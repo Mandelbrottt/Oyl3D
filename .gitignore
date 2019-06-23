@@ -1,0 +1,9 @@
+# Directories
+.vs/
+bin/
+bin-int/
+!vendor/bin/
+
+# files
+*.sln
+*.vcxpproj*
