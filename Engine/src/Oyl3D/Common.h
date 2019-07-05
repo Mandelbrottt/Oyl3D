@@ -1,15 +1,7 @@
 #pragma once
 
 #if defined (OYL_PLATFORM_WINDOWS)
-#	if defined (OYL_BUILD_DLL)
-#		if defined(OYL_ENGINE)
-#			define OYL_API __declspec(dllexport)
-#		else
-#			define OYL_API __declspec(dllimport)
-#		endif
-#	else
-#		define OYL_API
-#	endif
+
 #else
 #	error Oyl3D only supports Windows!
 #endif

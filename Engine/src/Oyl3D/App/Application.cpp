@@ -7,6 +7,7 @@ namespace oyl {
 	Application::Application() 
 		:m_running(true) {
 
+		Log::init();
 	}
 
 	Application::~Application() {
@@ -15,7 +16,7 @@ namespace oyl {
 
 	void Application::run() {
 		while (m_running) {
-			
+
 		}
 	}
 

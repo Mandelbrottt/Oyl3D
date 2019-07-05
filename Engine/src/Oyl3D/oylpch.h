@@ -13,6 +13,8 @@
 #include <unordered_map>
 #include <unordered_set>
 
+#include "System/Logging.h"
+
 #ifdef OYL_PLATFORM_WINDOWS
 //#	include <windows.h>
 #endif
