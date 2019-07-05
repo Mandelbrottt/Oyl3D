@@ -23,7 +23,7 @@ namespace oyl {
 		EventDispatcher dispatcher(e);
 		dispatcher.dispatch<WindowClose>(BIND_CALLBACK(Application::onWindowClose));
 
-		LOG("Event with type {0} and category {1} dispatched", e.type, e.categoryFlags);
+		LOG("{0}", e);
 	}
 
 	bool Application::onWindowClose(Event& e) {

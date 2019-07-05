@@ -71,8 +71,8 @@ void Win32Window::init(const WindowProps& props) {
 								  WindowEvent event;
 								  event.type = WindowResize;
 								  event.categoryFlags = CATEGORY_FLAGS(EventCategoryWindow);
-								  event.width = width;
-								  event.height = height;
+								  event.x = width;
+								  event.y = height;
 
 								  data.width = width;
 								  data.height = height;
@@ -143,11 +143,11 @@ void Win32Window::init(const WindowProps& props) {
 
 								   switch (action) {
 								   case GLFW_PRESS:
-									   event.type = MouseButtonPress;
+									   event.type = MousePress;
 									   event.pressed = true;
 									   break;
 								   case GLFW_RELEASE:
-									   event.type = MouseButtonRelease;
+									   event.type = MouseRelease;
 									   event.pressed = false;
 									   break;
 								   }
