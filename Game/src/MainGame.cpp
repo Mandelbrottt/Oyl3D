@@ -1,31 +1,16 @@
-#include "Hazel.h"
+#include <Oyl3D.h>
 
-class ExampleLayer : public Hazel::Layer {
+class Game : public oyl::Application {
 public:
-	ExampleLayer()
-		: Layer("Example") {}
+	Game() {
 
-	void onUpdate() override {
-		
 	}
 
-	virtual void onImGuiRender() override {
-		
-	}
-
-	void onEvent(Hazel::Event& event) override {
+	~Game() {
 
 	}
 };
 
-class Sandbox : public Hazel::Application {
-public:
-	Sandbox() {
-		pushLayer(new ExampleLayer());
-	}
-	~Sandbox() {}
-};
-
-Hazel::Application* Hazel::createApplication() {
-	return new Sandbox();
+oyl::Application* oyl::createApplication() {
+	return new Game();
 }
