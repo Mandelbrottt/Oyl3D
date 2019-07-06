@@ -19,22 +19,39 @@ namespace oyl {
 
 	}
 
+	void Application::pushLayer(Layer* layer) {
+		m_layerStack.pushLayer(layer);
+	}
+
+	void Application::pushOverlay(Layer* overlay) {
+		m_layerStack.pushOverlay(overlay);
+	}
+
 	void Application::onEvent(Event& e) {
 		EventDispatcher dispatcher(e);
 		dispatcher.dispatch<WindowClose>(BIND_CALLBACK(Application::onWindowClose));
 
-		LOG("{0}", e);
+		for (auto it = m_layerStack.end(); it != m_layerStack.begin();) {
+			(*--it)->onEvent(e);
+			if (e.handled)
+				break;
+		}
+	}
+
+	void Application::run() {
+		while (m_running) {
+
+			for (Layer* layer : m_layerStack) {
+				layer->onUpdate();
+			}
+
+			m_window->onUpdate();
+		}
 	}
 
 	bool Application::onWindowClose(Event& e) {
 		m_running = false;
 		return true;
-	}
-
-	void Application::run() {
-		while (m_running) {
-			m_window->onUpdate();
-		}
 	}
 
 }
