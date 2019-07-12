@@ -3,6 +3,7 @@
 #include "Oyl3D/Common.h"
 #include "Oyl3D/App/Window.h"
 #include "Oyl3D/Events/Event.h"
+#include "Oyl3D/Events/EventDispatcher.h"
 #include "Oyl3D/System/LayerStack.h"
 
 namespace oyl {
@@ -18,6 +19,10 @@ namespace oyl {
 
 		void pushLayer(Layer* layer);
 		void pushOverlay(Layer* overlay);
+
+		inline Window& getWindow() { return *m_window; }
+
+		inline static Application& get() { return *s_instance; }
 	private:
 		bool onWindowClose(Event& e);
 	private:
@@ -25,6 +30,8 @@ namespace oyl {
 		bool m_running;
 
 		LayerStack m_layerStack;
+	private:
+		static Application* s_instance;
 	};
 
 	Application* createApplication();

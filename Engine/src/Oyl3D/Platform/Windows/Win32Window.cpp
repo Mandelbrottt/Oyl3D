@@ -2,6 +2,8 @@
 
 #include "Win32Window.h"
 
+#include <glad/glad.h>
+
 namespace oyl {
 
 bool Win32Window::s_GLFWInitialized = false;
@@ -60,6 +62,8 @@ void Win32Window::init(const WindowProps& props) {
 								nullptr);
 
 	glfwMakeContextCurrent(m_window);
+	int status = gladLoadGLLoader((GLADloadproc) glfwGetProcAddress);
+	ASSERT(status, "Failed to initialize Glad!");
 	glfwSetWindowUserPointer(m_window, &m_data);
 	setVsync(true);
 
@@ -68,11 +72,7 @@ void Win32Window::init(const WindowProps& props) {
 							  {
 								  WindowData& data = *(WindowData*) glfwGetWindowUserPointer(window);
 
-								  WindowEvent event;
-								  event.type = WindowResize;
-								  event.categoryFlags = CATEGORY_FLAGS(EventCategoryWindow);
-								  event.x = width;
-								  event.y = height;
+								  WindowResizeEvent event(width, height);
 
 								  data.width = width;
 								  data.height = height;
@@ -83,10 +83,7 @@ void Win32Window::init(const WindowProps& props) {
 							   {
 								   WindowData& data = *(WindowData*) glfwGetWindowUserPointer(window);
 
-								   WindowEvent event;
-								   event.type = WindowClose;
-								   event.categoryFlags = CATEGORY_FLAGS(EventCategoryWindow);
-								   event.shouldClose = true;
+								   WindowCloseEvent event;
 
 								   data.eventCallback(event);
 							   });
@@ -95,28 +92,23 @@ void Win32Window::init(const WindowProps& props) {
 					   {
 						   WindowData& data = *(WindowData*) glfwGetWindowUserPointer(window);
 
-						   KeyEvent event;
-						   event.categoryFlags = CATEGORY_FLAGS(EventCategoryKeyboard);
-						   event.keycode = key;
-						   event.mods = mods;
+						   static int repeats = 0;
 
 						   switch (action) {
-						   case GLFW_PRESS:
-							   event.type = KeyPress;
-							   event.pressed = true;
-							   event.count = 0;
-							   data.eventCallback(event);
+						   case GLFW_PRESS: {
+							   KeyPressEvent pressEvent(key);
+							   data.eventCallback(pressEvent);
 							   break;
-						   case GLFW_RELEASE:
-							   event.type = KeyRelease;
-							   event.pressed = false;
-							   data.eventCallback(event);
+						   } case GLFW_RELEASE: {
+							   KeyReleaseEvent releaseEvent(key);
+							   data.eventCallback(releaseEvent);
+							   repeats = 0;
 							   break;
-						   case GLFW_REPEAT:
-							   event.type = KeyPress;
-							   event.pressed = true;
-							   event.count = 1;
+						   } case GLFW_REPEAT: {
+							   KeyPressEvent repeatEvent(key, ++repeats);
+							   data.eventCallback(repeatEvent);
 							   break;
+						   }
 						   }
 					   });
 
@@ -124,10 +116,7 @@ void Win32Window::init(const WindowProps& props) {
 						{
 							WindowData& data = *(WindowData*) glfwGetWindowUserPointer(window);
 
-							KeyEvent event;
-							event.type = KeyType;
-							event.categoryFlags = CATEGORY_FLAGS(EventCategoryKeyboard);
-							event.keycode = keycode;
+							KeyTypeEvent event(keycode);
 
 							data.eventCallback(event);
 						});
@@ -136,53 +125,37 @@ void Win32Window::init(const WindowProps& props) {
 							   {
 								   WindowData& data = *(WindowData*) glfwGetWindowUserPointer(window);
 
-								   MouseEvent event;
-								   event.categoryFlags = CATEGORY_FLAGS(EventCategoryMouse);
-								   event.button = button;
-								   event.mods = mods;
-
 								   switch (action) {
-								   case GLFW_PRESS:
-									   event.type = MousePress;
-									   event.pressed = true;
+								   case GLFW_PRESS: {
+									   MousePressEvent pressEvent(button);
+									   data.eventCallback(pressEvent);
 									   break;
-								   case GLFW_RELEASE:
-									   event.type = MouseRelease;
-									   event.pressed = false;
+								   } case GLFW_RELEASE: {
+									   MouseReleaseEvent releaseEvent(button);
+									   data.eventCallback(releaseEvent);
 									   break;
 								   }
-								   data.eventCallback(event);
+								   }
 							   });
 
-	glfwSetScrollCallback(m_window, [](GLFWwindow * window, double xOffset, double yOffset)
+	glfwSetScrollCallback(m_window, [](GLFWwindow * window, double x, double y)
 						  {
 							  WindowData& data = *(WindowData*) glfwGetWindowUserPointer(window);
 
-							  MouseEvent event;
-							  event.type = MouseScroll;
-							  event.categoryFlags = CATEGORY_FLAGS(EventCategoryMouse);
-							  event.scroll.x = (float) xOffset;
-							  event.scroll.y = (float) yOffset;
+							  MouseScrollEvent event((float) x, (float) y);
 							  data.eventCallback(event);
 						  });
 
-	glfwSetCursorPosCallback(m_window, [](GLFWwindow * window, double xPos, double yPos)
+	glfwSetCursorPosCallback(m_window, [](GLFWwindow * window, double x, double y)
 							 {
 								 WindowData& data = *(WindowData*) glfwGetWindowUserPointer(window);
 
-								 MouseEvent event;
-								 event.type = MouseMove;
-								 event.categoryFlags = CATEGORY_FLAGS(EventCategoryMouse);
+								 static float lastx = (float) x, lasty = (float) y;
 
-								 static float lastx = (float) xPos, lasty = (float) yPos;
+								 MouseMoveEvent event((float) x, (float) y, (float) x - lastx, (float) y - lasty);
 
-								 event.position.x = (float) xPos;
-								 event.position.y = (float) yPos;
-								 event.delta.x = (float) xPos - lastx;
-								 event.delta.y = (float) yPos - lasty;
-
-								 lastx = (float) xPos;
-								 lasty = (float) yPos;
+								 lastx = (float) x;
+								 lasty = (float) y;
 
 								 data.eventCallback(event);
 							 });

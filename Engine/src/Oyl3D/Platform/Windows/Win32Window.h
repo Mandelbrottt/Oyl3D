@@ -3,7 +3,6 @@
 #include "Oyl3D/App/Window.h"
 
 #include <GLFW/glfw3.h>
-#include <glad/glad.h>
 
 namespace oyl {
 

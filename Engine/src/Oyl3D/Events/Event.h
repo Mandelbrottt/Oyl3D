@@ -36,19 +36,305 @@ template <int v> struct CategoryFlags<v> {
 
 #define CATEGORY_FLAGS(...) CategoryFlags<__VA_ARGS__>::RESULT
 
-struct Event abstract {
+#if !defined(OYL_DIST)
+#define EVENT_CLASS_TYPE(type)	static int getStaticType() { return type; }\
+								virtual int getEventType() const override { return getStaticType(); }\
+								virtual const char* getName() const override { return #type; }
+#else
+#define EVENT_CLASS_TYPE(type)	static int getStaticType() { return type; }\
+								virtual int getEventType() const override { return getStaticType(); }
+#endif
+
+#define EVENT_CLASS_CATEGORY(...) virtual int getCategoryFlags() const override { return CATEGORY_FLAGS(__VA_ARGS__); }
+
+class Event {
+public:
+	virtual int getEventType() const = 0;
+	virtual int getCategoryFlags() const = 0;
+
+	inline bool isInCategory(int category) { return category & getCategoryFlags(); };
 
 #if !defined(OYL_DIST)
+	virtual const char* getName() const = 0;
 	virtual std::string toString() const = 0;
 #endif
 
-	inline bool isInCategory(int category) { return categoryFlags & category; }
-
-	int type;
-	int categoryFlags;
+public:
 	bool handled;
 };
 
+/////////////////////////////////////////////////
+
+class WindowCloseEvent : public Event {
+public:
+	WindowCloseEvent() {}
+
+#if !defined(OYL_DIST)
+	std::string toString() const override {
+		return "WindowCloseEvent";
+	}
+#endif
+
+	EVENT_CLASS_TYPE(WindowClose)
+	EVENT_CLASS_CATEGORY(EventCategoryWindow)
+};
+
+/////////////////////////////////////////////////
+
+class WindowMoveEvent : public Event {
+public:
+	WindowMoveEvent(unsigned int x, unsigned int y)
+		: m_x(x), m_y(y) {}
+
+	inline unsigned int getWidth() const { return m_x; }
+	inline unsigned int getHeight() const { return m_y; }
+
+#if !defined(OYL_DIST)
+	std::string toString() const override {
+		char buffer[100];
+		sprintf(buffer, "WindowMoveEvent: (%d, %d)", m_x, m_y);
+		return std::string(buffer);
+	}
+#endif
+
+	EVENT_CLASS_TYPE(WindowMove)
+	EVENT_CLASS_CATEGORY(EventCategoryWindow)
+private:
+	unsigned int m_x, m_y;
+};
+
+/////////////////////////////////////////////////
+
+class WindowResizeEvent : public Event {
+public:
+	WindowResizeEvent(unsigned int width, unsigned int height)
+		: m_width(width), m_height(height) {}
+
+	inline unsigned int getWidth() const { return m_width; }
+	inline unsigned int getHeight() const { return m_height; }
+
+#if !defined(OYL_DIST)
+	std::string toString() const override {
+		char buffer[100];
+		sprintf(buffer, "WindowResizeEvent: (%d, %d)", m_width, m_height);
+		return std::string(buffer);
+	}
+#endif
+
+	EVENT_CLASS_TYPE(WindowMove)
+	EVENT_CLASS_CATEGORY(EventCategoryWindow)
+private:
+	unsigned int m_width;
+	unsigned int m_height;
+};
+
+/////////////////////////////////////////////////
+
+class WindowFocusEvent : public Event {
+	WindowFocusEvent() {}
+
+#if !defined(OYL_DIST)
+	std::string toString() const override {
+		return "WindowFocusEvent";
+	}
+#endif
+
+	EVENT_CLASS_TYPE(WindowClose)
+	EVENT_CLASS_CATEGORY(EventCategoryWindow)
+};
+
+/////////////////////////////////////////////////
+
+class WindowLostFocusEvent : public Event {
+	WindowLostFocusEvent() {}
+
+#if !defined(OYL_DIST)
+	std::string toString() const override {
+		return "WindowLostFocusEvent";
+	}
+#endif
+
+	EVENT_CLASS_TYPE(WindowClose)
+	EVENT_CLASS_CATEGORY(EventCategoryWindow)
+};
+
+/////////////////////////////////////////////////
+
+class KeyEvent : public Event {
+public:
+	inline int getKeyCode() const { return m_keyCode; }
+
+	EVENT_CLASS_CATEGORY(EventCategoryKeyboard, EventCategoryInput)
+protected:
+	KeyEvent(int keyCode)
+		: m_keyCode(keyCode) {}
+
+	int m_keyCode;
+};
+
+/////////////////////////////////////////////////
+
+class KeyPressEvent : public KeyEvent {
+public:
+	KeyPressEvent(int keyCode, int repeatCount = 0)
+		: KeyEvent(keyCode), m_repeatCount(repeatCount) {}
+
+	inline int getRepeatCount() { return m_repeatCount; }
+
+#if !defined(OYL_DIST)
+	std::string toString() const override {
+		char buffer[100];
+		sprintf(buffer, "KeyPressEvent: %d (%d times)", m_keyCode, m_repeatCount);
+		return std::string(buffer);
+	}
+#endif
+
+	EVENT_CLASS_TYPE(KeyPress)
+private:
+	int m_repeatCount;
+};
+
+/////////////////////////////////////////////////
+
+class KeyTypeEvent : public KeyEvent {
+public:
+	KeyTypeEvent(int keyCode)
+		: KeyEvent(keyCode) {}
+
+#if !defined(OYL_DIST)
+	std::string toString() const override {
+		char buffer[100];
+		sprintf(buffer, "KeyTypeEvent: %c", (char) m_keyCode);
+		return std::string(buffer);
+	}
+#endif
+
+	EVENT_CLASS_TYPE(KeyType)
+};
+
+/////////////////////////////////////////////////
+
+class KeyReleaseEvent : public KeyEvent {
+public:
+	KeyReleaseEvent(int keyCode, int repeatCount = 0)
+		: KeyEvent(keyCode) {}
+
+#if !defined(OYL_DIST)
+	std::string toString() const override {
+		char buffer[100];
+		sprintf(buffer, "KeyReleaseEvent: %d", m_keyCode);
+		return std::string(buffer);
+	}
+#endif
+
+	EVENT_CLASS_TYPE(KeyRelease)
+};
+
+/////////////////////////////////////////////////
+
+class MouseButtonEvent : public Event {
+public:
+	inline int getButton() { return m_button; }
+
+	EVENT_CLASS_CATEGORY(EventCategoryMouse, EventCategoryInput)
+protected:
+	MouseButtonEvent(int button)
+		: m_button(button) {}
+
+	int m_button;
+};
+
+/////////////////////////////////////////////////
+
+class MousePressEvent : public MouseButtonEvent {
+public:
+	MousePressEvent(int button)
+		: MouseButtonEvent(button) {}
+
+#if !defined(OYL_DIST)
+	std::string toString() const override {
+		char buffer[100];
+		sprintf(buffer, "MousePressEvent: %d", m_button);
+		return std::string(buffer);
+	}
+#endif
+
+	EVENT_CLASS_TYPE(KeyPress)
+};
+
+/////////////////////////////////////////////////
+
+class MouseReleaseEvent : public MouseButtonEvent {
+public:
+	MouseReleaseEvent(int button)
+		: MouseButtonEvent(button) {}
+
+#if !defined(OYL_DIST)
+	std::string toString() const override {
+		char buffer[100];
+		sprintf(buffer, "MouseReleaseEvent: %d", m_button);
+		return std::string(buffer);
+	}
+#endif
+
+	EVENT_CLASS_TYPE(KeyRelease)
+};
+
+/////////////////////////////////////////////////
+
+class MouseMoveEvent : public Event {
+public:
+	MouseMoveEvent(float x, float y, float dx = 0, float dy = 0)
+		: m_x(x), m_y(y), m_dx(dx), m_dy(dy) {}
+
+	inline float getX() { return m_x; }
+	inline float getY() { return m_y; }
+	inline float getDX() { return m_dx; }
+	inline float getDY() { return m_dy; }
+
+#if !defined(OYL_DIST)
+	std::string toString() const override {
+		char buffer[100];
+		sprintf(buffer, "MouseMoveEvent: %f, %f", m_x, m_y);
+		return std::string(buffer);
+	}
+#endif
+
+	EVENT_CLASS_TYPE(MouseMove)
+	EVENT_CLASS_CATEGORY(EventCategoryMouse, EventCategoryInput)
+private:
+	float m_x;
+	float m_y;
+	float m_dx;
+	float m_dy;
+};
+
+/////////////////////////////////////////////////
+
+class MouseScrollEvent : public Event {
+public:
+	MouseScrollEvent(float x, float y)
+		: m_x(x), m_y(y) {}
+
+	inline float getX() { return m_x; }
+	inline float getY() { return m_y; }
+
+#if !defined(OYL_DIST)
+	std::string toString() const override {
+		char buffer[100];
+		sprintf(buffer, "MouseScrollEvent: %f, %f", m_x, m_y);
+		return std::string(buffer);
+	}
+#endif
+
+	EVENT_CLASS_TYPE(MouseScroll)
+	EVENT_CLASS_CATEGORY(EventCategoryMouse, EventCategoryInput)
+private:
+	float m_x;
+	float m_y;
+};
+
+/*
 struct WindowEvent : public Event {
 	std::string title;
 	unsigned int x;
@@ -72,6 +358,8 @@ struct KeyEvent : public Event {
 	inline virtual std::string toString() const final;
 #endif
 };
+
+
 
 struct MouseEvent : public Event {
 	glm::vec2 scroll;
@@ -106,69 +394,5 @@ struct SoundEvent : public Event {
 	inline virtual std::string toString() const final;
 #endif
 };
-
-#if !defined(OYL_DIST)
-inline std::string WindowEvent::toString() const {
-	std::stringstream ss;
-	switch (type) {
-	case WindowClose:
-		ss << "WindowClose"; break;
-	case WindowMove:
-		ss << "WindowMove: " << x << "," << y; break;
-	case WindowResize:
-		ss << "WindowResize: " << x << "," << y; break;
-	case WindowFocus:
-		ss << "WindowFocus"; break;
-	case WindowLostFocus:
-		ss << "WindowLostFocus"; break;
-	}
-	return ss.str();
-}
-
-inline std::string KeyEvent::toString() const {
-	std::stringstream ss;
-	switch (type) {
-	case KeyPress:
-		ss << "KeyPress: " << keycode << "(" << count << " times)"; break;
-	case KeyType:
-		ss << "KeyType: " << (char) keycode; break;
-	case KeyRelease:
-		ss << "KeyRelease: " << keycode; break;
-	}
-	return ss.str();
-}
-
-inline std::string MouseEvent::toString() const {
-	std::stringstream ss;
-	switch (type) {
-	case MousePress:
-		ss << "MousePress: " << (int) button; break;
-	case MouseRelease:
-		ss << "MouseRelease: " << (int) button; break;
-	case MouseMove:
-		ss << "MouseMove: ";
-		ss << "pos(" << position.x << ", " << position.y << "), ";
-		ss << "delta(" << delta.x << ", " << delta.y << ")"; break;
-	case MouseScroll:
-		ss << "MouseScroll: (" << scroll.x << ", " << scroll.y << ")"; break;
-	}
-	return ss.str();
-}
-
-inline std::string GamePadEvent::toString() const {
-	std::stringstream ss;
-	return ss.str();
-}
-
-inline std::string SoundEvent::toString() const {
-	std::stringstream ss;
-	return ss.str();
-}
-
-inline std::ostream& operator<<(std::ostream& os, const Event& e) {
-	os << e.toString();
-	return os;
-}
-#endif
-
+*/
 }

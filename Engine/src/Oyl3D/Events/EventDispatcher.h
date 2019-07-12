@@ -5,14 +5,14 @@
 namespace oyl {
 
 class EventDispatcher {
-	using EventFn = std::function<bool(Event&)>;
+	template<class T> using EventFn = std::function<bool(T&)>;
 public:
 	EventDispatcher(Event& event)
 		: m_event(event) {}
 
-	template<int EventType> bool dispatch(EventFn func) {
-		if (m_event.type == EventType) {
-			m_event.handled = func(m_event);
+	template<class T> bool dispatch(EventFn<T> func) {
+		if (m_event.getEventType() == T::getStaticType()) {
+			m_event.handled = func(*(T*)&m_event);
 			return true;
 		}
 		return false;

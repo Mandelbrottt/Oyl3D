@@ -4,7 +4,7 @@ workspace "Oyl3D"
 	configurations {
 		"Debug",
 		"Release",
-		"Dist"
+		"Distribution"
 	}	
 	
 	startproject "OylGame"
@@ -107,6 +107,7 @@ project "OylGame"
 
 	defines {
 		-- "OYL_BUILD_DLL",
+		"_CRT_SECURE_NO_WARNINGS",
 		"OYL_GAME"
 	}
 
