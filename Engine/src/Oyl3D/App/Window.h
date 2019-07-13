@@ -46,6 +46,8 @@ public:
 	virtual void setFullscreenType(FullscreenType type) = 0;
 	virtual bool getFullscreenType() const = 0;
 
+	virtual void* getNativeWindow() const = 0;
+
 	static Window* create(const WindowProps& props = WindowProps());
 };
 

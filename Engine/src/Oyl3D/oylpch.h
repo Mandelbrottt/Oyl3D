@@ -17,6 +17,8 @@
 
 #include "System/Logging.h"
 
+#include "Input/InputCodes.h"
+
 #ifdef OYL_PLATFORM_WINDOWS
 //#	include <windows.h>
 #endif

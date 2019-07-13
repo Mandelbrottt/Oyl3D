@@ -63,6 +63,11 @@ public:
 	bool handled;
 };
 
+static std::ostream& operator <<(std::ostream& os, Event& e) {
+	os << e;
+	return os;
+}
+
 /////////////////////////////////////////////////
 
 class WindowCloseEvent : public Event {

@@ -4,7 +4,7 @@
 
 #include "Events/EventDispatcher.h"
 
-#include <glfw/glfw3.h>
+#include "Input/Input.h"
 
 namespace oyl {
 
@@ -38,7 +38,7 @@ void Application::onEvent(Event& e) {
 	EventDispatcher dispatcher(e);
 	dispatcher.dispatch<KeyPressEvent>([&](KeyPressEvent& event)->bool
 									   {
-										   if (event.getKeyCode() == GLFW_KEY_ESCAPE)
+										   if (event.getKeyCode() == OYL_KEY_ESCAPE)
 											   onWindowClose(e);
 										   return true;
 									   });
