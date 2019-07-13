@@ -2,6 +2,7 @@
 
 #include "Win32Window.h"
 
+#include <glfw/glfw3.h>
 #include <glad/glad.h>
 
 namespace oyl {
@@ -43,6 +44,8 @@ void Win32Window::init(const WindowProps& props) {
 
 	GLFWmonitor* monitor = nullptr;
 
+	// TODO: Abstract away glfw more
+
 	switch (m_data.fullscreenType) {
 	case Windowed:
 		glfwWindowHint(GLFW_DECORATED, GLFW_FALSE);
@@ -56,14 +59,14 @@ void Win32Window::init(const WindowProps& props) {
 	}
 
 	m_window = glfwCreateWindow((int) props.width,
-		(int) props.height,
+								(int) props.height,
 								m_data.title.c_str(),
 								monitor,
 								nullptr);
 
-	glfwMakeContextCurrent(m_window);
-	int status = gladLoadGLLoader((GLADloadproc) glfwGetProcAddress);
-	ASSERT(status, "Failed to initialize Glad!");
+	m_context = new OpenGLContext(m_window);
+	m_context->init();
+
 	glfwSetWindowUserPointer(m_window, &m_data);
 	setVsync(true);
 
@@ -168,7 +171,7 @@ void Win32Window::shutdown() {
 
 void Win32Window::onUpdate() {
 	glfwPollEvents();
-	glfwSwapBuffers(m_window);
+	m_context->swapBuffers();
 }
 
 void Win32Window::setVsync(bool enabled) {

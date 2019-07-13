@@ -2,7 +2,7 @@
 
 #include "Oyl3D/App/Window.h"
 
-#include <GLFW/glfw3.h>
+#include "Oyl3D/Platform/OpenGL/OpenGLContext.h"
 
 namespace oyl {
 
@@ -30,6 +30,7 @@ private:
 	virtual void shutdown();
 private:
 	GLFWwindow* m_window;
+	GraphicsContext* m_context;
 
 	struct WindowData {
 		std::string title;
