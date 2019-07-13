@@ -11,16 +11,10 @@ public:
 
 	virtual void onAttach() override;
 	virtual void onDetach() override;
-	virtual void onUpdate() override;
-	virtual void onEvent(Event& e) override;
+	virtual void onImGuiRender() override;
 
-	bool onMouseMove(MouseMoveEvent& e);
-	bool onMousePress(MousePressEvent& e);
-	bool onMouseRelease(MouseReleaseEvent& e);
-	bool onMouseScroll(MouseScrollEvent& e);
-	bool onKeyPress(KeyPressEvent& e);
-	bool onKeyRelease(KeyReleaseEvent& e);
-	bool onKeyType(KeyTypeEvent& e);
+	void begin();
+	void end();
 private:
 	float m_time;
 };

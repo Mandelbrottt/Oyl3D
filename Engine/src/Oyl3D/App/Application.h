@@ -5,6 +5,7 @@
 #include "Oyl3D/Events/Event.h"
 #include "Oyl3D/Events/EventDispatcher.h"
 #include "Oyl3D/System/LayerStack.h"
+#include "Oyl3D/Debug/ImGuiLayer.h"
 
 namespace oyl {
 
@@ -27,6 +28,7 @@ namespace oyl {
 		bool onWindowClose(Event& e);
 	private:
 		std::unique_ptr<Window> m_window;
+		ImGuiLayer* m_imguiLayer;
 		bool m_running;
 
 		LayerStack m_layerStack;

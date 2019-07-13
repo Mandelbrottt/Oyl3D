@@ -6,6 +6,8 @@
 
 #include "Input/Input.h"
 
+#include <glad/glad.h>
+
 namespace oyl {
 
 Application* Application::s_instance = nullptr;
@@ -20,6 +22,9 @@ Application::Application()
 
 	m_window = std::unique_ptr<Window>(Window::create());
 	m_window->setEventCallback(BIND_CALLBACK(Application::onEvent));
+
+	m_imguiLayer = new ImGuiLayer();
+	pushOverlay(m_imguiLayer);
 }
 
 Application::~Application() {
@@ -36,12 +41,6 @@ void Application::pushOverlay(Layer* overlay) {
 
 void Application::onEvent(Event& e) {
 	EventDispatcher dispatcher(e);
-	dispatcher.dispatch<KeyPressEvent>([&](KeyPressEvent& event)->bool
-									   {
-										   if (event.getKeyCode() == OYL_KEY_ESCAPE)
-											   onWindowClose(e);
-										   return true;
-									   });
 	dispatcher.dispatch<WindowCloseEvent>(BIND_CALLBACK(Application::onWindowClose));
 
 	for (auto it = m_layerStack.end(); it != m_layerStack.begin();) {
@@ -54,9 +53,21 @@ void Application::onEvent(Event& e) {
 void Application::run() {
 	while (m_running) {
 
-		for (Layer* layer : m_layerStack) {
+		glClear(GL_COLOR_BUFFER_BIT);
+
+		// TEMPORARY:
+		if (Input::isKeyPressed(OYL_KEY_ESCAPE))
+			m_running = false;
+
+		for (Layer* layer : m_layerStack) 
 			layer->onUpdate();
-		}
+
+#if !defined(OYL_DIST)
+		m_imguiLayer->begin();
+		for (Layer* layer : m_layerStack)
+			layer->onImGuiRender();
+		m_imguiLayer->end();
+#endif
 
 		m_window->onUpdate();
 	}

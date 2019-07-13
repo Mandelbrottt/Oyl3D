@@ -7,3 +7,4 @@ bin-int/
 # files
 *.sln
 *.vcxproj*
+*.ini

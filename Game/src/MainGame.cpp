@@ -3,7 +3,7 @@
 class Game : public oyl::Application {
 public:
 	Game() {
-		pushOverlay(new oyl::ImGuiLayer());
+
 	}
 
 	~Game() {
