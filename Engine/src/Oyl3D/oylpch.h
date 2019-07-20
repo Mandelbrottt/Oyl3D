@@ -19,6 +19,8 @@
 
 #include "Input/InputCodes.h"
 
+using uint = uint32_t;
+
 #ifdef OYL_PLATFORM_WINDOWS
 //#	include <windows.h>
 #endif

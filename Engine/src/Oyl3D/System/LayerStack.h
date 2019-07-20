@@ -16,9 +16,11 @@ public:
 
 	std::vector<Layer*>::iterator begin() { return m_layers.begin(); }
 	std::vector<Layer*>::iterator end() { return m_layers.end(); }
+	std::vector<Layer*>::const_iterator begin() const { return m_layers.begin(); }
+	std::vector<Layer*>::const_iterator end() const { return m_layers.end(); }
 private:
 	std::vector<Layer*> m_layers;
-	unsigned int m_layerInsertIndex = 0;
+	uint m_layerInsertIndex = 0;
 };
 
 }

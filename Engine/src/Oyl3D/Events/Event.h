@@ -88,11 +88,11 @@ public:
 
 class WindowMoveEvent : public Event {
 public:
-	WindowMoveEvent(unsigned int x, unsigned int y)
+	WindowMoveEvent(uint x, uint y)
 		: m_x(x), m_y(y) {}
 
-	inline unsigned int getWidth() const { return m_x; }
-	inline unsigned int getHeight() const { return m_y; }
+	inline uint getWidth() const { return m_x; }
+	inline uint getHeight() const { return m_y; }
 
 #if !defined(OYL_DIST)
 	std::string toString() const override {
@@ -105,18 +105,18 @@ public:
 	EVENT_CLASS_TYPE(WindowMove)
 	EVENT_CLASS_CATEGORY(EventCategoryWindow)
 private:
-	unsigned int m_x, m_y;
+	uint m_x, m_y;
 };
 
 /////////////////////////////////////////////////
 
 class WindowResizeEvent : public Event {
 public:
-	WindowResizeEvent(unsigned int width, unsigned int height)
+	WindowResizeEvent(uint width, uint height)
 		: m_width(width), m_height(height) {}
 
-	inline unsigned int getWidth() const { return m_width; }
-	inline unsigned int getHeight() const { return m_height; }
+	inline uint getWidth() const { return m_width; }
+	inline uint getHeight() const { return m_height; }
 
 #if !defined(OYL_DIST)
 	std::string toString() const override {
@@ -129,8 +129,8 @@ public:
 	EVENT_CLASS_TYPE(WindowMove)
 	EVENT_CLASS_CATEGORY(EventCategoryWindow)
 private:
-	unsigned int m_width;
-	unsigned int m_height;
+	uint m_width;
+	uint m_height;
 };
 
 /////////////////////////////////////////////////
@@ -339,65 +339,4 @@ private:
 	float m_y;
 };
 
-/*
-struct WindowEvent : public Event {
-	std::string title;
-	unsigned int x;
-	unsigned int y;
-	bool vsync;
-	bool fullscreen;
-	bool shouldClose;
-
-#if !defined(OYL_DIST)
-	inline virtual std::string toString() const final;
-#endif
-};
-
-struct KeyEvent : public Event {
-	int keycode;
-	int count;
-	char mods;
-	bool pressed;
-
-#if !defined(OYL_DIST)
-	inline virtual std::string toString() const final;
-#endif
-};
-
-
-
-struct MouseEvent : public Event {
-	glm::vec2 scroll;
-	glm::vec2 position;
-	glm::vec2 delta;
-	char button;
-	char mods;
-	bool pressed;
-	bool locked;
-
-#if !defined(OYL_DIST)
-	inline virtual std::string toString() const final;
-#endif
-};
-
-struct GamePadEvent : public Event {
-	char button;
-	char playerID;
-	bool pressed;
-	float value;
-	float prevValue;
-
-#if !defined(OYL_DIST)
-	inline virtual std::string toString() const final;
-#endif
-};
-
-struct SoundEvent : public Event {
-	//TODO: Implement sound events when audio is implemented
-
-#if !defined(OYL_DIST)
-	inline virtual std::string toString() const final;
-#endif
-};
-*/
 }

@@ -13,8 +13,8 @@ public:
 
 	void onUpdate() override;
 
-	virtual unsigned int getWidth() const override { return m_data.width; }
-	virtual unsigned int getHeight() const override { return m_data.height; }
+	virtual uint getWidth() const override { return m_data.width; }
+	virtual uint getHeight() const override { return m_data.height; }
 
 	virtual void setEventCallback(const EventCallbackFn& callback) override { m_data.eventCallback = callback; }
 
@@ -24,7 +24,7 @@ public:
 	virtual void setFullscreenType(FullscreenType enabled) override;
 	virtual bool getFullscreenType() const override;
 
-	inline virtual void* getNativeWindow() const override { return m_window; }
+	virtual void* getNativeWindow() const override { return m_window; }
 private:
 	virtual void init(const WindowProps& props);
 	virtual void shutdown();
@@ -34,8 +34,8 @@ private:
 
 	struct WindowData {
 		std::string title;
-		unsigned int width;
-		unsigned int height;
+		uint width;
+		uint height;
 		bool vsync;
 		FullscreenType fullscreenType;
 

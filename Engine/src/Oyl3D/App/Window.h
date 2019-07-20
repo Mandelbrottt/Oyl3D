@@ -13,14 +13,14 @@ enum FullscreenType : char {
 
 struct WindowProps {
 	std::string title;
-	unsigned int width;
-	unsigned int height;
+	uint width;
+	uint height;
 	bool vsync;
 	FullscreenType type;
 
 	WindowProps(std::string title = "Oyl3D",
-				unsigned int width = 1280,
-				unsigned int height = 720,
+				uint width = 1280,
+				uint height = 720,
 				bool vsync = true, 
 				FullscreenType type = Windowed)
 		: title(title), width(width), height(height), 
@@ -35,8 +35,8 @@ public:
 
 	virtual void onUpdate() = 0;
 
-	virtual unsigned int getWidth() const = 0;
-	virtual unsigned int getHeight() const = 0;
+	virtual uint getWidth() const = 0;
+	virtual uint getHeight() const = 0;
 
 	virtual void setEventCallback(const EventCallbackFn& callback) = 0;
 	

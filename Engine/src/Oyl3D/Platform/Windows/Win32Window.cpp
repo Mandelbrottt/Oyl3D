@@ -115,7 +115,7 @@ void Win32Window::init(const WindowProps& props) {
 						   }
 					   });
 
-	glfwSetCharCallback(m_window, [](GLFWwindow * window, unsigned int keycode)
+	glfwSetCharCallback(m_window, [](GLFWwindow * window, uint keycode)
 						{
 							WindowData& data = *(WindowData*) glfwGetWindowUserPointer(window);
 
