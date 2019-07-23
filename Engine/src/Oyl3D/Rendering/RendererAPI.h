@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Buffer.h"
+#include "Graphics/Buffer.h"
 
 namespace oyl {
 

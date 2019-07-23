@@ -136,5 +136,35 @@ void OpenGLShader::unbind() const {
 	glUseProgram(0);
 }
 
+void OpenGLShader::setUniformVec2(const std::string& name, const glm::vec2& v){
+	int location = glGetUniformLocation(m_rendererID, name.c_str());
+	//ASSERT(location, "Location Not Found!");
+	glUniform2fv(location, 1, glm::value_ptr(v));
+}
+
+void OpenGLShader::setUniformVec3(const std::string& name, const glm::vec3& v){
+	int location = glGetUniformLocation(m_rendererID, name.c_str());
+	//ASSERT(location, "Location Not Found!");
+	glUniform3fv(location, 1, glm::value_ptr(v));
+}
+
+void OpenGLShader::setUniformVec4(const std::string& name, const glm::vec4& v){
+	int location = glGetUniformLocation(m_rendererID, name.c_str());
+	//ASSERT(location, "Location Not Found!");
+	glUniform4fv(location, 1, glm::value_ptr(v));
+}
+
+void OpenGLShader::setUniformMat3(const std::string& name, const glm::mat3& m){
+	int location = glGetUniformLocation(m_rendererID, name.c_str());
+	//ASSERT(location, "Location Not Found!");
+	glUniformMatrix3fv(location, 1, GL_FALSE, glm::value_ptr(m));
+}
+
+void OpenGLShader::setUniformMat4(const std::string& name, const glm::mat4& m){
+	int location = glGetUniformLocation(m_rendererID, name.c_str());
+	//ASSERT(location, "Location Not Found!");
+	glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(m));
+}
+
 }
 

@@ -17,6 +17,8 @@
 #include <unordered_set>
 
 #include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 #include "System/Logging.h"
 

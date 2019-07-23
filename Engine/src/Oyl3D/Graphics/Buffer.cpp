@@ -1,7 +1,7 @@
 #include "oylpch.h"
 #include "Buffer.h"
 
-#include "Renderer.h"
+#include "Rendering/Renderer.h"
 #include "Platform/OpenGL/OpenGLBuffer.h"
 
 namespace oyl {

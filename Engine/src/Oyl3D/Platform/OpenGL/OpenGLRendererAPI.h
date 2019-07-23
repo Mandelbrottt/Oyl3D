@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Oyl3D/Graphics/RendererAPI.h"
+#include "Oyl3D/Rendering/RendererAPI.h"
 
 namespace oyl {
 
