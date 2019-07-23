@@ -3,10 +3,12 @@
 namespace oyl {
 
 enum class ShaderType {
-	None,
 	Vertex,
+	TessControl,
+	TessEvaluation,
 	Geometry,
-	Pixel
+	Pixel,
+	NumTypes
 };
 
 struct ShaderInfo {
@@ -21,7 +23,6 @@ public:
 	virtual void bind() const = 0;
 	virtual void unbind() const = 0;
 
-	static Shader* create(const std::string& vertexSrc, const std::string& fragmentSrc);
 	static Shader* create(const std::initializer_list<ShaderInfo>& files);
 };
 
