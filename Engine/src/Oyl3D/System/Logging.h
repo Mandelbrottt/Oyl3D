@@ -22,7 +22,7 @@ private:
 
 }
 
-#if defined(OYL_DEBUG)
+#if !defined(OYL_DIST)
 #	if defined(OYL_ENGINE)
 #		define LOG_TRACE(...)	::oyl::Log::getEngineLogger()->trace(__VA_ARGS__)
 #		define LOG_INFO(...)	::oyl::Log::getEngineLogger()->info(__VA_ARGS__)

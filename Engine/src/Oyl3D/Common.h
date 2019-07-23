@@ -17,7 +17,7 @@
 #	define ASSERT(x, ...) { if(!x) { LOG_ERROR("Assertion failed: {0}", __VA_ARGS__); BREAKPOINT; } }
 #	define VERIFY(x, ...) { if(!x) { LOG_ERROR("Verification failed: {0}", __VA_ARGS__); BREAKPOINT; } }
 #else
-#	define BREAKPOINT()
-#	define ASSERT(x) 
-#	define VERIFY(x) x
+#	define BREAKPOINT
+#	define ASSERT(x, ...) 
+#	define VERIFY(x, ...) x
 #endif
