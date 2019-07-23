@@ -100,7 +100,7 @@ public:
 	virtual BufferLayout getLayout() const = 0;
 	virtual void setLayout(const BufferLayout& layout) = 0;
 
-	static VertexBuffer* create(float* vertices, size_t size);
+	static VertexBuffer* create(float* vertices, uint size);
 };
 
 class IndexBuffer {
@@ -112,7 +112,7 @@ public:
 
 	virtual uint getCount() const = 0;
 
-	static IndexBuffer* create(uint* indices, size_t size);
+	static IndexBuffer* create(uint* indices, uint size);
 };
 
 // Vertex Array ///////////////////////////////////////////

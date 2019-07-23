@@ -27,11 +27,14 @@ namespace oyl {
 	private:
 		bool onWindowClose(Event& e);
 	private:
-		std::unique_ptr<Window> m_window;
-		ImGuiLayer* m_imguiLayer;
-		bool m_running;
+		bool m_running = true;
 
+		std::unique_ptr<Window> m_window;
+		
 		LayerStack m_layerStack;
+		ImGuiLayer* m_imguiLayer;
+
+		float m_lastFrameTime;
 	private:
 		static Application* s_instance;
 	};

@@ -1,9 +1,9 @@
 #pragma once
 
-#include "RenderCommand.h"
+#include "Oyl3D/Rendering/RenderCommand.h"
 
-#include "Graphics/Camera.h"
-#include "Graphics/Shader.h"
+#include "Oyl3D/Graphics/Camera.h"
+#include "Oyl3D/Graphics/Shader.h"
 
 namespace oyl {
 

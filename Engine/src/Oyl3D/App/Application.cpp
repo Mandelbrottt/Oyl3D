@@ -6,14 +6,16 @@
 
 #include "Input/Input.h"
 
-#include <glad/glad.h>
+#include "System/Platform.h"
+#include "System/Timestep.h"
+
+#include "Rendering/Renderer.h"
 
 namespace oyl {
 
 Application* Application::s_instance = nullptr;
 
-Application::Application()
-	: m_running(true) {
+Application::Application() {
 
 	ASSERT(!s_instance, "Application already exists!");
 	s_instance = this;
@@ -52,16 +54,16 @@ void Application::onEvent(Event& e) {
 
 void Application::run() {
 	while (m_running) {
-
-		glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
-		glClear(GL_COLOR_BUFFER_BIT);
+		float time = (float) Platform::getTime();
+		Timestep timestep = time - m_lastFrameTime;
+		m_lastFrameTime = time;
 
 		// TEMPORARY:
 		if (Input::isKeyPressed(OYL_KEY_ESCAPE))
 			m_running = false;
 
-		for (Layer* layer : m_layerStack) 
-			layer->onUpdate();
+		for (Layer* layer : m_layerStack)
+			layer->onUpdate(timestep);
 
 #if !defined(OYL_DIST)
 		m_imguiLayer->begin();

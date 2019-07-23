@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Oyl3D/Events/Event.h"
+#include "Oyl3D/System/Timestep.h"
 
 namespace oyl {
 class Layer {
@@ -10,7 +11,7 @@ public:
 
 	virtual void onAttach() {}
 	virtual void onDetach() {}
-	virtual void onUpdate() {}
+	virtual void onUpdate(Timestep dt) {}
 	virtual void onImGuiRender() {}
 	virtual void onEvent(Event& e) {}
 

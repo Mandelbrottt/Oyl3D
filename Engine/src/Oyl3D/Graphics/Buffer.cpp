@@ -6,7 +6,7 @@
 
 namespace oyl {
 
-oyl::VertexBuffer* VertexBuffer::create(float* vertices, size_t size) {
+oyl::VertexBuffer* VertexBuffer::create(float* vertices, uint size) {
 	switch (Renderer::getAPI()) {
 	case RendererAPI::API::None: ASSERT(false, "None is currently unsupported"); return nullptr;
 	case RendererAPI::API::OpenGL: return new OpenGLVertexBuffer(vertices, size);
@@ -14,7 +14,7 @@ oyl::VertexBuffer* VertexBuffer::create(float* vertices, size_t size) {
 	return nullptr;
 }
 
-oyl::IndexBuffer* IndexBuffer::create(uint* indices, size_t size) {
+oyl::IndexBuffer* IndexBuffer::create(uint* indices, uint size) {
 	switch (Renderer::getAPI()) {
 	case RendererAPI::API::None: ASSERT(false, "None is currently unsupported"); return nullptr;
 	case RendererAPI::API::OpenGL: return new OpenGLIndexBuffer(indices, size);
