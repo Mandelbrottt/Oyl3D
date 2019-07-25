@@ -13,7 +13,7 @@ double Win32Platform::getTimeImpl() {
 	}();
 	static double frequency = [&]()->float {
 		QueryPerformanceFrequency(&li);
-		return double(li.QuadPart) / 1000.0;
+		return double(li.QuadPart);
 	}();
 
 	QueryPerformanceCounter(&li);

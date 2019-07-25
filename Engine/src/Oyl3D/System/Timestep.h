@@ -7,13 +7,13 @@ public:
 	Timestep(float time = 0.0f)
 		: m_time(time) {}
 
-	float getMillis() const { return m_time; }
-	float getSeconds() const { return m_time / 1000.0f; }
+	float getMillis() const { return m_time * 1000.0f; }
+	float getSeconds() const { return m_time; }
 
-	// Returns the timestep in milliseconds
+	// Returns the timestep in seconds
 	operator float() const { return m_time; }
 
-	// Assumes that the timestep is in milliseconds
+	// Assumes that the timestep is in seconds
 	friend static float operator *(Timestep ts, float f);
 	friend static float operator *(float f, Timestep ts);
 private:
@@ -21,9 +21,9 @@ private:
 };
 
 static float operator *(Timestep ts, float f) {
-	return f * ts.getMillis();
+	return f * ts.getSeconds();
 }
 static float operator *(float f, Timestep ts) {
-	return f * ts.getMillis();
+	return f * ts.getSeconds();
 }
 }
