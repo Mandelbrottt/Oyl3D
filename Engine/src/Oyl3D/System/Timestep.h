@@ -12,18 +12,7 @@ public:
 
 	// Returns the timestep in seconds
 	operator float() const { return m_time; }
-
-	// Assumes that the timestep is in seconds
-	friend static float operator *(Timestep ts, float f);
-	friend static float operator *(float f, Timestep ts);
 private:
 	float m_time;
 };
-
-static float operator *(Timestep ts, float f) {
-	return f * ts.getSeconds();
-}
-static float operator *(float f, Timestep ts) {
-	return f * ts.getSeconds();
-}
 }

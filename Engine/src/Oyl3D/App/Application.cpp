@@ -55,7 +55,7 @@ void Application::onEvent(Event& e) {
 void Application::run() {
 	while (m_running) {
 		float time = (float) Platform::getTime();
-		Timestep timestep = time - m_lastFrameTime;
+		Timestep timestep(time - m_lastFrameTime);
 		m_lastFrameTime = time;
 
 		// TEMPORARY: Escape should not close the engine later on
@@ -63,7 +63,7 @@ void Application::run() {
 			m_running = false;
 
 		for (Layer* layer : m_layerStack)
-			layer->onUpdate(timestep.getSeconds() > 1.0f / 60.0f ? 1.0f / 60.0f : timestep);
+			layer->onUpdate(abs(timestep.getSeconds()) > 1.0f / 60.0f ? Timestep(1.0f / 60.0f) : timestep);
 
 #if !defined(OYL_DIST)
 		m_imguiLayer->begin();
@@ -73,6 +73,7 @@ void Application::run() {
 #endif
 
 		m_window->onUpdate();
+
 	}
 }
 
