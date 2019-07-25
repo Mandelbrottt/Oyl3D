@@ -58,12 +58,12 @@ void Application::run() {
 		Timestep timestep = time - m_lastFrameTime;
 		m_lastFrameTime = time;
 
-		// TEMPORARY:
+		// TEMPORARY: Escape should not close the engine later on
 		if (Input::isKeyPressed(OYL_KEY_ESCAPE))
 			m_running = false;
 
 		for (Layer* layer : m_layerStack)
-			layer->onUpdate(timestep);
+			layer->onUpdate(timestep.getSeconds() > 1.0f / 60.0f ? 1.0f / 60.0f : timestep);
 
 #if !defined(OYL_DIST)
 		m_imguiLayer->begin();

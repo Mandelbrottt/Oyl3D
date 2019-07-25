@@ -117,7 +117,8 @@ project "OylGame"
 		"Engine/vendor/spdlog/include",
 		"Engine/src/",
 		"Engine/vendor/",
-		"%{IncludeDir.glm}"
+		"%{IncludeDir.glm}",
+		"%{IncludeDir.imgui}"
 	}
 
 	links {

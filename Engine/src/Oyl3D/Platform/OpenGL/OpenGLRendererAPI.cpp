@@ -17,5 +17,9 @@ void OpenGLRendererAPI::drawIndexed(const std::shared_ptr<VertexArray>& vao) {
 	glDrawElements(GL_TRIANGLES, vao->getIndexBuffer()->getCount(), GL_UNSIGNED_INT, nullptr);
 }
 
+void OpenGLRendererAPI::drawMesh(const std::shared_ptr<Mesh>& mesh) {
+	glDrawArrays(GL_TRIANGLES, 0, mesh->getNumVertices());
+}
+
 }
 

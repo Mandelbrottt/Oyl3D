@@ -18,7 +18,7 @@ void OrthographicCamera::recalculateViewMatrix() {
 }
 
 PerspectiveCamera::PerspectiveCamera(float fov, float aspect, float nearZ, float farZ)
-	: m_projection(glm::perspective(fov, aspect, nearZ, farZ)), m_view(1.0f) {
+	: m_projection(glm::perspective(glm::radians(fov), aspect, nearZ, farZ)), m_view(1.0f) {
 	m_viewProjection = m_projection * m_view;
 }
 

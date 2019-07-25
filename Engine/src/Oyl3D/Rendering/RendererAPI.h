@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Oyl3D/Graphics/Buffer.h"
+#include "Oyl3D/Graphics/Mesh.h"
 
 namespace oyl {
 
@@ -15,6 +16,7 @@ public:
 	virtual void clear() = 0;
 
 	virtual void drawIndexed(const std::shared_ptr<VertexArray>& vao) = 0;
+	virtual void drawMesh(const std::shared_ptr<Mesh>& mesh) = 0;
 
 	inline static API getAPI() { return s_API; }
 private:

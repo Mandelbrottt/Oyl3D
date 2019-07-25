@@ -35,7 +35,6 @@ void Win32Window::init(const WindowProps& props) {
 
 	if (!s_GLFWInitialized)
 	{
-		// TODO: glfwTerminate on system shutdown
 		int success = glfwInit();
 		ASSERT(success, "Could not intialize GLFW!");
 		glfwSetErrorCallback(GLFWErrorCallback);
@@ -165,7 +164,7 @@ void Win32Window::init(const WindowProps& props) {
 }
 
 void Win32Window::shutdown() {
-
+	glfwTerminate();
 }
 
 

@@ -9,6 +9,7 @@ class OpenGLRendererAPI : public RendererAPI {
 	virtual void clear() override;
 
 	virtual void drawIndexed(const std::shared_ptr<VertexArray>& vao) override;
+	virtual void drawMesh(const std::shared_ptr<Mesh>& mesh) override;
 };
 
 }

@@ -37,6 +37,8 @@ void OpenGLContext::init() {
 	glDebugMessageCallback(OpenGLErrorCallback, 0);
 #endif
 
+	glEnable(GL_DEPTH_TEST);
+
 	LOG_INFO("OpenGL Info:");
 	LOG_INFO("  Vendor: {0}", glGetString(GL_VENDOR));
 	LOG_INFO("  Renderer: {0}", glGetString(GL_RENDERER));

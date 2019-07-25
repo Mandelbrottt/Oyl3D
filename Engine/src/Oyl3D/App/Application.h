@@ -34,7 +34,7 @@ namespace oyl {
 		LayerStack m_layerStack;
 		ImGuiLayer* m_imguiLayer;
 
-		float m_lastFrameTime;
+		float m_lastFrameTime = 0;
 	private:
 		static Application* s_instance;
 	};
