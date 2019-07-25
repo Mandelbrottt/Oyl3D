@@ -35,33 +35,36 @@ void Win32Window::init(const WindowProps& props) {
 
 	if (!s_GLFWInitialized)
 	{
-		int success = glfwInit();
-		ASSERT(success, "Could not intialize GLFW!");
+		VERIFY(glfwInit(), "Could not intialize GLFW!");
 		glfwSetErrorCallback(GLFWErrorCallback);
 		s_GLFWInitialized = true;
 	}
 
-	GLFWmonitor* monitor = nullptr;
+	m_data.monitor = glfwGetPrimaryMonitor();
 
 	// TODO: Abstract away glfw more
 
 	switch (m_data.fullscreenType) {
-	case Windowed:
+	case FullscreenType::Windowed:
+		glfwWindowHint(GLFW_DECORATED, GLFW_TRUE);
+		break;
+	case FullscreenType::Borderless:
 		glfwWindowHint(GLFW_DECORATED, GLFW_FALSE);
-		break;
-	case Borderless:
-		glfwWindowHint(GLFW_DECORATED, m_data.fullscreenType == GLFW_TRUE);
-		break;
-	case Fullscreen:
-		monitor = glfwGetPrimaryMonitor();
 		break;
 	}
 
-	m_window = glfwCreateWindow((int) props.width,
-								(int) props.height,
+	m_window = glfwCreateWindow(props.width,
+								props.height,
 								m_data.title.c_str(),
-								monitor,
+								m_data.fullscreenType == FullscreenType::Fullscreen ? m_data.monitor : nullptr,
 								nullptr);
+
+	const GLFWvidmode* mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
+	m_data.posx = mode->width / 2 - props.width / 2;
+	m_data.posy = mode->height / 2 - props.height / 2;
+
+	if (m_data.fullscreenType == FullscreenType::Windowed)
+		glfwSetWindowMonitor(m_window, nullptr, m_data.posx, m_data.posy, m_data.width, m_data.height, 0);
 
 	m_context = new OpenGLContext(m_window);
 	m_context->init();
@@ -96,7 +99,7 @@ void Win32Window::init(const WindowProps& props) {
 
 						   static int repeats = 0;
 
-						   switch (action) {
+ 						   switch (action) {
 						   case GLFW_PRESS: {
 							   KeyPressEvent pressEvent(key);
 							   data.eventCallback(pressEvent);
@@ -183,13 +186,35 @@ bool Win32Window::isVsync() const {
 }
 
 void Win32Window::setFullscreenType(FullscreenType type) {
-	if (m_data.fullscreenType != type) {
-		m_data.fullscreenType = type;
-		init(WindowProps(m_data.title, m_data.width, m_data.height, m_data.vsync));
+
+	if (m_data.fullscreenType == type) return;
+	m_data.fullscreenType = type;
+
+	static int lastWindowSize[2] = { 0, 0 };
+
+	if (type == FullscreenType::Fullscreen || type == FullscreenType::Borderless) {
+		// backup windwo position and window size
+		glfwGetWindowPos(m_window, &m_data.posx, &m_data.posy);
+		glfwGetWindowSize(m_window, lastWindowSize, lastWindowSize + 1);
+
+		// get reolution of monitor
+		const GLFWvidmode* mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
+
+		// switch to full screen
+		glfwSetWindowMonitor(m_window, m_data.monitor, 
+							 0, 0, 
+							 mode->width, mode->height, 
+							 mode->refreshRate);
+	} else if (type == FullscreenType::Windowed) {
+		glfwSetWindowMonitor(m_window, nullptr, 
+							 m_data.posx, m_data.posy, 
+							 lastWindowSize[0], lastWindowSize[1], 
+							 0);
 	}
+	m_context->updateViewport();
 }
 
-bool Win32Window::getFullscreenType() const {
+FullscreenType Win32Window::getFullscreenType() const {
 	return m_data.fullscreenType;
 }
 

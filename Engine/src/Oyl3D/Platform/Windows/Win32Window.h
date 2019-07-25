@@ -22,7 +22,7 @@ public:
 	virtual bool isVsync() const override;
 
 	virtual void setFullscreenType(FullscreenType enabled) override;
-	virtual bool getFullscreenType() const override;
+	virtual FullscreenType getFullscreenType() const override;
 
 	virtual void* getNativeWindow() const override { return m_window; }
 private:
@@ -33,11 +33,16 @@ private:
 	GraphicsContext* m_context;
 
 	struct WindowData {
-		std::string title;
-		uint width;
-		uint height;
-		bool vsync;
-		FullscreenType fullscreenType;
+		std::string title = "Oyl3D";
+		int posx = 0;
+		int posy = 0;
+		int width = 1280;
+		int height = 720;
+
+		GLFWmonitor* monitor = nullptr;
+
+		bool vsync = true;
+		FullscreenType fullscreenType = FullscreenType::Windowed;
 
 		EventCallbackFn eventCallback;
 	};

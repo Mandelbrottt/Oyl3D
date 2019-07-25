@@ -32,6 +32,8 @@ void OpenGLContext::init() {
 	int status = gladLoadGLLoader((GLADloadproc) glfwGetProcAddress);
 	ASSERT(status, "Failed to initialize Glad!");
 
+	updateViewport();
+
 #if !defined(OYL_DIST)
 	glEnable(GL_DEBUG_OUTPUT);
 	glDebugMessageCallback(OpenGLErrorCallback, 0);
@@ -47,6 +49,11 @@ void OpenGLContext::init() {
 
 void OpenGLContext::swapBuffers() {
 	glfwSwapBuffers(m_windowHandle);
+}
+
+void OpenGLContext::updateViewport() {
+	glfwGetFramebufferSize(m_windowHandle, &m_vpWidth, &m_vpHeight);
+	glViewport(0, 0, m_vpWidth, m_vpHeight);
 }
 
 }

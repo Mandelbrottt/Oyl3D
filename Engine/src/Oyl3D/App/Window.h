@@ -5,24 +5,24 @@
 
 namespace oyl {
 
-enum FullscreenType : char {
+enum class FullscreenType : char {
 	Windowed,
 	Borderless,
-	Fullscreen
+	Fullscreen = Borderless
 };
 
 struct WindowProps {
 	std::string title;
-	uint width;
-	uint height;
+	int width;
+	int height;
 	bool vsync;
 	FullscreenType type;
 
 	WindowProps(std::string title = "Oyl3D",
-				uint width = 1280,
-				uint height = 720,
+				int width = 1280,
+				int height = 720,
 				bool vsync = true, 
-				FullscreenType type = Windowed)
+				FullscreenType type = FullscreenType::Windowed)
 		: title(title), width(width), height(height), 
 		  vsync(vsync), type(type) {}
 };
@@ -44,7 +44,7 @@ public:
 	virtual bool isVsync() const = 0;
 
 	virtual void setFullscreenType(FullscreenType type) = 0;
-	virtual bool getFullscreenType() const = 0;
+	virtual FullscreenType getFullscreenType() const = 0;
 
 	virtual void* getNativeWindow() const = 0;
 
