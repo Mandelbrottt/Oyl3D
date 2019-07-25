@@ -45,8 +45,8 @@ void Application::onEvent(Event& e) {
 	EventDispatcher dispatcher(e);
 	dispatcher.dispatch<WindowCloseEvent>(BIND_CALLBACK(Application::onWindowClose));
 
-	for (auto it = m_layerStack.end(); it != m_layerStack.begin();) {
-		(*--it)->onEvent(e);
+	for (Layer* layer : m_layerStack) {
+		layer->onEvent(e);
 		if (e.handled)
 			break;
 	}
