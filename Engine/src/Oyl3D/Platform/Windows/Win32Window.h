@@ -24,6 +24,8 @@ public:
 	virtual void setFullscreenType(FullscreenType enabled) override;
 	virtual FullscreenType getFullscreenType() const override;
 
+	virtual void updateViewport() override;
+
 	virtual void* getNativeWindow() const override { return m_window; }
 private:
 	virtual void init(const WindowProps& props);

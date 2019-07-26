@@ -40,6 +40,7 @@ void OpenGLContext::init() {
 #endif
 
 	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_CULL_FACE);
 
 	LOG_INFO("OpenGL Info:");
 	LOG_INFO("  Vendor: {0}", glGetString(GL_VENDOR));

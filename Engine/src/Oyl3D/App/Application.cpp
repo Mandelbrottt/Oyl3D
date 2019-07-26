@@ -44,6 +44,8 @@ void Application::pushOverlay(Layer* overlay) {
 void Application::onEvent(Event& e) {
 	EventDispatcher dispatcher(e);
 	dispatcher.dispatch<WindowCloseEvent>(BIND_CALLBACK(Application::onWindowClose));
+	dispatcher.dispatch<WindowResizeEvent>(BIND_CALLBACK(Application::onWindowResize));
+	dispatcher.dispatch<WindowFocusEvent>(BIND_CALLBACK(Application::onWindowFocus));
 
 	for (Layer* layer : m_layerStack) {
 		layer->onEvent(e);
@@ -80,6 +82,17 @@ void Application::run() {
 bool Application::onWindowClose(Event& e) {
 	m_running = false;
 	return true;
+}
+
+bool Application::onWindowResize(Event& e) {
+	m_window->updateViewport();
+	return false;
+}
+
+bool Application::onWindowFocus(WindowFocusEvent& e) {
+	LOG("Focus {0}", e.isFocused() ? "Gained" : "Lost");
+	if (e.isFocused()) return false;
+	else			  return true;
 }
 
 }

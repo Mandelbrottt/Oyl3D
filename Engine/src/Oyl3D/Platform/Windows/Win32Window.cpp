@@ -13,10 +13,6 @@ static void GLFWErrorCallback(int error, const char* description) {
 	LOG_ERROR("GLFW ERROR ({0}): {1}", error, description);
 }
 
-Window* Window::create(const WindowProps& props) {
-	return new Win32Window(props);
-}
-
 Win32Window::Win32Window(const WindowProps& props) {
 	init(props);
 }
@@ -44,15 +40,6 @@ void Win32Window::init(const WindowProps& props) {
 
 	// TODO: Abstract away glfw more
 
-	switch (m_data.fullscreenType) {
-	case FullscreenType::Windowed:
-		glfwWindowHint(GLFW_DECORATED, GLFW_TRUE);
-		break;
-	case FullscreenType::Borderless:
-		glfwWindowHint(GLFW_DECORATED, GLFW_FALSE);
-		break;
-	}
-
 	m_window = glfwCreateWindow(props.width,
 								props.height,
 								m_data.title.c_str(),
@@ -63,10 +50,13 @@ void Win32Window::init(const WindowProps& props) {
 	m_data.posx = mode->width / 2 - props.width / 2;
 	m_data.posy = mode->height / 2 - props.height / 2;
 
+	glfwSetWindowAspectRatio(m_window, 16, 9);
+	glfwSetWindowSizeLimits(m_window, 1280, 720, GLFW_DONT_CARE, GLFW_DONT_CARE);
+
 	if (m_data.fullscreenType == FullscreenType::Windowed)
 		glfwSetWindowMonitor(m_window, nullptr, m_data.posx, m_data.posy, m_data.width, m_data.height, 0);
 
-	m_context = new OpenGLContext(m_window);
+	m_context = GraphicsContext::create(m_window);
 	m_context->init();
 
 	glfwSetWindowUserPointer(m_window, &m_data);
@@ -91,6 +81,15 @@ void Win32Window::init(const WindowProps& props) {
 								   WindowCloseEvent event;
 
 								   data.eventCallback(event);
+							   });
+
+	glfwSetWindowFocusCallback(m_window, [](GLFWwindow * window, int focused) 
+							   {
+								   WindowData& data = *(WindowData*) glfwGetWindowUserPointer(window);
+
+								   WindowFocusEvent focusEvent(focused);
+
+								   data.eventCallback(focusEvent);
 							   });
 
 	glfwSetKeyCallback(m_window, [](GLFWwindow * window, int key, int scancode, int action, int mods)
@@ -216,6 +215,10 @@ void Win32Window::setFullscreenType(FullscreenType type) {
 
 FullscreenType Win32Window::getFullscreenType() const {
 	return m_data.fullscreenType;
+}
+
+void Win32Window::updateViewport() {
+	m_context->updateViewport();
 }
 
 }

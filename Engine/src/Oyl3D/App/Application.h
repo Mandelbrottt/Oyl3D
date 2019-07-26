@@ -26,6 +26,8 @@ namespace oyl {
 		inline static Application& get() { return *s_instance; }
 	private:
 		bool onWindowClose(Event& e);
+		bool onWindowResize(Event& e);
+		bool onWindowFocus(WindowFocusEvent& e);
 	private:
 		bool m_running = true;
 

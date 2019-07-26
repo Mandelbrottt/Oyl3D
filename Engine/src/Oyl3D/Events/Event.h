@@ -10,7 +10,7 @@ namespace oyl {
 // ex. enum CustomEventType : int { CustomEvent1 = oyl::EventTypeCustomStart, CustomEvent2, CustomEvent3 }
 enum EventType : int {
 	None = 0,
-	WindowClose, WindowMove, WindowResize, WindowFocus, WindowLostFocus,
+	WindowClose, WindowMove, WindowResize, WindowFocus,
 	KeyPress, KeyType, KeyRelease,
 	MousePress, MouseRelease, MouseMove, MouseScroll,
 	EventTypeCustomStart
@@ -136,7 +136,11 @@ private:
 /////////////////////////////////////////////////
 
 class WindowFocusEvent : public Event {
-	WindowFocusEvent() {}
+public:
+	WindowFocusEvent(int focused)
+		: m_focused(focused) {}
+
+	inline int isFocused() { return m_focused; }
 
 #if !defined(OYL_DIST)
 	std::string toString() const override {
@@ -144,23 +148,10 @@ class WindowFocusEvent : public Event {
 	}
 #endif
 
-	EVENT_CLASS_TYPE(WindowClose)
+	EVENT_CLASS_TYPE(WindowFocus)
 	EVENT_CLASS_CATEGORY(EventCategoryWindow)
-};
-
-/////////////////////////////////////////////////
-
-class WindowLostFocusEvent : public Event {
-	WindowLostFocusEvent() {}
-
-#if !defined(OYL_DIST)
-	std::string toString() const override {
-		return "WindowLostFocusEvent";
-	}
-#endif
-
-	EVENT_CLASS_TYPE(WindowClose)
-	EVENT_CLASS_CATEGORY(EventCategoryWindow)
+private:
+	int m_focused;
 };
 
 /////////////////////////////////////////////////
