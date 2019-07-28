@@ -73,10 +73,6 @@ project "OylEngine"
 			"GLFW_INCLUDE_NONE"
 		}
 
-		-- postbuildcommands {
-		-- 	("{COPY} %{cfg.buildtarget.relpath} \"../bin/" .. outputdir .. "/OylGame/\"")
-		-- }
-
 	filter "configurations:Debug"
 		defines "OYL_DEBUG"
 		runtime "Debug"
@@ -87,7 +83,7 @@ project "OylEngine"
 		runtime "Release"
 		optimize "on"
 
-	filter "configurations:Dist"
+	filter "configurations:Distribution"
 		defines "OYL_DIST"
 		runtime "Release"
 		optimize "on"
@@ -111,6 +107,11 @@ project "OylGame"
 		-- "OYL_BUILD_DLL",
 		"_CRT_SECURE_NO_WARNINGS",
 		"OYL_GAME"
+	}
+
+	postbuildcommands {
+		"{COPY} %{prj.location}res/ %{wks.location}bin/"..outputdir.."/%{prj.name}/res/",
+		"{COPY} %{prj.location}imgui.ini* %{wks.location}bin/"..outputdir.."/%{prj.name}/imgui.ini*"
 	}
 
 	includedirs {
@@ -142,7 +143,7 @@ project "OylGame"
 		runtime "Release"
 		optimize "on"
 
-	filter "configurations:Dist"
+	filter "configurations:Distribution"
 		defines "OYL_DIST"
 		runtime "Release"
 		optimize "on"

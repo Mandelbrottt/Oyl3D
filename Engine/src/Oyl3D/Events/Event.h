@@ -60,7 +60,7 @@ public:
 #endif
 
 public:
-	bool handled;
+	bool handled = false;
 };
 
 static std::ostream& operator <<(std::ostream& os, Event& e) {

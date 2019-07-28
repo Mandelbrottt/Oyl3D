@@ -42,15 +42,27 @@ public:
 
 	inline const glm::vec3 getRotation() const { return m_rotation; }
 	inline void setRotation(glm::vec3& rotation) { m_rotation = rotation; recalculateViewMatrix(); }
+
+	inline void setFOV(float fov) { m_fov = fov; recalculateProjMatrix(); }
+	inline void setAspect(float aspect) { m_aspect = aspect; recalculateProjMatrix(); }
+	inline void setNearZ(float nearZ) { m_nearZ = nearZ; recalculateProjMatrix(); }
+	inline void setFarZ(float farZ) { m_farZ = farZ; recalculateProjMatrix(); }
 private:
 	void recalculateViewMatrix();
+	void recalculateProjMatrix();
 private:
+	float m_fov;
+	float m_aspect;
+	float m_nearZ;
+	float m_farZ;
+
 	glm::mat4 m_view;
 	glm::mat4 m_projection;
 	glm::mat4 m_viewProjection;
 
 	glm::vec3 m_position = glm::vec3(0);
 	glm::vec3 m_rotation = glm::vec3(0);
+
 };
 
 }
