@@ -33,7 +33,7 @@ public:
 public:
 	virtual ~Window() {}
 
-	virtual void onUpdate() = 0;
+	virtual void onUpdate(bool doSwapBuffers = true) = 0;
 
 	virtual uint getWidth() const = 0;
 	virtual uint getHeight() const = 0;
@@ -46,7 +46,8 @@ public:
 	virtual void setFullscreenType(FullscreenType type) = 0;
 	virtual FullscreenType getFullscreenType() const = 0;
 
-	virtual void updateViewport() = 0;
+	// Isn't handled until the next frame
+	virtual void updateViewport(int width, int height) = 0;
 
 	virtual void* getNativeWindow() const = 0;
 

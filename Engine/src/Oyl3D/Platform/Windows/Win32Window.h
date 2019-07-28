@@ -11,7 +11,7 @@ public:
 	Win32Window(const WindowProps& props);
 	virtual ~Win32Window();
 
-	void onUpdate() override;
+	void onUpdate(bool doSwapBuffers = true) override;
 
 	virtual uint getWidth() const override { return m_data.width; }
 	virtual uint getHeight() const override { return m_data.height; }
@@ -24,7 +24,7 @@ public:
 	virtual void setFullscreenType(FullscreenType enabled) override;
 	virtual FullscreenType getFullscreenType() const override;
 
-	virtual void updateViewport() override;
+	virtual void updateViewport(int width, int height) override;
 
 	virtual void* getNativeWindow() const override { return m_window; }
 private:
@@ -33,6 +33,9 @@ private:
 private:
 	GLFWwindow* m_window;
 	GraphicsContext* m_context;
+
+	bool m_isViewportDirty = false;
+	int m_desiredWidth, m_desiredHeight;
 
 	struct WindowData {
 		std::string title = "Oyl3D";

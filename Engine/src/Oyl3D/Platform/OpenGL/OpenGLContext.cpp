@@ -18,7 +18,7 @@ static void OpenGLErrorCallback(GLenum source,
 	case 131185:
 		return;
 	}
-	LOG_ERROR("OpenGL Error({0}) at {1}:{2}\n\t   {3}", id, __FILE__, __LINE__, message);
+	LOG_ERROR("OpenGL Error({0}): {1}", id, message);
 	BREAKPOINT;
 }
 
@@ -31,8 +31,6 @@ void OpenGLContext::init() {
 	glfwMakeContextCurrent(m_windowHandle);
 	int status = gladLoadGLLoader((GLADloadproc) glfwGetProcAddress);
 	ASSERT(status, "Failed to initialize Glad!");
-
-	updateViewport();
 
 #if !defined(OYL_DIST)
 	glEnable(GL_DEBUG_OUTPUT);
@@ -50,11 +48,19 @@ void OpenGLContext::init() {
 
 void OpenGLContext::swapBuffers() {
 	glfwSwapBuffers(m_windowHandle);
+
+	if (m_isViewportDirty) {
+		glViewport(0, 0, m_vpWidth, m_vpHeight);
+		m_isViewportDirty = false;
+	}
 }
 
-void OpenGLContext::updateViewport() {
-	glfwGetFramebufferSize(m_windowHandle, &m_vpWidth, &m_vpHeight);
-	glViewport(0, 0, m_vpWidth, m_vpHeight);
+void OpenGLContext::updateViewport(int width, int height) {
+	if (m_vpWidth == width && m_vpHeight == height) return;
+
+	m_vpWidth = width;
+	m_vpHeight = height;
+	m_isViewportDirty = true;
 }
 
 }

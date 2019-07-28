@@ -30,5 +30,13 @@ oyl::VertexArray* VertexArray::create() {
 	return nullptr;
 }
 
+oyl::FrameBuffer* FrameBuffer::create(int numColorAttachments) {
+	switch (Renderer::getAPI()) {
+	case RendererAPI::API::None: ASSERT(false, "None is currently unsupported"); return nullptr;
+	case RendererAPI::API::OpenGL: return new OpenGLFrameBuffer(numColorAttachments);
+	}
+	return nullptr;
+}
+
 }
 

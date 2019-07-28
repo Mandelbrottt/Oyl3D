@@ -170,9 +170,12 @@ void Win32Window::shutdown() {
 }
 
 
-void Win32Window::onUpdate() {
+void Win32Window::onUpdate(bool doSwapBuffers /*= true*/)
+{
 	glfwPollEvents();
-	m_context->swapBuffers();
+	if (doSwapBuffers) {
+		m_context->swapBuffers();
+	}
 }
 
 void Win32Window::setVsync(bool enabled) {
@@ -189,7 +192,7 @@ void Win32Window::setFullscreenType(FullscreenType type) {
 	if (m_data.fullscreenType == type) return;
 	m_data.fullscreenType = type;
 
-	static int lastWindowSize[2] = { 0, 0 };
+	static int lastWindowSize[2] = { 1280, 720 };
 
 	if (type == FullscreenType::Fullscreen || type == FullscreenType::Borderless) {
 		// backup windwo position and window size
@@ -204,21 +207,25 @@ void Win32Window::setFullscreenType(FullscreenType type) {
 							 0, 0, 
 							 mode->width, mode->height, 
 							 mode->refreshRate);
+		m_desiredWidth = mode->width;
+		m_desiredHeight = mode->height;
 	} else if (type == FullscreenType::Windowed) {
 		glfwSetWindowMonitor(m_window, nullptr, 
 							 m_data.posx, m_data.posy, 
 							 lastWindowSize[0], lastWindowSize[1], 
 							 0);
+		m_desiredWidth = lastWindowSize[0];
+		m_desiredHeight = lastWindowSize[1];
 	}
-	m_context->updateViewport();
+	m_context->updateViewport(m_desiredWidth, m_desiredHeight);
 }
 
 FullscreenType Win32Window::getFullscreenType() const {
 	return m_data.fullscreenType;
 }
 
-void Win32Window::updateViewport() {
-	m_context->updateViewport();
+void Win32Window::updateViewport(int width, int height) {
+	m_context->updateViewport(width, height);
 }
 
 }

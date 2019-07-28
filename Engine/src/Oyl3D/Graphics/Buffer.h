@@ -63,12 +63,14 @@ struct BufferElement {
 	bool normalized;
 };
 
+// Buffer Layout //////////////////////////////////////////////////////////////////////////
+
 class BufferLayout {
 public:
 	BufferLayout() {}
 
 	BufferLayout(const std::initializer_list<BufferElement>& elements) 
-		: m_elements(elements), m_stride(0) {
+		: m_elements(elements) {
 		// Calculate the relative offsets and stride for the layout
 		uint offset = 0;
 		for (auto& element : m_elements) {
@@ -87,39 +89,56 @@ public:
 	std::vector<BufferElement>::const_iterator end() const { return m_elements.end(); }
 private:
 	std::vector<BufferElement> m_elements;
-	uint m_stride;
+	uint m_stride = 0;
 };
+
+// Vertex Buffer //////////////////////////////////////////////////////////////////////////
 
 class VertexBuffer {
 public:
 	virtual ~VertexBuffer() {}
 
+	virtual void load(float* vertices, uint size) = 0;
+	virtual void unload() = 0;
+	
 	virtual void bind() const = 0;
 	virtual void unbind() const = 0;
 
 	virtual BufferLayout getLayout() const = 0;
 	virtual void setLayout(const BufferLayout& layout) = 0;
 
+	virtual bool isLoaded() const = 0;
+
 	static VertexBuffer* create(float* vertices, uint size);
 };
+
+// Index Buffer ///////////////////////////////////////////////////////////////////////////
 
 class IndexBuffer {
 public:
 	virtual ~IndexBuffer() {}
+
+	virtual void load(uint* indices, uint count) = 0;
+	virtual void unload() = 0;
 
 	virtual void bind() const = 0;
 	virtual void unbind() const = 0;
 
 	virtual uint getCount() const = 0;
 
+	virtual bool isLoaded() const = 0;
+
 	static IndexBuffer* create(uint* indices, uint size);
 };
 
-// Vertex Array ///////////////////////////////////////////
+// Vertex Array ///////////////////////////////////////////////////////////////////////////
 
 class VertexArray {
 public:
 	virtual ~VertexArray() {}
+
+	virtual void load() = 0;
+	virtual void unload() = 0;
 
 	virtual void bind() const = 0;
 	virtual void unbind() const = 0;
@@ -129,8 +148,49 @@ public:
 
 	virtual const std::vector<std::shared_ptr<VertexBuffer>>& getVertexBuffers() const = 0;
 	virtual const std::shared_ptr<IndexBuffer>& getIndexBuffer() const = 0;
+	
+	virtual bool isLoaded() const = 0;
 
 	static VertexArray* create();
+};
+
+// FrameBuffer ////////////////////////////////////////////////////////////////////////////
+
+enum class TextureFormat { RGB8, RGBA8 };
+enum class TextureFilter { Nearest, Linear, };
+enum class TextureWrap { Clamp, Mirror, Repeat };
+
+class FrameBuffer {
+public:
+	virtual ~FrameBuffer() {}
+
+	virtual void load(uint numColorAttachments) = 0;
+	virtual void unload() = 0;
+
+	virtual void bind() = 0;
+	virtual void unbind() = 0;
+
+	virtual void initDepthTexture(int width, int height) = 0;
+	virtual void initColorTexture(uint index, 
+								  int width, int height, 
+								  TextureFormat format, 
+								  TextureFilter filter, 
+								  TextureWrap wrap) = 0;
+
+	virtual void updateViewport(int width, int height) = 0;
+	virtual void clear() = 0;
+
+	virtual void moveToBackBuffer(int width, int height) = 0;
+
+	virtual uint getDepthHandle() const = 0;
+	virtual uint getColorHandle(int index) const = 0;
+
+	virtual bool isLoaded() const = 0;
+
+	static FrameBuffer* create(int numColorAttachments = 1);
+
+	static const int maxColorAttachments = 8;
+
 };
 
 }
