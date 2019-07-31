@@ -10,3 +10,6 @@
 [submodule "Engine/vendor/imgui"]
 	path = Engine/vendor/imgui
 	url = https://github.com/Mandelbrottt/imgui
+[submodule "Engine/vendor/stb"]
+	path = Engine/vendor/stb
+	url = https://github.com/nothings/stb
