@@ -14,8 +14,8 @@
 #	if defined(_MSC_VER)
 #		define BREAKPOINT __debugbreak()
 #	endif
-#	define ASSERT(x, ...) { if(!x) { LOG_ERROR("Assertion failed: {0}", __VA_ARGS__); BREAKPOINT; } }
-#	define VERIFY(x, ...) { if(!x) { LOG_ERROR("Verification failed: {0}", __VA_ARGS__); BREAKPOINT; } }
+#	define ASSERT(x, ...) { if(!(x)) { LOG_ERROR("Assertion failed: {0}", __VA_ARGS__); BREAKPOINT; } }
+#	define VERIFY(x, ...) { if(!(x)) { LOG_ERROR("Verification failed: {0}", __VA_ARGS__); BREAKPOINT; } }
 #else
 #	define BREAKPOINT
 #	define ASSERT(x, ...) 
