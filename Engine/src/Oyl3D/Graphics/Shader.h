@@ -2,17 +2,8 @@
 
 namespace oyl {
 
-enum class ShaderType {
-	Vertex,
-	TessControl,
-	TessEvaluation,
-	Geometry,
-	Pixel,
-	NumTypes
-};
-
 struct ShaderInfo {
-	ShaderType type;
+	OylEnum type;
 	std::string filename;
 };
 

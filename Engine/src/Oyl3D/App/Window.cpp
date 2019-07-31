@@ -10,8 +10,8 @@ namespace oyl {
 
 Window* Window::create(const WindowProps& props) {
 	switch (Renderer::getAPI()) {
-	case RendererAPI::API::None: ASSERT(false, "None is currently unsupported"); return nullptr;
-	case RendererAPI::API::OpenGL: return new Win32Window(props);
+	case None: ASSERT(false, "None is currently unsupported"); return nullptr;
+	case API_OpenGL: return new Win32Window(props);
 	}
 	return nullptr;
 }

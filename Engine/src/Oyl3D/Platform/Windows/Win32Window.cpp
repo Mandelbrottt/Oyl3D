@@ -1,6 +1,7 @@
 #include "oylpch.h"
 
 #include "Win32Window.h"
+#include "Win32Input.h"
 
 #include <glfw/glfw3.h>
 #include <glad/glad.h>
@@ -43,7 +44,7 @@ void Win32Window::init(const WindowProps& props) {
 	m_window = glfwCreateWindow(props.width,
 								props.height,
 								m_data.title.c_str(),
-								m_data.fullscreenType == FullscreenType::Fullscreen ? m_data.monitor : nullptr,
+								m_data.fullscreenType == Fullscreen ? m_data.monitor : nullptr,
 								nullptr);
 
 	const GLFWvidmode* mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
@@ -53,7 +54,7 @@ void Win32Window::init(const WindowProps& props) {
 	glfwSetWindowAspectRatio(m_window, 16, 9);
 	glfwSetWindowSizeLimits(m_window, 1280, 720, GLFW_DONT_CARE, GLFW_DONT_CARE);
 
-	if (m_data.fullscreenType == FullscreenType::Windowed)
+	if (m_data.fullscreenType == Windowed)
 		glfwSetWindowMonitor(m_window, nullptr, m_data.posx, m_data.posy, m_data.width, m_data.height, 0);
 
 	m_context = GraphicsContext::create(m_window);
@@ -100,16 +101,16 @@ void Win32Window::init(const WindowProps& props) {
 
  						   switch (action) {
 						   case GLFW_PRESS: {
-							   KeyPressEvent pressEvent(key);
+							   KeyPressEvent pressEvent(glfwToOylCode(key));
 							   data.eventCallback(pressEvent);
 							   break;
 						   } case GLFW_RELEASE: {
-							   KeyReleaseEvent releaseEvent(key);
+							   KeyReleaseEvent releaseEvent(glfwToOylCode(key));
 							   data.eventCallback(releaseEvent);
 							   repeats = 0;
 							   break;
 						   } case GLFW_REPEAT: {
-							   KeyPressEvent repeatEvent(key, ++repeats);
+							   KeyPressEvent repeatEvent(glfwToOylCode(key), ++repeats);
 							   data.eventCallback(repeatEvent);
 							   break;
 						   }
@@ -120,7 +121,7 @@ void Win32Window::init(const WindowProps& props) {
 						{
 							WindowData& data = *(WindowData*) glfwGetWindowUserPointer(window);
 
-							KeyTypeEvent event(keycode);
+							KeyTypeEvent event(glfwToOylCode(keycode));
 
 							data.eventCallback(event);
 						});
@@ -131,11 +132,11 @@ void Win32Window::init(const WindowProps& props) {
 
 								   switch (action) {
 								   case GLFW_PRESS: {
-									   MousePressEvent pressEvent(button);
+									   MousePressEvent pressEvent(glfwToOylCode(button));
 									   data.eventCallback(pressEvent);
 									   break;
 								   } case GLFW_RELEASE: {
-									   MouseReleaseEvent releaseEvent(button);
+									   MouseReleaseEvent releaseEvent(glfwToOylCode(button));
 									   data.eventCallback(releaseEvent);
 									   break;
 								   }
@@ -187,14 +188,14 @@ bool Win32Window::isVsync() const {
 	return m_data.vsync;
 }
 
-void Win32Window::setFullscreenType(FullscreenType type) {
+void Win32Window::setFullscreenType(OylEnum type) {
 
 	if (m_data.fullscreenType == type) return;
 	m_data.fullscreenType = type;
 
 	static int lastWindowSize[2] = { 1280, 720 };
 
-	if (type == FullscreenType::Fullscreen || type == FullscreenType::Borderless) {
+	if (type == Fullscreen || type == Borderless) {
 		// backup windwo position and window size
 		glfwGetWindowPos(m_window, &m_data.posx, &m_data.posy);
 		glfwGetWindowSize(m_window, lastWindowSize, lastWindowSize + 1);
@@ -209,7 +210,7 @@ void Win32Window::setFullscreenType(FullscreenType type) {
 							 mode->refreshRate);
 		m_desiredWidth = mode->width;
 		m_desiredHeight = mode->height;
-	} else if (type == FullscreenType::Windowed) {
+	} else if (type == Windowed) {
 		glfwSetWindowMonitor(m_window, nullptr, 
 							 m_data.posx, m_data.posy, 
 							 lastWindowSize[0], lastWindowSize[1], 
@@ -220,7 +221,7 @@ void Win32Window::setFullscreenType(FullscreenType type) {
 	m_context->updateViewport(m_desiredWidth, m_desiredHeight);
 }
 
-FullscreenType Win32Window::getFullscreenType() const {
+OylEnum Win32Window::getFullscreenType() const {
 	return m_data.fullscreenType;
 }
 

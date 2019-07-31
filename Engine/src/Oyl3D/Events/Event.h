@@ -5,26 +5,9 @@
 namespace oyl {
 
 // To create your own custom event types and type categories, create your own
-// enum with any name of type int, and have the first value be equal to
+// enum with any name of type unsigned int, and have the first value be equal to
 // $EventTypeCustomStart or $EventCategoryCustomStart.
-// ex. enum CustomEventType : int { CustomEvent1 = oyl::EventTypeCustomStart, CustomEvent2, CustomEvent3 }
-enum EventType : int {
-	None = 0,
-	WindowClose, WindowMove, WindowResize, WindowFocus,
-	KeyPress, KeyType, KeyRelease,
-	MousePress, MouseRelease, MouseMove, MouseScroll,
-	EventTypeCustomStart
-};
-
-enum EventCategory : int {
-	EventCategoryApplication,
-	EventCategoryWindow,
-	EventCategoryInput,
-	EventCategoryKeyboard,
-	EventCategoryMouse,
-	EventCategoryMouseButton,
-	EventCategoryCustomStart
-};
+// ex. enum CustomEventType : unsigned int { CustomEvent1 = oyl::EventTypeCustomStart, CustomEvent2, CustomEvent3 };
 
 // Supporting Templates for the CATEGORY_FLAGS macro
 template <int v1, int... vx> struct CategoryFlags {
@@ -144,7 +127,7 @@ public:
 
 #if !defined(OYL_DIST)
 	std::string toString() const override {
-		return "WindowFocusEvent";
+		return "WindowFocusEvent: " + m_focused ? "Gained" : "Lost";
 	}
 #endif
 

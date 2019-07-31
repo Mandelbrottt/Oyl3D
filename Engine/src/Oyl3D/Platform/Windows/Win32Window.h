@@ -21,8 +21,8 @@ public:
 	virtual void setVsync(bool enabled) override;
 	virtual bool isVsync() const override;
 
-	virtual void setFullscreenType(FullscreenType enabled) override;
-	virtual FullscreenType getFullscreenType() const override;
+	virtual void setFullscreenType(OylEnum enabled) override;
+	virtual OylEnum getFullscreenType() const override;
 
 	virtual void updateViewport(int width, int height) override;
 
@@ -47,7 +47,7 @@ private:
 		GLFWmonitor* monitor = nullptr;
 
 		bool vsync = true;
-		FullscreenType fullscreenType = FullscreenType::Windowed;
+		OylEnum fullscreenType = Windowed;
 
 		EventCallbackFn eventCallback;
 	};

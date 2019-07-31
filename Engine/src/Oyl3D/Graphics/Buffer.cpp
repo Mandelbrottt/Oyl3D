@@ -8,32 +8,32 @@ namespace oyl {
 
 oyl::VertexBuffer* VertexBuffer::create(float* vertices, uint size) {
 	switch (Renderer::getAPI()) {
-	case RendererAPI::API::None: ASSERT(false, "None is currently unsupported"); return nullptr;
-	case RendererAPI::API::OpenGL: return new OpenGLVertexBuffer(vertices, size);
+	case None: ASSERT(false, "None is currently unsupported"); return nullptr;
+	case API_OpenGL: return new OpenGLVertexBuffer(vertices, size);
 	}
 	return nullptr;
 }
 
 oyl::IndexBuffer* IndexBuffer::create(uint* indices, uint size) {
 	switch (Renderer::getAPI()) {
-	case RendererAPI::API::None: ASSERT(false, "None is currently unsupported"); return nullptr;
-	case RendererAPI::API::OpenGL: return new OpenGLIndexBuffer(indices, size);
+	case None: ASSERT(false, "None is currently unsupported"); return nullptr;
+	case API_OpenGL: return new OpenGLIndexBuffer(indices, size);
 	}
 	return nullptr;
 }
 
 oyl::VertexArray* VertexArray::create() {
 	switch (Renderer::getAPI()) {
-	case RendererAPI::API::None: ASSERT(false, "None is currently unsupported"); return nullptr;
-	case RendererAPI::API::OpenGL: return new OpenGLVertexArray();
+	case None: ASSERT(false, "None is currently unsupported"); return nullptr;
+	case API_OpenGL: return new OpenGLVertexArray();
 	}
 	return nullptr;
 }
 
 oyl::FrameBuffer* FrameBuffer::create(int numColorAttachments) {
 	switch (Renderer::getAPI()) {
-	case RendererAPI::API::None: ASSERT(false, "None is currently unsupported"); return nullptr;
-	case RendererAPI::API::OpenGL: return new OpenGLFrameBuffer(numColorAttachments);
+	case None: ASSERT(false, "None is currently unsupported"); return nullptr;
+	case API_OpenGL: return new OpenGLFrameBuffer(numColorAttachments);
 	}
 	return nullptr;
 }

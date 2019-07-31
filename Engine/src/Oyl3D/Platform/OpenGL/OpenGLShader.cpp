@@ -111,14 +111,14 @@ void OpenGLShader::processShaders(const std::string& vertSrc,
 OpenGLShader::OpenGLShader(const std::initializer_list<ShaderInfo>& files) {
 	std::vector<ShaderInfo> infos(files);
 	
-	std::string srcs[(int) ShaderType::NumTypes]{ "" };
+	std::string srcs[NumShaderTypes]{ "" };
 	for (auto& info : infos) {
-		ASSERT(srcs[(int) info.type].empty(), "Multiple same type shaders defined!");
+		ASSERT(srcs[info.type - 1].empty(), "Multiple same type shaders defined!");
 		std::ifstream i(info.filename);
 		ASSERT(i, "File \"{0}\" could not open!", info.filename);
 		std::stringstream ss;
 		ss << i.rdbuf();
-		srcs[(int) info.type] = ss.str();
+		srcs[info.type - 1] = ss.str();
 	}
 
 	processShaders(srcs[0], srcs[1], srcs[2], srcs[3], srcs[4]);

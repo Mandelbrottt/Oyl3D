@@ -8,8 +8,8 @@ namespace oyl {
 
 GraphicsContext* GraphicsContext::create(void* window) {
 	switch (Renderer::getAPI()) {
-	case RendererAPI::API::None: ASSERT(false, "None is currently unsupported"); return nullptr;
-	case RendererAPI::API::OpenGL: return new OpenGLContext((GLFWwindow*) window);
+	case None: ASSERT(false, "None is currently unsupported"); return nullptr;
+	case API_OpenGL: return new OpenGLContext((GLFWwindow*) window);
 	}
 }
 

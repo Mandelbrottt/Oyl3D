@@ -101,9 +101,9 @@ public:
 	virtual void initDepthTexture(int width, int height) override;
 	virtual void initColorTexture(uint index, 
 								  int width, int height, 
-								  TextureFormat format, 
-								  TextureFilter filter, 
-								  TextureWrap wrap) override;
+								  OylEnum format,
+								  OylEnum filter,
+								  OylEnum wrap) override;
 
 	virtual void updateViewport(int width, int height) override;
 	virtual void clear() override;
@@ -125,9 +125,9 @@ private:
 	uint m_colorAttachmentIDs[FrameBuffer::maxColorAttachments]{ 0 };
 	uint m_bufs[FrameBuffer::maxColorAttachments]{ 0 };
 
-	TextureFormat m_formats[FrameBuffer::maxColorAttachments];
-	TextureFilter m_filters[FrameBuffer::maxColorAttachments];
-	TextureWrap m_wraps[FrameBuffer::maxColorAttachments];
+	OylEnum m_formats[FrameBuffer::maxColorAttachments];
+	OylEnum m_filters[FrameBuffer::maxColorAttachments];
+	OylEnum m_wraps[FrameBuffer::maxColorAttachments];
 
 	uint m_numColorAttachments = 0;
 

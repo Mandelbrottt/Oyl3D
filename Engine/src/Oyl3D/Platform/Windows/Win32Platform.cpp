@@ -5,6 +5,10 @@ namespace oyl {
 
 Platform* Platform::s_instance = new Win32Platform;
 
+Win32Platform::Win32Platform() {
+	getTimeImpl();
+}
+
 float Win32Platform::getTimeImpl() {
 	LARGE_INTEGER li;
 	static uint64_t timeStart = [&]()->float {

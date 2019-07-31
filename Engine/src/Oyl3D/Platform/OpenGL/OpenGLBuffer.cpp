@@ -110,7 +110,7 @@ void OpenGLVertexArray::unbind() const {
 	glBindVertexArray(GL_NONE);
 }
 
-static GLenum ShaderDataTypeToGLType(ShaderDataType type);
+static GLenum ShaderDataTypeToGLType(OylEnum type);
 
 void OpenGLVertexArray::addVertexBuffer(const std::shared_ptr<VertexBuffer>& vbo) {
 	ASSERT(!vbo->getLayout().getElements().empty(), "Layout is Empty!");
@@ -144,20 +144,20 @@ void OpenGLVertexArray::addIndexBuffer(const std::shared_ptr<IndexBuffer>& ebo) 
 	glBindVertexArray(GL_NONE);
 }
 
-static GLenum ShaderDataTypeToGLType(ShaderDataType type) {
+static GLenum ShaderDataTypeToGLType(OylEnum type) {
 	switch (type) {
-	case ShaderDataType::UInt:		return GL_UNSIGNED_INT;
-	case ShaderDataType::Int:		return GL_INT;
-	case ShaderDataType::Int2:		return GL_INT;
-	case ShaderDataType::Int3:		return GL_INT;
-	case ShaderDataType::Int4:		return GL_INT;
-	case ShaderDataType::Float:		return GL_FLOAT;
-	case ShaderDataType::Float2:	return GL_FLOAT;
-	case ShaderDataType::Float3:	return GL_FLOAT;
-	case ShaderDataType::Float4:	return GL_FLOAT;
-	case ShaderDataType::Mat3:		return GL_FLOAT;
-	case ShaderDataType::Mat4:		return GL_FLOAT;
-	case ShaderDataType::Bool:		return GL_BOOL;
+	case UInt:		return GL_UNSIGNED_INT;
+	case Int:		return GL_INT;
+	case Int2:		return GL_INT;
+	case Int3:		return GL_INT;
+	case Int4:		return GL_INT;
+	case Float:		return GL_FLOAT;
+	case Float2:	return GL_FLOAT;
+	case Float3:	return GL_FLOAT;
+	case Float4:	return GL_FLOAT;
+	case Mat3:		return GL_FLOAT;
+	case Mat4:		return GL_FLOAT;
+	case Bool:		return GL_BOOL;
 	}
 	ASSERT(false, "Unknown Type!");
 	return 0;
@@ -165,27 +165,27 @@ static GLenum ShaderDataTypeToGLType(ShaderDataType type) {
 
 // Frame Buffer //////////////////////////////////////////////////////////////
 
-static uint TextureFormatToGLFormat(TextureFormat format) {
+static uint TextureFormatToGLFormat(OylEnum format) {
 	switch (format) {
-	case TextureFormat::RGB8: return GL_RGB8;
-	case TextureFormat::RGBA8: return GL_RGBA8;
+	case RGB8: return GL_RGB8;
+	case RGBA8: return GL_RGBA8;
 	}
 	return 0;
 }
 
-static uint TextureFilterToGLFilter(TextureFilter filter) {
+static uint TextureFilterToGLFilter(OylEnum filter) {
 	switch (filter) {
-	case TextureFilter::Linear:  return GL_LINEAR; 
-	case TextureFilter::Nearest: return GL_NEAREST;
+	case Linear:  return GL_LINEAR; 
+	case Nearest: return GL_NEAREST;
 	}
 	return 0;
 }
 
-static uint TextureWrapToGLWrap(TextureWrap wrap) {
+static uint TextureWrapToGLWrap(OylEnum wrap) {
 	switch (wrap) {
-	case TextureWrap::Clamp:  return GL_CLAMP_TO_EDGE;
-	case TextureWrap::Mirror: return GL_MIRRORED_REPEAT;
-	case TextureWrap::Repeat: return GL_REPEAT;
+	case Clamp:  return GL_CLAMP_TO_EDGE;
+	case Mirror: return GL_MIRRORED_REPEAT;
+	case Repeat: return GL_REPEAT;
 	}
 	return 0;
 }
@@ -266,9 +266,9 @@ void OpenGLFrameBuffer::initDepthTexture(int width, int height) {
 
 void OpenGLFrameBuffer::initColorTexture(uint index, 
 										 int width, int height, 
-										 TextureFormat format, 
-										 TextureFilter filter, 
-										 TextureWrap wrap) {
+										 OylEnum format, 
+										 OylEnum filter,
+										 OylEnum wrap) {
 	ASSERT(index < m_numColorAttachments, "Invalid index!");
 
 	m_formats[index] = format;

@@ -8,7 +8,6 @@
 #include <functional>
 #include <chrono>
 
-
 #include <string>
 #include <sstream>
 
@@ -22,7 +21,7 @@
 
 #include "System/Logging.h"
 
-#include "Input/InputCodes.h"
+#include "Enums.h"
 
 #ifdef OYL_PLATFORM_WINDOWS
 #	include <windows.h>

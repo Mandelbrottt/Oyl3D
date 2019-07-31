@@ -91,9 +91,9 @@ bool Mesh::loadFromFile(const std::string& filename) {
 	m_vbo.reset(VertexBuffer::create(unpackedData.data(), unpackedData.size() * sizeof(float)));
 
 	BufferLayout layout = {
-		{ ShaderDataType::Float3, "a_position" },
-		{ ShaderDataType::Float2, "a_textureUV" },
-		{ ShaderDataType::Float3, "a_normal" },
+		{ Float3, "a_position" },
+		{ Float2, "a_textureUV" },
+		{ Float3, "a_normal" },
 	};
 
 	m_vbo->setLayout(layout);

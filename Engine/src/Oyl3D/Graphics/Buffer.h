@@ -2,29 +2,20 @@
 
 namespace oyl {
 
-enum class ShaderDataType : uint {
-	None = 0,
-	UInt,
-	Int, Int2, Int3, Int4,
-	Float, Float2, Float3, Float4,
-	Mat3, Mat4,
-	Bool
-};
-
-static uint shaderDataTypeSize(ShaderDataType type) {
+static uint shaderDataTypeSize(OylEnum type) {
 	switch (type) {
-	case ShaderDataType::UInt:		return 4;
-	case ShaderDataType::Int:		return 4;
-	case ShaderDataType::Int2:		return 4 * 2;
-	case ShaderDataType::Int3:		return 4 * 3;
-	case ShaderDataType::Int4:		return 4 * 4;
-	case ShaderDataType::Float:		return 4;
-	case ShaderDataType::Float2:	return 4 * 2;
-	case ShaderDataType::Float3:	return 4 * 3;
-	case ShaderDataType::Float4:	return 4 * 4;
-	case ShaderDataType::Mat3:		return 4 * 3 * 3;
-	case ShaderDataType::Mat4:		return 4 * 4 * 4;
-	case ShaderDataType::Bool:		return 1;
+	case UInt:		return 4;
+	case Int:		return 4;
+	case Int2:		return 4 * 2;
+	case Int3:		return 4 * 3;
+	case Int4:		return 4 * 4;
+	case Float:		return 4;
+	case Float2:	return 4 * 2;
+	case Float3:	return 4 * 3;
+	case Float4:	return 4 * 4;
+	case Mat3:		return 4 * 3 * 3;
+	case Mat4:		return 4 * 4 * 4;
+	case Bool:		return 1;
 	}
 
 	ASSERT(false, "Unknown Type!");
@@ -34,30 +25,30 @@ static uint shaderDataTypeSize(ShaderDataType type) {
 struct BufferElement {
 	BufferElement() {}
 
-	BufferElement(ShaderDataType type, const std::string& name, bool normalized = false)
+	BufferElement(OylEnum type, const std::string& name, bool normalized = false)
 		: name(name), type(type), size(shaderDataTypeSize(type)), offset(0), normalized(normalized) {}
 
 	uint getElementCount() const {
 		switch (type) {
-		case ShaderDataType::UInt:		return 1;
-		case ShaderDataType::Int:		return 1;
-		case ShaderDataType::Int2:		return 2;
-		case ShaderDataType::Int3:		return 3;
-		case ShaderDataType::Int4:		return 4;
-		case ShaderDataType::Float:		return 1;
-		case ShaderDataType::Float2:	return 2;
-		case ShaderDataType::Float3:	return 3;
-		case ShaderDataType::Float4:	return 4;
-		case ShaderDataType::Mat3:		return 3 * 3;
-		case ShaderDataType::Mat4:		return 4 * 4;
-		case ShaderDataType::Bool:		return 1;
+		case UInt:		return 1;
+		case Int:		return 1;
+		case Int2:		return 2;
+		case Int3:		return 3;
+		case Int4:		return 4;
+		case Float:		return 1;
+		case Float2:	return 2;
+		case Float3:	return 3;
+		case Float4:	return 4;
+		case Mat3:		return 3 * 3;
+		case Mat4:		return 4 * 4;
+		case Bool:		return 1;
 		}
 		ASSERT(false, "Unknown Type!");
 		return 0;
 	}
 
 	std::string name;
-	ShaderDataType type;
+	OylEnum type;
 	uint size;
 	uint offset;
 	bool normalized;
@@ -156,10 +147,6 @@ public:
 
 // FrameBuffer ////////////////////////////////////////////////////////////////////////////
 
-enum class TextureFormat { RGB8, RGBA8 };
-enum class TextureFilter { Nearest, Linear, };
-enum class TextureWrap { Clamp, Mirror, Repeat };
-
 class FrameBuffer {
 public:
 	virtual ~FrameBuffer() {}
@@ -173,9 +160,9 @@ public:
 	virtual void initDepthTexture(int width, int height) = 0;
 	virtual void initColorTexture(uint index, 
 								  int width, int height, 
-								  TextureFormat format, 
-								  TextureFilter filter, 
-								  TextureWrap wrap) = 0;
+								  OylEnum format, 
+								  OylEnum filter,
+								  OylEnum wrap) = 0;
 
 	virtual void updateViewport(int width, int height) = 0;
 	virtual void clear() = 0;

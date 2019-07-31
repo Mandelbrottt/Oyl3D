@@ -6,6 +6,7 @@ namespace oyl {
 
 class Win32Platform : public Platform {
 public:
+	Win32Platform();
 	virtual float getTimeImpl() override;
 };
 
