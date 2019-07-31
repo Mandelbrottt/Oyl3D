@@ -1,6 +1,8 @@
 #include "oylpch.h"
 #include "OpenGLShader.h"
 
+#include "GLCommon.h"
+
 #include <glad/glad.h>
 
 namespace oyl {
@@ -8,24 +10,25 @@ namespace oyl {
 static GLuint compileShader(GLuint type, const std::string& src) {
 	if (src.empty()) return 0;
 
-	GLuint shader = glCreateShader(type);
+	GLuint shader;
+	GLCall(shader = glCreateShader(type));
 
 	const char* source = src.c_str();
-	glShaderSource(shader, 1, &source, 0);
+	GLCall(glShaderSource(shader, 1, &source, 0));
 
-	glCompileShader(shader);
+	GLCall(glCompileShader(shader));
 
 	GLint isCompiled = 0;
-	glGetShaderiv(shader, GL_COMPILE_STATUS, &isCompiled);
+	GLCall(glGetShaderiv(shader, GL_COMPILE_STATUS, &isCompiled));
 	if (isCompiled == GL_FALSE)
 	{
 		GLint maxLength = 0;
-		glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &maxLength);
+		GLCall(glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &maxLength));
 
 		std::vector<GLchar> infoLog(maxLength);
-		glGetShaderInfoLog(shader, maxLength, &maxLength, &infoLog[0]);
+		GLCall(glGetShaderInfoLog(shader, maxLength, &maxLength, &infoLog[0]));
 
-		glDeleteShader(shader);
+		GLCall(glDeleteShader(shader));
 
 		LOG_ERROR("{0}", infoLog.data());
 		std::string err = " shader compilation failure!";
@@ -56,26 +59,26 @@ static void linkShaders(const uint id,
 	if (geomShader != 0) glAttachShader(id, geomShader);
 	if (fragShader != 0) glAttachShader(id, fragShader);
 
-	glLinkProgram(id);
+	GLCall(glLinkProgram(id));
 
 	GLint isLinked = 0;
-	glGetProgramiv(id, GL_LINK_STATUS, (int*) & isLinked);
+	GLCall(glGetProgramiv(id, GL_LINK_STATUS, (int*) & isLinked));
 	if (isLinked == GL_FALSE)
 	{
 		GLint maxLength = 0;
-		glGetProgramiv(id, GL_INFO_LOG_LENGTH, &maxLength);
+		GLCall(glGetProgramiv(id, GL_INFO_LOG_LENGTH, &maxLength));
 
 		// The maxLength includes the NULL character
 		std::vector<GLchar> infoLog(maxLength);
-		glGetProgramInfoLog(id, maxLength, &maxLength, &infoLog[0]);
+		GLCall(glGetProgramInfoLog(id, maxLength, &maxLength, &infoLog[0]));
 
-		glDeleteProgram(id);
+		GLCall(glDeleteProgram(id));
 
-		if (vertShader != 0) glDeleteShader(vertShader);
-		if (tescShader != 0) glDeleteShader(tescShader);
-		if (teseShader != 0) glDeleteShader(teseShader);
-		if (geomShader != 0) glDeleteShader(geomShader);
-		if (fragShader != 0) glDeleteShader(fragShader);
+		if (vertShader != 0) GLCall(glDeleteShader(vertShader));
+		if (tescShader != 0) GLCall(glDeleteShader(tescShader));
+		if (teseShader != 0) GLCall(glDeleteShader(teseShader));
+		if (geomShader != 0) GLCall(glDeleteShader(geomShader));
+		if (fragShader != 0) GLCall(glDeleteShader(fragShader));
 
 		LOG_ERROR("{0}", infoLog.data());
 		ASSERT(false, "Shader link failure!");
@@ -84,11 +87,11 @@ static void linkShaders(const uint id,
 	}
 
 	// Always detach shaders after a successful link.
-	if (vertShader != 0) glDetachShader(id, vertShader);
-	if (tescShader != 0) glDetachShader(id, tescShader);
-	if (teseShader != 0) glDetachShader(id, teseShader);
-	if (geomShader != 0) glDetachShader(id, geomShader);
-	if (fragShader != 0) glDetachShader(id, fragShader);
+	if (vertShader != 0) GLCall(glDetachShader(id, vertShader));
+	if (tescShader != 0) GLCall(glDetachShader(id, tescShader));
+	if (teseShader != 0) GLCall(glDetachShader(id, teseShader));
+	if (geomShader != 0) GLCall(glDetachShader(id, geomShader));
+	if (fragShader != 0) GLCall(glDetachShader(id, fragShader));
 }
 
 void OpenGLShader::processShaders(const std::string& vertSrc, 
@@ -103,7 +106,7 @@ void OpenGLShader::processShaders(const std::string& vertSrc,
 	GLuint geometryShader		= compileShader(GL_GEOMETRY_SHADER, geomSrc);
 	GLuint fragmentShader		= compileShader(GL_FRAGMENT_SHADER, fragSrc);
 
-	m_rendererID = glCreateProgram();
+	GLCall(m_rendererID = glCreateProgram());
 
 	linkShaders(m_rendererID, vertexShader, tessControlShader, tessEvaluationShader, geometryShader, fragmentShader);
 }
@@ -125,45 +128,57 @@ OpenGLShader::OpenGLShader(const std::initializer_list<ShaderInfo>& files) {
 }
 
 OpenGLShader::~OpenGLShader() {
-	glDeleteProgram(m_rendererID);
+	GLCall(glDeleteProgram(m_rendererID));
 }
 
 void OpenGLShader::bind() const {
-	glUseProgram(m_rendererID);
+	GLCall(glUseProgram(m_rendererID));
 }
 
 void OpenGLShader::unbind() const {
-	glUseProgram(GL_NONE);
+	GLCall(glUseProgram(GL_NONE));
+}
+
+void OpenGLShader::setUniform(const std::string& name, const int v) {
+	int location;
+	GLCall(location = glGetUniformLocation(m_rendererID, name.c_str()));
+	//ASSERT(location, "Location Not Found!");
+	GLCall(glUniform1i(location, v));
 }
 
 void OpenGLShader::setUniform(const std::string& name, const glm::vec2& v){
-	int location = glGetUniformLocation(m_rendererID, name.c_str());
+	int location;
+	GLCall(location = glGetUniformLocation(m_rendererID, name.c_str()));
 	//ASSERT(location, "Location Not Found!");
-	glUniform2fv(location, 1, glm::value_ptr(v));
+	GLCall(glUniform2fv(location, 1, glm::value_ptr(v)));
 }
 
 void OpenGLShader::setUniform(const std::string& name, const glm::vec3& v){
-	int location = glGetUniformLocation(m_rendererID, name.c_str());
+	int location;
+	GLCall(location = glGetUniformLocation(m_rendererID, name.c_str()));
 	//ASSERT(location, "Location Not Found!");
-	glUniform3fv(location, 1, glm::value_ptr(v));
+	GLCall(glUniform3fv(location, 1, glm::value_ptr(v)));
 }
 
 void OpenGLShader::setUniform(const std::string& name, const glm::vec4& v){
-	int location = glGetUniformLocation(m_rendererID, name.c_str());
+	int location;
+	GLCall(location = glGetUniformLocation(m_rendererID, name.c_str()));
 	//ASSERT(location, "Location Not Found!");
-	glUniform4fv(location, 1, glm::value_ptr(v));
+	GLCall(glUniform4fv(location, 1, glm::value_ptr(v)));
 }
 
 void OpenGLShader::setUniform(const std::string& name, const glm::mat3& m){
-	int location = glGetUniformLocation(m_rendererID, name.c_str());
+	int location;
+	GLCall(location = glGetUniformLocation(m_rendererID, name.c_str()));
 	//ASSERT(location, "Location Not Found!");
-	glUniformMatrix3fv(location, 1, GL_FALSE, glm::value_ptr(m));
+	GLCall(glUniformMatrix3fv(location, 1, GL_FALSE, glm::value_ptr(m)));
 }
 
 void OpenGLShader::setUniform(const std::string& name, const glm::mat4& m){
-	int location = glGetUniformLocation(m_rendererID, name.c_str());
+	int location;
+	GLCall(location = glGetUniformLocation(m_rendererID, name.c_str()));
 	//ASSERT(location, "Location Not Found!");
-	glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(m));
+	GLCall(glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(m)));
 }
 
 }

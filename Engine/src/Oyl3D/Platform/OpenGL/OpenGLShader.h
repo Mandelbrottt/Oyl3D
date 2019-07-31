@@ -11,6 +11,7 @@ public:
 	virtual void bind() const;
 	virtual void unbind() const;
 
+	virtual void setUniform(const std::string& name, const int v) override;
 	virtual void setUniform(const std::string& name, const glm::vec2& v) override;
 	virtual void setUniform(const std::string& name, const glm::vec3& v) override;
 	virtual void setUniform(const std::string& name, const glm::vec4& v) override;

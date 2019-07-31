@@ -1,6 +1,8 @@
 #include "oylpch.h"
 #include "OpenGLBuffer.h"
 
+#include "GLCommon.h"
+
 #include <glad/glad.h>
 
 namespace oyl {
@@ -19,26 +21,26 @@ void OpenGLVertexBuffer::load(float* vertices, uint size) {
 	if (m_loaded) return;
 	m_loaded = true;
 
-	glGenBuffers(1, &m_rendererID);
-	glBindBuffer(GL_ARRAY_BUFFER, m_rendererID);
+	GLCall(glGenBuffers(1, &m_rendererID));
+	GLCall(glBindBuffer(GL_ARRAY_BUFFER, m_rendererID));
 
 	// Upload data to the GPU
-	glBufferData(GL_ARRAY_BUFFER, size, vertices, GL_STATIC_DRAW);
+	GLCall(glBufferData(GL_ARRAY_BUFFER, size, vertices, GL_STATIC_DRAW));
 }
 
 void OpenGLVertexBuffer::unload() {
 	if (!m_loaded) return;
 	m_loaded = false;
 
-	glDeleteBuffers(1, &m_rendererID);
+	GLCall(glDeleteBuffers(1, &m_rendererID));
 }
 
 void OpenGLVertexBuffer::bind() const {
-	glBindBuffer(GL_ARRAY_BUFFER, m_rendererID);
+	GLCall(glBindBuffer(GL_ARRAY_BUFFER, m_rendererID));
 }
 
 void OpenGLVertexBuffer::unbind() const {
-	glBindBuffer(GL_ARRAY_BUFFER, GL_NONE);
+	GLCall(glBindBuffer(GL_ARRAY_BUFFER, GL_NONE));
 }
 
 // IndexBuffer ///////////////////////////////////////////////////////////////
@@ -56,26 +58,26 @@ void OpenGLIndexBuffer::load(uint* indices, uint count){
 	if (m_loaded) return;
 	m_loaded = true;
 
-	glGenBuffers(1, &m_rendererID);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_rendererID);
+	GLCall(glGenBuffers(1, &m_rendererID));
+	GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_rendererID));
 
 	// Upload data to the GPU
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, count * sizeof(uint), indices, GL_STATIC_DRAW);
+	GLCall(glBufferData(GL_ELEMENT_ARRAY_BUFFER, count * sizeof(uint), indices, GL_STATIC_DRAW));
 }
 
 void OpenGLIndexBuffer::unload(){
 	if (!m_loaded) return;
 	m_loaded = false;
 
-	glDeleteBuffers(1, &m_rendererID);
+	GLCall(glDeleteBuffers(1, &m_rendererID));
 }
 
 void OpenGLIndexBuffer::bind() const {
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_rendererID);
+	GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_rendererID));
 }
 
 void OpenGLIndexBuffer::unbind() const {
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, GL_NONE);
+	GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, GL_NONE));
 }
 
 // Vertex Array //////////////////////////////////////////////////////////////
@@ -92,22 +94,22 @@ void OpenGLVertexArray::load(){
 	if (m_loaded) return;
 	m_loaded = true;
 
-	glGenVertexArrays(1, &m_rendererID);
+	GLCall(glGenVertexArrays(1, &m_rendererID));
 }
 
 void OpenGLVertexArray::unload(){
 	if (!m_loaded) return;
 	m_loaded = false;
 
-	glDeleteVertexArrays(1, &m_rendererID);
+	GLCall(glDeleteVertexArrays(1, &m_rendererID));
 }
 
 void OpenGLVertexArray::bind() const {
-	glBindVertexArray(m_rendererID);
+	GLCall(glBindVertexArray(m_rendererID));
 }
 
 void OpenGLVertexArray::unbind() const {
-	glBindVertexArray(GL_NONE);
+	GLCall(glBindVertexArray(GL_NONE));
 }
 
 static GLenum ShaderDataTypeToGLType(OylEnum type);
@@ -115,33 +117,33 @@ static GLenum ShaderDataTypeToGLType(OylEnum type);
 void OpenGLVertexArray::addVertexBuffer(const std::shared_ptr<VertexBuffer>& vbo) {
 	ASSERT(!vbo->getLayout().getElements().empty(), "Layout is Empty!");
 
-	glBindVertexArray(m_rendererID);
+	GLCall(glBindVertexArray(m_rendererID));
 	vbo->bind();
 
 	// Setup the vertex buffer's layout
 	uint index = 0;
 	const auto& layout = vbo->getLayout();
 	for (const auto& element : vbo->getLayout()) {
-		glEnableVertexAttribArray(index);
-		glVertexAttribPointer(index,
+		GLCall(glEnableVertexAttribArray(index));
+		GLCall(glVertexAttribPointer(index,
 							  element.getElementCount(),
 							  ShaderDataTypeToGLType(element.type),
 							  element.normalized ? GL_TRUE : GL_FALSE,
 							  layout.getStride(),
-							  (const void*) element.offset);
+							  (const void*) element.offset));
 		index++;
 	}
 
 	m_vertexBuffers.push_back(vbo);
-	glBindVertexArray(GL_NONE);
+	GLCall(glBindVertexArray(GL_NONE));
 }
 
 void OpenGLVertexArray::addIndexBuffer(const std::shared_ptr<IndexBuffer>& ebo) {
-	glBindVertexArray(m_rendererID);
+	GLCall(glBindVertexArray(m_rendererID));
 	ebo->bind();
 
 	m_indexBuffer = ebo;
-	glBindVertexArray(GL_NONE);
+	GLCall(glBindVertexArray(GL_NONE));
 }
 
 static GLenum ShaderDataTypeToGLType(OylEnum type) {
@@ -202,7 +204,7 @@ void OpenGLFrameBuffer::load(uint numColorAttachments) {
 	if (m_loaded) return;
 	m_loaded = true;
 
-	glGenFramebuffers(1, &m_rendererID);
+	GLCall(glGenFramebuffers(1, &m_rendererID));
 
 	// m_bufs is required as a paramater for glDrawBuffers()
 	for (int i = 0; i < numColorAttachments; i++) {
@@ -221,47 +223,47 @@ void OpenGLFrameBuffer::unload() {
 	}
 
 	if (m_colorAttachmentIDs[0] != 0) {
-		glDeleteTextures(m_numColorAttachments, m_colorAttachmentIDs);
+		GLCall(glDeleteTextures(m_numColorAttachments, m_colorAttachmentIDs));
 
 		for (auto& id : m_colorAttachmentIDs) id = 0;
 	}
 
 	if (m_depthAttachmentID != GL_NONE) {
-		glDeleteTextures(1, &m_depthAttachmentID);
+		GLCall(glDeleteTextures(1, &m_depthAttachmentID));
 		m_depthAttachmentID = GL_NONE;
 	}
 
 	m_numColorAttachments = 0;
 
-	glDeleteFramebuffers(1, &m_rendererID);
+	GLCall(glDeleteFramebuffers(1, &m_rendererID));
 }
 
 void OpenGLFrameBuffer::bind() {
-	glBindFramebuffer(GL_FRAMEBUFFER, m_rendererID);
-	glDrawBuffers(m_numColorAttachments, m_bufs);
+	GLCall(glBindFramebuffer(GL_FRAMEBUFFER, m_rendererID));
+	GLCall(glDrawBuffers(m_numColorAttachments, m_bufs));
 }
 
 void OpenGLFrameBuffer::unbind() {
-	glBindFramebuffer(GL_FRAMEBUFFER, GL_NONE);
+	GLCall(glBindFramebuffer(GL_FRAMEBUFFER, GL_NONE));
 }
 
 void OpenGLFrameBuffer::initDepthTexture(int width, int height) {
-	glBindFramebuffer(GL_FRAMEBUFFER, m_rendererID);
+	GLCall(glBindFramebuffer(GL_FRAMEBUFFER, m_rendererID));
 	
 	// Create depth texture
-	glGenTextures(1, &m_depthAttachmentID);
-	glBindTexture(GL_TEXTURE_2D, m_depthAttachmentID);
-	glTexStorage2D(GL_TEXTURE_2D, 1, GL_DEPTH_COMPONENT24, width, height);
+	GLCall(glGenTextures(1, &m_depthAttachmentID));
+	GLCall(glBindTexture(GL_TEXTURE_2D, m_depthAttachmentID));
+	GLCall(glTexStorage2D(GL_TEXTURE_2D, 1, GL_DEPTH_COMPONENT24, width, height));
 
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST));
+	GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST));
+	GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE));
+	GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE));
 
 	// Bind texture to FBO
-	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, m_depthAttachmentID, 0);
+	GLCall(glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, m_depthAttachmentID, 0));
 
-	glBindFramebuffer(GL_FRAMEBUFFER, GL_NONE);
+	GLCall(glBindFramebuffer(GL_FRAMEBUFFER, GL_NONE));
 }
 
 void OpenGLFrameBuffer::initColorTexture(uint index, 
@@ -275,22 +277,22 @@ void OpenGLFrameBuffer::initColorTexture(uint index,
 	m_filters[index] = filter;
 	m_wraps[index] = wrap;
 
-	glBindFramebuffer(GL_FRAMEBUFFER, m_rendererID);
+	GLCall(glBindFramebuffer(GL_FRAMEBUFFER, m_rendererID));
 
 	// Create depth texture
-	glGenTextures(1, &m_colorAttachmentIDs[index]);
-	glBindTexture(GL_TEXTURE_2D, m_colorAttachmentIDs[index]);
-	glTexStorage2D(GL_TEXTURE_2D, 1, TextureFormatToGLFormat(format), width, height);
+	GLCall(glGenTextures(1, &m_colorAttachmentIDs[index]));
+	GLCall(glBindTexture(GL_TEXTURE_2D, m_colorAttachmentIDs[index]));
+	GLCall(glTexStorage2D(GL_TEXTURE_2D, 1, TextureFormatToGLFormat(format), width, height));
 
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, TextureFilterToGLFilter(filter));
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, TextureFilterToGLFilter(filter));
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, TextureWrapToGLWrap(wrap));
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, TextureWrapToGLWrap(wrap));
+	GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, TextureFilterToGLFilter(filter)));
+	GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, TextureFilterToGLFilter(filter)));
+	GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, TextureWrapToGLWrap(wrap)));
+	GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, TextureWrapToGLWrap(wrap)));
 
 	// Bind texture to FBO
-	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + index, GL_TEXTURE_2D, m_colorAttachmentIDs[index], 0);
+	GLCall(glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + index, GL_TEXTURE_2D, m_colorAttachmentIDs[index], 0));
 
-	glBindFramebuffer(GL_FRAMEBUFFER, GL_NONE);
+	GLCall(glBindFramebuffer(GL_FRAMEBUFFER, GL_NONE));
 }
 
 
@@ -313,25 +315,27 @@ void OpenGLFrameBuffer::clear() {
 
 	if (m_numColorAttachments > 0) temp |= GL_COLOR_BUFFER_BIT;
 
-	glBindFramebuffer(GL_FRAMEBUFFER, m_rendererID);
-	glClear(temp);
-	glBindFramebuffer(GL_FRAMEBUFFER, GL_NONE);
+	GLCall(glBindFramebuffer(GL_FRAMEBUFFER, m_rendererID));
+	GLCall(glClear(temp));
+	GLCall(glBindFramebuffer(GL_FRAMEBUFFER, GL_NONE));
 }
 
 void OpenGLFrameBuffer::moveToBackBuffer(int width, int height)
 {
-	glBindFramebuffer(GL_READ_FRAMEBUFFER, m_rendererID);
-	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, GL_NONE);
+	GLCall(glBindFramebuffer(GL_READ_FRAMEBUFFER, m_rendererID));
+	GLCall(glBindFramebuffer(GL_DRAW_FRAMEBUFFER, GL_NONE));
 
-	glBlitFramebuffer(0, 0, width, height, 0, 0, width, height, GL_COLOR_BUFFER_BIT, GL_NEAREST);
+	GLCall(glBlitFramebuffer(0, 0, width, height, 0, 0, width, height, GL_COLOR_BUFFER_BIT, GL_NEAREST));
 
-	glBindFramebuffer(GL_FRAMEBUFFER, GL_NONE);
+	GLCall(glBindFramebuffer(GL_FRAMEBUFFER, GL_NONE));
 }
 
 bool OpenGLFrameBuffer::checkFBO() {
-	glBindFramebuffer(GL_FRAMEBUFFER, m_rendererID);
+	GLCall(glBindFramebuffer(GL_FRAMEBUFFER, m_rendererID));
 
-	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
+	GLenum status;
+	GLCall(status = glCheckFramebufferStatus(GL_FRAMEBUFFER));
+	if (status != GL_FRAMEBUFFER_COMPLETE) {
 		unload();
 		return false;
 	}

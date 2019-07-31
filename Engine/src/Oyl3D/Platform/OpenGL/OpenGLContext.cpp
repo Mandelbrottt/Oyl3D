@@ -1,6 +1,8 @@
 #include "oylpch.h"
 #include "OpenGLContext.h"
 
+#include "GLCommon.h"
+
 #include <glfw/glfw3.h>
 #include <glad/glad.h>
 
@@ -18,8 +20,7 @@ static void OpenGLErrorCallback(GLenum source,
 	case 131185:
 		return;
 	}
-	LOG_ERROR("OpenGL Error({0}): {1}", id, message);
-	BREAKPOINT;
+	LOG_ERROR("OpenGL Error ({0}): {1}", id, message);
 }
 
 OpenGLContext::OpenGLContext(GLFWwindow* windowHandle)
@@ -50,7 +51,7 @@ void OpenGLContext::swapBuffers() {
 	glfwSwapBuffers(m_windowHandle);
 
 	if (m_isViewportDirty) {
-		glViewport(0, 0, m_vpWidth, m_vpHeight);
+		GLCall(glViewport(0, 0, m_vpWidth, m_vpHeight));
 		m_isViewportDirty = false;
 	}
 }
