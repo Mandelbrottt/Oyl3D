@@ -108,6 +108,8 @@ void Application::run() {
 			m_mainBuffer->unbind();
 		}
 
+		m_mainBuffer->moveToBackBuffer(m_window->getWidth(), m_window->getHeight());
+
 		// HACK: Still using demo window, also abstract away into ImGuiLayer
 		Timestep updateTime = (float) Platform::getTime() - time;
 
@@ -117,8 +119,14 @@ void Application::run() {
 			m_imguiLayer->begin();
 			for (Layer* layer : m_layerStack)
 				layer->onImGuiRender();
+			bool neededBool = false;
 
-			ImGui::Begin("Viewport");
+			ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
+			ImGui::Begin("Viewport", &neededBool, ImGuiWindowFlags_NoResize |
+						 ImGuiWindowFlags_AlwaysAutoResize |
+						 ImGuiWindowFlags_NoScrollbar |
+						 ImGuiWindowFlags_NoCollapse |
+						 ImGuiWindowFlags_NoMove);
 
 			auto[x, y] = ImGui::GetWindowSize();
 
@@ -126,9 +134,18 @@ void Application::run() {
 
 			ImGui::Image(
 				(void*) m_mainBuffer->getColorHandle(0),
-				ImVec2(x - 15, y - 35),
+				ImVec2(x, y),
 				ImVec2(0, 1), ImVec2(1, 0)
 			);
+			//
+			//auto [sx, sy] = ImGui::GetCursorScreenPos();
+
+			//ImGui::GetWindowDrawList()->AddImage(
+			//	(void*) m_mainBuffer->getColorHandle(0),
+			//	ImVec2(sx, sy),
+			//	ImVec2(sx + x, sy + y),
+			//	ImVec2(0, 1), ImVec2(1, 0)
+			//);
 
 			int distance = 10;
 
@@ -149,6 +166,9 @@ void Application::run() {
 						  ImGuiWindowFlags_NoFocusOnAppearing |
 						  ImGuiWindowFlags_NoNav
 						  );
+
+			ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(8, 8));
+
 			ImGui::Begin("DebugInfo", &debugOpen, flags);
 			ImGui::Text("Debug Info");
 
@@ -162,11 +182,15 @@ void Application::run() {
 				totalTime = 0;
 			}
 
+			
 			ImGui::Text("  Render Time: %.2fms ", ut);
 			ImGui::Text("  Frame Time:  %.2fms", ts);
 			ImGui::End();
+
+			ImGui::PopStyleVar();
 			
 			ImGui::End();
+			ImGui::PopStyleVar();
 
 			m_imguiLayer->end();
 

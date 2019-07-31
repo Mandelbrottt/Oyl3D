@@ -57,7 +57,7 @@ enum OylEnum : unsigned int {
 	// Printable Keys //
 	Key_Space = 32,
 	Key_Apostrophe = 39,	/* ' */
-	Key_Comma = 44,	/* , */
+	Key_Comma = 44,			/* , */
 	Key_Minus,				/* - */
 	Key_Period,				/* . */
 	Key_Slash,				/* / */
@@ -71,8 +71,8 @@ enum OylEnum : unsigned int {
 	Key_7,
 	Key_8,
 	Key_9,
-	Key_Semicolon = 59,	/* ; */
-	Key_Equal = 61,	/* = */
+	Key_Semicolon = 59,		/* ; */
+	Key_Equal = 61,			/* = */
 	Key_A = 65,
 	Key_B,
 	Key_C,
@@ -102,8 +102,8 @@ enum OylEnum : unsigned int {
 	Key_LeftBracket,		/* [ */
 	Key_Backslash,			/* \ */
 	Key_RightBracket,		/* ] */
-	Key_Grave = 96,	/* ` */
-	Key_World1 = 161,	/* non-US #1 */
+	Key_Grave = 96,			/* ` */
+	Key_World1 = 161,		/* non-US #1 */
 	Key_World2,				/* non-US #2 */
 
 	// Function Keys
