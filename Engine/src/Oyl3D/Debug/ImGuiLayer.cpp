@@ -86,6 +86,26 @@ void ImGuiLayer::end() {
 void ImGuiLayer::onImGuiRender() {
 	static bool show = true;
 	ImGui::ShowDemoWindow(&show);
+
+	bool neededBool = false;
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
+	ImGui::Begin("Viewport", &neededBool, ImGuiWindowFlags_AlwaysAutoResize |
+				 ImGuiWindowFlags_NoScrollbar |
+				 ImGuiWindowFlags_NoCollapse |
+				 ImGuiWindowFlags_NoMove);
+
+	auto [x, y] = ImGui::GetWindowSize();
+
+	Application::get().getMainCamera().setAspect(x / y);
+
+	ImGui::Image(
+		(void*) Application::get().getMainFrameBuffer().getColorHandle(0),
+		ImVec2(x, y),
+		ImVec2(0, 1), ImVec2(1, 0)
+	);
+
+	ImGui::End();
+	ImGui::PopStyleVar();
 }
 
 }

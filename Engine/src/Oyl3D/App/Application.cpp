@@ -92,6 +92,7 @@ void Application::run() {
 	while (m_running) {
 		float time = (float) Platform::getTime();
 		Timestep timestep(time - m_lastFrameTime);
+		m_lastFrameTime = time;
 
 		if (m_doUpdate) {
 			RenderCommand::setClearColor(0.1f, 0.1f, 0.1f, 1.0f);
@@ -108,100 +109,16 @@ void Application::run() {
 			m_mainBuffer->unbind();
 		}
 
-		m_mainBuffer->moveToBackBuffer(m_window->getWidth(), m_window->getHeight());
-
-		// HACK: Still using demo window, also abstract away into ImGuiLayer
-		Timestep updateTime = (float) Platform::getTime() - time;
-
 #if !defined(OYL_DIST)
-			//RenderCommand::clear();
-
-			m_imguiLayer->begin();
-			for (Layer* layer : m_layerStack)
-				layer->onImGuiRender();
-			bool neededBool = false;
-
-			ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
-			ImGui::Begin("Viewport", &neededBool, ImGuiWindowFlags_NoResize |
-						 ImGuiWindowFlags_AlwaysAutoResize |
-						 ImGuiWindowFlags_NoScrollbar |
-						 ImGuiWindowFlags_NoCollapse |
-						 ImGuiWindowFlags_NoMove);
-
-			auto[x, y] = ImGui::GetWindowSize();
-
-			m_camera.setAspect(x / y);
-
-			ImGui::Image(
-				(void*) m_mainBuffer->getColorHandle(0),
-				ImVec2(x, y),
-				ImVec2(0, 1), ImVec2(1, 0)
-			);
-			//
-			//auto [sx, sy] = ImGui::GetCursorScreenPos();
-
-			//ImGui::GetWindowDrawList()->AddImage(
-			//	(void*) m_mainBuffer->getColorHandle(0),
-			//	ImVec2(sx, sy),
-			//	ImVec2(sx + x, sy + y),
-			//	ImVec2(0, 1), ImVec2(1, 0)
-			//);
-
-			int distance = 10;
-
-			auto [wx, wy] = ImGui::GetWindowPos();
-
-			ImVec2 window_pos = ImVec2(wx + distance, wy + distance + 20);
-			ImGui::SetNextWindowPos(window_pos, ImGuiCond_Always, ImVec2(0, 0));
-	
-			ImGui::SetNextWindowBgAlpha(0.35f); // Transparent background
-				
-			bool debugOpen = true;
-			auto flags = (ImGuiWindowFlags_NoMove |
-						  ImGuiWindowFlags_NoDocking |
-						  ImGuiWindowFlags_NoTitleBar |
-						  ImGuiWindowFlags_NoResize |
-						  ImGuiWindowFlags_AlwaysAutoResize |
-				 		  ImGuiWindowFlags_NoSavedSettings |
-						  ImGuiWindowFlags_NoFocusOnAppearing |
-						  ImGuiWindowFlags_NoNav
-						  );
-
-			ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(8, 8));
-
-			ImGui::Begin("DebugInfo", &debugOpen, flags);
-			ImGui::Text("Debug Info");
-
-			static float ut = updateTime.getMillis();
-			static float ts = timestep.getMillis();
-			static float totalTime = timestep;
-			totalTime += timestep;
-			if (totalTime > 1) {
-				ut = updateTime.getMillis();
-				ts = timestep.getMillis();
-				totalTime = 0;
-			}
-
-			
-			ImGui::Text("  Render Time: %.2fms ", ut);
-			ImGui::Text("  Frame Time:  %.2fms", ts);
-			ImGui::End();
-
-			ImGui::PopStyleVar();
-			
-			ImGui::End();
-			ImGui::PopStyleVar();
-
-			m_imguiLayer->end();
-
-			//m_window->updateViewport(lmao.x, lmao.y);
-			//m_mainBuffer->updateViewport(lmao.x, lmao.y);
+		m_imguiLayer->begin();
+		for (Layer* layer : m_layerStack)
+			layer->onImGuiRender();
+		m_imguiLayer->end();
 #else
 		m_mainBuffer->moveToBackBuffer(m_window->getWidth(), m_window->getHeight());
 #endif
 		
 		m_window->onUpdate(m_doUpdate);
-		m_lastFrameTime = time;
 	}
 }
 

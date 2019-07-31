@@ -25,6 +25,8 @@ namespace oyl {
 		void pushOverlay(Layer* overlay);
 
 		inline Window& getWindow() { return *m_window; }
+		inline FrameBuffer& getMainFrameBuffer() { return *m_mainBuffer; }
+		inline PerspectiveCamera& getMainCamera() { return m_camera; }
 
 		inline static Application& get() { return *s_instance; }
 	private:
