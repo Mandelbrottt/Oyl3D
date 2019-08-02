@@ -27,7 +27,7 @@ void ImGuiLayer::onAttach() {
 	// Setup Dear ImGui context
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
-	ImGuiIO& io = ImGui::GetIO(); (void) io;
+	ImGuiIO& io = ImGui::GetIO();
 	//io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
 	//io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
 	io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;           // Enable Docking
@@ -38,13 +38,9 @@ void ImGuiLayer::onAttach() {
 	// Setup Dear ImGui style
 	ImGui::StyleColorsDark();
 
-	// When viewports are enabled we tweak WindowRounding/WindowBg so platform windows can look identical to regular ones.
 	ImGuiStyle& style = ImGui::GetStyle();
-	if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
-	{
-		style.WindowRounding = 0.0f;
-		style.Colors[ImGuiCol_WindowBg].w = 1.0f;
-	}
+	style.WindowRounding = 0.0f;
+	style.Colors[ImGuiCol_WindowBg].w = 1.0f;
 
 	Application& app = Application::get();
 	GLFWwindow* window = static_cast<GLFWwindow*>(app.getWindow().getNativeWindow());
@@ -84,15 +80,45 @@ void ImGuiLayer::end() {
 }
 
 void ImGuiLayer::onImGuiRender() {
-	static bool show = true;
-	ImGui::ShowDemoWindow(&show);
+	
+	// Only still here for easy navigation to the source code for learning imgui
+	if (false) ImGui::ShowDemoWindow();
+
+	static ImGuiDockNodeFlags dockspace_flags = ImGuiDockNodeFlags_None;
+
+	// We are using the ImGuiWindowFlags_NoDocking flag to make the parent window not dockable into,
+	// because it would be confusing to have two docking targets within each others.
+	ImGuiWindowFlags window_flags = (ImGuiWindowFlags_NoDocking |
+									 ImGuiWindowFlags_NoTitleBar |
+									 ImGuiWindowFlags_NoCollapse |
+									 ImGuiWindowFlags_NoResize |
+									 ImGuiWindowFlags_NoMove |
+									 ImGuiWindowFlags_NoBringToFrontOnFocus |
+									 ImGuiWindowFlags_NoNavFocus);
+
+	ImGuiViewport* viewport = ImGui::GetMainViewport();
+	ImGui::SetNextWindowPos(viewport->Pos);
+	ImGui::SetNextWindowSize(viewport->Size);
+	ImGui::SetNextWindowViewport(viewport->ID);
+
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
+	bool p_open = true;
+	ImGui::Begin("DockSpace Demo", &p_open, window_flags);
+	ImGui::PopStyleVar(3);
+
+	ASSERT(ImGui::GetIO().ConfigFlags & ImGuiConfigFlags_DockingEnable, "Docking should always be enabled!");
+
+	// DockSpace
+	ImGuiID dockspace_id = ImGui::GetID("MyDockSpace");
+	ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), dockspace_flags);
+	ImGui::End();
 
 	bool neededBool = false;
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
-	ImGui::Begin("Viewport", &neededBool, ImGuiWindowFlags_AlwaysAutoResize |
-				 ImGuiWindowFlags_NoScrollbar |
-				 ImGuiWindowFlags_NoCollapse |
-				 ImGuiWindowFlags_NoMove);
+	ImGui::Begin("Viewport", &neededBool, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoCollapse);
+	ImGui::PopStyleVar();
 
 	auto [x, y] = ImGui::GetWindowSize();
 
@@ -105,7 +131,6 @@ void ImGuiLayer::onImGuiRender() {
 	);
 
 	ImGui::End();
-	ImGui::PopStyleVar();
 }
 
 }
