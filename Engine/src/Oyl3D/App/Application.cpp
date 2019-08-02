@@ -74,12 +74,6 @@ void Application::onEvent(Event& e) {
 #endif
 											  return !e.isFocused();
 										  });
-	dispatcher.dispatch<KeyReleaseEvent>([&](KeyReleaseEvent & e)->bool {
-		static bool lmao = false;
-		if (e.getKeyCode() == Key_F7)
-			m_window->setVsync(lmao = !lmao);
-		return false;
-										 });
 
 	for (Layer* layer : m_layerStack) {
 		layer->onEvent(e);

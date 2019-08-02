@@ -59,7 +59,7 @@ void OpenGLTexture2D::load(const std::string& filename) {
 	} else {
 		LOG_ERROR("Texture {0} failed to load!", filename);
 		unsigned char* err = new unsigned char[3]{ 255, 0, 255 };
-		GLCall(glTexImage2D(GL_TEXTURE, 0, GL_RGB, 1, 1, 0, GL_RGB, GL_UNSIGNED_BYTE, err));
+		GLCall(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 1, 1, 0, GL_RGB, GL_UNSIGNED_BYTE, err));
 	}
 	stbi_image_free(data);
 
