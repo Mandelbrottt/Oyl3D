@@ -16,7 +16,7 @@ bool Mesh::loadFromFile(const std::string& filename) {
 
 	std::ifstream file(filename);
 	if (!file) {
-		ASSERT(false, "Could not open obj file " + filename)
+		LOG_ERROR("Could not open file \"{0}\"!", filename);
 		return false;
 	}
 
@@ -112,12 +112,26 @@ void Mesh::unload() {
 	m_vao.reset();
 }
 
+void Mesh::loadTexture(const std::string& filename, uint slot) {
+	m_texture.reset(Texture2D::create(filename));
+}
+
+void Mesh::loadTexture(std::shared_ptr<Texture2D> texture) {
+	m_texture = texture;
+}
+
+void Mesh::unloadTexture() {
+	m_texture.reset();
+}
+
 void Mesh::bind() {
 	m_vao->bind();
+	if (m_texture) m_texture->bind();
 }
 
 void Mesh::unbind() {
 	m_vao->unbind();
+	if (m_texture) m_texture->unbind();
 }
 
 }

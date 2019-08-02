@@ -320,8 +320,7 @@ void OpenGLFrameBuffer::clear() {
 	GLCall(glBindFramebuffer(GL_FRAMEBUFFER, GL_NONE));
 }
 
-void OpenGLFrameBuffer::moveToBackBuffer(int width, int height)
-{
+void OpenGLFrameBuffer::moveToBackBuffer(int width, int height) {
 	GLCall(glBindFramebuffer(GL_READ_FRAMEBUFFER, m_rendererID));
 	GLCall(glBindFramebuffer(GL_DRAW_FRAMEBUFFER, GL_NONE));
 

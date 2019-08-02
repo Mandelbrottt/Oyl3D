@@ -27,12 +27,14 @@ void Renderer::submit(const std::shared_ptr<Shader>& shader, const std::shared_p
 	RenderCommand::drawIndexed(vao);
 }
 
+// Assumes that there is only one texture, will be changed when material file system is implemented
 void Renderer::submit(const std::shared_ptr<Shader>& shader, const std::shared_ptr<Mesh>& mesh, glm::mat4 transform) {
+	mesh->bind();
 	shader->bind();
 	shader->setUniform("u_model", transform);
 	shader->setUniform("u_view", s_sceneData->perspectiveViewMatrix);
 	shader->setUniform("u_projection", s_sceneData->perspectiveProjectionMatrix);
-	mesh->bind();
+	shader->setUniform("u_texture", 0);
 	RenderCommand::drawMesh(mesh);
 }
 

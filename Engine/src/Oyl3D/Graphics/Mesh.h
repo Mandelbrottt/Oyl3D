@@ -2,12 +2,18 @@
 
 #include "Oyl3D/Graphics/Buffer.h"
 
+#include "Oyl3D/Graphics/Texture.h"
+
 namespace oyl {
 
 class Mesh {
 public:
-	virtual bool loadFromFile(const std::string& filename);
-	virtual void unload();
+	bool loadFromFile(const std::string& filename);
+	void unload();
+
+	void loadTexture(const std::string& filename, uint slot = 0);
+	void loadTexture(std::shared_ptr<Texture2D> texture);
+	void unloadTexture();
 
 	void bind();
 	void unbind();
@@ -16,6 +22,8 @@ public:
 
 	uint getNumFaces() const { return m_numFaces; }
 	uint getNumVertices() const { return m_numVertices; }
+
+	std::shared_ptr<Texture2D> getTexture() { return std::shared_ptr<Texture2D>(m_texture); }
 private:
 	Mesh(const std::string& filename);
 
@@ -24,6 +32,8 @@ private:
 
 	std::shared_ptr<VertexArray> m_vao;
 	std::shared_ptr<VertexBuffer> m_vbo;
+
+	std::shared_ptr<Texture2D> m_texture;
 };
 
 struct MeshFaceData {

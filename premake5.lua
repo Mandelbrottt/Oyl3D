@@ -32,8 +32,8 @@ project "OylEngine"
 	cppdialect "C++17"
 	staticruntime "on"
 
-	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
-	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
+	targetdir ("bin/" .. outputdir .. "/Engine")
+	objdir ("bin-int/" .. outputdir .. "/Engine")
 
 	pchheader "oylpch.h"
 	pchsource "Engine/src/Oyl3D/oylpch.cpp"
@@ -47,6 +47,10 @@ project "OylEngine"
 		-- "OYL_BUILD_DLL",
 		"OYL_ENGINE",
 		"_CRT_SECURE_NO_WARNINGS"
+	}
+
+	postbuildcommands {
+		"{COPY} %{prj.location}res/ %{wks.location}bin/"..outputdir.."/Engine/res/"
 	}
 
 	includedirs {
@@ -97,8 +101,8 @@ project "OylGame"
 	cppdialect "C++17"
 	staticruntime "on"
 
-	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
-	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
+	targetdir ("bin/" .. outputdir .. "/Game")
+	objdir ("bin-int/" .. outputdir .. "/Game")
 
 	files {
 		"Game/src/**.h",
@@ -112,8 +116,8 @@ project "OylGame"
 	}
 
 	postbuildcommands {
-		"{COPY} %{prj.location}res/ %{wks.location}bin/"..outputdir.."/%{prj.name}/res/",
-		"{COPY} %{prj.location}imgui.ini* %{wks.location}bin/"..outputdir.."/%{prj.name}/imgui.ini*"
+		"{COPY} %{prj.location}res/ %{wks.location}bin/"..outputdir.."/Game/res/",
+		"{COPY} %{prj.location}imgui.ini* %{wks.location}bin/"..outputdir.."/Game/imgui.ini*"
 	}
 
 	includedirs {
