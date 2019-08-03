@@ -1,8 +1,6 @@
 #include "oylpch.h"
 #include "OpenGLContext.h"
 
-#include "GLCommon.h"
-
 #include <glfw/glfw3.h>
 #include <glad/glad.h>
 
@@ -15,12 +13,20 @@ static void OpenGLErrorCallback(GLenum source,
 								GLsizei length, 
 								const GLchar* message,
 								const void* userParam) {
-	// Ignore List
-	switch (id) {
-	case 131185:
-		return;
+	const char* finalMessage = "[OpenGL Error] ID {0}: {1}";
+	switch (severity) {
+	case GL_DEBUG_SEVERITY_NOTIFICATION:
+		//LOG_INFO(finalMessage, id, message); 
+		break;
+	case GL_DEBUG_SEVERITY_LOW:
+	case GL_DEBUG_SEVERITY_MEDIUM:
+		LOG_WARN(finalMessage, id, message); 
+		break;
+	case GL_DEBUG_SEVERITY_HIGH:
+		LOG_ERROR(finalMessage, id, message); 
+		BREAKPOINT; 
+		break;
 	}
-	LOG_ERROR("OpenGL Error ({0}): {1}", id, message);
 }
 
 OpenGLContext::OpenGLContext(GLFWwindow* windowHandle)
@@ -35,7 +41,9 @@ void OpenGLContext::init() {
 
 #if !defined(OYL_DIST)
 	glEnable(GL_DEBUG_OUTPUT);
+	glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
 	glDebugMessageCallback(OpenGLErrorCallback, 0);
+	glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, nullptr, true);
 #endif
 
 	glEnable(GL_DEPTH_TEST);
@@ -51,7 +59,7 @@ void OpenGLContext::swapBuffers() {
 	glfwSwapBuffers(m_windowHandle);
 
 	if (m_isViewportDirty) {
-		GLCall(glViewport(0, 0, m_vpWidth, m_vpHeight));
+		glViewport(0, 0, m_vpWidth, m_vpHeight);
 		m_isViewportDirty = false;
 	}
 }
