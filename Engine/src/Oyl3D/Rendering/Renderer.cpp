@@ -21,8 +21,8 @@ void Renderer::endScene() {
 
 void Renderer::submit(const std::shared_ptr<Shader>& shader, const std::shared_ptr<VertexArray>& vao, glm::mat4 transform) {
 	shader->bind();
-	shader->setUniform("u_viewProjection", s_sceneData->orthoVPMatrix);
-	shader->setUniform("u_model", transform);
+	shader->setUniformMat4("u_viewProjection", s_sceneData->orthoVPMatrix);
+	shader->setUniformMat4("u_model", transform);
 	vao->bind();
 	RenderCommand::drawIndexed(vao);
 }
@@ -31,10 +31,10 @@ void Renderer::submit(const std::shared_ptr<Shader>& shader, const std::shared_p
 void Renderer::submit(const std::shared_ptr<Shader>& shader, const std::shared_ptr<Mesh>& mesh, glm::mat4 transform) {
 	mesh->bind();
 	shader->bind();
-	shader->setUniform("u_model", transform);
-	shader->setUniform("u_view", s_sceneData->perspectiveViewMatrix);
-	shader->setUniform("u_projection", s_sceneData->perspectiveProjectionMatrix);
-	shader->setUniform("u_texture", 0);
+	shader->setUniformMat4("u_model", transform);
+	shader->setUniformMat4("u_view", s_sceneData->perspectiveViewMatrix);
+	shader->setUniformMat4("u_projection", s_sceneData->perspectiveProjectionMatrix);
+	shader->setUniform1i("u_texture", 0);
 	RenderCommand::drawMesh(mesh);
 }
 

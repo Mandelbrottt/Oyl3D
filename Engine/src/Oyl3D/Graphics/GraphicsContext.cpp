@@ -11,6 +11,7 @@ GraphicsContext* GraphicsContext::create(void* window) {
 	case None: ASSERT(false, "None is currently unsupported"); return nullptr;
 	case API_OpenGL: return new OpenGLContext((GLFWwindow*) window);
 	}
+	return nullptr;
 }
 
 }
