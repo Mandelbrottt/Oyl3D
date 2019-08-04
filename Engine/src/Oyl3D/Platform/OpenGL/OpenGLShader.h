@@ -27,11 +27,11 @@ private:
 						const std::string& geomSrc,
 						const std::string& fragSrc);
 
-	int getUniformLocation(const std::string& name);
+	int getUniformLocation(const std::string& name) const;
 private:
 	uint m_rendererID = 0;
 
-	std::unordered_map<std::string, int> m_uniformLocations;
+	mutable std::unordered_map<std::string, int> m_uniformLocations;
 };
 
 }

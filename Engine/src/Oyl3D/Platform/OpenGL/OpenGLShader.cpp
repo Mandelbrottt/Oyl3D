@@ -116,7 +116,7 @@ OpenGLShader::OpenGLShader(const std::initializer_list<ShaderInfo>& files) {
 	for (auto& info : infos) {
 		ASSERT(srcs[info.type - 1].empty(), "Multiple same type shaders defined!");
 		std::ifstream i(info.filename);
-		ASSERT(i, "File \"{0}\" could not open!", info.filename);
+		ASSERT(i, "Shader \"{0}\" could not open!", info.filename);
 		std::stringstream ss;
 		ss << i.rdbuf();
 		srcs[info.type - 1] = ss.str();
@@ -137,11 +137,11 @@ void OpenGLShader::unbind() const {
 	glUseProgram(GL_NONE);
 }
 
-int OpenGLShader::getUniformLocation(const std::string& name) {
+GLint OpenGLShader::getUniformLocation(const std::string& name) const {
 	if (m_uniformLocations.find(name) != m_uniformLocations.end()) 
 		return m_uniformLocations.at(name);
 
-	int location = glGetUniformLocation(m_rendererID, name.c_str());
+	GLint location = glGetUniformLocation(m_rendererID, name.c_str());
 
 	if (location != -1) {
 		m_uniformLocations[name] = location;
@@ -154,32 +154,32 @@ int OpenGLShader::getUniformLocation(const std::string& name) {
 }
 
 void OpenGLShader::setUniform1i(const std::string& name, const int v) {
-	int location = getUniformLocation(name);
+	GLint location = getUniformLocation(name);
 	glUniform1i(location, v);
 }
 
 void OpenGLShader::setUniform2f(const std::string& name, const glm::vec2& v){
-	int location = getUniformLocation(name);
+	GLint location = getUniformLocation(name);
 	glUniform2fv(location, 1, glm::value_ptr(v));
 }
 
 void OpenGLShader::setUniform3f(const std::string& name, const glm::vec3& v){
-	int location = getUniformLocation(name);
+	GLint location = getUniformLocation(name);
 	glUniform3fv(location, 1, glm::value_ptr(v));
 }
 
 void OpenGLShader::setUniform4f(const std::string& name, const glm::vec4& v){
-	int location = getUniformLocation(name);
+	GLint location = getUniformLocation(name);
 	glUniform4fv(location, 1, glm::value_ptr(v));
 }
 
 void OpenGLShader::setUniformMat3(const std::string& name, const glm::mat3& m){
-	int location = getUniformLocation(name);
+	GLint location = getUniformLocation(name);
 	glUniformMatrix3fv(location, 1, GL_FALSE, glm::value_ptr(m));
 }
 
 void OpenGLShader::setUniformMat4(const std::string& name, const glm::mat4& m){
-	int location = getUniformLocation(name);
+	GLint location = getUniformLocation(name);
 	glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(m));
 }
 
