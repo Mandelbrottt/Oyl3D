@@ -14,9 +14,15 @@ dir /b /a "Engine\vendor\imgui\*" | >nul findstr "^" || set doUpdate=T
 if "%doUpdate%"=="T" (
     echo One or more git submodules was not configured correctly. Updating...
     echo.
+    
     git submodule deinit --all -f
     git submodule init
     git submodule update --remote
+    
+    cd Engine/vendor/imgui
+    git checkout docking
+    cd ../../..
+
     echo.
     echo Update Complete.
     echo.
