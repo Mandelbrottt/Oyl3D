@@ -3,7 +3,7 @@
 #include "Oyl3D/Common.h"
 #include "Oyl3D/App/Window.h"
 #include "Oyl3D/Events/Event.h"
-#include "Oyl3D/Events/EventDispatcher.h"
+#include "Oyl3D/Events/EventListener.h"
 #include "Oyl3D/System/LayerStack.h"
 #include "Oyl3D/Debug/ImGuiLayer.h"
 
@@ -33,12 +33,12 @@ namespace oyl {
 		bool m_running = true;
 		bool m_doUpdate = true;
 
-		std::unique_ptr<Window> m_window;
+		uniqueRef<Window> m_window;
 		
 		LayerStack m_layerStack;
 		ImGuiLayer* m_imguiLayer;
 
-		std::shared_ptr<FrameBuffer> m_mainBuffer;
+		ref<FrameBuffer> m_mainBuffer;
 
 		PerspectiveCamera m_camera;
 

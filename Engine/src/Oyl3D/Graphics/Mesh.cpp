@@ -117,7 +117,7 @@ void Mesh::loadTexture(const std::string& filename, uint slot) {
 	m_texture.reset(Texture2D::create(filename));
 }
 
-void Mesh::loadTexture(std::shared_ptr<Texture2D> texture) {
+void Mesh::loadTexture(ref<Texture2D> texture) {
 	m_texture = texture;
 }
 

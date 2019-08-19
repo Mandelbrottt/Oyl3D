@@ -2,7 +2,7 @@
 
 #include "Application.h"
 
-#include "Events/EventDispatcher.h"
+#include "Events/EventListener.h"
 
 #include "Input/Input.h"
 
@@ -25,7 +25,7 @@ Application::Application()
 
 	Log::init();
 
-	m_window = std::unique_ptr<Window>(Window::create());
+	m_window = uniqueRef<Window>(Window::create());
 	m_window->setEventCallback(BIND_CALLBACK(Application::onEvent));
 
 	m_imguiLayer = new ImGuiLayer();
@@ -55,7 +55,7 @@ void Application::pushOverlay(Layer* overlay) {
 }
 
 void Application::onEvent(Event& e) {
-	EventDispatcher dispatcher(e);
+	EventListener dispatcher(e);
 	dispatcher.dispatch<WindowCloseEvent>([&](WindowCloseEvent & e)->bool 
 										  {
 											  m_running = false;

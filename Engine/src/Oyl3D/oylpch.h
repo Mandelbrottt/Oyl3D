@@ -7,6 +7,8 @@
 #include <algorithm>
 #include <functional>
 #include <chrono>
+#include <thread>
+#include <future>
 
 #include <string>
 #include <sstream>
@@ -19,6 +21,9 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+#include "Typedefs.h"
+#include "Common.h"
+
 #include "System/Logging.h"
 
 #include "Enums.h"
@@ -26,5 +31,3 @@
 #ifdef OYL_PLATFORM_WINDOWS
 #	include <windows.h>
 #endif
-
-using uint = uint32_t;

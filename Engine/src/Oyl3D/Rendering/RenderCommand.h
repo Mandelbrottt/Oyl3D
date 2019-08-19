@@ -18,12 +18,12 @@ public:
 		s_rendererAPI->clear();
 	}
 
-	inline static void drawIndexed(const std::shared_ptr<VertexArray>& vao) {
+	inline static void drawIndexed(const ref<VertexArray>& vao) {
 		s_rendererAPI->drawIndexed(vao);
 	}
 
 	// TEMPORARY: Make more robust
-	inline static void drawMesh(const std::shared_ptr<Mesh>& mesh) {
+	inline static void drawMesh(const ref<Mesh>& mesh) {
 		s_rendererAPI->drawMesh(mesh);
 	}
 private:

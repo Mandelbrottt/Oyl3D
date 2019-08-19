@@ -1,10 +1,12 @@
 #include "oylpch.h"
 #include "Logging.h"
 
-std::shared_ptr<spdlog::logger> oyl::Log::s_engineLogger = nullptr;
-std::shared_ptr<spdlog::logger> oyl::Log::s_gameLogger = nullptr;
+namespace oyl {
 
-void oyl::Log::init() {
+ref<spdlog::logger> oyl::Log::s_engineLogger = nullptr;
+ref<spdlog::logger> oyl::Log::s_gameLogger = nullptr;
+
+void Log::init() {
 	spdlog::set_pattern("%^[%T] %n: %v%$");
 
 	s_engineLogger = spdlog::stdout_color_mt("Engine");
@@ -14,4 +16,4 @@ void oyl::Log::init() {
 	s_gameLogger->set_level(spdlog::level::trace);
 }
 
-
+}

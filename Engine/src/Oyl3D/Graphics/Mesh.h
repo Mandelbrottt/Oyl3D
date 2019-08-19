@@ -12,7 +12,7 @@ public:
 	void unload();
 
 	void loadTexture(const std::string& filename, uint slot = 0);
-	void loadTexture(std::shared_ptr<Texture2D> texture);
+	void loadTexture(ref<Texture2D> texture);
 	void unloadTexture();
 
 	void bind();
@@ -23,17 +23,17 @@ public:
 	uint getNumFaces() const { return m_numFaces; }
 	uint getNumVertices() const { return m_numVertices; }
 
-	std::shared_ptr<Texture2D> getTexture() { return std::shared_ptr<Texture2D>(m_texture); }
+	ref<Texture2D> getTexture() { return ref<Texture2D>(m_texture); }
 private:
 	Mesh(const std::string& filename);
 
 	uint m_numFaces = 0;
 	uint m_numVertices = 0;
 
-	std::shared_ptr<VertexArray> m_vao;
-	std::shared_ptr<VertexBuffer> m_vbo;
+	ref<VertexArray> m_vao;
+	ref<VertexBuffer> m_vbo;
 
-	std::shared_ptr<Texture2D> m_texture;
+	ref<Texture2D> m_texture;
 };
 
 struct MeshFaceData {

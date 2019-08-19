@@ -68,11 +68,11 @@ public:
 	virtual void bind() const override;
 	virtual void unbind() const override;
 
-	virtual void addVertexBuffer(const std::shared_ptr<VertexBuffer>& vbo) override;
-	virtual void addIndexBuffer(const std::shared_ptr<IndexBuffer>& ebo) override;
+	virtual void addVertexBuffer(const ref<VertexBuffer>& vbo) override;
+	virtual void addIndexBuffer(const ref<IndexBuffer>& ebo) override;
 
-	virtual const std::vector<std::shared_ptr<VertexBuffer>>& getVertexBuffers() const { return m_vertexBuffers; };
-	virtual const std::shared_ptr<IndexBuffer>& getIndexBuffer() const { return m_indexBuffer; }
+	virtual const std::vector<ref<VertexBuffer>>& getVertexBuffers() const { return m_vertexBuffers; };
+	virtual const ref<IndexBuffer>& getIndexBuffer() const { return m_indexBuffer; }
 
 	virtual bool isLoaded() const override { return m_loaded; }
 private:
@@ -80,8 +80,8 @@ private:
 	OpenGLVertexArray();
 
 	uint m_rendererID = 0;
-	std::vector<std::shared_ptr<VertexBuffer>> m_vertexBuffers;
-	std::shared_ptr<IndexBuffer> m_indexBuffer;
+	std::vector<ref<VertexBuffer>> m_vertexBuffers;
+	ref<IndexBuffer> m_indexBuffer;
 
 	bool m_loaded = false;
 };

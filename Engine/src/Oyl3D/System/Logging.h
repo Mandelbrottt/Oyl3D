@@ -13,11 +13,11 @@ class Log {
 public:
 	static void init();
 
-	inline static std::shared_ptr<spdlog::logger>& getEngineLogger() { return s_engineLogger; }
-	inline static std::shared_ptr<spdlog::logger>& getGameLogger() { return s_gameLogger; }
+	inline static ref<spdlog::logger>& getEngineLogger() { return s_engineLogger; }
+	inline static ref<spdlog::logger>& getGameLogger() { return s_gameLogger; }
 private:
-	static std::shared_ptr<spdlog::logger> s_engineLogger;
-	static std::shared_ptr<spdlog::logger> s_gameLogger;
+	static ref<spdlog::logger> s_engineLogger;
+	static ref<spdlog::logger> s_gameLogger;
 };
 
 }
