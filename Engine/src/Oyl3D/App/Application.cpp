@@ -28,8 +28,8 @@ Application::Application()
 	m_window = uniqueRef<Window>(Window::create());
 	m_window->setEventCallback(BIND_CALLBACK(Application::onEvent));
 
-	m_imguiLayer = new ImGuiLayer();
-	pushOverlay(m_imguiLayer);
+	m_imguiLayer.reset(new ImGuiLayer());
+	m_imguiLayer->onAttach();
 
 	m_mainBuffer.reset(oyl::FrameBuffer::create(1));
 	m_mainBuffer->initDepthTexture(m_window->getWidth(), m_window->getHeight());
@@ -44,14 +44,6 @@ Application::Application()
 
 Application::~Application() {
 
-}
-
-void Application::pushLayer(Layer* layer) {
-	m_layerStack.pushLayer(layer);
-}
-
-void Application::pushOverlay(Layer* overlay) {
-	m_layerStack.pushOverlay(overlay);
 }
 
 void Application::onEvent(Event& e) {
@@ -75,10 +67,20 @@ void Application::onEvent(Event& e) {
 											  return !e.isFocused();
 										  });
 
-	for (Layer* layer : m_layerStack) {
-		layer->onEvent(e);
-		if (e.handled)
-			break;
+	m_imguiLayer->onEvent(e);
+	if (!e.handled) m_currentScene->onEvent(e);
+}
+
+void Application::pushScene(Scene* scene) {
+	if (m_currentScene) {
+		m_currentScene->onExit();
+
+		m_currentScene = nullptr;
+	}
+
+	if (scene) {
+		m_currentScene.reset(scene);
+		m_currentScene->onEnter();
 	}
 }
 
@@ -96,8 +98,7 @@ void Application::run() {
 			m_mainBuffer->bind();
 			Renderer::beginScene(m_camera);
 
-			for (Layer* layer : m_layerStack)
-				layer->onUpdate(abs(timestep) > 1.0f / 30.0f ? 1.0f / 30.0f : timestep);
+			m_currentScene->onUpdate(abs(timestep) > 1.0f / 30.0f ? 1.0f / 30.0f : timestep);
 
 			Renderer::endScene();
 			m_mainBuffer->unbind();
@@ -105,9 +106,12 @@ void Application::run() {
 
 #if !defined(OYL_DIST)
 		m_imguiLayer->begin();
-		for (Layer* layer : m_layerStack)
-			layer->onImGuiRender();
+
+		m_imguiLayer->onImGuiRender();
+		m_currentScene->onImGuiRender();
+
 		m_imguiLayer->end();
+
 #else
 		m_mainBuffer->moveToBackBuffer(m_window->getWidth(), m_window->getHeight());
 #endif

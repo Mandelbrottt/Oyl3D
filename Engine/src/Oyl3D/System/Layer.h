@@ -6,11 +6,11 @@
 namespace oyl {
 class Layer {
 public:
-	Layer(const std::string& debugName = "Layer");;
+	Layer(const std::string& debugName = "Layer");
 	virtual ~Layer();
 
-	virtual void onAttach() {}
-	virtual void onDetach() {}
+	virtual void onAttach() = 0;
+	virtual void onDetach() = 0;
 	virtual void onUpdate(Timestep dt) {}
 	virtual void onImGuiRender() {}
 	virtual void onEvent(Event& e) {}

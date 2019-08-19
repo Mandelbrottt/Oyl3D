@@ -2,10 +2,11 @@
 
 #include "Oyl3D/Common.h"
 #include "Oyl3D/App/Window.h"
+#include "Oyl3D/Debug/ImGuiLayer.h"
 #include "Oyl3D/Events/Event.h"
 #include "Oyl3D/Events/EventListener.h"
 #include "Oyl3D/System/LayerStack.h"
-#include "Oyl3D/Debug/ImGuiLayer.h"
+#include "Oyl3D/System/Scene.h"
 
 #include "Oyl3D/Graphics/Buffer.h"
 #include "Oyl3D/Graphics/Camera.h"
@@ -21,8 +22,7 @@ namespace oyl {
 
 		void onEvent(Event& e);
 
-		void pushLayer(Layer* layer);
-		void pushOverlay(Layer* overlay);
+		void pushScene(Scene* scene);
 
 		inline Window& getWindow() { return *m_window; }
 		inline FrameBuffer& getMainFrameBuffer() { return *m_mainBuffer; }
@@ -35,8 +35,10 @@ namespace oyl {
 
 		uniqueRef<Window> m_window;
 		
+		ref<Scene> m_currentScene;
+
 		LayerStack m_layerStack;
-		ImGuiLayer* m_imguiLayer;
+		ref<ImGuiLayer> m_imguiLayer;
 
 		ref<FrameBuffer> m_mainBuffer;
 

@@ -4,11 +4,14 @@
 namespace oyl {
 
 LayerStack::LayerStack() {
+
 }
 
 LayerStack::~LayerStack() {
-	for (Layer* layer : m_layers)
+	for (Layer* layer : m_layers) {
+		layer->onDetach();
 		delete layer;
+	}
 }
 
 void LayerStack::pushLayer(Layer* layer) {
