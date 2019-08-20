@@ -9,7 +9,7 @@
 #define BIND_CALLBACK_1(x) std::bind(&x, this, std::placeholders::_1)
 #define BIND_CALLBACK(x) BIND_CALLBACK_1(x)
 
-
+#pragma warning(disable: 02 05)
 #if defined(OYL_DEBUG)
 #	if defined(_MSC_VER)
 #		define BREAKPOINT __debugbreak()
@@ -23,3 +23,4 @@
 #	define ASSERT(x, ...) 
 #	define VERIFY(x, ...) x
 #endif
+#pragma warning(default: 05)
