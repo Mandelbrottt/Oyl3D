@@ -10,6 +10,10 @@
 #include <thread>
 #include <future>
 
+#include <cstddef>
+#include <cstdint>
+#include <cstdlib>
+
 #include <string>
 #include <sstream>
 
