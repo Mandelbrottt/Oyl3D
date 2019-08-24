@@ -96,7 +96,7 @@ project "OylEngine"
 
 project "OylGame"
 	location "Game"
-	kind "ConsoleApp"
+	kind "WindowedApp"
 	language "C++"
 	cppdialect "C++17"
 	staticruntime "on"
@@ -134,6 +134,7 @@ project "OylGame"
 	}
 
 	filter "system:windows"
+		entrypoint "wWinMainCRTStartup"
 		systemversion "latest"
 
 		defines {
