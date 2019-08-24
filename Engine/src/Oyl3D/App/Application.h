@@ -1,15 +1,20 @@
 #pragma once
 
 #include "Oyl3D/Common.h"
+
 #include "Oyl3D/App/Window.h"
+
 #include "Oyl3D/Debug/ImGuiLayer.h"
+
 #include "Oyl3D/Events/Event.h"
 #include "Oyl3D/Events/EventListener.h"
-#include "Oyl3D/System/LayerStack.h"
-#include "Oyl3D/System/Scene.h"
 
 #include "Oyl3D/Graphics/Buffer.h"
 #include "Oyl3D/Graphics/Camera.h"
+
+#include "Oyl3D/System/LayerStack.h"
+#include "Oyl3D/System/Scene.h"
+
 
 namespace oyl {
 
@@ -37,7 +42,6 @@ namespace oyl {
 		
 		ref<Scene> m_currentScene;
 
-		LayerStack m_layerStack;
 		ref<ImGuiLayer> m_imguiLayer;
 
 		ref<FrameBuffer> m_mainBuffer;
