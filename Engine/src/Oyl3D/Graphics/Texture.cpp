@@ -7,26 +7,26 @@
 
 namespace oyl {
 
-Texture1D* Texture1D::create(const std::string& filename) {
+Ref<Texture1D> Texture1D::create(const std::string& filename) {
 	switch (Renderer::getAPI()) {
 	case None: ASSERT(false, "None is currently unsupported"); return nullptr;
-	case API_OpenGL: return new OpenGLTexture1D(filename);
+	case API_OpenGL: return Ref<Texture1D>(new OpenGLTexture1D(filename));
 	}
 	return nullptr;
 }
 
-Texture2D* Texture2D::create(const std::string& filename) {
+Ref<Texture2D> Texture2D::create(const std::string& filename) {
 	switch (Renderer::getAPI()) {
 	case None: ASSERT(false, "None is currently unsupported"); return nullptr;
-	case API_OpenGL: return new OpenGLTexture2D(filename);
+	case API_OpenGL: return Ref<Texture2D>(new OpenGLTexture2D(filename));
 	}
 	return nullptr;
 }
 
-Texture3D* Texture3D::create(const std::string& filename) {
+Ref<Texture3D> Texture3D::create(const std::string& filename) {
 	switch (Renderer::getAPI()) {
 	case None: ASSERT(false, "None is currently unsupported"); return nullptr;
-	case API_OpenGL: return new OpenGLTexture3D(filename);
+	case API_OpenGL: return Ref<Texture3D>(new OpenGLTexture3D(filename));
 	}
 	return nullptr;
 }

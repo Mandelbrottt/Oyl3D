@@ -45,7 +45,7 @@ public:
 
 	virtual void* getNativeWindow() const = 0;
 
-	static Window* create(const WindowProps& props = WindowProps());
+	static Ref<Window> create(const WindowProps& props = WindowProps());
 };
 
 }

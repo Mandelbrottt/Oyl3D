@@ -32,7 +32,7 @@ private:
 	virtual void shutdown();
 private:
 	GLFWwindow* m_window;
-	GraphicsContext* m_context;
+	Ref<GraphicsContext> m_context;
 
 	bool m_isViewportDirty = false;
 	int m_desiredWidth, m_desiredHeight;

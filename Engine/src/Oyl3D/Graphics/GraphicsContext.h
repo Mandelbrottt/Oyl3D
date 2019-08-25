@@ -8,7 +8,7 @@ public:
 	virtual void swapBuffers() = 0;
 	virtual void updateViewport(int width, int height) = 0;
 
-	static GraphicsContext* create(void* window);
+	static Ref<GraphicsContext> create(void* window);
 };
 
 }

@@ -3,8 +3,8 @@
 
 namespace oyl {
 
-ref<spdlog::logger> oyl::Log::s_engineLogger = nullptr;
-ref<spdlog::logger> oyl::Log::s_gameLogger = nullptr;
+Ref<spdlog::logger> oyl::Log::s_engineLogger = nullptr;
+Ref<spdlog::logger> oyl::Log::s_gameLogger = nullptr;
 
 void Log::init() {
 	spdlog::set_pattern("%^[%T] %n: %v%$");

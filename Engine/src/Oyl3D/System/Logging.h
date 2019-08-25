@@ -13,11 +13,11 @@ class Log {
 public:
 	static void init();
 
-	inline static ref<spdlog::logger>& getEngineLogger() { return s_engineLogger; }
-	inline static ref<spdlog::logger>& getGameLogger() { return s_gameLogger; }
+	inline static Ref<spdlog::logger>& getEngineLogger() { return s_engineLogger; }
+	inline static Ref<spdlog::logger>& getGameLogger() { return s_gameLogger; }
 private:
-	static ref<spdlog::logger> s_engineLogger;
-	static ref<spdlog::logger> s_gameLogger;
+	static Ref<spdlog::logger> s_engineLogger;
+	static Ref<spdlog::logger> s_gameLogger;
 };
 
 }

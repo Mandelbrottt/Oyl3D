@@ -13,11 +13,11 @@ void OpenGLRendererAPI::clear() {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
-void OpenGLRendererAPI::drawIndexed(const ref<VertexArray>& vao) {
+void OpenGLRendererAPI::drawIndexed(const Ref<VertexArray>& vao) {
 	glDrawElements(GL_TRIANGLES, vao->getIndexBuffer()->getCount(), GL_UNSIGNED_INT, nullptr);
 }
 
-void OpenGLRendererAPI::drawMesh(const ref<Mesh>& mesh) {
+void OpenGLRendererAPI::drawMesh(const Ref<Mesh>& mesh) {
 	glDrawArrays(GL_TRIANGLES, 0, mesh->getNumVertices());
 }
 

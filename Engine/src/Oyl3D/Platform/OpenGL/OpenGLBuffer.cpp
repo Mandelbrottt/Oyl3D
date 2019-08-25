@@ -112,7 +112,7 @@ void OpenGLVertexArray::unbind() const {
 
 static GLenum ShaderDataTypeToGLType(OylEnum type);
 
-void OpenGLVertexArray::addVertexBuffer(const ref<VertexBuffer>& vbo) {
+void OpenGLVertexArray::addVertexBuffer(const Ref<VertexBuffer>& vbo) {
 	ASSERT(!vbo->getLayout().getElements().empty(), "Layout is Empty!");
 
 	glBindVertexArray(m_rendererID);
@@ -136,7 +136,7 @@ void OpenGLVertexArray::addVertexBuffer(const ref<VertexBuffer>& vbo) {
 	glBindVertexArray(GL_NONE);
 }
 
-void OpenGLVertexArray::addIndexBuffer(const ref<IndexBuffer>& ebo) {
+void OpenGLVertexArray::addIndexBuffer(const Ref<IndexBuffer>& ebo) {
 	glBindVertexArray(m_rendererID);
 	ebo->bind();
 
@@ -165,7 +165,7 @@ static GLenum ShaderDataTypeToGLType(OylEnum type) {
 
 // Frame Buffer //////////////////////////////////////////////////////////////
 
-static uint TextuniqueReformatToGLFormat(OylEnum format) {
+static uint TextUniqueReformatToGLFormat(OylEnum format) {
 	switch (format) {
 	case RGB8: return GL_RGB8;
 	case RGBA8: return GL_RGBA8;
@@ -173,7 +173,7 @@ static uint TextuniqueReformatToGLFormat(OylEnum format) {
 	return 0;
 }
 
-static uint TextuniqueRefilterToGLFilter(OylEnum filter) {
+static uint TextUniqueRefilterToGLFilter(OylEnum filter) {
 	switch (filter) {
 	case Linear:  return GL_LINEAR; 
 	case Nearest: return GL_NEAREST;
@@ -280,10 +280,10 @@ void OpenGLFrameBuffer::initColorTexture(uint index,
 	// Create depth texture
 	glGenTextures(1, &m_colorAttachmentIDs[index]);
 	glBindTexture(GL_TEXTURE_2D, m_colorAttachmentIDs[index]);
-	glTexStorage2D(GL_TEXTURE_2D, 1, TextuniqueReformatToGLFormat(format), width, height);
+	glTexStorage2D(GL_TEXTURE_2D, 1, TextUniqueReformatToGLFormat(format), width, height);
 
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, TextuniqueRefilterToGLFilter(filter));
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, TextuniqueRefilterToGLFilter(filter));
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, TextUniqueRefilterToGLFilter(filter));
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, TextUniqueRefilterToGLFilter(filter));
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, TextureWrapToGLWrap(wrap));
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, TextureWrapToGLWrap(wrap));
 

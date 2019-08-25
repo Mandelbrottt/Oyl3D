@@ -7,10 +7,10 @@
 
 namespace oyl {
 
-Shader* Shader::create(const std::initializer_list<ShaderInfo>& files) {
+Ref<Shader> Shader::create(const std::initializer_list<ShaderInfo>& files) {
 	switch (Renderer::getAPI()) {
 	case None: ASSERT(false, "None is currently unsupported"); return nullptr;
-	case API_OpenGL: return new OpenGLShader(files);
+	case API_OpenGL: return Ref<Shader>(new OpenGLShader(files));
 	}
 	return nullptr;
 }

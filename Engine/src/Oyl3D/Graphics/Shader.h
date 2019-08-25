@@ -14,7 +14,7 @@ public:
 	virtual void bind() const = 0;
 	virtual void unbind() const = 0;
 
-	static Shader* create(const std::initializer_list<ShaderInfo>& files);
+	static Ref<Shader> create(const std::initializer_list<ShaderInfo>& files);
 
 	virtual void setUniform1i(const std::string& name, const int v) = 0;
 	virtual void setUniform2f(const std::string& name, const glm::vec2& v) = 0;

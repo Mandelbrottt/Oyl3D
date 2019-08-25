@@ -89,7 +89,7 @@ bool Mesh::loadFromFile(const std::string& filename) {
 	m_numFaces = faceData.size();
 	m_numVertices = m_numFaces * 3;
 
-	m_vbo.reset(VertexBuffer::create(unpackedData.data(), unpackedData.size() * sizeof(float)));
+	m_vbo = VertexBuffer::create(unpackedData.data(), unpackedData.size() * sizeof(float));
 
 	BufferLayout layout = {
 		{ Float3, "a_position" },
@@ -99,7 +99,7 @@ bool Mesh::loadFromFile(const std::string& filename) {
 
 	m_vbo->setLayout(layout);
 
-	m_vao.reset(VertexArray::create());
+	m_vao = VertexArray::create();
 	m_vao->addVertexBuffer(m_vbo);
 
 	m_vbo->unbind();
@@ -114,10 +114,10 @@ void Mesh::unload() {
 }
 
 void Mesh::loadTexture(const std::string& filename, uint slot) {
-	m_texture.reset(Texture2D::create(filename));
+	m_texture = Texture2D::create(filename);
 }
 
-void Mesh::loadTexture(ref<Texture2D> texture) {
+void Mesh::loadTexture(Ref<Texture2D> texture) {
 	m_texture = texture;
 }
 

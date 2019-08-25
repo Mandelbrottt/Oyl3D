@@ -18,12 +18,12 @@ public:
 		s_rendererAPI->clear();
 	}
 
-	inline static void drawIndexed(const ref<VertexArray>& vao) {
+	inline static void drawIndexed(const Ref<VertexArray>& vao) {
 		s_rendererAPI->drawIndexed(vao);
 	}
 
 	// TEMPORARY: Make more robust
-	inline static void drawMesh(const ref<Mesh>& mesh) {
+	inline static void drawMesh(const Ref<Mesh>& mesh) {
 		s_rendererAPI->drawMesh(mesh);
 	}
 private:

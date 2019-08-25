@@ -21,6 +21,6 @@ using f64 = double;
 static_assert(sizeof(double) == 8, "double should be 64 bits wide!");
 
 namespace oyl {
-template<class T> using ref = std::shared_ptr<T>;
-template<class T> using uniqueRef = std::unique_ptr<T>;
+template<class T> using Ref = std::shared_ptr<T>;
+template<class T> using UniqueRef = std::unique_ptr<T>;
 }

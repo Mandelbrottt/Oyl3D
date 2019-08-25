@@ -10,8 +10,8 @@ public:
 	virtual void setClearColor(float r, float g, float b, float a) = 0;
 	virtual void clear() = 0;
 
-	virtual void drawIndexed(const ref<VertexArray>& vao) = 0;
-	virtual void drawMesh(const ref<Mesh>& mesh) = 0;
+	virtual void drawIndexed(const Ref<VertexArray>& vao) = 0;
+	virtual void drawMesh(const Ref<Mesh>& mesh) = 0;
 
 	inline static OylEnum getAPI() { return s_API; }
 private:

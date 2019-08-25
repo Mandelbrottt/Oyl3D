@@ -68,11 +68,11 @@ public:
 	virtual void bind() const override;
 	virtual void unbind() const override;
 
-	virtual void addVertexBuffer(const ref<VertexBuffer>& vbo) override;
-	virtual void addIndexBuffer(const ref<IndexBuffer>& ebo) override;
+	virtual void addVertexBuffer(const Ref<VertexBuffer>& vbo) override;
+	virtual void addIndexBuffer(const Ref<IndexBuffer>& ebo) override;
 
-	virtual const std::vector<ref<VertexBuffer>>& getVertexBuffers() const { return m_vertexBuffers; };
-	virtual const ref<IndexBuffer>& getIndexBuffer() const { return m_indexBuffer; }
+	virtual const std::vector<Ref<VertexBuffer>>& getVertexBuffers() const { return m_vertexBuffers; };
+	virtual const Ref<IndexBuffer>& getIndexBuffer() const { return m_indexBuffer; }
 
 	virtual bool isLoaded() const override { return m_loaded; }
 private:
@@ -80,8 +80,8 @@ private:
 	OpenGLVertexArray();
 
 	uint m_rendererID = 0;
-	std::vector<ref<VertexBuffer>> m_vertexBuffers;
-	ref<IndexBuffer> m_indexBuffer;
+	std::vector<Ref<VertexBuffer>> m_vertexBuffers;
+	Ref<IndexBuffer> m_indexBuffer;
 
 	bool m_loaded = false;
 };

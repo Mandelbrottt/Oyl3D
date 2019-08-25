@@ -100,7 +100,7 @@ public:
 
 	virtual bool isLoaded() const = 0;
 
-	static VertexBuffer* create(float* vertices, uint size);
+	static Ref<VertexBuffer> create(float* vertices, uint size);
 };
 
 // Index Buffer ///////////////////////////////////////////////////////////////////////////
@@ -119,7 +119,7 @@ public:
 
 	virtual bool isLoaded() const = 0;
 
-	static IndexBuffer* create(uint* indices, uint size);
+	static Ref<IndexBuffer> create(uint* indices, uint size);
 };
 
 // Vertex Array ///////////////////////////////////////////////////////////////////////////
@@ -134,15 +134,15 @@ public:
 	virtual void bind() const = 0;
 	virtual void unbind() const = 0;
 
-	virtual void addVertexBuffer(const ref<VertexBuffer>& vbo) = 0;
-	virtual void addIndexBuffer(const ref<IndexBuffer>& ebo) = 0;
+	virtual void addVertexBuffer(const Ref<VertexBuffer>& vbo) = 0;
+	virtual void addIndexBuffer(const Ref<IndexBuffer>& ebo) = 0;
 
-	virtual const std::vector<ref<VertexBuffer>>& getVertexBuffers() const = 0;
-	virtual const ref<IndexBuffer>& getIndexBuffer() const = 0;
+	virtual const std::vector<Ref<VertexBuffer>>& getVertexBuffers() const = 0;
+	virtual const Ref<IndexBuffer>& getIndexBuffer() const = 0;
 	
 	virtual bool isLoaded() const = 0;
 
-	static VertexArray* create();
+	static Ref<VertexArray> create();
 };
 
 // FrameBuffer ////////////////////////////////////////////////////////////////////////////
@@ -174,7 +174,7 @@ public:
 
 	virtual bool isLoaded() const = 0;
 
-	static FrameBuffer* create(int numColorAttachments = 1);
+	static Ref<FrameBuffer> create(int numColorAttachments = 1);
 
 	static const int maxColorAttachments = 8;
 

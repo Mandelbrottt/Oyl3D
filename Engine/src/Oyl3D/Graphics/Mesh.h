@@ -12,28 +12,28 @@ public:
 	void unload();
 
 	void loadTexture(const std::string& filename, uint slot = 0);
-	void loadTexture(ref<Texture2D> texture);
+	void loadTexture(Ref<Texture2D> texture);
 	void unloadTexture();
 
 	void bind();
 	void unbind();
 
-	static Mesh* create(const std::string& filename) { return new Mesh(filename); }
+	static Ref<Mesh> create(const std::string& filename) { return Ref<Mesh>(new Mesh(filename)); }
 
 	uint getNumFaces() const { return m_numFaces; }
 	uint getNumVertices() const { return m_numVertices; }
 
-	ref<Texture2D> getTexture() { return ref<Texture2D>(m_texture); }
+	Ref<Texture2D> getTexture() { return Ref<Texture2D>(m_texture); }
 private:
 	Mesh(const std::string& filename);
 
 	uint m_numFaces = 0;
 	uint m_numVertices = 0;
 
-	ref<VertexArray> m_vao;
-	ref<VertexBuffer> m_vbo;
+	Ref<VertexArray> m_vao;
+	Ref<VertexBuffer> m_vbo;
 
-	ref<Texture2D> m_texture;
+	Ref<Texture2D> m_texture;
 };
 
 struct MeshFaceData {

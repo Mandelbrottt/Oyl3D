@@ -6,10 +6,10 @@
 
 namespace oyl {
 
-GraphicsContext* GraphicsContext::create(void* window) {
+Ref<GraphicsContext> GraphicsContext::create(void* window) {
 	switch (Renderer::getAPI()) {
 	case None: ASSERT(false, "None is currently unsupported"); return nullptr;
-	case API_OpenGL: return new OpenGLContext((GLFWwindow*) window);
+	case API_OpenGL: return Ref<GraphicsContext>(new OpenGLContext((GLFWwindow*) window));
 	}
 	return nullptr;
 }

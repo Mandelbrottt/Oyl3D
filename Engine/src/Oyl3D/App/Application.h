@@ -38,13 +38,13 @@ namespace oyl {
 		bool m_running = true;
 		bool m_doUpdate = true;
 
-		uniqueRef<Window> m_window;
+		Ref<Window> m_window;
 		
-		ref<Scene> m_currentScene;
+		Ref<Scene> m_currentScene;
 
-		ref<ImGuiLayer> m_imguiLayer;
+		Ref<ImGuiLayer> m_imguiLayer;
 
-		ref<FrameBuffer> m_mainBuffer;
+		Ref<FrameBuffer> m_mainBuffer;
 
 		PerspectiveCamera m_camera;
 

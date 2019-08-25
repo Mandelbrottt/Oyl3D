@@ -19,7 +19,7 @@ void Renderer::endScene() {
 
 }
 
-void Renderer::submit(const ref<Shader>& shader, const ref<VertexArray>& vao, glm::mat4 transform) {
+void Renderer::submit(const Ref<Shader>& shader, const Ref<VertexArray>& vao, glm::mat4 transform) {
 	shader->bind();
 	shader->setUniformMat4("u_viewProjection", s_sceneData->orthoVPMatrix);
 	shader->setUniformMat4("u_model", transform);
@@ -28,7 +28,7 @@ void Renderer::submit(const ref<Shader>& shader, const ref<VertexArray>& vao, gl
 }
 
 // Assumes that there is only one texture, will be changed when material file system is implemented
-void Renderer::submit(const ref<Shader>& shader, const ref<Mesh>& mesh, glm::mat4 transform) {
+void Renderer::submit(const Ref<Shader>& shader, const Ref<Mesh>& mesh, glm::mat4 transform) {
 	mesh->bind();
 	shader->bind();
 	shader->setUniformMat4("u_model", transform);

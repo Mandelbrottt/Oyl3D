@@ -25,13 +25,13 @@ Application::Application()
 
 	Log::init();
 
-	m_window = uniqueRef<Window>(Window::create());
+	m_window = Window::create();
 	m_window->setEventCallback(BIND_CALLBACK(Application::onEvent));
 
 	m_imguiLayer.reset(new ImGuiLayer());
 	m_imguiLayer->onAttach();
 
-	m_mainBuffer.reset(oyl::FrameBuffer::create(1));
+	m_mainBuffer = oyl::FrameBuffer::create(1);
 	m_mainBuffer->initDepthTexture(m_window->getWidth(), m_window->getHeight());
 
 	m_mainBuffer->initColorTexture(0, m_window->getWidth(), m_window->getHeight(),

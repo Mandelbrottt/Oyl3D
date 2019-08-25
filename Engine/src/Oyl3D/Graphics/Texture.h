@@ -12,7 +12,7 @@ public:
 	virtual void bind() = 0;
 	virtual void unbind() = 0;
 
-	static Texture1D* create(const std::string& filename);
+	static Ref<Texture1D> create(const std::string& filename);
 };
 
 class Texture2D {
@@ -25,7 +25,7 @@ public:
 	virtual void bind() = 0;
 	virtual void unbind() = 0;
 
-	static Texture2D* create(const std::string& filename);
+	static Ref<Texture2D> create(const std::string& filename);
 };
 
 class Texture3D {
@@ -38,7 +38,7 @@ public:
 	virtual void bind() = 0;
 	virtual void unbind() = 0;
 
-	static Texture3D* create(const std::string& filename);
+	static Ref<Texture3D> create(const std::string& filename);
 };
 
 }
