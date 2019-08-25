@@ -66,6 +66,8 @@ void Win32Window::init(const WindowProps& props) {
 	// Set GLFW callbacks
 	glfwSetWindowSizeCallback(m_window, [](GLFWwindow * window, int width, int height)
 							  {
+								  if (width <= 0 || height <= 0) return;
+
 								  WindowData& data = *(WindowData*) glfwGetWindowUserPointer(window);
 
 								  WindowResizeEvent event(width, height);
