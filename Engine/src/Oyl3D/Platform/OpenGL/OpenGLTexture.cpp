@@ -23,11 +23,11 @@ void OpenGLTexture1D::unload() {
 
 }
 
-void OpenGLTexture1D::bind() {
+void OpenGLTexture1D::bind(uint slot) const {
 
 }
 
-void OpenGLTexture1D::unbind() {
+void OpenGLTexture1D::unbind() const {
 
 }
 
@@ -40,40 +40,49 @@ OpenGLTexture2D::~OpenGLTexture2D() {
 }
 
 void OpenGLTexture2D::load(const std::string& filename) {
+	if (m_loaded) return;
+
 	glGenTextures(1, &m_rendererID);
 	glBindTexture(GL_TEXTURE_2D, m_rendererID);
 
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-
+	
 	int width, height, nrChannels;
 	stbi_set_flip_vertically_on_load(true);
-	unsigned char* data = stbi_load(filename.c_str(), &width, &height, &nrChannels, 0);
+	u8* data = stbi_load(filename.c_str(), &width, &height, &nrChannels, 0);
 	if (data) {
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+		m_loaded = true;
+		m_width = width;
+		m_height = height;
+		m_path = filename;
+
+		glTexStorage2D(GL_TEXTURE_2D, 1, GL_RGB8, width, height);
+		glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, width, height, GL_RGB, GL_UNSIGNED_BYTE, data);
 		glGenerateMipmap(GL_TEXTURE_2D);
 	} else {
 		LOG_ERROR("Texture {0} failed to load!", filename);
-		unsigned char* err = new unsigned char[3]{ 255, 0, 255 };
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 1, 1, 0, GL_RGB, GL_UNSIGNED_BYTE, err);
+		u8* err = new u8[3]{ 0xFF, 0, 0xFF };
+
+		glTexStorage2D(GL_TEXTURE_2D, 1, GL_RGB8, 1, 1);
+		glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 1, 1, GL_RGB8, GL_UNSIGNED_BYTE, err);
 	}
 	stbi_image_free(data);
-
-	glBindTexture(GL_TEXTURE_2D, GL_NONE);
 }
 
 void OpenGLTexture2D::unload() {
+	if (!m_loaded) return;
+	m_loaded = false;
 
+	glDeleteTextures(1, &m_rendererID);
 }
 
-void OpenGLTexture2D::bind() {
-	glActiveTexture(GL_TEXTURE0);
+void OpenGLTexture2D::bind(uint slot) const {
+	glActiveTexture(GL_TEXTURE0 + slot);
 	glBindTexture(GL_TEXTURE_2D, m_rendererID);
 }
 
-void OpenGLTexture2D::unbind() {
+void OpenGLTexture2D::unbind() const {
 	glBindTexture(GL_TEXTURE_2D, GL_NONE);
 }
 
@@ -93,11 +102,11 @@ void OpenGLTexture3D::unload() {
 
 }
 
-void OpenGLTexture3D::bind() {
+void OpenGLTexture3D::bind(uint slot) const {
 
 }
 
-void OpenGLTexture3D::unbind() {
+void OpenGLTexture3D::unbind() const {
 
 }
 
