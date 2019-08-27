@@ -61,7 +61,7 @@ void Application::onEvent(Event& e) {
 										   });
 	dispatcher.dispatch<WindowFocusEvent>([&](WindowFocusEvent & e)->bool
 										  {
-#if defined(OYL_DIST)
+#if defined(OYL_DISTRIBUTION)
 											  m_doUpdate = e.isFocused();
 #endif
 											  return !e.isFocused();
@@ -104,7 +104,7 @@ void Application::run() {
 			m_mainBuffer->unbind();
 		}
 
-#if !defined(OYL_DIST)
+#if !defined(OYL_DISTRIBUTION)
 		m_imguiLayer->begin();
 
 		m_imguiLayer->onImGuiRender();

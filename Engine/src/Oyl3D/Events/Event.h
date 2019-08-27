@@ -19,7 +19,7 @@ template <int v> struct CategoryFlags<v> {
 
 #define CATEGORY_FLAGS(...) CategoryFlags<__VA_ARGS__>::RESULT
 
-#if !defined(OYL_DIST)
+#if !defined(OYL_DISTRIBUTION)
 #define EVENT_CLASS_TYPE(type)	static int getStaticType() { return type; }\
 								virtual int getEventType() const override { return getStaticType(); }\
 								virtual const char* getName() const override { return #type; }
@@ -37,7 +37,7 @@ public:
 
 	inline bool isInCategory(int category) { return category & getCategoryFlags(); };
 
-#if !defined(OYL_DIST)
+#if !defined(OYL_DISTRIBUTION)
 	virtual const char* getName() const = 0;
 	virtual std::string toString() const = 0;
 #endif
@@ -57,7 +57,7 @@ class WindowCloseEvent : public Event {
 public:
 	WindowCloseEvent() {}
 
-#if !defined(OYL_DIST)
+#if !defined(OYL_DISTRIBUTION)
 	std::string toString() const override {
 		return "WindowCloseEvent";
 	}
@@ -77,7 +77,7 @@ public:
 	inline uint getWidth() const { return m_x; }
 	inline uint getHeight() const { return m_y; }
 
-#if !defined(OYL_DIST)
+#if !defined(OYL_DISTRIBUTION)
 	std::string toString() const override {
 		char buffer[100];
 		sprintf(buffer, "WindowMoveEvent: (%d, %d)", m_x, m_y);
@@ -101,7 +101,7 @@ public:
 	inline uint getWidth() const { return m_width; }
 	inline uint getHeight() const { return m_height; }
 
-#if !defined(OYL_DIST)
+#if !defined(OYL_DISTRIBUTION)
 	std::string toString() const override {
 		char buffer[100];
 		sprintf(buffer, "WindowResizeEvent: (%d, %d)", m_width, m_height);
@@ -125,7 +125,7 @@ public:
 
 	inline int isFocused() { return m_focused; }
 
-#if !defined(OYL_DIST)
+#if !defined(OYL_DISTRIBUTION)
 	std::string toString() const override {
 		return "WindowFocusEvent: " + m_focused ? "Gained" : "Lost";
 	}
@@ -160,7 +160,7 @@ public:
 
 	inline int getRepeatCount() { return m_repeatCount; }
 
-#if !defined(OYL_DIST)
+#if !defined(OYL_DISTRIBUTION)
 	std::string toString() const override {
 		char buffer[100];
 		sprintf(buffer, "KeyPressEvent: %d (%d times)", m_keyCode, m_repeatCount);
@@ -180,7 +180,7 @@ public:
 	KeyTypeEvent(int keyCode)
 		: KeyEvent(keyCode) {}
 
-#if !defined(OYL_DIST)
+#if !defined(OYL_DISTRIBUTION)
 	std::string toString() const override {
 		char buffer[100];
 		sprintf(buffer, "KeyTypeEvent: %c", (char) m_keyCode);
@@ -198,7 +198,7 @@ public:
 	KeyReleaseEvent(int keyCode, int repeatCount = 0)
 		: KeyEvent(keyCode) {}
 
-#if !defined(OYL_DIST)
+#if !defined(OYL_DISTRIBUTION)
 	std::string toString() const override {
 		char buffer[100];
 		sprintf(buffer, "KeyReleaseEvent: %d", m_keyCode);
@@ -230,7 +230,7 @@ public:
 	MousePressEvent(int button)
 		: MouseButtonEvent(button) {}
 
-#if !defined(OYL_DIST)
+#if !defined(OYL_DISTRIBUTION)
 	std::string toString() const override {
 		char buffer[100];
 		sprintf(buffer, "MousePressEvent: %d", m_button);
@@ -248,7 +248,7 @@ public:
 	MouseReleaseEvent(int button)
 		: MouseButtonEvent(button) {}
 
-#if !defined(OYL_DIST)
+#if !defined(OYL_DISTRIBUTION)
 	std::string toString() const override {
 		char buffer[100];
 		sprintf(buffer, "MouseReleaseEvent: %d", m_button);
@@ -271,7 +271,7 @@ public:
 	inline float getDX() { return m_dx; }
 	inline float getDY() { return m_dy; }
 
-#if !defined(OYL_DIST)
+#if !defined(OYL_DISTRIBUTION)
 	std::string toString() const override {
 		char buffer[100];
 		sprintf(buffer, "MouseMoveEvent: %f, %f", m_x, m_y);
@@ -298,7 +298,7 @@ public:
 	inline float getX() { return m_x; }
 	inline float getY() { return m_y; }
 
-#if !defined(OYL_DIST)
+#if !defined(OYL_DISTRIBUTION)
 	std::string toString() const override {
 		char buffer[100];
 		sprintf(buffer, "MouseScrollEvent: %f, %f", m_x, m_y);

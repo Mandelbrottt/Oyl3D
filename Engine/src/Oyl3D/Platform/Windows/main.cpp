@@ -4,12 +4,12 @@
 
 extern oyl::Application* oyl::createApplication();
 
-int APIENTRY wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLine, int nCmdShow) {
+int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLine, int nCmdShow) {
 
-#if !defined(OYL_DIST)
-	AllocConsole();
+#if defined(OYL_LOG_CONSOLE)
+	if (!AttachConsole(ATTACH_PARENT_PROCESS))
+		AllocConsole();
 	freopen("CONOUT$", "w", stdout);
-	freopen("CONIN$", "r", stdin);
 #endif
 
 	auto app = oyl::createApplication();

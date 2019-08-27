@@ -39,7 +39,7 @@ void OpenGLContext::init() {
 	int status = gladLoadGLLoader((GLADloadproc) glfwGetProcAddress);
 	ASSERT(status, "Failed to initialize Glad!");
 
-#if !defined(OYL_DIST)
+#if defined(OYL_LOG_CONSOLE)
 	glEnable(GL_DEBUG_OUTPUT);
 	glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
 	glDebugMessageCallback(OpenGLErrorCallback, 0);

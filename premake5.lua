@@ -3,7 +3,7 @@ workspace "Oyl3D"
 
 	configurations {
 		"Debug",
-		"Release",
+		"Development",
 		"Distribution"
 	}	
 	
@@ -76,21 +76,22 @@ project "OylEngine"
 
 		defines {
 			"OYL_PLATFORM_WINDOWS",
-			"GLFW_INCLUDE_NONE"
+			"GLFW_INCLUDE_NONE", 
+			"WIN32_LEAN_AND_MEAN"
 		}
 
 	filter "configurations:Debug"
-		defines "OYL_DEBUG"
+		defines { "OYL_DEBUG", "OYL_LOG_CONSOLE" }
 		runtime "Debug"
 		symbols "on"
 
-	filter "configurations:Release"
-		defines "OYL_RELEASE"
+	filter "configurations:Development"
+		defines { "OYL_DEVELOPMENT", "OYL_LOG_CONSOLE" }
 		runtime "Release"
 		optimize "on"
 
 	filter "configurations:Distribution"
-		defines "OYL_DIST"
+		defines "OYL_DISTRIBUTION"
 		runtime "Release"
 		optimize "on"
 
@@ -138,20 +139,21 @@ project "OylGame"
 		systemversion "latest"
 
 		defines {
-			"OYL_PLATFORM_WINDOWS"
+			"OYL_PLATFORM_WINDOWS",
+			"WIN32_LEAN_AND_MEAN"
 		}
 
 	filter "configurations:Debug"
-		defines "OYL_DEBUG"
+		defines { "OYL_DEBUG", "OYL_LOG_CONSOLE" }
 		runtime "Debug"
 		symbols "On"
 
-	filter "configurations:Release"
-		defines "OYL_RELEASE"
+	filter "configurations:Development"
+		defines { "OYL_DEVELOPMENT", "OYL_LOG_CONSOLE" }
 		runtime "Release"
 		optimize "on"
 
 	filter "configurations:Distribution"
-		defines "OYL_DIST"
+		defines "OYL_DISTRIBUTION"
 		runtime "Release"
 		optimize "on"
