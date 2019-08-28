@@ -13,35 +13,35 @@ Scene::~Scene() {
 }
 
 void Scene::onUpdate(Timestep dt) {
-	for (Layer* layer : m_layerStack)
+	for (Ref<Layer> layer : m_layerStack)
 		layer->onUpdate(dt);
 }
 
 void Scene::onEvent(Event& e) {
-	for (Layer* layer : m_layerStack) {
+	for (Ref<Layer> layer : m_layerStack) {
 		layer->onEvent(e);
 		if (e.handled) break;
 	}
 }
 
 void Scene::onImGuiRender() {
-	for (Layer* layer : m_layerStack)
+	for (Ref<Layer> layer : m_layerStack)
 		layer->onImGuiRender();
 }
 
-void Scene::pushLayer(Layer* layer) {
+void Scene::pushLayer(Ref<Layer> layer) {
 	m_layerStack.pushLayer(layer);
 }
 
-void Scene::pushOverlay(Layer* overlay) {
+void Scene::pushOverlay(Ref<Layer> overlay) {
 	m_layerStack.pushOverlay(overlay);
 }
 
-void Scene::popLayer(Layer* layer) {
+void Scene::popLayer(Ref<Layer> layer) {
 	m_layerStack.popLayer(layer);
 }
 
-void Scene::popOverlay(Layer* overlay) {
+void Scene::popOverlay(Ref<Layer> overlay) {
 	m_layerStack.popOverlay(overlay);
 }
 

@@ -16,10 +16,10 @@ public:
 	virtual void onEnter() = 0;
 	virtual void onExit() = 0;
 
-	void pushLayer(Layer* layer);
-	void pushOverlay(Layer* overlay);
-	void popLayer(Layer* layer);
-	void popOverlay(Layer* overlay);
+	void pushLayer(Ref<Layer> layer);
+	void pushOverlay(Ref<Layer> overlay);
+	void popLayer(Ref<Layer> layer);
+	void popOverlay(Ref<Layer> overlay);
 private:
 	void onUpdate(Timestep dt);
 	void onEvent(Event& e);

@@ -27,7 +27,7 @@ namespace oyl {
 
 		void onEvent(Event& e);
 
-		void pushScene(Scene* scene);
+		void pushScene(Ref<Scene> scene);
 
 		inline Window& getWindow() { return *m_window; }
 		inline FrameBuffer& getMainFrameBuffer() { return *m_mainBuffer; }

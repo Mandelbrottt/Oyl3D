@@ -71,15 +71,14 @@ void Application::onEvent(Event& e) {
 	if (!e.handled) m_currentScene->onEvent(e);
 }
 
-void Application::pushScene(Scene* scene) {
+void Application::pushScene(Ref<Scene> scene) {
 	if (m_currentScene) {
 		m_currentScene->onExit();
-
-		m_currentScene = nullptr;
+		m_currentScene.reset();
 	}
 
 	if (scene) {
-		m_currentScene.reset(scene);
+		m_currentScene = scene;
 		m_currentScene->onEnter();
 	}
 }

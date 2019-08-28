@@ -8,24 +8,24 @@ LayerStack::LayerStack() {
 }
 
 LayerStack::~LayerStack() {
-	for (Layer* layer : m_layers) {
+	for (Ref<Layer> layer : m_layers) {
 		layer->onDetach();
-		delete layer;
+		layer.reset();
 	}
 }
 
-void LayerStack::pushLayer(Layer* layer) {
+void LayerStack::pushLayer(Ref<Layer> layer) {
 	m_layers.emplace(m_layers.begin() + m_layerInsertIndex, layer);
 	m_layerInsertIndex++;
 	layer->onAttach();
 }
 
-void LayerStack::pushOverlay(Layer* overlay) {
+void LayerStack::pushOverlay(Ref<Layer> overlay) {
 	m_layers.emplace_back(overlay);
 	overlay->onAttach();
 }
 
-void LayerStack::popLayer(Layer* layer) {
+void LayerStack::popLayer(Ref<Layer> layer) {
 	auto it = std::find(m_layers.begin(), m_layers.end(), layer);
 	if (it != m_layers.end()) {
 		m_layers.erase(it);
@@ -34,7 +34,7 @@ void LayerStack::popLayer(Layer* layer) {
 	layer->onDetach();
 }
 
-void LayerStack::popOverlay(Layer* overlay) {
+void LayerStack::popOverlay(Ref<Layer> overlay) {
 	auto it = std::find(m_layers.begin(), m_layers.end(), overlay);
 	if (it != m_layers.end()) {
 		m_layers.erase(it);
