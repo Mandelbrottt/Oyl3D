@@ -9,6 +9,8 @@
 #define BIND_CALLBACK_1(x) std::bind(&x, this, std::placeholders::_1)
 #define BIND_CALLBACK(x) BIND_CALLBACK_1(x)
 
+#define OYL_CREATE_FUNC(type) static ::oyl::Ref<type> create() { return ::oyl::Ref<type>(new type()); }
+
 #pragma warning(disable: 4002 4005)
 #if defined(OYL_DEBUG)
 #	if defined(_MSC_VER)
