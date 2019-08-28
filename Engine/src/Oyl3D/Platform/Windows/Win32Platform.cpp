@@ -21,7 +21,7 @@ float Win32Platform::getTimeImpl() {
 	}();
 
 	QueryPerformanceCounter(&li);
-	return double(li.QuadPart - timeStart) / frequency;
+	return static_cast<float>(double(li.QuadPart - timeStart) / frequency);
 }
 
 }
