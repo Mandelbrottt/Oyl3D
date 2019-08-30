@@ -16,7 +16,7 @@ bool Mesh::loadFromFile(const std::string& filename) {
 
 	std::ifstream file(filename);
 	if (!file) {
-		LOG_ERROR("Could not open file \"{0}\"!", filename);
+		OYL_LOG_ERROR("Could not open file \"{0}\"!", filename);
 		loadFromFile("../Engine/res/Unknown.obj");
 		return false;
 	}

@@ -10,7 +10,7 @@ namespace oyl {
 class Scene {
 	friend class Application;
 public:
-	Scene(const std::string& debugName);
+	Scene(const std::string& debugName = "Scene");
 	virtual ~Scene();
 
 	virtual void onEnter() = 0;
@@ -27,7 +27,10 @@ private:
 private:
 	LayerStack m_layerStack;
 
-	std::string m_debugName;
+#if defined(OYL_LOG_CONSOLE)
+protected:
+	const std::string m_debugName;
+#endif
 };
 
 }

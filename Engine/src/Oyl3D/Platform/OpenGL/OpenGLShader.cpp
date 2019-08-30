@@ -28,7 +28,7 @@ static GLuint compileShader(GLuint type, const std::string& src) {
 
 		glDeleteShader(shader);
 
-		LOG_ERROR("{0}", infoLog.data());
+		OYL_LOG_ERROR("{0}", infoLog.data());
 		std::string err = " shader compilation failure!";
 		switch (type) {
 		case GL_VERTEX_SHADER:			err.insert(0, "Vertex"); break;
@@ -37,7 +37,7 @@ static GLuint compileShader(GLuint type, const std::string& src) {
 		case GL_GEOMETRY_SHADER:		err.insert(0, "Geometry"); break;
 		case GL_FRAGMENT_SHADER:		err.insert(0, "Fragment"); break;
 		}
-		ASSERT(false, err);
+		OYL_ASSERT(false, err);
 
 		return 0;
 	}
@@ -78,8 +78,8 @@ static void linkShaders(const uint id,
 		if (geomShader != 0) glDeleteShader(geomShader);
 		if (fragShader != 0) glDeleteShader(fragShader);
 
-		LOG_ERROR("{0}", infoLog.data());
-		ASSERT(false, "Shader link failure!");
+		OYL_LOG_ERROR("{0}", infoLog.data());
+		OYL_ASSERT(false, "Shader link failure!");
 
 		return;
 	}
@@ -114,9 +114,9 @@ OpenGLShader::OpenGLShader(const std::initializer_list<ShaderInfo>& files) {
 	
 	std::string srcs[NumShaderTypes]{ "" };
 	for (auto& info : infos) {
-		ASSERT(srcs[info.type - 1].empty(), "Multiple same type shaders defined!");
+		OYL_ASSERT(srcs[info.type - 1].empty(), "Multiple same type shaders defined!");
 		std::ifstream i(info.filename);
-		ASSERT(i, "Shader \"{0}\" could not open!", info.filename);
+		OYL_ASSERT(i, "Shader \"{0}\" could not open!", info.filename);
 		std::stringstream ss;
 		ss << i.rdbuf();
 		srcs[info.type - 1] = ss.str();
@@ -146,8 +146,8 @@ GLint OpenGLShader::getUniformLocation(const std::string& name) const {
 	if (location != -1) {
 		m_uniformLocations[name] = location;
 	} else {
-		LOG_ERROR("Invalid uniform name \"{0}\"!", name, m_rendererID);
-		BREAKPOINT;
+		OYL_LOG_ERROR("Invalid uniform name \"{0}\"!", name, m_rendererID);
+		OYL_BREAKPOINT;
 	}
 
 	return location;
