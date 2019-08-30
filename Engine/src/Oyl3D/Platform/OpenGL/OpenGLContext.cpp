@@ -16,28 +16,28 @@ static void OpenGLErrorCallback(GLenum source,
 	const char* finalMessage = "[OpenGL Error] ID {0}: {1}";
 	switch (severity) {
 	case GL_DEBUG_SEVERITY_NOTIFICATION:
-		//LOG_INFO(finalMessage, id, message); 
+		//OYL_LOG_INFO(finalMessage, id, message); 
 		break;
 	case GL_DEBUG_SEVERITY_LOW:
 	case GL_DEBUG_SEVERITY_MEDIUM:
-		LOG_WARN(finalMessage, id, message); 
+		OYL_LOG_WARN(finalMessage, id, message); 
 		break;
 	case GL_DEBUG_SEVERITY_HIGH:
-		LOG_ERROR(finalMessage, id, message); 
-		BREAKPOINT; 
+		OYL_LOG_ERROR(finalMessage, id, message); 
+		OYL_BREAKPOINT; 
 		break;
 	}
 }
 
 OpenGLContext::OpenGLContext(GLFWwindow* windowHandle)
 	: m_windowHandle(windowHandle) {
-	ASSERT(windowHandle, "Window handle is null!");
+	OYL_ASSERT(windowHandle, "Window handle is null!");
 }
 
 void OpenGLContext::init() {
 	glfwMakeContextCurrent(m_windowHandle);
 	int status = gladLoadGLLoader((GLADloadproc) glfwGetProcAddress);
-	ASSERT(status, "Failed to initialize Glad!");
+	OYL_ASSERT(status, "Failed to initialize Glad!");
 
 #if defined(OYL_LOG_CONSOLE)
 	glEnable(GL_DEBUG_OUTPUT);
@@ -49,10 +49,10 @@ void OpenGLContext::init() {
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
 
-	LOG_INFO("OpenGL Info:");
-	LOG_INFO("  Vendor: {0}", glGetString(GL_VENDOR));
-	LOG_INFO("  Renderer: {0}", glGetString(GL_RENDERER));
-	LOG_INFO("  Version: {0}", glGetString(GL_VERSION));
+	OYL_LOG_INFO("OpenGL Info:");
+	OYL_LOG_INFO("  Vendor: {0}", glGetString(GL_VENDOR));
+	OYL_LOG_INFO("  Renderer: {0}", glGetString(GL_RENDERER));
+	OYL_LOG_INFO("  Version: {0}", glGetString(GL_VERSION));
 }
 
 void OpenGLContext::swapBuffers() {

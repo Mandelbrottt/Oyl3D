@@ -11,7 +11,7 @@ namespace oyl {
 bool Win32Window::s_GLFWInitialized = false;
 
 static void GLFWErrorCallback(int error, const char* description) {
-	LOG_ERROR("GLFW ERROR ({0}): {1}", error, description);
+	OYL_LOG_ERROR("GLFW ERROR ({0}): {1}", error, description);
 }
 
 Win32Window::Win32Window(const WindowProps& props) {
@@ -28,11 +28,11 @@ void Win32Window::init(const WindowProps& props) {
 	m_data.height = props.height;
 	m_data.vsync = props.vsync;
 
-	LOG_INFO("Creating Window \"{0}\" with size ({1}, {2})", props.title, props.width, props.height);
+	OYL_LOG_INFO("Creating Window \"{0}\" with size ({1}, {2})", props.title, props.width, props.height);
 
 	if (!s_GLFWInitialized)
 	{
-		VERIFY(glfwInit(), "Could not intialize GLFW!");
+		OYL_VERIFY(glfwInit(), "Could not intialize GLFW!");
 		glfwSetErrorCallback(GLFWErrorCallback);
 		s_GLFWInitialized = true;
 	}

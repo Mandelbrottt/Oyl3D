@@ -20,13 +20,13 @@ Application* Application::s_instance = nullptr;
 Application::Application()
 	: m_camera(60.0f, 16.0f / 9.0f, 0.01f, 1000.0f) {
 
-	ASSERT(!s_instance, "Application already exists!");
+	OYL_ASSERT(!s_instance, "Application already exists!");
 	s_instance = this;
 
 	Log::init();
 
 	m_window = Window::create();
-	m_window->setEventCallback(BIND_CALLBACK(Application::onEvent));
+	m_window->setEventCallback(OYL_CALLBACK_1(Application::onEvent));
 
 	m_imguiLayer.reset(new ImGuiLayer());
 	m_imguiLayer->onAttach();

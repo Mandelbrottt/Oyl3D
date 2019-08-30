@@ -15,8 +15,9 @@ public:
 	virtual void onImGuiRender() {}
 	virtual void onEvent(Event& e) {}
 
-	inline const std::string& getName() const { return m_debugName; }
+#if defined(OYL_LOG_CONSOLE)
 protected:
 	const std::string m_debugName;
+#endif
 };
 }

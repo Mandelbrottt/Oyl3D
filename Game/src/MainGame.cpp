@@ -83,9 +83,18 @@ public:
 		pushScene(MainScene::create());
 	}
 
-	~Game() {
+	virtual void onExit() {}
+public:
+	OYL_CREATE_FUNC(MainScene)
+};
 
+class Game : public oyl::Application {
+public:
+	Game() {
+		pushScene(MainScene::create());
 	}
+
+	~Game() {}
 };
 
 oyl::Application* oyl::createApplication() {

@@ -44,9 +44,7 @@ project "OylEngine"
 	}
 
 	defines {
-		-- "OYL_BUILD_DLL",
-		"OYL_ENGINE",
-		"_CRT_SECURE_NO_WARNINGS"
+		"OYL_ENGINE"
 	}
 
 	postbuildcommands {
@@ -111,8 +109,6 @@ project "OylGame"
 	}
 
 	defines {
-		-- "OYL_BUILD_DLL",
-		"_CRT_SECURE_NO_WARNINGS",
 		"OYL_GAME"
 	}
 
@@ -139,8 +135,7 @@ project "OylGame"
 		systemversion "latest"
 
 		defines {
-			"OYL_PLATFORM_WINDOWS",
-			"WIN32_LEAN_AND_MEAN"
+			"OYL_PLATFORM_WINDOWS"
 		}
 
 	filter "configurations:Debug"

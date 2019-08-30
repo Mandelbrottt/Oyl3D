@@ -18,7 +18,7 @@ static uint shaderDataTypeSize(OylEnum type) {
 	case Bool:		return 1;
 	}
 
-	ASSERT(false, "Unknown Type!");
+	OYL_ASSERT(false, "Unknown Type!");
 	return 0;
 }
 
@@ -43,7 +43,7 @@ struct BufferElement {
 		case Mat4:		return 4 * 4;
 		case Bool:		return 1;
 		}
-		ASSERT(false, "Unknown Type!");
+		OYL_ASSERT(false, "Unknown Type!");
 		return 0;
 	}
 

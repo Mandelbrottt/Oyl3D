@@ -5,7 +5,6 @@
 
 #include <imgui.h>
 
-#define IMGUI_IMPL_API
 #include <examples/imgui_impl_glfw.h>
 #include <examples/imgui_impl_opengl3.h>
 
@@ -108,7 +107,7 @@ void ImGuiLayer::onImGuiRender() {
 	ImGui::Begin("DockSpace Demo", &p_open, window_flags);
 	ImGui::PopStyleVar(3);
 
-	ASSERT(ImGui::GetIO().ConfigFlags & ImGuiConfigFlags_DockingEnable, "Docking should always be enabled!");
+	OYL_ASSERT(ImGui::GetIO().ConfigFlags & ImGuiConfigFlags_DockingEnable, "Docking should always be enabled!");
 
 	// DockSpace
 	ImGuiID dockspace_id = ImGui::GetID("MyDockSpace");

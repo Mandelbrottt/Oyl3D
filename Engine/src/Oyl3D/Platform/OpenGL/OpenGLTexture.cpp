@@ -61,7 +61,7 @@ void OpenGLTexture2D::load(const std::string& filename) {
 		glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, width, height, GL_RGB, GL_UNSIGNED_BYTE, data);
 		glGenerateMipmap(GL_TEXTURE_2D);
 	} else {
-		LOG_ERROR("Texture {0} failed to load!", filename);
+		OYL_LOG_ERROR("Texture {0} failed to load!", filename);
 		u8* err = new u8[3]{ 0xFF, 0, 0xFF };
 
 		glTexStorage2D(GL_TEXTURE_2D, 1, GL_RGB8, 1, 1);

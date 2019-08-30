@@ -1,5 +1,19 @@
 #pragma once
 
+#if !defined(_CRT_SECURE_NO_WARNINGS)
+#	define _CRT_SECURE_NO_WARNINGS
+#endif
+
+#if defined(OYL_PLATFORM_WINDOWS)
+#	if !defined(NOMINMAX)
+#		define NOMINMAX
+#	endif
+#	if !defined(WIN32_LEAN_AND_MEAN)
+#		define WIN32_LEAN_AND_MEAN
+#	endif
+#	include <windows.h>
+#endif
+
 #include <iostream>
 #include <fstream>
 #include <memory>
@@ -25,13 +39,8 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-#include "Typedefs.h"
 #include "Common.h"
+#include "Enums.h"
+#include "Typedefs.h"
 
 #include "System/Logging.h"
-
-#include "Enums.h"
-
-#ifdef OYL_PLATFORM_WINDOWS
-#	include <windows.h>
-#endif

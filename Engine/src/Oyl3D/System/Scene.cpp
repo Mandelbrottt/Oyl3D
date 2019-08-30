@@ -3,8 +3,11 @@
 
 namespace oyl {
 
-Scene::Scene(const std::string& debugName)
-	: m_debugName(debugName) {
+Scene::Scene(const std::string& debugName) 
+#if defined(OYL_LOG_CONSOLE)
+	: m_debugName(debugName)
+#endif 
+{
 
 }
 

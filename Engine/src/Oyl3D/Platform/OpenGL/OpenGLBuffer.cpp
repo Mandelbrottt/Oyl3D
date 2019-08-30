@@ -113,7 +113,7 @@ void OpenGLVertexArray::unbind() const {
 static GLenum ShaderDataTypeToGLType(OylEnum type);
 
 void OpenGLVertexArray::addVertexBuffer(const Ref<VertexBuffer>& vbo) {
-	ASSERT(!vbo->getLayout().getElements().empty(), "Layout is Empty!");
+	OYL_ASSERT(!vbo->getLayout().getElements().empty(), "Layout is Empty!");
 
 	glBindVertexArray(m_rendererID);
 	vbo->bind();
@@ -159,7 +159,7 @@ static GLenum ShaderDataTypeToGLType(OylEnum type) {
 	case Mat4:		return GL_FLOAT;
 	case Bool:		return GL_BOOL;
 	}
-	ASSERT(false, "Unknown Type!");
+	OYL_ASSERT(false, "Unknown Type!");
 	return 0;
 }
 
@@ -269,7 +269,7 @@ void OpenGLFrameBuffer::initColorTexture(uint index,
 										 OylEnum format, 
 										 OylEnum filter,
 										 OylEnum wrap) {
-	ASSERT(index < m_numColorAttachments, "Invalid index!");
+	OYL_ASSERT(index < m_numColorAttachments, "Invalid index!");
 
 	m_formats[index] = format;
 	m_filters[index] = filter;
