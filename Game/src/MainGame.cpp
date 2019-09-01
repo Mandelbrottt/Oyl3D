@@ -12,7 +12,7 @@ public:
 
 		m_meshShader = oyl::Shader::create({
 			{ oyl::VertexShader, "../Engine/res/meshShader.vert" },
-			{ oyl::PixelShader, "../Engine/res/meshShader.frag" },
+			{ oyl::FragmentShader, "../Engine/res/meshShader.frag" },
 											   });
 	}
 
