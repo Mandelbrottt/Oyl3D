@@ -5,12 +5,23 @@
 
 namespace oyl {
 
-static GLuint compileShader(GLuint type, const std::string& src) {
+static GLenum shaderTypeFromOylEnum(const uint e) {
+    switch (e) {
+    case VertexShader:         return GL_VERTEX_SHADER;
+    case TessControlShader:    return GL_TESS_CONTROL_SHADER;
+    case TessEvaluationShader: return GL_TESS_EVALUATION_SHADER;
+    case GeometryShader:       return GL_GEOMETRY_SHADER;
+    case FragmentShader:       return GL_FRAGMENT_SHADER;
+    }
+    return GL_NONE;
+}
+
+uint OpenGLShader::compileShader(uint type, const std::string& src) {
 	if (src.empty()) return 0;
 
-	GLuint shader;
-	shader = glCreateShader(type);
+	GLuint shader = glCreateShader(shaderTypeFromOylEnum(type));
 
+    // Upload the shader source code to the GPU
 	const char* source = src.c_str();
 	glShaderSource(shader, 1, &source, 0);
 
@@ -18,8 +29,9 @@ static GLuint compileShader(GLuint type, const std::string& src) {
 
 	GLint isCompiled = 0;
 	glGetShaderiv(shader, GL_COMPILE_STATUS, &isCompiled);
-	if (isCompiled == GL_FALSE)
-	{
+    
+	if (isCompiled == GL_FALSE) {
+        // Retreive the error log from OpenGL
 		GLint maxLength = 0;
 		glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &maxLength);
 
@@ -28,105 +40,109 @@ static GLuint compileShader(GLuint type, const std::string& src) {
 
 		glDeleteShader(shader);
 
+	    // Print the error log
 		OYL_LOG_ERROR("{0}", infoLog.data());
 		std::string err = " shader compilation failure!";
 		switch (type) {
-		case GL_VERTEX_SHADER:			err.insert(0, "Vertex"); break;
-		case GL_TESS_CONTROL_SHADER:	err.insert(0, "Tesselation Control"); break;
-		case GL_TESS_EVALUATION_SHADER: err.insert(0, "Tesselation Evaluation"); break;
-		case GL_GEOMETRY_SHADER:		err.insert(0, "Geometry"); break;
-		case GL_FRAGMENT_SHADER:		err.insert(0, "Fragment"); break;
+        case VertexShader:         err.insert(0, "Vertex");                 break;
+        case TessControlShader:    err.insert(0, "Tesselation Control");    break;
+        case TessEvaluationShader: err.insert(0, "Tesselation Evaluation"); break;
+        case GeometryShader:       err.insert(0, "Geometry");               break;
+        case FragmentShader:       err.insert(0, "Fragment");               break;
 		}
-		OYL_ASSERT(false, err);
+		OYL_LOG_ERROR(err.c_str());
 
 		return 0;
 	}
 	return shader;
 }
 
-static void linkShaders(const uint id, 
-						const GLuint vertShader, 
-						const GLuint tescShader, 
-						const GLuint teseShader, 
-						const GLuint geomShader, 
-						const GLuint fragShader) {
+uint OpenGLShader::linkShaders(std::array<uint, NumShaderTypes> shaders) {
+    // Get a program ID from OpenGL
+    GLuint program = glCreateProgram();
+    if (program == 0) {
+        OYL_ASSERT(false, "Shader program failed to be created!");
+        return 0;
+    }
 
-	if (vertShader != 0) glAttachShader(id, vertShader);
-	if (tescShader != 0) glAttachShader(id, tescShader);
-	if (teseShader != 0) glAttachShader(id, teseShader);
-	if (geomShader != 0) glAttachShader(id, geomShader);
-	if (fragShader != 0) glAttachShader(id, fragShader);
+    // Attach all of the present shaders to the shader program
+    for (auto shader : shaders) {
+        if (shader != 0) glAttachShader(program, shader);
+    }
 
-	glLinkProgram(id);
+	glLinkProgram(program);
 
 	GLint isLinked = 0;
-	glGetProgramiv(id, GL_LINK_STATUS, (int*) & isLinked);
-	if (isLinked == GL_FALSE)
-	{
+	glGetProgramiv(program, GL_LINK_STATUS, &isLinked);
+	if (isLinked == GL_FALSE) {
+        // Retreive the error log from OpenGL
 		GLint maxLength = 0;
-		glGetProgramiv(id, GL_INFO_LOG_LENGTH, &maxLength);
+		glGetProgramiv(program, GL_INFO_LOG_LENGTH, &maxLength);
 
-		// The maxLength includes the NULL character
 		std::vector<GLchar> infoLog(maxLength);
-		glGetProgramInfoLog(id, maxLength, &maxLength, &infoLog[0]);
+		glGetProgramInfoLog(program, maxLength, &maxLength, &infoLog[0]);
 
-		glDeleteProgram(id);
+		glDeleteProgram(program);
 
-		if (vertShader != 0) glDeleteShader(vertShader);
-		if (tescShader != 0) glDeleteShader(tescShader);
-		if (teseShader != 0) glDeleteShader(teseShader);
-		if (geomShader != 0) glDeleteShader(geomShader);
-		if (fragShader != 0) glDeleteShader(fragShader);
+	    // Always delete shaders after a failed link
+        for (auto shaderID : shaders) {
+            if (shaderID != 0) glDeleteShader(shaderID);
+        }
 
-		OYL_LOG_ERROR("{0}", infoLog.data());
-		OYL_ASSERT(false, "Shader link failure!");
-
-		return;
+		OYL_ASSERT(false, "Shader link failure!\n{0}", infoLog.data());
+	    
+		return 0;
 	}
 
-	// Always detach shaders after a successful link.
-	if (vertShader != 0) glDetachShader(id, vertShader);
-	if (tescShader != 0) glDetachShader(id, tescShader);
-	if (teseShader != 0) glDetachShader(id, teseShader);
-	if (geomShader != 0) glDetachShader(id, geomShader);
-	if (fragShader != 0) glDetachShader(id, fragShader);
+	// Always detach shaders after a successful link
+    for (auto shaderID : shaders) {
+        if (shaderID != 0) glDetachShader(program, shaderID);
+    }
+
+    return program;
 }
 
-void OpenGLShader::processShaders(const std::string& vertSrc, 
-								  const std::string& tescSrc, 
-								  const std::string& teseSrc, 
-								  const std::string& geomSrc, 
-								  const std::string& fragSrc) {
+void OpenGLShader::processShaders(std::array<std::string, NumShaderTypes> shaderSrcs) {
 
-	GLuint vertexShader			= compileShader(GL_VERTEX_SHADER, vertSrc);
-	GLuint tessControlShader	= compileShader(GL_TESS_CONTROL_SHADER, tescSrc);
-	GLuint tessEvaluationShader = compileShader(GL_TESS_EVALUATION_SHADER, teseSrc);
-	GLuint geometryShader		= compileShader(GL_GEOMETRY_SHADER, geomSrc);
-	GLuint fragmentShader		= compileShader(GL_FRAGMENT_SHADER, fragSrc);
+    std::array<uint, NumShaderTypes> shaders{ 0 };
 
-	m_rendererID = glCreateProgram();
+    // Get the IDs for all of the present shaders
+    for (uint i = 0; i < NumShaderTypes; i++) {
+        shaders[i] = compileShader(VertexShader + i, shaderSrcs[i]);
+    }
 
-	linkShaders(m_rendererID, vertexShader, tessControlShader, tessEvaluationShader, geometryShader, fragmentShader);
+	m_rendererID = linkShaders(shaders);
 }
 
 OpenGLShader::OpenGLShader(const std::initializer_list<ShaderInfo>& files) {
 	std::vector<ShaderInfo> infos(files);
 	
-	std::string srcs[NumShaderTypes]{ "" };
+	std::array<std::string, NumShaderTypes> srcs{ "" };
 	for (auto& info : infos) {
-		OYL_ASSERT(srcs[info.type - 1].empty(), "Multiple same type shaders defined!");
-		std::ifstream i(info.filename);
-		OYL_ASSERT(i, "Shader \"{0}\" could not open!", info.filename);
-		std::stringstream ss;
-		ss << i.rdbuf();
+	    // Return if the source code for a given shader already exists
+        if (!srcs[info.type - 1].empty()) {
+            OYL_LOG_ERROR("Multiple same type shaders defined! Duplicate File: {0}", info.filename.c_str());
+            continue;
+        }
+		std::ifstream in(info.filename);
+        // Return if the file is not opened correctly
+        if (!in) {
+            OYL_LOG_ERROR("Shader \"{0}\" could not open!", info.filename.c_str());
+            return;
+        }
+
+	    // Dump the entire file contents into the corresponding source string
+	    std::stringstream ss;
+		ss << in.rdbuf();
 		srcs[info.type - 1] = ss.str();
 	}
 
-	processShaders(srcs[0], srcs[1], srcs[2], srcs[3], srcs[4]);
+    // Compile and link the given shader source codes into one program
+	processShaders(srcs);
 }
 
 OpenGLShader::~OpenGLShader() {
-	glDeleteProgram(m_rendererID);
+    if (m_rendererID) glDeleteProgram(m_rendererID);
 }
 
 void OpenGLShader::bind() const {
@@ -138,16 +154,17 @@ void OpenGLShader::unbind() const {
 }
 
 GLint OpenGLShader::getUniformLocation(const std::string& name) const {
+    // Return the cached uniform location
 	if (m_uniformLocations.find(name) != m_uniformLocations.end()) 
 		return m_uniformLocations.at(name);
 
 	GLint location = glGetUniformLocation(m_rendererID, name.c_str());
 
 	if (location != -1) {
+	    // Cache the uniform location
 		m_uniformLocations[name] = location;
 	} else {
-		OYL_LOG_ERROR("Invalid uniform name \"{0}\"!", name, m_rendererID);
-		OYL_BREAKPOINT;
+        OYL_ASSERT(false, "Invalid uniform name \"{0}\"!", name.c_str());
 	}
 
 	return location;
@@ -158,27 +175,27 @@ void OpenGLShader::setUniform1i(const std::string& name, const int v) {
 	glUniform1i(location, v);
 }
 
-void OpenGLShader::setUniform2f(const std::string& name, const glm::vec2& v){
+void OpenGLShader::setUniform2f(const std::string& name, const glm::vec2& v) {
 	GLint location = getUniformLocation(name);
 	glUniform2fv(location, 1, glm::value_ptr(v));
 }
 
-void OpenGLShader::setUniform3f(const std::string& name, const glm::vec3& v){
+void OpenGLShader::setUniform3f(const std::string& name, const glm::vec3& v) {
 	GLint location = getUniformLocation(name);
 	glUniform3fv(location, 1, glm::value_ptr(v));
 }
 
-void OpenGLShader::setUniform4f(const std::string& name, const glm::vec4& v){
+void OpenGLShader::setUniform4f(const std::string& name, const glm::vec4& v) {
 	GLint location = getUniformLocation(name);
 	glUniform4fv(location, 1, glm::value_ptr(v));
 }
 
-void OpenGLShader::setUniformMat3(const std::string& name, const glm::mat3& m){
+void OpenGLShader::setUniformMat3(const std::string& name, const glm::mat3& m) {
 	GLint location = getUniformLocation(name);
 	glUniformMatrix3fv(location, 1, GL_FALSE, glm::value_ptr(m));
 }
 
-void OpenGLShader::setUniformMat4(const std::string& name, const glm::mat4& m){
+void OpenGLShader::setUniformMat4(const std::string& name, const glm::mat4& m) {
 	GLint location = getUniformLocation(name);
 	glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(m));
 }
