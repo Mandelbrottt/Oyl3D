@@ -112,11 +112,6 @@ project "OylGame"
 		"OYL_GAME"
 	}
 
-	postbuildcommands {
-		"{COPY} %{prj.location}res/ %{wks.location}bin/"..outputdir.."/Game/res/",
-		"{COPY} %{prj.location}imgui.ini* %{wks.location}bin/"..outputdir.."/Game/imgui.ini*"
-	}
-
 	includedirs {
 		"Engine/vendor/spdlog/include",
 		"Engine/src/",
@@ -130,25 +125,35 @@ project "OylGame"
 		"OylEngine"
 	}
 
+	postbuildcommands {
+		"{COPY} %{prj.location}res/ %{wks.location}bin/"..outputdir.."/Game/res/"
+	}
+	
 	filter "system:windows"
 		entrypoint "wWinMainCRTStartup"
 		systemversion "latest"
-
+	
 		defines {
 			"OYL_PLATFORM_WINDOWS"
-		}
-
+		}		
+	
 	filter "configurations:Debug"
-		defines { "OYL_DEBUG", "OYL_LOG_CONSOLE" }
+		defines { "OYL_DEBUG" }
 		runtime "Debug"
 		symbols "On"
-
+	
 	filter "configurations:Development"
-		defines { "OYL_DEVELOPMENT", "OYL_LOG_CONSOLE" }
+		defines { "OYL_DEVELOPMENT" }
 		runtime "Release"
 		optimize "on"
-
+	
 	filter "configurations:Distribution"
 		defines "OYL_DISTRIBUTION"
 		runtime "Release"
 		optimize "on"
+
+	filter "configurations:not Distribution"
+		defines { "OYL_LOG_CONSOLE" }
+		postbuildcommands {
+			"{COPY} %{prj.location}imgui.ini* %{wks.location}bin/"..outputdir.."/Game/imgui.ini*"
+		}
