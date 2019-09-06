@@ -44,7 +44,8 @@ project "OylEngine"
 	}
 
 	defines {
-		"OYL_ENGINE"
+		"OYL_ENGINE",
+		"_CRT_SECURE_NO_WARNINGS"
 	}
 
 	postbuildcommands {
@@ -79,19 +80,22 @@ project "OylEngine"
 		}
 
 	filter "configurations:Debug"
-		defines { "OYL_DEBUG", "OYL_LOG_CONSOLE" }
+		defines { "OYL_DEBUG" }
 		runtime "Debug"
 		symbols "on"
 
 	filter "configurations:Development"
-		defines { "OYL_DEVELOPMENT", "OYL_LOG_CONSOLE" }
+		defines { "OYL_DEVELOPMENT" }
 		runtime "Release"
 		optimize "on"
 
 	filter "configurations:Distribution"
-		defines "OYL_DISTRIBUTION"
+		defines { "OYL_DISTRIBUTION" }
 		runtime "Release"
 		optimize "on"
+
+	filter "configurations:not Distribution"
+		defines { "OYL_LOG_CONSOLE" }
 
 project "OylGame"
 	location "Game"
@@ -108,8 +112,11 @@ project "OylGame"
 		"Game/src/**.cpp"
 	}
 
+	excludes { "**/ClientAppTemplate.cpp" }
+
 	defines {
-		"OYL_GAME"
+		"OYL_GAME",
+		"_CRT_SECURE_NO_WARNINGS"
 	}
 
 	includedirs {
@@ -134,7 +141,9 @@ project "OylGame"
 		systemversion "latest"
 	
 		defines {
-			"OYL_PLATFORM_WINDOWS"
+			"OYL_PLATFORM_WINDOWS",
+			"WIN32_LEAN_AND_MEAN",
+			"NOMINMAX"
 		}		
 	
 	filter "configurations:Debug"
