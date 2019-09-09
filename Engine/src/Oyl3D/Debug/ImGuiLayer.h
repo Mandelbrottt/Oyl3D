@@ -2,21 +2,21 @@
 
 #include "Oyl3D/System/Layer.h"
 
-namespace oyl {
+namespace oyl
+{
+    class ImGuiLayer : public Layer
+    {
+    public:
+        ImGuiLayer();
+        virtual ~ImGuiLayer();
 
-class ImGuiLayer : public Layer {
-public:
-	ImGuiLayer();
-	virtual ~ImGuiLayer();
+        virtual void onAttach() override;
+        virtual void onDetach() override;
+        virtual void onImGuiRender() override;
 
-	virtual void onAttach() override;
-	virtual void onDetach() override;
-	virtual void onImGuiRender() override;
-
-	void begin();
-	void end();
-private:
-	float m_time = 0;
-};
-
+        void begin();
+        void end();
+    private:
+        float m_time = 0;
+    };
 }

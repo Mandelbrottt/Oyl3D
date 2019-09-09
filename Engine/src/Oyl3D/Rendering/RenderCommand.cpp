@@ -3,9 +3,7 @@
 
 #include "Platform/OpenGL/OpenGLRendererAPI.h"
 
-namespace oyl {
-
-RendererAPI* RenderCommand::s_rendererAPI = new OpenGLRendererAPI();
-
+namespace oyl
+{
+    RendererAPI* RenderCommand::s_rendererAPI = new OpenGLRendererAPI();
 }
-

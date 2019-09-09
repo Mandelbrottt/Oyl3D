@@ -15,44 +15,41 @@
 #include "Oyl3D/System/LayerStack.h"
 #include "Oyl3D/System/Scene.h"
 
+namespace oyl
+{
+    class Application
+    {
+    public:
+        Application();
+        virtual ~Application();
 
-namespace oyl {
+        void run();
 
-	class Application {
-	public:
-		Application();
-		virtual ~Application();
+        void onEvent(Event& e);
 
-		void run();
+        void pushScene(Ref<Scene> scene);
 
-		void onEvent(Event& e);
+        inline Window&            getWindow() { return *m_window; }
+        inline FrameBuffer&       getMainFrameBuffer() { return *m_mainBuffer; }
+        inline PerspectiveCamera& getMainCamera() { return m_camera; }
 
-		void pushScene(Ref<Scene> scene);
+        inline static Application& get() { return *s_instance; }
+    private:
 
-		inline Window& getWindow() { return *m_window; }
-		inline FrameBuffer& getMainFrameBuffer() { return *m_mainBuffer; }
-		inline PerspectiveCamera& getMainCamera() { return m_camera; }
+        Ref<Window>      m_window;
+        Ref<Scene>       m_currentScene;
+        Ref<ImGuiLayer>  m_imguiLayer;
+        Ref<FrameBuffer> m_mainBuffer;
 
-		inline static Application& get() { return *s_instance; }
-	private:
-		bool m_running = true;
-		bool m_doUpdate = true;
+        PerspectiveCamera m_camera;
 
-		Ref<Window> m_window;
-		
-		Ref<Scene> m_currentScene;
+        float m_lastFrameTime = 0;
+        
+        bool m_running  = true;
+        bool m_doUpdate = true;
+    private:
+        static Application* s_instance;
+    };
 
-		Ref<ImGuiLayer> m_imguiLayer;
-
-		Ref<FrameBuffer> m_mainBuffer;
-
-		PerspectiveCamera m_camera;
-
-		float m_lastFrameTime = 0;
-	private:
-		static Application* s_instance;
-	};
-
-	Application* createApplication();
-
+    Application* createApplication();
 }

@@ -4,25 +4,24 @@
 
 #include "glfw/glfw3.h"
 
-namespace oyl {
+namespace oyl
+{
+    class OpenGLContext : public GraphicsContext
+    {
+    public:
+        OpenGLContext(GLFWwindow* windowHandle);
 
-class OpenGLContext : public GraphicsContext {
-public:
-	OpenGLContext(GLFWwindow* windowHandle);
+        virtual void init() override;
+        virtual void swapBuffers() override;
+        virtual void updateViewport(int width, int height) override;
+    private:
+        GLFWwindow* m_windowHandle;
 
-	virtual void init() override;
-	virtual void swapBuffers() override;
-	virtual void updateViewport(int width, int height) override;
-private:
-	GLFWwindow* m_windowHandle;
+        int m_vpWidth  = 0;
+        int m_vpHeight = 0;
 
-	int m_vpWidth = 0;
-	int m_vpHeight = 0;
+        bool m_isViewportDirty = false;
 
-	bool m_isViewportDirty = false;
-
-
-	static bool s_glfwInitialized;
-};
-
+        static bool s_glfwInitialized;
+    };
 }
