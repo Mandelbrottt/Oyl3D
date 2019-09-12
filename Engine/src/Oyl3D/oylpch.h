@@ -1,17 +1,17 @@
 #pragma once
 
 #if !defined(_CRT_SECURE_NO_WARNINGS)
-#	define _CRT_SECURE_NO_WARNINGS
+    #define _CRT_SECURE_NO_WARNINGS
 #endif
 
 #if defined(OYL_PLATFORM_WINDOWS)
-#	if !defined(NOMINMAX)
-#		define NOMINMAX
-#	endif
-#	if !defined(WIN32_LEAN_AND_MEAN)
-#		define WIN32_LEAN_AND_MEAN
-#	endif
-#	include <windows.h>
+    #if !defined(NOMINMAX)
+        #define NOMINMAX
+    #endif
+    #if !defined(WIN32_LEAN_AND_MEAN)
+        #define WIN32_LEAN_AND_MEAN
+    #endif
+    #include <windows.h>
 #endif
 
 #include <iostream>

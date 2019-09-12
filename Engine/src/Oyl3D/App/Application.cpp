@@ -13,110 +13,115 @@
 
 #include <imgui.h>
 
-namespace oyl {
+namespace oyl
+{
+    Application* Application::s_instance = nullptr;
 
-Application* Application::s_instance = nullptr;
+    Application::Application()
+        : m_camera(60.0f, 16.0f / 9.0f, 0.01f, 1000.0f)
+    {
+        OYL_ASSERT(!s_instance, "Application already exists!");
+        s_instance = this;
 
-Application::Application()
-	: m_camera(60.0f, 16.0f / 9.0f, 0.01f, 1000.0f) {
+        Log::init();
 
-	OYL_ASSERT(!s_instance, "Application already exists!");
-	s_instance = this;
+        m_window = Window::create();
+        m_window->setEventCallback(OYL_CALLBACK_1(Application::onEvent));
 
-	Log::init();
+        m_imguiLayer.reset(new ImGuiLayer());
+        m_imguiLayer->onAttach();
 
-	m_window = Window::create();
-	m_window->setEventCallback(OYL_CALLBACK_1(Application::onEvent));
+        m_mainBuffer = oyl::FrameBuffer::create(1);
+        m_mainBuffer->initDepthTexture(m_window->getWidth(), m_window->getHeight());
 
-	m_imguiLayer.reset(new ImGuiLayer());
-	m_imguiLayer->onAttach();
+        m_mainBuffer->initColorTexture(0, m_window->getWidth(), m_window->getHeight(),
+                                       oyl::RGBA8, 
+                                       oyl::Nearest, 
+                                       oyl::Clamp);
 
-	m_mainBuffer = oyl::FrameBuffer::create(1);
-	m_mainBuffer->initDepthTexture(m_window->getWidth(), m_window->getHeight());
+        m_window->setVsync(false);
+    }
 
-	m_mainBuffer->initColorTexture(0, m_window->getWidth(), m_window->getHeight(),
-								   oyl::RGBA8,
-								   oyl::Nearest,
-								   oyl::Clamp);
+    Application::~Application() {}
 
-	m_window->setVsync(false);
-}
+    void Application::onEvent(Event& e)
+    {
+        EventListener dispatcher(e);
 
-Application::~Application() {
+        dispatcher.dispatch<WindowCloseEvent>([&](WindowCloseEvent& e)->bool
+        {
+            m_running = false;
+            return false;
+        });
+        dispatcher.dispatch<WindowResizeEvent>([&](WindowResizeEvent& e)->bool
+        {
+            m_window->updateViewport(e.getWidth(), e.getHeight());
+            m_mainBuffer->updateViewport(e.getWidth(), e.getHeight());
+            return false;
+        });
+        dispatcher.dispatch<WindowFocusEvent>([&](WindowFocusEvent& e)->bool
+        {
+        #if defined(OYL_DISTRIBUTION)
+            m_doUpdate = e.isFocused();
+        #endif
+            return !e.isFocused();
+        });
 
-}
+        m_imguiLayer->onEvent(e);
+        if (!e.handled) m_currentScene->onEvent(e);
+    }
 
-void Application::onEvent(Event& e) {
-	EventListener dispatcher(e);
-	dispatcher.dispatch<WindowCloseEvent>([&](WindowCloseEvent & e)->bool 
-										  {
-											  m_running = false;
-											  return false;
-										  });
-	dispatcher.dispatch<WindowResizeEvent>([&](WindowResizeEvent & e)->bool
-										   {
-											   m_window->updateViewport(e.getWidth(), e.getHeight());
-											   m_mainBuffer->updateViewport(e.getWidth(), e.getHeight());
-											   return false;
-										   });
-	dispatcher.dispatch<WindowFocusEvent>([&](WindowFocusEvent & e)->bool
-										  {
-#if defined(OYL_DISTRIBUTION)
-											  m_doUpdate = e.isFocused();
-#endif
-											  return !e.isFocused();
-										  });
+    void Application::pushScene(Ref<Scene> scene)
+    {
+        if (m_currentScene)
+        {
+            m_currentScene->onExit();
+            m_currentScene.reset();
+        }
 
-	m_imguiLayer->onEvent(e);
-	if (!e.handled) m_currentScene->onEvent(e);
-}
+        if (scene)
+        {
+            m_currentScene = scene;
+            m_currentScene->onEnter();
+        }
+    }
 
-void Application::pushScene(Ref<Scene> scene) {
-	if (m_currentScene) {
-		m_currentScene->onExit();
-		m_currentScene.reset();
-	}
+    void Application::run()
+    {
+        while (m_running)
+        {
+            float    time = (float) Platform::getTime();
+            Timestep timestep(time - m_lastFrameTime);
+            m_lastFrameTime = time;
 
-	if (scene) {
-		m_currentScene = scene;
-		m_currentScene->onEnter();
-	}
-}
+            if (m_doUpdate)
+            {
+                RenderCommand::setClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+                RenderCommand::clear();
+                m_mainBuffer->clear();
 
-void Application::run() {
-	while (m_running) {
-		float time = (float) Platform::getTime();
-		Timestep timestep(time - m_lastFrameTime);
-		m_lastFrameTime = time;
+                m_mainBuffer->bind();
+                Renderer::beginScene(m_camera);
 
-		if (m_doUpdate) {
-			RenderCommand::setClearColor(0.1f, 0.1f, 0.1f, 1.0f);
-			RenderCommand::clear();
-			m_mainBuffer->clear();
+                m_currentScene->onUpdate(abs(timestep) > 1.0f / 30.0f ? 1.0f / 30.0f : timestep);
 
-			m_mainBuffer->bind();
-			Renderer::beginScene(m_camera);
+                Renderer::endScene();
+                m_mainBuffer->unbind();
+            }
 
-			m_currentScene->onUpdate(abs(timestep) > 1.0f / 30.0f ? 1.0f / 30.0f : timestep);
+        #if !defined(OYL_DISTRIBUTION)
+            m_imguiLayer->begin();
 
-			Renderer::endScene();
-			m_mainBuffer->unbind();
-		}
+            m_imguiLayer->onImGuiRender();
+            m_currentScene->onImGuiRender();
 
-#if !defined(OYL_DISTRIBUTION)
-		m_imguiLayer->begin();
+            m_imguiLayer->end();
 
-		m_imguiLayer->onImGuiRender();
-		m_currentScene->onImGuiRender();
+        #else
+		    m_mainBuffer->moveToBackBuffer(m_window->getWidth(), m_window->getHeight());
+        #endif
 
-		m_imguiLayer->end();
-
-#else
-		m_mainBuffer->moveToBackBuffer(m_window->getWidth(), m_window->getHeight());
-#endif
-		
-		m_window->onUpdate(m_doUpdate);
-	}
-}
-
+            m_window->onUpdate(m_doUpdate);
+        }
+    }
 }
