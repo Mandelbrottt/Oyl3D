@@ -20,6 +20,7 @@ IncludeDir["glm"] = "Engine/vendor/glm/"
 IncludeDir["stb"] = "Engine/vendor/stb/"
 IncludeDir["fmod"] = "Engine/vendor/fmod/include/"
 IncludeDir["gainput"] = "Engine/vendor/gainput/lib/include/"
+IncludeDir["entt"] = "Engine/vendor/entt/src/"
 
 group "Dependencies"
 	include "Engine/vendor/glad/"
@@ -64,12 +65,16 @@ project "OylEngine"
 		"%{IncludeDir.imgui}",
 		"%{IncludeDir.glm}",
 		"%{IncludeDir.stb}",
+<<<<<<< HEAD
 		"%{IncludeDir.fmod}",
 		"%{IncludeDir.gainput}"
 	}
 
 	libdirs {
 		"Engine/vendor/fmod/lib/"
+=======
+		"%{IncludeDir.entt}"
+>>>>>>> Added ENTT As a Submodule
 	}
 
 	links {
