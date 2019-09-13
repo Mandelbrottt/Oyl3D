@@ -18,6 +18,7 @@ IncludeDir["glad"] = "Engine/vendor/glad/include/"
 IncludeDir["imgui"] = "Engine/vendor/imgui/"
 IncludeDir["glm"] = "Engine/vendor/glm/"
 IncludeDir["stb"] = "Engine/vendor/stb/"
+IncludeDir["entt"] = "Engine/vendor/entt/src/"
 
 group "Dependencies"
 	include "Engine/vendor/glad/"
@@ -60,7 +61,8 @@ project "OylEngine"
 		"%{IncludeDir.glad}",
 		"%{IncludeDir.imgui}",
 		"%{IncludeDir.glm}",
-		"%{IncludeDir.stb}"
+		"%{IncludeDir.stb}",
+		"%{IncludeDir.entt}"
 	}
 
 	links {
