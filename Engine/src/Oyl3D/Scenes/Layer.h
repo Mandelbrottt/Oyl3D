@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Oyl3D/Events/Event.h"
-#include "Oyl3D/System/Timestep.h"
 
 namespace oyl
 {
