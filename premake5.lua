@@ -53,7 +53,7 @@ project "OylEngine"
 	}
 
 	postbuildcommands {
-		"{COPY} %{prj.location}res/ %{wks.location}bin/"..outputdir.."/Engine/res/"
+		"{COPY} %{prj.location}res/ %{wks.location}bin/" .. outputdir .. "/Engine/res/"
 	}
 
 	includedirs {
@@ -65,16 +65,13 @@ project "OylEngine"
 		"%{IncludeDir.imgui}",
 		"%{IncludeDir.glm}",
 		"%{IncludeDir.stb}",
-<<<<<<< HEAD
 		"%{IncludeDir.fmod}",
-		"%{IncludeDir.gainput}"
+		"%{IncludeDir.gainput}",
+		"%{IncludeDir.entt}"
 	}
 
 	libdirs {
 		"Engine/vendor/fmod/lib/"
-=======
-		"%{IncludeDir.entt}"
->>>>>>> Added ENTT As a Submodule
 	}
 
 	links {
