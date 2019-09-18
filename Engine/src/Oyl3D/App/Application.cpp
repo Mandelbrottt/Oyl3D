@@ -7,7 +7,6 @@
 #include "Input/Input.h"
 
 #include "System/Platform.h"
-#include "System/Timestep.h"
 
 #include "Rendering/Renderer.h"
 

@@ -1,10 +1,12 @@
 #pragma once
 
 #if defined (OYL_PLATFORM_WINDOWS)
-    #if defined(OYL_ENGINE) && !defined(OYL_BUILD_DLL)
-        #define OYL_BUILD_DLL
-    #elif !defined(OYL_DLL)
-        #define OYL_DLL
+    #if defined(OYL_SHARED_LIB)
+        #if defined(OYL_ENGINE) && !defined(OYL_BUILD_DLL)
+            #define OYL_BUILD_DLL
+        #elif !defined(OYL_DLL)
+            #define OYL_DLL
+        #endif
     #endif
 
     #if defined(OYL_BUILD_DLL) && defined(OYL_DLL)

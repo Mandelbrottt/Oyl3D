@@ -12,8 +12,8 @@
 #include "Oyl3D/Graphics/Buffer.h"
 #include "Oyl3D/Graphics/Camera.h"
 
-#include "Oyl3D/System/LayerStack.h"
-#include "Oyl3D/System/Scene.h"
+#include "Oyl3D/Scenes/LayerStack.h"
+#include "Oyl3D/Scenes/Scene.h"
 
 namespace oyl
 {
