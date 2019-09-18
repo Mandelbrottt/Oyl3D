@@ -63,7 +63,7 @@ project "OylEngine"
 		"%{IncludeDir.imgui}",
 		"%{IncludeDir.glm}",
 		"%{IncludeDir.stb}",
-		"%{IncludeDir.entt}"
+		"%{IncludeDir.entt}",
 		"%{IncludeDir.fmod}"
 	}
 
