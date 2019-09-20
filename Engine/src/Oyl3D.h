@@ -26,6 +26,7 @@
 #include "Oyl3D/System/Platform.h"
 
 #include "Oyl3D/Utils/Logging.h"
+#include "Oyl3D/Utils/Refs.h"
 #include "Oyl3D/Utils/Timestep.h"
 
 // Library/Vendor Includes
