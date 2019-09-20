@@ -19,11 +19,13 @@ IncludeDir["imgui"] = "Engine/vendor/imgui/"
 IncludeDir["glm"] = "Engine/vendor/glm/"
 IncludeDir["stb"] = "Engine/vendor/stb/"
 IncludeDir["fmod"] = "Engine/vendor/fmod/include/"
+IncludeDir["gainput"] = "Engine/vendor/gainput/lib/include/"
 
 group "Dependencies"
 	include "Engine/vendor/glad/"
 	include "Engine/vendor/glfw/"
 	include "Engine/vendor/imgui/"
+	include "Engine/vendor/gainput/"
 group ""
 
 project "OylEngine"
@@ -62,7 +64,8 @@ project "OylEngine"
 		"%{IncludeDir.imgui}",
 		"%{IncludeDir.glm}",
 		"%{IncludeDir.stb}",
-		"%{IncludeDir.fmod}"
+		"%{IncludeDir.fmod}",
+		"%{IncludeDir.gainput}"
 	}
 
 	libdirs {
@@ -73,6 +76,7 @@ project "OylEngine"
 		"GLFW",
 		"Glad",
 		"ImGui",
+		"Gainput",
 		"opengl32.lib"
 	}
 
