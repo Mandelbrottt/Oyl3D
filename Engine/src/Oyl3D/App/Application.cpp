@@ -109,18 +109,11 @@ namespace oyl
             m_currentScene = std::move(scene);
 
             m_dispatcherPostCallback =
-                std::bind(&EventDispatcher::postEvent,
-                          &m_dispatcher,
-                          std::placeholders::_1);
+                OYL_CALLBACK_1(EventDispatcher::postEvent, &m_dispatcher);
             m_dispatcherRegisterCallback =
-                std::bind(&EventDispatcher::registerListener,
-                          &m_dispatcher,
-                          std::placeholders::_1,
-                          std::placeholders::_2);
-            m_dispatcherUnregisterCallback =
-                std::bind(&EventDispatcher::unregisterListener,
-                          &m_dispatcher,
-                          std::placeholders::_1);
+                OYL_CALLBACK_2(EventDispatcher::registerListener, &m_dispatcher);
+            m_dispatcherUnregisterCallback = 
+                OYL_CALLBACK_1(EventDispatcher::unregisterListener, &m_dispatcher);
 
             m_dispatcher.registerListener(m_currentScene);
             m_currentScene->setPostEventCallback(m_dispatcherPostCallback);
