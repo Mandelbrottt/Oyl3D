@@ -49,7 +49,6 @@ namespace oyl
 
             GLFWmonitor* monitor = nullptr;
 
-            
             OylEnum fullscreenType = Windowed;
 
             EventCallbackFn eventCallback;

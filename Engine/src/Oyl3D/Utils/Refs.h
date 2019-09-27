@@ -29,4 +29,16 @@ namespace oyl
             return std::make_unique<T>(std::forward<TArgs>(args)...);
         }
     };
+
+    template<class T>
+    class WeakRef : public std::weak_ptr<T>
+    {
+    public:
+        using std::weak_ptr<T>::weak_ptr;
+
+        std::weak_ptr<T> getRef()
+        {
+            return std::weak_ptr<T>::lock();
+        }
+    };
 }

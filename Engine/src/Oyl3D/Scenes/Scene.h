@@ -1,17 +1,17 @@
 #pragma once
 
-#include "Oyl3D/Debug/ImGuiLayer.h"
 #include "Oyl3D/Events/Event.h"
+#include "Oyl3D/Events/EventListener.h"
 
 #include "Oyl3D/Scenes/LayerStack.h"
 
 namespace oyl
 {
-    class Scene
+    class Scene : public EventListener
     {
         friend class Application;
     public:
-        Scene(const std::string& debugName = "Scene");
+        explicit Scene(const std::string& debugName = "Scene");
         virtual ~Scene();
 
         virtual void onEnter() = 0;
@@ -21,10 +21,16 @@ namespace oyl
         void pushOverlay(Ref<Layer> overlay);
         void popLayer(Ref<Layer> layer);
         void popOverlay(Ref<Layer> overlay);
+        
+        virtual void setPostEventCallback(PostEventFn callback) override;
+        virtual void setRegisterCallback(RegisterFn callback) override;
+        virtual void setUnregisterCallback(UnregisterFn callback) override;
+        
+        virtual bool onEvent(Ref<Event> event) override;
     private:
         void onUpdate(Timestep dt);
-        void onEvent(Event& e);
-        void onImGuiRender();
+        void onGuiRender();
+        
     private:
         LayerStack m_layerStack;
 

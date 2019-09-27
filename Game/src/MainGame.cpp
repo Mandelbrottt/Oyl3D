@@ -1,93 +1,111 @@
 #include <Oyl3D.h>
 
-class MainLayer : public oyl::Layer {
+#include <Oyl3D/ECS/System.h>
+
+class OtherSystem : public oyl::ECS::System
+{
+    virtual void onUpdate(oyl::Timestep dt) override
+    {
+        static int counter = 0;
+        if (counter++ >= 10)
+        {
+            postEvent(oyl::UniqueRef<oyl::WindowFocusEvent>::create(1));
+            counter = 0;
+        }
+    }
+};
+
+class PhysicsSystem : public oyl::ECS::System //, oyl::EventListener
+{
+    virtual bool onEvent(oyl::Ref<oyl::Event> e) override
+    {
+        OYL_LOG("IT WORKS");
+        return false;
+    }
+};
+
+class MainLayer : public oyl::Layer
+{
 public:
-	OYL_CREATE_FUNC(MainLayer)
+    OYL_CREATE_FUNC(MainLayer)
 
-	MainLayer() : Layer("Main") {}
+    MainLayer()
+        : Layer("Main")
+    {
+    }
 
-	virtual void onAttach() override {
-		m_mesh = oyl::Mesh::create("res/capsule.obj");
-		m_mesh->loadTexture("res/capsule0.jpg");
+    virtual void onAttach() override
+    {
+        scheduleSystemUpdate<PhysicsSystem>();
+        scheduleSystemUpdate<OtherSystem>();
+        // TODO: Internally registerForEvents(eventsBitMask);
+    }
 
-		m_meshShader = oyl::Shader::create({
-			{ oyl::VertexShader, "../Engine/res/meshShader.vert" },
-			{ oyl::FragmentShader, "../Engine/res/meshShader.frag" },
-											   });
-	}
+    virtual void onDetach() override
+    {
+    }
 
-	virtual void onDetach() override {}
+    virtual void onUpdate(oyl::Timestep dt) override
+    {
+    }
 
-	virtual void onUpdate(oyl::Timestep dt) override {
-		m_timeSince += dt;
+    virtual void onGuiRender() override
+    {
+    }
 
-		glm::mat4 transform(1.0f);
-		transform = glm::translate(transform, glm::vec3(0, 0, -5));
-		transform = glm::rotate(transform, m_timeSince, glm::vec3(0.0f, 1.0f, 0.5f));
+    virtual bool onEvent(oyl::Ref<oyl::Event> e) override
+    {
+        return false;
+    }
 
-		oyl::Renderer::submit(m_meshShader, m_mesh, transform);
-	}
-
-	virtual void onImGuiRender() override {
-
-	}
-
-	virtual void onEvent(oyl::Event& event) override {
-		oyl::EventListener dispatcher(event);
-		dispatcher.dispatch<oyl::KeyReleaseEvent>([](oyl::KeyReleaseEvent e)->bool {
-			oyl::Window& window = oyl::Application::get().getWindow();
-			switch (e.getKeyCode()) {
-			case oyl::Key_F11:
-				if (window.getFullscreenType() == oyl::Windowed) {
-					window.setFullscreenType(oyl::Fullscreen);
-				} else {
-					window.setFullscreenType(oyl::Windowed);
-				}
-				break;
-			case oyl::Key_F7:
-				window.setVsync(!window.isVsync());
-				break;
-			}
-			return false;
-												  });
-	}
 private:
-	oyl::Ref<oyl::Mesh> m_mesh;
-	oyl::Ref<oyl::Shader> m_meshShader;
 
-	float m_timeSince = 0.0f;
 };
 
-class MainScene : public oyl::Scene {
+class MainScene : public oyl::Scene
+{
 public:
-	OYL_CREATE_FUNC(MainScene)
+    OYL_CREATE_FUNC(MainScene)
 
-	MainScene() : oyl::Scene("MainScene") {}
-	~MainScene() {}
+    MainScene()
+        : oyl::Scene("MainScene")
+    {
+    }
 
-	virtual void onEnter() {
-		m_mainLayer = MainLayer::create();
-		pushLayer(m_mainLayer);
-	}
+    virtual ~MainScene() = default;
 
-	virtual void onExit() {
-		popLayer(m_mainLayer);
-	}
+    virtual void onEnter() override
+    {
+        m_mainLayer = MainLayer::create();
+        pushLayer(m_mainLayer);
+    }
+
+    virtual void onExit() override
+    {
+        popLayer(m_mainLayer);
+    }
+
 private:
-	oyl::Ref<MainLayer> m_mainLayer;
+    oyl::Ref<MainLayer> m_mainLayer;
 };
 
-class Game : public oyl::Application {
+class Game : public oyl::Application
+{
 public:
-	Game() {
-		pushScene(MainScene::create());
-	}
+    Game()
+    {
+        pushScene(MainScene::create());
+    }
 
-	virtual void onExit() {}
+    virtual void onExit()
+    {
+    }
+
 public:
-	OYL_CREATE_FUNC(MainScene)
+    OYL_CREATE_FUNC(MainScene)
 };
 
-oyl::Application* oyl::createApplication() {
-	return new Game();
+oyl::Application* oyl::createApplication()
+{
+    return new Game();
 }

@@ -8,6 +8,7 @@
 
 #include "Oyl3D/Events/Event.h"
 #include "Oyl3D/Events/EventListener.h"
+#include "Oyl3D/Events/EventDispatcher.h"
 
 #include "Oyl3D/Graphics/Buffer.h"
 #include "Oyl3D/Graphics/Camera.h"
@@ -17,6 +18,11 @@
 
 namespace oyl
 {
+    namespace _internal
+    {
+        class ApplicationListener;
+    }
+
     class Application
     {
     public:
@@ -25,7 +31,7 @@ namespace oyl
 
         void run();
 
-        void onEvent(Event& e);
+        bool onEvent(Ref<Event> event);
 
         void pushScene(Ref<Scene> scene);
 
@@ -44,11 +50,20 @@ namespace oyl
         PerspectiveCamera m_camera;
 
         float m_lastFrameTime = 0;
-        
+
         bool m_running  = true;
         bool m_doUpdate = true;
     private:
         static Application* s_instance;
+
+        EventDispatcher m_dispatcher;
+        
+        std::function<void(UniqueRef<Event>)> m_dispatcherPostCallback;
+        
+        std::function<void(Ref<IEventListener>, IEventListener::Priority)> m_dispatcherRegisterCallback;
+        std::function<void(Ref<IEventListener>)> m_dispatcherUnregisterCallback;
+
+        Ref<_internal::ApplicationListener> m_appListener;
     };
 
     Application* createApplication();

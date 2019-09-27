@@ -14,6 +14,21 @@
 
 namespace oyl
 {
+    namespace _internal
+    {
+        class ApplicationListener : public EventListener
+        {
+            friend class oyl::Application;
+        private:
+            virtual bool onEvent(Ref<Event> event) override
+            {
+                return app->onEvent(event);
+            }
+
+            oyl::Application* app = nullptr;
+        };
+    }
+
     Application* Application::s_instance = nullptr;
 
     Application::Application()
@@ -25,40 +40,52 @@ namespace oyl
         Log::init();
 
         m_window = Window::create();
-        m_window->setEventCallback(OYL_CALLBACK_1(Application::onEvent));
+        m_window->setEventCallback(std::bind(&EventDispatcher::postEvent,
+                                             &m_dispatcher,
+                                             std::placeholders::_1));
+
+        m_appListener      = Ref<_internal::ApplicationListener>::create();
+        m_appListener->app = this;
+        m_dispatcher.registerListener(m_appListener);
 
         m_imguiLayer.reset(new ImGuiLayer());
         m_imguiLayer->onAttach();
+
+        m_dispatcher.registerListener(m_imguiLayer);
 
         m_mainBuffer = oyl::FrameBuffer::create(1);
         m_mainBuffer->initDepthTexture(m_window->getWidth(), m_window->getHeight());
 
         m_mainBuffer->initColorTexture(0, m_window->getWidth(), m_window->getHeight(),
-                                       oyl::RGBA8, 
-                                       oyl::Nearest, 
+                                       oyl::RGBA8,
+                                       oyl::Nearest,
                                        oyl::Clamp);
 
         m_window->setVsync(false);
     }
 
-    Application::~Application() {}
-
-    void Application::onEvent(Event& e)
+    Application::~Application()
     {
-        EventListener dispatcher(e);
+    }
 
-        dispatcher.dispatch<WindowCloseEvent>([&](WindowCloseEvent& e)->bool
+    bool Application::onEvent(Ref<Event> event)
+    {
+        bool handled = false;
+
+        EventListenerDeprecated dispatcher(*event);
+
+        handled = handled || dispatcher.dispatch<WindowCloseEvent>([&](WindowCloseEvent& e)
         {
             m_running = false;
             return false;
         });
-        dispatcher.dispatch<WindowResizeEvent>([&](WindowResizeEvent& e)->bool
+        handled = handled || dispatcher.dispatch<WindowResizeEvent>([&](WindowResizeEvent& e)
         {
             m_window->updateViewport(e.getWidth(), e.getHeight());
             m_mainBuffer->updateViewport(e.getWidth(), e.getHeight());
             return false;
         });
-        dispatcher.dispatch<WindowFocusEvent>([&](WindowFocusEvent& e)->bool
+        handled = handled || dispatcher.dispatch<WindowFocusEvent>([&](WindowFocusEvent& e)
         {
         #if defined(OYL_DISTRIBUTION)
             m_doUpdate = e.isFocused();
@@ -66,8 +93,7 @@ namespace oyl
             return !e.isFocused();
         });
 
-        m_imguiLayer->onEvent(e);
-        if (!e.handled) m_currentScene->onEvent(e);
+        return handled;
     }
 
     void Application::pushScene(Ref<Scene> scene)
@@ -80,7 +106,27 @@ namespace oyl
 
         if (scene)
         {
-            m_currentScene = scene;
+            m_currentScene = std::move(scene);
+
+            m_dispatcherPostCallback =
+                std::bind(&EventDispatcher::postEvent,
+                          &m_dispatcher,
+                          std::placeholders::_1);
+            m_dispatcherRegisterCallback =
+                std::bind(&EventDispatcher::registerListener,
+                          &m_dispatcher,
+                          std::placeholders::_1,
+                          std::placeholders::_2);
+            m_dispatcherUnregisterCallback =
+                std::bind(&EventDispatcher::unregisterListener,
+                          &m_dispatcher,
+                          std::placeholders::_1);
+
+            m_dispatcher.registerListener(m_currentScene);
+            m_currentScene->setPostEventCallback(m_dispatcherPostCallback);
+            m_currentScene->setRegisterCallback(m_dispatcherRegisterCallback);
+            m_currentScene->setUnregisterCallback(m_dispatcherUnregisterCallback);
+
             m_currentScene->onEnter();
         }
     }
@@ -89,7 +135,7 @@ namespace oyl
     {
         while (m_running)
         {
-            float    time = (float) Platform::getTime();
+            auto     time = (float) Platform::getTime();
             Timestep timestep(time - m_lastFrameTime);
             m_lastFrameTime = time;
 
@@ -102,23 +148,25 @@ namespace oyl
                 m_mainBuffer->bind();
                 Renderer::beginScene(m_camera);
 
+                m_dispatcher.dispatchEvents();
+
                 m_currentScene->onUpdate(abs(timestep) > 1.0f / 30.0f ? 1.0f / 30.0f : timestep);
 
                 Renderer::endScene();
                 m_mainBuffer->unbind();
             }
 
-        #if !defined(OYL_DISTRIBUTION)
+#if !defined(OYL_DISTRIBUTION)
             m_imguiLayer->begin();
 
-            m_imguiLayer->onImGuiRender();
-            m_currentScene->onImGuiRender();
+            m_imguiLayer->onGuiRender();
+            m_currentScene->onGuiRender();
 
             m_imguiLayer->end();
 
-        #else
-		    m_mainBuffer->moveToBackBuffer(m_window->getWidth(), m_window->getHeight());
-        #endif
+#else
+            m_mainBuffer->moveToBackBuffer(m_window->getWidth(), m_window->getHeight());
+#endif
 
             m_window->onUpdate(m_doUpdate);
         }

@@ -74,29 +74,29 @@ namespace oyl
 
             WindowData& data = *(WindowData*) glfwGetWindowUserPointer(window);
 
-            WindowResizeEvent event(width, height);
+            UniqueRef<Event> event = UniqueRef<WindowResizeEvent>::create(width, height);
 
             data.width  = width;
             data.height = height;
-            data.eventCallback(event);
+            data.eventCallback(std::move(event));
         });
 
         glfwSetWindowCloseCallback(m_window, [](GLFWwindow* window)
         {
             WindowData& data = *(WindowData*) glfwGetWindowUserPointer(window);
 
-            WindowCloseEvent event;
+            UniqueRef<Event> event = UniqueRef<WindowCloseEvent>::create();
 
-            data.eventCallback(event);
+            data.eventCallback(std::move(event));
         });
 
         glfwSetWindowFocusCallback(m_window, [](GLFWwindow* window, int focused)
         {
             WindowData& data = *(WindowData*) glfwGetWindowUserPointer(window);
 
-            WindowFocusEvent focusEvent(focused);
+            UniqueRef<Event> event = UniqueRef<WindowFocusEvent>::create(focused);
 
-            data.eventCallback(focusEvent);
+            data.eventCallback(std::move(event));
         });
 
         glfwSetKeyCallback(m_window, [](GLFWwindow* window, int key, int scancode, int action, int mods)
@@ -105,25 +105,27 @@ namespace oyl
 
             static int repeats = 0;
 
+            UniqueRef<Event> event(nullptr);
+
             switch (action)
             {
                 case GLFW_PRESS:
                 {
-                    KeyPressEvent pressEvent(glfwToOylCode(key));
-                    data.eventCallback(pressEvent);
+                    event = UniqueRef<KeyPressEvent>::create(glfwToOylCode(key));
+                    data.eventCallback(std::move(event));
                     break;
                 }
                 case GLFW_RELEASE:
                 {
-                    KeyReleaseEvent releaseEvent(glfwToOylCode(key));
-                    data.eventCallback(releaseEvent);
+                    event = UniqueRef<KeyReleaseEvent>::create(glfwToOylCode(key));
+                    data.eventCallback(std::move(event));
                     repeats = 0;
                     break;
                 }
                 case GLFW_REPEAT:
                 {
-                    KeyPressEvent repeatEvent(glfwToOylCode(key), ++repeats);
-                    data.eventCallback(repeatEvent);
+                    event = UniqueRef<KeyReleaseEvent>::create(glfwToOylCode(key), ++repeats);
+                    data.eventCallback(std::move(event));
                     break;
                 }
             }
@@ -133,27 +135,29 @@ namespace oyl
         {
             WindowData& data = *(WindowData*) glfwGetWindowUserPointer(window);
 
-            KeyTypeEvent event(glfwToOylCode(keycode));
+            UniqueRef<Event> event = UniqueRef<KeyTypeEvent>::create(glfwToOylCode(keycode));
 
-            data.eventCallback(event);
+            data.eventCallback(std::move(event));
         });
 
         glfwSetMouseButtonCallback(m_window, [](GLFWwindow* window, int button, int action, int mods)
         {
             WindowData& data = *(WindowData*) glfwGetWindowUserPointer(window);
 
+            UniqueRef<Event> event(nullptr);
+
             switch (action)
             {
                 case GLFW_PRESS:
                 {
-                    MousePressEvent pressEvent(glfwToOylCode(button));
-                    data.eventCallback(pressEvent);
+                    event = UniqueRef<MousePressEvent>::create(glfwToOylCode(button));
+                    data.eventCallback(std::move(event));
                     break;
                 }
                 case GLFW_RELEASE:
                 {
-                    MouseReleaseEvent releaseEvent(glfwToOylCode(button));
-                    data.eventCallback(releaseEvent);
+                    event = UniqueRef<MouseReleaseEvent>::create(glfwToOylCode(button));
+                    data.eventCallback(std::move(event));
                     break;
                 }
             }
@@ -163,8 +167,8 @@ namespace oyl
         {
             WindowData& data = *(WindowData*) glfwGetWindowUserPointer(window);
 
-            MouseScrollEvent event((float) x, (float) y);
-            data.eventCallback(event);
+            UniqueRef<Event> event = UniqueRef<MouseScrollEvent>::create((float) x, (float) y);
+            data.eventCallback(std::move(event));
         });
 
         glfwSetCursorPosCallback(m_window, [](GLFWwindow* window, double x, double y)
@@ -173,12 +177,15 @@ namespace oyl
 
             static float lastx = (float) x, lasty = (float) y;
 
-            MouseMoveEvent event((float) x, (float) y, (float) x - lastx, (float) y - lasty);
+            UniqueRef<Event> event = UniqueRef<MouseMoveEvent>::create((float) x,
+                                                                       (float) y,
+                                                                       (float) x - lastx,
+                                                                       (float) y - lasty);
 
             lastx = (float) x;
             lasty = (float) y;
 
-            data.eventCallback(event);
+            data.eventCallback(std::move(event));
         });
     }
 

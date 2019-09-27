@@ -12,7 +12,7 @@ namespace oyl
 
         virtual void onAttach() override;
         virtual void onDetach() override;
-        virtual void onImGuiRender() override;
+        virtual void onGuiRender() override;
 
         void begin();
         void end();

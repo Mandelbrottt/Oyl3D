@@ -83,7 +83,7 @@ namespace oyl
         }
     }
 
-    void ImGuiLayer::onImGuiRender()
+    void ImGuiLayer::onGuiRender()
     {
         // Only still here for easy navigation to the source code for learning imgui
         if (false) ImGui::ShowDemoWindow();
