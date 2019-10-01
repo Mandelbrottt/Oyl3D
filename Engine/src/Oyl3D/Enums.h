@@ -15,19 +15,17 @@ namespace oyl
         Fullscreen = Borderless,
 
         // Event Types //
-        WindowClose = 1, WindowMove, WindowResize, WindowFocus,
-        KeyPress, KeyType, KeyRelease,
-        MousePress, MouseRelease, MouseMove, MouseScroll,
+        TypeWindowClosed = 1, TypeWindowMoved, TypeWindowResized, TypeWindowFocused,
+        TypeKeyPressed, TypeKeyTyped, TypeKeyReleased,
+        TypeMousePressed, TypeMouseReleased, TypeMouseMoved, TypeMouseScrolled,
         EventTypeCustomStart,
 
         // Event Categories //
-        EventCategoryApplication = 1,
-        EventCategoryWindow,
-        EventCategoryInput,
-        EventCategoryKeyboard,
-        EventCategoryMouse,
-        EventCategoryMouseButton,
-        EventCategoryCustomStart,
+        CategoryApplication = 1,
+        CategoryWindow,
+        CategoryInput,
+        CategoryAudio,
+        CategoryCustomStart,
 
         // Shader Data Types //
         UInt = 1, Uint2, Uint3, Uint4,
