@@ -141,7 +141,7 @@ namespace oyl
         for (; it != m_eventQueue.end(); ++it)
         {
             event = std::move(*it);
-
+            
             dispatchEvent(std::move(event));
         }
         m_eventQueue.clear();
@@ -153,7 +153,13 @@ namespace oyl
 
         for (const auto& listener : m_listeners)
         {
-            listener.listener.lock()->onEvent(dispatchEvent);
+            auto li = listener.listener.lock();
+            
+            if (li->getEventMask()[dispatchEvent->type] ||
+                li->getCategoryMask()[dispatchEvent->category])
+            {
+                li->onEvent(dispatchEvent);
+            }
         }
     }
 }

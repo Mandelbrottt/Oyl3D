@@ -46,8 +46,12 @@ namespace oyl
 
         m_appListener      = Ref<_internal::ApplicationListener>::create();
         m_appListener->app = this;
+        m_appListener->addToEventMask(oyl::TypeWindowClosed);
+        m_appListener->addToEventMask(oyl::TypeWindowResized);
+        m_appListener->addToEventMask(oyl::TypeWindowFocused);
+        
         m_dispatcher.registerListener(m_appListener);
-
+        
         m_imguiLayer.reset(new ImGuiLayer());
         m_imguiLayer->onAttach();
 
@@ -72,26 +76,34 @@ namespace oyl
     {
         bool handled = false;
 
-        EventListenerDeprecated dispatcher(*event);
+        //EventListenerDeprecated dispatcher(*event);
 
-        handled = handled || dispatcher.dispatch<WindowCloseEvent>([&](WindowCloseEvent& e)
+        switch (event->type)
         {
-            m_running = false;
-            return false;
-        });
-        handled = handled || dispatcher.dispatch<WindowResizeEvent>([&](WindowResizeEvent& e)
-        {
-            m_window->updateViewport(e.getWidth(), e.getHeight());
-            m_mainBuffer->updateViewport(e.getWidth(), e.getHeight());
-            return false;
-        });
-        handled = handled || dispatcher.dispatch<WindowFocusEvent>([&](WindowFocusEvent& e)
-        {
-        #if defined(OYL_DISTRIBUTION)
-            m_doUpdate = e.isFocused();
-        #endif
-            return !e.isFocused();
-        });
+            case TypeWindowClosed:
+            {
+                m_running = false;
+                handled = true;
+                break;
+            }
+            case TypeWindowResized:
+            {
+                auto e = (WindowResizedEvent) *event;
+                m_window->updateViewport(e.width, e.height);
+                m_mainBuffer->updateViewport(e.width, e.height);
+                break;
+            }
+            case TypeWindowFocused:
+            {
+                auto e = (WindowFocusedEvent) *event;
+            #if defined(OYL_DISTRIBUTION)
+                m_doUpdate = e.focused;
+            #endif
+                break;
+            }
+        }
+
+        handled |= m_doUpdate;
 
         return handled;
     }
@@ -112,7 +124,7 @@ namespace oyl
                 OYL_CALLBACK_1(EventDispatcher::postEvent, &m_dispatcher);
             m_dispatcherRegisterCallback =
                 OYL_CALLBACK_2(EventDispatcher::registerListener, &m_dispatcher);
-            m_dispatcherUnregisterCallback = 
+            m_dispatcherUnregisterCallback =
                 OYL_CALLBACK_1(EventDispatcher::unregisterListener, &m_dispatcher);
 
             m_dispatcher.registerListener(m_currentScene);

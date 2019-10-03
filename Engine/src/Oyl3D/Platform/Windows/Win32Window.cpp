@@ -3,6 +3,8 @@
 #include "Win32Window.h"
 #include "Win32Input.h"
 
+#include "Events/Event.h"
+
 #include <glfw/glfw3.h>
 #include <glad/glad.h>
 
@@ -74,29 +76,31 @@ namespace oyl
 
             WindowData& data = *(WindowData*) glfwGetWindowUserPointer(window);
 
-            UniqueRef<Event> event = UniqueRef<WindowResizeEvent>::create(width, height);
+            WindowResizedEvent event{};
+            event.width  = width;
+            event.height = height;
 
             data.width  = width;
             data.height = height;
-            data.eventCallback(std::move(event));
+            data.eventCallback(Event::create(event));
         });
 
         glfwSetWindowCloseCallback(m_window, [](GLFWwindow* window)
         {
             WindowData& data = *(WindowData*) glfwGetWindowUserPointer(window);
 
-            UniqueRef<Event> event = UniqueRef<WindowCloseEvent>::create();
+            WindowClosedEvent event{};
 
-            data.eventCallback(std::move(event));
+            data.eventCallback(Event::create(event));
         });
 
         glfwSetWindowFocusCallback(m_window, [](GLFWwindow* window, int focused)
         {
             WindowData& data = *(WindowData*) glfwGetWindowUserPointer(window);
 
-            UniqueRef<Event> event = UniqueRef<WindowFocusEvent>::create(focused);
+            WindowFocusedEvent event{};
 
-            data.eventCallback(std::move(event));
+            data.eventCallback(Event::create(event));
         });
 
         glfwSetKeyCallback(m_window, [](GLFWwindow* window, int key, int scancode, int action, int mods)
@@ -105,27 +109,32 @@ namespace oyl
 
             static int repeats = 0;
 
-            UniqueRef<Event> event(nullptr);
-
             switch (action)
             {
                 case GLFW_PRESS:
                 {
-                    event = UniqueRef<KeyPressEvent>::create(glfwToOylCode(key));
-                    data.eventCallback(std::move(event));
+                    KeyPressedEvent event{};
+                    event.keycode     = glfwToOylCode(key);
+                    event.mods        = mods;
+                    event.repeatCount = 0;
+                    data.eventCallback(Event::create(event));
                     break;
                 }
                 case GLFW_RELEASE:
                 {
-                    event = UniqueRef<KeyReleaseEvent>::create(glfwToOylCode(key));
-                    data.eventCallback(std::move(event));
-                    repeats = 0;
+                    KeyReleasedEvent event{};
+                    event.keycode = glfwToOylCode(key);
+                    event.mods    = mods;
+                    data.eventCallback(Event::create(event));
                     break;
                 }
                 case GLFW_REPEAT:
                 {
-                    event = UniqueRef<KeyReleaseEvent>::create(glfwToOylCode(key), ++repeats);
-                    data.eventCallback(std::move(event));
+                    KeyPressedEvent event{};
+                    event.keycode     = glfwToOylCode(key);
+                    event.mods        = mods;
+                    event.repeatCount = ++repeats;
+                    data.eventCallback(Event::create(event));
                     break;
                 }
             }
@@ -135,29 +144,32 @@ namespace oyl
         {
             WindowData& data = *(WindowData*) glfwGetWindowUserPointer(window);
 
-            UniqueRef<Event> event = UniqueRef<KeyTypeEvent>::create(glfwToOylCode(keycode));
+            KeyTypedEvent event{};
+            event.keycode = glfwToOylCode(keycode);
 
-            data.eventCallback(std::move(event));
+            data.eventCallback(Event::create(event));
         });
 
         glfwSetMouseButtonCallback(m_window, [](GLFWwindow* window, int button, int action, int mods)
         {
             WindowData& data = *(WindowData*) glfwGetWindowUserPointer(window);
 
-            UniqueRef<Event> event(nullptr);
-
             switch (action)
             {
                 case GLFW_PRESS:
                 {
-                    event = UniqueRef<MousePressEvent>::create(glfwToOylCode(button));
-                    data.eventCallback(std::move(event));
+                    MousePressedEvent event{};
+                    event.button = glfwToOylCode(button);
+                    event.mods   = mods;
+                    data.eventCallback(Event::create(event));
                     break;
                 }
                 case GLFW_RELEASE:
                 {
-                    event = UniqueRef<MouseReleaseEvent>::create(glfwToOylCode(button));
-                    data.eventCallback(std::move(event));
+                    MouseReleasedEvent event{};
+                    event.button = glfwToOylCode(button);
+                    event.mods   = mods;
+                    data.eventCallback(Event::create(event));
                     break;
                 }
             }
@@ -167,8 +179,11 @@ namespace oyl
         {
             WindowData& data = *(WindowData*) glfwGetWindowUserPointer(window);
 
-            UniqueRef<Event> event = UniqueRef<MouseScrollEvent>::create((float) x, (float) y);
-            data.eventCallback(std::move(event));
+            MouseScrolledEvent event{};
+            event.x = (f32) x;
+            event.y = (f32) y;
+
+            data.eventCallback(Event::create(event));
         });
 
         glfwSetCursorPosCallback(m_window, [](GLFWwindow* window, double x, double y)
@@ -177,15 +192,16 @@ namespace oyl
 
             static float lastx = (float) x, lasty = (float) y;
 
-            UniqueRef<Event> event = UniqueRef<MouseMoveEvent>::create((float) x,
-                                                                       (float) y,
-                                                                       (float) x - lastx,
-                                                                       (float) y - lasty);
+            MouseMovedEvent event{};
+            event.x  = (f32) x;
+            event.y  = (f32) y;
+            event.dx = (f32) x - lastx;
+            event.dy = (f32) y - lasty;
 
             lastx = (float) x;
             lasty = (float) y;
 
-            data.eventCallback(std::move(event));
+            data.eventCallback(Event::create(event));
         });
     }
 

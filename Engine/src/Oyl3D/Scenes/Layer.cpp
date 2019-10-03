@@ -13,6 +13,8 @@ namespace oyl
 
     Layer::~Layer()
     {
+        for (auto system : m_systems)
+            system->onExit();
     }
 
     void Layer::onAttach()
@@ -50,16 +52,5 @@ namespace oyl
         {
             system->onGuiRender();
         }
-    }
-
-    bool Layer::onEventSystems(Ref<Event> event)
-    {
-        bool handled = false;
-        for (auto system : m_systems)
-        {
-            handled = system->onEvent(event);
-            if (handled) break;
-        }
-        return handled;
     }
 }

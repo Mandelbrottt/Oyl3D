@@ -1,10 +1,125 @@
 #pragma once
 
-#include "Oyl3d/oylpch.h"
+#include "Oyl3D/oylpch.h"
+
+#define _OYL_EVENT_SIZE 32
+#define _OYL_NUM_EVENT_ARGS ((_OYL_EVENT_SIZE - 8) / 4)
+
+#define OYL_EVENT_STRUCT(class_name, event_type, event_category, x)               \
+union class_name {                                                                \
+    class_name() : type(event_type), category(event_category) {}                  \
+    class_name(::oyl::Event& e) { *this = *reinterpret_cast<class_name*>(&e); }   \
+    operator ::oyl::Event() { return *reinterpret_cast<::oyl::Event*>(this); }    \
+    struct {                                                                      \
+        ::oyl::u32 args[_OYL_NUM_EVENT_ARGS];                                     \
+        ::oyl::u32 type;                                                          \
+        ::oyl::u32 category;                                                      \
+    };                                                                            \
+    struct x;                                                                     \
+private:                                                                          \
+    struct _sizeTest x;                                                           \
+    static_assert(sizeof(_sizeTest) <= _OYL_NUM_EVENT_ARGS * 4);                  \
+}
 
 namespace oyl
 {
+    struct Event
+    {
+        u32 args[_OYL_NUM_EVENT_ARGS];
+        u32 type;
+        u32 category;
 
+        static UniqueRef<Event> create(Event e)
+        {
+            auto sptr = UniqueRef<Event>::create();
+            *sptr = e;
+            return sptr;
+        }
+    };
+
+    // Window Events //////////////////////////////////////////////////////
+
+    OYL_EVENT_STRUCT(WindowClosedEvent, TypeWindowClosed, CategoryWindow,
+                     {
+                     i32 _noArgs;
+                     });
+
+    OYL_EVENT_STRUCT(WindowMovedEvent, TypeWindowMoved, CategoryWindow,
+                     {
+                     i32 x;
+                     i32 y;
+                     });
+
+    OYL_EVENT_STRUCT(WindowResizedEvent, TypeWindowResized, CategoryWindow,
+                     {
+                     i32 width;
+                     i32 height;
+                     });
+
+    OYL_EVENT_STRUCT(WindowFocusedEvent, TypeWindowFocused, CategoryWindow,
+                     {
+                     i32 focused;
+                     });
+
+    //-Window Events-//////////////////////////////////////////////////////
+
+    // Keyboard Events ////////////////////////////////////////////////////
+
+    OYL_EVENT_STRUCT(KeyPressedEvent, TypeKeyPressed, CategoryInput,
+                     {
+                     i32 keycode;
+                     i32 repeatCount;
+                     i32 mods;
+                     });
+
+    OYL_EVENT_STRUCT(KeyReleasedEvent, TypeKeyReleased, CategoryInput,
+                     {
+                     i32 keycode;
+                     i32 mods;
+
+                     });
+
+    OYL_EVENT_STRUCT(KeyTypedEvent, TypeKeyTyped, CategoryInput,
+                     {
+                     i32 keycode;
+                     i32 scancode;
+                     i32 repeatCount;
+                     i32 mods;
+                     });
+
+    //-Keyboard Events-////////////////////////////////////////////////////
+
+    // Mouse Events ///////////////////////////////////////////////////////
+
+    OYL_EVENT_STRUCT(MousePressedEvent, TypeMousePressed, CategoryInput,
+                     {
+                     i32 button;
+                     i32 mods;
+                     });
+
+    OYL_EVENT_STRUCT(MouseReleasedEvent, TypeMouseReleased, CategoryInput,
+                     {
+                     i32 button;
+                     i32 mods;
+                     });
+
+    OYL_EVENT_STRUCT(MouseMovedEvent, TypeMouseMoved, CategoryInput,
+                     {
+                     f32 x;
+                     f32 y;
+                     f32 dx;
+                     f32 dy;
+                     });
+
+    OYL_EVENT_STRUCT(MouseScrolledEvent, TypeMouseScrolled, CategoryInput,
+                     {
+                     f32 x;
+                     f32 y;
+                     });
+
+    //-Mouse Events-///////////////////////////////////////////////////////
+
+    /*
 // To create your own custom event types and type categories, create your own
 // enum with any name of type unsigned int, and have the first value be equal to
 // $EventTypeCustomStart or $EventCategoryCustomStart.
@@ -366,4 +481,5 @@ namespace oyl
         float m_x;
         float m_y;
     };
+    */
 }

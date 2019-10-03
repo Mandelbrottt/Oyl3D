@@ -20,10 +20,8 @@ namespace oyl
 
         virtual bool onEvent(Ref<Event> event) override;
 
-        // TEMPORARY:
         void onUpdateSystems(Timestep dt);
         void onGuiRenderSystems();
-        bool onEventSystems(Ref<Event> event);
 
     protected:
         template<class T>
@@ -36,20 +34,6 @@ namespace oyl
         const std::string m_debugName;
 #endif
     };
-
-    template<class T>
-    void Layer::scheduleSystemUpdate(Priority priority)
-    {
-        static bool isInitialized = false;
-        OYL_ASSERT(!isInitialized, "Systems should only be initialized once!");
-
-        Ref<ECS::System> newSystem = Ref<T>::create();
-
-        newSystem->setPostEventCallback(m_postEventCallback);
-        m_registerCallback(newSystem, priority);
-        
-        m_systems.emplace_back(std::move(newSystem));
-
-        isInitialized = true;
-    }
 }
+
+#include "Layer.inl"
