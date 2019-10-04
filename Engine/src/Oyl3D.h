@@ -8,6 +8,8 @@
 
 #include "Oyl3D/Debug/ImGuiLayer.h"
 
+#include "Oyl3D/ECS/System.h"
+
 #include "Oyl3D/Events/Event.h"
 #include "Oyl3D/Events/EventListener.h"
 

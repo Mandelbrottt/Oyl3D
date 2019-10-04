@@ -1,7 +1,5 @@
 #include <Oyl3D.h>
 
-#include <Oyl3D/ECS/System.h>
-
 enum CustomEvents
 {
     TypeTestEvent = oyl::EventTypeCustomStart
