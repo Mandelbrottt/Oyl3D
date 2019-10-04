@@ -34,14 +34,15 @@ namespace oyl
 
     bool Scene::onEvent(Ref<Event> event)
     {
-        bool handled = false;
-        for (const Ref<Layer>& layer : m_layerStack)
-        {
-            handled = layer->onEvent(event);
-            
-            if (handled) break;
-        }
-        return handled;
+        //bool handled = false;
+        //for (const Ref<Layer>& layer : m_layerStack)
+        //{
+        //    handled = layer->onEvent(event);
+        //    
+        //    if (handled) break;
+        //}
+        //return handled;
+        return false;
     }
 
     void Scene::setPostEventCallback(PostEventFn callback)

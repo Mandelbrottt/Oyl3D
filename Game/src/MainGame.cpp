@@ -22,8 +22,8 @@ class OtherSystem : public oyl::ECS::System
         if (counter++ >= 60)
         {
             TestEvent test;
-            test.x   = rand() % 10;
-            test.y   = rand() % 10;
+            test.x   = rand() % 9 + 1;
+            test.y   = rand() % 9 + 1;
             test.xyz = (float) test.x / (float) test.y;
 
             postEvent(oyl::Event::create(test));
@@ -37,7 +37,8 @@ class PhysicsSystem : public oyl::ECS::System
     virtual void onEnter() override
     {
         addToEventMask(TypeTestEvent);
-        addToEventMask(oyl::TypeMousePressed);
+        addToCategoryMask(oyl::CategoryMouse);
+        addToCategoryMask(oyl::CategoryGamepad);
     }
 
     virtual bool onEvent(oyl::Ref<oyl::Event> event) override
@@ -54,6 +55,31 @@ class PhysicsSystem : public oyl::ECS::System
             {
                 auto e = (oyl::MousePressedEvent) *event;
                 OYL_LOG("Mouse Pressed Event: {0} {1}", e.button, e.mods);
+                break;
+            }
+            case oyl::TypeGamepadConnected:
+            case oyl::TypeGamepadDisconnected:
+            {
+                auto e = (oyl::GamepadConnectedEvent) *event;
+                OYL_LOG("Gamepad Connection Event: {0}", e.gid);
+                break;
+            }
+            case oyl::TypeGamepadButtonPressed:
+            {
+                auto e = (oyl::GamepadButtonPressedEvent) *event;
+                OYL_LOG("Gamepad Button Press Event: {0} {1} {2}", e.gid, e.button, e.repeatCount);
+                break;
+            }
+            case oyl::TypeGamepadStickMoved:
+            {
+                auto e = (oyl::GamepadStickMovedEvent) *event;
+                OYL_LOG("Gamepad Stick Moved Event: {0} {1} {2} {3} {4} {5}", e.gid, e.stick, e.x, e.y, e.dx, e.dy);
+                break;
+            }
+            case oyl::TypeGamepadTriggerPressed:
+            {
+                auto e = (oyl::GamepadTriggerPressedEvent) *event;
+                OYL_LOG("Gamepad Trigger Moved Event: {0} {1} {2} {3}", e.gid, e.trigger, e.x, e.dx);
                 break;
             }
         }
@@ -76,6 +102,17 @@ public:
     {
         scheduleSystemUpdate<PhysicsSystem>();
         scheduleSystemUpdate<OtherSystem>();
+
+        addToEventMask(oyl::TypeKeyPressed);
+        addToEventMask(oyl::TypeGamepadStickMoved);
+
+        m_mesh = oyl::Mesh::create("res/capsule.obj");
+        m_mesh->loadTexture("res/capsule0.jpg");
+
+        m_meshShader = oyl::Shader::create({
+            { oyl::VertexShader, "../Engine/res/meshShader.vert" },
+            { oyl::FragmentShader, "../Engine/res/meshShader.frag" },
+        });
     }
 
     virtual void onDetach() override
@@ -84,18 +121,58 @@ public:
 
     virtual void onUpdate(oyl::Timestep dt) override
     {
+        m_timeSince += dt;
+
+        glm::mat4 transform(1.0f);
+
+        transform = glm::translate(transform, m_translate);
+        transform = glm::rotate(transform, m_timeSince, glm::vec3(1.0f, 0.5f, 0.0f));
+        oyl::Renderer::submit(m_meshShader, m_mesh, transform);
     }
 
     virtual void onGuiRender() override
     {
     }
 
-    virtual bool onEvent(oyl::Ref<oyl::Event> e) override
+    virtual bool onEvent(oyl::Ref<oyl::Event> event) override
     {
+        switch (event->type)
+        {
+            case oyl::TypeKeyReleased:
+            {
+                oyl::Window& window = oyl::Application::get().getWindow();
+
+                auto e = (oyl::KeyReleasedEvent) *event;
+                if (e.keycode == oyl::Key_F11)
+                {
+                    if (window.getFullscreenType() == oyl::Windowed)
+                        window.setFullscreenType(oyl::Fullscreen);
+                    else
+                        window.setFullscreenType(oyl::Windowed);
+                }
+                else if (e.keycode == oyl::Key_F7)
+                {
+                    window.setVsync(!window.isVsync());
+                }
+            }
+            case oyl::TypeGamepadStickMoved:
+            {
+                auto e = (oyl::GamepadStickMovedEvent) *event;
+                if (e.stick == oyl::Gamepad_LeftStick)
+                {
+                    m_translate = glm::vec3(e.x, e.y, 0.0f);
+                }
+            }
+        }
         return false;
     }
 
 private:
+    oyl::Ref<oyl::Mesh>   m_mesh;
+    oyl::Ref<oyl::Shader> m_meshShader;
+    glm::vec3 m_translate = glm::vec3(0.0f);
+
+    float m_timeSince = 0.0f;
 };
 
 class MainScene : public oyl::Scene

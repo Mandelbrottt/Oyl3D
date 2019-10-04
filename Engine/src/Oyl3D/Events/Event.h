@@ -32,7 +32,7 @@ namespace oyl
         static UniqueRef<Event> create(Event e)
         {
             auto sptr = UniqueRef<Event>::create();
-            *sptr = e;
+            *sptr     = e;
             return sptr;
         }
     };
@@ -65,21 +65,21 @@ namespace oyl
 
     // Keyboard Events ////////////////////////////////////////////////////
 
-    OYL_EVENT_STRUCT(KeyPressedEvent, TypeKeyPressed, CategoryInput,
+    OYL_EVENT_STRUCT(KeyPressedEvent, TypeKeyPressed, CategoryKeyboard,
                      {
                      i32 keycode;
                      i32 repeatCount;
                      i32 mods;
                      });
 
-    OYL_EVENT_STRUCT(KeyReleasedEvent, TypeKeyReleased, CategoryInput,
+    OYL_EVENT_STRUCT(KeyReleasedEvent, TypeKeyReleased, CategoryKeyboard,
                      {
                      i32 keycode;
                      i32 mods;
 
                      });
 
-    OYL_EVENT_STRUCT(KeyTypedEvent, TypeKeyTyped, CategoryInput,
+    OYL_EVENT_STRUCT(KeyTypedEvent, TypeKeyTyped, CategoryKeyboard,
                      {
                      i32 keycode;
                      i32 scancode;
@@ -91,19 +91,19 @@ namespace oyl
 
     // Mouse Events ///////////////////////////////////////////////////////
 
-    OYL_EVENT_STRUCT(MousePressedEvent, TypeMousePressed, CategoryInput,
+    OYL_EVENT_STRUCT(MousePressedEvent, TypeMousePressed, CategoryMouse,
                      {
                      i32 button;
                      i32 mods;
                      });
 
-    OYL_EVENT_STRUCT(MouseReleasedEvent, TypeMouseReleased, CategoryInput,
+    OYL_EVENT_STRUCT(MouseReleasedEvent, TypeMouseReleased, CategoryMouse,
                      {
                      i32 button;
                      i32 mods;
                      });
 
-    OYL_EVENT_STRUCT(MouseMovedEvent, TypeMouseMoved, CategoryInput,
+    OYL_EVENT_STRUCT(MouseMovedEvent, TypeMouseMoved, CategoryMouse,
                      {
                      f32 x;
                      f32 y;
@@ -111,13 +111,62 @@ namespace oyl
                      f32 dy;
                      });
 
-    OYL_EVENT_STRUCT(MouseScrolledEvent, TypeMouseScrolled, CategoryInput,
+    OYL_EVENT_STRUCT(MouseScrolledEvent, TypeMouseScrolled, CategoryMouse,
                      {
                      f32 x;
                      f32 y;
                      });
 
     //-Mouse Events-///////////////////////////////////////////////////////
+
+    // Gamepad Events /////////////////////////////////////////////////////
+
+    OYL_EVENT_STRUCT(GamepadConnectedEvent, TypeGamepadConnected, CategoryGamepad,
+                     {
+                     u32 gid;
+                     });
+
+    OYL_EVENT_STRUCT(GamepadDisconnectedEvent, TypeGamepadDisconnected, CategoryGamepad,
+                     {
+                     u32 gid;
+                     });
+
+    OYL_EVENT_STRUCT(GamepadButtonPressedEvent, TypeGamepadButtonPressed, CategoryGamepad,
+                     {
+                     u32 gid;
+
+                     u32 button;
+                     u32 repeatCount;
+                     });
+
+    OYL_EVENT_STRUCT(GamepadButtonReleasedEvent, TypeGamepadButtonReleased, CategoryGamepad,
+                     {
+                     u32 gid;
+
+                     u32 button;
+                     });
+
+    OYL_EVENT_STRUCT(GamepadStickMovedEvent, TypeGamepadStickMoved, CategoryGamepad,
+                     {
+                     u32 gid;
+
+                     u32 stick;
+                     f32 x;
+                     f32 y;
+                     f32 dx;
+                     f32 dy;
+                     });
+
+    OYL_EVENT_STRUCT(GamepadTriggerPressedEvent, TypeGamepadTriggerPressed, CategoryGamepad,
+                     {
+                     u32 gid;
+
+                     u32 trigger;
+                     f32 x;
+                     f32 dx;
+                     });
+
+    //-Gamepad Events-/////////////////////////////////////////////////////
 
     /*
 // To create your own custom event types and type categories, create your own

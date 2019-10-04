@@ -31,6 +31,8 @@ namespace oyl
     private:
         virtual void init(const WindowProps& props);
         virtual void shutdown();
+
+        void pollGamepadEvents();
     private:
         GLFWwindow*          m_window;
         Ref<GraphicsContext> m_context;
