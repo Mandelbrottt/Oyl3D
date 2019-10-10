@@ -59,5 +59,11 @@ namespace oyl
         WindowData m_data;
 
         static bool s_GLFWInitialized;
+
+        static struct VibrationData
+        {
+            f32 leftTime, rightTime;
+            f32 leftVibe, rightVibe;
+        } s_gamepadVibration[4];
     };
 }

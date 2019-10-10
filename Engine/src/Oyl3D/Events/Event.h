@@ -7,7 +7,7 @@
 
 #define OYL_EVENT_STRUCT(class_name, event_type, event_category, x)               \
 union class_name {                                                                \
-    class_name() : type(event_type), category(event_category) {}                  \
+    class_name() : type(event_type), category(event_category), args{ 0 } {}                  \
     class_name(::oyl::Event& e) { *this = *reinterpret_cast<class_name*>(&e); }   \
     operator ::oyl::Event() { return *reinterpret_cast<::oyl::Event*>(this); }    \
     struct {                                                                      \
@@ -164,6 +164,16 @@ namespace oyl
                      u32 trigger;
                      f32 x;
                      f32 dx;
+                     });
+
+    OYL_EVENT_STRUCT(GamepadVibrationEvent, TypeGamepadVibration, CategoryGamepadVibration,
+                     {
+                     u32 gid;
+
+                     f32 leftTime;
+                     f32 rightTime;
+                     f32 leftMotor;
+                     f32 rightMotor;
                      });
 
     //-Gamepad Events-/////////////////////////////////////////////////////

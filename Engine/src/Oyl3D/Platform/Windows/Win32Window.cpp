@@ -10,6 +10,10 @@
 
 #include <glm/gtx/norm.hpp>
 
+#include <Xinput.h>
+
+#pragma comment(lib, "XInput.lib");
+
 // HACK:
 static void* _oylGamepadUserPointer = 0;
 
@@ -244,7 +248,7 @@ namespace oyl
         _oylGamepadUserPointer = nullptr;
     }
 
-    void Win32Window::onUpdate(bool doSwapBuffers /*= true*/)
+    void Win32Window::onUpdate(bool doSwapBuffers)
     {
         glfwPollEvents();
 

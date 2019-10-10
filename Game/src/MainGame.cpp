@@ -35,6 +35,7 @@ class PhysicsSystem : public oyl::ECS::System
     virtual void onEnter() override
     {
         addToEventMask(TypeTestEvent);
+        addToCategoryMask(oyl::CategoryKeyboard);
         addToCategoryMask(oyl::CategoryMouse);
         addToCategoryMask(oyl::CategoryGamepad);
     }
@@ -79,6 +80,26 @@ class PhysicsSystem : public oyl::ECS::System
                 auto e = (oyl::GamepadTriggerPressedEvent) *event;
                 OYL_LOG("Gamepad Trigger Moved Event: {0} {1} {2} {3}", e.gid, e.trigger, e.x, e.dx);
                 break;
+            }
+            case oyl::TypeKeyPressed:
+            {
+                auto e = (oyl::KeyPressedEvent) *event;
+                if (e.repeatCount == 0)
+                {
+                    oyl::GamepadVibrationEvent newEvent;
+                    newEvent.gid = 0;
+                    if (e.keycode == oyl::Key_Left)
+                    {
+                        newEvent.leftTime  = 1.0f;
+                        newEvent.leftMotor = 1.0f;
+                    }
+                    if (e.keycode == oyl::Key_Right)
+                    {
+                        newEvent.rightTime  = 1.0f;
+                        newEvent.rightMotor = 1.0f;
+                    }
+                    postEvent(oyl::Event::create(newEvent));
+                }
             }
         }
 

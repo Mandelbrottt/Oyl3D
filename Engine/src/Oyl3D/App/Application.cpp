@@ -46,11 +46,18 @@ namespace oyl
 
         m_appListener      = Ref<_internal::ApplicationListener>::create();
         m_appListener->app = this;
-        m_appListener->addToEventMask(oyl::TypeWindowClosed);
-        m_appListener->addToEventMask(oyl::TypeWindowResized);
-        m_appListener->addToEventMask(oyl::TypeWindowFocused);
+        m_appListener->addToEventMask(TypeWindowClosed);
+        m_appListener->addToEventMask(TypeWindowResized);
+        m_appListener->addToEventMask(TypeWindowFocused);
+        m_appListener->addToCategoryMask(CategoryWindow);
         
         m_dispatcher.registerListener(m_appListener);
+
+        m_vibrationListener = _internal::GamepadVibration::create();
+        m_vibrationListener->addToEventMask(TypeGamepadVibration);
+        m_vibrationListener->addToCategoryMask(CategoryGamepadVibration);
+        
+        m_dispatcher.registerListener(m_vibrationListener);
         
         m_imguiLayer.reset(new ImGuiLayer());
         m_imguiLayer->onAttach();
@@ -141,21 +148,22 @@ namespace oyl
         while (m_running)
         {
             auto     time = (float) Platform::getTime();
-            Timestep timestep(time - m_lastFrameTime);
+            Timestep realTimestep(time - m_lastFrameTime);
+            Timestep timestep(abs(realTimestep) > 1.0f / 30.0f ? 1.0f / 30.0f : realTimestep);
             m_lastFrameTime = time;
 
             if (m_doUpdate)
-            {
+            {                
                 RenderCommand::setClearColor(0.1f, 0.1f, 0.1f, 1.0f);
                 RenderCommand::clear();
                 m_mainBuffer->clear();
 
-                m_mainBuffer->bind();
+                m_mainBuffer->bind();                
                 Renderer::beginScene(m_camera);
 
                 m_dispatcher.dispatchEvents();
 
-                m_currentScene->onUpdate(abs(timestep) > 1.0f / 30.0f ? 1.0f / 30.0f : timestep);
+                m_currentScene->onUpdate(timestep);
 
                 Renderer::endScene();
                 m_mainBuffer->unbind();
@@ -163,8 +171,35 @@ namespace oyl
 
 #if !defined(OYL_DISTRIBUTION)
             m_imguiLayer->begin();
-
             m_imguiLayer->onGuiRender();
+
+            // TEMPORARY:
+            ImGui::Begin("Camera Transforms");
+            
+            static glm::vec3 position = glm::vec3(0.0f, 0.0f, 8.0f);
+            static glm::vec3 rotation = glm::vec3(0.0f, 0.0f, 0.0f);
+
+            ImGui::DragFloat3("Position", glm::value_ptr(position), 0.05f, -20.0f, 20.0f);
+            ImGui::InputFloat3("Position Input", glm::value_ptr(position));
+
+            ImGui::NewLine();
+            
+            ImGui::DragFloat3("Rotation", glm::value_ptr(rotation), 0.5f, -360.0f, 360.0f);
+            ImGui::InputFloat3("Rotation Input", glm::value_ptr(rotation));
+
+            ImGui::NewLine();
+
+            if (ImGui::Button("Reset Transforms"))
+            {
+                position = glm::vec3(0.0f, 0.0f, 8.0f);
+                rotation = glm::vec3(0.0f, 0.0f, 0.0f);
+            }
+
+            m_camera.setPosition(position);
+            m_camera.setRotation(rotation);
+
+            ImGui::End();
+
             m_currentScene->onGuiRender();
 
             m_imguiLayer->end();
@@ -174,6 +209,8 @@ namespace oyl
 #endif
 
             m_window->onUpdate(m_doUpdate);
+
+            m_vibrationListener->onUpdate(timestep);
         }
     }
 }

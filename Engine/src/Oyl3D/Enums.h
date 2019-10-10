@@ -21,6 +21,7 @@ namespace oyl
         TypeGamepadConnected, TypeGamepadDisconnected,
         TypeGamepadButtonPressed, TypeGamepadButtonReleased,
         TypeGamepadStickMoved, TypeGamepadTriggerPressed,
+        TypeGamepadVibration,
         EventTypeCustomStart,
 
         // Event Categories //
@@ -29,6 +30,7 @@ namespace oyl
         CategoryKeyboard,
         CategoryMouse,
         CategoryGamepad,
+        CategoryGamepadVibration,
         CategoryAudio,
         CategoryCustomStart,
 
