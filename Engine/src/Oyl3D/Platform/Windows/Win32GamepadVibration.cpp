@@ -1,9 +1,7 @@
 #include "oylpch.h"
 #include "Win32GamepadVibration.h"
 
-#include "Xinput.h"
-
-#pragma comment(lib, "Xinput.lib")
+#include <Xinput.h>
 
 namespace oyl::_internal
 {
@@ -18,7 +16,7 @@ namespace oyl::_internal
         f32& currLeftVibe  = gamepads[e.gid].leftVibration;
         f32& currRightVibe = gamepads[e.gid].rightVibration;
 
-        e.leftMotor = glm::clamp(e.leftMotor, 0.0f, 1.0f);
+        e.leftMotor  = glm::clamp(e.leftMotor, 0.0f, 1.0f);
         e.rightMotor = glm::clamp(e.rightMotor, 0.0f, 1.0f);
 
         if (e.leftTime > 0.0f)
