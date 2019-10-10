@@ -53,7 +53,7 @@ namespace oyl
         
         m_dispatcher.registerListener(m_appListener);
 
-        m_vibrationListener = _internal::GamepadVibration::create();
+        m_vibrationListener = _internal::GamepadListener::create();
         m_vibrationListener->addToEventMask(TypeGamepadVibration);
         m_vibrationListener->addToCategoryMask(CategoryGamepadVibration);
         

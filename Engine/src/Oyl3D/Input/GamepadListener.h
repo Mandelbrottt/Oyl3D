@@ -4,16 +4,16 @@
 
 namespace oyl::_internal
 {
-    class GamepadVibration : public EventListener
+    class GamepadListener : public EventListener
     {
     public:
-        explicit GamepadVibration();
-		virtual ~GamepadVibration() = default;
+        explicit GamepadListener();
+		virtual ~GamepadListener() = default;
 
         // Called once per frame
         virtual void onUpdate(Timestep dt) = 0;
 
-        static Ref<GamepadVibration> create();
+        static Ref<GamepadListener> create();
     private:
 		static bool s_init;
     };

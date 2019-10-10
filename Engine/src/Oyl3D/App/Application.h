@@ -6,7 +6,7 @@
 
 #include "Oyl3D/Debug/ImGuiLayer.h"
 
-#include "Oyl3D/Input/GamepadVibration.h"
+#include "Oyl3D/Input/GamepadListener.h"
 
 #include "Oyl3D/Events/Event.h"
 #include "Oyl3D/Events/EventListener.h"
@@ -67,7 +67,7 @@ namespace oyl
         std::function<void(Ref<IEventListener>)> m_dispatcherUnregisterCallback;
 
         Ref<_internal::ApplicationListener> m_appListener;
-        Ref<_internal::GamepadVibration> m_vibrationListener;
+        Ref<_internal::GamepadListener> m_vibrationListener;
     };
 
     Application* createApplication();

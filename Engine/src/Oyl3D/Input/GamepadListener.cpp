@@ -1,12 +1,12 @@
 #include "oylpch.h"
-#include "GamepadVibration.h"
-#include "Platform/Windows/Win32GamepadVibration.h"
+#include "GamepadListener.h"
+#include "Platform/Windows/Win32GamepadListener.h"
 
 namespace oyl::_internal
 {
-    bool GamepadVibration::s_init = false;
+    bool GamepadListener::s_init = false;
 
-    GamepadVibration::GamepadVibration()
+    GamepadListener::GamepadListener()
     {
         OYL_ASSERT(!s_init, "GamepadVibration should only be initalized once!");
         s_init = true;
@@ -15,10 +15,10 @@ namespace oyl::_internal
         EventListener::addToCategoryMask(CategoryGamepadVibration);
     }
 
-    Ref<GamepadVibration> GamepadVibration::create()
+    Ref<GamepadListener> GamepadListener::create()
     {
 #if   defined(OYL_PLATFORM_WINDOWS)
-        return Ref<Win32GamepadVibration>::create();
+        return Ref<Win32GamepadListener>::create();
 #elif defined(OYL_PLATFORM_OSX)
 #error Oyl3D does not support MacOS!
 #elif defined(OYL_PLATFORM_LINUX)
