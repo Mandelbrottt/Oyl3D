@@ -3,7 +3,7 @@
 
 #include "Xinput.h"
 
-#pragma comment(lib, "Xinput.lib");
+#pragma comment(lib, "Xinput.lib")
 
 namespace oyl::_internal
 {
