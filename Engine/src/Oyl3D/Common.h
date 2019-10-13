@@ -8,7 +8,7 @@
             #error x86 builds are not supported!
         #endif
     #elif defined(__APPLE__) || defined(__MACH__)
-        #include <TargetConditionals.h
+        #include <TargetConditionals.h>
         #if TARGET_IPHONE_SIMULATOR == 1
             #error "IOS simulator is not supported!"
         #elif TARGET_OS_IPHONE == 1
