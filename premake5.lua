@@ -18,6 +18,7 @@ IncludeDir["glad"] = "Engine/vendor/glad/include/"
 IncludeDir["imgui"] = "Engine/vendor/imgui/"
 IncludeDir["glm"] = "Engine/vendor/glm/"
 IncludeDir["stb"] = "Engine/vendor/stb/"
+IncludeDir["entt"] = "Engine/vendor/entt/src/"
 IncludeDir["fmod"] = "Engine/vendor/fmod/include/"
 IncludeDir["gainput"] = "Engine/vendor/gainput/lib/include/"
 IncludeDir["entt"] = "Engine/vendor/entt/src/"
@@ -65,6 +66,7 @@ project "OylEngine"
 		"%{IncludeDir.imgui}",
 		"%{IncludeDir.glm}",
 		"%{IncludeDir.stb}",
+		"%{IncludeDir.entt}",
 		"%{IncludeDir.fmod}",
 		"%{IncludeDir.gainput}",
 		"%{IncludeDir.entt}"
