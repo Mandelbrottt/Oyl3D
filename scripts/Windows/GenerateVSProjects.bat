@@ -1,6 +1,6 @@
 @echo off
 
-pushd ..\..\
+pushd %~dp0\..\..\
 
 set doUpdate=F
 
