@@ -30,14 +30,18 @@ namespace oyl
     }
 
     // Assumes that there is only one texture, will be changed when material file system is implemented
-    void Renderer::submit(const Ref<Shader>& shader, const Ref<Mesh>& mesh, glm::mat4 transform)
+    void Renderer::submit(const Ref<Mesh>& mesh, glm::mat4 transform)
     {
         mesh->bind();
-        shader->bind();
-        shader->setUniformMat4("u_model", transform);
-        shader->setUniformMat4("u_view", s_sceneData->perspectiveViewMatrix);
-        shader->setUniformMat4("u_projection", s_sceneData->perspectiveProjectionMatrix);
-        shader->setUniform1i("u_texture", 0);
+        Ref<Material> mat = mesh->getMaterial();
+
+        mat->bind();
+        mat->applyUniforms();
+
+        // TEMPORARY:
+        mat->setUniformMat4("u_view", s_sceneData->perspectiveViewMatrix);
+        mat->setUniformMat4("u_projection", s_sceneData->perspectiveProjectionMatrix);
+
         RenderCommand::drawMesh(mesh);
     }
 }
