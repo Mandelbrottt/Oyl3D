@@ -84,7 +84,6 @@ project "OylEngine"
 		systemversion "latest"
 
 		defines {
-			"OYL_PLATFORM_WINDOWS",
 			"GLFW_INCLUDE_NONE", 
 			"WIN32_LEAN_AND_MEAN"
 		}
@@ -111,7 +110,7 @@ project "OylEngine"
 	filter "configurations:not Debug"
 		links {
 			"fmod_vc.lib",
-			"fmod_studio_vc.lib"
+			"fmodstudio_vc.lib"
 		}
 
 	filter "configurations:not Development"
@@ -160,13 +159,7 @@ project "OylGame"
 	
 	filter "system:windows"
 		entrypoint "wWinMainCRTStartup"
-		systemversion "latest"
-	
-		defines {
-			"OYL_PLATFORM_WINDOWS",
-			"WIN32_LEAN_AND_MEAN",
-			"NOMINMAX"
-		}		
+		systemversion "latest"	
 	
 	filter "configurations:Debug"
 		defines { "OYL_DEBUG" }
