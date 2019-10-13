@@ -9,11 +9,11 @@ namespace oyl
     {
         switch (e)
         {
-            case VertexShader:         return GL_VERTEX_SHADER;
-            case TessControlShader:    return GL_TESS_CONTROL_SHADER;
+            case VertexShader: return GL_VERTEX_SHADER;
+            case TessControlShader: return GL_TESS_CONTROL_SHADER;
             case TessEvaluationShader: return GL_TESS_EVALUATION_SHADER;
-            case GeometryShader:       return GL_GEOMETRY_SHADER;
-            case FragmentShader:       return GL_FRAGMENT_SHADER;
+            case GeometryShader: return GL_GEOMETRY_SHADER;
+            case FragmentShader: return GL_FRAGMENT_SHADER;
         }
         return GL_NONE;
     }
@@ -211,6 +211,12 @@ namespace oyl
     {
         GLint location = getUniformLocation(name);
         glUniform1i(location, v);
+    }
+
+    void OpenGLShader::setUniform1f(const std::string& name, const float v)
+    {
+        GLint location = getUniformLocation(name);
+        glUniform1f(location, v);
     }
 
     void OpenGLShader::setUniform2f(const std::string& name, const glm::vec2& v)

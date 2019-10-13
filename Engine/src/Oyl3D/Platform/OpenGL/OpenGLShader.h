@@ -13,6 +13,7 @@ namespace oyl
         virtual void unbind() const override;
 
         virtual void setUniform1i(const std::string& name, const int v) override;
+        virtual void setUniform1f(const std::string& name, const float v) override;
         virtual void setUniform2f(const std::string& name, const glm::vec2& v) override;
         virtual void setUniform3f(const std::string& name, const glm::vec3& v) override;
         virtual void setUniform4f(const std::string& name, const glm::vec4& v) override;
