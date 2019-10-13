@@ -3,7 +3,12 @@
 
 namespace oyl
 {
-    Material::Material(Ref<Shader> shader)
+    Material::Material(_Material)
+        : m_shader(nullptr)
+    {
+    }
+
+    Material::Material(_Material, Ref<Shader> shader)
         : m_shader(std::move(shader))
     {
     }

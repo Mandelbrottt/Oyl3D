@@ -6,13 +6,23 @@ namespace oyl
 {
     class OYLAPI Material
     {
+        struct _Material
+        {
+        };
+        
     public:
-        explicit Material(Ref<Shader> shader);
+        explicit Material(_Material);
+        explicit Material(_Material, Ref<Shader> shader);
         virtual ~Material() = default;
 
-        const Ref<Shader>& getShader() { return m_shader; }
+        static Ref<Material> create(Ref<Shader> shader) { return Ref<Material>::create(_Material{}, std::move(shader)); }
+        static Ref<Material> create() { return Ref<Material>::create(_Material{}); }
 
+        virtual void bind() { m_shader->bind(); }
+        
         virtual void applyUniforms();
+
+        const Ref<Shader>& getShader() { return m_shader; }
 
         void setUniform1i(const std::string& name, i32 value) { m_uniformInts[name] = std::move(value); }
         void setUniform1f(const std::string& name, f32 value) { m_uniformFloats[name] = std::move(value); }
