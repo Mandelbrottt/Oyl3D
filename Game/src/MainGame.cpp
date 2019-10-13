@@ -124,14 +124,18 @@ public:
 
         addToEventMask(oyl::TypeKeyPressed);
         addToEventMask(oyl::TypeGamepadStickMoved);
-
-        m_mesh = oyl::Mesh::create("res/capsule.obj");
-        m_mesh->loadTexture("res/capsule0.jpg");
-
-        m_meshShader = oyl::Shader::create({
+        
+        auto shader = oyl::Shader::create({
             { oyl::VertexShader, "../Engine/res/meshShader.vert" },
             { oyl::FragmentShader, "../Engine/res/meshShader.frag" },
         });
+
+        auto mat = oyl::Material::create(shader);
+        
+        m_mesh = oyl::Mesh::create("res/capsule.obj");
+        m_mesh->loadTexture("res/capsule0.jpg");
+        m_mesh->setMaterial(mat);
+        m_mesh->getMaterial()->setUniform1i("u_texture", 0);
     }
 
     virtual void onDetach() override
@@ -146,7 +150,10 @@ public:
 
         transform = glm::translate(transform, m_translate);
         transform = glm::rotate(transform, m_timeSince, glm::vec3(1.0f, 0.5f, 0.0f));
-        oyl::Renderer::submit(m_meshShader, m_mesh, transform);
+
+        m_mesh->getMaterial()->setUniformMat4("u_model", transform);
+        
+        oyl::Renderer::submit(m_mesh, transform);
     }
 
     virtual void onGuiRender() override
