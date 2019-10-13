@@ -252,6 +252,7 @@ namespace oyl
     {
         glfwPollEvents();
 
+        // TODO: Move into application
         pollGamepadEvents();
 
         if (doSwapBuffers)
@@ -307,6 +308,9 @@ namespace oyl
 
                     glm::vec2 dz  = _radialDeadZone(_crossDeadZone({ x, y }, deadZone * 0.5f), deadZone * 0.5f);
                     glm::vec2 pdz = _radialDeadZone(_crossDeadZone({ px, py }, deadZone * 0.5f), deadZone * 0.5f);
+
+                    if (glm::length2(dz) > 1.0f) dz = glm::normalize(dz);
+                    if (glm::length2(pdz) > 1.0f) pdz = glm::normalize(pdz);
 
                     if (dz.x != pdz.x || dz.y != pdz.y)
                     {

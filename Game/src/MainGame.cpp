@@ -179,7 +179,7 @@ public:
                 auto e = (oyl::GamepadStickMovedEvent) *event;
                 if (e.stick == oyl::Gamepad_LeftStick)
                 {
-                    m_translate = glm::vec3(e.x, e.y, 0.0f);
+                    m_translate = glm::vec3(e.x, e.y, -5.0f);
                 }
             }
         }
@@ -189,7 +189,7 @@ public:
 private:
     oyl::Ref<oyl::Mesh>   m_mesh;
     oyl::Ref<oyl::Shader> m_meshShader;
-    glm::vec3 m_translate = glm::vec3(0.0f);
+    glm::vec3 m_translate = glm::vec3(0.0f, 0.0f, -5.0f);
 
     float m_timeSince = 0.0f;
 };
