@@ -171,35 +171,8 @@ namespace oyl
 
 #if !defined(OYL_DISTRIBUTION)
             m_imguiLayer->begin();
+
             m_imguiLayer->onGuiRender();
-
-            // TEMPORARY:
-            ImGui::Begin("Camera Transforms");
-            
-            static glm::vec3 position = glm::vec3(0.0f, 0.0f, 8.0f);
-            static glm::vec3 rotation = glm::vec3(0.0f, 0.0f, 0.0f);
-
-            ImGui::DragFloat3("Position", glm::value_ptr(position), 0.05f, -20.0f, 20.0f);
-            ImGui::InputFloat3("Position Input", glm::value_ptr(position));
-
-            ImGui::NewLine();
-            
-            ImGui::DragFloat3("Rotation", glm::value_ptr(rotation), 0.5f, -360.0f, 360.0f);
-            ImGui::InputFloat3("Rotation Input", glm::value_ptr(rotation));
-
-            ImGui::NewLine();
-
-            if (ImGui::Button("Reset Transforms"))
-            {
-                position = glm::vec3(0.0f, 0.0f, 8.0f);
-                rotation = glm::vec3(0.0f, 0.0f, 0.0f);
-            }
-
-            m_camera.setPosition(position);
-            m_camera.setRotation(rotation);
-
-            ImGui::End();
-
             m_currentScene->onGuiRender();
 
             m_imguiLayer->end();
