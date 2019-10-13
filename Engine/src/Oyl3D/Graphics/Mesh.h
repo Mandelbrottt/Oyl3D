@@ -1,14 +1,20 @@
 #pragma once
 
 #include "Oyl3D/Graphics/Buffer.h"
-
+#include "Oyl3D/Graphics/Material.h"
 #include "Oyl3D/Graphics/Texture.h"
 
 namespace oyl
 {
     class Mesh
     {
+        struct _Mesh
+        {
+        };
+
     public:
+        explicit Mesh(_Mesh, const std::string& filename);
+
         bool loadFromFile(const std::string& filename);
         void unload();
 
@@ -16,55 +22,28 @@ namespace oyl
         void loadTexture(Ref<Texture2D> texture);
         void unloadTexture();
 
+        void setMaterial(Ref<Material> material);
+
         void bind();
         void unbind();
 
-        static Ref<Mesh> create(const std::string& filename) { return Ref<Mesh>(new Mesh(filename)); }
+        static Ref<Mesh> create(const std::string& filename) { return Ref<Mesh>::create(_Mesh{}, filename); }
 
         uint getNumFaces() const { return m_numFaces; }
         uint getNumVertices() const { return m_numVertices; }
 
-        Ref<Texture2D> getTexture() { return Ref<Texture2D>(m_texture); }
-    private:
-        Mesh(const std::string& filename);
+        const Ref<Texture2D>& getTexture() { return m_texture; }
+        const Ref<Material>& getMaterial() { return m_material; }
 
+    protected:
         uint m_numFaces    = 0;
         uint m_numVertices = 0;
 
-        Ref<VertexArray>  m_vao;
-        Ref<VertexBuffer> m_vbo;
+        Ref<VertexArray>  m_vao = nullptr;
+        Ref<VertexBuffer> m_vbo = nullptr;
 
-        Ref<Texture2D> m_texture;
-    };
+        Ref<Material> m_material = nullptr;
 
-    struct MeshFaceData
-    {
-        MeshFaceData(uint v0, uint v1, uint v2,
-                     uint t0, uint t1, uint t2,
-                     uint n0, uint n1, uint n2)
-        {
-            init(v0, v1, v2, t0, t1, t2, n0, n1, n2);
-        }
-
-        void init(uint v0, uint v1, uint v2,
-                  uint t0, uint t1, uint t2,
-                  uint n0, uint n1, uint n2)
-        {
-            vertices[0] = v0;
-            vertices[1] = v1;
-            vertices[2] = v2;
-
-            textureUVs[0] = t0;
-            textureUVs[1] = t1;
-            textureUVs[2] = t2;
-
-            normals[0] = n0;
-            normals[1] = n1;
-            normals[2] = n2;
-        }
-
-        uint vertices[3];
-        uint textureUVs[3];
-        uint normals[3];
+        Ref<Texture2D> m_texture = nullptr;
     };
 }

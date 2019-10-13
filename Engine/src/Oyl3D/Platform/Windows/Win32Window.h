@@ -31,6 +31,8 @@ namespace oyl
     private:
         virtual void init(const WindowProps& props);
         virtual void shutdown();
+
+        void pollGamepadEvents();
     private:
         GLFWwindow*          m_window;
         Ref<GraphicsContext> m_context;
@@ -49,7 +51,6 @@ namespace oyl
 
             GLFWmonitor* monitor = nullptr;
 
-            
             OylEnum fullscreenType = Windowed;
 
             EventCallbackFn eventCallback;
@@ -58,5 +59,11 @@ namespace oyl
         WindowData m_data;
 
         static bool s_GLFWInitialized;
+
+        static struct VibrationData
+        {
+            f32 leftTime, rightTime;
+            f32 leftVibe, rightVibe;
+        } s_gamepadVibration[4];
     };
 }

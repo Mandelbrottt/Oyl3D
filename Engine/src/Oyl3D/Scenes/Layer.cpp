@@ -13,5 +13,44 @@ namespace oyl
 
     Layer::~Layer()
     {
+        for (auto system : m_systems)
+            system->onExit();
+    }
+
+    void Layer::onAttach()
+    {
+    }
+
+    void Layer::onDetach()
+    {
+    }
+
+    void Layer::onUpdate(Timestep dt)
+    {
+    }
+
+    void Layer::onGuiRender()
+    {
+    }
+
+    bool Layer::onEvent(Ref<Event> event)
+    {
+        return false;
+    }
+
+    void Layer::onUpdateSystems(Timestep dt)
+    {
+        for (auto system : m_systems)
+        {
+            system->onUpdate(dt);
+        }
+    }
+
+    void Layer::onGuiRenderSystems()
+    {
+        for (auto system : m_systems)
+        {
+            system->onGuiRender();
+        }
     }
 }

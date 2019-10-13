@@ -1,5 +1,7 @@
 @echo off
 
+pushd %~dp0\..\..\
+
 set doUpdate=F
 
 if not exist "Engine\vendor\glfw\premake5.lua" set doUpdate=T
@@ -25,5 +27,7 @@ if "%doUpdate%"=="T" (
     echo.
 )
 
-call vendor\bin\premake\premake5.exe vs2017
+call vendor\bin\premake\premake5.exe vs2019
 pause
+
+popd

@@ -3,8 +3,22 @@
 #include "Win32Window.h"
 #include "Win32Input.h"
 
+#include "Events/Event.h"
+
 #include <glfw/glfw3.h>
 #include <glad/glad.h>
+
+#include <glm/gtx/norm.hpp>
+
+#include <Xinput.h>
+
+#pragma comment(lib, "XInput.lib");
+
+// HACK:
+static void* _oylGamepadUserPointer = 0;
+
+static glm::vec2 _radialDeadZone(glm::vec2 rawInput, float deadZone);
+static glm::vec2 _crossDeadZone(glm::vec2 rawInput, float deadZone);
 
 namespace oyl
 {
@@ -65,6 +79,8 @@ namespace oyl
         m_context->init();
 
         glfwSetWindowUserPointer(m_window, &m_data);
+        _oylGamepadUserPointer = &m_data;
+
         setVsync(true);
 
         // Set GLFW callbacks
@@ -74,29 +90,31 @@ namespace oyl
 
             WindowData& data = *(WindowData*) glfwGetWindowUserPointer(window);
 
-            WindowResizeEvent event(width, height);
+            WindowResizedEvent event{};
+            event.width  = width;
+            event.height = height;
 
             data.width  = width;
             data.height = height;
-            data.eventCallback(event);
+            data.eventCallback(Event::create(event));
         });
 
         glfwSetWindowCloseCallback(m_window, [](GLFWwindow* window)
         {
             WindowData& data = *(WindowData*) glfwGetWindowUserPointer(window);
 
-            WindowCloseEvent event;
+            WindowClosedEvent event{};
 
-            data.eventCallback(event);
+            data.eventCallback(Event::create(event));
         });
 
         glfwSetWindowFocusCallback(m_window, [](GLFWwindow* window, int focused)
         {
             WindowData& data = *(WindowData*) glfwGetWindowUserPointer(window);
 
-            WindowFocusEvent focusEvent(focused);
+            WindowFocusedEvent event{};
 
-            data.eventCallback(focusEvent);
+            data.eventCallback(Event::create(event));
         });
 
         glfwSetKeyCallback(m_window, [](GLFWwindow* window, int key, int scancode, int action, int mods)
@@ -109,21 +127,28 @@ namespace oyl
             {
                 case GLFW_PRESS:
                 {
-                    KeyPressEvent pressEvent(glfwToOylCode(key));
-                    data.eventCallback(pressEvent);
+                    KeyPressedEvent event{};
+                    event.keycode     = glfwToOylCode(key);
+                    event.mods        = mods;
+                    event.repeatCount = 0;
+                    data.eventCallback(Event::create(event));
                     break;
                 }
                 case GLFW_RELEASE:
                 {
-                    KeyReleaseEvent releaseEvent(glfwToOylCode(key));
-                    data.eventCallback(releaseEvent);
-                    repeats = 0;
+                    KeyReleasedEvent event{};
+                    event.keycode = glfwToOylCode(key);
+                    event.mods    = mods;
+                    data.eventCallback(Event::create(event));
                     break;
                 }
                 case GLFW_REPEAT:
                 {
-                    KeyPressEvent repeatEvent(glfwToOylCode(key), ++repeats);
-                    data.eventCallback(repeatEvent);
+                    KeyPressedEvent event{};
+                    event.keycode     = glfwToOylCode(key);
+                    event.mods        = mods;
+                    event.repeatCount = ++repeats;
+                    data.eventCallback(Event::create(event));
                     break;
                 }
             }
@@ -133,9 +158,10 @@ namespace oyl
         {
             WindowData& data = *(WindowData*) glfwGetWindowUserPointer(window);
 
-            KeyTypeEvent event(glfwToOylCode(keycode));
+            KeyTypedEvent event{};
+            event.keycode = glfwToOylCode(keycode);
 
-            data.eventCallback(event);
+            data.eventCallback(Event::create(event));
         });
 
         glfwSetMouseButtonCallback(m_window, [](GLFWwindow* window, int button, int action, int mods)
@@ -146,14 +172,18 @@ namespace oyl
             {
                 case GLFW_PRESS:
                 {
-                    MousePressEvent pressEvent(glfwToOylCode(button));
-                    data.eventCallback(pressEvent);
+                    MousePressedEvent event{};
+                    event.button = glfwToOylCode(button);
+                    event.mods   = mods;
+                    data.eventCallback(Event::create(event));
                     break;
                 }
                 case GLFW_RELEASE:
                 {
-                    MouseReleaseEvent releaseEvent(glfwToOylCode(button));
-                    data.eventCallback(releaseEvent);
+                    MouseReleasedEvent event{};
+                    event.button = glfwToOylCode(button);
+                    event.mods   = mods;
+                    data.eventCallback(Event::create(event));
                     break;
                 }
             }
@@ -163,8 +193,11 @@ namespace oyl
         {
             WindowData& data = *(WindowData*) glfwGetWindowUserPointer(window);
 
-            MouseScrollEvent event((float) x, (float) y);
-            data.eventCallback(event);
+            MouseScrolledEvent event{};
+            event.x = (f32) x;
+            event.y = (f32) y;
+
+            data.eventCallback(Event::create(event));
         });
 
         glfwSetCursorPosCallback(m_window, [](GLFWwindow* window, double x, double y)
@@ -173,26 +206,142 @@ namespace oyl
 
             static float lastx = (float) x, lasty = (float) y;
 
-            MouseMoveEvent event((float) x, (float) y, (float) x - lastx, (float) y - lasty);
+            MouseMovedEvent event{};
+            event.x  = (f32) x;
+            event.y  = (f32) y;
+            event.dx = (f32) x - lastx;
+            event.dy = (f32) y - lasty;
 
             lastx = (float) x;
             lasty = (float) y;
 
-            data.eventCallback(event);
+            data.eventCallback(Event::create(event));
+        });
+
+        glfwSetJoystickCallback([](int jid, int event)
+        {
+            WindowData& data = *(WindowData*) _oylGamepadUserPointer;
+
+            switch (event)
+            {
+                case GLFW_CONNECTED:
+                {
+                    GamepadConnectedEvent e;
+                    e.gid = jid;
+                    data.eventCallback(Event::create(e));
+                    break;
+                }
+                case GLFW_DISCONNECTED:
+                {
+                    GamepadDisconnectedEvent e;
+                    e.gid = jid;
+                    data.eventCallback(Event::create(e));
+                    break;
+                }
+            }
         });
     }
 
     void Win32Window::shutdown()
     {
         glfwTerminate();
+        _oylGamepadUserPointer = nullptr;
     }
 
-    void Win32Window::onUpdate(bool doSwapBuffers /*= true*/)
+    void Win32Window::onUpdate(bool doSwapBuffers)
     {
         glfwPollEvents();
+
+        // TODO: Move into application
+        pollGamepadEvents();
+
         if (doSwapBuffers)
         {
             m_context->swapBuffers();
+        }
+    }
+
+    void Win32Window::pollGamepadEvents()
+    {
+        const int numGamepads = 4;
+
+        static GLFWgamepadstate currState[numGamepads];
+        static GLFWgamepadstate prevState[numGamepads];
+
+        static int repeatCount[numGamepads][GLFW_GAMEPAD_BUTTON_LAST];
+
+        for (int jid = 0; jid < numGamepads; jid++)
+        {
+            if (glfwJoystickIsGamepad(jid))
+            {
+                glfwGetGamepadState(jid, &currState[jid]);
+                for (int button = GLFW_GAMEPAD_BUTTON_A; button <= GLFW_GAMEPAD_BUTTON_LAST; button++)
+                {
+                    // Button Pressed
+                    if (currState[jid].buttons[button] == GLFW_PRESS)
+                    {
+                        GamepadButtonPressedEvent event;
+                        event.gid         = jid;
+                        event.button      = glfwToOylCode(button);
+                        event.repeatCount = repeatCount[jid][button]++;
+                        m_data.eventCallback(Event::create(event));
+                    } // Button released
+                    else if (currState[jid].buttons[button] == GLFW_RELEASE &&
+                             prevState[jid].buttons[button] == GLFW_PRESS)
+                    {
+                        GamepadButtonReleasedEvent event;
+                        event.gid    = jid;
+                        event.button = glfwToOylCode(button);
+                        m_data.eventCallback(Event::create(event));
+                        repeatCount[jid][button] = 0;
+                    }
+                }
+
+                const float deadZone = 0.3f;
+
+                for (int i = 0; i < 2; i++)
+                {
+                    float x  = currState[jid].axes[2 * i];
+                    float y  = currState[jid].axes[2 * i + 1];
+                    float px = prevState[jid].axes[2 * i];
+                    float py = prevState[jid].axes[2 * i + 1];
+
+                    glm::vec2 dz  = _radialDeadZone(_crossDeadZone({ x, y }, deadZone * 0.5f), deadZone * 0.5f);
+                    glm::vec2 pdz = _radialDeadZone(_crossDeadZone({ px, py }, deadZone * 0.5f), deadZone * 0.5f);
+
+                    if (glm::length2(dz) > 1.0f) dz = glm::normalize(dz);
+                    if (glm::length2(pdz) > 1.0f) pdz = glm::normalize(pdz);
+
+                    if (dz.x != pdz.x || dz.y != pdz.y)
+                    {
+                        GamepadStickMovedEvent event;
+                        event.gid   = jid;
+                        event.stick = Gamepad_LeftStick + i;
+                        event.x     = dz.x;
+                        event.y     = -dz.y;
+                        event.dx    = pdz.x - dz.x;
+                        event.dy    = -(pdz.y - dz.y);
+                        m_data.eventCallback(Event::create(event));
+                    }
+                }
+
+                for (int i = 0; i < 2; i++)
+                {
+                    float x  = currState[jid].axes[GLFW_GAMEPAD_AXIS_LEFT_TRIGGER + i];
+                    float px = prevState[jid].axes[GLFW_GAMEPAD_AXIS_LEFT_TRIGGER + i];
+
+                    if (x != px)
+                    {
+                        GamepadTriggerPressedEvent event;
+                        event.gid     = jid;
+                        event.trigger = i;
+                        event.x       = x;
+                        event.dx      = px - x;
+                        m_data.eventCallback(Event::create(event));
+                    }
+                }
+            }
+            prevState[jid] = currState[jid];
         }
     }
 
@@ -252,4 +401,29 @@ namespace oyl
     {
         m_context->updateViewport(width, height);
     }
+}
+
+glm::vec2 _radialDeadZone(glm::vec2 rawInput, float deadZone)
+{
+    if (glm::length2(rawInput) < deadZone * deadZone)
+        return glm::vec2(0.0f);
+    else
+        return glm::normalize(rawInput) * (glm::length(rawInput) - deadZone) / (1 - deadZone);
+}
+
+glm::vec2 _crossDeadZone(glm::vec2 rawInput, float deadZone)
+{
+    glm::vec2 newInput = rawInput;
+
+    if (abs(rawInput.x) < deadZone)
+        newInput.x = 0;
+    else
+        newInput.x = glm::sign(rawInput.x) * (abs(rawInput.x) - deadZone) / (1 - deadZone);
+
+    if (abs(rawInput.y) < deadZone)
+        newInput.y = 0;
+    else
+        newInput.y = glm::sign(rawInput.y) * (abs(rawInput.y) - deadZone) / (1 - deadZone);
+
+    return newInput;
 }

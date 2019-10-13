@@ -17,3 +17,6 @@
 [submodule "Engine/vendor/entt"]
 	path = Engine/vendor/entt
 	url = https://github.com/skypjack/entt
+[submodule "Engine/vendor/gainput"]
+	path = Engine/vendor/gainput
+	url = https://github.com/Mandelbrottt/gainput

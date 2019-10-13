@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Oyl3D/Common.h"
+#include "Oyl3D/Utils/Refs.h"
 
 #include <spdlog/spdlog.h>
 #include <spdlog/fmt/ostr.h>

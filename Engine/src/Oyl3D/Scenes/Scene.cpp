@@ -16,42 +16,67 @@ namespace oyl
 
     void Scene::onUpdate(Timestep dt)
     {
-        for (Ref<Layer> layer : m_layerStack)
-            layer->onUpdate(dt);
-    }
-
-    void Scene::onEvent(Event& e)
-    {
-        for (Ref<Layer> layer : m_layerStack)
+        for (const Ref<Layer>& layer : m_layerStack)
         {
-            layer->onEvent(e);
-            if (e.handled) break;
+            layer->onUpdateSystems(dt);
+            layer->onUpdate(dt);
         }
     }
 
-    void Scene::onImGuiRender()
+    void Scene::onGuiRender()
     {
-        for (Ref<Layer> layer : m_layerStack)
-            layer->onImGuiRender();
+        for (const Ref<Layer>& layer : m_layerStack)
+        {
+            layer->onGuiRenderSystems();
+            layer->onGuiRender();
+        }
+    }
+
+    bool Scene::onEvent(Ref<Event> event)
+    {
+        //bool handled = false;
+        //for (const Ref<Layer>& layer : m_layerStack)
+        //{
+        //    handled = layer->onEvent(event);
+        //    
+        //    if (handled) break;
+        //}
+        //return handled;
+        return false;
+    }
+
+    void Scene::setPostEventCallback(PostEventFn callback)
+    {
+        m_layerStack.setPostEventCallback(callback);
+    }
+
+    void Scene::setRegisterCallback(RegisterFn callback)
+    {
+        m_layerStack.setRegisterCallback(callback);
+    }
+
+    void Scene::setUnregisterCallback(UnregisterFn callback)
+    {
+        m_layerStack.setUnregisterCallback(callback);
     }
 
     void Scene::pushLayer(Ref<Layer> layer)
     {
-        m_layerStack.pushLayer(layer);
+        m_layerStack.pushLayer(std::move(layer));
     }
 
     void Scene::pushOverlay(Ref<Layer> overlay)
     {
-        m_layerStack.pushOverlay(overlay);
+        m_layerStack.pushOverlay(std::move(overlay));
     }
 
     void Scene::popLayer(Ref<Layer> layer)
     {
-        m_layerStack.popLayer(layer);
+        m_layerStack.popLayer(std::move(layer));
     }
 
     void Scene::popOverlay(Ref<Layer> overlay)
     {
-        m_layerStack.popOverlay(overlay);
+        m_layerStack.popOverlay(std::move(overlay));
     }
 }

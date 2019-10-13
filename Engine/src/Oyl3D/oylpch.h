@@ -32,16 +32,20 @@
 #include <sstream>
 
 #include <vector>
+#include <map>
+#include <set>
 #include <unordered_map>
 #include <unordered_set>
+#include <bitset>
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-#include "Common.h"
-#include "Enums.h"
-#include "Typedefs.h"
+#include "Oyl3D/Common.h"
+#include "Oyl3D/Enums.h"
+#include "Oyl3D/Typedefs.h"
 
-#include "Utils/Timestep.h"
-#include "Utils/Logging.h"
+#include "Oyl3D/Utils/Logging.h"
+#include "Oyl3D/Utils/Refs.h"
+#include "Oyl3D/Utils/Timestep.h"

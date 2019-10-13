@@ -20,12 +20,26 @@ namespace oyl
     {
         m_layers.emplace(m_layers.begin() + m_layerInsertIndex, layer);
         m_layerInsertIndex++;
+
+        m_registerCallback(layer, 0);
+        
+        layer->setPostEventCallback(m_postEventCallback);
+        layer->setRegisterCallback(m_registerCallback);
+        layer->setUnregisterCallback(m_unregisterCallback);
+
         layer->onAttach();
     }
 
     void LayerStack::pushOverlay(Ref<Layer> overlay)
     {
         m_layers.emplace_back(overlay);
+
+        m_registerCallback(overlay, 0);
+
+        overlay->setPostEventCallback(m_postEventCallback);
+        overlay->setRegisterCallback(m_registerCallback);
+        overlay->setUnregisterCallback(m_unregisterCallback);
+
         overlay->onAttach();
     }
 
@@ -36,8 +50,15 @@ namespace oyl
         {
             m_layers.erase(it);
             m_layerInsertIndex--;
+
+            m_unregisterCallback(layer);
+
+            layer->setPostEventCallback(nullptr);
+            layer->setRegisterCallback(nullptr);
+            layer->setUnregisterCallback(nullptr);
+            
+            layer->onDetach();
         }
-        layer->onDetach();
     }
 
     void LayerStack::popOverlay(Ref<Layer> overlay)
@@ -46,7 +67,14 @@ namespace oyl
         if (it != m_layers.end())
         {
             m_layers.erase(it);
+
+            m_unregisterCallback(overlay);
+
+            overlay->setPostEventCallback(nullptr);
+            overlay->setRegisterCallback(nullptr);
+            overlay->setUnregisterCallback(nullptr);
+            
+            overlay->onDetach();
         }
-        overlay->onDetach();
     }
 }

@@ -1,33 +1,39 @@
 #pragma once
 
 #include "Oyl3D/Events/Event.h"
+#include "Oyl3D/Events/EventListener.h"
+#include "Oyl3D/ECS/System.h"
 
 namespace oyl
-{
-    class Layer
+{    
+    class Layer : public EventListener
     {
     public:
-        Layer(const std::string& debugName = "Layer");
+        explicit Layer(const std::string& debugName = "Layer");
         virtual ~Layer();
 
-        virtual void onAttach() = 0;
-        virtual void onDetach() = 0;
+        virtual void onAttach();
+        virtual void onDetach();
 
-        virtual void onUpdate(Timestep dt)
-        {
-        }
+        virtual void onUpdate(Timestep dt);
+        virtual void onGuiRender();
 
-        virtual void onImGuiRender()
-        {
-        }
+        virtual bool onEvent(Ref<Event> event) override;
 
-        virtual void onEvent(Event& e)
-        {
-        }
+        void onUpdateSystems(Timestep dt);
+        void onGuiRenderSystems();
 
+    protected:
+        template<class T>
+        void scheduleSystemUpdate(Priority priority = 0);
+
+        std::vector<Ref<ECS::System>> m_systems;
+        
 #if defined(OYL_LOG_CONSOLE)
     protected:
         const std::string m_debugName;
 #endif
     };
 }
+
+#include "Layer.inl"

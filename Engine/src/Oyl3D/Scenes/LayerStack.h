@@ -4,7 +4,7 @@
 
 namespace oyl
 {
-    class LayerStack
+    class LayerStack : public EventListener
     {
     public:
         LayerStack();
