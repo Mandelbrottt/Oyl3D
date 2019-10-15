@@ -151,6 +151,9 @@ project "OylGame"
 		"%{IncludeDir.glm}",
 		"%{IncludeDir.stb}",
 		"%{IncludeDir.imgui}"
+		-- TEMPORARY:
+	  , "%{IncludeDir.entt}"
+
 	}
 
 	links {

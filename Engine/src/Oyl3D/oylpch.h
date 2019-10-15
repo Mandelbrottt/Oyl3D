@@ -1,5 +1,13 @@
 #pragma once
 
+#include "Oyl3D/Common.h"
+#include "Oyl3D/Enums.h"
+#include "Oyl3D/Typedefs.h"
+
+#include "Oyl3D/Utils/Logging.h"
+#include "Oyl3D/Utils/Refs.h"
+#include "Oyl3D/Utils/Timestep.h"
+
 #if !defined(_CRT_SECURE_NO_WARNINGS)
     #define _CRT_SECURE_NO_WARNINGS
 #endif
@@ -41,11 +49,3 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
-
-#include "Oyl3D/Common.h"
-#include "Oyl3D/Enums.h"
-#include "Oyl3D/Typedefs.h"
-
-#include "Oyl3D/Utils/Logging.h"
-#include "Oyl3D/Utils/Refs.h"
-#include "Oyl3D/Utils/Timestep.h"
