@@ -36,6 +36,8 @@ namespace oyl
     private:
         void onUpdate(Timestep dt);
         void onGuiRender();
+
+        static WeakRef<Scene> s_current;
         
     private:
         LayerStack m_layerStack;

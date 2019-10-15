@@ -3,6 +3,8 @@
 
 namespace oyl
 {
+    WeakRef<Scene> Scene::s_current{};
+    
     Scene::Scene(const std::string& debugName)
         : m_registry(Ref<ECS::Registry>::create()),
           m_debugName(debugName)

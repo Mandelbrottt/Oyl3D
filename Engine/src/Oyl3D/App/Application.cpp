@@ -129,6 +129,8 @@ namespace oyl
         {
             m_currentScene = std::move(scene);
 
+            Scene::s_current = m_currentScene;
+            
             m_dispatcher.registerListener(m_currentScene);
             m_currentScene->setPostEventCallback(m_dispatcherPostCallback);
             m_currentScene->setRegisterCallback(m_dispatcherRegisterCallback);
