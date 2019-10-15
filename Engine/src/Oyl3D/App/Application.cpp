@@ -4,8 +4,6 @@
 
 #include "Events/EventListener.h"
 
-#include "Input/Input.h"
-
 #include "System/Platform.h"
 
 #include "Rendering/Renderer.h"
@@ -39,26 +37,32 @@ namespace oyl
 
         Log::init();
 
-        m_window = Window::create();
-        m_window->setEventCallback(std::bind(&EventDispatcher::postEvent,
-                                             &m_dispatcher,
-                                             std::placeholders::_1));
+        m_dispatcherPostCallback =
+            OYL_CALLBACK_1(EventDispatcher::postEvent, &m_dispatcher);
+        m_dispatcherRegisterCallback =
+            OYL_CALLBACK_2(EventDispatcher::registerListener, &m_dispatcher);
+        m_dispatcherUnregisterCallback =
+            OYL_CALLBACK_1(EventDispatcher::unregisterListener, &m_dispatcher);
 
-        m_appListener      = Ref<_internal::ApplicationListener>::create();
+        m_window = Window::create();
+        m_window->setEventCallback(m_dispatcherPostCallback);
+
+        m_appListener = Ref<_internal::ApplicationListener>::create();
+
         m_appListener->app = this;
         m_appListener->addToEventMask(TypeWindowClosed);
         m_appListener->addToEventMask(TypeWindowResized);
         m_appListener->addToEventMask(TypeWindowFocused);
         m_appListener->addToCategoryMask(CategoryWindow);
-        
+
         m_dispatcher.registerListener(m_appListener);
 
         m_vibrationListener = _internal::GamepadListener::create();
         m_vibrationListener->addToEventMask(TypeGamepadVibration);
         m_vibrationListener->addToCategoryMask(CategoryGamepadVibration);
-        
+
         m_dispatcher.registerListener(m_vibrationListener);
-        
+
         m_imguiLayer.reset(new ImGuiLayer());
         m_imguiLayer->onAttach();
 
@@ -79,18 +83,16 @@ namespace oyl
     {
     }
 
-    bool Application::onEvent(Ref<Event> event)
+    bool Application::onEvent(const Ref<Event>& event)
     {
         bool handled = false;
-
-        //EventListenerDeprecated dispatcher(*event);
 
         switch (event->type)
         {
             case TypeWindowClosed:
             {
                 m_running = false;
-                handled = true;
+                handled   = true;
                 break;
             }
             case TypeWindowResized:
@@ -120,19 +122,12 @@ namespace oyl
         if (m_currentScene)
         {
             m_currentScene->onExit();
-            m_currentScene.reset();
+            m_currentScene = nullptr;
         }
 
         if (scene)
         {
             m_currentScene = std::move(scene);
-
-            m_dispatcherPostCallback =
-                OYL_CALLBACK_1(EventDispatcher::postEvent, &m_dispatcher);
-            m_dispatcherRegisterCallback =
-                OYL_CALLBACK_2(EventDispatcher::registerListener, &m_dispatcher);
-            m_dispatcherUnregisterCallback =
-                OYL_CALLBACK_1(EventDispatcher::unregisterListener, &m_dispatcher);
 
             m_dispatcher.registerListener(m_currentScene);
             m_currentScene->setPostEventCallback(m_dispatcherPostCallback);
@@ -153,12 +148,12 @@ namespace oyl
             m_lastFrameTime = time;
 
             if (m_doUpdate)
-            {                
+            {
                 RenderCommand::setClearColor(0.1f, 0.1f, 0.1f, 1.0f);
                 RenderCommand::clear();
                 m_mainBuffer->clear();
 
-                m_mainBuffer->bind();                
+                m_mainBuffer->bind();
                 Renderer::beginScene(m_camera);
 
                 m_dispatcher.dispatchEvents();

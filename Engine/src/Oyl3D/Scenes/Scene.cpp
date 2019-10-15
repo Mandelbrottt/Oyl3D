@@ -4,14 +4,15 @@
 namespace oyl
 {
     Scene::Scene(const std::string& debugName)
-    #if defined(OYL_LOG_CONSOLE)
-        : m_debugName(debugName)
-    #endif
+        : m_registry(Ref<ECS::Registry>::create()),
+          m_debugName(debugName)
     {
     }
 
     Scene::~Scene()
     {
+        m_registry->reset();
+        m_registry = nullptr;
     }
 
     void Scene::onUpdate(Timestep dt)
@@ -62,21 +63,25 @@ namespace oyl
 
     void Scene::pushLayer(Ref<Layer> layer)
     {
+        layer->setRegistry(m_registry);
         m_layerStack.pushLayer(std::move(layer));
     }
 
     void Scene::pushOverlay(Ref<Layer> overlay)
     {
+        overlay->setRegistry(m_registry);
         m_layerStack.pushOverlay(std::move(overlay));
     }
 
     void Scene::popLayer(Ref<Layer> layer)
     {
+        layer->setRegistry(nullptr);
         m_layerStack.popLayer(std::move(layer));
     }
 
     void Scene::popOverlay(Ref<Layer> overlay)
     {
+        overlay->setRegistry(nullptr);
         m_layerStack.popOverlay(std::move(overlay));
     }
 }

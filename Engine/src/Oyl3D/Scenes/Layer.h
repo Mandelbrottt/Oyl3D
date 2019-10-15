@@ -2,6 +2,8 @@
 
 #include "Oyl3D/Events/Event.h"
 #include "Oyl3D/Events/EventListener.h"
+
+#include "Oyl3D/ECS/Registry.h"
 #include "Oyl3D/ECS/System.h"
 
 namespace oyl
@@ -23,7 +25,14 @@ namespace oyl
         void onUpdateSystems(Timestep dt);
         void onGuiRenderSystems();
 
+        const Ref<ECS::Registry>& getRegistry() { return registry; }
+        void setRegistry(Ref<ECS::Registry> reg);
+
     protected:
+        // Break naming convention for sake of client usability
+        // TODO: maybe change name to 'ecs'?
+        Ref<ECS::Registry> registry;
+        
         template<class T>
         void scheduleSystemUpdate(Priority priority = 0);
 

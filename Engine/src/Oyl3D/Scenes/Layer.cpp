@@ -13,8 +13,10 @@ namespace oyl
 
     Layer::~Layer()
     {
-        for (auto system : m_systems)
+        for (auto& system : m_systems)
+        {
             system->onExit();
+        }
     }
 
     void Layer::onAttach()
@@ -40,7 +42,7 @@ namespace oyl
 
     void Layer::onUpdateSystems(Timestep dt)
     {
-        for (auto system : m_systems)
+        for (auto& system : m_systems)
         {
             system->onUpdate(dt);
         }
@@ -48,9 +50,14 @@ namespace oyl
 
     void Layer::onGuiRenderSystems()
     {
-        for (auto system : m_systems)
+        for (auto& system : m_systems)
         {
             system->onGuiRender();
         }
+    }
+
+    void Layer::setRegistry(Ref<ECS::Registry> reg)
+    {
+        registry = std::move(reg);
     }
 }

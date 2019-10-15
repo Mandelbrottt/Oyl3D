@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Oyl3D/ECS/Registry.h"
+
 #include "Oyl3D/Events/Event.h"
 #include "Oyl3D/Events/EventListener.h"
 
@@ -21,10 +23,14 @@ namespace oyl
         void pushOverlay(Ref<Layer> overlay);
         void popLayer(Ref<Layer> layer);
         void popOverlay(Ref<Layer> overlay);
-        
-        virtual void setPostEventCallback(PostEventFn callback) override;
-        virtual void setRegisterCallback(RegisterFn callback) override;
-        virtual void setUnregisterCallback(UnregisterFn callback) override;
+
+        static Ref<Scene> current() { return s_current.lock(); }
+
+        const Ref<ECS::Registry>& getRegistry() { return m_registry; }
+
+        virtual void setPostEventCallback(PostEventFn callback) override final;
+        virtual void setRegisterCallback(RegisterFn callback) override final;
+        virtual void setUnregisterCallback(UnregisterFn callback) override final;
         
         virtual bool onEvent(Ref<Event> event) override;
     private:
@@ -34,9 +40,9 @@ namespace oyl
     private:
         LayerStack m_layerStack;
 
-#if defined(OYL_LOG_CONSOLE)
+        Ref<ECS::Registry> m_registry;
+        
     protected:
-        const std::string m_debugName;
-#endif
+        std::string m_debugName;
     };
 }
