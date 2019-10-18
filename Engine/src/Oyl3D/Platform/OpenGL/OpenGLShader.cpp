@@ -139,7 +139,7 @@ namespace oyl
         m_rendererID = linkShaders(shaders);
     }
 
-    OpenGLShader::OpenGLShader(const std::initializer_list<ShaderInfo>& files)
+    OpenGLShader::OpenGLShader(_OpenGLShader, const std::initializer_list<ShaderInfo>& files)
     {
         std::vector<ShaderInfo> infos(files);
 

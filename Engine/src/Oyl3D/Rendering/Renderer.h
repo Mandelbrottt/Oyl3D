@@ -18,7 +18,7 @@ namespace oyl
         static void endScene();
 
         static void submit(const Ref<Shader>& shader, const Ref<VertexArray>& vao, glm::mat4 transform = glm::mat4(1.0f));
-        static void submit(const Ref<Mesh>& mesh, glm::mat4 transform = glm::mat4(1.0f));
+        static void submit(const Ref<Mesh>& mesh, const Ref<Material>& material, glm::mat4 transform = glm::mat4(1.0f));
 
         inline static OylEnum getAPI() { return RendererAPI::getAPI(); }
     private:

@@ -146,35 +146,13 @@ namespace oyl
         m_vao.reset();
     }
 
-    void Mesh::loadTexture(const std::string& filename, uint slot)
-    {
-        m_texture = Texture2D::create(filename);
-    }
-
-    void Mesh::loadTexture(Ref<Texture2D> texture)
-    {
-        m_texture = std::move(texture);
-    }
-
-    void Mesh::unloadTexture()
-    {
-        m_texture.reset();
-    }
-
-    void Mesh::setMaterial(Ref<Material> material)
-    {
-        m_material = std::move(material);
-    }
-
     void Mesh::bind()
     {
         m_vao->bind();
-        if (m_texture) m_texture->bind();
     }
 
     void Mesh::unbind()
     {
         m_vao->unbind();
-        if (m_texture) m_texture->unbind();
     }
 }

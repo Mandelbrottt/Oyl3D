@@ -1,9 +1,9 @@
 #include "oylpch.h"
 #include "Shader.h"
 
-#include "Rendering/Renderer.h"
-
 #include "Platform/OpenGL/OpenGLShader.h"
+
+#include "Rendering/Renderer.h"
 
 namespace oyl
 {
@@ -15,7 +15,7 @@ namespace oyl
                 OYL_ASSERT(false, "None is currently unsupported");
                 return nullptr;
             case API_OpenGL:
-                return Ref<Shader>(new OpenGLShader(files));
+                return OpenGLShader::create(files);
         }
         return nullptr;
     }

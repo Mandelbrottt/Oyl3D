@@ -131,21 +131,19 @@ public:
         });
 
         auto mat = oyl::Material::create(shader);
+        mat->loadTexture("res/capsule0.jpg");
+        mat->setUniform1i("u_texture", 0);
 
         auto mesh = oyl::Mesh::create("res/capsule.obj");
-        mesh->loadTexture("res/capsule0.jpg");
-        mesh->setMaterial(mat);
-        mesh->getMaterial()->setUniform1i("u_texture", 0);
+        for (int i = 0; i < 10; i++)
+        {
+            oyl::Component::MeshRenderer mr;
+            mr.mesh     = mesh;
+            mr.material = mat;
 
-        oyl::Component::MeshRenderer model;
-        model.mesh = mesh;
-
-        oyl::Component::Transform transform{};
-        transform.position = m_translate;
-
-        m_entity = registry->create();
-        registry->assign<oyl::Component::Transform>(m_entity, transform);
-        registry->assign<oyl::Component::MeshRenderer>(m_entity, model);
+            auto e = registry->create();
+            registry->assign<oyl::Component::MeshRenderer>(e, mr);
+        }
     }
 
     virtual void onDetach() override
@@ -156,13 +154,18 @@ public:
     {
         m_timeSince += dt;
 
-        glm::mat4 transform(1.0f);
+        const auto& view = registry->view<oyl::Component::MeshRenderer, oyl::Component::Transform>();
 
-        transform = glm::translate(transform, m_translate);
-        transform = glm::rotate(transform, m_timeSince, glm::vec3(1.0f, 0.5f, 0.0f));
+        float i = 0;
 
-        auto mesh = registry->get<oyl::Component::MeshRenderer>(m_entity).mesh;
-        mesh->getMaterial()->setUniformMat4("u_model", transform);
+        for (const auto& entity : view)
+        {
+            auto& transform    = registry->get<oyl::Component::Transform>(entity);
+            transform.position = m_translate + i * glm::vec3(0.5f, 0.5f, -1.0f);
+            transform.rotation = glm::vec3(glm::degrees(m_timeSince));
+
+            i += 1.0f;
+        }
     }
 
     virtual void onGuiRender() override
@@ -203,9 +206,6 @@ public:
     }
 
 private:
-    //oyl::Ref<oyl::Mesh>   m_mesh;
-    //oyl::Ref<oyl::Shader> m_meshShader;
-    oyl::Entity m_entity;
 
     glm::vec3 m_translate = glm::vec3(0.0f, 0.0f, -5.0f);
 
