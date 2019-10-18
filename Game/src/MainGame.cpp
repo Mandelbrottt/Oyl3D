@@ -137,7 +137,7 @@ public:
         mesh->setMaterial(mat);
         mesh->getMaterial()->setUniform1i("u_texture", 0);
 
-        oyl::Component::Model model;
+        oyl::Component::MeshRenderer model;
         model.mesh = mesh;
 
         oyl::Component::Transform transform{};
@@ -145,7 +145,7 @@ public:
 
         m_entity = registry->create();
         registry->assign<oyl::Component::Transform>(m_entity, transform);
-        registry->assign<oyl::Component::Model>(m_entity, model);
+        registry->assign<oyl::Component::MeshRenderer>(m_entity, model);
     }
 
     virtual void onDetach() override
@@ -161,7 +161,7 @@ public:
         transform = glm::translate(transform, m_translate);
         transform = glm::rotate(transform, m_timeSince, glm::vec3(1.0f, 0.5f, 0.0f));
 
-        auto mesh = registry->get<oyl::Component::Model>(m_entity).mesh;
+        auto mesh = registry->get<oyl::Component::MeshRenderer>(m_entity).mesh;
         mesh->getMaterial()->setUniformMat4("u_model", transform);
     }
 

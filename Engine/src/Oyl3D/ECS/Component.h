@@ -16,7 +16,7 @@ namespace oyl::Component
         glm::mat4 getMatrix() const;
     };
 
-    struct Model
+    struct MeshRenderer
     {
         Ref<Mesh> mesh;
     };

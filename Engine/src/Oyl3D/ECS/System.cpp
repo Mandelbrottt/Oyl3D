@@ -44,14 +44,14 @@ namespace oyl::ECS
     void RenderSystem::onUpdate(Timestep dt)
     {
         using Component::Transform;
-        using Component::Model;
+        using Component::MeshRenderer;
 
         Ref<Registry> reg = Scene::current()->getRegistry();
         
-        auto view = reg->view<Transform, Model>();
+        auto view = reg->view<Transform, MeshRenderer>();
         for (auto& entity : view)
         {
-            const Ref<Mesh>& mesh = reg->get<Model>(entity).mesh;
+            const Ref<Mesh>& mesh = reg->get<MeshRenderer>(entity).mesh;
             const glm::mat4& transform = reg->get<Transform>(entity).getMatrix();
             Renderer::submit(mesh, transform);
         }
