@@ -6,8 +6,6 @@
 
 namespace oyl::ECS
 {
-    using EntityID = entt::entity;
-
     class Registry : public entt::registry
     {
     public:

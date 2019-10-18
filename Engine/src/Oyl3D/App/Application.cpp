@@ -136,6 +136,12 @@ namespace oyl
             m_currentScene->setRegisterCallback(m_dispatcherRegisterCallback);
             m_currentScene->setUnregisterCallback(m_dispatcherUnregisterCallback);
 
+            // TEMPORARY: Make single function that registers all scene systems
+            m_dispatcher.registerListener(m_currentScene->m_renderSystem);
+            m_currentScene->m_renderSystem->setPostEventCallback(m_dispatcherPostCallback);
+            m_currentScene->m_renderSystem->setRegisterCallback(m_dispatcherRegisterCallback);
+            m_currentScene->m_renderSystem->setUnregisterCallback(m_dispatcherUnregisterCallback);
+
             m_currentScene->onEnter();
         }
     }
@@ -161,6 +167,8 @@ namespace oyl
                 m_dispatcher.dispatchEvents();
 
                 m_currentScene->onUpdate(timestep);
+
+                m_currentScene->m_renderSystem->onUpdate(timestep);
 
                 Renderer::endScene();
                 m_mainBuffer->unbind();

@@ -124,18 +124,28 @@ public:
 
         addToEventMask(oyl::TypeKeyPressed);
         addToEventMask(oyl::TypeGamepadStickMoved);
-        
+
         auto shader = oyl::Shader::create({
             { oyl::VertexShader, "../Engine/res/meshShader.vert" },
             { oyl::FragmentShader, "../Engine/res/meshShader.frag" },
         });
 
         auto mat = oyl::Material::create(shader);
-        
-        m_mesh = oyl::Mesh::create("res/capsule.obj");
-        m_mesh->loadTexture("res/capsule0.jpg");
-        m_mesh->setMaterial(mat);
-        m_mesh->getMaterial()->setUniform1i("u_texture", 0);
+
+        auto mesh = oyl::Mesh::create("res/capsule.obj");
+        mesh->loadTexture("res/capsule0.jpg");
+        mesh->setMaterial(mat);
+        mesh->getMaterial()->setUniform1i("u_texture", 0);
+
+        oyl::Component::Model model;
+        model.mesh = mesh;
+
+        oyl::Component::Transform transform{};
+        transform.position = m_translate;
+
+        m_entity = registry->create();
+        registry->assign<oyl::Component::Transform>(m_entity, transform);
+        registry->assign<oyl::Component::Model>(m_entity, model);
     }
 
     virtual void onDetach() override
@@ -151,9 +161,8 @@ public:
         transform = glm::translate(transform, m_translate);
         transform = glm::rotate(transform, m_timeSince, glm::vec3(1.0f, 0.5f, 0.0f));
 
-        m_mesh->getMaterial()->setUniformMat4("u_model", transform);
-        
-        oyl::Renderer::submit(m_mesh, transform);
+        auto mesh = registry->get<oyl::Component::Model>(m_entity).mesh;
+        mesh->getMaterial()->setUniformMat4("u_model", transform);
     }
 
     virtual void onGuiRender() override
@@ -194,8 +203,10 @@ public:
     }
 
 private:
-    oyl::Ref<oyl::Mesh>   m_mesh;
-    oyl::Ref<oyl::Shader> m_meshShader;
+    //oyl::Ref<oyl::Mesh>   m_mesh;
+    //oyl::Ref<oyl::Shader> m_meshShader;
+    oyl::Entity m_entity;
+
     glm::vec3 m_translate = glm::vec3(0.0f, 0.0f, -5.0f);
 
     float m_timeSince = 0.0f;

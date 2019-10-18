@@ -2,6 +2,7 @@
 
 #include <cstdint>
 #include <memory>
+#include <entt/entt.hpp>
 
 namespace oyl
 {
@@ -21,4 +22,6 @@ namespace oyl
     static_assert(sizeof(float) == 4, "float should be 32 bits wide!");
     using f64 = double;
     static_assert(sizeof(double) == 8, "double should be 64 bits wide!");
+
+    using Entity = entt::entity;
 }

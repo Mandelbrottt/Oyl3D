@@ -4,9 +4,10 @@
 namespace oyl
 {
     WeakRef<Scene> Scene::s_current{};
-    
+
     Scene::Scene(const std::string& debugName)
         : m_registry(Ref<ECS::Registry>::create()),
+          m_renderSystem(Ref<ECS::RenderSystem>::create()),
           m_debugName(debugName)
     {
     }
@@ -37,14 +38,6 @@ namespace oyl
 
     bool Scene::onEvent(Ref<Event> event)
     {
-        //bool handled = false;
-        //for (const Ref<Layer>& layer : m_layerStack)
-        //{
-        //    handled = layer->onEvent(event);
-        //    
-        //    if (handled) break;
-        //}
-        //return handled;
         return false;
     }
 
