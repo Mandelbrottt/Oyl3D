@@ -30,44 +30,23 @@ namespace oyl
     Application* Application::s_instance = nullptr;
 
     Application::Application()
-        : m_camera(60.0f, 16.0f / 9.0f, 0.01f, 1000.0f)
     {
         OYL_ASSERT(!s_instance, "Application already exists!");
         s_instance = this;
 
+        m_camera.setProjection(glm::perspective(glm::radians(60.0f), 16.0f / 9.0f, 0.01f, 1000.0f));
+        m_camera.setPosition(glm::vec3(0.0f));
+        m_camera.lookAt(glm::vec3(0.0f, 0.0f, -1.0f));
+        
         Log::init();
 
-        m_dispatcherPostCallback =
-            OYL_CALLBACK_1(EventDispatcher::postEvent, &m_dispatcher);
-        m_dispatcherRegisterCallback =
-            OYL_CALLBACK_2(EventDispatcher::registerListener, &m_dispatcher);
-        m_dispatcherUnregisterCallback =
-            OYL_CALLBACK_1(EventDispatcher::unregisterListener, &m_dispatcher);
-
         m_window = Window::create();
-        m_window->setEventCallback(m_dispatcherPostCallback);
-
-        m_appListener = Ref<_internal::ApplicationListener>::create();
-
-        m_appListener->app = this;
-        m_appListener->addToEventMask(TypeWindowClosed);
-        m_appListener->addToEventMask(TypeWindowResized);
-        m_appListener->addToEventMask(TypeWindowFocused);
-        m_appListener->addToCategoryMask(CategoryWindow);
-
-        m_dispatcher.registerListener(m_appListener);
-
-        m_vibrationListener = _internal::GamepadListener::create();
-        m_vibrationListener->addToEventMask(TypeGamepadVibration);
-        m_vibrationListener->addToCategoryMask(CategoryGamepadVibration);
-
-        m_dispatcher.registerListener(m_vibrationListener);
-
-        m_imguiLayer.reset(new ImGuiLayer());
+        
+        m_imguiLayer = Ref<ImGuiLayer>::create();
         m_imguiLayer->onAttach();
 
-        m_dispatcher.registerListener(m_imguiLayer);
-
+        initEventListeners();
+        
         m_mainBuffer = oyl::FrameBuffer::create(1);
         m_mainBuffer->initDepthTexture(m_window->getWidth(), m_window->getHeight());
 
@@ -76,7 +55,7 @@ namespace oyl
                                        oyl::Nearest,
                                        oyl::Clamp);
 
-        m_window->setVsync(false);
+        //m_window->setVsync(false);
     }
 
     Application::~Application()
@@ -190,5 +169,35 @@ namespace oyl
 
             m_vibrationListener->onUpdate(timestep);
         }
+    }
+    
+    void Application::initEventListeners()
+    {
+        m_dispatcherPostCallback =
+            OYL_CALLBACK_1(EventDispatcher::postEvent, &m_dispatcher);
+        m_dispatcherRegisterCallback =
+            OYL_CALLBACK_2(EventDispatcher::registerListener, &m_dispatcher);
+        m_dispatcherUnregisterCallback =
+            OYL_CALLBACK_1(EventDispatcher::unregisterListener, &m_dispatcher);
+
+        m_window->setEventCallback(m_dispatcherPostCallback);
+
+        m_appListener = Ref<_internal::ApplicationListener>::create();
+
+        m_appListener->app = this;
+        m_appListener->addToEventMask(TypeWindowClosed);
+        m_appListener->addToEventMask(TypeWindowResized);
+        m_appListener->addToEventMask(TypeWindowFocused);
+        m_appListener->addToCategoryMask(CategoryWindow);
+
+        m_dispatcher.registerListener(m_appListener);
+
+        m_vibrationListener = _internal::GamepadListener::create();
+        m_vibrationListener->addToEventMask(TypeGamepadVibration);
+        m_vibrationListener->addToCategoryMask(CategoryGamepadVibration);
+
+        m_dispatcher.registerListener(m_vibrationListener);
+
+        m_dispatcher.registerListener(m_imguiLayer);
     }
 }

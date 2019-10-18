@@ -3,44 +3,49 @@
 
 namespace oyl
 {
-    OrthographicCamera::OrthographicCamera(float left, float right, float bottom, float top)
-        : m_projection(glm::ortho(left, right, bottom, top, -1.0f, 1.0f)),
-          m_view(1.0f),
-          m_viewProjection(m_projection * m_view)
+    const glm::mat4& Camera::getViewMatrix() const
     {
+        return m_view;
     }
 
-    void OrthographicCamera::recalculateViewMatrix()
+    glm::mat4 Camera::getViewProjectionMatrix() const
     {
-        glm::mat4 transform = glm::translate(glm::mat4(1.0f), m_position);
-
-        transform        = glm::rotate(transform, glm::radians(m_rotation), glm::vec3(0.0f, 0.0f, 1.0f));
-        m_view           = glm::inverse(transform);
-        m_viewProjection = m_projection * m_view;
+        return m_projection * m_view;
     }
 
-    PerspectiveCamera::PerspectiveCamera(float fov, float aspect, float nearZ, float farZ)
-        : m_fov(fov), m_aspect(aspect), m_nearZ(nearZ), m_farZ(farZ),
-          m_projection(glm::perspective(glm::radians(fov), aspect, nearZ, farZ)),
-          m_view(1.0f)
+    void Camera::setPosition(glm::vec3 position)
     {
-        m_viewProjection = m_projection * m_view;
+        glm::vec3 temp = glm::vec4(-glm::mat3(m_view) * position, 1.0f);
+        
+        transX = temp.x;
+        transY = temp.y;
+        transZ = temp.z;
+
+        m_position = position;
     }
 
-    void PerspectiveCamera::recalculateViewMatrix()
+    void Camera::lookAt(const glm::vec3& target, const glm::vec3& up)
     {
-        glm::mat4 transform = glm::translate(glm::mat4(1.0f), m_position);
-
-        transform = glm::rotate(transform, glm::radians(m_rotation.z), glm::vec3(0.0f, 0.0f, 1.0f)); // Z
-        transform = glm::rotate(transform, glm::radians(m_rotation.y), glm::vec3(0.0f, 1.0f, 0.0f)); // Y
-        transform = glm::rotate(transform, glm::radians(m_rotation.x), glm::vec3(1.0f, 0.0f, 0.0f)); // X
-
-        m_view           = inverse(transform);
-        m_viewProjection = m_projection * m_view;
+        m_view = glm::lookAt(m_position, target, up);
     }
 
-    void PerspectiveCamera::recalculateProjMatrix()
+    void Camera::rotate(const glm::quat& rot)
     {
-        m_projection = glm::perspective(glm::radians(m_fov), m_aspect, m_nearZ, m_farZ);
+        if (rot != glm::quat(glm::vec3(0.0f)))
+        {
+            m_view = glm::mat4_cast(rot) * m_view;
+        }
+    }
+
+    void Camera::move(const glm::vec3& local)
+    {
+        if (local != glm::vec3(0.0f))
+        {
+            transX -= local.x;
+            transY -= local.y;
+            transZ -= local.z;
+
+            m_position = -glm::inverse(glm::mat3(m_view)) * glm::vec3(transX, transY, transZ);
+        }
     }
 }

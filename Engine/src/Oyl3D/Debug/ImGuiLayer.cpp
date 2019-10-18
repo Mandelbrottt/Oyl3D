@@ -126,7 +126,9 @@ namespace oyl
 
         auto [x, y] = ImGui::GetWindowSize();
 
-        Application::get().getMainCamera().setAspect(x / y);
+        glm::mat4 newProj = glm::perspective(glm::radians(60.0f), x / y, 0.01f, 1000.0f);
+        
+        Application::get().getMainCamera().setProjection(newProj);
 
         ImGui::Image(
             (void*) Application::get().getMainFrameBuffer().getColorHandle(0),

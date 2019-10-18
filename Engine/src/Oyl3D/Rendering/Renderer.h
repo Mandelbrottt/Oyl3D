@@ -12,9 +12,7 @@ namespace oyl
     {
     public:
         // TODO: make a seperate beginGUI for ortho, beginScene for perspective
-        static void beginScene(const OrthographicCamera& camera);
-        // TEMPORARY:
-        static void beginScene(const PerspectiveCamera& camera);
+        static void beginScene(const Camera& camera);
         static void endScene();
 
         static void submit(const Ref<Shader>& shader, const Ref<VertexArray>& vao, glm::mat4 transform = glm::mat4(1.0f));

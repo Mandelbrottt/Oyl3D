@@ -4,107 +4,50 @@ namespace oyl
 {
 
 // TODO: have a dirty flag
-
-    class OrthographicCamera
+    class Camera
     {
     public:
-        OrthographicCamera(float left, float right, float bottom, float top);
+        explicit Camera()  = default;
+        virtual  ~Camera() = default;
 
-        inline const glm::mat4& getViewMatrix() const { return m_view; }
+        const glm::mat4& getViewMatrix() const;
+        glm::mat4        getViewProjectionMatrix() const;
+
         inline const glm::mat4& getProjectionMatrix() const { return m_projection; }
-        inline const glm::mat4& getViewProjectionMatrix() const { return m_viewProjection; }
 
         inline const glm::vec3& getPosition() const { return m_position; };
+        void                    setPosition(glm::vec3 position);
 
-        inline void setPosition(const glm::vec3& position)
+        inline glm::quat getRotation() const { return glm::quat_cast(glm::mat3(m_view)); }
+
+        inline void setProjection(glm::mat4 proj) { m_projection = proj; }
+
+        inline glm::vec3 GetForward() const { return glm::vec3(frontX, frontY, frontZ); }
+        inline glm::vec3 GetUp() const { return glm::vec3(upX, upY, upZ); }
+        inline glm::vec3 GetRight() const { return glm::vec3(rightX, rightY, rightZ); }
+
+        void lookAt(const glm::vec3& target, const glm::vec3& up = glm::vec3(0, 1, 0));
+        void rotate(const glm::quat& rot);
+        void rotate(const glm::vec3& rot) { rotate(glm::quat(rot)); }
+        void move(const glm::vec3& local);
+
+    protected:
+        glm::mat4         m_projection     = glm::mat4(1.0f);
+        mutable glm::mat4 m_viewProjection = glm::mat4(1.0f);
+
+        glm::vec3 m_position = glm::vec3(0.0f);
+
+        union
         {
-            m_position = position;
-            recalculateViewMatrix();
-        }
+            mutable glm::mat4 m_view = glm::mat4(1.0f);
 
-        inline const float getRotation() const { return m_rotation; }
-
-        inline void setRotation(float rotation)
-        {
-            m_rotation = rotation;
-            recalculateViewMatrix();
-        }
-
-    private:
-        void recalculateViewMatrix();
-    private:
-        glm::mat4 m_view;
-        glm::mat4 m_projection;
-        glm::mat4 m_viewProjection;
-
-        glm::vec3 m_position = glm::vec3(0);
-        float     m_rotation = 0.0f;
-    };
-
-// TODO: Swap to quaternion rotation
-    class PerspectiveCamera
-    {
-    public:
-        PerspectiveCamera(float fov, float aspect, float nearZ, float farZ);
-
-        inline const glm::mat4& getViewMatrix() const { return m_view; }
-        inline const glm::mat4& getProjectionMatrix() const { return m_projection; }
-        inline const glm::mat4& getViewProjectionMatrix() const { return m_viewProjection; }
-
-        inline const glm::vec3& getPosition() const { return m_position; };
-
-        inline void setPosition(glm::vec3& position)
-        {
-            m_position = position;
-            recalculateViewMatrix();
-        }
-
-        inline const glm::vec3 getRotation() const { return m_rotation; }
-
-        inline void setRotation(glm::vec3& rotation)
-        {
-            m_rotation = rotation;
-            recalculateViewMatrix();
-        }
-
-        inline void setFOV(float fov)
-        {
-            m_fov = fov;
-            recalculateProjMatrix();
-        }
-
-        inline void setAspect(float aspect)
-        {
-            m_aspect = aspect;
-            recalculateProjMatrix();
-        }
-
-        inline void setNearZ(float nearZ)
-        {
-            m_nearZ = nearZ;
-            recalculateProjMatrix();
-        }
-
-        inline void setFarZ(float farZ)
-        {
-            m_farZ = farZ;
-            recalculateProjMatrix();
-        }
-
-    private:
-        void recalculateViewMatrix();
-        void recalculateProjMatrix();
-    private:
-        float m_fov;
-        float m_aspect;
-        float m_nearZ;
-        float m_farZ;
-
-        glm::mat4 m_view;
-        glm::mat4 m_projection;
-        glm::mat4 m_viewProjection;
-
-        glm::vec3 m_position = glm::vec3(0);
-        glm::vec3 m_rotation = glm::vec3(0);
+            struct
+            {
+                float rightX, rightY, rightZ, m03;
+                float upX,    upY,    upZ,    m13;
+                float frontX, frontY, frontZ, m23;
+                float transX, transY, transZ, m33;
+            };
+        };
     };
 }

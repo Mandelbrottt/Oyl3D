@@ -40,22 +40,26 @@ namespace oyl
 
         inline Window&            getWindow() { return *m_window; }
         inline FrameBuffer&       getMainFrameBuffer() { return *m_mainBuffer; }
-        inline PerspectiveCamera& getMainCamera() { return m_camera; }
+        inline Camera& getMainCamera() { return m_camera; }
 
         inline static Application& get() { return *s_instance; }
-    private:
 
+    private:
+        void initEventListeners();
+
+    private:
         Ref<Window>      m_window;
         Ref<Scene>       m_currentScene;
         Ref<ImGuiLayer>  m_imguiLayer;
         Ref<FrameBuffer> m_mainBuffer;
 
-        PerspectiveCamera m_camera;
+        Camera m_camera;
 
         float m_lastFrameTime = 0;
 
         bool m_running  = true;
         bool m_doUpdate = true;
+
     private:
         static Application* s_instance;
 

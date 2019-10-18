@@ -5,12 +5,7 @@ namespace oyl
 {
     Renderer::SceneData* Renderer::s_sceneData = new Renderer::SceneData;
 
-    void Renderer::beginScene(const OrthographicCamera& camera)
-    {
-        s_sceneData->orthoVPMatrix = camera.getViewProjectionMatrix();
-    }
-
-    void Renderer::beginScene(const PerspectiveCamera& camera)
+    void Renderer::beginScene(const Camera& camera)
     {
         s_sceneData->perspectiveViewMatrix       = camera.getViewMatrix();
         s_sceneData->perspectiveProjectionMatrix = camera.getProjectionMatrix();
