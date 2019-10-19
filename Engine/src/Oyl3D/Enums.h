@@ -202,6 +202,10 @@ namespace oyl
         Mouse_Back = Mouse_4,
         Mouse_Forward = Mouse_5,
 
+        Cursor_Enabled = 1,
+        Cursor_Disabled,
+        Cursor_Hidden,
+
         Gamepad_A = 1,
         Gamepad_B,
         Gamepad_X,

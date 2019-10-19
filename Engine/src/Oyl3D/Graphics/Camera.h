@@ -1,4 +1,6 @@
 #pragma once
+#include <glm/common.hpp>
+#include "Camera.h"
 
 namespace oyl
 {
@@ -20,15 +22,20 @@ namespace oyl
 
         inline glm::quat getRotation() const { return glm::quat_cast(glm::mat3(m_view)); }
 
+        void setRotation(const glm::quat& rot);
+        void setRotation(glm::vec3 rot);
+
         inline void setProjection(glm::mat4 proj) { m_projection = proj; }
 
-        inline glm::vec3 GetForward() const { return glm::vec3(frontX, frontY, frontZ); }
-        inline glm::vec3 GetUp() const { return glm::vec3(upX, upY, upZ); }
-        inline glm::vec3 GetRight() const { return glm::vec3(rightX, rightY, rightZ); }
+        inline glm::vec3 getForward() const { return glm::vec3(frontX, frontY, frontZ); }
+        inline glm::vec3 getUp() const { return glm::vec3(upX, upY, upZ); }
+        inline glm::vec3 getRight() const { return glm::vec3(rightX, rightY, rightZ); }
 
         void lookAt(const glm::vec3& target, const glm::vec3& up = glm::vec3(0, 1, 0));
+
         void rotate(const glm::quat& rot);
-        void rotate(const glm::vec3& rot) { rotate(glm::quat(rot)); }
+        void rotate(glm::vec3 rot);
+        
         void move(const glm::vec3& local);
 
     protected:

@@ -37,16 +37,16 @@ namespace oyl
         m_camera.setProjection(glm::perspective(glm::radians(60.0f), 16.0f / 9.0f, 0.01f, 1000.0f));
         m_camera.setPosition(glm::vec3(0.0f));
         m_camera.lookAt(glm::vec3(0.0f, 0.0f, -1.0f));
-        
+
         Log::init();
 
         m_window = Window::create();
-        
+
         m_imguiLayer = Ref<ImGuiLayer>::create();
         m_imguiLayer->onAttach();
 
         initEventListeners();
-        
+
         m_mainBuffer = oyl::FrameBuffer::create(1);
         m_mainBuffer->initDepthTexture(m_window->getWidth(), m_window->getHeight());
 
@@ -55,7 +55,7 @@ namespace oyl
                                        oyl::Nearest,
                                        oyl::Clamp);
 
-        //m_window->setVsync(false);
+        m_window->setVsync(false);
     }
 
     Application::~Application()
@@ -91,6 +91,8 @@ namespace oyl
             }
         }
 
+        handled |= processCameraInput(event);
+
         handled |= m_doUpdate;
 
         return handled;
@@ -109,7 +111,7 @@ namespace oyl
             m_currentScene = std::move(scene);
 
             Scene::s_current = m_currentScene;
-            
+
             m_dispatcher.registerListener(m_currentScene);
             m_currentScene->setPostEventCallback(m_dispatcherPostCallback);
             m_currentScene->setRegisterCallback(m_dispatcherRegisterCallback);
@@ -136,6 +138,8 @@ namespace oyl
 
             if (m_doUpdate)
             {
+                processCameraUpdate(timestep);
+
                 RenderCommand::setClearColor(0.1f, 0.1f, 0.1f, 1.0f);
                 RenderCommand::clear();
                 m_mainBuffer->clear();
@@ -156,6 +160,13 @@ namespace oyl
 #if !defined(OYL_DISTRIBUTION)
             m_imguiLayer->begin();
 
+            ImGui::Begin("Camera");
+
+            ImGui::SliderFloat("Move Speed", &m_cameraMoveSpeed, 0.1f, 10.f);
+            ImGui::SliderFloat("Turn Speed", &m_cameraRotateSpeed, 0.1f, 50.0f);
+
+            ImGui::End();
+
             m_imguiLayer->onGuiRender();
             m_currentScene->onGuiRender();
 
@@ -170,7 +181,7 @@ namespace oyl
             m_vibrationListener->onUpdate(timestep);
         }
     }
-    
+
     void Application::initEventListeners()
     {
         m_dispatcherPostCallback =
@@ -185,10 +196,9 @@ namespace oyl
         m_appListener = Ref<_internal::ApplicationListener>::create();
 
         m_appListener->app = this;
-        m_appListener->addToEventMask(TypeWindowClosed);
-        m_appListener->addToEventMask(TypeWindowResized);
-        m_appListener->addToEventMask(TypeWindowFocused);
         m_appListener->addToCategoryMask(CategoryWindow);
+        m_appListener->addToCategoryMask(CategoryKeyboard);
+        m_appListener->addToCategoryMask(CategoryMouse);
 
         m_dispatcher.registerListener(m_appListener);
 
@@ -199,5 +209,77 @@ namespace oyl
         m_dispatcher.registerListener(m_vibrationListener);
 
         m_dispatcher.registerListener(m_imguiLayer);
+    }
+
+    bool Application::processCameraInput(const Ref<Event>& event)
+    {
+        switch (event->type)
+        {
+            case TypeKeyPressed:
+            {
+                auto e = (KeyPressedEvent) *event;
+                if (e.keycode == Key_W)
+                    m_cameraMove.z = -1;
+                if (e.keycode == Key_S)
+                    m_cameraMove.z = 1;
+                if (e.keycode == Key_D)
+                    m_cameraMove.x = 1;
+                if (e.keycode == Key_A)
+                    m_cameraMove.x = -1;;
+                if (e.keycode == Key_Space)
+                    m_cameraMove.y = 1;
+                if (e.keycode == Key_LeftControl)
+                    m_cameraMove.y = -1;
+                if (e.keycode == Key_LeftAlt && !e.repeatCount)
+                {
+                    m_doMoveCamera ^= 1;
+                    
+                    if (m_window->getCursorState() == Cursor_Disabled)
+                        m_window->setCursorState(Cursor_Enabled);
+                    else
+                        m_window->setCursorState(Cursor_Disabled);
+                }
+                break;
+            }
+            case TypeKeyReleased:
+            {
+                auto e = (KeyReleasedEvent) *event;
+                if (e.keycode == Key_W || e.keycode == Key_S)
+                    m_cameraMove.z = 0;
+                if (e.keycode == Key_D || e.keycode == Key_A)
+                    m_cameraMove.x = 0;
+                if (e.keycode == Key_Space || e.keycode == Key_LeftControl)
+                    m_cameraMove.y = 0;
+                break;
+            }
+            case TypeMouseMoved:
+                auto e = (MouseMovedEvent) *event;
+                m_cameraRotate.y = e.dx;
+                m_cameraRotate.x = e.dy;
+                break;
+        }
+        return false;
+    }
+
+    void Application::processCameraUpdate(Timestep dt)
+    {
+        if (!m_doMoveCamera) return;
+
+        glm::vec3 move = m_cameraMove;
+
+        if (move != glm::vec3(0.0f))
+            move = glm::normalize(move);
+
+        m_camera.move(move * m_cameraMoveSpeed * dt.getSeconds());
+
+        static glm::vec3 realRotation = glm::vec3(0.0f);
+
+        realRotation += m_cameraRotate * m_cameraRotateSpeed * dt.getSeconds();
+        if (realRotation.x > 89.0f) realRotation.x = 89.0f;
+        if (realRotation.x < -89.0f) realRotation.x = -89.0f;
+        
+        m_camera.setRotation(realRotation);
+
+        m_cameraRotate = glm::vec3(0.0f);
     }
 }

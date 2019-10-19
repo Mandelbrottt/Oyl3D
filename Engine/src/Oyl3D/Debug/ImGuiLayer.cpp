@@ -62,31 +62,6 @@ namespace oyl
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
-    }
-
-    void ImGuiLayer::end()
-    {
-        ImGuiIO&     io  = ImGui::GetIO();
-        Application& app = Application::get();
-        io.DisplaySize   = ImVec2(app.getWindow().getWidth(), app.getWindow().getHeight());
-
-        // Rendering
-        ImGui::Render();
-        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-
-        if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
-        {
-            GLFWwindow* backup_current_context = glfwGetCurrentContext();
-            ImGui::UpdatePlatformWindows();
-            ImGui::RenderPlatformWindowsDefault();
-            glfwMakeContextCurrent(backup_current_context);
-        }
-    }
-
-    void ImGuiLayer::onGuiRender()
-    {
-        // Only still here for easy navigation to the source code for learning imgui
-        if (false) ImGui::ShowDemoWindow();
 
         static ImGuiDockNodeFlags dockspace_flags = ImGuiDockNodeFlags_None;
 
@@ -118,6 +93,31 @@ namespace oyl
         ImGuiID dockspace_id = ImGui::GetID("MyDockSpace");
         ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), dockspace_flags);
         ImGui::End();
+    }
+
+    void ImGuiLayer::end()
+    {
+        ImGuiIO&     io  = ImGui::GetIO();
+        Application& app = Application::get();
+        io.DisplaySize   = ImVec2(app.getWindow().getWidth(), app.getWindow().getHeight());
+
+        // Rendering
+        ImGui::Render();
+        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
+        if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
+        {
+            GLFWwindow* backup_current_context = glfwGetCurrentContext();
+            ImGui::UpdatePlatformWindows();
+            ImGui::RenderPlatformWindowsDefault();
+            glfwMakeContextCurrent(backup_current_context);
+        }
+    }
+
+    void ImGuiLayer::onGuiRender()
+    {
+        // Only still here for easy navigation to the source code for learning imgui
+        if (false) ImGui::ShowDemoWindow();
 
         bool neededBool = false;
         ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));

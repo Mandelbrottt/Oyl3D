@@ -397,6 +397,39 @@ namespace oyl
         return m_data.fullscreenType;
     }
 
+    void Win32Window::setCursorState(OylEnum state)
+    {
+        uint glfwState = 0;
+        switch (state)
+        {
+            case Cursor_Enabled:
+                glfwState = GLFW_CURSOR_NORMAL;
+                break;
+            case Cursor_Disabled:
+                glfwState = GLFW_CURSOR_DISABLED;
+                break;
+            case Cursor_Hidden:
+                glfwState = GLFW_CURSOR_HIDDEN;
+                break;
+        }
+        glfwSetInputMode(m_window, GLFW_CURSOR, glfwState);
+    }
+
+    OylEnum Win32Window::getCursorState() const
+    {
+        auto currState = glfwGetInputMode(m_window, GLFW_CURSOR);
+        switch (currState)
+        {
+            case GLFW_CURSOR_NORMAL:
+                return Cursor_Enabled;
+            case GLFW_CURSOR_DISABLED:
+                return Cursor_Disabled;
+            case GLFW_CURSOR_HIDDEN:
+                return Cursor_Hidden;
+        }
+        return None;
+    }
+
     void Win32Window::updateViewport(int width, int height)
     {
         m_context->updateViewport(width, height);

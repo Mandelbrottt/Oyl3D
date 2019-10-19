@@ -25,6 +25,9 @@ namespace oyl
         virtual void    setFullscreenType(OylEnum enabled) override;
         virtual OylEnum getFullscreenType() const override;
 
+        virtual void setCursorState(OylEnum state) override;
+        virtual OylEnum getCursorState() const override;
+
         virtual void updateViewport(int width, int height) override;
 
         virtual void* getNativeWindow() const override { return m_window; }

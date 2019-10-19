@@ -44,6 +44,9 @@ namespace oyl
         virtual void    setFullscreenType(OylEnum type) = 0;
         virtual OylEnum getFullscreenType() const = 0;
 
+        virtual OylEnum getCursorState() const = 0;
+        virtual void setCursorState(OylEnum state) = 0;
+
         // Isn't handled until the next frame
         virtual void updateViewport(int width, int height) = 0;
 
