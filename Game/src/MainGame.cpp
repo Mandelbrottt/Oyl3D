@@ -130,11 +130,12 @@ public:
             { oyl::FragmentShader, "../Engine/res/meshShader.frag" },
         });
 
+        auto mesh = oyl::Mesh::create("res/monkey.obj");
+
         auto mat = oyl::Material::create(shader);
         mat->loadTexture("res/capsule0.jpg");
         mat->setUniform1i("u_texture", 0);
 
-        auto mesh = oyl::Mesh::create("res/capsule.obj");
         for (int i = 0; i < 10; i++)
         {
             oyl::Component::MeshRenderer mr;

@@ -22,4 +22,10 @@ namespace oyl::Component
         Ref<Mesh>     mesh;
         Ref<Material> material;
     };
+
+    // TODO: Make more robust when adding physics
+    struct RigidBody
+    {
+        oyl::Entity id;
+    };
 }
