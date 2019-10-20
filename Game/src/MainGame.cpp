@@ -119,6 +119,7 @@ public:
 
     virtual void onAttach() override
     {
+        scheduleSystemUpdate<oyl::ECS::OracleCameraSystem>();
         scheduleSystemUpdate<PhysicsSystem>();
         scheduleSystemUpdate<OtherSystem>();
 

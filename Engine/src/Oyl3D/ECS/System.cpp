@@ -3,8 +3,11 @@
 #include "System.h"
 
 #include "ECS/Component.h"
+#include "ECS/Registry.h"
 
 #include "Events/EventListener.h"
+
+#include "Graphics/Camera.h"
 
 #include "Rendering/Renderer.h"
 
@@ -65,6 +68,11 @@ namespace oyl::ECS
         Ref<Shader>   boundShader;
         Ref<Material> boundMaterial;
 
+
+        // TEMPORARY:
+        auto    camView       = reg->view<Component::PlayerCamera>();
+        Ref<Camera> currentCamera = reg->get<Component::PlayerCamera>(*camView.begin()).camera;
+
         auto view = reg->view<MeshRenderer>();
         for (const auto& entity : view)
         {
@@ -82,6 +90,8 @@ namespace oyl::ECS
             if (mr.material != boundMaterial)
             {
                 boundMaterial = mr.material;
+                mr.material->setUniformMat4("u_view", currentCamera->getViewMatrix());
+                mr.material->setUniformMat4("u_projection", currentCamera->getProjectionMatrix());
                 boundMaterial->applyUniforms();
             }
 
@@ -101,4 +111,119 @@ namespace oyl::ECS
     }
 
     // ^^^ Render System ^^^ //
+
+    // vvv Oracle Camera System vvv //
+
+    void OracleCameraSystem::onEnter()
+    {
+        Component::PlayerCamera cam;
+        cam.player = 0;
+        cam.camera = Ref<Camera>::create();
+        cam.camera->setProjection(glm::perspective(glm::radians(60.0f), 16.0f / 9.0f, 0.01f, 1000.0f));
+        cam.camera->setPosition(glm::vec3(0.0f));
+        cam.camera->lookAt(glm::vec3(0.0f, 0.0f, -1.0f));
+        
+        auto e     = registry->create();
+        registry->assign<Component::PlayerCamera>(e, cam);
+    }
+
+    void OracleCameraSystem::onExit()
+    {
+    }
+
+    void OracleCameraSystem::onUpdate(Timestep dt)
+    {
+        auto view = registry->view<Component::PlayerCamera>();
+        for (auto& entity : view)
+        {
+        }
+    }
+
+    void OracleCameraSystem::onGuiRender()
+    {
+        ImGui::Begin("Camera");
+
+        ImGui::SliderFloat("Move Speed", &m_cameraMoveSpeed, 0.1f, 10.f);
+        ImGui::SliderFloat("Turn Speed", &m_cameraRotateSpeed, 0.1f, 50.0f);
+
+        ImGui::End();
+    }
+
+    bool OracleCameraSystem::onEvent(Ref<Event> event)
+    {
+        switch (event->type)
+        {
+            case TypeKeyPressed:
+            {
+                auto e = (KeyPressedEvent) *event;
+                if (e.keycode == Key_W)
+                    m_cameraMove.z = -1;
+                if (e.keycode == Key_S)
+                    m_cameraMove.z = 1;
+                if (e.keycode == Key_D)
+                    m_cameraMove.x = 1;
+                if (e.keycode == Key_A)
+                    m_cameraMove.x = -1;;
+                if (e.keycode == Key_Space)
+                    m_cameraMove.y = 1;
+                if (e.keycode == Key_LeftControl)
+                    m_cameraMove.y = -1;
+                if (e.keycode == Key_LeftAlt && !e.repeatCount)
+                {
+                    m_doMoveCamera ^= 1;
+
+                    CursorStateRequestEvent cursorRequest;
+
+                    cursorRequest.state = m_doMoveCamera ? Cursor_Disabled : Cursor_Enabled;
+
+                    postEvent(Event::create(cursorRequest));
+                }
+                break;
+            }
+            case TypeKeyReleased:
+            {
+                auto e = (KeyReleasedEvent) *event;
+                if (e.keycode == Key_W || e.keycode == Key_S)
+                    m_cameraMove.z = 0;
+                if (e.keycode == Key_D || e.keycode == Key_A)
+                    m_cameraMove.x = 0;
+                if (e.keycode == Key_Space || e.keycode == Key_LeftControl)
+                    m_cameraMove.y = 0;
+                break;
+            }
+            case TypeMouseMoved:
+                auto e = (MouseMovedEvent) *event;
+                m_cameraRotate.y = e.dx;
+                m_cameraRotate.x = e.dy;
+                break;
+        }
+        return false;
+    }
+
+    void OracleCameraSystem::processCameraUpdate(Timestep dt)
+    {
+        if (!m_doMoveCamera) return;
+
+        glm::vec3 move = m_cameraMove;
+
+        if (move != glm::vec3(0.0f))
+            move = glm::normalize(move);
+
+        Entity camEntity = *registry->view<Component::PlayerCamera>().begin();
+        Ref<Camera> cam = registry->get<Component::PlayerCamera>(camEntity).camera;
+        
+        cam->move(move * m_cameraMoveSpeed * dt.getSeconds());
+
+        static glm::vec3 realRotation = glm::vec3(0.0f);
+
+        realRotation += m_cameraRotate * m_cameraRotateSpeed * dt.getSeconds();
+        if (realRotation.x > 89.0f) realRotation.x = 89.0f;
+        if (realRotation.x < -89.0f) realRotation.x = -89.0f;
+
+        cam->setRotation(realRotation);
+
+        m_cameraRotate = glm::vec3(0.0f);
+    }
+
+    // ^^^ Oracle Camera System vvv //
 }

@@ -10,6 +10,8 @@ namespace oyl
 
         Ref<ECS::System> newSystem = Ref<T>::create();
 
+        newSystem->setRegistry(registry);
+
         newSystem->setPostEventCallback(m_postEventCallback);
         m_registerCallback(newSystem, priority);
 

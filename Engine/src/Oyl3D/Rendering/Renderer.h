@@ -12,21 +12,12 @@ namespace oyl
     {
     public:
         // TODO: make a seperate beginGUI for ortho, beginScene for perspective
-        static void beginScene(const Camera& camera);
+        static void beginScene();
         static void endScene();
 
         static void submit(const Ref<Shader>& shader, const Ref<VertexArray>& vao, glm::mat4 transform = glm::mat4(1.0f));
         static void submit(const Ref<Mesh>& mesh, const Ref<Material>& material, glm::mat4 transform = glm::mat4(1.0f));
 
         inline static OylEnum getAPI() { return RendererAPI::getAPI(); }
-    private:
-        struct SceneData
-        {
-            glm::mat4 orthoVPMatrix;
-            glm::mat4 perspectiveViewMatrix;
-            glm::mat4 perspectiveProjectionMatrix;
-        };
-
-        static SceneData* s_sceneData;
     };
 }

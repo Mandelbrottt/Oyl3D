@@ -3,12 +3,10 @@
 
 namespace oyl
 {
-    Renderer::SceneData* Renderer::s_sceneData = new Renderer::SceneData;
+    //Renderer::SceneData* Renderer::s_sceneData = new Renderer::SceneData;
 
-    void Renderer::beginScene(const Camera& camera)
+    void Renderer::beginScene()
     {
-        s_sceneData->perspectiveViewMatrix       = camera.getViewMatrix();
-        s_sceneData->perspectiveProjectionMatrix = camera.getProjectionMatrix();
     }
 
     void Renderer::endScene()
@@ -18,9 +16,9 @@ namespace oyl
     void Renderer::submit(const Ref<Shader>& shader, const Ref<VertexArray>& vao, glm::mat4 transform)
     {
         shader->bind();
-        shader->setUniformMat4("u_viewProjection", s_sceneData->orthoVPMatrix);
-        shader->setUniformMat4("u_model", transform);
+        
         vao->bind();
+
         RenderCommand::drawIndexed(vao);
     }
 
@@ -32,11 +30,7 @@ namespace oyl
         material->bind();
         
         // TEMPORARY:
-        material->setUniformMat4("u_model", transform);
-        material->setUniformMat4("u_view", s_sceneData->perspectiveViewMatrix);
-        material->setUniformMat4("u_projection", s_sceneData->perspectiveProjectionMatrix);
-
-        material->applyUniforms();
+        material->getShader()->setUniformMat4("u_model", transform);
 
         RenderCommand::drawMesh(mesh);
     }

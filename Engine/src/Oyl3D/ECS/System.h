@@ -2,6 +2,7 @@
 
 #include "Oyl3D/Events/Event.h"
 #include "Oyl3D/Events/EventListener.h"
+#include "Oyl3D/ECS/Registry.h"
 
 namespace oyl::ECS
 {
@@ -29,6 +30,11 @@ namespace oyl::ECS
 
         virtual void onUpdate(Timestep dt) override;
         virtual void onGuiRender() override;
+
+        void setRegistry(Ref<Registry> reg) { registry = std::move(reg); }
+
+    protected:
+        Ref<Registry> registry;
     };
 
     class RenderSystem : public System
@@ -59,5 +65,31 @@ namespace oyl::ECS
         virtual void onGuiRender() override;
 
         virtual bool onEvent(Ref<Event> event) override;
+    };
+
+    class OracleCameraSystem : public System
+    {
+    public:
+        explicit OracleCameraSystem() = default;
+        virtual  ~OracleCameraSystem() = default;
+
+        virtual void onEnter() override;
+        virtual void onExit() override;
+
+        virtual void onUpdate(Timestep dt) override;
+        virtual void onGuiRender() override;
+
+        virtual bool onEvent(Ref<Event> event) override;
+
+    private:
+        bool processCameraInput(const Ref<Event>& event);
+        void processCameraUpdate(Timestep dt);
+
+        glm::vec3 m_cameraMove = glm::vec3(0.0f);
+        float m_cameraMoveSpeed = 5.0f;
+        glm::vec3 m_cameraRotate = glm::vec3(0.0f);
+        float m_cameraRotateSpeed = 25.0f;
+
+        bool m_doMoveCamera = false;
     };
 }

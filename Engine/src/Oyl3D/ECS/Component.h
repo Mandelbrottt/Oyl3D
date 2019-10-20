@@ -4,6 +4,7 @@ namespace oyl
 {
     class Mesh;
     class Material;
+    class Camera;
 }
 
 namespace oyl::Component
@@ -26,6 +27,12 @@ namespace oyl::Component
     // TODO: Make more robust when adding physics
     struct RigidBody
     {
-        oyl::Entity id;
+        Entity id;
+    };
+
+    struct PlayerCamera
+    {
+        int player = -1;
+        Ref<Camera> camera;
     };
 }

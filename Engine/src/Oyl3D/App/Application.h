@@ -40,31 +40,17 @@ namespace oyl
 
         inline Window&            getWindow() { return *m_window; }
         inline FrameBuffer&       getMainFrameBuffer() { return *m_mainBuffer; }
-        inline Camera& getMainCamera() { return m_camera; }
 
         inline static Application& get() { return *s_instance; }
 
     private:
         void initEventListeners();
-
-        // TEMPORARY: Abstract away into camera controller class
-        bool processCameraInput(const Ref<Event>& event);
-        void processCameraUpdate(Timestep dt);
-
-        glm::vec3 m_cameraMove = glm::vec3(0.0f);
-        float m_cameraMoveSpeed = 5.0f;
-        glm::vec3 m_cameraRotate = glm::vec3(0.0f);
-        float m_cameraRotateSpeed = 25.0f;
-        
-        bool m_doMoveCamera = false;
         
     private:
         Ref<Window>      m_window;
         Ref<Scene>       m_currentScene;
         Ref<ImGuiLayer>  m_imguiLayer;
         Ref<FrameBuffer> m_mainBuffer;
-
-        Camera m_camera;
 
         float m_lastFrameTime = 0;
 
