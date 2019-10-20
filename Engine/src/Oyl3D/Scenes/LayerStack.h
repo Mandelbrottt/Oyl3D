@@ -4,7 +4,7 @@
 
 namespace oyl
 {
-    class LayerStack : public EventListener
+    class LayerStack
     {
     public:
         LayerStack();
@@ -12,8 +12,8 @@ namespace oyl
 
         void pushLayer(Ref<Layer> layer);
         void pushOverlay(Ref<Layer> overlay);
-        void popLayer(Ref<Layer> layer);
-        void popOverlay(Ref<Layer> overlay);
+        void popLayer(const Ref<Layer>& layer);
+        void popOverlay(const Ref<Layer>& overlay);
 
         std::vector<Ref<Layer>>::iterator begin() { return m_layers.begin(); }
         std::vector<Ref<Layer>>::iterator end() { return m_layers.end(); }

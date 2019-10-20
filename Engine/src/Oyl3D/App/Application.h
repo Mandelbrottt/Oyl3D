@@ -1,5 +1,6 @@
 #pragma once
 
+// TODO: Forward Declare Some Stuff
 #include "Oyl3D/Common.h"
 
 #include "Oyl3D/App/Window.h"
@@ -18,7 +19,6 @@
 #include "Oyl3D/Scenes/LayerStack.h"
 #include "Oyl3D/Scenes/Scene.h"
 
-
 namespace oyl
 {
     namespace _internal
@@ -26,11 +26,11 @@ namespace oyl
         class ApplicationListener;
     }
 
-    class Application
+    class OYLAPI Application
     {
     public:
-        Application();
-        virtual ~Application();
+        explicit Application();
+        virtual  ~Application() = default;
 
         void run();
 
@@ -38,14 +38,14 @@ namespace oyl
 
         void pushScene(Ref<Scene> scene);
 
-        inline Window&            getWindow() { return *m_window; }
-        inline FrameBuffer&       getMainFrameBuffer() { return *m_mainBuffer; }
+        inline Window&      getWindow() { return *m_window; }
+        inline FrameBuffer& getMainFrameBuffer() { return *m_mainBuffer; }
 
         inline static Application& get() { return *s_instance; }
 
     private:
         void initEventListeners();
-        
+
     private:
         Ref<Window>      m_window;
         Ref<Scene>       m_currentScene;
@@ -60,15 +60,10 @@ namespace oyl
     private:
         static Application* s_instance;
 
-        EventDispatcher m_dispatcher;
-        
-        std::function<void(UniqueRef<Event>)> m_dispatcherPostCallback;
-        
-        std::function<void(Ref<IEventListener>, IEventListener::Priority)> m_dispatcherRegisterCallback;
-        std::function<void(Ref<IEventListener>)> m_dispatcherUnregisterCallback;
+        Ref<EventDispatcher> m_dispatcher;
 
         Ref<_internal::ApplicationListener> m_appListener;
-        Ref<_internal::GamepadListener> m_vibrationListener;
+        Ref<_internal::GamepadListener>     m_vibrationListener;
     };
 
     Application* createApplication();

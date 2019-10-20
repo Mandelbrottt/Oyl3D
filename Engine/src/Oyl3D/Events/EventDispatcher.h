@@ -1,14 +1,17 @@
 #pragma once
 
-#include "EventListener.h"
+//#include "EventListener.h"
 
 namespace oyl
 {
-    class EventDispatcher final
+    class IEventListener;
+    struct Event;
+
+    class OYLAPI EventDispatcher final
     {
     public:
         using Priority = u32;
-        
+
         struct ListenerInfo
         {
             Priority                priority = 0;
@@ -25,16 +28,16 @@ namespace oyl
         void postEvent(UniqueRef<Event> event);
 
         void dispatchEvents();
-        
+
     private:
         void validateListeners();
 
         void dispatchEvent(UniqueRef<Event> event);
-        
+
     private:
         std::vector<ListenerInfo> m_listeners;
 
-        std::vector<ListenerInfo> m_listenerAddSet;
+        std::vector<ListenerInfo>            m_listenerAddSet;
         std::vector<WeakRef<IEventListener>> m_listenerDeleteSet;
 
         // TODO: Implement as ring list or pool allocator

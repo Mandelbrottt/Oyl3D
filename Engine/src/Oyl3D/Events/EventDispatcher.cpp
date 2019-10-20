@@ -22,11 +22,11 @@ namespace oyl
     {
         for (auto& info : m_listenerAddSet)
             if (auto ref = info.listener.lock())
-                ref->setPostEventCallback(nullptr);
+                ref->setDispatcher(nullptr);
 
         for (auto& info : m_listeners)
             if (auto ref = info.listener.lock())
-                ref->setPostEventCallback(nullptr);
+                ref->setDispatcher(nullptr);
 
         m_listeners.clear();
         m_listenerAddSet.clear();

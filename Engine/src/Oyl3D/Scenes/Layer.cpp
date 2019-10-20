@@ -2,12 +2,13 @@
 
 #include "Layer.h"
 
+#include "ECS/Registry.h"
+#include "ECS/System.h"
+
 namespace oyl
 {
-    Layer::Layer(const std::string& debugName)
-    #if defined(OYL_LOG_CONSOLE)
-        : m_debugName(debugName)
-    #endif
+    Layer::Layer(std::string debugName)
+        : m_debugName(std::move(debugName))
     {
     }
 
@@ -54,6 +55,11 @@ namespace oyl
         {
             system->onGuiRender();
         }
+    }
+
+    const Ref<ECS::Registry>& Layer::getRegistry()
+    {
+        return registry;
     }
 
     void Layer::setRegistry(Ref<ECS::Registry> reg)

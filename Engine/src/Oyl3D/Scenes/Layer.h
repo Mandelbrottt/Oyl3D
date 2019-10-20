@@ -1,18 +1,27 @@
 #pragma once
 
-#include "Oyl3D/Events/Event.h"
 #include "Oyl3D/Events/EventListener.h"
+//#include "Oyl3D/Events/EventDispatcher.h"
 
-#include "Oyl3D/ECS/Registry.h"
-#include "Oyl3D/ECS/System.h"
+//#include "ECS/Registry.h"
+//#include "ECS/System.h"
 
 namespace oyl
-{    
+{
+    struct Event;
+    class EventDispatcher;
+    
+    namespace ECS
+    {
+        class Registry;
+        class System;
+    }
+
     class Layer : public EventListener
     {
     public:
-        explicit Layer(const std::string& debugName = "Layer");
-        virtual ~Layer();
+        explicit Layer(std::string debugName = "Layer");
+        virtual  ~Layer();
 
         virtual void onAttach();
         virtual void onDetach();
@@ -25,24 +34,40 @@ namespace oyl
         void onUpdateSystems(Timestep dt);
         void onGuiRenderSystems();
 
-        const Ref<ECS::Registry>& getRegistry() { return registry; }
+        const Ref<ECS::Registry>& getRegistry();
+
         void setRegistry(Ref<ECS::Registry> reg);
 
     protected:
         // Break naming convention for sake of client usability
-        // TODO: maybe change name to 'ecs'?
         Ref<ECS::Registry> registry;
-        
+
         template<class T>
         void scheduleSystemUpdate(Priority priority = 0);
 
         std::vector<Ref<ECS::System>> m_systems;
-        
-#if defined(OYL_LOG_CONSOLE)
+
     protected:
         const std::string m_debugName;
-#endif
     };
-}
 
-#include "Layer.inl"
+    template<class SYSTEM>
+    void Layer::scheduleSystemUpdate(Priority priority)
+    {
+        static bool isInitialized = false;
+        OYL_ASSERT(!isInitialized, "Systems should only be initialized once!");
+
+        Ref<ECS::System> newSystem = Ref<SYSTEM>::create();
+
+        newSystem->setRegistry(registry);
+
+        newSystem->setDispatcher(m_dispatcher);
+        m_dispatcher->registerListener(newSystem, priority);
+
+        newSystem->onEnter();
+
+        m_systems.emplace_back(std::move(newSystem));
+
+        isInitialized = true;
+    }
+}

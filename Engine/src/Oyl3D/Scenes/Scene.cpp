@@ -1,6 +1,12 @@
 #include "oylpch.h"
 #include "Scene.h"
 
+#include "ECS/System.h"
+#include "ECS/Registry.h"
+
+#include "Events/EventDispatcher.h"
+
+
 namespace oyl
 {
     WeakRef<Scene> Scene::s_current{};
@@ -14,8 +20,9 @@ namespace oyl
 
     Scene::~Scene()
     {
+        // Reset the registry then reset the actual Ref
         m_registry->reset();
-        m_registry = nullptr;
+        m_registry.reset();
     }
 
     void Scene::onUpdate(Timestep dt)
@@ -25,8 +32,15 @@ namespace oyl
             layer->onUpdateSystems(dt);
             layer->onUpdate(dt);
         }
+
+        m_renderSystem->onUpdate(dt);
     }
 
+    bool Scene::onEvent(Ref<Event> event)
+    {
+        return false;
+    }
+    
     void Scene::onGuiRender()
     {
         for (const Ref<Layer>& layer : m_layerStack)
@@ -34,49 +48,55 @@ namespace oyl
             layer->onGuiRenderSystems();
             layer->onGuiRender();
         }
+
+        m_renderSystem->onGuiRender();
     }
 
-    bool Scene::onEvent(Ref<Event> event)
+    void Scene::initDefaultSystems()
     {
-        return false;
+        m_renderSystem->setRegistry(this->m_registry);
+        m_renderSystem->setDispatcher(m_dispatcher);
+        m_dispatcher->registerListener(m_renderSystem);
     }
 
-    void Scene::setPostEventCallback(PostEventFn callback)
+    const Ref<ECS::Registry>& Scene::getRegistry()
     {
-        m_layerStack.setPostEventCallback(callback);
-    }
-
-    void Scene::setRegisterCallback(RegisterFn callback)
-    {
-        m_layerStack.setRegisterCallback(callback);
-    }
-
-    void Scene::setUnregisterCallback(UnregisterFn callback)
-    {
-        m_layerStack.setUnregisterCallback(callback);
+        return m_registry;
     }
 
     void Scene::pushLayer(Ref<Layer> layer)
     {
         layer->setRegistry(m_registry);
+        layer->setDispatcher(m_dispatcher);
+        m_dispatcher->registerListener(layer);
+        
         m_layerStack.pushLayer(std::move(layer));
     }
 
     void Scene::pushOverlay(Ref<Layer> overlay)
     {
         overlay->setRegistry(m_registry);
+        overlay->setDispatcher(m_dispatcher);
+        m_dispatcher->registerListener(overlay);
+        
         m_layerStack.pushOverlay(std::move(overlay));
     }
 
-    void Scene::popLayer(Ref<Layer> layer)
+    void Scene::popLayer(const Ref<Layer>& layer)
     {
         layer->setRegistry(nullptr);
-        m_layerStack.popLayer(std::move(layer));
+        layer->setDispatcher(nullptr);
+        m_dispatcher->unregisterListener(layer);
+        
+        m_layerStack.popLayer(layer);
     }
 
-    void Scene::popOverlay(Ref<Layer> overlay)
+    void Scene::popOverlay(const Ref<Layer>& overlay)
     {
         overlay->setRegistry(nullptr);
-        m_layerStack.popOverlay(std::move(overlay));
+        overlay->setDispatcher(nullptr);
+        m_dispatcher->unregisterListener(overlay);
+        
+        m_layerStack.popOverlay(overlay);
     }
 }

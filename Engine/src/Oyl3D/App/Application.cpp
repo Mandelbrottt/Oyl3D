@@ -17,6 +17,15 @@ namespace oyl
         class ApplicationListener : public EventListener
         {
             friend class oyl::Application;
+        public:
+            ApplicationListener()
+            {
+                addToCategoryMask(CategoryWindow);
+                //addToCategoryMask(CategoryKeyboard);
+                //addToCategoryMask(CategoryMouse);
+                addToCategoryMask(CategoryCursorStateRequest);
+            }
+
         private:
             virtual bool onEvent(Ref<Event> event) override
             {
@@ -53,10 +62,6 @@ namespace oyl
         m_window->setVsync(false);
     }
 
-    Application::~Application()
-    {
-    }
-
     bool Application::onEvent(const Ref<Event>& event)
     {
         bool handled = false;
@@ -91,7 +96,7 @@ namespace oyl
                     m_window->setCursorState(e.state);
             }
         }
-        
+
         handled |= m_doUpdate;
 
         return handled;
@@ -111,16 +116,10 @@ namespace oyl
 
             Scene::s_current = m_currentScene;
 
-            m_dispatcher.registerListener(m_currentScene);
-            m_currentScene->setPostEventCallback(m_dispatcherPostCallback);
-            m_currentScene->setRegisterCallback(m_dispatcherRegisterCallback);
-            m_currentScene->setUnregisterCallback(m_dispatcherUnregisterCallback);
+            m_dispatcher->registerListener(m_currentScene);
+            m_currentScene->setDispatcher(m_dispatcher);
 
-            // TEMPORARY: Make single function that registers all scene systems
-            m_dispatcher.registerListener(m_currentScene->m_renderSystem);
-            m_currentScene->m_renderSystem->setPostEventCallback(m_dispatcherPostCallback);
-            m_currentScene->m_renderSystem->setRegisterCallback(m_dispatcherRegisterCallback);
-            m_currentScene->m_renderSystem->setUnregisterCallback(m_dispatcherUnregisterCallback);
+            m_currentScene->initDefaultSystems();
 
             m_currentScene->pushOverlay(m_imguiLayer);
             m_currentScene->onEnter();
@@ -146,11 +145,9 @@ namespace oyl
 
                 Renderer::beginScene();
 
-                m_dispatcher.dispatchEvents();
+                m_dispatcher->dispatchEvents();
 
                 m_currentScene->onUpdate(timestep);
-
-                m_currentScene->m_renderSystem->onUpdate(timestep);
 
                 Renderer::endScene();
                 m_mainBuffer->unbind();
@@ -176,31 +173,18 @@ namespace oyl
 
     void Application::initEventListeners()
     {
-        m_dispatcherPostCallback =
-            OYL_CALLBACK_1(EventDispatcher::postEvent, &m_dispatcher);
-        m_dispatcherRegisterCallback =
-            OYL_CALLBACK_2(EventDispatcher::registerListener, &m_dispatcher);
-        m_dispatcherUnregisterCallback =
-            OYL_CALLBACK_1(EventDispatcher::unregisterListener, &m_dispatcher);
+        m_dispatcher = Ref<EventDispatcher>::create();
 
-        m_window->setEventCallback(m_dispatcherPostCallback);
+        // TODO: Make Window an EventListener
+        m_window->setEventCallback(OYL_CALLBACK_1(EventDispatcher::postEvent, m_dispatcher.get()));
 
-        m_appListener = Ref<_internal::ApplicationListener>::create();
-
+        m_appListener      = Ref<_internal::ApplicationListener>::create();
         m_appListener->app = this;
-        m_appListener->addToCategoryMask(CategoryWindow);
-        //m_appListener->addToCategoryMask(CategoryKeyboard);
-        //m_appListener->addToCategoryMask(CategoryMouse);
-        m_appListener->addToCategoryMask(CategoryCursorStateRequest);
-
-        m_dispatcher.registerListener(m_appListener);
+        m_dispatcher->registerListener(m_appListener);
 
         m_vibrationListener = _internal::GamepadListener::create();
-        m_vibrationListener->addToEventMask(TypeGamepadVibration);
-        m_vibrationListener->addToCategoryMask(CategoryGamepadVibration);
+        m_dispatcher->registerListener(m_vibrationListener);
 
-        m_dispatcher.registerListener(m_vibrationListener);
-
-        m_dispatcher.registerListener(m_imguiLayer);
+        m_dispatcher->registerListener(m_imguiLayer);
     }
 }

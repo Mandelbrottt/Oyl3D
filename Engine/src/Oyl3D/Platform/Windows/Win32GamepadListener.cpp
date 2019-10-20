@@ -1,6 +1,8 @@
 #include "oylpch.h"
 #include "Win32GamepadListener.h"
 
+#include "Events/Event.h"
+
 #include <Xinput.h>
 
 namespace oyl::_internal
