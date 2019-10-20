@@ -126,9 +126,14 @@ namespace oyl
 
         auto [x, y] = ImGui::GetWindowSize();
 
-        glm::mat4 newProj = glm::perspective(glm::radians(60.0f), x / y, 0.01f, 1000.0f);
+        ViewportResizedEvent vrevent;
+        vrevent.id = 0;
+        vrevent.width = x;
+        vrevent.height = y;
         
-        Application::get().getMainCamera().setProjection(newProj);
+        postEvent(Event::create(vrevent));
+        
+        //Application::get().getMainCamera().setProjection(newProj);
 
         ImGui::Image(
             (void*) Application::get().getMainFrameBuffer().getColorHandle(0),

@@ -70,7 +70,7 @@ namespace oyl::ECS
 
 
         // TEMPORARY:
-        auto    camView       = reg->view<Component::PlayerCamera>();
+        auto        camView       = reg->view<Component::PlayerCamera>();
         Ref<Camera> currentCamera = reg->get<Component::PlayerCamera>(*camView.begin()).camera;
 
         auto view = reg->view<MeshRenderer>();
@@ -116,14 +116,19 @@ namespace oyl::ECS
 
     void OracleCameraSystem::onEnter()
     {
+        addToEventMask(TypeKeyPressed);
+        addToEventMask(TypeKeyReleased);
+        addToEventMask(TypeMouseMoved);
+        addToEventMask(TypeViewportResized);
+        
         Component::PlayerCamera cam;
         cam.player = 0;
         cam.camera = Ref<Camera>::create();
         cam.camera->setProjection(glm::perspective(glm::radians(60.0f), 16.0f / 9.0f, 0.01f, 1000.0f));
         cam.camera->setPosition(glm::vec3(0.0f));
         cam.camera->lookAt(glm::vec3(0.0f, 0.0f, -1.0f));
-        
-        auto e     = registry->create();
+
+        auto e = registry->create();
         registry->assign<Component::PlayerCamera>(e, cam);
     }
 
@@ -136,6 +141,8 @@ namespace oyl::ECS
         auto view = registry->view<Component::PlayerCamera>();
         for (auto& entity : view)
         {
+            auto cam = registry->get<Component::PlayerCamera>(entity).camera;
+            processCameraUpdate(dt, cam);
         }
     }
 
@@ -192,15 +199,31 @@ namespace oyl::ECS
                 break;
             }
             case TypeMouseMoved:
-                auto e = (MouseMovedEvent) *event;
+            {
+                auto e           = (MouseMovedEvent) *event;
                 m_cameraRotate.y = e.dx;
                 m_cameraRotate.x = e.dy;
                 break;
+            }
+            case TypeViewportResized:
+            {
+                auto e = (ViewportResizedEvent) *event;
+                auto view = registry->view<Component::PlayerCamera>();
+                for (auto entity : view)
+                {
+                    auto pc = registry->get<Component::PlayerCamera>(entity);
+                    if (pc.player == e.id)
+                    {
+                        glm::mat4 proj = glm::perspective(glm::radians(60.0f), e.width / e.height, 0.01f, 1000.0f);
+                        pc.camera->setProjection(proj);
+                    }
+                }
+            }
         }
         return false;
     }
 
-    void OracleCameraSystem::processCameraUpdate(Timestep dt)
+    void OracleCameraSystem::processCameraUpdate(Timestep dt, const Ref<Camera>& camera)
     {
         if (!m_doMoveCamera) return;
 
@@ -209,10 +232,10 @@ namespace oyl::ECS
         if (move != glm::vec3(0.0f))
             move = glm::normalize(move);
 
-        Entity camEntity = *registry->view<Component::PlayerCamera>().begin();
-        Ref<Camera> cam = registry->get<Component::PlayerCamera>(camEntity).camera;
-        
-        cam->move(move * m_cameraMoveSpeed * dt.getSeconds());
+        //Entity      camEntity = *registry->view<Component::PlayerCamera>().begin();
+        //Ref<Camera> cam       = registry->get<Component::PlayerCamera>(camEntity).camera;
+
+        camera->move(move * m_cameraMoveSpeed * dt.getSeconds());
 
         static glm::vec3 realRotation = glm::vec3(0.0f);
 
@@ -220,7 +243,7 @@ namespace oyl::ECS
         if (realRotation.x > 89.0f) realRotation.x = 89.0f;
         if (realRotation.x < -89.0f) realRotation.x = -89.0f;
 
-        cam->setRotation(realRotation);
+        camera->setRotation(realRotation);
 
         m_cameraRotate = glm::vec3(0.0f);
     }

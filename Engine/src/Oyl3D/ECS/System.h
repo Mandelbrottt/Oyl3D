@@ -1,8 +1,13 @@
 #pragma once
+#include "Oyl3D/ECS/Registry.h"
 
 #include "Oyl3D/Events/Event.h"
 #include "Oyl3D/Events/EventListener.h"
-#include "Oyl3D/ECS/Registry.h"
+
+namespace oyl
+{
+    class Camera;
+}
 
 namespace oyl::ECS
 {
@@ -55,7 +60,7 @@ namespace oyl::ECS
     class PhysicsSystem : public System
     {
     public:
-        explicit PhysicsSystem() = default;
+        explicit PhysicsSystem()  = default;
         virtual  ~PhysicsSystem() = default;
 
         virtual void onEnter() override;
@@ -70,7 +75,7 @@ namespace oyl::ECS
     class OracleCameraSystem : public System
     {
     public:
-        explicit OracleCameraSystem() = default;
+        explicit OracleCameraSystem()  = default;
         virtual  ~OracleCameraSystem() = default;
 
         virtual void onEnter() override;
@@ -82,13 +87,12 @@ namespace oyl::ECS
         virtual bool onEvent(Ref<Event> event) override;
 
     private:
-        bool processCameraInput(const Ref<Event>& event);
-        void processCameraUpdate(Timestep dt);
+        void processCameraUpdate(Timestep dt, const Ref<Camera>& camera);
 
-        glm::vec3 m_cameraMove = glm::vec3(0.0f);
-        float m_cameraMoveSpeed = 5.0f;
-        glm::vec3 m_cameraRotate = glm::vec3(0.0f);
-        float m_cameraRotateSpeed = 25.0f;
+        glm::vec3 m_cameraMove        = glm::vec3(0.0f);
+        float     m_cameraMoveSpeed   = 5.0f;
+        glm::vec3 m_cameraRotate      = glm::vec3(0.0f);
+        float     m_cameraRotateSpeed = 25.0f;
 
         bool m_doMoveCamera = false;
     };

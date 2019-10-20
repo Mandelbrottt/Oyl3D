@@ -16,21 +16,25 @@ namespace oyl
 
         // Event Types //
         TypeWindowClosed = 1, TypeWindowMoved, TypeWindowResized, TypeWindowFocused,
+        TypeViewportResized,
         TypeKeyPressed, TypeKeyTyped, TypeKeyReleased,
         TypeMousePressed, TypeMouseReleased, TypeMouseMoved, TypeMouseScrolled,
         TypeGamepadConnected, TypeGamepadDisconnected,
         TypeGamepadButtonPressed, TypeGamepadButtonReleased,
         TypeGamepadStickMoved, TypeGamepadTriggerPressed,
-        TypeGamepadVibration,
+        TypeGamepadVibration, // TODO: Rename to GamepadVibrationRequest
+        TypeCursorStateRequest,
         EventTypeCustomStart,
 
         // Event Categories //
         CategoryApplication = 1,
         CategoryWindow,
+        CategoryViewport,
         CategoryKeyboard,
         CategoryMouse,
         CategoryGamepad,
         CategoryGamepadVibration,
+        CategoryCursorStateRequest,
         CategoryAudio,
         CategoryCustomStart,
 

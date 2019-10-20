@@ -178,6 +178,23 @@ namespace oyl
 
     //-Gamepad Events-/////////////////////////////////////////////////////
 
+    // Cursor Events //////////////////////////////////////////////////////
+
+    OYL_EVENT_STRUCT(CursorStateRequestEvent, TypeCursorStateRequest, CategoryCursorStateRequest,
+                     {
+                     OylEnum state;
+                     });
+
+    OYL_EVENT_STRUCT(ViewportResizedEvent, TypeViewportResized, CategoryViewport,
+                     {
+                     i32 id;
+                         
+                     f32 width;
+                     f32 height;
+                     });
+    
+    //-Cursor Events-//////////////////////////////////////////////////////
+
     /*
 // To create your own custom event types and type categories, create your own
 // enum with any name of type unsigned int, and have the first value be equal to
