@@ -6,7 +6,7 @@ namespace oyl
 {
     class Texture2D;
 
-    class OYLAPI Material
+    class Material
     {
         struct _Material
         {

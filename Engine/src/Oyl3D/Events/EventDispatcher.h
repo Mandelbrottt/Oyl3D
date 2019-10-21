@@ -7,7 +7,7 @@ namespace oyl
     class IEventListener;
     struct Event;
 
-    class OYLAPI EventDispatcher final
+    class EventDispatcher final
     {
     public:
         using Priority = u32;

@@ -26,7 +26,7 @@ namespace oyl
         class ApplicationListener;
     }
 
-    class OYLAPI Application
+    class Application
     {
     public:
         explicit Application();
