@@ -5,6 +5,7 @@
 
 namespace oyl
 {
+    // TODO: Make enums more verbose
     enum OylEnum : u32
     {
         None = 0,

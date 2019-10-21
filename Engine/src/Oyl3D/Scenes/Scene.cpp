@@ -25,6 +25,14 @@ namespace oyl
         m_registry.reset();
     }
 
+    void Scene::onEnter()
+    {
+    }
+
+    void Scene::onExit()
+    {
+    }
+
     void Scene::onUpdate(Timestep dt)
     {
         for (const Ref<Layer>& layer : m_layerStack)

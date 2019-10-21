@@ -22,14 +22,20 @@ namespace oyl
 
     void Material::bind()
     {
-        m_shader->bind();
-        m_texture->bind();
+        if (m_shader)
+            m_shader->bind();
+
+        if (m_texture)
+            m_texture->bind();
     }
 
     void Material::unbind()
     {
-        m_shader->unbind();
-        if (m_texture) m_texture->unbind();
+        if (m_shader) 
+            m_shader->unbind();
+
+        if (m_texture)
+            m_texture->unbind();
     }
 
     void Material::applyUniforms()

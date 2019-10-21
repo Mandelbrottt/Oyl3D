@@ -19,11 +19,12 @@ namespace oyl
     {
         friend class Application;
     public:
+        // TODO: Add private empty struct for ctor protection
         explicit Scene(const std::string& debugName = "Scene");
         virtual  ~Scene();
 
-        virtual void onEnter() = 0;
-        virtual void onExit() = 0;
+        virtual void onEnter();
+        virtual void onExit();
 
         void pushLayer(Ref<Layer> layer);
         void pushOverlay(Ref<Layer> overlay);
