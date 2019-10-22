@@ -25,9 +25,12 @@ namespace oyl
     public:
         virtual ~Scene();
 
-        virtual void onEnter() = 0;
-        virtual void onExit() = 0;
+        virtual void onEnter() override;
+        virtual void onExit() override;
 
+        virtual void onUpdate(Timestep dt) override;
+        virtual void onGuiRender(Timestep dt) override;
+        
         void pushLayer(Ref<Layer> layer);
         void pushOverlay(Ref<Layer> overlay);
         void popLayer(const Ref<Layer>& layer);
@@ -40,8 +43,6 @@ namespace oyl
         virtual bool onEvent(Ref<Event> event) override;
 
     private:
-        void onUpdate(Timestep dt);
-        void onGuiRender();
 
         void initDefaultSystems();
 

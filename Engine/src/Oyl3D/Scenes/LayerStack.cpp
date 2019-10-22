@@ -11,14 +11,14 @@ namespace oyl
     {
         for (Ref<Layer> layer : m_layers)
         {
-            layer->onDetach();
+            layer->onEnter();
             layer.reset();
         }
     }
 
     void LayerStack::pushLayer(Ref<Layer> layer)
     {
-        layer->onAttach();
+        layer->onEnter();
 
         m_layers.emplace(m_layers.begin() + m_layerInsertIndex, std::move(layer));
         m_layerInsertIndex++;
@@ -27,7 +27,7 @@ namespace oyl
 
     void LayerStack::pushOverlay(Ref<Layer> overlay)
     {
-        overlay->onAttach();
+        overlay->onEnter();
         m_layers.emplace_back(std::move(overlay));
     }
 
@@ -39,7 +39,7 @@ namespace oyl
             m_layers.erase(it);
             m_layerInsertIndex--;
             
-            layer->onDetach();
+            layer->onExit();
         }
     }
 
@@ -50,7 +50,7 @@ namespace oyl
         {
             m_layers.erase(it);
             
-            overlay->onDetach();
+            overlay->onExit();
         }
     }
 }

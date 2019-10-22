@@ -35,7 +35,7 @@ namespace oyl::ECS
     {
     }
 
-    void System::onGuiRender()
+    void System::onGuiRender(Timestep dt)
     {
     }
 
@@ -47,11 +47,6 @@ namespace oyl::ECS
     // ^^^ Generic System ^^^ //
 
     // vvv Render System vvv //
-
-    Ref<RenderSystem> RenderSystem::create()
-    {
-        return Ref<RenderSystem>::create(_RenderSystem_{});
-    }
 
     void RenderSystem::onEnter()
     {
@@ -117,7 +112,7 @@ namespace oyl::ECS
         }
     }
 
-    void RenderSystem::onGuiRender()
+    void RenderSystem::onGuiRender(Timestep dt)
     {
     }
 
@@ -129,11 +124,6 @@ namespace oyl::ECS
     // ^^^ Render System ^^^ //
 
     // vvv Oracle Camera System vvv //
-
-    Ref<OracleCameraSystem> OracleCameraSystem::create()
-    {
-        return Ref<OracleCameraSystem>::create(_OracleCameraSystem_{});
-    }
 
     void OracleCameraSystem::onEnter()
     {
@@ -167,7 +157,7 @@ namespace oyl::ECS
         }
     }
 
-    void OracleCameraSystem::onGuiRender()
+    void OracleCameraSystem::onGuiRender(Timestep dt)
     {
         ImGui::Begin("Camera");
 

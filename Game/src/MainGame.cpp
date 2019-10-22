@@ -16,8 +16,6 @@ class OtherSystem : public oyl::ECS::System
 {
 public:
     OYL_CTOR(OtherSystem, System)
-    {
-    }
 
     virtual void onUpdate(oyl::Timestep dt) override
     {
@@ -38,9 +36,7 @@ public:
 class PhysicsSystem : public oyl::ECS::System
 {
 public:
-OYL_CONSTRUCTOR(PhysicsSystem, System)
-    {
-    }
+    OYL_CONSTRUCTOR(PhysicsSystem, System)
 
     virtual void onEnter() override
     {
@@ -120,11 +116,9 @@ OYL_CONSTRUCTOR(PhysicsSystem, System)
 class MainLayer : public oyl::Layer
 {
 public:
-OYL_CTOR(MainLayer, Layer)
-    {
-    }
+    OYL_CTOR(MainLayer, Layer)
 
-    virtual void onAttach() override
+    virtual void onEnter() override
     {
         scheduleSystemUpdate<oyl::ECS::OracleCameraSystem>();
         scheduleSystemUpdate<PhysicsSystem>();
@@ -155,7 +149,7 @@ OYL_CTOR(MainLayer, Layer)
         }
     }
 
-    virtual void onDetach() override
+    virtual void onExit() override
     {
     }
 
@@ -177,7 +171,7 @@ OYL_CTOR(MainLayer, Layer)
         }
     }
 
-    virtual void onGuiRender() override
+    virtual void onGuiRender(oyl::Timestep dt) override
     {
     }
 
@@ -194,9 +188,7 @@ private:
 class MainScene : public oyl::Scene
 {
 public:
-OYL_CTOR(MainScene, Scene)
-    {
-    }
+    OYL_CTOR(MainScene, Scene)
 
     virtual ~MainScene() = default;
 

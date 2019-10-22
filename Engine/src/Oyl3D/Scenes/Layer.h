@@ -26,16 +26,16 @@ namespace oyl
     public:
         virtual  ~Layer();
 
-        virtual void onAttach();
-        virtual void onDetach();
+        virtual void onEnter() override;
+        virtual void onExit() override;
 
-        virtual void onUpdate(Timestep dt);
-        virtual void onGuiRender();
+        virtual void onUpdate(Timestep dt) override;
+        virtual void onGuiRender(Timestep dt) override;
 
         virtual bool onEvent(Ref<Event> event) override;
 
         void onUpdateSystems(Timestep dt);
-        void onGuiRenderSystems();
+        void onGuiRenderSystems(Timestep dt);
 
         const Ref<ECS::Registry>& getRegistry();
 
@@ -57,7 +57,7 @@ namespace oyl
         static bool isInitialized = false;
         OYL_ASSERT(!isInitialized, "Systems should only be initialized once!");
 
-        Ref<ECS::System> newSystem = Ref<SYSTEM>::create();
+        Ref<ECS::System> newSystem = SYSTEM::create();
 
         newSystem->setRegistry(registry);
 

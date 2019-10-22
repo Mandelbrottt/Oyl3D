@@ -25,6 +25,14 @@ namespace oyl
         m_registry.reset();
     }
 
+    void Scene::onEnter()
+    {
+    }
+
+    void Scene::onExit()
+    {
+    }
+
     void Scene::onUpdate(Timestep dt)
     {
         for (const Ref<Layer>& layer : m_layerStack)
@@ -41,15 +49,15 @@ namespace oyl
         return false;
     }
     
-    void Scene::onGuiRender()
+    void Scene::onGuiRender(Timestep dt)
     {
         for (const Ref<Layer>& layer : m_layerStack)
         {
-            layer->onGuiRenderSystems();
-            layer->onGuiRender();
+            layer->onGuiRenderSystems(dt);
+            layer->onGuiRender(dt);
         }
 
-        m_renderSystem->onGuiRender();
+        m_renderSystem->onGuiRender(dt);
     }
 
     void Scene::initDefaultSystems()

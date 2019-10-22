@@ -7,11 +7,11 @@ class SandboxLayer : public oyl::Layer
 public:
     OYL_CTOR(SandboxLayer, Layer)
 
-    virtual void onAttach() override;
+    virtual void onEnter() override;
 
     virtual void onUpdate(oyl::Timestep dt) override;
 
-    virtual void onGuiRender() override;
+    virtual void onGuiRender(oyl::Timestep dt) override;
 
     virtual bool onEvent(oyl::Ref<oyl::Event> event) override;
 };

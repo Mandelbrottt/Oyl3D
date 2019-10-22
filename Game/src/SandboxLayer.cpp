@@ -4,7 +4,7 @@
 
 using namespace oyl;
 
-void SandboxLayer::onAttach()
+void SandboxLayer::onEnter()
 {
     scheduleSystemUpdate<ECS::OracleCameraSystem>();
 
@@ -50,7 +50,7 @@ void SandboxLayer::onUpdate(Timestep dt)
 {
 }
 
-void SandboxLayer::onGuiRender()
+void SandboxLayer::onGuiRender(Timestep dt)
 {
 }
 
