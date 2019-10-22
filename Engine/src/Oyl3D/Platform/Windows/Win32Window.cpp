@@ -78,7 +78,7 @@ namespace oyl
         m_context = GraphicsContext::create(m_window);
         m_context->init();
 
-        glfwSetWindowUserPointer(m_window, &m_data);
+        glfwSetWindowUserPointer(m_window, &m_data);        
         _oylGamepadUserPointer = &m_data;
 
         setVsync(true);

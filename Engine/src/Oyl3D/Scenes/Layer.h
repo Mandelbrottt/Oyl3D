@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Oyl3D/Events/EventListener.h"
+#include "Oyl3D/Scenes/Node.h"
 //#include "Oyl3D/Events/EventDispatcher.h"
 
 //#include "ECS/Registry.h"
@@ -17,10 +18,12 @@ namespace oyl
         class System;
     }
 
-    class Layer : public EventListener
+    class Layer : public virtual EventListener, public Node
     {
+    protected:
+        explicit Layer(std::string name);
+        
     public:
-        explicit Layer(std::string debugName = "Layer");
         virtual  ~Layer();
 
         virtual void onAttach();
@@ -46,9 +49,6 @@ namespace oyl
         void scheduleSystemUpdate(Priority priority = 0);
 
         std::vector<Ref<ECS::System>> m_systems;
-
-    protected:
-        const std::string m_debugName;
     };
 
     template<class SYSTEM>

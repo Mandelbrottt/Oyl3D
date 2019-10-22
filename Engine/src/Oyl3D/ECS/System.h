@@ -1,8 +1,9 @@
 #pragma once
-#include "Oyl3D/ECS/Registry.h"
 
-#include "Oyl3D/Events/Event.h"
+//#include "Oyl3D/Events/Event.h"
 #include "Oyl3D/Events/EventListener.h"
+
+#include "Oyl3D/Scenes/Node.h"
 
 namespace oyl
 {
@@ -11,6 +12,8 @@ namespace oyl
 
 namespace oyl::ECS
 {
+    class Registry;
+
     class ISystem
     {
     public:
@@ -24,11 +27,13 @@ namespace oyl::ECS
         virtual void onGuiRender() = 0;
     };
 
-    class System : public ISystem, public EventListener
+    class System : public ISystem, public EventListener, public Node
     {
+    protected:
+        explicit System(std::string name = "System");
+
     public:
-        explicit System()  = default;
-        virtual  ~System() = default;
+        virtual ~System() = default;
 
         virtual void onEnter() override;
         virtual void onExit() override;
@@ -36,7 +41,7 @@ namespace oyl::ECS
         virtual void onUpdate(Timestep dt) override;
         virtual void onGuiRender() override;
 
-        void setRegistry(Ref<Registry> reg) { registry = std::move(reg); }
+        void setRegistry(Ref<Registry> reg);
 
     protected:
         Ref<Registry> registry;
@@ -44,9 +49,19 @@ namespace oyl::ECS
 
     class RenderSystem : public System
     {
+        struct _RenderSystem_
+        {
+        };
+
     public:
-        explicit RenderSystem()  = default;
-        virtual  ~RenderSystem() = default;
+        explicit RenderSystem(_RenderSystem_)
+            : System("RenderSystem")
+        {
+        }
+
+        static Ref<RenderSystem> create();
+
+        virtual ~RenderSystem() = default;
 
         virtual void onEnter() override;
         virtual void onExit() override;
@@ -59,9 +74,19 @@ namespace oyl::ECS
 
     class PhysicsSystem : public System
     {
+        struct _PhysicsSystem_
+        {
+        };
+
     public:
-        explicit PhysicsSystem()  = default;
-        virtual  ~PhysicsSystem() = default;
+        explicit PhysicsSystem(_PhysicsSystem_)
+            : System("PhysicsSystem")
+        {
+        }
+
+        virtual ~PhysicsSystem() = default;
+        
+        //static Ref<PhysicsSystem> create();
 
         virtual void onEnter() override;
         virtual void onExit() override;
@@ -74,9 +99,19 @@ namespace oyl::ECS
 
     class OracleCameraSystem : public System
     {
+        struct _OracleCameraSystem_
+        {
+        };
+
     public:
-        explicit OracleCameraSystem()  = default;
-        virtual  ~OracleCameraSystem() = default;
+        explicit OracleCameraSystem(_OracleCameraSystem_)
+            : System("PhysicsSystem")
+        {
+        }
+
+        virtual ~OracleCameraSystem() = default;
+
+        static Ref<OracleCameraSystem> create();
 
         virtual void onEnter() override;
         virtual void onExit() override;

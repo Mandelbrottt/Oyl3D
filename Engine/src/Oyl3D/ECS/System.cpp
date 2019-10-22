@@ -5,6 +5,7 @@
 #include "ECS/Component.h"
 #include "ECS/Registry.h"
 
+#include "Events/Event.h"
 #include "Events/EventListener.h"
 
 #include "Graphics/Camera.h"
@@ -16,6 +17,12 @@
 namespace oyl::ECS
 {
     // vvv Generic System vvv //
+
+    System::System(std::string name)
+        : Node(std::move(name))
+    {
+    }
+
     void System::onEnter()
     {
     }
@@ -32,9 +39,19 @@ namespace oyl::ECS
     {
     }
 
+    void System::setRegistry(Ref<Registry> reg)
+    {
+        registry = std::move(reg);
+    }
+
     // ^^^ Generic System ^^^ //
 
     // vvv Render System vvv //
+
+    Ref<RenderSystem> RenderSystem::create()
+    {
+        return Ref<RenderSystem>::create(_RenderSystem_{});
+    }
 
     void RenderSystem::onEnter()
     {
@@ -67,7 +84,6 @@ namespace oyl::ECS
 
         Ref<Shader>   boundShader;
         Ref<Material> boundMaterial;
-
 
         // TEMPORARY:
         auto        camView       = reg->view<Component::PlayerCamera>();
@@ -114,13 +130,18 @@ namespace oyl::ECS
 
     // vvv Oracle Camera System vvv //
 
+    Ref<OracleCameraSystem> OracleCameraSystem::create()
+    {
+        return Ref<OracleCameraSystem>::create(_OracleCameraSystem_{});
+    }
+
     void OracleCameraSystem::onEnter()
     {
         addToEventMask(TypeKeyPressed);
         addToEventMask(TypeKeyReleased);
         addToEventMask(TypeMouseMoved);
         addToEventMask(TypeViewportResized);
-        
+
         Component::PlayerCamera cam;
         cam.player = 0;
         cam.camera = Ref<Camera>::create();
@@ -207,7 +228,7 @@ namespace oyl::ECS
             }
             case TypeViewportResized:
             {
-                auto e = (ViewportResizedEvent) *event;
+                auto e    = (ViewportResizedEvent) *event;
                 auto view = registry->view<Component::PlayerCamera>();
                 for (auto entity : view)
                 {

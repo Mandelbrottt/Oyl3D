@@ -7,8 +7,8 @@
 
 namespace oyl
 {
-    Layer::Layer(std::string debugName)
-        : m_debugName(std::move(debugName))
+    Layer::Layer(std::string name)
+        : Node(std::move(name))
     {
     }
 

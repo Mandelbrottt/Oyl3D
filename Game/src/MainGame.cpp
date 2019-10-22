@@ -14,6 +14,11 @@ OYL_EVENT_STRUCT(TestEvent, TypeTestEvent, TypeTestEvent,
 
 class OtherSystem : public oyl::ECS::System
 {
+public:
+    OYL_CTOR(OtherSystem, System)
+    {
+    }
+
     virtual void onUpdate(oyl::Timestep dt) override
     {
         static int counter = 0;
@@ -32,6 +37,11 @@ class OtherSystem : public oyl::ECS::System
 
 class PhysicsSystem : public oyl::ECS::System
 {
+public:
+OYL_CONSTRUCTOR(PhysicsSystem, System)
+    {
+    }
+
     virtual void onEnter() override
     {
         addToEventMask(TypeTestEvent);
@@ -110,10 +120,7 @@ class PhysicsSystem : public oyl::ECS::System
 class MainLayer : public oyl::Layer
 {
 public:
-    OYL_CREATE_FUNC(MainLayer)
-
-    MainLayer()
-        : Layer("Main")
+OYL_CTOR(MainLayer, Layer)
     {
     }
 
@@ -176,51 +183,18 @@ public:
 
     virtual bool onEvent(oyl::Ref<oyl::Event> event) override
     {
-        switch (event->type)
-        {
-            case oyl::TypeKeyReleased:
-            {
-                oyl::Window& window = oyl::Application::get().getWindow();
-
-                auto e = (oyl::KeyReleasedEvent) *event;
-                if (e.keycode == oyl::Key_F11)
-                {
-                    if (window.getFullscreenType() == oyl::Windowed)
-                        window.setFullscreenType(oyl::Fullscreen);
-                    else
-                        window.setFullscreenType(oyl::Windowed);
-                }
-                else if (e.keycode == oyl::Key_F7)
-                {
-                    window.setVsync(!window.isVsync());
-                }
-            }
-            case oyl::TypeGamepadStickMoved:
-            {
-                auto e = (oyl::GamepadStickMovedEvent) *event;
-                if (e.stick == oyl::Gamepad_LeftStick)
-                {
-                    m_translate = glm::vec3(e.x, e.y, -5.0f);
-                }
-            }
-        }
         return false;
     }
 
 private:
-
-    glm::vec3 m_translate = glm::vec3(0.0f, 0.0f, -5.0f);
-
-    float m_timeSince = 0.0f;
+    glm::vec3 m_translate = glm::vec3(0.0f);
+    float     m_timeSince = 0;
 };
 
 class MainScene : public oyl::Scene
 {
 public:
-    OYL_CREATE_FUNC(MainScene)
-
-    MainScene()
-        : oyl::Scene("MainScene")
+OYL_CTOR(MainScene, Scene)
     {
     }
 
@@ -252,9 +226,6 @@ public:
     virtual void onExit()
     {
     }
-
-public:
-    OYL_CREATE_FUNC(MainScene)
 };
 
 oyl::Application* oyl::createApplication()

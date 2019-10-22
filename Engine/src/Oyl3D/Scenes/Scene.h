@@ -6,6 +6,7 @@
 //#include "Oyl3D/Events/EventListener.h"
 
 #include "Oyl3D/Scenes/LayerStack.h"
+#include "Oyl3D/Scenes/Node.h"
 
 namespace oyl
 {
@@ -15,12 +16,14 @@ namespace oyl
         class RenderSystem;
     }
 
-    class Scene : public EventListener
+    class Scene : public EventListener, public Node
     {
         friend class Application;
+    protected:
+        explicit Scene(std::string name);
+
     public:
-        explicit Scene(const std::string& debugName = "Scene");
-        virtual  ~Scene();
+        virtual ~Scene();
 
         virtual void onEnter() = 0;
         virtual void onExit() = 0;
@@ -35,6 +38,7 @@ namespace oyl
         const Ref<ECS::Registry>& getRegistry();
 
         virtual bool onEvent(Ref<Event> event) override;
+
     private:
         void onUpdate(Timestep dt);
         void onGuiRender();
@@ -50,8 +54,5 @@ namespace oyl
         Ref<ECS::Registry> m_registry;
 
         Ref<ECS::RenderSystem> m_renderSystem;
-
-    protected:
-        std::string m_debugName;
     };
 }
