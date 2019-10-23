@@ -1,6 +1,9 @@
 #include "oylpch.h"
 #include "Renderer.h"
 
+#include "Graphics/Shader.h"
+#include "Graphics/Material.h"
+
 namespace oyl
 {
     //Renderer::SceneData* Renderer::s_sceneData = new Renderer::SceneData;

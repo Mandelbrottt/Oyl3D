@@ -2,12 +2,15 @@
 
 #include "Oyl3D/Rendering/RenderCommand.h"
 
-#include "Oyl3D/Graphics/Camera.h"
-#include "Oyl3D/Graphics/Mesh.h"
-#include "Oyl3D/Graphics/Shader.h"
+//#include "Oyl3D/Graphics/Camera.h"
+//#include "Oyl3D/Graphics/Mesh.h"
+//#include "Oyl3D/Graphics/Shader.h"
 
 namespace oyl
 {
+    class Shader;
+    class Material;
+
     class Renderer
     {
     public:

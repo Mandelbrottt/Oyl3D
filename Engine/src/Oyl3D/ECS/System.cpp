@@ -9,6 +9,7 @@
 #include "Events/EventListener.h"
 
 #include "Graphics/Camera.h"
+#include "Graphics/Material.h"
 
 #include "Rendering/Renderer.h"
 

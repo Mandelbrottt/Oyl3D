@@ -47,6 +47,8 @@ namespace oyl
 
         m_window = Window::create();
 
+        Mesh::init();
+
         m_imguiLayer = Ref<ImGuiLayer>::create();
 
         initEventListeners();
