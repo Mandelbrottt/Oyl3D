@@ -10,9 +10,9 @@ namespace oyl
         ImGuiLayer();
         virtual ~ImGuiLayer();
 
-        virtual void onAttach() override;
-        virtual void onDetach() override;
-        virtual void onGuiRender() override;
+        virtual void onEnter() override;
+        virtual void onExit() override;
+        virtual void onGuiRender(Timestep dt) override;
 
         void begin();
         void end();

@@ -1,19 +1,17 @@
 #pragma once
 
-#include <Oyl3D/Scenes/Layer.h>
+#include <Oyl3D.h>
 
 class SandboxLayer : public oyl::Layer
 {
 public:
-    OYL_CREATE_FUNC(SandboxLayer)
+    OYL_CTOR(SandboxLayer, Layer)
 
-    explicit SandboxLayer();
-
-    virtual void onAttach() override;
+    virtual void onEnter() override;
 
     virtual void onUpdate(oyl::Timestep dt) override;
 
-    virtual void onGuiRender() override;
+    virtual void onGuiRender(oyl::Timestep dt) override;
 
     virtual bool onEvent(oyl::Ref<oyl::Event> event) override;
 };

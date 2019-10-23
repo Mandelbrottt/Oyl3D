@@ -5,6 +5,7 @@
 #include "ECS/Component.h"
 #include "ECS/Registry.h"
 
+#include "Events/Event.h"
 #include "Events/EventListener.h"
 
 #include "Graphics/Camera.h"
@@ -16,6 +17,12 @@
 namespace oyl::ECS
 {
     // vvv Generic System vvv //
+
+    System::System(std::string name)
+        : Node(std::move(name))
+    {
+    }
+
     void System::onEnter()
     {
     }
@@ -28,8 +35,13 @@ namespace oyl::ECS
     {
     }
 
-    void System::onGuiRender()
+    void System::onGuiRender(Timestep dt)
     {
+    }
+
+    void System::setRegistry(Ref<Registry> reg)
+    {
+        registry = std::move(reg);
     }
 
     // ^^^ Generic System ^^^ //
@@ -68,7 +80,6 @@ namespace oyl::ECS
         Ref<Shader>   boundShader;
         Ref<Material> boundMaterial;
 
-
         // TEMPORARY:
         auto        camView       = reg->view<Component::PlayerCamera>();
         Ref<Camera> currentCamera = reg->get<Component::PlayerCamera>(*camView.begin()).camera;
@@ -101,7 +112,7 @@ namespace oyl::ECS
         }
     }
 
-    void RenderSystem::onGuiRender()
+    void RenderSystem::onGuiRender(Timestep dt)
     {
     }
 
@@ -120,7 +131,7 @@ namespace oyl::ECS
         addToEventMask(TypeKeyReleased);
         addToEventMask(TypeMouseMoved);
         addToEventMask(TypeViewportResized);
-        
+
         Component::PlayerCamera cam;
         cam.player = 0;
         cam.camera = Ref<Camera>::create();
@@ -146,7 +157,7 @@ namespace oyl::ECS
         }
     }
 
-    void OracleCameraSystem::onGuiRender()
+    void OracleCameraSystem::onGuiRender(Timestep dt)
     {
         ImGui::Begin("Camera");
 
@@ -207,7 +218,7 @@ namespace oyl::ECS
             }
             case TypeViewportResized:
             {
-                auto e = (ViewportResizedEvent) *event;
+                auto e    = (ViewportResizedEvent) *event;
                 auto view = registry->view<Component::PlayerCamera>();
                 for (auto entity : view)
                 {

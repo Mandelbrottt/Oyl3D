@@ -11,10 +11,10 @@ namespace oyl
 {
     WeakRef<Scene> Scene::s_current{};
 
-    Scene::Scene(const std::string& debugName)
-        : m_registry(Ref<ECS::Registry>::create()),
-          m_renderSystem(Ref<ECS::RenderSystem>::create()),
-          m_debugName(debugName)
+    Scene::Scene(std::string name)
+        : Node(std::move(name)),
+          m_registry(Ref<ECS::Registry>::create()),
+          m_renderSystem(ECS::RenderSystem::create())
     {
     }
 
@@ -49,15 +49,15 @@ namespace oyl
         return false;
     }
     
-    void Scene::onGuiRender()
+    void Scene::onGuiRender(Timestep dt)
     {
         for (const Ref<Layer>& layer : m_layerStack)
         {
-            layer->onGuiRenderSystems();
-            layer->onGuiRender();
+            layer->onGuiRenderSystems(dt);
+            layer->onGuiRender(dt);
         }
 
-        m_renderSystem->onGuiRender();
+        m_renderSystem->onGuiRender(dt);
     }
 
     void Scene::initDefaultSystems()

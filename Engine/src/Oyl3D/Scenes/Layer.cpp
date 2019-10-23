@@ -7,8 +7,8 @@
 
 namespace oyl
 {
-    Layer::Layer(std::string debugName)
-        : m_debugName(std::move(debugName))
+    Layer::Layer(std::string name)
+        : Node(std::move(name))
     {
     }
 
@@ -20,11 +20,11 @@ namespace oyl
         }
     }
 
-    void Layer::onAttach()
+    void Layer::onEnter()
     {
     }
 
-    void Layer::onDetach()
+    void Layer::onExit()
     {
     }
 
@@ -32,7 +32,7 @@ namespace oyl
     {
     }
 
-    void Layer::onGuiRender()
+    void Layer::onGuiRender(Timestep dt)
     {
     }
 
@@ -49,11 +49,11 @@ namespace oyl
         }
     }
 
-    void Layer::onGuiRenderSystems()
+    void Layer::onGuiRenderSystems(Timestep dt)
     {
         for (auto& system : m_systems)
         {
-            system->onGuiRender();
+            system->onGuiRender(dt);
         }
     }
 

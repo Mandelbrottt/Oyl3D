@@ -7,7 +7,7 @@ using namespace oyl;
 class MainLayer : public Layer
 {
 public:
-    OYL_CREATE_FUNC(MainLayer)
+    OYL_CTOR(MainLayer, Layer)
 
     bool onEvent(Ref<Event> event) override
     {
@@ -39,12 +39,7 @@ public:
 class MainScene : public Scene
 {
 public:
-    OYL_CREATE_FUNC(MainScene)
-
-    MainScene()
-        : oyl::Scene("MainScene")
-    {
-    }
+    OYL_CTOR(MainScene, Scene)
 
     virtual ~MainScene() = default;
 

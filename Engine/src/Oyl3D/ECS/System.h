@@ -1,8 +1,9 @@
 #pragma once
-#include "Oyl3D/ECS/Registry.h"
 
-#include "Oyl3D/Events/Event.h"
+//#include "Oyl3D/Events/Event.h"
 #include "Oyl3D/Events/EventListener.h"
+
+#include "Oyl3D/Scenes/Node.h"
 
 namespace oyl
 {
@@ -11,32 +12,36 @@ namespace oyl
 
 namespace oyl::ECS
 {
-    class ISystem
+    class Registry;
+
+    class ISystem : public Node
     {
     public:
         explicit ISystem()  = default;
         virtual  ~ISystem() = default;
 
-        virtual void onEnter() = 0;
-        virtual void onExit() = 0;
+        virtual void onEnter() override = 0;
+        virtual void onExit() override = 0;
 
-        virtual void onUpdate(Timestep dt) = 0;
-        virtual void onGuiRender() = 0;
+        virtual void onUpdate(Timestep dt) override = 0;
+        virtual void onGuiRender(Timestep dt) override = 0;
     };
 
-    class System : public ISystem, public EventListener
+    class System : public ISystem, public EventListener, public Node
     {
+    protected:
+        explicit System(std::string name = "System");
+
     public:
-        explicit System()  = default;
-        virtual  ~System() = default;
+        virtual ~System() = default;
 
         virtual void onEnter() override;
         virtual void onExit() override;
 
         virtual void onUpdate(Timestep dt) override;
-        virtual void onGuiRender() override;
+        virtual void onGuiRender(Timestep dt) override;
 
-        void setRegistry(Ref<Registry> reg) { registry = std::move(reg); }
+        void setRegistry(Ref<Registry> reg);
 
     protected:
         Ref<Registry> registry;
@@ -44,45 +49,45 @@ namespace oyl::ECS
 
     class RenderSystem : public System
     {
-    public:
-        explicit RenderSystem()  = default;
-        virtual  ~RenderSystem() = default;
+        OYL_CTOR(RenderSystem, System)
+
+        virtual ~RenderSystem() = default;
 
         virtual void onEnter() override;
         virtual void onExit() override;
 
         virtual void onUpdate(Timestep dt) override;
-        virtual void onGuiRender() override;
+        virtual void onGuiRender(Timestep dt) override;
 
         virtual bool onEvent(Ref<Event> event) override;
     };
 
     class PhysicsSystem : public System
     {
-    public:
-        explicit PhysicsSystem()  = default;
-        virtual  ~PhysicsSystem() = default;
+        OYL_CTOR(PhysicsSystem, System)
+
+        virtual ~PhysicsSystem() = default;
 
         virtual void onEnter() override;
         virtual void onExit() override;
 
         virtual void onUpdate(Timestep dt) override;
-        virtual void onGuiRender() override;
+        virtual void onGuiRender(Timestep) override;
 
         virtual bool onEvent(Ref<Event> event) override;
     };
 
     class OracleCameraSystem : public System
     {
-    public:
-        explicit OracleCameraSystem()  = default;
-        virtual  ~OracleCameraSystem() = default;
+        OYL_CTOR(OracleCameraSystem, System)
+
+        virtual ~OracleCameraSystem() = default;
 
         virtual void onEnter() override;
         virtual void onExit() override;
 
         virtual void onUpdate(Timestep dt) override;
-        virtual void onGuiRender() override;
+        virtual void onGuiRender(Timestep dt) override;
 
         virtual bool onEvent(Ref<Event> event) override;
 

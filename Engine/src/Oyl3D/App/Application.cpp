@@ -156,8 +156,7 @@ namespace oyl
 #if !defined(OYL_DISTRIBUTION)
             m_imguiLayer->begin();
 
-            //m_imguiLayer->onGuiRender();
-            m_currentScene->onGuiRender();
+            m_currentScene->onGuiRender(timestep);
 
             m_imguiLayer->end();
 

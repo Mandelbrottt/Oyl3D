@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Oyl3D/Events/EventListener.h"
+#include "Oyl3D/Scenes/Node.h"
 //#include "Oyl3D/Events/EventDispatcher.h"
 
 //#include "ECS/Registry.h"
@@ -17,22 +18,24 @@ namespace oyl
         class System;
     }
 
-    class Layer : public EventListener
+    class Layer : public virtual EventListener, public Node
     {
+    protected:
+        explicit Layer(std::string name);
+        
     public:
-        explicit Layer(std::string debugName = "Layer");
         virtual  ~Layer();
 
-        virtual void onAttach();
-        virtual void onDetach();
+        virtual void onEnter() override;
+        virtual void onExit() override;
 
-        virtual void onUpdate(Timestep dt);
-        virtual void onGuiRender();
+        virtual void onUpdate(Timestep dt) override;
+        virtual void onGuiRender(Timestep dt) override;
 
         virtual bool onEvent(Ref<Event> event) override;
 
         void onUpdateSystems(Timestep dt);
-        void onGuiRenderSystems();
+        void onGuiRenderSystems(Timestep dt);
 
         const Ref<ECS::Registry>& getRegistry();
 
@@ -46,9 +49,6 @@ namespace oyl
         void scheduleSystemUpdate(Priority priority = 0);
 
         std::vector<Ref<ECS::System>> m_systems;
-
-    protected:
-        const std::string m_debugName;
     };
 
     template<class SYSTEM>
@@ -57,7 +57,7 @@ namespace oyl
         static bool isInitialized = false;
         OYL_ASSERT(!isInitialized, "Systems should only be initialized once!");
 
-        Ref<ECS::System> newSystem = Ref<SYSTEM>::create();
+        Ref<ECS::System> newSystem = SYSTEM::create();
 
         newSystem->setRegistry(registry);
 

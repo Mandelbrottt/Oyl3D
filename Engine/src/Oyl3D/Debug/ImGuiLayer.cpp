@@ -22,7 +22,7 @@ namespace oyl
     {
     }
 
-    void ImGuiLayer::onAttach()
+    void ImGuiLayer::onEnter()
     {
         // Setup Dear ImGui context
         IMGUI_CHECKVERSION();
@@ -50,7 +50,7 @@ namespace oyl
         ImGui_ImplOpenGL3_Init("#version 420");
     }
 
-    void ImGuiLayer::onDetach()
+    void ImGuiLayer::onExit()
     {
         ImGui_ImplOpenGL3_Shutdown();
         ImGui_ImplGlfw_Shutdown();
@@ -114,7 +114,7 @@ namespace oyl
         }
     }
 
-    void ImGuiLayer::onGuiRender()
+    void ImGuiLayer::onGuiRender(Timestep dt)
     {
         // Only still here for easy navigation to the source code for learning imgui
         if (false) ImGui::ShowDemoWindow();

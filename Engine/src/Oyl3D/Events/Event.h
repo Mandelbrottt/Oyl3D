@@ -5,20 +5,21 @@
 #define _OYL_EVENT_SIZE 32
 #define _OYL_NUM_EVENT_ARGS ((_OYL_EVENT_SIZE - 8) / 4)
 
-#define OYL_EVENT_STRUCT(class_name, event_type, event_category, x)               \
-union class_name {                                                                \
-    class_name() : type(event_type), category(event_category), args{ 0 } {}                  \
-    class_name(::oyl::Event& e) { *this = *reinterpret_cast<class_name*>(&e); }   \
-    operator ::oyl::Event() { return *reinterpret_cast<::oyl::Event*>(this); }    \
-    struct {                                                                      \
-        ::oyl::u32 args[_OYL_NUM_EVENT_ARGS];                                     \
-        ::oyl::u32 type;                                                          \
-        ::oyl::u32 category;                                                      \
-    };                                                                            \
-    struct x;                                                                     \
-private:                                                                          \
-    struct _sizeTest x;                                                           \
-    static_assert(sizeof(_sizeTest) <= _OYL_NUM_EVENT_ARGS * 4);                  \
+#define OYL_EVENT_STRUCT(class_name, event_type, event_category, x)                      \
+union class_name {                                                                       \
+    class_name() : type(event_type), category(event_category), args{ 0 } {}              \
+    class_name(::oyl::Event& e) { *this = *reinterpret_cast<class_name*>(&e); }          \
+    operator ::oyl::Event() { return *reinterpret_cast<::oyl::Event*>(this); }           \
+    struct {                                                                             \
+        ::oyl::u32 args[_OYL_NUM_EVENT_ARGS];                                            \
+        ::oyl::u32 type;                                                                 \
+        ::oyl::u32 category;                                                             \
+    };                                                                                   \
+                                                                                         \
+    struct x;                                                                            \
+private:                                                                                 \
+    struct _##class_name x;                                                              \
+    static_assert(sizeof(_##class_name) <= _OYL_EVENT_SIZE);                             \
 }
 
 namespace oyl
@@ -36,7 +37,7 @@ namespace oyl
             return sptr;
         }
     };
-
+    
     // Window Events //////////////////////////////////////////////////////
 
     OYL_EVENT_STRUCT(WindowClosedEvent, TypeWindowClosed, CategoryWindow,
@@ -188,7 +189,7 @@ namespace oyl
     OYL_EVENT_STRUCT(ViewportResizedEvent, TypeViewportResized, CategoryViewport,
                      {
                      i32 id;
-                         
+
                      f32 width;
                      f32 height;
                      });
