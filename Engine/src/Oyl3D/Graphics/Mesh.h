@@ -1,9 +1,15 @@
 #pragma once
 
-#include "Oyl3D/Graphics/Buffer.h"
+// TODO: Forward declare
+//#include "Oyl3D/Graphics/Buffer.h"
+
+#include "Oyl3D/Utils/AssetCache.h"
 
 namespace oyl
 {
+    class VertexBuffer;
+    class VertexArray;
+    
     class Mesh
     {
         friend class Application;
@@ -13,7 +19,7 @@ namespace oyl
         };
 
     public:
-        using CacheAlias = std::string;
+        struct FileInfo;
 
         explicit Mesh(_Mesh, const std::string& filePath);
 
@@ -26,8 +32,8 @@ namespace oyl
         static Ref<Mesh> create(const std::string& filePath);
 
         static const Ref<Mesh>& cache(const std::string& filePath,
-                                      CacheAlias         alias     = "",
-                                      bool               overwrite = false);
+                                             const CacheAlias& alias = "",
+                                             bool overwrite = false);
 
         static void discard(const CacheAlias& alias);
 
@@ -35,10 +41,17 @@ namespace oyl
 
         static const Ref<Mesh>& rename(const CacheAlias& currentAlias,
                                        const CacheAlias& newAlias,
-                                       bool              overwrite = false);
+                                       bool overwrite = false);
 
         uint getNumFaces() const { return m_numFaces; }
         uint getNumVertices() const { return m_numVertices; }
+
+        struct FileInfo
+        {
+            std::string filePath;
+        };
+        
+        const std::string& getFilePath() { return m_filePath; }
 
     protected:
         uint m_numFaces    = 0;
@@ -47,11 +60,9 @@ namespace oyl
         Ref<VertexArray>  m_vao = nullptr;
         Ref<VertexBuffer> m_vbo = nullptr;
 
-        std::string m_fileName;
+        std::string m_filePath;
 
-        static Ref<Mesh> s_invalid;
-
-        static std::unordered_map<CacheAlias, Ref<Mesh>> s_cache;
+        static internal::AssetCache<Mesh> s_cache;
 
     private:
         static void init();

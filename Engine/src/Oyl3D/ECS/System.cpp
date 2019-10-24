@@ -10,6 +10,7 @@
 
 #include "Graphics/Camera.h"
 #include "Graphics/Material.h"
+#include "Graphics/Shader.h"
 
 #include "Rendering/Renderer.h"
 

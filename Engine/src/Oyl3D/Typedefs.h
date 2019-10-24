@@ -24,4 +24,6 @@ namespace oyl
     static_assert(sizeof(double) == 8, "double should be 64 bits wide!");
 
     using Entity = entt::entity;
+
+    using CacheAlias = std::string;
 }

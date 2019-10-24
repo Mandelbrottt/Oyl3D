@@ -69,11 +69,11 @@ namespace oyl
         }
         else
         {
-            OYL_LOG_ERROR("Texture {0} failed to load!", filename);
+            OYL_LOG_ERROR("Texture '{0}' failed to load!", filename);
             u8* err = new u8[3]{ 0xFF, 0, 0xFF };
 
             glTexStorage2D(GL_TEXTURE_2D, 1, GL_RGB8, 1, 1);
-            glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 1, 1, GL_RGB8, GL_UNSIGNED_BYTE, err);
+            glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 1, 1, GL_RGB, GL_UNSIGNED_BYTE, err);
         }
         stbi_image_free(data);
     }
