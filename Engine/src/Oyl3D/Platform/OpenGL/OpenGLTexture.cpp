@@ -17,8 +17,9 @@ namespace oyl
         unload();
     }
 
-    void OpenGLTexture1D::load(const std::string& filename)
+    bool OpenGLTexture1D::load(const std::string& filename)
     {
+        return false;
     }
 
     void OpenGLTexture1D::unload()
@@ -43,9 +44,9 @@ namespace oyl
         unload();
     }
 
-    void OpenGLTexture2D::load(const std::string& filename)
+    bool OpenGLTexture2D::load(const std::string& filename)
     {
-        if (m_loaded) return;
+        if (m_loaded) unload();
 
         glGenTextures(1, &m_rendererID);
         glBindTexture(GL_TEXTURE_2D, m_rendererID);
@@ -70,12 +71,19 @@ namespace oyl
         else
         {
             OYL_LOG_ERROR("Texture '{0}' failed to load!", filename);
-            u8* err = new u8[3]{ 0xFF, 0, 0xFF };
+            
+            u8 err[12] = 
+            {
+                0xFF, 0x00, 0xFF, 0xFF, 0xFF, 0x00,
+                0xFF, 0xFF, 0x00, 0xFF, 0x00, 0xFF
+            };
 
-            glTexStorage2D(GL_TEXTURE_2D, 1, GL_RGB8, 1, 1);
-            glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 1, 1, GL_RGB, GL_UNSIGNED_BYTE, err);
+            glTexStorage2D(GL_TEXTURE_2D, 1, GL_RGB8, 2, 2);
+            glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 2, 2, GL_RGB, GL_UNSIGNED_BYTE, err);
         }
         stbi_image_free(data);
+
+        return m_loaded;
     }
 
     void OpenGLTexture2D::unload()
@@ -107,8 +115,9 @@ namespace oyl
         unload();
     }
 
-    void OpenGLTexture3D::load(const std::string& filename)
+    bool OpenGLTexture3D::load(const std::string& filename)
     {
+        return false;
     }
 
     void OpenGLTexture3D::unload()

@@ -10,11 +10,13 @@ namespace oyl
         OpenGLTexture1D(const std::string& filename);
         virtual ~OpenGLTexture1D();
 
-        virtual void load(const std::string& filename) override;
+        virtual bool load(const std::string& filename) override;
         virtual void unload() override;
 
         virtual void bind(uint slot) const override;
         virtual void unbind() const override;
+
+        virtual bool isLoaded() const override { return m_loaded; }
 
         virtual uint getLength() const override { return m_length; }
     private:
@@ -32,11 +34,13 @@ namespace oyl
         OpenGLTexture2D(const std::string& filename);
         virtual ~OpenGLTexture2D();
 
-        virtual void load(const std::string& filename) override;
+        virtual bool load(const std::string& filename) override;
         virtual void unload() override;
 
         virtual void bind(uint slot) const override;
         virtual void unbind() const override;
+
+        virtual bool isLoaded() const override { return m_loaded; }
 
         virtual uint getWidth() const override { return m_width; }
         virtual uint getHeight() const override { return m_height; }
@@ -56,11 +60,13 @@ namespace oyl
         OpenGLTexture3D(const std::string& filename);
         virtual ~OpenGLTexture3D();
 
-        virtual void load(const std::string& filename) override;
+        virtual bool load(const std::string& filename) override;
         virtual void unload() override;
 
         virtual void bind(uint slot) const override;
         virtual void unbind() const override;
+
+        virtual bool isLoaded() const override { return m_loaded; }
 
         virtual uint getWidth() const override { return m_width; }
         virtual uint getHeight() const override { return m_height; }

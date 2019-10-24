@@ -166,7 +166,7 @@ namespace oyl
     Ref<Mesh> Mesh::create(const std::string& filePath)
     {
         auto mesh = Ref<Mesh>::create(_Mesh{}, filePath);
-        return mesh->m_numVertices <= 0 ? s_cache.m_invalid : mesh;
+        return mesh->m_numVertices <= 0 ? s_cache.get(INVALID_ALIAS) : mesh;
     }
 
     const Ref<Mesh>& Mesh::cache(const std::string& filePath,
@@ -195,6 +195,6 @@ namespace oyl
 
     void Mesh::init()
     {
-        s_cache.m_invalid = Mesh::create("../Engine/res/unknown.obj");
+        Mesh::cache(ENGINE_RES + INVALID_MESH_PATH, INVALID_ALIAS);
     }
 }

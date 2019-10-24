@@ -10,13 +10,15 @@ namespace oyl
     public:
         virtual ~Texture() = default;
 
-        virtual void load(const std::string& filePath) = 0;
+        virtual bool load(const std::string& filePath) = 0;
         virtual void unload() = 0;
 
         virtual void bind(uint slot = 0) const = 0;
         virtual void unbind() const = 0;
 
-        const std::string& getFilePath() { return m_filePath; }
+        virtual bool isLoaded() const = 0;
+
+        const std::string& getFilePath() const { return m_filePath; }
 
     protected:
         std::string m_filePath;

@@ -23,7 +23,8 @@ namespace oyl
                 OYL_ASSERT(false, "None is currently unsupported");
                 return nullptr;
             case API_OpenGL:
-                return Ref<OpenGLTexture1D>::create(filePath);
+                auto ogl = Ref<OpenGLTexture1D>::create(filePath);
+                return ogl->isLoaded() ? ogl : s_cache.get(INVALID_ALIAS);
         }
         return nullptr;
     }
@@ -36,7 +37,8 @@ namespace oyl
                 OYL_ASSERT(false, "None is currently unsupported");
                 return nullptr;
             case API_OpenGL:
-                return Ref<OpenGLTexture2D>::create(filePath);
+                auto ogl = Ref<OpenGLTexture2D>::create(filePath);
+                return ogl->isLoaded() ? ogl : s_cache.get(INVALID_ALIAS);
         }
         return nullptr;
     }
@@ -49,16 +51,17 @@ namespace oyl
                 OYL_ASSERT(false, "None is currently unsupported");
                 return nullptr;
             case API_OpenGL:
-                return Ref<OpenGLTexture3D>::create(filePath);
+                auto ogl = Ref<OpenGLTexture3D>::create(filePath);
+                return ogl->isLoaded() ? ogl : s_cache.get(INVALID_ALIAS);
         }
         return nullptr;
     }
 
     void Texture::init()
     {
-        //Texture1D::s_invalid = 
-        //Texture2D::s_invalid = 
-        //Texture3D::s_invalid = 
+        //Texture1D::cache(INVALID_TEXTURE_PATH, INVALID_ALIAS);
+        Texture2D::cache(ENGINE_RES + INVALID_TEXTURE_PATH, INVALID_ALIAS);
+        //Texture3D::cache(INVALID_TEXTURE_PATH, INVALID_ALIAS);
     }
 
     const Ref<Texture1D>& Texture1D::cache(const std::string& filePath, 

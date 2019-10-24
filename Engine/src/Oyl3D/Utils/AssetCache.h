@@ -29,8 +29,6 @@ namespace oyl::internal
                              bool overwrite = false);
 
     protected:
-        Ref<T> m_invalid;
-
         std::unordered_map<CacheAlias, Ref<T>> m_cache;
 
         static const char* s_typename;
@@ -128,7 +126,7 @@ namespace oyl::internal
         if (m_cache.find(alias) == m_cache.end())
         {
             OYL_LOG_ERROR("{0} '{1}' not found!", s_typename, alias);
-            return m_invalid;
+            return this->get(INVALID_ALIAS);
         }
         return m_cache.at(alias);
     }
@@ -143,7 +141,7 @@ namespace oyl::internal
         if (currIt == m_cache.end())
         {
             OYL_LOG_ERROR("{0} '{1}' was not found!", s_typename, currentAlias);
-            return m_invalid;
+            return this->get(INVALID_ALIAS);
         }
 
         // Special case if a mesh with alias $newAlias already exists

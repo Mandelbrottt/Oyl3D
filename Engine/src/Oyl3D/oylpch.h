@@ -8,6 +8,8 @@
 #include "Oyl3D/Utils/Refs.h"
 #include "Oyl3D/Utils/Timestep.h"
 
+#include "Oyl3D/AssetPaths.h"
+
 #if !defined(_CRT_SECURE_NO_WARNINGS)
     #define _CRT_SECURE_NO_WARNINGS
 #endif

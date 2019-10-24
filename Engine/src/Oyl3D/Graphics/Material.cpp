@@ -107,7 +107,7 @@ namespace oyl
         if (currIt == m_cache.end())
         {
             OYL_LOG_ERROR("Material '{1}' was not found!", currentAlias);
-            return m_invalid;
+            return this->get(INVALID_ALIAS);
         }
 
         // Special case if a mesh with alias $newAlias already exists

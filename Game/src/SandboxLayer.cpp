@@ -12,7 +12,7 @@ void SandboxLayer::onEnter()
     addToEventMask(TypeGamepadStickMoved);
 
     Component::MeshRenderer mr;
-    mr.mesh     = Mesh::get("monkey");
+    mr.mesh     = Mesh::get(MONKEY_MESH_ALIAS);
     mr.material = Material::get("monkeyMat");
 
     Component::Transform t;
@@ -26,7 +26,7 @@ void SandboxLayer::onEnter()
         registry->assign<Component::Transform>(e, t);
     }
 
-    mr.mesh     = Mesh::get("cube");
+    mr.mesh     = Mesh::get(CUBE_MESH_ALIAS);
     mr.material = Material::get("cubeMat");
     
     e = registry->create();

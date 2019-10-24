@@ -4,6 +4,10 @@
 
 #include "Events/EventListener.h"
 
+#include "Graphics/Material.h"
+#include "Graphics/Shader.h"
+#include "Graphics/Texture.h"
+
 #include "System/Platform.h"
 
 #include "Rendering/Renderer.h"
@@ -48,6 +52,25 @@ namespace oyl
         m_window = Window::create();
 
         Mesh::init();
+        Texture::init();
+
+        Shader::cache(
+            {
+                { VertexShader, ENGINE_RES + LIGHTING_SHADER_VERTEX_PATH },
+                { FragmentShader, ENGINE_RES + LIGHTING_SHADER_FRAGMENT_PATH },
+            }, LIGHTING_SHADER_ALIAS);
+
+        Shader::cache(
+            {
+                { VertexShader, ENGINE_RES +   TEXTURE_SHADER_VERTEX_PATH },
+                { FragmentShader, ENGINE_RES + TEXTURE_SHADER_FRAGMENT_PATH },
+            }, TEXTURE_SHADER_ALIAS);
+
+        Mesh::cache(ENGINE_RES + CUBE_MESH_PATH, CUBE_MESH_ALIAS);
+        Mesh::cache(ENGINE_RES + MONKEY_MESH_PATH, MONKEY_MESH_ALIAS);
+
+        Texture2D::cache(ENGINE_RES + WHITE_TEXTURE_PATH, WHITE_TEXTURE_ALIAS);
+        Texture2D::cache(ENGINE_RES + UV_TEXTURE_PATH, UV_TEXTURE_ALIAS);
 
         m_imguiLayer = Ref<ImGuiLayer>::create();
 
