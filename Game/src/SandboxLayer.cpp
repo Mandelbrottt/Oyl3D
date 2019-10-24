@@ -11,18 +11,9 @@ void SandboxLayer::onEnter()
     addToEventMask(TypeKeyPressed);
     addToEventMask(TypeGamepadStickMoved);
 
-    auto shader = Shader::create({
-        { VertexShader, "../Engine/res/staticLighting.vert" },
-        { FragmentShader, "../Engine/res/staticLighting.frag" },
-    });
-
-    auto mesh = Mesh::create("res/monkey.obj");
-
-    auto mat = Material::create(shader);
-
     Component::MeshRenderer mr;
-    mr.mesh     = mesh;
-    mr.material = mat;
+    mr.mesh     = Mesh::get("monkey");
+    mr.material = Material::get("monkeyMat");
 
     Component::Transform t;
     Entity e;
@@ -35,8 +26,8 @@ void SandboxLayer::onEnter()
         registry->assign<Component::Transform>(e, t);
     }
 
-    mr.mesh = Mesh::create("res/cube.obj");
-    mr.material->loadTexture("res/capsule0.jpg");
+    mr.mesh     = Mesh::get("cube");
+    mr.material = Material::get("cubeMat");
     
     e = registry->create();
     registry->assign<Component::MeshRenderer>(e, mr);

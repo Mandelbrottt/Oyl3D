@@ -62,15 +62,14 @@ namespace oyl
             {
                 OYL_LOG_ERROR("Material '{1}' is already cached!", alias);
                 return it->second;
-            } else
-            {
-                it->second = alreadyCached != nullptr ? alreadyCached : existing;
-                return it->second;
             }
-        }
 
-        m_cache[alias] = existing;
-        return existing;
+            it->second = alreadyCached;
+            return it->second;
+        }
+        
+        m_cache[alias] = existing != nullptr ? existing : Material::create();
+        return m_cache[alias];
     }
 
     const Ref<Material>& Material::cache(const Ref<Material>& material, 
