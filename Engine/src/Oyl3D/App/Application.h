@@ -1,29 +1,22 @@
 #pragma once
 
-// TODO: Forward Declare Some Stuff
-#include "Oyl3D/Common.h"
-
 #include "Oyl3D/App/Window.h"
 
-#include "Oyl3D/Debug/ImGuiLayer.h"
-
-#include "Oyl3D/Input/GamepadListener.h"
-
-#include "Oyl3D/Events/Event.h"
-#include "Oyl3D/Events/EventListener.h"
-#include "Oyl3D/Events/EventDispatcher.h"
+//#include "Oyl3D/Debug/GuiLayer.h"
 
 #include "Oyl3D/Graphics/Buffer.h"
-#include "Oyl3D/Graphics/Camera.h"
-
-#include "Oyl3D/Scenes/LayerStack.h"
 #include "Oyl3D/Scenes/Scene.h"
 
 namespace oyl
 {
-    namespace _internal
+    class EventListener;
+    class Scene;
+    class GuiLayer;
+
+    namespace internal
     {
         class ApplicationListener;
+        class GamepadListener;
     }
 
     class Application
@@ -38,6 +31,7 @@ namespace oyl
 
         void pushScene(Ref<Scene> scene);
 
+        // TODO: Make Refs
         inline Window&      getWindow() { return *m_window; }
         inline FrameBuffer& getMainFrameBuffer() { return *m_mainBuffer; }
 
@@ -49,7 +43,7 @@ namespace oyl
     private:
         Ref<Window>      m_window;
         Ref<Scene>       m_currentScene;
-        Ref<ImGuiLayer>  m_imguiLayer;
+        Ref<GuiLayer>    m_guiLayer;
         Ref<FrameBuffer> m_mainBuffer;
 
         float m_lastFrameTime = 0;
@@ -62,8 +56,8 @@ namespace oyl
 
         Ref<EventDispatcher> m_dispatcher;
 
-        Ref<_internal::ApplicationListener> m_appListener;
-        Ref<_internal::GamepadListener>     m_vibrationListener;
+        Ref<internal::ApplicationListener> m_appListener;
+        Ref<internal::GamepadListener>     m_vibrationListener;
     };
 
     Application* createApplication();

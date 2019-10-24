@@ -6,7 +6,7 @@
 
 #include "Oyl3D/App/Application.h"
 
-#include "Oyl3D/Debug/ImGuiLayer.h"
+#include "Oyl3D/Debug/GuiLayer.h"
 
 #include "Oyl3D/ECS/Component.h"
 #include "Oyl3D/ECS/Registry.h"

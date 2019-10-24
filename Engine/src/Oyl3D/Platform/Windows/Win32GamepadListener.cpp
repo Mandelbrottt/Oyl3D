@@ -5,7 +5,7 @@
 
 #include <Xinput.h>
 
-namespace oyl::_internal
+namespace oyl::internal
 {
 bool Win32GamepadListener::onEvent(Ref<Event> event)
 {

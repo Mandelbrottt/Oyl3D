@@ -1,11 +1,11 @@
 #pragma once
 
-#include "Oyl3D/Events/EventListener.h"
-#include "Oyl3D/Scenes/Node.h"
-//#include "Oyl3D/Events/EventDispatcher.h"
+#include "Oyl3D/ECS/System.h"
 
-//#include "ECS/Registry.h"
-//#include "ECS/System.h"
+#include "Oyl3D/Events/EventDispatcher.h"
+#include "Oyl3D/Events/EventListener.h"
+
+#include "Oyl3D/Scenes/Node.h"
 
 namespace oyl
 {
@@ -18,7 +18,7 @@ namespace oyl
         class System;
     }
 
-    class Layer : public virtual EventListener, public Node
+    class Layer : public virtual EventListener, public virtual Node
     {
     protected:
         explicit Layer(std::string name);

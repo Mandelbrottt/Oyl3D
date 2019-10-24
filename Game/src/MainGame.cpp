@@ -53,8 +53,6 @@ class MainScene : public Scene
 public:
     OYL_CTOR(MainScene, Scene)
 
-    virtual ~MainScene() = default;
-
     virtual void onEnter() override
     {
         pushLayer(MainLayer::create());

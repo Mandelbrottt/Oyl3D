@@ -94,7 +94,8 @@
         struct _##type {};                                                               \
     public:                                                                              \
         static ::oyl::Ref<type> create() { return ::oyl::Ref<type>::create(_##type{}); } \
-        type(_##type) : base(#type) {}
+        explicit type(_##type) : base(#type) {}                                          \
+        virtual ~##type() {}
 
     #define OYL_CONSTRUCTOR(type, base) OYL_CTOR(type, base)
 #pragma endregion

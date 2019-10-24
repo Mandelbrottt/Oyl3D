@@ -2,7 +2,7 @@
 #include "GamepadListener.h"
 #include "Platform/Windows/Win32GamepadListener.h"
 
-namespace oyl::_internal
+namespace oyl::internal
 {
     bool GamepadListener::s_init = false;
 

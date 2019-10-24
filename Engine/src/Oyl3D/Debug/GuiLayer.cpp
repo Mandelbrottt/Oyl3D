@@ -1,28 +1,16 @@
 #include "oylpch.h"
-#include "ImGuiLayer.h"
+#include "GuiLayer.h"
 
 #include "Oyl3D/App/Application.h"
-
-#include <imgui.h>
 
 #include <examples/imgui_impl_glfw.h>
 #include <examples/imgui_impl_opengl3.h>
 
-#include <glfw/glfw3.h>
-#include <glad/glad.h>
+#include <GLFW/glfw3.h>
 
 namespace oyl
 {
-    ImGuiLayer::ImGuiLayer()
-        : Layer("ImGuiLayer")
-    {
-    }
-
-    ImGuiLayer::~ImGuiLayer()
-    {
-    }
-
-    void ImGuiLayer::onEnter()
+    void GuiLayer::onEnter()
     {
         // Setup Dear ImGui context
         IMGUI_CHECKVERSION();
@@ -50,14 +38,14 @@ namespace oyl
         ImGui_ImplOpenGL3_Init("#version 420");
     }
 
-    void ImGuiLayer::onExit()
+    void GuiLayer::onExit()
     {
         ImGui_ImplOpenGL3_Shutdown();
         ImGui_ImplGlfw_Shutdown();
         ImGui::DestroyContext();
     }
 
-    void ImGuiLayer::begin()
+    void GuiLayer::begin()
     {
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
@@ -95,7 +83,7 @@ namespace oyl
         ImGui::End();
     }
 
-    void ImGuiLayer::end()
+    void GuiLayer::end()
     {
         ImGuiIO&     io  = ImGui::GetIO();
         Application& app = Application::get();
@@ -114,7 +102,7 @@ namespace oyl
         }
     }
 
-    void ImGuiLayer::onGuiRender(Timestep dt)
+    void GuiLayer::onGuiRender(Timestep dt)
     {
         // Only still here for easy navigation to the source code for learning imgui
         if (false) ImGui::ShowDemoWindow();

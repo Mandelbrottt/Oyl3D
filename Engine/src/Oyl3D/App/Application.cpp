@@ -2,13 +2,21 @@
 
 #include "Application.h"
 
+#include "App/Window.h"
+
+#include "Debug/GuiLayer.h"
+
+#include "Events/EventDispatcher.h"
 #include "Events/EventListener.h"
 
-#include "Graphics/Material.h"
 #include "Graphics/Shader.h"
 #include "Graphics/Texture.h"
 
+#include "Input/GamepadListener.h"
+
 #include "System/Platform.h"
+
+#include "Scenes/Scene.h"
 
 #include "Rendering/Renderer.h"
 
@@ -16,7 +24,7 @@
 
 namespace oyl
 {
-    namespace _internal
+    namespace internal
     {
         class ApplicationListener : public EventListener
         {
@@ -72,11 +80,11 @@ namespace oyl
         Texture2D::cache(ENGINE_RES + WHITE_TEXTURE_PATH, WHITE_TEXTURE_ALIAS);
         Texture2D::cache(ENGINE_RES + UV_TEXTURE_PATH, UV_TEXTURE_ALIAS);
 
-        m_imguiLayer = Ref<ImGuiLayer>::create();
+        m_guiLayer = GuiLayer::create();
 
         initEventListeners();
 
-        m_mainBuffer = oyl::FrameBuffer::create(1);
+        m_mainBuffer = FrameBuffer::create(1);
         m_mainBuffer->initDepthTexture(m_window->getWidth(), m_window->getHeight());
 
         m_mainBuffer->initColorTexture(0, m_window->getWidth(), m_window->getHeight(),
@@ -146,7 +154,7 @@ namespace oyl
 
             m_currentScene->initDefaultSystems();
 
-            m_currentScene->pushOverlay(m_imguiLayer);
+            m_currentScene->pushOverlay(m_guiLayer);
             m_currentScene->onEnter();
         }
     }
@@ -179,11 +187,11 @@ namespace oyl
             }
 
 #if !defined(OYL_DISTRIBUTION)
-            m_imguiLayer->begin();
+            m_guiLayer->begin();
 
             m_currentScene->onGuiRender(timestep);
 
-            m_imguiLayer->end();
+            m_guiLayer->end();
 
 #else
             m_mainBuffer->moveToBackBuffer(m_window->getWidth(), m_window->getHeight());
@@ -202,13 +210,13 @@ namespace oyl
         // TODO: Make Window an EventListener
         m_window->setEventCallback(OYL_CALLBACK_1(EventDispatcher::postEvent, m_dispatcher.get()));
 
-        m_appListener      = Ref<_internal::ApplicationListener>::create();
+        m_appListener      = Ref<internal::ApplicationListener>::create();
         m_appListener->app = this;
         m_dispatcher->registerListener(m_appListener);
 
-        m_vibrationListener = _internal::GamepadListener::create();
+        m_vibrationListener = internal::GamepadListener::create();
         m_dispatcher->registerListener(m_vibrationListener);
 
-        m_dispatcher->registerListener(m_imguiLayer);
+        m_dispatcher->registerListener(m_guiLayer);
     }
 }

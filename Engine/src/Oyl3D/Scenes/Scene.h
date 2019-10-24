@@ -16,7 +16,7 @@ namespace oyl
         class RenderSystem;
     }
 
-    class Scene : public EventListener, public Node
+    class Scene : public EventListener, public virtual Node
     {
         friend class Application;
     protected:

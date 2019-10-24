@@ -3,7 +3,7 @@
 #include "Input/GamepadListener.h"
 #include "Input/Input.h"
 
-namespace oyl::_internal
+namespace oyl::internal
 {
 class Win32GamepadListener : public GamepadListener
 {

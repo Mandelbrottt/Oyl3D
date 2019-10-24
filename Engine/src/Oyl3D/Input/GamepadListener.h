@@ -2,7 +2,7 @@
 
 #include "Oyl3D/Events/EventListener.h"
 
-namespace oyl::_internal
+namespace oyl::internal
 {
     class GamepadListener : public EventListener
     {

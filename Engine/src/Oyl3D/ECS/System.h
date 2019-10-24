@@ -14,7 +14,7 @@ namespace oyl::ECS
 {
     class Registry;
 
-    class ISystem : public Node
+    class ISystem : public virtual Node
     {
     public:
         explicit ISystem()  = default;
@@ -27,7 +27,7 @@ namespace oyl::ECS
         virtual void onGuiRender(Timestep dt) override = 0;
     };
 
-    class System : public ISystem, public EventListener, public Node
+    class System : public ISystem, public EventListener
     {
     protected:
         explicit System(std::string name = "System");
@@ -51,8 +51,6 @@ namespace oyl::ECS
     {
         OYL_CTOR(RenderSystem, System)
 
-        virtual ~RenderSystem() = default;
-
         virtual void onEnter() override;
         virtual void onExit() override;
 
@@ -66,8 +64,6 @@ namespace oyl::ECS
     {
         OYL_CTOR(PhysicsSystem, System)
 
-        virtual ~PhysicsSystem() = default;
-
         virtual void onEnter() override;
         virtual void onExit() override;
 
@@ -80,8 +76,6 @@ namespace oyl::ECS
     class OracleCameraSystem : public System
     {
         OYL_CTOR(OracleCameraSystem, System)
-
-        virtual ~OracleCameraSystem() = default;
 
         virtual void onEnter() override;
         virtual void onExit() override;
