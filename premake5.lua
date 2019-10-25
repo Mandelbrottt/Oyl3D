@@ -22,6 +22,7 @@ IncludeDir["entt"] = "Engine/vendor/entt/src/"
 IncludeDir["fmod"] = "Engine/vendor/fmod/include/"
 IncludeDir["gainput"] = "Engine/vendor/gainput/lib/include/"
 IncludeDir["entt"] = "Engine/vendor/entt/src/"
+IncludeDir["json"] = "Engine/vendor/nlohmann/single_include/"
 
 group "Dependencies"
 	include "Engine/vendor/glad/"
@@ -69,7 +70,8 @@ project "OylEngine"
 		"%{IncludeDir.entt}",
 		"%{IncludeDir.fmod}",
 		"%{IncludeDir.gainput}",
-		"%{IncludeDir.entt}"
+		"%{IncludeDir.entt}",
+		"%{IncludeDir.json}"
 	}
 
 	libdirs {
@@ -150,10 +152,9 @@ project "OylGame"
 		"Engine/vendor/",
 		"%{IncludeDir.glm}",
 		"%{IncludeDir.stb}",
-		"%{IncludeDir.imgui}"
-		-- TEMPORARY:
-	  , "%{IncludeDir.entt}"
-
+		"%{IncludeDir.imgui}", 
+		"%{IncludeDir.entt}",
+		"%{IncludeDir.json}"
 	}
 
 	links {

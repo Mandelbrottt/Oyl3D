@@ -93,7 +93,7 @@ namespace oyl
     {
         drawViewport();
 
-        if (ImGui::Begin("Scene Hierarchy"))
+        if (ImGui::Begin("Scene Hierarchy", nullptr, ImGuiWindowFlags_NoCollapse))
         {
             registry->each(
                 [this](auto entity)
@@ -112,7 +112,7 @@ namespace oyl
 
                     if (entity == Entity(m_currentEntity))
                         nodeFlags |= ImGuiTreeNodeFlags_Selected;
-                
+                    
                     bool treeNode = ImGui::TreeNodeEx((const void*) entity, nodeFlags, entityNodeFmt, so.name.c_str());
                     bool clicked = ImGui::IsItemClicked(0);
                     if (treeNode)
@@ -137,42 +137,79 @@ namespace oyl
         }
         ImGui::End();
 
-        if (ImGui::Begin("Entity Properties"))
+        if (ImGui::Begin("Entity Properties", nullptr))
         {
             if (m_currentEntity != u32(-1))
             {
                 if (ImGui::CollapsingHeader("Transform"))
                 {
-                    ImGui::Indent();
+                    ImGui::Indent(5);
 
                     auto& transform = registry->get_or_assign<Component::Transform>(Entity(m_currentEntity));
 
-                    ImGui::PushItemWidth(15);
+                    float newWidth = ImGui::GetWindowContentRegionWidth() / 6;
 
-                    ImGui::DragFloat("X", &transform.position[0], 0.2f, 0, 0, "");
+                    ImGui::PushItemWidth(newWidth);
+
+                    const float posDragSpeed = 0.02f;
+                    ImGui::Text("Position");
+                    ImGui::SameLine(ImGui::GetWindowContentRegionWidth() - (15 * 3 + newWidth * 3 + 20));
+                    ImGui::SetNextItemWidth(15);
+                    ImGui::DragFloat("##XPos", &transform.position.x, posDragSpeed, 0, 0, "X");
                     ImGui::SameLine();
-                    ImGui::DragFloat("Y", &transform.position[1], 0.2, 0, 0, "");
+                    ImGui::InputFloat("##XPosInput", &transform.position.x, 0, 0, "%.2f");
                     ImGui::SameLine();
-                    ImGui::DragFloat("Z", &transform.position[2], 0.2f, 0, 0, "");
+                    ImGui::SetNextItemWidth(15);
+                    ImGui::DragFloat("##YPos", &transform.position.y, posDragSpeed, 0, 0, "Y");
+                    ImGui::SameLine();
+                    ImGui::InputFloat("##YPosInput", &transform.position.y, 0, 0, "%.2f");
+                    ImGui::SameLine();
+                    ImGui::SetNextItemWidth(15);
+                    ImGui::DragFloat("##ZPos", &transform.position.z, posDragSpeed, 0, 0, "Z");
+                    ImGui::SameLine();
+                    ImGui::InputFloat("##ZPosInput", &transform.position.z, 0, 0, "%.2f");
+
+                    const float rotDragSpeed = 1.0f;
+                    ImGui::Text("Rotation");
+                    ImGui::SameLine(ImGui::GetWindowContentRegionWidth() - (15 * 3 + newWidth * 3 + 20));
+                    ImGui::SetNextItemWidth(15);
+                    ImGui::DragFloat("##XRot", &transform.rotation.x, rotDragSpeed, 0, 0, "X");
+                    ImGui::SameLine();
+                    ImGui::InputFloat("##XRotInput", &transform.rotation.x, 0, 0, "%.2f");
+                    ImGui::SameLine();
+                    ImGui::SetNextItemWidth(15);
+                    ImGui::DragFloat("##YRot", &transform.rotation.y, rotDragSpeed, 0, 0, "Y");
+                    ImGui::SameLine();
+                    ImGui::InputFloat("##YRotInput", &transform.rotation.y, 0, 0, "%.2f");
+                    ImGui::SameLine();
+                    ImGui::SetNextItemWidth(15);
+                    ImGui::DragFloat("##ZRot", &transform.rotation.z, rotDragSpeed, 0, 0, "Z");
+                    ImGui::SameLine();
+                    ImGui::InputFloat("##ZRotInput", &transform.rotation.z, 0, 0, "%.2f");
+
+                    const float scaleDragSpeed = 0.02f;
+                    ImGui::Text("Scale");
+                    ImGui::SameLine(ImGui::GetWindowContentRegionWidth() - (15 * 3 + newWidth * 3 + 20));
+                    ImGui::SetNextItemWidth(15);
+                    ImGui::DragFloat("##XSca", &transform.scale.x, scaleDragSpeed, 0, 0, "X");
+                    ImGui::SameLine();
+                    ImGui::InputFloat("##XScaInput", &transform.scale.x, 0, 0, "%.2f");
+                    ImGui::SameLine();
+                    ImGui::SetNextItemWidth(15);
+                    ImGui::DragFloat("##YSca", &transform.scale.y, scaleDragSpeed, 0, 0, "Y");
+                    ImGui::SameLine();
+                    ImGui::InputFloat("##YScaInput", &transform.scale.y, 0, 0, "%.2f");
+                    ImGui::SameLine();
+                    ImGui::SetNextItemWidth(15);
+                    ImGui::DragFloat("##ZSca", &transform.scale.z, scaleDragSpeed, 0, 0, "Z");
+                    ImGui::SameLine();
+                    ImGui::InputFloat("##ZScaInput", &transform.scale.z, 0, 0, "%.2f");
+
+                    ImGui::IsItemClicked();
 
                     ImGui::PopItemWidth();
 
-                    ImGui::InputFloat3("Position", &transform.position[0]);
-                    ImGui::InputFloat3("Rotation", &transform.rotation[0]);
-                    ImGui::InputFloat3("Scale", &transform.scale[0]);
-
-                    ImGui::Unindent();
-                }
-
-                if (ImGui::BeginCombo("COMBO", "COMBO"))
-                {
-
-                    ImGui::Image(
-                        (void*)m_viewportHandle,
-                        ImVec2(100, 100),
-                        ImVec2(0, 1), ImVec2(1, 0));
-
-                    ImGui::EndCombo();
+                    ImGui::Unindent(5);
                 }
             }
         }
@@ -238,9 +275,8 @@ namespace oyl
         if constexpr (false)
             ImGui::ShowDemoWindow();
 
-        bool neededBool = true;
         ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
-        ImGui::Begin("Viewport", &neededBool, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoCollapse);
+        ImGui::Begin("Viewport", nullptr, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoCollapse);
 
         auto [x, y] = ImGui::GetWindowSize();
         y -= ImGui::GetCursorPosY();
@@ -252,18 +288,24 @@ namespace oyl
         ImVec2 cameraWindowSize = ImVec2(x / 4, y / 4);
         ImGui::SetNextWindowSize(cameraWindowSize);
         
-        ImGui::Begin("Camera Viewport", &neededBool, 
-                     ImGuiWindowFlags_NoScrollbar | 
-                     ImGuiWindowFlags_NoCollapse |
-                     ImGuiWindowFlags_NoResize);
+        if (ImGui::Begin("Camera Viewport", nullptr,
+                         ImGuiWindowFlags_NoScrollbar |
+                         ImGuiWindowFlags_NoResize))
+        {
+
+            ImGui::Image(
+                (void*) m_viewportHandle,
+                cameraWindowSize,
+                ImVec2(0, 1), ImVec2(1, 0)
+            );
+        }
+        else
+        {
+            auto [newX, newY] = ImGui::GetWindowPos();
+            newY -= cameraWindowSize.y;
+            ImGui::SetWindowPos("Camera Viewport", ImVec2(newX, newY));
+        }
         ImGui::PopStyleVar();
-
-        ImGui::Image(
-            (void*) m_viewportHandle,
-            cameraWindowSize,
-            ImVec2(0, 1), ImVec2(1, 0)
-        );
-
         ImGui::End();
         
         ViewportResizedEvent vrevent;

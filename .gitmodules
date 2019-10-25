@@ -23,3 +23,6 @@
 [submodule "Engine/vendor/entt"]
 	path = Engine/vendor/entt
 	url = https://github.com/skypjack/entt
+[submodule "Engine/vendor/nlohmann"]
+	path = Engine/vendor/nlohmann
+	url = https://github.com/nlohmann/json
