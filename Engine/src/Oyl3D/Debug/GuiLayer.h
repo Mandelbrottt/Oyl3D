@@ -15,7 +15,17 @@ namespace oyl
         void onExit() override;
         void onGuiRender(Timestep dt) override;
 
+        bool onEvent(Ref<Event> event) override;
+
         void begin();
         void end();
+
+    private:
+        void setupGuiLibrary();
+        void drawViewport();
+
+        u32 m_viewportHandle;
+
+        u32 m_currentEntity = -1;
     };
 }

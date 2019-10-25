@@ -33,8 +33,8 @@ namespace oyl
             ApplicationListener()
             {
                 addToCategoryMask(CategoryWindow);
-                //addToCategoryMask(CategoryKeyboard);
-                //addToCategoryMask(CategoryMouse);
+                addToCategoryMask(CategoryKeyboard);
+                addToCategoryMask(CategoryMouse);
                 addToCategoryMask(CategoryCursorStateRequest);
             }
 
@@ -91,6 +91,11 @@ namespace oyl
                                        oyl::RGBA8,
                                        oyl::Nearest,
                                        oyl::Clamp);
+
+        ViewportHandleChangedEvent handleChanged;
+        handleChanged.handle = m_mainBuffer->getColorHandle(0);
+        
+        m_dispatcher->postEvent(Event::create(handleChanged));
 
         m_window->setVsync(false);
     }

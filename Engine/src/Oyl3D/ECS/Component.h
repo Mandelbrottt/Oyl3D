@@ -35,4 +35,9 @@ namespace oyl::Component
         int player = -1;
         Ref<Camera> camera;
     };
+
+    struct SceneObject
+    {
+        std::string name;
+    };
 }

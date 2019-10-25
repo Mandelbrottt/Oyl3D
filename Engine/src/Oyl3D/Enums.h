@@ -17,7 +17,7 @@ namespace oyl
 
         // Event Types //
         TypeWindowClosed = 1, TypeWindowMoved, TypeWindowResized, TypeWindowFocused,
-        TypeViewportResized,
+        TypeViewportResized, TypeViewportHandleChanged,
         TypeKeyPressed, TypeKeyTyped, TypeKeyReleased,
         TypeMousePressed, TypeMouseReleased, TypeMouseMoved, TypeMouseScrolled,
         TypeGamepadConnected, TypeGamepadDisconnected,
@@ -25,6 +25,7 @@ namespace oyl
         TypeGamepadStickMoved, TypeGamepadTriggerPressed,
         TypeGamepadVibration, // TODO: Rename to GamepadVibrationRequest
         TypeCursorStateRequest,
+        TypeEditorEntitySelected,
         EventTypeCustomStart,
 
         // Event Categories //
@@ -37,6 +38,7 @@ namespace oyl
         CategoryGamepadVibration,
         CategoryCursorStateRequest,
         CategoryAudio,
+        CategoryEditor,
         CategoryCustomStart,
 
         // Shader Data Types //
