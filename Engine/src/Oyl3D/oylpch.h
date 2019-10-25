@@ -54,6 +54,7 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include <imgui.h>
+#include <imguizmo/ImGuizmo.h>
 
 #include <nlohmann/json.hpp>
 using nlohmann::json;
