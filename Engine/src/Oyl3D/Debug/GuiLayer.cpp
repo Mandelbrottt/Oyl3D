@@ -169,7 +169,7 @@ namespace oyl
                     ImGui::SameLine();
                     ImGui::InputFloat("##ZPosInput", &transform.position.z, 0, 0, "%.2f");
 
-                    const float rotDragSpeed = 1.0f;
+                    const float rotDragSpeed = 0.5f;
                     ImGui::Text("Rotation");
                     ImGui::SameLine(ImGui::GetWindowContentRegionWidth() - (15 * 3 + newWidth * 3 + 20));
                     ImGui::SetNextItemWidth(15);
