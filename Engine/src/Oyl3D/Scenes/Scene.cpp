@@ -6,14 +6,14 @@
 
 #include "Events/EventDispatcher.h"
 
+#include "ECS/Component.h"
 
 namespace oyl
 {
     WeakRef<Scene> Scene::s_current{};
 
-    Scene::Scene(std::string name)
-        : Node(std::move(name)),
-          m_registry(Ref<ECS::Registry>::create()),
+    Scene::Scene()
+        : m_registry(Ref<ECS::Registry>::create()),
           m_renderSystem(ECS::RenderSystem::create())
     {
     }
@@ -31,6 +31,7 @@ namespace oyl
 
     void Scene::onExit()
     {
+        saveScene();
     }
 
     void Scene::onUpdate(Timestep dt)
@@ -106,5 +107,38 @@ namespace oyl
         m_dispatcher->unregisterListener(overlay);
         
         m_layerStack.popOverlay(overlay);
+    }
+
+    void Scene::loadScene()
+    {
+        
+    }
+
+    void Scene::saveScene()
+    {
+        json sceneJson;
+
+        using Component::SceneObject;
+        using Component::Transform;
+        auto view = m_registry->view<SceneObject, Transform>();
+        for (auto entity : view)
+        {
+            auto& so = view.get<SceneObject>(entity);
+            auto& t =  view.get<Transform>(entity);
+            sceneJson[so.name]["Transform"]["Position"]["X"] = t.position.x;
+            sceneJson[so.name]["Transform"]["Position"]["Y"] = t.position.y;
+            sceneJson[so.name]["Transform"]["Position"]["Z"] = t.position.z;
+
+            sceneJson[so.name]["Transform"]["Rotation"]["X"] = t.rotation.x;
+            sceneJson[so.name]["Transform"]["Rotation"]["Y"] = t.rotation.y;
+            sceneJson[so.name]["Transform"]["Rotation"]["Z"] = t.rotation.z;
+
+            sceneJson[so.name]["Transform"]["Scale"]["X"] = t.scale.x;
+            sceneJson[so.name]["Transform"]["Scale"]["Y"] = t.scale.y;
+            sceneJson[so.name]["Transform"]["Scale"]["Z"] = t.scale.z;
+        }
+        
+        std::ofstream sceneFile("res/scenes/" + m_name + ".scene.json");
+        sceneFile << std::setw(4) << sceneJson;
     }
 }

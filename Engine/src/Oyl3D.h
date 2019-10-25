@@ -34,5 +34,16 @@
 #include "Oyl3D/Utils/Refs.h"
 #include "Oyl3D/Utils/Timestep.h"
 
+#include <iomanip>
+
 // Library/Vendor Includes
 #include <imgui.h>
+
+#include <nlohmann/json.hpp>
+using nlohmann::json;
+
+#include <glm/glm.hpp>
+
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/matrix_inverse.hpp>
+#include <glm/gtc/quaternion.hpp>

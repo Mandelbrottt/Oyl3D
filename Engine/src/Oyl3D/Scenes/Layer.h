@@ -21,7 +21,7 @@ namespace oyl
     class Layer : public virtual EventListener, public virtual Node
     {
     protected:
-        explicit Layer(std::string name);
+        explicit Layer() = default;
         
     public:
         virtual  ~Layer();

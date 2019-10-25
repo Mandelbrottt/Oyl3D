@@ -26,6 +26,7 @@
 
 #include <iostream>
 #include <fstream>
+#include <iomanip>
 #include <memory>
 #include <utility>
 #include <algorithm>
@@ -53,3 +54,6 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include <imgui.h>
+
+#include <nlohmann/json.hpp>
+using nlohmann::json;

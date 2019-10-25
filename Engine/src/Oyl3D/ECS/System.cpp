@@ -20,11 +20,6 @@ namespace oyl::ECS
 {
     // vvv Generic System vvv //
 
-    System::System(std::string name)
-        : Node(std::move(name))
-    {
-    }
-
     void System::onEnter()
     {
     }
@@ -61,13 +56,13 @@ namespace oyl::ECS
     void RenderSystem::onUpdate(Timestep dt)
     {
         using Component::Transform;
-        using Component::MeshRenderer;
+        using Component::Renderable;
 
         Ref<Registry> reg = Scene::current()->getRegistry();
         
         // We sort our mesh renderers based on material properties
         // This will group all of our meshes based on shader first, then material second
-        reg->sort<MeshRenderer>([](const MeshRenderer& lhs, const MeshRenderer& rhs)
+        reg->sort<Renderable>([](const Renderable& lhs, const Renderable& rhs)
         {
             if (rhs.material == nullptr || rhs.mesh == nullptr)
                 return false;
@@ -86,10 +81,10 @@ namespace oyl::ECS
         auto        camView       = reg->view<Component::PlayerCamera>();
         Ref<Camera> currentCamera = reg->get<Component::PlayerCamera>(*camView.begin()).camera;
 
-        auto view = reg->view<MeshRenderer>();
+        auto view = reg->view<Renderable>();
         for (const auto& entity : view)
         {
-            MeshRenderer& mr = reg->get<MeshRenderer>(entity);
+            Renderable& mr = reg->get<Renderable>(entity);
 
             if (mr.mesh == nullptr || mr.material == nullptr)
                 continue;

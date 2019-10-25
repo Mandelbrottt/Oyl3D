@@ -23,7 +23,7 @@ namespace oyl
     {
     public:
         explicit Application();
-        virtual  ~Application() = default;
+        virtual  ~Application();
 
         void run();
 

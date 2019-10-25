@@ -7,11 +7,6 @@
 
 namespace oyl
 {
-    Layer::Layer(std::string name)
-        : Node(std::move(name))
-    {
-    }
-
     Layer::~Layer()
     {
         for (auto& system : m_systems)

@@ -20,7 +20,7 @@ namespace oyl
     {
         friend class Application;
     protected:
-        explicit Scene(std::string name);
+        explicit Scene();
 
     public:
         virtual ~Scene();
@@ -35,6 +35,9 @@ namespace oyl
         void pushOverlay(Ref<Layer> overlay);
         void popLayer(const Ref<Layer>& layer);
         void popOverlay(const Ref<Layer>& overlay);
+
+        void loadScene();
+        void saveScene();
 
         static Ref<Scene> current() { return s_current.lock(); }
 

@@ -100,6 +100,12 @@ namespace oyl
         m_window->setVsync(false);
     }
 
+    Application::~Application()
+    {
+        // TEMPORARY:
+        m_currentScene->onExit();
+    }
+
     bool Application::onEvent(const Ref<Event>& event)
     {
         bool handled = false;

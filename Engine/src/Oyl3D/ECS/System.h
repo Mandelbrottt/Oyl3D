@@ -30,7 +30,7 @@ namespace oyl::ECS
     class System : public ISystem, public EventListener
     {
     protected:
-        explicit System(std::string name = "System");
+        explicit System() = default;
 
     public:
         virtual ~System() = default;
