@@ -37,11 +37,28 @@ namespace oyl::component
 
     struct PlayerCamera
     {
-        int player = -1;
+        i32 player = -1;
         Ref<Camera> camera;
     };
 
-    // TODO: Add Light Source
+    // TODO: Attenuation
+    struct DirectionalLight
+    {
+        glm::vec3 direction = glm::vec3(-1.0f);
+        glm::vec3 color = glm::vec3(1.0f);
+    };
+
+    struct PointLight
+    {
+        glm::vec3 color = glm::vec3(1.0f);
+    };
+
+    struct SpotLight
+    {
+        glm::vec3 direction;
+        glm::vec3 color = glm::vec3(1.0f);
+        f32 angle;
+    };
 
     namespace internal
     {
