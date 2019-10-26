@@ -6,9 +6,6 @@ using namespace oyl;
 
 void SandboxLayer::onEnter()
 {
-    addToEventMask(TypeKeyPressed);
-    addToEventMask(TypeGamepadStickMoved);
-
     component::Renderable mr;
     mr.mesh     = Mesh::get(MONKEY_MESH_ALIAS);
     mr.material = Material::get("monkeyMat");
@@ -36,6 +33,9 @@ void SandboxLayer::onEnter()
     t.position = glm::vec3(2.0f, 2.0f, 0.0f);
     t.scale    = glm::vec3(0.2f);
     registry->assign<component::Transform>(e, t);
+
+    auto& so = registry->assign<component::SceneObject>(e);
+    so.name = "Light";
 }
 
 void SandboxLayer::onUpdate(Timestep dt)

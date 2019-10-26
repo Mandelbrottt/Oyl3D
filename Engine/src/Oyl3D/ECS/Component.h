@@ -41,6 +41,8 @@ namespace oyl::component
         Ref<Camera> camera;
     };
 
+    // TODO: Add Light Source
+
     namespace internal
     {
         struct EditorCamera

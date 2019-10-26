@@ -139,8 +139,8 @@ namespace oyl::ECS
             EditorCamera cam;
             cam.camera = Ref<Camera>::create();
             cam.camera->setProjection(glm::perspective(glm::radians(60.0f), 16.0f / 9.0f, 0.01f, 1000.0f));
-            cam.camera->setPosition(glm::vec3(0.0f));
-            cam.camera->lookAt(glm::vec3(0.0f, 0.0f, -1.0f));
+            cam.camera->setPosition(glm::vec3(10.0f, 5.0f, 10.0f));
+            cam.camera->lookAt(glm::vec3(0.0f, 0.0f, 0.0f));
 
             auto e = registry->create();
             registry->assign<EditorCamera>(e, cam);

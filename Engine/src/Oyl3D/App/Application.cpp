@@ -229,7 +229,5 @@ namespace oyl
 
         m_vibrationListener = internal::GamepadListener::create();
         m_dispatcher->registerListener(m_vibrationListener);
-
-        m_dispatcher->registerListener(m_guiLayer);
     }
 }

@@ -32,6 +32,8 @@ namespace oyl
         void drawTransformGizmoSettings();
         void drawTransformGizmo();
 
+        void applyCustomColorTheme();
+
         u32 m_viewportHandle;
 
         Entity m_currentEntity = Entity(-1);

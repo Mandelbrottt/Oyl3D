@@ -189,7 +189,7 @@
             }
         }
     },
-    "Entity 11": {
+    "Light": {
         "Transform": {
             "Position": {
                 "X": 2.0,
@@ -198,7 +198,7 @@
             },
             "Rotation": {
                 "X": 0.0,
-                "Y": 0.0,
+                "Y": -0.0,
                 "Z": 0.0
             },
             "Scale": {
