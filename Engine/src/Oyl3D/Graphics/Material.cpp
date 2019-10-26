@@ -9,17 +9,17 @@ namespace oyl
     internal::AssetCache<Material> Material::s_cache;
     
     Material::Material(_Material)
-        : m_shader(nullptr), m_texture(nullptr)
+        : m_shader(nullptr), m_albedo(nullptr)
     {
     }
 
     Material::Material(_Material, Ref<Shader> shader, Ref<Texture> texture)
-        : m_shader(std::move(shader)), m_texture(std::move(texture))
+        : m_shader(std::move(shader)), m_albedo(std::move(texture))
     {
     }
 
     Material::Material(_Material, Ref<Texture> texture)
-        : m_shader(nullptr), m_texture(std::move(texture))
+        : m_shader(nullptr), m_albedo(std::move(texture))
     {
     }
 
@@ -49,7 +49,7 @@ namespace oyl
         {
             if (kvp.second == existing ||
                 (kvp.second->getShader() == existing->getShader() &&
-                 kvp.second->getTexture() == existing->getTexture()))
+                 kvp.second->getAlbedoMap() == existing->getAlbedoMap()))
             {
                 alreadyCached = kvp.second;
             }
@@ -125,7 +125,7 @@ namespace oyl
 
             // Warn the user if they are overiding a mesh of a different type
             if (currIt->second->getShader() != newIt->second->getShader() ||
-                currIt->second->getTexture() != newIt->second->getTexture())
+                currIt->second->getAlbedoMap() != newIt->second->getAlbedoMap())
             {
                 OYL_LOG_WARN("Material '{0}' was replaced by '{1}'.",
                              newIt->first, currIt->first, newAlias);
@@ -149,8 +149,8 @@ namespace oyl
         if (m_shader)
             m_shader->bind();
 
-        if (m_texture)
-            m_texture->bind();
+        if (m_albedo)
+            m_albedo->bind();
     }
 
     void Material::unbind()
@@ -158,8 +158,8 @@ namespace oyl
         if (m_shader) 
             m_shader->unbind();
 
-        if (m_texture)
-            m_texture->unbind();
+        if (m_albedo)
+            m_albedo->unbind();
     }
 
     void Material::applyUniforms()
@@ -181,18 +181,18 @@ namespace oyl
     void Material::loadTexture(const std::string& filename)
     {
         unloadTexture();
-        m_texture = Texture2D::create(filename);
+        m_albedo = Texture2D::create(filename);
     }
 
     void Material::loadTexture(Ref<Texture> texture)
     {
         unloadTexture();
-        m_texture = std::move(texture);
+        m_albedo = std::move(texture);
     }
 
     void Material::unloadTexture()
     {
-        m_texture.reset();
+        m_albedo.reset();
     }
 
     template<> [[deprecated]]

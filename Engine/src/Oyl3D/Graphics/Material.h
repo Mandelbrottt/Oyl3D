@@ -51,10 +51,18 @@ namespace oyl
         void unloadTexture();
 
         const Ref<Shader>& getShader() const { return m_shader; }
-        const Ref<Texture>& getTexture() const { return m_texture; }
-
         void setShader(Ref<Shader> shader) { m_shader = std::move(shader); }
-        void setTexture(Ref<Texture> texture) { m_texture = std::move(texture); }
+        
+        const Ref<Texture>& getAlbedoMap() const { return m_albedo; }
+        const Ref<Texture>& getSpecularMap() const { return m_specular; }
+        const Ref<Texture>& getNormalMap() const { return m_normal; }
+
+        void setAlbedoMap(Ref<Texture> albedo) { m_albedo = std::move(albedo); }
+        void setSpecularMap(Ref<Texture> specular) { m_albedo = std::move(specular); }
+        void setNormalMap(Ref<Texture> normal) { m_albedo = std::move(normal); }
+
+        float getSpecularScalar() const { return m_specularScalar; }
+        void  setSpecularScalar(float specular) { m_specularScalar = specular; }
         
         void setUniform1i(const std::string& name, i32 value) { m_uniformInts[name] = value; }
         void setUniform1f(const std::string& name, f32 value) { m_uniformFloats[name] = value; }
@@ -64,7 +72,12 @@ namespace oyl
         void setUniformMat4(const std::string& name, glm::mat4 value) { m_uniformMat4s[name] = value; }
     private:
         Ref<Shader>  m_shader;
-        Ref<Texture> m_texture;
+        
+        Ref<Texture> m_albedo;
+        Ref<Texture> m_specular;
+        Ref<Texture> m_normal;
+
+        float m_specularScalar = 0.5f;
         
         // TODO: Implement in custom data structure
         std::unordered_map<std::string, glm::mat4> m_uniformMat4s;
