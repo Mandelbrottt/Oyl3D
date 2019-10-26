@@ -22,10 +22,27 @@ namespace oyl
 
     private:
         void setupGuiLibrary();
+        void drawMenuBar();
+        void drawSceneHierarchy();
+        void drawInspector();
+        void drawInspectorTransform();
+        void drawInspectorRenderable();
+        void drawInspectorRigidBody();
         void drawViewport();
+        void drawTransformGizmoSettings();
+        void drawTransformGizmo();
 
         u32 m_viewportHandle;
 
         u32 m_currentEntity = -1;
+
+        ImGuizmo::OPERATION m_currentOp = ImGuizmo::TRANSLATE;
+        ImGuizmo::MODE m_currentMode = ImGuizmo::WORLD;
+
+        bool m_doSnap = false;
+        glm::vec3 m_translateSnap{ 0.5f };
+        glm::vec3 m_rotateSnap{ 15.0f };
+        glm::vec3 m_scaleSnap{ 0.2f };
+        glm::vec3 m_snap;
     };
 }

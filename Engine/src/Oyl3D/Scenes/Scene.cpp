@@ -6,7 +6,7 @@
 
 #include "Events/EventDispatcher.h"
 
-#include "ECS/Component.h"
+#include "ECS/component.h"
 
 namespace oyl
 {
@@ -118,8 +118,8 @@ namespace oyl
     {
         json sceneJson;
 
-        using Component::SceneObject;
-        using Component::Transform;
+        using component::SceneObject;
+        using component::Transform;
         auto view = m_registry->view<SceneObject, Transform>();
         for (auto entity : view)
         {

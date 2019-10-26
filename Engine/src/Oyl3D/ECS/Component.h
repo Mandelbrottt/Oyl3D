@@ -7,8 +7,13 @@ namespace oyl
     class Camera;
 }
 
-namespace oyl::Component
+namespace oyl::component
 {
+    struct SceneObject
+    {
+        std::string name;
+    };
+
     struct Transform
     {
         glm::vec3 position = glm::vec3(0.0f);
@@ -36,8 +41,11 @@ namespace oyl::Component
         Ref<Camera> camera;
     };
 
-    struct SceneObject
+    namespace internal
     {
-        std::string name;
-    };
+        struct EditorCamera
+        {
+            Ref<Camera> camera;
+        };
+    }
 }

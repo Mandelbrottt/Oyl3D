@@ -1,9 +1,9 @@
 #include "oylpch.h"
-#include "Component.h"
+#include "component.h"
 
 #include "Graphics/Mesh.h"
 
-namespace oyl::Component
+namespace oyl::component
 {
     glm::mat4 Transform::getMatrix() const
     {

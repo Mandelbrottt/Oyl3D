@@ -6,35 +6,33 @@ using namespace oyl;
 
 void SandboxLayer::onEnter()
 {
-    scheduleSystemUpdate<ECS::OracleCameraSystem>();
-
     addToEventMask(TypeKeyPressed);
     addToEventMask(TypeGamepadStickMoved);
 
-    Component::Renderable mr;
+    component::Renderable mr;
     mr.mesh     = Mesh::get(MONKEY_MESH_ALIAS);
     mr.material = Material::get("monkeyMat");
 
-    Component::Transform t;
+    component::Transform t;
     Entity e;
     for (int i = 0; i < 10; i++)
     {
         e = registry->create();
-        registry->assign<Component::Renderable>(e, mr);
+        registry->assign<component::Renderable>(e, mr);
 
         t.position = glm::vec3(3 * i - 15, 0.0f, -2.0f);
-        registry->assign<Component::Transform>(e, t);
+        registry->assign<component::Transform>(e, t);
     }
 
     mr.mesh     = Mesh::get(CUBE_MESH_ALIAS);
     mr.material = Material::get("cubeMat");
     
     e = registry->create();
-    registry->assign<Component::Renderable>(e, mr);
+    registry->assign<component::Renderable>(e, mr);
 
     t.position = glm::vec3(2.0f, 2.0f, 0.0f);
     t.scale    = glm::vec3(0.2f);
-    registry->assign<Component::Transform>(e, t);
+    registry->assign<component::Transform>(e, t);
 }
 
 void SandboxLayer::onUpdate(Timestep dt)

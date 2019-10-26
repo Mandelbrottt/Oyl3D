@@ -72,27 +72,30 @@ namespace oyl::ECS
 
         virtual bool onEvent(Ref<Event> event) override;
     };
-
-    class OracleCameraSystem : public System
+    
+    namespace internal
     {
-        OYL_CTOR(OracleCameraSystem, System)
+        class OracleCameraSystem : public System
+        {
+            OYL_CTOR(OracleCameraSystem, System)
 
-        virtual void onEnter() override;
-        virtual void onExit() override;
+            virtual void onEnter() override;
+            virtual void onExit() override;
 
-        virtual void onUpdate(Timestep dt) override;
-        virtual void onGuiRender(Timestep dt) override;
+            virtual void onUpdate(Timestep dt) override;
+            virtual void onGuiRender(Timestep dt) override;
 
-        virtual bool onEvent(Ref<Event> event) override;
+            virtual bool onEvent(Ref<Event> event) override;
 
-    private:
-        void processCameraUpdate(Timestep dt, const Ref<Camera>& camera);
+        private:
+            void processCameraUpdate(Timestep dt, const Ref<Camera>& camera);
 
-        glm::vec3 m_cameraMove        = glm::vec3(0.0f);
-        float     m_cameraMoveSpeed   = 5.0f;
-        glm::vec3 m_cameraRotate      = glm::vec3(0.0f);
-        float     m_cameraRotateSpeed = 25.0f;
+            glm::vec3 m_cameraMove        = glm::vec3(0.0f);
+            float     m_cameraMoveSpeed   = 5.0f;
+            glm::vec3 m_cameraRotate      = glm::vec3(0.0f);
+            float     m_cameraRotateSpeed = 25.0f;
 
-        bool m_doMoveCamera = false;
-    };
+            bool m_doMoveCamera = false;
+        };
+    }
 }

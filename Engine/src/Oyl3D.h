@@ -8,7 +8,7 @@
 
 #include "Oyl3D/Debug/GuiLayer.h"
 
-#include "Oyl3D/ECS/Component.h"
+#include "Oyl3D/ECS/component.h"
 #include "Oyl3D/ECS/Registry.h"
 #include "Oyl3D/ECS/System.h"
 
