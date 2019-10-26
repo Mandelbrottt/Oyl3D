@@ -91,7 +91,7 @@ namespace oyl::ECS
             void processCameraUpdate(Timestep dt, const Ref<Camera>& camera);
 
             glm::vec3 m_cameraMove        = glm::vec3(0.0f);
-            float     m_cameraMoveSpeed   = 5.0f;
+            float     m_cameraMoveSpeed   = 15.0f;
             glm::vec3 m_cameraRotate      = glm::vec3(0.0f);
             float     m_cameraRotateSpeed = 25.0f;
 

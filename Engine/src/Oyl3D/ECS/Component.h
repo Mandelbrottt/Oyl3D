@@ -47,5 +47,15 @@ namespace oyl::component
         {
             Ref<Camera> camera;
         };
+
+        struct SceneIntrinsic
+        {
+            
+        };
+
+        struct ExcludeFromHierarchy
+        {
+            
+        };
     }
 }

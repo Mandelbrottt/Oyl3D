@@ -13,7 +13,7 @@
 
 #include <GLFW/glfw3.h>
 
-static const char* entityNodeFmt = "%s\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t";
+static const char* entityNodeFmt = "%s\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t";
 
 namespace oyl
 {
@@ -149,7 +149,7 @@ namespace oyl
             case TypeEditorEntitySelected:
             {
                 auto e          = (EditorEntitySelectedEvent) *event;
-                m_currentEntity = u32(e.entity);
+                m_currentEntity = e.entity;
                 return true;
             }
             case TypeMousePressed:
@@ -166,11 +166,18 @@ namespace oyl
 
     void GuiLayer::drawMenuBar()
     {
+        static bool showReloadDialogue = false;
         if (ImGui::BeginMenuBar())
         {
             if (ImGui::BeginMenu("File##MainMenuBarFile"))
             {
-                ImGui::Text("Nothing to see here ;)");
+                if (ImGui::MenuItem("Save##MainMenuSave", "Ctrl+S"))
+                {
+                    Scene::current()->saveSceneToFile();   
+                }
+                showReloadDialogue = 
+                    ImGui::MenuItem("Reload##MainMenuReload", "Ctrl+Shift+S");
+                
                 ImGui::EndMenu();
             }
             if (ImGui::BeginMenu("Edit##MainMenuBarFile"))
@@ -189,6 +196,32 @@ namespace oyl
                 ImGui::EndMenu();
             }
             ImGui::EndMenuBar();
+
+            if (showReloadDialogue)
+            {
+                ImGui::SetNextWindowPosCenter(ImGuiCond_Always);
+                if (ImGui::Begin("Confirmation##ReloadConfirmation", 0, 
+                                 ImGuiWindowFlags_AlwaysAutoResize |
+                                 ImGuiWindowFlags_NoCollapse))
+                {
+                    ImGui::Text("Are you sure you want to reload the scene?");
+                    ImGui::Text("You will lose any unsaved changes you've made.");
+
+                    ImGui::Indent(ImGui::GetWindowContentRegionWidth() / 2 - 55);
+                    if (ImGui::Button("Reload##ReloadConfirmationReload"))
+                    {
+                        Scene::current()->loadSceneFromFile();
+                        m_currentEntity = Entity(-1);
+                        showReloadDialogue = false;
+                    }
+                    ImGui::SameLine();
+                    if (ImGui::Button("Cancel##ReloadConfirmationCancel"))
+                    {
+                        showReloadDialogue = false;
+                    }
+                }
+                ImGui::End();
+            }
         }
     }
 
@@ -199,6 +232,10 @@ namespace oyl
             registry->each(
                 [this](auto entity)
                 {
+                    using component::internal::ExcludeFromHierarchy;
+                    if (registry->has<ExcludeFromHierarchy>(entity))
+                        return;
+                
                     auto& so = registry->get_or_assign<component::SceneObject>(entity);
                     if (so.name.empty())
                     {
@@ -216,6 +253,7 @@ namespace oyl
 
                     bool treeNode = ImGui::TreeNodeEx((const void*) entity, nodeFlags, entityNodeFmt, so.name.c_str());
                     bool clicked  = ImGui::IsItemClicked(0);
+                    float testValue = ImGui::GetMousePos().x - ImGui::GetItemRectMin().x;
                     if (treeNode)
                     {
                         ImGui::Indent();
@@ -227,7 +265,6 @@ namespace oyl
                         ImGui::TreePop();
                     }
                 
-                    float testValue = ImGui::GetMousePos().x - ImGui::GetItemRectMin().x;
                     if (clicked && testValue > ImGui::GetTreeNodeToLabelSpacing())
                     {
                         EditorEntitySelectedEvent selected;
@@ -243,7 +280,7 @@ namespace oyl
     {
         if (ImGui::Begin("Inspector##EditorInspector", nullptr))
         {
-            if (m_currentEntity != u32(-1))
+            if (m_currentEntity != Entity(-1))
             {
                 drawInspectorTransform();
                 drawInspectorRenderable();
@@ -255,11 +292,14 @@ namespace oyl
 
     void GuiLayer::drawInspectorTransform()
     {
-        if (ImGui::CollapsingHeader("Transform##InspectorTransform"), 0, ImGuiTreeNodeFlags_DefaultOpen)
+        using component::Transform;
+        
+        if (registry->has<Transform>(m_currentEntity) &&
+            ImGui::CollapsingHeader("Transform##InspectorTransform"))
         {
             ImGui::Indent(5);
 
-            auto& transform = registry->get_or_assign<component::Transform>(Entity(m_currentEntity));
+            auto& transform = registry->get<Transform>(m_currentEntity);
 
             float newWidth = ImGui::GetWindowContentRegionWidth() / 6;
 
@@ -267,7 +307,7 @@ namespace oyl
 
             const float posDragSpeed = 0.02f;
             ImGui::Text("Position");
-            ImGui::SameLine(ImGui::GetWindowContentRegionWidth() - (15 * 3 + newWidth * 3 + 20));
+            ImGui::SameLine(ImGui::GetWindowContentRegionWidth() - (15 * 3 + newWidth * 3 + 27));
             ImGui::SetNextItemWidth(15);
             ImGui::DragFloat("##XPos", &transform.position.x, posDragSpeed, 0, 0, "X");
             ImGui::SameLine();
@@ -285,7 +325,7 @@ namespace oyl
 
             const float rotDragSpeed = 0.5f;
             ImGui::Text("Rotation");
-            ImGui::SameLine(ImGui::GetWindowContentRegionWidth() - (15 * 3 + newWidth * 3 + 20));
+            ImGui::SameLine(ImGui::GetWindowContentRegionWidth() - (15 * 3 + newWidth * 3 + 27));
             ImGui::SetNextItemWidth(15);
             ImGui::DragFloat("##XRot", &transform.rotation.x, rotDragSpeed, 0, 0, "X");
             ImGui::SameLine();
@@ -303,7 +343,7 @@ namespace oyl
 
             const float scaleDragSpeed = 0.02f;
             ImGui::Text("Scale");
-            ImGui::SameLine(ImGui::GetWindowContentRegionWidth() - (15 * 3 + newWidth * 3 + 20));
+            ImGui::SameLine(ImGui::GetWindowContentRegionWidth() - (15 * 3 + newWidth * 3 + 27));
             ImGui::SetNextItemWidth(15);
             ImGui::DragFloat("##XSca", &transform.scale.x, scaleDragSpeed, 0, 0, "X");
             ImGui::SameLine();
@@ -391,7 +431,7 @@ namespace oyl
         ImGuizmo::SetRect(minX, minY, sizeX, sizeY);
 
         if (ImGui::IsItemClicked(1))
-            m_currentEntity = -1;
+            m_currentEntity = Entity(-1);
 
         drawTransformGizmo();
 
@@ -456,7 +496,7 @@ namespace oyl
         using component::Transform;
         using component::internal::EditorCamera;
 
-        if (m_currentEntity != u32(-1) &&
+        if (m_currentEntity != Entity(-1) &&
             registry->has<Transform>(Entity(m_currentEntity)))
         {
             auto  view = registry->view<EditorCamera>();

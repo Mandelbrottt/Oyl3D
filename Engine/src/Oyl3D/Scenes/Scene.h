@@ -36,8 +36,8 @@ namespace oyl
         void popLayer(const Ref<Layer>& layer);
         void popOverlay(const Ref<Layer>& overlay);
 
-        void loadScene();
-        void saveScene();
+        void loadSceneFromFile();
+        void saveSceneToFile();
 
         static Ref<Scene> current() { return s_current.lock(); }
 
@@ -46,8 +46,9 @@ namespace oyl
         virtual bool onEvent(Ref<Event> event) override;
 
     private:
-
         void initDefaultSystems();
+
+        void saveSceneBackupToFile();
 
         static WeakRef<Scene> s_current;
 

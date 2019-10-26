@@ -102,7 +102,6 @@ namespace oyl
 
     Application::~Application()
     {
-        // TEMPORARY:
         m_currentScene->onExit();
     }
 
@@ -138,6 +137,7 @@ namespace oyl
                 auto e = (CursorStateRequestEvent) *event;
                 if (m_window->getCursorState() != e.state)
                     m_window->setCursorState(e.state);
+                break;
             }
         }
 
@@ -167,6 +167,8 @@ namespace oyl
 
             m_currentScene->pushOverlay(m_guiLayer);
             m_currentScene->onEnter();
+
+            m_currentScene->loadSceneFromFile();
         }
     }
 

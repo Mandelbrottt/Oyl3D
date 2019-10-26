@@ -15,6 +15,6 @@ namespace oyl
         virtual void onUpdate(Timestep dt) = 0;
         virtual void onGuiRender(Timestep dt) = 0;
 
-        std::string m_name;
+        const std::string m_name;
     };
 }

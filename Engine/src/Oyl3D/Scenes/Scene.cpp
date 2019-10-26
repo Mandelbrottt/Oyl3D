@@ -20,6 +20,8 @@ namespace oyl
 
     Scene::~Scene()
     {
+        saveSceneBackupToFile();
+        
         // Reset the registry then reset the actual Ref
         m_registry->reset();
         m_registry.reset();
@@ -31,7 +33,6 @@ namespace oyl
 
     void Scene::onExit()
     {
-        saveScene();
     }
 
     void Scene::onUpdate(Timestep dt)
@@ -49,7 +50,7 @@ namespace oyl
     {
         return false;
     }
-    
+
     void Scene::onGuiRender(Timestep dt)
     {
         for (const Ref<Layer>& layer : m_layerStack)
@@ -109,12 +110,82 @@ namespace oyl
         m_layerStack.popOverlay(overlay);
     }
 
-    void Scene::loadScene()
+    void Scene::loadSceneFromFile()
     {
+        using component::internal::SceneIntrinsic;
+
+        using component::SceneObject;
+        using component::Transform;
         
+        //m_registry->each([this](auto entity)
+        //{
+        //    m_registry->assign<SceneIntrinsic>(entity);
+        //    if (!m_registry->has<SceneObject>(entity))
+        //    {
+        //        auto& so = m_registry->assign<SceneObject>(entity);
+        //        
+        //        char buf[128];
+        //        sprintf(buf, "Entity %d", (u32)entity);
+        //        so.name = std::string(buf);
+        //    }
+        //});
+
+        std::ifstream sceneFile("res/scenes/" + m_name + ".scene.json");
+        if (!sceneFile)
+            return;
+        
+        json sceneJson;
+        sceneFile >> sceneJson;
+        sceneFile.close();
+
+        auto view = m_registry->view<SceneObject>();
+        for (auto& [key, value] : sceneJson.items())
+        {
+            for (auto entity : view)
+            {
+                SceneObject& so = view.get(entity);
+                if (key == so.name)
+                {
+                    auto& t = m_registry->get_or_assign<Transform>(entity);
+                    t.position.x = value["Transform"]["Position"]["X"].get<float>();
+                    t.position.y = value["Transform"]["Position"]["Y"].get<float>();
+                    t.position.z = value["Transform"]["Position"]["Z"].get<float>();
+
+                    t.rotation.x = value["Transform"]["Rotation"]["X"].get<float>();
+                    t.rotation.y = value["Transform"]["Rotation"]["Y"].get<float>();
+                    t.rotation.z = value["Transform"]["Rotation"]["Z"].get<float>();
+
+                    t.scale.x = value["Transform"]["Scale"]["X"].get<float>();
+                    t.scale.y = value["Transform"]["Scale"]["Y"].get<float>();
+                    t.scale.z = value["Transform"]["Scale"]["Z"].get<float>();
+
+                    // Other components...
+
+                    break;
+                }
+            }
+        }
+
+        //auto view = m_registry->view<SceneObject, Transform>();
+        //for (auto entity : view)
+        //{
+        //    auto& so = view.get<SceneObject>(entity);
+        //    auto& t = view.get<Transform>(entity);
+        //    sceneJson[so.name]["Transform"]["Position"]["X"] = t.position.x;
+        //    sceneJson[so.name]["Transform"]["Position"]["Y"] = t.position.y;
+        //    sceneJson[so.name]["Transform"]["Position"]["Z"] = t.position.z;
+
+        //    sceneJson[so.name]["Transform"]["Rotation"]["X"] = t.rotation.x;
+        //    sceneJson[so.name]["Transform"]["Rotation"]["Y"] = t.rotation.y;
+        //    sceneJson[so.name]["Transform"]["Rotation"]["Z"] = t.rotation.z;
+
+        //    sceneJson[so.name]["Transform"]["Scale"]["X"] = t.scale.x;
+        //    sceneJson[so.name]["Transform"]["Scale"]["Y"] = t.scale.y;
+        //    sceneJson[so.name]["Transform"]["Scale"]["Z"] = t.scale.z;
+        //}
     }
 
-    void Scene::saveScene()
+    void Scene::saveSceneToFile()
     {
         json sceneJson;
 
@@ -140,5 +211,18 @@ namespace oyl
         
         std::ofstream sceneFile("res/scenes/" + m_name + ".scene.json");
         sceneFile << std::setw(4) << sceneJson;
+    }
+
+    void Scene::saveSceneBackupToFile()
+    {
+        json sceneBackup;
+        std::ifstream sceneFile("res/scenes/" + m_name + ".scene.json");
+        if (sceneFile)
+        {
+            sceneFile >> sceneBackup;
+            
+            std::ofstream sceneBackupFile("res/scenes/" + m_name + ".scene.backup.json");
+            sceneBackupFile << sceneBackup;
+        }
     }
 }

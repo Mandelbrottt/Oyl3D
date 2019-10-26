@@ -22,6 +22,9 @@ void SandboxLayer::onEnter()
 
         t.position = glm::vec3(3 * i - 15, 0.0f, -2.0f);
         registry->assign<component::Transform>(e, t);
+
+        auto& so = registry->assign<component::SceneObject>(e);
+        so.name = "Custom Name " + std::to_string(i);
     }
 
     mr.mesh     = Mesh::get(CUBE_MESH_ALIAS);

@@ -129,6 +129,7 @@ namespace oyl::ECS
         void OracleCameraSystem::onEnter()
         {
             using component::internal::EditorCamera;
+            using component::internal::ExcludeFromHierarchy;
 
             addToEventMask(TypeKeyPressed);
             addToEventMask(TypeKeyReleased);
@@ -143,6 +144,7 @@ namespace oyl::ECS
 
             auto e = registry->create();
             registry->assign<EditorCamera>(e, cam);
+            registry->assign<ExcludeFromHierarchy>(e);
         }
 
         void OracleCameraSystem::onExit()
@@ -165,7 +167,7 @@ namespace oyl::ECS
         {
             ImGui::Begin("Camera");
 
-            ImGui::SliderFloat("Move Speed", &m_cameraMoveSpeed, 0.1f, 10.f);
+            ImGui::SliderFloat("Move Speed", &m_cameraMoveSpeed, 5.0f, 30.f);
             ImGui::SliderFloat("Turn Speed", &m_cameraRotateSpeed, 0.1f, 50.0f);
 
             ImGui::End();

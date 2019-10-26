@@ -34,7 +34,7 @@ namespace oyl
 
         u32 m_viewportHandle;
 
-        u32 m_currentEntity = -1;
+        Entity m_currentEntity = Entity(-1);
 
         ImGuizmo::OPERATION m_currentOp = ImGuizmo::TRANSLATE;
         ImGuizmo::MODE m_currentMode = ImGuizmo::WORLD;
