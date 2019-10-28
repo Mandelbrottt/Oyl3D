@@ -300,7 +300,7 @@ namespace oyl
         if (registry->has<Transform>(m_currentEntity) &&
             ImGui::CollapsingHeader("Transform##InspectorTransform"))
         {
-            ImGui::Indent(5);
+            ImGui::Indent(10);
 
             auto& transform = registry->get<Transform>(m_currentEntity);
 
@@ -366,7 +366,7 @@ namespace oyl
 
             ImGui::PopItemWidth();
 
-            ImGui::Unindent(5);
+            ImGui::Unindent(10);
         }
     }
 

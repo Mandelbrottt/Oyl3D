@@ -14,7 +14,7 @@ namespace oyl
         virtual void unload() = 0;
 
         virtual void bind(uint slot = 0) const = 0;
-        virtual void unbind() const = 0;
+        virtual void unbind(uint slot = 0) const = 0;
 
         virtual bool isLoaded() const = 0;
 

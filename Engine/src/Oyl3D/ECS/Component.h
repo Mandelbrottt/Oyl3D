@@ -45,19 +45,27 @@ namespace oyl::component
     struct DirectionalLight
     {
         glm::vec3 direction = glm::vec3(-1.0f);
-        glm::vec3 color = glm::vec3(1.0f);
+        
+        glm::vec3 ambient = glm::vec3(0.2f);
+        glm::vec3 diffuse = glm::vec3(0.5f);
+        glm::vec3 specular = glm::vec3(1.0f);
     };
 
     struct PointLight
     {
-        glm::vec3 color = glm::vec3(1.0f);
+        glm::vec3 ambient = glm::vec3(0.2f);
+        glm::vec3 diffuse = glm::vec3(0.5f);
+        glm::vec3 specular = glm::vec3(1.0f);
     };
 
     struct SpotLight
     {
         glm::vec3 direction;
-        glm::vec3 color = glm::vec3(1.0f);
-        f32 angle;
+        f32       angle;
+
+        glm::vec3 ambient = glm::vec3(0.2f);
+        glm::vec3 diffuse = glm::vec3(0.5f);
+        glm::vec3 specular = glm::vec3(1.0f);
     };
 
     namespace internal

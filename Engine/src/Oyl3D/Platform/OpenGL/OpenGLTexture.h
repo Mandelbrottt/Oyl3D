@@ -14,7 +14,7 @@ namespace oyl
         virtual void unload() override;
 
         virtual void bind(uint slot) const override;
-        virtual void unbind() const override;
+        virtual void unbind(uint slot) const override;
 
         virtual bool isLoaded() const override { return m_loaded; }
 
@@ -38,7 +38,7 @@ namespace oyl
         virtual void unload() override;
 
         virtual void bind(uint slot) const override;
-        virtual void unbind() const override;
+        virtual void unbind(uint slot) const override;
 
         virtual bool isLoaded() const override { return m_loaded; }
 
@@ -64,7 +64,7 @@ namespace oyl
         virtual void unload() override;
 
         virtual void bind(uint slot) const override;
-        virtual void unbind() const override;
+        virtual void unbind(uint slot) const override;
 
         virtual bool isLoaded() const override { return m_loaded; }
 

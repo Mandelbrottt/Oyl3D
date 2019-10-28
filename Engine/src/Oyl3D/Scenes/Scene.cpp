@@ -130,7 +130,7 @@ namespace oyl
         //    }
         //});
 
-        std::ifstream sceneFile("res/scenes/" + m_name + ".scene.json");
+        std::ifstream sceneFile("res/scenes/" + m_name + ".oylscene");
         if (!sceneFile)
             return;
         
@@ -209,20 +209,20 @@ namespace oyl
             sceneJson[so.name]["Transform"]["Scale"]["Z"] = t.scale.z;
         }
         
-        std::ofstream sceneFile("res/scenes/" + m_name + ".scene.json");
+        std::ofstream sceneFile("res/scenes/" + m_name + ".oylscene");
         sceneFile << std::setw(4) << sceneJson;
     }
 
     void Scene::saveSceneBackupToFile()
     {
         json sceneBackup;
-        std::ifstream sceneFile("res/scenes/" + m_name + ".scene.json");
+        std::ifstream sceneFile("res/scenes/" + m_name + ".oylscene");
         if (sceneFile)
         {
             sceneFile >> sceneBackup;
             
-            std::ofstream sceneBackupFile("res/scenes/" + m_name + ".scene.backup.json");
-            sceneBackupFile << sceneBackup;
+            std::ofstream sceneBackupFile("res/scenes/" + m_name + ".oylscene.backup");
+            sceneBackupFile << std::setw(4) << sceneBackup;
         }
     }
 }

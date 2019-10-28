@@ -150,7 +150,16 @@ namespace oyl
             m_shader->bind();
 
         if (m_albedo)
-            m_albedo->bind();
+            m_albedo->bind(0);
+        setUniform1i("u_material.albedo", 0);
+
+        if (m_specular)
+            m_specular->bind(1);
+        setUniform1i("u_material.specular", 1);
+
+        //if (m_normal)
+        //    m_normal->bind(2);
+        //setUniform1i("u_material.normal", 2);
     }
 
     void Material::unbind()
@@ -160,12 +169,20 @@ namespace oyl
 
         if (m_albedo)
             m_albedo->unbind();
+
+        if (m_specular)
+            m_specular->unbind();
+
+        //if (m_normal)
+        //    m_normal->unbind();
     }
 
     void Material::applyUniforms()
     {
         for (const auto& kvp : m_uniformMat4s)
             m_shader->setUniformMat4(kvp.first, kvp.second);
+        for (const auto& kvp : m_uniformMat3s)
+            m_shader->setUniformMat3(kvp.first, kvp.second);
         for (const auto& kvp : m_uniformVec4s)
             m_shader->setUniform4f(kvp.first, kvp.second);
         for (const auto& kvp : m_uniformVec3s)

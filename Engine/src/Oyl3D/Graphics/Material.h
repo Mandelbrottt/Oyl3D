@@ -58,8 +58,8 @@ namespace oyl
         const Ref<Texture>& getNormalMap() const { return m_normal; }
 
         void setAlbedoMap(Ref<Texture> albedo) { m_albedo = std::move(albedo); }
-        void setSpecularMap(Ref<Texture> specular) { m_albedo = std::move(specular); }
-        void setNormalMap(Ref<Texture> normal) { m_albedo = std::move(normal); }
+        void setSpecularMap(Ref<Texture> specular) { m_specular = std::move(specular); }
+        void setNormalMap(Ref<Texture> normal) { m_normal = std::move(normal); }
 
         float getSpecularScalar() const { return m_specularScalar; }
         void  setSpecularScalar(float specular) { m_specularScalar = specular; }
@@ -70,6 +70,7 @@ namespace oyl
         void setUniform2f(const std::string& name, glm::vec2 value) { m_uniformVec2s[name] = value; }
         void setUniform4f(const std::string& name, glm::vec4 value) { m_uniformVec4s[name] = value; }
         void setUniformMat4(const std::string& name, glm::mat4 value) { m_uniformMat4s[name] = value; }
+        void setUniformMat3(const std::string& name, glm::mat3 value) { m_uniformMat3s[name] = value; }
     private:
         Ref<Shader>  m_shader;
         
@@ -81,6 +82,7 @@ namespace oyl
         
         // TODO: Implement in custom data structure
         std::unordered_map<std::string, glm::mat4> m_uniformMat4s;
+        std::unordered_map<std::string, glm::mat3> m_uniformMat3s;
         std::unordered_map<std::string, glm::vec4> m_uniformVec4s;
         std::unordered_map<std::string, glm::vec3> m_uniformVec3s;
         std::unordered_map<std::string, glm::vec2> m_uniformVec2s;

@@ -58,6 +58,7 @@ namespace oyl::ECS
         using component::Transform;
         using component::Renderable;
         using component::PlayerCamera;
+        using component::PointLight;
         using component::internal::EditorCamera;
 
         Ref<Registry> reg = Scene::current()->getRegistry();
@@ -76,7 +77,6 @@ namespace oyl::ECS
                 return lhs.material < rhs.material;
         });
 
-        Ref<Shader>   boundShader;
         Ref<Material> boundMaterial;
 
         // TEMPORARY
@@ -88,23 +88,36 @@ namespace oyl::ECS
         {
             Renderable& mr = reg->get<Renderable>(entity);
 
-            if (mr.mesh == nullptr || mr.material == nullptr)
+            if (mr.mesh == nullptr || 
+                mr.material == nullptr || 
+                mr.material->getShader() == nullptr)
                 continue;
-
-            if (mr.material->getShader() != boundShader)
-            {
-                boundShader = mr.material->getShader();
-                boundShader->bind();
-            }
 
             if (mr.material != boundMaterial)
             {
                 boundMaterial = mr.material;
+                
                 mr.material->setUniformMat4("u_view", currentCamera->getViewMatrix());
-                mr.material->setUniformMat4("u_projection", currentCamera->getProjectionMatrix());
+                mr.material->setUniformMat4("u_viewProjection", currentCamera->getViewProjectionMatrix());
+                glm::mat4 viewNormal = glm::mat4(currentCamera->getViewMatrix());
+                viewNormal = glm::inverse(glm::transpose(viewNormal));
+                mr.material->setUniformMat3("u_viewNormal", glm::mat4(viewNormal));
+
+                auto  lightView =       registry->view<Transform, PointLight>();
+                auto& lightProps =     lightView.get<PointLight>(*view.begin());
+                auto& lightTransform = lightView.get<Transform>(*view.begin());
+                
+                mr.material->setUniform3f("u_pointLight.position",  
+                                          viewNormal * glm::vec4(lightTransform.position, 1.0f));
+                mr.material->setUniform3f("u_pointLight.ambient",   lightProps.ambient);
+                mr.material->setUniform3f("u_pointLight.diffuse",   lightProps.diffuse);
+                mr.material->setUniform3f("u_pointLight.specular",  lightProps.specular);
+
+                // TEMPORARY:
+                boundMaterial->bind();
                 boundMaterial->applyUniforms();
             }
-
+            
             const glm::mat4& transform = reg->get_or_assign<Transform>(entity).getMatrix();
 
             Renderer::submit(mr.mesh, mr.material, transform);
@@ -180,6 +193,18 @@ namespace oyl::ECS
                 case TypeKeyPressed:
                 {
                     auto e = (KeyPressedEvent) *event;
+                    if (e.keycode == Key_LeftAlt && !e.repeatCount)
+                    {
+                        m_doMoveCamera ^= 1;
+
+                        CursorStateRequestEvent cursorRequest;
+
+                        cursorRequest.state = m_doMoveCamera ? Cursor_Disabled : Cursor_Enabled;
+
+                        postEvent(Event::create(cursorRequest));
+                    }
+                    if (!m_doMoveCamera) break;
+                    
                     if (e.keycode == Key_W)
                         m_cameraMove.z = -1;
                     if (e.keycode == Key_S)
@@ -192,16 +217,6 @@ namespace oyl::ECS
                         m_cameraMove.y = 1;
                     if (e.keycode == Key_LeftControl)
                         m_cameraMove.y = -1;
-                    if (e.keycode == Key_LeftAlt && !e.repeatCount)
-                    {
-                        m_doMoveCamera ^= 1;
-
-                        CursorStateRequestEvent cursorRequest;
-
-                        cursorRequest.state = m_doMoveCamera ? Cursor_Disabled : Cursor_Enabled;
-
-                        postEvent(Event::create(cursorRequest));
-                    }
                     break;
                 }
                 case TypeKeyReleased:
@@ -217,9 +232,12 @@ namespace oyl::ECS
                 }
                 case TypeMouseMoved:
                 {
+                    if (!m_doMoveCamera) break;
+
                     auto e           = (MouseMovedEvent) *event;
                     m_cameraRotate.y = e.dx;
                     m_cameraRotate.x = e.dy;
+
                     break;
                 }
                 case TypeViewportResized:
@@ -247,12 +265,9 @@ namespace oyl::ECS
             if (move != glm::vec3(0.0f))
                 move = glm::normalize(move);
 
-            //Entity      camEntity = *registry->view<Component::PlayerCamera>().begin();
-            //Ref<Camera> cam       = registry->get<Component::PlayerCamera>(camEntity).camera;
-
             camera->move(move * m_cameraMoveSpeed * dt.getSeconds());
 
-            static glm::vec3 realRotation = glm::vec3(0.0f);
+            static glm::vec3 realRotation = glm::vec3(20.0f, -45.0f, 0.0f);
 
             realRotation += m_cameraRotate * m_cameraRotateSpeed * dt.getSeconds();
             if (realRotation.x > 89.0f) realRotation.x = 89.0f;

@@ -9,3 +9,4 @@ bin-int/
 *.vcxproj*
 *.user
 *.ini
+*.oylscene.backup

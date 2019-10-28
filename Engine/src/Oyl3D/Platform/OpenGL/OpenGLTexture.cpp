@@ -30,7 +30,7 @@ namespace oyl
     {
     }
 
-    void OpenGLTexture1D::unbind() const
+    void OpenGLTexture1D::unbind(uint slot) const
     {
     }
 
@@ -100,8 +100,9 @@ namespace oyl
         glBindTexture(GL_TEXTURE_2D, m_rendererID);
     }
 
-    void OpenGLTexture2D::unbind() const
+    void OpenGLTexture2D::unbind(uint slot) const
     {
+        glActiveTexture(GL_TEXTURE0 + slot);
         glBindTexture(GL_TEXTURE_2D, GL_NONE);
     }
 
@@ -128,7 +129,7 @@ namespace oyl
     {
     }
 
-    void OpenGLTexture3D::unbind() const
+    void OpenGLTexture3D::unbind(uint slot) const
     {
     }
 }

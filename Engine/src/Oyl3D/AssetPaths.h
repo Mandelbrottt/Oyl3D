@@ -13,11 +13,11 @@ namespace oyl
     
     const std::string ENGINE_RES = "../Engine/res/";
 
-    const CacheAlias LIGHTING_SHADER_ALIAS               = "_lighting";
-    const std::string LIGHTING_SHADER_VERTEX_PATH   = "shaders/staticLighting.vert";
-    const std::string LIGHTING_SHADER_FRAGMENT_PATH = "shaders/staticLighting.frag";
+    const CacheAlias  LIGHTING_SHADER_ALIAS         = "_lighting";
+    const std::string LIGHTING_SHADER_VERTEX_PATH   = "shaders/lighting.vert";
+    const std::string LIGHTING_SHADER_FRAGMENT_PATH = "shaders/lighting.frag";
     
-    const CacheAlias TEXTURE_SHADER_ALIAS               = "_texture";
+    const CacheAlias  TEXTURE_SHADER_ALIAS         = "_texture";
     const std::string TEXTURE_SHADER_VERTEX_PATH   = "shaders/meshShader.vert";
     const std::string TEXTURE_SHADER_FRAGMENT_PATH = "shaders/meshShader.frag";
 
@@ -26,7 +26,7 @@ namespace oyl
 
     const std::string INVALID_MESH_PATH = "models/invalid.obj";
 
-    const CacheAlias CUBE_MESH_ALIAS      = "_cube";
+    const CacheAlias CUBE_MESH_ALIAS = "_cube";
     const std::string CUBE_MESH_PATH = "models/cube.obj";
 
     const CacheAlias MONKEY_MESH_ALIAS = "_monkey";
