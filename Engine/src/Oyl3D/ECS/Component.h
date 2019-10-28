@@ -14,6 +14,7 @@ namespace oyl::component
         std::string name;
     };
 
+    // TODO: Distinction between local and global
     struct Transform
     {
         glm::vec3 position = glm::vec3(0.0f);

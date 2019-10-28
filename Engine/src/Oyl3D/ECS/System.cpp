@@ -103,9 +103,9 @@ namespace oyl::ECS
                 viewNormal = glm::inverse(glm::transpose(viewNormal));
                 mr.material->setUniformMat3("u_viewNormal", glm::mat4(viewNormal));
 
-                auto  lightView =       registry->view<Transform, PointLight>();
-                auto& lightProps =     lightView.get<PointLight>(*view.begin());
-                auto& lightTransform = lightView.get<Transform>(*view.begin());
+                auto  lightView =       registry->view<PointLight>();
+                auto  lightProps =      lightView.get(lightView[0]);
+                auto  lightTransform =  registry->get<Transform>(lightView[0]);
                 
                 mr.material->setUniform3f("u_pointLight.position",  
                                           viewNormal * glm::vec4(lightTransform.position, 1.0f));

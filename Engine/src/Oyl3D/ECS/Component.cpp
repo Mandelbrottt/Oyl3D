@@ -1,5 +1,5 @@
 #include "oylpch.h"
-#include "component.h"
+#include "Component.h"
 
 #include "Graphics/Mesh.h"
 
