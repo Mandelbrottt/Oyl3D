@@ -23,12 +23,19 @@ IncludeDir["fmod"] = "Engine/vendor/fmod/include/"
 IncludeDir["gainput"] = "Engine/vendor/gainput/lib/include/"
 IncludeDir["entt"] = "Engine/vendor/entt/src/"
 IncludeDir["json"] = "Engine/vendor/nlohmann/single_include/"
+IncludeDir["bullet"] = "Engine/vendor/bullet3/src/"
 
 group "Dependencies"
 	include "Engine/vendor/glad/"
 	include "Engine/vendor/glfw/"
 	include "Engine/vendor/imgui/"
 	include "Engine/vendor/gainput/"
+
+group "Dependencies/Bullet3"
+	include "Engine/vendor/bullet3/src/BulletDynamics"
+	include "Engine/vendor/bullet3/src/BulletCollision"
+	include "Engine/vendor/bullet3/src/LinearMath"
+
 group ""
 
 project "OylEngine"
@@ -71,7 +78,8 @@ project "OylEngine"
 		"%{IncludeDir.fmod}",
 		"%{IncludeDir.gainput}",
 		"%{IncludeDir.entt}",
-		"%{IncludeDir.json}"
+		"%{IncludeDir.json}",
+		"%{IncludeDir.bullet}"
 	}
 
 	libdirs {
@@ -83,7 +91,10 @@ project "OylEngine"
 		"Glad",
 		"ImGui",
 		"Gainput",
-		"opengl32.lib"
+		"BulletDynamics",
+		"BulletCollision",
+		"LinearMath",
+		"opengl32"
 	}
 
 	filter "system:windows"
