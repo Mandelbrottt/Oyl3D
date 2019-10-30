@@ -133,6 +133,14 @@ namespace oyl::ECS
         return false;
     }
 
+    void RenderSystem::init()
+    {
+    }
+
+    void RenderSystem::shutdown()
+    {
+    }
+
     // ^^^ Render System ^^^ //
 
     // vvv Oracle Camera System vvv //

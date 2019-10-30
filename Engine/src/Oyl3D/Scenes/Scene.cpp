@@ -13,8 +13,7 @@ namespace oyl
     WeakRef<Scene> Scene::s_current{};
 
     Scene::Scene()
-        : m_registry(Ref<ECS::Registry>::create()),
-          m_renderSystem(ECS::RenderSystem::create())
+        : m_registry(Ref<ECS::Registry>::create())
     {
     }
 
@@ -42,8 +41,6 @@ namespace oyl
             layer->onUpdateSystems(dt);
             layer->onUpdate(dt);
         }
-
-        m_renderSystem->onUpdate(dt);
     }
 
     bool Scene::onEvent(Ref<Event> event)
@@ -58,15 +55,10 @@ namespace oyl
             layer->onGuiRenderSystems(dt);
             layer->onGuiRender(dt);
         }
-
-        m_renderSystem->onGuiRender(dt);
     }
 
     void Scene::initDefaultSystems()
     {
-        m_renderSystem->setRegistry(this->m_registry);
-        m_renderSystem->setDispatcher(m_dispatcher);
-        m_dispatcher->registerListener(m_renderSystem);
     }
 
     const Ref<ECS::Registry>& Scene::getRegistry()

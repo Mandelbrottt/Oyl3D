@@ -80,6 +80,8 @@ namespace oyl
         Texture2D::cache(ENGINE_RES + WHITE_TEXTURE_PATH, WHITE_TEXTURE_ALIAS);
         Texture2D::cache(ENGINE_RES + UV_TEXTURE_PATH, UV_TEXTURE_ALIAS);
 
+        m_renderSystem = ECS::RenderSystem::create();
+
         initEventListeners();
         
     #if !defined(OYL_DISTRIBUTION)
@@ -109,9 +111,14 @@ namespace oyl
     Application::~Application()
     {
         m_currentScene->onExit();
+
     #if !defined(OYL_DISTRIBUTION)
+        m_guiLayer->onExit();
         m_guiLayer->shutdown();
     #endif
+        
+        m_renderSystem->onExit();
+        m_renderSystem->shutdown();
     }
 
     bool Application::onEvent(const Ref<Event>& event)
@@ -159,31 +166,38 @@ namespace oyl
     {
         if (m_currentScene)
         {
-            m_guiLayer->onExit();
             m_currentScene->onExit();
             m_currentScene = nullptr;
-        }
-
-        if (scene)
-        {
-            m_currentScene = std::move(scene);
-
-            Scene::s_current = m_currentScene;
-
-            m_dispatcher->registerListener(m_currentScene);
-            m_currentScene->setDispatcher(m_dispatcher);
 
         #if !defined(OYL_DISTRIBUTION)
-            m_guiLayer->setRegistry(m_currentScene->m_registry);
-            m_guiLayer->onEnter();
+            m_guiLayer->onExit();
         #endif
             
-            m_currentScene->initDefaultSystems();
-
-            m_currentScene->onEnter();
-            
-            m_currentScene->loadSceneFromFile();
+            m_renderSystem->onExit();
         }
+
+        OYL_ASSERT(scene, "Pushed scene must be initialized!");
+
+        m_currentScene = std::move(scene);
+
+        Scene::s_current = m_currentScene;
+
+        m_dispatcher->registerListener(m_currentScene);
+        m_currentScene->setDispatcher(m_dispatcher);
+
+        m_renderSystem->setRegistry(m_currentScene->m_registry);
+        m_renderSystem->onEnter();
+
+    #if !defined(OYL_DISTRIBUTION)
+        m_guiLayer->setRegistry(m_currentScene->m_registry);
+        m_guiLayer->onEnter();
+    #endif
+        
+        m_currentScene->initDefaultSystems();
+
+        m_currentScene->onEnter();
+        
+        m_currentScene->loadSceneFromFile();
     }
 
     void Application::run()
@@ -211,6 +225,8 @@ namespace oyl
                 m_guiLayer->onUpdateSystems(timestep);
                 m_guiLayer->onUpdate(timestep);
                 
+                m_renderSystem->onUpdate(timestep);
+                
                 if (m_guiLayer->doGameUpdate())
                 {
                     m_currentScene->onUpdate(timestep);
@@ -225,6 +241,8 @@ namespace oyl
 
         #if !defined(OYL_DISTRIBUTION)
             m_guiLayer->begin();
+
+            m_renderSystem->onGuiRender(timestep);
 
             m_guiLayer->onGuiRender(timestep);
 
@@ -255,6 +273,9 @@ namespace oyl
         m_appListener->setDispatcher(m_dispatcher);
 
         m_vibrationListener = internal::GamepadListener::create();
+        m_dispatcher->registerListener(m_vibrationListener);
+        m_vibrationListener->setDispatcher(m_dispatcher);
+
         m_dispatcher->registerListener(m_vibrationListener);
         m_vibrationListener->setDispatcher(m_dispatcher);
     }

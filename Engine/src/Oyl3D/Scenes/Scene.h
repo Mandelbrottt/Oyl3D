@@ -57,7 +57,5 @@ namespace oyl
         LayerStack m_layerStack;
 
         Ref<ECS::Registry> m_registry;
-
-        Ref<ECS::RenderSystem> m_renderSystem;
     };
 }

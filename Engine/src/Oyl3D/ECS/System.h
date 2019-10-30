@@ -47,6 +47,7 @@ namespace oyl::ECS
         Ref<Registry> registry;
     };
 
+    // TODO: Make standalone layer
     class RenderSystem : public System
     {
         OYL_CTOR(RenderSystem, System)
@@ -58,6 +59,9 @@ namespace oyl::ECS
         virtual void onGuiRender(Timestep dt) override;
 
         virtual bool onEvent(Ref<Event> event) override;
+
+        void init();
+        void shutdown();
     };
 
     class PhysicsSystem : public System

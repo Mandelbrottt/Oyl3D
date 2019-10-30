@@ -49,6 +49,8 @@ namespace oyl
         Ref<GuiLayer>    m_guiLayer;
     #endif
 
+        Ref<ECS::RenderSystem> m_renderSystem;
+
         float m_lastFrameTime = 0;
 
         bool m_running  = true;
