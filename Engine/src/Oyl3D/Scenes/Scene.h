@@ -1,10 +1,5 @@
 #pragma once
 
-//#include "Oyl3D/ECS/Registry.h"
-
-//#include "Oyl3D/Events/Event.h"
-//#include "Oyl3D/Events/EventListener.h"
-
 #include "Oyl3D/Scenes/LayerStack.h"
 #include "Oyl3D/Scenes/Node.h"
 
@@ -14,6 +9,7 @@ namespace oyl
     {
         class Registry;
         class RenderSystem;
+        class PhysicsSystem;
     }
 
     class Scene : public EventListener, public virtual Node
@@ -41,7 +37,7 @@ namespace oyl
 
         static Ref<Scene> current() { return s_current.lock(); }
 
-        const Ref<ECS::Registry>& getRegistry();
+        const Ref<ECS::Registry>& getRegistry() { return m_registry; }
 
         virtual bool onEvent(Ref<Event> event) override;
 
@@ -59,5 +55,6 @@ namespace oyl
         Ref<ECS::Registry> m_registry;
 
         Ref<ECS::RenderSystem> m_renderSystem;
+        Ref<ECS::PhysicsSystem> m_physicsSystem;
     };
 }

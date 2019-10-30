@@ -5,6 +5,7 @@
 
 #include "ECS/Component.h"
 #include "ECS/Registry.h"
+#include "ECS/SystemImpl.h"
 
 #include "Graphics/Camera.h"
 

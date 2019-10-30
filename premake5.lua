@@ -13,6 +13,7 @@ outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
 -- Include directories relative to root folder (solution directory)
 IncludeDir = {}
+IncludeDir["spdlog"] = "Engine/vendor/spdlog/include/"
 IncludeDir["glfw"] = "Engine/vendor/glfw/include/"
 IncludeDir["glad"] = "Engine/vendor/glad/include/"
 IncludeDir["imgui"] = "Engine/vendor/imgui/"
@@ -31,10 +32,10 @@ group "Dependencies"
 	include "Engine/vendor/imgui/"
 	include "Engine/vendor/gainput/"
 
-group "Dependencies/Bullet3"
-	include "Engine/vendor/bullet3/src/BulletDynamics"
-	include "Engine/vendor/bullet3/src/BulletCollision"
-	include "Engine/vendor/bullet3/src/LinearMath"
+	group "Dependencies/Bullet3"
+		include "Engine/vendor/bullet3/src/BulletDynamics"
+		include "Engine/vendor/bullet3/src/BulletCollision"
+		include "Engine/vendor/bullet3/src/LinearMath"
 
 group ""
 
@@ -68,7 +69,8 @@ project "OylEngine"
 	includedirs {
 		"Engine/src/",
 		"Engine/src/Oyl3D/",
-		"Engine/vendor/spdlog/include/",
+		"Engine/vendor/",
+		"%{IncludeDir.spdlog}",
 		"%{IncludeDir.glfw}",
 		"%{IncludeDir.glad}",
 		"%{IncludeDir.imgui}",
@@ -158,14 +160,14 @@ project "OylGame"
 	}
 
 	includedirs {
-		"Engine/vendor/spdlog/include",
 		"Engine/src/",
 		"Engine/vendor/",
+		"%{IncludeDir.spdlog}",
 		"%{IncludeDir.glm}",
 		"%{IncludeDir.stb}",
-		"%{IncludeDir.imgui}", 
+		"%{IncludeDir.imgui}",
 		"%{IncludeDir.entt}",
-		"%{IncludeDir.json}"
+		"%{IncludeDir.json}",
 	}
 
 	links {

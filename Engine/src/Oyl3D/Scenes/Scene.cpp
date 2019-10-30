@@ -1,12 +1,12 @@
 #include "oylpch.h"
 #include "Scene.h"
 
-#include "ECS/System.h"
+#include "ECS/SystemImpl.h"
 #include "ECS/Registry.h"
 
 #include "Events/EventDispatcher.h"
 
-#include "ECS/component.h"
+#include "ECS/Component.h"
 
 namespace oyl
 {
@@ -14,7 +14,8 @@ namespace oyl
 
     Scene::Scene()
         : m_registry(Ref<ECS::Registry>::create()),
-          m_renderSystem(ECS::RenderSystem::create())
+          m_renderSystem(ECS::RenderSystem::create()),
+          m_physicsSystem(ECS::PhysicsSystem::create())
     {
     }
 
@@ -43,6 +44,7 @@ namespace oyl
             layer->onUpdate(dt);
         }
 
+        m_physicsSystem->onUpdate(dt);
         m_renderSystem->onUpdate(dt);
     }
 
@@ -59,19 +61,19 @@ namespace oyl
             layer->onGuiRender(dt);
         }
 
+        m_physicsSystem->onUpdate(dt);
         m_renderSystem->onGuiRender(dt);
     }
 
     void Scene::initDefaultSystems()
     {
-        m_renderSystem->setRegistry(this->m_registry);
+        m_renderSystem->setRegistry(m_registry);
         m_renderSystem->setDispatcher(m_dispatcher);
-        m_dispatcher->registerListener(m_renderSystem);
-    }
 
-    const Ref<ECS::Registry>& Scene::getRegistry()
-    {
-        return m_registry;
+        m_physicsSystem->setRegistry(m_registry);
+        m_physicsSystem->setDispatcher(m_dispatcher);
+        
+        m_dispatcher->registerListener(m_renderSystem);
     }
 
     void Scene::pushLayer(Ref<Layer> layer)

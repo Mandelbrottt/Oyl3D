@@ -5,7 +5,7 @@
 using namespace oyl;
 
 void SandboxLayer::onEnter()
-{
+{    
     auto mesh = Mesh::cache("res/assets/models/cube.obj");
     
     auto mat = Material::cache(Shader::get(LIGHTING_SHADER_ALIAS), 

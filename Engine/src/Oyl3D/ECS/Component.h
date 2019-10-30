@@ -31,9 +31,12 @@ namespace oyl::component
     };
 
     // TODO: Make more robust when adding physics
+    class btRigidBody;
+    
     struct RigidBody
     {
         Entity id;
+        OylEnum type;
     };
 
     struct PlayerCamera

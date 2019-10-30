@@ -1,8 +1,9 @@
 #include "oylpch.h"
 
-#include "System.h"
+#include "ECS/System.h"
+#include "ECS/SystemImpl.h"
 
-#include "ECS/component.h"
+#include "ECS/Component.h"
 #include "ECS/Registry.h"
 
 #include "Events/Event.h"
@@ -15,6 +16,9 @@
 #include "Rendering/Renderer.h"
 
 #include "Scenes/Scene.h"
+
+#include <btBulletDynamicsCommon.h>
+#include <btBulletCollisionCommon.h>
 
 namespace oyl::ECS
 {
@@ -34,11 +38,6 @@ namespace oyl::ECS
 
     void System::onGuiRender(Timestep dt)
     {
-    }
-
-    void System::setRegistry(Ref<Registry> reg)
-    {
-        registry = std::move(reg);
     }
 
     // ^^^ Generic System ^^^ //
@@ -132,9 +131,62 @@ namespace oyl::ECS
     {
         return false;
     }
+    
+    // ^^^ Render System //
+    
+    // vvv Physics System vvv //
+    
+    void PhysicsSystem::onEnter()
+    {
+        m_fixedTimeStep = 1.0f / 60.0f;
 
-    // ^^^ Render System ^^^ //
+        m_collisionConfig = UniqueRef<btDefaultCollisionConfiguration>::create();
+        m_dispatcher = UniqueRef<btCollisionDispatcher>::create(m_collisionConfig.get());
+        m_broadphase = UniqueRef<btDbvtBroadphase>::create();
+        m_solver = UniqueRef<btSequentialImpulseConstraintSolver>::create();
+        m_world = UniqueRef<btDiscreteDynamicsWorld>::create(m_dispatcher.get(), 
+                                                             m_broadphase.get(),
+                                                             m_solver.get(),
+                                                             m_collisionConfig.get());
+        m_world->setGravity(btVector3(0.0f, -10.0f, 0.0f));
+    }
 
+    void PhysicsSystem::onExit()
+    {
+    }
+
+    void PhysicsSystem::onUpdate(Timestep dt)
+    {
+        auto view = registry->view<component::RigidBody>();
+        for (auto entity : view)
+        {
+            if (m_rigidBodies.find(entity) == m_rigidBodies.end())
+            {
+
+            }
+        }
+        
+        //if (registry->view<component::RigidBody>().size() != m_rigidBodies.size())
+        //{
+        //    
+        //}
+
+        //btRigidBody::getCollisionShape()->getShapeType();
+        
+        m_world->stepSimulation(dt.getSeconds(), 1, m_fixedTimeStep);
+    }
+
+    void PhysicsSystem::onGuiRender(Timestep dt)
+    {
+    }
+
+    bool PhysicsSystem::onEvent(Ref<Event> event)
+    {
+        return false;
+    }
+
+    // ^^^ Physics System ^^^ //
+    
     // vvv Oracle Camera System vvv //
 
     namespace internal
