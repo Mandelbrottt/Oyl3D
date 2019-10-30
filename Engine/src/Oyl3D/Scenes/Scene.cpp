@@ -14,7 +14,6 @@ namespace oyl
 
     Scene::Scene()
         : m_registry(Ref<ECS::Registry>::create()),
-          m_renderSystem(ECS::RenderSystem::create()),
           m_physicsSystem(ECS::PhysicsSystem::create())
     {
         m_renderSystem->onEnter();
@@ -47,7 +46,6 @@ namespace oyl
         }
 
         m_physicsSystem->onUpdate(dt);
-        m_renderSystem->onUpdate(dt);
     }
 
     bool Scene::onEvent(Ref<Event> event)
@@ -64,14 +62,10 @@ namespace oyl
         }
 
         m_physicsSystem->onUpdate(dt);
-        m_renderSystem->onGuiRender(dt);
     }
 
     void Scene::initDefaultSystems()
     {
-        m_renderSystem->setRegistry(m_registry);
-        m_renderSystem->setDispatcher(m_dispatcher);
-
         m_physicsSystem->setRegistry(m_registry);
         m_physicsSystem->setDispatcher(m_dispatcher);
         

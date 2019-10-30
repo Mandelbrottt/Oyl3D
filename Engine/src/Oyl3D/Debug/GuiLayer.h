@@ -17,8 +17,13 @@ namespace oyl
 
         bool onEvent(Ref<Event> event) override;
 
+        void init();
+        void shutdown();
+
         void begin();
         void end();
+
+        bool doGameUpdate() const { return gameUpdate; }
 
     private:
         void setupGuiLibrary();
@@ -46,5 +51,7 @@ namespace oyl
         glm::vec3 m_rotateSnap{ 15.0f };
         glm::vec3 m_scaleSnap{ 0.2f };
         glm::vec3 m_snap;
+
+        bool gameUpdate = false;
     };
 }

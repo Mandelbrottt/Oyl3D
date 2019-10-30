@@ -54,13 +54,14 @@ namespace oyl
     template<class SYSTEM>
     void Layer::scheduleSystemUpdate(Priority priority)
     {
-        static bool isInitialized = false;
-        OYL_ASSERT(!isInitialized, "Systems should only be initialized once!");
+        //static bool isInitialized = false;
+        //OYL_ASSERT(!isInitialized, "Systems should only be initialized once!");
 
         Ref<ECS::System> newSystem = SYSTEM::create();
-
+        
         newSystem->setRegistry(registry);
 
+        OYL_ASSERT(m_dispatcher, "Dispatcher should be initialized!");
         newSystem->setDispatcher(m_dispatcher);
         m_dispatcher->registerListener(newSystem, priority);
 
@@ -68,6 +69,6 @@ namespace oyl
 
         m_systems.emplace_back(std::move(newSystem));
 
-        isInitialized = true;
+        //isInitialized = true;
     }
 }

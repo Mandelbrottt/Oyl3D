@@ -54,7 +54,6 @@ namespace oyl
 
         Ref<ECS::Registry> m_registry;
 
-        Ref<ECS::RenderSystem> m_renderSystem;
         Ref<ECS::PhysicsSystem> m_physicsSystem;
     };
 }

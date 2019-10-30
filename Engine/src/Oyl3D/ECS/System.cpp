@@ -262,6 +262,15 @@ namespace oyl::ECS
         m_rigidBodies[entity]->motion = motion;
     }
 
+    void RenderSystem::init()
+    {
+    }
+
+    void RenderSystem::shutdown()
+    {
+    }
+
+    // ^^^ Render System ^^^ //
 
     // ^^^ Physics System ^^^ //
     

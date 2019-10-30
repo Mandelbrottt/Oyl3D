@@ -20,7 +20,7 @@ static const char* entityNodeFmt = "%s\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t";
 
 namespace oyl
 {
-    void GuiLayer::onEnter()
+    void GuiLayer::init()
     {
         setupGuiLibrary();
 
@@ -28,10 +28,26 @@ namespace oyl
         addToEventMask(TypeEditorEntitySelected);
         addToEventMask(TypeMousePressed);
 
-        scheduleSystemUpdate<ECS::internal::OracleCameraSystem>();
-
         ImGuizmo::SetGizmoScale(2.0f);
         ImGuizmo::SetGizmoThickness(2.0f);
+    }
+    
+    void GuiLayer::shutdown()
+    {
+        ImGui_ImplOpenGL3_Shutdown();
+        ImGui_ImplGlfw_Shutdown();
+        ImGui::DestroyContext();
+    }
+    
+    void GuiLayer::onEnter()
+    {
+        scheduleSystemUpdate<ECS::internal::OracleCameraSystem>();
+
+        for (auto& system : m_systems)
+        {
+            system->setRegistry(registry);
+            system->setDispatcher(m_dispatcher);
+        }
     }
 
     void GuiLayer::setupGuiLibrary()
@@ -65,9 +81,12 @@ namespace oyl
 
     void GuiLayer::onExit()
     {
-        ImGui_ImplOpenGL3_Shutdown();
-        ImGui_ImplGlfw_Shutdown();
-        ImGui::DestroyContext();
+        for (auto& system : m_systems)
+        {
+            system->onExit();
+        }
+        
+        m_systems.clear();
     }
 
     void GuiLayer::begin()
@@ -138,6 +157,12 @@ namespace oyl
         drawInspector();
 
         drawViewport();
+
+        ImGui::Begin("TestPlayButton");
+
+        ImGui::Checkbox("Play Button", &gameUpdate);
+        
+        ImGui::End();
     }
 
     bool GuiLayer::onEvent(Ref<Event> event)
@@ -165,7 +190,7 @@ namespace oyl
                 //}
             }
         }
-        return false;
+        return !gameUpdate;
     }
 
     void GuiLayer::drawMenuBar()
