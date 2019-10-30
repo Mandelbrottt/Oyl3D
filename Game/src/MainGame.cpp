@@ -4,7 +4,7 @@
 
 using namespace oyl;
 
-class MainLayer : public Layer
+class MainLayer : public Layer 
 {
 public:
     OYL_CTOR(MainLayer, Layer)
