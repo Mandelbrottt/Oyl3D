@@ -17,6 +17,8 @@ namespace oyl
           m_renderSystem(ECS::RenderSystem::create()),
           m_physicsSystem(ECS::PhysicsSystem::create())
     {
+        m_renderSystem->onEnter();
+        m_physicsSystem->onEnter();
     }
 
     Scene::~Scene()

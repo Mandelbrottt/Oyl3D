@@ -240,7 +240,7 @@ namespace oyl
         Gamepad_LeftStick,
         Gamepad_RightStick,
 
-        RigidBody_Plane = 1,
+        RigidBody_StaticPlane = 1,
         RigidBody_Sphere,
         RigidBody_Box,
     };

@@ -15,6 +15,7 @@ namespace oyl::component
     };
 
     // TODO: Distinction between local and global
+    // TODO: Change access to functions
     struct Transform
     {
         glm::vec3 position = glm::vec3(0.0f);
@@ -35,8 +36,21 @@ namespace oyl::component
     
     struct RigidBody
     {
-        Entity id;
-        OylEnum type;
+        Entity id = Entity(-1);
+        OylEnum type = OylEnum::None;
+
+        glm::vec3 velocity     = { 0, 0, 0 };
+        glm::vec3 acceleration = { 0, 0, 0 };
+        glm::vec3 force        = { 0, 0, 0 };
+
+        f32 mass = 1.0f;
+
+        union
+        {
+            f32 radius;
+            
+            struct { f32 width, height, length; };
+        };
     };
 
     struct PlayerCamera

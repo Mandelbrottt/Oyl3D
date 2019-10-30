@@ -148,6 +148,7 @@ namespace oyl::ECS
                                                              m_broadphase.get(),
                                                              m_solver.get(),
                                                              m_collisionConfig.get());
+        
         m_world->setGravity(btVector3(0.0f, -10.0f, 0.0f));
     }
 
@@ -157,13 +158,26 @@ namespace oyl::ECS
 
     void PhysicsSystem::onUpdate(Timestep dt)
     {
-        auto view = registry->view<component::RigidBody>();
+        using component::Transform;
+        using component::RigidBody;
+        
+        auto view = registry->view<Transform, RigidBody>();
         for (auto entity : view)
         {
+            auto& transform = view.get<Transform>(entity);
+            auto& rigidBody = view.get<RigidBody>(entity);
+
+            rigidBody.id = entity;
             if (m_rigidBodies.find(entity) == m_rigidBodies.end())
             {
-
+                addRigidBody(entity, transform, rigidBody);
             }
+
+            btTransform newT = {};
+            m_rigidBodies[entity]->motion->getWorldTransform(newT);
+
+            btVector3 _pos = newT.getOrigin();
+            transform.position = { _pos.x(), _pos.y(), _pos.z() };
         }
         
         //if (registry->view<component::RigidBody>().size() != m_rigidBodies.size())
@@ -184,6 +198,70 @@ namespace oyl::ECS
     {
         return false;
     }
+
+    void PhysicsSystem::addRigidBody(Entity entity, 
+                                     const component::Transform& transformComponent, 
+                                     const component::RigidBody& bodyComponent)
+    {
+        Ref<btCollisionShape> shape  = nullptr;
+        Ref<btMotionState>  motion = nullptr;
+        Ref<btRigidBody>    body   = nullptr;
+        
+        switch (bodyComponent.type)
+        {
+            case RigidBody_StaticPlane:
+            {
+                btTransform t;
+                t.setIdentity();
+                glm::vec3 origin = transformComponent.position;
+                t.setOrigin(btVector3(origin.x, origin.y, origin.z));
+
+                glm::vec3 up = glm::vec3(transformComponent.getMatrix()[1]);
+                
+                shape  = Ref<btStaticPlaneShape>::create(btVector3(up.x, up.y, up.z), 0);
+                motion = Ref<btDefaultMotionState>::create(t);
+
+                btRigidBody::btRigidBodyConstructionInfo info(0.0f, motion.get(), shape.get());
+
+                body = Ref<btRigidBody>::create(info);
+                
+                break;
+            }
+            case RigidBody_Box:
+            {
+                OYL_ASSERT(false, "Not Yet Implemented!");
+                break;
+            }
+            case RigidBody_Sphere:
+            {
+                btTransform t;
+                t.setIdentity();
+                glm::vec3 origin = transformComponent.position;
+                t.setOrigin(btVector3(origin.x, origin.y, origin.z));
+                shape = Ref<btSphereShape>::create(bodyComponent.radius);
+
+                btVector3 inertia = { 0, 0, 0 };
+                if (bodyComponent.mass != 0.0f)
+                    shape->calculateLocalInertia(bodyComponent.mass, inertia);
+
+                motion = Ref<btDefaultMotionState>::create(t);
+
+                btRigidBody::btRigidBodyConstructionInfo info(bodyComponent.mass, motion.get(), shape.get());
+
+                body = Ref<btRigidBody>::create(info);
+
+                break;
+            }
+        }
+
+        m_world->addRigidBody(body.get());
+        
+        m_rigidBodies[entity] = Ref<RigidBodyInfo>::create();
+        m_rigidBodies[entity]->body = body;
+        m_rigidBodies[entity]->shape = shape;
+        m_rigidBodies[entity]->motion = motion;
+    }
+
 
     // ^^^ Physics System ^^^ //
     

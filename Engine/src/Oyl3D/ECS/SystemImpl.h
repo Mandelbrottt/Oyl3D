@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Component.h"
 #include "System.h"
 
 #include <btBulletDynamicsCommon.h>
@@ -32,17 +33,29 @@ namespace oyl::ECS
 
         virtual bool onEvent(Ref<Event> event) override;
 
+        void addRigidBody(Entity entity, 
+                          const component::Transform& transformComponent, 
+                          const component::RigidBody& bodyComponent);
+
     private:
         Timestep m_fixedTimeStep;
 
+        struct RigidBodyInfo
+        {            
+            Ref<btRigidBody> body;
+
+            Ref<btCollisionShape> shape;
+            Ref<btMotionState> motion;
+        };
+
+        std::unordered_map<Entity, Ref<RigidBodyInfo>> m_rigidBodies;
+
         // TODO: Do i need to keep hold of all of these?
-        UniqueRef<btDynamicsWorld>          m_world;
-        UniqueRef<btDispatcher>             m_dispatcher;
         UniqueRef<btBroadphaseInterface>    m_broadphase;
+        UniqueRef<btDispatcher>             m_dispatcher;
         UniqueRef<btCollisionConfiguration> m_collisionConfig;
         UniqueRef<btConstraintSolver>       m_solver;
-
-        std::unordered_map<Entity, Ref<btRigidBody>> m_rigidBodies;
+        UniqueRef<btDynamicsWorld>          m_world;
     };
 
     namespace internal
