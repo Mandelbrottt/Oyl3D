@@ -55,6 +55,7 @@ project "OylEngine"
 	files {
 		"Engine/src/**.h",
 		"Engine/src/**.cpp"
+		"Engine/src/**.inl"
 	}
 
 	defines {
@@ -150,6 +151,7 @@ project "OylGame"
 	files {
 		"Game/src/**.h",
 		"Game/src/**.cpp"
+		"Game/src/**.inl"
 	}
 
 	excludes { "**/ClientAppTemplate.cpp" }

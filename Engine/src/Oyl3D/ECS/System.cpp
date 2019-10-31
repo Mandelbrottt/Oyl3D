@@ -24,33 +24,21 @@ namespace oyl::ECS
 {
     // vvv Generic System vvv //
 
-    void System::onEnter()
-    {
-    }
+    void System::onEnter() { }
 
-    void System::onExit()
-    {
-    }
+    void System::onExit() { }
 
-    void System::onUpdate(Timestep dt)
-    {
-    }
+    void System::onUpdate(Timestep dt) { }
 
-    void System::onGuiRender(Timestep dt)
-    {
-    }
+    void System::onGuiRender(Timestep dt) { }
 
     // ^^^ Generic System ^^^ //
 
     // vvv Render System vvv //
 
-    void RenderSystem::onEnter()
-    {
-    }
+    void RenderSystem::onEnter() { }
 
-    void RenderSystem::onExit()
-    {
-    }
+    void RenderSystem::onExit() { }
 
     void RenderSystem::onUpdate(Timestep dt)
     {
@@ -107,7 +95,7 @@ namespace oyl::ECS
                 auto  lightTransform =  registry->get<Transform>(lightView[0]);
                 
                 mr.material->setUniform3f("u_pointLight.position",  
-                                          viewNormal * glm::vec4(lightTransform.position, 1.0f));
+                                          viewNormal * glm::vec4(lightTransform.getPosition(), 1.0f));
                 mr.material->setUniform3f("u_pointLight.ambient",   lightProps.ambient);
                 mr.material->setUniform3f("u_pointLight.diffuse",   lightProps.diffuse);
                 mr.material->setUniform3f("u_pointLight.specular",  lightProps.specular);
@@ -117,28 +105,22 @@ namespace oyl::ECS
                 boundMaterial->applyUniforms();
             }
             
-            const glm::mat4& transform = reg->get_or_assign<Transform>(entity).getMatrix();
+            const glm::mat4& transform = reg->get_or_assign<Transform>(entity).getMatrixLocal();
 
             Renderer::submit(mr.mesh, mr.material, transform);
         }
     }
 
-    void RenderSystem::onGuiRender(Timestep dt)
-    {
-    }
+    void RenderSystem::onGuiRender(Timestep dt) { }
 
     bool RenderSystem::onEvent(Ref<Event> event)
     {
         return false;
     }
 
-    void RenderSystem::init()
-    {
-    }
+    void RenderSystem::init() { }
 
-    void RenderSystem::shutdown()
-    {
-    }
+    void RenderSystem::shutdown() { }
     
     // ^^^ Render System //
     
@@ -194,7 +176,7 @@ namespace oyl::ECS
             m_rigidBodies[entity]->motion->getWorldTransform(newT);
 
             btVector3 _pos = newT.getOrigin();
-            transform.position = { _pos.x(), _pos.y(), _pos.z() };
+            transform.setPosition({ _pos.x(), _pos.y(), _pos.z() });
         }
         
         //if (registry->view<component::RigidBody>().size() != m_rigidBodies.size())
@@ -207,9 +189,7 @@ namespace oyl::ECS
         m_world->stepSimulation(dt.getSeconds(), 1, m_fixedTimeStep);
     }
 
-    void PhysicsSystem::onGuiRender(Timestep dt)
-    {
-    }
+    void PhysicsSystem::onGuiRender(Timestep dt) { }
 
     bool PhysicsSystem::onEvent(Ref<Event> event)
     {
@@ -230,10 +210,10 @@ namespace oyl::ECS
             {
                 btTransform t;
                 t.setIdentity();
-                glm::vec3 origin = transformComponent.position;
+                glm::vec3 origin = transformComponent.getPosition();
                 t.setOrigin(btVector3(origin.x, origin.y, origin.z));
 
-                glm::vec3 up = glm::vec3(transformComponent.getMatrix()[1]);
+                glm::vec3 up = glm::vec3(transformComponent.getMatrixLocal()[1]);
                 
                 shape  = Ref<btStaticPlaneShape>::create(btVector3(up.x, up.y, up.z), 0);
                 motion = Ref<btDefaultMotionState>::create(t);
@@ -253,7 +233,7 @@ namespace oyl::ECS
             {
                 btTransform t;
                 t.setIdentity();
-                glm::vec3 origin = transformComponent.position;
+                glm::vec3 origin = transformComponent.getPosition();
                 t.setOrigin(btVector3(origin.x, origin.y, origin.z));
                 shape = Ref<btSphereShape>::create(bodyComponent.radius);
 
@@ -306,9 +286,7 @@ namespace oyl::ECS
             registry->assign<ExcludeFromHierarchy>(e);
         }
 
-        void OracleCameraSystem::onExit()
-        {
-        }
+        void OracleCameraSystem::onExit() { }
 
         void OracleCameraSystem::onUpdate(Timestep dt)
         {

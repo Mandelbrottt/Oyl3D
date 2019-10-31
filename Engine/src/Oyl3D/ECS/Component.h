@@ -14,15 +14,68 @@ namespace oyl::component
         std::string name;
     };
 
-    // TODO: Distinction between local and global
-    // TODO: Change access to functions
     struct Transform
     {
-        glm::vec3 position = glm::vec3(0.0f);
-        glm::vec3 rotation = glm::vec3(0.0f);
-        glm::vec3 scale    = glm::vec3(1.0f);
+    public:
+        glm::vec3 getPosition()  const;
+        f32       getPositionX() const;
+        f32       getPositionY() const;
+        f32       getPositionZ() const;
+        
+        glm::vec3 getRotationEuler()  const;
+        f32       getRotationEulerX() const;
+        f32       getRotationEulerY() const;
+        f32       getRotationEulerZ() const;
+        
+        OYL_DEPRECATED("Not implemented, use getRotationEuler() instead.")
+        glm::quat getRotationQuat() const;
+        
+        glm::vec3 getScale()  const;
+        f32       getScaleX() const;
+        f32       getScaleY() const;
+        f32       getScaleZ() const;
 
-        glm::mat4 getMatrix() const;
+        const glm::mat4& getMatrixLocal()  const;
+        glm::mat4        getMatrixGlobal() const;
+
+        glm::vec3 getForwardLocal() const;
+        glm::vec3 getRightLocal()   const;
+        glm::vec3 getUpLocal()      const;
+
+        glm::vec3 getForwardGlobal() const;
+        glm::vec3 getRightGlobal()   const;
+        glm::vec3 getUpGlobal()      const;
+
+        void setPosition(glm::vec3 position);
+        void setPositionX(f32 x);
+        void setPositionY(f32 y);
+        void setPositionZ(f32 z);
+
+        void setRotationEuler(glm::vec3 rotation);
+        void setRotationEulerX(f32 x);
+        void setRotationEulerY(f32 y);
+        void setRotationEulerZ(f32 z);
+
+        OYL_DEPRECATED("Not implemented, use setRotationEuler instead.")
+        void setRotationQuat(glm::quat rotation);
+        
+        void setScale(glm::vec3 scale);
+        void setScaleX(f32 x);
+        void setScaleY(f32 y);
+        void setScaleZ(f32 z);
+
+        bool isLocalDirty() const;
+    private:
+        glm::vec3 m_localPosition      = glm::vec3(0.0f);
+        glm::vec3 m_localEulerRotation = glm::vec3(0.0f);
+        glm::quat m_localQuatRotaiton  = glm::quat(glm::vec3(0.0f));
+        glm::vec3 m_localScale         = glm::vec3(1.0f);
+        
+        mutable glm::mat4 m_localMatrix = glm::mat4(1.0f);
+
+        mutable glm::mat4 m_globalMatrix = glm::mat4(1.0f);
+
+        mutable bool m_isLocalDirty = true;
     };
 
     struct Renderable
@@ -93,14 +146,8 @@ namespace oyl::component
             Ref<Camera> camera;
         };
 
-        struct SceneIntrinsic
-        {
-            
-        };
-
-        struct ExcludeFromHierarchy
-        {
-            
-        };
+        struct ExcludeFromHierarchy { };
     }
 }
+
+#include "Component.inl"

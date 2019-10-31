@@ -362,61 +362,75 @@ namespace oyl
 
             ImGui::PushItemWidth(newWidth);
 
-            const float posDragSpeed = 0.02f;
-            ImGui::Text("Position");
-            ImGui::SameLine(ImGui::GetWindowContentRegionWidth() - (15 * 3 + newWidth * 3 + 27));
-            ImGui::SetNextItemWidth(15);
-            ImGui::DragFloat("##XPos", &transform.position.x, posDragSpeed, 0, 0, "X");
-            ImGui::SameLine();
-            ImGui::InputFloat("##XPosInput", &transform.position.x, 0, 0, "%.2f");
-            ImGui::SameLine();
-            ImGui::SetNextItemWidth(15);
-            ImGui::DragFloat("##YPos", &transform.position.y, posDragSpeed, 0, 0, "Y");
-            ImGui::SameLine();
-            ImGui::InputFloat("##YPosInput", &transform.position.y, 0, 0, "%.2f");
-            ImGui::SameLine();
-            ImGui::SetNextItemWidth(15);
-            ImGui::DragFloat("##ZPos", &transform.position.z, posDragSpeed, 0, 0, "Z");
-            ImGui::SameLine();
-            ImGui::InputFloat("##ZPosInput", &transform.position.z, 0, 0, "%.2f");
+            {
+                glm::vec3 position = transform.getPosition();
 
-            const float rotDragSpeed = 0.5f;
-            ImGui::Text("Rotation");
-            ImGui::SameLine(ImGui::GetWindowContentRegionWidth() - (15 * 3 + newWidth * 3 + 27));
-            ImGui::SetNextItemWidth(15);
-            ImGui::DragFloat("##XRot", &transform.rotation.x, rotDragSpeed, 0, 0, "X");
-            ImGui::SameLine();
-            ImGui::InputFloat("##XRotInput", &transform.rotation.x, 0, 0, "%.2f");
-            ImGui::SameLine();
-            ImGui::SetNextItemWidth(15);
-            ImGui::DragFloat("##YRot", &transform.rotation.y, rotDragSpeed, 0, 0, "Y");
-            ImGui::SameLine();
-            ImGui::InputFloat("##YRotInput", &transform.rotation.y, 0, 0, "%.2f");
-            ImGui::SameLine();
-            ImGui::SetNextItemWidth(15);
-            ImGui::DragFloat("##ZRot", &transform.rotation.z, rotDragSpeed, 0, 0, "Z");
-            ImGui::SameLine();
-            ImGui::InputFloat("##ZRotInput", &transform.rotation.z, 0, 0, "%.2f");
+                const float posDragSpeed = 0.02f;
+                ImGui::Text("Position");
+                ImGui::SameLine(ImGui::GetWindowContentRegionWidth() - (15 * 3 + newWidth * 3 + 27));
+                ImGui::SetNextItemWidth(15);
+                ImGui::DragFloat("##XPos", &position.x, posDragSpeed, 0, 0, "X");
+                ImGui::SameLine();
+                ImGui::InputFloat("##XPosInput", &position.x, 0, 0, "%.2f");
+                ImGui::SameLine();
+                ImGui::SetNextItemWidth(15);
+                ImGui::DragFloat("##YPos", &position.y, posDragSpeed, 0, 0, "Y");
+                ImGui::SameLine();
+                ImGui::InputFloat("##YPosInput", &position.y, 0, 0, "%.2f");
+                ImGui::SameLine();
+                ImGui::SetNextItemWidth(15);
+                ImGui::DragFloat("##ZPos", &position.z, posDragSpeed, 0, 0, "Z");
+                ImGui::SameLine();
+                ImGui::InputFloat("##ZPosInput", &position.z, 0, 0, "%.2f");
 
-            const float scaleDragSpeed = 0.02f;
-            ImGui::Text("Scale");
-            ImGui::SameLine(ImGui::GetWindowContentRegionWidth() - (15 * 3 + newWidth * 3 + 27));
-            ImGui::SetNextItemWidth(15);
-            ImGui::DragFloat("##XSca", &transform.scale.x, scaleDragSpeed, 0, 0, "X");
-            ImGui::SameLine();
-            ImGui::InputFloat("##XScaInput", &transform.scale.x, 0, 0, "%.2f");
-            ImGui::SameLine();
-            ImGui::SetNextItemWidth(15);
-            ImGui::DragFloat("##YSca", &transform.scale.y, scaleDragSpeed, 0, 0, "Y");
-            ImGui::SameLine();
-            ImGui::InputFloat("##YScaInput", &transform.scale.y, 0, 0, "%.2f");
-            ImGui::SameLine();
-            ImGui::SetNextItemWidth(15);
-            ImGui::DragFloat("##ZSca", &transform.scale.z, scaleDragSpeed, 0, 0, "Z");
-            ImGui::SameLine();
-            ImGui::InputFloat("##ZScaInput", &transform.scale.z, 0, 0, "%.2f");
+                transform.setPosition(position);
+            }
+            {
+                glm::vec3 rotation = transform.getRotationEuler();
 
-            ImGui::IsItemClicked();
+                const float rotDragSpeed = 0.5f;
+                ImGui::Text("Rotation");
+                ImGui::SameLine(ImGui::GetWindowContentRegionWidth() - (15 * 3 + newWidth * 3 + 27));
+                ImGui::SetNextItemWidth(15);
+                ImGui::DragFloat("##XRot", &rotation.x, rotDragSpeed, 0, 0, "X");
+                ImGui::SameLine();
+                ImGui::InputFloat("##XRotInput", &rotation.x, 0, 0, "%.2f");
+                ImGui::SameLine();
+                ImGui::SetNextItemWidth(15);
+                ImGui::DragFloat("##YRot", &rotation.y, rotDragSpeed, 0, 0, "Y");
+                ImGui::SameLine();
+                ImGui::InputFloat("##YRotInput", &rotation.y, 0, 0, "%.2f");
+                ImGui::SameLine();
+                ImGui::SetNextItemWidth(15);
+                ImGui::DragFloat("##ZRot", &rotation.z, rotDragSpeed, 0, 0, "Z");
+                ImGui::SameLine();
+                ImGui::InputFloat("##ZRotInput", &rotation.z, 0, 0, "%.2f");
+
+                transform.setRotationEuler(rotation);
+            }
+            {
+                glm::vec3 scale = transform.getScale();
+
+                const float scaleDragSpeed = 0.02f;
+                ImGui::Text("Scale");
+                ImGui::SameLine(ImGui::GetWindowContentRegionWidth() - (15 * 3 + newWidth * 3 + 27));
+                ImGui::SetNextItemWidth(15);
+                ImGui::DragFloat("##XSca", &scale.x, scaleDragSpeed, 0, 0, "X");
+                ImGui::SameLine();
+                ImGui::InputFloat("##XScaInput", &scale.x, 0, 0, "%.2f");
+                ImGui::SameLine();
+                ImGui::SetNextItemWidth(15);
+                ImGui::DragFloat("##YSca", &scale.y, scaleDragSpeed, 0, 0, "Y");
+                ImGui::SameLine();
+                ImGui::InputFloat("##YScaInput", &scale.y, 0, 0, "%.2f");
+                ImGui::SameLine();
+                ImGui::SetNextItemWidth(15);
+                ImGui::DragFloat("##ZSca", &scale.z, scaleDragSpeed, 0, 0, "Z");
+                ImGui::SameLine();
+                ImGui::InputFloat("##ZScaInput", &scale.z, 0, 0, "%.2f");
+
+                transform.setScale(scale);
+            }
 
             ImGui::PopItemWidth();
 
@@ -424,13 +438,9 @@ namespace oyl
         }
     }
 
-    void GuiLayer::drawInspectorRenderable()
-    {
-    }
+    void GuiLayer::drawInspectorRenderable() {}
 
-    void GuiLayer::drawInspectorRigidBody()
-    {
-    }
+    void GuiLayer::drawInspectorRigidBody() {}
 
     void GuiLayer::drawViewport()
     {
@@ -561,11 +571,15 @@ namespace oyl
 
             auto& model = registry->get<Transform>(Entity(m_currentEntity));
 
+            glm::vec3 position = model.getPosition();
+            glm::vec3 rotation = model.getRotationEuler();
+            glm::vec3 scale    = model.getScale();
+            
             glm::mat4 modelMatrix;
 
-            ImGuizmo::RecomposeMatrixFromComponents(value_ptr(model.position),
-                                                    value_ptr(model.rotation),
-                                                    value_ptr(model.scale),
+            ImGuizmo::RecomposeMatrixFromComponents(value_ptr(position),
+                                                    value_ptr(rotation),
+                                                    value_ptr(scale),
                                                     value_ptr(modelMatrix));
 
             ImGuizmo::Manipulate(value_ptr(cam->getViewMatrix()),
@@ -577,11 +591,15 @@ namespace oyl
                                  m_doSnap ? &m_snap.x : nullptr);
 
             ImGuizmo::DecomposeMatrixToComponents(value_ptr(modelMatrix),
-                                                  value_ptr(model.position),
-                                                  value_ptr(model.rotation),
-                                                  value_ptr(model.scale));
+                                                  value_ptr(position),
+                                                  value_ptr(rotation),
+                                                  value_ptr(scale));
 
-            model.scale = glm::max(glm::vec3(0.01f), model.scale);
+            scale = glm::max(glm::vec3(0.01f), scale);
+
+            model.setPosition(position);
+            model.setRotationEuler(rotation);
+            model.setScale(scale);
         }
     }
 

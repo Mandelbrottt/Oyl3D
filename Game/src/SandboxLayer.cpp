@@ -23,7 +23,7 @@ void SandboxLayer::onEnter()
         registry->assign<component::Renderable>(e, mr);
 
         component::Transform t;
-        t.position = glm::vec3(0.0f);
+        t.setPosition(glm::vec3(0.0f));
         registry->assign<component::Transform>(e, t);
 
         auto& so = registry->assign<component::SceneObject>(e);
@@ -38,8 +38,8 @@ void SandboxLayer::onEnter()
         registry->assign<component::Renderable>(e, mr);
 
         component::Transform t;
-        t.position = glm::vec3(3.0f, 3.0f, 3.0f);
-        t.scale = glm::vec3(0.3f);
+        t.setPosition(glm::vec3(3.0f, 3.0f, 3.0f));
+        t.setScale(glm::vec3(0.3f));
         registry->assign<component::Transform>(e, t);
 
         auto& l = registry->assign<component::PointLight>(e);
@@ -56,7 +56,7 @@ void SandboxLayer::onEnter()
         registry->assign<component::Renderable>(e, mr);
 
         component::Transform t;
-        t.position = glm::vec3(0.0f, -5.0f, 0.0f);
+        t.setPosition(glm::vec3(0.0f, -5.0f, 0.0f));
         registry->assign<component::Transform>(e, t);
 
         auto& so = registry->assign<component::SceneObject>(e);
@@ -74,7 +74,7 @@ void SandboxLayer::onEnter()
         registry->assign<component::Renderable>(e, mr);
 
         component::Transform t;
-        t.position = glm::vec3(-3.0f, -1.0f, -2.0f);
+        t.setPosition(glm::vec3(-3.0f, -1.0f, -2.0f));
         registry->assign<component::Transform>(e, t);
 
         auto& so = registry->assign<component::SceneObject>(e);

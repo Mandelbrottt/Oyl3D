@@ -107,8 +107,6 @@ namespace oyl
 
     void Scene::loadSceneFromFile()
     {
-        using component::internal::SceneIntrinsic;
-
         using component::SceneObject;
         using component::Transform;
         
@@ -142,17 +140,17 @@ namespace oyl
                 if (key == so.name)
                 {
                     auto& t = m_registry->get_or_assign<Transform>(entity);
-                    t.position.x = value["Transform"]["Position"]["X"].get<float>();
-                    t.position.y = value["Transform"]["Position"]["Y"].get<float>();
-                    t.position.z = value["Transform"]["Position"]["Z"].get<float>();
+                    t.setPositionX(value["Transform"]["Position"]["X"].get<float>());
+                    t.setPositionY(value["Transform"]["Position"]["Y"].get<float>());
+                    t.setPositionZ(value["Transform"]["Position"]["Z"].get<float>());
 
-                    t.rotation.x = value["Transform"]["Rotation"]["X"].get<float>();
-                    t.rotation.y = value["Transform"]["Rotation"]["Y"].get<float>();
-                    t.rotation.z = value["Transform"]["Rotation"]["Z"].get<float>();
+                    t.setRotationEulerX(value["Transform"]["Rotation"]["X"].get<float>());
+                    t.setRotationEulerY(value["Transform"]["Rotation"]["Y"].get<float>());
+                    t.setRotationEulerZ(value["Transform"]["Rotation"]["Z"].get<float>());
 
-                    t.scale.x = value["Transform"]["Scale"]["X"].get<float>();
-                    t.scale.y = value["Transform"]["Scale"]["Y"].get<float>();
-                    t.scale.z = value["Transform"]["Scale"]["Z"].get<float>();
+                    t.setScaleX(value["Transform"]["Scale"]["X"].get<float>());
+                    t.setScaleY(value["Transform"]["Scale"]["Y"].get<float>());
+                    t.setScaleZ(value["Transform"]["Scale"]["Z"].get<float>());
 
                     // Other components...
 
@@ -197,17 +195,17 @@ namespace oyl
         {
             auto& so = view.get<SceneObject>(entity);
             auto& t =  view.get<Transform>(entity);
-            sceneJson[so.name]["Transform"]["Position"]["X"] = t.position.x;
-            sceneJson[so.name]["Transform"]["Position"]["Y"] = t.position.y;
-            sceneJson[so.name]["Transform"]["Position"]["Z"] = t.position.z;
+            sceneJson[so.name]["Transform"]["Position"]["X"] = t.getPositionX();
+            sceneJson[so.name]["Transform"]["Position"]["Y"] = t.getPositionY();
+            sceneJson[so.name]["Transform"]["Position"]["Z"] = t.getPositionZ();
 
-            sceneJson[so.name]["Transform"]["Rotation"]["X"] = t.rotation.x;
-            sceneJson[so.name]["Transform"]["Rotation"]["Y"] = t.rotation.y;
-            sceneJson[so.name]["Transform"]["Rotation"]["Z"] = t.rotation.z;
+            sceneJson[so.name]["Transform"]["Rotation"]["X"] = t.getRotationEulerX();
+            sceneJson[so.name]["Transform"]["Rotation"]["Y"] = t.getRotationEulerY();
+            sceneJson[so.name]["Transform"]["Rotation"]["Z"] = t.getRotationEulerZ();
 
-            sceneJson[so.name]["Transform"]["Scale"]["X"] = t.scale.x;
-            sceneJson[so.name]["Transform"]["Scale"]["Y"] = t.scale.y;
-            sceneJson[so.name]["Transform"]["Scale"]["Z"] = t.scale.z;
+            sceneJson[so.name]["Transform"]["Scale"]["X"] = t.getScaleX();
+            sceneJson[so.name]["Transform"]["Scale"]["Y"] = t.getScaleY();
+            sceneJson[so.name]["Transform"]["Scale"]["Z"] = t.getScaleZ();
         }
         
         std::ofstream sceneFile("res/scenes/" + m_name + ".oylscene");

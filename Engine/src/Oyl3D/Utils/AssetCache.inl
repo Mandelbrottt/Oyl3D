@@ -1,3 +1,6 @@
+#pragma once
+#include "AssetCache.h"
+
 namespace oyl::internal
 {    
     template<class T>
