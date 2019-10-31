@@ -246,6 +246,7 @@ namespace oyl
 
             m_renderSystem->onGuiRender(timestep);
 
+            m_guiLayer->onGuiRenderSystems(timestep);
             m_guiLayer->onGuiRender(timestep);
 
             if (m_guiLayer->doGameUpdate())

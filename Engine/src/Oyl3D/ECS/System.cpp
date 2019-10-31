@@ -324,7 +324,7 @@ namespace oyl::ECS
 
         void OracleCameraSystem::onGuiRender(Timestep dt)
         {
-            ImGui::Begin("Camera");
+            ImGui::Begin("Camera##CameraSettings");
 
             ImGui::SliderFloat("Move Speed", &m_cameraMoveSpeed, 5.0f, 30.f);
             ImGui::SliderFloat("Turn Speed", &m_cameraRotateSpeed, 0.1f, 50.0f);
