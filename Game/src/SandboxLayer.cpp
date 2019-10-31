@@ -82,7 +82,7 @@ void SandboxLayer::onEnter()
 
         auto& rb = registry->assign<component::RigidBody>(e);
         rb.type   = RigidBody_Sphere;
-        rb.radius = 1.0f;
+        rb.radius = 0.5f;
         rb.mass   = 1.0f;
     }
 }
