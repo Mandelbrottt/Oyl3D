@@ -1,6 +1,8 @@
 #pragma once
 
 //#include "Oyl3D/Events/Event.h"
+#include "Oyl3D/ECS/Registry.h"
+
 #include "Oyl3D/Events/EventListener.h"
 
 #include "Oyl3D/Scenes/Node.h"
@@ -12,8 +14,6 @@ namespace oyl
 
 namespace oyl::ECS
 {
-    class Registry;
-
     class ISystem : public virtual Node
     {
     public:

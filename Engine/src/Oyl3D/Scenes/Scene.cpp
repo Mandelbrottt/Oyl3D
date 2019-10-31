@@ -175,6 +175,12 @@ namespace oyl
         //    sceneJson[so.name]["Transform"]["Scale"]["Y"] = t.scale.y;
         //    sceneJson[so.name]["Transform"]["Scale"]["Z"] = t.scale.z;
         //}
+
+        //m_registry->each(
+        //    [&](auto entity)
+        //    {
+        //        m_registry->assign<SceneIntrinsic>(entity);
+        //    });
     }
 
     void Scene::saveSceneToFile()

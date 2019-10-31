@@ -157,10 +157,35 @@ namespace oyl
 
         drawViewport();
 
-        ImGui::Begin("TestPlayButton");
-
-        ImGui::Checkbox("Play Button", &gameUpdate);
-        
+        if (ImGui::Begin("TestPlayButton"))
+        {
+            if (m_editorOverrideUpdate)
+            {
+                if (ImGui::ArrowButton("##EditorPlayButton", ImGuiDir_Right))
+                {
+                    m_editorOverrideUpdate = false;
+                    m_gameUpdate = true;
+                    m_registryRestore = Scene::current()->getRegistry()->clone();
+                    m_currentEntity = Entity(-1);
+                }
+            }
+            else
+            {
+                if (ImGui::ArrowButton("##EditorBackButton", ImGuiDir_Left))
+                {
+                    m_editorOverrideUpdate = true;
+                    m_gameUpdate = false;
+                    *Scene::current()->m_registry = m_registryRestore.clone();
+                    m_currentEntity = Entity(-1);
+                }
+                ImGui::SameLine();
+                if ((m_gameUpdate && ImGui::Button("II##EditorPauseButton")) ||
+                    (!m_gameUpdate && ImGui::ArrowButton("##EditorPausedPlayButton", ImGuiDir_Right)))
+                {
+                    m_gameUpdate ^= 1;
+                }
+            }
+        }
         ImGui::End();
     }
 
@@ -189,7 +214,7 @@ namespace oyl
                 //}
             }
         }
-        return !gameUpdate;
+        return !m_editorOverrideUpdate;
     }
 
     void GuiLayer::drawMenuBar()
@@ -199,12 +224,12 @@ namespace oyl
         {
             if (ImGui::BeginMenu("File##MainMenuBarFile"))
             {
-                if (ImGui::MenuItem("Save##MainMenuSave", "Ctrl+S"))
+                if (ImGui::MenuItem("Save##MainMenuSave", "Ctrl+S", false, m_editorOverrideUpdate))
                 {
                     Scene::current()->saveSceneToFile();   
                 }
                 showReloadDialogue = 
-                    ImGui::MenuItem("Reload##MainMenuReload", "Ctrl+Shift+S");
+                    ImGui::MenuItem("Reload##MainMenuReload", "Ctrl+Shift+S", false, m_editorOverrideUpdate);
                 
                 ImGui::EndMenu();
             }

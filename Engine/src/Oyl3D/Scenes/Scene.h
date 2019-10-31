@@ -1,6 +1,6 @@
 #pragma once
 
-//#include "Oyl3D/ECS/Registry.h"
+#include "Oyl3D/ECS/Registry.h"
 
 //#include "Oyl3D/Events/Event.h"
 //#include "Oyl3D/Events/EventListener.h"
@@ -12,13 +12,14 @@ namespace oyl
 {
     namespace ECS
     {
-        class Registry;
+        //class Registry;
         class RenderSystem;
     }
 
     class Scene : public EventListener, public virtual Node
     {
         friend class Application;
+        friend class GuiLayer;
     protected:
         explicit Scene();
 
