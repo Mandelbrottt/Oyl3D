@@ -383,7 +383,8 @@ namespace oyl
                 ImGui::SameLine();
                 ImGui::InputFloat("##ZPosInput", &position.z, 0, 0, "%.2f");
 
-                transform.setPosition(position);
+                if (position != transform.getPosition())
+                    transform.setPosition(position);
             }
             {
                 glm::vec3 rotation = transform.getRotationEuler();
@@ -406,7 +407,8 @@ namespace oyl
                 ImGui::SameLine();
                 ImGui::InputFloat("##ZRotInput", &rotation.z, 0, 0, "%.2f");
 
-                transform.setRotationEuler(rotation);
+                if (rotation != transform.getRotationEuler())
+                    transform.setRotationEuler(rotation);
             }
             {
                 glm::vec3 scale = transform.getScale();
@@ -429,7 +431,8 @@ namespace oyl
                 ImGui::SameLine();
                 ImGui::InputFloat("##ZScaInput", &scale.z, 0, 0, "%.2f");
 
-                transform.setScale(scale);
+                if (scale != transform.getScale())
+                    transform.setScale(scale);
             }
 
             ImGui::PopItemWidth();
@@ -597,9 +600,12 @@ namespace oyl
 
             scale = glm::max(glm::vec3(0.01f), scale);
 
-            model.setPosition(position);
-            model.setRotationEuler(rotation);
-            model.setScale(scale);
+            if (ImGuizmo::IsUsing())
+            {
+                model.setPosition(position);
+                model.setRotationEuler(rotation);
+                model.setScale(scale);
+            }
         }
     }
 

@@ -5,6 +5,11 @@ namespace oyl
     class Mesh;
     class Material;
     class Camera;
+
+    namespace ECS
+    {
+        class PhysicsSystem;
+    }
 }
 
 namespace oyl::component
@@ -65,7 +70,10 @@ namespace oyl::component
         void setScaleZ(f32 z);
 
         bool isLocalDirty() const;
+
     private:
+        friend ECS::PhysicsSystem;
+        
         glm::vec3 m_localPosition      = glm::vec3(0.0f);
         glm::vec3 m_localEulerRotation = glm::vec3(0.0f);
         glm::quat m_localQuatRotaiton  = glm::quat(glm::vec3(0.0f));
@@ -76,6 +84,10 @@ namespace oyl::component
         mutable glm::mat4 m_globalMatrix = glm::mat4(1.0f);
 
         mutable bool m_isLocalDirty = true;
+        
+        bool m_isPositionOverridden = true;
+        bool m_isRotationOverridden = true;
+        bool m_isScaleOverridden    = true;
     };
 
     struct Renderable

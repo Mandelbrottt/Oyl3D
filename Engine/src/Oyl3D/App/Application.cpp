@@ -227,14 +227,15 @@ namespace oyl
                 m_guiLayer->onUpdateSystems(timestep);
                 m_guiLayer->onUpdate(timestep);
                 
-                m_renderSystem->onUpdate(timestep);
-                
                 if (m_guiLayer->doGameUpdate())
                 {
                     m_currentScene->onUpdate(timestep);
                 }
+                
+                m_renderSystem->onUpdate(timestep);
             #else
                 m_currentScene->onUpdate(timestep);
+                m_renderSystem->onUpdate(timestep);
             #endif
 
                 Renderer::endScene();

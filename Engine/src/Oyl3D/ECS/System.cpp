@@ -105,7 +105,7 @@ namespace oyl::ECS
                 boundMaterial->applyUniforms();
             }
             
-            const glm::mat4& transform = reg->get_or_assign<Transform>(entity).getMatrixLocal();
+            const glm::mat4& transform = reg->get_or_assign<Transform>(entity).getMatrixGlobal();
 
             Renderer::submit(mr.mesh, mr.material, transform);
         }
@@ -172,11 +172,57 @@ namespace oyl::ECS
                 addRigidBody(entity, transform, rigidBody);
             }
 
-            btTransform newT = {};
-            m_rigidBodies[entity]->motion->getWorldTransform(newT);
+            //btTransform newT = {};
+            //m_rigidBodies[entity]->motion->getWorldTransform(newT);
 
-            btVector3 _pos = newT.getOrigin();
-            transform.setPosition({ _pos.x(), _pos.y(), _pos.z() });
+            btVector3 _pos = {};
+            btQuaternion _rot = {};
+            if (transform.m_isPositionOverridden || transform.m_isRotationOverridden)
+            {
+                //btTransform newTransform;
+                //
+                //_pos = { transform.getPositionX(), transform.getPositionY(), transform.getPositionZ() };
+                //_rot.setEuler(transform.getRotationEulerX(), 
+                //              transform.getRotationEulerY(), 
+                //              transform.getRotationEulerZ());
+                //
+                //newTransform.setOrigin(_pos);
+                //newTransform.setRotation(_rot);
+                //
+                ////m_rigidBodies[entity]->body->setWorldTransform(newTransform);
+                //m_rigidBodies[entity]->body->setCenterOfMassTransform(newTransform);
+                //m_rigidBodies[entity]->motion->setWorldTransform(newTransform);
+
+                //m_rigidBodies[entity]->body->setLinearVelocity(btVector3(0, 0, 0));
+                //m_rigidBodies[entity]->body->setAngularVelocity(btVector3(0, 0, 0));
+
+                //m_rigidBodies[entity]->body->clearForces();
+
+                m_world->removeRigidBody(m_rigidBodies[entity]->body.get());
+                addRigidBody(entity, transform, rigidBody);
+
+                transform.m_isPositionOverridden = false;
+                transform.m_isRotationOverridden = false;
+            }
+            else
+            {
+                btTransform t = m_rigidBodies[entity]->body->getWorldTransform();
+                //btTransform t = {};
+                //m_rigidBodies[entity]->motion->getWorldTransform(t);
+
+                _pos = t.getOrigin();
+                _rot = t.getRotation();
+                
+                transform.m_localPosition = { _pos.x(), _pos.y(), _pos.z() };
+
+                glm::vec3 newRot = {};
+                _rot.getEulerZYX(newRot.z, newRot.y, newRot.x);
+                newRot = glm::degrees(newRot);
+                
+                transform.m_localEulerRotation = newRot;
+                
+                transform.m_isLocalDirty = true;
+            }
         }
         
         //if (registry->view<component::RigidBody>().size() != m_rigidBodies.size())
@@ -209,11 +255,14 @@ namespace oyl::ECS
             case RigidBody_StaticPlane:
             {
                 btTransform t;
-                t.setIdentity();
-                glm::vec3 origin = transformComponent.getPosition();
-                t.setOrigin(btVector3(origin.x, origin.y, origin.z));
-
-                glm::vec3 up = glm::vec3(transformComponent.getMatrixLocal()[1]);
+                //t.setIdentity();
+                //glm::vec3 origin = transformComponent.getPosition();
+                //t.setOrigin(btVector3(origin.x, origin.y, origin.z));
+                
+                glm::mat4 newTransform = transformComponent.getMatrixGlobal();
+                t.setFromOpenGLMatrix(value_ptr(newTransform));
+                
+                glm::vec3 up = transformComponent.getUpGlobal();
                 
                 shape  = Ref<btStaticPlaneShape>::create(btVector3(up.x, up.y, up.z), 0);
                 motion = Ref<btDefaultMotionState>::create(t);
@@ -232,9 +281,13 @@ namespace oyl::ECS
             case RigidBody_Sphere:
             {
                 btTransform t;
-                t.setIdentity();
-                glm::vec3 origin = transformComponent.getPosition();
-                t.setOrigin(btVector3(origin.x, origin.y, origin.z));
+                //t.setIdentity();
+                //glm::vec3 origin = transformComponent.getPosition();
+                //t.setOrigin(btVector3(origin.x, origin.y, origin.z));
+                
+                glm::mat4 newTransform = transformComponent.getMatrixGlobal();
+                t.setFromOpenGLMatrix(value_ptr(newTransform));
+                
                 shape = Ref<btSphereShape>::create(bodyComponent.radius);
 
                 btVector3 inertia = { 0, 0, 0 };
@@ -243,7 +296,7 @@ namespace oyl::ECS
 
                 motion = Ref<btDefaultMotionState>::create(t);
 
-                btRigidBody::btRigidBodyConstructionInfo info(bodyComponent.mass, motion.get(), shape.get());
+                btRigidBody::btRigidBodyConstructionInfo info(bodyComponent.mass, motion.get(), shape.get(), inertia);
 
                 body = Ref<btRigidBody>::create(info);
 

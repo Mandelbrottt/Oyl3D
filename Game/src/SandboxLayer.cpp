@@ -78,12 +78,32 @@ void SandboxLayer::onEnter()
         registry->assign<component::Transform>(e, t);
 
         auto& so = registry->assign<component::SceneObject>(e);
-        so.name = "Sphere";
+        so.name = "Sphere 1";
 
         auto& rb = registry->assign<component::RigidBody>(e);
         rb.type   = RigidBody_Sphere;
         rb.radius = 0.5f;
         rb.mass   = 1.0f;
+    }
+    {
+        component::Renderable mr;
+        mr.mesh = Mesh::get("sphere");
+        mr.material = mat;
+
+        Entity e = registry->create();
+        registry->assign<component::Renderable>(e, mr);
+
+        component::Transform t;
+        t.setPosition(glm::vec3(-3.0f, -1.0f, -2.0f));
+        registry->assign<component::Transform>(e, t);
+
+        auto& so = registry->assign<component::SceneObject>(e);
+        so.name = "Sphere 2";
+
+        auto& rb = registry->assign<component::RigidBody>(e);
+        rb.type = RigidBody_Sphere;
+        rb.radius = 0.5f;
+        rb.mass = 1.0f;
     }
 }
 

@@ -124,50 +124,58 @@ namespace oyl::component
 
     inline void Transform::setPosition(glm::vec3 position)
     {
+        m_isLocalDirty |= m_localPosition != position;
         m_localPosition = position;
-        m_isLocalDirty = true;
+        m_isPositionOverridden = true;
     }
 
     inline void Transform::setPositionX(f32 x)
     {
+        m_isLocalDirty |= m_localPosition.x != x;
         m_localPosition.x = x;
-        m_isLocalDirty = true;
+        m_isPositionOverridden = true;
     }
 
     inline void Transform::setPositionY(f32 y)
     {
+        m_isLocalDirty |= m_localPosition.y != y;
         m_localPosition.y = y;
-        m_isLocalDirty = true;
+        m_isPositionOverridden = true;
     }
 
     inline void Transform::setPositionZ(f32 z)
     {
-        m_localPosition.x = z;
-        m_isLocalDirty = true;
+        m_isLocalDirty |= m_localPosition.z != z;
+        m_localPosition.z = z;
+        m_isPositionOverridden = true;
     }
 
     inline void Transform::setRotationEuler(glm::vec3 rotation)
     {
+        m_isLocalDirty |= m_localEulerRotation != rotation;
         m_localEulerRotation = rotation;
-        m_isLocalDirty = true;
+        m_isRotationOverridden = true;
     }
 
     inline void Transform::setRotationEulerX(f32 x)
     {
+        m_isLocalDirty |= m_localEulerRotation.x != x;
         m_localEulerRotation.x = x;
-        m_isLocalDirty = true;
+        m_isRotationOverridden = true;
     }
 
     inline void Transform::setRotationEulerY(f32 y)
     {
+        m_isLocalDirty |= m_localEulerRotation.y != y;
         m_localEulerRotation.y = y;
-        m_isLocalDirty = true;
+        m_isRotationOverridden = true;
     }
 
     inline void Transform::setRotationEulerZ(f32 z)
     {
+        m_isLocalDirty |= m_localEulerRotation.z != z;
         m_localEulerRotation.z = z;
-        m_isLocalDirty = true;
+        m_isRotationOverridden = true;
     }
 
     OYL_DEPRECATED("Not implemented, use setRotationEuler instead.")
@@ -178,26 +186,30 @@ namespace oyl::component
 
     inline void Transform::setScale(glm::vec3 scale)
     {
+        m_isLocalDirty |= m_localScale != scale;
         m_localScale = scale;
-        m_isLocalDirty = true;
+        m_isScaleOverridden = true;
     }
 
     inline void Transform::setScaleX(f32 x)
     {
+        m_isLocalDirty |= m_localScale.x != x;
         m_localScale.x = x;
-        m_isLocalDirty = true;
+        m_isScaleOverridden = true;
     }
 
     inline void Transform::setScaleY(f32 y)
     {
+        m_isLocalDirty |= m_localScale.y != y;
         m_localScale.y = y;
-        m_isLocalDirty = true;
+        m_isScaleOverridden = true;
     }
 
     inline void Transform::setScaleZ(f32 z)
     {
+        m_isLocalDirty |= m_localScale.z != z;
         m_localScale.z = z;
-        m_isLocalDirty = true;
+        m_isScaleOverridden = true;
     }
 
     inline bool Transform::isLocalDirty() const
