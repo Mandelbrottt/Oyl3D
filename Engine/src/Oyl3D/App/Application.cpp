@@ -6,6 +6,8 @@
 
 #include "Debug/GuiLayer.h"
 
+#include "ECS/SystemImpl.h"
+
 #include "Events/EventDispatcher.h"
 #include "Events/EventListener.h"
 

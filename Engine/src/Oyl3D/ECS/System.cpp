@@ -131,6 +131,14 @@ namespace oyl::ECS
     {
         return false;
     }
+
+    void RenderSystem::init()
+    {
+    }
+
+    void RenderSystem::shutdown()
+    {
+    }
     
     // ^^^ Render System //
     
@@ -139,6 +147,8 @@ namespace oyl::ECS
     void PhysicsSystem::onEnter()
     {
         m_fixedTimeStep = 1.0f / 60.0f;
+
+        m_rigidBodies.clear();
 
         m_collisionConfig = UniqueRef<btDefaultCollisionConfiguration>::create();
         m_dispatcher = UniqueRef<btCollisionDispatcher>::create(m_collisionConfig.get());
@@ -154,6 +164,13 @@ namespace oyl::ECS
 
     void PhysicsSystem::onExit()
     {
+        m_world.reset();
+        m_solver.reset();
+        m_broadphase.reset();
+        m_dispatcher.reset();
+        m_collisionConfig.reset();
+
+        m_rigidBodies.clear();
     }
 
     void PhysicsSystem::onUpdate(Timestep dt)
@@ -261,16 +278,6 @@ namespace oyl::ECS
         m_rigidBodies[entity]->shape = shape;
         m_rigidBodies[entity]->motion = motion;
     }
-
-    void RenderSystem::init()
-    {
-    }
-
-    void RenderSystem::shutdown()
-    {
-    }
-
-    // ^^^ Render System ^^^ //
 
     // ^^^ Physics System ^^^ //
     

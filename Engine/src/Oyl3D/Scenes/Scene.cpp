@@ -16,7 +16,6 @@ namespace oyl
         : m_registry(Ref<ECS::Registry>::create()),
           m_physicsSystem(ECS::PhysicsSystem::create())
     {
-        m_renderSystem->onEnter();
         m_physicsSystem->onEnter();
     }
 
@@ -68,8 +67,6 @@ namespace oyl
     {
         m_physicsSystem->setRegistry(m_registry);
         m_physicsSystem->setDispatcher(m_dispatcher);
-        
-        m_dispatcher->registerListener(m_renderSystem);
     }
 
     void Scene::pushLayer(Ref<Layer> layer)
@@ -181,6 +178,12 @@ namespace oyl
         //    sceneJson[so.name]["Transform"]["Scale"]["Y"] = t.scale.y;
         //    sceneJson[so.name]["Transform"]["Scale"]["Z"] = t.scale.z;
         //}
+
+        //m_registry->each(
+        //    [&](auto entity)
+        //    {
+        //        m_registry->assign<SceneIntrinsic>(entity);
+        //    });
     }
 
     void Scene::saveSceneToFile()

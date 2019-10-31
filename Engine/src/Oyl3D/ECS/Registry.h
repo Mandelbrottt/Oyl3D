@@ -4,9 +4,11 @@
 
 namespace oyl::ECS
 {
-    class Registry : public entt::registry
-    {
-    public:
-        using entt::registry::registry;
-    };
+    //class Registry : public entt::registry
+    //{
+    //public:
+    //    using entt::registry::registry;
+    //};
+    
+    using Registry = ::entt::registry;
 }

@@ -1,10 +1,13 @@
 #pragma once
 
+<<<<<<< HEAD
+=======
 #include "Oyl3D/ECS/Registry.h"
 
 //#include "Oyl3D/Events/Event.h"
 //#include "Oyl3D/Events/EventListener.h"
 
+>>>>>>> scene_gui
 #include "Oyl3D/Scenes/LayerStack.h"
 #include "Oyl3D/Scenes/Node.h"
 

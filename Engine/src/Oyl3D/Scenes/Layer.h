@@ -1,11 +1,13 @@
 #pragma once
 
 #include "Oyl3D/ECS/System.h"
+#include "Oyl3D/ECS/Registry.h"
 
 #include "Oyl3D/Events/EventDispatcher.h"
 #include "Oyl3D/Events/EventListener.h"
 
 #include "Oyl3D/Scenes/Node.h"
+
 
 namespace oyl
 {
@@ -14,7 +16,7 @@ namespace oyl
     
     namespace ECS
     {
-        class Registry;
+        //class Registry;
         class System;
     }
 
