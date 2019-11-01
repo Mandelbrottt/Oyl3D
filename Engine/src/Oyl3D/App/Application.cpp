@@ -102,10 +102,15 @@ namespace oyl
                                        oyl::Nearest,
                                        oyl::Clamp);
 
-        EditorViewportHandleChangedEvent handleChanged;
+        ViewportHandleChangedEvent handleChanged;
         handleChanged.handle = m_mainBuffer->getColorHandle(0);
         
         m_dispatcher->postEvent(Event::create(handleChanged));
+
+        WindowResizedEvent wr;
+        wr.width = 1280;
+        wr.height = 720;
+        m_dispatcher->postEvent(Event::create(wr));
 
         m_window->setVsync(false);
     }
@@ -216,13 +221,13 @@ namespace oyl
                 m_dispatcher->dispatchEvents();
 
             #if !defined(OYL_DISTRIBUTION)
-                m_guiLayer->onUpdateSystems(timestep);
-                m_guiLayer->onUpdate(timestep);
-                
                 if (m_guiLayer->doGameUpdate())
                 {
                     m_currentScene->onUpdate(timestep);
                 }
+                
+                m_guiLayer->onUpdateSystems(timestep);
+                m_guiLayer->onUpdate(timestep);
             #else
                 m_currentScene->onUpdate(timestep);
             #endif
@@ -254,7 +259,7 @@ namespace oyl
 
             m_guiLayer->end();
         #else
-            // TODO: Make Renderer Call
+            // TODO: Turn into Renderer Call
             m_mainBuffer->moveToBackBuffer(m_window->getWidth(), m_window->getHeight());
         #endif
 

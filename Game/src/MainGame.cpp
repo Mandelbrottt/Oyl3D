@@ -22,9 +22,12 @@ public:
 
         {
             auto e = registry->create();
+            registry->assign<component::Transform>(e);
             auto& camera = registry->assign<component::PlayerCamera>(e);
             camera.player = 0;
             camera.projection = glm::perspective(glm::radians(60.0f), 16.0f / 9.0f, 0.01f, 1000.0f);
+            auto& so = registry->assign<component::SceneObject>(e);
+            so.name = "Player Camera";
         }
     }
 

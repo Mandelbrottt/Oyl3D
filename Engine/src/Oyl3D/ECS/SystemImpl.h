@@ -6,6 +6,8 @@
 #include <btBulletDynamicsCommon.h>
 #include <btBulletCollisionCommon.h>
 
+#include "Graphics/Buffer.h"
+
 namespace oyl::internal
 {
     class RenderSystem : public System
@@ -98,5 +100,8 @@ namespace oyl::internal
 
         void init();
         void shutdown();
+
+    private:
+        Ref<FrameBuffer> m_editorViewportBuffer;
     };
 }

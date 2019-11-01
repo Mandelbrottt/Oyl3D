@@ -431,96 +431,120 @@ namespace oyl
             m_cameraRotate = glm::vec3(0.0f);
         }
 
-    // ^^^ Editor Camera System vvv //
+        // ^^^ Editor Camera System vvv //
 
-    // vvv Editor Render System vvv //
+        // vvv Editor Render System vvv //
 
-    void EditorRenderSystem::onEnter() { }
-
-    void EditorRenderSystem::onExit() { }
-
-    void EditorRenderSystem::onUpdate(Timestep dt)
-    {
-        using component::Transform;
-        using component::Renderable;
-        using component::PlayerCamera;
-        using component::PointLight;
-        using component::internal::EditorCamera;
-
-        // We sort our mesh renderers based on material properties
-        // This will group all of our meshes based on shader first, then material second
-        registry->sort<Renderable>(
-            [](const Renderable& lhs, const Renderable& rhs)
-            {
-                if (rhs.material == nullptr || rhs.mesh == nullptr)
-                    return false;
-                else if (lhs.material == nullptr || lhs.mesh == nullptr)
-                    return true;
-                else if (lhs.material->getShader() != rhs.material->getShader())
-                    return lhs.material->getShader() < rhs.material->getShader();
-                else
-                    return lhs.material < rhs.material;
-            });
-
-        Ref<Material> boundMaterial;
-
-        // TEMPORARY
-        auto        camView = registry->view<EditorCamera>();
-        Ref<Camera> currentCamera = camView.get(*camView.begin()).camera;
-
-        auto view = registry->view<Renderable>();
-        for (const auto& entity : view)
+        void EditorRenderSystem::onEnter()
         {
-            Renderable& mr = registry->get<Renderable>(entity);
+            addToEventMask(TypeWindowResized);
 
-            if (mr.mesh == nullptr ||
-                mr.material == nullptr ||
-                mr.material->getShader() == nullptr)
-                continue;
+            m_editorViewportBuffer = FrameBuffer::create(1);
+            m_editorViewportBuffer->initDepthTexture(1, 1);
+            m_editorViewportBuffer->initColorTexture(0, 1, 1, oyl::RGBA8, oyl::Nearest, oyl::Clamp);
 
-            if (mr.material != boundMaterial)
+            EditorViewportHandleChangedEvent handleChanged;
+            handleChanged.handle = m_editorViewportBuffer->getColorHandle(0);
+            postEvent(Event::create(handleChanged));
+        }
+
+        void EditorRenderSystem::onExit() { }
+
+        void EditorRenderSystem::onUpdate(Timestep dt)
+        {
+            m_editorViewportBuffer->clear();
+            m_editorViewportBuffer->bind();
+            
+            using component::Transform;
+            using component::Renderable;
+            using component::PlayerCamera;
+            using component::PointLight;
+            using component::internal::EditorCamera;
+
+            // We sort our mesh renderers based on material properties
+            // This will group all of our meshes based on shader first, then material second
+            registry->sort<Renderable>(
+                [](const Renderable& lhs, const Renderable& rhs)
+                {
+                    if (rhs.material == nullptr || rhs.mesh == nullptr)
+                        return false;
+                    else if (lhs.material == nullptr || lhs.mesh == nullptr)
+                        return true;
+                    else if (lhs.material->getShader() != rhs.material->getShader())
+                        return lhs.material->getShader() < rhs.material->getShader();
+                    else
+                        return lhs.material < rhs.material;
+                });
+
+            Ref<Material> boundMaterial;
+
+            // TODO: Make EditorCamera like PlayerCamera
+            auto        camView = registry->view<EditorCamera>();
+            Ref<Camera> currentCamera = camView.get(*camView.begin()).camera;
+
+            auto view = registry->view<Renderable>();
+            for (const auto& entity : view)
             {
-                boundMaterial = mr.material;
+                Renderable& mr = registry->get<Renderable>(entity);
 
-                mr.material->setUniformMat4("u_view", currentCamera->getViewMatrix());
-                mr.material->setUniformMat4("u_viewProjection", currentCamera->getViewProjectionMatrix());
-                glm::mat4 viewNormal = glm::mat4(currentCamera->getViewMatrix());
-                viewNormal = glm::inverse(glm::transpose(viewNormal));
-                mr.material->setUniformMat3("u_viewNormal", glm::mat4(viewNormal));
+                if (mr.mesh == nullptr ||
+                    mr.material == nullptr ||
+                    mr.material->getShader() == nullptr)
+                    continue;
 
-                auto  lightView = registry->view<PointLight>();
-                auto  lightProps = lightView.get(lightView[0]);
-                auto  lightTransform = registry->get<Transform>(lightView[0]);
+                if (mr.material != boundMaterial)
+                {
+                    boundMaterial = mr.material;
 
-                mr.material->setUniform3f("u_pointLight.position",
-                                          viewNormal * glm::vec4(lightTransform.getPosition(), 1.0f));
-                mr.material->setUniform3f("u_pointLight.ambient", lightProps.ambient);
-                mr.material->setUniform3f("u_pointLight.diffuse", lightProps.diffuse);
-                mr.material->setUniform3f("u_pointLight.specular", lightProps.specular);
+                    mr.material->setUniformMat4("u_view", currentCamera->getViewMatrix());
+                    mr.material->setUniformMat4("u_viewProjection", currentCamera->getViewProjectionMatrix());
+                    glm::mat4 viewNormal = glm::mat4(currentCamera->getViewMatrix());
+                    viewNormal = glm::inverse(glm::transpose(viewNormal));
+                    mr.material->setUniformMat3("u_viewNormal", glm::mat4(viewNormal));
 
-                // TEMPORARY:
-                boundMaterial->bind();
-                boundMaterial->applyUniforms();
+                    auto  lightView = registry->view<PointLight>();
+                    auto  lightProps = lightView.get(lightView[0]);
+                    auto  lightTransform = registry->get<Transform>(lightView[0]);
+
+                    mr.material->setUniform3f("u_pointLight.position",
+                                              viewNormal * glm::vec4(lightTransform.getPosition(), 1.0f));
+                    mr.material->setUniform3f("u_pointLight.ambient", lightProps.ambient);
+                    mr.material->setUniform3f("u_pointLight.diffuse", lightProps.diffuse);
+                    mr.material->setUniform3f("u_pointLight.specular", lightProps.specular);
+
+                    // TEMPORARY:
+                    boundMaterial->bind();
+                    boundMaterial->applyUniforms();
+                }
+
+                const glm::mat4& transform = registry->get_or_assign<Transform>(entity).getMatrixGlobal();
+
+                Renderer::submit(mr.mesh, mr.material, transform);
             }
 
-            const glm::mat4& transform = registry->get_or_assign<Transform>(entity).getMatrixGlobal();
-
-            Renderer::submit(mr.mesh, mr.material, transform);
+            m_editorViewportBuffer->unbind();
         }
-    }
 
-    void EditorRenderSystem::onGuiRender(Timestep dt) { }
+        void EditorRenderSystem::onGuiRender(Timestep dt) { }
 
-    bool EditorRenderSystem::onEvent(Ref<Event> event)
-    {
-        return false;
-    }
+        bool EditorRenderSystem::onEvent(Ref<Event> event)
+        {
+            switch (event->type)
+            {
+                case TypeWindowResized:
+                {
+                    auto e = (WindowResizedEvent) *event;
+                    m_editorViewportBuffer->updateViewport(e.width, e.height);
+                    return true;
+                }
+            }
+            return false;
+        }
 
-    void EditorRenderSystem::init() { }
+        void EditorRenderSystem::init() { }
 
-    void EditorRenderSystem::shutdown() { }
+        void EditorRenderSystem::shutdown() { }
 
-    // ^^^ Editor Render System ^^ //
-
+        // ^^^ Editor Render System ^^^ //
     }
 }

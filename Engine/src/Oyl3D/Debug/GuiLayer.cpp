@@ -26,6 +26,9 @@ namespace oyl
 
         addToEventMask(TypeEditorViewportHandleChanged);
         addToEventMask(TypeEditorEntitySelected);
+
+        addToEventMask(TypeViewportHandleChanged);
+
         addToEventMask(TypeMousePressed);
 
         ImGuizmo::SetGizmoScale(2.0f);
@@ -212,6 +215,12 @@ namespace oyl
                 auto e = (EditorEntitySelectedEvent) *event;
                 m_currentEntity = e.entity;
                 return true;
+            }
+            case TypeViewportHandleChanged:
+            {
+                auto e = (ViewportHandleChangedEvent) *event;
+                m_gameViewportHandle = e.handle;
+                return false;
             }
             case TypeMousePressed:
             {
@@ -504,24 +513,28 @@ namespace oyl
         {
             // TEMPORARY:
             {
-                static ImVec2 lastSize = { 0, 0 };
-
                 auto [x, y] = ImGui::GetWindowSize();
                 auto [cx, cy] = ImGui::GetCursorPos();
 
-                if (lastSize.x != x || lastSize.y != y)
-                {
-                    EditorViewportResizedEvent vrevent;
-                    vrevent.width = x;
-                    vrevent.height = y - cy;
+                //y -= cy;
 
-                    postEvent(Event::create(vrevent));
+                ImVec2 newPos = { 0, 0 };
+                
+                if (x / y < 16.0f / 9.0f)
+                {
+                    newPos.y = (y - x * 9.0f / 16.0f) / 2.0f;
+                    y = x * 9.0f / 16.0f;
+                }
+                else
+                {
+                    newPos.x = (x - y * 16.0f / 9.0f) / 2.0f;
+                    x = y * 16.0f / 9.0f;
                 }
 
-                y -= cy;
-
+                ImGui::SetCursorPos(newPos);
+                
                 ImGui::Image(
-                    (void*) m_editorViewportHandle,
+                    (void*) m_gameViewportHandle,
                     ImVec2(x, y),
                     ImVec2(0, 1), ImVec2(1, 0)
                 );
