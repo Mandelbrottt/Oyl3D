@@ -31,8 +31,10 @@ namespace oyl
         void setupLayout();
         
         void drawMenuBar();
-        void drawSceneHierarchy();
 
+        void drawSceneHierarchy();
+        void drawEntityNode(Entity entity);
+        
         void drawInspector();
         void drawInspectorTransform();
         void drawInspectorRenderable();

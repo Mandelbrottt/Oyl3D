@@ -16,6 +16,8 @@
 
 #include <GLFW/glfw3.h>
 
+#include "Input/Input.h"
+
 static const char* g_entityNodeFmt = "%s\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t";
 
 static const char* g_transformGizmosName = "##ViewportGizmoSettings";
@@ -97,43 +99,37 @@ namespace oyl
 
     void GuiLayer::setupLayout()
     {
-        //ImGuiID dockSpaceID = ImGui::GetID(g_mainDockSpaceName);
-        //if (!ImGui::DockBuilderGetNode(dockSpaceID))
-        //if (std::ifstream guiFile("imgui.ini"); !guiFile)
-        {
-            m_consoleDockSpaceId = ImGui::GetID("_DockSpace");
+        m_consoleDockSpaceId = ImGui::GetID("_DockSpace");
 
-            ImGui::DockBuilderRemoveNode(m_consoleDockSpaceId);
-            ImGuiDockNodeFlags dockSpaceFlags = 0;
-            dockSpaceFlags |= ImGuiDockNodeFlags_PassthruCentralNode;
-            ImGui::DockBuilderAddNode(m_consoleDockSpaceId, dockSpaceFlags);
+        ImGui::DockBuilderRemoveNode(m_consoleDockSpaceId);
+        ImGuiDockNodeFlags dockSpaceFlags = 0;
+        dockSpaceFlags |= ImGuiDockNodeFlags_PassthruCentralNode;
+        ImGui::DockBuilderAddNode(m_consoleDockSpaceId, dockSpaceFlags);
 
-            ImGuiID dockMain  = m_consoleDockSpaceId;
+        ImGuiID dockMain = m_consoleDockSpaceId;
 
-            ImGuiID dockGizmoControls  = ImGui::DockBuilderSplitNode(dockMain, ImGuiDir_Up, 0.01f, NULL, &dockMain);
-            ImGuiID dockPausePlayStep  = ImGui::DockBuilderSplitNode(dockGizmoControls, ImGuiDir_Right, 0.55f, NULL, &dockGizmoControls);
+        ImGuiID dockGizmoControls = ImGui::DockBuilderSplitNode(dockMain, ImGuiDir_Up, 0.01f, NULL, &dockMain);
+        ImGuiID dockPausePlayStep = ImGui::DockBuilderSplitNode(dockGizmoControls, ImGuiDir_Right, 0.55f, NULL, &dockGizmoControls);
 
-            ImGuiID dockHierarchy  = ImGui::DockBuilderSplitNode(dockMain, ImGuiDir_Left, 0.25f, NULL, &dockMain);
-            ImGuiID dockInspector = ImGui::DockBuilderSplitNode(dockMain, ImGuiDir_Right, 0.30f, NULL, &dockMain);
-            
-            ImGuiID dockUp    = ImGui::DockBuilderSplitNode(dockMain, ImGuiDir_Up, 0.1f, NULL, &dockMain);
-            ImGuiID dockDown  = ImGui::DockBuilderSplitNode(dockMain, ImGuiDir_Down, 0.15f, NULL, &dockMain);
+        ImGuiID dockHierarchy = ImGui::DockBuilderSplitNode(dockMain, ImGuiDir_Left, 0.25f, NULL, &dockMain);
+        ImGuiID dockInspector = ImGui::DockBuilderSplitNode(dockMain, ImGuiDir_Right, 0.30f, NULL, &dockMain);
 
-            ImGui::DockBuilderDockWindow(g_sceneWindowName, dockMain);
-            ImGui::DockBuilderDockWindow(g_gameWindowName, dockMain);
+        ImGuiID dockUp   = ImGui::DockBuilderSplitNode(dockMain, ImGuiDir_Up, 0.1f, NULL, &dockMain);
+        ImGuiID dockDown = ImGui::DockBuilderSplitNode(dockMain, ImGuiDir_Down, 0.15f, NULL, &dockMain);
 
-            ImGui::DockBuilderDockWindow(g_transformGizmosName, dockGizmoControls);
-            ImGui::DockBuilderDockWindow(g_playPauseWindowName, dockPausePlayStep);
-            
-            ImGui::DockBuilderDockWindow(g_hierarchyWindowName, dockHierarchy);
-            ImGui::DockBuilderDockWindow(g_inspectorWindowName, dockInspector);
+        ImGui::DockBuilderDockWindow(g_sceneWindowName, dockMain);
+        ImGui::DockBuilderDockWindow(g_gameWindowName, dockMain);
 
-            ImGui::DockBuilderFinish(m_consoleDockSpaceId);
+        ImGui::DockBuilderDockWindow(g_transformGizmosName, dockGizmoControls);
+        ImGui::DockBuilderDockWindow(g_playPauseWindowName, dockPausePlayStep);
 
-            ImGui::DockBuilderGetNode(dockGizmoControls)->LocalFlags |= ImGuiDockNodeFlags_NoTabBar;
-            ImGui::DockBuilderGetNode(dockPausePlayStep)->LocalFlags |= ImGuiDockNodeFlags_NoTabBar;
-            // ...
-        }
+        ImGui::DockBuilderDockWindow(g_hierarchyWindowName, dockHierarchy);
+        ImGui::DockBuilderDockWindow(g_inspectorWindowName, dockInspector);
+
+        ImGui::DockBuilderFinish(m_consoleDockSpaceId);
+
+        ImGui::DockBuilderGetNode(dockGizmoControls)->LocalFlags |= ImGuiDockNodeFlags_NoTabBar;
+        ImGui::DockBuilderGetNode(dockPausePlayStep)->LocalFlags |= ImGuiDockNodeFlags_NoTabBar;
     }
 
     void GuiLayer::onExit()
@@ -354,53 +350,73 @@ namespace oyl
     {
         if (ImGui::Begin(g_hierarchyWindowName, nullptr, ImGuiWindowFlags_NoCollapse))
         {
+            auto parentView = registry->view<component::Parent>();
+            
             registry->each(
-                [this](auto entity)
+                [&](auto entity)
                 {
                     using component::internal::ExcludeFromHierarchy;
                     if (registry->has<ExcludeFromHierarchy>(entity))
                         return;
                 
-                    auto& so = registry->get_or_assign<component::SceneObject>(entity);
-                    if (so.name.empty())
-                    {
-                        char buf[128];
-                        sprintf(buf, "Entity %d", (u32) entity);
-                        so.name = std::string(buf);
-                    }
+                    if (parentView.contains(entity)) return;
 
-                    auto nodeFlags = ImGuiTreeNodeFlags_OpenOnDoubleClick |
-                                     ImGuiTreeNodeFlags_OpenOnArrow |
-                                     ImGuiTreeNodeFlags_DefaultOpen;
-
-                    //nodeFlags |= ImGuiTreeNodeFlags_Leaf;
-
-                    if (entity == Entity(m_currentEntity))
-                        nodeFlags |= ImGuiTreeNodeFlags_Selected;
-
-                    bool treeNode = ImGui::TreeNodeEx((const void*) entity, nodeFlags, g_entityNodeFmt, so.name.c_str());
-                    bool clicked  = ImGui::IsItemClicked(0);
-                    float testValue = ImGui::GetMousePos().x - ImGui::GetItemRectMin().x;
-                    if (treeNode)
-                    {
-                        ImGui::Indent();
-
-                        ImGui::Text("Nothing Here Yet!");
-
-                        ImGui::Unindent();
-
-                        ImGui::TreePop();
-                    }
-                
-                    if (clicked && testValue > ImGui::GetTreeNodeToLabelSpacing())
-                    {
-                        EditorEntitySelectedEvent selected;
-                        selected.entity = entity;
-                        postEvent(Event::create(selected));
-                    }
+                    drawEntityNode(entity);
                 });
         }
         ImGui::End();
+    }
+
+    void GuiLayer::drawEntityNode(Entity entity)
+    {
+        auto& so = registry->get_or_assign<component::SceneObject>(entity);
+        if (so.name.empty())
+        {
+            char buf[128];
+            sprintf(buf, "Entity %d", (u32) entity);
+            so.name = std::string(buf);
+        }
+        
+        auto nodeFlags = ImGuiTreeNodeFlags_OpenOnDoubleClick |
+                         ImGuiTreeNodeFlags_OpenOnArrow |
+                         ImGuiTreeNodeFlags_DefaultOpen;
+        
+        if (entity == Entity(m_currentEntity))
+            nodeFlags |= ImGuiTreeNodeFlags_Selected;
+
+        nodeFlags |= ImGuiTreeNodeFlags_Leaf;
+        auto parentView = registry->view<component::Parent>();
+        for (auto child : parentView)
+            if (parentView.get(child).parent == entity)
+            {
+                nodeFlags &= ~ImGuiTreeNodeFlags_Leaf;
+                break;
+            }
+        
+        bool treeNode = ImGui::TreeNodeEx((const void*) entity, nodeFlags, g_entityNodeFmt, so.name.c_str());
+        bool clicked = ImGui::IsItemClicked(0);
+        float testValue = ImGui::GetMousePos().x - ImGui::GetItemRectMin().x;
+        if (treeNode)
+        {
+            //ImGui::Indent();
+
+            for (auto child : parentView)
+            {
+                if (parentView.get(child).parent == entity)
+                    drawEntityNode(child);
+            }
+
+            //ImGui::Unindent();
+
+            ImGui::TreePop();
+        }
+
+        if (clicked && testValue > ImGui::GetTreeNodeToLabelSpacing())
+        {
+            EditorEntitySelectedEvent selected;
+            selected.entity = entity;
+            postEvent(Event::create(selected));
+        }
     }
 
     void GuiLayer::drawInspector()
@@ -523,8 +539,19 @@ namespace oyl
         if constexpr (false)
             ImGui::ShowDemoWindow();
 
+        // HACK: Make scene window the default on open
+        {
+            static bool _first = true;
+            if (static bool _second = true; !_first && _second)
+            {
+                _second = false;
+                ImGui::SetNextWindowFocus();
+            }
+            _first = false;
+        }
+        
         ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
-        if (ImGui::Begin(g_sceneWindowName, nullptr, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoCollapse))
+        if (ImGui::Begin(g_sceneWindowName, nullptr, ImGuiWindowFlags_NoScrollbar))
         {
             static ImVec2 lastSize = { 0, 0 };
 
@@ -596,38 +623,33 @@ namespace oyl
     }
 
     void GuiLayer::drawGameViewport()
-    {
+    {        
         ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
-        if (ImGui::Begin(g_gameWindowName, NULL, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoCollapse))
+
+        if (ImGui::Begin(g_gameWindowName, NULL, ImGuiWindowFlags_NoScrollbar))
         {
-            // TEMPORARY:
+            auto [x, y]   = ImGui::GetWindowSize();
+
+            ImVec2 newPos = { 0, 0 };
+
+            if (x / y < 16.0f / 9.0f)
             {
-                auto [x, y] = ImGui::GetWindowSize();
-                auto [cx, cy] = ImGui::GetCursorPos();
-
-                //y -= cy;
-
-                ImVec2 newPos = { 0, 0 };
-                
-                if (x / y < 16.0f / 9.0f)
-                {
-                    newPos.y = (y - x * 9.0f / 16.0f) / 2.0f;
-                    y = x * 9.0f / 16.0f;
-                }
-                else
-                {
-                    newPos.x = (x - y * 16.0f / 9.0f) / 2.0f;
-                    x = y * 16.0f / 9.0f;
-                }
-
-                ImGui::SetCursorPos(newPos);
-                
-                ImGui::Image(
-                    (void*) m_gameViewportHandle,
-                    ImVec2(x, y),
-                    ImVec2(0, 1), ImVec2(1, 0)
-                );
+                newPos.y = (y - x * 9.0f / 16.0f) / 2.0f;
+                y = x * 9.0f / 16.0f;
             }
+            else
+            {
+                newPos.x = (x - y * 16.0f / 9.0f) / 2.0f;
+                x = y * 16.0f / 9.0f;
+            }
+
+            ImGui::SetCursorPos(newPos);
+
+            ImGui::Image(
+                (void*) m_gameViewportHandle,
+                ImVec2(x, y),
+                ImVec2(0, 1), ImVec2(1, 0)
+            );
         }
         ImGui::End();
         ImGui::PopStyleVar();

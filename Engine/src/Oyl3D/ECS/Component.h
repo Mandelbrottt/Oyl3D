@@ -99,9 +99,6 @@ namespace oyl::component
         Ref<Material> material;
     };
 
-    // TODO: Make more robust when adding physics
-    class btRigidBody;
-    
     struct RigidBody
     {
         Entity id = Entity(-1);
@@ -129,6 +126,11 @@ namespace oyl::component
         glm::mat4 projection;
         
         //Ref<Camera> camera;
+    };
+
+    struct Parent
+    {
+        Entity parent;
     };
 
     // TODO: Attenuation
