@@ -6,6 +6,8 @@
 
 #include "Debug/GuiLayer.h"
 
+#include "ECS/SystemImpl.h"
+
 #include "Events/EventDispatcher.h"
 #include "Events/EventListener.h"
 
@@ -225,14 +227,15 @@ namespace oyl
                 m_guiLayer->onUpdateSystems(timestep);
                 m_guiLayer->onUpdate(timestep);
                 
-                m_renderSystem->onUpdate(timestep);
-                
                 if (m_guiLayer->doGameUpdate())
                 {
                     m_currentScene->onUpdate(timestep);
                 }
+                
+                m_renderSystem->onUpdate(timestep);
             #else
                 m_currentScene->onUpdate(timestep);
+                m_renderSystem->onUpdate(timestep);
             #endif
 
                 Renderer::endScene();
@@ -244,6 +247,7 @@ namespace oyl
 
             m_renderSystem->onGuiRender(timestep);
 
+            m_guiLayer->onGuiRenderSystems(timestep);
             m_guiLayer->onGuiRender(timestep);
 
             if (m_guiLayer->doGameUpdate())

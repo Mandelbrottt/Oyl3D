@@ -13,6 +13,11 @@ namespace oyl
     class Scene;
     class GuiLayer;
 
+    namespace ECS
+    {
+        class RenderSystem;
+    }
+
     namespace internal
     {
         class ApplicationListener;

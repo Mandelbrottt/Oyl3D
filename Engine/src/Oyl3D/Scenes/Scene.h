@@ -14,6 +14,7 @@ namespace oyl
     {
         //class Registry;
         class RenderSystem;
+        class PhysicsSystem;
     }
 
     class Scene : public EventListener, public virtual Node
@@ -42,7 +43,7 @@ namespace oyl
 
         static Ref<Scene> current() { return s_current.lock(); }
 
-        const Ref<ECS::Registry>& getRegistry();
+        const Ref<ECS::Registry>& getRegistry() { return m_registry; }
 
         virtual bool onEvent(Ref<Event> event) override;
 
@@ -58,5 +59,7 @@ namespace oyl
         LayerStack m_layerStack;
 
         Ref<ECS::Registry> m_registry;
+
+        Ref<ECS::PhysicsSystem> m_physicsSystem;
     };
 }

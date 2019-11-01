@@ -52,11 +52,6 @@ namespace oyl
         }
     }
 
-    const Ref<ECS::Registry>& Layer::getRegistry()
-    {
-        return registry;
-    }
-
     void Layer::setRegistry(Ref<ECS::Registry> reg)
     {
         registry = std::move(reg);

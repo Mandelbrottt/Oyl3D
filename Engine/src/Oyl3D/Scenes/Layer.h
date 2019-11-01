@@ -39,7 +39,7 @@ namespace oyl
         void onUpdateSystems(Timestep dt);
         void onGuiRenderSystems(Timestep dt);
 
-        const Ref<ECS::Registry>& getRegistry();
+        const Ref<ECS::Registry>& getRegistry() const { return registry; }
 
         void setRegistry(Ref<ECS::Registry> reg);
 
