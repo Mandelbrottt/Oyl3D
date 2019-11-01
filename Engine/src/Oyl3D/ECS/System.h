@@ -10,10 +10,7 @@
 namespace oyl
 {
     class Camera;
-}
 
-namespace oyl::ECS
-{
     class ISystem : public virtual Node
     {
     public:

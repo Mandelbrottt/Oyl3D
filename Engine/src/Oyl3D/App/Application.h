@@ -12,14 +12,10 @@ namespace oyl
     class EventListener;
     class Scene;
     class GuiLayer;
-
-    namespace ECS
-    {
-        class RenderSystem;
-    }
-
+    
     namespace internal
-    {
+    {   
+        class RenderSystem;  
         class ApplicationListener;
         class GamepadListener;
     }
@@ -54,7 +50,7 @@ namespace oyl
         Ref<GuiLayer>    m_guiLayer;
     #endif
 
-        Ref<ECS::RenderSystem> m_renderSystem;
+        Ref<internal::RenderSystem> m_renderSystem;
 
         float m_lastFrameTime = 0;
 

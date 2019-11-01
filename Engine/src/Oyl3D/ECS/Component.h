@@ -6,10 +6,11 @@ namespace oyl
     class Material;
     class Camera;
 
-    namespace ECS
+    namespace internal
     {
-        class PhysicsSystem;
+        class PhysicsSystem;   
     }
+    
 }
 
 namespace oyl::component
@@ -72,7 +73,7 @@ namespace oyl::component
         bool isLocalDirty() const;
 
     private:
-        friend ECS::PhysicsSystem;
+        friend internal::PhysicsSystem;
         
         glm::vec3 m_localPosition      = glm::vec3(0.0f);
         glm::vec3 m_localEulerRotation = glm::vec3(0.0f);

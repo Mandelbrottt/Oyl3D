@@ -208,6 +208,17 @@ namespace oyl
 
     // Editor Events //////////////////////////////////////////////////////
 
+    OYL_EVENT_STRUCT(EditorViewportHandleChangedEvent, TypeEditorViewportHandleChanged, CategoryEditor,
+                     {
+                         i32 handle;
+                     });
+
+    OYL_EVENT_STRUCT(EditorViewportHandleResizedEvent, TypeEditorViewportResized, CategoryEditor,
+                     {
+                         f32 width;
+                         f32 height;
+                     });
+    
     OYL_EVENT_STRUCT(EditorEntitySelectedEvent, TypeEditorEntitySelected, CategoryEditor, 
                      {
                          Entity entity;

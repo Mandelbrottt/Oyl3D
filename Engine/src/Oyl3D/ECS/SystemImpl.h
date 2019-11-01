@@ -6,7 +6,7 @@
 #include <btBulletDynamicsCommon.h>
 #include <btBulletCollisionCommon.h>
 
-namespace oyl::ECS
+namespace oyl::internal
 {
     class RenderSystem : public System
     {
@@ -36,19 +36,19 @@ namespace oyl::ECS
 
         virtual bool onEvent(Ref<Event> event) override;
 
-        void addRigidBody(Entity entity, 
-                          const component::Transform& transformComponent, 
+        void addRigidBody(Entity entity,
+                          const component::Transform& transformComponent,
                           const component::RigidBody& bodyComponent);
 
     private:
         Timestep m_fixedTimeStep;
 
         struct RigidBodyInfo
-        {            
+        {
             Ref<btRigidBody> body;
 
             Ref<btCollisionShape> shape;
-            Ref<btMotionState> motion;
+            Ref<btMotionState>    motion;
         };
 
         std::unordered_map<Entity, Ref<RigidBodyInfo>> m_rigidBodies;
@@ -61,29 +61,26 @@ namespace oyl::ECS
         UniqueRef<btDynamicsWorld>          m_world;
     };
 
-    namespace internal
+    class EditorCameraSystem : public System
     {
-        class OracleCameraSystem : public System
-        {
-            OYL_CTOR(OracleCameraSystem, System)
+        OYL_CTOR(EditorCameraSystem, System)
 
-            virtual void onEnter() override;
-            virtual void onExit() override;
+        virtual void onEnter() override;
+        virtual void onExit() override;
 
-            virtual void onUpdate(Timestep dt) override;
-            virtual void onGuiRender(Timestep dt) override;
+        virtual void onUpdate(Timestep dt) override;
+        virtual void onGuiRender(Timestep dt) override;
 
-            virtual bool onEvent(Ref<Event> event) override;
+        virtual bool onEvent(Ref<Event> event) override;
 
-        private:
-            void processCameraUpdate(Timestep dt, const Ref<Camera>& camera);
+    private:
+        void processCameraUpdate(Timestep dt, const Ref<Camera>& camera);
 
-            glm::vec3 m_cameraMove        = glm::vec3(0.0f);
-            float     m_cameraMoveSpeed   = 15.0f;
-            glm::vec3 m_cameraRotate      = glm::vec3(0.0f);
-            float     m_cameraRotateSpeed = 25.0f;
+        glm::vec3 m_cameraMove        = glm::vec3(0.0f);
+        float     m_cameraMoveSpeed   = 15.0f;
+        glm::vec3 m_cameraRotate      = glm::vec3(0.0f);
+        float     m_cameraRotateSpeed = 25.0f;
 
-            bool m_doMoveCamera = false;
-        };
-    }
+        bool m_doMoveCamera = false;
+    };
 }

@@ -13,8 +13,8 @@ namespace oyl
     WeakRef<Scene> Scene::s_current{};
 
     Scene::Scene()
-        : m_registry(Ref<ECS::Registry>::create()),
-          m_physicsSystem(ECS::PhysicsSystem::create())
+        : m_registry(Ref<Registry>::create()),
+          m_physicsSystem(internal::PhysicsSystem::create())
     {
         m_physicsSystem->onEnter();
     }
@@ -28,13 +28,9 @@ namespace oyl
         m_registry.reset();
     }
 
-    void Scene::onEnter()
-    {
-    }
+    void Scene::onEnter() { }
 
-    void Scene::onExit()
-    {
-    }
+    void Scene::onExit() { }
 
     void Scene::onUpdate(Timestep dt)
     {

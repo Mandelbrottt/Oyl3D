@@ -15,21 +15,13 @@ namespace oyl
         }
     }
 
-    void Layer::onEnter()
-    {
-    }
+    void Layer::onEnter() { }
 
-    void Layer::onExit()
-    {
-    }
+    void Layer::onExit() { }
 
-    void Layer::onUpdate(Timestep dt)
-    {
-    }
+    void Layer::onUpdate(Timestep dt) { }
 
-    void Layer::onGuiRender(Timestep dt)
-    {
-    }
+    void Layer::onGuiRender(Timestep dt) { }
 
     bool Layer::onEvent(Ref<Event> event)
     {
@@ -52,7 +44,7 @@ namespace oyl
         }
     }
 
-    void Layer::setRegistry(Ref<ECS::Registry> reg)
+    void Layer::setRegistry(Ref<Registry> reg)
     {
         registry = std::move(reg);
     }

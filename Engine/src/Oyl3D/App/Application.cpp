@@ -30,7 +30,7 @@ namespace oyl
     {
         class ApplicationListener : public EventListener
         {
-            friend class oyl::Application;
+            friend class Application;
         public:
             ApplicationListener()
             {
@@ -82,7 +82,7 @@ namespace oyl
         Texture2D::cache(ENGINE_RES + WHITE_TEXTURE_PATH, WHITE_TEXTURE_ALIAS);
         Texture2D::cache(ENGINE_RES + UV_TEXTURE_PATH, UV_TEXTURE_ALIAS);
 
-        m_renderSystem = ECS::RenderSystem::create();
+        m_renderSystem = internal::RenderSystem::create();
 
         initEventListeners();
         

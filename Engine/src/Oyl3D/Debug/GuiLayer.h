@@ -53,7 +53,7 @@ namespace oyl
         glm::vec3 m_scaleSnap{ 0.2f };
         glm::vec3 m_snap;
 
-        ECS::Registry m_registryRestore;
+        Registry m_registryRestore;
         
         bool m_doSnap = false;
         bool m_editorOverrideUpdate = true;

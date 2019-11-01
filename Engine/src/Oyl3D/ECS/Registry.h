@@ -2,13 +2,7 @@
 
 #include <entt/entt.hpp>
 
-namespace oyl::ECS
+namespace oyl
 {
-    //class Registry : public entt::registry
-    //{
-    //public:
-    //    using entt::registry::registry;
-    //};
-    
     using Registry = ::entt::registry;
 }

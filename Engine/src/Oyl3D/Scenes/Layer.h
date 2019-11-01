@@ -13,12 +13,7 @@ namespace oyl
 {
     struct Event;
     class EventDispatcher;
-    
-    namespace ECS
-    {
-        //class Registry;
-        class System;
-    }
+    class System;
 
     class Layer : public virtual EventListener, public virtual Node
     {
@@ -39,18 +34,18 @@ namespace oyl
         void onUpdateSystems(Timestep dt);
         void onGuiRenderSystems(Timestep dt);
 
-        const Ref<ECS::Registry>& getRegistry() const { return registry; }
+        const Ref<Registry>& getRegistry() const { return registry; }
 
-        void setRegistry(Ref<ECS::Registry> reg);
+        void setRegistry(Ref<Registry> reg);
 
     protected:
         // Break naming convention for sake of client usability
-        Ref<ECS::Registry> registry;
+        Ref<Registry> registry;
 
         template<class T>
         void scheduleSystemUpdate(Priority priority = 0);
 
-        std::vector<Ref<ECS::System>> m_systems;
+        std::vector<Ref<System>> m_systems;
     };
 
     template<class SYSTEM>
@@ -59,7 +54,7 @@ namespace oyl
         //static bool isInitialized = false;
         //OYL_ASSERT(!isInitialized, "Systems should only be initialized once!");
 
-        Ref<ECS::System> newSystem = SYSTEM::create();
+        Ref<System> newSystem = SYSTEM::create();
         
         newSystem->setRegistry(registry);
 

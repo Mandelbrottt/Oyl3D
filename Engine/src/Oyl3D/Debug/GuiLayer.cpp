@@ -41,7 +41,7 @@ namespace oyl
     
     void GuiLayer::onEnter()
     {
-        scheduleSystemUpdate<ECS::internal::OracleCameraSystem>();
+        scheduleSystemUpdate<internal::EditorCameraSystem>();
 
         for (auto& system : m_systems)
         {

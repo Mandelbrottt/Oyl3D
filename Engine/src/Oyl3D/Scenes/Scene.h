@@ -10,10 +10,8 @@
 
 namespace oyl
 {
-    namespace ECS
+    namespace internal
     {
-        //class Registry;
-        class RenderSystem;
         class PhysicsSystem;
     }
 
@@ -43,7 +41,7 @@ namespace oyl
 
         static Ref<Scene> current() { return s_current.lock(); }
 
-        const Ref<ECS::Registry>& getRegistry() { return m_registry; }
+        const Ref<Registry>& getRegistry() { return m_registry; }
 
         virtual bool onEvent(Ref<Event> event) override;
 
@@ -58,8 +56,8 @@ namespace oyl
         // TODO: Put in internal namespace
         LayerStack m_layerStack;
 
-        Ref<ECS::Registry> m_registry;
+        Ref<Registry> m_registry;
 
-        Ref<ECS::PhysicsSystem> m_physicsSystem;
+        Ref<internal::PhysicsSystem> m_physicsSystem;
     };
 }
