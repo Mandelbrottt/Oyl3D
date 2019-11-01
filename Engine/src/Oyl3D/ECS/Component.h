@@ -57,6 +57,8 @@ namespace oyl::component
         void setPositionY(f32 y);
         void setPositionZ(f32 z);
 
+        void move(glm::vec3 move);
+
         void setRotationEuler(glm::vec3 rotation);
         void setRotationEulerX(f32 x);
         void setRotationEulerY(f32 y);

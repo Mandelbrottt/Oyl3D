@@ -150,6 +150,13 @@ namespace oyl::component
         m_isPositionOverridden = true;
     }
 
+    inline void Transform::move(glm::vec3 move)
+    {
+        m_isLocalDirty |= move != glm::vec3(0.0f);
+        m_localPosition += move;
+        m_isPositionOverridden = true;
+    }
+
     inline void Transform::setRotationEuler(glm::vec3 rotation)
     {
         m_isLocalDirty |= m_localEulerRotation != rotation;
