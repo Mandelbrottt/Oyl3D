@@ -16,13 +16,25 @@
 
 #include <GLFW/glfw3.h>
 
-static const char* entityNodeFmt = "%s\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t";
+static const char* g_entityNodeFmt = "%s\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t";
+
+static const char* g_transformGizmosName = "##ViewportGizmoSettings";
+static const char* g_playPauseWindowName = "##TestPlayButton";
+
+static const char* g_sceneWindowName     = "Scene##EditorSceneViewport";
+static const char* g_gameWindowName      = "Game##EditorGameViewport";
+
+static const char* g_hierarchyWindowName = "Hierarchy##EditorHierarchy";
+static const char* g_inspectorWindowName = "Inspector##EditorInspector";
+
+static const char* g_mainDockSpaceName = "_DockSpace";
 
 namespace oyl
 {
     void GuiLayer::init()
     {
         setupGuiLibrary();
+        //setupLayout();
 
         addToEventMask(TypeEditorViewportHandleChanged);
         addToEventMask(TypeEditorEntitySelected);
@@ -32,7 +44,7 @@ namespace oyl
         addToEventMask(TypeMousePressed);
 
         ImGuizmo::SetGizmoScale(2.0f);
-        ImGuizmo::SetGizmoThickness(2.0f);
+        ImGuizmo::SetGizmoThickness(1.0f);
     }
     
     void GuiLayer::shutdown()
@@ -68,7 +80,7 @@ namespace oyl
         //io.ConfigViewportsNoTaskBarIcon = true;
 
         // Setup Dear ImGui style
-        ImGui::StyleColorsDark();
+        //ImGui::StyleColorsDark();
         applyCustomColorTheme();
         
         ImGuiStyle& style                 = ImGui::GetStyle();
@@ -81,6 +93,47 @@ namespace oyl
         // Setup Platform/Renderer bindings
         ImGui_ImplGlfw_InitForOpenGL(window, true);
         ImGui_ImplOpenGL3_Init("#version 420");
+    }
+
+    void GuiLayer::setupLayout()
+    {
+        //ImGuiID dockSpaceID = ImGui::GetID(g_mainDockSpaceName);
+        //if (!ImGui::DockBuilderGetNode(dockSpaceID))
+        //if (std::ifstream guiFile("imgui.ini"); !guiFile)
+        {
+            m_consoleDockSpaceId = ImGui::GetID("_DockSpace");
+
+            ImGui::DockBuilderRemoveNode(m_consoleDockSpaceId);
+            ImGuiDockNodeFlags dockSpaceFlags = 0;
+            dockSpaceFlags |= ImGuiDockNodeFlags_PassthruCentralNode;
+            ImGui::DockBuilderAddNode(m_consoleDockSpaceId, dockSpaceFlags);
+
+            ImGuiID dockMain  = m_consoleDockSpaceId;
+
+            ImGuiID dockGizmoControls  = ImGui::DockBuilderSplitNode(dockMain, ImGuiDir_Up, 0.01f, NULL, &dockMain);
+            ImGuiID dockPausePlayStep  = ImGui::DockBuilderSplitNode(dockGizmoControls, ImGuiDir_Right, 0.55f, NULL, &dockGizmoControls);
+
+            ImGuiID dockHierarchy  = ImGui::DockBuilderSplitNode(dockMain, ImGuiDir_Left, 0.25f, NULL, &dockMain);
+            ImGuiID dockInspector = ImGui::DockBuilderSplitNode(dockMain, ImGuiDir_Right, 0.30f, NULL, &dockMain);
+            
+            ImGuiID dockUp    = ImGui::DockBuilderSplitNode(dockMain, ImGuiDir_Up, 0.1f, NULL, &dockMain);
+            ImGuiID dockDown  = ImGui::DockBuilderSplitNode(dockMain, ImGuiDir_Down, 0.15f, NULL, &dockMain);
+
+            ImGui::DockBuilderDockWindow(g_sceneWindowName, dockMain);
+            ImGui::DockBuilderDockWindow(g_gameWindowName, dockMain);
+
+            ImGui::DockBuilderDockWindow(g_transformGizmosName, dockGizmoControls);
+            ImGui::DockBuilderDockWindow(g_playPauseWindowName, dockPausePlayStep);
+            
+            ImGui::DockBuilderDockWindow(g_hierarchyWindowName, dockHierarchy);
+            ImGui::DockBuilderDockWindow(g_inspectorWindowName, dockInspector);
+
+            ImGui::DockBuilderFinish(m_consoleDockSpaceId);
+
+            ImGui::DockBuilderGetNode(dockGizmoControls)->LocalFlags |= ImGuiDockNodeFlags_NoTabBar;
+            ImGui::DockBuilderGetNode(dockPausePlayStep)->LocalFlags |= ImGuiDockNodeFlags_NoTabBar;
+            // ...
+        }
     }
 
     void GuiLayer::onExit()
@@ -125,12 +178,15 @@ namespace oyl
         ImGui::Begin("DockSpace##EditorDockspace", &p_open, window_flags);
         ImGui::PopStyleVar(3);
 
+        if (std::ifstream guiFile("imgui.ini"); !guiFile)
+            setupLayout();
+
         drawMenuBar();
 
         OYL_ASSERT(ImGui::GetIO().ConfigFlags & ImGuiConfigFlags_DockingEnable, "Docking should always be enabled!");
         
         // DockSpace
-        ImGuiID dockspace_id = ImGui::GetID("_DockSpace");
+        ImGuiID dockspace_id = ImGui::GetID(g_mainDockSpaceName);
         ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), dockspace_flags);
         ImGui::End();
     }
@@ -155,17 +211,17 @@ namespace oyl
     }
 
     void GuiLayer::onGuiRender(Timestep dt)
-    {
+    {        
         drawSceneHierarchy();
 
         drawInspector();
 
         drawSceneViewport();
 
-        if (!m_editorOverrideUpdate)
-            drawGameViewport();
+        drawGameViewport();
 
-        if (ImGui::Begin("##TestPlayButton"), NULL, ImGuiWindowFlags_NoDecoration)
+        // TODO: Put in own function
+        if (ImGui::Begin(g_playPauseWindowName), NULL, ImGuiWindowFlags_NoDecoration)
         {
             if (m_editorOverrideUpdate)
             {
@@ -187,7 +243,6 @@ namespace oyl
                     Scene::current()->m_physicsSystem->onExit();
                     Scene::current()->m_physicsSystem->onEnter();
                     m_currentEntity = Entity(-1);
-                    
                 }
                 ImGui::SameLine();
                 if ((m_gameUpdate && ImGui::Button("II##EditorPauseButton")) ||
@@ -297,7 +352,7 @@ namespace oyl
 
     void GuiLayer::drawSceneHierarchy()
     {
-        if (ImGui::Begin("Hierarchy##EditorHierarchy", nullptr, ImGuiWindowFlags_NoCollapse))
+        if (ImGui::Begin(g_hierarchyWindowName, nullptr, ImGuiWindowFlags_NoCollapse))
         {
             registry->each(
                 [this](auto entity)
@@ -318,10 +373,12 @@ namespace oyl
                                      ImGuiTreeNodeFlags_OpenOnArrow |
                                      ImGuiTreeNodeFlags_DefaultOpen;
 
+                    //nodeFlags |= ImGuiTreeNodeFlags_Leaf;
+
                     if (entity == Entity(m_currentEntity))
                         nodeFlags |= ImGuiTreeNodeFlags_Selected;
 
-                    bool treeNode = ImGui::TreeNodeEx((const void*) entity, nodeFlags, entityNodeFmt, so.name.c_str());
+                    bool treeNode = ImGui::TreeNodeEx((const void*) entity, nodeFlags, g_entityNodeFmt, so.name.c_str());
                     bool clicked  = ImGui::IsItemClicked(0);
                     float testValue = ImGui::GetMousePos().x - ImGui::GetItemRectMin().x;
                     if (treeNode)
@@ -348,7 +405,7 @@ namespace oyl
 
     void GuiLayer::drawInspector()
     {
-        if (ImGui::Begin("Inspector##EditorInspector", nullptr))
+        if (ImGui::Begin(g_inspectorWindowName, nullptr))
         {
             if (m_currentEntity != Entity(-1))
             {
@@ -363,6 +420,8 @@ namespace oyl
     void GuiLayer::drawInspectorTransform()
     {
         using component::Transform;
+
+        ImGui::SetNextTreeNodeOpen(true, ImGuiCond_Once);
         
         if (registry->has<Transform>(m_currentEntity) &&
             ImGui::CollapsingHeader("Transform##InspectorTransform"))
@@ -465,7 +524,7 @@ namespace oyl
             ImGui::ShowDemoWindow();
 
         ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
-        if (ImGui::Begin("Scene##EditorSceneViewport", nullptr, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoCollapse))
+        if (ImGui::Begin(g_sceneWindowName, nullptr, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoCollapse))
         {
             static ImVec2 lastSize = { 0, 0 };
 
@@ -498,14 +557,15 @@ namespace oyl
                 float camY = posy + y - 20;
 
                 ImGui::SetNextWindowPos(ImVec2(camX, camY), 0, ImVec2(1, 1));
-                ImVec2 cameraWindowSize = ImVec2(x / 4, y / 4);
+                ImVec2 cameraWindowSize = ImVec2((16.0f / 9.0f) * y / 4.0f, y / 4.0f);
                 ImGui::SetNextWindowSize(cameraWindowSize);
 
                 ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImGui::GetStyle().WindowPadding);
                 if (ImGui::Begin("Camera Preview##ViewportCameraPreview", nullptr,
                                  ImGuiWindowFlags_NoScrollbar |
                                  ImGuiWindowFlags_NoResize |
-                                 ImGuiWindowFlags_NoMove))
+                                 ImGuiWindowFlags_NoMove |
+                                 ImGuiWindowFlags_NoCollapse))
                 {
                     ImGui::Image(
                         (void*) m_gameViewportHandle,
@@ -538,7 +598,7 @@ namespace oyl
     void GuiLayer::drawGameViewport()
     {
         ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
-        if (ImGui::Begin("Game##EditorGameViewport", NULL, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoCollapse))
+        if (ImGui::Begin(g_gameWindowName, NULL, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoCollapse))
         {
             // TEMPORARY:
             {
@@ -575,7 +635,7 @@ namespace oyl
 
     void GuiLayer::drawTransformGizmoSettings()
     {
-        if (ImGui::Begin("##ViewportGizmoSettings", NULL, ImGuiWindowFlags_NoDecoration))
+        if (ImGui::Begin(g_transformGizmosName, NULL, ImGuiWindowFlags_NoDecoration))
         {
             if (ImGui::RadioButton("Translate##RadioTranslate", m_currentOp == ImGuizmo::TRANSLATE))
                 m_currentOp = ImGuizmo::TRANSLATE;
@@ -716,17 +776,17 @@ namespace oyl
         style.Colors[ImGuiCol_PlotHistogram] = TEXT(0.63f);
         style.Colors[ImGuiCol_PlotHistogramHovered] = MED(1.00f);
         style.Colors[ImGuiCol_TextSelectedBg] = MED(0.43f);
-        //style.Colors[ImGuiCol_Tab] = LOW(0.43f);
-        //style.Colors[ImGuiCol_TabActive] = MED(1.00f);
-        //style.Colors[ImGuiCol_TabHovered] = HI(1.00f);
-        //style.Colors[ImGuiCol_TabUnfocused] = LOW(0.88f);
-        //style.Colors[ImGuiCol_TabUnfocusedActive] = MED(0.73f);
+        style.Colors[ImGuiCol_Tab] = LOW(0.43f);
+        style.Colors[ImGuiCol_TabActive] = MED(1.00f);
+        style.Colors[ImGuiCol_TabHovered] = HI(1.00f);
+        style.Colors[ImGuiCol_TabUnfocused] = LOW(0.88f);
+        style.Colors[ImGuiCol_TabUnfocusedActive] = MED(0.73f);
 
-        style.Colors[ImGuiCol_Tab] = ImLerp(style.Colors[ImGuiCol_Header], style.Colors[ImGuiCol_TitleBgActive], 0.80f);
-        style.Colors[ImGuiCol_TabHovered] = style.Colors[ImGuiCol_HeaderHovered];
-        style.Colors[ImGuiCol_TabActive] = ImLerp(style.Colors[ImGuiCol_HeaderActive], style.Colors[ImGuiCol_TitleBgActive], 0.60f);
-        style.Colors[ImGuiCol_TabUnfocused] = ImLerp(style.Colors[ImGuiCol_Tab], style.Colors[ImGuiCol_TitleBg], 0.80f);
-        style.Colors[ImGuiCol_TabUnfocusedActive] = ImLerp(style.Colors[ImGuiCol_TabActive], style.Colors[ImGuiCol_TitleBg], 0.40f);
+        //style.Colors[ImGuiCol_Tab] = ImLerp(style.Colors[ImGuiCol_Header], style.Colors[ImGuiCol_TitleBgActive], 0.80f);
+        //style.Colors[ImGuiCol_TabHovered] = style.Colors[ImGuiCol_HeaderHovered];
+        //style.Colors[ImGuiCol_TabActive] = ImLerp(style.Colors[ImGuiCol_HeaderActive], style.Colors[ImGuiCol_TitleBgActive], 0.60f);
+        //style.Colors[ImGuiCol_TabUnfocused] = ImLerp(style.Colors[ImGuiCol_Tab], style.Colors[ImGuiCol_TitleBg], 0.80f);
+        //style.Colors[ImGuiCol_TabUnfocusedActive] = ImLerp(style.Colors[ImGuiCol_TabActive], style.Colors[ImGuiCol_TitleBg], 0.40f);
         
         // [...]
         style.Colors[ImGuiCol_ModalWindowDarkening] = BG(0.73f);

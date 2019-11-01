@@ -28,6 +28,8 @@ namespace oyl
 
     private:
         void setupGuiLibrary();
+        void setupLayout();
+        
         void drawMenuBar();
         void drawSceneHierarchy();
 
@@ -45,6 +47,8 @@ namespace oyl
         void applyCustomColorTheme();
 
     private:
+        ImGuiID m_consoleDockSpaceId;
+
         u32 m_editorViewportHandle;
         u32 m_gameViewportHandle;
 
