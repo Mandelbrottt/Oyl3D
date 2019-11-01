@@ -59,7 +59,7 @@ namespace oyl::component
         ret.y = mat[2].y;
         ret.z = mat[2].z;
 
-        return ret;
+        return -ret;
     }
 
     inline glm::vec3 Transform::getRightLocal() const
@@ -95,7 +95,7 @@ namespace oyl::component
         ret.y = mat[2].y;
         ret.z = mat[2].z;
 
-        return ret;
+        return -ret;
     }
 
     inline glm::vec3 Transform::getRightGlobal() const
