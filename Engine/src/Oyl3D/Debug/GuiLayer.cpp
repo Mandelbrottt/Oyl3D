@@ -488,7 +488,36 @@ namespace oyl
                 ImVec2(x, y),
                 ImVec2(0, 1), ImVec2(1, 0)
             );
-    
+
+            if (m_currentEntity != Entity(-1) && 
+                registry->has<component::PlayerCamera>(m_currentEntity))
+            {
+                auto [posx, posy] = ImGui::GetItemRectMin();
+
+                float camX = posx + x - 20;
+                float camY = posy + y - 20;
+
+                ImGui::SetNextWindowPos(ImVec2(camX, camY), 0, ImVec2(1, 1));
+                ImVec2 cameraWindowSize = ImVec2(x / 4, y / 4);
+                ImGui::SetNextWindowSize(cameraWindowSize);
+
+                ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImGui::GetStyle().WindowPadding);
+                if (ImGui::Begin("Camera Preview##ViewportCameraPreview", nullptr,
+                                 ImGuiWindowFlags_NoScrollbar |
+                                 ImGuiWindowFlags_NoResize |
+                                 ImGuiWindowFlags_NoMove))
+                {
+                    ImGui::Image(
+                        (void*) m_gameViewportHandle,
+                        ImGui::GetWindowSize(),
+                        ImVec2(0, 1), ImVec2(1, 0)
+                    );
+                }
+                ImGui::PopStyleVar();
+
+                ImGui::End();
+            }
+            
             ImGuizmo::SetDrawlist();
             auto [minX, minY]   = ImGui::GetItemRectMin();
             auto [sizeX, sizeY] = ImGui::GetItemRectSize();
