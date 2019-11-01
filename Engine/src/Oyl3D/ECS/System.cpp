@@ -52,62 +52,71 @@ namespace oyl
             
             // We sort our mesh renderers based on material properties
             // This will group all of our meshes based on shader first, then material second
-            registry->sort<Renderable>([](const Renderable& lhs, const Renderable& rhs)
-            {
-                if (rhs.material == nullptr || rhs.mesh == nullptr)
-                    return false;
-                else if (lhs.material == nullptr || lhs.mesh == nullptr)
-                    return true;
-                else if (lhs.material->getShader() != rhs.material->getShader())
-                    return lhs.material->getShader() < rhs.material->getShader();
-                else
-                    return lhs.material < rhs.material;
-            });
+            registry->sort<Renderable>(
+                [](const Renderable& lhs, const Renderable& rhs)
+                {
+                    if (rhs.material == nullptr || rhs.mesh == nullptr)
+                        return false;
+                    else if (lhs.material == nullptr || lhs.mesh == nullptr)
+                        return true;
+                    else if (lhs.material->getShader() != rhs.material->getShader())
+                        return lhs.material->getShader() < rhs.material->getShader();
+                    else
+                        return lhs.material < rhs.material;
+                });
 
             Ref<Material> boundMaterial;
 
-            // TEMPORARY
-            auto        camView       = registry->view<EditorCamera>();
-            Ref<Camera> currentCamera = camView.get(*camView.begin()).camera;
+            auto camView = registry->view<Transform, PlayerCamera>();
+            OYL_ASSERT(camView.size() == 1, "Only one camera supported!");
 
-            auto view = registry->view<Renderable>();
-            for (const auto& entity : view)
+            for (auto camera : camView)
             {
-                Renderable& mr = registry->get<Renderable>(entity);
+                //Ref<Camera> currentCamera = camView.get(camera).camera;
 
-                if (mr.mesh == nullptr || 
-                    mr.material == nullptr || 
-                    mr.material->getShader() == nullptr)
-                    continue;
-
-                if (mr.material != boundMaterial)
+                auto view = registry->view<Transform, Renderable>();
+                for (const auto& entity : view)
                 {
-                    boundMaterial = mr.material;
-                    
-                    mr.material->setUniformMat4("u_view", currentCamera->getViewMatrix());
-                    mr.material->setUniformMat4("u_viewProjection", currentCamera->getViewProjectionMatrix());
-                    glm::mat4 viewNormal = glm::mat4(currentCamera->getViewMatrix());
-                    viewNormal = glm::inverse(glm::transpose(viewNormal));
-                    mr.material->setUniformMat3("u_viewNormal", glm::mat4(viewNormal));
+                    Renderable& mr = view.get<Renderable>(entity);
 
-                    auto  lightView =       registry->view<PointLight>();
-                    auto  lightProps =      lightView.get(lightView[0]);
-                    auto  lightTransform =  registry->get<Transform>(lightView[0]);
+                    if (mr.mesh == nullptr || 
+                        mr.material == nullptr || 
+                        mr.material->getShader() == nullptr)
+                        continue;
                     
-                    mr.material->setUniform3f("u_pointLight.position",  
-                                              viewNormal * glm::vec4(lightTransform.getPosition(), 1.0f));
-                    mr.material->setUniform3f("u_pointLight.ambient",   lightProps.ambient);
-                    mr.material->setUniform3f("u_pointLight.diffuse",   lightProps.diffuse);
-                    mr.material->setUniform3f("u_pointLight.specular",  lightProps.specular);
+                    if (mr.material != boundMaterial)
+                    {
+                        boundMaterial = mr.material;
 
-                    // TEMPORARY:
-                    boundMaterial->bind();
-                    boundMaterial->applyUniforms();
+                        glm::mat4 viewMatrix = camView.get<Transform>(camera).getMatrixGlobal();
+                        viewMatrix = inverse(viewMatrix);
+
+                        const glm::mat4& projectionMatrix = camView.get<PlayerCamera>(camera).projection;
+                        
+                        mr.material->setUniformMat4("u_view", viewMatrix);
+                        mr.material->setUniformMat4("u_viewProjection", projectionMatrix * viewMatrix);
+                        glm::mat4 viewNormal = inverse(transpose(viewMatrix));
+                        mr.material->setUniformMat3("u_viewNormal", glm::mat3(viewNormal));
+
+                        auto lightView =      registry->view<PointLight>();
+                        auto lightProps =     lightView.get(lightView[0]);
+                        auto lightTransform = registry->get<Transform>(lightView[0]);
+                        
+                        mr.material->setUniform3f("u_pointLight.position",  
+                                                  viewNormal * glm::vec4(lightTransform.getPosition(), 1.0f));
+                        mr.material->setUniform3f("u_pointLight.ambient",   lightProps.ambient);
+                        mr.material->setUniform3f("u_pointLight.diffuse",   lightProps.diffuse);
+                        mr.material->setUniform3f("u_pointLight.specular",  lightProps.specular);
+
+                        // TEMPORARY:
+                        boundMaterial->bind();
+                        boundMaterial->applyUniforms();
+                    }
+                    
+                    glm::mat4 transform = view.get<Transform>(entity).getMatrixGlobal();
+
+                    Renderer::submit(mr.mesh, mr.material, transform);
                 }
-                
-                const glm::mat4& transform = registry->get_or_assign<Transform>(entity).getMatrixGlobal();
-
-                Renderer::submit(mr.mesh, mr.material, transform);
             }
         }
 
@@ -421,7 +430,97 @@ namespace oyl
 
             m_cameraRotate = glm::vec3(0.0f);
         }
-    }
 
     // ^^^ Editor Camera System vvv //
+
+    // vvv Editor Render System vvv //
+
+    void EditorRenderSystem::onEnter() { }
+
+    void EditorRenderSystem::onExit() { }
+
+    void EditorRenderSystem::onUpdate(Timestep dt)
+    {
+        using component::Transform;
+        using component::Renderable;
+        using component::PlayerCamera;
+        using component::PointLight;
+        using component::internal::EditorCamera;
+
+        // We sort our mesh renderers based on material properties
+        // This will group all of our meshes based on shader first, then material second
+        registry->sort<Renderable>(
+            [](const Renderable& lhs, const Renderable& rhs)
+            {
+                if (rhs.material == nullptr || rhs.mesh == nullptr)
+                    return false;
+                else if (lhs.material == nullptr || lhs.mesh == nullptr)
+                    return true;
+                else if (lhs.material->getShader() != rhs.material->getShader())
+                    return lhs.material->getShader() < rhs.material->getShader();
+                else
+                    return lhs.material < rhs.material;
+            });
+
+        Ref<Material> boundMaterial;
+
+        // TEMPORARY
+        auto        camView = registry->view<EditorCamera>();
+        Ref<Camera> currentCamera = camView.get(*camView.begin()).camera;
+
+        auto view = registry->view<Renderable>();
+        for (const auto& entity : view)
+        {
+            Renderable& mr = registry->get<Renderable>(entity);
+
+            if (mr.mesh == nullptr ||
+                mr.material == nullptr ||
+                mr.material->getShader() == nullptr)
+                continue;
+
+            if (mr.material != boundMaterial)
+            {
+                boundMaterial = mr.material;
+
+                mr.material->setUniformMat4("u_view", currentCamera->getViewMatrix());
+                mr.material->setUniformMat4("u_viewProjection", currentCamera->getViewProjectionMatrix());
+                glm::mat4 viewNormal = glm::mat4(currentCamera->getViewMatrix());
+                viewNormal = glm::inverse(glm::transpose(viewNormal));
+                mr.material->setUniformMat3("u_viewNormal", glm::mat4(viewNormal));
+
+                auto  lightView = registry->view<PointLight>();
+                auto  lightProps = lightView.get(lightView[0]);
+                auto  lightTransform = registry->get<Transform>(lightView[0]);
+
+                mr.material->setUniform3f("u_pointLight.position",
+                                          viewNormal * glm::vec4(lightTransform.getPosition(), 1.0f));
+                mr.material->setUniform3f("u_pointLight.ambient", lightProps.ambient);
+                mr.material->setUniform3f("u_pointLight.diffuse", lightProps.diffuse);
+                mr.material->setUniform3f("u_pointLight.specular", lightProps.specular);
+
+                // TEMPORARY:
+                boundMaterial->bind();
+                boundMaterial->applyUniforms();
+            }
+
+            const glm::mat4& transform = registry->get_or_assign<Transform>(entity).getMatrixGlobal();
+
+            Renderer::submit(mr.mesh, mr.material, transform);
+        }
+    }
+
+    void EditorRenderSystem::onGuiRender(Timestep dt) { }
+
+    bool EditorRenderSystem::onEvent(Ref<Event> event)
+    {
+        return false;
+    }
+
+    void EditorRenderSystem::init() { }
+
+    void EditorRenderSystem::shutdown() { }
+
+    // ^^^ Editor Render System ^^ //
+
+    }
 }

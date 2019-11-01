@@ -19,6 +19,13 @@ public:
         auto uv = Texture2D::get(UV_TEXTURE_ALIAS);
         
         Material::cache(textureShader, uv, "cubeMat");
+
+        {
+            auto e = registry->create();
+            auto& camera = registry->assign<component::PlayerCamera>(e);
+            camera.player = 0;
+            camera.projection = glm::perspective(glm::radians(60.0f), 16.0f / 9.0f, 0.01f, 1000.0f);
+        }
     }
 
     bool onEvent(Ref<Event> event) override

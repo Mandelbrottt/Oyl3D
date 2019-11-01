@@ -83,4 +83,20 @@ namespace oyl::internal
 
         bool m_doMoveCamera = false;
     };
+
+    class EditorRenderSystem : public System
+    {
+        OYL_CTOR(EditorRenderSystem, System)
+
+        virtual void onEnter() override;
+        virtual void onExit() override;
+
+        virtual void onUpdate(Timestep dt) override;
+        virtual void onGuiRender(Timestep dt) override;
+
+        virtual bool onEvent(Ref<Event> event) override;
+
+        void init();
+        void shutdown();
+    };
 }

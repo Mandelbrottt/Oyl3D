@@ -122,7 +122,11 @@ namespace oyl::component
     struct PlayerCamera
     {
         i32 player = -1;
-        Ref<Camera> camera;
+
+        // TEMPORARY:
+        glm::mat4 projection;
+        
+        //Ref<Camera> camera;
     };
 
     // TODO: Attenuation

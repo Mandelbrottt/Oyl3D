@@ -26,6 +26,7 @@ namespace oyl
         virtual const EventMask&    getEventMask() const = 0;
         virtual const CategoryMask& getCategoryMask() const = 0;
 
+        // TODO: Change functions to listenForEventType() and listenForEventCategory()
         virtual void addToEventMask(u32 eventType) = 0;
         virtual void addToCategoryMask(u32 eventCategory) = 0;
 

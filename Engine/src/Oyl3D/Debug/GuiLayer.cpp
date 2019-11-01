@@ -42,6 +42,7 @@ namespace oyl
     void GuiLayer::onEnter()
     {
         scheduleSystemUpdate<internal::EditorCameraSystem>();
+        scheduleSystemUpdate<internal::EditorRenderSystem>();
 
         for (auto& system : m_systems)
         {
