@@ -24,7 +24,7 @@ namespace oyl
     {
         setupGuiLibrary();
 
-        addToEventMask(TypeViewportHandleChanged);
+        addToEventMask(TypeEditorViewportHandleChanged);
         addToEventMask(TypeEditorEntitySelected);
         addToEventMask(TypeMousePressed);
 
@@ -156,7 +156,10 @@ namespace oyl
 
         drawInspector();
 
-        drawViewport();
+        drawSceneViewport();
+
+        if (!m_editorOverrideUpdate)
+            drawGameViewport();
 
         if (ImGui::Begin("##TestPlayButton"), NULL, ImGuiWindowFlags_NoDecoration)
         {
@@ -197,15 +200,15 @@ namespace oyl
     {
         switch (event->type)
         {
-            case TypeViewportHandleChanged:
+            case TypeEditorViewportHandleChanged:
             {
-                auto e           = (ViewportHandleChangedEvent) *event;
-                m_viewportHandle = e.handle;
-                return true;
+                auto e = (EditorViewportHandleChangedEvent) *event;
+                m_editorViewportHandle = e.handle;
+                return false;
             }
             case TypeEditorEntitySelected:
             {
-                auto e          = (EditorEntitySelectedEvent) *event;
+                auto e = (EditorEntitySelectedEvent) *event;
                 m_currentEntity = e.entity;
                 return true;
             }
@@ -445,72 +448,86 @@ namespace oyl
 
     void GuiLayer::drawInspectorRigidBody() {}
 
-    void GuiLayer::drawViewport()
+    void GuiLayer::drawSceneViewport()
     {
         // Only still here for easy navigation to the source code for learning imgui
         if constexpr (false)
             ImGui::ShowDemoWindow();
 
         ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
-        ImGui::Begin("Viewport##EditorViewport", nullptr, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoCollapse);
-
-        auto [x, y]       = ImGui::GetWindowSize();
-        auto [cx, cy]     = ImGui::GetCursorPos();
-        auto [posx, posy] = ImGui::GetItemRectMin();
-
-        y -= cy;
-
-        float camX = posx + x - 40;
-        float camY = posy + y;
-
-        ImGui::SetNextWindowPos(ImVec2(camX, camY), 0, ImVec2(1, 1));
-        ImVec2 cameraWindowSize = ImVec2(x / 4, y / 4);
-        ImGui::SetNextWindowSize(cameraWindowSize);
-
-        if (ImGui::Begin("Camera Preview##ViewportCameraPreview", nullptr,
-                         ImGuiWindowFlags_NoScrollbar |
-                         ImGuiWindowFlags_NoResize |
-                         ImGuiWindowFlags_NoMove))
+        if (ImGui::Begin("Scene##EditorSceneViewport", nullptr, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoCollapse))
         {
+            static ImVec2 lastSize = { 0, 0 };
+
+            auto [x, y]   = ImGui::GetWindowSize();
+            auto [cx, cy] = ImGui::GetCursorPos();
+
+            if (lastSize.x != x || lastSize.y != y)
+            {   
+                EditorViewportResizedEvent vrevent;
+                vrevent.width  = x;
+                vrevent.height = y - cy;
+                
+                postEvent(Event::create(vrevent));
+            }
+            
+            y -= cy;
+    
             ImGui::Image(
-                (void*) m_viewportHandle,
-                cameraWindowSize,
+                (void*) m_editorViewportHandle,
+                ImVec2(x, y),
                 ImVec2(0, 1), ImVec2(1, 0)
             );
+    
+            ImGuizmo::SetDrawlist();
+            auto [minX, minY]   = ImGui::GetItemRectMin();
+            auto [sizeX, sizeY] = ImGui::GetItemRectSize();
+            ImGuizmo::SetRect(minX, minY, sizeX, sizeY);
+    
+            if (ImGui::IsItemClicked(1))
+                m_currentEntity = Entity(-1);
+    
+            drawTransformGizmo();
         }
-
-        ImGui::PopStyleVar();
-        ImGui::End();
-
-        ViewportResizedEvent vrevent;
-        vrevent.id     = 0;
-        vrevent.width  = x;
-        vrevent.height = y;
-
-        postEvent(Event::create(vrevent));
-
-        ImGui::Image(
-            (void*) m_viewportHandle,
-            ImVec2(x, y),
-            ImVec2(0, 1), ImVec2(1, 0)
-        );
-
-        ImGuizmo::SetDrawlist();
-        auto [minX, minY]   = ImGui::GetItemRectMin();
-        auto [sizeX, sizeY] = ImGui::GetItemRectSize();
-        ImGuizmo::SetRect(minX, minY, sizeX, sizeY);
-
-        if (ImGui::IsItemClicked(1))
-            m_currentEntity = Entity(-1);
-
-        drawTransformGizmo();
-
-        //ImVec2 gzsPos = ImVec2(minX + 20, minY + cy + 20);
-        //ImGui::SetNextWindowPos(gzsPos);
 
         drawTransformGizmoSettings();
 
         ImGui::End();
+        ImGui::PopStyleVar();
+    }
+
+    void GuiLayer::drawGameViewport()
+    {
+        ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
+        if (ImGui::Begin("Game##EditorGameViewport", NULL, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoCollapse))
+        {
+            // TEMPORARY:
+            {
+                static ImVec2 lastSize = { 0, 0 };
+
+                auto [x, y] = ImGui::GetWindowSize();
+                auto [cx, cy] = ImGui::GetCursorPos();
+
+                if (lastSize.x != x || lastSize.y != y)
+                {
+                    EditorViewportResizedEvent vrevent;
+                    vrevent.width = x;
+                    vrevent.height = y - cy;
+
+                    postEvent(Event::create(vrevent));
+                }
+
+                y -= cy;
+
+                ImGui::Image(
+                    (void*) m_editorViewportHandle,
+                    ImVec2(x, y),
+                    ImVec2(0, 1), ImVec2(1, 0)
+                );
+            }
+        }
+        ImGui::End();
+        ImGui::PopStyleVar();
     }
 
     void GuiLayer::drawTransformGizmoSettings()

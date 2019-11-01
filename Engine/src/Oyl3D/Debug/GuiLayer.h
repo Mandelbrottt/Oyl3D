@@ -30,18 +30,23 @@ namespace oyl
         void setupGuiLibrary();
         void drawMenuBar();
         void drawSceneHierarchy();
+
         void drawInspector();
         void drawInspectorTransform();
         void drawInspectorRenderable();
         void drawInspectorRigidBody();
-        void drawViewport();
+        
+        void drawSceneViewport();
+        void drawGameViewport();
+
         void drawTransformGizmoSettings();
         void drawTransformGizmo();
 
         void applyCustomColorTheme();
 
     private:
-        u32 m_viewportHandle;
+        u32 m_editorViewportHandle;
+        u32 m_gameViewportHandle;
 
         Entity m_currentEntity = Entity(-1);
 

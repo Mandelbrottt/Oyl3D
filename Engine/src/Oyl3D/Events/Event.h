@@ -213,7 +213,7 @@ namespace oyl
                          i32 handle;
                      });
 
-    OYL_EVENT_STRUCT(EditorViewportHandleResizedEvent, TypeEditorViewportResized, CategoryEditor,
+    OYL_EVENT_STRUCT(EditorViewportResizedEvent, TypeEditorViewportResized, CategoryEditor,
                      {
                          f32 width;
                          f32 height;

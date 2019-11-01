@@ -49,12 +49,10 @@ namespace oyl
             using component::PlayerCamera;
             using component::PointLight;
             using component::internal::EditorCamera;
-
-            Ref<Registry> reg = Scene::current()->getRegistry();
             
             // We sort our mesh renderers based on material properties
             // This will group all of our meshes based on shader first, then material second
-            reg->sort<Renderable>([](const Renderable& lhs, const Renderable& rhs)
+            registry->sort<Renderable>([](const Renderable& lhs, const Renderable& rhs)
             {
                 if (rhs.material == nullptr || rhs.mesh == nullptr)
                     return false;
@@ -69,13 +67,13 @@ namespace oyl
             Ref<Material> boundMaterial;
 
             // TEMPORARY
-            auto        camView       = reg->view<EditorCamera>();
+            auto        camView       = registry->view<EditorCamera>();
             Ref<Camera> currentCamera = camView.get(*camView.begin()).camera;
 
-            auto view = reg->view<Renderable>();
+            auto view = registry->view<Renderable>();
             for (const auto& entity : view)
             {
-                Renderable& mr = reg->get<Renderable>(entity);
+                Renderable& mr = registry->get<Renderable>(entity);
 
                 if (mr.mesh == nullptr || 
                     mr.material == nullptr || 
@@ -107,7 +105,7 @@ namespace oyl
                     boundMaterial->applyUniforms();
                 }
                 
-                const glm::mat4& transform = reg->get_or_assign<Transform>(entity).getMatrixGlobal();
+                const glm::mat4& transform = registry->get_or_assign<Transform>(entity).getMatrixGlobal();
 
                 Renderer::submit(mr.mesh, mr.material, transform);
             }
@@ -174,32 +172,10 @@ namespace oyl
                     addRigidBody(entity, transform, rigidBody);
                 }
 
-                //btTransform newT = {};
-                //m_rigidBodies[entity]->motion->getWorldTransform(newT);
-
                 btVector3 _pos = {};
                 btQuaternion _rot = {};
                 if (transform.m_isPositionOverridden || transform.m_isRotationOverridden)
                 {
-                    //btTransform newTransform;
-                    //
-                    //_pos = { transform.getPositionX(), transform.getPositionY(), transform.getPositionZ() };
-                    //_rot.setEuler(transform.getRotationEulerX(), 
-                    //              transform.getRotationEulerY(), 
-                    //              transform.getRotationEulerZ());
-                    //
-                    //newTransform.setOrigin(_pos);
-                    //newTransform.setRotation(_rot);
-                    //
-                    ////m_rigidBodies[entity]->body->setWorldTransform(newTransform);
-                    //m_rigidBodies[entity]->body->setCenterOfMassTransform(newTransform);
-                    //m_rigidBodies[entity]->motion->setWorldTransform(newTransform);
-
-                    //m_rigidBodies[entity]->body->setLinearVelocity(btVector3(0, 0, 0));
-                    //m_rigidBodies[entity]->body->setAngularVelocity(btVector3(0, 0, 0));
-
-                    //m_rigidBodies[entity]->body->clearForces();
-
                     m_world->removeRigidBody(m_rigidBodies[entity]->body.get());
                     addRigidBody(entity, transform, rigidBody);
 
@@ -209,8 +185,6 @@ namespace oyl
                 else
                 {
                     btTransform t = m_rigidBodies[entity]->body->getWorldTransform();
-                    //btTransform t = {};
-                    //m_rigidBodies[entity]->motion->getWorldTransform(t);
 
                     _pos = t.getOrigin();
                     _rot = t.getRotation();
@@ -226,14 +200,7 @@ namespace oyl
                     transform.m_isLocalDirty = true;
                 }
             }
-            
-            //if (registry->view<component::RigidBody>().size() != m_rigidBodies.size())
-            //{
-            //    
-            //}
-
-            //btRigidBody::getCollisionShape()->getShapeType();
-            
+                        
             m_world->stepSimulation(dt.getSeconds(), 1, m_fixedTimeStep);
         }
 
@@ -316,7 +283,7 @@ namespace oyl
 
         // ^^^ Physics System ^^^ //
         
-        // vvv Oracle Camera System vvv //
+        // vvv Editor Camera System vvv //
 
         void EditorCameraSystem::onEnter()
         {
@@ -326,7 +293,7 @@ namespace oyl
             addToEventMask(TypeKeyPressed);
             addToEventMask(TypeKeyReleased);
             addToEventMask(TypeMouseMoved);
-            addToEventMask(TypeViewportResized);
+            addToEventMask(TypeEditorViewportResized);
 
             EditorCamera cam;
             cam.camera = Ref<Camera>::create();
@@ -417,11 +384,11 @@ namespace oyl
 
                     break;
                 }
-                case TypeViewportResized:
+                case TypeEditorViewportResized:
                 {
                     using component::internal::EditorCamera;
                     
-                    auto e    = (ViewportResizedEvent) *event;
+                    auto e    = (EditorViewportResizedEvent) *event;
                     auto view = registry->view<EditorCamera>();
 
                     auto pc = view.get(*view.begin());
@@ -456,5 +423,5 @@ namespace oyl
         }
     }
 
-    // ^^^ Oracle Camera System vvv //
+    // ^^^ Editor Camera System vvv //
 }

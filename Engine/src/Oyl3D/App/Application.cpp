@@ -46,7 +46,7 @@ namespace oyl
                 return app->onEvent(event);
             }
 
-            oyl::Application* app = nullptr;
+            Application* app = nullptr;
         };
     }
 
@@ -102,7 +102,7 @@ namespace oyl
                                        oyl::Nearest,
                                        oyl::Clamp);
 
-        ViewportHandleChangedEvent handleChanged;
+        EditorViewportHandleChangedEvent handleChanged;
         handleChanged.handle = m_mainBuffer->getColorHandle(0);
         
         m_dispatcher->postEvent(Event::create(handleChanged));
@@ -213,14 +213,6 @@ namespace oyl
 
             if (m_doUpdate)
             {
-                RenderCommand::setClearColor(0.1f, 0.1f, 0.1f, 1.0f);
-                RenderCommand::clear();
-
-                m_mainBuffer->clear();
-                m_mainBuffer->bind();
-
-                Renderer::beginScene();
-
                 m_dispatcher->dispatchEvents();
 
             #if !defined(OYL_DISTRIBUTION)
@@ -231,12 +223,19 @@ namespace oyl
                 {
                     m_currentScene->onUpdate(timestep);
                 }
-                
-                m_renderSystem->onUpdate(timestep);
             #else
                 m_currentScene->onUpdate(timestep);
-                m_renderSystem->onUpdate(timestep);
             #endif
+
+                RenderCommand::setClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+                RenderCommand::clear();
+
+                m_mainBuffer->clear();
+                m_mainBuffer->bind();
+
+                Renderer::beginScene();
+                
+                m_renderSystem->onUpdate(timestep);
 
                 Renderer::endScene();
                 m_mainBuffer->unbind();

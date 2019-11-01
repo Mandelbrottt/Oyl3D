@@ -3,10 +3,9 @@
 
 #include "ECS/SystemImpl.h"
 #include "ECS/Registry.h"
+#include "ECS/Component.h"
 
 #include "Events/EventDispatcher.h"
-
-#include "ECS/Component.h"
 
 namespace oyl
 {
