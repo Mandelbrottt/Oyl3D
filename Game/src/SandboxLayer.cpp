@@ -1,11 +1,15 @@
 #include <Oyl3D.h>
 
 #include "SandboxLayer.h"
+#include "Team.h"
+#include "Cannon.h"
 
 using namespace oyl;
 
 void SandboxLayer::onEnter()
 {
+	scheduleSystemUpdate<CannonSystem>();
+    
     auto& mesh = Mesh::cache("res/assets/models/cube.obj");
     
     auto& mat = Material::cache(Shader::get(LIGHTING_SHADER_ALIAS), 
@@ -18,17 +22,21 @@ void SandboxLayer::onEnter()
     mr.mesh     = mesh;
     mr.material = mat;
 
-    Entity e = registry->create();
-    registry->assign<component::Renderable>(e, mr);
+    Entity cannonBlue = registry->create();
+	registry->assign<Cannon>(cannonBlue);
+	registry->get<Cannon>(cannonBlue).team = Teams::blue;
+	registry->get<Cannon>(cannonBlue).fuse.timeToWait = 10.0f;
+    
+    registry->assign<component::Renderable>(cannonBlue, mr);
 
     component::Transform t;
     t.position = glm::vec3(0.0f);
-    registry->assign<component::Transform>(e, t);
+    registry->assign<component::Transform>(cannonBlue, t);
 
-    auto& so = registry->assign<component::SceneObject>(e);
-    so.name = "Container";
+    auto& so = registry->assign<component::SceneObject>(cannonBlue);
+    so.name = "BlueCannon";
     
-    e = registry->create();
+    Entity e = registry->create();
     registry->assign<component::Renderable>(e, mr);
 
     t.position = glm::vec3(3.0f, 3.0f, 3.0f);
