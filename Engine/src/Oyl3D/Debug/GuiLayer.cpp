@@ -771,7 +771,7 @@ namespace oyl
                     m_editorOverrideUpdate = true;
                     m_gameUpdate = false;
 
-                    // TEMPORARY:
+                    // TEMPORARY: Send as event
                     *Scene::current()->m_registry = m_registryRestore.clone();
                     Scene::current()->m_physicsSystem->onExit();
                     Scene::current()->m_physicsSystem->onEnter();
