@@ -13,9 +13,11 @@ namespace oyl
 
     Scene::Scene()
         : m_registry(Ref<Registry>::create()),
-          m_physicsSystem(internal::PhysicsSystem::create())
+          m_physicsSystem(internal::PhysicsSystem::create()),
+          m_transformUpdateSystem(internal::TransformUpdateSystem::create())
     {
         m_physicsSystem->onEnter();
+        m_transformUpdateSystem->onEnter();
     }
 
     Scene::~Scene()
@@ -40,6 +42,7 @@ namespace oyl
         }
 
         m_physicsSystem->onUpdate(dt);
+        m_transformUpdateSystem->onUpdate(dt);
     }
 
     bool Scene::onEvent(Ref<Event> event)
@@ -55,13 +58,17 @@ namespace oyl
             layer->onGuiRender(dt);
         }
 
-        m_physicsSystem->onUpdate(dt);
+        m_physicsSystem->onGuiRender(dt);
+        m_transformUpdateSystem->onGuiRender(dt);
     }
 
     void Scene::initDefaultSystems()
     {
         m_physicsSystem->setRegistry(m_registry);
         m_physicsSystem->setDispatcher(m_dispatcher);
+
+        m_transformUpdateSystem->setRegistry(m_registry);
+        m_transformUpdateSystem->setDispatcher(m_dispatcher);
     }
 
     void Scene::pushLayer(Ref<Layer> layer)

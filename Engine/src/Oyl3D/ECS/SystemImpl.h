@@ -63,6 +63,13 @@ namespace oyl::internal
         UniqueRef<btDynamicsWorld>          m_world;
     };
 
+    class TransformUpdateSystem : public System
+    {
+        OYL_CTOR(TransformUpdateSystem, System)
+
+        virtual void onUpdate(Timestep dt) override;
+    };
+
     class EditorCameraSystem : public System
     {
         OYL_CTOR(EditorCameraSystem, System)

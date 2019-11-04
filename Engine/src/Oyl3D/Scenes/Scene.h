@@ -13,6 +13,7 @@ namespace oyl
     namespace internal
     {
         class PhysicsSystem;
+        class TransformUpdateSystem;
     }
 
     class Scene : public EventListener, public virtual Node
@@ -59,5 +60,6 @@ namespace oyl
         Ref<Registry> m_registry;
 
         Ref<internal::PhysicsSystem> m_physicsSystem;
+        Ref<internal::TransformUpdateSystem> m_transformUpdateSystem;
     };
 }

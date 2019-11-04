@@ -142,6 +142,24 @@ namespace oyl
         m_systems.clear();
     }
 
+    void GuiLayer::onUpdate(Timestep dt)
+    {
+        using component::Transform;
+        using component::Parent;
+
+        // For every child object, give its transform a reference to its parent's
+        auto view = registry->view<Transform, Parent>();
+        for (auto entity : view)
+        {
+            auto& ct = view.get<Transform>(entity);
+            auto parent = view.get<Parent>(entity).parent;
+            auto& pt = registry->get<Transform>(parent);
+            pt.m_localRef = Ref<Transform>(&pt, [](Transform*) {});
+
+            ct.m_parentRef = pt.m_localRef;
+        }
+    }
+
     void GuiLayer::begin()
     {
         ImGui_ImplOpenGL3_NewFrame();
@@ -216,39 +234,7 @@ namespace oyl
 
         drawGameViewport();
 
-        // TODO: Put in own function
-        if (ImGui::Begin(g_playPauseWindowName), NULL, ImGuiWindowFlags_NoDecoration)
-        {
-            if (m_editorOverrideUpdate)
-            {
-                if (ImGui::ArrowButton("##EditorPlayButton", ImGuiDir_Right))
-                {
-                    m_editorOverrideUpdate = false;
-                    m_gameUpdate = true;
-                    m_registryRestore = Scene::current()->getRegistry()->clone();
-                    m_currentEntity = Entity(-1);
-                }
-            }
-            else
-            {
-                if (ImGui::ArrowButton("##EditorBackButton", ImGuiDir_Left))
-                {
-                    m_editorOverrideUpdate = true;
-                    m_gameUpdate = false;
-                    *Scene::current()->m_registry = m_registryRestore.clone();
-                    Scene::current()->m_physicsSystem->onExit();
-                    Scene::current()->m_physicsSystem->onEnter();
-                    m_currentEntity = Entity(-1);
-                }
-                ImGui::SameLine();
-                if ((m_gameUpdate && ImGui::Button("II##EditorPauseButton")) ||
-                    (!m_gameUpdate && ImGui::ArrowButton("##EditorPausedPlayButton", ImGuiDir_Right)))
-                {
-                    m_gameUpdate ^= 1;
-                }
-            }
-        }
-        ImGui::End();
+        drawPlayPauseButtons();
     }
 
     bool GuiLayer::onEvent(Ref<Event> event)
@@ -716,39 +702,84 @@ namespace oyl
 
             auto& model = registry->get<Transform>(Entity(m_currentEntity));
 
-            glm::vec3 position = model.getPosition();
-            glm::vec3 rotation = model.getRotationEuler();
-            glm::vec3 scale    = model.getScale();
+            glm::mat4 gizmoMatrix = model.getMatrixGlobal();
             
-            glm::mat4 modelMatrix;
-
-            ImGuizmo::RecomposeMatrixFromComponents(value_ptr(position),
-                                                    value_ptr(rotation),
-                                                    value_ptr(scale),
-                                                    value_ptr(modelMatrix));
-
             ImGuizmo::Manipulate(value_ptr(cam->getViewMatrix()),
                                  value_ptr(cam->getProjectionMatrix()),
                                  m_currentOp,
                                  m_currentMode,
-                                 value_ptr(modelMatrix),
+                                 value_ptr(gizmoMatrix),
                                  nullptr,
                                  m_doSnap ? &m_snap.x : nullptr);
 
-            ImGuizmo::DecomposeMatrixToComponents(value_ptr(modelMatrix),
-                                                  value_ptr(position),
-                                                  value_ptr(rotation),
-                                                  value_ptr(scale));
-
-            scale = glm::max(glm::vec3(0.01f), scale);
-
             if (ImGuizmo::IsUsing())
-            {
-                model.setPosition(position);
-                model.setRotationEuler(rotation);
-                model.setScale(scale);
+            {                
+                if (registry->has<component::Parent>(m_currentEntity))
+                {   
+                    auto parent = registry->get<component::Parent>(m_currentEntity).parent;
+                    auto& parentTransform = registry->get<Transform>(parent);
+
+                    model.m_localMatrix = glm::inverse(parentTransform.getMatrixGlobal()) * gizmoMatrix;
+                }
+                else
+                {
+                    model.m_localMatrix = gizmoMatrix;    
+                }
+                
+                glm::vec3 tComponents[3];
+                ImGuizmo::DecomposeMatrixToComponents(value_ptr(model.m_localMatrix),
+                                                      value_ptr(tComponents[0]),
+                                                      value_ptr(tComponents[1]),
+                                                      value_ptr(tComponents[2]));
+
+                tComponents[2] = max(glm::vec3(0.01f), tComponents[2]);
+                
+                model.m_localPosition      = tComponents[0];
+                model.m_localEulerRotation = tComponents[1];
+                model.m_localScale         = tComponents[2];
+
+                model.m_isLocalDirty = false;
+
+                model.m_isPositionOverridden = true;
+                model.m_isRotationOverridden = true;
+                model.m_isScaleOverridden    = true;
             }
         }
+    }
+
+    void GuiLayer::drawPlayPauseButtons()
+    {
+        if (ImGui::Begin(g_playPauseWindowName), NULL, ImGuiWindowFlags_NoDecoration)
+        {
+            if (m_editorOverrideUpdate)
+            {
+                if (ImGui::ArrowButton("##EditorPlayButton", ImGuiDir_Right))
+                {
+                    m_editorOverrideUpdate = false;
+                    m_gameUpdate = true;
+                    m_registryRestore = Scene::current()->getRegistry()->clone();
+                    m_currentEntity = Entity(-1);
+                }
+            } else
+            {
+                if (ImGui::ArrowButton("##EditorBackButton", ImGuiDir_Left))
+                {
+                    m_editorOverrideUpdate = true;
+                    m_gameUpdate = false;
+                    *Scene::current()->m_registry = m_registryRestore.clone();
+                    Scene::current()->m_physicsSystem->onExit();
+                    Scene::current()->m_physicsSystem->onEnter();
+                    m_currentEntity = Entity(-1);
+                }
+                ImGui::SameLine();
+                if ((m_gameUpdate && ImGui::Button("II##EditorPauseButton")) ||
+                    (!m_gameUpdate && ImGui::ArrowButton("##EditorPausedPlayButton", ImGuiDir_Right)))
+                {
+                    m_gameUpdate ^= 1;
+                }
+            }
+        }
+        ImGui::End();
     }
 
     void GuiLayer::applyCustomColorTheme()

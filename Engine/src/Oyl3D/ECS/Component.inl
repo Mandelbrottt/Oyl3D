@@ -47,7 +47,14 @@ namespace oyl::component
 
     inline glm::mat4 Transform::getMatrixGlobal() const
     {
-        return m_globalMatrix * getMatrixLocal();
+        using wf = WeakRef<Transform>;
+        bool isOrphan = true;
+        isOrphan = !m_parentRef.owner_before(wf{}) && !wf{}.owner_before(m_parentRef);
+        if (isOrphan || m_parentRef.expired())
+        {
+            return getMatrixLocal();
+        } 
+        return m_parentRef.lock()->getMatrixGlobal() * getMatrixLocal();
     }
 
     inline glm::vec3 Transform::getForwardLocal() const

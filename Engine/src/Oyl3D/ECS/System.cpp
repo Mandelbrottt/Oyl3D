@@ -291,6 +291,36 @@ namespace oyl
         }
 
         // ^^^ Physics System ^^^ //
+
+        // vvv Transform Update System vvv //
+
+        void TransformUpdateSystem::onUpdate(Timestep dt)
+        {
+            using component::Transform;
+            using component::Parent;
+
+            registry->each(
+                [&](auto entity)
+                {
+                    Transform& t = registry->get_or_assign<Transform>(entity);
+                    if (!t.m_localRef)
+                    {
+                        t.m_localRef = Ref<Transform>(&t, [](Transform*) {});
+                    }
+                });
+
+            auto view = registry->view<Transform, Parent>();
+            for (auto entity : view)
+            {
+                auto& ct = view.get<Transform>(entity);
+                auto parent = view.get<Parent>(entity).parent;
+                auto& pt = view.get<Transform>(parent);
+
+                ct.m_parentRef = pt.m_localRef;
+            }
+        };
+
+        // ^^^ Transform Update System ^^^ //
         
         // vvv Editor Camera System vvv //
 

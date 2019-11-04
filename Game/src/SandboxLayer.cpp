@@ -28,24 +28,21 @@ void SandboxLayer::onEnter()
 
         auto& so = registry->assign<component::SceneObject>(e);
         so.name = "Container";
-    }
-    {
-        component::Renderable mr;
-        mr.mesh = mesh;
-        mr.material = mat;
 
-        Entity e = registry->create();
-        registry->assign<component::Renderable>(e, mr);
+        Entity e2 = registry->create();
+        registry->assign<component::Renderable>(e2, mr);
 
-        component::Transform t;
         t.setPosition(glm::vec3(3.0f, 3.0f, 3.0f));
         t.setScale(glm::vec3(0.3f));
-        registry->assign<component::Transform>(e, t);
+        registry->assign<component::Transform>(e2, t);
 
-        auto& l = registry->assign<component::PointLight>(e);
+        registry->assign<component::PointLight>(e2);
 
-        auto& so = registry->assign<component::SceneObject>(e);
-        so.name = "Light 1";
+        auto& so2 = registry->assign<component::SceneObject>(e2);
+        so2.name = "Light 1";
+
+        auto& p = registry->assign<component::Parent>(e2);
+        p.parent = e;
     }
     {
         component::Renderable mr;

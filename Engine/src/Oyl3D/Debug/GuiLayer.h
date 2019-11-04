@@ -14,6 +14,7 @@ namespace oyl
 
         void onEnter() override;
         void onExit() override;
+        void onUpdate(Timestep dt) override;
         void onGuiRender(Timestep dt) override;
 
         bool onEvent(Ref<Event> event) override;
@@ -45,6 +46,7 @@ namespace oyl
 
         void drawTransformGizmoSettings();
         void drawTransformGizmo();
+        void drawPlayPauseButtons();
 
         void applyCustomColorTheme();
 

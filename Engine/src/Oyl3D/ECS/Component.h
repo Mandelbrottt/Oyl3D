@@ -8,7 +8,8 @@ namespace oyl
 
     namespace internal
     {
-        class PhysicsSystem;   
+        class PhysicsSystem;
+        class TransformUpdateSystem;
     }
     
 }
@@ -22,7 +23,7 @@ namespace oyl::component
 
     struct Transform
     {
-    public:
+    public:        
         glm::vec3 getPosition()  const;
         f32       getPositionX() const;
         f32       getPositionY() const;
@@ -76,6 +77,8 @@ namespace oyl::component
 
     private:
         friend internal::PhysicsSystem;
+        friend internal::TransformUpdateSystem;
+        friend class GuiLayer;
         
         glm::vec3 m_localPosition      = glm::vec3(0.0f);
         glm::vec3 m_localEulerRotation = glm::vec3(0.0f);
@@ -84,7 +87,8 @@ namespace oyl::component
         
         mutable glm::mat4 m_localMatrix = glm::mat4(1.0f);
 
-        mutable glm::mat4 m_globalMatrix = glm::mat4(1.0f);
+        Ref<Transform>     m_localRef  = nullptr;
+        WeakRef<Transform> m_parentRef = WeakRef<Transform>{};
 
         mutable bool m_isLocalDirty = true;
         
