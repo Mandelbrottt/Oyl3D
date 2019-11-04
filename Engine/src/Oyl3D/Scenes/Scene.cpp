@@ -111,19 +111,7 @@ namespace oyl
     {
         using component::SceneObject;
         using component::Transform;
-        
-        //m_registry->each([this](auto entity)
-        //{
-        //    m_registry->assign<SceneIntrinsic>(entity);
-        //    if (!m_registry->has<SceneObject>(entity))
-        //    {
-        //        auto& so = m_registry->assign<SceneObject>(entity);
-        //        
-        //        char buf[128];
-        //        sprintf(buf, "Entity %d", (u32)entity);
-        //        so.name = std::string(buf);
-        //    }
-        //});
+        using component::Parent;
 
         std::ifstream sceneFile("res/scenes/" + m_name + ".oylscene");
         if (!sceneFile)
@@ -154,36 +142,26 @@ namespace oyl
                     t.setScaleY(value["Transform"]["Scale"]["Y"].get<float>());
                     t.setScaleZ(value["Transform"]["Scale"]["Z"].get<float>());
 
-                    // Other components...
+                    if (value.find("Parent") != value.end() &&
+                        value["Parent"].find("Name") != value["Parent"].end() &&
+                        value["Parent"]["Name"].is_string())
+                    {
+                        std::string name = value["Parent"]["Name"].get<std::string>();
+                        if (name != so.name)
+                            for (auto e : view)
+                            {
+                                if (view.get(e).name == name)
+                                {
+                                    auto& p = m_registry->get_or_assign<Parent>(entity);
+                                    p.parent = e;
+                                }
+                            }
+                    }
 
                     break;
                 }
             }
         }
-
-        //auto view = m_registry->view<SceneObject, Transform>();
-        //for (auto entity : view)
-        //{
-        //    auto& so = view.get<SceneObject>(entity);
-        //    auto& t = view.get<Transform>(entity);
-        //    sceneJson[so.name]["Transform"]["Position"]["X"] = t.position.x;
-        //    sceneJson[so.name]["Transform"]["Position"]["Y"] = t.position.y;
-        //    sceneJson[so.name]["Transform"]["Position"]["Z"] = t.position.z;
-
-        //    sceneJson[so.name]["Transform"]["Rotation"]["X"] = t.rotation.x;
-        //    sceneJson[so.name]["Transform"]["Rotation"]["Y"] = t.rotation.y;
-        //    sceneJson[so.name]["Transform"]["Rotation"]["Z"] = t.rotation.z;
-
-        //    sceneJson[so.name]["Transform"]["Scale"]["X"] = t.scale.x;
-        //    sceneJson[so.name]["Transform"]["Scale"]["Y"] = t.scale.y;
-        //    sceneJson[so.name]["Transform"]["Scale"]["Z"] = t.scale.z;
-        //}
-
-        //m_registry->each(
-        //    [&](auto entity)
-        //    {
-        //        m_registry->assign<SceneIntrinsic>(entity);
-        //    });
     }
 
     void Scene::saveSceneToFile()
@@ -192,22 +170,37 @@ namespace oyl
 
         using component::SceneObject;
         using component::Transform;
-        auto view = m_registry->view<SceneObject, Transform>();
-        for (auto entity : view)
+        using component::Parent;
+
         {
-            auto& so = view.get<SceneObject>(entity);
-            auto& t =  view.get<Transform>(entity);
-            sceneJson[so.name]["Transform"]["Position"]["X"] = t.getPositionX();
-            sceneJson[so.name]["Transform"]["Position"]["Y"] = t.getPositionY();
-            sceneJson[so.name]["Transform"]["Position"]["Z"] = t.getPositionZ();
+            auto view = m_registry->view<SceneObject, Transform>();
+            for (auto entity : view)
+            {
+                auto& so = view.get<SceneObject>(entity);
+                auto& t  = view.get<Transform>(entity);
+                
+                sceneJson[so.name]["Transform"]["Position"]["X"] = t.getPositionX();
+                sceneJson[so.name]["Transform"]["Position"]["Y"] = t.getPositionY();
+                sceneJson[so.name]["Transform"]["Position"]["Z"] = t.getPositionZ();
 
-            sceneJson[so.name]["Transform"]["Rotation"]["X"] = t.getRotationEulerX();
-            sceneJson[so.name]["Transform"]["Rotation"]["Y"] = t.getRotationEulerY();
-            sceneJson[so.name]["Transform"]["Rotation"]["Z"] = t.getRotationEulerZ();
+                sceneJson[so.name]["Transform"]["Rotation"]["X"] = t.getRotationEulerX();
+                sceneJson[so.name]["Transform"]["Rotation"]["Y"] = t.getRotationEulerY();
+                sceneJson[so.name]["Transform"]["Rotation"]["Z"] = t.getRotationEulerZ();
 
-            sceneJson[so.name]["Transform"]["Scale"]["X"] = t.getScaleX();
-            sceneJson[so.name]["Transform"]["Scale"]["Y"] = t.getScaleY();
-            sceneJson[so.name]["Transform"]["Scale"]["Z"] = t.getScaleZ();
+                sceneJson[so.name]["Transform"]["Scale"]["X"] = t.getScaleX();
+                sceneJson[so.name]["Transform"]["Scale"]["Y"] = t.getScaleY();
+                sceneJson[so.name]["Transform"]["Scale"]["Z"] = t.getScaleZ();
+            }
+        }
+        {
+            auto view = m_registry->view<SceneObject, Parent>();
+            for (auto entity : view)
+            {
+                auto& so = view.get<SceneObject>(entity);
+                auto& p  = view.get<Parent>(entity);
+
+                sceneJson[so.name]["Parent"]["Name"] = m_registry->get<SceneObject>(p.parent).name;
+            }
         }
         
         std::ofstream sceneFile("res/scenes/" + m_name + ".oylscene");

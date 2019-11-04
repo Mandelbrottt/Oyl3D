@@ -40,9 +40,6 @@ void SandboxLayer::onEnter()
 
         auto& so2 = registry->assign<component::SceneObject>(e2);
         so2.name = "Light 1";
-
-        auto& p = registry->assign<component::Parent>(e2);
-        p.parent = e;
     }
     {
         component::Renderable mr;

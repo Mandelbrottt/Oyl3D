@@ -647,6 +647,8 @@ namespace oyl
     {
         if (ImGui::Begin(g_transformGizmosName, NULL, ImGuiWindowFlags_NoDecoration))
         {
+            ImGui::SameLine(0, 10);
+            
             if (ImGui::RadioButton("Translate##RadioTranslate", m_currentOp == ImGuizmo::TRANSLATE))
                 m_currentOp = ImGuizmo::TRANSLATE;
             ImGui::SameLine(0, 5);
@@ -715,7 +717,7 @@ namespace oyl
                                  m_doSnap ? &m_snap.x : nullptr);
 
             if (ImGuizmo::IsUsing())
-            {                
+            {
                 if (registry->has<component::Parent>(m_currentEntity))
                 {   
                     auto parent = registry->get<component::Parent>(m_currentEntity).parent;
@@ -768,9 +770,20 @@ namespace oyl
                 {
                     m_editorOverrideUpdate = true;
                     m_gameUpdate = false;
+
+                    // TEMPORARY:
                     *Scene::current()->m_registry = m_registryRestore.clone();
                     Scene::current()->m_physicsSystem->onExit();
                     Scene::current()->m_physicsSystem->onEnter();
+                    auto view = registry->view<component::Transform>();
+
+                    for (auto entity : view)
+                    {
+                        auto& t = view.get(entity);
+                        t.m_localRef = Ref<component::Transform>(&t, [](component::Transform*) {});
+                        t.m_parentRef.reset();
+                    }
+
                     m_currentEntity = Entity(-1);
                 }
                 ImGui::SameLine();
