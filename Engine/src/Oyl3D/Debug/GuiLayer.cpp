@@ -744,14 +744,14 @@ namespace oyl
                 {
                     case ImGuizmo::TRANSLATE:
                     {
-                        model.m_localEulerRotation   = tComponents[1];
-                        model.m_isRotationOverridden = true;
+                        model.m_localPosition        = tComponents[0];
+                        model.m_isPositionOverridden = true;
                         break;
                     }
                     case ImGuizmo::ROTATE:
                     {
-                        model.m_localPosition        = tComponents[0];
-                        model.m_isPositionOverridden = true;
+                        model.m_localEulerRotation   = tComponents[1];
+                        model.m_isRotationOverridden = true;
                         break;
                     }
                     case ImGuizmo::SCALE:
@@ -775,6 +775,8 @@ namespace oyl
             {
                 if (ImGui::ArrowButton("##EditorPlayButton", ImGuiDir_Right))
                 {
+                    ImGui::SetWindowFocus(g_gameWindowName);
+                    
                     m_editorOverrideUpdate = false;
                     m_gameUpdate = true;
                     m_registryRestore = Scene::current()->getRegistry()->clone();
@@ -784,6 +786,8 @@ namespace oyl
             {
                 if (ImGui::ArrowButton("##EditorBackButton", ImGuiDir_Left))
                 {
+                    ImGui::SetWindowFocus(g_sceneWindowName);
+                    
                     m_editorOverrideUpdate = true;
                     m_gameUpdate = false;
 
