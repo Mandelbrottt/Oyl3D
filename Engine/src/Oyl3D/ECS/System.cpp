@@ -178,18 +178,22 @@ namespace oyl
                 rigidBody.id = entity;
                 if (m_rigidBodies.find(entity) == m_rigidBodies.end())
                 {
-                    addRigidBody(entity, transform, rigidBody);
+                    this->addRigidBody(entity, transform, rigidBody);
                 }
 
+                // TODO: Deal with changing values after the fact, change to setter getter?
                 btVector3 _pos = {};
                 btQuaternion _rot = {};
-                if (transform.m_isPositionOverridden || transform.m_isRotationOverridden)
+                if (transform.m_isPositionOverridden || 
+                    transform.m_isRotationOverridden || 
+                    transform.m_isScaleOverridden)
                 {
                     m_world->removeRigidBody(m_rigidBodies[entity]->body.get());
-                    addRigidBody(entity, transform, rigidBody);
+                    this->addRigidBody(entity, transform, rigidBody);
 
                     transform.m_isPositionOverridden = false;
                     transform.m_isRotationOverridden = false;
+                    transform.m_isScaleOverridden = false;
                 }
                 else
                 {
@@ -227,18 +231,22 @@ namespace oyl
             Ref<btCollisionShape> shape  = nullptr;
             Ref<btMotionState>  motion = nullptr;
             Ref<btRigidBody>    body   = nullptr;
-            
+
+            // TODO: Deal with parenting
             switch (bodyComponent.type)
             {
                 case RigidBody_StaticPlane:
                 {
                     btTransform t;
-                    //t.setIdentity();
-                    //glm::vec3 origin = transformComponent.getPosition();
-                    //t.setOrigin(btVector3(origin.x, origin.y, origin.z));
                     
-                    glm::mat4 newTransform = transformComponent.getMatrixGlobal();
-                    t.setFromOpenGLMatrix(value_ptr(newTransform));
+                    t.setOrigin(btVector3(transformComponent.getPositionX(),
+                                          transformComponent.getPositionY(),
+                                          transformComponent.getPositionZ()));
+
+                    glm::quat q = glm::quat_cast(transformComponent.getMatrixGlobal());
+
+                    btQuaternion btq = btQuaternion(q.x, q.y, q.z, q.w);
+                    t.setRotation(btq);
                     
                     glm::vec3 up = transformComponent.getUpGlobal();
                     
@@ -253,18 +261,52 @@ namespace oyl
                 }
                 case RigidBody_Box:
                 {
-                    OYL_ASSERT(false, "Not Yet Implemented!");
+                    btTransform t;
+
+                    t.setOrigin(btVector3(transformComponent.getPositionX(),
+                                          transformComponent.getPositionY(),
+                                          transformComponent.getPositionZ()));
+
+                    glm::quat q = glm::quat_cast(transformComponent.getMatrixGlobal());
+
+                    btQuaternion btq = btQuaternion(q.x, q.y, q.z, q.w);
+                    t.setRotation(btq);
+
+                    btVector3 halfExtents;
+                    halfExtents.setX(bodyComponent.width  / 2.0f);
+                    halfExtents.setY(bodyComponent.height / 2.0f);
+                    halfExtents.setZ(bodyComponent.length / 2.0f);
+
+                    shape = Ref<btBoxShape>::create(halfExtents);
+
+                    btVector3 inertia = { 0, 0, 0 };
+                    if (bodyComponent.mass != 0.0f)
+                        shape->calculateLocalInertia(bodyComponent.mass, inertia);
+                    
+                    motion = Ref<btDefaultMotionState>::create(t);
+
+                    btRigidBody::btRigidBodyConstructionInfo info(bodyComponent.mass, 
+                                                                  motion.get(), 
+                                                                  shape.get(), 
+                                                                  inertia);
+
+                    body = Ref<btRigidBody>::create(info);
+
                     break;
                 }
                 case RigidBody_Sphere:
                 {
                     btTransform t;
-                    //t.setIdentity();
-                    //glm::vec3 origin = transformComponent.getPosition();
-                    //t.setOrigin(btVector3(origin.x, origin.y, origin.z));
+                    t.setFromOpenGLMatrix(value_ptr(transformComponent.getMatrixGlobal()));
                     
-                    glm::mat4 newTransform = transformComponent.getMatrixGlobal();
-                    t.setFromOpenGLMatrix(value_ptr(newTransform));
+                    t.setOrigin(btVector3(transformComponent.getPositionX(),
+                                          transformComponent.getPositionY(),
+                                          transformComponent.getPositionZ()));
+
+                    glm::quat q = glm::quat_cast(transformComponent.getMatrixGlobal());
+
+                    btQuaternion btq = btQuaternion(q.x, q.y, q.z, q.w);
+                    t.setRotation(btq);
                     
                     shape = Ref<btSphereShape>::create(bodyComponent.radius);
 
@@ -274,13 +316,20 @@ namespace oyl
 
                     motion = Ref<btDefaultMotionState>::create(t);
 
-                    btRigidBody::btRigidBodyConstructionInfo info(bodyComponent.mass, motion.get(), shape.get(), inertia);
+                    btRigidBody::btRigidBodyConstructionInfo info(bodyComponent.mass, 
+                                                                  motion.get(), 
+                                                                  shape.get(), 
+                                                                  inertia);
 
                     body = Ref<btRigidBody>::create(info);
 
                     break;
                 }
             }
+
+            shape->setLocalScaling(btVector3(transformComponent.getScaleX(),
+                                             transformComponent.getScaleY(),
+                                             transformComponent.getScaleZ()));
 
             m_world->addRigidBody(body.get());
             
@@ -298,16 +347,6 @@ namespace oyl
         {
             using component::Transform;
             using component::Parent;
-
-            //registry->each(
-            //    [&](auto entity)
-            //    {
-            //        Transform& t = registry->get_or_assign<Transform>(entity);
-            //        if (t.m_localRef)
-            //        {
-            //            t.m_localRef = Ref<Transform>(&t, [](Transform*) {});
-            //        }
-            //    });
 
             auto view = registry->view<Transform, Parent>();
             for (auto entity : view)

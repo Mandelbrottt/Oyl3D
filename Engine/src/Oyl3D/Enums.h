@@ -243,5 +243,8 @@ namespace oyl
         RigidBody_StaticPlane = 1,
         RigidBody_Sphere,
         RigidBody_Box,
+        RigidBody_Capsule,
+        RigidBody_Cylinder,
+        RigidBody_Cone
     };
 }

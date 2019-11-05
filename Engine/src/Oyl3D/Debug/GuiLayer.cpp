@@ -718,35 +718,51 @@ namespace oyl
 
             if (ImGuizmo::IsUsing())
             {
+                glm::mat4 tempLocal;
+                
                 if (registry->has<component::Parent>(m_currentEntity))
                 {   
                     auto parent = registry->get<component::Parent>(m_currentEntity).parent;
                     auto& parentTransform = registry->get<Transform>(parent);
 
-                    model.m_localMatrix = glm::inverse(parentTransform.getMatrixGlobal()) * gizmoMatrix;
+                    tempLocal = glm::inverse(parentTransform.getMatrixGlobal()) * gizmoMatrix;
                 }
                 else
                 {
-                    model.m_localMatrix = gizmoMatrix;    
+                    tempLocal = gizmoMatrix;    
                 }
                 
                 glm::vec3 tComponents[3];
-                ImGuizmo::DecomposeMatrixToComponents(value_ptr(model.m_localMatrix),
+                ImGuizmo::DecomposeMatrixToComponents(value_ptr(tempLocal),
                                                       value_ptr(tComponents[0]),
                                                       value_ptr(tComponents[1]),
                                                       value_ptr(tComponents[2]));
 
                 tComponents[2] = max(glm::vec3(0.01f), tComponents[2]);
-                
-                model.m_localPosition      = tComponents[0];
-                model.m_localEulerRotation = tComponents[1];
-                model.m_localScale         = tComponents[2];
 
-                model.m_isLocalDirty = false;
+                switch (m_currentOp)
+                {
+                    case ImGuizmo::TRANSLATE:
+                    {
+                        model.m_localEulerRotation   = tComponents[1];
+                        model.m_isRotationOverridden = true;
+                        break;
+                    }
+                    case ImGuizmo::ROTATE:
+                    {
+                        model.m_localPosition        = tComponents[0];
+                        model.m_isPositionOverridden = true;
+                        break;
+                    }
+                    case ImGuizmo::SCALE:
+                    {
+                        model.m_localScale           = tComponents[2];
+                        model.m_isScaleOverridden    = true;
+                        break;
+                    }
+                }
 
-                model.m_isPositionOverridden = true;
-                model.m_isRotationOverridden = true;
-                model.m_isScaleOverridden    = true;
+                model.m_isLocalDirty = true;
             }
         }
     }

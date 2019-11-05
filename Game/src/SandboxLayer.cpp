@@ -29,6 +29,13 @@ void SandboxLayer::onEnter()
         auto& so = registry->assign<component::SceneObject>(e);
         so.name = "Container";
 
+        auto& rb = registry->assign<component::RigidBody>(e);
+        rb.mass = 1.0f;
+        rb.type = RigidBody_Box;
+        rb.width =  1.0f;
+        rb.height = 1.0f;
+        rb.length = 1.0f;
+
         Entity e2 = registry->create();
         registry->assign<component::Renderable>(e2, mr);
 
@@ -57,7 +64,11 @@ void SandboxLayer::onEnter()
         so.name = "Plane";
 
         auto& rb = registry->assign<component::RigidBody>(e);
-        rb.type = RigidBody_StaticPlane;
+        rb.type = RigidBody_Box;
+        rb.mass = 0;
+        rb.width = 20;
+        rb.height = 0.1f;
+        rb.length = 20;
     }
     {
         component::Renderable mr;
