@@ -771,7 +771,8 @@ namespace oyl
                     m_editorOverrideUpdate = true;
                     m_gameUpdate = false;
 
-                    // TEMPORARY: Send as event
+                    // HACK: Send as event
+                    // TODO: Store backup registry in scene?
                     *Scene::current()->m_registry = m_registryRestore.clone();
                     Scene::current()->m_physicsSystem->onExit();
                     Scene::current()->m_physicsSystem->onEnter();
