@@ -2,7 +2,6 @@
 
 #include "Layer.h"
 
-#include "ECS/Registry.h"
 #include "ECS/System.h"
 
 namespace oyl
@@ -44,7 +43,7 @@ namespace oyl
         }
     }
 
-    void Layer::setRegistry(Ref<Registry> reg)
+    void Layer::setRegistry(Ref<entt::registry> reg)
     {
         registry = std::move(reg);
     }

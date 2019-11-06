@@ -38,7 +38,7 @@ namespace oyl::internal
 
         virtual bool onEvent(Ref<Event> event) override;
 
-        void addRigidBody(Entity entity,
+        void addRigidBody(entt::entity entity,
                           const component::Transform& transformComponent,
                           const component::RigidBody& bodyComponent);
 
@@ -53,7 +53,7 @@ namespace oyl::internal
             Ref<btMotionState>    motion;
         };
 
-        std::unordered_map<Entity, Ref<RigidBodyInfo>> m_rigidBodies;
+        std::unordered_map<entt::entity, Ref<RigidBodyInfo>> m_rigidBodies;
 
         // TODO: Do i need to keep hold of all of these?
         UniqueRef<btBroadphaseInterface>    m_broadphase;

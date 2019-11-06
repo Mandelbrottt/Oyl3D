@@ -4,7 +4,6 @@
 #include "ECS/SystemImpl.h"
 
 #include "ECS/Component.h"
-#include "ECS/Registry.h"
 
 #include "Events/Event.h"
 #include "Events/EventListener.h"
@@ -224,7 +223,7 @@ namespace oyl
             return false;
         }
 
-        void PhysicsSystem::addRigidBody(Entity entity, 
+        void PhysicsSystem::addRigidBody(entt::entity entity,
                                          const component::Transform& transformComponent, 
                                          const component::RigidBody& bodyComponent)
         {

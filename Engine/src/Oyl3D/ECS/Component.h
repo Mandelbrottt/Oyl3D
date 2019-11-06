@@ -105,7 +105,8 @@ namespace oyl::component
 
     struct RigidBody
     {
-        Entity id = Entity(-1);
+        entt::entity id = entt::null;
+        
         OylEnum type = OylEnum::None;
 
         glm::vec3 velocity     = { 0, 0, 0 };
@@ -134,7 +135,7 @@ namespace oyl::component
 
     struct Parent
     {
-        Entity parent;
+        entt::entity parent;
     };
 
     // TODO: Attenuation

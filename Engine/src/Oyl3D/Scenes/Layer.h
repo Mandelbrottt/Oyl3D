@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Oyl3D/ECS/System.h"
-#include "Oyl3D/ECS/Registry.h"
 
 #include "Oyl3D/Events/EventDispatcher.h"
 #include "Oyl3D/Events/EventListener.h"
@@ -34,13 +33,13 @@ namespace oyl
         void onUpdateSystems(Timestep dt);
         void onGuiRenderSystems(Timestep dt);
 
-        const Ref<Registry>& getRegistry() const { return registry; }
+        const Ref<entt::registry>& getRegistry() const { return registry; }
 
-        void setRegistry(Ref<Registry> reg);
+        void setRegistry(Ref<entt::registry> reg);
 
     protected:
         // Break naming convention for sake of client usability
-        Ref<Registry> registry;
+        Ref<entt::registry> registry;
 
         template<class T>
         void scheduleSystemUpdate(Priority priority = 0);

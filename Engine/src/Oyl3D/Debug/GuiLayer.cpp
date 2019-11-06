@@ -4,7 +4,6 @@
 #include "App/Application.h"
 
 #include "ECS/Component.h"
-#include "ECS/Registry.h"
 #include "ECS/SystemImpl.h"
 
 #include "Graphics/Camera.h"
@@ -320,7 +319,7 @@ namespace oyl
                     if (ImGui::Button("Reload##ReloadConfirmationReload"))
                     {
                         Scene::current()->loadSceneFromFile();
-                        m_currentEntity = Entity(-1);
+                        m_currentEntity = entt::null;
                         showReloadDialogue = false;
                     }
                     ImGui::SameLine();
@@ -355,7 +354,7 @@ namespace oyl
         ImGui::End();
     }
 
-    void GuiLayer::drawEntityNode(Entity entity)
+    void GuiLayer::drawEntityNode(entt::entity entity)
     {
         auto& so = registry->get_or_assign<component::SceneObject>(entity);
         if (so.name.empty())
@@ -369,7 +368,7 @@ namespace oyl
                          ImGuiTreeNodeFlags_OpenOnArrow |
                          ImGuiTreeNodeFlags_DefaultOpen;
         
-        if (entity == Entity(m_currentEntity))
+        if (entity == entt::entity(m_currentEntity))
             nodeFlags |= ImGuiTreeNodeFlags_Selected;
 
         nodeFlags |= ImGuiTreeNodeFlags_Leaf;
@@ -411,7 +410,7 @@ namespace oyl
     {
         if (ImGui::Begin(g_inspectorWindowName, nullptr))
         {
-            if (m_currentEntity != Entity(-1))
+            if (m_currentEntity != entt::null)
             {
                 drawInspectorTransform();
                 drawInspectorRenderable();
@@ -563,7 +562,7 @@ namespace oyl
                 ImVec2(0, 1), ImVec2(1, 0)
             );
 
-            if (m_currentEntity != Entity(-1) && 
+            if (m_currentEntity != entt::null && 
                 registry->has<component::PlayerCamera>(m_currentEntity))
             {
                 auto [posx, posy] = ImGui::GetItemRectMin();
@@ -599,7 +598,7 @@ namespace oyl
             ImGuizmo::SetRect(minX, minY, sizeX, sizeY);
     
             if (ImGui::IsItemClicked(1))
-                m_currentEntity = Entity(-1);
+                m_currentEntity = entt::null;
     
             drawTransformGizmo();
         }
@@ -698,13 +697,13 @@ namespace oyl
         using component::Transform;
         using component::internal::EditorCamera;
 
-        if (m_currentEntity != Entity(-1) &&
-            registry->has<Transform>(Entity(m_currentEntity)))
+        if (m_currentEntity != entt::null &&
+            registry->has<Transform>(m_currentEntity))
         {
             auto  view = registry->view<EditorCamera>();
             auto& cam  = view.get(*view.begin()).camera;
 
-            auto& model = registry->get<Transform>(Entity(m_currentEntity));
+            auto& model = registry->get<Transform>(m_currentEntity);
 
             glm::mat4 gizmoMatrix = model.getMatrixGlobal();
             
@@ -780,7 +779,7 @@ namespace oyl
                     m_editorOverrideUpdate = false;
                     m_gameUpdate = true;
                     m_registryRestore = Scene::current()->getRegistry()->clone();
-                    m_currentEntity = Entity(-1);
+                    m_currentEntity = entt::null;
                 }
             } else
             {
@@ -805,7 +804,7 @@ namespace oyl
                         t.m_parentRef.reset();
                     }
 
-                    m_currentEntity = Entity(-1);
+                    m_currentEntity = entt::null;
                 }
                 ImGui::SameLine();
                 if ((m_gameUpdate && ImGui::Button("II##EditorPauseButton")) ||

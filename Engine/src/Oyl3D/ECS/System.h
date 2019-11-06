@@ -1,7 +1,6 @@
 #pragma once
 
 //#include "Oyl3D/Events/Event.h"
-#include "Oyl3D/ECS/Registry.h"
 
 #include "Oyl3D/Events/EventListener.h"
 
@@ -38,9 +37,9 @@ namespace oyl
         virtual void onUpdate(Timestep dt) override;
         virtual void onGuiRender(Timestep dt) override;
 
-        void setRegistry(Ref<Registry> reg) { registry = std::move(reg); }
+        void setRegistry(Ref<entt::registry> reg) { registry = std::move(reg); }
 
     protected:
-        Ref<Registry> registry;
+        Ref<entt::registry> registry;
     };
 }

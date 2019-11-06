@@ -19,7 +19,7 @@ void SandboxLayer::onEnter()
         mr.mesh     = mesh;
         mr.material = mat;
 
-        Entity e = registry->create();
+        entt::entity e = registry->create();
         registry->assign<component::Renderable>(e, mr);
 
         component::Transform t;
@@ -36,7 +36,7 @@ void SandboxLayer::onEnter()
         rb.height = 1.0f;
         rb.length = 1.0f;
 
-        Entity e2 = registry->create();
+        entt::entity e2 = registry->create();
         registry->assign<component::Renderable>(e2, mr);
 
         t.setPosition(glm::vec3(3.0f, 3.0f, 3.0f));
@@ -53,7 +53,7 @@ void SandboxLayer::onEnter()
         mr.mesh = Mesh::cache("res/assets/models/plane.obj");
         mr.material = mat;
 
-        Entity e = registry->create();
+        entt::entity e = registry->create();
         registry->assign<component::Renderable>(e, mr);
 
         component::Transform t;
@@ -75,7 +75,7 @@ void SandboxLayer::onEnter()
         mr.mesh = Mesh::cache("res/assets/models/sphere.obj");
         mr.material = mat;
 
-        Entity e = registry->create();
+        entt::entity e = registry->create();
         registry->assign<component::Renderable>(e, mr);
 
         component::Transform t;
@@ -95,7 +95,7 @@ void SandboxLayer::onEnter()
         mr.mesh = Mesh::get("sphere");
         mr.material = mat;
 
-        Entity e = registry->create();
+        entt::entity e = registry->create();
         registry->assign<component::Renderable>(e, mr);
 
         component::Transform t;

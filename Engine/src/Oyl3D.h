@@ -5,14 +5,13 @@
 
 #include <Oyl3D/Common.h>
 #include <Oyl3D/Typedefs.h>
-#include <oyl3D/Enums.h>
+#include <Oyl3D/Enums.h>
 
 #include <Oyl3D/App/Application.h>
 
 #include <Oyl3D/Debug/GuiLayer.h>
 
-#include <Oyl3D/ECS/component.h>
-#include <Oyl3D/ECS/Registry.h>
+#include <Oyl3D/ECS/Component.h>
 #include <Oyl3D/ECS/System.h>
 
 #include <Oyl3D/Events/Event.h>

@@ -144,6 +144,7 @@ namespace oyl
             
             dispatchEvent(std::move(event));
         }
+        
         m_eventQueue.clear();
     }
 

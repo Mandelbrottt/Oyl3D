@@ -221,7 +221,7 @@ namespace oyl
     
     OYL_EVENT_STRUCT(EditorEntitySelectedEvent, TypeEditorEntitySelected, CategoryEditor, 
                      {
-                         Entity entity;
+                         entt::entity entity;
                      });
 
     //-Editor Events-//////////////////////////////////////////////////////

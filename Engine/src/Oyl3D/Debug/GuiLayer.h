@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Oyl3D/Scenes/Layer.h"
-#include "Oyl3D/ECS/Registry.h"
 
 // TODO: Turn off mouse input when cursor is disabled
 
@@ -34,7 +33,7 @@ namespace oyl
         void drawMenuBar();
 
         void drawSceneHierarchy();
-        void drawEntityNode(Entity entity);
+        void drawEntityNode(entt::entity entity);
         
         void drawInspector();
         void drawInspectorTransform();
@@ -56,7 +55,7 @@ namespace oyl
         u32 m_editorViewportHandle;
         u32 m_gameViewportHandle;
 
-        Entity m_currentEntity = Entity(-1);
+        entt::entity m_currentEntity = entt::null;
 
         ImGuizmo::OPERATION m_currentOp = ImGuizmo::TRANSLATE;
         ImGuizmo::MODE m_currentMode = ImGuizmo::WORLD;
@@ -66,7 +65,7 @@ namespace oyl
         glm::vec3 m_scaleSnap{ 0.2f };
         glm::vec3 m_snap;
 
-        Registry m_registryRestore;
+        entt::registry m_registryRestore;
         
         bool m_doSnap = false;
         bool m_editorOverrideUpdate = true;

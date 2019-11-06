@@ -2,7 +2,6 @@
 #include "Scene.h"
 
 #include "ECS/SystemImpl.h"
-#include "ECS/Registry.h"
 #include "ECS/Component.h"
 
 #include "Events/EventDispatcher.h"
@@ -12,7 +11,7 @@ namespace oyl
     WeakRef<Scene> Scene::s_current{};
 
     Scene::Scene()
-        : m_registry(Ref<Registry>::create()),
+        : m_registry(Ref<entt::registry>::create()),
           m_physicsSystem(internal::PhysicsSystem::create()),
           m_transformUpdateSystem(internal::TransformUpdateSystem::create())
     {
