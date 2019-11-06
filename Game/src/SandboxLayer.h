@@ -14,4 +14,6 @@ public:
     virtual void onGuiRender(oyl::Timestep dt) override;
 
     virtual bool onEvent(oyl::Ref<oyl::Event> event) override;
+
+    float forceSpeed = 1.0f;
 };

@@ -36,6 +36,8 @@ void SandboxLayer::onEnter()
         rb.height = 1.0f;
         rb.length = 1.0f;
 
+        registry->assign<entt::tag<"Container"_hs>>(e);
+
         entt::entity e2 = registry->create();
         registry->assign<component::Renderable>(e2, mr);
 
@@ -114,10 +116,39 @@ void SandboxLayer::onEnter()
 
 void SandboxLayer::onUpdate(Timestep dt)
 {
+    auto view = registry->view<entt::tag<"Container"_hs>>();
+    entt::entity container = view[0];
+
+    component::Transform& tr = registry->get<component::Transform>(container);
+    component::RigidBody& rb = registry->get<component::RigidBody>(container);
+
+    glm::vec3 desiredVel = {};
+    
+    if (Input::isKeyPressed(Key_W))
+        desiredVel = tr.getForwardLocal() * forceSpeed;
+                                         
+    if (Input::isKeyPressed(Key_S))      
+        desiredVel = -tr.getForwardLocal() * forceSpeed;
+
+    if (Input::isKeyPressed(Key_A))
+        desiredVel = -tr.getRightLocal() * forceSpeed;
+
+    if (Input::isKeyPressed(Key_D))
+        desiredVel = tr.getRightLocal() * forceSpeed;
+
+    glm::vec3 velChange = desiredVel - rb.velocity;
+    velChange.y = 0.01f;
+    rb.impulse = rb.mass * velChange;
+    
 }
 
 void SandboxLayer::onGuiRender(Timestep dt)
 {
+    ImGui::Begin("xdhaha");
+
+    ImGui::SliderFloat("Force Speed", &forceSpeed, 0.1f, 10.0f);
+    
+    ImGui::End();
 }
 
 bool SandboxLayer::onEvent(Ref<Event> event)

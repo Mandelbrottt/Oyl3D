@@ -112,6 +112,9 @@ namespace oyl::component
         glm::vec3 velocity     = { 0, 0, 0 };
         glm::vec3 acceleration = { 0, 0, 0 };
         glm::vec3 force        = { 0, 0, 0 };
+        glm::vec3 impulse      = { 0, 0, 0 };
+
+        bool isKinematic = false;
 
         f32 mass = 1.0f;
 

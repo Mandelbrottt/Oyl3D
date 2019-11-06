@@ -211,9 +211,43 @@ namespace oyl
                     
                     transform.m_isLocalDirty = true;
                 }
+
+                m_rigidBodies[entity]->shape->setLocalScaling(btVector3(transform.getScaleX(),
+                                                                        transform.getScaleY(),
+                                                                        transform.getScaleZ()));
+
+                m_rigidBodies[entity]->body->applyCentralForce(btVector3(rigidBody.force.x,
+                                                                         rigidBody.force.y, 
+                                                                         rigidBody.force.z));
+
+                m_rigidBodies[entity]->body->applyCentralImpulse(btVector3(rigidBody.impulse.x,
+                                                                           rigidBody.impulse.y,
+                                                                           rigidBody.impulse.z));
+
+                // TEMPORARY:
+                if (registry->has<entt::tag<"Container"_hs>>(entity))
+                {
+                    m_rigidBodies[entity]->body->setFriction(1.0f);
+                    m_rigidBodies[entity]->body->setRollingFriction(1.0f);
+                    m_rigidBodies[entity]->body->setSpinningFriction(1.0f);
+                    
+                    m_rigidBodies[entity]->body->setDeactivationTime(0.0f);
+                }
+
+                //m_rigidBodies[entity]->body->
             }
-                        
+            
             m_world->stepSimulation(dt.getSeconds(), 1, m_fixedTimeStep);
+
+            for (auto entity : view)
+            {
+                auto& rigidBody = view.get<RigidBody>(entity);
+                //rigidBody.force = glm::vec3(0.0f);
+
+                rigidBody.velocity = glm::vec3(m_rigidBodies[entity]->body->getLinearVelocity().x(),
+                                               m_rigidBodies[entity]->body->getLinearVelocity().y(), 
+                                               m_rigidBodies[entity]->body->getLinearVelocity().z());
+            }
         }
 
         void PhysicsSystem::onGuiRender(Timestep dt) { }
