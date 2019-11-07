@@ -76,8 +76,6 @@ namespace oyl::internal
         bool m_editorOverrideUpdate = true;
         bool m_gameUpdate = false;
 
-        std::array<UniqueRef<EditorCommand>, 512> m_commandHistory;
-
         u32 m_currentCommandPos;
     };
 }

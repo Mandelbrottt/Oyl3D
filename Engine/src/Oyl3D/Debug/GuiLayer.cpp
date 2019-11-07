@@ -131,11 +131,11 @@ namespace oyl::internal
         ImGui::DockBuilderGetNode(dockPausePlayStep)->LocalFlags |= ImGuiDockNodeFlags_NoTabBar;
     }
 
-    void GuiLayer::addToCommandHistory(UniqueRef<EditorCommand>&& command)
-    {
-        m_currentCommandPos++;
-        m_commandHistory[m_currentCommandPos] = std::move(command);
-    }
+    //void GuiLayer::addToCommandHistory(UniqueRef<EditorCommand>&& command)
+    //{
+    //    m_currentCommandPos++;
+    //    m_commandHistory[m_currentCommandPos] = std::move(command);
+    //}
 
     void GuiLayer::onExit()
     {
