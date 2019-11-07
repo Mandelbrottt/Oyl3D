@@ -37,12 +37,14 @@ namespace oyl
         setupGuiLibrary();
         //setupLayout();
 
-        addToEventMask(TypeEditorViewportHandleChanged);
-        addToEventMask(TypeEditorEntitySelected);
+        //addToEventMask(TypeEditorViewportHandleChanged);
+        //addToEventMask(TypeEditorEntitySelected);
 
-        addToEventMask(TypeViewportHandleChanged);
+        //addToEventMask(TypeViewportHandleChanged);
 
-        addToEventMask(TypeMousePressed);
+        //addToEventMask(TypeMousePressed);
+
+        listenForAllEvents();
 
         ImGuizmo::SetGizmoScale(2.0f);
         ImGuizmo::SetGizmoThickness(1.0f);
@@ -277,7 +279,7 @@ namespace oyl
                 //}
             }
         }
-        return !m_editorOverrideUpdate;
+        return m_editorOverrideUpdate;
     }
 
     void GuiLayer::drawMenuBar()
