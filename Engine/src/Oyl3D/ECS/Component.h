@@ -28,26 +28,42 @@ namespace oyl::component
         f32       getPositionX() const;
         f32       getPositionY() const;
         f32       getPositionZ() const;
+
+        glm::vec3 getPositionGlobal()  const;
+        f32       getPositionXGlobal() const;
+        f32       getPositionYGlobal() const;
+        f32       getPositionZGlobal() const;
         
         glm::vec3 getRotationEuler()  const;
         f32       getRotationEulerX() const;
         f32       getRotationEulerY() const;
         f32       getRotationEulerZ() const;
-        
         OYL_DEPRECATED("Not implemented, use getRotationEuler() instead.")
         glm::quat getRotationQuat() const;
+
+        glm::vec3 getRotationEulerGlobal()  const;
+        f32       getRotationEulerXGlobal() const;
+        f32       getRotationEulerYGlobal() const;
+        f32       getRotationEulerZGlobal() const;
+        OYL_DEPRECATED("Not implemented, use getRotationEulerGlobal() instead.")
+        glm::quat getRotationQuatGlobal() const;
         
         glm::vec3 getScale()  const;
         f32       getScaleX() const;
         f32       getScaleY() const;
         f32       getScaleZ() const;
 
-        const glm::mat4& getMatrixLocal()  const;
+        glm::vec3 getScaleGlobal()  const;
+        f32       getScaleXGlobal() const;
+        f32       getScaleYGlobal() const;
+        f32       getScaleZGlobal() const;
+
+        const glm::mat4& getMatrix()       const;
         glm::mat4        getMatrixGlobal() const;
 
-        glm::vec3 getForwardLocal() const;
-        glm::vec3 getRightLocal()   const;
-        glm::vec3 getUpLocal()      const;
+        glm::vec3 getForward() const;
+        glm::vec3 getRight()   const;
+        glm::vec3 getUp()      const;
 
         glm::vec3 getForwardGlobal() const;
         glm::vec3 getRightGlobal()   const;

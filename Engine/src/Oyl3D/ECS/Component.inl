@@ -9,6 +9,54 @@ namespace oyl::component
     inline f32 Transform::getPositionY() const { return m_localPosition.y; }
     inline f32 Transform::getPositionZ() const { return m_localPosition.z; }
 
+    inline glm::vec3 Transform::getPositionGlobal() const
+    {
+        using wf = WeakRef<Transform>;
+        bool isOrphan = true;
+        isOrphan = !m_parentRef.owner_before(wf{}) && !wf{}.owner_before(m_parentRef);
+        if (isOrphan || m_parentRef.expired())
+        {
+            return getPosition();
+        }
+        return m_parentRef.lock()->getMatrixGlobal() * glm::vec4(m_localPosition, 1.0f);
+    }
+
+    inline f32 Transform::getPositionXGlobal() const
+    {
+        using wf = WeakRef<Transform>;
+        bool isOrphan = true;
+        isOrphan = !m_parentRef.owner_before(wf{}) && !wf{}.owner_before(m_parentRef);
+        if (isOrphan || m_parentRef.expired())
+        {
+            return getPositionX();
+        }
+        return (m_parentRef.lock()->getMatrixGlobal() * glm::vec4(getPosition(), 1.0f)).x;
+    }
+    
+    inline f32 Transform::getPositionYGlobal() const
+    {
+        using wf = WeakRef<Transform>;
+        bool isOrphan = true;
+        isOrphan = !m_parentRef.owner_before(wf{}) && !wf{}.owner_before(m_parentRef);
+        if (isOrphan || m_parentRef.expired())
+        {
+            return getPositionY();
+        }
+        return (m_parentRef.lock()->getMatrixGlobal() * glm::vec4(getPosition(), 1.0f)).y;
+    }
+    
+    inline f32 Transform::getPositionZGlobal() const
+    {
+        using wf = WeakRef<Transform>;
+        bool isOrphan = true;
+        isOrphan = !m_parentRef.owner_before(wf{}) && !wf{}.owner_before(m_parentRef);
+        if (isOrphan || m_parentRef.expired())
+        {
+            return getPositionZ();
+        }
+        return (m_parentRef.lock()->getMatrixGlobal() * glm::vec4(getPosition(), 1.0f)).x;
+    }
+
     inline glm::vec3 Transform::getRotationEuler() const { return m_localEulerRotation; }
     inline f32       Transform::getRotationEulerX() const { return m_localEulerRotation.x; }
     inline f32       Transform::getRotationEulerY() const { return m_localEulerRotation.y; }
@@ -26,7 +74,7 @@ namespace oyl::component
     inline f32       Transform::getScaleY() const { return m_localScale.y; }
     inline f32       Transform::getScaleZ() const { return m_localScale.z; }
 
-    inline const glm::mat4& Transform::getMatrixLocal() const
+    inline const glm::mat4& Transform::getMatrix() const
     {
         if (m_isLocalDirty)
         {
@@ -52,15 +100,15 @@ namespace oyl::component
         isOrphan = !m_parentRef.owner_before(wf{}) && !wf{}.owner_before(m_parentRef);
         if (isOrphan || m_parentRef.expired())
         {
-            return getMatrixLocal();
+            return getMatrix();
         } 
-        return m_parentRef.lock()->getMatrixGlobal() * getMatrixLocal();
+        return m_parentRef.lock()->getMatrixGlobal() * getMatrix();
     }
 
-    inline glm::vec3 Transform::getForwardLocal() const
+    inline glm::vec3 Transform::getForward() const
     {
         glm::vec3   ret(0.0f);
-        const auto& mat = getMatrixLocal();
+        const auto& mat = getMatrix();
 
         ret.x = mat[2].x;
         ret.y = mat[2].y;
@@ -69,10 +117,10 @@ namespace oyl::component
         return -ret;
     }
 
-    inline glm::vec3 Transform::getRightLocal() const
+    inline glm::vec3 Transform::getRight() const
     {
         glm::vec3   ret(0.0f);
-        const auto& mat = getMatrixLocal();
+        const auto& mat = getMatrix();
 
         ret.x = mat[0].x;
         ret.y = mat[0].y;
@@ -81,10 +129,10 @@ namespace oyl::component
         return ret;
     }
 
-    inline glm::vec3 Transform::getUpLocal() const
+    inline glm::vec3 Transform::getUp() const
     {
         glm::vec3   ret(0.0f);
-        const auto& mat = getMatrixLocal();
+        const auto& mat = getMatrix();
 
         ret.x = mat[1].x;
         ret.y = mat[1].y;

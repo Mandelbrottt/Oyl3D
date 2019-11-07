@@ -877,7 +877,8 @@ namespace oyl
             {
                 glm::mat4 tempLocal;
                 
-                if (registry->has<component::Parent>(m_currentEntity))
+                if (registry->has<component::Parent>(m_currentEntity) &&
+                    registry->get<component::Parent>(m_currentEntity).parent != entt::null)
                 {   
                     auto parent = registry->get<component::Parent>(m_currentEntity).parent;
                     auto& parentTransform = registry->get<Transform>(parent);

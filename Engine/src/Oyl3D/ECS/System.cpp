@@ -102,7 +102,7 @@ namespace oyl
                         auto lightTransform = registry->get<Transform>(lightView[0]);
                         
                         mr.material->setUniform3f("u_pointLight.position",  
-                                                  viewNormal * glm::vec4(lightTransform.getPosition(), 1.0f));
+                                                  viewMatrix * glm::vec4(lightTransform.getPositionGlobal(), 1.0f));
                         mr.material->setUniform3f("u_pointLight.ambient",   lightProps.ambient);
                         mr.material->setUniform3f("u_pointLight.diffuse",   lightProps.diffuse);
                         mr.material->setUniform3f("u_pointLight.specular",  lightProps.specular);
