@@ -34,10 +34,10 @@ namespace oyl
         public:
             ApplicationListener()
             {
-                addToCategoryMask(CategoryWindow);
-                addToCategoryMask(CategoryKeyboard);
-                addToCategoryMask(CategoryMouse);
-                addToCategoryMask(CategoryCursorStateRequest);
+                listenForEventType(CategoryWindow);
+                listenForEventType(CategoryKeyboard);
+                listenForEventType(CategoryMouse);
+                listenForEventType(CategoryCursorStateRequest);
             }
 
         private:
@@ -282,9 +282,6 @@ namespace oyl
         m_appListener->setDispatcher(m_dispatcher);
 
         m_vibrationListener = internal::GamepadListener::create();
-        m_dispatcher->registerListener(m_vibrationListener);
-        m_vibrationListener->setDispatcher(m_dispatcher);
-
         m_dispatcher->registerListener(m_vibrationListener);
         m_vibrationListener->setDispatcher(m_dispatcher);
     }
