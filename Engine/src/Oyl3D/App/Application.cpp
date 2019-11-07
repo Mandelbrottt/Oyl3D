@@ -16,7 +16,7 @@
 
 #include "Input/GamepadListener.h"
 
-#include "System/Platform.h"
+#include "Platform/Platform.h"
 
 #include "Scenes/Scene.h"
 
@@ -34,10 +34,10 @@ namespace oyl
         public:
             ApplicationListener()
             {
-                listenForEventType(CategoryWindow);
-                listenForEventType(CategoryKeyboard);
-                listenForEventType(CategoryMouse);
-                listenForEventType(CategoryCursorStateRequest);
+                listenForEventCategory(CategoryWindow);
+                listenForEventCategory(CategoryKeyboard);
+                listenForEventCategory(CategoryMouse);
+                listenForEventCategory(CategoryCursorStateRequest);
             }
 
         private:
