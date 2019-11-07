@@ -12,12 +12,13 @@ namespace oyl
     {
         class PhysicsSystem;
         class TransformUpdateSystem;
+        class GuiLayer;
     }
 
     class Scene : public EventListener, public virtual Node
     {
         friend class Application;
-        friend class GuiLayer;
+        friend internal::GuiLayer;
     protected:
         explicit Scene();
 

@@ -30,7 +30,7 @@ static const char* g_inspectorWindowName = "Inspector##EditorInspector";
 
 static const char* g_mainDockSpaceName = "_DockSpace";
 
-namespace oyl
+namespace oyl::internal
 {
     void GuiLayer::init()
     {
@@ -129,6 +129,12 @@ namespace oyl
 
         ImGui::DockBuilderGetNode(dockGizmoControls)->LocalFlags |= ImGuiDockNodeFlags_NoTabBar;
         ImGui::DockBuilderGetNode(dockPausePlayStep)->LocalFlags |= ImGuiDockNodeFlags_NoTabBar;
+    }
+
+    void GuiLayer::addToCommandHistory(UniqueRef<EditorCommand>&& command)
+    {
+        m_currentCommandPos++;
+        m_commandHistory[m_currentCommandPos] = std::move(command);
     }
 
     void GuiLayer::onExit()
@@ -880,6 +886,7 @@ namespace oyl
                 {
                     case ImGuizmo::TRANSLATE:
                     {
+                        //UniqueRef<EditorTranslateEntityCommand>
                         model.m_localPosition        = tComponents[0];
                         model.m_isPositionOverridden = true;
                         break;

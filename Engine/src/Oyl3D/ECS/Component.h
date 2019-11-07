@@ -10,6 +10,7 @@ namespace oyl
     {
         class PhysicsSystem;
         class TransformUpdateSystem;
+        class GuiLayer;
     }
     
 }
@@ -97,7 +98,7 @@ namespace oyl::component
     private:
         friend internal::PhysicsSystem;
         friend internal::TransformUpdateSystem;
-        friend class GuiLayer;
+        friend internal::GuiLayer;
         
         glm::vec3 m_localPosition      = glm::vec3(0.0f);
         glm::quat m_localRotation      = {};
