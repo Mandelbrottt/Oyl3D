@@ -11,13 +11,13 @@ namespace oyl
 {
     class EventListener;
     class Scene;
-    class GuiLayer;
     
     namespace internal
     {   
         class RenderSystem;  
         class ApplicationListener;
         class GamepadListener;
+        class GuiLayer;
     }
 
     class Application
@@ -47,7 +47,7 @@ namespace oyl
         Ref<FrameBuffer> m_mainBuffer;
         
     #if !defined(OYL_DISTRIBUTION)
-        Ref<GuiLayer>    m_guiLayer;
+        Ref<internal::GuiLayer>    m_guiLayer;
     #endif
 
         Ref<internal::RenderSystem> m_renderSystem;

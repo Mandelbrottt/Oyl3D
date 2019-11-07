@@ -30,7 +30,7 @@ static const char* g_inspectorWindowName = "Inspector##EditorInspector";
 
 static const char* g_mainDockSpaceName = "_DockSpace";
 
-namespace oyl
+namespace oyl::internal
 {
     void GuiLayer::init()
     {
@@ -129,6 +129,12 @@ namespace oyl
 
         ImGui::DockBuilderGetNode(dockGizmoControls)->LocalFlags |= ImGuiDockNodeFlags_NoTabBar;
         ImGui::DockBuilderGetNode(dockPausePlayStep)->LocalFlags |= ImGuiDockNodeFlags_NoTabBar;
+    }
+
+    void GuiLayer::addToCommandHistory(UniqueRef<EditorCommand>&& command)
+    {
+        m_currentCommandPos++;
+        m_commandHistory[m_currentCommandPos] = std::move(command);
     }
 
     void GuiLayer::onExit()
@@ -552,28 +558,6 @@ namespace oyl
                                                 ? registry->get<SceneObject>(parent).name.c_str()
                                                 : "None";
 
-            auto decomp = [](Transform& ct, Transform& pt)
-            {
-                glm::mat4 tempChild  = ct.getMatrixGlobal();
-                glm::mat4 tempParent = pt.getMatrixGlobal();
-
-                tempChild = glm::inverse(tempParent) * tempChild;
-
-                glm::vec3 tComponents[3];
-                ImGuizmo::DecomposeMatrixToComponents(value_ptr(tempChild),
-                                                      value_ptr(tComponents[0]),
-                                                      value_ptr(tComponents[1]),
-                                                      value_ptr(tComponents[2]));
-
-                tComponents[2] = max(glm::vec3(0.01f), tComponents[2]);
-
-                ct.m_localPosition      = tComponents[0];
-                ct.m_localEulerRotation = tComponents[1];
-                ct.m_localScale         = tComponents[2];
-
-                ct.m_isLocalDirty = true;
-            };
-
             ImGui::Text("Current Parent");
             ImGui::SameLine();
             if (ImGui::BeginCombo("##ParentPropertiesCurrentParent", currentParentName))
@@ -598,8 +582,8 @@ namespace oyl
                         tComponents[2] = max(glm::vec3(0.01f), tComponents[2]);
 
                         ct.m_localPosition = tComponents[0];
-                        ct.m_localEulerRotation = tComponents[1];
-                        ct.m_localScale = tComponents[2];
+                        ct.m_localRotation = glm::quat(radians(tComponents[1]));
+                        ct.m_localScale    = tComponents[2];
 
                         ct.m_isLocalDirty = true;
                     }
@@ -634,8 +618,8 @@ namespace oyl
                             tComponents[2] = max(glm::vec3(0.01f), tComponents[2]);
 
                             ct.m_localPosition = tComponents[0];
-                            ct.m_localEulerRotation = tComponents[1];
-                            ct.m_localScale = tComponents[2];
+                            ct.m_localRotation = glm::quat(radians(tComponents[1]));
+                            ct.m_localScale    = tComponents[2];
 
                             ct.m_isLocalDirty = true;
                             
@@ -902,13 +886,14 @@ namespace oyl
                 {
                     case ImGuizmo::TRANSLATE:
                     {
+                        //UniqueRef<EditorTranslateEntityCommand>
                         model.m_localPosition        = tComponents[0];
                         model.m_isPositionOverridden = true;
                         break;
                     }
                     case ImGuizmo::ROTATE:
                     {
-                        model.m_localEulerRotation   = tComponents[1];
+                        model.m_localRotation        = glm::quat(radians(tComponents[1]));
                         model.m_isRotationOverridden = true;
                         break;
                     }

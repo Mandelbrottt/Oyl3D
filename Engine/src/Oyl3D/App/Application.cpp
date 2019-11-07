@@ -16,7 +16,7 @@
 
 #include "Input/GamepadListener.h"
 
-#include "System/Platform.h"
+#include "Platform/Platform.h"
 
 #include "Scenes/Scene.h"
 

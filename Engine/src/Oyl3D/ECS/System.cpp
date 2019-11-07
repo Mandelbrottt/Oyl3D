@@ -180,36 +180,32 @@ namespace oyl
                     this->addRigidBody(entity, transform, rigidBody);
                 }
 
-                // TODO: Deal with changing values after the fact, change to setter getter?
-                btVector3 _pos = {};
-                btQuaternion _rot = {};
-                if (transform.m_isPositionOverridden || 
-                    transform.m_isRotationOverridden || 
-                    transform.m_isScaleOverridden)
+                if (transform.m_isPositionOverridden)
                 {
-                    m_world->removeRigidBody(m_rigidBodies[entity]->body.get());
-                    this->addRigidBody(entity, transform, rigidBody);
+                    //m_world->removeRigidBody(m_rigidBodies[entity]->body.get());
+                    //this->addRigidBody(entity, transform, rigidBody);
+                    
+                    btTransform t = m_rigidBodies[entity]->body->getWorldTransform();
+
+                    t.setOrigin(btVector3(transform.getPositionXGlobal(),
+                                          transform.getPositionYGlobal(),
+                                          transform.getPositionZGlobal()));
+                    
+                    m_rigidBodies[entity]->body->setWorldTransform(t);
 
                     transform.m_isPositionOverridden = false;
-                    transform.m_isRotationOverridden = false;
-                    transform.m_isScaleOverridden = false;
                 }
-                else
+                
+                if (transform.m_isRotationOverridden)
                 {
                     btTransform t = m_rigidBodies[entity]->body->getWorldTransform();
 
-                    _pos = t.getOrigin();
-                    _rot = t.getRotation();
-                    
-                    transform.m_localPosition = { _pos.x(), _pos.y(), _pos.z() };
+                    glm::quat rotation = transform.getRotation();
+                    t.setRotation(btQuaternion(rotation.x, rotation.y, rotation.z, rotation.w));
 
-                    glm::vec3 newRot = {};
-                    _rot.getEulerZYX(newRot.z, newRot.y, newRot.x);
-                    newRot = glm::degrees(newRot);
-                    
-                    transform.m_localEulerRotation = newRot;
-                    
-                    transform.m_isLocalDirty = true;
+                    m_rigidBodies[entity]->body->setWorldTransform(t);
+
+                    transform.m_isRotationOverridden = false;
                 }
 
                 m_rigidBodies[entity]->shape->setLocalScaling(btVector3(transform.getScaleX(),
@@ -232,6 +228,7 @@ namespace oyl
                     m_rigidBodies[entity]->body->setSpinningFriction(1.0f);
                     
                     m_rigidBodies[entity]->body->setDeactivationTime(0.0f);
+                    m_rigidBodies[entity]->body->setAngularFactor({ 0.0f, 1.0f, 0.0f });
                 }
 
                 //m_rigidBodies[entity]->body->
@@ -241,8 +238,29 @@ namespace oyl
 
             for (auto entity : view)
             {
+                auto& transform = view.get<Transform>(entity);
                 auto& rigidBody = view.get<RigidBody>(entity);
-                //rigidBody.force = glm::vec3(0.0f);
+
+                //rigidBody.force   = glm::vec3(0.0f);
+                //rigidBody.impulse = glm::vec3(0.0f);
+
+                btVector3 _pos = {};
+                btQuaternion _rot = {};
+                
+                btTransform t = m_rigidBodies[entity]->body->getWorldTransform();
+
+                _pos = t.getOrigin();
+                _rot = t.getRotation();
+
+                transform.m_localPosition = { _pos.x(), _pos.y(), _pos.z() };
+
+                //glm::vec3 newRot = {};
+                //_rot.getEulerZYX(newRot.z, newRot.y, newRot.x);
+                //newRot = glm::degrees(newRot);
+
+                transform.m_localRotation = glm::quat(_rot.w(), _rot.x(), _rot.y(), _rot.z());
+
+                transform.m_isLocalDirty = true;
 
                 rigidBody.velocity = glm::vec3(m_rigidBodies[entity]->body->getLinearVelocity().x(),
                                                m_rigidBodies[entity]->body->getLinearVelocity().y(), 
