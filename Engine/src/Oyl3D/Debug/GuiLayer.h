@@ -39,6 +39,8 @@ namespace oyl
         void drawInspectorTransform();
         void drawInspectorRenderable();
         void drawInspectorRigidBody();
+        void drawInspectorParent();
+        void drawInspectorObjectName();
         
         void drawSceneViewport();
         void drawGameViewport();

@@ -45,8 +45,9 @@ void SandboxLayer::onEnter()
         t.setScale(glm::vec3(0.3f));
         registry->assign<component::Transform>(e2, t);
 
-        registry->assign<component::PointLight>(e2);
-
+        auto& l = registry->assign<component::PointLight>(e2);
+        l.ambient = glm::vec3(0.75f);
+        
         auto& so2 = registry->assign<component::SceneObject>(e2);
         so2.name = "Light 1";
     }

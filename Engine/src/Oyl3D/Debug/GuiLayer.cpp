@@ -152,12 +152,20 @@ namespace oyl
         {
             auto& ct = view.get<Transform>(entity);
             auto parent = view.get<Parent>(entity).parent;
-            auto& pt = registry->get<Transform>(parent);
 
-            if (!pt.m_localRef)
-                pt.m_localRef = Ref<Transform>(&pt, [](Transform*) {});
+            if (parent != entt::null)
+            {
+                auto& pt = registry->get<Transform>(parent);
 
-            ct.m_parentRef = pt.m_localRef;
+                if (!pt.m_localRef)
+                    pt.m_localRef = Ref<Transform>(&pt, [](Transform*) {});
+
+                ct.m_parentRef = pt.m_localRef;
+            }
+            else
+            {
+                ct.m_parentRef = {};
+            }
         }
     }
 
@@ -346,7 +354,8 @@ namespace oyl
                     if (registry->has<ExcludeFromHierarchy>(entity))
                         return;
                 
-                    if (parentView.contains(entity)) return;
+                    if (parentView.contains(entity) && 
+                        parentView.get(entity).parent != entt::null) return;
 
                     drawEntityNode(entity);
                 });
@@ -412,6 +421,8 @@ namespace oyl
         {
             if (m_currentEntity != entt::null)
             {
+                drawInspectorObjectName();
+                drawInspectorParent();
                 drawInspectorTransform();
                 drawInspectorRenderable();
                 drawInspectorRigidBody();
@@ -519,6 +530,153 @@ namespace oyl
     void GuiLayer::drawInspectorRenderable() {}
 
     void GuiLayer::drawInspectorRigidBody() {}
+
+    void GuiLayer::drawInspectorParent()
+    {
+        using component::Transform;
+        using component::SceneObject;
+        using component::Parent;
+        
+        ImGui::SetNextTreeNodeOpen(true, ImGuiCond_Once);
+        
+        if (ImGui::CollapsingHeader("Parent Properties##InspectorParentProperties"))
+        {
+            ImGui::Indent(10);
+
+            entt::entity parent = entt::null;
+
+            if (registry->has<Parent>(m_currentEntity))
+                parent = registry->get<Parent>(m_currentEntity).parent;
+
+            const char* currentParentName = parent != entt::null && registry->has<SceneObject>(parent)
+                                                ? registry->get<SceneObject>(parent).name.c_str()
+                                                : "None";
+
+            auto decomp = [](Transform& ct, Transform& pt)
+            {
+                glm::mat4 tempChild  = ct.getMatrixGlobal();
+                glm::mat4 tempParent = pt.getMatrixGlobal();
+
+                tempChild = glm::inverse(tempParent) * tempChild;
+
+                glm::vec3 tComponents[3];
+                ImGuizmo::DecomposeMatrixToComponents(value_ptr(tempChild),
+                                                      value_ptr(tComponents[0]),
+                                                      value_ptr(tComponents[1]),
+                                                      value_ptr(tComponents[2]));
+
+                tComponents[2] = max(glm::vec3(0.01f), tComponents[2]);
+
+                ct.m_localPosition      = tComponents[0];
+                ct.m_localEulerRotation = tComponents[1];
+                ct.m_localScale         = tComponents[2];
+
+                ct.m_isLocalDirty = true;
+            };
+
+            ImGui::Text("Current Parent");
+            ImGui::SameLine();
+            if (ImGui::BeginCombo("##ParentPropertiesCurrentParent", currentParentName))
+            {
+                if (ImGui::Selectable("None", parent == entt::null))
+                {
+                    auto& p  = registry->get_or_assign<Parent>(m_currentEntity);
+                    p.parent = entt::null;
+
+                    if (parent != entt::null)
+                    {
+                        auto& ct = registry->get<Transform>(m_currentEntity);
+
+                        glm::mat4 tempChild = ct.getMatrixGlobal();
+
+                        glm::vec3 tComponents[3];
+                        ImGuizmo::DecomposeMatrixToComponents(value_ptr(tempChild),
+                                                              value_ptr(tComponents[0]),
+                                                              value_ptr(tComponents[1]),
+                                                              value_ptr(tComponents[2]));
+
+                        tComponents[2] = max(glm::vec3(0.01f), tComponents[2]);
+
+                        ct.m_localPosition = tComponents[0];
+                        ct.m_localEulerRotation = tComponents[1];
+                        ct.m_localScale = tComponents[2];
+
+                        ct.m_isLocalDirty = true;
+                    }
+                }
+                else
+                {
+                    auto view = registry->view<SceneObject>();
+                    for (auto entity : view)
+                    {
+                        bool isSelected = entity == parent;
+                        
+                        if (entity != m_currentEntity && 
+                            ImGui::Selectable(view.get(entity).name.c_str(), isSelected))
+                        {
+                            auto& p = registry->get_or_assign<Parent>(m_currentEntity);
+                            p.parent = entity;
+
+                            auto& ct = registry->get<Transform>(m_currentEntity);
+                            auto& pt = registry->get<Transform>(entity);
+
+                            glm::mat4 tempChild = ct.getMatrixGlobal();
+                            glm::mat4 tempParent = pt.getMatrixGlobal();
+
+                            tempChild = glm::inverse(tempParent) * tempChild;
+
+                            glm::vec3 tComponents[3];
+                            ImGuizmo::DecomposeMatrixToComponents(value_ptr(tempChild),
+                                                                  value_ptr(tComponents[0]),
+                                                                  value_ptr(tComponents[1]),
+                                                                  value_ptr(tComponents[2]));
+
+                            tComponents[2] = max(glm::vec3(0.01f), tComponents[2]);
+
+                            ct.m_localPosition = tComponents[0];
+                            ct.m_localEulerRotation = tComponents[1];
+                            ct.m_localScale = tComponents[2];
+
+                            ct.m_isLocalDirty = true;
+                            
+                            break;
+                        }
+
+                        if (isSelected) ImGui::SetItemDefaultFocus();
+                    }
+                }
+                
+                ImGui::EndCombo();
+            }
+            
+            ImGui::Unindent(10);
+        }
+    }
+
+    void GuiLayer::drawInspectorObjectName()
+    {
+
+        ImGui::SetNextTreeNodeOpen(true, ImGuiCond_Once);
+
+        if (registry->has<component::SceneObject>(m_currentEntity) &&
+            ImGui::CollapsingHeader("Object Properties##InspectorObjectProperties"))
+        {
+            ImGui::Indent(10);
+            
+            auto& so = registry->get<component::SceneObject>(m_currentEntity);
+
+            char name[256]{ 0 };
+            std::strcpy(name, so.name.c_str());
+
+            ImGui::Text("Object Name");
+            ImGui::SameLine();
+            ImGui::InputText("##InspectorObjectNameInputField", name, 256);
+
+            so.name.assign(name);
+
+            ImGui::Unindent(10);
+        }
+    }
 
     void GuiLayer::drawSceneViewport()
     {

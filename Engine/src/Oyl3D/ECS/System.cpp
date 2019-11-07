@@ -386,12 +386,19 @@ namespace oyl
             {
                 auto& ct = view.get<Transform>(entity);
                 auto parent = view.get<Parent>(entity).parent;
-                auto& pt = registry->get<Transform>(parent);
+                if (parent != entt::null)
+                {   
+                    auto& pt = registry->get<Transform>(parent);
 
-                if (!pt.m_localRef) 
-                    pt.m_localRef = Ref<Transform>(&pt, [](Transform*) {});
+                    if (!pt.m_localRef) 
+                        pt.m_localRef = Ref<Transform>(&pt, [](Transform*) {});
 
-                ct.m_parentRef = pt.m_localRef;
+                    ct.m_parentRef = pt.m_localRef;
+                }
+                else
+                {
+                    ct.m_parentRef = {};
+                }
             }
         };
 
