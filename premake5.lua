@@ -54,7 +54,7 @@ project "OylEngine"
 
 	files {
 		"Engine/src/**.h",
-		"Engine/src/**.cpp"
+		"Engine/src/**.cpp",
 		"Engine/src/**.inl"
 	}
 
@@ -150,7 +150,7 @@ project "OylGame"
 
 	files {
 		"Game/src/**.h",
-		"Game/src/**.cpp"
+		"Game/src/**.cpp",
 		"Game/src/**.inl"
 	}
 
