@@ -1,6 +1,7 @@
 #pragma once
 
 #include <Oyl3D.h>
+#include "Player.h"
 
 class SandboxLayer : public oyl::Layer
 {
@@ -15,5 +16,5 @@ public:
 
     virtual bool onEvent(oyl::Ref<oyl::Event> event) override;
 
-    float forceSpeed = 1.0f;
+    float forceSpeed = 2.0f;
 };

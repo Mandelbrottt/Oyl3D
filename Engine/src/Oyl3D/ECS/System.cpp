@@ -207,7 +207,7 @@ namespace oyl
                     _rot.getEulerZYX(newRot.z, newRot.y, newRot.x);
                     newRot = glm::degrees(newRot);
                     
-                    transform.m_localEulerRotation = newRot;
+                    //transform.m_localEulerRotation = newRot;
                     
                     transform.m_isLocalDirty = true;
                 }

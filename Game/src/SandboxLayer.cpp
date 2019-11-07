@@ -1,6 +1,8 @@
 #include <Oyl3D.h>
 
 #include "SandboxLayer.h"
+#include "Cannon.h"
+#include "Player.h"
 
 using namespace oyl;
 
@@ -19,24 +21,40 @@ void SandboxLayer::onEnter()
         mr.mesh     = mesh;
         mr.material = mat;
 
-        entt::entity e = registry->create();
-        registry->assign<component::Renderable>(e, mr);
+		entt::entity cannonBlue = registry->create();
+		registry->assign<Cannon>(cannonBlue);
+		registry->get<Cannon>(cannonBlue).team = Teams::blue;
+		registry->get<Cannon>(cannonBlue).fuse.timeToWait = 10.0f;
 
-        component::Transform t;
-        t.setPosition(glm::vec3(0.0f));
-        registry->assign<component::Transform>(e, t);
+		registry->assign<component::Renderable>(cannonBlue, mr);
 
-        auto& so = registry->assign<component::SceneObject>(e);
-        so.name = "Container";
+		component::Transform t;
+		t.setPosition(glm::vec3(0.0f));
+		registry->assign<component::Transform>(cannonBlue, t);
 
-        auto& rb = registry->assign<component::RigidBody>(e);
+		auto& so = registry->assign<component::SceneObject>(cannonBlue);
+		so.name = "BlueCannon";
+
+        entt::entity player = registry->create();
+		registry->assign<Player>(player);
+        
+        registry->assign<component::Renderable>(player, mr);
+
+        component::Transform t2;
+        t2.setPosition(glm::vec3(0.0f));
+        registry->assign<component::Transform>(player, t2);
+
+        auto& so2 = registry->assign<component::SceneObject>(player);
+        so2.name = "Player";
+
+        auto& rb = registry->assign<component::RigidBody>(player);
         rb.mass = 1.0f;
         rb.type = RigidBody_Box;
         rb.width =  1.0f;
         rb.height = 1.0f;
         rb.length = 1.0f;
 
-        registry->assign<entt::tag<"Container"_hs>>(e);
+        registry->assign<entt::tag<"Player"_hs>>(player);
 
         entt::entity e2 = registry->create();
         registry->assign<component::Renderable>(e2, mr);
@@ -48,8 +66,8 @@ void SandboxLayer::onEnter()
         auto& l = registry->assign<component::PointLight>(e2);
         l.ambient = glm::vec3(0.75f);
         
-        auto& so2 = registry->assign<component::SceneObject>(e2);
-        so2.name = "Light 1";
+        auto& so3 = registry->assign<component::SceneObject>(e2);
+        so3.name = "Light 1";
     }
     {
         component::Renderable mr;
@@ -117,30 +135,7 @@ void SandboxLayer::onEnter()
 
 void SandboxLayer::onUpdate(Timestep dt)
 {
-    auto view = registry->view<entt::tag<"Container"_hs>>();
-    entt::entity container = view[0];
 
-    component::Transform& tr = registry->get<component::Transform>(container);
-    component::RigidBody& rb = registry->get<component::RigidBody>(container);
-
-    glm::vec3 desiredVel = {};
-    
-    if (Input::isKeyPressed(Key_W))
-        desiredVel = tr.getForward() * forceSpeed;
-                                         
-    if (Input::isKeyPressed(Key_S))      
-        desiredVel = -tr.getForward() * forceSpeed;
-
-    if (Input::isKeyPressed(Key_A))
-        desiredVel = -tr.getRight() * forceSpeed;
-
-    if (Input::isKeyPressed(Key_D))
-        desiredVel = tr.getRight() * forceSpeed;
-
-    glm::vec3 velChange = desiredVel - rb.velocity;
-    velChange.y = 0.01f;
-    rb.impulse = rb.mass * velChange;
-    
 }
 
 void SandboxLayer::onGuiRender(Timestep dt)
