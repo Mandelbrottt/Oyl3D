@@ -552,28 +552,6 @@ namespace oyl
                                                 ? registry->get<SceneObject>(parent).name.c_str()
                                                 : "None";
 
-            auto decomp = [](Transform& ct, Transform& pt)
-            {
-                glm::mat4 tempChild  = ct.getMatrixGlobal();
-                glm::mat4 tempParent = pt.getMatrixGlobal();
-
-                tempChild = glm::inverse(tempParent) * tempChild;
-
-                glm::vec3 tComponents[3];
-                ImGuizmo::DecomposeMatrixToComponents(value_ptr(tempChild),
-                                                      value_ptr(tComponents[0]),
-                                                      value_ptr(tComponents[1]),
-                                                      value_ptr(tComponents[2]));
-
-                tComponents[2] = max(glm::vec3(0.01f), tComponents[2]);
-
-                ct.m_localPosition      = tComponents[0];
-                ct.m_localEulerRotation = tComponents[1];
-                ct.m_localScale         = tComponents[2];
-
-                ct.m_isLocalDirty = true;
-            };
-
             ImGui::Text("Current Parent");
             ImGui::SameLine();
             if (ImGui::BeginCombo("##ParentPropertiesCurrentParent", currentParentName))
@@ -598,8 +576,8 @@ namespace oyl
                         tComponents[2] = max(glm::vec3(0.01f), tComponents[2]);
 
                         ct.m_localPosition = tComponents[0];
-                        ct.m_localEulerRotation = tComponents[1];
-                        ct.m_localScale = tComponents[2];
+                        ct.m_localRotation = glm::quat(radians(tComponents[1]));
+                        ct.m_localScale    = tComponents[2];
 
                         ct.m_isLocalDirty = true;
                     }
@@ -634,8 +612,8 @@ namespace oyl
                             tComponents[2] = max(glm::vec3(0.01f), tComponents[2]);
 
                             ct.m_localPosition = tComponents[0];
-                            ct.m_localEulerRotation = tComponents[1];
-                            ct.m_localScale = tComponents[2];
+                            ct.m_localRotation = glm::quat(radians(tComponents[1]));
+                            ct.m_localScale    = tComponents[2];
 
                             ct.m_isLocalDirty = true;
                             
@@ -908,7 +886,7 @@ namespace oyl
                     }
                     case ImGuizmo::ROTATE:
                     {
-                        model.m_localEulerRotation   = tComponents[1];
+                        model.m_localRotation        = glm::quat(radians(tComponents[1]));
                         model.m_isRotationOverridden = true;
                         break;
                     }
