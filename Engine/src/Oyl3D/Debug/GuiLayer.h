@@ -4,10 +4,11 @@
 
 // TODO: Turn off mouse input when cursor is disabled
 
-namespace oyl
+namespace oyl::internal
 {
     class GuiLayer : public Layer
     {
+        friend class EditorCommand;
     public:
         OYL_CTOR(GuiLayer, Layer)
 
@@ -29,6 +30,8 @@ namespace oyl
     private:
         void setupGuiLibrary();
         void setupLayout();
+
+        void addToCommandHistory(UniqueRef<EditorCommand>&& command);
         
         void drawMenuBar();
 
@@ -72,5 +75,7 @@ namespace oyl
         bool m_doSnap = false;
         bool m_editorOverrideUpdate = true;
         bool m_gameUpdate = false;
+
+        u32 m_currentCommandPos;
     };
 }

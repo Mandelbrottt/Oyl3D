@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Oyl3D/System/Platform.h"
+#include "Oyl3D/Platform//Platform.h"
 
 namespace oyl
 {

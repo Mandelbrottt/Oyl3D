@@ -87,7 +87,7 @@ namespace oyl
         initEventListeners();
         
     #if !defined(OYL_DISTRIBUTION)
-        m_guiLayer = GuiLayer::create();
+        m_guiLayer = internal::GuiLayer::create();
         m_guiLayer->init();
 
         m_dispatcher->registerListener(m_guiLayer);
