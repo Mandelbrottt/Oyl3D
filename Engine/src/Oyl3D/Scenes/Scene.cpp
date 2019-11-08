@@ -8,29 +8,30 @@
 
 namespace oyl
 {
-    WeakRef<Scene> Scene::s_current{};
+    WeakRef<Scene> Scene::s_current = {};
+    Ref<internal::GuiLayer> Scene::s_guiLayer = {};
 
     Scene::Scene()
         : m_registry(Ref<entt::registry>::create()),
           m_physicsSystem(internal::PhysicsSystem::create()),
-          m_transformUpdateSystem(internal::TransformUpdateSystem::create())
+          m_transformUpdateSystem(internal::TransformUpdateSystem::create()) {}
+
+    Scene::~Scene() {}
+
+    void Scene::onEnter()
     {
         m_physicsSystem->onEnter();
         m_transformUpdateSystem->onEnter();
     }
 
-    Scene::~Scene()
+    void Scene::onExit()
     {
         saveSceneBackupToFile();
-        
+
         // Reset the registry then reset the actual Ref
         m_registry->reset();
         m_registry.reset();
     }
-
-    void Scene::onEnter() { }
-
-    void Scene::onExit() { }
 
     void Scene::onUpdate(Timestep dt)
     {
