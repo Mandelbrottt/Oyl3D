@@ -567,7 +567,8 @@ namespace oyl
 
         void EditorRenderSystem::onEnter()
         {
-            addToEventMask(TypeWindowResized);
+            listenForEventType(TypeWindowResized);
+            listenForAllEvents();
 
             m_editorViewportBuffer = FrameBuffer::create(1);
             m_editorViewportBuffer->initDepthTexture(1, 1);

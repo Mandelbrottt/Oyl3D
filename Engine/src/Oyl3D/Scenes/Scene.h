@@ -51,6 +51,7 @@ namespace oyl
         void saveSceneBackupToFile();
 
         static WeakRef<Scene> s_current;
+        static Ref<internal::GuiLayer> s_guiLayer;
 
     private:
         // TODO: Put in internal namespace
@@ -60,5 +61,6 @@ namespace oyl
 
         Ref<internal::PhysicsSystem> m_physicsSystem;
         Ref<internal::TransformUpdateSystem> m_transformUpdateSystem;
+
     };
 }

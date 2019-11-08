@@ -30,7 +30,7 @@ namespace oyl
     {
         class ApplicationListener : public EventListener
         {
-            friend class Application;
+            friend Application;
         public:
             ApplicationListener()
             {
@@ -85,14 +85,6 @@ namespace oyl
         m_renderSystem = internal::RenderSystem::create();
 
         initEventListeners();
-        
-    #if !defined(OYL_DISTRIBUTION)
-        m_guiLayer = internal::GuiLayer::create();
-        m_guiLayer->init();
-
-        m_dispatcher->registerListener(m_guiLayer);
-        m_guiLayer->setDispatcher(m_dispatcher);
-    #endif
 
         m_mainBuffer = FrameBuffer::create(1);
         m_mainBuffer->initDepthTexture(m_window->getWidth(), m_window->getHeight());
@@ -104,7 +96,7 @@ namespace oyl
 
         ViewportHandleChangedEvent handleChanged;
         handleChanged.handle = m_mainBuffer->getColorHandle(0);
-        
+
         m_dispatcher->postEvent(Event::create(handleChanged));
 
         WindowResizedEvent wr;
@@ -164,13 +156,13 @@ namespace oyl
             }
         }
 
-        handled |= m_doUpdate;
+        handled |= !m_doUpdate;
 
         return handled;
     }
 
     void Application::pushScene(Ref<Scene> scene)
-    {
+    {        
         if (m_currentScene)
         {
             m_currentScene->onExit();
@@ -189,16 +181,30 @@ namespace oyl
 
         Scene::s_current = m_currentScene;
 
-        m_dispatcher->registerListener(m_currentScene);
-        m_currentScene->setDispatcher(m_dispatcher);
-
         m_renderSystem->setRegistry(m_currentScene->m_registry);
         m_renderSystem->onEnter();
 
     #if !defined(OYL_DISTRIBUTION)
-        m_guiLayer->setRegistry(m_currentScene->m_registry);
-        m_guiLayer->onEnter();
+        if (!m_guiLayer)
+        {
+            m_guiLayer = internal::GuiLayer::create();
+            m_guiLayer->init();
+
+            m_guiLayer->setDispatcher(m_dispatcher);
+            m_guiLayer->setRegistry(m_currentScene->m_registry);
+            m_guiLayer->onEnter();
+            
+            m_dispatcher->registerListener(m_guiLayer);
+        }
+        else
+        {
+            m_guiLayer->setRegistry(m_currentScene->m_registry);
+            m_guiLayer->onEnter();
+        }
     #endif
+
+        m_dispatcher->registerListener(m_currentScene);
+        m_currentScene->setDispatcher(m_dispatcher);
         
         m_currentScene->initDefaultSystems();
 
@@ -208,7 +214,7 @@ namespace oyl
     }
 
     void Application::run()
-    {
+    {        
         while (m_running)
         {
             auto     time = (float) Platform::getTime();

@@ -35,16 +35,6 @@ namespace oyl::internal
     void GuiLayer::init()
     {
         setupGuiLibrary();
-        //setupLayout();
-
-        //addToEventMask(TypeEditorViewportHandleChanged);
-        //addToEventMask(TypeEditorEntitySelected);
-
-        //addToEventMask(TypeViewportHandleChanged);
-
-        //addToEventMask(TypeMousePressed);
-
-        listenForAllEvents();
 
         ImGuizmo::SetGizmoScale(2.0f);
         ImGuizmo::SetGizmoThickness(1.0f);
@@ -59,8 +49,10 @@ namespace oyl::internal
     
     void GuiLayer::onEnter()
     {
-        scheduleSystemUpdate<internal::EditorCameraSystem>();
-        scheduleSystemUpdate<internal::EditorRenderSystem>();
+        scheduleSystemUpdate<EditorCameraSystem>();
+        scheduleSystemUpdate<EditorRenderSystem>();
+
+        listenForAllEvents();
 
         for (auto& system : m_systems)
         {
@@ -283,6 +275,11 @@ namespace oyl::internal
                 //{
                 //    m_currentEntity = -1;
                 //}
+                break;
+            }
+            case TypeWindowResized:
+            {
+                break;
             }
         }
         return m_editorOverrideUpdate;
