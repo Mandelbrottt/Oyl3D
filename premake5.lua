@@ -107,6 +107,10 @@ project "OylEngine"
 			"GLFW_INCLUDE_NONE", 
 			"WIN32_LEAN_AND_MEAN"
 		}
+		
+		prebuildcommands {
+			"%{wks.location}scripts/windows/GenerateVSProjects.bat"
+		}
 
 	filter "configurations:Debug"
 		defines { "OYL_DEBUG" }
