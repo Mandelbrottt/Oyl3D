@@ -126,6 +126,76 @@ namespace oyl::component
         Ref<Material> material;
     };
 
+    struct Collider
+    {
+        struct ShapeInfo
+        {
+            OylEnum type;
+
+            bool isTrigger;
+            
+            union
+            {
+                struct BoxCollider
+                {
+                    glm::vec3 center;
+                    glm::vec3 size;
+                } box;
+
+                struct SphereCollider
+                {
+                    glm::vec3 center;
+                    f32       radius;
+                } sphere;
+
+                enum class Direction
+                {
+                    Y_AXIS, Z_AXIS, X_AXIS
+                };
+
+                struct CapsuleCollider
+                {
+                    glm::vec3 center;
+                    f32       radius;
+                    f32       height;
+                    Direction direction;
+                } capsule;
+
+                struct CylinderCollider
+                {
+                    glm::vec3 center;
+                    f32       radius;
+                    f32       height;
+                    Direction direction;
+                } cylinder;
+
+                OYL_DEPRECATED("Not fully implemented.")
+                struct MeshCollider
+                {
+                    glm::vec3 center;
+                    Ref<Mesh> mesh;
+                } mesh;
+            };
+        };
+
+        void pushShape(ShapeInfo shape);
+        void eraseShape(u32 index);
+        ShapeInfo& getShape(u32 index);
+
+        const std::vector<ShapeInfo>& getShapes();
+
+        std::vector<ShapeInfo>::iterator begin();
+        std::vector<ShapeInfo>::iterator end();
+
+        std::vector<ShapeInfo>::const_iterator begin() const;
+        std::vector<ShapeInfo>::const_iterator end()   const;
+
+    private:
+        std::vector<ShapeInfo> m_shapes;
+        
+        bool m_isDirty = false;
+    };
+
     struct RigidBody
     {
         entt::entity id = entt::null;

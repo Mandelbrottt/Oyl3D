@@ -80,9 +80,7 @@ public:
         pushScene(MainScene::create());
     }
 
-    virtual void onExit()
-    {
-    }
+    virtual void onExit() { }
 };
 
 oyl::Application* oyl::createApplication()

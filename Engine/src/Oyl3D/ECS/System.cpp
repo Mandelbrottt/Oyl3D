@@ -429,10 +429,10 @@ namespace oyl
             using component::internal::EditorCamera;
             using component::internal::ExcludeFromHierarchy;
 
-            addToEventMask(TypeKeyPressed);
-            addToEventMask(TypeKeyReleased);
-            addToEventMask(TypeMouseMoved);
-            addToEventMask(TypeEditorViewportResized);
+            listenForEventType(TypeKeyPressed);
+            listenForEventType(TypeKeyReleased);
+            listenForEventType(TypeMouseMoved);
+            listenForEventType(TypeEditorViewportResized);
 
             EditorCamera cam;
             cam.camera = Ref<Camera>::create();

@@ -299,4 +299,67 @@ namespace oyl::component
     {
         return m_isLocalDirty;
     }
+
+    // ^^^ Transform ^^^ //
+
+    // vvv Collider vvv ///
+
+    inline void Collider::pushShape(ShapeInfo shape)
+    {
+        m_isDirty = true;
+
+        m_shapes.emplace_back(std::move(shape));
+    }
+
+    inline void Collider::eraseShape(u32 index)
+    {
+        OYL_ASSERT(index >= 0 && index < m_shapes.size());
+
+        m_isDirty = true;
+        
+        m_shapes.erase(m_shapes.begin() + index);
+    }
+
+    inline Collider::ShapeInfo& Collider::getShape(u32 index)
+    {
+        OYL_ASSERT(index >= 0 && index < m_shapes.size());
+
+        // TEMPORARY:
+        m_isDirty = true;
+
+        return m_shapes.at(index);
+    }
+
+    inline std::vector<Collider::ShapeInfo>& Collider::getShapes()
+    {
+        m_isDirty = true;
+
+        return m_shapes;
+    }
+
+    inline std::vector<Collider::ShapeInfo>::iterator Collider::begin()
+    {
+        m_isDirty = true;
+
+        return m_shapes.begin();
+    }
+
+    inline std::vector<Collider::ShapeInfo>::iterator Collider::end()
+    {
+        m_isDirty = true;
+
+        return m_shapes.end();
+    }
+
+    inline std::vector<Collider::ShapeInfo>::const_iterator Collider::begin() const
+    {
+        return m_shapes.cbegin();
+    }
+
+    inline std::vector<Collider::ShapeInfo>::const_iterator Collider::end() const
+    {
+        return m_shapes.cend();
+    }
+
+    // ^^^ Collider ^^^ //
 }
