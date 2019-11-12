@@ -159,7 +159,8 @@ namespace oyl
             if (li->getEventMask()[dispatchEvent->type] ||
                 li->getCategoryMask()[dispatchEvent->category])
             {
-                li->onEvent(dispatchEvent);
+                if (li->onEvent(dispatchEvent))
+                    break;
             }
         }
     }

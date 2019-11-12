@@ -11,6 +11,8 @@ public:
 
     void onEnter() override
     {
+        listenForEventType(TypeKeyReleased);
+        
         auto lightShader = Shader::get(LIGHTING_SHADER_ALIAS);
 
         Material::cache(lightShader, nullptr, "monkeyMat");

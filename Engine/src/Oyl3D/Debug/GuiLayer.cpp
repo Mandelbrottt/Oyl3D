@@ -35,14 +35,6 @@ namespace oyl::internal
     void GuiLayer::init()
     {
         setupGuiLibrary();
-        //setupLayout();
-
-        addToEventMask(TypeEditorViewportHandleChanged);
-        addToEventMask(TypeEditorEntitySelected);
-
-        addToEventMask(TypeViewportHandleChanged);
-
-        addToEventMask(TypeMousePressed);
 
         ImGuizmo::SetGizmoScale(2.0f);
         ImGuizmo::SetGizmoThickness(1.0f);
@@ -57,8 +49,10 @@ namespace oyl::internal
     
     void GuiLayer::onEnter()
     {
-        scheduleSystemUpdate<internal::EditorCameraSystem>();
-        scheduleSystemUpdate<internal::EditorRenderSystem>();
+        scheduleSystemUpdate<EditorCameraSystem>();
+        scheduleSystemUpdate<EditorRenderSystem>();
+
+        listenForAllEvents();
 
         for (auto& system : m_systems)
         {
@@ -131,11 +125,11 @@ namespace oyl::internal
         ImGui::DockBuilderGetNode(dockPausePlayStep)->LocalFlags |= ImGuiDockNodeFlags_NoTabBar;
     }
 
-    void GuiLayer::addToCommandHistory(UniqueRef<EditorCommand>&& command)
-    {
-        m_currentCommandPos++;
-        m_commandHistory[m_currentCommandPos] = std::move(command);
-    }
+    //void GuiLayer::addToCommandHistory(UniqueRef<EditorCommand>&& command)
+    //{
+    //    m_currentCommandPos++;
+    //    m_commandHistory[m_currentCommandPos] = std::move(command);
+    //}
 
     void GuiLayer::onExit()
     {
@@ -281,9 +275,14 @@ namespace oyl::internal
                 //{
                 //    m_currentEntity = -1;
                 //}
+                break;
+            }
+            case TypeWindowResized:
+            {
+                break;
             }
         }
-        return !m_editorOverrideUpdate;
+        return m_editorOverrideUpdate;
     }
 
     void GuiLayer::drawMenuBar()
