@@ -66,7 +66,9 @@ public:
 			{
 				isCameraActive = !isCameraActive;
 
-				isCameraActive ? Cursor_Enabled : Cursor_Disabled;
+				CursorStateRequestEvent cursorRequest;
+				cursorRequest.state = isCameraActive ? Cursor_Disabled : Cursor_Enabled;
+				postEvent(Event::create(cursorRequest));
 			}
 
 			break;
@@ -188,7 +190,7 @@ public:
 		{
 			if (isCameraActive)
 			{
-				auto evt = (MouseMovedEvent) * event;
+				auto evt = (MouseMovedEvent)* event;
 
 				auto playerView = registry->view<Player, component::Transform>();
 				for (auto& entity : playerView)

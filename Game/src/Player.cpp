@@ -28,14 +28,14 @@ void PlayerSystem::onUpdate(Timestep dt)
 		{
 		    case PlayerStates::idle:
 		    {
-
+				playerRB.impulse = glm::vec3(0.0f);
 				break;
 		    }
 		    
 		    case PlayerStates::walking:
 			{
 				glm::vec3 deltaVelocity = (player.moveDirection * player.speedForce) - playerRB.velocity;
-				playerRB.impulse = playerRB.mass * deltaVelocity * (float)dt;
+				playerRB.impulse = playerRB.mass * deltaVelocity * static_cast<float>(dt);
 
 				if (player.moveDirection == glm::vec3(0.0f))
 					changeToIdle(&player);

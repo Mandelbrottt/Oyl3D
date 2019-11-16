@@ -32,13 +32,13 @@ struct Player
 {
 	PlayerStates state = PlayerStates::idle;
 
-	float speedForce = 2.0f;
+	float speedForce = 500.0f;
 	glm::vec3 moveDirection = glm::vec3(0.0f);
     
 	MoveableUsingLerp adjustingPositionStateData;
 	MoveableUsingLerp pushingStateData;
 
-	entt::entity e = entt::null;
+	entt::entity interactableEntity = entt::null;
 };
 
 class PlayerSystem : public System
