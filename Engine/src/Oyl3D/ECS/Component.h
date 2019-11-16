@@ -5,6 +5,13 @@ namespace oyl
     class Mesh;
     class Material;
     class Camera;
+
+    namespace internal
+    {
+        class PhysicsSystem;
+        class TransformUpdateSystem;
+    }
+    
 }
 
 namespace oyl::component
@@ -16,11 +23,94 @@ namespace oyl::component
 
     struct Transform
     {
-        glm::vec3 position = glm::vec3(0.0f);
-        glm::vec3 rotation = glm::vec3(0.0f);
-        glm::vec3 scale    = glm::vec3(1.0f);
+    public:        
+        glm::vec3 getPosition()  const;
+        f32       getPositionX() const;
+        f32       getPositionY() const;
+        f32       getPositionZ() const;
 
-        glm::mat4 getMatrix() const;
+        glm::vec3 getPositionGlobal()  const;
+        f32       getPositionXGlobal() const;
+        f32       getPositionYGlobal() const;
+        f32       getPositionZGlobal() const;
+        
+        glm::vec3 getRotationEuler()  const;
+        f32       getRotationEulerX() const;
+        f32       getRotationEulerY() const;
+        f32       getRotationEulerZ() const;
+        OYL_DEPRECATED("Not implemented, use getRotationEuler() instead.")
+        glm::quat getRotationQuat() const;
+
+        glm::vec3 getRotationEulerGlobal()  const;
+        f32       getRotationEulerXGlobal() const;
+        f32       getRotationEulerYGlobal() const;
+        f32       getRotationEulerZGlobal() const;
+        OYL_DEPRECATED("Not implemented, use getRotationEulerGlobal() instead.")
+        glm::quat getRotationQuatGlobal() const;
+        
+        glm::vec3 getScale()  const;
+        f32       getScaleX() const;
+        f32       getScaleY() const;
+        f32       getScaleZ() const;
+
+        glm::vec3 getScaleGlobal()  const;
+        f32       getScaleXGlobal() const;
+        f32       getScaleYGlobal() const;
+        f32       getScaleZGlobal() const;
+
+        const glm::mat4& getMatrix()       const;
+        glm::mat4        getMatrixGlobal() const;
+
+        glm::vec3 getForward() const;
+        glm::vec3 getRight()   const;
+        glm::vec3 getUp()      const;
+
+        glm::vec3 getForwardGlobal() const;
+        glm::vec3 getRightGlobal()   const;
+        glm::vec3 getUpGlobal()      const;
+
+        void setPosition(glm::vec3 position);
+        void setPositionX(f32 x);
+        void setPositionY(f32 y);
+        void setPositionZ(f32 z);
+
+        void move(glm::vec3 move);
+
+        void setRotationEuler(glm::vec3 rotation);
+        void setRotationEulerX(f32 x);
+        void setRotationEulerY(f32 y);
+        void setRotationEulerZ(f32 z);
+
+        OYL_DEPRECATED("Not implemented, use setRotationEuler instead.")
+        void setRotationQuat(glm::quat rotation);
+        
+        void setScale(glm::vec3 scale);
+        void setScaleX(f32 x);
+        void setScaleY(f32 y);
+        void setScaleZ(f32 z);
+
+        bool isLocalDirty() const;
+
+    private:
+        friend internal::PhysicsSystem;
+        friend internal::TransformUpdateSystem;
+        friend class GuiLayer;
+        
+        glm::vec3 m_localPosition      = glm::vec3(0.0f);
+        glm::vec3 m_localEulerRotation = glm::vec3(0.0f);
+        glm::quat m_localQuatRotaiton  = glm::quat(glm::vec3(0.0f));
+        glm::vec3 m_localScale         = glm::vec3(1.0f);
+        
+        mutable glm::mat4 m_localMatrix = glm::mat4(1.0f);
+
+        Ref<Transform>     m_localRef  = nullptr;
+        WeakRef<Transform> m_parentRef = WeakRef<Transform>{};
+
+        mutable bool m_isLocalDirty = true;
+        
+        bool m_isPositionOverridden = true;
+        bool m_isRotationOverridden = true;
+        bool m_isScaleOverridden    = true;
     };
 
     struct Renderable
@@ -29,16 +119,42 @@ namespace oyl::component
         Ref<Material> material;
     };
 
-    // TODO: Make more robust when adding physics
     struct RigidBody
     {
-        Entity id;
+        entt::entity id = entt::null;
+        
+        OylEnum type = OylEnum::None;
+
+        glm::vec3 velocity     = { 0, 0, 0 };
+        glm::vec3 acceleration = { 0, 0, 0 };
+        glm::vec3 force        = { 0, 0, 0 };
+        glm::vec3 impulse      = { 0, 0, 0 };
+
+        bool isKinematic = false;
+
+        f32 mass = 1.0f;
+
+        union
+        {
+            f32 radius;
+            
+            struct { f32 width, height, length; };
+        };
     };
 
     struct PlayerCamera
     {
         i32 player = -1;
-        Ref<Camera> camera;
+
+        // TEMPORARY:
+        glm::mat4 projection;
+        
+        //Ref<Camera> camera;
+    };
+
+    struct Parent
+    {
+        entt::entity parent;
     };
 
     // TODO: Attenuation
@@ -75,14 +191,8 @@ namespace oyl::component
             Ref<Camera> camera;
         };
 
-        struct SceneIntrinsic
-        {
-            
-        };
-
-        struct ExcludeFromHierarchy
-        {
-            
-        };
+        struct ExcludeFromHierarchy { };
     }
 }
+
+#include "Component.inl"

@@ -25,33 +25,43 @@ void CannonSystem::onUpdate(Timestep dt)
 	    //update fuse for every cannon
 		updateFuse(dt, &cannon);
 
-	    if (cannon.state == CannonStates::doingNothing)
-	    {
-	        
-	    }
-		else if (cannon.state == CannonStates::firingSoon)
+		switch (cannon.state)
 		{
-		    
-		}
-		else if (cannon.state == CannonStates::beingPushed)
-		{		    
-			cannon.pushStateData.interpolationParam = std::min(cannon.pushStateData.interpolationParam + cannon.pushStateData.speed * dt, 
-				                                               1.0f);
-
-			cannonTransform.position = lerp(cannon.pushStateData.startPos, cannon.pushStateData.desinationPos, cannon.pushStateData.interpolationParam);
-			
-		    if (cannon.pushStateData.interpolationParam >= 1.0f)
-				changeToDoingNothing(&cannon);
-		}
-		else if (cannon.state == CannonStates::waiting)
-		{
-			cannon.waitTimer.timer += dt;
-			if (cannon.waitTimer.timer > cannon.waitTimer.timeToWait)
+		    case  CannonStates::doingNothing:
 			{
-			    //TODO: destination not hard coded. check which side of the cannon the player is on and incorporate the rotation of the cannon to determine destination
-				changeToBeingPushed(cannonTransform.position + glm::vec3(15.0f, 0.0f, 0.0f), &cannon, &cannonTransform);
-				cannon.waitTimer.timer = 0.0f;
+				break;
 			}
+		    
+			case CannonStates::firingSoon:
+		    {
+				break;
+		    }
+		    
+			case CannonStates::beingPushed:
+		    {
+		        cannon.pushStateData.interpolationParam = std::min(cannon.pushStateData.interpolationParam + cannon.pushStateData.speed * dt,
+			        1.0f);
+
+		        cannonTransform.setPosition(lerp(cannon.pushStateData.startPos, cannon.pushStateData.desinationPos, cannon.pushStateData.interpolationParam));
+
+		        if (cannon.pushStateData.interpolationParam >= 1.0f)
+			        changeToDoingNothing(&cannon);
+
+				break;
+		    }
+		    
+			case CannonStates::waiting:
+		    {
+		        cannon.waitTimer.elapsed += dt;
+		        if (cannon.waitTimer.elapsed > cannon.waitTimer.timeToWait)
+		        {
+			        //TODO: destination not hard coded. check which side of the cannon the player is on and incorporate the rotation of the cannon to determine destination
+			        changeToBeingPushed(cannonTransform.getPosition() + glm::vec3(5.0f, 0.0f, 0.0f), &cannon, &cannonTransform);
+			        cannon.waitTimer.elapsed = 0.0f;
+		        }
+
+				break;
+		    }
 		}
 	}
 }
@@ -98,7 +108,7 @@ void CannonSystem::changeToBeingPushed(glm::vec3 a_destinationPos, Cannon* a_can
 {    
 	a_cannon->pushStateData.interpolationParam = 0.0f;
     
-	a_cannon->pushStateData.startPos      = a_cannonTransform->position;
+	a_cannon->pushStateData.startPos      = a_cannonTransform->getPosition();
 	a_cannon->pushStateData.desinationPos = a_destinationPos;
 	a_cannon->state = CannonStates::beingPushed;
 }
@@ -110,18 +120,21 @@ void CannonSystem::changeToFiringSoon(Cannon* a_cannon)
 
 void CannonSystem::updateFuse(float dt, Cannon* a_cannon)
 {
-	a_cannon->fuse.timer += dt;
+	a_cannon->fuse.elapsed += dt;
 
     //check if cannon is firing soon (if fuse timer >= (time between firing - time it takes to push the cannon)
-    if (a_cannon->fuse.timer >= (a_cannon->fuse.timeToWait - (1.0f / a_cannon->pushStateData.speed)))
+    if (a_cannon->fuse.elapsed >= (a_cannon->fuse.timeToWait - (1.0f / a_cannon->pushStateData.speed)))
     {
-		changeToFiringSoon(a_cannon);
+        if (a_cannon->state == CannonStates::doingNothing)
+		    changeToFiringSoon(a_cannon);
+
+		std::cout << "FIRING SOON\n";
         
-		if (a_cannon->fuse.timer >= a_cannon->fuse.timeToWait)
+		if (a_cannon->fuse.elapsed >= a_cannon->fuse.timeToWait)
 		{
 			loadCannonball(a_cannon); //TODO: get rid of this once cannon loading is implemented
 		    
-			a_cannon->fuse.timer = 0.0f;
+			a_cannon->fuse.elapsed = 0.0f;
 			changeToDoingNothing(a_cannon);
 		    
 		    if (a_cannon->isLoaded)

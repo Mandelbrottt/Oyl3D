@@ -6,6 +6,8 @@
 
 #include "Debug/GuiLayer.h"
 
+#include "ECS/SystemImpl.h"
+
 #include "Events/EventDispatcher.h"
 #include "Events/EventListener.h"
 
@@ -28,7 +30,7 @@ namespace oyl
     {
         class ApplicationListener : public EventListener
         {
-            friend class oyl::Application;
+            friend class Application;
         public:
             ApplicationListener()
             {
@@ -44,7 +46,7 @@ namespace oyl
                 return app->onEvent(event);
             }
 
-            oyl::Application* app = nullptr;
+            Application* app = nullptr;
         };
     }
 
@@ -80,9 +82,17 @@ namespace oyl
         Texture2D::cache(ENGINE_RES + WHITE_TEXTURE_PATH, WHITE_TEXTURE_ALIAS);
         Texture2D::cache(ENGINE_RES + UV_TEXTURE_PATH, UV_TEXTURE_ALIAS);
 
-        m_guiLayer = GuiLayer::create();
+        m_renderSystem = internal::RenderSystem::create();
 
         initEventListeners();
+        
+    #if !defined(OYL_DISTRIBUTION)
+        m_guiLayer = GuiLayer::create();
+        m_guiLayer->init();
+
+        m_dispatcher->registerListener(m_guiLayer);
+        m_guiLayer->setDispatcher(m_dispatcher);
+    #endif
 
         m_mainBuffer = FrameBuffer::create(1);
         m_mainBuffer->initDepthTexture(m_window->getWidth(), m_window->getHeight());
@@ -97,12 +107,25 @@ namespace oyl
         
         m_dispatcher->postEvent(Event::create(handleChanged));
 
+        WindowResizedEvent wr;
+        wr.width = 1280;
+        wr.height = 720;
+        m_dispatcher->postEvent(Event::create(wr));
+
         m_window->setVsync(false);
     }
 
     Application::~Application()
     {
         m_currentScene->onExit();
+
+    #if !defined(OYL_DISTRIBUTION)
+        m_guiLayer->onExit();
+        m_guiLayer->shutdown();
+    #endif
+        
+        m_renderSystem->onExit();
+        m_renderSystem->shutdown();
     }
 
     bool Application::onEvent(const Ref<Event>& event)
@@ -152,24 +175,36 @@ namespace oyl
         {
             m_currentScene->onExit();
             m_currentScene = nullptr;
+
+        #if !defined(OYL_DISTRIBUTION)
+            m_guiLayer->onExit();
+        #endif
+            
+            m_renderSystem->onExit();
         }
 
-        if (scene)
-        {
-            m_currentScene = std::move(scene);
+        OYL_ASSERT(scene, "Pushed scene must be initialized!");
 
-            Scene::s_current = m_currentScene;
+        m_currentScene = std::move(scene);
 
-            m_dispatcher->registerListener(m_currentScene);
-            m_currentScene->setDispatcher(m_dispatcher);
+        Scene::s_current = m_currentScene;
 
-            m_currentScene->initDefaultSystems();
+        m_dispatcher->registerListener(m_currentScene);
+        m_currentScene->setDispatcher(m_dispatcher);
 
-            m_currentScene->pushOverlay(m_guiLayer);
-            m_currentScene->onEnter();
+        m_renderSystem->setRegistry(m_currentScene->m_registry);
+        m_renderSystem->onEnter();
 
-            m_currentScene->loadSceneFromFile();
-        }
+    #if !defined(OYL_DISTRIBUTION)
+        m_guiLayer->setRegistry(m_currentScene->m_registry);
+        m_guiLayer->onEnter();
+    #endif
+        
+        m_currentScene->initDefaultSystems();
+
+        m_currentScene->onEnter();
+        
+        m_currentScene->loadSceneFromFile();
     }
 
     void Application::run()
@@ -183,6 +218,20 @@ namespace oyl
 
             if (m_doUpdate)
             {
+                m_dispatcher->dispatchEvents();
+
+            #if !defined(OYL_DISTRIBUTION)
+                if (m_guiLayer->doGameUpdate())
+                {
+                    m_currentScene->onUpdate(timestep);
+                }
+                
+                m_guiLayer->onUpdateSystems(timestep);
+                m_guiLayer->onUpdate(timestep);
+            #else
+                m_currentScene->onUpdate(timestep);
+            #endif
+
                 RenderCommand::setClearColor(0.1f, 0.1f, 0.1f, 1.0f);
                 RenderCommand::clear();
 
@@ -190,25 +239,29 @@ namespace oyl
                 m_mainBuffer->bind();
 
                 Renderer::beginScene();
-
-                m_dispatcher->dispatchEvents();
-
-                m_currentScene->onUpdate(timestep);
+                
+                m_renderSystem->onUpdate(timestep);
 
                 Renderer::endScene();
                 m_mainBuffer->unbind();
             }
 
-#if !defined(OYL_DISTRIBUTION)
+        #if !defined(OYL_DISTRIBUTION)
             m_guiLayer->begin();
 
-            m_currentScene->onGuiRender(timestep);
+            m_renderSystem->onGuiRender(timestep);
+
+            m_guiLayer->onGuiRenderSystems(timestep);
+            m_guiLayer->onGuiRender(timestep);
+
+            if (m_guiLayer->doGameUpdate())
+                m_currentScene->onGuiRender(timestep);
 
             m_guiLayer->end();
-
-#else
+        #else
+            // TODO: Turn into Renderer Call
             m_mainBuffer->moveToBackBuffer(m_window->getWidth(), m_window->getHeight());
-#endif
+        #endif
 
             m_window->onUpdate(m_doUpdate);
 
@@ -226,8 +279,13 @@ namespace oyl
         m_appListener      = Ref<internal::ApplicationListener>::create();
         m_appListener->app = this;
         m_dispatcher->registerListener(m_appListener);
+        m_appListener->setDispatcher(m_dispatcher);
 
         m_vibrationListener = internal::GamepadListener::create();
         m_dispatcher->registerListener(m_vibrationListener);
+        m_vibrationListener->setDispatcher(m_dispatcher);
+
+        m_dispatcher->registerListener(m_vibrationListener);
+        m_vibrationListener->setDispatcher(m_dispatcher);
     }
 }

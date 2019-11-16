@@ -4,7 +4,7 @@
 #include "App/Application.h"
 
 #include "ECS/Component.h"
-#include "ECS/Registry.h"
+#include "ECS/SystemImpl.h"
 
 #include "Graphics/Camera.h"
 
@@ -15,22 +15,56 @@
 
 #include <GLFW/glfw3.h>
 
-static const char* entityNodeFmt = "%s\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t";
+#include "Input/Input.h"
+
+static const char* g_entityNodeFmt = "%s\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t";
+
+static const char* g_transformGizmosName = "##ViewportGizmoSettings";
+static const char* g_playPauseWindowName = "##TestPlayButton";
+
+static const char* g_sceneWindowName     = "Scene##EditorSceneViewport";
+static const char* g_gameWindowName      = "Game##EditorGameViewport";
+
+static const char* g_hierarchyWindowName = "Hierarchy##EditorHierarchy";
+static const char* g_inspectorWindowName = "Inspector##EditorInspector";
+
+static const char* g_mainDockSpaceName = "_DockSpace";
 
 namespace oyl
 {
-    void GuiLayer::onEnter()
+    void GuiLayer::init()
     {
         setupGuiLibrary();
+        //setupLayout();
+
+        addToEventMask(TypeEditorViewportHandleChanged);
+        addToEventMask(TypeEditorEntitySelected);
 
         addToEventMask(TypeViewportHandleChanged);
-        addToEventMask(TypeEditorEntitySelected);
+
         addToEventMask(TypeMousePressed);
 
-        scheduleSystemUpdate<ECS::internal::OracleCameraSystem>();
-
         ImGuizmo::SetGizmoScale(2.0f);
-        ImGuizmo::SetGizmoThickness(2.0f);
+        ImGuizmo::SetGizmoThickness(1.0f);
+    }
+    
+    void GuiLayer::shutdown()
+    {
+        ImGui_ImplOpenGL3_Shutdown();
+        ImGui_ImplGlfw_Shutdown();
+        ImGui::DestroyContext();
+    }
+    
+    void GuiLayer::onEnter()
+    {
+        scheduleSystemUpdate<internal::EditorCameraSystem>();
+        scheduleSystemUpdate<internal::EditorRenderSystem>();
+
+        for (auto& system : m_systems)
+        {
+            system->setRegistry(registry);
+            system->setDispatcher(m_dispatcher);
+        }
     }
 
     void GuiLayer::setupGuiLibrary()
@@ -47,7 +81,7 @@ namespace oyl
         //io.ConfigViewportsNoTaskBarIcon = true;
 
         // Setup Dear ImGui style
-        ImGui::StyleColorsDark();
+        //ImGui::StyleColorsDark();
         applyCustomColorTheme();
         
         ImGuiStyle& style                 = ImGui::GetStyle();
@@ -62,11 +96,77 @@ namespace oyl
         ImGui_ImplOpenGL3_Init("#version 420");
     }
 
+    void GuiLayer::setupLayout()
+    {
+        m_consoleDockSpaceId = ImGui::GetID("_DockSpace");
+
+        ImGui::DockBuilderRemoveNode(m_consoleDockSpaceId);
+        ImGuiDockNodeFlags dockSpaceFlags = 0;
+        dockSpaceFlags |= ImGuiDockNodeFlags_PassthruCentralNode;
+        ImGui::DockBuilderAddNode(m_consoleDockSpaceId, dockSpaceFlags);
+
+        ImGuiID dockMain = m_consoleDockSpaceId;
+
+        ImGuiID dockGizmoControls = ImGui::DockBuilderSplitNode(dockMain, ImGuiDir_Up, 0.01f, NULL, &dockMain);
+        ImGuiID dockPausePlayStep = ImGui::DockBuilderSplitNode(dockGizmoControls, ImGuiDir_Right, 0.55f, NULL, &dockGizmoControls);
+
+        ImGuiID dockHierarchy = ImGui::DockBuilderSplitNode(dockMain, ImGuiDir_Left, 0.25f, NULL, &dockMain);
+        ImGuiID dockInspector = ImGui::DockBuilderSplitNode(dockMain, ImGuiDir_Right, 0.30f, NULL, &dockMain);
+
+        ImGuiID dockUp   = ImGui::DockBuilderSplitNode(dockMain, ImGuiDir_Up, 0.1f, NULL, &dockMain);
+        ImGuiID dockDown = ImGui::DockBuilderSplitNode(dockMain, ImGuiDir_Down, 0.15f, NULL, &dockMain);
+
+        ImGui::DockBuilderDockWindow(g_sceneWindowName, dockMain);
+        ImGui::DockBuilderDockWindow(g_gameWindowName, dockMain);
+
+        ImGui::DockBuilderDockWindow(g_transformGizmosName, dockGizmoControls);
+        ImGui::DockBuilderDockWindow(g_playPauseWindowName, dockPausePlayStep);
+
+        ImGui::DockBuilderDockWindow(g_hierarchyWindowName, dockHierarchy);
+        ImGui::DockBuilderDockWindow(g_inspectorWindowName, dockInspector);
+
+        ImGui::DockBuilderFinish(m_consoleDockSpaceId);
+
+        ImGui::DockBuilderGetNode(dockGizmoControls)->LocalFlags |= ImGuiDockNodeFlags_NoTabBar;
+        ImGui::DockBuilderGetNode(dockPausePlayStep)->LocalFlags |= ImGuiDockNodeFlags_NoTabBar;
+    }
+
     void GuiLayer::onExit()
     {
-        ImGui_ImplOpenGL3_Shutdown();
-        ImGui_ImplGlfw_Shutdown();
-        ImGui::DestroyContext();
+        for (auto& system : m_systems)
+        {
+            system->onExit();
+        }
+        
+        m_systems.clear();
+    }
+
+    void GuiLayer::onUpdate(Timestep dt)
+    {
+        using component::Transform;
+        using component::Parent;
+
+        // For every child object, give its transform a reference to its parent's
+        auto view = registry->view<Transform, Parent>();
+        for (auto entity : view)
+        {
+            auto& ct = view.get<Transform>(entity);
+            auto parent = view.get<Parent>(entity).parent;
+
+            if (parent != entt::null)
+            {
+                auto& pt = registry->get<Transform>(parent);
+
+                if (!pt.m_localRef)
+                    pt.m_localRef = Ref<Transform>(&pt, [](Transform*) {});
+
+                ct.m_parentRef = pt.m_localRef;
+            }
+            else
+            {
+                ct.m_parentRef = {};
+            }
+        }
     }
 
     void GuiLayer::begin()
@@ -101,12 +201,15 @@ namespace oyl
         ImGui::Begin("DockSpace##EditorDockspace", &p_open, window_flags);
         ImGui::PopStyleVar(3);
 
+        if (std::ifstream guiFile("imgui.ini"); !guiFile)
+            setupLayout();
+
         drawMenuBar();
 
         OYL_ASSERT(ImGui::GetIO().ConfigFlags & ImGuiConfigFlags_DockingEnable, "Docking should always be enabled!");
         
         // DockSpace
-        ImGuiID dockspace_id = ImGui::GetID("_DockSpace");
+        ImGuiID dockspace_id = ImGui::GetID(g_mainDockSpaceName);
         ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), dockspace_flags);
         ImGui::End();
     }
@@ -131,29 +234,39 @@ namespace oyl
     }
 
     void GuiLayer::onGuiRender(Timestep dt)
-    {
+    {        
         drawSceneHierarchy();
 
         drawInspector();
 
-        drawViewport();
+        drawSceneViewport();
+
+        drawGameViewport();
+
+        drawPlayPauseButtons();
     }
 
     bool GuiLayer::onEvent(Ref<Event> event)
     {
         switch (event->type)
         {
-            case TypeViewportHandleChanged:
+            case TypeEditorViewportHandleChanged:
             {
-                auto e           = (ViewportHandleChangedEvent) *event;
-                m_viewportHandle = e.handle;
-                return true;
+                auto e = (EditorViewportHandleChangedEvent) *event;
+                m_editorViewportHandle = e.handle;
+                return false;
             }
             case TypeEditorEntitySelected:
             {
-                auto e          = (EditorEntitySelectedEvent) *event;
+                auto e = (EditorEntitySelectedEvent) *event;
                 m_currentEntity = e.entity;
                 return true;
+            }
+            case TypeViewportHandleChanged:
+            {
+                auto e = (ViewportHandleChangedEvent) *event;
+                m_gameViewportHandle = e.handle;
+                return false;
             }
             case TypeMousePressed:
             {
@@ -164,7 +277,7 @@ namespace oyl
                 //}
             }
         }
-        return false;
+        return !m_editorOverrideUpdate;
     }
 
     void GuiLayer::drawMenuBar()
@@ -174,12 +287,12 @@ namespace oyl
         {
             if (ImGui::BeginMenu("File##MainMenuBarFile"))
             {
-                if (ImGui::MenuItem("Save##MainMenuSave", "Ctrl+S"))
+                if (ImGui::MenuItem("Save##MainMenuSave", "Ctrl+S", false, m_editorOverrideUpdate))
                 {
                     Scene::current()->saveSceneToFile();   
                 }
                 showReloadDialogue = 
-                    ImGui::MenuItem("Reload##MainMenuReload", "Ctrl+Shift+S");
+                    ImGui::MenuItem("Reload##MainMenuReload", "Ctrl+Shift+S", false, m_editorOverrideUpdate);
                 
                 ImGui::EndMenu();
             }
@@ -214,7 +327,7 @@ namespace oyl
                     if (ImGui::Button("Reload##ReloadConfirmationReload"))
                     {
                         Scene::current()->loadSceneFromFile();
-                        m_currentEntity = Entity(-1);
+                        m_currentEntity = entt::null;
                         showReloadDialogue = false;
                     }
                     ImGui::SameLine();
@@ -230,61 +343,86 @@ namespace oyl
 
     void GuiLayer::drawSceneHierarchy()
     {
-        if (ImGui::Begin("Hierarchy##EditorHierarchy", nullptr, ImGuiWindowFlags_NoCollapse))
+        if (ImGui::Begin(g_hierarchyWindowName, nullptr, ImGuiWindowFlags_NoCollapse))
         {
+            auto parentView = registry->view<component::Parent>();
+            
             registry->each(
-                [this](auto entity)
+                [&](auto entity)
                 {
                     using component::internal::ExcludeFromHierarchy;
                     if (registry->has<ExcludeFromHierarchy>(entity))
                         return;
                 
-                    auto& so = registry->get_or_assign<component::SceneObject>(entity);
-                    if (so.name.empty())
-                    {
-                        char buf[128];
-                        sprintf(buf, "Entity %d", (u32) entity);
-                        so.name = std::string(buf);
-                    }
+                    if (parentView.contains(entity) && 
+                        parentView.get(entity).parent != entt::null) return;
 
-                    auto nodeFlags = ImGuiTreeNodeFlags_OpenOnDoubleClick |
-                                     ImGuiTreeNodeFlags_OpenOnArrow |
-                                     ImGuiTreeNodeFlags_DefaultOpen;
-
-                    if (entity == Entity(m_currentEntity))
-                        nodeFlags |= ImGuiTreeNodeFlags_Selected;
-
-                    bool treeNode = ImGui::TreeNodeEx((const void*) entity, nodeFlags, entityNodeFmt, so.name.c_str());
-                    bool clicked  = ImGui::IsItemClicked(0);
-                    float testValue = ImGui::GetMousePos().x - ImGui::GetItemRectMin().x;
-                    if (treeNode)
-                    {
-                        ImGui::Indent();
-
-                        ImGui::Text("Nothing Here Yet!");
-
-                        ImGui::Unindent();
-
-                        ImGui::TreePop();
-                    }
-                
-                    if (clicked && testValue > ImGui::GetTreeNodeToLabelSpacing())
-                    {
-                        EditorEntitySelectedEvent selected;
-                        selected.entity = entity;
-                        postEvent(Event::create(selected));
-                    }
+                    drawEntityNode(entity);
                 });
         }
         ImGui::End();
     }
 
+    void GuiLayer::drawEntityNode(entt::entity entity)
+    {
+        auto& so = registry->get_or_assign<component::SceneObject>(entity);
+        if (so.name.empty())
+        {
+            char buf[128];
+            sprintf(buf, "Entity %d", (u32) entity);
+            so.name = std::string(buf);
+        }
+        
+        auto nodeFlags = ImGuiTreeNodeFlags_OpenOnDoubleClick |
+                         ImGuiTreeNodeFlags_OpenOnArrow |
+                         ImGuiTreeNodeFlags_DefaultOpen;
+        
+        if (entity == entt::entity(m_currentEntity))
+            nodeFlags |= ImGuiTreeNodeFlags_Selected;
+
+        nodeFlags |= ImGuiTreeNodeFlags_Leaf;
+        auto parentView = registry->view<component::Parent>();
+        for (auto child : parentView)
+            if (parentView.get(child).parent == entity)
+            {
+                nodeFlags &= ~ImGuiTreeNodeFlags_Leaf;
+                break;
+            }
+        
+        bool treeNode = ImGui::TreeNodeEx((const void*) entity, nodeFlags, g_entityNodeFmt, so.name.c_str());
+        bool clicked = ImGui::IsItemClicked(0);
+        float testValue = ImGui::GetMousePos().x - ImGui::GetItemRectMin().x;
+        if (treeNode)
+        {
+            //ImGui::Indent();
+
+            for (auto child : parentView)
+            {
+                if (parentView.get(child).parent == entity)
+                    drawEntityNode(child);
+            }
+
+            //ImGui::Unindent();
+
+            ImGui::TreePop();
+        }
+
+        if (clicked && testValue > ImGui::GetTreeNodeToLabelSpacing())
+        {
+            EditorEntitySelectedEvent selected;
+            selected.entity = entity;
+            postEvent(Event::create(selected));
+        }
+    }
+
     void GuiLayer::drawInspector()
     {
-        if (ImGui::Begin("Inspector##EditorInspector", nullptr))
+        if (ImGui::Begin(g_inspectorWindowName, nullptr))
         {
-            if (m_currentEntity != Entity(-1))
+            if (m_currentEntity != entt::null)
             {
+                drawInspectorObjectName();
+                drawInspectorParent();
                 drawInspectorTransform();
                 drawInspectorRenderable();
                 drawInspectorRigidBody();
@@ -296,6 +434,8 @@ namespace oyl
     void GuiLayer::drawInspectorTransform()
     {
         using component::Transform;
+
+        ImGui::SetNextTreeNodeOpen(true, ImGuiCond_Once);
         
         if (registry->has<Transform>(m_currentEntity) &&
             ImGui::CollapsingHeader("Transform##InspectorTransform"))
@@ -308,61 +448,78 @@ namespace oyl
 
             ImGui::PushItemWidth(newWidth);
 
-            const float posDragSpeed = 0.02f;
-            ImGui::Text("Position");
-            ImGui::SameLine(ImGui::GetWindowContentRegionWidth() - (15 * 3 + newWidth * 3 + 27));
-            ImGui::SetNextItemWidth(15);
-            ImGui::DragFloat("##XPos", &transform.position.x, posDragSpeed, 0, 0, "X");
-            ImGui::SameLine();
-            ImGui::InputFloat("##XPosInput", &transform.position.x, 0, 0, "%.2f");
-            ImGui::SameLine();
-            ImGui::SetNextItemWidth(15);
-            ImGui::DragFloat("##YPos", &transform.position.y, posDragSpeed, 0, 0, "Y");
-            ImGui::SameLine();
-            ImGui::InputFloat("##YPosInput", &transform.position.y, 0, 0, "%.2f");
-            ImGui::SameLine();
-            ImGui::SetNextItemWidth(15);
-            ImGui::DragFloat("##ZPos", &transform.position.z, posDragSpeed, 0, 0, "Z");
-            ImGui::SameLine();
-            ImGui::InputFloat("##ZPosInput", &transform.position.z, 0, 0, "%.2f");
+            {
+                glm::vec3 position = transform.getPosition();
 
-            const float rotDragSpeed = 0.5f;
-            ImGui::Text("Rotation");
-            ImGui::SameLine(ImGui::GetWindowContentRegionWidth() - (15 * 3 + newWidth * 3 + 27));
-            ImGui::SetNextItemWidth(15);
-            ImGui::DragFloat("##XRot", &transform.rotation.x, rotDragSpeed, 0, 0, "X");
-            ImGui::SameLine();
-            ImGui::InputFloat("##XRotInput", &transform.rotation.x, 0, 0, "%.2f");
-            ImGui::SameLine();
-            ImGui::SetNextItemWidth(15);
-            ImGui::DragFloat("##YRot", &transform.rotation.y, rotDragSpeed, 0, 0, "Y");
-            ImGui::SameLine();
-            ImGui::InputFloat("##YRotInput", &transform.rotation.y, 0, 0, "%.2f");
-            ImGui::SameLine();
-            ImGui::SetNextItemWidth(15);
-            ImGui::DragFloat("##ZRot", &transform.rotation.z, rotDragSpeed, 0, 0, "Z");
-            ImGui::SameLine();
-            ImGui::InputFloat("##ZRotInput", &transform.rotation.z, 0, 0, "%.2f");
+                const float posDragSpeed = 0.02f;
+                ImGui::Text("Position");
+                ImGui::SameLine(ImGui::GetWindowContentRegionWidth() - (15 * 3 + newWidth * 3 + 27));
+                ImGui::SetNextItemWidth(15);
+                ImGui::DragFloat("##XPos", &position.x, posDragSpeed, 0, 0, "X");
+                ImGui::SameLine();
+                ImGui::InputFloat("##XPosInput", &position.x, 0, 0, "%.2f");
+                ImGui::SameLine();
+                ImGui::SetNextItemWidth(15);
+                ImGui::DragFloat("##YPos", &position.y, posDragSpeed, 0, 0, "Y");
+                ImGui::SameLine();
+                ImGui::InputFloat("##YPosInput", &position.y, 0, 0, "%.2f");
+                ImGui::SameLine();
+                ImGui::SetNextItemWidth(15);
+                ImGui::DragFloat("##ZPos", &position.z, posDragSpeed, 0, 0, "Z");
+                ImGui::SameLine();
+                ImGui::InputFloat("##ZPosInput", &position.z, 0, 0, "%.2f");
 
-            const float scaleDragSpeed = 0.02f;
-            ImGui::Text("Scale");
-            ImGui::SameLine(ImGui::GetWindowContentRegionWidth() - (15 * 3 + newWidth * 3 + 27));
-            ImGui::SetNextItemWidth(15);
-            ImGui::DragFloat("##XSca", &transform.scale.x, scaleDragSpeed, 0, 0, "X");
-            ImGui::SameLine();
-            ImGui::InputFloat("##XScaInput", &transform.scale.x, 0, 0, "%.2f");
-            ImGui::SameLine();
-            ImGui::SetNextItemWidth(15);
-            ImGui::DragFloat("##YSca", &transform.scale.y, scaleDragSpeed, 0, 0, "Y");
-            ImGui::SameLine();
-            ImGui::InputFloat("##YScaInput", &transform.scale.y, 0, 0, "%.2f");
-            ImGui::SameLine();
-            ImGui::SetNextItemWidth(15);
-            ImGui::DragFloat("##ZSca", &transform.scale.z, scaleDragSpeed, 0, 0, "Z");
-            ImGui::SameLine();
-            ImGui::InputFloat("##ZScaInput", &transform.scale.z, 0, 0, "%.2f");
+                if (position != transform.getPosition())
+                    transform.setPosition(position);
+            }
+            {
+                glm::vec3 rotation = transform.getRotationEuler();
 
-            ImGui::IsItemClicked();
+                const float rotDragSpeed = 0.5f;
+                ImGui::Text("Rotation");
+                ImGui::SameLine(ImGui::GetWindowContentRegionWidth() - (15 * 3 + newWidth * 3 + 27));
+                ImGui::SetNextItemWidth(15);
+                ImGui::DragFloat("##XRot", &rotation.x, rotDragSpeed, 0, 0, "X");
+                ImGui::SameLine();
+                ImGui::InputFloat("##XRotInput", &rotation.x, 0, 0, "%.2f");
+                ImGui::SameLine();
+                ImGui::SetNextItemWidth(15);
+                ImGui::DragFloat("##YRot", &rotation.y, rotDragSpeed, 0, 0, "Y");
+                ImGui::SameLine();
+                ImGui::InputFloat("##YRotInput", &rotation.y, 0, 0, "%.2f");
+                ImGui::SameLine();
+                ImGui::SetNextItemWidth(15);
+                ImGui::DragFloat("##ZRot", &rotation.z, rotDragSpeed, 0, 0, "Z");
+                ImGui::SameLine();
+                ImGui::InputFloat("##ZRotInput", &rotation.z, 0, 0, "%.2f");
+
+                if (rotation != transform.getRotationEuler())
+                    transform.setRotationEuler(rotation);
+            }
+            {
+                glm::vec3 scale = transform.getScale();
+
+                const float scaleDragSpeed = 0.02f;
+                ImGui::Text("Scale");
+                ImGui::SameLine(ImGui::GetWindowContentRegionWidth() - (15 * 3 + newWidth * 3 + 27));
+                ImGui::SetNextItemWidth(15);
+                ImGui::DragFloat("##XSca", &scale.x, scaleDragSpeed, 0, 0, "X");
+                ImGui::SameLine();
+                ImGui::InputFloat("##XScaInput", &scale.x, 0, 0, "%.2f");
+                ImGui::SameLine();
+                ImGui::SetNextItemWidth(15);
+                ImGui::DragFloat("##YSca", &scale.y, scaleDragSpeed, 0, 0, "Y");
+                ImGui::SameLine();
+                ImGui::InputFloat("##YScaInput", &scale.y, 0, 0, "%.2f");
+                ImGui::SameLine();
+                ImGui::SetNextItemWidth(15);
+                ImGui::DragFloat("##ZSca", &scale.z, scaleDragSpeed, 0, 0, "Z");
+                ImGui::SameLine();
+                ImGui::InputFloat("##ZScaInput", &scale.z, 0, 0, "%.2f");
+
+                if (scale != transform.getScale())
+                    transform.setScale(scale);
+            }
 
             ImGui::PopItemWidth();
 
@@ -370,86 +527,285 @@ namespace oyl
         }
     }
 
-    void GuiLayer::drawInspectorRenderable()
+    void GuiLayer::drawInspectorRenderable() {}
+
+    void GuiLayer::drawInspectorRigidBody() {}
+
+    void GuiLayer::drawInspectorParent()
     {
+        using component::Transform;
+        using component::SceneObject;
+        using component::Parent;
+        
+        ImGui::SetNextTreeNodeOpen(true, ImGuiCond_Once);
+        
+        if (ImGui::CollapsingHeader("Parent Properties##InspectorParentProperties"))
+        {
+            ImGui::Indent(10);
+
+            entt::entity parent = entt::null;
+
+            if (registry->has<Parent>(m_currentEntity))
+                parent = registry->get<Parent>(m_currentEntity).parent;
+
+            const char* currentParentName = parent != entt::null && registry->has<SceneObject>(parent)
+                                                ? registry->get<SceneObject>(parent).name.c_str()
+                                                : "None";
+
+            auto decomp = [](Transform& ct, Transform& pt)
+            {
+                glm::mat4 tempChild  = ct.getMatrixGlobal();
+                glm::mat4 tempParent = pt.getMatrixGlobal();
+
+                tempChild = glm::inverse(tempParent) * tempChild;
+
+                glm::vec3 tComponents[3];
+                ImGuizmo::DecomposeMatrixToComponents(value_ptr(tempChild),
+                                                      value_ptr(tComponents[0]),
+                                                      value_ptr(tComponents[1]),
+                                                      value_ptr(tComponents[2]));
+
+                tComponents[2] = max(glm::vec3(0.01f), tComponents[2]);
+
+                ct.m_localPosition      = tComponents[0];
+                ct.m_localEulerRotation = tComponents[1];
+                ct.m_localScale         = tComponents[2];
+
+                ct.m_isLocalDirty = true;
+            };
+
+            ImGui::Text("Current Parent");
+            ImGui::SameLine();
+            if (ImGui::BeginCombo("##ParentPropertiesCurrentParent", currentParentName))
+            {
+                if (ImGui::Selectable("None", parent == entt::null))
+                {
+                    auto& p  = registry->get_or_assign<Parent>(m_currentEntity);
+                    p.parent = entt::null;
+
+                    if (parent != entt::null)
+                    {
+                        auto& ct = registry->get<Transform>(m_currentEntity);
+
+                        glm::mat4 tempChild = ct.getMatrixGlobal();
+
+                        glm::vec3 tComponents[3];
+                        ImGuizmo::DecomposeMatrixToComponents(value_ptr(tempChild),
+                                                              value_ptr(tComponents[0]),
+                                                              value_ptr(tComponents[1]),
+                                                              value_ptr(tComponents[2]));
+
+                        tComponents[2] = max(glm::vec3(0.01f), tComponents[2]);
+
+                        ct.m_localPosition = tComponents[0];
+                        ct.m_localEulerRotation = tComponents[1];
+                        ct.m_localScale = tComponents[2];
+
+                        ct.m_isLocalDirty = true;
+                    }
+                }
+                else
+                {
+                    auto view = registry->view<SceneObject>();
+                    for (auto entity : view)
+                    {
+                        bool isSelected = entity == parent;
+                        
+                        if (entity != m_currentEntity && 
+                            ImGui::Selectable(view.get(entity).name.c_str(), isSelected))
+                        {
+                            auto& p = registry->get_or_assign<Parent>(m_currentEntity);
+                            p.parent = entity;
+
+                            auto& ct = registry->get<Transform>(m_currentEntity);
+                            auto& pt = registry->get<Transform>(entity);
+
+                            glm::mat4 tempChild = ct.getMatrixGlobal();
+                            glm::mat4 tempParent = pt.getMatrixGlobal();
+
+                            tempChild = glm::inverse(tempParent) * tempChild;
+
+                            glm::vec3 tComponents[3];
+                            ImGuizmo::DecomposeMatrixToComponents(value_ptr(tempChild),
+                                                                  value_ptr(tComponents[0]),
+                                                                  value_ptr(tComponents[1]),
+                                                                  value_ptr(tComponents[2]));
+
+                            tComponents[2] = max(glm::vec3(0.01f), tComponents[2]);
+
+                            ct.m_localPosition = tComponents[0];
+                            ct.m_localEulerRotation = tComponents[1];
+                            ct.m_localScale = tComponents[2];
+
+                            ct.m_isLocalDirty = true;
+                            
+                            break;
+                        }
+
+                        if (isSelected) ImGui::SetItemDefaultFocus();
+                    }
+                }
+                
+                ImGui::EndCombo();
+            }
+            
+            ImGui::Unindent(10);
+        }
     }
 
-    void GuiLayer::drawInspectorRigidBody()
+    void GuiLayer::drawInspectorObjectName()
     {
+
+        ImGui::SetNextTreeNodeOpen(true, ImGuiCond_Once);
+
+        if (registry->has<component::SceneObject>(m_currentEntity) &&
+            ImGui::CollapsingHeader("Object Properties##InspectorObjectProperties"))
+        {
+            ImGui::Indent(10);
+            
+            auto& so = registry->get<component::SceneObject>(m_currentEntity);
+
+            char name[256]{ 0 };
+            std::strcpy(name, so.name.c_str());
+
+            ImGui::Text("Object Name");
+            ImGui::SameLine();
+            ImGui::InputText("##InspectorObjectNameInputField", name, 256);
+
+            so.name.assign(name);
+
+            ImGui::Unindent(10);
+        }
     }
 
-    void GuiLayer::drawViewport()
+    void GuiLayer::drawSceneViewport()
     {
         // Only still here for easy navigation to the source code for learning imgui
         if constexpr (false)
             ImGui::ShowDemoWindow();
 
-        ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
-        ImGui::Begin("Viewport##EditorViewport", nullptr, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoCollapse);
-
-        auto [x, y]       = ImGui::GetWindowSize();
-        auto [cx, cy]     = ImGui::GetCursorPos();
-        auto [posx, posy] = ImGui::GetItemRectMin();
-
-        y -= cy;
-
-        float camX = posx + x - 40;
-        float camY = posy + y;
-
-        ImGui::SetNextWindowPos(ImVec2(camX, camY), 0, ImVec2(1, 1));
-        ImVec2 cameraWindowSize = ImVec2(x / 4, y / 4);
-        ImGui::SetNextWindowSize(cameraWindowSize);
-
-        if (ImGui::Begin("Camera Preview##ViewportCameraPreview", nullptr,
-                         ImGuiWindowFlags_NoScrollbar |
-                         ImGuiWindowFlags_NoResize |
-                         ImGuiWindowFlags_NoMove))
+        // HACK: Make scene window the default on open
         {
+            static bool _first = true;
+            if (static bool _second = true; !_first && _second)
+            {
+                _second = false;
+                ImGui::SetNextWindowFocus();
+            }
+            _first = false;
+        }
+        
+        ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
+        if (ImGui::Begin(g_sceneWindowName, nullptr, ImGuiWindowFlags_NoScrollbar))
+        {
+            static ImVec2 lastSize = { 0, 0 };
+
+            auto [x, y]   = ImGui::GetWindowSize();
+            auto [cx, cy] = ImGui::GetCursorPos();
+
+            if (lastSize.x != x || lastSize.y != y)
+            {   
+                EditorViewportResizedEvent vrevent;
+                vrevent.width  = x;
+                vrevent.height = y - cy;
+                
+                postEvent(Event::create(vrevent));
+            }
+            
+            y -= cy;
+    
             ImGui::Image(
-                (void*) m_viewportHandle,
-                cameraWindowSize,
+                (void*) m_editorViewportHandle,
+                ImVec2(x, y),
                 ImVec2(0, 1), ImVec2(1, 0)
             );
+
+            if (m_currentEntity != entt::null && 
+                registry->has<component::PlayerCamera>(m_currentEntity))
+            {
+                auto [posx, posy] = ImGui::GetItemRectMin();
+
+                float camX = posx + x - 20;
+                float camY = posy + y - 20;
+
+                ImGui::SetNextWindowPos(ImVec2(camX, camY), 0, ImVec2(1, 1));
+                ImVec2 cameraWindowSize = ImVec2((16.0f / 9.0f) * y / 4.0f, y / 4.0f);
+                ImGui::SetNextWindowSize(cameraWindowSize);
+
+                ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImGui::GetStyle().WindowPadding);
+                if (ImGui::Begin("Camera Preview##ViewportCameraPreview", nullptr,
+                                 ImGuiWindowFlags_NoScrollbar |
+                                 ImGuiWindowFlags_NoResize |
+                                 ImGuiWindowFlags_NoMove |
+                                 ImGuiWindowFlags_NoCollapse))
+                {
+                    ImGui::Image(
+                        (void*) m_gameViewportHandle,
+                        ImGui::GetWindowSize(),
+                        ImVec2(0, 1), ImVec2(1, 0)
+                    );
+                }
+                ImGui::PopStyleVar();
+
+                ImGui::End();
+            }
+            
+            ImGuizmo::SetDrawlist();
+            auto [minX, minY]   = ImGui::GetItemRectMin();
+            auto [sizeX, sizeY] = ImGui::GetItemRectSize();
+            ImGuizmo::SetRect(minX, minY, sizeX, sizeY);
+    
+            if (ImGui::IsItemClicked(1))
+                m_currentEntity = entt::null;
+    
+            drawTransformGizmo();
         }
-
-        ImGui::PopStyleVar();
-        ImGui::End();
-
-        ViewportResizedEvent vrevent;
-        vrevent.id     = 0;
-        vrevent.width  = x;
-        vrevent.height = y;
-
-        postEvent(Event::create(vrevent));
-
-        ImGui::Image(
-            (void*) m_viewportHandle,
-            ImVec2(x, y),
-            ImVec2(0, 1), ImVec2(1, 0)
-        );
-
-        ImGuizmo::SetDrawlist();
-        auto [minX, minY]   = ImGui::GetItemRectMin();
-        auto [sizeX, sizeY] = ImGui::GetItemRectSize();
-        ImGuizmo::SetRect(minX, minY, sizeX, sizeY);
-
-        if (ImGui::IsItemClicked(1))
-            m_currentEntity = Entity(-1);
-
-        drawTransformGizmo();
-
-        //ImVec2 gzsPos = ImVec2(minX + 20, minY + cy + 20);
-        //ImGui::SetNextWindowPos(gzsPos);
 
         drawTransformGizmoSettings();
 
         ImGui::End();
+        ImGui::PopStyleVar();
+    }
+
+    void GuiLayer::drawGameViewport()
+    {        
+        ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
+
+        if (ImGui::Begin(g_gameWindowName, NULL, ImGuiWindowFlags_NoScrollbar))
+        {
+            auto [x, y]   = ImGui::GetWindowSize();
+
+            ImVec2 newPos = { 0, 0 };
+
+            if (x / y < 16.0f / 9.0f)
+            {
+                newPos.y = (y - x * 9.0f / 16.0f) / 2.0f;
+                y = x * 9.0f / 16.0f;
+            }
+            else
+            {
+                newPos.x = (x - y * 16.0f / 9.0f) / 2.0f;
+                x = y * 16.0f / 9.0f;
+            }
+
+            ImGui::SetCursorPos(newPos);
+
+            ImGui::Image(
+                (void*) m_gameViewportHandle,
+                ImVec2(x, y),
+                ImVec2(0, 1), ImVec2(1, 0)
+            );
+        }
+        ImGui::End();
+        ImGui::PopStyleVar();
     }
 
     void GuiLayer::drawTransformGizmoSettings()
     {
-        if (ImGui::Begin("##ViewportGizmoSettings", NULL, ImGuiWindowFlags_NoDecoration))
+        if (ImGui::Begin(g_transformGizmosName, NULL, ImGuiWindowFlags_NoDecoration))
         {
+            ImGui::SameLine(0, 10);
+            
             if (ImGui::RadioButton("Translate##RadioTranslate", m_currentOp == ImGuizmo::TRANSLATE))
                 m_currentOp = ImGuizmo::TRANSLATE;
             ImGui::SameLine(0, 5);
@@ -499,36 +855,125 @@ namespace oyl
         using component::Transform;
         using component::internal::EditorCamera;
 
-        if (m_currentEntity != Entity(-1) &&
-            registry->has<Transform>(Entity(m_currentEntity)))
+        if (m_currentEntity != entt::null &&
+            registry->has<Transform>(m_currentEntity))
         {
             auto  view = registry->view<EditorCamera>();
             auto& cam  = view.get(*view.begin()).camera;
 
-            auto& model = registry->get<Transform>(Entity(m_currentEntity));
+            auto& model = registry->get<Transform>(m_currentEntity);
 
-            glm::mat4 modelMatrix;
-
-            ImGuizmo::RecomposeMatrixFromComponents(value_ptr(model.position),
-                                                    value_ptr(model.rotation),
-                                                    value_ptr(model.scale),
-                                                    value_ptr(modelMatrix));
-
+            glm::mat4 gizmoMatrix = model.getMatrixGlobal();
+            
             ImGuizmo::Manipulate(value_ptr(cam->getViewMatrix()),
                                  value_ptr(cam->getProjectionMatrix()),
                                  m_currentOp,
                                  m_currentMode,
-                                 value_ptr(modelMatrix),
+                                 value_ptr(gizmoMatrix),
                                  nullptr,
                                  m_doSnap ? &m_snap.x : nullptr);
 
-            ImGuizmo::DecomposeMatrixToComponents(value_ptr(modelMatrix),
-                                                  value_ptr(model.position),
-                                                  value_ptr(model.rotation),
-                                                  value_ptr(model.scale));
+            if (ImGuizmo::IsUsing())
+            {
+                glm::mat4 tempLocal;
+                
+                if (registry->has<component::Parent>(m_currentEntity) &&
+                    registry->get<component::Parent>(m_currentEntity).parent != entt::null)
+                {   
+                    auto parent = registry->get<component::Parent>(m_currentEntity).parent;
+                    auto& parentTransform = registry->get<Transform>(parent);
 
-            model.scale = glm::max(glm::vec3(0.01f), model.scale);
+                    tempLocal = glm::inverse(parentTransform.getMatrixGlobal()) * gizmoMatrix;
+                }
+                else
+                {
+                    tempLocal = gizmoMatrix;    
+                }
+                
+                glm::vec3 tComponents[3];
+                ImGuizmo::DecomposeMatrixToComponents(value_ptr(tempLocal),
+                                                      value_ptr(tComponents[0]),
+                                                      value_ptr(tComponents[1]),
+                                                      value_ptr(tComponents[2]));
+
+                tComponents[2] = max(glm::vec3(0.01f), tComponents[2]);
+
+                switch (m_currentOp)
+                {
+                    case ImGuizmo::TRANSLATE:
+                    {
+                        model.m_localPosition        = tComponents[0];
+                        model.m_isPositionOverridden = true;
+                        break;
+                    }
+                    case ImGuizmo::ROTATE:
+                    {
+                        model.m_localEulerRotation   = tComponents[1];
+                        model.m_isRotationOverridden = true;
+                        break;
+                    }
+                    case ImGuizmo::SCALE:
+                    {
+                        model.m_localScale           = tComponents[2];
+                        model.m_isScaleOverridden    = true;
+                        break;
+                    }
+                }
+
+                model.m_isLocalDirty = true;
+            }
         }
+    }
+
+    void GuiLayer::drawPlayPauseButtons()
+    {
+        if (ImGui::Begin(g_playPauseWindowName), NULL, ImGuiWindowFlags_NoDecoration)
+        {
+            if (m_editorOverrideUpdate)
+            {
+                if (ImGui::ArrowButton("##EditorPlayButton", ImGuiDir_Right))
+                {
+                    ImGui::SetWindowFocus(g_gameWindowName);
+                    
+                    m_editorOverrideUpdate = false;
+                    m_gameUpdate = true;
+                    m_registryRestore = Scene::current()->getRegistry()->clone();
+                    m_currentEntity = entt::null;
+                }
+            } else
+            {
+                if (ImGui::ArrowButton("##EditorBackButton", ImGuiDir_Left))
+                {
+                    ImGui::SetWindowFocus(g_sceneWindowName);
+                    
+                    m_editorOverrideUpdate = true;
+                    m_gameUpdate = false;
+
+                    // HACK: Send as event
+                    // TODO: Store backup registry in scene?
+                    *Scene::current()->m_registry = m_registryRestore.clone();
+                    Scene::current()->m_physicsSystem->onExit();
+                    Scene::current()->m_physicsSystem->onEnter();
+                    auto view = registry->view<component::Transform>();
+
+                    for (auto entity : view)
+                    {
+                        auto& t = view.get(entity);
+                        t.m_localRef = Ref<component::Transform>(&t, [](component::Transform*) {});
+                        t.m_parentRef.reset();
+                    }
+
+                    m_currentEntity = entt::null;
+                }
+                ImGui::SameLine();
+                if ((m_gameUpdate && ImGui::Button("II##EditorPauseButton")) ||
+                    (!m_gameUpdate && ImGui::ArrowButton("##EditorPausedPlayButton", ImGuiDir_Right)))
+                {
+                    m_gameUpdate ^= 1;
+                }
+            }
+        }
+        ImGui::End();
     }
 
     void GuiLayer::applyCustomColorTheme()
@@ -578,17 +1023,17 @@ namespace oyl
         style.Colors[ImGuiCol_PlotHistogram] = TEXT(0.63f);
         style.Colors[ImGuiCol_PlotHistogramHovered] = MED(1.00f);
         style.Colors[ImGuiCol_TextSelectedBg] = MED(0.43f);
-        //style.Colors[ImGuiCol_Tab] = LOW(0.43f);
-        //style.Colors[ImGuiCol_TabActive] = MED(1.00f);
-        //style.Colors[ImGuiCol_TabHovered] = HI(1.00f);
-        //style.Colors[ImGuiCol_TabUnfocused] = LOW(0.88f);
-        //style.Colors[ImGuiCol_TabUnfocusedActive] = MED(0.73f);
+        style.Colors[ImGuiCol_Tab] = LOW(0.43f);
+        style.Colors[ImGuiCol_TabActive] = MED(1.00f);
+        style.Colors[ImGuiCol_TabHovered] = HI(1.00f);
+        style.Colors[ImGuiCol_TabUnfocused] = LOW(0.88f);
+        style.Colors[ImGuiCol_TabUnfocusedActive] = MED(0.73f);
 
-        style.Colors[ImGuiCol_Tab] = ImLerp(style.Colors[ImGuiCol_Header], style.Colors[ImGuiCol_TitleBgActive], 0.80f);
-        style.Colors[ImGuiCol_TabHovered] = style.Colors[ImGuiCol_HeaderHovered];
-        style.Colors[ImGuiCol_TabActive] = ImLerp(style.Colors[ImGuiCol_HeaderActive], style.Colors[ImGuiCol_TitleBgActive], 0.60f);
-        style.Colors[ImGuiCol_TabUnfocused] = ImLerp(style.Colors[ImGuiCol_Tab], style.Colors[ImGuiCol_TitleBg], 0.80f);
-        style.Colors[ImGuiCol_TabUnfocusedActive] = ImLerp(style.Colors[ImGuiCol_TabActive], style.Colors[ImGuiCol_TitleBg], 0.40f);
+        //style.Colors[ImGuiCol_Tab] = ImLerp(style.Colors[ImGuiCol_Header], style.Colors[ImGuiCol_TitleBgActive], 0.80f);
+        //style.Colors[ImGuiCol_TabHovered] = style.Colors[ImGuiCol_HeaderHovered];
+        //style.Colors[ImGuiCol_TabActive] = ImLerp(style.Colors[ImGuiCol_HeaderActive], style.Colors[ImGuiCol_TitleBgActive], 0.60f);
+        //style.Colors[ImGuiCol_TabUnfocused] = ImLerp(style.Colors[ImGuiCol_Tab], style.Colors[ImGuiCol_TitleBg], 0.80f);
+        //style.Colors[ImGuiCol_TabUnfocusedActive] = ImLerp(style.Colors[ImGuiCol_TabActive], style.Colors[ImGuiCol_TitleBg], 0.40f);
         
         // [...]
         style.Colors[ImGuiCol_ModalWindowDarkening] = BG(0.73f);

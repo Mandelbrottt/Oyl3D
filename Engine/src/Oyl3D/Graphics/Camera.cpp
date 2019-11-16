@@ -41,9 +41,9 @@ namespace oyl
         move(m_position);
 
         glm::mat4 temp = glm::mat4(1.0f);
+        temp = glm::rotate(temp, rot.z, glm::vec3(0.0f, 0.0f, 1.0f));
         temp = glm::rotate(temp, rot.x, glm::vec3(1.0f, 0.0f, 0.0f));
         temp = glm::rotate(temp, rot.y, glm::vec3(0.0f, 1.0f, 0.0f));
-        temp = glm::rotate(temp, rot.z, glm::vec3(0.0f, 0.0f, 1.0f));
 
         m_view = temp * m_view;
     }

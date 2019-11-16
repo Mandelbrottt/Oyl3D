@@ -136,3 +136,7 @@
     
     #pragma warning(default: 4005 4003)
 #pragma endregion
+
+#pragma region Attributes
+    #define OYL_DEPRECATED(reason) [[deprecated(reason)]]
+#pragma endregion

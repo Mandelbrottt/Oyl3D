@@ -1,5 +1,7 @@
 #pragma once
 
+#define _ENABLE_EXTENDED_ALIGNED_STORAGE 1
+
 #include "Oyl3D/Common.h"
 #include "Oyl3D/Enums.h"
 #include "Oyl3D/Typedefs.h"

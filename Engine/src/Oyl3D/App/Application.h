@@ -12,9 +12,10 @@ namespace oyl
     class EventListener;
     class Scene;
     class GuiLayer;
-
+    
     namespace internal
-    {
+    {   
+        class RenderSystem;  
         class ApplicationListener;
         class GamepadListener;
     }
@@ -43,8 +44,13 @@ namespace oyl
     private:
         Ref<Window>      m_window;
         Ref<Scene>       m_currentScene;
-        Ref<GuiLayer>    m_guiLayer;
         Ref<FrameBuffer> m_mainBuffer;
+        
+    #if !defined(OYL_DISTRIBUTION)
+        Ref<GuiLayer>    m_guiLayer;
+    #endif
+
+        Ref<internal::RenderSystem> m_renderSystem;
 
         float m_lastFrameTime = 0;
 

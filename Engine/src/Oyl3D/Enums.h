@@ -25,7 +25,8 @@ namespace oyl
         TypeGamepadStickMoved, TypeGamepadTriggerPressed,
         TypeGamepadVibration, // TODO: Rename to GamepadVibrationRequest
         TypeCursorStateRequest,
-        TypeEditorEntitySelected,
+        TypePhysicsCollision,
+        TypeEditorViewportResized, TypeEditorViewportHandleChanged, TypeEditorEntitySelected,
         EventTypeCustomStart,
 
         // Event Categories //
@@ -38,6 +39,7 @@ namespace oyl
         CategoryGamepadVibration,
         CategoryCursorStateRequest,
         CategoryAudio,
+        CategoryPhysics,
         CategoryEditor,
         CategoryCustomStart,
 
@@ -236,6 +238,13 @@ namespace oyl
         Gamepad_LeftTrigger,
         Gamepad_RightTrigger,
         Gamepad_LeftStick,
-        Gamepad_RightStick
+        Gamepad_RightStick,
+
+        RigidBody_StaticPlane = 1,
+        RigidBody_Sphere,
+        RigidBody_Box,
+        RigidBody_Capsule,
+        RigidBody_Cylinder,
+        RigidBody_Cone
     };
 }

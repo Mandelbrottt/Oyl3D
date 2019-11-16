@@ -1,25 +1,17 @@
 #pragma once
-#include <Oyl3D.h>
 #include "Team.h"
+#include "CustomEvents.h"
+#include "CustomComponents.h"
 
 using namespace oyl;
 
 /////////// EVENTS ///////////
-enum CannonEventCategory
-{
-	CategoryCannon = CategoryCustomStart
-};
-enum CannonEventType
-{
-	TypeCannonInteract = EventTypeCustomStart
-};
 OYL_EVENT_STRUCT(CannonInteractEvent, TypeCannonInteract, CategoryCannon,
 	             {
 		             entt::entity cannon;
                      //TODO: add player entity
 	             });
 //////////////////////////////
-///
 
 /////////// COMPONENTS ///////////
 enum class CannonStates
@@ -28,20 +20,6 @@ enum class CannonStates
 	waiting,
     beingPushed,
     firingSoon
-};
-struct TimedAction
-{
-	float timer = 0.0f;
-	float timeToWait;
-};
-
-struct MoveableUsingLerp
-{
-	glm::vec3 startPos;
-	glm::vec3 desinationPos;
-    
-	float speed = 0.2;
-	float interpolationParam = 0.0f;
 };
 
 struct Cannon
@@ -62,7 +40,7 @@ struct Cannon
 
 
 /////////// SYSTEMS ///////////
-class CannonSystem : public oyl::ECS::System
+class CannonSystem : public System
 {
 	OYL_CTOR(CannonSystem, System)
     

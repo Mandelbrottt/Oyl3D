@@ -12,14 +12,14 @@ namespace oyl
     bool Win32Input::isKeyPressedImpl(uint keyCode)
     {
         auto window = static_cast<GLFWwindow*>(Application::get().getWindow().getNativeWindow());
-        auto state  = glfwGetKey(window, keyCode);
+        auto state  = glfwGetKey(window, OylToGlfwCodes(keyCode));
         return state == GLFW_PRESS || state == GLFW_REPEAT;
     }
 
     bool Win32Input::isMousePressedImpl(uint button)
     {
         auto window = static_cast<GLFWwindow*>(Application::get().getWindow().getNativeWindow());
-        auto state  = glfwGetMouseButton(window, button);
+        auto state  = glfwGetMouseButton(window, OylToGlfwCodes(button));
         return state == GLFW_PRESS;
     }
 
