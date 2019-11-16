@@ -44,7 +44,7 @@ public:
     bool onEvent(Ref<Event> event) override
     {
 		auto view = registry->view<Cannon, component::Transform, component::SceneObject>();
-        for (Entity e : view)
+        for (entt::entity e : view)
         {
 			switch (event->type)
 			{
@@ -240,9 +240,10 @@ public:
     virtual void onExit()
     {
     }
+    
 };
 
 oyl::Application* oyl::createApplication()
 {
-    return new Game();
+	return new Game();
 }
