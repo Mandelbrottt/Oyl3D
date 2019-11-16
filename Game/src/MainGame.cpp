@@ -75,7 +75,7 @@ public:
 			{
 				Window& window = oyl::Application::get().getWindow();
 
-				auto evt = (oyl::KeyPressedEvent) * event;
+				auto evt = (oyl::KeyPressedEvent)* event;
 
 				switch (evt.keycode)
 				{

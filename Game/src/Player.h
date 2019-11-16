@@ -33,6 +33,7 @@ struct Player
 	PlayerStates state = PlayerStates::idle;
 
 	float speedForce = 2.0f;
+	glm::vec3 moveDirection = glm::vec3(0.0f);
     
 	MoveableUsingLerp adjustingPositionStateData;
 	MoveableUsingLerp pushingStateData;
@@ -55,6 +56,6 @@ class PlayerSystem : public System
 	void changeToJumping(Player* a_player);
 	void changeToFalling(Player* a_player);
 	void changeToAdjustingPosition(Player* a_player, component::Transform a_playerTransform, glm::vec3 a_destinationPos);
-	void changeToCleaning(Player* a_player);
 	void changeToPushing(Player* a_player, component::Transform a_playerTransform, glm::vec3 a_destinationPos);
+	void changeToCleaning(Player* a_player);
 };
