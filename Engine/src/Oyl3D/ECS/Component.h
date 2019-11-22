@@ -16,13 +16,13 @@ namespace oyl
 }
 
 namespace oyl::component
-{
+{ 
     struct SceneObject
     {
         std::string name;
     };
 
-    struct Transform
+    class Transform
     {
     public:        
         glm::vec3 getPosition()  const;
@@ -126,63 +126,146 @@ namespace oyl::component
         Ref<Material> material;
     };
 
-    struct Collider
+    enum class Direction
     {
-        struct ShapeInfo
+        X_AXIS, Y_AXIS, Z_AXIS
+    };
+
+    namespace internal
+    {
+        class BaseCollider
         {
-            OylEnum type;
+        public:
+            glm::vec3 getCenter() const;
 
-            bool isTrigger;
-            
-            union
-            {
-                struct BoxCollider
-                {
-                    glm::vec3 center;
-                    glm::vec3 size;
-                } box;
+            void setCenter(glm::vec3 center);
 
-                struct SphereCollider
-                {
-                    glm::vec3 center;
-                    f32       radius;
-                } sphere;
+            bool isDirty() const;
 
-                enum class Direction
-                {
-                    Y_AXIS, Z_AXIS, X_AXIS
-                };
+        protected:
+            glm::vec3 m_center = glm::vec3(0.0f);
 
-                struct CapsuleCollider
-                {
-                    glm::vec3 center;
-                    f32       radius;
-                    f32       height;
-                    Direction direction;
-                } capsule;
+            bool m_isDirty = true;
 
-                struct CylinderCollider
-                {
-                    glm::vec3 center;
-                    f32       radius;
-                    f32       height;
-                    Direction direction;
-                } cylinder;
-
-                OYL_DEPRECATED("Not fully implemented.")
-                struct MeshCollider
-                {
-                    glm::vec3 center;
-                    Ref<Mesh> mesh;
-                } mesh;
-            };
+            BaseCollider() = default;
         };
 
-        void pushShape(ShapeInfo shape);
-        void eraseShape(u32 index);
-        ShapeInfo& getShape(u32 index);
+        class BoxCollider : public BaseCollider
+        {
+        public:
+            // TODO: Add getWidth() and so on
+            glm::vec3 getSize() const;
 
-        const std::vector<ShapeInfo>& getShapes();
+            void setSize(glm::vec3 size);
+
+        private:
+            glm::vec3 m_size = glm::vec3(1.0f);
+        };
+
+        class SphereCollider : public BaseCollider
+        {
+        public:
+            f32 getRadius() const;
+
+            void setRadius(f32 radius);
+
+        private:
+            f32 m_radius = 0.5f;
+        };
+
+        class CapsuleCollider : public BaseCollider
+        {
+        public:
+            f32       getRadius()    const;
+            f32       getHeight()    const;
+            Direction getDirection() const;
+
+            void setRadius(f32 radius);
+            void setHeight(f32 height);
+            void setDirection(Direction direction);
+
+        private:
+            f32       m_radius = 0.5f;
+            f32       m_height = 1.0f;
+            Direction m_direction = Direction::Y_AXIS;
+        };
+
+        class CylinderCollider : public BaseCollider
+        {
+        public:
+            f32       getRadius()    const;
+            f32       getHeight()    const;
+            Direction getDirection() const;
+
+            void setRadius(f32 radius);
+            void setHeight(f32 height);
+            void setDirection(Direction direction);
+
+        private:
+            f32       m_radius = 0.5f;
+            f32       m_height = 1.0f;
+            Direction m_direction = Direction::Y_AXIS;
+        };
+
+        class OYL_DEPRECATED("Not fully implemented.")
+            MeshCollider : public BaseCollider
+        {
+        public:
+            MeshCollider() = default;
+            ~MeshCollider() = default;
+            MeshCollider(const MeshCollider& other) : m_mesh(other.m_mesh) {}
+
+            const Ref<Mesh>& getMesh() const;
+
+            void setMesh(Ref<Mesh> mesh);
+
+        private:
+            Ref<Mesh> m_mesh = nullptr;
+        };
+    }
+
+    class Collider
+    {
+    public:
+        struct ShapeInfo
+        {
+            ShapeInfo() { m_selfRef = Ref<ShapeInfo>(this, [](ShapeInfo*) {}); }
+            ShapeInfo(OylEnum type) : type(type) { m_selfRef = Ref<ShapeInfo>(this, [](ShapeInfo*) {}); }
+            ShapeInfo(const ShapeInfo& shapeInfo);
+            ~ShapeInfo() {}
+
+            ShapeInfo& operator=(const ShapeInfo& shapeInfo);
+            
+            OylEnum type = None;
+
+            bool isTrigger = false;
+
+            union
+            {
+                internal::BoxCollider      box;
+                internal::SphereCollider   sphere;
+                internal::CapsuleCollider  capsule;
+                internal::CylinderCollider cylinder;
+                internal::MeshCollider     mesh;
+            };
+
+        private:
+            friend oyl::internal::PhysicsSystem;
+            Ref<ShapeInfo> m_selfRef;
+        };
+
+        ShapeInfo& pushShape(ShapeInfo shape);
+        ShapeInfo& pushShape(OylEnum type);
+        void eraseShape(u32 index);
+        
+        ShapeInfo& getShape(u32 index);
+        const ShapeInfo& getShape(u32 index) const;
+
+        std::vector<ShapeInfo>& getShapes();
+        const std::vector<ShapeInfo>& getShapes() const;
+
+        std::size_t size() const;
+        bool empty() const;
 
         std::vector<ShapeInfo>::iterator begin();
         std::vector<ShapeInfo>::iterator end();
@@ -196,28 +279,66 @@ namespace oyl::component
         bool m_isDirty = false;
     };
 
-    struct RigidBody
+    // TODO: Inherit from bullet3 classes
+    class RigidBody
     {
-        entt::entity id = entt::null;
-        
-        OylEnum type = OylEnum::None;
-
-        glm::vec3 velocity     = { 0, 0, 0 };
-        glm::vec3 acceleration = { 0, 0, 0 };
-        glm::vec3 force        = { 0, 0, 0 };
-        glm::vec3 impulse      = { 0, 0, 0 };
-
-        bool isKinematic = false;
-        bool isStatic    = false;
-
-        f32 mass = 1.0f;
-
-        union
+        friend oyl::internal::PhysicsSystem;
+    public:
+        enum Property : u32
         {
-            f32 radius;
-            
-            struct { f32 width, height, length; };
+            IS_KINEMATIC      = 0x00,
+            DETECT_COLLISIONS = 0x01,
+            FREEZE_ROTATION_X = 0x02,
+            FREEZE_ROTATION_Y = 0x04,
+            FREEZE_ROTATION_Z = 0x08,
+            DO_INTERPOLATION  = 0x10,
+            USE_GRAVITY       = 0x20,
         };
+        
+        // TODO: Add getVelocityX() and so on
+        glm::vec3 getVelocity() const;
+        glm::vec3 getAcceleration() const;
+        glm::vec3 getForce() const;
+        glm::vec3 getImpulse() const;
+
+        f32 getMass() const;
+        f32 getFriction() const;
+
+        bool getProperty(Property prop) const;
+        bool getPropertyFlags() const;
+
+        void setVelocity(glm::vec3 velocity);
+        void addVelocity(glm::vec3 velocity);
+
+        void setAcceleration(glm::vec3 acceleration);
+        void addAcceleration(glm::vec3 acceleration);
+
+        void setForce(glm::vec3 force);
+        void addForce(glm::vec3 force);
+
+        void addImpulse(glm::vec3 impulse);
+
+        void setMass(f32 mass);
+        void setFriction(f32 friction);
+
+        void overwritePropertyFlags(u32 flags);
+        void setProperty(Property flag, bool value);
+        void setProperties(u32 flags, bool value);
+
+    private:
+        // TODO: Add more stuff
+        glm::vec3 m_velocity     = { 0, 0, 0 };
+        glm::vec3 m_force        = { 0, 0, 0 };
+        glm::vec3 m_impulse      = { 0, 0, 0 };
+
+        f32 m_mass = 1.0f;
+        f32 m_friction = 0.5f;
+
+        u32 m_propertyFlags = DETECT_COLLISIONS | 
+                              DO_INTERPOLATION | 
+                              USE_GRAVITY;
+
+        bool m_isDirty = true;
     };
 
     struct PlayerCamera
