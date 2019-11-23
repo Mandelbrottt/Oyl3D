@@ -114,7 +114,23 @@ namespace oyl
                     
                     glm::mat4 transform = view.get<Transform>(entity).getMatrixGlobal();
 
-                    Renderer::submit(mr.mesh, mr.material, transform);
+                    if (registry->has<component::Animation>(entity))
+                    {
+                        auto& anim = registry->get<component::Animation>(entity);
+                        if (anim.vao)
+                        {
+                            anim.vao->bind();
+
+                            mr.material->bind();
+                            mr.material->getShader()->setUniform1f("lerpT", glm::mod(anim.elapsed, 1.0f));
+
+                            Renderer::submit(mr.material, anim.vao, mr.mesh->getNumVertices(), transform);
+                        }
+                    }
+                    else
+                    {
+                        Renderer::submit(mr.mesh, mr.material, transform);
+                    }
                 }
             }
         }
@@ -129,16 +145,66 @@ namespace oyl
         void RenderSystem::init() { }
 
         void RenderSystem::shutdown() { }
+
+        // ^^^ Render System ^^^ //
+
+        // vvv Animation System vvv //
         
-        // ^^^ Render System //
+        void AnimationSystem::onEnter() {}
+
+        void AnimationSystem::onExit() {}
+
+        void AnimationSystem::onUpdate(Timestep dt)
+        {
+            auto view = registry->view<component::Animation>();
+            for (auto entity : view)
+            {
+                auto& anim = view.get(entity);
+
+                if (!anim.vao)
+                {
+                    anim.vao = VertexArray::create();
+
+                    anim.vao->addVertexBuffer(anim.poses[0].mesh->m_vbo);
+                    anim.vao->addVertexBuffer(anim.poses[1].mesh->m_vbo);
+                }
+
+                uint lastVal = glm::floor(anim.elapsed);
+                anim.elapsed += dt.getSeconds() * (1.0f / anim.poses[lastVal].duration);
+                uint currVal = glm::floor(anim.elapsed);
+
+                if (lastVal != currVal)
+                {
+                    anim.elapsed = glm::mod(anim.elapsed, (f32) anim.poses.size());
+                    
+                    ++lastVal %= anim.poses.size();
+                    ++currVal %= anim.poses.size();
+                    
+                    auto lastMeshVbo = anim.poses[lastVal].mesh->m_vbo;
+                    auto currMeshVbo = anim.poses[currVal].mesh->m_vbo;
+
+                    anim.vao->unload();
+                    anim.vao->load();
+
+                    anim.vao->addVertexBuffer(lastMeshVbo);
+                    anim.vao->addVertexBuffer(currMeshVbo);
+                }
+            }
+        }
+
+        void AnimationSystem::onGuiRender(Timestep dt) {}
+
+        bool AnimationSystem::onEvent(Ref<Event> event) { return false; }
+
+        // ^^^ Animation System ^^^ //
         
         // vvv Physics System vvv //
         
         void PhysicsSystem::onEnter()
         {
+            listenForEventType(TypePhysicsResetWorld);
+            
             m_fixedTimeStep = 1.0f / 60.0f;
-
-            m_rigidBodies.clear();
 
             m_collisionConfig = UniqueRef<btDefaultCollisionConfiguration>::create();
             m_dispatcher = UniqueRef<btCollisionDispatcher>::create(m_collisionConfig.get());
@@ -149,6 +215,8 @@ namespace oyl
                                                                  m_solver.get(),
                                                                  m_collisionConfig.get());
             
+            m_rigidBodies.clear();
+
             m_world->setGravity(btVector3(0.0f, -10.0f, 0.0f));
         }
 
@@ -272,6 +340,16 @@ namespace oyl
 
         bool PhysicsSystem::onEvent(Ref<Event> event)
         {
+            switch (event->type)
+            {
+                case TypePhysicsResetWorld:
+                {
+                    onExit();
+                    onEnter();
+                    
+                    return true;    
+                }
+            }
             return false;
         }
 
@@ -429,10 +507,10 @@ namespace oyl
             using component::internal::EditorCamera;
             using component::internal::ExcludeFromHierarchy;
 
-            addToEventMask(TypeKeyPressed);
-            addToEventMask(TypeKeyReleased);
-            addToEventMask(TypeMouseMoved);
-            addToEventMask(TypeEditorViewportResized);
+            listenForEventType(TypeKeyPressed);
+            listenForEventType(TypeKeyReleased);
+            listenForEventType(TypeMouseMoved);
+            listenForEventType(TypeEditorViewportResized);
 
             EditorCamera cam;
             cam.camera = Ref<Camera>::create();
@@ -608,6 +686,7 @@ namespace oyl
                 });
 
             Ref<Material> boundMaterial;
+            Ref<Shader> tempShader;
 
             // TODO: Make EditorCamera like PlayerCamera
             auto        camView = registry->view<EditorCamera>();
@@ -618,15 +697,16 @@ namespace oyl
             {
                 Renderable& mr = registry->get<Renderable>(entity);
 
-                if (mr.mesh == nullptr ||
-                    mr.material == nullptr ||
-                    mr.material->getShader() == nullptr)
+                if (mr.mesh == nullptr)
                     continue;
 
                 if (mr.material != boundMaterial)
                 {
+                    if (boundMaterial)
+                        boundMaterial->setShader(tempShader);
+                    
                     boundMaterial = mr.material;
-
+                    
                     mr.material->setUniformMat4("u_view", currentCamera->getViewMatrix());
                     mr.material->setUniformMat4("u_viewProjection", currentCamera->getViewProjectionMatrix());
                     glm::mat4 viewNormal = glm::mat4(currentCamera->getViewMatrix());
@@ -643,6 +723,9 @@ namespace oyl
                     mr.material->setUniform3f("u_pointLight.diffuse", lightProps.diffuse);
                     mr.material->setUniform3f("u_pointLight.specular", lightProps.specular);
 
+                    tempShader = boundMaterial->getShader();
+                    mr.material->setShader(Shader::get(LIGHTING_SHADER_ALIAS));
+                    
                     // TEMPORARY:
                     boundMaterial->bind();
                     boundMaterial->applyUniforms();

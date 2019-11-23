@@ -25,7 +25,7 @@ namespace oyl
         TypeGamepadStickMoved, TypeGamepadTriggerPressed,
         TypeGamepadVibration, // TODO: Rename to GamepadVibrationRequest
         TypeCursorStateRequest,
-        TypePhysicsCollision,
+        TypePhysicsCollision, TypePhysicsResetWorld,
         TypeEditorViewportResized, TypeEditorViewportHandleChanged, TypeEditorEntitySelected,
         EventTypeCustomStart,
 

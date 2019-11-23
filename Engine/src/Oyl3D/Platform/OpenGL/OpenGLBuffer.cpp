@@ -105,7 +105,7 @@ namespace oyl
 
     void OpenGLVertexArray::load()
     {
-        if (m_loaded) return;
+        if (m_loaded) unload();
         m_loaded = true;
 
         glGenVertexArrays(1, &m_rendererID);
@@ -117,6 +117,8 @@ namespace oyl
         m_loaded = false;
 
         glDeleteVertexArrays(1, &m_rendererID);
+        m_vertexBuffers.clear();
+        m_indexBuffer.reset();
     }
 
     void OpenGLVertexArray::bind() const
@@ -136,24 +138,27 @@ namespace oyl
         OYL_ASSERT(!vbo->getLayout().getElements().empty(), "Layout is Empty!");
 
         glBindVertexArray(m_rendererID);
-        vbo->bind();
-
-        // Setup the vertex buffer's layout
-        uint        index  = 0;
-        const auto& layout = vbo->getLayout();
-        for (const auto& element : vbo->getLayout())
-        {
-            glEnableVertexAttribArray(index);
-            glVertexAttribPointer(index,
-                                  element.getElementCount(),
-                                  ShaderDataTypeToGLType(element.type),
-                                  element.normalized ? GL_TRUE : GL_FALSE,
-                                  layout.getStride(),
-                                  (const void*) element.offset);
-            index++;
-        }
 
         m_vertexBuffers.push_back(vbo);
+
+        u32 index  = 0;
+        u32 stride = 0;
+        
+        for (const auto& tVbo : m_vertexBuffers)
+        {
+            tVbo->bind();
+            for (const auto& element : tVbo->getLayout())
+            {
+                glEnableVertexAttribArray(index);
+                glVertexAttribPointer(index,
+                                      element.getElementCount(),
+                                      ShaderDataTypeToGLType(element.type),
+                                      element.normalized ? GL_TRUE : GL_FALSE,
+                                      tVbo->getLayout().getStride(),
+                                      (const void*) element.offset);
+                index++;
+            }
+        }
         glBindVertexArray(GL_NONE);
     }
 

@@ -26,6 +26,19 @@ namespace oyl::internal
         void shutdown();
     };
 
+    class AnimationSystem : public System
+    {
+        OYL_CTOR(AnimationSystem, System)
+
+        virtual void onEnter() override;
+        virtual void onExit() override;
+
+        virtual void onUpdate(Timestep dt) override;
+        virtual void onGuiRender(Timestep dt) override;
+
+        virtual bool onEvent(Ref<Event> event) override;
+    };
+    
     class PhysicsSystem : public System
     {
         OYL_CTOR(PhysicsSystem, System)

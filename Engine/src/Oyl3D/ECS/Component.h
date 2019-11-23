@@ -5,6 +5,7 @@ namespace oyl
     class Mesh;
     class Material;
     class Camera;
+    class VertexArray;
 
     namespace internal
     {
@@ -122,10 +123,25 @@ namespace oyl::component
 
     struct Renderable
     {
-        Ref<Mesh>     mesh;
-        Ref<Material> material;
+        Ref<Mesh>      mesh;
+        Ref<Material>  material;
     };
 
+    struct Animation
+    {
+        struct KeyPose
+        {
+            Ref<Mesh> mesh;
+            f32       duration;
+        };
+
+        std::vector<KeyPose> poses;
+
+        f32 elapsed;
+
+        Ref<VertexArray> vao;
+    };
+    
     struct RigidBody
     {
         entt::entity id = entt::null;

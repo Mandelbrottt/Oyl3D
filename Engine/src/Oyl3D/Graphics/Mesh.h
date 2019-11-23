@@ -9,14 +9,18 @@ namespace oyl
 {
     class VertexBuffer;
     class VertexArray;
+
+    namespace internal
+    {
+        class AnimationSystem;    
+    }
     
     class Mesh
     {
         friend class Application;
+        friend internal::AnimationSystem;
 
-        struct _Mesh
-        {
-        };
+        struct _Mesh {};
 
     public:
         struct FileInfo;
@@ -32,8 +36,8 @@ namespace oyl
         static Ref<Mesh> create(const std::string& filePath);
 
         static const Ref<Mesh>& cache(const std::string& filePath,
-                                             const CacheAlias& alias = "",
-                                             bool overwrite = false);
+                                      const CacheAlias&  alias = "",
+                                      bool               overwrite = false);
 
         static void discard(const CacheAlias& alias);
 

@@ -10,8 +10,9 @@ namespace oyl
 {
     namespace internal
     {
-        class PhysicsSystem;
-        class TransformUpdateSystem;
+        //class PhysicsSystem;
+        //class TransformUpdateSystem;
+        //class SystemsLayer;
         class GuiLayer;
     }
 
@@ -51,7 +52,8 @@ namespace oyl
         void saveSceneBackupToFile();
 
         static WeakRef<Scene> s_current;
-        static Ref<internal::GuiLayer> s_guiLayer;
+        //static Ref<internal::GuiLayer> s_guiLayer;
+        //static Ref<internal::SystemsLayer> s_systemsLayer;
 
     private:
         // TODO: Put in internal namespace
@@ -59,8 +61,8 @@ namespace oyl
 
         Ref<entt::registry> m_registry;
 
-        Ref<internal::PhysicsSystem> m_physicsSystem;
-        Ref<internal::TransformUpdateSystem> m_transformUpdateSystem;
+        //Ref<internal::PhysicsSystem> m_physicsSystem;
+        //Ref<internal::TransformUpdateSystem> m_transformUpdateSystem;
 
     };
 }
