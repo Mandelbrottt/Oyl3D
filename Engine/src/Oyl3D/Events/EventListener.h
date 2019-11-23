@@ -11,7 +11,7 @@ namespace oyl
         static const u32 MAX_EVENT_TYPES = 256;
         static const u32 MAX_CATEGORIES  = 256;
     public:
-        using Priority = u32;
+        using Priority     = u32;
         using EventMask    = std::bitset<MAX_EVENT_TYPES>;
         using CategoryMask = std::bitset<MAX_CATEGORIES>;
 
@@ -26,7 +26,6 @@ namespace oyl
         virtual const EventMask&    getEventMask() const    = 0;
         virtual const CategoryMask& getCategoryMask() const = 0;
 
-        // TODO: Change functions to listenForEventType() and listenForEventCategory()
         OYL_DEPRECATED("Use listenForEventType() instead.")
         virtual void addToEventMask(OylEnum eventType) = 0;
         OYL_DEPRECATED("Use listenForEventCategory() instead.")

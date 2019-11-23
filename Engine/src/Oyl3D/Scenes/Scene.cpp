@@ -28,9 +28,13 @@ namespace oyl
     {
         saveSceneBackupToFile();
 
+        m_physicsSystem->onExit();
+        m_transformUpdateSystem->onExit();
+
         // Reset the registry then reset the actual Ref
         m_registry->reset();
         m_registry.reset();
+
     }
 
     void Scene::onUpdate(Timestep dt)
@@ -199,7 +203,8 @@ namespace oyl
                 auto& so = view.get<SceneObject>(entity);
                 auto& p  = view.get<Parent>(entity);
 
-                sceneJson[so.name]["Parent"]["Name"] = m_registry->get<SceneObject>(p.parent).name;
+                if (m_registry->valid(p.parent))
+                    sceneJson[so.name]["Parent"]["Name"] = m_registry->get<SceneObject>(p.parent).name;
             }
         }
         

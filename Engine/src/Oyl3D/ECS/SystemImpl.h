@@ -38,10 +38,17 @@ namespace oyl::internal
 
         virtual bool onEvent(Ref<Event> event) override;
 
+    private:
+        OYL_DEPRECATED("xd")
         void addRigidBody(entt::entity entity,
                           const component::Transform& transformComponent,
                           const component::RigidBody& bodyComponent);
 
+        void processIncomingRigidBody(entt::entity entity,
+                                      const component::Transform& transformComponent,
+                                      const component::Collider&  colliderComponent,
+                                      const component::RigidBody& rigidBodyComponent);
+        
     private:
         Timestep m_fixedTimeStep;
 
@@ -51,6 +58,14 @@ namespace oyl::internal
 
             Ref<btCollisionShape> shape;
             Ref<btMotionState>    motion;
+
+            struct ChildShapeInfo
+            {
+                WeakRef<component::Collider::ShapeInfo> shapeInfo;
+                Ref<btCollisionShape>                   btShape;
+            };
+
+            std::vector<ChildShapeInfo> children;
         };
 
         std::unordered_map<entt::entity, Ref<RigidBodyInfo>> m_rigidBodies;

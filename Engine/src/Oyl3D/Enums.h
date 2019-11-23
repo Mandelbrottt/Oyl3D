@@ -240,11 +240,11 @@ namespace oyl
         Gamepad_LeftStick,
         Gamepad_RightStick,
 
-        RigidBody_StaticPlane = 1,
-        RigidBody_Sphere,
-        RigidBody_Box,
-        RigidBody_Capsule,
-        RigidBody_Cylinder,
-        RigidBody_Cone
+        Collider_StaticPlane = 1,
+        Collider_Box,
+        Collider_Sphere,
+        Collider_Capsule,
+        Collider_Cylinder,
+        Collider_Mesh
     };
 }

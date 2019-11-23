@@ -208,6 +208,7 @@ namespace oyl
         
         m_currentScene->initDefaultSystems();
 
+        m_currentScene->Scene::onEnter();
         m_currentScene->onEnter();
         
         m_currentScene->loadSceneFromFile();

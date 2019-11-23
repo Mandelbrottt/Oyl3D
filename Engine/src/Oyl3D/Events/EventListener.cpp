@@ -7,9 +7,7 @@
 namespace oyl
 {
     EventListener::EventListener()
-        : m_dispatcher(nullptr)
-    {
-    }
+        : m_dispatcher(nullptr) { }
 
     EventListener::~EventListener()
     {

@@ -11,8 +11,8 @@ namespace oyl::internal
         OYL_ASSERT(!s_init, "GamepadVibration should only be initalized once!");
         s_init = true;
 
-        addToEventMask(TypeGamepadVibration);
-        addToCategoryMask(CategoryGamepadVibration);
+        listenForEventType(TypeGamepadVibration);
+        listenForEventCategory(CategoryGamepadVibration);
     }
 
     Ref<GamepadListener> GamepadListener::create()
