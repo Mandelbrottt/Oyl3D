@@ -19,6 +19,7 @@
 #include "Platform/Platform.h"
 
 #include "Scenes/Scene.h"
+#include "Scenes/SystemsLayer.h"
 
 #include "Rendering/Renderer.h"
 
@@ -76,6 +77,12 @@ namespace oyl
                 { FragmentShader, ENGINE_RES + TEXTURE_SHADER_FRAGMENT_PATH },
             }, TEXTURE_SHADER_ALIAS);
 
+        Shader::cache(
+            {
+                { VertexShader, ENGINE_RES + "shaders/morphTargetLighting.vert" },
+                { FragmentShader, ENGINE_RES + LIGHTING_SHADER_FRAGMENT_PATH },
+            }, "animation");
+
         Mesh::cache(ENGINE_RES + CUBE_MESH_PATH, CUBE_MESH_ALIAS);
         Mesh::cache(ENGINE_RES + MONKEY_MESH_PATH, MONKEY_MESH_ALIAS);
 
@@ -115,6 +122,8 @@ namespace oyl
         m_guiLayer->onExit();
         m_guiLayer->shutdown();
     #endif
+
+        m_systemsLayer->onExit();
         
         m_renderSystem->onExit();
         m_renderSystem->shutdown();
@@ -171,6 +180,8 @@ namespace oyl
         #if !defined(OYL_DISTRIBUTION)
             m_guiLayer->onExit();
         #endif
+
+            m_systemsLayer->onExit();
             
             m_renderSystem->onExit();
         }
@@ -181,8 +192,27 @@ namespace oyl
 
         Scene::s_current = m_currentScene;
 
+        m_renderSystem->setDispatcher(m_dispatcher);
         m_renderSystem->setRegistry(m_currentScene->m_registry);
         m_renderSystem->onEnter();
+
+        m_dispatcher->registerListener(m_renderSystem);
+
+        if (!m_systemsLayer)
+        {
+            m_systemsLayer = internal::SystemsLayer::create();
+            
+            m_systemsLayer->setDispatcher(m_dispatcher);
+            m_systemsLayer->setRegistry(m_currentScene->m_registry);
+            m_systemsLayer->onEnter();
+
+            m_dispatcher->registerListener(m_systemsLayer);
+        }
+        else
+        {
+            m_systemsLayer->setRegistry(m_currentScene->m_registry);
+            m_systemsLayer->onEnter();
+        }
 
     #if !defined(OYL_DISTRIBUTION)
         if (!m_guiLayer)
@@ -205,8 +235,6 @@ namespace oyl
 
         m_dispatcher->registerListener(m_currentScene);
         m_currentScene->setDispatcher(m_dispatcher);
-        
-        m_currentScene->initDefaultSystems();
 
         m_currentScene->Scene::onEnter();
         m_currentScene->onEnter();
@@ -230,12 +258,18 @@ namespace oyl
             #if !defined(OYL_DISTRIBUTION)
                 if (m_guiLayer->doGameUpdate())
                 {
+                    m_systemsLayer->onUpdateSystems(timestep);
+                    m_systemsLayer->onUpdate(timestep);
+
                     m_currentScene->onUpdate(timestep);
                 }
                 
                 m_guiLayer->onUpdateSystems(timestep);
                 m_guiLayer->onUpdate(timestep);
             #else
+                m_systemsLayer->onUpdateSystems(timestep);
+                m_systemsLayer->onUpdate(timestep);
+
                 m_currentScene->onUpdate(timestep);
             #endif
 

@@ -16,6 +16,7 @@ namespace oyl
 
         OYL_DEPRECATED("Avoid working with primitives.")
         static void submit(const Ref<Shader>& shader, const Ref<VertexArray>& vao, glm::mat4 transform = glm::mat4(1.0f));
+        static void submit(const Ref<Material>& material, const Ref<VertexArray>& vao, u32 count, glm::mat4 transform = glm::mat4(1.0f));
         static void submit(const Ref<Mesh>& mesh, const Ref<Material>& material, glm::mat4 transform = glm::mat4(1.0f));
 
         inline static OylEnum getAPI() { return RendererAPI::getAPI(); }

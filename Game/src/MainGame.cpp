@@ -22,6 +22,9 @@ public:
         
         Material::cache(textureShader, uv, "cubeMat");
 
+        // auto animShader = Shader::get("animation");
+        // Material::cache(animShader, uv, "animationMat");
+
         {
             auto e = registry->create();
             registry->assign<component::Transform>(e);
@@ -31,6 +34,40 @@ public:
             auto& so = registry->assign<component::SceneObject>(e);
             so.name = "Player Camera";
         }
+
+        // TEMPORARY:
+        // {
+        //     auto e = registry->create();
+            
+        //     auto& t = registry->assign<component::Transform>(e);
+        //     t.setPosition(glm::vec3(3.0f, 3.0f, 3.0f));
+
+        //     auto& so = registry->assign<component::SceneObject>(e);
+        //     so.name = "Animation Object";
+
+        //     auto& mr = registry->assign<component::Renderable>(e);
+        //     mr.mesh = Mesh::cache("res/assets/models/agony/agony1_000001.obj");
+        //     mr.material = Material::get("animationMat");
+
+        //     char filename[512];
+
+        //     std::string s;
+        //     s.reserve(512);
+            
+        //     auto& an = registry->assign<component::Animation>(e);
+        //     for (int i = 0; i < 110; i++)
+        //     {
+        //         component::Animation::KeyPose kp;
+        //         kp.duration = 1.0f / 30.0f;
+        //         //kp.duration = 1.0f;
+
+        //         sprintf(filename, "res/assets/models/agony/agony1_%06d.obj", i + 1);
+        //         s.assign(filename);
+                
+        //         kp.mesh = Mesh::cache(s);
+        //         an.poses.push_back(kp);
+        //     }
+        // }
     }
 
     bool onEvent(Ref<Event> event) override

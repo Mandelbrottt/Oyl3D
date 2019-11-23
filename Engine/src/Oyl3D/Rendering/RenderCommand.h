@@ -22,6 +22,11 @@ namespace oyl
             s_rendererAPI->clear();
         }
 
+        inline static void drawArrays(const Ref<VertexArray>& vao, u32 count)
+        {
+            s_rendererAPI->drawArrays(vao, count);
+        }
+
         inline static void drawIndexed(const Ref<VertexArray>& vao)
         {
             s_rendererAPI->drawIndexed(vao);
