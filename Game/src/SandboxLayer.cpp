@@ -29,14 +29,16 @@ void SandboxLayer::onEnter()
         auto& so = registry->assign<component::SceneObject>(e);
         so.name = "Container";
 
-        auto& rb = registry->assign<component::RigidBody>(e);
-        rb.mass = 1.0f;
-        rb.type = RigidBody_Box;
-        rb.width =  1.0f;
-        rb.height = 1.0f;
-        rb.length = 1.0f;
-
         registry->assign<entt::tag<"Container"_hs>>(e);
+
+        auto& rb = registry->assign<component::RigidBody>(e);
+        rb.setMass(1.0f);
+        rb.setFriction(1.0f);
+
+        auto& cl = registry->assign<component::Collider>(e);
+
+        auto& shi = cl.pushShape(Collider_Box);
+        shi.box.setSize({ 1.0f, 1.0f, 1.0f });
 
         entt::entity e2 = registry->create();
         registry->assign<component::Renderable>(e2, mr);
@@ -67,11 +69,12 @@ void SandboxLayer::onEnter()
         so.name = "Plane";
 
         auto& rb = registry->assign<component::RigidBody>(e);
-        rb.type = RigidBody_Box;
-        rb.mass = 0;
-        rb.width = 20;
-        rb.height = 0.1f;
-        rb.length = 20;
+        rb.setMass(0.0f);
+
+        auto& cl = registry->assign<component::Collider>(e);
+
+        auto& shi = cl.pushShape(Collider_Box);
+        shi.box.setSize({ 20.0f, 0.1f, 20.0f });
     }
     {
         component::Renderable mr;
@@ -87,11 +90,14 @@ void SandboxLayer::onEnter()
 
         auto& so = registry->assign<component::SceneObject>(e);
         so.name = "Sphere 1";
-
+        
         auto& rb = registry->assign<component::RigidBody>(e);
-        rb.type   = RigidBody_Sphere;
-        rb.radius = 0.5f;
-        rb.mass   = 1.0f;
+        rb.setMass(1.0f);
+
+        auto& cl = registry->assign<component::Collider>(e);
+
+        auto& shi = cl.pushShape(Collider_Sphere);
+        shi.sphere.setRadius(0.5f);
     }
     {
         component::Renderable mr;
@@ -109,9 +115,12 @@ void SandboxLayer::onEnter()
         so.name = "Sphere 2";
 
         auto& rb = registry->assign<component::RigidBody>(e);
-        rb.type = RigidBody_Sphere;
-        rb.radius = 0.5f;
-        rb.mass = 1.0f;
+        rb.setMass(1.0f);
+
+        auto& cl = registry->assign<component::Collider>(e);
+
+        auto& shi = cl.pushShape(Collider_Sphere);
+        shi.sphere.setRadius(0.5f);
     }
 }
 
@@ -137,9 +146,9 @@ void SandboxLayer::onUpdate(Timestep dt)
     if (Input::isKeyPressed(Key_D))
         desiredVel = tr.getRight() * forceSpeed;
 
-    glm::vec3 velChange = desiredVel - rb.velocity;
+    glm::vec3 velChange = desiredVel - rb.getVelocity();
     velChange.y = 0.01f;
-    rb.impulse = rb.mass * velChange;
+    rb.addImpulse(rb.getMass() * velChange);
     
 }
 
