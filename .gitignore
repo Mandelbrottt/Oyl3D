@@ -10,3 +10,4 @@ bin-int/
 *.user
 *.ini
 *.oylscene.backup
+/Game/res/assets/models/agony

@@ -17,6 +17,7 @@ namespace oyl
         class RenderSystem;  
         class ApplicationListener;
         class GamepadListener;
+        class SystemsLayer;
         class GuiLayer;
     }
 
@@ -47,9 +48,11 @@ namespace oyl
         Ref<FrameBuffer> m_mainBuffer;
         
     #if !defined(OYL_DISTRIBUTION)
-        Ref<internal::GuiLayer>    m_guiLayer;
+        Ref<internal::GuiLayer> m_guiLayer;
     #endif
 
+        Ref<internal::SystemsLayer> m_systemsLayer;
+        // TODO: Put in systems layer
         Ref<internal::RenderSystem> m_renderSystem;
 
         float m_lastFrameTime = 0;

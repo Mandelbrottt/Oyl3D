@@ -936,8 +936,9 @@ namespace oyl::internal
                     // HACK: Send as event
                     // TODO: Store backup registry in scene?
                     *Scene::current()->m_registry = m_registryRestore.clone();
-                    Scene::current()->m_physicsSystem->onExit();
-                    Scene::current()->m_physicsSystem->onEnter();
+
+                    postEvent(Event::create(PhysicsResetWorldEvent{}));
+                    
                     auto view = registry->view<component::Transform>();
 
                     for (auto entity : view)

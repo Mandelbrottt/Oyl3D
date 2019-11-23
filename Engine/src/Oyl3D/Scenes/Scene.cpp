@@ -6,30 +6,22 @@
 
 #include "Events/EventDispatcher.h"
 
+#include "SystemsLayer.h"
+
 namespace oyl
 {
     WeakRef<Scene> Scene::s_current = {};
-    Ref<internal::GuiLayer> Scene::s_guiLayer = {};
-
+    
     Scene::Scene()
-        : m_registry(Ref<entt::registry>::create()),
-          m_physicsSystem(internal::PhysicsSystem::create()),
-          m_transformUpdateSystem(internal::TransformUpdateSystem::create()) {}
+        : m_registry(Ref<entt::registry>::create()) {}
 
     Scene::~Scene() {}
 
-    void Scene::onEnter()
-    {
-        m_physicsSystem->onEnter();
-        m_transformUpdateSystem->onEnter();
-    }
+    void Scene::onEnter() {}
 
     void Scene::onExit()
     {
         saveSceneBackupToFile();
-
-        m_physicsSystem->onExit();
-        m_transformUpdateSystem->onExit();
 
         // Reset the registry then reset the actual Ref
         m_registry->reset();
@@ -44,9 +36,6 @@ namespace oyl
             layer->onUpdateSystems(dt);
             layer->onUpdate(dt);
         }
-
-        m_physicsSystem->onUpdate(dt);
-        m_transformUpdateSystem->onUpdate(dt);
     }
 
     bool Scene::onEvent(Ref<Event> event)
@@ -61,18 +50,6 @@ namespace oyl
             layer->onGuiRenderSystems(dt);
             layer->onGuiRender(dt);
         }
-
-        m_physicsSystem->onGuiRender(dt);
-        m_transformUpdateSystem->onGuiRender(dt);
-    }
-
-    void Scene::initDefaultSystems()
-    {
-        m_physicsSystem->setRegistry(m_registry);
-        m_physicsSystem->setDispatcher(m_dispatcher);
-
-        m_transformUpdateSystem->setRegistry(m_registry);
-        m_transformUpdateSystem->setDispatcher(m_dispatcher);
     }
 
     void Scene::pushLayer(Ref<Layer> layer)
@@ -111,6 +88,7 @@ namespace oyl
         m_layerStack.popOverlay(overlay);
     }
 
+    // TODO: Move into helper functions
     void Scene::loadSceneFromFile()
     {
         using component::SceneObject;
