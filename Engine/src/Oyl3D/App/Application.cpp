@@ -23,6 +23,8 @@
 
 #include "Rendering/Renderer.h"
 
+#include "Utils/SceneToFile.h"
+
 #include <imgui.h>
 
 namespace oyl
@@ -239,7 +241,8 @@ namespace oyl
         m_currentScene->Scene::onEnter();
         m_currentScene->onEnter();
         
-        m_currentScene->loadSceneFromFile();
+        internal::loadSceneFromFile(*m_currentScene);
+        
     }
 
     void Application::run()

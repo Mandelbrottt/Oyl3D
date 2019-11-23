@@ -8,6 +8,8 @@
 
 #include "Graphics/Camera.h"
 
+#include "Utils/SceneToFile.h"
+
 #include <examples/imgui_impl_glfw.h>
 #include <examples/imgui_impl_opengl3.h>
 
@@ -294,7 +296,7 @@ namespace oyl::internal
             {
                 if (ImGui::MenuItem("Save##MainMenuSave", "Ctrl+S", false, m_editorOverrideUpdate))
                 {
-                    Scene::current()->saveSceneToFile();   
+                    saveSceneToFile(*Scene::current());
                 }
                 showReloadDialogue = 
                     ImGui::MenuItem("Reload##MainMenuReload", "Ctrl+Shift+S", false, m_editorOverrideUpdate);
@@ -331,7 +333,7 @@ namespace oyl::internal
                     ImGui::Indent(ImGui::GetWindowContentRegionWidth() / 2 - 55);
                     if (ImGui::Button("Reload##ReloadConfirmationReload"))
                     {
-                        Scene::current()->loadSceneFromFile();
+                        loadSceneFromFile(*Scene::current());
                         m_currentEntity = entt::null;
                         showReloadDialogue = false;
                     }
