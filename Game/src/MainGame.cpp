@@ -1,17 +1,16 @@
 #include <Oyl3D.h>
 
 #include "SandboxLayer.h"
-#include "Cannon.h"
-#include "Player.h"
+#include "PlayerInteractionValidation.h"
 
 using namespace oyl;
 
 class MainLayer : public Layer
 {
 public:
-	OYL_CTOR(MainLayer, Layer)
+	OYL_CTOR(MainLayer, oyl::Layer)
 
-		bool isCameraActive = false;
+	bool isCameraActive = false;
 
 	void onEnter() override
 	{
@@ -20,6 +19,7 @@ public:
 
 		scheduleSystemUpdate<PlayerSystem>();
 		scheduleSystemUpdate<CannonSystem>();
+		scheduleSystemUpdate<PlayerInteractionValidationSystem>();
 
 		auto lightShader = Shader::get(LIGHTING_SHADER_ALIAS);
 
@@ -89,7 +89,7 @@ public:
 				{
 					component::Transform& cannonTransform = cannonView.get<component::Transform>(e);
 
-					if (cannonView.get<component::SceneObject>(e).name == "BlueCannon" && cannonView.get<Cannon>(e).state == CannonStates::doingNothing)
+					if (cannonView.get<component::SceneObject>(e).name == "BlueCannon" && cannonView.get<Cannon>(e).state == CannonState::doingNothing)
 					{
 						cannonTransform.setPosition(cannonTransform.getPosition() += glm::vec3(-1.0f, 0.0f, 0.0f));
 					}
@@ -104,7 +104,7 @@ public:
 				{
 					component::Transform& cannonTransform = cannonView.get<component::Transform>(e);
 
-					if (cannonView.get<component::SceneObject>(e).name == "BlueCannon" && cannonView.get<Cannon>(e).state == CannonStates::doingNothing)
+					if (cannonView.get<component::SceneObject>(e).name == "BlueCannon" && cannonView.get<Cannon>(e).state == CannonState::doingNothing)
 					{
 						cannonTransform.setPosition(cannonTransform.getPosition() += glm::vec3(1.0f, 0.0f, 0.0f));
 					}
@@ -114,16 +114,13 @@ public:
 			}
 			case oyl::Key_E:
 			{
-				auto cannonView = registry->view<Cannon, component::Transform, component::SceneObject>();
+				auto playerView = registry->view<Player>();
 
-				for (entt::entity e : cannonView)
+				for (entt::entity playerEntity : playerView)
 				{
-					if (cannonView.get<component::SceneObject>(e).name == "BlueCannon" && cannonView.get<Cannon>(e).state == CannonStates::doingNothing)
-					{
-						CannonInteractEvent cannonEvent;
-						cannonEvent.cannon = e;
-						postEvent(Event::create(cannonEvent));
-					}
+					PlayerInteractionRequestEvent playerInteractionRequest;
+					playerInteractionRequest.player = playerEntity;
+					postEvent(Event::create(playerInteractionRequest));
 				}
 
 				break;
@@ -132,11 +129,11 @@ public:
 			{
 				auto playerView = registry->view<Player, component::Transform, component::RigidBody, component::SceneObject>();
 
-				for (entt::entity e : playerView)
+				for (entt::entity playerEntity : playerView)
 				{
 					PlayerMoveEvent playerMove;
-					playerMove.player = e;
-					playerMove.direction = playerView.get<component::Transform>(e).getForward();
+					playerMove.player = &registry->get<Player>(playerEntity);
+					playerMove.direction = playerView.get<component::Transform>(playerEntity).getForward();
 					postEvent(Event::create(playerMove));
 				}
 
@@ -146,11 +143,11 @@ public:
 			{
 				auto playerView = registry->view<Player, component::Transform, component::RigidBody, component::SceneObject>();
 
-				for (entt::entity e : playerView)
+				for (entt::entity playerEntity : playerView)
 				{
 					PlayerMoveEvent playerMove;
-					playerMove.player = e;
-					playerMove.direction = -playerView.get<component::Transform>(e).getRight();
+					playerMove.player = &registry->get<Player>(playerEntity);
+					playerMove.direction = -playerView.get<component::Transform>(playerEntity).getRight();
 					postEvent(Event::create(playerMove));
 				}
 
@@ -160,11 +157,11 @@ public:
 			{
 				auto playerView = registry->view<Player, component::Transform, component::RigidBody, component::SceneObject>();
 
-				for (entt::entity e : playerView)
+				for (entt::entity playerEntity : playerView)
 				{
 					PlayerMoveEvent playerMove;
-					playerMove.player = e;
-					playerMove.direction = -playerView.get<component::Transform>(e).getForward();
+					playerMove.player = &registry->get<Player>(playerEntity);
+					playerMove.direction = -playerView.get<component::Transform>(playerEntity).getForward();
 					postEvent(Event::create(playerMove));
 				}
 
@@ -174,11 +171,11 @@ public:
 			{
 				auto playerView = registry->view<Player, component::Transform, component::RigidBody, component::SceneObject>();
 
-				for (entt::entity e : playerView)
+				for (entt::entity playerEntity : playerView)
 				{
 					PlayerMoveEvent playerMove;
-					playerMove.player = e;
-					playerMove.direction = playerView.get<component::Transform>(e).getRight();
+					playerMove.player = &registry->get<Player>(playerEntity);
+					playerMove.direction = playerView.get<component::Transform>(playerEntity).getRight();
 					postEvent(Event::create(playerMove));
 				}
 
@@ -216,10 +213,10 @@ public:
 	}
 };
 
-class MainScene : public Scene
+class MainScene : public oyl::Scene
 {
 public:
-	OYL_CTOR(MainScene, Scene)
+	OYL_CTOR(MainScene, oyl::Scene)
 
 		virtual void onEnter() override
 	{

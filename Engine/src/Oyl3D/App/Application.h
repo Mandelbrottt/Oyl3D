@@ -10,7 +10,6 @@
 namespace oyl
 {
     class EventListener;
-    class Scene;
     class GuiLayer;
     
     namespace internal

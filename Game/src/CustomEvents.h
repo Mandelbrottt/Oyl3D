@@ -1,14 +1,46 @@
 #pragma once
 #include "Oyl3D.h"
+#include "CustomComponents.h"
 
 enum CustomEventsCategories
 {
-	CategoryCannon = oyl::CategoryCustomStart,
-	CategoryPlayer
+	CategoryPlayer = oyl::CategoryCustomStart,
+	CategoryCannon
 };
 enum CustomEventTypes
 {
-	TypeCannonInteract = oyl::EventTypeCustomStart,
-    TypePlayerInteract,
-    TypePlayerMove
+    TypePlayerMove = oyl::EventTypeCustomStart,
+    TypePlayerInteractionRequest,
+	TypePlayerStateChange,
+    TypeCannonStateChange,
+    TypeLoadCannon
 };
+
+
+OYL_EVENT_STRUCT(PlayerMoveEvent, TypePlayerMove, CategoryPlayer,
+	{
+		Player*   player;
+		glm::vec3 direction;
+	});
+
+OYL_EVENT_STRUCT(PlayerInteractionRequestEvent, TypePlayerInteractionRequest, CategoryPlayer,
+	{
+		entt::entity player;
+	});
+
+OYL_EVENT_STRUCT(PlayerStateChangeEvent, TypePlayerStateChange, CategoryPlayer,
+	{
+		Player*     player;
+        PlayerState newState;
+	});
+
+OYL_EVENT_STRUCT(CannonStateChangeEvent, TypeCannonStateChange, CategoryCannon,
+	{
+		Cannon*      cannon;
+		CannonState  newState;
+	});
+
+OYL_EVENT_STRUCT(LoadCannonEvent, TypeLoadCannon, CategoryCannon,
+	{
+		Cannon* cannon;
+	});

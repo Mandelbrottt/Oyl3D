@@ -1,10 +1,5 @@
 #include "Player.h"
 
-glm::vec3 myLerp(const glm::vec3& v1, const glm::vec3& v2, float u)
-{
-	return (1.0f - u) * v1 + v2 * u;
-}
-
 void PlayerSystem::onEnter()
 {
 	addToCategoryMask(CategoryPlayer);
@@ -26,16 +21,16 @@ void PlayerSystem::onUpdate(Timestep dt)
 
 		switch (player.state)
 		{
-		    case PlayerStates::idle:
+		    case PlayerState::idle:
 		    {
 				playerRB.impulse = glm::vec3(0.0f);
 				break;
 		    }
 		    
-		    case PlayerStates::walking:
+		    case PlayerState::walking:
 			{
 				glm::vec3 deltaVelocity = (player.moveDirection * player.speedForce) - playerRB.velocity;
-				playerRB.impulse = playerRB.mass * deltaVelocity * static_cast<float>(dt);
+				playerRB.impulse        = playerRB.mass * deltaVelocity * static_cast<float>(dt);
 
 				if (player.moveDirection == glm::vec3(0.0f))
 					changeToIdle(&player);
@@ -43,50 +38,48 @@ void PlayerSystem::onUpdate(Timestep dt)
 				break;
 			}
 
-			case PlayerStates::jumping:
+			case PlayerState::jumping:
 			{
 		        
 				break;
 			}
 
-			case PlayerStates::falling:
+			case PlayerState::falling:
 			{
 
 				break;
 			}
-		    
-		    case PlayerStates::adjustingPosition:
+
+		    case PlayerState::pushing:
 		    {
-			    player.adjustingPositionStateData.interpolationParam = std::min(
-					player.adjustingPositionStateData.interpolationParam + player.adjustingPositionStateData.speed * dt,
-				    1.0f);
+				if (player.adjustingPositionStateData.interpolationParam < 1.0f)
+				{
+					player.adjustingPositionStateData.interpolationParam = std::min(
+						player.adjustingPositionStateData.interpolationParam + player.adjustingPositionStateData.speed * dt,
+						1.0f);
 
-			    playerTransform.setPosition(glm::mix(player.adjustingPositionStateData.startPos, 
-					                                 player.adjustingPositionStateData.desinationPos, 
-					                                 player.adjustingPositionStateData.interpolationParam));
+					playerTransform.setPosition(glm::mix(player.adjustingPositionStateData.startPos,
+						player.adjustingPositionStateData.desinationPos,
+						player.adjustingPositionStateData.interpolationParam));
+				}
+				else //adjustingposition interpolation parameter >= 1.0f AKA player is done adjusting their position
+				{
+				    //the player is pushing
+					player.pushingStateData.interpolationParam = std::min(player.pushingStateData.interpolationParam + player.pushingStateData.speed * dt,
+						1.0f);
 
-			    if (player.adjustingPositionStateData.interpolationParam >= 1.0f)
-				    changeToPushing(&player, playerTransform, glm::vec3(10.0f, 0.0f, 0.0f));
+					playerTransform.setPosition(glm::mix(player.pushingStateData.startPos,
+						player.pushingStateData.desinationPos,
+						player.pushingStateData.interpolationParam));
+
+					if (player.pushingStateData.interpolationParam >= 1.0f)
+						changeToIdle(&player);
+				}
 
 				break;
 		    }
 
-		    case PlayerStates::pushing:
-		    {
-			    player.pushingStateData.interpolationParam = std::min(player.pushingStateData.interpolationParam + player.pushingStateData.speed * dt,
-				    1.0f);
-
-			    playerTransform.setPosition(glm::mix(player.pushingStateData.startPos, 
-					                                 player.pushingStateData.desinationPos, 
-					                                 player.pushingStateData.interpolationParam));
-
-			    if (player.pushingStateData.interpolationParam >= 1.0f)
-				    changeToIdle(&player);
-
-				break;
-		    }
-
-			case PlayerStates::cleaning:
+			case PlayerState::cleaning:
 			{
 		        
 				break;
@@ -102,35 +95,27 @@ bool PlayerSystem::onEvent(Ref<Event> event)
 {
 	switch (event->type)
 	{
-		case TypePlayerInteract:
+		case TypePlayerStateChange:
 		{
-			auto evt = (PlayerInteractEvent)* event;
-		    
-	        auto playerView = registry->view<Player, component::Transform>();
-			for (auto& entity : playerView)
+			auto evt = (PlayerStateChangeEvent)* event;
+			switch (evt.newState)
 			{
-				if (evt.player == entity)
-				{
-
-				}
+			    case PlayerState::pushing:
+			    {
+					changeToPushing(evt.player);
+				    break;
+			    }
 			}
+
+			break;
 		}
+	    
 		case TypePlayerMove:
 		{
 			auto evt = (PlayerMoveEvent)* event;
-
-			auto playerView = registry->view<Player, component::Transform, component::RigidBody>();
-		    for (auto& entity : playerView)
-		    {
-				auto& player = playerView.get<Player>(entity);
-				auto& playerRB = playerView.get<component::RigidBody>(entity);
-		        
-		        if (evt.player == entity)
-		        {
-					player.moveDirection = evt.direction;
-					changeToWalking(&player);
-		        }
-		    }
+		    
+			evt.player->moveDirection += evt.direction;
+			changeToWalking(evt.player);
 		}
 	}
 	return false;
@@ -138,47 +123,38 @@ bool PlayerSystem::onEvent(Ref<Event> event)
 
 void PlayerSystem::changeToIdle(Player* a_player)
 {
-	a_player->state = PlayerStates::idle;
+	a_player->state = PlayerState::idle;
 }
 
 void PlayerSystem::changeToWalking(Player* a_player)
 {
-    if (a_player->state == PlayerStates::idle)
-	    a_player->state = PlayerStates::walking;
+    if (a_player->state == PlayerState::idle)
+	    a_player->state = PlayerState::walking;
 }
 
 void PlayerSystem::changeToJumping(Player* a_player)
 {
-	a_player->state = PlayerStates::jumping;
+	a_player->state = PlayerState::jumping;
 }
 
 void PlayerSystem::changeToFalling(Player* a_player)
 {
-	a_player->state = PlayerStates::falling;
+	a_player->state = PlayerState::falling;
 }
 
-void PlayerSystem::changeToAdjustingPosition(Player* a_player, component::Transform a_playerTransform, glm::vec3 a_destinationPos)
-{
+//destination and start positions for adjusting and pushing should be set before calling this function
+void PlayerSystem::changeToPushing(Player* a_player)
+{    
 	a_player->adjustingPositionStateData.interpolationParam = 0.0f;
-	a_player->adjustingPositionStateData.speed = 3.33f;
+	a_player->adjustingPositionStateData.speed  = a_player->adjustingPositionSpeed;
     
-	a_player->adjustingPositionStateData.startPos = a_playerTransform.getPosition();
-	a_player->adjustingPositionStateData.desinationPos = a_destinationPos;
-
-	a_player->state = PlayerStates::adjustingPosition;
-}
-
-void PlayerSystem::changeToPushing(Player* a_player, component::Transform a_playerTransform, glm::vec3 a_destinationPos)
-{
 	a_player->pushingStateData.interpolationParam = 0.0f;
+	a_player->pushingStateData.speed = a_player->pushingSpeed;
     
-	a_player->pushingStateData.startPos = a_playerTransform.getPosition();
-	a_player->pushingStateData.desinationPos = a_destinationPos;
-    
-	a_player->state = PlayerStates::pushing;
+	a_player->state = PlayerState::pushing;
 }
 
 void PlayerSystem::changeToCleaning(Player* a_player)
 {
-	a_player->state = PlayerStates::cleaning;
+	a_player->state = PlayerState::cleaning;
 }
