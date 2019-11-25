@@ -81,37 +81,6 @@ public:
 
 			switch (evt.keycode)
 			{
-				//TODO: Remove U and I keypress events, they're just for testing
-			case oyl::Key_U:
-			{
-				auto cannonView = registry->view<Cannon, component::Transform, component::SceneObject>();
-				for (entt::entity e : cannonView)
-				{
-					component::Transform& cannonTransform = cannonView.get<component::Transform>(e);
-
-					if (cannonView.get<component::SceneObject>(e).name == "BlueCannon" && cannonView.get<Cannon>(e).state == CannonState::doingNothing)
-					{
-						cannonTransform.setPosition(cannonTransform.getPosition() += glm::vec3(-1.0f, 0.0f, 0.0f));
-					}
-				}
-
-				break;
-			}
-			case oyl::Key_I:
-			{
-				auto cannonView = registry->view<Cannon, component::Transform, component::SceneObject>();
-				for (entt::entity e : cannonView)
-				{
-					component::Transform& cannonTransform = cannonView.get<component::Transform>(e);
-
-					if (cannonView.get<component::SceneObject>(e).name == "BlueCannon" && cannonView.get<Cannon>(e).state == CannonState::doingNothing)
-					{
-						cannonTransform.setPosition(cannonTransform.getPosition() += glm::vec3(1.0f, 0.0f, 0.0f));
-					}
-				}
-
-				break;
-			}
 			case oyl::Key_E:
 			{
 				auto playerView = registry->view<Player>();

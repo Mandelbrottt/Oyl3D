@@ -70,35 +70,50 @@ void PlayerInteractionValidationSystem::validateInteraction(Player* a_player, co
 
 			if (a_player->interactableEntity == entity)
 			{
-				if (cannon.isPushingValid)
+			    if (a_player->carriedItem == CarryableItemType::cannonball) //check if cannon can be loaded with a cannonball
+			    {
+
+			    }
+				else if (cannon.state == CannonState::doingNothing) //cannon can be pushed TODO: get rid of condition after raycast validation is in, should just be an else
 				{
 					float playerForwardDotCannonRight = glm::dot(a_playerTransform.getForward(), cannonTransform.getRight());
 
+					bool isCannonOnLeftSideOfTrack = (-cannonTransform.getRight().x * cannon.pushDistance + cannon.initialPosition.x == cannonTransform.getPosition().x)
+						                              ? true : false;
+					bool isCannonOnRightSideOfTrack = (cannonTransform.getRight().x * cannon.pushDistance + cannon.initialPosition.x == cannonTransform.getPosition().x)
+						                              ? true : false;
+
 				    //TODO: get rid of position comparison once raycasting is in
-				    //check if player is on the right side of the cannon
-					if (playerForwardDotCannonRight < -0.3f) //&& a_playerTransform.getPositionX() > cannonTransform.getPositionX())
+				    //check if player is on the right side of the cannon (will be pushing towards the left)
+					if (playerForwardDotCannonRight < -0.3f && !isCannonOnLeftSideOfTrack) //&& a_playerTransform.getPositionX() > cannonTransform.getPositionX())
 					{
 						//set adjusting position and pushing state data before setting the new state
-						a_player->adjustingPositionStateData.desinationPos = cannonTransform.getRight()  * glm::vec3(1.0f, 0.0f, 0.0f) + cannonTransform.getPosition();
-						a_player->pushingStateData.desinationPos           = -cannonTransform.getRight() * glm::vec3(5.0f, 0.0f, 0.0f) + a_player->adjustingPositionStateData.desinationPos;
-
-						cannon.pushStateData.desinationPos = -cannonTransform.getRight() * glm::vec3(5.0f, 0.0f, 0.0f) + cannonTransform.getPosition();
+						a_player->adjustingPositionStateData.destinationPos   = cannonTransform.getRight()  * glm::vec3(1.0f, 0.0f, 0.0f) + cannonTransform.getPosition();
+						a_player->adjustingPositionStateData.destinationPos.y = a_playerTransform.getPositionY(); //don't change the player's y position
+					    
+						a_player->pushingStateData.destinationPos   = -cannonTransform.getRight() * glm::vec3(cannon.pushDistance, 0.0f, 0.0f) + a_player->adjustingPositionStateData.destinationPos;
+						a_player->pushingStateData.destinationPos.y = a_playerTransform.getPositionY(); //don't change the player's y position
+					    
+						cannon.pushStateData.destinationPos = -cannonTransform.getRight() * glm::vec3(cannon.pushDistance, 0.0f, 0.0f) + cannonTransform.getPosition();
 					}
 					//TODO: get rid of position comparison once raycasting is in
-				    //check if player is on the left side of the cannon
-					else if (playerForwardDotCannonRight > 0.3f) //&& a_playerTransform.getPositionX() < cannonTransform.getPositionX())
+				    //check if player is on the left side of the cannon (will be pushing towards the right
+					else if (playerForwardDotCannonRight > 0.3f && !isCannonOnRightSideOfTrack) //&& a_playerTransform.getPositionX() < cannonTransform.getPositionX())
 					{
 						//set adjusting position and pushing state data before setting the new state
-						a_player->adjustingPositionStateData.desinationPos = -cannonTransform.getRight() * glm::vec3(1.0f, 0.0f, 0.0f) + cannonTransform.getPosition();
-						a_player->pushingStateData.desinationPos           = cannonTransform.getRight()  * glm::vec3(5.0f, 0.0f, 0.0f) + a_player->adjustingPositionStateData.desinationPos;
-
-						cannon.pushStateData.desinationPos = cannonTransform.getRight() * glm::vec3(5.0f, 0.0f, 0.0f) + cannonTransform.getPosition();
+						a_player->adjustingPositionStateData.destinationPos = -cannonTransform.getRight() * glm::vec3(1.0f, 0.0f, 0.0f) + cannonTransform.getPosition();
+						a_player->adjustingPositionStateData.destinationPos.y = a_playerTransform.getPositionY(); //don't change the player's y position
+					    
+						a_player->pushingStateData.destinationPos   = cannonTransform.getRight()  * glm::vec3(cannon.pushDistance, 0.0f, 0.0f) + a_player->adjustingPositionStateData.destinationPos;
+						a_player->pushingStateData.destinationPos.y = a_playerTransform.getPositionY(); //don't change the player's y position
+					    
+						cannon.pushStateData.destinationPos = cannonTransform.getRight() * glm::vec3(cannon.pushDistance, 0.0f, 0.0f) + cannonTransform.getPosition();
 					}
 					else
 						return; //no valid push
 				    
 					a_player->adjustingPositionStateData.startPos = a_playerTransform.getPosition();
-					a_player->pushingStateData.startPos           = a_player->adjustingPositionStateData.desinationPos;
+					a_player->pushingStateData.startPos           = a_player->adjustingPositionStateData.destinationPos;
 
 					cannon.pushStateData.startPos = cannonTransform.getPosition();
 
@@ -112,10 +127,6 @@ void PlayerInteractionValidationSystem::validateInteraction(Player* a_player, co
 					cannonStateChange.cannon   = &cannon;
 					cannonStateChange.newState = CannonState::beingPushed;
 					postEvent(Event::create(cannonStateChange));
-				}
-				else if (cannon.isLoadingCannonballValid)
-				{
-
 				}
 			}
 		}

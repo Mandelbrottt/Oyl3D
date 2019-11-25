@@ -52,14 +52,16 @@ void PlayerSystem::onUpdate(Timestep dt)
 
 		    case PlayerState::pushing:
 		    {
+		        //adjust the players position before actually starting to push (this is always the first "phase" of the pushing state)
 				if (player.adjustingPositionStateData.interpolationParam < 1.0f)
 				{
+				    //LERP to the adjusting position destination (the starting point for pushing)
 					player.adjustingPositionStateData.interpolationParam = std::min(
 						player.adjustingPositionStateData.interpolationParam + player.adjustingPositionStateData.speed * dt,
 						1.0f);
 
 					playerTransform.setPosition(glm::mix(player.adjustingPositionStateData.startPos,
-						player.adjustingPositionStateData.desinationPos,
+						player.adjustingPositionStateData.destinationPos,
 						player.adjustingPositionStateData.interpolationParam));
 				}
 				else //adjustingposition interpolation parameter >= 1.0f AKA player is done adjusting their position
@@ -69,7 +71,7 @@ void PlayerSystem::onUpdate(Timestep dt)
 						1.0f);
 
 					playerTransform.setPosition(glm::mix(player.pushingStateData.startPos,
-						player.pushingStateData.desinationPos,
+						player.pushingStateData.destinationPos,
 						player.pushingStateData.interpolationParam));
 
 					if (player.pushingStateData.interpolationParam >= 1.0f)

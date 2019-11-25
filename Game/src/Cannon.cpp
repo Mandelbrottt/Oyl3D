@@ -16,8 +16,6 @@ void CannonSystem::onUpdate(Timestep dt)
 	{
 		auto& cannon = registry->get<Cannon>(entity);
 	    auto& cannonTransform = registry->get<component::Transform>(entity);
-
-		cannon.isPushingValid = false; //TODO: get rid of this once proper validation is in (raycasting)
 	    
 	    //update fuse for every cannon
 		updateFuse(dt, &cannon);
@@ -26,8 +24,7 @@ void CannonSystem::onUpdate(Timestep dt)
 		{
 		    case CannonState::doingNothing:
 			{
-				cannon.isPushingValid = true; //TODO: get rid of this once proper validation is in (raycasting)
-		        
+
 				break;
 			}
 		    
@@ -46,7 +43,7 @@ void CannonSystem::onUpdate(Timestep dt)
 					cannon.pushStateData.interpolationParam = std::min(cannon.pushStateData.interpolationParam + cannon.pushStateData.speed * dt,
 						1.0f);
 
-					cannonTransform.setPosition(glm::mix(cannon.pushStateData.startPos, cannon.pushStateData.desinationPos, cannon.pushStateData.interpolationParam));
+					cannonTransform.setPosition(glm::mix(cannon.pushStateData.startPos, cannon.pushStateData.destinationPos, cannon.pushStateData.interpolationParam));
 
 					if (cannon.pushStateData.interpolationParam >= 1.0f)
 					{
