@@ -41,6 +41,36 @@ public:
 		}
 	}
 
+	void onUpdate(Timestep dt) override
+	{
+		auto view = registry->view<Player, component::Transform>();
+		for (auto& entity : view)
+		{
+			auto& player = registry->get<Player>(entity);
+			auto& playerTransform = registry->get<component::Transform>(entity);
+
+			glm::vec3 desiredMoveDirection = glm::vec3(0.0f);
+
+			if (Input::isKeyPressed(Key_W))
+				desiredMoveDirection += playerTransform.getForward();
+
+			if (Input::isKeyPressed(Key_S))
+				desiredMoveDirection += -playerTransform.getForward();
+
+			if (Input::isKeyPressed(Key_A))
+				desiredMoveDirection += -playerTransform.getRight();
+
+			if (Input::isKeyPressed(Key_D))
+				desiredMoveDirection += playerTransform.getRight();
+
+		    //check if it's 0 because if we normalize a vector with 0 magnitude it breaks
+		    if (desiredMoveDirection == glm::vec3(0.0f))
+			    player.moveDirection = desiredMoveDirection;
+			else
+				player.moveDirection = glm::normalize(desiredMoveDirection);
+		}
+	}
+
 	bool onEvent(Ref<Event> event) override
 	{
 		switch (event->type)
@@ -94,7 +124,7 @@ public:
 
 				break;
 			}
-			case oyl::Key_W:
+			/*case oyl::Key_W:
 			{
 				auto playerView = registry->view<Player, component::Transform, component::RigidBody, component::SceneObject>();
 
@@ -149,7 +179,7 @@ public:
 				}
 
 				break;
-			}
+			}*/
 			}
 		}
 		case TypeMouseMoved:

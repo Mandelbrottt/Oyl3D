@@ -24,6 +24,10 @@ void PlayerSystem::onUpdate(Timestep dt)
 		    case PlayerState::idle:
 		    {
 				playerRB.impulse = glm::vec3(0.0f);
+
+				if (player.moveDirection != glm::vec3(0.0f))
+					changeToWalking(&player);
+		        
 				break;
 		    }
 		    
@@ -87,9 +91,6 @@ void PlayerSystem::onUpdate(Timestep dt)
 				break;
 			}
 		}
-
-	    //reset player's movement before the next frame
-		player.moveDirection = glm::vec3(0.0f);
 	}
 }
 
