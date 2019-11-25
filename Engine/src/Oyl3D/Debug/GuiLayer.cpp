@@ -429,14 +429,22 @@ namespace oyl::internal
             if (m_currentEntity != entt::null)
             {
                 drawInspectorObjectName();
-                drawInspectorParent();
-                drawInspectorTransform();
-                drawInspectorRenderable();
-                drawInspectorCollider();
-                drawInspectorRigidBody();
+                ImGui::Separator();
                 ImGui::NewLine();
-                ImGui::SeparatorEx(ImGuiSeparatorFlags_Horizontal | 
-                                   ImGuiSeparatorFlags_SpanAllColumns);
+                drawInspectorParent();
+                ImGui::Separator();
+                ImGui::NewLine();
+                drawInspectorTransform();
+                ImGui::Separator();
+                ImGui::NewLine();
+                drawInspectorRenderable();
+                ImGui::Separator();
+                ImGui::NewLine();
+                drawInspectorCollider();
+                //ImGui::Separator();
+                //ImGui::NewLine();
+                //drawInspectorRigidBody();
+                ImGui::Separator();
                 ImGui::NewLine();
                 drawInspectorAddComponent();
             }
@@ -984,12 +992,17 @@ namespace oyl::internal
     void GuiLayer::drawInspectorAddComponent()
     {
         using component::Renderable;
+        using component::Collider;
         
         if (ImGui::BeginCombo("##InspectorAddComponent", "Add Component", ImGuiComboFlags_NoArrowButton))
         {
             if (!registry->has<Renderable>(m_currentEntity) &&
                 ImGui::Selectable("Renderable"))
                 registry->assign<Renderable>(m_currentEntity);
+
+            if (!registry->has<Collider>(m_currentEntity) &&
+                ImGui::Selectable("Collider"))
+                registry->assign<Collider>(m_currentEntity);
 
             ImGui::EndCombo();
         }

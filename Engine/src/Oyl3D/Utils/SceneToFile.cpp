@@ -17,6 +17,8 @@ namespace oyl::internal
     static void saveTransforms(json& j, entt::registry& registry);
     static void saveParents(json& j, entt::registry& registry);
     static void saveRenderables(json& j, entt::registry& registry);
+    static void saveColliders(json& j, entt::registry& registry);
+    static void saveRigidBodies(json& j, entt::registry& registry);
 
     void saveSceneToFile(const Scene& scene)
     {
@@ -25,6 +27,8 @@ namespace oyl::internal
         saveTransforms(sceneJson, *scene.m_registry);
         saveParents(sceneJson, *scene.m_registry);
         saveRenderables(sceneJson, *scene.m_registry);
+        saveColliders(sceneJson, *scene.m_registry);
+        saveRigidBodies(sceneJson, *scene.m_registry);
 
         std::ofstream sceneFile("res/scenes/" + scene.m_name + ".oylscene");
         sceneFile << std::setw(4) << sceneJson;
@@ -33,6 +37,8 @@ namespace oyl::internal
     static void loadTransform(const json& j, entt::registry& registry, entt::entity entity);
     static void loadParent(const json& j, entt::registry& registry, entt::entity entity);
     static void loadRenderable(const json& j, entt::registry& registry, entt::entity entity);
+    static void loadCollider(const json& j, entt::registry& registry, entt::entity entity);
+    static void loadRigidBody(const json& j, entt::registry& registry, entt::entity entity);
 
     void loadSceneFromFile(Scene& scene)
     {
@@ -71,6 +77,12 @@ namespace oyl::internal
 
             if (value.find("Renderable") != value.end())
                 loadRenderable(value["Renderable"], *scene.m_registry, entityToLoad);
+
+            if (value.find("Collider") != value.end())
+                loadCollider(value["Collider"], *scene.m_registry, entityToLoad);
+
+            if (value.find("RigidBody") != value.end())
+                loadCollider(value["RigidBody"], *scene.m_registry, entityToLoad);
         }
 
         for (auto& [key, value] : sceneJson.items())
@@ -240,6 +252,16 @@ namespace oyl::internal
         }
     }
 
+    static void saveColliders(json& j, entt::registry& registry)
+    {
+        
+    }
+    
+    static void saveRigidBodies(json& j, entt::registry& registry)
+    {
+        
+    }
+
     void loadTransform(const json& j, entt::registry& registry, entt::entity entity)
     {
         using component::Transform;
@@ -366,5 +388,15 @@ namespace oyl::internal
                     re.material->specularMap = Texture2D::cache(filePath, alias);
             } else re.material->specularMap = Texture2D::get(WHITE_TEXTURE_ALIAS);
         }
+    }
+
+    static void loadCollider(const json& j, entt::registry& registry, entt::entity entity)
+    {
+        
+    }
+    
+    static void loadRigidBody(const json& j, entt::registry& registry, entt::entity entity)
+    {
+        
     }
 }

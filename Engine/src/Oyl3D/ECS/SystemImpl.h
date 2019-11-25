@@ -52,11 +52,6 @@ namespace oyl::internal
         virtual bool onEvent(Ref<Event> event) override;
 
     private:
-        OYL_DEPRECATED("xd")
-        void addRigidBody(entt::entity entity,
-                          const component::Transform& transformComponent,
-                          const component::RigidBody& bodyComponent);
-
         void processIncomingRigidBody(entt::entity entity,
                                       const component::Transform& transformComponent,
                                       const component::Collider&  colliderComponent,
