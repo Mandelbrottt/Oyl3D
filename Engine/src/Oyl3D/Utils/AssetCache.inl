@@ -35,7 +35,7 @@ namespace oyl::internal
 
         if (!overwrite && m_cache.find(alias) != m_cache.end())
         {
-            OYL_LOG_ERROR("{0} with alias '{1}' already exists!", s_typename, alias);
+            OYL_LOG_WARN("{0} with alias '{1}' already exists!", s_typename, alias);
             return m_cache.at(alias);
         }
 
@@ -64,7 +64,7 @@ namespace oyl::internal
         {
             if (!overwrite)
             {
-                OYL_LOG_ERROR("{0} '{1}' is already cached!", s_typename, alias);
+                OYL_LOG_WARN("{0} '{1}' is already cached!", s_typename, alias);
                 return it->second;
             }
             else
@@ -84,7 +84,7 @@ namespace oyl::internal
         auto it = m_cache.find(alias);
         if (it == m_cache.end())
         {
-            OYL_LOG_WARN("{0} '{1}' could not be discarded because it does not exist.", s_typename, alias);
+            OYL_LOG_ERROR("{0} '{1}' could not be discarded because it does not exist.", s_typename, alias);
         }
         else m_cache.erase(it);
     }
@@ -101,6 +101,36 @@ namespace oyl::internal
         return m_cache.at(alias);
     }
 
+    template<class T>
+    bool AssetCache<T>::isCached(const Ref<T>& existing)
+    {
+        // Return true if the Ref is already cached, otherwise return false
+        for (const auto& kvp : m_cache)
+        {
+            if (kvp.second == existing)
+                return true;
+        }
+        return false;
+    }
+
+    template<class T> bool AssetCache<T>::exists(const CacheAlias& alias)
+    {
+        return m_cache.find(alias) != m_cache.end();
+    }
+
+    template<class T>
+    const CacheAlias& AssetCache<T>::getAlias(const Ref<T>& existing)
+    {
+        // If the Ref is already cached, return the first alias in the list.
+        // Otherwise, return the 'invalid' alias
+        for (const auto& kvp : m_cache)
+        {
+            if (kvp.second == existing)
+                return kvp.first;
+        }
+        return INVALID_ALIAS;
+    }
+    
     template<class T>
     const Ref<T>& AssetCache<T>::rename(const CacheAlias& currentAlias,
                                         const CacheAlias& newAlias,
@@ -130,7 +160,7 @@ namespace oyl::internal
             // Warn the user if they are overiding a mesh of a different type
             if (currIt->second->getFilePath() != newIt->second->getFilePath())
             {
-                OYL_LOG_WARN("{2} '{3}' with info '{0}' was replaced by '{1}'.",
+                OYL_LOG_INFO("{2} '{3}' with info '{0}' was replaced by '{1}'.",
                              currIt->second->getFilePath(),
                              newIt->second->getFilePath(),
                              s_typename, newAlias);

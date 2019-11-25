@@ -170,10 +170,17 @@ namespace oyl
     }
 
     const Ref<Mesh>& Mesh::cache(const std::string& filePath,
-                                 const CacheAlias& alias,
+                                 const CacheAlias&  alias,
                                  bool overwrite)
     {
         return s_cache.cache(filePath, alias, overwrite);
+    }
+
+    const Ref<Mesh>& Mesh::cache(const Ref<Mesh>&  existing,
+                                 const CacheAlias& alias,
+                                 bool overwrite)
+    {
+        return s_cache.cache(existing, alias, overwrite);
     }
 
     void Mesh::discard(const CacheAlias& alias)
@@ -184,6 +191,21 @@ namespace oyl
     const Ref<Mesh>& Mesh::get(const CacheAlias& alias)
     {
         return s_cache.get(alias);
+    }
+
+    bool Mesh::isCached(const Ref<Mesh>& existing)
+    {
+        return s_cache.isCached(existing);
+    }
+
+    bool Mesh::exists(const CacheAlias& alias)
+    {
+        return s_cache.exists(alias);
+    }
+
+    const CacheAlias& Mesh::getAlias(const Ref<Mesh>& existing)
+    {
+        return s_cache.getAlias(existing);
     }
 
     const Ref<Mesh>& Mesh::rename(const CacheAlias& currentAlias,

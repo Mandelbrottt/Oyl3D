@@ -1,9 +1,7 @@
 #pragma once
 
 namespace oyl
-{
-    class Mesh;
-    
+{    
     struct ShaderInfo
     {
         OylEnum     type;
@@ -18,10 +16,15 @@ namespace oyl
         virtual void bind() const = 0;
         virtual void unbind() const = 0;
 
+        static Ref<Shader> create(const std::vector<ShaderInfo>& infos);
         static Ref<Shader> create(const std::initializer_list<ShaderInfo>& files);
 
         static const Ref<Shader>& cache(const std::initializer_list<ShaderInfo>& files, 
                                         const CacheAlias& alias, 
+                                        bool overwrite = false);
+
+        static const Ref<Shader>& cache(const std::vector<ShaderInfo>& infos,
+                                        const CacheAlias& alias,
                                         bool overwrite = false);
 
         static const Ref<Shader>& cache(const Ref<Shader>& shader,
@@ -32,9 +35,17 @@ namespace oyl
 
         static const Ref<Shader>& get(const CacheAlias& alias);
 
+        static bool isCached(const Ref<Shader>& existing);
+
+        static const CacheAlias& getAlias(const Ref<Shader>& existing);
+
+        static bool exists(const CacheAlias& alias);
+        
         static const Ref<Shader>& rename(const CacheAlias& currentAlias,
                                          const CacheAlias& newAlias,
                                          bool overwrite = false);
+
+        static const auto& getCache() { return s_cache; }
 
         virtual void setUniform1i(const std::string& name, const int v) = 0;
         virtual void setUniform1f(const std::string& name, const float v) = 0;
@@ -43,6 +54,11 @@ namespace oyl
         virtual void setUniform4f(const std::string& name, const glm::vec4& v) = 0;
         virtual void setUniformMat3(const std::string& name, const glm::mat3& v) = 0;
         virtual void setUniformMat4(const std::string& name, const glm::mat4& v) = 0;
+
+        const std::vector<ShaderInfo>& getShaderInfos() { return m_shaderInfos; }
+
+    protected:
+        std::vector<ShaderInfo> m_shaderInfos;
 
     private:
         static Ref<Shader> s_invalid;

@@ -5,31 +5,26 @@
 namespace oyl
 {
     class Shader;
-    class Texture;
+    class Texture2D;
 
     class Material
     {
-        struct _Material
-        {
-        };
+        struct _Material {};
 
     public:
         explicit Material(_Material);
-        explicit Material(_Material, Ref<Shader> shader, Ref<Texture> texture = nullptr);
-        explicit Material(_Material, Ref<Texture> texture);
+        explicit Material(_Material, Ref<Shader> shader);
         
-        virtual  ~Material() = default;
+        virtual ~Material() = default;
 
-        static Ref<Material> create(const Ref<Shader>& shader, const Ref<Texture>& texture = nullptr);
-        static Ref<Material> create(const Ref<Texture>& texture);
+        static Ref<Material> create(const Ref<Shader>& shader);
         static Ref<Material> create();
 
         static const Ref<Material>& cache(const Ref<Material>& material,
                                           const CacheAlias& alias,
                                           bool overwrite = false);
-
+        
         static const Ref<Material>& cache(const Ref<Shader>& shader,
-                                          const Ref<Texture>& texture,
                                           const CacheAlias& alias,
                                           bool overwrite = false);
 
@@ -37,32 +32,52 @@ namespace oyl
 
         static const Ref<Material>& get(const CacheAlias& alias);
 
+        static bool isCached(const Ref<Material>& existing);
+
+        static bool exists(const CacheAlias& alias);
+
+        static const CacheAlias& getAlias(const Ref<Material>& existing);
+        
         static const Ref<Material>& rename(const CacheAlias& currentAlias,
                                            const CacheAlias& newAlias,
                                            bool overwrite = false);
+
+        static const auto& getCache() { return s_cache.m_cache; }
 
         virtual void bind();
         virtual void unbind();
 
         virtual void applyUniforms();
 
-        void loadTexture(const std::string& filename);
-        void loadTexture(Ref<Texture> texture);
-        void unloadTexture();
+        OYL_DEPRECATED("Access 'shader' directly instead.")
+        const Ref<Shader>& getShader() const { return shader; }
 
-        const Ref<Shader>& getShader() const { return m_shader; }
-        void setShader(Ref<Shader> shader) { m_shader = std::move(shader); }
-        
-        const Ref<Texture>& getAlbedoMap() const { return m_albedo; }
-        const Ref<Texture>& getSpecularMap() const { return m_specular; }
-        const Ref<Texture>& getNormalMap() const { return m_normal; }
+        OYL_DEPRECATED("Access 'shader' directly instead.")
+        void setShader(Ref<Shader> shader) { this->shader = std::move(shader); }
 
-        void setAlbedoMap(Ref<Texture> albedo) { m_albedo = std::move(albedo); }
-        void setSpecularMap(Ref<Texture> specular) { m_specular = std::move(specular); }
-        void setNormalMap(Ref<Texture> normal) { m_normal = std::move(normal); }
+        OYL_DEPRECATED("Access 'albedoMap' directly instead")
+        const Ref<Texture2D>& getAlbedoMap() const { return albedoMap; }
 
-        float getSpecularScalar() const { return m_specularScalar; }
-        void  setSpecularScalar(float specular) { m_specularScalar = specular; }
+        OYL_DEPRECATED("Access 'specularMap' directly instead")
+        const Ref<Texture2D>& getSpecularMap() const { return specularMap; }
+
+        OYL_DEPRECATED("Access 'normalMap' directly instead")
+        const Ref<Texture2D>& getNormalMap() const { return normalMap; }
+
+        OYL_DEPRECATED("Access 'albedoMap' directly instead")
+        void setAlbedoMap(Ref<Texture2D> albedo) { albedoMap = std::move(albedo); }
+
+        OYL_DEPRECATED("Access 'specularMap' directly instead")
+        void setSpecularMap(Ref<Texture2D> specular) { specularMap = std::move(specular); }
+
+        OYL_DEPRECATED("Access 'normalMap' directly instead")
+        void setNormalMap(Ref<Texture2D> normal) { normalMap = std::move(normal); }
+
+        OYL_DEPRECATED("Access 'shader' directly instead")
+        float getSpecularScalar() const { return specularScalar; }
+
+        OYL_DEPRECATED("Access 'shader' directly instead")
+        void  setSpecularScalar(float specular) { specularScalar = specular; }
         
         void setUniform1i(const std::string& name, i32 value) { m_uniformInts[name] = value; }
         void setUniform1f(const std::string& name, f32 value) { m_uniformFloats[name] = value; }
@@ -71,14 +86,17 @@ namespace oyl
         void setUniform4f(const std::string& name, glm::vec4 value) { m_uniformVec4s[name] = value; }
         void setUniformMat4(const std::string& name, glm::mat4 value) { m_uniformMat4s[name] = value; }
         void setUniformMat3(const std::string& name, glm::mat3 value) { m_uniformMat3s[name] = value; }
-    private:
-        Ref<Shader>  m_shader;
-        
-        Ref<Texture> m_albedo;
-        Ref<Texture> m_specular;
-        Ref<Texture> m_normal;
 
-        float m_specularScalar = 0.5f;
+    public:
+        Ref<Shader> shader;
+
+        Ref<Texture2D> albedoMap;
+        Ref<Texture2D> specularMap;
+        Ref<Texture2D> normalMap;
+        
+        float specularScalar = 0.5f;
+
+    private:
         
         // TODO: Implement in custom data structure
         std::unordered_map<std::string, glm::mat4> m_uniformMat4s;

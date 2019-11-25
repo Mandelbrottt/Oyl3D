@@ -71,6 +71,13 @@ namespace oyl
         return s_cache.cache(filePath, alias, overwrite);
     }
 
+    const Ref<Texture1D>& Texture1D::cache(const Ref<Texture1D>& existing, 
+                                           const CacheAlias&     alias, 
+                                           bool  overwrite)
+    {
+        return s_cache.cache(existing, alias, overwrite);
+    }
+
     void Texture1D::discard(const CacheAlias& alias)
     {
         s_cache.discard(alias);
@@ -79,6 +86,21 @@ namespace oyl
     const Ref<Texture1D>& Texture1D::get(const CacheAlias& alias)
     {
         return s_cache.get(alias);
+    }
+
+    bool Texture1D::isCached(const Ref<Texture1D>& existing)
+    {
+        return s_cache.isCached(existing);
+    }
+
+    bool Texture1D::exists(const CacheAlias& alias)
+    {
+        return s_cache.exists(alias);
+    }
+
+    const CacheAlias& Texture1D::getAlias(const Ref<Texture1D>& existing)
+    {
+        return s_cache.getAlias(existing);
     }
 
     const Ref<Texture1D>& Texture1D::rename(const CacheAlias& currentAlias, 
@@ -95,6 +117,13 @@ namespace oyl
         return s_cache.cache(filePath, alias, overwrite);
     }
 
+    const Ref<Texture2D>& Texture2D::cache(const Ref<Texture2D>& existing, 
+                                           const CacheAlias&     alias, 
+                                           bool  overwrite)
+    {
+        return s_cache.cache(existing, alias, overwrite);
+    }
+
     void Texture2D::discard(const CacheAlias& alias)
     {
         s_cache.discard(alias);
@@ -103,6 +132,21 @@ namespace oyl
     const Ref<Texture2D>& Texture2D::get(const CacheAlias& alias)
     {
         return s_cache.get(alias);
+    }
+
+    bool Texture2D::isCached(const Ref<Texture2D>& existing)
+    {
+        return s_cache.isCached(existing);
+    }
+
+    bool Texture2D::exists(const CacheAlias& alias)
+    {
+        return s_cache.exists(alias);
+    }
+
+    const CacheAlias& Texture2D::getAlias(const Ref<Texture2D>& existing)
+    {
+        return s_cache.getAlias(existing);
     }
 
     const Ref<Texture2D>& Texture2D::rename(const CacheAlias& currentAlias, 
@@ -119,6 +163,13 @@ namespace oyl
         return s_cache.cache(filePath, alias, overwrite);
     }
 
+    const Ref<Texture3D>& Texture3D::cache(const Ref<Texture3D>& existing, 
+                                           const CacheAlias&     alias, 
+                                           bool  overwrite)
+    {
+        return s_cache.cache(existing, alias, overwrite);
+    }
+
     void Texture3D::discard(const CacheAlias& alias)
     {
         s_cache.discard(alias);
@@ -127,6 +178,21 @@ namespace oyl
     const Ref<Texture3D>& Texture3D::get(const CacheAlias& alias)
     {
         return s_cache.get(alias);
+    }
+
+    bool Texture3D::isCached(const Ref<Texture3D>& existing)
+    {
+        return s_cache.isCached(existing);
+    }
+
+    bool Texture3D::exists(const CacheAlias& alias)
+    {
+        return s_cache.exists(alias);
+    }
+
+    const CacheAlias& Texture3D::getAlias(const Ref<Texture3D>& existing)
+    {
+        return s_cache.getAlias(existing);
     }
 
     const Ref<Texture3D>& Texture3D::rename(const CacheAlias& currentAlias, 
