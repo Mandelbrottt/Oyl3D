@@ -6,13 +6,11 @@ namespace oyl
 {
     class OpenGLShader : public Shader
     {
-        struct _OpenGLShader
-        {
-        };
+        struct _OpenGLShader {};
 
         friend class Shader;
     public:
-        explicit OpenGLShader(_OpenGLShader, const std::initializer_list<ShaderInfo>& files);
+        explicit OpenGLShader(_OpenGLShader, const std::vector<ShaderInfo>& infos);
         virtual  ~OpenGLShader();
 
         virtual void bind() const override;
@@ -26,8 +24,10 @@ namespace oyl
         virtual void setUniformMat3(const std::string& name, const glm::mat3& m) override;
         virtual void setUniformMat4(const std::string& name, const glm::mat4& m) override;
 
-        using _InitList = std::initializer_list<ShaderInfo>;
-        static Ref<Shader> create(const _InitList& files) { return Ref<OpenGLShader>::create(_OpenGLShader{}, files); }
+        static Ref<Shader> create(const std::vector<ShaderInfo>& infos)
+        {
+            return Ref<OpenGLShader>::create(_OpenGLShader{}, infos);
+        }
 
     private:
         void processShaders(std::array<std::string, NumShaderTypes> shaderSrcs);

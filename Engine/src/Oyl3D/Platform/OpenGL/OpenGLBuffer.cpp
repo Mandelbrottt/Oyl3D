@@ -139,26 +139,27 @@ namespace oyl
 
         glBindVertexArray(m_rendererID);
 
-        m_vertexBuffers.push_back(vbo);
-
         u32 index  = 0;
-        u32 stride = 0;
-        
+
         for (const auto& tVbo : m_vertexBuffers)
+            index += tVbo->getLayout().getElements().size();
+
+        vbo->bind();
+
+        const auto& layout = vbo->getLayout();
+        for (const auto& element : layout)
         {
-            tVbo->bind();
-            for (const auto& element : tVbo->getLayout())
-            {
-                glEnableVertexAttribArray(index);
-                glVertexAttribPointer(index,
-                                      element.getElementCount(),
-                                      ShaderDataTypeToGLType(element.type),
-                                      element.normalized ? GL_TRUE : GL_FALSE,
-                                      tVbo->getLayout().getStride(),
-                                      (const void*) element.offset);
-                index++;
-            }
+            glEnableVertexAttribArray(index);
+            glVertexAttribPointer(index,
+                                  element.getElementCount(),
+                                  ShaderDataTypeToGLType(element.type),
+                                  element.normalized ? GL_TRUE : GL_FALSE,
+                                  layout.getStride(),
+                                  (const void*) element.offset);
+            index++;
         }
+        
+        m_vertexBuffers.push_back(vbo);
         glBindVertexArray(GL_NONE);
     }
 

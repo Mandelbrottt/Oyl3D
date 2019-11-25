@@ -8,11 +8,9 @@ void SandboxLayer::onEnter()
 {    
     auto mesh = Mesh::cache("res/assets/models/cube.obj");
     
-    auto mat = Material::cache(Shader::get(LIGHTING_SHADER_ALIAS), 
-                               Texture2D::cache("res/assets/textures/container2.jpg"), 
-                               "container");
-
-    mat->setSpecularMap(Texture2D::cache("res/assets/textures/container2_specular.jpg"));
+    auto& mat = Material::cache(Shader::get(LIGHTING_SHADER_ALIAS), "container");
+    mat->albedoMap   = Texture2D::cache("res/assets/textures/container2.jpg");
+    mat->specularMap = Texture2D::cache("res/assets/textures/container2_specular.jpg");
 
     {
         component::Renderable mr;
