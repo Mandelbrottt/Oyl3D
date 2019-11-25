@@ -39,12 +39,15 @@ namespace oyl::internal
         void drawEntityNode(entt::entity entity);
         
         void drawInspector();
+        void drawInspectorObjectName();
+        void drawInspectorParent();
         void drawInspectorTransform();
+        void drawInspectorCollider();
         void drawInspectorRenderable();
         void drawInspectorRigidBody();
-        void drawInspectorParent();
-        void drawInspectorObjectName();
         
+        void drawInspectorAddComponent();
+
         void drawSceneViewport();
         void drawGameViewport();
 

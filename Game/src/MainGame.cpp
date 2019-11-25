@@ -13,13 +13,12 @@ public:
     {
         listenForEventType(TypeKeyReleased);
         
-        auto lightShader = Shader::get(LIGHTING_SHADER_ALIAS);
+        auto lightShader = Shader::get(TEXTURE_SHADER_ALIAS);
 
-        Material::cache(lightShader, "monkeyMat");
-
-        auto textureShader = Shader::get(TEXTURE_SHADER_ALIAS);
+        auto& lightMat = Material::cache(lightShader, "monkeyMat");
+        lightMat->albedoMap = Texture2D::get(WHITE_TEXTURE_ALIAS);
         
-        auto& cubeMat = Material::cache(textureShader, "cubeMat");
+        auto& cubeMat = Material::cache(lightShader, "cubeMat");
         cubeMat->albedoMap = Texture2D::get(UV_TEXTURE_ALIAS);
         
         // auto animShader = Shader::get("animation");
