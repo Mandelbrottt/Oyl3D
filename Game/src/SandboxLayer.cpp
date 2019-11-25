@@ -22,21 +22,25 @@ void SandboxLayer::onEnter()
         mr.material = mat;
 
 		entt::entity cannonBlue = registry->create();
-		registry->assign<Cannon>(cannonBlue);
-		registry->get<Cannon>(cannonBlue).team = Teams::blue;
-		registry->get<Cannon>(cannonBlue).fuse.timeToWait = 10.0f;
-
-		registry->assign<component::Renderable>(cannonBlue, mr);
-
+        
 		component::Transform t;
 		t.setPosition(glm::vec3(0.0f));
 		registry->assign<component::Transform>(cannonBlue, t);
+        
+		registry->assign<Cannon>(cannonBlue);
+		registry->get<Cannon>(cannonBlue).team = Team::blue;
+		registry->get<Cannon>(cannonBlue).fuse.timeToWait = 10.0f;
+		registry->get<Cannon>(cannonBlue).initialPosition = t.getPosition();
+
+		registry->assign<component::Renderable>(cannonBlue, mr);
+
 
 		auto& so = registry->assign<component::SceneObject>(cannonBlue);
 		so.name = "BlueCannon";
 
         entt::entity player = registry->create();
 		registry->assign<Player>(player);
+		registry->get<Player>(player).team = Team::blue;
         
         registry->assign<component::Renderable>(player, mr);
 
