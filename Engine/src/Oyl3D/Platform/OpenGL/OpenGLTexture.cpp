@@ -9,7 +9,8 @@ namespace oyl
 {
     OpenGLTexture1D::OpenGLTexture1D(const std::string& filename)
     {
-        load(filename);
+        if (load(filename))
+            m_filePath = filename;
     }
 
     OpenGLTexture1D::~OpenGLTexture1D()
@@ -36,7 +37,8 @@ namespace oyl
 
     OpenGLTexture2D::OpenGLTexture2D(const std::string& filename)
     {
-        load(filename);
+        if (load(filename))
+            m_filePath = filename;
     }
 
     OpenGLTexture2D::~OpenGLTexture2D()
@@ -62,7 +64,6 @@ namespace oyl
             m_loaded = true;
             m_width  = width;
             m_height = height;
-            m_path   = filename;
 
             glTexStorage2D(GL_TEXTURE_2D, 1, GL_RGB8, width, height);
             glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, width, height, GL_RGB, GL_UNSIGNED_BYTE, data);
@@ -108,7 +109,8 @@ namespace oyl
 
     OpenGLTexture3D::OpenGLTexture3D(const std::string& filename)
     {
-        load(filename);
+        if (load(filename))
+            m_filePath = filename;
     }
 
     OpenGLTexture3D::~OpenGLTexture3D()

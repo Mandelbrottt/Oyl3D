@@ -139,10 +139,8 @@ namespace oyl
         m_rendererID = linkShaders(shaders);
     }
 
-    OpenGLShader::OpenGLShader(_OpenGLShader, const std::initializer_list<ShaderInfo>& files)
+    OpenGLShader::OpenGLShader(_OpenGLShader, const std::vector<ShaderInfo>& infos)
     {
-        std::vector<ShaderInfo> infos(files);
-
         std::array<std::string, NumShaderTypes> srcs{ "" };
         for (auto& info : infos)
         {
@@ -168,6 +166,9 @@ namespace oyl
 
         // Compile and link the given shader source codes into one program
         processShaders(srcs);
+
+        if (m_rendererID)
+            m_shaderInfos = infos;
     }
 
     OpenGLShader::~OpenGLShader()
