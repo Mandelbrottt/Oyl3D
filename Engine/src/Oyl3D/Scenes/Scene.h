@@ -8,19 +8,22 @@
 
 namespace oyl
 {
+    class Scene;
+    
     namespace internal
     {
-        class PhysicsSystem;
-        class TransformUpdateSystem;
+        class GuiLayer;
+        class SceneToFile;
+
+        void saveSceneToFile(const Scene& scene);
+        void loadSceneFromFile(Scene& scene);
+        void saveSceneBackupToFile(const Scene& scene);
     }
 
     class Scene : public EventListener, public virtual Node
     {
-        friend class Application;
-        friend class GuiLayer;
     protected:
         explicit Scene();
-
     public:
         virtual ~Scene();
 
@@ -35,9 +38,6 @@ namespace oyl
         void popLayer(const Ref<Layer>& layer);
         void popOverlay(const Ref<Layer>& overlay);
 
-        void loadSceneFromFile();
-        void saveSceneToFile();
-
         static Ref<Scene> current() { return s_current.lock(); }
 
         const Ref<entt::registry>& getRegistry() { return m_registry; }
@@ -45,19 +45,18 @@ namespace oyl
         virtual bool onEvent(Ref<Event> event) override;
 
     private:
-        void initDefaultSystems();
-
-        void saveSceneBackupToFile();
-
         static WeakRef<Scene> s_current;
 
-    private:
         // TODO: Put in internal namespace
         LayerStack m_layerStack;
 
         Ref<entt::registry> m_registry;
 
-        Ref<internal::PhysicsSystem> m_physicsSystem;
-        Ref<internal::TransformUpdateSystem> m_transformUpdateSystem;
+        friend class Application;
+        friend internal::GuiLayer;
+
+        friend void internal::saveSceneToFile(const Scene& scene);
+        friend void internal::loadSceneFromFile(Scene& scene);
+        friend void internal::saveSceneBackupToFile(const Scene& scene);
     };
 }

@@ -10,11 +10,9 @@ void SandboxLayer::onEnter()
 {    
     auto mesh = Mesh::cache("res/assets/models/cube.obj");
     
-    auto mat = Material::cache(Shader::get(LIGHTING_SHADER_ALIAS), 
-                               Texture2D::cache("res/assets/textures/container2.jpg"), 
-                               "container");
-
-    mat->setSpecularMap(Texture2D::cache("res/assets/textures/container2_specular.jpg"));
+    auto& mat = Material::cache(Shader::get(LIGHTING_SHADER_ALIAS), "container");
+    mat->albedoMap   = Texture2D::cache("res/assets/textures/container2.jpg");
+    mat->specularMap = Texture2D::cache("res/assets/textures/container2_specular.jpg");
 
     {
         component::Renderable mr;
@@ -60,6 +58,9 @@ void SandboxLayer::onEnter()
 
         registry->assign<entt::tag<"Player"_hs>>(player);
 
+        auto& shi = cl.pushShape(Collider_Box);
+        shi.box.setSize({ 1.0f, 1.0f, 1.0f });
+
         entt::entity e2 = registry->create();
         registry->assign<component::Renderable>(e2, mr);
 
@@ -89,11 +90,12 @@ void SandboxLayer::onEnter()
         so.name = "Plane";
 
         auto& rb = registry->assign<component::RigidBody>(e);
-        rb.type = RigidBody_Box;
-        rb.mass = 0;
-        rb.width = 20;
-        rb.height = 0.1f;
-        rb.length = 20;
+        rb.setMass(0.0f);
+
+        auto& cl = registry->assign<component::Collider>(e);
+
+        auto& shi = cl.pushShape(Collider_Box);
+        shi.box.setSize({ 20.0f, 0.1f, 20.0f });
     }
     {
         component::Renderable mr;
@@ -109,11 +111,14 @@ void SandboxLayer::onEnter()
 
         auto& so = registry->assign<component::SceneObject>(e);
         so.name = "Sphere 1";
-
+        
         auto& rb = registry->assign<component::RigidBody>(e);
-        rb.type   = RigidBody_Sphere;
-        rb.radius = 0.5f;
-        rb.mass   = 1.0f;
+        rb.setMass(1.0f);
+
+        auto& cl = registry->assign<component::Collider>(e);
+
+        auto& shi = cl.pushShape(Collider_Sphere);
+        shi.sphere.setRadius(0.5f);
     }
     {
         component::Renderable mr;
@@ -131,9 +136,12 @@ void SandboxLayer::onEnter()
         so.name = "Sphere 2";
 
         auto& rb = registry->assign<component::RigidBody>(e);
-        rb.type = RigidBody_Sphere;
-        rb.radius = 0.5f;
-        rb.mass = 1.0f;
+        rb.setMass(1.0f);
+
+        auto& cl = registry->assign<component::Collider>(e);
+
+        auto& shi = cl.pushShape(Collider_Sphere);
+        shi.sphere.setRadius(0.5f);
     }
 }
 

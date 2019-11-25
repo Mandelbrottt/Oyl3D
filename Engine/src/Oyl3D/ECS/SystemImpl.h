@@ -26,6 +26,19 @@ namespace oyl::internal
         void shutdown();
     };
 
+    class AnimationSystem : public System
+    {
+        OYL_CTOR(AnimationSystem, System)
+
+        virtual void onEnter() override;
+        virtual void onExit() override;
+
+        virtual void onUpdate(Timestep dt) override;
+        virtual void onGuiRender(Timestep dt) override;
+
+        virtual bool onEvent(Ref<Event> event) override;
+    };
+    
     class PhysicsSystem : public System
     {
         OYL_CTOR(PhysicsSystem, System)
@@ -38,10 +51,12 @@ namespace oyl::internal
 
         virtual bool onEvent(Ref<Event> event) override;
 
-        void addRigidBody(entt::entity entity,
-                          const component::Transform& transformComponent,
-                          const component::RigidBody& bodyComponent);
-
+    private:
+        void processIncomingRigidBody(entt::entity entity,
+                                      const component::Transform& transformComponent,
+                                      const component::Collider&  colliderComponent,
+                                      const component::RigidBody& rigidBodyComponent);
+        
     private:
         Timestep m_fixedTimeStep;
 
@@ -51,6 +66,14 @@ namespace oyl::internal
 
             Ref<btCollisionShape> shape;
             Ref<btMotionState>    motion;
+
+            struct ChildShapeInfo
+            {
+                WeakRef<component::Collider::ShapeInfo> shapeInfo;
+                Ref<btCollisionShape>                   btShape;
+            };
+
+            std::vector<ChildShapeInfo> children;
         };
 
         std::unordered_map<entt::entity, Ref<RigidBodyInfo>> m_rigidBodies;

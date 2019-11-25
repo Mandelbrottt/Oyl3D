@@ -11,7 +11,7 @@ namespace oyl
     
     std::unordered_map<CacheAlias, Ref<Shader>> Shader::s_cache;
 
-    Ref<Shader> Shader::create(const std::initializer_list<ShaderInfo>& files)
+    Ref<Shader> Shader::create(const std::vector<ShaderInfo>& infos)
     {
         switch (Renderer::getAPI())
         {
@@ -19,13 +19,25 @@ namespace oyl
                 OYL_ASSERT(false, "None is currently unsupported");
                 return nullptr;
             case API_OpenGL:
-                return OpenGLShader::create(files);
+                return OpenGLShader::create(infos);
         }
         return nullptr;
     }
 
+    Ref<Shader> Shader::create(const std::initializer_list<ShaderInfo>& files)
+    {
+        return create(std::vector<ShaderInfo>(files));
+    }
+
     const Ref<Shader>& Shader::cache(const std::initializer_list<ShaderInfo>& files, 
                                      const CacheAlias& alias, 
+                                     bool overwrite)
+    {
+        return cache(std::vector<ShaderInfo>(files), alias, overwrite);
+    }
+
+    const Ref<Shader>& Shader::cache(const std::vector<ShaderInfo>& infos,
+                                     const CacheAlias& alias,
                                      bool overwrite)
     {
         auto it = s_cache.find(alias);
@@ -33,17 +45,16 @@ namespace oyl
         {
             if (!overwrite)
             {
-                OYL_LOG_ERROR("Shader {0} is already cached!", alias);
+                OYL_LOG_WARN("Shader {0} is already cached!", alias);
                 return it->second;
-            }
-            else
+            } else
             {
-                it->second = Shader::create(files);
+                it->second = Shader::create(infos);
                 return it->second;
             }
         }
 
-        s_cache[alias] = Shader::create(files);
+        s_cache[alias] = Shader::create(infos);
         return s_cache[alias];
     }
 
@@ -64,7 +75,7 @@ namespace oyl
         {
             if (!overwrite)
             {
-                OYL_LOG_ERROR("Shader '{0}' is already cached!", alias);
+                OYL_LOG_WARN("Shader '{0}' is already cached!", alias);
                 return it->second;
             } else
             {
@@ -95,6 +106,34 @@ namespace oyl
             return s_invalid;
         }
         return s_cache.at(alias);
+    }
+
+    bool Shader::isCached(const Ref<Shader>& existing)
+    {
+        // Return true if the Ref is already cached, otherwise return false
+        for (auto kvp : s_cache)
+        {
+            if (kvp.second == existing)
+                return true;
+        }
+        return false;
+    }
+    
+    const CacheAlias& Shader::getAlias(const Ref<Shader>& existing)
+    {
+        // If the Ref is already cached, return the first alias in the list.
+        // Otherwise, return the 'invalid' alias
+        for (const auto& kvp : s_cache)
+        {
+            if (kvp.second == existing)
+                return kvp.first;
+        }
+        return INVALID_ALIAS;
+    }
+
+    bool Shader::exists(const CacheAlias& alias)
+    {
+        return s_cache.find(alias) != s_cache.end();
     }
 
     const Ref<Shader>& Shader::rename(const CacheAlias& currentAlias, 

@@ -16,11 +16,14 @@
 
 #include "Input/GamepadListener.h"
 
-#include "System/Platform.h"
+#include "Platform/Platform.h"
 
 #include "Scenes/Scene.h"
+#include "Scenes/SystemsLayer.h"
 
 #include "Rendering/Renderer.h"
+
+#include "Utils/SceneToFile.h"
 
 #include <imgui.h>
 
@@ -30,14 +33,14 @@ namespace oyl
     {
         class ApplicationListener : public EventListener
         {
-            friend class Application;
+            friend Application;
         public:
             ApplicationListener()
             {
-                addToCategoryMask(CategoryWindow);
-                addToCategoryMask(CategoryKeyboard);
-                addToCategoryMask(CategoryMouse);
-                addToCategoryMask(CategoryCursorStateRequest);
+                listenForEventCategory(CategoryWindow);
+                listenForEventCategory(CategoryKeyboard);
+                listenForEventCategory(CategoryMouse);
+                listenForEventCategory(CategoryCursorStateRequest);
             }
 
         private:
@@ -76,6 +79,12 @@ namespace oyl
                 { FragmentShader, ENGINE_RES + TEXTURE_SHADER_FRAGMENT_PATH },
             }, TEXTURE_SHADER_ALIAS);
 
+        Shader::cache(
+            {
+                { VertexShader, ENGINE_RES + "shaders/morphTargetLighting.vert" },
+                { FragmentShader, ENGINE_RES + LIGHTING_SHADER_FRAGMENT_PATH },
+            }, "animation");
+
         Mesh::cache(ENGINE_RES + CUBE_MESH_PATH, CUBE_MESH_ALIAS);
         Mesh::cache(ENGINE_RES + MONKEY_MESH_PATH, MONKEY_MESH_ALIAS);
 
@@ -85,14 +94,6 @@ namespace oyl
         m_renderSystem = internal::RenderSystem::create();
 
         initEventListeners();
-        
-    #if !defined(OYL_DISTRIBUTION)
-        m_guiLayer = GuiLayer::create();
-        m_guiLayer->init();
-
-        m_dispatcher->registerListener(m_guiLayer);
-        m_guiLayer->setDispatcher(m_dispatcher);
-    #endif
 
         m_mainBuffer = FrameBuffer::create(1);
         m_mainBuffer->initDepthTexture(m_window->getWidth(), m_window->getHeight());
@@ -104,7 +105,7 @@ namespace oyl
 
         ViewportHandleChangedEvent handleChanged;
         handleChanged.handle = m_mainBuffer->getColorHandle(0);
-        
+
         m_dispatcher->postEvent(Event::create(handleChanged));
 
         WindowResizedEvent wr;
@@ -123,6 +124,8 @@ namespace oyl
         m_guiLayer->onExit();
         m_guiLayer->shutdown();
     #endif
+
+        m_systemsLayer->onExit();
         
         m_renderSystem->onExit();
         m_renderSystem->shutdown();
@@ -164,13 +167,13 @@ namespace oyl
             }
         }
 
-        handled |= m_doUpdate;
+        handled |= !m_doUpdate;
 
         return handled;
     }
 
     void Application::pushScene(Ref<Scene> scene)
-    {
+    {        
         if (m_currentScene)
         {
             m_currentScene->onExit();
@@ -179,6 +182,8 @@ namespace oyl
         #if !defined(OYL_DISTRIBUTION)
             m_guiLayer->onExit();
         #endif
+
+            m_systemsLayer->onExit();
             
             m_renderSystem->onExit();
         }
@@ -189,26 +194,59 @@ namespace oyl
 
         Scene::s_current = m_currentScene;
 
-        m_dispatcher->registerListener(m_currentScene);
-        m_currentScene->setDispatcher(m_dispatcher);
-
+        m_renderSystem->setDispatcher(m_dispatcher);
         m_renderSystem->setRegistry(m_currentScene->m_registry);
         m_renderSystem->onEnter();
 
-    #if !defined(OYL_DISTRIBUTION)
-        m_guiLayer->setRegistry(m_currentScene->m_registry);
-        m_guiLayer->onEnter();
-    #endif
-        
-        m_currentScene->initDefaultSystems();
+        m_dispatcher->registerListener(m_renderSystem);
 
+        if (!m_systemsLayer)
+        {
+            m_systemsLayer = internal::SystemsLayer::create();
+            
+            m_systemsLayer->setDispatcher(m_dispatcher);
+            m_systemsLayer->setRegistry(m_currentScene->m_registry);
+            m_systemsLayer->onEnter();
+
+            m_dispatcher->registerListener(m_systemsLayer);
+        }
+        else
+        {
+            m_systemsLayer->setRegistry(m_currentScene->m_registry);
+            m_systemsLayer->onEnter();
+        }
+
+    #if !defined(OYL_DISTRIBUTION)
+        if (!m_guiLayer)
+        {
+            m_guiLayer = internal::GuiLayer::create();
+            m_guiLayer->init();
+
+            m_guiLayer->setDispatcher(m_dispatcher);
+            m_guiLayer->setRegistry(m_currentScene->m_registry);
+            m_guiLayer->onEnter();
+            
+            m_dispatcher->registerListener(m_guiLayer);
+        }
+        else
+        {
+            m_guiLayer->setRegistry(m_currentScene->m_registry);
+            m_guiLayer->onEnter();
+        }
+    #endif
+
+        m_dispatcher->registerListener(m_currentScene);
+        m_currentScene->setDispatcher(m_dispatcher);
+
+        m_currentScene->Scene::onEnter();
         m_currentScene->onEnter();
         
-        m_currentScene->loadSceneFromFile();
+        internal::loadSceneFromFile(*m_currentScene);
+        
     }
 
     void Application::run()
-    {
+    {        
         while (m_running)
         {
             auto     time = (float) Platform::getTime();
@@ -223,12 +261,18 @@ namespace oyl
             #if !defined(OYL_DISTRIBUTION)
                 if (m_guiLayer->doGameUpdate())
                 {
+                    m_systemsLayer->onUpdateSystems(timestep);
+                    m_systemsLayer->onUpdate(timestep);
+
                     m_currentScene->onUpdate(timestep);
                 }
                 
                 m_guiLayer->onUpdateSystems(timestep);
                 m_guiLayer->onUpdate(timestep);
             #else
+                m_systemsLayer->onUpdateSystems(timestep);
+                m_systemsLayer->onUpdate(timestep);
+
                 m_currentScene->onUpdate(timestep);
             #endif
 
@@ -282,9 +326,6 @@ namespace oyl
         m_appListener->setDispatcher(m_dispatcher);
 
         m_vibrationListener = internal::GamepadListener::create();
-        m_dispatcher->registerListener(m_vibrationListener);
-        m_vibrationListener->setDispatcher(m_dispatcher);
-
         m_dispatcher->registerListener(m_vibrationListener);
         m_vibrationListener->setDispatcher(m_dispatcher);
     }

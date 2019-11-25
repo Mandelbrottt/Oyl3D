@@ -105,7 +105,7 @@ namespace oyl
 
     void OpenGLVertexArray::load()
     {
-        if (m_loaded) return;
+        if (m_loaded) unload();
         m_loaded = true;
 
         glGenVertexArrays(1, &m_rendererID);
@@ -117,6 +117,8 @@ namespace oyl
         m_loaded = false;
 
         glDeleteVertexArrays(1, &m_rendererID);
+        m_vertexBuffers.clear();
+        m_indexBuffer.reset();
     }
 
     void OpenGLVertexArray::bind() const
@@ -136,12 +138,16 @@ namespace oyl
         OYL_ASSERT(!vbo->getLayout().getElements().empty(), "Layout is Empty!");
 
         glBindVertexArray(m_rendererID);
+
+        u32 index  = 0;
+
+        for (const auto& tVbo : m_vertexBuffers)
+            index += tVbo->getLayout().getElements().size();
+
         vbo->bind();
 
-        // Setup the vertex buffer's layout
-        uint        index  = 0;
         const auto& layout = vbo->getLayout();
-        for (const auto& element : vbo->getLayout())
+        for (const auto& element : layout)
         {
             glEnableVertexAttribArray(index);
             glVertexAttribPointer(index,
@@ -152,7 +158,7 @@ namespace oyl
                                   (const void*) element.offset);
             index++;
         }
-
+        
         m_vertexBuffers.push_back(vbo);
         glBindVertexArray(GL_NONE);
     }
