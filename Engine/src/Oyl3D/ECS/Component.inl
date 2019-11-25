@@ -304,17 +304,34 @@ namespace oyl::component
 
     // vvv Collider vvv ///
 
+    inline Collider::ShapeInfo::ShapeInfo()
+    {
+        m_selfRef = Ref<ShapeInfo>(this, [](ShapeInfo*) {});
+
+        defaultInit();
+    }
+
+    inline Collider::ShapeInfo::ShapeInfo(OylEnum type)
+        : m_type(type)
+    {
+        m_selfRef = Ref<ShapeInfo>(this, [](ShapeInfo*) {});
+        
+        defaultInit();
+    }
+    
     inline Collider::ShapeInfo::ShapeInfo(const ShapeInfo& shapeInfo)
     {
         *this = shapeInfo;
+
+        m_isDirty = true;
     }
 
     inline Collider::ShapeInfo& Collider::ShapeInfo::operator=(const ShapeInfo& shapeInfo)
     {
-        this->type = shapeInfo.type;
-        this->isTrigger = shapeInfo.isTrigger;
+        m_type = shapeInfo.m_type;
+        m_isTrigger = shapeInfo.m_isTrigger;
 
-        switch (shapeInfo.type)
+        switch (shapeInfo.m_type)
         {
             case Collider_Box:
                 this->box = shapeInfo.box;
@@ -333,27 +350,89 @@ namespace oyl::component
                 break;
         }
 
+        m_isDirty = true;
+
         return *this;
+    }
+
+    inline void Collider::ShapeInfo::defaultInit()
+    {
+        switch (m_type)
+        {
+            case Collider_Box:
+                box = {};
+                box.setSize(glm::vec3(1.0f));
+                break;
+            case Collider_Sphere:
+                sphere = {};
+                sphere.setRadius(0.5f);
+                break;
+            case Collider_Capsule:
+                capsule = {};
+                capsule.setRadius(0.5f);
+                capsule.setHeight(1.0f);
+                capsule.setDirection(Direction::Y_AXIS);
+                break;
+            case Collider_Cylinder:
+                cylinder = {};
+                cylinder.setRadius(0.5f);
+                cylinder.setHeight(1.0f);
+                cylinder.setDirection(Direction::Y_AXIS);
+                break;
+            case Collider_Mesh:
+                mesh = {};
+                break;
+        }
+
+        m_isDirty = true;
+    }
+
+    inline OylEnum Collider::ShapeInfo::getType() const
+    {
+        return m_type;
+    }
+
+    inline void Collider::ShapeInfo::setType(OylEnum type)
+    {
+        if (m_type != type)
+        {
+            m_isDirty = true;
+            m_type = type;
+
+            defaultInit();
+        }
+        
+    }
+
+    inline bool Collider::ShapeInfo::isTrigger() const
+    {
+        return m_isTrigger;
+    }
+
+    inline void Collider::ShapeInfo::setIsTrigger(bool trigger)
+    {
+        m_isDirty |= m_isTrigger != trigger;
+        m_isTrigger = trigger;
+    }
+
+    inline bool Collider::ShapeInfo::isDirty() const
+    {
+        return m_isDirty || box.isDirty() || sphere.isDirty() || 
+               capsule.isDirty() || cylinder.isDirty() || mesh.isDirty();
     }
 
     inline Collider::ShapeInfo& Collider::pushShape(ShapeInfo shape)
     {
-        m_isDirty = true;
-
-        return m_shapes.emplace_back(std::move(shape));
+        return m_shapes.emplace_back(shape);
     }
 
     inline Collider::ShapeInfo& Collider::pushShape(OylEnum type)
     {
-        m_isDirty = true;
-
         return m_shapes.emplace_back(type);
     }
 
     inline void Collider::eraseShape(u32 index)
-    {
-        m_isDirty = true;
-        
+    {   
         m_shapes.erase(m_shapes.begin() + index);
     }
 
@@ -385,6 +464,14 @@ namespace oyl::component
     inline bool Collider::empty() const
     {
         return m_shapes.empty();
+    }
+
+    inline bool Collider::isDirty() const
+    {
+        bool dirty = false;
+        for (const auto& shape : m_shapes)
+            dirty |= shape.isDirty();
+        return dirty;
     }
 
     inline std::vector<Collider::ShapeInfo>::iterator Collider::begin()
@@ -425,7 +512,15 @@ namespace oyl::component
 
             m_center = center;
         }
-        
+
+        inline BaseCollider& BaseCollider::operator =(const BaseCollider& other)
+        {
+            m_center  = other.m_center;
+            m_isDirty = true;
+
+            return *this;
+        }
+
         inline glm::vec3 BoxCollider::getSize() const
         {
             return m_size;

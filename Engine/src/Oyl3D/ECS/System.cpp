@@ -423,121 +423,6 @@ namespace oyl
             return false;
         }
 
-        void PhysicsSystem::addRigidBody(entt::entity entity,
-                                         const component::Transform& transformComponent, 
-                                         const component::RigidBody& bodyComponent)
-        {
-            //Ref<btCollisionShape> shape  = nullptr;
-            //Ref<btMotionState>  motion = nullptr;
-            //Ref<btRigidBody>    body   = nullptr;
-
-            //// TODO: Deal with parenting
-            //switch (bodyComponent.type)
-            //{
-            //    case RigidBody_StaticPlane:
-            //    {
-            //        btTransform t;
-            //        
-            //        t.setOrigin(btVector3(transformComponent.getPositionX(),
-            //                              transformComponent.getPositionY(),
-            //                              transformComponent.getPositionZ()));
-
-            //        glm::quat q = glm::quat_cast(transformComponent.getMatrixGlobal());
-
-            //        btQuaternion btq = btQuaternion(q.x, q.y, q.z, q.w);
-            //        t.setRotation(btq);
-            //        
-            //        glm::vec3 up = transformComponent.getUpGlobal();
-            //        
-            //        shape  = Ref<btStaticPlaneShape>::create(btVector3(up.x, up.y, up.z), 0);
-            //        motion = Ref<btDefaultMotionState>::create(t);
-
-            //        btRigidBody::btRigidBodyConstructionInfo info(0.0f, motion.get(), shape.get());
-
-            //        body = Ref<btRigidBody>::create(info);
-            //        
-            //        break;
-            //    }
-            //    case RigidBody_Box:
-            //    {
-            //        btTransform t;
-
-            //        t.setOrigin(btVector3(transformComponent.getPositionX(),
-            //                              transformComponent.getPositionY(),
-            //                              transformComponent.getPositionZ()));
-
-            //        glm::quat q = glm::quat_cast(transformComponent.getMatrixGlobal());
-
-            //        btQuaternion btq = btQuaternion(q.x, q.y, q.z, q.w);
-            //        t.setRotation(btq);
-
-            //        btVector3 halfExtents;
-            //        halfExtents.setX(bodyComponent.width  / 2.0f);
-            //        halfExtents.setY(bodyComponent.height / 2.0f);
-            //        halfExtents.setZ(bodyComponent.length / 2.0f);
-
-            //        shape = Ref<btBoxShape>::create(halfExtents);
-
-            //        btVector3 inertia = { 0, 0, 0 };
-            //        if (bodyComponent.mass != 0.0f)
-            //            shape->calculateLocalInertia(bodyComponent.mass, inertia);
-            //        
-            //        motion = Ref<btDefaultMotionState>::create(t);
-
-            //        btRigidBody::btRigidBodyConstructionInfo info(bodyComponent.mass, 
-            //                                                      motion.get(), 
-            //                                                      shape.get(), 
-            //                                                      inertia);
-
-            //        body = Ref<btRigidBody>::create(info);
-
-            //        break;
-            //    }
-            //    case RigidBody_Sphere:
-            //    {
-            //        btTransform t;
-            //        t.setFromOpenGLMatrix(value_ptr(transformComponent.getMatrixGlobal()));
-            //        
-            //        t.setOrigin(btVector3(transformComponent.getPositionX(),
-            //                              transformComponent.getPositionY(),
-            //                              transformComponent.getPositionZ()));
-
-            //        glm::quat q = glm::quat_cast(transformComponent.getMatrixGlobal());
-
-            //        btQuaternion btq = btQuaternion(q.x, q.y, q.z, q.w);
-            //        t.setRotation(btq);
-            //        
-            //        shape = Ref<btSphereShape>::create(bodyComponent.radius);
-
-            //        btVector3 inertia = { 0, 0, 0 };
-            //        if (bodyComponent.mass != 0.0f)
-            //            shape->calculateLocalInertia(bodyComponent.mass, inertia);
-
-            //        motion = Ref<btDefaultMotionState>::create(t);
-
-            //        btRigidBody::btRigidBodyConstructionInfo info(bodyComponent.mass, 
-            //                                                      motion.get(), 
-            //                                                      shape.get(), 
-            //                                                      inertia);
-
-            //        body = Ref<btRigidBody>::create(info);
-
-            //        break;
-            //    }
-            //}
-
-            //shape->setLocalScaling(btVector3(transformComponent.getScaleX(),
-            //                                 transformComponent.getScaleY(),
-            //                                 transformComponent.getScaleZ()));
-
-            //m_world->addRigidBody(body.get());
-            //
-            //m_rigidBodies[entity] = Ref<RigidBodyInfo>::create();
-            //m_rigidBodies[entity]->body = body;
-            //m_rigidBodies[entity]->shape = shape;
-            //m_rigidBodies[entity]->motion = motion;
-        }
-
         // TODO: Currently need rigidbody for collider to register in world, make mutually exclusive
         void PhysicsSystem::processIncomingRigidBody(entt::entity entity, 
                                                      const component::Transform& transformComponent, 
@@ -554,7 +439,25 @@ namespace oyl
                 }
                 return;
             }
+            
+            // TODO: Don't get rid of the body from the world, just update it
+            if (colliderComponent.isDirty() && 
+                m_rigidBodies.find(entity) != m_rigidBodies.end())
+            {
+                m_world->removeRigidBody(m_rigidBodies.at(entity)->body.get());
+                m_rigidBodies.erase(entity);
 
+                for (auto& shape : const_cast<component::Collider&>(colliderComponent))
+                {
+                    shape.m_isDirty          = false;
+                    shape.box.m_isDirty      = false;
+                    shape.sphere.m_isDirty   = false;
+                    shape.capsule.m_isDirty  = false;
+                    shape.cylinder.m_isDirty = false;
+                    shape.mesh.m_isDirty     = false;
+                }
+            }
+            
             if (m_rigidBodies.find(entity) == m_rigidBodies.end())
             {
                 // Add RigidBody to World
@@ -566,15 +469,14 @@ namespace oyl
                 m_rigidBodies[entity] = Ref<RigidBodyInfo>::create();
 
                 // TEMPORARY:
-                OYL_ASSERT(colliderComponent.size() <= 1, "Multiple shapes are not working right now");
+                //OYL_ASSERT(colliderComponent.size() <= 1, "Multiple shapes are not working right now");
 
                 if (colliderComponent.size() == 1)
-                    //if (false)
                 {
                     btTransform t;
 
                     const auto& shapeThing = colliderComponent.getShape(0);
-                    switch (shapeThing.type)
+                    switch (shapeThing.m_type)
                     {
                         case Collider_Box:
                         {
@@ -668,7 +570,7 @@ namespace oyl
                     auto childIter = colliderComponent.begin();
                     for (; childIter != colliderComponent.end(); ++childIter)
                     {
-                        switch (childIter->type)
+                        switch (childIter->m_type)
                         {
                             case Collider_Box:
                             {
@@ -984,55 +886,58 @@ namespace oyl
                 [](const Renderable& lhs, const Renderable& rhs)
                 {
                     if (rhs.material == nullptr || rhs.mesh == nullptr)
-                        return false;
-                    else if (lhs.material == nullptr || lhs.mesh == nullptr)
                         return true;
-                    else if (lhs.material->getShader() != rhs.material->getShader())
-                        return lhs.material->getShader() < rhs.material->getShader();
+                    else if (lhs.material == nullptr || lhs.mesh == nullptr)
+                        return false;
+                    else if (lhs.material->shader != rhs.material->shader)
+                        return lhs.material->shader < rhs.material->shader;
                     else
                         return lhs.material < rhs.material;
                 });
 
             Ref<Material> boundMaterial;
-            Ref<Shader> tempShader;
+            Ref<Shader>   tempShader;
 
             // TODO: Make EditorCamera like PlayerCamera
-            auto        camView = registry->view<EditorCamera>();
+            auto camView = registry->view<EditorCamera>();
             Ref<Camera> currentCamera = camView.get(*camView.begin()).camera;
 
             auto view = registry->view<Renderable>();
-            for (const auto& entity : view)
+            for (auto entity : view)
             {
-                Renderable& mr = registry->get<Renderable>(entity);
+                Renderable& mr = view.get(entity);
 
                 if (mr.mesh == nullptr)
-                    continue;
+                    break;
 
                 if (mr.material != boundMaterial)
                 {
                     if (boundMaterial)
-                        boundMaterial->setShader(tempShader);
+                        boundMaterial->shader = tempShader;
                     
                     boundMaterial = mr.material;
-                    
-                    mr.material->setUniformMat4("u_view", currentCamera->getViewMatrix());
-                    mr.material->setUniformMat4("u_viewProjection", currentCamera->getViewProjectionMatrix());
+
+                    if (!boundMaterial)
+                        break;
+
+                    boundMaterial->setUniformMat4("u_view", currentCamera->getViewMatrix());
+                    boundMaterial->setUniformMat4("u_viewProjection", currentCamera->getViewProjectionMatrix());
                     glm::mat4 viewNormal = glm::mat4(currentCamera->getViewMatrix());
                     viewNormal = glm::inverse(glm::transpose(viewNormal));
-                    mr.material->setUniformMat3("u_viewNormal", glm::mat4(viewNormal));
+                    boundMaterial->setUniformMat3("u_viewNormal", glm::mat4(viewNormal));
 
-                    auto  lightView = registry->view<PointLight>();
-                    auto  lightProps = lightView.get(lightView[0]);
-                    auto  lightTransform = registry->get<Transform>(lightView[0]);
+                    auto lightView = registry->view<PointLight>();
+                    auto lightProps = lightView.get(lightView[0]);
+                    auto lightTransform = registry->get<Transform>(lightView[0]);
 
-                    mr.material->setUniform3f("u_pointLight.position",
-                                              viewNormal * glm::vec4(lightTransform.getPosition(), 1.0f));
-                    mr.material->setUniform3f("u_pointLight.ambient", lightProps.ambient);
-                    mr.material->setUniform3f("u_pointLight.diffuse", lightProps.diffuse);
-                    mr.material->setUniform3f("u_pointLight.specular", lightProps.specular);
+                    boundMaterial->setUniform3f("u_pointLight.position",
+                                                viewNormal * glm::vec4(lightTransform.getPosition(), 1.0f));
+                    boundMaterial->setUniform3f("u_pointLight.ambient", lightProps.ambient);
+                    boundMaterial->setUniform3f("u_pointLight.diffuse", lightProps.diffuse);
+                    boundMaterial->setUniform3f("u_pointLight.specular", lightProps.specular);
 
-                    tempShader = boundMaterial->getShader();
-                    mr.material->setShader(Shader::get(LIGHTING_SHADER_ALIAS));
+                    tempShader = boundMaterial->shader;
+                    boundMaterial->shader = Shader::get(LIGHTING_SHADER_ALIAS);
                     
                     // TEMPORARY:
                     boundMaterial->bind();
@@ -1041,7 +946,7 @@ namespace oyl
 
                 const glm::mat4& transform = registry->get_or_assign<Transform>(entity).getMatrixGlobal();
 
-                Renderer::submit(mr.mesh, mr.material, transform);
+                Renderer::submit(mr.mesh, boundMaterial, transform);
             }
 
             m_editorViewportBuffer->unbind();

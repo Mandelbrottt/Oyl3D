@@ -24,6 +24,12 @@ namespace oyl::internal
 
         const Ref<T>& get(const CacheAlias& alias);
 
+        bool isCached(const Ref<T>& existing);
+
+        bool exists(const CacheAlias& alias);
+
+        const CacheAlias& getAlias(const Ref<T>& existing);
+
         const Ref<T>& rename(const CacheAlias& currentAlias,
                              const CacheAlias& newAlias,
                              bool overwrite = false);

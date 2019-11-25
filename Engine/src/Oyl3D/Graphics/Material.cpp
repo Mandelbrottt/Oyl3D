@@ -7,30 +7,16 @@
 namespace oyl
 {
     internal::AssetCache<Material> Material::s_cache;
-    
+
     Material::Material(_Material)
-        : m_shader(nullptr), m_albedo(nullptr)
-    {
-    }
+        : shader(nullptr) {}
 
-    Material::Material(_Material, Ref<Shader> shader, Ref<Texture> texture)
-        : m_shader(std::move(shader)), m_albedo(std::move(texture))
-    {
-    }
+    Material::Material(_Material, Ref<Shader> shader)
+        : shader(std::move(shader)) {}
 
-    Material::Material(_Material, Ref<Texture> texture)
-        : m_shader(nullptr), m_albedo(std::move(texture))
+    Ref<Material> Material::create(const Ref<Shader>& shader)
     {
-    }
-
-    Ref<Material> Material::create(const Ref<Shader>& shader, const Ref<Texture>& texture)
-    {
-        return Ref<Material>::create(_Material{}, shader, texture);
-    }
-
-    Ref<Material> Material::create(const Ref<Texture>& texture)
-    {
-        return Ref<Material>::create(_Material{}, std::move(texture));
+        return Ref<Material>::create(_Material{}, shader);
     }
 
     Ref<Material> Material::create()
@@ -40,7 +26,7 @@ namespace oyl
 
     template<>
     const Ref<Material>& internal::AssetCache<Material>::cache(const Ref<Material>& existing,
-                                                               const CacheAlias& alias,
+                                                               const CacheAlias&    alias,
                                                                bool overwrite)
     {
         Ref<Material> alreadyCached = nullptr;
@@ -49,7 +35,9 @@ namespace oyl
         {
             if (kvp.second == existing ||
                 (kvp.second->getShader() == existing->getShader() &&
-                 kvp.second->getAlbedoMap() == existing->getAlbedoMap()))
+                 kvp.second->getAlbedoMap() == existing->getAlbedoMap() &&
+                 kvp.second->getSpecularMap() == existing->getSpecularMap() &&
+                 kvp.second->getNormalMap() == existing->getNormalMap()))
             {
                 alreadyCached = kvp.second;
             }
@@ -60,7 +48,7 @@ namespace oyl
         {
             if (!overwrite)
             {
-                OYL_LOG_ERROR("Material '{1}' is already cached!", alias);
+                OYL_LOG_WARN("Material '{1}' is already cached!", alias);
                 return it->second;
             }
 
@@ -73,18 +61,17 @@ namespace oyl
     }
 
     const Ref<Material>& Material::cache(const Ref<Material>& material, 
-                                         const CacheAlias& alias, 
+                                         const CacheAlias&    alias, 
                                          bool overwrite)
     {
         return s_cache.cache(material, alias, overwrite);
     }
 
-    const Ref<Material>& Material::cache(const Ref<Shader>& shader, 
-                                         const Ref<Texture>& texture, 
-                                         const CacheAlias& alias, 
+    const Ref<Material>& Material::cache(const Ref<Shader>& shader,
+                                         const CacheAlias&  alias,
                                          bool overwrite)
     {
-        auto mat = Material::create(shader, texture);
+        Ref<Material> mat = Material::create(shader);
         return s_cache.cache(mat, alias, overwrite);
     }
 
@@ -96,6 +83,21 @@ namespace oyl
     const Ref<Material>& Material::get(const CacheAlias& alias)
     {
         return s_cache.get(alias);
+    }
+
+    bool Material::isCached(const Ref<Material>& existing)
+    {
+        return s_cache.isCached(existing);
+    }
+
+    bool Material::exists(const CacheAlias& alias)
+    {
+        return s_cache.exists(alias);
+    }
+
+    const CacheAlias& Material::getAlias(const Ref<Material>& existing)
+    {
+        return s_cache.getAlias(existing);
     }
 
     const Ref<Material>& internal::AssetCache<Material>::rename(const CacheAlias& currentAlias,
@@ -146,73 +148,56 @@ namespace oyl
 
     void Material::bind()
     {
-        if (m_shader)
-            m_shader->bind();
+        if (shader)
+            shader->bind();
 
-        if (m_albedo)
-            m_albedo->bind(0);
+        if (albedoMap)
+            albedoMap->bind(0);
         setUniform1i("u_material.albedo", 0);
 
-        if (m_specular)
-            m_specular->bind(1);
+        if (specularMap)
+            specularMap->bind(1);
         setUniform1i("u_material.specular", 1);
 
-        //if (m_normal)
-        //    m_normal->bind(2);
+        //if (normalMap)
+        //    normalMap->bind(2);
         //setUniform1i("u_material.normal", 2);
     }
 
     void Material::unbind()
     {
-        if (m_shader) 
-            m_shader->unbind();
+        if (shader) 
+            shader->unbind();
 
-        if (m_albedo)
-            m_albedo->unbind();
+        if (albedoMap)
+            albedoMap->unbind();
 
-        if (m_specular)
-            m_specular->unbind();
+        if (specularMap)
+            specularMap->unbind();
 
-        //if (m_normal)
-        //    m_normal->unbind();
+        //if (normalMap)
+        //    normalMap->unbind();
     }
 
     void Material::applyUniforms()
     {
         for (const auto& kvp : m_uniformMat4s)
-            m_shader->setUniformMat4(kvp.first, kvp.second);
+            shader->setUniformMat4(kvp.first, kvp.second);
         for (const auto& kvp : m_uniformMat3s)
-            m_shader->setUniformMat3(kvp.first, kvp.second);
+            shader->setUniformMat3(kvp.first, kvp.second);
         for (const auto& kvp : m_uniformVec4s)
-            m_shader->setUniform4f(kvp.first, kvp.second);
+            shader->setUniform4f(kvp.first, kvp.second);
         for (const auto& kvp : m_uniformVec3s)
-            m_shader->setUniform3f(kvp.first, kvp.second);
+            shader->setUniform3f(kvp.first, kvp.second);
         for (const auto& kvp : m_uniformVec2s)
-            m_shader->setUniform2f(kvp.first, kvp.second);
+            shader->setUniform2f(kvp.first, kvp.second);
         for (const auto& kvp : m_uniformFloats)
-            m_shader->setUniform1f(kvp.first, kvp.second);
+            shader->setUniform1f(kvp.first, kvp.second);
         for (const auto& kvp : m_uniformInts)
-            m_shader->setUniform1i(kvp.first, kvp.second);
+            shader->setUniform1i(kvp.first, kvp.second);
     }
 
-    void Material::loadTexture(const std::string& filename)
-    {
-        unloadTexture();
-        m_albedo = Texture2D::create(filename);
-    }
-
-    void Material::loadTexture(Ref<Texture> texture)
-    {
-        unloadTexture();
-        m_albedo = std::move(texture);
-    }
-
-    void Material::unloadTexture()
-    {
-        m_albedo.reset();
-    }
-
-    template<> [[deprecated]]
+    template<> OYL_DEPRECATED("Huh?")
     const Ref<Material>& internal::AssetCache<Material>::cache(const std::string& filePath,
                                                                CacheAlias alias,
                                                                bool overwrite)

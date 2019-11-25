@@ -41,13 +41,25 @@ namespace oyl
                                            const CacheAlias& alias = "",
                                            bool overwrite = false);
 
+        static const Ref<Texture1D>& cache(const Ref<Texture1D>& existing,
+                                           const CacheAlias&     alias = "",
+                                           bool overwrite = false);
+
         static void discard(const CacheAlias& alias);
 
         static const Ref<Texture1D>& get(const CacheAlias& alias);
 
+        static bool isCached(const Ref<Texture1D>& existing);
+
+        static bool exists(const CacheAlias& alias);
+
+        static const CacheAlias& getAlias(const Ref<Texture1D>& existing);
+        
         static const Ref<Texture1D>& rename(const CacheAlias& currentAlias,
                                             const CacheAlias& newAlias,
                                             bool overwrite = false);
+
+        static const auto& getCache() { return s_cache.m_cache; }
 
     private:
         static internal::AssetCache<Texture1D> s_cache;
@@ -68,13 +80,25 @@ namespace oyl
                                            const CacheAlias& alias = "",
                                            bool overwrite = false);
 
+        static const Ref<Texture2D>& cache(const Ref<Texture2D>& existing,
+                                           const CacheAlias&     alias = "",
+                                           bool overwrite = false);
+        
         static void discard(const CacheAlias& alias);
 
         static const Ref<Texture2D>& get(const CacheAlias& alias);
 
+        static bool isCached(const Ref<Texture2D>& existing);
+
+        static bool exists(const CacheAlias& alias);
+
+        static const CacheAlias& getAlias(const Ref<Texture2D>& existing);
+
         static const Ref<Texture2D>& rename(const CacheAlias& currentAlias,
                                             const CacheAlias& newAlias,
                                             bool              overwrite = false);
+
+        static const auto& getCache() { return s_cache.m_cache; }
 
     private:
         static internal::AssetCache<Texture2D> s_cache;
@@ -96,13 +120,25 @@ namespace oyl
                                            const CacheAlias& alias = "",
                                            bool overwrite = false);
 
+        static const Ref<Texture3D>& cache(const Ref<Texture3D>& existing,
+                                           const CacheAlias&     alias = "",
+                                           bool overwrite = false);
+
         static void discard(const CacheAlias& alias);
 
         static const Ref<Texture3D>& get(const CacheAlias& alias);
 
+        static bool isCached(const Ref<Texture3D>& existing);
+
+        static bool exists(const CacheAlias& alias);
+
+        static const CacheAlias& getAlias(const Ref<Texture3D>& existing);
+
         static const Ref<Texture3D>& rename(const CacheAlias& currentAlias,
                                             const CacheAlias& newAlias,
                                             bool              overwrite = false);
+
+        static const auto& getCache() { return s_cache.m_cache; }
 
     private:
         static internal::AssetCache<Texture3D> s_cache;

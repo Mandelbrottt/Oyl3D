@@ -35,25 +35,33 @@ namespace oyl
 
         static Ref<Mesh> create(const std::string& filePath);
 
+        // TODO: add cache for existing Ref
         static const Ref<Mesh>& cache(const std::string& filePath,
                                       const CacheAlias&  alias = "",
                                       bool               overwrite = false);
+
+        static const Ref<Mesh>& cache(const Ref<Mesh>&  existing,
+                                      const CacheAlias& alias = "",
+                                      bool              overwrite = false);
 
         static void discard(const CacheAlias& alias);
 
         static const Ref<Mesh>& get(const CacheAlias& alias);
 
+        static bool isCached(const Ref<Mesh>& existing);
+
+        static bool exists(const CacheAlias& alias);
+        
+        static const CacheAlias& getAlias(const Ref<Mesh>& existing);
+
         static const Ref<Mesh>& rename(const CacheAlias& currentAlias,
                                        const CacheAlias& newAlias,
                                        bool overwrite = false);
 
+        static const auto& getCache() { return s_cache.m_cache; }
+
         uint getNumFaces() const { return m_numFaces; }
         uint getNumVertices() const { return m_numVertices; }
-
-        struct FileInfo
-        {
-            std::string filePath;
-        };
         
         const std::string& getFilePath() { return m_filePath; }
 

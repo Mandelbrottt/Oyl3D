@@ -152,6 +152,7 @@ namespace oyl::component
         class BaseCollider
         {
         public:
+            
             glm::vec3 getCenter() const;
 
             void setCenter(glm::vec3 center);
@@ -164,6 +165,10 @@ namespace oyl::component
             bool m_isDirty = true;
 
             BaseCollider() = default;
+            BaseCollider& operator =(const BaseCollider& other);
+
+        private:
+            friend oyl::internal::PhysicsSystem;
         };
 
         class BoxCollider : public BaseCollider
@@ -201,8 +206,8 @@ namespace oyl::component
             void setDirection(Direction direction);
 
         private:
-            f32       m_radius = 0.5f;
-            f32       m_height = 1.0f;
+            f32       m_radius    = 0.5f;
+            f32       m_height    = 1.0f;
             Direction m_direction = Direction::Y_AXIS;
         };
 
@@ -229,7 +234,7 @@ namespace oyl::component
         public:
             MeshCollider() = default;
             ~MeshCollider() = default;
-            MeshCollider(const MeshCollider& other) : m_mesh(other.m_mesh) {}
+            MeshCollider(const MeshCollider& other) : BaseCollider(other), m_mesh(other.m_mesh) {}
 
             const Ref<Mesh>& getMesh() const;
 
@@ -243,19 +248,24 @@ namespace oyl::component
     class Collider
     {
     public:
+        // TODO: Inherit from bullet3 classes
         struct ShapeInfo
         {
-            ShapeInfo() { m_selfRef = Ref<ShapeInfo>(this, [](ShapeInfo*) {}); }
-            ShapeInfo(OylEnum type) : type(type) { m_selfRef = Ref<ShapeInfo>(this, [](ShapeInfo*) {}); }
+            ShapeInfo();
+            ShapeInfo(OylEnum type);
             ShapeInfo(const ShapeInfo& shapeInfo);
             ~ShapeInfo() {}
 
             ShapeInfo& operator=(const ShapeInfo& shapeInfo);
+
+            OylEnum getType() const;
+            void setType(OylEnum type);
             
-            OylEnum type = None;
+            bool isTrigger() const;
+            void setIsTrigger(bool trigger);
 
-            bool isTrigger = false;
-
+            bool isDirty() const;
+            
             union
             {
                 internal::BoxCollider      box;
@@ -267,7 +277,16 @@ namespace oyl::component
 
         private:
             friend oyl::internal::PhysicsSystem;
+            friend oyl::internal::GuiLayer;
+
+            void defaultInit();
+
             Ref<ShapeInfo> m_selfRef;
+
+            OylEnum m_type = None;
+
+            bool m_isTrigger = false;
+            bool m_isDirty   = true;
         };
 
         ShapeInfo& pushShape(ShapeInfo shape);
@@ -283,6 +302,8 @@ namespace oyl::component
         std::size_t size() const;
         bool empty() const;
 
+        bool isDirty() const;
+
         std::vector<ShapeInfo>::iterator begin();
         std::vector<ShapeInfo>::iterator end();
 
@@ -290,12 +311,12 @@ namespace oyl::component
         std::vector<ShapeInfo>::const_iterator end()   const;
 
     private:
-        std::vector<ShapeInfo> m_shapes;
+        friend oyl::internal::PhysicsSystem;
+        friend oyl::internal::GuiLayer;
         
-        bool m_isDirty = false;
+        std::vector<ShapeInfo> m_shapes;
     };
 
-    // TODO: Inherit from bullet3 classes
     class RigidBody
     {
         friend oyl::internal::PhysicsSystem;
