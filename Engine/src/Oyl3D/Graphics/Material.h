@@ -20,6 +20,7 @@ namespace oyl
         static Ref<Material> create(const Ref<Shader>& shader);
         static Ref<Material> create();
 
+        // TODO: Add ctor like shader has with ShaderInfo
         static const Ref<Material>& cache(const Ref<Material>& material,
                                           const CacheAlias& alias,
                                           bool overwrite = false);
