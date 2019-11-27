@@ -75,12 +75,6 @@ namespace oyl
 
         Shader::cache(
             {
-                { VertexShader, ENGINE_RES +   TEXTURE_SHADER_VERTEX_PATH },
-                { FragmentShader, ENGINE_RES + TEXTURE_SHADER_FRAGMENT_PATH },
-            }, TEXTURE_SHADER_ALIAS);
-
-        Shader::cache(
-            {
                 { VertexShader, ENGINE_RES + "shaders/morphTargetLighting.vert" },
                 { FragmentShader, ENGINE_RES + LIGHTING_SHADER_FRAGMENT_PATH },
             }, "animation");
@@ -89,6 +83,7 @@ namespace oyl
         Mesh::cache(ENGINE_RES + MONKEY_MESH_PATH, MONKEY_MESH_ALIAS);
 
         Texture2D::cache(ENGINE_RES + WHITE_TEXTURE_PATH, WHITE_TEXTURE_ALIAS);
+        Texture2D::cache(ENGINE_RES + BLACK_TEXTURE_PATH, BLACK_TEXTURE_ALIAS);
         Texture2D::cache(ENGINE_RES + UV_TEXTURE_PATH, UV_TEXTURE_ALIAS);
 
         m_renderSystem = internal::RenderSystem::create();

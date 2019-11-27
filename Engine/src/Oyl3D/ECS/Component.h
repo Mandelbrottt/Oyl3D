@@ -2,14 +2,16 @@
 
 namespace oyl
 {
-    class Mesh;
-    class Material;
     class Camera;
+    class Material;
+    class Mesh;
     class VertexArray;
 
     namespace internal
     {
+        class AnimationSystem;
         class PhysicsSystem;
+        class RenderSystem;
         class TransformUpdateSystem;
         class GuiLayer;
     }
@@ -23,6 +25,7 @@ namespace oyl::component
         std::string name;
     };
 
+    // TODO: Move larger components into seperate files?
     class Transform
     {
     public:        
@@ -127,6 +130,7 @@ namespace oyl::component
         Ref<Material>  material;
     };
 
+    // Morph Target Animation
     struct Animation
     {
         struct KeyPose
@@ -136,10 +140,75 @@ namespace oyl::component
         };
 
         std::vector<KeyPose> poses;
+    };
 
-        f32 elapsed;
+    struct Script
+    {
+        void (*onUpdateCallback)(entt::registry&, entt::entity, Transform&, Timestep);
+        void (*onCollisionEnterCallback)();
+        void (*onCustomEventCallback)(entt::registry&, entt::entity, UniqueRef<Event>);
+        
+    private:
+        entt::registry m_reg;
+        entt::entity m_entity;
+    };
 
-        Ref<VertexArray> vao;
+    //#define getComponent(component_type) _registry.get<component_type>(_entity)
+    //#define CALLBACK_ARGS entt::registry& _registry, entt::entity _entity, Transform& transform
+    //
+    //void foo()
+    //{
+    //    Script s;
+    //    s.onUpdateCallback =
+    //        [](CALLBACK_ARGS, Timestep dt)
+    //        {
+    //            for (int i = 0; i < 10; i++)
+    //            {
+    //                transform.setPosition(glm::vec3(0, 0, 0));
+    //
+    //                auto& something = getComponent(Parent);
+    //            }
+    //        };
+    //
+    //    s.onCustomEventCallback = [](entt::registry& registry, entt::entity entity, UniqueRef<Event> event)
+    //    {
+    //        switch (event->type)
+    //        {
+    //            case 
+    //        }
+    //    };
+    //
+    //
+    //    registry->assign<Script>(e, s);
+    //}
+    
+    class Animator
+    {
+    public:
+        void pushAnimation(const std::string& alias, const Ref<Animation>& animation);
+
+        void setNextAnimation(const std::string& alias, f32 transitionDuration = 0.0f);
+        
+        bool getBool(const std::string& name) const;
+        void setBool(const std::string& name, bool value);
+
+        const Ref<VertexArray>& getVertexArray() const;
+    private:
+        friend oyl::internal::AnimationSystem;
+        friend oyl::internal::RenderSystem;
+        std::unordered_map<std::string, Ref<Animation>> m_animations;
+
+        std::unordered_map<std::string, bool> m_bools;
+
+        Ref<Animation> m_currentAnimation;
+        Ref<Animation> m_nextAnimation;
+
+        Ref<VertexArray> m_vao;
+
+        f32 m_currentElapsed = 0.0f;
+
+        f32 m_transitionElapsed  = 0.0f;
+        f32 m_transitionDuration = 0.0f;
     };
     
     enum class Direction
@@ -359,7 +428,6 @@ namespace oyl::component
         void setFriction(f32 friction);
 
         void overwritePropertyFlags(u32 flags);
-        void setProperty(Property flag, bool value);
         void setProperties(u32 flags, bool value);
 
     private:
