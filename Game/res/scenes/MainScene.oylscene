@@ -1,5 +1,27 @@
 {
     "BlueCannon": {
+        "Renderable": {
+            "Material": {
+                "Albedo": {
+                    "Alias": "container2",
+                    "FilePath": "res/assets/textures/container2.jpg"
+                },
+                "Alias": "container",
+                "Shader": {
+                    "Alias": "oyl_lighting",
+                    "Pixel": "../Engine/res/shaders/lighting.frag",
+                    "Vertex": "../Engine/res/shaders/lighting.vert"
+                },
+                "Specular": {
+                    "Alias": "container2_specular",
+                    "FilePath": "res/assets/textures/container2_specular.jpg"
+                }
+            },
+            "Mesh": {
+                "Alias": "cube",
+                "FilePath": "res/assets/models/cube.obj"
+            }
+        },
         "Transform": {
             "Position": {
                 "X": 0.0,
@@ -19,6 +41,28 @@
         }
     },
     "Light 1": {
+        "Renderable": {
+            "Material": {
+                "Albedo": {
+                    "Alias": "container2",
+                    "FilePath": "res/assets/textures/container2.jpg"
+                },
+                "Alias": "container",
+                "Shader": {
+                    "Alias": "oyl_lighting",
+                    "Pixel": "../Engine/res/shaders/lighting.frag",
+                    "Vertex": "../Engine/res/shaders/lighting.vert"
+                },
+                "Specular": {
+                    "Alias": "container2_specular",
+                    "FilePath": "res/assets/textures/container2_specular.jpg"
+                }
+            },
+            "Mesh": {
+                "Alias": "cube",
+                "FilePath": "res/assets/models/cube.obj"
+            }
+        },
         "Transform": {
             "Position": {
                 "X": 0.0,
@@ -27,7 +71,7 @@
             },
             "Rotation": {
                 "X": 50.76619338989258,
-                "Y": -26.246105194091797,
+                "Y": -26.246103286743164,
                 "Z": -45.769500732421875
             },
             "Scale": {
@@ -38,6 +82,28 @@
         }
     },
     "Plane": {
+        "Renderable": {
+            "Material": {
+                "Albedo": {
+                    "Alias": "container2",
+                    "FilePath": "res/assets/textures/container2.jpg"
+                },
+                "Alias": "container",
+                "Shader": {
+                    "Alias": "oyl_lighting",
+                    "Pixel": "../Engine/res/shaders/lighting.frag",
+                    "Vertex": "../Engine/res/shaders/lighting.vert"
+                },
+                "Specular": {
+                    "Alias": "container2_specular",
+                    "FilePath": "res/assets/textures/container2_specular.jpg"
+                }
+            },
+            "Mesh": {
+                "Alias": "plane",
+                "FilePath": "res/assets/models/plane.obj"
+            }
+        },
         "Transform": {
             "Position": {
                 "X": 0.0,
@@ -57,6 +123,28 @@
         }
     },
     "Player": {
+        "Renderable": {
+            "Material": {
+                "Albedo": {
+                    "Alias": "container2",
+                    "FilePath": "res/assets/textures/container2.jpg"
+                },
+                "Alias": "container",
+                "Shader": {
+                    "Alias": "oyl_lighting",
+                    "Pixel": "../Engine/res/shaders/lighting.frag",
+                    "Vertex": "../Engine/res/shaders/lighting.vert"
+                },
+                "Specular": {
+                    "Alias": "container2_specular",
+                    "FilePath": "res/assets/textures/container2_specular.jpg"
+                }
+            },
+            "Mesh": {
+                "Alias": "cube",
+                "FilePath": "res/assets/models/cube.obj"
+            }
+        },
         "Transform": {
             "Position": {
                 "X": 0.9301067590713501,
@@ -65,13 +153,13 @@
             },
             "Rotation": {
                 "X": 0.0,
-                "Y": 0.0,
+                "Y": -0.0,
                 "Z": 0.0
             },
             "Scale": {
-                "X": 0.5001283884048462,
+                "X": 1.0,
                 "Y": 1.0,
-                "Z": 0.5033996105194092
+                "Z": 1.0
             }
         }
     },
@@ -83,11 +171,11 @@
             "Position": {
                 "X": 0.0,
                 "Y": 0.7667633295059204,
-                "Z": 0.0
+                "Z": -0.46485698223114014
             },
             "Rotation": {
                 "X": 0.0,
-                "Y": 0.0,
+                "Y": -0.0,
                 "Z": 0.0
             },
             "Scale": {
@@ -98,6 +186,28 @@
         }
     },
     "Sphere 1": {
+        "Renderable": {
+            "Material": {
+                "Albedo": {
+                    "Alias": "container2",
+                    "FilePath": "res/assets/textures/container2.jpg"
+                },
+                "Alias": "container",
+                "Shader": {
+                    "Alias": "oyl_lighting",
+                    "Pixel": "../Engine/res/shaders/lighting.frag",
+                    "Vertex": "../Engine/res/shaders/lighting.vert"
+                },
+                "Specular": {
+                    "Alias": "container2_specular",
+                    "FilePath": "res/assets/textures/container2_specular.jpg"
+                }
+            },
+            "Mesh": {
+                "Alias": "sphere",
+                "FilePath": "res/assets/models/sphere.obj"
+            }
+        },
         "Transform": {
             "Position": {
                 "X": 0.8501790761947632,
@@ -117,6 +227,28 @@
         }
     },
     "Sphere 2": {
+        "Renderable": {
+            "Material": {
+                "Albedo": {
+                    "Alias": "container2",
+                    "FilePath": "res/assets/textures/container2.jpg"
+                },
+                "Alias": "container",
+                "Shader": {
+                    "Alias": "oyl_lighting",
+                    "Pixel": "../Engine/res/shaders/lighting.frag",
+                    "Vertex": "../Engine/res/shaders/lighting.vert"
+                },
+                "Specular": {
+                    "Alias": "container2_specular",
+                    "FilePath": "res/assets/textures/container2_specular.jpg"
+                }
+            },
+            "Mesh": {
+                "Alias": "sphere",
+                "FilePath": "res/assets/models/sphere.obj"
+            }
+        },
         "Transform": {
             "Position": {
                 "X": -2.6420369148254395,
@@ -125,8 +257,8 @@
             },
             "Rotation": {
                 "X": -160.17391967773438,
-                "Y": 0.0014551709173247218,
-                "Z": 9.213858720613644e-05
+                "Y": 0.0014551706844940782,
+                "Z": 9.213855810230598e-05
             },
             "Scale": {
                 "X": 1.0,

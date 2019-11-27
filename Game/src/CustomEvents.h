@@ -11,6 +11,7 @@ enum CustomEventTypes
 {
     TypePlayerMove = oyl::EventTypeCustomStart,
     TypePlayerInteractionRequest,
+	TypePlayerDropItem,
 	TypePlayerStateChange,
     TypeCannonStateChange,
     TypeLoadCannon
@@ -25,7 +26,12 @@ OYL_EVENT_STRUCT(PlayerMoveEvent, TypePlayerMove, CategoryPlayer,
 
 OYL_EVENT_STRUCT(PlayerInteractionRequestEvent, TypePlayerInteractionRequest, CategoryPlayer,
 	{
-		entt::entity player;
+		entt::entity playerEntity;
+	});
+
+OYL_EVENT_STRUCT(PlayerDropItemEvent, TypePlayerDropItem, CategoryPlayer,
+	{
+		entt::entity playerEntity;
 	});
 
 OYL_EVENT_STRUCT(PlayerStateChangeEvent, TypePlayerStateChange, CategoryPlayer,

@@ -1,0 +1,54 @@
+#include "GarbagePileSystem.h"
+
+void GarbagePileSystem::onEnter()
+{
+}
+
+void GarbagePileSystem::onExit()
+{
+
+}
+
+void GarbagePileSystem::onUpdate(Timestep dt)
+{
+	bool addGarbageLevel = false;
+	passiveGarbageBuildupCountdown -= dt;
+	if (passiveGarbageBuildupCountdown < 0.0f)
+	{
+		addGarbageLevel = true;
+		passiveGarbageBuildupCountdown = PASSIVE_GARBAGE_BUILDUP_TIME;
+	}
+
+	totalGarbageLevel = 0; //reset the total garbage level and recalculate every frame
+
+	auto view = registry->view<GarbagePile, component::Renderable>();
+	for (auto& garbagePileEntity : view)
+	{
+		auto& garbagePile = registry->get<GarbagePile>(garbagePileEntity);
+		auto& garbagePileRenderable = registry->get<component::Renderable>(garbagePileEntity);
+
+		if (addGarbageLevel)
+			garbagePile.garbageLevel++;
+
+		if (garbagePile.garbageLevel <= 0) //check if garbage is fully depleted
+		{
+			garbageLevelHitZeroDirty = true;
+			garbagePileRenderable.mesh = NULL;
+		}
+		else //garbage isn't fully depleted
+		{
+			if (garbageLevelHitZeroDirty)
+			{
+				garbagePileRenderable.mesh = Mesh::cache("res/assets/models/cube.obj");
+				garbageLevelHitZeroDirty = false;
+			}
+		}
+
+		totalGarbageLevel += garbagePile.garbageLevel;
+	}
+}
+
+bool GarbagePileSystem::onEvent(Ref<Event> event)
+{
+	return false;
+}

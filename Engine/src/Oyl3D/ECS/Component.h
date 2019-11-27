@@ -359,7 +359,6 @@ namespace oyl::component
         void setFriction(f32 friction);
 
         void overwritePropertyFlags(u32 flags);
-        void setProperty(Property flag, bool value);
         void setProperties(u32 flags, bool value);
 
     private:

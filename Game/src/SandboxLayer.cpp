@@ -19,60 +19,128 @@ void SandboxLayer::onEnter()
         mr.mesh     = mesh;
         mr.material = mat;
 
-		entt::entity cannonBlue = registry->create();
+		{
+			entt::entity playerBlueEntity = registry->create();
+			registry->assign<Player>(playerBlueEntity);
+			registry->get<Player>(playerBlueEntity).team = Team::blue;
+
+			registry->assign<component::Renderable>(playerBlueEntity, mr);
+
+			component::Transform t2;
+			t2.setPosition(glm::vec3(0.0f));
+			registry->assign<component::Transform>(playerBlueEntity, t2);
+
+			auto& so2 = registry->assign<component::SceneObject>(playerBlueEntity);
+			so2.name = "Player";
+
+			auto& rb = registry->assign<component::RigidBody>(playerBlueEntity);
+			rb.setMass(5.0f);
+			rb.setFriction(1.0f);
+			rb.setProperties(component::RigidBody::Property::FREEZE_ROTATION_X, true);
+			rb.setProperties(component::RigidBody::Property::FREEZE_ROTATION_Y, true);
+			rb.setProperties(component::RigidBody::Property::FREEZE_ROTATION_Z, true);
+
+			auto& playerCollider = registry->assign<component::Collider>(playerBlueEntity);
+			auto& shapeInfo = playerCollider.pushShape(Collider_Box);
+			shapeInfo.box.setSize({ 1.0f, 1.0f, 1.0f });
+
+			registry->assign<entt::tag<"Player"_hs>>(playerBlueEntity);
+		}
         
-		component::Transform t;
-		t.setPosition(glm::vec3(0.0f));
-		registry->assign<component::Transform>(cannonBlue, t);
-        
-		registry->assign<Cannon>(cannonBlue);
-		registry->get<Cannon>(cannonBlue).team = Team::blue;
-		registry->get<Cannon>(cannonBlue).fuse.timeToWait = 10.0f;
-		registry->get<Cannon>(cannonBlue).initialPosition = t.getPosition();
+		{
+			entt::entity cannonBlueEntity = registry->create();
 
-		registry->assign<component::Renderable>(cannonBlue, mr);
+			component::Transform cannonTransform;
+			cannonTransform.setPosition(glm::vec3(0.0f));
+			registry->assign<component::Transform>(cannonBlueEntity, cannonTransform);
 
+			auto& cannon = registry->assign<Cannon>(cannonBlueEntity);
+			cannon.team = Team::blue;
+			cannon.fuse.timeToWait = 10.0f;
 
-		auto& so = registry->assign<component::SceneObject>(cannonBlue);
-		so.name = "BlueCannon";
+			registry->assign<component::Renderable>(cannonBlueEntity, mr);
 
-        entt::entity player = registry->create();
-		registry->assign<Player>(player);
-		registry->get<Player>(player).team = Team::blue;
-        
-        registry->assign<component::Renderable>(player, mr);
+			auto& so = registry->assign<component::SceneObject>(cannonBlueEntity);
+			so.name = "BlueCannon";
+/*
+			auto& rb = registry->assign<component::RigidBody>(cannonBlueEntity);
+			rb.setMass(5.0f);
+			rb.setFriction(1.0f);
+			rb.setProperties(component::RigidBody::Property::FREEZE_ROTATION_X, true);
+			rb.setProperties(component::RigidBody::Property::FREEZE_ROTATION_Y, true);
+			rb.setProperties(component::RigidBody::Property::FREEZE_ROTATION_Z, true);*/
 
-        component::Transform t2;
-        t2.setPosition(glm::vec3(0.0f));
-        registry->assign<component::Transform>(player, t2);
+			auto& cannonCollider = registry->assign<component::Collider>(cannonBlueEntity);
+			auto& shapeInfo = cannonCollider.pushShape(Collider_Box);
+			shapeInfo.box.setSize({ 1.0f, 1.0f, 1.0f });
+		}
 
-        auto& so2 = registry->assign<component::SceneObject>(player);
-        so2.name = "Player";
+        {
+			entt::entity mopBlueEntity = registry->create();
 
-        auto& rb = registry->assign<component::RigidBody>(player);
-        rb.mass = 1.0f;
-        rb.type = RigidBody_Box;
-        rb.width =  1.0f;
-        rb.height = 1.0f;
-        rb.length = 1.0f;
+			component::Transform mopTransform;
+			mopTransform.setPosition(glm::vec3(3.0f, 0.1f, 0.0f));
+			mopTransform.setScale(glm::vec3(2.0f, 0.2f, 0.2f));
+			registry->assign<component::Transform>(mopBlueEntity, mopTransform);
 
-        registry->assign<entt::tag<"Player"_hs>>(player);
+			auto& mop = registry->assign<CarryableItem>(mopBlueEntity);
+			mop.team = Team::blue;
+			mop.type = CarryableItemType::mop;
 
-        auto& shi = cl.pushShape(Collider_Box);
-        shi.box.setSize({ 1.0f, 1.0f, 1.0f });
+			registry->assign<component::Renderable>(mopBlueEntity, mr);
 
-        entt::entity e2 = registry->create();
-        registry->assign<component::Renderable>(e2, mr);
+			auto& so2 = registry->assign<component::SceneObject>(mopBlueEntity);
+			so2.name = "BlueMop";
 
-        t.setPosition(glm::vec3(3.0f, 3.0f, 3.0f));
-        t.setScale(glm::vec3(0.3f));
-        registry->assign<component::Transform>(e2, t);
+			/*auto& rb = registry->assign<component::RigidBody>(mopBlueEntity);
+			rb.setMass(2.0f);
+			rb.setFriction(1.0f);*/
 
-        auto& l = registry->assign<component::PointLight>(e2);
-        l.ambient = glm::vec3(0.75f);
-        
-        auto& so3 = registry->assign<component::SceneObject>(e2);
-        so3.name = "Light 1";
+			auto& mopCollider = registry->assign<component::Collider>(mopBlueEntity);
+			auto& shapeInfo = mopCollider.pushShape(Collider_Box);
+			shapeInfo.box.setSize({ 1.0f, 1.0f, 1.0f });
+        }
+
+		{
+			entt::entity garbagePileBlueEntity = registry->create();
+
+			component::Transform garbagePileTransform;
+			garbagePileTransform.setPosition(glm::vec3(-3.0f, 0.0f, 0.0f));
+			garbagePileTransform.setScale(glm::vec3(3.0f, 0.7f, 3.0f));
+			registry->assign<component::Transform>(garbagePileBlueEntity, garbagePileTransform);
+
+			auto& garbagePile = registry->assign<GarbagePile>(garbagePileBlueEntity);
+			garbagePile.team = Team::blue;
+
+			registry->assign<component::Renderable>(garbagePileBlueEntity, mr);
+
+			auto& so2 = registry->assign<component::SceneObject>(garbagePileBlueEntity);
+			so2.name = "BlueGarbagePile";
+
+			auto& garbagePileCollider = registry->assign<component::Collider>(garbagePileBlueEntity);
+			auto& shapeInfo = garbagePileCollider.pushShape(Collider_Box);
+			shapeInfo.box.setSize({ 1.0f, 1.0f, 1.0f });
+		}
+
+		{
+			component::Collider boxCollider;
+			auto& shi = boxCollider.pushShape(Collider_Box);
+			shi.box.setSize({ 1.0f, 1.0f, 1.0f });
+
+			entt::entity e2 = registry->create();
+			registry->assign<component::Renderable>(e2, mr);
+
+			component::Transform boxTransform;
+			boxTransform.setPosition(glm::vec3(3.0f, 3.0f, 3.0f));
+			boxTransform.setScale(glm::vec3(0.3f));
+			registry->assign<component::Transform>(e2, boxTransform);
+
+			auto& l = registry->assign<component::PointLight>(e2);
+			l.ambient = glm::vec3(0.75f);
+
+			auto& so3 = registry->assign<component::SceneObject>(e2);
+			so3.name = "Light 1";
+		}
     }
     {
         component::Renderable mr;
@@ -91,6 +159,7 @@ void SandboxLayer::onEnter()
 
         auto& rb = registry->assign<component::RigidBody>(e);
         rb.setMass(0.0f);
+		rb.setFriction(1.0f);
 
         auto& cl = registry->assign<component::Collider>(e);
 

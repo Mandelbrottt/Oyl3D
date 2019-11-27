@@ -2,7 +2,7 @@
 
 void CannonSystem::onEnter()
 {
-	this->addToCategoryMask(CategoryCannon);
+	this->listenForEventCategory((OylEnum)CategoryCannon);
 }
 
 void CannonSystem::onExit()

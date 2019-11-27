@@ -2,7 +2,7 @@
 
 void PlayerSystem::onEnter()
 {
-	addToCategoryMask(CategoryPlayer);
+	this->listenForEventCategory((OylEnum)CategoryPlayer);
 }
 
 void PlayerSystem::onExit()
@@ -23,8 +23,6 @@ void PlayerSystem::onUpdate(Timestep dt)
 		{
 		    case PlayerState::idle:
 		    {
-				playerRB.impulse = glm::vec3(0.0f);
-
 				if (player.moveDirection != glm::vec3(0.0f))
 					changeToWalking(&player);
 		        
@@ -33,8 +31,8 @@ void PlayerSystem::onUpdate(Timestep dt)
 		    
 		    case PlayerState::walking:
 			{
-				glm::vec3 deltaVelocity = (player.moveDirection * player.speedForce) - playerRB.velocity;
-				playerRB.impulse        = playerRB.mass * deltaVelocity * static_cast<float>(dt);
+				glm::vec3 deltaVelocity = (player.moveDirection * player.speedForce) - playerRB.getVelocity();
+				playerRB.addImpulse(playerRB.getMass() * deltaVelocity * static_cast<float>(dt));
 
 				if (player.moveDirection == glm::vec3(0.0f))
 					changeToIdle(&player);

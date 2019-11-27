@@ -254,14 +254,15 @@ namespace oyl
                     //m_world->removeRigidBody(m_rigidBodies[entity]->body.get());
                     //this->addRigidBody(entity, transform, rigidBody);
                     
-                    btTransform t;
-                    cachedBody.motion->getWorldTransform(t);
+                    btTransform t = cachedBody.body->getWorldTransform();
 
                     t.setOrigin(btVector3(transform.getPositionXGlobal(),
                                           transform.getPositionYGlobal(),
                                           transform.getPositionZGlobal()));
                     
-                    cachedBody.motion->setWorldTransform(t);
+                    cachedBody.body->setWorldTransform(t);
+
+					cachedBody.body->activate();
 
                     transform.m_isPositionOverridden = false;
                 }
@@ -275,6 +276,8 @@ namespace oyl
 
                     cachedBody.body->setWorldTransform(t);
 
+					cachedBody.body->activate();
+                    
                     transform.m_isRotationOverridden = false;
                 }
                 if (transform.m_isScaleOverridden)
@@ -283,6 +286,8 @@ namespace oyl
                                                                 transform.getScaleY(),
                                                                 transform.getScaleZ()));
 
+					cachedBody.body->activate();
+                    
                     transform.m_isScaleOverridden = false;
                 }
                 if (rigidBody.m_isDirty)
