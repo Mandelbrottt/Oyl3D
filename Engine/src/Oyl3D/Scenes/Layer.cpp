@@ -43,8 +43,8 @@ namespace oyl
         }
     }
 
-    void Layer::setRegistry(Ref<entt::registry> reg)
+    void Layer::setRegistry(const Ref<entt::registry>& reg)
     {
-        registry = std::move(reg);
+        registry = reg;
     }
 }

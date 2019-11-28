@@ -28,9 +28,12 @@ public:
         {
             auto e = registry->create();
             registry->assign<component::Transform>(e);
+
             auto& camera = registry->assign<component::PlayerCamera>(e);
             camera.player = 0;
             camera.projection = glm::perspective(glm::radians(60.0f), 16.0f / 9.0f, 0.01f, 1000.0f);
+            camera.skybox = TextureCubeMap::get(DEFAULT_SKYBOX_ALIAS);
+            
             auto& so = registry->assign<component::SceneObject>(e);
             so.name = "Player Camera";
         }
@@ -57,7 +60,7 @@ public:
             auto anim1 = Ref<component::Animation>::create();
             auto anim2 = Ref<component::Animation>::create();
 
-            int scale = 1;
+            int scale = 10;
             
             for (int i = 0; i < 205 / scale; i++)
             {
@@ -74,7 +77,7 @@ public:
             for (int i = 0; i < 65 / scale; i++)
             {
                 component::Animation::KeyPose kp;
-                kp.duration = (1.0f / 30.0f) * scale;
+                kp.duration = (1.0f / 30.0f) * (float) scale;
 
                 sprintf(filename, "res/assets/models/boxing/boxing_%06d.obj", i * scale + 1);
                 s.assign(filename);
@@ -87,6 +90,18 @@ public:
 
             anim.pushAnimation("agony", anim1);
             anim.pushAnimation("boxing", anim2);
+        }
+
+        {
+            auto e = registry->create();
+
+            auto& t = registry->assign<component::Transform>(e);
+
+            auto& so = registry->assign<component::SceneObject>(e);
+            so.name = "Gui Thing";
+            
+            auto& gui = registry->assign<component::GuiRenderable>(e);
+            gui.texture = Texture2D::get("archer");
         }
     }
 

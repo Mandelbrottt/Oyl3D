@@ -22,6 +22,16 @@ namespace oyl
             s_rendererAPI->clear();
         }
 
+        inline static void setDepthDraw(bool value)
+        {
+            s_rendererAPI->setDepthDraw(value);
+        }
+
+        inline static void setBackfaceCulling(bool value)
+        {
+            s_rendererAPI->setBackfaceCulling(value);
+        }
+
         inline static void drawArrays(const Ref<VertexArray>& vao, u32 count)
         {
             s_rendererAPI->drawArrays(vao, count);

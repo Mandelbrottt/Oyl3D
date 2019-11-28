@@ -4,6 +4,8 @@ namespace oyl
 {
     class Camera;
     class Material;
+    class Texture2D;
+    class TextureCubeMap;
     class Mesh;
     class VertexArray;
 
@@ -128,6 +130,11 @@ namespace oyl::component
     {
         Ref<Mesh>      mesh;
         Ref<Material>  material;
+    };
+
+    struct GuiRenderable
+    {
+        Ref<Texture2D> texture;
     };
 
     // Morph Target Animation
@@ -452,6 +459,8 @@ namespace oyl::component
 
         // TEMPORARY:
         glm::mat4 projection;
+
+        Ref<TextureCubeMap> skybox;
         
         //Ref<Camera> camera;
     };

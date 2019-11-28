@@ -11,6 +11,7 @@
 #include "Graphics/Camera.h"
 #include "Graphics/Material.h"
 #include "Graphics/Shader.h"
+#include "Graphics/Texture.h"
 
 #include "Rendering/Renderer.h"
 
@@ -48,7 +49,11 @@ namespace oyl
             using component::PlayerCamera;
             using component::PointLight;
             using component::internal::EditorCamera;
-            
+
+            const auto& skybox = TextureCubeMap::get(DEFAULT_SKYBOX_ALIAS);
+            const auto& shader = Shader::get(SKYBOX_SHADER_ALIAS);
+            const auto& mesh = Mesh::get(CUBE_MESH_ALIAS);
+
             // We sort our mesh renderers based on material properties
             // This will group all of our meshes based on shader first, then material second
             registry->sort<Renderable>(
@@ -71,7 +76,18 @@ namespace oyl
 
             for (auto camera : camView)
             {
-                //Ref<Camera> currentCamera = camView.get(camera).camera;
+                glm::mat4 viewProj = camView.get<PlayerCamera>(camera).projection;
+                glm::mat4 tempView = camView.get<Transform>(camera).getMatrixGlobal();
+                viewProj *= glm::mat4(glm::inverse(glm::mat3(tempView)));
+                
+                shader->bind();
+                shader->setUniformMat4("u_viewProjection", viewProj);
+
+                RenderCommand::setDepthDraw(false);
+                RenderCommand::setBackfaceCulling(false);
+                Renderer::submit(mesh, shader, skybox);
+                RenderCommand::setBackfaceCulling(true);
+                RenderCommand::setDepthDraw(true);
 
                 auto view = registry->view<Transform, Renderable>();
                 for (const auto& entity : view)
@@ -143,12 +159,118 @@ namespace oyl
             return false;
         }
 
-        void RenderSystem::init() { }
-
-        void RenderSystem::shutdown() { }
-
         // ^^^ Render System ^^^ //
 
+        // vvv Gui Render System vvv //
+
+        void GuiRenderSystem::onEnter()
+        {
+            listenForEventType(TypeWindowResized);
+            m_shader = Shader::get("texturedQuad");
+
+            float vertices[] = {
+                -0.5f, -0.5f, 0.0f, 0.0f, 0.0f,
+                 0.5f, -0.5f, 0.0f, 1.0f, 0.0f,
+                 0.5f,  0.5f, 0.0f, 1.0f, 1.0f,
+                -0.5f,  0.5f, 0.0f, 0.0f, 1.0f
+            };
+
+            u32 indices[] = {
+                0, 2, 1,
+                0, 3, 2
+            };
+
+            // TEMPORARY: move to onEnter()
+            m_vao = VertexArray::create();
+            Ref<VertexBuffer> vbo = VertexBuffer::create(vertices, sizeof(vertices));
+            vbo->setLayout({
+                { Float3, "in_position" },
+                { Float2, "in_texCoord" }
+            });
+            Ref<IndexBuffer> ebo = IndexBuffer::create(indices, 6);
+            m_vao->addVertexBuffer(vbo);
+            m_vao->addIndexBuffer(ebo);
+        }
+
+        void GuiRenderSystem::onExit() {}
+
+        void GuiRenderSystem::onUpdate(Timestep dt)
+        {
+            using component::GuiRenderable;
+            using component::Transform;
+
+            registry->sort<GuiRenderable>(
+                [](const GuiRenderable& lhs, const GuiRenderable& rhs)
+                {
+                    if (rhs.texture == nullptr)
+                        return false;
+                    else if (lhs.texture == nullptr)
+                        return true;
+                    else
+                        return lhs.texture < rhs.texture;
+                });
+
+            Ref<Texture2D> boundTexture;
+
+            m_shader->bind();
+            m_shader->setUniform1i("u_texture", 0);
+
+            auto view = registry->view<Transform, GuiRenderable>();
+            for (auto entity : view)
+            {
+                auto& transform = view.get<Transform>(entity);
+                auto& gui = view.get<GuiRenderable>(entity);
+
+                if ((!boundTexture || boundTexture != gui.texture) && gui.texture->isLoaded())
+                {
+                    boundTexture = gui.texture;
+                    boundTexture->bind(0);
+                }
+
+                glm::vec3 texSize = glm::vec3(0.0f);
+                texSize.x = (float) gui.texture->getWidth() / (float) gui.texture->getHeight();
+                texSize.y = 1.0f;
+
+                glm::vec3 pos = transform.getPosition();
+                pos.z = 0.99f;
+                
+                glm::mat4 model = glm::mat4(1.0f);
+                model = glm::translate(model, pos);
+                model = glm::rotate(model, glm::radians(transform.getRotationEuler().z), glm::vec3(0.0f, 0.0f, -1.0f));
+                model = glm::scale(model, transform.getScale());
+                model = glm::scale(model, texSize);
+
+                Renderer::submit(m_shader, m_vao, model);
+            }
+        }
+
+        void GuiRenderSystem::onGuiRender(Timestep dt) {}
+
+        bool GuiRenderSystem::onEvent(Ref<Event> event)
+        {
+            switch (event->type)
+            {
+                case TypeWindowResized:
+                    auto e = (WindowResizedEvent) *event;
+                    //OYL_LOG("{0}", offsetof(WindowResizedEvent, width));
+                    //OYL_LOG("{0}", offsetof(WindowResizedEvent, height));
+                    f32 aspectRatio = (float) e.width / (float) e.height;
+                    f32 size = 10.0f;
+                    glm::mat4 projection = glm::ortho(-size * aspectRatio / 2.0f, 
+                                                      size * aspectRatio / 2.0f, 
+                                                      size / 2.0f, 
+                                                      -size / 2.0f);
+
+                    m_shader->bind();
+                    m_shader->setUniformMat4("u_projection", projection);
+
+                    break;
+            }
+            return false;
+        }
+
+        // ^^^ Gui Render System ^^^ //
+        
         // vvv Animation System vvv //
         
         void AnimationSystem::onEnter() {}
@@ -923,14 +1045,33 @@ namespace oyl
 
         void EditorRenderSystem::onUpdate(Timestep dt)
         {
-            m_editorViewportBuffer->clear();
-            m_editorViewportBuffer->bind();
-            
             using component::Transform;
             using component::Renderable;
             using component::PlayerCamera;
             using component::PointLight;
             using component::internal::EditorCamera;
+            
+            m_editorViewportBuffer->clear();
+            m_editorViewportBuffer->bind();
+
+            // TODO: Make EditorCamera like PlayerCamers
+            auto camView = registry->view<EditorCamera>();
+            Ref<Camera> currentCamera = camView.get(*camView.begin()).camera;
+
+            const auto& skybox = TextureCubeMap::get(DEFAULT_SKYBOX_ALIAS);
+            const auto& shader = Shader::get(SKYBOX_SHADER_ALIAS);
+            const auto& mesh   = Mesh::get(CUBE_MESH_ALIAS);
+
+            glm::mat4 viewProj = currentCamera->getProjectionMatrix();
+            viewProj *= glm::mat4(glm::mat3(currentCamera->getViewMatrix()));
+            shader->bind();
+            shader->setUniformMat4("u_viewProjection", viewProj);
+
+            RenderCommand::setDepthDraw(false);
+            RenderCommand::setBackfaceCulling(false);
+            Renderer::submit(mesh, shader, skybox);
+            RenderCommand::setBackfaceCulling(true);
+            RenderCommand::setDepthDraw(true);
 
             // We sort our mesh renderers based on material properties
             // This will group all of our meshes based on shader first, then material second
@@ -949,10 +1090,6 @@ namespace oyl
 
             Ref<Material> boundMaterial = Material::create();
             Ref<Shader>   tempShader    = Shader::get(LIGHTING_SHADER_ALIAS);
-
-            // TODO: Make EditorCamera like PlayerCamera
-            auto camView = registry->view<EditorCamera>();
-            Ref<Camera> currentCamera = camView.get(*camView.begin()).camera;
 
             auto view = registry->view<Renderable>();
             for (auto entity : view)
