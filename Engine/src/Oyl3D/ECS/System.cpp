@@ -244,6 +244,7 @@ namespace oyl
                 texSize.y = 1.0f;
 
                 glm::vec3 pos = transform.getPosition();
+                pos.y = -pos.y;
                 pos.z = 0.99f;
                 
                 glm::mat4 model = glm::mat4(1.0f);
@@ -991,7 +992,7 @@ namespace oyl
                 {
                     if (!m_doMoveCamera) break;
 
-                    auto e           = (MouseMovedEvent) *event;
+                    auto e = (MouseMovedEvent) *event;
                     m_cameraRotate.y = e.dx;
                     m_cameraRotate.x = e.dy;
 

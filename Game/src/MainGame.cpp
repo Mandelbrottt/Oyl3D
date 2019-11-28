@@ -96,12 +96,98 @@ public:
             auto e = registry->create();
 
             auto& t = registry->assign<component::Transform>(e);
+            t.setPosition(glm::vec3(0.0f, -2.5f, 0.0f));
+            t.setScale(glm::vec3(4.0f, 4.0f, 1.0f));
 
             auto& so = registry->assign<component::SceneObject>(e);
-            so.name = "Gui Thing";
+            so.name = "Push Cannon Message";
             
             auto& gui = registry->assign<component::GuiRenderable>(e);
-            gui.texture = Texture2D::get("archer");
+            gui.texture = Texture2D::cache("res/assets/textures/gui/pushCannon.png");
+        }
+
+        {
+            auto e = registry->create();
+
+            auto& t = registry->assign<component::Transform>(e);
+            t.setPosition(glm::vec3(0.0f, -2.5f, 0.0f));
+            t.setScale(glm::vec3(4.0f, 4.0f, 1.0f));
+
+            auto& so = registry->assign<component::SceneObject>(e);
+            so.name = "Load Cannon Message";
+
+            auto& gui = registry->assign<component::GuiRenderable>(e);
+            gui.texture = Texture2D::cache("res/assets/textures/gui/loadCannon.png"); 
+        }
+
+        {
+            auto e = registry->create();
+
+            auto& t = registry->assign<component::Transform>(e);
+            t.setPosition(glm::vec3(0.0f, -2.5f, 0.0f));
+            t.setScale(glm::vec3(4.0f, 4.0f, 1.0f));
+
+            auto& so = registry->assign<component::SceneObject>(e);
+            so.name = "Pickup Cannonball Message";
+
+            auto& gui = registry->assign<component::GuiRenderable>(e);
+            gui.texture = Texture2D::cache("res/assets/textures/gui/pickupCannonball.png");
+        }
+
+        {
+            auto e = registry->create();
+
+            auto& t = registry->assign<component::Transform>(e);
+            t.setPosition(glm::vec3(0.0f, -2.5f, 0.0f));
+            t.setScale(glm::vec3(4.0f, 4.0f, 1.0f));
+
+            auto& so = registry->assign<component::SceneObject>(e);
+            so.name = "Cannonball Crate Message";
+
+            auto& gui = registry->assign<component::GuiRenderable>(e);
+            gui.texture = Texture2D::cache("res/assets/textures/gui/cannonballCrate.png");
+        }
+
+        {
+            auto e = registry->create();
+
+            auto& t = registry->assign<component::Transform>(e);
+            t.setPosition(glm::vec3(0.0f, -2.5f, 0.0f));
+            t.setScale(glm::vec3(4.0f, 4.0f, 1.0f));
+
+            auto& so = registry->assign<component::SceneObject>(e);
+            so.name = "Pickup Mop Message";
+
+            auto& gui = registry->assign<component::GuiRenderable>(e);
+            gui.texture = Texture2D::cache("res/assets/textures/gui/pickupMop.png");
+        }
+
+        {
+            auto e = registry->create();
+
+            auto& t = registry->assign<component::Transform>(e);
+            t.setPosition(glm::vec3(0.0f, -2.5f, 0.0f));
+            t.setScale(glm::vec3(4.0f, 4.0f, 1.0f));
+
+            auto& so = registry->assign<component::SceneObject>(e);
+            so.name = "Clean Garbage Message";
+
+            auto& gui = registry->assign<component::GuiRenderable>(e);
+            gui.texture = Texture2D::cache("res/assets/textures/gui/cleanGarbage.png");
+        }
+
+        {
+            auto e = registry->create();
+
+            auto& t = registry->assign<component::Transform>(e);
+            t.setPosition(glm::vec3(0.0f, -2.5f, 0.0f));
+            t.setScale(glm::vec3(4.0f, 4.0f, 1.0f));
+
+            auto& so = registry->assign<component::SceneObject>(e);
+            so.name = "Cannon Firing Message";
+            
+            auto& gui = registry->assign<component::GuiRenderable>(e);
+            gui.texture = Texture2D::cache("res/assets/textures/gui/cannonFiring.png");
         }
     }
 
