@@ -131,4 +131,5 @@ void CannonSystem::fireCannon(Cannon* a_cannon)
 {
 	std::cout << "CANNON FIRED!\n";
 	a_cannon->isLoaded = false;
+	changeToDoingNothing(a_cannon);
 }

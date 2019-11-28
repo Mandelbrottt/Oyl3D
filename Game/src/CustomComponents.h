@@ -56,6 +56,12 @@ enum class PlayerInteractionResult
 	cleanGarbagePile,
 };
 
+enum class ReticleType
+{
+	normal,
+	invalid
+};
+
 struct TimedAction
 {
 	float elapsed = 0.0f;
@@ -140,4 +146,9 @@ struct CannonballCrate
 struct PlayerInteractionType
 {
 	PlayerInteractionResult type;
+};
+
+struct Reticle
+{
+	ReticleType type;
 };

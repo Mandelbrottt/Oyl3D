@@ -109,94 +109,7 @@ void PlayerInteractionValidationSystem::checkForAnyValidPlayerInteractions(entt:
 {
 	bool isValidInteraction = false; //TODO: remove once raycast is in
 
-	//check all cannons
-	auto view = registry->view<Cannon, component::Transform>();
-	for (auto& entity : view)
-	{
-		auto& cannon = registry->get<Cannon>(entity);
-		auto& cannonTransform = registry->get<component::Transform>(entity);
-
-		a_player->interactableEntity = entity; //TODO: remove this once proper validation (raycast) is in
-
-		if (a_player->interactableEntity == entity)
-		{
-			//cannon can be loaded with a cannonball
-			if (a_player->carriedItem == CarryingItemState::cannonball
-				&& cannon.isLoaded == false
-				//compare x values
-				&& a_playerTransform->getPositionX() < cannonTransform.getPositionX() + 1.7f
-				&& a_playerTransform->getPositionX() > cannonTransform.getPositionX() - 1.7f
-				//compare z values
-				&& a_playerTransform->getPositionZ() < cannonTransform.getPositionZ() + 1.7f
-				&& a_playerTransform->getPositionZ() > cannonTransform.getPositionZ() - 1.7f) //check if cannon can be loaded with a cannonball
-			{
-				isValidInteraction = true;
-				cannon.isLoaded = true;
-
-				//get rid of the cannonball the player has loaded
-				auto carriedItemsView = registry->view<CarryableItem, component::Parent, component::Transform>();
-				for (entt::entity carriedItemEntity : carriedItemsView)
-				{
-					auto& carriedItem = registry->get<CarryableItem>(carriedItemEntity);
-					auto& carriedItemParent = registry->get<component::Parent>(carriedItemEntity);
-					auto& carriedItemTransform = registry->get<component::Transform>(carriedItemEntity);
-
-					if (carriedItemParent.parent == a_playerEntity)
-					{
-						isValidInteraction = true;
-
-						PlayerInteractResultEvent playerInteractResult;
-						playerInteractResult.interactionType = PlayerInteractionResult::loadCannon;
-						postEvent(Event::create(playerInteractResult));
-					}
-				}
-			}
-			else if (cannon.state == CannonState::doingNothing && a_player->carriedItem == CarryingItemState::nothing) //cannon can be pushed TODO: get rid of conditions after raycast validation is in, should just be an else
-			{
-				float playerForwardDotCannonRight = glm::dot(a_playerTransform->getForward(), cannonTransform.getRight());
-
-				bool isCannonOnLeftSideOfTrack = (cannon.cannonTrackPosition == -1)
-					? true : false;
-				bool isCannonOnRightSideOfTrack = (cannon.cannonTrackPosition == 1)
-					? true : false;
-
-				//TODO: get rid of position comparison once raycasting is in
-				//check if player is on the right side of the cannon (will be pushing towards the left)
-				if (playerForwardDotCannonRight < -0.65f && !isCannonOnLeftSideOfTrack
-					//compare x values
-					&& a_playerTransform->getPositionX() < cannonTransform.getPositionX() + 2.5f
-					&& a_playerTransform->getPositionX() > cannonTransform.getPositionX() + 1.1f
-					//compare z values
-					&& a_playerTransform->getPositionZ() < cannonTransform.getPositionZ() + 1.0f
-					&& a_playerTransform->getPositionZ() > cannonTransform.getPositionZ() - 1.0f)
-				{
-					isValidInteraction = true;
-
-					PlayerInteractResultEvent playerInteractResult;
-					playerInteractResult.interactionType = PlayerInteractionResult::pushCannon;
-					postEvent(Event::create(playerInteractResult));
-				}
-				//TODO: get rid of position comparison once raycasting is in
-				//check if player is on the left side of the cannon (will be pushing towards the right)
-				else if (playerForwardDotCannonRight > 0.65f && !isCannonOnRightSideOfTrack
-					//compare x values
-					&& a_playerTransform->getPositionX() > cannonTransform.getPositionX() - 2.5f
-					&& a_playerTransform->getPositionX() < cannonTransform.getPositionX() - 1.1f
-					//compare z values
-					&& a_playerTransform->getPositionZ() < cannonTransform.getPositionZ() + 1.0f
-					&& a_playerTransform->getPositionZ() > cannonTransform.getPositionZ() - 1.0f)
-				{
-					isValidInteraction = true;
-
-					PlayerInteractResultEvent playerInteractResult;
-					playerInteractResult.interactionType = PlayerInteractionResult::pushCannon;
-					postEvent(Event::create(playerInteractResult));
-				}
-			}
-		}
-	}
-
-	if (!isValidInteraction && a_player->state != PlayerState::pushing && a_player->state != PlayerState::cleaning)
+	if (a_player->state != PlayerState::pushing && a_player->state != PlayerState::cleaning)
 	{
 		auto view = registry->view<CarryableItem, component::Transform>();
 		for (auto& carryableItemEntity : view)
@@ -329,38 +242,13 @@ void PlayerInteractionValidationSystem::checkForAnyValidPlayerInteractions(entt:
 		}
 	}
 
-	//no valid interactions
 	if (!isValidInteraction)
 	{
-		PlayerInteractResultEvent playerInteractResult;
-		playerInteractResult.interactionType = PlayerInteractionResult::nothing;
-		postEvent(Event::create(playerInteractResult));
-	}
-}
-
-void PlayerInteractionValidationSystem::validateInteraction(entt::entity a_playerEntity, Player* a_player, component::Transform* a_playerTransform)
-{
-	/////////////TODO: remove this once proper validation (raycast) is in
-	auto view = registry->view<Cannon, component::Transform>();
-	for (auto& entity : view)
-	{
-		a_player->interactableEntity = entity;
-	}
-    /////////////
-    
-    //check if there's a valid entity the player can interact with first
-	if (a_player->interactableEntity == entt::null)
-		return;
-
-	bool isValidInteraction = false; //TODO: remove once raycast is in
-
-    //check type of interactable entity
-	if (registry->has<Cannon>(a_player->interactableEntity))
-	{
+		//check all cannons
 		auto view = registry->view<Cannon, component::Transform>();
 		for (auto& entity : view)
 		{
-			auto& cannon          = registry->get<Cannon>(entity);
+			auto& cannon = registry->get<Cannon>(entity);
 			auto& cannonTransform = registry->get<component::Transform>(entity);
 
 			a_player->interactableEntity = entity; //TODO: remove this once proper validation (raycast) is in
@@ -368,7 +256,7 @@ void PlayerInteractionValidationSystem::validateInteraction(entt::entity a_playe
 			if (a_player->interactableEntity == entity)
 			{
 				//cannon can be loaded with a cannonball
-			    if (a_player->carriedItem == CarryingItemState::cannonball
+				if (a_player->carriedItem == CarryingItemState::cannonball
 					&& cannon.isLoaded == false
 					//compare x values
 					&& a_playerTransform->getPositionX() < cannonTransform.getPositionX() + 1.7f
@@ -376,9 +264,8 @@ void PlayerInteractionValidationSystem::validateInteraction(entt::entity a_playe
 					//compare z values
 					&& a_playerTransform->getPositionZ() < cannonTransform.getPositionZ() + 1.7f
 					&& a_playerTransform->getPositionZ() > cannonTransform.getPositionZ() - 1.7f) //check if cannon can be loaded with a cannonball
-			    {
+				{
 					isValidInteraction = true;
-					cannon.isLoaded = true;
 
 					//get rid of the cannonball the player has loaded
 					auto carriedItemsView = registry->view<CarryableItem, component::Parent, component::Transform>();
@@ -390,30 +277,42 @@ void PlayerInteractionValidationSystem::validateInteraction(entt::entity a_playe
 
 						if (carriedItemParent.parent == a_playerEntity)
 						{
-							std::cout << "LOADED CANNON!\n";
+							isValidInteraction = true;
 
-							carriedItemParent.parent = entt::null;
-							a_player->carriedItem = CarryingItemState::nothing;
-							carriedItem.isBeingCarried = false;
-							carriedItemTransform.setPosition(glm::vec3(1000.0f, 1000.0f, 1000.0f));
-							carriedItem.isActive = false;
+							PlayerInteractResultEvent playerInteractResult;
+							playerInteractResult.interactionType = PlayerInteractionResult::loadCannon;
+							postEvent(Event::create(playerInteractResult));
 						}
 					}
-			    }
+				}
+				else if (cannon.state == CannonState::firingSoon)
+				{
+					    //compare x values
+					if (   a_playerTransform->getPositionX() < cannonTransform.getPositionX() + 1.7f
+						&& a_playerTransform->getPositionX() > cannonTransform.getPositionX() - 1.7f
+						//compare z values
+						&& a_playerTransform->getPositionZ() < cannonTransform.getPositionZ() + 1.7f
+						&& a_playerTransform->getPositionZ() > cannonTransform.getPositionZ() - 1.7f) //check if cannon can be loaded with a cannonball
+					{
+						isValidInteraction = true;
+
+						PlayerInteractResultEvent playerInteractResult;
+						playerInteractResult.interactionType = PlayerInteractionResult::cannonFiringSoon;
+						postEvent(Event::create(playerInteractResult));
+					}
+				}
 				else if (cannon.state == CannonState::doingNothing && a_player->carriedItem == CarryingItemState::nothing) //cannon can be pushed TODO: get rid of conditions after raycast validation is in, should just be an else
 				{
 					float playerForwardDotCannonRight = glm::dot(a_playerTransform->getForward(), cannonTransform.getRight());
 
 					bool isCannonOnLeftSideOfTrack = (cannon.cannonTrackPosition == -1)
-						                              ? true : false;
+						? true : false;
 					bool isCannonOnRightSideOfTrack = (cannon.cannonTrackPosition == 1)
-						                              ? true : false;
+						? true : false;
 
-					std::cout << "dot: " << playerForwardDotCannonRight << "\n";
-
-				    //TODO: get rid of position comparison once raycasting is in
-				    //check if player is on the right side of the cannon (will be pushing towards the left)
-					if (playerForwardDotCannonRight < -0.65f && !isCannonOnLeftSideOfTrack 
+					//TODO: get rid of position comparison once raycasting is in
+					//check if player is on the right side of the cannon (will be pushing towards the left)
+					if (playerForwardDotCannonRight < -0.65f && !isCannonOnLeftSideOfTrack
 						//compare x values
 						&& a_playerTransform->getPositionX() < cannonTransform.getPositionX() + 2.5f
 						&& a_playerTransform->getPositionX() > cannonTransform.getPositionX() + 1.1f
@@ -421,26 +320,14 @@ void PlayerInteractionValidationSystem::validateInteraction(entt::entity a_playe
 						&& a_playerTransform->getPositionZ() < cannonTransform.getPositionZ() + 1.0f
 						&& a_playerTransform->getPositionZ() > cannonTransform.getPositionZ() - 1.0f)
 					{
-						//set adjusting position and pushing state data before setting the new state
-						a_player->adjustingPositionStateData.destinationPos   = cannonTransform.getRight() * glm::vec3(1.2f, 0.0f, 0.0f) + cannonTransform.getPosition();
-						a_player->adjustingPositionStateData.destinationPos.y = a_playerTransform->getPositionY(); //don't change the player's y position
-					    
-						a_player->pushingStateData.destinationPos   = -cannonTransform.getRight() * glm::vec3(cannon.pushDistance, 0.0f, 0.0f) + a_player->adjustingPositionStateData.destinationPos;
-						a_player->pushingStateData.destinationPos.y = a_playerTransform->getPositionY(); //don't change the player's y position
-					    
-						cannon.pushStateData.destinationPos = -cannonTransform.getRight() * glm::vec3(cannon.pushDistance, 0.0f, 0.0f) + cannonTransform.getPosition();
+						isValidInteraction = true;
 
-						cannon.cannonTrackPosition--;
-
-						//hacky way to limit the camera but it works for now
-						a_player->yRotationClamp = 50.0f;
-						if (a_playerTransform->getRotationEulerY() < a_player->yRotationClamp)
-							a_playerTransform->setRotationEulerY(a_player->yRotationClamp);
-
-						isValidInteraction = true; //TODO: remove once raycast is in
+						PlayerInteractResultEvent playerInteractResult;
+						playerInteractResult.interactionType = PlayerInteractionResult::pushCannon;
+						postEvent(Event::create(playerInteractResult));
 					}
 					//TODO: get rid of position comparison once raycasting is in
-				    //check if player is on the left side of the cannon (will be pushing towards the right)
+					//check if player is on the left side of the cannon (will be pushing towards the right)
 					else if (playerForwardDotCannonRight > 0.65f && !isCannonOnRightSideOfTrack
 						//compare x values
 						&& a_playerTransform->getPositionX() > cannonTransform.getPositionX() - 2.5f
@@ -449,51 +336,35 @@ void PlayerInteractionValidationSystem::validateInteraction(entt::entity a_playe
 						&& a_playerTransform->getPositionZ() < cannonTransform.getPositionZ() + 1.0f
 						&& a_playerTransform->getPositionZ() > cannonTransform.getPositionZ() - 1.0f)
 					{
-						//set adjusting position and pushing state data before setting the new state
-						a_player->adjustingPositionStateData.destinationPos   = -cannonTransform.getRight() * glm::vec3(1.2f, 0.0f, 0.0f) + cannonTransform.getPosition();
-						a_player->adjustingPositionStateData.destinationPos.y = a_playerTransform->getPositionY(); //don't change the player's y position
-					    
-						a_player->pushingStateData.destinationPos   = cannonTransform.getRight() * glm::vec3(cannon.pushDistance, 0.0f, 0.0f) + a_player->adjustingPositionStateData.destinationPos;
-						a_player->pushingStateData.destinationPos.y = a_playerTransform->getPositionY(); //don't change the player's y position
-					    
-						cannon.pushStateData.destinationPos = cannonTransform.getRight() * glm::vec3(cannon.pushDistance, 0.0f, 0.0f) + cannonTransform.getPosition();
+						isValidInteraction = true;
 
-						cannon.cannonTrackPosition++;
-
-						//hacky way to limit the camera but it works for now
-						a_player->yRotationClamp = -50.0f;
-						if (a_playerTransform->getRotationEulerY() > a_player->yRotationClamp)
-							a_playerTransform->setRotationEulerY(a_player->yRotationClamp);
-
-						isValidInteraction = true; //TODO: remove once raycast is in
-					}
-
-					if (isValidInteraction)
-					{
-						std::cout << "PUSHING!\n";
-
-						a_player->adjustingPositionStateData.startPos = a_playerTransform->getPosition();
-						a_player->pushingStateData.startPos = a_player->adjustingPositionStateData.destinationPos;
-
-						cannon.pushStateData.startPos = cannonTransform.getPosition();
-
-						//once all the new positions are set for the states, send out state change events
-						PlayerStateChangeEvent playerStateChange;
-						playerStateChange.player = a_player;
-						playerStateChange.newState = PlayerState::pushing;
-						postEvent(Event::create(playerStateChange));
-
-						CannonStateChangeEvent cannonStateChange;
-						cannonStateChange.cannon = &cannon;
-						cannonStateChange.newState = CannonState::beingPushed;
-						postEvent(Event::create(cannonStateChange));
+						PlayerInteractResultEvent playerInteractResult;
+						playerInteractResult.interactionType = PlayerInteractionResult::pushCannon;
+						postEvent(Event::create(playerInteractResult));
 					}
 				}
 			}
 		}
 	}
 
-	if (!isValidInteraction && a_player->state != PlayerState::pushing && a_player->state != PlayerState::cleaning)
+	//no valid interactions
+	if (!isValidInteraction)
+	{
+		PlayerInteractResultEvent playerInteractResult;
+		playerInteractResult.interactionType = PlayerInteractionResult::nothing;
+		postEvent(Event::create(playerInteractResult));
+	}
+}
+
+void PlayerInteractionValidationSystem::validateInteraction(entt::entity a_playerEntity, Player* a_player, component::Transform* a_playerTransform)
+{
+	bool isValidInteraction = false; //TODO: remove once raycast is in
+    
+    //check if there's a valid entity the player can interact with first
+	if (a_player->interactableEntity == entt::null)
+		return;
+
+	if (a_player->state != PlayerState::pushing && a_player->state != PlayerState::cleaning)
 	{
 		auto view = registry->view<CarryableItem, component::Transform>();
 		for (auto& carryableItemEntity : view)
@@ -665,6 +536,152 @@ void PlayerInteractionValidationSystem::validateInteraction(entt::entity a_playe
 							carryableItemTransform.setRotationEuler(glm::vec3(0.0f));
 							carryableItemTransform.setPosition(glm::vec3(0.0f, 0.35f, -0.75f));
 						}
+					}
+				}
+			}
+		}
+	}
+
+	/////////////TODO: remove this once proper validation (raycast) is in
+	auto view = registry->view<Cannon, component::Transform>();
+	for (auto& entity : view)
+	{
+		a_player->interactableEntity = entity;
+	}
+	/////////////
+	//check type of interactable entity
+	if (registry->has<Cannon>(a_player->interactableEntity) && !isValidInteraction)
+	{
+		auto view = registry->view<Cannon, component::Transform>();
+		for (auto& entity : view)
+		{
+			auto& cannon = registry->get<Cannon>(entity);
+			auto& cannonTransform = registry->get<component::Transform>(entity);
+
+			a_player->interactableEntity = entity; //TODO: remove this once proper validation (raycast) is in
+
+			if (a_player->interactableEntity == entity)
+			{
+				//cannon can be loaded with a cannonball
+				if (a_player->carriedItem == CarryingItemState::cannonball
+					&& cannon.isLoaded == false
+					//compare x values
+					&& a_playerTransform->getPositionX() < cannonTransform.getPositionX() + 1.7f
+					&& a_playerTransform->getPositionX() > cannonTransform.getPositionX() - 1.7f
+					//compare z values
+					&& a_playerTransform->getPositionZ() < cannonTransform.getPositionZ() + 1.7f
+					&& a_playerTransform->getPositionZ() > cannonTransform.getPositionZ() - 1.7f) //check if cannon can be loaded with a cannonball
+				{
+					isValidInteraction = true;
+					cannon.isLoaded = true;
+
+					//get rid of the cannonball the player has loaded
+					auto carriedItemsView = registry->view<CarryableItem, component::Parent, component::Transform>();
+					for (entt::entity carriedItemEntity : carriedItemsView)
+					{
+						auto& carriedItem = registry->get<CarryableItem>(carriedItemEntity);
+						auto& carriedItemParent = registry->get<component::Parent>(carriedItemEntity);
+						auto& carriedItemTransform = registry->get<component::Transform>(carriedItemEntity);
+
+						if (carriedItemParent.parent == a_playerEntity)
+						{
+							std::cout << "LOADED CANNON!\n";
+
+							carriedItemParent.parent = entt::null;
+							a_player->carriedItem = CarryingItemState::nothing;
+							carriedItem.isBeingCarried = false;
+							carriedItemTransform.setPosition(glm::vec3(1000.0f, 1000.0f, 1000.0f));
+							carriedItem.isActive = false;
+						}
+					}
+				}
+				else if (cannon.state == CannonState::doingNothing && a_player->carriedItem == CarryingItemState::nothing) //cannon can be pushed TODO: get rid of conditions after raycast validation is in, should just be an else
+				{
+					float playerForwardDotCannonRight = glm::dot(a_playerTransform->getForward(), cannonTransform.getRight());
+
+					bool isCannonOnLeftSideOfTrack = (cannon.cannonTrackPosition == -1)
+						? true : false;
+					bool isCannonOnRightSideOfTrack = (cannon.cannonTrackPosition == 1)
+						? true : false;
+
+					std::cout << "dot: " << playerForwardDotCannonRight << "\n";
+
+					//TODO: get rid of position comparison once raycasting is in
+					//check if player is on the right side of the cannon (will be pushing towards the left)
+					if (playerForwardDotCannonRight < -0.65f && !isCannonOnLeftSideOfTrack
+						//compare x values
+						&& a_playerTransform->getPositionX() < cannonTransform.getPositionX() + 2.5f
+						&& a_playerTransform->getPositionX() > cannonTransform.getPositionX() + 1.1f
+						//compare z values
+						&& a_playerTransform->getPositionZ() < cannonTransform.getPositionZ() + 1.0f
+						&& a_playerTransform->getPositionZ() > cannonTransform.getPositionZ() - 1.0f)
+					{
+						//set adjusting position and pushing state data before setting the new state
+						a_player->adjustingPositionStateData.destinationPos = cannonTransform.getRight() * glm::vec3(1.2f, 0.0f, 0.0f) + cannonTransform.getPosition();
+						a_player->adjustingPositionStateData.destinationPos.y = a_playerTransform->getPositionY(); //don't change the player's y position
+
+						a_player->pushingStateData.destinationPos = -cannonTransform.getRight() * glm::vec3(cannon.pushDistance, 0.0f, 0.0f) + a_player->adjustingPositionStateData.destinationPos;
+						a_player->pushingStateData.destinationPos.y = a_playerTransform->getPositionY(); //don't change the player's y position
+
+						cannon.pushStateData.destinationPos = -cannonTransform.getRight() * glm::vec3(cannon.pushDistance, 0.0f, 0.0f) + cannonTransform.getPosition();
+
+						cannon.cannonTrackPosition--;
+
+						//hacky way to limit the camera but it works for now
+						a_player->yRotationClamp = 50.0f;
+						if (a_playerTransform->getRotationEulerY() < a_player->yRotationClamp)
+							a_playerTransform->setRotationEulerY(a_player->yRotationClamp);
+
+						isValidInteraction = true; //TODO: remove once raycast is in
+					}
+					//TODO: get rid of position comparison once raycasting is in
+					//check if player is on the left side of the cannon (will be pushing towards the right)
+					else if (playerForwardDotCannonRight > 0.65f && !isCannonOnRightSideOfTrack
+						//compare x values
+						&& a_playerTransform->getPositionX() > cannonTransform.getPositionX() - 2.5f
+						&& a_playerTransform->getPositionX() < cannonTransform.getPositionX() - 1.1f
+						//compare z values
+						&& a_playerTransform->getPositionZ() < cannonTransform.getPositionZ() + 1.0f
+						&& a_playerTransform->getPositionZ() > cannonTransform.getPositionZ() - 1.0f)
+					{
+						//set adjusting position and pushing state data before setting the new state
+						a_player->adjustingPositionStateData.destinationPos = -cannonTransform.getRight() * glm::vec3(1.2f, 0.0f, 0.0f) + cannonTransform.getPosition();
+						a_player->adjustingPositionStateData.destinationPos.y = a_playerTransform->getPositionY(); //don't change the player's y position
+
+						a_player->pushingStateData.destinationPos = cannonTransform.getRight() * glm::vec3(cannon.pushDistance, 0.0f, 0.0f) + a_player->adjustingPositionStateData.destinationPos;
+						a_player->pushingStateData.destinationPos.y = a_playerTransform->getPositionY(); //don't change the player's y position
+
+						cannon.pushStateData.destinationPos = cannonTransform.getRight() * glm::vec3(cannon.pushDistance, 0.0f, 0.0f) + cannonTransform.getPosition();
+
+						cannon.cannonTrackPosition++;
+
+						//hacky way to limit the camera but it works for now
+						a_player->yRotationClamp = -50.0f;
+						if (a_playerTransform->getRotationEulerY() > a_player->yRotationClamp)
+							a_playerTransform->setRotationEulerY(a_player->yRotationClamp);
+
+						isValidInteraction = true; //TODO: remove once raycast is in
+					}
+
+					if (isValidInteraction)
+					{
+						std::cout << "PUSHING!\n";
+
+						a_player->adjustingPositionStateData.startPos = a_playerTransform->getPosition();
+						a_player->pushingStateData.startPos = a_player->adjustingPositionStateData.destinationPos;
+
+						cannon.pushStateData.startPos = cannonTransform.getPosition();
+
+						//once all the new positions are set for the states, send out state change events
+						PlayerStateChangeEvent playerStateChange;
+						playerStateChange.player = a_player;
+						playerStateChange.newState = PlayerState::pushing;
+						postEvent(Event::create(playerStateChange));
+
+						CannonStateChangeEvent cannonStateChange;
+						cannonStateChange.cannon = &cannon;
+						cannonStateChange.newState = CannonState::beingPushed;
+						postEvent(Event::create(cannonStateChange));
 					}
 				}
 			}

@@ -11,7 +11,7 @@ void UIManagerSystem::onExit()
 
 void UIManagerSystem::onUpdate(Timestep dt)
 {
-
+	
 }
 
 bool UIManagerSystem::onEvent(Ref<Event> event)
@@ -25,148 +25,67 @@ bool UIManagerSystem::onEvent(Ref<Event> event)
 			{
 				case PlayerInteractionResult::nothing:
 				{
-					auto view = registry->view<component::GuiRenderable, PlayerInteractionType>();
-					for (auto& guiEntity : view)
+					auto guiView = registry->view<component::GuiRenderable, component::Transform, PlayerInteractionType>();
+					for (auto guiEntity : guiView)
 					{
 						auto& renderable = registry->get<component::GuiRenderable>(guiEntity);
-						renderable.enabled = false;
+						auto& renderableTransform = registry->get<component::Transform>(guiEntity);
+
+						renderableTransform.setPosition(glm::vec3(100.0f, 100.0f, 100.0f));
 					}
+
+					auto reticleView = registry->view<component::GuiRenderable, component::Transform, Reticle>();
+					for (auto& reticleEntity : reticleView)
+					{
+						auto& reticle = registry->get<Reticle>(reticleEntity);
+						auto& reticleTransform = registry->get<component::Transform>(reticleEntity);
+
+						if (reticle.type == ReticleType::normal)
+							reticleTransform.setPosition(glm::vec3(0.0f, 0.0f, 0.0f));
+						else
+							reticleTransform.setPosition(glm::vec3(100.0f, 100.0f, 100.0f));
+					}
+
 					break;
 				}
 				case PlayerInteractionResult::cannonFiringSoon:
 				{
-					/*auto view = registry->view<component::GuiRenderable, PlayerInteractionType>();
-					for (auto& guiEntity : view)
-					{
-						auto& renderable = registry->get<component::GuiRenderable>(guiEntity);
-						auto& interactionType = registry->get<PlayerInteractionType>(guiEntity);
-
-						if (interactionType.type == evt.interactionType)
-						{
-							renderable.enabled = true;
-							break;
-						}
-					}
-
-					break;*/
+					enableInvalidUIType(PlayerInteractionResult::cannonFiringSoon);
+					break;
 				}
 				case PlayerInteractionResult::loadCannon:
 				{
-					/*auto view = registry->view<component::GuiRenderable, PlayerInteractionType>();
-					for (auto& guiEntity : view)
-					{
-						auto& renderable = registry->get<component::GuiRenderable>(guiEntity);
-						auto& interactionType = registry->get<PlayerInteractionType>(guiEntity);
-
-						if (interactionType.type == evt.interactionType)
-						{
-							renderable.enabled = true;
-							break;
-						}
-					}
-
-					break;*/
+					enableValidUIType(PlayerInteractionResult::loadCannon);
+					break;
 				}
 				case PlayerInteractionResult::pushCannon:
 				{
-					/*auto view = registry->view<component::GuiRenderable, PlayerInteractionType>();
-					for (auto& guiEntity : view)
-					{
-						auto& renderable = registry->get<component::GuiRenderable>(guiEntity);
-						auto& interactionType = registry->get<PlayerInteractionType>(guiEntity);
-
-						if (interactionType.type == evt.interactionType)
-						{
-							renderable.enabled = true;
-							break;
-						}
-					}
-
-					break;*/
+					enableValidUIType(PlayerInteractionResult::pushCannon);
+					break;
 				}
 				case PlayerInteractionResult::takeCannonballFromCrate:
 				{
-					/*auto view = registry->view<component::GuiRenderable, PlayerInteractionType>();
-					for (auto& guiEntity : view)
-					{
-						auto& renderable = registry->get<component::GuiRenderable>(guiEntity);
-						auto& interactionType = registry->get<PlayerInteractionType>(guiEntity);
-
-						if (interactionType.type == evt.interactionType)
-						{
-							renderable.enabled = true;
-							break;
-						}
-					}
-
-					break;*/
+					enableValidUIType(PlayerInteractionResult::takeCannonballFromCrate);
+					break;
 				}
 				case PlayerInteractionResult::pickUpCannonball:
 				{
-					/*auto view = registry->view<component::GuiRenderable, PlayerInteractionType>();
-					for (auto& guiEntity : view)
-					{
-						auto& renderable = registry->get<component::GuiRenderable>(guiEntity);
-						auto& interactionType = registry->get<PlayerInteractionType>(guiEntity);
-
-						if (interactionType.type == evt.interactionType)
-						{
-							renderable.enabled = true;
-							break;
-						}
-					}
-
-					break;*/
+					enableValidUIType(PlayerInteractionResult::pickUpCannonball);
+					break;
 				}
 				case PlayerInteractionResult::pickUpMop:
 				{
-					/*auto view = registry->view<component::GuiRenderable, PlayerInteractionType>();
-					for (auto& guiEntity : view)
-					{
-						auto& renderable = registry->get<component::GuiRenderable>(guiEntity);
-						auto& interactionType = registry->get<PlayerInteractionType>(guiEntity);
-
-						if (interactionType.type == evt.interactionType)
-						{
-							renderable.enabled = true;
-							break;
-						}
-					}
-
-					break;*/
+					enableValidUIType(PlayerInteractionResult::pickUpMop);
+					break;
 				}
 				case PlayerInteractionResult::cleanGarbagePile:
 				{
-					/*auto view = registry->view<component::GuiRenderable, PlayerInteractionType>();
-					for (auto& guiEntity : view)
-					{
-						auto& renderable = registry->get<component::GuiRenderable>(guiEntity);
-						auto& interactionType = registry->get<PlayerInteractionType>(guiEntity);
-
-						if (interactionType.type == evt.interactionType)
-						{
-							renderable.enabled = true;
-							break;
-						}
-					}
-
-					break;*/
+					enableValidUIType(PlayerInteractionResult::cleanGarbagePile);
+					break;
 				}
 				case PlayerInteractionResult::invalid:
 				{
-					auto view = registry->view<component::GuiRenderable, PlayerInteractionType>();
-					for (auto& guiEntity : view)
-					{
-						auto& renderable = registry->get<component::GuiRenderable>(guiEntity);
-						auto& interactionType = registry->get<PlayerInteractionType>(guiEntity);
-
-						if (interactionType.type == evt.interactionType)
-						{
-							renderable.enabled = true;
-							break;
-						}
-					}
-
+					enableInvalidUIType(PlayerInteractionResult::invalid);
 					break;
 				}
 			}
@@ -178,7 +97,60 @@ bool UIManagerSystem::onEvent(Ref<Event> event)
 	return false;
 }
 
-void UIManagerSystem::enableUIType(PlayerInteractionResult a_type)
+void UIManagerSystem::enableValidUIType(PlayerInteractionResult a_type)
 {
+	auto guiView = registry->view<component::GuiRenderable, component::Transform, PlayerInteractionType> ();
+	for (auto& guiEntity : guiView)
+	{
+		auto& interactionType = registry->get<PlayerInteractionType>(guiEntity);
+		auto& renderableTransform = registry->get<component::Transform>(guiEntity);
+		
+		renderableTransform.setPosition(glm::vec3(100.0f, 100.0f, 100.0f));
 
+		if (interactionType.type == a_type)
+		{
+			renderableTransform.setPosition(glm::vec3(0.0f, 2.0f, 0.0f));
+		}
+	}
+
+	auto reticleView = registry->view<component::GuiRenderable, component::Transform, Reticle>();
+	for (auto& reticleEntity : reticleView)
+	{
+		auto& reticle = registry->get<Reticle>(reticleEntity);
+		auto& reticleTransform = registry->get<component::Transform>(reticleEntity);
+
+		if (reticle.type == ReticleType::normal)
+			reticleTransform.setPosition(glm::vec3(0.0f, 0.0f, 0.0f));
+		else
+			reticleTransform.setPosition(glm::vec3(100.0f, 100.0f, 100.0f));
+	}
+}
+
+void UIManagerSystem::enableInvalidUIType(PlayerInteractionResult a_type)
+{
+	auto guiView = registry->view<component::GuiRenderable, component::Transform, PlayerInteractionType>();
+	for (auto& guiEntity : guiView)
+	{
+		auto& interactionType = registry->get<PlayerInteractionType>(guiEntity);
+		auto& renderableTransform = registry->get<component::Transform>(guiEntity);
+
+		renderableTransform.setPosition(glm::vec3(100.0f, 100.0f, 100.0f));
+
+		if (interactionType.type == a_type)
+		{
+			renderableTransform.setPosition(glm::vec3(0.0f, 2.0f, 0.0f));
+		}
+	}
+
+	auto reticleView = registry->view<component::GuiRenderable, component::Transform, Reticle>();
+	for (auto& reticleEntity : reticleView)
+	{
+		auto& reticle = registry->get<Reticle>(reticleEntity);
+		auto& reticleTransform = registry->get<component::Transform>(reticleEntity);
+
+		if (reticle.type == ReticleType::invalid)
+			reticleTransform.setPosition(glm::vec3(0.0f, 0.0f, 0.0f));
+		else
+			reticleTransform.setPosition(glm::vec3(100.0f, 100.0f, 100.0f));
+	}
 }
