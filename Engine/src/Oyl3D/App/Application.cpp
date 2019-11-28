@@ -70,28 +70,38 @@ namespace oyl
         Shader::cache(
             {
                 { VertexShader, ENGINE_RES + LIGHTING_SHADER_VERTEX_PATH },
-                { FragmentShader, ENGINE_RES + LIGHTING_SHADER_FRAGMENT_PATH },
+                { PixelShader, ENGINE_RES + LIGHTING_SHADER_FRAGMENT_PATH },
             }, LIGHTING_SHADER_ALIAS);
 
         Shader::cache(
             {
-                { VertexShader, ENGINE_RES +   TEXTURE_SHADER_VERTEX_PATH },
-                { FragmentShader, ENGINE_RES + TEXTURE_SHADER_FRAGMENT_PATH },
-            }, TEXTURE_SHADER_ALIAS);
+                { VertexShader, ENGINE_RES + "shaders/morphTargetLighting.vert" },
+                { PixelShader, ENGINE_RES + LIGHTING_SHADER_FRAGMENT_PATH },
+            }, "animation");
 
         Shader::cache(
             {
-                { VertexShader, ENGINE_RES + "shaders/morphTargetLighting.vert" },
-                { FragmentShader, ENGINE_RES + LIGHTING_SHADER_FRAGMENT_PATH },
-            }, "animation");
+                { VertexShader, ENGINE_RES + "shaders/texturedQuad.vert" },
+                { PixelShader, ENGINE_RES + "shaders/texturedQuad.frag" }
+            }, "texturedQuad");
+
+        Shader::cache(
+            {
+                { VertexShader, ENGINE_RES + SKYBOX_SHADER_VERTEX_PATH },
+                { PixelShader, ENGINE_RES + SKYBOX_SHADER_FRAGMENT_PATH }
+            }, SKYBOX_SHADER_ALIAS);
 
         Mesh::cache(ENGINE_RES + CUBE_MESH_PATH, CUBE_MESH_ALIAS);
         Mesh::cache(ENGINE_RES + MONKEY_MESH_PATH, MONKEY_MESH_ALIAS);
 
         Texture2D::cache(ENGINE_RES + WHITE_TEXTURE_PATH, WHITE_TEXTURE_ALIAS);
+        Texture2D::cache(ENGINE_RES + BLACK_TEXTURE_PATH, BLACK_TEXTURE_ALIAS);
         Texture2D::cache(ENGINE_RES + UV_TEXTURE_PATH, UV_TEXTURE_ALIAS);
 
-        m_renderSystem = internal::RenderSystem::create();
+        TextureCubeMap::cache(ENGINE_RES + DEFAULT_SKYBOX_PATH, DEFAULT_SKYBOX_ALIAS);
+
+        m_renderSystem    = internal::RenderSystem::create();
+        m_guiRenderSystem = internal::GuiRenderSystem::create();
 
         initEventListeners();
 
@@ -111,6 +121,8 @@ namespace oyl
         WindowResizedEvent wr;
         wr.width = 1280;
         wr.height = 720;
+        wr.args[2] = offsetof(WindowResizedEvent, width);
+        wr.args[3] = offsetof(WindowResizedEvent, height);
         m_dispatcher->postEvent(Event::create(wr));
 
         m_window->setVsync(false);
@@ -128,7 +140,6 @@ namespace oyl
         m_systemsLayer->onExit();
         
         m_renderSystem->onExit();
-        m_renderSystem->shutdown();
     }
 
     bool Application::onEvent(const Ref<Event>& event)
@@ -199,6 +210,12 @@ namespace oyl
         m_renderSystem->onEnter();
 
         m_dispatcher->registerListener(m_renderSystem);
+
+        m_guiRenderSystem->setDispatcher(m_dispatcher);
+        m_guiRenderSystem->setRegistry(m_currentScene->m_registry);
+        m_guiRenderSystem->onEnter();
+
+        m_dispatcher->registerListener(m_guiRenderSystem);
 
         if (!m_systemsLayer)
         {
@@ -285,6 +302,7 @@ namespace oyl
                 Renderer::beginScene();
                 
                 m_renderSystem->onUpdate(timestep);
+                m_guiRenderSystem->onUpdate(timestep);
 
                 Renderer::endScene();
                 m_mainBuffer->unbind();
@@ -294,6 +312,7 @@ namespace oyl
             m_guiLayer->begin();
 
             m_renderSystem->onGuiRender(timestep);
+            m_guiRenderSystem->onGuiRender(timestep);
 
             m_guiLayer->onGuiRenderSystems(timestep);
             m_guiLayer->onGuiRender(timestep);

@@ -150,6 +150,7 @@ namespace oyl
         virtual void bind() const = 0;
         virtual void unbind() const = 0;
 
+        // TODO: Add remove and reset functions for buffers
         virtual void addVertexBuffer(const Ref<VertexBuffer>& vbo) = 0;
         virtual void addIndexBuffer(const Ref<IndexBuffer>& ebo) = 0;
 
