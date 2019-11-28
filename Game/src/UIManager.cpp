@@ -3,6 +3,7 @@
 void UIManagerSystem::onEnter()
 {
 	this->listenForEventCategory((OylEnum)CategoryPlayer);
+	this->listenForEventCategory((OylEnum)CategoryGarbagePile);
 }
 
 void UIManagerSystem::onExit()
@@ -11,7 +12,16 @@ void UIManagerSystem::onExit()
 
 void UIManagerSystem::onUpdate(Timestep dt)
 {
-	
+	auto garbageTickView = registry->view<component::Transform, GarbageTick>();
+	for (auto& garbageTickEntity : garbageTickView)
+	{
+		auto& garbageTick = registry->get<GarbageTick>(garbageTickEntity);
+		auto& garbageTickTransform = registry->get<component::Transform>(garbageTickEntity);
+
+		garbageTick.screenDurationTimer.elapsed += dt;
+		if (garbageTick.screenDurationTimer.elapsed > garbageTick.screenDurationTimer.timeToWait)
+			garbageTickTransform.setPosition(glm::vec3(100.0f));
+	}
 }
 
 bool UIManagerSystem::onEvent(Ref<Event> event)
@@ -90,6 +100,30 @@ bool UIManagerSystem::onEvent(Ref<Event> event)
 				}
 			}
 
+			break;
+		}
+		case TypeGarbageCleaned:
+		{
+			auto evt = (GarbageCleanedEvent)* event;
+
+			auto garbageTickView = registry->view<component::Transform, GarbageTick>();
+			int i = 0;
+			for (auto& garbageTickEntity : garbageTickView)
+			{
+				auto& garbageTick = registry->get<GarbageTick>(garbageTickEntity);
+				auto& garbageTickTransform = registry->get<component::Transform>(garbageTickEntity);
+
+				garbageTickTransform.setPosition(glm::vec3(100.0f));
+
+				if (evt.currentGarbageTicks >= i + 1)
+				{
+					garbageTick.screenDurationTimer.elapsed = 0.0f;
+					garbageTick.screenDurationTimer.timeToWait = garbageTick.ON_SCREEN_DURATION;
+					garbageTickTransform.setPosition(glm::vec3((i * 3.0f) - 3.0f, 4.0f, 0.0f));
+				}
+
+				i++;
+			}
 			break;
 		}
 	}

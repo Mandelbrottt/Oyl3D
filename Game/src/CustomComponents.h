@@ -152,3 +152,14 @@ struct Reticle
 {
 	ReticleType type;
 };
+
+struct EndScreen
+{
+	bool isLoseScreen;
+};
+
+struct GarbageTick
+{
+	TimedAction screenDurationTimer;
+	float ON_SCREEN_DURATION = 1.5f;
+};

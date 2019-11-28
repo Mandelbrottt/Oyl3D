@@ -487,6 +487,19 @@ void PlayerInteractionValidationSystem::validateInteraction(entt::entity a_playe
 							garbagePile.garbageLevel--;
 							garbagePile.garbageLevelTicks = garbagePile.MAX_GARBAGE_LEVEL_TICKS;
 						}
+
+						if (garbagePile.garbageLevel > 0)
+						{
+							GarbageCleanedEvent garbageCleaned;
+							garbageCleaned.currentGarbageTicks = garbagePile.garbageLevelTicks;
+							postEvent(Event::create(garbageCleaned));
+						}
+						else
+						{
+							GarbageCleanedEvent garbageCleaned;
+							garbageCleaned.currentGarbageTicks = 0;
+							postEvent(Event::create(garbageCleaned));
+						}
 					}
 				}
 			}

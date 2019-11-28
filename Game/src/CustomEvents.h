@@ -17,7 +17,8 @@ enum CustomEventTypes
 	TypePlayerStateChange,
     TypeCannonStateChange,
     TypeLoadCannon,
-	TypeTotalGarbageCount
+	TypeTotalGarbageCount,
+	TypeGarbageCleaned
 };
 
 
@@ -62,4 +63,9 @@ OYL_EVENT_STRUCT(LoadCannonEvent, TypeLoadCannon, CategoryCannon,
 OYL_EVENT_STRUCT(TotalGarbageCountEvent, TypeTotalGarbageCount, CategoryGarbagePile,
 	{
 		int totalGarbageCount;
+	});
+
+OYL_EVENT_STRUCT(GarbageCleanedEvent, TypeGarbageCleaned, CategoryGarbagePile,
+	{
+		int currentGarbageTicks;
 	});

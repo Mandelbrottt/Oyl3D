@@ -1396,7 +1396,7 @@
     "Cannon Firing Message": {
         "Transform": {
             "Position": {
-                "X": 0.0,
+                "X": -24.0,
                 "Y": -2.5,
                 "Z": 0.0
             },
@@ -1415,7 +1415,7 @@
     "Cannonball Crate Message": {
         "Transform": {
             "Position": {
-                "X": 0.0,
+                "X": -24.119998931884766,
                 "Y": -2.5,
                 "Z": 0.0
             },
@@ -1434,7 +1434,7 @@
     "Clean Garbage Message": {
         "Transform": {
             "Position": {
-                "X": 0.0,
+                "X": -23.760000228881836,
                 "Y": -2.5,
                 "Z": 0.0
             },
@@ -1472,7 +1472,7 @@
     "Invalid Reticle": {
         "Transform": {
             "Position": {
-                "X": 0.0,
+                "X": -14.899999618530273,
                 "Y": 0.0,
                 "Z": 0.0
             },
@@ -1532,7 +1532,7 @@
     "Load Cannon Message": {
         "Transform": {
             "Position": {
-                "X": 0.0,
+                "X": -21.100000381469727,
                 "Y": -2.5,
                 "Z": 0.0
             },
@@ -1548,10 +1548,29 @@
             }
         }
     },
+    "Lose Screen": {
+        "Transform": {
+            "Position": {
+                "X": -100.0,
+                "Y": -100.0,
+                "Z": -200.0
+            },
+            "Rotation": {
+                "X": 0.0,
+                "Y": -0.0,
+                "Z": 0.0
+            },
+            "Scale": {
+                "X": 10.0,
+                "Y": 10.0,
+                "Z": 1.0
+            }
+        }
+    },
     "Normal Reticle": {
         "Transform": {
             "Position": {
-                "X": 0.0,
+                "X": -10.859999656677246,
                 "Y": 0.7199999690055847,
                 "Z": -2.0
             },
@@ -1570,7 +1589,7 @@
     "Pickup Cannonball Message": {
         "Transform": {
             "Position": {
-                "X": 0.0,
+                "X": -20.84000015258789,
                 "Y": -2.5,
                 "Z": 0.0
             },
@@ -1589,7 +1608,7 @@
     "Pickup Mop Message": {
         "Transform": {
             "Position": {
-                "X": 0.0,
+                "X": -23.260000228881836,
                 "Y": -2.5,
                 "Z": 0.0
             },
@@ -1712,7 +1731,7 @@
     "Push Cannon Message": {
         "Transform": {
             "Position": {
-                "X": 0.0,
+                "X": -24.0,
                 "Y": -2.5,
                 "Z": 0.0
             },
@@ -1825,6 +1844,25 @@
             "Scale": {
                 "X": 2.819999933242798,
                 "Y": 3.0199999809265137,
+                "Z": 1.0
+            }
+        }
+    },
+    "Win Screen": {
+        "Transform": {
+            "Position": {
+                "X": -100.0,
+                "Y": -100.0,
+                "Z": -200.0
+            },
+            "Rotation": {
+                "X": 0.0,
+                "Y": -0.0,
+                "Z": 0.0
+            },
+            "Scale": {
+                "X": 10.0,
+                "Y": 10.0,
                 "Z": 1.0
             }
         }

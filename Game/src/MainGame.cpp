@@ -182,6 +182,56 @@ public:
 		}
 
 		{
+			entt::entity e = registry->create();
+			auto& gui = registry->assign<component::GuiRenderable>(e);
+			gui.texture = Texture2D::cache("res/assets/textures/gui/VictoryScreen.jpg");
+
+			component::Transform winScreenTransform;
+			winScreenTransform.setPosition(glm::vec3(-100.0f, -100.0f, -200.0f));
+			registry->assign<component::Transform>(e, winScreenTransform);
+
+			auto& endScreen = registry->assign<EndScreen>(e);
+			endScreen.isLoseScreen = false;
+
+			auto& so = registry->assign<component::SceneObject>(e);
+			so.name = "Win Screen";
+		}
+
+		{
+			entt::entity e = registry->create();
+			auto& gui = registry->assign<component::GuiRenderable>(e);
+			gui.texture = Texture2D::cache("res/assets/textures/gui/LoseScreen.jpg");
+
+			auto& endScreen = registry->assign<EndScreen>(e);
+			endScreen.isLoseScreen = true;
+
+			component::Transform loseScreenTransform;
+			loseScreenTransform.setPosition(glm::vec3(-100.0f, -100.0f, -200.0f));
+			registry->assign<component::Transform>(e, loseScreenTransform);
+
+			auto& so = registry->assign<component::SceneObject>(e);
+			so.name = "Lose Screen";
+		}
+
+		{
+			for (int i = 0; i < 3; i++)
+			{
+				entt::entity e = registry->create();
+				auto& gui = registry->assign<component::GuiRenderable>(e);
+				gui.texture = Texture2D::cache("res/assets/textures/gui/garbageTick.png");
+
+				auto& garbageTick = registry->assign<GarbageTick>(e);
+
+				component::Transform garbageTickTransform;
+				garbageTickTransform.setPosition(glm::vec3(-100.0f, -100.0f, -200.0f));
+				registry->assign<component::Transform>(e, garbageTickTransform);
+
+				auto& so = registry->assign<component::SceneObject>(e);
+				so.name = "Garbage Tick" + std::to_string(i);
+			}
+		}
+
+		{
 			auto playerCameraEntity = registry->create();
 			registry->assign<component::Transform>(playerCameraEntity);
 			auto& camera = registry->assign<component::PlayerCamera>(playerCameraEntity);
@@ -386,6 +436,35 @@ public:
 						cameraTransform.setRotationEulerX(cameraRotationClampValue);
 					else if (cameraTransform.getRotationEulerX() < -cameraRotationClampValue)
 						cameraTransform.setRotationEulerX(-cameraRotationClampValue);
+				}
+			}
+
+			break;
+		}
+		case TypeTotalGarbageCount:
+		{
+			auto evt = (TotalGarbageCountEvent)* event;
+			if (evt.totalGarbageCount > 1)
+			{
+				auto guiView = registry->view<component::GuiRenderable, component::Transform>();
+				for (auto& guiEntity : guiView)
+				{
+					auto& renderableTransform = registry->get<component::Transform>(guiEntity);
+					renderableTransform.setPosition(glm::vec3(100.0f, 100.0f, 100.0f));
+				}
+
+				auto endScreensView = registry->view<component::GuiRenderable, component::Transform, EndScreen>();
+				for (auto& endScreenEntity : endScreensView)
+				{
+					auto& renderableTransform = registry->get<component::Transform>(endScreenEntity);
+					auto& endScreen = registry->get<EndScreen>(endScreenEntity);
+
+					renderableTransform.setPosition(glm::vec3(100.0f, 100.0f, 100.0f));
+
+					if (endScreen.isLoseScreen);
+					{
+						renderableTransform.setPosition(glm::vec3(0.0f, 0.0f, 0.0f));
+					}
 				}
 			}
 

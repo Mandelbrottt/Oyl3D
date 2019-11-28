@@ -2,6 +2,7 @@
 
 void GarbagePileSystem::onEnter()
 {
+
 }
 
 void GarbagePileSystem::onExit()
@@ -28,7 +29,7 @@ void GarbagePileSystem::onUpdate(Timestep dt)
 		auto& garbagePile = registry->get<GarbagePile>(garbagePileEntity);
 		auto& garbagePileRenderable = registry->get<component::Renderable>(garbagePileEntity);
 
-		if (addGarbageLevel)
+		if (addGarbageLevel && garbagePile.garbageLevel <= garbagePile.MAX_GARBAGE_LEVEL)
 			garbagePile.garbageLevel++;
 
 		if (garbagePile.garbageLevel <= 0) //check if garbage is fully depleted
@@ -46,14 +47,17 @@ void GarbagePileSystem::onUpdate(Timestep dt)
 		}
 
 		totalGarbageLevel += garbagePile.garbageLevel;
+
+		/*if (totalGarbageLevel > 1)
+			totalGarbageLevel = 500;*/
 	}
 
-	if (totalGarbageLevel != lastFrameTotalGarbageLevel)
+	/*if (totalGarbageLevel != lastFrameTotalGarbageLevel)
 	{
 		TotalGarbageCountEvent totalGarbageUpdate;
 		totalGarbageUpdate.totalGarbageCount = totalGarbageLevel;
 		postEvent(Event::create(totalGarbageUpdate));
-	}
+	}*/
 }
 
 bool GarbagePileSystem::onEvent(Ref<Event> event)
