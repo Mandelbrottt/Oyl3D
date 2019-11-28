@@ -18,7 +18,7 @@ void CannonSystem::onUpdate(Timestep dt)
 	    auto& cannonTransform = registry->get<component::Transform>(entity);
 	    
 	    //update fuse for every cannon
-		updateFuse(dt, &cannon);
+		updateFuse(dt, &cannon, &cannonTransform);
 
 		switch (cannon.state)
 		{
@@ -104,7 +104,7 @@ void CannonSystem::changeToFiringSoon(Cannon* a_cannon)
 	std::cout << "FIRING SOON!\n";
 }
 
-void CannonSystem::updateFuse(float dt, Cannon* a_cannon)
+void CannonSystem::updateFuse(float dt, Cannon* a_cannon, component::Transform* a_cannonTransform)
 {
 	a_cannon->fuse.elapsed += dt;
 
@@ -120,16 +120,20 @@ void CannonSystem::updateFuse(float dt, Cannon* a_cannon)
 			changeToDoingNothing(a_cannon);
 		    
 			if (a_cannon->isLoaded)
-				fireCannon(a_cannon);
+				fireCannon(a_cannon, a_cannonTransform);
 			else
 				std::cout << "CANNON MISFIRE! (UNLOADED CANNON FIRED)\n";
 		}
     }
 }
 
-void CannonSystem::fireCannon(Cannon* a_cannon)
+void CannonSystem::fireCannon(Cannon* a_cannon, component::Transform* a_cannonTransform)
 {
 	std::cout << "CANNON FIRED!\n";
 	a_cannon->isLoaded = false;
 	changeToDoingNothing(a_cannon);
+
+	CannonFiredEvent cannonFired;
+	cannonFired.cannonPosition = a_cannonTransform->getPosition();
+	postEvent(Event::create(cannonFired));
 }

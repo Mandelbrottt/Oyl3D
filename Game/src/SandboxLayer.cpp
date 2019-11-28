@@ -142,6 +142,8 @@ void SandboxLayer::onEnter()
 				carryableItem.team = Team::blue;
 				carryableItem.type = CarryableItemType::cannonball;
 
+				auto& cannonball = registry->assign<Cannonball>(cannonballEntity);
+
 				mr.mesh = Mesh::get("sphere");
 				registry->assign<component::Renderable>(cannonballEntity, mr);
 

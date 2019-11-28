@@ -124,7 +124,7 @@ struct CarryableItem
 	CarryableItemType type = CarryableItemType::invalid; //must manually be set when spawning items
 	bool isBeingCarried = false;
 
-	bool isActive = true;
+	bool isActive = false;
 };
 
 struct GarbagePile
@@ -141,6 +141,18 @@ struct GarbagePile
 struct CannonballCrate
 {
 	Team team;
+};
+
+struct Cannonball
+{
+	bool isBeingFired = false;
+
+	glm::vec3 v1;
+	glm::vec3 v2;
+	glm::vec3 v3;
+	glm::vec3 v4;
+
+	float interpolationParam = 0.0f;
 };
 
 struct PlayerInteractionType

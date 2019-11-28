@@ -16,6 +16,7 @@ enum CustomEventTypes
 	TypePlayerDropItem,
 	TypePlayerStateChange,
     TypeCannonStateChange,
+	TypeCannonFired,
     TypeLoadCannon,
 	TypeTotalGarbageCount,
 	TypeGarbageCleaned
@@ -53,6 +54,11 @@ OYL_EVENT_STRUCT(CannonStateChangeEvent, TypeCannonStateChange, CategoryCannon,
 	{
 		Cannon*      cannon;
 		CannonState  newState;
+	});
+
+OYL_EVENT_STRUCT(CannonFiredEvent, TypeCannonFired, CategoryCannon,
+	{
+		glm::vec3 cannonPosition;
 	});
 
 OYL_EVENT_STRUCT(LoadCannonEvent, TypeLoadCannon, CategoryCannon,

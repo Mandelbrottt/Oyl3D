@@ -72,7 +72,6 @@ bool PlayerInteractionValidationSystem::onEvent(Ref<Event> event)
 							carriedItemParent.parent = entt::null;
 							player.carriedItem = CarryingItemState::nothing;
 							carriedItem.isBeingCarried = false;
-							carriedItem.isActive = false;
 
 							glm::vec3 newPosition = playerTransform.getPosition();
 							glm::vec3 newRotation = playerTransform.getRotationEuler();
@@ -229,7 +228,7 @@ void PlayerInteractionValidationSystem::checkForAnyValidPlayerInteractions(entt:
 					auto& carryableItem = registry->get<CarryableItem>(carryableItemEntity);
 					auto& carryableItemTransform = registry->get<component::Transform>(carryableItemEntity);
 
-					if (carryableItem.type == CarryableItemType::cannonball && carryableItem.isActive && !carryableItem.isBeingCarried)
+					if (carryableItem.type == CarryableItemType::cannonball && !carryableItem.isActive && !carryableItem.isBeingCarried)
 					{
 						isValidInteraction = true;
 
@@ -535,11 +534,12 @@ void PlayerInteractionValidationSystem::validateInteraction(entt::entity a_playe
 						auto& carryableItem = registry->get<CarryableItem>(carryableItemEntity);
 						auto& carryableItemTransform = registry->get<component::Transform>(carryableItemEntity);
 
-						if (carryableItem.type == CarryableItemType::cannonball && carryableItem.isActive && !carryableItem.isBeingCarried)
+						if (carryableItem.type == CarryableItemType::cannonball && !carryableItem.isActive && !carryableItem.isBeingCarried)
 						{
 							isValidInteraction = true;
 							a_player->carriedItem = CarryingItemState::cannonball;
 							carryableItem.isBeingCarried = true;
+							carryableItem.isActive = true;
 							
 							std::cout << "OBTAINED CANNONBALL!\n";
 

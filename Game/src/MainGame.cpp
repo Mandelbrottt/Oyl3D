@@ -8,6 +8,7 @@
 #include "PlayerInteractionValidation.h"
 #include "GarbagePileSystem.h"
 #include "UIManager.h"
+#include "Cannonball.h"
 
 using namespace oyl;
 
@@ -29,6 +30,7 @@ public:
 		scheduleSystemUpdate<PlayerInteractionValidationSystem>();
 		scheduleSystemUpdate<GarbagePileSystem>();
 		scheduleSystemUpdate<UIManagerSystem>();
+		scheduleSystemUpdate<CannonballSystem>();
 
 		{
 			auto e = registry->create();
@@ -461,7 +463,7 @@ public:
 
 					renderableTransform.setPosition(glm::vec3(100.0f, 100.0f, 100.0f));
 
-					if (endScreen.isLoseScreen);
+					if (endScreen.isLoseScreen)
 					{
 						renderableTransform.setPosition(glm::vec3(0.0f, 0.0f, 0.0f));
 					}
