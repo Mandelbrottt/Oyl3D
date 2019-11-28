@@ -30,66 +30,15 @@ public:
 		scheduleSystemUpdate<GarbagePileSystem>();
 		scheduleSystemUpdate<UIManagerSystem>();
 
-        // TEMPORARY:
-        {
-            auto e = registry->create();
-         
-            auto& t = registry->assign<component::Transform>(e);
-            t.setPosition(glm::vec3(3.0f, 3.0f, 3.0f));
-        
-            auto& so = registry->assign<component::SceneObject>(e);
-            so.name = "Animation Object";
-        
-            auto& mr = registry->assign<component::Renderable>(e);
-            mr.mesh = Mesh::cache("res/assets/models/agony/agony1_000001.obj");
-            mr.material = animMat;
-        
-            char filename[512];
-        
-            std::string s;
-            s.reserve(512);
-         
-            auto anim1 = Ref<component::Animation>::create();
-            auto anim2 = Ref<component::Animation>::create();
-        
-            int scale = 3;
-            
-            for (int i = 0; i < 205 / scale; i++)
-            {
-                component::Animation::KeyPose kp;
-                kp.duration = (1.0f / 30.0f) * scale;
-        
-                sprintf(filename, "res/assets/models/default/dancemoves_%06d.obj", i * scale + 1);
-                s.assign(filename);
-             
-                kp.mesh = Mesh::cache(s);
-                anim1->poses.push_back(kp);
-            }
-        
-            for (int i = 0; i < 65 / scale; i++)
-            {
-                component::Animation::KeyPose kp;
-                kp.duration = (1.0f / 30.0f) * (float) scale;
-        
-                sprintf(filename, "res/assets/models/boxing/boxing_%06d.obj", i * scale + 1);
-                s.assign(filename);
-        
-                kp.mesh = Mesh::create(s);
-                anim2->poses.push_back(kp);
-            }
-        
-            auto& anim = registry->assign<component::Animator>(e);
-        
-            anim.pushAnimation("agony", anim1);
-            anim.pushAnimation("boxing", anim2);
-        }
-
-	    auto& a = Material::cache(lightShader, "monkeyMat");
-		a->albedoMap = Texture2D::get(WHITE_TEXTURE_ALIAS);
+		{
+			auto e = registry->create();
 
             auto& t = registry->assign<component::Transform>(e);
             t.setPosition(glm::vec3(0.0f, -2.5f, 0.0f));
             t.setScale(glm::vec3(4.0f, 4.0f, 1.0f));
+
+			auto& uiType = registry->assign<PlayerInteractionType>(e);
+			uiType.type = PlayerInteractionResult::pushCannon;
 
             auto& so = registry->assign<component::SceneObject>(e);
             so.name = "Push Cannon Message";
@@ -105,6 +54,9 @@ public:
             t.setPosition(glm::vec3(0.0f, -2.5f, 0.0f));
             t.setScale(glm::vec3(4.0f, 4.0f, 1.0f));
 
+			auto& uiType = registry->assign<PlayerInteractionType>(e);
+			uiType.type = PlayerInteractionResult::loadCannon;
+
             auto& so = registry->assign<component::SceneObject>(e);
             so.name = "Load Cannon Message";
 
@@ -118,6 +70,9 @@ public:
             auto& t = registry->assign<component::Transform>(e);
             t.setPosition(glm::vec3(0.0f, -2.5f, 0.0f));
             t.setScale(glm::vec3(4.0f, 4.0f, 1.0f));
+
+			auto& uiType = registry->assign<PlayerInteractionType>(e);
+			uiType.type = PlayerInteractionResult::pickUpCannonball;
 
             auto& so = registry->assign<component::SceneObject>(e);
             so.name = "Pickup Cannonball Message";
@@ -133,6 +88,9 @@ public:
             t.setPosition(glm::vec3(0.0f, -2.5f, 0.0f));
             t.setScale(glm::vec3(4.0f, 4.0f, 1.0f));
 
+			auto& uiType = registry->assign<PlayerInteractionType>(e);
+			uiType.type = PlayerInteractionResult::takeCannonballFromCrate;
+
             auto& so = registry->assign<component::SceneObject>(e);
             so.name = "Cannonball Crate Message";
 
@@ -146,6 +104,9 @@ public:
             auto& t = registry->assign<component::Transform>(e);
             t.setPosition(glm::vec3(0.0f, -2.5f, 0.0f));
             t.setScale(glm::vec3(4.0f, 4.0f, 1.0f));
+
+			auto& uiType = registry->assign<PlayerInteractionType>(e);
+			uiType.type = PlayerInteractionResult::pickUpMop;
 
             auto& so = registry->assign<component::SceneObject>(e);
             so.name = "Pickup Mop Message";
@@ -161,6 +122,9 @@ public:
             t.setPosition(glm::vec3(0.0f, -2.5f, 0.0f));
             t.setScale(glm::vec3(4.0f, 4.0f, 1.0f));
 
+			auto& uiType = registry->assign<PlayerInteractionType>(e);
+			uiType.type = PlayerInteractionResult::cleanGarbagePile;
+
             auto& so = registry->assign<component::SceneObject>(e);
             so.name = "Clean Garbage Message";
 
@@ -175,13 +139,31 @@ public:
             t.setPosition(glm::vec3(0.0f, -2.5f, 0.0f));
             t.setScale(glm::vec3(4.0f, 4.0f, 1.0f));
 
+			auto& uiType = registry->assign<PlayerInteractionType>(e);
+			uiType.type = PlayerInteractionResult::cannonFiringSoon;
+
             auto& so = registry->assign<component::SceneObject>(e);
             so.name = "Cannon Firing Message";
             
             auto& gui = registry->assign<component::GuiRenderable>(e);
             gui.texture = Texture2D::cache("res/assets/textures/gui/cannonFiring.png");
         }
-    }
+
+		{
+			entt::entity e = registry->create();
+			auto& gui = registry->assign<component::GuiRenderable>(e);
+			gui.texture = Texture2D::cache("res/assets/textures/invalid_reticle.png");
+
+			auto& uiType = registry->assign<PlayerInteractionType>(e);
+			uiType.type = PlayerInteractionResult::invalid;
+
+			component::Transform t;
+			t.setPosition(glm::vec3(-3.0f, -1.0f, -2.0f));
+			registry->assign<component::Transform>(e, t);
+
+			auto& so = registry->assign<component::SceneObject>(e);
+			so.name = "Invalid Reticle";
+		}
 
 		{
 			auto playerCameraEntity = registry->create();

@@ -266,22 +266,6 @@ void SandboxLayer::onEnter()
         auto& shi = cl.pushShape(Collider_Sphere);
         shi.sphere.setRadius(0.5f);
     }
-
-	{
-		entt::entity e = registry->create();
-		auto& gui = registry->assign<component::GuiRenderable>(e);
-		gui.texture = Texture2D::cache("res/assets/textures/invalid_reticle.png");
-
-		auto& uiType = registry->assign<PlayerInteractionType>(e);
-		uiType.type = PlayerInteractionResult::invalid;
-
-		component::Transform t;
-		t.setPosition(glm::vec3(-3.0f, -1.0f, -2.0f));
-		registry->assign<component::Transform>(e, t);
-
-		auto& so = registry->assign<component::SceneObject>(e);
-		so.name = "UI TEst";
-	}
 }
 
 void SandboxLayer::onUpdate(Timestep dt)

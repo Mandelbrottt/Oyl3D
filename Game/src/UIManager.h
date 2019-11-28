@@ -15,4 +15,6 @@ private:
 	void onExit() override;
 	void onUpdate(Timestep dt) override;
 	bool onEvent(Ref<Event> event) override;
+
+	void enableUIType(PlayerInteractionResult a_type);
 };

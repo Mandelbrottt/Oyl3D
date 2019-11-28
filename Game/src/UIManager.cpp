@@ -177,3 +177,8 @@ bool UIManagerSystem::onEvent(Ref<Event> event)
 
 	return false;
 }
+
+void UIManagerSystem::enableUIType(PlayerInteractionResult a_type)
+{
+
+}
