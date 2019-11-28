@@ -34,13 +34,13 @@ void GarbagePileSystem::onUpdate(Timestep dt)
 		if (garbagePile.garbageLevel <= 0) //check if garbage is fully depleted
 		{
 			garbageLevelHitZeroDirty = true;
-			garbagePileRenderable.mesh = NULL;
+			garbagePileRenderable.enabled = false;
 		}
 		else //garbage isn't fully depleted
 		{
 			if (garbageLevelHitZeroDirty)
 			{
-				garbagePileRenderable.mesh = Mesh::get("cube");
+				garbagePileRenderable.enabled = true;
 				garbageLevelHitZeroDirty = false;
 			}
 		}

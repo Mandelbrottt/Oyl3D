@@ -43,6 +43,19 @@ enum class CarryingItemState
     gloop
 };
 
+enum class PlayerInteractionResult
+{
+	nothing,
+	invalid,
+	cannonFiringSoon,
+	loadCannon,
+	pushCannon,
+	takeCannonballFromCrate,
+	pickUpCannonball,
+	pickUpMop,
+	cleanGarbagePile,
+};
+
 struct TimedAction
 {
 	float elapsed = 0.0f;
@@ -122,4 +135,9 @@ struct GarbagePile
 struct CannonballCrate
 {
 	Team team;
+};
+
+struct PlayerInteractionType
+{
+	PlayerInteractionResult type;
 };

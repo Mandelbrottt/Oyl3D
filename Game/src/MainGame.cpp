@@ -7,6 +7,7 @@
 #include "CustomEvents.h"
 #include "PlayerInteractionValidation.h"
 #include "GarbagePileSystem.h"
+#include "UIManager.h"
 
 using namespace oyl;
 
@@ -27,6 +28,7 @@ public:
 		scheduleSystemUpdate<CannonSystem>();
 		scheduleSystemUpdate<PlayerInteractionValidationSystem>();
 		scheduleSystemUpdate<GarbagePileSystem>();
+		scheduleSystemUpdate<UIManagerSystem>();
 
 		auto lightShader = Shader::get(LIGHTING_SHADER_ALIAS);
 
