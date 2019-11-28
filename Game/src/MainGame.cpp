@@ -446,7 +446,7 @@ public:
 		case TypeTotalGarbageCount:
 		{
 			auto evt = (TotalGarbageCountEvent)* event;
-			if (evt.totalGarbageCount > 1)
+			if (evt.totalGarbageCount >= 15)
 			{
 				auto guiView = registry->view<component::GuiRenderable, component::Transform>();
 				for (auto& guiEntity : guiView)
