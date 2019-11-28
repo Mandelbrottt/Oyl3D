@@ -11,6 +11,7 @@ enum CustomEventsCategories
 enum CustomEventTypes
 {
     TypePlayerMove = oyl::EventTypeCustomStart,
+	TypePlayerInteractResult,
     TypePlayerInteractionRequest,
 	TypePlayerDropItem,
 	TypePlayerStateChange,
@@ -24,6 +25,11 @@ OYL_EVENT_STRUCT(PlayerMoveEvent, TypePlayerMove, CategoryPlayer,
 	{
 		Player*   player;
 		glm::vec3 direction;
+	});
+
+OYL_EVENT_STRUCT(PlayerInteractResultEvent, TypePlayerInteractResult, CategoryPlayer,
+	{
+		PlayerInteractionResult interactionType;
 	});
 
 OYL_EVENT_STRUCT(PlayerInteractionRequestEvent, TypePlayerInteractionRequest, CategoryPlayer,

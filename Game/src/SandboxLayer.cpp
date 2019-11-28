@@ -64,13 +64,13 @@ void SandboxLayer::onEnter()
 
 			auto& so = registry->assign<component::SceneObject>(cannonBlueEntity);
 			so.name = "BlueCannon";
-/*
+
 			auto& rb = registry->assign<component::RigidBody>(cannonBlueEntity);
-			rb.setMass(5.0f);
-			rb.setFriction(1.0f);
+			rb.setMass(0.0f);
 			rb.setProperties(component::RigidBody::Property::FREEZE_ROTATION_X, true);
 			rb.setProperties(component::RigidBody::Property::FREEZE_ROTATION_Y, true);
-			rb.setProperties(component::RigidBody::Property::FREEZE_ROTATION_Z, true);*/
+			rb.setProperties(component::RigidBody::Property::FREEZE_ROTATION_Z, true);
+			rb.setProperties(component::RigidBody::Property::IS_KINEMATIC, true);
 
 			auto& cannonCollider = registry->assign<component::Collider>(cannonBlueEntity);
 			auto& shapeInfo = cannonCollider.pushShape(Collider_Box);
@@ -270,7 +270,10 @@ void SandboxLayer::onEnter()
 	{
 		entt::entity e = registry->create();
 		auto& gui = registry->assign<component::GuiRenderable>(e);
-		gui.texture = Texture2D::cache("res/assets/textures/InteractPrompt.png");
+		gui.texture = Texture2D::cache("res/assets/textures/invalid_reticle.png");
+
+		auto& uiType = registry->assign<PlayerInteractionType>(e);
+		uiType.type = PlayerInteractionResult::invalid;
 
 		component::Transform t;
 		t.setPosition(glm::vec3(-3.0f, -1.0f, -2.0f));

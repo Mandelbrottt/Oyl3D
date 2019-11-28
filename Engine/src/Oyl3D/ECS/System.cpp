@@ -60,13 +60,13 @@ namespace oyl
                 [](const Renderable& lhs, const Renderable& rhs)
                 {
                     if (!rhs.enabled)
-                        return false;
+                        return true;
                     else if (!lhs.enabled)
-                        return true;
-                    else if (rhs.material == nullptr || rhs.mesh == nullptr)
                         return false;
-                    else if (lhs.material == nullptr || lhs.mesh == nullptr)
+                    else if (rhs.material == nullptr || rhs.mesh == nullptr)
                         return true;
+                    else if (lhs.material == nullptr || lhs.mesh == nullptr)
+                        return false;
                     else if (lhs.material->shader != rhs.material->shader)
                         return lhs.material->shader < rhs.material->shader;
                     else
@@ -208,13 +208,13 @@ namespace oyl
                 [](const GuiRenderable& lhs, const GuiRenderable& rhs)
                 {
                     if (!rhs.enabled)
-                        return false;
+                        return true;
                     else if (!lhs.enabled)
-                        return true;
-                    else if (rhs.texture == nullptr)
                         return false;
-                    else if (lhs.texture == nullptr)
+                    else if (rhs.texture == nullptr)
                         return true;
+                    else if (lhs.texture == nullptr)
+                        return false;
                     else
                         return lhs.texture < rhs.texture;
                 });
@@ -554,8 +554,10 @@ namespace oyl
                 btVector3 _pos = {};
                 btQuaternion _rot = {};
                 
-                btTransform t;
-                cachedBody.motion->getWorldTransform(t);
+				btTransform t = cachedBody.body->getWorldTransform();
+
+                //btTransform t;
+                //cachedBody.motion->getWorldTransform(t);
 
                 _pos = t.getOrigin();
                 _rot = t.getRotation();
