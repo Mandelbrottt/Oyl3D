@@ -30,16 +30,140 @@ public:
 		scheduleSystemUpdate<GarbagePileSystem>();
 		scheduleSystemUpdate<UIManagerSystem>();
 
-		auto lightShader = Shader::get(LIGHTING_SHADER_ALIAS);
+		{
+			auto e = registry->create();
 
-	    auto& a = Material::cache(lightShader, "monkeyMat");
-		a->albedoMap = Texture2D::get(WHITE_TEXTURE_ALIAS);
+            auto& t = registry->assign<component::Transform>(e);
+            t.setPosition(glm::vec3(0.0f, -2.5f, 0.0f));
+            t.setScale(glm::vec3(4.0f, 4.0f, 1.0f));
 
-		auto textureShader = Shader::get(TEXTURE_SHADER_ALIAS);
-		auto uv = Texture2D::get(UV_TEXTURE_ALIAS);
+			auto& uiType = registry->assign<PlayerInteractionType>(e);
+			uiType.type = PlayerInteractionResult::pushCannon;
 
-		auto& cubeMat = Material::cache(textureShader, "cubeMat");
-		cubeMat->albedoMap = uv;
+            auto& so = registry->assign<component::SceneObject>(e);
+            so.name = "Push Cannon Message";
+            
+            auto& gui = registry->assign<component::GuiRenderable>(e);
+            gui.texture = Texture2D::cache("res/assets/textures/gui/pushCannon.png");
+        }
+
+        {
+            auto e = registry->create();
+
+            auto& t = registry->assign<component::Transform>(e);
+            t.setPosition(glm::vec3(0.0f, -2.5f, 0.0f));
+            t.setScale(glm::vec3(4.0f, 4.0f, 1.0f));
+
+			auto& uiType = registry->assign<PlayerInteractionType>(e);
+			uiType.type = PlayerInteractionResult::loadCannon;
+
+            auto& so = registry->assign<component::SceneObject>(e);
+            so.name = "Load Cannon Message";
+
+            auto& gui = registry->assign<component::GuiRenderable>(e);
+            gui.texture = Texture2D::cache("res/assets/textures/gui/loadCannon.png"); 
+        }
+
+        {
+            auto e = registry->create();
+
+            auto& t = registry->assign<component::Transform>(e);
+            t.setPosition(glm::vec3(0.0f, -2.5f, 0.0f));
+            t.setScale(glm::vec3(4.0f, 4.0f, 1.0f));
+
+			auto& uiType = registry->assign<PlayerInteractionType>(e);
+			uiType.type = PlayerInteractionResult::pickUpCannonball;
+
+            auto& so = registry->assign<component::SceneObject>(e);
+            so.name = "Pickup Cannonball Message";
+
+            auto& gui = registry->assign<component::GuiRenderable>(e);
+            gui.texture = Texture2D::cache("res/assets/textures/gui/pickupCannonball.png");
+        }
+
+        {
+            auto e = registry->create();
+
+            auto& t = registry->assign<component::Transform>(e);
+            t.setPosition(glm::vec3(0.0f, -2.5f, 0.0f));
+            t.setScale(glm::vec3(4.0f, 4.0f, 1.0f));
+
+			auto& uiType = registry->assign<PlayerInteractionType>(e);
+			uiType.type = PlayerInteractionResult::takeCannonballFromCrate;
+
+            auto& so = registry->assign<component::SceneObject>(e);
+            so.name = "Cannonball Crate Message";
+
+            auto& gui = registry->assign<component::GuiRenderable>(e);
+            gui.texture = Texture2D::cache("res/assets/textures/gui/cannonballCrate.png");
+        }
+
+        {
+            auto e = registry->create();
+
+            auto& t = registry->assign<component::Transform>(e);
+            t.setPosition(glm::vec3(0.0f, -2.5f, 0.0f));
+            t.setScale(glm::vec3(4.0f, 4.0f, 1.0f));
+
+			auto& uiType = registry->assign<PlayerInteractionType>(e);
+			uiType.type = PlayerInteractionResult::pickUpMop;
+
+            auto& so = registry->assign<component::SceneObject>(e);
+            so.name = "Pickup Mop Message";
+
+            auto& gui = registry->assign<component::GuiRenderable>(e);
+            gui.texture = Texture2D::cache("res/assets/textures/gui/pickupMop.png");
+        }
+
+        {
+            auto e = registry->create();
+
+            auto& t = registry->assign<component::Transform>(e);
+            t.setPosition(glm::vec3(0.0f, -2.5f, 0.0f));
+            t.setScale(glm::vec3(4.0f, 4.0f, 1.0f));
+
+			auto& uiType = registry->assign<PlayerInteractionType>(e);
+			uiType.type = PlayerInteractionResult::cleanGarbagePile;
+
+            auto& so = registry->assign<component::SceneObject>(e);
+            so.name = "Clean Garbage Message";
+
+            auto& gui = registry->assign<component::GuiRenderable>(e);
+            gui.texture = Texture2D::cache("res/assets/textures/gui/cleanGarbage.png");
+        }
+
+        {
+            auto e = registry->create();
+
+            auto& t = registry->assign<component::Transform>(e);
+            t.setPosition(glm::vec3(0.0f, -2.5f, 0.0f));
+            t.setScale(glm::vec3(4.0f, 4.0f, 1.0f));
+
+			auto& uiType = registry->assign<PlayerInteractionType>(e);
+			uiType.type = PlayerInteractionResult::cannonFiringSoon;
+
+            auto& so = registry->assign<component::SceneObject>(e);
+            so.name = "Cannon Firing Message";
+            
+            auto& gui = registry->assign<component::GuiRenderable>(e);
+            gui.texture = Texture2D::cache("res/assets/textures/gui/cannonFiring.png");
+        }
+
+		{
+			entt::entity e = registry->create();
+			auto& gui = registry->assign<component::GuiRenderable>(e);
+			gui.texture = Texture2D::cache("res/assets/textures/invalid_reticle.png");
+
+			auto& uiType = registry->assign<PlayerInteractionType>(e);
+			uiType.type = PlayerInteractionResult::invalid;
+
+			component::Transform t;
+			t.setPosition(glm::vec3(-3.0f, -1.0f, -2.0f));
+			registry->assign<component::Transform>(e, t);
+
+			auto& so = registry->assign<component::SceneObject>(e);
+			so.name = "Invalid Reticle";
+		}
 
 		{
 			auto playerCameraEntity = registry->create();
