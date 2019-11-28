@@ -26,10 +26,20 @@ enum class CannonState
 
 enum class CarryableItemType
 {
+    invalid,
+    cannonball,
+    mop,
+    cleaningSolution,
+    gloop
+};
+
+enum class CarryingItemState
+{
     nothing,
     cannonball,
     mop,
     cleaningSolution,
+    mopAndCleaningSolution,
     gloop
 };
 
@@ -52,11 +62,11 @@ struct Player
 {
 	Team team;
 
-	CarryableItemType carriedItem = CarryableItemType::nothing;
+	CarryingItemState carriedItem = CarryingItemState::nothing;
     
 	PlayerState state = PlayerState::idle;
 
-	float speedForce = 40.0f;
+	float speedForce = 7.0f;
 	glm::vec3 moveDirection = glm::vec3(0.0f);
 
 	float adjustingPositionSpeed = 3.333f;
@@ -64,6 +74,8 @@ struct Player
 
 	MoveableUsingLerp adjustingPositionStateData; //TODO: integrate adjusting position into pushing state instead of having its own state
 	MoveableUsingLerp pushingStateData;
+
+	float yRotationClamp = 0.0f;
 
 	entt::entity interactableEntity = entt::null;
 };
@@ -77,19 +89,37 @@ struct Cannon
 
 	TimedAction fuse;
 
-	glm::vec3 initialPosition;
+	int cannonTrackPosition = 0;
 	float pushDistance = 5.0f;
 	float beingPushedSpeed = 0.2f;
 	MoveableUsingLerp pushStateData;
 
 	float waitTimeBeforeBeingPushed = 0.3f;
-	TimedAction waitTimer; //TODO: integrate wait timer into pushing state instead of having its own state
+	TimedAction waitTimer;
 };
 
 struct CarryableItem
 {
 	Team team;
 
-	CarryableItemType type = CarryableItemType::nothing; //must manually be set when spawning items
+	CarryableItemType type = CarryableItemType::invalid; //must manually be set when spawning items
 	bool isBeingCarried = false;
+
+	bool isActive = true;
+};
+
+struct GarbagePile
+{
+	Team team;
+
+	int MAX_GARBAGE_LEVEL = 5;
+	int garbageLevel = 1;
+
+	int MAX_GARBAGE_LEVEL_TICKS = 3; // each level will have 3 sub-levels (or ticks) before it goes down by 1
+	int garbageLevelTicks = 3;
+};
+
+struct CannonballCrate
+{
+	Team team;
 };

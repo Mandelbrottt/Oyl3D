@@ -19,7 +19,6 @@ private:
     
 	void updateFuse(float dt, Cannon* a_cannon);
 
-	void loadCannonball(Cannon* a_cannon);
 	void fireCannon(Cannon* a_cannon);
 
     //state changing functions

@@ -5,15 +5,18 @@
 enum CustomEventsCategories
 {
 	CategoryPlayer = oyl::CategoryCustomStart,
-	CategoryCannon
+	CategoryCannon,
+	CategoryGarbagePile
 };
 enum CustomEventTypes
 {
     TypePlayerMove = oyl::EventTypeCustomStart,
     TypePlayerInteractionRequest,
+	TypePlayerDropItem,
 	TypePlayerStateChange,
     TypeCannonStateChange,
-    TypeLoadCannon
+    TypeLoadCannon,
+	TypeTotalGarbageCount
 };
 
 
@@ -25,7 +28,12 @@ OYL_EVENT_STRUCT(PlayerMoveEvent, TypePlayerMove, CategoryPlayer,
 
 OYL_EVENT_STRUCT(PlayerInteractionRequestEvent, TypePlayerInteractionRequest, CategoryPlayer,
 	{
-		entt::entity player;
+		entt::entity playerEntity;
+	});
+
+OYL_EVENT_STRUCT(PlayerDropItemEvent, TypePlayerDropItem, CategoryPlayer,
+	{
+		entt::entity playerEntity;
 	});
 
 OYL_EVENT_STRUCT(PlayerStateChangeEvent, TypePlayerStateChange, CategoryPlayer,
@@ -43,4 +51,9 @@ OYL_EVENT_STRUCT(CannonStateChangeEvent, TypeCannonStateChange, CategoryCannon,
 OYL_EVENT_STRUCT(LoadCannonEvent, TypeLoadCannon, CategoryCannon,
 	{
 		Cannon* cannon;
+	});
+
+OYL_EVENT_STRUCT(TotalGarbageCountEvent, TypeTotalGarbageCount, CategoryGarbagePile,
+	{
+		int totalGarbageCount;
 	});

@@ -107,6 +107,11 @@ project "OylEngine"
 			"GLFW_INCLUDE_NONE", 
 			"WIN32_LEAN_AND_MEAN"
 		}
+		
+		-- TODO: Find way to stop build process if it changes
+		-- prebuildcommands {
+		-- 	"%{wks.location}scripts/windows/GenerateVSProjects.bat"
+		-- }
 
 	filter "configurations:Debug"
 		defines { "OYL_DEBUG" }

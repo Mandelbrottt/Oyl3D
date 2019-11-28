@@ -7,6 +7,10 @@
 #include "ECS/SystemImpl.h"
 
 #include "Graphics/Camera.h"
+#include "Graphics/Material.h"
+#include "Graphics/Mesh.h"
+#include "Graphics/Shader.h"
+#include "Graphics/Texture.h"
 
 #include <examples/imgui_impl_glfw.h>
 #include <examples/imgui_impl_opengl3.h>
@@ -14,8 +18,6 @@
 #include <imgui_internal.h>
 
 #include <GLFW/glfw3.h>
-
-#include "Input/Input.h"
 
 static const char* g_entityNodeFmt = "%s\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t";
 
@@ -30,19 +32,11 @@ static const char* g_inspectorWindowName = "Inspector##EditorInspector";
 
 static const char* g_mainDockSpaceName = "_DockSpace";
 
-namespace oyl
+namespace oyl::internal
 {
     void GuiLayer::init()
     {
         setupGuiLibrary();
-        //setupLayout();
-
-        addToEventMask(TypeEditorViewportHandleChanged);
-        addToEventMask(TypeEditorEntitySelected);
-
-        addToEventMask(TypeViewportHandleChanged);
-
-        addToEventMask(TypeMousePressed);
 
         ImGuizmo::SetGizmoScale(2.0f);
         ImGuizmo::SetGizmoThickness(1.0f);
@@ -57,8 +51,10 @@ namespace oyl
     
     void GuiLayer::onEnter()
     {
-        scheduleSystemUpdate<internal::EditorCameraSystem>();
-        scheduleSystemUpdate<internal::EditorRenderSystem>();
+        scheduleSystemUpdate<EditorCameraSystem>();
+        scheduleSystemUpdate<EditorRenderSystem>();
+
+        listenForAllEvents();
 
         for (auto& system : m_systems)
         {
@@ -130,6 +126,12 @@ namespace oyl
         ImGui::DockBuilderGetNode(dockGizmoControls)->LocalFlags |= ImGuiDockNodeFlags_NoTabBar;
         ImGui::DockBuilderGetNode(dockPausePlayStep)->LocalFlags |= ImGuiDockNodeFlags_NoTabBar;
     }
+
+    //void GuiLayer::addToCommandHistory(UniqueRef<EditorCommand>&& command)
+    //{
+    //    m_currentCommandPos++;
+    //    m_commandHistory[m_currentCommandPos] = std::move(command);
+    //}
 
     void GuiLayer::onExit()
     {
@@ -275,9 +277,14 @@ namespace oyl
                 //{
                 //    m_currentEntity = -1;
                 //}
+                break;
+            }
+            case TypeWindowResized:
+            {
+                break;
             }
         }
-        return !m_editorOverrideUpdate;
+        return m_editorOverrideUpdate;
     }
 
     void GuiLayer::drawMenuBar()
@@ -289,7 +296,7 @@ namespace oyl
             {
                 if (ImGui::MenuItem("Save##MainMenuSave", "Ctrl+S", false, m_editorOverrideUpdate))
                 {
-                    Scene::current()->saveSceneToFile();   
+                    saveSceneToFile(*Scene::current());
                 }
                 showReloadDialogue = 
                     ImGui::MenuItem("Reload##MainMenuReload", "Ctrl+Shift+S", false, m_editorOverrideUpdate);
@@ -326,7 +333,7 @@ namespace oyl
                     ImGui::Indent(ImGui::GetWindowContentRegionWidth() / 2 - 55);
                     if (ImGui::Button("Reload##ReloadConfirmationReload"))
                     {
-                        Scene::current()->loadSceneFromFile();
+                        loadSceneFromFile(*Scene::current());
                         m_currentEntity = entt::null;
                         showReloadDialogue = false;
                     }
@@ -422,123 +429,89 @@ namespace oyl
             if (m_currentEntity != entt::null)
             {
                 drawInspectorObjectName();
+                ImGui::Separator();
+                ImGui::NewLine();
                 drawInspectorParent();
+                ImGui::Separator();
+                ImGui::NewLine();
                 drawInspectorTransform();
+                ImGui::Separator();
+                ImGui::NewLine();
                 drawInspectorRenderable();
-                drawInspectorRigidBody();
+                ImGui::Separator();
+                ImGui::NewLine();
+                drawInspectorCollider();
+                //ImGui::Separator();
+                //ImGui::NewLine();
+                //drawInspectorRigidBody();
+                ImGui::Separator();
+                ImGui::NewLine();
+                drawInspectorAddComponent();
             }
         }
         ImGui::End();
     }
-
-    void GuiLayer::drawInspectorTransform()
+    
+    void GuiLayer::drawInspectorObjectName()
     {
-        using component::Transform;
+        using component::SceneObject;
 
         ImGui::SetNextTreeNodeOpen(true, ImGuiCond_Once);
-        
-        if (registry->has<Transform>(m_currentEntity) &&
-            ImGui::CollapsingHeader("Transform##InspectorTransform"))
+
+        if (registry->has<SceneObject>(m_currentEntity) &&
+            ImGui::CollapsingHeader("Object Properties##InspectorObjectProperties"))
         {
             ImGui::Indent(10);
 
-            auto& transform = registry->get<Transform>(m_currentEntity);
+            auto& so = registry->get<SceneObject>(m_currentEntity);
 
-            float newWidth = ImGui::GetWindowContentRegionWidth() / 6;
+            char name[256]{ 0 };
+            std::strcpy(name, so.name.c_str());
 
-            ImGui::PushItemWidth(newWidth);
+            ImGui::Text("Object Name");
+            ImGui::SameLine();
 
+            if (ImGui::InputText("##InspectorObjectNameInputField", name, 256, ImGuiInputTextFlags_EnterReturnsTrue))
             {
-                glm::vec3 position = transform.getPosition();
+                char newNameTemp[512];
+                std::strcpy(newNameTemp, name);
 
-                const float posDragSpeed = 0.02f;
-                ImGui::Text("Position");
-                ImGui::SameLine(ImGui::GetWindowContentRegionWidth() - (15 * 3 + newWidth * 3 + 27));
-                ImGui::SetNextItemWidth(15);
-                ImGui::DragFloat("##XPos", &position.x, posDragSpeed, 0, 0, "X");
-                ImGui::SameLine();
-                ImGui::InputFloat("##XPosInput", &position.x, 0, 0, "%.2f");
-                ImGui::SameLine();
-                ImGui::SetNextItemWidth(15);
-                ImGui::DragFloat("##YPos", &position.y, posDragSpeed, 0, 0, "Y");
-                ImGui::SameLine();
-                ImGui::InputFloat("##YPosInput", &position.y, 0, 0, "%.2f");
-                ImGui::SameLine();
-                ImGui::SetNextItemWidth(15);
-                ImGui::DragFloat("##ZPos", &position.z, posDragSpeed, 0, 0, "Z");
-                ImGui::SameLine();
-                ImGui::InputFloat("##ZPosInput", &position.z, 0, 0, "%.2f");
+                bool isValid = false;
+                int  count = 1;
+                while (!isValid)
+                {
+                    isValid = true;
 
-                if (position != transform.getPosition())
-                    transform.setPosition(position);
+                    auto view = registry->view<SceneObject>();
+                    for (auto entity : view)
+                    {
+                        if (entity == m_currentEntity) continue;
+
+                        if (std::strcmp(newNameTemp, view.get(entity).name.c_str()) == 0)
+                        {
+                            sprintf(newNameTemp, "%s %d", name, count);
+
+                            isValid = false;
+                            break;
+                        }
+                    }
+                    ++count;
+                }
+                so.name.assign(newNameTemp);
             }
-            {
-                glm::vec3 rotation = transform.getRotationEuler();
-
-                const float rotDragSpeed = 0.5f;
-                ImGui::Text("Rotation");
-                ImGui::SameLine(ImGui::GetWindowContentRegionWidth() - (15 * 3 + newWidth * 3 + 27));
-                ImGui::SetNextItemWidth(15);
-                ImGui::DragFloat("##XRot", &rotation.x, rotDragSpeed, 0, 0, "X");
-                ImGui::SameLine();
-                ImGui::InputFloat("##XRotInput", &rotation.x, 0, 0, "%.2f");
-                ImGui::SameLine();
-                ImGui::SetNextItemWidth(15);
-                ImGui::DragFloat("##YRot", &rotation.y, rotDragSpeed, 0, 0, "Y");
-                ImGui::SameLine();
-                ImGui::InputFloat("##YRotInput", &rotation.y, 0, 0, "%.2f");
-                ImGui::SameLine();
-                ImGui::SetNextItemWidth(15);
-                ImGui::DragFloat("##ZRot", &rotation.z, rotDragSpeed, 0, 0, "Z");
-                ImGui::SameLine();
-                ImGui::InputFloat("##ZRotInput", &rotation.z, 0, 0, "%.2f");
-
-                if (rotation != transform.getRotationEuler())
-                    transform.setRotationEuler(rotation);
-            }
-            {
-                glm::vec3 scale = transform.getScale();
-
-                const float scaleDragSpeed = 0.02f;
-                ImGui::Text("Scale");
-                ImGui::SameLine(ImGui::GetWindowContentRegionWidth() - (15 * 3 + newWidth * 3 + 27));
-                ImGui::SetNextItemWidth(15);
-                ImGui::DragFloat("##XSca", &scale.x, scaleDragSpeed, 0, 0, "X");
-                ImGui::SameLine();
-                ImGui::InputFloat("##XScaInput", &scale.x, 0, 0, "%.2f");
-                ImGui::SameLine();
-                ImGui::SetNextItemWidth(15);
-                ImGui::DragFloat("##YSca", &scale.y, scaleDragSpeed, 0, 0, "Y");
-                ImGui::SameLine();
-                ImGui::InputFloat("##YScaInput", &scale.y, 0, 0, "%.2f");
-                ImGui::SameLine();
-                ImGui::SetNextItemWidth(15);
-                ImGui::DragFloat("##ZSca", &scale.z, scaleDragSpeed, 0, 0, "Z");
-                ImGui::SameLine();
-                ImGui::InputFloat("##ZScaInput", &scale.z, 0, 0, "%.2f");
-
-                if (scale != transform.getScale())
-                    transform.setScale(scale);
-            }
-
-            ImGui::PopItemWidth();
 
             ImGui::Unindent(10);
         }
     }
-
-    void GuiLayer::drawInspectorRenderable() {}
-
-    void GuiLayer::drawInspectorRigidBody() {}
 
     void GuiLayer::drawInspectorParent()
     {
         using component::Transform;
         using component::SceneObject;
         using component::Parent;
-        
+
         ImGui::SetNextTreeNodeOpen(true, ImGuiCond_Once);
-        
+
         if (ImGui::CollapsingHeader("Parent Properties##InspectorParentProperties"))
         {
             ImGui::Indent(10);
@@ -552,35 +525,13 @@ namespace oyl
                                                 ? registry->get<SceneObject>(parent).name.c_str()
                                                 : "None";
 
-            auto decomp = [](Transform& ct, Transform& pt)
-            {
-                glm::mat4 tempChild  = ct.getMatrixGlobal();
-                glm::mat4 tempParent = pt.getMatrixGlobal();
-
-                tempChild = glm::inverse(tempParent) * tempChild;
-
-                glm::vec3 tComponents[3];
-                ImGuizmo::DecomposeMatrixToComponents(value_ptr(tempChild),
-                                                      value_ptr(tComponents[0]),
-                                                      value_ptr(tComponents[1]),
-                                                      value_ptr(tComponents[2]));
-
-                tComponents[2] = max(glm::vec3(0.01f), tComponents[2]);
-
-                ct.m_localPosition      = tComponents[0];
-                ct.m_localEulerRotation = tComponents[1];
-                ct.m_localScale         = tComponents[2];
-
-                ct.m_isLocalDirty = true;
-            };
-
             ImGui::Text("Current Parent");
             ImGui::SameLine();
             if (ImGui::BeginCombo("##ParentPropertiesCurrentParent", currentParentName))
             {
                 if (ImGui::Selectable("None", parent == entt::null))
                 {
-                    auto& p  = registry->get_or_assign<Parent>(m_currentEntity);
+                    auto& p = registry->get_or_assign<Parent>(m_currentEntity);
                     p.parent = entt::null;
 
                     if (parent != entt::null)
@@ -598,20 +549,19 @@ namespace oyl
                         tComponents[2] = max(glm::vec3(0.01f), tComponents[2]);
 
                         ct.m_localPosition = tComponents[0];
-                        ct.m_localEulerRotation = tComponents[1];
+                        ct.m_localRotation = glm::quat(radians(tComponents[1]));
                         ct.m_localScale = tComponents[2];
 
                         ct.m_isLocalDirty = true;
                     }
-                }
-                else
+                } else
                 {
                     auto view = registry->view<SceneObject>();
                     for (auto entity : view)
                     {
                         bool isSelected = entity == parent;
-                        
-                        if (entity != m_currentEntity && 
+
+                        if (entity != m_currentEntity &&
                             ImGui::Selectable(view.get(entity).name.c_str(), isSelected))
                         {
                             auto& p = registry->get_or_assign<Parent>(m_currentEntity);
@@ -634,47 +584,427 @@ namespace oyl
                             tComponents[2] = max(glm::vec3(0.01f), tComponents[2]);
 
                             ct.m_localPosition = tComponents[0];
-                            ct.m_localEulerRotation = tComponents[1];
+                            ct.m_localRotation = glm::quat(radians(tComponents[1]));
                             ct.m_localScale = tComponents[2];
 
                             ct.m_isLocalDirty = true;
-                            
+
                             break;
                         }
 
                         if (isSelected) ImGui::SetItemDefaultFocus();
                     }
                 }
-                
+
                 ImGui::EndCombo();
             }
-            
+
             ImGui::Unindent(10);
         }
     }
 
-    void GuiLayer::drawInspectorObjectName()
+    void GuiLayer::drawInspectorTransform()
     {
+        using component::Transform;
+
+        if (!registry->has<Transform>(m_currentEntity)) return;
 
         ImGui::SetNextTreeNodeOpen(true, ImGuiCond_Once);
 
-        if (registry->has<component::SceneObject>(m_currentEntity) &&
-            ImGui::CollapsingHeader("Object Properties##InspectorObjectProperties"))
+        auto flags = ImGuiInputTextFlags_EnterReturnsTrue;
+        
+        if (ImGui::CollapsingHeader("Transform##InspectorTransform"))
         {
             ImGui::Indent(10);
-            
-            auto& so = registry->get<component::SceneObject>(m_currentEntity);
 
-            char name[256]{ 0 };
-            std::strcpy(name, so.name.c_str());
+            auto& transform = registry->get<Transform>(m_currentEntity);
 
-            ImGui::Text("Object Name");
-            ImGui::SameLine();
-            ImGui::InputText("##InspectorObjectNameInputField", name, 256);
+            float newWidth = ImGui::GetWindowContentRegionWidth() / 6;
 
-            so.name.assign(name);
+            ImGui::PushItemWidth(newWidth);
+
+            {
+                glm::vec3 position = transform.getPosition();
+
+                const float posDragSpeed = 0.02f;
+                ImGui::Text("Position");
+                ImGui::SameLine(ImGui::GetWindowContentRegionWidth() - (15 * 3 + newWidth * 3 + 27));
+                ImGui::SetNextItemWidth(15);
+                ImGui::DragFloat("##XPos", &position.x, posDragSpeed, 0, 0, "X");
+                ImGui::SameLine();
+                ImGui::InputFloat("##XPosInput", &position.x, 0, 0, "%.2f", flags);
+                ImGui::SameLine();
+                ImGui::SetNextItemWidth(15);
+                ImGui::DragFloat("##YPos", &position.y, posDragSpeed, 0, 0, "Y");
+                ImGui::SameLine();
+                ImGui::InputFloat("##YPosInput", &position.y, 0, 0, "%.2f", flags);
+                ImGui::SameLine();
+                ImGui::SetNextItemWidth(15);
+                ImGui::DragFloat("##ZPos", &position.z, posDragSpeed, 0, 0, "Z");
+                ImGui::SameLine();
+                ImGui::InputFloat("##ZPosInput", &position.z, 0, 0, "%.2f", flags);
+
+                if (position != transform.getPosition())
+                    transform.setPosition(position);
+            }
+            {
+                glm::vec3 rotation = transform.getRotationEuler();
+
+                const float rotDragSpeed = 0.5f;
+                ImGui::Text("Rotation");
+                ImGui::SameLine(ImGui::GetWindowContentRegionWidth() - (15 * 3 + newWidth * 3 + 27));
+                ImGui::SetNextItemWidth(15);
+                ImGui::DragFloat("##XRot", &rotation.x, rotDragSpeed, 0, 0, "X");
+                ImGui::SameLine();
+                ImGui::InputFloat("##XRotInput", &rotation.x, 0, 0, "%.2f", flags);
+                ImGui::SameLine();
+                ImGui::SetNextItemWidth(15);
+                ImGui::DragFloat("##YRot", &rotation.y, rotDragSpeed, 0, 0, "Y");
+                ImGui::SameLine();
+                ImGui::InputFloat("##YRotInput", &rotation.y, 0, 0, "%.2f", flags);
+                ImGui::SameLine();
+                ImGui::SetNextItemWidth(15);
+                ImGui::DragFloat("##ZRot", &rotation.z, rotDragSpeed, 0, 0, "Z");
+                ImGui::SameLine();
+                ImGui::InputFloat("##ZRotInput", &rotation.z, 0, 0, "%.2f", flags);
+
+                if (rotation != transform.getRotationEuler())
+                    transform.setRotationEuler(rotation);
+            }
+            {
+                glm::vec3 scale = transform.getScale();
+
+                const float scaleDragSpeed = 0.02f;
+                ImGui::Text("Scale");
+                ImGui::SameLine(ImGui::GetWindowContentRegionWidth() - (15 * 3 + newWidth * 3 + 27));
+                ImGui::SetNextItemWidth(15);
+                ImGui::DragFloat("##XSca", &scale.x, scaleDragSpeed, 0, 0, "X");
+                ImGui::SameLine();
+                ImGui::InputFloat("##XScaInput", &scale.x, 0, 0, "%.2f", flags);
+                ImGui::SameLine();
+                ImGui::SetNextItemWidth(15);
+                ImGui::DragFloat("##YSca", &scale.y, scaleDragSpeed, 0, 0, "Y");
+                ImGui::SameLine();
+                ImGui::InputFloat("##YScaInput", &scale.y, 0, 0, "%.2f", flags);
+                ImGui::SameLine();
+                ImGui::SetNextItemWidth(15);
+                ImGui::DragFloat("##ZSca", &scale.z, scaleDragSpeed, 0, 0, "Z");
+                ImGui::SameLine();
+                ImGui::InputFloat("##ZScaInput", &scale.z, 0, 0, "%.2f", flags);
+
+                if (scale != transform.getScale())
+                    transform.setScale(scale);
+            }
+
+            ImGui::PopItemWidth();
 
             ImGui::Unindent(10);
+        }
+    }
+
+    void GuiLayer::drawInspectorRenderable()
+    {
+        using component::Renderable;
+        using component::SceneObject;
+
+        if (!registry->has<Renderable>(m_currentEntity)) return;
+
+        ImGui::SetNextTreeNodeOpen(true, ImGuiCond_Once);
+
+        if (ImGui::CollapsingHeader("Renderable##InspectorRenderableProperties"))
+        {
+            ImGui::Indent(10);
+
+            auto& renderable = registry->get<Renderable>(m_currentEntity);
+
+            CacheAlias currentName;
+            if (renderable.mesh)
+            {
+                currentName.assign(Mesh::getAlias(renderable.mesh));
+                if (currentName == INVALID_ALIAS && 
+                    renderable.mesh != Mesh::get(INVALID_ALIAS))
+                {
+                    int count = 1;
+                    char newNameTemp[512];
+                    CacheAlias newName;
+                    do 
+                    {
+                        sprintf(newNameTemp, "%s %d", currentName.c_str(), count);
+                        newName.assign(newNameTemp);
+                        count++;
+                    }
+                    while (!Mesh::exists(newName));
+
+                    Mesh::cache(renderable.mesh, newName);
+                    currentName = newName;
+                }
+            }
+            else currentName.assign("None");
+
+            ImGui::Text("Current Mesh");
+            ImGui::SameLine();
+            ImGui::SetNextItemWidth(ImGui::GetWindowWidth() - ImGui::GetCursorPosX());
+            if (ImGui::BeginCombo("##RenderablePropertiesCurrentMesh", currentName.c_str()))
+            {
+                if (ImGui::Selectable("None", renderable.mesh == nullptr))
+                    renderable.mesh.reset();    
+                
+                const auto& meshCache = Mesh::getCache();
+                for (const auto& kvp : meshCache)
+                {
+                    if (kvp.first != INVALID_ALIAS &&
+                        ImGui::Selectable(kvp.first.c_str(), renderable.mesh == kvp.second))
+                    {
+                        renderable.mesh = kvp.second;
+                    }
+                }
+
+                ImGui::EndCombo();
+            }
+            
+            if (renderable.material)
+            {
+                currentName.assign(Material::getAlias(renderable.material));
+                if (currentName == INVALID_ALIAS && 
+                    renderable.material != Material::get(INVALID_ALIAS))
+                {
+                    int count = 1;
+                    char newNameTemp[512];
+                    CacheAlias newName;
+                    do
+                    {
+                        sprintf(newNameTemp, "%s %d", currentName.c_str(), count);
+                        newName.assign(newNameTemp);
+                        count++;
+                    } while (!Shader::exists(newName));
+
+                    Material::cache(renderable.material, newName);
+                    currentName.assign(newName);
+                }
+            } else currentName.assign("None");
+            
+            ImGui::Text("Current Material");
+            ImGui::SameLine();
+            ImGui::SetNextItemWidth(ImGui::GetWindowWidth() - ImGui::GetCursorPosX());
+            if (ImGui::BeginCombo("##RenderablePropertiesCurrentMaterial", currentName.c_str()))
+            {
+                if (ImGui::Selectable("None", renderable.material == nullptr))
+                    renderable.material.reset();
+                
+                const auto& meshCache = Material::getCache();
+                for (const auto& kvp : meshCache)
+                {
+                    if (kvp.first != INVALID_ALIAS &&
+                        ImGui::Selectable(kvp.first.c_str(), renderable.material == kvp.second))
+                    {
+                        renderable.material = kvp.second;
+                    }
+                }
+
+                ImGui::EndCombo();
+            }
+
+            ImGui::Unindent(10);
+        }
+    }
+
+    void GuiLayer::drawInspectorCollider()
+    {
+        using component::Collider;
+
+        if (!registry->has<Collider>(m_currentEntity)) return;
+
+        ImGui::SetNextTreeNodeOpen(true, ImGuiCond_Once);
+
+        auto flags = ImGuiInputTextFlags_EnterReturnsTrue;
+
+        if (ImGui::CollapsingHeader("Collider##InspectorColliderProperties"))
+        {
+            ImGui::Indent(10);
+
+            auto& collider = registry->get<Collider>(m_currentEntity);
+            int count = 0;
+            char shapeID[512];
+            char temp[128];
+            for (auto& shape : collider)
+            {
+                if (shape.getType() == Collider_Box)
+                    strcpy(shapeID, "Box");
+                else if (shape.getType() == Collider_Sphere)
+                    strcpy(shapeID, "Sphere");
+                else if (shape.getType() == Collider_Capsule)
+                    strcpy(shapeID, "Capsule");
+                else if (shape.getType() == Collider_Cylinder)
+                    strcpy(shapeID, "Cylinder");
+                else if (shape.getType() == Collider_Mesh)
+                    strcpy(shapeID, "Mesh");
+
+                sprintf(shapeID, "%s##ColliderPropertiesShape%d", shapeID, count);
+
+                ImGui::SetNextTreeNodeOpen(true, ImGuiCond_Once);
+                if (ImGui::CollapsingHeader(shapeID))
+                {
+                    ImGui::Indent(10);
+
+                    sprintf(temp, "##ColliderChangeShape%d", count);
+                    if (ImGui::BeginCombo(temp, "Set Type"))
+                    {
+                        sprintf(temp, "Box##Box%d", count);
+                        if (ImGui::Selectable(temp))
+                            shape.setType(Collider_Box);
+                        sprintf(temp, "Sphere##Sphere%d", count);
+                        if (ImGui::Selectable(temp))
+                            shape.setType(Collider_Sphere);
+                        sprintf(temp, "Capsule##Capsule%d", count);
+                        if (ImGui::Selectable(temp))
+                            shape.setType(Collider_Capsule);
+                        sprintf(temp, "Cylinder##Cylinder%d", count);
+                        if (ImGui::Selectable(temp))
+                            shape.setType(Collider_Cylinder);
+                        sprintf(temp, "Mesh##Mesh%d", count);
+                        if (ImGui::Selectable(temp))
+                            shape.setType(Collider_Mesh);
+
+                        ImGui::EndCombo();
+                    }   
+
+                    float newWidth = ImGui::GetWindowContentRegionWidth() / 6;
+
+                    ImGui::PushItemWidth(newWidth);
+                    
+                    {
+                        glm::vec3 position = shape.box.getCenter();
+                        const float posDragSpeed = 0.02f;
+                        ImGui::Text("Center");
+                        ImGui::SameLine(ImGui::GetWindowContentRegionWidth() - (15 * 3 + newWidth * 3 + 27));
+                        ImGui::SetNextItemWidth(15);
+                        sprintf(temp, "##XCenter%d", count);
+                        ImGui::DragFloat(temp, &position.x, posDragSpeed, 0, 0, "X");
+                        ImGui::SameLine();
+                        sprintf(temp, "##XCenterInput%d", count);
+                        ImGui::InputFloat(temp, &position.x, 0, 0, "%.2f", flags);
+                        ImGui::SameLine();
+                        ImGui::SetNextItemWidth(15);
+                        sprintf(temp, "##YCenter%d", count);
+                        ImGui::DragFloat(temp, &position.y, posDragSpeed, 0, 0, "Y");
+                        ImGui::SameLine();
+                        sprintf(temp, "##YCenterInput%d", count);
+                        ImGui::InputFloat(temp, &position.y, 0, 0, "%.2f", flags);
+                        ImGui::SameLine();
+                        ImGui::SetNextItemWidth(15);
+                        sprintf(temp, "##ZCenter%d", count);
+                        ImGui::DragFloat(temp, &position.z, posDragSpeed, 0, 0, "Z");
+                        ImGui::SameLine();
+                        sprintf(temp, "##ZCenterInput%d", count);
+                        ImGui::InputFloat(temp, &position.z, 0, 0, "%.2f", flags);
+
+                        if (position != shape.box.getCenter())
+                            shape.box.setCenter(position);
+                    }
+
+                    switch (shape.getType())
+                    {
+                        case Collider_Box:
+                        {
+                            glm::vec3 size = shape.box.getSize();
+                            const float posDragSpeed = 0.02f;
+                            ImGui::Text("Size");
+                            ImGui::SameLine(ImGui::GetWindowContentRegionWidth() - (15 * 3 + newWidth * 3 + 27));
+                            ImGui::SetNextItemWidth(15);
+                            sprintf(temp, "##XSize%d", count);
+                            ImGui::DragFloat(temp, &size.x, posDragSpeed, 0, 0, "X");
+                            ImGui::SameLine();
+                            sprintf(temp, "##XSizeInput%d", count);
+                            ImGui::InputFloat(temp, &size.x, 0, 0, "%.2f", flags);
+                            ImGui::SameLine();
+                            ImGui::SetNextItemWidth(15);
+                            sprintf(temp, "##YSize%d", count);
+                            ImGui::DragFloat(temp, &size.y, posDragSpeed, 0, 0, "Y");
+                            ImGui::SameLine();
+                            sprintf(temp, "##YSizeInput%d", count);
+                            ImGui::InputFloat(temp, &size.y, 0, 0, "%.2f", flags);
+                            ImGui::SameLine();
+                            ImGui::SetNextItemWidth(15);
+                            sprintf(temp, "##ZSize%d", count);
+                            ImGui::DragFloat(temp, &size.z, posDragSpeed, 0, 0, "Z");
+                            ImGui::SameLine();
+                            sprintf(temp, "##ZSizeInput%d", count);
+                            ImGui::InputFloat(temp, &size.z, 0, 0, "%.2f", flags);
+
+                            if (size != shape.box.getSize())
+                                shape.box.setSize(size);
+                            
+                            break;
+                        }
+                        case Collider_Sphere:
+                        {
+                            float radius = shape.sphere.getRadius();
+                            const float posDragSpeed = 0.01f;
+                            ImGui::Text("Radius");
+                            ImGui::SameLine(ImGui::GetWindowContentRegionWidth() - (15 * 3 + newWidth * 3 + 27));
+                            ImGui::SetNextItemWidth(15);
+                            sprintf(temp, "##Radius%d", count);
+                            ImGui::DragFloat(temp, &radius, posDragSpeed, 0, 0, "R");
+                            ImGui::SameLine();
+                            sprintf(temp, "##RadiusInput%d", count);
+                            ImGui::InputFloat(temp, &radius, 0, 0, "%.2f", flags);
+
+                            radius = glm::max(radius, 0.1f);
+                            if (radius != shape.sphere.getRadius())
+                                shape.sphere.setRadius(radius);
+
+                            break;
+                        }
+                    }
+
+                    ImGui::Unindent(10);
+
+                    ImGui::PopItemWidth();
+                }
+
+                ++count;
+            }
+
+            ImGui::NewLine();
+
+            if (ImGui::BeginCombo("##InspectorColliderAddShape", "Add Shape", ImGuiComboFlags_NoArrowButton))
+            {
+                if (ImGui::Selectable("Box"))
+                    collider.pushShape(Collider_Box);
+                if (ImGui::Selectable("Sphere"))
+                    collider.pushShape(Collider_Sphere);
+                if (ImGui::Selectable("Capsule"))
+                    collider.pushShape(Collider_Capsule);
+                if (ImGui::Selectable("Cylinder"))
+                    collider.pushShape(Collider_Cylinder);
+                if (ImGui::Selectable("Mesh"))
+                    collider.pushShape(Collider_Sphere);
+
+                ImGui::EndCombo();
+            }
+
+            ImGui::Unindent(10);
+        }
+    }
+
+    void GuiLayer::drawInspectorRigidBody() {}
+
+    void GuiLayer::drawInspectorAddComponent()
+    {
+        using component::Renderable;
+        using component::Collider;
+        
+        if (ImGui::BeginCombo("##InspectorAddComponent", "Add Component", ImGuiComboFlags_NoArrowButton))
+        {
+            if (!registry->has<Renderable>(m_currentEntity) &&
+                ImGui::Selectable("Renderable"))
+                registry->assign<Renderable>(m_currentEntity);
+
+            if (!registry->has<Collider>(m_currentEntity) &&
+                ImGui::Selectable("Collider"))
+                registry->assign<Collider>(m_currentEntity);
+
+            ImGui::EndCombo();
         }
     }
 
@@ -902,13 +1232,14 @@ namespace oyl
                 {
                     case ImGuizmo::TRANSLATE:
                     {
+                        //UniqueRef<EditorTranslateEntityCommand>
                         model.m_localPosition        = tComponents[0];
                         model.m_isPositionOverridden = true;
                         break;
                     }
                     case ImGuizmo::ROTATE:
                     {
-                        model.m_localEulerRotation   = tComponents[1];
+                        model.m_localRotation        = glm::quat(radians(tComponents[1]));
                         model.m_isRotationOverridden = true;
                         break;
                     }
@@ -952,8 +1283,9 @@ namespace oyl
                     // HACK: Send as event
                     // TODO: Store backup registry in scene?
                     *Scene::current()->m_registry = m_registryRestore.clone();
-                    Scene::current()->m_physicsSystem->onExit();
-                    Scene::current()->m_physicsSystem->onEnter();
+
+                    postEvent(Event::create(PhysicsResetWorldEvent{}));
+                    
                     auto view = registry->view<component::Transform>();
 
                     for (auto entity : view)

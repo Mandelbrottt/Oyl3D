@@ -114,7 +114,23 @@ namespace oyl
                     
                     glm::mat4 transform = view.get<Transform>(entity).getMatrixGlobal();
 
-                    Renderer::submit(mr.mesh, mr.material, transform);
+                    if (registry->has<component::Animation>(entity))
+                    {
+                        auto& anim = registry->get<component::Animation>(entity);
+                        if (anim.vao)
+                        {
+                            anim.vao->bind();
+
+                            mr.material->bind();
+                            mr.material->getShader()->setUniform1f("lerpT", glm::mod(anim.elapsed, 1.0f));
+
+                            Renderer::submit(mr.material, anim.vao, mr.mesh->getNumVertices(), transform);
+                        }
+                    }
+                    else
+                    {
+                        Renderer::submit(mr.mesh, mr.material, transform);
+                    }
                 }
             }
         }
@@ -129,16 +145,66 @@ namespace oyl
         void RenderSystem::init() { }
 
         void RenderSystem::shutdown() { }
+
+        // ^^^ Render System ^^^ //
+
+        // vvv Animation System vvv //
         
-        // ^^^ Render System //
+        void AnimationSystem::onEnter() {}
+
+        void AnimationSystem::onExit() {}
+
+        void AnimationSystem::onUpdate(Timestep dt)
+        {
+            auto view = registry->view<component::Animation>();
+            for (auto entity : view)
+            {
+                auto& anim = view.get(entity);
+
+                if (!anim.vao)
+                {
+                    anim.vao = VertexArray::create();
+
+                    anim.vao->addVertexBuffer(anim.poses[0].mesh->m_vbo);
+                    anim.vao->addVertexBuffer(anim.poses[1].mesh->m_vbo);
+                }
+
+                uint lastVal = glm::floor(anim.elapsed);
+                anim.elapsed += dt.getSeconds() * (1.0f / anim.poses[lastVal].duration);
+                uint currVal = glm::floor(anim.elapsed);
+
+                if (lastVal != currVal)
+                {
+                    anim.elapsed = glm::mod(anim.elapsed, (f32) anim.poses.size());
+                    
+                    ++lastVal %= anim.poses.size();
+                    ++currVal %= anim.poses.size();
+                    
+                    auto lastMeshVbo = anim.poses[lastVal].mesh->m_vbo;
+                    auto currMeshVbo = anim.poses[currVal].mesh->m_vbo;
+
+                    anim.vao->unload();
+                    anim.vao->load();
+
+                    anim.vao->addVertexBuffer(lastMeshVbo);
+                    anim.vao->addVertexBuffer(currMeshVbo);
+                }
+            }
+        }
+
+        void AnimationSystem::onGuiRender(Timestep dt) {}
+
+        bool AnimationSystem::onEvent(Ref<Event> event) { return false; }
+
+        // ^^^ Animation System ^^^ //
         
         // vvv Physics System vvv //
         
         void PhysicsSystem::onEnter()
         {
+            listenForEventType(TypePhysicsResetWorld);
+            
             m_fixedTimeStep = 1.0f / 60.0f;
-
-            m_rigidBodies.clear();
 
             m_collisionConfig = UniqueRef<btDefaultCollisionConfiguration>::create();
             m_dispatcher = UniqueRef<btCollisionDispatcher>::create(m_collisionConfig.get());
@@ -148,8 +214,10 @@ namespace oyl
                                                                  m_broadphase.get(),
                                                                  m_solver.get(),
                                                                  m_collisionConfig.get());
+
+            m_rigidBodies.clear();
             
-            m_world->setGravity(btVector3(0.0f, -10.0f, 0.0f));
+            m_world->setGravity(btVector3(0.0f, -9.81f, 0.0f));
         }
 
         void PhysicsSystem::onExit()
@@ -167,209 +235,452 @@ namespace oyl
         {
             using component::Transform;
             using component::RigidBody;
+            using component::Collider;
             
             auto view = registry->view<Transform, RigidBody>();
             for (auto entity : view)
             {
                 auto& transform = view.get<Transform>(entity);
                 auto& rigidBody = view.get<RigidBody>(entity);
+                auto& collider  = registry->get_or_assign<Collider>(entity);
+                
+                processIncomingRigidBody(entity, transform, collider, rigidBody);
 
-                rigidBody.id = entity;
-                if (m_rigidBodies.find(entity) == m_rigidBodies.end())
-                {
-                    this->addRigidBody(entity, transform, rigidBody);
-                }
+                RigidBodyInfo& cachedBody = *m_rigidBodies[entity];
 
-                // TODO: Deal with changing values after the fact, change to setter getter?
-                btVector3 _pos = {};
-                btQuaternion _rot = {};
-                if (transform.m_isPositionOverridden || 
-                    transform.m_isRotationOverridden || 
-                    transform.m_isScaleOverridden)
+                // TODO: Separate lazy calculations into functions?
+                if (transform.m_isPositionOverridden)
                 {
-                    m_world->removeRigidBody(m_rigidBodies[entity]->body.get());
-                    this->addRigidBody(entity, transform, rigidBody);
+                    //m_world->removeRigidBody(m_rigidBodies[entity]->body.get());
+                    //this->addRigidBody(entity, transform, rigidBody);
+                    
+                    btTransform t = cachedBody.body->getWorldTransform();
+
+                    t.setOrigin(btVector3(transform.getPositionXGlobal(),
+                                          transform.getPositionYGlobal(),
+                                          transform.getPositionZGlobal()));
+                    
+                    cachedBody.body->setWorldTransform(t);
+
+					cachedBody.body->activate();
 
                     transform.m_isPositionOverridden = false;
+                }
+                
+                if (transform.m_isRotationOverridden)
+                {
+                    btTransform t = cachedBody.body->getWorldTransform();
+
+                    glm::quat rotation = transform.getRotation();
+                    t.setRotation(btQuaternion(rotation.x, rotation.y, rotation.z, rotation.w));
+
+                    cachedBody.body->setWorldTransform(t);
+
+					cachedBody.body->activate();
+                    
                     transform.m_isRotationOverridden = false;
+                }
+                if (transform.m_isScaleOverridden)
+                {
+                    cachedBody.shape->setLocalScaling(btVector3(transform.getScaleX(),
+                                                                transform.getScaleY(),
+                                                                transform.getScaleZ()));
+
+					cachedBody.body->activate();
+                    
                     transform.m_isScaleOverridden = false;
                 }
-                else
+                if (rigidBody.m_isDirty)
                 {
-                    btTransform t = m_rigidBodies[entity]->body->getWorldTransform();
+                    // Velocity
+                    cachedBody.body->setLinearVelocity(btVector3(rigidBody.m_velocity.x,
+                                                                 rigidBody.m_velocity.y,
+                                                                 rigidBody.m_velocity.z));
 
-                    _pos = t.getOrigin();
-                    _rot = t.getRotation();
-                    
-                    transform.m_localPosition = { _pos.x(), _pos.y(), _pos.z() };
+                    // Forces
+                    cachedBody.body->clearForces();
 
-                    glm::vec3 newRot = {};
-                    _rot.getEulerZYX(newRot.z, newRot.y, newRot.x);
-                    newRot = glm::degrees(newRot);
+                    // Mass
+                    btVector3 inertia = { 0, 0, 0 };
+                    if (rigidBody.m_mass != 0.0f)
+                        cachedBody.shape->calculateLocalInertia(rigidBody.m_mass, inertia);
                     
-                    //transform.m_localEulerRotation = newRot;
-                    
-                    transform.m_isLocalDirty = true;
+                    cachedBody.body->setMassProps(rigidBody.m_mass, inertia);
+
+                    // Friction
+                    cachedBody.body->setFriction(rigidBody.m_friction);
+
+                    // Flags
+                    int flags = cachedBody.body->getCollisionFlags();
+
+                    flags &= ~btRigidBody::CF_KINEMATIC_OBJECT;
+                    flags |= rigidBody.getProperty(RigidBody::IS_KINEMATIC)
+                                 ? btRigidBody::CF_KINEMATIC_OBJECT
+                                 : 0;
+
+                    flags &= ~btRigidBody::CF_NO_CONTACT_RESPONSE;
+                    flags |= rigidBody.getProperty(RigidBody::DETECT_COLLISIONS)
+                                 ? 0
+                                 : btRigidBody::CF_NO_CONTACT_RESPONSE;
+
+                    cachedBody.body->setCollisionFlags(flags);
+
+                    // Rotation Locking
+                    btVector3 angularFactor = {};
+
+                    angularFactor.setX(rigidBody.getProperty(RigidBody::FREEZE_ROTATION_X) ? 0.0f : 1.0f);
+                    angularFactor.setY(rigidBody.getProperty(RigidBody::FREEZE_ROTATION_Y) ? 0.0f : 1.0f);
+                    angularFactor.setZ(rigidBody.getProperty(RigidBody::FREEZE_ROTATION_Z) ? 0.0f : 1.0f);
+
+                    cachedBody.body->setAngularFactor(angularFactor);
+
+                    // Gravity
+                    if (rigidBody.getProperty(RigidBody::USE_GRAVITY))
+                        cachedBody.body->setGravity(m_world->getGravity());
+                    else
+                        cachedBody.body->setGravity({ 0.0f, 0.0f, 0.0f });
+
+                    rigidBody.m_isDirty = false;
                 }
 
-                m_rigidBodies[entity]->shape->setLocalScaling(btVector3(transform.getScaleX(),
-                                                                        transform.getScaleY(),
-                                                                        transform.getScaleZ()));
+                if (rigidBody.m_force != glm::vec3(0.0f) || rigidBody.m_impulse != glm::vec3(0.0f))
+                    cachedBody.body->activate();
 
-                m_rigidBodies[entity]->body->applyCentralForce(btVector3(rigidBody.force.x,
-                                                                         rigidBody.force.y, 
-                                                                         rigidBody.force.z));
-
-                m_rigidBodies[entity]->body->applyCentralImpulse(btVector3(rigidBody.impulse.x,
-                                                                           rigidBody.impulse.y,
-                                                                           rigidBody.impulse.z));
-
-                // TEMPORARY:
-                if (registry->has<entt::tag<"Container"_hs>>(entity))
-                {
-                    m_rigidBodies[entity]->body->setFriction(1.0f);
-                    m_rigidBodies[entity]->body->setRollingFriction(1.0f);
-                    m_rigidBodies[entity]->body->setSpinningFriction(1.0f);
-                    
-                    m_rigidBodies[entity]->body->setDeactivationTime(0.0f);
-                }
-
-                //m_rigidBodies[entity]->body->
+                cachedBody.body->applyCentralForce(btVector3(rigidBody.m_force.x,
+                                                             rigidBody.m_force.y, 
+                                                             rigidBody.m_force.z));
+                
+                cachedBody.body->applyCentralImpulse(btVector3(rigidBody.m_impulse.x,
+                                                               rigidBody.m_impulse.y,
+                                                               rigidBody.m_impulse.z));
             }
             
             m_world->stepSimulation(dt.getSeconds(), 1, m_fixedTimeStep);
 
             for (auto entity : view)
             {
+                auto& transform = view.get<Transform>(entity);
                 auto& rigidBody = view.get<RigidBody>(entity);
-                //rigidBody.force = glm::vec3(0.0f);
 
-                rigidBody.velocity = glm::vec3(m_rigidBodies[entity]->body->getLinearVelocity().x(),
-                                               m_rigidBodies[entity]->body->getLinearVelocity().y(), 
-                                               m_rigidBodies[entity]->body->getLinearVelocity().z());
+                RigidBodyInfo& cachedBody = *m_rigidBodies[entity];
+                
+                btVector3 _pos = {};
+                btQuaternion _rot = {};
+                
+                btTransform t;
+                cachedBody.motion->getWorldTransform(t);
+
+                _pos = t.getOrigin();
+                _rot = t.getRotation();
+
+                transform.m_localPosition = { _pos.x(), _pos.y(), _pos.z() };
+
+                transform.m_localRotation = glm::quat(_rot.w(), _rot.x(), _rot.y(), _rot.z());
+
+                transform.m_isLocalDirty = true;
+
+                rigidBody.m_velocity = glm::vec3(cachedBody.body->getLinearVelocity().x(),
+                                                 cachedBody.body->getLinearVelocity().y(), 
+                                                 cachedBody.body->getLinearVelocity().z());
+
+                rigidBody.m_force = glm::vec3(cachedBody.body->getTotalForce().x(),
+                                              cachedBody.body->getTotalForce().y(), 
+                                              cachedBody.body->getTotalForce().z());
+
+                rigidBody.m_impulse = glm::vec3(0.0f);
             }
         }
 
-        void PhysicsSystem::onGuiRender(Timestep dt) { }
+        void PhysicsSystem::onGuiRender(Timestep dt)
+        {
+            using component::Transform;
+            using component::RigidBody;
+            using component::SceneObject;
+            auto view = registry->view<SceneObject, RigidBody>();
+
+            ImGui::Begin("Physics");
+
+            for (auto entity : view)
+            {
+                auto& rb = view.get<RigidBody>(entity);
+                ImGui::Text("%s: X(%.3f) Y(%.3f) Z(%.3f)",
+                            view.get<SceneObject>(entity).name.c_str(),
+                            rb.getVelocity().x,
+                            rb.getVelocity().y, 
+                            rb.getVelocity().z);
+            }
+
+            ImGui::End();
+        }
 
         bool PhysicsSystem::onEvent(Ref<Event> event)
         {
+            switch (event->type)
+            {
+                case TypePhysicsResetWorld:
+                {
+                    onExit();
+                    onEnter();
+                    
+                    return true;    
+                }
+            }
             return false;
         }
 
-        void PhysicsSystem::addRigidBody(entt::entity entity,
-                                         const component::Transform& transformComponent, 
-                                         const component::RigidBody& bodyComponent)
+        // TODO: Currently need rigidbody for collider to register in world, make mutually exclusive
+        void PhysicsSystem::processIncomingRigidBody(entt::entity entity, 
+                                                     const component::Transform& transformComponent, 
+                                                     const component::Collider&  colliderComponent, 
+                                                     const component::RigidBody& rigidBodyComponent)
         {
-            Ref<btCollisionShape> shape  = nullptr;
-            Ref<btMotionState>  motion = nullptr;
-            Ref<btRigidBody>    body   = nullptr;
-
-            // TODO: Deal with parenting
-            switch (bodyComponent.type)
+            // Check if collider was emptied past frame
+            if (colliderComponent.empty())
             {
-                case RigidBody_StaticPlane:
+                if (m_rigidBodies.find(entity) != m_rigidBodies.end()) 
                 {
-                    btTransform t;
-                    
-                    t.setOrigin(btVector3(transformComponent.getPositionX(),
-                                          transformComponent.getPositionY(),
-                                          transformComponent.getPositionZ()));
-
-                    glm::quat q = glm::quat_cast(transformComponent.getMatrixGlobal());
-
-                    btQuaternion btq = btQuaternion(q.x, q.y, q.z, q.w);
-                    t.setRotation(btq);
-                    
-                    glm::vec3 up = transformComponent.getUpGlobal();
-                    
-                    shape  = Ref<btStaticPlaneShape>::create(btVector3(up.x, up.y, up.z), 0);
-                    motion = Ref<btDefaultMotionState>::create(t);
-
-                    btRigidBody::btRigidBodyConstructionInfo info(0.0f, motion.get(), shape.get());
-
-                    body = Ref<btRigidBody>::create(info);
-                    
-                    break;
+                    m_world->removeRigidBody(m_rigidBodies.at(entity)->body.get());
+                    m_rigidBodies.erase(entity);
                 }
-                case RigidBody_Box:
+                return;
+            }
+            
+            // TODO: Don't get rid of the body from the world, just update it
+            if (colliderComponent.isDirty() && 
+                m_rigidBodies.find(entity) != m_rigidBodies.end())
+            {
+                m_world->removeRigidBody(m_rigidBodies.at(entity)->body.get());
+                m_rigidBodies.erase(entity);
+
+                for (auto& shape : const_cast<component::Collider&>(colliderComponent))
                 {
-                    btTransform t;
-
-                    t.setOrigin(btVector3(transformComponent.getPositionX(),
-                                          transformComponent.getPositionY(),
-                                          transformComponent.getPositionZ()));
-
-                    glm::quat q = glm::quat_cast(transformComponent.getMatrixGlobal());
-
-                    btQuaternion btq = btQuaternion(q.x, q.y, q.z, q.w);
-                    t.setRotation(btq);
-
-                    btVector3 halfExtents;
-                    halfExtents.setX(bodyComponent.width  / 2.0f);
-                    halfExtents.setY(bodyComponent.height / 2.0f);
-                    halfExtents.setZ(bodyComponent.length / 2.0f);
-
-                    shape = Ref<btBoxShape>::create(halfExtents);
-
-                    btVector3 inertia = { 0, 0, 0 };
-                    if (bodyComponent.mass != 0.0f)
-                        shape->calculateLocalInertia(bodyComponent.mass, inertia);
-                    
-                    motion = Ref<btDefaultMotionState>::create(t);
-
-                    btRigidBody::btRigidBodyConstructionInfo info(bodyComponent.mass, 
-                                                                  motion.get(), 
-                                                                  shape.get(), 
-                                                                  inertia);
-
-                    body = Ref<btRigidBody>::create(info);
-
-                    break;
-                }
-                case RigidBody_Sphere:
-                {
-                    btTransform t;
-                    t.setFromOpenGLMatrix(value_ptr(transformComponent.getMatrixGlobal()));
-                    
-                    t.setOrigin(btVector3(transformComponent.getPositionX(),
-                                          transformComponent.getPositionY(),
-                                          transformComponent.getPositionZ()));
-
-                    glm::quat q = glm::quat_cast(transformComponent.getMatrixGlobal());
-
-                    btQuaternion btq = btQuaternion(q.x, q.y, q.z, q.w);
-                    t.setRotation(btq);
-                    
-                    shape = Ref<btSphereShape>::create(bodyComponent.radius);
-
-                    btVector3 inertia = { 0, 0, 0 };
-                    if (bodyComponent.mass != 0.0f)
-                        shape->calculateLocalInertia(bodyComponent.mass, inertia);
-
-                    motion = Ref<btDefaultMotionState>::create(t);
-
-                    btRigidBody::btRigidBodyConstructionInfo info(bodyComponent.mass, 
-                                                                  motion.get(), 
-                                                                  shape.get(), 
-                                                                  inertia);
-
-                    body = Ref<btRigidBody>::create(info);
-
-                    break;
+                    shape.m_isDirty          = false;
+                    shape.box.m_isDirty      = false;
+                    shape.sphere.m_isDirty   = false;
+                    shape.capsule.m_isDirty  = false;
+                    shape.cylinder.m_isDirty = false;
+                    shape.mesh.m_isDirty     = false;
                 }
             }
-
-            shape->setLocalScaling(btVector3(transformComponent.getScaleX(),
-                                             transformComponent.getScaleY(),
-                                             transformComponent.getScaleZ()));
-
-            m_world->addRigidBody(body.get());
             
-            m_rigidBodies[entity] = Ref<RigidBodyInfo>::create();
-            m_rigidBodies[entity]->body = body;
-            m_rigidBodies[entity]->shape = shape;
-            m_rigidBodies[entity]->motion = motion;
+            if (m_rigidBodies.find(entity) == m_rigidBodies.end())
+            {
+                // Add RigidBody to World
+
+                Ref<btCollisionShape> shape  = nullptr;
+                Ref<btMotionState>    motion = nullptr;
+                Ref<btRigidBody>      body   = nullptr;
+
+                m_rigidBodies[entity] = Ref<RigidBodyInfo>::create();
+
+                // TEMPORARY:
+                //OYL_ASSERT(colliderComponent.size() <= 1, "Multiple shapes are not working right now");
+
+                if (colliderComponent.size() == 1)
+                {
+                    btTransform t;
+
+                    const auto& shapeThing = colliderComponent.getShape(0);
+                    switch (shapeThing.m_type)
+                    {
+                        case Collider_Box:
+                        {
+                            t.setIdentity();
+
+                            t.setOrigin({
+                                shapeThing.box.getCenter().x,
+                                shapeThing.box.getCenter().y,
+                                shapeThing.box.getCenter().z
+                            });
+
+                            btVector3 halfExtents = {
+                                shapeThing.box.getSize().x / 2.0f,
+                                shapeThing.box.getSize().y / 2.0f,
+                                shapeThing.box.getSize().z / 2.0f
+                            };
+
+                            shape = Ref<btBoxShape>::create(halfExtents);
+
+                            RigidBodyInfo::ChildShapeInfo info;
+
+                            info.btShape = shape;
+
+                            info.shapeInfo = shapeThing.m_selfRef;
+
+                            m_rigidBodies[entity]->children.push_back(info);
+
+                            break;
+                        }
+                        case Collider_Sphere:
+                        {
+                            t.setIdentity();
+
+                            t.setOrigin({
+                                shapeThing.sphere.getCenter().x,
+                                shapeThing.sphere.getCenter().y,
+                                shapeThing.sphere.getCenter().z
+                            });
+
+                            shape = Ref<btSphereShape>::create(shapeThing.sphere.getRadius());
+
+                            RigidBodyInfo::ChildShapeInfo info;
+
+                            info.btShape = shape;
+
+                            info.shapeInfo = shapeThing.m_selfRef;
+
+                            m_rigidBodies[entity]->children.emplace_back(info);
+
+                            break;
+                        }
+                    }
+                    
+                    // TEMPORARY: Make relative to collider
+                    t.setIdentity();
+                    
+                    t.setFromOpenGLMatrix(value_ptr(transformComponent.getMatrixGlobal()));
+
+                    t.setOrigin(btVector3(transformComponent.getPositionX(),
+                                          transformComponent.getPositionY(),
+                                          transformComponent.getPositionZ()));
+
+                    glm::quat q = quat_cast(transformComponent.getMatrixGlobal());
+
+                    btQuaternion btq = btQuaternion(q.x, q.y, q.z, q.w);
+                    t.setRotation(btq);
+                    //
+                    
+                    btVector3 inertia = { 0, 0, 0 };
+                    if (rigidBodyComponent.getMass() != 0.0f)
+                        shape->calculateLocalInertia(rigidBodyComponent.getMass(), inertia);
+
+                    shape->setLocalScaling({
+                        transformComponent.getScaleX(),
+                        transformComponent.getScaleY(),
+                        transformComponent.getScaleZ()
+                    });
+
+                    motion = Ref<btDefaultMotionState>::create(t);
+
+                    btRigidBody::btRigidBodyConstructionInfo info(rigidBodyComponent.getMass(),
+                                                                  motion.get(),
+                                                                  shape.get(),
+                                                                  inertia);
+
+                    body = Ref<btRigidBody>::create(info);
+                }
+                else
+                {
+                    auto workingShape = Ref<btCompoundShape>::create();
+                    auto childIter = colliderComponent.begin();
+                    for (; childIter != colliderComponent.end(); ++childIter)
+                    {
+                        switch (childIter->m_type)
+                        {
+                            case Collider_Box:
+                            {
+                                btTransform t;
+
+                                t.setIdentity();
+
+                                t.setOrigin({
+                                    childIter->box.getCenter().x,
+                                    childIter->box.getCenter().y,
+                                    childIter->box.getCenter().z
+                                });
+                                
+                                btVector3 halfExtents = {
+                                    childIter->box.getSize().x / 2.0f,
+                                    childIter->box.getSize().y / 2.0f,
+                                    childIter->box.getSize().z / 2.0f
+                                };
+                                
+                                auto childShape = Ref<btBoxShape>::create(halfExtents);
+                                workingShape->addChildShape(t, childShape.get());
+
+                                RigidBodyInfo::ChildShapeInfo info;
+
+                                info.btShape = childShape;
+
+                                info.shapeInfo = childIter->m_selfRef;
+
+                                m_rigidBodies[entity]->children.emplace_back(info);
+
+                                break;
+                            }
+                            case Collider_Sphere:
+                            {
+                                btTransform t;
+
+                                t.setIdentity();
+                                
+                                t.setOrigin({
+                                    childIter->sphere.getCenter().x,
+                                    childIter->sphere.getCenter().y,
+                                    childIter->sphere.getCenter().z
+                                });
+
+                                auto childShape = Ref<btSphereShape>::create(childIter->sphere.getRadius());
+                                workingShape->addChildShape(t, childShape.get());
+
+                                RigidBodyInfo::ChildShapeInfo info;
+
+                                info.btShape = childShape;
+
+                                info.shapeInfo = childIter->m_selfRef;
+
+                                m_rigidBodies[entity]->children.emplace_back(info);
+
+                                break;
+                            }
+                        }
+                    }
+
+                    shape = workingShape;
+
+                    btTransform t;
+                    
+                    t.setFromOpenGLMatrix(value_ptr(transformComponent.getMatrixGlobal()));
+
+                    t.setOrigin(btVector3(transformComponent.getPositionX(),
+                                          transformComponent.getPositionY(),
+                                          transformComponent.getPositionZ()));
+
+                    glm::quat q = quat_cast(transformComponent.getMatrixGlobal());
+
+                    btQuaternion btq = btQuaternion(q.x, q.y, q.z, q.w);
+                    t.setRotation(btq);
+
+                    btVector3 inertia = { 0, 0, 0 };
+                    if (rigidBodyComponent.getMass() != 0.0f)
+                        shape->calculateLocalInertia(rigidBodyComponent.getMass(), inertia);
+
+                    shape->setLocalScaling({
+                        transformComponent.getScaleX(),
+                        transformComponent.getScaleY(),
+                        transformComponent.getScaleZ()
+                    });
+                    
+                    motion = Ref<btDefaultMotionState>::create(t);
+
+                    btRigidBody::btRigidBodyConstructionInfo info(rigidBodyComponent.getMass(),
+                                                                  motion.get(),
+                                                                  shape.get(),
+                                                                  inertia);
+
+                    body = Ref<btRigidBody>::create(info);
+                }
+                
+                m_world->addRigidBody(body.get());
+
+                m_rigidBodies[entity]->body   = body;
+                m_rigidBodies[entity]->shape  = shape;
+                m_rigidBodies[entity]->motion = motion;
+            }
+            else
+            {
+                // RigidBody is already in world, check if dirty
+            }
         }
 
         // ^^^ Physics System ^^^ //
@@ -411,10 +722,10 @@ namespace oyl
             using component::internal::EditorCamera;
             using component::internal::ExcludeFromHierarchy;
 
-            addToEventMask(TypeKeyPressed);
-            addToEventMask(TypeKeyReleased);
-            addToEventMask(TypeMouseMoved);
-            addToEventMask(TypeEditorViewportResized);
+            listenForEventType(TypeKeyPressed);
+            listenForEventType(TypeKeyReleased);
+            listenForEventType(TypeMouseMoved);
+            listenForEventType(TypeEditorViewportResized);
 
             EditorCamera cam;
             cam.camera = Ref<Camera>::create();
@@ -549,7 +860,8 @@ namespace oyl
 
         void EditorRenderSystem::onEnter()
         {
-            addToEventMask(TypeWindowResized);
+            listenForEventType(TypeWindowResized);
+            listenForAllEvents();
 
             m_editorViewportBuffer = FrameBuffer::create(1);
             m_editorViewportBuffer->initDepthTexture(1, 1);
@@ -579,51 +891,59 @@ namespace oyl
                 [](const Renderable& lhs, const Renderable& rhs)
                 {
                     if (rhs.material == nullptr || rhs.mesh == nullptr)
-                        return false;
-                    else if (lhs.material == nullptr || lhs.mesh == nullptr)
                         return true;
-                    else if (lhs.material->getShader() != rhs.material->getShader())
-                        return lhs.material->getShader() < rhs.material->getShader();
+                    else if (lhs.material == nullptr || lhs.mesh == nullptr)
+                        return false;
+                    else if (lhs.material->shader != rhs.material->shader)
+                        return lhs.material->shader < rhs.material->shader;
                     else
                         return lhs.material < rhs.material;
                 });
 
             Ref<Material> boundMaterial;
+            Ref<Shader>   tempShader;
 
             // TODO: Make EditorCamera like PlayerCamera
-            auto        camView = registry->view<EditorCamera>();
+            auto camView = registry->view<EditorCamera>();
             Ref<Camera> currentCamera = camView.get(*camView.begin()).camera;
 
             auto view = registry->view<Renderable>();
-            for (const auto& entity : view)
+            for (auto entity : view)
             {
-                Renderable& mr = registry->get<Renderable>(entity);
+                Renderable& mr = view.get(entity);
 
-                if (mr.mesh == nullptr ||
-                    mr.material == nullptr ||
-                    mr.material->getShader() == nullptr)
-                    continue;
+                if (mr.mesh == nullptr)
+                    break;
 
                 if (mr.material != boundMaterial)
                 {
+                    if (boundMaterial)
+                        boundMaterial->shader = tempShader;
+                    
                     boundMaterial = mr.material;
 
-                    mr.material->setUniformMat4("u_view", currentCamera->getViewMatrix());
-                    mr.material->setUniformMat4("u_viewProjection", currentCamera->getViewProjectionMatrix());
+                    if (!boundMaterial)
+                        break;
+
+                    boundMaterial->setUniformMat4("u_view", currentCamera->getViewMatrix());
+                    boundMaterial->setUniformMat4("u_viewProjection", currentCamera->getViewProjectionMatrix());
                     glm::mat4 viewNormal = glm::mat4(currentCamera->getViewMatrix());
                     viewNormal = glm::inverse(glm::transpose(viewNormal));
-                    mr.material->setUniformMat3("u_viewNormal", glm::mat4(viewNormal));
+                    boundMaterial->setUniformMat3("u_viewNormal", glm::mat4(viewNormal));
 
-                    auto  lightView = registry->view<PointLight>();
-                    auto  lightProps = lightView.get(lightView[0]);
-                    auto  lightTransform = registry->get<Transform>(lightView[0]);
+                    auto lightView = registry->view<PointLight>();
+                    auto lightProps = lightView.get(lightView[0]);
+                    auto lightTransform = registry->get<Transform>(lightView[0]);
 
-                    mr.material->setUniform3f("u_pointLight.position",
-                                              viewNormal * glm::vec4(lightTransform.getPosition(), 1.0f));
-                    mr.material->setUniform3f("u_pointLight.ambient", lightProps.ambient);
-                    mr.material->setUniform3f("u_pointLight.diffuse", lightProps.diffuse);
-                    mr.material->setUniform3f("u_pointLight.specular", lightProps.specular);
+                    boundMaterial->setUniform3f("u_pointLight.position",
+                                                viewNormal * glm::vec4(lightTransform.getPosition(), 1.0f));
+                    boundMaterial->setUniform3f("u_pointLight.ambient", lightProps.ambient);
+                    boundMaterial->setUniform3f("u_pointLight.diffuse", lightProps.diffuse);
+                    boundMaterial->setUniform3f("u_pointLight.specular", lightProps.specular);
 
+                    tempShader = boundMaterial->shader;
+                    boundMaterial->shader = Shader::get(LIGHTING_SHADER_ALIAS);
+                    
                     // TEMPORARY:
                     boundMaterial->bind();
                     boundMaterial->applyUniforms();
@@ -631,7 +951,7 @@ namespace oyl
 
                 const glm::mat4& transform = registry->get_or_assign<Transform>(entity).getMatrixGlobal();
 
-                Renderer::submit(mr.mesh, mr.material, transform);
+                Renderer::submit(mr.mesh, boundMaterial, transform);
             }
 
             m_editorViewportBuffer->unbind();

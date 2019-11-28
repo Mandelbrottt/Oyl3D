@@ -225,4 +225,13 @@ namespace oyl
                      });
 
     //-Editor Events-//////////////////////////////////////////////////////
+
+    // Physics Events /////////////////////////////////////////////////////
+
+    OYL_EVENT_STRUCT(PhysicsResetWorldEvent, TypePhysicsResetWorld, CategoryPhysics,
+                     {
+                         i32 _noArgs;
+                     });
+
+    //-Physics Events-/////////////////////////////////////////////////////
 }
