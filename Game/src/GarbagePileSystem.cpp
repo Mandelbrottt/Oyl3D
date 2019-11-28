@@ -23,14 +23,20 @@ void GarbagePileSystem::onUpdate(Timestep dt)
 	int lastFrameTotalGarbageLevel = totalGarbageLevel; //get the last frame's total garbage level so we can compare them later
 	totalGarbageLevel = 0; //reset the total garbage level and recalculate every frame
 
-	auto view = registry->view<GarbagePile, component::Renderable>();
+	auto view = registry->view<GarbagePile, component::Renderable, component::Transform>();
 	for (auto& garbagePileEntity : view)
 	{
 		auto& garbagePile = registry->get<GarbagePile>(garbagePileEntity);
 		auto& garbagePileRenderable = registry->get<component::Renderable>(garbagePileEntity);
+		auto& garbagePileTransform  = registry->get<component::Transform>(garbagePileEntity);
 
 		if (addGarbageLevel && garbagePile.garbageLevel <= garbagePile.MAX_GARBAGE_LEVEL)
 			garbagePile.garbageLevel++;
+
+		garbagePileTransform.setScale(glm::vec3(
+			0.3f * garbagePile.garbageLevel + 1.5f,
+			0.7f,
+			0.3f * garbagePile.garbageLevel + 1.5f));
 
 		if (garbagePile.garbageLevel <= 0) //check if garbage is fully depleted
 		{
