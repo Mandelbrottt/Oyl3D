@@ -77,7 +77,10 @@ void PlayerSystem::onUpdate(Timestep dt)
 						player.pushingStateData.interpolationParam));
 
 					if (player.pushingStateData.interpolationParam >= 1.0f)
+					{
 						changeToIdle(&player);
+						player.yRotationClamp = 0.0f; //reset the camera rotation limit
+					}
 				}
 
 				break;

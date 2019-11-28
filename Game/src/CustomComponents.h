@@ -75,6 +75,8 @@ struct Player
 	MoveableUsingLerp adjustingPositionStateData; //TODO: integrate adjusting position into pushing state instead of having its own state
 	MoveableUsingLerp pushingStateData;
 
+	float yRotationClamp = 0.0f;
+
 	entt::entity interactableEntity = entt::null;
 };
 
@@ -102,6 +104,8 @@ struct CarryableItem
 
 	CarryableItemType type = CarryableItemType::invalid; //must manually be set when spawning items
 	bool isBeingCarried = false;
+
+	bool isActive = true;
 };
 
 struct GarbagePile
@@ -113,4 +117,9 @@ struct GarbagePile
 
 	int MAX_GARBAGE_LEVEL_TICKS = 3; // each level will have 3 sub-levels (or ticks) before it goes down by 1
 	int garbageLevelTicks = 3;
+};
+
+struct CannonballCrate
+{
+	Team team;
 };

@@ -20,6 +20,7 @@ void SandboxLayer::onEnter()
         mr.material = mat;
 
 		{
+			//PLAYER
 			entt::entity playerBlueEntity = registry->create();
 			registry->assign<Player>(playerBlueEntity);
 			registry->get<Player>(playerBlueEntity).team = Team::blue;
@@ -48,6 +49,7 @@ void SandboxLayer::onEnter()
 		}
         
 		{
+			//CANNON
 			entt::entity cannonBlueEntity = registry->create();
 
 			component::Transform cannonTransform;
@@ -76,6 +78,7 @@ void SandboxLayer::onEnter()
 		}
 
         {
+			//MOP
 			entt::entity mopBlueEntity = registry->create();
 
 			component::Transform mopTransform;
@@ -102,6 +105,7 @@ void SandboxLayer::onEnter()
         }
 
 		{
+			//GARBAGE PILES
 			entt::entity garbagePileBlueEntity = registry->create();
 
 			component::Transform garbagePileTransform;
@@ -120,6 +124,56 @@ void SandboxLayer::onEnter()
 			auto& garbagePileCollider = registry->assign<component::Collider>(garbagePileBlueEntity);
 			auto& shapeInfo = garbagePileCollider.pushShape(Collider_Box);
 			shapeInfo.box.setSize({ 1.0f, 1.0f, 1.0f });
+		}
+
+		{
+			//CANNONBALLS
+			mr.mesh = Mesh::cache("res/assets/models/sphere.obj");
+			for (int i = 0; i < 30; i++)
+			{
+				entt::entity cannonballEntity = registry->create();
+
+				component::Transform cannonballTransform;
+				cannonballTransform.setPosition(glm::vec3(1000.0f, 1000.0f, 1000.0f));
+				cannonballTransform.setScale(glm::vec3(0.5f, 0.5f, 0.5f));
+				registry->assign<component::Transform>(cannonballEntity, cannonballTransform);
+
+				auto& carryableItem = registry->assign<CarryableItem>(cannonballEntity);
+				carryableItem.team = Team::blue;
+				carryableItem.type = CarryableItemType::cannonball;
+
+				mr.mesh = Mesh::get("sphere");
+				registry->assign<component::Renderable>(cannonballEntity, mr);
+
+				auto& so2 = registry->assign<component::SceneObject>(cannonballEntity);
+				so2.name = "BlueCannonball" + std::to_string(i);
+
+				auto& cannonballCollider = registry->assign<component::Collider>(cannonballEntity);
+				auto& shapeInfo = cannonballCollider.pushShape(Collider_Sphere);
+				shapeInfo.sphere.setRadius(0.5f);
+			}
+
+			//CANNONBALL CRATE
+			entt::entity cannonballCrateEntity = registry->create();
+
+			component::Transform cannonballCrateTransform;
+			cannonballCrateTransform.setPosition(glm::vec3(-1.0f, 0.5f, -3.0f));
+			cannonballCrateTransform.setScale(glm::vec3(2.0f, 1.0f, 1.0f));
+			registry->assign<component::Transform>(cannonballCrateEntity, cannonballCrateTransform);
+
+			auto& cannonballCrate = registry->assign<CannonballCrate>(cannonballCrateEntity);
+			cannonballCrate.team = Team::blue;
+
+			mr.mesh = Mesh::get("cube");
+			mr.material = mat;
+			registry->assign<component::Renderable>(cannonballCrateEntity, mr);
+
+			auto& so2 = registry->assign<component::SceneObject>(cannonballCrateEntity);
+			so2.name = "BlueCannonballCrate";
+
+			auto& cannonballCrateCollider = registry->assign<component::Collider>(cannonballCrateEntity);
+			auto& shapeInfo = cannonballCrateCollider.pushShape(Collider_Box);
+			shapeInfo.box.setSize({ 2.0f, 2.0f, 1.0f });
 		}
 
 		{
@@ -168,7 +222,7 @@ void SandboxLayer::onEnter()
     }
     {
         component::Renderable mr;
-        mr.mesh = Mesh::cache("res/assets/models/sphere.obj");
+        mr.mesh = Mesh::get("sphere");
         mr.material = mat;
 
         entt::entity e = registry->create();

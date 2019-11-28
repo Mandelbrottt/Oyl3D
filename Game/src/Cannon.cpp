@@ -100,6 +100,8 @@ void CannonSystem::changeToBeingPushed(Cannon* a_cannon)
 void CannonSystem::changeToFiringSoon(Cannon* a_cannon)
 {
 	a_cannon->state = CannonState::firingSoon;
+
+	std::cout << "FIRING SOON!\n";
 }
 
 void CannonSystem::updateFuse(float dt, Cannon* a_cannon)
@@ -111,28 +113,22 @@ void CannonSystem::updateFuse(float dt, Cannon* a_cannon)
     {
         if (a_cannon->state == CannonState::doingNothing)
 		    changeToFiringSoon(a_cannon);
-
-		std::cout << "FIRING SOON\n";
         
 		if (a_cannon->fuse.elapsed >= a_cannon->fuse.timeToWait)
 		{
-			loadCannonball(a_cannon); //TODO: get rid of this once cannon loading is implemented
-		    
 			a_cannon->fuse.elapsed = 0.0f;
 			changeToDoingNothing(a_cannon);
 		    
-		    if (a_cannon->isLoaded)
-			    fireCannon(a_cannon);
+			if (a_cannon->isLoaded)
+				fireCannon(a_cannon);
+			else
+				std::cout << "CANNON MISFIRE! (UNLOADED CANNON FIRED)\n";
 		}
     }
-}
-
-void CannonSystem::loadCannonball(Cannon* a_cannon)
-{
-	a_cannon->isLoaded = true;
 }
 
 void CannonSystem::fireCannon(Cannon* a_cannon)
 {
 	std::cout << "CANNON FIRED!\n";
+	a_cannon->isLoaded = false;
 }

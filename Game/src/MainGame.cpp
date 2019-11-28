@@ -21,6 +21,7 @@ public:
 	{
 		addToCategoryMask(CategoryKeyboard);
 		addToCategoryMask(CategoryMouse);
+		this->listenForEventCategory((OylEnum)CategoryGarbagePile);
 
 		scheduleSystemUpdate<PlayerSystem>();
 		scheduleSystemUpdate<CannonSystem>();
@@ -212,9 +213,21 @@ public:
 				auto playerView = registry->view<Player, component::Transform>();
 				for (auto& entity : playerView)
 				{
-					component::Transform& playerTransform = registry->get<component::Transform>(entity);
+					auto& player = registry->get<Player>(entity);
+					auto& playerTransform = registry->get<component::Transform>(entity);
 
 					playerTransform.rotate(glm::vec3(0.0f, -evt.dx * 0.5f, 0.0f));
+
+					if (player.yRotationClamp > 1)
+					{
+						if (playerTransform.getRotationEulerY() < player.yRotationClamp)
+							playerTransform.setRotationEulerY(player.yRotationClamp);
+					}
+					else if (player.yRotationClamp < -1)
+					{
+						if (playerTransform.getRotationEulerY() > player.yRotationClamp)
+							playerTransform.setRotationEulerY(player.yRotationClamp);
+					}
 				}
 
 				auto playerCameraView = registry->view<component::PlayerCamera, component::Transform>();

@@ -19,6 +19,7 @@ void GarbagePileSystem::onUpdate(Timestep dt)
 		passiveGarbageBuildupCountdown = PASSIVE_GARBAGE_BUILDUP_TIME;
 	}
 
+	int lastFrameTotalGarbageLevel = totalGarbageLevel; //get the last frame's total garbage level so we can compare them later
 	totalGarbageLevel = 0; //reset the total garbage level and recalculate every frame
 
 	auto view = registry->view<GarbagePile, component::Renderable>();
@@ -39,12 +40,19 @@ void GarbagePileSystem::onUpdate(Timestep dt)
 		{
 			if (garbageLevelHitZeroDirty)
 			{
-				garbagePileRenderable.mesh = Mesh::cache("res/assets/models/cube.obj");
+				garbagePileRenderable.mesh = Mesh::get("cube");
 				garbageLevelHitZeroDirty = false;
 			}
 		}
 
 		totalGarbageLevel += garbagePile.garbageLevel;
+	}
+
+	if (totalGarbageLevel != lastFrameTotalGarbageLevel)
+	{
+		TotalGarbageCountEvent totalGarbageUpdate;
+		totalGarbageUpdate.totalGarbageCount = totalGarbageLevel;
+		postEvent(Event::create(totalGarbageUpdate));
 	}
 }
 

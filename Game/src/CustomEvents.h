@@ -5,7 +5,8 @@
 enum CustomEventsCategories
 {
 	CategoryPlayer = oyl::CategoryCustomStart,
-	CategoryCannon
+	CategoryCannon,
+	CategoryGarbagePile
 };
 enum CustomEventTypes
 {
@@ -14,7 +15,8 @@ enum CustomEventTypes
 	TypePlayerDropItem,
 	TypePlayerStateChange,
     TypeCannonStateChange,
-    TypeLoadCannon
+    TypeLoadCannon,
+	TypeTotalGarbageCount
 };
 
 
@@ -49,4 +51,9 @@ OYL_EVENT_STRUCT(CannonStateChangeEvent, TypeCannonStateChange, CategoryCannon,
 OYL_EVENT_STRUCT(LoadCannonEvent, TypeLoadCannon, CategoryCannon,
 	{
 		Cannon* cannon;
+	});
+
+OYL_EVENT_STRUCT(TotalGarbageCountEvent, TypeTotalGarbageCount, CategoryGarbagePile,
+	{
+		int totalGarbageCount;
 	});
