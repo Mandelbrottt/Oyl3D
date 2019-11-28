@@ -1,8 +1,9 @@
 #include "oylpch.h"
 #include "Renderer.h"
 
-#include "Graphics/Shader.h"
 #include "Graphics/Material.h"
+#include "Graphics/Shader.h"
+#include "Graphics/Texture.h"
 
 namespace oyl
 {
@@ -31,13 +32,11 @@ namespace oyl
         
         shader->bind();
 
-        // TEMPORARY:
         shader->setUniformMat4("u_model", transform);
         
         RenderCommand::drawIndexed(vao);
     }
 
-    // Assumes that there is only one texture, will be changed when material file system is implemented
     void Renderer::submit(const Ref<Mesh>& mesh, const Ref<Material>& material, glm::mat4 transform)
     {
         mesh->bind();
@@ -46,6 +45,18 @@ namespace oyl
         
         // TEMPORARY:
         material->getShader()->setUniformMat4("u_model", transform);
+
+        RenderCommand::drawMesh(mesh);
+    }
+
+    void Renderer::submit(const Ref<Mesh>& mesh, const Ref<Shader>& shader, const Ref<TextureCubeMap>& cubemap)
+    {
+        mesh->bind();
+
+        shader->bind();
+
+        cubemap->bind(0);
+        shader->setUniform1i("u_skybox", 0);
 
         RenderCommand::drawMesh(mesh);
     }

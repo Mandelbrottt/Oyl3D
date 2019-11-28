@@ -8,6 +8,11 @@
 
 #include "Graphics/Buffer.h"
 
+namespace oyl
+{
+    class Shader;
+}
+
 namespace oyl::internal
 {
     class RenderSystem : public System
@@ -21,9 +26,24 @@ namespace oyl::internal
         virtual void onGuiRender(Timestep dt) override;
 
         virtual bool onEvent(Ref<Event> event) override;
+    };
 
-        void init();
-        void shutdown();
+    class GuiRenderSystem : public System
+    {
+        OYL_CTOR(GuiRenderSystem, System)
+
+        virtual void onEnter() override;
+        virtual void onExit() override;
+
+        virtual void onUpdate(Timestep dt) override;
+        virtual void onGuiRender(Timestep dt) override;
+
+        virtual bool onEvent(Ref<Event> event) override;
+
+    private:
+        Ref<Shader> m_shader;
+
+        Ref<VertexArray> m_vao;
     };
 
     class AnimationSystem : public System

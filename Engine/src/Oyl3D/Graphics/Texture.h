@@ -143,4 +143,43 @@ namespace oyl
     private:
         static internal::AssetCache<Texture3D> s_cache;
     };
+
+    class TextureCubeMap : public Texture
+    {
+        friend Texture;
+    public:
+        virtual ~TextureCubeMap() = default;
+
+        virtual uint getWidth() const = 0;
+        virtual uint getHeight() const = 0;
+
+        static Ref<TextureCubeMap> create(const std::string& filePath);
+
+        static const Ref<TextureCubeMap>& cache(const std::string& filePath,
+                                                const CacheAlias& alias = "",
+                                                bool overwrite = false);
+
+        static const Ref<TextureCubeMap>& cache(const Ref<TextureCubeMap>& existing,
+                                                const CacheAlias&     alias = "",
+                                                bool overwrite = false);
+
+        static void discard(const CacheAlias& alias);
+
+        static const Ref<TextureCubeMap>& get(const CacheAlias& alias);
+
+        static bool isCached(const Ref<TextureCubeMap>& existing);
+
+        static bool exists(const CacheAlias& alias);
+
+        static const CacheAlias& getAlias(const Ref<TextureCubeMap>& existing);
+
+        static const Ref<TextureCubeMap>& rename(const CacheAlias& currentAlias,
+                                                 const CacheAlias& newAlias,
+                                                 bool              overwrite = false);
+
+        static const auto& getCache() { return s_cache.m_cache; }
+
+    private:
+        static internal::AssetCache<TextureCubeMap> s_cache;
+    };
 }

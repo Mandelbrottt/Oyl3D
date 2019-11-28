@@ -15,6 +15,19 @@ namespace oyl
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     }
 
+    void OpenGLRendererAPI::setDepthDraw(bool value)
+    {
+        glDepthMask(value ? GL_TRUE : GL_FALSE);
+    }
+
+    void OpenGLRendererAPI::setBackfaceCulling(bool value)
+    {
+        if (value)
+            glEnable(GL_CULL_FACE);
+        else
+            glDisable(GL_CULL_FACE);
+    }
+
     void OpenGLRendererAPI::drawArrays(const Ref<VertexArray>& vao, u32 count)
     {
         glDrawArrays(GL_TRIANGLES, 0, count);
