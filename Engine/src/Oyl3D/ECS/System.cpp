@@ -59,7 +59,11 @@ namespace oyl
             registry->sort<Renderable>(
                 [](const Renderable& lhs, const Renderable& rhs)
                 {
-                    if (rhs.material == nullptr || rhs.mesh == nullptr)
+                    if (!rhs.enabled)
+                        return false;
+                    else if (!lhs.enabled)
+                        return true;
+                    else if (rhs.material == nullptr || rhs.mesh == nullptr)
                         return false;
                     else if (lhs.material == nullptr || lhs.mesh == nullptr)
                         return true;
@@ -94,10 +98,11 @@ namespace oyl
                 {
                     Renderable& mr = view.get<Renderable>(entity);
 
-                    if (mr.mesh == nullptr || 
+                    if (!mr.enabled ||
+                        mr.mesh == nullptr || 
                         mr.material == nullptr || 
                         mr.material->shader == nullptr)
-                        continue;
+                        break;
                     
                     if (mr.material != boundMaterial)
                     {
@@ -202,7 +207,11 @@ namespace oyl
             registry->sort<GuiRenderable>(
                 [](const GuiRenderable& lhs, const GuiRenderable& rhs)
                 {
-                    if (rhs.texture == nullptr)
+                    if (!rhs.enabled)
+                        return false;
+                    else if (!lhs.enabled)
+                        return true;
+                    else if (rhs.texture == nullptr)
                         return false;
                     else if (lhs.texture == nullptr)
                         return true;
@@ -220,6 +229,9 @@ namespace oyl
             {
                 auto& transform = view.get<Transform>(entity);
                 auto& gui = view.get<GuiRenderable>(entity);
+
+                if (!gui.enabled || !gui.texture)
+                    break;
 
                 if ((!boundTexture || boundTexture != gui.texture) && gui.texture->isLoaded())
                 {

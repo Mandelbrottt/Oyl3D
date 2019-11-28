@@ -130,11 +130,15 @@ namespace oyl::component
     {
         Ref<Mesh>      mesh;
         Ref<Material>  material;
+
+        bool enabled = true;
     };
 
     struct GuiRenderable
     {
         Ref<Texture2D> texture;
+
+        bool enabled = true;
     };
 
     // Morph Target Animation
@@ -149,16 +153,16 @@ namespace oyl::component
         std::vector<KeyPose> poses;
     };
 
-    struct Script
-    {
-        void (*onUpdateCallback)(entt::registry&, entt::entity, Transform&, Timestep);
-        void (*onCollisionEnterCallback)();
-        void (*onCustomEventCallback)(entt::registry&, entt::entity, UniqueRef<Event>);
-        
-    private:
-        entt::registry m_reg;
-        entt::entity m_entity;
-    };
+    //struct Script
+    //{
+    //    void (*onUpdateCallback)(entt::registry&, entt::entity, Transform&, Timestep);
+    //    void (*onCollisionEnterCallback)();
+    //    void (*onCustomEventCallback)(entt::registry&, entt::entity, UniqueRef<Event>);
+    //    
+    //private:
+    //    entt::registry m_reg;
+    //    entt::entity m_entity;
+    //};
 
     //#define getComponent(component_type) _registry.get<component_type>(_entity)
     //#define CALLBACK_ARGS entt::registry& _registry, entt::entity _entity, Transform& transform
