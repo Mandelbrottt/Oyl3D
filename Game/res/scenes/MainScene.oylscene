@@ -3,7 +3,7 @@
         "Renderable": {
             "Material": {
                 "Albedo": {
-                    "Alias": "oyl_white",
+                    "Alias": "Oyl White",
                     "FilePath": "../Engine/res/textures/white.png"
                 },
                 "Alias": "animationMat",
@@ -94,8 +94,8 @@
                 "Z": 0.0
             },
             "Scale": {
-                "X": 6.399999618530273,
-                "Y": 4.680000305175781,
+                "X": 5.0,
+                "Y": 5.0,
                 "Z": 1.0
             }
         }

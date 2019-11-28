@@ -64,9 +64,12 @@ namespace oyl
             m_loaded = true;
             m_width  = width;
             m_height = height;
+            
+            auto texStorageFormat = nrChannels == 3 ? GL_RGB8 : GL_RGBA8;
+            auto texSubFormat     = nrChannels == 3 ? GL_RGB  : GL_RGBA;
 
-            glTexStorage2D(GL_TEXTURE_2D, 1, GL_RGB8, width, height);
-            glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, width, height, GL_RGB, GL_UNSIGNED_BYTE, data);
+            glTexStorage2D(GL_TEXTURE_2D, 1, texStorageFormat, width, height);
+            glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, width, height, texSubFormat, GL_UNSIGNED_BYTE, data);
             glGenerateMipmap(GL_TEXTURE_2D);
         }
         else
@@ -176,9 +179,14 @@ namespace oyl
                 m_width = width;
                 m_height = height;
 
+                auto texStorageFormat = nrChannels == 3 ? GL_RGB8 : GL_RGBA8;
+                auto texSubFormat     = nrChannels == 3 ? GL_RGB  : GL_RGBA;
+
                 if (i == 0)
-                    glTexStorage2D(GL_TEXTURE_CUBE_MAP, 1, GL_RGB8, width, height);
-                glTexSubImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, 0, 0, width, height, GL_RGB, GL_UNSIGNED_BYTE, data);
+                    glTexStorage2D(GL_TEXTURE_CUBE_MAP, 1, texStorageFormat, width, height);
+                glTexSubImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 
+                                0, 0, 0, width, height, 
+                                texSubFormat, GL_UNSIGNED_BYTE, data);
             }
             else
             {

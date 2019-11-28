@@ -717,6 +717,8 @@ namespace oyl::internal
 
             auto& renderable = registry->get<Renderable>(m_currentEntity);
 
+            ImGui::Checkbox("Enabled", &renderable.enabled);
+            
             CacheAlias currentName;
             if (renderable.mesh)
             {

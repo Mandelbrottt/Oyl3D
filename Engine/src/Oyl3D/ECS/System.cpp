@@ -60,13 +60,13 @@ namespace oyl
                 [](const Renderable& lhs, const Renderable& rhs)
                 {
                     if (!rhs.enabled)
-                        return false;
+                        return true;
                     else if (!lhs.enabled)
-                        return true;
-                    else if (rhs.material == nullptr || rhs.mesh == nullptr)
                         return false;
-                    else if (lhs.material == nullptr || lhs.mesh == nullptr)
+                    else if (rhs.material == nullptr || rhs.mesh == nullptr)
                         return true;
+                    else if (lhs.material == nullptr || lhs.mesh == nullptr)
+                        return false;
                     else if (lhs.material->shader != rhs.material->shader)
                         return lhs.material->shader < rhs.material->shader;
                     else
@@ -174,10 +174,10 @@ namespace oyl
             m_shader = Shader::get("texturedQuad");
 
             float vertices[] = {
-                -0.5f, -0.5f, 0.0f, 0.0f, 0.0f,
-                 0.5f, -0.5f, 0.0f, 1.0f, 0.0f,
-                 0.5f,  0.5f, 0.0f, 1.0f, 1.0f,
-                -0.5f,  0.5f, 0.0f, 0.0f, 1.0f
+                -0.5f, -0.5f, 0.0f, 0.0f, 1.0f,
+                 0.5f, -0.5f, 0.0f, 1.0f, 1.0f,
+                 0.5f,  0.5f, 0.0f, 1.0f, 0.0f,
+                -0.5f,  0.5f, 0.0f, 0.0f, 0.0f
             };
 
             u32 indices[] = {
@@ -208,13 +208,13 @@ namespace oyl
                 [](const GuiRenderable& lhs, const GuiRenderable& rhs)
                 {
                     if (!rhs.enabled)
-                        return false;
+                        return true;
                     else if (!lhs.enabled)
-                        return true;
-                    else if (rhs.texture == nullptr)
                         return false;
-                    else if (lhs.texture == nullptr)
+                    else if (rhs.texture == nullptr)
                         return true;
+                    else if (lhs.texture == nullptr)
+                        return false;
                     else
                         return lhs.texture < rhs.texture;
                 });
