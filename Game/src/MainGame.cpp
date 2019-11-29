@@ -202,7 +202,7 @@ public:
 		{
 			entt::entity e = registry->create();
 			auto& gui = registry->assign<component::GuiRenderable>(e);
-			gui.texture = Texture2D::cache("res/assets/textures/gui/LoseScreen.jpg");
+			gui.texture = Texture2D::cache("res/assets/textures/gui/YouLose.jpg");
 
 			auto& endScreen = registry->assign<EndScreen>(e);
 			endScreen.isLoseScreen = true;

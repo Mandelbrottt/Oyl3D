@@ -109,7 +109,7 @@ struct Cannon
 	TimedAction fuse;
 
 	int cannonTrackPosition = 0;
-	float pushDistance = 5.0f;
+	float pushDistance = 10.0f;
 	float beingPushedSpeed = 0.2f;
 	MoveableUsingLerp pushStateData;
 

@@ -58,7 +58,7 @@ void SandboxLayer::onEnter()
 
 			auto& cannon = registry->assign<Cannon>(cannonBlueEntity);
 			cannon.team = Team::blue;
-			cannon.fuse.timeToWait = 10.0f;
+			cannon.fuse.timeToWait = 20.0f;
 
 			registry->assign<component::Renderable>(cannonBlueEntity, mr);
 
@@ -105,25 +105,28 @@ void SandboxLayer::onEnter()
         }
 
 		{
-			//GARBAGE PILES
-			entt::entity garbagePileBlueEntity = registry->create();
+			for (int i = 0; i < 3; i++)
+			{
+				//GARBAGE PILES
+				entt::entity garbagePileBlueEntity = registry->create();
 
-			component::Transform garbagePileTransform;
-			garbagePileTransform.setPosition(glm::vec3(-3.0f, 0.0f, 0.0f));
-			garbagePileTransform.setScale(glm::vec3(3.0f, 0.7f, 3.0f));
-			registry->assign<component::Transform>(garbagePileBlueEntity, garbagePileTransform);
+				component::Transform garbagePileTransform;
+				garbagePileTransform.setPosition(glm::vec3(-3.0f, 0.0f, 0.0f));
+				garbagePileTransform.setScale(glm::vec3(3.0f, 0.7f, 3.0f));
+				registry->assign<component::Transform>(garbagePileBlueEntity, garbagePileTransform);
 
-			auto& garbagePile = registry->assign<GarbagePile>(garbagePileBlueEntity);
-			garbagePile.team = Team::blue;
+				auto& garbagePile = registry->assign<GarbagePile>(garbagePileBlueEntity);
+				garbagePile.team = Team::blue;
 
-			registry->assign<component::Renderable>(garbagePileBlueEntity, mr);
+				registry->assign<component::Renderable>(garbagePileBlueEntity, mr);
 
-			auto& so2 = registry->assign<component::SceneObject>(garbagePileBlueEntity);
-			so2.name = "BlueGarbagePile";
+				auto& so2 = registry->assign<component::SceneObject>(garbagePileBlueEntity);
+				so2.name = "BlueGarbagePile" + std::to_string(i);
 
-			auto& garbagePileCollider = registry->assign<component::Collider>(garbagePileBlueEntity);
-			auto& shapeInfo = garbagePileCollider.pushShape(Collider_Box);
-			shapeInfo.box.setSize({ 1.0f, 1.0f, 1.0f });
+				auto& garbagePileCollider = registry->assign<component::Collider>(garbagePileBlueEntity);
+				auto& shapeInfo = garbagePileCollider.pushShape(Collider_Box);
+				shapeInfo.box.setSize({ 1.0f, 1.0f, 1.0f });
+			}
 		}
 
 		{
@@ -173,9 +176,16 @@ void SandboxLayer::onEnter()
 			auto& so2 = registry->assign<component::SceneObject>(cannonballCrateEntity);
 			so2.name = "BlueCannonballCrate";
 
+			auto& rb = registry->assign<component::RigidBody>(cannonballCrateEntity);
+			rb.setMass(0.0f);
+			rb.setProperties(component::RigidBody::Property::FREEZE_ROTATION_X, true);
+			rb.setProperties(component::RigidBody::Property::FREEZE_ROTATION_Y, true);
+			rb.setProperties(component::RigidBody::Property::FREEZE_ROTATION_Z, true);
+			rb.setProperties(component::RigidBody::Property::IS_KINEMATIC, true);
+
 			auto& cannonballCrateCollider = registry->assign<component::Collider>(cannonballCrateEntity);
 			auto& shapeInfo = cannonballCrateCollider.pushShape(Collider_Box);
-			shapeInfo.box.setSize({ 2.0f, 2.0f, 1.0f });
+			shapeInfo.box.setSize({ 1.0f, 1.0f, 1.0f });
 		}
 
 		{
@@ -196,6 +206,30 @@ void SandboxLayer::onEnter()
 
 			auto& so3 = registry->assign<component::SceneObject>(e2);
 			so3.name = "Light 1";
+		}
+
+		{
+			//CHARACTER
+			entt::entity characterEntity = registry->create();
+
+			component::Transform mopTransform;
+			mopTransform.setPosition(glm::vec3(10.0f, 6.0f, 0.0f));
+			mopTransform.setScale(glm::vec3(1.0f, 1.0f, 1.0f));
+			registry->assign<component::Transform>(characterEntity, mopTransform);
+
+			mr.mesh = Mesh::cache("res/assets/models/character.obj");
+			registry->assign<component::Renderable>(characterEntity, mr);
+
+			auto& so2 = registry->assign<component::SceneObject>(characterEntity);
+			so2.name = "Character";
+
+			/*auto& rb = registry->assign<component::RigidBody>(mopBlueEntity);
+			rb.setMass(2.0f);
+			rb.setFriction(1.0f);*/
+
+			auto& mopCollider = registry->assign<component::Collider>(characterEntity);
+			auto& shapeInfo = mopCollider.pushShape(Collider_Box);
+			shapeInfo.box.setSize({ 1.0f, 1.0f, 1.0f });
 		}
     }
     {
@@ -277,11 +311,11 @@ void SandboxLayer::onUpdate(Timestep dt)
 
 void SandboxLayer::onGuiRender(Timestep dt)
 {
-    ImGui::Begin("xdhaha");
+    /*ImGui::Begin("xdhaha");
 
     ImGui::SliderFloat("Force Speed", &forceSpeed, 0.1f, 10.0f);
     
-    ImGui::End();
+    ImGui::End();*/
 }
 
 bool SandboxLayer::onEvent(Ref<Event> event)

@@ -1311,7 +1311,7 @@
             }
         }
     },
-    "BlueGarbagePile": {
+    "BlueGarbagePile0": {
         "Renderable": {
             "Material": {
                 "Albedo": {
@@ -1339,6 +1339,88 @@
                 "X": -3.0,
                 "Y": 0.0,
                 "Z": 0.0
+            },
+            "Rotation": {
+                "X": 0.0,
+                "Y": -0.0,
+                "Z": 0.0
+            },
+            "Scale": {
+                "X": 3.0,
+                "Y": 0.699999988079071,
+                "Z": 3.0
+            }
+        }
+    },
+    "BlueGarbagePile1": {
+        "Renderable": {
+            "Material": {
+                "Albedo": {
+                    "Alias": "container2",
+                    "FilePath": "res/assets/textures/container2.jpg"
+                },
+                "Alias": "container",
+                "Shader": {
+                    "Alias": "oyl_lighting",
+                    "Pixel": "../Engine/res/shaders/lighting.frag",
+                    "Vertex": "../Engine/res/shaders/lighting.vert"
+                },
+                "Specular": {
+                    "Alias": "container2_specular",
+                    "FilePath": "res/assets/textures/container2_specular.jpg"
+                }
+            },
+            "Mesh": {
+                "Alias": "cube",
+                "FilePath": "res/assets/models/cube.obj"
+            }
+        },
+        "Transform": {
+            "Position": {
+                "X": -18.872875213623047,
+                "Y": 0.0,
+                "Z": 1.6313629150390625
+            },
+            "Rotation": {
+                "X": 0.0,
+                "Y": -0.0,
+                "Z": 0.0
+            },
+            "Scale": {
+                "X": 3.0,
+                "Y": 0.699999988079071,
+                "Z": 3.0
+            }
+        }
+    },
+    "BlueGarbagePile2": {
+        "Renderable": {
+            "Material": {
+                "Albedo": {
+                    "Alias": "container2",
+                    "FilePath": "res/assets/textures/container2.jpg"
+                },
+                "Alias": "container",
+                "Shader": {
+                    "Alias": "oyl_lighting",
+                    "Pixel": "../Engine/res/shaders/lighting.frag",
+                    "Vertex": "../Engine/res/shaders/lighting.vert"
+                },
+                "Specular": {
+                    "Alias": "container2_specular",
+                    "FilePath": "res/assets/textures/container2_specular.jpg"
+                }
+            },
+            "Mesh": {
+                "Alias": "cube",
+                "FilePath": "res/assets/models/cube.obj"
+            }
+        },
+        "Transform": {
+            "Position": {
+                "X": 16.815935134887695,
+                "Y": 0.0,
+                "Z": -2.513417959213257
             },
             "Rotation": {
                 "X": 0.0,
@@ -1431,12 +1513,110 @@
             }
         }
     },
+    "Character": {
+        "Renderable": {
+            "Material": {
+                "Albedo": {
+                    "Alias": "container2",
+                    "FilePath": "res/assets/textures/container2.jpg"
+                },
+                "Alias": "container",
+                "Shader": {
+                    "Alias": "oyl_lighting",
+                    "Pixel": "../Engine/res/shaders/lighting.frag",
+                    "Vertex": "../Engine/res/shaders/lighting.vert"
+                },
+                "Specular": {
+                    "Alias": "container2_specular",
+                    "FilePath": "res/assets/textures/container2_specular.jpg"
+                }
+            },
+            "Mesh": {
+                "Alias": "character",
+                "FilePath": "res/assets/models/character.obj"
+            }
+        },
+        "Transform": {
+            "Position": {
+                "X": 10.0,
+                "Y": 6.0,
+                "Z": 0.0
+            },
+            "Rotation": {
+                "X": 0.0,
+                "Y": -0.0,
+                "Z": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
     "Clean Garbage Message": {
         "Transform": {
             "Position": {
                 "X": -23.760000228881836,
                 "Y": -2.5,
                 "Z": 0.0
+            },
+            "Rotation": {
+                "X": 0.0,
+                "Y": -0.0,
+                "Z": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Garbage Tick0": {
+        "Transform": {
+            "Position": {
+                "X": -100.0,
+                "Y": -100.0,
+                "Z": -200.0
+            },
+            "Rotation": {
+                "X": 0.0,
+                "Y": -0.0,
+                "Z": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Garbage Tick1": {
+        "Transform": {
+            "Position": {
+                "X": -100.0,
+                "Y": -100.0,
+                "Z": -200.0
+            },
+            "Rotation": {
+                "X": 0.0,
+                "Y": -0.0,
+                "Z": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Garbage Tick2": {
+        "Transform": {
+            "Position": {
+                "X": -100.0,
+                "Y": -100.0,
+                "Z": -200.0
             },
             "Rotation": {
                 "X": 0.0,
@@ -1514,7 +1694,7 @@
         "Transform": {
             "Position": {
                 "X": 0.0,
-                "Y": 0.738800048828125,
+                "Y": 5.148453235626221,
                 "Z": -1.8205928802490234
             },
             "Rotation": {
@@ -1561,7 +1741,7 @@
                 "Z": 0.0
             },
             "Scale": {
-                "X": 10.0,
+                "X": 11.0,
                 "Y": 10.0,
                 "Z": 1.0
             }
@@ -1659,7 +1839,7 @@
                 "Z": 0.0
             },
             "Scale": {
-                "X": 1.0,
+                "X": 2.5172064304351807,
                 "Y": 0.9999904036521912,
                 "Z": 0.9999904036521912
             }
