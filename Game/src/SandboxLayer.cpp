@@ -57,7 +57,24 @@ void SandboxLayer::onEnter()
         
         auto& so2 = registry->assign<component::SceneObject>(e2);
         so2.name = "Light 1";
+
+        {
+            e2 = registry->create();
+            registry->assign<component::Renderable>(e2, mr);
+
+            t.setPosition(glm::vec3(3.0f, 3.0f, 3.0f));
+            t.setScale(glm::vec3(0.3f));
+            registry->assign<component::Transform>(e2, t);
+
+            auto& l = registry->assign<component::PointLight>(e2);
+            l.ambient = glm::vec3(0.75f);
+            l.specular = glm::vec3(0.5f);
+
+            auto& so2 = registry->assign<component::SceneObject>(e2);
+            so2.name = "Light 2";
+        }
     }
+    
     {
         component::Renderable mr;
         mr.mesh = Mesh::cache("res/assets/models/plane.obj");
@@ -127,6 +144,53 @@ void SandboxLayer::onEnter()
         auto& shi = cl.pushShape(Collider_Sphere);
         shi.sphere.setRadius(0.5f);
     }
+    {
+        component::Renderable mr;
+        mr.mesh = Mesh::cache("res/assets/models/ship.obj");
+        auto& shipMat = Material::cache(Material::create(), "shipMat");
+        shipMat->shader = mat->shader;
+        shipMat->albedoMap = Texture2D::create("res/assets/textures/ship.png");
+        mr.material = shipMat;
+
+        entt::entity e = registry->create();
+        registry->assign<component::Renderable>(e, mr);
+
+        component::Transform t;
+        t.setPosition(glm::vec3(0.0f, 0.0f, 0.0f));
+        registry->assign<component::Transform>(e, t);
+
+        auto& so = registry->assign<component::SceneObject>(e);
+        so.name = "Ship";
+
+        for (int i = 0; i < 12; i++)
+        {
+            component::Renderable mr;
+            mr.mesh = Mesh::get("cube");
+            mr.material = mat;
+            mr.enabled = false;
+
+            entt::entity e2 = registry->create();
+            registry->assign<component::Renderable>(e2, mr);
+
+            component::Transform t;
+            t.setPosition(glm::vec3(0.0f, 0.0f, 0.0f));
+            registry->assign<component::Transform>(e2, t);
+
+            auto& so = registry->assign<component::SceneObject>(e2);
+            so.name = "Ship Collider Object " + std::to_string(i + 1);
+
+            auto& rb = registry->assign<component::RigidBody>(e2);
+            rb.setMass(0.0f);
+
+            auto& cl = registry->assign<component::Collider>(e2);
+
+            auto& shi = cl.pushShape(Collider_Box);
+            shi.box.setSize(glm::vec3(1.0f));
+
+            auto& pa = registry->assign<component::Parent>(e2);
+            pa.parent = e;
+        }
+    }
 }
 
 void SandboxLayer::onUpdate(Timestep dt)
@@ -137,6 +201,9 @@ void SandboxLayer::onUpdate(Timestep dt)
     component::Transform& tr = registry->get<component::Transform>(container);
     component::RigidBody& rb = registry->get<component::RigidBody>(container);
 
+    rb.setProperties(component::RigidBody::IS_KINEMATIC, true);
+    //rb.setProperties(component::RigidBody::USE_GRAVITY, false);
+    
     glm::vec3 desiredVel = {};
     
     if (Input::isKeyPressed(Key_W))
@@ -151,10 +218,8 @@ void SandboxLayer::onUpdate(Timestep dt)
     if (Input::isKeyPressed(Key_D))
         desiredVel = tr.getRight() * forceSpeed;
 
-    //glm::vec3 velChange = desiredVel - rb.getVelocity();
-    glm::vec3 velChange = desiredVel;
-    rb.addImpulse(rb.getMass() * velChange);
-    
+    if (desiredVel != glm::vec3(0.0f))
+        tr.translate(desiredVel);
 }
 
 void SandboxLayer::onGuiRender(Timestep dt)

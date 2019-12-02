@@ -59,18 +59,13 @@ namespace oyl
             registry->sort<Renderable>(
                 [](const Renderable& lhs, const Renderable& rhs)
                 {
-                    if (!rhs.enabled)
-                        return true;
-                    else if (!lhs.enabled)
+                    if (!lhs.enabled || lhs.material == nullptr || lhs.mesh == nullptr)
                         return false;
-                    else if (rhs.material == nullptr || rhs.mesh == nullptr)
+                    if (!rhs.enabled || rhs.material == nullptr || rhs.mesh == nullptr)
                         return true;
-                    else if (lhs.material == nullptr || lhs.mesh == nullptr)
-                        return false;
-                    else if (lhs.material->shader != rhs.material->shader)
+                    if (lhs.material->shader != rhs.material->shader)
                         return lhs.material->shader < rhs.material->shader;
-                    else
-                        return lhs.material < rhs.material;
+                    return lhs.material < rhs.material;
                 });
 
             Ref<Material> boundMaterial;
@@ -98,8 +93,9 @@ namespace oyl
                 {
                     Renderable& mr = view.get<Renderable>(entity);
 
-                    if (!mr.enabled ||
-                        mr.mesh == nullptr || 
+                    if (!mr.enabled) continue;
+                    
+                    if (mr.mesh == nullptr || 
                         mr.material == nullptr || 
                         mr.material->shader == nullptr)
                         break;
@@ -119,14 +115,22 @@ namespace oyl
                         boundMaterial->setUniformMat3("u_viewNormal", glm::mat3(viewNormal));
 
                         auto lightView =      registry->view<PointLight>();
-                        auto lightProps =     lightView.get(lightView[0]);
-                        auto lightTransform = registry->get<Transform>(lightView[0]);
-                        
-                        boundMaterial->setUniform3f("u_pointLight.position",  
-                                                    viewMatrix * glm::vec4(lightTransform.getPositionGlobal(), 1.0f));
-                        boundMaterial->setUniform3f("u_pointLight.ambient",   lightProps.ambient);
-                        boundMaterial->setUniform3f("u_pointLight.diffuse",   lightProps.diffuse);
-                        boundMaterial->setUniform3f("u_pointLight.specular",  lightProps.specular);
+                        int count = 0;
+                        for (auto light : lightView)
+                        {
+                            auto lightProps =     lightView.get(light);
+                            auto lightTransform = registry->get<Transform>(light);
+                            
+                            boundMaterial->setUniform3f("u_pointLight[" + std::to_string(count) + "].position",
+                                                        viewMatrix * glm::vec4(lightTransform.getPositionGlobal(), 1.0f));
+                            boundMaterial->setUniform3f("u_pointLight[" + std::to_string(count) + "].ambient",
+                                                        lightProps.ambient);
+                            boundMaterial->setUniform3f("u_pointLight[" + std::to_string(count) + "].diffuse",
+                                                        lightProps.diffuse);
+                            boundMaterial->setUniform3f("u_pointLight[" + std::to_string(count) + "].specular",
+                                                        lightProps.specular);
+                            count++;
+                        }
 
                         // TEMPORARY:
                         boundMaterial->bind();
@@ -207,16 +211,12 @@ namespace oyl
             registry->sort<GuiRenderable>(
                 [](const GuiRenderable& lhs, const GuiRenderable& rhs)
                 {
-                    if (!rhs.enabled)
-                        return true;
-                    else if (!lhs.enabled)
+                    if (rhs.texture == nullptr)
                         return false;
-                    else if (rhs.texture == nullptr)
+                    if (lhs.texture == nullptr)
                         return true;
-                    else if (lhs.texture == nullptr)
-                        return false;
-                    else
-                        return lhs.texture < rhs.texture;
+                    
+                    return lhs.texture < rhs.texture;
                 });
 
             Ref<Texture2D> boundTexture;
@@ -379,6 +379,7 @@ namespace oyl
 
             m_rigidBodies.clear();
             
+            //m_world->setGravity(btVector3(0.0f, -9.81f, 0.0f));
             m_world->setGravity(btVector3(0.0f, -9.81f, 0.0f));
         }
 
@@ -448,7 +449,7 @@ namespace oyl
                 }
                 if (rigidBody.m_isDirty)
                 {
-                    m_world->removeRigidBody(cachedBody.body.get());
+                    //m_world->removeRigidBody(cachedBody.body.get());
                     
                     // Velocity
                     cachedBody.body->setLinearVelocity(btVector3(rigidBody.m_velocity.x,
@@ -475,6 +476,8 @@ namespace oyl
                         flags |= btRigidBody::CF_KINEMATIC_OBJECT;
                         cachedBody.body->setActivationState(DISABLE_DEACTIVATION);
                         cachedBody.body->setMassProps(0.0f, btVector3(0.0f, 0.0f, 0.0f));
+                        cachedBody.body->setLinearVelocity({ 0.0f, 0.0f, 0.0f });
+                        cachedBody.body->setAngularVelocity({ 0.0f, 0.0f, 0.0f });
                     }
                     else
                     {
@@ -488,6 +491,8 @@ namespace oyl
                         cachedBody.body->setMassProps(rigidBody.m_mass, inertia);
                     }
 
+                    cachedBody.body->updateInertiaTensor();
+
                     flags &= ~btRigidBody::CF_NO_CONTACT_RESPONSE;
                     flags |= rigidBody.getProperty(RigidBody::DETECT_COLLISIONS)
                                  ? 0
@@ -495,16 +500,18 @@ namespace oyl
 
                     cachedBody.body->setCollisionFlags(flags);
 
-                    // Rotation Locking
-                    btVector3 inertiaTensor = {};
+                    //// Rotation Locking
+                    //btVector3 inertiaTensor = {};
 
-                    inertiaTensor.setX(rigidBody.getProperty(RigidBody::FREEZE_ROTATION_X) ? 0.0f : 1.0f);
-                    inertiaTensor.setY(rigidBody.getProperty(RigidBody::FREEZE_ROTATION_Y) ? 0.0f : 1.0f);
-                    inertiaTensor.setZ(rigidBody.getProperty(RigidBody::FREEZE_ROTATION_Z) ? 0.0f : 1.0f);
+                    //inertiaTensor.setX(rigidBody.getProperty(RigidBody::FREEZE_ROTATION_X) ? 0.0f : 1.0f);
+                    //inertiaTensor.setY(rigidBody.getProperty(RigidBody::FREEZE_ROTATION_Y) ? 0.0f : 1.0f);
+                    //inertiaTensor.setZ(rigidBody.getProperty(RigidBody::FREEZE_ROTATION_Z) ? 0.0f : 1.0f);
 
-                    cachedBody.body->setInvInertiaDiagLocal(inertiaTensor);
+                    //cachedBody.body->setInvInertiaDiagLocal(inertiaTensor);
 
-                    cachedBody.body->updateInertiaTensor();
+                    //cachedBody.body->updateInertiaTensor();
+
+                    //m_world->addRigidBody(cachedBody.body.get());
 
                     // Gravity
                     if (rigidBody.getProperty(RigidBody::USE_GRAVITY))
@@ -515,8 +522,6 @@ namespace oyl
                     {
                         cachedBody.body->setGravity({ 0.0f, 0.0f, 0.0f });
                     }
-
-                    m_world->addRigidBody(cachedBody.body.get());
 
                     rigidBody.m_isDirty = false;
                 }
@@ -1091,14 +1096,13 @@ namespace oyl
             registry->sort<Renderable>(
                 [](const Renderable& lhs, const Renderable& rhs)
                 {
+                    if (lhs.material == nullptr || lhs.mesh == nullptr)
+                        return false;
                     if (rhs.material == nullptr || rhs.mesh == nullptr)
                         return true;
-                    else if (lhs.material == nullptr || lhs.mesh == nullptr)
-                        return false;
-                    else if (lhs.material->shader != rhs.material->shader)
+                    if (lhs.material->shader != rhs.material->shader)
                         return lhs.material->shader < rhs.material->shader;
-                    else
-                        return lhs.material < rhs.material;
+                    return lhs.material < rhs.material;
                 });
 
             Ref<Material> boundMaterial = Material::create();
@@ -1123,16 +1127,24 @@ namespace oyl
                     viewNormal = glm::inverse(glm::transpose(viewNormal));
                     boundMaterial->setUniformMat3("u_viewNormal", glm::mat4(viewNormal));
 
-                    auto lightView      = registry->view<PointLight>();
-                    auto lightProps     = lightView.get(lightView[0]);
-                    auto lightTransform = registry->get<Transform>(lightView[0]);
+                    auto lightView = registry->view<PointLight>();
+                    int count = 0;
+                    for (auto light : lightView)
+                    {
+                        auto lightProps = lightView.get(light);
+                        auto lightTransform = registry->get<Transform>(light);
 
-                    boundMaterial->setUniform3f("u_pointLight.position",
-                                                viewNormal * glm::vec4(lightTransform.getPosition(), 1.0f));
-                    boundMaterial->setUniform3f("u_pointLight.ambient", lightProps.ambient);
-                    boundMaterial->setUniform3f("u_pointLight.diffuse", lightProps.diffuse);
-                    boundMaterial->setUniform3f("u_pointLight.specular", lightProps.specular);
-
+                        boundMaterial->setUniform3f("u_pointLight[" + std::to_string(count) + "].position",
+                                                    currentCamera->getViewMatrix() * glm::vec4(lightTransform.getPositionGlobal(), 1.0f));
+                        boundMaterial->setUniform3f("u_pointLight[" + std::to_string(count) + "].ambient",
+                                                    lightProps.ambient);
+                        boundMaterial->setUniform3f("u_pointLight[" + std::to_string(count) + "].diffuse",
+                                                    lightProps.diffuse);
+                        boundMaterial->setUniform3f("u_pointLight[" + std::to_string(count) + "].specular",
+                                                    lightProps.specular);
+                        count++;
+                    }
+                    
                     boundMaterial->bind();
                     boundMaterial->applyUniforms();
                 }

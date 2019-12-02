@@ -175,6 +175,8 @@ namespace oyl::internal
 
             auto& jName = j[so.name]["Renderable"];
 
+            jName["Enabled"] = re.enabled;
+            
             if (re.mesh)
             {
                 auto& jMesh = jName["Mesh"];
@@ -304,6 +306,9 @@ namespace oyl::internal
 
         auto& re = registry.get_or_assign<Renderable>(entity);
 
+        if (j.find("Enabled") != j.end())
+            re.enabled = j["Enabled"].get<bool>();
+
         if (j.find("Mesh") != j.end())
         {
             auto alias    = j["Mesh"]["Alias"].get<std::string>();
@@ -318,7 +323,9 @@ namespace oyl::internal
             else
                 re.mesh = Mesh::cache(filePath, alias);
         }
-        else re.mesh = Mesh::get(INVALID_ALIAS);
+        //else re.mesh = Mesh::get(INVALID_ALIAS);
+        // TEMPORARY:
+        else re.mesh = nullptr;
 
         if (j.find("Material") != j.end())
         {
