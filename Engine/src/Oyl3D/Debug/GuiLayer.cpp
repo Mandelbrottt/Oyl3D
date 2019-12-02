@@ -366,6 +366,24 @@ namespace oyl::internal
 
                     drawEntityNode(entity);
                 });
+
+            ImGui::BeginChild("##HierarchyContextWindowChild");
+            if (ImGui::BeginPopupContextWindow())
+            {
+                if (ImGui::Selectable("Add Entity##ContextWindowTest"))
+                {
+                    auto e = registry->create();
+
+                    registry->assign<component::Transform>(e);
+                    auto& so = registry->assign<component::SceneObject>(e);
+
+                    char name[128];
+                    sprintf(name, "Entity %d", e);
+                    so.name.assign(name);
+                }
+                ImGui::EndPopup();
+            }
+            ImGui::EndChild();
         }
         ImGui::End();
     }
@@ -428,24 +446,13 @@ namespace oyl::internal
         {
             if (m_currentEntity != entt::null)
             {
+                // TODO: Move separators into functions
                 drawInspectorObjectName();
-                ImGui::Separator();
-                ImGui::NewLine();
                 drawInspectorParent();
-                ImGui::Separator();
-                ImGui::NewLine();
                 drawInspectorTransform();
-                ImGui::Separator();
-                ImGui::NewLine();
                 drawInspectorRenderable();
-                ImGui::Separator();
-                ImGui::NewLine();
-                drawInspectorCollider();
-                //ImGui::Separator();
-                //ImGui::NewLine();
-                //drawInspectorRigidBody();
-                ImGui::Separator();
-                ImGui::NewLine();
+                drawInspectorCollidable();
+                drawInspectorRigidBody();
                 drawInspectorAddComponent();
             }
         }
@@ -501,6 +508,9 @@ namespace oyl::internal
             }
 
             ImGui::Unindent(10);
+
+            ImGui::Separator();
+            ImGui::NewLine();
         }
     }
 
@@ -598,8 +608,11 @@ namespace oyl::internal
 
                 ImGui::EndCombo();
             }
-
+            
             ImGui::Unindent(10);
+            
+            ImGui::Separator();
+            ImGui::NewLine();
         }
     }
 
@@ -699,6 +712,9 @@ namespace oyl::internal
             ImGui::PopItemWidth();
 
             ImGui::Unindent(10);
+
+            ImGui::Separator();
+            ImGui::NewLine();
         }
     }
 
@@ -807,24 +823,27 @@ namespace oyl::internal
             }
 
             ImGui::Unindent(10);
+
+            ImGui::Separator();
+            ImGui::NewLine();
         }
     }
 
-    void GuiLayer::drawInspectorCollider()
+    void GuiLayer::drawInspectorCollidable()
     {
-        using component::Collider;
+        using component::Collidable;
 
-        if (!registry->has<Collider>(m_currentEntity)) return;
+        if (!registry->has<Collidable>(m_currentEntity)) return;
 
         ImGui::SetNextTreeNodeOpen(true, ImGuiCond_Once);
 
         auto flags = ImGuiInputTextFlags_EnterReturnsTrue;
 
-        if (ImGui::CollapsingHeader("Collider##InspectorColliderProperties"))
+        if (ImGui::CollapsingHeader("Collidable##InspectorColliderProperties"))
         {
             ImGui::Indent(10);
 
-            auto& collider = registry->get<Collider>(m_currentEntity);
+            auto& collider = registry->get<Collidable>(m_currentEntity);
             int count = 0;
             char shapeID[512];
             char temp[128];
@@ -969,7 +988,7 @@ namespace oyl::internal
 
             ImGui::NewLine();
 
-            if (ImGui::BeginCombo("##InspectorColliderAddShape", "Add Shape", ImGuiComboFlags_NoArrowButton))
+            if (ImGui::BeginCombo("##InspectorCollidableAddShape", "Add Shape", ImGuiComboFlags_NoArrowButton))
             {
                 if (ImGui::Selectable("Box"))
                     collider.pushShape(Collider_Box);
@@ -986,25 +1005,92 @@ namespace oyl::internal
             }
 
             ImGui::Unindent(10);
+
+            ImGui::Separator();
+            ImGui::NewLine();
         }
     }
 
-    void GuiLayer::drawInspectorRigidBody() {}
+    void GuiLayer::drawInspectorRigidBody()
+    {
+        using component::RigidBody;
+
+        if (!registry->has<RigidBody>(m_currentEntity))
+            return;
+
+        ImGui::SetNextItemOpen(true, ImGuiCond_Once);
+
+        if (ImGui::CollapsingHeader("RigidBody##InspectorRigidBody"))
+        {
+            ImGui::Indent(10);
+
+            auto& rb = registry->get<RigidBody>(m_currentEntity);
+
+            // TODO: Make boxes relative to right side of window like transforms are
+            
+            // TODO: Add more property checkboxes
+            bool useGravity = rb.getProperty(RigidBody::USE_GRAVITY);
+            ImGui::Text("Use Gravity");
+            ImGui::SameLine();
+            ImGui::Checkbox("##InspectorRigidBodyGravityCheckbox", &useGravity);
+            if (useGravity != rb.getProperty(RigidBody::USE_GRAVITY))
+                rb.setProperties(RigidBody::USE_GRAVITY, useGravity);
+
+            float mass = rb.getMass();
+            ImGui::Text("Mass");
+            ImGui::SameLine();
+            ImGui::SetNextItemWidth(15);
+            ImGui::DragFloat("##DragMass", &mass, 0.02f, 0.0f, 1000.0f, "M");
+            ImGui::SameLine();
+            ImGui::InputFloat("##MassInput", &mass, 0, 0, "%.2f");
+            if (mass != rb.getMass())
+                rb.setMass(mass);
+
+            float friction = rb.getFriction();
+            ImGui::Text("Friction");
+            ImGui::SameLine();
+            ImGui::SetNextItemWidth(15);
+            ImGui::DragFloat("##DragFriction", &friction, 0.02f, 0.0f, 1000.0f, "F");
+            ImGui::SameLine();
+            ImGui::InputFloat("##FrictionInput", &friction, 0, 0, "%.2f");
+            if (friction != rb.getFriction())
+                rb.setFriction(friction);
+
+            if (ImGui::CollapsingHeader("Simulation Values##InspectorRigidBodySimValues"))
+            {
+                ImGui::Indent(10);
+
+                ImGui::Text("Nothing to see here yet :)");
+
+                ImGui::Unindent(10);
+            }
+            
+            ImGui::Unindent(10);
+
+            ImGui::Separator();
+            ImGui::NewLine();
+        }
+    }
 
     void GuiLayer::drawInspectorAddComponent()
     {
+        using component::Collidable;
         using component::Renderable;
-        using component::Collider;
+        using component::RigidBody;
         
         if (ImGui::BeginCombo("##InspectorAddComponent", "Add Component", ImGuiComboFlags_NoArrowButton))
         {
+            if (!registry->has<Collidable>(m_currentEntity) &&
+                ImGui::Selectable("Collider"))
+                registry->assign<Collidable>(m_currentEntity);
+            
             if (!registry->has<Renderable>(m_currentEntity) &&
                 ImGui::Selectable("Renderable"))
                 registry->assign<Renderable>(m_currentEntity);
 
-            if (!registry->has<Collider>(m_currentEntity) &&
-                ImGui::Selectable("Collider"))
-                registry->assign<Collider>(m_currentEntity);
+            if (!registry->has<RigidBody>(m_currentEntity) &&
+                ImGui::Selectable("RigidBody"))
+                registry->assign<RigidBody>(m_currentEntity);
 
             ImGui::EndCombo();
         }

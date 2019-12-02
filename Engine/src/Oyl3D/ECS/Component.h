@@ -325,7 +325,7 @@ namespace oyl::component
         };
     }
 
-    class Collider
+    class Collidable
     {
     public:
         // TODO: Inherit from bullet3 classes

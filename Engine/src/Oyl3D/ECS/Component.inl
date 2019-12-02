@@ -342,14 +342,14 @@ namespace oyl::component
     
     // vvv Collider vvv //
 
-    inline Collider::ShapeInfo::ShapeInfo()
+    inline Collidable::ShapeInfo::ShapeInfo()
     {
         m_selfRef = Ref<ShapeInfo>(this, [](ShapeInfo*) {});
 
         defaultInit();
     }
 
-    inline Collider::ShapeInfo::ShapeInfo(OylEnum type)
+    inline Collidable::ShapeInfo::ShapeInfo(OylEnum type)
         : m_type(type)
     {
         m_selfRef = Ref<ShapeInfo>(this, [](ShapeInfo*) {});
@@ -357,14 +357,14 @@ namespace oyl::component
         defaultInit();
     }
     
-    inline Collider::ShapeInfo::ShapeInfo(const ShapeInfo& shapeInfo)
+    inline Collidable::ShapeInfo::ShapeInfo(const ShapeInfo& shapeInfo)
     {
         *this = shapeInfo;
 
         m_isDirty = true;
     }
 
-    inline Collider::ShapeInfo& Collider::ShapeInfo::operator=(const ShapeInfo& shapeInfo)
+    inline Collidable::ShapeInfo& Collidable::ShapeInfo::operator=(const ShapeInfo& shapeInfo)
     {
         m_type = shapeInfo.m_type;
         m_isTrigger = shapeInfo.m_isTrigger;
@@ -393,7 +393,7 @@ namespace oyl::component
         return *this;
     }
 
-    inline void Collider::ShapeInfo::defaultInit()
+    inline void Collidable::ShapeInfo::defaultInit()
     {
         switch (m_type)
         {
@@ -425,12 +425,12 @@ namespace oyl::component
         m_isDirty = true;
     }
 
-    inline OylEnum Collider::ShapeInfo::getType() const
+    inline OylEnum Collidable::ShapeInfo::getType() const
     {
         return m_type;
     }
 
-    inline void Collider::ShapeInfo::setType(OylEnum type)
+    inline void Collidable::ShapeInfo::setType(OylEnum type)
     {
         if (m_type != type)
         {
@@ -442,69 +442,69 @@ namespace oyl::component
         
     }
 
-    inline bool Collider::ShapeInfo::isTrigger() const
+    inline bool Collidable::ShapeInfo::isTrigger() const
     {
         return m_isTrigger;
     }
 
-    inline void Collider::ShapeInfo::setIsTrigger(bool trigger)
+    inline void Collidable::ShapeInfo::setIsTrigger(bool trigger)
     {
         m_isDirty |= m_isTrigger != trigger;
         m_isTrigger = trigger;
     }
 
-    inline bool Collider::ShapeInfo::isDirty() const
+    inline bool Collidable::ShapeInfo::isDirty() const
     {
         return m_isDirty || box.isDirty() || sphere.isDirty() || 
                capsule.isDirty() || cylinder.isDirty() || mesh.isDirty();
     }
 
-    inline Collider::ShapeInfo& Collider::pushShape(ShapeInfo shape)
+    inline Collidable::ShapeInfo& Collidable::pushShape(ShapeInfo shape)
     {
         return m_shapes.emplace_back(shape);
     }
 
-    inline Collider::ShapeInfo& Collider::pushShape(OylEnum type)
+    inline Collidable::ShapeInfo& Collidable::pushShape(OylEnum type)
     {
         return m_shapes.emplace_back(type);
     }
 
-    inline void Collider::eraseShape(u32 index)
+    inline void Collidable::eraseShape(u32 index)
     {   
         m_shapes.erase(m_shapes.begin() + index);
     }
 
-    inline Collider::ShapeInfo& Collider::getShape(u32 index)
+    inline Collidable::ShapeInfo& Collidable::getShape(u32 index)
     {
         return m_shapes.at(index);
     }
 
-    inline const Collider::ShapeInfo& Collider::getShape(u32 index) const
+    inline const Collidable::ShapeInfo& Collidable::getShape(u32 index) const
     {
         return m_shapes.at(index);
     }
 
-    inline std::vector<Collider::ShapeInfo>& Collider::getShapes()
+    inline std::vector<Collidable::ShapeInfo>& Collidable::getShapes()
     {
         return m_shapes;
     }
 
-    inline const std::vector<Collider::ShapeInfo>& Collider::getShapes() const
+    inline const std::vector<Collidable::ShapeInfo>& Collidable::getShapes() const
     {
         return m_shapes;
     }
 
-    inline std::size_t Collider::size() const
+    inline std::size_t Collidable::size() const
     {
         return m_shapes.size();
     }
 
-    inline bool Collider::empty() const
+    inline bool Collidable::empty() const
     {
         return m_shapes.empty();
     }
 
-    inline bool Collider::isDirty() const
+    inline bool Collidable::isDirty() const
     {
         bool dirty = false;
         for (const auto& shape : m_shapes)
@@ -512,22 +512,22 @@ namespace oyl::component
         return dirty;
     }
 
-    inline std::vector<Collider::ShapeInfo>::iterator Collider::begin()
+    inline std::vector<Collidable::ShapeInfo>::iterator Collidable::begin()
     {
         return m_shapes.begin();
     }
 
-    inline std::vector<Collider::ShapeInfo>::iterator Collider::end()
+    inline std::vector<Collidable::ShapeInfo>::iterator Collidable::end()
     {
         return m_shapes.end();
     }
 
-    inline std::vector<Collider::ShapeInfo>::const_iterator Collider::begin() const
+    inline std::vector<Collidable::ShapeInfo>::const_iterator Collidable::begin() const
     {
         return m_shapes.cbegin();
     }
 
-    inline std::vector<Collider::ShapeInfo>::const_iterator Collider::end() const
+    inline std::vector<Collidable::ShapeInfo>::const_iterator Collidable::end() const
     {
         return m_shapes.cend();
     }

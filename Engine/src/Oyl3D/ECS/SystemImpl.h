@@ -74,7 +74,7 @@ namespace oyl::internal
     private:
         void processIncomingRigidBody(entt::entity entity,
                                       const component::Transform& transformComponent,
-                                      const component::Collider&  colliderComponent,
+                                      const component::Collidable&  colliderComponent,
                                       const component::RigidBody& rigidBodyComponent);
         
     private:
@@ -89,7 +89,7 @@ namespace oyl::internal
 
             struct ChildShapeInfo
             {
-                WeakRef<component::Collider::ShapeInfo> shapeInfo;
+                WeakRef<component::Collidable::ShapeInfo> shapeInfo;
                 Ref<btCollisionShape>                   btShape;
             };
 

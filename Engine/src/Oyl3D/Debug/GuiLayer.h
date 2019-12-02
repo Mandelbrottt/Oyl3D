@@ -42,7 +42,7 @@ namespace oyl::internal
         void drawInspectorObjectName();
         void drawInspectorParent();
         void drawInspectorTransform();
-        void drawInspectorCollider();
+        void drawInspectorCollidable();
         void drawInspectorRenderable();
         void drawInspectorRigidBody();
         
