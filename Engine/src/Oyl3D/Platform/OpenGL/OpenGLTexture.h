@@ -77,4 +77,29 @@ namespace oyl
 
         bool m_loaded = false;
     };
+
+    class OpenGLTextureCubeMap : public TextureCubeMap
+    {
+    public:
+        explicit OpenGLTextureCubeMap(const std::string& filename);
+        virtual ~OpenGLTextureCubeMap();
+
+        virtual bool load(const std::string& filename) override;
+        virtual void unload() override;
+
+        virtual void bind(uint slot) const override;
+        virtual void unbind(uint slot) const override;
+
+        virtual bool isLoaded() const override { return m_loaded; }
+
+        virtual uint getWidth() const override { return m_width; }
+        virtual uint getHeight() const override { return m_height; }
+
+    protected:
+        uint m_rendererID = 0;
+        uint m_width = 0;
+        uint m_height = 0;
+
+        bool m_loaded = false;
+    };
 }

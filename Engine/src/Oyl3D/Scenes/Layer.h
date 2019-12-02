@@ -35,7 +35,7 @@ namespace oyl
 
         const Ref<entt::registry>& getRegistry() const { return registry; }
 
-        void setRegistry(Ref<entt::registry> reg);
+        void setRegistry(const Ref<entt::registry>& reg);
 
     protected:
         // Break naming convention for sake of client usability

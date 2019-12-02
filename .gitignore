@@ -11,3 +11,5 @@ bin-int/
 *.ini
 *.oylscene.backup
 /Game/res/assets/models/agony
+/Game/res/assets/models/boxing
+/Game/res/assets/models/default

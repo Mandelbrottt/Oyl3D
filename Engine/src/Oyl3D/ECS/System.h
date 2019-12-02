@@ -37,7 +37,7 @@ namespace oyl
         virtual void onUpdate(Timestep dt) override;
         virtual void onGuiRender(Timestep dt) override;
 
-        void setRegistry(Ref<entt::registry> reg) { registry = std::move(reg); }
+        void setRegistry(const Ref<entt::registry>& reg) { registry = reg; }
 
     protected:
         Ref<entt::registry> registry;
