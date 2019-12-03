@@ -171,6 +171,7 @@ namespace oyl::internal
         }
 
         // TODO: update the asset list every frame, maybe stagger how many we update per frame for performance reasons
+        updateAssetList();
     }
 
     void GuiLayer::begin()
@@ -1117,6 +1118,46 @@ namespace oyl::internal
 
     void GuiLayer::updateAssetList()
     {
+        //for (const auto& kvp : Shader::getCache())
+        //{
+        //    if (kvp.second == nullptr)
+        //        continue;
+        //    
+        //    for (const auto& shader : kvp.second->getShaderInfos())
+        //    {
+        //        // If the file path is not in the database, add it
+        //        auto relPath = std::fs::relative(shader.filename);
+        //        auto relPathStr = relPath.string();
+        //        if (m_fileSaveTimes.find(relPathStr) == m_fileSaveTimes.end())
+        //        {
+        //            m_fileSaveTimes[relPathStr] = last_write_time(relPath);
+        //            continue;
+        //        }
+
+        //        // If a file has been changed outside of the editor, reload it
+        //        bool isChanged = false;
+        //        for (auto& path : m_fileSaveTimes)
+        //        {
+        //            auto currRelPath = std::fs::relative(path.first);
+        //            auto lastWriteTime = std::fs::last_write_time(currRelPath);
+        //            if (std::fs::equivalent(currRelPath, relPath) &&
+        //                lastWriteTime != path.second)
+        //            {
+        //                isChanged = true;
+        //                kvp.second->load(kvp.second->getShaderInfos());
+        //                // TEMPORARY:
+        //                //path.second = lastWriteTime;
+        //            }
+        //        }
+        //        if (isChanged) break;
+        //    }
+        //}
+
+        static auto it = m_fileSaveTimes.begin();
+
+        std::fs::file_time_type lastWriteTime;
+        bool isEntryUpdated = false;
+        
         for (const auto& kvp : Shader::getCache())
         {
             if (kvp.second == nullptr)
@@ -1124,37 +1165,40 @@ namespace oyl::internal
             
             for (const auto& shader : kvp.second->getShaderInfos())
             {
-                // If the file path is not in the database, add it
                 auto relPath = std::fs::relative(shader.filename);
                 auto relPathStr = relPath.string();
-                if (m_fileSaveTimes.find(relPathStr) == m_fileSaveTimes.end())
-                {
-                    m_fileSaveTimes[relPathStr] = last_write_time(relPath);
-                    continue;
-                }
-
-                // If a file has been changed outside of the editor, reload it
-                bool isChanged = false;
-                for (auto& path : m_fileSaveTimes)
-                {
-                    auto currRelPath = std::fs::relative(path.first);
-                    auto lastWriteTime = std::fs::last_write_time(currRelPath);
-                    if (std::fs::equivalent(currRelPath, relPath) &&
-                        lastWriteTime != path.second)
+                if (it == m_fileSaveTimes.begin() ||
+                    m_fileSaveTimes.empty())
+                {    
+                    // If the file path is not in the database, add it
+                    if (m_fileSaveTimes.find(relPathStr) == m_fileSaveTimes.end())
                     {
-                        isChanged = true;
-                        kvp.second->load(kvp.second->getShaderInfos());
-                        // TEMPORARY:
-                        //path.second = lastWriteTime;
+                        m_fileSaveTimes[relPathStr] = last_write_time(relPath);
+                        it = m_fileSaveTimes.begin();
+                        continue;
                     }
                 }
-                if (isChanged) break;
+                else
+                {
+                    auto currRelPath = std::fs::relative(it->first);
+                    lastWriteTime = std::fs::last_write_time(currRelPath);
+                    if (std::fs::equivalent(currRelPath, relPath) &&
+                        lastWriteTime != it->second)
+                    {
+                        kvp.second->load(kvp.second->getShaderInfos());
+                        //it->second = lastWriteTime;
+                        isEntryUpdated = true;
+                    }
+                }
             }
         }
 
+        if (isEntryUpdated)
+            it->second = lastWriteTime;
 
+        if (++it == m_fileSaveTimes.end())
+            it = m_fileSaveTimes.begin();
 
-        
         //for (auto& p : std::fs::recursive_directory_iterator("res/assets/"))
         //{
         //    // TEMPORARY:
