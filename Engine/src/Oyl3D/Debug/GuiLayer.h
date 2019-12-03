@@ -31,7 +31,7 @@ namespace oyl::internal
         void setupGuiLibrary();
         void setupLayout();
 
-        void addToCommandHistory(UniqueRef<EditorCommand>&& command);
+        //void addToCommandHistory(UniqueRef<EditorCommand>&& command);
         
         void drawMenuBar();
 
@@ -45,9 +45,11 @@ namespace oyl::internal
         void drawInspectorCollidable();
         void drawInspectorRenderable();
         void drawInspectorRigidBody();
-        
         void drawInspectorAddComponent();
 
+        void drawAssetList();
+        void updateAssetList();
+        
         void drawSceneViewport();
         void drawGameViewport();
 
@@ -80,5 +82,7 @@ namespace oyl::internal
         bool m_gameUpdate = false;
 
         u32 m_currentCommandPos;
+        
+        std::unordered_map<std::string, std::fs::file_time_type> m_fileSaveTimes;
     };
 }

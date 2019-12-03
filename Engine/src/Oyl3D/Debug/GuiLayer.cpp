@@ -169,6 +169,8 @@ namespace oyl::internal
                 ct.m_parentRef = {};
             }
         }
+
+        // TODO: update the asset list every frame, maybe stagger how many we update per frame for performance reasons
     }
 
     void GuiLayer::begin()
@@ -236,10 +238,12 @@ namespace oyl::internal
     }
 
     void GuiLayer::onGuiRender(Timestep dt)
-    {        
+    {
         drawSceneHierarchy();
 
         drawInspector();
+        
+        drawAssetList();
 
         drawSceneViewport();
 
@@ -282,6 +286,12 @@ namespace oyl::internal
             case TypeWindowResized:
             {
                 break;
+            }
+            case TypeKeyReleased:
+            {
+                auto e = (KeyReleasedEvent) *event;
+                if (e.keycode == Key_F1)
+                    updateAssetList();
             }
         }
         return m_editorOverrideUpdate;
@@ -1094,6 +1104,70 @@ namespace oyl::internal
 
             ImGui::EndCombo();
         }
+    }
+
+    void GuiLayer::drawAssetList()
+    {   
+        if (ImGui::Begin("Assets##AssetListMainWindow"))
+        {
+            ImGui::Text("Nothing to see here :)");
+        }
+        ImGui::End();
+    }
+
+    void GuiLayer::updateAssetList()
+    {
+        for (const auto& kvp : Shader::getCache())
+        {
+            if (kvp.second == nullptr)
+                continue;
+            
+            for (const auto& shader : kvp.second->getShaderInfos())
+            {
+                // If the file path is not in the database, add it
+                auto relPath = std::fs::relative(shader.filename);
+                auto relPathStr = relPath.string();
+                if (m_fileSaveTimes.find(relPathStr) == m_fileSaveTimes.end())
+                {
+                    m_fileSaveTimes[relPathStr] = last_write_time(relPath);
+                    continue;
+                }
+
+                // If a file has been changed outside of the editor, reload it
+                bool isChanged = false;
+                for (auto& path : m_fileSaveTimes)
+                {
+                    auto currRelPath = std::fs::relative(path.first);
+                    auto lastWriteTime = std::fs::last_write_time(currRelPath);
+                    if (std::fs::equivalent(currRelPath, relPath) &&
+                        lastWriteTime != path.second)
+                    {
+                        isChanged = true;
+                        kvp.second->load(kvp.second->getShaderInfos());
+                        // TEMPORARY:
+                        //path.second = lastWriteTime;
+                    }
+                }
+                if (isChanged) break;
+            }
+        }
+
+
+
+        
+        //for (auto& p : std::fs::recursive_directory_iterator("res/assets/"))
+        //{
+        //    // TEMPORARY:
+        //    if (p.is_directory()) continue;
+
+        //    if (p.is_regular_file())
+        //    {
+        //        if (p.path().extension().string().compare(""))
+        //        {
+        //            
+        //        }
+        //    }
+        //}
     }
 
     void GuiLayer::drawSceneViewport()

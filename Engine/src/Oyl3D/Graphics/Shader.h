@@ -1,10 +1,16 @@
 #pragma once
 
 namespace oyl
-{    
+{
+    namespace internal
+    {
+        class GuiLayer;
+    }
+    
     struct ShaderInfo
     {
-        OylEnum     type;
+        OylEnum type;
+
         std::string filename;
     };
 
@@ -12,6 +18,11 @@ namespace oyl
     {
     public:
         virtual ~Shader() = default;
+
+        virtual bool load(const std::vector<ShaderInfo>& infos) = 0;
+        virtual bool load(const std::initializer_list<ShaderInfo>& infos) = 0;
+
+        virtual void unload() = 0;
 
         virtual void bind() const = 0;
         virtual void unbind() const = 0;

@@ -100,6 +100,7 @@ namespace oyl
     private:
         
         // TODO: Implement in custom data structure
+        // TODO: Add textures
         std::unordered_map<std::string, glm::mat4> m_uniformMat4s;
         std::unordered_map<std::string, glm::mat3> m_uniformMat3s;
         std::unordered_map<std::string, glm::vec4> m_uniformVec4s;

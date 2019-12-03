@@ -1,8 +1,6 @@
 #pragma once
 // TODO: Maybe come up with a better file name
 
-#include "Typedefs.h"
-
 namespace oyl
 {
     // TODO: Make enums more verbose

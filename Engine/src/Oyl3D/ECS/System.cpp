@@ -146,16 +146,16 @@ namespace oyl
                         {
                             anim.m_vao->bind();
                             
-                            mr.material->shader->bind();
-                            mr.material->shader->setUniform1f("lerpT_curr", glm::mod(anim.m_currentElapsed, 1.0f));
-                            mr.material->shader->setUniform1f("lerpT_trans", glm::mod(anim.m_transitionElapsed, 1.0f));
+                            boundMaterial->shader->bind();
+                            boundMaterial->shader->setUniform1f("lerpT_curr", glm::mod(anim.m_currentElapsed, 1.0f));
+                            boundMaterial->shader->setUniform1f("lerpT_trans", glm::mod(anim.m_transitionElapsed, 1.0f));
 
-                            Renderer::submit(mr.material, anim.m_vao, mr.mesh->getNumVertices(), transform);
+                            Renderer::submit(boundMaterial, anim.m_vao, mr.mesh->getNumVertices(), transform);
                         }
                     }
                     else
                     {
-                        Renderer::submit(mr.mesh, mr.material, transform);
+                        Renderer::submit(mr.mesh, boundMaterial, transform);
                     }
                 }
             }
