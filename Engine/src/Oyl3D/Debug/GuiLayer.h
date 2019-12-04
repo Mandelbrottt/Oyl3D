@@ -37,6 +37,8 @@ namespace oyl::internal
 
         void drawSceneHierarchy();
         void drawEntityNode(entt::entity entity);
+
+        void setEntityParent(entt::entity entity, entt::entity parent);
         
         void drawInspector();
         void drawInspectorObjectName();

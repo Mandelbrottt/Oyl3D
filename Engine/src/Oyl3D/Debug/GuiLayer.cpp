@@ -19,7 +19,7 @@
 
 #include <GLFW/glfw3.h>
 
-static const char* g_entityNodeFmt = "%s\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t";
+static const char* g_entityNodeFmt = "%s\t";
 
 static const char* g_transformGizmosName = "##ViewportGizmoSettings";
 static const char* g_playPauseWindowName = "##TestPlayButton";
@@ -363,23 +363,7 @@ namespace oyl::internal
     {
         if (ImGui::Begin(g_hierarchyWindowName, nullptr, ImGuiWindowFlags_NoCollapse))
         {
-            auto parentView = registry->view<component::Parent>();
-            
-            registry->each(
-                [&](auto entity)
-                {
-                    using component::internal::ExcludeFromHierarchy;
-                    if (registry->has<ExcludeFromHierarchy>(entity))
-                        return;
-                
-                    if (parentView.contains(entity) && 
-                        parentView.get(entity).parent != entt::null) return;
-
-                    drawEntityNode(entity);
-                });
-
-            ImGui::BeginChild("##HierarchyContextWindowChild");
-            if (ImGui::BeginPopupContextWindow())
+            if (ImGui::BeginPopupContextWindow("##HierarchyContextWindow"))
             {
                 if (ImGui::Selectable("Add Entity##ContextWindowTest"))
                 {
@@ -394,7 +378,21 @@ namespace oyl::internal
                 }
                 ImGui::EndPopup();
             }
-            ImGui::EndChild();
+            
+            auto parentView = registry->view<component::Parent>();
+            
+            registry->each(
+                [&](auto entity)
+                {
+                    using component::internal::ExcludeFromHierarchy;
+                    if (registry->has<ExcludeFromHierarchy>(entity))
+                        return;
+                
+                    if (parentView.contains(entity) && 
+                        parentView.get(entity).parent != entt::null) return;
+
+                    drawEntityNode(entity);
+                });
         }
         ImGui::End();
     }
@@ -430,16 +428,44 @@ namespace oyl::internal
         float testValue = ImGui::GetMousePos().x - ImGui::GetItemRectMin().x;
         if (treeNode)
         {
-            //ImGui::Indent();
+            if (ImGui::BeginPopupContextItem())
+            {
+                int flags = 0;
+                if (!registry->has<component::Parent>(entity))
+                    flags |= ImGuiSelectableFlags_Disabled;
+                
+                if (ImGui::Selectable("Clear Parent##HierarchyContextClearParent", false, flags))
+                {
+                    setEntityParent(entity, entt::null);
+                }
+                
+                ImGui::EndPopup();
+            }
+            
+            if (ImGui::BeginDragDropSource())
+            {
+                ImGui::Text("%s", so.name.c_str());
+                ImGui::SetDragDropPayload("HierarchyEntity", &entity, sizeof(entt::entity));
+                ImGui::EndDragDropSource();
+            }
 
+            if (ImGui::BeginDragDropTarget())
+            {
+                if (auto payload = ImGui::AcceptDragDropPayload("HierarchyEntity"))
+                {
+                    entt::entity child = *reinterpret_cast<entt::entity*>(payload->Data);
+                    //auto& p = registry->get_or_assign<component::Parent>(child);
+                    //p.parent = entity;
+                    setEntityParent(child, entity);
+                }
+                ImGui::EndDragDropTarget();
+            }
+            
             for (auto child : parentView)
             {
                 if (parentView.get(child).parent == entity)
                     drawEntityNode(child);
             }
-
-            //ImGui::Unindent();
-
             ImGui::TreePop();
         }
 
@@ -451,15 +477,67 @@ namespace oyl::internal
         }
     }
 
+    void GuiLayer::setEntityParent(entt::entity entity, entt::entity parent)
+    {
+        using component::Parent;
+        using component::Transform;
+        
+        auto& p = registry->get_or_assign<Parent>(entity);
+        if (parent == entt::null && p.parent != entt::null)
+        {
+            auto& ct = registry->get<Transform>(entity);
+
+            glm::mat4 tempChild = ct.getMatrixGlobal();
+
+            glm::vec3 tComponents[3];
+            ImGuizmo::DecomposeMatrixToComponents(value_ptr(tempChild),
+                                                  value_ptr(tComponents[0]),
+                                                  value_ptr(tComponents[1]),
+                                                  value_ptr(tComponents[2]));
+
+            tComponents[2] = max(glm::vec3(0.01f), tComponents[2]);
+
+            ct.m_localPosition = tComponents[0];
+            ct.m_localRotation = glm::quat(radians(tComponents[1]));
+            ct.m_localScale = tComponents[2];
+
+            ct.m_isLocalDirty = true;
+        }
+        else
+        {
+            auto& ct = registry->get<Transform>(entity);
+            auto& pt = registry->get<Transform>(parent);
+
+            glm::mat4 tempChild = ct.getMatrixGlobal();
+            glm::mat4 tempParent = pt.getMatrixGlobal();
+
+            tempChild = glm::inverse(tempParent) * tempChild;
+
+            glm::vec3 tComponents[3];
+            ImGuizmo::DecomposeMatrixToComponents(value_ptr(tempChild),
+                                                  value_ptr(tComponents[0]),
+                                                  value_ptr(tComponents[1]),
+                                                  value_ptr(tComponents[2]));
+
+            tComponents[2] = max(glm::vec3(0.01f), tComponents[2]);
+
+            ct.m_localPosition = tComponents[0];
+            ct.m_localRotation = glm::quat(radians(tComponents[1]));
+            ct.m_localScale = tComponents[2];
+
+            ct.m_isLocalDirty = true;
+        }
+        p.parent = parent;
+    }
+
     void GuiLayer::drawInspector()
     {
         if (ImGui::Begin(g_inspectorWindowName, nullptr))
         {
             if (m_currentEntity != entt::null)
             {
-                // TODO: Move separators into functions
                 drawInspectorObjectName();
-                drawInspectorParent();
+                //drawInspectorParent();
                 drawInspectorTransform();
                 drawInspectorRenderable();
                 drawInspectorCollidable();
@@ -546,36 +624,18 @@ namespace oyl::internal
                                                 ? registry->get<SceneObject>(parent).name.c_str()
                                                 : "None";
 
+            bool parentChanged = false;
+
             ImGui::Text("Current Parent");
             ImGui::SameLine();
             if (ImGui::BeginCombo("##ParentPropertiesCurrentParent", currentParentName))
             {
                 if (ImGui::Selectable("None", parent == entt::null))
                 {
-                    auto& p = registry->get_or_assign<Parent>(m_currentEntity);
-                    p.parent = entt::null;
-
-                    if (parent != entt::null)
-                    {
-                        auto& ct = registry->get<Transform>(m_currentEntity);
-
-                        glm::mat4 tempChild = ct.getMatrixGlobal();
-
-                        glm::vec3 tComponents[3];
-                        ImGuizmo::DecomposeMatrixToComponents(value_ptr(tempChild),
-                                                              value_ptr(tComponents[0]),
-                                                              value_ptr(tComponents[1]),
-                                                              value_ptr(tComponents[2]));
-
-                        tComponents[2] = max(glm::vec3(0.01f), tComponents[2]);
-
-                        ct.m_localPosition = tComponents[0];
-                        ct.m_localRotation = glm::quat(radians(tComponents[1]));
-                        ct.m_localScale = tComponents[2];
-
-                        ct.m_isLocalDirty = true;
-                    }
-                } else
+                    parent = entt::null;
+                    parentChanged = true;
+                }
+                else
                 {
                     auto view = registry->view<SceneObject>();
                     for (auto entity : view)
@@ -585,30 +645,8 @@ namespace oyl::internal
                         if (entity != m_currentEntity &&
                             ImGui::Selectable(view.get(entity).name.c_str(), isSelected))
                         {
-                            auto& p = registry->get_or_assign<Parent>(m_currentEntity);
-                            p.parent = entity;
-
-                            auto& ct = registry->get<Transform>(m_currentEntity);
-                            auto& pt = registry->get<Transform>(entity);
-
-                            glm::mat4 tempChild = ct.getMatrixGlobal();
-                            glm::mat4 tempParent = pt.getMatrixGlobal();
-
-                            tempChild = glm::inverse(tempParent) * tempChild;
-
-                            glm::vec3 tComponents[3];
-                            ImGuizmo::DecomposeMatrixToComponents(value_ptr(tempChild),
-                                                                  value_ptr(tComponents[0]),
-                                                                  value_ptr(tComponents[1]),
-                                                                  value_ptr(tComponents[2]));
-
-                            tComponents[2] = max(glm::vec3(0.01f), tComponents[2]);
-
-                            ct.m_localPosition = tComponents[0];
-                            ct.m_localRotation = glm::quat(radians(tComponents[1]));
-                            ct.m_localScale = tComponents[2];
-
-                            ct.m_isLocalDirty = true;
+                            parent = entity;
+                            parentChanged = true;
 
                             break;
                         }
@@ -619,6 +657,9 @@ namespace oyl::internal
 
                 ImGui::EndCombo();
             }
+
+            if (parentChanged)
+                setEntityParent(m_currentEntity, parent);
             
             ImGui::Unindent(10);
             
