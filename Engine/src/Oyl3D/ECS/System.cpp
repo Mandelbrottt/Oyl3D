@@ -912,6 +912,8 @@ namespace oyl
             listenForEventType(TypeKeyPressed);
             listenForEventType(TypeKeyReleased);
             listenForEventType(TypeMouseMoved);
+            listenForEventType(TypeMousePressed);
+            listenForEventType(TypeMouseReleased);
             listenForEventType(TypeEditorViewportResized);
 
             EditorCamera cam;
@@ -956,16 +958,16 @@ namespace oyl
                 case TypeKeyPressed:
                 {
                     auto e = (KeyPressedEvent) *event;
-                    if (e.keycode == Key_LeftAlt && !e.repeatCount)
-                    {
-                        m_doMoveCamera ^= 1;
+                    //if (e.keycode == Key_LeftAlt && !e.repeatCount)
+                    //{
+                    //    m_doMoveCamera ^= 1;
 
-                        CursorStateRequestEvent cursorRequest;
+                    //    CursorStateRequestEvent cursorRequest;
 
-                        cursorRequest.state = m_doMoveCamera ? Cursor_Disabled : Cursor_Enabled;
+                    //    cursorRequest.state = m_doMoveCamera ? Cursor_Disabled : Cursor_Enabled;
 
-                        postEvent(Event::create(cursorRequest));
-                    }
+                    //    postEvent(Event::create(cursorRequest));
+                    //}
                     if (!m_doMoveCamera) break;
                     
                     if (e.keycode == Key_W)
@@ -1001,6 +1003,34 @@ namespace oyl
                     m_cameraRotate.y = e.dx;
                     m_cameraRotate.x = e.dy;
 
+                    break;
+                }
+                case TypeMousePressed:
+                {
+                    auto e = (MousePressedEvent) *event;
+                    if (e.button == Mouse_Right)
+                    {
+                        m_doMoveCamera = true;
+
+                        CursorStateRequestEvent cursorRequest;
+                        cursorRequest.state = Cursor_Disabled;
+
+                        postEvent(Event::create(cursorRequest));
+                    }
+                    break;
+                }
+                case TypeMouseReleased:
+                {
+                    auto e = (MouseReleasedEvent) *event;
+                    if (e.button == Mouse_Right)
+                    {
+                        m_doMoveCamera = false;
+
+                        CursorStateRequestEvent cursorRequest;
+                        cursorRequest.state = Cursor_Enabled;
+
+                        postEvent(Event::create(cursorRequest));
+                    }
                     break;
                 }
                 case TypeEditorViewportResized:
