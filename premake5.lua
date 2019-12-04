@@ -60,7 +60,8 @@ project "OylEngine"
 
 	defines {
 		"OYL_ENGINE",
-		"_CRT_SECURE_NO_WARNINGS"
+		"_CRT_SECURE_NO_WARNINGS",
+		"IMGUI_DEFINE_MATH_OPERATORS"
 	}
 
 	postbuildcommands {
@@ -163,7 +164,8 @@ project "OylGame"
 
 	defines {
 		"OYL_GAME",
-		"_CRT_SECURE_NO_WARNINGS"
+		"_CRT_SECURE_NO_WARNINGS",
+		"IMGUI_DEFINE_MATH_OPERATORS"
 	}
 
 	includedirs {
