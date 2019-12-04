@@ -68,7 +68,13 @@ void main()
 		specular += u_pointLight[i].specular * spec * vec3(texture(u_material.specular, in_texCoords));
 		diffuse  *= 1.0 / (1.0 + 0.01 * pow(length(u_pointLight[i].position - in_position), 2.0));
 		specular *= 1.0 / (1.0 + 0.01 * pow(length(u_pointLight[i].position - in_position), 2.0));
+
 	}
 	
 	out_color = vec4((ambient + diffuse + specular), 1.0);
+
+
+	// Gamma Correction
+	vec3 gamma = vec3(1.0 / 2.2);
+	out_color = pow(out_color, vec4(gamma, 1.0));
 }
