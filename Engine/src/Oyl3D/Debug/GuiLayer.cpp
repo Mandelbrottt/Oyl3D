@@ -363,6 +363,18 @@ namespace oyl::internal
     {
         if (ImGui::Begin(g_hierarchyWindowName, nullptr, ImGuiWindowFlags_NoCollapse))
         {
+            ImGui::Dummy(ImGui::GetWindowContentRegionMax() - ImGui::GetCursorPos());
+            
+            if (ImGui::BeginDragDropTarget())
+            {
+                if (auto payload = ImGui::AcceptDragDropPayload("HierarchyEntity"))
+                {
+                    entt::entity child = *reinterpret_cast<entt::entity*>(payload->Data);
+                    setEntityParent(child, entt::null);
+                }
+                ImGui::EndDragDropTarget();
+            }
+            
             if (ImGui::BeginPopupContextWindow("##HierarchyContextWindow"))
             {
                 if (ImGui::Selectable("Add Entity##ContextWindowTest"))
@@ -378,6 +390,8 @@ namespace oyl::internal
                 }
                 ImGui::EndPopup();
             }
+
+            ImGui::SetCursorPos(ImGui::GetWindowContentRegionMin());
             
             auto parentView = registry->view<component::Parent>();
             
@@ -454,8 +468,6 @@ namespace oyl::internal
                 if (auto payload = ImGui::AcceptDragDropPayload("HierarchyEntity"))
                 {
                     entt::entity child = *reinterpret_cast<entt::entity*>(payload->Data);
-                    //auto& p = registry->get_or_assign<component::Parent>(child);
-                    //p.parent = entity;
                     setEntityParent(child, entity);
                 }
                 ImGui::EndDragDropTarget();
@@ -483,6 +495,9 @@ namespace oyl::internal
         using component::Transform;
         
         auto& p = registry->get_or_assign<Parent>(entity);
+
+        if (parent == p.parent) return;
+        
         if (parent == entt::null && p.parent != entt::null)
         {
             auto& ct = registry->get<Transform>(entity);
