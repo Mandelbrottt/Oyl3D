@@ -141,6 +141,16 @@ namespace oyl
 
     OpenGLShader::OpenGLShader(_OpenGLShader, const std::vector<ShaderInfo>& infos)
     {
+        OpenGLShader::load(infos);
+    }
+
+    OpenGLShader::~OpenGLShader()
+    {
+        OpenGLShader::unload();
+    }
+
+    bool OpenGLShader::load(const std::vector<ShaderInfo>& infos)
+    {
         std::array<std::string, NumShaderTypes> srcs{ "" };
         for (auto& info : infos)
         {
@@ -155,7 +165,7 @@ namespace oyl
             if (!in)
             {
                 OYL_LOG_ERROR("Shader \"{0}\" could not open!", info.filename.c_str());
-                return;
+                return false;
             }
 
             // Dump the entire file contents into the corresponding source string
@@ -164,14 +174,30 @@ namespace oyl
             srcs[info.type - 1] = ss.str();
         }
 
+        uint prevRendererID = m_rendererID;
+
         // Compile and link the given shader source codes into one program
         processShaders(srcs);
 
-        if (m_rendererID)
-            m_shaderInfos = infos;
-    }
+        if (!m_rendererID)
+        {
+            m_rendererID = prevRendererID;
+            return false;
+        }
 
-    OpenGLShader::~OpenGLShader()
+        if (prevRendererID)
+            glDeleteProgram(prevRendererID);
+        
+        m_shaderInfos = infos;
+        return true;
+    }
+    
+    bool OpenGLShader::load(const std::initializer_list<ShaderInfo>& infos)
+    {
+        return load(infos);
+    }
+    
+    void OpenGLShader::unload()
     {
         if (m_rendererID)
             glDeleteProgram(m_rendererID);

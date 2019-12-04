@@ -40,7 +40,7 @@ void SandboxLayer::onEnter()
 
         //rb.setProperties(component::RigidBody::DETECT_COLLISIONS, false);
 
-        auto& cl = registry->assign<component::Collider>(e);
+        auto& cl = registry->assign<component::Collidable>(e);
 
         auto& shi = cl.pushShape(Collider_Box);
         shi.box.setSize({ 1.0f, 1.0f, 1.0f });
@@ -93,7 +93,7 @@ void SandboxLayer::onEnter()
         auto& rb = registry->assign<component::RigidBody>(e);
         rb.setMass(0.0f);
         
-        auto& cl = registry->assign<component::Collider>(e);
+        auto& cl = registry->assign<component::Collidable>(e);
 
         auto& shi = cl.pushShape(Collider_Box);
         shi.box.setSize({ 20.0f, 0.1f, 20.0f });
@@ -116,7 +116,7 @@ void SandboxLayer::onEnter()
         auto& rb = registry->assign<component::RigidBody>(e);
         rb.setMass(1.0f);
 
-        auto& cl = registry->assign<component::Collider>(e);
+        auto& cl = registry->assign<component::Collidable>(e);
 
         auto& shi = cl.pushShape(Collider_Sphere);
         shi.sphere.setRadius(0.5f);
@@ -139,7 +139,7 @@ void SandboxLayer::onEnter()
         auto& rb = registry->assign<component::RigidBody>(e);
         rb.setMass(1.0f);
 
-        auto& cl = registry->assign<component::Collider>(e);
+        auto& cl = registry->assign<component::Collidable>(e);
 
         auto& shi = cl.pushShape(Collider_Sphere);
         shi.sphere.setRadius(0.5f);
@@ -182,7 +182,7 @@ void SandboxLayer::onEnter()
             auto& rb = registry->assign<component::RigidBody>(e2);
             rb.setMass(0.0f);
 
-            auto& cl = registry->assign<component::Collider>(e2);
+            auto& cl = registry->assign<component::Collidable>(e2);
 
             auto& shi = cl.pushShape(Collider_Box);
             shi.box.setSize(glm::vec3(1.0f));

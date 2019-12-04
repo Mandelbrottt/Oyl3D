@@ -4,6 +4,9 @@
 
 namespace oyl
 {
+    // TODO: Store every individual shader (ie. vert or frag) in a global list
+    //       On create, index into list with provided filenames and see if they match
+    //       link existing shaders into new program
     class OpenGLShader : public Shader
     {
         struct _OpenGLShader {};
@@ -12,6 +15,11 @@ namespace oyl
     public:
         explicit OpenGLShader(_OpenGLShader, const std::vector<ShaderInfo>& infos);
         virtual  ~OpenGLShader();
+
+        virtual bool load(const std::vector<ShaderInfo>& infos) override;
+        virtual bool load(const std::initializer_list<ShaderInfo>& infos) override;
+
+        virtual void unload() override;
 
         virtual void bind() const override;
         virtual void unbind() const override;

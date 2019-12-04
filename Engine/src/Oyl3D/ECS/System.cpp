@@ -146,16 +146,16 @@ namespace oyl
                         {
                             anim.m_vao->bind();
                             
-                            mr.material->shader->bind();
-                            mr.material->shader->setUniform1f("lerpT_curr", glm::mod(anim.m_currentElapsed, 1.0f));
-                            mr.material->shader->setUniform1f("lerpT_trans", glm::mod(anim.m_transitionElapsed, 1.0f));
+                            boundMaterial->shader->bind();
+                            boundMaterial->shader->setUniform1f("lerpT_curr", glm::mod(anim.m_currentElapsed, 1.0f));
+                            boundMaterial->shader->setUniform1f("lerpT_trans", glm::mod(anim.m_transitionElapsed, 1.0f));
 
-                            Renderer::submit(mr.material, anim.m_vao, mr.mesh->getNumVertices(), transform);
+                            Renderer::submit(boundMaterial, anim.m_vao, mr.mesh->getNumVertices(), transform);
                         }
                     }
                     else
                     {
-                        Renderer::submit(mr.mesh, mr.material, transform);
+                        Renderer::submit(mr.mesh, boundMaterial, transform);
                     }
                 }
             }
@@ -398,14 +398,14 @@ namespace oyl
         {
             using component::Transform;
             using component::RigidBody;
-            using component::Collider;
+            using component::Collidable;
             
             auto view = registry->view<Transform, RigidBody>();
             for (auto entity : view)
             {
                 auto& transform = view.get<Transform>(entity);
                 auto& rigidBody = view.get<RigidBody>(entity);
-                auto& collider  = registry->get_or_assign<Collider>(entity);
+                auto& collider  = registry->get_or_assign<Collidable>(entity);
                 
                 processIncomingRigidBody(entity, transform, collider, rigidBody);
 
@@ -618,7 +618,7 @@ namespace oyl
         // TODO: Currently need rigidbody for collider to register in world, make mutually exclusive
         void PhysicsSystem::processIncomingRigidBody(entt::entity entity, 
                                                      const component::Transform& transformComponent, 
-                                                     const component::Collider&  colliderComponent, 
+                                                     const component::Collidable&  colliderComponent, 
                                                      const component::RigidBody& rigidBodyComponent)
         {
             // Check if collider was emptied past frame
@@ -639,7 +639,7 @@ namespace oyl
                 m_world->removeRigidBody(m_rigidBodies.at(entity)->body.get());
                 m_rigidBodies.erase(entity);
 
-                for (auto& shape : const_cast<component::Collider&>(colliderComponent))
+                for (auto& shape : const_cast<component::Collidable&>(colliderComponent))
                 {
                     shape.m_isDirty          = false;
                     shape.box.m_isDirty      = false;
