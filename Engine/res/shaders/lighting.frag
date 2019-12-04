@@ -66,8 +66,9 @@ void main()
     	ambient  += u_pointLight[i].ambient  *        vec3(texture(u_material.albedo,   in_texCoords));
 		diffuse  += u_pointLight[i].diffuse  * diff * vec3(texture(u_material.albedo,   in_texCoords));
 		specular += u_pointLight[i].specular * spec * vec3(texture(u_material.specular, in_texCoords));
-	// vec3 specular = u_pointLight.specular * spec * u_material.specularScalar; // temporary
+		diffuse  *= 1.0 / (1.0 + 0.01 * pow(length(u_pointLight[i].position - in_position), 2.0));
+		specular *= 1.0 / (1.0 + 0.01 * pow(length(u_pointLight[i].position - in_position), 2.0));
 	}
-
+	
 	out_color = vec4((ambient + diffuse + specular), 1.0);
 }
