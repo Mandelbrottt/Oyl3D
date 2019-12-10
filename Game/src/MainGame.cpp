@@ -62,7 +62,8 @@ public:
         
             int scale = 2;
             
-            for (int i = 0; i < 110 / scale; i++)
+            for (int i = 0; i < 2; i++)
+            //for (int i = 0; i < 110 / scale; i++)
             {
                 component::Animation::KeyPose kp;
                 kp.duration = (1.0f / 30.0f) * scale;
@@ -70,11 +71,12 @@ public:
                 sprintf(filename, "res/assets/models/agony/agony1_%06d.obj", i * scale + 1);
                 s.assign(filename);
              
-                kp.mesh = Mesh::cache(s);
+                kp.mesh = Mesh::create(s);
                 anim1->poses.push_back(kp);
             }
         
-            for (int i = 0; i < 65 / scale; i++)
+            for (int i = 0; i < 2; i++)
+            //for (int i = 0; i < 65 / scale; i++)
             {
                 component::Animation::KeyPose kp;
                 kp.duration = (1.0f / 30.0f) * (float) scale;

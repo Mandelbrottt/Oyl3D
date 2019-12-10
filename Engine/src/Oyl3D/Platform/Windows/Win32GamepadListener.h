@@ -13,7 +13,7 @@ public:
 
     virtual bool onEvent(Ref<Event> event) override;
 
-    virtual void onUpdate(Timestep dt) override;
+    virtual void onUpdate() override;
 
 protected:
     struct _Gamepad

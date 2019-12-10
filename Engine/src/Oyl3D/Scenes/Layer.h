@@ -7,7 +7,6 @@
 
 #include "Oyl3D/Scenes/Node.h"
 
-
 namespace oyl
 {
     struct Event;
@@ -25,13 +24,13 @@ namespace oyl
         virtual void onEnter() override;
         virtual void onExit() override;
 
-        virtual void onUpdate(Timestep dt) override;
-        virtual void onGuiRender(Timestep dt) override;
+        virtual void onUpdate() override;
+        virtual void onGuiRender() override;
 
         virtual bool onEvent(Ref<Event> event) override;
 
-        void onUpdateSystems(Timestep dt);
-        void onGuiRenderSystems(Timestep dt);
+        void onUpdateSystems();
+        void onGuiRenderSystems();
 
         const Ref<entt::registry>& getRegistry() const { return registry; }
 

@@ -60,6 +60,8 @@ namespace oyl
         OYL_ASSERT(!s_instance, "Application already exists!");
         s_instance = this;
 
+        Time::init();
+        
         Log::init();
 
         m_window = Window::create();
@@ -266,11 +268,8 @@ namespace oyl
     {        
         while (m_running)
         {
-            auto     time = (float) Platform::getTime();
-            Timestep realTimestep(time - m_lastFrameTime);
-            Timestep timestep(abs(realTimestep) > 1.0f / 30.0f ? 1.0f / 30.0f : realTimestep);
-            m_lastFrameTime = time;
-
+            Time::update();
+            
             if (m_doUpdate)
             {
                 m_dispatcher->dispatchEvents();
@@ -278,14 +277,14 @@ namespace oyl
             #if !defined(OYL_DISTRIBUTION)
                 if (m_guiLayer->doGameUpdate())
                 {
-                    m_systemsLayer->onUpdateSystems(timestep);
-                    m_systemsLayer->onUpdate(timestep);
+                    m_systemsLayer->onUpdateSystems();
+                    m_systemsLayer->onUpdate();
 
-                    m_currentScene->onUpdate(timestep);
+                    m_currentScene->onUpdate();
                 }
                 
-                m_guiLayer->onUpdateSystems(timestep);
-                m_guiLayer->onUpdate(timestep);
+                m_guiLayer->onUpdateSystems();
+                m_guiLayer->onUpdate();
             #else
                 m_systemsLayer->onUpdateSystems(timestep);
                 m_systemsLayer->onUpdate(timestep);
@@ -301,8 +300,8 @@ namespace oyl
 
                 Renderer::beginScene();
                 
-                m_renderSystem->onUpdate(timestep);
-                m_guiRenderSystem->onUpdate(timestep);
+                m_renderSystem->onUpdate();
+                m_guiRenderSystem->onUpdate();
 
                 Renderer::endScene();
                 m_mainBuffer->unbind();
@@ -311,14 +310,14 @@ namespace oyl
         #if !defined(OYL_DISTRIBUTION)
             m_guiLayer->begin();
 
-            m_renderSystem->onGuiRender(timestep);
-            m_guiRenderSystem->onGuiRender(timestep);
+            m_renderSystem->onGuiRender();
+            m_guiRenderSystem->onGuiRender();
 
-            m_guiLayer->onGuiRenderSystems(timestep);
-            m_guiLayer->onGuiRender(timestep);
+            m_guiLayer->onGuiRenderSystems();
+            m_guiLayer->onGuiRender();
 
             if (m_guiLayer->doGameUpdate())
-                m_currentScene->onGuiRender(timestep);
+                m_currentScene->onGuiRender();
 
             m_guiLayer->end();
         #else
@@ -328,7 +327,7 @@ namespace oyl
 
             m_window->onUpdate(m_doUpdate);
 
-            m_vibrationListener->onUpdate(timestep);
+            m_vibrationListener->onUpdate();
         }
     }
 

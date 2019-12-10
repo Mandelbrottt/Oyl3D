@@ -34,7 +34,7 @@ bool Win32GamepadListener::onEvent(Ref<Event> event)
     return false;
 }
 
-void Win32GamepadListener::onUpdate(Timestep dt)
+void Win32GamepadListener::onUpdate()
 {
     XINPUT_VIBRATION vibration[4];
 
@@ -44,13 +44,13 @@ void Win32GamepadListener::onUpdate(Timestep dt)
     {
         _Gamepad& currentGamepad = gamepads[i];
 
-        vibration[i].wLeftMotorSpeed = (u16)(65535.0f * currentGamepad.leftVibration);
-        vibration[i].wRightMotorSpeed = (u16)(65535.0f * currentGamepad.rightVibration);
+        vibration[i].wLeftMotorSpeed = (u16) (65535.0f * currentGamepad.leftVibration);
+        vibration[i].wRightMotorSpeed = (u16) (65535.0f * currentGamepad.rightVibration);
 
         XInputSetState(i, &vibration[i]);
 
-        currentGamepad.leftTime -= dt.getSeconds();
-        currentGamepad.rightTime -= dt.getSeconds();
+        currentGamepad.leftTime -= Time::deltaTime();
+        currentGamepad.rightTime -= Time::deltaTime();
 
         if (currentGamepad.leftTime <= 0)
         {

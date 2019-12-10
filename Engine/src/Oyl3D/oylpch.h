@@ -60,6 +60,7 @@
 #include "Oyl3D/AssetPaths.h"
 #include "Oyl3D/Enums.h"
 
+#include "Oyl3D/Utils/Time.h"
 #include "Oyl3D/Utils/Logging.h"
 #include "Oyl3D/Utils/Refs.h"
 #include "Oyl3D/Utils/Timestep.h"

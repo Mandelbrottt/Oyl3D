@@ -193,7 +193,7 @@ void SandboxLayer::onEnter()
     }
 }
 
-void SandboxLayer::onUpdate(Timestep dt)
+void SandboxLayer::onUpdate()
 {
     auto view = registry->view<entt::tag<"Container"_hs>>();
     entt::entity container = view[0];
@@ -222,7 +222,7 @@ void SandboxLayer::onUpdate(Timestep dt)
         tr.translate(desiredVel);
 }
 
-void SandboxLayer::onGuiRender(Timestep dt)
+void SandboxLayer::onGuiRender()
 {
     ImGui::Begin("xdhaha");
 

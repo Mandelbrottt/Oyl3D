@@ -18,28 +18,28 @@ namespace oyl
 
     void Layer::onExit() { }
 
-    void Layer::onUpdate(Timestep dt) { }
+    void Layer::onUpdate() { }
 
-    void Layer::onGuiRender(Timestep dt) { }
+    void Layer::onGuiRender() { }
 
     bool Layer::onEvent(Ref<Event> event)
     {
         return false;
     }
 
-    void Layer::onUpdateSystems(Timestep dt)
+    void Layer::onUpdateSystems()
     {
         for (auto& system : m_systems)
         {
-            system->onUpdate(dt);
+            system->onUpdate();
         }
     }
 
-    void Layer::onGuiRenderSystems(Timestep dt)
+    void Layer::onGuiRenderSystems()
     {
         for (auto& system : m_systems)
         {
-            system->onGuiRender(dt);
+            system->onGuiRender();
         }
     }
 

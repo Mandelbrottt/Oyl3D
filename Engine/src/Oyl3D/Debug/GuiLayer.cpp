@@ -143,7 +143,7 @@ namespace oyl::internal
         m_systems.clear();
     }
 
-    void GuiLayer::onUpdate(Timestep dt)
+    void GuiLayer::onUpdate()
     {
         using component::Transform;
         using component::Parent;
@@ -238,7 +238,7 @@ namespace oyl::internal
         }
     }
 
-    void GuiLayer::onGuiRender(Timestep dt)
+    void GuiLayer::onGuiRender()
     {
         drawSceneHierarchy();
 

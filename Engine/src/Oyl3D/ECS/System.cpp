@@ -28,9 +28,9 @@ namespace oyl
 
     void System::onExit() { }
 
-    void System::onUpdate(Timestep dt) { }
+    void System::onUpdate() { }
 
-    void System::onGuiRender(Timestep dt) { }
+    void System::onGuiRender() { }
 
     // ^^^ Generic System ^^^ //
 
@@ -42,7 +42,7 @@ namespace oyl
 
         void RenderSystem::onExit() { }
 
-        void RenderSystem::onUpdate(Timestep dt)
+        void RenderSystem::onUpdate()
         {
             using component::Transform;
             using component::Renderable;
@@ -161,7 +161,7 @@ namespace oyl
             }
         }
 
-        void RenderSystem::onGuiRender(Timestep dt) { }
+        void RenderSystem::onGuiRender() { }
 
         bool RenderSystem::onEvent(Ref<Event> event)
         {
@@ -203,7 +203,7 @@ namespace oyl
 
         void GuiRenderSystem::onExit() {}
 
-        void GuiRenderSystem::onUpdate(Timestep dt)
+        void GuiRenderSystem::onUpdate()
         {
             using component::GuiRenderable;
             using component::Transform;
@@ -257,7 +257,7 @@ namespace oyl
             }
         }
 
-        void GuiRenderSystem::onGuiRender(Timestep dt) {}
+        void GuiRenderSystem::onGuiRender() {}
 
         bool GuiRenderSystem::onEvent(Ref<Event> event)
         {
@@ -290,7 +290,7 @@ namespace oyl
 
         void AnimationSystem::onExit() {}
 
-        void AnimationSystem::onUpdate(Timestep dt)
+        void AnimationSystem::onUpdate()
         {
             auto view = registry->view<component::Animator>();
             for (auto entity : view)
@@ -310,7 +310,7 @@ namespace oyl
 
                 if (anim.m_nextAnimation)
                 {
-                    anim.m_transitionElapsed += dt.getSeconds() / anim.m_transitionDuration;
+                    anim.m_transitionElapsed += Time::deltaTime() / anim.m_transitionDuration;
                     if (anim.m_transitionElapsed >= 1.0f)
                     {
                         anim.m_currentAnimation = anim.m_nextAnimation;
@@ -325,7 +325,7 @@ namespace oyl
                     glm::mod(anim.m_currentElapsed, (f32) anim.m_currentAnimation->poses.size());
 
                 uint lastVal = glm::floor(anim.m_currentElapsed);
-                anim.m_currentElapsed += dt.getSeconds() / anim.m_currentAnimation->poses[lastVal].duration;
+                anim.m_currentElapsed += Time::deltaTime() / anim.m_currentAnimation->poses[lastVal].duration;
 
                 anim.m_currentElapsed =
                     glm::mod(anim.m_currentElapsed, (f32) anim.m_currentAnimation->poses.size());
@@ -354,7 +354,7 @@ namespace oyl
             }
         }
 
-        void AnimationSystem::onGuiRender(Timestep dt) {}
+        void AnimationSystem::onGuiRender() {}
 
         bool AnimationSystem::onEvent(Ref<Event> event) { return false; }
 
@@ -394,7 +394,7 @@ namespace oyl
             m_rigidBodies.clear();
         }
 
-        void PhysicsSystem::onUpdate(Timestep dt)
+        void PhysicsSystem::onUpdate()
         {
             using component::Transform;
             using component::RigidBody;
@@ -542,7 +542,7 @@ namespace oyl
                                                                rigidBody.m_impulse.z));
             }
             
-            m_world->stepSimulation(dt.getSeconds(), 1, m_fixedTimeStep);
+            m_world->stepSimulation(Time::deltaTime(), 1, m_fixedTimeStep);
 
             for (auto entity : view)
             {
@@ -578,7 +578,7 @@ namespace oyl
             }
         }
 
-        void PhysicsSystem::onGuiRender(Timestep dt)
+        void PhysicsSystem::onGuiRender()
         {
             using component::Transform;
             using component::RigidBody;
@@ -873,7 +873,7 @@ namespace oyl
 
         // vvv Transform Update System vvv //
 
-        void TransformUpdateSystem::onUpdate(Timestep dt)
+        void TransformUpdateSystem::onUpdate()
         {
             using component::Transform;
             using component::Parent;
@@ -929,7 +929,7 @@ namespace oyl
 
         void EditorCameraSystem::onExit() { }
 
-        void EditorCameraSystem::onUpdate(Timestep dt)
+        void EditorCameraSystem::onUpdate()
         {
             using component::internal::EditorCamera;
 
@@ -937,11 +937,11 @@ namespace oyl
             for (auto& entity : view)
             {
                 auto cam = registry->get<EditorCamera>(entity).camera;
-                processCameraUpdate(dt, cam);
+                processCameraUpdate(cam);
             }
         }
 
-        void EditorCameraSystem::onGuiRender(Timestep dt)
+        void EditorCameraSystem::onGuiRender()
         {
             ImGui::Begin("Camera##CameraSettings");
 
@@ -957,42 +957,43 @@ namespace oyl
             {
                 case TypeKeyPressed:
                 {
-                    auto e = (KeyPressedEvent) *event;
-                    //if (e.keycode == Key_LeftAlt && !e.repeatCount)
-                    //{
-                    //    m_doMoveCamera ^= 1;
-
-                    //    CursorStateRequestEvent cursorRequest;
-
-                    //    cursorRequest.state = m_doMoveCamera ? Cursor_Disabled : Cursor_Enabled;
-
-                    //    postEvent(Event::create(cursorRequest));
-                    //}
                     if (!m_doMoveCamera) break;
-                    
-                    if (e.keycode == Key_W)
-                        m_cameraMove.z = -1;
-                    if (e.keycode == Key_S)
-                        m_cameraMove.z = 1;
-                    if (e.keycode == Key_D)
-                        m_cameraMove.x = 1;
-                    if (e.keycode == Key_A)
-                        m_cameraMove.x = -1;;
-                    if (e.keycode == Key_Space)
-                        m_cameraMove.y = 1;
-                    if (e.keycode == Key_LeftControl)
-                        m_cameraMove.y = -1;
+
+                    auto e = (KeyPressedEvent) *event;
+                    if (!e.repeatCount)
+                    {
+                        if (e.keycode == Key_W)
+                            m_cameraMove.z -= m_cameraMoveSpeed;
+                        if (e.keycode == Key_S)
+                            m_cameraMove.z += m_cameraMoveSpeed;
+                        if (e.keycode == Key_D)
+                            m_cameraMove.x += m_cameraMoveSpeed;
+                        if (e.keycode == Key_A)
+                            m_cameraMove.x -= m_cameraMoveSpeed;
+                        if (e.keycode == Key_Space)
+                            m_cameraMove.y += m_cameraMoveSpeed;
+                        if (e.keycode == Key_LeftControl)
+                            m_cameraMove.y -= m_cameraMoveSpeed;
+                    }
                     break;
                 }
                 case TypeKeyReleased:
                 {
+                    if (!m_doMoveCamera) break;
+                    
                     auto e = (KeyReleasedEvent) *event;
-                    if (e.keycode == Key_W || e.keycode == Key_S)
-                        m_cameraMove.z = 0;
-                    if (e.keycode == Key_D || e.keycode == Key_A)
-                        m_cameraMove.x = 0;
-                    if (e.keycode == Key_Space || e.keycode == Key_LeftControl)
-                        m_cameraMove.y = 0;
+                    if (e.keycode == Key_W)
+                        m_cameraMove.z += m_cameraMoveSpeed;
+                    if (e.keycode == Key_S)
+                        m_cameraMove.z -= m_cameraMoveSpeed;
+                    if (e.keycode == Key_D)
+                        m_cameraMove.x -= m_cameraMoveSpeed;
+                    if (e.keycode == Key_A)
+                        m_cameraMove.x += m_cameraMoveSpeed;
+                    if (e.keycode == Key_Space)
+                        m_cameraMove.y -= m_cameraMoveSpeed;
+                    if (e.keycode == Key_LeftControl)
+                        m_cameraMove.y += m_cameraMoveSpeed;
                     break;
                 }
                 case TypeMouseMoved:
@@ -1049,20 +1050,20 @@ namespace oyl
             return false;
         }
 
-        void EditorCameraSystem::processCameraUpdate(Timestep dt, const Ref<Camera>& camera)
+        void EditorCameraSystem::processCameraUpdate(const Ref<Camera>& camera)
         {
-            if (!m_doMoveCamera) return;
+            if (!m_doMoveCamera)
+            {
+                m_cameraMove   = glm::vec3(0.0f);
+                m_cameraRotate = glm::vec3(0.0f);
+                return;
+            }
 
-            glm::vec3 move = m_cameraMove;
-
-            if (move != glm::vec3(0.0f))
-                move = glm::normalize(move);
-
-            camera->move(move * m_cameraMoveSpeed * dt.getSeconds());
+            camera->move(m_cameraMove * Time::deltaTime());
 
             static glm::vec3 realRotation = glm::vec3(20.0f, -45.0f, 0.0f);
 
-            realRotation += m_cameraRotate * m_cameraRotateSpeed * dt.getSeconds();
+            realRotation += m_cameraRotate * m_cameraRotateSpeed * Time::deltaTime();
             if (realRotation.x > 89.0f) realRotation.x = 89.0f;
             if (realRotation.x < -89.0f) realRotation.x = -89.0f;
 
@@ -1091,7 +1092,7 @@ namespace oyl
 
         void EditorRenderSystem::onExit() { }
 
-        void EditorRenderSystem::onUpdate(Timestep dt)
+        void EditorRenderSystem::onUpdate()
         {
             using component::Transform;
             using component::Renderable;
@@ -1187,7 +1188,7 @@ namespace oyl
             m_editorViewportBuffer->unbind();
         }
 
-        void EditorRenderSystem::onGuiRender(Timestep dt) { }
+        void EditorRenderSystem::onGuiRender() { }
 
         bool EditorRenderSystem::onEvent(Ref<Event> event)
         {
