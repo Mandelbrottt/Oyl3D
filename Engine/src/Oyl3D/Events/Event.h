@@ -22,6 +22,12 @@ private:                                                                        
     static_assert(sizeof(_##class_name) <= _OYL_EVENT_SIZE);                             \
 }
 
+#define OYL_EVENT_CAST(...) _OYL_MACRO_OVERLOAD(_OYL_EVENT_CAST, __VA_ARGS__)
+
+#define _OYL_EVENT_CAST_1(type)        (const type&)
+#define _OYL_EVENT_CAST_2(type, event) reinterpret_cast<const type&>(event)
+
+
 namespace oyl
 {
     struct Event
@@ -29,13 +35,6 @@ namespace oyl
         u32 args[_OYL_NUM_EVENT_ARGS];
         u32 type;
         u32 category;
-
-        static UniqueRef<Event> create(const Event& event)
-        {
-            auto sptr = UniqueRef<Event>::create();
-            *sptr     = event;
-            return sptr;
-        }
     };
     
     // Window Events //////////////////////////////////////////////////////

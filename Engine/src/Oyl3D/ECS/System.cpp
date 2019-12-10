@@ -163,7 +163,7 @@ namespace oyl
 
         void RenderSystem::onGuiRender() { }
 
-        bool RenderSystem::onEvent(Ref<Event> event)
+        bool RenderSystem::onEvent(const Event& event)
         {
             return false;
         }
@@ -259,14 +259,12 @@ namespace oyl
 
         void GuiRenderSystem::onGuiRender() {}
 
-        bool GuiRenderSystem::onEvent(Ref<Event> event)
+        bool GuiRenderSystem::onEvent(const Event& event)
         {
-            switch (event->type)
+            switch (event.type)
             {
                 case TypeWindowResized:
-                    auto e = (WindowResizedEvent) *event;
-                    //OYL_LOG("{0}", offsetof(WindowResizedEvent, width));
-                    //OYL_LOG("{0}", offsetof(WindowResizedEvent, height));
+                    auto e = OYL_EVENT_CAST(WindowResizedEvent) event;
                     f32 aspectRatio = (float) e.width / (float) e.height;
                     f32 size = 10.0f;
                     glm::mat4 projection = glm::ortho(-size * aspectRatio / 2.0f, 
@@ -356,7 +354,7 @@ namespace oyl
 
         void AnimationSystem::onGuiRender() {}
 
-        bool AnimationSystem::onEvent(Ref<Event> event) { return false; }
+        bool AnimationSystem::onEvent(const Event& event) { return false; }
 
         // ^^^ Animation System ^^^ //
         
@@ -600,9 +598,9 @@ namespace oyl
             ImGui::End();
         }
 
-        bool PhysicsSystem::onEvent(Ref<Event> event)
+        bool PhysicsSystem::onEvent(const Event& event)
         {
-            switch (event->type)
+            switch (event.type)
             {
                 case TypePhysicsResetWorld:
                 {
@@ -951,15 +949,15 @@ namespace oyl
             ImGui::End();
         }
 
-        bool EditorCameraSystem::onEvent(Ref<Event> event)
+        bool EditorCameraSystem::onEvent(const Event& event)
         {
-            switch (event->type)
+            switch (event.type)
             {
                 case TypeKeyPressed:
                 {
                     if (!m_doMoveCamera) break;
 
-                    auto e = (KeyPressedEvent) *event;
+                    auto e = OYL_EVENT_CAST(KeyPressedEvent) event;
                     if (!e.repeatCount)
                     {
                         if (e.keycode == Key_W)
@@ -981,7 +979,7 @@ namespace oyl
                 {
                     if (!m_doMoveCamera) break;
                     
-                    auto e = (KeyReleasedEvent) *event;
+                    auto e = OYL_EVENT_CAST(KeyReleasedEvent) event;
                     if (e.keycode == Key_W)
                         m_cameraMove.z += m_cameraMoveSpeed;
                     if (e.keycode == Key_S)
@@ -1000,7 +998,7 @@ namespace oyl
                 {
                     if (!m_doMoveCamera) break;
 
-                    auto e = (MouseMovedEvent) *event;
+                    auto e = OYL_EVENT_CAST(MouseMovedEvent) event;
                     m_cameraRotate.y = e.dx;
                     m_cameraRotate.x = e.dy;
 
@@ -1008,7 +1006,7 @@ namespace oyl
                 }
                 case TypeMousePressed:
                 {
-                    auto e = (MousePressedEvent) *event;
+                    auto e = OYL_EVENT_CAST(MousePressedEvent) event;
                     if (e.button == Mouse_Right)
                     {
                         m_doMoveCamera = true;
@@ -1022,7 +1020,7 @@ namespace oyl
                 }
                 case TypeMouseReleased:
                 {
-                    auto e = (MouseReleasedEvent) *event;
+                    auto e = OYL_EVENT_CAST(MouseReleasedEvent) event;
                     if (e.button == Mouse_Right)
                     {
                         m_doMoveCamera = false;
@@ -1038,7 +1036,7 @@ namespace oyl
                 {
                     using component::internal::EditorCamera;
                     
-                    auto e    = (EditorViewportResizedEvent) *event;
+                    auto e    = OYL_EVENT_CAST(EditorViewportResizedEvent) event;
                     auto view = registry->view<EditorCamera>();
 
                     auto pc = view.get(*view.begin());
@@ -1190,13 +1188,13 @@ namespace oyl
 
         void EditorRenderSystem::onGuiRender() { }
 
-        bool EditorRenderSystem::onEvent(Ref<Event> event)
+        bool EditorRenderSystem::onEvent(const Event& event)
         {
-            switch (event->type)
+            switch (event.type)
             {
                 case TypeWindowResized:
                 {
-                    auto e = (WindowResizedEvent) *event;
+                    auto e = OYL_EVENT_CAST(WindowResizedEvent) event;
                     m_editorViewportBuffer->updateViewport(e.width, e.height);
                     return true;
                 }

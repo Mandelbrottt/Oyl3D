@@ -253,25 +253,25 @@ namespace oyl::internal
         drawPlayPauseButtons();
     }
 
-    bool GuiLayer::onEvent(Ref<Event> event)
+    bool GuiLayer::onEvent(const Event& event)
     {
-        switch (event->type)
+        switch (event.type)
         {
             case TypeEditorViewportHandleChanged:
             {
-                auto e = (EditorViewportHandleChangedEvent) *event;
+                auto e = OYL_EVENT_CAST(EditorViewportHandleChangedEvent) event;
                 m_editorViewportHandle = e.handle;
                 return false;
             }
             case TypeEditorEntitySelected:
             {
-                auto e = (EditorEntitySelectedEvent) *event;
+                auto e = OYL_EVENT_CAST(EditorEntitySelectedEvent) event;
                 m_currentEntity = e.entity;
                 return true;
             }
             case TypeViewportHandleChanged:
             {
-                auto e = (ViewportHandleChangedEvent) *event;
+                auto e = OYL_EVENT_CAST(ViewportHandleChangedEvent) event;
                 m_gameViewportHandle = e.handle;
                 return false;
             }
@@ -290,7 +290,7 @@ namespace oyl::internal
             }
             case TypeKeyReleased:
             {
-                auto e = (KeyReleasedEvent) *event;
+                auto e = OYL_EVENT_CAST(KeyReleasedEvent) event;
                 if (e.keycode == Key_F1)
                     updateAssetList();
             }

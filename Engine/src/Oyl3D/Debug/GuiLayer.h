@@ -17,7 +17,7 @@ namespace oyl::internal
         void onUpdate() override;
         void onGuiRender() override;
 
-        bool onEvent(Ref<Event> event) override;
+        bool onEvent(const Event& event) override;
 
         void init();
         void shutdown();

@@ -14,19 +14,24 @@ namespace oyl
         m_dispatcher.reset();
     }
 
-    bool EventListener::onEvent(Ref<Event> event)
+    //bool EventListener::onEvent(Ref<Event> event)
+    //{
+    //    return false;
+    //}
+
+    bool EventListener::onEvent(const Event& event)
     {
         return false;
     }
 
-    void EventListener::postEvent(UniqueRef<Event> event)
-    {
-        m_dispatcher->postEvent(std::move(event));
-    }
+    //void EventListener::postEvent(UniqueRef<Event> event)
+    //{
+    //    m_dispatcher->postEvent(*event);
+    //}
 
     void EventListener::postEvent(const Event& event)
     {
-        m_dispatcher->postEvent(Event::create(event));
+        m_dispatcher->postEvent(event);
     }
 
     void EventListener::listenForEventType(OylEnum type)

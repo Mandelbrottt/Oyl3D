@@ -13,7 +13,5 @@ public:
 
     virtual void onGuiRender() override;
 
-    virtual bool onEvent(oyl::Ref<oyl::Event> event) override;
-
     float forceSpeed = 1.0f;
 };

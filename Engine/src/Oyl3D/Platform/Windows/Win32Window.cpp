@@ -96,7 +96,7 @@ namespace oyl
 
             data.width  = width;
             data.height = height;
-            data.eventCallback(Event::create(event));
+            data.eventCallback(event);
         });
 
         glfwSetWindowCloseCallback(m_window, [](GLFWwindow* window)
@@ -105,7 +105,7 @@ namespace oyl
 
             WindowClosedEvent event{};
 
-            data.eventCallback(Event::create(event));
+            data.eventCallback(event);
         });
 
         glfwSetWindowFocusCallback(m_window, [](GLFWwindow* window, int focused)
@@ -114,7 +114,7 @@ namespace oyl
 
             WindowFocusedEvent event{};
 
-            data.eventCallback(Event::create(event));
+            data.eventCallback(event);
         });
 
         glfwSetKeyCallback(m_window, [](GLFWwindow* window, int key, int scancode, int action, int mods)
@@ -131,7 +131,7 @@ namespace oyl
                     event.keycode     = glfwToOylCode(key);
                     event.mods        = mods;
                     event.repeatCount = 0;
-                    data.eventCallback(Event::create(event));
+                    data.eventCallback(event);
                     break;
                 }
                 case GLFW_RELEASE:
@@ -139,7 +139,7 @@ namespace oyl
                     KeyReleasedEvent event{};
                     event.keycode = glfwToOylCode(key);
                     event.mods    = mods;
-                    data.eventCallback(Event::create(event));
+                    data.eventCallback(event);
                     break;
                 }
                 case GLFW_REPEAT:
@@ -148,7 +148,7 @@ namespace oyl
                     event.keycode     = glfwToOylCode(key);
                     event.mods        = mods;
                     event.repeatCount = ++repeats;
-                    data.eventCallback(Event::create(event));
+                    data.eventCallback(event);
                     break;
                 }
             }
@@ -161,7 +161,7 @@ namespace oyl
             KeyTypedEvent event{};
             event.keycode = glfwToOylCode(keycode);
 
-            data.eventCallback(Event::create(event));
+            data.eventCallback(event);
         });
 
         glfwSetMouseButtonCallback(m_window, [](GLFWwindow* window, int button, int action, int mods)
@@ -175,7 +175,7 @@ namespace oyl
                     MousePressedEvent event{};
                     event.button = glfwToOylCode(button);
                     event.mods   = mods;
-                    data.eventCallback(Event::create(event));
+                    data.eventCallback(event);
                     break;
                 }
                 case GLFW_RELEASE:
@@ -183,7 +183,7 @@ namespace oyl
                     MouseReleasedEvent event{};
                     event.button = glfwToOylCode(button);
                     event.mods   = mods;
-                    data.eventCallback(Event::create(event));
+                    data.eventCallback(event);
                     break;
                 }
             }
@@ -197,7 +197,7 @@ namespace oyl
             event.x = (f32) x;
             event.y = (f32) y;
 
-            data.eventCallback(Event::create(event));
+            data.eventCallback(event);
         });
 
         glfwSetCursorPosCallback(m_window, [](GLFWwindow* window, double x, double y)
@@ -215,7 +215,7 @@ namespace oyl
             lastx = (float) x;
             lasty = (float) y;
 
-            data.eventCallback(Event::create(event));
+            data.eventCallback(event);
         });
 
         glfwSetJoystickCallback([](int jid, int event)
@@ -228,14 +228,14 @@ namespace oyl
                 {
                     GamepadConnectedEvent e;
                     e.gid = jid;
-                    data.eventCallback(Event::create(e));
+                    data.eventCallback(e);
                     break;
                 }
                 case GLFW_DISCONNECTED:
                 {
                     GamepadDisconnectedEvent e;
                     e.gid = jid;
-                    data.eventCallback(Event::create(e));
+                    data.eventCallback(e);
                     break;
                 }
             }
@@ -284,7 +284,7 @@ namespace oyl
                         event.gid         = jid;
                         event.button      = glfwToOylCode(button);
                         event.repeatCount = repeatCount[jid][button]++;
-                        m_data.eventCallback(Event::create(event));
+                        m_data.eventCallback(event);
                     } // Button released
                     else if (currState[jid].buttons[button] == GLFW_RELEASE &&
                              prevState[jid].buttons[button] == GLFW_PRESS)
@@ -292,7 +292,7 @@ namespace oyl
                         GamepadButtonReleasedEvent event;
                         event.gid    = jid;
                         event.button = glfwToOylCode(button);
-                        m_data.eventCallback(Event::create(event));
+                        m_data.eventCallback(event);
                         repeatCount[jid][button] = 0;
                     }
                 }
@@ -321,7 +321,7 @@ namespace oyl
                         event.y     = -dz.y;
                         event.dx    = pdz.x - dz.x;
                         event.dy    = -(pdz.y - dz.y);
-                        m_data.eventCallback(Event::create(event));
+                        m_data.eventCallback(event);
                     }
                 }
 
@@ -337,7 +337,7 @@ namespace oyl
                         event.trigger = i;
                         event.x       = x;
                         event.dx      = px - x;
-                        m_data.eventCallback(Event::create(event));
+                        m_data.eventCallback(event);
                     }
                 }
             }

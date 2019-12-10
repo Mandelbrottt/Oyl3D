@@ -42,7 +42,7 @@ namespace oyl
 
         const Ref<entt::registry>& getRegistry() { return m_registry; }
 
-        virtual bool onEvent(Ref<Event> event) override;
+        virtual bool onEvent(const Event& event) override;
 
     private:
         static WeakRef<Scene> s_current;

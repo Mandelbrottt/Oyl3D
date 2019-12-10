@@ -27,7 +27,7 @@ namespace oyl
     class Window
     {
     public:
-        using EventCallbackFn = std::function<void(UniqueRef<Event>)>;
+        using EventCallbackFn = std::function<void(const Event&)>;
     public:
         virtual ~Window() = default;
 

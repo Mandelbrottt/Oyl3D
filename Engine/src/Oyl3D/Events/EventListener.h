@@ -19,10 +19,13 @@ namespace oyl
         explicit IEventListener()  = default;
         virtual  ~IEventListener() = default;
 
-        virtual bool onEvent(Ref<Event> event) = 0;
+        //OYL_DEPRECATED("Use onEvent(Event event) instead.")
+        //virtual bool onEvent(Ref<Event> event) = 0;
 
-        OYL_DEPRECATED("Use postEvent(Event event) instead.")
-        virtual void postEvent(UniqueRef<Event> event) = 0;
+        virtual bool onEvent(const Event& event) = 0;
+
+        //OYL_DEPRECATED("Use postEvent(Event event) instead.")
+        //virtual void postEvent(UniqueRef<Event> event) = 0;
 
         virtual void postEvent(const Event& event) = 0;
 
@@ -52,10 +55,13 @@ namespace oyl
         explicit EventListener();
         virtual  ~EventListener();
 
-        bool onEvent(Ref<Event> event) override;
+        //OYL_DEPRECATED("Use onEvent(Event event) instead.")
+        //bool onEvent(Ref<Event> event) override;
 
-        OYL_DEPRECATED("Use postEvent(Event event) instead.")
-        void postEvent(UniqueRef<Event> event) override final;
+        bool onEvent(const Event& event) override;
+
+        //OYL_DEPRECATED("Use postEvent(Event event) instead.")
+        //void postEvent(UniqueRef<Event> event) override final;
 
         void postEvent(const Event& event) override final;
 

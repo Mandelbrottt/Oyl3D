@@ -95,15 +95,15 @@ public:
         }
     }
 
-    bool onEvent(Ref<Event> event) override
+    bool onEvent(const Event& event) override
     {
-        switch (event->type)
+        switch (event.type)
         {
             case TypeKeyReleased:
             {
                 Window& window = oyl::Application::get().getWindow();
 
-                auto e = (oyl::KeyReleasedEvent) *event;
+                auto e = OYL_EVENT_CAST(oyl::KeyReleasedEvent) event;
                 if (e.keycode == oyl::Key_F11)
                 {
                     // TODO: Make Event Request

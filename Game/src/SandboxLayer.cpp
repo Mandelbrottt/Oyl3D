@@ -230,8 +230,3 @@ void SandboxLayer::onGuiRender()
     
     ImGui::End();
 }
-
-bool SandboxLayer::onEvent(Ref<Event> event)
-{
-    return false;
-}

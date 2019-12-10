@@ -25,7 +25,7 @@ namespace oyl::internal
         virtual void onUpdate() override;
         virtual void onGuiRender() override;
 
-        virtual bool onEvent(Ref<Event> event) override;
+        virtual bool onEvent(const Event& event) override;
     };
 
     class GuiRenderSystem : public System
@@ -38,7 +38,7 @@ namespace oyl::internal
         virtual void onUpdate() override;
         virtual void onGuiRender() override;
 
-        virtual bool onEvent(Ref<Event> event) override;
+        virtual bool onEvent(const Event& event) override;
 
     private:
         Ref<Shader> m_shader;
@@ -56,7 +56,7 @@ namespace oyl::internal
         virtual void onUpdate() override;
         virtual void onGuiRender() override;
 
-        virtual bool onEvent(Ref<Event> event) override;
+        virtual bool onEvent(const Event& event) override;
     };
     
     class PhysicsSystem : public System
@@ -69,7 +69,7 @@ namespace oyl::internal
         virtual void onUpdate() override;
         virtual void onGuiRender() override;
 
-        virtual bool onEvent(Ref<Event> event) override;
+        virtual bool onEvent(const Event& event) override;
 
     private:
         void processIncomingRigidBody(entt::entity entity,
@@ -123,7 +123,7 @@ namespace oyl::internal
         virtual void onUpdate() override;
         virtual void onGuiRender() override;
 
-        virtual bool onEvent(Ref<Event> event) override;
+        virtual bool onEvent(const Event& event) override;
 
     private:
         void processCameraUpdate(const Ref<Camera>& camera);
@@ -146,7 +146,7 @@ namespace oyl::internal
         virtual void onUpdate() override;
         virtual void onGuiRender() override;
 
-        virtual bool onEvent(Ref<Event> event) override;
+        virtual bool onEvent(const Event& event) override;
 
         void init();
         void shutdown();

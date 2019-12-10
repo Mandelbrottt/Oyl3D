@@ -18,5 +18,5 @@ namespace oyl::internal
 
     void SystemsLayer::onGuiRender() {}
 
-    bool SystemsLayer::onEvent(Ref<Event> event) { return false; }
+    bool SystemsLayer::onEvent(const Event& event) { return false; }
 }

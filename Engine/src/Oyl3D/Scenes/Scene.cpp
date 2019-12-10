@@ -40,7 +40,7 @@ namespace oyl
         }
     }
 
-    bool Scene::onEvent(Ref<Event> event)
+    bool Scene::onEvent(const Event& event)
     {
         return false;
     }

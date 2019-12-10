@@ -27,7 +27,7 @@ namespace oyl
         virtual void onUpdate() override;
         virtual void onGuiRender() override;
 
-        virtual bool onEvent(Ref<Event> event) override;
+        virtual bool onEvent(const Event& event) override;
 
         void onUpdateSystems();
         void onGuiRenderSystems();

@@ -22,7 +22,7 @@ namespace oyl
 
     void Layer::onGuiRender() { }
 
-    bool Layer::onEvent(Ref<Event> event)
+    bool Layer::onEvent(const Event& event)
     {
         return false;
     }
