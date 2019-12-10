@@ -30,10 +30,10 @@ namespace oyl
         u32 type;
         u32 category;
 
-        static UniqueRef<Event> create(Event e)
+        static UniqueRef<Event> create(const Event& event)
         {
             auto sptr = UniqueRef<Event>::create();
-            *sptr     = e;
+            *sptr     = event;
             return sptr;
         }
     };
@@ -51,35 +51,12 @@ namespace oyl
                          i32 y;
                      });
 
-    union WindowResizedEvent
-    {
-        WindowResizedEvent() : type(TypeWindowResized), category(CategoryWindow), args{ 0 } {}
-        WindowResizedEvent(::oyl::Event& e) { *this = *reinterpret_cast<WindowResizedEvent*>(&e); }
-        operator ::oyl::Event() { return *reinterpret_cast<::oyl::Event*>(this); }
-
-        struct
-        {
-            ::oyl::u32 args[((32 - 8) / 4)];
-            ::oyl::u32 type;
-            ::oyl::u32 category;
-        };
-
-        struct
-        {
-            i32 width;
-            i32 height;
-        };
-
-    private:
-        struct _WindowResizedEvent
-        {
-            i32 width;
-            i32 height;
-        };
-
-        static_assert(sizeof(_WindowResizedEvent) <= 32);
-    };
-
+    OYL_EVENT_STRUCT(WindowResizedEvent, TypeWindowResized, CategoryWindow,
+                     {
+                         i32 width;
+                         i32 height;
+                     });
+    
     OYL_EVENT_STRUCT(WindowFocusedEvent, TypeWindowFocused, CategoryWindow,
                      {
                          i32 focused;

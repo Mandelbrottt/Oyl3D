@@ -485,7 +485,7 @@ namespace oyl::internal
         {
             EditorEntitySelectedEvent selected;
             selected.entity = entity;
-            postEvent(Event::create(selected));
+            postEvent(selected);
         }
     }
 
@@ -1266,7 +1266,7 @@ namespace oyl::internal
                 vrevent.width  = x;
                 vrevent.height = y - cy;
                 
-                postEvent(Event::create(vrevent));
+                postEvent(vrevent);
             }
             
             y -= cy;
@@ -1511,7 +1511,7 @@ namespace oyl::internal
                     // TODO: Store backup registry in scene?
                     *Scene::current()->m_registry = m_registryRestore.clone();
 
-                    postEvent(Event::create(PhysicsResetWorldEvent{}));
+                    postEvent(PhysicsResetWorldEvent{});
                     
                     auto view = registry->view<component::Transform>();
 

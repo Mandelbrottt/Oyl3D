@@ -64,6 +64,7 @@ namespace oyl
         m_listenerDeleteSet.emplace_back(std::move(listener));
     }
 
+    // TODO: Change to normal event instead of UniqueRef
     void EventDispatcher::postEvent(UniqueRef<Event> event)
     {
         if (event)

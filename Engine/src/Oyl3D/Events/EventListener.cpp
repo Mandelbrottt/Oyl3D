@@ -24,6 +24,11 @@ namespace oyl
         m_dispatcher->postEvent(std::move(event));
     }
 
+    void EventListener::postEvent(const Event& event)
+    {
+        m_dispatcher->postEvent(Event::create(event));
+    }
+
     void EventListener::listenForEventType(OylEnum type)
     {
         m_typeMask[(u32) type] = true;

@@ -21,7 +21,10 @@ namespace oyl
 
         virtual bool onEvent(Ref<Event> event) = 0;
 
+        OYL_DEPRECATED("Use postEvent(Event event) instead.")
         virtual void postEvent(UniqueRef<Event> event) = 0;
+
+        virtual void postEvent(const Event& event) = 0;
 
         virtual const EventMask&    getEventMask() const    = 0;
         virtual const CategoryMask& getCategoryMask() const = 0;
@@ -51,7 +54,10 @@ namespace oyl
 
         bool onEvent(Ref<Event> event) override;
 
+        OYL_DEPRECATED("Use postEvent(Event event) instead.")
         void postEvent(UniqueRef<Event> event) override final;
+
+        void postEvent(const Event& event) override final;
 
         const EventMask&    getEventMask() const override final { return m_typeMask; }
         const CategoryMask& getCategoryMask() const override final { return m_categoryMask; }

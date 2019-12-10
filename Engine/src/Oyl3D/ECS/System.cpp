@@ -1016,7 +1016,7 @@ namespace oyl
                         CursorStateRequestEvent cursorRequest;
                         cursorRequest.state = Cursor_Disabled;
 
-                        postEvent(Event::create(cursorRequest));
+                        postEvent(cursorRequest);
                     }
                     break;
                 }
@@ -1030,7 +1030,7 @@ namespace oyl
                         CursorStateRequestEvent cursorRequest;
                         cursorRequest.state = Cursor_Enabled;
 
-                        postEvent(Event::create(cursorRequest));
+                        postEvent(cursorRequest);
                     }
                     break;
                 }
@@ -1087,7 +1087,7 @@ namespace oyl
 
             EditorViewportHandleChangedEvent handleChanged;
             handleChanged.handle = m_editorViewportBuffer->getColorHandle(0);
-            postEvent(Event::create(handleChanged));
+            postEvent(handleChanged);
         }
 
         void EditorRenderSystem::onExit() { }
