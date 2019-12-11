@@ -44,15 +44,20 @@
 
 #include <entt/single_include/entt/entt.hpp>
 
+#define GLM_FORCE_ALIGNED_GENTYPES  1
+#define GLM_FORCE_SWIZZLE 1
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/matrix_inverse.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtx/spline.hpp>
 
+#define IMGUI_DEFINE_MATH_OPERATORS 1
 #include <imgui.h>
 #include <imguizmo/ImGuizmo.h>
 
 #include <nlohmann/json.hpp>
+using nlohmann::json;
 
 #include "Oyl3D/Common.h"
 #include "Oyl3D/Typedefs.h"
