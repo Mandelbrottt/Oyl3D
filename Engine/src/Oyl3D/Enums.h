@@ -25,6 +25,7 @@ namespace oyl
         TypeCursorStateRequest,
         TypePhysicsCollision, TypePhysicsResetWorld,
         TypeEditorViewportResized, TypeEditorViewportHandleChanged, TypeEditorEntitySelected,
+        TypeEditorCameraChanged,
         EventTypeCustomStart,
 
         // Event Categories //

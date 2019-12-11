@@ -1,16 +1,21 @@
 #pragma once
 
-#include "Component.h"
+#include "Components/Transform.h"
+#include "Components/Collidable.h"
+#include "Components/RigidBody.h"
+
+#include "Graphics/Buffer.h"
+
 #include "System.h"
 
 #include <btBulletDynamicsCommon.h>
 #include <btBulletCollisionCommon.h>
 
-#include "Graphics/Buffer.h"
 
 namespace oyl
 {
     class Shader;
+    class Camera;
 }
 
 namespace oyl::internal
@@ -73,9 +78,9 @@ namespace oyl::internal
 
     private:
         void processIncomingRigidBody(entt::entity entity,
-                                      const component::Transform& transformComponent,
-                                      const component::Collidable&  colliderComponent,
-                                      const component::RigidBody& rigidBodyComponent);
+                                      const component::Transform&  transformComponent,
+                                      const component::Collidable& colliderComponent,
+                                      const component::RigidBody&  rigidBodyComponent);
         
     private:
         Timestep m_fixedTimeStep;
@@ -126,7 +131,7 @@ namespace oyl::internal
         virtual bool onEvent(const Event& event) override;
 
     private:
-        void processCameraUpdate(const Ref<Camera>& camera);
+        Ref<Camera> m_camera;
 
         glm::vec3 m_cameraMove        = glm::vec3(0.0f);
         float     m_cameraMoveSpeed   = 15.0f;
@@ -153,5 +158,7 @@ namespace oyl::internal
 
     private:
         Ref<FrameBuffer> m_editorViewportBuffer;
+
+        Ref<Camera> m_targetCamera;
     };
 }

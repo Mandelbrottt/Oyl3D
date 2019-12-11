@@ -4,6 +4,11 @@
 
 // TODO: Turn off mouse input when cursor is disabled
 
+namespace oyl
+{
+    class Camera;
+}
+
 namespace oyl::internal
 {
     class GuiLayer : public Layer
@@ -86,5 +91,7 @@ namespace oyl::internal
         u32 m_currentCommandPos;
         
         std::unordered_map<std::string, std::fs::file_time_type> m_fileSaveTimes;
+
+        Ref<Camera> m_editorCamera;
     };
 }

@@ -9,7 +9,7 @@ namespace oyl::internal
 {
     bool Win32GamepadListener::onEvent(const Event& event)
     {
-        auto e = OYL_EVENT_CAST(GamepadVibrationEvent) event;
+        auto e = event_cast<GamepadVibrationEvent>(event);
     
         OYL_ASSERT(e.gid < 4);
     

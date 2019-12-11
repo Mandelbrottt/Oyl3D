@@ -22,12 +22,6 @@ private:                                                                        
     static_assert(sizeof(_##class_name) <= _OYL_EVENT_SIZE);                             \
 }
 
-#define OYL_EVENT_CAST(...) _OYL_MACRO_OVERLOAD(_OYL_EVENT_CAST, __VA_ARGS__)
-
-#define _OYL_EVENT_CAST_1(type)        (const type&)
-#define _OYL_EVENT_CAST_2(type, event) reinterpret_cast<const type&>(event)
-
-
 namespace oyl
 {
     struct Event
@@ -36,6 +30,12 @@ namespace oyl
         u32 type;
         u32 category;
     };
+    
+    template<class T>
+    static const T& event_cast(const Event& event)
+    {
+        return reinterpret_cast<const T&>(event);
+    }
     
     // Window Events //////////////////////////////////////////////////////
 
@@ -221,6 +221,13 @@ namespace oyl
     OYL_EVENT_STRUCT(EditorEntitySelectedEvent, TypeEditorEntitySelected, CategoryEditor, 
                      {
                          entt::entity entity;
+                     });
+
+    class Camera;
+    
+    OYL_EVENT_STRUCT(EditorCameraChangedEvent, TypeEditorCameraChanged, CategoryEditor,
+                     {
+                         Ref<Camera>* camera;
                      });
 
     //-Editor Events-//////////////////////////////////////////////////////

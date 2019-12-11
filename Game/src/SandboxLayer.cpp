@@ -24,7 +24,7 @@ void SandboxLayer::onEnter()
         t.setPosition(glm::vec3(0.0f));
         registry->assign<component::Transform>(e, t);
 
-        auto& so = registry->assign<component::SceneObject>(e);
+        auto& so = registry->assign<component::EntityInfo>(e);
         so.name = "Container";
 
         registry->assign<entt::tag<"Container"_hs>>(e);
@@ -55,7 +55,7 @@ void SandboxLayer::onEnter()
         auto& l = registry->assign<component::PointLight>(e2);
         l.ambient = glm::vec3(0.75f);
         
-        auto& so2 = registry->assign<component::SceneObject>(e2);
+        auto& so2 = registry->assign<component::EntityInfo>(e2);
         so2.name = "Light 1";
 
         {
@@ -70,7 +70,7 @@ void SandboxLayer::onEnter()
             l.ambient = glm::vec3(0.75f);
             l.specular = glm::vec3(0.5f);
 
-            auto& so2 = registry->assign<component::SceneObject>(e2);
+            auto& so2 = registry->assign<component::EntityInfo>(e2);
             so2.name = "Light 2";
         }
     }
@@ -87,7 +87,7 @@ void SandboxLayer::onEnter()
         t.setPosition(glm::vec3(0.0f, -5.0f, 0.0f));
         registry->assign<component::Transform>(e, t);
 
-        auto& so = registry->assign<component::SceneObject>(e);
+        auto& so = registry->assign<component::EntityInfo>(e);
         so.name = "Plane";
 
         auto& rb = registry->assign<component::RigidBody>(e);
@@ -110,7 +110,7 @@ void SandboxLayer::onEnter()
         t.setPosition(glm::vec3(-3.0f, -1.0f, -2.0f));
         registry->assign<component::Transform>(e, t);
 
-        auto& so = registry->assign<component::SceneObject>(e);
+        auto& so = registry->assign<component::EntityInfo>(e);
         so.name = "Sphere 1";
         
         auto& rb = registry->assign<component::RigidBody>(e);
@@ -133,7 +133,7 @@ void SandboxLayer::onEnter()
         t.setPosition(glm::vec3(-3.0f, -1.0f, -2.0f));
         registry->assign<component::Transform>(e, t);
 
-        auto& so = registry->assign<component::SceneObject>(e);
+        auto& so = registry->assign<component::EntityInfo>(e);
         so.name = "Sphere 2";
 
         auto& rb = registry->assign<component::RigidBody>(e);
@@ -159,7 +159,7 @@ void SandboxLayer::onEnter()
         t.setPosition(glm::vec3(0.0f, 0.0f, 0.0f));
         registry->assign<component::Transform>(e, t);
 
-        auto& so = registry->assign<component::SceneObject>(e);
+        auto& so = registry->assign<component::EntityInfo>(e);
         so.name = "Ship";
 
         for (int i = 0; i < 12; i++)
@@ -176,7 +176,7 @@ void SandboxLayer::onEnter()
             t.setPosition(glm::vec3(0.0f, 0.0f, 0.0f));
             registry->assign<component::Transform>(e2, t);
 
-            auto& so = registry->assign<component::SceneObject>(e2);
+            auto& so = registry->assign<component::EntityInfo>(e2);
             so.name = "Ship Collider Object " + std::to_string(i + 1);
 
             auto& rb = registry->assign<component::RigidBody>(e2);

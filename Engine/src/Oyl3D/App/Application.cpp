@@ -158,14 +158,14 @@ namespace oyl
             }
             case TypeWindowResized:
             {
-                auto e = OYL_EVENT_CAST(WindowResizedEvent) event;
+                auto e = event_cast<WindowResizedEvent>(event);
                 m_window->updateViewport(e.width, e.height);
                 m_mainBuffer->updateViewport(e.width, e.height);
                 break;
             }
             case TypeWindowFocused:
             {
-                auto e = OYL_EVENT_CAST(WindowFocusedEvent) event;
+                auto e = event_cast<WindowFocusedEvent>(event);
             #if defined(OYL_DISTRIBUTION)
                 m_doUpdate = e.focused;
             #endif
@@ -173,7 +173,7 @@ namespace oyl
             }
             case TypeCursorStateRequest:
             {
-                auto e = OYL_EVENT_CAST(CursorStateRequestEvent) event;
+                auto e = event_cast<CursorStateRequestEvent>(event);
                 if (m_window->getCursorState() != e.state)
                     m_window->setCursorState(e.state);
                 break;

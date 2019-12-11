@@ -1,9 +1,14 @@
 #include "oylpch.h"
 
+#include "Components/Animatable.h"
+#include "Components/Camera.h"
+#include "Components/Lights.h"
+#include "Components/Misc.h"
+#include "Components/Renderable.h"
+#include "Components/Transform.h"
+
 #include "ECS/System.h"
 #include "ECS/SystemImpl.h"
-
-#include "ECS/Component.h"
 
 #include "Events/Event.h"
 #include "Events/EventListener.h"
@@ -48,7 +53,6 @@ namespace oyl
             using component::Renderable;
             using component::PlayerCamera;
             using component::PointLight;
-            using component::internal::EditorCamera;
 
             const auto& skybox = TextureCubeMap::get(DEFAULT_SKYBOX_ALIAS);
             const auto& shader = Shader::get(SKYBOX_SHADER_ALIAS);
@@ -139,9 +143,9 @@ namespace oyl
                     
                     glm::mat4 transform = view.get<Transform>(entity).getMatrixGlobal();
 
-                    if (registry->has<component::Animator>(entity))
+                    if (registry->has<component::Animatable>(entity))
                     {
-                        auto& anim = registry->get<component::Animator>(entity);
+                        auto& anim = registry->get<component::Animatable>(entity);
                         if (anim.getVertexArray())
                         {
                             anim.m_vao->bind();
@@ -264,7 +268,7 @@ namespace oyl
             switch (event.type)
             {
                 case TypeWindowResized:
-                    auto e = OYL_EVENT_CAST(WindowResizedEvent) event;
+                    auto e = event_cast<WindowResizedEvent>(event);
                     f32 aspectRatio = (float) e.width / (float) e.height;
                     f32 size = 10.0f;
                     glm::mat4 projection = glm::ortho(-size * aspectRatio / 2.0f, 
@@ -290,7 +294,7 @@ namespace oyl
 
         void AnimationSystem::onUpdate()
         {
-            auto view = registry->view<component::Animator>();
+            auto view = registry->view<component::Animatable>();
             for (auto entity : view)
             {
                 auto& anim = view.get(entity);
@@ -580,8 +584,8 @@ namespace oyl
         {
             using component::Transform;
             using component::RigidBody;
-            using component::SceneObject;
-            auto view = registry->view<SceneObject, RigidBody>();
+            using component::EntityInfo;
+            auto view = registry->view<EntityInfo, RigidBody>();
 
             ImGui::Begin("Physics");
 
@@ -589,7 +593,7 @@ namespace oyl
             {
                 auto& rb = view.get<RigidBody>(entity);
                 ImGui::Text("%s: X(%.3f) Y(%.3f) Z(%.3f)",
-                            view.get<SceneObject>(entity).name.c_str(),
+                            view.get<EntityInfo>(entity).name.c_str(),
                             rb.getVelocity().x,
                             rb.getVelocity().y, 
                             rb.getVelocity().z);
@@ -904,9 +908,6 @@ namespace oyl
 
         void EditorCameraSystem::onEnter()
         {
-            using component::internal::EditorCamera;
-            using component::internal::ExcludeFromHierarchy;
-
             listenForEventType(TypeKeyPressed);
             listenForEventType(TypeKeyReleased);
             listenForEventType(TypeMouseMoved);
@@ -914,29 +915,39 @@ namespace oyl
             listenForEventType(TypeMouseReleased);
             listenForEventType(TypeEditorViewportResized);
 
-            EditorCamera cam;
-            cam.camera = Ref<Camera>::create();
-            cam.camera->setProjection(glm::perspective(glm::radians(60.0f), 16.0f / 9.0f, 0.01f, 1000.0f));
-            cam.camera->setPosition(glm::vec3(10.0f, 5.0f, 10.0f));
-            cam.camera->lookAt(glm::vec3(0.0f, 0.0f, 0.0f));
+            m_camera = Ref<Camera>::create();
+            m_camera->setProjection(glm::perspective(glm::radians(60.0f), 16.0f / 9.0f, 0.1f, 1000.0f));
+            m_camera->setPosition(glm::vec3(10.0f, 5.0f, 10.0f));
+            m_camera->lookAt(glm::vec3(0.0f, 0.0f, 0.0f));
 
-            auto e = registry->create();
-            registry->assign<EditorCamera>(e, cam);
-            registry->assign<ExcludeFromHierarchy>(e);
+            EditorCameraChangedEvent ccEvent;
+            ccEvent.camera = &m_camera;
+
+            postEvent(ccEvent);
         }
 
         void EditorCameraSystem::onExit() { }
 
         void EditorCameraSystem::onUpdate()
         {
-            using component::internal::EditorCamera;
-
-            auto view = registry->view<EditorCamera>();
-            for (auto& entity : view)
+            if (!m_doMoveCamera)
             {
-                auto cam = registry->get<EditorCamera>(entity).camera;
-                processCameraUpdate(cam);
+                m_cameraMove = glm::vec3(0.0f);
+                m_cameraRotate = glm::vec3(0.0f);
+                return;
             }
+
+            m_camera->move(m_cameraMove * Time::deltaTime());
+
+            static glm::vec3 realRotation = glm::vec3(20.0f, -45.0f, 0.0f);
+
+            realRotation += m_cameraRotate * m_cameraRotateSpeed * Time::deltaTime();
+            if (realRotation.x > 89.0f) realRotation.x = 89.0f;
+            if (realRotation.x < -89.0f) realRotation.x = -89.0f;
+
+            m_camera->setRotation(realRotation);
+
+            m_cameraRotate = glm::vec3(0.0f);
         }
 
         void EditorCameraSystem::onGuiRender()
@@ -957,7 +968,7 @@ namespace oyl
                 {
                     if (!m_doMoveCamera) break;
 
-                    auto e = OYL_EVENT_CAST(KeyPressedEvent) event;
+                    auto e = event_cast<KeyPressedEvent>(event);
                     if (!e.repeatCount)
                     {
                         if (e.keycode == Key_W)
@@ -979,7 +990,7 @@ namespace oyl
                 {
                     if (!m_doMoveCamera) break;
                     
-                    auto e = OYL_EVENT_CAST(KeyReleasedEvent) event;
+                    auto e = event_cast<KeyReleasedEvent>(event);
                     if (e.keycode == Key_W)
                         m_cameraMove.z += m_cameraMoveSpeed;
                     if (e.keycode == Key_S)
@@ -998,7 +1009,7 @@ namespace oyl
                 {
                     if (!m_doMoveCamera) break;
 
-                    auto e = OYL_EVENT_CAST(MouseMovedEvent) event;
+                    auto e = event_cast<MouseMovedEvent>(event);
                     m_cameraRotate.y = e.dx;
                     m_cameraRotate.x = e.dy;
 
@@ -1006,7 +1017,7 @@ namespace oyl
                 }
                 case TypeMousePressed:
                 {
-                    auto e = OYL_EVENT_CAST(MousePressedEvent) event;
+                    auto e = event_cast<MousePressedEvent>(event);
                     if (e.button == Mouse_Right)
                     {
                         m_doMoveCamera = true;
@@ -1020,7 +1031,7 @@ namespace oyl
                 }
                 case TypeMouseReleased:
                 {
-                    auto e = OYL_EVENT_CAST(MouseReleasedEvent) event;
+                    auto e = event_cast<MouseReleasedEvent>(event);
                     if (e.button == Mouse_Right)
                     {
                         m_doMoveCamera = false;
@@ -1034,40 +1045,12 @@ namespace oyl
                 }
                 case TypeEditorViewportResized:
                 {
-                    using component::internal::EditorCamera;
-                    
-                    auto e    = OYL_EVENT_CAST(EditorViewportResizedEvent) event;
-                    auto view = registry->view<EditorCamera>();
-
-                    auto pc = view.get(*view.begin());
-
-                    glm::mat4 proj = glm::perspective(glm::radians(60.0f), e.width / e.height, 0.01f, 1000.0f);
-                    pc.camera->setProjection(proj);
+                    auto e = event_cast<EditorViewportResizedEvent>(event);
+                    glm::mat4 proj = glm::perspective(glm::radians(60.0f), e.width / e.height, 0.1f, 1000.0f);
+                    m_camera->setProjection(proj);
                 }
             }
             return false;
-        }
-
-        void EditorCameraSystem::processCameraUpdate(const Ref<Camera>& camera)
-        {
-            if (!m_doMoveCamera)
-            {
-                m_cameraMove   = glm::vec3(0.0f);
-                m_cameraRotate = glm::vec3(0.0f);
-                return;
-            }
-
-            camera->move(m_cameraMove * Time::deltaTime());
-
-            static glm::vec3 realRotation = glm::vec3(20.0f, -45.0f, 0.0f);
-
-            realRotation += m_cameraRotate * m_cameraRotateSpeed * Time::deltaTime();
-            if (realRotation.x > 89.0f) realRotation.x = 89.0f;
-            if (realRotation.x < -89.0f) realRotation.x = -89.0f;
-
-            camera->setRotation(realRotation);
-
-            m_cameraRotate = glm::vec3(0.0f);
         }
 
         // ^^^ Editor Camera System vvv //
@@ -1077,7 +1060,7 @@ namespace oyl
         void EditorRenderSystem::onEnter()
         {
             listenForEventType(TypeWindowResized);
-            listenForAllEvents();
+            listenForEventType(TypeEditorCameraChanged);
 
             m_editorViewportBuffer = FrameBuffer::create(1);
             m_editorViewportBuffer->initDepthTexture(1, 1);
@@ -1096,21 +1079,16 @@ namespace oyl
             using component::Renderable;
             using component::PlayerCamera;
             using component::PointLight;
-            using component::internal::EditorCamera;
             
             m_editorViewportBuffer->clear();
             m_editorViewportBuffer->bind();
-
-            // TODO: Make EditorCamera like PlayerCamers
-            auto camView = registry->view<EditorCamera>();
-            Ref<Camera> currentCamera = camView.get(*camView.begin()).camera;
 
             const auto& skybox = TextureCubeMap::get(DEFAULT_SKYBOX_ALIAS);
             const auto& shader = Shader::get(SKYBOX_SHADER_ALIAS);
             const auto& mesh   = Mesh::get(CUBE_MESH_ALIAS);
 
-            glm::mat4 viewProj = currentCamera->getProjectionMatrix();
-            viewProj *= glm::mat4(glm::mat3(currentCamera->getViewMatrix()));
+            glm::mat4 viewProj = m_targetCamera->getProjectionMatrix();
+            viewProj *= glm::mat4(glm::mat3(m_targetCamera->getViewMatrix()));
             shader->bind();
             shader->setUniformMat4("u_viewProjection", viewProj);
 
@@ -1150,9 +1128,9 @@ namespace oyl
                     *boundMaterial = *mr.material;
                     boundMaterial->shader = tempShader;
 
-                    boundMaterial->setUniformMat4("u_view", currentCamera->getViewMatrix());
-                    boundMaterial->setUniformMat4("u_viewProjection", currentCamera->getViewProjectionMatrix());
-                    glm::mat4 viewNormal = glm::mat4(currentCamera->getViewMatrix());
+                    boundMaterial->setUniformMat4("u_view", m_targetCamera->getViewMatrix());
+                    boundMaterial->setUniformMat4("u_viewProjection", m_targetCamera->getViewProjectionMatrix());
+                    glm::mat4 viewNormal = glm::mat4(m_targetCamera->getViewMatrix());
                     viewNormal = glm::inverse(glm::transpose(viewNormal));
                     boundMaterial->setUniformMat3("u_viewNormal", glm::mat4(viewNormal));
 
@@ -1164,7 +1142,7 @@ namespace oyl
                         auto lightTransform = registry->get<Transform>(light);
 
                         boundMaterial->setUniform3f("u_pointLight[" + std::to_string(count) + "].position",
-                                                    currentCamera->getViewMatrix() * glm::vec4(lightTransform.getPositionGlobal(), 1.0f));
+                                                    m_targetCamera->getViewMatrix() * glm::vec4(lightTransform.getPositionGlobal(), 1.0f));
                         boundMaterial->setUniform3f("u_pointLight[" + std::to_string(count) + "].ambient",
                                                     lightProps.ambient);
                         boundMaterial->setUniform3f("u_pointLight[" + std::to_string(count) + "].diffuse",
@@ -1194,9 +1172,14 @@ namespace oyl
             {
                 case TypeWindowResized:
                 {
-                    auto e = OYL_EVENT_CAST(WindowResizedEvent) event;
+                    auto e = event_cast<WindowResizedEvent>(event);
                     m_editorViewportBuffer->updateViewport(e.width, e.height);
                     return true;
+                }
+                case TypeEditorCameraChanged:
+                {
+                    auto e = event_cast<EditorCameraChangedEvent>(event);
+                    m_targetCamera = *e.camera;
                 }
             }
             return false;
