@@ -56,8 +56,7 @@ namespace oyl::internal
     void Win32Time::updateImpl()
     {
         static LARGE_INTEGER lli;
-        static double lastTime;
-        
+
         m_timeScale = m_timeScaleHint;
 
         LARGE_INTEGER li;
@@ -76,7 +75,5 @@ namespace oyl::internal
         m_time = m_unscaledTime + m_timeDifference;
 
         lli = li;
-        
-        lastTime = currentTime;
     }
 }
