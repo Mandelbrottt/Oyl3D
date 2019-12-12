@@ -66,8 +66,7 @@ namespace oyl::internal
 
         double currentTime = static_cast<double>(li.QuadPart - lli.QuadPart) / m_frequency;
 
-        m_unscaledDeltaTime = static_cast<float>(currentTime);
-        m_unscaledDeltaTime = glm::clamp(m_unscaledDeltaTime, 0.0001f, 0.01f);
+        m_unscaledDeltaTime = glm::clamp(static_cast<float>(currentTime), 0.0001f, 0.1f);
         m_deltaTime = m_unscaledDeltaTime * m_timeScale;
 
         m_timeDifference += m_unscaledDeltaTime - m_deltaTime;

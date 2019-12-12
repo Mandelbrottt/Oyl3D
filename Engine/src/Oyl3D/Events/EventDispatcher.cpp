@@ -66,12 +66,9 @@ namespace oyl
 
     void EventDispatcher::postEvent(const Event& event)
     {
-        if (event.type != None && event.category != None)
-        {
-            UniqueRef<Event> eventToQueue = UniqueRef<Event>::create();
-            *eventToQueue = event;
-            m_eventQueue.emplace_back(std::move(eventToQueue));
-        }
+        UniqueRef<Event> eventToQueue = UniqueRef<Event>::create();
+        *eventToQueue = event;
+        m_eventQueue.emplace_back(std::move(eventToQueue));
     }
 
     void EventDispatcher::validateListeners()
@@ -150,8 +147,8 @@ namespace oyl
         {
             auto li = listener.listener.lock();
             
-            if (li->getEventMask()[event->type] ||
-                li->getCategoryMask()[event->category])
+            if (li->getEventMask()[(i32) event->type] ||
+                li->getCategoryMask()[(i32) event->category])
             {
                 if (li->onEvent(*event))
                     break;

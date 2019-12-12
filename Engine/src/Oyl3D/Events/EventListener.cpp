@@ -34,14 +34,14 @@ namespace oyl
         m_dispatcher->postEvent(event);
     }
 
-    void EventListener::listenForEventType(OylEnum type)
+    void EventListener::listenForEventType(EventType type)
     {
-        m_typeMask[(u32) type] = true;
+        m_typeMask[(i32) type] = true;
     }
 
-    void EventListener::listenForEventCategory(OylEnum category)
+    void EventListener::listenForEventCategory(EventCategory category)
     {
-        m_categoryMask[(u32) category] = true;
+        m_categoryMask[(i32) category] = true;
     }
 
     void EventListener::listenForAllEvents()

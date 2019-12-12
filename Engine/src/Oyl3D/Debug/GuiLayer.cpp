@@ -2,6 +2,7 @@
 #include "GuiLayer.h"
 
 #include "App/Application.h"
+#include "App/Window.h"
 
 #include "Components/Animatable.h"
 #include "Components/Collidable.h"
@@ -19,6 +20,8 @@
 #include "Graphics/Mesh.h"
 #include "Graphics/Shader.h"
 #include "Graphics/Texture.h"
+
+#include "Input/Input.h"
 
 #include <examples/imgui_impl_glfw.h>
 #include <examples/imgui_impl_opengl3.h>
@@ -265,31 +268,31 @@ namespace oyl::internal
     {
         switch (event.type)
         {
-            case TypeEditorViewportHandleChanged:
+            case EventType::EditorViewportHandleChanged:
             {
                 auto e = event_cast<EditorViewportHandleChangedEvent>(event);
                 m_editorViewportHandle = e.handle;
                 return false;
             }
-            case TypeEditorEntitySelected:
+            case EventType::EditorEntitySelected:
             {
                 auto e = event_cast<EditorEntitySelectedEvent>(event);
                 m_currentEntity = e.entity;
                 return true;
             }
-            case TypeEditorCameraChanged:
+            case EventType::EditorCameraChanged:
             {
                 auto e = event_cast<EditorCameraChangedEvent>(event);
                 m_editorCamera = *e.camera;
                 return false;
             }
-            case TypeViewportHandleChanged:
+            case EventType::ViewportHandleChanged:
             {
                 auto e = event_cast<ViewportHandleChangedEvent>(event);
                 m_gameViewportHandle = e.handle;
                 return false;
             }
-            case TypeMousePressed:
+            case EventType::MousePressed:
             {
                 //auto e = (MousePressedEvent) *event;
                 //if (e.button == Mouse_Right)
@@ -298,14 +301,14 @@ namespace oyl::internal
                 //}
                 break;
             }
-            case TypeWindowResized:
+            case EventType::WindowResized:
             {
                 break;
             }
-            case TypeKeyReleased:
+            case EventType::KeyReleased:
             {
                 auto e = event_cast<KeyReleasedEvent>(event);
-                if (e.keycode == Key_F1)
+                if (e.keycode == Key::F1)
                     updateAssetList();
             }
         }

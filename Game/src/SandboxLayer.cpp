@@ -206,16 +206,16 @@ void SandboxLayer::onUpdate()
     
     glm::vec3 desiredVel = {};
     
-    if (Input::isKeyPressed(Key_W))
+    if (Input::isKeyPressed(Key::W))
         desiredVel = tr.getForward() * forceSpeed;
                                          
-    if (Input::isKeyPressed(Key_S))      
+    if (Input::isKeyPressed(Key::S))      
         desiredVel = -tr.getForward() * forceSpeed;
 
-    if (Input::isKeyPressed(Key_A))
+    if (Input::isKeyPressed(Key::A))
         desiredVel = -tr.getRight() * forceSpeed;
 
-    if (Input::isKeyPressed(Key_D))
+    if (Input::isKeyPressed(Key::D))
         desiredVel = tr.getRight() * forceSpeed;
 
     if (desiredVel != glm::vec3(0.0f))

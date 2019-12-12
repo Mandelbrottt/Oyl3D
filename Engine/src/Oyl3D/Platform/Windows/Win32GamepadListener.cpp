@@ -9,7 +9,7 @@ namespace oyl::internal
 {
     bool Win32GamepadListener::onEvent(const Event& event)
     {
-        auto e = event_cast<GamepadVibrationEvent>(event);
+        auto e = event_cast<GamepadVibrationRequestEvent>(event);
     
         OYL_ASSERT(e.gid < 4);
     
@@ -31,7 +31,7 @@ namespace oyl::internal
             currRightTime = std::max(currRightTime, e.rightTime);
             currRightVibe = std::max(currRightVibe, e.rightMotor);
         }
-        return false;
+        return true;
     }
     
     void Win32GamepadListener::onUpdate()

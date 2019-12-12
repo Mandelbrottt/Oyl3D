@@ -3,6 +3,10 @@
 namespace oyl
 {
     class EventDispatcher;
+
+    enum class EventType;
+    enum class EventCategory;
+
     struct Event;
     
     class IEventListener
@@ -19,13 +23,7 @@ namespace oyl
         explicit IEventListener()  = default;
         virtual  ~IEventListener() = default;
 
-        //OYL_DEPRECATED("Use onEvent(Event event) instead.")
-        //virtual bool onEvent(Ref<Event> event) = 0;
-
         virtual bool onEvent(const Event& event) = 0;
-
-        //OYL_DEPRECATED("Use postEvent(Event event) instead.")
-        //virtual void postEvent(UniqueRef<Event> event) = 0;
 
         virtual void postEvent(const Event& event) = 0;
 
@@ -37,9 +35,9 @@ namespace oyl
         OYL_DEPRECATED("Use listenForEventCategory() instead.")
         virtual void addToCategoryMask(OylEnum eventCategory) = 0;
 
-        virtual void listenForEventType(OylEnum type)         = 0;
-        virtual void listenForEventCategory(OylEnum category) = 0;
-        virtual void listenForAllEvents()                     = 0;
+        virtual void listenForEventType(EventType type)             = 0;
+        virtual void listenForEventCategory(EventCategory category) = 0;
+        virtual void listenForAllEvents()                           = 0;
         
         virtual void ignoreEventType(OylEnum type)         = 0;
         virtual void ignoreEventCategory(OylEnum category) = 0;
@@ -55,13 +53,7 @@ namespace oyl
         explicit EventListener();
         virtual  ~EventListener();
 
-        //OYL_DEPRECATED("Use onEvent(Event event) instead.")
-        //bool onEvent(Ref<Event> event) override;
-
         bool onEvent(const Event& event) override;
-
-        //OYL_DEPRECATED("Use postEvent(Event event) instead.")
-        //void postEvent(UniqueRef<Event> event) override final;
 
         void postEvent(const Event& event) override final;
 
@@ -69,13 +61,13 @@ namespace oyl
         const CategoryMask& getCategoryMask() const override final { return m_categoryMask; }
 
         OYL_DEPRECATED("Use listenForEventType() instead.")
-        void addToEventMask(OylEnum eventType) override final { listenForEventType(eventType); }
+        void addToEventMask(OylEnum eventType) override final { listenForEventType((EventType) eventType); }
 
         OYL_DEPRECATED("Use listenForEventCategory() instead.")
-        void addToCategoryMask(OylEnum eventCategory) override final { listenForEventCategory(eventCategory); }
+        void addToCategoryMask(OylEnum eventCategory) override final { listenForEventCategory((EventCategory) eventCategory); }
 
-        void listenForEventType(OylEnum type) override final;
-        void listenForEventCategory(OylEnum category) override final;
+        void listenForEventType(EventType type) override final;
+        void listenForEventCategory(EventCategory category) override final;
 
         void listenForAllEvents() override final;
 

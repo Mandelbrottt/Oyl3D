@@ -3,9 +3,6 @@
 
 #include "SystemsLayer.h"
 
-#include "ECS/SystemImpl.h"
-#include "ECS/Component.h"
-
 #include "Events/EventDispatcher.h"
 
 #include "Utils/SceneToFile.h"

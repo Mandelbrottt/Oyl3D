@@ -9,7 +9,7 @@ namespace oyl
     class Win32Window : public Window
     {
     public:
-        Win32Window(const WindowProps& props);
+        explicit Win32Window(const WindowProps& props);
         virtual ~Win32Window();
 
         void onUpdate(bool doSwapBuffers = true) override;
@@ -22,11 +22,11 @@ namespace oyl
         virtual void setVsync(bool enabled) override;
         virtual bool isVsync() const override;
 
-        virtual void    setFullscreenType(OylEnum enabled) override;
-        virtual OylEnum getFullscreenType() const override;
+        virtual void setWindowState(WindowState state) override;
+        virtual WindowState getWindowState() const override;
 
-        virtual void setCursorState(OylEnum state) override;
-        virtual OylEnum getCursorState() const override;
+        virtual void setCursorState(CursorState state) override;
+        virtual CursorState getCursorState() const override;
 
         virtual void updateViewport(int width, int height) override;
 
@@ -54,7 +54,7 @@ namespace oyl
 
             GLFWmonitor* monitor = nullptr;
 
-            OylEnum fullscreenType = Windowed;
+            WindowState windowState = WindowState::Windowed;
 
             EventCallbackFn eventCallback;
         };

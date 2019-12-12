@@ -205,19 +205,19 @@ namespace oyl::internal
 
                         switch (info.type)
                         {
-                            case VertexShader:
+                            case Shader::Vertex:
                                 type = "Vertex";
                                 break;
-                            case GeometryShader:
+                            case Shader::Geometry:
                                 type = "Geometry";
                                 break;
-                            case TessControlShader:
+                            case Shader::TessControl:
                                 type = "TessControl";
                                 break;
-                            case TessEvaluationShader:
+                            case Shader::TessEvaluation:
                                 type = "TessEvaluation";
                                 break;
-                            case PixelShader:
+                            case Shader::Pixel:
                                 type = "Pixel";
                                 break;
                             default:
@@ -353,19 +353,19 @@ namespace oyl::internal
                     infos.reserve(5);
                     
                     if (jSha.find("Vertex") != jSha.end())
-                        infos.push_back({ VertexShader, jSha["Vertex"].get<std::string>() });
+                        infos.push_back({ Shader::Vertex, jSha["Vertex"].get<std::string>() });
 
                     if (jSha.find("Geometry") != jSha.end())
-                        infos.push_back({ GeometryShader, jSha["Geometry"].get<std::string>() });
+                        infos.push_back({ Shader::Geometry, jSha["Geometry"].get<std::string>() });
 
                     if (jSha.find("TessControl") != jSha.end())
-                        infos.push_back({ TessControlShader, jSha["TessControl"].get<std::string>() });
+                        infos.push_back({ Shader::TessControl, jSha["TessControl"].get<std::string>() });
 
                     if (jSha.find("TessEvaluation") != jSha.end())
-                        infos.push_back({ TessEvaluationShader, jSha["TessEvaluation"].get<std::string>() });
+                        infos.push_back({ Shader::TessEvaluation, jSha["TessEvaluation"].get<std::string>() });
 
                     if (jSha.find("Pixel") != jSha.end())
-                        infos.push_back({ PixelShader, jSha["Pixel"].get<std::string>() });
+                        infos.push_back({ Shader::Pixel, jSha["Pixel"].get<std::string>() });
 
                     Shader::cache(infos, alias);
                 }

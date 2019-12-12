@@ -7,8 +7,6 @@
 
 namespace oyl
 {
-    //Renderer::SceneData* Renderer::s_sceneData = new Renderer::SceneData;
-
     void Renderer::beginScene() { }
 
     void Renderer::endScene() { }

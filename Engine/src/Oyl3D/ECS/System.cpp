@@ -17,10 +17,11 @@
 #include "Graphics/Material.h"
 #include "Graphics/Shader.h"
 #include "Graphics/Texture.h"
+#include "App/Window.h"
+
+#include "Input/Input.h"
 
 #include "Rendering/Renderer.h"
-
-#include "Scenes/Scene.h"
 
 #include <btBulletDynamicsCommon.h>
 #include <btBulletCollisionCommon.h>
@@ -178,7 +179,7 @@ namespace oyl
 
         void GuiRenderSystem::onEnter()
         {
-            listenForEventType(TypeWindowResized);
+            listenForEventType(EventType::WindowResized);
             m_shader = Shader::get("texturedQuad");
 
             float vertices[] = {
@@ -197,8 +198,8 @@ namespace oyl
             m_vao = VertexArray::create();
             Ref<VertexBuffer> vbo = VertexBuffer::create(vertices, sizeof(vertices));
             vbo->setLayout({
-                { Float3, "in_position" },
-                { Float2, "in_texCoord" }
+                { DataType::Float3, "in_position" },
+                { DataType::Float2, "in_texCoord" }
             });
             Ref<IndexBuffer> ebo = IndexBuffer::create(indices, 6);
             m_vao->addVertexBuffer(vbo);
@@ -267,7 +268,7 @@ namespace oyl
         {
             switch (event.type)
             {
-                case TypeWindowResized:
+                case EventType::WindowResized:
                     auto e = event_cast<WindowResizedEvent>(event);
                     f32 aspectRatio = (float) e.width / (float) e.height;
                     f32 size = 10.0f;
@@ -366,7 +367,7 @@ namespace oyl
         
         void PhysicsSystem::onEnter()
         {
-            listenForEventType(TypePhysicsResetWorld);
+            listenForEventType(EventType::PhysicsResetWorld);
             
             m_fixedTimeStep = 1.0f / 60.0f;
 
@@ -606,7 +607,7 @@ namespace oyl
         {
             switch (event.type)
             {
-                case TypePhysicsResetWorld:
+                case EventType::PhysicsResetWorld:
                 {
                     onExit();
                     onEnter();
@@ -908,12 +909,12 @@ namespace oyl
 
         void EditorCameraSystem::onEnter()
         {
-            listenForEventType(TypeKeyPressed);
-            listenForEventType(TypeKeyReleased);
-            listenForEventType(TypeMouseMoved);
-            listenForEventType(TypeMousePressed);
-            listenForEventType(TypeMouseReleased);
-            listenForEventType(TypeEditorViewportResized);
+            listenForEventType(EventType::KeyPressed);
+            listenForEventType(EventType::KeyReleased);
+            listenForEventType(EventType::MouseMoved);
+            listenForEventType(EventType::MousePressed);
+            listenForEventType(EventType::MouseReleased);
+            listenForEventType(EventType::EditorViewportResized);
 
             m_camera = Ref<Camera>::create();
             m_camera->setProjection(glm::perspective(glm::radians(60.0f), 16.0f / 9.0f, 0.1f, 1000.0f));
@@ -964,48 +965,48 @@ namespace oyl
         {
             switch (event.type)
             {
-                case TypeKeyPressed:
+                case EventType::KeyPressed:
                 {
                     if (!m_doMoveCamera) break;
 
                     auto e = event_cast<KeyPressedEvent>(event);
                     if (!e.repeatCount)
                     {
-                        if (e.keycode == Key_W)
+                        if (e.keycode == Key::W)
                             m_cameraMove.z -= m_cameraMoveSpeed;
-                        if (e.keycode == Key_S)
+                        if (e.keycode == Key::S)
                             m_cameraMove.z += m_cameraMoveSpeed;
-                        if (e.keycode == Key_D)
+                        if (e.keycode == Key::D)
                             m_cameraMove.x += m_cameraMoveSpeed;
-                        if (e.keycode == Key_A)
+                        if (e.keycode == Key::A)
                             m_cameraMove.x -= m_cameraMoveSpeed;
-                        if (e.keycode == Key_Space)
+                        if (e.keycode == Key::Space)
                             m_cameraMove.y += m_cameraMoveSpeed;
-                        if (e.keycode == Key_LeftControl)
+                        if (e.keycode == Key::LeftControl)
                             m_cameraMove.y -= m_cameraMoveSpeed;
                     }
                     break;
                 }
-                case TypeKeyReleased:
+                case EventType::KeyReleased:
                 {
                     if (!m_doMoveCamera) break;
                     
                     auto e = event_cast<KeyReleasedEvent>(event);
-                    if (e.keycode == Key_W)
+                    if (e.keycode == Key::W)
                         m_cameraMove.z += m_cameraMoveSpeed;
-                    if (e.keycode == Key_S)
+                    if (e.keycode == Key::S)
                         m_cameraMove.z -= m_cameraMoveSpeed;
-                    if (e.keycode == Key_D)
+                    if (e.keycode == Key::D)
                         m_cameraMove.x -= m_cameraMoveSpeed;
-                    if (e.keycode == Key_A)
+                    if (e.keycode == Key::A)
                         m_cameraMove.x += m_cameraMoveSpeed;
-                    if (e.keycode == Key_Space)
+                    if (e.keycode == Key::Space)
                         m_cameraMove.y -= m_cameraMoveSpeed;
-                    if (e.keycode == Key_LeftControl)
+                    if (e.keycode == Key::LeftControl)
                         m_cameraMove.y += m_cameraMoveSpeed;
                     break;
                 }
-                case TypeMouseMoved:
+                case EventType::MouseMoved:
                 {
                     if (!m_doMoveCamera) break;
 
@@ -1015,35 +1016,35 @@ namespace oyl
 
                     break;
                 }
-                case TypeMousePressed:
+                case EventType::MousePressed:
                 {
                     auto e = event_cast<MousePressedEvent>(event);
-                    if (e.button == Mouse_Right)
+                    if (e.button == Mouse::Right)
                     {
                         m_doMoveCamera = true;
 
                         CursorStateRequestEvent cursorRequest;
-                        cursorRequest.state = Cursor_Disabled;
+                        cursorRequest.state = CursorState::Disabled;
 
                         postEvent(cursorRequest);
                     }
                     break;
                 }
-                case TypeMouseReleased:
+                case EventType::MouseReleased:
                 {
                     auto e = event_cast<MouseReleasedEvent>(event);
-                    if (e.button == Mouse_Right)
+                    if (e.button == Mouse::Right)
                     {
                         m_doMoveCamera = false;
 
                         CursorStateRequestEvent cursorRequest;
-                        cursorRequest.state = Cursor_Enabled;
+                        cursorRequest.state = CursorState::Normal;
 
                         postEvent(cursorRequest);
                     }
                     break;
                 }
-                case TypeEditorViewportResized:
+                case EventType::EditorViewportResized:
                 {
                     auto e = event_cast<EditorViewportResizedEvent>(event);
                     glm::mat4 proj = glm::perspective(glm::radians(60.0f), e.width / e.height, 0.1f, 1000.0f);
@@ -1059,12 +1060,12 @@ namespace oyl
 
         void EditorRenderSystem::onEnter()
         {
-            listenForEventType(TypeWindowResized);
-            listenForEventType(TypeEditorCameraChanged);
+            listenForEventType(EventType::WindowResized);
+            listenForEventType(EventType::EditorCameraChanged);
 
             m_editorViewportBuffer = FrameBuffer::create(1);
             m_editorViewportBuffer->initDepthTexture(1, 1);
-            m_editorViewportBuffer->initColorTexture(0, 1, 1, oyl::RGBA8, oyl::Nearest, oyl::Clamp);
+            m_editorViewportBuffer->initColorTexture(0, 1, 1, Texture::RGBA8, Texture::Nearest, Texture::Clamp);
 
             EditorViewportHandleChangedEvent handleChanged;
             handleChanged.handle = m_editorViewportBuffer->getColorHandle(0);
@@ -1170,13 +1171,13 @@ namespace oyl
         {
             switch (event.type)
             {
-                case TypeWindowResized:
+                case EventType::WindowResized:
                 {
                     auto e = event_cast<WindowResizedEvent>(event);
                     m_editorViewportBuffer->updateViewport(e.width, e.height);
                     return true;
                 }
-                case TypeEditorCameraChanged:
+                case EventType::EditorCameraChanged:
                 {
                     auto e = event_cast<EditorCameraChangedEvent>(event);
                     m_targetCamera = *e.camera;

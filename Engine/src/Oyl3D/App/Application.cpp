@@ -16,8 +16,6 @@
 
 #include "Input/GamepadListener.h"
 
-#include "Platform/Platform.h"
-
 #include "Scenes/Scene.h"
 #include "Scenes/SystemsLayer.h"
 
@@ -37,10 +35,10 @@ namespace oyl
         public:
             ApplicationListener()
             {
-                listenForEventCategory(CategoryWindow);
-                listenForEventCategory(CategoryKeyboard);
-                listenForEventCategory(CategoryMouse);
-                listenForEventCategory(CategoryCursorStateRequest);
+                listenForEventCategory(EventCategory::Window);
+                listenForEventCategory(EventCategory::Keyboard);
+                listenForEventCategory(EventCategory::Mouse);
+                listenForEventCategory(EventCategory::Cursor);
             }
 
         private:
@@ -71,26 +69,26 @@ namespace oyl
 
         Shader::cache(
             {
-                { VertexShader, ENGINE_RES + LIGHTING_SHADER_VERTEX_PATH },
-                { PixelShader, ENGINE_RES + LIGHTING_SHADER_FRAGMENT_PATH },
+                { Shader::Vertex, ENGINE_RES + LIGHTING_SHADER_VERTEX_PATH },
+                { Shader::Pixel, ENGINE_RES + LIGHTING_SHADER_FRAGMENT_PATH },
             }, LIGHTING_SHADER_ALIAS);
 
         Shader::cache(
             {
-                { VertexShader, ENGINE_RES + "shaders/morphTargetLighting.vert" },
-                { PixelShader, ENGINE_RES + LIGHTING_SHADER_FRAGMENT_PATH },
+                { Shader::Vertex, ENGINE_RES + "shaders/morphTargetLighting.vert" },
+                { Shader::Pixel, ENGINE_RES + LIGHTING_SHADER_FRAGMENT_PATH },
             }, "animation");
 
         Shader::cache(
             {
-                { VertexShader, ENGINE_RES + "shaders/texturedQuad.vert" },
-                { PixelShader, ENGINE_RES + "shaders/texturedQuad.frag" }
+                { Shader::Vertex, ENGINE_RES + "shaders/texturedQuad.vert" },
+                { Shader::Pixel, ENGINE_RES + "shaders/texturedQuad.frag" }
             }, "texturedQuad");
 
         Shader::cache(
             {
-                { VertexShader, ENGINE_RES + SKYBOX_SHADER_VERTEX_PATH },
-                { PixelShader, ENGINE_RES + SKYBOX_SHADER_FRAGMENT_PATH }
+                { Shader::Vertex, ENGINE_RES + SKYBOX_SHADER_VERTEX_PATH },
+                { Shader::Pixel, ENGINE_RES + SKYBOX_SHADER_FRAGMENT_PATH }
             }, SKYBOX_SHADER_ALIAS);
 
         Mesh::cache(ENGINE_RES + CUBE_MESH_PATH, CUBE_MESH_ALIAS);
@@ -111,9 +109,9 @@ namespace oyl
         m_mainBuffer->initDepthTexture(m_window->getWidth(), m_window->getHeight());
 
         m_mainBuffer->initColorTexture(0, m_window->getWidth(), m_window->getHeight(),
-                                       oyl::RGBA8,
-                                       oyl::Nearest,
-                                       oyl::Clamp);
+                                       Texture::RGBA8,
+                                       Texture::Nearest,
+                                       Texture::Clamp);
 
         ViewportHandleChangedEvent hcEvent;
         hcEvent.handle = m_mainBuffer->getColorHandle(0);
@@ -123,8 +121,6 @@ namespace oyl
         WindowResizedEvent wrEvent;
         wrEvent.width = 1280;
         wrEvent.height = 720;
-        wrEvent.args[2] = offsetof(WindowResizedEvent, width);
-        wrEvent.args[3] = offsetof(WindowResizedEvent, height);
         m_dispatcher->postEvent(wrEvent);
 
         m_window->setVsync(false);
@@ -150,20 +146,20 @@ namespace oyl
 
         switch (event.type)
         {
-            case TypeWindowClosed:
+            case EventType::WindowClosed:
             {
                 m_running = false;
                 handled   = true;
                 break;
             }
-            case TypeWindowResized:
+            case EventType::WindowResized:
             {
                 auto e = event_cast<WindowResizedEvent>(event);
                 m_window->updateViewport(e.width, e.height);
                 m_mainBuffer->updateViewport(e.width, e.height);
                 break;
             }
-            case TypeWindowFocused:
+            case EventType::WindowFocused:
             {
                 auto e = event_cast<WindowFocusedEvent>(event);
             #if defined(OYL_DISTRIBUTION)
@@ -171,7 +167,7 @@ namespace oyl
             #endif
                 break;
             }
-            case TypeCursorStateRequest:
+            case EventType::CursorStateRequest:
             {
                 auto e = event_cast<CursorStateRequestEvent>(event);
                 if (m_window->getCursorState() != e.state)

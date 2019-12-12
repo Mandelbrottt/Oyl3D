@@ -34,8 +34,6 @@
 
 #include <Oyl3D/Input/Input.h>
 
-#include <Oyl3D/Platform/Platform.h>
-
 #include <Oyl3D/Rendering/Renderer.h>
 #include <Oyl3D/Rendering/RenderCommand.h>
 

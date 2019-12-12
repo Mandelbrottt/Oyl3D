@@ -2,17 +2,19 @@
 
 #include "Oyl3D/oylpch.h"
 
+#include "InputCodes.h"
+
 namespace oyl
-{
+{    
     class Input
     {
     public:
         virtual ~Input() = default;
 
-        inline static bool isKeyPressed(uint keyCode) { return s_instance->isKeyPressedImpl(keyCode); }
-        inline static bool isMousePressed(uint button = Mouse_1) { return s_instance->isMousePressedImpl(button); }
+        inline static bool isKeyPressed(Key keyCode) { return s_instance->isKeyPressedImpl(keyCode); }
+        inline static bool isMousePressed(Mouse button = Mouse::Left) { return s_instance->isMousePressedImpl(button); }
 
-        inline static bool isGamepadButtonPressed(uint button, uint gid = 0)
+        inline static bool isGamepadButtonPressed(Gamepad button, uint gid = 0)
         {
             return s_instance->isGamepadButtonPressedImpl(button, gid);
         }
@@ -33,9 +35,9 @@ namespace oyl
         inline static float getGamepadRightTrigger(uint gid = 0) { return s_instance->getGamepadRightTriggerImpl(gid); }
 
     protected:
-        virtual bool isKeyPressedImpl(uint keyCode) = 0;
-        virtual bool isMousePressedImpl(uint button) = 0;
-        virtual bool isGamepadButtonPressedImpl(uint button, uint gid) = 0;
+        virtual bool isKeyPressedImpl(Key keyCode) = 0;
+        virtual bool isMousePressedImpl(Mouse button) = 0;
+        virtual bool isGamepadButtonPressedImpl(Gamepad button, uint gid) = 0;
 
         virtual glm::vec2 getMousePosImpl() = 0;
         virtual float     getMouseXImpl() = 0;

@@ -10,11 +10,9 @@ namespace oyl
     {
         switch (Renderer::getAPI())
         {
-            case None:
-                OYL_ASSERT(false, "None is currently unsupported");
-                return nullptr;
-            case API_OpenGL:
-                return Ref<VertexBuffer>(new OpenGLVertexBuffer(vertices, size));
+            case RendererAPI::OpenGL:
+                return Ref<OpenGLVertexBuffer>::create(OpenGLVertexBuffer::_OpenGLVertexBuffer{}, 
+                                                       vertices, size);
         }
         return nullptr;
     }
@@ -23,11 +21,9 @@ namespace oyl
     {
         switch (Renderer::getAPI())
         {
-            case None:
-                OYL_ASSERT(false, "None is currently unsupported");
-                return nullptr;
-            case API_OpenGL:
-                return Ref<IndexBuffer>(new OpenGLIndexBuffer(indices, size));
+            case RendererAPI::OpenGL:
+                return Ref<OpenGLIndexBuffer>::create(OpenGLIndexBuffer::_OpenGLIndexBuffer{},
+                                                      indices, size);
         }
         return nullptr;
     }
@@ -36,11 +32,8 @@ namespace oyl
     {
         switch (Renderer::getAPI())
         {
-            case None:
-                OYL_ASSERT(false, "None is currently unsupported");
-                return nullptr;
-            case API_OpenGL:
-                return Ref<VertexArray>(new OpenGLVertexArray());
+            case RendererAPI::OpenGL:
+                return Ref<OpenGLVertexArray>::create(OpenGLVertexArray::_OpenGLVertexArray{});
         }
         return nullptr;
     }
@@ -49,11 +42,9 @@ namespace oyl
     {
         switch (Renderer::getAPI())
         {
-            case None:
-                OYL_ASSERT(false, "None is currently unsupported");
-                return nullptr;
-            case API_OpenGL:
-                return Ref<FrameBuffer>(new OpenGLFrameBuffer(numColorAttachments));
+            case RendererAPI::OpenGL:
+                return Ref<OpenGLFrameBuffer>::create(OpenGLFrameBuffer::_OpenGLFrameBuffer{},
+                                                      numColorAttachments);
         }
         return nullptr;
     }

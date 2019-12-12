@@ -11,7 +11,7 @@ public:
 
     void onEnter() override
     {
-        listenForEventType(TypeKeyReleased);
+        listenForEventType(EventType::KeyReleased);
         
         auto lightShader = Shader::get(TEXTURE_SHADER_ALIAS);
 
@@ -99,24 +99,24 @@ public:
     {
         switch (event.type)
         {
-            case TypeKeyReleased:
+            case EventType::KeyReleased:
             {
-                Window& window = oyl::Application::get().getWindow();
+                Window& window = Application::get().getWindow();
 
-                auto e = event_cast<oyl::KeyReleasedEvent>(event);
-                if (e.keycode == oyl::Key_F11)
+                auto e = event_cast<KeyReleasedEvent>(event);
+                if (e.keycode == Key::F11)
                 {
                     // TODO: Make Event Request
-                    if (window.getFullscreenType() == oyl::Windowed)
-                        window.setFullscreenType(oyl::Fullscreen);
+                    if (window.getWindowState() == WindowState::Windowed)
+                        window.setWindowState(WindowState::Fullscreen);
                     else
-                        window.setFullscreenType(oyl::Windowed);
+                        window.setWindowState(WindowState::Windowed);
                 }
-                else if (e.keycode == oyl::Key_F7)
+                else if (e.keycode == Key::F7)
                 {
                     window.setVsync(!window.isVsync());
                 }
-                else if (e.keycode == oyl::Key_M)
+                else if (e.keycode == Key::M)
                 {
                     static bool oneOrTheOther = false;
                     auto  view = registry->view<component::Animatable>();
