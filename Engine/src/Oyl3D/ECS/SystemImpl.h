@@ -31,6 +31,9 @@ namespace oyl::internal
         virtual void onGuiRender() override;
 
         virtual bool onEvent(const Event& event) override;
+
+    private:
+        glm::ivec2 m_windowSize;
     };
 
     class GuiRenderSystem : public System
@@ -160,5 +163,7 @@ namespace oyl::internal
         Ref<FrameBuffer> m_editorViewportBuffer;
 
         Ref<Camera> m_targetCamera;
+
+        glm::ivec2 m_windowSize;
     };
 }

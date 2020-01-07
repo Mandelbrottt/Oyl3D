@@ -44,7 +44,10 @@ namespace oyl
     {
         // vvv Render System vvv //
 
-        void RenderSystem::onEnter() { }
+        void RenderSystem::onEnter()
+        {
+            listenForEventType(EventType::WindowResized);
+        }
 
         void RenderSystem::onExit() { }
 
@@ -76,11 +79,26 @@ namespace oyl
             Ref<Material> boundMaterial;
 
             auto camView = registry->view<Transform, PlayerCamera>();
-            OYL_ASSERT(camView.size() == 1, "Only one camera supported!");
+            
+            int x = m_windowSize.x / 2;
+            int y = camView.size() > 2 ? m_windowSize.y / 2 : 0;
 
+            int width = m_windowSize.x;
+            if (camView.size() > 1) width /= 2;
+
+            int height = m_windowSize.y;
+            if (camView.size() > 2) height /= 2;
+            
             for (auto camera : camView)
             {
-                glm::mat4 viewProj = camView.get<PlayerCamera>(camera).projection;
+                PlayerCamera& pc = camView.get<PlayerCamera>(camera);
+                
+                RenderCommand::setDrawRect(!!(pc.player & 1) * x, !(pc.player & 2) * y, width, height);
+                
+                pc.projection =
+                    glm::perspective(glm::radians(60.0f), (float) width / (float) height, 0.01f, 1000.0f);
+
+                glm::mat4 viewProj = pc.projection;
                 glm::mat4 tempView = camView.get<Transform>(camera).getMatrixGlobal();
                 viewProj *= glm::mat4(glm::inverse(glm::mat3(tempView)));
                 
@@ -170,6 +188,13 @@ namespace oyl
 
         bool RenderSystem::onEvent(const Event& event)
         {
+            switch (event.type)
+            {
+                case EventType::WindowResized:
+                    auto e = event_cast<WindowResizedEvent>(event);
+                    m_windowSize = { e.width, e.height };
+                    break;
+            }
             return false;
         }
 
@@ -1084,6 +1109,8 @@ namespace oyl
             m_editorViewportBuffer->clear();
             m_editorViewportBuffer->bind();
 
+            RenderCommand::setDrawRect(0, 0, m_windowSize.x, m_windowSize.y);
+
             const auto& skybox = TextureCubeMap::get(DEFAULT_SKYBOX_ALIAS);
             const auto& shader = Shader::get(SKYBOX_SHADER_ALIAS);
             const auto& mesh   = Mesh::get(CUBE_MESH_ALIAS);
@@ -1175,6 +1202,7 @@ namespace oyl
                 {
                     auto e = event_cast<WindowResizedEvent>(event);
                     m_editorViewportBuffer->updateViewport(e.width, e.height);
+                    m_windowSize = { e.width, e.height };
                     return true;
                 }
                 case EventType::EditorCameraChanged:

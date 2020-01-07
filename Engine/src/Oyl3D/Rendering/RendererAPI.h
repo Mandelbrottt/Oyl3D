@@ -24,6 +24,8 @@ namespace oyl
         virtual void setDepthDraw(bool value) = 0;
         virtual void setBackfaceCulling(bool value) = 0;
 
+        virtual void setDrawRect(int x, int y, int width, int height) = 0;
+
         virtual void drawArrays(const Ref<VertexArray>& vao, u32 count) = 0;
         virtual void drawIndexed(const Ref<VertexArray>& vao) = 0;
         virtual void drawMesh(const Ref<Mesh>& mesh) = 0;

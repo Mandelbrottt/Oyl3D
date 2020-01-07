@@ -97,7 +97,8 @@ project "OylEngine"
 		"BulletDynamics",
 		"BulletCollision",
 		"LinearMath",
-		"opengl32"
+		"opengl32",
+		"Xinput9_1_0.lib"
 	}
 
 	filter "system:windows"
