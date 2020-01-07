@@ -41,7 +41,9 @@ namespace oyl
 
         CursorStateRequest,
         
-        PhysicsCollision, PhysicsResetWorld,
+        PhysicsTriggerEnter, PhysicsTriggerExit, PhysicsTriggerStay,
+        PhysicsCollisionEnter, PhysicsCollisionExit, PhysicsCollisionStay,
+        PhysicsResetWorld,
         
         EditorViewportResized, EditorViewportHandleChanged, EditorEntitySelected,
         EditorCameraChanged,
@@ -281,6 +283,42 @@ namespace oyl
     //-Editor Events-//////////////////////////////////////////////////////
 
     // Physics Events /////////////////////////////////////////////////////
+
+    OYL_EVENT_STRUCT(PhysicsTriggerEnterEvent, EventType::PhysicsTriggerEnter, EventCategory::Physics,
+                     {
+                         entt::entity entity;
+                         entt::entity target;
+                     });
+
+    OYL_EVENT_STRUCT(PhysicsTriggerExitEvent, EventType::PhysicsTriggerExit, EventCategory::Physics,
+                     {
+                         entt::entity entity;
+                         entt::entity target;
+                     });
+
+    OYL_EVENT_STRUCT(PhysicsTriggerStayEvent, EventType::PhysicsTriggerStay, EventCategory::Physics,
+                     {
+                         entt::entity entity;
+                         entt::entity target;
+                     });
+
+    OYL_EVENT_STRUCT(PhysicsCollisionEnterEvent, EventType::PhysicsCollisionEnter, EventCategory::Physics,
+                     {
+                         entt::entity entity;
+                         entt::entity target;
+                     });
+    
+    OYL_EVENT_STRUCT(PhysicsCollisionExitEvent, EventType::PhysicsCollisionExit, EventCategory::Physics,
+                     {
+                         entt::entity entity;
+                         entt::entity target;
+                     });
+
+    OYL_EVENT_STRUCT(PhysicsCollisionStayEvent, EventType::PhysicsCollisionStay, EventCategory::Physics,
+                     {
+                         entt::entity entity;
+                         entt::entity target;
+                     });
 
     OYL_EVENT_STRUCT(PhysicsResetWorldEvent, EventType::PhysicsResetWorld, EventCategory::Physics,
                      {
