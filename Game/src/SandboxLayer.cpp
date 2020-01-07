@@ -42,7 +42,7 @@ void SandboxLayer::onEnter()
 
         auto& cl = registry->assign<component::Collidable>(e);
 
-        auto& shi = cl.pushShape(Collider_Box);
+        auto& shi = cl.pushShape(ColliderType::Box);
         shi.box.setSize({ 1.0f, 1.0f, 1.0f });
 
         entt::entity e2 = registry->create();
@@ -95,7 +95,7 @@ void SandboxLayer::onEnter()
         
         auto& cl = registry->assign<component::Collidable>(e);
 
-        auto& shi = cl.pushShape(Collider_Box);
+        auto& shi = cl.pushShape(ColliderType::Box);
         shi.box.setSize({ 20.0f, 0.1f, 20.0f });
     }
     {
@@ -118,7 +118,7 @@ void SandboxLayer::onEnter()
 
         auto& cl = registry->assign<component::Collidable>(e);
 
-        auto& shi = cl.pushShape(Collider_Sphere);
+        auto& shi = cl.pushShape(ColliderType::Sphere);
         shi.sphere.setRadius(0.5f);
     }
     {
@@ -141,7 +141,7 @@ void SandboxLayer::onEnter()
 
         auto& cl = registry->assign<component::Collidable>(e);
 
-        auto& shi = cl.pushShape(Collider_Sphere);
+        auto& shi = cl.pushShape(ColliderType::Sphere);
         shi.sphere.setRadius(0.5f);
     }
     {
@@ -184,7 +184,7 @@ void SandboxLayer::onEnter()
 
             auto& cl = registry->assign<component::Collidable>(e2);
 
-            auto& shi = cl.pushShape(Collider_Box);
+            auto& shi = cl.pushShape(ColliderType::Box);
             shi.box.setSize(glm::vec3(1.0f));
 
             auto& pa = registry->assign<component::Parent>(e2);

@@ -695,7 +695,7 @@ namespace oyl
                     const auto& shapeThing = colliderComponent.getShape(0);
                     switch (shapeThing.m_type)
                     {
-                        case Collider_Box:
+                        case ColliderType::Box:
                         {
                             t.setIdentity();
 
@@ -723,7 +723,7 @@ namespace oyl
 
                             break;
                         }
-                        case Collider_Sphere:
+                        case ColliderType::Sphere:
                         {
                             t.setIdentity();
 
@@ -789,7 +789,7 @@ namespace oyl
                     {
                         switch (childIter->m_type)
                         {
-                            case Collider_Box:
+                            case ColliderType::Box:
                             {
                                 btTransform t;
 
@@ -820,7 +820,7 @@ namespace oyl
 
                                 break;
                             }
-                            case Collider_Sphere:
+                            case ColliderType::Sphere:
                             {
                                 btTransform t;
 

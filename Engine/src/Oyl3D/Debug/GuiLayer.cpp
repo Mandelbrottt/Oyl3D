@@ -929,15 +929,15 @@ namespace oyl::internal
             char temp[128];
             for (auto& shape : collider)
             {
-                if (shape.getType() == Collider_Box)
+                if (shape.getType() == ColliderType::Box)
                     strcpy(shapeID, "Box");
-                else if (shape.getType() == Collider_Sphere)
+                else if (shape.getType() == ColliderType::Sphere)
                     strcpy(shapeID, "Sphere");
-                else if (shape.getType() == Collider_Capsule)
+                else if (shape.getType() == ColliderType::Capsule)
                     strcpy(shapeID, "Capsule");
-                else if (shape.getType() == Collider_Cylinder)
+                else if (shape.getType() == ColliderType::Cylinder)
                     strcpy(shapeID, "Cylinder");
-                else if (shape.getType() == Collider_Mesh)
+                else if (shape.getType() == ColliderType::Mesh)
                     strcpy(shapeID, "Mesh");
 
                 sprintf(shapeID, "%s##ColliderPropertiesShape%d", shapeID, count);
@@ -952,19 +952,19 @@ namespace oyl::internal
                     {
                         sprintf(temp, "Box##Box%d", count);
                         if (ImGui::Selectable(temp))
-                            shape.setType(Collider_Box);
+                            shape.setType(ColliderType::Box);
                         sprintf(temp, "Sphere##Sphere%d", count);
                         if (ImGui::Selectable(temp))
-                            shape.setType(Collider_Sphere);
+                            shape.setType(ColliderType::Sphere);
                         sprintf(temp, "Capsule##Capsule%d", count);
                         if (ImGui::Selectable(temp))
-                            shape.setType(Collider_Capsule);
+                            shape.setType(ColliderType::Capsule);
                         sprintf(temp, "Cylinder##Cylinder%d", count);
                         if (ImGui::Selectable(temp))
-                            shape.setType(Collider_Cylinder);
+                            shape.setType(ColliderType::Cylinder);
                         sprintf(temp, "Mesh##Mesh%d", count);
                         if (ImGui::Selectable(temp))
-                            shape.setType(Collider_Mesh);
+                            shape.setType(ColliderType::Mesh);
 
                         ImGui::EndCombo();
                     }   
@@ -1005,7 +1005,7 @@ namespace oyl::internal
 
                     switch (shape.getType())
                     {
-                        case Collider_Box:
+                        case ColliderType::Box:
                         {
                             glm::vec3 size = shape.box.getSize();
                             const float posDragSpeed = 0.02f;
@@ -1037,7 +1037,7 @@ namespace oyl::internal
                             
                             break;
                         }
-                        case Collider_Sphere:
+                        case ColliderType::Sphere:
                         {
                             float radius = shape.sphere.getRadius();
                             const float posDragSpeed = 0.01f;
@@ -1071,15 +1071,15 @@ namespace oyl::internal
             if (ImGui::BeginCombo("##InspectorCollidableAddShape", "Add Shape", ImGuiComboFlags_NoArrowButton))
             {
                 if (ImGui::Selectable("Box"))
-                    collider.pushShape(Collider_Box);
+                    collider.pushShape(ColliderType::Box);
                 if (ImGui::Selectable("Sphere"))
-                    collider.pushShape(Collider_Sphere);
+                    collider.pushShape(ColliderType::Sphere);
                 if (ImGui::Selectable("Capsule"))
-                    collider.pushShape(Collider_Capsule);
+                    collider.pushShape(ColliderType::Capsule);
                 if (ImGui::Selectable("Cylinder"))
-                    collider.pushShape(Collider_Cylinder);
+                    collider.pushShape(ColliderType::Cylinder);
                 if (ImGui::Selectable("Mesh"))
-                    collider.pushShape(Collider_Sphere);
+                    collider.pushShape(ColliderType::Sphere);
 
                 ImGui::EndCombo();
             }
