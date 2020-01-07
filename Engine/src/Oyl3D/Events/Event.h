@@ -286,38 +286,38 @@ namespace oyl
 
     OYL_EVENT_STRUCT(PhysicsTriggerEnterEvent, EventType::PhysicsTriggerEnter, EventCategory::Physics,
                      {
-                         entt::entity entity;
-                         entt::entity target;
+                         entt::entity entity1;
+                         entt::entity entity2;
                      });
 
     OYL_EVENT_STRUCT(PhysicsTriggerExitEvent, EventType::PhysicsTriggerExit, EventCategory::Physics,
                      {
-                         entt::entity entity;
-                         entt::entity target;
+                         entt::entity entity1;
+                         entt::entity entity2;
                      });
 
     OYL_EVENT_STRUCT(PhysicsTriggerStayEvent, EventType::PhysicsTriggerStay, EventCategory::Physics,
                      {
-                         entt::entity entity;
-                         entt::entity target;
+                         entt::entity entity1;
+                         entt::entity entity2;
                      });
 
     OYL_EVENT_STRUCT(PhysicsCollisionEnterEvent, EventType::PhysicsCollisionEnter, EventCategory::Physics,
                      {
-                         entt::entity entity;
-                         entt::entity target;
+                         entt::entity entity1;
+                         entt::entity entity2;
                      });
     
     OYL_EVENT_STRUCT(PhysicsCollisionExitEvent, EventType::PhysicsCollisionExit, EventCategory::Physics,
                      {
-                         entt::entity entity;
-                         entt::entity target;
+                         entt::entity entity1;
+                         entt::entity entity2;
                      });
 
     OYL_EVENT_STRUCT(PhysicsCollisionStayEvent, EventType::PhysicsCollisionStay, EventCategory::Physics,
                      {
-                         entt::entity entity;
-                         entt::entity target;
+                         entt::entity entity1;
+                         entt::entity entity2;
                      });
 
     OYL_EVENT_STRUCT(PhysicsResetWorldEvent, EventType::PhysicsResetWorld, EventCategory::Physics,

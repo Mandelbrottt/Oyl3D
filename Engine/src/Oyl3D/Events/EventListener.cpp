@@ -50,12 +50,12 @@ namespace oyl
         m_categoryMask.set();
     }
 
-    void EventListener::ignoreEventType(OylEnum type)
+    void EventListener::ignoreEventType(EventType type)
     {
         m_typeMask[(u32) type] = false;
     }
     
-    void EventListener::ignoreEventCategory(OylEnum category)
+    void EventListener::ignoreEventCategory(EventCategory category)
     {
         m_categoryMask[(u32) category] = false;
     }
