@@ -12,6 +12,7 @@
 
 #include "Events/Event.h"
 #include "Events/EventListener.h"
+#include "Events/EventDispatcher.h"
 
 #include "Graphics/Camera.h"
 #include "Graphics/Material.h"
@@ -389,35 +390,74 @@ namespace oyl
         // ^^^ Animation System ^^^ //
         
         // vvv Physics System vvv //
+
+        static Ref<EventDispatcher> g_dispatcher;
+        static Ref<entt::registry>  g_currentRegistry;
+
+        static bool physicsCallbackFunc(btManifoldPoint& cp,
+                                        const btCollisionObjectWrapper* obj1, int id1, int index1,
+                                        const btCollisionObjectWrapper* obj2, int id2, int index2)
+        {
+            auto entity1 = (entt::entity) reinterpret_cast<ENTT_ID_TYPE>(obj1->getCollisionObject()->getUserPointer());
+            auto entity2 = (entt::entity) reinterpret_cast<ENTT_ID_TYPE>(obj2->getCollisionObject()->getUserPointer());
+
+            if (!g_currentRegistry->valid(entity1) || !g_currentRegistry->valid(entity2))
+                return false;
+            
+            if (obj1->getCollisionObject()->getCollisionFlags() & btCollisionObject::CF_NO_CONTACT_RESPONSE ||
+                obj2->getCollisionObject()->getCollisionFlags() & btCollisionObject::CF_NO_CONTACT_RESPONSE)
+            {
+                PhysicsTriggerStayEvent event;
+                event.entity1 = entity1;
+                event.entity2 = entity2;
+
+                g_dispatcher->postEvent(event);
+            }
+            else
+            {
+                PhysicsCollisionStayEvent event;
+                event.entity1 = entt::entity(entity1);
+                event.entity2 = entt::entity(entity2);
+
+                g_dispatcher->postEvent(event);
+            }
+            return false;
+        }
         
         void PhysicsSystem::onEnter()
         {
             listenForEventType(EventType::PhysicsResetWorld);
+
+            gContactAddedCallback = physicsCallbackFunc;
+
+            g_dispatcher = m_dispatcher;
+
+            g_currentRegistry = registry;
             
             m_fixedTimeStep = 1.0f / 60.0f;
 
-            m_collisionConfig = UniqueRef<btDefaultCollisionConfiguration>::create();
-            m_dispatcher = UniqueRef<btCollisionDispatcher>::create(m_collisionConfig.get());
-            m_broadphase = UniqueRef<btDbvtBroadphase>::create();
-            m_solver = UniqueRef<btSequentialImpulseConstraintSolver>::create();
-            m_world = UniqueRef<btDiscreteDynamicsWorld>::create(m_dispatcher.get(), 
-                                                                 m_broadphase.get(),
-                                                                 m_solver.get(),
-                                                                 m_collisionConfig.get());
+            m_btCollisionConfig = UniqueRef<btDefaultCollisionConfiguration>::create();
+            m_btDispatcher = UniqueRef<btCollisionDispatcher>::create(m_btCollisionConfig.get());
+            m_btBroadphase = UniqueRef<btDbvtBroadphase>::create();
+            m_btSolver = UniqueRef<btSequentialImpulseConstraintSolver>::create();
+            m_btWorld = UniqueRef<btDiscreteDynamicsWorld>::create(m_btDispatcher.get(), 
+                                                                   m_btBroadphase.get(),
+                                                                   m_btSolver.get(),
+                                                                   m_btCollisionConfig.get());
 
             m_rigidBodies.clear();
             
             //m_world->setGravity(btVector3(0.0f, -9.81f, 0.0f));
-            m_world->setGravity(btVector3(0.0f, -9.81f, 0.0f));
+            m_btWorld->setGravity(btVector3(0.0f, -9.81f, 0.0f));
         }
 
         void PhysicsSystem::onExit()
         {
-            m_world.reset();
-            m_solver.reset();
-            m_broadphase.reset();
-            m_dispatcher.reset();
-            m_collisionConfig.reset();
+            m_btWorld.reset();
+            m_btSolver.reset();
+            m_btBroadphase.reset();
+            m_btDispatcher.reset();
+            m_btCollisionConfig.reset();
 
             m_rigidBodies.clear();
         }
@@ -544,7 +584,7 @@ namespace oyl
                     // Gravity
                     if (rigidBody.getProperty(RigidBody::USE_GRAVITY))
                     {
-                        cachedBody.body->setGravity(m_world->getGravity());
+                        cachedBody.body->setGravity(m_btWorld->getGravity());
                     }
                     else
                     {
@@ -570,7 +610,7 @@ namespace oyl
                                                                rigidBody.m_impulse.z));
             }
             
-            m_world->stepSimulation(Time::deltaTime(), 1, m_fixedTimeStep);
+            m_btWorld->stepSimulation(Time::deltaTime(), 1, m_fixedTimeStep);
 
             for (auto entity : view)
             {
@@ -654,7 +694,7 @@ namespace oyl
             {
                 if (m_rigidBodies.find(entity) != m_rigidBodies.end()) 
                 {
-                    m_world->removeRigidBody(m_rigidBodies.at(entity)->body.get());
+                    m_btWorld->removeRigidBody(m_rigidBodies.at(entity)->body.get());
                     m_rigidBodies.erase(entity);
                 }
                 return;
@@ -664,7 +704,7 @@ namespace oyl
             if (colliderComponent.isDirty() && 
                 m_rigidBodies.find(entity) != m_rigidBodies.end())
             {
-                m_world->removeRigidBody(m_rigidBodies.at(entity)->body.get());
+                m_btWorld->removeRigidBody(m_rigidBodies.at(entity)->body.get());
                 m_rigidBodies.erase(entity);
 
                 for (auto& shape : const_cast<component::Collidable&>(colliderComponent))
@@ -884,12 +924,18 @@ namespace oyl
 
                     body->setRestitution(1.0f);
                 }
-                
-                m_world->addRigidBody(body.get());
 
+                body->setCollisionFlags(body->getCollisionFlags() |
+                                        btCollisionObject::CF_CUSTOM_MATERIAL_CALLBACK);
+                
+                m_btWorld->addRigidBody(body.get());
+
+                m_rigidBodies[entity]->entity = entity;
                 m_rigidBodies[entity]->body   = body;
                 m_rigidBodies[entity]->shape  = shape;
                 m_rigidBodies[entity]->motion = motion;
+
+                body->setUserPointer((void*) entity);
             }
             else
             {

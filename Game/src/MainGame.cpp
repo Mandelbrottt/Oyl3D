@@ -14,6 +14,7 @@ public:
         listenForEventType(EventType::KeyReleased);
         listenForEventType(EventType::GamepadConnected);
         listenForEventType(EventType::GamepadDisconnected);
+        listenForEventType(EventType::PhysicsCollisionStay);
         
         auto lightShader = Shader::get(TEXTURE_SHADER_ALIAS);
 
@@ -92,6 +93,17 @@ public:
                         break;
                     }
                 }
+                break;
+            }
+            case EventType::PhysicsCollisionStay:
+            {
+                auto ev = event_cast<PhysicsCollisionStayEvent>(event);
+                
+                component::EntityInfo& info1 = registry->get<component::EntityInfo>(ev.entity1);
+                component::EntityInfo& info2 = registry->get<component::EntityInfo>(ev.entity2);
+
+                OYL_LOG_INFO("Entity \"{0}\" Collided with Entity \"{1}\"", info1.name, info2.name);
+
                 break;
             }
         }

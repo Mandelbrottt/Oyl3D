@@ -79,6 +79,24 @@ namespace oyl::internal
 
         virtual bool onEvent(const Event& event) override;
 
+    public:
+        struct RigidBodyInfo
+        {
+            entt::entity entity = entt::null;
+            
+            Ref<btRigidBody>      body;
+            Ref<btCollisionShape> shape;
+            Ref<btMotionState>    motion;
+
+            struct ChildShapeInfo
+            {
+                WeakRef<component::Collidable::ShapeInfo> shapeInfo;
+                Ref<btCollisionShape>                     btShape;
+            };
+
+            std::vector<ChildShapeInfo> children;
+        };
+        
     private:
         void processIncomingRigidBody(entt::entity entity,
                                       const component::Transform&  transformComponent,
@@ -88,30 +106,14 @@ namespace oyl::internal
     private:
         Timestep m_fixedTimeStep;
 
-        struct RigidBodyInfo
-        {
-            Ref<btRigidBody> body;
-
-            Ref<btCollisionShape> shape;
-            Ref<btMotionState>    motion;
-
-            struct ChildShapeInfo
-            {
-                WeakRef<component::Collidable::ShapeInfo> shapeInfo;
-                Ref<btCollisionShape>                   btShape;
-            };
-
-            std::vector<ChildShapeInfo> children;
-        };
-
         std::unordered_map<entt::entity, Ref<RigidBodyInfo>> m_rigidBodies;
 
         // TODO: Do i need to keep hold of all of these?
-        UniqueRef<btBroadphaseInterface>    m_broadphase;
-        UniqueRef<btDispatcher>             m_dispatcher;
-        UniqueRef<btCollisionConfiguration> m_collisionConfig;
-        UniqueRef<btConstraintSolver>       m_solver;
-        UniqueRef<btDynamicsWorld>          m_world;
+        UniqueRef<btBroadphaseInterface>    m_btBroadphase;
+        UniqueRef<btDispatcher>             m_btDispatcher;
+        UniqueRef<btCollisionConfiguration> m_btCollisionConfig;
+        UniqueRef<btConstraintSolver>       m_btSolver;
+        UniqueRef<btDynamicsWorld>          m_btWorld;
     };
 
     class TransformUpdateSystem : public System
