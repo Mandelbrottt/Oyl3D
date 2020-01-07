@@ -9,15 +9,10 @@ namespace oyl
 {
     Ref<Window> Window::create(const WindowProps& props)
     {
-        // TODO: Make Platform Specific
-        switch (Renderer::getAPI())
-        {
-            case None:
-                OYL_ASSERT(false, "None is currently unsupported");
-                return nullptr;
-            case API_OpenGL:
-                return Ref<Window>(new Win32Window(props));
-        }
+    #if defined(OYL_PLATFORM_WINDOWS)
+        return Ref<Window>(new Win32Window(props));
+    #else
         return nullptr;
+    #endif
     }
 }

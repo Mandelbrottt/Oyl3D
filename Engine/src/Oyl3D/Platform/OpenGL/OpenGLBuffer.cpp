@@ -8,14 +8,14 @@ namespace oyl
 
 // VertexBuffer //////////////////////////////////////////////////////////////
 
-    OpenGLVertexBuffer::OpenGLVertexBuffer(float* vertices, uint size)
+    OpenGLVertexBuffer::OpenGLVertexBuffer(_OpenGLVertexBuffer, float* vertices, uint size)
     {
-        load(vertices, size);
+        OpenGLVertexBuffer::load(vertices, size);
     }
 
     OpenGLVertexBuffer::~OpenGLVertexBuffer()
     {
-        unload();
+        OpenGLVertexBuffer::unload();
     }
 
     void OpenGLVertexBuffer::load(float* vertices, uint size)
@@ -50,15 +50,15 @@ namespace oyl
 
 // IndexBuffer ///////////////////////////////////////////////////////////////
 
-    OpenGLIndexBuffer::OpenGLIndexBuffer(uint* indices, uint count)
+    OpenGLIndexBuffer::OpenGLIndexBuffer(_OpenGLIndexBuffer, uint* indices, uint count)
         : m_count(count)
     {
-        load(indices, count);
+        OpenGLIndexBuffer::load(indices, count);
     }
 
     OpenGLIndexBuffer::~OpenGLIndexBuffer()
     {
-        unload();
+        OpenGLIndexBuffer::unload();
     }
 
     void OpenGLIndexBuffer::load(uint* indices, uint count)
@@ -93,7 +93,7 @@ namespace oyl
 
 // Vertex Array //////////////////////////////////////////////////////////////
 
-    OpenGLVertexArray::OpenGLVertexArray()
+    OpenGLVertexArray::OpenGLVertexArray(_OpenGLVertexArray)
     {
         load();
     }
@@ -131,7 +131,7 @@ namespace oyl
         glBindVertexArray(GL_NONE);
     }
 
-    static GLenum ShaderDataTypeToGLType(OylEnum type);
+    static GLenum ShaderDataTypeToGLType(DataType type);
 
     void OpenGLVertexArray::addVertexBuffer(const Ref<VertexBuffer>& vbo)
     {
@@ -172,22 +172,22 @@ namespace oyl
         glBindVertexArray(GL_NONE);
     }
 
-    static GLenum ShaderDataTypeToGLType(OylEnum type)
+    static GLenum ShaderDataTypeToGLType(DataType type)
     {
         switch (type)
         {
-            case UInt:   return GL_UNSIGNED_INT;
-            case Int:    return GL_INT;
-            case Int2:   return GL_INT;
-            case Int3:   return GL_INT;
-            case Int4:   return GL_INT;
-            case Float:  return GL_FLOAT;
-            case Float2: return GL_FLOAT;
-            case Float3: return GL_FLOAT;
-            case Float4: return GL_FLOAT;
-            case Mat3:   return GL_FLOAT;
-            case Mat4:   return GL_FLOAT;
-            case Bool:   return GL_BOOL;
+            case DataType::Uint:   return GL_UNSIGNED_INT;
+            case DataType::Int:    return GL_INT;
+            case DataType::Int2:   return GL_INT;
+            case DataType::Int3:   return GL_INT;
+            case DataType::Int4:   return GL_INT;
+            case DataType::Float:  return GL_FLOAT;
+            case DataType::Float2: return GL_FLOAT;
+            case DataType::Float3: return GL_FLOAT;
+            case DataType::Float4: return GL_FLOAT;
+            case DataType::Mat3:   return GL_FLOAT;
+            case DataType::Mat4:   return GL_FLOAT;
+            case DataType::Bool:   return GL_BOOL;
         }
         OYL_ASSERT(false, "Unknown Type!");
         return 0;
@@ -195,45 +195,45 @@ namespace oyl
 
 // Frame Buffer //////////////////////////////////////////////////////////////
 
-    static uint TextUniqueReformatToGLFormat(OylEnum format)
+    static uint TextUniqueReformatToGLFormat(Texture::Format format)
     {
         switch (format)
         {
-            case RGB8:  return GL_RGB8;
-            case RGBA8: return GL_RGBA8;
+            case Texture::RGB8:  return GL_RGB8;
+            case Texture::RGBA8: return GL_RGBA8;
         }
         return 0;
     }
 
-    static uint TextUniqueRefilterToGLFilter(OylEnum filter)
+    static uint TextUniqueRefilterToGLFilter(Texture::Filter filter)
     {
         switch (filter)
         {
-            case Linear:  return GL_LINEAR;
-            case Nearest: return GL_NEAREST;
+            case Texture::Linear:  return GL_LINEAR;
+            case Texture::Nearest: return GL_NEAREST;
         }
         return 0;
     }
 
-    static uint TextureWrapToGLWrap(OylEnum wrap)
+    static uint TextureWrapToGLWrap(Texture::Wrap wrap)
     {
         switch (wrap)
         {
-            case Clamp:  return GL_CLAMP_TO_EDGE;
-            case Mirror: return GL_MIRRORED_REPEAT;
-            case Repeat: return GL_REPEAT;
+            case Texture::Clamp:  return GL_CLAMP_TO_EDGE;
+            case Texture::Mirror: return GL_MIRRORED_REPEAT;
+            case Texture::Repeat: return GL_REPEAT;
         }
         return 0;
     }
 
-    OpenGLFrameBuffer::OpenGLFrameBuffer(int numColorAttachments)
+    OpenGLFrameBuffer::OpenGLFrameBuffer(_OpenGLFrameBuffer, int numColorAttachments)
     {
-        load(numColorAttachments);
+        OpenGLFrameBuffer::load(numColorAttachments);
     }
 
     OpenGLFrameBuffer::~OpenGLFrameBuffer()
     {
-        unload();
+        OpenGLFrameBuffer::unload();
     }
 
     void OpenGLFrameBuffer::load(uint numColorAttachments)
@@ -311,12 +311,12 @@ namespace oyl
         glBindFramebuffer(GL_FRAMEBUFFER, GL_NONE);
     }
 
-    void OpenGLFrameBuffer::initColorTexture(uint    index,
-                                             int     width, 
-                                             int     height,
-                                             OylEnum format,
-                                             OylEnum filter,
-                                             OylEnum wrap)
+    void OpenGLFrameBuffer::initColorTexture(uint index,
+                                             int  width, 
+                                             int  height,
+                                             Texture::Format format,
+                                             Texture::Filter filter,
+                                             Texture::Wrap   wrap)
     {
         OYL_ASSERT(index < m_numColorAttachments, "Invalid index!");
 
@@ -383,8 +383,7 @@ namespace oyl
     {
         glBindFramebuffer(GL_FRAMEBUFFER, m_rendererID);
 
-        GLenum status;
-        status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
+        GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
         if (status != GL_FRAMEBUFFER_COMPLETE)
         {
             unload();

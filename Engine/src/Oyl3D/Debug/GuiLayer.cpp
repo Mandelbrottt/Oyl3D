@@ -2,8 +2,17 @@
 #include "GuiLayer.h"
 
 #include "App/Application.h"
+#include "App/Window.h"
 
-#include "ECS/Component.h"
+#include "Components/Animatable.h"
+#include "Components/Collidable.h"
+#include "Components/Camera.h"
+#include "Components/Lights.h"
+#include "Components/Misc.h"
+#include "Components/Renderable.h"
+#include "Components/RigidBody.h"
+#include "Components/Transform.h"
+
 #include "ECS/SystemImpl.h"
 
 #include "Graphics/Camera.h"
@@ -11,6 +20,8 @@
 #include "Graphics/Mesh.h"
 #include "Graphics/Shader.h"
 #include "Graphics/Texture.h"
+
+#include "Input/Input.h"
 
 #include <examples/imgui_impl_glfw.h>
 #include <examples/imgui_impl_opengl3.h>
@@ -143,7 +154,7 @@ namespace oyl::internal
         m_systems.clear();
     }
 
-    void GuiLayer::onUpdate(Timestep dt)
+    void GuiLayer::onUpdate()
     {
         using component::Transform;
         using component::Parent;
@@ -238,7 +249,7 @@ namespace oyl::internal
         }
     }
 
-    void GuiLayer::onGuiRender(Timestep dt)
+    void GuiLayer::onGuiRender()
     {
         drawSceneHierarchy();
 
@@ -253,29 +264,35 @@ namespace oyl::internal
         drawPlayPauseButtons();
     }
 
-    bool GuiLayer::onEvent(Ref<Event> event)
+    bool GuiLayer::onEvent(const Event& event)
     {
-        switch (event->type)
+        switch (event.type)
         {
-            case TypeEditorViewportHandleChanged:
+            case EventType::EditorViewportHandleChanged:
             {
-                auto e = (EditorViewportHandleChangedEvent) *event;
+                auto e = event_cast<EditorViewportHandleChangedEvent>(event);
                 m_editorViewportHandle = e.handle;
                 return false;
             }
-            case TypeEditorEntitySelected:
+            case EventType::EditorEntitySelected:
             {
-                auto e = (EditorEntitySelectedEvent) *event;
+                auto e = event_cast<EditorEntitySelectedEvent>(event);
                 m_currentEntity = e.entity;
                 return true;
             }
-            case TypeViewportHandleChanged:
+            case EventType::EditorCameraChanged:
             {
-                auto e = (ViewportHandleChangedEvent) *event;
+                auto e = event_cast<EditorCameraChangedEvent>(event);
+                m_editorCamera = *e.camera;
+                return false;
+            }
+            case EventType::ViewportHandleChanged:
+            {
+                auto e = event_cast<ViewportHandleChangedEvent>(event);
                 m_gameViewportHandle = e.handle;
                 return false;
             }
-            case TypeMousePressed:
+            case EventType::MousePressed:
             {
                 //auto e = (MousePressedEvent) *event;
                 //if (e.button == Mouse_Right)
@@ -284,14 +301,14 @@ namespace oyl::internal
                 //}
                 break;
             }
-            case TypeWindowResized:
+            case EventType::WindowResized:
             {
                 break;
             }
-            case TypeKeyReleased:
+            case EventType::KeyReleased:
             {
-                auto e = (KeyReleasedEvent) *event;
-                if (e.keycode == Key_F1)
+                auto e = event_cast<KeyReleasedEvent>(event);
+                if (e.keycode == Key::F1)
                     updateAssetList();
             }
         }
@@ -382,7 +399,7 @@ namespace oyl::internal
                     auto e = registry->create();
 
                     registry->assign<component::Transform>(e);
-                    auto& so = registry->assign<component::SceneObject>(e);
+                    auto& so = registry->assign<component::EntityInfo>(e);
 
                     char name[128];
                     sprintf(name, "Entity %d", e);
@@ -398,10 +415,6 @@ namespace oyl::internal
             registry->each(
                 [&](auto entity)
                 {
-                    using component::internal::ExcludeFromHierarchy;
-                    if (registry->has<ExcludeFromHierarchy>(entity))
-                        return;
-                
                     if (parentView.contains(entity) && 
                         parentView.get(entity).parent != entt::null) return;
 
@@ -413,7 +426,7 @@ namespace oyl::internal
 
     void GuiLayer::drawEntityNode(entt::entity entity)
     {
-        auto& so = registry->get_or_assign<component::SceneObject>(entity);
+        auto& so = registry->get_or_assign<component::EntityInfo>(entity);
         if (so.name.empty())
         {
             char buf[128];
@@ -485,7 +498,7 @@ namespace oyl::internal
         {
             EditorEntitySelectedEvent selected;
             selected.entity = entity;
-            postEvent(Event::create(selected));
+            postEvent(selected);
         }
     }
 
@@ -565,16 +578,16 @@ namespace oyl::internal
     
     void GuiLayer::drawInspectorObjectName()
     {
-        using component::SceneObject;
+        using component::EntityInfo;
 
         ImGui::SetNextTreeNodeOpen(true, ImGuiCond_Once);
 
-        if (registry->has<SceneObject>(m_currentEntity) &&
+        if (registry->has<EntityInfo>(m_currentEntity) &&
             ImGui::CollapsingHeader("Object Properties##InspectorObjectProperties"))
         {
             ImGui::Indent(10);
 
-            auto& so = registry->get<SceneObject>(m_currentEntity);
+            auto& so = registry->get<EntityInfo>(m_currentEntity);
 
             char name[256]{ 0 };
             std::strcpy(name, so.name.c_str());
@@ -593,7 +606,7 @@ namespace oyl::internal
                 {
                     isValid = true;
 
-                    auto view = registry->view<SceneObject>();
+                    auto view = registry->view<EntityInfo>();
                     for (auto entity : view)
                     {
                         if (entity == m_currentEntity) continue;
@@ -621,7 +634,7 @@ namespace oyl::internal
     void GuiLayer::drawInspectorParent()
     {
         using component::Transform;
-        using component::SceneObject;
+        using component::EntityInfo;
         using component::Parent;
 
         ImGui::SetNextTreeNodeOpen(true, ImGuiCond_Once);
@@ -635,8 +648,8 @@ namespace oyl::internal
             if (registry->has<Parent>(m_currentEntity))
                 parent = registry->get<Parent>(m_currentEntity).parent;
 
-            const char* currentParentName = parent != entt::null && registry->has<SceneObject>(parent)
-                                                ? registry->get<SceneObject>(parent).name.c_str()
+            const char* currentParentName = parent != entt::null && registry->has<EntityInfo>(parent)
+                                                ? registry->get<EntityInfo>(parent).name.c_str()
                                                 : "None";
 
             bool parentChanged = false;
@@ -652,7 +665,7 @@ namespace oyl::internal
                 }
                 else
                 {
-                    auto view = registry->view<SceneObject>();
+                    auto view = registry->view<EntityInfo>();
                     for (auto entity : view)
                     {
                         bool isSelected = entity == parent;
@@ -788,7 +801,7 @@ namespace oyl::internal
     void GuiLayer::drawInspectorRenderable()
     {
         using component::Renderable;
-        using component::SceneObject;
+        using component::EntityInfo;
 
         if (!registry->has<Renderable>(m_currentEntity)) return;
 
@@ -1266,7 +1279,7 @@ namespace oyl::internal
                 vrevent.width  = x;
                 vrevent.height = y - cy;
                 
-                postEvent(Event::create(vrevent));
+                postEvent(vrevent);
             }
             
             y -= cy;
@@ -1410,20 +1423,16 @@ namespace oyl::internal
     void GuiLayer::drawTransformGizmo()
     {
         using component::Transform;
-        using component::internal::EditorCamera;
-
+        
         if (m_currentEntity != entt::null &&
             registry->has<Transform>(m_currentEntity))
         {
-            auto  view = registry->view<EditorCamera>();
-            auto& cam  = view.get(*view.begin()).camera;
-
             auto& model = registry->get<Transform>(m_currentEntity);
 
             glm::mat4 gizmoMatrix = model.getMatrixGlobal();
             
-            ImGuizmo::Manipulate(value_ptr(cam->getViewMatrix()),
-                                 value_ptr(cam->getProjectionMatrix()),
+            ImGuizmo::Manipulate(value_ptr(m_editorCamera->getViewMatrix()),
+                                 value_ptr(m_editorCamera->getProjectionMatrix()),
                                  m_currentOp,
                                  m_currentMode,
                                  value_ptr(gizmoMatrix),
@@ -1511,7 +1520,7 @@ namespace oyl::internal
                     // TODO: Store backup registry in scene?
                     *Scene::current()->m_registry = m_registryRestore.clone();
 
-                    postEvent(Event::create(PhysicsResetWorldEvent{}));
+                    postEvent(PhysicsResetWorldEvent{});
                     
                     auto view = registry->view<component::Transform>();
 

@@ -9,11 +9,9 @@ public:
 
     virtual void onEnter() override;
 
-    virtual void onUpdate(oyl::Timestep dt) override;
+    virtual void onUpdate() override;
 
-    virtual void onGuiRender(oyl::Timestep dt) override;
-
-    virtual bool onEvent(oyl::Ref<oyl::Event> event) override;
+    virtual void onGuiRender() override;
 
     float forceSpeed = 1.0f;
 };

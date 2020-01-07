@@ -11,9 +11,9 @@ union class_name {                                                              
     class_name(::oyl::Event& e) { *this = *reinterpret_cast<class_name*>(&e); }          \
     operator ::oyl::Event() { return *reinterpret_cast<::oyl::Event*>(this); }           \
     struct {                                                                             \
-        ::oyl::u32 args[_OYL_NUM_EVENT_ARGS];                                            \
-        ::oyl::u32 type;                                                                 \
-        ::oyl::u32 category;                                                             \
+        ::oyl::i32 args[_OYL_NUM_EVENT_ARGS];                                            \
+        ::oyl::EventType type;                                                           \
+        ::oyl::EventCategory category;                                                   \
     };                                                                                   \
                                                                                          \
     struct x;                                                                            \
@@ -24,63 +24,80 @@ private:                                                                        
 
 namespace oyl
 {
+    enum class EventType : i32
+    {
+        WindowClosed = 0, WindowMoved, WindowResized, WindowFocused,
+
+        ViewportResized, ViewportHandleChanged,
+
+        KeyPressed, KeyTyped, KeyReleased,
+
+        MousePressed, MouseReleased, MouseMoved, MouseScrolled,
+
+        GamepadConnected, GamepadDisconnected,
+        GamepadButtonPressed, GamepadButtonReleased,
+        GamepadStickMoved, GamepadTriggerPressed,
+        GamepadVibrationRequest,
+
+        CursorStateRequest,
+        
+        PhysicsCollision, PhysicsResetWorld,
+        
+        EditorViewportResized, EditorViewportHandleChanged, EditorEntitySelected,
+        EditorCameraChanged,
+
+        CustomStart,
+    };
+
+    enum class EventCategory : i32
+    {   
+        Application = 0,
+        Window,
+        Viewport,
+        Keyboard,
+        Mouse,
+        Gamepad,
+        GamepadVibration,
+        Cursor,
+        Audio,
+        Physics,
+        Editor,
+        CustomStart,
+    };
+    
     struct Event
     {
-        u32 args[_OYL_NUM_EVENT_ARGS];
-        u32 type;
-        u32 category;
-
-        static UniqueRef<Event> create(Event e)
-        {
-            auto sptr = UniqueRef<Event>::create();
-            *sptr     = e;
-            return sptr;
-        }
+        i32 args[_OYL_NUM_EVENT_ARGS];
+        EventType type;
+        EventCategory category;
     };
+    
+    template<class T>
+    static const T& event_cast(const Event& event)
+    {
+        return reinterpret_cast<const T&>(event);
+    }
     
     // Window Events //////////////////////////////////////////////////////
 
-    OYL_EVENT_STRUCT(WindowClosedEvent, TypeWindowClosed, CategoryWindow,
+    OYL_EVENT_STRUCT(WindowClosedEvent, EventType::WindowClosed, EventCategory::Window,
                      {
                          i32 _noArgs;
                      });
 
-    OYL_EVENT_STRUCT(WindowMovedEvent, TypeWindowMoved, CategoryWindow,
+    OYL_EVENT_STRUCT(WindowMovedEvent, EventType::WindowMoved, EventCategory::Window,
                      {
                          i32 x;
                          i32 y;
                      });
 
-    union WindowResizedEvent
-    {
-        WindowResizedEvent() : type(TypeWindowResized), category(CategoryWindow), args{ 0 } {}
-        WindowResizedEvent(::oyl::Event& e) { *this = *reinterpret_cast<WindowResizedEvent*>(&e); }
-        operator ::oyl::Event() { return *reinterpret_cast<::oyl::Event*>(this); }
-
-        struct
-        {
-            ::oyl::u32 args[((32 - 8) / 4)];
-            ::oyl::u32 type;
-            ::oyl::u32 category;
-        };
-
-        struct
-        {
-            i32 width;
-            i32 height;
-        };
-
-    private:
-        struct _WindowResizedEvent
-        {
-            i32 width;
-            i32 height;
-        };
-
-        static_assert(sizeof(_WindowResizedEvent) <= 32);
-    };
-
-    OYL_EVENT_STRUCT(WindowFocusedEvent, TypeWindowFocused, CategoryWindow,
+    OYL_EVENT_STRUCT(WindowResizedEvent, EventType::WindowResized, EventCategory::Window,
+                     {
+                         f32 width;
+                         f32 height;
+                     });
+    
+    OYL_EVENT_STRUCT(WindowFocusedEvent, EventType::WindowFocused, EventCategory::Window,
                      {
                          i32 focused;
                      });
@@ -89,23 +106,24 @@ namespace oyl
 
     // Keyboard Events ////////////////////////////////////////////////////
 
-    OYL_EVENT_STRUCT(KeyPressedEvent, TypeKeyPressed, CategoryKeyboard,
+    enum class Key;
+    
+    OYL_EVENT_STRUCT(KeyPressedEvent, EventType::KeyPressed, EventCategory::Keyboard,
                      {
-                         i32 keycode;
+                         Key keycode;
                          i32 repeatCount;
                          i32 mods;
                      });
 
-    OYL_EVENT_STRUCT(KeyReleasedEvent, TypeKeyReleased, CategoryKeyboard,
+    OYL_EVENT_STRUCT(KeyReleasedEvent, EventType::KeyReleased, EventCategory::Keyboard,
                      {
-                         i32 keycode;
+                         Key keycode;
                          i32 mods;
-
                      });
 
-    OYL_EVENT_STRUCT(KeyTypedEvent, TypeKeyTyped, CategoryKeyboard,
+    OYL_EVENT_STRUCT(KeyTypedEvent, EventType::KeyTyped, EventCategory::Keyboard,
                      {
-                         i32 keycode;
+                         Key keycode;
                          i32 scancode;
                          i32 repeatCount;
                          i32 mods;
@@ -115,19 +133,21 @@ namespace oyl
 
     // Mouse Events ///////////////////////////////////////////////////////
 
-    OYL_EVENT_STRUCT(MousePressedEvent, TypeMousePressed, CategoryMouse,
+    enum class Mouse;
+
+    OYL_EVENT_STRUCT(MousePressedEvent, EventType::MousePressed, EventCategory::Mouse,
                      {
-                         i32 button;
+                         Mouse button;
                          i32 mods;
                      });
 
-    OYL_EVENT_STRUCT(MouseReleasedEvent, TypeMouseReleased, CategoryMouse,
+    OYL_EVENT_STRUCT(MouseReleasedEvent, EventType::MouseReleased, EventCategory::Mouse,
                      {
-                         i32 button;
+                         Mouse button;
                          i32 mods;
                      });
 
-    OYL_EVENT_STRUCT(MouseMovedEvent, TypeMouseMoved, CategoryMouse,
+    OYL_EVENT_STRUCT(MouseMovedEvent, EventType::MouseMoved, EventCategory::Mouse,
                      {
                          f32 x;
                          f32 y;
@@ -135,7 +155,7 @@ namespace oyl
                          f32 dy;
                      });
 
-    OYL_EVENT_STRUCT(MouseScrolledEvent, TypeMouseScrolled, CategoryMouse,
+    OYL_EVENT_STRUCT(MouseScrolledEvent, EventType::MouseScrolled, EventCategory::Mouse,
                      {
                          f32 x;
                          f32 y;
@@ -145,52 +165,54 @@ namespace oyl
 
     // Gamepad Events /////////////////////////////////////////////////////
 
-    OYL_EVENT_STRUCT(GamepadConnectedEvent, TypeGamepadConnected, CategoryGamepad,
+    enum class Gamepad;
+
+    OYL_EVENT_STRUCT(GamepadConnectedEvent, EventType::GamepadConnected, EventCategory::Gamepad,
                      {
                          u32 gid;
                      });
 
-    OYL_EVENT_STRUCT(GamepadDisconnectedEvent, TypeGamepadDisconnected, CategoryGamepad,
+    OYL_EVENT_STRUCT(GamepadDisconnectedEvent, EventType::GamepadDisconnected, EventCategory::Gamepad,
                      {
                          u32 gid;
                      });
 
-    OYL_EVENT_STRUCT(GamepadButtonPressedEvent, TypeGamepadButtonPressed, CategoryGamepad,
+    OYL_EVENT_STRUCT(GamepadButtonPressedEvent, EventType::GamepadButtonPressed, EventCategory::Gamepad,
                      {
                          u32 gid;
                          
-                         u32 button;
+                         Gamepad button;
                          u32 repeatCount;
                      });
 
-    OYL_EVENT_STRUCT(GamepadButtonReleasedEvent, TypeGamepadButtonReleased, CategoryGamepad,
+    OYL_EVENT_STRUCT(GamepadButtonReleasedEvent, EventType::GamepadButtonReleased, EventCategory::Gamepad,
                      {
-                     u32 gid;
+                        u32 gid;
 
-                     u32 button;
+                        Gamepad button;
                      });
 
-    OYL_EVENT_STRUCT(GamepadStickMovedEvent, TypeGamepadStickMoved, CategoryGamepad,
+    OYL_EVENT_STRUCT(GamepadStickMovedEvent, EventType::GamepadStickMoved, EventCategory::Gamepad,
                      {
                          u32 gid;
                          
-                         u32 stick;
+                         Gamepad stick;
                          f32 x;
                          f32 y;
                          f32 dx;
                          f32 dy;
                      });
 
-    OYL_EVENT_STRUCT(GamepadTriggerPressedEvent, TypeGamepadTriggerPressed, CategoryGamepad,
+    OYL_EVENT_STRUCT(GamepadTriggerPressedEvent, EventType::GamepadTriggerPressed, EventCategory::Gamepad,
                      {
                          u32 gid;
                          
-                         u32 trigger;
+                         Gamepad trigger;
                          f32 x;
                          f32 dx;
                      });
 
-    OYL_EVENT_STRUCT(GamepadVibrationEvent, TypeGamepadVibration, CategoryGamepadVibration,
+    OYL_EVENT_STRUCT(GamepadVibrationRequestEvent, EventType::GamepadVibrationRequest, EventCategory::GamepadVibration,
                      {
                          u32 gid;
                          
@@ -204,9 +226,11 @@ namespace oyl
 
     // Cursor Events //////////////////////////////////////////////////////
 
-    OYL_EVENT_STRUCT(CursorStateRequestEvent, TypeCursorStateRequest, CategoryCursorStateRequest,
+    enum class CursorState;
+
+    OYL_EVENT_STRUCT(CursorStateRequestEvent, EventType::CursorStateRequest, EventCategory::Cursor,
                      {
-                         OylEnum state;
+                         CursorState state;
                      });
 
     
@@ -214,7 +238,7 @@ namespace oyl
 
     // Viewport Events ////////////////////////////////////////////////////
     
-    OYL_EVENT_STRUCT(ViewportResizedEvent, TypeViewportResized, CategoryViewport,
+    OYL_EVENT_STRUCT(ViewportResizedEvent, EventType::ViewportResized, EventCategory::Viewport,
                      {
                          i32 id;
                          
@@ -222,7 +246,7 @@ namespace oyl
                          f32 height;
                      });
 
-    OYL_EVENT_STRUCT(ViewportHandleChangedEvent, TypeViewportHandleChanged, CategoryViewport,
+    OYL_EVENT_STRUCT(ViewportHandleChangedEvent, EventType::ViewportHandleChanged, EventCategory::Viewport,
                      {
                          i32 handle;
                      });
@@ -231,27 +255,34 @@ namespace oyl
 
     // Editor Events //////////////////////////////////////////////////////
 
-    OYL_EVENT_STRUCT(EditorViewportHandleChangedEvent, TypeEditorViewportHandleChanged, CategoryEditor,
+    OYL_EVENT_STRUCT(EditorViewportHandleChangedEvent, EventType::EditorViewportHandleChanged, EventCategory::Editor,
                      {
                          i32 handle;
                      });
 
-    OYL_EVENT_STRUCT(EditorViewportResizedEvent, TypeEditorViewportResized, CategoryEditor,
+    OYL_EVENT_STRUCT(EditorViewportResizedEvent, EventType::EditorViewportResized, EventCategory::Editor,
                      {
                          f32 width;
                          f32 height;
                      });
     
-    OYL_EVENT_STRUCT(EditorEntitySelectedEvent, TypeEditorEntitySelected, CategoryEditor, 
+    OYL_EVENT_STRUCT(EditorEntitySelectedEvent, EventType::EditorEntitySelected, EventCategory::Editor, 
                      {
                          entt::entity entity;
+                     });
+
+    class Camera;
+    
+    OYL_EVENT_STRUCT(EditorCameraChangedEvent, EventType::EditorCameraChanged, EventCategory::Editor,
+                     {
+                         Ref<Camera>* camera;
                      });
 
     //-Editor Events-//////////////////////////////////////////////////////
 
     // Physics Events /////////////////////////////////////////////////////
 
-    OYL_EVENT_STRUCT(PhysicsResetWorldEvent, TypePhysicsResetWorld, CategoryPhysics,
+    OYL_EVENT_STRUCT(PhysicsResetWorldEvent, EventType::PhysicsResetWorld, EventCategory::Physics,
                      {
                          i32 _noArgs;
                      });

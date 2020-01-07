@@ -15,12 +15,10 @@ namespace oyl
     {
         switch (Renderer::getAPI())
         {
-            case None:
-                OYL_ASSERT(false, "None is currently unsupported");
-                return nullptr;
-            case API_OpenGL:
+            case RendererAPI::OpenGL:
                 return OpenGLShader::create(infos);
         }
+        OYL_ASSERT(false, "Invalid API!");
         return nullptr;
     }
 

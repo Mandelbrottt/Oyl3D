@@ -11,6 +11,8 @@ namespace oyl
     class Renderer
     {
     public:
+        
+    public:
         // TODO: make a seperate beginGUI for ortho, beginScene for perspective
         static void beginScene();
         static void endScene();
@@ -20,6 +22,6 @@ namespace oyl
         static void submit(const Ref<Mesh>& mesh, const Ref<Material>& material, glm::mat4 transform = glm::mat4(1.0f));
         static void submit(const Ref<Mesh>& mesh, const Ref<Shader>& shader, const Ref<TextureCubeMap>& cubemap);
 
-        inline static OylEnum getAPI() { return RendererAPI::getAPI(); }
+        inline static RendererAPI::API getAPI() { return RendererAPI::getAPI(); }
     };
 }

@@ -4,16 +4,16 @@
 
 namespace oyl
 {
-    class Win32Input : public Input
+    class Win32Input final : public Input
     {
     protected:
-        virtual bool isKeyPressedImpl(uint keyCode) override;
-        virtual bool isMousePressedImpl(uint button) override;
-        bool         isGamepadButtonPressedImpl(uint button, uint gid) override;
+        bool isKeyPressedImpl(Key keyCode) override;
+        bool isMousePressedImpl(Mouse button) override;
+        bool isGamepadButtonPressedImpl(Gamepad button, uint gid) override;
 
-        virtual glm::vec2 getMousePosImpl() override;
-        virtual float     getMouseXImpl() override;
-        virtual float     getMouseYImpl() override;
+        glm::vec2 getMousePosImpl() override;
+        float     getMouseXImpl() override;
+        float     getMouseYImpl() override;
 
         glm::vec2 getGamepadLeftStickImpl(uint gid) override;
         float     getGamepadLeftStickXImpl(uint gid) override;
@@ -27,6 +27,12 @@ namespace oyl
         float getGamepadRightTriggerImpl(uint gid) override;
     };
 
-    extern uint OylToGlfwCodes(uint code);
-    extern uint glfwToOylCode(uint code);
+    extern uint OylToGlfwKeyCode(Key code);
+    extern Key glfwToOylKeyCode(uint code);
+
+    extern uint OylToGlfwMouseCode(Mouse code);
+    extern Mouse glfwToOylMouseCode(uint code);
+
+    extern uint OylToGlfwGamepadCode(Gamepad code);
+    extern Gamepad glfwToOylGamepadCode(uint code);
 }

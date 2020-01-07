@@ -12,6 +12,8 @@ namespace oyl
         virtual void setDepthDraw(bool value) override;
         virtual void setBackfaceCulling(bool value) override;
 
+        virtual void setDrawRect(int x, int y, int width, int height) override;
+
         virtual void drawArrays(const Ref<VertexArray>& vao, u32 count) override;
         virtual void drawIndexed(const Ref<VertexArray>& vao) override;
         virtual void drawMesh(const Ref<Mesh>& mesh) override;

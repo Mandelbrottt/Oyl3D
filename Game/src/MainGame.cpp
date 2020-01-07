@@ -11,7 +11,7 @@ public:
 
     void onEnter() override
     {
-        listenForEventType(TypeKeyReleased);
+        listenForEventType(EventType::KeyReleased);
         
         auto lightShader = Shader::get(TEXTURE_SHADER_ALIAS);
 
@@ -34,7 +34,7 @@ public:
             camera.projection = glm::perspective(glm::radians(60.0f), 16.0f / 9.0f, 0.01f, 1000.0f);
             camera.skybox = TextureCubeMap::get(DEFAULT_SKYBOX_ALIAS);
             
-            auto& so = registry->assign<component::SceneObject>(e);
+            auto& so = registry->assign<component::EntityInfo>(e);
             so.name = "Player Camera";
         }
 
@@ -45,7 +45,7 @@ public:
             auto& t = registry->assign<component::Transform>(e);
             t.setPosition(glm::vec3(3.0f, 3.0f, 3.0f));
         
-            auto& so = registry->assign<component::SceneObject>(e);
+            auto& so = registry->assign<component::EntityInfo>(e);
             so.name = "Animation Object";
         
             auto& mr = registry->assign<component::Renderable>(e);
@@ -57,26 +57,28 @@ public:
             std::string s;
             s.reserve(512);
          
-            auto anim1 = Ref<component::Animation>::create();
-            auto anim2 = Ref<component::Animation>::create();
+            auto anim1 = Ref<Animation>::create();
+            auto anim2 = Ref<Animation>::create();
         
             int scale = 2;
             
-            for (int i = 0; i < 110 / scale; i++)
+            for (int i = 0; i < 2; i++)
+            //for (int i = 0; i < 110 / scale; i++)
             {
-                component::Animation::KeyPose kp;
+                Animation::KeyPose kp;
                 kp.duration = (1.0f / 30.0f) * scale;
         
                 sprintf(filename, "res/assets/models/agony/agony1_%06d.obj", i * scale + 1);
                 s.assign(filename);
              
-                kp.mesh = Mesh::cache(s);
+                kp.mesh = Mesh::create(s);
                 anim1->poses.push_back(kp);
             }
         
-            for (int i = 0; i < 65 / scale; i++)
+            for (int i = 0; i < 2; i++)
+            //for (int i = 0; i < 65 / scale; i++)
             {
-                component::Animation::KeyPose kp;
+                Animation::KeyPose kp;
                 kp.duration = (1.0f / 30.0f) * (float) scale;
         
                 sprintf(filename, "res/assets/models/boxing/boxing_%06d.obj", i * scale + 1);
@@ -86,38 +88,38 @@ public:
                 anim2->poses.push_back(kp);
             }
         
-            auto& anim = registry->assign<component::Animator>(e);
+            auto& anim = registry->assign<component::Animatable>(e);
         
             anim.pushAnimation("agony", anim1);
             anim.pushAnimation("boxing", anim2);
         }
     }
 
-    bool onEvent(Ref<Event> event) override
+    bool onEvent(const Event& event) override
     {
-        switch (event->type)
+        switch (event.type)
         {
-            case TypeKeyReleased:
+            case EventType::KeyReleased:
             {
-                Window& window = oyl::Application::get().getWindow();
+                Window& window = Application::get().getWindow();
 
-                auto e = (oyl::KeyReleasedEvent) *event;
-                if (e.keycode == oyl::Key_F11)
+                auto e = event_cast<KeyReleasedEvent>(event);
+                if (e.keycode == Key::F11)
                 {
                     // TODO: Make Event Request
-                    if (window.getFullscreenType() == oyl::Windowed)
-                        window.setFullscreenType(oyl::Fullscreen);
+                    if (window.getWindowState() == WindowState::Windowed)
+                        window.setWindowState(WindowState::Fullscreen);
                     else
-                        window.setFullscreenType(oyl::Windowed);
+                        window.setWindowState(WindowState::Windowed);
                 }
-                else if (e.keycode == oyl::Key_F7)
+                else if (e.keycode == Key::F7)
                 {
                     window.setVsync(!window.isVsync());
                 }
-                else if (e.keycode == oyl::Key_M)
+                else if (e.keycode == Key::M)
                 {
                     static bool oneOrTheOther = false;
-                    auto  view = registry->view<component::Animator>();
+                    auto  view = registry->view<component::Animatable>();
                     auto& anim = view.get(view[0]);
                     
                     if (oneOrTheOther ^= 1)

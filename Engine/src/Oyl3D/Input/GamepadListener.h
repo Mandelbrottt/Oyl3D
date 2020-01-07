@@ -11,7 +11,7 @@ namespace oyl::internal
 		virtual ~GamepadListener() = default;
 
         // Called once per frame
-        virtual void onUpdate(Timestep dt) = 0;
+        virtual void onUpdate() = 0;
 
         static Ref<GamepadListener> create();
     private:

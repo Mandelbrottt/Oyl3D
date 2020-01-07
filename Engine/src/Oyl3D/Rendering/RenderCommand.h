@@ -32,6 +32,11 @@ namespace oyl
             s_rendererAPI->setBackfaceCulling(value);
         }
 
+        inline static void setDrawRect(int x, int y, int width, int height)
+        {
+            s_rendererAPI->setDrawRect(x, y, width, height);
+        }
+
         inline static void drawArrays(const Ref<VertexArray>& vao, u32 count)
         {
             s_rendererAPI->drawArrays(vao, count);

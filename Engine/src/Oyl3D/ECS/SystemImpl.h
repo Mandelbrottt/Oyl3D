@@ -1,16 +1,21 @@
 #pragma once
 
-#include "Component.h"
+#include "Components/Transform.h"
+#include "Components/Collidable.h"
+#include "Components/RigidBody.h"
+
+#include "Graphics/Buffer.h"
+
 #include "System.h"
 
 #include <btBulletDynamicsCommon.h>
 #include <btBulletCollisionCommon.h>
 
-#include "Graphics/Buffer.h"
 
 namespace oyl
 {
     class Shader;
+    class Camera;
 }
 
 namespace oyl::internal
@@ -22,10 +27,13 @@ namespace oyl::internal
         virtual void onEnter() override;
         virtual void onExit() override;
 
-        virtual void onUpdate(Timestep dt) override;
-        virtual void onGuiRender(Timestep dt) override;
+        virtual void onUpdate() override;
+        virtual void onGuiRender() override;
 
-        virtual bool onEvent(Ref<Event> event) override;
+        virtual bool onEvent(const Event& event) override;
+
+    private:
+        glm::ivec2 m_windowSize;
     };
 
     class GuiRenderSystem : public System
@@ -35,10 +43,10 @@ namespace oyl::internal
         virtual void onEnter() override;
         virtual void onExit() override;
 
-        virtual void onUpdate(Timestep dt) override;
-        virtual void onGuiRender(Timestep dt) override;
+        virtual void onUpdate() override;
+        virtual void onGuiRender() override;
 
-        virtual bool onEvent(Ref<Event> event) override;
+        virtual bool onEvent(const Event& event) override;
 
     private:
         Ref<Shader> m_shader;
@@ -53,10 +61,10 @@ namespace oyl::internal
         virtual void onEnter() override;
         virtual void onExit() override;
 
-        virtual void onUpdate(Timestep dt) override;
-        virtual void onGuiRender(Timestep dt) override;
+        virtual void onUpdate() override;
+        virtual void onGuiRender() override;
 
-        virtual bool onEvent(Ref<Event> event) override;
+        virtual bool onEvent(const Event& event) override;
     };
     
     class PhysicsSystem : public System
@@ -66,16 +74,16 @@ namespace oyl::internal
         virtual void onEnter() override;
         virtual void onExit() override;
 
-        virtual void onUpdate(Timestep dt) override;
-        virtual void onGuiRender(Timestep) override;
+        virtual void onUpdate() override;
+        virtual void onGuiRender() override;
 
-        virtual bool onEvent(Ref<Event> event) override;
+        virtual bool onEvent(const Event& event) override;
 
     private:
         void processIncomingRigidBody(entt::entity entity,
-                                      const component::Transform& transformComponent,
-                                      const component::Collidable&  colliderComponent,
-                                      const component::RigidBody& rigidBodyComponent);
+                                      const component::Transform&  transformComponent,
+                                      const component::Collidable& colliderComponent,
+                                      const component::RigidBody&  rigidBodyComponent);
         
     private:
         Timestep m_fixedTimeStep;
@@ -110,7 +118,7 @@ namespace oyl::internal
     {
         OYL_CTOR(TransformUpdateSystem, System)
 
-        virtual void onUpdate(Timestep dt) override;
+        virtual void onUpdate() override;
     };
 
     class EditorCameraSystem : public System
@@ -120,13 +128,13 @@ namespace oyl::internal
         virtual void onEnter() override;
         virtual void onExit() override;
 
-        virtual void onUpdate(Timestep dt) override;
-        virtual void onGuiRender(Timestep dt) override;
+        virtual void onUpdate() override;
+        virtual void onGuiRender() override;
 
-        virtual bool onEvent(Ref<Event> event) override;
+        virtual bool onEvent(const Event& event) override;
 
     private:
-        void processCameraUpdate(Timestep dt, const Ref<Camera>& camera);
+        Ref<Camera> m_camera;
 
         glm::vec3 m_cameraMove        = glm::vec3(0.0f);
         float     m_cameraMoveSpeed   = 15.0f;
@@ -143,15 +151,19 @@ namespace oyl::internal
         virtual void onEnter() override;
         virtual void onExit() override;
 
-        virtual void onUpdate(Timestep dt) override;
-        virtual void onGuiRender(Timestep dt) override;
+        virtual void onUpdate() override;
+        virtual void onGuiRender() override;
 
-        virtual bool onEvent(Ref<Event> event) override;
+        virtual bool onEvent(const Event& event) override;
 
         void init();
         void shutdown();
 
     private:
         Ref<FrameBuffer> m_editorViewportBuffer;
+
+        Ref<Camera> m_targetCamera;
+
+        glm::ivec2 m_windowSize;
     };
 }
