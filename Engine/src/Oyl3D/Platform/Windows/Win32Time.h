@@ -28,12 +28,12 @@ namespace oyl::internal
         float m_unscaledDeltaTime = 0.0f;
         float m_fixedDeltaTime    = 1.0f / 60.0f;
 
-        float m_time = 0.0f;
-        float m_unscaledTime = 0.0f;
+        float m_time           = 0.0f;
+        float m_unscaledTime   = 0.0f;
         float m_timeDifference = 0.0f;
 
-        float m_timeScale     = 1.0f;
-        float m_timeScaleHint = 1.0f;
+        float m_timeScale                  = 1.0f;
+        std::atomic<float> m_timeScaleHint = 1.0f;
 
         u64    m_timeStart = 0;
         double m_frequency = 0.0f;

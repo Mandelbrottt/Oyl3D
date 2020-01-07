@@ -24,6 +24,7 @@
 #include <algorithm>
 #include <functional>
 #include <chrono>
+#include <atomic>
 #include <thread>
 #include <future>
 #include <filesystem>

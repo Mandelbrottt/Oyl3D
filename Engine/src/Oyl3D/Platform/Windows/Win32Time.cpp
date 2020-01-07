@@ -69,7 +69,7 @@ namespace oyl::internal
         m_unscaledDeltaTime = glm::clamp(static_cast<float>(currentTime), 0.0001f, 0.1f);
         m_deltaTime = m_unscaledDeltaTime * m_timeScale;
 
-        m_timeDifference += m_unscaledDeltaTime - m_deltaTime;
+        m_timeDifference = m_timeDifference + m_unscaledDeltaTime - m_deltaTime;
 
         m_time = m_unscaledTime + m_timeDifference;
 
