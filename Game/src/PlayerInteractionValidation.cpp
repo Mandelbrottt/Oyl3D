@@ -15,12 +15,7 @@ void PlayerInteractionValidationSystem::onUpdate(Timestep dt)
 {
 	auto playerView = registry->view<Player, component::Transform>();
 	for (entt::entity playerEntity : playerView)
-	{
-		auto& player = registry->get<Player>(playerEntity);
-		auto& playerTransform = registry->get<component::Transform>(playerEntity);
-
-		checkForAnyValidPlayerInteractions(playerEntity, &player, &playerTransform);
-	}
+		checkForAnyValidPlayerInteractions(playerEntity);
 }
 
 bool PlayerInteractionValidationSystem::onEvent(Ref<Event> event)
@@ -35,12 +30,7 @@ bool PlayerInteractionValidationSystem::onEvent(Ref<Event> event)
 			for (entt::entity playerEntity : playerView)
 			{
 			    if (evt.playerEntity == playerEntity)
-			    {
-					auto& player          = registry->get<Player>(playerEntity);
-					auto& playerTransform = registry->get<component::Transform>(playerEntity);
-			        
-					validateInteraction(playerEntity, &player, &playerTransform);
-			    }
+					validateInteraction(playerEntity);
 			}
 	        
 			break;
@@ -55,7 +45,7 @@ bool PlayerInteractionValidationSystem::onEvent(Ref<Event> event)
 			{
 				if (evt.playerEntity == playerEntity)
 				{
-					auto& player = registry->get<Player>(playerEntity);
+					auto& player          = registry->get<Player>(playerEntity);
 					auto& playerTransform = registry->get<component::Transform>(playerEntity);
 
 					auto carriedItemsView = registry->view<CarryableItem, component::Parent, component::Transform>();
@@ -104,14 +94,17 @@ bool PlayerInteractionValidationSystem::onEvent(Ref<Event> event)
 	return false;
 }
 
-void PlayerInteractionValidationSystem::checkForAnyValidPlayerInteractions(entt::entity a_playerEntity, Player* a_player, component::Transform* a_playerTransform)
+void PlayerInteractionValidationSystem::checkForAnyValidPlayerInteractions(entt::entity a_playerEntity)
 {
-	if (a_player->state != PlayerState::pushing && a_player->state != PlayerState::cleaning)
+	auto& player          = registry->get<Player>(a_playerEntity);
+	auto& playerTransform = registry->get<component::Transform>(a_playerEntity);
+
+	if (player.state != PlayerState::pushing && player.state != PlayerState::cleaning)
 	{
 		auto carryableItemView = registry->view<CarryableItem, component::Transform>();
 		for (auto& carryableItemEntity : carryableItemView)
 		{
-			auto& carryableItem = registry->get<CarryableItem>(carryableItemEntity);
+			auto& carryableItem          = registry->get<CarryableItem>(carryableItemEntity);
 			auto& carryableItemTransform = registry->get<component::Transform>(carryableItemEntity);
 
 			glm::vec3 itemNewPosition = glm::vec3(0.0f);
@@ -123,15 +116,15 @@ void PlayerInteractionValidationSystem::checkForAnyValidPlayerInteractions(entt:
 				{
 					if (!carryableItem.isBeingCarried
 						//compare x values
-						&& a_playerTransform->getPositionX() < carryableItemTransform.getPositionX() + 1.8f
-						&& a_playerTransform->getPositionX() > carryableItemTransform.getPositionX() - 1.8f
+						&& playerTransform.getPositionX() < carryableItemTransform.getPositionX() + 1.8f
+						&& playerTransform.getPositionX() > carryableItemTransform.getPositionX() - 1.8f
 						//compare z values
-						&& a_playerTransform->getPositionZ() < carryableItemTransform.getPositionZ() + 1.8f
-						&& a_playerTransform->getPositionZ() > carryableItemTransform.getPositionZ() - 1.8f)
+						&& playerTransform.getPositionZ() < carryableItemTransform.getPositionZ() + 1.8f
+						&& playerTransform.getPositionZ() > carryableItemTransform.getPositionZ() - 1.8f)
 					{
-						if (a_player->carriedItem == CarryingItemState::nothing || a_player->carriedItem == CarryingItemState::cleaningSolution)
+						if (player.carriedItem == CarryingItemState::nothing || player.carriedItem == CarryingItemState::cleaningSolution)
 						{
-							a_player->interactableEntity = carryableItemEntity;
+							player.interactableEntity = carryableItemEntity;
 
 							PlayerInteractResultEvent playerInteractResult;
 							playerInteractResult.interactionType = PlayerInteractionResult::pickUpMop;
@@ -147,15 +140,15 @@ void PlayerInteractionValidationSystem::checkForAnyValidPlayerInteractions(entt:
 				{
 					if (!carryableItem.isBeingCarried
 						//compare x values
-						&& a_playerTransform->getPositionX() < carryableItemTransform.getPositionX() + 1.1f
-						&& a_playerTransform->getPositionX() > carryableItemTransform.getPositionX() - 1.1f
+						&& playerTransform.getPositionX() < carryableItemTransform.getPositionX() + 1.1f
+						&& playerTransform.getPositionX() > carryableItemTransform.getPositionX() - 1.1f
 						//compare z values
-						&& a_playerTransform->getPositionZ() < carryableItemTransform.getPositionZ() + 1.1f
-						&& a_playerTransform->getPositionZ() > carryableItemTransform.getPositionZ() - 1.1f)
+						&& playerTransform.getPositionZ() < carryableItemTransform.getPositionZ() + 1.1f
+						&& playerTransform.getPositionZ() > carryableItemTransform.getPositionZ() - 1.1f)
 					{
-						if (a_player->carriedItem == CarryingItemState::nothing)
+						if (player.carriedItem == CarryingItemState::nothing)
 						{
-							a_player->interactableEntity = carryableItemEntity;
+							player.interactableEntity = carryableItemEntity;
 
 							PlayerInteractResultEvent playerInteractResult;
 							playerInteractResult.interactionType = PlayerInteractionResult::pickUpCannonball;
@@ -173,21 +166,21 @@ void PlayerInteractionValidationSystem::checkForAnyValidPlayerInteractions(entt:
 	auto garbagePileView = registry->view<GarbagePile, component::Transform>();
 	for (auto& garbagePileEntity : garbagePileView)
 	{
-		auto& garbagePile = registry->get<GarbagePile>(garbagePileEntity);
+		auto& garbagePile          = registry->get<GarbagePile>(garbagePileEntity);
 		auto& garbagePileTransform = registry->get<component::Transform>(garbagePileEntity);
 
-		if (a_player->carriedItem == CarryingItemState::mop
+		if (player.carriedItem == CarryingItemState::mop
 			//compare x values
-			&& a_playerTransform->getPositionX() < garbagePileTransform.getPositionX() + 2.6f
-			&& a_playerTransform->getPositionX() > garbagePileTransform.getPositionX() - 2.6f
+			&& playerTransform.getPositionX() < garbagePileTransform.getPositionX() + 2.6f
+			&& playerTransform.getPositionX() > garbagePileTransform.getPositionX() - 2.6f
 			//compare z values
-			&& a_playerTransform->getPositionZ() < garbagePileTransform.getPositionZ() + 2.6f
-			&& a_playerTransform->getPositionZ() > garbagePileTransform.getPositionZ() - 2.6f)
+			&& playerTransform.getPositionZ() < garbagePileTransform.getPositionZ() + 2.6f
+			&& playerTransform.getPositionZ() > garbagePileTransform.getPositionZ() - 2.6f)
 		{
 			//make sure there is some garbage before we try to clean
 			if (garbagePile.garbageLevel > 0)
 			{
-				a_player->interactableEntity = garbagePileEntity;
+				player.interactableEntity = garbagePileEntity;
 
 				PlayerInteractResultEvent playerInteractResult;
 				playerInteractResult.interactionType = PlayerInteractionResult::cleanGarbagePile;
@@ -198,23 +191,23 @@ void PlayerInteractionValidationSystem::checkForAnyValidPlayerInteractions(entt:
 		}
 	}
 
-	if (a_player->state != PlayerState::pushing && a_player->state != PlayerState::cleaning)
+	if (player.state != PlayerState::pushing && player.state != PlayerState::cleaning)
 	{
 		auto crateView = registry->view<CannonballCrate, component::Transform>();
 		for (auto& cannonballCrateEntity : crateView)
 		{
-			auto& cannonballCrate = registry->get<CannonballCrate>(cannonballCrateEntity);
+			auto& cannonballCrate          = registry->get<CannonballCrate>(cannonballCrateEntity);
 			auto& cannonballCrateTransform = registry->get<component::Transform>(cannonballCrateEntity);
 
-			if (a_player->carriedItem == CarryingItemState::nothing
+			if (player.carriedItem == CarryingItemState::nothing
 				//compare x values
-				&& a_playerTransform->getPositionX() < cannonballCrateTransform.getPositionX() + 2.2f
-				&& a_playerTransform->getPositionX() > cannonballCrateTransform.getPositionX() - 2.2f
+				&& playerTransform.getPositionX() < cannonballCrateTransform.getPositionX() + 2.2f
+				&& playerTransform.getPositionX() > cannonballCrateTransform.getPositionX() - 2.2f
 				//compare z values
-				&& a_playerTransform->getPositionZ() < cannonballCrateTransform.getPositionZ() + 1.7f
-				&& a_playerTransform->getPositionZ() > cannonballCrateTransform.getPositionZ() - 1.7f)
+				&& playerTransform.getPositionZ() < cannonballCrateTransform.getPositionZ() + 1.7f
+				&& playerTransform.getPositionZ() > cannonballCrateTransform.getPositionZ() - 1.7f)
 			{
-				a_player->interactableEntity = cannonballCrateEntity;
+				player.interactableEntity = cannonballCrateEntity;
 
 				PlayerInteractResultEvent playerInteractResult;
 				playerInteractResult.interactionType = PlayerInteractionResult::takeCannonballFromCrate;
@@ -229,30 +222,30 @@ void PlayerInteractionValidationSystem::checkForAnyValidPlayerInteractions(entt:
 	auto cannonView = registry->view<Cannon, component::Transform>();
 	for (auto& cannonEntity : cannonView)
 	{
-		auto& cannon = registry->get<Cannon>(cannonEntity);
+		auto& cannon          = registry->get<Cannon>(cannonEntity);
 		auto& cannonTransform = registry->get<component::Transform>(cannonEntity);
 
 		//cannon can be loaded with a cannonball
-		if (a_player->carriedItem == CarryingItemState::cannonball
+		if (player.carriedItem == CarryingItemState::cannonball
 			&& cannon.isLoaded == false
 			//compare x values
-			&& a_playerTransform->getPositionX() < cannonTransform.getPositionX() + 1.7f
-			&& a_playerTransform->getPositionX() > cannonTransform.getPositionX() - 1.7f
+			&& playerTransform.getPositionX() < cannonTransform.getPositionX() + 1.7f
+			&& playerTransform.getPositionX() > cannonTransform.getPositionX() - 1.7f
 			//compare z values
-			&& a_playerTransform->getPositionZ() < cannonTransform.getPositionZ() + 1.7f
-			&& a_playerTransform->getPositionZ() > cannonTransform.getPositionZ() - 1.7f) //check if cannon can be loaded with a cannonball
+			&& playerTransform.getPositionZ() < cannonTransform.getPositionZ() + 1.7f
+			&& playerTransform.getPositionZ() > cannonTransform.getPositionZ() - 1.7f) //check if cannon can be loaded with a cannonball
 		{
 			//get rid of the cannonball the player has loaded
 			auto carriedItemsView = registry->view<CarryableItem, component::Parent, component::Transform>();
 			for (entt::entity carriedItemEntity : carriedItemsView)
 			{
-				auto& carriedItem = registry->get<CarryableItem>(carriedItemEntity);
-				auto& carriedItemParent = registry->get<component::Parent>(carriedItemEntity);
+				auto& carriedItem          = registry->get<CarryableItem>(carriedItemEntity);
+				auto& carriedItemParent    = registry->get<component::Parent>(carriedItemEntity);
 				auto& carriedItemTransform = registry->get<component::Transform>(carriedItemEntity);
 
 				if (carriedItemParent.parent == a_playerEntity)
 				{
-					a_player->interactableEntity = cannonEntity;
+					player.interactableEntity = cannonEntity;
 
 					PlayerInteractResultEvent playerInteractResult;
 					playerInteractResult.interactionType = PlayerInteractionResult::loadCannon;
@@ -265,13 +258,13 @@ void PlayerInteractionValidationSystem::checkForAnyValidPlayerInteractions(entt:
 		else if (cannon.state == CannonState::firingSoon)
 		{
 			//compare x values
-			if (   a_playerTransform->getPositionX() < cannonTransform.getPositionX() + 1.7f
-				&& a_playerTransform->getPositionX() > cannonTransform.getPositionX() - 1.7f
+			if (   playerTransform.getPositionX() < cannonTransform.getPositionX() + 1.7f
+				&& playerTransform.getPositionX() > cannonTransform.getPositionX() - 1.7f
 				//compare z values
-				&& a_playerTransform->getPositionZ() < cannonTransform.getPositionZ() + 1.7f
-				&& a_playerTransform->getPositionZ() > cannonTransform.getPositionZ() - 1.7f) //check if cannon can be loaded with a cannonball
+				&& playerTransform.getPositionZ() < cannonTransform.getPositionZ() + 1.7f
+				&& playerTransform.getPositionZ() > cannonTransform.getPositionZ() - 1.7f) //check if cannon can be loaded with a cannonball
 			{
-				a_player->interactableEntity = entt::null;
+				player.interactableEntity = entt::null;
 
 				PlayerInteractResultEvent playerInteractResult;
 				playerInteractResult.interactionType = PlayerInteractionResult::cannonFiringSoon;
@@ -280,9 +273,9 @@ void PlayerInteractionValidationSystem::checkForAnyValidPlayerInteractions(entt:
 				return;
 			}
 		}
-		else if (cannon.state == CannonState::doingNothing && a_player->carriedItem == CarryingItemState::nothing) //cannon can be pushed TODO: get rid of conditions after raycast validation is in, should just be an else
+		else if (cannon.state == CannonState::doingNothing && player.carriedItem == CarryingItemState::nothing) //cannon can be pushed TODO: get rid of conditions after raycast validation is in, should just be an else
 		{
-			float playerForwardDotCannonRight = glm::dot(a_playerTransform->getForward(), cannonTransform.getRight());
+			float playerForwardDotCannonRight = glm::dot(playerTransform.getForward(), cannonTransform.getRight());
 
 			bool isCannonOnLeftSideOfTrack = (cannon.cannonTrackPosition == -1)
 				? true : false;
@@ -293,13 +286,13 @@ void PlayerInteractionValidationSystem::checkForAnyValidPlayerInteractions(entt:
 			//check if player is on the right side of the cannon (will be pushing towards the left)
 			if (playerForwardDotCannonRight < -0.65f && !isCannonOnLeftSideOfTrack
 				//compare x values
-				&& a_playerTransform->getPositionX() < cannonTransform.getPositionX() + 2.5f
-				&& a_playerTransform->getPositionX() > cannonTransform.getPositionX() + 1.1f
+				&& playerTransform.getPositionX() < cannonTransform.getPositionX() + 2.5f
+				&& playerTransform.getPositionX() > cannonTransform.getPositionX() + 1.1f
 				//compare z values
-				&& a_playerTransform->getPositionZ() < cannonTransform.getPositionZ() + 1.0f
-				&& a_playerTransform->getPositionZ() > cannonTransform.getPositionZ() - 1.0f)
+				&& playerTransform.getPositionZ() < cannonTransform.getPositionZ() + 1.0f
+				&& playerTransform.getPositionZ() > cannonTransform.getPositionZ() - 1.0f)
 			{
-				a_player->interactableEntity = cannonEntity;
+				player.interactableEntity = cannonEntity;
 
 				PlayerInteractResultEvent playerInteractResult;
 				playerInteractResult.interactionType = PlayerInteractionResult::pushCannon;
@@ -311,13 +304,13 @@ void PlayerInteractionValidationSystem::checkForAnyValidPlayerInteractions(entt:
 			//check if player is on the left side of the cannon (will be pushing towards the right)
 			else if (playerForwardDotCannonRight > 0.65f && !isCannonOnRightSideOfTrack
 				//compare x values
-				&& a_playerTransform->getPositionX() > cannonTransform.getPositionX() - 2.5f
-				&& a_playerTransform->getPositionX() < cannonTransform.getPositionX() - 1.1f
+				&& playerTransform.getPositionX() > cannonTransform.getPositionX() - 2.5f
+				&& playerTransform.getPositionX() < cannonTransform.getPositionX() - 1.1f
 				//compare z values
-				&& a_playerTransform->getPositionZ() < cannonTransform.getPositionZ() + 1.0f
-				&& a_playerTransform->getPositionZ() > cannonTransform.getPositionZ() - 1.0f)
+				&& playerTransform.getPositionZ() < cannonTransform.getPositionZ() + 1.0f
+				&& playerTransform.getPositionZ() > cannonTransform.getPositionZ() - 1.0f)
 			{
-				a_player->interactableEntity = cannonEntity;
+				player.interactableEntity = cannonEntity;
 
 				PlayerInteractResultEvent playerInteractResult;
 				playerInteractResult.interactionType = PlayerInteractionResult::pushCannon;
@@ -329,23 +322,26 @@ void PlayerInteractionValidationSystem::checkForAnyValidPlayerInteractions(entt:
 	}
 
 	//no valid interactions (we would've early returned if there was)
-	a_player->interactableEntity = entt::null;
+	player.interactableEntity = entt::null;
 
 	PlayerInteractResultEvent playerInteractResult;
 	playerInteractResult.interactionType = PlayerInteractionResult::nothing;
 	postEvent(Event::create(playerInteractResult));
 }
 
-void PlayerInteractionValidationSystem::validateInteraction(entt::entity a_playerEntity, Player* a_player, component::Transform* a_playerTransform)
+void PlayerInteractionValidationSystem::validateInteraction(entt::entity a_playerEntity)
 {
+	auto& player          = registry->get<Player>(a_playerEntity);
+	auto& playerTransform = registry->get<component::Transform>(a_playerEntity);
+
     //check if there's a valid entity the player can interact with first
-	if (a_player->interactableEntity == entt::null)
+	if (player.interactableEntity == entt::null)
 		return;
 
-	if (registry->has<CarryableItem>(a_player->interactableEntity))
+	if (registry->has<CarryableItem>(player.interactableEntity))
 	{
-		auto& carryableItem = registry->get<CarryableItem>(a_player->interactableEntity);
-		auto& carryableItemTransform = registry->get<component::Transform>(a_player->interactableEntity);
+		auto& carryableItem          = registry->get<CarryableItem>(player.interactableEntity);
+		auto& carryableItemTransform = registry->get<component::Transform>(player.interactableEntity);
 
 		glm::vec3 itemNewPosition = glm::vec3(0.0f);
 		glm::vec3 itemNewRotation = glm::vec3(0.0f);
@@ -354,10 +350,10 @@ void PlayerInteractionValidationSystem::validateInteraction(entt::entity a_playe
 		{
 			case CarryableItemType::mop:
 			{
-				if (a_player->carriedItem == CarryingItemState::nothing)
-					a_player->carriedItem = CarryingItemState::mop;
+				if (player.carriedItem == CarryingItemState::nothing)
+					player.carriedItem = CarryingItemState::mop;
 				else
-					a_player->carriedItem = CarryingItemState::mopAndCleaningSolution;
+					player.carriedItem = CarryingItemState::mopAndCleaningSolution;
 
 				std::cout << "PICKED UP MOP!\n";
 
@@ -368,7 +364,7 @@ void PlayerInteractionValidationSystem::validateInteraction(entt::entity a_playe
 			}
 			case CarryableItemType::cannonball:
 			{
-				a_player->carriedItem = CarryingItemState::cannonball;
+				player.carriedItem = CarryingItemState::cannonball;
 				std::cout << "PICKED UP CANNONBALL!\n";
 
 				itemNewPosition = glm::vec3(0.0f, 0.35f, -0.75f);
@@ -384,8 +380,8 @@ void PlayerInteractionValidationSystem::validateInteraction(entt::entity a_playe
 		}
 
 		carryableItem.isBeingCarried = true;
-		auto& carryableItemParent = registry->get_or_assign<component::Parent>(a_player->interactableEntity);
-		carryableItemParent.parent = a_playerEntity;
+		auto& carryableItemParent    = registry->get_or_assign<component::Parent>(player.interactableEntity);
+		carryableItemParent.parent   = a_playerEntity;
 
 		carryableItemTransform.setRotationEuler(itemNewRotation);
 		carryableItemTransform.setPosition(itemNewPosition);
@@ -393,37 +389,38 @@ void PlayerInteractionValidationSystem::validateInteraction(entt::entity a_playe
 		return;
 	}
 
-	else if (registry->has<GarbagePile>(a_player->interactableEntity))
+	else if (registry->has<GarbagePile>(player.interactableEntity))
 	{
-		auto& garbagePile = registry->get<GarbagePile>(a_player->interactableEntity);
-		auto& garbagePileTransform = registry->get<component::Transform>(a_player->interactableEntity);
+		auto& garbagePile          = registry->get<GarbagePile>(player.interactableEntity);
+		auto& garbagePileTransform = registry->get<component::Transform>(player.interactableEntity);
 
 		std::cout << "CLEANING!\n";
 
 		RequestToCleanGarbageEvent requestToCleanGarbage;
-		requestToCleanGarbage.garbagePileEntity = a_player->interactableEntity;
+		requestToCleanGarbage.garbagePileEntity = player.interactableEntity;
 		postEvent(Event::create(requestToCleanGarbage));
 
 		return;
 	}
 
-	else if (registry->has<CannonballCrate>(a_player->interactableEntity))
+	else if (registry->has<CannonballCrate>(player.interactableEntity))
 	{
 		auto carryableItemView = registry->view<CarryableItem, component::Transform>();
 		for (auto& carryableItemEntity : carryableItemView)
 		{
-			auto& carryableItem = registry->get<CarryableItem>(carryableItemEntity);
+			auto& carryableItem          = registry->get<CarryableItem>(carryableItemEntity);
 			auto& carryableItemTransform = registry->get<component::Transform>(carryableItemEntity);
 
 			if (carryableItem.type == CarryableItemType::cannonball && !carryableItem.isActive && !carryableItem.isBeingCarried)
 			{
-				a_player->carriedItem = CarryingItemState::cannonball;
+				player.carriedItem = CarryingItemState::cannonball;
+
 				carryableItem.isBeingCarried = true;
-				carryableItem.isActive = true;
+				carryableItem.isActive       = true;
 							
 				std::cout << "OBTAINED CANNONBALL!\n";
 
-				auto& cannonballParent = registry->get_or_assign<component::Parent>(carryableItemEntity);
+				auto& cannonballParent  = registry->get_or_assign<component::Parent>(carryableItemEntity);
 				cannonballParent.parent = a_playerEntity;
 
 				carryableItemTransform.setRotationEuler(glm::vec3(0.0f));
@@ -434,13 +431,13 @@ void PlayerInteractionValidationSystem::validateInteraction(entt::entity a_playe
 		}
 	}
 
-	else if (registry->has<Cannon>(a_player->interactableEntity))
+	else if (registry->has<Cannon>(player.interactableEntity))
 	{
-		auto& cannon = registry->get<Cannon>(a_player->interactableEntity);
-		auto& cannonTransform = registry->get<component::Transform>(a_player->interactableEntity);
+		auto& cannon          = registry->get<Cannon>(player.interactableEntity);
+		auto& cannonTransform = registry->get<component::Transform>(player.interactableEntity);
 
 		//cannon can be loaded with a cannonball
-		if (a_player->carriedItem == CarryingItemState::cannonball && cannon.isLoaded == false)
+		if (player.carriedItem == CarryingItemState::cannonball && cannon.isLoaded == false)
 		{
 			cannon.isLoaded = true;
 
@@ -448,8 +445,8 @@ void PlayerInteractionValidationSystem::validateInteraction(entt::entity a_playe
 			auto carriedItemsView = registry->view<CarryableItem, component::Parent, component::Transform>();
 			for (entt::entity carriedItemEntity : carriedItemsView)
 			{
-				auto& carriedItem = registry->get<CarryableItem>(carriedItemEntity);
-				auto& carriedItemParent = registry->get<component::Parent>(carriedItemEntity);
+				auto& carriedItem          = registry->get<CarryableItem>(carriedItemEntity);
+				auto& carriedItemParent    = registry->get<component::Parent>(carriedItemEntity);
 				auto& carriedItemTransform = registry->get<component::Transform>(carriedItemEntity);
 
 				if (carriedItemParent.parent == a_playerEntity)
@@ -457,10 +454,11 @@ void PlayerInteractionValidationSystem::validateInteraction(entt::entity a_playe
 					std::cout << "LOADED CANNON!\n";
 
 					carriedItemParent.parent = entt::null;
-					a_player->carriedItem = CarryingItemState::nothing;
+					player.carriedItem = CarryingItemState::nothing;
+
 					carriedItem.isBeingCarried = false;
+					carriedItem.isActive       = false;
 					carriedItemTransform.setPosition(glm::vec3(1000.0f, 1000.0f, 1000.0f));
-					carriedItem.isActive = false;
 
 					return;
 				}
@@ -468,7 +466,7 @@ void PlayerInteractionValidationSystem::validateInteraction(entt::entity a_playe
 		}
 		else
 		{
-			float playerForwardDotCannonRight = glm::dot(a_playerTransform->getForward(), cannonTransform.getRight());
+			float playerForwardDotCannonRight = glm::dot(playerTransform.getForward(), cannonTransform.getRight());
 
 			bool isCannonOnLeftSideOfTrack = (cannon.cannonTrackPosition == -1)
 				? true : false;
@@ -481,51 +479,51 @@ void PlayerInteractionValidationSystem::validateInteraction(entt::entity a_playe
 			if (playerForwardDotCannonRight < -0.65f)
 			{
 				//set direction-specific variables in the if statement and non-direction specific variables outside
-				a_player->adjustingPositionStateData.destinationPos =  cannonTransform.getRight() * glm::vec3(1.2f, 0.0f, 0.0f) + cannonTransform.getPosition();
-				a_player->pushingStateData.destinationPos           = -cannonTransform.getRight() * glm::vec3(cannon.pushDistance, 0.0f, 0.0f) + a_player->adjustingPositionStateData.destinationPos;
+				player.adjustingPositionStateData.destinationPos =  cannonTransform.getRight() * glm::vec3(1.2f, 0.0f, 0.0f) + cannonTransform.getPosition();
+				player.pushingStateData.destinationPos           = -cannonTransform.getRight() * glm::vec3(cannon.pushDistance, 0.0f, 0.0f) + player.adjustingPositionStateData.destinationPos;
 				
 				cannon.pushStateData.destinationPos = -cannonTransform.getRight() * glm::vec3(cannon.pushDistance, 0.0f, 0.0f) + cannonTransform.getPosition();
 				cannon.cannonTrackPosition--;
 
 				//hacky way to limit the camera but it works for now
-				a_player->yRotationClamp = 50.0f;
-				if (a_playerTransform->getRotationEulerY() < a_player->yRotationClamp)
-					a_playerTransform->setRotationEulerY(a_player->yRotationClamp);
+				player.yRotationClamp = 50.0f;
+				if (playerTransform.getRotationEulerY() < player.yRotationClamp)
+					playerTransform.setRotationEulerY(player.yRotationClamp);
 			}
 			//player is on the left side of the cannon (will be pushing towards the right)
 			else
 			{
 				//set direction-specific variables in the if statement and non-direction specific variables outside
-				a_player->adjustingPositionStateData.destinationPos = -cannonTransform.getRight() * glm::vec3(1.2f, 0.0f, 0.0f) + cannonTransform.getPosition();
-				a_player->pushingStateData.destinationPos           =  cannonTransform.getRight() * glm::vec3(cannon.pushDistance, 0.0f, 0.0f) + a_player->adjustingPositionStateData.destinationPos;
+				player.adjustingPositionStateData.destinationPos = -cannonTransform.getRight() * glm::vec3(1.2f, 0.0f, 0.0f) + cannonTransform.getPosition();
+				player.pushingStateData.destinationPos           =  cannonTransform.getRight() * glm::vec3(cannon.pushDistance, 0.0f, 0.0f) + player.adjustingPositionStateData.destinationPos;
 
 				cannon.pushStateData.destinationPos = cannonTransform.getRight() * glm::vec3(cannon.pushDistance, 0.0f, 0.0f) + cannonTransform.getPosition();
 				cannon.cannonTrackPosition++;
 
 				//hacky way to limit the camera but it works for now
-				a_player->yRotationClamp = -50.0f;
-				if (a_playerTransform->getRotationEulerY() > a_player->yRotationClamp)
-					a_playerTransform->setRotationEulerY(a_player->yRotationClamp);
+				player.yRotationClamp = -50.0f;
+				if (playerTransform.getRotationEulerY() > player.yRotationClamp)
+					playerTransform.setRotationEulerY(player.yRotationClamp);
 			}
 
 			std::cout << "PUSHING!\n";
 
-			a_player->adjustingPositionStateData.startPos = a_playerTransform->getPosition();
-			a_player->adjustingPositionStateData.destinationPos.y = a_playerTransform->getPositionY(); //don't change the player's y position
+			player.adjustingPositionStateData.startPos         = playerTransform.getPosition();
+			player.adjustingPositionStateData.destinationPos.y = playerTransform.getPositionY(); //don't change the player's y position
 
-			a_player->pushingStateData.startPos = a_player->adjustingPositionStateData.destinationPos;
-			a_player->pushingStateData.destinationPos.y = a_playerTransform->getPositionY(); //don't change the player's y position
+			player.pushingStateData.startPos         = player.adjustingPositionStateData.destinationPos;
+			player.pushingStateData.destinationPos.y = playerTransform.getPositionY(); //don't change the player's y position
 
 			cannon.pushStateData.startPos = cannonTransform.getPosition();
 
 			//once all the new positions are set for the states, send out state change events
 			PlayerStateChangeEvent playerStateChange;
-			playerStateChange.player = a_player;
+			playerStateChange.player   = &player;
 			playerStateChange.newState = PlayerState::pushing;
 			postEvent(Event::create(playerStateChange));
 
 			CannonStateChangeEvent cannonStateChange;
-			cannonStateChange.cannon = &cannon;
+			cannonStateChange.cannon   = &cannon;
 			cannonStateChange.newState = CannonState::beingPushed;
 			postEvent(Event::create(cannonStateChange));
 
@@ -537,4 +535,9 @@ void PlayerInteractionValidationSystem::validateInteraction(entt::entity a_playe
 CannonInteractionOutcome PlayerInteractionValidationSystem::validateRaycastHit(Player* a_player, Cannon* a_cannon)
 {
 	return CannonInteractionOutcome::invalid;
+}
+
+void dropPlayerItems(entt::entity a_playerEntity, bool dropSpecificItemType, CarryableItemType itemTypeToDrop)
+{
+
 }

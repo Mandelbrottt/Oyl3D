@@ -23,7 +23,8 @@ private:
 	void onUpdate(Timestep dt) override;
 	bool onEvent(Ref<Event> event) override;
 
-	void checkForAnyValidPlayerInteractions(entt::entity a_playerEntity, Player* a_player, component::Transform* a_playerTransform);
-	void validateInteraction(entt::entity a_playerEntity, Player* a_player, component::Transform* a_playerTransform);
+	void checkForAnyValidPlayerInteractions(entt::entity a_playerEntity);
+	void validateInteraction(entt::entity a_playerEntity);
 	CannonInteractionOutcome validateRaycastHit(Player* a_player, Cannon* a_cannon);
+	void dropPlayerItems(entt::entity a_playerEntity, bool dropSpecificItemType = false, CarryableItemType itemTypeToDrop = CarryableItemType::invalid);
 };
