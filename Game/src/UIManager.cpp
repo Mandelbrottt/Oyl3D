@@ -105,10 +105,9 @@ bool UIManagerSystem::onEvent(Ref<Event> event)
 
 				garbageTickTransform.setPosition(glm::vec3(100.0f));
 
-				if (evt.currentGarbageTicks >= i + 1)
+				if (evt.numGarbageTicksToDisplay >= i + 1)
 				{
-					garbageTick.screenDurationTimer.elapsed = 0.0f;
-					garbageTick.screenDurationTimer.timeToWait = garbageTick.ON_SCREEN_DURATION;
+					garbageTick.onScreenCountdown = garbageTick.ON_SCREEN_DURATION;
 					garbageTickTransform.setPosition(glm::vec3((i * 3.0f) - 3.0f, 4.0f, 0.0f));
 				}
 

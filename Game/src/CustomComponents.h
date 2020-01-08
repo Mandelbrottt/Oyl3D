@@ -62,12 +62,6 @@ enum class ReticleType
 	invalid
 };
 
-struct TimedAction
-{
-	float elapsed = 0.0f;
-	float timeToWait;
-};
-
 struct MoveableUsingLerp
 {
 	glm::vec3 startPos;
@@ -106,15 +100,16 @@ struct Cannon
 	CannonState state = CannonState::doingNothing;
 	bool isLoaded = false;
 
-	TimedAction fuse;
+	float FUSE_DURATION = 20.0f;
+	float fuseCountdown = FUSE_DURATION;
 
 	int cannonTrackPosition = 0;
 	float pushDistance = 10.0f;
 	float beingPushedSpeed = 0.2f;
 	MoveableUsingLerp pushStateData;
 
-	float waitTimeBeforeBeingPushed = 0.3f;
-	TimedAction waitTimer;
+	float WAIT_BEFORE_BEING_PUSHED_DURATION = 0.3f;
+	float waitBeforeBeingPushedCountdown = WAIT_BEFORE_BEING_PUSHED_DURATION;
 };
 
 struct CarryableItem
@@ -131,11 +126,13 @@ struct GarbagePile
 {
 	Team team;
 
+	bool isGlooped = false;
+
 	int MAX_GARBAGE_LEVEL = 5;
 	int garbageLevel = 1;
 
-	int MAX_GARBAGE_LEVEL_TICKS = 3; // each level will have 3 sub-levels (or ticks) before it goes down by 1
-	int garbageLevelTicks = 3;
+	float GARBAGE_TICKS_PER_LEVEL = 3.0f;
+	float garbageTicks = 3.0f;
 };
 
 struct CannonballCrate
@@ -172,6 +169,6 @@ struct EndScreen
 
 struct GarbageTick
 {
-	TimedAction screenDurationTimer;
-	float ON_SCREEN_DURATION = 3.f;
+	float ON_SCREEN_DURATION = 3.0f;
+	float onScreenCountdown = ON_SCREEN_DURATION;
 };

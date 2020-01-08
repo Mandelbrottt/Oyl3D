@@ -58,7 +58,6 @@ void SandboxLayer::onEnter()
 
 			auto& cannon = registry->assign<Cannon>(cannonBlueEntity);
 			cannon.team = Team::blue;
-			cannon.fuse.timeToWait = 20.0f;
 
 			registry->assign<component::Renderable>(cannonBlueEntity, mr);
 

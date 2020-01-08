@@ -18,8 +18,8 @@ void GarbageTickSystem::onUpdate(Timestep dt)
 		auto& garbageTick = registry->get<GarbageTick>(garbageTickEntity);
 		auto& garbageTickTransform = registry->get<component::Transform>(garbageTickEntity);
 
-		garbageTick.screenDurationTimer.elapsed += dt;
-		if (garbageTick.screenDurationTimer.elapsed > garbageTick.screenDurationTimer.timeToWait)
+		garbageTick.onScreenCountdown -= dt;
+		if (garbageTick.onScreenCountdown < 0.0f)
 			garbageTickTransform.setPosition(glm::vec3(100.0f));
 	}
 }

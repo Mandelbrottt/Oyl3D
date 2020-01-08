@@ -18,4 +18,6 @@ class GarbagePileSystem : public System
 	void onExit() override;
 	void onUpdate(Timestep dt) override;
 	bool onEvent(Ref<Event> event) override;
+
+	void increaseGarbageLevel(entt::entity a_garbagePileEntity);
 };

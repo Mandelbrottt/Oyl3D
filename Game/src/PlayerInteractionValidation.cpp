@@ -400,25 +400,9 @@ void PlayerInteractionValidationSystem::validateInteraction(entt::entity a_playe
 
 		std::cout << "CLEANING!\n";
 
-		garbagePile.garbageLevelTicks--;
-		if (garbagePile.garbageLevelTicks <= 0)
-		{
-			garbagePile.garbageLevel--;
-			garbagePile.garbageLevelTicks = garbagePile.MAX_GARBAGE_LEVEL_TICKS;
-		}
-
-		if (garbagePile.garbageLevel > 0)
-		{
-			GarbageCleanedEvent garbageCleaned;
-			garbageCleaned.currentGarbageTicks = garbagePile.garbageLevelTicks;
-			postEvent(Event::create(garbageCleaned));
-		}
-		else
-		{
-			GarbageCleanedEvent garbageCleaned;
-			garbageCleaned.currentGarbageTicks = 0;
-			postEvent(Event::create(garbageCleaned));
-		}
+		RequestToCleanGarbageEvent requestToCleanGarbage;
+		requestToCleanGarbage.garbagePileEntity = a_player->interactableEntity;
+		postEvent(Event::create(requestToCleanGarbage));
 
 		return;
 	}

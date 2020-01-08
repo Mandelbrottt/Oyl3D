@@ -19,6 +19,7 @@ enum CustomEventTypes
 	TypeCannonFired,
     TypeLoadCannon,
 	TypeTotalGarbageCount,
+	TypeRequestToCleanGarbage,
 	TypeGarbageCleaned
 };
 
@@ -71,7 +72,13 @@ OYL_EVENT_STRUCT(TotalGarbageCountEvent, TypeTotalGarbageCount, CategoryGarbageP
 		int totalGarbageCount;
 	});
 
+OYL_EVENT_STRUCT(RequestToCleanGarbageEvent, TypeRequestToCleanGarbage, CategoryGarbagePile,
+	{
+		entt::entity garbagePileEntity;
+	});
+
 OYL_EVENT_STRUCT(GarbageCleanedEvent, TypeGarbageCleaned, CategoryGarbagePile,
 	{
-		int currentGarbageTicks;
+		float numGarbageTicksToDisplay;
+		bool  displayGlooped;
 	});
