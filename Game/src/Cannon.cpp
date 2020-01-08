@@ -40,10 +40,13 @@ void CannonSystem::onUpdate(Timestep dt)
 				cannon.waitTimer.elapsed += dt;
 				if (cannon.waitTimer.elapsed > cannon.waitTimer.timeToWait)
 				{
-					cannon.pushStateData.interpolationParam = std::min(cannon.pushStateData.interpolationParam + cannon.pushStateData.speed * dt,
+					cannon.pushStateData.interpolationParam = std::min(
+						cannon.pushStateData.interpolationParam + cannon.pushStateData.speed * dt,
 						1.0f);
 
-					cannonTransform.setPosition(glm::mix(cannon.pushStateData.startPos, cannon.pushStateData.destinationPos, cannon.pushStateData.interpolationParam));
+					cannonTransform.setPosition(glm::mix(cannon.pushStateData.startPos, 
+						cannon.pushStateData.destinationPos, 
+						cannon.pushStateData.interpolationParam));
 
 					if (cannon.pushStateData.interpolationParam >= 1.0f)
 					{

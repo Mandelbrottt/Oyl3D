@@ -21,10 +21,16 @@ void CannonballSystem::onUpdate(Timestep dt)
 
 		if (cannonball.isBeingFired)
 		{
-			cannonball.interpolationParam = std::min(cannonball.interpolationParam + 0.7f * dt,
+			cannonball.interpolationParam = std::min(
+				cannonball.interpolationParam + 0.7f * dt,
 				1.0f);
 			
-			cannonballTransform.setPosition(glm::catmullRom(cannonball.v1, cannonball.v2, cannonball.v3, cannonball.v4, cannonball.interpolationParam));
+			cannonballTransform.setPosition(glm::catmullRom(
+				cannonball.v1, 
+				cannonball.v2, 
+				cannonball.v3, 
+				cannonball.v4, 
+				cannonball.interpolationParam));
 
 			if (cannonball.interpolationParam >= 1.0f)
 			{

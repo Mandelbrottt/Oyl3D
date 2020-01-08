@@ -62,17 +62,20 @@ void PlayerSystem::onUpdate(Timestep dt)
 						player.adjustingPositionStateData.interpolationParam + player.adjustingPositionStateData.speed * dt,
 						1.0f);
 
-					playerTransform.setPosition(glm::mix(player.adjustingPositionStateData.startPos,
+					playerTransform.setPosition(glm::mix(
+						player.adjustingPositionStateData.startPos,
 						player.adjustingPositionStateData.destinationPos,
 						player.adjustingPositionStateData.interpolationParam));
 				}
 				else //adjustingposition interpolation parameter >= 1.0f AKA player is done adjusting their position
 				{
 				    //the player is pushing
-					player.pushingStateData.interpolationParam = std::min(player.pushingStateData.interpolationParam + player.pushingStateData.speed * dt,
+					player.pushingStateData.interpolationParam = std::min(
+						player.pushingStateData.interpolationParam + player.pushingStateData.speed * dt,
 						1.0f);
 
-					playerTransform.setPosition(glm::mix(player.pushingStateData.startPos,
+					playerTransform.setPosition(glm::mix(
+						player.pushingStateData.startPos,
 						player.pushingStateData.destinationPos,
 						player.pushingStateData.interpolationParam));
 
