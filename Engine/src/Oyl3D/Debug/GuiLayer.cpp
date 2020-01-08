@@ -449,7 +449,7 @@ namespace oyl::internal
                 nodeFlags &= ~ImGuiTreeNodeFlags_Leaf;
                 break;
             }
-        
+
         bool treeNode = ImGui::TreeNodeEx((const void*) entity, nodeFlags, g_entityNodeFmt, so.name.c_str());
         bool clicked = ImGui::IsItemClicked(0);
         float testValue = ImGui::GetMousePos().x - ImGui::GetItemRectMin().x;
@@ -457,40 +457,65 @@ namespace oyl::internal
         {
             if (ImGui::BeginPopupContextItem())
             {
+                using component::Parent;
+                
                 int flags = 0;
-                if (!registry->has<component::Parent>(entity))
+                if (!registry->has<Parent>(entity) ||
+                    registry->get<Parent>(entity).parent == entt::null)
+                {
                     flags |= ImGuiSelectableFlags_Disabled;
+                }
                 
                 if (ImGui::Selectable("Clear Parent##HierarchyContextClearParent", false, flags))
                 {
                     setEntityParent(entity, entt::null);
                 }
+
+                if (ImGui::Selectable("Delete Entity##HierarchyContextDeleteEntity", false))
+                {
+                    for (auto child : registry->view<Parent>())
+                    {
+                        if (registry->get<Parent>(child).parent == entity)
+                        {
+                            setEntityParent(child, entt::null);
+                        }
+                    }
+
+                    registry->destroy(entity);
+
+                    if (m_currentEntity == entity)
+                        m_currentEntity = entt::null;
+                }
                 
                 ImGui::EndPopup();
             }
-            
-            if (ImGui::BeginDragDropSource())
+
+            if (registry->valid(entity))
             {
-                ImGui::Text("%s", so.name.c_str());
-                ImGui::SetDragDropPayload("HierarchyEntity", &entity, sizeof(entt::entity));
-                ImGui::EndDragDropSource();
+                if (ImGui::BeginDragDropSource())
+                {
+                    ImGui::Text("%s", so.name.c_str());
+                    ImGui::SetDragDropPayload("HierarchyEntity", &entity, sizeof(entt::entity));
+                    ImGui::EndDragDropSource();
+                }
+
+                if (ImGui::BeginDragDropTarget())
+                {
+                    if (auto payload = ImGui::AcceptDragDropPayload("HierarchyEntity"))
+                    {
+                        entt::entity child = *reinterpret_cast<entt::entity*>(payload->Data);
+                        setEntityParent(child, entity);
+                    }
+                    ImGui::EndDragDropTarget();
+                }
+            
+                for (auto child : parentView)
+                {
+                    if (parentView.get(child).parent == entity)
+                        drawEntityNode(child);
+                }
             }
 
-            if (ImGui::BeginDragDropTarget())
-            {
-                if (auto payload = ImGui::AcceptDragDropPayload("HierarchyEntity"))
-                {
-                    entt::entity child = *reinterpret_cast<entt::entity*>(payload->Data);
-                    setEntityParent(child, entity);
-                }
-                ImGui::EndDragDropTarget();
-            }
-            
-            for (auto child : parentView)
-            {
-                if (parentView.get(child).parent == entity)
-                    drawEntityNode(child);
-            }
             ImGui::TreePop();
         }
 
