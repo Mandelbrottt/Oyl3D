@@ -14,7 +14,14 @@ public:
         listenForEventType(EventType::KeyReleased);
         listenForEventType(EventType::GamepadConnected);
         listenForEventType(EventType::GamepadDisconnected);
+
+        listenForEventType(EventType::PhysicsTriggerEnter);
+        listenForEventType(EventType::PhysicsTriggerStay);
+        listenForEventType(EventType::PhysicsTriggerExit);
+
+        listenForEventType(EventType::PhysicsCollisionEnter);
         listenForEventType(EventType::PhysicsCollisionStay);
+        listenForEventType(EventType::PhysicsCollisionExit);
         
         auto lightShader = Shader::get(TEXTURE_SHADER_ALIAS);
 
@@ -63,46 +70,36 @@ public:
                     window.setVsync(!window.isVsync());
                 }
             }
-            case EventType::GamepadConnected:
+            case EventType::PhysicsTriggerEnter:
             {
-                auto ev = event_cast<GamepadConnectedEvent>(event);
-                if (ev.gid == 1)
-                {
-                    auto e = registry->create();
-                    registry->assign<component::Transform>(e);
+                auto ev = event_cast<PhysicsCollisionStayEvent>(event);
 
-                    auto& camera = registry->assign<component::PlayerCamera>(e);
-                    camera.player = 1;
-                    camera.skybox = TextureCubeMap::get(DEFAULT_SKYBOX_ALIAS);
+                component::EntityInfo& info1 = registry->get<component::EntityInfo>(ev.entity1);
+                component::EntityInfo& info2 = registry->get<component::EntityInfo>(ev.entity2);
 
-                    auto& so = registry->assign<component::EntityInfo>(e);
-                    so.name = "Player Camera 2";
-                }
+                OYL_LOG_INFO("Entity \"{0}\" Started Colliding with Entity \"{1}\"", info1.name, info2.name);
+
                 break;
             }
-            case EventType::GamepadDisconnected:
+            case EventType::PhysicsTriggerExit:
             {
-                auto ev = event_cast<GamepadDisconnectedEvent>(event);
-                auto view = registry->view<component::PlayerCamera>();
-                for (auto pc : view)
-                {
-                    if (ev.gid != 0 && 
-                        view.get(pc).player == ev.gid)
-                    {
-                        registry->destroy(pc);
-                        break;
-                    }
-                }
+                auto ev = event_cast<PhysicsCollisionStayEvent>(event);
+
+                component::EntityInfo& info1 = registry->get<component::EntityInfo>(ev.entity1);
+                component::EntityInfo& info2 = registry->get<component::EntityInfo>(ev.entity2);
+
+                OYL_LOG_INFO("Entity \"{0}\" Stopped Colliding with Entity \"{1}\"", info1.name, info2.name);
+
                 break;
             }
-            case EventType::PhysicsCollisionStay:
+            case EventType::PhysicsTriggerStay:
             {
                 auto ev = event_cast<PhysicsCollisionStayEvent>(event);
                 
                 component::EntityInfo& info1 = registry->get<component::EntityInfo>(ev.entity1);
                 component::EntityInfo& info2 = registry->get<component::EntityInfo>(ev.entity2);
 
-                OYL_LOG_INFO("Entity \"{0}\" Collided with Entity \"{1}\"", info1.name, info2.name);
+                OYL_LOG_INFO("Entity \"{0}\" Stayed Colliding with Entity \"{1}\"", info1.name, info2.name);
 
                 break;
             }

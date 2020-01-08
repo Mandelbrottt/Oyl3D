@@ -5,7 +5,7 @@
 using namespace oyl;
 
 void SandboxLayer::onEnter()
-{    
+{
     auto mesh = Mesh::cache("res/assets/models/cube.obj");
     
     auto& mat = Material::cache(Shader::get(LIGHTING_SHADER_ALIAS), "container");
@@ -38,7 +38,7 @@ void SandboxLayer::onEnter()
         
         //rb.setProperties(component::RigidBody::IS_KINEMATIC, true);
 
-        //rb.setProperties(component::RigidBody::DETECT_COLLISIONS, false);
+        rb.setProperties(component::RigidBody::DETECT_COLLISIONS, false);
 
         auto& cl = registry->assign<component::Collidable>(e);
 
@@ -92,6 +92,7 @@ void SandboxLayer::onEnter()
 
         auto& rb = registry->assign<component::RigidBody>(e);
         rb.setMass(0.0f);
+        //rb.setProperties(component::RigidBody::Property::DETECT_COLLISIONS, false);
         
         auto& cl = registry->assign<component::Collidable>(e);
 

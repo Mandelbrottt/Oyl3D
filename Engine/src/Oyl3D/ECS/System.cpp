@@ -394,41 +394,107 @@ namespace oyl
         static Ref<EventDispatcher> g_dispatcher;
         static Ref<entt::registry>  g_currentRegistry;
 
-        static bool physicsCallbackFunc(btManifoldPoint& cp,
-                                        const btCollisionObjectWrapper* obj1, int id1, int index1,
-                                        const btCollisionObjectWrapper* obj2, int id2, int index2)
+        static void* g_obj1 = 0;
+        static void* g_obj2 = 0;
+
+        static void contactStartedCallback(btPersistentManifold* const& manifold)
         {
-            auto entity1 = (entt::entity) reinterpret_cast<ENTT_ID_TYPE>(obj1->getCollisionObject()->getUserPointer());
-            auto entity2 = (entt::entity) reinterpret_cast<ENTT_ID_TYPE>(obj2->getCollisionObject()->getUserPointer());
+            auto body1 = manifold->getBody0();
+            auto body2 = manifold->getBody1();
+
+            if (body1 == g_obj1 && body2 == g_obj2)
+                return;
+            
+            g_obj1 = (void*) body1;
+            g_obj2 = (void*) body2;
+            
+            auto entity1 = (entt::entity) reinterpret_cast<ENTT_ID_TYPE>(body1->getUserPointer());
+            auto entity2 = (entt::entity) reinterpret_cast<ENTT_ID_TYPE>(body2->getUserPointer());
+
+            if (!g_currentRegistry->valid(entity1) || !g_currentRegistry->valid(entity2))
+                return;
+
+            PhysicsCollisionEnterEvent event;
+            event.entity1 = entity1;
+            event.entity2 = entity2;
+
+            if (body1->getCollisionFlags() & btCollisionObject::CF_NO_CONTACT_RESPONSE ||
+                body2->getCollisionFlags() & btCollisionObject::CF_NO_CONTACT_RESPONSE)
+            {
+                event.type = EventType::PhysicsTriggerEnter;
+            }
+
+            g_dispatcher->postEvent(event);
+        }
+
+        static void contactEndedCallback(btPersistentManifold* const& manifold)
+        {
+            auto body1 = manifold->getBody0();
+            auto body2 = manifold->getBody1();
+
+            if (body1 == g_obj1 && body2 == g_obj2)
+                return;
+
+            g_obj1 = (void*) body1;
+            g_obj2 = (void*) body2;
+            
+            auto entity1 = (entt::entity) reinterpret_cast<ENTT_ID_TYPE>(body1->getUserPointer());
+            auto entity2 = (entt::entity) reinterpret_cast<ENTT_ID_TYPE>(body2->getUserPointer());
+
+            if (!g_currentRegistry->valid(entity1) || !g_currentRegistry->valid(entity2))
+                return;
+
+            PhysicsCollisionExitEvent event;
+            event.entity1 = entity1;
+            event.entity2 = entity2;
+
+            if (body1->getCollisionFlags() & btCollisionObject::CF_NO_CONTACT_RESPONSE ||
+                body2->getCollisionFlags() & btCollisionObject::CF_NO_CONTACT_RESPONSE)
+            {
+                event.type = EventType::PhysicsTriggerExit;
+            }
+            
+            g_dispatcher->postEvent(event);
+        }
+
+        static bool contactProcessedCallback(btManifoldPoint& cp, void* obj1, void* obj2)
+        {
+            auto body1 = reinterpret_cast<btCollisionObject*>(obj1);
+            auto body2 = reinterpret_cast<btCollisionObject*>(obj2);
+
+            if (body1 == g_obj1 && body2 == g_obj2)
+                return false;
+
+            g_obj1 = (void*) body1;
+            g_obj2 = (void*) body2;
+
+            auto entity1 = (entt::entity) reinterpret_cast<ENTT_ID_TYPE>(body1->getUserPointer());
+            auto entity2 = (entt::entity) reinterpret_cast<ENTT_ID_TYPE>(body2->getUserPointer());
 
             if (!g_currentRegistry->valid(entity1) || !g_currentRegistry->valid(entity2))
                 return false;
-            
-            if (obj1->getCollisionObject()->getCollisionFlags() & btCollisionObject::CF_NO_CONTACT_RESPONSE ||
-                obj2->getCollisionObject()->getCollisionFlags() & btCollisionObject::CF_NO_CONTACT_RESPONSE)
-            {
-                PhysicsTriggerStayEvent event;
-                event.entity1 = entity1;
-                event.entity2 = entity2;
 
-                g_dispatcher->postEvent(event);
-            }
-            else
-            {
-                PhysicsCollisionStayEvent event;
-                event.entity1 = entt::entity(entity1);
-                event.entity2 = entt::entity(entity2);
+            PhysicsCollisionStayEvent event;
+            event.entity1 = entity1;
+            event.entity2 = entity2;
 
-                g_dispatcher->postEvent(event);
+            if (body1->getCollisionFlags() & btCollisionObject::CF_NO_CONTACT_RESPONSE ||
+                body2->getCollisionFlags() & btCollisionObject::CF_NO_CONTACT_RESPONSE)
+            {
+                event.type = EventType::PhysicsTriggerStay;
             }
+
+            g_dispatcher->postEvent(event);
             return false;
         }
-        
+
         void PhysicsSystem::onEnter()
         {
             listenForEventType(EventType::PhysicsResetWorld);
-
-            gContactAddedCallback = physicsCallbackFunc;
+            
+            gContactStartedCallback   = contactStartedCallback;
+            gContactEndedCallback     = contactEndedCallback;
+            gContactProcessedCallback = contactProcessedCallback;
 
             g_dispatcher = m_dispatcher;
 
@@ -609,8 +675,11 @@ namespace oyl
                                                                rigidBody.m_impulse.y,
                                                                rigidBody.m_impulse.z));
             }
-            
-            m_btWorld->stepSimulation(Time::deltaTime(), 1, m_fixedTimeStep);
+
+            // TODO: Iterate over ghost objects with tick callback
+            m_btWorld->stepSimulation(Time::deltaTime(), 10, m_fixedTimeStep);
+
+            g_obj1 = g_obj2 = 0;
 
             for (auto entity : view)
             {
