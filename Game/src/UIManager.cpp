@@ -78,6 +78,11 @@ bool UIManagerSystem::onEvent(Ref<Event> event)
 					enableValidUIType(PlayerInteractionResult::pickUpMop);
 					break;
 				}
+				case PlayerInteractionResult::pickUpCleaningSolution:
+				{
+					enableValidUIType(PlayerInteractionResult::pickUpCleaningSolution);
+					break;
+				}
 				case PlayerInteractionResult::cleanGarbagePile:
 				{
 					enableValidUIType(PlayerInteractionResult::cleanGarbagePile);

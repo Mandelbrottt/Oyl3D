@@ -43,6 +43,7 @@ enum class PlayerInteractionResult
 	takeCannonballFromCrate,
 	pickUpCannonball,
 	pickUpMop,
+	pickUpCleaningSolution,
 	cleanGarbagePile,
 };
 
@@ -78,6 +79,9 @@ struct Player
 
 	MoveableUsingLerp adjustingPositionStateData; //TODO: integrate adjusting position into pushing state instead of having its own state
 	MoveableUsingLerp pushingStateData;
+
+	float CLEANING_TIME_DURATION = 2.0f;
+	float cleaningTimeCountdown = CLEANING_TIME_DURATION;
 
 	float yRotationClamp = 0.0f;
 

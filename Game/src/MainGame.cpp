@@ -119,6 +119,23 @@ public:
             gui.texture = Texture2D::cache("res/assets/textures/gui/pickupMop.png");
         }
 
+		{
+			auto e = registry->create();
+
+			auto& t = registry->assign<component::Transform>(e);
+			t.setPosition(glm::vec3(0.0f, -2.5f, 0.0f));
+			t.setScale(glm::vec3(4.0f, 4.0f, 1.0f));
+
+			auto& uiType = registry->assign<PlayerInteractionType>(e);
+			uiType.type = PlayerInteractionResult::pickUpCleaningSolution;
+
+			auto& so = registry->assign<component::SceneObject>(e);
+			so.name = "Pickup Cleaning SOlution Message";
+
+			auto& gui = registry->assign<component::GuiRenderable>(e);
+			gui.texture = Texture2D::cache("res/assets/textures/gui/pickupCleaningSolution.png");
+		}
+
         {
             auto e = registry->create();
 

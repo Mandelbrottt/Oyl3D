@@ -7,7 +7,7 @@
 using namespace oyl;
 
 void SandboxLayer::onEnter()
-{    
+{
     auto mesh = Mesh::cache("res/assets/models/cube.obj");
     
     auto& mat = Material::cache(Shader::get(LIGHTING_SHADER_ALIAS), "container");
@@ -76,33 +76,6 @@ void SandboxLayer::onEnter()
 			shapeInfo.box.setSize({ 1.0f, 1.0f, 1.0f });
 		}
 
-        {
-			//MOP
-			entt::entity mopBlueEntity = registry->create();
-
-			component::Transform mopTransform;
-			mopTransform.setPosition(glm::vec3(3.0f, 0.1f, 0.0f));
-			mopTransform.setScale(glm::vec3(2.0f, 0.2f, 0.2f));
-			registry->assign<component::Transform>(mopBlueEntity, mopTransform);
-
-			auto& mop = registry->assign<CarryableItem>(mopBlueEntity);
-			mop.team = Team::blue;
-			mop.type = CarryableItemType::mop;
-
-			registry->assign<component::Renderable>(mopBlueEntity, mr);
-
-			auto& so2 = registry->assign<component::SceneObject>(mopBlueEntity);
-			so2.name = "BlueMop";
-
-			/*auto& rb = registry->assign<component::RigidBody>(mopBlueEntity);
-			rb.setMass(2.0f);
-			rb.setFriction(1.0f);*/
-
-			auto& mopCollider = registry->assign<component::Collider>(mopBlueEntity);
-			auto& shapeInfo = mopCollider.pushShape(Collider_Box);
-			shapeInfo.box.setSize({ 1.0f, 1.0f, 1.0f });
-        }
-
 		{
 			for (int i = 0; i < 3; i++)
 			{
@@ -124,6 +97,59 @@ void SandboxLayer::onEnter()
 
 				auto& garbagePileCollider = registry->assign<component::Collider>(garbagePileBlueEntity);
 				auto& shapeInfo = garbagePileCollider.pushShape(Collider_Box);
+				shapeInfo.box.setSize({ 1.0f, 1.0f, 1.0f });
+			}
+		}
+
+        {
+			//MOP
+			entt::entity mopBlueEntity = registry->create();
+
+			component::Transform mopTransform;
+			mopTransform.setPosition(glm::vec3(3.0f, 0.1f, 0.0f));
+			mopTransform.setScale(glm::vec3(2.0f, 0.2f, 0.2f));
+			registry->assign<component::Transform>(mopBlueEntity, mopTransform);
+
+			auto& carryableItem = registry->assign<CarryableItem>(mopBlueEntity);
+			carryableItem.team = Team::blue;
+			carryableItem.type = CarryableItemType::mop;
+
+			registry->assign<component::Renderable>(mopBlueEntity, mr);
+
+			auto& so2 = registry->assign<component::SceneObject>(mopBlueEntity);
+			so2.name = "BlueMop";
+
+			/*auto& rb = registry->assign<component::RigidBody>(mopBlueEntity);
+			rb.setMass(2.0f);
+			rb.setFriction(1.0f);*/
+
+			auto& mopCollider = registry->assign<component::Collider>(mopBlueEntity);
+			auto& shapeInfo = mopCollider.pushShape(Collider_Box);
+			shapeInfo.box.setSize({ 1.0f, 1.0f, 1.0f });
+        }
+
+		{
+			//CLEANING SOLUTION
+			for (int i = 0; i < 3; i++)
+			{
+				entt::entity cleaningSolutionEntity = registry->create();
+
+				component::Transform cleaningSolutionTransform;
+				cleaningSolutionTransform.setPosition(glm::vec3(5.0f, 5.0f, 5.0f));
+				cleaningSolutionTransform.setScale(glm::vec3(0.5f, 0.5f, 0.5f));
+				registry->assign<component::Transform>(cleaningSolutionEntity, cleaningSolutionTransform);
+
+				auto& carryableItem = registry->assign<CarryableItem>(cleaningSolutionEntity);
+				carryableItem.team = Team::blue;
+				carryableItem.type = CarryableItemType::cleaningSolution;
+
+				registry->assign<component::Renderable>(cleaningSolutionEntity, mr);
+
+				auto& so2 = registry->assign<component::SceneObject>(cleaningSolutionEntity);
+				so2.name = "BlueCleaningSolution" + std::to_string(i);
+
+				auto& cleaningSolutionCollider = registry->assign<component::Collider>(cleaningSolutionEntity);
+				auto& shapeInfo = cleaningSolutionCollider.pushShape(Collider_Box);
 				shapeInfo.box.setSize({ 1.0f, 1.0f, 1.0f });
 			}
 		}
@@ -156,7 +182,9 @@ void SandboxLayer::onEnter()
 				auto& shapeInfo = cannonballCollider.pushShape(Collider_Sphere);
 				shapeInfo.sphere.setRadius(0.5f);
 			}
+		}
 
+		{
 			//CANNONBALL CRATE
 			entt::entity cannonballCrateEntity = registry->create();
 

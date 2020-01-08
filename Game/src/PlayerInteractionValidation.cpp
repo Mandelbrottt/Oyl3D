@@ -62,6 +62,7 @@ void PlayerInteractionValidationSystem::checkForAnyValidPlayerInteractions(entt:
 		playerInteractResult.interactionType = PlayerInteractionResult::nothing;
 		postEvent(Event::create(playerInteractResult));
 	}
+
 	auto carryableItemView = registry->view<CarryableItem, component::Transform>();
 	for (auto& carryableItemEntity : carryableItemView)
 	{
@@ -70,36 +71,15 @@ void PlayerInteractionValidationSystem::checkForAnyValidPlayerInteractions(entt:
 
 		glm::vec3 itemNewPosition = glm::vec3(0.0f);
 		glm::vec3 itemNewRotation = glm::vec3(0.0f);
+			
 
 		switch (carryableItem.type)
 		{
-			case CarryableItemType::mop:
-			{
-				if (!carryableItem.isBeingCarried
-					//compare x values
-					&& playerTransform.getPositionX() < carryableItemTransform.getPositionX() + 1.8f
-					&& playerTransform.getPositionX() > carryableItemTransform.getPositionX() - 1.8f
-					//compare z values
-					&& playerTransform.getPositionZ() < carryableItemTransform.getPositionZ() + 1.8f
-					&& playerTransform.getPositionZ() > carryableItemTransform.getPositionZ() - 1.8f)
-				{
-					if (player.primaryCarriedItem == entt::null)
-					{
-						player.interactableEntity = carryableItemEntity;
-
-						PlayerInteractResultEvent playerInteractResult;
-						playerInteractResult.interactionType = PlayerInteractionResult::pickUpMop;
-						postEvent(Event::create(playerInteractResult));
-
-						return;
-					}
-				}
-
-				break;
-			}
 			case CarryableItemType::cannonball:
 			{
-				if (!carryableItem.isBeingCarried
+				if (   !carryableItem.isBeingCarried
+					&& player.primaryCarriedItem   == entt::null
+					&& player.secondaryCarriedItem == entt::null
 					//compare x values
 					&& playerTransform.getPositionX() < carryableItemTransform.getPositionX() + 1.1f
 					&& playerTransform.getPositionX() > carryableItemTransform.getPositionX() - 1.1f
@@ -107,17 +87,60 @@ void PlayerInteractionValidationSystem::checkForAnyValidPlayerInteractions(entt:
 					&& playerTransform.getPositionZ() < carryableItemTransform.getPositionZ() + 1.1f
 					&& playerTransform.getPositionZ() > carryableItemTransform.getPositionZ() - 1.1f)
 				{
-					if (player.primaryCarriedItem == entt::null && player.secondaryCarriedItem == entt::null)
-					{
-						player.interactableEntity = carryableItemEntity;
+					player.interactableEntity = carryableItemEntity;
 
-						PlayerInteractResultEvent playerInteractResult;
-						playerInteractResult.interactionType = PlayerInteractionResult::pickUpCannonball;
-						postEvent(Event::create(playerInteractResult));
+					PlayerInteractResultEvent playerInteractResult;
+					playerInteractResult.interactionType = PlayerInteractionResult::pickUpCannonball;
+					postEvent(Event::create(playerInteractResult));
 
-						return;
-					}
+					return;
 				}
+				break;
+			}
+			case CarryableItemType::mop:
+			{
+				if (   !carryableItem.isBeingCarried
+					&& player.primaryCarriedItem == entt::null
+					//compare x values
+					&& playerTransform.getPositionX() < carryableItemTransform.getPositionX() + 1.8f
+					&& playerTransform.getPositionX() > carryableItemTransform.getPositionX() - 1.8f
+					//compare z values
+					&& playerTransform.getPositionZ() < carryableItemTransform.getPositionZ() + 1.8f
+					&& playerTransform.getPositionZ() > carryableItemTransform.getPositionZ() - 1.8f)
+				{
+					player.interactableEntity = carryableItemEntity;
+
+					PlayerInteractResultEvent playerInteractResult;
+					playerInteractResult.interactionType = PlayerInteractionResult::pickUpMop;
+					postEvent(Event::create(playerInteractResult));
+
+					return;
+				}
+
+				break;
+			}
+			case CarryableItemType::cleaningSolution:
+			{
+				if (   !carryableItem.isBeingCarried
+					&& player.secondaryCarriedItem == entt::null
+					&& (player.primaryCarriedItem  == entt::null
+						|| registry->get<CarryableItem>(player.primaryCarriedItem).type == CarryableItemType::mop)
+					//compare x values
+					&& playerTransform.getPositionX() < carryableItemTransform.getPositionX() + 1.3f
+					&& playerTransform.getPositionX() > carryableItemTransform.getPositionX() - 1.3f
+					//compare z values
+					&& playerTransform.getPositionZ() < carryableItemTransform.getPositionZ() + 1.3f
+					&& playerTransform.getPositionZ() > carryableItemTransform.getPositionZ() - 1.3f)
+				{
+					player.interactableEntity = carryableItemEntity;
+
+					PlayerInteractResultEvent playerInteractResult;
+					playerInteractResult.interactionType = PlayerInteractionResult::pickUpCleaningSolution;
+					postEvent(Event::create(playerInteractResult));
+
+					return;
+				}
+
 				break;
 			}
 		}
@@ -379,7 +402,7 @@ void PlayerInteractionValidationSystem::validateInteraction(entt::entity a_playe
 
 			if (carryableItem.type == CarryableItemType::cannonball && !carryableItem.isActive && !carryableItem.isBeingCarried)
 			{
-				player.primaryCarriedItem = player.interactableEntity;
+				player.primaryCarriedItem = carryableItemEntity;
 
 				carryableItem.isBeingCarried = true;
 				carryableItem.isActive       = true;
