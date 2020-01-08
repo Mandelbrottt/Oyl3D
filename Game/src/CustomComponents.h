@@ -33,16 +33,6 @@ enum class CarryableItemType
     gloop
 };
 
-enum class CarryingItemState
-{
-    nothing,
-    cannonball,
-    mop,
-    cleaningSolution,
-    mopAndCleaningSolution,
-    gloop
-};
-
 enum class PlayerInteractionResult
 {
 	nothing,
@@ -75,7 +65,8 @@ struct Player
 {
 	Team team;
 
-	CarryingItemState carriedItem = CarryingItemState::nothing;
+	entt::entity primaryCarriedItem   = entt::null;
+	entt::entity secondaryCarriedItem = entt::null;
     
 	PlayerState state = PlayerState::idle;
 

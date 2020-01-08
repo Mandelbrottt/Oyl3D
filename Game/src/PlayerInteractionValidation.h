@@ -26,5 +26,5 @@ private:
 	void checkForAnyValidPlayerInteractions(entt::entity a_playerEntity);
 	void validateInteraction(entt::entity a_playerEntity);
 	CannonInteractionOutcome validateRaycastHit(Player* a_player, Cannon* a_cannon);
-	void dropPlayerItems(entt::entity a_playerEntity, bool dropSpecificItemType = false, CarryableItemType itemTypeToDrop = CarryableItemType::invalid);
+	void dropPlayerCarriedItems(entt::entity a_playerEntity, bool dropSpecificItemType = false, CarryableItemType itemTypeToDrop = CarryableItemType::invalid);
 };
