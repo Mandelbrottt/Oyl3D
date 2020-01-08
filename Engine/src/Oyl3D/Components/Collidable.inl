@@ -11,7 +11,7 @@ namespace oyl::component
         defaultInit();
     }
 
-    inline Collidable::ShapeInfo::ShapeInfo(OylEnum type)
+    inline Collidable::ShapeInfo::ShapeInfo(ColliderType type)
         : m_type(type)
     {
         m_selfRef = Ref<ShapeInfo>(this, [](ShapeInfo*) {});
@@ -33,19 +33,19 @@ namespace oyl::component
 
         switch (shapeInfo.m_type)
         {
-            case Collider_Box:
+            case ColliderType::Box:
                 this->box = shapeInfo.box;
                 break;
-            case Collider_Sphere:
+            case ColliderType::Sphere:
                 this->sphere = shapeInfo.sphere;
                 break;
-            case Collider_Capsule:
+            case ColliderType::Capsule:
                 this->capsule = shapeInfo.capsule;
                 break;
-            case Collider_Cylinder:
+            case ColliderType::Cylinder:
                 this->cylinder = shapeInfo.cylinder;
                 break;
-            case Collider_Mesh:
+            case ColliderType::Mesh:
                 this->mesh = shapeInfo.mesh;
                 break;
         }
@@ -59,27 +59,27 @@ namespace oyl::component
     {
         switch (m_type)
         {
-            case Collider_Box:
+            case ColliderType::Box:
                 box = {};
                 box.setSize(glm::vec3(1.0f));
                 break;
-            case Collider_Sphere:
+            case ColliderType::Sphere:
                 sphere = {};
                 sphere.setRadius(0.5f);
                 break;
-            case Collider_Capsule:
+            case ColliderType::Capsule:
                 capsule = {};
                 capsule.setRadius(0.5f);
                 capsule.setHeight(1.0f);
                 capsule.setDirection(Direction::Y_AXIS);
                 break;
-            case Collider_Cylinder:
+            case ColliderType::Cylinder:
                 cylinder = {};
                 cylinder.setRadius(0.5f);
                 cylinder.setHeight(1.0f);
                 cylinder.setDirection(Direction::Y_AXIS);
                 break;
-            case Collider_Mesh:
+            case ColliderType::Mesh:
                 mesh = {};
                 break;
         }
@@ -87,12 +87,12 @@ namespace oyl::component
         m_isDirty = true;
     }
 
-    inline OylEnum Collidable::ShapeInfo::getType() const
+    inline ColliderType Collidable::ShapeInfo::getType() const
     {
         return m_type;
     }
 
-    inline void Collidable::ShapeInfo::setType(OylEnum type)
+    inline void Collidable::ShapeInfo::setType(ColliderType type)
     {
         if (m_type != type)
         {
@@ -126,7 +126,7 @@ namespace oyl::component
         return m_shapes.emplace_back(shape);
     }
 
-    inline Collidable::ShapeInfo& Collidable::pushShape(OylEnum type)
+    inline Collidable::ShapeInfo& Collidable::pushShape(ColliderType type)
     {
         return m_shapes.emplace_back(type);
     }

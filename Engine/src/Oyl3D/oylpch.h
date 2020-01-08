@@ -64,7 +64,6 @@ using nlohmann::json;
 #include "Oyl3D/Typedefs.h"
 
 #include "Oyl3D/AssetPaths.h"
-#include "Oyl3D/Enums.h"
 
 #include "Oyl3D/Utils/Time.h"
 #include "Oyl3D/Utils/Logging.h"

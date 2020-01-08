@@ -30,18 +30,13 @@ namespace oyl
         virtual const EventMask&    getEventMask() const    = 0;
         virtual const CategoryMask& getCategoryMask() const = 0;
 
-        OYL_DEPRECATED("Use listenForEventType() instead.")
-        virtual void addToEventMask(OylEnum eventType) = 0;
-        OYL_DEPRECATED("Use listenForEventCategory() instead.")
-        virtual void addToCategoryMask(OylEnum eventCategory) = 0;
-
         virtual void listenForEventType(EventType type)             = 0;
         virtual void listenForEventCategory(EventCategory category) = 0;
         virtual void listenForAllEvents()                           = 0;
         
-        virtual void ignoreEventType(OylEnum type)         = 0;
-        virtual void ignoreEventCategory(OylEnum category) = 0;
-        virtual void ignoreAllEvents()                     = 0;
+        virtual void ignoreEventType(EventType type)             = 0;
+        virtual void ignoreEventCategory(EventCategory category) = 0;
+        virtual void ignoreAllEvents()                           = 0;
         
         virtual void setDispatcher(Ref<EventDispatcher> dispatcher) = 0;
     };
@@ -60,19 +55,13 @@ namespace oyl
         const EventMask&    getEventMask() const override final { return m_typeMask; }
         const CategoryMask& getCategoryMask() const override final { return m_categoryMask; }
 
-        OYL_DEPRECATED("Use listenForEventType() instead.")
-        void addToEventMask(OylEnum eventType) override final { listenForEventType((EventType) eventType); }
-
-        OYL_DEPRECATED("Use listenForEventCategory() instead.")
-        void addToCategoryMask(OylEnum eventCategory) override final { listenForEventCategory((EventCategory) eventCategory); }
-
         void listenForEventType(EventType type) override final;
         void listenForEventCategory(EventCategory category) override final;
 
         void listenForAllEvents() override final;
 
-        void ignoreEventType(OylEnum type) override final;
-        void ignoreEventCategory(OylEnum category) override final;
+        void ignoreEventType(EventType type) override final;
+        void ignoreEventCategory(EventCategory category) override final;
 
         void ignoreAllEvents() override final;
 

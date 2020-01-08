@@ -6,16 +6,27 @@ namespace oyl
 {
     class Mesh;
     
-    enum class Direction
-    {
-        X_AXIS, Y_AXIS, Z_AXIS
-    };
-
     namespace internal
     {
         class GuiLayer;
         class PhysicsSystem;
     }
+
+    enum class Direction
+    {
+        X_AXIS,
+        Y_AXIS,
+        Z_AXIS
+    };
+
+    enum class ColliderType
+    {
+        Box,
+        Sphere,
+        Capsule,
+        Cylinder,
+        Mesh
+    };
 }
 
 namespace oyl::component
@@ -125,14 +136,14 @@ namespace oyl::component
         struct ShapeInfo
         {
             ShapeInfo();
-            ShapeInfo(OylEnum type);
+            explicit ShapeInfo(ColliderType type);
             ShapeInfo(const ShapeInfo& shapeInfo);
             ~ShapeInfo() {}
 
             ShapeInfo& operator=(const ShapeInfo& shapeInfo);
 
-            OylEnum getType() const;
-            void setType(OylEnum type);
+            ColliderType getType() const;
+            void setType(ColliderType type);
             
             bool isTrigger() const;
             void setIsTrigger(bool trigger);
@@ -156,14 +167,14 @@ namespace oyl::component
 
             Ref<ShapeInfo> m_selfRef;
 
-            OylEnum m_type = None;
+            ColliderType m_type = ColliderType::Box;
 
             bool m_isTrigger = false;
             bool m_isDirty   = true;
         };
 
         ShapeInfo& pushShape(ShapeInfo shape);
-        ShapeInfo& pushShape(OylEnum type);
+        ShapeInfo& pushShape(ColliderType type);
         void eraseShape(u32 index);
         
         ShapeInfo& getShape(u32 index);

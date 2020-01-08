@@ -5,7 +5,6 @@
 
 #include <Oyl3D/Common.h>
 #include <Oyl3D/Typedefs.h>
-#include <Oyl3D/Enums.h>
 
 #include <Oyl3D/App/Application.h>
 

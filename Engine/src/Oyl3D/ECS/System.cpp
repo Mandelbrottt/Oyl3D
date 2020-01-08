@@ -12,6 +12,7 @@
 
 #include "Events/Event.h"
 #include "Events/EventListener.h"
+#include "Events/EventDispatcher.h"
 
 #include "Graphics/Camera.h"
 #include "Graphics/Material.h"
@@ -389,35 +390,140 @@ namespace oyl
         // ^^^ Animation System ^^^ //
         
         // vvv Physics System vvv //
-        
+
+        static Ref<EventDispatcher> g_dispatcher;
+        static Ref<entt::registry>  g_currentRegistry;
+
+        static void* g_obj1 = 0;
+        static void* g_obj2 = 0;
+
+        static void contactStartedCallback(btPersistentManifold* const& manifold)
+        {
+            auto body1 = manifold->getBody0();
+            auto body2 = manifold->getBody1();
+
+            if (body1 == g_obj1 && body2 == g_obj2)
+                return;
+            
+            g_obj1 = (void*) body1;
+            g_obj2 = (void*) body2;
+            
+            auto entity1 = (entt::entity) reinterpret_cast<ENTT_ID_TYPE>(body1->getUserPointer());
+            auto entity2 = (entt::entity) reinterpret_cast<ENTT_ID_TYPE>(body2->getUserPointer());
+
+            if (!g_currentRegistry->valid(entity1) || !g_currentRegistry->valid(entity2))
+                return;
+
+            PhysicsCollisionEnterEvent event;
+            event.entity1 = entity1;
+            event.entity2 = entity2;
+
+            if (body1->getCollisionFlags() & btCollisionObject::CF_NO_CONTACT_RESPONSE ||
+                body2->getCollisionFlags() & btCollisionObject::CF_NO_CONTACT_RESPONSE)
+            {
+                event.type = EventType::PhysicsTriggerEnter;
+            }
+
+            g_dispatcher->postEvent(event);
+        }
+
+        static void contactEndedCallback(btPersistentManifold* const& manifold)
+        {
+            auto body1 = manifold->getBody0();
+            auto body2 = manifold->getBody1();
+
+            if (body1 == g_obj1 && body2 == g_obj2)
+                return;
+
+            g_obj1 = (void*) body1;
+            g_obj2 = (void*) body2;
+            
+            auto entity1 = (entt::entity) reinterpret_cast<ENTT_ID_TYPE>(body1->getUserPointer());
+            auto entity2 = (entt::entity) reinterpret_cast<ENTT_ID_TYPE>(body2->getUserPointer());
+
+            if (!g_currentRegistry->valid(entity1) || !g_currentRegistry->valid(entity2))
+                return;
+
+            PhysicsCollisionExitEvent event;
+            event.entity1 = entity1;
+            event.entity2 = entity2;
+
+            if (body1->getCollisionFlags() & btCollisionObject::CF_NO_CONTACT_RESPONSE ||
+                body2->getCollisionFlags() & btCollisionObject::CF_NO_CONTACT_RESPONSE)
+            {
+                event.type = EventType::PhysicsTriggerExit;
+            }
+            
+            g_dispatcher->postEvent(event);
+        }
+
+        static bool contactProcessedCallback(btManifoldPoint& cp, void* obj1, void* obj2)
+        {
+            auto body1 = reinterpret_cast<btCollisionObject*>(obj1);
+            auto body2 = reinterpret_cast<btCollisionObject*>(obj2);
+
+            if (body1 == g_obj1 && body2 == g_obj2)
+                return false;
+
+            g_obj1 = (void*) body1;
+            g_obj2 = (void*) body2;
+
+            auto entity1 = (entt::entity) reinterpret_cast<ENTT_ID_TYPE>(body1->getUserPointer());
+            auto entity2 = (entt::entity) reinterpret_cast<ENTT_ID_TYPE>(body2->getUserPointer());
+
+            if (!g_currentRegistry->valid(entity1) || !g_currentRegistry->valid(entity2))
+                return false;
+
+            PhysicsCollisionStayEvent event;
+            event.entity1 = entity1;
+            event.entity2 = entity2;
+
+            if (body1->getCollisionFlags() & btCollisionObject::CF_NO_CONTACT_RESPONSE ||
+                body2->getCollisionFlags() & btCollisionObject::CF_NO_CONTACT_RESPONSE)
+            {
+                event.type = EventType::PhysicsTriggerStay;
+            }
+
+            g_dispatcher->postEvent(event);
+            return false;
+        }
+
         void PhysicsSystem::onEnter()
         {
             listenForEventType(EventType::PhysicsResetWorld);
             
+            gContactStartedCallback   = contactStartedCallback;
+            gContactEndedCallback     = contactEndedCallback;
+            gContactProcessedCallback = contactProcessedCallback;
+
+            g_dispatcher = m_dispatcher;
+
+            g_currentRegistry = registry;
+            
             m_fixedTimeStep = 1.0f / 60.0f;
 
-            m_collisionConfig = UniqueRef<btDefaultCollisionConfiguration>::create();
-            m_dispatcher = UniqueRef<btCollisionDispatcher>::create(m_collisionConfig.get());
-            m_broadphase = UniqueRef<btDbvtBroadphase>::create();
-            m_solver = UniqueRef<btSequentialImpulseConstraintSolver>::create();
-            m_world = UniqueRef<btDiscreteDynamicsWorld>::create(m_dispatcher.get(), 
-                                                                 m_broadphase.get(),
-                                                                 m_solver.get(),
-                                                                 m_collisionConfig.get());
+            m_btCollisionConfig = UniqueRef<btDefaultCollisionConfiguration>::create();
+            m_btDispatcher = UniqueRef<btCollisionDispatcher>::create(m_btCollisionConfig.get());
+            m_btBroadphase = UniqueRef<btDbvtBroadphase>::create();
+            m_btSolver = UniqueRef<btSequentialImpulseConstraintSolver>::create();
+            m_btWorld = UniqueRef<btDiscreteDynamicsWorld>::create(m_btDispatcher.get(), 
+                                                                   m_btBroadphase.get(),
+                                                                   m_btSolver.get(),
+                                                                   m_btCollisionConfig.get());
 
             m_rigidBodies.clear();
             
             //m_world->setGravity(btVector3(0.0f, -9.81f, 0.0f));
-            m_world->setGravity(btVector3(0.0f, -9.81f, 0.0f));
+            m_btWorld->setGravity(btVector3(0.0f, -9.81f, 0.0f));
         }
 
         void PhysicsSystem::onExit()
         {
-            m_world.reset();
-            m_solver.reset();
-            m_broadphase.reset();
-            m_dispatcher.reset();
-            m_collisionConfig.reset();
+            m_btWorld.reset();
+            m_btSolver.reset();
+            m_btBroadphase.reset();
+            m_btDispatcher.reset();
+            m_btCollisionConfig.reset();
 
             m_rigidBodies.clear();
         }
@@ -544,7 +650,7 @@ namespace oyl
                     // Gravity
                     if (rigidBody.getProperty(RigidBody::USE_GRAVITY))
                     {
-                        cachedBody.body->setGravity(m_world->getGravity());
+                        cachedBody.body->setGravity(m_btWorld->getGravity());
                     }
                     else
                     {
@@ -569,8 +675,11 @@ namespace oyl
                                                                rigidBody.m_impulse.y,
                                                                rigidBody.m_impulse.z));
             }
-            
-            m_world->stepSimulation(Time::deltaTime(), 1, m_fixedTimeStep);
+
+            // TODO: Iterate over ghost objects with tick callback
+            m_btWorld->stepSimulation(Time::deltaTime(), 10, m_fixedTimeStep);
+
+            g_obj1 = g_obj2 = 0;
 
             for (auto entity : view)
             {
@@ -654,7 +763,7 @@ namespace oyl
             {
                 if (m_rigidBodies.find(entity) != m_rigidBodies.end()) 
                 {
-                    m_world->removeRigidBody(m_rigidBodies.at(entity)->body.get());
+                    m_btWorld->removeRigidBody(m_rigidBodies.at(entity)->body.get());
                     m_rigidBodies.erase(entity);
                 }
                 return;
@@ -664,7 +773,7 @@ namespace oyl
             if (colliderComponent.isDirty() && 
                 m_rigidBodies.find(entity) != m_rigidBodies.end())
             {
-                m_world->removeRigidBody(m_rigidBodies.at(entity)->body.get());
+                m_btWorld->removeRigidBody(m_rigidBodies.at(entity)->body.get());
                 m_rigidBodies.erase(entity);
 
                 for (auto& shape : const_cast<component::Collidable&>(colliderComponent))
@@ -695,7 +804,7 @@ namespace oyl
                     const auto& shapeThing = colliderComponent.getShape(0);
                     switch (shapeThing.m_type)
                     {
-                        case Collider_Box:
+                        case ColliderType::Box:
                         {
                             t.setIdentity();
 
@@ -723,7 +832,7 @@ namespace oyl
 
                             break;
                         }
-                        case Collider_Sphere:
+                        case ColliderType::Sphere:
                         {
                             t.setIdentity();
 
@@ -789,7 +898,7 @@ namespace oyl
                     {
                         switch (childIter->m_type)
                         {
-                            case Collider_Box:
+                            case ColliderType::Box:
                             {
                                 btTransform t;
 
@@ -820,7 +929,7 @@ namespace oyl
 
                                 break;
                             }
-                            case Collider_Sphere:
+                            case ColliderType::Sphere:
                             {
                                 btTransform t;
 
@@ -884,12 +993,18 @@ namespace oyl
 
                     body->setRestitution(1.0f);
                 }
-                
-                m_world->addRigidBody(body.get());
 
+                body->setCollisionFlags(body->getCollisionFlags() |
+                                        btCollisionObject::CF_CUSTOM_MATERIAL_CALLBACK);
+                
+                m_btWorld->addRigidBody(body.get());
+
+                m_rigidBodies[entity]->entity = entity;
                 m_rigidBodies[entity]->body   = body;
                 m_rigidBodies[entity]->shape  = shape;
                 m_rigidBodies[entity]->motion = motion;
+
+                body->setUserPointer((void*) entity);
             }
             else
             {
