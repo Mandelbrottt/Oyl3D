@@ -8,13 +8,11 @@ class GarbagePileSystem : public System
 {
 	OYL_CTOR(GarbagePileSystem, System)
 
-	const float PASSIVE_GARBAGE_BUILDUP_TIME = 34.0f;
+	const float PASSIVE_GARBAGE_BUILDUP_TIME = 12.0f;
 	float passiveGarbageBuildupCountdown = PASSIVE_GARBAGE_BUILDUP_TIME;
 	int numBuildUpsAccumulated = 0;
 
 	int totalGarbageLevel = 0;
-
-	bool garbageLevelHitZeroDirty = false;
 
 	void onEnter() override;
 	void onExit() override;

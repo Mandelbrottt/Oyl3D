@@ -7,6 +7,7 @@
 #include "CustomEvents.h"
 #include "PlayerInteractionValidation.h"
 #include "GarbagePileSystem.h"
+#include "GarbageTickSystem.h"
 #include "UIManager.h"
 #include "Cannonball.h"
 
@@ -29,6 +30,7 @@ public:
 		scheduleSystemUpdate<CannonSystem>();
 		scheduleSystemUpdate<PlayerInteractionValidationSystem>();
 		scheduleSystemUpdate<GarbagePileSystem>();
+		scheduleSystemUpdate<GarbageTickSystem>();
 		scheduleSystemUpdate<UIManagerSystem>();
 		scheduleSystemUpdate<CannonballSystem>();
 
@@ -443,7 +445,7 @@ public:
 
 			break;
 		}
-		case TypeTotalGarbageCount:
+		/*case TypeTotalGarbageCount:
 		{
 			auto evt = (TotalGarbageCountEvent)* event;
 			if (evt.totalGarbageCount >= 15)
@@ -471,7 +473,7 @@ public:
 			}
 
 			break;
-		}
+		}*/
 		}
 		return false;
 	}

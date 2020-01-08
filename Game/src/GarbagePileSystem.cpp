@@ -12,12 +12,13 @@ void GarbagePileSystem::onExit()
 
 void GarbagePileSystem::onUpdate(Timestep dt)
 {
+	//TODO: change to add to a random garbage pile rather than all of them for the final version
 	bool addGarbageLevel = false;
 	passiveGarbageBuildupCountdown -= dt;
 	if (passiveGarbageBuildupCountdown < 0.0f)
 	{
 		addGarbageLevel = true;
-		passiveGarbageBuildupCountdown = PASSIVE_GARBAGE_BUILDUP_TIME - numBuildUpsAccumulated * 2;
+		passiveGarbageBuildupCountdown = PASSIVE_GARBAGE_BUILDUP_TIME - numBuildUpsAccumulated * 2; //TODO: come up with a better calculate for time scaling
 		numBuildUpsAccumulated++;
 	}
 
@@ -40,23 +41,14 @@ void GarbagePileSystem::onUpdate(Timestep dt)
 			0.3f * garbagePile.garbageLevel + 1.5f));
 
 		if (garbagePile.garbageLevel <= 0) //check if garbage is fully depleted
-		{
-			garbageLevelHitZeroDirty = true;
 			garbagePileRenderable.enabled = false;
-		}
 		else //garbage isn't fully depleted
-		{
-			if (garbageLevelHitZeroDirty)
-			{
-				garbagePileRenderable.enabled = true;
-				garbageLevelHitZeroDirty = false;
-			}
-		}
+			garbagePileRenderable.enabled = true;
 
 		totalGarbageLevel += garbagePile.garbageLevel;
 
-		if (totalGarbageLevel >= 15)
-			totalGarbageLevel = 500;
+		//if (totalGarbageLevel >= 15)
+			//totalGarbageLevel = 500;
 	}
 
 	if (totalGarbageLevel != lastFrameTotalGarbageLevel)
