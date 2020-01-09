@@ -65,11 +65,13 @@ bool CannonSystem::onEvent(Ref<Event> event)
 	    case TypeCannonStateChange:
 	    {
 			auto evt = (CannonStateChangeEvent)* event;
+			auto& cannon = registry->get<Cannon>(evt.cannonEntity);
+
 	        switch (evt.newState)
 	        {
 			    case CannonState::beingPushed:
 			    {
-					changeToBeingPushed(evt.cannon);
+					changeToBeingPushed(&cannon);
 				    break;
 			    }
 	        }

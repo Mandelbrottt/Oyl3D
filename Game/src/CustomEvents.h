@@ -17,7 +17,6 @@ enum CustomEventTypes
 	TypePlayerStateChange,
     TypeCannonStateChange,
 	TypeCannonFired,
-    TypeLoadCannon,
 	TypeTotalGarbageCount,
 	TypeRequestToCleanGarbage,
 	TypeGarbageCleaned
@@ -26,8 +25,8 @@ enum CustomEventTypes
 
 OYL_EVENT_STRUCT(PlayerMoveEvent, TypePlayerMove, CategoryPlayer,
 	{
-		Player*   player;
-		glm::vec3 direction;
+		entt::entity playerEntity;
+		glm::vec3    direction;
 	});
 
 OYL_EVENT_STRUCT(PlayerInteractResultEvent, TypePlayerInteractResult, CategoryPlayer,
@@ -47,24 +46,19 @@ OYL_EVENT_STRUCT(PlayerDropItemEvent, TypePlayerDropItem, CategoryPlayer,
 
 OYL_EVENT_STRUCT(PlayerStateChangeEvent, TypePlayerStateChange, CategoryPlayer,
 	{
-		Player*     player;
-        PlayerState newState;
+		entt::entity playerEntity;
+        PlayerState  newState;
 	});
 
 OYL_EVENT_STRUCT(CannonStateChangeEvent, TypeCannonStateChange, CategoryCannon,
 	{
-		Cannon*      cannon;
+		entt::entity cannonEntity;
 		CannonState  newState;
 	});
 
 OYL_EVENT_STRUCT(CannonFiredEvent, TypeCannonFired, CategoryCannon,
 	{
 		glm::vec3 cannonPosition;
-	});
-
-OYL_EVENT_STRUCT(LoadCannonEvent, TypeLoadCannon, CategoryCannon,
-	{
-		Cannon* cannon;
 	});
 
 OYL_EVENT_STRUCT(TotalGarbageCountEvent, TypeTotalGarbageCount, CategoryGarbagePile,

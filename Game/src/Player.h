@@ -20,4 +20,6 @@ class PlayerSystem : public System
 	void changeToFalling(Player* a_player);
 	void changeToPushing(Player* a_player);
 	void changeToCleaning(Player* a_player);
+
+	void performBasicMovement(entt::entity a_playerEntity, const float a_speedForce, const float a_dt);
 };

@@ -61,6 +61,8 @@ void PlayerInteractionValidationSystem::checkForAnyValidPlayerInteractions(entt:
 		PlayerInteractResultEvent playerInteractResult;
 		playerInteractResult.interactionType = PlayerInteractionResult::nothing;
 		postEvent(Event::create(playerInteractResult));
+
+		return;
 	}
 
 	auto carryableItemView = registry->view<CarryableItem, component::Transform>();
@@ -431,6 +433,11 @@ void PlayerInteractionValidationSystem::validateInteraction(entt::entity a_playe
 		requestToCleanGarbage.garbagePileEntity = player.interactableEntity;
 		postEvent(Event::create(requestToCleanGarbage));
 
+		PlayerStateChangeEvent playerStateChange;
+		playerStateChange.playerEntity = a_playerEntity;
+		playerStateChange.newState     = PlayerState::cleaning;
+		postEvent(Event::create(playerStateChange));
+
 		return;
 	}
 
@@ -546,13 +553,13 @@ void PlayerInteractionValidationSystem::validateInteraction(entt::entity a_playe
 
 			//once all the new positions are set for the states, send out state change events
 			PlayerStateChangeEvent playerStateChange;
-			playerStateChange.player   = &player;
-			playerStateChange.newState = PlayerState::pushing;
+			playerStateChange.playerEntity = a_playerEntity;
+			playerStateChange.newState     = PlayerState::pushing;
 			postEvent(Event::create(playerStateChange));
 
 			CannonStateChangeEvent cannonStateChange;
-			cannonStateChange.cannon   = &cannon;
-			cannonStateChange.newState = CannonState::beingPushed;
+			cannonStateChange.cannonEntity = player.interactableEntity;
+			cannonStateChange.newState     = CannonState::beingPushed;
 			postEvent(Event::create(cannonStateChange));
 
 			return;

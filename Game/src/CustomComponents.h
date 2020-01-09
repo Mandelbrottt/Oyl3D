@@ -80,7 +80,7 @@ struct Player
 	MoveableUsingLerp adjustingPositionStateData; //TODO: integrate adjusting position into pushing state instead of having its own state
 	MoveableUsingLerp pushingStateData;
 
-	float CLEANING_TIME_DURATION = 2.0f;
+	float CLEANING_TIME_DURATION = 1.5f;
 	float cleaningTimeCountdown = CLEANING_TIME_DURATION;
 
 	float yRotationClamp = 0.0f;
@@ -164,6 +164,6 @@ struct EndScreen
 
 struct GarbageTick
 {
-	float ON_SCREEN_DURATION = 3.0f;
+	float ON_SCREEN_DURATION = 2.5f;
 	float onScreenCountdown = ON_SCREEN_DURATION;
 };
