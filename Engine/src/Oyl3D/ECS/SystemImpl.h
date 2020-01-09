@@ -16,6 +16,10 @@ namespace oyl
 {
     class Shader;
     class Camera;
+
+    struct RaycastResult;
+    struct ClosestRaycastResult;
+    struct AllHitsRaycastResult;
 }
 
 namespace oyl::internal
@@ -66,11 +70,12 @@ namespace oyl::internal
 
         virtual bool onEvent(const Event& event) override;
     };
-    
+
     class PhysicsSystem : public System
     {
         OYL_CTOR(PhysicsSystem, System)
 
+    public:
         virtual void onEnter() override;
         virtual void onExit() override;
 
@@ -78,6 +83,8 @@ namespace oyl::internal
         virtual void onGuiRender() override;
 
         virtual bool onEvent(const Event& event) override;
+
+        static Ref<ClosestRaycastResult> raytestClosest(glm::vec3 position, glm::vec3 direction, f32 distance);
 
     public:
         struct RigidBodyInfo

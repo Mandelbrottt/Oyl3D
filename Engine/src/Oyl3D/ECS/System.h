@@ -31,6 +31,7 @@ namespace oyl
     public:
         virtual ~System() = default;
 
+        // TODO: Differentiate with onCreate, onDestroy, etc.
         virtual void onEnter() override;
         virtual void onExit() override;
 

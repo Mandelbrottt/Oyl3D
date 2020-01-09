@@ -27,9 +27,9 @@ namespace oyl
 
         inline void setProjection(glm::mat4 proj) { m_projection = proj; }
 
-        inline glm::vec3 getForward() const { return glm::vec3(frontX, frontY, frontZ); }
-        inline glm::vec3 getUp() const { return glm::vec3(upX, upY, upZ); }
-        inline glm::vec3 getRight() const { return glm::vec3(rightX, rightY, rightZ); }
+        inline glm::vec3 getForward() const { return glm::vec3(frontX, frontY, -frontZ); }
+        inline glm::vec3 getUp() const { return glm::vec3(upX, upY, -upZ); }
+        inline glm::vec3 getRight() const { return glm::vec3(rightX, rightY, -rightZ); }
 
         void lookAt(const glm::vec3& target, const glm::vec3& up = glm::vec3(0, 1, 0));
 
