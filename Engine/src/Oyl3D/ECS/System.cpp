@@ -560,13 +560,15 @@ namespace oyl
                     cachedBody.body->setWorldTransform(t);
 
                     transform.m_isPositionOverridden = false;
+
+                    // TODO: Recursively recalculate every child transform
                 }
                 
                 if (transform.m_isRotationOverridden)
                 {
                     btTransform t = cachedBody.body->getWorldTransform();
 
-                    glm::quat rotation = transform.getRotation();
+                    glm::quat rotation = transform.getRotationGlobal();
                     t.setRotation(btQuaternion(rotation.x, rotation.y, rotation.z, rotation.w));
 
                     cachedBody.body->setWorldTransform(t);
@@ -575,9 +577,9 @@ namespace oyl
                 }
                 if (transform.m_isScaleOverridden)
                 {
-                    cachedBody.shape->setLocalScaling(btVector3(transform.getScaleX(),
-                                                                transform.getScaleY(),
-                                                                transform.getScaleZ()));
+                    cachedBody.shape->setLocalScaling(btVector3(transform.getScaleXGlobal(),
+                                                                transform.getScaleYGlobal(),
+                                                                transform.getScaleZGlobal()));
 
                     transform.m_isScaleOverridden = false;
                 }
@@ -697,10 +699,21 @@ namespace oyl
                 _pos = t.getOrigin();
                 _rot = t.getRotation();
 
-                transform.m_localPosition = { _pos.x(), _pos.y(), _pos.z() };
+                if (transform.m_parentRef.expired())
+                {
+                    transform.m_localPosition = { _pos.x(), _pos.y(), _pos.z() };
+                    transform.m_localRotation = glm::quat(_rot.w(), _rot.x(), _rot.y(), _rot.z());
 
-                transform.m_localRotation = glm::quat(_rot.w(), _rot.x(), _rot.y(), _rot.z());
-
+                }
+                else
+                {
+                    auto _t = transform.m_parentRef.lock()->getMatrixGlobal();
+                    transform.m_localPosition = 
+                        inverse(_t) * glm::vec4(_pos.x(), _pos.y(), _pos.z(), 1.0f);
+                    transform.m_localRotation =
+                        inverse(quat_cast(_t)) * glm::quat(_rot.w(), _rot.x(), _rot.y(), _rot.z());
+                }
+                
                 transform.m_isLocalDirty = true;
 
                 rigidBody.m_velocity = glm::vec3(cachedBody.body->getLinearVelocity().x(),
@@ -859,26 +872,25 @@ namespace oyl
                     // TEMPORARY: Make relative to collider
                     t.setIdentity();
                     
-                    t.setFromOpenGLMatrix(value_ptr(transformComponent.getMatrixGlobal()));
+                    //t.setFromOpenGLMatrix(value_ptr(transformComponent.getMatrixGlobal()));
 
-                    t.setOrigin(btVector3(transformComponent.getPositionX(),
-                                          transformComponent.getPositionY(),
-                                          transformComponent.getPositionZ()));
+                    t.setOrigin(btVector3(transformComponent.getPositionXGlobal(),
+                                          transformComponent.getPositionYGlobal(),
+                                          transformComponent.getPositionZGlobal()));
 
-                    glm::quat q = quat_cast(transformComponent.getMatrixGlobal());
+                    glm::quat q = transformComponent.getRotationGlobal();
 
                     btQuaternion btq = btQuaternion(q.x, q.y, q.z, q.w);
                     t.setRotation(btq);
-                    //
                     
                     btVector3 inertia = { 0, 0, 0 };
                     if (rigidBodyComponent.getMass() != 0.0f)
                         shape->calculateLocalInertia(rigidBodyComponent.getMass(), inertia);
 
                     shape->setLocalScaling({
-                        transformComponent.getScaleX(),
-                        transformComponent.getScaleY(),
-                        transformComponent.getScaleZ()
+                        transformComponent.getScaleXGlobal(),
+                        transformComponent.getScaleYGlobal(),
+                        transformComponent.getScaleZGlobal()
                     });
 
                     motion = Ref<btDefaultMotionState>::create(t);
@@ -961,13 +973,13 @@ namespace oyl
 
                     btTransform t;
                     
-                    t.setFromOpenGLMatrix(value_ptr(transformComponent.getMatrixGlobal()));
+                    //t.setFromOpenGLMatrix(value_ptr(transformComponent.getMatrixGlobal()));
 
-                    t.setOrigin(btVector3(transformComponent.getPositionX(),
-                                          transformComponent.getPositionY(),
-                                          transformComponent.getPositionZ()));
+                    t.setOrigin(btVector3(transformComponent.getPositionXGlobal(),
+                                          transformComponent.getPositionYGlobal(),
+                                          transformComponent.getPositionZGlobal()));
 
-                    glm::quat q = quat_cast(transformComponent.getMatrixGlobal());
+                    glm::quat q = transformComponent.getRotationGlobal();
 
                     btQuaternion btq = btQuaternion(q.x, q.y, q.z, q.w);
                     t.setRotation(btq);
@@ -977,9 +989,9 @@ namespace oyl
                         shape->calculateLocalInertia(rigidBodyComponent.getMass(), inertia);
 
                     shape->setLocalScaling({
-                        transformComponent.getScaleX(),
-                        transformComponent.getScaleY(),
-                        transformComponent.getScaleZ()
+                        transformComponent.getScaleXGlobal(),
+                        transformComponent.getScaleYGlobal(),
+                        transformComponent.getScaleZGlobal()
                     });
                     
                     motion = Ref<btDefaultMotionState>::create(t);
