@@ -38,7 +38,7 @@ void SandboxLayer::onEnter()
         
         //rb.setProperties(component::RigidBody::IS_KINEMATIC, true);
 
-        rb.setProperties(component::RigidBody::DETECT_COLLISIONS, false);
+        //rb.setProperties(component::RigidBody::DETECT_COLLISIONS, false);
 
         auto& cl = registry->assign<component::Collidable>(e);
 

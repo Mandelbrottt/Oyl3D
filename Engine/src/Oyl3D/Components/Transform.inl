@@ -4,11 +4,25 @@
 
 namespace oyl::component
 {
-    inline glm::vec3 Transform::getPosition() const { return m_localPosition; }
+    inline glm::vec3 Transform::getPosition() const
+    {
+        return m_localPosition;
+    }
 
-    inline f32 Transform::getPositionX() const { return m_localPosition.x; }
-    inline f32 Transform::getPositionY() const { return m_localPosition.y; }
-    inline f32 Transform::getPositionZ() const { return m_localPosition.z; }
+    inline f32 Transform::getPositionX() const
+    {
+        return m_localPosition.x;
+    }
+
+    inline f32 Transform::getPositionY() const
+    {
+        return m_localPosition.y;
+    }
+
+    inline f32 Transform::getPositionZ() const
+    {
+        return m_localPosition.z;
+    }
 
     inline glm::vec3 Transform::getPositionGlobal() const
     {
@@ -17,58 +31,137 @@ namespace oyl::component
         isOrphan = !m_parentRef.owner_before(wf{}) && !wf{}.owner_before(m_parentRef);
         if (isOrphan || m_parentRef.expired())
         {
-            return getPosition();
+            return m_localPosition;
         }
         return m_parentRef.lock()->getMatrixGlobal() * glm::vec4(m_localPosition, 1.0f);
     }
 
     inline f32 Transform::getPositionXGlobal() const
     {
-        using wf = WeakRef<Transform>;
-        bool isOrphan = true;
-        isOrphan = !m_parentRef.owner_before(wf{}) && !wf{}.owner_before(m_parentRef);
-        if (isOrphan || m_parentRef.expired())
-        {
-            return getPositionX();
-        }
-        return (m_parentRef.lock()->getMatrixGlobal() * glm::vec4(getPosition(), 1.0f)).x;
+        return getPositionGlobal().x;
     }
 
     inline f32 Transform::getPositionYGlobal() const
     {
-        using wf = WeakRef<Transform>;
-        bool isOrphan = true;
-        isOrphan = !m_parentRef.owner_before(wf{}) && !wf{}.owner_before(m_parentRef);
-        if (isOrphan || m_parentRef.expired())
-        {
-            return getPositionY();
-        }
-        return (m_parentRef.lock()->getMatrixGlobal() * glm::vec4(getPosition(), 1.0f)).y;
+        return getPositionGlobal().y;
     }
 
     inline f32 Transform::getPositionZGlobal() const
+    {
+        return getPositionGlobal().z;
+    }
+
+    inline glm::vec3 Transform::getRotationEuler() const
+    {
+        return degrees(eulerAngles(m_localRotation));
+    }
+
+    inline f32 Transform::getRotationEulerX() const
+    {
+        return getRotationEuler().x;
+    }
+
+    inline f32 Transform::getRotationEulerY() const
+    {
+        return getRotationEuler().y;
+    }
+    
+    inline f32 Transform::getRotationEulerZ() const
+    {
+        return getRotationEuler().z;
+    }
+
+    inline glm::quat Transform::getRotation() const
+    {
+        return m_localRotation;
+    }
+
+    inline glm::vec3 Transform::getRotationEulerGlobal() const
     {
         using wf = WeakRef<Transform>;
         bool isOrphan = true;
         isOrphan = !m_parentRef.owner_before(wf{}) && !wf{}.owner_before(m_parentRef);
         if (isOrphan || m_parentRef.expired())
         {
-            return getPositionZ();
+            return getRotationEuler();
         }
-        return (m_parentRef.lock()->getMatrixGlobal() * glm::vec4(getPosition(), 1.0f)).x;
+        glm::quat globalQuat = m_parentRef.lock()->getRotationGlobal() * m_localRotation;
+        return degrees(eulerAngles(globalQuat));
     }
 
-    inline glm::vec3 Transform::getRotationEuler() const { return degrees(glm::eulerAngles(m_localRotation)); }
-    inline f32       Transform::getRotationEulerX() const { return degrees(glm::eulerAngles(m_localRotation)).x; }
-    inline f32       Transform::getRotationEulerY() const { return degrees(glm::eulerAngles(m_localRotation)).y; }
-    inline f32       Transform::getRotationEulerZ() const { return degrees(glm::eulerAngles(m_localRotation)).z; }
+    inline f32 Transform::getRotationEulerXGlobal() const
+    {
+        return getRotationEulerGlobal().x;
+    }
 
-    inline glm::quat Transform::getRotation() const { return m_localRotation; }
+    inline f32 Transform::getRotationEulerYGlobal() const
+    {
+        return getRotationEulerGlobal().y;
+    }
 
-    inline glm::vec3 Transform::getScale() const { return m_localScale; }
-    inline f32       Transform::getScaleX() const { return m_localScale.x; }
-    inline f32       Transform::getScaleY() const { return m_localScale.y; }
-    inline f32       Transform::getScaleZ() const { return m_localScale.z; }
+    inline f32 Transform::getRotationEulerZGlobal() const
+    {
+        return getRotationEulerGlobal().z;
+    }
+
+    inline glm::quat Transform::getRotationGlobal() const
+    {
+        using wf = WeakRef<Transform>;
+        bool isOrphan = true;
+        isOrphan = !m_parentRef.owner_before(wf{}) && !wf{}.owner_before(m_parentRef);
+        if (isOrphan || m_parentRef.expired())
+        {
+            return getRotation();
+        }
+        return m_parentRef.lock()->getRotationGlobal() * m_localRotation;
+    }
+
+    inline glm::vec3 Transform::getScale() const
+    {
+        return m_localScale;
+    }
+
+    inline f32 Transform::getScaleX() const
+    {
+        return m_localScale.x;
+    }
+
+    inline f32 Transform::getScaleY() const
+    {
+        return m_localScale.y;
+    }
+
+    inline f32 Transform::getScaleZ() const
+    {
+        return m_localScale.z;
+    }
+
+    inline glm::vec3 Transform::getScaleGlobal() const
+    {
+        using wf = WeakRef<Transform>;
+        bool isOrphan = true;
+        isOrphan = !m_parentRef.owner_before(wf{}) && !wf{}.owner_before(m_parentRef);
+        if (isOrphan || m_parentRef.expired())
+        {
+            return getScale();
+        }
+        return m_parentRef.lock()->getScaleGlobal() * m_localScale;
+    }
+
+    inline f32 Transform::getScaleXGlobal() const
+    {
+        return getScaleGlobal().x;
+    }
+
+    inline f32 Transform::getScaleYGlobal() const
+    {
+        return getScaleGlobal().y;
+    }
+
+    inline f32 Transform::getScaleZGlobal() const
+    {
+        return getScaleGlobal().z;
+    }
 
     inline const glm::mat4& Transform::getMatrix() const
     {

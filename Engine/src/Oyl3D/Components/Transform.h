@@ -59,7 +59,8 @@ namespace oyl::component
         glm::vec3 getForwardGlobal() const;
         glm::vec3 getRightGlobal()   const;
         glm::vec3 getUpGlobal()      const;
-    
+
+        // TODO: add setXGlobal functions
         void setPosition(glm::vec3 position);
         void setPositionX(f32 x);
         void setPositionY(f32 y);

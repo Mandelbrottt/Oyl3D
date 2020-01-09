@@ -69,6 +69,7 @@ public:
                 {
                     window.setVsync(!window.isVsync());
                 }
+                break;
             }
             case EventType::PhysicsTriggerEnter:
             {
