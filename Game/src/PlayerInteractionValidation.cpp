@@ -83,11 +83,11 @@ void PlayerInteractionValidationSystem::checkForAnyValidPlayerInteractions(entt:
 					&& !registry->valid(player.primaryCarriedItem)
 					&& !registry->valid(player.secondaryCarriedItem)
 					//compare x values
-					&& playerTransform.getPositionX() < carryableItemTransform.getPositionX() + 1.1f
-					&& playerTransform.getPositionX() > carryableItemTransform.getPositionX() - 1.1f
+					&& playerTransform.getPositionX() < carryableItemTransform.getPositionX() + 1.f
+					&& playerTransform.getPositionX() > carryableItemTransform.getPositionX() - 1.f
 					//compare z values
-					&& playerTransform.getPositionZ() < carryableItemTransform.getPositionZ() + 1.1f
-					&& playerTransform.getPositionZ() > carryableItemTransform.getPositionZ() - 1.1f)
+					&& playerTransform.getPositionZ() < carryableItemTransform.getPositionZ() + 1.f
+					&& playerTransform.getPositionZ() > carryableItemTransform.getPositionZ() - 1.f)
 				{
 					player.interactableEntity = carryableItemEntity;
 
@@ -104,11 +104,11 @@ void PlayerInteractionValidationSystem::checkForAnyValidPlayerInteractions(entt:
 				if (   !carryableItem.isBeingCarried
 					&& !registry->valid(player.primaryCarriedItem)
 					//compare x values
-					&& playerTransform.getPositionX() < carryableItemTransform.getPositionX() + 1.8f
-					&& playerTransform.getPositionX() > carryableItemTransform.getPositionX() - 1.8f
+					&& playerTransform.getPositionX() < carryableItemTransform.getPositionX() + 1.6f
+					&& playerTransform.getPositionX() > carryableItemTransform.getPositionX() - 1.6f
 					//compare z values
-					&& playerTransform.getPositionZ() < carryableItemTransform.getPositionZ() + 1.8f
-					&& playerTransform.getPositionZ() > carryableItemTransform.getPositionZ() - 1.8f)
+					&& playerTransform.getPositionZ() < carryableItemTransform.getPositionZ() + 1.6f
+					&& playerTransform.getPositionZ() > carryableItemTransform.getPositionZ() - 1.6f)
 				{
 					player.interactableEntity = carryableItemEntity;
 
@@ -128,11 +128,11 @@ void PlayerInteractionValidationSystem::checkForAnyValidPlayerInteractions(entt:
 					&& (!registry->valid(player.primaryCarriedItem)
 						|| registry->get<CarryableItem>(player.primaryCarriedItem).type == CarryableItemType::mop)
 					//compare x values
-					&& playerTransform.getPositionX() < carryableItemTransform.getPositionX() + 1.3f
-					&& playerTransform.getPositionX() > carryableItemTransform.getPositionX() - 1.3f
+					&& playerTransform.getPositionX() < carryableItemTransform.getPositionX() + 1.1f
+					&& playerTransform.getPositionX() > carryableItemTransform.getPositionX() - 1.1f
 					//compare z values
-					&& playerTransform.getPositionZ() < carryableItemTransform.getPositionZ() + 1.3f
-					&& playerTransform.getPositionZ() > carryableItemTransform.getPositionZ() - 1.3f)
+					&& playerTransform.getPositionZ() < carryableItemTransform.getPositionZ() + 1.1f
+					&& playerTransform.getPositionZ() > carryableItemTransform.getPositionZ() - 1.1f)
 				{
 					player.interactableEntity = carryableItemEntity;
 
@@ -151,11 +151,11 @@ void PlayerInteractionValidationSystem::checkForAnyValidPlayerInteractions(entt:
 					&& !registry->valid(player.primaryCarriedItem)
 					&& !registry->valid(player.secondaryCarriedItem)
 					//compare x values
-					&& playerTransform.getPositionX() < carryableItemTransform.getPositionX() + 1.45f
-					&& playerTransform.getPositionX() > carryableItemTransform.getPositionX() - 1.45f
+					&& playerTransform.getPositionX() < carryableItemTransform.getPositionX() + 1.2f
+					&& playerTransform.getPositionX() > carryableItemTransform.getPositionX() - 1.2f
 					//compare z values
-					&& playerTransform.getPositionZ() < carryableItemTransform.getPositionZ() + 1.45f
-					&& playerTransform.getPositionZ() > carryableItemTransform.getPositionZ() - 1.45f)
+					&& playerTransform.getPositionZ() < carryableItemTransform.getPositionZ() + 1.2f
+					&& playerTransform.getPositionZ() > carryableItemTransform.getPositionZ() - 1.2f)
 				{
 					player.interactableEntity = carryableItemEntity;
 

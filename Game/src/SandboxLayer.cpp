@@ -404,6 +404,8 @@ void SandboxLayer::onEnter()
 				carryableItem.team = Team::red;
 				carryableItem.type = CarryableItemType::gloop;
 
+				registry->assign<Gloop>(gloopEntity);
+
 				mr.mesh = Mesh::get("cube");
 				registry->assign<component::Renderable>(gloopEntity, mr);
 

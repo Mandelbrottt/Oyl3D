@@ -374,7 +374,6 @@ public:
 			case oyl::Key_E:
 			{
 				auto playerView = registry->view<Player>();
-
 				for (entt::entity playerEntity : playerView)
 				{
 					PlayerInteractionRequestEvent playerInteractionRequest;
@@ -387,12 +386,33 @@ public:
 			case oyl::Key_F:
 			{
 				auto playerView = registry->view<Player>();
-
 				for (entt::entity playerEntity : playerView)
 				{
 					PlayerDropItemEvent playerDropItem;
 					playerDropItem.playerEntity = playerEntity;
 					postEvent(Event::create(playerDropItem));
+				}
+
+				break;
+			}
+			case oyl::Key_G:
+			{
+				//G key changes player's teams for debugging TODO: remove for working version
+				auto playerView = registry->view<Player>();
+				for (entt::entity playerEntity : playerView)
+				{
+					auto& player = registry->get<Player>(playerEntity);
+
+					if (player.team == Team::blue)
+					{
+						player.team = Team::red;
+						std::cout << "SWITCHED TO RED TEAM\n";
+					}
+					else
+					{
+						player.team = Team::blue;
+						std::cout << "SWITCHED TO BLUE TEAM\n";
+					}
 				}
 
 				break;
