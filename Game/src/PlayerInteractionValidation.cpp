@@ -152,9 +152,7 @@ void PlayerInteractionValidationSystem::checkForAnyValidPlayerInteractions(entt:
 		auto& garbagePile          = registry->get<GarbagePile>(garbagePileEntity);
 		auto& garbagePileTransform = registry->get<component::Transform>(garbagePileEntity);
 
-		if (   player.primaryCarriedItem != entt::null
-			&& registry->get<CarryableItem>(player.primaryCarriedItem).type == CarryableItemType::mop
-			&& registry->get<CarryableItem>(player.primaryCarriedItem).team == player.team
+		if (garbagePile.garbageLevel > 0
 			//compare x values
 			&& playerTransform.getPositionX() < garbagePileTransform.getPositionX() + 2.6f
 			&& playerTransform.getPositionX() > garbagePileTransform.getPositionX() - 2.6f
@@ -162,16 +160,37 @@ void PlayerInteractionValidationSystem::checkForAnyValidPlayerInteractions(entt:
 			&& playerTransform.getPositionZ() < garbagePileTransform.getPositionZ() + 2.6f
 			&& playerTransform.getPositionZ() > garbagePileTransform.getPositionZ() - 2.6f)
 		{
-			//make sure there is some garbage before we try to clean
-			if (garbagePile.garbageLevel > 0)
+			//garbage ticks less than max means the player needs a mop to clean
+			if (garbagePile.garbageTicks < garbagePile.GARBAGE_TICKS_PER_LEVEL)
 			{
-				player.interactableEntity = garbagePileEntity;
+				if (player.primaryCarriedItem != entt::null
+					&& registry->get<CarryableItem>(player.primaryCarriedItem).type == CarryableItemType::mop
+					&& registry->get<CarryableItem>(player.primaryCarriedItem).team == player.team)
+				{
+					player.interactableEntity = garbagePileEntity;
 
-				PlayerInteractResultEvent playerInteractResult;
-				playerInteractResult.interactionType = PlayerInteractionResult::cleanGarbagePile;
-				postEvent(Event::create(playerInteractResult));
+					PlayerInteractResultEvent playerInteractResult;
+					playerInteractResult.interactionType = PlayerInteractionResult::cleanGarbagePile;
+					postEvent(Event::create(playerInteractResult));
 
-				return;
+					return;
+				}
+			}
+			//garbage ticks at max means the player needs cleaning solution to be able to clean
+			else //garbage ticks at max
+			{
+				if (player.secondaryCarriedItem != entt::null
+					&& registry->get<CarryableItem>(player.secondaryCarriedItem).type == CarryableItemType::cleaningSolution
+					&& registry->get<CarryableItem>(player.secondaryCarriedItem).team == player.team)
+				{
+					player.interactableEntity = garbagePileEntity;
+
+					PlayerInteractResultEvent playerInteractResult;
+					playerInteractResult.interactionType = PlayerInteractionResult::cleanGarbagePile;
+					postEvent(Event::create(playerInteractResult));
+
+					return;
+				}
 			}
 		}
 	}
@@ -339,6 +358,17 @@ void PlayerInteractionValidationSystem::validateInteraction(entt::entity a_playe
 
 		switch (carryableItem.type)
 		{
+			case CarryableItemType::cannonball:
+			{
+				player.primaryCarriedItem = player.interactableEntity;
+
+				std::cout << "PICKED UP CANNONBALL!\n";
+
+				itemNewPosition = glm::vec3(0.0f, 0.35f, -0.75f);
+				itemNewRotation = glm::vec3(0.0f, 0.0f, 0.0f);
+
+				break;
+			}
 			case CarryableItemType::mop:
 			{
 				player.primaryCarriedItem = player.interactableEntity;
@@ -350,13 +380,13 @@ void PlayerInteractionValidationSystem::validateInteraction(entt::entity a_playe
 
 				break;
 			}
-			case CarryableItemType::cannonball:
+			case CarryableItemType::cleaningSolution:
 			{
-				player.primaryCarriedItem = player.interactableEntity;
+				player.secondaryCarriedItem = player.interactableEntity;
 
-				std::cout << "PICKED UP CANNONBALL!\n";
+				std::cout << "PICKED UP CLEANING SOLUTION!\n";
 
-				itemNewPosition = glm::vec3(0.0f, 0.35f, -0.75f);
+				itemNewPosition = glm::vec3(-0.25f, 0.4f, -0.7f);
 				itemNewRotation = glm::vec3(0.0f, 0.0f, 0.0f);
 
 				break;
@@ -384,6 +414,18 @@ void PlayerInteractionValidationSystem::validateInteraction(entt::entity a_playe
 		auto& garbagePileTransform = registry->get<component::Transform>(player.interactableEntity);
 
 		std::cout << "CLEANING!\n";
+
+		if (garbagePile.garbageTicks < garbagePile.GARBAGE_TICKS_PER_LEVEL)
+		{
+			//if only a mop is needed for cleaning, drop the cleaning solution if the player is carrying one (mop animation uses both hands)
+			if (player.secondaryCarriedItem != entt::null && registry->get<CarryableItem>(player.secondaryCarriedItem).type == CarryableItemType::cleaningSolution)
+				dropPlayerCarriedItems(a_playerEntity, true, CarryableItemType::cleaningSolution);
+		}
+		else //garbage ticks >= max ticks, so cleaning solution is used
+		{
+			registry->destroy(player.secondaryCarriedItem);
+			player.secondaryCarriedItem = entt::null;
+		}
 
 		RequestToCleanGarbageEvent requestToCleanGarbage;
 		requestToCleanGarbage.garbagePileEntity = player.interactableEntity;
@@ -540,30 +582,48 @@ void PlayerInteractionValidationSystem::dropPlayerCarriedItems(entt::entity a_pl
 
 		if (carriedItemParent.parent == a_playerEntity)
 		{
-			std::cout << "DROPPED ITEMS!\n";
-
 			carriedItemParent.parent = entt::null;
 			carriedItem.isBeingCarried = false;
 
 			glm::vec3 newPosition = playerTransform.getPosition();
 			glm::vec3 newRotation = playerTransform.getRotationEuler();
 
-			if (carriedItem.type == CarryableItemType::mop)
+			switch (carriedItem.type)
 			{
-				player.primaryCarriedItem = entt::null;
+				case CarryableItemType::cannonball:
+				{
+					std::cout << "DROPPED CANNONBALL!\n";
+					player.primaryCarriedItem = entt::null;
 
-				newPosition += playerTransform.getForward() * 0.7f;
-				newPosition += playerTransform.getRight() * 0.7f;
-				newPosition.y = 0.1f;
+					newPosition += playerTransform.getForward() * 0.8f;
+					newPosition.y = 0.25f;
 
-				newRotation += glm::vec3(0.0f, -90.0f, 0.0f);
-			}
-			else if (carriedItem.type == CarryableItemType::cannonball)
-			{
-				player.primaryCarriedItem = entt::null;
+					break;
+				}
+				case CarryableItemType::mop:
+				{
+					std::cout << "DROPPED MOP!\n";
+					player.primaryCarriedItem = entt::null;
 
-				newPosition += playerTransform.getForward() * 0.8f;
-				newPosition.y = 0.25f;
+					newPosition += playerTransform.getForward() * 0.7f;
+					newPosition += playerTransform.getRight()   * 0.7f;
+					newPosition.y = 0.1f;
+
+					newRotation += glm::vec3(0.0f, -90.0f, 0.0f);
+
+					break;
+				}
+				case CarryableItemType::cleaningSolution:
+				{
+					std::cout << "DROPPED CLEANING SOLUTION!\n";
+					player.secondaryCarriedItem = entt::null;
+
+					newPosition += playerTransform.getForward() * 1.0f;
+					newPosition += playerTransform.getRight()   * -0.3f;
+					newPosition.y = 0.22f;
+
+					break;
+				}
 			}
 
 			carriedItemTransform.setPosition(newPosition);

@@ -135,8 +135,8 @@ void SandboxLayer::onEnter()
 				entt::entity cleaningSolutionEntity = registry->create();
 
 				component::Transform cleaningSolutionTransform;
-				cleaningSolutionTransform.setPosition(glm::vec3(5.0f, 5.0f, 5.0f));
-				cleaningSolutionTransform.setScale(glm::vec3(0.5f, 0.5f, 0.5f));
+				cleaningSolutionTransform.setPosition(glm::vec3(3.0f, 0.22f, 3.0f));
+				cleaningSolutionTransform.setScale(glm::vec3(0.2f, 0.44f, 0.2f));
 				registry->assign<component::Transform>(cleaningSolutionEntity, cleaningSolutionTransform);
 
 				auto& carryableItem = registry->assign<CarryableItem>(cleaningSolutionEntity);
@@ -236,7 +236,7 @@ void SandboxLayer::onEnter()
 		}
 
 		{
-			//CHARACTER
+			//CHARACTER MESH
 			entt::entity characterEntity = registry->create();
 
 			component::Transform mopTransform;
@@ -269,6 +269,7 @@ void SandboxLayer::onEnter()
 
         component::Transform t;
         t.setPosition(glm::vec3(0.0f, -5.0f, 0.0f));
+		t.setScale(glm::vec3(2.5f, 1.0f, 1.7f));
         registry->assign<component::Transform>(e, t);
 
         auto& so = registry->assign<component::SceneObject>(e);

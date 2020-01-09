@@ -39,7 +39,7 @@ public:
 
             auto& t = registry->assign<component::Transform>(e);
             t.setPosition(glm::vec3(0.0f, -2.5f, 0.0f));
-            t.setScale(glm::vec3(4.0f, 4.0f, 1.0f));
+            t.setScale(glm::vec3(1.0f, 1.0f, 1.0f));
 
 			auto& uiType = registry->assign<PlayerInteractionType>(e);
 			uiType.type = PlayerInteractionResult::pushCannon;
@@ -56,7 +56,7 @@ public:
 
             auto& t = registry->assign<component::Transform>(e);
             t.setPosition(glm::vec3(0.0f, -2.5f, 0.0f));
-            t.setScale(glm::vec3(4.0f, 4.0f, 1.0f));
+            t.setScale(glm::vec3(1.0f, 1.0f, 1.0f));
 
 			auto& uiType = registry->assign<PlayerInteractionType>(e);
 			uiType.type = PlayerInteractionResult::loadCannon;
@@ -73,24 +73,7 @@ public:
 
             auto& t = registry->assign<component::Transform>(e);
             t.setPosition(glm::vec3(0.0f, -2.5f, 0.0f));
-            t.setScale(glm::vec3(4.0f, 4.0f, 1.0f));
-
-			auto& uiType = registry->assign<PlayerInteractionType>(e);
-			uiType.type = PlayerInteractionResult::pickUpCannonball;
-
-            auto& so = registry->assign<component::SceneObject>(e);
-            so.name = "Pickup Cannonball Message";
-
-            auto& gui = registry->assign<component::GuiRenderable>(e);
-            gui.texture = Texture2D::cache("res/assets/textures/gui/pickupCannonball.png");
-        }
-
-        {
-            auto e = registry->create();
-
-            auto& t = registry->assign<component::Transform>(e);
-            t.setPosition(glm::vec3(0.0f, -2.5f, 0.0f));
-            t.setScale(glm::vec3(4.0f, 4.0f, 1.0f));
+            t.setScale(glm::vec3(2.0f, 2.0f, 1.0f));
 
 			auto& uiType = registry->assign<PlayerInteractionType>(e);
 			uiType.type = PlayerInteractionResult::takeCannonballFromCrate;
@@ -102,12 +85,29 @@ public:
             gui.texture = Texture2D::cache("res/assets/textures/gui/cannonballCrate.png");
         }
 
+		{
+			auto e = registry->create();
+
+			auto& t = registry->assign<component::Transform>(e);
+			t.setPosition(glm::vec3(0.0f, -2.5f, 0.0f));
+			t.setScale(glm::vec3(0.8f, 0.8f, 1.0f));
+
+			auto& uiType = registry->assign<PlayerInteractionType>(e);
+			uiType.type = PlayerInteractionResult::pickUpCannonball;
+
+			auto& so = registry->assign<component::SceneObject>(e);
+			so.name = "Pickup Cannonball Message";
+
+			auto& gui = registry->assign<component::GuiRenderable>(e);
+			gui.texture = Texture2D::cache("res/assets/textures/gui/pickupCannonball.png");
+		}
+
         {
             auto e = registry->create();
 
             auto& t = registry->assign<component::Transform>(e);
             t.setPosition(glm::vec3(0.0f, -2.5f, 0.0f));
-            t.setScale(glm::vec3(4.0f, 4.0f, 1.0f));
+            t.setScale(glm::vec3(1.0f, 1.0f, 1.0f));
 
 			auto& uiType = registry->assign<PlayerInteractionType>(e);
 			uiType.type = PlayerInteractionResult::pickUpMop;
@@ -124,13 +124,13 @@ public:
 
 			auto& t = registry->assign<component::Transform>(e);
 			t.setPosition(glm::vec3(0.0f, -2.5f, 0.0f));
-			t.setScale(glm::vec3(4.0f, 4.0f, 1.0f));
+			t.setScale(glm::vec3(0.8f, 0.8f, 1.0f));
 
 			auto& uiType = registry->assign<PlayerInteractionType>(e);
 			uiType.type = PlayerInteractionResult::pickUpCleaningSolution;
 
 			auto& so = registry->assign<component::SceneObject>(e);
-			so.name = "Pickup Cleaning SOlution Message";
+			so.name = "Pickup Cleaning Solution Message";
 
 			auto& gui = registry->assign<component::GuiRenderable>(e);
 			gui.texture = Texture2D::cache("res/assets/textures/gui/pickupCleaningSolution.png");
@@ -141,7 +141,7 @@ public:
 
             auto& t = registry->assign<component::Transform>(e);
             t.setPosition(glm::vec3(0.0f, -2.5f, 0.0f));
-            t.setScale(glm::vec3(4.0f, 4.0f, 1.0f));
+            t.setScale(glm::vec3(1.0f, 1.0f, 1.0f));
 
 			auto& uiType = registry->assign<PlayerInteractionType>(e);
 			uiType.type = PlayerInteractionResult::cleanGarbagePile;
@@ -158,7 +158,7 @@ public:
 
             auto& t = registry->assign<component::Transform>(e);
             t.setPosition(glm::vec3(0.0f, -2.5f, 0.0f));
-            t.setScale(glm::vec3(4.0f, 4.0f, 1.0f));
+            t.setScale(glm::vec3(1.0f, 1.0f, 1.0f));
 
 			auto& uiType = registry->assign<PlayerInteractionType>(e);
 			uiType.type = PlayerInteractionResult::cannonFiringSoon;
@@ -180,6 +180,7 @@ public:
 
 			component::Transform t;
 			t.setPosition(glm::vec3(-3.0f, -1.0f, -2.0f));
+			t.setScale(glm::vec3(0.2f, 0.2f, 1.0f));
 			registry->assign<component::Transform>(e, t);
 
 			auto& so = registry->assign<component::SceneObject>(e);
@@ -196,6 +197,7 @@ public:
 
 			component::Transform t;
 			t.setPosition(glm::vec3(-3.0f, -1.0f, -2.0f));
+			t.setScale(glm::vec3(0.5f, 0.5f, 1.0f));
 			registry->assign<component::Transform>(e, t);
 
 			auto& so = registry->assign<component::SceneObject>(e);
