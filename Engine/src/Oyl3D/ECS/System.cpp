@@ -1,5 +1,7 @@
 #include "oylpch.h"
 
+#include "App/Window.h"
+
 #include "Components/Animatable.h"
 #include "Components/Camera.h"
 #include "Components/Lights.h"
@@ -18,9 +20,10 @@
 #include "Graphics/Material.h"
 #include "Graphics/Shader.h"
 #include "Graphics/Texture.h"
-#include "App/Window.h"
 
 #include "Input/Input.h"
+
+#include "Physics/Raycast.h"
 
 #include "Rendering/Renderer.h"
 
@@ -391,6 +394,8 @@ namespace oyl
         
         // vvv Physics System vvv //
 
+        static PhysicsSystem* g_currentPhysicsSystem = nullptr;
+
         static Ref<EventDispatcher> g_dispatcher;
         static Ref<entt::registry>  g_currentRegistry;
 
@@ -490,6 +495,8 @@ namespace oyl
 
         void PhysicsSystem::onEnter()
         {
+            g_currentPhysicsSystem = this;
+            
             listenForEventType(EventType::PhysicsResetWorld);
             
             gContactStartedCallback   = contactStartedCallback;
@@ -703,7 +710,6 @@ namespace oyl
                 {
                     transform.m_localPosition = { _pos.x(), _pos.y(), _pos.z() };
                     transform.m_localRotation = glm::quat(_rot.w(), _rot.x(), _rot.y(), _rot.z());
-
                 }
                 else
                 {
@@ -1024,6 +1030,53 @@ namespace oyl
             }
         }
 
+        Ref<ClosestRaycastResult> PhysicsSystem::raytestClosest(glm::vec3 position, glm::vec3 direction, f32 distance)
+        {
+            glm::vec3 endPos = position + direction * distance;
+            btVector3 from = { position.x, position.y, position.z };
+            btVector3 to   = { endPos.x, endPos.y, endPos.z };
+
+            btCollisionWorld::ClosestRayResultCallback rayCallback(from, to);
+            g_currentPhysicsSystem->m_btWorld->rayTest(from, to, rayCallback);
+
+            RaycastResult::HitObject obj = {};
+            
+            if (rayCallback.hasHit())
+            {
+                obj.hitPosition = {
+                    rayCallback.m_hitPointWorld.x(),
+                    rayCallback.m_hitPointWorld.y(),
+                    rayCallback.m_hitPointWorld.z()
+                };
+                
+                obj.hitNormal = {
+                    rayCallback.m_hitNormalWorld.x(),
+                    rayCallback.m_hitNormalWorld.y(),
+                    rayCallback.m_hitNormalWorld.z()
+                };
+                
+                obj.hitFraction = rayCallback.m_closestHitFraction;
+                
+                obj.distanceTo = glm::length(direction * rayCallback.m_closestHitFraction);
+
+                for (auto& kvp : g_currentPhysicsSystem->m_rigidBodies)
+                {
+                    if (kvp.second->body.get() == rayCallback.m_collisionObject)
+                    {
+                        obj.entity = kvp.first;
+                        break;
+                    }
+                }
+
+                OYL_ASSERT(obj.entity != entt::null);
+            }
+            
+            Ref<ClosestRaycastResult> result = 
+                Ref<ClosestRaycastResult>::create(position, endPos, rayCallback.hasHit(), std::move(obj));
+
+            return result;
+        }
+
         // ^^^ Physics System ^^^ //
 
         // vvv Transform Update System vvv //
@@ -1090,11 +1143,11 @@ namespace oyl
                 return;
             }
 
-            m_camera->move(m_cameraMove * Time::deltaTime());
+            m_camera->move(m_cameraMove * Time::unscaledDeltaTime());
 
             static glm::vec3 realRotation = glm::vec3(20.0f, -45.0f, 0.0f);
 
-            realRotation += m_cameraRotate * m_cameraRotateSpeed * Time::deltaTime();
+            realRotation += m_cameraRotate * m_cameraRotateSpeed * Time::unscaledDeltaTime();
             if (realRotation.x > 89.0f) realRotation.x = 89.0f;
             if (realRotation.x < -89.0f) realRotation.x = -89.0f;
 
