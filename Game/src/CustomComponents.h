@@ -44,6 +44,8 @@ enum class PlayerInteractionResult
 	pickUpCannonball,
 	pickUpMop,
 	pickUpCleaningSolution,
+	pickUpGloop,
+	useGloop,
 	cleanGarbagePile,
 };
 
@@ -117,6 +119,28 @@ struct CarryableItem
 	bool isActive = false;
 };
 
+struct Cannonball
+{
+	bool isBeingFired = false;
+
+	glm::vec3 v1;
+	glm::vec3 v2;
+	glm::vec3 v3;
+	glm::vec3 v4;
+
+	float interpolationParam = 0.0f;
+};
+
+struct Gloop
+{
+	int numUses = 2;
+};
+
+struct CannonballCrate
+{
+	Team team;
+};
+
 struct GarbagePile
 {
 	Team team;
@@ -128,23 +152,6 @@ struct GarbagePile
 
 	float GARBAGE_TICKS_PER_LEVEL = 3.0f;
 	float garbageTicks = 3.0f;
-};
-
-struct CannonballCrate
-{
-	Team team;
-};
-
-struct Cannonball
-{
-	bool isBeingFired = false;
-
-	glm::vec3 v1;
-	glm::vec3 v2;
-	glm::vec3 v3;
-	glm::vec3 v4;
-
-	float interpolationParam = 0.0f;
 };
 
 struct PlayerInteractionType

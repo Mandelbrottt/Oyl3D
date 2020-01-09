@@ -1,15 +1,16 @@
 #include <Oyl3D.h>
 
 #include "SandboxLayer.h"
-#include "Player.h"
-#include "Cannon.h"
+#include "PlayerSystem.h"
+#include "CannonSystem.h"
 #include "CustomComponents.h"
 #include "CustomEvents.h"
 #include "PlayerInteractionValidation.h"
 #include "GarbagePileSystem.h"
 #include "GarbageTickSystem.h"
-#include "UIManager.h"
-#include "Cannonball.h"
+#include "UIManagerSystem.h"
+#include "CannonballSystem.h"
+#include "GloopSystem.h"
 
 using namespace oyl;
 
@@ -33,6 +34,7 @@ public:
 		scheduleSystemUpdate<GarbageTickSystem>();
 		scheduleSystemUpdate<UIManagerSystem>();
 		scheduleSystemUpdate<CannonballSystem>();
+		scheduleSystemUpdate<GloopSystem>();
 
 		{
 			auto e = registry->create();
@@ -134,6 +136,40 @@ public:
 
 			auto& gui = registry->assign<component::GuiRenderable>(e);
 			gui.texture = Texture2D::cache("res/assets/textures/gui/pickupCleaningSolution.png");
+		}
+
+		{
+			auto e = registry->create();
+
+			auto& t = registry->assign<component::Transform>(e);
+			t.setPosition(glm::vec3(0.0f, -2.5f, 0.0f));
+			t.setScale(glm::vec3(1.0f, 1.0f, 1.0f));
+
+			auto& uiType = registry->assign<PlayerInteractionType>(e);
+			uiType.type = PlayerInteractionResult::pickUpGloop;
+
+			auto& so = registry->assign<component::SceneObject>(e);
+			so.name = "Pickup Gloop Message";
+
+			auto& gui = registry->assign<component::GuiRenderable>(e);
+			gui.texture = Texture2D::cache("res/assets/textures/gui/pickUpGloop.png");
+		}
+
+		{
+			auto e = registry->create();
+
+			auto& t = registry->assign<component::Transform>(e);
+			t.setPosition(glm::vec3(0.0f, -2.5f, 0.0f));
+			t.setScale(glm::vec3(1.0f, 1.0f, 1.0f));
+
+			auto& uiType = registry->assign<PlayerInteractionType>(e);
+			uiType.type = PlayerInteractionResult::useGloop;
+
+			auto& so = registry->assign<component::SceneObject>(e);
+			so.name = "Use Gloop Message";
+
+			auto& gui = registry->assign<component::GuiRenderable>(e);
+			gui.texture = Texture2D::cache("res/assets/textures/gui/useGloop.png");
 		}
 
         {

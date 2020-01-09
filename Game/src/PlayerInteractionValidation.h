@@ -1,9 +1,10 @@
 #pragma once
 
 #include <Oyl3D.h>
+#include "CustomComponents.h"
+#include "CustomEvents.h"
 
-#include "Cannon.h"
-#include "Player.h"
+using namespace oyl;
 
 enum class CannonInteractionOutcome
 {

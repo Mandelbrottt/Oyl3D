@@ -1,4 +1,4 @@
-#include "UIManager.h"
+#include "UIManagerSystem.h"
 
 void UIManagerSystem::onEnter()
 {
@@ -81,6 +81,16 @@ bool UIManagerSystem::onEvent(Ref<Event> event)
 				case PlayerInteractionResult::pickUpCleaningSolution:
 				{
 					enableValidUIType(PlayerInteractionResult::pickUpCleaningSolution);
+					break;
+				}
+				case PlayerInteractionResult::pickUpGloop:
+				{
+					enableValidUIType(PlayerInteractionResult::pickUpGloop);
+					break;
+				}
+				case PlayerInteractionResult::useGloop:
+				{
+					enableValidUIType(PlayerInteractionResult::useGloop);
 					break;
 				}
 				case PlayerInteractionResult::cleanGarbagePile:

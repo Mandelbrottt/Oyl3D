@@ -6,7 +6,8 @@ enum CustomEventsCategories
 {
 	CategoryPlayer = oyl::CategoryCustomStart,
 	CategoryCannon,
-	CategoryGarbagePile
+	CategoryGarbagePile,
+	CategoryGloop
 };
 enum CustomEventTypes
 {
@@ -19,7 +20,8 @@ enum CustomEventTypes
 	TypeCannonFired,
 	TypeTotalGarbageCount,
 	TypeRequestToCleanGarbage,
-	TypeGarbageCleaned
+	TypeGarbageCleaned,
+	TypeUseGloop
 };
 
 
@@ -75,4 +77,9 @@ OYL_EVENT_STRUCT(GarbageCleanedEvent, TypeGarbageCleaned, CategoryGarbagePile,
 	{
 		float numGarbageTicksToDisplay;
 		bool  displayGlooped;
+	});
+
+OYL_EVENT_STRUCT(UseGloopEvent, TypeUseGloop, CategoryGloop,
+	{
+		entt::entity gloopEntity;
 	});

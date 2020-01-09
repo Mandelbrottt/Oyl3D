@@ -68,7 +68,11 @@ bool GarbagePileSystem::onEvent(Ref<Event> event)
 			auto evt = (RequestToCleanGarbageEvent)* event;
 			auto& garbagePile = registry->get<GarbagePile>(evt.garbagePileEntity);
 
-			garbagePile.garbageTicks -= garbagePile.isGlooped ? 0.5f : 1.0f;
+			if (garbagePile.garbageTicks < garbagePile.GARBAGE_TICKS_PER_LEVEL)
+				garbagePile.garbageTicks -= garbagePile.isGlooped ? 0.5f : 1.0f;
+			else //garbage ticks >= MAX TICKS
+				garbagePile.garbageTicks -= 1.0f;
+
 			if (garbagePile.garbageTicks <= 0.0f)
 			{
 				garbagePile.garbageLevel--;

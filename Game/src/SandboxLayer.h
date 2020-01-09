@@ -1,7 +1,8 @@
 #pragma once
 
 #include <Oyl3D.h>
-#include "Player.h"
+#include "CustomComponents.h"
+#include "CustomEvents.h"
 
 class SandboxLayer : public oyl::Layer
 {
