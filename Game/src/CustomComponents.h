@@ -14,6 +14,7 @@ enum class PlayerState
 	jumping,
 	falling,
 	pushing,
+	inCleaningQuicktimeEvent,
 	cleaning
 };
 
@@ -33,16 +34,6 @@ enum class CarryableItemType
     gloop
 };
 
-enum class CarryingItemState
-{
-    nothing,
-    cannonball,
-    mop,
-    cleaningSolution,
-    mopAndCleaningSolution,
-    gloop
-};
-
 enum class PlayerInteractionResult
 {
 	nothing,
@@ -53,13 +44,16 @@ enum class PlayerInteractionResult
 	takeCannonballFromCrate,
 	pickUpCannonball,
 	pickUpMop,
+	pickUpCleaningSolution,
+	pickUpGloop,
+	useGloop,
 	cleanGarbagePile,
 };
 
-struct TimedAction
+enum class ReticleType
 {
-	float elapsed = 0.0f;
-	float timeToWait;
+	normal,
+	invalid
 };
 
 struct MoveableUsingLerp
@@ -68,6 +62,7 @@ struct MoveableUsingLerp
 	glm::vec3 destinationPos;
 
 	float speed;
+	bool  isMovingForward = true;
 	float interpolationParam = 0.0f;
 };
 
@@ -75,7 +70,8 @@ struct Player
 {
 	Team team;
 
-	CarryingItemState carriedItem = CarryingItemState::nothing;
+	entt::entity primaryCarriedItem   = entt::null;
+	entt::entity secondaryCarriedItem = entt::null;
     
 	PlayerState state = PlayerState::idle;
 
@@ -87,6 +83,9 @@ struct Player
 
 	MoveableUsingLerp adjustingPositionStateData; //TODO: integrate adjusting position into pushing state instead of having its own state
 	MoveableUsingLerp pushingStateData;
+
+	float CLEANING_TIME_DURATION = 1.5f;
+	float cleaningTimeCountdown = CLEANING_TIME_DURATION;
 
 	float yRotationClamp = 0.0f;
 
@@ -100,15 +99,16 @@ struct Cannon
 	CannonState state = CannonState::doingNothing;
 	bool isLoaded = false;
 
-	TimedAction fuse;
+	float FUSE_DURATION = 20.0f;
+	float fuseCountdown = FUSE_DURATION;
 
 	int cannonTrackPosition = 0;
-	float pushDistance = 5.0f;
+	float pushDistance = 10.0f;
 	float beingPushedSpeed = 0.2f;
 	MoveableUsingLerp pushStateData;
 
-	float waitTimeBeforeBeingPushed = 0.3f;
-	TimedAction waitTimer;
+	float WAIT_BEFORE_BEING_PUSHED_DURATION = 0.3f;
+	float waitBeforeBeingPushedCountdown = WAIT_BEFORE_BEING_PUSHED_DURATION;
 };
 
 struct CarryableItem
@@ -118,18 +118,24 @@ struct CarryableItem
 	CarryableItemType type = CarryableItemType::invalid; //must manually be set when spawning items
 	bool isBeingCarried = false;
 
-	bool isActive = true;
+	bool isActive = false;
 };
 
-struct GarbagePile
+struct Cannonball
 {
-	Team team;
+	bool isBeingFired = false;
 
-	int MAX_GARBAGE_LEVEL = 5;
-	int garbageLevel = 1;
+	glm::vec3 v1;
+	glm::vec3 v2;
+	glm::vec3 v3;
+	glm::vec3 v4;
 
-	int MAX_GARBAGE_LEVEL_TICKS = 3; // each level will have 3 sub-levels (or ticks) before it goes down by 1
-	int garbageLevelTicks = 3;
+	float interpolationParam = 0.0f;
+};
+
+struct Gloop
+{
+	int numUses = 2;
 };
 
 struct CannonballCrate
@@ -137,7 +143,48 @@ struct CannonballCrate
 	Team team;
 };
 
+struct GarbagePile
+{
+	Team team;
+
+	bool isGlooped = false;
+
+	int MAX_GARBAGE_LEVEL = 5;
+	int garbageLevel = 1;
+
+	float GARBAGE_TICKS_PER_LEVEL = 3.0f;
+	float garbageTicks = 3.0f;
+};
+
 struct PlayerInteractionType
 {
 	PlayerInteractionResult type;
+};
+
+struct Reticle
+{
+	ReticleType type;
+};
+
+struct EndScreen
+{
+	bool isLoseScreen;
+};
+
+struct GarbageTick
+{
+	float ON_SCREEN_DURATION = 2.5f;
+	float onScreenCountdown = ON_SCREEN_DURATION;
+};
+
+struct CleaningQuicktimeEventIndicator
+{
+	bool isActive = false;
+
+	float LOWER_BOUND_FOR_SUCCESS = 0.4f;
+	float UPPER_BOUND_FOR_SUCCESS = 0.6f;
+
+	MoveableUsingLerp lerpInformation;
+
+	entt::entity cleaningQuicktimeEventBackground;
 };

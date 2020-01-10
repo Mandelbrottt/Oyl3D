@@ -6,7 +6,9 @@ enum CustomEventsCategories
 {
 	CategoryPlayer = oyl::CategoryCustomStart,
 	CategoryCannon,
-	CategoryGarbagePile
+	CategoryGarbagePile,
+	CategoryGloop,
+	CategoryQuicktimeCleaningEvent
 };
 enum CustomEventTypes
 {
@@ -16,15 +18,19 @@ enum CustomEventTypes
 	TypePlayerDropItem,
 	TypePlayerStateChange,
     TypeCannonStateChange,
-    TypeLoadCannon,
-	TypeTotalGarbageCount
+	TypeCannonFired,
+	TypeTotalGarbageCount,
+	TypeRequestToCleanGarbage,
+	TypeGarbageCleaned,
+	TypeUseGloop,
+	TypeQuicktimeCleaningEventResult
 };
 
 
 OYL_EVENT_STRUCT(PlayerMoveEvent, TypePlayerMove, CategoryPlayer,
 	{
-		Player*   player;
-		glm::vec3 direction;
+		entt::entity playerEntity;
+		glm::vec3    direction;
 	});
 
 OYL_EVENT_STRUCT(PlayerInteractResultEvent, TypePlayerInteractResult, CategoryPlayer,
@@ -44,22 +50,44 @@ OYL_EVENT_STRUCT(PlayerDropItemEvent, TypePlayerDropItem, CategoryPlayer,
 
 OYL_EVENT_STRUCT(PlayerStateChangeEvent, TypePlayerStateChange, CategoryPlayer,
 	{
-		Player*     player;
-        PlayerState newState;
+		entt::entity playerEntity;
+        PlayerState  newState;
 	});
 
 OYL_EVENT_STRUCT(CannonStateChangeEvent, TypeCannonStateChange, CategoryCannon,
 	{
-		Cannon*      cannon;
+		entt::entity cannonEntity;
 		CannonState  newState;
 	});
 
-OYL_EVENT_STRUCT(LoadCannonEvent, TypeLoadCannon, CategoryCannon,
+OYL_EVENT_STRUCT(CannonFiredEvent, TypeCannonFired, CategoryCannon,
 	{
-		Cannon* cannon;
+		glm::vec3 cannonPosition;
 	});
 
 OYL_EVENT_STRUCT(TotalGarbageCountEvent, TypeTotalGarbageCount, CategoryGarbagePile,
 	{
 		int totalGarbageCount;
+	});
+
+OYL_EVENT_STRUCT(RequestToCleanGarbageEvent, TypeRequestToCleanGarbage, CategoryGarbagePile,
+	{
+		entt::entity garbagePileEntity;
+	});
+
+OYL_EVENT_STRUCT(GarbageCleanedEvent, TypeGarbageCleaned, CategoryGarbagePile,
+	{
+		float numGarbageTicksToDisplay;
+		bool  displayGlooped;
+	});
+
+OYL_EVENT_STRUCT(UseGloopEvent, TypeUseGloop, CategoryGloop,
+	{
+		entt::entity gloopEntity;
+	});
+
+OYL_EVENT_STRUCT(QuicktimeCleaningEventResultEvent, TypeQuicktimeCleaningEventResult, CategoryQuicktimeCleaningEvent,
+	{
+		entt::entity playerEntity;
+		bool         wasSuccessful;
 	});

@@ -224,6 +224,8 @@ namespace oyl
             m_shader->bind();
             m_shader->setUniform1i("u_texture", 0);
 
+            RenderCommand::setDepthDraw(false);
+
             auto view = registry->view<Transform, GuiRenderable>();
             for (auto entity : view)
             {
@@ -255,6 +257,7 @@ namespace oyl
 
                 Renderer::submit(m_shader, m_vao, model);
             }
+            RenderCommand::setDepthDraw(true);
         }
 
         void GuiRenderSystem::onGuiRender(Timestep dt) {}

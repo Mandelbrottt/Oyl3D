@@ -10,13 +10,14 @@ class GarbagePileSystem : public System
 
 	const float PASSIVE_GARBAGE_BUILDUP_TIME = 15.0f;
 	float passiveGarbageBuildupCountdown = PASSIVE_GARBAGE_BUILDUP_TIME;
+	int numBuildUpsAccumulated = 0;
 
 	int totalGarbageLevel = 0;
-
-	bool garbageLevelHitZeroDirty = false;
 
 	void onEnter() override;
 	void onExit() override;
 	void onUpdate(Timestep dt) override;
 	bool onEvent(Ref<Event> event) override;
+
+	void increaseGarbageLevel(entt::entity a_garbagePileEntity);
 };

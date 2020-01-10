@@ -1,13 +1,17 @@
 #include <Oyl3D.h>
 
 #include "SandboxLayer.h"
-#include "Player.h"
-#include "Cannon.h"
+#include "PlayerSystem.h"
+#include "CannonSystem.h"
 #include "CustomComponents.h"
 #include "CustomEvents.h"
 #include "PlayerInteractionValidation.h"
 #include "GarbagePileSystem.h"
-#include "UIManager.h"
+#include "GarbageTickSystem.h"
+#include "UIManagerSystem.h"
+#include "CannonballSystem.h"
+#include "GloopSystem.h"
+#include "CleaningQuicktimeEventSystem.h"
 
 using namespace oyl;
 
@@ -28,14 +32,18 @@ public:
 		scheduleSystemUpdate<CannonSystem>();
 		scheduleSystemUpdate<PlayerInteractionValidationSystem>();
 		scheduleSystemUpdate<GarbagePileSystem>();
+		scheduleSystemUpdate<GarbageTickSystem>();
 		scheduleSystemUpdate<UIManagerSystem>();
+		scheduleSystemUpdate<CannonballSystem>();
+		scheduleSystemUpdate<GloopSystem>();
+		scheduleSystemUpdate<CleaningQuicktimeEventSystem>();
 
 		{
 			auto e = registry->create();
 
             auto& t = registry->assign<component::Transform>(e);
             t.setPosition(glm::vec3(0.0f, -2.5f, 0.0f));
-            t.setScale(glm::vec3(4.0f, 4.0f, 1.0f));
+            t.setScale(glm::vec3(1.0f, 1.0f, 1.0f));
 
 			auto& uiType = registry->assign<PlayerInteractionType>(e);
 			uiType.type = PlayerInteractionResult::pushCannon;
@@ -52,7 +60,7 @@ public:
 
             auto& t = registry->assign<component::Transform>(e);
             t.setPosition(glm::vec3(0.0f, -2.5f, 0.0f));
-            t.setScale(glm::vec3(4.0f, 4.0f, 1.0f));
+            t.setScale(glm::vec3(1.0f, 1.0f, 1.0f));
 
 			auto& uiType = registry->assign<PlayerInteractionType>(e);
 			uiType.type = PlayerInteractionResult::loadCannon;
@@ -69,24 +77,7 @@ public:
 
             auto& t = registry->assign<component::Transform>(e);
             t.setPosition(glm::vec3(0.0f, -2.5f, 0.0f));
-            t.setScale(glm::vec3(4.0f, 4.0f, 1.0f));
-
-			auto& uiType = registry->assign<PlayerInteractionType>(e);
-			uiType.type = PlayerInteractionResult::pickUpCannonball;
-
-            auto& so = registry->assign<component::SceneObject>(e);
-            so.name = "Pickup Cannonball Message";
-
-            auto& gui = registry->assign<component::GuiRenderable>(e);
-            gui.texture = Texture2D::cache("res/assets/textures/gui/pickupCannonball.png");
-        }
-
-        {
-            auto e = registry->create();
-
-            auto& t = registry->assign<component::Transform>(e);
-            t.setPosition(glm::vec3(0.0f, -2.5f, 0.0f));
-            t.setScale(glm::vec3(4.0f, 4.0f, 1.0f));
+            t.setScale(glm::vec3(2.0f, 2.0f, 1.0f));
 
 			auto& uiType = registry->assign<PlayerInteractionType>(e);
 			uiType.type = PlayerInteractionResult::takeCannonballFromCrate;
@@ -98,12 +89,29 @@ public:
             gui.texture = Texture2D::cache("res/assets/textures/gui/cannonballCrate.png");
         }
 
+		{
+			auto e = registry->create();
+
+			auto& t = registry->assign<component::Transform>(e);
+			t.setPosition(glm::vec3(0.0f, -2.5f, 0.0f));
+			t.setScale(glm::vec3(0.8f, 0.8f, 1.0f));
+
+			auto& uiType = registry->assign<PlayerInteractionType>(e);
+			uiType.type = PlayerInteractionResult::pickUpCannonball;
+
+			auto& so = registry->assign<component::SceneObject>(e);
+			so.name = "Pickup Cannonball Message";
+
+			auto& gui = registry->assign<component::GuiRenderable>(e);
+			gui.texture = Texture2D::cache("res/assets/textures/gui/pickupCannonball.png");
+		}
+
         {
             auto e = registry->create();
 
             auto& t = registry->assign<component::Transform>(e);
             t.setPosition(glm::vec3(0.0f, -2.5f, 0.0f));
-            t.setScale(glm::vec3(4.0f, 4.0f, 1.0f));
+            t.setScale(glm::vec3(1.0f, 1.0f, 1.0f));
 
 			auto& uiType = registry->assign<PlayerInteractionType>(e);
 			uiType.type = PlayerInteractionResult::pickUpMop;
@@ -115,12 +123,63 @@ public:
             gui.texture = Texture2D::cache("res/assets/textures/gui/pickupMop.png");
         }
 
+		{
+			auto e = registry->create();
+
+			auto& t = registry->assign<component::Transform>(e);
+			t.setPosition(glm::vec3(0.0f, -2.5f, 0.0f));
+			t.setScale(glm::vec3(0.8f, 0.8f, 1.0f));
+
+			auto& uiType = registry->assign<PlayerInteractionType>(e);
+			uiType.type = PlayerInteractionResult::pickUpCleaningSolution;
+
+			auto& so = registry->assign<component::SceneObject>(e);
+			so.name = "Pickup Cleaning Solution Message";
+
+			auto& gui = registry->assign<component::GuiRenderable>(e);
+			gui.texture = Texture2D::cache("res/assets/textures/gui/pickupCleaningSolution.png");
+		}
+
+		{
+			auto e = registry->create();
+
+			auto& t = registry->assign<component::Transform>(e);
+			t.setPosition(glm::vec3(0.0f, -2.5f, 0.0f));
+			t.setScale(glm::vec3(1.0f, 1.0f, 1.0f));
+
+			auto& uiType = registry->assign<PlayerInteractionType>(e);
+			uiType.type = PlayerInteractionResult::pickUpGloop;
+
+			auto& so = registry->assign<component::SceneObject>(e);
+			so.name = "Pickup Gloop Message";
+
+			auto& gui = registry->assign<component::GuiRenderable>(e);
+			gui.texture = Texture2D::cache("res/assets/textures/gui/pickUpGloop.png");
+		}
+
+		{
+			auto e = registry->create();
+
+			auto& t = registry->assign<component::Transform>(e);
+			t.setPosition(glm::vec3(0.0f, -2.5f, 0.0f));
+			t.setScale(glm::vec3(1.0f, 1.0f, 1.0f));
+
+			auto& uiType = registry->assign<PlayerInteractionType>(e);
+			uiType.type = PlayerInteractionResult::useGloop;
+
+			auto& so = registry->assign<component::SceneObject>(e);
+			so.name = "Use Gloop Message";
+
+			auto& gui = registry->assign<component::GuiRenderable>(e);
+			gui.texture = Texture2D::cache("res/assets/textures/gui/useGloop.png");
+		}
+
         {
             auto e = registry->create();
 
             auto& t = registry->assign<component::Transform>(e);
             t.setPosition(glm::vec3(0.0f, -2.5f, 0.0f));
-            t.setScale(glm::vec3(4.0f, 4.0f, 1.0f));
+            t.setScale(glm::vec3(1.0f, 1.0f, 1.0f));
 
 			auto& uiType = registry->assign<PlayerInteractionType>(e);
 			uiType.type = PlayerInteractionResult::cleanGarbagePile;
@@ -137,7 +196,7 @@ public:
 
             auto& t = registry->assign<component::Transform>(e);
             t.setPosition(glm::vec3(0.0f, -2.5f, 0.0f));
-            t.setScale(glm::vec3(4.0f, 4.0f, 1.0f));
+            t.setScale(glm::vec3(1.0f, 1.0f, 1.0f));
 
 			auto& uiType = registry->assign<PlayerInteractionType>(e);
 			uiType.type = PlayerInteractionResult::cannonFiringSoon;
@@ -152,17 +211,122 @@ public:
 		{
 			entt::entity e = registry->create();
 			auto& gui = registry->assign<component::GuiRenderable>(e);
-			gui.texture = Texture2D::cache("res/assets/textures/invalid_reticle.png");
+			gui.texture = Texture2D::cache("res/assets/textures/gui/reticle.png");
 
-			auto& uiType = registry->assign<PlayerInteractionType>(e);
-			uiType.type = PlayerInteractionResult::invalid;
+			auto& reticle = registry->assign<Reticle>(e);
+			reticle.type = ReticleType::normal;
 
 			component::Transform t;
 			t.setPosition(glm::vec3(-3.0f, -1.0f, -2.0f));
+			t.setScale(glm::vec3(0.2f, 0.2f, 1.0f));
+			registry->assign<component::Transform>(e, t);
+
+			auto& so = registry->assign<component::SceneObject>(e);
+			so.name = "Normal Reticle";
+		}
+
+		{
+			entt::entity e = registry->create();
+			auto& gui = registry->assign<component::GuiRenderable>(e);
+			gui.texture = Texture2D::cache("res/assets/textures/gui/invalid_reticle.png");
+
+			auto& reticle = registry->assign<Reticle>(e);
+			reticle.type = ReticleType::invalid;
+
+			component::Transform t;
+			t.setPosition(glm::vec3(-3.0f, -1.0f, -2.0f));
+			t.setScale(glm::vec3(0.5f, 0.5f, 1.0f));
 			registry->assign<component::Transform>(e, t);
 
 			auto& so = registry->assign<component::SceneObject>(e);
 			so.name = "Invalid Reticle";
+		}
+
+		{
+			entt::entity e = registry->create();
+			auto& gui = registry->assign<component::GuiRenderable>(e);
+			gui.texture = Texture2D::cache("res/assets/textures/gui/VictoryScreen.jpg");
+
+			component::Transform winScreenTransform;
+			winScreenTransform.setPosition(glm::vec3(-100.0f, -100.0f, -200.0f));
+			registry->assign<component::Transform>(e, winScreenTransform);
+
+			auto& endScreen = registry->assign<EndScreen>(e);
+			endScreen.isLoseScreen = false;
+
+			auto& so = registry->assign<component::SceneObject>(e);
+			so.name = "Win Screen";
+		}
+
+		{
+			entt::entity e = registry->create();
+			auto& gui = registry->assign<component::GuiRenderable>(e);
+			gui.texture = Texture2D::cache("res/assets/textures/gui/YouLose.jpg");
+
+			auto& endScreen = registry->assign<EndScreen>(e);
+			endScreen.isLoseScreen = true;
+
+			component::Transform loseScreenTransform;
+			loseScreenTransform.setPosition(glm::vec3(-100.0f, -100.0f, -200.0f));
+			registry->assign<component::Transform>(e, loseScreenTransform);
+
+			auto& so = registry->assign<component::SceneObject>(e);
+			so.name = "Lose Screen";
+		}
+
+		{
+			for (int i = 0; i < 3; i++)
+			{
+				entt::entity e = registry->create();
+				auto& gui = registry->assign<component::GuiRenderable>(e);
+				gui.texture = Texture2D::cache("res/assets/textures/gui/garbageTick.png");
+
+				auto& garbageTick = registry->assign<GarbageTick>(e);
+
+				component::Transform garbageTickTransform;
+				garbageTickTransform.setPosition(glm::vec3(-100.0f, -100.0f, -200.0f));
+				registry->assign<component::Transform>(e, garbageTickTransform);
+
+				auto& so = registry->assign<component::SceneObject>(e);
+				so.name = "Garbage Tick" + std::to_string(i);
+			}
+		}
+
+		{
+			//background for cleaning quicktime event
+			entt::entity cleaningQuicktimeEventBackgroundEntity = registry->create();
+			auto& cleaningQuicktimeEventBackgroundGui = registry->assign<component::GuiRenderable>(cleaningQuicktimeEventBackgroundEntity);
+			cleaningQuicktimeEventBackgroundGui.texture = Texture2D::cache("res/assets/textures/gui/cleaningQuicktimeEventBackground.png");
+
+			component::Transform cleaningEventBackgroundTransform;
+			cleaningEventBackgroundTransform.setPosition(glm::vec3(-30.0f, 3.5f, 0.0f));
+			cleaningEventBackgroundTransform.setScale(glm::vec3(2.0f, 1.5f, 1.0f));
+			registry->assign<component::Transform>(cleaningQuicktimeEventBackgroundEntity, cleaningEventBackgroundTransform);
+
+			auto& cleaningQuicktimeEventBackgroundSceneObject = registry->assign<component::SceneObject>(cleaningQuicktimeEventBackgroundEntity);
+			cleaningQuicktimeEventBackgroundSceneObject.name = "Cleaning Quicktime Event Background";
+
+
+			//indicator for cleaning quicktime event
+			entt::entity cleaningQuicktimeEventIndicatorEntity = registry->create();
+			auto& cleaningQuicktimeEventIndicatorGui = registry->assign<component::GuiRenderable>(cleaningQuicktimeEventIndicatorEntity);
+			cleaningQuicktimeEventIndicatorGui.texture = Texture2D::cache("res/assets/textures/gui/cleaningQuicktimeEventIndicator.png");
+
+			CleaningQuicktimeEventIndicator cleaningQuicktimeEventIndicator;
+			cleaningQuicktimeEventIndicator.lerpInformation.startPos       = glm::vec3(-4.95f, 3.6f, 0.0f);
+			cleaningQuicktimeEventIndicator.lerpInformation.destinationPos = glm::vec3(4.95f, 3.6f, 0.0f);
+			cleaningQuicktimeEventIndicator.lerpInformation.speed          = 1.0f;
+
+			cleaningQuicktimeEventIndicator.cleaningQuicktimeEventBackground = cleaningQuicktimeEventBackgroundEntity;
+			registry->assign<CleaningQuicktimeEventIndicator>(cleaningQuicktimeEventIndicatorEntity, cleaningQuicktimeEventIndicator);
+
+			component::Transform cleaningEventIndicatorTransform;
+			cleaningEventIndicatorTransform.setPosition(glm::vec3(-30.0f, 3.6f, 0.0f));
+			cleaningEventIndicatorTransform.setScale(glm::vec3(1.5f, 2.0f, 1.0f));
+			registry->assign<component::Transform>(cleaningQuicktimeEventIndicatorEntity, cleaningEventIndicatorTransform);
+
+			auto& cleaningQuicktimeEventIndicatorEntitySceneObject = registry->assign<component::SceneObject>(cleaningQuicktimeEventIndicatorEntity);
+			cleaningQuicktimeEventIndicatorEntitySceneObject.name = "Cleaning Quicktime Event Indicator";
 		}
 
 		{
@@ -249,7 +413,6 @@ public:
 			case oyl::Key_E:
 			{
 				auto playerView = registry->view<Player>();
-
 				for (entt::entity playerEntity : playerView)
 				{
 					PlayerInteractionRequestEvent playerInteractionRequest;
@@ -262,12 +425,33 @@ public:
 			case oyl::Key_F:
 			{
 				auto playerView = registry->view<Player>();
-
 				for (entt::entity playerEntity : playerView)
 				{
 					PlayerDropItemEvent playerDropItem;
 					playerDropItem.playerEntity = playerEntity;
 					postEvent(Event::create(playerDropItem));
+				}
+
+				break;
+			}
+			case oyl::Key_G:
+			{
+				//G key changes player's teams for debugging TODO: remove for working version
+				auto playerView = registry->view<Player>();
+				for (entt::entity playerEntity : playerView)
+				{
+					auto& player = registry->get<Player>(playerEntity);
+
+					if (player.team == Team::blue)
+					{
+						player.team = Team::red;
+						std::cout << "SWITCHED TO RED TEAM\n";
+					}
+					else
+					{
+						player.team = Team::blue;
+						std::cout << "SWITCHED TO BLUE TEAM\n";
+					}
 				}
 
 				break;
@@ -375,6 +559,35 @@ public:
 
 			break;
 		}
+		/*case TypeTotalGarbageCount:
+		{
+			auto evt = (TotalGarbageCountEvent)* event;
+			if (evt.totalGarbageCount >= 15)
+			{
+				auto guiView = registry->view<component::GuiRenderable, component::Transform>();
+				for (auto& guiEntity : guiView)
+				{
+					auto& renderableTransform = registry->get<component::Transform>(guiEntity);
+					renderableTransform.setPosition(glm::vec3(100.0f, 100.0f, 100.0f));
+				}
+
+				auto endScreensView = registry->view<component::GuiRenderable, component::Transform, EndScreen>();
+				for (auto& endScreenEntity : endScreensView)
+				{
+					auto& renderableTransform = registry->get<component::Transform>(endScreenEntity);
+					auto& endScreen = registry->get<EndScreen>(endScreenEntity);
+
+					renderableTransform.setPosition(glm::vec3(100.0f, 100.0f, 100.0f));
+
+					if (endScreen.isLoseScreen)
+					{
+						renderableTransform.setPosition(glm::vec3(0.0f, 0.0f, 0.0f));
+					}
+				}
+			}
+
+			break;
+		}*/
 		}
 		return false;
 	}
