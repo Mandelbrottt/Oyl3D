@@ -2,7 +2,7 @@
 
 void CleaningQuicktimeEventSystem::onEnter()
 {
-	this->listenForEventCategory((OylEnum)CategoryPlayer);
+	this->listenForEventCategory((EventCategory)CategoryPlayer);
 }
 
 void CleaningQuicktimeEventSystem::onExit()
@@ -10,7 +10,7 @@ void CleaningQuicktimeEventSystem::onExit()
 
 }
 
-void CleaningQuicktimeEventSystem::onUpdate(Timestep dt)
+void CleaningQuicktimeEventSystem::onUpdate()
 {
 	//the indicators LERP continuously back and forth between the start and end positions
 	auto cleaningQuicktimeEventIndicatorView = registry->view<component::Transform, CleaningQuicktimeEventIndicator>();
@@ -27,9 +27,19 @@ void CleaningQuicktimeEventSystem::onUpdate(Timestep dt)
 		}
 
 		if (cleaningQuicktimeEventIndicator.lerpInformation.isMovingForward)
-			cleaningQuicktimeEventIndicator.lerpInformation.interpolationParam = cleaningQuicktimeEventIndicator.lerpInformation.interpolationParam + cleaningQuicktimeEventIndicator.lerpInformation.speed * dt;
+		{
+			cleaningQuicktimeEventIndicator.lerpInformation.interpolationParam 
+				= cleaningQuicktimeEventIndicator.lerpInformation.interpolationParam 
+				+ cleaningQuicktimeEventIndicator.lerpInformation.speed 
+				* Time::deltaTime();
+		}
 		else //!isMovingForward
-			cleaningQuicktimeEventIndicator.lerpInformation.interpolationParam = cleaningQuicktimeEventIndicator.lerpInformation.interpolationParam - cleaningQuicktimeEventIndicator.lerpInformation.speed * dt;
+		{
+			cleaningQuicktimeEventIndicator.lerpInformation.interpolationParam 
+				= cleaningQuicktimeEventIndicator.lerpInformation.interpolationParam 
+				- cleaningQuicktimeEventIndicator.lerpInformation.speed 
+				* Time::deltaTime();
+		}
 
 		if (   cleaningQuicktimeEventIndicator.lerpInformation.interpolationParam < 0.0f
 			|| cleaningQuicktimeEventIndicator.lerpInformation.interpolationParam > 1.0f)
@@ -45,13 +55,13 @@ void CleaningQuicktimeEventSystem::onUpdate(Timestep dt)
 	}
 }
 
-bool CleaningQuicktimeEventSystem::onEvent(Ref<Event> event)
+bool CleaningQuicktimeEventSystem::onEvent(const Event& event)
 {
-	switch (event->type)
+	switch (event.type)
 	{
-		case TypePlayerInteractionRequest:
+		case (EventType)TypePlayerInteractionRequest:
 		{
-			auto evt = (PlayerInteractionRequestEvent)* event;
+			auto evt = event_cast<PlayerInteractionRequestEvent>(event);
 
 			auto cleaningQuicktimeEventIndicatorView = registry->view<component::Transform, CleaningQuicktimeEventIndicator>();
 			for (auto& cleaningQuicktimeEventIndicatorEntity : cleaningQuicktimeEventIndicatorView)
@@ -73,14 +83,14 @@ bool CleaningQuicktimeEventSystem::onEvent(Ref<Event> event)
 				}
 				else
 					quicktimeCleaningEventResult.wasSuccessful = false;
-				postEvent(Event::create(quicktimeCleaningEventResult));
+				postEvent(quicktimeCleaningEventResult);
 			}
 
 			break;
 		}
-		case TypePlayerInteractResult:
+		case (EventType)TypePlayerInteractResult:
 		{
-			auto evt = (PlayerInteractResultEvent)* event;
+			auto evt = event_cast<PlayerInteractResultEvent>(event);
 
 			if (evt.interactionType == PlayerInteractionResult::cleanGarbagePile)
 			{

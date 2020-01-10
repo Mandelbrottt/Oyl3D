@@ -26,7 +26,7 @@ public:
 	{
 		this->listenForEventCategory(EventCategory::Keyboard);
 		this->listenForEventCategory(EventCategory::Mouse);
-		this->listenForEventCategory(CategoryGarbagePile);
+		this->listenForEventCategory((EventCategory) CategoryGarbagePile);
 
 		scheduleSystemUpdate<PlayerSystem>();
 		scheduleSystemUpdate<CannonSystem>();
@@ -340,7 +340,7 @@ public:
 		}
 	}
 
-	void onUpdate(Timestep dt) override
+	void onUpdate() override
 	{
 		auto view = registry->view<Player, component::Transform>();
 		for (auto& entity : view)
@@ -350,16 +350,16 @@ public:
 
 			glm::vec3 desiredMoveDirection = glm::vec3(0.0f);
 
-			if (Input::isKeyPressed(Key_W))
+			if (Input::isKeyPressed(Key::W))
 				desiredMoveDirection += playerTransform.getForward();
 
-			if (Input::isKeyPressed(Key_S))
+			if (Input::isKeyPressed(Key::S))
 				desiredMoveDirection += -playerTransform.getForward();
 
-			if (Input::isKeyPressed(Key_A))
+			if (Input::isKeyPressed(Key::A))
 				desiredMoveDirection += -playerTransform.getRight();
 
-			if (Input::isKeyPressed(Key_D))
+			if (Input::isKeyPressed(Key::D))
 				desiredMoveDirection += playerTransform.getRight();
 
 		    //check if it's 0 because if we normalize a vector with 0 magnitude it breaks
@@ -370,71 +370,71 @@ public:
 		}
 	}
 
-	bool onEvent(Ref<Event> event) override
+	bool onEvent(const Event& event) override
 	{
-		switch (event->type)
+		switch (event.type)
 		{
-		case TypeKeyReleased:
+		case EventType::KeyReleased:
 		{
 			Window& window = oyl::Application::get().getWindow();
 
-			auto e = (oyl::KeyReleasedEvent)* event;
-			if (e.keycode == oyl::Key_F11)
+			auto e = event_cast<KeyReleasedEvent>(event);
+			if (e.keycode == oyl::Key::F11)
 			{
 				// TODO: Make Event Request
-				if (window.getFullscreenType() == oyl::Windowed)
-					window.setFullscreenType(oyl::Fullscreen);
+				if (window.getWindowState() == oyl::WindowState::Windowed)
+					window.setWindowState(oyl::WindowState::Fullscreen);
 				else
-					window.setFullscreenType(oyl::Windowed);
+					window.setWindowState(oyl::WindowState::Windowed);
 			}
-			else if (e.keycode == oyl::Key_F7)
+			else if (e.keycode == oyl::Key::F7)
 			{
 				window.setVsync(!window.isVsync());
 			}
-			else if (e.keycode == oyl::Key_C)
+			else if (e.keycode == oyl::Key::C)
 			{
 				isCameraActive = !isCameraActive;
 
 				CursorStateRequestEvent cursorRequest;
-				cursorRequest.state = isCameraActive ? Cursor_Disabled : Cursor_Enabled;
-				postEvent(Event::create(cursorRequest));
+				cursorRequest.state = isCameraActive ? CursorState::Disabled : CursorState::Normal;
+				postEvent(cursorRequest);
 			}
 
 			break;
 		}
-		case TypeKeyPressed:
+		case EventType::KeyPressed:
 		{
 			Window& window = oyl::Application::get().getWindow();
 
-			auto evt = (oyl::KeyPressedEvent)* event;
+			auto evt = event_cast<KeyPressedEvent>(event);
 
 			switch (evt.keycode)
 			{
-			case oyl::Key_E:
+			case oyl::Key::E:
 			{
 				auto playerView = registry->view<Player>();
 				for (entt::entity playerEntity : playerView)
 				{
 					PlayerInteractionRequestEvent playerInteractionRequest;
 					playerInteractionRequest.playerEntity = playerEntity;
-					postEvent(Event::create(playerInteractionRequest));
+					postEvent(playerInteractionRequest);
 				}
 
 				break;
 			}
-			case oyl::Key_F:
+			case oyl::Key::F:
 			{
 				auto playerView = registry->view<Player>();
 				for (entt::entity playerEntity : playerView)
 				{
 					PlayerDropItemEvent playerDropItem;
 					playerDropItem.playerEntity = playerEntity;
-					postEvent(Event::create(playerDropItem));
+					postEvent(playerDropItem);
 				}
 
 				break;
 			}
-			case oyl::Key_G:
+			case oyl::Key::G:
 			{
 				//G key changes player's teams for debugging TODO: remove for working version
 				auto playerView = registry->view<Player>();
@@ -514,11 +514,11 @@ public:
 			}*/
 			}
 		}
-		case TypeMouseMoved:
+		case EventType::MouseMoved:
 		{
 			if (isCameraActive)
 			{
-				auto evt = (MouseMovedEvent)* event;
+				auto evt = event_cast<MouseMovedEvent>(event);
 
 				auto playerView = registry->view<Player, component::Transform>();
 				for (auto& entity : playerView)

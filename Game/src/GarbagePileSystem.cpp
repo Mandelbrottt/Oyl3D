@@ -2,7 +2,7 @@
 
 void GarbagePileSystem::onEnter()
 {
-	this->listenForEventCategory((OylEnum)CategoryGarbagePile);
+	this->listenForEventCategory((EventCategory)CategoryGarbagePile);
 }
 
 void GarbagePileSystem::onExit()
@@ -10,11 +10,11 @@ void GarbagePileSystem::onExit()
 
 }
 
-void GarbagePileSystem::onUpdate(Timestep dt)
+void GarbagePileSystem::onUpdate()
 {
 	//TODO: change to add to a random garbage pile rather than all of them for the final version
 	bool addGarbageLevel = false;
-	passiveGarbageBuildupCountdown -= dt;
+	passiveGarbageBuildupCountdown -= Time::deltaTime();
 	if (passiveGarbageBuildupCountdown < 0.0f)
 	{
 		addGarbageLevel = true;
@@ -50,17 +50,18 @@ void GarbagePileSystem::onUpdate(Timestep dt)
 	{
 		TotalGarbageCountEvent totalGarbageUpdate;
 		totalGarbageUpdate.totalGarbageCount = totalGarbageLevel;
-		postEvent(Event::create(totalGarbageUpdate));
+		postEvent(totalGarbageUpdate);
 	}
 }
 
-bool GarbagePileSystem::onEvent(Ref<Event> event)
+bool GarbagePileSystem::onEvent(const Event& event)
 {
-	switch (event->type)
+	switch (event.type)
 	{
-		case TypeRequestToCleanGarbage:
+		case (EventType)TypeRequestToCleanGarbage:
 		{
-			auto evt = (RequestToCleanGarbageEvent)* event;
+			auto evt = event_cast<RequestToCleanGarbageEvent>(event);
+
 			auto& garbagePile           = registry->get<GarbagePile>(evt.garbagePileEntity);
 			auto& garbagePileRenderable = registry->get<component::Renderable>(evt.garbagePileEntity);
 
@@ -86,7 +87,7 @@ bool GarbagePileSystem::onEvent(Ref<Event> event)
 			GarbageCleanedEvent garbageCleaned;
 			garbageCleaned.numGarbageTicksToDisplay = garbagePile.garbageTicks;
 			garbageCleaned.displayGlooped           = garbagePile.isGlooped;
-			postEvent(Event::create(garbageCleaned));
+			postEvent(garbageCleaned);
 
 			break;
 		}

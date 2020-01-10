@@ -1,6 +1,7 @@
 {
     "BlueCannon": {
         "Renderable": {
+            "Enabled": true,
             "Material": {
                 "Albedo": {
                     "Alias": "container2",
@@ -42,6 +43,7 @@
     },
     "BlueCannonball0": {
         "Renderable": {
+            "Enabled": true,
             "Material": {
                 "Albedo": {
                     "Alias": "container2",
@@ -83,6 +85,7 @@
     },
     "BlueCannonball1": {
         "Renderable": {
+            "Enabled": true,
             "Material": {
                 "Albedo": {
                     "Alias": "container2",
@@ -124,6 +127,7 @@
     },
     "BlueCannonball10": {
         "Renderable": {
+            "Enabled": true,
             "Material": {
                 "Albedo": {
                     "Alias": "container2",
@@ -165,6 +169,7 @@
     },
     "BlueCannonball11": {
         "Renderable": {
+            "Enabled": true,
             "Material": {
                 "Albedo": {
                     "Alias": "container2",
@@ -206,6 +211,7 @@
     },
     "BlueCannonball12": {
         "Renderable": {
+            "Enabled": true,
             "Material": {
                 "Albedo": {
                     "Alias": "container2",
@@ -247,6 +253,7 @@
     },
     "BlueCannonball13": {
         "Renderable": {
+            "Enabled": true,
             "Material": {
                 "Albedo": {
                     "Alias": "container2",
@@ -288,6 +295,7 @@
     },
     "BlueCannonball14": {
         "Renderable": {
+            "Enabled": true,
             "Material": {
                 "Albedo": {
                     "Alias": "container2",
@@ -329,6 +337,7 @@
     },
     "BlueCannonball15": {
         "Renderable": {
+            "Enabled": true,
             "Material": {
                 "Albedo": {
                     "Alias": "container2",
@@ -370,6 +379,7 @@
     },
     "BlueCannonball16": {
         "Renderable": {
+            "Enabled": true,
             "Material": {
                 "Albedo": {
                     "Alias": "container2",
@@ -411,6 +421,7 @@
     },
     "BlueCannonball17": {
         "Renderable": {
+            "Enabled": true,
             "Material": {
                 "Albedo": {
                     "Alias": "container2",
@@ -452,6 +463,7 @@
     },
     "BlueCannonball18": {
         "Renderable": {
+            "Enabled": true,
             "Material": {
                 "Albedo": {
                     "Alias": "container2",
@@ -493,6 +505,7 @@
     },
     "BlueCannonball19": {
         "Renderable": {
+            "Enabled": true,
             "Material": {
                 "Albedo": {
                     "Alias": "container2",
@@ -534,6 +547,7 @@
     },
     "BlueCannonball2": {
         "Renderable": {
+            "Enabled": true,
             "Material": {
                 "Albedo": {
                     "Alias": "container2",
@@ -575,6 +589,7 @@
     },
     "BlueCannonball20": {
         "Renderable": {
+            "Enabled": true,
             "Material": {
                 "Albedo": {
                     "Alias": "container2",
@@ -616,6 +631,7 @@
     },
     "BlueCannonball21": {
         "Renderable": {
+            "Enabled": true,
             "Material": {
                 "Albedo": {
                     "Alias": "container2",
@@ -657,6 +673,7 @@
     },
     "BlueCannonball22": {
         "Renderable": {
+            "Enabled": true,
             "Material": {
                 "Albedo": {
                     "Alias": "container2",
@@ -698,6 +715,7 @@
     },
     "BlueCannonball23": {
         "Renderable": {
+            "Enabled": true,
             "Material": {
                 "Albedo": {
                     "Alias": "container2",
@@ -739,6 +757,7 @@
     },
     "BlueCannonball24": {
         "Renderable": {
+            "Enabled": true,
             "Material": {
                 "Albedo": {
                     "Alias": "container2",
@@ -780,6 +799,7 @@
     },
     "BlueCannonball25": {
         "Renderable": {
+            "Enabled": true,
             "Material": {
                 "Albedo": {
                     "Alias": "container2",
@@ -821,6 +841,7 @@
     },
     "BlueCannonball26": {
         "Renderable": {
+            "Enabled": true,
             "Material": {
                 "Albedo": {
                     "Alias": "container2",
@@ -862,6 +883,7 @@
     },
     "BlueCannonball27": {
         "Renderable": {
+            "Enabled": true,
             "Material": {
                 "Albedo": {
                     "Alias": "container2",
@@ -903,6 +925,7 @@
     },
     "BlueCannonball28": {
         "Renderable": {
+            "Enabled": true,
             "Material": {
                 "Albedo": {
                     "Alias": "container2",
@@ -944,6 +967,7 @@
     },
     "BlueCannonball29": {
         "Renderable": {
+            "Enabled": true,
             "Material": {
                 "Albedo": {
                     "Alias": "container2",
@@ -985,6 +1009,7 @@
     },
     "BlueCannonball3": {
         "Renderable": {
+            "Enabled": true,
             "Material": {
                 "Albedo": {
                     "Alias": "container2",
@@ -1026,6 +1051,7 @@
     },
     "BlueCannonball4": {
         "Renderable": {
+            "Enabled": true,
             "Material": {
                 "Albedo": {
                     "Alias": "container2",
@@ -1067,6 +1093,7 @@
     },
     "BlueCannonball5": {
         "Renderable": {
+            "Enabled": true,
             "Material": {
                 "Albedo": {
                     "Alias": "container2",
@@ -1108,6 +1135,7 @@
     },
     "BlueCannonball6": {
         "Renderable": {
+            "Enabled": true,
             "Material": {
                 "Albedo": {
                     "Alias": "container2",
@@ -1149,6 +1177,7 @@
     },
     "BlueCannonball7": {
         "Renderable": {
+            "Enabled": true,
             "Material": {
                 "Albedo": {
                     "Alias": "container2",
@@ -1190,6 +1219,7 @@
     },
     "BlueCannonball8": {
         "Renderable": {
+            "Enabled": true,
             "Material": {
                 "Albedo": {
                     "Alias": "container2",
@@ -1231,6 +1261,7 @@
     },
     "BlueCannonball9": {
         "Renderable": {
+            "Enabled": true,
             "Material": {
                 "Albedo": {
                     "Alias": "container2",
@@ -1272,6 +1303,7 @@
     },
     "BlueCannonballCrate": {
         "Renderable": {
+            "Enabled": true,
             "Material": {
                 "Albedo": {
                     "Alias": "container2",
@@ -1313,6 +1345,7 @@
     },
     "BlueCleaningSolution0": {
         "Renderable": {
+            "Enabled": true,
             "Material": {
                 "Albedo": {
                     "Alias": "container2",
@@ -1354,6 +1387,7 @@
     },
     "BlueCleaningSolution1": {
         "Renderable": {
+            "Enabled": true,
             "Material": {
                 "Albedo": {
                     "Alias": "container2",
@@ -1395,6 +1429,7 @@
     },
     "BlueCleaningSolution2": {
         "Renderable": {
+            "Enabled": true,
             "Material": {
                 "Albedo": {
                     "Alias": "container2",
@@ -1436,6 +1471,7 @@
     },
     "BlueGarbagePile0": {
         "Renderable": {
+            "Enabled": true,
             "Material": {
                 "Albedo": {
                     "Alias": "container2",
@@ -1477,6 +1513,7 @@
     },
     "BlueGarbagePile1": {
         "Renderable": {
+            "Enabled": true,
             "Material": {
                 "Albedo": {
                     "Alias": "container2",
@@ -1518,6 +1555,7 @@
     },
     "BlueGarbagePile2": {
         "Renderable": {
+            "Enabled": true,
             "Material": {
                 "Albedo": {
                     "Alias": "container2",
@@ -1559,6 +1597,7 @@
     },
     "BlueGloop0": {
         "Renderable": {
+            "Enabled": true,
             "Material": {
                 "Albedo": {
                     "Alias": "container2",
@@ -1600,6 +1639,7 @@
     },
     "BlueGloop1": {
         "Renderable": {
+            "Enabled": true,
             "Material": {
                 "Albedo": {
                     "Alias": "container2",
@@ -1641,6 +1681,7 @@
     },
     "BlueGloop2": {
         "Renderable": {
+            "Enabled": true,
             "Material": {
                 "Albedo": {
                     "Alias": "container2",
@@ -1682,6 +1723,7 @@
     },
     "BlueMop": {
         "Renderable": {
+            "Enabled": true,
             "Material": {
                 "Albedo": {
                     "Alias": "container2",
@@ -1761,6 +1803,7 @@
     },
     "Character": {
         "Renderable": {
+            "Enabled": true,
             "Material": {
                 "Albedo": {
                     "Alias": "container2",
@@ -1815,6 +1858,44 @@
             "Scale": {
                 "X": 1.0,
                 "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Cleaning Quicktime Event Background": {
+        "Transform": {
+            "Position": {
+                "X": -30.0,
+                "Y": 3.5,
+                "Z": 0.0
+            },
+            "Rotation": {
+                "X": 0.0,
+                "Y": -0.0,
+                "Z": 0.0
+            },
+            "Scale": {
+                "X": 2.0,
+                "Y": 1.5,
+                "Z": 1.0
+            }
+        }
+    },
+    "Cleaning Quicktime Event Indicator": {
+        "Transform": {
+            "Position": {
+                "X": -30.0,
+                "Y": 3.5999999046325684,
+                "Z": 0.0
+            },
+            "Rotation": {
+                "X": 0.0,
+                "Y": -0.0,
+                "Z": 0.0
+            },
+            "Scale": {
+                "X": 1.5,
+                "Y": 2.0,
                 "Z": 1.0
             }
         }
@@ -1916,6 +1997,7 @@
     },
     "Light 1": {
         "Renderable": {
+            "Enabled": true,
             "Material": {
                 "Albedo": {
                     "Alias": "container2",
@@ -2031,25 +2113,6 @@
             }
         }
     },
-    "Pickup Cleaning SOlution Message": {
-        "Transform": {
-            "Position": {
-                "X": 0.0,
-                "Y": -2.5,
-                "Z": 0.0
-            },
-            "Rotation": {
-                "X": 0.0,
-                "Y": -0.0,
-                "Z": 0.0
-            },
-            "Scale": {
-                "X": 1.0,
-                "Y": 1.0,
-                "Z": 1.0
-            }
-        }
-    },
     "Pickup Cleaning Solution Message": {
         "Transform": {
             "Position": {
@@ -2109,6 +2172,7 @@
     },
     "Plane": {
         "Renderable": {
+            "Enabled": true,
             "Material": {
                 "Albedo": {
                     "Alias": "container2",
@@ -2150,6 +2214,7 @@
     },
     "Player": {
         "Renderable": {
+            "Enabled": true,
             "Material": {
                 "Albedo": {
                     "Alias": "container2",
@@ -2232,6 +2297,7 @@
     },
     "RedCannon": {
         "Renderable": {
+            "Enabled": true,
             "Material": {
                 "Albedo": {
                     "Alias": "container2",
@@ -2273,6 +2339,7 @@
     },
     "RedCannonball0": {
         "Renderable": {
+            "Enabled": true,
             "Material": {
                 "Albedo": {
                     "Alias": "container2",
@@ -2314,6 +2381,7 @@
     },
     "RedCannonball1": {
         "Renderable": {
+            "Enabled": true,
             "Material": {
                 "Albedo": {
                     "Alias": "container2",
@@ -2355,6 +2423,7 @@
     },
     "RedCannonball10": {
         "Renderable": {
+            "Enabled": true,
             "Material": {
                 "Albedo": {
                     "Alias": "container2",
@@ -2396,6 +2465,7 @@
     },
     "RedCannonball11": {
         "Renderable": {
+            "Enabled": true,
             "Material": {
                 "Albedo": {
                     "Alias": "container2",
@@ -2437,6 +2507,7 @@
     },
     "RedCannonball12": {
         "Renderable": {
+            "Enabled": true,
             "Material": {
                 "Albedo": {
                     "Alias": "container2",
@@ -2478,6 +2549,7 @@
     },
     "RedCannonball13": {
         "Renderable": {
+            "Enabled": true,
             "Material": {
                 "Albedo": {
                     "Alias": "container2",
@@ -2519,6 +2591,7 @@
     },
     "RedCannonball14": {
         "Renderable": {
+            "Enabled": true,
             "Material": {
                 "Albedo": {
                     "Alias": "container2",
@@ -2560,6 +2633,7 @@
     },
     "RedCannonball15": {
         "Renderable": {
+            "Enabled": true,
             "Material": {
                 "Albedo": {
                     "Alias": "container2",
@@ -2601,6 +2675,7 @@
     },
     "RedCannonball16": {
         "Renderable": {
+            "Enabled": true,
             "Material": {
                 "Albedo": {
                     "Alias": "container2",
@@ -2642,6 +2717,7 @@
     },
     "RedCannonball17": {
         "Renderable": {
+            "Enabled": true,
             "Material": {
                 "Albedo": {
                     "Alias": "container2",
@@ -2683,6 +2759,7 @@
     },
     "RedCannonball18": {
         "Renderable": {
+            "Enabled": true,
             "Material": {
                 "Albedo": {
                     "Alias": "container2",
@@ -2724,6 +2801,7 @@
     },
     "RedCannonball19": {
         "Renderable": {
+            "Enabled": true,
             "Material": {
                 "Albedo": {
                     "Alias": "container2",
@@ -2765,6 +2843,7 @@
     },
     "RedCannonball2": {
         "Renderable": {
+            "Enabled": true,
             "Material": {
                 "Albedo": {
                     "Alias": "container2",
@@ -2806,6 +2885,7 @@
     },
     "RedCannonball20": {
         "Renderable": {
+            "Enabled": true,
             "Material": {
                 "Albedo": {
                     "Alias": "container2",
@@ -2847,6 +2927,7 @@
     },
     "RedCannonball21": {
         "Renderable": {
+            "Enabled": true,
             "Material": {
                 "Albedo": {
                     "Alias": "container2",
@@ -2888,6 +2969,7 @@
     },
     "RedCannonball22": {
         "Renderable": {
+            "Enabled": true,
             "Material": {
                 "Albedo": {
                     "Alias": "container2",
@@ -2929,6 +3011,7 @@
     },
     "RedCannonball23": {
         "Renderable": {
+            "Enabled": true,
             "Material": {
                 "Albedo": {
                     "Alias": "container2",
@@ -2970,6 +3053,7 @@
     },
     "RedCannonball24": {
         "Renderable": {
+            "Enabled": true,
             "Material": {
                 "Albedo": {
                     "Alias": "container2",
@@ -3011,6 +3095,7 @@
     },
     "RedCannonball25": {
         "Renderable": {
+            "Enabled": true,
             "Material": {
                 "Albedo": {
                     "Alias": "container2",
@@ -3052,6 +3137,7 @@
     },
     "RedCannonball26": {
         "Renderable": {
+            "Enabled": true,
             "Material": {
                 "Albedo": {
                     "Alias": "container2",
@@ -3093,6 +3179,7 @@
     },
     "RedCannonball27": {
         "Renderable": {
+            "Enabled": true,
             "Material": {
                 "Albedo": {
                     "Alias": "container2",
@@ -3134,6 +3221,7 @@
     },
     "RedCannonball28": {
         "Renderable": {
+            "Enabled": true,
             "Material": {
                 "Albedo": {
                     "Alias": "container2",
@@ -3175,6 +3263,7 @@
     },
     "RedCannonball29": {
         "Renderable": {
+            "Enabled": true,
             "Material": {
                 "Albedo": {
                     "Alias": "container2",
@@ -3216,6 +3305,7 @@
     },
     "RedCannonball3": {
         "Renderable": {
+            "Enabled": true,
             "Material": {
                 "Albedo": {
                     "Alias": "container2",
@@ -3257,6 +3347,7 @@
     },
     "RedCannonball4": {
         "Renderable": {
+            "Enabled": true,
             "Material": {
                 "Albedo": {
                     "Alias": "container2",
@@ -3298,6 +3389,7 @@
     },
     "RedCannonball5": {
         "Renderable": {
+            "Enabled": true,
             "Material": {
                 "Albedo": {
                     "Alias": "container2",
@@ -3339,6 +3431,7 @@
     },
     "RedCannonball6": {
         "Renderable": {
+            "Enabled": true,
             "Material": {
                 "Albedo": {
                     "Alias": "container2",
@@ -3380,6 +3473,7 @@
     },
     "RedCannonball7": {
         "Renderable": {
+            "Enabled": true,
             "Material": {
                 "Albedo": {
                     "Alias": "container2",
@@ -3421,6 +3515,7 @@
     },
     "RedCannonball8": {
         "Renderable": {
+            "Enabled": true,
             "Material": {
                 "Albedo": {
                     "Alias": "container2",
@@ -3462,6 +3557,7 @@
     },
     "RedCannonball9": {
         "Renderable": {
+            "Enabled": true,
             "Material": {
                 "Albedo": {
                     "Alias": "container2",
@@ -3503,6 +3599,7 @@
     },
     "RedCannonballCrate": {
         "Renderable": {
+            "Enabled": true,
             "Material": {
                 "Albedo": {
                     "Alias": "container2",
@@ -3544,6 +3641,7 @@
     },
     "RedCleaningSolution0": {
         "Renderable": {
+            "Enabled": true,
             "Material": {
                 "Albedo": {
                     "Alias": "container2",
@@ -3585,6 +3683,7 @@
     },
     "RedCleaningSolution1": {
         "Renderable": {
+            "Enabled": true,
             "Material": {
                 "Albedo": {
                     "Alias": "container2",
@@ -3626,6 +3725,7 @@
     },
     "RedCleaningSolution2": {
         "Renderable": {
+            "Enabled": true,
             "Material": {
                 "Albedo": {
                     "Alias": "container2",
@@ -3667,6 +3767,7 @@
     },
     "RedGarbagePile0": {
         "Renderable": {
+            "Enabled": true,
             "Material": {
                 "Albedo": {
                     "Alias": "container2",
@@ -3708,6 +3809,7 @@
     },
     "RedGarbagePile1": {
         "Renderable": {
+            "Enabled": true,
             "Material": {
                 "Albedo": {
                     "Alias": "container2",
@@ -3749,6 +3851,7 @@
     },
     "RedGarbagePile2": {
         "Renderable": {
+            "Enabled": true,
             "Material": {
                 "Albedo": {
                     "Alias": "container2",
@@ -3790,6 +3893,7 @@
     },
     "RedGloop0": {
         "Renderable": {
+            "Enabled": true,
             "Material": {
                 "Albedo": {
                     "Alias": "container2",
@@ -3831,6 +3935,7 @@
     },
     "RedGloop1": {
         "Renderable": {
+            "Enabled": true,
             "Material": {
                 "Albedo": {
                     "Alias": "container2",
@@ -3872,6 +3977,7 @@
     },
     "RedGloop2": {
         "Renderable": {
+            "Enabled": true,
             "Material": {
                 "Albedo": {
                     "Alias": "container2",
@@ -3913,6 +4019,7 @@
     },
     "RedMop": {
         "Renderable": {
+            "Enabled": true,
             "Material": {
                 "Albedo": {
                     "Alias": "container2",
@@ -3954,6 +4061,7 @@
     },
     "Sphere 1": {
         "Renderable": {
+            "Enabled": true,
             "Material": {
                 "Albedo": {
                     "Alias": "container2",
@@ -3995,6 +4103,7 @@
     },
     "Sphere 2": {
         "Renderable": {
+            "Enabled": true,
             "Material": {
                 "Albedo": {
                     "Alias": "container2",

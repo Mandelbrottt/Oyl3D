@@ -2,8 +2,8 @@
 
 void PlayerInteractionValidationSystem::onEnter()
 {
-	this->listenForEventCategory((OylEnum)CategoryPlayer);
-	this->listenForEventCategory((OylEnum)CategoryQuicktimeCleaningEvent);
+	this->listenForEventCategory((EventCategory)CategoryPlayer);
+	this->listenForEventCategory((EventCategory)CategoryQuicktimeCleaningEvent);
 }
 
 void PlayerInteractionValidationSystem::onExit()
@@ -11,34 +11,34 @@ void PlayerInteractionValidationSystem::onExit()
     
 }
 
-void PlayerInteractionValidationSystem::onUpdate(Timestep dt)
+void PlayerInteractionValidationSystem::onUpdate()
 {
 	auto playerView = registry->view<Player, component::Transform>();
 	for (entt::entity playerEntity : playerView)
 		checkForAnyValidPlayerInteractions(playerEntity);
 }
 
-bool PlayerInteractionValidationSystem::onEvent(Ref<Event> event)
+bool PlayerInteractionValidationSystem::onEvent(const Event& event)
 {
-	switch (event->type)
+	switch (event.type)
 	{
-	    case TypePlayerInteractionRequest:
+		case (EventType)TypePlayerInteractionRequest:
 	    {
-			auto evt = (PlayerInteractionRequestEvent)* event;
+			auto evt = event_cast<PlayerInteractionRequestEvent>(event);
 			validateInteraction(evt.playerEntity);
 	        
 			break;
 	    }
-		case TypePlayerDropItem:
+		case (EventType)TypePlayerDropItem:
 		{
-			auto evt = (PlayerDropItemEvent)* event;
+			auto evt = event_cast<PlayerDropItemEvent>(event);
 			dropPlayerCarriedItems(evt.playerEntity);
 			
 			break;
 		}
-		case TypeQuicktimeCleaningEventResult:
+		case (EventType)TypeQuicktimeCleaningEventResult:
 		{
-			auto evt = (QuicktimeCleaningEventResultEvent)* event;
+			auto evt = event_cast<QuicktimeCleaningEventResultEvent>(event);
 			if (evt.wasSuccessful)
 			{
 				auto& player = registry->get<Player>(evt.playerEntity);
@@ -65,12 +65,12 @@ bool PlayerInteractionValidationSystem::onEvent(Ref<Event> event)
 
 				RequestToCleanGarbageEvent requestToCleanGarbage;
 				requestToCleanGarbage.garbagePileEntity = player.interactableEntity;
-				postEvent(Event::create(requestToCleanGarbage));
+				postEvent(requestToCleanGarbage);
 
 				PlayerStateChangeEvent playerStateChange;
 				playerStateChange.playerEntity = evt.playerEntity;
 				playerStateChange.newState = PlayerState::cleaning;
-				postEvent(Event::create(playerStateChange));
+				postEvent(playerStateChange);
 			}
 			else //!wasSuccessful
 			{
@@ -79,7 +79,7 @@ bool PlayerInteractionValidationSystem::onEvent(Ref<Event> event)
 				PlayerStateChangeEvent playerStateChange;
 				playerStateChange.playerEntity = evt.playerEntity;
 				playerStateChange.newState = PlayerState::idle;
-				postEvent(Event::create(playerStateChange));
+				postEvent(playerStateChange);
 			}
 
 			break;
@@ -101,7 +101,7 @@ void PlayerInteractionValidationSystem::checkForAnyValidPlayerInteractions(entt:
 
 		PlayerInteractResultEvent playerInteractResult;
 		playerInteractResult.interactionType = PlayerInteractionResult::nothing;
-		postEvent(Event::create(playerInteractResult));
+		postEvent(playerInteractResult);
 
 		return;
 	}
@@ -134,7 +134,7 @@ void PlayerInteractionValidationSystem::checkForAnyValidPlayerInteractions(entt:
 
 					PlayerInteractResultEvent playerInteractResult;
 					playerInteractResult.interactionType = PlayerInteractionResult::pickUpCannonball;
-					postEvent(Event::create(playerInteractResult));
+					postEvent(playerInteractResult);
 
 					return;
 				}
@@ -155,7 +155,7 @@ void PlayerInteractionValidationSystem::checkForAnyValidPlayerInteractions(entt:
 
 					PlayerInteractResultEvent playerInteractResult;
 					playerInteractResult.interactionType = PlayerInteractionResult::pickUpMop;
-					postEvent(Event::create(playerInteractResult));
+					postEvent(playerInteractResult);
 
 					return;
 				}
@@ -179,7 +179,7 @@ void PlayerInteractionValidationSystem::checkForAnyValidPlayerInteractions(entt:
 
 					PlayerInteractResultEvent playerInteractResult;
 					playerInteractResult.interactionType = PlayerInteractionResult::pickUpCleaningSolution;
-					postEvent(Event::create(playerInteractResult));
+					postEvent(playerInteractResult);
 
 					return;
 				}
@@ -202,7 +202,7 @@ void PlayerInteractionValidationSystem::checkForAnyValidPlayerInteractions(entt:
 
 					PlayerInteractResultEvent playerInteractResult;
 					playerInteractResult.interactionType = PlayerInteractionResult::pickUpGloop;
-					postEvent(Event::create(playerInteractResult));
+					postEvent(playerInteractResult);
 
 					return;
 				}
@@ -238,7 +238,7 @@ void PlayerInteractionValidationSystem::checkForAnyValidPlayerInteractions(entt:
 
 						PlayerInteractResultEvent playerInteractResult;
 						playerInteractResult.interactionType = PlayerInteractionResult::cleanGarbagePile;
-						postEvent(Event::create(playerInteractResult));
+						postEvent(playerInteractResult);
 
 						return;
 					}
@@ -254,7 +254,7 @@ void PlayerInteractionValidationSystem::checkForAnyValidPlayerInteractions(entt:
 
 						PlayerInteractResultEvent playerInteractResult;
 						playerInteractResult.interactionType = PlayerInteractionResult::cleanGarbagePile;
-						postEvent(Event::create(playerInteractResult));
+						postEvent(playerInteractResult);
 
 						return;
 					}
@@ -271,7 +271,7 @@ void PlayerInteractionValidationSystem::checkForAnyValidPlayerInteractions(entt:
 
 					PlayerInteractResultEvent playerInteractResult;
 					playerInteractResult.interactionType = PlayerInteractionResult::useGloop;
-					postEvent(Event::create(playerInteractResult));
+					postEvent(playerInteractResult);
 
 					return;
 				}
@@ -299,7 +299,7 @@ void PlayerInteractionValidationSystem::checkForAnyValidPlayerInteractions(entt:
 
 			PlayerInteractResultEvent playerInteractResult;
 			playerInteractResult.interactionType = PlayerInteractionResult::takeCannonballFromCrate;
-			postEvent(Event::create(playerInteractResult));
+			postEvent(playerInteractResult);
 
 			return;
 		}
@@ -340,7 +340,7 @@ void PlayerInteractionValidationSystem::checkForAnyValidPlayerInteractions(entt:
 
 						PlayerInteractResultEvent playerInteractResult;
 						playerInteractResult.interactionType = PlayerInteractionResult::loadCannon;
-						postEvent(Event::create(playerInteractResult));
+						postEvent(playerInteractResult);
 
 						return;
 					}
@@ -359,7 +359,7 @@ void PlayerInteractionValidationSystem::checkForAnyValidPlayerInteractions(entt:
 
 					PlayerInteractResultEvent playerInteractResult;
 					playerInteractResult.interactionType = PlayerInteractionResult::cannonFiringSoon;
-					postEvent(Event::create(playerInteractResult));
+					postEvent(playerInteractResult);
 
 					return;
 				}
@@ -389,7 +389,7 @@ void PlayerInteractionValidationSystem::checkForAnyValidPlayerInteractions(entt:
 
 					PlayerInteractResultEvent playerInteractResult;
 					playerInteractResult.interactionType = PlayerInteractionResult::pushCannon;
-					postEvent(Event::create(playerInteractResult));
+					postEvent(playerInteractResult);
 
 					return;
 				}
@@ -407,7 +407,7 @@ void PlayerInteractionValidationSystem::checkForAnyValidPlayerInteractions(entt:
 
 					PlayerInteractResultEvent playerInteractResult;
 					playerInteractResult.interactionType = PlayerInteractionResult::pushCannon;
-					postEvent(Event::create(playerInteractResult));
+					postEvent(playerInteractResult);
 
 					return;
 				}
@@ -420,7 +420,7 @@ void PlayerInteractionValidationSystem::checkForAnyValidPlayerInteractions(entt:
 
 	PlayerInteractResultEvent playerInteractResult;
 	playerInteractResult.interactionType = PlayerInteractionResult::nothing;
-	postEvent(Event::create(playerInteractResult));
+	postEvent(playerInteractResult);
 }
 
 void PlayerInteractionValidationSystem::validateInteraction(entt::entity a_playerEntity)
@@ -516,7 +516,7 @@ void PlayerInteractionValidationSystem::validateInteraction(entt::entity a_playe
 
 			UseGloopEvent useGloop;
 			useGloop.gloopEntity = player.primaryCarriedItem;
-			postEvent(Event::create(useGloop));
+			postEvent(useGloop);
 		}
 		//if the player and garbage pile are the same team, cleaning is handled in the OnEvent function in this file under the cleaning quicktime event
 	}
@@ -635,12 +635,12 @@ void PlayerInteractionValidationSystem::validateInteraction(entt::entity a_playe
 			PlayerStateChangeEvent playerStateChange;
 			playerStateChange.playerEntity = a_playerEntity;
 			playerStateChange.newState     = PlayerState::pushing;
-			postEvent(Event::create(playerStateChange));
+			postEvent(playerStateChange);
 
 			CannonStateChangeEvent cannonStateChange;
 			cannonStateChange.cannonEntity = player.interactableEntity;
 			cannonStateChange.newState     = CannonState::beingPushed;
-			postEvent(Event::create(cannonStateChange));
+			postEvent(cannonStateChange);
 
 			return;
 		}

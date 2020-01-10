@@ -14,8 +14,8 @@ private:
     
 	void onEnter() override;
 	void onExit() override;
-	void onUpdate(Timestep dt) override;
-	bool onEvent(Ref<Event> event) override;
+	void onUpdate() override;
+	bool onEvent(const Event& event) override;
     
 	void updateFuse(float dt, Cannon* a_cannon, component::Transform* a_cannonTransform);
 
