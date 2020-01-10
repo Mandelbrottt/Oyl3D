@@ -3,6 +3,7 @@
 void PlayerInteractionValidationSystem::onEnter()
 {
 	this->listenForEventCategory((OylEnum)CategoryPlayer);
+	this->listenForEventCategory((OylEnum)CategoryQuicktimeCleaningEvent);
 }
 
 void PlayerInteractionValidationSystem::onExit()
@@ -28,12 +29,59 @@ bool PlayerInteractionValidationSystem::onEvent(Ref<Event> event)
 	        
 			break;
 	    }
-
 		case TypePlayerDropItem:
 		{
 			auto evt = (PlayerDropItemEvent)* event;
 			dropPlayerCarriedItems(evt.playerEntity);
 			
+			break;
+		}
+		case TypeQuicktimeCleaningEventResult:
+		{
+			auto evt = (QuicktimeCleaningEventResultEvent)* event;
+			if (evt.wasSuccessful)
+			{
+				auto& player = registry->get<Player>(evt.playerEntity);
+				if (!registry->valid(player.interactableEntity) || !registry->has<GarbagePile>(player.interactableEntity))
+				{
+					std::cout << "WARNING: PLAYER'S INTERACTABLE ENTITY AFTER COMPLETING CLEANING QUICKTIME EVENT WAS AN INVALID ENTITY!\n";
+					break;
+				}
+				auto& garbagePile = registry->get<GarbagePile>(player.interactableEntity);
+
+				std::cout << "CLEANING!\n";
+
+				if (garbagePile.garbageTicks < garbagePile.GARBAGE_TICKS_PER_LEVEL)
+				{
+					//if only a mop is needed for cleaning, drop the cleaning solution if the player is carrying one (mop animation uses both hands)
+					if (registry->valid(player.secondaryCarriedItem) && registry->get<CarryableItem>(player.secondaryCarriedItem).type == CarryableItemType::cleaningSolution)
+						dropPlayerCarriedItems(evt.playerEntity, true, CarryableItemType::cleaningSolution);
+				}
+				else //garbage ticks >= max ticks, so cleaning solution is used
+				{
+					registry->destroy(player.secondaryCarriedItem);
+					player.secondaryCarriedItem = entt::null;
+				}
+
+				RequestToCleanGarbageEvent requestToCleanGarbage;
+				requestToCleanGarbage.garbagePileEntity = player.interactableEntity;
+				postEvent(Event::create(requestToCleanGarbage));
+
+				PlayerStateChangeEvent playerStateChange;
+				playerStateChange.playerEntity = evt.playerEntity;
+				playerStateChange.newState = PlayerState::cleaning;
+				postEvent(Event::create(playerStateChange));
+			}
+			else //!wasSuccessful
+			{
+				dropPlayerCarriedItems(evt.playerEntity);
+
+				PlayerStateChangeEvent playerStateChange;
+				playerStateChange.playerEntity = evt.playerEntity;
+				playerStateChange.newState = PlayerState::idle;
+				postEvent(Event::create(playerStateChange));
+			}
+
 			break;
 		}
 	}
@@ -460,34 +508,7 @@ void PlayerInteractionValidationSystem::validateInteraction(entt::entity a_playe
 		auto& garbagePile          = registry->get<GarbagePile>(player.interactableEntity);
 		auto& garbagePileTransform = registry->get<component::Transform>(player.interactableEntity);
 
-		if (garbagePile.team == player.team)
-		{
-			std::cout << "CLEANING!\n";
-
-			if (garbagePile.garbageTicks < garbagePile.GARBAGE_TICKS_PER_LEVEL)
-			{
-				//if only a mop is needed for cleaning, drop the cleaning solution if the player is carrying one (mop animation uses both hands)
-				if (registry->valid(player.secondaryCarriedItem) && registry->get<CarryableItem>(player.secondaryCarriedItem).type == CarryableItemType::cleaningSolution)
-					dropPlayerCarriedItems(a_playerEntity, true, CarryableItemType::cleaningSolution);
-			}
-			else //garbage ticks >= max ticks, so cleaning solution is used
-			{
-				registry->destroy(player.secondaryCarriedItem);
-				player.secondaryCarriedItem = entt::null;
-			}
-
-			RequestToCleanGarbageEvent requestToCleanGarbage;
-			requestToCleanGarbage.garbagePileEntity = player.interactableEntity;
-			postEvent(Event::create(requestToCleanGarbage));
-
-			PlayerStateChangeEvent playerStateChange;
-			playerStateChange.playerEntity = a_playerEntity;
-			playerStateChange.newState = PlayerState::cleaning;
-			postEvent(Event::create(playerStateChange));
-
-			return;
-		}
-		else //garbagePile.team != player.team
+		if (garbagePile.team != player.team)
 		{
 			std::cout << "USED GLOOP\n";
 
@@ -497,6 +518,7 @@ void PlayerInteractionValidationSystem::validateInteraction(entt::entity a_playe
 			useGloop.gloopEntity = player.primaryCarriedItem;
 			postEvent(Event::create(useGloop));
 		}
+		//if the player and garbage pile are the same team, cleaning is handled in the OnEvent function in this file under the cleaning quicktime event
 	}
 
 	else if (registry->has<CannonballCrate>(player.interactableEntity))
@@ -627,6 +649,8 @@ void PlayerInteractionValidationSystem::validateInteraction(entt::entity a_playe
 
 CannonInteractionOutcome PlayerInteractionValidationSystem::validateRaycastHit(Player* a_player, Cannon* a_cannon)
 {
+	//TODO: make it so when a player is in a quicktime cleaning event, they are automatically kicked out when no longer hitting the garbage pile with a raycast
+
 	return CannonInteractionOutcome::invalid;
 }
 

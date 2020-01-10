@@ -18,7 +18,7 @@ void GarbagePileSystem::onUpdate(Timestep dt)
 	if (passiveGarbageBuildupCountdown < 0.0f)
 	{
 		addGarbageLevel = true;
-		passiveGarbageBuildupCountdown = PASSIVE_GARBAGE_BUILDUP_TIME - numBuildUpsAccumulated * 0.5f; //TODO: come up with a better calculate for time scaling
+		passiveGarbageBuildupCountdown = PASSIVE_GARBAGE_BUILDUP_TIME - numBuildUpsAccumulated * 0.3f; //TODO: come up with a better equation for time scaling
 		numBuildUpsAccumulated++;
 	}
 
@@ -39,11 +39,6 @@ void GarbagePileSystem::onUpdate(Timestep dt)
 			0.3f * garbagePile.garbageLevel + 1.5f,
 			0.7f,
 			0.3f * garbagePile.garbageLevel + 1.5f));
-
-		if (garbagePile.garbageLevel <= 0) //check if garbage is fully depleted
-			garbagePileRenderable.enabled = false;
-		else //garbage isn't fully depleted
-			garbagePileRenderable.enabled = true;
 
 		totalGarbageLevel += garbagePile.garbageLevel;
 
@@ -66,7 +61,8 @@ bool GarbagePileSystem::onEvent(Ref<Event> event)
 		case TypeRequestToCleanGarbage:
 		{
 			auto evt = (RequestToCleanGarbageEvent)* event;
-			auto& garbagePile = registry->get<GarbagePile>(evt.garbagePileEntity);
+			auto& garbagePile           = registry->get<GarbagePile>(evt.garbagePileEntity);
+			auto& garbagePileRenderable = registry->get<component::Renderable>(evt.garbagePileEntity);
 
 			if (garbagePile.garbageTicks < garbagePile.GARBAGE_TICKS_PER_LEVEL)
 				garbagePile.garbageTicks -= garbagePile.isGlooped ? 0.5f : 1.0f;
@@ -76,7 +72,14 @@ bool GarbagePileSystem::onEvent(Ref<Event> event)
 			if (garbagePile.garbageTicks <= 0.0f)
 			{
 				garbagePile.garbageLevel--;
-				garbagePile.garbageTicks = garbagePile.garbageLevel > 0 ? garbagePile.GARBAGE_TICKS_PER_LEVEL : 0.0f; //set ticks to 0 if the garbage pile is depleted since there's nothing to clean
+				if (garbagePile.garbageLevel > 0)
+					garbagePile.garbageTicks = garbagePile.GARBAGE_TICKS_PER_LEVEL;
+				else //garbagePile.garbageLevel == 0
+				{
+					garbagePile.garbageTicks      = 0;
+					garbagePileRenderable.enabled = false;
+				}
+				
 				garbagePile.isGlooped = false;
 			}
 
@@ -94,11 +97,15 @@ bool GarbagePileSystem::onEvent(Ref<Event> event)
 
 void GarbagePileSystem::increaseGarbageLevel(entt::entity a_garbagePileEntity)
 {
-	auto& garbagePile = registry->get<GarbagePile>(a_garbagePileEntity);
+	auto& garbagePile           = registry->get<GarbagePile>(a_garbagePileEntity);
+	auto& garbagePileRenderable = registry->get<component::Renderable>(a_garbagePileEntity);
+
 	if (garbagePile.garbageLevel == 0)
 	{
 		garbagePile.garbageLevel++;
 		garbagePile.garbageTicks = garbagePile.GARBAGE_TICKS_PER_LEVEL;
+
+		garbagePileRenderable.enabled = true;
 	}
 	else if (garbagePile.garbageLevel < garbagePile.MAX_GARBAGE_LEVEL)
 	{

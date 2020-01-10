@@ -14,6 +14,7 @@ enum class PlayerState
 	jumping,
 	falling,
 	pushing,
+	inCleaningQuicktimeEvent,
 	cleaning
 };
 
@@ -178,10 +179,12 @@ struct GarbageTick
 
 struct CleaningQuicktimeEventIndicator
 {
-	bool isActive = true;
+	bool isActive = false;
 
 	float LOWER_BOUND_FOR_SUCCESS = 0.4f;
 	float UPPER_BOUND_FOR_SUCCESS = 0.6f;
 
 	MoveableUsingLerp lerpInformation;
+
+	entt::entity cleaningQuicktimeEventBackground;
 };

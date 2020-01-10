@@ -293,37 +293,40 @@ public:
 		}
 
 		{
-			entt::entity e = registry->create();
-			auto& gui = registry->assign<component::GuiRenderable>(e);
-			gui.texture = Texture2D::cache("res/assets/textures/gui/cleaningQuicktimeEventBackground.png");
+			//background for cleaning quicktime event
+			entt::entity cleaningQuicktimeEventBackgroundEntity = registry->create();
+			auto& cleaningQuicktimeEventBackgroundGui = registry->assign<component::GuiRenderable>(cleaningQuicktimeEventBackgroundEntity);
+			cleaningQuicktimeEventBackgroundGui.texture = Texture2D::cache("res/assets/textures/gui/cleaningQuicktimeEventBackground.png");
 
 			component::Transform cleaningEventBackgroundTransform;
-			cleaningEventBackgroundTransform.setPosition(glm::vec3(0.0f, 3.5f, 0.0f));
+			cleaningEventBackgroundTransform.setPosition(glm::vec3(-30.0f, 3.5f, 0.0f));
 			cleaningEventBackgroundTransform.setScale(glm::vec3(2.0f, 1.5f, 1.0f));
-			registry->assign<component::Transform>(e, cleaningEventBackgroundTransform);
+			registry->assign<component::Transform>(cleaningQuicktimeEventBackgroundEntity, cleaningEventBackgroundTransform);
 
-			auto& so = registry->assign<component::SceneObject>(e);
-			so.name = "Cleaning Quicktime Event Background";
-		}
+			auto& cleaningQuicktimeEventBackgroundSceneObject = registry->assign<component::SceneObject>(cleaningQuicktimeEventBackgroundEntity);
+			cleaningQuicktimeEventBackgroundSceneObject.name = "Cleaning Quicktime Event Background";
 
-		{
-			entt::entity e = registry->create();
-			auto& gui = registry->assign<component::GuiRenderable>(e);
-			gui.texture = Texture2D::cache("res/assets/textures/gui/cleaningQuicktimeEventIndicator.png");
+
+			//indicator for cleaning quicktime event
+			entt::entity cleaningQuicktimeEventIndicatorEntity = registry->create();
+			auto& cleaningQuicktimeEventIndicatorGui = registry->assign<component::GuiRenderable>(cleaningQuicktimeEventIndicatorEntity);
+			cleaningQuicktimeEventIndicatorGui.texture = Texture2D::cache("res/assets/textures/gui/cleaningQuicktimeEventIndicator.png");
 
 			CleaningQuicktimeEventIndicator cleaningQuicktimeEventIndicator;
 			cleaningQuicktimeEventIndicator.lerpInformation.startPos       = glm::vec3(-4.95f, 3.6f, 0.0f);
 			cleaningQuicktimeEventIndicator.lerpInformation.destinationPos = glm::vec3(4.95f, 3.6f, 0.0f);
 			cleaningQuicktimeEventIndicator.lerpInformation.speed          = 1.0f;
-			registry->assign<CleaningQuicktimeEventIndicator>(e, cleaningQuicktimeEventIndicator);
+
+			cleaningQuicktimeEventIndicator.cleaningQuicktimeEventBackground = cleaningQuicktimeEventBackgroundEntity;
+			registry->assign<CleaningQuicktimeEventIndicator>(cleaningQuicktimeEventIndicatorEntity, cleaningQuicktimeEventIndicator);
 
 			component::Transform cleaningEventIndicatorTransform;
-			cleaningEventIndicatorTransform.setPosition(glm::vec3(-4.95f, 3.6f, 0.0f));
+			cleaningEventIndicatorTransform.setPosition(glm::vec3(-30.0f, 3.6f, 0.0f));
 			cleaningEventIndicatorTransform.setScale(glm::vec3(1.5f, 2.0f, 1.0f));
-			registry->assign<component::Transform>(e, cleaningEventIndicatorTransform);
+			registry->assign<component::Transform>(cleaningQuicktimeEventIndicatorEntity, cleaningEventIndicatorTransform);
 
-			auto& so = registry->assign<component::SceneObject>(e);
-			so.name = "Cleaning Quicktime Event Indicator";
+			auto& cleaningQuicktimeEventIndicatorEntitySceneObject = registry->assign<component::SceneObject>(cleaningQuicktimeEventIndicatorEntity);
+			cleaningQuicktimeEventIndicatorEntitySceneObject.name = "Cleaning Quicktime Event Indicator";
 		}
 
 		{

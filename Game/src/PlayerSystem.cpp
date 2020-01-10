@@ -88,6 +88,13 @@ void PlayerSystem::onUpdate(Timestep dt)
 				break;
 		    }
 
+			case PlayerState::inCleaningQuicktimeEvent:
+			{
+				performBasicMovement(playerEntity, player.speedForce * 0.5f, dt);
+
+				break;
+			}
+
 			case PlayerState::cleaning:
 			{
 				performBasicMovement(playerEntity, player.speedForce * 0.5f, dt);
@@ -113,11 +120,21 @@ bool PlayerSystem::onEvent(Ref<Event> event)
 
 			switch (evt.newState)
 			{
+				case PlayerState::idle:
+			    {
+					changeToIdle(&player);
+				    break;
+			    }
 			    case PlayerState::pushing:
 			    {
 					changeToPushing(&player);
 				    break;
 			    }
+				case PlayerState::inCleaningQuicktimeEvent:
+				{
+					changeToInCleaningQuicktimeEvent(&player);
+					break;
+				}
 				case PlayerState::cleaning:
 				{
 					changeToCleaning(&player);
@@ -171,6 +188,11 @@ void PlayerSystem::changeToPushing(Player* a_player)
 	a_player->pushingStateData.speed = a_player->pushingSpeed;
     
 	a_player->state = PlayerState::pushing;
+}
+
+void PlayerSystem::changeToInCleaningQuicktimeEvent(Player* a_player)
+{
+	a_player->state = PlayerState::inCleaningQuicktimeEvent;
 }
 
 void PlayerSystem::changeToCleaning(Player* a_player)
