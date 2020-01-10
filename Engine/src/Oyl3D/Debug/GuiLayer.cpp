@@ -813,6 +813,23 @@ namespace oyl::internal
                 if (scale != transform.getScale())
                     transform.setScale(scale);
             }
+            {
+                glm::bvec3 mirror = transform.getMirror();
+
+                ImGui::Text("Mirror");
+                ImGui::SameLine(ImGui::GetWindowContentRegionWidth() - (15 * 3 + newWidth * 3 + 27));
+                ImGui::SetNextItemWidth(15);
+                ImGui::Checkbox("X##XMir", &mirror.x);
+                ImGui::SameLine();
+                ImGui::SetNextItemWidth(15);
+                ImGui::Checkbox("Y##YMir", &mirror.y);
+                ImGui::SameLine();
+                ImGui::SetNextItemWidth(15);
+                ImGui::Checkbox("Z##ZMir", &mirror.z);
+                
+                if (mirror != transform.getMirror())
+                    transform.setMirror(mirror);
+            }
 
             ImGui::PopItemWidth();
 

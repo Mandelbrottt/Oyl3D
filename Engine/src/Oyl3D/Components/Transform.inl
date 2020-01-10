@@ -163,15 +163,69 @@ namespace oyl::component
         return getScaleGlobal().z;
     }
 
+    inline glm::bvec3 Transform::getMirror() const
+    {
+        return m_mirror;
+    }
+    
+    inline bool Transform::getMirrorX() const
+    {
+        return m_mirror.x;
+    }
+
+    inline bool Transform::getMirrorY() const
+    {
+        return m_mirror.y;
+    }
+
+    inline bool Transform::getMirrorZ() const
+    {
+        return m_mirror.z;
+    }
+
+    inline glm::bvec3 Transform::getMirrorGlobal() const
+    {
+        using wf = WeakRef<Transform>;
+        bool isOrphan = true;
+        isOrphan = !m_parentRef.owner_before(wf{}) && !wf{}.owner_before(m_parentRef);
+        if (isOrphan || m_parentRef.expired())
+        {
+            return getMirror();
+        }
+        glm::bvec3 ret = m_parentRef.lock()->getMirrorGlobal();
+        for (int i = 0; i < 3; ++i)
+            if (m_mirror[i]) ret[i] ^= 1;
+        return ret;
+    }
+
+    inline bool Transform::getMirrorXGlobal() const
+    {
+        return getMirrorGlobal().x;
+    }
+
+    inline bool Transform::getMirrorYGlobal() const
+    {
+        return getMirrorGlobal().y;
+    }
+
+    inline bool Transform::getMirrorZGlobal() const
+    {
+        return getMirrorGlobal().z;
+    }
+
     inline const glm::mat4& Transform::getMatrix() const
     {
         if (m_isLocalDirty)
         {
             glm::mat4 ret(1.0f);
 
+            glm::vec3 mirror = glm::vec3(1.0f);
+            for (int i = 0; i < 3; i++)
+                if (m_mirror[i]) mirror[i] = -1.0f;
+
             ret = glm::translate(ret, m_localPosition);
             ret *= glm::mat4_cast(m_localRotation);
-            ret = glm::scale(ret, m_localScale);
+            ret = glm::scale(ret, m_localScale * mirror);
 
             m_localMatrix = ret;
             m_isLocalDirty = false;
@@ -384,6 +438,30 @@ namespace oyl::component
         m_isLocalDirty |= m_localScale.z != z;
         m_localScale.z = z;
         m_isScaleOverridden = true;
+    }
+
+    inline void Transform::setMirror(glm::bvec3 mirror)
+    {
+        m_isLocalDirty |= m_mirror != mirror;
+        m_mirror = mirror;
+    }
+
+    inline void Transform::setMirrorX(bool mirror)
+    {
+        m_isLocalDirty |= m_mirror.x != mirror;
+        m_mirror.x = mirror;
+    }
+
+    inline void Transform::setMirrorY(bool mirror)
+    {
+        m_isLocalDirty |= m_mirror.y != mirror;
+        m_mirror.y = mirror;
+    }
+
+    inline void Transform::setMirrorZ(bool mirror)
+    {
+        m_isLocalDirty |= m_mirror.z != mirror;
+        m_mirror.z = mirror;
     }
 
     inline bool Transform::isLocalDirty() const

@@ -92,6 +92,8 @@ namespace oyl
 
             int height = m_windowSize.y;
             if (camView.size() > 2) height /= 2;
+
+            bool doCulling = true;
             
             for (auto camera : camView)
             {
@@ -141,7 +143,7 @@ namespace oyl
                         glm::mat4 viewNormal = inverse(transpose(viewMatrix));
                         boundMaterial->setUniformMat3("u_viewNormal", glm::mat3(viewNormal));
 
-                        auto lightView =      registry->view<PointLight>();
+                        auto lightView = registry->view<PointLight>();
                         int count = 0;
                         for (auto light : lightView)
                         {
@@ -163,8 +165,9 @@ namespace oyl
                         boundMaterial->bind();
                         boundMaterial->applyUniforms();
                     }
-                    
-                    glm::mat4 transform = view.get<Transform>(entity).getMatrixGlobal();
+
+                    auto& transformComponent = view.get<Transform>(entity);
+                    glm::mat4 transform = transformComponent.getMatrixGlobal();
 
                     if (registry->has<component::Animatable>(entity))
                     {
@@ -243,20 +246,32 @@ namespace oyl
             using component::Transform;
 
             registry->sort<GuiRenderable>(
-                [](const GuiRenderable& lhs, const GuiRenderable& rhs)
+                [this](const entt::entity lhs, const entt::entity rhs)
                 {
-                    if (rhs.texture == nullptr)
+                    auto& lguir = registry->get<GuiRenderable>(lhs);
+                    auto& rguir = registry->get<GuiRenderable>(rhs);
+
+                    if (rguir.texture == nullptr)
                         return false;
-                    if (lhs.texture == nullptr)
+                    if (lguir.texture == nullptr)
                         return true;
-                    
-                    return lhs.texture < rhs.texture;
+
+                    auto& lt = registry->get<Transform>(lhs);
+                    auto& rt = registry->get<Transform>(rhs);
+
+                    if (float lz = lt.getPositionZGlobal(), rz = rt.getPositionZGlobal();
+                        lz != rz)
+                        return lz > rz;
+
+                    return lguir.texture < rguir.texture;
                 });
 
             Ref<Texture2D> boundTexture;
 
             m_shader->bind();
             m_shader->setUniform1i("u_texture", 0);
+
+            RenderCommand::setDepthDraw(false);
 
             auto view = registry->view<Transform, GuiRenderable>();
             for (auto entity : view)
@@ -289,6 +304,8 @@ namespace oyl
 
                 Renderer::submit(m_shader, m_vao, model);
             }
+
+            RenderCommand::setDepthDraw(true);
         }
 
         void GuiRenderSystem::onGuiRender() {}
@@ -1323,6 +1340,8 @@ namespace oyl
             Ref<Material> boundMaterial = Material::create();
             Ref<Shader>   tempShader    = Shader::get(LIGHTING_SHADER_ALIAS);
 
+            bool doCulling = true;
+
             auto view = registry->view<Renderable>();
             for (auto entity : view)
             {
@@ -1364,8 +1383,16 @@ namespace oyl
                     boundMaterial->applyUniforms();
                 }
 
-                const glm::mat4& transform = registry->get_or_assign<Transform>(entity).getMatrixGlobal();
+                auto& transformComponent = registry->get_or_assign<Transform>(entity);
+                glm::mat4 transform = transformComponent.getMatrixGlobal();
 
+                glm::bvec3 mirror = transformComponent.getMirrorGlobal();
+                if (!(mirror.x ^ mirror.y ^ mirror.z) != doCulling)
+                {
+                    doCulling ^= 1;
+                    RenderCommand::setBackfaceCulling(doCulling);
+                }
+                
                 Renderer::submit(mr.mesh, boundMaterial, transform);
             }
 

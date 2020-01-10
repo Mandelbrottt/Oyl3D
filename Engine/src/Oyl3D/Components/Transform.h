@@ -38,7 +38,7 @@ namespace oyl::component
         f32       getRotationEulerZGlobal() const;
     
         glm::quat getRotationGlobal() const;
-    
+
         glm::vec3 getScale()  const;
         f32       getScaleX() const;
         f32       getScaleY() const;
@@ -48,6 +48,16 @@ namespace oyl::component
         f32       getScaleXGlobal() const;
         f32       getScaleYGlobal() const;
         f32       getScaleZGlobal() const;
+
+        glm::bvec3 getMirror()  const;
+        bool       getMirrorX() const;
+        bool       getMirrorY() const;
+        bool       getMirrorZ() const;
+
+        glm::bvec3 getMirrorGlobal()  const;
+        bool       getMirrorXGlobal() const;
+        bool       getMirrorYGlobal() const;
+        bool       getMirrorZGlobal() const;
     
         const glm::mat4& getMatrix()       const;
         glm::mat4        getMatrixGlobal() const;
@@ -83,7 +93,12 @@ namespace oyl::component
         void setScaleZ(f32 z);
     
         void scale(glm::vec3 scale);
-    
+
+        void setMirror(glm::bvec3 mirror);
+        void setMirrorX(bool mirror);
+        void setMirrorY(bool mirror);
+        void setMirrorZ(bool mirror);
+        
         bool isLocalDirty() const;
     
     private:
@@ -94,6 +109,7 @@ namespace oyl::component
         glm::vec3 m_localPosition = glm::vec3(0.0f);
         glm::quat m_localRotation = glm::quat();
         glm::vec3 m_localScale    = glm::vec3(1.0f);
+        glm::bvec3 m_mirror       = glm::bvec3(false);
     
         glm::vec3 m_deltaPosition = glm::vec3(0.0f);
         glm::vec3 m_deltaRotation = glm::vec3(0.0f);
