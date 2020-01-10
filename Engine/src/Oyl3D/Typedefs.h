@@ -1,9 +1,5 @@
 #pragma once
 
-#include <cstdint>
-#include <memory>
-#include <entt/entt.hpp>
-
 namespace oyl
 {
     using i8 = int8_t;
@@ -25,3 +21,10 @@ namespace oyl
 
     using CacheAlias = std::string;
 }
+
+namespace std
+{
+    namespace fs = filesystem;
+}
+
+using nlohmann::json;

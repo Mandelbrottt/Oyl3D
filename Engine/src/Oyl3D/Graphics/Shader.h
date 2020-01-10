@@ -1,17 +1,35 @@
 #pragma once
 
 namespace oyl
-{    
-    struct ShaderInfo
+{
+    namespace internal
     {
-        OylEnum     type;
-        std::string filename;
-    };
+        class GuiLayer;
+    }
 
+    struct ShaderInfo;
+    
     class Shader
     {
     public:
+        enum Type
+        {
+            Vertex = 0,
+            TessControl,
+            TessEvaluation,
+            Geometry,
+            Pixel,
+            Fragment = Pixel,
+            NumShaderTypes,
+        };
+        
+    public:
         virtual ~Shader() = default;
+
+        virtual bool load(const std::vector<ShaderInfo>& infos) = 0;
+        virtual bool load(const std::initializer_list<ShaderInfo>& infos) = 0;
+
+        virtual void unload() = 0;
 
         virtual void bind() const = 0;
         virtual void unbind() const = 0;
@@ -47,8 +65,8 @@ namespace oyl
 
         static const auto& getCache() { return s_cache; }
 
-        virtual void setUniform1i(const std::string& name, const int v) = 0;
-        virtual void setUniform1f(const std::string& name, const float v) = 0;
+        virtual void setUniform1i(const std::string& name, int v) = 0;
+        virtual void setUniform1f(const std::string& name, float v) = 0;
         virtual void setUniform2f(const std::string& name, const glm::vec2& v) = 0;
         virtual void setUniform3f(const std::string& name, const glm::vec3& v) = 0;
         virtual void setUniform4f(const std::string& name, const glm::vec4& v) = 0;
@@ -64,5 +82,12 @@ namespace oyl
         static Ref<Shader> s_invalid;
 
         static std::unordered_map<CacheAlias, Ref<Shader>> s_cache;
+    };
+
+    struct ShaderInfo
+    {
+        Shader::Type type;
+
+        std::string filename;
     };
 }

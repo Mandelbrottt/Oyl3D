@@ -31,12 +31,12 @@ namespace oyl
 
     Win32Window::Win32Window(const WindowProps& props)
     {
-        init(props);
+        Win32Window::init(props);
     }
 
     Win32Window::~Win32Window()
     {
-        shutdown();
+        Win32Window::shutdown();
     }
 
     void Win32Window::init(const WindowProps& props)
@@ -62,7 +62,7 @@ namespace oyl
         m_window = glfwCreateWindow(props.width,
                                     props.height,
                                     m_data.title.c_str(),
-                                    m_data.fullscreenType == Fullscreen ? m_data.monitor : nullptr,
+                                    m_data.windowState == WindowState::Fullscreen ? m_data.monitor : nullptr,
                                     nullptr);
 
         const GLFWvidmode* mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
@@ -72,7 +72,7 @@ namespace oyl
         glfwSetWindowAspectRatio(m_window, 16, 9);
         glfwSetWindowSizeLimits(m_window, 1280, 720, GLFW_DONT_CARE, GLFW_DONT_CARE);
 
-        if (m_data.fullscreenType == Windowed)
+        if (m_data.windowState == WindowState::Windowed)
             glfwSetWindowMonitor(m_window, nullptr, m_data.posx, m_data.posy, m_data.width, m_data.height, 0);
 
         m_context = GraphicsContext::create(m_window);
@@ -96,7 +96,7 @@ namespace oyl
 
             data.width  = width;
             data.height = height;
-            data.eventCallback(Event::create(event));
+            data.eventCallback(event);
         });
 
         glfwSetWindowCloseCallback(m_window, [](GLFWwindow* window)
@@ -105,7 +105,7 @@ namespace oyl
 
             WindowClosedEvent event{};
 
-            data.eventCallback(Event::create(event));
+            data.eventCallback(event);
         });
 
         glfwSetWindowFocusCallback(m_window, [](GLFWwindow* window, int focused)
@@ -114,7 +114,7 @@ namespace oyl
 
             WindowFocusedEvent event{};
 
-            data.eventCallback(Event::create(event));
+            data.eventCallback(event);
         });
 
         glfwSetKeyCallback(m_window, [](GLFWwindow* window, int key, int scancode, int action, int mods)
@@ -128,27 +128,27 @@ namespace oyl
                 case GLFW_PRESS:
                 {
                     KeyPressedEvent event{};
-                    event.keycode     = glfwToOylCode(key);
+                    event.keycode     = glfwToOylKeyCode(key);
                     event.mods        = mods;
                     event.repeatCount = 0;
-                    data.eventCallback(Event::create(event));
+                    data.eventCallback(event);
                     break;
                 }
                 case GLFW_RELEASE:
                 {
                     KeyReleasedEvent event{};
-                    event.keycode = glfwToOylCode(key);
+                    event.keycode = glfwToOylKeyCode(key);
                     event.mods    = mods;
-                    data.eventCallback(Event::create(event));
+                    data.eventCallback(event);
                     break;
                 }
                 case GLFW_REPEAT:
                 {
                     KeyPressedEvent event{};
-                    event.keycode     = glfwToOylCode(key);
+                    event.keycode     = glfwToOylKeyCode(key);
                     event.mods        = mods;
                     event.repeatCount = ++repeats;
-                    data.eventCallback(Event::create(event));
+                    data.eventCallback(event);
                     break;
                 }
             }
@@ -159,9 +159,9 @@ namespace oyl
             WindowData& data = *(WindowData*) glfwGetWindowUserPointer(window);
 
             KeyTypedEvent event{};
-            event.keycode = glfwToOylCode(keycode);
+            event.keycode = glfwToOylKeyCode(keycode);
 
-            data.eventCallback(Event::create(event));
+            data.eventCallback(event);
         });
 
         glfwSetMouseButtonCallback(m_window, [](GLFWwindow* window, int button, int action, int mods)
@@ -173,17 +173,17 @@ namespace oyl
                 case GLFW_PRESS:
                 {
                     MousePressedEvent event{};
-                    event.button = glfwToOylCode(button);
+                    event.button = glfwToOylMouseCode(button);
                     event.mods   = mods;
-                    data.eventCallback(Event::create(event));
+                    data.eventCallback(event);
                     break;
                 }
                 case GLFW_RELEASE:
                 {
                     MouseReleasedEvent event{};
-                    event.button = glfwToOylCode(button);
+                    event.button = glfwToOylMouseCode(button);
                     event.mods   = mods;
-                    data.eventCallback(Event::create(event));
+                    data.eventCallback(event);
                     break;
                 }
             }
@@ -197,7 +197,7 @@ namespace oyl
             event.x = (f32) x;
             event.y = (f32) y;
 
-            data.eventCallback(Event::create(event));
+            data.eventCallback(event);
         });
 
         glfwSetCursorPosCallback(m_window, [](GLFWwindow* window, double x, double y)
@@ -215,7 +215,7 @@ namespace oyl
             lastx = (float) x;
             lasty = (float) y;
 
-            data.eventCallback(Event::create(event));
+            data.eventCallback(event);
         });
 
         glfwSetJoystickCallback([](int jid, int event)
@@ -228,14 +228,14 @@ namespace oyl
                 {
                     GamepadConnectedEvent e;
                     e.gid = jid;
-                    data.eventCallback(Event::create(e));
+                    data.eventCallback(e);
                     break;
                 }
                 case GLFW_DISCONNECTED:
                 {
                     GamepadDisconnectedEvent e;
                     e.gid = jid;
-                    data.eventCallback(Event::create(e));
+                    data.eventCallback(e);
                     break;
                 }
             }
@@ -282,17 +282,17 @@ namespace oyl
                     {
                         GamepadButtonPressedEvent event;
                         event.gid         = jid;
-                        event.button      = glfwToOylCode(button);
+                        event.button      = glfwToOylGamepadCode(button);
                         event.repeatCount = repeatCount[jid][button]++;
-                        m_data.eventCallback(Event::create(event));
+                        m_data.eventCallback(event);
                     } // Button released
                     else if (currState[jid].buttons[button] == GLFW_RELEASE &&
                              prevState[jid].buttons[button] == GLFW_PRESS)
                     {
                         GamepadButtonReleasedEvent event;
                         event.gid    = jid;
-                        event.button = glfwToOylCode(button);
-                        m_data.eventCallback(Event::create(event));
+                        event.button = glfwToOylGamepadCode(button);
+                        m_data.eventCallback(event);
                         repeatCount[jid][button] = 0;
                     }
                 }
@@ -316,12 +316,12 @@ namespace oyl
                     {
                         GamepadStickMovedEvent event;
                         event.gid   = jid;
-                        event.stick = Gamepad_LeftStick + i;
+                        event.stick = Gamepad(i32(Gamepad::LeftStick) + i);
                         event.x     = dz.x;
                         event.y     = -dz.y;
                         event.dx    = pdz.x - dz.x;
                         event.dy    = -(pdz.y - dz.y);
-                        m_data.eventCallback(Event::create(event));
+                        m_data.eventCallback(event);
                     }
                 }
 
@@ -334,10 +334,10 @@ namespace oyl
                     {
                         GamepadTriggerPressedEvent event;
                         event.gid     = jid;
-                        event.trigger = i;
+                        event.trigger = (Gamepad) i;
                         event.x       = x;
                         event.dx      = px - x;
-                        m_data.eventCallback(Event::create(event));
+                        m_data.eventCallback(event);
                     }
                 }
             }
@@ -356,14 +356,14 @@ namespace oyl
         return m_data.vsync;
     }
 
-    void Win32Window::setFullscreenType(OylEnum type)
+    void Win32Window::setWindowState(WindowState state)
     {
-        if (m_data.fullscreenType == type) return;
-        m_data.fullscreenType = type;
+        if (m_data.windowState == state) return;
+        m_data.windowState = state;
 
         static int lastWindowSize[2] = { 1280, 720 };
 
-        if (type == Fullscreen || type == Borderless)
+        if (state == WindowState::Fullscreen || state == WindowState::Borderless)
         {
             // backup windwo position and window size
             glfwGetWindowPos(m_window, &m_data.posx, &m_data.posy);
@@ -380,7 +380,7 @@ namespace oyl
             m_desiredWidth  = mode->width;
             m_desiredHeight = mode->height;
         }
-        else if (type == Windowed)
+        else if (state == WindowState::Windowed)
         {
             glfwSetWindowMonitor(m_window, nullptr,
                                  m_data.posx, m_data.posy,
@@ -392,42 +392,46 @@ namespace oyl
         m_context->updateViewport(m_desiredWidth, m_desiredHeight);
     }
 
-    OylEnum Win32Window::getFullscreenType() const
+    WindowState Win32Window::getWindowState() const
     {
-        return m_data.fullscreenType;
+        return m_data.windowState;
     }
 
-    void Win32Window::setCursorState(OylEnum state)
+    void Win32Window::setCursorState(CursorState state)
     {
         uint glfwState = 0;
         switch (state)
         {
-            case Cursor_Enabled:
+            case CursorState::Normal:
                 glfwState = GLFW_CURSOR_NORMAL;
                 break;
-            case Cursor_Disabled:
+            case CursorState::Disabled:
                 glfwState = GLFW_CURSOR_DISABLED;
                 break;
-            case Cursor_Hidden:
+            case CursorState::Hidden:
                 glfwState = GLFW_CURSOR_HIDDEN;
                 break;
+            default:
+                OYL_ASSERT(false, "Invalid cursor state!");
+                glfwState = GLFW_CURSOR_NORMAL;
         }
         glfwSetInputMode(m_window, GLFW_CURSOR, glfwState);
     }
 
-    OylEnum Win32Window::getCursorState() const
+    CursorState Win32Window::getCursorState() const
     {
         auto currState = glfwGetInputMode(m_window, GLFW_CURSOR);
         switch (currState)
         {
             case GLFW_CURSOR_NORMAL:
-                return Cursor_Enabled;
+                return CursorState::Normal;
             case GLFW_CURSOR_DISABLED:
-                return Cursor_Disabled;
+                return CursorState::Disabled;
             case GLFW_CURSOR_HIDDEN:
-                return Cursor_Hidden;
+                return CursorState::Hidden;
         }
-        return None;
+        // Redundant, here to suppress compiler warnings
+        return CursorState::Normal;
     }
 
     void Win32Window::updateViewport(int width, int height)

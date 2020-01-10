@@ -12,8 +12,8 @@ namespace oyl
         virtual void onEnter() = 0;
         virtual void onExit() = 0;
 
-        virtual void onUpdate(Timestep dt) = 0;
-        virtual void onGuiRender(Timestep dt) = 0;
+        virtual void onUpdate() = 0;
+        virtual void onGuiRender() = 0;
 
         const std::string m_name;
     };

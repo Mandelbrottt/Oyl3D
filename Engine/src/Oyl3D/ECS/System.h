@@ -19,8 +19,8 @@ namespace oyl
         virtual void onEnter() override = 0;
         virtual void onExit() override = 0;
 
-        virtual void onUpdate(Timestep dt) override = 0;
-        virtual void onGuiRender(Timestep dt) override = 0;
+        virtual void onUpdate() override = 0;
+        virtual void onGuiRender() override = 0;
     };
 
     class System : public ISystem, public EventListener
@@ -31,11 +31,12 @@ namespace oyl
     public:
         virtual ~System() = default;
 
+        // TODO: Differentiate with onCreate, onDestroy, etc.
         virtual void onEnter() override;
         virtual void onExit() override;
 
-        virtual void onUpdate(Timestep dt) override;
-        virtual void onGuiRender(Timestep dt) override;
+        virtual void onUpdate() override;
+        virtual void onGuiRender() override;
 
         void setRegistry(const Ref<entt::registry>& reg) { registry = reg; }
 

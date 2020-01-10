@@ -495,6 +495,7 @@ void SandboxLayer::onEnter()
 			shapeInfo.box.setSize({ 1.0f, 1.0f, 1.0f });
 		}
     }
+    
     {
         component::Renderable mr;
         mr.mesh = Mesh::cache("res/assets/models/plane.obj");
@@ -508,7 +509,7 @@ void SandboxLayer::onEnter()
 		t.setScale(glm::vec3(2.5f, 1.0f, 1.7f));
         registry->assign<component::Transform>(e, t);
 
-        auto& so = registry->assign<component::SceneObject>(e);
+        auto& so = registry->assign<component::EntityInfo>(e);
         so.name = "Plane";
 
         auto& rb = registry->assign<component::RigidBody>(e);
@@ -517,7 +518,7 @@ void SandboxLayer::onEnter()
 
         auto& cl = registry->assign<component::Collider>(e);
 
-        auto& shi = cl.pushShape(Collider_Box);
+        auto& shi = cl.pushShape(ColliderType::Box);
         shi.box.setSize({ 20.0f, 0.1f, 20.0f });
     }
     {
@@ -532,15 +533,15 @@ void SandboxLayer::onEnter()
         t.setPosition(glm::vec3(-3.0f, -1.0f, -2.0f));
         registry->assign<component::Transform>(e, t);
 
-        auto& so = registry->assign<component::SceneObject>(e);
+        auto& so = registry->assign<component::EntityInfo>(e);
         so.name = "Sphere 1";
         
         auto& rb = registry->assign<component::RigidBody>(e);
         rb.setMass(1.0f);
 
-        auto& cl = registry->assign<component::Collider>(e);
+        auto& cl = registry->assign<component::Collidable>(e);
 
-        auto& shi = cl.pushShape(Collider_Sphere);
+        auto& shi = cl.pushShape(ColliderType::Sphere);
         shi.sphere.setRadius(0.5f);
     }
     {
@@ -555,34 +556,76 @@ void SandboxLayer::onEnter()
         t.setPosition(glm::vec3(-3.0f, -1.0f, -2.0f));
         registry->assign<component::Transform>(e, t);
 
-        auto& so = registry->assign<component::SceneObject>(e);
+        auto& so = registry->assign<component::EntityInfo>(e);
         so.name = "Sphere 2";
 
         auto& rb = registry->assign<component::RigidBody>(e);
         rb.setMass(1.0f);
 
-        auto& cl = registry->assign<component::Collider>(e);
+        auto& cl = registry->assign<component::Collidable>(e);
 
-        auto& shi = cl.pushShape(Collider_Sphere);
+        auto& shi = cl.pushShape(ColliderType::Sphere);
         shi.sphere.setRadius(0.5f);
+    }
+    {
+        component::Renderable mr;
+        mr.mesh = Mesh::cache("res/assets/models/ship.obj");
+        auto& shipMat = Material::cache(Material::create(), "shipMat");
+        shipMat->shader = mat->shader;
+        shipMat->albedoMap = Texture2D::create("res/assets/textures/ship.png");
+        mr.material = shipMat;
+
+        entt::entity e = registry->create();
+        registry->assign<component::Renderable>(e, mr);
+
+        component::Transform t;
+        t.setPosition(glm::vec3(0.0f, 0.0f, 0.0f));
+        registry->assign<component::Transform>(e, t);
+
+        auto& so = registry->assign<component::EntityInfo>(e);
+        so.name = "Ship";
+
+        for (int i = 0; i < 12; i++)
+        {
+            component::Renderable mr;
+            mr.mesh = Mesh::get("cube");
+            mr.material = mat;
+            mr.enabled = false;
+
+            entt::entity e2 = registry->create();
+            registry->assign<component::Renderable>(e2, mr);
+
+            component::Transform t;
+            t.setPosition(glm::vec3(0.0f, 0.0f, 0.0f));
+            registry->assign<component::Transform>(e2, t);
+
+            auto& so = registry->assign<component::EntityInfo>(e2);
+            so.name = "Ship Collider Object " + std::to_string(i + 1);
+
+            auto& rb = registry->assign<component::RigidBody>(e2);
+            rb.setMass(0.0f);
+
+            auto& cl = registry->assign<component::Collidable>(e2);
+
+            auto& shi = cl.pushShape(ColliderType::Box);
+            shi.box.setSize(glm::vec3(1.0f));
+
+            auto& pa = registry->assign<component::Parent>(e2);
+            pa.parent = e;
+        }
     }
 }
 
-void SandboxLayer::onUpdate(Timestep dt)
+void SandboxLayer::onUpdate()
 {
 
 }
 
-void SandboxLayer::onGuiRender(Timestep dt)
+void SandboxLayer::onGuiRender()
 {
     /*ImGui::Begin("xdhaha");
 
     ImGui::SliderFloat("Force Speed", &forceSpeed, 0.1f, 10.0f);
     
     ImGui::End();*/
-}
-
-bool SandboxLayer::onEvent(Ref<Event> event)
-{
-    return false;
 }

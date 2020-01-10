@@ -2,16 +2,6 @@
 
 #define _ENABLE_EXTENDED_ALIGNED_STORAGE 1
 
-#include "Oyl3D/Common.h"
-#include "Oyl3D/Enums.h"
-#include "Oyl3D/Typedefs.h"
-
-#include "Oyl3D/Utils/Logging.h"
-#include "Oyl3D/Utils/Refs.h"
-#include "Oyl3D/Utils/Timestep.h"
-
-#include "Oyl3D/AssetPaths.h"
-
 #if !defined(_CRT_SECURE_NO_WARNINGS)
     #define _CRT_SECURE_NO_WARNINGS
 #endif
@@ -34,8 +24,10 @@
 #include <algorithm>
 #include <functional>
 #include <chrono>
+#include <atomic>
 #include <thread>
 #include <future>
+#include <filesystem>
 
 #include <cstddef>
 #include <cstdint>
@@ -51,13 +43,29 @@
 #include <unordered_set>
 #include <bitset>
 
+#include <entt/single_include/entt/entt.hpp>
+
+#define GLM_FORCE_ALIGNED_GENTYPES  1
+#define GLM_FORCE_SWIZZLE 1
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/matrix_inverse.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtx/spline.hpp>
 
+#define IMGUI_DEFINE_MATH_OPERATORS 1
 #include <imgui.h>
 #include <imguizmo/ImGuizmo.h>
 
 #include <nlohmann/json.hpp>
 using nlohmann::json;
+
+#include "Oyl3D/Common.h"
+#include "Oyl3D/Typedefs.h"
+
+#include "Oyl3D/AssetPaths.h"
+
+#include "Oyl3D/Utils/Time.h"
+#include "Oyl3D/Utils/Logging.h"
+#include "Oyl3D/Utils/Refs.h"
+#include "Oyl3D/Utils/Timestep.h"

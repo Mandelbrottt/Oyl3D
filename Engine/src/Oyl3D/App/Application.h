@@ -30,7 +30,7 @@ namespace oyl
 
         void run();
 
-        bool onEvent(const Ref<Event>& event);
+        bool onEvent(const Event& event);
 
         void pushScene(Ref<Scene> scene);
 

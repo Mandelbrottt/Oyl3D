@@ -1,16 +1,25 @@
 #pragma once
 
-#include "Component.h"
+#include "Components/Transform.h"
+#include "Components/Collidable.h"
+#include "Components/RigidBody.h"
+
+#include "Graphics/Buffer.h"
+
 #include "System.h"
 
 #include <btBulletDynamicsCommon.h>
 #include <btBulletCollisionCommon.h>
 
-#include "Graphics/Buffer.h"
 
 namespace oyl
 {
     class Shader;
+    class Camera;
+
+    struct RaycastResult;
+    struct ClosestRaycastResult;
+    struct AllHitsRaycastResult;
 }
 
 namespace oyl::internal
@@ -22,10 +31,13 @@ namespace oyl::internal
         virtual void onEnter() override;
         virtual void onExit() override;
 
-        virtual void onUpdate(Timestep dt) override;
-        virtual void onGuiRender(Timestep dt) override;
+        virtual void onUpdate() override;
+        virtual void onGuiRender() override;
 
-        virtual bool onEvent(Ref<Event> event) override;
+        virtual bool onEvent(const Event& event) override;
+
+    private:
+        glm::ivec2 m_windowSize;
     };
 
     class GuiRenderSystem : public System
@@ -35,10 +47,10 @@ namespace oyl::internal
         virtual void onEnter() override;
         virtual void onExit() override;
 
-        virtual void onUpdate(Timestep dt) override;
-        virtual void onGuiRender(Timestep dt) override;
+        virtual void onUpdate() override;
+        virtual void onGuiRender() override;
 
-        virtual bool onEvent(Ref<Event> event) override;
+        virtual bool onEvent(const Event& event) override;
 
     private:
         Ref<Shader> m_shader;
@@ -53,64 +65,69 @@ namespace oyl::internal
         virtual void onEnter() override;
         virtual void onExit() override;
 
-        virtual void onUpdate(Timestep dt) override;
-        virtual void onGuiRender(Timestep dt) override;
+        virtual void onUpdate() override;
+        virtual void onGuiRender() override;
 
-        virtual bool onEvent(Ref<Event> event) override;
+        virtual bool onEvent(const Event& event) override;
     };
-    
+
     class PhysicsSystem : public System
     {
         OYL_CTOR(PhysicsSystem, System)
 
+    public:
         virtual void onEnter() override;
         virtual void onExit() override;
 
-        virtual void onUpdate(Timestep dt) override;
-        virtual void onGuiRender(Timestep) override;
+        virtual void onUpdate() override;
+        virtual void onGuiRender() override;
 
-        virtual bool onEvent(Ref<Event> event) override;
+        virtual bool onEvent(const Event& event) override;
 
-    private:
-        void processIncomingRigidBody(entt::entity entity,
-                                      const component::Transform& transformComponent,
-                                      const component::Collider&  colliderComponent,
-                                      const component::RigidBody& rigidBodyComponent);
-        
-    private:
-        Timestep m_fixedTimeStep;
+        static Ref<ClosestRaycastResult> raytestClosest(glm::vec3 position, glm::vec3 direction, f32 distance);
 
+    public:
         struct RigidBodyInfo
         {
-            Ref<btRigidBody> body;
-
+            entt::entity entity = entt::null;
+            
+            Ref<btRigidBody>      body;
             Ref<btCollisionShape> shape;
             Ref<btMotionState>    motion;
 
             struct ChildShapeInfo
             {
-                WeakRef<component::Collider::ShapeInfo> shapeInfo;
-                Ref<btCollisionShape>                   btShape;
+                WeakRef<component::Collidable::ShapeInfo> shapeInfo;
+                Ref<btCollisionShape>                     btShape;
             };
 
             std::vector<ChildShapeInfo> children;
         };
+        
+    private:
+        void processIncomingRigidBody(entt::entity entity,
+                                      const component::Transform&  transformComponent,
+                                      const component::Collidable& colliderComponent,
+                                      const component::RigidBody&  rigidBodyComponent);
+        
+    private:
+        Timestep m_fixedTimeStep;
 
         std::unordered_map<entt::entity, Ref<RigidBodyInfo>> m_rigidBodies;
 
         // TODO: Do i need to keep hold of all of these?
-        UniqueRef<btBroadphaseInterface>    m_broadphase;
-        UniqueRef<btDispatcher>             m_dispatcher;
-        UniqueRef<btCollisionConfiguration> m_collisionConfig;
-        UniqueRef<btConstraintSolver>       m_solver;
-        UniqueRef<btDynamicsWorld>          m_world;
+        UniqueRef<btBroadphaseInterface>    m_btBroadphase;
+        UniqueRef<btDispatcher>             m_btDispatcher;
+        UniqueRef<btCollisionConfiguration> m_btCollisionConfig;
+        UniqueRef<btConstraintSolver>       m_btSolver;
+        UniqueRef<btDynamicsWorld>          m_btWorld;
     };
 
     class TransformUpdateSystem : public System
     {
         OYL_CTOR(TransformUpdateSystem, System)
 
-        virtual void onUpdate(Timestep dt) override;
+        virtual void onUpdate() override;
     };
 
     class EditorCameraSystem : public System
@@ -120,13 +137,13 @@ namespace oyl::internal
         virtual void onEnter() override;
         virtual void onExit() override;
 
-        virtual void onUpdate(Timestep dt) override;
-        virtual void onGuiRender(Timestep dt) override;
+        virtual void onUpdate() override;
+        virtual void onGuiRender() override;
 
-        virtual bool onEvent(Ref<Event> event) override;
+        virtual bool onEvent(const Event& event) override;
 
     private:
-        void processCameraUpdate(Timestep dt, const Ref<Camera>& camera);
+        Ref<Camera> m_camera;
 
         glm::vec3 m_cameraMove        = glm::vec3(0.0f);
         float     m_cameraMoveSpeed   = 15.0f;
@@ -143,15 +160,19 @@ namespace oyl::internal
         virtual void onEnter() override;
         virtual void onExit() override;
 
-        virtual void onUpdate(Timestep dt) override;
-        virtual void onGuiRender(Timestep dt) override;
+        virtual void onUpdate() override;
+        virtual void onGuiRender() override;
 
-        virtual bool onEvent(Ref<Event> event) override;
+        virtual bool onEvent(const Event& event) override;
 
         void init();
         void shutdown();
 
     private:
         Ref<FrameBuffer> m_editorViewportBuffer;
+
+        Ref<Camera> m_targetCamera;
+
+        glm::ivec2 m_windowSize;
     };
 }

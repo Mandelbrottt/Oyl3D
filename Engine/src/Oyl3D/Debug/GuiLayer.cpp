@@ -2,8 +2,17 @@
 #include "GuiLayer.h"
 
 #include "App/Application.h"
+#include "App/Window.h"
 
-#include "ECS/Component.h"
+#include "Components/Animatable.h"
+#include "Components/Collidable.h"
+#include "Components/Camera.h"
+#include "Components/Lights.h"
+#include "Components/Misc.h"
+#include "Components/Renderable.h"
+#include "Components/RigidBody.h"
+#include "Components/Transform.h"
+
 #include "ECS/SystemImpl.h"
 
 #include "Graphics/Camera.h"
@@ -12,6 +21,8 @@
 #include "Graphics/Shader.h"
 #include "Graphics/Texture.h"
 
+#include "Input/Input.h"
+
 #include <examples/imgui_impl_glfw.h>
 #include <examples/imgui_impl_opengl3.h>
 
@@ -19,7 +30,7 @@
 
 #include <GLFW/glfw3.h>
 
-static const char* g_entityNodeFmt = "%s\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t";
+static const char* g_entityNodeFmt = "%s\t";
 
 static const char* g_transformGizmosName = "##ViewportGizmoSettings";
 static const char* g_playPauseWindowName = "##TestPlayButton";
@@ -143,7 +154,7 @@ namespace oyl::internal
         m_systems.clear();
     }
 
-    void GuiLayer::onUpdate(Timestep dt)
+    void GuiLayer::onUpdate()
     {
         using component::Transform;
         using component::Parent;
@@ -169,6 +180,9 @@ namespace oyl::internal
                 ct.m_parentRef = {};
             }
         }
+
+        // TODO: update the asset list every frame, maybe stagger how many we update per frame for performance reasons
+        updateAssetList();
     }
 
     void GuiLayer::begin()
@@ -235,11 +249,13 @@ namespace oyl::internal
         }
     }
 
-    void GuiLayer::onGuiRender(Timestep dt)
-    {        
+    void GuiLayer::onGuiRender()
+    {
         drawSceneHierarchy();
 
         drawInspector();
+        
+        drawAssetList();
 
         drawSceneViewport();
 
@@ -248,29 +264,35 @@ namespace oyl::internal
         drawPlayPauseButtons();
     }
 
-    bool GuiLayer::onEvent(Ref<Event> event)
+    bool GuiLayer::onEvent(const Event& event)
     {
-        switch (event->type)
+        switch (event.type)
         {
-            case TypeEditorViewportHandleChanged:
+            case EventType::EditorViewportHandleChanged:
             {
-                auto e = (EditorViewportHandleChangedEvent) *event;
+                auto e = event_cast<EditorViewportHandleChangedEvent>(event);
                 m_editorViewportHandle = e.handle;
                 return false;
             }
-            case TypeEditorEntitySelected:
+            case EventType::EditorEntitySelected:
             {
-                auto e = (EditorEntitySelectedEvent) *event;
+                auto e = event_cast<EditorEntitySelectedEvent>(event);
                 m_currentEntity = e.entity;
                 return true;
             }
-            case TypeViewportHandleChanged:
+            case EventType::EditorCameraChanged:
             {
-                auto e = (ViewportHandleChangedEvent) *event;
+                auto e = event_cast<EditorCameraChangedEvent>(event);
+                m_editorCamera = *e.camera;
+                return false;
+            }
+            case EventType::ViewportHandleChanged:
+            {
+                auto e = event_cast<ViewportHandleChangedEvent>(event);
                 m_gameViewportHandle = e.handle;
                 return false;
             }
-            case TypeMousePressed:
+            case EventType::MousePressed:
             {
                 //auto e = (MousePressedEvent) *event;
                 //if (e.button == Mouse_Right)
@@ -279,9 +301,15 @@ namespace oyl::internal
                 //}
                 break;
             }
-            case TypeWindowResized:
+            case EventType::WindowResized:
             {
                 break;
+            }
+            case EventType::KeyReleased:
+            {
+                auto e = event_cast<KeyReleasedEvent>(event);
+                if (e.keycode == Key::F1)
+                    updateAssetList();
             }
         }
         return m_editorOverrideUpdate;
@@ -352,15 +380,41 @@ namespace oyl::internal
     {
         if (ImGui::Begin(g_hierarchyWindowName, nullptr, ImGuiWindowFlags_NoCollapse))
         {
+            ImGui::Dummy(ImGui::GetWindowContentRegionMax() - ImGui::GetCursorPos());
+            
+            if (ImGui::BeginDragDropTarget())
+            {
+                if (auto payload = ImGui::AcceptDragDropPayload("HierarchyEntity"))
+                {
+                    entt::entity child = *reinterpret_cast<entt::entity*>(payload->Data);
+                    setEntityParent(child, entt::null);
+                }
+                ImGui::EndDragDropTarget();
+            }
+            
+            if (ImGui::BeginPopupContextWindow("##HierarchyContextWindow"))
+            {
+                if (ImGui::Selectable("Add Entity##ContextWindowTest"))
+                {
+                    auto e = registry->create();
+
+                    registry->assign<component::Transform>(e);
+                    auto& so = registry->assign<component::EntityInfo>(e);
+
+                    char name[128];
+                    sprintf(name, "Entity %d", e);
+                    so.name.assign(name);
+                }
+                ImGui::EndPopup();
+            }
+
+            ImGui::SetCursorPos(ImGui::GetWindowContentRegionMin());
+            
             auto parentView = registry->view<component::Parent>();
             
             registry->each(
                 [&](auto entity)
                 {
-                    using component::internal::ExcludeFromHierarchy;
-                    if (registry->has<ExcludeFromHierarchy>(entity))
-                        return;
-                
                     if (parentView.contains(entity) && 
                         parentView.get(entity).parent != entt::null) return;
 
@@ -372,7 +426,7 @@ namespace oyl::internal
 
     void GuiLayer::drawEntityNode(entt::entity entity)
     {
-        auto& so = registry->get_or_assign<component::SceneObject>(entity);
+        auto& so = registry->get_or_assign<component::EntityInfo>(entity);
         if (so.name.empty())
         {
             char buf[128];
@@ -395,21 +449,72 @@ namespace oyl::internal
                 nodeFlags &= ~ImGuiTreeNodeFlags_Leaf;
                 break;
             }
-        
+
         bool treeNode = ImGui::TreeNodeEx((const void*) entity, nodeFlags, g_entityNodeFmt, so.name.c_str());
         bool clicked = ImGui::IsItemClicked(0);
         float testValue = ImGui::GetMousePos().x - ImGui::GetItemRectMin().x;
         if (treeNode)
         {
-            //ImGui::Indent();
-
-            for (auto child : parentView)
+            if (ImGui::BeginPopupContextItem())
             {
-                if (parentView.get(child).parent == entity)
-                    drawEntityNode(child);
+                using component::Parent;
+                
+                int flags = 0;
+                if (!registry->has<Parent>(entity) ||
+                    registry->get<Parent>(entity).parent == entt::null)
+                {
+                    flags |= ImGuiSelectableFlags_Disabled;
+                }
+                
+                if (ImGui::Selectable("Clear Parent##HierarchyContextClearParent", false, flags))
+                {
+                    setEntityParent(entity, entt::null);
+                }
+
+                if (ImGui::Selectable("Delete Entity##HierarchyContextDeleteEntity", false))
+                {
+                    for (auto child : registry->view<Parent>())
+                    {
+                        if (registry->get<Parent>(child).parent == entity)
+                        {
+                            setEntityParent(child, entt::null);
+                        }
+                    }
+
+                    registry->destroy(entity);
+
+                    if (m_currentEntity == entity)
+                        m_currentEntity = entt::null;
+                }
+                
+                ImGui::EndPopup();
             }
 
-            //ImGui::Unindent();
+            if (registry->valid(entity))
+            {
+                if (ImGui::BeginDragDropSource())
+                {
+                    ImGui::Text("%s", so.name.c_str());
+                    ImGui::SetDragDropPayload("HierarchyEntity", &entity, sizeof(entt::entity));
+                    ImGui::EndDragDropSource();
+                }
+
+                if (ImGui::BeginDragDropTarget())
+                {
+                    if (auto payload = ImGui::AcceptDragDropPayload("HierarchyEntity"))
+                    {
+                        entt::entity child = *reinterpret_cast<entt::entity*>(payload->Data);
+                        setEntityParent(child, entity);
+                    }
+                    ImGui::EndDragDropTarget();
+                }
+            
+                for (auto child : parentView)
+                {
+                    if (parentView.get(child).parent == entity)
+                        drawEntityNode(child);
+                }
+            }
 
             ImGui::TreePop();
         }
@@ -418,8 +523,64 @@ namespace oyl::internal
         {
             EditorEntitySelectedEvent selected;
             selected.entity = entity;
-            postEvent(Event::create(selected));
+            postEvent(selected);
         }
+    }
+
+    void GuiLayer::setEntityParent(entt::entity entity, entt::entity parent)
+    {
+        using component::Parent;
+        using component::Transform;
+        
+        auto& p = registry->get_or_assign<Parent>(entity);
+
+        if (parent == p.parent) return;
+        
+        if (parent == entt::null && p.parent != entt::null)
+        {
+            auto& ct = registry->get<Transform>(entity);
+
+            glm::mat4 tempChild = ct.getMatrixGlobal();
+
+            glm::vec3 tComponents[3];
+            ImGuizmo::DecomposeMatrixToComponents(value_ptr(tempChild),
+                                                  value_ptr(tComponents[0]),
+                                                  value_ptr(tComponents[1]),
+                                                  value_ptr(tComponents[2]));
+
+            tComponents[2] = max(glm::vec3(0.01f), tComponents[2]);
+
+            ct.m_localPosition = tComponents[0];
+            ct.m_localRotation = glm::quat(radians(tComponents[1]));
+            ct.m_localScale = tComponents[2];
+
+            ct.m_isLocalDirty = true;
+        }
+        else
+        {
+            auto& ct = registry->get<Transform>(entity);
+            auto& pt = registry->get<Transform>(parent);
+
+            glm::mat4 tempChild = ct.getMatrixGlobal();
+            glm::mat4 tempParent = pt.getMatrixGlobal();
+
+            tempChild = glm::inverse(tempParent) * tempChild;
+
+            glm::vec3 tComponents[3];
+            ImGuizmo::DecomposeMatrixToComponents(value_ptr(tempChild),
+                                                  value_ptr(tComponents[0]),
+                                                  value_ptr(tComponents[1]),
+                                                  value_ptr(tComponents[2]));
+
+            tComponents[2] = max(glm::vec3(0.01f), tComponents[2]);
+
+            ct.m_localPosition = tComponents[0];
+            ct.m_localRotation = glm::quat(radians(tComponents[1]));
+            ct.m_localScale = tComponents[2];
+
+            ct.m_isLocalDirty = true;
+        }
+        p.parent = parent;
     }
 
     void GuiLayer::drawInspector()
@@ -429,23 +590,11 @@ namespace oyl::internal
             if (m_currentEntity != entt::null)
             {
                 drawInspectorObjectName();
-                ImGui::Separator();
-                ImGui::NewLine();
-                drawInspectorParent();
-                ImGui::Separator();
-                ImGui::NewLine();
+                //drawInspectorParent();
                 drawInspectorTransform();
-                ImGui::Separator();
-                ImGui::NewLine();
                 drawInspectorRenderable();
-                ImGui::Separator();
-                ImGui::NewLine();
-                drawInspectorCollider();
-                //ImGui::Separator();
-                //ImGui::NewLine();
-                //drawInspectorRigidBody();
-                ImGui::Separator();
-                ImGui::NewLine();
+                drawInspectorCollidable();
+                drawInspectorRigidBody();
                 drawInspectorAddComponent();
             }
         }
@@ -454,16 +603,16 @@ namespace oyl::internal
     
     void GuiLayer::drawInspectorObjectName()
     {
-        using component::SceneObject;
+        using component::EntityInfo;
 
         ImGui::SetNextTreeNodeOpen(true, ImGuiCond_Once);
 
-        if (registry->has<SceneObject>(m_currentEntity) &&
+        if (registry->has<EntityInfo>(m_currentEntity) &&
             ImGui::CollapsingHeader("Object Properties##InspectorObjectProperties"))
         {
             ImGui::Indent(10);
 
-            auto& so = registry->get<SceneObject>(m_currentEntity);
+            auto& so = registry->get<EntityInfo>(m_currentEntity);
 
             char name[256]{ 0 };
             std::strcpy(name, so.name.c_str());
@@ -482,7 +631,7 @@ namespace oyl::internal
                 {
                     isValid = true;
 
-                    auto view = registry->view<SceneObject>();
+                    auto view = registry->view<EntityInfo>();
                     for (auto entity : view)
                     {
                         if (entity == m_currentEntity) continue;
@@ -501,13 +650,16 @@ namespace oyl::internal
             }
 
             ImGui::Unindent(10);
+
+            ImGui::Separator();
+            ImGui::NewLine();
         }
     }
 
     void GuiLayer::drawInspectorParent()
     {
         using component::Transform;
-        using component::SceneObject;
+        using component::EntityInfo;
         using component::Parent;
 
         ImGui::SetNextTreeNodeOpen(true, ImGuiCond_Once);
@@ -521,9 +673,11 @@ namespace oyl::internal
             if (registry->has<Parent>(m_currentEntity))
                 parent = registry->get<Parent>(m_currentEntity).parent;
 
-            const char* currentParentName = parent != entt::null && registry->has<SceneObject>(parent)
-                                                ? registry->get<SceneObject>(parent).name.c_str()
+            const char* currentParentName = parent != entt::null && registry->has<EntityInfo>(parent)
+                                                ? registry->get<EntityInfo>(parent).name.c_str()
                                                 : "None";
+
+            bool parentChanged = false;
 
             ImGui::Text("Current Parent");
             ImGui::SameLine();
@@ -531,32 +685,12 @@ namespace oyl::internal
             {
                 if (ImGui::Selectable("None", parent == entt::null))
                 {
-                    auto& p = registry->get_or_assign<Parent>(m_currentEntity);
-                    p.parent = entt::null;
-
-                    if (parent != entt::null)
-                    {
-                        auto& ct = registry->get<Transform>(m_currentEntity);
-
-                        glm::mat4 tempChild = ct.getMatrixGlobal();
-
-                        glm::vec3 tComponents[3];
-                        ImGuizmo::DecomposeMatrixToComponents(value_ptr(tempChild),
-                                                              value_ptr(tComponents[0]),
-                                                              value_ptr(tComponents[1]),
-                                                              value_ptr(tComponents[2]));
-
-                        tComponents[2] = max(glm::vec3(0.01f), tComponents[2]);
-
-                        ct.m_localPosition = tComponents[0];
-                        ct.m_localRotation = glm::quat(radians(tComponents[1]));
-                        ct.m_localScale = tComponents[2];
-
-                        ct.m_isLocalDirty = true;
-                    }
-                } else
+                    parent = entt::null;
+                    parentChanged = true;
+                }
+                else
                 {
-                    auto view = registry->view<SceneObject>();
+                    auto view = registry->view<EntityInfo>();
                     for (auto entity : view)
                     {
                         bool isSelected = entity == parent;
@@ -564,30 +698,8 @@ namespace oyl::internal
                         if (entity != m_currentEntity &&
                             ImGui::Selectable(view.get(entity).name.c_str(), isSelected))
                         {
-                            auto& p = registry->get_or_assign<Parent>(m_currentEntity);
-                            p.parent = entity;
-
-                            auto& ct = registry->get<Transform>(m_currentEntity);
-                            auto& pt = registry->get<Transform>(entity);
-
-                            glm::mat4 tempChild = ct.getMatrixGlobal();
-                            glm::mat4 tempParent = pt.getMatrixGlobal();
-
-                            tempChild = glm::inverse(tempParent) * tempChild;
-
-                            glm::vec3 tComponents[3];
-                            ImGuizmo::DecomposeMatrixToComponents(value_ptr(tempChild),
-                                                                  value_ptr(tComponents[0]),
-                                                                  value_ptr(tComponents[1]),
-                                                                  value_ptr(tComponents[2]));
-
-                            tComponents[2] = max(glm::vec3(0.01f), tComponents[2]);
-
-                            ct.m_localPosition = tComponents[0];
-                            ct.m_localRotation = glm::quat(radians(tComponents[1]));
-                            ct.m_localScale = tComponents[2];
-
-                            ct.m_isLocalDirty = true;
+                            parent = entity;
+                            parentChanged = true;
 
                             break;
                         }
@@ -599,7 +711,13 @@ namespace oyl::internal
                 ImGui::EndCombo();
             }
 
+            if (parentChanged)
+                setEntityParent(m_currentEntity, parent);
+            
             ImGui::Unindent(10);
+            
+            ImGui::Separator();
+            ImGui::NewLine();
         }
     }
 
@@ -695,17 +813,37 @@ namespace oyl::internal
                 if (scale != transform.getScale())
                     transform.setScale(scale);
             }
+            {
+                glm::bvec3 mirror = transform.getMirror();
+
+                ImGui::Text("Mirror");
+                ImGui::SameLine(ImGui::GetWindowContentRegionWidth() - (15 * 3 + newWidth * 3 + 27));
+                ImGui::SetNextItemWidth(15);
+                ImGui::Checkbox("X##XMir", &mirror.x);
+                ImGui::SameLine();
+                ImGui::SetNextItemWidth(15);
+                ImGui::Checkbox("Y##YMir", &mirror.y);
+                ImGui::SameLine();
+                ImGui::SetNextItemWidth(15);
+                ImGui::Checkbox("Z##ZMir", &mirror.z);
+                
+                if (mirror != transform.getMirror())
+                    transform.setMirror(mirror);
+            }
 
             ImGui::PopItemWidth();
 
             ImGui::Unindent(10);
+
+            ImGui::Separator();
+            ImGui::NewLine();
         }
     }
 
     void GuiLayer::drawInspectorRenderable()
     {
         using component::Renderable;
-        using component::SceneObject;
+        using component::EntityInfo;
 
         if (!registry->has<Renderable>(m_currentEntity)) return;
 
@@ -807,38 +945,41 @@ namespace oyl::internal
             }
 
             ImGui::Unindent(10);
+
+            ImGui::Separator();
+            ImGui::NewLine();
         }
     }
 
-    void GuiLayer::drawInspectorCollider()
+    void GuiLayer::drawInspectorCollidable()
     {
-        using component::Collider;
+        using component::Collidable;
 
-        if (!registry->has<Collider>(m_currentEntity)) return;
+        if (!registry->has<Collidable>(m_currentEntity)) return;
 
         ImGui::SetNextTreeNodeOpen(true, ImGuiCond_Once);
 
         auto flags = ImGuiInputTextFlags_EnterReturnsTrue;
 
-        if (ImGui::CollapsingHeader("Collider##InspectorColliderProperties"))
+        if (ImGui::CollapsingHeader("Collidable##InspectorColliderProperties"))
         {
             ImGui::Indent(10);
 
-            auto& collider = registry->get<Collider>(m_currentEntity);
+            auto& collider = registry->get<Collidable>(m_currentEntity);
             int count = 0;
             char shapeID[512];
             char temp[128];
             for (auto& shape : collider)
             {
-                if (shape.getType() == Collider_Box)
+                if (shape.getType() == ColliderType::Box)
                     strcpy(shapeID, "Box");
-                else if (shape.getType() == Collider_Sphere)
+                else if (shape.getType() == ColliderType::Sphere)
                     strcpy(shapeID, "Sphere");
-                else if (shape.getType() == Collider_Capsule)
+                else if (shape.getType() == ColliderType::Capsule)
                     strcpy(shapeID, "Capsule");
-                else if (shape.getType() == Collider_Cylinder)
+                else if (shape.getType() == ColliderType::Cylinder)
                     strcpy(shapeID, "Cylinder");
-                else if (shape.getType() == Collider_Mesh)
+                else if (shape.getType() == ColliderType::Mesh)
                     strcpy(shapeID, "Mesh");
 
                 sprintf(shapeID, "%s##ColliderPropertiesShape%d", shapeID, count);
@@ -853,19 +994,19 @@ namespace oyl::internal
                     {
                         sprintf(temp, "Box##Box%d", count);
                         if (ImGui::Selectable(temp))
-                            shape.setType(Collider_Box);
+                            shape.setType(ColliderType::Box);
                         sprintf(temp, "Sphere##Sphere%d", count);
                         if (ImGui::Selectable(temp))
-                            shape.setType(Collider_Sphere);
+                            shape.setType(ColliderType::Sphere);
                         sprintf(temp, "Capsule##Capsule%d", count);
                         if (ImGui::Selectable(temp))
-                            shape.setType(Collider_Capsule);
+                            shape.setType(ColliderType::Capsule);
                         sprintf(temp, "Cylinder##Cylinder%d", count);
                         if (ImGui::Selectable(temp))
-                            shape.setType(Collider_Cylinder);
+                            shape.setType(ColliderType::Cylinder);
                         sprintf(temp, "Mesh##Mesh%d", count);
                         if (ImGui::Selectable(temp))
-                            shape.setType(Collider_Mesh);
+                            shape.setType(ColliderType::Mesh);
 
                         ImGui::EndCombo();
                     }   
@@ -906,7 +1047,7 @@ namespace oyl::internal
 
                     switch (shape.getType())
                     {
-                        case Collider_Box:
+                        case ColliderType::Box:
                         {
                             glm::vec3 size = shape.box.getSize();
                             const float posDragSpeed = 0.02f;
@@ -938,7 +1079,7 @@ namespace oyl::internal
                             
                             break;
                         }
-                        case Collider_Sphere:
+                        case ColliderType::Sphere:
                         {
                             float radius = shape.sphere.getRadius();
                             const float posDragSpeed = 0.01f;
@@ -969,45 +1110,184 @@ namespace oyl::internal
 
             ImGui::NewLine();
 
-            if (ImGui::BeginCombo("##InspectorColliderAddShape", "Add Shape", ImGuiComboFlags_NoArrowButton))
+            if (ImGui::BeginCombo("##InspectorCollidableAddShape", "Add Shape", ImGuiComboFlags_NoArrowButton))
             {
                 if (ImGui::Selectable("Box"))
-                    collider.pushShape(Collider_Box);
+                    collider.pushShape(ColliderType::Box);
                 if (ImGui::Selectable("Sphere"))
-                    collider.pushShape(Collider_Sphere);
+                    collider.pushShape(ColliderType::Sphere);
                 if (ImGui::Selectable("Capsule"))
-                    collider.pushShape(Collider_Capsule);
+                    collider.pushShape(ColliderType::Capsule);
                 if (ImGui::Selectable("Cylinder"))
-                    collider.pushShape(Collider_Cylinder);
+                    collider.pushShape(ColliderType::Cylinder);
                 if (ImGui::Selectable("Mesh"))
-                    collider.pushShape(Collider_Sphere);
+                    collider.pushShape(ColliderType::Sphere);
 
                 ImGui::EndCombo();
             }
 
             ImGui::Unindent(10);
+
+            ImGui::Separator();
+            ImGui::NewLine();
         }
     }
 
-    void GuiLayer::drawInspectorRigidBody() {}
+    void GuiLayer::drawInspectorRigidBody()
+    {
+        using component::RigidBody;
+
+        if (!registry->has<RigidBody>(m_currentEntity))
+            return;
+
+        ImGui::SetNextItemOpen(true, ImGuiCond_Once);
+
+        if (ImGui::CollapsingHeader("RigidBody##InspectorRigidBody"))
+        {
+            ImGui::Indent(10);
+
+            auto& rb = registry->get<RigidBody>(m_currentEntity);
+
+            // TODO: Make boxes relative to right side of window like transforms are
+            
+            // TODO: Add more property checkboxes
+            bool useGravity = rb.getProperty(RigidBody::USE_GRAVITY);
+            ImGui::Text("Use Gravity");
+            ImGui::SameLine();
+            ImGui::Checkbox("##InspectorRigidBodyGravityCheckbox", &useGravity);
+            if (useGravity != rb.getProperty(RigidBody::USE_GRAVITY))
+                rb.setProperties(RigidBody::USE_GRAVITY, useGravity);
+
+            float mass = rb.getMass();
+            ImGui::Text("Mass");
+            ImGui::SameLine();
+            ImGui::SetNextItemWidth(15);
+            ImGui::DragFloat("##DragMass", &mass, 0.02f, 0.0f, 1000.0f, "M");
+            ImGui::SameLine();
+            ImGui::InputFloat("##MassInput", &mass, 0, 0, "%.2f");
+            if (mass != rb.getMass())
+                rb.setMass(mass);
+
+            float friction = rb.getFriction();
+            ImGui::Text("Friction");
+            ImGui::SameLine();
+            ImGui::SetNextItemWidth(15);
+            ImGui::DragFloat("##DragFriction", &friction, 0.02f, 0.0f, 1000.0f, "F");
+            ImGui::SameLine();
+            ImGui::InputFloat("##FrictionInput", &friction, 0, 0, "%.2f");
+            if (friction != rb.getFriction())
+                rb.setFriction(friction);
+
+            if (ImGui::CollapsingHeader("Simulation Values##InspectorRigidBodySimValues"))
+            {
+                ImGui::Indent(10);
+
+                ImGui::Text("Nothing to see here yet :)");
+
+                ImGui::Unindent(10);
+            }
+            
+            ImGui::Unindent(10);
+
+            ImGui::Separator();
+            ImGui::NewLine();
+        }
+    }
 
     void GuiLayer::drawInspectorAddComponent()
     {
+        using component::Collidable;
         using component::Renderable;
-        using component::Collider;
+        using component::RigidBody;
         
         if (ImGui::BeginCombo("##InspectorAddComponent", "Add Component", ImGuiComboFlags_NoArrowButton))
         {
+            if (!registry->has<Collidable>(m_currentEntity) &&
+                ImGui::Selectable("Collider"))
+                registry->assign<Collidable>(m_currentEntity);
+            
             if (!registry->has<Renderable>(m_currentEntity) &&
                 ImGui::Selectable("Renderable"))
                 registry->assign<Renderable>(m_currentEntity);
 
-            if (!registry->has<Collider>(m_currentEntity) &&
-                ImGui::Selectable("Collider"))
-                registry->assign<Collider>(m_currentEntity);
+            if (!registry->has<RigidBody>(m_currentEntity) &&
+                ImGui::Selectable("RigidBody"))
+                registry->assign<RigidBody>(m_currentEntity);
 
             ImGui::EndCombo();
         }
+    }
+
+    void GuiLayer::drawAssetList()
+    {   
+        if (ImGui::Begin("Assets##AssetListMainWindow"))
+        {
+            ImGui::Text("Nothing to see here :)");
+        }
+        ImGui::End();
+    }
+
+    void GuiLayer::updateAssetList()
+    {
+        static auto it = m_fileSaveTimes.begin();
+
+        std::fs::file_time_type lastWriteTime;
+        bool isEntryUpdated = false;
+        
+        for (const auto& kvp : Shader::getCache())
+        {
+            if (kvp.second == nullptr)
+                continue;
+            
+            for (const auto& shader : kvp.second->getShaderInfos())
+            {
+                auto relPath = std::fs::relative(shader.filename);
+                auto relPathStr = relPath.string();
+                if (it == m_fileSaveTimes.begin() ||
+                    m_fileSaveTimes.empty())
+                {    
+                    // If the file path is not in the database, add it
+                    if (m_fileSaveTimes.find(relPathStr) == m_fileSaveTimes.end())
+                    {
+                        m_fileSaveTimes[relPathStr] = last_write_time(relPath);
+                        it = m_fileSaveTimes.begin();
+                        continue;
+                    }
+                }
+                else
+                {
+                    auto currRelPath = std::fs::relative(it->first);
+                    lastWriteTime = std::fs::last_write_time(currRelPath);
+                    if (std::fs::equivalent(currRelPath, relPath) &&
+                        lastWriteTime != it->second)
+                    {
+                        kvp.second->load(kvp.second->getShaderInfos());
+                        //it->second = lastWriteTime;
+                        isEntryUpdated = true;
+                    }
+                }
+            }
+        }
+
+        if (isEntryUpdated)
+            it->second = lastWriteTime;
+
+        if (++it == m_fileSaveTimes.end())
+            it = m_fileSaveTimes.begin();
+
+        //for (auto& p : std::fs::recursive_directory_iterator("res/assets/"))
+        //{
+        //    // TEMPORARY:
+        //    if (p.is_directory()) continue;
+
+        //    if (p.is_regular_file())
+        //    {
+        //        if (p.path().extension().string().compare(""))
+        //        {
+        //            
+        //        }
+        //    }
+        //}
     }
 
     void GuiLayer::drawSceneViewport()
@@ -1041,7 +1321,7 @@ namespace oyl::internal
                 vrevent.width  = x;
                 vrevent.height = y - cy;
                 
-                postEvent(Event::create(vrevent));
+                postEvent(vrevent);
             }
             
             y -= cy;
@@ -1185,20 +1465,16 @@ namespace oyl::internal
     void GuiLayer::drawTransformGizmo()
     {
         using component::Transform;
-        using component::internal::EditorCamera;
-
+        
         if (m_currentEntity != entt::null &&
             registry->has<Transform>(m_currentEntity))
         {
-            auto  view = registry->view<EditorCamera>();
-            auto& cam  = view.get(*view.begin()).camera;
-
             auto& model = registry->get<Transform>(m_currentEntity);
 
             glm::mat4 gizmoMatrix = model.getMatrixGlobal();
             
-            ImGuizmo::Manipulate(value_ptr(cam->getViewMatrix()),
-                                 value_ptr(cam->getProjectionMatrix()),
+            ImGuizmo::Manipulate(value_ptr(m_editorCamera->getViewMatrix()),
+                                 value_ptr(m_editorCamera->getProjectionMatrix()),
                                  m_currentOp,
                                  m_currentMode,
                                  value_ptr(gizmoMatrix),
@@ -1286,7 +1562,7 @@ namespace oyl::internal
                     // TODO: Store backup registry in scene?
                     *Scene::current()->m_registry = m_registryRestore.clone();
 
-                    postEvent(Event::create(PhysicsResetWorldEvent{}));
+                    postEvent(PhysicsResetWorldEvent{});
                     
                     auto view = registry->view<component::Transform>();
 

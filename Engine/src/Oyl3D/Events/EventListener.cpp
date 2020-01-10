@@ -14,24 +14,34 @@ namespace oyl
         m_dispatcher.reset();
     }
 
-    bool EventListener::onEvent(Ref<Event> event)
+    //bool EventListener::onEvent(Ref<Event> event)
+    //{
+    //    return false;
+    //}
+
+    bool EventListener::onEvent(const Event& event)
     {
         return false;
     }
 
-    void EventListener::postEvent(UniqueRef<Event> event)
+    //void EventListener::postEvent(UniqueRef<Event> event)
+    //{
+    //    m_dispatcher->postEvent(*event);
+    //}
+
+    void EventListener::postEvent(const Event& event)
     {
-        m_dispatcher->postEvent(std::move(event));
+        m_dispatcher->postEvent(event);
     }
 
-    void EventListener::listenForEventType(OylEnum type)
+    void EventListener::listenForEventType(EventType type)
     {
-        m_typeMask[(u32) type] = true;
+        m_typeMask[(i32) type] = true;
     }
 
-    void EventListener::listenForEventCategory(OylEnum category)
+    void EventListener::listenForEventCategory(EventCategory category)
     {
-        m_categoryMask[(u32) category] = true;
+        m_categoryMask[(i32) category] = true;
     }
 
     void EventListener::listenForAllEvents()
@@ -40,12 +50,12 @@ namespace oyl
         m_categoryMask.set();
     }
 
-    void EventListener::ignoreEventType(OylEnum type)
+    void EventListener::ignoreEventType(EventType type)
     {
         m_typeMask[(u32) type] = false;
     }
     
-    void EventListener::ignoreEventCategory(OylEnum category)
+    void EventListener::ignoreEventCategory(EventCategory category)
     {
         m_categoryMask[(u32) category] = false;
     }

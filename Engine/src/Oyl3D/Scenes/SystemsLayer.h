@@ -11,8 +11,8 @@ namespace oyl::internal
         void onEnter() override;
         void onExit() override;
 
-        void onUpdate(Timestep dt) override;
-        void onGuiRender(Timestep dt) override;
-        bool onEvent(Ref<Event> event) override;
+        void onUpdate() override;
+        void onGuiRender() override;
+        bool onEvent(const Event& event) override;
     };
 }

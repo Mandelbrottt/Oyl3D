@@ -65,8 +65,8 @@ namespace oyl
             m_width  = width;
             m_height = height;
             
-            auto texStorageFormat = nrChannels == 3 ? GL_RGB8 : GL_RGBA8;
-            auto texSubFormat     = nrChannels == 3 ? GL_RGB  : GL_RGBA;
+            auto texStorageFormat = nrChannels == 3 ? GL_SRGB8 : GL_SRGB8_ALPHA8;
+            auto texSubFormat     = nrChannels == 3 ? GL_RGB : GL_RGBA;
 
             glTexStorage2D(GL_TEXTURE_2D, 1, texStorageFormat, width, height);
             glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, width, height, texSubFormat, GL_UNSIGNED_BYTE, data);

@@ -11,9 +11,9 @@ public:
     explicit Win32GamepadListener() = default;
     virtual  ~Win32GamepadListener() = default;
 
-    virtual bool onEvent(Ref<Event> event) override;
+    virtual bool onEvent(const Event& event) override;
 
-    virtual void onUpdate(Timestep dt) override;
+    virtual void onUpdate() override;
 
 protected:
     struct _Gamepad

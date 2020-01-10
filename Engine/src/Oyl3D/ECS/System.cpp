@@ -1,21 +1,31 @@
 #include "oylpch.h"
 
+#include "App/Window.h"
+
+#include "Components/Animatable.h"
+#include "Components/Camera.h"
+#include "Components/Lights.h"
+#include "Components/Misc.h"
+#include "Components/Renderable.h"
+#include "Components/Transform.h"
+
 #include "ECS/System.h"
 #include "ECS/SystemImpl.h"
 
-#include "ECS/Component.h"
-
 #include "Events/Event.h"
 #include "Events/EventListener.h"
+#include "Events/EventDispatcher.h"
 
 #include "Graphics/Camera.h"
 #include "Graphics/Material.h"
 #include "Graphics/Shader.h"
 #include "Graphics/Texture.h"
 
-#include "Rendering/Renderer.h"
+#include "Input/Input.h"
 
-#include "Scenes/Scene.h"
+#include "Physics/Raycast.h"
+
+#include "Rendering/Renderer.h"
 
 #include <btBulletDynamicsCommon.h>
 #include <btBulletCollisionCommon.h>
@@ -28,9 +38,9 @@ namespace oyl
 
     void System::onExit() { }
 
-    void System::onUpdate(Timestep dt) { }
+    void System::onUpdate() { }
 
-    void System::onGuiRender(Timestep dt) { }
+    void System::onGuiRender() { }
 
     // ^^^ Generic System ^^^ //
 
@@ -38,17 +48,19 @@ namespace oyl
     {
         // vvv Render System vvv //
 
-        void RenderSystem::onEnter() { }
+        void RenderSystem::onEnter()
+        {
+            listenForEventType(EventType::WindowResized);
+        }
 
         void RenderSystem::onExit() { }
 
-        void RenderSystem::onUpdate(Timestep dt)
+        void RenderSystem::onUpdate()
         {
             using component::Transform;
             using component::Renderable;
             using component::PlayerCamera;
             using component::PointLight;
-            using component::internal::EditorCamera;
 
             const auto& skybox = TextureCubeMap::get(DEFAULT_SKYBOX_ALIAS);
             const auto& shader = Shader::get(SKYBOX_SHADER_ALIAS);
@@ -59,28 +71,40 @@ namespace oyl
             registry->sort<Renderable>(
                 [](const Renderable& lhs, const Renderable& rhs)
                 {
-                    if (!rhs.enabled)
-                        return true;
-                    else if (!lhs.enabled)
+                    if (!lhs.enabled || lhs.material == nullptr || lhs.mesh == nullptr)
                         return false;
-                    else if (rhs.material == nullptr || rhs.mesh == nullptr)
+                    if (!rhs.enabled || rhs.material == nullptr || rhs.mesh == nullptr)
                         return true;
-                    else if (lhs.material == nullptr || lhs.mesh == nullptr)
-                        return false;
-                    else if (lhs.material->shader != rhs.material->shader)
+                    if (lhs.material->shader != rhs.material->shader)
                         return lhs.material->shader < rhs.material->shader;
-                    else
-                        return lhs.material < rhs.material;
+                    return lhs.material < rhs.material;
                 });
 
             Ref<Material> boundMaterial;
 
             auto camView = registry->view<Transform, PlayerCamera>();
-            OYL_ASSERT(camView.size() == 1, "Only one camera supported!");
+            
+            int x = m_windowSize.x / 2;
+            int y = camView.size() > 2 ? m_windowSize.y / 2 : 0;
 
+            int width = m_windowSize.x;
+            if (camView.size() > 1) width /= 2;
+
+            int height = m_windowSize.y;
+            if (camView.size() > 2) height /= 2;
+
+            bool doCulling = true;
+            
             for (auto camera : camView)
             {
-                glm::mat4 viewProj = camView.get<PlayerCamera>(camera).projection;
+                PlayerCamera& pc = camView.get<PlayerCamera>(camera);
+                
+                RenderCommand::setDrawRect(!!(pc.player & 1) * x, !(pc.player & 2) * y, width, height);
+                
+                pc.projection =
+                    glm::perspective(glm::radians(60.0f), (float) width / (float) height, 0.01f, 1000.0f);
+
+                glm::mat4 viewProj = pc.projection;
                 glm::mat4 tempView = camView.get<Transform>(camera).getMatrixGlobal();
                 viewProj *= glm::mat4(glm::inverse(glm::mat3(tempView)));
                 
@@ -98,8 +122,9 @@ namespace oyl
                 {
                     Renderable& mr = view.get<Renderable>(entity);
 
-                    if (!mr.enabled ||
-                        mr.mesh == nullptr || 
+                    if (!mr.enabled) continue;
+                    
+                    if (mr.mesh == nullptr || 
                         mr.material == nullptr || 
                         mr.material->shader == nullptr)
                         break;
@@ -118,49 +143,65 @@ namespace oyl
                         glm::mat4 viewNormal = inverse(transpose(viewMatrix));
                         boundMaterial->setUniformMat3("u_viewNormal", glm::mat3(viewNormal));
 
-                        auto lightView =      registry->view<PointLight>();
-                        auto lightProps =     lightView.get(lightView[0]);
-                        auto lightTransform = registry->get<Transform>(lightView[0]);
-                        
-                        boundMaterial->setUniform3f("u_pointLight.position",  
-                                                    viewMatrix * glm::vec4(lightTransform.getPositionGlobal(), 1.0f));
-                        boundMaterial->setUniform3f("u_pointLight.ambient",   lightProps.ambient);
-                        boundMaterial->setUniform3f("u_pointLight.diffuse",   lightProps.diffuse);
-                        boundMaterial->setUniform3f("u_pointLight.specular",  lightProps.specular);
+                        auto lightView = registry->view<PointLight>();
+                        int count = 0;
+                        for (auto light : lightView)
+                        {
+                            auto lightProps =     lightView.get(light);
+                            auto lightTransform = registry->get<Transform>(light);
+                            
+                            boundMaterial->setUniform3f("u_pointLight[" + std::to_string(count) + "].position",
+                                                        viewMatrix * glm::vec4(lightTransform.getPositionGlobal(), 1.0f));
+                            boundMaterial->setUniform3f("u_pointLight[" + std::to_string(count) + "].ambient",
+                                                        lightProps.ambient);
+                            boundMaterial->setUniform3f("u_pointLight[" + std::to_string(count) + "].diffuse",
+                                                        lightProps.diffuse);
+                            boundMaterial->setUniform3f("u_pointLight[" + std::to_string(count) + "].specular",
+                                                        lightProps.specular);
+                            count++;
+                        }
 
                         // TEMPORARY:
                         boundMaterial->bind();
                         boundMaterial->applyUniforms();
                     }
-                    
-                    glm::mat4 transform = view.get<Transform>(entity).getMatrixGlobal();
 
-                    if (registry->has<component::Animator>(entity))
+                    auto& transformComponent = view.get<Transform>(entity);
+                    glm::mat4 transform = transformComponent.getMatrixGlobal();
+
+                    if (registry->has<component::Animatable>(entity))
                     {
-                        auto& anim = registry->get<component::Animator>(entity);
+                        auto& anim = registry->get<component::Animatable>(entity);
                         if (anim.getVertexArray())
                         {
                             anim.m_vao->bind();
                             
-                            mr.material->shader->bind();
-                            mr.material->shader->setUniform1f("lerpT_curr", glm::mod(anim.m_currentElapsed, 1.0f));
-                            mr.material->shader->setUniform1f("lerpT_trans", glm::mod(anim.m_transitionElapsed, 1.0f));
+                            boundMaterial->shader->bind();
+                            boundMaterial->shader->setUniform1f("lerpT_curr", glm::mod(anim.m_currentElapsed, 1.0f));
+                            boundMaterial->shader->setUniform1f("lerpT_trans", glm::mod(anim.m_transitionElapsed, 1.0f));
 
-                            Renderer::submit(mr.material, anim.m_vao, mr.mesh->getNumVertices(), transform);
+                            Renderer::submit(boundMaterial, anim.m_vao, mr.mesh->getNumVertices(), transform);
                         }
                     }
                     else
                     {
-                        Renderer::submit(mr.mesh, mr.material, transform);
+                        Renderer::submit(mr.mesh, boundMaterial, transform);
                     }
                 }
             }
         }
 
-        void RenderSystem::onGuiRender(Timestep dt) { }
+        void RenderSystem::onGuiRender() { }
 
-        bool RenderSystem::onEvent(Ref<Event> event)
+        bool RenderSystem::onEvent(const Event& event)
         {
+            switch (event.type)
+            {
+                case EventType::WindowResized:
+                    auto e = event_cast<WindowResizedEvent>(event);
+                    m_windowSize = { e.width, e.height };
+                    break;
+            }
             return false;
         }
 
@@ -170,7 +211,7 @@ namespace oyl
 
         void GuiRenderSystem::onEnter()
         {
-            listenForEventType(TypeWindowResized);
+            listenForEventType(EventType::WindowResized);
             m_shader = Shader::get("texturedQuad");
 
             float vertices[] = {
@@ -189,8 +230,8 @@ namespace oyl
             m_vao = VertexArray::create();
             Ref<VertexBuffer> vbo = VertexBuffer::create(vertices, sizeof(vertices));
             vbo->setLayout({
-                { Float3, "in_position" },
-                { Float2, "in_texCoord" }
+                { DataType::Float3, "in_position" },
+                { DataType::Float2, "in_texCoord" }
             });
             Ref<IndexBuffer> ebo = IndexBuffer::create(indices, 6);
             m_vao->addVertexBuffer(vbo);
@@ -199,24 +240,30 @@ namespace oyl
 
         void GuiRenderSystem::onExit() {}
 
-        void GuiRenderSystem::onUpdate(Timestep dt)
+        void GuiRenderSystem::onUpdate()
         {
             using component::GuiRenderable;
             using component::Transform;
 
             registry->sort<GuiRenderable>(
-                [](const GuiRenderable& lhs, const GuiRenderable& rhs)
+                [this](const entt::entity lhs, const entt::entity rhs)
                 {
-                    if (!rhs.enabled)
-                        return true;
-                    else if (!lhs.enabled)
+                    auto& lguir = registry->get<GuiRenderable>(lhs);
+                    auto& rguir = registry->get<GuiRenderable>(rhs);
+
+                    if (rguir.texture == nullptr)
                         return false;
-                    else if (rhs.texture == nullptr)
+                    if (lguir.texture == nullptr)
                         return true;
-                    else if (lhs.texture == nullptr)
-                        return false;
-                    else
-                        return lhs.texture < rhs.texture;
+
+                    auto& lt = registry->get<Transform>(lhs);
+                    auto& rt = registry->get<Transform>(rhs);
+
+                    if (float lz = lt.getPositionZGlobal(), rz = rt.getPositionZGlobal();
+                        lz != rz)
+                        return lz > rz;
+
+                    return lguir.texture < rguir.texture;
                 });
 
             Ref<Texture2D> boundTexture;
@@ -257,19 +304,18 @@ namespace oyl
 
                 Renderer::submit(m_shader, m_vao, model);
             }
+
             RenderCommand::setDepthDraw(true);
         }
 
-        void GuiRenderSystem::onGuiRender(Timestep dt) {}
+        void GuiRenderSystem::onGuiRender() {}
 
-        bool GuiRenderSystem::onEvent(Ref<Event> event)
+        bool GuiRenderSystem::onEvent(const Event& event)
         {
-            switch (event->type)
+            switch (event.type)
             {
-                case TypeWindowResized:
-                    auto e = (WindowResizedEvent) *event;
-                    //OYL_LOG("{0}", offsetof(WindowResizedEvent, width));
-                    //OYL_LOG("{0}", offsetof(WindowResizedEvent, height));
+                case EventType::WindowResized:
+                    auto e = event_cast<WindowResizedEvent>(event);
                     f32 aspectRatio = (float) e.width / (float) e.height;
                     f32 size = 10.0f;
                     glm::mat4 projection = glm::ortho(-size * aspectRatio / 2.0f, 
@@ -293,9 +339,9 @@ namespace oyl
 
         void AnimationSystem::onExit() {}
 
-        void AnimationSystem::onUpdate(Timestep dt)
+        void AnimationSystem::onUpdate()
         {
-            auto view = registry->view<component::Animator>();
+            auto view = registry->view<component::Animatable>();
             for (auto entity : view)
             {
                 auto& anim = view.get(entity);
@@ -313,7 +359,7 @@ namespace oyl
 
                 if (anim.m_nextAnimation)
                 {
-                    anim.m_transitionElapsed += dt.getSeconds() / anim.m_transitionDuration;
+                    anim.m_transitionElapsed += Time::deltaTime() / anim.m_transitionDuration;
                     if (anim.m_transitionElapsed >= 1.0f)
                     {
                         anim.m_currentAnimation = anim.m_nextAnimation;
@@ -328,7 +374,7 @@ namespace oyl
                     glm::mod(anim.m_currentElapsed, (f32) anim.m_currentAnimation->poses.size());
 
                 uint lastVal = glm::floor(anim.m_currentElapsed);
-                anim.m_currentElapsed += dt.getSeconds() / anim.m_currentAnimation->poses[lastVal].duration;
+                anim.m_currentElapsed += Time::deltaTime() / anim.m_currentAnimation->poses[lastVal].duration;
 
                 anim.m_currentElapsed =
                     glm::mod(anim.m_currentElapsed, (f32) anim.m_currentAnimation->poses.size());
@@ -357,57 +403,167 @@ namespace oyl
             }
         }
 
-        void AnimationSystem::onGuiRender(Timestep dt) {}
+        void AnimationSystem::onGuiRender() {}
 
-        bool AnimationSystem::onEvent(Ref<Event> event) { return false; }
+        bool AnimationSystem::onEvent(const Event& event) { return false; }
 
         // ^^^ Animation System ^^^ //
         
         // vvv Physics System vvv //
-        
+
+        static PhysicsSystem* g_currentPhysicsSystem = nullptr;
+
+        static Ref<EventDispatcher> g_dispatcher;
+        static Ref<entt::registry>  g_currentRegistry;
+
+        static void* g_obj1 = 0;
+        static void* g_obj2 = 0;
+
+        static void contactStartedCallback(btPersistentManifold* const& manifold)
+        {
+            auto body1 = manifold->getBody0();
+            auto body2 = manifold->getBody1();
+
+            if (body1 == g_obj1 && body2 == g_obj2)
+                return;
+            
+            g_obj1 = (void*) body1;
+            g_obj2 = (void*) body2;
+            
+            auto entity1 = (entt::entity) reinterpret_cast<ENTT_ID_TYPE>(body1->getUserPointer());
+            auto entity2 = (entt::entity) reinterpret_cast<ENTT_ID_TYPE>(body2->getUserPointer());
+
+            if (!g_currentRegistry->valid(entity1) || !g_currentRegistry->valid(entity2))
+                return;
+
+            PhysicsCollisionEnterEvent event;
+            event.entity1 = entity1;
+            event.entity2 = entity2;
+
+            if (body1->getCollisionFlags() & btCollisionObject::CF_NO_CONTACT_RESPONSE ||
+                body2->getCollisionFlags() & btCollisionObject::CF_NO_CONTACT_RESPONSE)
+            {
+                event.type = EventType::PhysicsTriggerEnter;
+            }
+
+            g_dispatcher->postEvent(event);
+        }
+
+        static void contactEndedCallback(btPersistentManifold* const& manifold)
+        {
+            auto body1 = manifold->getBody0();
+            auto body2 = manifold->getBody1();
+
+            if (body1 == g_obj1 && body2 == g_obj2)
+                return;
+
+            g_obj1 = (void*) body1;
+            g_obj2 = (void*) body2;
+            
+            auto entity1 = (entt::entity) reinterpret_cast<ENTT_ID_TYPE>(body1->getUserPointer());
+            auto entity2 = (entt::entity) reinterpret_cast<ENTT_ID_TYPE>(body2->getUserPointer());
+
+            if (!g_currentRegistry->valid(entity1) || !g_currentRegistry->valid(entity2))
+                return;
+
+            PhysicsCollisionExitEvent event;
+            event.entity1 = entity1;
+            event.entity2 = entity2;
+
+            if (body1->getCollisionFlags() & btCollisionObject::CF_NO_CONTACT_RESPONSE ||
+                body2->getCollisionFlags() & btCollisionObject::CF_NO_CONTACT_RESPONSE)
+            {
+                event.type = EventType::PhysicsTriggerExit;
+            }
+            
+            g_dispatcher->postEvent(event);
+        }
+
+        static bool contactProcessedCallback(btManifoldPoint& cp, void* obj1, void* obj2)
+        {
+            auto body1 = reinterpret_cast<btCollisionObject*>(obj1);
+            auto body2 = reinterpret_cast<btCollisionObject*>(obj2);
+
+            if (body1 == g_obj1 && body2 == g_obj2)
+                return false;
+
+            g_obj1 = (void*) body1;
+            g_obj2 = (void*) body2;
+
+            auto entity1 = (entt::entity) reinterpret_cast<ENTT_ID_TYPE>(body1->getUserPointer());
+            auto entity2 = (entt::entity) reinterpret_cast<ENTT_ID_TYPE>(body2->getUserPointer());
+
+            if (!g_currentRegistry->valid(entity1) || !g_currentRegistry->valid(entity2))
+                return false;
+
+            PhysicsCollisionStayEvent event;
+            event.entity1 = entity1;
+            event.entity2 = entity2;
+
+            if (body1->getCollisionFlags() & btCollisionObject::CF_NO_CONTACT_RESPONSE ||
+                body2->getCollisionFlags() & btCollisionObject::CF_NO_CONTACT_RESPONSE)
+            {
+                event.type = EventType::PhysicsTriggerStay;
+            }
+
+            g_dispatcher->postEvent(event);
+            return false;
+        }
+
         void PhysicsSystem::onEnter()
         {
-            listenForEventType(TypePhysicsResetWorld);
+            g_currentPhysicsSystem = this;
+            
+            listenForEventType(EventType::PhysicsResetWorld);
+            
+            gContactStartedCallback   = contactStartedCallback;
+            gContactEndedCallback     = contactEndedCallback;
+            gContactProcessedCallback = contactProcessedCallback;
+
+            g_dispatcher = m_dispatcher;
+
+            g_currentRegistry = registry;
             
             m_fixedTimeStep = 1.0f / 60.0f;
 
-            m_collisionConfig = UniqueRef<btDefaultCollisionConfiguration>::create();
-            m_dispatcher = UniqueRef<btCollisionDispatcher>::create(m_collisionConfig.get());
-            m_broadphase = UniqueRef<btDbvtBroadphase>::create();
-            m_solver = UniqueRef<btSequentialImpulseConstraintSolver>::create();
-            m_world = UniqueRef<btDiscreteDynamicsWorld>::create(m_dispatcher.get(), 
-                                                                 m_broadphase.get(),
-                                                                 m_solver.get(),
-                                                                 m_collisionConfig.get());
+            m_btCollisionConfig = UniqueRef<btDefaultCollisionConfiguration>::create();
+            m_btDispatcher = UniqueRef<btCollisionDispatcher>::create(m_btCollisionConfig.get());
+            m_btBroadphase = UniqueRef<btDbvtBroadphase>::create();
+            m_btSolver = UniqueRef<btSequentialImpulseConstraintSolver>::create();
+            m_btWorld = UniqueRef<btDiscreteDynamicsWorld>::create(m_btDispatcher.get(), 
+                                                                   m_btBroadphase.get(),
+                                                                   m_btSolver.get(),
+                                                                   m_btCollisionConfig.get());
 
             m_rigidBodies.clear();
             
-            m_world->setGravity(btVector3(0.0f, -9.81f, 0.0f));
+            //m_world->setGravity(btVector3(0.0f, -9.81f, 0.0f));
+            m_btWorld->setGravity(btVector3(0.0f, -9.81f, 0.0f));
         }
 
         void PhysicsSystem::onExit()
         {
-            m_world.reset();
-            m_solver.reset();
-            m_broadphase.reset();
-            m_dispatcher.reset();
-            m_collisionConfig.reset();
+            m_btWorld.reset();
+            m_btSolver.reset();
+            m_btBroadphase.reset();
+            m_btDispatcher.reset();
+            m_btCollisionConfig.reset();
 
             m_rigidBodies.clear();
         }
 
-        void PhysicsSystem::onUpdate(Timestep dt)
+        void PhysicsSystem::onUpdate()
         {
             using component::Transform;
             using component::RigidBody;
-            using component::Collider;
+            using component::Collidable;
             
             auto view = registry->view<Transform, RigidBody>();
             for (auto entity : view)
             {
                 auto& transform = view.get<Transform>(entity);
                 auto& rigidBody = view.get<RigidBody>(entity);
-                auto& collider  = registry->get_or_assign<Collider>(entity);
+                auto& collider  = registry->get_or_assign<Collidable>(entity);
                 
                 processIncomingRigidBody(entity, transform, collider, rigidBody);
 
@@ -430,13 +586,15 @@ namespace oyl
 					cachedBody.body->activate();
 
                     transform.m_isPositionOverridden = false;
+
+                    // TODO: Recursively recalculate every child transform
                 }
                 
                 if (transform.m_isRotationOverridden)
                 {
                     btTransform t = cachedBody.body->getWorldTransform();
 
-                    glm::quat rotation = transform.getRotation();
+                    glm::quat rotation = transform.getRotationGlobal();
                     t.setRotation(btQuaternion(rotation.x, rotation.y, rotation.z, rotation.w));
 
                     cachedBody.body->setWorldTransform(t);
@@ -447,9 +605,9 @@ namespace oyl
                 }
                 if (transform.m_isScaleOverridden)
                 {
-                    cachedBody.shape->setLocalScaling(btVector3(transform.getScaleX(),
-                                                                transform.getScaleY(),
-                                                                transform.getScaleZ()));
+                    cachedBody.shape->setLocalScaling(btVector3(transform.getScaleXGlobal(),
+                                                                transform.getScaleYGlobal(),
+                                                                transform.getScaleZGlobal()));
 
 					cachedBody.body->activate();
                     
@@ -457,7 +615,7 @@ namespace oyl
                 }
                 if (rigidBody.m_isDirty)
                 {
-                    m_world->removeRigidBody(cachedBody.body.get());
+                    //m_world->removeRigidBody(cachedBody.body.get());
                     
                     // Velocity
                     cachedBody.body->setLinearVelocity(btVector3(rigidBody.m_velocity.x,
@@ -484,6 +642,8 @@ namespace oyl
                         flags |= btRigidBody::CF_KINEMATIC_OBJECT;
                         cachedBody.body->setActivationState(DISABLE_DEACTIVATION);
                         cachedBody.body->setMassProps(0.0f, btVector3(0.0f, 0.0f, 0.0f));
+                        cachedBody.body->setLinearVelocity({ 0.0f, 0.0f, 0.0f });
+                        cachedBody.body->setAngularVelocity({ 0.0f, 0.0f, 0.0f });
                     }
                     else
                     {
@@ -497,6 +657,8 @@ namespace oyl
                         cachedBody.body->setMassProps(rigidBody.m_mass, inertia);
                     }
 
+                    cachedBody.body->updateInertiaTensor();
+
                     flags &= ~btRigidBody::CF_NO_CONTACT_RESPONSE;
                     flags |= rigidBody.getProperty(RigidBody::DETECT_COLLISIONS)
                                  ? 0
@@ -504,28 +666,28 @@ namespace oyl
 
                     cachedBody.body->setCollisionFlags(flags);
 
-                    // Rotation Locking
-                    btVector3 inertiaTensor = {};
+                    //// Rotation Locking
+                    //btVector3 inertiaTensor = {};
 
-                    inertiaTensor.setX(rigidBody.getProperty(RigidBody::FREEZE_ROTATION_X) ? 0.0f : 1.0f);
-                    inertiaTensor.setY(rigidBody.getProperty(RigidBody::FREEZE_ROTATION_Y) ? 0.0f : 1.0f);
-                    inertiaTensor.setZ(rigidBody.getProperty(RigidBody::FREEZE_ROTATION_Z) ? 0.0f : 1.0f);
+                    //inertiaTensor.setX(rigidBody.getProperty(RigidBody::FREEZE_ROTATION_X) ? 0.0f : 1.0f);
+                    //inertiaTensor.setY(rigidBody.getProperty(RigidBody::FREEZE_ROTATION_Y) ? 0.0f : 1.0f);
+                    //inertiaTensor.setZ(rigidBody.getProperty(RigidBody::FREEZE_ROTATION_Z) ? 0.0f : 1.0f);
 
-                    cachedBody.body->setInvInertiaDiagLocal(inertiaTensor);
+                    //cachedBody.body->setInvInertiaDiagLocal(inertiaTensor);
 
-                    cachedBody.body->updateInertiaTensor();
+                    //cachedBody.body->updateInertiaTensor();
+
+                    //m_world->addRigidBody(cachedBody.body.get());
 
                     // Gravity
                     if (rigidBody.getProperty(RigidBody::USE_GRAVITY))
                     {
-                        cachedBody.body->setGravity(m_world->getGravity());
+                        cachedBody.body->setGravity(m_btWorld->getGravity());
                     }
                     else
                     {
                         cachedBody.body->setGravity({ 0.0f, 0.0f, 0.0f });
                     }
-
-                    m_world->addRigidBody(cachedBody.body.get());
 
                     rigidBody.m_isDirty = false;
                 }
@@ -545,8 +707,11 @@ namespace oyl
                                                                rigidBody.m_impulse.y,
                                                                rigidBody.m_impulse.z));
             }
-            
-            m_world->stepSimulation(dt.getSeconds(), 1, m_fixedTimeStep);
+
+            // TODO: Iterate over ghost objects with tick callback
+            m_btWorld->stepSimulation(Time::deltaTime(), 10, m_fixedTimeStep);
+
+            g_obj1 = g_obj2 = 0;
 
             for (auto entity : view)
             {
@@ -566,10 +731,20 @@ namespace oyl
                 _pos = t.getOrigin();
                 _rot = t.getRotation();
 
-                transform.m_localPosition = { _pos.x(), _pos.y(), _pos.z() };
-
-                transform.m_localRotation = glm::quat(_rot.w(), _rot.x(), _rot.y(), _rot.z());
-
+                if (transform.m_parentRef.expired())
+                {
+                    transform.m_localPosition = { _pos.x(), _pos.y(), _pos.z() };
+                    transform.m_localRotation = glm::quat(_rot.w(), _rot.x(), _rot.y(), _rot.z());
+                }
+                else
+                {
+                    auto _t = transform.m_parentRef.lock()->getMatrixGlobal();
+                    transform.m_localPosition = 
+                        inverse(_t) * glm::vec4(_pos.x(), _pos.y(), _pos.z(), 1.0f);
+                    transform.m_localRotation =
+                        inverse(quat_cast(_t)) * glm::quat(_rot.w(), _rot.x(), _rot.y(), _rot.z());
+                }
+                
                 transform.m_isLocalDirty = true;
 
                 rigidBody.m_velocity = glm::vec3(cachedBody.body->getLinearVelocity().x(),
@@ -584,12 +759,12 @@ namespace oyl
             }
         }
 
-        void PhysicsSystem::onGuiRender(Timestep dt)
+        void PhysicsSystem::onGuiRender()
         {
             using component::Transform;
             using component::RigidBody;
-            using component::SceneObject;
-            auto view = registry->view<SceneObject, RigidBody>();
+            using component::EntityInfo;
+            auto view = registry->view<EntityInfo, RigidBody>();
 
             ImGui::Begin("Physics");
 
@@ -597,7 +772,7 @@ namespace oyl
             {
                 auto& rb = view.get<RigidBody>(entity);
                 ImGui::Text("%s: X(%.3f) Y(%.3f) Z(%.3f)",
-                            view.get<SceneObject>(entity).name.c_str(),
+                            view.get<EntityInfo>(entity).name.c_str(),
                             rb.getVelocity().x,
                             rb.getVelocity().y, 
                             rb.getVelocity().z);
@@ -606,11 +781,11 @@ namespace oyl
             ImGui::End();
         }
 
-        bool PhysicsSystem::onEvent(Ref<Event> event)
+        bool PhysicsSystem::onEvent(const Event& event)
         {
-            switch (event->type)
+            switch (event.type)
             {
-                case TypePhysicsResetWorld:
+                case EventType::PhysicsResetWorld:
                 {
                     onExit();
                     onEnter();
@@ -624,7 +799,7 @@ namespace oyl
         // TODO: Currently need rigidbody for collider to register in world, make mutually exclusive
         void PhysicsSystem::processIncomingRigidBody(entt::entity entity, 
                                                      const component::Transform& transformComponent, 
-                                                     const component::Collider&  colliderComponent, 
+                                                     const component::Collidable&  colliderComponent, 
                                                      const component::RigidBody& rigidBodyComponent)
         {
             // Check if collider was emptied past frame
@@ -632,7 +807,7 @@ namespace oyl
             {
                 if (m_rigidBodies.find(entity) != m_rigidBodies.end()) 
                 {
-                    m_world->removeRigidBody(m_rigidBodies.at(entity)->body.get());
+                    m_btWorld->removeRigidBody(m_rigidBodies.at(entity)->body.get());
                     m_rigidBodies.erase(entity);
                 }
                 return;
@@ -642,10 +817,10 @@ namespace oyl
             if (colliderComponent.isDirty() && 
                 m_rigidBodies.find(entity) != m_rigidBodies.end())
             {
-                m_world->removeRigidBody(m_rigidBodies.at(entity)->body.get());
+                m_btWorld->removeRigidBody(m_rigidBodies.at(entity)->body.get());
                 m_rigidBodies.erase(entity);
 
-                for (auto& shape : const_cast<component::Collider&>(colliderComponent))
+                for (auto& shape : const_cast<component::Collidable&>(colliderComponent))
                 {
                     shape.m_isDirty          = false;
                     shape.box.m_isDirty      = false;
@@ -673,7 +848,7 @@ namespace oyl
                     const auto& shapeThing = colliderComponent.getShape(0);
                     switch (shapeThing.m_type)
                     {
-                        case Collider_Box:
+                        case ColliderType::Box:
                         {
                             t.setIdentity();
 
@@ -701,7 +876,7 @@ namespace oyl
 
                             break;
                         }
-                        case Collider_Sphere:
+                        case ColliderType::Sphere:
                         {
                             t.setIdentity();
 
@@ -728,26 +903,25 @@ namespace oyl
                     // TEMPORARY: Make relative to collider
                     t.setIdentity();
                     
-                    t.setFromOpenGLMatrix(value_ptr(transformComponent.getMatrixGlobal()));
+                    //t.setFromOpenGLMatrix(value_ptr(transformComponent.getMatrixGlobal()));
 
-                    t.setOrigin(btVector3(transformComponent.getPositionX(),
-                                          transformComponent.getPositionY(),
-                                          transformComponent.getPositionZ()));
+                    t.setOrigin(btVector3(transformComponent.getPositionXGlobal(),
+                                          transformComponent.getPositionYGlobal(),
+                                          transformComponent.getPositionZGlobal()));
 
-                    glm::quat q = quat_cast(transformComponent.getMatrixGlobal());
+                    glm::quat q = transformComponent.getRotationGlobal();
 
                     btQuaternion btq = btQuaternion(q.x, q.y, q.z, q.w);
                     t.setRotation(btq);
-                    //
                     
                     btVector3 inertia = { 0, 0, 0 };
                     if (rigidBodyComponent.getMass() != 0.0f)
                         shape->calculateLocalInertia(rigidBodyComponent.getMass(), inertia);
 
                     shape->setLocalScaling({
-                        transformComponent.getScaleX(),
-                        transformComponent.getScaleY(),
-                        transformComponent.getScaleZ()
+                        transformComponent.getScaleXGlobal(),
+                        transformComponent.getScaleYGlobal(),
+                        transformComponent.getScaleZGlobal()
                     });
 
                     motion = Ref<btDefaultMotionState>::create(t);
@@ -767,7 +941,7 @@ namespace oyl
                     {
                         switch (childIter->m_type)
                         {
-                            case Collider_Box:
+                            case ColliderType::Box:
                             {
                                 btTransform t;
 
@@ -798,7 +972,7 @@ namespace oyl
 
                                 break;
                             }
-                            case Collider_Sphere:
+                            case ColliderType::Sphere:
                             {
                                 btTransform t;
 
@@ -830,13 +1004,13 @@ namespace oyl
 
                     btTransform t;
                     
-                    t.setFromOpenGLMatrix(value_ptr(transformComponent.getMatrixGlobal()));
+                    //t.setFromOpenGLMatrix(value_ptr(transformComponent.getMatrixGlobal()));
 
-                    t.setOrigin(btVector3(transformComponent.getPositionX(),
-                                          transformComponent.getPositionY(),
-                                          transformComponent.getPositionZ()));
+                    t.setOrigin(btVector3(transformComponent.getPositionXGlobal(),
+                                          transformComponent.getPositionYGlobal(),
+                                          transformComponent.getPositionZGlobal()));
 
-                    glm::quat q = quat_cast(transformComponent.getMatrixGlobal());
+                    glm::quat q = transformComponent.getRotationGlobal();
 
                     btQuaternion btq = btQuaternion(q.x, q.y, q.z, q.w);
                     t.setRotation(btq);
@@ -846,9 +1020,9 @@ namespace oyl
                         shape->calculateLocalInertia(rigidBodyComponent.getMass(), inertia);
 
                     shape->setLocalScaling({
-                        transformComponent.getScaleX(),
-                        transformComponent.getScaleY(),
-                        transformComponent.getScaleZ()
+                        transformComponent.getScaleXGlobal(),
+                        transformComponent.getScaleYGlobal(),
+                        transformComponent.getScaleZGlobal()
                     });
                     
                     motion = Ref<btDefaultMotionState>::create(t);
@@ -862,12 +1036,18 @@ namespace oyl
 
                     body->setRestitution(1.0f);
                 }
-                
-                m_world->addRigidBody(body.get());
 
+                body->setCollisionFlags(body->getCollisionFlags() |
+                                        btCollisionObject::CF_CUSTOM_MATERIAL_CALLBACK);
+                
+                m_btWorld->addRigidBody(body.get());
+
+                m_rigidBodies[entity]->entity = entity;
                 m_rigidBodies[entity]->body   = body;
                 m_rigidBodies[entity]->shape  = shape;
                 m_rigidBodies[entity]->motion = motion;
+
+                body->setUserPointer((void*) entity);
             }
             else
             {
@@ -875,11 +1055,58 @@ namespace oyl
             }
         }
 
+        Ref<ClosestRaycastResult> PhysicsSystem::raytestClosest(glm::vec3 position, glm::vec3 direction, f32 distance)
+        {
+            glm::vec3 endPos = position + direction * distance;
+            btVector3 from = { position.x, position.y, position.z };
+            btVector3 to   = { endPos.x, endPos.y, endPos.z };
+
+            btCollisionWorld::ClosestRayResultCallback rayCallback(from, to);
+            g_currentPhysicsSystem->m_btWorld->rayTest(from, to, rayCallback);
+
+            RaycastResult::HitObject obj = {};
+            
+            if (rayCallback.hasHit())
+            {
+                obj.hitPosition = {
+                    rayCallback.m_hitPointWorld.x(),
+                    rayCallback.m_hitPointWorld.y(),
+                    rayCallback.m_hitPointWorld.z()
+                };
+                
+                obj.hitNormal = {
+                    rayCallback.m_hitNormalWorld.x(),
+                    rayCallback.m_hitNormalWorld.y(),
+                    rayCallback.m_hitNormalWorld.z()
+                };
+                
+                obj.hitFraction = rayCallback.m_closestHitFraction;
+                
+                obj.distanceTo = glm::length(direction * rayCallback.m_closestHitFraction);
+
+                for (auto& kvp : g_currentPhysicsSystem->m_rigidBodies)
+                {
+                    if (kvp.second->body.get() == rayCallback.m_collisionObject)
+                    {
+                        obj.entity = kvp.first;
+                        break;
+                    }
+                }
+
+                OYL_ASSERT(obj.entity != entt::null);
+            }
+            
+            Ref<ClosestRaycastResult> result = 
+                Ref<ClosestRaycastResult>::create(position, endPos, rayCallback.hasHit(), std::move(obj));
+
+            return result;
+        }
+
         // ^^^ Physics System ^^^ //
 
         // vvv Transform Update System vvv //
 
-        void TransformUpdateSystem::onUpdate(Timestep dt)
+        void TransformUpdateSystem::onUpdate()
         {
             using component::Transform;
             using component::Parent;
@@ -912,40 +1139,49 @@ namespace oyl
 
         void EditorCameraSystem::onEnter()
         {
-            using component::internal::EditorCamera;
-            using component::internal::ExcludeFromHierarchy;
+            listenForEventType(EventType::KeyPressed);
+            listenForEventType(EventType::KeyReleased);
+            listenForEventType(EventType::MouseMoved);
+            listenForEventType(EventType::MousePressed);
+            listenForEventType(EventType::MouseReleased);
+            listenForEventType(EventType::EditorViewportResized);
 
-            listenForEventType(TypeKeyPressed);
-            listenForEventType(TypeKeyReleased);
-            listenForEventType(TypeMouseMoved);
-            listenForEventType(TypeEditorViewportResized);
+            m_camera = Ref<Camera>::create();
+            m_camera->setProjection(glm::perspective(glm::radians(60.0f), 16.0f / 9.0f, 0.1f, 1000.0f));
+            m_camera->setPosition(glm::vec3(10.0f, 5.0f, 10.0f));
+            m_camera->lookAt(glm::vec3(0.0f, 0.0f, 0.0f));
 
-            EditorCamera cam;
-            cam.camera = Ref<Camera>::create();
-            cam.camera->setProjection(glm::perspective(glm::radians(60.0f), 16.0f / 9.0f, 0.01f, 1000.0f));
-            cam.camera->setPosition(glm::vec3(10.0f, 5.0f, 10.0f));
-            cam.camera->lookAt(glm::vec3(0.0f, 0.0f, 0.0f));
+            EditorCameraChangedEvent ccEvent;
+            ccEvent.camera = &m_camera;
 
-            auto e = registry->create();
-            registry->assign<EditorCamera>(e, cam);
-            registry->assign<ExcludeFromHierarchy>(e);
+            postEvent(ccEvent);
         }
 
         void EditorCameraSystem::onExit() { }
 
-        void EditorCameraSystem::onUpdate(Timestep dt)
+        void EditorCameraSystem::onUpdate()
         {
-            using component::internal::EditorCamera;
-
-            auto view = registry->view<EditorCamera>();
-            for (auto& entity : view)
+            if (!m_doMoveCamera)
             {
-                auto cam = registry->get<EditorCamera>(entity).camera;
-                processCameraUpdate(dt, cam);
+                m_cameraMove = glm::vec3(0.0f);
+                m_cameraRotate = glm::vec3(0.0f);
+                return;
             }
+
+            m_camera->move(m_cameraMove * Time::unscaledDeltaTime());
+
+            static glm::vec3 realRotation = glm::vec3(20.0f, -45.0f, 0.0f);
+
+            realRotation += m_cameraRotate * m_cameraRotateSpeed * Time::unscaledDeltaTime();
+            if (realRotation.x > 89.0f) realRotation.x = 89.0f;
+            if (realRotation.x < -89.0f) realRotation.x = -89.0f;
+
+            m_camera->setRotation(realRotation);
+
+            m_cameraRotate = glm::vec3(0.0f);
         }
 
-        void EditorCameraSystem::onGuiRender(Timestep dt)
+        void EditorCameraSystem::onGuiRender()
         {
             ImGui::Begin("Camera##CameraSettings");
 
@@ -955,96 +1191,97 @@ namespace oyl
             ImGui::End();
         }
 
-        bool EditorCameraSystem::onEvent(Ref<Event> event)
+        bool EditorCameraSystem::onEvent(const Event& event)
         {
-            switch (event->type)
+            switch (event.type)
             {
-                case TypeKeyPressed:
+                case EventType::KeyPressed:
                 {
-                    auto e = (KeyPressedEvent) *event;
-                    if (e.keycode == Key_LeftAlt && !e.repeatCount)
+                    if (!m_doMoveCamera) break;
+
+                    auto e = event_cast<KeyPressedEvent>(event);
+                    if (!e.repeatCount)
                     {
-                        m_doMoveCamera ^= 1;
-
-                        CursorStateRequestEvent cursorRequest;
-
-                        cursorRequest.state = m_doMoveCamera ? Cursor_Disabled : Cursor_Enabled;
-
-                        postEvent(Event::create(cursorRequest));
+                        if (e.keycode == Key::W)
+                            m_cameraMove.z -= m_cameraMoveSpeed;
+                        if (e.keycode == Key::S)
+                            m_cameraMove.z += m_cameraMoveSpeed;
+                        if (e.keycode == Key::D)
+                            m_cameraMove.x += m_cameraMoveSpeed;
+                        if (e.keycode == Key::A)
+                            m_cameraMove.x -= m_cameraMoveSpeed;
+                        if (e.keycode == Key::Space)
+                            m_cameraMove.y += m_cameraMoveSpeed;
+                        if (e.keycode == Key::LeftControl)
+                            m_cameraMove.y -= m_cameraMoveSpeed;
                     }
+                    break;
+                }
+                case EventType::KeyReleased:
+                {
                     if (!m_doMoveCamera) break;
                     
-                    if (e.keycode == Key_W)
-                        m_cameraMove.z = -1;
-                    if (e.keycode == Key_S)
-                        m_cameraMove.z = 1;
-                    if (e.keycode == Key_D)
-                        m_cameraMove.x = 1;
-                    if (e.keycode == Key_A)
-                        m_cameraMove.x = -1;;
-                    if (e.keycode == Key_Space)
-                        m_cameraMove.y = 1;
-                    if (e.keycode == Key_LeftControl)
-                        m_cameraMove.y = -1;
+                    auto e = event_cast<KeyReleasedEvent>(event);
+                    if (e.keycode == Key::W)
+                        m_cameraMove.z += m_cameraMoveSpeed;
+                    if (e.keycode == Key::S)
+                        m_cameraMove.z -= m_cameraMoveSpeed;
+                    if (e.keycode == Key::D)
+                        m_cameraMove.x -= m_cameraMoveSpeed;
+                    if (e.keycode == Key::A)
+                        m_cameraMove.x += m_cameraMoveSpeed;
+                    if (e.keycode == Key::Space)
+                        m_cameraMove.y -= m_cameraMoveSpeed;
+                    if (e.keycode == Key::LeftControl)
+                        m_cameraMove.y += m_cameraMoveSpeed;
                     break;
                 }
-                case TypeKeyReleased:
-                {
-                    auto e = (KeyReleasedEvent) *event;
-                    if (e.keycode == Key_W || e.keycode == Key_S)
-                        m_cameraMove.z = 0;
-                    if (e.keycode == Key_D || e.keycode == Key_A)
-                        m_cameraMove.x = 0;
-                    if (e.keycode == Key_Space || e.keycode == Key_LeftControl)
-                        m_cameraMove.y = 0;
-                    break;
-                }
-                case TypeMouseMoved:
+                case EventType::MouseMoved:
                 {
                     if (!m_doMoveCamera) break;
 
-                    auto e = (MouseMovedEvent) *event;
+                    auto e = event_cast<MouseMovedEvent>(event);
                     m_cameraRotate.y = e.dx;
                     m_cameraRotate.x = e.dy;
 
                     break;
                 }
-                case TypeEditorViewportResized:
+                case EventType::MousePressed:
                 {
-                    using component::internal::EditorCamera;
-                    
-                    auto e    = (EditorViewportResizedEvent) *event;
-                    auto view = registry->view<EditorCamera>();
+                    auto e = event_cast<MousePressedEvent>(event);
+                    if (e.button == Mouse::Right)
+                    {
+                        m_doMoveCamera = true;
 
-                    auto pc = view.get(*view.begin());
+                        CursorStateRequestEvent cursorRequest;
+                        cursorRequest.state = CursorState::Disabled;
 
-                    glm::mat4 proj = glm::perspective(glm::radians(60.0f), e.width / e.height, 0.01f, 1000.0f);
-                    pc.camera->setProjection(proj);
+                        postEvent(cursorRequest);
+                    }
+                    break;
+                }
+                case EventType::MouseReleased:
+                {
+                    auto e = event_cast<MouseReleasedEvent>(event);
+                    if (e.button == Mouse::Right)
+                    {
+                        m_doMoveCamera = false;
+
+                        CursorStateRequestEvent cursorRequest;
+                        cursorRequest.state = CursorState::Normal;
+
+                        postEvent(cursorRequest);
+                    }
+                    break;
+                }
+                case EventType::EditorViewportResized:
+                {
+                    auto e = event_cast<EditorViewportResizedEvent>(event);
+                    glm::mat4 proj = glm::perspective(glm::radians(60.0f), e.width / e.height, 0.1f, 1000.0f);
+                    m_camera->setProjection(proj);
                 }
             }
             return false;
-        }
-
-        void EditorCameraSystem::processCameraUpdate(Timestep dt, const Ref<Camera>& camera)
-        {
-            if (!m_doMoveCamera) return;
-
-            glm::vec3 move = m_cameraMove;
-
-            if (move != glm::vec3(0.0f))
-                move = glm::normalize(move);
-
-            camera->move(move * m_cameraMoveSpeed * dt.getSeconds());
-
-            static glm::vec3 realRotation = glm::vec3(20.0f, -45.0f, 0.0f);
-
-            realRotation += m_cameraRotate * m_cameraRotateSpeed * dt.getSeconds();
-            if (realRotation.x > 89.0f) realRotation.x = 89.0f;
-            if (realRotation.x < -89.0f) realRotation.x = -89.0f;
-
-            camera->setRotation(realRotation);
-
-            m_cameraRotate = glm::vec3(0.0f);
         }
 
         // ^^^ Editor Camera System vvv //
@@ -1053,41 +1290,38 @@ namespace oyl
 
         void EditorRenderSystem::onEnter()
         {
-            listenForEventType(TypeWindowResized);
-            listenForAllEvents();
+            listenForEventType(EventType::WindowResized);
+            listenForEventType(EventType::EditorCameraChanged);
 
             m_editorViewportBuffer = FrameBuffer::create(1);
             m_editorViewportBuffer->initDepthTexture(1, 1);
-            m_editorViewportBuffer->initColorTexture(0, 1, 1, oyl::RGBA8, oyl::Nearest, oyl::Clamp);
+            m_editorViewportBuffer->initColorTexture(0, 1, 1, Texture::RGBA8, Texture::Nearest, Texture::Clamp);
 
             EditorViewportHandleChangedEvent handleChanged;
             handleChanged.handle = m_editorViewportBuffer->getColorHandle(0);
-            postEvent(Event::create(handleChanged));
+            postEvent(handleChanged);
         }
 
         void EditorRenderSystem::onExit() { }
 
-        void EditorRenderSystem::onUpdate(Timestep dt)
+        void EditorRenderSystem::onUpdate()
         {
             using component::Transform;
             using component::Renderable;
             using component::PlayerCamera;
             using component::PointLight;
-            using component::internal::EditorCamera;
             
             m_editorViewportBuffer->clear();
             m_editorViewportBuffer->bind();
 
-            // TODO: Make EditorCamera like PlayerCamers
-            auto camView = registry->view<EditorCamera>();
-            Ref<Camera> currentCamera = camView.get(*camView.begin()).camera;
+            RenderCommand::setDrawRect(0, 0, m_windowSize.x, m_windowSize.y);
 
             const auto& skybox = TextureCubeMap::get(DEFAULT_SKYBOX_ALIAS);
             const auto& shader = Shader::get(SKYBOX_SHADER_ALIAS);
             const auto& mesh   = Mesh::get(CUBE_MESH_ALIAS);
 
-            glm::mat4 viewProj = currentCamera->getProjectionMatrix();
-            viewProj *= glm::mat4(glm::mat3(currentCamera->getViewMatrix()));
+            glm::mat4 viewProj = m_targetCamera->getProjectionMatrix();
+            viewProj *= glm::mat4(glm::mat3(m_targetCamera->getViewMatrix()));
             shader->bind();
             shader->setUniformMat4("u_viewProjection", viewProj);
 
@@ -1102,18 +1336,19 @@ namespace oyl
             registry->sort<Renderable>(
                 [](const Renderable& lhs, const Renderable& rhs)
                 {
+                    if (lhs.material == nullptr || lhs.mesh == nullptr)
+                        return false;
                     if (rhs.material == nullptr || rhs.mesh == nullptr)
                         return true;
-                    else if (lhs.material == nullptr || lhs.mesh == nullptr)
-                        return false;
-                    else if (lhs.material->shader != rhs.material->shader)
+                    if (lhs.material->shader != rhs.material->shader)
                         return lhs.material->shader < rhs.material->shader;
-                    else
-                        return lhs.material < rhs.material;
+                    return lhs.material < rhs.material;
                 });
 
             Ref<Material> boundMaterial = Material::create();
             Ref<Shader>   tempShader    = Shader::get(LIGHTING_SHADER_ALIAS);
+
+            bool doCulling = true;
 
             auto view = registry->view<Renderable>();
             for (auto entity : view)
@@ -1128,45 +1363,67 @@ namespace oyl
                     *boundMaterial = *mr.material;
                     boundMaterial->shader = tempShader;
 
-                    boundMaterial->setUniformMat4("u_view", currentCamera->getViewMatrix());
-                    boundMaterial->setUniformMat4("u_viewProjection", currentCamera->getViewProjectionMatrix());
-                    glm::mat4 viewNormal = glm::mat4(currentCamera->getViewMatrix());
+                    boundMaterial->setUniformMat4("u_view", m_targetCamera->getViewMatrix());
+                    boundMaterial->setUniformMat4("u_viewProjection", m_targetCamera->getViewProjectionMatrix());
+                    glm::mat4 viewNormal = glm::mat4(m_targetCamera->getViewMatrix());
                     viewNormal = glm::inverse(glm::transpose(viewNormal));
                     boundMaterial->setUniformMat3("u_viewNormal", glm::mat4(viewNormal));
 
-                    auto lightView      = registry->view<PointLight>();
-                    auto lightProps     = lightView.get(lightView[0]);
-                    auto lightTransform = registry->get<Transform>(lightView[0]);
+                    auto lightView = registry->view<PointLight>();
+                    int count = 0;
+                    for (auto light : lightView)
+                    {
+                        auto lightProps = lightView.get(light);
+                        auto lightTransform = registry->get<Transform>(light);
 
-                    boundMaterial->setUniform3f("u_pointLight.position",
-                                                viewNormal * glm::vec4(lightTransform.getPosition(), 1.0f));
-                    boundMaterial->setUniform3f("u_pointLight.ambient", lightProps.ambient);
-                    boundMaterial->setUniform3f("u_pointLight.diffuse", lightProps.diffuse);
-                    boundMaterial->setUniform3f("u_pointLight.specular", lightProps.specular);
-
+                        boundMaterial->setUniform3f("u_pointLight[" + std::to_string(count) + "].position",
+                                                    m_targetCamera->getViewMatrix() * glm::vec4(lightTransform.getPositionGlobal(), 1.0f));
+                        boundMaterial->setUniform3f("u_pointLight[" + std::to_string(count) + "].ambient",
+                                                    lightProps.ambient);
+                        boundMaterial->setUniform3f("u_pointLight[" + std::to_string(count) + "].diffuse",
+                                                    lightProps.diffuse);
+                        boundMaterial->setUniform3f("u_pointLight[" + std::to_string(count) + "].specular",
+                                                    lightProps.specular);
+                        count++;
+                    }
+                    
                     boundMaterial->bind();
                     boundMaterial->applyUniforms();
                 }
 
-                const glm::mat4& transform = registry->get_or_assign<Transform>(entity).getMatrixGlobal();
+                auto& transformComponent = registry->get_or_assign<Transform>(entity);
+                glm::mat4 transform = transformComponent.getMatrixGlobal();
 
+                glm::bvec3 mirror = transformComponent.getMirrorGlobal();
+                if (!(mirror.x ^ mirror.y ^ mirror.z) != doCulling)
+                {
+                    doCulling ^= 1;
+                    RenderCommand::setBackfaceCulling(doCulling);
+                }
+                
                 Renderer::submit(mr.mesh, boundMaterial, transform);
             }
 
             m_editorViewportBuffer->unbind();
         }
 
-        void EditorRenderSystem::onGuiRender(Timestep dt) { }
+        void EditorRenderSystem::onGuiRender() { }
 
-        bool EditorRenderSystem::onEvent(Ref<Event> event)
+        bool EditorRenderSystem::onEvent(const Event& event)
         {
-            switch (event->type)
+            switch (event.type)
             {
-                case TypeWindowResized:
+                case EventType::WindowResized:
                 {
-                    auto e = (WindowResizedEvent) *event;
+                    auto e = event_cast<WindowResizedEvent>(event);
                     m_editorViewportBuffer->updateViewport(e.width, e.height);
+                    m_windowSize = { e.width, e.height };
                     return true;
+                }
+                case EventType::EditorCameraChanged:
+                {
+                    auto e = event_cast<EditorCameraChangedEvent>(event);
+                    m_targetCamera = *e.camera;
                 }
             }
             return false;

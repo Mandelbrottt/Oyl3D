@@ -131,9 +131,9 @@ namespace oyl
         m_vbo = VertexBuffer::create(unpackedData.data(), unpackedData.size() * sizeof(float));
 
         BufferLayout layout = {
-            { Float3, "a_position" },
-            { Float2, "a_textureUV" },
-            { Float3, "a_normal" },
+            { DataType::Float3, "a_position" },
+            { DataType::Float2, "a_textureUV" },
+            { DataType::Float3, "a_normal" },
         };
 
         m_vbo->setLayout(layout);

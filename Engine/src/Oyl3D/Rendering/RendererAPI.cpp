@@ -3,5 +3,5 @@
 
 namespace oyl
 {
-    OylEnum RendererAPI::s_API = API_OpenGL;
+    RendererAPI::API RendererAPI::s_API = OpenGL;
 }
