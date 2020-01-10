@@ -24,9 +24,9 @@ public:
 
 	void onEnter() override
 	{
-		addToCategoryMask(CategoryKeyboard);
-		addToCategoryMask(CategoryMouse);
-		this->listenForEventCategory((OylEnum)CategoryGarbagePile);
+		this->listenForEventCategory(EventCategory::Keyboard);
+		this->listenForEventCategory(EventCategory::Mouse);
+		this->listenForEventCategory(CategoryGarbagePile);
 
 		scheduleSystemUpdate<PlayerSystem>();
 		scheduleSystemUpdate<CannonSystem>();
@@ -48,7 +48,7 @@ public:
 			auto& uiType = registry->assign<PlayerInteractionType>(e);
 			uiType.type = PlayerInteractionResult::pushCannon;
 
-            auto& so = registry->assign<component::SceneObject>(e);
+            auto& so = registry->assign<component::EntityInfo>(e);
             so.name = "Push Cannon Message";
             
             auto& gui = registry->assign<component::GuiRenderable>(e);
@@ -65,7 +65,7 @@ public:
 			auto& uiType = registry->assign<PlayerInteractionType>(e);
 			uiType.type = PlayerInteractionResult::loadCannon;
 
-            auto& so = registry->assign<component::SceneObject>(e);
+            auto& so = registry->assign<component::EntityInfo>(e);
             so.name = "Load Cannon Message";
 
             auto& gui = registry->assign<component::GuiRenderable>(e);
@@ -82,7 +82,7 @@ public:
 			auto& uiType = registry->assign<PlayerInteractionType>(e);
 			uiType.type = PlayerInteractionResult::takeCannonballFromCrate;
 
-            auto& so = registry->assign<component::SceneObject>(e);
+            auto& so = registry->assign<component::EntityInfo>(e);
             so.name = "Cannonball Crate Message";
 
             auto& gui = registry->assign<component::GuiRenderable>(e);
@@ -99,7 +99,7 @@ public:
 			auto& uiType = registry->assign<PlayerInteractionType>(e);
 			uiType.type = PlayerInteractionResult::pickUpCannonball;
 
-			auto& so = registry->assign<component::SceneObject>(e);
+			auto& so = registry->assign<component::EntityInfo>(e);
 			so.name = "Pickup Cannonball Message";
 
 			auto& gui = registry->assign<component::GuiRenderable>(e);
@@ -116,7 +116,7 @@ public:
 			auto& uiType = registry->assign<PlayerInteractionType>(e);
 			uiType.type = PlayerInteractionResult::pickUpMop;
 
-            auto& so = registry->assign<component::SceneObject>(e);
+            auto& so = registry->assign<component::EntityInfo>(e);
             so.name = "Pickup Mop Message";
 
             auto& gui = registry->assign<component::GuiRenderable>(e);
@@ -133,7 +133,7 @@ public:
 			auto& uiType = registry->assign<PlayerInteractionType>(e);
 			uiType.type = PlayerInteractionResult::pickUpCleaningSolution;
 
-			auto& so = registry->assign<component::SceneObject>(e);
+			auto& so = registry->assign<component::EntityInfo>(e);
 			so.name = "Pickup Cleaning Solution Message";
 
 			auto& gui = registry->assign<component::GuiRenderable>(e);
@@ -150,7 +150,7 @@ public:
 			auto& uiType = registry->assign<PlayerInteractionType>(e);
 			uiType.type = PlayerInteractionResult::pickUpGloop;
 
-			auto& so = registry->assign<component::SceneObject>(e);
+			auto& so = registry->assign<component::EntityInfo>(e);
 			so.name = "Pickup Gloop Message";
 
 			auto& gui = registry->assign<component::GuiRenderable>(e);
@@ -167,7 +167,7 @@ public:
 			auto& uiType = registry->assign<PlayerInteractionType>(e);
 			uiType.type = PlayerInteractionResult::useGloop;
 
-			auto& so = registry->assign<component::SceneObject>(e);
+			auto& so = registry->assign<component::EntityInfo>(e);
 			so.name = "Use Gloop Message";
 
 			auto& gui = registry->assign<component::GuiRenderable>(e);
@@ -184,7 +184,7 @@ public:
 			auto& uiType = registry->assign<PlayerInteractionType>(e);
 			uiType.type = PlayerInteractionResult::cleanGarbagePile;
 
-            auto& so = registry->assign<component::SceneObject>(e);
+            auto& so = registry->assign<component::EntityInfo>(e);
             so.name = "Clean Garbage Message";
 
             auto& gui = registry->assign<component::GuiRenderable>(e);
@@ -201,7 +201,7 @@ public:
 			auto& uiType = registry->assign<PlayerInteractionType>(e);
 			uiType.type = PlayerInteractionResult::cannonFiringSoon;
 
-            auto& so = registry->assign<component::SceneObject>(e);
+            auto& so = registry->assign<component::EntityInfo>(e);
             so.name = "Cannon Firing Message";
             
             auto& gui = registry->assign<component::GuiRenderable>(e);
@@ -221,7 +221,7 @@ public:
 			t.setScale(glm::vec3(0.2f, 0.2f, 1.0f));
 			registry->assign<component::Transform>(e, t);
 
-			auto& so = registry->assign<component::SceneObject>(e);
+			auto& so = registry->assign<component::EntityInfo>(e);
 			so.name = "Normal Reticle";
 		}
 
@@ -238,7 +238,7 @@ public:
 			t.setScale(glm::vec3(0.5f, 0.5f, 1.0f));
 			registry->assign<component::Transform>(e, t);
 
-			auto& so = registry->assign<component::SceneObject>(e);
+			auto& so = registry->assign<component::EntityInfo>(e);
 			so.name = "Invalid Reticle";
 		}
 
@@ -254,7 +254,7 @@ public:
 			auto& endScreen = registry->assign<EndScreen>(e);
 			endScreen.isLoseScreen = false;
 
-			auto& so = registry->assign<component::SceneObject>(e);
+			auto& so = registry->assign<component::EntityInfo>(e);
 			so.name = "Win Screen";
 		}
 
@@ -270,7 +270,7 @@ public:
 			loseScreenTransform.setPosition(glm::vec3(-100.0f, -100.0f, -200.0f));
 			registry->assign<component::Transform>(e, loseScreenTransform);
 
-			auto& so = registry->assign<component::SceneObject>(e);
+			auto& so = registry->assign<component::EntityInfo>(e);
 			so.name = "Lose Screen";
 		}
 
@@ -287,7 +287,7 @@ public:
 				garbageTickTransform.setPosition(glm::vec3(-100.0f, -100.0f, -200.0f));
 				registry->assign<component::Transform>(e, garbageTickTransform);
 
-				auto& so = registry->assign<component::SceneObject>(e);
+				auto& so = registry->assign<component::EntityInfo>(e);
 				so.name = "Garbage Tick" + std::to_string(i);
 			}
 		}
@@ -303,7 +303,7 @@ public:
 			cleaningEventBackgroundTransform.setScale(glm::vec3(2.0f, 1.5f, 1.0f));
 			registry->assign<component::Transform>(cleaningQuicktimeEventBackgroundEntity, cleaningEventBackgroundTransform);
 
-			auto& cleaningQuicktimeEventBackgroundSceneObject = registry->assign<component::SceneObject>(cleaningQuicktimeEventBackgroundEntity);
+			auto& cleaningQuicktimeEventBackgroundSceneObject = registry->assign<component::EntityInfo>(cleaningQuicktimeEventBackgroundEntity);
 			cleaningQuicktimeEventBackgroundSceneObject.name = "Cleaning Quicktime Event Background";
 
 
@@ -325,7 +325,7 @@ public:
 			cleaningEventIndicatorTransform.setScale(glm::vec3(1.5f, 2.0f, 1.0f));
 			registry->assign<component::Transform>(cleaningQuicktimeEventIndicatorEntity, cleaningEventIndicatorTransform);
 
-			auto& cleaningQuicktimeEventIndicatorEntitySceneObject = registry->assign<component::SceneObject>(cleaningQuicktimeEventIndicatorEntity);
+			auto& cleaningQuicktimeEventIndicatorEntitySceneObject = registry->assign<component::EntityInfo>(cleaningQuicktimeEventIndicatorEntity);
 			cleaningQuicktimeEventIndicatorEntitySceneObject.name = "Cleaning Quicktime Event Indicator";
 		}
 
@@ -335,7 +335,7 @@ public:
 			auto& camera = registry->assign<component::PlayerCamera>(playerCameraEntity);
 			camera.player = 0;
 			camera.projection = glm::perspective(glm::radians(60.0f), 16.0f / 9.0f, 0.01f, 1000.0f);
-			auto& so = registry->assign<component::SceneObject>(playerCameraEntity);
+			auto& so = registry->assign<component::EntityInfo>(playerCameraEntity);
 			so.name = "Player Camera";
 		}
 	}
