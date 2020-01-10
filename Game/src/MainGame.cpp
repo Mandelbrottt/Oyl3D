@@ -11,6 +11,7 @@
 #include "UIManagerSystem.h"
 #include "CannonballSystem.h"
 #include "GloopSystem.h"
+#include "CleaningQuicktimeEventSystem.h"
 
 using namespace oyl;
 
@@ -35,6 +36,7 @@ public:
 		scheduleSystemUpdate<UIManagerSystem>();
 		scheduleSystemUpdate<CannonballSystem>();
 		scheduleSystemUpdate<GloopSystem>();
+		scheduleSystemUpdate<CleaningQuicktimeEventSystem>();
 
 		{
 			auto e = registry->create();
@@ -288,6 +290,40 @@ public:
 				auto& so = registry->assign<component::SceneObject>(e);
 				so.name = "Garbage Tick" + std::to_string(i);
 			}
+		}
+
+		{
+			entt::entity e = registry->create();
+			auto& gui = registry->assign<component::GuiRenderable>(e);
+			gui.texture = Texture2D::cache("res/assets/textures/gui/cleaningQuicktimeEventBackground.png");
+
+			component::Transform cleaningEventBackgroundTransform;
+			cleaningEventBackgroundTransform.setPosition(glm::vec3(0.0f, 3.5f, 0.0f));
+			cleaningEventBackgroundTransform.setScale(glm::vec3(2.0f, 1.5f, 1.0f));
+			registry->assign<component::Transform>(e, cleaningEventBackgroundTransform);
+
+			auto& so = registry->assign<component::SceneObject>(e);
+			so.name = "Cleaning Quicktime Event Background";
+		}
+
+		{
+			entt::entity e = registry->create();
+			auto& gui = registry->assign<component::GuiRenderable>(e);
+			gui.texture = Texture2D::cache("res/assets/textures/gui/cleaningQuicktimeEventIndicator.png");
+
+			CleaningQuicktimeEventIndicator cleaningQuicktimeEventIndicator;
+			cleaningQuicktimeEventIndicator.lerpInformation.startPos       = glm::vec3(-4.95f, 3.6f, 0.0f);
+			cleaningQuicktimeEventIndicator.lerpInformation.destinationPos = glm::vec3(4.95f, 3.6f, 0.0f);
+			cleaningQuicktimeEventIndicator.lerpInformation.speed          = 1.0f;
+			registry->assign<CleaningQuicktimeEventIndicator>(e, cleaningQuicktimeEventIndicator);
+
+			component::Transform cleaningEventIndicatorTransform;
+			cleaningEventIndicatorTransform.setPosition(glm::vec3(-4.95f, 3.6f, 0.0f));
+			cleaningEventIndicatorTransform.setScale(glm::vec3(1.5f, 2.0f, 1.0f));
+			registry->assign<component::Transform>(e, cleaningEventIndicatorTransform);
+
+			auto& so = registry->assign<component::SceneObject>(e);
+			so.name = "Cleaning Quicktime Event Indicator";
 		}
 
 		{

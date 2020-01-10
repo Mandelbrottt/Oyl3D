@@ -3,7 +3,6 @@
 void PlayerInteractionValidationSystem::onEnter()
 {
 	this->listenForEventCategory((OylEnum)CategoryPlayer);
-	this->listenForEventCategory((OylEnum)CategoryCannon);
 }
 
 void PlayerInteractionValidationSystem::onExit()
@@ -25,13 +24,7 @@ bool PlayerInteractionValidationSystem::onEvent(Ref<Event> event)
 	    case TypePlayerInteractionRequest:
 	    {
 			auto evt = (PlayerInteractionRequestEvent)* event;
-	        
-			auto playerView = registry->view<Player, component::Transform>();
-			for (entt::entity playerEntity : playerView)
-			{
-			    if (evt.playerEntity == playerEntity)
-					validateInteraction(playerEntity);
-			}
+			validateInteraction(evt.playerEntity);
 	        
 			break;
 	    }

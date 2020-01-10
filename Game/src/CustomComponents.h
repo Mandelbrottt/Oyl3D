@@ -61,6 +61,7 @@ struct MoveableUsingLerp
 	glm::vec3 destinationPos;
 
 	float speed;
+	bool  isMovingForward = true;
 	float interpolationParam = 0.0f;
 };
 
@@ -173,4 +174,14 @@ struct GarbageTick
 {
 	float ON_SCREEN_DURATION = 2.5f;
 	float onScreenCountdown = ON_SCREEN_DURATION;
+};
+
+struct CleaningQuicktimeEventIndicator
+{
+	bool isActive = true;
+
+	float LOWER_BOUND_FOR_SUCCESS = 0.4f;
+	float UPPER_BOUND_FOR_SUCCESS = 0.6f;
+
+	MoveableUsingLerp lerpInformation;
 };
