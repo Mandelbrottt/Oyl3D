@@ -313,8 +313,8 @@ public:
 			cleaningQuicktimeEventIndicatorGui.texture = Texture2D::cache("res/assets/textures/gui/cleaningQuicktimeEventIndicator.png");
 
 			CleaningQuicktimeEventIndicator cleaningQuicktimeEventIndicator;
-			cleaningQuicktimeEventIndicator.lerpInformation.startPos       = glm::vec3(-4.95f, 3.6f, 0.0f);
-			cleaningQuicktimeEventIndicator.lerpInformation.destinationPos = glm::vec3(4.95f, 3.6f, 0.0f);
+			cleaningQuicktimeEventIndicator.lerpInformation.startPos       = glm::vec3(-4.95f, 3.6f, -1.0f);
+			cleaningQuicktimeEventIndicator.lerpInformation.destinationPos = glm::vec3(4.95f, 3.6f, -1.0f);
 			cleaningQuicktimeEventIndicator.lerpInformation.speed          = 1.0f;
 
 			cleaningQuicktimeEventIndicator.cleaningQuicktimeEventBackground = cleaningQuicktimeEventBackgroundEntity;
