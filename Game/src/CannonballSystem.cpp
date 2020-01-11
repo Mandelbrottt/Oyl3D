@@ -2,7 +2,7 @@
 
 void CannonballSystem::onEnter()
 {
-	this->listenForEventCategory((OylEnum)CategoryCannon);
+	this->listenForEventCategory((EventCategory)CategoryCannon);
 }
 
 void CannonballSystem::onExit()
@@ -10,7 +10,7 @@ void CannonballSystem::onExit()
 
 }
 
-void CannonballSystem::onUpdate(Timestep dt)
+void CannonballSystem::onUpdate()
 {
 	auto view = registry->view<Cannonball, CarryableItem, component::Transform>();
 	for (auto& cannonballEntity : view)
@@ -22,7 +22,7 @@ void CannonballSystem::onUpdate(Timestep dt)
 		if (cannonball.isBeingFired)
 		{
 			cannonball.interpolationParam = std::min(
-				cannonball.interpolationParam + 0.7f * dt,
+				cannonball.interpolationParam + 0.7f * Time::deltaTime(),
 				1.0f);
 			
 			cannonballTransform.setPosition(glm::catmullRom(
@@ -44,13 +44,13 @@ void CannonballSystem::onUpdate(Timestep dt)
 	}
 }
 
-bool CannonballSystem::onEvent(Ref<Event> event)
+bool CannonballSystem::onEvent(const Event& event)
 {
-	switch (event->type)
+	switch (event.type)
 	{
-		case TypeCannonFired:
+		case (EventType) TypeCannonFired:
 		{
-			auto evt = (CannonFiredEvent)* event;
+			auto evt = event_cast<CannonFiredEvent>(event);
 			
 			auto view = registry->view<Cannonball, CarryableItem, component::Transform>();
 			for (auto& cannonballEntity : view)

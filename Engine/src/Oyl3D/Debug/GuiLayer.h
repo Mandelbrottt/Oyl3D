@@ -4,6 +4,11 @@
 
 // TODO: Turn off mouse input when cursor is disabled
 
+namespace oyl
+{
+    class Camera;
+}
+
 namespace oyl::internal
 {
     class GuiLayer : public Layer
@@ -14,10 +19,10 @@ namespace oyl::internal
 
         void onEnter() override;
         void onExit() override;
-        void onUpdate(Timestep dt) override;
-        void onGuiRender(Timestep dt) override;
+        void onUpdate() override;
+        void onGuiRender() override;
 
-        bool onEvent(Ref<Event> event) override;
+        bool onEvent(const Event& event) override;
 
         void init();
         void shutdown();
@@ -31,23 +36,27 @@ namespace oyl::internal
         void setupGuiLibrary();
         void setupLayout();
 
-        void addToCommandHistory(UniqueRef<EditorCommand>&& command);
+        //void addToCommandHistory(UniqueRef<EditorCommand>&& command);
         
         void drawMenuBar();
 
         void drawSceneHierarchy();
         void drawEntityNode(entt::entity entity);
+
+        void setEntityParent(entt::entity entity, entt::entity parent);
         
         void drawInspector();
         void drawInspectorObjectName();
         void drawInspectorParent();
         void drawInspectorTransform();
-        void drawInspectorCollider();
+        void drawInspectorCollidable();
         void drawInspectorRenderable();
         void drawInspectorRigidBody();
-        
         void drawInspectorAddComponent();
 
+        void drawAssetList();
+        void updateAssetList();
+        
         void drawSceneViewport();
         void drawGameViewport();
 
@@ -80,5 +89,9 @@ namespace oyl::internal
         bool m_gameUpdate = false;
 
         u32 m_currentCommandPos;
+        
+        std::unordered_map<std::string, std::fs::file_time_type> m_fileSaveTimes;
+
+        Ref<Camera> m_editorCamera;
     };
 }

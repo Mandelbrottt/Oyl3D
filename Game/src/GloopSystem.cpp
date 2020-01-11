@@ -2,7 +2,7 @@
 
 void GloopSystem::onEnter()
 {
-	this->listenForEventCategory((OylEnum)CategoryGloop);
+	this->listenForEventCategory((EventCategory)CategoryGloop);
 }
 
 void GloopSystem::onExit()
@@ -10,18 +10,18 @@ void GloopSystem::onExit()
 
 }
 
-void GloopSystem::onUpdate(Timestep dt)
+void GloopSystem::onUpdate()
 {
 	
 }
 
-bool GloopSystem::onEvent(Ref<Event> event)
+bool GloopSystem::onEvent(const Event& event)
 {
-	switch (event->type)
+	switch (event.type)
 	{
-		case TypeUseGloop:
+		case (EventType)TypeUseGloop:
 		{
-			auto evt = (UseGloopEvent)* event;
+			auto evt = event_cast<UseGloopEvent>(event);
 			auto& gloop = registry->get<Gloop>(evt.gloopEntity);
 				
 			gloop.numUses--;

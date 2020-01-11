@@ -1,7 +1,11 @@
 #include "oylpch.h"
 #include "SceneToFile.h"
 
-#include "ECS/Component.h"
+#include "Components/Collidable.h"
+#include "Components/Misc.h"
+#include "Components/Renderable.h"
+#include "Components/RigidBody.h"
+#include "Components/Transform.h"
 
 #include "Graphics/Material.h"
 #include "Graphics/Mesh.h"
@@ -42,7 +46,7 @@ namespace oyl::internal
 
     void loadSceneFromFile(Scene& scene)
     {
-        using component::SceneObject;
+        using component::EntityInfo;
 
         std::ifstream sceneFile("res/scenes/" + scene.m_name + ".oylscene");
         if (!sceneFile)
@@ -52,14 +56,14 @@ namespace oyl::internal
         sceneFile >> sceneJson;
         sceneFile.close();
 
-        auto view = scene.m_registry->view<SceneObject>();
+        auto view = scene.m_registry->view<EntityInfo>();
         for (auto& [key, value] : sceneJson.items())
         {
             entt::entity entityToLoad = entt::null;
 
             for (auto entity : view)
             {
-                SceneObject& so = view.get(entity);
+                EntityInfo& so = view.get(entity);
                 if (so.name == key)
                 {
                     entityToLoad = entity;
@@ -69,7 +73,7 @@ namespace oyl::internal
             if (entityToLoad == entt::null)
                 entityToLoad = scene.m_registry->create();
 
-            auto& so = scene.m_registry->get_or_assign<SceneObject>(entityToLoad);
+            auto& so = scene.m_registry->get_or_assign<EntityInfo>(entityToLoad);
             so.name = key;
             
             if (value.find("Transform") != value.end())
@@ -89,7 +93,7 @@ namespace oyl::internal
         {
             for (auto entity : view)
             {
-                SceneObject& so = view.get(entity);
+                EntityInfo& so = view.get(entity);
                 if (so.name == key)
                 {
                     if (value.find("Parent") != value.end() &&
@@ -118,13 +122,13 @@ namespace oyl::internal
 
     void saveTransforms(json& j, entt::registry& registry)
     {
-        using component::SceneObject;
+        using component::EntityInfo;
         using component::Transform;
 
-        auto view = registry.view<SceneObject, Transform>();
+        auto view = registry.view<EntityInfo, Transform>();
         for (auto entity : view)
         {
-            auto& so = view.get<SceneObject>(entity);
+            auto& so = view.get<EntityInfo>(entity);
             auto& t = view.get<Transform>(entity);
 
             auto& jName = j[so.name]["Transform"];
@@ -148,33 +152,35 @@ namespace oyl::internal
 
     void saveParents(json& j, entt::registry& registry)
     {
-        using component::SceneObject;
+        using component::EntityInfo;
         using component::Parent;
 
-        auto view = registry.view<SceneObject, Parent>();
+        auto view = registry.view<EntityInfo, Parent>();
         for (auto entity : view)
         {
-            auto& so = view.get<SceneObject>(entity);
+            auto& so = view.get<EntityInfo>(entity);
             auto& pa = view.get<Parent>(entity);
 
             if (registry.valid(pa.parent))
-                j[so.name]["Parent"]["Name"] = registry.get<SceneObject>(pa.parent).name;
+                j[so.name]["Parent"]["Name"] = registry.get<EntityInfo>(pa.parent).name;
         }
     }
 
     static void saveRenderables(json& j, entt::registry& registry)
     {
-        using component::SceneObject;
+        using component::EntityInfo;
         using component::Renderable;
 
-        auto view = registry.view<SceneObject, Renderable>();
+        auto view = registry.view<EntityInfo, Renderable>();
         for (auto entity : view)
         {
-            auto& so = view.get<SceneObject>(entity);
+            auto& so = view.get<EntityInfo>(entity);
             auto& re = view.get<Renderable>(entity);
 
             auto& jName = j[so.name]["Renderable"];
 
+            jName["Enabled"] = re.enabled;
+            
             if (re.mesh)
             {
                 auto& jMesh = jName["Mesh"];
@@ -199,19 +205,19 @@ namespace oyl::internal
 
                         switch (info.type)
                         {
-                            case VertexShader:
+                            case Shader::Vertex:
                                 type = "Vertex";
                                 break;
-                            case GeometryShader:
+                            case Shader::Geometry:
                                 type = "Geometry";
                                 break;
-                            case TessControlShader:
+                            case Shader::TessControl:
                                 type = "TessControl";
                                 break;
-                            case TessEvaluationShader:
+                            case Shader::TessEvaluation:
                                 type = "TessEvaluation";
                                 break;
-                            case PixelShader:
+                            case Shader::Pixel:
                                 type = "Pixel";
                                 break;
                             default:
@@ -283,11 +289,11 @@ namespace oyl::internal
     
     void loadParent(const json& j, entt::registry& registry, entt::entity entity)
     {
-        using component::SceneObject;
+        using component::EntityInfo;
         using component::Parent;
         
         std::string name = j["Name"].get<std::string>();
-        auto view = registry.view<SceneObject>();
+        auto view = registry.view<EntityInfo>();
         for (auto e : view)
         {
             if (view.get(e).name == name)
@@ -304,6 +310,9 @@ namespace oyl::internal
 
         auto& re = registry.get_or_assign<Renderable>(entity);
 
+        if (j.find("Enabled") != j.end())
+            re.enabled = j["Enabled"].get<bool>();
+
         if (j.find("Mesh") != j.end())
         {
             auto alias    = j["Mesh"]["Alias"].get<std::string>();
@@ -318,7 +327,9 @@ namespace oyl::internal
             else
                 re.mesh = Mesh::cache(filePath, alias);
         }
-        else re.mesh = Mesh::get(INVALID_ALIAS);
+        //else re.mesh = Mesh::get(INVALID_ALIAS);
+        // TEMPORARY:
+        else re.mesh = nullptr;
 
         if (j.find("Material") != j.end())
         {
@@ -342,19 +353,19 @@ namespace oyl::internal
                     infos.reserve(5);
                     
                     if (jSha.find("Vertex") != jSha.end())
-                        infos.push_back({ VertexShader, jSha["Vertex"].get<std::string>() });
+                        infos.push_back({ Shader::Vertex, jSha["Vertex"].get<std::string>() });
 
                     if (jSha.find("Geometry") != jSha.end())
-                        infos.push_back({ GeometryShader, jSha["Geometry"].get<std::string>() });
+                        infos.push_back({ Shader::Geometry, jSha["Geometry"].get<std::string>() });
 
                     if (jSha.find("TessControl") != jSha.end())
-                        infos.push_back({ TessControlShader, jSha["TessControl"].get<std::string>() });
+                        infos.push_back({ Shader::TessControl, jSha["TessControl"].get<std::string>() });
 
                     if (jSha.find("TessEvaluation") != jSha.end())
-                        infos.push_back({ TessEvaluationShader, jSha["TessEvaluation"].get<std::string>() });
+                        infos.push_back({ Shader::TessEvaluation, jSha["TessEvaluation"].get<std::string>() });
 
                     if (jSha.find("Pixel") != jSha.end())
-                        infos.push_back({ PixelShader, jSha["Pixel"].get<std::string>() });
+                        infos.push_back({ Shader::Pixel, jSha["Pixel"].get<std::string>() });
 
                     Shader::cache(infos, alias);
                 }

@@ -2,14 +2,14 @@
 
 void CannonSystem::onEnter()
 {
-	this->listenForEventCategory((OylEnum)CategoryCannon);
+	this->listenForEventCategory((EventCategory)CategoryCannon);
 }
 
 void CannonSystem::onExit()
 {
 }
 
-void CannonSystem::onUpdate(Timestep dt)
+void CannonSystem::onUpdate()
 {
 	auto view = registry->view<Cannon, component::Transform>();
 	for (auto& entity : view)
@@ -18,7 +18,7 @@ void CannonSystem::onUpdate(Timestep dt)
 	    auto& cannonTransform = registry->get<component::Transform>(entity);
 	    
 	    //update fuse for every cannon
-		updateFuse(dt, &cannon, &cannonTransform);
+		updateFuse(Time::deltaTime(), &cannon, &cannonTransform);
 
 		switch (cannon.state)
 		{
@@ -30,18 +30,18 @@ void CannonSystem::onUpdate(Timestep dt)
 		    
 			case CannonState::firingSoon:
 		    {
-		        
+
 				break;
 		    }
 		    
 			case CannonState::beingPushed:
 		    {
 		        //wait before pushing (so the player can have the position adjusted)
-				cannon.waitBeforeBeingPushedCountdown -= dt;
+				cannon.waitBeforeBeingPushedCountdown -= Time::deltaTime();
 				if (cannon.waitBeforeBeingPushedCountdown < 0.0f)
 				{
 					cannon.pushStateData.interpolationParam = std::min(
-						cannon.pushStateData.interpolationParam + cannon.pushStateData.speed * dt,
+						cannon.pushStateData.interpolationParam + cannon.pushStateData.speed * Time::deltaTime(),
 						1.0f);
 
 					cannonTransform.setPosition(glm::mix(cannon.pushStateData.startPos, 
@@ -58,13 +58,13 @@ void CannonSystem::onUpdate(Timestep dt)
 	}
 }
 
-bool CannonSystem::onEvent(Ref<Event> event)
+bool CannonSystem::onEvent(const Event& event)
 {
-	switch (event->type)
+	switch (event.type)
 	{
-	    case TypeCannonStateChange:
+		case (EventType)TypeCannonStateChange:
 	    {
-			auto evt = (CannonStateChangeEvent)* event;
+			auto evt = event_cast<CannonStateChangeEvent>(event);
 			auto& cannon = registry->get<Cannon>(evt.cannonEntity);
 
 	        switch (evt.newState)
@@ -137,5 +137,5 @@ void CannonSystem::fireCannon(Cannon* a_cannon, component::Transform* a_cannonTr
 
 	CannonFiredEvent cannonFired;
 	cannonFired.cannonPosition = a_cannonTransform->getPosition();
-	postEvent(Event::create(cannonFired));
+	postEvent(cannonFired);
 }

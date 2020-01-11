@@ -14,9 +14,9 @@ namespace oyl::internal
 
     void SystemsLayer::onExit() {}
 
-    void SystemsLayer::onUpdate(Timestep dt) {}
+    void SystemsLayer::onUpdate() {}
 
-    void SystemsLayer::onGuiRender(Timestep dt) {}
+    void SystemsLayer::onGuiRender() {}
 
-    bool SystemsLayer::onEvent(Ref<Event> event) { return false; }
+    bool SystemsLayer::onEvent(const Event& event) { return false; }
 }

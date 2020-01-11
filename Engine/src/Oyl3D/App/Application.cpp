@@ -16,8 +16,6 @@
 
 #include "Input/GamepadListener.h"
 
-#include "Platform/Platform.h"
-
 #include "Scenes/Scene.h"
 #include "Scenes/SystemsLayer.h"
 
@@ -37,14 +35,14 @@ namespace oyl
         public:
             ApplicationListener()
             {
-                listenForEventCategory(CategoryWindow);
-                listenForEventCategory(CategoryKeyboard);
-                listenForEventCategory(CategoryMouse);
-                listenForEventCategory(CategoryCursorStateRequest);
+                listenForEventCategory(EventCategory::Window);
+                listenForEventCategory(EventCategory::Keyboard);
+                listenForEventCategory(EventCategory::Mouse);
+                listenForEventCategory(EventCategory::Cursor);
             }
 
         private:
-            virtual bool onEvent(Ref<Event> event) override
+            virtual bool onEvent(const Event& event) override
             {
                 return app->onEvent(event);
             }
@@ -60,6 +58,8 @@ namespace oyl
         OYL_ASSERT(!s_instance, "Application already exists!");
         s_instance = this;
 
+        Time::init();
+        
         Log::init();
 
         m_window = Window::create();
@@ -69,26 +69,26 @@ namespace oyl
 
         Shader::cache(
             {
-                { VertexShader, ENGINE_RES + LIGHTING_SHADER_VERTEX_PATH },
-                { PixelShader, ENGINE_RES + LIGHTING_SHADER_FRAGMENT_PATH },
+                { Shader::Vertex, ENGINE_RES + LIGHTING_SHADER_VERTEX_PATH },
+                { Shader::Pixel, ENGINE_RES + LIGHTING_SHADER_FRAGMENT_PATH },
             }, LIGHTING_SHADER_ALIAS);
 
         Shader::cache(
             {
-                { VertexShader, ENGINE_RES + "shaders/morphTargetLighting.vert" },
-                { PixelShader, ENGINE_RES + LIGHTING_SHADER_FRAGMENT_PATH },
+                { Shader::Vertex, ENGINE_RES + "shaders/morphTargetLighting.vert" },
+                { Shader::Pixel, ENGINE_RES + LIGHTING_SHADER_FRAGMENT_PATH },
             }, "animation");
 
         Shader::cache(
             {
-                { VertexShader, ENGINE_RES + "shaders/texturedQuad.vert" },
-                { PixelShader, ENGINE_RES + "shaders/texturedQuad.frag" }
+                { Shader::Vertex, ENGINE_RES + "shaders/texturedQuad.vert" },
+                { Shader::Pixel, ENGINE_RES + "shaders/texturedQuad.frag" }
             }, "texturedQuad");
 
         Shader::cache(
             {
-                { VertexShader, ENGINE_RES + SKYBOX_SHADER_VERTEX_PATH },
-                { PixelShader, ENGINE_RES + SKYBOX_SHADER_FRAGMENT_PATH }
+                { Shader::Vertex, ENGINE_RES + SKYBOX_SHADER_VERTEX_PATH },
+                { Shader::Pixel, ENGINE_RES + SKYBOX_SHADER_FRAGMENT_PATH }
             }, SKYBOX_SHADER_ALIAS);
 
         Mesh::cache(ENGINE_RES + CUBE_MESH_PATH, CUBE_MESH_ALIAS);
@@ -109,21 +109,19 @@ namespace oyl
         m_mainBuffer->initDepthTexture(m_window->getWidth(), m_window->getHeight());
 
         m_mainBuffer->initColorTexture(0, m_window->getWidth(), m_window->getHeight(),
-                                       oyl::RGBA8,
-                                       oyl::Nearest,
-                                       oyl::Clamp);
+                                       Texture::RGBA8,
+                                       Texture::Nearest,
+                                       Texture::Clamp);
 
-        ViewportHandleChangedEvent handleChanged;
-        handleChanged.handle = m_mainBuffer->getColorHandle(0);
+        ViewportHandleChangedEvent hcEvent;
+        hcEvent.handle = m_mainBuffer->getColorHandle(0);
 
-        m_dispatcher->postEvent(Event::create(handleChanged));
+        m_dispatcher->postEvent(hcEvent);
 
-        WindowResizedEvent wr;
-        wr.width = 1280;
-        wr.height = 720;
-        wr.args[2] = offsetof(WindowResizedEvent, width);
-        wr.args[3] = offsetof(WindowResizedEvent, height);
-        m_dispatcher->postEvent(Event::create(wr));
+        WindowResizedEvent wrEvent;
+        wrEvent.width = 1280;
+        wrEvent.height = 720;
+        m_dispatcher->postEvent(wrEvent);
 
         m_window->setVsync(false);
     }
@@ -142,36 +140,36 @@ namespace oyl
         m_renderSystem->onExit();
     }
 
-    bool Application::onEvent(const Ref<Event>& event)
+    bool Application::onEvent(const Event& event)
     {
         bool handled = false;
 
-        switch (event->type)
+        switch (event.type)
         {
-            case TypeWindowClosed:
+            case EventType::WindowClosed:
             {
                 m_running = false;
                 handled   = true;
                 break;
             }
-            case TypeWindowResized:
+            case EventType::WindowResized:
             {
-                auto e = (WindowResizedEvent) *event;
+                auto e = event_cast<WindowResizedEvent>(event);
                 m_window->updateViewport(e.width, e.height);
                 m_mainBuffer->updateViewport(e.width, e.height);
                 break;
             }
-            case TypeWindowFocused:
+            case EventType::WindowFocused:
             {
-                auto e = (WindowFocusedEvent) *event;
+                auto e = event_cast<WindowFocusedEvent>(event);
             #if defined(OYL_DISTRIBUTION)
                 m_doUpdate = e.focused;
             #endif
                 break;
             }
-            case TypeCursorStateRequest:
+            case EventType::CursorStateRequest:
             {
-                auto e = (CursorStateRequestEvent) *event;
+                auto e = event_cast<CursorStateRequestEvent>(event);
                 if (m_window->getCursorState() != e.state)
                     m_window->setCursorState(e.state);
                 break;
@@ -266,11 +264,8 @@ namespace oyl
     {        
         while (m_running)
         {
-            auto     time = (float) Platform::getTime();
-            Timestep realTimestep(time - m_lastFrameTime);
-            Timestep timestep(abs(realTimestep) > 1.0f / 30.0f ? 1.0f / 30.0f : realTimestep);
-            m_lastFrameTime = time;
-
+            Time::update();
+            
             if (m_doUpdate)
             {
                 m_dispatcher->dispatchEvents();
@@ -278,14 +273,14 @@ namespace oyl
             #if !defined(OYL_DISTRIBUTION)
                 if (m_guiLayer->doGameUpdate())
                 {
-                    m_systemsLayer->onUpdateSystems(timestep);
-                    m_systemsLayer->onUpdate(timestep);
+                    m_systemsLayer->onUpdateSystems();
+                    m_systemsLayer->onUpdate();
 
-                    m_currentScene->onUpdate(timestep);
+                    m_currentScene->onUpdate();
                 }
                 
-                m_guiLayer->onUpdateSystems(timestep);
-                m_guiLayer->onUpdate(timestep);
+                m_guiLayer->onUpdateSystems();
+                m_guiLayer->onUpdate();
             #else
                 m_systemsLayer->onUpdateSystems(timestep);
                 m_systemsLayer->onUpdate(timestep);
@@ -301,8 +296,8 @@ namespace oyl
 
                 Renderer::beginScene();
                 
-                m_renderSystem->onUpdate(timestep);
-                m_guiRenderSystem->onUpdate(timestep);
+                m_renderSystem->onUpdate();
+                m_guiRenderSystem->onUpdate();
 
                 Renderer::endScene();
                 m_mainBuffer->unbind();
@@ -311,14 +306,14 @@ namespace oyl
         #if !defined(OYL_DISTRIBUTION)
             m_guiLayer->begin();
 
-            m_renderSystem->onGuiRender(timestep);
-            m_guiRenderSystem->onGuiRender(timestep);
+            m_renderSystem->onGuiRender();
+            m_guiRenderSystem->onGuiRender();
 
-            m_guiLayer->onGuiRenderSystems(timestep);
-            m_guiLayer->onGuiRender(timestep);
+            m_guiLayer->onGuiRenderSystems();
+            m_guiLayer->onGuiRender();
 
             if (m_guiLayer->doGameUpdate())
-                m_currentScene->onGuiRender(timestep);
+                m_currentScene->onGuiRender();
 
             m_guiLayer->end();
         #else
@@ -328,7 +323,7 @@ namespace oyl
 
             m_window->onUpdate(m_doUpdate);
 
-            m_vibrationListener->onUpdate(timestep);
+            m_vibrationListener->onUpdate();
         }
     }
 

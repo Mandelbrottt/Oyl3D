@@ -64,14 +64,11 @@ namespace oyl
         m_listenerDeleteSet.emplace_back(std::move(listener));
     }
 
-    void EventDispatcher::postEvent(UniqueRef<Event> event)
+    void EventDispatcher::postEvent(const Event& event)
     {
-        if (event)
-        {
-            UniqueRef<Event> newEvent(nullptr);
-            m_eventQueue.emplace_back(std::move(event));
-        }
-                
+        UniqueRef<Event> eventToQueue = UniqueRef<Event>::create();
+        *eventToQueue = event;
+        m_eventQueue.emplace_back(std::move(eventToQueue));
     }
 
     void EventDispatcher::validateListeners()
@@ -135,31 +132,25 @@ namespace oyl
     {
         validateListeners();
 
-        UniqueRef<Event> event(nullptr);
-
-        auto it = m_eventQueue.begin();
-        for (; it != m_eventQueue.end(); ++it)
+        auto eventIt = m_eventQueue.begin();
+        for (; eventIt != m_eventQueue.end(); ++eventIt)
         {
-            event = std::move(*it);
-            
-            dispatchEvent(std::move(event));
+            dispatchEvent(std::move(*eventIt));
         }
         
         m_eventQueue.clear();
     }
 
-    void EventDispatcher::dispatchEvent(UniqueRef<Event> event)
+    void EventDispatcher::dispatchEvent(UniqueRef<Event>&& event)
     {
-        Ref<Event> dispatchEvent(std::move(event));
-
         for (const auto& listener : m_listeners)
         {
             auto li = listener.listener.lock();
             
-            if (li->getEventMask()[dispatchEvent->type] ||
-                li->getCategoryMask()[dispatchEvent->category])
+            if (li->getEventMask()[(i32) event->type] ||
+                li->getCategoryMask()[(i32) event->category])
             {
-                if (li->onEvent(dispatchEvent))
+                if (li->onEvent(*event))
                     break;
             }
         }

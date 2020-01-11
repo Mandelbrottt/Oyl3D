@@ -25,14 +25,14 @@ namespace oyl
         void registerListener(Ref<IEventListener> listener, Priority priority = 0);
         void unregisterListener(Ref<IEventListener> listener);
 
-        void postEvent(UniqueRef<Event> event);
+        void postEvent(const Event& event);
 
         void dispatchEvents();
 
     private:
         void validateListeners();
 
-        void dispatchEvent(UniqueRef<Event> event);
+        void dispatchEvent(UniqueRef<Event>&& event);
 
     private:
         std::vector<ListenerInfo> m_listeners;

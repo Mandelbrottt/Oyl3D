@@ -2,25 +2,25 @@
 
 void UIManagerSystem::onEnter()
 {
-	this->listenForEventCategory((OylEnum)CategoryPlayer);
-	this->listenForEventCategory((OylEnum)CategoryGarbagePile);
+	this->listenForEventCategory((EventCategory)CategoryPlayer);
+	this->listenForEventCategory((EventCategory)CategoryGarbagePile);
 }
 
 void UIManagerSystem::onExit()
 {
 }
 
-void UIManagerSystem::onUpdate(Timestep dt)
+void UIManagerSystem::onUpdate()
 {
 }
 
-bool UIManagerSystem::onEvent(Ref<Event> event)
+bool UIManagerSystem::onEvent(const Event& event)
 {
-	switch (event->type)
+	switch (event.type)
 	{
-		case TypePlayerInteractResult:
+		case (EventType)TypePlayerInteractResult:
 		{
-			auto evt = (PlayerInteractResultEvent)* event;
+			auto evt = event_cast<PlayerInteractResultEvent>(event);
 			switch (evt.interactionType)
 			{
 				case PlayerInteractionResult::nothing:
@@ -107,9 +107,9 @@ bool UIManagerSystem::onEvent(Ref<Event> event)
 
 			break;
 		}
-		case TypeGarbageCleaned:
+		case (EventType)TypeGarbageCleaned:
 		{
-			auto evt = (GarbageCleanedEvent)* event;
+			auto evt = event_cast<GarbageCleanedEvent>(event);
 
 			auto garbageTickView = registry->view<component::Transform, GarbageTick>();
 			int i = 0;

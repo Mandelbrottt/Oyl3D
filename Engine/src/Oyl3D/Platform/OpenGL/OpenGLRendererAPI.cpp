@@ -28,6 +28,12 @@ namespace oyl
             glDisable(GL_CULL_FACE);
     }
 
+    void OpenGLRendererAPI::setDrawRect(int x, int y, int width, int height)
+    {
+        // TODO: Add clamping based on window size
+        glViewport(x, y, width, height);
+    }
+
     void OpenGLRendererAPI::drawArrays(const Ref<VertexArray>& vao, u32 count)
     {
         glDrawArrays(GL_TRIANGLES, 0, count);

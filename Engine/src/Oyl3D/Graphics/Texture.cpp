@@ -21,10 +21,7 @@ namespace oyl
     {
         switch (Renderer::getAPI())
         {
-            case None:
-                OYL_ASSERT(false, "None is currently unsupported");
-                return nullptr;
-            case API_OpenGL:
+            case RendererAPI::OpenGL:
                 auto ogl = Ref<OpenGLTexture1D>::create(filePath);
                 return ogl->isLoaded() ? ogl : s_cache.get(INVALID_ALIAS);
         }
@@ -35,10 +32,7 @@ namespace oyl
     {
         switch (Renderer::getAPI())
         {
-            case None:
-                OYL_ASSERT(false, "None is currently unsupported");
-                return nullptr;
-            case API_OpenGL:
+            case RendererAPI::OpenGL:
                 auto ogl = Ref<OpenGLTexture2D>::create(filePath);
                 return ogl->isLoaded() ? ogl : s_cache.get(INVALID_ALIAS);
         }
@@ -49,10 +43,7 @@ namespace oyl
     {
         switch (Renderer::getAPI())
         {
-            case None:
-                OYL_ASSERT(false, "None is currently unsupported");
-                return nullptr;
-            case API_OpenGL:
+            case RendererAPI::OpenGL:
                 auto ogl = Ref<OpenGLTexture3D>::create(filePath);
                 return ogl->isLoaded() ? ogl : s_cache.get(INVALID_ALIAS);
         }
@@ -63,10 +54,7 @@ namespace oyl
     {
         switch (Renderer::getAPI())
         {
-            case None:
-                OYL_ASSERT(false, "None is currently unsupported");
-                return nullptr;
-            case API_OpenGL:
+            case RendererAPI::OpenGL:
                 auto ogl = Ref<OpenGLTextureCubeMap>::create(filePath);
                 return ogl->isLoaded() ? ogl : s_cache.get(INVALID_ALIAS);
         }

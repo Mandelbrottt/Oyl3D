@@ -5,20 +5,20 @@
 
 namespace oyl
 {
-    static GLenum shaderTypeFromOylEnum(const uint e)
+    static GLenum shaderTypeFromOylEnum(Shader::Type e)
     {
         switch (e)
         {
-            case VertexShader: return GL_VERTEX_SHADER;
-            case TessControlShader: return GL_TESS_CONTROL_SHADER;
-            case TessEvaluationShader: return GL_TESS_EVALUATION_SHADER;
-            case GeometryShader: return GL_GEOMETRY_SHADER;
-            case FragmentShader: return GL_FRAGMENT_SHADER;
+            case Shader::Vertex: return GL_VERTEX_SHADER;
+            case Shader::TessControl: return GL_TESS_CONTROL_SHADER;
+            case Shader::TessEvaluation: return GL_TESS_EVALUATION_SHADER;
+            case Shader::Geometry: return GL_GEOMETRY_SHADER;
+            case Shader::Fragment: return GL_FRAGMENT_SHADER;
         }
         return GL_NONE;
     }
 
-    uint OpenGLShader::compileShader(uint type, const std::string& src)
+    uint OpenGLShader::compileShader(Shader::Type type, const std::string& src)
     {
         if (src.empty()) return 0;
 
@@ -49,19 +49,19 @@ namespace oyl
             std::string err = " shader compilation failure!";
             switch (type)
             {
-                case VertexShader:
+                case Vertex:
                     err.insert(0, "Vertex");
                     break;
-                case TessControlShader:
+                case TessControl:
                     err.insert(0, "Tesselation Control");
                     break;
-                case TessEvaluationShader:
+                case TessEvaluation:
                     err.insert(0, "Tesselation Evaluation");
                     break;
-                case GeometryShader:
+                case Geometry:
                     err.insert(0, "Geometry");
                     break;
-                case FragmentShader:
+                case Fragment:
                     err.insert(0, "Fragment");
                     break;
             }
@@ -72,7 +72,7 @@ namespace oyl
         return shader;
     }
 
-    uint OpenGLShader::linkShaders(std::array<uint, NumShaderTypes> shaders)
+    u32 OpenGLShader::linkShaders(const std::array<uint, NumShaderTypes>& shaders)
     {
         // Get a program ID from OpenGL
         GLuint program = glCreateProgram();
@@ -126,14 +126,14 @@ namespace oyl
         return program;
     }
 
-    void OpenGLShader::processShaders(std::array<std::string, NumShaderTypes> shaderSrcs)
+    void OpenGLShader::processShaders(const std::array<std::string, NumShaderTypes>& shaderSrcs)
     {
         std::array<uint, NumShaderTypes> shaders{ 0 };
 
         // Get the IDs for all of the present shaders
         for (uint i = 0; i < NumShaderTypes; i++)
         {
-            shaders[i] = compileShader(VertexShader + i, shaderSrcs[i]);
+            shaders[i] = compileShader((Type) i, shaderSrcs[i]);
         }
 
         m_rendererID = linkShaders(shaders);
@@ -141,11 +141,21 @@ namespace oyl
 
     OpenGLShader::OpenGLShader(_OpenGLShader, const std::vector<ShaderInfo>& infos)
     {
+        OpenGLShader::load(infos);
+    }
+
+    OpenGLShader::~OpenGLShader()
+    {
+        OpenGLShader::unload();
+    }
+
+    bool OpenGLShader::load(const std::vector<ShaderInfo>& infos)
+    {
         std::array<std::string, NumShaderTypes> srcs{ "" };
         for (auto& info : infos)
         {
             // Return if the source code for a given shader already exists
-            if (!srcs[info.type - 1].empty())
+            if (!srcs[info.type].empty())
             {
                 OYL_LOG_ERROR("Multiple same type shaders defined! Duplicate File: {0}", info.filename.c_str());
                 continue;
@@ -155,23 +165,39 @@ namespace oyl
             if (!in)
             {
                 OYL_LOG_ERROR("Shader \"{0}\" could not open!", info.filename.c_str());
-                return;
+                return false;
             }
 
             // Dump the entire file contents into the corresponding source string
             std::stringstream ss;
             ss << in.rdbuf();
-            srcs[info.type - 1] = ss.str();
+            srcs[info.type] = ss.str();
         }
+
+        uint prevRendererID = m_rendererID;
 
         // Compile and link the given shader source codes into one program
         processShaders(srcs);
 
-        if (m_rendererID)
-            m_shaderInfos = infos;
-    }
+        if (!m_rendererID)
+        {
+            m_rendererID = prevRendererID;
+            return false;
+        }
 
-    OpenGLShader::~OpenGLShader()
+        if (prevRendererID)
+            glDeleteProgram(prevRendererID);
+        
+        m_shaderInfos = infos;
+        return true;
+    }
+    
+    bool OpenGLShader::load(const std::initializer_list<ShaderInfo>& infos)
+    {
+        return load(infos);
+    }
+    
+    void OpenGLShader::unload()
     {
         if (m_rendererID)
             glDeleteProgram(m_rendererID);
@@ -208,13 +234,13 @@ namespace oyl
         return location;
     }
 
-    void OpenGLShader::setUniform1i(const std::string& name, const int v)
+    void OpenGLShader::setUniform1i(const std::string& name, int v)
     {
         if (GLint location = getUniformLocation(name); location != -1)
             glUniform1i(location, v);
     }
 
-    void OpenGLShader::setUniform1f(const std::string& name, const float v)
+    void OpenGLShader::setUniform1f(const std::string& name, float v)
     {
         if (GLint location = getUniformLocation(name); location != -1)
             glUniform1f(location, v);

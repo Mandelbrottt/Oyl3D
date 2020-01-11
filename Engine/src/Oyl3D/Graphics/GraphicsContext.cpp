@@ -10,11 +10,8 @@ namespace oyl
     {
         switch (Renderer::getAPI())
         {
-            case None:
-                OYL_ASSERT(false, "None is currently unsupported");
-                return nullptr;
-            case API_OpenGL:
-                return Ref<GraphicsContext>(new OpenGLContext((GLFWwindow*) window));
+            case RendererAPI::OpenGL:
+                return Ref<OpenGLContext>::create((GLFWwindow*) window);
         }
         return nullptr;
     }

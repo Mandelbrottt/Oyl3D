@@ -44,24 +44,37 @@ layout(location = 0) out vec4 out_color;
 
 uniform Material u_material;
 
-uniform PointLight u_pointLight;
+uniform PointLight u_pointLight[2];
 
 void main() 
 {
-	vec3 norm = normalize(in_normal);
-	vec3 lightDir = normalize(u_pointLight.position - in_position);
+	vec3 ambient = vec3(0.0);
+	vec3 diffuse = vec3(0.0);
+	vec3 specular = vec3(0.0);
+	for (int i = 0; i < 8; i++) 
+	{
+		vec3 norm = normalize(in_normal);
+		vec3 lightDir = normalize(u_pointLight[i].position - in_position);
 
-	float diff = max(dot(norm, lightDir), 0.0);
+		float diff = max(dot(norm, lightDir), 0.0);
 
-	vec3 viewDir = normalize(-in_position);
-	vec3 halfwayDir = normalize(lightDir + viewDir);
+		vec3 viewDir = normalize(-in_position);
+		vec3 halfwayDir = normalize(lightDir + viewDir);
 
-	float spec = pow(max(dot(norm, halfwayDir), 0.0), 32);
+		float spec = pow(max(dot(norm, halfwayDir), 0.0), 32);
+
+    	ambient  += u_pointLight[i].ambient  *        vec3(texture(u_material.albedo,   in_texCoords));
+		diffuse  += u_pointLight[i].diffuse  * diff * vec3(texture(u_material.albedo,   in_texCoords));
+		specular += u_pointLight[i].specular * spec * vec3(texture(u_material.specular, in_texCoords));
+		diffuse  *= 1.0 / (1.0 + 0.01 * pow(length(u_pointLight[i].position - in_position), 2.0));
+		specular *= 1.0 / (1.0 + 0.01 * pow(length(u_pointLight[i].position - in_position), 2.0));
+
+	}
 	
-    vec3 ambient  = u_pointLight.ambient  *        vec3(texture(u_material.albedo,   in_texCoords));
-	vec3 diffuse  = u_pointLight.diffuse  * diff * vec3(texture(u_material.albedo,   in_texCoords));
-	vec3 specular = u_pointLight.specular * spec * vec3(texture(u_material.specular, in_texCoords));
-	// vec3 specular = u_pointLight.specular * spec * u_material.specularScalar; // temporary
-
 	out_color = vec4((ambient + diffuse + specular), 1.0);
+	// out_color += vec4(in_normal, 1.0);
+
+	// Gamma Correction
+	vec3 gamma = vec3(1.0 / 2.2);
+	out_color = pow(out_color, vec4(gamma, 1.0));
 }

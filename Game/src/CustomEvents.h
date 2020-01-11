@@ -2,17 +2,17 @@
 #include "Oyl3D.h"
 #include "CustomComponents.h"
 
-enum CustomEventsCategories
+enum CustomEventsCategories : int
 {
-	CategoryPlayer = oyl::CategoryCustomStart,
+	CategoryPlayer = (int) oyl::EventCategory::CustomStart,
 	CategoryCannon,
 	CategoryGarbagePile,
 	CategoryGloop,
 	CategoryQuicktimeCleaningEvent
 };
-enum CustomEventTypes
+enum CustomEventTypes : int
 {
-    TypePlayerMove = oyl::EventTypeCustomStart,
+    TypePlayerMove = (int) oyl::EventType::CustomStart,
 	TypePlayerInteractResult,
     TypePlayerInteractionRequest,
 	TypePlayerDropItem,
@@ -27,66 +27,66 @@ enum CustomEventTypes
 };
 
 
-OYL_EVENT_STRUCT(PlayerMoveEvent, TypePlayerMove, CategoryPlayer,
+OYL_EVENT_STRUCT(PlayerMoveEvent, (oyl::EventType) TypePlayerMove, (oyl::EventCategory) CategoryPlayer,
 	{
 		entt::entity playerEntity;
 		glm::vec3    direction;
 	});
 
-OYL_EVENT_STRUCT(PlayerInteractResultEvent, TypePlayerInteractResult, CategoryPlayer,
+OYL_EVENT_STRUCT(PlayerInteractResultEvent, (oyl::EventType) TypePlayerInteractResult, (oyl::EventCategory) CategoryPlayer,
 	{
 		PlayerInteractionResult interactionType;
 	});
 
-OYL_EVENT_STRUCT(PlayerInteractionRequestEvent, TypePlayerInteractionRequest, CategoryPlayer,
+OYL_EVENT_STRUCT(PlayerInteractionRequestEvent, (oyl::EventType) TypePlayerInteractionRequest, (oyl::EventCategory) CategoryPlayer,
 	{
 		entt::entity playerEntity;
 	});
 
-OYL_EVENT_STRUCT(PlayerDropItemEvent, TypePlayerDropItem, CategoryPlayer,
+OYL_EVENT_STRUCT(PlayerDropItemEvent, (oyl::EventType) TypePlayerDropItem, (oyl::EventCategory) CategoryPlayer,
 	{
 		entt::entity playerEntity;
 	});
 
-OYL_EVENT_STRUCT(PlayerStateChangeEvent, TypePlayerStateChange, CategoryPlayer,
+OYL_EVENT_STRUCT(PlayerStateChangeEvent, (oyl::EventType) TypePlayerStateChange, (oyl::EventCategory) CategoryPlayer,
 	{
 		entt::entity playerEntity;
         PlayerState  newState;
 	});
 
-OYL_EVENT_STRUCT(CannonStateChangeEvent, TypeCannonStateChange, CategoryCannon,
+OYL_EVENT_STRUCT(CannonStateChangeEvent, (oyl::EventType) TypeCannonStateChange, (oyl::EventCategory) CategoryCannon,
 	{
 		entt::entity cannonEntity;
 		CannonState  newState;
 	});
 
-OYL_EVENT_STRUCT(CannonFiredEvent, TypeCannonFired, CategoryCannon,
+OYL_EVENT_STRUCT(CannonFiredEvent, (oyl::EventType) TypeCannonFired, (oyl::EventCategory) CategoryCannon,
 	{
 		glm::vec3 cannonPosition;
 	});
 
-OYL_EVENT_STRUCT(TotalGarbageCountEvent, TypeTotalGarbageCount, CategoryGarbagePile,
+OYL_EVENT_STRUCT(TotalGarbageCountEvent, (oyl::EventType) TypeTotalGarbageCount, (oyl::EventCategory) CategoryGarbagePile,
 	{
 		int totalGarbageCount;
 	});
 
-OYL_EVENT_STRUCT(RequestToCleanGarbageEvent, TypeRequestToCleanGarbage, CategoryGarbagePile,
+OYL_EVENT_STRUCT(RequestToCleanGarbageEvent, (oyl::EventType) TypeRequestToCleanGarbage, (oyl::EventCategory) CategoryGarbagePile,
 	{
 		entt::entity garbagePileEntity;
 	});
 
-OYL_EVENT_STRUCT(GarbageCleanedEvent, TypeGarbageCleaned, CategoryGarbagePile,
+OYL_EVENT_STRUCT(GarbageCleanedEvent, (oyl::EventType) TypeGarbageCleaned, (oyl::EventCategory) CategoryGarbagePile,
 	{
 		float numGarbageTicksToDisplay;
 		bool  displayGlooped;
 	});
 
-OYL_EVENT_STRUCT(UseGloopEvent, TypeUseGloop, CategoryGloop,
+OYL_EVENT_STRUCT(UseGloopEvent, (oyl::EventType) TypeUseGloop, (oyl::EventCategory) CategoryGloop,
 	{
 		entt::entity gloopEntity;
 	});
 
-OYL_EVENT_STRUCT(QuicktimeCleaningEventResultEvent, TypeQuicktimeCleaningEventResult, CategoryQuicktimeCleaningEvent,
+OYL_EVENT_STRUCT(QuicktimeCleaningEventResultEvent, (oyl::EventType) TypeQuicktimeCleaningEventResult, (oyl::EventCategory) CategoryQuicktimeCleaningEvent,
 	{
 		entt::entity playerEntity;
 		bool         wasSuccessful;

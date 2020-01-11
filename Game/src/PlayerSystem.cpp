@@ -2,7 +2,7 @@
 
 void PlayerSystem::onEnter()
 {
-	this->listenForEventCategory((OylEnum)CategoryPlayer);
+	this->listenForEventCategory((EventCategory)CategoryPlayer);
 }
 
 void PlayerSystem::onExit()
@@ -10,7 +10,7 @@ void PlayerSystem::onExit()
     
 }
 
-void PlayerSystem::onUpdate(Timestep dt)
+void PlayerSystem::onUpdate()
 {
 	auto view = registry->view<Player, component::Transform, component::RigidBody>();
 	for (auto& playerEntity : view)
@@ -31,7 +31,7 @@ void PlayerSystem::onUpdate(Timestep dt)
 		    
 		    case PlayerState::walking:
 			{
-				performBasicMovement(playerEntity, player.speedForce, dt);
+				performBasicMovement(playerEntity, player.speedForce, Time::deltaTime());
 
 				if (player.moveDirection == glm::vec3(0.0f))
 					changeToIdle(&player);
@@ -58,7 +58,7 @@ void PlayerSystem::onUpdate(Timestep dt)
 				{
 				    //LERP to the adjusting position destination (the starting point for pushing)
 					player.adjustingPositionStateData.interpolationParam = std::min(
-						player.adjustingPositionStateData.interpolationParam + player.adjustingPositionStateData.speed * dt,
+						player.adjustingPositionStateData.interpolationParam + player.adjustingPositionStateData.speed * Time::deltaTime(),
 						1.0f);
 
 					playerTransform.setPosition(glm::mix(
@@ -70,7 +70,7 @@ void PlayerSystem::onUpdate(Timestep dt)
 				{
 				    //the player is pushing
 					player.pushingStateData.interpolationParam = std::min(
-						player.pushingStateData.interpolationParam + player.pushingStateData.speed * dt,
+						player.pushingStateData.interpolationParam + player.pushingStateData.speed * Time::deltaTime(),
 						1.0f);
 
 					playerTransform.setPosition(glm::mix(
@@ -90,16 +90,16 @@ void PlayerSystem::onUpdate(Timestep dt)
 
 			case PlayerState::inCleaningQuicktimeEvent:
 			{
-				performBasicMovement(playerEntity, player.speedForce * 0.5f, dt);
+				performBasicMovement(playerEntity, player.speedForce * 0.5f, Time::deltaTime());
 
 				break;
 			}
 
 			case PlayerState::cleaning:
 			{
-				performBasicMovement(playerEntity, player.speedForce * 0.5f, dt);
+				performBasicMovement(playerEntity, player.speedForce * 0.5f, Time::deltaTime());
 
-				player.cleaningTimeCountdown -= dt;
+				player.cleaningTimeCountdown -= Time::deltaTime();
 				if (player.cleaningTimeCountdown < 0.0f)
 					changeToIdle(&player);
 
@@ -109,13 +109,13 @@ void PlayerSystem::onUpdate(Timestep dt)
 	}
 }
 
-bool PlayerSystem::onEvent(Ref<Event> event)
+bool PlayerSystem::onEvent(const Event& event)
 {
-	switch (event->type)
+	switch (event.type)
 	{
-		case TypePlayerStateChange:
+		case (EventType) TypePlayerStateChange:
 		{
-			auto evt = (PlayerStateChangeEvent)* event;
+			auto evt     = event_cast<PlayerStateChangeEvent>(event);
 			auto& player = registry->get<Player>(evt.playerEntity);
 
 			switch (evt.newState)
@@ -145,9 +145,9 @@ bool PlayerSystem::onEvent(Ref<Event> event)
 			break;
 		}
 	    
-		case TypePlayerMove:
+		case (EventType)TypePlayerMove:
 		{
-			auto evt = (PlayerMoveEvent)* event;
+			auto evt     = event_cast<PlayerMoveEvent>(event);
 			auto& player = registry->get<Player>(evt.playerEntity);
 
 			player.moveDirection += evt.direction;

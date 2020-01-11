@@ -3,10 +3,25 @@
 #include "Oyl3D/Utils/AssetCache.h"
 
 namespace oyl
-{    
+{
     class Texture
     {
-        friend class Application;
+    public:
+        enum Format
+        {
+            RGB8, RGBA8, SRGB8, SRGBA8
+        };
+
+        enum Filter
+        {
+            Nearest, Linear,
+        };
+
+        enum Wrap
+        {
+            Clamp, Mirror, Repeat    
+        };
+        
     public:
         virtual ~Texture() = default;
 
@@ -25,6 +40,8 @@ namespace oyl
 
     private:
         static void init();
+
+        friend class Application;
     };
 
     class Texture1D : public Texture

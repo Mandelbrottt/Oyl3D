@@ -13,8 +13,8 @@ private:
 
 	void onEnter() override;
 	void onExit() override;
-	void onUpdate(Timestep dt) override;
-	bool onEvent(Ref<Event> event) override;
+	void onUpdate() override;
+	bool onEvent(const Event& event) override;
 
 	void enableValidUIType(PlayerInteractionResult a_type);
 	void enableInvalidUIType(PlayerInteractionResult a_type);
