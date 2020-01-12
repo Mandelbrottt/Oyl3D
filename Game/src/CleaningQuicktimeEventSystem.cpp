@@ -90,6 +90,9 @@ bool CleaningQuicktimeEventSystem::onEvent(const Event& event)
 		}
 		case (EventType)TypePlayerInteractResult:
 		{
+			//TODO: need to find a way to check if the garbage is at max ticks (in which case quicktime event will not be displayed)
+			//      maybe create a separate event for when we want to activate the cleaning quicktime event
+
 			auto evt = event_cast<PlayerInteractResultEvent>(event);
 
 			if (evt.interactionType == PlayerInteractionResult::cleanGarbagePile)

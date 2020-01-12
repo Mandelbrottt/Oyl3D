@@ -68,6 +68,8 @@ struct MoveableUsingLerp
 
 struct Player
 {
+	int playerNum = -1; //should always correspond with appropriate PlayerCamera player number
+
 	Team team;
 
 	entt::entity primaryCarriedItem   = entt::null;

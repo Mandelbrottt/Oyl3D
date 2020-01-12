@@ -22,8 +22,9 @@ void SandboxLayer::onEnter()
 		{
 			//PLAYER
 			entt::entity playerBlueEntity = registry->create();
-			registry->assign<Player>(playerBlueEntity);
-			registry->get<Player>(playerBlueEntity).team = Team::blue;
+			auto& player = registry->assign<Player>(playerBlueEntity);
+			player.playerNum = 0;
+			player.team      = Team::blue;
 
 			registry->assign<component::Renderable>(playerBlueEntity, mr);
 
@@ -46,6 +47,17 @@ void SandboxLayer::onEnter()
 			shapeInfo.box.setSize({ 1.0f, 1.0f, 1.0f });
 
 			registry->assign<entt::tag<"Player"_hs>>(playerBlueEntity);
+		}
+
+		//PLAYER CAMERA
+		{
+			auto playerCameraEntity = registry->create();
+			registry->assign<component::Transform>(playerCameraEntity);
+			auto& camera = registry->assign<component::PlayerCamera>(playerCameraEntity);
+			camera.player = 0;
+			camera.projection = glm::perspective(glm::radians(60.0f), 16.0f / 9.0f, 0.01f, 1000.0f);
+			auto& so = registry->assign<component::EntityInfo>(playerCameraEntity);
+			so.name = "Player Camera";
 		}
         
 		{

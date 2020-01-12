@@ -325,18 +325,8 @@ public:
 			cleaningEventIndicatorTransform.setScale(glm::vec3(1.5f, 2.0f, 1.0f));
 			registry->assign<component::Transform>(cleaningQuicktimeEventIndicatorEntity, cleaningEventIndicatorTransform);
 
-			auto& cleaningQuicktimeEventIndicatorEntitySceneObject = registry->assign<component::EntityInfo>(cleaningQuicktimeEventIndicatorEntity);
-			cleaningQuicktimeEventIndicatorEntitySceneObject.name = "Cleaning Quicktime Event Indicator";
-		}
-
-		{
-			auto playerCameraEntity = registry->create();
-			registry->assign<component::Transform>(playerCameraEntity);
-			auto& camera = registry->assign<component::PlayerCamera>(playerCameraEntity);
-			camera.player = 0;
-			camera.projection = glm::perspective(glm::radians(60.0f), 16.0f / 9.0f, 0.01f, 1000.0f);
-			auto& so = registry->assign<component::EntityInfo>(playerCameraEntity);
-			so.name = "Player Camera";
+			auto& cleaningQuicktimeEventIndicatorSceneObject = registry->assign<component::EntityInfo>(cleaningQuicktimeEventIndicatorEntity);
+			cleaningQuicktimeEventIndicatorSceneObject.name = "Cleaning Quicktime Event Indicator";
 		}
 	}
 
