@@ -413,12 +413,12 @@ namespace oyl::internal
             auto parentView = registry->view<component::Parent>();
             
             registry->each(
-                [&](auto entity)
+                [this, &parentView](auto entity)
                 {
                     if (parentView.contains(entity) && 
                         parentView.get(entity).parent != entt::null) return;
 
-                    drawEntityNode(entity);
+                    this->drawEntityNode(entity);
                 });
         }
         ImGui::End();
@@ -465,10 +465,37 @@ namespace oyl::internal
                 {
                     flags |= ImGuiSelectableFlags_Disabled;
                 }
-                
-                if (ImGui::Selectable("Clear Parent##HierarchyContextClearParent", false, flags))
+
+                // Redundant with drag and drop
+                //if (ImGui::Selectable("Clear Parent##HierarchyContextClearParent", false, flags))
+                //{
+                //    setEntityParent(entity, entt::null);
+                //}
+
+                // TODO: Fix issue where parent ref in transform occasionally breaks
+                if (ImGui::Selectable("Duplicate Entity##HierarchyContextDupeEntity", false))
                 {
-                    setEntityParent(entity, entt::null);
+                    auto copy = registry->create();
+                    registry->stomp(copy, entity, *registry);
+
+                    auto& copyEI = registry->get<component::EntityInfo>(copy);
+
+                    uint pos = copyEI.name.size() - 1;
+                    while (pos > 0 && std::isdigit(copyEI.name[pos]))
+                    {
+                        pos--;
+                    }
+
+                    if (pos > 0 && pos != copyEI.name.size() - 1)
+                    {
+                        int number = std::stoi(copyEI.name.substr(pos));
+                        copyEI.name.erase(pos);
+                        copyEI.name.append(" " + std::to_string(number + 1));
+                    }
+                    else
+                    {
+                        copyEI.name.append(" " + std::to_string(1));
+                    }
                 }
 
                 if (ImGui::Selectable("Delete Entity##HierarchyContextDeleteEntity", false))
