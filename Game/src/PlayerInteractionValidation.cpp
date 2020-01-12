@@ -1,5 +1,4 @@
 #include "PlayerInteractionValidation.h"
-#include <Oyl3D/Physics/Raycast.h>
 
 void PlayerInteractionValidationSystem::onEnter()
 {
@@ -146,7 +145,7 @@ void PlayerInteractionValidationSystem::performRaycastAndValidateForPlayer(entt:
 
 	auto& playerCameraTransform = registry->get<component::Transform>(playersCameraEntity);
 
-	auto ray = RayTest::Closest(playerCameraTransform.getPosition(), playerCameraTransform.getForward(), 2.0f);
+	auto ray = RayTest::Closest(playerCameraTransform.getPositionGlobal(), playerCameraTransform.getForwardGlobal(), 1.4f);
 	if (ray->hasHit)
 	{
 		entt::entity raycastHitEntity = ray->hitObject.entity;

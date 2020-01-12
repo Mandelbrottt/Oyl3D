@@ -62,28 +62,28 @@ void SandboxLayer::onEnter()
         
 		{
 			//CANNON
-			entt::entity cannonBlueEntity = registry->create();
+			entt::entity cannonEntity = registry->create();
 
 			component::Transform cannonTransform;
 			cannonTransform.setPosition(glm::vec3(0.0f));
-			registry->assign<component::Transform>(cannonBlueEntity, cannonTransform);
+			registry->assign<component::Transform>(cannonEntity, cannonTransform);
 
-			auto& cannon = registry->assign<Cannon>(cannonBlueEntity);
+			auto& cannon = registry->assign<Cannon>(cannonEntity);
 			cannon.team = Team::blue;
 
-			registry->assign<component::Renderable>(cannonBlueEntity, mr);
+			registry->assign<component::Renderable>(cannonEntity, mr);
 
-			auto& so = registry->assign<component::EntityInfo>(cannonBlueEntity);
+			auto& so = registry->assign<component::EntityInfo>(cannonEntity);
 			so.name = "BlueCannon";
 
-			auto& rb = registry->assign<component::RigidBody>(cannonBlueEntity);
+			auto& rb = registry->assign<component::RigidBody>(cannonEntity);
 			rb.setMass(0.0f);
 			rb.setProperties(component::RigidBody::Property::FREEZE_ROTATION_X, true);
 			rb.setProperties(component::RigidBody::Property::FREEZE_ROTATION_Y, true);
 			rb.setProperties(component::RigidBody::Property::FREEZE_ROTATION_Z, true);
 			rb.setProperties(component::RigidBody::Property::IS_KINEMATIC, true);
 
-			auto& cannonCollider = registry->assign<component::Collidable>(cannonBlueEntity);
+			auto& cannonCollider = registry->assign<component::Collidable>(cannonEntity);
 			auto& shapeInfo = cannonCollider.pushShape(ColliderType::Box);
 			shapeInfo.box.setSize({ 1.0f, 1.0f, 1.0f });
 		}
@@ -92,22 +92,26 @@ void SandboxLayer::onEnter()
 			for (int i = 0; i < 3; i++)
 			{
 				//GARBAGE PILES
-				entt::entity garbagePileBlueEntity = registry->create();
+				entt::entity garbagePileEntity = registry->create();
 
 				component::Transform garbagePileTransform;
-				garbagePileTransform.setPosition(glm::vec3(-3.0f, 0.0f, 0.0f));
-				garbagePileTransform.setScale(glm::vec3(3.0f, 0.7f, 3.0f));
-				registry->assign<component::Transform>(garbagePileBlueEntity, garbagePileTransform);
+				garbagePileTransform.setPosition(glm::vec3(-3.0f, 0.2f, 0.0f));
+				garbagePileTransform.setScale(glm::vec3(3.0f, 0.4f, 3.0f));
+				registry->assign<component::Transform>(garbagePileEntity, garbagePileTransform);
 
-				auto& garbagePile = registry->assign<GarbagePile>(garbagePileBlueEntity);
+				auto& garbagePile = registry->assign<GarbagePile>(garbagePileEntity);
 				garbagePile.team = Team::blue;
 
-				registry->assign<component::Renderable>(garbagePileBlueEntity, mr);
+				auto& rb = registry->assign<component::RigidBody>(garbagePileEntity);
+				rb.setMass(0.0f);
+				rb.setProperties(component::RigidBody::Property::IS_KINEMATIC, true);
 
-				auto& so2 = registry->assign<component::EntityInfo>(garbagePileBlueEntity);
+				registry->assign<component::Renderable>(garbagePileEntity, mr);
+
+				auto& so2 = registry->assign<component::EntityInfo>(garbagePileEntity);
 				so2.name = "BlueGarbagePile" + std::to_string(i);
 
-				auto& garbagePileCollider = registry->assign<component::Collidable>(garbagePileBlueEntity);
+				auto& garbagePileCollider = registry->assign<component::Collidable>(garbagePileEntity);
 				auto& shapeInfo = garbagePileCollider.pushShape(ColliderType::Box);
 				shapeInfo.box.setSize({ 1.0f, 1.0f, 1.0f });
 			}
@@ -129,6 +133,9 @@ void SandboxLayer::onEnter()
 				carryableItem.team = Team::blue;
 				carryableItem.type = CarryableItemType::cannonball;
 
+				auto& rb = registry->assign<component::RigidBody>(cannonballEntity);
+				rb.setProperties(component::RigidBody::Property::IS_KINEMATIC, true);
+
 				auto& cannonball = registry->assign<Cannonball>(cannonballEntity);
 
 				mr.mesh = Mesh::get("sphere");
@@ -145,28 +152,31 @@ void SandboxLayer::onEnter()
 
         {
 			//MOP
-			entt::entity mopBlueEntity = registry->create();
+			entt::entity mopEntity = registry->create();
 
 			component::Transform mopTransform;
 			mopTransform.setPosition(glm::vec3(3.0f, 0.1f, 0.0f));
 			mopTransform.setScale(glm::vec3(2.0f, 0.2f, 0.2f));
-			registry->assign<component::Transform>(mopBlueEntity, mopTransform);
+			registry->assign<component::Transform>(mopEntity, mopTransform);
 
-			auto& carryableItem = registry->assign<CarryableItem>(mopBlueEntity);
+			auto& carryableItem = registry->assign<CarryableItem>(mopEntity);
 			carryableItem.team = Team::blue;
 			carryableItem.type = CarryableItemType::mop;
 
-			mr.mesh = Mesh::get("cube");
-			registry->assign<component::Renderable>(mopBlueEntity, mr);
+			auto& rb = registry->assign<component::RigidBody>(mopEntity);
+			rb.setProperties(component::RigidBody::Property::IS_KINEMATIC, true);
 
-			auto& so2 = registry->assign<component::EntityInfo>(mopBlueEntity);
+			mr.mesh = Mesh::get("cube");
+			registry->assign<component::Renderable>(mopEntity, mr);
+
+			auto& so2 = registry->assign<component::EntityInfo>(mopEntity);
 			so2.name = "BlueMop";
 
 			/*auto& rb = registry->assign<component::RigidBody>(mopBlueEntity);
 			rb.setMass(2.0f);
 			rb.setFriction(1.0f);*/
 
-			auto& mopCollider = registry->assign<component::Collidable>(mopBlueEntity);
+			auto& mopCollider = registry->assign<component::Collidable>(mopEntity);
 			auto& shapeInfo = mopCollider.pushShape(ColliderType::Box);
 			shapeInfo.box.setSize({ 1.0f, 1.0f, 1.0f });
         }
@@ -185,6 +195,9 @@ void SandboxLayer::onEnter()
 				auto& carryableItem = registry->assign<CarryableItem>(cleaningSolutionEntity);
 				carryableItem.team = Team::blue;
 				carryableItem.type = CarryableItemType::cleaningSolution;
+
+				auto& rb = registry->assign<component::RigidBody>(cleaningSolutionEntity);
+				rb.setProperties(component::RigidBody::Property::IS_KINEMATIC, true);
 
 				mr.mesh = Mesh::get("cube");
 				registry->assign<component::Renderable>(cleaningSolutionEntity, mr);
@@ -212,6 +225,9 @@ void SandboxLayer::onEnter()
 				auto& carryableItem = registry->assign<CarryableItem>(gloopEntity);
 				carryableItem.team = Team::blue;
 				carryableItem.type = CarryableItemType::gloop;
+
+				auto& rb = registry->assign<component::RigidBody>(gloopEntity);
+				rb.setProperties(component::RigidBody::Property::IS_KINEMATIC, true);
 
 				registry->assign<Gloop>(gloopEntity);
 
@@ -248,10 +264,6 @@ void SandboxLayer::onEnter()
 
 			auto& rb = registry->assign<component::RigidBody>(cannonballCrateEntity);
 			rb.setMass(0.0f);
-			rb.setProperties(component::RigidBody::Property::FREEZE_ROTATION_X, true);
-			rb.setProperties(component::RigidBody::Property::FREEZE_ROTATION_Y, true);
-			rb.setProperties(component::RigidBody::Property::FREEZE_ROTATION_Z, true);
-			rb.setProperties(component::RigidBody::Property::IS_KINEMATIC, true);
 
 			auto& cannonballCrateCollider = registry->assign<component::Collidable>(cannonballCrateEntity);
 			auto& shapeInfo = cannonballCrateCollider.pushShape(ColliderType::Box);
@@ -264,29 +276,29 @@ void SandboxLayer::onEnter()
 		///////////////////// RED TEAM //////////////////////
 		{
 			//CANNON
-			entt::entity cannonBlueEntity = registry->create();
+			entt::entity cannonEntity = registry->create();
 
 			component::Transform cannonTransform;
 			cannonTransform.setPosition(glm::vec3(0.0f));
 			cannonTransform.setRotationEulerY(180.0f);
-			registry->assign<component::Transform>(cannonBlueEntity, cannonTransform);
+			registry->assign<component::Transform>(cannonEntity, cannonTransform);
 
-			auto& cannon = registry->assign<Cannon>(cannonBlueEntity);
+			auto& cannon = registry->assign<Cannon>(cannonEntity);
 			cannon.team = Team::red;
 
-			registry->assign<component::Renderable>(cannonBlueEntity, mr);
+			registry->assign<component::Renderable>(cannonEntity, mr);
 
-			auto& so = registry->assign<component::EntityInfo>(cannonBlueEntity);
+			auto& so = registry->assign<component::EntityInfo>(cannonEntity);
 			so.name = "RedCannon";
 
-			auto& rb = registry->assign<component::RigidBody>(cannonBlueEntity);
+			auto& rb = registry->assign<component::RigidBody>(cannonEntity);
 			rb.setMass(0.0f);
 			rb.setProperties(component::RigidBody::Property::FREEZE_ROTATION_X, true);
 			rb.setProperties(component::RigidBody::Property::FREEZE_ROTATION_Y, true);
 			rb.setProperties(component::RigidBody::Property::FREEZE_ROTATION_Z, true);
 			rb.setProperties(component::RigidBody::Property::IS_KINEMATIC, true);
 
-			auto& cannonCollider = registry->assign<component::Collidable>(cannonBlueEntity);
+			auto& cannonCollider = registry->assign<component::Collidable>(cannonEntity);
 			auto& shapeInfo = cannonCollider.pushShape(ColliderType::Box);
 			shapeInfo.box.setSize({ 1.0f, 1.0f, 1.0f });
 		}
@@ -295,22 +307,26 @@ void SandboxLayer::onEnter()
 			for (int i = 0; i < 3; i++)
 			{
 				//GARBAGE PILES
-				entt::entity garbagePileBlueEntity = registry->create();
+				entt::entity garbagePileEntity = registry->create();
 
 				component::Transform garbagePileTransform;
-				garbagePileTransform.setPosition(glm::vec3(-3.0f, 0.0f, 0.0f));
-				garbagePileTransform.setScale(glm::vec3(3.0f, 0.7f, 3.0f));
-				registry->assign<component::Transform>(garbagePileBlueEntity, garbagePileTransform);
+				garbagePileTransform.setPosition(glm::vec3(-3.0f, 0.2f, 0.0f));
+				garbagePileTransform.setScale(glm::vec3(3.0f, 0.4f, 3.0f));
+				registry->assign<component::Transform>(garbagePileEntity, garbagePileTransform);
 
-				auto& garbagePile = registry->assign<GarbagePile>(garbagePileBlueEntity);
+				auto& garbagePile = registry->assign<GarbagePile>(garbagePileEntity);
 				garbagePile.team = Team::red;
 
-				registry->assign<component::Renderable>(garbagePileBlueEntity, mr);
+				auto& rb = registry->assign<component::RigidBody>(garbagePileEntity);
+				rb.setMass(0.0f);
+				rb.setProperties(component::RigidBody::Property::IS_KINEMATIC, true);
 
-				auto& so2 = registry->assign<component::EntityInfo>(garbagePileBlueEntity);
+				registry->assign<component::Renderable>(garbagePileEntity, mr);
+
+				auto& so2 = registry->assign<component::EntityInfo>(garbagePileEntity);
 				so2.name = "RedGarbagePile" + std::to_string(i);
 
-				auto& garbagePileCollider = registry->assign<component::Collidable>(garbagePileBlueEntity);
+				auto& garbagePileCollider = registry->assign<component::Collidable>(garbagePileEntity);
 				auto& shapeInfo = garbagePileCollider.pushShape(ColliderType::Box);
 				shapeInfo.box.setSize({ 1.0f, 1.0f, 1.0f });
 			}
@@ -332,6 +348,9 @@ void SandboxLayer::onEnter()
 				carryableItem.team = Team::red;
 				carryableItem.type = CarryableItemType::cannonball;
 
+				auto& rb = registry->assign<component::RigidBody>(cannonballEntity);
+				rb.setProperties(component::RigidBody::Property::IS_KINEMATIC, true);
+
 				auto& cannonball = registry->assign<Cannonball>(cannonballEntity);
 
 				mr.mesh = Mesh::get("sphere");
@@ -348,28 +367,31 @@ void SandboxLayer::onEnter()
 
 		{
 			//MOP
-			entt::entity mopBlueEntity = registry->create();
+			entt::entity mopEntity = registry->create();
 
 			component::Transform mopTransform;
 			mopTransform.setPosition(glm::vec3(3.0f, 0.1f, 0.0f));
 			mopTransform.setScale(glm::vec3(2.0f, 0.2f, 0.2f));
-			registry->assign<component::Transform>(mopBlueEntity, mopTransform);
+			registry->assign<component::Transform>(mopEntity, mopTransform);
 
-			auto& carryableItem = registry->assign<CarryableItem>(mopBlueEntity);
+			auto& carryableItem = registry->assign<CarryableItem>(mopEntity);
 			carryableItem.team = Team::red;
 			carryableItem.type = CarryableItemType::mop;
 
-			mr.mesh = Mesh::get("cube");
-			registry->assign<component::Renderable>(mopBlueEntity, mr);
+			auto& rb = registry->assign<component::RigidBody>(mopEntity);
+			rb.setProperties(component::RigidBody::Property::IS_KINEMATIC, true);
 
-			auto& so2 = registry->assign<component::EntityInfo>(mopBlueEntity);
+			mr.mesh = Mesh::get("cube");
+			registry->assign<component::Renderable>(mopEntity, mr);
+
+			auto& so2 = registry->assign<component::EntityInfo>(mopEntity);
 			so2.name = "RedMop";
 
 			/*auto& rb = registry->assign<component::RigidBody>(mopBlueEntity);
 			rb.setMass(2.0f);
 			rb.setFriction(1.0f);*/
 
-			auto& mopCollider = registry->assign<component::Collidable>(mopBlueEntity);
+			auto& mopCollider = registry->assign<component::Collidable>(mopEntity);
 			auto& shapeInfo = mopCollider.pushShape(ColliderType::Box);
 			shapeInfo.box.setSize({ 1.0f, 1.0f, 1.0f });
 		}
@@ -388,6 +410,9 @@ void SandboxLayer::onEnter()
 				auto& carryableItem = registry->assign<CarryableItem>(cleaningSolutionEntity);
 				carryableItem.team = Team::red;
 				carryableItem.type = CarryableItemType::cleaningSolution;
+
+				auto& rb = registry->assign<component::RigidBody>(cleaningSolutionEntity);
+				rb.setProperties(component::RigidBody::Property::IS_KINEMATIC, true);
 
 				mr.mesh = Mesh::get("cube");
 				registry->assign<component::Renderable>(cleaningSolutionEntity, mr);
@@ -415,6 +440,9 @@ void SandboxLayer::onEnter()
 				auto& carryableItem = registry->assign<CarryableItem>(gloopEntity);
 				carryableItem.team = Team::red;
 				carryableItem.type = CarryableItemType::gloop;
+
+				auto& rb = registry->assign<component::RigidBody>(gloopEntity);
+				rb.setProperties(component::RigidBody::Property::IS_KINEMATIC, true);
 
 				registry->assign<Gloop>(gloopEntity);
 
@@ -451,10 +479,6 @@ void SandboxLayer::onEnter()
 
 			auto& rb = registry->assign<component::RigidBody>(cannonballCrateEntity);
 			rb.setMass(0.0f);
-			rb.setProperties(component::RigidBody::Property::FREEZE_ROTATION_X, true);
-			rb.setProperties(component::RigidBody::Property::FREEZE_ROTATION_Y, true);
-			rb.setProperties(component::RigidBody::Property::FREEZE_ROTATION_Z, true);
-			rb.setProperties(component::RigidBody::Property::IS_KINEMATIC, true);
 
 			auto& cannonballCrateCollider = registry->assign<component::Collidable>(cannonballCrateEntity);
 			auto& shapeInfo = cannonballCrateCollider.pushShape(ColliderType::Box);
