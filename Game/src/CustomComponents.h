@@ -48,6 +48,7 @@ enum class PlayerInteractionResult
 	pickUpGloop,
 	useGloop,
 	cleanGarbagePile,
+	activateCleaningQuicktimeEvent
 };
 
 enum class ReticleType
@@ -161,6 +162,12 @@ struct GarbagePile
 struct PlayerInteractionType
 {
 	PlayerInteractionResult type;
+};
+
+struct PlayerHUDElement
+{
+	int playerNum = -1;
+	glm::vec3 positionWhenActive;
 };
 
 struct Reticle

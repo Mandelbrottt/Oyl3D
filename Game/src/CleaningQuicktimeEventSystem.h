@@ -12,4 +12,7 @@ class CleaningQuicktimeEventSystem : public System
 	void onExit() override;
 	void onUpdate() override;
 	bool onEvent(const Event& event) override;
+
+	void activateCleaningQuicktimeEvent(entt::entity a_cleaningQuicktimeEventIndicatorEntity);
+	void deactivateCleaningQuicktimeEvent(entt::entity a_cleaningQuicktimeEventIndicatorEntity);
 };

@@ -23,7 +23,8 @@ enum CustomEventTypes : int
 	TypeRequestToCleanGarbage,
 	TypeGarbageCleaned,
 	TypeUseGloop,
-	TypeQuicktimeCleaningEventResult
+	TypeQuicktimeCleaningEventResult,
+	TypeCancelQuicktimeCleaningEvent
 };
 
 
@@ -36,6 +37,7 @@ OYL_EVENT_STRUCT(PlayerMoveEvent, (oyl::EventType) TypePlayerMove, (oyl::EventCa
 OYL_EVENT_STRUCT(PlayerInteractResultEvent, (oyl::EventType) TypePlayerInteractResult, (oyl::EventCategory) CategoryPlayer,
 	{
 		PlayerInteractionResult interactionType;
+		int playerNum;
 	});
 
 OYL_EVENT_STRUCT(PlayerInteractionRequestEvent, (oyl::EventType) TypePlayerInteractionRequest, (oyl::EventCategory) CategoryPlayer,
@@ -90,4 +92,9 @@ OYL_EVENT_STRUCT(QuicktimeCleaningEventResultEvent, (oyl::EventType) TypeQuickti
 	{
 		entt::entity playerEntity;
 		bool         wasSuccessful;
+	});
+
+OYL_EVENT_STRUCT(CancelQuicktimeCleaningEventEvent, (oyl::EventType) TypeCancelQuicktimeCleaningEvent, (oyl::EventCategory) CategoryQuicktimeCleaningEvent,
+	{
+		int playerNum;
 	});

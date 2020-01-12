@@ -22,9 +22,7 @@ void PlayerInteractionValidationSystem::onUpdate()
 		auto& player = registry->get<Player>(playerEntity);
 		if (player.state == PlayerState::inCleaningQuicktimeEvent)
 		{
-			if (   !registry->valid(player.primaryCarriedItem)
-				|| registry->get<CarryableItem>(player.primaryCarriedItem).type != CarryableItemType::mop
-				|| !registry->valid(player.interactableEntity)
+			if (   !registry->valid(player.interactableEntity)
 				|| !registry->has<GarbagePile>(player.interactableEntity))
 			{
 				PlayerStateChangeEvent playerStateChange;
@@ -32,7 +30,10 @@ void PlayerInteractionValidationSystem::onUpdate()
 				playerStateChange.newState     = PlayerState::idle;
 				postEvent(playerStateChange);
 
-				//TODO: deactivate CleaningQuicktimeEvent UI for player
+				//deactivate CleaningQuicktimeEvent UI for player
+				CancelQuicktimeCleaningEventEvent cancelQuicktimeCleaningEvent;
+				cancelQuicktimeCleaningEvent.playerNum = player.playerNum;
+				postEvent(cancelQuicktimeCleaningEvent);
 			}
 		}
 	}
@@ -77,13 +78,6 @@ bool PlayerInteractionValidationSystem::onEvent(const Event& event)
 					if (registry->valid(player.secondaryCarriedItem) && registry->get<CarryableItem>(player.secondaryCarriedItem).type == CarryableItemType::cleaningSolution)
 						dropPlayerCarriedItems(evt.playerEntity, true, CarryableItemType::cleaningSolution);
 				}
-				else //garbage ticks >= max ticks, so cleaning solution is used
-				{
-					registry->destroy(player.secondaryCarriedItem);
-					player.secondaryCarriedItem = entt::null;
-				}
-
-				//TODO: deactivate CleaningQuicktimeEvent UI for player
 
 				RequestToCleanGarbageEvent requestToCleanGarbage;
 				requestToCleanGarbage.garbagePileEntity = player.interactableEntity;
@@ -123,6 +117,7 @@ void PlayerInteractionValidationSystem::performRaycastAndValidateForPlayer(entt:
 
 		PlayerInteractResultEvent playerInteractResult;
 		playerInteractResult.interactionType = PlayerInteractionResult::nothing;
+		playerInteractResult.playerNum       = player.playerNum;
 		postEvent(playerInteractResult);
 
 		return;
@@ -146,7 +141,7 @@ void PlayerInteractionValidationSystem::performRaycastAndValidateForPlayer(entt:
 	auto& playerCameraTransform = registry->get<component::Transform>(playersCameraEntity);
 
 	auto ray = RayTest::Closest(playerCameraTransform.getPositionGlobal(), playerCameraTransform.getForwardGlobal(), 1.4f);
-	if (ray->hasHit)
+	if (ray->hasHit && registry->valid(ray->hitObject.entity))
 	{
 		entt::entity raycastHitEntity = ray->hitObject.entity;
 		if (registry->has<component::EntityInfo>(raycastHitEntity))
@@ -174,6 +169,7 @@ void PlayerInteractionValidationSystem::performRaycastAndValidateForPlayer(entt:
 
 			PlayerInteractResultEvent playerInteractResult;
 			playerInteractResult.interactionType = PlayerInteractionResult::nothing;
+			playerInteractResult.playerNum       = player.playerNum;
 			postEvent(playerInteractResult);
 		}
 
@@ -185,6 +181,7 @@ void PlayerInteractionValidationSystem::performRaycastAndValidateForPlayer(entt:
 
 		PlayerInteractResultEvent playerInteractResult;
 		playerInteractResult.interactionType = PlayerInteractionResult::nothing;
+		playerInteractResult.playerNum       = player.playerNum;
 		postEvent(playerInteractResult);
 	}
 }
@@ -209,6 +206,7 @@ void PlayerInteractionValidationSystem::validateCarryableItemInteraction(entt::e
 
 					PlayerInteractResultEvent playerInteractResult;
 					playerInteractResult.interactionType = PlayerInteractionResult::pickUpCannonball;
+					playerInteractResult.playerNum       = player.playerNum;
 					postEvent(playerInteractResult);
 
 					return;
@@ -223,6 +221,7 @@ void PlayerInteractionValidationSystem::validateCarryableItemInteraction(entt::e
 
 					PlayerInteractResultEvent playerInteractResult;
 					playerInteractResult.interactionType = PlayerInteractionResult::pickUpMop;
+					playerInteractResult.playerNum       = player.playerNum;
 					postEvent(playerInteractResult);
 
 					return;
@@ -239,6 +238,7 @@ void PlayerInteractionValidationSystem::validateCarryableItemInteraction(entt::e
 
 					PlayerInteractResultEvent playerInteractResult;
 					playerInteractResult.interactionType = PlayerInteractionResult::pickUpCleaningSolution;
+					playerInteractResult.playerNum       = player.playerNum;
 					postEvent(playerInteractResult);
 
 					return;
@@ -254,6 +254,7 @@ void PlayerInteractionValidationSystem::validateCarryableItemInteraction(entt::e
 
 					PlayerInteractResultEvent playerInteractResult;
 					playerInteractResult.interactionType = PlayerInteractionResult::pickUpGloop;
+					playerInteractResult.playerNum       = player.playerNum;
 					postEvent(playerInteractResult);
 
 					return;
@@ -264,8 +265,11 @@ void PlayerInteractionValidationSystem::validateCarryableItemInteraction(entt::e
 	}
 
 	//no early return means there is no valid result
+	player.interactableEntity = entt::null;
+
 	PlayerInteractResultEvent playerInteractResult;
 	playerInteractResult.interactionType = PlayerInteractionResult::invalid;
+	playerInteractResult.playerNum       = player.playerNum;
 	postEvent(playerInteractResult);
 }
 
@@ -281,7 +285,7 @@ void PlayerInteractionValidationSystem::validateGarbagePileInteraction(entt::ent
 	{
 		if (garbagePile.team == player.team)
 		{
-			//garbage ticks less than max means the player needs a mop to clean
+			//garbage ticks less than max means the player needs a mop to clean and the cleaning quicktime event will be activated
 			if (garbagePile.garbageTicks < garbagePile.GARBAGE_TICKS_PER_LEVEL)
 			{
 				if (   registry->valid(player.primaryCarriedItem)
@@ -291,13 +295,19 @@ void PlayerInteractionValidationSystem::validateGarbagePileInteraction(entt::ent
 					player.interactableEntity = a_garbagePileEntity;
 
 					PlayerInteractResultEvent playerInteractResult;
-					playerInteractResult.interactionType = PlayerInteractionResult::cleanGarbagePile;
+					playerInteractResult.interactionType = PlayerInteractionResult::activateCleaningQuicktimeEvent;
+					playerInteractResult.playerNum       = player.playerNum;
 					postEvent(playerInteractResult);
+
+					PlayerStateChangeEvent playerStateChange;
+					playerStateChange.playerEntity = a_playerEntity;
+					playerStateChange.newState     = PlayerState::inCleaningQuicktimeEvent;
+					postEvent(playerStateChange);
 
 					return;
 				}
 			}
-			//garbage ticks at max means the player needs cleaning solution to be able to clean
+			//garbage ticks at max means the player needs cleaning solution to be able to clean (cleaning quicktime event is not displayed in this case)
 			else //garbage ticks at max
 			{
 				if (   registry->valid(player.secondaryCarriedItem)
@@ -308,6 +318,7 @@ void PlayerInteractionValidationSystem::validateGarbagePileInteraction(entt::ent
 
 					PlayerInteractResultEvent playerInteractResult;
 					playerInteractResult.interactionType = PlayerInteractionResult::cleanGarbagePile;
+					playerInteractResult.playerNum       = player.playerNum;
 					postEvent(playerInteractResult);
 
 					return;
@@ -325,6 +336,7 @@ void PlayerInteractionValidationSystem::validateGarbagePileInteraction(entt::ent
 
 				PlayerInteractResultEvent playerInteractResult;
 				playerInteractResult.interactionType = PlayerInteractionResult::useGloop;
+				playerInteractResult.playerNum       = player.playerNum;
 				postEvent(playerInteractResult);
 
 				return;
@@ -333,8 +345,11 @@ void PlayerInteractionValidationSystem::validateGarbagePileInteraction(entt::ent
 	}
 
 	//no early return means there is no valid result
+	player.interactableEntity = entt::null;
+
 	PlayerInteractResultEvent playerInteractResult;
 	playerInteractResult.interactionType = PlayerInteractionResult::invalid;
+	playerInteractResult.playerNum       = player.playerNum;
 	postEvent(playerInteractResult);
 }
 
@@ -354,14 +369,18 @@ void PlayerInteractionValidationSystem::validateCannonballCrateInteraction(entt:
 
 		PlayerInteractResultEvent playerInteractResult;
 		playerInteractResult.interactionType = PlayerInteractionResult::takeCannonballFromCrate;
+		playerInteractResult.playerNum       = player.playerNum;
 		postEvent(playerInteractResult);
 
 		return;
 	}
 
 	//no early return means there is no valid result
+	player.interactableEntity = entt::null;
+
 	PlayerInteractResultEvent playerInteractResult;
 	playerInteractResult.interactionType = PlayerInteractionResult::invalid;
+	playerInteractResult.playerNum       = player.playerNum;
 	postEvent(playerInteractResult);
 }
 
@@ -385,6 +404,7 @@ void PlayerInteractionValidationSystem::validateCannonInteraction(entt::entity a
 
 			PlayerInteractResultEvent playerInteractResult;
 			playerInteractResult.interactionType = PlayerInteractionResult::loadCannon;
+			playerInteractResult.playerNum       = player.playerNum;
 			postEvent(playerInteractResult);
 
 			return;
@@ -395,6 +415,7 @@ void PlayerInteractionValidationSystem::validateCannonInteraction(entt::entity a
 
 			PlayerInteractResultEvent playerInteractResult;
 			playerInteractResult.interactionType = PlayerInteractionResult::cannonFiringSoon;
+			playerInteractResult.playerNum       = player.playerNum;
 			postEvent(playerInteractResult);
 
 			return;
@@ -417,6 +438,7 @@ void PlayerInteractionValidationSystem::validateCannonInteraction(entt::entity a
 
 				PlayerInteractResultEvent playerInteractResult;
 				playerInteractResult.interactionType = PlayerInteractionResult::pushCannon;
+				playerInteractResult.playerNum       = player.playerNum;
 				postEvent(playerInteractResult);
 
 				return;
@@ -428,6 +450,7 @@ void PlayerInteractionValidationSystem::validateCannonInteraction(entt::entity a
 
 				PlayerInteractResultEvent playerInteractResult;
 				playerInteractResult.interactionType = PlayerInteractionResult::pushCannon;
+				playerInteractResult.playerNum       = player.playerNum;
 				postEvent(playerInteractResult);
 
 				return;
@@ -436,8 +459,11 @@ void PlayerInteractionValidationSystem::validateCannonInteraction(entt::entity a
 	}
 
 	//no early return means there is no valid result
+	player.interactableEntity = entt::null;
+
 	PlayerInteractResultEvent playerInteractResult;
 	playerInteractResult.interactionType = PlayerInteractionResult::invalid;
+	playerInteractResult.playerNum       = player.playerNum;
 	postEvent(playerInteractResult);
 }
 
@@ -460,60 +486,60 @@ void PlayerInteractionValidationSystem::performInteractionForPlayer(entt::entity
 
 		switch (carryableItem.type)
 		{
-		case CarryableItemType::cannonball:
-		{
-			player.primaryCarriedItem = player.interactableEntity;
+			case CarryableItemType::cannonball:
+			{
+				player.primaryCarriedItem = player.interactableEntity;
 
-			std::cout << "PICKED UP CANNONBALL!\n";
+				std::cout << "PICKED UP CANNONBALL!\n";
 
-			itemNewPosition = glm::vec3(0.0f, 0.35f, -0.75f);
-			itemNewRotation = glm::vec3(0.0f, 0.0f, 0.0f);
+				itemNewPosition = glm::vec3(0.0f, 0.55f, -0.75f);
+				itemNewRotation = glm::vec3(0.0f, 0.0f, 0.0f);
 
-			break;
-		}
-		case CarryableItemType::mop:
-		{
-			player.primaryCarriedItem = player.interactableEntity;
+				break;
+			}
+			case CarryableItemType::mop:
+			{
+				player.primaryCarriedItem = player.interactableEntity;
 
-			std::cout << "PICKED UP MOP!\n";
+				std::cout << "PICKED UP MOP!\n";
 
-			itemNewPosition = glm::vec3(0.45f, -0.15f, -1.4f);
-			itemNewRotation = glm::vec3(-107.0f, -69.5f, 106.0f);
+				itemNewPosition = glm::vec3(0.45f, -0.15f, -1.4f);
+				itemNewRotation = glm::vec3(-107.0f, -69.5f, 106.0f);
 
-			break;
-		}
-		case CarryableItemType::cleaningSolution:
-		{
-			player.secondaryCarriedItem = player.interactableEntity;
+				break;
+			}
+			case CarryableItemType::cleaningSolution:
+			{
+				player.secondaryCarriedItem = player.interactableEntity;
 
-			std::cout << "PICKED UP CLEANING SOLUTION!\n";
+				std::cout << "PICKED UP CLEANING SOLUTION!\n";
 
-			itemNewPosition = glm::vec3(-0.25f, 0.4f, -0.7f);
-			itemNewRotation = glm::vec3(0.0f, 0.0f, 0.0f);
+				itemNewPosition = glm::vec3(-0.25f, 0.4f, -0.7f);
+				itemNewRotation = glm::vec3(0.0f, 0.0f, 0.0f);
 
-			break;
-		}
-		case CarryableItemType::gloop:
-		{
-			player.primaryCarriedItem = player.interactableEntity;
+				break;
+			}
+			case CarryableItemType::gloop:
+			{
+				player.primaryCarriedItem = player.interactableEntity;
 
-			std::cout << "PICKED UP GLOOP!\n";
+				std::cout << "PICKED UP GLOOP!\n";
 
-			itemNewPosition = glm::vec3(0.0f, 0.25f, -0.75f);
-			itemNewRotation = glm::vec3(0.0f, 0.0f, 0.0f);
+				itemNewPosition = glm::vec3(0.0f, 0.25f, -0.75f);
+				itemNewRotation = glm::vec3(0.0f, 0.0f, 0.0f);
 
-			break;
-		}
-		default:
-		{
-			std::cout << "INVALID ITEM TYPE: TRIED TO PICK UP AN ITEM BUT THE ITEM TYPE WAS NOT A VALID OPTION!\n";
-			break;
-		}
+				break;
+			}
+			default:
+			{
+				std::cout << "INVALID ITEM TYPE: TRIED TO PICK UP AN ITEM BUT THE ITEM TYPE WAS NOT A VALID OPTION!\n";
+				break;
+			}
 		}
 
 		carryableItem.isBeingCarried = true;
-		auto& carryableItemParent = registry->get_or_assign<component::Parent>(player.interactableEntity);
-		carryableItemParent.parent = a_playerEntity;
+		auto& carryableItemParent    = registry->get_or_assign<component::Parent>(player.interactableEntity);
+		carryableItemParent.parent   = a_playerEntity;
 
 		carryableItemTransform.setRotationEuler(itemNewRotation);
 		carryableItemTransform.setPosition(itemNewPosition);
@@ -526,7 +552,26 @@ void PlayerInteractionValidationSystem::performInteractionForPlayer(entt::entity
 		auto& garbagePile = registry->get<GarbagePile>(player.interactableEntity);
 		auto& garbagePileTransform = registry->get<component::Transform>(player.interactableEntity);
 
-		if (garbagePile.team != player.team)
+		if( garbagePile.team == player.team)
+		{
+			//if garbage pile is at max ticks, use cleaning solution
+			//NOTE: if garbage pile is not at max ticks, cleaning is handled in the OnEvent function in this file under the cleaning quicktime event
+			if (garbagePile.garbageTicks >= garbagePile.GARBAGE_TICKS_PER_LEVEL)
+			{
+				registry->destroy(player.secondaryCarriedItem);
+				player.secondaryCarriedItem = entt::null;
+
+				RequestToCleanGarbageEvent requestToCleanGarbage;
+				requestToCleanGarbage.garbagePileEntity = player.interactableEntity;
+				postEvent(requestToCleanGarbage);
+
+				PlayerStateChangeEvent playerStateChange;
+				playerStateChange.playerEntity = a_playerEntity;
+				playerStateChange.newState     = PlayerState::cleaning;
+				postEvent(playerStateChange);
+			}
+		}
+		else //garbagePile.team != player.team
 		{
 			std::cout << "USED GLOOP\n";
 
@@ -536,18 +581,22 @@ void PlayerInteractionValidationSystem::performInteractionForPlayer(entt::entity
 			useGloop.gloopEntity = player.primaryCarriedItem;
 			postEvent(useGloop);
 		}
-		//if the player and garbage pile are the same team, cleaning is handled in the OnEvent function in this file under the cleaning quicktime event
 	}
 
 	else if (registry->has<CannonballCrate>(player.interactableEntity))
 	{
+		auto& cannonballCrate = registry->get<CannonballCrate>(player.interactableEntity);
+
 		auto carryableItemView = registry->view<CarryableItem, component::Transform>();
 		for (auto& carryableItemEntity : carryableItemView)
 		{
 			auto& carryableItem = registry->get<CarryableItem>(carryableItemEntity);
 			auto& carryableItemTransform = registry->get<component::Transform>(carryableItemEntity);
 
-			if (carryableItem.type == CarryableItemType::cannonball && !carryableItem.isActive && !carryableItem.isBeingCarried)
+			if (   carryableItem.type == CarryableItemType::cannonball 
+				&& carryableItem.team == cannonballCrate.team
+				&& !carryableItem.isActive 
+				&& !carryableItem.isBeingCarried)
 			{
 				player.primaryCarriedItem = carryableItemEntity;
 
@@ -560,7 +609,7 @@ void PlayerInteractionValidationSystem::performInteractionForPlayer(entt::entity
 				cannonballParent.parent = a_playerEntity;
 
 				carryableItemTransform.setRotationEuler(glm::vec3(0.0f));
-				carryableItemTransform.setPosition(glm::vec3(0.0f, 0.35f, -0.75f));
+				carryableItemTransform.setPosition(glm::vec3(0.0f, 0.55f, -0.75f));
 
 				return;
 			}
@@ -700,7 +749,7 @@ void PlayerInteractionValidationSystem::dropPlayerCarriedItems(entt::entity a_pl
 					player.primaryCarriedItem = entt::null;
 
 					newPosition += playerTransform.getForward() * 0.8f;
-					newPosition.y = 0.25f;
+					//newPosition.y = 0.25f;
 
 					break;
 				}
@@ -711,7 +760,7 @@ void PlayerInteractionValidationSystem::dropPlayerCarriedItems(entt::entity a_pl
 
 					newPosition += playerTransform.getForward() * 0.7f;
 					newPosition += playerTransform.getRight()   * 0.7f;
-					newPosition.y = 0.1f;
+					//newPosition.y = 0.1f;
 
 					newRotation += glm::vec3(0.0f, -90.0f, 0.0f);
 
@@ -724,7 +773,7 @@ void PlayerInteractionValidationSystem::dropPlayerCarriedItems(entt::entity a_pl
 
 					newPosition += playerTransform.getForward() * 1.0f;
 					newPosition += playerTransform.getRight()   * -0.3f;
-					newPosition.y = 0.22f;
+					//newPosition.y = 0.22f;
 
 					break;
 				}
@@ -734,7 +783,7 @@ void PlayerInteractionValidationSystem::dropPlayerCarriedItems(entt::entity a_pl
 					player.primaryCarriedItem = entt::null;
 
 					newPosition += playerTransform.getForward() * 0.8f;
-					newPosition.y = 0.27f;
+					//newPosition.y = 0.27f;
 
 					break;
 				}

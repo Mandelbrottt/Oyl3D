@@ -24,6 +24,8 @@ public:
 
 	void onEnter() override
 	{
+		srand(time(NULL));
+
 		this->listenForEventCategory(EventCategory::Keyboard);
 		this->listenForEventCategory(EventCategory::Mouse);
 		this->listenForEventCategory((EventCategory) CategoryGarbagePile);
@@ -48,6 +50,10 @@ public:
 			auto& uiType = registry->assign<PlayerInteractionType>(e);
 			uiType.type = PlayerInteractionResult::pushCannon;
 
+			auto& HUDElement = registry->assign<PlayerHUDElement>(e);
+			HUDElement.positionWhenActive = glm::vec3(0.0f, 2.0f, 0.0f);
+			HUDElement.playerNum = 0;
+
             auto& so = registry->assign<component::EntityInfo>(e);
             so.name = "Push Cannon Message";
             
@@ -64,6 +70,10 @@ public:
 
 			auto& uiType = registry->assign<PlayerInteractionType>(e);
 			uiType.type = PlayerInteractionResult::loadCannon;
+
+			auto& HUDElement = registry->assign<PlayerHUDElement>(e);
+			HUDElement.positionWhenActive = glm::vec3(0.0f, 2.0f, 0.0f);
+			HUDElement.playerNum = 0;
 
             auto& so = registry->assign<component::EntityInfo>(e);
             so.name = "Load Cannon Message";
@@ -82,6 +92,10 @@ public:
 			auto& uiType = registry->assign<PlayerInteractionType>(e);
 			uiType.type = PlayerInteractionResult::takeCannonballFromCrate;
 
+			auto& HUDElement = registry->assign<PlayerHUDElement>(e);
+			HUDElement.positionWhenActive = glm::vec3(0.0f, 2.0f, 0.0f);
+			HUDElement.playerNum = 0;
+
             auto& so = registry->assign<component::EntityInfo>(e);
             so.name = "Cannonball Crate Message";
 
@@ -98,6 +112,10 @@ public:
 
 			auto& uiType = registry->assign<PlayerInteractionType>(e);
 			uiType.type = PlayerInteractionResult::pickUpCannonball;
+
+			auto& HUDElement = registry->assign<PlayerHUDElement>(e);
+			HUDElement.positionWhenActive = glm::vec3(0.0f, 2.0f, 0.0f);
+			HUDElement.playerNum = 0;
 
 			auto& so = registry->assign<component::EntityInfo>(e);
 			so.name = "Pickup Cannonball Message";
@@ -116,6 +134,10 @@ public:
 			auto& uiType = registry->assign<PlayerInteractionType>(e);
 			uiType.type = PlayerInteractionResult::pickUpMop;
 
+			auto& HUDElement = registry->assign<PlayerHUDElement>(e);
+			HUDElement.positionWhenActive = glm::vec3(0.0f, 2.0f, 0.0f);
+			HUDElement.playerNum = 0;
+
             auto& so = registry->assign<component::EntityInfo>(e);
             so.name = "Pickup Mop Message";
 
@@ -132,6 +154,10 @@ public:
 
 			auto& uiType = registry->assign<PlayerInteractionType>(e);
 			uiType.type = PlayerInteractionResult::pickUpCleaningSolution;
+
+			auto& HUDElement = registry->assign<PlayerHUDElement>(e);
+			HUDElement.positionWhenActive = glm::vec3(0.0f, 2.0f, 0.0f);
+			HUDElement.playerNum = 0;
 
 			auto& so = registry->assign<component::EntityInfo>(e);
 			so.name = "Pickup Cleaning Solution Message";
@@ -150,6 +176,10 @@ public:
 			auto& uiType = registry->assign<PlayerInteractionType>(e);
 			uiType.type = PlayerInteractionResult::pickUpGloop;
 
+			auto& HUDElement = registry->assign<PlayerHUDElement>(e);
+			HUDElement.positionWhenActive = glm::vec3(0.0f, 2.0f, 0.0f);
+			HUDElement.playerNum = 0;
+
 			auto& so = registry->assign<component::EntityInfo>(e);
 			so.name = "Pickup Gloop Message";
 
@@ -166,6 +196,10 @@ public:
 
 			auto& uiType = registry->assign<PlayerInteractionType>(e);
 			uiType.type = PlayerInteractionResult::useGloop;
+
+			auto& HUDElement = registry->assign<PlayerHUDElement>(e);
+			HUDElement.positionWhenActive = glm::vec3(0.0f, 2.0f, 0.0f);
+			HUDElement.playerNum = 0;
 
 			auto& so = registry->assign<component::EntityInfo>(e);
 			so.name = "Use Gloop Message";
@@ -184,6 +218,10 @@ public:
 			auto& uiType = registry->assign<PlayerInteractionType>(e);
 			uiType.type = PlayerInteractionResult::cleanGarbagePile;
 
+			auto& HUDElement = registry->assign<PlayerHUDElement>(e);
+			HUDElement.positionWhenActive = glm::vec3(0.0f, 2.0f, 0.0f);
+			HUDElement.playerNum = 0;
+
             auto& so = registry->assign<component::EntityInfo>(e);
             so.name = "Clean Garbage Message";
 
@@ -201,6 +239,10 @@ public:
 			auto& uiType = registry->assign<PlayerInteractionType>(e);
 			uiType.type = PlayerInteractionResult::cannonFiringSoon;
 
+			auto& HUDElement = registry->assign<PlayerHUDElement>(e);
+			HUDElement.positionWhenActive = glm::vec3(0.0f, 2.0f, 0.0f);
+			HUDElement.playerNum = 0;
+
             auto& so = registry->assign<component::EntityInfo>(e);
             so.name = "Cannon Firing Message";
             
@@ -215,6 +257,10 @@ public:
 
 			auto& reticle = registry->assign<Reticle>(e);
 			reticle.type = ReticleType::normal;
+
+			auto& HUDElement = registry->assign<PlayerHUDElement>(e);
+			HUDElement.positionWhenActive = glm::vec3(0.0f, 0.0f, 0.0f);
+			HUDElement.playerNum = 0;
 
 			component::Transform t;
 			t.setPosition(glm::vec3(-3.0f, -1.0f, -2.0f));
@@ -232,6 +278,10 @@ public:
 
 			auto& reticle = registry->assign<Reticle>(e);
 			reticle.type = ReticleType::invalid;
+
+			auto& HUDElement = registry->assign<PlayerHUDElement>(e);
+			HUDElement.positionWhenActive = glm::vec3(0.0f, 0.0f, 0.0f);
+			HUDElement.playerNum = 0;
 
 			component::Transform t;
 			t.setPosition(glm::vec3(-3.0f, -1.0f, -2.0f));
@@ -295,38 +345,47 @@ public:
 		{
 			//background for cleaning quicktime event
 			entt::entity cleaningQuicktimeEventBackgroundEntity = registry->create();
-			auto& cleaningQuicktimeEventBackgroundGui = registry->assign<component::GuiRenderable>(cleaningQuicktimeEventBackgroundEntity);
-			cleaningQuicktimeEventBackgroundGui.texture = Texture2D::cache("res/assets/textures/gui/cleaningQuicktimeEventBackground.png");
+			auto& backgroundGUI = registry->assign<component::GuiRenderable>(cleaningQuicktimeEventBackgroundEntity);
+			backgroundGUI.texture = Texture2D::cache("res/assets/textures/gui/cleaningQuicktimeEventBackground.png");
 
-			component::Transform cleaningEventBackgroundTransform;
-			cleaningEventBackgroundTransform.setPosition(glm::vec3(-30.0f, 3.5f, 0.0f));
-			cleaningEventBackgroundTransform.setScale(glm::vec3(2.0f, 1.5f, 1.0f));
-			registry->assign<component::Transform>(cleaningQuicktimeEventBackgroundEntity, cleaningEventBackgroundTransform);
+			component::Transform backgroundTransform;
+			backgroundTransform.setPosition(glm::vec3(-30.0f, 3.5f, 0.0f));
+			backgroundTransform.setScale(glm::vec3(2.0f, 1.5f, 1.0f));
+			registry->assign<component::Transform>(cleaningQuicktimeEventBackgroundEntity, backgroundTransform);
 
-			auto& cleaningQuicktimeEventBackgroundSceneObject = registry->assign<component::EntityInfo>(cleaningQuicktimeEventBackgroundEntity);
-			cleaningQuicktimeEventBackgroundSceneObject.name = "Cleaning Quicktime Event Background";
+			auto& backgroundHUDElement = registry->assign<PlayerHUDElement>(cleaningQuicktimeEventBackgroundEntity);
+			backgroundHUDElement.positionWhenActive = glm::vec3(0.0f, 3.5f, 0.0f);
+			backgroundHUDElement.playerNum = 0;
+
+			auto& backgroundSceneObject = registry->assign<component::EntityInfo>(cleaningQuicktimeEventBackgroundEntity);
+			backgroundSceneObject.name = "Cleaning Quicktime Event Background";
+
 
 
 			//indicator for cleaning quicktime event
 			entt::entity cleaningQuicktimeEventIndicatorEntity = registry->create();
-			auto& cleaningQuicktimeEventIndicatorGui = registry->assign<component::GuiRenderable>(cleaningQuicktimeEventIndicatorEntity);
-			cleaningQuicktimeEventIndicatorGui.texture = Texture2D::cache("res/assets/textures/gui/cleaningQuicktimeEventIndicator.png");
+			auto& indicatorGUI = registry->assign<component::GuiRenderable>(cleaningQuicktimeEventIndicatorEntity);
+			indicatorGUI.texture = Texture2D::cache("res/assets/textures/gui/cleaningQuicktimeEventIndicator.png");
+
+			component::Transform indicatorTransform;
+			indicatorTransform.setPosition(glm::vec3(-30.0f, 3.6f, -1.0f));
+			indicatorTransform.setScale(glm::vec3(1.5f, 2.0f, 1.0f));
+			registry->assign<component::Transform>(cleaningQuicktimeEventIndicatorEntity, indicatorTransform);
 
 			CleaningQuicktimeEventIndicator cleaningQuicktimeEventIndicator;
-			cleaningQuicktimeEventIndicator.lerpInformation.startPos       = glm::vec3(-4.95f, 3.6f, -1.0f);
+			cleaningQuicktimeEventIndicator.lerpInformation.startPos = glm::vec3(-4.95f, 3.6f, -1.0f);
 			cleaningQuicktimeEventIndicator.lerpInformation.destinationPos = glm::vec3(4.95f, 3.6f, -1.0f);
-			cleaningQuicktimeEventIndicator.lerpInformation.speed          = 1.0f;
+			cleaningQuicktimeEventIndicator.lerpInformation.speed = 1.0f;
 
 			cleaningQuicktimeEventIndicator.cleaningQuicktimeEventBackground = cleaningQuicktimeEventBackgroundEntity;
 			registry->assign<CleaningQuicktimeEventIndicator>(cleaningQuicktimeEventIndicatorEntity, cleaningQuicktimeEventIndicator);
 
-			component::Transform cleaningEventIndicatorTransform;
-			cleaningEventIndicatorTransform.setPosition(glm::vec3(-30.0f, 3.6f, 0.0f));
-			cleaningEventIndicatorTransform.setScale(glm::vec3(1.5f, 2.0f, 1.0f));
-			registry->assign<component::Transform>(cleaningQuicktimeEventIndicatorEntity, cleaningEventIndicatorTransform);
+			auto& indicatorHUDElement = registry->assign<PlayerHUDElement>(cleaningQuicktimeEventIndicatorEntity);
+			indicatorHUDElement.positionWhenActive = glm::vec3(-4.95f, 3.6f, -1.0f);
+			indicatorHUDElement.playerNum = 0;
 
-			auto& cleaningQuicktimeEventIndicatorSceneObject = registry->assign<component::EntityInfo>(cleaningQuicktimeEventIndicatorEntity);
-			cleaningQuicktimeEventIndicatorSceneObject.name = "Cleaning Quicktime Event Indicator";
+			auto& indicatorSceneObject = registry->assign<component::EntityInfo>(cleaningQuicktimeEventIndicatorEntity);
+			indicatorSceneObject.name = "Cleaning Quicktime Event Indicator";
 		}
 	}
 

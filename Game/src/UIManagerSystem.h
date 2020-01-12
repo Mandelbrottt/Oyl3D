@@ -16,6 +16,6 @@ private:
 	void onUpdate() override;
 	bool onEvent(const Event& event) override;
 
-	void enableValidUIType(PlayerInteractionResult a_type);
-	void enableInvalidUIType(PlayerInteractionResult a_type);
+	void enableValidUIType(PlayerInteractionResult a_type, int a_playerNum);
+	void enableInvalidUIType(PlayerInteractionResult a_type, int a_playerNum);
 };

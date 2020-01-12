@@ -90,7 +90,7 @@ void PlayerSystem::onUpdate()
 
 			case PlayerState::inCleaningQuicktimeEvent:
 			{
-				performBasicMovement(playerEntity, player.speedForce * 0.5f, Time::deltaTime());
+				performBasicMovement(playerEntity, player.speedForce, Time::deltaTime());
 
 				break;
 			}
