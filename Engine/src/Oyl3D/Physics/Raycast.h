@@ -1,16 +1,12 @@
 #pragma once
 
-// TODO: Change to something that doesn't expose internals to the user
-#include "Oyl3D/ECS/SystemImpl.h"
-
 namespace oyl
 {
+    struct ClosestRaycastResult;
+    
     namespace RayTest
     {
-        inline Ref<ClosestRaycastResult> Closest(glm::vec3 from, glm::vec3 direction, f32 distance)
-        {
-            return internal::PhysicsSystem::raytestClosest(from, direction, distance);
-        }
+        extern Ref<ClosestRaycastResult> Closest(glm::vec3 from, glm::vec3 direction, f32 distance);
     }
     
     struct RaycastResult
