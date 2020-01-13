@@ -558,6 +558,16 @@ namespace oyl
             using component::RigidBody;
             using component::Collidable;
             
+            for (auto it = m_rigidBodies.begin(); it != m_rigidBodies.end(); ++it)
+            {
+                if (registry->valid(it->first) &&
+                    !registry->has<RigidBody>(it->first))
+                {
+                    m_btWorld->removeRigidBody(it->second->body.get());
+                    it = m_rigidBodies.erase(it);
+                }
+            }
+            
             auto view = registry->view<Transform, RigidBody>();
             for (auto entity : view)
             {
@@ -790,9 +800,9 @@ namespace oyl
 
         // TODO: Currently need rigidbody for collider to register in world, make mutually exclusive
         void PhysicsSystem::processIncomingRigidBody(entt::entity entity, 
-                                                     const component::Transform& transformComponent, 
-                                                     const component::Collidable&  colliderComponent, 
-                                                     const component::RigidBody& rigidBodyComponent)
+                                                     const component::Transform&  transformComponent, 
+                                                     const component::Collidable& colliderComponent, 
+                                                     const component::RigidBody&  rigidBodyComponent)
         {
             // Check if collider was emptied past frame
             if (colliderComponent.empty())
