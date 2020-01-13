@@ -480,21 +480,18 @@ namespace oyl::internal
 
                     auto& copyEI = registry->get<component::EntityInfo>(copy);
 
-                    uint pos = copyEI.name.size() - 1;
-                    while (pos > 0 && std::isdigit(copyEI.name[pos]))
-                    {
-                        pos--;
-                    }
+                    uint pos = copyEI.name.size();
+                    while (pos > 0 && std::isdigit(copyEI.name[pos - 1])) pos--;
 
                     if (pos > 0 && pos != copyEI.name.size() - 1)
                     {
                         int number = std::stoi(copyEI.name.substr(pos));
                         copyEI.name.erase(pos);
-                        copyEI.name.append(" " + std::to_string(number + 1));
+                        copyEI.name.append(std::to_string(number + 1));
                     }
                     else
                     {
-                        copyEI.name.append(" " + std::to_string(1));
+                        copyEI.name.append(std::to_string(1));
                     }
                 }
 
