@@ -84,7 +84,7 @@ struct Player
 	float adjustingPositionSpeed = 3.333f;
 	float pushingSpeed = 0.2f;
 
-	MoveableUsingLerp adjustingPositionStateData; //TODO: integrate adjusting position into pushing state instead of having its own state
+	MoveableUsingLerp adjustingPositionStateData;
 	MoveableUsingLerp pushingStateData;
 
 	float CLEANING_TIME_DURATION = 1.5f;
@@ -166,7 +166,7 @@ struct PlayerInteractionType
 
 struct PlayerHUDElement
 {
-	int playerNum = -1;
+	int playerNum = -1; //should always correspond with player camera's player number
 	glm::vec3 positionWhenActive;
 };
 

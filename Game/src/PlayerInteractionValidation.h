@@ -23,6 +23,10 @@ private:
 	void validateCannonInteraction(entt::entity a_playerEntity, entt::entity a_cannonEntity);
 
 	void performInteractionForPlayer(entt::entity a_playerEntity);
+	void performCarryableItemInteraction(entt::entity a_playerEntity, entt::entity a_carryableItemEntity);
+	void performGarbagePileInteraction(entt::entity a_playerEntity, entt::entity a_garbagePileEntity);
+	void performCannonballCrateInteraction(entt::entity a_playerEntity, entt::entity a_cannonballCrateEntity);
+	void performCannonInteraction(entt::entity a_playerEntity, entt::entity a_cannonEntity);
 
 	void dropPlayerCarriedItems(entt::entity a_playerEntity, bool dropSpecificItemType = false, CarryableItemType itemTypeToDrop = CarryableItemType::invalid);
 };

@@ -55,13 +55,13 @@ bool CannonballSystem::onEvent(const Event& event)
 			auto view = registry->view<Cannonball, CarryableItem, component::Transform>();
 			for (auto& cannonballEntity : view)
 			{
-				auto& cannonball = registry->get<Cannonball>(cannonballEntity);
+				auto& cannonball          = registry->get<Cannonball>(cannonballEntity);
 				auto& cannonballCarryable = registry->get<CarryableItem>(cannonballEntity);
 				auto& cannonballTransform = registry->get<component::Transform>(cannonballEntity);
 
 				if (!cannonball.isBeingFired && !cannonballCarryable.isActive)
 				{
-					cannonball.isBeingFired = true;
+					cannonball.isBeingFired      = true;
 					cannonballCarryable.isActive = true;
 
 					cannonball.v1 = evt.cannonPosition + glm::vec3(0.0f, -2.0f, 0.0f);
