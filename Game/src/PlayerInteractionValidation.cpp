@@ -105,6 +105,8 @@ bool PlayerInteractionValidationSystem::onEvent(const Event& event)
 	return false;
 }
 
+
+
 void PlayerInteractionValidationSystem::performRaycastAndValidateForPlayer(entt::entity a_playerEntity)
 {
 	auto& player          = registry->get<Player>(a_playerEntity);
@@ -187,6 +189,10 @@ void PlayerInteractionValidationSystem::performRaycastAndValidateForPlayer(entt:
 	}
 }
 
+#pragma region VALIDATION FUNCTIONS
+////////////////////////////////////////////////////////////////////
+/////////////////////// VALIDATION FUNCTIONS ///////////////////////
+////////////////////////////////////////////////////////////////////
 void PlayerInteractionValidationSystem::validateCarryableItemInteraction(entt::entity a_playerEntity, entt::entity a_carryableItemEntity)
 {
 	auto& player          = registry->get<Player>(a_playerEntity);
@@ -467,8 +473,12 @@ void PlayerInteractionValidationSystem::validateCannonInteraction(entt::entity a
 	playerInteractResult.playerNum       = player.playerNum;
 	postEvent(playerInteractResult);
 }
+#pragma endregion
 
-
+#pragma region STATE CHANGING FUNCTIONS
+////////////////////////////////////////////////////////////////////
+///////////////////// STATE CHANGING FUNCTIONS /////////////////////
+////////////////////////////////////////////////////////////////////
 
 //the player's interactable entity would have been validated and set based on the result of the raycast performed every frame
 void PlayerInteractionValidationSystem::performInteractionForPlayer(entt::entity a_playerEntity)
@@ -738,7 +748,12 @@ void PlayerInteractionValidationSystem::performCannonInteraction(entt::entity a_
 		return;
 	}
 }
+#pragma endregion
 
+#pragma region HELPER FUNCTIONS
+////////////////////////////////////////////////////////////////////
+//////////////////////// HELPER FUNCTIONS //////////////////////////
+////////////////////////////////////////////////////////////////////
 void PlayerInteractionValidationSystem::dropPlayerCarriedItems(entt::entity a_playerEntity, bool dropSpecificItemType, CarryableItemType itemTypeToDrop)
 {
 	auto& player          = registry->get<Player>(a_playerEntity);
@@ -824,3 +839,4 @@ void PlayerInteractionValidationSystem::dropPlayerCarriedItems(entt::entity a_pl
 		}
 	}
 }
+#pragma endregion
