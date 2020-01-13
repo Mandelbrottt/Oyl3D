@@ -510,6 +510,10 @@ void PlayerInteractionValidationSystem::performCarryableItemInteraction(entt::en
 	auto& carryableItemTransform = registry->get<component::Transform>(a_carryableItemEntity);
 	auto& carryableItemParent    = registry->get_or_assign<component::Parent>(a_carryableItemEntity);
 
+	//remove rigidbody when item is carried
+	if (registry->has<component::RigidBody>(a_carryableItemEntity))
+		registry->remove<component::RigidBody>(a_carryableItemEntity);
+
 	glm::vec3 itemNewPosition = glm::vec3(0.0f);
 	glm::vec3 itemNewRotation = glm::vec3(0.0f);
 
@@ -521,7 +525,7 @@ void PlayerInteractionValidationSystem::performCarryableItemInteraction(entt::en
 
 			std::cout << "PICKED UP CANNONBALL!\n";
 
-			itemNewPosition = glm::vec3(0.0f, 0.55f, -0.75f);
+			itemNewPosition = glm::vec3(0.0f, 0.3f, -0.8f);
 			itemNewRotation = glm::vec3(0.0f, 0.0f, 0.0f);
 
 			break;
@@ -627,6 +631,10 @@ void PlayerInteractionValidationSystem::performCannonballCrateInteraction(entt::
 			&& !carryableItem.isActive
 			&& !carryableItem.isBeingCarried)
 		{
+			//remove rigidbody when item is carried
+			if (registry->has<component::RigidBody>(cannonballEntity))
+				registry->remove<component::RigidBody>(cannonballEntity);
+
 			player.primaryCarriedItem = cannonballEntity;
 
 			carryableItem.isBeingCarried = true;
@@ -638,7 +646,7 @@ void PlayerInteractionValidationSystem::performCannonballCrateInteraction(entt::
 			cannonballParent.parent = a_playerEntity;
 
 			cannonballTransform.setRotationEuler(glm::vec3(0.0f));
-			cannonballTransform.setPosition(glm::vec3(0.0f, 0.55f, -0.75f));
+			cannonballTransform.setPosition(glm::vec3(0.0f, 0.3f, -0.8f));
 
 			return;
 		}
@@ -765,7 +773,6 @@ void PlayerInteractionValidationSystem::dropPlayerCarriedItems(entt::entity a_pl
 		auto& carriedItem          = registry->get<CarryableItem>(carriedItemEntity);
 		auto& carriedItemParent    = registry->get<component::Parent>(carriedItemEntity);
 		auto& carriedItemTransform = registry->get<component::Transform>(carriedItemEntity);
-		auto& carriedItemRB        = registry->get<component::RigidBody>(carriedItemEntity);
 
 		if (dropSpecificItemType && carriedItem.type != itemTypeToDrop)
 			continue;
@@ -775,10 +782,11 @@ void PlayerInteractionValidationSystem::dropPlayerCarriedItems(entt::entity a_pl
 
 		if (carriedItemParent.parent == a_playerEntity)
 		{
+			auto& carriedItemRB = registry->get_or_assign<component::RigidBody>(carriedItemEntity); //add the rigidbody back for the item when it's dropped
+			carriedItemRB.setVelocity(glm::vec3(0.0f));
+
 			carriedItemParent.parent = entt::null;
 			carriedItem.isBeingCarried = false;
-
-			carriedItemRB.setVelocity(glm::vec3(0.0f));
 
 			glm::vec3 newPosition = playerTransform.getPosition();
 			glm::vec3 newRotation = playerTransform.getRotationEuler();
