@@ -70,31 +70,27 @@ void SandboxLayer::onEnter()
 
 			mr.material = Material::cache(Shader::get(LIGHTING_SHADER_ALIAS), "cannonball");
 			mr.material->albedoMap = Texture2D::cache("res/assets/textures/cannonballTemp.png");
-			mr.material->specularMap = Texture2D::cache("res/assets/textures/tempSpec.jpg");
 
 			mr.material = Material::cache(Shader::get(LIGHTING_SHADER_ALIAS), "goop");
 			mr.material->albedoMap = Texture2D::cache("res/assets/textures/goopTemp.png");
-			mr.material->specularMap = Texture2D::cache("res/assets/textures/tempSpec.jpg");
 
 			mr.material = Material::cache(Shader::get(LIGHTING_SHADER_ALIAS), "pirax");
 			mr.material->albedoMap = Texture2D::cache("res/assets/textures/piraxTemp.png");
-			mr.material->specularMap = Texture2D::cache("res/assets/textures/tempSpec.jpg");
 
 			mr.material = Material::cache(Shader::get(LIGHTING_SHADER_ALIAS), "garbage");
 			mr.material->albedoMap = Texture2D::cache("res/assets/textures/garbageTemp.png");
-			mr.material->specularMap = Texture2D::cache("res/assets/textures/tempSpec.jpg");
 
 			mr.material = Material::cache(Shader::get(LIGHTING_SHADER_ALIAS), "crate");
 			mr.material->albedoMap = Texture2D::cache("res/assets/textures/binTemp.png");
-			mr.material->specularMap = Texture2D::cache("res/assets/textures/tempSpec.jpg");
 
 			mr.material = Material::cache(Shader::get(LIGHTING_SHADER_ALIAS), "mop");
 			mr.material->albedoMap = Texture2D::cache("res/assets/textures/mopTemp.png");
-			mr.material->specularMap = Texture2D::cache("res/assets/textures/tempSpec.jpg");
 
 			mr.material = Material::cache(Shader::get(LIGHTING_SHADER_ALIAS), "cannon");
 			mr.material->albedoMap = Texture2D::cache("res/assets/textures/cannonTemp.png");
-			mr.material->specularMap = Texture2D::cache("res/assets/textures/tempSpec.jpg");
+
+			mr.material = Material::cache(Shader::get(LIGHTING_SHADER_ALIAS), "lamp");
+			mr.material->albedoMap = Texture2D::cache("res/assets/textures/lampTemp.png");
 
 			//CANNON
 			entt::entity cannonEntity = registry->create();
@@ -511,6 +507,7 @@ void SandboxLayer::onEnter()
 		/////////////////////////////////////////////////////
 
 		{
+			mr.mesh = Mesh::cache("res/assets/models/lamp.obj");
 			component::Collidable boxCollider;
 			auto& shi = boxCollider.pushShape(ColliderType::Box);
 			shi.box.setSize({ 1.0f, 1.0f, 1.0f });

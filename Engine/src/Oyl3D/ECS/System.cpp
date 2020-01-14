@@ -117,6 +117,8 @@ namespace oyl
                 RenderCommand::setBackfaceCulling(true);
                 RenderCommand::setDepthDraw(true);
 
+                bool doCulling = true;
+
                 auto view = registry->view<Transform, Renderable>();
                 for (const auto& entity : view)
                 {
@@ -168,6 +170,13 @@ namespace oyl
 
                     auto& transformComponent = view.get<Transform>(entity);
                     glm::mat4 transform = transformComponent.getMatrixGlobal();
+
+                    glm::bvec3 mirror = transformComponent.getMirrorGlobal();
+                    if (!(mirror.x ^ mirror.y ^ mirror.z) != doCulling)
+                    {
+                        doCulling ^= 1;
+                        RenderCommand::setBackfaceCulling(doCulling);
+                    }
 
                     if (registry->has<component::Animatable>(entity))
                     {
@@ -557,7 +566,8 @@ namespace oyl
             using component::Transform;
             using component::RigidBody;
             using component::Collidable;
-            
+
+            // TEMPORARY: Change on proper collider integration
             for (auto it = m_rigidBodies.begin(); it != m_rigidBodies.end(); ++it)
             {
                 if (registry->valid(it->first) &&

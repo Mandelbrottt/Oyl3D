@@ -992,35 +992,40 @@
             "Enabled": true,
             "Material": {
                 "Albedo": {
-                    "Alias": "container2",
-                    "FilePath": "res/assets/textures/container2.jpg"
+                    "Alias": "lampTemp",
+                    "FilePath": "res/assets/textures/lampTemp.png"
                 },
-                "Alias": "container",
+                "Alias": "lamp",
                 "Shader": {
-                    "Alias": "oyl_lighting",
+                    "Alias": "Oyl Lighting",
                     "Pixel": "../Engine/res/shaders/lighting.frag",
                     "Vertex": "../Engine/res/shaders/lighting.vert"
                 },
                 "Specular": {
-                    "Alias": "container2_specular",
-                    "FilePath": "res/assets/textures/container2_specular.jpg"
+                    "Alias": "Oyl White",
+                    "FilePath": "../Engine/res/textures/white.png"
                 }
             },
             "Mesh": {
-                "Alias": "cube",
-                "FilePath": "res/assets/models/cube.obj"
+                "Alias": "lamp",
+                "FilePath": "res/assets/models/lamp.obj"
             }
         },
         "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
             "Position": {
                 "X": 0.0,
-                "Y": 5.148453235626221,
+                "Y": 5.534851551055908,
                 "Z": -1.8205928802490234
             },
             "Rotation": {
-                "X": 50.76619338989258,
-                "Y": -26.246103286743164,
-                "Z": -45.769500732421875
+                "X": 0.0,
+                "Y": -0.0,
+                "Z": 0.0
             },
             "Scale": {
                 "X": 0.3000001907348633,
@@ -1151,14 +1156,15 @@
                 "Z": 0.0
             },
             "Rotation": {
-                "X": 0.0,
-                "Y": -0.0,
-                "Z": 0.0
+                "qW": 0.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
             },
             "Scale": {
-                "X": 1.0,
-                "Y": 1.0,
-                "Z": 1.0
+                "X": 0.0,
+                "Y": 0.0,
+                "Z": 0.0
             }
         }
     },
@@ -1224,20 +1230,25 @@
                 }
             },
             "Mesh": {
-                "Alias": "cube",
-                "FilePath": "res/assets/models/cube.obj"
+                "Filepath": "res/assets/models/cube.obj"
             }
         },
         "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
             "Position": {
                 "X": 0.9301067590713501,
                 "Y": 0.537074089050293,
                 "Z": 0.0
             },
             "Rotation": {
-                "X": 0.0,
-                "Y": -0.0,
-                "Z": 0.0
+                "qW": 0.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
             },
             "Scale": {
                 "X": 1.0,
@@ -1251,6 +1262,11 @@
             "Name": "Player"
         },
         "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
             "Position": {
                 "X": 0.0,
                 "Y": 0.7667633295059204,
@@ -1276,9 +1292,10 @@
                 "Z": 0.0
             },
             "Rotation": {
-                "X": 0.0,
-                "Y": -0.0,
-                "Z": 0.0
+                "qW": 0.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
             },
             "Scale": {
                 "X": 1.0,
@@ -1312,6 +1329,11 @@
             }
         },
         "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
             "Position": {
                 "X": 0.0,
                 "Y": 0.0,
@@ -1354,15 +1376,21 @@
             }
         },
         "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
             "Position": {
                 "X": 1000.0,
                 "Y": 1000.0,
                 "Z": 1000.0
             },
             "Rotation": {
-                "X": 0.0,
-                "Y": -0.0,
-                "Z": 0.0
+                "qW": 0.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
             },
             "Scale": {
                 "X": 0.5,
@@ -1396,6 +1424,11 @@
             }
         },
         "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
             "Position": {
                 "X": 1000.0,
                 "Y": 1000.0,
@@ -1437,7 +1470,18 @@
                 "FilePath": "res/assets/models/sphere.obj"
             }
         },
+        "Renderable": {
+            "Enabled": true,
+            "Mesh": {
+                "Filepath": null
+            }
+        },
         "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
             "Position": {
                 "X": 1000.0,
                 "Y": 1000.0,
@@ -1480,15 +1524,21 @@
             }
         },
         "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
             "Position": {
                 "X": 1000.0,
                 "Y": 1000.0,
                 "Z": 1000.0
             },
             "Rotation": {
-                "X": 0.0,
-                "Y": -0.0,
-                "Z": 0.0
+                "qW": 0.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
             },
             "Scale": {
                 "X": 0.5,
@@ -1522,15 +1572,21 @@
             }
         },
         "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
             "Position": {
                 "X": 1000.0,
                 "Y": 1000.0,
                 "Z": 1000.0
             },
             "Rotation": {
-                "X": 0.0,
-                "Y": -0.0,
-                "Z": 0.0
+                "qW": 0.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
             },
             "Scale": {
                 "X": 0.5,
@@ -1564,15 +1620,21 @@
             }
         },
         "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
             "Position": {
                 "X": 1000.0,
                 "Y": 1000.0,
                 "Z": 1000.0
             },
             "Rotation": {
-                "X": 0.0,
-                "Y": -0.0,
-                "Z": 0.0
+                "qW": 0.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
             },
             "Scale": {
                 "X": 0.5,
@@ -1606,15 +1668,21 @@
             }
         },
         "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
             "Position": {
                 "X": 0.0028204917907714844,
                 "Y": 0.0,
                 "Z": 11.480600357055664
             },
             "Rotation": {
-                "X": 0.0,
-                "Y": -0.0,
-                "Z": 0.0
+                "qW": 0.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
             },
             "Scale": {
                 "X": 1.5,
@@ -1648,15 +1716,21 @@
             }
         },
         "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
             "Position": {
                 "X": 1.7901506423950195,
                 "Y": 0.3100000023841858,
                 "Z": 9.316363334655762
             },
             "Rotation": {
-                "X": 0.0,
-                "Y": -0.0,
-                "Z": 0.0
+                "qW": 0.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
             },
             "Scale": {
                 "X": 0.30000001192092896,
@@ -1690,15 +1764,21 @@
             }
         },
         "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
             "Position": {
                 "X": 1.999654769897461,
                 "Y": 0.3100000023841858,
                 "Z": 9.853049278259277
             },
             "Rotation": {
-                "X": 0.0,
-                "Y": -0.0,
-                "Z": 0.0
+                "qW": 0.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
             },
             "Scale": {
                 "X": 0.30000001192092896,
@@ -1732,15 +1812,21 @@
             }
         },
         "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
             "Position": {
                 "X": 1.377821683883667,
                 "Y": 0.3100000023841858,
                 "Z": 9.964077949523926
             },
             "Rotation": {
-                "X": 0.0,
-                "Y": -0.0,
-                "Z": 0.0
+                "qW": 0.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
             },
             "Scale": {
                 "X": 0.30000001192092896,
@@ -1774,15 +1860,21 @@
             }
         },
         "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
             "Position": {
                 "X": 4.9495954513549805,
                 "Y": 0.10000000149011612,
                 "Z": 8.795110702514648
             },
             "Rotation": {
-                "X": 0.0,
-                "Y": -0.0,
-                "Z": 0.0
+                "qW": 0.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
             },
             "Scale": {
                 "X": 0.5,
@@ -1816,15 +1908,21 @@
             }
         },
         "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
             "Position": {
                 "X": -8.23352336883545,
                 "Y": 0.10000000149011612,
                 "Z": 7.538014888763428
             },
             "Rotation": {
-                "X": 0.0,
-                "Y": -0.0,
-                "Z": 0.0
+                "qW": 0.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
             },
             "Scale": {
                 "X": 0.5,
@@ -1858,15 +1956,21 @@
             }
         },
         "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
             "Position": {
                 "X": -3.0,
                 "Y": 0.10000000149011612,
                 "Z": 8.08315658569336
             },
             "Rotation": {
-                "X": 0.0,
-                "Y": -0.0,
-                "Z": 0.0
+                "qW": 0.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
             },
             "Scale": {
                 "X": 0.5,
@@ -1900,15 +2004,21 @@
             }
         },
         "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
             "Position": {
                 "X": 1.9112193584442139,
                 "Y": 0.27000001072883606,
                 "Z": 7.053325176239014
             },
             "Rotation": {
-                "X": 0.0,
-                "Y": -0.0,
-                "Z": 0.0
+                "qW": 0.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
             },
             "Scale": {
                 "X": 0.10000000149011612,
@@ -1942,15 +2052,21 @@
             }
         },
         "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
             "Position": {
                 "X": 2.2958927154541016,
                 "Y": 0.27000001072883606,
                 "Z": 6.682285785675049
             },
             "Rotation": {
-                "X": 0.0,
-                "Y": -0.0,
-                "Z": 0.0
+                "qW": 0.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
             },
             "Scale": {
                 "X": 0.10000000149011612,
@@ -1984,15 +2100,21 @@
             }
         },
         "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
             "Position": {
                 "X": 1.3819799423217773,
                 "Y": 0.27000001072883606,
                 "Z": 6.718793869018555
             },
             "Rotation": {
-                "X": 0.0,
-                "Y": -0.0,
-                "Z": 0.0
+                "qW": 0.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
             },
             "Scale": {
                 "X": 0.10000000149011612,
@@ -2026,15 +2148,21 @@
             }
         },
         "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
             "Position": {
                 "X": 0.07136392593383789,
                 "Y": 0.20000000298023224,
                 "Z": 8.31336784362793
             },
             "Rotation": {
-                "X": 0.0,
-                "Y": -0.0,
-                "Z": 0.0
+                "qW": 0.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
             },
             "Scale": {
                 "X": 1.0,
@@ -2044,6 +2172,7 @@
         }
     },
     "Sphere 1": {
+        "Parent": null,
         "Renderable": {
             "Enabled": true,
             "Material": {
@@ -2063,20 +2192,25 @@
                 }
             },
             "Mesh": {
-                "Alias": "sphere",
-                "FilePath": "res/assets/models/sphere.obj"
+                "Filepath": "res/assets/models/sphere.obj"
             }
         },
         "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
             "Position": {
                 "X": 1.0817230939865112,
                 "Y": 3.196739435195923,
                 "Z": -2.415987253189087
             },
             "Rotation": {
-                "X": 24.71917724609375,
-                "Y": -0.001496367622166872,
-                "Z": -0.00033271004213020205
+                "qW": 0.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
             },
             "Scale": {
                 "X": 1.0,
@@ -2086,6 +2220,7 @@
         }
     },
     "Sphere 2": {
+        "Parent": null,
         "Renderable": {
             "Enabled": true,
             "Material": {
@@ -2105,20 +2240,25 @@
                 }
             },
             "Mesh": {
-                "Alias": "sphere",
-                "FilePath": "res/assets/models/sphere.obj"
+                "Filepath": "res/assets/models/sphere.obj"
             }
         },
         "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
             "Position": {
                 "X": 1.9203922748565674,
                 "Y": 5.0,
                 "Z": -3.4646668434143066
             },
             "Rotation": {
-                "X": -160.17391967773438,
-                "Y": 0.0014551703352481127,
-                "Z": 9.213855810230598e-05
+                "qW": 0.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
             },
             "Scale": {
                 "X": 1.0,

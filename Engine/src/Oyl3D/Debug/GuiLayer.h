@@ -72,6 +72,7 @@ namespace oyl::internal
         u32 m_editorViewportHandle;
         u32 m_gameViewportHandle;
 
+        // TODO: Make wrapper object with getters and setters for current selection, setters set other object to null
         entt::entity m_currentEntity = entt::null;
 
         ImGuizmo::OPERATION m_currentOp = ImGuizmo::TRANSLATE;
