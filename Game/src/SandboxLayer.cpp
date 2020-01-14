@@ -116,14 +116,14 @@ void SandboxLayer::onEnter()
 
 			auto& cannonCollider = registry->assign<component::Collidable>(cannonEntity);
 			auto& shapeInfo = cannonCollider.pushShape(ColliderType::Box);
-			shapeInfo.box.setSize({ 1.0f, 1.0f, 1.0f });
+			shapeInfo.box.setSize({ 2.35f, 4.15f, 2.6f });
 		}
 
 		{
+			//GARBAGE PILES
 			mr.mesh = Mesh::cache("res/assets/models/garbage.obj");
 			for (int i = 0; i < 3; i++)
 			{
-				//GARBAGE PILES
 				entt::entity garbagePileEntity = registry->create();
 
 				component::Transform garbagePileTransform;
@@ -144,7 +144,7 @@ void SandboxLayer::onEnter()
 
 				auto& garbagePileCollider = registry->assign<component::Collidable>(garbagePileEntity);
 				auto& shapeInfo = garbagePileCollider.pushShape(ColliderType::Box);
-				shapeInfo.box.setSize({ 1.0f, 1.0f, 1.0f });
+				shapeInfo.box.setSize({ 3.4f, 1.0f, 3.2f });
 			}
 		}
 
@@ -221,7 +221,7 @@ void SandboxLayer::onEnter()
 
 				component::Transform cleaningSolutionTransform;
 				cleaningSolutionTransform.setPosition(glm::vec3(3.0f, 0.31f, 3.0f));
-				cleaningSolutionTransform.setScale(glm::vec3(0.6f, 0.6f, 0.6f));
+				cleaningSolutionTransform.setScale(glm::vec3(0.3f, 0.3f, 0.3f));
 				registry->assign<component::Transform>(cleaningSolutionEntity, cleaningSolutionTransform);
 
 				auto& carryableItem = registry->assign<CarryableItem>(cleaningSolutionEntity);
@@ -239,7 +239,7 @@ void SandboxLayer::onEnter()
 
 				auto& cleaningSolutionCollider = registry->assign<component::Collidable>(cleaningSolutionEntity);
 				auto& shapeInfo = cleaningSolutionCollider.pushShape(ColliderType::Box);
-				shapeInfo.box.setSize({ 1.0f, 1.0f, 1.0f });
+				shapeInfo.box.setSize({ 1.0f, 1.0f, 1.15f });
 			}
 		}
 
@@ -252,7 +252,7 @@ void SandboxLayer::onEnter()
 
 				component::Transform gloopTransform;
 				gloopTransform.setPosition(glm::vec3(3.0f, 0.27f, 3.0f));
-				gloopTransform.setScale(glm::vec3(0.2f, 0.2f, 0.2f));
+				gloopTransform.setScale(glm::vec3(0.23f, 0.23f, 0.23f));
 				registry->assign<component::Transform>(gloopEntity, gloopTransform);
 
 				auto& carryableItem = registry->assign<CarryableItem>(gloopEntity);
@@ -270,7 +270,7 @@ void SandboxLayer::onEnter()
 
 				auto& gloopCollider = registry->assign<component::Collidable>(gloopEntity);
 				auto& shapeInfo = gloopCollider.pushShape(ColliderType::Box);
-				shapeInfo.box.setSize({ 1.0f, 1.0f, 1.0f });
+				shapeInfo.box.setSize({ 1.55f, 2.65f, 1.0f });
 			}
 		}
 
@@ -298,7 +298,7 @@ void SandboxLayer::onEnter()
 
 			auto& cannonballCrateCollider = registry->assign<component::Collidable>(cannonballCrateEntity);
 			auto& shapeInfo = cannonballCrateCollider.pushShape(ColliderType::Box);
-			shapeInfo.box.setSize({ 1.0f, 1.0f, 1.0f });
+			shapeInfo.box.setSize({ 2.0f, 2.7f, 1.2f });
 		}
 		/////////////////////////////////////////////////////
 		/////////////////////////////////////////////////////
@@ -327,13 +327,13 @@ void SandboxLayer::onEnter()
 
 			auto& cannonCollider = registry->assign<component::Collidable>(cannonEntity);
 			auto& shapeInfo = cannonCollider.pushShape(ColliderType::Box);
-			shapeInfo.box.setSize({ 1.0f, 1.0f, 1.0f });
+			shapeInfo.box.setSize({ 2.35f, 4.15f, 2.6f });
 		}
 
 		{
+			//GARBAGE PILES
 			for (int i = 0; i < 3; i++)
 			{
-				//GARBAGE PILES
 				entt::entity garbagePileEntity = registry->create();
 
 				component::Transform garbagePileTransform;
@@ -354,7 +354,7 @@ void SandboxLayer::onEnter()
 
 				auto& garbagePileCollider = registry->assign<component::Collidable>(garbagePileEntity);
 				auto& shapeInfo = garbagePileCollider.pushShape(ColliderType::Box);
-				shapeInfo.box.setSize({ 1.0f, 1.0f, 1.0f });
+				shapeInfo.box.setSize({ 3.4f, 1.0f, 3.2f });
 			}
 		}
 
@@ -446,7 +446,7 @@ void SandboxLayer::onEnter()
 
 				auto& cleaningSolutionCollider = registry->assign<component::Collidable>(cleaningSolutionEntity);
 				auto& shapeInfo = cleaningSolutionCollider.pushShape(ColliderType::Box);
-				shapeInfo.box.setSize({ 1.0f, 1.0f, 1.0f });
+				shapeInfo.box.setSize({ 1.0f, 1.0f, 1.15f });
 			}
 		}
 
@@ -477,7 +477,7 @@ void SandboxLayer::onEnter()
 
 				auto& gloopCollider = registry->assign<component::Collidable>(gloopEntity);
 				auto& shapeInfo = gloopCollider.pushShape(ColliderType::Box);
-				shapeInfo.box.setSize({ 1.0f, 1.0f, 1.0f });
+				shapeInfo.box.setSize({ 1.55f, 2.65f, 1.0f });
 			}
 		}
 
@@ -505,7 +505,7 @@ void SandboxLayer::onEnter()
 
 			auto& cannonballCrateCollider = registry->assign<component::Collidable>(cannonballCrateEntity);
 			auto& shapeInfo = cannonballCrateCollider.pushShape(ColliderType::Box);
-			shapeInfo.box.setSize({ 1.0f, 1.0f, 1.0f });
+			shapeInfo.box.setSize({ 2.0f, 2.7f, 1.2f });
 		}
 		/////////////////////////////////////////////////////
 		/////////////////////////////////////////////////////
