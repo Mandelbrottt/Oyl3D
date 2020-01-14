@@ -445,7 +445,8 @@ void PlayerInteractionValidationSystem::validateCannonInteraction(entt::entity a
 				? true : false;
 
 			//check if player is on the right side of the cannon (will be pushing towards the left)
-			if (playerForwardDotCannonRight < -0.65f && !isCannonOnLeftSideOfTrack)
+			if (   playerForwardDotCannonRight < -0.1f 
+				&& !isCannonOnLeftSideOfTrack)
 			{
 				player.interactableEntity = a_cannonEntity;
 
@@ -457,7 +458,7 @@ void PlayerInteractionValidationSystem::validateCannonInteraction(entt::entity a
 				return;
 			}
 			//check if player is on the left side of the cannon (will be pushing towards the right)
-			else if (playerForwardDotCannonRight > 0.65f && !isCannonOnRightSideOfTrack)
+			else if (playerForwardDotCannonRight > 0.1f && !isCannonOnRightSideOfTrack)
 			{
 				player.interactableEntity = a_cannonEntity;
 
@@ -542,7 +543,7 @@ void PlayerInteractionValidationSystem::performCarryableItemInteraction(entt::en
 
 			std::cout << "PICKED UP MOP!\n";
 
-			itemNewPosition = glm::vec3(0.45f, -0.15f, -1.4f);
+			itemNewPosition = glm::vec3(0.45f, -0.15f, -1.1f);
 			itemNewRotation = glm::vec3(-107.0f, -69.5f, 106.0f);
 
 			break;
@@ -564,7 +565,7 @@ void PlayerInteractionValidationSystem::performCarryableItemInteraction(entt::en
 
 			std::cout << "PICKED UP GLOOP!\n";
 
-			itemNewPosition = glm::vec3(0.0f, 0.2f, -0.75f);
+			itemNewPosition = glm::vec3(0.0f, 0.45f, -0.65f);
 			itemNewRotation = glm::vec3(0.0f, 0.0f, 0.0f);
 
 			break;
@@ -679,7 +680,7 @@ void PlayerInteractionValidationSystem::performCannonInteraction(entt::entity a_
 		std::cout << "dot: " << playerForwardDotCannonRight << "\n";
 
 		//check if player is on the right side of the cannon (will be pushing towards the left)
-		if (playerForwardDotCannonRight < -0.65f)
+		if (playerForwardDotCannonRight < -0.1f)
 		{
 			//set direction-specific variables in the if statement and non-direction specific variables outside
 			player.adjustingPositionStateData.destinationPos = cannonTransform.getRight() * glm::vec3(2.4f, 0.0f, 0.0f) + cannonTransform.getPosition();
@@ -691,7 +692,7 @@ void PlayerInteractionValidationSystem::performCannonInteraction(entt::entity a_
 			cannon.cannonTrackPosition--;
 
 			//hacky way to limit the camera but it works for now
-			player.yRotationClamp = 50.0f;
+			player.yRotationClamp = 10.0f;
 			if (playerTransform.getRotationEulerY() < player.yRotationClamp)
 				playerTransform.setRotationEulerY(player.yRotationClamp);
 		}
@@ -708,7 +709,7 @@ void PlayerInteractionValidationSystem::performCannonInteraction(entt::entity a_
 			cannon.cannonTrackPosition++;
 
 			//hacky way to limit the camera but it works for now
-			player.yRotationClamp = -50.0f;
+			player.yRotationClamp = -10.0f;
 			if (playerTransform.getRotationEulerY() > player.yRotationClamp)
 				playerTransform.setRotationEulerY(player.yRotationClamp);
 		}
