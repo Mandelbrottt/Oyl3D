@@ -108,7 +108,11 @@ namespace oyl
         std::unordered_map<std::string, glm::vec2> m_uniformVec2s;
         std::unordered_map<std::string, f32>       m_uniformFloats;
         std::unordered_map<std::string, i32>       m_uniformInts;
+
+        static void init();
         
         static internal::AssetCache<Material> s_cache;
+
+        friend Application;
     };
 }

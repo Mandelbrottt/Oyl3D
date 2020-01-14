@@ -71,12 +71,14 @@ namespace oyl
             registry->sort<Renderable>(
                 [](const Renderable& lhs, const Renderable& rhs)
                 {
-                    if (!lhs.enabled || lhs.material == nullptr || lhs.mesh == nullptr)
+                    if (!lhs.enabled || !lhs.mesh || lhs.material || !lhs.material->albedoMap)
                         return false;
-                    if (!rhs.enabled || rhs.material == nullptr || rhs.mesh == nullptr)
+                    if (!rhs.enabled || !rhs.mesh || !rhs.material || !rhs.material->albedoMap)
                         return true;
                     if (lhs.material->shader != rhs.material->shader)
                         return lhs.material->shader < rhs.material->shader;
+                    if (lhs.material->albedoMap != rhs.material->albedoMap)
+                        return lhs.material->albedoMap < rhs.material->albedoMap;
                     return lhs.material < rhs.material;
                 });
 
@@ -92,8 +94,6 @@ namespace oyl
 
             int height = m_windowSize.y;
             if (camView.size() > 2) height /= 2;
-
-            bool doCulling = true;
             
             for (auto camera : camView)
             {
@@ -119,16 +119,14 @@ namespace oyl
 
                 bool doCulling = true;
 
-                auto view = registry->view<Transform, Renderable>();
-                for (const auto& entity : view)
+                auto view = registry->view<Renderable, Transform>();
+                for (auto entity : view)
                 {
                     Renderable& mr = view.get<Renderable>(entity);
 
                     if (!mr.enabled) continue;
                     
-                    if (mr.mesh == nullptr || 
-                        mr.material == nullptr || 
-                        mr.material->shader == nullptr)
+                    if (!mr.mesh || !mr.material || !mr.material->shader || !mr.material->albedoMap)
                         break;
                     
                     if (mr.material != boundMaterial)
@@ -1362,10 +1360,10 @@ namespace oyl
 
             bool doCulling = true;
 
-            auto view = registry->view<Renderable>();
+            auto view = registry->view<Renderable, Transform>();
             for (auto entity : view)
             {
-                Renderable& mr = view.get(entity);
+                Renderable& mr = view.get<Renderable>(entity);
 
                 if (mr.mesh == nullptr || mr.material == nullptr)
                     break;
@@ -1403,7 +1401,7 @@ namespace oyl
                     boundMaterial->applyUniforms();
                 }
 
-                auto& transformComponent = registry->get_or_assign<Transform>(entity);
+                auto& transformComponent = view.get<Transform>(entity);
                 glm::mat4 transform = transformComponent.getMatrixGlobal();
 
                 glm::bvec3 mirror = transformComponent.getMirrorGlobal();

@@ -107,7 +107,7 @@ namespace oyl::component
         friend oyl::internal::GuiLayer;
     
         glm::vec3 m_localPosition = glm::vec3(0.0f);
-        glm::quat m_localRotation = glm::quat();
+        glm::quat m_localRotation = glm::quat(1.0f, 0.0f, 0.0f, 0.0f);
         glm::vec3 m_localScale    = glm::vec3(1.0f);
         glm::bvec3 m_mirror       = glm::bvec3(false);
     
