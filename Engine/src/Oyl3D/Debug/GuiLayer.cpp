@@ -23,6 +23,8 @@
 
 #include "Input/Input.h"
 
+#include "Utils/SceneToFile.h"
+
 #include <examples/imgui_impl_glfw.h>
 #include <examples/imgui_impl_opengl3.h>
 
@@ -324,7 +326,9 @@ namespace oyl::internal
             {
                 if (ImGui::MenuItem("Save##MainMenuSave", "Ctrl+S", false, m_editorOverrideUpdate))
                 {
-                    saveSceneToFile(*Scene::current());
+                    //saveSceneToFile(*Scene::current());
+                    // TEMPORARY: Let name be accessed through a getter
+                    registryToSceneFile(*registry, Scene::current()->m_name);
                 }
                 showReloadDialogue = 
                     ImGui::MenuItem("Reload##MainMenuReload", "Ctrl+Shift+S", false, m_editorOverrideUpdate);
@@ -361,7 +365,8 @@ namespace oyl::internal
                     ImGui::Indent(ImGui::GetWindowContentRegionWidth() / 2 - 55);
                     if (ImGui::Button("Reload##ReloadConfirmationReload"))
                     {
-                        loadSceneFromFile(*Scene::current());
+                        //loadSceneFromFile(*Scene::current());
+                        registryFromSceneFile(*registry, Scene::current()->m_name);
                         m_currentEntity = entt::null;
                         showReloadDialogue = false;
                     }
