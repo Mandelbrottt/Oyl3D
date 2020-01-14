@@ -718,30 +718,30 @@
             "Enabled": true,
             "Material": {
                 "Albedo": {
-                    "Alias": "container2",
-                    "FilePath": "res/assets/textures/container2.jpg"
+                    "Alias": "mopTemp",
+                    "FilePath": "res/assets/textures/mopTemp.png"
                 },
-                "Alias": "container",
+                "Alias": "mop",
                 "Shader": {
-                    "Alias": "oyl_lighting",
+                    "Alias": "Oyl Lighting",
                     "Pixel": "../Engine/res/shaders/lighting.frag",
                     "Vertex": "../Engine/res/shaders/lighting.vert"
                 },
                 "Specular": {
-                    "Alias": "container2_specular",
-                    "FilePath": "res/assets/textures/container2_specular.jpg"
+                    "Alias": "tempSpec",
+                    "FilePath": "res/assets/textures/tempSpec.jpg"
                 }
             },
             "Mesh": {
-                "Alias": "cube",
-                "FilePath": "res/assets/models/cube.obj"
+                "Alias": "mop",
+                "FilePath": "res/assets/models/mop.obj"
             }
         },
         "Transform": {
             "Position": {
                 "X": 2.634769916534424,
-                "Y": 0.10000000149011612,
-                "Z": -1.8144558668136597
+                "Y": 0.20000000298023224,
+                "Z": -2.9898247718811035
             },
             "Rotation": {
                 "X": 0.0,
@@ -749,9 +749,9 @@
                 "Z": 0.0
             },
             "Scale": {
-                "X": 2.0,
-                "Y": 0.20000000298023224,
-                "Z": 0.20000000298023224
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
             }
         }
     },
@@ -2006,30 +2006,30 @@
             "Enabled": true,
             "Material": {
                 "Albedo": {
-                    "Alias": "container2",
-                    "FilePath": "res/assets/textures/container2.jpg"
+                    "Alias": "mopTemp",
+                    "FilePath": "res/assets/textures/mopTemp.png"
                 },
-                "Alias": "container",
+                "Alias": "mop",
                 "Shader": {
-                    "Alias": "oyl_lighting",
+                    "Alias": "Oyl Lighting",
                     "Pixel": "../Engine/res/shaders/lighting.frag",
                     "Vertex": "../Engine/res/shaders/lighting.vert"
                 },
                 "Specular": {
-                    "Alias": "container2_specular",
-                    "FilePath": "res/assets/textures/container2_specular.jpg"
+                    "Alias": "tempSpec",
+                    "FilePath": "res/assets/textures/tempSpec.jpg"
                 }
             },
             "Mesh": {
-                "Alias": "cube",
-                "FilePath": "res/assets/models/cube.obj"
+                "Alias": "mop",
+                "FilePath": "res/assets/models/mop.obj"
             }
         },
         "Transform": {
             "Position": {
-                "X": 2.001387596130371,
-                "Y": 0.10000008344650269,
-                "Z": 8.150835990905762
+                "X": 0.07136392593383789,
+                "Y": 0.20000000298023224,
+                "Z": 8.31336784362793
             },
             "Rotation": {
                 "X": 0.0,
@@ -2037,9 +2037,9 @@
                 "Z": 0.0
             },
             "Scale": {
-                "X": 2.0,
-                "Y": 0.20000000298023224,
-                "Z": 0.20000000298023224
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
             }
         }
     },

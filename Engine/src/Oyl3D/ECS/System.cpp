@@ -565,6 +565,7 @@ namespace oyl
                 {
                     m_btWorld->removeRigidBody(it->second->body.get());
                     it = m_rigidBodies.erase(it);
+					if (it == m_rigidBodies.end()) break;
                 }
             }
             
