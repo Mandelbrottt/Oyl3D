@@ -256,7 +256,8 @@ namespace oyl
         m_currentScene->Scene::onEnter();
         m_currentScene->onEnter();
         
-        internal::loadSceneFromFile(*m_currentScene);
+        //internal::loadSceneFromFile(*m_currentScene);
+        internal::registryFromSceneFile(*m_currentScene->m_registry, m_currentScene->m_name);
         
     }
 

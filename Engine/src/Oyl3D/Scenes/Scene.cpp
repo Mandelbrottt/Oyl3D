@@ -20,7 +20,7 @@ namespace oyl
 
     void Scene::onExit()
     {
-        internal::saveSceneBackupToFile(*this);
+        //internal::saveSceneBackupToFile(*this);
 
         // Reset the registry then reset the actual Ref
         m_registry->reset();
