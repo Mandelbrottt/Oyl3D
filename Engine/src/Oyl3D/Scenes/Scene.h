@@ -14,10 +14,6 @@ namespace oyl
     {
         class GuiLayer;
         class SceneToFile;
-
-        void saveSceneToFile(const Scene& scene);
-        void loadSceneFromFile(Scene& scene);
-        void saveSceneBackupToFile(const Scene& scene);
     }
 
     class Scene : public EventListener, public virtual Node
@@ -54,9 +50,5 @@ namespace oyl
 
         friend class Application;
         friend internal::GuiLayer;
-
-        friend void internal::saveSceneToFile(const Scene& scene);
-        friend void internal::loadSceneFromFile(Scene& scene);
-        friend void internal::saveSceneBackupToFile(const Scene& scene);
     };
 }
