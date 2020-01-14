@@ -92,6 +92,10 @@ void SandboxLayer::onEnter()
 			mr.material->albedoMap = Texture2D::cache("res/assets/textures/mopTemp.png");
 			mr.material->specularMap = Texture2D::cache("res/assets/textures/tempSpec.jpg");
 
+			mr.material = Material::cache(Shader::get(LIGHTING_SHADER_ALIAS), "cannon");
+			mr.material->albedoMap = Texture2D::cache("res/assets/textures/cannonTemp.png");
+			mr.material->specularMap = Texture2D::cache("res/assets/textures/tempSpec.jpg");
+
 			//CANNON
 			entt::entity cannonEntity = registry->create();
 

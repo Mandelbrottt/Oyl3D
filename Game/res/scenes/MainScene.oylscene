@@ -4,18 +4,18 @@
             "Enabled": true,
             "Material": {
                 "Albedo": {
-                    "Alias": "container2",
-                    "FilePath": "res/assets/textures/container2.jpg"
+                    "Alias": "cannonTemp",
+                    "FilePath": "res/assets/textures/cannonTemp.png"
                 },
-                "Alias": "container",
+                "Alias": "cannon",
                 "Shader": {
-                    "Alias": "oyl_lighting",
+                    "Alias": "Oyl Lighting",
                     "Pixel": "../Engine/res/shaders/lighting.frag",
                     "Vertex": "../Engine/res/shaders/lighting.vert"
                 },
                 "Specular": {
-                    "Alias": "container2_specular",
-                    "FilePath": "res/assets/textures/container2_specular.jpg"
+                    "Alias": "tempSpec",
+                    "FilePath": "res/assets/textures/tempSpec.jpg"
                 }
             },
             "Mesh": {
@@ -1292,18 +1292,18 @@
             "Enabled": true,
             "Material": {
                 "Albedo": {
-                    "Alias": "container2",
-                    "FilePath": "res/assets/textures/container2.jpg"
+                    "Alias": "cannonTemp",
+                    "FilePath": "res/assets/textures/cannonTemp.png"
                 },
-                "Alias": "container",
+                "Alias": "cannon",
                 "Shader": {
-                    "Alias": "oyl_lighting",
+                    "Alias": "Oyl Lighting",
                     "Pixel": "../Engine/res/shaders/lighting.frag",
                     "Vertex": "../Engine/res/shaders/lighting.vert"
                 },
                 "Specular": {
-                    "Alias": "container2_specular",
-                    "FilePath": "res/assets/textures/container2_specular.jpg"
+                    "Alias": "tempSpec",
+                    "FilePath": "res/assets/textures/tempSpec.jpg"
                 }
             },
             "Mesh": {
