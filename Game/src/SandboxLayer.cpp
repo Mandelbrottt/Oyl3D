@@ -61,6 +61,33 @@ void SandboxLayer::onEnter()
 		}
         
 		{
+			mr.mesh = Mesh::cache("res/assets/models/cannon.obj");
+
+			//TEMP MATERIAL INIT LOCATION UNTIL SYSTEM OVERHAUL
+			mr.material = Material::cache(Shader::get(LIGHTING_SHADER_ALIAS), "planks");
+			mr.material->albedoMap = Texture2D::cache("res/assets/textures/woodPlanks.png");
+			mr.material->specularMap = Texture2D::cache("res/assets/textures/tempSpec.jpg");
+
+			mr.material = Material::cache(Shader::get(LIGHTING_SHADER_ALIAS), "cannonball");
+			mr.material->albedoMap = Texture2D::cache("res/assets/textures/cannonballTemp.png");
+			mr.material->specularMap = Texture2D::cache("res/assets/textures/tempSpec.jpg");
+
+			mr.material = Material::cache(Shader::get(LIGHTING_SHADER_ALIAS), "goop");
+			mr.material->albedoMap = Texture2D::cache("res/assets/textures/goopTemp.png");
+			mr.material->specularMap = Texture2D::cache("res/assets/textures/tempSpec.jpg");
+
+			mr.material = Material::cache(Shader::get(LIGHTING_SHADER_ALIAS), "pirax");
+			mr.material->albedoMap = Texture2D::cache("res/assets/textures/piraxTemp.png");
+			mr.material->specularMap = Texture2D::cache("res/assets/textures/tempSpec.jpg");
+
+			mr.material = Material::cache(Shader::get(LIGHTING_SHADER_ALIAS), "garbage");
+			mr.material->albedoMap = Texture2D::cache("res/assets/textures/garbageTemp.png");
+			mr.material->specularMap = Texture2D::cache("res/assets/textures/tempSpec.jpg");
+
+			mr.material = Material::cache(Shader::get(LIGHTING_SHADER_ALIAS), "crate");
+			mr.material->albedoMap = Texture2D::cache("res/assets/textures/binTemp.png");
+			mr.material->specularMap = Texture2D::cache("res/assets/textures/tempSpec.jpg");
+
 			//CANNON
 			entt::entity cannonEntity = registry->create();
 
@@ -85,6 +112,7 @@ void SandboxLayer::onEnter()
 		}
 
 		{
+			mr.mesh = Mesh::cache("res/assets/models/garbage.obj");
 			for (int i = 0; i < 3; i++)
 			{
 				//GARBAGE PILES
@@ -115,7 +143,7 @@ void SandboxLayer::onEnter()
 		{
 			//CANNONBALLS
 			mr.mesh = Mesh::cache("res/assets/models/sphere.obj");
-			for (int i = 0; i < 5; i++)
+			for (int i = 0; i < 6; i++)
 			{
 				entt::entity cannonballEntity = registry->create();
 
@@ -176,14 +204,15 @@ void SandboxLayer::onEnter()
         }
 
 		{
+			mr.mesh = Mesh::cache("res/assets/models/Pirax.obj");
 			//CLEANING SOLUTION
 			for (int i = 0; i < 3; i++)
 			{
 				entt::entity cleaningSolutionEntity = registry->create();
 
 				component::Transform cleaningSolutionTransform;
-				cleaningSolutionTransform.setPosition(glm::vec3(3.0f, 0.22f, 3.0f));
-				cleaningSolutionTransform.setScale(glm::vec3(0.2f, 0.44f, 0.2f));
+				cleaningSolutionTransform.setPosition(glm::vec3(3.0f, 0.31f, 3.0f));
+				cleaningSolutionTransform.setScale(glm::vec3(0.6f, 0.6f, 0.6f));
 				registry->assign<component::Transform>(cleaningSolutionEntity, cleaningSolutionTransform);
 
 				auto& carryableItem = registry->assign<CarryableItem>(cleaningSolutionEntity);
@@ -191,6 +220,7 @@ void SandboxLayer::onEnter()
 				carryableItem.type = CarryableItemType::cleaningSolution;
 
 				auto& rb = registry->assign<component::RigidBody>(cleaningSolutionEntity);
+				rb.setProperties(component::RigidBody::Property::IS_KINEMATIC, true);
 
 				mr.mesh = Mesh::get("cube");
 				registry->assign<component::Renderable>(cleaningSolutionEntity, mr);
@@ -205,6 +235,7 @@ void SandboxLayer::onEnter()
 		}
 
 		{
+			mr.mesh = Mesh::cache("res/assets/models/Gloop.obj");
 			//GLOOP
 			for (int i = 0; i < 3; i++)
 			{
@@ -212,7 +243,7 @@ void SandboxLayer::onEnter()
 
 				component::Transform gloopTransform;
 				gloopTransform.setPosition(glm::vec3(3.0f, 0.27f, 3.0f));
-				gloopTransform.setScale(glm::vec3(0.32f, 0.54f, 0.32f));
+				gloopTransform.setScale(glm::vec3(0.2f, 0.2f, 0.2f));
 				registry->assign<component::Transform>(gloopEntity, gloopTransform);
 
 				auto& carryableItem = registry->assign<CarryableItem>(gloopEntity);
@@ -223,11 +254,10 @@ void SandboxLayer::onEnter()
 
 				registry->assign<Gloop>(gloopEntity);
 
-				mr.mesh = Mesh::get("cube");
 				registry->assign<component::Renderable>(gloopEntity, mr);
 
 				auto& so2 = registry->assign<component::EntityInfo>(gloopEntity);
-				so2.name = "BlueGloop" + std::to_string(i);
+				so2.name = "BlueGloopA" + std::to_string(i);
 
 				auto& gloopCollider = registry->assign<component::Collidable>(gloopEntity);
 				auto& shapeInfo = gloopCollider.pushShape(ColliderType::Box);
@@ -236,6 +266,7 @@ void SandboxLayer::onEnter()
 		}
 
 		{
+			mr.mesh = Mesh::cache("res/assets/models/crateTemp.obj");
 			//CANNONBALL CRATE
 			entt::entity cannonballCrateEntity = registry->create();
 
@@ -247,7 +278,6 @@ void SandboxLayer::onEnter()
 			auto& cannonballCrate = registry->assign<CannonballCrate>(cannonballCrateEntity);
 			cannonballCrate.team = Team::blue;
 
-			mr.mesh = Mesh::get("cube");
 			mr.material = mat;
 			registry->assign<component::Renderable>(cannonballCrateEntity, mr);
 
@@ -322,7 +352,7 @@ void SandboxLayer::onEnter()
 		{
 			//CANNONBALLS
 			mr.mesh = Mesh::cache("res/assets/models/sphere.obj");
-			for (int i = 0; i < 30; i++)
+			for (int i = 0; i < 6; i++)
 			{
 				entt::entity cannonballEntity = registry->create();
 
@@ -419,7 +449,7 @@ void SandboxLayer::onEnter()
 
 				component::Transform gloopTransform;
 				gloopTransform.setPosition(glm::vec3(3.0f, 0.27f, 3.0f));
-				gloopTransform.setScale(glm::vec3(0.32f, 0.54f, 0.32f));
+				gloopTransform.setScale(glm::vec3(0.2f, 0.2f, 0.2f));
 				registry->assign<component::Transform>(gloopEntity, gloopTransform);
 
 				auto& carryableItem = registry->assign<CarryableItem>(gloopEntity);
@@ -430,11 +460,11 @@ void SandboxLayer::onEnter()
 
 				registry->assign<Gloop>(gloopEntity);
 
-				mr.mesh = Mesh::get("cube");
+				mr.mesh = Mesh::get("Gloop");
 				registry->assign<component::Renderable>(gloopEntity, mr);
 
 				auto& so2 = registry->assign<component::EntityInfo>(gloopEntity);
-				so2.name = "RedGloop" + std::to_string(i);
+				so2.name = "RedGloopA" + std::to_string(i);
 
 				auto& gloopCollider = registry->assign<component::Collidable>(gloopEntity);
 				auto& shapeInfo = gloopCollider.pushShape(ColliderType::Box);
