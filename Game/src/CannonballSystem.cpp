@@ -3,6 +3,7 @@
 void CannonballSystem::onEnter()
 {
 	this->listenForEventCategory((EventCategory)CategoryCannon);
+	this->listenForEventCategory((EventCategory)CategoryCannonball);
 }
 
 void CannonballSystem::onExit()
@@ -48,12 +49,47 @@ bool CannonballSystem::onEvent(const Event& event)
 {
 	switch (event.type)
 	{
+		case (EventType) TypeSpawnCannonballForPlayer:
+		{
+			auto evt = event_cast<SpawnCannonballForPlayerEvent>(event);
+
+			bool isThereAnInactiveCannonball = false;
+			entt::entity cannonballEntityToCopyFrom;
+
+			auto cannonballView = registry->view<Cannonball, CarryableItem, component::Transform>();
+			for (auto& cannonballEntity : cannonballView)
+			{
+				auto& cannonballCarryable = registry->get<CarryableItem>(cannonballEntity);
+
+				cannonballEntityToCopyFrom = cannonballEntity;
+
+				if (!cannonballCarryable.isActive)
+				{
+					isThereAnInactiveCannonball = true;
+
+					setCannonballToCarriedForPlayer(evt.playerEntity, cannonballEntity);
+
+					break;
+				}
+			}
+
+			if (!isThereAnInactiveCannonball)
+			{
+				auto newCannonballEntity = registry->create();
+				registry->stomp(newCannonballEntity, cannonballEntityToCopyFrom, *registry);
+
+				setCannonballToCarriedForPlayer(evt.playerEntity, newCannonballEntity);
+			}
+
+			break;
+		}
+
 		case (EventType) TypeCannonFired:
 		{
 			auto evt = event_cast<CannonFiredEvent>(event);
 			
-			auto view = registry->view<Cannonball, CarryableItem, component::Transform>();
-			for (auto& cannonballEntity : view)
+			auto cannonballView = registry->view<Cannonball, CarryableItem, component::Transform>();
+			for (auto& cannonballEntity : cannonballView)
 			{
 				auto& cannonball          = registry->get<Cannonball>(cannonballEntity);
 				auto& cannonballCarryable = registry->get<CarryableItem>(cannonballEntity);
@@ -78,4 +114,30 @@ bool CannonballSystem::onEvent(const Event& event)
 	}
 
 	return false;
+}
+
+void CannonballSystem::setCannonballToCarriedForPlayer(entt::entity a_playerEntity, entt::entity a_cannonballEntity)
+{
+	auto& player = registry->get<Player>(a_playerEntity);
+
+	auto& cannonball          = registry->get<Cannonball>(a_cannonballEntity);
+	auto& cannonballCarryable = registry->get<CarryableItem>(a_cannonballEntity);
+	auto& cannonballTransform = registry->get<component::Transform>(a_cannonballEntity);
+
+	//remove rigidbody when item is carried
+	if (registry->has<component::RigidBody>(a_cannonballEntity))
+		registry->remove<component::RigidBody>(a_cannonballEntity);
+
+	player.primaryCarriedItem = a_cannonballEntity;
+
+	cannonballCarryable.isBeingCarried = true;
+	cannonballCarryable.isActive       = true;
+
+	std::cout << "OBTAINED CANNONBALL!\n";
+
+	auto& cannonballParent  = registry->get_or_assign<component::Parent>(a_cannonballEntity);
+	cannonballParent.parent = a_playerEntity;
+
+	cannonballTransform.setRotationEuler(glm::vec3(0.0f));
+	cannonballTransform.setPosition(glm::vec3(0.0f, 0.3f, -0.8f));
 }

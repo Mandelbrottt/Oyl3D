@@ -118,10 +118,11 @@ struct CarryableItem
 {
 	Team team;
 
-	CarryableItemType type = CarryableItemType::invalid; //must manually be set when spawning items
-	bool isBeingCarried = false;
+	bool isActive = true;
 
-	bool isActive = false;
+	CarryableItemType type = CarryableItemType::invalid; //must manually be set when spawning items
+	bool isBeingCarried    = false;
+	bool hasBeenCarrried   = false;
 };
 
 struct Cannonball

@@ -175,7 +175,6 @@ void PlayerInteractionValidationSystem::performRaycastAndValidateForPlayer(entt:
 			playerInteractResult.playerNum       = player.playerNum;
 			postEvent(playerInteractResult);
 		}
-
 	}
 	else //no ray hits
 	{
@@ -631,22 +630,7 @@ void PlayerInteractionValidationSystem::performCannonballCrateInteraction(entt::
 			&& !carryableItem.isActive
 			&& !carryableItem.isBeingCarried)
 		{
-			//remove rigidbody when item is carried
-			if (registry->has<component::RigidBody>(cannonballEntity))
-				registry->remove<component::RigidBody>(cannonballEntity);
-
-			player.primaryCarriedItem = cannonballEntity;
-
-			carryableItem.isBeingCarried = true;
-			carryableItem.isActive = true;
-
-			std::cout << "OBTAINED CANNONBALL!\n";
-
-			auto& cannonballParent  = registry->get_or_assign<component::Parent>(cannonballEntity);
-			cannonballParent.parent = a_playerEntity;
-
-			cannonballTransform.setRotationEuler(glm::vec3(0.0f));
-			cannonballTransform.setPosition(glm::vec3(0.0f, 0.3f, -0.8f));
+			
 
 			return;
 		}
@@ -663,7 +647,7 @@ void PlayerInteractionValidationSystem::performCannonInteraction(entt::entity a_
 
 	//cannon can be loaded with a cannonball
 	if (   registry->valid(player.primaryCarriedItem)
-		&& registry->get<CarryableItem>(player.primaryCarriedItem).type == CarryableItemType::cannonball
+		&& registry->has<Cannonball>(player.primaryCarriedItem)
 		&& cannon.isLoaded == false)
 	{
 		cannon.isLoaded = true;

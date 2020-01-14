@@ -12,6 +12,7 @@ void UIManagerSystem::onExit()
 
 void UIManagerSystem::onUpdate()
 {
+
 }
 
 bool UIManagerSystem::onEvent(const Event& event)

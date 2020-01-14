@@ -12,4 +12,6 @@ class CannonballSystem : public System
 	void onExit() override;
 	void onUpdate() override;
 	bool onEvent(const Event& event) override;
+
+	void setCannonballToCarriedForPlayer(entt::entity a_playerEntity, entt::entity a_cannonballEntity);
 };
