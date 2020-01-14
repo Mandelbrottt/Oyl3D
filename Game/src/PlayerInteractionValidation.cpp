@@ -619,22 +619,12 @@ void PlayerInteractionValidationSystem::performCannonballCrateInteraction(entt::
 
 	auto& cannonballCrate = registry->get<CannonballCrate>(a_cannonballCrateEntity);
 
-	auto cannonballView = registry->view<CarryableItem, Cannonball, component::Transform>();
-	for (auto& cannonballEntity : cannonballView)
-	{
-		auto& carryableItem       = registry->get<CarryableItem>(cannonballEntity);
-		auto& cannonballTransform = registry->get<component::Transform>(cannonballEntity);
+	SpawnCannonballForPlayerEvent spawnCannonball;
+	spawnCannonball.playerEntity = a_playerEntity;
+	spawnCannonball.team         = cannonballCrate.team;
+	postEvent(spawnCannonball);
 
-		if (   carryableItem.type == CarryableItemType::cannonball
-			&& carryableItem.team == cannonballCrate.team
-			&& !carryableItem.isActive
-			&& !carryableItem.isBeingCarried)
-		{
-			
-
-			return;
-		}
-	}
+	return;
 }
 
 void PlayerInteractionValidationSystem::performCannonInteraction(entt::entity a_playerEntity, entt::entity a_cannonEntity)

@@ -63,13 +63,16 @@ bool CannonballSystem::onEvent(const Event& event)
 
 				cannonballEntityToCopyFrom = cannonballEntity;
 
-				if (!cannonballCarryable.isActive)
+				if (cannonballCarryable.team == evt.team)
 				{
-					isThereAnInactiveCannonball = true;
-
 					setCannonballToCarriedForPlayer(evt.playerEntity, cannonballEntity);
 
-					break;
+					if (!cannonballCarryable.isActive)
+					{
+						isThereAnInactiveCannonball = true;
+
+						break;
+					}
 				}
 			}
 
