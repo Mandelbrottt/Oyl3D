@@ -16,7 +16,7 @@ void CannonballSystem::onUpdate()
 	auto view = registry->view<Cannonball, CarryableItem, component::Transform>();
 	for (auto& cannonballEntity : view)
 	{
-		auto& cannonball = registry->get<Cannonball>(cannonballEntity);
+		auto& cannonball          = registry->get<Cannonball>(cannonballEntity);
 		auto& cannonballCarryable = registry->get<CarryableItem>(cannonballEntity);
 		auto& cannonballTransform = registry->get<component::Transform>(cannonballEntity);
 
@@ -61,15 +61,14 @@ bool CannonballSystem::onEvent(const Event& event)
 			{
 				auto& cannonballCarryable = registry->get<CarryableItem>(cannonballEntity);
 
-				cannonballEntityToCopyFrom = cannonballEntity;
-
 				if (cannonballCarryable.team == evt.team)
 				{
-					setCannonballToCarriedForPlayer(evt.playerEntity, cannonballEntity);
+					cannonballEntityToCopyFrom = cannonballEntity;
 
 					if (!cannonballCarryable.isActive)
 					{
 						isThereAnInactiveCannonball = true;
+						setCannonballToCarriedForPlayer(evt.playerEntity, cannonballEntity);
 
 						break;
 					}
@@ -78,8 +77,15 @@ bool CannonballSystem::onEvent(const Event& event)
 
 			if (!isThereAnInactiveCannonball)
 			{
+				std::cout << registry->get<component::EntityInfo>(cannonballEntityToCopyFrom).name << "\n";
+
 				auto newCannonballEntity = registry->create();
 				registry->stomp(newCannonballEntity, cannonballEntityToCopyFrom, *registry);
+
+				std::string teamNamePrefix = evt.team == Team::blue ? "Blue" : "Red";
+
+				auto& cannonballEntityInfo = registry->get_or_assign<component::EntityInfo>(newCannonballEntity);
+				cannonballEntityInfo.name  = teamNamePrefix + "Cannonball" + std::to_string(cannonballView.size());
 
 				setCannonballToCarriedForPlayer(evt.playerEntity, newCannonballEntity);
 			}

@@ -132,7 +132,14 @@ void PlayerInteractionValidationSystem::performRaycastAndValidateForPlayer(entt:
 	for (entt::entity cameraEntity : cameraView)
 	{
 		if (player.playerNum == registry->get<component::PlayerCamera>(cameraEntity).player)
+		{
 			playersCameraEntity = cameraEntity;
+			//set the camera parent to the player in case it hasn't already been done
+			auto& cameraParent  = registry->get_or_assign<component::Parent>(cameraEntity);
+			cameraParent.parent = a_playerEntity;
+			
+			break;
+		}
 	}
 	if (!registry->valid(playersCameraEntity))
 	{
@@ -546,7 +553,7 @@ void PlayerInteractionValidationSystem::performCarryableItemInteraction(entt::en
 
 			std::cout << "PICKED UP CLEANING SOLUTION!\n";
 
-			itemNewPosition = glm::vec3(-0.25f, 0.4f, -0.7f);
+			itemNewPosition = glm::vec3(-0.21f, 0.4f, -0.66f);
 			itemNewRotation = glm::vec3(0.0f, 0.0f, 0.0f);
 
 			break;
@@ -557,7 +564,7 @@ void PlayerInteractionValidationSystem::performCarryableItemInteraction(entt::en
 
 			std::cout << "PICKED UP GLOOP!\n";
 
-			itemNewPosition = glm::vec3(0.0f, 0.25f, -0.75f);
+			itemNewPosition = glm::vec3(0.0f, 0.2f, -0.75f);
 			itemNewRotation = glm::vec3(0.0f, 0.0f, 0.0f);
 
 			break;
@@ -675,7 +682,7 @@ void PlayerInteractionValidationSystem::performCannonInteraction(entt::entity a_
 		if (playerForwardDotCannonRight < -0.65f)
 		{
 			//set direction-specific variables in the if statement and non-direction specific variables outside
-			player.adjustingPositionStateData.destinationPos = cannonTransform.getRight() * glm::vec3(1.2f, 0.0f, 0.0f) + cannonTransform.getPosition();
+			player.adjustingPositionStateData.destinationPos = cannonTransform.getRight() * glm::vec3(2.4f, 0.0f, 0.0f) + cannonTransform.getPosition();
 
 			player.pushingStateData.destinationPos = -cannonTransform.getRight() * glm::vec3(cannon.pushDistance, 0.0f, 0.0f) + player.adjustingPositionStateData.destinationPos;
 
@@ -692,7 +699,7 @@ void PlayerInteractionValidationSystem::performCannonInteraction(entt::entity a_
 		else
 		{
 			//set direction-specific variables in the if statement and non-direction specific variables outside
-			player.adjustingPositionStateData.destinationPos = -cannonTransform.getRight() * glm::vec3(1.2f, 0.0f, 0.0f) + cannonTransform.getPosition();
+			player.adjustingPositionStateData.destinationPos = -cannonTransform.getRight() * glm::vec3(2.4f, 0.0f, 0.0f) + cannonTransform.getPosition();
 
 			player.pushingStateData.destinationPos = cannonTransform.getRight() * glm::vec3(cannon.pushDistance, 0.0f, 0.0f) + player.adjustingPositionStateData.destinationPos;
 
