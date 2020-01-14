@@ -444,30 +444,34 @@ void PlayerInteractionValidationSystem::validateCannonInteraction(entt::entity a
 			bool isCannonOnRightSideOfTrack = (cannon.cannonTrackPosition == 1)
 				? true : false;
 
-			//check if player is on the right side of the cannon (will be pushing towards the left)
-			if (   playerForwardDotCannonRight < -0.1f 
-				&& !isCannonOnLeftSideOfTrack)
+			//make sure the player is beside the cannon (don't let them push if they're directionly in front or behind it)
+			if (   playerTransform.getPositionX() < cannonTransform.getPositionX() - 1.1f
+				|| playerTransform.getPositionX() > cannonTransform.getPositionX() + 1.1f)
 			{
-				player.interactableEntity = a_cannonEntity;
+				//check if player is on the right side of the cannon (will be pushing towards the left)
+				if (playerForwardDotCannonRight < -0.1f && !isCannonOnLeftSideOfTrack)
+				{
+					player.interactableEntity = a_cannonEntity;
 
-				PlayerInteractResultEvent playerInteractResult;
-				playerInteractResult.interactionType = PlayerInteractionResult::pushCannon;
-				playerInteractResult.playerNum       = player.playerNum;
-				postEvent(playerInteractResult);
+					PlayerInteractResultEvent playerInteractResult;
+					playerInteractResult.interactionType = PlayerInteractionResult::pushCannon;
+					playerInteractResult.playerNum       = player.playerNum;
+					postEvent(playerInteractResult);
 
-				return;
-			}
-			//check if player is on the left side of the cannon (will be pushing towards the right)
-			else if (playerForwardDotCannonRight > 0.1f && !isCannonOnRightSideOfTrack)
-			{
-				player.interactableEntity = a_cannonEntity;
+					return;
+				}
+				//check if player is on the left side of the cannon (will be pushing towards the right)
+				else if (playerForwardDotCannonRight > 0.1f && !isCannonOnRightSideOfTrack)
+				{
+					player.interactableEntity = a_cannonEntity;
 
-				PlayerInteractResultEvent playerInteractResult;
-				playerInteractResult.interactionType = PlayerInteractionResult::pushCannon;
-				playerInteractResult.playerNum       = player.playerNum;
-				postEvent(playerInteractResult);
+					PlayerInteractResultEvent playerInteractResult;
+					playerInteractResult.interactionType = PlayerInteractionResult::pushCannon;
+					playerInteractResult.playerNum       = player.playerNum;
+					postEvent(playerInteractResult);
 
-				return;
+					return;
+				}
 			}
 		}
 	}
