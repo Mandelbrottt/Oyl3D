@@ -209,7 +209,7 @@ void SandboxLayer::onEnter()
 
 			auto& mopCollider = registry->assign<component::Collidable>(mopEntity);
 			auto& shapeInfo = mopCollider.pushShape(ColliderType::Box);
-			shapeInfo.box.setSize({ 1.0f, 1.0f, 1.0f });
+			shapeInfo.box.setSize({ 2.0f, 0.2f, 0.5f });
         }
 
 		{
