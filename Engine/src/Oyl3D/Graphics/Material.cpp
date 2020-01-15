@@ -197,6 +197,14 @@ namespace oyl
             shader->setUniform1i(kvp.first, kvp.second);
     }
 
+    void Material::init()
+    {
+        auto mat = Material::create();
+        mat->shader = Shader::get(LIGHTING_SHADER_ALIAS);
+        mat->albedoMap = Texture2D::get(INVALID_ALIAS);
+        Material::cache(mat, INVALID_ALIAS);
+    }
+
     template<> OYL_DEPRECATED("Huh?")
     const Ref<Material>& internal::AssetCache<Material>::cache(const std::string& filePath,
                                                                CacheAlias alias,

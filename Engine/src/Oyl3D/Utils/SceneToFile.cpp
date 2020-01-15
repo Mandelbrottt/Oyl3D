@@ -187,11 +187,11 @@ namespace oyl::internal
         if (re.mesh)
         {
             auto& jMesh = j["Mesh"];
-            jMesh["Filepath"] = re.mesh->getFilePath();
+            jMesh["FilePath"] = re.mesh->getFilePath();
         }
         else
         {
-            j["Mesh"]["Filepath"];
+            j["Mesh"]["FilePath"];
         }
 
         if (false && re.material)
@@ -304,14 +304,14 @@ namespace oyl::internal
                 rotIt->contains("qY") &&
                 rotIt->contains("qZ"))
             {
-                glm::quat rotation = {
-                    rotIt->at("qW").get<float>(),
-                    rotIt->at("qX").get<float>(),
-                    rotIt->at("qY").get<float>(),
-                    rotIt->at("qZ").get<float>(),
-                };
-
-                t.setRotation(rotation);
+                //glm::quat rotation = {
+                //    rotIt->at("qW").get<float>(),
+                //    rotIt->at("qX").get<float>(),
+                //    rotIt->at("qY").get<float>(),
+                //    rotIt->at("qZ").get<float>(),
+                //};
+                //
+                //t.setRotation(rotation);
             }
         }
         {
@@ -382,7 +382,7 @@ namespace oyl::internal
 
         if (auto it = j.find("Mesh"); it != j.end() && !it->is_null())
         {
-            if (auto fpIt = it->find("FilePath"); fpIt != it->end())
+            if (auto fpIt = it->find("FilePath"); fpIt != it->end() && !fpIt->is_null())
             {
                 auto filePath = fpIt->get<std::string>();
                    

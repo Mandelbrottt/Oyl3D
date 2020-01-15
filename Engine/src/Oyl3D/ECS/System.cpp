@@ -71,12 +71,14 @@ namespace oyl
             registry->sort<Renderable>(
                 [](const Renderable& lhs, const Renderable& rhs)
                 {
-                    if (!lhs.enabled || lhs.material == nullptr || lhs.mesh == nullptr)
+                    if (!lhs.enabled || !lhs.mesh || lhs.material || !lhs.material->albedoMap)
                         return false;
-                    if (!rhs.enabled || rhs.material == nullptr || rhs.mesh == nullptr)
+                    if (!rhs.enabled || !rhs.mesh || !rhs.material || !rhs.material->albedoMap)
                         return true;
                     if (lhs.material->shader != rhs.material->shader)
                         return lhs.material->shader < rhs.material->shader;
+                    if (lhs.material->albedoMap != rhs.material->albedoMap)
+                        return lhs.material->albedoMap < rhs.material->albedoMap;
                     return lhs.material < rhs.material;
                 });
 
@@ -92,8 +94,6 @@ namespace oyl
 
             int height = m_windowSize.y;
             if (camView.size() > 2) height /= 2;
-
-            bool doCulling = true;
             
             for (auto camera : camView)
             {
@@ -119,16 +119,14 @@ namespace oyl
 
                 bool doCulling = true;
 
-                auto view = registry->view<Transform, Renderable>();
-                for (const auto& entity : view)
+                auto view = registry->view<Renderable, Transform>();
+                for (auto entity : view)
                 {
                     Renderable& mr = view.get<Renderable>(entity);
 
                     if (!mr.enabled) continue;
                     
-                    if (mr.mesh == nullptr || 
-                        mr.material == nullptr || 
-                        mr.material->shader == nullptr)
+                    if (!mr.mesh || !mr.material || !mr.material->shader || !mr.material->albedoMap)
                         break;
                     
                     if (mr.material != boundMaterial)
@@ -743,14 +741,14 @@ namespace oyl
                 _pos = t.getOrigin();
                 _rot = t.getRotation();
 
-                if (transform.m_parentRef.expired())
+                if (auto p = transform.getParent(); p == nullptr)
                 {
                     transform.m_localPosition = { _pos.x(), _pos.y(), _pos.z() };
                     transform.m_localRotation = glm::quat(_rot.w(), _rot.x(), _rot.y(), _rot.z());
                 }
                 else
                 {
-                    auto _t = transform.m_parentRef.lock()->getMatrixGlobal();
+                    auto _t = p->getMatrixGlobal();
                     transform.m_localPosition = 
                         inverse(_t) * glm::vec4(_pos.x(), _pos.y(), _pos.z(), 1.0f);
                     transform.m_localRotation =
@@ -1118,32 +1116,32 @@ namespace oyl
 
         // vvv Transform Update System vvv //
 
-        void TransformUpdateSystem::onUpdate()
-        {
-            using component::Transform;
-            using component::Parent;
+        //void TransformUpdateSystem::onUpdate()
+        //{
+        //    using component::Transform;
+        //    using component::Parent;
 
-            auto view = registry->view<Transform>();
-            for (auto entity : view)
-            {
-                auto& ct = view.get(entity);
-                if (registry->has<Parent>(entity))
-                {
-                    auto parent = registry->get<Parent>(entity).parent;
-                    if (parent != entt::null)
-                    {   
-                        auto& pt = registry->get<Transform>(parent);
+        //    auto view = registry->view<Transform>();
+        //    for (auto entity : view)
+        //    {
+        //        auto& ct = view.get(entity);
+        //        if (registry->has<Parent>(entity))
+        //        {
+        //            auto parent = registry->get<Parent>(entity).parent;
+        //            if (parent != entt::null)
+        //            {   
+        //                auto& pt = registry->get<Transform>(parent);
 
-                        if (!pt.m_localRef) 
-                            pt.m_localRef = Ref<Transform>(&pt, [](Transform*) {});
+        //                if (!pt.m_localRef) 
+        //                    pt.m_localRef = Ref<Transform>(&pt, [](Transform*) {});
 
-                        ct.m_parentRef = pt.m_localRef;
-                    }
-                    else ct.m_parentRef = {};
-                }
-                else ct.m_parentRef = {};
-            }
-        };
+        //                ct.m_parentRef = pt.m_localRef;
+        //            }
+        //            else ct.m_parentRef = {};
+        //        }
+        //        else ct.m_parentRef = {};
+        //    }
+        //};
 
         // ^^^ Transform Update System ^^^ //
         
@@ -1362,10 +1360,10 @@ namespace oyl
 
             bool doCulling = true;
 
-            auto view = registry->view<Renderable>();
+            auto view = registry->view<Renderable, Transform>();
             for (auto entity : view)
             {
-                Renderable& mr = view.get(entity);
+                Renderable& mr = view.get<Renderable>(entity);
 
                 if (mr.mesh == nullptr || mr.material == nullptr)
                     break;
@@ -1403,7 +1401,7 @@ namespace oyl
                     boundMaterial->applyUniforms();
                 }
 
-                auto& transformComponent = registry->get_or_assign<Transform>(entity);
+                auto& transformComponent = view.get<Transform>(entity);
                 glm::mat4 transform = transformComponent.getMatrixGlobal();
 
                 glm::bvec3 mirror = transformComponent.getMirrorGlobal();
