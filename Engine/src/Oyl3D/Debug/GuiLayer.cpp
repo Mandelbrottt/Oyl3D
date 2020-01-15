@@ -161,27 +161,27 @@ namespace oyl::internal
         using component::Transform;
         using component::Parent;
 
-        // For every child object, give its transform a reference to its parent's
-        auto view = registry->view<Transform, Parent>();
-        for (auto entity : view)
-        {
-            auto& ct = view.get<Transform>(entity);
-            auto parent = view.get<Parent>(entity).parent;
+        //// For every child object, give its transform a reference to its parent's
+        //auto view = registry->view<Transform, Parent>();
+        //for (auto entity : view)
+        //{
+        //    auto& ct = view.get<Transform>(entity);
+        //    auto parent = view.get<Parent>(entity).parent;
 
-            if (parent != entt::null)
-            {
-                auto& pt = registry->get<Transform>(parent);
+        //    if (parent != entt::null)
+        //    {
+        //        auto& pt = registry->get<Transform>(parent);
 
-                if (!pt.m_localRef)
-                    pt.m_localRef = Ref<Transform>(&pt, [](Transform*) {});
+        //        if (!pt.m_localRef)
+        //            pt.m_localRef = Ref<Transform>(&pt, [](Transform*) {});
 
-                ct.m_parentRef = pt.m_localRef;
-            }
-            else
-            {
-                ct.m_parentRef = {};
-            }
-        }
+        //        ct.m_parentRef = pt.m_localRef;
+        //    }
+        //    else
+        //    {
+        //        ct.m_parentRef = {};
+        //    }
+        //}
 
         // TODO: update the asset list every frame, maybe stagger how many we update per frame for performance reasons
         updateAssetList();
@@ -488,7 +488,7 @@ namespace oyl::internal
                     uint pos = copyEI.name.size();
                     while (pos > 0 && std::isdigit(copyEI.name[pos - 1])) pos--;
 
-                    if (pos > 0 && pos != copyEI.name.size() - 1)
+                    if (pos > 0 && pos != copyEI.name.size())
                     {
                         int number = std::stoi(copyEI.name.substr(pos));
                         copyEI.name.erase(pos);
@@ -1593,14 +1593,14 @@ namespace oyl::internal
 
                     postEvent(PhysicsResetWorldEvent{});
                     
-                    auto view = registry->view<component::Transform>();
+                    //auto view = registry->view<component::Transform>();
 
-                    for (auto entity : view)
-                    {
-                        auto& t = view.get(entity);
-                        t.m_localRef = Ref<component::Transform>(&t, [](component::Transform*) {});
-                        t.m_parentRef.reset();
-                    }
+                    //for (auto entity : view)
+                    //{
+                    //    auto& t = view.get(entity);
+                    //    t.m_localRef = Ref<component::Transform>(&t, [](component::Transform*) {});
+                    //    t.m_parentRef.reset();
+                    //}
 
                     m_currentEntity = entt::null;
                 }
