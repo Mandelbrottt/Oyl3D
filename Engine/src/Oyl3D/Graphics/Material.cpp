@@ -4,24 +4,35 @@
 #include "Graphics/Texture.h"
 #include "Graphics/Shader.h"
 
+#include "Utils/SceneToFile.h"
+
 namespace oyl
 {
     internal::AssetCache<Material> Material::s_cache;
 
-    Material::Material(_Material)
-        : shader(nullptr) {}
+    Material::Material(_Material) {}
 
-    Material::Material(_Material, Ref<Shader> shader)
-        : shader(std::move(shader)) {}
+    Material::Material(_Material, const std::string& filepath)
+        : m_filepath(filepath) {}
 
-    Ref<Material> Material::create(const Ref<Shader>& shader)
-    {
-        return Ref<Material>::create(_Material{}, shader);
-    }
+    //Material::Material(_Material, Ref<Shader> shader)
+    //    : shader(std::move(shader)) {}
+
+    //Ref<Material> Material::create(const Ref<Shader>& shader)
+    //{
+    //    return Ref<Material>::create(_Material{}, shader);
+    //}
 
     Ref<Material> Material::create()
     {
         return Ref<Material>::create(_Material{});
+    }
+
+    Ref<Material> Material::create(const std::string& filepath)
+    {
+        auto ret = internal::materialFromFile(filepath);
+        ret->m_filepath = filepath;
+        return ret;
     }
 
     template<>
@@ -34,10 +45,10 @@ namespace oyl
         for (auto& kvp : m_cache)
         {
             if (kvp.second == existing ||
-                (kvp.second->getShader() == existing->getShader() &&
-                 kvp.second->getAlbedoMap() == existing->getAlbedoMap() &&
-                 kvp.second->getSpecularMap() == existing->getSpecularMap() &&
-                 kvp.second->getNormalMap() == existing->getNormalMap()))
+                (kvp.second->shader == existing->shader &&
+                 kvp.second->albedoMap == existing->albedoMap &&
+                 kvp.second->specularMap == existing->specularMap &&
+                 kvp.second->normalMap == existing->normalMap))
             {
                 alreadyCached = kvp.second;
             }
@@ -62,18 +73,25 @@ namespace oyl
 
     const Ref<Material>& Material::cache(const Ref<Material>& material, 
                                          const CacheAlias&    alias, 
-                                         bool overwrite)
+                                         bool                 overwrite)
     {
         return s_cache.cache(material, alias, overwrite);
     }
 
-    const Ref<Material>& Material::cache(const Ref<Shader>& shader,
-                                         const CacheAlias&  alias,
-                                         bool overwrite)
+    const Ref<Material>& Material::cache(const std::string&   filepath,
+                                         const CacheAlias&    alias,
+                                         bool                 overwrite)
     {
-        Ref<Material> mat = Material::create(shader);
-        return s_cache.cache(mat, alias, overwrite);
+        return s_cache.cache(filepath, alias, overwrite);
     }
+
+    //const Ref<Material>& Material::cache(const Ref<Shader>& shader,
+    //                                     const CacheAlias&  alias,
+    //                                     bool overwrite)
+    //{
+    //    Ref<Material> mat = Material::create(shader);
+    //    return s_cache.cache(mat, alias, overwrite);
+    //}
 
     void Material::discard(const CacheAlias& alias)
     {
@@ -126,8 +144,10 @@ namespace oyl
             }
 
             // Warn the user if they are overiding a mesh of a different type
-            if (currIt->second->getShader() != newIt->second->getShader() ||
-                currIt->second->getAlbedoMap() != newIt->second->getAlbedoMap())
+            if (currIt->second->shader != newIt->second->shader ||
+                currIt->second->albedoMap != newIt->second->albedoMap ||
+                currIt->second->specularMap != newIt->second->specularMap || 
+                currIt->second->normalMap != newIt->second->normalMap)
             {
                 OYL_LOG_WARN("Material '{0}' was replaced by '{1}'.",
                              newIt->first, currIt->first, newAlias);
@@ -203,14 +223,5 @@ namespace oyl
         mat->shader = Shader::get(LIGHTING_SHADER_ALIAS);
         mat->albedoMap = Texture2D::get(INVALID_ALIAS);
         Material::cache(mat, INVALID_ALIAS);
-    }
-
-    template<> OYL_DEPRECATED("Huh?")
-    const Ref<Material>& internal::AssetCache<Material>::cache(const std::string& filePath,
-                                                               CacheAlias alias,
-                                                               bool overwrite)
-    {
-        OYL_ASSERT("How are you running this");
-        return nullptr;
     }
 }
