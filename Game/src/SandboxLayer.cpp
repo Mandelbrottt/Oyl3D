@@ -94,6 +94,7 @@ void SandboxLayer::onEnter()
 
 			//CANNON
 			entt::entity cannonEntity = registry->create();
+			mr.material = Material::get("cannon");
 
 			component::Transform cannonTransform;
 			cannonTransform.setPosition(glm::vec3(0.0f));
@@ -118,6 +119,7 @@ void SandboxLayer::onEnter()
 		{
 			//GARBAGE PILES
 			mr.mesh = Mesh::cache("res/assets/models/garbage.obj");
+			mr.material = Material::get("garbage");
 			for (int i = 0; i < 3; i++)
 			{
 				entt::entity garbagePileEntity = registry->create();
@@ -147,6 +149,7 @@ void SandboxLayer::onEnter()
 		{
 			//CANNONBALLS
 			mr.mesh = Mesh::cache("res/assets/models/sphere.obj");
+			mr.material = Material::get("cannonball");
 			for (int i = 0; i < 6; i++)
 			{
 				entt::entity cannonballEntity = registry->create();
@@ -179,6 +182,7 @@ void SandboxLayer::onEnter()
 
         {
 			mr.mesh = Mesh::cache("res/assets/models/mop.obj");
+			mr.material = Material::get("mop");
 			//MOP
 			entt::entity mopEntity = registry->create();
 
@@ -210,6 +214,7 @@ void SandboxLayer::onEnter()
 
 		{
 			mr.mesh = Mesh::cache("res/assets/models/Pirax.obj");
+			mr.material = Material::get("pirax");
 			//CLEANING SOLUTION
 			for (int i = 0; i < 3; i++)
 			{
@@ -241,6 +246,7 @@ void SandboxLayer::onEnter()
 
 		{
 			mr.mesh = Mesh::cache("res/assets/models/Gloop.obj");
+			mr.material = Material::get("goop");
 			//GLOOP
 			for (int i = 0; i < 3; i++)
 			{
@@ -272,6 +278,7 @@ void SandboxLayer::onEnter()
 
 		{
 			mr.mesh = Mesh::cache("res/assets/models/crateTemp.obj");
+			mr.material = Material::get("crate");
 			//CANNONBALL CRATE
 			entt::entity cannonballCrateEntity = registry->create();
 
@@ -303,6 +310,7 @@ void SandboxLayer::onEnter()
 		///////////////////// RED TEAM //////////////////////
 		{
 			//CANNON
+			mr.material = Material::get("cannon");
 			entt::entity cannonEntity = registry->create();
 
 			component::Transform cannonTransform;
@@ -328,6 +336,8 @@ void SandboxLayer::onEnter()
 
 		{
 			//GARBAGE PILES
+			mr.material = Material::get("garbage");
+
 			for (int i = 0; i < 3; i++)
 			{
 				entt::entity garbagePileEntity = registry->create();
@@ -357,6 +367,7 @@ void SandboxLayer::onEnter()
 		{
 			//CANNONBALLS
 			mr.mesh = Mesh::cache("res/assets/models/sphere.obj");
+			mr.material = Material::get("cannonball");
 			for (int i = 0; i < 6; i++)
 			{
 				entt::entity cannonballEntity = registry->create();
@@ -389,6 +400,9 @@ void SandboxLayer::onEnter()
 
 		{
 			//MOP
+			mr.mesh = Mesh::get("mop");
+			mr.material = Material::get("mop");
+
 			entt::entity mopEntity = registry->create();
 
 			component::Transform mopTransform;
@@ -419,6 +433,7 @@ void SandboxLayer::onEnter()
 
 		{
 			//CLEANING SOLUTION
+			mr.material = Material::get("pirax");
 			for (int i = 0; i < 3; i++)
 			{
 				entt::entity cleaningSolutionEntity = registry->create();
@@ -448,6 +463,7 @@ void SandboxLayer::onEnter()
 
 		{
 			//GLOOP
+			mr.material = Material::get("goop");
 			for (int i = 0; i < 3; i++)
 			{
 				entt::entity gloopEntity = registry->create();
@@ -479,6 +495,8 @@ void SandboxLayer::onEnter()
 
 		{
 			//CANNONBALL CRATE
+			mr.material = Material::get("crate");
+
 			entt::entity cannonballCrateEntity = registry->create();
 
 			component::Transform cannonballCrateTransform;
@@ -508,6 +526,7 @@ void SandboxLayer::onEnter()
 
 		{
 			mr.mesh = Mesh::cache("res/assets/models/lamp.obj");
+			mr.material = Material::get("lamp");
 			component::Collidable boxCollider;
 			auto& shi = boxCollider.pushShape(ColliderType::Box);
 			shi.box.setSize({ 1.0f, 1.0f, 1.0f });

@@ -187,11 +187,11 @@ namespace oyl::internal
         if (re.mesh)
         {
             auto& jMesh = j["Mesh"];
-            jMesh["Filepath"] = re.mesh->getFilePath();
+            jMesh["FilePath"] = re.mesh->getFilePath();
         }
         else
         {
-            j["Mesh"]["Filepath"];
+            j["Mesh"]["FilePath"];
         }
 
         if (false && re.material)
@@ -298,7 +298,7 @@ namespace oyl::internal
         {
             const auto rotIt = j.find("Rotation");
 
-            if (rotIt != j.end()     &&
+            if (rotIt != j.end()      &&
                 rotIt->contains("qW") &&
                 rotIt->contains("qX") &&
                 rotIt->contains("qY") &&
