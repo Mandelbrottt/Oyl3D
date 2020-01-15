@@ -13,21 +13,26 @@ namespace oyl
 
     public:
         explicit Material(_Material);
-        explicit Material(_Material, Ref<Shader> shader);
+        explicit Material(_Material, const std::string& filepath);
+        //explicit Material(_Material, Ref<Shader> shader);
         
         virtual ~Material() = default;
 
-        static Ref<Material> create(const Ref<Shader>& shader);
+        static Ref<Material> create(const std::string& filepath);
         static Ref<Material> create();
 
         // TODO: Add ctor like shader has with ShaderInfo
         static const Ref<Material>& cache(const Ref<Material>& material,
                                           const CacheAlias& alias,
                                           bool overwrite = false);
-        
-        static const Ref<Material>& cache(const Ref<Shader>& shader,
-                                          const CacheAlias& alias,
+
+        static const Ref<Material>& cache(const std::string& filepath,
+                                          const CacheAlias& alias = "",
                                           bool overwrite = false);
+        
+        //static const Ref<Material>& cache(const Ref<Shader>& shader,
+        //                                  const CacheAlias& alias,
+        //                                  bool overwrite = false);
 
         static void discard(const CacheAlias& alias);
 
@@ -88,6 +93,8 @@ namespace oyl
         void setUniformMat4(const std::string& name, glm::mat4 value) { m_uniformMat4s[name] = value; }
         void setUniformMat3(const std::string& name, glm::mat3 value) { m_uniformMat3s[name] = value; }
 
+        const std::string& getFilePath() { return m_filepath; }
+
     public:
         Ref<Shader> shader;
 
@@ -98,6 +105,8 @@ namespace oyl
         float specularScalar = 0.5f;
 
     private:
+
+        std::string m_filepath;
         
         // TODO: Implement in custom data structure
         // TODO: Add textures
