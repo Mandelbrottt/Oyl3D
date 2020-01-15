@@ -71,9 +71,9 @@ namespace oyl
             registry->sort<Renderable>(
                 [](const Renderable& lhs, const Renderable& rhs)
                 {
-                    if (!lhs.enabled || !lhs.mesh || lhs.material || !lhs.material->albedoMap)
+                    if (!lhs.enabled || !lhs.mesh || !lhs.material || !lhs.material->shader || !lhs.material->albedoMap)
                         return false;
-                    if (!rhs.enabled || !rhs.mesh || !rhs.material || !rhs.material->albedoMap)
+                    if (!rhs.enabled || !rhs.mesh || !rhs.material || !rhs.material->shader || !rhs.material->albedoMap)
                         return true;
                     if (lhs.material->shader != rhs.material->shader)
                         return lhs.material->shader < rhs.material->shader;
@@ -124,7 +124,7 @@ namespace oyl
                 {
                     Renderable& mr = view.get<Renderable>(entity);
 
-                    if (!mr.enabled) continue;
+					if (!mr.enabled) break;
                     
                     if (!mr.mesh || !mr.material || !mr.material->shader || !mr.material->albedoMap)
                         break;
@@ -166,7 +166,7 @@ namespace oyl
                         boundMaterial->applyUniforms();
                     }
 
-                    auto& transformComponent = view.get<Transform>(entity);
+                    auto& transformComponent = registry->get_or_assign<Transform>(entity);
                     glm::mat4 transform = transformComponent.getMatrixGlobal();
 
                     glm::bvec3 mirror = transformComponent.getMirrorGlobal();
