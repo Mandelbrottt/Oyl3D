@@ -7,7 +7,7 @@ namespace oyl::internal
 {
     void SystemsLayer::onEnter()
     {
-        scheduleSystemUpdate<TransformUpdateSystem>();
+        //scheduleSystemUpdate<TransformUpdateSystem>();
         scheduleSystemUpdate<PhysicsSystem>();
         scheduleSystemUpdate<AnimationSystem>();
     }
