@@ -1,10 +1,9 @@
 #pragma once
-#include "App/Application.h"
 
 namespace oyl
 {
-    class Scene;
-
+    class Material;
+    
     namespace internal
     {
         //extern void saveSceneToFile(const Scene& scene);
@@ -16,5 +15,8 @@ namespace oyl
 
         extern entt::entity entityToPrefabFile(entt::registry& registry, const std::string& filepath);
         extern entt::entity entityfromPrefabFile(entt::registry& registry, const std::string& filepath);
+
+        extern Ref<Material> materialFromFile(const std::string& filepath);
+        extern void materialToFile(const Ref<Material>& material, const std::string& filepath);
     }
 }

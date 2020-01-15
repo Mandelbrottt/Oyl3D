@@ -194,71 +194,15 @@ namespace oyl::internal
             j["Mesh"]["FilePath"];
         }
 
-        if (false && re.material)
+        json& jMat = j["Material"];
+        json& jAlias = jMat["Alias"];
+        if (re.material)
         {
-            auto& jMat = j["Material"];
-            jMat["Alias"] = Material::getAlias(re.material);
-
-            if (re.material->shader)
+            if (Material::isCached(re.material))
             {
-                auto& jSha    = jMat["Shader"];
-                jSha["Alias"] = Shader::getAlias(re.material->shader);
-
-                for (const auto& info : re.material->shader->getShaderInfos())
-                {
-                    const char* type = nullptr;
-
-                    switch (info.type)
-                    {
-                        case Shader::Vertex:
-                            type = "Vertex";
-                            break;
-                        case Shader::Geometry:
-                            type = "Geometry";
-                            break;
-                        case Shader::TessControl:
-                            type = "TessControl";
-                            break;
-                        case Shader::TessEvaluation:
-                            type = "TessEvaluation";
-                            break;
-                        case Shader::Pixel:
-                            type = "Pixel";
-                            break;
-                        default:
-                            OYL_ASSERT(false, "Invalid Shader Type!");
-                    }
-
-                    if (type)
-                    {
-                        jSha[type] = info.filename;
-                    }
-                }
+                std::string alias = Material::getAlias(re.material);
+                jAlias = alias;
             }
-
-            if (re.material->albedoMap)
-            {
-                auto& jTex = jMat["Albedo"];
-
-                jTex["Alias"] = Texture2D::getAlias(re.material->albedoMap);
-                jTex["FilePath"] = re.material->albedoMap->getFilePath();
-            }
-
-            if (re.material->specularMap)
-            {
-                auto& jTex = jMat["Specular"];
-
-                jTex["Alias"] = Texture2D::getAlias(re.material->specularMap);
-                jTex["FilePath"] = re.material->specularMap->getFilePath();
-            }
-
-            //if (re.material->normalMap)
-            //{
-            //    auto& jTex = jMat["albedoMap"];
-
-            //    jTex["Alias"] = Texture2D::getAlias(re.material->normalMap);
-            //    jTex["FilePath"] = re.material->normalMap->getFilePath();
-            //}
         }
     }
 
@@ -304,14 +248,14 @@ namespace oyl::internal
                 rotIt->contains("qY") &&
                 rotIt->contains("qZ"))
             {
-                glm::quat rotation = {
-                    rotIt->at("qW").get<float>(),
-                    rotIt->at("qX").get<float>(),
-                    rotIt->at("qY").get<float>(),
-                    rotIt->at("qZ").get<float>(),
-                };
-
-                t.setRotation(rotation);
+                //glm::quat rotation = {
+                //    rotIt->at("qW").get<float>(),
+                //    rotIt->at("qX").get<float>(),
+                //    rotIt->at("qY").get<float>(),
+                //    rotIt->at("qZ").get<float>(),
+                //};
+                //
+                //t.setRotation(rotation);
             }
         }
         {
@@ -382,7 +326,7 @@ namespace oyl::internal
 
         if (auto it = j.find("Mesh"); it != j.end() && !it->is_null())
         {
-            if (auto fpIt = it->find("FilePath"); fpIt != it->end())
+            if (auto fpIt = it->find("FilePath"); fpIt != it->end() && !fpIt->is_null())
             {
                 auto filePath = fpIt->get<std::string>();
                    
@@ -392,73 +336,16 @@ namespace oyl::internal
         }
         else re.mesh = nullptr;
 
-        if (false && j.find("Material") != j.end())
+        if (j.find("Material") != j.end())
         {
             auto& jMat = j["Material"];
 
-            if (!Material::exists(jMat["Alias"].get<std::string>()))
-                re.material = Material::cache(Material::create(), jMat["Alias"].get<std::string>());
-            else
-                re.material = Material::get(jMat["Alias"].get<std::string>());
-
-            if (jMat.find("Shader") != jMat.end())
+            if (auto it = jMat.find("Alias"); it != jMat.end() && it->is_string())
             {
-                auto& jSha  = jMat["Shader"];
-                auto  alias = jSha["Alias"].get<std::string>();
-
-                if (Shader::exists(alias))
-                    re.material->shader = Shader::get(alias);
-                else
-                {
-                    std::vector<ShaderInfo> infos;
-                    infos.reserve(5);
-                    
-                    if (jSha.find("Vertex") != jSha.end())
-                        infos.push_back({ Shader::Vertex, jSha["Vertex"].get<std::string>() });
-
-                    if (jSha.find("Geometry") != jSha.end())
-                        infos.push_back({ Shader::Geometry, jSha["Geometry"].get<std::string>() });
-
-                    if (jSha.find("TessControl") != jSha.end())
-                        infos.push_back({ Shader::TessControl, jSha["TessControl"].get<std::string>() });
-
-                    if (jSha.find("TessEvaluation") != jSha.end())
-                        infos.push_back({ Shader::TessEvaluation, jSha["TessEvaluation"].get<std::string>() });
-
-                    if (jSha.find("Pixel") != jSha.end())
-                        infos.push_back({ Shader::Pixel, jSha["Pixel"].get<std::string>() });
-
-                    Shader::cache(infos, alias);
-                }
-            } else re.material->shader = Shader::get(LIGHTING_SHADER_ALIAS);
-
-            if (jMat.find("Albedo") != jMat.end())
-            {
-                auto alias = jMat["Albedo"]["Alias"].get<std::string>();
-                auto filePath = jMat["Albedo"]["FilePath"].get<std::string>();
-                if (Texture2D::exists(alias))
-                {
-                    re.material->albedoMap = Texture2D::get(alias);
-
-                    if (re.material->albedoMap->getFilePath() != filePath)
-                        re.material->albedoMap = Texture2D::cache(filePath);
-                } else
-                    re.material->albedoMap = Texture2D::cache(filePath, alias);
-            } else re.material->albedoMap = Texture2D::get(WHITE_TEXTURE_ALIAS);
-
-            if (jMat.find("Specular") != jMat.end())
-            {
-                auto alias = jMat["Specular"]["Alias"].get<std::string>();
-                auto filePath = jMat["Specular"]["FilePath"].get<std::string>();
-                if (Texture2D::exists(alias))
-                {
-                    re.material->specularMap = Texture2D::get(alias);
-
-                    if (re.material->specularMap->getFilePath() != filePath)
-                        re.material->specularMap = Texture2D::cache(filePath);
-                } else
-                    re.material->specularMap = Texture2D::cache(filePath, alias);
-            } else re.material->specularMap = Texture2D::get(WHITE_TEXTURE_ALIAS);
+                std::string alias = it->get<std::string>();
+                if (Material::exists(alias))
+                    re.material = Material::get(alias);
+            }
         }
     }
 
@@ -570,5 +457,234 @@ namespace oyl::internal
 
         if (auto it = j.find("Renderable"); it != j.end())
             loadRenderable(entity, registry, it.value());
+    }
+
+    Ref<Material> materialFromFile(const std::string& filepath)
+    {
+        std::ifstream materialFile(filepath);
+        if (!materialFile)
+        {
+            OYL_LOG_ERROR("Failed to open material file \"{0}\"!", filepath);
+            return nullptr;
+        }
+
+        json jFile;
+        materialFile >> jFile;
+        materialFile.close();
+
+        const json& jMaterial = jFile["Material"];
+
+        Ref<Material> material = Material::create();
+
+        if (auto it = jMaterial.find("Shader"); it != jMaterial.end() && !it->is_null())
+        {
+            bool loadNewShader = false;
+            std::string alias;
+            if (auto alIt = it->find("Alias"); alIt != it->end() && alIt->is_string())
+            {
+                alias = alIt->get<std::string>();
+                if (Shader::exists(alias))
+                    material->shader = Shader::get(alias);
+                else
+                    loadNewShader = true;
+            }
+            else loadNewShader = true;
+
+            if (loadNewShader)
+            {
+                std::vector<ShaderInfo> infos;
+                infos.reserve(5);
+
+                auto pushBackFn = [&infos, &it](const char* key, Shader::Type type)
+                {
+                    if (auto sIt = it->find(key);
+                        sIt != it->end() &&
+                        sIt->contains("guid") &&
+                        sIt->contains("FilePath"))
+                    {
+                        ShaderInfo info;
+                        info.type = type;
+                        info.filename = sIt->at("FilePath").get<std::string>();
+
+                        infos.push_back(std::move(info));
+                    }
+                };
+
+                pushBackFn("Vertex",         Shader::Type::Vertex);
+                pushBackFn("Geometry",       Shader::Type::Geometry);
+                pushBackFn("TessControl",    Shader::Type::TessControl);
+                pushBackFn("TessEvaluation", Shader::Type::TessEvaluation);
+                pushBackFn("Pixel",          Shader::Type::Fragment);
+
+                if (!alias.empty())
+                    material->shader = Shader::cache(infos, alias);
+                else
+                    material->shader = Shader::create(infos);
+            }
+        }
+
+        if (auto it = jMaterial.find("Textures"); it != jMaterial.end())
+        {
+            auto getTextureFn = [](json::const_iterator& it)
+            {
+                std::string tFilepath = {};
+                if (auto filepathIt = it->find("FilePath");
+                    filepathIt != it->end() && filepathIt->is_string())
+                    tFilepath = filepathIt->get<std::string>();
+
+                if (auto aliasIt = it->find("Alias"); aliasIt != it->end() && aliasIt->is_string())
+                {
+                    std::string alias = aliasIt->get<std::string>();
+                    if (Texture2D::exists(alias))
+                        return Texture2D::get(alias);
+                    else
+                        return Texture2D::cache(tFilepath, alias);
+                }
+                else if (!tFilepath.empty())
+                    return Texture2D::create(tFilepath);
+                else
+                    return Ref<Texture2D>(nullptr);
+            };
+            
+            if (auto albedoIt = it->find("Albedo"); albedoIt != it->end())
+                material->albedoMap = getTextureFn(albedoIt);
+
+            if (auto specularIt = it->find("Specular"); specularIt != it->end())
+                material->specularMap = getTextureFn(specularIt);
+            
+            if (auto normalIt = it->find("Normal"); normalIt != it->end())
+                material->normalMap = getTextureFn(normalIt);
+        }
+
+        if (auto it = jMaterial.find("Alias"); it != jMaterial.end() && it->is_string())
+        {
+            std::string alias = it->get<std::string>();
+            if (Material::exists(alias))
+            {
+                auto testMat = Material::get(alias);
+                if (material->shader == testMat->shader &&
+                    material->albedoMap == testMat->albedoMap &&
+                    material->specularMap == testMat->specularMap &&
+                    material->normalMap == testMat->normalMap)
+                {
+                    material = testMat;
+                }
+            }
+        }
+        
+        return material;
+    }
+
+    void materialToFile(const Ref<Material>& material, const std::string& filepath)
+    {
+        json jFile;
+        json& jMaterial = jFile["Material"];
+
+        json& jMatAlias = jMaterial["Alias"];
+        if (auto alias = Material::getAlias(material); alias != INVALID_ALIAS)
+            jMatAlias = alias;
+        
+        json& jShader = jMaterial["Shader"];
+        if (material->shader)
+        {
+            json& jAlias = jShader["Alias"];
+            if (auto alias = Shader::getAlias(material->shader); alias != INVALID_ALIAS)
+                jAlias = alias;
+            
+            const auto& infos = material->shader->getShaderInfos();
+            for (const auto& info : infos)
+            {
+                switch (info.type)
+                {
+                    case Shader::Type::Vertex:
+                    {
+                        json& jVert = jShader["Vertex"];
+                        jVert["guid"];
+                        jVert["FilePath"] = info.filename;
+                        break;
+                    }
+                    case Shader::Type::Geometry:
+                    {
+                        json& jGeom = jShader["Geometry"];
+                        jGeom["guid"];
+                        jGeom["FilePath"] = info.filename;
+                        break;
+                    }
+                    case Shader::Type::TessControl:
+                    {
+                        json& jTesc = jShader["TessControl"];
+                        jTesc["guid"];
+                        jTesc["FilePath"] = info.filename;
+                        break;
+                    }
+                    case Shader::Type::TessEvaluation:
+                    {
+                        json& jTese = jShader["TessEvaluation"];
+                        jTese["guid"];
+                        jTese["FilePath"] = info.filename;
+                        break;
+                    }
+                    case Shader::Type::Fragment:
+                    {
+                        json& jFrag = jShader["Pixel"];
+                        jFrag["guid"];
+                        jFrag["FilePath"] = info.filename;
+                        break;
+                    }
+                }
+            }
+        }
+
+        json& jTextures = jMaterial["Textures"];
+
+        json& jAlbedo = jTextures["Albedo"];
+        if (material->albedoMap)
+        {
+            jAlbedo["guid"];
+
+            // TEMPORARY:
+            jAlbedo["FilePath"] = material->albedoMap->getFilePath();
+
+            json& jAlias = jAlbedo["Alias"];
+            if (auto alias = Texture2D::getAlias(material->albedoMap); alias != INVALID_ALIAS)
+                jAlias = alias;
+        }
+
+        json& jSpecular = jTextures["Specular"];
+        if (material->specularMap)
+        {
+            jSpecular["guid"];
+
+            // TEMPORARY:
+            jSpecular["FilePath"] = material->specularMap->getFilePath();
+
+            json& jAlias = jAlbedo["Alias"];
+            if (auto alias = Texture2D::getAlias(material->specularMap); alias != INVALID_ALIAS)
+                jAlias = alias;
+        }
+
+        json& jNormal = jTextures["Normal"];
+        if (material->normalMap)
+        {
+            jNormal["guid"];
+
+            // TEMPORARY:
+            jNormal["FilePath"] = material->normalMap->getFilePath();
+
+            json& jAlias = jAlbedo["Alias"];
+            if (auto alias = Texture2D::getAlias(material->normalMap); alias != INVALID_ALIAS)
+                jAlias = alias;
+        }
+
+        std::ofstream materialFile(filepath);
+        if (materialFile)
+        {
+            materialFile << std::setw(4) << jFile;
+            materialFile.flush();
+        }
+        else
+        {
+            OYL_LOG_ERROR("Failed to save material file \"{0}\"!", filepath);
+        }
     }
 }

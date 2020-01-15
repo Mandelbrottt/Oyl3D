@@ -8,7 +8,8 @@ void SandboxLayer::onEnter()
 {
     auto mesh = Mesh::cache("res/assets/models/cube.obj");
     
-    auto& mat = Material::cache(Shader::get(LIGHTING_SHADER_ALIAS), "container");
+    auto& mat = Material::cache(Material::create(), "container");
+	mat->shader = Shader::get(LIGHTING_SHADER_ALIAS);
     mat->albedoMap   = Texture2D::cache("res/assets/textures/container2.jpg");
     mat->specularMap = Texture2D::cache("res/assets/textures/container2_specular.jpg");
 
@@ -64,32 +65,33 @@ void SandboxLayer::onEnter()
 			mr.mesh = Mesh::cache("res/assets/models/cannon.obj");
 
 			//TEMP MATERIAL INIT LOCATION UNTIL SYSTEM OVERHAUL
-			mr.material = Material::cache(Shader::get(LIGHTING_SHADER_ALIAS), "planks");
+			mr.material = Material::cache(Material::create(), "planks");
+			mat->shader = Shader::get(LIGHTING_SHADER_ALIAS);
 			mr.material->albedoMap = Texture2D::cache("res/assets/textures/woodPlanks.png");
 			mr.material->specularMap = Texture2D::cache("res/assets/textures/tempSpec.jpg");
 
-			mr.material = Material::cache(Shader::get(LIGHTING_SHADER_ALIAS), "cannonball");
+			mr.material = Material::cache(Material::create(), "cannonball");
 			mr.material->albedoMap = Texture2D::cache("res/assets/textures/cannonballTemp.png");
 
-			mr.material = Material::cache(Shader::get(LIGHTING_SHADER_ALIAS), "goop");
+			mr.material = Material::cache(Material::create(), "goop");
 			mr.material->albedoMap = Texture2D::cache("res/assets/textures/goopTemp.png");
 
-			mr.material = Material::cache(Shader::get(LIGHTING_SHADER_ALIAS), "pirax");
+			mr.material = Material::cache(Material::create(), "pirax");
 			mr.material->albedoMap = Texture2D::cache("res/assets/textures/piraxTemp.png");
 
-			mr.material = Material::cache(Shader::get(LIGHTING_SHADER_ALIAS), "garbage");
+			mr.material = Material::cache(Material::create(), "garbage");
 			mr.material->albedoMap = Texture2D::cache("res/assets/textures/garbageTemp.png");
 
-			mr.material = Material::cache(Shader::get(LIGHTING_SHADER_ALIAS), "crate");
+			mr.material = Material::cache(Material::create(), "crate");
 			mr.material->albedoMap = Texture2D::cache("res/assets/textures/binTemp.png");
 
-			mr.material = Material::cache(Shader::get(LIGHTING_SHADER_ALIAS), "mop");
+			mr.material = Material::cache(Material::create(), "mop");
 			mr.material->albedoMap = Texture2D::cache("res/assets/textures/mopTemp.png");
 
-			mr.material = Material::cache(Shader::get(LIGHTING_SHADER_ALIAS), "cannon");
+			mr.material = Material::cache(Material::create(), "cannon");
 			mr.material->albedoMap = Texture2D::cache("res/assets/textures/cannonTemp.png");
 
-			mr.material = Material::cache(Shader::get(LIGHTING_SHADER_ALIAS), "lamp");
+			mr.material = Material::cache((Material::create()), "lamp");
 			mr.material->albedoMap = Texture2D::cache("res/assets/textures/lampTemp.png");
 
 			//CANNON
