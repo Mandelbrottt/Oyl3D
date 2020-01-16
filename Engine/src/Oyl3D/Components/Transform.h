@@ -2,11 +2,16 @@
 
 #include "Oyl3D/oylpch.h"
 
-namespace oyl::internal
+namespace oyl
 {
-    class PhysicsSystem;
-    class TransformUpdateSystem;
-    class GuiLayer;
+    class Scene;
+    
+    namespace internal
+    {
+        class PhysicsSystem;
+        class TransformUpdateSystem;
+        class GuiLayer;
+    }
 }
 
 namespace oyl::component
@@ -70,6 +75,11 @@ namespace oyl::component
         glm::vec3 getRightGlobal()   const;
         glm::vec3 getUpGlobal()      const;
 
+        bool hasParent() const;
+
+        Transform* getParent();
+        const Transform* getParent() const;
+
         // TODO: add setXGlobal functions
         void setPosition(glm::vec3 position);
         void setPositionX(f32 x);
@@ -100,14 +110,17 @@ namespace oyl::component
         void setMirrorZ(bool mirror);
         
         bool isLocalDirty() const;
-    
+
     private:
+        friend oyl::Scene;
         friend oyl::internal::PhysicsSystem;
         friend oyl::internal::TransformUpdateSystem;
         friend oyl::internal::GuiLayer;
     
+        static void on_construct(entt::entity entity, entt::registry& registry, Transform& transform);
+    
         glm::vec3 m_localPosition = glm::vec3(0.0f);
-        glm::quat m_localRotation = glm::quat();
+        glm::quat m_localRotation = glm::quat(1.0f, 0.0f, 0.0f, 0.0f);
         glm::vec3 m_localScale    = glm::vec3(1.0f);
         glm::bvec3 m_mirror       = glm::bvec3(false);
     
@@ -117,14 +130,17 @@ namespace oyl::component
     
         mutable glm::mat4 m_localMatrix = glm::mat4(1.0f);
     
-        Ref<Transform>     m_localRef;
-        WeakRef<Transform> m_parentRef = WeakRef<Transform>{};
+        //Ref<Transform>     m_localRef;
+        //WeakRef<Transform> m_parentRef = WeakRef<Transform>{};
     
         mutable bool m_isLocalDirty = true;
     
         bool m_isPositionOverridden = true;
         bool m_isRotationOverridden = true;
         bool m_isScaleOverridden    = true;
+
+        entt::entity       m_owner;
+        entt::registry*    m_registry;
     };
 }
 

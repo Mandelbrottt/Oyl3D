@@ -1,38 +1,31 @@
 {
     "BlueCannon": {
+        "Parent": null,
         "Renderable": {
             "Enabled": true,
             "Material": {
-                "Albedo": {
-                    "Alias": "cannonTemp",
-                    "FilePath": "res/assets/textures/cannonTemp.png"
-                },
-                "Alias": "cannon",
-                "Shader": {
-                    "Alias": "Oyl Lighting",
-                    "Pixel": "../Engine/res/shaders/lighting.frag",
-                    "Vertex": "../Engine/res/shaders/lighting.vert"
-                },
-                "Specular": {
-                    "Alias": "tempSpec",
-                    "FilePath": "res/assets/textures/tempSpec.jpg"
-                }
+                "Alias": "cannon"
             },
             "Mesh": {
-                "Alias": "cannon",
                 "FilePath": "res/assets/models/cannon.obj"
             }
         },
         "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": true
+            },
             "Position": {
                 "X": 0.0,
                 "Y": 0.0,
                 "Z": -6.0
             },
             "Rotation": {
-                "X": 0.0,
-                "Y": -0.0,
-                "Z": 0.0
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
             },
             "Scale": {
                 "X": 0.699999988079071,
@@ -42,39 +35,32 @@
         }
     },
     "BlueCannonball0": {
+        "Parent": null,
         "Renderable": {
             "Enabled": true,
             "Material": {
-                "Albedo": {
-                    "Alias": "cannonballTemp",
-                    "FilePath": "res/assets/textures/cannonballTemp.png"
-                },
-                "Alias": "cannonball",
-                "Shader": {
-                    "Alias": "Oyl Lighting",
-                    "Pixel": "../Engine/res/shaders/lighting.frag",
-                    "Vertex": "../Engine/res/shaders/lighting.vert"
-                },
-                "Specular": {
-                    "Alias": "Oyl White",
-                    "FilePath": "../Engine/res/textures/white.png"
-                }
+                "Alias": "cannonball"
             },
             "Mesh": {
-                "Alias": "sphere",
                 "FilePath": "res/assets/models/sphere.obj"
             }
         },
         "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
             "Position": {
                 "X": 1000.0,
                 "Y": 1000.0,
                 "Z": 1000.0
             },
             "Rotation": {
-                "X": 0.0,
-                "Y": -0.0,
-                "Z": 0.0
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
             },
             "Scale": {
                 "X": 0.5,
@@ -84,39 +70,32 @@
         }
     },
     "BlueCannonball1": {
+        "Parent": null,
         "Renderable": {
             "Enabled": true,
             "Material": {
-                "Albedo": {
-                    "Alias": "cannonballTemp",
-                    "FilePath": "res/assets/textures/cannonballTemp.png"
-                },
-                "Alias": "cannonball",
-                "Shader": {
-                    "Alias": "Oyl Lighting",
-                    "Pixel": "../Engine/res/shaders/lighting.frag",
-                    "Vertex": "../Engine/res/shaders/lighting.vert"
-                },
-                "Specular": {
-                    "Alias": "Oyl White",
-                    "FilePath": "../Engine/res/textures/white.png"
-                }
+                "Alias": "cannonball"
             },
             "Mesh": {
-                "Alias": "sphere",
                 "FilePath": "res/assets/models/sphere.obj"
             }
         },
         "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
             "Position": {
                 "X": 1000.0,
                 "Y": 1000.0,
                 "Z": 1000.0
             },
             "Rotation": {
-                "X": 0.0,
-                "Y": -0.0,
-                "Z": 0.0
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
             },
             "Scale": {
                 "X": 0.5,
@@ -126,39 +105,32 @@
         }
     },
     "BlueCannonball2": {
+        "Parent": null,
         "Renderable": {
             "Enabled": true,
             "Material": {
-                "Albedo": {
-                    "Alias": "cannonballTemp",
-                    "FilePath": "res/assets/textures/cannonballTemp.png"
-                },
-                "Alias": "cannonball",
-                "Shader": {
-                    "Alias": "Oyl Lighting",
-                    "Pixel": "../Engine/res/shaders/lighting.frag",
-                    "Vertex": "../Engine/res/shaders/lighting.vert"
-                },
-                "Specular": {
-                    "Alias": "Oyl White",
-                    "FilePath": "../Engine/res/textures/white.png"
-                }
+                "Alias": "cannonball"
             },
             "Mesh": {
-                "Alias": "sphere",
                 "FilePath": "res/assets/models/sphere.obj"
             }
         },
         "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
             "Position": {
                 "X": 1000.0,
                 "Y": 1000.0,
                 "Z": 1000.0
             },
             "Rotation": {
-                "X": 0.0,
-                "Y": -0.0,
-                "Z": 0.0
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
             },
             "Scale": {
                 "X": 0.5,
@@ -168,39 +140,32 @@
         }
     },
     "BlueCannonball3": {
+        "Parent": null,
         "Renderable": {
             "Enabled": true,
             "Material": {
-                "Albedo": {
-                    "Alias": "cannonballTemp",
-                    "FilePath": "res/assets/textures/cannonballTemp.png"
-                },
-                "Alias": "cannonball",
-                "Shader": {
-                    "Alias": "Oyl Lighting",
-                    "Pixel": "../Engine/res/shaders/lighting.frag",
-                    "Vertex": "../Engine/res/shaders/lighting.vert"
-                },
-                "Specular": {
-                    "Alias": "Oyl White",
-                    "FilePath": "../Engine/res/textures/white.png"
-                }
+                "Alias": "cannonball"
             },
             "Mesh": {
-                "Alias": "sphere",
                 "FilePath": "res/assets/models/sphere.obj"
             }
         },
         "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
             "Position": {
                 "X": 1000.0,
                 "Y": 1000.0,
                 "Z": 1000.0
             },
             "Rotation": {
-                "X": 0.0,
-                "Y": -0.0,
-                "Z": 0.0
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
             },
             "Scale": {
                 "X": 0.5,
@@ -210,39 +175,32 @@
         }
     },
     "BlueCannonball4": {
+        "Parent": null,
         "Renderable": {
             "Enabled": true,
             "Material": {
-                "Albedo": {
-                    "Alias": "cannonballTemp",
-                    "FilePath": "res/assets/textures/cannonballTemp.png"
-                },
-                "Alias": "cannonball",
-                "Shader": {
-                    "Alias": "Oyl Lighting",
-                    "Pixel": "../Engine/res/shaders/lighting.frag",
-                    "Vertex": "../Engine/res/shaders/lighting.vert"
-                },
-                "Specular": {
-                    "Alias": "Oyl White",
-                    "FilePath": "../Engine/res/textures/white.png"
-                }
+                "Alias": "cannonball"
             },
             "Mesh": {
-                "Alias": "sphere",
                 "FilePath": "res/assets/models/sphere.obj"
             }
         },
         "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
             "Position": {
                 "X": 1000.0,
                 "Y": 1000.0,
                 "Z": 1000.0
             },
             "Rotation": {
-                "X": 0.0,
-                "Y": -0.0,
-                "Z": 0.0
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
             },
             "Scale": {
                 "X": 0.5,
@@ -252,39 +210,32 @@
         }
     },
     "BlueCannonball5": {
+        "Parent": null,
         "Renderable": {
             "Enabled": true,
             "Material": {
-                "Albedo": {
-                    "Alias": "cannonballTemp",
-                    "FilePath": "res/assets/textures/cannonballTemp.png"
-                },
-                "Alias": "cannonball",
-                "Shader": {
-                    "Alias": "Oyl Lighting",
-                    "Pixel": "../Engine/res/shaders/lighting.frag",
-                    "Vertex": "../Engine/res/shaders/lighting.vert"
-                },
-                "Specular": {
-                    "Alias": "Oyl White",
-                    "FilePath": "../Engine/res/textures/white.png"
-                }
+                "Alias": "cannonball"
             },
             "Mesh": {
-                "Alias": "sphere",
                 "FilePath": "res/assets/models/sphere.obj"
             }
         },
         "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
             "Position": {
                 "X": 1000.0,
                 "Y": 1000.0,
                 "Z": 1000.0
             },
             "Rotation": {
-                "X": 0.0,
-                "Y": -0.0,
-                "Z": 0.0
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
             },
             "Scale": {
                 "X": 0.5,
@@ -294,39 +245,32 @@
         }
     },
     "BlueCannonballCrate": {
+        "Parent": null,
         "Renderable": {
             "Enabled": true,
             "Material": {
-                "Albedo": {
-                    "Alias": "binTemp",
-                    "FilePath": "res/assets/textures/binTemp.png"
-                },
-                "Alias": "crate",
-                "Shader": {
-                    "Alias": "Oyl Lighting",
-                    "Pixel": "../Engine/res/shaders/lighting.frag",
-                    "Vertex": "../Engine/res/shaders/lighting.vert"
-                },
-                "Specular": {
-                    "Alias": "tempSpec",
-                    "FilePath": "res/assets/textures/tempSpec.jpg"
-                }
+                "Alias": "crate"
             },
             "Mesh": {
-                "Alias": "crateTemp",
                 "FilePath": "res/assets/models/crateTemp.obj"
             }
         },
         "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": true
+            },
             "Position": {
                 "X": -1.0,
                 "Y": 0.0,
                 "Z": -3.0
             },
             "Rotation": {
-                "X": 0.0,
-                "Y": -0.0,
-                "Z": 0.0
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
             },
             "Scale": {
                 "X": 1.5,
@@ -336,39 +280,32 @@
         }
     },
     "BlueCleaningSolution0": {
+        "Parent": null,
         "Renderable": {
             "Enabled": true,
             "Material": {
-                "Albedo": {
-                    "Alias": "piraxTemp",
-                    "FilePath": "res/assets/textures/piraxTemp.png"
-                },
-                "Alias": "pirax",
-                "Shader": {
-                    "Alias": "Oyl Lighting",
-                    "Pixel": "../Engine/res/shaders/lighting.frag",
-                    "Vertex": "../Engine/res/shaders/lighting.vert"
-                },
-                "Specular": {
-                    "Alias": "Oyl White",
-                    "FilePath": "../Engine/res/textures/white.png"
-                }
+                "Alias": "pirax"
             },
             "Mesh": {
-                "Alias": "Pirax",
                 "FilePath": "res/assets/models/Pirax.obj"
             }
         },
         "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
             "Position": {
                 "X": 2.8278794288635254,
                 "Y": 0.3100000023841858,
                 "Z": 0.6259580850601196
             },
             "Rotation": {
-                "X": 0.0,
-                "Y": -0.0,
-                "Z": 0.0
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
             },
             "Scale": {
                 "X": 0.30000001192092896,
@@ -378,39 +315,32 @@
         }
     },
     "BlueCleaningSolution1": {
+        "Parent": null,
         "Renderable": {
             "Enabled": true,
             "Material": {
-                "Albedo": {
-                    "Alias": "piraxTemp",
-                    "FilePath": "res/assets/textures/piraxTemp.png"
-                },
-                "Alias": "pirax",
-                "Shader": {
-                    "Alias": "Oyl Lighting",
-                    "Pixel": "../Engine/res/shaders/lighting.frag",
-                    "Vertex": "../Engine/res/shaders/lighting.vert"
-                },
-                "Specular": {
-                    "Alias": "Oyl White",
-                    "FilePath": "../Engine/res/textures/white.png"
-                }
+                "Alias": "pirax"
             },
             "Mesh": {
-                "Alias": "Pirax",
                 "FilePath": "res/assets/models/Pirax.obj"
             }
         },
         "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
             "Position": {
                 "X": 3.3754539489746094,
                 "Y": 0.3100000023841858,
                 "Z": 0.32471024990081787
             },
             "Rotation": {
-                "X": 0.0,
-                "Y": -0.0,
-                "Z": 0.0
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
             },
             "Scale": {
                 "X": 0.30000001192092896,
@@ -420,39 +350,32 @@
         }
     },
     "BlueCleaningSolution2": {
+        "Parent": null,
         "Renderable": {
             "Enabled": true,
             "Material": {
-                "Albedo": {
-                    "Alias": "piraxTemp",
-                    "FilePath": "res/assets/textures/piraxTemp.png"
-                },
-                "Alias": "pirax",
-                "Shader": {
-                    "Alias": "Oyl Lighting",
-                    "Pixel": "../Engine/res/shaders/lighting.frag",
-                    "Vertex": "../Engine/res/shaders/lighting.vert"
-                },
-                "Specular": {
-                    "Alias": "Oyl White",
-                    "FilePath": "../Engine/res/textures/white.png"
-                }
+                "Alias": "pirax"
             },
             "Mesh": {
-                "Alias": "Pirax",
                 "FilePath": "res/assets/models/Pirax.obj"
             }
         },
         "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
             "Position": {
                 "X": 2.8527729511260986,
                 "Y": 0.3100000023841858,
                 "Z": 0.02576392889022827
             },
             "Rotation": {
-                "X": 0.0,
-                "Y": -0.0,
-                "Z": 0.0
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
             },
             "Scale": {
                 "X": 0.30000001192092896,
@@ -462,39 +385,32 @@
         }
     },
     "BlueGarbagePile0": {
+        "Parent": null,
         "Renderable": {
             "Enabled": true,
             "Material": {
-                "Albedo": {
-                    "Alias": "garbageTemp",
-                    "FilePath": "res/assets/textures/garbageTemp.png"
-                },
-                "Alias": "garbage",
-                "Shader": {
-                    "Alias": "Oyl Lighting",
-                    "Pixel": "../Engine/res/shaders/lighting.frag",
-                    "Vertex": "../Engine/res/shaders/lighting.vert"
-                },
-                "Specular": {
-                    "Alias": "Oyl White",
-                    "FilePath": "../Engine/res/textures/white.png"
-                }
+                "Alias": "garbage"
             },
             "Mesh": {
-                "Alias": "garbage",
                 "FilePath": "res/assets/models/garbage.obj"
             }
         },
         "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
             "Position": {
                 "X": -3.0,
                 "Y": 0.10000000149011612,
                 "Z": 0.0
             },
             "Rotation": {
-                "X": 0.0,
-                "Y": -0.0,
-                "Z": 0.0
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
             },
             "Scale": {
                 "X": 0.5,
@@ -504,39 +420,32 @@
         }
     },
     "BlueGarbagePile1": {
+        "Parent": null,
         "Renderable": {
             "Enabled": true,
             "Material": {
-                "Albedo": {
-                    "Alias": "garbageTemp",
-                    "FilePath": "res/assets/textures/garbageTemp.png"
-                },
-                "Alias": "garbage",
-                "Shader": {
-                    "Alias": "Oyl Lighting",
-                    "Pixel": "../Engine/res/shaders/lighting.frag",
-                    "Vertex": "../Engine/res/shaders/lighting.vert"
-                },
-                "Specular": {
-                    "Alias": "Oyl White",
-                    "FilePath": "../Engine/res/textures/white.png"
-                }
+                "Alias": "garbage"
             },
             "Mesh": {
-                "Alias": "garbage",
                 "FilePath": "res/assets/models/garbage.obj"
             }
         },
         "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
             "Position": {
                 "X": -8.921297073364258,
                 "Y": 0.10000000149011612,
                 "Z": 0.6169818639755249
             },
             "Rotation": {
-                "X": 0.0,
-                "Y": -0.0,
-                "Z": 0.0
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
             },
             "Scale": {
                 "X": 0.5,
@@ -546,39 +455,32 @@
         }
     },
     "BlueGarbagePile2": {
+        "Parent": null,
         "Renderable": {
             "Enabled": true,
             "Material": {
-                "Albedo": {
-                    "Alias": "garbageTemp",
-                    "FilePath": "res/assets/textures/garbageTemp.png"
-                },
-                "Alias": "garbage",
-                "Shader": {
-                    "Alias": "Oyl Lighting",
-                    "Pixel": "../Engine/res/shaders/lighting.frag",
-                    "Vertex": "../Engine/res/shaders/lighting.vert"
-                },
-                "Specular": {
-                    "Alias": "Oyl White",
-                    "FilePath": "../Engine/res/textures/white.png"
-                }
+                "Alias": "garbage"
             },
             "Mesh": {
-                "Alias": "garbage",
                 "FilePath": "res/assets/models/garbage.obj"
             }
         },
         "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
             "Position": {
                 "X": 5.464639663696289,
                 "Y": 0.10000000149011612,
                 "Z": -2.513417959213257
             },
             "Rotation": {
-                "X": 0.0,
-                "Y": -0.0,
-                "Z": 0.0
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
             },
             "Scale": {
                 "X": 0.5,
@@ -588,39 +490,32 @@
         }
     },
     "BlueGloopA0": {
+        "Parent": null,
         "Renderable": {
             "Enabled": true,
             "Material": {
-                "Albedo": {
-                    "Alias": "goopTemp",
-                    "FilePath": "res/assets/textures/goopTemp.png"
-                },
-                "Alias": "goop",
-                "Shader": {
-                    "Alias": "Oyl Lighting",
-                    "Pixel": "../Engine/res/shaders/lighting.frag",
-                    "Vertex": "../Engine/res/shaders/lighting.vert"
-                },
-                "Specular": {
-                    "Alias": "Oyl White",
-                    "FilePath": "../Engine/res/textures/white.png"
-                }
+                "Alias": "goop"
             },
             "Mesh": {
-                "Alias": "Gloop",
                 "FilePath": "res/assets/models/Gloop.obj"
             }
         },
         "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
             "Position": {
                 "X": 2.0733766555786133,
                 "Y": 0.27000001072883606,
                 "Z": 2.6188392639160156
             },
             "Rotation": {
-                "X": 0.0,
-                "Y": -0.0,
-                "Z": 0.0
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
             },
             "Scale": {
                 "X": 0.10000000149011612,
@@ -630,39 +525,32 @@
         }
     },
     "BlueGloopA1": {
+        "Parent": null,
         "Renderable": {
             "Enabled": true,
             "Material": {
-                "Albedo": {
-                    "Alias": "goopTemp",
-                    "FilePath": "res/assets/textures/goopTemp.png"
-                },
-                "Alias": "goop",
-                "Shader": {
-                    "Alias": "Oyl Lighting",
-                    "Pixel": "../Engine/res/shaders/lighting.frag",
-                    "Vertex": "../Engine/res/shaders/lighting.vert"
-                },
-                "Specular": {
-                    "Alias": "Oyl White",
-                    "FilePath": "../Engine/res/textures/white.png"
-                }
+                "Alias": "goop"
             },
             "Mesh": {
-                "Alias": "Gloop",
                 "FilePath": "res/assets/models/Gloop.obj"
             }
         },
         "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
             "Position": {
                 "X": 2.266162395477295,
                 "Y": 0.27000001072883606,
                 "Z": 2.324187755584717
             },
             "Rotation": {
-                "X": 0.0,
-                "Y": -0.0,
-                "Z": 0.0
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
             },
             "Scale": {
                 "X": 0.10000000149011612,
@@ -672,39 +560,32 @@
         }
     },
     "BlueGloopA2": {
+        "Parent": null,
         "Renderable": {
             "Enabled": true,
             "Material": {
-                "Albedo": {
-                    "Alias": "goopTemp",
-                    "FilePath": "res/assets/textures/goopTemp.png"
-                },
-                "Alias": "goop",
-                "Shader": {
-                    "Alias": "Oyl Lighting",
-                    "Pixel": "../Engine/res/shaders/lighting.frag",
-                    "Vertex": "../Engine/res/shaders/lighting.vert"
-                },
-                "Specular": {
-                    "Alias": "Oyl White",
-                    "FilePath": "../Engine/res/textures/white.png"
-                }
+                "Alias": "goop"
             },
             "Mesh": {
-                "Alias": "Gloop",
                 "FilePath": "res/assets/models/Gloop.obj"
             }
         },
         "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
             "Position": {
                 "X": 1.7939262390136719,
                 "Y": 0.27000001072883606,
                 "Z": 2.3463497161865234
             },
             "Rotation": {
-                "X": 0.0,
-                "Y": -0.0,
-                "Z": 0.0
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
             },
             "Scale": {
                 "X": 0.10000000149011612,
@@ -714,39 +595,32 @@
         }
     },
     "BlueMop": {
+        "Parent": null,
         "Renderable": {
             "Enabled": true,
             "Material": {
-                "Albedo": {
-                    "Alias": "mopTemp",
-                    "FilePath": "res/assets/textures/mopTemp.png"
-                },
-                "Alias": "mop",
-                "Shader": {
-                    "Alias": "Oyl Lighting",
-                    "Pixel": "../Engine/res/shaders/lighting.frag",
-                    "Vertex": "../Engine/res/shaders/lighting.vert"
-                },
-                "Specular": {
-                    "Alias": "tempSpec",
-                    "FilePath": "res/assets/textures/tempSpec.jpg"
-                }
+                "Alias": "mop"
             },
             "Mesh": {
-                "Alias": "mop",
                 "FilePath": "res/assets/models/mop.obj"
             }
         },
         "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
             "Position": {
                 "X": 2.634769916534424,
                 "Y": 0.20000000298023224,
                 "Z": -2.9898247718811035
             },
             "Rotation": {
-                "X": 0.0,
-                "Y": -0.0,
-                "Z": 0.0
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
             },
             "Scale": {
                 "X": 1.0,
@@ -756,16 +630,32 @@
         }
     },
     "Cannon Firing Message": {
+        "Parent": null,
+        "Renderable": {
+            "Enabled": true,
+            "Material": {
+                "Alias": null
+            },
+            "Mesh": {
+                "FilePath": null
+            }
+        },
         "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
             "Position": {
                 "X": -24.0,
                 "Y": -2.5,
                 "Z": 0.0
             },
             "Rotation": {
-                "X": 0.0,
-                "Y": -0.0,
-                "Z": 0.0
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
             },
             "Scale": {
                 "X": 1.0,
@@ -775,16 +665,32 @@
         }
     },
     "Cannonball Crate Message": {
+        "Parent": null,
+        "Renderable": {
+            "Enabled": true,
+            "Material": {
+                "Alias": null
+            },
+            "Mesh": {
+                "FilePath": null
+            }
+        },
         "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
             "Position": {
                 "X": -24.119998931884766,
                 "Y": -2.5,
                 "Z": 0.0
             },
             "Rotation": {
-                "X": 0.0,
-                "Y": -0.0,
-                "Z": 0.0
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
             },
             "Scale": {
                 "X": 2.0,
@@ -794,39 +700,32 @@
         }
     },
     "Character": {
+        "Parent": null,
         "Renderable": {
             "Enabled": true,
             "Material": {
-                "Albedo": {
-                    "Alias": "container2",
-                    "FilePath": "res/assets/textures/container2.jpg"
-                },
-                "Alias": "container",
-                "Shader": {
-                    "Alias": "oyl_lighting",
-                    "Pixel": "../Engine/res/shaders/lighting.frag",
-                    "Vertex": "../Engine/res/shaders/lighting.vert"
-                },
-                "Specular": {
-                    "Alias": "container2_specular",
-                    "FilePath": "res/assets/textures/container2_specular.jpg"
-                }
+                "Alias": "lamp"
             },
             "Mesh": {
-                "Alias": "character",
                 "FilePath": "res/assets/models/character.obj"
             }
         },
         "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
             "Position": {
                 "X": 10.0,
                 "Y": 6.0,
                 "Z": 0.0
             },
             "Rotation": {
-                "X": 0.0,
-                "Y": -0.0,
-                "Z": 0.0
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
             },
             "Scale": {
                 "X": 1.0,
@@ -836,16 +735,32 @@
         }
     },
     "Clean Garbage Message": {
+        "Parent": null,
+        "Renderable": {
+            "Enabled": true,
+            "Material": {
+                "Alias": null
+            },
+            "Mesh": {
+                "FilePath": null
+            }
+        },
         "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
             "Position": {
                 "X": -23.760000228881836,
                 "Y": -2.5,
                 "Z": 0.0
             },
             "Rotation": {
-                "X": 0.0,
-                "Y": -0.0,
-                "Z": 0.0
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
             },
             "Scale": {
                 "X": 1.0,
@@ -855,16 +770,32 @@
         }
     },
     "Cleaning Quicktime Event Background": {
+        "Parent": null,
+        "Renderable": {
+            "Enabled": true,
+            "Material": {
+                "Alias": null
+            },
+            "Mesh": {
+                "FilePath": null
+            }
+        },
         "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
             "Position": {
                 "X": -30.0,
                 "Y": 3.5,
                 "Z": 0.0
             },
             "Rotation": {
-                "X": 0.0,
-                "Y": -0.0,
-                "Z": 0.0
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
             },
             "Scale": {
                 "X": 2.0,
@@ -874,16 +805,32 @@
         }
     },
     "Cleaning Quicktime Event Indicator": {
+        "Parent": null,
+        "Renderable": {
+            "Enabled": true,
+            "Material": {
+                "Alias": null
+            },
+            "Mesh": {
+                "FilePath": null
+            }
+        },
         "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
             "Position": {
                 "X": -30.0,
                 "Y": 3.5999999046325684,
                 "Z": 0.0
             },
             "Rotation": {
-                "X": 0.0,
-                "Y": -0.0,
-                "Z": 0.0
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
             },
             "Scale": {
                 "X": 1.5,
@@ -893,16 +840,32 @@
         }
     },
     "Garbage Tick0": {
+        "Parent": null,
+        "Renderable": {
+            "Enabled": true,
+            "Material": {
+                "Alias": null
+            },
+            "Mesh": {
+                "FilePath": null
+            }
+        },
         "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
             "Position": {
                 "X": -100.0,
                 "Y": -100.0,
                 "Z": -200.0
             },
             "Rotation": {
-                "X": 0.0,
-                "Y": -0.0,
-                "Z": 0.0
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
             },
             "Scale": {
                 "X": 1.0,
@@ -912,16 +875,32 @@
         }
     },
     "Garbage Tick1": {
+        "Parent": null,
+        "Renderable": {
+            "Enabled": true,
+            "Material": {
+                "Alias": null
+            },
+            "Mesh": {
+                "FilePath": null
+            }
+        },
         "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
             "Position": {
                 "X": -100.0,
                 "Y": -100.0,
                 "Z": -200.0
             },
             "Rotation": {
-                "X": 0.0,
-                "Y": -0.0,
-                "Z": 0.0
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
             },
             "Scale": {
                 "X": 1.0,
@@ -931,16 +910,32 @@
         }
     },
     "Garbage Tick2": {
+        "Parent": null,
+        "Renderable": {
+            "Enabled": true,
+            "Material": {
+                "Alias": null
+            },
+            "Mesh": {
+                "FilePath": null
+            }
+        },
         "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
             "Position": {
                 "X": -100.0,
                 "Y": -100.0,
                 "Z": -200.0
             },
             "Rotation": {
-                "X": 0.0,
-                "Y": -0.0,
-                "Z": 0.0
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
             },
             "Scale": {
                 "X": 1.0,
@@ -950,16 +945,32 @@
         }
     },
     "Gui Thing": {
+        "Parent": null,
+        "Renderable": {
+            "Enabled": true,
+            "Material": {
+                "Alias": null
+            },
+            "Mesh": {
+                "FilePath": null
+            }
+        },
         "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
             "Position": {
                 "X": -5.079999923706055,
                 "Y": -2.0399999618530273,
                 "Z": 0.0
             },
             "Rotation": {
-                "X": 0.0,
-                "Y": -0.0,
-                "Z": 0.0
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
             },
             "Scale": {
                 "X": 5.0,
@@ -969,16 +980,32 @@
         }
     },
     "Invalid Reticle": {
+        "Parent": null,
+        "Renderable": {
+            "Enabled": true,
+            "Material": {
+                "Alias": null
+            },
+            "Mesh": {
+                "FilePath": null
+            }
+        },
         "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
             "Position": {
                 "X": -14.899999618530273,
                 "Y": 0.0,
                 "Z": 0.0
             },
             "Rotation": {
-                "X": 0.0,
-                "Y": -0.0,
-                "Z": 0.0
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
             },
             "Scale": {
                 "X": 0.5,
@@ -988,26 +1015,13 @@
         }
     },
     "Light 1": {
+        "Parent": null,
         "Renderable": {
             "Enabled": true,
             "Material": {
-                "Albedo": {
-                    "Alias": "lampTemp",
-                    "FilePath": "res/assets/textures/lampTemp.png"
-                },
-                "Alias": "lamp",
-                "Shader": {
-                    "Alias": "Oyl Lighting",
-                    "Pixel": "../Engine/res/shaders/lighting.frag",
-                    "Vertex": "../Engine/res/shaders/lighting.vert"
-                },
-                "Specular": {
-                    "Alias": "Oyl White",
-                    "FilePath": "../Engine/res/textures/white.png"
-                }
+                "Alias": "lamp"
             },
             "Mesh": {
-                "Alias": "lamp",
                 "FilePath": "res/assets/models/lamp.obj"
             }
         },
@@ -1023,9 +1037,10 @@
                 "Z": -1.8205928802490234
             },
             "Rotation": {
-                "X": 0.0,
-                "Y": -0.0,
-                "Z": 0.0
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
             },
             "Scale": {
                 "X": 0.3000001907348633,
@@ -1035,16 +1050,32 @@
         }
     },
     "Load Cannon Message": {
+        "Parent": null,
+        "Renderable": {
+            "Enabled": true,
+            "Material": {
+                "Alias": null
+            },
+            "Mesh": {
+                "FilePath": null
+            }
+        },
         "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
             "Position": {
                 "X": -21.100000381469727,
                 "Y": -2.5,
                 "Z": 0.0
             },
             "Rotation": {
-                "X": 0.0,
-                "Y": -0.0,
-                "Z": 0.0
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
             },
             "Scale": {
                 "X": 1.0,
@@ -1054,16 +1085,32 @@
         }
     },
     "Lose Screen": {
+        "Parent": null,
+        "Renderable": {
+            "Enabled": true,
+            "Material": {
+                "Alias": null
+            },
+            "Mesh": {
+                "FilePath": null
+            }
+        },
         "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
             "Position": {
                 "X": -100.0,
                 "Y": -100.0,
                 "Z": -200.0
             },
             "Rotation": {
-                "X": 0.0,
-                "Y": -0.0,
-                "Z": 0.0
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
             },
             "Scale": {
                 "X": 11.0,
@@ -1073,16 +1120,32 @@
         }
     },
     "Normal Reticle": {
+        "Parent": null,
+        "Renderable": {
+            "Enabled": true,
+            "Material": {
+                "Alias": null
+            },
+            "Mesh": {
+                "FilePath": null
+            }
+        },
         "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
             "Position": {
                 "X": -10.859999656677246,
                 "Y": 0.7199999690055847,
                 "Z": -2.0
             },
             "Rotation": {
-                "X": 0.0,
-                "Y": -0.0,
-                "Z": 0.0
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
             },
             "Scale": {
                 "X": 0.20000000298023224,
@@ -1092,16 +1155,32 @@
         }
     },
     "Pickup Cannonball Message": {
+        "Parent": null,
+        "Renderable": {
+            "Enabled": true,
+            "Material": {
+                "Alias": null
+            },
+            "Mesh": {
+                "FilePath": null
+            }
+        },
         "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
             "Position": {
                 "X": -20.84000015258789,
                 "Y": -2.5,
                 "Z": 0.0
             },
             "Rotation": {
-                "X": 0.0,
-                "Y": -0.0,
-                "Z": 0.0
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
             },
             "Scale": {
                 "X": 0.800000011920929,
@@ -1111,16 +1190,32 @@
         }
     },
     "Pickup Cleaning Solution Message": {
+        "Parent": null,
+        "Renderable": {
+            "Enabled": true,
+            "Material": {
+                "Alias": null
+            },
+            "Mesh": {
+                "FilePath": null
+            }
+        },
         "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
             "Position": {
                 "X": -27.0,
                 "Y": -2.5,
                 "Z": 0.0
             },
             "Rotation": {
-                "X": 0.0,
-                "Y": -0.0,
-                "Z": 0.0
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
             },
             "Scale": {
                 "X": 0.800000011920929,
@@ -1130,16 +1225,32 @@
         }
     },
     "Pickup Gloop Message": {
+        "Parent": null,
+        "Renderable": {
+            "Enabled": true,
+            "Material": {
+                "Alias": null
+            },
+            "Mesh": {
+                "FilePath": null
+            }
+        },
         "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
             "Position": {
                 "X": -27.0,
                 "Y": -2.5,
                 "Z": 0.0
             },
             "Rotation": {
-                "X": 0.0,
-                "Y": -0.0,
-                "Z": 0.0
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
             },
             "Scale": {
                 "X": 1.0,
@@ -1149,59 +1260,67 @@
         }
     },
     "Pickup Mop Message": {
+        "Parent": null,
+        "Renderable": {
+            "Enabled": true,
+            "Material": {
+                "Alias": null
+            },
+            "Mesh": {
+                "FilePath": null
+            }
+        },
         "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
             "Position": {
                 "X": -23.260000228881836,
                 "Y": -2.5,
                 "Z": 0.0
             },
             "Rotation": {
-                "qW": 0.0,
+                "qW": 1.0,
                 "qX": 0.0,
                 "qY": 0.0,
                 "qZ": 0.0
             },
             "Scale": {
-                "X": 0.0,
-                "Y": 0.0,
-                "Z": 0.0
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
             }
         }
     },
     "Plane": {
+        "Parent": null,
         "Renderable": {
             "Enabled": true,
             "Material": {
-                "Albedo": {
-                    "Alias": "woodPlanks",
-                    "FilePath": "res/assets/textures/woodPlanks.png"
-                },
-                "Alias": "planks",
-                "Shader": {
-                    "Alias": "Oyl Lighting",
-                    "Pixel": "../Engine/res/shaders/lighting.frag",
-                    "Vertex": "../Engine/res/shaders/lighting.vert"
-                },
-                "Specular": {
-                    "Alias": "Oyl White",
-                    "FilePath": "../Engine/res/textures/white.png"
-                }
+                "Alias": "container"
             },
             "Mesh": {
-                "Alias": "plane",
                 "FilePath": "res/assets/models/plane.obj"
             }
         },
         "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
             "Position": {
                 "X": 0.0,
                 "Y": 0.0,
                 "Z": 5.798562049865723
             },
             "Rotation": {
-                "X": 0.0,
-                "Y": -0.0,
-                "Z": 0.0
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
             },
             "Scale": {
                 "X": 2.5,
@@ -1211,26 +1330,14 @@
         }
     },
     "Player": {
+        "Parent": null,
         "Renderable": {
             "Enabled": true,
             "Material": {
-                "Albedo": {
-                    "Alias": "container2",
-                    "FilePath": "res/assets/textures/container2.jpg"
-                },
-                "Alias": "container",
-                "Shader": {
-                    "Alias": "oyl_lighting",
-                    "Pixel": "../Engine/res/shaders/lighting.frag",
-                    "Vertex": "../Engine/res/shaders/lighting.vert"
-                },
-                "Specular": {
-                    "Alias": "container2_specular",
-                    "FilePath": "res/assets/textures/container2_specular.jpg"
-                }
+                "Alias": "container"
             },
             "Mesh": {
-                "Filepath": "res/assets/models/cube.obj"
+                "FilePath": "res/assets/models/cube.obj"
             }
         },
         "Transform": {
@@ -1245,7 +1352,7 @@
                 "Z": 0.0
             },
             "Rotation": {
-                "qW": 0.0,
+                "qW": 1.0,
                 "qX": 0.0,
                 "qY": 0.0,
                 "qZ": 0.0
@@ -1261,6 +1368,15 @@
         "Parent": {
             "Name": "Player"
         },
+        "Renderable": {
+            "Enabled": true,
+            "Material": {
+                "Alias": null
+            },
+            "Mesh": {
+                "FilePath": null
+            }
+        },
         "Transform": {
             "Mirror": {
                 "X": false,
@@ -1273,9 +1389,10 @@
                 "Z": -0.46485698223114014
             },
             "Rotation": {
-                "X": 0.0,
-                "Y": -0.0,
-                "Z": 0.0
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
             },
             "Scale": {
                 "X": 0.9999999403953552,
@@ -1285,14 +1402,29 @@
         }
     },
     "Push Cannon Message": {
+        "Parent": null,
+        "Renderable": {
+            "Enabled": true,
+            "Material": {
+                "Alias": null
+            },
+            "Mesh": {
+                "FilePath": null
+            }
+        },
         "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
             "Position": {
                 "X": -24.0,
                 "Y": -2.5,
                 "Z": 0.0
             },
             "Rotation": {
-                "qW": 0.0,
+                "qW": 1.0,
                 "qX": 0.0,
                 "qY": 0.0,
                 "qZ": 0.0
@@ -1305,26 +1437,13 @@
         }
     },
     "RedCannon": {
+        "Parent": null,
         "Renderable": {
             "Enabled": true,
             "Material": {
-                "Albedo": {
-                    "Alias": "cannonTemp",
-                    "FilePath": "res/assets/textures/cannonTemp.png"
-                },
-                "Alias": "cannon",
-                "Shader": {
-                    "Alias": "Oyl Lighting",
-                    "Pixel": "../Engine/res/shaders/lighting.frag",
-                    "Vertex": "../Engine/res/shaders/lighting.vert"
-                },
-                "Specular": {
-                    "Alias": "tempSpec",
-                    "FilePath": "res/assets/textures/tempSpec.jpg"
-                }
+                "Alias": "cannon"
             },
             "Mesh": {
-                "Alias": "cannon",
                 "FilePath": "res/assets/models/cannon.obj"
             }
         },
@@ -1340,9 +1459,10 @@
                 "Z": 15.0
             },
             "Rotation": {
-                "X": 0.0,
-                "Y": -0.0,
-                "Z": 0.0
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
             },
             "Scale": {
                 "X": 0.699999988079071,
@@ -1352,26 +1472,13 @@
         }
     },
     "RedCannonball0": {
+        "Parent": null,
         "Renderable": {
             "Enabled": true,
             "Material": {
-                "Albedo": {
-                    "Alias": "cannonballTemp",
-                    "FilePath": "res/assets/textures/cannonballTemp.png"
-                },
-                "Alias": "cannonball",
-                "Shader": {
-                    "Alias": "Oyl Lighting",
-                    "Pixel": "../Engine/res/shaders/lighting.frag",
-                    "Vertex": "../Engine/res/shaders/lighting.vert"
-                },
-                "Specular": {
-                    "Alias": "Oyl White",
-                    "FilePath": "../Engine/res/textures/white.png"
-                }
+                "Alias": "cannonball"
             },
             "Mesh": {
-                "Alias": "sphere",
                 "FilePath": "res/assets/models/sphere.obj"
             }
         },
@@ -1387,7 +1494,7 @@
                 "Z": 1000.0
             },
             "Rotation": {
-                "qW": 0.0,
+                "qW": 1.0,
                 "qX": 0.0,
                 "qY": 0.0,
                 "qZ": 0.0
@@ -1400,26 +1507,13 @@
         }
     },
     "RedCannonball1": {
+        "Parent": null,
         "Renderable": {
             "Enabled": true,
             "Material": {
-                "Albedo": {
-                    "Alias": "cannonballTemp",
-                    "FilePath": "res/assets/textures/cannonballTemp.png"
-                },
-                "Alias": "cannonball",
-                "Shader": {
-                    "Alias": "Oyl Lighting",
-                    "Pixel": "../Engine/res/shaders/lighting.frag",
-                    "Vertex": "../Engine/res/shaders/lighting.vert"
-                },
-                "Specular": {
-                    "Alias": "Oyl White",
-                    "FilePath": "../Engine/res/textures/white.png"
-                }
+                "Alias": "cannonball"
             },
             "Mesh": {
-                "Alias": "sphere",
                 "FilePath": "res/assets/models/sphere.obj"
             }
         },
@@ -1435,9 +1529,10 @@
                 "Z": 1000.0
             },
             "Rotation": {
-                "X": 0.0,
-                "Y": -0.0,
-                "Z": 0.0
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
             },
             "Scale": {
                 "X": 0.5,
@@ -1447,33 +1542,14 @@
         }
     },
     "RedCannonball2": {
+        "Parent": null,
         "Renderable": {
             "Enabled": true,
             "Material": {
-                "Albedo": {
-                    "Alias": "cannonballTemp",
-                    "FilePath": "res/assets/textures/cannonballTemp.png"
-                },
-                "Alias": "cannonball",
-                "Shader": {
-                    "Alias": "Oyl Lighting",
-                    "Pixel": "../Engine/res/shaders/lighting.frag",
-                    "Vertex": "../Engine/res/shaders/lighting.vert"
-                },
-                "Specular": {
-                    "Alias": "Oyl White",
-                    "FilePath": "../Engine/res/textures/white.png"
-                }
+                "Alias": "cannonball"
             },
             "Mesh": {
-                "Alias": "sphere",
                 "FilePath": "res/assets/models/sphere.obj"
-            }
-        },
-        "Renderable": {
-            "Enabled": true,
-            "Mesh": {
-                "Filepath": null
             }
         },
         "Transform": {
@@ -1488,9 +1564,10 @@
                 "Z": 1000.0
             },
             "Rotation": {
-                "X": 0.0,
-                "Y": -0.0,
-                "Z": 0.0
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
             },
             "Scale": {
                 "X": 0.5,
@@ -1500,26 +1577,13 @@
         }
     },
     "RedCannonball3": {
+        "Parent": null,
         "Renderable": {
             "Enabled": true,
             "Material": {
-                "Albedo": {
-                    "Alias": "cannonballTemp",
-                    "FilePath": "res/assets/textures/cannonballTemp.png"
-                },
-                "Alias": "cannonball",
-                "Shader": {
-                    "Alias": "Oyl Lighting",
-                    "Pixel": "../Engine/res/shaders/lighting.frag",
-                    "Vertex": "../Engine/res/shaders/lighting.vert"
-                },
-                "Specular": {
-                    "Alias": "Oyl White",
-                    "FilePath": "../Engine/res/textures/white.png"
-                }
+                "Alias": "cannonball"
             },
             "Mesh": {
-                "Alias": "sphere",
                 "FilePath": "res/assets/models/sphere.obj"
             }
         },
@@ -1535,7 +1599,7 @@
                 "Z": 1000.0
             },
             "Rotation": {
-                "qW": 0.0,
+                "qW": 1.0,
                 "qX": 0.0,
                 "qY": 0.0,
                 "qZ": 0.0
@@ -1548,26 +1612,13 @@
         }
     },
     "RedCannonball4": {
+        "Parent": null,
         "Renderable": {
             "Enabled": true,
             "Material": {
-                "Albedo": {
-                    "Alias": "cannonballTemp",
-                    "FilePath": "res/assets/textures/cannonballTemp.png"
-                },
-                "Alias": "cannonball",
-                "Shader": {
-                    "Alias": "Oyl Lighting",
-                    "Pixel": "../Engine/res/shaders/lighting.frag",
-                    "Vertex": "../Engine/res/shaders/lighting.vert"
-                },
-                "Specular": {
-                    "Alias": "Oyl White",
-                    "FilePath": "../Engine/res/textures/white.png"
-                }
+                "Alias": "cannonball"
             },
             "Mesh": {
-                "Alias": "sphere",
                 "FilePath": "res/assets/models/sphere.obj"
             }
         },
@@ -1583,7 +1634,7 @@
                 "Z": 1000.0
             },
             "Rotation": {
-                "qW": 0.0,
+                "qW": 1.0,
                 "qX": 0.0,
                 "qY": 0.0,
                 "qZ": 0.0
@@ -1596,26 +1647,13 @@
         }
     },
     "RedCannonball5": {
+        "Parent": null,
         "Renderable": {
             "Enabled": true,
             "Material": {
-                "Albedo": {
-                    "Alias": "cannonballTemp",
-                    "FilePath": "res/assets/textures/cannonballTemp.png"
-                },
-                "Alias": "cannonball",
-                "Shader": {
-                    "Alias": "Oyl Lighting",
-                    "Pixel": "../Engine/res/shaders/lighting.frag",
-                    "Vertex": "../Engine/res/shaders/lighting.vert"
-                },
-                "Specular": {
-                    "Alias": "Oyl White",
-                    "FilePath": "../Engine/res/textures/white.png"
-                }
+                "Alias": "cannonball"
             },
             "Mesh": {
-                "Alias": "sphere",
                 "FilePath": "res/assets/models/sphere.obj"
             }
         },
@@ -1631,7 +1669,7 @@
                 "Z": 1000.0
             },
             "Rotation": {
-                "qW": 0.0,
+                "qW": 1.0,
                 "qX": 0.0,
                 "qY": 0.0,
                 "qZ": 0.0
@@ -1644,26 +1682,13 @@
         }
     },
     "RedCannonballCrate": {
+        "Parent": null,
         "Renderable": {
             "Enabled": true,
             "Material": {
-                "Albedo": {
-                    "Alias": "binTemp",
-                    "FilePath": "res/assets/textures/binTemp.png"
-                },
-                "Alias": "crate",
-                "Shader": {
-                    "Alias": "Oyl Lighting",
-                    "Pixel": "../Engine/res/shaders/lighting.frag",
-                    "Vertex": "../Engine/res/shaders/lighting.vert"
-                },
-                "Specular": {
-                    "Alias": "tempSpec",
-                    "FilePath": "res/assets/textures/tempSpec.jpg"
-                }
+                "Alias": "crate"
             },
             "Mesh": {
-                "Alias": "crateTemp",
                 "FilePath": "res/assets/models/crateTemp.obj"
             }
         },
@@ -1679,7 +1704,7 @@
                 "Z": 11.480600357055664
             },
             "Rotation": {
-                "qW": 0.0,
+                "qW": 1.0,
                 "qX": 0.0,
                 "qY": 0.0,
                 "qZ": 0.0
@@ -1692,26 +1717,13 @@
         }
     },
     "RedCleaningSolution0": {
+        "Parent": null,
         "Renderable": {
             "Enabled": true,
             "Material": {
-                "Albedo": {
-                    "Alias": "piraxTemp",
-                    "FilePath": "res/assets/textures/piraxTemp.png"
-                },
-                "Alias": "pirax",
-                "Shader": {
-                    "Alias": "Oyl Lighting",
-                    "Pixel": "../Engine/res/shaders/lighting.frag",
-                    "Vertex": "../Engine/res/shaders/lighting.vert"
-                },
-                "Specular": {
-                    "Alias": "Oyl White",
-                    "FilePath": "../Engine/res/textures/white.png"
-                }
+                "Alias": "pirax"
             },
             "Mesh": {
-                "Alias": "Pirax",
                 "FilePath": "res/assets/models/Pirax.obj"
             }
         },
@@ -1727,7 +1739,7 @@
                 "Z": 9.316363334655762
             },
             "Rotation": {
-                "qW": 0.0,
+                "qW": 1.0,
                 "qX": 0.0,
                 "qY": 0.0,
                 "qZ": 0.0
@@ -1740,26 +1752,13 @@
         }
     },
     "RedCleaningSolution1": {
+        "Parent": null,
         "Renderable": {
             "Enabled": true,
             "Material": {
-                "Albedo": {
-                    "Alias": "piraxTemp",
-                    "FilePath": "res/assets/textures/piraxTemp.png"
-                },
-                "Alias": "pirax",
-                "Shader": {
-                    "Alias": "Oyl Lighting",
-                    "Pixel": "../Engine/res/shaders/lighting.frag",
-                    "Vertex": "../Engine/res/shaders/lighting.vert"
-                },
-                "Specular": {
-                    "Alias": "Oyl White",
-                    "FilePath": "../Engine/res/textures/white.png"
-                }
+                "Alias": "pirax"
             },
             "Mesh": {
-                "Alias": "Pirax",
                 "FilePath": "res/assets/models/Pirax.obj"
             }
         },
@@ -1775,7 +1774,7 @@
                 "Z": 9.853049278259277
             },
             "Rotation": {
-                "qW": 0.0,
+                "qW": 1.0,
                 "qX": 0.0,
                 "qY": 0.0,
                 "qZ": 0.0
@@ -1788,26 +1787,13 @@
         }
     },
     "RedCleaningSolution2": {
+        "Parent": null,
         "Renderable": {
             "Enabled": true,
             "Material": {
-                "Albedo": {
-                    "Alias": "piraxTemp",
-                    "FilePath": "res/assets/textures/piraxTemp.png"
-                },
-                "Alias": "pirax",
-                "Shader": {
-                    "Alias": "Oyl Lighting",
-                    "Pixel": "../Engine/res/shaders/lighting.frag",
-                    "Vertex": "../Engine/res/shaders/lighting.vert"
-                },
-                "Specular": {
-                    "Alias": "Oyl White",
-                    "FilePath": "../Engine/res/textures/white.png"
-                }
+                "Alias": "pirax"
             },
             "Mesh": {
-                "Alias": "Pirax",
                 "FilePath": "res/assets/models/Pirax.obj"
             }
         },
@@ -1823,7 +1809,7 @@
                 "Z": 9.964077949523926
             },
             "Rotation": {
-                "qW": 0.0,
+                "qW": 1.0,
                 "qX": 0.0,
                 "qY": 0.0,
                 "qZ": 0.0
@@ -1836,26 +1822,13 @@
         }
     },
     "RedGarbagePile0": {
+        "Parent": null,
         "Renderable": {
             "Enabled": true,
             "Material": {
-                "Albedo": {
-                    "Alias": "garbageTemp",
-                    "FilePath": "res/assets/textures/garbageTemp.png"
-                },
-                "Alias": "garbage",
-                "Shader": {
-                    "Alias": "Oyl Lighting",
-                    "Pixel": "../Engine/res/shaders/lighting.frag",
-                    "Vertex": "../Engine/res/shaders/lighting.vert"
-                },
-                "Specular": {
-                    "Alias": "Oyl White",
-                    "FilePath": "../Engine/res/textures/white.png"
-                }
+                "Alias": "garbage"
             },
             "Mesh": {
-                "Alias": "garbage",
                 "FilePath": "res/assets/models/garbage.obj"
             }
         },
@@ -1871,7 +1844,7 @@
                 "Z": 8.795110702514648
             },
             "Rotation": {
-                "qW": 0.0,
+                "qW": 1.0,
                 "qX": 0.0,
                 "qY": 0.0,
                 "qZ": 0.0
@@ -1884,26 +1857,13 @@
         }
     },
     "RedGarbagePile1": {
+        "Parent": null,
         "Renderable": {
             "Enabled": true,
             "Material": {
-                "Albedo": {
-                    "Alias": "garbageTemp",
-                    "FilePath": "res/assets/textures/garbageTemp.png"
-                },
-                "Alias": "garbage",
-                "Shader": {
-                    "Alias": "Oyl Lighting",
-                    "Pixel": "../Engine/res/shaders/lighting.frag",
-                    "Vertex": "../Engine/res/shaders/lighting.vert"
-                },
-                "Specular": {
-                    "Alias": "Oyl White",
-                    "FilePath": "../Engine/res/textures/white.png"
-                }
+                "Alias": "garbage"
             },
             "Mesh": {
-                "Alias": "garbage",
                 "FilePath": "res/assets/models/garbage.obj"
             }
         },
@@ -1919,7 +1879,7 @@
                 "Z": 7.538014888763428
             },
             "Rotation": {
-                "qW": 0.0,
+                "qW": 1.0,
                 "qX": 0.0,
                 "qY": 0.0,
                 "qZ": 0.0
@@ -1932,26 +1892,13 @@
         }
     },
     "RedGarbagePile2": {
+        "Parent": null,
         "Renderable": {
             "Enabled": true,
             "Material": {
-                "Albedo": {
-                    "Alias": "garbageTemp",
-                    "FilePath": "res/assets/textures/garbageTemp.png"
-                },
-                "Alias": "garbage",
-                "Shader": {
-                    "Alias": "Oyl Lighting",
-                    "Pixel": "../Engine/res/shaders/lighting.frag",
-                    "Vertex": "../Engine/res/shaders/lighting.vert"
-                },
-                "Specular": {
-                    "Alias": "Oyl White",
-                    "FilePath": "../Engine/res/textures/white.png"
-                }
+                "Alias": "garbage"
             },
             "Mesh": {
-                "Alias": "garbage",
                 "FilePath": "res/assets/models/garbage.obj"
             }
         },
@@ -1967,7 +1914,7 @@
                 "Z": 8.08315658569336
             },
             "Rotation": {
-                "qW": 0.0,
+                "qW": 1.0,
                 "qX": 0.0,
                 "qY": 0.0,
                 "qZ": 0.0
@@ -1980,26 +1927,13 @@
         }
     },
     "RedGloopA0": {
+        "Parent": null,
         "Renderable": {
             "Enabled": true,
             "Material": {
-                "Albedo": {
-                    "Alias": "goopTemp",
-                    "FilePath": "res/assets/textures/goopTemp.png"
-                },
-                "Alias": "goop",
-                "Shader": {
-                    "Alias": "Oyl Lighting",
-                    "Pixel": "../Engine/res/shaders/lighting.frag",
-                    "Vertex": "../Engine/res/shaders/lighting.vert"
-                },
-                "Specular": {
-                    "Alias": "Oyl White",
-                    "FilePath": "../Engine/res/textures/white.png"
-                }
+                "Alias": "goop"
             },
             "Mesh": {
-                "Alias": "Gloop",
                 "FilePath": "res/assets/models/Gloop.obj"
             }
         },
@@ -2015,7 +1949,7 @@
                 "Z": 7.053325176239014
             },
             "Rotation": {
-                "qW": 0.0,
+                "qW": 1.0,
                 "qX": 0.0,
                 "qY": 0.0,
                 "qZ": 0.0
@@ -2028,26 +1962,13 @@
         }
     },
     "RedGloopA1": {
+        "Parent": null,
         "Renderable": {
             "Enabled": true,
             "Material": {
-                "Albedo": {
-                    "Alias": "goopTemp",
-                    "FilePath": "res/assets/textures/goopTemp.png"
-                },
-                "Alias": "goop",
-                "Shader": {
-                    "Alias": "Oyl Lighting",
-                    "Pixel": "../Engine/res/shaders/lighting.frag",
-                    "Vertex": "../Engine/res/shaders/lighting.vert"
-                },
-                "Specular": {
-                    "Alias": "Oyl White",
-                    "FilePath": "../Engine/res/textures/white.png"
-                }
+                "Alias": "goop"
             },
             "Mesh": {
-                "Alias": "Gloop",
                 "FilePath": "res/assets/models/Gloop.obj"
             }
         },
@@ -2063,7 +1984,7 @@
                 "Z": 6.682285785675049
             },
             "Rotation": {
-                "qW": 0.0,
+                "qW": 1.0,
                 "qX": 0.0,
                 "qY": 0.0,
                 "qZ": 0.0
@@ -2076,26 +1997,13 @@
         }
     },
     "RedGloopA2": {
+        "Parent": null,
         "Renderable": {
             "Enabled": true,
             "Material": {
-                "Albedo": {
-                    "Alias": "goopTemp",
-                    "FilePath": "res/assets/textures/goopTemp.png"
-                },
-                "Alias": "goop",
-                "Shader": {
-                    "Alias": "Oyl Lighting",
-                    "Pixel": "../Engine/res/shaders/lighting.frag",
-                    "Vertex": "../Engine/res/shaders/lighting.vert"
-                },
-                "Specular": {
-                    "Alias": "Oyl White",
-                    "FilePath": "../Engine/res/textures/white.png"
-                }
+                "Alias": "goop"
             },
             "Mesh": {
-                "Alias": "Gloop",
                 "FilePath": "res/assets/models/Gloop.obj"
             }
         },
@@ -2111,7 +2019,7 @@
                 "Z": 6.718793869018555
             },
             "Rotation": {
-                "qW": 0.0,
+                "qW": 1.0,
                 "qX": 0.0,
                 "qY": 0.0,
                 "qZ": 0.0
@@ -2124,26 +2032,13 @@
         }
     },
     "RedMop": {
+        "Parent": null,
         "Renderable": {
             "Enabled": true,
             "Material": {
-                "Albedo": {
-                    "Alias": "mopTemp",
-                    "FilePath": "res/assets/textures/mopTemp.png"
-                },
-                "Alias": "mop",
-                "Shader": {
-                    "Alias": "Oyl Lighting",
-                    "Pixel": "../Engine/res/shaders/lighting.frag",
-                    "Vertex": "../Engine/res/shaders/lighting.vert"
-                },
-                "Specular": {
-                    "Alias": "tempSpec",
-                    "FilePath": "res/assets/textures/tempSpec.jpg"
-                }
+                "Alias": "mop"
             },
             "Mesh": {
-                "Alias": "mop",
                 "FilePath": "res/assets/models/mop.obj"
             }
         },
@@ -2159,7 +2054,7 @@
                 "Z": 8.31336784362793
             },
             "Rotation": {
-                "qW": 0.0,
+                "qW": 1.0,
                 "qX": 0.0,
                 "qY": 0.0,
                 "qZ": 0.0
@@ -2176,23 +2071,10 @@
         "Renderable": {
             "Enabled": true,
             "Material": {
-                "Albedo": {
-                    "Alias": "container2",
-                    "FilePath": "res/assets/textures/container2.jpg"
-                },
-                "Alias": "container",
-                "Shader": {
-                    "Alias": "oyl_lighting",
-                    "Pixel": "../Engine/res/shaders/lighting.frag",
-                    "Vertex": "../Engine/res/shaders/lighting.vert"
-                },
-                "Specular": {
-                    "Alias": "container2_specular",
-                    "FilePath": "res/assets/textures/container2_specular.jpg"
-                }
+                "Alias": "container"
             },
             "Mesh": {
-                "Filepath": "res/assets/models/sphere.obj"
+                "FilePath": "res/assets/models/sphere.obj"
             }
         },
         "Transform": {
@@ -2207,7 +2089,7 @@
                 "Z": -2.415987253189087
             },
             "Rotation": {
-                "qW": 0.0,
+                "qW": 1.0,
                 "qX": 0.0,
                 "qY": 0.0,
                 "qZ": 0.0
@@ -2224,23 +2106,10 @@
         "Renderable": {
             "Enabled": true,
             "Material": {
-                "Albedo": {
-                    "Alias": "container2",
-                    "FilePath": "res/assets/textures/container2.jpg"
-                },
-                "Alias": "container",
-                "Shader": {
-                    "Alias": "oyl_lighting",
-                    "Pixel": "../Engine/res/shaders/lighting.frag",
-                    "Vertex": "../Engine/res/shaders/lighting.vert"
-                },
-                "Specular": {
-                    "Alias": "container2_specular",
-                    "FilePath": "res/assets/textures/container2_specular.jpg"
-                }
+                "Alias": "container"
             },
             "Mesh": {
-                "Filepath": "res/assets/models/sphere.obj"
+                "FilePath": "res/assets/models/sphere.obj"
             }
         },
         "Transform": {
@@ -2255,7 +2124,7 @@
                 "Z": -3.4646668434143066
             },
             "Rotation": {
-                "qW": 0.0,
+                "qW": 1.0,
                 "qX": 0.0,
                 "qY": 0.0,
                 "qZ": 0.0
@@ -2268,16 +2137,32 @@
         }
     },
     "UI TEst": {
+        "Parent": null,
+        "Renderable": {
+            "Enabled": true,
+            "Material": {
+                "Alias": null
+            },
+            "Mesh": {
+                "FilePath": null
+            }
+        },
         "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
             "Position": {
                 "X": -3.0,
                 "Y": -1.0,
                 "Z": -2.0
             },
             "Rotation": {
-                "X": 0.0,
-                "Y": -0.0,
-                "Z": 0.0
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
             },
             "Scale": {
                 "X": 2.819999933242798,
@@ -2287,16 +2172,32 @@
         }
     },
     "Use Gloop Message": {
+        "Parent": null,
+        "Renderable": {
+            "Enabled": true,
+            "Material": {
+                "Alias": null
+            },
+            "Mesh": {
+                "FilePath": null
+            }
+        },
         "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
             "Position": {
                 "X": -28.0,
                 "Y": -2.5,
                 "Z": 0.0
             },
             "Rotation": {
-                "X": 0.0,
-                "Y": -0.0,
-                "Z": 0.0
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
             },
             "Scale": {
                 "X": 1.0,
@@ -2306,16 +2207,32 @@
         }
     },
     "Win Screen": {
+        "Parent": null,
+        "Renderable": {
+            "Enabled": true,
+            "Material": {
+                "Alias": null
+            },
+            "Mesh": {
+                "FilePath": null
+            }
+        },
         "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
             "Position": {
                 "X": -100.0,
                 "Y": -100.0,
                 "Z": -200.0
             },
             "Rotation": {
-                "X": 0.0,
-                "Y": -0.0,
-                "Z": 0.0
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
             },
             "Scale": {
                 "X": 10.0,

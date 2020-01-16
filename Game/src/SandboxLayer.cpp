@@ -8,7 +8,8 @@ void SandboxLayer::onEnter()
 {
     auto mesh = Mesh::cache("res/assets/models/cube.obj");
     
-    auto& mat = Material::cache(Shader::get(LIGHTING_SHADER_ALIAS), "container");
+    auto& mat = Material::cache(Material::create(), "container");
+	mat->shader = Shader::get(LIGHTING_SHADER_ALIAS);
     mat->albedoMap   = Texture2D::cache("res/assets/textures/container2.jpg");
     mat->specularMap = Texture2D::cache("res/assets/textures/container2_specular.jpg");
 
@@ -64,36 +65,54 @@ void SandboxLayer::onEnter()
 			mr.mesh = Mesh::cache("res/assets/models/cannon.obj");
 
 			//TEMP MATERIAL INIT LOCATION UNTIL SYSTEM OVERHAUL
-			mr.material = Material::cache(Shader::get(LIGHTING_SHADER_ALIAS), "planks");
+			mr.material = Material::cache(Material::create(), "planks");
+			mr.material->shader = Shader::get(LIGHTING_SHADER_ALIAS);
 			mr.material->albedoMap = Texture2D::cache("res/assets/textures/woodPlanks.png");
 			mr.material->specularMap = Texture2D::cache("res/assets/textures/tempSpec.jpg");
 
-			mr.material = Material::cache(Shader::get(LIGHTING_SHADER_ALIAS), "cannonball");
+			mr.material = Material::cache(Material::create(), "cannonball");
+			mr.material->shader = Shader::get(LIGHTING_SHADER_ALIAS);
 			mr.material->albedoMap = Texture2D::cache("res/assets/textures/cannonballTemp.png");
+			mr.material->specularMap = Material::get("planks")->specularMap;
 
-			mr.material = Material::cache(Shader::get(LIGHTING_SHADER_ALIAS), "goop");
+			mr.material = Material::cache(Material::create(), "goop");
+			mr.material->shader = Shader::get(LIGHTING_SHADER_ALIAS);
 			mr.material->albedoMap = Texture2D::cache("res/assets/textures/goopTemp.png");
+			mr.material->specularMap = Material::get("planks")->specularMap;
 
-			mr.material = Material::cache(Shader::get(LIGHTING_SHADER_ALIAS), "pirax");
+			mr.material = Material::cache(Material::create(), "pirax");
+			mr.material->shader = Shader::get(LIGHTING_SHADER_ALIAS);
 			mr.material->albedoMap = Texture2D::cache("res/assets/textures/piraxTemp.png");
+			mr.material->specularMap = Material::get("planks")->specularMap;
 
-			mr.material = Material::cache(Shader::get(LIGHTING_SHADER_ALIAS), "garbage");
+			mr.material = Material::cache(Material::create(), "garbage");
+			mr.material->shader = Shader::get(LIGHTING_SHADER_ALIAS);
 			mr.material->albedoMap = Texture2D::cache("res/assets/textures/garbageTemp.png");
+			mr.material->specularMap = Material::get("planks")->specularMap;
 
-			mr.material = Material::cache(Shader::get(LIGHTING_SHADER_ALIAS), "crate");
+			mr.material = Material::cache(Material::create(), "crate");
+			mr.material->shader = Shader::get(LIGHTING_SHADER_ALIAS);
 			mr.material->albedoMap = Texture2D::cache("res/assets/textures/binTemp.png");
+			mr.material->specularMap = Material::get("planks")->specularMap;
 
-			mr.material = Material::cache(Shader::get(LIGHTING_SHADER_ALIAS), "mop");
+			mr.material = Material::cache(Material::create(), "mop");
+			mr.material->shader = Shader::get(LIGHTING_SHADER_ALIAS);
 			mr.material->albedoMap = Texture2D::cache("res/assets/textures/mopTemp.png");
+			mr.material->specularMap = Material::get("planks")->specularMap;
 
-			mr.material = Material::cache(Shader::get(LIGHTING_SHADER_ALIAS), "cannon");
+			mr.material = Material::cache(Material::create(), "cannon");
+			mr.material->shader = Shader::get(LIGHTING_SHADER_ALIAS);
 			mr.material->albedoMap = Texture2D::cache("res/assets/textures/cannonTemp.png");
+			mr.material->specularMap = Material::get("planks")->specularMap;
 
-			mr.material = Material::cache(Shader::get(LIGHTING_SHADER_ALIAS), "lamp");
+			mr.material = Material::cache((Material::create()), "lamp");
+			mr.material->shader = Shader::get(LIGHTING_SHADER_ALIAS);
 			mr.material->albedoMap = Texture2D::cache("res/assets/textures/lampTemp.png");
+			mr.material->specularMap = Material::get("planks")->specularMap;
 
 			//CANNON
 			entt::entity cannonEntity = registry->create();
+			mr.material = Material::get("cannon");
 
 			component::Transform cannonTransform;
 			cannonTransform.setPosition(glm::vec3(0.0f));
@@ -118,6 +137,7 @@ void SandboxLayer::onEnter()
 		{
 			//GARBAGE PILES
 			mr.mesh = Mesh::cache("res/assets/models/garbage.obj");
+			mr.material = Material::get("garbage");
 			for (int i = 0; i < 3; i++)
 			{
 				entt::entity garbagePileEntity = registry->create();
@@ -147,6 +167,7 @@ void SandboxLayer::onEnter()
 		{
 			//CANNONBALLS
 			mr.mesh = Mesh::cache("res/assets/models/sphere.obj");
+			mr.material = Material::get("cannonball");
 			for (int i = 0; i < 6; i++)
 			{
 				entt::entity cannonballEntity = registry->create();
@@ -179,6 +200,7 @@ void SandboxLayer::onEnter()
 
         {
 			mr.mesh = Mesh::cache("res/assets/models/mop.obj");
+			mr.material = Material::get("mop");
 			//MOP
 			entt::entity mopEntity = registry->create();
 
@@ -210,6 +232,7 @@ void SandboxLayer::onEnter()
 
 		{
 			mr.mesh = Mesh::cache("res/assets/models/Pirax.obj");
+			mr.material = Material::get("pirax");
 			//CLEANING SOLUTION
 			for (int i = 0; i < 3; i++)
 			{
@@ -241,6 +264,7 @@ void SandboxLayer::onEnter()
 
 		{
 			mr.mesh = Mesh::cache("res/assets/models/Gloop.obj");
+			mr.material = Material::get("goop");
 			//GLOOP
 			for (int i = 0; i < 3; i++)
 			{
@@ -272,6 +296,7 @@ void SandboxLayer::onEnter()
 
 		{
 			mr.mesh = Mesh::cache("res/assets/models/crateTemp.obj");
+			mr.material = Material::get("planks");
 			//CANNONBALL CRATE
 			entt::entity cannonballCrateEntity = registry->create();
 
@@ -303,11 +328,11 @@ void SandboxLayer::onEnter()
 		///////////////////// RED TEAM //////////////////////
 		{
 			//CANNON
+			mr.material = Material::get("cannon");
 			entt::entity cannonEntity = registry->create();
 
 			component::Transform cannonTransform;
 			cannonTransform.setPosition(glm::vec3(0.0f));
-			cannonTransform.setRotationEulerY(180.0f);
 			registry->assign<component::Transform>(cannonEntity, cannonTransform);
 
 			auto& cannon = registry->assign<Cannon>(cannonEntity);
@@ -328,6 +353,8 @@ void SandboxLayer::onEnter()
 
 		{
 			//GARBAGE PILES
+			mr.material = Material::get("garbage");
+
 			for (int i = 0; i < 3; i++)
 			{
 				entt::entity garbagePileEntity = registry->create();
@@ -357,6 +384,7 @@ void SandboxLayer::onEnter()
 		{
 			//CANNONBALLS
 			mr.mesh = Mesh::cache("res/assets/models/sphere.obj");
+			mr.material = Material::get("cannonball");
 			for (int i = 0; i < 6; i++)
 			{
 				entt::entity cannonballEntity = registry->create();
@@ -389,6 +417,9 @@ void SandboxLayer::onEnter()
 
 		{
 			//MOP
+			mr.mesh = Mesh::get("mop");
+			mr.material = Material::get("mop");
+
 			entt::entity mopEntity = registry->create();
 
 			component::Transform mopTransform;
@@ -419,6 +450,7 @@ void SandboxLayer::onEnter()
 
 		{
 			//CLEANING SOLUTION
+			mr.material = Material::get("pirax");
 			for (int i = 0; i < 3; i++)
 			{
 				entt::entity cleaningSolutionEntity = registry->create();
@@ -448,6 +480,7 @@ void SandboxLayer::onEnter()
 
 		{
 			//GLOOP
+			mr.material = Material::get("goop");
 			for (int i = 0; i < 3; i++)
 			{
 				entt::entity gloopEntity = registry->create();
@@ -479,6 +512,8 @@ void SandboxLayer::onEnter()
 
 		{
 			//CANNONBALL CRATE
+			mr.material = Material::get("crate");
+
 			entt::entity cannonballCrateEntity = registry->create();
 
 			component::Transform cannonballCrateTransform;
@@ -507,7 +542,10 @@ void SandboxLayer::onEnter()
 		/////////////////////////////////////////////////////
 
 		{
+			//LAMP
 			mr.mesh = Mesh::cache("res/assets/models/lamp.obj");
+			mr.material = Material::get("lamp");
+
 			component::Collidable boxCollider;
 			auto& shi = boxCollider.pushShape(ColliderType::Box);
 			shi.box.setSize({ 1.0f, 1.0f, 1.0f });
@@ -525,6 +563,27 @@ void SandboxLayer::onEnter()
 
 			auto& so3 = registry->assign<component::EntityInfo>(e2);
 			so3.name = "Light 1";
+		}
+
+		{
+			//BOAT
+			entt::entity boatDeckMiddleEntity = registry->create();
+			mr.material = Material::get("planks");
+
+			component::Transform boatMiddleDeckTransform;
+			boatMiddleDeckTransform.setPosition(glm::vec3(0.0f, 4.0f, 0.0f));
+			boatMiddleDeckTransform.setScale(glm::vec3(1.0f, 1.0f, 1.0f));
+			registry->assign<component::Transform>(boatDeckMiddleEntity, boatMiddleDeckTransform);
+
+			mr.mesh = Mesh::cache("res/assets/models/boat_deck_middle.obj");
+			registry->assign<component::Renderable>(boatDeckMiddleEntity, mr);
+
+			auto& so2 = registry->assign<component::EntityInfo>(boatDeckMiddleEntity);
+			so2.name = "Boat Middle Deck Parent";
+
+			auto& mopCollider = registry->assign<component::Collidable>(boatDeckMiddleEntity);
+			auto& shapeInfo = mopCollider.pushShape(ColliderType::Box);
+			shapeInfo.box.setSize({ 1.0f, 0.2f, 1.0f });
 		}
 
 		{
@@ -553,6 +612,8 @@ void SandboxLayer::onEnter()
     }
     
     {
+		//GROUND PLANE
+
         component::Renderable mr;
         mr.mesh = Mesh::cache("res/assets/models/plane.obj");
         mr.material = mat;
@@ -577,7 +638,10 @@ void SandboxLayer::onEnter()
         auto& shi = cl.pushShape(ColliderType::Box);
         shi.box.setSize({ 20.0f, 0.1f, 20.0f });
     }
+
     {
+		//RANDOM SPHERES
+
         component::Renderable mr;
         mr.mesh = Mesh::get("sphere");
         mr.material = mat;
