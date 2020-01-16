@@ -317,7 +317,6 @@ void SandboxLayer::onEnter()
 
 			component::Transform cannonTransform;
 			cannonTransform.setPosition(glm::vec3(0.0f));
-			cannonTransform.setRotationEulerY(180.0f);
 			registry->assign<component::Transform>(cannonEntity, cannonTransform);
 
 			auto& cannon = registry->assign<Cannon>(cannonEntity);

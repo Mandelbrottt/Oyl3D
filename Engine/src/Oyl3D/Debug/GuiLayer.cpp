@@ -420,7 +420,8 @@ namespace oyl::internal
             registry->each(
                 [this, &parentView](auto entity)
                 {
-                    if (parentView.contains(entity) && 
+                    if (!registry->valid(entity) ||
+						parentView.contains(entity) && 
                         parentView.get(entity).parent != entt::null) return;
 
                     this->drawEntityNode(entity);
