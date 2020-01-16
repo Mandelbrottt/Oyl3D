@@ -629,15 +629,163 @@
             }
         }
     },
-    "Boat Middle Deck Parent": {
-        "Parent": null,
+    "Boat Hull": {
+        "Parent": {
+            "Name": "Boat Root L"
+        },
         "Renderable": {
             "Enabled": true,
             "Material": {
                 "Alias": "planks"
             },
             "Mesh": {
-                "FilePath": "res/assets/models/boat_deck_middle.obj"
+                "FilePath": "res/assets/models/BoatHull.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -21.0,
+                "Y": 0.0,
+                "Z": -2.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Boat Hull 1": {
+        "Parent": {
+            "Name": "Boat Root R"
+        },
+        "Renderable": {
+            "Enabled": true,
+            "Material": {
+                "Alias": "planks"
+            },
+            "Mesh": {
+                "FilePath": "res/assets/models/BoatHull.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -21.0,
+                "Y": 0.0,
+                "Z": -2.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Boat Hull Inner": {
+        "Parent": {
+            "Name": "Boat Root L"
+        },
+        "Renderable": {
+            "Enabled": true,
+            "Material": {
+                "Alias": "planks"
+            },
+            "Mesh": {
+                "FilePath": "res/assets/models/BoatHullFlipped.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -21.0,
+                "Y": 0.0,
+                "Z": -2.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Boat Hull Inner 1": {
+        "Parent": {
+            "Name": "Boat Root R"
+        },
+        "Renderable": {
+            "Enabled": true,
+            "Material": {
+                "Alias": "planks"
+            },
+            "Mesh": {
+                "FilePath": "res/assets/models/BoatHullFlipped.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -21.0,
+                "Y": 0.0,
+                "Z": -2.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Boat Root L": {
+        "Parent": null,
+        "Renderable": {
+            "Enabled": true,
+            "Material": {
+                "Alias": null
+            },
+            "Mesh": {
+                "FilePath": null
             }
         },
         "Transform": {
@@ -648,8 +796,43 @@
             },
             "Position": {
                 "X": 0.0,
-                "Y": 4.0,
+                "Y": 0.0,
                 "Z": 0.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Boat Root R": {
+        "Parent": null,
+        "Renderable": {
+            "Enabled": true,
+            "Material": {
+                "Alias": null
+            },
+            "Mesh": {
+                "FilePath": null
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": 0.0,
+                "Y": 0.0,
+                "Z": 19.0
             },
             "Rotation": {
                 "qW": 1.0,
@@ -730,6 +913,154 @@
             "Scale": {
                 "X": 2.0,
                 "Y": 2.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Captains Quarters": {
+        "Parent": {
+            "Name": "Boat Root L"
+        },
+        "Renderable": {
+            "Enabled": true,
+            "Material": {
+                "Alias": "planks"
+            },
+            "Mesh": {
+                "FilePath": "res/assets/models/CapQuarters.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": 8.0,
+                "Y": 1.0,
+                "Z": -3.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Captains Quarters 1": {
+        "Parent": {
+            "Name": "Boat Root R"
+        },
+        "Renderable": {
+            "Enabled": true,
+            "Material": {
+                "Alias": "planks"
+            },
+            "Mesh": {
+                "FilePath": "res/assets/models/CapQuarters.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": 8.0,
+                "Y": 1.0,
+                "Z": -3.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Captains Quarters Rail": {
+        "Parent": {
+            "Name": "Boat Root L"
+        },
+        "Renderable": {
+            "Enabled": true,
+            "Material": {
+                "Alias": "planks"
+            },
+            "Mesh": {
+                "FilePath": "res/assets/models/QuartersRail.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": 8.0,
+                "Y": 5.0,
+                "Z": -6.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Captains Quarters Rail 1": {
+        "Parent": {
+            "Name": "Boat Root R"
+        },
+        "Renderable": {
+            "Enabled": true,
+            "Material": {
+                "Alias": "planks"
+            },
+            "Mesh": {
+                "FilePath": "res/assets/models/QuartersRail.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": 8.0,
+                "Y": 5.0,
+                "Z": -6.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
                 "Z": 1.0
             }
         }
@@ -870,6 +1201,80 @@
             "Scale": {
                 "X": 1.5,
                 "Y": 2.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "DeckRail": {
+        "Parent": {
+            "Name": "Boat Root L"
+        },
+        "Renderable": {
+            "Enabled": true,
+            "Material": {
+                "Alias": "planks"
+            },
+            "Mesh": {
+                "FilePath": "res/assets/models/DeckRail.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -14.0,
+                "Y": 1.0,
+                "Z": 2.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "DeckRail 1": {
+        "Parent": {
+            "Name": "Boat Root R"
+        },
+        "Renderable": {
+            "Enabled": true,
+            "Material": {
+                "Alias": "planks"
+            },
+            "Mesh": {
+                "FilePath": "res/assets/models/DeckRail.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -14.0,
+                "Y": 1.0,
+                "Z": 2.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
                 "Z": 1.0
             }
         }
@@ -1330,11 +1735,13 @@
         }
     },
     "Plane": {
-        "Parent": null,
+        "Parent": {
+            "Name": "Boat Root L"
+        },
         "Renderable": {
-            "Enabled": true,
+            "Enabled": false,
             "Material": {
-                "Alias": "planks"
+                "Alias": null
             },
             "Mesh": {
                 "FilePath": "res/assets/models/plane.obj"
@@ -1347,9 +1754,9 @@
                 "Z": false
             },
             "Position": {
-                "X": 0.0,
+                "X": -1.0000001192092896,
                 "Y": 0.0,
-                "Z": 5.798562049865723
+                "Z": -2.0214388370513916
             },
             "Rotation": {
                 "qW": 1.0,
@@ -1358,9 +1765,81 @@
                 "qZ": 0.0
             },
             "Scale": {
-                "X": 2.5,
-                "Y": 0.9999904036521912,
-                "Z": 1.7000000476837158
+                "X": 1.899999976158142,
+                "Y": 0.20000000298023224,
+                "Z": 0.5
+            }
+        }
+    },
+    "Plane 1": {
+        "Parent": {
+            "Name": "Boat Root R"
+        },
+        "Renderable": {
+            "Enabled": false,
+            "Material": {
+                "Alias": null
+            },
+            "Mesh": {
+                "FilePath": "res/assets/models/plane.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -1.0,
+                "Y": 0.0,
+                "Z": -2.0214385986328125
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.899999976158142,
+                "Y": 0.20000000298023224,
+                "Z": 0.5
+            }
+        }
+    },
+    "Plane 2": {
+        "Parent": null,
+        "Renderable": {
+            "Enabled": true,
+            "Material": {
+                "Alias": "container"
+            },
+            "Mesh": {
+                "FilePath": "res/assets/models/plane.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -1.0000001192092896,
+                "Y": 0.0,
+                "Z": 7.4310302734375
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 0.30000001192092896,
+                "Y": 1.0,
+                "Z": 0.5
             }
         }
     },
@@ -1383,7 +1862,7 @@
             },
             "Position": {
                 "X": 0.9301067590713501,
-                "Y": 0.537074089050293,
+                "Y": 0.800000011920929,
                 "Z": 0.0
             },
             "Rotation": {
@@ -1394,7 +1873,7 @@
             },
             "Scale": {
                 "X": 1.0,
-                "Y": 1.0000001192092896,
+                "Y": 1.0,
                 "Z": 1.0000001192092896
             }
         }
@@ -1491,7 +1970,7 @@
             "Position": {
                 "X": 0.0,
                 "Y": 0.0,
-                "Z": 15.0
+                "Z": 21.0
             },
             "Rotation": {
                 "qW": 1.0,
@@ -1736,7 +2215,7 @@
             "Position": {
                 "X": 0.0028204917907714844,
                 "Y": 0.0,
-                "Z": 11.480600357055664
+                "Z": 17.480600357055664
             },
             "Rotation": {
                 "qW": 1.0,
@@ -1771,7 +2250,7 @@
             "Position": {
                 "X": 1.7901506423950195,
                 "Y": 0.3100000023841858,
-                "Z": 9.316363334655762
+                "Z": 15.316363334655762
             },
             "Rotation": {
                 "qW": 1.0,
@@ -1806,7 +2285,7 @@
             "Position": {
                 "X": 1.999654769897461,
                 "Y": 0.3100000023841858,
-                "Z": 9.853049278259277
+                "Z": 15.853049278259277
             },
             "Rotation": {
                 "qW": 1.0,
@@ -1841,7 +2320,7 @@
             "Position": {
                 "X": 1.377821683883667,
                 "Y": 0.3100000023841858,
-                "Z": 9.964077949523926
+                "Z": 15.964077949523926
             },
             "Rotation": {
                 "qW": 1.0,
@@ -1876,7 +2355,7 @@
             "Position": {
                 "X": 4.9495954513549805,
                 "Y": 0.10000000149011612,
-                "Z": 8.795110702514648
+                "Z": 14.795110702514648
             },
             "Rotation": {
                 "qW": 1.0,
@@ -1911,7 +2390,7 @@
             "Position": {
                 "X": -8.23352336883545,
                 "Y": 0.10000000149011612,
-                "Z": 7.538014888763428
+                "Z": 18.538015365600586
             },
             "Rotation": {
                 "qW": 1.0,
@@ -1946,7 +2425,7 @@
             "Position": {
                 "X": -3.0,
                 "Y": 0.10000000149011612,
-                "Z": 8.08315658569336
+                "Z": 16.08315658569336
             },
             "Rotation": {
                 "qW": 1.0,
@@ -1981,7 +2460,7 @@
             "Position": {
                 "X": 1.9112193584442139,
                 "Y": 0.27000001072883606,
-                "Z": 7.053325176239014
+                "Z": 13.053325653076172
             },
             "Rotation": {
                 "qW": 1.0,
@@ -2016,7 +2495,7 @@
             "Position": {
                 "X": 2.2958927154541016,
                 "Y": 0.27000001072883606,
-                "Z": 6.682285785675049
+                "Z": 12.68228530883789
             },
             "Rotation": {
                 "qW": 1.0,
@@ -2051,7 +2530,7 @@
             "Position": {
                 "X": 1.3819799423217773,
                 "Y": 0.27000001072883606,
-                "Z": 6.718793869018555
+                "Z": 12.718793869018555
             },
             "Rotation": {
                 "qW": 1.0,
@@ -2086,7 +2565,7 @@
             "Position": {
                 "X": 0.07136392593383789,
                 "Y": 0.20000000298023224,
-                "Z": 8.31336784362793
+                "Z": 15.31336784362793
             },
             "Rotation": {
                 "qW": 1.0,
@@ -2119,9 +2598,9 @@
                 "Z": false
             },
             "Position": {
-                "X": -3.0,
-                "Y": -1.0,
-                "Z": -2.0
+                "X": 1.652702808380127,
+                "Y": 2.311728000640869,
+                "Z": -3.5488104820251465
             },
             "Rotation": {
                 "qW": 1.0,
@@ -2154,9 +2633,83 @@
                 "Z": false
             },
             "Position": {
-                "X": -3.0,
-                "Y": -1.0,
-                "Z": -2.0
+                "X": 0.690822422504425,
+                "Y": 4.172219753265381,
+                "Z": -3.2637431621551514
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Top Deck": {
+        "Parent": {
+            "Name": "Boat Root L"
+        },
+        "Renderable": {
+            "Enabled": true,
+            "Material": {
+                "Alias": "planks"
+            },
+            "Mesh": {
+                "FilePath": "res/assets/models/TopDeck.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": 3.0,
+                "Y": 0.0,
+                "Z": 2.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Top Deck 1": {
+        "Parent": {
+            "Name": "Boat Root R"
+        },
+        "Renderable": {
+            "Enabled": true,
+            "Material": {
+                "Alias": "planks"
+            },
+            "Mesh": {
+                "FilePath": "res/assets/models/TopDeck.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": 3.0,
+                "Y": 0.0,
+                "Z": 2.0
             },
             "Rotation": {
                 "qW": 1.0,
