@@ -3,6 +3,9 @@
         "Parent": null,
         "Renderable": {
             "Enabled": true,
+            "Material": {
+                "Alias": "cannon"
+            },
             "Mesh": {
                 "FilePath": "res/assets/models/cannon.obj"
             }
@@ -11,7 +14,7 @@
             "Mirror": {
                 "X": false,
                 "Y": false,
-                "Z": false
+                "Z": true
             },
             "Position": {
                 "X": 0.0,
@@ -35,6 +38,9 @@
         "Parent": null,
         "Renderable": {
             "Enabled": true,
+            "Material": {
+                "Alias": "cannonball"
+            },
             "Mesh": {
                 "FilePath": "res/assets/models/sphere.obj"
             }
@@ -67,6 +73,9 @@
         "Parent": null,
         "Renderable": {
             "Enabled": true,
+            "Material": {
+                "Alias": "cannonball"
+            },
             "Mesh": {
                 "FilePath": "res/assets/models/sphere.obj"
             }
@@ -99,6 +108,9 @@
         "Parent": null,
         "Renderable": {
             "Enabled": true,
+            "Material": {
+                "Alias": "cannonball"
+            },
             "Mesh": {
                 "FilePath": "res/assets/models/sphere.obj"
             }
@@ -131,6 +143,9 @@
         "Parent": null,
         "Renderable": {
             "Enabled": true,
+            "Material": {
+                "Alias": "cannonball"
+            },
             "Mesh": {
                 "FilePath": "res/assets/models/sphere.obj"
             }
@@ -163,6 +178,9 @@
         "Parent": null,
         "Renderable": {
             "Enabled": true,
+            "Material": {
+                "Alias": "cannonball"
+            },
             "Mesh": {
                 "FilePath": "res/assets/models/sphere.obj"
             }
@@ -195,6 +213,9 @@
         "Parent": null,
         "Renderable": {
             "Enabled": true,
+            "Material": {
+                "Alias": "cannonball"
+            },
             "Mesh": {
                 "FilePath": "res/assets/models/sphere.obj"
             }
@@ -227,6 +248,9 @@
         "Parent": null,
         "Renderable": {
             "Enabled": true,
+            "Material": {
+                "Alias": "crate"
+            },
             "Mesh": {
                 "FilePath": "res/assets/models/crateTemp.obj"
             }
@@ -235,7 +259,7 @@
             "Mirror": {
                 "X": false,
                 "Y": false,
-                "Z": false
+                "Z": true
             },
             "Position": {
                 "X": -1.0,
@@ -259,6 +283,9 @@
         "Parent": null,
         "Renderable": {
             "Enabled": true,
+            "Material": {
+                "Alias": "pirax"
+            },
             "Mesh": {
                 "FilePath": "res/assets/models/Pirax.obj"
             }
@@ -291,6 +318,9 @@
         "Parent": null,
         "Renderable": {
             "Enabled": true,
+            "Material": {
+                "Alias": "pirax"
+            },
             "Mesh": {
                 "FilePath": "res/assets/models/Pirax.obj"
             }
@@ -323,6 +353,9 @@
         "Parent": null,
         "Renderable": {
             "Enabled": true,
+            "Material": {
+                "Alias": "pirax"
+            },
             "Mesh": {
                 "FilePath": "res/assets/models/Pirax.obj"
             }
@@ -355,6 +388,9 @@
         "Parent": null,
         "Renderable": {
             "Enabled": true,
+            "Material": {
+                "Alias": "garbage"
+            },
             "Mesh": {
                 "FilePath": "res/assets/models/garbage.obj"
             }
@@ -387,6 +423,9 @@
         "Parent": null,
         "Renderable": {
             "Enabled": true,
+            "Material": {
+                "Alias": "garbage"
+            },
             "Mesh": {
                 "FilePath": "res/assets/models/garbage.obj"
             }
@@ -419,6 +458,9 @@
         "Parent": null,
         "Renderable": {
             "Enabled": true,
+            "Material": {
+                "Alias": "garbage"
+            },
             "Mesh": {
                 "FilePath": "res/assets/models/garbage.obj"
             }
@@ -451,6 +493,9 @@
         "Parent": null,
         "Renderable": {
             "Enabled": true,
+            "Material": {
+                "Alias": "goop"
+            },
             "Mesh": {
                 "FilePath": "res/assets/models/Gloop.obj"
             }
@@ -483,6 +528,9 @@
         "Parent": null,
         "Renderable": {
             "Enabled": true,
+            "Material": {
+                "Alias": "goop"
+            },
             "Mesh": {
                 "FilePath": "res/assets/models/Gloop.obj"
             }
@@ -515,6 +563,9 @@
         "Parent": null,
         "Renderable": {
             "Enabled": true,
+            "Material": {
+                "Alias": "goop"
+            },
             "Mesh": {
                 "FilePath": "res/assets/models/Gloop.obj"
             }
@@ -547,6 +598,9 @@
         "Parent": null,
         "Renderable": {
             "Enabled": true,
+            "Material": {
+                "Alias": "mop"
+            },
             "Mesh": {
                 "FilePath": "res/assets/models/mop.obj"
             }
@@ -575,9 +629,89 @@
             }
         }
     },
+    "Boat Middle Deck Parent": {
+        "Parent": null,
+        "Renderable": {
+            "Enabled": true,
+            "Material": {
+                "Alias": "planks"
+            },
+            "Mesh": {
+                "FilePath": "res/assets/models/boat_deck_middle.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": 0.0,
+                "Y": 0.0,
+                "Z": 0.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Boat Middle Deck1": {
+        "Parent": {
+            "Name": "Boat Middle Deck Parent"
+        },
+        "Renderable": {
+            "Enabled": true,
+            "Material": {
+                "Alias": "planks"
+            },
+            "Mesh": {
+                "FilePath": "res/assets/models/boat_deck_middle.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": 1.0,
+                "Y": 0.0,
+                "Z": 0.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
     "Cannon Firing Message": {
         "Parent": null,
-        "Renderable": null,
+        "Renderable": {
+            "Enabled": true,
+            "Material": {
+                "Alias": null
+            },
+            "Mesh": {
+                "FilePath": null
+            }
+        },
         "Transform": {
             "Mirror": {
                 "X": false,
@@ -604,7 +738,15 @@
     },
     "Cannonball Crate Message": {
         "Parent": null,
-        "Renderable": null,
+        "Renderable": {
+            "Enabled": true,
+            "Material": {
+                "Alias": null
+            },
+            "Mesh": {
+                "FilePath": null
+            }
+        },
         "Transform": {
             "Mirror": {
                 "X": false,
@@ -633,6 +775,9 @@
         "Parent": null,
         "Renderable": {
             "Enabled": true,
+            "Material": {
+                "Alias": "lamp"
+            },
             "Mesh": {
                 "FilePath": "res/assets/models/character.obj"
             }
@@ -663,7 +808,15 @@
     },
     "Clean Garbage Message": {
         "Parent": null,
-        "Renderable": null,
+        "Renderable": {
+            "Enabled": true,
+            "Material": {
+                "Alias": null
+            },
+            "Mesh": {
+                "FilePath": null
+            }
+        },
         "Transform": {
             "Mirror": {
                 "X": false,
@@ -690,7 +843,15 @@
     },
     "Cleaning Quicktime Event Background": {
         "Parent": null,
-        "Renderable": null,
+        "Renderable": {
+            "Enabled": true,
+            "Material": {
+                "Alias": null
+            },
+            "Mesh": {
+                "FilePath": null
+            }
+        },
         "Transform": {
             "Mirror": {
                 "X": false,
@@ -717,7 +878,15 @@
     },
     "Cleaning Quicktime Event Indicator": {
         "Parent": null,
-        "Renderable": null,
+        "Renderable": {
+            "Enabled": true,
+            "Material": {
+                "Alias": null
+            },
+            "Mesh": {
+                "FilePath": null
+            }
+        },
         "Transform": {
             "Mirror": {
                 "X": false,
@@ -744,7 +913,15 @@
     },
     "Garbage Tick0": {
         "Parent": null,
-        "Renderable": null,
+        "Renderable": {
+            "Enabled": true,
+            "Material": {
+                "Alias": null
+            },
+            "Mesh": {
+                "FilePath": null
+            }
+        },
         "Transform": {
             "Mirror": {
                 "X": false,
@@ -771,7 +948,15 @@
     },
     "Garbage Tick1": {
         "Parent": null,
-        "Renderable": null,
+        "Renderable": {
+            "Enabled": true,
+            "Material": {
+                "Alias": null
+            },
+            "Mesh": {
+                "FilePath": null
+            }
+        },
         "Transform": {
             "Mirror": {
                 "X": false,
@@ -798,7 +983,15 @@
     },
     "Garbage Tick2": {
         "Parent": null,
-        "Renderable": null,
+        "Renderable": {
+            "Enabled": true,
+            "Material": {
+                "Alias": null
+            },
+            "Mesh": {
+                "FilePath": null
+            }
+        },
         "Transform": {
             "Mirror": {
                 "X": false,
@@ -825,7 +1018,15 @@
     },
     "Gui Thing": {
         "Parent": null,
-        "Renderable": null,
+        "Renderable": {
+            "Enabled": true,
+            "Material": {
+                "Alias": null
+            },
+            "Mesh": {
+                "FilePath": null
+            }
+        },
         "Transform": {
             "Mirror": {
                 "X": false,
@@ -852,7 +1053,15 @@
     },
     "Invalid Reticle": {
         "Parent": null,
-        "Renderable": null,
+        "Renderable": {
+            "Enabled": true,
+            "Material": {
+                "Alias": null
+            },
+            "Mesh": {
+                "FilePath": null
+            }
+        },
         "Transform": {
             "Mirror": {
                 "X": false,
@@ -881,6 +1090,9 @@
         "Parent": null,
         "Renderable": {
             "Enabled": true,
+            "Material": {
+                "Alias": "lamp"
+            },
             "Mesh": {
                 "FilePath": "res/assets/models/lamp.obj"
             }
@@ -911,7 +1123,15 @@
     },
     "Load Cannon Message": {
         "Parent": null,
-        "Renderable": null,
+        "Renderable": {
+            "Enabled": true,
+            "Material": {
+                "Alias": null
+            },
+            "Mesh": {
+                "FilePath": null
+            }
+        },
         "Transform": {
             "Mirror": {
                 "X": false,
@@ -938,7 +1158,15 @@
     },
     "Lose Screen": {
         "Parent": null,
-        "Renderable": null,
+        "Renderable": {
+            "Enabled": true,
+            "Material": {
+                "Alias": null
+            },
+            "Mesh": {
+                "FilePath": null
+            }
+        },
         "Transform": {
             "Mirror": {
                 "X": false,
@@ -965,7 +1193,15 @@
     },
     "Normal Reticle": {
         "Parent": null,
-        "Renderable": null,
+        "Renderable": {
+            "Enabled": true,
+            "Material": {
+                "Alias": null
+            },
+            "Mesh": {
+                "FilePath": null
+            }
+        },
         "Transform": {
             "Mirror": {
                 "X": false,
@@ -992,7 +1228,15 @@
     },
     "Pickup Cannonball Message": {
         "Parent": null,
-        "Renderable": null,
+        "Renderable": {
+            "Enabled": true,
+            "Material": {
+                "Alias": null
+            },
+            "Mesh": {
+                "FilePath": null
+            }
+        },
         "Transform": {
             "Mirror": {
                 "X": false,
@@ -1019,7 +1263,15 @@
     },
     "Pickup Cleaning Solution Message": {
         "Parent": null,
-        "Renderable": null,
+        "Renderable": {
+            "Enabled": true,
+            "Material": {
+                "Alias": null
+            },
+            "Mesh": {
+                "FilePath": null
+            }
+        },
         "Transform": {
             "Mirror": {
                 "X": false,
@@ -1046,7 +1298,15 @@
     },
     "Pickup Gloop Message": {
         "Parent": null,
-        "Renderable": null,
+        "Renderable": {
+            "Enabled": true,
+            "Material": {
+                "Alias": null
+            },
+            "Mesh": {
+                "FilePath": null
+            }
+        },
         "Transform": {
             "Mirror": {
                 "X": false,
@@ -1073,7 +1333,15 @@
     },
     "Pickup Mop Message": {
         "Parent": null,
-        "Renderable": null,
+        "Renderable": {
+            "Enabled": true,
+            "Material": {
+                "Alias": null
+            },
+            "Mesh": {
+                "FilePath": null
+            }
+        },
         "Transform": {
             "Mirror": {
                 "X": false,
@@ -1102,6 +1370,9 @@
         "Parent": null,
         "Renderable": {
             "Enabled": true,
+            "Material": {
+                "Alias": null
+            },
             "Mesh": {
                 "FilePath": "res/assets/models/plane.obj"
             }
@@ -1134,6 +1405,9 @@
         "Parent": null,
         "Renderable": {
             "Enabled": true,
+            "Material": {
+                "Alias": "container"
+            },
             "Mesh": {
                 "FilePath": "res/assets/models/cube.obj"
             }
@@ -1166,7 +1440,15 @@
         "Parent": {
             "Name": "Player"
         },
-        "Renderable": null,
+        "Renderable": {
+            "Enabled": true,
+            "Material": {
+                "Alias": null
+            },
+            "Mesh": {
+                "FilePath": null
+            }
+        },
         "Transform": {
             "Mirror": {
                 "X": false,
@@ -1193,7 +1475,15 @@
     },
     "Push Cannon Message": {
         "Parent": null,
-        "Renderable": null,
+        "Renderable": {
+            "Enabled": true,
+            "Material": {
+                "Alias": null
+            },
+            "Mesh": {
+                "FilePath": null
+            }
+        },
         "Transform": {
             "Mirror": {
                 "X": false,
@@ -1222,6 +1512,9 @@
         "Parent": null,
         "Renderable": {
             "Enabled": true,
+            "Material": {
+                "Alias": "cannon"
+            },
             "Mesh": {
                 "FilePath": "res/assets/models/cannon.obj"
             }
@@ -1238,10 +1531,10 @@
                 "Z": 15.0
             },
             "Rotation": {
-                "qW": -4.371138828673793e-08,
-                "qX": -0.0,
-                "qY": 1.0,
-                "qZ": -0.0
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
             },
             "Scale": {
                 "X": 0.699999988079071,
@@ -1254,6 +1547,9 @@
         "Parent": null,
         "Renderable": {
             "Enabled": true,
+            "Material": {
+                "Alias": "cannonball"
+            },
             "Mesh": {
                 "FilePath": "res/assets/models/sphere.obj"
             }
@@ -1286,6 +1582,9 @@
         "Parent": null,
         "Renderable": {
             "Enabled": true,
+            "Material": {
+                "Alias": "cannonball"
+            },
             "Mesh": {
                 "FilePath": "res/assets/models/sphere.obj"
             }
@@ -1318,6 +1617,9 @@
         "Parent": null,
         "Renderable": {
             "Enabled": true,
+            "Material": {
+                "Alias": "cannonball"
+            },
             "Mesh": {
                 "FilePath": "res/assets/models/sphere.obj"
             }
@@ -1350,6 +1652,9 @@
         "Parent": null,
         "Renderable": {
             "Enabled": true,
+            "Material": {
+                "Alias": "cannonball"
+            },
             "Mesh": {
                 "FilePath": "res/assets/models/sphere.obj"
             }
@@ -1382,6 +1687,9 @@
         "Parent": null,
         "Renderable": {
             "Enabled": true,
+            "Material": {
+                "Alias": "cannonball"
+            },
             "Mesh": {
                 "FilePath": "res/assets/models/sphere.obj"
             }
@@ -1414,6 +1722,9 @@
         "Parent": null,
         "Renderable": {
             "Enabled": true,
+            "Material": {
+                "Alias": "cannonball"
+            },
             "Mesh": {
                 "FilePath": "res/assets/models/sphere.obj"
             }
@@ -1446,6 +1757,9 @@
         "Parent": null,
         "Renderable": {
             "Enabled": true,
+            "Material": {
+                "Alias": "crate"
+            },
             "Mesh": {
                 "FilePath": "res/assets/models/crateTemp.obj"
             }
@@ -1478,6 +1792,9 @@
         "Parent": null,
         "Renderable": {
             "Enabled": true,
+            "Material": {
+                "Alias": "pirax"
+            },
             "Mesh": {
                 "FilePath": "res/assets/models/Pirax.obj"
             }
@@ -1510,6 +1827,9 @@
         "Parent": null,
         "Renderable": {
             "Enabled": true,
+            "Material": {
+                "Alias": "pirax"
+            },
             "Mesh": {
                 "FilePath": "res/assets/models/Pirax.obj"
             }
@@ -1542,6 +1862,9 @@
         "Parent": null,
         "Renderable": {
             "Enabled": true,
+            "Material": {
+                "Alias": "pirax"
+            },
             "Mesh": {
                 "FilePath": "res/assets/models/Pirax.obj"
             }
@@ -1574,6 +1897,9 @@
         "Parent": null,
         "Renderable": {
             "Enabled": true,
+            "Material": {
+                "Alias": "garbage"
+            },
             "Mesh": {
                 "FilePath": "res/assets/models/garbage.obj"
             }
@@ -1606,6 +1932,9 @@
         "Parent": null,
         "Renderable": {
             "Enabled": true,
+            "Material": {
+                "Alias": "garbage"
+            },
             "Mesh": {
                 "FilePath": "res/assets/models/garbage.obj"
             }
@@ -1638,6 +1967,9 @@
         "Parent": null,
         "Renderable": {
             "Enabled": true,
+            "Material": {
+                "Alias": "garbage"
+            },
             "Mesh": {
                 "FilePath": "res/assets/models/garbage.obj"
             }
@@ -1670,6 +2002,9 @@
         "Parent": null,
         "Renderable": {
             "Enabled": true,
+            "Material": {
+                "Alias": "goop"
+            },
             "Mesh": {
                 "FilePath": "res/assets/models/Gloop.obj"
             }
@@ -1702,6 +2037,9 @@
         "Parent": null,
         "Renderable": {
             "Enabled": true,
+            "Material": {
+                "Alias": "goop"
+            },
             "Mesh": {
                 "FilePath": "res/assets/models/Gloop.obj"
             }
@@ -1734,6 +2072,9 @@
         "Parent": null,
         "Renderable": {
             "Enabled": true,
+            "Material": {
+                "Alias": "goop"
+            },
             "Mesh": {
                 "FilePath": "res/assets/models/Gloop.obj"
             }
@@ -1766,6 +2107,9 @@
         "Parent": null,
         "Renderable": {
             "Enabled": true,
+            "Material": {
+                "Alias": "mop"
+            },
             "Mesh": {
                 "FilePath": "res/assets/models/mop.obj"
             }
@@ -1798,6 +2142,9 @@
         "Parent": null,
         "Renderable": {
             "Enabled": true,
+            "Material": {
+                "Alias": "container"
+            },
             "Mesh": {
                 "FilePath": "res/assets/models/sphere.obj"
             }
@@ -1830,6 +2177,9 @@
         "Parent": null,
         "Renderable": {
             "Enabled": true,
+            "Material": {
+                "Alias": "container"
+            },
             "Mesh": {
                 "FilePath": "res/assets/models/sphere.obj"
             }
@@ -1860,7 +2210,15 @@
     },
     "UI TEst": {
         "Parent": null,
-        "Renderable": null,
+        "Renderable": {
+            "Enabled": true,
+            "Material": {
+                "Alias": null
+            },
+            "Mesh": {
+                "FilePath": null
+            }
+        },
         "Transform": {
             "Mirror": {
                 "X": false,
@@ -1887,7 +2245,15 @@
     },
     "Use Gloop Message": {
         "Parent": null,
-        "Renderable": null,
+        "Renderable": {
+            "Enabled": true,
+            "Material": {
+                "Alias": null
+            },
+            "Mesh": {
+                "FilePath": null
+            }
+        },
         "Transform": {
             "Mirror": {
                 "X": false,
@@ -1914,7 +2280,15 @@
     },
     "Win Screen": {
         "Parent": null,
-        "Renderable": null,
+        "Renderable": {
+            "Enabled": true,
+            "Material": {
+                "Alias": null
+            },
+            "Mesh": {
+                "FilePath": null
+            }
+        },
         "Transform": {
             "Mirror": {
                 "X": false,
