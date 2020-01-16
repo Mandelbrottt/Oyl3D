@@ -547,7 +547,7 @@ void PlayerInteractionValidationSystem::performCarryableItemInteraction(entt::en
 
 			std::cout << "PICKED UP MOP!\n";
 
-			itemNewPosition = glm::vec3(0.45f, -0.15f, -1.1f);
+			itemNewPosition = glm::vec3(0.45f, 0.2f, -0.5f);
 			itemNewRotation = glm::vec3(-107.0f, -69.5f, 106.0f);
 
 			break;
@@ -694,11 +694,6 @@ void PlayerInteractionValidationSystem::performCannonInteraction(entt::entity a_
 			cannon.pushStateData.destinationPos = -cannonTransform.getRight() * glm::vec3(cannon.pushDistance, 0.0f, 0.0f) + cannonTransform.getPosition();
 
 			cannon.cannonTrackPosition--;
-
-			//hacky way to limit the camera but it works for now
-			player.yRotationClamp = 10.0f;
-			if (playerTransform.getRotationEulerY() < player.yRotationClamp)
-				playerTransform.setRotationEulerY(player.yRotationClamp);
 		}
 		//player is on the left side of the cannon (will be pushing towards the right)
 		else
@@ -711,11 +706,6 @@ void PlayerInteractionValidationSystem::performCannonInteraction(entt::entity a_
 			cannon.pushStateData.destinationPos = cannonTransform.getRight() * glm::vec3(cannon.pushDistance, 0.0f, 0.0f) + cannonTransform.getPosition();
 
 			cannon.cannonTrackPosition++;
-
-			//hacky way to limit the camera but it works for now
-			player.yRotationClamp = -10.0f;
-			if (playerTransform.getRotationEulerY() > player.yRotationClamp)
-				playerTransform.setRotationEulerY(player.yRotationClamp);
 		}
 
 		std::cout << "PUSHING!\n";
@@ -727,6 +717,21 @@ void PlayerInteractionValidationSystem::performCannonInteraction(entt::entity a_
 		player.pushingStateData.destinationPos.y = playerTransform.getPositionY(); //don't change the player's y position
 
 		cannon.pushStateData.startPos = cannonTransform.getPosition();
+
+		//hacky way to limit the camera but it works
+		if (playerTransform.getPositionX() > cannonTransform.getPositionX())
+		{
+			player.yRotationClamp = 10.0f;
+			if (playerTransform.getRotationEulerY() < player.yRotationClamp)
+				playerTransform.setRotationEulerY(player.yRotationClamp);
+		}
+		else
+		{
+			player.yRotationClamp = -10.0f;
+			if (playerTransform.getRotationEulerY() > player.yRotationClamp)
+				playerTransform.setRotationEulerY(player.yRotationClamp);
+		}
+
 
 		//once all the new positions are set for the states, send out state change events
 		PlayerStateChangeEvent playerStateChange;

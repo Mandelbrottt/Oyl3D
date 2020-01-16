@@ -105,6 +105,8 @@ struct Cannon
 	float FUSE_DURATION = 20.0f;
 	float fuseCountdown = FUSE_DURATION;
 
+	glm::vec3 firingDirection = glm::vec3(1.0f, 1.0f, 1.0f);
+
 	int cannonTrackPosition = 0;
 	float pushDistance = 10.0f;
 	float beingPushedSpeed = 0.2f;
@@ -122,7 +124,18 @@ struct CarryableItem
 
 	CarryableItemType type = CarryableItemType::invalid; //must manually be set when spawning items
 	bool isBeingCarried    = false;
-	bool hasBeenCarrried   = false;
+};
+
+struct Respawnable
+{
+	glm::vec3 spawnPosition = glm::vec3(0.0f, 0.0f, 0.0f);
+	
+	bool hasBeenCarried = false;
+
+	float RESPAWN_DURATION = 10.0f;
+	float respawnCountdown = RESPAWN_DURATION;
+
+	bool isRespawnTimerActive = false;
 };
 
 struct Cannonball
@@ -189,6 +202,8 @@ struct GarbageTick
 
 struct CleaningQuicktimeEventIndicator
 {
+	entt::entity cleaningQuicktimeEventBackground;
+
 	bool isActive = false;
 
 	float LOWER_BOUND_FOR_SUCCESS = 0.4f;
@@ -196,5 +211,12 @@ struct CleaningQuicktimeEventIndicator
 
 	MoveableUsingLerp lerpInformation;
 
-	entt::entity cleaningQuicktimeEventBackground;
+	float DELAY_BEFORE_DISAPPEARING_DURATION = 0.3f;
+	float delayBeforeDisappearingCountdown   = 0.0f;
+
+	bool shouldShake                = false;
+	float SHAKE_START_VALUE         = 0.3f;
+	float SHAKE_DECREASE_PER_SECOND = 1.0f;
+	float currentShakeValue         = SHAKE_START_VALUE;
+	bool isNumberOfShakesEven       = true;
 };

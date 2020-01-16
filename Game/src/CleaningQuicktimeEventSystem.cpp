@@ -17,27 +17,62 @@ void CleaningQuicktimeEventSystem::onUpdate()
 	auto cleaningQuicktimeEventIndicatorView = registry->view<component::Transform, CleaningQuicktimeEventIndicator>();
 	for (auto& cleaningQuicktimeEventIndicatorEntity : cleaningQuicktimeEventIndicatorView)
 	{
-		auto& indicator          = registry->get<CleaningQuicktimeEventIndicator>(cleaningQuicktimeEventIndicatorEntity);
+		auto& indicator = registry->get<CleaningQuicktimeEventIndicator>(cleaningQuicktimeEventIndicatorEntity);
 		auto& indicatorTransform = registry->get<component::Transform>(cleaningQuicktimeEventIndicatorEntity);
 
-		if (!indicator.isActive)
-			continue;
+		auto& backgroundTransform = registry->get<component::Transform>(indicator.cleaningQuicktimeEventBackground);
 
-		if (indicator.lerpInformation.isMovingForward)
-			indicator.lerpInformation.interpolationParam += indicator.lerpInformation.speed * Time::deltaTime();
-		else //!isMovingForward
-			indicator.lerpInformation.interpolationParam -= indicator.lerpInformation.speed * Time::deltaTime();
-
-		if (indicator.lerpInformation.interpolationParam < 0.0f || indicator.lerpInformation.interpolationParam > 1.0f)
+		if (indicator.isActive)
 		{
-			indicator.lerpInformation.isMovingForward    = !indicator.lerpInformation.isMovingForward;
-			indicator.lerpInformation.interpolationParam = std::round(indicator.lerpInformation.interpolationParam); //round so it doesnt go below 0 or above 1
-		}
+			if (indicator.lerpInformation.isMovingForward)
+				indicator.lerpInformation.interpolationParam += indicator.lerpInformation.speed * Time::deltaTime();
+			else //!isMovingForward
+				indicator.lerpInformation.interpolationParam -= indicator.lerpInformation.speed * Time::deltaTime();
 
-		indicatorTransform.setPosition(glm::mix(
-			indicator.lerpInformation.startPos,
-			indicator.lerpInformation.destinationPos,
-			indicator.lerpInformation.interpolationParam));
+			if (indicator.lerpInformation.interpolationParam < 0.0f || indicator.lerpInformation.interpolationParam > 1.0f)
+			{
+				indicator.lerpInformation.isMovingForward = !indicator.lerpInformation.isMovingForward;
+				indicator.lerpInformation.interpolationParam = std::round(indicator.lerpInformation.interpolationParam); //round so it doesnt go below 0 or above 1
+			}
+
+			indicatorTransform.setPosition(glm::mix(
+				indicator.lerpInformation.startPos,
+				indicator.lerpInformation.destinationPos,
+				indicator.lerpInformation.interpolationParam));
+		}
+		else if (indicator.delayBeforeDisappearingCountdown > 0.0f)
+		{
+			if (indicator.shouldShake)
+			{
+				{
+					float newIndicatorPositionY = indicator.isNumberOfShakesEven
+						? indicatorTransform.getPositionY() + indicator.currentShakeValue
+						: indicatorTransform.getPositionY() - indicator.currentShakeValue;
+
+					indicatorTransform.setPositionY(newIndicatorPositionY);
+				}
+
+				{
+					float newBackgroundPositionY = indicator.isNumberOfShakesEven
+						? backgroundTransform.getPositionY() + indicator.currentShakeValue
+						: backgroundTransform.getPositionY() - indicator.currentShakeValue;
+
+					backgroundTransform.setPositionY(newBackgroundPositionY);
+				}
+
+				indicator.currentShakeValue -= indicator.SHAKE_DECREASE_PER_SECOND * Time::deltaTime();
+				indicator.currentShakeValue = std::max(indicator.currentShakeValue, 0.0f);
+
+				indicator.isNumberOfShakesEven = !indicator.isNumberOfShakesEven;
+			}
+
+			indicator.delayBeforeDisappearingCountdown -= Time::deltaTime();
+			if (indicator.delayBeforeDisappearingCountdown < 0.0f)
+			{
+				indicator.shouldShake = false;
+				deactivateCleaningQuicktimeEvent(cleaningQuicktimeEventIndicatorEntity);
+			}
+		}
 	}
 }
 
@@ -90,14 +125,23 @@ bool CleaningQuicktimeEventSystem::onEvent(const Event& event)
 					&& indicator.lerpInformation.interpolationParam <= indicator.UPPER_BOUND_FOR_SUCCESS)
 				{
 					quicktimeCleaningEventResult.wasSuccessful = true;
+
+					indicator.shouldShake = false;
 				}
 				else
+				{
 					quicktimeCleaningEventResult.wasSuccessful = false;
+
+					//the cleaning quicktime event UI does a little shake animation on failure to add some juice
+					indicator.shouldShake       = true;
+					indicator.currentShakeValue = indicator.SHAKE_START_VALUE;
+				}
 
 				postEvent(quicktimeCleaningEventResult); //send the event out
 
-				//deactivate quicktime cleaning event after player attempt (whether it was successful or not)
-				deactivateCleaningQuicktimeEvent(cleaningQuicktimeEventIndicatorEntity);
+				//set timer to hide quicktime cleaning event after player attempt
+				indicator.delayBeforeDisappearingCountdown = indicator.DELAY_BEFORE_DISAPPEARING_DURATION;
+				indicator.isActive = false;
 			}
 
 			break;
@@ -109,10 +153,16 @@ bool CleaningQuicktimeEventSystem::onEvent(const Event& event)
 			auto cleaningQuicktimeEventIndicatorView = registry->view<component::Transform, CleaningQuicktimeEventIndicator>();
 			for (auto& cleaningQuicktimeEventIndicatorEntity : cleaningQuicktimeEventIndicatorView)
 			{
+				auto& indicator           = registry->get<CleaningQuicktimeEventIndicator>(cleaningQuicktimeEventIndicatorEntity);
 				auto& indicatorHUDElement = registry->get<PlayerHUDElement>(cleaningQuicktimeEventIndicatorEntity);
 
 				if (evt.playerNum == indicatorHUDElement.playerNum)
-					deactivateCleaningQuicktimeEvent(cleaningQuicktimeEventIndicatorEntity);
+				{
+					if (indicator.delayBeforeDisappearingCountdown <= 0.0f)
+						deactivateCleaningQuicktimeEvent(cleaningQuicktimeEventIndicatorEntity);
+
+					break;
+				}
 			}
 
 			break;
