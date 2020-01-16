@@ -258,7 +258,7 @@ void SandboxLayer::onEnter()
 
 				auto& cleaningSolutionCollider = registry->assign<component::Collidable>(cleaningSolutionEntity);
 				auto& shapeInfo = cleaningSolutionCollider.pushShape(ColliderType::Box);
-				shapeInfo.box.setSize({ 1.0f, 1.0f, 1.15f });
+				shapeInfo.box.setSize({ 0.8f, 1.0f, 0.85f });
 			}
 		}
 
@@ -474,7 +474,7 @@ void SandboxLayer::onEnter()
 
 				auto& cleaningSolutionCollider = registry->assign<component::Collidable>(cleaningSolutionEntity);
 				auto& shapeInfo = cleaningSolutionCollider.pushShape(ColliderType::Box);
-				shapeInfo.box.setSize({ 1.0f, 1.0f, 1.15f });
+				shapeInfo.box.setSize({ 0.8f, 1.0f, 0.85f });
 			}
 		}
 
