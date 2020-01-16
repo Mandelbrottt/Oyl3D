@@ -629,6 +629,41 @@
             }
         }
     },
+    "Boat Middle Deck Parent": {
+        "Parent": null,
+        "Renderable": {
+            "Enabled": true,
+            "Material": {
+                "Alias": "planks"
+            },
+            "Mesh": {
+                "FilePath": "res/assets/models/boat_deck_middle.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": 0.0,
+                "Y": 4.0,
+                "Z": 0.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
     "Cannon Firing Message": {
         "Parent": null,
         "Renderable": {
@@ -1299,7 +1334,7 @@
         "Renderable": {
             "Enabled": true,
             "Material": {
-                "Alias": "container"
+                "Alias": "planks"
             },
             "Mesh": {
                 "FilePath": "res/assets/models/plane.obj"
@@ -2084,9 +2119,9 @@
                 "Z": false
             },
             "Position": {
-                "X": 1.0817230939865112,
-                "Y": 3.196739435195923,
-                "Z": -2.415987253189087
+                "X": -3.0,
+                "Y": -1.0,
+                "Z": -2.0
             },
             "Rotation": {
                 "qW": 1.0,
@@ -2119,9 +2154,9 @@
                 "Z": false
             },
             "Position": {
-                "X": 1.9203922748565674,
-                "Y": 5.0,
-                "Z": -3.4646668434143066
+                "X": -3.0,
+                "Y": -1.0,
+                "Z": -2.0
             },
             "Rotation": {
                 "qW": 1.0,
