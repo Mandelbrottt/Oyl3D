@@ -66,14 +66,19 @@ namespace oyl
             const auto& shader = Shader::get(SKYBOX_SHADER_ALIAS);
             const auto& mesh = Mesh::get(CUBE_MESH_ALIAS);
 
+            auto isRenderableValid = [](const Renderable& r)
+            {
+                return r.enabled && r.mesh && r.material && r.material->shader && r.material->albedoMap;
+            };
+
             // We sort our mesh renderers based on material properties
             // This will group all of our meshes based on shader first, then material second
             registry->sort<Renderable>(
-                [](const Renderable& lhs, const Renderable& rhs)
+                [&isRenderableValid](const Renderable& lhs, const Renderable& rhs)
                 {
-                    if (!lhs.enabled || !lhs.mesh || lhs.material || !lhs.material->albedoMap)
+                    if (!isRenderableValid(lhs))
                         return false;
-                    if (!rhs.enabled || !rhs.mesh || !rhs.material || !rhs.material->albedoMap)
+                    if (!isRenderableValid(rhs))
                         return true;
                     if (lhs.material->shader != rhs.material->shader)
                         return lhs.material->shader < rhs.material->shader;
@@ -123,10 +128,8 @@ namespace oyl
                 for (auto entity : view)
                 {
                     Renderable& mr = view.get<Renderable>(entity);
-
-                    if (!mr.enabled) continue;
                     
-                    if (!mr.mesh || !mr.material || !mr.material->shader || !mr.material->albedoMap)
+                    if (!isRenderableValid(mr))
                         break;
                     
                     if (mr.material != boundMaterial)
