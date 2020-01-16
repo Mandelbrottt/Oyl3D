@@ -11,6 +11,6 @@ namespace oyl::component
 
     struct Parent
     {
-        entt::entity parent;
+        entt::entity parent = entt::null;
     };
 }
