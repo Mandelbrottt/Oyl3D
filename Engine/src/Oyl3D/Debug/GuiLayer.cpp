@@ -479,38 +479,17 @@ namespace oyl::internal
 
                 // TODO: Fix issue where parent ref in transform occasionally breaks
                 if (ImGui::Selectable("Duplicate Entity##HierarchyContextDupeEntity", false))
-                {
+                {                    
                     auto copy = registry->create();
                     registry->stomp(copy, entity, *registry);
+                    recursiveCopy(copy, entity);
 
-                    auto& copyEI = registry->get<component::EntityInfo>(copy);
-
-                    uint pos = copyEI.name.size();
-                    while (pos > 0 && std::isdigit(copyEI.name[pos - 1])) pos--;
-
-                    if (pos > 0 && pos != copyEI.name.size())
-                    {
-                        int number = std::stoi(copyEI.name.substr(pos));
-                        copyEI.name.erase(pos);
-                        copyEI.name.append(std::to_string(number + 1));
-                    }
-                    else
-                    {
-                        copyEI.name.append(std::to_string(1));
-                    }
+                    m_currentEntity = entity;
                 }
 
                 if (ImGui::Selectable("Delete Entity##HierarchyContextDeleteEntity", false))
                 {
-                    for (auto child : registry->view<Parent>())
-                    {
-                        if (registry->get<Parent>(child).parent == entity)
-                        {
-                            setEntityParent(child, entt::null);
-                        }
-                    }
-
-                    registry->destroy(entity);
+                    recursiveDelete(entity);
 
                     if (m_currentEntity == entity)
                         m_currentEntity = entt::null;
@@ -540,8 +519,12 @@ namespace oyl::internal
             
                 for (auto child : parentView)
                 {
-                    if (parentView.get(child).parent == entity)
+                    if (registry->valid(child) && 
+                        registry->has<component::Parent>(child) &&
+                        parentView.get(child).parent == entity)
+                    {
                         drawEntityNode(child);
+                    }
                 }
             }
 
@@ -554,6 +537,72 @@ namespace oyl::internal
             selected.entity = entity;
             postEvent(selected);
         }
+    }
+
+    void GuiLayer::recursiveCopy(entt::entity copy, entt::entity original)
+    {
+        using component::EntityInfo;
+        using component::Parent;
+
+        auto& copyEI = registry->get<EntityInfo>(copy);
+
+        uint pos = copyEI.name.size();
+        while (pos > 0 && std::isdigit(copyEI.name[pos - 1])) pos--;
+
+        auto eiView = registry->view<EntityInfo>();
+        bool isValid = false;
+        do
+        {
+            isValid = true;
+            if (pos > 0 && pos != copyEI.name.size())
+            {
+                int number = std::stoi(copyEI.name.substr(pos));
+                copyEI.name.erase(pos);
+
+                if (copyEI.name[pos - 1] != ' ')
+                    copyEI.name.append(" ");
+
+                copyEI.name.append(std::to_string(number + 1));
+            }
+            else
+            {
+                copyEI.name.append(" " + std::to_string(1));
+            }
+            for (auto entity : eiView)
+            {
+                if (entity != copy && eiView.get(entity).name == copyEI.name)
+                {
+                    isValid = false;
+                    break;
+                }
+            }
+        } while (!isValid);
+        
+        auto view = registry->view<Parent>();
+        for (auto child : view)
+        {
+            if (view.get(child).parent == original)
+            {
+                auto e = registry->create();
+                registry->stomp(e, child, *registry);
+                registry->get<Parent>(e).parent = copy;
+                recursiveCopy(e, child);
+            }
+        }
+    }
+
+    void GuiLayer::recursiveDelete(entt::entity entity)
+    {
+        using component::Parent;
+        
+        auto view = registry->view<Parent>();
+        for (auto child : view)
+        {
+            if (view.get(child).parent == entity)
+                recursiveDelete(child);
+        }
+
+        registry->destroy(entity);
     }
 
     void GuiLayer::setEntityParent(entt::entity entity, entt::entity parent)
