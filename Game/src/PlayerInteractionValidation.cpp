@@ -804,7 +804,7 @@ void PlayerInteractionValidationSystem::dropPlayerCarriedItems(entt::entity a_pl
 					newPosition.y = playerTransform.getPositionY();
 					//newPosition.y = 0.1f;
 
-					newRotation += glm::vec3(0.0f, -90.0f, 0.0f);
+					newRotation += glm::vec3(0.0f, 90.0f, 0.0f);
 
 					break;
 				}

@@ -109,10 +109,10 @@ bool CannonballSystem::onEvent(const Event& event)
 					cannonball.isBeingFired      = true;
 					cannonballCarryable.isActive = true;
 
-					cannonball.v1 = evt.cannonPosition + glm::vec3(0.0f, -1.0f, -.0f);
-					cannonball.v2 = cannonball.v1 + glm::vec3(0.0f, 2.5f, -1.0f);
-					cannonball.v3 = cannonball.v2 + glm::vec3(0.0f, 3.0f, -18.0f);
-					cannonball.v4 = cannonball.v3 + glm::vec3(0.0f, -5.0f, -15.0f);
+					cannonball.v1 = evt.cannonPosition + glm::vec3(0.0f, -1.0f, 0.0f) * evt.fireDirection;
+					cannonball.v2 = cannonball.v1 + glm::vec3(0.0f, 2.5f, 1.0f)   * evt.fireDirection;
+					cannonball.v3 = cannonball.v2 + glm::vec3(0.0f, 3.0f, 18.0f)  * evt.fireDirection;
+					cannonball.v4 = cannonball.v3 + glm::vec3(0.0f, -5.0f, 15.0f) * evt.fireDirection;
 
 					break;
 				}

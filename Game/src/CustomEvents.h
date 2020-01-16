@@ -67,6 +67,7 @@ OYL_EVENT_STRUCT(CannonStateChangeEvent, (oyl::EventType) TypeCannonStateChange,
 OYL_EVENT_STRUCT(CannonFiredEvent, (oyl::EventType) TypeCannonFired, (oyl::EventCategory) CategoryCannon,
 	{
 		glm::vec3 cannonPosition;
+		glm::vec3 fireDirection;
 	});
 
 OYL_EVENT_STRUCT(TotalGarbageCountEvent, (oyl::EventType) TypeTotalGarbageCount, (oyl::EventCategory) CategoryGarbagePile,

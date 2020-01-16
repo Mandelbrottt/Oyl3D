@@ -137,5 +137,6 @@ void CannonSystem::fireCannon(Cannon* a_cannon, component::Transform* a_cannonTr
 
 	CannonFiredEvent cannonFired;
 	cannonFired.cannonPosition = a_cannonTransform->getPosition();
+	cannonFired.fireDirection  = a_cannon->firingDirection;
 	postEvent(cannonFired);
 }

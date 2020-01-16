@@ -119,7 +119,8 @@ void SandboxLayer::onEnter()
 			registry->assign<component::Transform>(cannonEntity, cannonTransform);
 
 			auto& cannon = registry->assign<Cannon>(cannonEntity);
-			cannon.team = Team::blue;
+			cannon.team  = Team::blue;
+			cannon.firingDirection = glm::vec3(1.0f, 1.0f, 1.0f);
 
 			registry->assign<component::Renderable>(cannonEntity, mr);
 
@@ -336,7 +337,8 @@ void SandboxLayer::onEnter()
 			registry->assign<component::Transform>(cannonEntity, cannonTransform);
 
 			auto& cannon = registry->assign<Cannon>(cannonEntity);
-			cannon.team = Team::red;
+			cannon.team  = Team::red;
+			cannon.firingDirection = glm::vec3(1.0f, 1.0f, -1.0f);
 
 			registry->assign<component::Renderable>(cannonEntity, mr);
 
