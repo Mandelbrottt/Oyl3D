@@ -329,8 +329,15 @@ namespace oyl::internal
             if (auto fpIt = it->find("FilePath"); fpIt != it->end() && !fpIt->is_null())
             {
                 auto filePath = fpIt->get<std::string>();
-                   
-                if (re.mesh && re.mesh->getFilePath() != filePath)
+
+                bool meshFound = false;
+                for (const auto& [alias, mesh] : Mesh::getCache())
+                {
+                    if (mesh->getFilePath() == filePath)
+                        meshFound = true, re.mesh = mesh;
+                }
+
+                if (!meshFound && (!re.mesh || re.mesh && re.mesh->getFilePath() != filePath))
                     re.mesh = Mesh::cache(filePath);
             }
         }
@@ -365,7 +372,6 @@ namespace oyl::internal
 
     void registryToSceneFile(entt::registry& registry, const std::string& sceneName)
     {
-        
         json sceneJson;
         
         using component::EntityInfo;
@@ -408,19 +414,31 @@ namespace oyl::internal
         std::unordered_set<std::string> processedEntities;
         processedEntities.reserve(sceneJson.size());
 
-        //for (auto entity : registry)
-        registry.each([&registry, &sceneJson, &processedEntities](const entt::entity entity)
+        auto view = registry.view<EntityInfo>(); 
+        for (auto& [key, value] : sceneJson.items())
         {
-            if (registry.has<EntityInfo>(entity))
+            bool exists = false;
+            for (auto entity : view)
+                exists |= view.get(entity).name == key;
+
+            if (!exists)
             {
-                EntityInfo& ei = registry.get<EntityInfo>(entity);
-                if (sceneJson.find(ei.name) != sceneJson.end())
-                {
-                    entityFromJson(entity, registry, sceneJson[ei.name]);
-                    processedEntities.emplace(ei.name);
-                }
+                auto entity = registry.create();
+                EntityInfo info = { key };
+                registry.assign<EntityInfo>(entity, info);
             }
-        });
+        }
+
+        view = registry.view<EntityInfo>();
+        for (auto entity : view)
+        {
+            EntityInfo& info = view.get(entity);
+            if (sceneJson.find(info.name) != sceneJson.end())
+            {
+                entityFromJson(entity, registry, sceneJson[info.name]);
+                processedEntities.emplace(info.name);
+            }
+        }
         
         for (auto& [key, value] : sceneJson.items())
         {
