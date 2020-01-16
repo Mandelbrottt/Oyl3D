@@ -420,10 +420,12 @@ namespace oyl::internal
             registry->each(
                 [this, &parentView](auto entity)
                 {
-                    if (parentView.contains(entity) && 
-                        parentView.get(entity).parent != entt::null) return;
-
-                    this->drawEntityNode(entity);
+                    if (registry->valid(entity) &&
+                        (!parentView.contains(entity) ||
+                         !registry->valid(parentView.get(entity).parent)))
+                    {
+                        this->drawEntityNode(entity);
+                    }
                 });
         }
         ImGui::End();
@@ -665,7 +667,7 @@ namespace oyl::internal
     {
         if (ImGui::Begin(g_inspectorWindowName, nullptr))
         {
-            if (m_currentEntity != entt::null)
+            if (registry->valid(m_currentEntity))
             {
                 drawInspectorObjectName();
                 //drawInspectorParent();
@@ -1410,7 +1412,7 @@ namespace oyl::internal
                 ImVec2(0, 1), ImVec2(1, 0)
             );
 
-            if (m_currentEntity != entt::null && 
+            if (registry->valid(m_currentEntity) && 
                 registry->has<component::PlayerCamera>(m_currentEntity))
             {
                 auto [posx, posy] = ImGui::GetItemRectMin();
@@ -1544,7 +1546,7 @@ namespace oyl::internal
     {
         using component::Transform;
         
-        if (m_currentEntity != entt::null &&
+        if (registry->valid(m_currentEntity) &&
             registry->has<Transform>(m_currentEntity))
         {
             auto& model = registry->get<Transform>(m_currentEntity);
