@@ -542,8 +542,10 @@ void SandboxLayer::onEnter()
 		/////////////////////////////////////////////////////
 
 		{
+			//LAMP
 			mr.mesh = Mesh::cache("res/assets/models/lamp.obj");
 			mr.material = Material::get("lamp");
+
 			component::Collidable boxCollider;
 			auto& shi = boxCollider.pushShape(ColliderType::Box);
 			shi.box.setSize({ 1.0f, 1.0f, 1.0f });
@@ -563,12 +565,10 @@ void SandboxLayer::onEnter()
 			so3.name = "Light 1";
 		}
 
-		///////////////////////////////////////////////////////////////////////////////
-		////						   	B O A T		S T A R T						 //
-		///////////////////////////////////////////////////////////////////////////////
 		{
-			//Boat Middle Deck Piece
+			//BOAT
 			entt::entity boatDeckMiddleEntity = registry->create();
+			mr.material = Material::get("planks");
 
 			component::Transform boatMiddleDeckTransform;
 			boatMiddleDeckTransform.setPosition(glm::vec3(0.0f, 4.0f, 0.0f));
@@ -579,7 +579,7 @@ void SandboxLayer::onEnter()
 			registry->assign<component::Renderable>(boatDeckMiddleEntity, mr);
 
 			auto& so2 = registry->assign<component::EntityInfo>(boatDeckMiddleEntity);
-			so2.name = "Boat Middle Deck";
+			so2.name = "Boat Middle Deck Parent";
 
 			auto& mopCollider = registry->assign<component::Collidable>(boatDeckMiddleEntity);
 			auto& shapeInfo = mopCollider.pushShape(ColliderType::Box);
@@ -612,6 +612,8 @@ void SandboxLayer::onEnter()
     }
     
     {
+		//GROUND PLANE
+
         component::Renderable mr;
         mr.mesh = Mesh::cache("res/assets/models/plane.obj");
         mr.material = mat;
@@ -636,7 +638,10 @@ void SandboxLayer::onEnter()
         auto& shi = cl.pushShape(ColliderType::Box);
         shi.box.setSize({ 20.0f, 0.1f, 20.0f });
     }
+
     {
+		//RANDOM SPHERES
+
         component::Renderable mr;
         mr.mesh = Mesh::get("sphere");
         mr.material = mat;

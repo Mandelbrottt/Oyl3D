@@ -629,78 +629,6 @@
             }
         }
     },
-    "Boat Middle Deck Parent": {
-        "Parent": null,
-        "Renderable": {
-            "Enabled": true,
-            "Material": {
-                "Alias": "planks"
-            },
-            "Mesh": {
-                "FilePath": "res/assets/models/boat_deck_middle.obj"
-            }
-        },
-        "Transform": {
-            "Mirror": {
-                "X": false,
-                "Y": false,
-                "Z": false
-            },
-            "Position": {
-                "X": 0.0,
-                "Y": 0.0,
-                "Z": 0.0
-            },
-            "Rotation": {
-                "qW": 1.0,
-                "qX": 0.0,
-                "qY": 0.0,
-                "qZ": 0.0
-            },
-            "Scale": {
-                "X": 1.0,
-                "Y": 1.0,
-                "Z": 1.0
-            }
-        }
-    },
-    "Boat Middle Deck1": {
-        "Parent": {
-            "Name": "Boat Middle Deck Parent"
-        },
-        "Renderable": {
-            "Enabled": true,
-            "Material": {
-                "Alias": "planks"
-            },
-            "Mesh": {
-                "FilePath": "res/assets/models/boat_deck_middle.obj"
-            }
-        },
-        "Transform": {
-            "Mirror": {
-                "X": false,
-                "Y": false,
-                "Z": false
-            },
-            "Position": {
-                "X": 1.0,
-                "Y": 0.0,
-                "Z": 0.0
-            },
-            "Rotation": {
-                "qW": 1.0,
-                "qX": 0.0,
-                "qY": 0.0,
-                "qZ": 0.0
-            },
-            "Scale": {
-                "X": 1.0,
-                "Y": 1.0,
-                "Z": 1.0
-            }
-        }
-    },
     "Cannon Firing Message": {
         "Parent": null,
         "Renderable": {
@@ -1371,7 +1299,7 @@
         "Renderable": {
             "Enabled": true,
             "Material": {
-                "Alias": null
+                "Alias": "container"
             },
             "Mesh": {
                 "FilePath": "res/assets/models/plane.obj"
