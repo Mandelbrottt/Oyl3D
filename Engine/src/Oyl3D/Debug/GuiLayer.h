@@ -42,6 +42,8 @@ namespace oyl::internal
 
         void drawSceneHierarchy();
         void drawEntityNode(entt::entity entity);
+        void recursiveCopy(entt::entity copy, entt::entity original);
+        void recursiveDelete(entt::entity entity);
 
         void setEntityParent(entt::entity entity, entt::entity parent);
         
