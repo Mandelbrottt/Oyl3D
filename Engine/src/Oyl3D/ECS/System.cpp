@@ -1378,9 +1378,9 @@ namespace oyl
 
                     boundMaterial->setUniformMat4("u_view", m_targetCamera->getViewMatrix());
                     boundMaterial->setUniformMat4("u_viewProjection", m_targetCamera->getViewProjectionMatrix());
-                    glm::mat4 viewNormal = glm::mat4(m_targetCamera->getViewMatrix());
-                    viewNormal = glm::inverse(glm::transpose(viewNormal));
-                    boundMaterial->setUniformMat3("u_viewNormal", glm::mat4(viewNormal));
+                    glm::mat3 viewNormal = glm::mat3(m_targetCamera->getViewMatrix());
+                    viewNormal = inverse(transpose(viewNormal));
+                    boundMaterial->setUniformMat3("u_viewNormal", viewNormal);
 
                     auto lightView = registry->view<PointLight>();
                     int count = 0;
