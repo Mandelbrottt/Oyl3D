@@ -582,6 +582,7 @@ void PlayerInteractionValidationSystem::performCarryableItemInteraction(entt::en
 	}
 
 	carryableItem.isBeingCarried = true;
+	carryableItem.hasBeenCarried = true;
 	carryableItemParent.parent   = a_playerEntity;
 
 	carryableItemTransform.setRotationEuler(itemNewRotation);
@@ -600,7 +601,12 @@ void PlayerInteractionValidationSystem::performGarbagePileInteraction(entt::enti
 		//NOTE: if garbage pile is not at max ticks, cleaning is handled in the OnEvent function in this file under the cleaning quicktime event
 		if (garbagePile.garbageTicks >= garbagePile.GARBAGE_TICKS_PER_LEVEL)
 		{
-			registry->destroy(player.secondaryCarriedItem);
+			auto& carryableItem          = registry->get<CarryableItem>(player.secondaryCarriedItem);
+			auto& carryableItemTransform = registry->get<component::Transform>(player.secondaryCarriedItem);
+
+			carryableItem.isActive = false;
+			carryableItemTransform.setPosition(glm::vec3(-99999.0f));
+
 			player.secondaryCarriedItem = entt::null;
 
 			RequestToCleanGarbageEvent requestToCleanGarbage;

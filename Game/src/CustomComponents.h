@@ -27,11 +27,11 @@ enum class CannonState
 
 enum class CarryableItemType
 {
-    invalid,
-    cannonball,
-    mop,
-    cleaningSolution,
-    gloop
+	invalid,
+	cannonball,
+	mop,
+	cleaningSolution,
+	gloop
 };
 
 enum class PlayerInteractionResult
@@ -123,17 +123,25 @@ struct CarryableItem
 	bool isActive = true;
 
 	CarryableItemType type = CarryableItemType::invalid; //must manually be set when spawning items
-	bool isBeingCarried    = false;
+
+	bool isBeingCarried = false;
+	bool hasBeenCarried = false;
 };
 
 struct Respawnable
 {
-	glm::vec3 spawnPosition = glm::vec3(0.0f, 0.0f, 0.0f);
-	
-	bool hasBeenCarried = false;
+	glm::vec3 spawnPosition = glm::vec3(0.0f);
+	glm::vec3 spawnRotation = glm::vec3(0.0f);
+};
 
-	float RESPAWN_DURATION = 10.0f;
-	float respawnCountdown = RESPAWN_DURATION;
+struct RespawnManager
+{
+	CarryableItemType type = CarryableItemType::invalid; //all respawnable items are also carryable items.. so this works fine
+
+	Team team;
+
+	float respawnTimerDuration   = 10.0f;
+	float respawnTimerCountdown  = respawnTimerDuration;
 
 	bool isRespawnTimerActive = false;
 };

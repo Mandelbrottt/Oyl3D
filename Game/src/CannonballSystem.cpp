@@ -36,10 +36,10 @@ void CannonballSystem::onUpdate()
 			if (cannonball.interpolationParam >= 1.0f)
 			{
 				cannonball.interpolationParam = 0.0f;
-				cannonball.isBeingFired = false;
-				cannonballCarryable.isActive = false;
+				cannonball.isBeingFired       = false;
+				cannonballCarryable.isActive  = false;
 
-				cannonballTransform.setPosition(glm::vec3(-1000.0f));
+				cannonballTransform.setPosition(glm::vec3(-99999.0f));
 			}
 		}
 	}

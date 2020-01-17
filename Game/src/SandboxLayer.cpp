@@ -248,6 +248,10 @@ void SandboxLayer::onEnter()
 				carryableItem.team = Team::blue;
 				carryableItem.type = CarryableItemType::cleaningSolution;
 
+				auto& respawnable = registry->assign<Respawnable>(cleaningSolutionEntity);
+				respawnable.spawnPosition = glm::vec3(2.8f, 0.31f, 0.65f);
+				respawnable.spawnRotation = glm::vec3(0.0f);
+
 				auto& rb = registry->assign<component::RigidBody>(cleaningSolutionEntity);
 				rb.setProperties(component::RigidBody::Property::IS_KINEMATIC, true);
 
@@ -279,6 +283,10 @@ void SandboxLayer::onEnter()
 				auto& carryableItem = registry->assign<CarryableItem>(gloopEntity);
 				carryableItem.team = Team::blue;
 				carryableItem.type = CarryableItemType::gloop;
+
+				auto& respawnable = registry->assign<Respawnable>(gloopEntity);
+				respawnable.spawnPosition = glm::vec3(1.8f, 0.27f, 2.35f);
+				respawnable.spawnRotation = glm::vec3(0.0f);
 
 				auto& rb = registry->assign<component::RigidBody>(gloopEntity);
 
@@ -321,6 +329,26 @@ void SandboxLayer::onEnter()
 			auto& cannonballCrateCollider = registry->assign<component::Collidable>(cannonballCrateEntity);
 			auto& shapeInfo = cannonballCrateCollider.pushShape(ColliderType::Box);
 			shapeInfo.box.setSize({ 2.0f, 2.7f, 1.2f });
+		}
+
+		{
+			//CLEANING SOLUTION SPAWNER
+			entt::entity cleaningSolutionSpawnerEntity = registry->create();
+
+			auto& spawner = registry->assign<RespawnManager>(cleaningSolutionSpawnerEntity);
+			spawner.respawnTimerDuration = 10.0f;
+			spawner.team = Team::blue;
+			spawner.type = CarryableItemType::cleaningSolution;
+		}
+
+		{
+			//GLOOP SPAWNER
+			entt::entity gloopSpawnerEntity = registry->create();
+
+			auto& spawner = registry->assign<RespawnManager>(gloopSpawnerEntity);
+			spawner.respawnTimerDuration = 20.0f;
+			spawner.team = Team::blue;
+			spawner.type = CarryableItemType::gloop;
 		}
 		/////////////////////////////////////////////////////
 		/////////////////////////////////////////////////////
@@ -466,6 +494,10 @@ void SandboxLayer::onEnter()
 				carryableItem.team = Team::red;
 				carryableItem.type = CarryableItemType::cleaningSolution;
 
+				auto& respawnable = registry->assign<Respawnable>(cleaningSolutionEntity);
+				respawnable.spawnPosition = glm::vec3(1.8f, 0.31f, 9.3f);
+				respawnable.spawnRotation = glm::vec3(0.0f);
+
 				auto& rb = registry->assign<component::RigidBody>(cleaningSolutionEntity);
 
 				mr.mesh = Mesh::get("cube");
@@ -495,6 +527,10 @@ void SandboxLayer::onEnter()
 				auto& carryableItem = registry->assign<CarryableItem>(gloopEntity);
 				carryableItem.team = Team::red;
 				carryableItem.type = CarryableItemType::gloop;
+
+				auto& respawnable = registry->assign<Respawnable>(gloopEntity);
+				respawnable.spawnPosition = glm::vec3(2.3f, 0.27f, 6.7f);
+				respawnable.spawnRotation = glm::vec3(0.0f);
 
 				auto& rb = registry->assign<component::RigidBody>(gloopEntity);
 
@@ -539,6 +575,26 @@ void SandboxLayer::onEnter()
 			auto& cannonballCrateCollider = registry->assign<component::Collidable>(cannonballCrateEntity);
 			auto& shapeInfo = cannonballCrateCollider.pushShape(ColliderType::Box);
 			shapeInfo.box.setSize({ 2.0f, 2.7f, 1.2f });
+		}
+
+		{
+			//CLEANING SOLUTION SPAWNER
+			entt::entity cleaningSolutionSpawnerEntity = registry->create();
+
+			auto& spawner = registry->assign<RespawnManager>(cleaningSolutionSpawnerEntity);
+			spawner.respawnTimerDuration = 10.0f;
+			spawner.team = Team::red;
+			spawner.type = CarryableItemType::cleaningSolution;
+		}
+
+		{
+			//GLOOP SPAWNER
+			entt::entity gloopSpawnerEntity = registry->create();
+
+			auto& spawner = registry->assign<RespawnManager>(gloopSpawnerEntity);
+			spawner.respawnTimerDuration = 20.0f;
+			spawner.team = Team::red;
+			spawner.type = CarryableItemType::gloop;
 		}
 		/////////////////////////////////////////////////////
 		/////////////////////////////////////////////////////
