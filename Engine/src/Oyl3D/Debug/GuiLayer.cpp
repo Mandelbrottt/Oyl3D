@@ -1351,12 +1351,12 @@ namespace oyl::internal
                                 }, (void*) &material))
                 {
                     isEntryUpdated = true;
+                    break;
                 }
             }
         }
 
-        if (isEntryUpdated)
-            m_fileSaveTimeIt->second = lastWriteTime;
+        m_fileSaveTimeIt->second = lastWriteTime;
 
         if (++m_fileSaveTimeIt == m_fileSaveTimes.end())
             m_fileSaveTimeIt = m_fileSaveTimes.begin();
@@ -1382,17 +1382,15 @@ namespace oyl::internal
                 return false;
             }
         }
-        //else
+
+        // If the file has been saved to since the last load, reload it
+        auto currRelPath = std::fs::relative(m_fileSaveTimeIt->first);
+        lastWriteTime = std::fs::last_write_time(currRelPath);
+        if (std::fs::equivalent(currRelPath, relPath) &&
+            lastWriteTime != m_fileSaveTimeIt->second)
         {
-            // If the file has been saved to since the last load, reload it
-            auto currRelPath = std::fs::relative(m_fileSaveTimeIt->first);
-            lastWriteTime = std::fs::last_write_time(currRelPath);
-            if (std::fs::equivalent(currRelPath, relPath) &&
-                lastWriteTime != m_fileSaveTimeIt->second)
-            {
-                loadAsset(userData);
-                return true;
-            }
+            loadAsset(userData);
+            return true;
         }
         return false;
     }
