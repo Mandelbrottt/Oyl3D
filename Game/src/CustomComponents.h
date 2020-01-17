@@ -150,7 +150,7 @@ struct RespawnManager
 struct Cannonball
 {
 	bool isWaitingToBeFired = false;
-	bool isBeingFired = false;
+	bool isBeingFired       = false;
 
 	glm::vec3 v1;
 	glm::vec3 v2;

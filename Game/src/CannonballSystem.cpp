@@ -137,6 +137,8 @@ void CannonballSystem::setCannonballToCarriedForPlayer(entt::entity a_playerEnti
 
 	player.primaryCarriedItem = a_cannonballEntity;
 
+	cannonball.isWaitingToBeFired = false;
+
 	cannonballCarryable.isBeingCarried = true;
 	cannonballCarryable.isActive       = true;
 

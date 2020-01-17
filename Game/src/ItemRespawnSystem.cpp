@@ -62,66 +62,28 @@ void ItemRespawnSystem::spawnItem(entt::entity a_respawnManagerEntity)
 {
 	auto& respawnManager = registry->get<RespawnManager>(a_respawnManagerEntity);
 
-	entt::entity entityToCopy = entt::null;
+	//spawn the new item
+	auto newEntity = registry->create();
+	registry->stomp(newEntity, respawnManager.entityPrefab, *registry);
 
-	bool isThereAnInactiveRespawnable = false;
+	auto& newCarryableItem = registry->get<CarryableItem>(newEntity);
+	auto& newRespawnable   = registry->get<Respawnable>(newEntity);
+	auto& newTransform     = registry->get<component::Transform>(newEntity);
+	auto& newEntityInfo    = registry->get<component::EntityInfo>(newEntity);
+
+	newCarryableItem.hasBeenCarried = false;
+
+	newTransform.setPosition(newRespawnable.spawnPosition);
+	newTransform.setRotation(newRespawnable.spawnRotation);
+
+	std::string itemTeamName = respawnManager.team == Team::blue ? "Blue" : "Red";
+
+	std::string itemTypeName;
+	if (newCarryableItem.type == CarryableItemType::cleaningSolution)
+		itemTypeName = "CleaningSolution";
+	else if (newCarryableItem.type == CarryableItemType::gloop)
+		itemTypeName = "Gloop";
 
 	auto respawnableItemsView = registry->view<Respawnable, CarryableItem, component::Transform>();
-	for (auto& respawnableEntity : respawnableItemsView)
-	{
-		auto& carryableItem = registry->get<CarryableItem>(respawnableEntity);
-
-		//search for an item we can copy
-		if (carryableItem.type == respawnManager.type && carryableItem.team == respawnManager.team)
-		{
-			entityToCopy = respawnableEntity;
-
-			if (!carryableItem.isActive)
-			{
-				auto& respawnable   = registry->get<Respawnable>(respawnableEntity);
-				auto& itemTransform = registry->get<component::Transform>(respawnableEntity);
-
-				isThereAnInactiveRespawnable = true;
-				//spawn the item back into the game
-				carryableItem.isActive       = true;
-				carryableItem.isBeingCarried = false;
-				carryableItem.hasBeenCarried = false;
-
-				itemTransform.setPosition(respawnable.spawnPosition);
-				itemTransform.setRotation(respawnable.spawnRotation);
-
-				break;
-			}
-		}
-	}
-
-	//if there were no inactive items to reuse, spawn a new one
-	if (!isThereAnInactiveRespawnable)
-	{
-		//spawn the item
-		auto newEntity = registry->create();
-		registry->stomp(newEntity, entityToCopy, *registry);
-
-		auto& newCarryableItem = registry->get<CarryableItem>(newEntity);
-		auto& newRespawnable   = registry->get<Respawnable>(newEntity);
-		auto& newTransform     = registry->get<component::Transform>(newEntity);
-		auto& newEntityInfo    = registry->get<component::EntityInfo>(newEntity);
-
-		newCarryableItem.isActive       = true;
-		newCarryableItem.hasBeenCarried = false;
-		newCarryableItem.isBeingCarried = false;
-
-		newTransform.setPosition(newRespawnable.spawnPosition);
-		newTransform.setRotation(newRespawnable.spawnRotation);
-
-		std::string itemTeamName = respawnManager.team == Team::blue ? "Blue" : "Red";
-
-		std::string itemTypeName;
-		if (newCarryableItem.type == CarryableItemType::cleaningSolution)
-			itemTypeName = "CleaningSolution";
-		else if (newCarryableItem.type == CarryableItemType::gloop)
-			itemTypeName = "Gloop";
-
-		newEntityInfo.name = itemTeamName + itemTypeName + std::to_string(respawnableItemsView.size());
-	}
+	newEntityInfo.name = itemTeamName + itemTypeName + std::to_string(respawnableItemsView.size());
 }

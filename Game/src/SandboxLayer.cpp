@@ -253,9 +253,7 @@ void SandboxLayer::onEnter()
 				respawnable.spawnRotation = glm::vec3(0.0f);
 
 				auto& rb = registry->assign<component::RigidBody>(cleaningSolutionEntity);
-				rb.setProperties(component::RigidBody::Property::IS_KINEMATIC, true);
 
-				mr.mesh = Mesh::get("cube");
 				registry->assign<component::Renderable>(cleaningSolutionEntity, mr);
 
 				auto& so2 = registry->assign<component::EntityInfo>(cleaningSolutionEntity);
@@ -277,7 +275,7 @@ void SandboxLayer::onEnter()
 
 				component::Transform gloopTransform;
 				gloopTransform.setPosition(glm::vec3(3.0f, 0.27f, 3.0f));
-				gloopTransform.setScale(glm::vec3(0.23f, 0.23f, 0.23f));
+				gloopTransform.setScale(glm::vec3(0.1f, 0.1f, 0.1f));
 				registry->assign<component::Transform>(gloopEntity, gloopTransform);
 
 				auto& carryableItem = registry->assign<CarryableItem>(gloopEntity);
@@ -333,22 +331,66 @@ void SandboxLayer::onEnter()
 
 		{
 			//CLEANING SOLUTION SPAWNER
+			//NOTE: MAKE SURE THIS IS INITIALIZED AFTER CLEANING SOLUTION ENTITIES
 			entt::entity cleaningSolutionSpawnerEntity = registry->create();
 
 			auto& spawner = registry->assign<RespawnManager>(cleaningSolutionSpawnerEntity);
 			spawner.respawnTimerDuration = 10.0f;
 			spawner.team = Team::blue;
 			spawner.type = CarryableItemType::cleaningSolution;
+
+			auto respawnableItemsView = registry->view<Respawnable, CarryableItem, component::Transform>();
+			for (auto& respawnableEntity : respawnableItemsView)
+			{
+				auto& carryableItem = registry->get<CarryableItem>(respawnableEntity);
+
+				if (carryableItem.type == spawner.type && carryableItem.team == spawner.team)
+				{
+					spawner.entityPrefab = registry->create();
+					registry->stomp(spawner.entityPrefab, respawnableEntity, *registry);
+
+					auto& newTransform  = registry->get<component::Transform>(spawner.entityPrefab);
+					auto& newEntityInfo = registry->get<component::EntityInfo>(spawner.entityPrefab);
+					auto& newCarryable = registry->get<CarryableItem>(spawner.entityPrefab);
+
+					newCarryable.hasBeenCarried = true; //we have to do this or else the prefab entity will stop this spawner from ever spawning an item
+					newTransform.setPosition(glm::vec3(-99999.0f));
+					newEntityInfo.name = "BlueCleaningSolutionPrefab";
+					break;
+				}
+			}
 		}
 
 		{
 			//GLOOP SPAWNER
+			//NOTE: MAKE SURE THIS IS INITIALIZED AFTER GLOOP ENTITIES
 			entt::entity gloopSpawnerEntity = registry->create();
 
 			auto& spawner = registry->assign<RespawnManager>(gloopSpawnerEntity);
 			spawner.respawnTimerDuration = 20.0f;
 			spawner.team = Team::blue;
 			spawner.type = CarryableItemType::gloop;
+
+			auto respawnableItemsView = registry->view<Respawnable, CarryableItem, component::Transform>();
+			for (auto& respawnableEntity : respawnableItemsView)
+			{
+				auto& carryableItem = registry->get<CarryableItem>(respawnableEntity);
+
+				if (carryableItem.type == spawner.type && carryableItem.team == spawner.team)
+				{
+					spawner.entityPrefab = registry->create();
+					registry->stomp(spawner.entityPrefab, respawnableEntity, *registry);
+
+					auto& newTransform  = registry->get<component::Transform>(spawner.entityPrefab);
+					auto& newEntityInfo = registry->get<component::EntityInfo>(spawner.entityPrefab);
+					auto& newCarryable = registry->get<CarryableItem>(spawner.entityPrefab);
+
+					newCarryable.hasBeenCarried = true; //we have to do this or else the prefab entity will stop this spawner from ever spawning an item
+					newTransform.setPosition(glm::vec3(-99999.0f));
+					newEntityInfo.name = "BlueGloopPrefab";
+					break;
+				}
+			}
 		}
 		/////////////////////////////////////////////////////
 		/////////////////////////////////////////////////////
@@ -500,7 +542,6 @@ void SandboxLayer::onEnter()
 
 				auto& rb = registry->assign<component::RigidBody>(cleaningSolutionEntity);
 
-				mr.mesh = Mesh::get("cube");
 				registry->assign<component::Renderable>(cleaningSolutionEntity, mr);
 
 				auto& so2 = registry->assign<component::EntityInfo>(cleaningSolutionEntity);
@@ -521,7 +562,7 @@ void SandboxLayer::onEnter()
 
 				component::Transform gloopTransform;
 				gloopTransform.setPosition(glm::vec3(3.0f, 0.27f, 3.0f));
-				gloopTransform.setScale(glm::vec3(0.2f, 0.2f, 0.2f));
+				gloopTransform.setScale(glm::vec3(0.1f, 0.1f, 0.1f));
 				registry->assign<component::Transform>(gloopEntity, gloopTransform);
 
 				auto& carryableItem = registry->assign<CarryableItem>(gloopEntity);
@@ -579,22 +620,66 @@ void SandboxLayer::onEnter()
 
 		{
 			//CLEANING SOLUTION SPAWNER
+			//NOTE: MAKE SURE THIS IS INITIALIZED AFTER CLEANING SOLUTION ENTITIES
 			entt::entity cleaningSolutionSpawnerEntity = registry->create();
 
 			auto& spawner = registry->assign<RespawnManager>(cleaningSolutionSpawnerEntity);
 			spawner.respawnTimerDuration = 10.0f;
 			spawner.team = Team::red;
 			spawner.type = CarryableItemType::cleaningSolution;
+
+			auto respawnableItemsView = registry->view<Respawnable, CarryableItem, component::Transform>();
+			for (auto& respawnableEntity : respawnableItemsView)
+			{
+				auto& carryableItem = registry->get<CarryableItem>(respawnableEntity);
+
+				if (carryableItem.type == spawner.type && carryableItem.team == spawner.team)
+				{
+					spawner.entityPrefab = registry->create();
+					registry->stomp(spawner.entityPrefab, respawnableEntity, *registry);
+
+					auto& newTransform  = registry->get<component::Transform>(spawner.entityPrefab);
+					auto& newEntityInfo = registry->get<component::EntityInfo>(spawner.entityPrefab);
+					auto& newCarryable = registry->get<CarryableItem>(spawner.entityPrefab);
+
+					newCarryable.hasBeenCarried = true; //we have to do this or else the prefab entity will stop this spawner from ever spawning an item
+					newTransform.setPosition(glm::vec3(-99999.0f));
+					newEntityInfo.name = "RedCleaningSolutionPrefab";
+					break;
+				}
+			}
 		}
 
 		{
 			//GLOOP SPAWNER
+			//NOTE: MAKE SURE THIS IS INITIALIZED AFTER GLOOP ENTITIES
 			entt::entity gloopSpawnerEntity = registry->create();
 
 			auto& spawner = registry->assign<RespawnManager>(gloopSpawnerEntity);
 			spawner.respawnTimerDuration = 20.0f;
 			spawner.team = Team::red;
 			spawner.type = CarryableItemType::gloop;
+
+			auto respawnableItemsView = registry->view<Respawnable, CarryableItem, component::Transform>();
+			for (auto& respawnableEntity : respawnableItemsView)
+			{
+				auto& carryableItem = registry->get<CarryableItem>(respawnableEntity);
+
+				if (carryableItem.type == spawner.type && carryableItem.team == spawner.team)
+				{
+					spawner.entityPrefab = registry->create();
+					registry->stomp(spawner.entityPrefab, respawnableEntity, *registry);
+
+					auto& newTransform  = registry->get<component::Transform>(spawner.entityPrefab);
+					auto& newEntityInfo = registry->get<component::EntityInfo>(spawner.entityPrefab);
+					auto& newCarryable  = registry->get<CarryableItem>(spawner.entityPrefab);
+
+					newCarryable.hasBeenCarried = true; //we have to do this or else the prefab entity will stop this spawner from ever spawning an item
+					newTransform.setPosition(glm::vec3(-99999.0f));
+					newEntityInfo.name = "RedGloopPrefab";
+					break;
+				}
+			}
 		}
 		/////////////////////////////////////////////////////
 		/////////////////////////////////////////////////////
