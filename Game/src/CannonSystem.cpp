@@ -12,13 +12,13 @@ void CannonSystem::onExit()
 void CannonSystem::onUpdate()
 {
 	auto view = registry->view<Cannon, component::Transform>();
-	for (auto& entity : view)
+	for (auto& cannonEntity : view)
 	{
-		auto& cannon = registry->get<Cannon>(entity);
-	    auto& cannonTransform = registry->get<component::Transform>(entity);
+		auto& cannon = registry->get<Cannon>(cannonEntity);
+	    auto& cannonTransform = registry->get<component::Transform>(cannonEntity);
 	    
 	    //update fuse for every cannon
-		updateFuse(Time::deltaTime(), &cannon, &cannonTransform);
+		updateFuse(Time::deltaTime(), cannonEntity);
 
 		switch (cannon.state)
 		{
@@ -106,37 +106,45 @@ void CannonSystem::changeToFiringSoon(Cannon* a_cannon)
 	std::cout << "FIRING SOON!\n";
 }
 
-void CannonSystem::updateFuse(float dt, Cannon* a_cannon, component::Transform* a_cannonTransform)
+void CannonSystem::updateFuse(float dt, entt::entity a_cannonEntity)
 {
-	a_cannon->fuseCountdown -= dt;
+	auto& cannon          = registry->get<Cannon>(a_cannonEntity);
+	auto& cannonTransform = registry->get<component::Transform>(a_cannonEntity);
+
+	cannon.fuseCountdown -= dt;
 
     //check if cannon is firing soon (if fuse timer <= time it takes to push the cannon)
-    if (a_cannon->fuseCountdown <= (1.0f / a_cannon->beingPushedSpeed))
+    if (cannon.fuseCountdown <= (1.0f / cannon.beingPushedSpeed))
     {
-        if (a_cannon->state == CannonState::doingNothing)
-		    changeToFiringSoon(a_cannon);
+        if (cannon.state == CannonState::doingNothing)
+		    changeToFiringSoon(&cannon);
         
-		if (a_cannon->fuseCountdown < 0.0f)
+		if (cannon.fuseCountdown < 0.0f)
 		{
-			a_cannon->fuseCountdown = a_cannon->FUSE_DURATION;
-			changeToDoingNothing(a_cannon);
+			cannon.fuseCountdown = cannon.FUSE_DURATION;
+			changeToDoingNothing(&cannon);
 		    
-			if (a_cannon->isLoaded)
-				fireCannon(a_cannon, a_cannonTransform);
-			else
-				std::cout << "CANNON MISFIRE! (UNLOADED CANNON FIRED)\n";
+			fireCannon(a_cannonEntity);
 		}
     }
 }
 
-void CannonSystem::fireCannon(Cannon* a_cannon, component::Transform* a_cannonTransform)
+void CannonSystem::fireCannon(entt::entity a_cannonEntity)
 {
-	std::cout << "CANNON FIRED!\n";
-	a_cannon->isLoaded = false;
-	changeToDoingNothing(a_cannon);
+	auto& cannon = registry->get<Cannon>(a_cannonEntity);
 
-	CannonFiredEvent cannonFired;
-	cannonFired.cannonPosition = a_cannonTransform->getPosition();
-	cannonFired.fireDirection  = a_cannon->firingDirection;
-	postEvent(cannonFired);
+	if (cannon.isLoaded)
+	{
+		std::cout << "CANNON FIRED!\n";
+		cannon.isLoaded = false;
+		changeToDoingNothing(&cannon);
+
+		CannonFiredEvent cannonFired;
+		cannonFired.cannonEntity = a_cannonEntity;
+		postEvent(cannonFired);
+	}
+	else
+	{
+		std::cout << "CANNON MISFIRE! (UNLOADED CANNON FIRED)\n";
+	}
 }

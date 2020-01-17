@@ -604,9 +604,7 @@ void PlayerInteractionValidationSystem::performGarbagePileInteraction(entt::enti
 			auto& carryableItem          = registry->get<CarryableItem>(player.secondaryCarriedItem);
 			auto& carryableItemTransform = registry->get<component::Transform>(player.secondaryCarriedItem);
 
-			carryableItem.isActive = false;
-			carryableItemTransform.setPosition(glm::vec3(-99999.0f));
-
+			registry->destroy(player.secondaryCarriedItem);
 			player.secondaryCarriedItem = entt::null;
 
 			RequestToCleanGarbageEvent requestToCleanGarbage;
@@ -660,6 +658,7 @@ void PlayerInteractionValidationSystem::performCannonInteraction(entt::entity a_
 	{
 		cannon.isLoaded = true;
 
+		auto& cannonball           = registry->get<Cannonball>(player.primaryCarriedItem);
 		auto& carriedItem          = registry->get<CarryableItem>(player.primaryCarriedItem);
 		auto& carriedItemParent    = registry->get<component::Parent>(player.primaryCarriedItem);
 		auto& carriedItemTransform = registry->get<component::Transform>(player.primaryCarriedItem);
@@ -670,10 +669,11 @@ void PlayerInteractionValidationSystem::performCannonInteraction(entt::entity a_
 
 			carriedItemParent.parent  = entt::null;
 			player.primaryCarriedItem = entt::null;
+			
+			cannonball.isWaitingToBeFired = true;
 
 			carriedItem.isBeingCarried = false;
-			carriedItem.isActive       = false;
-			carriedItemTransform.setPosition(glm::vec3(-1000.0f, -1000.0f, -1000.0f));
+			carriedItemTransform.setPosition(glm::vec3(-99999.0f));
 
 			return;
 		}

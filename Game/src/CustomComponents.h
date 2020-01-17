@@ -136,18 +136,20 @@ struct Respawnable
 
 struct RespawnManager
 {
-	CarryableItemType type = CarryableItemType::invalid; //all respawnable items are also carryable items.. so this works fine
+	entt::entity entityPrefab = entt::null;
 
+	CarryableItemType type = CarryableItemType::invalid; //all respawnable items are also carryable items.. so this works fine
 	Team team;
 
-	float respawnTimerDuration   = 10.0f;
-	float respawnTimerCountdown  = respawnTimerDuration;
+	float respawnTimerDuration  = 10.0f;
+	float respawnTimerCountdown = respawnTimerDuration;
 
 	bool isRespawnTimerActive = false;
 };
 
 struct Cannonball
 {
+	bool isWaitingToBeFired = false;
 	bool isBeingFired = false;
 
 	glm::vec3 v1;
