@@ -261,15 +261,13 @@ namespace oyl::component
     {
         using component::Parent;
 
-        entt::entity parent;
-
         // Check if the owner has a parent
-        if (!m_registry->has<Parent>(m_owner) ||
-            (parent = m_registry->get<Parent>(m_owner).parent) == entt::null)
+        Parent* p = m_registry->try_get<Parent>(m_owner);
+        if (!p || !m_registry->valid(p->parent))
         {
             return getMatrix();
         }
-        auto& parentTransform = m_registry->get<Transform>(parent);
+        auto& parentTransform = m_registry->get<Transform>(p->parent);
         return parentTransform.getMatrixGlobal() * getMatrix();
     }
 
