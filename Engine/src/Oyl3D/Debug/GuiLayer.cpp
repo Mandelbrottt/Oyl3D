@@ -74,6 +74,8 @@ namespace oyl::internal
             system->setRegistry(registry);
             system->setDispatcher(m_dispatcher);
         }
+
+        m_fileSaveTimeIt = m_fileSaveTimes.begin();
     }
 
     void GuiLayer::setupGuiLibrary()
@@ -622,6 +624,12 @@ namespace oyl::internal
             ct.m_localPosition = tComponents[0];
             ct.m_localRotation = glm::quat(radians(tComponents[1]));
             ct.m_localScale = tComponents[2];
+            ct.m_mirror = glm::bvec3(false);
+
+            for (int i = 0; i < 3; i++)
+                ct.m_mirror[i] = ct.m_localScale[i] < 0.0f;
+
+            ct.m_localScale = glm::abs(ct.m_localScale);
 
             ct.m_isLocalDirty = true;
         }
@@ -646,6 +654,12 @@ namespace oyl::internal
             ct.m_localPosition = tComponents[0];
             ct.m_localRotation = glm::quat(radians(tComponents[1]));
             ct.m_localScale = tComponents[2];
+            ct.m_mirror = glm::bvec3(false);
+
+            for (int i = 0; i < 3; i++)
+                ct.m_mirror[i] = ct.m_localScale[i] < 0.0f;
+
+            ct.m_localScale = glm::abs(ct.m_localScale);
 
             ct.m_isLocalDirty = true;
         }
@@ -1298,9 +1312,7 @@ namespace oyl::internal
 
     void GuiLayer::updateAssetList()
     {
-        static auto it = m_fileSaveTimes.begin();
-
-        std::fs::file_time_type lastWriteTime;
+        std::fs::file_time_type lastWriteTime = {};
         bool isEntryUpdated = false;
         
         for (const auto& kvp : Shader::getCache())
@@ -1310,53 +1322,79 @@ namespace oyl::internal
             
             for (const auto& shader : kvp.second->getShaderInfos())
             {
-                auto relPath = std::fs::relative(shader.filename);
-                auto relPathStr = relPath.string();
-                if (it == m_fileSaveTimes.begin() ||
-                    m_fileSaveTimes.empty())
-                {    
-                    // If the file path is not in the database, add it
-                    if (m_fileSaveTimes.find(relPathStr) == m_fileSaveTimes.end())
-                    {
-                        m_fileSaveTimes[relPathStr] = last_write_time(relPath);
-                        it = m_fileSaveTimes.begin();
-                        continue;
-                    }
-                }
-                else
+                auto pair = std::make_pair<const ShaderInfo&, const Ref<Shader>&>(shader, kvp.second);
+                if (updateAsset(shader.filename, lastWriteTime,
+                                [](void* data)
+                                {
+                                    decltype(pair)& p = *reinterpret_cast<decltype(pair)*>(data);
+                                    p.second->load(p.second->getShaderInfos());
+                                }, (void*) &pair))
                 {
-                    auto currRelPath = std::fs::relative(it->first);
-                    lastWriteTime = std::fs::last_write_time(currRelPath);
-                    if (std::fs::equivalent(currRelPath, relPath) &&
-                        lastWriteTime != it->second)
-                    {
-                        kvp.second->load(kvp.second->getShaderInfos());
-                        //it->second = lastWriteTime;
-                        isEntryUpdated = true;
-                    }
+                    isEntryUpdated = true;
+                    break;
+                }
+            }
+        }
+
+        if (!isEntryUpdated)
+        {
+            for (auto& [alias, material] : Material::getCache())
+            {
+                if (!material) continue;
+
+                if (updateAsset(material->getFilePath(), lastWriteTime,
+                                [](void* data)
+                                {
+                                    auto& materialRef = *reinterpret_cast<Ref<Material>*>(data);
+                                    auto mat = Material::create(materialRef->getFilePath());
+                                    if (mat) *materialRef = *mat;
+                                }, (void*) &material))
+                {
+                    isEntryUpdated = true;
                 }
             }
         }
 
         if (isEntryUpdated)
-            it->second = lastWriteTime;
+            m_fileSaveTimeIt->second = lastWriteTime;
 
-        if (++it == m_fileSaveTimes.end())
-            it = m_fileSaveTimes.begin();
+        if (++m_fileSaveTimeIt == m_fileSaveTimes.end())
+            m_fileSaveTimeIt = m_fileSaveTimes.begin();
+    }
 
-        //for (auto& p : std::fs::recursive_directory_iterator("res/assets/"))
-        //{
-        //    // TEMPORARY:
-        //    if (p.is_directory()) continue;
-
-        //    if (p.is_regular_file())
-        //    {
-        //        if (p.path().extension().string().compare(""))
-        //        {
-        //            
-        //        }
-        //    }
-        //}
+    bool GuiLayer::updateAsset(const std::string& filepath, 
+                               std::fs::file_time_type& lastWriteTime,
+                               void (*loadAsset)(void*), 
+                               void* userData)
+    {
+        if (filepath.empty()) return false;
+        
+        auto relPath = std::fs::relative(filepath);
+        auto relPathStr = relPath.string();
+        if (m_fileSaveTimeIt == m_fileSaveTimes.begin() ||
+            m_fileSaveTimes.empty())
+        {
+            // If the file path is not in the database, add it
+            if (m_fileSaveTimes.find(relPathStr) == m_fileSaveTimes.end())
+            {
+                m_fileSaveTimes[relPathStr] = last_write_time(relPath);
+                m_fileSaveTimeIt = m_fileSaveTimes.begin();
+                return false;
+            }
+        }
+        //else
+        {
+            // If the file has been saved to since the last load, reload it
+            auto currRelPath = std::fs::relative(m_fileSaveTimeIt->first);
+            lastWriteTime = std::fs::last_write_time(currRelPath);
+            if (std::fs::equivalent(currRelPath, relPath) &&
+                lastWriteTime != m_fileSaveTimeIt->second)
+            {
+                loadAsset(userData);
+                return true;
+            }
+        }
+        return false;
     }
 
     void GuiLayer::drawSceneViewport()
