@@ -11,6 +11,7 @@
 #include "Events/EventDispatcher.h"
 #include "Events/EventListener.h"
 
+#include "Graphics/Material.h"
 #include "Graphics/Shader.h"
 #include "Graphics/Texture.h"
 
@@ -99,6 +100,8 @@ namespace oyl
         Texture2D::cache(ENGINE_RES + UV_TEXTURE_PATH, UV_TEXTURE_ALIAS);
 
         TextureCubeMap::cache(ENGINE_RES + DEFAULT_SKYBOX_PATH, DEFAULT_SKYBOX_ALIAS);
+
+		Material::cache(Material::create(), INVALID_ALIAS);
 
         m_renderSystem    = internal::RenderSystem::create();
         m_guiRenderSystem = internal::GuiRenderSystem::create();
@@ -256,7 +259,8 @@ namespace oyl
         m_currentScene->Scene::onEnter();
         m_currentScene->onEnter();
         
-        internal::loadSceneFromFile(*m_currentScene);
+        //internal::loadSceneFromFile(*m_currentScene);
+        internal::registryFromSceneFile(*m_currentScene->m_registry, m_currentScene->m_name);
         
     }
 

@@ -23,6 +23,8 @@
 
 #include "Input/Input.h"
 
+#include "Utils/SceneToFile.h"
+
 #include <examples/imgui_impl_glfw.h>
 #include <examples/imgui_impl_opengl3.h>
 
@@ -159,27 +161,27 @@ namespace oyl::internal
         using component::Transform;
         using component::Parent;
 
-        // For every child object, give its transform a reference to its parent's
-        auto view = registry->view<Transform, Parent>();
-        for (auto entity : view)
-        {
-            auto& ct = view.get<Transform>(entity);
-            auto parent = view.get<Parent>(entity).parent;
+        //// For every child object, give its transform a reference to its parent's
+        //auto view = registry->view<Transform, Parent>();
+        //for (auto entity : view)
+        //{
+        //    auto& ct = view.get<Transform>(entity);
+        //    auto parent = view.get<Parent>(entity).parent;
 
-            if (parent != entt::null)
-            {
-                auto& pt = registry->get<Transform>(parent);
+        //    if (parent != entt::null)
+        //    {
+        //        auto& pt = registry->get<Transform>(parent);
 
-                if (!pt.m_localRef)
-                    pt.m_localRef = Ref<Transform>(&pt, [](Transform*) {});
+        //        if (!pt.m_localRef)
+        //            pt.m_localRef = Ref<Transform>(&pt, [](Transform*) {});
 
-                ct.m_parentRef = pt.m_localRef;
-            }
-            else
-            {
-                ct.m_parentRef = {};
-            }
-        }
+        //        ct.m_parentRef = pt.m_localRef;
+        //    }
+        //    else
+        //    {
+        //        ct.m_parentRef = {};
+        //    }
+        //}
 
         // TODO: update the asset list every frame, maybe stagger how many we update per frame for performance reasons
         updateAssetList();
@@ -324,7 +326,9 @@ namespace oyl::internal
             {
                 if (ImGui::MenuItem("Save##MainMenuSave", "Ctrl+S", false, m_editorOverrideUpdate))
                 {
-                    saveSceneToFile(*Scene::current());
+                    //saveSceneToFile(*Scene::current());
+                    // TEMPORARY: Let name be accessed through a getter
+                    registryToSceneFile(*registry, Scene::current()->m_name);
                 }
                 showReloadDialogue = 
                     ImGui::MenuItem("Reload##MainMenuReload", "Ctrl+Shift+S", false, m_editorOverrideUpdate);
@@ -361,7 +365,8 @@ namespace oyl::internal
                     ImGui::Indent(ImGui::GetWindowContentRegionWidth() / 2 - 55);
                     if (ImGui::Button("Reload##ReloadConfirmationReload"))
                     {
-                        loadSceneFromFile(*Scene::current());
+                        //loadSceneFromFile(*Scene::current());
+                        registryFromSceneFile(*registry, Scene::current()->m_name);
                         m_currentEntity = entt::null;
                         showReloadDialogue = false;
                     }
@@ -413,12 +418,14 @@ namespace oyl::internal
             auto parentView = registry->view<component::Parent>();
             
             registry->each(
-                [&](auto entity)
+                [this, &parentView](auto entity)
                 {
-                    if (parentView.contains(entity) && 
-                        parentView.get(entity).parent != entt::null) return;
-
-                    drawEntityNode(entity);
+                    if (registry->valid(entity) &&
+                        (!parentView.contains(entity) ||
+                         !registry->valid(parentView.get(entity).parent)))
+                    {
+                        this->drawEntityNode(entity);
+                    }
                 });
         }
         ImGui::End();
@@ -465,23 +472,26 @@ namespace oyl::internal
                 {
                     flags |= ImGuiSelectableFlags_Disabled;
                 }
-                
-                if (ImGui::Selectable("Clear Parent##HierarchyContextClearParent", false, flags))
-                {
-                    setEntityParent(entity, entt::null);
+
+                // Redundant with drag and drop
+                //if (ImGui::Selectable("Clear Parent##HierarchyContextClearParent", false, flags))
+                //{
+                //    setEntityParent(entity, entt::null);
+                //}
+
+                // TODO: Fix issue where parent ref in transform occasionally breaks
+                if (ImGui::Selectable("Duplicate Entity##HierarchyContextDupeEntity", false))
+                {                    
+                    auto copy = registry->create();
+                    registry->stomp(copy, entity, *registry);
+                    recursiveCopy(copy, entity);
+
+                    m_currentEntity = entity;
                 }
 
                 if (ImGui::Selectable("Delete Entity##HierarchyContextDeleteEntity", false))
                 {
-                    for (auto child : registry->view<Parent>())
-                    {
-                        if (registry->get<Parent>(child).parent == entity)
-                        {
-                            setEntityParent(child, entt::null);
-                        }
-                    }
-
-                    registry->destroy(entity);
+                    recursiveDelete(entity);
 
                     if (m_currentEntity == entity)
                         m_currentEntity = entt::null;
@@ -511,8 +521,12 @@ namespace oyl::internal
             
                 for (auto child : parentView)
                 {
-                    if (parentView.get(child).parent == entity)
+                    if (registry->valid(child) && 
+                        registry->has<component::Parent>(child) &&
+                        parentView.get(child).parent == entity)
+                    {
                         drawEntityNode(child);
+                    }
                 }
             }
 
@@ -525,6 +539,72 @@ namespace oyl::internal
             selected.entity = entity;
             postEvent(selected);
         }
+    }
+
+    void GuiLayer::recursiveCopy(entt::entity copy, entt::entity original)
+    {
+        using component::EntityInfo;
+        using component::Parent;
+
+        auto& copyEI = registry->get<EntityInfo>(copy);
+
+        uint pos = copyEI.name.size();
+        while (pos > 0 && std::isdigit(copyEI.name[pos - 1])) pos--;
+
+        auto eiView = registry->view<EntityInfo>();
+        bool isValid = false;
+        do
+        {
+            isValid = true;
+            if (pos > 0 && pos != copyEI.name.size())
+            {
+                int number = std::stoi(copyEI.name.substr(pos));
+                copyEI.name.erase(pos);
+
+                if (copyEI.name[pos - 1] != ' ')
+                    copyEI.name.append(" ");
+
+                copyEI.name.append(std::to_string(number + 1));
+            }
+            else
+            {
+                copyEI.name.append(" " + std::to_string(1));
+            }
+            for (auto entity : eiView)
+            {
+                if (entity != copy && eiView.get(entity).name == copyEI.name)
+                {
+                    isValid = false;
+                    break;
+                }
+            }
+        } while (!isValid);
+        
+        auto view = registry->view<Parent>();
+        for (auto child : view)
+        {
+            if (view.get(child).parent == original)
+            {
+                auto e = registry->create();
+                registry->stomp(e, child, *registry);
+                registry->get<Parent>(e).parent = copy;
+                recursiveCopy(e, child);
+            }
+        }
+    }
+
+    void GuiLayer::recursiveDelete(entt::entity entity)
+    {
+        using component::Parent;
+        
+        auto view = registry->view<Parent>();
+        for (auto child : view)
+        {
+            if (view.get(child).parent == entity)
+                recursiveDelete(child);
+        }
+
+        registry->destroy(entity);
     }
 
     void GuiLayer::setEntityParent(entt::entity entity, entt::entity parent)
@@ -587,7 +667,7 @@ namespace oyl::internal
     {
         if (ImGui::Begin(g_inspectorWindowName, nullptr))
         {
-            if (m_currentEntity != entt::null)
+            if (registry->valid(m_currentEntity))
             {
                 drawInspectorObjectName();
                 //drawInspectorParent();
@@ -1332,7 +1412,7 @@ namespace oyl::internal
                 ImVec2(0, 1), ImVec2(1, 0)
             );
 
-            if (m_currentEntity != entt::null && 
+            if (registry->valid(m_currentEntity) && 
                 registry->has<component::PlayerCamera>(m_currentEntity))
             {
                 auto [posx, posy] = ImGui::GetItemRectMin();
@@ -1466,7 +1546,7 @@ namespace oyl::internal
     {
         using component::Transform;
         
-        if (m_currentEntity != entt::null &&
+        if (registry->valid(m_currentEntity) &&
             registry->has<Transform>(m_currentEntity))
         {
             auto& model = registry->get<Transform>(m_currentEntity);
@@ -1564,14 +1644,14 @@ namespace oyl::internal
 
                     postEvent(PhysicsResetWorldEvent{});
                     
-                    auto view = registry->view<component::Transform>();
+                    //auto view = registry->view<component::Transform>();
 
-                    for (auto entity : view)
-                    {
-                        auto& t = view.get(entity);
-                        t.m_localRef = Ref<component::Transform>(&t, [](component::Transform*) {});
-                        t.m_parentRef.reset();
-                    }
+                    //for (auto entity : view)
+                    //{
+                    //    auto& t = view.get(entity);
+                    //    t.m_localRef = Ref<component::Transform>(&t, [](component::Transform*) {});
+                    //    t.m_parentRef.reset();
+                    //}
 
                     m_currentEntity = entt::null;
                 }

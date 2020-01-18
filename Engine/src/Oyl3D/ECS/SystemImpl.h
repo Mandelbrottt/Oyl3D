@@ -123,12 +123,12 @@ namespace oyl::internal
         UniqueRef<btDynamicsWorld>          m_btWorld;
     };
 
-    class TransformUpdateSystem : public System
-    {
-        OYL_CTOR(TransformUpdateSystem, System)
+    //class TransformUpdateSystem : public System
+    //{
+    //    OYL_CTOR(TransformUpdateSystem, System)
 
-        virtual void onUpdate() override;
-    };
+    //    virtual void onUpdate() override;
+    //};
 
     class EditorCameraSystem : public System
     {

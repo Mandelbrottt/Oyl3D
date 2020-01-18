@@ -18,7 +18,7 @@ void GarbagePileSystem::onUpdate()
 	if (passiveGarbageBuildupCountdown < 0.0f)
 	{
 		addGarbageLevel = true;
-		passiveGarbageBuildupCountdown = PASSIVE_GARBAGE_BUILDUP_TIME - numBuildUpsAccumulated * 0.3f; //TODO: come up with a better equation for time scaling
+		passiveGarbageBuildupCountdown = PASSIVE_GARBAGE_BUILDUP_TIME - numBuildUpsAccumulated * 0.1f; //TODO: come up with a better equation for time scaling
 		numBuildUpsAccumulated++;
 	}
 
@@ -35,10 +35,8 @@ void GarbagePileSystem::onUpdate()
 		if (addGarbageLevel)
 			increaseGarbageLevel(garbagePileEntity);
 
-		garbagePileTransform.setScale(glm::vec3(
-			0.3f * garbagePile.garbageLevel + 1.5f,
-			0.7f,
-			0.3f * garbagePile.garbageLevel + 1.5f));
+		garbagePileTransform.setScaleX(0.07f * garbagePile.garbageLevel + 0.5f);
+		garbagePileTransform.setScaleZ(0.07f * garbagePile.garbageLevel + 0.5f);
 
 		totalGarbageLevel += garbagePile.garbageLevel;
 

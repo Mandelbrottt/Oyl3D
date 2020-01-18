@@ -33,6 +33,8 @@
 
 #include <Oyl3D/Input/Input.h>
 
+#include <Oyl3D/Physics/Raycast.h>
+
 #include <Oyl3D/Rendering/Renderer.h>
 #include <Oyl3D/Rendering/RenderCommand.h>
 

@@ -21,7 +21,7 @@ bool GloopSystem::onEvent(const Event& event)
 	{
 		case (EventType)TypeUseGloop:
 		{
-			auto evt = event_cast<UseGloopEvent>(event);
+			auto evt    = event_cast<UseGloopEvent>(event);
 			auto& gloop = registry->get<Gloop>(evt.gloopEntity);
 				
 			gloop.numUses--;

@@ -7,12 +7,17 @@
 
 #include "Utils/SceneToFile.h"
 
+#include "Components/Transform.h"
+
 namespace oyl
 {
     WeakRef<Scene> Scene::s_current = {};
     
     Scene::Scene()
-        : m_registry(Ref<entt::registry>::create()) {}
+        : m_registry(Ref<entt::registry>::create())
+    {
+        m_registry->on_construct<component::Transform>().connect<&component::Transform::on_construct>();
+    }
 
     Scene::~Scene() {}
 
@@ -20,7 +25,7 @@ namespace oyl
 
     void Scene::onExit()
     {
-        internal::saveSceneBackupToFile(*this);
+        //internal::saveSceneBackupToFile(*this);
 
         // Reset the registry then reset the actual Ref
         m_registry->reset();

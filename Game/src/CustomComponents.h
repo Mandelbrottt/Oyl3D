@@ -27,11 +27,11 @@ enum class CannonState
 
 enum class CarryableItemType
 {
-    invalid,
-    cannonball,
-    mop,
-    cleaningSolution,
-    gloop
+	invalid,
+	cannonball,
+	mop,
+	cleaningSolution,
+	gloop
 };
 
 enum class PlayerInteractionResult
@@ -48,6 +48,7 @@ enum class PlayerInteractionResult
 	pickUpGloop,
 	useGloop,
 	cleanGarbagePile,
+	activateCleaningQuicktimeEvent
 };
 
 enum class ReticleType
@@ -68,6 +69,8 @@ struct MoveableUsingLerp
 
 struct Player
 {
+	int playerNum = -1; //should always correspond with appropriate PlayerCamera player number
+
 	Team team;
 
 	entt::entity primaryCarriedItem   = entt::null;
@@ -81,7 +84,7 @@ struct Player
 	float adjustingPositionSpeed = 3.333f;
 	float pushingSpeed = 0.2f;
 
-	MoveableUsingLerp adjustingPositionStateData; //TODO: integrate adjusting position into pushing state instead of having its own state
+	MoveableUsingLerp adjustingPositionStateData;
 	MoveableUsingLerp pushingStateData;
 
 	float CLEANING_TIME_DURATION = 1.5f;
@@ -102,6 +105,8 @@ struct Cannon
 	float FUSE_DURATION = 20.0f;
 	float fuseCountdown = FUSE_DURATION;
 
+	glm::vec3 firingDirection = glm::vec3(1.0f, 1.0f, 1.0f);
+
 	int cannonTrackPosition = 0;
 	float pushDistance = 10.0f;
 	float beingPushedSpeed = 0.2f;
@@ -115,15 +120,37 @@ struct CarryableItem
 {
 	Team team;
 
-	CarryableItemType type = CarryableItemType::invalid; //must manually be set when spawning items
-	bool isBeingCarried = false;
+	bool isActive = true;
 
-	bool isActive = false;
+	CarryableItemType type = CarryableItemType::invalid; //must manually be set when spawning items
+
+	bool isBeingCarried = false;
+	bool hasBeenCarried = false;
+};
+
+struct Respawnable
+{
+	glm::vec3 spawnPosition = glm::vec3(0.0f);
+	glm::vec3 spawnRotation = glm::vec3(0.0f);
+};
+
+struct RespawnManager
+{
+	entt::entity entityPrefab = entt::null;
+
+	CarryableItemType type = CarryableItemType::invalid; //all respawnable items are also carryable items.. so this works fine
+	Team team;
+
+	float respawnTimerDuration  = 10.0f;
+	float respawnTimerCountdown = respawnTimerDuration;
+
+	bool isRespawnTimerActive = false;
 };
 
 struct Cannonball
 {
-	bool isBeingFired = false;
+	bool isWaitingToBeFired = false;
+	bool isBeingFired       = false;
 
 	glm::vec3 v1;
 	glm::vec3 v2;
@@ -161,6 +188,12 @@ struct PlayerInteractionType
 	PlayerInteractionResult type;
 };
 
+struct PlayerHUDElement
+{
+	int playerNum = -1; //should always correspond with player camera's player number
+	glm::vec3 positionWhenActive;
+};
+
 struct Reticle
 {
 	ReticleType type;
@@ -179,6 +212,8 @@ struct GarbageTick
 
 struct CleaningQuicktimeEventIndicator
 {
+	entt::entity cleaningQuicktimeEventBackground;
+
 	bool isActive = false;
 
 	float LOWER_BOUND_FOR_SUCCESS = 0.4f;
@@ -186,5 +221,12 @@ struct CleaningQuicktimeEventIndicator
 
 	MoveableUsingLerp lerpInformation;
 
-	entt::entity cleaningQuicktimeEventBackground;
+	float DELAY_BEFORE_DISAPPEARING_DURATION = 0.3f;
+	float delayBeforeDisappearingCountdown   = 0.0f;
+
+	bool shouldShake                = false;
+	float SHAKE_START_VALUE         = 0.3f;
+	float SHAKE_DECREASE_PER_SECOND = 1.0f;
+	float currentShakeValue         = SHAKE_START_VALUE;
+	bool isNumberOfShakesEven       = true;
 };
