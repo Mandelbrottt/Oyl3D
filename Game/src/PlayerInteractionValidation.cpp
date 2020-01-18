@@ -439,7 +439,7 @@ void PlayerInteractionValidationSystem::validateCannonInteraction(entt::entity a
 		{
 			float playerForwardDotCannonRight = glm::dot(playerTransform.getForward(), cannonTransform.getRight());
 
-			bool isCannonOnLeftSideOfTrack = (cannon.cannonTrackPosition == -1)
+			bool isCannonOnLeftSideOfTrack  = (cannon.cannonTrackPosition == -1)
 				? true : false;
 			bool isCannonOnRightSideOfTrack = (cannon.cannonTrackPosition == 1)
 				? true : false;
@@ -687,7 +687,7 @@ void PlayerInteractionValidationSystem::performCannonInteraction(entt::entity a_
 	{
 		float playerForwardDotCannonRight = glm::dot(playerTransform.getForward(), cannonTransform.getRight());
 
-		bool isCannonOnLeftSideOfTrack = (cannon.cannonTrackPosition == -1)
+		bool isCannonOnLeftSideOfTrack  = (cannon.cannonTrackPosition == -1)
 			? true : false;
 		bool isCannonOnRightSideOfTrack = (cannon.cannonTrackPosition == 1)
 			? true : false;

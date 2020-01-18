@@ -144,6 +144,8 @@ void SandboxLayer::onEnter()
 
 		{
 			//GARBAGE PILES
+			//NOTE: MAKE SURE THESE ARE ARRANGED SO THE FIRST ONE (BlueGarbagePile0) IS ON THE LEFTMOST SIDE RELATIVE TO THE POSITIVE Z AXIS
+			//      AND THE LAST ONE IS ON THE RIGHT SO THAT THE OPPOSING CANNON FIRES AT THE CORRECT GARBAGE PILE
 			mr.mesh = Mesh::cache("res/assets/models/garbage.obj");
 			mr.material = Material::get("garbage");
 			for (int i = 0; i < 3; i++)
@@ -157,6 +159,7 @@ void SandboxLayer::onEnter()
 
 				auto& garbagePile = registry->assign<GarbagePile>(garbagePileEntity);
 				garbagePile.team = Team::blue;
+				garbagePile.relativePositionOnShip = i - 1;
 
 				auto& rb = registry->assign<component::RigidBody>(garbagePileEntity);
 				rb.setMass(0.0f);
@@ -433,6 +436,8 @@ void SandboxLayer::onEnter()
 
 		{
 			//GARBAGE PILES
+			//NOTE: MAKE SURE THESE ARE ARRANGED SO THE FIRST ONE (RedGarbagePile0) IS ON THE LEFTMOST SIDE RELATIVE TO THE POSITIVE Z AXIS
+			//      AND THE LAST ONE IS ON THE RIGHT SO THAT THE OPPOSING CANNON FIRES AT THE CORRECT GARBAGE PILE
 			mr.material = Material::get("garbage");
 
 			for (int i = 0; i < 3; i++)
@@ -446,6 +451,7 @@ void SandboxLayer::onEnter()
 
 				auto& garbagePile = registry->assign<GarbagePile>(garbagePileEntity);
 				garbagePile.team = Team::red;
+				garbagePile.relativePositionOnShip = i - 1;
 
 				auto& rb = registry->assign<component::RigidBody>(garbagePileEntity);
 				rb.setMass(0.0f);
