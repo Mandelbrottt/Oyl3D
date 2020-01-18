@@ -110,6 +110,13 @@ void SandboxLayer::onEnter()
 			mr.material->albedoMap = Texture2D::cache("res/assets/textures/lampTemp.png");
 			mr.material->specularMap = Material::get("planks")->specularMap;
 
+			mr.material = Material::cache((Material::create()), "water");
+			mr.material->shader = Shader::get(LIGHTING_SHADER_ALIAS);
+			mr.material->albedoMap = Texture2D::cache("res/assets/textures/water.png");
+			mr.material->specularMap = Material::get("container")->specularMap;
+
+
+
 			//CANNON
 			entt::entity cannonEntity = registry->create();
 			mr.material = Material::get("cannon");
@@ -709,24 +716,126 @@ void SandboxLayer::onEnter()
 		}
 
 		{
-			//BOAT
-			entt::entity boatDeckMiddleEntity = registry->create();
+			//BOAT HULL
+			entt::entity boatHullEntity = registry->create();
 			mr.material = Material::get("planks");
 
-			component::Transform boatMiddleDeckTransform;
-			boatMiddleDeckTransform.setPosition(glm::vec3(0.0f, 4.0f, 0.0f));
-			boatMiddleDeckTransform.setScale(glm::vec3(1.0f, 1.0f, 1.0f));
-			registry->assign<component::Transform>(boatDeckMiddleEntity, boatMiddleDeckTransform);
+			component::Transform boatHullTransform;
+			boatHullTransform.setPosition(glm::vec3(-21.0f, 0.0f, -2.0f));
+			boatHullTransform.setScale(glm::vec3(1.0f, 1.0f, 1.0f));
+			registry->assign<component::Transform>(boatHullEntity, boatHullTransform);
 
-			mr.mesh = Mesh::cache("res/assets/models/boat_deck_middle.obj");
-			registry->assign<component::Renderable>(boatDeckMiddleEntity, mr);
+			mr.mesh = Mesh::cache("res/assets/models/BoatHull.obj");
+			registry->assign<component::Renderable>(boatHullEntity, mr);
 
-			auto& so2 = registry->assign<component::EntityInfo>(boatDeckMiddleEntity);
-			so2.name = "Boat Middle Deck Parent";
+			auto& so2 = registry->assign<component::EntityInfo>(boatHullEntity);
+			so2.name = "Boat Hull";
 
-			auto& mopCollider = registry->assign<component::Collidable>(boatDeckMiddleEntity);
-			auto& shapeInfo = mopCollider.pushShape(ColliderType::Box);
-			shapeInfo.box.setSize({ 1.0f, 0.2f, 1.0f });
+			auto& boatHullCollider = registry->assign<component::Collidable>(boatHullEntity);
+			auto& shapeInfo = boatHullCollider.pushShape(ColliderType::Box);
+			shapeInfo.box.setSize({ 0.0f, 0.0f, 0.0f });
+
+		}
+		{
+			//BOAT HULL
+			entt::entity boatHullFLippedEntity = registry->create();
+			mr.material = Material::get("planks");
+
+			component::Transform boatHullFlippedTransform;
+			boatHullFlippedTransform.setPosition(glm::vec3(-21.0f, 0.0f, -2.0f));
+			boatHullFlippedTransform.setScale(glm::vec3(1.0f, 1.0f, 1.0f));
+			registry->assign<component::Transform>(boatHullFLippedEntity, boatHullFlippedTransform);
+
+			mr.mesh = Mesh::cache("res/assets/models/BoatHullFlipped.obj");
+			registry->assign<component::Renderable>(boatHullFLippedEntity, mr);
+
+			auto& so2 = registry->assign<component::EntityInfo>(boatHullFLippedEntity);
+			so2.name = "Boat Hull Inner";
+
+			auto& boatHullCollider = registry->assign<component::Collidable>(boatHullFLippedEntity);
+			auto& shapeInfo = boatHullCollider.pushShape(ColliderType::Box);
+			shapeInfo.box.setSize({ 0.0f, 0.0f, 0.0f });
+
+		}
+		{
+			//BOAT DECK
+			entt::entity deckBoatEntity = registry->create();
+			mr.material = Material::get("planks");
+
+			component::Transform TopDeckBoatTransform;
+			TopDeckBoatTransform.setPosition(glm::vec3(3.0f, 0.0f, 2.0f));
+			TopDeckBoatTransform.setScale(glm::vec3(1.0f, 1.0f, 1.0f));
+			registry->assign<component::Transform>(deckBoatEntity, TopDeckBoatTransform);
+
+			mr.mesh = Mesh::cache("res/assets/models/TopDeck.obj");
+			registry->assign<component::Renderable>(deckBoatEntity, mr);
+
+			auto& so2 = registry->assign<component::EntityInfo>(deckBoatEntity);
+			so2.name = "Top Deck";
+
+			auto& topDeckCollider = registry->assign<component::Collidable>(deckBoatEntity);
+			auto& shapeInfo = topDeckCollider.pushShape(ColliderType::Box);
+			shapeInfo.box.setSize({ 1.0f, 0.2f, 0.5f });
+		}
+		{
+			//BOAT DECK RAIL
+			entt::entity deckBoatRailEntity = registry->create();
+			mr.material = Material::get("planks");
+
+			component::Transform deckBoatRailTransform;
+			deckBoatRailTransform.setPosition(glm::vec3(-14.0f, 1.0f, 2.0f));
+			deckBoatRailTransform.setScale(glm::vec3(1.0f, 1.0f, 1.0f));
+			registry->assign<component::Transform>(deckBoatRailEntity, deckBoatRailTransform);
+
+			mr.mesh = Mesh::cache("res/assets/models/DeckRail.obj");
+			registry->assign<component::Renderable>(deckBoatRailEntity, mr);
+
+			auto& so2 = registry->assign<component::EntityInfo>(deckBoatRailEntity);
+			so2.name = "DeckRail";
+
+			auto& topDeckCollider = registry->assign<component::Collidable>(deckBoatRailEntity);
+			auto& shapeInfo = topDeckCollider.pushShape(ColliderType::Box);
+			shapeInfo.box.setSize({ 1.0f, 0.2f, 0.5f });
+		}
+		{
+			//BOAT CAPN QUARTERS
+			entt::entity quartersBoatEntity = registry->create();
+			mr.material = Material::get("planks");
+
+			component::Transform quartersBoatTransform;
+			quartersBoatTransform.setPosition(glm::vec3(8.0f, 1.0f, -3.0f));
+			quartersBoatTransform.setScale(glm::vec3(1.0f, 1.0f, 1.0f));
+			registry->assign<component::Transform>(quartersBoatEntity, quartersBoatTransform);
+
+			mr.mesh = Mesh::cache("res/assets/models/CapQuarters.obj");
+			registry->assign<component::Renderable>(quartersBoatEntity, mr);
+
+			auto& so2 = registry->assign<component::EntityInfo>(quartersBoatEntity);
+			so2.name = "Captains Quarters";
+
+			auto& topDeckCollider = registry->assign<component::Collidable>(quartersBoatEntity);
+			auto& shapeInfo = topDeckCollider.pushShape(ColliderType::Box);
+			shapeInfo.box.setSize({ 1.0f, 0.2f, 0.5f });
+		}
+		{
+			//BOAT CAPN QUARTERS RAIL
+			entt::entity quartersRailBoatEntity = registry->create();
+			mr.material = Material::get("planks");
+
+			component::Transform quartersRailBoatTransform;
+			quartersRailBoatTransform.setPosition(glm::vec3(8.0f, 5.0f, -6.0f));
+			quartersRailBoatTransform.setScale(glm::vec3(1.0f, 1.0f, 1.0f));
+			registry->assign<component::Transform>(quartersRailBoatEntity, quartersRailBoatTransform);
+
+			mr.mesh = Mesh::cache("res/assets/models/QuartersRail.obj");
+			registry->assign<component::Renderable>(quartersRailBoatEntity, mr);
+
+			auto& so2 = registry->assign<component::EntityInfo>(quartersRailBoatEntity);
+			so2.name = "Captains Quarters Rail";
+
+			auto& topDeckCollider = registry->assign<component::Collidable>(quartersRailBoatEntity);
+			auto& shapeInfo = topDeckCollider.pushShape(ColliderType::Box);
+			shapeInfo.box.setSize({ 1.0f, 0.2f, 0.5f });
 		}
 
 		{
@@ -759,7 +868,7 @@ void SandboxLayer::onEnter()
 
         component::Renderable mr;
         mr.mesh = Mesh::cache("res/assets/models/plane.obj");
-        mr.material = mat;
+        mr.material = nullptr;
 
         entt::entity e = registry->create();
         registry->assign<component::Renderable>(e, mr);
