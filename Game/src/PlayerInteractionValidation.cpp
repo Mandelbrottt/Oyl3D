@@ -626,6 +626,11 @@ void PlayerInteractionValidationSystem::performGarbagePileInteraction(entt::enti
 		UseGloopEvent useGloop;
 		useGloop.gloopEntity = player.primaryCarriedItem;
 		postEvent(useGloop);
+
+		PlayerStateChangeEvent playerStateChange;
+		playerStateChange.playerEntity = a_playerEntity;
+		playerStateChange.newState     = PlayerState::cleaning; //not exactly cleaning but.. close enough. We want the same delay and movement slow effect anyway so might as well reuse it
+		postEvent(playerStateChange);
 	}
 }
 

@@ -87,7 +87,7 @@ struct Player
 	MoveableUsingLerp adjustingPositionStateData;
 	MoveableUsingLerp pushingStateData;
 
-	float CLEANING_TIME_DURATION = 1.5f;
+	float CLEANING_TIME_DURATION = 1.2f;
 	float cleaningTimeCountdown = CLEANING_TIME_DURATION;
 
 	float yRotationClamp = 0.0f;
