@@ -35,8 +35,8 @@ void GarbagePileSystem::onUpdate()
 		if (addGarbageLevel)
 			increaseGarbageLevel(garbagePileEntity);
 
-		garbagePileTransform.setScaleX(0.07f * garbagePile.garbageLevel + 0.5f);
-		garbagePileTransform.setScaleZ(0.07f * garbagePile.garbageLevel + 0.5f);
+		garbagePileTransform.setScaleX(0.03f * garbagePile.garbageLevel + 0.4f);
+		garbagePileTransform.setScaleZ(0.03f * garbagePile.garbageLevel + 0.4f);
 
 		totalGarbageLevel += garbagePile.garbageLevel;
 
