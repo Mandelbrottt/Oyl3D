@@ -780,7 +780,6 @@ void PlayerInteractionValidationSystem::dropPlayerCarriedItems(entt::entity a_pl
 		if (carriedItemParent.parent == a_playerEntity)
 		{
 			auto& carriedItemRB = registry->get_or_assign<component::RigidBody>(carriedItemEntity); //add the rigidbody back for the item when it's dropped
-			carriedItemRB.setVelocity(glm::vec3(0.0f));
 
 			carriedItemParent.parent = entt::null;
 			carriedItem.isBeingCarried = false;
@@ -796,7 +795,6 @@ void PlayerInteractionValidationSystem::dropPlayerCarriedItems(entt::entity a_pl
 					player.primaryCarriedItem = entt::null;
 
 					newPosition += playerTransform.getForward() * 0.8f;
-					//newPosition.y = 0.25f;
 
 					break;
 				}
@@ -805,12 +803,11 @@ void PlayerInteractionValidationSystem::dropPlayerCarriedItems(entt::entity a_pl
 					std::cout << "DROPPED MOP!\n";
 					player.primaryCarriedItem = entt::null;
 
-					newPosition += playerTransform.getForward() * 0.7f;
+					newPosition += playerTransform.getForward() * 0.6f;
 					newPosition += playerTransform.getRight()   * 0.7f;
 					newPosition.y = playerTransform.getPositionY();
-					//newPosition.y = 0.1f;
 
-					newRotation += glm::vec3(0.0f, 90.0f, 0.0f);
+					newRotation.y += playerTransform.getForward().z > 0.0f ? 90.0f : -90.0f;
 
 					break;
 				}
@@ -819,10 +816,9 @@ void PlayerInteractionValidationSystem::dropPlayerCarriedItems(entt::entity a_pl
 					std::cout << "DROPPED CLEANING SOLUTION!\n";
 					player.secondaryCarriedItem = entt::null;
 
-					newPosition += playerTransform.getForward() * 1.0f;
-					newPosition += playerTransform.getRight()   * -0.3f;
-					newPosition.y = playerTransform.getPositionY();
-					//newPosition.y = 0.22f;
+					newPosition += playerTransform.getForward() * 0.7f;
+					newPosition += playerTransform.getRight()   * -0.2f;
+					newPosition += playerTransform.getUp()      * 0.3f;
 
 					break;
 				}
@@ -833,7 +829,6 @@ void PlayerInteractionValidationSystem::dropPlayerCarriedItems(entt::entity a_pl
 
 					newPosition += playerTransform.getForward() * 0.8f;
 					newPosition.y = playerTransform.getPositionY();
-					//newPosition.y = 0.27f;
 
 					break;
 				}

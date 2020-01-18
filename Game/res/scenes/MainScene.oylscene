@@ -384,6 +384,41 @@
             }
         }
     },
+    "BlueCleaningSolutionPrefab": {
+        "Parent": null,
+        "Renderable": {
+            "Enabled": true,
+            "Material": {
+                "Alias": "pirax"
+            },
+            "Mesh": {
+                "FilePath": "res/assets/models/Pirax.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -99999.0,
+                "Y": -99999.0,
+                "Z": -99999.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 0.30000001192092896,
+                "Y": 0.30000001192092896,
+                "Z": 0.30000001192092896
+            }
+        }
+    },
     "BlueGarbagePile0": {
         "Parent": null,
         "Renderable": {
@@ -580,6 +615,41 @@
                 "X": 1.7939262390136719,
                 "Y": 0.27000001072883606,
                 "Z": 2.3463497161865234
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 0.10000000149011612,
+                "Y": 0.10000000149011612,
+                "Z": 0.10000000149011612
+            }
+        }
+    },
+    "BlueGloopPrefab": {
+        "Parent": null,
+        "Renderable": {
+            "Enabled": true,
+            "Material": {
+                "Alias": "goop"
+            },
+            "Mesh": {
+                "FilePath": "res/assets/models/Gloop.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -99999.0,
+                "Y": -99999.0,
+                "Z": -99999.0
             },
             "Rotation": {
                 "qW": 1.0,
@@ -870,6 +940,114 @@
             "Scale": {
                 "X": 1.5,
                 "Y": 2.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Entity 39": {
+        "Parent": null,
+        "Renderable": null,
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": 0.0,
+                "Y": 0.0,
+                "Z": 0.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Entity 41": {
+        "Parent": null,
+        "Renderable": null,
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": 0.0,
+                "Y": 0.0,
+                "Z": 0.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Entity 61": {
+        "Parent": null,
+        "Renderable": null,
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": 0.0,
+                "Y": 0.0,
+                "Z": 0.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Entity 63": {
+        "Parent": null,
+        "Renderable": null,
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": 0.0,
+                "Y": 0.0,
+                "Z": 0.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
                 "Z": 1.0
             }
         }
@@ -1856,6 +2034,41 @@
             }
         }
     },
+    "RedCleaningSolutionPrefab": {
+        "Parent": null,
+        "Renderable": {
+            "Enabled": true,
+            "Material": {
+                "Alias": "pirax"
+            },
+            "Mesh": {
+                "FilePath": "res/assets/models/Pirax.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -99999.0,
+                "Y": -99999.0,
+                "Z": -99999.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 0.20000000298023224,
+                "Y": 0.4399999976158142,
+                "Z": 0.20000000298023224
+            }
+        }
+    },
     "RedGarbagePile0": {
         "Parent": null,
         "Renderable": {
@@ -2052,6 +2265,41 @@
                 "X": 1.3819799423217773,
                 "Y": 0.27000001072883606,
                 "Z": 6.718793869018555
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 0.10000000149011612,
+                "Y": 0.10000000149011612,
+                "Z": 0.10000000149011612
+            }
+        }
+    },
+    "RedGloopPrefab": {
+        "Parent": null,
+        "Renderable": {
+            "Enabled": true,
+            "Material": {
+                "Alias": "goop"
+            },
+            "Mesh": {
+                "FilePath": "res/assets/models/Gloop.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -99999.0,
+                "Y": -99999.0,
+                "Z": -99999.0
             },
             "Rotation": {
                 "qW": 1.0,
