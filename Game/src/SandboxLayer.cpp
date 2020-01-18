@@ -316,6 +316,7 @@ void SandboxLayer::onEnter()
 
 			component::Transform cannonballCrateTransform;
 			cannonballCrateTransform.setPosition(glm::vec3(-1.0f, 0.5f, -3.0f));
+			cannonballCrateTransform.setRotation(glm::vec3(0.0f, -90.0f, 0.0f));
 			cannonballCrateTransform.setScale(glm::vec3(2.0f, 1.0f, 1.0f));
 			registry->assign<component::Transform>(cannonballCrateEntity, cannonballCrateTransform);
 
@@ -604,6 +605,7 @@ void SandboxLayer::onEnter()
 
 			component::Transform cannonballCrateTransform;
 			cannonballCrateTransform.setPosition(glm::vec3(-1.0f, 0.5f, -3.0f));
+			cannonballCrateTransform.setRotation(glm::vec3(0.0f, -90.0f, 0.0f));
 			cannonballCrateTransform.setScale(glm::vec3(2.0f, 1.0f, 1.0f));
 			registry->assign<component::Transform>(cannonballCrateEntity, cannonballCrateTransform);
 
@@ -865,30 +867,32 @@ void SandboxLayer::onEnter()
     
     {
 		//GROUND PLANE
+		for (int i = 0; i < 4; i++)
+		{
+			component::Renderable mr;
+			mr.mesh = Mesh::cache("res/assets/models/plane.obj");
+			mr.material = nullptr;
 
-        component::Renderable mr;
-        mr.mesh = Mesh::cache("res/assets/models/plane.obj");
-        mr.material = nullptr;
+			entt::entity e = registry->create();
+			registry->assign<component::Renderable>(e, mr);
 
-        entt::entity e = registry->create();
-        registry->assign<component::Renderable>(e, mr);
+			component::Transform t;
+			t.setPosition(glm::vec3(0.0f, -5.0f, 0.0f));
+			t.setScale(glm::vec3(1.9f, 0.2f, 0.5f));
+			registry->assign<component::Transform>(e, t);
 
-        component::Transform t;
-        t.setPosition(glm::vec3(0.0f, -5.0f, 0.0f));
-		t.setScale(glm::vec3(2.5f, 1.0f, 1.7f));
-        registry->assign<component::Transform>(e, t);
+			auto& so = registry->assign<component::EntityInfo>(e);
+			so.name = "Plane " + std::to_string(i);
 
-        auto& so = registry->assign<component::EntityInfo>(e);
-        so.name = "Plane";
+			auto& rb = registry->assign<component::RigidBody>(e);
+			rb.setMass(0.0f);
+			rb.setFriction(1.0f);
 
-        auto& rb = registry->assign<component::RigidBody>(e);
-        rb.setMass(0.0f);
-		rb.setFriction(1.0f);
+			auto& cl = registry->assign<component::Collidable>(e);
 
-        auto& cl = registry->assign<component::Collidable>(e);
-
-        auto& shi = cl.pushShape(ColliderType::Box);
-        shi.box.setSize({ 20.0f, 0.1f, 20.0f });
+			auto& shi = cl.pushShape(ColliderType::Box);
+			shi.box.setSize({ 20.0f, 0.1f, 20.0f });
+		}
     }
 
     {
