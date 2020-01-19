@@ -350,7 +350,7 @@ namespace oyl::internal
 
             if (showReloadDialogue)
             {
-                ImGui::SetNextWindowPosCenter(ImGuiCond_Always);
+                ImGui::SetNextWindowPos(ImGui::GetWindowSize() / 2, ImGuiCond_Always, ImVec2(0.5f, 0.5f));
                 if (ImGui::Begin("Confirmation##ReloadConfirmation", 0, 
                                  ImGuiWindowFlags_AlwaysAutoResize |
                                  ImGuiWindowFlags_NoCollapse))
@@ -1305,9 +1305,89 @@ namespace oyl::internal
     {   
         if (ImGui::Begin("Assets##AssetListMainWindow"))
         {
-            ImGui::Text("Nothing to see here :)");
+            uint flags = (ImGuiTableFlags_Resizable |
+                          ImGuiTableFlags_RowBg |
+                          ImGuiTableFlags_BordersVInner |
+                          ImGuiTableFlags_BordersHInner |
+                          ImGuiTableFlags_ScrollY |
+                          ImGuiTableFlags_ScrollFreezeTopRow);
+
+            if (ImGui::BeginTable("##AssetTable", 2, flags))
+            {
+                uint cFlags = ImGuiTableColumnFlags_WidthStretch |
+                              ImGuiTableColumnFlags_NoHide;
+                ImGui::TableSetupColumn("Name", cFlags);
+                ImGui::TableSetupColumn("Type", cFlags);
+                ImGui::TableAutoHeaders();
+
+                drawAssetNode(std::fs::directory_iterator("res"));
+                
+                ImGui::EndTable();
+            }
         }
+        
         ImGui::End();
+    }
+
+    void GuiLayer::drawAssetNode(const std::fs::directory_iterator& dir)
+    {
+        for (const auto& dirEntry : dir)
+        {
+            ImGui::TableNextRow();
+
+            std::string name = dirEntry.path().filename().string();
+
+            if (dirEntry.is_directory())
+            {
+                bool open = ImGui::TreeNodeEx(name.c_str(), ImGuiTreeNodeFlags_OpenOnDoubleClick |
+                                                            ImGuiTreeNodeFlags_OpenOnArrow |
+                                                            ImGuiTreeNodeFlags_SpanFullWidth);
+
+                ImGui::TableNextCell();
+                ImGui::TextDisabled("Folder");
+                if (open)
+                {
+                    drawAssetNode(std::fs::directory_iterator(dirEntry));
+                    ImGui::TreePop();
+                }
+            } else
+            {
+                std::string ext = name.substr(name.find_last_of('.'));
+
+                ImGui::TreeNodeEx(name.c_str(), ImGuiTreeNodeFlags_Leaf |
+                                                ImGuiTreeNodeFlags_NoTreePushOnOpen |
+                                                ImGuiTreeNodeFlags_SpanFullWidth);
+
+                ImGui::TableNextCell();
+
+                const char* type = nullptr;
+
+                if (strcmp(ext.c_str(), ".jpg") == 0 ||
+                    strcmp(ext.c_str(), ".png") == 0 ||
+                    strcmp(ext.c_str(), ".bmp") == 0)
+                {
+                    type = "Texture";
+                } else if (strcmp(ext.c_str(), ".obj") == 0)
+                {
+                    type = "Mesh";
+                } else if (strcmp(ext.c_str(), ".vert") == 0 ||
+                           strcmp(ext.c_str(), ".tesc") == 0 ||
+                           strcmp(ext.c_str(), ".tese") == 0 ||
+                           strcmp(ext.c_str(), ".geom") == 0 ||
+                           strcmp(ext.c_str(), ".frag") == 0)
+                {
+                    type = "Shader";
+                } else if (strcmp(ext.c_str(), ".oylmat") == 0)
+                {
+                    type = "Material";
+                } else if (strcmp(ext.c_str(), ".oylscene") == 0)
+                {
+                    type = "Scene";
+                } else type = "Unknown";
+
+                ImGui::TextUnformatted(type);
+            }
+        }
     }
 
     void GuiLayer::updateAssetList()
@@ -1695,7 +1775,6 @@ namespace oyl::internal
         style.Colors[ImGuiCol_Text] = TEXT(0.78f);
         style.Colors[ImGuiCol_TextDisabled] = TEXT(0.28f);
         style.Colors[ImGuiCol_WindowBg] = ImVec4(0.13f, 0.14f, 0.17f, 1.00f);
-        style.Colors[ImGuiCol_ChildWindowBg] = BG(0.58f);
         style.Colors[ImGuiCol_PopupBg] = BG(0.9f);
         style.Colors[ImGuiCol_Border] = ImVec4(0.31f, 0.31f, 1.00f, 0.00f);
         style.Colors[ImGuiCol_BorderShadow] = ImVec4(0.00f, 0.00f, 0.00f, 0.00f);

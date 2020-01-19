@@ -57,6 +57,8 @@ namespace oyl::internal
         void drawInspectorAddComponent();
 
         void drawAssetList();
+        void drawAssetNode(const std::filesystem::directory_iterator& dir);
+
         void updateAssetList();
         bool updateAsset(const std::string& filepath, 
                          std::fs::file_time_type& lastWriteTime, 
