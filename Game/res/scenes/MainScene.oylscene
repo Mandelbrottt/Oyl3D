@@ -636,7 +636,7 @@
         "Renderable": {
             "Enabled": true,
             "Material": {
-                "Alias": "planks"
+                "Alias": "siding"
             },
             "Mesh": {
                 "FilePath": "res/assets/models/BoatHull.obj"
@@ -673,7 +673,7 @@
         "Renderable": {
             "Enabled": true,
             "Material": {
-                "Alias": "planks"
+                "Alias": "siding"
             },
             "Mesh": {
                 "FilePath": "res/assets/models/BoatHull.obj"
@@ -924,7 +924,7 @@
         "Renderable": {
             "Enabled": true,
             "Material": {
-                "Alias": "planks"
+                "Alias": "siding"
             },
             "Mesh": {
                 "FilePath": "res/assets/models/CapQuarters.obj"
@@ -961,7 +961,7 @@
         "Renderable": {
             "Enabled": true,
             "Material": {
-                "Alias": "planks"
+                "Alias": "siding"
             },
             "Mesh": {
                 "FilePath": "res/assets/models/CapQuarters.obj"
@@ -998,7 +998,7 @@
         "Renderable": {
             "Enabled": true,
             "Material": {
-                "Alias": "planks"
+                "Alias": "cannonball"
             },
             "Mesh": {
                 "FilePath": "res/assets/models/QuartersRail.obj"
@@ -1035,7 +1035,7 @@
         "Renderable": {
             "Enabled": true,
             "Material": {
-                "Alias": "planks"
+                "Alias": "cannonball"
             },
             "Mesh": {
                 "FilePath": "res/assets/models/QuartersRail.obj"
@@ -1212,7 +1212,7 @@
         "Renderable": {
             "Enabled": true,
             "Material": {
-                "Alias": "planks"
+                "Alias": "cannonball"
             },
             "Mesh": {
                 "FilePath": "res/assets/models/DeckRail.obj"
@@ -1249,7 +1249,7 @@
         "Renderable": {
             "Enabled": true,
             "Material": {
-                "Alias": "planks"
+                "Alias": "cannonball"
             },
             "Mesh": {
                 "FilePath": "res/assets/models/DeckRail.obj"
