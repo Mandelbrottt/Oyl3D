@@ -1421,7 +1421,15 @@
     },
     "Entity 61": {
         "Parent": null,
-        "Renderable": null,
+        "Renderable": {
+            "Enabled": true,
+            "Material": {
+                "Alias": null
+            },
+            "Mesh": {
+                "FilePath": null
+            }
+        },
         "Transform": {
             "Mirror": {
                 "X": false,
@@ -1448,7 +1456,15 @@
     },
     "Entity 63": {
         "Parent": null,
-        "Renderable": null,
+        "Renderable": {
+            "Enabled": true,
+            "Material": {
+                "Alias": null
+            },
+            "Mesh": {
+                "FilePath": null
+            }
+        },
         "Transform": {
             "Mirror": {
                 "X": false,
@@ -2558,9 +2574,9 @@
                 "qZ": 0.0
             },
             "Scale": {
-                "X": 0.20000000298023224,
-                "Y": 0.4399999976158142,
-                "Z": 0.20000000298023224
+                "X": 0.30000001192092896,
+                "Y": 0.30000001192092896,
+                "Z": 0.30000001192092896
             }
         }
     },
