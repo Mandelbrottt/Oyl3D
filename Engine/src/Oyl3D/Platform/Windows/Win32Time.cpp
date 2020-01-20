@@ -79,9 +79,6 @@ namespace oyl::internal
         prevFrameIndex %= 10;
 
         m_unscaledDeltaTime = sum;
-
-        if (m_unscaledDeltaTime > 0.02f)
-            OYL_LOG_INFO("{0}", m_unscaledDeltaTime);
         
         //m_unscaledDeltaTime = glm::clamp(static_cast<float>(currentTime), 0.0001f, 0.1f);
         //m_unscaledDeltaTime = glm::max(static_cast<float>(currentTime), 0.0f);
