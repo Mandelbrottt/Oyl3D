@@ -68,9 +68,12 @@ void main()
     	vec3 tempambient  = u_pointLight[i].ambient  *        vec3(texture(u_material.albedo,   in_texCoords));
 		vec3 tempdiffuse  = u_pointLight[i].diffuse  * diff * vec3(texture(u_material.albedo,   in_texCoords));
 		vec3 tempspecular = u_pointLight[i].specular * spec * vec3(texture(u_material.specular, in_texCoords));
+
+		float dist = length(u_pointLight[i].position - in_position);
+		float attenuation = 1.0 / (1.0 + 0.01 * dist * dist);
 		
-		tempdiffuse  *= 1.0 / (1.0 + 0.01 * pow(length(u_pointLight[i].position - in_position), 2.0));
-		tempspecular *= 1.0 / (1.0 + 0.01 * pow(length(u_pointLight[i].position - in_position), 2.0));
+		tempdiffuse  *= attenuation;
+		tempspecular *= attenuation;
 		
 		ambient += tempambient;
 		diffuse += tempdiffuse;
