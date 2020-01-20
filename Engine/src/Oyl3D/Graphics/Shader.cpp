@@ -58,6 +58,8 @@ namespace oyl
 
     const Ref<Shader>& Shader::cache(const Ref<Shader>& shader, const CacheAlias& alias, bool overwrite)
     {
+        if (!shader) return shader;
+
         Ref<Shader> alreadyCached = nullptr;
         
         for (auto& kvp : s_cache)
