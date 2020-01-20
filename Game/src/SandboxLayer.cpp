@@ -144,6 +144,8 @@ void SandboxLayer::onEnter()
 
 		{
 			//GARBAGE PILES
+			//NOTE: MAKE SURE THESE ARE ARRANGED SO THE FIRST ONE (BlueGarbagePile0) IS ON THE LEFTMOST SIDE RELATIVE TO THE POSITIVE Z AXIS
+			//      AND THE LAST ONE IS ON THE RIGHT SO THAT THE OPPOSING CANNON FIRES AT THE CORRECT GARBAGE PILE
 			mr.mesh = Mesh::cache("res/assets/models/garbage.obj");
 			mr.material = Material::get("garbage");
 			for (int i = 0; i < 3; i++)
@@ -157,6 +159,7 @@ void SandboxLayer::onEnter()
 
 				auto& garbagePile = registry->assign<GarbagePile>(garbagePileEntity);
 				garbagePile.team = Team::blue;
+				garbagePile.relativePositionOnShip = i - 1;
 
 				auto& rb = registry->assign<component::RigidBody>(garbagePileEntity);
 				rb.setMass(0.0f);
@@ -281,7 +284,7 @@ void SandboxLayer::onEnter()
 				entt::entity gloopEntity = registry->create();
 
 				component::Transform gloopTransform;
-				gloopTransform.setPosition(glm::vec3(3.0f, 0.27f, 3.0f));
+				gloopTransform.setPosition(glm::vec3(3.0f, 0.2f, 3.0f));
 				gloopTransform.setScale(glm::vec3(0.1f, 0.1f, 0.1f));
 				registry->assign<component::Transform>(gloopEntity, gloopTransform);
 
@@ -290,7 +293,7 @@ void SandboxLayer::onEnter()
 				carryableItem.type = CarryableItemType::gloop;
 
 				auto& respawnable = registry->assign<Respawnable>(gloopEntity);
-				respawnable.spawnPosition = glm::vec3(1.8f, 0.27f, 2.35f);
+				respawnable.spawnPosition = glm::vec3(1.4f, 0.2f, 1.6f);
 				respawnable.spawnRotation = glm::vec3(0.0f);
 
 				auto& rb = registry->assign<component::RigidBody>(gloopEntity);
@@ -433,6 +436,8 @@ void SandboxLayer::onEnter()
 
 		{
 			//GARBAGE PILES
+			//NOTE: MAKE SURE THESE ARE ARRANGED SO THE FIRST ONE (RedGarbagePile0) IS ON THE LEFTMOST SIDE RELATIVE TO THE POSITIVE Z AXIS
+			//      AND THE LAST ONE IS ON THE RIGHT SO THAT THE OPPOSING CANNON FIRES AT THE CORRECT GARBAGE PILE
 			mr.material = Material::get("garbage");
 
 			for (int i = 0; i < 3; i++)
@@ -446,6 +451,7 @@ void SandboxLayer::onEnter()
 
 				auto& garbagePile = registry->assign<GarbagePile>(garbagePileEntity);
 				garbagePile.team = Team::red;
+				garbagePile.relativePositionOnShip = i - 1;
 
 				auto& rb = registry->assign<component::RigidBody>(garbagePileEntity);
 				rb.setMass(0.0f);
@@ -537,7 +543,7 @@ void SandboxLayer::onEnter()
 
 				component::Transform cleaningSolutionTransform;
 				cleaningSolutionTransform.setPosition(glm::vec3(3.0f, 0.22f, 3.0f));
-				cleaningSolutionTransform.setScale(glm::vec3(0.2f, 0.44f, 0.2f));
+				cleaningSolutionTransform.setScale(glm::vec3(0.3f, 0.3f, 0.3f));
 				registry->assign<component::Transform>(cleaningSolutionEntity, cleaningSolutionTransform);
 
 				auto& carryableItem = registry->assign<CarryableItem>(cleaningSolutionEntity);
@@ -545,7 +551,7 @@ void SandboxLayer::onEnter()
 				carryableItem.type = CarryableItemType::cleaningSolution;
 
 				auto& respawnable = registry->assign<Respawnable>(cleaningSolutionEntity);
-				respawnable.spawnPosition = glm::vec3(1.8f, 0.31f, 9.3f);
+				respawnable.spawnPosition = glm::vec3(1.7f, 0.2f, 15.4f);
 				respawnable.spawnRotation = glm::vec3(0.0f);
 
 				auto& rb = registry->assign<component::RigidBody>(cleaningSolutionEntity);
@@ -578,7 +584,7 @@ void SandboxLayer::onEnter()
 				carryableItem.type = CarryableItemType::gloop;
 
 				auto& respawnable = registry->assign<Respawnable>(gloopEntity);
-				respawnable.spawnPosition = glm::vec3(2.3f, 0.27f, 6.7f);
+				respawnable.spawnPosition = glm::vec3(2.4f, 0.2f, 14.0f);
 				respawnable.spawnRotation = glm::vec3(0.0f);
 
 				auto& rb = registry->assign<component::RigidBody>(gloopEntity);

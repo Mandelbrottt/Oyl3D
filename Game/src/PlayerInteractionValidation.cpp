@@ -439,7 +439,7 @@ void PlayerInteractionValidationSystem::validateCannonInteraction(entt::entity a
 		{
 			float playerForwardDotCannonRight = glm::dot(playerTransform.getForward(), cannonTransform.getRight());
 
-			bool isCannonOnLeftSideOfTrack = (cannon.cannonTrackPosition == -1)
+			bool isCannonOnLeftSideOfTrack  = (cannon.cannonTrackPosition == -1)
 				? true : false;
 			bool isCannonOnRightSideOfTrack = (cannon.cannonTrackPosition == 1)
 				? true : false;
@@ -626,6 +626,11 @@ void PlayerInteractionValidationSystem::performGarbagePileInteraction(entt::enti
 		UseGloopEvent useGloop;
 		useGloop.gloopEntity = player.primaryCarriedItem;
 		postEvent(useGloop);
+
+		PlayerStateChangeEvent playerStateChange;
+		playerStateChange.playerEntity = a_playerEntity;
+		playerStateChange.newState     = PlayerState::cleaning; //not exactly cleaning but.. close enough. We want the same delay and movement slow effect anyway so might as well reuse it
+		postEvent(playerStateChange);
 	}
 }
 
@@ -682,7 +687,7 @@ void PlayerInteractionValidationSystem::performCannonInteraction(entt::entity a_
 	{
 		float playerForwardDotCannonRight = glm::dot(playerTransform.getForward(), cannonTransform.getRight());
 
-		bool isCannonOnLeftSideOfTrack = (cannon.cannonTrackPosition == -1)
+		bool isCannonOnLeftSideOfTrack  = (cannon.cannonTrackPosition == -1)
 			? true : false;
 		bool isCannonOnRightSideOfTrack = (cannon.cannonTrackPosition == 1)
 			? true : false;

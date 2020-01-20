@@ -23,7 +23,7 @@ void CannonballSystem::onUpdate()
 		if (cannonball.isBeingFired)
 		{
 			cannonball.interpolationParam = std::min(
-				cannonball.interpolationParam + 0.7f * Time::deltaTime(),
+				cannonball.interpolationParam + cannonball.speedWhenFired * Time::deltaTime(),
 				1.0f);
 			
 			cannonballTransform.setPosition(glm::catmullRom(

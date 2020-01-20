@@ -87,7 +87,7 @@ struct Player
 	MoveableUsingLerp adjustingPositionStateData;
 	MoveableUsingLerp pushingStateData;
 
-	float CLEANING_TIME_DURATION = 1.5f;
+	float CLEANING_TIME_DURATION = 1.2f;
 	float cleaningTimeCountdown = CLEANING_TIME_DURATION;
 
 	float yRotationClamp = 0.0f;
@@ -100,7 +100,7 @@ struct Cannon
 	Team team;
 
 	CannonState state = CannonState::doingNothing;
-	bool isLoaded = false;
+	bool isLoaded     = false;
 
 	float FUSE_DURATION = 20.0f;
 	float fuseCountdown = FUSE_DURATION;
@@ -108,8 +108,8 @@ struct Cannon
 	glm::vec3 firingDirection = glm::vec3(1.0f, 1.0f, 1.0f);
 
 	int cannonTrackPosition = 0;
-	float pushDistance = 10.0f;
-	float beingPushedSpeed = 0.2f;
+	float pushDistance      = 10.0f;
+	float beingPushedSpeed  = 0.2f;
 	MoveableUsingLerp pushStateData;
 
 	float WAIT_BEFORE_BEING_PUSHED_DURATION = 0.3f;
@@ -158,6 +158,7 @@ struct Cannonball
 	glm::vec3 v4;
 
 	float interpolationParam = 0.0f;
+	float speedWhenFired     = 0.7f;
 };
 
 struct Gloop
@@ -181,6 +182,11 @@ struct GarbagePile
 
 	float GARBAGE_TICKS_PER_LEVEL = 3.0f;
 	float garbageTicks = 3.0f;
+
+	float DELAY_BEFORE_ADDING_GARBAGE_DURATION = 1.0f;
+	float delayBeforeAddingGarbageCountdown    = DELAY_BEFORE_ADDING_GARBAGE_DURATION;
+
+	int relativePositionOnShip = -10; //this will be -1 (left), 0 (middle), or 1 (right) to mirror the cannon track position. It is used to determine which pile the cannons are firing at
 };
 
 struct PlayerInteractionType
