@@ -75,7 +75,8 @@ namespace oyl::internal
             system->setDispatcher(m_dispatcher);
         }
 
-        m_fileSaveTimeIt = m_fileSaveTimes.begin();
+        m_fileSaveTimeIt = m_fileSaveTimes.end();
+        updateAssetList();
     }
 
     void GuiLayer::setupGuiLibrary()
@@ -1528,7 +1529,7 @@ namespace oyl::internal
                     const char* ext = relPathStr.c_str() + relPathStr.find_last_of('.');
 
                     if (isTexture(ext))  Texture2D::cache(relPathStr);
-                    if (isMesh(ext)) Mesh::cache(relPathStr);
+                    if (isMesh(ext))     Mesh::cache(relPathStr);
                     if (isMaterial(ext)) Material::cache(relPathStr);
                 }
             }
