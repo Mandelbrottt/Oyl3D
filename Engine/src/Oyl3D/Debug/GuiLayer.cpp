@@ -74,6 +74,8 @@ namespace oyl::internal
             system->setRegistry(registry);
             system->setDispatcher(m_dispatcher);
         }
+
+        m_fileSaveTimeIt = m_fileSaveTimes.begin();
     }
 
     void GuiLayer::setupGuiLibrary()
@@ -348,7 +350,7 @@ namespace oyl::internal
 
             if (showReloadDialogue)
             {
-                ImGui::SetNextWindowPosCenter(ImGuiCond_Always);
+                ImGui::SetNextWindowPos(ImGui::GetWindowSize() / 2, ImGuiCond_Always, ImVec2(0.5f, 0.5f));
                 if (ImGui::Begin("Confirmation##ReloadConfirmation", 0, 
                                  ImGuiWindowFlags_AlwaysAutoResize |
                                  ImGuiWindowFlags_NoCollapse))
@@ -622,6 +624,12 @@ namespace oyl::internal
             ct.m_localPosition = tComponents[0];
             ct.m_localRotation = glm::quat(radians(tComponents[1]));
             ct.m_localScale = tComponents[2];
+            ct.m_mirror = glm::bvec3(false);
+
+            for (int i = 0; i < 3; i++)
+                ct.m_mirror[i] = ct.m_localScale[i] < 0.0f;
+
+            ct.m_localScale = glm::abs(ct.m_localScale);
 
             ct.m_isLocalDirty = true;
         }
@@ -646,6 +654,12 @@ namespace oyl::internal
             ct.m_localPosition = tComponents[0];
             ct.m_localRotation = glm::quat(radians(tComponents[1]));
             ct.m_localScale = tComponents[2];
+            ct.m_mirror = glm::bvec3(false);
+
+            for (int i = 0; i < 3; i++)
+                ct.m_mirror[i] = ct.m_localScale[i] < 0.0f;
+
+            ct.m_localScale = glm::abs(ct.m_localScale);
 
             ct.m_isLocalDirty = true;
         }
@@ -1291,72 +1305,299 @@ namespace oyl::internal
     {   
         if (ImGui::Begin("Assets##AssetListMainWindow"))
         {
-            ImGui::Text("Nothing to see here :)");
+            uint flags = (ImGuiTableFlags_Resizable |
+                          ImGuiTableFlags_RowBg |
+                          ImGuiTableFlags_BordersVInner |
+                          ImGuiTableFlags_BordersHInner |
+                          ImGuiTableFlags_ScrollY |
+                          ImGuiTableFlags_ScrollFreezeTopRow);
+
+            if (ImGui::BeginTable("##AssetTable", 2, flags))
+            {
+                uint cFlags = ImGuiTableColumnFlags_WidthStretch |
+                              ImGuiTableColumnFlags_NoHide;
+                ImGui::TableSetupColumn("Name", cFlags);
+                ImGui::TableSetupColumn("Type", cFlags);
+                ImGui::TableAutoHeaders();
+
+                drawAssetNode(std::fs::directory_iterator("res"));
+                
+                ImGui::EndTable();
+            }
         }
+        
         ImGui::End();
     }
 
+    static bool isTexture(const char* ext)
+    {
+        return strcmp(ext, ".jpg") == 0 ||
+               strcmp(ext, ".png") == 0 ||
+               strcmp(ext, ".bmp") == 0;
+    }
+
+    static bool isMesh(const char* ext)
+    {
+        return strcmp(ext, ".obj") == 0;
+    }
+
+    static bool isShader(const char* ext)
+    {
+        return strcmp(ext, ".vert") == 0 ||
+               strcmp(ext, ".tesc") == 0 ||
+               strcmp(ext, ".tese") == 0 ||
+               strcmp(ext, ".geom") == 0 ||
+               strcmp(ext, ".frag") == 0;
+    }
+
+    static bool isMaterial(const char* ext)
+    {
+        return strcmp(ext, ".oylmat") == 0;
+    }
+
+    static bool isScene(const char* ext)
+    {
+        return strcmp(ext, ".oylscene") == 0;
+    }
+    
+    void GuiLayer::drawAssetNode(const std::fs::directory_iterator& dir)
+    {
+        for (const auto& dirEntry : dir)
+        {
+            ImGui::TableNextRow();
+
+            //std::string name = dirEntry.path().filename().string();
+            std::string name = dirEntry.path().filename().string();
+
+            if (dirEntry.is_directory())
+            {
+                bool open = ImGui::TreeNodeEx(name.c_str(), ImGuiTreeNodeFlags_OpenOnDoubleClick |
+                                                            ImGuiTreeNodeFlags_OpenOnArrow |
+                                                            ImGuiTreeNodeFlags_SpanFullWidth);
+
+                ImGui::TableNextCell();
+                ImGui::TextDisabled("Folder");
+                if (open)
+                {
+                    drawAssetNode(std::fs::directory_iterator(dirEntry));
+                    ImGui::TreePop();
+                }
+            } else
+            {
+                ImGui::TreeNodeEx(name.c_str(), ImGuiTreeNodeFlags_Leaf |
+                                                ImGuiTreeNodeFlags_NoTreePushOnOpen |
+                                                ImGuiTreeNodeFlags_SpanFullWidth);
+                
+                ImGui::TableNextCell();
+
+                const char* type = nullptr;
+                const char* ext = name.c_str() + name.find_last_of('.');
+                
+                if      (isTexture(ext))  type = "Texture";
+                else if (isMesh(ext))     type = "Mesh";
+                else if (isShader(ext))   type = "Shader";
+                else if (isMaterial(ext)) type = "Material";
+                else if (isScene(ext))    type = "Scene";
+
+                ImGui::TextUnformatted(type != nullptr ? type : "Unkown");
+            }
+        }
+    }
+
+    // TODO: Update algorithm to check recursive driectories and cached for any change to update file 
     void GuiLayer::updateAssetList()
     {
-        static auto it = m_fileSaveTimes.begin();
-
-        std::fs::file_time_type lastWriteTime;
-        bool isEntryUpdated = false;
-        
-        for (const auto& kvp : Shader::getCache())
+        if (m_fileSaveTimeIt != m_fileSaveTimes.end())
         {
-            if (kvp.second == nullptr)
-                continue;
-            
-            for (const auto& shader : kvp.second->getShaderInfos())
+            bool stillExists = true;
+            std::fs::file_time_type lastWriteTimeNew = {};
+
+            do
             {
-                auto relPath = std::fs::relative(shader.filename);
-                auto relPathStr = relPath.string();
-                if (it == m_fileSaveTimes.begin() ||
-                    m_fileSaveTimes.empty())
-                {    
-                    // If the file path is not in the database, add it
-                    if (m_fileSaveTimes.find(relPathStr) == m_fileSaveTimes.end())
-                    {
-                        m_fileSaveTimes[relPathStr] = last_write_time(relPath);
-                        it = m_fileSaveTimes.begin();
-                        continue;
-                    }
+                stillExists = true;
+                auto path = std::fs::path(m_fileSaveTimeIt->first);
+                if (exists(path))
+                {
+                    lastWriteTimeNew = last_write_time(path);
                 }
                 else
                 {
-                    auto currRelPath = std::fs::relative(it->first);
-                    lastWriteTime = std::fs::last_write_time(currRelPath);
-                    if (std::fs::equivalent(currRelPath, relPath) &&
-                        lastWriteTime != it->second)
-                    {
-                        kvp.second->load(kvp.second->getShaderInfos());
-                        //it->second = lastWriteTime;
-                        isEntryUpdated = true;
-                    }
+                    auto pathStr = path.string();
+                    
+                    m_fileSaveTimeIt = m_fileSaveTimes.erase(m_fileSaveTimeIt);
+                    stillExists = false;
+
+                    std::string ext = path.extension().string();
+
+                    if (isTexture(ext.c_str()))
+                        for (const auto& [alias, texture] : Texture2D::getCache())
+                            if (pathStr == texture->getFilePath())
+                                Texture2D::discard(alias);
+
+                    if (isMesh(ext.c_str()))
+                        for (const auto& [alias, mesh] : Mesh::getCache())
+                            if (pathStr == mesh->getFilePath())
+                                Mesh::discard(alias);
+
+                    if (isMaterial(ext.c_str()))
+                        for (const auto& [alias, material] : Material::getCache())
+                            if (pathStr == material->getFilePath())
+                                Material::discard(alias);
+                }
+            } while (!stillExists);
+            
+            if (lastWriteTimeNew != std::fs::file_time_type{} && 
+                lastWriteTimeNew != m_fileSaveTimeIt->second)
+            {
+                m_fileSaveTimeIt->second = lastWriteTimeNew;
+                
+                const char* ext =
+                    m_fileSaveTimeIt->first.c_str() + m_fileSaveTimeIt->first.find_last_of('.');
+
+                if (isShader(ext))
+                    for (const auto& kvp : Shader::getCache())
+                        for (const auto& shader : kvp.second->getShaderInfos())
+                        {
+                            //auto pair = std::make_pair<const ShaderInfo&, const Ref<Shader>&>(shader, kvp.second);
+                            if (updateAsset(shader.filename,
+                                            [](void* data)
+                                            {
+                                                auto& shaderRef = *reinterpret_cast<Ref<Shader>*>(data);
+                                                auto shader = Shader::create(shaderRef->getShaderInfos());
+                                                if (!shader->getShaderInfos().empty()) shaderRef = shader;
+                                            }, (void*) &kvp.second))
+                            {
+                                break;
+                            }
+                        }
+
+                if (isMaterial(ext))
+                    for (auto& [alias, material] : Material::getCache())
+                        if (updateAsset(material->getFilePath(),
+                                        [](void* data)
+                                        {
+                                            auto& materialRef = *reinterpret_cast<Ref<Material>*>(data);
+                                            auto mat = Material::create(materialRef->getFilePath());
+                                            if (mat) *materialRef = *mat;
+                                        }, (void*) &material))
+                        {
+                            break;
+                        }
+
+                if (isMesh(ext))
+                    for (auto& [alias, mesh] : Mesh::getCache())
+                        if (updateAsset(mesh->getFilePath(),
+                                        [](void* data)
+                                        {
+                                            auto& meshRef = *reinterpret_cast<Ref<Mesh>*>(data);
+                                            auto mesh = Mesh::create(meshRef->getFilePath());
+                                            if (mesh != Mesh::get(INVALID_ALIAS)) *meshRef = *mesh;
+                                        }, (void*) &mesh))
+                        {
+                            break;
+                        }
+
+                if (isTexture(ext))
+                    for (auto& [alias, texture] : Texture2D::getCache())
+                        if (updateAsset(texture->getFilePath(),
+                                        [](void* data)
+                                        {
+                                            auto& textureRef = *reinterpret_cast<Ref<Texture2D>*>(data);
+                                            auto tex = Texture2D::create(textureRef->getFilePath());
+                                            if (tex->isLoaded()) *textureRef = *tex;
+                                        }, (void*) &texture))
+                        {
+                            break;
+                        }
+
+
+            }
+
+            ++m_fileSaveTimeIt;
+        }
+        else
+        {
+            std::fs::recursive_directory_iterator res("res");
+            for (const auto& dirEntry : res)
+            {   
+                auto relPath = relative(dirEntry.path());
+                std::string relPathStr = relPath.string();
+                if (m_fileSaveTimes.find(relPathStr) == m_fileSaveTimes.end())
+                {
+                    m_fileSaveTimes[relPathStr] = last_write_time(relPath);
+                    const char* ext = relPathStr.c_str() + relPathStr.find_last_of('.');
+
+                    if (isTexture(ext))  Texture2D::cache(relPathStr);
+                    if (isMesh(ext)) Mesh::cache(relPathStr);
+                    if (isMaterial(ext)) Material::cache(relPathStr);
                 }
             }
+
+            m_fileSaveTimeIt = m_fileSaveTimes.begin();
+
+            // Helper function, return true if was not present in the list, return false otherwise
+            auto addToFileSaveTimes = [this](const std::string& filename)
+            {
+                if (filename.empty()) return;
+                auto relPath = std::fs::relative(filename);
+                auto relPathStr = relPath.string();
+                if (m_fileSaveTimes.find(relPathStr) == m_fileSaveTimes.end())
+                    m_fileSaveTimes[relPathStr] = last_write_time(relPath);
+            };
+            
+            // If at the end, iterate through all of the assets and
+            // add them to the list if they're not already 
+            for (const auto& [alias, shader] : Shader::getCache())
+                for (const auto& info : shader->getShaderInfos())
+                    addToFileSaveTimes(info.filename);
+
+            for (const auto& [alias, material] : Material::getCache())
+                addToFileSaveTimes(material->getFilePath());
+
+            for (const auto& [alias, mesh] : Mesh::getCache())
+                addToFileSaveTimes(mesh->getFilePath());
+
+            // TEMPORARY: Uncomment when 1D and 3D textures are supported
+            //for (const auto& [alias, texture1D] : Texture1D::getCache())
+            //    addToFileSaveTimes(texture1D->getFilePath());
+
+            for (const auto& [alias, texture2D] : Texture2D::getCache())
+                addToFileSaveTimes(texture2D->getFilePath());
+
+            //for (const auto& [alias, texture3D] : Texture3D::getCache())
+            //    addToFileSaveTimes(texture3D->getFilePath());
         }
+    }
 
-        if (isEntryUpdated)
-            it->second = lastWriteTime;
-
-        if (++it == m_fileSaveTimes.end())
-            it = m_fileSaveTimes.begin();
-
-        //for (auto& p : std::fs::recursive_directory_iterator("res/assets/"))
+    bool GuiLayer::updateAsset(const std::string& filepath, 
+                               void (*loadAsset)(void*), 
+                               void* userData)
+    {
+        //if (filepath.empty()) return false;
+        //
+        //auto relPath = std::fs::relative(filepath);
+        //auto relPathStr = relPath.string();
+        //if (m_fileSaveTimeIt == m_fileSaveTimes.begin() ||
+        //    m_fileSaveTimes.empty())
         //{
-        //    // TEMPORARY:
-        //    if (p.is_directory()) continue;
-
-        //    if (p.is_regular_file())
+        //    // If the file path is not in the database, add it
+        //    if (m_fileSaveTimes.find(relPathStr) == m_fileSaveTimes.end())
         //    {
-        //        if (p.path().extension().string().compare(""))
-        //        {
-        //            
-        //        }
+        //        m_fileSaveTimes[relPathStr] = last_write_time(relPath);
+        //        m_fileSaveTimeIt = m_fileSaveTimes.begin();
+        //        return false;
         //    }
         //}
+
+        // If the file has been saved to since the last load, reload it
+        auto relPath = std::fs::relative(filepath);
+        auto currRelPath = std::fs::relative(m_fileSaveTimeIt->first);
+        if (std::fs::equivalent(currRelPath, relPath))
+        {
+            loadAsset(userData);
+            return true;
+        }
+        return false;
     }
 
     void GuiLayer::drawSceneViewport()
@@ -1659,7 +1900,6 @@ namespace oyl::internal
         style.Colors[ImGuiCol_Text] = TEXT(0.78f);
         style.Colors[ImGuiCol_TextDisabled] = TEXT(0.28f);
         style.Colors[ImGuiCol_WindowBg] = ImVec4(0.13f, 0.14f, 0.17f, 1.00f);
-        style.Colors[ImGuiCol_ChildWindowBg] = BG(0.58f);
         style.Colors[ImGuiCol_PopupBg] = BG(0.9f);
         style.Colors[ImGuiCol_Border] = ImVec4(0.31f, 0.31f, 1.00f, 0.00f);
         style.Colors[ImGuiCol_BorderShadow] = ImVec4(0.00f, 0.00f, 0.00f, 0.00f);

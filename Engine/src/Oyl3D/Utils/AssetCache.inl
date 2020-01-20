@@ -49,6 +49,8 @@ namespace oyl::internal
                                        const CacheAlias& alias,
                                        bool              overwrite)
     {
+        if (!existing) return existing;
+        
         Ref<T> alreadyCached = nullptr;
 
         for (auto& kvp : m_cache)
