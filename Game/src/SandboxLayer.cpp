@@ -367,7 +367,7 @@ void SandboxLayer::onEnter()
 
 					auto& newTransform  = registry->get<component::Transform>(spawner.entityPrefab);
 					auto& newEntityInfo = registry->get<component::EntityInfo>(spawner.entityPrefab);
-					auto& newCarryable = registry->get<CarryableItem>(spawner.entityPrefab);
+					auto& newCarryable  = registry->get<CarryableItem>(spawner.entityPrefab);
 
 					newCarryable.hasBeenCarried = true; //we have to do this or else the prefab entity will stop this spawner from ever spawning an item
 					newTransform.setPosition(glm::vec3(-99999.0f));
@@ -375,6 +375,12 @@ void SandboxLayer::onEnter()
 					break;
 				}
 			}
+
+			auto& spawnerTransform = registry->assign<component::Transform>(cleaningSolutionSpawnerEntity);
+			spawnerTransform.setPosition(glm::vec3(0.0f));
+
+			auto& spawnerInfo = registry->assign<component::EntityInfo>(cleaningSolutionSpawnerEntity);
+			spawnerInfo.name = "BlueCleaningSolutionSpawner";
 		}
 
 		{
@@ -399,7 +405,7 @@ void SandboxLayer::onEnter()
 
 					auto& newTransform  = registry->get<component::Transform>(spawner.entityPrefab);
 					auto& newEntityInfo = registry->get<component::EntityInfo>(spawner.entityPrefab);
-					auto& newCarryable = registry->get<CarryableItem>(spawner.entityPrefab);
+					auto& newCarryable  = registry->get<CarryableItem>(spawner.entityPrefab);
 
 					newCarryable.hasBeenCarried = true; //we have to do this or else the prefab entity will stop this spawner from ever spawning an item
 					newTransform.setPosition(glm::vec3(-99999.0f));
@@ -407,6 +413,12 @@ void SandboxLayer::onEnter()
 					break;
 				}
 			}
+
+			auto& spawnerTransform = registry->assign<component::Transform>(gloopSpawnerEntity);
+			spawnerTransform.setPosition(glm::vec3(0.0f));
+
+			auto& spawnerInfo = registry->assign<component::EntityInfo>(gloopSpawnerEntity);
+			spawnerInfo.name = "BlueGloopSpawner";
 		}
 		/////////////////////////////////////////////////////
 		/////////////////////////////////////////////////////
@@ -660,7 +672,7 @@ void SandboxLayer::onEnter()
 
 					auto& newTransform  = registry->get<component::Transform>(spawner.entityPrefab);
 					auto& newEntityInfo = registry->get<component::EntityInfo>(spawner.entityPrefab);
-					auto& newCarryable = registry->get<CarryableItem>(spawner.entityPrefab);
+					auto& newCarryable  = registry->get<CarryableItem>(spawner.entityPrefab);
 
 					newCarryable.hasBeenCarried = true; //we have to do this or else the prefab entity will stop this spawner from ever spawning an item
 					newTransform.setPosition(glm::vec3(-99999.0f));
@@ -668,6 +680,12 @@ void SandboxLayer::onEnter()
 					break;
 				}
 			}
+
+			auto& spawnerTransform = registry->assign<component::Transform>(cleaningSolutionSpawnerEntity);
+			spawnerTransform.setPosition(glm::vec3(0.0f));
+
+			auto& spawnerInfo = registry->assign<component::EntityInfo>(cleaningSolutionSpawnerEntity);
+			spawnerInfo.name = "RedCleaningSolutionSpawner";
 		}
 
 		{
@@ -700,6 +718,12 @@ void SandboxLayer::onEnter()
 					break;
 				}
 			}
+
+			auto& spawnerTransform = registry->assign<component::Transform>(gloopSpawnerEntity);
+			spawnerTransform.setPosition(glm::vec3(0.0f));
+
+			auto& spawnerInfo = registry->assign<component::EntityInfo>(gloopSpawnerEntity);
+			spawnerInfo.name = "RedGloopSpawner";
 		}
 		/////////////////////////////////////////////////////
 		/////////////////////////////////////////////////////

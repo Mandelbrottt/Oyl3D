@@ -7,7 +7,7 @@
                 "Alias": "cannon"
             },
             "Mesh": {
-                "FilePath": "res/assets/models/cannon.obj"
+                "FilePath": "res\\assets\\models\\cannon.obj"
             }
         },
         "Transform": {
@@ -42,7 +42,7 @@
                 "Alias": "cannonball"
             },
             "Mesh": {
-                "FilePath": "res/assets/models/sphere.obj"
+                "FilePath": "res\\assets\\models\\sphere.obj"
             }
         },
         "Transform": {
@@ -77,7 +77,7 @@
                 "Alias": "cannonball"
             },
             "Mesh": {
-                "FilePath": "res/assets/models/sphere.obj"
+                "FilePath": "res\\assets\\models\\sphere.obj"
             }
         },
         "Transform": {
@@ -112,7 +112,7 @@
                 "Alias": "cannonball"
             },
             "Mesh": {
-                "FilePath": "res/assets/models/sphere.obj"
+                "FilePath": "res\\assets\\models\\sphere.obj"
             }
         },
         "Transform": {
@@ -147,7 +147,7 @@
                 "Alias": "cannonball"
             },
             "Mesh": {
-                "FilePath": "res/assets/models/sphere.obj"
+                "FilePath": "res\\assets\\models\\sphere.obj"
             }
         },
         "Transform": {
@@ -182,7 +182,7 @@
                 "Alias": "cannonball"
             },
             "Mesh": {
-                "FilePath": "res/assets/models/sphere.obj"
+                "FilePath": "res\\assets\\models\\sphere.obj"
             }
         },
         "Transform": {
@@ -217,7 +217,7 @@
                 "Alias": "cannonball"
             },
             "Mesh": {
-                "FilePath": "res/assets/models/sphere.obj"
+                "FilePath": "res\\assets\\models\\sphere.obj"
             }
         },
         "Transform": {
@@ -252,7 +252,7 @@
                 "Alias": "crate"
             },
             "Mesh": {
-                "FilePath": "res/assets/models/crateTemp.obj"
+                "FilePath": "res\\assets\\models\\crateTemp.obj"
             }
         },
         "Transform": {
@@ -287,7 +287,7 @@
                 "Alias": "pirax"
             },
             "Mesh": {
-                "FilePath": "res/assets/models/Pirax.obj"
+                "FilePath": "res\\assets\\models\\Pirax.obj"
             }
         },
         "Transform": {
@@ -322,7 +322,7 @@
                 "Alias": "pirax"
             },
             "Mesh": {
-                "FilePath": "res/assets/models/Pirax.obj"
+                "FilePath": "res\\assets\\models\\Pirax.obj"
             }
         },
         "Transform": {
@@ -357,7 +357,7 @@
                 "Alias": "pirax"
             },
             "Mesh": {
-                "FilePath": "res/assets/models/Pirax.obj"
+                "FilePath": "res\\assets\\models\\Pirax.obj"
             }
         },
         "Transform": {
@@ -392,7 +392,7 @@
                 "Alias": "pirax"
             },
             "Mesh": {
-                "FilePath": "res/assets/models/Pirax.obj"
+                "FilePath": "res\\assets\\models\\Pirax.obj"
             }
         },
         "Transform": {
@@ -419,6 +419,41 @@
             }
         }
     },
+    "BlueCleaningSolutionSpawner": {
+        "Parent": null,
+        "Renderable": {
+            "Enabled": true,
+            "Material": {
+                "Alias": null
+            },
+            "Mesh": {
+                "FilePath": null
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": 0.0,
+                "Y": 0.0,
+                "Z": 0.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
     "BlueGarbagePile0": {
         "Parent": null,
         "Renderable": {
@@ -427,7 +462,7 @@
                 "Alias": "garbage"
             },
             "Mesh": {
-                "FilePath": "res/assets/models/garbage.obj"
+                "FilePath": "res\\assets\\models\\garbage.obj"
             }
         },
         "Transform": {
@@ -462,7 +497,7 @@
                 "Alias": "garbage"
             },
             "Mesh": {
-                "FilePath": "res/assets/models/garbage.obj"
+                "FilePath": "res\\assets\\models\\garbage.obj"
             }
         },
         "Transform": {
@@ -497,7 +532,7 @@
                 "Alias": "garbage"
             },
             "Mesh": {
-                "FilePath": "res/assets/models/garbage.obj"
+                "FilePath": "res\\assets\\models\\garbage.obj"
             }
         },
         "Transform": {
@@ -532,7 +567,7 @@
                 "Alias": "goop"
             },
             "Mesh": {
-                "FilePath": "res/assets/models/Gloop.obj"
+                "FilePath": "res\\assets\\models\\Gloop.obj"
             }
         },
         "Transform": {
@@ -567,7 +602,7 @@
                 "Alias": "goop"
             },
             "Mesh": {
-                "FilePath": "res/assets/models/Gloop.obj"
+                "FilePath": "res\\assets\\models\\Gloop.obj"
             }
         },
         "Transform": {
@@ -602,7 +637,7 @@
                 "Alias": "goop"
             },
             "Mesh": {
-                "FilePath": "res/assets/models/Gloop.obj"
+                "FilePath": "res\\assets\\models\\Gloop.obj"
             }
         },
         "Transform": {
@@ -637,7 +672,7 @@
                 "Alias": "goop"
             },
             "Mesh": {
-                "FilePath": "res/assets/models/Gloop.obj"
+                "FilePath": "res\\assets\\models\\Gloop.obj"
             }
         },
         "Transform": {
@@ -664,6 +699,41 @@
             }
         }
     },
+    "BlueGloopSpawner": {
+        "Parent": null,
+        "Renderable": {
+            "Enabled": true,
+            "Material": {
+                "Alias": null
+            },
+            "Mesh": {
+                "FilePath": null
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": 0.0,
+                "Y": 0.0,
+                "Z": 0.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
     "BlueMop": {
         "Parent": null,
         "Renderable": {
@@ -672,7 +742,7 @@
                 "Alias": "mop"
             },
             "Mesh": {
-                "FilePath": "res/assets/models/mop.obj"
+                "FilePath": "res\\assets\\models\\mop.obj"
             }
         },
         "Transform": {
@@ -709,7 +779,7 @@
                 "Alias": "siding"
             },
             "Mesh": {
-                "FilePath": "res/assets/models/BoatHull.obj"
+                "FilePath": "res\\assets\\models\\BoatHull.obj"
             }
         },
         "Transform": {
@@ -746,7 +816,7 @@
                 "Alias": "siding"
             },
             "Mesh": {
-                "FilePath": "res/assets/models/BoatHull.obj"
+                "FilePath": "res\\assets\\models\\BoatHull.obj"
             }
         },
         "Transform": {
@@ -783,7 +853,7 @@
                 "Alias": "planks"
             },
             "Mesh": {
-                "FilePath": "res/assets/models/BoatHullFlipped.obj"
+                "FilePath": "res\\assets\\models\\BoatHullFlipped.obj"
             }
         },
         "Transform": {
@@ -820,7 +890,7 @@
                 "Alias": "planks"
             },
             "Mesh": {
-                "FilePath": "res/assets/models/BoatHullFlipped.obj"
+                "FilePath": "res\\assets\\models\\BoatHullFlipped.obj"
             }
         },
         "Transform": {
@@ -997,7 +1067,7 @@
                 "Alias": "siding"
             },
             "Mesh": {
-                "FilePath": "res/assets/models/CapQuarters.obj"
+                "FilePath": "res\\assets\\models\\CapQuarters.obj"
             }
         },
         "Transform": {
@@ -1034,7 +1104,7 @@
                 "Alias": "siding"
             },
             "Mesh": {
-                "FilePath": "res/assets/models/CapQuarters.obj"
+                "FilePath": "res\\assets\\models\\CapQuarters.obj"
             }
         },
         "Transform": {
@@ -1071,7 +1141,7 @@
                 "Alias": "cannonball"
             },
             "Mesh": {
-                "FilePath": "res/assets/models/QuartersRail.obj"
+                "FilePath": "res\\assets\\models\\QuartersRail.obj"
             }
         },
         "Transform": {
@@ -1108,7 +1178,7 @@
                 "Alias": "cannonball"
             },
             "Mesh": {
-                "FilePath": "res/assets/models/QuartersRail.obj"
+                "FilePath": "res\\assets\\models\\QuartersRail.obj"
             }
         },
         "Transform": {
@@ -1143,7 +1213,7 @@
                 "Alias": "lamp"
             },
             "Mesh": {
-                "FilePath": "res/assets/models/character.obj"
+                "FilePath": "res\\assets\\models\\character.obj"
             }
         },
         "Transform": {
@@ -1285,7 +1355,7 @@
                 "Alias": "cannonball"
             },
             "Mesh": {
-                "FilePath": "res/assets/models/DeckRail.obj"
+                "FilePath": "res\\assets\\models\\DeckRail.obj"
             }
         },
         "Transform": {
@@ -1322,7 +1392,7 @@
                 "Alias": "cannonball"
             },
             "Mesh": {
-                "FilePath": "res/assets/models/DeckRail.obj"
+                "FilePath": "res\\assets\\models\\DeckRail.obj"
             }
         },
         "Transform": {
@@ -1335,146 +1405,6 @@
                 "X": -14.0,
                 "Y": 1.0,
                 "Z": 2.0
-            },
-            "Rotation": {
-                "qW": 1.0,
-                "qX": 0.0,
-                "qY": 0.0,
-                "qZ": 0.0
-            },
-            "Scale": {
-                "X": 1.0,
-                "Y": 1.0,
-                "Z": 1.0
-            }
-        }
-    },
-    "Entity 39": {
-        "Parent": null,
-        "Renderable": {
-            "Enabled": true,
-            "Material": {
-                "Alias": null
-            },
-            "Mesh": {
-                "FilePath": null
-            }
-        },
-        "Transform": {
-            "Mirror": {
-                "X": false,
-                "Y": false,
-                "Z": false
-            },
-            "Position": {
-                "X": 0.0,
-                "Y": 0.0,
-                "Z": 0.0
-            },
-            "Rotation": {
-                "qW": 1.0,
-                "qX": 0.0,
-                "qY": 0.0,
-                "qZ": 0.0
-            },
-            "Scale": {
-                "X": 1.0,
-                "Y": 1.0,
-                "Z": 1.0
-            }
-        }
-    },
-    "Entity 41": {
-        "Parent": null,
-        "Renderable": {
-            "Enabled": true,
-            "Material": {
-                "Alias": null
-            },
-            "Mesh": {
-                "FilePath": null
-            }
-        },
-        "Transform": {
-            "Mirror": {
-                "X": false,
-                "Y": false,
-                "Z": false
-            },
-            "Position": {
-                "X": 0.0,
-                "Y": 0.0,
-                "Z": 0.0
-            },
-            "Rotation": {
-                "qW": 1.0,
-                "qX": 0.0,
-                "qY": 0.0,
-                "qZ": 0.0
-            },
-            "Scale": {
-                "X": 1.0,
-                "Y": 1.0,
-                "Z": 1.0
-            }
-        }
-    },
-    "Entity 61": {
-        "Parent": null,
-        "Renderable": {
-            "Enabled": true,
-            "Material": {
-                "Alias": null
-            },
-            "Mesh": {
-                "FilePath": null
-            }
-        },
-        "Transform": {
-            "Mirror": {
-                "X": false,
-                "Y": false,
-                "Z": false
-            },
-            "Position": {
-                "X": 0.0,
-                "Y": 0.0,
-                "Z": 0.0
-            },
-            "Rotation": {
-                "qW": 1.0,
-                "qX": 0.0,
-                "qY": 0.0,
-                "qZ": 0.0
-            },
-            "Scale": {
-                "X": 1.0,
-                "Y": 1.0,
-                "Z": 1.0
-            }
-        }
-    },
-    "Entity 63": {
-        "Parent": null,
-        "Renderable": {
-            "Enabled": true,
-            "Material": {
-                "Alias": null
-            },
-            "Mesh": {
-                "FilePath": null
-            }
-        },
-        "Transform": {
-            "Mirror": {
-                "X": false,
-                "Y": false,
-                "Z": false
-            },
-            "Position": {
-                "X": 0.0,
-                "Y": 0.0,
-                "Z": 0.0
             },
             "Rotation": {
                 "qW": 1.0,
@@ -1637,7 +1567,7 @@
                 "Alias": "lamp"
             },
             "Mesh": {
-                "FilePath": "res/assets/models/lamp.obj"
+                "FilePath": "res\\assets\\models\\lamp.obj"
             }
         },
         "Transform": {
@@ -1919,7 +1849,7 @@
                 "Alias": null
             },
             "Mesh": {
-                "FilePath": "res/assets/models/plane.obj"
+                "FilePath": "res\\assets\\models\\plane.obj"
             }
         },
         "Transform": {
@@ -1956,7 +1886,7 @@
                 "Alias": null
             },
             "Mesh": {
-                "FilePath": "res/assets/models/plane.obj"
+                "FilePath": "res\\assets\\models\\plane.obj"
             }
         },
         "Transform": {
@@ -1991,7 +1921,7 @@
                 "Alias": "container"
             },
             "Mesh": {
-                "FilePath": "res/assets/models/plane.obj"
+                "FilePath": "res\\assets\\models\\plane.obj"
             }
         },
         "Transform": {
@@ -2026,7 +1956,7 @@
                 "Alias": null
             },
             "Mesh": {
-                "FilePath": "res/assets/models/plane.obj"
+                "FilePath": "res\\assets\\models\\plane.obj"
             }
         },
         "Transform": {
@@ -2061,7 +1991,7 @@
                 "Alias": "container"
             },
             "Mesh": {
-                "FilePath": "res/assets/models/cube.obj"
+                "FilePath": "res\\assets\\models\\cube.obj"
             }
         },
         "Transform": {
@@ -2168,7 +2098,7 @@
                 "Alias": "cannon"
             },
             "Mesh": {
-                "FilePath": "res/assets/models/cannon.obj"
+                "FilePath": "res\\assets\\models\\cannon.obj"
             }
         },
         "Transform": {
@@ -2203,7 +2133,7 @@
                 "Alias": "cannonball"
             },
             "Mesh": {
-                "FilePath": "res/assets/models/sphere.obj"
+                "FilePath": "res\\assets\\models\\sphere.obj"
             }
         },
         "Transform": {
@@ -2238,7 +2168,7 @@
                 "Alias": "cannonball"
             },
             "Mesh": {
-                "FilePath": "res/assets/models/sphere.obj"
+                "FilePath": "res\\assets\\models\\sphere.obj"
             }
         },
         "Transform": {
@@ -2273,7 +2203,7 @@
                 "Alias": "cannonball"
             },
             "Mesh": {
-                "FilePath": "res/assets/models/sphere.obj"
+                "FilePath": "res\\assets\\models\\sphere.obj"
             }
         },
         "Transform": {
@@ -2308,7 +2238,7 @@
                 "Alias": "cannonball"
             },
             "Mesh": {
-                "FilePath": "res/assets/models/sphere.obj"
+                "FilePath": "res\\assets\\models\\sphere.obj"
             }
         },
         "Transform": {
@@ -2343,7 +2273,7 @@
                 "Alias": "cannonball"
             },
             "Mesh": {
-                "FilePath": "res/assets/models/sphere.obj"
+                "FilePath": "res\\assets\\models\\sphere.obj"
             }
         },
         "Transform": {
@@ -2378,7 +2308,7 @@
                 "Alias": "cannonball"
             },
             "Mesh": {
-                "FilePath": "res/assets/models/sphere.obj"
+                "FilePath": "res\\assets\\models\\sphere.obj"
             }
         },
         "Transform": {
@@ -2413,7 +2343,7 @@
                 "Alias": "crate"
             },
             "Mesh": {
-                "FilePath": "res/assets/models/crateTemp.obj"
+                "FilePath": "res\\assets\\models\\crateTemp.obj"
             }
         },
         "Transform": {
@@ -2448,7 +2378,7 @@
                 "Alias": "pirax"
             },
             "Mesh": {
-                "FilePath": "res/assets/models/Pirax.obj"
+                "FilePath": "res\\assets\\models\\Pirax.obj"
             }
         },
         "Transform": {
@@ -2483,7 +2413,7 @@
                 "Alias": "pirax"
             },
             "Mesh": {
-                "FilePath": "res/assets/models/Pirax.obj"
+                "FilePath": "res\\assets\\models\\Pirax.obj"
             }
         },
         "Transform": {
@@ -2518,7 +2448,7 @@
                 "Alias": "pirax"
             },
             "Mesh": {
-                "FilePath": "res/assets/models/Pirax.obj"
+                "FilePath": "res\\assets\\models\\Pirax.obj"
             }
         },
         "Transform": {
@@ -2553,7 +2483,7 @@
                 "Alias": "pirax"
             },
             "Mesh": {
-                "FilePath": "res/assets/models/Pirax.obj"
+                "FilePath": "res\\assets\\models\\Pirax.obj"
             }
         },
         "Transform": {
@@ -2580,6 +2510,41 @@
             }
         }
     },
+    "RedCleaningSolutionSpawner": {
+        "Parent": null,
+        "Renderable": {
+            "Enabled": true,
+            "Material": {
+                "Alias": null
+            },
+            "Mesh": {
+                "FilePath": null
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": 0.0,
+                "Y": 0.0,
+                "Z": 0.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
     "RedGarbagePile0": {
         "Parent": null,
         "Renderable": {
@@ -2588,7 +2553,7 @@
                 "Alias": "garbage"
             },
             "Mesh": {
-                "FilePath": "res/assets/models/garbage.obj"
+                "FilePath": "res\\assets\\models\\garbage.obj"
             }
         },
         "Transform": {
@@ -2623,7 +2588,7 @@
                 "Alias": "garbage"
             },
             "Mesh": {
-                "FilePath": "res/assets/models/garbage.obj"
+                "FilePath": "res\\assets\\models\\garbage.obj"
             }
         },
         "Transform": {
@@ -2658,7 +2623,7 @@
                 "Alias": "garbage"
             },
             "Mesh": {
-                "FilePath": "res/assets/models/garbage.obj"
+                "FilePath": "res\\assets\\models\\garbage.obj"
             }
         },
         "Transform": {
@@ -2693,7 +2658,7 @@
                 "Alias": "goop"
             },
             "Mesh": {
-                "FilePath": "res/assets/models/Gloop.obj"
+                "FilePath": "res\\assets\\models\\Gloop.obj"
             }
         },
         "Transform": {
@@ -2728,7 +2693,7 @@
                 "Alias": "goop"
             },
             "Mesh": {
-                "FilePath": "res/assets/models/Gloop.obj"
+                "FilePath": "res\\assets\\models\\Gloop.obj"
             }
         },
         "Transform": {
@@ -2763,7 +2728,7 @@
                 "Alias": "goop"
             },
             "Mesh": {
-                "FilePath": "res/assets/models/Gloop.obj"
+                "FilePath": "res\\assets\\models\\Gloop.obj"
             }
         },
         "Transform": {
@@ -2798,7 +2763,7 @@
                 "Alias": "goop"
             },
             "Mesh": {
-                "FilePath": "res/assets/models/Gloop.obj"
+                "FilePath": "res\\assets\\models\\Gloop.obj"
             }
         },
         "Transform": {
@@ -2825,6 +2790,41 @@
             }
         }
     },
+    "RedGloopSpawner": {
+        "Parent": null,
+        "Renderable": {
+            "Enabled": true,
+            "Material": {
+                "Alias": null
+            },
+            "Mesh": {
+                "FilePath": null
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": 0.0,
+                "Y": 0.0,
+                "Z": 0.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
     "RedMop": {
         "Parent": null,
         "Renderable": {
@@ -2833,7 +2833,7 @@
                 "Alias": "mop"
             },
             "Mesh": {
-                "FilePath": "res/assets/models/mop.obj"
+                "FilePath": "res\\assets\\models\\mop.obj"
             }
         },
         "Transform": {
@@ -2868,7 +2868,7 @@
                 "Alias": "container"
             },
             "Mesh": {
-                "FilePath": "res/assets/models/sphere.obj"
+                "FilePath": "res\\assets\\models\\sphere.obj"
             }
         },
         "Transform": {
@@ -2903,7 +2903,7 @@
                 "Alias": "container"
             },
             "Mesh": {
-                "FilePath": "res/assets/models/sphere.obj"
+                "FilePath": "res\\assets\\models\\sphere.obj"
             }
         },
         "Transform": {
@@ -2940,7 +2940,7 @@
                 "Alias": "planks"
             },
             "Mesh": {
-                "FilePath": "res/assets/models/TopDeck.obj"
+                "FilePath": "res\\assets\\models\\TopDeck.obj"
             }
         },
         "Transform": {
@@ -2977,7 +2977,7 @@
                 "Alias": "planks"
             },
             "Mesh": {
-                "FilePath": "res/assets/models/TopDeck.obj"
+                "FilePath": "res\\assets\\models\\TopDeck.obj"
             }
         },
         "Transform": {
