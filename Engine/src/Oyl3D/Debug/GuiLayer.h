@@ -61,7 +61,6 @@ namespace oyl::internal
 
         void updateAssetList();
         bool updateAsset(const std::string& filepath, 
-                         std::fs::file_time_type& lastWriteTime, 
                          void (*loadAsset)(void*), 
                          void* userData);
         
