@@ -115,6 +115,11 @@ void SandboxLayer::onEnter()
 			mr.material->albedoMap = Texture2D::cache("res/assets/textures/water.png");
 			mr.material->specularMap = Material::get("container")->specularMap;
 
+			mr.material = Material::cache((Material::create()), "siding");
+			mr.material->shader = Shader::get(LIGHTING_SHADER_ALIAS);
+			mr.material->albedoMap = Texture2D::cache("res/assets/textures/woodPlankSiding.png");
+			mr.material->specularMap = Material::get("planks")->specularMap;
+
 
 
 			//CANNON
@@ -726,7 +731,7 @@ void SandboxLayer::onEnter()
 		{
 			//BOAT HULL
 			entt::entity boatHullEntity = registry->create();
-			mr.material = Material::get("planks");
+			mr.material = Material::get("siding");
 
 			component::Transform boatHullTransform;
 			boatHullTransform.setPosition(glm::vec3(-21.0f, 0.0f, -2.0f));
@@ -747,7 +752,7 @@ void SandboxLayer::onEnter()
 		{
 			//BOAT HULL
 			entt::entity boatHullFLippedEntity = registry->create();
-			mr.material = Material::get("planks");
+			mr.material = Material::get("siding");
 
 			component::Transform boatHullFlippedTransform;
 			boatHullFlippedTransform.setPosition(glm::vec3(-21.0f, 0.0f, -2.0f));
