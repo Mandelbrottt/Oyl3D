@@ -31,7 +31,7 @@ namespace oyl
     Ref<Material> Material::create(const std::string& filepath)
     {
         auto ret = internal::materialFromFile(filepath);
-        ret->m_filepath = filepath;
+        if (ret) ret->m_filepath = filepath;
         return ret;
     }
 
@@ -40,6 +40,8 @@ namespace oyl
                                                                const CacheAlias&    alias,
                                                                bool overwrite)
     {
+        if (!existing) return existing;
+        
         Ref<Material> alreadyCached = nullptr;
 
         for (auto& kvp : m_cache)

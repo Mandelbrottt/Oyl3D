@@ -149,6 +149,8 @@ void SandboxLayer::onEnter()
 
 		{
 			//GARBAGE PILES
+			//NOTE: MAKE SURE THESE ARE ARRANGED SO THE FIRST ONE (BlueGarbagePile0) IS ON THE LEFTMOST SIDE RELATIVE TO THE POSITIVE Z AXIS
+			//      AND THE LAST ONE IS ON THE RIGHT SO THAT THE OPPOSING CANNON FIRES AT THE CORRECT GARBAGE PILE
 			mr.mesh = Mesh::cache("res/assets/models/garbage.obj");
 			mr.material = Material::get("garbage");
 			for (int i = 0; i < 3; i++)
@@ -162,6 +164,7 @@ void SandboxLayer::onEnter()
 
 				auto& garbagePile = registry->assign<GarbagePile>(garbagePileEntity);
 				garbagePile.team = Team::blue;
+				garbagePile.relativePositionOnShip = i - 1;
 
 				auto& rb = registry->assign<component::RigidBody>(garbagePileEntity);
 				rb.setMass(0.0f);
@@ -260,10 +263,12 @@ void SandboxLayer::onEnter()
 				carryableItem.team = Team::blue;
 				carryableItem.type = CarryableItemType::cleaningSolution;
 
-				auto& rb = registry->assign<component::RigidBody>(cleaningSolutionEntity);
-				rb.setProperties(component::RigidBody::Property::IS_KINEMATIC, true);
+				auto& respawnable = registry->assign<Respawnable>(cleaningSolutionEntity);
+				respawnable.spawnPosition = glm::vec3(2.8f, 0.31f, 0.65f);
+				respawnable.spawnRotation = glm::vec3(0.0f);
 
-				mr.mesh = Mesh::get("cube");
+				auto& rb = registry->assign<component::RigidBody>(cleaningSolutionEntity);
+
 				registry->assign<component::Renderable>(cleaningSolutionEntity, mr);
 
 				auto& so2 = registry->assign<component::EntityInfo>(cleaningSolutionEntity);
@@ -284,13 +289,17 @@ void SandboxLayer::onEnter()
 				entt::entity gloopEntity = registry->create();
 
 				component::Transform gloopTransform;
-				gloopTransform.setPosition(glm::vec3(3.0f, 0.27f, 3.0f));
-				gloopTransform.setScale(glm::vec3(0.23f, 0.23f, 0.23f));
+				gloopTransform.setPosition(glm::vec3(3.0f, 0.2f, 3.0f));
+				gloopTransform.setScale(glm::vec3(0.1f, 0.1f, 0.1f));
 				registry->assign<component::Transform>(gloopEntity, gloopTransform);
 
 				auto& carryableItem = registry->assign<CarryableItem>(gloopEntity);
 				carryableItem.team = Team::blue;
 				carryableItem.type = CarryableItemType::gloop;
+
+				auto& respawnable = registry->assign<Respawnable>(gloopEntity);
+				respawnable.spawnPosition = glm::vec3(1.4f, 0.2f, 1.6f);
+				respawnable.spawnRotation = glm::vec3(0.0f);
 
 				auto& rb = registry->assign<component::RigidBody>(gloopEntity);
 
@@ -315,6 +324,7 @@ void SandboxLayer::onEnter()
 
 			component::Transform cannonballCrateTransform;
 			cannonballCrateTransform.setPosition(glm::vec3(-1.0f, 0.5f, -3.0f));
+			cannonballCrateTransform.setRotation(glm::vec3(0.0f, -90.0f, 0.0f));
 			cannonballCrateTransform.setScale(glm::vec3(2.0f, 1.0f, 1.0f));
 			registry->assign<component::Transform>(cannonballCrateEntity, cannonballCrateTransform);
 
@@ -333,6 +343,70 @@ void SandboxLayer::onEnter()
 			auto& cannonballCrateCollider = registry->assign<component::Collidable>(cannonballCrateEntity);
 			auto& shapeInfo = cannonballCrateCollider.pushShape(ColliderType::Box);
 			shapeInfo.box.setSize({ 2.0f, 2.7f, 1.2f });
+		}
+
+		{
+			//CLEANING SOLUTION SPAWNER
+			//NOTE: MAKE SURE THIS IS INITIALIZED AFTER CLEANING SOLUTION ENTITIES
+			entt::entity cleaningSolutionSpawnerEntity = registry->create();
+
+			auto& spawner = registry->assign<RespawnManager>(cleaningSolutionSpawnerEntity);
+			spawner.respawnTimerDuration = 10.0f;
+			spawner.team = Team::blue;
+			spawner.type = CarryableItemType::cleaningSolution;
+
+			auto respawnableItemsView = registry->view<Respawnable, CarryableItem, component::Transform>();
+			for (auto& respawnableEntity : respawnableItemsView)
+			{
+				auto& carryableItem = registry->get<CarryableItem>(respawnableEntity);
+
+				if (carryableItem.type == spawner.type && carryableItem.team == spawner.team)
+				{
+					spawner.entityPrefab = registry->create();
+					registry->stomp(spawner.entityPrefab, respawnableEntity, *registry);
+
+					auto& newTransform  = registry->get<component::Transform>(spawner.entityPrefab);
+					auto& newEntityInfo = registry->get<component::EntityInfo>(spawner.entityPrefab);
+					auto& newCarryable = registry->get<CarryableItem>(spawner.entityPrefab);
+
+					newCarryable.hasBeenCarried = true; //we have to do this or else the prefab entity will stop this spawner from ever spawning an item
+					newTransform.setPosition(glm::vec3(-99999.0f));
+					newEntityInfo.name = "BlueCleaningSolutionPrefab";
+					break;
+				}
+			}
+		}
+
+		{
+			//GLOOP SPAWNER
+			//NOTE: MAKE SURE THIS IS INITIALIZED AFTER GLOOP ENTITIES
+			entt::entity gloopSpawnerEntity = registry->create();
+
+			auto& spawner = registry->assign<RespawnManager>(gloopSpawnerEntity);
+			spawner.respawnTimerDuration = 20.0f;
+			spawner.team = Team::blue;
+			spawner.type = CarryableItemType::gloop;
+
+			auto respawnableItemsView = registry->view<Respawnable, CarryableItem, component::Transform>();
+			for (auto& respawnableEntity : respawnableItemsView)
+			{
+				auto& carryableItem = registry->get<CarryableItem>(respawnableEntity);
+
+				if (carryableItem.type == spawner.type && carryableItem.team == spawner.team)
+				{
+					spawner.entityPrefab = registry->create();
+					registry->stomp(spawner.entityPrefab, respawnableEntity, *registry);
+
+					auto& newTransform  = registry->get<component::Transform>(spawner.entityPrefab);
+					auto& newEntityInfo = registry->get<component::EntityInfo>(spawner.entityPrefab);
+					auto& newCarryable = registry->get<CarryableItem>(spawner.entityPrefab);
+
+					newCarryable.hasBeenCarried = true; //we have to do this or else the prefab entity will stop this spawner from ever spawning an item
+					newTransform.setPosition(glm::vec3(-99999.0f));
+					newEntityInfo.name = "BlueGloopPrefab";
+					break;
+				}
+			}
 		}
 		/////////////////////////////////////////////////////
 		/////////////////////////////////////////////////////
@@ -367,6 +441,8 @@ void SandboxLayer::onEnter()
 
 		{
 			//GARBAGE PILES
+			//NOTE: MAKE SURE THESE ARE ARRANGED SO THE FIRST ONE (RedGarbagePile0) IS ON THE LEFTMOST SIDE RELATIVE TO THE POSITIVE Z AXIS
+			//      AND THE LAST ONE IS ON THE RIGHT SO THAT THE OPPOSING CANNON FIRES AT THE CORRECT GARBAGE PILE
 			mr.material = Material::get("garbage");
 
 			for (int i = 0; i < 3; i++)
@@ -380,6 +456,7 @@ void SandboxLayer::onEnter()
 
 				auto& garbagePile = registry->assign<GarbagePile>(garbagePileEntity);
 				garbagePile.team = Team::red;
+				garbagePile.relativePositionOnShip = i - 1;
 
 				auto& rb = registry->assign<component::RigidBody>(garbagePileEntity);
 				rb.setMass(0.0f);
@@ -471,16 +548,19 @@ void SandboxLayer::onEnter()
 
 				component::Transform cleaningSolutionTransform;
 				cleaningSolutionTransform.setPosition(glm::vec3(3.0f, 0.22f, 3.0f));
-				cleaningSolutionTransform.setScale(glm::vec3(0.2f, 0.44f, 0.2f));
+				cleaningSolutionTransform.setScale(glm::vec3(0.3f, 0.3f, 0.3f));
 				registry->assign<component::Transform>(cleaningSolutionEntity, cleaningSolutionTransform);
 
 				auto& carryableItem = registry->assign<CarryableItem>(cleaningSolutionEntity);
 				carryableItem.team = Team::red;
 				carryableItem.type = CarryableItemType::cleaningSolution;
 
+				auto& respawnable = registry->assign<Respawnable>(cleaningSolutionEntity);
+				respawnable.spawnPosition = glm::vec3(1.7f, 0.2f, 15.4f);
+				respawnable.spawnRotation = glm::vec3(0.0f);
+
 				auto& rb = registry->assign<component::RigidBody>(cleaningSolutionEntity);
 
-				mr.mesh = Mesh::get("cube");
 				registry->assign<component::Renderable>(cleaningSolutionEntity, mr);
 
 				auto& so2 = registry->assign<component::EntityInfo>(cleaningSolutionEntity);
@@ -501,12 +581,16 @@ void SandboxLayer::onEnter()
 
 				component::Transform gloopTransform;
 				gloopTransform.setPosition(glm::vec3(3.0f, 0.27f, 3.0f));
-				gloopTransform.setScale(glm::vec3(0.2f, 0.2f, 0.2f));
+				gloopTransform.setScale(glm::vec3(0.1f, 0.1f, 0.1f));
 				registry->assign<component::Transform>(gloopEntity, gloopTransform);
 
 				auto& carryableItem = registry->assign<CarryableItem>(gloopEntity);
 				carryableItem.team = Team::red;
 				carryableItem.type = CarryableItemType::gloop;
+
+				auto& respawnable = registry->assign<Respawnable>(gloopEntity);
+				respawnable.spawnPosition = glm::vec3(2.4f, 0.2f, 14.0f);
+				respawnable.spawnRotation = glm::vec3(0.0f);
 
 				auto& rb = registry->assign<component::RigidBody>(gloopEntity);
 
@@ -532,6 +616,7 @@ void SandboxLayer::onEnter()
 
 			component::Transform cannonballCrateTransform;
 			cannonballCrateTransform.setPosition(glm::vec3(-1.0f, 0.5f, -3.0f));
+			cannonballCrateTransform.setRotation(glm::vec3(0.0f, -90.0f, 0.0f));
 			cannonballCrateTransform.setScale(glm::vec3(2.0f, 1.0f, 1.0f));
 			registry->assign<component::Transform>(cannonballCrateEntity, cannonballCrateTransform);
 
@@ -551,6 +636,70 @@ void SandboxLayer::onEnter()
 			auto& cannonballCrateCollider = registry->assign<component::Collidable>(cannonballCrateEntity);
 			auto& shapeInfo = cannonballCrateCollider.pushShape(ColliderType::Box);
 			shapeInfo.box.setSize({ 2.0f, 2.7f, 1.2f });
+		}
+
+		{
+			//CLEANING SOLUTION SPAWNER
+			//NOTE: MAKE SURE THIS IS INITIALIZED AFTER CLEANING SOLUTION ENTITIES
+			entt::entity cleaningSolutionSpawnerEntity = registry->create();
+
+			auto& spawner = registry->assign<RespawnManager>(cleaningSolutionSpawnerEntity);
+			spawner.respawnTimerDuration = 10.0f;
+			spawner.team = Team::red;
+			spawner.type = CarryableItemType::cleaningSolution;
+
+			auto respawnableItemsView = registry->view<Respawnable, CarryableItem, component::Transform>();
+			for (auto& respawnableEntity : respawnableItemsView)
+			{
+				auto& carryableItem = registry->get<CarryableItem>(respawnableEntity);
+
+				if (carryableItem.type == spawner.type && carryableItem.team == spawner.team)
+				{
+					spawner.entityPrefab = registry->create();
+					registry->stomp(spawner.entityPrefab, respawnableEntity, *registry);
+
+					auto& newTransform  = registry->get<component::Transform>(spawner.entityPrefab);
+					auto& newEntityInfo = registry->get<component::EntityInfo>(spawner.entityPrefab);
+					auto& newCarryable = registry->get<CarryableItem>(spawner.entityPrefab);
+
+					newCarryable.hasBeenCarried = true; //we have to do this or else the prefab entity will stop this spawner from ever spawning an item
+					newTransform.setPosition(glm::vec3(-99999.0f));
+					newEntityInfo.name = "RedCleaningSolutionPrefab";
+					break;
+				}
+			}
+		}
+
+		{
+			//GLOOP SPAWNER
+			//NOTE: MAKE SURE THIS IS INITIALIZED AFTER GLOOP ENTITIES
+			entt::entity gloopSpawnerEntity = registry->create();
+
+			auto& spawner = registry->assign<RespawnManager>(gloopSpawnerEntity);
+			spawner.respawnTimerDuration = 20.0f;
+			spawner.team = Team::red;
+			spawner.type = CarryableItemType::gloop;
+
+			auto respawnableItemsView = registry->view<Respawnable, CarryableItem, component::Transform>();
+			for (auto& respawnableEntity : respawnableItemsView)
+			{
+				auto& carryableItem = registry->get<CarryableItem>(respawnableEntity);
+
+				if (carryableItem.type == spawner.type && carryableItem.team == spawner.team)
+				{
+					spawner.entityPrefab = registry->create();
+					registry->stomp(spawner.entityPrefab, respawnableEntity, *registry);
+
+					auto& newTransform  = registry->get<component::Transform>(spawner.entityPrefab);
+					auto& newEntityInfo = registry->get<component::EntityInfo>(spawner.entityPrefab);
+					auto& newCarryable  = registry->get<CarryableItem>(spawner.entityPrefab);
+
+					newCarryable.hasBeenCarried = true; //we have to do this or else the prefab entity will stop this spawner from ever spawning an item
+					newTransform.setPosition(glm::vec3(-99999.0f));
+					newEntityInfo.name = "RedGloopPrefab";
+					break;
+				}
+			}
 		}
 		/////////////////////////////////////////////////////
 		/////////////////////////////////////////////////////
@@ -729,30 +878,32 @@ void SandboxLayer::onEnter()
     
     {
 		//GROUND PLANE
+		for (int i = 0; i < 4; i++)
+		{
+			component::Renderable mr;
+			mr.mesh = Mesh::cache("res/assets/models/plane.obj");
+			mr.material = nullptr;
 
-        component::Renderable mr;
-        mr.mesh = Mesh::cache("res/assets/models/plane.obj");
-        mr.material = nullptr;
+			entt::entity e = registry->create();
+			registry->assign<component::Renderable>(e, mr);
 
-        entt::entity e = registry->create();
-        registry->assign<component::Renderable>(e, mr);
+			component::Transform t;
+			t.setPosition(glm::vec3(0.0f, -5.0f, 0.0f));
+			t.setScale(glm::vec3(1.9f, 0.2f, 0.5f));
+			registry->assign<component::Transform>(e, t);
 
-        component::Transform t;
-        t.setPosition(glm::vec3(0.0f, -5.0f, 0.0f));
-		t.setScale(glm::vec3(2.5f, 1.0f, 1.7f));
-        registry->assign<component::Transform>(e, t);
+			auto& so = registry->assign<component::EntityInfo>(e);
+			so.name = "Plane " + std::to_string(i);
 
-        auto& so = registry->assign<component::EntityInfo>(e);
-        so.name = "Plane";
+			auto& rb = registry->assign<component::RigidBody>(e);
+			rb.setMass(0.0f);
+			rb.setFriction(1.0f);
 
-        auto& rb = registry->assign<component::RigidBody>(e);
-        rb.setMass(0.0f);
-		rb.setFriction(1.0f);
+			auto& cl = registry->assign<component::Collidable>(e);
 
-        auto& cl = registry->assign<component::Collidable>(e);
-
-        auto& shi = cl.pushShape(ColliderType::Box);
-        shi.box.setSize({ 20.0f, 0.1f, 20.0f });
+			auto& shi = cl.pushShape(ColliderType::Box);
+			shi.box.setSize({ 20.0f, 0.1f, 20.0f });
+		}
     }
 
     {

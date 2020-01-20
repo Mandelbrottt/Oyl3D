@@ -12,6 +12,7 @@
 #include "CannonballSystem.h"
 #include "GloopSystem.h"
 #include "CleaningQuicktimeEventSystem.h"
+#include "ItemRespawnSystem.h"
 
 using namespace oyl;
 
@@ -39,6 +40,7 @@ public:
 		scheduleSystemUpdate<CannonballSystem>();
 		scheduleSystemUpdate<GloopSystem>();
 		scheduleSystemUpdate<CleaningQuicktimeEventSystem>();
+		scheduleSystemUpdate<ItemRespawnSystem>();
 
 		{
 			auto e = registry->create();

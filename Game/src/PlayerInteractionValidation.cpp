@@ -439,7 +439,7 @@ void PlayerInteractionValidationSystem::validateCannonInteraction(entt::entity a
 		{
 			float playerForwardDotCannonRight = glm::dot(playerTransform.getForward(), cannonTransform.getRight());
 
-			bool isCannonOnLeftSideOfTrack = (cannon.cannonTrackPosition == -1)
+			bool isCannonOnLeftSideOfTrack  = (cannon.cannonTrackPosition == -1)
 				? true : false;
 			bool isCannonOnRightSideOfTrack = (cannon.cannonTrackPosition == 1)
 				? true : false;
@@ -582,6 +582,7 @@ void PlayerInteractionValidationSystem::performCarryableItemInteraction(entt::en
 	}
 
 	carryableItem.isBeingCarried = true;
+	carryableItem.hasBeenCarried = true;
 	carryableItemParent.parent   = a_playerEntity;
 
 	carryableItemTransform.setRotationEuler(itemNewRotation);
@@ -600,6 +601,9 @@ void PlayerInteractionValidationSystem::performGarbagePileInteraction(entt::enti
 		//NOTE: if garbage pile is not at max ticks, cleaning is handled in the OnEvent function in this file under the cleaning quicktime event
 		if (garbagePile.garbageTicks >= garbagePile.GARBAGE_TICKS_PER_LEVEL)
 		{
+			auto& carryableItem          = registry->get<CarryableItem>(player.secondaryCarriedItem);
+			auto& carryableItemTransform = registry->get<component::Transform>(player.secondaryCarriedItem);
+
 			registry->destroy(player.secondaryCarriedItem);
 			player.secondaryCarriedItem = entt::null;
 
@@ -622,6 +626,11 @@ void PlayerInteractionValidationSystem::performGarbagePileInteraction(entt::enti
 		UseGloopEvent useGloop;
 		useGloop.gloopEntity = player.primaryCarriedItem;
 		postEvent(useGloop);
+
+		PlayerStateChangeEvent playerStateChange;
+		playerStateChange.playerEntity = a_playerEntity;
+		playerStateChange.newState     = PlayerState::cleaning; //not exactly cleaning but.. close enough. We want the same delay and movement slow effect anyway so might as well reuse it
+		postEvent(playerStateChange);
 	}
 }
 
@@ -654,6 +663,7 @@ void PlayerInteractionValidationSystem::performCannonInteraction(entt::entity a_
 	{
 		cannon.isLoaded = true;
 
+		auto& cannonball           = registry->get<Cannonball>(player.primaryCarriedItem);
 		auto& carriedItem          = registry->get<CarryableItem>(player.primaryCarriedItem);
 		auto& carriedItemParent    = registry->get<component::Parent>(player.primaryCarriedItem);
 		auto& carriedItemTransform = registry->get<component::Transform>(player.primaryCarriedItem);
@@ -664,10 +674,11 @@ void PlayerInteractionValidationSystem::performCannonInteraction(entt::entity a_
 
 			carriedItemParent.parent  = entt::null;
 			player.primaryCarriedItem = entt::null;
+			
+			cannonball.isWaitingToBeFired = true;
 
 			carriedItem.isBeingCarried = false;
-			carriedItem.isActive       = false;
-			carriedItemTransform.setPosition(glm::vec3(-1000.0f, -1000.0f, -1000.0f));
+			carriedItemTransform.setPosition(glm::vec3(-99999.0f));
 
 			return;
 		}
@@ -676,7 +687,7 @@ void PlayerInteractionValidationSystem::performCannonInteraction(entt::entity a_
 	{
 		float playerForwardDotCannonRight = glm::dot(playerTransform.getForward(), cannonTransform.getRight());
 
-		bool isCannonOnLeftSideOfTrack = (cannon.cannonTrackPosition == -1)
+		bool isCannonOnLeftSideOfTrack  = (cannon.cannonTrackPosition == -1)
 			? true : false;
 		bool isCannonOnRightSideOfTrack = (cannon.cannonTrackPosition == 1)
 			? true : false;
@@ -774,7 +785,6 @@ void PlayerInteractionValidationSystem::dropPlayerCarriedItems(entt::entity a_pl
 		if (carriedItemParent.parent == a_playerEntity)
 		{
 			auto& carriedItemRB = registry->get_or_assign<component::RigidBody>(carriedItemEntity); //add the rigidbody back for the item when it's dropped
-			carriedItemRB.setVelocity(glm::vec3(0.0f));
 
 			carriedItemParent.parent = entt::null;
 			carriedItem.isBeingCarried = false;
@@ -790,7 +800,6 @@ void PlayerInteractionValidationSystem::dropPlayerCarriedItems(entt::entity a_pl
 					player.primaryCarriedItem = entt::null;
 
 					newPosition += playerTransform.getForward() * 0.8f;
-					//newPosition.y = 0.25f;
 
 					break;
 				}
@@ -799,12 +808,11 @@ void PlayerInteractionValidationSystem::dropPlayerCarriedItems(entt::entity a_pl
 					std::cout << "DROPPED MOP!\n";
 					player.primaryCarriedItem = entt::null;
 
-					newPosition += playerTransform.getForward() * 0.7f;
+					newPosition += playerTransform.getForward() * 0.6f;
 					newPosition += playerTransform.getRight()   * 0.7f;
 					newPosition.y = playerTransform.getPositionY();
-					//newPosition.y = 0.1f;
 
-					newRotation += glm::vec3(0.0f, 90.0f, 0.0f);
+					newRotation.y += playerTransform.getForward().z > 0.0f ? 90.0f : -90.0f;
 
 					break;
 				}
@@ -813,10 +821,9 @@ void PlayerInteractionValidationSystem::dropPlayerCarriedItems(entt::entity a_pl
 					std::cout << "DROPPED CLEANING SOLUTION!\n";
 					player.secondaryCarriedItem = entt::null;
 
-					newPosition += playerTransform.getForward() * 1.0f;
-					newPosition += playerTransform.getRight()   * -0.3f;
-					newPosition.y = playerTransform.getPositionY();
-					//newPosition.y = 0.22f;
+					newPosition += playerTransform.getForward() * 0.7f;
+					newPosition += playerTransform.getRight()   * -0.2f;
+					newPosition += playerTransform.getUp()      * 0.3f;
 
 					break;
 				}
@@ -827,7 +834,6 @@ void PlayerInteractionValidationSystem::dropPlayerCarriedItems(entt::entity a_pl
 
 					newPosition += playerTransform.getForward() * 0.8f;
 					newPosition.y = playerTransform.getPositionY();
-					//newPosition.y = 0.27f;
 
 					break;
 				}

@@ -23,7 +23,7 @@ void CannonballSystem::onUpdate()
 		if (cannonball.isBeingFired)
 		{
 			cannonball.interpolationParam = std::min(
-				cannonball.interpolationParam + 0.7f * Time::deltaTime(),
+				cannonball.interpolationParam + cannonball.speedWhenFired * Time::deltaTime(),
 				1.0f);
 			
 			cannonballTransform.setPosition(glm::catmullRom(
@@ -34,13 +34,7 @@ void CannonballSystem::onUpdate()
 				cannonball.interpolationParam));
 
 			if (cannonball.interpolationParam >= 1.0f)
-			{
-				cannonball.interpolationParam = 0.0f;
-				cannonball.isBeingFired = false;
-				cannonballCarryable.isActive = false;
-
-				cannonballTransform.setPosition(glm::vec3(-1000.0f));
-			}
+				registry->destroy(cannonballEntity);
 		}
 	}
 }
@@ -59,6 +53,7 @@ bool CannonballSystem::onEvent(const Event& event)
 			auto cannonballView = registry->view<Cannonball, CarryableItem, component::Transform>();
 			for (auto& cannonballEntity : cannonballView)
 			{
+				auto& cannonball          = registry->get<Cannonball>(cannonballEntity);
 				auto& cannonballCarryable = registry->get<CarryableItem>(cannonballEntity);
 
 				if (cannonballCarryable.team == evt.team)
@@ -96,6 +91,9 @@ bool CannonballSystem::onEvent(const Event& event)
 		case (EventType) TypeCannonFired:
 		{
 			auto evt = event_cast<CannonFiredEvent>(event);
+
+			auto& cannon          = registry->get<Cannon>(evt.cannonEntity);
+			auto& cannonTransform = registry->get<component::Transform>(evt.cannonEntity);
 			
 			auto cannonballView = registry->view<Cannonball, CarryableItem, component::Transform>();
 			for (auto& cannonballEntity : cannonballView)
@@ -104,15 +102,15 @@ bool CannonballSystem::onEvent(const Event& event)
 				auto& cannonballCarryable = registry->get<CarryableItem>(cannonballEntity);
 				auto& cannonballTransform = registry->get<component::Transform>(cannonballEntity);
 
-				if (!cannonball.isBeingFired && !cannonballCarryable.isActive)
+				if (cannonball.isWaitingToBeFired && cannonballCarryable.team == cannon.team)
 				{
-					cannonball.isBeingFired      = true;
-					cannonballCarryable.isActive = true;
+					cannonball.isBeingFired       = true;
+					cannonball.isWaitingToBeFired = false;
 
-					cannonball.v1 = evt.cannonPosition + glm::vec3(0.0f, -1.0f, 0.0f) * evt.fireDirection;
-					cannonball.v2 = cannonball.v1 + glm::vec3(0.0f, 2.5f, 1.0f)   * evt.fireDirection;
-					cannonball.v3 = cannonball.v2 + glm::vec3(0.0f, 3.0f, 18.0f)  * evt.fireDirection;
-					cannonball.v4 = cannonball.v3 + glm::vec3(0.0f, -5.0f, 15.0f) * evt.fireDirection;
+					cannonball.v1 = cannonTransform.getPosition() + glm::vec3(0.0f, -1.0f, 0.0f) * cannon.firingDirection;
+					cannonball.v2 = cannonball.v1 + glm::vec3(0.0f, 2.5f, 1.0f)   * cannon.firingDirection;
+					cannonball.v3 = cannonball.v2 + glm::vec3(0.0f, 3.0f, 18.0f)  * cannon.firingDirection;
+					cannonball.v4 = cannonball.v3 + glm::vec3(0.0f, -5.0f, 15.0f) * cannon.firingDirection;
 
 					break;
 				}
@@ -138,6 +136,8 @@ void CannonballSystem::setCannonballToCarriedForPlayer(entt::entity a_playerEnti
 		registry->remove<component::RigidBody>(a_cannonballEntity);
 
 	player.primaryCarriedItem = a_cannonballEntity;
+
+	cannonball.isWaitingToBeFired = false;
 
 	cannonballCarryable.isBeingCarried = true;
 	cannonballCarryable.isActive       = true;

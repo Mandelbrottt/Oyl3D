@@ -57,7 +57,12 @@ namespace oyl::internal
         void drawInspectorAddComponent();
 
         void drawAssetList();
+        void drawAssetNode(const std::filesystem::directory_iterator& dir);
+
         void updateAssetList();
+        bool updateAsset(const std::string& filepath, 
+                         void (*loadAsset)(void*), 
+                         void* userData);
         
         void drawSceneViewport();
         void drawGameViewport();
@@ -94,7 +99,8 @@ namespace oyl::internal
         u32 m_currentCommandPos;
         
         std::unordered_map<std::string, std::fs::file_time_type> m_fileSaveTimes;
-
+        decltype(m_fileSaveTimes)::iterator m_fileSaveTimeIt;
+        
         Ref<Camera> m_editorCamera;
     };
 }
