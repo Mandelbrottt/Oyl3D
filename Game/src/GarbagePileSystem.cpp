@@ -86,6 +86,9 @@ bool GarbagePileSystem::onEvent(const Event& event)
 				{
 					garbagePile.garbageTicks      = 0;
 					garbagePileRenderable.enabled = false;
+
+					if (registry->has<component::RigidBody>(evt.garbagePileEntity))
+						registry->remove<component::RigidBody>(evt.garbagePileEntity);
 				}
 				
 				garbagePile.isGlooped = false;
@@ -135,6 +138,8 @@ void GarbagePileSystem::increaseGarbageLevel(entt::entity a_garbagePileEntity)
 		garbagePile.garbageTicks = garbagePile.GARBAGE_TICKS_PER_LEVEL;
 
 		garbagePileRenderable.enabled = true;
+		auto& garbagePileRB = registry->get_or_assign<component::RigidBody>(a_garbagePileEntity);
+		garbagePileRB.setMass(0.0f);
 	}
 	else if (garbagePile.garbageLevel < garbagePile.MAX_GARBAGE_LEVEL)
 	{

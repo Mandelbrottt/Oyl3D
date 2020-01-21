@@ -1,6 +1,8 @@
 #include "oylpch.h"
 #include "GuiLayer.h"
 
+#include "Selectable.h"
+
 #include "App/Application.h"
 #include "App/Window.h"
 
@@ -31,6 +33,13 @@
 #include <imgui_internal.h>
 
 #include <GLFW/glfw3.h>
+
+static bool isTexture(const char* ext);
+static bool isMesh(const char* ext);
+static bool isShader(const char* ext);
+static bool isMaterial(const char* ext);
+static bool isScene(const char* ext);
+static bool isPrefab(const char* ext);
 
 static const char* g_entityNodeFmt = "%s\t";
 
@@ -254,7 +263,9 @@ namespace oyl::internal
 
         drawInspector();
         
-        drawAssetList();
+        //drawAssetList();
+
+        drawAssetCache();
 
         drawSceneViewport();
 
@@ -276,7 +287,7 @@ namespace oyl::internal
             case EventType::EditorEntitySelected:
             {
                 auto e = event_cast<EditorEntitySelectedEvent>(event);
-                m_currentEntity = e.entity;
+                m_currentSelection = Selectable(e.entity);
                 return true;
             }
             case EventType::EditorCameraChanged:
@@ -326,6 +337,11 @@ namespace oyl::internal
                     //saveSceneToFile(*Scene::current());
                     // TEMPORARY: Let name be accessed through a getter
                     registryToSceneFile(*registry, Scene::current()->m_name);
+
+                    for (const auto& [alias, material] : Material::getCache())
+                    {
+                        materialToFile(material, "res/assets/materials/" + alias + ".oylmat");
+                    }
                 }
                 showReloadDialogue = 
                     ImGui::MenuItem("Reload##MainMenuReload", "Ctrl+Shift+S", false, m_editorOverrideUpdate);
@@ -362,9 +378,15 @@ namespace oyl::internal
                     ImGui::Indent(ImGui::GetWindowContentRegionWidth() / 2 - 55);
                     if (ImGui::Button("Reload##ReloadConfirmationReload"))
                     {
-                        //loadSceneFromFile(*Scene::current());
+                        for (const auto& [alias, material] : Material::getCache())
+                        {
+                            if (!material->getFilePath().empty() && 
+                                std::fs::exists(material->getFilePath()))
+                                *material = *materialFromFile(material->getFilePath());
+                        }
+                        
                         registryFromSceneFile(*registry, Scene::current()->m_name);
-                        m_currentEntity = entt::null;
+                        m_currentSelection = entt::entity(entt::null);
                         showReloadDialogue = false;
                     }
                     ImGui::SameLine();
@@ -439,7 +461,7 @@ namespace oyl::internal
                          ImGuiTreeNodeFlags_OpenOnArrow |
                          ImGuiTreeNodeFlags_DefaultOpen;
         
-        if (entity == entt::entity(m_currentEntity))
+        if (entity == m_currentSelection.entity())
             nodeFlags |= ImGuiTreeNodeFlags_Selected;
 
         nodeFlags |= ImGuiTreeNodeFlags_Leaf;
@@ -477,7 +499,7 @@ namespace oyl::internal
                     registry->stomp(copy, entity, *registry);
                     recursiveCopy(copy, entity);
 
-                    m_currentEntity = entity;
+                    m_currentSelection = Selectable(entity);
                 }
 
                 if (ImGui::Selectable("Delete Entity##HierarchyContextDeleteEntity", false))
@@ -594,8 +616,8 @@ namespace oyl::internal
 
         registry->assign_or_replace<entt::tag<"_delete"_hs>>(entity);
 
-        if (m_currentEntity == entity)
-            m_currentEntity = entt::null;
+        if (m_currentSelection.entity() == entity)
+            m_currentSelection = Selectable(entt::entity(entt::null));
 
     }
 
@@ -671,15 +693,60 @@ namespace oyl::internal
     {
         if (ImGui::Begin(g_inspectorWindowName, nullptr))
         {
-            if (registry->valid(m_currentEntity))
+            if (m_currentSelection.type() == Selectable::Type::Entity &&
+                registry->valid(m_currentSelection.entity()))
             {
                 drawInspectorObjectName();
-                //drawInspectorParent();
                 drawInspectorTransform();
                 drawInspectorRenderable();
                 drawInspectorCollidable();
                 drawInspectorRigidBody();
                 drawInspectorAddComponent();
+            }
+            else if (m_currentSelection.type() == Selectable::Type::Material)
+            {
+                auto& material = m_currentSelection.material();
+
+                std::string tempAlias = Shader::getAlias(material->shader);
+                if (tempAlias == INVALID_ALIAS) tempAlias = "None";
+                if (ImGui::BeginCombo("Shader", tempAlias.c_str()))
+                {
+                    for (const auto& [alias, shader] : Shader::getCache())
+                        if (ImGui::Selectable(alias.c_str(), shader == material->shader))
+                            material->shader = shader;
+
+                    ImGui::EndCombo();
+                }
+                tempAlias = Texture2D::getAlias(material->albedoMap);
+                if (tempAlias == INVALID_ALIAS) tempAlias = "None";
+                if (ImGui::BeginCombo("Albedo Map", tempAlias.c_str()))
+                {
+                    for (const auto& [alias, albedo] : Texture2D::getCache())
+                        if (ImGui::Selectable(alias.c_str(), albedo == material->albedoMap))
+                            material->albedoMap = albedo;
+
+                    ImGui::EndCombo();
+                }
+                tempAlias = Texture2D::getAlias(material->specularMap);
+                if (tempAlias == INVALID_ALIAS) tempAlias = "None";
+                if (ImGui::BeginCombo("Specular Map", tempAlias.c_str()))
+                {
+                    for (const auto& [alias, specular] : Texture2D::getCache())
+                        if (ImGui::Selectable(alias.c_str(), specular == material->specularMap))
+                            material->specularMap = specular;
+
+                    ImGui::EndCombo();
+                }
+                tempAlias = Texture2D::getAlias(material->normalMap);
+                if (tempAlias == INVALID_ALIAS) tempAlias = "None";
+                if (ImGui::BeginCombo("Normal Map", tempAlias.c_str()))
+                {
+                    for (const auto& [alias, normal] : Texture2D::getCache())
+                        if (ImGui::Selectable(alias.c_str(), normal == material->normalMap))
+                            material->normalMap = normal;
+
+                    ImGui::EndCombo();
+                }
             }
         }
         ImGui::End();
@@ -691,12 +758,12 @@ namespace oyl::internal
 
         ImGui::SetNextTreeNodeOpen(true, ImGuiCond_Once);
 
-        if (registry->has<EntityInfo>(m_currentEntity) &&
+        if (registry->has<EntityInfo>(m_currentSelection.entity()) &&
             ImGui::CollapsingHeader("Object Properties##InspectorObjectProperties"))
         {
             ImGui::Indent(10);
 
-            auto& so = registry->get<EntityInfo>(m_currentEntity);
+            auto& so = registry->get<EntityInfo>(m_currentSelection.entity());
 
             char name[256]{ 0 };
             std::strcpy(name, so.name.c_str());
@@ -718,7 +785,7 @@ namespace oyl::internal
                     auto view = registry->view<EntityInfo>();
                     for (auto entity : view)
                     {
-                        if (entity == m_currentEntity) continue;
+                        if (entity == m_currentSelection.entity()) continue;
 
                         if (std::strcmp(newNameTemp, view.get(entity).name.c_str()) == 0)
                         {
@@ -754,8 +821,8 @@ namespace oyl::internal
 
             entt::entity parent = entt::null;
 
-            if (registry->has<Parent>(m_currentEntity))
-                parent = registry->get<Parent>(m_currentEntity).parent;
+            if (registry->has<Parent>(m_currentSelection.entity()))
+                parent = registry->get<Parent>(m_currentSelection.entity()).parent;
 
             const char* currentParentName = parent != entt::null && registry->has<EntityInfo>(parent)
                                                 ? registry->get<EntityInfo>(parent).name.c_str()
@@ -779,7 +846,7 @@ namespace oyl::internal
                     {
                         bool isSelected = entity == parent;
 
-                        if (entity != m_currentEntity &&
+                        if (entity != m_currentSelection.entity() &&
                             ImGui::Selectable(view.get(entity).name.c_str(), isSelected))
                         {
                             parent = entity;
@@ -796,7 +863,7 @@ namespace oyl::internal
             }
 
             if (parentChanged)
-                setEntityParent(m_currentEntity, parent);
+                setEntityParent(m_currentSelection.entity(), parent);
             
             ImGui::Unindent(10);
             
@@ -809,7 +876,7 @@ namespace oyl::internal
     {
         using component::Transform;
 
-        if (!registry->has<Transform>(m_currentEntity)) return;
+        if (!registry->has<Transform>(m_currentSelection.entity())) return;
 
         ImGui::SetNextTreeNodeOpen(true, ImGuiCond_Once);
 
@@ -819,7 +886,7 @@ namespace oyl::internal
         {
             ImGui::Indent(10);
 
-            auto& transform = registry->get<Transform>(m_currentEntity);
+            auto& transform = registry->get<Transform>(m_currentSelection.entity());
 
             float newWidth = ImGui::GetWindowContentRegionWidth() / 6;
 
@@ -929,7 +996,7 @@ namespace oyl::internal
         using component::Renderable;
         using component::EntityInfo;
 
-        if (!registry->has<Renderable>(m_currentEntity)) return;
+        if (!registry->has<Renderable>(m_currentSelection.entity())) return;
 
         ImGui::SetNextTreeNodeOpen(true, ImGuiCond_Once);
 
@@ -937,7 +1004,7 @@ namespace oyl::internal
         {
             ImGui::Indent(10);
 
-            auto& renderable = registry->get<Renderable>(m_currentEntity);
+            auto& renderable = registry->get<Renderable>(m_currentSelection.entity());
             
             ImGui::Checkbox("Enabled", &renderable.enabled);
             
@@ -1039,7 +1106,7 @@ namespace oyl::internal
     {
         using component::Collidable;
 
-        if (!registry->has<Collidable>(m_currentEntity)) return;
+        if (!registry->has<Collidable>(m_currentSelection.entity())) return;
 
         ImGui::SetNextTreeNodeOpen(true, ImGuiCond_Once);
 
@@ -1049,7 +1116,7 @@ namespace oyl::internal
         {
             ImGui::Indent(10);
 
-            auto& collider = registry->get<Collidable>(m_currentEntity);
+            auto& collider = registry->get<Collidable>(m_currentSelection.entity());
             int count = 0;
             char shapeID[512];
             char temp[128];
@@ -1221,7 +1288,7 @@ namespace oyl::internal
     {
         using component::RigidBody;
 
-        if (!registry->has<RigidBody>(m_currentEntity))
+        if (!registry->has<RigidBody>(m_currentSelection.entity()))
             return;
 
         ImGui::SetNextItemOpen(true, ImGuiCond_Once);
@@ -1230,7 +1297,7 @@ namespace oyl::internal
         {
             ImGui::Indent(10);
 
-            auto& rb = registry->get<RigidBody>(m_currentEntity);
+            auto& rb = registry->get<RigidBody>(m_currentSelection.entity());
 
             // TODO: Make boxes relative to right side of window like transforms are
             
@@ -1286,17 +1353,19 @@ namespace oyl::internal
         
         if (ImGui::BeginCombo("##InspectorAddComponent", "Add Component", ImGuiComboFlags_NoArrowButton))
         {
-            if (!registry->has<Collidable>(m_currentEntity) &&
-                ImGui::Selectable("Collider"))
-                registry->assign<Collidable>(m_currentEntity);
+            auto entity = m_currentSelection.entity();
             
-            if (!registry->has<Renderable>(m_currentEntity) &&
+            if (!registry->has<Collidable>(entity) &&
+                ImGui::Selectable("Collider"))
+                registry->assign<Collidable>(entity);
+            
+            if (!registry->has<Renderable>(entity) &&
                 ImGui::Selectable("Renderable"))
-                registry->assign<Renderable>(m_currentEntity);
+                registry->assign<Renderable>(entity);
 
-            if (!registry->has<RigidBody>(m_currentEntity) &&
+            if (!registry->has<RigidBody>(entity) &&
                 ImGui::Selectable("RigidBody"))
-                registry->assign<RigidBody>(m_currentEntity);
+                registry->assign<RigidBody>(entity);
 
             ImGui::EndCombo();
         }
@@ -1329,78 +1398,72 @@ namespace oyl::internal
         
         ImGui::End();
     }
-
-    static bool isTexture(const char* ext)
-    {
-        return strcmp(ext, ".jpg") == 0 ||
-               strcmp(ext, ".png") == 0 ||
-               strcmp(ext, ".bmp") == 0;
-    }
-
-    static bool isMesh(const char* ext)
-    {
-        return strcmp(ext, ".obj") == 0;
-    }
-
-    static bool isShader(const char* ext)
-    {
-        return strcmp(ext, ".vert") == 0 ||
-               strcmp(ext, ".tesc") == 0 ||
-               strcmp(ext, ".tese") == 0 ||
-               strcmp(ext, ".geom") == 0 ||
-               strcmp(ext, ".frag") == 0;
-    }
-
-    static bool isMaterial(const char* ext)
-    {
-        return strcmp(ext, ".oylmat") == 0;
-    }
-
-    static bool isScene(const char* ext)
-    {
-        return strcmp(ext, ".oylscene") == 0;
-    }
     
     void GuiLayer::drawAssetNode(const std::fs::directory_iterator& dir)
     {
+        const char* typeName = nullptr;
+        
+        uint flags = ImGuiTreeNodeFlags_SpanFullWidth;
         for (const auto& dirEntry : dir)
         {
             ImGui::TableNextRow();
 
-            //std::string name = dirEntry.path().filename().string();
             std::string name = dirEntry.path().filename().string();
+            const char* ext = name.c_str() + name.find_last_of('.');
 
             if (dirEntry.is_directory())
             {
-                bool open = ImGui::TreeNodeEx(name.c_str(), ImGuiTreeNodeFlags_OpenOnDoubleClick |
-                                                            ImGuiTreeNodeFlags_OpenOnArrow |
-                                                            ImGuiTreeNodeFlags_SpanFullWidth);
+                flags |= ImGuiTreeNodeFlags_OpenOnDoubleClick | ImGuiTreeNodeFlags_OpenOnArrow;
 
-                ImGui::TableNextCell();
-                ImGui::TextDisabled("Folder");
-                if (open)
-                {
-                    drawAssetNode(std::fs::directory_iterator(dirEntry));
-                    ImGui::TreePop();
-                }
+                typeName = "Folder";
             } else
             {
-                ImGui::TreeNodeEx(name.c_str(), ImGuiTreeNodeFlags_Leaf |
-                                                ImGuiTreeNodeFlags_NoTreePushOnOpen |
-                                                ImGuiTreeNodeFlags_SpanFullWidth);
-                
-                ImGui::TableNextCell();
+                flags |= ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_NoTreePushOnOpen;
 
-                const char* type = nullptr;
-                const char* ext = name.c_str() + name.find_last_of('.');
-                
-                if      (isTexture(ext))  type = "Texture";
-                else if (isMesh(ext))     type = "Mesh";
-                else if (isShader(ext))   type = "Shader";
-                else if (isMaterial(ext)) type = "Material";
-                else if (isScene(ext))    type = "Scene";
+                if      (isTexture(ext))  typeName = "Texture";
+                else if (isMesh(ext))     typeName = "Mesh";
+                else if (isShader(ext))   typeName = "Shader";
+                else if (isMaterial(ext)) typeName = "Material";
+                else if (isScene(ext))    typeName = "Scene";
+                else if (isPrefab(ext))   typeName = "Prefab";
+            }
+            
+            bool open = ImGui::TreeNodeEx(name.c_str(), flags);
 
-                ImGui::TextUnformatted(type != nullptr ? type : "Unkown");
+            //if (ImGui::BeginDragDropSource())
+            //{
+            //    
+            //    ImGui::SetDragDropPayload("AssetInList", , sizeof(Selectable));
+            //    ImGui::EndDragDropSource();
+            //}
+            
+            //if (ImGui::BeginPopupContextItem())
+            //{
+            //    if (ImGui::BeginMenu("New"))
+            //    {
+            //        if (ImGui::MenuItem("Material"))
+            //        {
+            //            ImGui::TextUnformatted("Hehe");
+            //        }
+            //        if (ImGui::MenuItem("Prefab"))
+            //        {
+            //            ImGui::TextUnformatted("Haha");
+            //        }
+            //        ImGui::EndMenu();
+            //    }
+            //    ImGui::EndPopup();
+            //}
+            
+            ImGui::TableNextCell();
+            if (dirEntry.is_directory())
+                ImGui::TextDisabled("Folder");
+            else
+                ImGui::TextUnformatted(typeName != nullptr ? typeName : "Unknown");
+
+            if (open)
+            {
+                drawAssetNode(std::fs::directory_iterator(dirEntry));
+                ImGui::TreePop();
             }
         }
     }
@@ -1410,13 +1473,13 @@ namespace oyl::internal
     {
         if (m_fileSaveTimeIt != m_fileSaveTimes.end())
         {
-            bool stillExists = true;
+            bool                    stillExists      = true;
             std::fs::file_time_type lastWriteTimeNew = {};
 
             do
             {
                 stillExists = true;
-                auto path = std::fs::path(m_fileSaveTimeIt->first);
+                auto path   = std::fs::path(m_fileSaveTimeIt->first);
                 if (exists(path))
                 {
                     lastWriteTimeNew = last_write_time(path);
@@ -1426,7 +1489,7 @@ namespace oyl::internal
                     auto pathStr = path.string();
                     
                     m_fileSaveTimeIt = m_fileSaveTimes.erase(m_fileSaveTimeIt);
-                    stillExists = false;
+                    stillExists      = false;
 
                     std::string ext = path.extension().string();
 
@@ -1464,7 +1527,7 @@ namespace oyl::internal
                                             [](void* data)
                                             {
                                                 auto& shaderRef = *reinterpret_cast<Ref<Shader>*>(data);
-                                                auto shader = Shader::create(shaderRef->getShaderInfos());
+                                                auto  shader    = Shader::create(shaderRef->getShaderInfos());
                                                 if (!shader->getShaderInfos().empty()) shaderRef = shader;
                                             }, (void*) &kvp.second))
                             {
@@ -1478,7 +1541,7 @@ namespace oyl::internal
                                         [](void* data)
                                         {
                                             auto& materialRef = *reinterpret_cast<Ref<Material>*>(data);
-                                            auto mat = Material::create(materialRef->getFilePath());
+                                            auto  mat         = Material::create(materialRef->getFilePath());
                                             if (mat) *materialRef = *mat;
                                         }, (void*) &material))
                         {
@@ -1491,7 +1554,7 @@ namespace oyl::internal
                                         [](void* data)
                                         {
                                             auto& meshRef = *reinterpret_cast<Ref<Mesh>*>(data);
-                                            auto mesh = Mesh::create(meshRef->getFilePath());
+                                            auto  mesh    = Mesh::create(meshRef->getFilePath());
                                             if (mesh != Mesh::get(INVALID_ALIAS)) *meshRef = *mesh;
                                         }, (void*) &mesh))
                         {
@@ -1504,7 +1567,7 @@ namespace oyl::internal
                                         [](void* data)
                                         {
                                             auto& textureRef = *reinterpret_cast<Ref<Texture2D>*>(data);
-                                            auto tex = Texture2D::create(textureRef->getFilePath());
+                                            auto  tex        = Texture2D::create(textureRef->getFilePath());
                                             if (tex->isLoaded()) *textureRef = *tex;
                                         }, (void*) &texture))
                         {
@@ -1521,12 +1584,12 @@ namespace oyl::internal
             std::fs::recursive_directory_iterator res("res");
             for (const auto& dirEntry : res)
             {   
-                auto relPath = relative(dirEntry.path());
+                auto        relPath    = relative(dirEntry.path());
                 std::string relPathStr = relPath.string();
                 if (m_fileSaveTimes.find(relPathStr) == m_fileSaveTimes.end())
                 {
                     m_fileSaveTimes[relPathStr] = last_write_time(relPath);
-                    const char* ext = relPathStr.c_str() + relPathStr.find_last_of('.');
+                    const char* ext             = relPathStr.c_str() + relPathStr.find_last_of('.');
 
                     if (isTexture(ext))  Texture2D::cache(relPathStr);
                     if (isMesh(ext))     Mesh::cache(relPathStr);
@@ -1540,7 +1603,7 @@ namespace oyl::internal
             auto addToFileSaveTimes = [this](const std::string& filename)
             {
                 if (filename.empty()) return;
-                auto relPath = std::fs::relative(filename);
+                auto relPath    = std::fs::relative(filename);
                 auto relPathStr = relPath.string();
                 if (m_fileSaveTimes.find(relPathStr) == m_fileSaveTimes.end())
                     m_fileSaveTimes[relPathStr] = last_write_time(relPath);
@@ -1571,34 +1634,66 @@ namespace oyl::internal
     }
 
     bool GuiLayer::updateAsset(const std::string& filepath, 
-                               void (*loadAsset)(void*), 
-                               void* userData)
+                               void (*            loadAsset)(void*), 
+                               void*              userData)
     {
-        //if (filepath.empty()) return false;
-        //
-        //auto relPath = std::fs::relative(filepath);
-        //auto relPathStr = relPath.string();
-        //if (m_fileSaveTimeIt == m_fileSaveTimes.begin() ||
-        //    m_fileSaveTimes.empty())
-        //{
-        //    // If the file path is not in the database, add it
-        //    if (m_fileSaveTimes.find(relPathStr) == m_fileSaveTimes.end())
-        //    {
-        //        m_fileSaveTimes[relPathStr] = last_write_time(relPath);
-        //        m_fileSaveTimeIt = m_fileSaveTimes.begin();
-        //        return false;
-        //    }
-        //}
-
         // If the file has been saved to since the last load, reload it
-        auto relPath = std::fs::relative(filepath);
+        auto relPath     = std::fs::relative(filepath);
         auto currRelPath = std::fs::relative(m_fileSaveTimeIt->first);
-        if (std::fs::equivalent(currRelPath, relPath))
+        if (exists(relPath) && exists(currRelPath) &&
+            std::fs::equivalent(currRelPath, relPath))
         {
             loadAsset(userData);
             return true;
         }
         return false;
+    }
+
+    inline void GuiLayer::drawAssetCache()
+    {
+        if (ImGui::Begin("AssetCache##DrawAssetCache"))
+        {
+            const int buf_size = 128;
+            static char name[buf_size]{ 0 };
+            static bool showDialogue = false;
+            if (!showDialogue)
+            {
+                if (ImGui::Button("Add Material"))
+                    showDialogue = true;
+            }
+            else
+            {
+                if (ImGui::InputText("Name##AssetCacheAddMatName", name, buf_size, ImGuiInputTextFlags_EnterReturnsTrue)
+                    && name[0] != 0)
+                {
+                    bool valid = true;
+                    for (const auto& [alias, material] : Material::getCache())
+                        if (strcmp(name, alias.c_str()) == 0)
+                        {
+                            valid = false;
+                            break;
+                        }
+
+                    if (valid)
+                    {
+                        Material::cache(Material::create(), name);
+
+                        memset(name, 0, sizeof(name));
+                        showDialogue = false;
+                    }
+                }
+            }
+            
+            for (const auto& [alias, material] : Material::getCache())
+            {
+                if (ImGui::Selectable(alias.c_str(), m_currentSelection.material() == material, 
+                                      ImGuiSelectableFlags_PressedOnClick))
+                {
+                    m_currentSelection = material;
+                }
+            }
+        }
+        ImGui::End();
     }
 
     void GuiLayer::drawSceneViewport()
@@ -1643,8 +1738,8 @@ namespace oyl::internal
                 ImVec2(0, 1), ImVec2(1, 0)
             );
 
-            if (registry->valid(m_currentEntity) && 
-                registry->has<component::PlayerCamera>(m_currentEntity))
+            if (registry->valid(m_currentSelection.entity()) && 
+                registry->has<component::PlayerCamera>(m_currentSelection.entity()))
             {
                 auto [posx, posy] = ImGui::GetItemRectMin();
 
@@ -1679,7 +1774,7 @@ namespace oyl::internal
             ImGuizmo::SetRect(minX, minY, sizeX, sizeY);
     
             if (ImGui::IsItemClicked(1))
-                m_currentEntity = entt::null;
+                m_currentSelection = Selectable(entt::entity(entt::null));
     
             drawTransformGizmo();
         }
@@ -1696,19 +1791,19 @@ namespace oyl::internal
 
         if (ImGui::Begin(g_gameWindowName, NULL, ImGuiWindowFlags_NoScrollbar))
         {
-            auto [x, y]   = ImGui::GetWindowSize();
+            auto [x, y] = ImGui::GetWindowSize();
 
             ImVec2 newPos = { 0, 0 };
 
             if (x / y < 16.0f / 9.0f)
             {
                 newPos.y = (y - x * 9.0f / 16.0f) / 2.0f;
-                y = x * 9.0f / 16.0f;
+                y        = x * 9.0f / 16.0f;
             }
             else
             {
                 newPos.x = (x - y * 16.0f / 9.0f) / 2.0f;
-                x = y * 16.0f / 9.0f;
+                x        = y * 16.0f / 9.0f;
             }
 
             ImGui::SetCursorPos(newPos);
@@ -1756,17 +1851,17 @@ namespace oyl::internal
                 case ImGuizmo::TRANSLATE:
                     ImGui::InputFloat("Snap##InputSnapTranslate", &m_translateSnap.x, 0.1f, 0.5f, "%.2f");
                     m_translateSnap.z = m_translateSnap.y = m_translateSnap.x;
-                    m_snap = m_translateSnap;
+                    m_snap            = m_translateSnap;
                     break;
                 case ImGuizmo::ROTATE:
                     ImGui::InputFloat("Snap##InputSnapRotate", &m_rotateSnap.x, 1.0f, 5.0f, "%.2f");
                     m_rotateSnap.z = m_rotateSnap.y = m_rotateSnap.x;
-                    m_snap = m_rotateSnap;
+                    m_snap         = m_rotateSnap;
                     break;
                 case ImGuizmo::SCALE:
                     ImGui::InputFloat("Snap##InputSnapScale", &m_scaleSnap.x, 0.1f, 0.5f, "%.2f");
                     m_scaleSnap.z = m_scaleSnap.y = m_scaleSnap.x;
-                    m_snap = m_scaleSnap;
+                    m_snap        = m_scaleSnap;
                     break;
             }
         }
@@ -1777,9 +1872,9 @@ namespace oyl::internal
     {
         using component::Transform;
         
-        if (registry->valid(m_currentEntity))
+        if (registry->valid(m_currentSelection.entity()))
         {
-            auto& model = registry->get<Transform>(m_currentEntity);
+            auto& model = registry->get<Transform>(m_currentSelection.entity());
 
             glm::mat4 gizmoMatrix = model.getMatrixGlobal();
             
@@ -1795,7 +1890,7 @@ namespace oyl::internal
             {
                 glm::mat4 tempLocal;
                 
-                if (auto* p = registry->try_get<component::Parent>(m_currentEntity);
+                if (auto* p = registry->try_get<component::Parent>(m_currentSelection.entity());
                     p && registry->valid(p->parent))
                 {   
                     auto& parentTransform = registry->get<Transform>(p->parent);
@@ -1832,8 +1927,8 @@ namespace oyl::internal
                     }
                     case ImGuizmo::SCALE:
                     {
-                        model.m_localScale           = tComponents[2];
-                        model.m_isScaleOverridden    = true;
+                        model.m_localScale        = tComponents[2];
+                        model.m_isScaleOverridden = true;
                         break;
                     }
                 }
@@ -1854,9 +1949,9 @@ namespace oyl::internal
                     ImGui::SetWindowFocus(g_gameWindowName);
                     
                     m_editorOverrideUpdate = false;
-                    m_gameUpdate = true;
-                    m_registryRestore = Scene::current()->getRegistry()->clone();
-                    m_currentEntity = entt::null;
+                    m_gameUpdate           = true;
+                    m_registryRestore      = Scene::current()->getRegistry()->clone();
+                    m_currentSelection     = entt::entity(entt::null);
                 }
             } else
             {
@@ -1865,7 +1960,7 @@ namespace oyl::internal
                     ImGui::SetWindowFocus(g_sceneWindowName);
                     
                     m_editorOverrideUpdate = true;
-                    m_gameUpdate = false;
+                    m_gameUpdate           = false;
 
                     // HACK: Send as event
                     // TODO: Store backup registry in scene?
@@ -1873,7 +1968,7 @@ namespace oyl::internal
 
                     postEvent(PhysicsResetWorldEvent{});
 
-                    m_currentEntity = entt::null;
+                    m_currentSelection = entt::entity(entt::null);
                 }
                 ImGui::SameLine();
                 if ((m_gameUpdate && ImGui::Button("II##EditorPauseButton")) ||
@@ -1897,46 +1992,46 @@ namespace oyl::internal
         // text
         #define TEXT(v) ImVec4(0.860f, 0.930f, 0.890f, v)
 
-        auto &style = ImGui::GetStyle();
-        style.Colors[ImGuiCol_Text] = TEXT(0.78f);
-        style.Colors[ImGuiCol_TextDisabled] = TEXT(0.28f);
-        style.Colors[ImGuiCol_WindowBg] = ImVec4(0.13f, 0.14f, 0.17f, 1.00f);
-        style.Colors[ImGuiCol_PopupBg] = BG(0.9f);
-        style.Colors[ImGuiCol_Border] = ImVec4(0.31f, 0.31f, 1.00f, 0.00f);
-        style.Colors[ImGuiCol_BorderShadow] = ImVec4(0.00f, 0.00f, 0.00f, 0.00f);
-        style.Colors[ImGuiCol_FrameBg] = BG(1.00f);
-        style.Colors[ImGuiCol_FrameBgHovered] = MED(0.78f);
-        style.Colors[ImGuiCol_FrameBgActive] = MED(1.00f);
-        style.Colors[ImGuiCol_TitleBg] = LOW(1.00f);
-        style.Colors[ImGuiCol_TitleBgActive] = HI(1.00f);
-        style.Colors[ImGuiCol_TitleBgCollapsed] = BG(0.75f);
-        style.Colors[ImGuiCol_MenuBarBg] = BG(0.47f);
-        style.Colors[ImGuiCol_ScrollbarBg] = BG(1.00f);
-        style.Colors[ImGuiCol_ScrollbarGrab] = ImVec4(0.09f, 0.15f, 0.16f, 1.00f);
+        auto & style                                = ImGui::GetStyle();
+        style.Colors[ImGuiCol_Text]                 = TEXT(0.78f);
+        style.Colors[ImGuiCol_TextDisabled]         = TEXT(0.28f);
+        style.Colors[ImGuiCol_WindowBg]             = ImVec4(0.13f, 0.14f, 0.17f, 1.00f);
+        style.Colors[ImGuiCol_PopupBg]              = BG(0.9f);
+        style.Colors[ImGuiCol_Border]               = ImVec4(0.31f, 0.31f, 1.00f, 0.00f);
+        style.Colors[ImGuiCol_BorderShadow]         = ImVec4(0.00f, 0.00f, 0.00f, 0.00f);
+        style.Colors[ImGuiCol_FrameBg]              = BG(1.00f);
+        style.Colors[ImGuiCol_FrameBgHovered]       = MED(0.78f);
+        style.Colors[ImGuiCol_FrameBgActive]        = MED(1.00f);
+        style.Colors[ImGuiCol_TitleBg]              = LOW(1.00f);
+        style.Colors[ImGuiCol_TitleBgActive]        = HI(1.00f);
+        style.Colors[ImGuiCol_TitleBgCollapsed]     = BG(0.75f);
+        style.Colors[ImGuiCol_MenuBarBg]            = BG(0.47f);
+        style.Colors[ImGuiCol_ScrollbarBg]          = BG(1.00f);
+        style.Colors[ImGuiCol_ScrollbarGrab]        = ImVec4(0.09f, 0.15f, 0.16f, 1.00f);
         style.Colors[ImGuiCol_ScrollbarGrabHovered] = MED(0.78f);
-        style.Colors[ImGuiCol_ScrollbarGrabActive] = MED(1.00f);
-        style.Colors[ImGuiCol_CheckMark] = ImVec4(0.71f, 0.22f, 0.27f, 1.00f);
-        style.Colors[ImGuiCol_SliderGrab] = ImVec4(0.47f, 0.77f, 0.83f, 0.14f);
-        style.Colors[ImGuiCol_SliderGrabActive] = ImVec4(0.71f, 0.22f, 0.27f, 1.00f);
-        style.Colors[ImGuiCol_Button] = ImVec4(0.47f, 0.77f, 0.83f, 0.14f);
-        style.Colors[ImGuiCol_ButtonHovered] = MED(0.86f);
-        style.Colors[ImGuiCol_ButtonActive] = MED(1.00f);
-        style.Colors[ImGuiCol_Header] = MED(0.76f);
-        style.Colors[ImGuiCol_HeaderHovered] = MED(0.86f);
-        style.Colors[ImGuiCol_HeaderActive] = HI(1.00f);
-        style.Colors[ImGuiCol_ResizeGrip] = ImVec4(0.47f, 0.77f, 0.83f, 0.04f);
-        style.Colors[ImGuiCol_ResizeGripHovered] = MED(0.78f);
-        style.Colors[ImGuiCol_ResizeGripActive] = MED(1.00f);
-        style.Colors[ImGuiCol_PlotLines] = TEXT(0.63f);
-        style.Colors[ImGuiCol_PlotLinesHovered] = MED(1.00f);
-        style.Colors[ImGuiCol_PlotHistogram] = TEXT(0.63f);
+        style.Colors[ImGuiCol_ScrollbarGrabActive]  = MED(1.00f);
+        style.Colors[ImGuiCol_CheckMark]            = ImVec4(0.71f, 0.22f, 0.27f, 1.00f);
+        style.Colors[ImGuiCol_SliderGrab]           = ImVec4(0.47f, 0.77f, 0.83f, 0.14f);
+        style.Colors[ImGuiCol_SliderGrabActive]     = ImVec4(0.71f, 0.22f, 0.27f, 1.00f);
+        style.Colors[ImGuiCol_Button]               = ImVec4(0.47f, 0.77f, 0.83f, 0.14f);
+        style.Colors[ImGuiCol_ButtonHovered]        = MED(0.86f);
+        style.Colors[ImGuiCol_ButtonActive]         = MED(1.00f);
+        style.Colors[ImGuiCol_Header]               = MED(0.76f);
+        style.Colors[ImGuiCol_HeaderHovered]        = MED(0.86f);
+        style.Colors[ImGuiCol_HeaderActive]         = HI(1.00f);
+        style.Colors[ImGuiCol_ResizeGrip]           = ImVec4(0.47f, 0.77f, 0.83f, 0.04f);
+        style.Colors[ImGuiCol_ResizeGripHovered]    = MED(0.78f);
+        style.Colors[ImGuiCol_ResizeGripActive]     = MED(1.00f);
+        style.Colors[ImGuiCol_PlotLines]            = TEXT(0.63f);
+        style.Colors[ImGuiCol_PlotLinesHovered]     = MED(1.00f);
+        style.Colors[ImGuiCol_PlotHistogram]        = TEXT(0.63f);
         style.Colors[ImGuiCol_PlotHistogramHovered] = MED(1.00f);
-        style.Colors[ImGuiCol_TextSelectedBg] = MED(0.43f);
-        style.Colors[ImGuiCol_Tab] = LOW(0.43f);
-        style.Colors[ImGuiCol_TabActive] = MED(1.00f);
-        style.Colors[ImGuiCol_TabHovered] = HI(1.00f);
-        style.Colors[ImGuiCol_TabUnfocused] = LOW(0.88f);
-        style.Colors[ImGuiCol_TabUnfocusedActive] = MED(0.73f);
+        style.Colors[ImGuiCol_TextSelectedBg]       = MED(0.43f);
+        style.Colors[ImGuiCol_Tab]                  = LOW(0.43f);
+        style.Colors[ImGuiCol_TabActive]            = MED(1.00f);
+        style.Colors[ImGuiCol_TabHovered]           = HI(1.00f);
+        style.Colors[ImGuiCol_TabUnfocused]         = LOW(0.88f);
+        style.Colors[ImGuiCol_TabUnfocusedActive]   = MED(0.73f);
 
         //style.Colors[ImGuiCol_Tab] = ImLerp(style.Colors[ImGuiCol_Header], style.Colors[ImGuiCol_TitleBgActive], 0.80f);
         //style.Colors[ImGuiCol_TabHovered] = style.Colors[ImGuiCol_HeaderHovered];
@@ -1947,23 +2042,59 @@ namespace oyl::internal
         // [...]
         style.Colors[ImGuiCol_ModalWindowDarkening] = BG(0.73f);
 
-        style.WindowPadding = ImVec2(6, 4);
-        style.WindowRounding = 0.0f;
-        style.FramePadding = ImVec2(5, 2);
-        style.FrameRounding = 3.0f;
-        style.ItemSpacing = ImVec2(7, 1);
-        style.ItemInnerSpacing = ImVec2(1, 1);
+        style.WindowPadding     = ImVec2(6, 4);
+        style.WindowRounding    = 0.0f;
+        style.FramePadding      = ImVec2(5, 2);
+        style.FrameRounding     = 3.0f;
+        style.ItemSpacing       = ImVec2(7, 1);
+        style.ItemInnerSpacing  = ImVec2(1, 1);
         style.TouchExtraPadding = ImVec2(0, 0);
-        style.IndentSpacing = 15.0f;
-        style.ScrollbarSize = 12.0f;
+        style.IndentSpacing     = 15.0f;
+        style.ScrollbarSize     = 12.0f;
         style.ScrollbarRounding = 16.0f;
-        style.GrabMinSize = 20.0f;
-        style.GrabRounding = 2.0f;
+        style.GrabMinSize       = 20.0f;
+        style.GrabRounding      = 2.0f;
 
         style.WindowTitleAlign.x = 0.50f;
 
         style.Colors[ImGuiCol_Border] = ImVec4(0.539f, 0.479f, 0.255f, 0.162f);
-        style.FrameBorderSize = 0.0f;
-        style.WindowBorderSize = 1.0f;
+        style.FrameBorderSize         = 0.0f;
+        style.WindowBorderSize        = 1.0f;
     }
+}
+
+static bool isTexture(const char* ext)
+{
+    return strcmp(ext, ".jpg") == 0 ||
+           strcmp(ext, ".png") == 0 ||
+           strcmp(ext, ".bmp") == 0;
+}
+
+static bool isMesh(const char* ext)
+{
+    return strcmp(ext, ".obj") == 0;
+}
+
+static bool isShader(const char* ext)
+{
+    return strcmp(ext, ".vert") == 0 ||
+           strcmp(ext, ".tesc") == 0 ||
+           strcmp(ext, ".tese") == 0 ||
+           strcmp(ext, ".geom") == 0 ||
+           strcmp(ext, ".frag") == 0;
+}
+
+static bool isMaterial(const char* ext)
+{
+    return strcmp(ext, ".oylmat") == 0;
+}
+
+static bool isScene(const char* ext)
+{
+    return strcmp(ext, ".oylscene") == 0;
+}
+
+static bool isPrefab(const char* ext)
+{
+    return strcmp(ext, ".oylpre") == 0;
 }

@@ -21,44 +21,91 @@ void SandboxLayer::onEnter()
 		/////////////////////////////////////////////////////
 		///////////////////// BLUE TEAM /////////////////////
 		{
-			//PLAYER
-			entt::entity playerBlueEntity = registry->create();
-			auto& player = registry->assign<Player>(playerBlueEntity);
-			player.playerNum = 0;
-			player.team      = Team::blue;
+			//PLAYER 0
+			entt::entity player0BlueEntity = registry->create();
+			auto& player = registry->assign<Player>(player0BlueEntity);
+			player.playerNum     = 0;
+			player.controllerNum = 0;
+			player.team          = Team::blue;
 
-			registry->assign<component::Renderable>(playerBlueEntity, mr);
+			registry->assign<component::Renderable>(player0BlueEntity, mr);
 
 			component::Transform t2;
 			t2.setPosition(glm::vec3(0.0f));
-			registry->assign<component::Transform>(playerBlueEntity, t2);
+			registry->assign<component::Transform>(player0BlueEntity, t2);
 
-			auto& so2 = registry->assign<component::EntityInfo>(playerBlueEntity);
-			so2.name = "Player";
+			auto& so2 = registry->assign<component::EntityInfo>(player0BlueEntity);
+			so2.name = "Player0 Blue";
 
-			auto& rb = registry->assign<component::RigidBody>(playerBlueEntity);
+			auto& rb = registry->assign<component::RigidBody>(player0BlueEntity);
 			rb.setMass(5.0f);
 			rb.setFriction(1.0f);
 			rb.setProperties(component::RigidBody::Property::FREEZE_ROTATION_X, true);
 			rb.setProperties(component::RigidBody::Property::FREEZE_ROTATION_Y, true);
 			rb.setProperties(component::RigidBody::Property::FREEZE_ROTATION_Z, true);
 
-			auto& playerCollider = registry->assign<component::Collidable>(playerBlueEntity);
+			auto& playerCollider = registry->assign<component::Collidable>(player0BlueEntity);
 			auto& shapeInfo = playerCollider.pushShape(ColliderType::Box);
 			shapeInfo.box.setSize({ 1.0f, 1.0f, 1.0f });
 
-			registry->assign<entt::tag<"Player"_hs>>(playerBlueEntity);
-		}
-
-		//PLAYER CAMERA
-		{
+			//PLAYER 0 CAMERA
 			auto playerCameraEntity = registry->create();
+
 			registry->assign<component::Transform>(playerCameraEntity);
+
 			auto& camera = registry->assign<component::PlayerCamera>(playerCameraEntity);
 			camera.player = 0;
 			camera.projection = glm::perspective(glm::radians(60.0f), 16.0f / 9.0f, 0.01f, 1000.0f);
-			auto& so = registry->assign<component::EntityInfo>(playerCameraEntity);
-			so.name = "Player Camera";
+
+			auto& cameraParent = registry->assign<component::Parent>(playerCameraEntity);
+			cameraParent.parent = player0BlueEntity;
+
+			auto& cameraEI = registry->assign<component::EntityInfo>(playerCameraEntity);
+			cameraEI.name = "Player0 Camera";
+		}
+
+		{
+			//PLAYER 2
+			entt::entity player2BlueEntity = registry->create();
+			auto& player = registry->assign<Player>(player2BlueEntity);
+			player.playerNum = 2;
+			player.controllerNum = 2;
+			player.team = Team::blue;
+
+			registry->assign<component::Renderable>(player2BlueEntity, mr);
+
+			component::Transform t2;
+			t2.setPosition(glm::vec3(0.0f));
+			registry->assign<component::Transform>(player2BlueEntity, t2);
+
+			auto& so2 = registry->assign<component::EntityInfo>(player2BlueEntity);
+			so2.name = "Player2 Blue";
+
+			auto& rb = registry->assign<component::RigidBody>(player2BlueEntity);
+			rb.setMass(5.0f);
+			rb.setFriction(1.0f);
+			rb.setProperties(component::RigidBody::Property::FREEZE_ROTATION_X, true);
+			rb.setProperties(component::RigidBody::Property::FREEZE_ROTATION_Y, true);
+			rb.setProperties(component::RigidBody::Property::FREEZE_ROTATION_Z, true);
+
+			auto& playerCollider = registry->assign<component::Collidable>(player2BlueEntity);
+			auto& shapeInfo = playerCollider.pushShape(ColliderType::Box);
+			shapeInfo.box.setSize({ 1.0f, 1.0f, 1.0f });
+
+			//PLAYER 2 CAMERA
+			auto playerCameraEntity = registry->create();
+
+			registry->assign<component::Transform>(playerCameraEntity);
+
+			auto& camera = registry->assign<component::PlayerCamera>(playerCameraEntity);
+			camera.player = 2;
+			camera.projection = glm::perspective(glm::radians(60.0f), 16.0f / 9.0f, 0.01f, 1000.0f);
+
+			auto& cameraParent = registry->assign<component::Parent>(playerCameraEntity);
+			cameraParent.parent = player2BlueEntity;
+
+			auto& cameraEI = registry->assign<component::EntityInfo>(playerCameraEntity);
+			cameraEI.name = "Player2 Camera";
 		}
         
 		{
@@ -117,7 +164,12 @@ void SandboxLayer::onEnter()
 
 			mr.material = Material::cache((Material::create()), "siding");
 			mr.material->shader = Shader::get(LIGHTING_SHADER_ALIAS);
-			mr.material->albedoMap = Texture2D::cache("res/assets/textures/woodPlankSiding.png");
+			mr.material->albedoMap = Texture2D::cache("res/assets/textures/woodPlankSiding2.png");
+			mr.material->specularMap = Material::get("planks")->specularMap;
+
+			mr.material = Material::cache((Material::create()), "atlasMaterial");
+			mr.material->shader = Shader::get(LIGHTING_SHADER_ALIAS);
+			mr.material->albedoMap = Texture2D::cache("res/assets/textures/shipAtlas.png");
 			mr.material->specularMap = Material::get("planks")->specularMap;
 
 
@@ -367,7 +419,7 @@ void SandboxLayer::onEnter()
 
 					auto& newTransform  = registry->get<component::Transform>(spawner.entityPrefab);
 					auto& newEntityInfo = registry->get<component::EntityInfo>(spawner.entityPrefab);
-					auto& newCarryable = registry->get<CarryableItem>(spawner.entityPrefab);
+					auto& newCarryable  = registry->get<CarryableItem>(spawner.entityPrefab);
 
 					newCarryable.hasBeenCarried = true; //we have to do this or else the prefab entity will stop this spawner from ever spawning an item
 					newTransform.setPosition(glm::vec3(-99999.0f));
@@ -375,6 +427,12 @@ void SandboxLayer::onEnter()
 					break;
 				}
 			}
+
+			auto& spawnerTransform = registry->assign<component::Transform>(cleaningSolutionSpawnerEntity);
+			spawnerTransform.setPosition(glm::vec3(0.0f));
+
+			auto& spawnerInfo = registry->assign<component::EntityInfo>(cleaningSolutionSpawnerEntity);
+			spawnerInfo.name = "BlueCleaningSolutionSpawner";
 		}
 
 		{
@@ -399,7 +457,7 @@ void SandboxLayer::onEnter()
 
 					auto& newTransform  = registry->get<component::Transform>(spawner.entityPrefab);
 					auto& newEntityInfo = registry->get<component::EntityInfo>(spawner.entityPrefab);
-					auto& newCarryable = registry->get<CarryableItem>(spawner.entityPrefab);
+					auto& newCarryable  = registry->get<CarryableItem>(spawner.entityPrefab);
 
 					newCarryable.hasBeenCarried = true; //we have to do this or else the prefab entity will stop this spawner from ever spawning an item
 					newTransform.setPosition(glm::vec3(-99999.0f));
@@ -407,12 +465,106 @@ void SandboxLayer::onEnter()
 					break;
 				}
 			}
+
+			auto& spawnerTransform = registry->assign<component::Transform>(gloopSpawnerEntity);
+			spawnerTransform.setPosition(glm::vec3(0.0f));
+
+			auto& spawnerInfo = registry->assign<component::EntityInfo>(gloopSpawnerEntity);
+			spawnerInfo.name = "BlueGloopSpawner";
 		}
 		/////////////////////////////////////////////////////
 		/////////////////////////////////////////////////////
 
 		/////////////////////////////////////////////////////
 		///////////////////// RED TEAM //////////////////////
+		{
+			//PLAYER 1
+			entt::entity player1RedEntity = registry->create();
+			auto& player = registry->assign<Player>(player1RedEntity);
+			player.playerNum = 1;
+			player.controllerNum = 1;
+			player.team = Team::red;
+
+			registry->assign<component::Renderable>(player1RedEntity, mr);
+
+			component::Transform t2;
+			t2.setPosition(glm::vec3(0.0f));
+			registry->assign<component::Transform>(player1RedEntity, t2);
+
+			auto& so2 = registry->assign<component::EntityInfo>(player1RedEntity);
+			so2.name = "Player2 Red";
+
+			auto& rb = registry->assign<component::RigidBody>(player1RedEntity);
+			rb.setMass(5.0f);
+			rb.setFriction(1.0f);
+			rb.setProperties(component::RigidBody::Property::FREEZE_ROTATION_X, true);
+			rb.setProperties(component::RigidBody::Property::FREEZE_ROTATION_Y, true);
+			rb.setProperties(component::RigidBody::Property::FREEZE_ROTATION_Z, true);
+
+			auto& playerCollider = registry->assign<component::Collidable>(player1RedEntity);
+			auto& shapeInfo = playerCollider.pushShape(ColliderType::Box);
+			shapeInfo.box.setSize({ 1.0f, 1.0f, 1.0f });
+
+			//PLAYER 2 CAMERA
+			auto playerCameraEntity = registry->create();
+
+			registry->assign<component::Transform>(playerCameraEntity);
+
+			auto& camera = registry->assign<component::PlayerCamera>(playerCameraEntity);
+			camera.player = 1;
+			camera.projection = glm::perspective(glm::radians(60.0f), 16.0f / 9.0f, 0.01f, 1000.0f);
+
+			auto& cameraParent = registry->assign<component::Parent>(playerCameraEntity);
+			cameraParent.parent = player1RedEntity;
+
+			auto& cameraEI = registry->assign<component::EntityInfo>(playerCameraEntity);
+			cameraEI.name = "Player1 Camera";
+		}
+
+		{
+			//PLAYER 3
+			entt::entity player3RedEntity = registry->create();
+			auto& player = registry->assign<Player>(player3RedEntity);
+			player.playerNum = 3;
+			player.controllerNum = 3;
+			player.team = Team::red;
+
+			registry->assign<component::Renderable>(player3RedEntity, mr);
+
+			component::Transform t2;
+			t2.setPosition(glm::vec3(0.0f));
+			registry->assign<component::Transform>(player3RedEntity, t2);
+
+			auto& so2 = registry->assign<component::EntityInfo>(player3RedEntity);
+			so2.name = "Player3 Red";
+
+			auto& rb = registry->assign<component::RigidBody>(player3RedEntity);
+			rb.setMass(5.0f);
+			rb.setFriction(1.0f);
+			rb.setProperties(component::RigidBody::Property::FREEZE_ROTATION_X, true);
+			rb.setProperties(component::RigidBody::Property::FREEZE_ROTATION_Y, true);
+			rb.setProperties(component::RigidBody::Property::FREEZE_ROTATION_Z, true);
+
+			auto& playerCollider = registry->assign<component::Collidable>(player3RedEntity);
+			auto& shapeInfo = playerCollider.pushShape(ColliderType::Box);
+			shapeInfo.box.setSize({ 1.0f, 1.0f, 1.0f });
+
+			//PLAYER 3 CAMERA
+			auto playerCameraEntity = registry->create();
+
+			registry->assign<component::Transform>(playerCameraEntity);
+
+			auto& camera = registry->assign<component::PlayerCamera>(playerCameraEntity);
+			camera.player = 3;
+			camera.projection = glm::perspective(glm::radians(60.0f), 16.0f / 9.0f, 0.01f, 1000.0f);
+
+			auto& cameraParent = registry->assign<component::Parent>(playerCameraEntity);
+			cameraParent.parent = player3RedEntity;
+
+			auto& cameraEI = registry->assign<component::EntityInfo>(playerCameraEntity);
+			cameraEI.name = "Player3 Camera";
+		}
+
 		{
 			//CANNON
 			mr.material = Material::get("cannon");
@@ -660,7 +812,7 @@ void SandboxLayer::onEnter()
 
 					auto& newTransform  = registry->get<component::Transform>(spawner.entityPrefab);
 					auto& newEntityInfo = registry->get<component::EntityInfo>(spawner.entityPrefab);
-					auto& newCarryable = registry->get<CarryableItem>(spawner.entityPrefab);
+					auto& newCarryable  = registry->get<CarryableItem>(spawner.entityPrefab);
 
 					newCarryable.hasBeenCarried = true; //we have to do this or else the prefab entity will stop this spawner from ever spawning an item
 					newTransform.setPosition(glm::vec3(-99999.0f));
@@ -668,6 +820,12 @@ void SandboxLayer::onEnter()
 					break;
 				}
 			}
+
+			auto& spawnerTransform = registry->assign<component::Transform>(cleaningSolutionSpawnerEntity);
+			spawnerTransform.setPosition(glm::vec3(0.0f));
+
+			auto& spawnerInfo = registry->assign<component::EntityInfo>(cleaningSolutionSpawnerEntity);
+			spawnerInfo.name = "RedCleaningSolutionSpawner";
 		}
 
 		{
@@ -700,6 +858,12 @@ void SandboxLayer::onEnter()
 					break;
 				}
 			}
+
+			auto& spawnerTransform = registry->assign<component::Transform>(gloopSpawnerEntity);
+			spawnerTransform.setPosition(glm::vec3(0.0f));
+
+			auto& spawnerInfo = registry->assign<component::EntityInfo>(gloopSpawnerEntity);
+			spawnerInfo.name = "RedGloopSpawner";
 		}
 		/////////////////////////////////////////////////////
 		/////////////////////////////////////////////////////
@@ -728,128 +892,6 @@ void SandboxLayer::onEnter()
 			so3.name = "Light 1";
 		}
 
-		{
-			//BOAT HULL
-			entt::entity boatHullEntity = registry->create();
-			mr.material = Material::get("siding");
-
-			component::Transform boatHullTransform;
-			boatHullTransform.setPosition(glm::vec3(-21.0f, 0.0f, -2.0f));
-			boatHullTransform.setScale(glm::vec3(1.0f, 1.0f, 1.0f));
-			registry->assign<component::Transform>(boatHullEntity, boatHullTransform);
-
-			mr.mesh = Mesh::cache("res/assets/models/BoatHull.obj");
-			registry->assign<component::Renderable>(boatHullEntity, mr);
-
-			auto& so2 = registry->assign<component::EntityInfo>(boatHullEntity);
-			so2.name = "Boat Hull";
-
-			auto& boatHullCollider = registry->assign<component::Collidable>(boatHullEntity);
-			auto& shapeInfo = boatHullCollider.pushShape(ColliderType::Box);
-			shapeInfo.box.setSize({ 0.0f, 0.0f, 0.0f });
-
-		}
-		{
-			//BOAT HULL
-			entt::entity boatHullFLippedEntity = registry->create();
-			mr.material = Material::get("siding");
-
-			component::Transform boatHullFlippedTransform;
-			boatHullFlippedTransform.setPosition(glm::vec3(-21.0f, 0.0f, -2.0f));
-			boatHullFlippedTransform.setScale(glm::vec3(1.0f, 1.0f, 1.0f));
-			registry->assign<component::Transform>(boatHullFLippedEntity, boatHullFlippedTransform);
-
-			mr.mesh = Mesh::cache("res/assets/models/BoatHullFlipped.obj");
-			registry->assign<component::Renderable>(boatHullFLippedEntity, mr);
-
-			auto& so2 = registry->assign<component::EntityInfo>(boatHullFLippedEntity);
-			so2.name = "Boat Hull Inner";
-
-			auto& boatHullCollider = registry->assign<component::Collidable>(boatHullFLippedEntity);
-			auto& shapeInfo = boatHullCollider.pushShape(ColliderType::Box);
-			shapeInfo.box.setSize({ 0.0f, 0.0f, 0.0f });
-
-		}
-		{
-			//BOAT DECK
-			entt::entity deckBoatEntity = registry->create();
-			mr.material = Material::get("planks");
-
-			component::Transform TopDeckBoatTransform;
-			TopDeckBoatTransform.setPosition(glm::vec3(3.0f, 0.0f, 2.0f));
-			TopDeckBoatTransform.setScale(glm::vec3(1.0f, 1.0f, 1.0f));
-			registry->assign<component::Transform>(deckBoatEntity, TopDeckBoatTransform);
-
-			mr.mesh = Mesh::cache("res/assets/models/TopDeck.obj");
-			registry->assign<component::Renderable>(deckBoatEntity, mr);
-
-			auto& so2 = registry->assign<component::EntityInfo>(deckBoatEntity);
-			so2.name = "Top Deck";
-
-			auto& topDeckCollider = registry->assign<component::Collidable>(deckBoatEntity);
-			auto& shapeInfo = topDeckCollider.pushShape(ColliderType::Box);
-			shapeInfo.box.setSize({ 1.0f, 0.2f, 0.5f });
-		}
-		{
-			//BOAT DECK RAIL
-			entt::entity deckBoatRailEntity = registry->create();
-			mr.material = Material::get("planks");
-
-			component::Transform deckBoatRailTransform;
-			deckBoatRailTransform.setPosition(glm::vec3(-14.0f, 1.0f, 2.0f));
-			deckBoatRailTransform.setScale(glm::vec3(1.0f, 1.0f, 1.0f));
-			registry->assign<component::Transform>(deckBoatRailEntity, deckBoatRailTransform);
-
-			mr.mesh = Mesh::cache("res/assets/models/DeckRail.obj");
-			registry->assign<component::Renderable>(deckBoatRailEntity, mr);
-
-			auto& so2 = registry->assign<component::EntityInfo>(deckBoatRailEntity);
-			so2.name = "DeckRail";
-
-			auto& topDeckCollider = registry->assign<component::Collidable>(deckBoatRailEntity);
-			auto& shapeInfo = topDeckCollider.pushShape(ColliderType::Box);
-			shapeInfo.box.setSize({ 1.0f, 0.2f, 0.5f });
-		}
-		{
-			//BOAT CAPN QUARTERS
-			entt::entity quartersBoatEntity = registry->create();
-			mr.material = Material::get("planks");
-
-			component::Transform quartersBoatTransform;
-			quartersBoatTransform.setPosition(glm::vec3(8.0f, 1.0f, -3.0f));
-			quartersBoatTransform.setScale(glm::vec3(1.0f, 1.0f, 1.0f));
-			registry->assign<component::Transform>(quartersBoatEntity, quartersBoatTransform);
-
-			mr.mesh = Mesh::cache("res/assets/models/CapQuarters.obj");
-			registry->assign<component::Renderable>(quartersBoatEntity, mr);
-
-			auto& so2 = registry->assign<component::EntityInfo>(quartersBoatEntity);
-			so2.name = "Captains Quarters";
-
-			auto& topDeckCollider = registry->assign<component::Collidable>(quartersBoatEntity);
-			auto& shapeInfo = topDeckCollider.pushShape(ColliderType::Box);
-			shapeInfo.box.setSize({ 1.0f, 0.2f, 0.5f });
-		}
-		{
-			//BOAT CAPN QUARTERS RAIL
-			entt::entity quartersRailBoatEntity = registry->create();
-			mr.material = Material::get("planks");
-
-			component::Transform quartersRailBoatTransform;
-			quartersRailBoatTransform.setPosition(glm::vec3(8.0f, 5.0f, -6.0f));
-			quartersRailBoatTransform.setScale(glm::vec3(1.0f, 1.0f, 1.0f));
-			registry->assign<component::Transform>(quartersRailBoatEntity, quartersRailBoatTransform);
-
-			mr.mesh = Mesh::cache("res/assets/models/QuartersRail.obj");
-			registry->assign<component::Renderable>(quartersRailBoatEntity, mr);
-
-			auto& so2 = registry->assign<component::EntityInfo>(quartersRailBoatEntity);
-			so2.name = "Captains Quarters Rail";
-
-			auto& topDeckCollider = registry->assign<component::Collidable>(quartersRailBoatEntity);
-			auto& shapeInfo = topDeckCollider.pushShape(ColliderType::Box);
-			shapeInfo.box.setSize({ 1.0f, 0.2f, 0.5f });
-		}
 
 		{
 			//CHARACTER MESH
@@ -914,7 +956,7 @@ void SandboxLayer::onEnter()
         mr.material = mat;
 
         entt::entity e = registry->create();
-        registry->assign<component::Renderable>(e, mr);
+        //registry->assign<component::Renderable>(e, mr);
 
         component::Transform t;
         t.setPosition(glm::vec3(-3.0f, -1.0f, -2.0f));
@@ -932,12 +974,12 @@ void SandboxLayer::onEnter()
         shi.sphere.setRadius(0.5f);
     }
     {
-        component::Renderable mr;
-        mr.mesh = Mesh::get("sphere");
-        mr.material = mat;
+        //component::Renderable mr;
+        //mr.mesh = Mesh::get("sphere");
+        //mr.material = mat;
 
         entt::entity e = registry->create();
-        registry->assign<component::Renderable>(e, mr);
+        //registry->assign<component::Renderable>(e, mr);
 
         component::Transform t;
         t.setPosition(glm::vec3(-3.0f, -1.0f, -2.0f));

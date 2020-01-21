@@ -248,14 +248,14 @@ namespace oyl::internal
                 rotIt->contains("qY") &&
                 rotIt->contains("qZ"))
             {
-                //glm::quat rotation = {
-                //    rotIt->at("qW").get<float>(),
-                //    rotIt->at("qX").get<float>(),
-                //    rotIt->at("qY").get<float>(),
-                //    rotIt->at("qZ").get<float>(),
-                //};
-                //
-                //t.setRotation(rotation);
+                glm::quat rotation = {
+                    rotIt->at("qW").get<float>(),
+                    rotIt->at("qX").get<float>(),
+                    rotIt->at("qY").get<float>(),
+                    rotIt->at("qZ").get<float>(),
+                };
+                
+                t.setRotation(rotation);
             }
         }
         {

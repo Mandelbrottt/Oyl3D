@@ -70,6 +70,7 @@ struct MoveableUsingLerp
 struct Player
 {
 	int playerNum = -1; //should always correspond with appropriate PlayerCamera player number
+	int controllerNum = -1; //the gid of the controller that will be used to control the player
 
 	Team team;
 

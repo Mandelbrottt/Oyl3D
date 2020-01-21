@@ -1,0 +1,28 @@
+{
+    "Material": {
+        "Alias": "container",
+        "Shader": {
+            "Alias": "Oyl Lighting",
+            "Pixel": {
+                "FilePath": "../Engine/res/shaders/lighting.frag",
+                "guid": null
+            },
+            "Vertex": {
+                "FilePath": "../Engine/res/shaders/lighting.vert",
+                "guid": null
+            }
+        },
+        "Textures": {
+            "Albedo": {
+                "Alias": "container2_specular",
+                "FilePath": "res\\assets\\textures\\container2.jpg",
+                "guid": null
+            },
+            "Normal": null,
+            "Specular": {
+                "FilePath": "res\\assets\\textures\\container2.jpg",
+                "guid": null
+            }
+        }
+    }
+}
