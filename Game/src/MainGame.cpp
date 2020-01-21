@@ -579,6 +579,8 @@ public:
 
 				if (player.controllerNum != evt.gid)
 					continue;
+				if (evt.repeatCount != 0)
+					break;
 
 				switch (evt.button)
 				{
