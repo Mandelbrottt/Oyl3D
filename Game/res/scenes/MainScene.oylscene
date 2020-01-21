@@ -1046,7 +1046,7 @@
             "Position": {
                 "X": 0.0,
                 "Y": 0.0,
-                "Z": -0.20702356100082397
+                "Z": -0.5719234347343445
             },
             "Rotation": {
                 "qW": 1.0,
@@ -1419,154 +1419,6 @@
             }
         }
     },
-    "Crate": {
-        "Parent": {
-            "Name": "Boat Root R 1"
-        },
-        "Renderable": {
-            "Enabled": true,
-            "Material": {
-                "Alias": "planks"
-            },
-            "Mesh": {
-                "FilePath": "../Engine/res/models/cube.obj"
-            }
-        },
-        "Transform": {
-            "Mirror": {
-                "X": false,
-                "Y": false,
-                "Z": false
-            },
-            "Position": {
-                "X": 7.647397518157959,
-                "Y": 0.7106161713600159,
-                "Z": 0.6406869292259216
-            },
-            "Rotation": {
-                "qW": 1.0,
-                "qX": 0.0,
-                "qY": 0.0,
-                "qZ": 0.0
-            },
-            "Scale": {
-                "X": 1.0,
-                "Y": 1.0,
-                "Z": 1.0
-            }
-        }
-    },
-    "Crate 1": {
-        "Parent": {
-            "Name": "Boat Root R 1"
-        },
-        "Renderable": {
-            "Enabled": true,
-            "Material": {
-                "Alias": "planks"
-            },
-            "Mesh": {
-                "FilePath": "../Engine/res/models/cube.obj"
-            }
-        },
-        "Transform": {
-            "Mirror": {
-                "X": false,
-                "Y": false,
-                "Z": false
-            },
-            "Position": {
-                "X": 6.4444990158081055,
-                "Y": 0.7106161713600159,
-                "Z": 0.6406869292259216
-            },
-            "Rotation": {
-                "qW": 1.0,
-                "qX": 0.0,
-                "qY": 0.0,
-                "qZ": 0.0
-            },
-            "Scale": {
-                "X": 1.0,
-                "Y": 1.0,
-                "Z": 1.0
-            }
-        }
-    },
-    "Crate 2": {
-        "Parent": {
-            "Name": "Boat Root R 1"
-        },
-        "Renderable": {
-            "Enabled": true,
-            "Material": {
-                "Alias": "planks"
-            },
-            "Mesh": {
-                "FilePath": "../Engine/res/models/cube.obj"
-            }
-        },
-        "Transform": {
-            "Mirror": {
-                "X": false,
-                "Y": false,
-                "Z": false
-            },
-            "Position": {
-                "X": 7.647397518157959,
-                "Y": 1.7296019792556763,
-                "Z": 0.6406869292259216
-            },
-            "Rotation": {
-                "qW": 1.0,
-                "qX": 0.0,
-                "qY": 0.0,
-                "qZ": 0.0
-            },
-            "Scale": {
-                "X": 1.0,
-                "Y": 1.0,
-                "Z": 1.0
-            }
-        }
-    },
-    "Crate 3": {
-        "Parent": {
-            "Name": "Boat Root R 1"
-        },
-        "Renderable": {
-            "Enabled": true,
-            "Material": {
-                "Alias": "planks"
-            },
-            "Mesh": {
-                "FilePath": "../Engine/res/models/cube.obj"
-            }
-        },
-        "Transform": {
-            "Mirror": {
-                "X": false,
-                "Y": false,
-                "Z": false
-            },
-            "Position": {
-                "X": 7.50622034072876,
-                "Y": 0.7608376741409302,
-                "Z": -4.926942825317383
-            },
-            "Rotation": {
-                "qW": 1.0,
-                "qX": 0.0,
-                "qY": 0.0,
-                "qZ": 0.0
-            },
-            "Scale": {
-                "X": 2.0,
-                "Y": 2.0,
-                "Z": 2.0
-            }
-        }
-    },
     "DeckRail 1": {
         "Parent": {
             "Name": "Boat Root R"
@@ -1806,6 +1658,80 @@
                 "X": -20.81462287902832,
                 "Y": -1.0275444984436035,
                 "Z": -1.7796382904052734
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Hull Detailing": {
+        "Parent": {
+            "Name": "Boat Root R"
+        },
+        "Renderable": {
+            "Enabled": true,
+            "Material": {
+                "Alias": "crate"
+            },
+            "Mesh": {
+                "FilePath": "res\\assets\\models\\HullDetailing.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -21.0,
+                "Y": 0.0,
+                "Z": -2.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Hull Detailing 1": {
+        "Parent": {
+            "Name": "Boat Root R 1"
+        },
+        "Renderable": {
+            "Enabled": true,
+            "Material": {
+                "Alias": "crate"
+            },
+            "Mesh": {
+                "FilePath": "res\\assets\\models\\HullDetailing.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -21.0,
+                "Y": 0.0,
+                "Z": -2.0
             },
             "Rotation": {
                 "qW": 1.0,
@@ -2321,7 +2247,7 @@
         "Renderable": {
             "Enabled": true,
             "Material": {
-                "Alias": null
+                "Alias": "water"
             },
             "Mesh": {
                 "FilePath": "res\\assets\\models\\plane.obj"
@@ -2335,8 +2261,8 @@
             },
             "Position": {
                 "X": 0.0,
-                "Y": -5.0,
-                "Z": 0.0
+                "Y": -7.4456024169921875,
+                "Z": 7.517473220825195
             },
             "Rotation": {
                 "qW": 1.0,
@@ -2345,9 +2271,9 @@
                 "qZ": 0.0
             },
             "Scale": {
-                "X": 1.899999976158142,
-                "Y": 0.20000000298023224,
-                "Z": 0.5
+                "X": 6.420000076293945,
+                "Y": 1.9399996995925903,
+                "Z": 5.400000095367432
             }
         }
     },
@@ -3540,9 +3466,9 @@
                 "Z": false
             },
             "Position": {
-                "X": -14.879182815551758,
-                "Y": -3.9105474948883057,
-                "Z": -4.120683193206787
+                "X": 4.096777439117432,
+                "Y": 0.0,
+                "Z": -4.32846736907959
             },
             "Rotation": {
                 "qW": 1.0,
@@ -3614,9 +3540,9 @@
                 "Z": false
             },
             "Position": {
-                "X": 4.096777439117432,
-                "Y": 0.0,
-                "Z": -4.32846736907959
+                "X": -14.879182815551758,
+                "Y": -3.9105474948883057,
+                "Z": -4.120683193206787
             },
             "Rotation": {
                 "qW": 1.0,
