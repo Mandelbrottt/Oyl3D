@@ -24,8 +24,9 @@ void SandboxLayer::onEnter()
 			//PLAYER
 			entt::entity playerBlueEntity = registry->create();
 			auto& player = registry->assign<Player>(playerBlueEntity);
-			player.playerNum = 0;
-			player.team      = Team::blue;
+			player.playerNum     = 0;
+			player.controllerNum = 0;
+			player.team          = Team::blue;
 
 			registry->assign<component::Renderable>(playerBlueEntity, mr);
 

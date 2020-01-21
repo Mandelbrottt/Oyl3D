@@ -29,6 +29,7 @@ public:
 
 		this->listenForEventCategory(EventCategory::Keyboard);
 		this->listenForEventCategory(EventCategory::Mouse);
+		this->listenForEventCategory(EventCategory::Gamepad);
 		this->listenForEventCategory((EventCategory) CategoryGarbagePile);
 
 		scheduleSystemUpdate<PlayerSystem>();
@@ -393,12 +394,13 @@ public:
 
 	void onUpdate() override
 	{
-		auto view = registry->view<Player, component::Transform>();
-		for (auto& entity : view)
+		auto playerView = registry->view<Player, component::Transform>();
+		for (auto& playerEntity : playerView)
 		{
-			auto& player = registry->get<Player>(entity);
-			auto& playerTransform = registry->get<component::Transform>(entity);
+			auto& player          = registry->get<Player>(playerEntity);
+			auto& playerTransform = registry->get<component::Transform>(playerEntity);
 
+			//player movement
 			glm::vec3 desiredMoveDirection = glm::vec3(0.0f);
 
 			if (Input::isKeyPressed(Key::W))
@@ -413,11 +415,68 @@ public:
 			if (Input::isKeyPressed(Key::D))
 				desiredMoveDirection += playerTransform.getRight();
 
+			if (Input::getGamepadLeftStickY(player.playerNum) > 0.1f || Input::getGamepadLeftStickY(player.playerNum) < -0.1f)
+				desiredMoveDirection += Input::getGamepadLeftStickY(player.playerNum) * -playerTransform.getForward();
+
+			if (Input::getGamepadLeftStickX(player.playerNum) > 0.1f || Input::getGamepadLeftStickX(player.playerNum) < -0.1f)
+				desiredMoveDirection += Input::getGamepadLeftStickX(player.playerNum) * playerTransform.getRight();
+
 		    //check if it's 0 because if we normalize a vector with 0 magnitude it breaks
 		    if (desiredMoveDirection == glm::vec3(0.0f))
 			    player.moveDirection = desiredMoveDirection;
 			else
 				player.moveDirection = glm::normalize(desiredMoveDirection);
+
+
+			//camera movement
+
+			glm::vec2 rightStick = Input::getGamepadRightStick();
+
+			//deadzone check
+			if (rightStick.x > 0.1f || rightStick.x < -0.1f)
+			{
+				playerTransform.rotate(glm::vec3(0.0f, -rightStick.x * 4.0f, 0.0f));
+
+				if (player.yRotationClamp > 1)
+				{
+					if (playerTransform.getRotationEulerY() < player.yRotationClamp)
+						playerTransform.setRotationEulerY(player.yRotationClamp);
+				}
+				else if (player.yRotationClamp < -1)
+				{
+					if (playerTransform.getRotationEulerY() > player.yRotationClamp)
+						playerTransform.setRotationEulerY(player.yRotationClamp);
+				}
+			}
+
+			auto playerCameraView = registry->view<component::PlayerCamera, component::Transform, component::Parent>();
+			for (auto& cameraEntity : playerCameraView)
+			{
+				auto& camera          = registry->get<component::PlayerCamera>(cameraEntity);
+				auto& cameraTransform = registry->get<component::Transform>(cameraEntity);
+				auto& cameraParent    = registry->get<component::Parent>(cameraEntity);
+
+				if (cameraParent.parent != playerEntity)
+					continue;
+				
+				//deadzone check
+				if (rightStick.y > 0.1f || rightStick.y < -0.1f)
+				{
+					cameraTransform.rotate(glm::vec3(-rightStick.y * 4.0f, 0.0f, 0.0f));
+
+					//clamp camera up/down rotation
+					float cameraRotationClampValue = 70.0f;
+
+					if (cameraTransform.getRotationEulerX() > cameraRotationClampValue)
+						cameraTransform.setRotationEulerX(cameraRotationClampValue);
+					else if (cameraTransform.getRotationEulerX() < -cameraRotationClampValue)
+						cameraTransform.setRotationEulerX(-cameraRotationClampValue);
+				}
+
+				break;
+			}
+
+			break;
 		}
 	}
 
@@ -453,10 +512,9 @@ public:
 
 			break;
 		}
+
 		case EventType::KeyPressed:
 		{
-			Window& window = oyl::Application::get().getWindow();
-
 			auto evt = event_cast<KeyPressedEvent>(event);
 
 			switch (evt.keycode)
@@ -507,109 +565,98 @@ public:
 
 				break;
 			}
-			/*case oyl::Key_W:
-			{
-				auto playerView = registry->view<Player, component::Transform, component::RigidBody, component::SceneObject>();
-
-				for (entt::entity playerEntity : playerView)
-				{
-					PlayerMoveEvent playerMove;
-					playerMove.player = &registry->get<Player>(playerEntity);
-					playerMove.direction = playerView.get<component::Transform>(playerEntity).getForward();
-					postEvent(Event::create(playerMove));
-				}
-
-				break;
-			}
-			case oyl::Key_A:
-			{
-				auto playerView = registry->view<Player, component::Transform, component::RigidBody, component::SceneObject>();
-
-				for (entt::entity playerEntity : playerView)
-				{
-					PlayerMoveEvent playerMove;
-					playerMove.player = &registry->get<Player>(playerEntity);
-					playerMove.direction = -playerView.get<component::Transform>(playerEntity).getRight();
-					postEvent(Event::create(playerMove));
-				}
-
-				break;
-			}
-			case oyl::Key_S:
-			{
-				auto playerView = registry->view<Player, component::Transform, component::RigidBody, component::SceneObject>();
-
-				for (entt::entity playerEntity : playerView)
-				{
-					PlayerMoveEvent playerMove;
-					playerMove.player = &registry->get<Player>(playerEntity);
-					playerMove.direction = -playerView.get<component::Transform>(playerEntity).getForward();
-					postEvent(Event::create(playerMove));
-				}
-
-				break;
-			}
-			case oyl::Key_D:
-			{
-				auto playerView = registry->view<Player, component::Transform, component::RigidBody, component::SceneObject>();
-
-				for (entt::entity playerEntity : playerView)
-				{
-					PlayerMoveEvent playerMove;
-					playerMove.player = &registry->get<Player>(playerEntity);
-					playerMove.direction = playerView.get<component::Transform>(playerEntity).getRight();
-					postEvent(Event::create(playerMove));
-				}
-
-				break;
-			}*/
 			}
 		}
-		case EventType::MouseMoved:
+
+		case EventType::GamepadButtonPressed:
 		{
-			if (isCameraActive)
+			auto evt = event_cast<GamepadButtonPressedEvent>(event);
+			
+			auto playerView = registry->view<Player>();
+			for (entt::entity playerEntity : playerView)
 			{
-				auto evt = event_cast<MouseMovedEvent>(event);
+				auto& player = registry->get<Player>(playerEntity);
 
-				auto playerView = registry->view<Player, component::Transform>();
-				for (auto& entity : playerView)
+				if (player.controllerNum != evt.gid)
+					continue;
+
+				switch (evt.button)
 				{
-					auto& player = registry->get<Player>(entity);
-					auto& playerTransform = registry->get<component::Transform>(entity);
+				case Gamepad::A:
+				{
+					//make the player jump
 
-					playerTransform.rotate(glm::vec3(0.0f, -evt.dx * 0.5f, 0.0f));
+					break;
+				}
+				case Gamepad::X:
+				{
+					PlayerInteractionRequestEvent playerInteractionRequest;
+					playerInteractionRequest.playerEntity = playerEntity;
+					postEvent(playerInteractionRequest);
 
-					if (player.yRotationClamp > 1)
-					{
-						if (playerTransform.getRotationEulerY() < player.yRotationClamp)
-							playerTransform.setRotationEulerY(player.yRotationClamp);
-					}
-					else if (player.yRotationClamp < -1)
-					{
-						if (playerTransform.getRotationEulerY() > player.yRotationClamp)
-							playerTransform.setRotationEulerY(player.yRotationClamp);
-					}
+					break;
+				}
+				case Gamepad::B:
+				{
+					PlayerDropItemEvent playerDropItem;
+					playerDropItem.playerEntity = playerEntity;
+					postEvent(playerDropItem);
+
+					break;
+				}
 				}
 
-				auto playerCameraView = registry->view<component::PlayerCamera, component::Transform>();
-				for (auto& entity : playerCameraView)
-				{
-					component::Transform& cameraTransform = registry->get<component::Transform>(entity);
-
-					cameraTransform.rotate(glm::vec3(-evt.dy * 0.5f, 0.0f, 0.0f));
-
-				    //clamp camera up/down rotation
-					float cameraRotationClampValue = 70.0f;
-				    
-				    if (cameraTransform.getRotationEulerX() > cameraRotationClampValue)
-						cameraTransform.setRotationEulerX(cameraRotationClampValue);
-					else if (cameraTransform.getRotationEulerX() < -cameraRotationClampValue)
-						cameraTransform.setRotationEulerX(-cameraRotationClampValue);
-				}
+				break;
 			}
 
 			break;
 		}
+
+		case EventType::MouseMoved:
+		{
+			if (!isCameraActive)
+				break;
+			auto evt = event_cast<MouseMovedEvent>(event);
+
+			auto playerView = registry->view<Player, component::Transform>();
+			for (auto& entity : playerView)
+			{
+				auto& player = registry->get<Player>(entity);
+				auto& playerTransform = registry->get<component::Transform>(entity);
+
+				playerTransform.rotate(glm::vec3(0.0f, -evt.dx * 0.5f, 0.0f));
+
+				if (player.yRotationClamp > 1)
+				{
+					if (playerTransform.getRotationEulerY() < player.yRotationClamp)
+						playerTransform.setRotationEulerY(player.yRotationClamp);
+				}
+				else if (player.yRotationClamp < -1)
+				{
+					if (playerTransform.getRotationEulerY() > player.yRotationClamp)
+						playerTransform.setRotationEulerY(player.yRotationClamp);
+				}
+			}
+
+			auto playerCameraView = registry->view<component::PlayerCamera, component::Transform>();
+			for (auto& entity : playerCameraView)
+			{
+				auto& cameraTransform = registry->get<component::Transform>(entity);
+
+				cameraTransform.rotate(glm::vec3(-evt.dy * 0.5f, 0.0f, 0.0f));
+
+				//clamp camera up/down rotation
+				float cameraRotationClampValue = 70.0f;
+				    
+				if (cameraTransform.getRotationEulerX() > cameraRotationClampValue)
+					cameraTransform.setRotationEulerX(cameraRotationClampValue);
+				else if (cameraTransform.getRotationEulerX() < -cameraRotationClampValue)
+					cameraTransform.setRotationEulerX(-cameraRotationClampValue);
+			}
+
+			break;
+		}
+
 		/*case TypeTotalGarbageCount:
 		{
 			auto evt = (TotalGarbageCountEvent)* event;
