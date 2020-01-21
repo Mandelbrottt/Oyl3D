@@ -118,7 +118,7 @@ void SandboxLayer::onEnter()
 
 			mr.material = Material::cache((Material::create()), "siding");
 			mr.material->shader = Shader::get(LIGHTING_SHADER_ALIAS);
-			mr.material->albedoMap = Texture2D::cache("res/assets/textures/woodPlankSiding.png");
+			mr.material->albedoMap = Texture2D::cache("res/assets/textures/woodPlankSiding2.png");
 			mr.material->specularMap = Material::get("planks")->specularMap;
 
 			mr.material = Material::cache((Material::create()), "atlasMaterial");
