@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Oyl3D/Scenes/Layer.h"
+#include "Selectable.h"
 
 // TODO: Turn off mouse input when cursor is disabled
 
@@ -63,6 +64,8 @@ namespace oyl::internal
         bool updateAsset(const std::string& filepath, 
                          void (*loadAsset)(void*), 
                          void* userData);
+
+        void drawAssetCache();
         
         void drawSceneViewport();
         void drawGameViewport();
@@ -80,7 +83,7 @@ namespace oyl::internal
         u32 m_gameViewportHandle;
 
         // TODO: Make wrapper object with getters and setters for current selection, setters set other object to null
-        entt::entity m_currentEntity = entt::null;
+        Selectable m_currentSelection;
 
         ImGuizmo::OPERATION m_currentOp = ImGuizmo::TRANSLATE;
         ImGuizmo::MODE m_currentMode = ImGuizmo::WORLD;
@@ -91,6 +94,7 @@ namespace oyl::internal
         glm::vec3 m_snap;
 
         entt::registry m_registryRestore;
+        entt::registry m_prefabRegistry;
         
         bool m_doSnap = false;
         bool m_editorOverrideUpdate = true;
