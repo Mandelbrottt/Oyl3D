@@ -21,45 +21,91 @@ void SandboxLayer::onEnter()
 		/////////////////////////////////////////////////////
 		///////////////////// BLUE TEAM /////////////////////
 		{
-			//PLAYER
-			entt::entity playerBlueEntity = registry->create();
-			auto& player = registry->assign<Player>(playerBlueEntity);
+			//PLAYER 0
+			entt::entity player0BlueEntity = registry->create();
+			auto& player = registry->assign<Player>(player0BlueEntity);
 			player.playerNum     = 0;
 			player.controllerNum = 0;
 			player.team          = Team::blue;
 
-			registry->assign<component::Renderable>(playerBlueEntity, mr);
+			registry->assign<component::Renderable>(player0BlueEntity, mr);
 
 			component::Transform t2;
 			t2.setPosition(glm::vec3(0.0f));
-			registry->assign<component::Transform>(playerBlueEntity, t2);
+			registry->assign<component::Transform>(player0BlueEntity, t2);
 
-			auto& so2 = registry->assign<component::EntityInfo>(playerBlueEntity);
-			so2.name = "Player";
+			auto& so2 = registry->assign<component::EntityInfo>(player0BlueEntity);
+			so2.name = "Player0 Blue";
 
-			auto& rb = registry->assign<component::RigidBody>(playerBlueEntity);
+			auto& rb = registry->assign<component::RigidBody>(player0BlueEntity);
 			rb.setMass(5.0f);
 			rb.setFriction(1.0f);
 			rb.setProperties(component::RigidBody::Property::FREEZE_ROTATION_X, true);
 			rb.setProperties(component::RigidBody::Property::FREEZE_ROTATION_Y, true);
 			rb.setProperties(component::RigidBody::Property::FREEZE_ROTATION_Z, true);
 
-			auto& playerCollider = registry->assign<component::Collidable>(playerBlueEntity);
+			auto& playerCollider = registry->assign<component::Collidable>(player0BlueEntity);
 			auto& shapeInfo = playerCollider.pushShape(ColliderType::Box);
 			shapeInfo.box.setSize({ 1.0f, 1.0f, 1.0f });
 
-			registry->assign<entt::tag<"Player"_hs>>(playerBlueEntity);
-		}
-
-		//PLAYER CAMERA
-		{
+			//PLAYER 0 CAMERA
 			auto playerCameraEntity = registry->create();
+
 			registry->assign<component::Transform>(playerCameraEntity);
+
 			auto& camera = registry->assign<component::PlayerCamera>(playerCameraEntity);
 			camera.player = 0;
 			camera.projection = glm::perspective(glm::radians(60.0f), 16.0f / 9.0f, 0.01f, 1000.0f);
-			auto& so = registry->assign<component::EntityInfo>(playerCameraEntity);
-			so.name = "Player Camera";
+
+			auto& cameraParent = registry->assign<component::Parent>(playerCameraEntity);
+			cameraParent.parent = player0BlueEntity;
+
+			auto& cameraEI = registry->assign<component::EntityInfo>(playerCameraEntity);
+			cameraEI.name = "Player0 Camera";
+		}
+
+		{
+			//PLAYER 2
+			entt::entity player2BlueEntity = registry->create();
+			auto& player = registry->assign<Player>(player2BlueEntity);
+			player.playerNum = 2;
+			player.controllerNum = 2;
+			player.team = Team::blue;
+
+			registry->assign<component::Renderable>(player2BlueEntity, mr);
+
+			component::Transform t2;
+			t2.setPosition(glm::vec3(0.0f));
+			registry->assign<component::Transform>(player2BlueEntity, t2);
+
+			auto& so2 = registry->assign<component::EntityInfo>(player2BlueEntity);
+			so2.name = "Player2 Blue";
+
+			auto& rb = registry->assign<component::RigidBody>(player2BlueEntity);
+			rb.setMass(5.0f);
+			rb.setFriction(1.0f);
+			rb.setProperties(component::RigidBody::Property::FREEZE_ROTATION_X, true);
+			rb.setProperties(component::RigidBody::Property::FREEZE_ROTATION_Y, true);
+			rb.setProperties(component::RigidBody::Property::FREEZE_ROTATION_Z, true);
+
+			auto& playerCollider = registry->assign<component::Collidable>(player2BlueEntity);
+			auto& shapeInfo = playerCollider.pushShape(ColliderType::Box);
+			shapeInfo.box.setSize({ 1.0f, 1.0f, 1.0f });
+
+			//PLAYER 2 CAMERA
+			auto playerCameraEntity = registry->create();
+
+			registry->assign<component::Transform>(playerCameraEntity);
+
+			auto& camera = registry->assign<component::PlayerCamera>(playerCameraEntity);
+			camera.player = 2;
+			camera.projection = glm::perspective(glm::radians(60.0f), 16.0f / 9.0f, 0.01f, 1000.0f);
+
+			auto& cameraParent = registry->assign<component::Parent>(playerCameraEntity);
+			cameraParent.parent = player2BlueEntity;
+
+			auto& cameraEI = registry->assign<component::EntityInfo>(playerCameraEntity);
+			cameraEI.name = "Player2 Camera";
 		}
         
 		{
@@ -431,6 +477,94 @@ void SandboxLayer::onEnter()
 
 		/////////////////////////////////////////////////////
 		///////////////////// RED TEAM //////////////////////
+		{
+			//PLAYER 1
+			entt::entity player1RedEntity = registry->create();
+			auto& player = registry->assign<Player>(player1RedEntity);
+			player.playerNum = 1;
+			player.controllerNum = 1;
+			player.team = Team::red;
+
+			registry->assign<component::Renderable>(player1RedEntity, mr);
+
+			component::Transform t2;
+			t2.setPosition(glm::vec3(0.0f));
+			registry->assign<component::Transform>(player1RedEntity, t2);
+
+			auto& so2 = registry->assign<component::EntityInfo>(player1RedEntity);
+			so2.name = "Player2 Red";
+
+			auto& rb = registry->assign<component::RigidBody>(player1RedEntity);
+			rb.setMass(5.0f);
+			rb.setFriction(1.0f);
+			rb.setProperties(component::RigidBody::Property::FREEZE_ROTATION_X, true);
+			rb.setProperties(component::RigidBody::Property::FREEZE_ROTATION_Y, true);
+			rb.setProperties(component::RigidBody::Property::FREEZE_ROTATION_Z, true);
+
+			auto& playerCollider = registry->assign<component::Collidable>(player1RedEntity);
+			auto& shapeInfo = playerCollider.pushShape(ColliderType::Box);
+			shapeInfo.box.setSize({ 1.0f, 1.0f, 1.0f });
+
+			//PLAYER 2 CAMERA
+			auto playerCameraEntity = registry->create();
+
+			registry->assign<component::Transform>(playerCameraEntity);
+
+			auto& camera = registry->assign<component::PlayerCamera>(playerCameraEntity);
+			camera.player = 1;
+			camera.projection = glm::perspective(glm::radians(60.0f), 16.0f / 9.0f, 0.01f, 1000.0f);
+
+			auto& cameraParent = registry->assign<component::Parent>(playerCameraEntity);
+			cameraParent.parent = player1RedEntity;
+
+			auto& cameraEI = registry->assign<component::EntityInfo>(playerCameraEntity);
+			cameraEI.name = "Player1 Camera";
+		}
+
+		{
+			//PLAYER 3
+			entt::entity player3RedEntity = registry->create();
+			auto& player = registry->assign<Player>(player3RedEntity);
+			player.playerNum = 3;
+			player.controllerNum = 3;
+			player.team = Team::red;
+
+			registry->assign<component::Renderable>(player3RedEntity, mr);
+
+			component::Transform t2;
+			t2.setPosition(glm::vec3(0.0f));
+			registry->assign<component::Transform>(player3RedEntity, t2);
+
+			auto& so2 = registry->assign<component::EntityInfo>(player3RedEntity);
+			so2.name = "Player3 Red";
+
+			auto& rb = registry->assign<component::RigidBody>(player3RedEntity);
+			rb.setMass(5.0f);
+			rb.setFriction(1.0f);
+			rb.setProperties(component::RigidBody::Property::FREEZE_ROTATION_X, true);
+			rb.setProperties(component::RigidBody::Property::FREEZE_ROTATION_Y, true);
+			rb.setProperties(component::RigidBody::Property::FREEZE_ROTATION_Z, true);
+
+			auto& playerCollider = registry->assign<component::Collidable>(player3RedEntity);
+			auto& shapeInfo = playerCollider.pushShape(ColliderType::Box);
+			shapeInfo.box.setSize({ 1.0f, 1.0f, 1.0f });
+
+			//PLAYER 3 CAMERA
+			auto playerCameraEntity = registry->create();
+
+			registry->assign<component::Transform>(playerCameraEntity);
+
+			auto& camera = registry->assign<component::PlayerCamera>(playerCameraEntity);
+			camera.player = 3;
+			camera.projection = glm::perspective(glm::radians(60.0f), 16.0f / 9.0f, 0.01f, 1000.0f);
+
+			auto& cameraParent = registry->assign<component::Parent>(playerCameraEntity);
+			cameraParent.parent = player3RedEntity;
+
+			auto& cameraEI = registry->assign<component::EntityInfo>(playerCameraEntity);
+			cameraEI.name = "Player3 Camera";
+		}
+
 		{
 			//CANNON
 			mr.material = Material::get("cannon");
