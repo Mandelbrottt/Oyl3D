@@ -1046,7 +1046,7 @@
             "Position": {
                 "X": 0.0,
                 "Y": 0.0,
-                "Z": -0.5719234347343445
+                "Z": -0.5456451773643494
             },
             "Rotation": {
                 "qW": 1.0,
@@ -1082,6 +1082,450 @@
                 "X": -24.0,
                 "Y": -2.5,
                 "Z": 0.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "CannonPortTrim": {
+        "Parent": {
+            "Name": "Boat Root R"
+        },
+        "Renderable": {
+            "Enabled": true,
+            "Material": {
+                "Alias": "atlasMaterial"
+            },
+            "Mesh": {
+                "FilePath": "res\\assets\\models\\Decorative\\cannonWindowTrim.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": true
+            },
+            "Position": {
+                "X": -9.961164474487305,
+                "Y": -3.088313579559326,
+                "Z": -7.527631759643555
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "CannonPortTrim 1": {
+        "Parent": {
+            "Name": "Boat Root R"
+        },
+        "Renderable": {
+            "Enabled": true,
+            "Material": {
+                "Alias": "atlasMaterial"
+            },
+            "Mesh": {
+                "FilePath": "res\\assets\\models\\Decorative\\cannonWindowTrim.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": true
+            },
+            "Position": {
+                "X": -1.9854516983032227,
+                "Y": -3.088313579559326,
+                "Z": -7.527631759643555
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "CannonPortTrim 10": {
+        "Parent": {
+            "Name": "Boat Root R 1"
+        },
+        "Renderable": {
+            "Enabled": true,
+            "Material": {
+                "Alias": "atlasMaterial"
+            },
+            "Mesh": {
+                "FilePath": "res\\assets\\models\\Decorative\\cannonWindowTrim.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": true
+            },
+            "Position": {
+                "X": -1.9854516983032227,
+                "Y": -3.088313579559326,
+                "Z": -7.527631759643555
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "CannonPortTrim 11": {
+        "Parent": {
+            "Name": "Boat Root R 1"
+        },
+        "Renderable": {
+            "Enabled": true,
+            "Material": {
+                "Alias": "atlasMaterial"
+            },
+            "Mesh": {
+                "FilePath": "res\\assets\\models\\Decorative\\cannonWindowTrim.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": true
+            },
+            "Position": {
+                "X": -9.961164474487305,
+                "Y": -3.088313579559326,
+                "Z": -7.527631759643555
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "CannonPortTrim 2": {
+        "Parent": {
+            "Name": "Boat Root R"
+        },
+        "Renderable": {
+            "Enabled": true,
+            "Material": {
+                "Alias": "atlasMaterial"
+            },
+            "Mesh": {
+                "FilePath": "res\\assets\\models\\Decorative\\cannonWindowTrim.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": true
+            },
+            "Position": {
+                "X": 4.984394550323486,
+                "Y": -3.088313579559326,
+                "Z": -7.527631759643555
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "CannonPortTrim 3": {
+        "Parent": {
+            "Name": "Boat Root R"
+        },
+        "Renderable": {
+            "Enabled": true,
+            "Material": {
+                "Alias": "atlasMaterial"
+            },
+            "Mesh": {
+                "FilePath": "res\\assets\\models\\Decorative\\cannonWindowTrim.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": 4.984394550323486,
+                "Y": -3.088313579559326,
+                "Z": 3.520254135131836
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "CannonPortTrim 4": {
+        "Parent": {
+            "Name": "Boat Root R"
+        },
+        "Renderable": {
+            "Enabled": true,
+            "Material": {
+                "Alias": "atlasMaterial"
+            },
+            "Mesh": {
+                "FilePath": "res\\assets\\models\\Decorative\\cannonWindowTrim.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -2.0278196334838867,
+                "Y": -3.088313579559326,
+                "Z": 3.520254135131836
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "CannonPortTrim 5": {
+        "Parent": {
+            "Name": "Boat Root R"
+        },
+        "Renderable": {
+            "Enabled": true,
+            "Material": {
+                "Alias": "atlasMaterial"
+            },
+            "Mesh": {
+                "FilePath": "res\\assets\\models\\Decorative\\cannonWindowTrim.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -10.042670249938965,
+                "Y": -3.088313579559326,
+                "Z": 3.520254135131836
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "CannonPortTrim 6": {
+        "Parent": {
+            "Name": "Boat Root R 1"
+        },
+        "Renderable": {
+            "Enabled": true,
+            "Material": {
+                "Alias": "atlasMaterial"
+            },
+            "Mesh": {
+                "FilePath": "res\\assets\\models\\Decorative\\cannonWindowTrim.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -10.042670249938965,
+                "Y": -3.088313579559326,
+                "Z": 3.520254135131836
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "CannonPortTrim 7": {
+        "Parent": {
+            "Name": "Boat Root R 1"
+        },
+        "Renderable": {
+            "Enabled": true,
+            "Material": {
+                "Alias": "atlasMaterial"
+            },
+            "Mesh": {
+                "FilePath": "res\\assets\\models\\Decorative\\cannonWindowTrim.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -2.0278196334838867,
+                "Y": -3.088313579559326,
+                "Z": 3.520254135131836
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "CannonPortTrim 8": {
+        "Parent": {
+            "Name": "Boat Root R 1"
+        },
+        "Renderable": {
+            "Enabled": true,
+            "Material": {
+                "Alias": "atlasMaterial"
+            },
+            "Mesh": {
+                "FilePath": "res\\assets\\models\\Decorative\\cannonWindowTrim.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": 4.984394550323486,
+                "Y": -3.088313579559326,
+                "Z": 3.520254135131836
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "CannonPortTrim 9": {
+        "Parent": {
+            "Name": "Boat Root R 1"
+        },
+        "Renderable": {
+            "Enabled": true,
+            "Material": {
+                "Alias": "atlasMaterial"
+            },
+            "Mesh": {
+                "FilePath": "res\\assets\\models\\Decorative\\cannonWindowTrim.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": true
+            },
+            "Position": {
+                "X": 4.984394550323486,
+                "Y": -3.088313579559326,
+                "Z": -7.527631759643555
             },
             "Rotation": {
                 "qW": 1.0,
