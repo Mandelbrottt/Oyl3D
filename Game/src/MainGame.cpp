@@ -23,18 +23,6 @@ public:
         listenForEventType(EventType::PhysicsCollisionStay);
         listenForEventType(EventType::PhysicsCollisionExit);
         
-        auto lightShader = Shader::get(TEXTURE_SHADER_ALIAS);
-
-        auto& lightMat = Material::cache(lightShader, "monkeyMat");
-        lightMat->albedoMap = Texture2D::get(WHITE_TEXTURE_ALIAS);
-        
-        auto& cubeMat = Material::cache(lightShader, "cubeMat");
-        cubeMat->albedoMap = Texture2D::get(UV_TEXTURE_ALIAS);
-        
-        auto animShader = Shader::get("animation");
-        auto& animMat = Material::cache(animShader, "animationMat");
-        animMat->albedoMap = Texture2D::cache("res/assets/textures/archer.png");
-        
         {
             auto e = registry->create();
             registry->assign<component::Transform>(e);

@@ -3,6 +3,9 @@
         "Parent": null,
         "Renderable": {
             "Enabled": true,
+            "Material": {
+                "Alias": null
+            },
             "Mesh": {
                 "FilePath": null
             }
@@ -35,8 +38,11 @@
         "Parent": null,
         "Renderable": {
             "Enabled": true,
+            "Material": {
+                "Alias": "lmao"
+            },
             "Mesh": {
-                "FilePath": "res/assets/models/cube.obj"
+                "FilePath": "res\\assets\\models\\cube.obj"
             }
         },
         "Transform": {
@@ -67,6 +73,9 @@
         "Parent": null,
         "Renderable": {
             "Enabled": true,
+            "Material": {
+                "Alias": null
+            },
             "Mesh": {
                 "FilePath": null
             }
@@ -101,8 +110,11 @@
         },
         "Renderable": {
             "Enabled": true,
+            "Material": {
+                "Alias": "container"
+            },
             "Mesh": {
-                "FilePath": "res/assets/models/cube.obj"
+                "FilePath": "res\\assets\\models\\cube.obj"
             }
         },
         "Transform": {
@@ -133,8 +145,11 @@
         "Parent": null,
         "Renderable": {
             "Enabled": true,
+            "Material": {
+                "Alias": "container"
+            },
             "Mesh": {
-                "FilePath": "res/assets/models/cube.obj"
+                "FilePath": "res\\assets\\models\\cube.obj"
             }
         },
         "Transform": {
@@ -165,8 +180,11 @@
         "Parent": null,
         "Renderable": {
             "Enabled": true,
+            "Material": {
+                "Alias": "container"
+            },
             "Mesh": {
-                "FilePath": "res/assets/models/plane.obj"
+                "FilePath": "res\\assets\\models\\plane.obj"
             }
         },
         "Transform": {
@@ -199,6 +217,9 @@
         },
         "Renderable": {
             "Enabled": true,
+            "Material": {
+                "Alias": null
+            },
             "Mesh": {
                 "FilePath": null
             }
@@ -231,8 +252,11 @@
         "Parent": null,
         "Renderable": {
             "Enabled": true,
+            "Material": {
+                "Alias": "shipMat"
+            },
             "Mesh": {
-                "FilePath": "res/assets/models/ship.obj"
+                "FilePath": "res\\assets\\models\\ship.obj"
             }
         },
         "Transform": {
@@ -245,448 +269,6 @@
                 "X": 0.0,
                 "Y": 0.0,
                 "Z": 0.0
-            },
-            "Rotation": {
-                "qW": 1.0,
-                "qX": 0.0,
-                "qY": 0.0,
-                "qZ": 0.0
-            },
-            "Scale": {
-                "X": 1.0,
-                "Y": 1.0,
-                "Z": 1.0
-            }
-        }
-    },
-    "Ship Collider Object": {
-        "Parent": {
-            "Name": "Ship"
-        },
-        "Renderable": {
-            "Enabled": true,
-            "Mesh": {
-                "FilePath": null
-            }
-        },
-        "Transform": {
-            "Mirror": {
-                "X": false,
-                "Y": false,
-                "Z": false
-            },
-            "Position": {
-                "X": 0.0,
-                "Y": 0.0,
-                "Z": 0.0
-            },
-            "Rotation": {
-                "qW": 1.0,
-                "qX": 0.0,
-                "qY": 0.0,
-                "qZ": 0.0
-            },
-            "Scale": {
-                "X": 1.0,
-                "Y": 1.0,
-                "Z": 1.0
-            }
-        }
-    },
-    "Ship Collider Object 1": {
-        "Parent": {
-            "Name": "Ship"
-        },
-        "Renderable": {
-            "Enabled": false,
-            "Mesh": {
-                "FilePath": "res/assets/models/cube.obj"
-            }
-        },
-        "Transform": {
-            "Mirror": {
-                "X": false,
-                "Y": false,
-                "Z": false
-            },
-            "Position": {
-                "X": 0.0,
-                "Y": 3.5663232803344727,
-                "Z": 0.0
-            },
-            "Rotation": {
-                "qW": 1.0,
-                "qX": 0.0,
-                "qY": 0.0,
-                "qZ": 0.0
-            },
-            "Scale": {
-                "X": 1.0,
-                "Y": 1.0,
-                "Z": 1.0
-            }
-        }
-    },
-    "Ship Collider Object 10": {
-        "Parent": {
-            "Name": "Ship"
-        },
-        "Renderable": {
-            "Enabled": false,
-            "Mesh": {
-                "FilePath": "res/assets/models/cube.obj"
-            }
-        },
-        "Transform": {
-            "Mirror": {
-                "X": false,
-                "Y": false,
-                "Z": false
-            },
-            "Position": {
-                "X": 10.444912910461426,
-                "Y": 4.389554500579834,
-                "Z": 2.1465868949890137
-            },
-            "Rotation": {
-                "qW": 1.0,
-                "qX": 0.0,
-                "qY": 0.0,
-                "qZ": 0.0
-            },
-            "Scale": {
-                "X": 1.0,
-                "Y": 1.0,
-                "Z": 1.0
-            }
-        }
-    },
-    "Ship Collider Object 11": {
-        "Parent": {
-            "Name": "Ship"
-        },
-        "Renderable": {
-            "Enabled": false,
-            "Mesh": {
-                "FilePath": "res/assets/models/cube.obj"
-            }
-        },
-        "Transform": {
-            "Mirror": {
-                "X": false,
-                "Y": false,
-                "Z": false
-            },
-            "Position": {
-                "X": 11.904208183288574,
-                "Y": 4.75050687789917,
-                "Z": 0.0
-            },
-            "Rotation": {
-                "qW": 1.0,
-                "qX": 0.0,
-                "qY": 0.0,
-                "qZ": 0.0
-            },
-            "Scale": {
-                "X": 1.0,
-                "Y": 1.0,
-                "Z": 1.0
-            }
-        }
-    },
-    "Ship Collider Object 12": {
-        "Parent": {
-            "Name": "Ship"
-        },
-        "Renderable": {
-            "Enabled": false,
-            "Mesh": {
-                "FilePath": "res/assets/models/cube.obj"
-            }
-        },
-        "Transform": {
-            "Mirror": {
-                "X": false,
-                "Y": false,
-                "Z": false
-            },
-            "Position": {
-                "X": 0.0,
-                "Y": 0.0,
-                "Z": 0.0
-            },
-            "Rotation": {
-                "qW": 1.0,
-                "qX": 0.0,
-                "qY": 0.0,
-                "qZ": 0.0
-            },
-            "Scale": {
-                "X": 1.0,
-                "Y": 1.0,
-                "Z": 1.0
-            }
-        }
-    },
-    "Ship Collider Object 2": {
-        "Parent": {
-            "Name": "Ship"
-        },
-        "Renderable": {
-            "Enabled": false,
-            "Mesh": {
-                "FilePath": "res/assets/models/cube.obj"
-            }
-        },
-        "Transform": {
-            "Mirror": {
-                "X": false,
-                "Y": false,
-                "Z": false
-            },
-            "Position": {
-                "X": -2.0916337966918945,
-                "Y": 4.614981174468994,
-                "Z": 0.0
-            },
-            "Rotation": {
-                "qW": 1.0,
-                "qX": 0.0,
-                "qY": 0.0,
-                "qZ": 0.0
-            },
-            "Scale": {
-                "X": 1.0,
-                "Y": 1.0,
-                "Z": 1.0
-            }
-        }
-    },
-    "Ship Collider Object 3": {
-        "Parent": {
-            "Name": "Ship"
-        },
-        "Renderable": {
-            "Enabled": false,
-            "Mesh": {
-                "FilePath": "res/assets/models/cube.obj"
-            }
-        },
-        "Transform": {
-            "Mirror": {
-                "X": false,
-                "Y": false,
-                "Z": false
-            },
-            "Position": {
-                "X": 0.4091818928718567,
-                "Y": 4.603150367736816,
-                "Z": 0.0
-            },
-            "Rotation": {
-                "qW": 1.0,
-                "qX": 0.0,
-                "qY": 0.0,
-                "qZ": 0.0
-            },
-            "Scale": {
-                "X": 1.0,
-                "Y": 1.0,
-                "Z": 1.0
-            }
-        }
-    },
-    "Ship Collider Object 4": {
-        "Parent": {
-            "Name": "Ship"
-        },
-        "Renderable": {
-            "Enabled": false,
-            "Mesh": {
-                "FilePath": "res/assets/models/cube.obj"
-            }
-        },
-        "Transform": {
-            "Mirror": {
-                "X": false,
-                "Y": false,
-                "Z": false
-            },
-            "Position": {
-                "X": 0.0,
-                "Y": 4.265598773956299,
-                "Z": 3.1201393604278564
-            },
-            "Rotation": {
-                "qW": 1.0,
-                "qX": 0.0,
-                "qY": 0.0,
-                "qZ": 0.0
-            },
-            "Scale": {
-                "X": 1.0,
-                "Y": 1.0,
-                "Z": 1.0
-            }
-        }
-    },
-    "Ship Collider Object 5": {
-        "Parent": {
-            "Name": "Ship"
-        },
-        "Renderable": {
-            "Enabled": false,
-            "Mesh": {
-                "FilePath": "res/assets/models/cube.obj"
-            }
-        },
-        "Transform": {
-            "Mirror": {
-                "X": false,
-                "Y": false,
-                "Z": false
-            },
-            "Position": {
-                "X": 0.0,
-                "Y": 4.3896026611328125,
-                "Z": -3.181988000869751
-            },
-            "Rotation": {
-                "qW": 1.0,
-                "qX": 0.0,
-                "qY": 0.0,
-                "qZ": 0.0
-            },
-            "Scale": {
-                "X": 1.0,
-                "Y": 1.0,
-                "Z": 1.0
-            }
-        }
-    },
-    "Ship Collider Object 6": {
-        "Parent": {
-            "Name": "Ship"
-        },
-        "Renderable": {
-            "Enabled": false,
-            "Mesh": {
-                "FilePath": "res/assets/models/cube.obj"
-            }
-        },
-        "Transform": {
-            "Mirror": {
-                "X": false,
-                "Y": false,
-                "Z": false
-            },
-            "Position": {
-                "X": -5.750711917877197,
-                "Y": 4.8739094734191895,
-                "Z": -0.26387840509414673
-            },
-            "Rotation": {
-                "qW": 1.0,
-                "qX": 0.0,
-                "qY": 0.0,
-                "qZ": 0.0
-            },
-            "Scale": {
-                "X": 1.0,
-                "Y": 1.0,
-                "Z": 1.0
-            }
-        }
-    },
-    "Ship Collider Object 7": {
-        "Parent": {
-            "Name": "Ship"
-        },
-        "Renderable": {
-            "Enabled": false,
-            "Mesh": {
-                "FilePath": "res/assets/models/cube.obj"
-            }
-        },
-        "Transform": {
-            "Mirror": {
-                "X": false,
-                "Y": false,
-                "Z": false
-            },
-            "Position": {
-                "X": -10.030263900756836,
-                "Y": 4.6995463371276855,
-                "Z": 0.0
-            },
-            "Rotation": {
-                "qW": 1.0,
-                "qX": 0.0,
-                "qY": 0.0,
-                "qZ": 0.0
-            },
-            "Scale": {
-                "X": 1.0,
-                "Y": 1.0,
-                "Z": 1.0
-            }
-        }
-    },
-    "Ship Collider Object 8": {
-        "Parent": {
-            "Name": "Ship"
-        },
-        "Renderable": {
-            "Enabled": false,
-            "Mesh": {
-                "FilePath": "res/assets/models/cube.obj"
-            }
-        },
-        "Transform": {
-            "Mirror": {
-                "X": false,
-                "Y": false,
-                "Z": false
-            },
-            "Position": {
-                "X": 8.177274703979492,
-                "Y": 4.481131076812744,
-                "Z": -1.601700782775879
-            },
-            "Rotation": {
-                "qW": 1.0,
-                "qX": 0.0,
-                "qY": 0.0,
-                "qZ": 0.0
-            },
-            "Scale": {
-                "X": 1.0,
-                "Y": 1.0,
-                "Z": 1.0
-            }
-        }
-    },
-    "Ship Collider Object 9": {
-        "Parent": {
-            "Name": "Ship"
-        },
-        "Renderable": {
-            "Enabled": false,
-            "Mesh": {
-                "FilePath": "res/assets/models/cube.obj"
-            }
-        },
-        "Transform": {
-            "Mirror": {
-                "X": false,
-                "Y": false,
-                "Z": false
-            },
-            "Position": {
-                "X": 8.219829559326172,
-                "Y": 3.7623229026794434,
-                "Z": 1.849059820175171
             },
             "Rotation": {
                 "qW": 1.0,
@@ -705,8 +287,11 @@
         "Parent": null,
         "Renderable": {
             "Enabled": true,
+            "Material": {
+                "Alias": "container"
+            },
             "Mesh": {
-                "FilePath": "res/assets/models/sphere.obj"
+                "FilePath": "res\\assets\\models\\sphere.obj"
             }
         },
         "Transform": {
@@ -737,8 +322,11 @@
         "Parent": null,
         "Renderable": {
             "Enabled": true,
+            "Material": {
+                "Alias": "container"
+            },
             "Mesh": {
-                "FilePath": "res/assets/models/sphere.obj"
+                "FilePath": "res\\assets\\models\\sphere.obj"
             }
         },
         "Transform": {

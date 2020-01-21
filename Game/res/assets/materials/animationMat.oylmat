@@ -1,0 +1,25 @@
+{
+    "Material": {
+        "Alias": "animationMat",
+        "Shader": {
+            "Alias": "animation",
+            "Pixel": {
+                "FilePath": "../Engine/res/shaders/lighting.frag",
+                "guid": null
+            },
+            "Vertex": {
+                "FilePath": "../Engine/res/shaders/morphTargetLighting.vert",
+                "guid": null
+            }
+        },
+        "Textures": {
+            "Albedo": {
+                "Alias": "archer",
+                "FilePath": "res\\assets\\textures\\archer.png",
+                "guid": null
+            },
+            "Normal": null,
+            "Specular": null
+        }
+    }
+}
