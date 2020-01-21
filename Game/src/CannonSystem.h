@@ -17,9 +17,9 @@ private:
 	void onUpdate() override;
 	bool onEvent(const Event& event) override;
     
-	void updateFuse(float dt, Cannon* a_cannon, component::Transform* a_cannonTransform);
+	void updateFuse(float dt, entt::entity a_cannonEntity);
 
-	void fireCannon(Cannon* a_cannon, component::Transform* a_cannonTransform);
+	void fireCannon(entt::entity a_cannonEntity);
 
     //state changing functions
 	void changeToDoingNothing(Cannon* a_cannon);

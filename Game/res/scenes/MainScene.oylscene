@@ -1,4 +1,78 @@
 {
+    "Anchor": {
+        "Parent": {
+            "Name": "Boat Root R"
+        },
+        "Renderable": {
+            "Enabled": true,
+            "Material": {
+                "Alias": "atlasMaterial"
+            },
+            "Mesh": {
+                "FilePath": "res\\assets\\models\\Decorative\\anchor.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": true,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -15.66435718536377,
+                "Y": -1.49025559425354,
+                "Z": -7.27834415435791
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Anchor 1": {
+        "Parent": {
+            "Name": "Boat Root R 1"
+        },
+        "Renderable": {
+            "Enabled": true,
+            "Material": {
+                "Alias": "atlasMaterial"
+            },
+            "Mesh": {
+                "FilePath": "res\\assets\\models\\Decorative\\anchor.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": true,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -15.66435718536377,
+                "Y": -1.49025559425354,
+                "Z": -7.27834415435791
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
     "BlueCannon": {
         "Parent": null,
         "Renderable": {
@@ -7,7 +81,7 @@
                 "Alias": "cannon"
             },
             "Mesh": {
-                "FilePath": "res/assets/models/cannon.obj"
+                "FilePath": "res\\assets\\models\\cannon.obj"
             }
         },
         "Transform": {
@@ -17,9 +91,9 @@
                 "Z": true
             },
             "Position": {
-                "X": 0.0,
+                "X": -1.0,
                 "Y": 0.0,
-                "Z": -6.0
+                "Z": -5.154168605804443
             },
             "Rotation": {
                 "qW": 1.0,
@@ -42,7 +116,7 @@
                 "Alias": "cannonball"
             },
             "Mesh": {
-                "FilePath": "res/assets/models/sphere.obj"
+                "FilePath": "res\\assets\\models\\sphere.obj"
             }
         },
         "Transform": {
@@ -77,7 +151,7 @@
                 "Alias": "cannonball"
             },
             "Mesh": {
-                "FilePath": "res/assets/models/sphere.obj"
+                "FilePath": "res\\assets\\models\\sphere.obj"
             }
         },
         "Transform": {
@@ -112,7 +186,7 @@
                 "Alias": "cannonball"
             },
             "Mesh": {
-                "FilePath": "res/assets/models/sphere.obj"
+                "FilePath": "res\\assets\\models\\sphere.obj"
             }
         },
         "Transform": {
@@ -147,7 +221,7 @@
                 "Alias": "cannonball"
             },
             "Mesh": {
-                "FilePath": "res/assets/models/sphere.obj"
+                "FilePath": "res\\assets\\models\\sphere.obj"
             }
         },
         "Transform": {
@@ -182,7 +256,7 @@
                 "Alias": "cannonball"
             },
             "Mesh": {
-                "FilePath": "res/assets/models/sphere.obj"
+                "FilePath": "res\\assets\\models\\sphere.obj"
             }
         },
         "Transform": {
@@ -217,7 +291,7 @@
                 "Alias": "cannonball"
             },
             "Mesh": {
-                "FilePath": "res/assets/models/sphere.obj"
+                "FilePath": "res\\assets\\models\\sphere.obj"
             }
         },
         "Transform": {
@@ -252,7 +326,7 @@
                 "Alias": "crate"
             },
             "Mesh": {
-                "FilePath": "res/assets/models/crateTemp.obj"
+                "FilePath": "res\\assets\\models\\crateTemp.obj"
             }
         },
         "Transform": {
@@ -262,14 +336,14 @@
                 "Z": true
             },
             "Position": {
-                "X": -1.0,
+                "X": -4.342803478240967,
                 "Y": 0.0,
-                "Z": -3.0
+                "Z": -2.368924856185913
             },
             "Rotation": {
-                "qW": 1.0,
+                "qW": 0.5253219604492188,
                 "qX": 0.0,
-                "qY": 0.0,
+                "qY": -0.8509035110473633,
                 "qZ": 0.0
             },
             "Scale": {
@@ -287,7 +361,7 @@
                 "Alias": "pirax"
             },
             "Mesh": {
-                "FilePath": "res/assets/models/Pirax.obj"
+                "FilePath": "res\\assets\\models\\Pirax.obj"
             }
         },
         "Transform": {
@@ -322,7 +396,7 @@
                 "Alias": "pirax"
             },
             "Mesh": {
-                "FilePath": "res/assets/models/Pirax.obj"
+                "FilePath": "res\\assets\\models\\Pirax.obj"
             }
         },
         "Transform": {
@@ -332,9 +406,9 @@
                 "Z": false
             },
             "Position": {
-                "X": 3.3754539489746094,
+                "X": 3.318744659423828,
                 "Y": 0.3100000023841858,
-                "Z": 0.32471024990081787
+                "Z": 0.4091641306877136
             },
             "Rotation": {
                 "qW": 1.0,
@@ -357,7 +431,7 @@
                 "Alias": "pirax"
             },
             "Mesh": {
-                "FilePath": "res/assets/models/Pirax.obj"
+                "FilePath": "res\\assets\\models\\Pirax.obj"
             }
         },
         "Transform": {
@@ -384,15 +458,15 @@
             }
         }
     },
-    "BlueGarbagePile0": {
+    "BlueCleaningSolutionPrefab": {
         "Parent": null,
         "Renderable": {
             "Enabled": true,
             "Material": {
-                "Alias": "garbage"
+                "Alias": "pirax"
             },
             "Mesh": {
-                "FilePath": "res/assets/models/garbage.obj"
+                "FilePath": "res\\assets\\models\\Pirax.obj"
             }
         },
         "Transform": {
@@ -402,9 +476,79 @@
                 "Z": false
             },
             "Position": {
-                "X": -3.0,
-                "Y": 0.10000000149011612,
+                "X": -99999.0,
+                "Y": -99999.0,
+                "Z": -99999.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 0.30000001192092896,
+                "Y": 0.30000001192092896,
+                "Z": 0.30000001192092896
+            }
+        }
+    },
+    "BlueCleaningSolutionSpawner": {
+        "Parent": null,
+        "Renderable": {
+            "Enabled": true,
+            "Material": {
+                "Alias": null
+            },
+            "Mesh": {
+                "FilePath": null
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": 0.0,
+                "Y": 0.0,
                 "Z": 0.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "BlueGarbagePile0": {
+        "Parent": null,
+        "Renderable": {
+            "Enabled": true,
+            "Material": {
+                "Alias": "garbage"
+            },
+            "Mesh": {
+                "FilePath": "res\\assets\\models\\garbage.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": 5.58795166015625,
+                "Y": 0.10000000149011612,
+                "Z": -1.5169984102249146
             },
             "Rotation": {
                 "qW": 1.0,
@@ -427,7 +571,7 @@
                 "Alias": "garbage"
             },
             "Mesh": {
-                "FilePath": "res/assets/models/garbage.obj"
+                "FilePath": "res\\assets\\models\\garbage.obj"
             }
         },
         "Transform": {
@@ -437,9 +581,9 @@
                 "Z": false
             },
             "Position": {
-                "X": -8.921297073364258,
+                "X": -0.5395398139953613,
                 "Y": 0.10000000149011612,
-                "Z": 0.6169818639755249
+                "Z": -0.8525766134262085
             },
             "Rotation": {
                 "qW": 1.0,
@@ -462,7 +606,7 @@
                 "Alias": "garbage"
             },
             "Mesh": {
-                "FilePath": "res/assets/models/garbage.obj"
+                "FilePath": "res\\assets\\models\\garbage.obj"
             }
         },
         "Transform": {
@@ -472,9 +616,9 @@
                 "Z": false
             },
             "Position": {
-                "X": 5.464639663696289,
+                "X": -7.881167411804199,
                 "Y": 0.10000000149011612,
-                "Z": -2.513417959213257
+                "Z": 0.43001675605773926
             },
             "Rotation": {
                 "qW": 1.0,
@@ -497,7 +641,7 @@
                 "Alias": "goop"
             },
             "Mesh": {
-                "FilePath": "res/assets/models/Gloop.obj"
+                "FilePath": "res\\assets\\models\\Gloop.obj"
             }
         },
         "Transform": {
@@ -507,9 +651,9 @@
                 "Z": false
             },
             "Position": {
-                "X": 2.0733766555786133,
+                "X": 1.2264628410339355,
                 "Y": 0.27000001072883606,
-                "Z": 2.6188392639160156
+                "Z": 1.3732361793518066
             },
             "Rotation": {
                 "qW": 1.0,
@@ -532,7 +676,7 @@
                 "Alias": "goop"
             },
             "Mesh": {
-                "FilePath": "res/assets/models/Gloop.obj"
+                "FilePath": "res\\assets\\models\\Gloop.obj"
             }
         },
         "Transform": {
@@ -542,9 +686,9 @@
                 "Z": false
             },
             "Position": {
-                "X": 2.266162395477295,
+                "X": 1.595083475112915,
                 "Y": 0.27000001072883606,
-                "Z": 2.324187755584717
+                "Z": 1.2137778997421265
             },
             "Rotation": {
                 "qW": 1.0,
@@ -567,7 +711,7 @@
                 "Alias": "goop"
             },
             "Mesh": {
-                "FilePath": "res/assets/models/Gloop.obj"
+                "FilePath": "res\\assets\\models\\Gloop.obj"
             }
         },
         "Transform": {
@@ -577,9 +721,9 @@
                 "Z": false
             },
             "Position": {
-                "X": 1.7939262390136719,
+                "X": 1.0946576595306396,
                 "Y": 0.27000001072883606,
-                "Z": 2.3463497161865234
+                "Z": 1.1341346502304077
             },
             "Rotation": {
                 "qW": 1.0,
@@ -594,15 +738,15 @@
             }
         }
     },
-    "BlueMop": {
+    "BlueGloopPrefab": {
         "Parent": null,
         "Renderable": {
             "Enabled": true,
             "Material": {
-                "Alias": "mop"
+                "Alias": "goop"
             },
             "Mesh": {
-                "FilePath": "res/assets/models/mop.obj"
+                "FilePath": "res\\assets\\models\\Gloop.obj"
             }
         },
         "Transform": {
@@ -612,9 +756,44 @@
                 "Z": false
             },
             "Position": {
-                "X": 2.634769916534424,
-                "Y": 0.20000000298023224,
-                "Z": -2.9898247718811035
+                "X": -99999.0,
+                "Y": -99999.0,
+                "Z": -99999.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 0.10000000149011612,
+                "Y": 0.10000000149011612,
+                "Z": 0.10000000149011612
+            }
+        }
+    },
+    "BlueGloopSpawner": {
+        "Parent": null,
+        "Renderable": {
+            "Enabled": true,
+            "Material": {
+                "Alias": null
+            },
+            "Mesh": {
+                "FilePath": null
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": 0.0,
+                "Y": 0.0,
+                "Z": 0.0
             },
             "Rotation": {
                 "qW": 1.0,
@@ -629,15 +808,198 @@
             }
         }
     },
-    "Boat Middle Deck Parent": {
+    "BlueMop": {
         "Parent": null,
+        "Renderable": {
+            "Enabled": true,
+            "Material": {
+                "Alias": "mop"
+            },
+            "Mesh": {
+                "FilePath": "res\\assets\\models\\mop.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": 2.634769916534424,
+                "Y": 0.20000000298023224,
+                "Z": -2.0208654403686523
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Boat Hull 1": {
+        "Parent": {
+            "Name": "Boat Root R"
+        },
+        "Renderable": {
+            "Enabled": true,
+            "Material": {
+                "Alias": "siding"
+            },
+            "Mesh": {
+                "FilePath": "res\\assets\\models\\BoatHull.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -21.0,
+                "Y": 0.0,
+                "Z": -2.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Boat Hull 2": {
+        "Parent": {
+            "Name": "Boat Root R 1"
+        },
+        "Renderable": {
+            "Enabled": true,
+            "Material": {
+                "Alias": "siding"
+            },
+            "Mesh": {
+                "FilePath": "res\\assets\\models\\BoatHull.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -21.0,
+                "Y": 0.0,
+                "Z": -2.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Boat Hull Inner 1": {
+        "Parent": {
+            "Name": "Boat Root R"
+        },
         "Renderable": {
             "Enabled": true,
             "Material": {
                 "Alias": "planks"
             },
             "Mesh": {
-                "FilePath": "res/assets/models/boat_deck_middle.obj"
+                "FilePath": "res\\assets\\models\\BoatHullFlipped.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -21.0,
+                "Y": 0.0,
+                "Z": -2.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Boat Hull Inner 2": {
+        "Parent": {
+            "Name": "Boat Root R 1"
+        },
+        "Renderable": {
+            "Enabled": true,
+            "Material": {
+                "Alias": "planks"
+            },
+            "Mesh": {
+                "FilePath": "res\\assets\\models\\BoatHullFlipped.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -21.0,
+                "Y": 0.0,
+                "Z": -2.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Boat Root R": {
+        "Parent": null,
+        "Renderable": {
+            "Enabled": true,
+            "Material": {
+                "Alias": null
+            },
+            "Mesh": {
+                "FilePath": null
             }
         },
         "Transform": {
@@ -648,8 +1010,43 @@
             },
             "Position": {
                 "X": 0.0,
-                "Y": 4.0,
-                "Z": 0.0
+                "Y": 0.0,
+                "Z": 19.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Boat Root R 1": {
+        "Parent": null,
+        "Renderable": {
+            "Enabled": true,
+            "Material": {
+                "Alias": null
+            },
+            "Mesh": {
+                "FilePath": null
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": 0.0,
+                "Y": 0.0,
+                "Z": -0.5456451773643494
             },
             "Rotation": {
                 "qW": 1.0,
@@ -699,6 +1096,450 @@
             }
         }
     },
+    "CannonPortTrim": {
+        "Parent": {
+            "Name": "Boat Root R"
+        },
+        "Renderable": {
+            "Enabled": true,
+            "Material": {
+                "Alias": "atlasMaterial"
+            },
+            "Mesh": {
+                "FilePath": "res\\assets\\models\\Decorative\\cannonWindowTrim.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": true
+            },
+            "Position": {
+                "X": -9.961164474487305,
+                "Y": -3.088313579559326,
+                "Z": -7.527631759643555
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "CannonPortTrim 1": {
+        "Parent": {
+            "Name": "Boat Root R"
+        },
+        "Renderable": {
+            "Enabled": true,
+            "Material": {
+                "Alias": "atlasMaterial"
+            },
+            "Mesh": {
+                "FilePath": "res\\assets\\models\\Decorative\\cannonWindowTrim.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": true
+            },
+            "Position": {
+                "X": -1.9854516983032227,
+                "Y": -3.088313579559326,
+                "Z": -7.527631759643555
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "CannonPortTrim 10": {
+        "Parent": {
+            "Name": "Boat Root R 1"
+        },
+        "Renderable": {
+            "Enabled": true,
+            "Material": {
+                "Alias": "atlasMaterial"
+            },
+            "Mesh": {
+                "FilePath": "res\\assets\\models\\Decorative\\cannonWindowTrim.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": true
+            },
+            "Position": {
+                "X": -1.9854516983032227,
+                "Y": -3.088313579559326,
+                "Z": -7.527631759643555
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "CannonPortTrim 11": {
+        "Parent": {
+            "Name": "Boat Root R 1"
+        },
+        "Renderable": {
+            "Enabled": true,
+            "Material": {
+                "Alias": "atlasMaterial"
+            },
+            "Mesh": {
+                "FilePath": "res\\assets\\models\\Decorative\\cannonWindowTrim.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": true
+            },
+            "Position": {
+                "X": -9.961164474487305,
+                "Y": -3.088313579559326,
+                "Z": -7.527631759643555
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "CannonPortTrim 2": {
+        "Parent": {
+            "Name": "Boat Root R"
+        },
+        "Renderable": {
+            "Enabled": true,
+            "Material": {
+                "Alias": "atlasMaterial"
+            },
+            "Mesh": {
+                "FilePath": "res\\assets\\models\\Decorative\\cannonWindowTrim.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": true
+            },
+            "Position": {
+                "X": 4.984394550323486,
+                "Y": -3.088313579559326,
+                "Z": -7.527631759643555
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "CannonPortTrim 3": {
+        "Parent": {
+            "Name": "Boat Root R"
+        },
+        "Renderable": {
+            "Enabled": true,
+            "Material": {
+                "Alias": "atlasMaterial"
+            },
+            "Mesh": {
+                "FilePath": "res\\assets\\models\\Decorative\\cannonWindowTrim.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": 4.984394550323486,
+                "Y": -3.088313579559326,
+                "Z": 3.520254135131836
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "CannonPortTrim 4": {
+        "Parent": {
+            "Name": "Boat Root R"
+        },
+        "Renderable": {
+            "Enabled": true,
+            "Material": {
+                "Alias": "atlasMaterial"
+            },
+            "Mesh": {
+                "FilePath": "res\\assets\\models\\Decorative\\cannonWindowTrim.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -2.0278196334838867,
+                "Y": -3.088313579559326,
+                "Z": 3.520254135131836
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "CannonPortTrim 5": {
+        "Parent": {
+            "Name": "Boat Root R"
+        },
+        "Renderable": {
+            "Enabled": true,
+            "Material": {
+                "Alias": "atlasMaterial"
+            },
+            "Mesh": {
+                "FilePath": "res\\assets\\models\\Decorative\\cannonWindowTrim.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -10.042670249938965,
+                "Y": -3.088313579559326,
+                "Z": 3.520254135131836
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "CannonPortTrim 6": {
+        "Parent": {
+            "Name": "Boat Root R 1"
+        },
+        "Renderable": {
+            "Enabled": true,
+            "Material": {
+                "Alias": "atlasMaterial"
+            },
+            "Mesh": {
+                "FilePath": "res\\assets\\models\\Decorative\\cannonWindowTrim.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -10.042670249938965,
+                "Y": -3.088313579559326,
+                "Z": 3.520254135131836
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "CannonPortTrim 7": {
+        "Parent": {
+            "Name": "Boat Root R 1"
+        },
+        "Renderable": {
+            "Enabled": true,
+            "Material": {
+                "Alias": "atlasMaterial"
+            },
+            "Mesh": {
+                "FilePath": "res\\assets\\models\\Decorative\\cannonWindowTrim.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -2.0278196334838867,
+                "Y": -3.088313579559326,
+                "Z": 3.520254135131836
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "CannonPortTrim 8": {
+        "Parent": {
+            "Name": "Boat Root R 1"
+        },
+        "Renderable": {
+            "Enabled": true,
+            "Material": {
+                "Alias": "atlasMaterial"
+            },
+            "Mesh": {
+                "FilePath": "res\\assets\\models\\Decorative\\cannonWindowTrim.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": 4.984394550323486,
+                "Y": -3.088313579559326,
+                "Z": 3.520254135131836
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "CannonPortTrim 9": {
+        "Parent": {
+            "Name": "Boat Root R 1"
+        },
+        "Renderable": {
+            "Enabled": true,
+            "Material": {
+                "Alias": "atlasMaterial"
+            },
+            "Mesh": {
+                "FilePath": "res\\assets\\models\\Decorative\\cannonWindowTrim.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": true
+            },
+            "Position": {
+                "X": 4.984394550323486,
+                "Y": -3.088313579559326,
+                "Z": -7.527631759643555
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
     "Cannonball Crate Message": {
         "Parent": null,
         "Renderable": {
@@ -734,6 +1575,154 @@
             }
         }
     },
+    "Captains Quarters 1": {
+        "Parent": {
+            "Name": "Boat Root R"
+        },
+        "Renderable": {
+            "Enabled": true,
+            "Material": {
+                "Alias": "siding"
+            },
+            "Mesh": {
+                "FilePath": "res\\assets\\models\\CapQuarters.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": 8.0,
+                "Y": 1.0,
+                "Z": -3.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Captains Quarters 2": {
+        "Parent": {
+            "Name": "Boat Root R 1"
+        },
+        "Renderable": {
+            "Enabled": true,
+            "Material": {
+                "Alias": "siding"
+            },
+            "Mesh": {
+                "FilePath": "res\\assets\\models\\CapQuarters.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": 8.0,
+                "Y": 1.0,
+                "Z": -3.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Captains Quarters Rail 1": {
+        "Parent": {
+            "Name": "Boat Root R"
+        },
+        "Renderable": {
+            "Enabled": true,
+            "Material": {
+                "Alias": "cannonball"
+            },
+            "Mesh": {
+                "FilePath": "res\\assets\\models\\QuartersRail.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": 8.0,
+                "Y": 5.0,
+                "Z": -6.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Captains Quarters Rail 2": {
+        "Parent": {
+            "Name": "Boat Root R 1"
+        },
+        "Renderable": {
+            "Enabled": true,
+            "Material": {
+                "Alias": "cannonball"
+            },
+            "Mesh": {
+                "FilePath": "res\\assets\\models\\QuartersRail.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": 8.0,
+                "Y": 5.0,
+                "Z": -6.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
     "Character": {
         "Parent": null,
         "Renderable": {
@@ -742,7 +1731,7 @@
                 "Alias": "lamp"
             },
             "Mesh": {
-                "FilePath": "res/assets/models/character.obj"
+                "FilePath": "res\\assets\\models\\character.obj"
             }
         },
         "Transform": {
@@ -874,6 +1863,80 @@
             }
         }
     },
+    "DeckRail 1": {
+        "Parent": {
+            "Name": "Boat Root R"
+        },
+        "Renderable": {
+            "Enabled": true,
+            "Material": {
+                "Alias": "crate"
+            },
+            "Mesh": {
+                "FilePath": "res\\assets\\models\\DeckRail.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -14.0,
+                "Y": 1.0,
+                "Z": 2.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "DeckRail 2": {
+        "Parent": {
+            "Name": "Boat Root R 1"
+        },
+        "Renderable": {
+            "Enabled": true,
+            "Material": {
+                "Alias": "crate"
+            },
+            "Mesh": {
+                "FilePath": "res\\assets\\models\\DeckRail.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -14.0,
+                "Y": 1.0,
+                "Z": 2.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
     "Garbage Tick0": {
         "Parent": null,
         "Renderable": {
@@ -979,15 +2042,17 @@
             }
         }
     },
-    "Gui Thing": {
-        "Parent": null,
+    "Head": {
+        "Parent": {
+            "Name": "Boat Root R"
+        },
         "Renderable": {
             "Enabled": true,
             "Material": {
-                "Alias": null
+                "Alias": "atlasMaterial"
             },
             "Mesh": {
-                "FilePath": null
+                "FilePath": "res\\assets\\models\\Decorative\\headPiece.obj"
             }
         },
         "Transform": {
@@ -997,9 +2062,9 @@
                 "Z": false
             },
             "Position": {
-                "X": -5.079999923706055,
-                "Y": -2.0399999618530273,
-                "Z": 0.0
+                "X": -20.81462287902832,
+                "Y": -1.0275444984436035,
+                "Z": -1.7796382904052734
             },
             "Rotation": {
                 "qW": 1.0,
@@ -1008,8 +2073,119 @@
                 "qZ": 0.0
             },
             "Scale": {
-                "X": 5.0,
-                "Y": 5.0,
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Head 1": {
+        "Parent": {
+            "Name": "Boat Root R 1"
+        },
+        "Renderable": {
+            "Enabled": true,
+            "Material": {
+                "Alias": "atlasMaterial"
+            },
+            "Mesh": {
+                "FilePath": "res\\assets\\models\\Decorative\\headPiece.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -20.81462287902832,
+                "Y": -1.0275444984436035,
+                "Z": -1.7796382904052734
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Hull Detailing": {
+        "Parent": {
+            "Name": "Boat Root R"
+        },
+        "Renderable": {
+            "Enabled": true,
+            "Material": {
+                "Alias": "crate"
+            },
+            "Mesh": {
+                "FilePath": "res\\assets\\models\\HullDetailing.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -21.0,
+                "Y": 0.0,
+                "Z": -2.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Hull Detailing 1": {
+        "Parent": {
+            "Name": "Boat Root R 1"
+        },
+        "Renderable": {
+            "Enabled": true,
+            "Material": {
+                "Alias": "crate"
+            },
+            "Mesh": {
+                "FilePath": "res\\assets\\models\\HullDetailing.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -21.0,
+                "Y": 0.0,
+                "Z": -2.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
                 "Z": 1.0
             }
         }
@@ -1057,7 +2233,7 @@
                 "Alias": "lamp"
             },
             "Mesh": {
-                "FilePath": "res/assets/models/lamp.obj"
+                "FilePath": "res\\assets\\models\\lamp.obj"
             }
         },
         "Transform": {
@@ -1150,6 +2326,80 @@
             "Scale": {
                 "X": 11.0,
                 "Y": 10.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Mast": {
+        "Parent": {
+            "Name": "Boat Root R"
+        },
+        "Renderable": {
+            "Enabled": true,
+            "Material": {
+                "Alias": "atlasMaterial"
+            },
+            "Mesh": {
+                "FilePath": "res\\assets\\models\\Decorative\\mast_temporary.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -5.321930408477783,
+                "Y": 0.0,
+                "Z": -1.7796382904052734
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Mast 1": {
+        "Parent": {
+            "Name": "Boat Root R 1"
+        },
+        "Renderable": {
+            "Enabled": true,
+            "Material": {
+                "Alias": "atlasMaterial"
+            },
+            "Mesh": {
+                "FilePath": "res\\assets\\models\\Decorative\\mast_temporary.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -5.321930408477783,
+                "Y": 0.0,
+                "Z": -1.7796382904052734
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
                 "Z": 1.0
             }
         }
@@ -1329,15 +2579,15 @@
             }
         }
     },
-    "Plane": {
+    "Plane 0": {
         "Parent": null,
         "Renderable": {
             "Enabled": true,
             "Material": {
-                "Alias": "planks"
+                "Alias": null
             },
             "Mesh": {
-                "FilePath": "res/assets/models/plane.obj"
+                "FilePath": "res\\assets\\models\\plane.obj"
             }
         },
         "Transform": {
@@ -1348,8 +2598,8 @@
             },
             "Position": {
                 "X": 0.0,
-                "Y": 0.0,
-                "Z": 5.798562049865723
+                "Y": -5.0,
+                "Z": 0.0
             },
             "Rotation": {
                 "qW": 1.0,
@@ -1358,9 +2608,153 @@
                 "qZ": 0.0
             },
             "Scale": {
-                "X": 2.5,
-                "Y": 0.9999904036521912,
-                "Z": 1.7000000476837158
+                "X": 1.899999976158142,
+                "Y": 0.20000000298023224,
+                "Z": 0.5
+            }
+        }
+    },
+    "Plane 1": {
+        "Parent": {
+            "Name": "Boat Root R"
+        },
+        "Renderable": {
+            "Enabled": false,
+            "Material": {
+                "Alias": null
+            },
+            "Mesh": {
+                "FilePath": "res\\assets\\models\\plane.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -1.0,
+                "Y": 0.0,
+                "Z": -13.043793678283691
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.899999976158142,
+                "Y": 0.20000000298023224,
+                "Z": 1.836396336555481
+            }
+        }
+    },
+    "Plane 2": {
+        "Parent": null,
+        "Renderable": {
+            "Enabled": true,
+            "Material": {
+                "Alias": "container"
+            },
+            "Mesh": {
+                "FilePath": "res\\assets\\models\\plane.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -1.9938584566116333,
+                "Y": -0.030644237995147705,
+                "Z": 7.498205184936523
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 0.11039278656244278,
+                "Y": 1.0,
+                "Z": 0.4699999988079071
+            }
+        }
+    },
+    "Plane 3": {
+        "Parent": null,
+        "Renderable": {
+            "Enabled": true,
+            "Material": {
+                "Alias": "water"
+            },
+            "Mesh": {
+                "FilePath": "res\\assets\\models\\plane.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": 0.0,
+                "Y": -7.4456024169921875,
+                "Z": 7.517473220825195
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 6.420000076293945,
+                "Y": 1.9399996995925903,
+                "Z": 5.400000095367432
+            }
+        }
+    },
+    "Plane 4": {
+        "Parent": {
+            "Name": "Boat Root R 1"
+        },
+        "Renderable": {
+            "Enabled": false,
+            "Material": {
+                "Alias": null
+            },
+            "Mesh": {
+                "FilePath": "res\\assets\\models\\plane.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -1.0,
+                "Y": 0.0,
+                "Z": -13.043793678283691
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.899999976158142,
+                "Y": 0.20000000298023224,
+                "Z": 1.836396336555481
             }
         }
     },
@@ -1372,7 +2766,7 @@
                 "Alias": "container"
             },
             "Mesh": {
-                "FilePath": "res/assets/models/cube.obj"
+                "FilePath": "res\\assets\\models\\cube.obj"
             }
         },
         "Transform": {
@@ -1382,9 +2776,9 @@
                 "Z": false
             },
             "Position": {
-                "X": 0.9301067590713501,
-                "Y": 0.537074089050293,
-                "Z": 0.0
+                "X": -2.3286333084106445,
+                "Y": 0.800000011920929,
+                "Z": 0.6502124071121216
             },
             "Rotation": {
                 "qW": 1.0,
@@ -1394,7 +2788,7 @@
             },
             "Scale": {
                 "X": 1.0,
-                "Y": 1.0000001192092896,
+                "Y": 1.0,
                 "Z": 1.0000001192092896
             }
         }
@@ -1479,7 +2873,7 @@
                 "Alias": "cannon"
             },
             "Mesh": {
-                "FilePath": "res/assets/models/cannon.obj"
+                "FilePath": "res\\assets\\models\\cannon.obj"
             }
         },
         "Transform": {
@@ -1489,9 +2883,9 @@
                 "Z": false
             },
             "Position": {
-                "X": 0.0,
+                "X": -1.0,
                 "Y": 0.0,
-                "Z": 15.0
+                "Z": 20.15757942199707
             },
             "Rotation": {
                 "qW": 1.0,
@@ -1514,7 +2908,7 @@
                 "Alias": "cannonball"
             },
             "Mesh": {
-                "FilePath": "res/assets/models/sphere.obj"
+                "FilePath": "res\\assets\\models\\sphere.obj"
             }
         },
         "Transform": {
@@ -1549,7 +2943,7 @@
                 "Alias": "cannonball"
             },
             "Mesh": {
-                "FilePath": "res/assets/models/sphere.obj"
+                "FilePath": "res\\assets\\models\\sphere.obj"
             }
         },
         "Transform": {
@@ -1584,7 +2978,7 @@
                 "Alias": "cannonball"
             },
             "Mesh": {
-                "FilePath": "res/assets/models/sphere.obj"
+                "FilePath": "res\\assets\\models\\sphere.obj"
             }
         },
         "Transform": {
@@ -1619,7 +3013,7 @@
                 "Alias": "cannonball"
             },
             "Mesh": {
-                "FilePath": "res/assets/models/sphere.obj"
+                "FilePath": "res\\assets\\models\\sphere.obj"
             }
         },
         "Transform": {
@@ -1654,7 +3048,7 @@
                 "Alias": "cannonball"
             },
             "Mesh": {
-                "FilePath": "res/assets/models/sphere.obj"
+                "FilePath": "res\\assets\\models\\sphere.obj"
             }
         },
         "Transform": {
@@ -1689,7 +3083,7 @@
                 "Alias": "cannonball"
             },
             "Mesh": {
-                "FilePath": "res/assets/models/sphere.obj"
+                "FilePath": "res\\assets\\models\\sphere.obj"
             }
         },
         "Transform": {
@@ -1724,7 +3118,7 @@
                 "Alias": "crate"
             },
             "Mesh": {
-                "FilePath": "res/assets/models/crateTemp.obj"
+                "FilePath": "res\\assets\\models\\crateTemp.obj"
             }
         },
         "Transform": {
@@ -1734,14 +3128,14 @@
                 "Z": false
             },
             "Position": {
-                "X": 0.0028204917907714844,
+                "X": 2.7500932216644287,
                 "Y": 0.0,
-                "Z": 11.480600357055664
+                "Z": 17.601642608642578
             },
             "Rotation": {
-                "qW": 1.0,
+                "qW": 0.5253219604492188,
                 "qX": 0.0,
-                "qY": 0.0,
+                "qY": -0.8509035110473633,
                 "qZ": 0.0
             },
             "Scale": {
@@ -1759,7 +3153,7 @@
                 "Alias": "pirax"
             },
             "Mesh": {
-                "FilePath": "res/assets/models/Pirax.obj"
+                "FilePath": "res\\assets\\models\\Pirax.obj"
             }
         },
         "Transform": {
@@ -1769,9 +3163,9 @@
                 "Z": false
             },
             "Position": {
-                "X": 1.7901506423950195,
+                "X": 1.7604764699935913,
                 "Y": 0.3100000023841858,
-                "Z": 9.316363334655762
+                "Z": 15.134521484375
             },
             "Rotation": {
                 "qW": 1.0,
@@ -1794,7 +3188,7 @@
                 "Alias": "pirax"
             },
             "Mesh": {
-                "FilePath": "res/assets/models/Pirax.obj"
+                "FilePath": "res\\assets\\models\\Pirax.obj"
             }
         },
         "Transform": {
@@ -1806,7 +3200,7 @@
             "Position": {
                 "X": 1.999654769897461,
                 "Y": 0.3100000023841858,
-                "Z": 9.853049278259277
+                "Z": 15.577291488647461
             },
             "Rotation": {
                 "qW": 1.0,
@@ -1829,7 +3223,7 @@
                 "Alias": "pirax"
             },
             "Mesh": {
-                "FilePath": "res/assets/models/Pirax.obj"
+                "FilePath": "res\\assets\\models\\Pirax.obj"
             }
         },
         "Transform": {
@@ -1841,7 +3235,7 @@
             "Position": {
                 "X": 1.377821683883667,
                 "Y": 0.3100000023841858,
-                "Z": 9.964077949523926
+                "Z": 15.592530250549316
             },
             "Rotation": {
                 "qW": 1.0,
@@ -1856,15 +3250,15 @@
             }
         }
     },
-    "RedGarbagePile0": {
+    "RedCleaningSolutionPrefab": {
         "Parent": null,
         "Renderable": {
             "Enabled": true,
             "Material": {
-                "Alias": "garbage"
+                "Alias": "pirax"
             },
             "Mesh": {
-                "FilePath": "res/assets/models/garbage.obj"
+                "FilePath": "res\\assets\\models\\Pirax.obj"
             }
         },
         "Transform": {
@@ -1874,9 +3268,79 @@
                 "Z": false
             },
             "Position": {
-                "X": 4.9495954513549805,
+                "X": -99999.0,
+                "Y": -99999.0,
+                "Z": -99999.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 0.30000001192092896,
+                "Y": 0.30000001192092896,
+                "Z": 0.30000001192092896
+            }
+        }
+    },
+    "RedCleaningSolutionSpawner": {
+        "Parent": null,
+        "Renderable": {
+            "Enabled": true,
+            "Material": {
+                "Alias": null
+            },
+            "Mesh": {
+                "FilePath": null
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": 0.0,
+                "Y": 0.0,
+                "Z": 0.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "RedGarbagePile0": {
+        "Parent": null,
+        "Renderable": {
+            "Enabled": true,
+            "Material": {
+                "Alias": "garbage"
+            },
+            "Mesh": {
+                "FilePath": "res\\assets\\models\\garbage.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": 5.359570503234863,
                 "Y": 0.10000000149011612,
-                "Z": 8.795110702514648
+                "Z": 14.227363586425781
             },
             "Rotation": {
                 "qW": 1.0,
@@ -1899,7 +3363,7 @@
                 "Alias": "garbage"
             },
             "Mesh": {
-                "FilePath": "res/assets/models/garbage.obj"
+                "FilePath": "res\\assets\\models\\garbage.obj"
             }
         },
         "Transform": {
@@ -1909,9 +3373,9 @@
                 "Z": false
             },
             "Position": {
-                "X": -8.23352336883545,
+                "X": -2.9508185386657715,
                 "Y": 0.10000000149011612,
-                "Z": 7.538014888763428
+                "Z": 15.173901557922363
             },
             "Rotation": {
                 "qW": 1.0,
@@ -1934,7 +3398,7 @@
                 "Alias": "garbage"
             },
             "Mesh": {
-                "FilePath": "res/assets/models/garbage.obj"
+                "FilePath": "res\\assets\\models\\garbage.obj"
             }
         },
         "Transform": {
@@ -1944,9 +3408,9 @@
                 "Z": false
             },
             "Position": {
-                "X": -3.0,
+                "X": -7.5513410568237305,
                 "Y": 0.10000000149011612,
-                "Z": 8.08315658569336
+                "Z": 16.67346954345703
             },
             "Rotation": {
                 "qW": 1.0,
@@ -1969,7 +3433,7 @@
                 "Alias": "goop"
             },
             "Mesh": {
-                "FilePath": "res/assets/models/Gloop.obj"
+                "FilePath": "res\\assets\\models\\Gloop.obj"
             }
         },
         "Transform": {
@@ -1979,9 +3443,9 @@
                 "Z": false
             },
             "Position": {
-                "X": 1.9112193584442139,
+                "X": 1.3567394018173218,
                 "Y": 0.27000001072883606,
-                "Z": 7.053325176239014
+                "Z": 14.250576972961426
             },
             "Rotation": {
                 "qW": 1.0,
@@ -2004,7 +3468,7 @@
                 "Alias": "goop"
             },
             "Mesh": {
-                "FilePath": "res/assets/models/Gloop.obj"
+                "FilePath": "res\\assets\\models\\Gloop.obj"
             }
         },
         "Transform": {
@@ -2014,9 +3478,9 @@
                 "Z": false
             },
             "Position": {
-                "X": 2.2958927154541016,
+                "X": 1.5808879137039185,
                 "Y": 0.27000001072883606,
-                "Z": 6.682285785675049
+                "Z": 13.947959899902344
             },
             "Rotation": {
                 "qW": 1.0,
@@ -2039,7 +3503,7 @@
                 "Alias": "goop"
             },
             "Mesh": {
-                "FilePath": "res/assets/models/Gloop.obj"
+                "FilePath": "res\\assets\\models\\Gloop.obj"
             }
         },
         "Transform": {
@@ -2049,9 +3513,9 @@
                 "Z": false
             },
             "Position": {
-                "X": 1.3819799423217773,
+                "X": 1.136847972869873,
                 "Y": 0.27000001072883606,
-                "Z": 6.718793869018555
+                "Z": 13.881453514099121
             },
             "Rotation": {
                 "qW": 1.0,
@@ -2066,15 +3530,15 @@
             }
         }
     },
-    "RedMop": {
+    "RedGloopPrefab": {
         "Parent": null,
         "Renderable": {
             "Enabled": true,
             "Material": {
-                "Alias": "mop"
+                "Alias": "goop"
             },
             "Mesh": {
-                "FilePath": "res/assets/models/mop.obj"
+                "FilePath": "res\\assets\\models\\Gloop.obj"
             }
         },
         "Transform": {
@@ -2084,9 +3548,153 @@
                 "Z": false
             },
             "Position": {
-                "X": 0.07136392593383789,
+                "X": -99999.0,
+                "Y": -99999.0,
+                "Z": -99999.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 0.10000000149011612,
+                "Y": 0.10000000149011612,
+                "Z": 0.10000000149011612
+            }
+        }
+    },
+    "RedGloopSpawner": {
+        "Parent": null,
+        "Renderable": {
+            "Enabled": true,
+            "Material": {
+                "Alias": null
+            },
+            "Mesh": {
+                "FilePath": null
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": 0.0,
+                "Y": 0.0,
+                "Z": 0.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "RedMop": {
+        "Parent": null,
+        "Renderable": {
+            "Enabled": true,
+            "Material": {
+                "Alias": "mop"
+            },
+            "Mesh": {
+                "FilePath": "res\\assets\\models\\mop.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -0.29999053478240967,
                 "Y": 0.20000000298023224,
-                "Z": 8.31336784362793
+                "Z": 17.357601165771484
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Sails": {
+        "Parent": {
+            "Name": "Boat Root R"
+        },
+        "Renderable": {
+            "Enabled": true,
+            "Material": {
+                "Alias": "atlasMaterial"
+            },
+            "Mesh": {
+                "FilePath": "res\\assets\\models\\Decorative\\sails_temporary.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -11.826237678527832,
+                "Y": 5.021702289581299,
+                "Z": -1.7796382904052734
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Sails 1": {
+        "Parent": {
+            "Name": "Boat Root R 1"
+        },
+        "Renderable": {
+            "Enabled": true,
+            "Material": {
+                "Alias": "atlasMaterial"
+            },
+            "Mesh": {
+                "FilePath": "res\\assets\\models\\Decorative\\sails_temporary.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -11.826237678527832,
+                "Y": 5.021702289581299,
+                "Z": -1.7796382904052734
             },
             "Rotation": {
                 "qW": 1.0,
@@ -2109,7 +3717,7 @@
                 "Alias": "container"
             },
             "Mesh": {
-                "FilePath": "res/assets/models/sphere.obj"
+                "FilePath": "res\\assets\\models\\sphere.obj"
             }
         },
         "Transform": {
@@ -2119,9 +3727,9 @@
                 "Z": false
             },
             "Position": {
-                "X": -3.0,
-                "Y": -1.0,
-                "Z": -2.0
+                "X": 1.652702808380127,
+                "Y": -1.9591906070709229,
+                "Z": -3.5488104820251465
             },
             "Rotation": {
                 "qW": 1.0,
@@ -2144,7 +3752,7 @@
                 "Alias": "container"
             },
             "Mesh": {
-                "FilePath": "res/assets/models/sphere.obj"
+                "FilePath": "res\\assets\\models\\sphere.obj"
             }
         },
         "Transform": {
@@ -2154,9 +3762,9 @@
                 "Z": false
             },
             "Position": {
-                "X": -3.0,
-                "Y": -1.0,
-                "Z": -2.0
+                "X": 0.690822422504425,
+                "Y": -2.9367728233337402,
+                "Z": -3.2637431621551514
             },
             "Rotation": {
                 "qW": 1.0,
@@ -2171,15 +3779,17 @@
             }
         }
     },
-    "UI TEst": {
-        "Parent": null,
+    "Stairs": {
+        "Parent": {
+            "Name": "Boat Root R"
+        },
         "Renderable": {
             "Enabled": true,
             "Material": {
-                "Alias": null
+                "Alias": "atlasMaterial"
             },
             "Mesh": {
-                "FilePath": null
+                "FilePath": "res\\assets\\models\\stairs.obj"
             }
         },
         "Transform": {
@@ -2189,9 +3799,9 @@
                 "Z": false
             },
             "Position": {
-                "X": -3.0,
-                "Y": -1.0,
-                "Z": -2.0
+                "X": 4.096777439117432,
+                "Y": 0.0,
+                "Z": -4.32846736907959
             },
             "Rotation": {
                 "qW": 1.0,
@@ -2200,8 +3810,267 @@
                 "qZ": 0.0
             },
             "Scale": {
-                "X": 2.819999933242798,
-                "Y": 3.0199999809265137,
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Stairs 1": {
+        "Parent": {
+            "Name": "Boat Root R"
+        },
+        "Renderable": {
+            "Enabled": true,
+            "Material": {
+                "Alias": "atlasMaterial"
+            },
+            "Mesh": {
+                "FilePath": "res\\assets\\models\\stairs.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": 4.096777439117432,
+                "Y": 0.0,
+                "Z": 2.370288848876953
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Stairs 2": {
+        "Parent": {
+            "Name": "Boat Root R"
+        },
+        "Renderable": {
+            "Enabled": true,
+            "Material": {
+                "Alias": "atlasMaterial"
+            },
+            "Mesh": {
+                "FilePath": "res\\assets\\models\\stairs.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -14.879182815551758,
+                "Y": -3.9105474948883057,
+                "Z": -4.120683193206787
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Stairs 3": {
+        "Parent": {
+            "Name": "Boat Root R 1"
+        },
+        "Renderable": {
+            "Enabled": true,
+            "Material": {
+                "Alias": "atlasMaterial"
+            },
+            "Mesh": {
+                "FilePath": "res\\assets\\models\\stairs.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": 4.096777439117432,
+                "Y": 0.0,
+                "Z": -4.32846736907959
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Stairs 4": {
+        "Parent": {
+            "Name": "Boat Root R 1"
+        },
+        "Renderable": {
+            "Enabled": true,
+            "Material": {
+                "Alias": "atlasMaterial"
+            },
+            "Mesh": {
+                "FilePath": "res\\assets\\models\\stairs.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": 4.096777439117432,
+                "Y": 0.0,
+                "Z": 2.370288848876953
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Stairs 5": {
+        "Parent": {
+            "Name": "Boat Root R 1"
+        },
+        "Renderable": {
+            "Enabled": true,
+            "Material": {
+                "Alias": "atlasMaterial"
+            },
+            "Mesh": {
+                "FilePath": "res\\assets\\models\\stairs.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -14.879182815551758,
+                "Y": -3.9105474948883057,
+                "Z": -4.120683193206787
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Top Deck 1": {
+        "Parent": {
+            "Name": "Boat Root R"
+        },
+        "Renderable": {
+            "Enabled": true,
+            "Material": {
+                "Alias": "planks"
+            },
+            "Mesh": {
+                "FilePath": "res\\assets\\models\\TopDeck.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": 3.0,
+                "Y": 0.0,
+                "Z": 2.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Top Deck 2": {
+        "Parent": {
+            "Name": "Boat Root R 1"
+        },
+        "Renderable": {
+            "Enabled": true,
+            "Material": {
+                "Alias": "planks"
+            },
+            "Mesh": {
+                "FilePath": "res\\assets\\models\\TopDeck.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": 3.0,
+                "Y": 0.0,
+                "Z": 2.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
                 "Z": 1.0
             }
         }
@@ -2227,6 +4096,80 @@
                 "X": -28.0,
                 "Y": -2.5,
                 "Z": 0.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Wheel": {
+        "Parent": {
+            "Name": "Boat Root R"
+        },
+        "Renderable": {
+            "Enabled": true,
+            "Material": {
+                "Alias": "atlasMaterial"
+            },
+            "Mesh": {
+                "FilePath": "res\\assets\\models\\Decorative\\wheel.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": 9.48975658416748,
+                "Y": 3.989125967025757,
+                "Z": -1.7796382904052734
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Wheel 1": {
+        "Parent": {
+            "Name": "Boat Root R 1"
+        },
+        "Renderable": {
+            "Enabled": true,
+            "Material": {
+                "Alias": "atlasMaterial"
+            },
+            "Mesh": {
+                "FilePath": "res\\assets\\models\\Decorative\\wheel.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": 9.48975658416748,
+                "Y": 3.989125967025757,
+                "Z": -1.7796382904052734
             },
             "Rotation": {
                 "qW": 1.0,
@@ -2272,6 +4215,80 @@
             "Scale": {
                 "X": 10.0,
                 "Y": 10.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "thingy": {
+        "Parent": {
+            "Name": "Boat Root R"
+        },
+        "Renderable": {
+            "Enabled": true,
+            "Material": {
+                "Alias": "atlasMaterial"
+            },
+            "Mesh": {
+                "FilePath": "res\\assets\\models\\Decorative\\weirdThingy.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -1.4115958213806152,
+                "Y": 0.0,
+                "Z": -1.7796382904052734
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "thingy 1": {
+        "Parent": {
+            "Name": "Boat Root R 1"
+        },
+        "Renderable": {
+            "Enabled": true,
+            "Material": {
+                "Alias": "atlasMaterial"
+            },
+            "Mesh": {
+                "FilePath": "res\\assets\\models\\Decorative\\weirdThingy.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -1.4115958213806152,
+                "Y": 0.0,
+                "Z": -1.7796382904052734
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
                 "Z": 1.0
             }
         }

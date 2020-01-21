@@ -67,7 +67,7 @@ namespace oyl
             }
             OYL_LOG_ERROR(err.c_str());
 
-            return 0;
+            return -1u;
         }
         return shader;
     }
@@ -130,13 +130,16 @@ namespace oyl
     {
         std::array<uint, NumShaderTypes> shaders{ 0 };
 
+        bool failed = false;
+        
         // Get the IDs for all of the present shaders
         for (uint i = 0; i < NumShaderTypes; i++)
         {
             shaders[i] = compileShader((Type) i, shaderSrcs[i]);
+            failed |= shaders[i] == -1u;
         }
 
-        m_rendererID = linkShaders(shaders);
+        m_rendererID = failed ? 0 : linkShaders(shaders);
     }
 
     OpenGLShader::OpenGLShader(_OpenGLShader, const std::vector<ShaderInfo>& infos)
@@ -184,6 +187,8 @@ namespace oyl
             m_rendererID = prevRendererID;
             return false;
         }
+
+        m_uniformLocations.clear();
 
         if (prevRendererID)
             glDeleteProgram(prevRendererID);

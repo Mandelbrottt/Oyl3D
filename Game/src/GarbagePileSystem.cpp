@@ -3,6 +3,7 @@
 void GarbagePileSystem::onEnter()
 {
 	this->listenForEventCategory((EventCategory)CategoryGarbagePile);
+	this->listenForEventCategory((EventCategory)CategoryCannon);
 }
 
 void GarbagePileSystem::onExit()
@@ -28,15 +29,23 @@ void GarbagePileSystem::onUpdate()
 	auto view = registry->view<GarbagePile, component::Renderable, component::Transform>();
 	for (auto& garbagePileEntity : view)
 	{
-		auto& garbagePile = registry->get<GarbagePile>(garbagePileEntity);
+		auto& garbagePile           = registry->get<GarbagePile>(garbagePileEntity);
 		auto& garbagePileRenderable = registry->get<component::Renderable>(garbagePileEntity);
 		auto& garbagePileTransform  = registry->get<component::Transform>(garbagePileEntity);
+
+		if (garbagePile.delayBeforeAddingGarbageCountdown > 0.0f)
+		{
+			garbagePile.delayBeforeAddingGarbageCountdown -= Time::deltaTime();
+
+			if (garbagePile.delayBeforeAddingGarbageCountdown < 0.0f)
+				increaseGarbageLevel(garbagePileEntity);
+		}
 
 		if (addGarbageLevel)
 			increaseGarbageLevel(garbagePileEntity);
 
-		garbagePileTransform.setScaleX(0.07f * garbagePile.garbageLevel + 0.5f);
-		garbagePileTransform.setScaleZ(0.07f * garbagePile.garbageLevel + 0.5f);
+		garbagePileTransform.setScaleX(0.03f * garbagePile.garbageLevel + 0.4f);
+		garbagePileTransform.setScaleZ(0.03f * garbagePile.garbageLevel + 0.4f);
 
 		totalGarbageLevel += garbagePile.garbageLevel;
 
@@ -77,6 +86,9 @@ bool GarbagePileSystem::onEvent(const Event& event)
 				{
 					garbagePile.garbageTicks      = 0;
 					garbagePileRenderable.enabled = false;
+
+					if (registry->has<component::RigidBody>(evt.garbagePileEntity))
+						registry->remove<component::RigidBody>(evt.garbagePileEntity);
 				}
 				
 				garbagePile.isGlooped = false;
@@ -87,6 +99,27 @@ bool GarbagePileSystem::onEvent(const Event& event)
 			garbageCleaned.displayGlooped           = garbagePile.isGlooped;
 			postEvent(garbageCleaned);
 
+			break;
+		}
+
+		case (EventType)TypeCannonFired:
+		{
+			auto evt     = event_cast<CannonFiredEvent>(event);
+			auto& cannon = registry->get<Cannon>(evt.cannonEntity);
+
+			int garbagePileFiredAt = cannon.cannonTrackPosition * -1; //flip the sign since we're on the other ship (cannon at -1 points at opposite ship's garbage pile at 1)
+
+			auto view = registry->view<GarbagePile, component::Transform>();
+			for (auto& garbagePileEntity : view)
+			{
+				auto& garbagePile = registry->get<GarbagePile>(garbagePileEntity);
+
+				if (garbagePile.relativePositionOnShip == garbagePileFiredAt && garbagePile.team != cannon.team)
+				{
+					garbagePile.delayBeforeAddingGarbageCountdown = garbagePile.DELAY_BEFORE_ADDING_GARBAGE_DURATION;
+					break;
+				}
+			}
 			break;
 		}
 	}
@@ -105,6 +138,8 @@ void GarbagePileSystem::increaseGarbageLevel(entt::entity a_garbagePileEntity)
 		garbagePile.garbageTicks = garbagePile.GARBAGE_TICKS_PER_LEVEL;
 
 		garbagePileRenderable.enabled = true;
+		auto& garbagePileRB = registry->get_or_assign<component::RigidBody>(a_garbagePileEntity);
+		garbagePileRB.setMass(0.0f);
 	}
 	else if (garbagePile.garbageLevel < garbagePile.MAX_GARBAGE_LEVEL)
 	{
