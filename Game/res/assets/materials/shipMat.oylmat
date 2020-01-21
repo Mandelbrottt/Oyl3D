@@ -1,0 +1,25 @@
+{
+    "Material": {
+        "Alias": "shipMat",
+        "Shader": {
+            "Alias": "Oyl Lighting",
+            "Pixel": {
+                "FilePath": "../Engine/res/shaders/lighting.frag",
+                "guid": null
+            },
+            "Vertex": {
+                "FilePath": "../Engine/res/shaders/lighting.vert",
+                "guid": null
+            }
+        },
+        "Textures": {
+            "Albedo": {
+                "Alias": "ship",
+                "FilePath": "res\\assets\\textures\\ship.png",
+                "guid": null
+            },
+            "Normal": null,
+            "Specular": null
+        }
+    }
+}

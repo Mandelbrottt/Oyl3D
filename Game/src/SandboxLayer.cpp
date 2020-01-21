@@ -822,7 +822,7 @@ void SandboxLayer::onEnter()
         mr.material = mat;
 
         entt::entity e = registry->create();
-        registry->assign<component::Renderable>(e, mr);
+        //registry->assign<component::Renderable>(e, mr);
 
         component::Transform t;
         t.setPosition(glm::vec3(-3.0f, -1.0f, -2.0f));
@@ -840,12 +840,12 @@ void SandboxLayer::onEnter()
         shi.sphere.setRadius(0.5f);
     }
     {
-        component::Renderable mr;
-        mr.mesh = Mesh::get("sphere");
-        mr.material = mat;
+        //component::Renderable mr;
+        //mr.mesh = Mesh::get("sphere");
+        //mr.material = mat;
 
         entt::entity e = registry->create();
-        registry->assign<component::Renderable>(e, mr);
+        //registry->assign<component::Renderable>(e, mr);
 
         component::Transform t;
         t.setPosition(glm::vec3(-3.0f, -1.0f, -2.0f));

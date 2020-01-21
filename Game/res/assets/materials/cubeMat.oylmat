@@ -1,0 +1,15 @@
+{
+    "Material": {
+        "Alias": "cubeMat",
+        "Shader": null,
+        "Textures": {
+            "Albedo": {
+                "Alias": "Oyl UV-Grid",
+                "FilePath": "../Engine/res/textures/uvgrid.png",
+                "guid": null
+            },
+            "Normal": null,
+            "Specular": null
+        }
+    }
+}

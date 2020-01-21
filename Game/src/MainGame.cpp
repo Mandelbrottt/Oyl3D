@@ -64,6 +64,10 @@ public:
             gui.texture = Texture2D::cache("res/assets/textures/gui/pushCannon.png");
         }
 
+        listenForEventType(EventType::PhysicsCollisionEnter);
+        listenForEventType(EventType::PhysicsCollisionStay);
+        listenForEventType(EventType::PhysicsCollisionExit);
+        
         {
             auto e = registry->create();
 
