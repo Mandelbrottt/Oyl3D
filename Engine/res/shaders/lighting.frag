@@ -81,7 +81,7 @@ void main()
 	}
 	
 	out_color = vec4((ambient + diffuse + specular), 1.0);
-	// out_color += vec4(in_normal, 1.0);
+	//out_color += vec4(in_normal, 1.0);
 
 	// Gamma Correction
 	vec3 gamma = vec3(1.0 / 2.2);
