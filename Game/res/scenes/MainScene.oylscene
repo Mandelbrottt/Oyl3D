@@ -1870,7 +1870,7 @@
         "Renderable": {
             "Enabled": true,
             "Material": {
-                "Alias": "cannonball"
+                "Alias": "crate"
             },
             "Mesh": {
                 "FilePath": "res\\assets\\models\\DeckRail.obj"
@@ -1907,7 +1907,7 @@
         "Renderable": {
             "Enabled": true,
             "Material": {
-                "Alias": "cannonball"
+                "Alias": "crate"
             },
             "Mesh": {
                 "FilePath": "res\\assets\\models\\DeckRail.obj"
