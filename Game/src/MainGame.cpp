@@ -247,7 +247,7 @@ public:
 			uiType.type = PlayerInteractionResult::cannonFiringSoon;
 
 			auto& HUDElement = registry->assign<PlayerHUDElement>(e);
-			HUDElement.positionWhenActive = glm::vec3(0.0f, 2.0f, 0.0f);
+			HUDElement.positionWhenActive = glm::vec3(5.0f, 2.0f, 0.0f);
 			HUDElement.playerNum = 0;
 
             auto& so = registry->assign<component::EntityInfo>(e);
@@ -407,17 +407,20 @@ public:
 			//player movement
 			glm::vec3 desiredMoveDirection = glm::vec3(0.0f);
 
-			if (Input::isKeyPressed(Key::W))
-				desiredMoveDirection += playerTransform.getForward();
+			if (player.playerNum == 0)
+			{
+				if (Input::isKeyPressed(Key::W))
+					desiredMoveDirection += playerTransform.getForward();
 
-			if (Input::isKeyPressed(Key::S))
-				desiredMoveDirection += -playerTransform.getForward();
+				if (Input::isKeyPressed(Key::S))
+					desiredMoveDirection += -playerTransform.getForward();
 
-			if (Input::isKeyPressed(Key::A))
-				desiredMoveDirection += -playerTransform.getRight();
+				if (Input::isKeyPressed(Key::A))
+					desiredMoveDirection += -playerTransform.getRight();
 
-			if (Input::isKeyPressed(Key::D))
-				desiredMoveDirection += playerTransform.getRight();
+				if (Input::isKeyPressed(Key::D))
+					desiredMoveDirection += playerTransform.getRight();
+			}
 
 			if (Input::getGamepadLeftStickY(player.playerNum) > 0.1f || Input::getGamepadLeftStickY(player.playerNum) < -0.1f)
 				desiredMoveDirection += Input::getGamepadLeftStickY(player.playerNum) * -playerTransform.getForward();
@@ -434,7 +437,7 @@ public:
 
 			//camera movement
 
-			glm::vec2 rightStick = Input::getGamepadRightStick();
+			glm::vec2 rightStick = Input::getGamepadRightStick(player.controllerNum);
 
 			//deadzone check
 			if (rightStick.x > 0.1f || rightStick.x < -0.1f)
@@ -479,8 +482,6 @@ public:
 
 				break;
 			}
-
-			break;
 		}
 	}
 
@@ -622,13 +623,17 @@ public:
 		{
 			if (!isCameraActive)
 				break;
+
 			auto evt = event_cast<MouseMovedEvent>(event);
 
 			auto playerView = registry->view<Player, component::Transform>();
-			for (auto& entity : playerView)
+			for (auto& playerEntity : playerView)
 			{
-				auto& player = registry->get<Player>(entity);
-				auto& playerTransform = registry->get<component::Transform>(entity);
+				auto& player          = registry->get<Player>(playerEntity);
+				auto& playerTransform = registry->get<component::Transform>(playerEntity);
+
+				if (player.playerNum != 0)
+					continue;
 
 				playerTransform.rotate(glm::vec3(0.0f, -evt.dx * 0.5f, 0.0f));
 
@@ -645,9 +650,13 @@ public:
 			}
 
 			auto playerCameraView = registry->view<component::PlayerCamera, component::Transform>();
-			for (auto& entity : playerCameraView)
+			for (auto& cameraEntity : playerCameraView)
 			{
-				auto& cameraTransform = registry->get<component::Transform>(entity);
+				auto& camera          = registry->get<component::PlayerCamera>(cameraEntity);
+				auto& cameraTransform = registry->get<component::Transform>(cameraEntity);
+
+				if (camera.player != 0)
+					continue;
 
 				cameraTransform.rotate(glm::vec3(-evt.dy * 0.5f, 0.0f, 0.0f));
 

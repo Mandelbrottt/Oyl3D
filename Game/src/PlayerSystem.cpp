@@ -15,9 +15,9 @@ void PlayerSystem::onUpdate()
 	auto view = registry->view<Player, component::Transform, component::RigidBody>();
 	for (auto& playerEntity : view)
 	{
-		auto& player = registry->get<Player>(playerEntity);
+		auto& player          = registry->get<Player>(playerEntity);
 		auto& playerTransform = registry->get<component::Transform>(playerEntity);
-		auto& playerRB = registry->get<component::RigidBody>(playerEntity);
+		auto& playerRB        = registry->get<component::RigidBody>(playerEntity);
 
 		switch (player.state)
 		{

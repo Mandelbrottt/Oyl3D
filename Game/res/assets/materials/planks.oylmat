@@ -1,0 +1,28 @@
+{
+    "Material": {
+        "Alias": "planks",
+        "Shader": {
+            "Alias": "Oyl Lighting",
+            "Pixel": {
+                "FilePath": "../Engine/res/shaders/lighting.frag",
+                "guid": null
+            },
+            "Vertex": {
+                "FilePath": "../Engine/res/shaders/lighting.vert",
+                "guid": null
+            }
+        },
+        "Textures": {
+            "Albedo": {
+                "Alias": "tempSpec",
+                "FilePath": "res\\assets\\textures\\woodPlanks.png",
+                "guid": null
+            },
+            "Normal": null,
+            "Specular": {
+                "FilePath": "res\\assets\\textures\\tempSpec.jpg",
+                "guid": null
+            }
+        }
+    }
+}
