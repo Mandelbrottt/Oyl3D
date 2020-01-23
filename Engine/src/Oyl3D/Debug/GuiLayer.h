@@ -50,11 +50,11 @@ namespace oyl::internal
         
         void drawInspector();
         void drawInspectorObjectName();
-        void drawInspectorParent();
         void drawInspectorTransform();
         void drawInspectorCollidable();
         void drawInspectorRenderable();
         void drawInspectorRigidBody();
+        void drawInspectorLightSource();
         void drawInspectorAddComponent();
 
         void drawAssetList();

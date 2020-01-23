@@ -46,7 +46,7 @@ namespace oyl
         PhysicsResetWorld,
         
         EditorViewportResized, EditorViewportHandleChanged, EditorEntitySelected,
-        EditorCameraChanged,
+        EditorCameraChanged, EditorCameraMoveRequest,
 
         CustomStart,
     };
@@ -278,6 +278,11 @@ namespace oyl
     OYL_EVENT_STRUCT(EditorCameraChangedEvent, EventType::EditorCameraChanged, EventCategory::Editor,
                      {
                          Ref<Camera>* camera;
+                     });
+
+    OYL_EVENT_STRUCT(EditorCameraMoveRequestEvent, EventType::EditorCameraMoveRequest, EventCategory::Editor,
+                     {
+                         bool doMove;
                      });
 
     //-Editor Events-//////////////////////////////////////////////////////

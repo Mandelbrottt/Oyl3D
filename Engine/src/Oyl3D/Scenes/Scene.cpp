@@ -8,6 +8,7 @@
 #include "Utils/SceneToFile.h"
 
 #include "Components/Transform.h"
+#include "Components/Camera.h"
 
 namespace oyl
 {
@@ -16,7 +17,10 @@ namespace oyl
     Scene::Scene()
         : m_registry(Ref<entt::registry>::create())
     {
-        m_registry->on_construct<component::Transform>().connect<&component::Transform::on_construct>();
+        using component::Transform;
+        using component::PlayerCamera;
+        m_registry->on_construct<Transform>().connect<&Transform::on_construct>();
+        m_registry->on_construct<PlayerCamera>().connect<&PlayerCamera::on_construct>();
     }
 
     Scene::~Scene() {}

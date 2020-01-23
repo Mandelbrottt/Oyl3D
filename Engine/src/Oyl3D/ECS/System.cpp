@@ -103,15 +103,14 @@ namespace oyl
             for (auto camera : camView)
             {
                 PlayerCamera& pc = camView.get<PlayerCamera>(camera);
-                
-                RenderCommand::setDrawRect(!!(pc.player & 1) * x, !(pc.player & 2) * y, width, height);
-                
-                pc.projection =
-                    glm::perspective(glm::radians(60.0f), (float) width / (float) height, 0.01f, 1000.0f);
 
-                glm::mat4 viewProj = pc.projection;
-                glm::mat4 tempView = camView.get<Transform>(camera).getMatrixGlobal();
-                viewProj *= glm::mat4(glm::inverse(glm::mat3(tempView)));
+                u32 playerNum = static_cast<u32>(pc.player);
+                RenderCommand::setDrawRect(!!(playerNum & 1) * x, !(playerNum & 2) * y, width, height);
+                
+                pc.aspect((float) width / (float) height);
+
+                glm::mat4 viewProj = pc.projectionMatrix();
+                viewProj *= glm::mat4(glm::mat3(pc.viewMatrix()));
                 
                 shader->bind();
                 shader->setUniformMat4("u_viewProjection", viewProj);
@@ -131,19 +130,17 @@ namespace oyl
                     
                     if (!isRenderableValid(mr))
                         break;
+
+                    if (!(mr.cullingMask & pc.cullingMask))
+                        continue;
                     
                     if (mr.material != boundMaterial)
                     {
                         boundMaterial = mr.material;
-
-                        glm::mat4 viewMatrix = camView.get<Transform>(camera).getMatrixGlobal();
-                        viewMatrix = inverse(viewMatrix);
-
-                        const glm::mat4& projectionMatrix = camView.get<PlayerCamera>(camera).projection;
                         
-                        boundMaterial->setUniformMat4("u_view", viewMatrix);
-                        boundMaterial->setUniformMat4("u_viewProjection", projectionMatrix * viewMatrix);
-                        glm::mat4 viewNormal = inverse(transpose(viewMatrix));
+                        boundMaterial->setUniformMat4("u_view", pc.viewMatrix());
+                        boundMaterial->setUniformMat4("u_viewProjection", pc.viewProjectionMatrix());
+                        glm::mat4 viewNormal = inverse(transpose(pc.viewMatrix()));
                         boundMaterial->setUniformMat3("u_viewNormal", glm::mat3(viewNormal));
 
                         auto lightView = registry->view<PointLight>();
@@ -154,7 +151,7 @@ namespace oyl
                             auto lightTransform = registry->get<Transform>(light);
                             
                             boundMaterial->setUniform3f("u_pointLight[" + std::to_string(count) + "].position",
-                                                        viewMatrix * glm::vec4(lightTransform.getPositionGlobal(), 1.0f));
+                                                        pc.viewMatrix() * glm::vec4(lightTransform.getPositionGlobal(), 1.0f));
                             boundMaterial->setUniform3f("u_pointLight[" + std::to_string(count) + "].ambient",
                                                         lightProps.ambient);
                             boundMaterial->setUniform3f("u_pointLight[" + std::to_string(count) + "].diffuse",
@@ -222,6 +219,7 @@ namespace oyl
         void GuiRenderSystem::onEnter()
         {
             listenForEventType(EventType::WindowResized);
+            
             m_shader = Shader::get("texturedQuad");
 
             float vertices[] = {
@@ -236,7 +234,6 @@ namespace oyl
                 0, 3, 2,
             };
 
-            // TEMPORARY: move to onEnter()
             m_vao = VertexArray::create();
             Ref<VertexBuffer> vbo = VertexBuffer::create(vertices, sizeof(vertices));
             vbo->setLayout({
@@ -254,6 +251,7 @@ namespace oyl
         {
             using component::GuiRenderable;
             using component::Transform;
+            using component::PlayerCamera;
 
             registry->sort<GuiRenderable>(
                 [this](const entt::entity lhs, const entt::entity rhs)
@@ -283,42 +281,66 @@ namespace oyl
 
             RenderCommand::setDepthDraw(false);
 
-            auto view = registry->view<Transform, GuiRenderable>();
-            for (auto entity : view)
-            {
-                auto& transform = view.get<Transform>(entity);
-                auto& gui = view.get<GuiRenderable>(entity);
+            auto camView = registry->view<PlayerCamera>();
 
-                if (!gui.enabled || !gui.texture)
-                    break;
+            int x = m_windowSize.x / 2;
+            int y = camView.size() > 2 ? m_windowSize.y / 2 : 0;
 
-                if ((!boundTexture || boundTexture != gui.texture) && gui.texture->isLoaded())
-                {
-                    boundTexture = gui.texture;
-                    boundTexture->bind(0);
-                }
+            int width = m_windowSize.x;
+            if (camView.size() > 1) width /= 2;
 
-                glm::vec3 texSize = glm::vec3(0.0f);
-                texSize.x = (float) gui.texture->getWidth() / (float) gui.texture->getHeight();
-                texSize.y = 1.0f;
-
-                glm::vec3 pos = transform.getPosition();
-                pos.y = -pos.y;
-                pos.z = 0.99f;
+            int height = m_windowSize.y;
+            if (camView.size() > 2) height /= 2;
+            
+            for (auto camera : camView)
+            {                
+                auto& pc = camView.get(camera);
                 
-                glm::mat4 model = glm::mat4(1.0f);
-                model = glm::translate(model, pos);
-                model = glm::rotate(model, glm::radians(transform.getRotationEuler().z), glm::vec3(0.0f, 0.0f, -1.0f));
-                model = glm::scale(model, transform.getScale());
-                model = glm::scale(model, texSize);
+                u32 playerNum = static_cast<u32>(pc.player);
+                RenderCommand::setDrawRect(!!(playerNum & 1) * x, !(playerNum & 2) * y, width, height);
 
-                Renderer::submit(m_shader, m_vao, model);
+                m_shader->setUniformMat4("u_projection", pc.orthoMatrix());
+                
+                auto view = registry->view<Transform, GuiRenderable>();
+                for (auto entity : view)
+                {
+                    auto& transform = view.get<Transform>(entity);
+                    auto& gui = view.get<GuiRenderable>(entity);
+
+                    if (!gui.enabled || !gui.texture)
+                        break;
+
+                    if (!(gui.cullingMask & pc.cullingMask))
+                        continue;
+
+                    if ((!boundTexture || boundTexture != gui.texture) && gui.texture->isLoaded())
+                    {
+                        boundTexture = gui.texture;
+                        boundTexture->bind(0);
+                    }
+
+                    glm::vec3 texSize = glm::vec3(0.0f);
+                    texSize.x = (float) gui.texture->getWidth() / (float) gui.texture->getHeight();
+                    texSize.y = 1.0f;
+
+                    glm::vec3 pos = transform.getPosition();
+                    pos.y = -pos.y;
+                    pos.z = 0.99f;
+                    
+                    glm::mat4 model = glm::mat4(1.0f);
+                    model = glm::translate(model, pos);
+                    model = glm::rotate(model, glm::radians(transform.getRotationEuler().z), glm::vec3(0.0f, 0.0f, -1.0f));
+                    model = glm::scale(model, transform.getScale());
+                    model = glm::scale(model, texSize);
+
+                    Renderer::submit(m_shader, m_vao, model);
+                }
             }
 
             RenderCommand::setDepthDraw(true);
         }
 
-        void GuiRenderSystem::onGuiRender() {}
+        void GuiRenderSystem::onGuiRender() { }
 
         bool GuiRenderSystem::onEvent(const Event& event)
         {
@@ -326,16 +348,8 @@ namespace oyl
             {
                 case EventType::WindowResized:
                     auto e = event_cast<WindowResizedEvent>(event);
-                    f32 aspectRatio = (float) e.width / (float) e.height;
-                    f32 size = 10.0f;
-                    glm::mat4 projection = glm::ortho(-size * aspectRatio / 2.0f, 
-                                                      size * aspectRatio / 2.0f, 
-                                                      size / 2.0f, 
-                                                      -size / 2.0f);
-
+                    m_windowSize = { e.width, e.height };
                     m_shader->bind();
-                    m_shader->setUniformMat4("u_projection", projection);
-
                     break;
             }
             return false;
@@ -1161,12 +1175,13 @@ namespace oyl
 
         void EditorCameraSystem::onEnter()
         {
-            listenForEventType(EventType::KeyPressed);
-            listenForEventType(EventType::KeyReleased);
-            listenForEventType(EventType::MouseMoved);
-            listenForEventType(EventType::MousePressed);
-            listenForEventType(EventType::MouseReleased);
+            //listenForEventType(EventType::KeyPressed);
+            //listenForEventType(EventType::KeyReleased);
+            //listenForEventType(EventType::MouseMoved);
+            //listenForEventType(EventType::MousePressed);
+            //listenForEventType(EventType::MouseReleased);
             listenForEventType(EventType::EditorViewportResized);
+            listenForEventType(EventType::EditorCameraMoveRequest);
 
             m_camera = Ref<Camera>::create();
             m_camera->setProjection(glm::perspective(glm::radians(60.0f), 16.0f / 9.0f, 0.1f, 1000.0f));
@@ -1219,8 +1234,6 @@ namespace oyl
             {
                 case EventType::KeyPressed:
                 {
-                    if (!m_doMoveCamera) break;
-
                     auto e = event_cast<KeyPressedEvent>(event);
                     if (!e.repeatCount)
                     {
@@ -1241,8 +1254,6 @@ namespace oyl
                 }
                 case EventType::KeyReleased:
                 {
-                    if (!m_doMoveCamera) break;
-                    
                     auto e = event_cast<KeyReleasedEvent>(event);
                     if (e.keycode == Key::W)
                         m_cameraMove.z += m_cameraMoveSpeed;
@@ -1260,40 +1271,35 @@ namespace oyl
                 }
                 case EventType::MouseMoved:
                 {
-                    if (!m_doMoveCamera) break;
-
                     auto e = event_cast<MouseMovedEvent>(event);
                     m_cameraRotate.y = e.dx;
                     m_cameraRotate.x = e.dy;
 
                     break;
                 }
-                case EventType::MousePressed:
+                case EventType::EditorCameraMoveRequest:
                 {
-                    auto e = event_cast<MousePressedEvent>(event);
-                    if (e.button == Mouse::Right)
+                    auto e = event_cast<EditorCameraMoveRequestEvent>(event);
+                    CursorStateRequestEvent cursorRequest;
+                    if (e.doMove)
                     {
-                        m_doMoveCamera = true;
-
-                        CursorStateRequestEvent cursorRequest;
+                        listenForEventType(EventType::MouseMoved);
+                        listenForEventType(EventType::KeyPressed);
+                        listenForEventType(EventType::KeyReleased);
                         cursorRequest.state = CursorState::Disabled;
-
-                        postEvent(cursorRequest);
                     }
-                    break;
-                }
-                case EventType::MouseReleased:
-                {
-                    auto e = event_cast<MouseReleasedEvent>(event);
-                    if (e.button == Mouse::Right)
+                    else
                     {
-                        m_doMoveCamera = false;
-
-                        CursorStateRequestEvent cursorRequest;
+                        ignoreEventType(EventType::MouseMoved);
+                        ignoreEventType(EventType::KeyPressed);
+                        ignoreEventType(EventType::KeyReleased);
                         cursorRequest.state = CursorState::Normal;
-
-                        postEvent(cursorRequest);
                     }
+
+                    if (m_doMoveCamera != e.doMove)
+                        postEvent(cursorRequest);
+                    m_doMoveCamera = e.doMove;
+
                     break;
                 }
                 case EventType::EditorViewportResized:
@@ -1301,6 +1307,8 @@ namespace oyl
                     auto e = event_cast<EditorViewportResizedEvent>(event);
                     glm::mat4 proj = glm::perspective(glm::radians(60.0f), e.width / e.height, 0.1f, 1000.0f);
                     m_camera->setProjection(proj);
+
+                    break;
                 }
             }
             return false;

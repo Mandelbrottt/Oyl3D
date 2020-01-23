@@ -110,6 +110,7 @@ namespace oyl::component
         void setMirrorZ(bool mirror);
         
         bool isLocalDirty() const;
+        bool isDirty() const;
 
     private:
         friend oyl::Scene;

@@ -501,7 +501,7 @@
                 "Alias": null
             },
             "Mesh": {
-                "FilePath": null
+                "FilePath": "../Engine/res/models/monkey.obj"
             }
         },
         "Transform": {
@@ -522,9 +522,9 @@
                 "qZ": 0.0
             },
             "Scale": {
-                "X": 1.0,
-                "Y": 1.0,
-                "Z": 1.0
+                "X": 0.30000001192092896,
+                "Y": 0.30000001192092896,
+                "Z": 0.30000001192092896
             }
         }
     },
@@ -538,6 +538,11 @@
             "Mesh": {
                 "FilePath": "res\\assets\\models\\garbage.obj"
             }
+        },
+        "RigidBody": {
+            "Friction": 5.0,
+            "Mass": 1.0,
+            "Properties": 63
         },
         "Transform": {
             "Mirror": {
@@ -3894,6 +3899,9 @@
         }
     },
     "Sphere 1": {
+        "Collidable": {
+            "Shapes": []
+        },
         "Parent": null,
         "Renderable": {
             "Enabled": true,
@@ -3929,6 +3937,9 @@
         }
     },
     "Sphere 2": {
+        "Collidable": {
+            "Shapes": []
+        },
         "Parent": null,
         "Renderable": {
             "Enabled": true,
