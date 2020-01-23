@@ -43,7 +43,7 @@ namespace oyl
     const std::string WHITE_TEXTURE_PATH  = "textures/white.png";
     
     const CacheAlias  BLACK_TEXTURE_ALIAS = "Oyl Black";
-    const std::string BLACK_TEXTURE_PATH  = "textures/white.png";
+    const std::string BLACK_TEXTURE_PATH  = "textures/black.png";
 
     const CacheAlias  UV_TEXTURE_ALIAS = "Oyl UV-Grid";
     const std::string UV_TEXTURE_PATH  = "textures/uvgrid.png";

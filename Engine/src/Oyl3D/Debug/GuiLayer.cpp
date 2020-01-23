@@ -188,6 +188,9 @@ namespace oyl::internal
                     sprintf(buf, "Entity %d", (u32) entity);
                     info.name.assign(buf);
                 }
+
+                if (!registry->has<Transform>(entity))
+                    registry->assign<Transform>(entity);
             });
 
         updateAssetList();
@@ -701,6 +704,7 @@ namespace oyl::internal
                 drawInspectorRenderable();
                 drawInspectorCollidable();
                 drawInspectorRigidBody();
+                drawInspectorLightSource();
                 drawInspectorAddComponent();
             }
             else if (m_currentSelection.type() == Selectable::Type::Material)
@@ -806,72 +810,7 @@ namespace oyl::internal
             ImGui::NewLine();
         }
     }
-
-    void GuiLayer::drawInspectorParent()
-    {
-        using component::Transform;
-        using component::EntityInfo;
-        using component::Parent;
-
-        ImGui::SetNextTreeNodeOpen(true, ImGuiCond_Once);
-
-        if (ImGui::CollapsingHeader("Parent Properties##InspectorParentProperties"))
-        {
-            ImGui::Indent(10);
-
-            entt::entity parent = entt::null;
-
-            if (registry->has<Parent>(m_currentSelection.entity()))
-                parent = registry->get<Parent>(m_currentSelection.entity()).parent;
-
-            const char* currentParentName = parent != entt::null && registry->has<EntityInfo>(parent)
-                                                ? registry->get<EntityInfo>(parent).name.c_str()
-                                                : "None";
-
-            bool parentChanged = false;
-
-            ImGui::Text("Current Parent");
-            ImGui::SameLine();
-            if (ImGui::BeginCombo("##ParentPropertiesCurrentParent", currentParentName))
-            {
-                if (ImGui::Selectable("None", parent == entt::null))
-                {
-                    parent = entt::null;
-                    parentChanged = true;
-                }
-                else
-                {
-                    auto view = registry->view<EntityInfo>();
-                    for (auto entity : view)
-                    {
-                        bool isSelected = entity == parent;
-
-                        if (entity != m_currentSelection.entity() &&
-                            ImGui::Selectable(view.get(entity).name.c_str(), isSelected))
-                        {
-                            parent = entity;
-                            parentChanged = true;
-
-                            break;
-                        }
-
-                        if (isSelected) ImGui::SetItemDefaultFocus();
-                    }
-                }
-
-                ImGui::EndCombo();
-            }
-
-            if (parentChanged)
-                setEntityParent(m_currentSelection.entity(), parent);
-            
-            ImGui::Unindent(10);
-            
-            ImGui::Separator();
-            ImGui::NewLine();
-        }
-    }
-
+    
     void GuiLayer::drawInspectorTransform()
     {
         using component::Transform;
@@ -1000,7 +939,19 @@ namespace oyl::internal
 
         ImGui::SetNextTreeNodeOpen(true, ImGuiCond_Once);
 
-        if (ImGui::CollapsingHeader("Renderable##InspectorRenderableProperties"))
+        bool open = ImGui::CollapsingHeader("Renderable##InspectorRenderableProperties");
+
+        if (ImGui::BeginPopupContextItem())
+        {
+            if (ImGui::Selectable("Delete Component"))
+            {
+                registry->remove<Renderable>(m_currentSelection.entity());
+                open = false;
+            }
+            ImGui::EndPopup();
+        }
+        
+        if (open)
         {
             ImGui::Indent(10);
 
@@ -1112,7 +1063,19 @@ namespace oyl::internal
 
         auto flags = ImGuiInputTextFlags_EnterReturnsTrue;
 
-        if (ImGui::CollapsingHeader("Collidable##InspectorColliderProperties"))
+        bool open = ImGui::CollapsingHeader("Collidable##InspectorColliderProperties");
+
+        if (ImGui::BeginPopupContextItem())
+        {
+            if (ImGui::Selectable("Delete Component"))
+            {
+                registry->remove<Collidable>(m_currentSelection.entity());
+                open = false;
+            }
+            ImGui::EndPopup();
+        }
+        
+        if (open)
         {
             ImGui::Indent(10);
 
@@ -1293,7 +1256,19 @@ namespace oyl::internal
 
         ImGui::SetNextItemOpen(true, ImGuiCond_Once);
 
-        if (ImGui::CollapsingHeader("RigidBody##InspectorRigidBody"))
+        bool open = ImGui::CollapsingHeader("RigidBody##InspectorRigidBody");
+
+        if (ImGui::BeginPopupContextItem())
+        {
+            if (ImGui::Selectable("Delete Component"))
+            {
+                registry->remove<RigidBody>(m_currentSelection.entity());
+                open = false;
+            }
+            ImGui::EndPopup();
+        }
+        
+        if (open)
         {
             ImGui::Indent(10);
 
@@ -1345,11 +1320,51 @@ namespace oyl::internal
         }
     }
 
+    void GuiLayer::drawInspectorLightSource()
+    {
+        // TEMPORARY: Change when adding LightSource component
+        using component::PointLight;
+
+        if (!registry->has<PointLight>(m_currentSelection.entity()))
+            return;
+
+        ImGui::SetNextItemOpen(true, ImGuiCond_Once);
+
+        bool open = ImGui::CollapsingHeader("Light Source##InspectorLightSource");
+
+        if (ImGui::BeginPopupContextItem())
+        {
+            if (ImGui::Selectable("Delete Component"))
+            {
+                registry->remove<PointLight>(m_currentSelection.entity());
+                open = false;
+            }
+            ImGui::EndPopup();
+        }
+
+        if (open)
+        {
+            ImGui::Indent(10);
+
+            auto& pl = registry->get<PointLight>(m_currentSelection.entity());
+
+            ImGui::ColorEdit3("Ambient##LightSourceAmbient",  value_ptr(pl.ambient));
+            ImGui::ColorEdit3("Diffuse##LightSourceAmbient",  value_ptr(pl.diffuse));
+            ImGui::ColorEdit3("Specular##LightSourceAmbient", value_ptr(pl.specular));
+
+            ImGui::Unindent(10);
+
+            ImGui::Separator();
+            ImGui::NewLine();
+        }
+    }
+
     void GuiLayer::drawInspectorAddComponent()
     {
         using component::Collidable;
         using component::Renderable;
         using component::RigidBody;
+        using component::PointLight;
         
         if (ImGui::BeginCombo("##InspectorAddComponent", "Add Component", ImGuiComboFlags_NoArrowButton))
         {
@@ -1367,6 +1382,10 @@ namespace oyl::internal
                 ImGui::Selectable("RigidBody"))
                 registry->assign<RigidBody>(entity);
 
+            if (!registry->has<PointLight>(entity) &&
+                ImGui::Selectable("Point Light"))
+                registry->assign<PointLight>(entity);
+            
             ImGui::EndCombo();
         }
     }
@@ -1634,8 +1653,8 @@ namespace oyl::internal
     }
 
     bool GuiLayer::updateAsset(const std::string& filepath, 
-                               void (*            loadAsset)(void*), 
-                               void*              userData)
+                               void (*loadAsset)(void*), 
+                               void* userData)
     {
         // If the file has been saved to since the last load, reload it
         auto relPath     = std::fs::relative(filepath);
@@ -1773,7 +1792,7 @@ namespace oyl::internal
             auto [sizeX, sizeY] = ImGui::GetItemRectSize();
             ImGuizmo::SetRect(minX, minY, sizeX, sizeY);
     
-            if (ImGui::IsItemClicked(1))
+            if (ImGui::IsItemClicked(0) && !ImGuizmo::IsOver())
                 m_currentSelection = Selectable(entt::entity(entt::null));
     
             drawTransformGizmo();

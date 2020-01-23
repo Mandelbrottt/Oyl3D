@@ -64,13 +64,36 @@ namespace oyl
             m_loaded = true;
             m_width  = width;
             m_height = height;
-            
-            auto texStorageFormat = nrChannels == 3 ? GL_SRGB8 : GL_SRGB8_ALPHA8;
-            auto texSubFormat     = nrChannels == 3 ? GL_RGB : GL_RGBA;
 
-            glTexStorage2D(GL_TEXTURE_2D, 1, texStorageFormat, width, height);
-            glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, width, height, texSubFormat, GL_UNSIGNED_BYTE, data);
-            glGenerateMipmap(GL_TEXTURE_2D);
+            GLenum texStorageFormat = GL_NONE;
+            GLenum texSubFormat     = GL_NONE;
+
+            switch (nrChannels)
+            {
+                case 1:
+                    texStorageFormat = GL_R8;
+                    texSubFormat     = GL_RED;
+                    break;
+                case 2:
+                    texStorageFormat = GL_RG8;
+                    texSubFormat     = GL_RG;
+                    break;
+                case 3:
+                    texStorageFormat = GL_SRGB8;
+                    texSubFormat     = GL_RGB;
+                    break;
+                case 4:
+                    texStorageFormat = GL_SRGB8_ALPHA8;
+                    texSubFormat     = GL_RGBA;
+                    break;
+            }
+
+            if (texStorageFormat != GL_NONE && texSubFormat != GL_NONE)
+            {
+                glTexStorage2D(GL_TEXTURE_2D, 1, texStorageFormat, width, height);
+                glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, width, height, texSubFormat, GL_UNSIGNED_BYTE, data);
+                glGenerateMipmap(GL_TEXTURE_2D);
+            }
         }
         else
         {
