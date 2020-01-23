@@ -2345,7 +2345,7 @@
         "Renderable": {
             "Enabled": true,
             "Material": {
-                "Alias": "crate"
+                "Alias": "siding"
             },
             "Mesh": {
                 "FilePath": "res\\assets\\models\\HullDetailing.obj"
@@ -2382,7 +2382,7 @@
         "Renderable": {
             "Enabled": true,
             "Material": {
-                "Alias": "crate"
+                "Alias": "siding"
             },
             "Mesh": {
                 "FilePath": "res\\assets\\models\\HullDetailing.obj"
