@@ -1011,7 +1011,7 @@
             "Position": {
                 "X": 0.0,
                 "Y": 0.0,
-                "Z": -0.5463132858276367
+                "Z": -0.5664392709732056
             },
             "Rotation": {
                 "qW": 1.0,
@@ -1301,7 +1301,7 @@
                 "Z": false
             },
             "Position": {
-                "X": 4.984394550323486,
+                "X": -10.042670249938965,
                 "Y": -3.088313579559326,
                 "Z": 3.520254135131836
             },
@@ -1486,7 +1486,7 @@
                 "Z": true
             },
             "Position": {
-                "X": 4.984394550323486,
+                "X": -9.961164474487305,
                 "Y": -3.088313579559326,
                 "Z": -7.527631759643555
             },
@@ -1504,43 +1504,6 @@
         }
     },
     "CannonPortTrim 7": {
-        "Parent": {
-            "Name": "Boat Root L"
-        },
-        "Renderable": {
-            "Enabled": true,
-            "Material": {
-                "Alias": "atlasMaterial"
-            },
-            "Mesh": {
-                "FilePath": "res\\assets\\models\\Decorative\\cannonWindowTrim.obj"
-            }
-        },
-        "Transform": {
-            "Mirror": {
-                "X": false,
-                "Y": false,
-                "Z": false
-            },
-            "Position": {
-                "X": -10.042670249938965,
-                "Y": -3.088313579559326,
-                "Z": 3.520254135131836
-            },
-            "Rotation": {
-                "qW": 1.0,
-                "qX": 0.0,
-                "qY": 0.0,
-                "qZ": 0.0
-            },
-            "Scale": {
-                "X": 1.0,
-                "Y": 1.0,
-                "Z": 1.0
-            }
-        }
-    },
-    "CannonPortTrim 8": {
         "Parent": {
             "Name": "Boat Root L"
         },
@@ -1577,7 +1540,7 @@
             }
         }
     },
-    "CannonPortTrim 9": {
+    "CannonPortTrim 8": {
         "Parent": {
             "Name": "Boat Root L"
         },
@@ -1597,9 +1560,46 @@
                 "Z": true
             },
             "Position": {
-                "X": -9.961164474487305,
+                "X": 4.984394550323486,
                 "Y": -3.088313579559326,
                 "Z": -7.527631759643555
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "CannonPortTrim 9": {
+        "Parent": {
+            "Name": "Boat Root L"
+        },
+        "Renderable": {
+            "Enabled": true,
+            "Material": {
+                "Alias": "atlasMaterial"
+            },
+            "Mesh": {
+                "FilePath": "res\\assets\\models\\Decorative\\cannonWindowTrim.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": 4.984394550323486,
+                "Y": -3.088313579559326,
+                "Z": 3.520254135131836
             },
             "Rotation": {
                 "qW": 1.0,
@@ -2187,6 +2187,80 @@
                 "X": 1.0,
                 "Y": 1.0,
                 "Z": 1.0
+            }
+        }
+    },
+    "GarbageCanDetail": {
+        "Parent": {
+            "Name": "Boat Root R"
+        },
+        "Renderable": {
+            "Enabled": true,
+            "Material": {
+                "Alias": "cubeMat"
+            },
+            "Mesh": {
+                "FilePath": "res\\assets\\models\\Decorative\\EnvironmentGarbageCan.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": true
+            },
+            "Position": {
+                "X": 15.484801292419434,
+                "Y": 0.023412317037582397,
+                "Z": -4.636775970458984
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 4.0,
+                "Y": 4.0,
+                "Z": 4.0
+            }
+        }
+    },
+    "GarbageCanDetail 1": {
+        "Parent": {
+            "Name": "Boat Root L"
+        },
+        "Renderable": {
+            "Enabled": true,
+            "Material": {
+                "Alias": "cubeMat"
+            },
+            "Mesh": {
+                "FilePath": "res\\assets\\models\\Decorative\\EnvironmentGarbageCan.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": true
+            },
+            "Position": {
+                "X": 15.484801292419434,
+                "Y": 0.023412317037582397,
+                "Z": -4.636775970458984
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 4.0,
+                "Y": 4.0,
+                "Z": 4.0
             }
         }
     },
@@ -2924,262 +2998,6 @@
                 "Z": false
             },
             "Position": {
-                "X": 1.4504601955413818,
-                "Y": 0.5463722348213196,
-                "Z": -0.25801706314086914
-            },
-            "Rotation": {
-                "qW": 1.0,
-                "qX": 0.0,
-                "qY": 0.0,
-                "qZ": 0.0
-            },
-            "Scale": {
-                "X": 1.0,
-                "Y": 1.0,
-                "Z": 1.0
-            }
-        }
-    },
-    "Player0 Camera": {
-        "Parent": {
-            "Name": "Player0 Blue"
-        },
-        "Renderable": null,
-        "Transform": {
-            "Mirror": {
-                "X": false,
-                "Y": false,
-                "Z": false
-            },
-            "Position": {
-                "X": 0.0,
-                "Y": 0.800000011920929,
-                "Z": -0.5
-            },
-            "Rotation": {
-                "qW": 1.0,
-                "qX": 0.0,
-                "qY": 0.0,
-                "qZ": 0.0
-            },
-            "Scale": {
-                "X": 1.0,
-                "Y": 1.0,
-                "Z": 1.0
-            }
-        }
-    },
-    "Player1 Camera": {
-        "Parent": {
-            "Name": "Player2 Red"
-        },
-        "Renderable": null,
-        "Transform": {
-            "Mirror": {
-                "X": false,
-                "Y": false,
-                "Z": false
-            },
-            "Position": {
-                "X": 0.0,
-                "Y": 0.800000011920929,
-                "Z": -0.5
-            },
-            "Rotation": {
-                "qW": 1.0,
-                "qX": 0.0,
-                "qY": 0.0,
-                "qZ": 0.0
-            },
-            "Scale": {
-                "X": 1.0,
-                "Y": 1.0,
-                "Z": 1.0
-            }
-        }
-    },
-    "Player2 Blue": {
-        "Parent": null,
-        "Renderable": {
-            "Enabled": true,
-            "Material": {
-                "Alias": "container"
-            },
-            "Mesh": {
-                "FilePath": "res\\assets\\models\\cube.obj"
-            }
-        },
-        "Transform": {
-            "Mirror": {
-                "X": false,
-                "Y": false,
-                "Z": false
-            },
-            "Position": {
-                "X": -3.6219992637634277,
-                "Y": 0.5343247056007385,
-                "Z": 0.5091124773025513
-            },
-            "Rotation": {
-                "qW": 1.0,
-                "qX": 0.0,
-                "qY": 0.0,
-                "qZ": 0.0
-            },
-            "Scale": {
-                "X": 1.0,
-                "Y": 1.0,
-                "Z": 1.0
-            }
-        }
-    },
-    "Player2 Camera": {
-        "Parent": {
-            "Name": "Player2 Blue"
-        },
-        "Renderable": null,
-        "Transform": {
-            "Mirror": {
-                "X": false,
-                "Y": false,
-                "Z": false
-            },
-            "Position": {
-                "X": 0.0,
-                "Y": 0.800000011920929,
-                "Z": -0.5
-            },
-            "Rotation": {
-                "qW": 1.0,
-                "qX": 0.0,
-                "qY": 0.0,
-                "qZ": 0.0
-            },
-            "Scale": {
-                "X": 1.0,
-                "Y": 1.0,
-                "Z": 1.0
-            }
-        }
-    },
-    "Player2 Red": {
-        "Parent": null,
-        "Renderable": {
-            "Enabled": true,
-            "Material": {
-                "Alias": "container"
-            },
-            "Mesh": {
-                "FilePath": "res\\assets\\models\\cube.obj"
-            }
-        },
-        "Transform": {
-            "Mirror": {
-                "X": false,
-                "Y": false,
-                "Z": false
-            },
-            "Position": {
-                "X": -5.52280855178833,
-                "Y": 0.5179259777069092,
-                "Z": 14.557616233825684
-            },
-            "Rotation": {
-                "qW": 1.0,
-                "qX": 0.0,
-                "qY": 0.0,
-                "qZ": 0.0
-            },
-            "Scale": {
-                "X": 1.0,
-                "Y": 1.0,
-                "Z": 1.0
-            }
-        }
-    },
-    "Player3 Camera": {
-        "Parent": {
-            "Name": "Player3 Red"
-        },
-        "Renderable": null,
-        "Transform": {
-            "Mirror": {
-                "X": false,
-                "Y": false,
-                "Z": false
-            },
-            "Position": {
-                "X": 0.0,
-                "Y": 0.800000011920929,
-                "Z": -0.5
-            },
-            "Rotation": {
-                "qW": 1.0,
-                "qX": 0.0,
-                "qY": 0.0,
-                "qZ": 0.0
-            },
-            "Scale": {
-                "X": 1.0,
-                "Y": 1.0,
-                "Z": 1.0
-            }
-        }
-    },
-    "Player3 Red": {
-        "Parent": null,
-        "Renderable": {
-            "Enabled": true,
-            "Material": {
-                "Alias": "container"
-            },
-            "Mesh": {
-                "FilePath": "res\\assets\\models\\cube.obj"
-            }
-        },
-        "Transform": {
-            "Mirror": {
-                "X": false,
-                "Y": false,
-                "Z": false
-            },
-            "Position": {
-                "X": -0.15425783395767212,
-                "Y": 0.5259593725204468,
-                "Z": 14.10324478149414
-            },
-            "Rotation": {
-                "qW": 1.0,
-                "qX": 0.0,
-                "qY": 0.0,
-                "qZ": 0.0
-            },
-            "Scale": {
-                "X": 1.0,
-                "Y": 1.0,
-                "Z": 1.0
-            }
-        }
-    },
-    "Player0 Blue": {
-        "Parent": null,
-        "Renderable": {
-            "Enabled": true,
-            "Material": {
-                "Alias": "container"
-            },
-            "Mesh": {
-                "FilePath": "res\\assets\\models\\cube.obj"
-            }
-        },
-        "Transform": {
-            "Mirror": {
-                "X": false,
-                "Y": false,
-                "Z": false
-            },
-            "Position": {
                 "X": 0.0,
                 "Y": 0.0,
                 "Z": 0.0
@@ -3471,6 +3289,80 @@
                 "X": -24.0,
                 "Y": -2.5,
                 "Z": 0.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Quarters Trim": {
+        "Parent": {
+            "Name": "Boat Root R"
+        },
+        "Renderable": {
+            "Enabled": true,
+            "Material": {
+                "Alias": "cubeMat"
+            },
+            "Mesh": {
+                "FilePath": "res\\assets\\models\\Decorative\\doorFrame.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": 8.518457412719727,
+                "Y": 2.9262430667877197,
+                "Z": -2.0118484497070313
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Quarters Trim 1": {
+        "Parent": {
+            "Name": "Boat Root L"
+        },
+        "Renderable": {
+            "Enabled": true,
+            "Material": {
+                "Alias": "cubeMat"
+            },
+            "Mesh": {
+                "FilePath": "res\\assets\\models\\Decorative\\doorFrame.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": 8.518457412719727,
+                "Y": 2.9262430667877197,
+                "Z": -2.0118484497070313
             },
             "Rotation": {
                 "qW": 1.0,
@@ -4255,6 +4147,154 @@
             }
         }
     },
+    "RopeDetail": {
+        "Parent": {
+            "Name": "Boat Root R"
+        },
+        "Renderable": {
+            "Enabled": true,
+            "Material": {
+                "Alias": "cubeMat"
+            },
+            "Mesh": {
+                "FilePath": "res\\assets\\models\\Decorative\\Environtment Rope.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -0.08978962898254395,
+                "Y": 0.023412317037582397,
+                "Z": -6.024791717529297
+            },
+            "Rotation": {
+                "qW": 0.8850693702697754,
+                "qX": -1.8341781427011483e-08,
+                "qY": 0.46545907855033875,
+                "qZ": -1.8341781427011483e-08
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "RopeDetail 1": {
+        "Parent": {
+            "Name": "Boat Root R"
+        },
+        "Renderable": {
+            "Enabled": true,
+            "Material": {
+                "Alias": "cubeMat"
+            },
+            "Mesh": {
+                "FilePath": "res\\assets\\models\\Decorative\\Environtment Rope.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": true
+            },
+            "Position": {
+                "X": 0.3570900559425354,
+                "Y": 0.023412317037582397,
+                "Z": -6.146539688110352
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "RopeDetail 2": {
+        "Parent": {
+            "Name": "Boat Root L"
+        },
+        "Renderable": {
+            "Enabled": true,
+            "Material": {
+                "Alias": "cubeMat"
+            },
+            "Mesh": {
+                "FilePath": "res\\assets\\models\\Decorative\\Environtment Rope.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -0.08978962898254395,
+                "Y": 0.023412317037582397,
+                "Z": -6.024791717529297
+            },
+            "Rotation": {
+                "qW": 0.8850693702697754,
+                "qX": -1.8341781427011483e-08,
+                "qY": 0.46545907855033875,
+                "qZ": -1.8341781427011483e-08
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "RopeDetail 3": {
+        "Parent": {
+            "Name": "Boat Root L"
+        },
+        "Renderable": {
+            "Enabled": true,
+            "Material": {
+                "Alias": "cubeMat"
+            },
+            "Mesh": {
+                "FilePath": "res\\assets\\models\\Decorative\\Environtment Rope.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": true
+            },
+            "Position": {
+                "X": 0.3570900559425354,
+                "Y": 0.023412317037582397,
+                "Z": -6.146539688110352
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
     "Sails": {
         "Parent": {
             "Name": "Boat Root R"
@@ -4325,6 +4365,80 @@
             "Scale": {
                 "X": 1.0,
                 "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Spawn Door": {
+        "Parent": {
+            "Name": "Boat Root R"
+        },
+        "Renderable": {
+            "Enabled": true,
+            "Material": {
+                "Alias": "cubeMat"
+            },
+            "Mesh": {
+                "FilePath": "res\\assets\\models\\Decorative\\SpawnDoor.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": true
+            },
+            "Position": {
+                "X": 15.33404541015625,
+                "Y": -0.02385503053665161,
+                "Z": -0.1395587921142578
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 0.800000011920929,
+                "Y": 0.800000011920929,
+                "Z": 1.0
+            }
+        }
+    },
+    "Spawn Door 1": {
+        "Parent": {
+            "Name": "Boat Root L"
+        },
+        "Renderable": {
+            "Enabled": true,
+            "Material": {
+                "Alias": "cubeMat"
+            },
+            "Mesh": {
+                "FilePath": "res\\assets\\models\\Decorative\\SpawnDoor.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": true
+            },
+            "Position": {
+                "X": 15.33404541015625,
+                "Y": -0.02385503053665161,
+                "Z": -0.1395587921142578
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 0.800000011920929,
+                "Y": 0.800000011920929,
                 "Z": 1.0
             }
         }
@@ -4864,80 +4978,6 @@
                 "X": 9.48975658416748,
                 "Y": 3.989125967025757,
                 "Z": -1.7796382904052734
-            },
-            "Rotation": {
-                "qW": 1.0,
-                "qX": 0.0,
-                "qY": 0.0,
-                "qZ": 0.0
-            },
-            "Scale": {
-                "X": 1.0,
-                "Y": 1.0,
-                "Z": 1.0
-            }
-        }
-    },
-    "Wheel 2": {
-        "Parent": {
-            "Name": "Boat Root R"
-        },
-        "Renderable": {
-            "Enabled": true,
-            "Material": {
-                "Alias": "atlasMaterial"
-            },
-            "Mesh": {
-                "FilePath": "res\\assets\\models\\Decorative\\doorFrame.obj"
-            }
-        },
-        "Transform": {
-            "Mirror": {
-                "X": false,
-                "Y": false,
-                "Z": false
-            },
-            "Position": {
-                "X": 8.518457412719727,
-                "Y": 2.926239490509033,
-                "Z": -2.0118484497070313
-            },
-            "Rotation": {
-                "qW": 1.0,
-                "qX": 0.0,
-                "qY": 0.0,
-                "qZ": 0.0
-            },
-            "Scale": {
-                "X": 1.0,
-                "Y": 1.0,
-                "Z": 1.0
-            }
-        }
-    },
-    "Wheel 3": {
-        "Parent": {
-            "Name": "Boat Root L"
-        },
-        "Renderable": {
-            "Enabled": true,
-            "Material": {
-                "Alias": "atlasMaterial"
-            },
-            "Mesh": {
-                "FilePath": "res\\assets\\models\\Decorative\\doorFrame.obj"
-            }
-        },
-        "Transform": {
-            "Mirror": {
-                "X": false,
-                "Y": false,
-                "Z": false
-            },
-            "Position": {
-                "X": 8.518457412719727,
-                "Y": 2.926239490509033,
-                "Z": -2.0118484497070313
             },
             "Rotation": {
                 "qW": 1.0,
