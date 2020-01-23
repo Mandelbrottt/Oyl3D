@@ -219,6 +219,7 @@ namespace oyl
         void GuiRenderSystem::onEnter()
         {
             listenForEventType(EventType::WindowResized);
+            
             m_shader = Shader::get("texturedQuad");
 
             float vertices[] = {
@@ -281,11 +282,25 @@ namespace oyl
             RenderCommand::setDepthDraw(false);
 
             auto camView = registry->view<PlayerCamera>();
+
+            int x = m_windowSize.x / 2;
+            int y = camView.size() > 2 ? m_windowSize.y / 2 : 0;
+
+            int width = m_windowSize.x;
+            if (camView.size() > 1) width /= 2;
+
+            int height = m_windowSize.y;
+            if (camView.size() > 2) height /= 2;
             
             for (auto camera : camView)
             {                
                 auto& pc = camView.get(camera);
+                
+                u32 playerNum = static_cast<u32>(pc.player);
+                RenderCommand::setDrawRect(!!(playerNum & 1) * x, !(playerNum & 2) * y, width, height);
 
+                m_shader->setUniformMat4("u_projection", pc.orthoMatrix());
+                
                 auto view = registry->view<Transform, GuiRenderable>();
                 for (auto entity : view)
                 {
@@ -325,7 +340,7 @@ namespace oyl
             RenderCommand::setDepthDraw(true);
         }
 
-        void GuiRenderSystem::onGuiRender() {}
+        void GuiRenderSystem::onGuiRender() { }
 
         bool GuiRenderSystem::onEvent(const Event& event)
         {
@@ -333,16 +348,8 @@ namespace oyl
             {
                 case EventType::WindowResized:
                     auto e = event_cast<WindowResizedEvent>(event);
-                    f32 aspectRatio = (float) e.width / (float) e.height;
-                    f32 size = 10.0f;
-                    glm::mat4 projection = glm::ortho(-size * aspectRatio / 2.0f, 
-                                                      size * aspectRatio / 2.0f, 
-                                                      size / 2.0f, 
-                                                      -size / 2.0f);
-
+                    m_windowSize = { e.width, e.height };
                     m_shader->bind();
-                    m_shader->setUniformMat4("u_projection", projection);
-
                     break;
             }
             return false;

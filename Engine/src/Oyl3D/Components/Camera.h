@@ -210,7 +210,7 @@ namespace oyl
         {
             if (m_orthoDirty)
             {
-                m_ortho = glm::ortho(m_lowerCoords.x, m_upperCoords.x, m_lowerCoords.y, m_upperCoords.y);
+                m_ortho = glm::ortho(m_lowerCoords.x, m_upperCoords.x, m_upperCoords.y, m_lowerCoords.y);
                 m_orthoDirty = false;
             }
 
