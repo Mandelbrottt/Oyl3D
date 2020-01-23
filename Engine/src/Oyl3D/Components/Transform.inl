@@ -519,6 +519,12 @@ namespace oyl::component
         return m_isLocalDirty;
     }
 
+    inline bool Transform::isDirty() const
+    {
+        const Transform* p;
+        return m_isLocalDirty || ((p = getParent()) != nullptr && p->isDirty());
+    }
+
     inline void Transform::on_construct(entt::entity entity, entt::registry& registry, Transform& transform)
     {
         transform.m_owner = entity;

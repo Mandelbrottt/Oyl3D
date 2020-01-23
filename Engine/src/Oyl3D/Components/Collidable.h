@@ -14,7 +14,7 @@ namespace oyl
 
     enum class Direction
     {
-        X_AXIS,
+        X_AXIS = 0,
         Y_AXIS,
         Z_AXIS
     };
