@@ -166,10 +166,10 @@ namespace oyl
 
             Transform& t = m_registry->get<Transform>(m_owner);
 
-            if (t.isDirty())
+            //if (t.isDirty())
             {
                 m_view           = inverse(t.getMatrixGlobal());
-                m_viewProjection = projectionMatrix() * m_view;
+                //m_viewProjection = projectionMatrix() * m_view;
             }
 
             return m_view;
@@ -179,9 +179,9 @@ namespace oyl
         {
             if (m_projectionDirty)
             {
-                m_projection = glm::perspective(glm::radians(m_fov), m_aspect, m_nearClipping, m_farClipping);
-                m_viewProjection = m_projection * viewMatrix();
                 m_projectionDirty = false;
+                m_projection = glm::perspective(glm::radians(m_fov), m_aspect, m_nearClipping, m_farClipping);
+                //m_viewProjection = m_projection * viewMatrix();
             }
 
             return m_projection;
@@ -193,15 +193,15 @@ namespace oyl
 
             Transform& t = m_registry->get<Transform>(m_owner);
 
-            bool isTDirty;
-            if ((isTDirty = t.isDirty()))
+            //bool isTDirty;
+            //if ((isTDirty = t.isDirty()))
                 m_view = inverse(t.getMatrixGlobal());
 
             if (m_projectionDirty)
                 m_projection = glm::perspective(m_fov, m_aspect, m_nearClipping, m_farClipping);
 
-            if (isTDirty || m_projectionDirty)
-                m_viewProjection = m_projection * m_view;
+            //if (m_projectionDirty)
+                m_viewProjection = projectionMatrix() * viewMatrix();
             
             return m_viewProjection;
         }

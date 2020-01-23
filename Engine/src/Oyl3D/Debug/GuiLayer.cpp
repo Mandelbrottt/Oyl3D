@@ -832,89 +832,97 @@ namespace oyl::internal
             ImGui::PushItemWidth(newWidth);
 
             {
+                bool changed = false;
                 glm::vec3 position = transform.getPosition();
 
                 const float posDragSpeed = 0.02f;
                 ImGui::Text("Position");
                 ImGui::SameLine(ImGui::GetWindowContentRegionWidth() - (15 * 3 + newWidth * 3 + 27));
                 ImGui::SetNextItemWidth(15);
-                ImGui::DragFloat("##XPos", &position.x, posDragSpeed, 0, 0, "X");
+                changed |= ImGui::DragFloat("##XPos", &position.x, posDragSpeed, 0, 0, "X");
                 ImGui::SameLine();
-                ImGui::InputFloat("##XPosInput", &position.x, 0, 0, "%.2f", flags);
-                ImGui::SameLine();
-                ImGui::SetNextItemWidth(15);
-                ImGui::DragFloat("##YPos", &position.y, posDragSpeed, 0, 0, "Y");
-                ImGui::SameLine();
-                ImGui::InputFloat("##YPosInput", &position.y, 0, 0, "%.2f", flags);
+                changed |= ImGui::InputFloat("##XPosInput", &position.x, 0, 0, "%.2f", flags);
                 ImGui::SameLine();
                 ImGui::SetNextItemWidth(15);
-                ImGui::DragFloat("##ZPos", &position.z, posDragSpeed, 0, 0, "Z");
+                changed |= ImGui::DragFloat("##YPos", &position.y, posDragSpeed, 0, 0, "Y");
                 ImGui::SameLine();
-                ImGui::InputFloat("##ZPosInput", &position.z, 0, 0, "%.2f", flags);
+                changed |= ImGui::InputFloat("##YPosInput", &position.y, 0, 0, "%.2f", flags);
+                ImGui::SameLine();
+                ImGui::SetNextItemWidth(15);
+                changed |= ImGui::DragFloat("##ZPos", &position.z, posDragSpeed, 0, 0, "Z");
+                ImGui::SameLine();
+                changed |= ImGui::InputFloat("##ZPosInput", &position.z, 0, 0, "%.2f", flags);
 
-                transform.setPosition(position);
+                if (changed)
+                    transform.setPosition(position);
             }
             {
+                bool changed = false;
                 glm::vec3 rotation = transform.getRotationEuler();
 
                 const float rotDragSpeed = 0.5f;
                 ImGui::Text("Rotation");
                 ImGui::SameLine(ImGui::GetWindowContentRegionWidth() - (15 * 3 + newWidth * 3 + 27));
                 ImGui::SetNextItemWidth(15);
-                ImGui::DragFloat("##XRot", &rotation.x, rotDragSpeed, 0, 0, "X");
+                changed |= ImGui::DragFloat("##XRot", &rotation.x, rotDragSpeed, 0, 0, "X");
                 ImGui::SameLine();
-                ImGui::InputFloat("##XRotInput", &rotation.x, 0, 0, "%.2f", flags);
-                ImGui::SameLine();
-                ImGui::SetNextItemWidth(15);
-                ImGui::DragFloat("##YRot", &rotation.y, rotDragSpeed, 0, 0, "Y");
-                ImGui::SameLine();
-                ImGui::InputFloat("##YRotInput", &rotation.y, 0, 0, "%.2f", flags);
+                changed |= ImGui::InputFloat("##XRotInput", &rotation.x, 0, 0, "%.2f", flags);
                 ImGui::SameLine();
                 ImGui::SetNextItemWidth(15);
-                ImGui::DragFloat("##ZRot", &rotation.z, rotDragSpeed, 0, 0, "Z");
+                changed |= ImGui::DragFloat("##YRot", &rotation.y, rotDragSpeed, 0, 0, "Y");
                 ImGui::SameLine();
-                ImGui::InputFloat("##ZRotInput", &rotation.z, 0, 0, "%.2f", flags);
+                changed |= ImGui::InputFloat("##YRotInput", &rotation.y, 0, 0, "%.2f", flags);
+                ImGui::SameLine();
+                ImGui::SetNextItemWidth(15);
+                changed |= ImGui::DragFloat("##ZRot", &rotation.z, rotDragSpeed, 0, 0, "Z");
+                ImGui::SameLine();
+                changed |= ImGui::InputFloat("##ZRotInput", &rotation.z, 0, 0, "%.2f", flags);
 
-                transform.setRotation(glm::quat(rotation));
+                if (changed)
+                    transform.setRotation(glm::quat(rotation));
             }
             {
+                bool changed = false;
                 glm::vec3 scale = transform.getScale();
 
                 const float scaleDragSpeed = 0.02f;
                 ImGui::Text("Scale");
                 ImGui::SameLine(ImGui::GetWindowContentRegionWidth() - (15 * 3 + newWidth * 3 + 27));
                 ImGui::SetNextItemWidth(15);
-                ImGui::DragFloat("##XSca", &scale.x, scaleDragSpeed, 0, 0, "X");
+                changed |= ImGui::DragFloat("##XSca", &scale.x, scaleDragSpeed, 0, 0, "X");
                 ImGui::SameLine();
-                ImGui::InputFloat("##XScaInput", &scale.x, 0, 0, "%.2f", flags);
-                ImGui::SameLine();
-                ImGui::SetNextItemWidth(15);
-                ImGui::DragFloat("##YSca", &scale.y, scaleDragSpeed, 0, 0, "Y");
-                ImGui::SameLine();
-                ImGui::InputFloat("##YScaInput", &scale.y, 0, 0, "%.2f", flags);
+                changed |= ImGui::InputFloat("##XScaInput", &scale.x, 0, 0, "%.2f", flags);
                 ImGui::SameLine();
                 ImGui::SetNextItemWidth(15);
-                ImGui::DragFloat("##ZSca", &scale.z, scaleDragSpeed, 0, 0, "Z");
+                changed |= ImGui::DragFloat("##YSca", &scale.y, scaleDragSpeed, 0, 0, "Y");
                 ImGui::SameLine();
-                ImGui::InputFloat("##ZScaInput", &scale.z, 0, 0, "%.2f", flags);
+                changed |= ImGui::InputFloat("##YScaInput", &scale.y, 0, 0, "%.2f", flags);
+                ImGui::SameLine();
+                ImGui::SetNextItemWidth(15);
+                changed |= ImGui::DragFloat("##ZSca", &scale.z, scaleDragSpeed, 0, 0, "Z");
+                ImGui::SameLine();
+                changed |= ImGui::InputFloat("##ZScaInput", &scale.z, 0, 0, "%.2f", flags);
 
-                transform.setScale(scale);
+                if (changed)
+                    transform.setScale(scale);
             }
             {
+                bool changed = false;
                 glm::bvec3 mirror = transform.getMirror();
 
                 ImGui::Text("Mirror");
                 ImGui::SameLine(ImGui::GetWindowContentRegionWidth() - (15 * 3 + newWidth * 3 + 27));
                 ImGui::SetNextItemWidth(15);
-                ImGui::Checkbox("X##XMir", &mirror.x);
+                changed |= ImGui::Checkbox("X##XMir", &mirror.x);
                 ImGui::SameLine();
                 ImGui::SetNextItemWidth(15);
-                ImGui::Checkbox("Y##YMir", &mirror.y);
+                changed |= ImGui::Checkbox("Y##YMir", &mirror.y);
                 ImGui::SameLine();
                 ImGui::SetNextItemWidth(15);
-                ImGui::Checkbox("Z##ZMir", &mirror.z);
-                
-                transform.setMirror(mirror);
+                changed |= ImGui::Checkbox("Z##ZMir", &mirror.z);
+
+                if (changed)
+                    transform.setMirror(mirror);
             }
 
             ImGui::PopItemWidth();
