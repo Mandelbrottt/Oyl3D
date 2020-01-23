@@ -9,7 +9,7 @@ namespace oyl
 {
     Ref<Shader> Shader::s_invalid;
     
-    std::unordered_map<CacheAlias, Ref<Shader>> Shader::s_cache;
+    std::map<CacheAlias, Ref<Shader>> Shader::s_cache;
 
     Ref<Shader> Shader::create(const std::vector<ShaderInfo>& infos)
     {
