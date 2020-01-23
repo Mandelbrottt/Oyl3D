@@ -68,8 +68,8 @@
         },
         "RigidBody": {
             "Friction": 5.0,
-            "Mass": 1.0,
-            "Properties": 63
+            "Mass": 0.0,
+            "Properties": 127
         },
         "Transform": {
             "Mirror": {
@@ -78,9 +78,9 @@
                 "Z": false
             },
             "Position": {
-                "X": 0.027547240257263184,
-                "Y": 3.334862232208252,
-                "Z": 0.9852830171585083
+                "X": 2.2581946849823,
+                "Y": 0.530284583568573,
+                "Z": -1.312644124031067
             },
             "Rotation": {
                 "qW": 1.0,
@@ -270,7 +270,22 @@
     },
     "Plane": {
         "Collidable": {
-            "Shapes": []
+            "Shapes": [
+                {
+                    "Center": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Size": [
+                        10.0,
+                        0.009999999776482582,
+                        10.0
+                    ],
+                    "Trigger": false,
+                    "Type": 0
+                }
+            ]
         },
         "Parent": null,
         "Renderable": {
@@ -281,6 +296,11 @@
             "Mesh": {
                 "FilePath": "res\\assets\\models\\plane.obj"
             }
+        },
+        "RigidBody": {
+            "Friction": 0.5,
+            "Mass": 0.0,
+            "Properties": 98
         },
         "Transform": {
             "Mirror": {
@@ -342,44 +362,8 @@
         }
     },
     "Player Camera 2": {
-        "Parent": null,
-        "Transform": {
-            "Mirror": {
-                "X": false,
-                "Y": false,
-                "Z": false
-            },
-            "Position": {
-                "X": 0.0,
-                "Y": 0.0,
-                "Z": 0.9049392938613892
-            },
-            "Rotation": {
-                "qW": 1.0,
-                "qX": 0.0,
-                "qY": 0.0,
-                "qZ": 0.0
-            },
-            "Scale": {
-                "X": 1.0,
-                "Y": 1.0,
-                "Z": 1.0
-            }
-        }
-    },
-    "Ship": {
-        "Collidable": {
-            "Shapes": []
-        },
-        "Parent": null,
-        "Renderable": {
-            "Enabled": true,
-            "Material": {
-                "Alias": "shipMat"
-            },
-            "Mesh": {
-                "FilePath": "res\\assets\\models\\ship.obj"
-            }
+        "Parent": {
+            "Name": "Container"
         },
         "Transform": {
             "Mirror": {
@@ -388,9 +372,9 @@
                 "Z": false
             },
             "Position": {
-                "X": 0.0,
-                "Y": 0.0,
-                "Z": 0.0
+                "X": -0.027547240257263184,
+                "Y": -0.023946285247802734,
+                "Z": 3.6298446655273438
             },
             "Rotation": {
                 "qW": 1.0,
@@ -407,7 +391,18 @@
     },
     "Sphere 1": {
         "Collidable": {
-            "Shapes": []
+            "Shapes": [
+                {
+                    "Center": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Radius": 0.5,
+                    "Trigger": false,
+                    "Type": 1
+                }
+            ]
         },
         "Parent": null,
         "Renderable": {
@@ -418,6 +413,11 @@
             "Mesh": {
                 "FilePath": "res\\assets\\models\\sphere.obj"
             }
+        },
+        "RigidBody": {
+            "Friction": 0.5,
+            "Mass": 1.0,
+            "Properties": 98
         },
         "Transform": {
             "Mirror": {
@@ -445,7 +445,18 @@
     },
     "Sphere 2": {
         "Collidable": {
-            "Shapes": []
+            "Shapes": [
+                {
+                    "Center": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Radius": 0.5,
+                    "Trigger": false,
+                    "Type": 1
+                }
+            ]
         },
         "Parent": null,
         "Renderable": {
@@ -457,6 +468,11 @@
                 "FilePath": "res\\assets\\models\\sphere.obj"
             }
         },
+        "RigidBody": {
+            "Friction": 0.5,
+            "Mass": 1.0,
+            "Properties": 98
+        },
         "Transform": {
             "Mirror": {
                 "X": false,
@@ -465,7 +481,7 @@
             },
             "Position": {
                 "X": 1.7106571197509766,
-                "Y": 5.217710018157959,
+                "Y": 16.83890724182129,
                 "Z": -1.2851614952087402
             },
             "Rotation": {

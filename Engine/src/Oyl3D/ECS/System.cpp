@@ -610,14 +610,21 @@ namespace oyl
                     //m_world->removeRigidBody(m_rigidBodies[entity]->body.get());
                     //this->addRigidBody(entity, transform, rigidBody);
                     
-                    btTransform t = cachedBody.body->getWorldTransform();
+                    btTransform t;
+                    if (cachedBody.body->getCollisionFlags() & btCollisionObject::CF_KINEMATIC_OBJECT)
+                        cachedBody.motion->getWorldTransform(t);
+                    else
+                        t = cachedBody.body->getWorldTransform();
 
                     t.setOrigin(btVector3(transform.getPositionXGlobal(),
                                           transform.getPositionYGlobal(),
                                           transform.getPositionZGlobal()));
                     
-                    cachedBody.body->setWorldTransform(t);
-
+                    if (cachedBody.body->getCollisionFlags() & btCollisionObject::CF_KINEMATIC_OBJECT)
+                        cachedBody.motion->setWorldTransform(t);
+                    else
+                        cachedBody.body->setWorldTransform(t);
+                    
                     transform.m_isPositionOverridden = false;
 
                     // TODO: Recursively recalculate every child transform
@@ -670,6 +677,7 @@ namespace oyl
                     {
                         flags |= btRigidBody::CF_KINEMATIC_OBJECT;
                         cachedBody.body->setActivationState(DISABLE_DEACTIVATION);
+                        cachedBody.body->activate(true);
                         cachedBody.body->setMassProps(0.0f, btVector3(0.0f, 0.0f, 0.0f));
                         cachedBody.body->setLinearVelocity({ 0.0f, 0.0f, 0.0f });
                         cachedBody.body->setAngularVelocity({ 0.0f, 0.0f, 0.0f });
@@ -746,6 +754,9 @@ namespace oyl
             {
                 auto& transform = view.get<Transform>(entity);
                 auto& rigidBody = view.get<RigidBody>(entity);
+
+                if (rigidBody.getProperty(RigidBody::IS_KINEMATIC))
+                    continue;
 
                 RigidBodyInfo& cachedBody = *m_rigidBodies[entity];
                 

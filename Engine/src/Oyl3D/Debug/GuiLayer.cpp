@@ -852,8 +852,7 @@ namespace oyl::internal
                 ImGui::SameLine();
                 ImGui::InputFloat("##ZPosInput", &position.z, 0, 0, "%.2f", flags);
 
-                if (position != transform.getPosition())
-                    transform.setPosition(position);
+                transform.setPosition(position);
             }
             {
                 glm::vec3 rotation = transform.getRotationEuler();
@@ -876,8 +875,7 @@ namespace oyl::internal
                 ImGui::SameLine();
                 ImGui::InputFloat("##ZRotInput", &rotation.z, 0, 0, "%.2f", flags);
 
-                if (rotation != transform.getRotationEuler())
-                    transform.setRotationEuler(rotation);
+                transform.setRotation(glm::quat(rotation));
             }
             {
                 glm::vec3 scale = transform.getScale();
@@ -900,8 +898,7 @@ namespace oyl::internal
                 ImGui::SameLine();
                 ImGui::InputFloat("##ZScaInput", &scale.z, 0, 0, "%.2f", flags);
 
-                if (scale != transform.getScale())
-                    transform.setScale(scale);
+                transform.setScale(scale);
             }
             {
                 glm::bvec3 mirror = transform.getMirror();
@@ -917,8 +914,7 @@ namespace oyl::internal
                 ImGui::SetNextItemWidth(15);
                 ImGui::Checkbox("Z##ZMir", &mirror.z);
                 
-                if (mirror != transform.getMirror())
-                    transform.setMirror(mirror);
+                transform.setMirror(mirror);
             }
 
             ImGui::PopItemWidth();
@@ -1278,11 +1274,14 @@ namespace oyl::internal
             
             // TODO: Add more property checkboxes
             bool useGravity = rb.getProperty(RigidBody::USE_GRAVITY);
-            ImGui::Text("Use Gravity");
-            ImGui::SameLine();
-            ImGui::Checkbox("##InspectorRigidBodyGravityCheckbox", &useGravity);
+            ImGui::Checkbox("Use Gravity##InspectorRigidBodyGravityCheckbox", &useGravity);
             if (useGravity != rb.getProperty(RigidBody::USE_GRAVITY))
                 rb.setProperties(RigidBody::USE_GRAVITY, useGravity);
+
+            bool isKinematic = rb.getProperty(RigidBody::IS_KINEMATIC);
+            ImGui::Checkbox("Is Kinematic##InspectorRigidBodyKinematicCheckbox", &isKinematic);
+            if (isKinematic != rb.getProperty(RigidBody::IS_KINEMATIC))
+                rb.setProperties(RigidBody::IS_KINEMATIC, isKinematic);
 
             float mass = rb.getMass();
             ImGui::Text("Mass");
@@ -1941,25 +1940,28 @@ namespace oyl::internal
                     case ImGuizmo::TRANSLATE:
                     {
                         //UniqueRef<EditorTranslateEntityCommand>
-                        model.m_localPosition        = tComponents[0];
-                        model.m_isPositionOverridden = true;
+                        model.setPosition(tComponents[0]);
+                        //model.m_localPosition        = tComponents[0];
+                        //model.m_isPositionOverridden = true;
                         break;
                     }
                     case ImGuizmo::ROTATE:
                     {
-                        model.m_localRotation        = glm::quat(radians(tComponents[1]));
-                        model.m_isRotationOverridden = true;
+                        model.setRotation(glm::quat(radians(tComponents[1])));
+                        //model.m_localRotation        = glm::quat(radians(tComponents[1]));
+                        //model.m_isRotationOverridden = true;
                         break;
                     }
                     case ImGuizmo::SCALE:
                     {
-                        model.m_localScale        = tComponents[2];
-                        model.m_isScaleOverridden = true;
+                        model.setScale(tComponents[2]);
+                        //model.m_localScale        = tComponents[2];
+                        //model.m_isScaleOverridden = true;
                         break;
                     }
                 }
 
-                model.m_isLocalDirty = true;
+                //model.m_isLocalDirty = true;
             }
         }
     }

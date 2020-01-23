@@ -494,13 +494,13 @@ namespace oyl::internal
 
         auto& rb = registry.get_or_assign<RigidBody>(entity);
 
-        if (auto it = j.find("Friction"); it != j.end())
+        if (auto it = j.find("Friction"); it != j.end() && it->is_number_float())
             rb.setFriction(it->get<float>());
 
-        if (auto it = j.find("Mass"); it != j.end())
+        if (auto it = j.find("Mass"); it != j.end() && it->is_number_float())
             rb.setMass(it->get<float>());
 
-        if (auto it = j.find("Properties"); it != j.end())
+        if (auto it = j.find("Properties"); it != j.end() && it->is_number_unsigned())
             rb.setPropertyFlags(it->get<uint>());
     }
 
