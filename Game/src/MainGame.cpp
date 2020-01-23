@@ -56,13 +56,13 @@ public:
             so.name = "Container";
 
             auto& rb = registry->assign<component::RigidBody>(e);
-            rb.setMass(1.0f);
+            rb.setMass(0.0f);
             rb.setFriction(5.0f);
             rb.setProperties(component::RigidBody::FREEZE_ROTATION_X |
                              component::RigidBody::FREEZE_ROTATION_Y |
                              component::RigidBody::FREEZE_ROTATION_Z, true);
 
-            //rb.setProperties(component::RigidBody::IS_KINEMATIC, true);
+            rb.setProperties(component::RigidBody::IS_KINEMATIC, true);
 
             //rb.setProperties(component::RigidBody::DETECT_COLLISIONS, false);
 
