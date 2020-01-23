@@ -1011,7 +1011,7 @@
             "Position": {
                 "X": 0.0,
                 "Y": 0.0,
-                "Z": -0.5903181433677673
+                "Z": -0.5463132858276367
             },
             "Rotation": {
                 "qW": 1.0,
@@ -1083,7 +1083,7 @@
             "Position": {
                 "X": 3.0,
                 "Y": -4.179999828338623,
-                "Z": 2.0
+                "Z": 2.4755020141601563
             },
             "Rotation": {
                 "qW": 1.0,
@@ -1120,7 +1120,7 @@
             "Position": {
                 "X": 3.0,
                 "Y": -4.179999828338623,
-                "Z": 2.0
+                "Z": 2.4755020141601563
             },
             "Rotation": {
                 "qW": 1.0,
@@ -4215,6 +4215,80 @@
             }
         }
     },
+    "Stair Trim": {
+        "Parent": {
+            "Name": "Boat Root R"
+        },
+        "Renderable": {
+            "Enabled": true,
+            "Material": {
+                "Alias": "planks"
+            },
+            "Mesh": {
+                "FilePath": "res\\assets\\models\\StairTrim.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": 3.0,
+                "Y": 0.0,
+                "Z": 2.0399999618530273
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Stair Trim 1": {
+        "Parent": {
+            "Name": "Boat Root L"
+        },
+        "Renderable": {
+            "Enabled": true,
+            "Material": {
+                "Alias": "planks"
+            },
+            "Mesh": {
+                "FilePath": "res\\assets\\models\\StairTrim.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": 3.0,
+                "Y": 0.0,
+                "Z": 2.0399999618530273
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
     "Stairs": {
         "Parent": {
             "Name": "Boat Root R"
@@ -4299,7 +4373,7 @@
                 "Alias": "atlasMaterial"
             },
             "Mesh": {
-                "FilePath": "res\\assets\\models\\stairs.obj"
+                "FilePath": "res\\assets\\models\\stairsDown.obj"
             }
         },
         "Transform": {
@@ -4309,9 +4383,9 @@
                 "Z": false
             },
             "Position": {
-                "X": -14.879182815551758,
-                "Y": -3.9105474948883057,
-                "Z": -4.120683193206787
+                "X": -13.358362197875977,
+                "Y": -4.134646415710449,
+                "Z": 0.1790142059326172
             },
             "Rotation": {
                 "qW": 1.0,
@@ -4410,7 +4484,7 @@
                 "Alias": "atlasMaterial"
             },
             "Mesh": {
-                "FilePath": "res\\assets\\models\\stairs.obj"
+                "FilePath": "res\\assets\\models\\stairsDown.obj"
             }
         },
         "Transform": {
@@ -4420,9 +4494,9 @@
                 "Z": false
             },
             "Position": {
-                "X": -14.879182815551758,
-                "Y": -3.9105474948883057,
-                "Z": -4.120683193206787
+                "X": -13.358362197875977,
+                "Y": -4.134646415710449,
+                "Z": 0.1790142059326172
             },
             "Rotation": {
                 "qW": 1.0,
