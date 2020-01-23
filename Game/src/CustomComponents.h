@@ -223,8 +223,8 @@ struct CleaningQuicktimeEventIndicator
 
 	bool isActive = false;
 
-	float LOWER_BOUND_FOR_SUCCESS = 0.4f;
-	float UPPER_BOUND_FOR_SUCCESS = 0.6f;
+	float LOWER_BOUND_FOR_SUCCESS = 0.37f;
+	float UPPER_BOUND_FOR_SUCCESS = 0.63f;
 
 	MoveableUsingLerp lerpInformation;
 

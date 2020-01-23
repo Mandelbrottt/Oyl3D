@@ -1,0 +1,11 @@
+{
+    "Material": {
+        "Alias": null,
+        "Shader": null,
+        "Textures": {
+            "Albedo": null,
+            "Normal": null,
+            "Specular": null
+        }
+    }
+}
