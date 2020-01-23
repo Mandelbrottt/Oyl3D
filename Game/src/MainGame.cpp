@@ -95,7 +95,6 @@ public:
             {
                 glm::vec3 ss = pc.worldToScreenSpace(glm::vec3(0.0f));
                 t.setPosition(ss);
-                OYL_LOG("(0, 0, 0) in screen space is ({0}, {1}, {2}", ss.x, ss.y, ss.z);
             });
         });
     }
