@@ -4,7 +4,7 @@
 
 enum CustomEventsCategories : int
 {
-	CategoryPlayer = (int) oyl::EventCategory::CustomStart,
+	CategoryPlayer = (int)oyl::EventCategory::CustomStart,
 	CategoryCannon,
 	CategoryGarbagePile,
 	CategoryCannonball,
@@ -13,7 +13,7 @@ enum CustomEventsCategories : int
 };
 enum CustomEventTypes : int
 {
-    TypePlayerMove = (int) oyl::EventType::CustomStart,
+    TypePlayerMove = (int)oyl::EventType::CustomStart,
 	TypePlayerInteractResult,
     TypePlayerInteractionRequest,
 	TypePlayerDropItem,
@@ -29,7 +29,6 @@ enum CustomEventTypes : int
 	TypeCancelQuicktimeCleaningEvent
 };
 
-
 OYL_EVENT_STRUCT(PlayerMoveEvent, (oyl::EventType) TypePlayerMove, (oyl::EventCategory) CategoryPlayer,
 	{
 		entt::entity playerEntity;
@@ -39,7 +38,7 @@ OYL_EVENT_STRUCT(PlayerMoveEvent, (oyl::EventType) TypePlayerMove, (oyl::EventCa
 OYL_EVENT_STRUCT(PlayerInteractResultEvent, (oyl::EventType) TypePlayerInteractResult, (oyl::EventCategory) CategoryPlayer,
 	{
 		PlayerInteractionResult interactionType;
-		int playerNum;
+		PlayerNumber playerNum;
 	});
 
 OYL_EVENT_STRUCT(PlayerInteractionRequestEvent, (oyl::EventType) TypePlayerInteractionRequest, (oyl::EventCategory) CategoryPlayer,
@@ -104,5 +103,5 @@ OYL_EVENT_STRUCT(QuicktimeCleaningEventResultEvent, (oyl::EventType) TypeQuickti
 
 OYL_EVENT_STRUCT(CancelQuicktimeCleaningEventEvent, (oyl::EventType) TypeCancelQuicktimeCleaningEvent, (oyl::EventCategory) CategoryQuicktimeCleaningEvent,
 	{
-		int playerNum;
+		PlayerNumber playerNum;
 	});

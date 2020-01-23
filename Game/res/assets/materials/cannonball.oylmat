@@ -14,12 +14,13 @@
         },
         "Textures": {
             "Albedo": {
-                "Alias": "tempSpec",
+                "Alias": "cannonballTemp",
                 "FilePath": "res\\assets\\textures\\cannonballTemp.png",
                 "guid": null
             },
             "Normal": null,
             "Specular": {
+                "Alias": "tempSpec",
                 "FilePath": "res\\assets\\textures\\tempSpec.jpg",
                 "guid": null
             }
