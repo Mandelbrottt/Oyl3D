@@ -247,7 +247,7 @@ public:
 			uiType.type = PlayerInteractionResult::cannonFiringSoon;
 
 			auto& HUDElement = registry->assign<PlayerHUDElement>(e);
-			HUDElement.positionWhenActive = glm::vec3(5.0f, 2.0f, 0.0f);
+			HUDElement.positionWhenActive = glm::vec3(0.0f, 2.0f, 0.0f);
 			HUDElement.playerNum = 0;
 
             auto& so = registry->assign<component::EntityInfo>(e);
@@ -350,7 +350,7 @@ public:
 			CleaningQuicktimeEventIndicator cleaningQuicktimeEventIndicator;
 			cleaningQuicktimeEventIndicator.lerpInformation.startPos = glm::vec3(-4.95f, 3.6f, -1.0f);
 			cleaningQuicktimeEventIndicator.lerpInformation.destinationPos = glm::vec3(4.95f, 3.6f, -1.0f);
-			cleaningQuicktimeEventIndicator.lerpInformation.speed = 1.0f;
+			cleaningQuicktimeEventIndicator.lerpInformation.speed = 2.2f;
 
 			cleaningQuicktimeEventIndicator.cleaningQuicktimeEventBackground = cleaningQuicktimeEventBackgroundEntity;
 			registry->assign<CleaningQuicktimeEventIndicator>(cleaningQuicktimeEventIndicatorEntity, cleaningQuicktimeEventIndicator);
