@@ -2906,7 +2906,7 @@
             }
         }
     },
-    "Player": {
+    "Player0 Blue": {
         "Parent": null,
         "Renderable": {
             "Enabled": true,
@@ -2924,9 +2924,9 @@
                 "Z": false
             },
             "Position": {
-                "X": -2.3286333084106445,
-                "Y": 0.800000011920929,
-                "Z": 0.6502124071121216
+                "X": 1.4504601955413818,
+                "Y": 0.5463722348213196,
+                "Z": -0.25801706314086914
             },
             "Rotation": {
                 "qW": 1.0,
@@ -2937,21 +2937,77 @@
             "Scale": {
                 "X": 1.0,
                 "Y": 1.0,
-                "Z": 1.0000001192092896
+                "Z": 1.0
             }
         }
     },
-    "Player Camera": {
+    "Player0 Camera": {
         "Parent": {
-            "Name": "Player"
+            "Name": "Player0 Blue"
         },
+        "Renderable": null,
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": 0.0,
+                "Y": 0.800000011920929,
+                "Z": -0.5
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Player1 Camera": {
+        "Parent": {
+            "Name": "Player2 Red"
+        },
+        "Renderable": null,
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": 0.0,
+                "Y": 0.800000011920929,
+                "Z": -0.5
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Player2 Blue": {
+        "Parent": null,
         "Renderable": {
             "Enabled": true,
             "Material": {
-                "Alias": null
+                "Alias": "container"
             },
             "Mesh": {
-                "FilePath": null
+                "FilePath": "res\\assets\\models\\cube.obj"
             }
         },
         "Transform": {
@@ -2961,9 +3017,9 @@
                 "Z": false
             },
             "Position": {
-                "X": 0.0,
-                "Y": 0.7667633295059204,
-                "Z": -0.46485698223114014
+                "X": -3.6219992637634277,
+                "Y": 0.5343247056007385,
+                "Z": 0.5091124773025513
             },
             "Rotation": {
                 "qW": 1.0,
@@ -2972,7 +3028,135 @@
                 "qZ": 0.0
             },
             "Scale": {
-                "X": 0.9999999403953552,
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Player2 Camera": {
+        "Parent": {
+            "Name": "Player2 Blue"
+        },
+        "Renderable": null,
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": 0.0,
+                "Y": 0.800000011920929,
+                "Z": -0.5
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Player2 Red": {
+        "Parent": null,
+        "Renderable": {
+            "Enabled": true,
+            "Material": {
+                "Alias": "container"
+            },
+            "Mesh": {
+                "FilePath": "res\\assets\\models\\cube.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -5.52280855178833,
+                "Y": 0.5179259777069092,
+                "Z": 14.557616233825684
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Player3 Camera": {
+        "Parent": {
+            "Name": "Player3 Red"
+        },
+        "Renderable": null,
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": 0.0,
+                "Y": 0.800000011920929,
+                "Z": -0.5
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Player3 Red": {
+        "Parent": null,
+        "Renderable": {
+            "Enabled": true,
+            "Material": {
+                "Alias": "container"
+            },
+            "Mesh": {
+                "FilePath": "res\\assets\\models\\cube.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -0.15425783395767212,
+                "Y": 0.5259593725204468,
+                "Z": 14.10324478149414
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
                 "Y": 1.0,
                 "Z": 1.0
             }

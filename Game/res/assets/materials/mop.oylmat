@@ -20,7 +20,7 @@
             },
             "Normal": null,
             "Specular": {
-                "FilePath": "res\\assets\\textures\\shipAtlas.png",
+                "FilePath": "res\\assets\\textures\\tempSpec.jpg",
                 "guid": null
             }
         }
