@@ -1,7 +1,5 @@
 #include <Oyl3D.h>
 
-#include "SandboxLayer.h"
-
 using namespace oyl;
 
 class MainLayer : public Layer
@@ -12,28 +10,94 @@ public:
     void onEnter() override
     {
         listenForEventType(EventType::KeyReleased);
-        listenForEventType(EventType::GamepadConnected);
-        listenForEventType(EventType::GamepadDisconnected);
 
-        listenForEventType(EventType::PhysicsTriggerEnter);
-        listenForEventType(EventType::PhysicsTriggerStay);
-        listenForEventType(EventType::PhysicsTriggerExit);
-
-        listenForEventType(EventType::PhysicsCollisionEnter);
-        listenForEventType(EventType::PhysicsCollisionStay);
-        listenForEventType(EventType::PhysicsCollisionExit);
-        
         {
             auto e = registry->create();
-            registry->assign<component::Transform>(e);
+
+            auto& l = registry->assign<component::PointLight>(e);
+            l.ambient = { 0.3f, 0.3f, 0.3f };
+            l.diffuse = { 1.0f, 1.0f, 1.0f };
+            l.specular = { 1.0f, 1.0f, 1.0f };
+            
+            auto& so = registry->assign<component::EntityInfo>(e);
+            so.name = "Light 1";
+
+            auto& re = registry->assign<component::Renderable>(e);
+            re.cullingMask = 0b0010;
+        }
+        {
+            auto e = registry->create();
 
             auto& camera = registry->assign<component::PlayerCamera>(e);
-            camera.player = 0;
+            camera.player = PlayerNumber::One;
             camera.skybox = TextureCubeMap::get(DEFAULT_SKYBOX_ALIAS);
+
+            camera.cullingMask = 0b0001;
             
             auto& so = registry->assign<component::EntityInfo>(e);
             so.name = "Player Camera";
         }
+        {
+            auto e = registry->create();
+
+            auto& camera = registry->assign<component::PlayerCamera>(e);
+            camera.player = PlayerNumber::Two;
+            camera.skybox = TextureCubeMap::get(DEFAULT_SKYBOX_ALIAS);
+
+            camera.cullingMask = 0b0010;
+
+            auto& so = registry->assign<component::EntityInfo>(e);
+            so.name = "Player Camera 2";
+        }
+        {
+            entt::entity e = registry->create();
+
+            auto& so = registry->assign<component::EntityInfo>(e);
+            so.name = "Container";
+
+            auto& rb = registry->assign<component::RigidBody>(e);
+            rb.setMass(1.0f);
+            rb.setFriction(5.0f);
+            rb.setProperties(component::RigidBody::FREEZE_ROTATION_X |
+                             component::RigidBody::FREEZE_ROTATION_Y |
+                             component::RigidBody::FREEZE_ROTATION_Z, true);
+
+            //rb.setProperties(component::RigidBody::IS_KINEMATIC, true);
+
+            //rb.setProperties(component::RigidBody::DETECT_COLLISIONS, false);
+
+            auto& cl = registry->assign<component::Collidable>(e);
+
+            auto& shi = cl.pushShape(ColliderType::Box); 
+            shi.box.setSize({ 1.0f, 1.0f, 1.0f });
+        }
+        {
+            auto e = registry->create();
+            auto& gr = registry->assign<component::GuiRenderable>(e);
+            gr.texture = Texture2D::get("archer");
+
+            gr.cullingMask = 0b0010;
+            
+            auto& ei = registry->assign<component::EntityInfo>(e);
+            ei.name = "Gui Renderable";
+        }
+    }
+
+    void onUpdate() override
+    {
+        using component::Transform;
+        using component::PlayerCamera;
+        using component::GuiRenderable;
+        auto view = registry->view<PlayerCamera>();
+        view.each([this](PlayerCamera& pc)
+        {
+            registry->view<GuiRenderable, Transform>().each([&](GuiRenderable& gr, Transform& t)
+            {
+                glm::vec3 ss = pc.worldToScreenSpace(glm::vec3(0.0f));
+                t.setPosition(ss);
+                OYL_LOG("(0, 0, 0) in screen space is ({0}, {1}, {2}", ss.x, ss.y, ss.z);
+            });
+        });
     }
 
     bool onEvent(const Event& event) override
@@ -59,39 +123,6 @@ public:
                 }
                 break;
             }
-            case EventType::PhysicsTriggerEnter:
-            {
-                auto ev = event_cast<PhysicsCollisionStayEvent>(event);
-
-                component::EntityInfo& info1 = registry->get<component::EntityInfo>(ev.entity1);
-                component::EntityInfo& info2 = registry->get<component::EntityInfo>(ev.entity2);
-
-                OYL_LOG_INFO("Entity \"{0}\" Started Colliding with Entity \"{1}\"", info1.name, info2.name);
-
-                break;
-            }
-            case EventType::PhysicsTriggerExit:
-            {
-                auto ev = event_cast<PhysicsCollisionStayEvent>(event);
-
-                component::EntityInfo& info1 = registry->get<component::EntityInfo>(ev.entity1);
-                component::EntityInfo& info2 = registry->get<component::EntityInfo>(ev.entity2);
-
-                OYL_LOG_INFO("Entity \"{0}\" Stopped Colliding with Entity \"{1}\"", info1.name, info2.name);
-
-                break;
-            }
-            case EventType::PhysicsTriggerStay:
-            {
-                auto ev = event_cast<PhysicsCollisionStayEvent>(event);
-                
-                component::EntityInfo& info1 = registry->get<component::EntityInfo>(ev.entity1);
-                component::EntityInfo& info2 = registry->get<component::EntityInfo>(ev.entity2);
-
-                OYL_LOG_INFO("Entity \"{0}\" Stayed Colliding with Entity \"{1}\"", info1.name, info2.name);
-
-                break;
-            }
         }
         return false;
     }
@@ -105,7 +136,6 @@ public:
     virtual void onEnter() override
     {
         pushLayer(MainLayer::create());
-        pushLayer(SandboxLayer::create());
     }
 };
 
