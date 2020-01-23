@@ -1794,6 +1794,13 @@ namespace oyl::internal
     
             if (ImGui::IsItemClicked(0) && !ImGuizmo::IsOver())
                 m_currentSelection = Selectable(entt::entity(entt::null));
+
+            if (ImGui::IsMouseClicked(1) || ImGui::IsMouseReleased(1))
+            {
+                EditorCameraMoveRequestEvent event;
+                event.doMove = ImGui::IsItemClicked(1);
+                postEvent(event);
+            }
     
             drawTransformGizmo();
         }

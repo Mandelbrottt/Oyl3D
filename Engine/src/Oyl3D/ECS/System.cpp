@@ -1166,12 +1166,13 @@ namespace oyl
 
         void EditorCameraSystem::onEnter()
         {
-            listenForEventType(EventType::KeyPressed);
-            listenForEventType(EventType::KeyReleased);
-            listenForEventType(EventType::MouseMoved);
-            listenForEventType(EventType::MousePressed);
-            listenForEventType(EventType::MouseReleased);
+            //listenForEventType(EventType::KeyPressed);
+            //listenForEventType(EventType::KeyReleased);
+            //listenForEventType(EventType::MouseMoved);
+            //listenForEventType(EventType::MousePressed);
+            //listenForEventType(EventType::MouseReleased);
             listenForEventType(EventType::EditorViewportResized);
+            listenForEventType(EventType::EditorCameraMoveRequest);
 
             m_camera = Ref<Camera>::create();
             m_camera->setProjection(glm::perspective(glm::radians(60.0f), 16.0f / 9.0f, 0.1f, 1000.0f));
@@ -1224,8 +1225,6 @@ namespace oyl
             {
                 case EventType::KeyPressed:
                 {
-                    if (!m_doMoveCamera) break;
-
                     auto e = event_cast<KeyPressedEvent>(event);
                     if (!e.repeatCount)
                     {
@@ -1246,8 +1245,6 @@ namespace oyl
                 }
                 case EventType::KeyReleased:
                 {
-                    if (!m_doMoveCamera) break;
-                    
                     auto e = event_cast<KeyReleasedEvent>(event);
                     if (e.keycode == Key::W)
                         m_cameraMove.z += m_cameraMoveSpeed;
@@ -1265,40 +1262,35 @@ namespace oyl
                 }
                 case EventType::MouseMoved:
                 {
-                    if (!m_doMoveCamera) break;
-
                     auto e = event_cast<MouseMovedEvent>(event);
                     m_cameraRotate.y = e.dx;
                     m_cameraRotate.x = e.dy;
 
                     break;
                 }
-                case EventType::MousePressed:
+                case EventType::EditorCameraMoveRequest:
                 {
-                    auto e = event_cast<MousePressedEvent>(event);
-                    if (e.button == Mouse::Right)
+                    auto e = event_cast<EditorCameraMoveRequestEvent>(event);
+                    CursorStateRequestEvent cursorRequest;
+                    if (e.doMove)
                     {
-                        m_doMoveCamera = true;
-
-                        CursorStateRequestEvent cursorRequest;
+                        listenForEventType(EventType::MouseMoved);
+                        listenForEventType(EventType::KeyPressed);
+                        listenForEventType(EventType::KeyReleased);
                         cursorRequest.state = CursorState::Disabled;
-
-                        postEvent(cursorRequest);
                     }
-                    break;
-                }
-                case EventType::MouseReleased:
-                {
-                    auto e = event_cast<MouseReleasedEvent>(event);
-                    if (e.button == Mouse::Right)
+                    else
                     {
-                        m_doMoveCamera = false;
-
-                        CursorStateRequestEvent cursorRequest;
+                        ignoreEventType(EventType::MouseMoved);
+                        ignoreEventType(EventType::KeyPressed);
+                        ignoreEventType(EventType::KeyReleased);
                         cursorRequest.state = CursorState::Normal;
-
-                        postEvent(cursorRequest);
                     }
+
+                    if (m_doMoveCamera != e.doMove)
+                        postEvent(cursorRequest);
+                    m_doMoveCamera = e.doMove;
+
                     break;
                 }
                 case EventType::EditorViewportResized:
@@ -1306,6 +1298,8 @@ namespace oyl
                     auto e = event_cast<EditorViewportResizedEvent>(event);
                     glm::mat4 proj = glm::perspective(glm::radians(60.0f), e.width / e.height, 0.1f, 1000.0f);
                     m_camera->setProjection(proj);
+
+                    break;
                 }
             }
             return false;
