@@ -32,6 +32,10 @@ public:
 		this->listenForEventCategory(EventCategory::Gamepad);
 		this->listenForEventCategory((EventCategory) CategoryGarbagePile);
 
+		listenForEventType(EventType::PhysicsCollisionEnter);
+		listenForEventType(EventType::PhysicsCollisionStay);
+		listenForEventType(EventType::PhysicsCollisionExit);
+
 		scheduleSystemUpdate<PlayerSystem>();
 		scheduleSystemUpdate<CannonSystem>();
 		scheduleSystemUpdate<PlayerInteractionValidationSystem>();
@@ -63,10 +67,6 @@ public:
             auto& gui = registry->assign<component::GuiRenderable>(e);
             gui.texture = Texture2D::cache("res/assets/textures/gui/pushCannon.png");
         }
-
-        listenForEventType(EventType::PhysicsCollisionEnter);
-        listenForEventType(EventType::PhysicsCollisionStay);
-        listenForEventType(EventType::PhysicsCollisionExit);
         
         {
             auto e = registry->create();
@@ -300,38 +300,6 @@ public:
 		}
 
 		{
-			entt::entity e = registry->create();
-			auto& gui = registry->assign<component::GuiRenderable>(e);
-			gui.texture = Texture2D::cache("res/assets/textures/gui/VictoryScreen.jpg");
-
-			component::Transform winScreenTransform;
-			winScreenTransform.setPosition(glm::vec3(-100.0f, -100.0f, -200.0f));
-			registry->assign<component::Transform>(e, winScreenTransform);
-
-			auto& endScreen = registry->assign<EndScreen>(e);
-			endScreen.isLoseScreen = false;
-
-			auto& so = registry->assign<component::EntityInfo>(e);
-			so.name = "Win Screen";
-		}
-
-		{
-			entt::entity e = registry->create();
-			auto& gui = registry->assign<component::GuiRenderable>(e);
-			gui.texture = Texture2D::cache("res/assets/textures/gui/YouLose.jpg");
-
-			auto& endScreen = registry->assign<EndScreen>(e);
-			endScreen.isLoseScreen = true;
-
-			component::Transform loseScreenTransform;
-			loseScreenTransform.setPosition(glm::vec3(-100.0f, -100.0f, -200.0f));
-			registry->assign<component::Transform>(e, loseScreenTransform);
-
-			auto& so = registry->assign<component::EntityInfo>(e);
-			so.name = "Lose Screen";
-		}
-
-		{
 			for (int i = 0; i < 3; i++)
 			{
 				entt::entity e = registry->create();
@@ -394,6 +362,38 @@ public:
 			auto& indicatorSceneObject = registry->assign<component::EntityInfo>(cleaningQuicktimeEventIndicatorEntity);
 			indicatorSceneObject.name = "Cleaning Quicktime Event Indicator";
 		}
+
+		{
+			entt::entity e = registry->create();
+			auto& gui = registry->assign<component::GuiRenderable>(e);
+			gui.texture = Texture2D::cache("res/assets/textures/gui/VictoryScreen.jpg");
+
+			component::Transform winScreenTransform;
+			winScreenTransform.setPosition(glm::vec3(-100.0f, -100.0f, -200.0f));
+			registry->assign<component::Transform>(e, winScreenTransform);
+
+			auto& endScreen = registry->assign<EndScreen>(e);
+			endScreen.isLoseScreen = false;
+
+			auto& so = registry->assign<component::EntityInfo>(e);
+			so.name = "Win Screen";
+		}
+
+		{
+			entt::entity e = registry->create();
+			auto& gui = registry->assign<component::GuiRenderable>(e);
+			gui.texture = Texture2D::cache("res/assets/textures/gui/YouLose.jpg");
+
+			auto& endScreen = registry->assign<EndScreen>(e);
+			endScreen.isLoseScreen = true;
+
+			component::Transform loseScreenTransform;
+			loseScreenTransform.setPosition(glm::vec3(-100.0f, -100.0f, -200.0f));
+			registry->assign<component::Transform>(e, loseScreenTransform);
+
+			auto& so = registry->assign<component::EntityInfo>(e);
+			so.name = "Lose Screen";
+		}
 	}
 
 	void onUpdate() override
@@ -421,12 +421,15 @@ public:
 				if (Input::isKeyPressed(Key::D))
 					desiredMoveDirection += playerTransform.getRight();
 			}
+			
+			if (player.playerNum <= -1)
+			{
+				if (Input::getGamepadLeftStickY(player.playerNum) > 0.1f || Input::getGamepadLeftStickY(player.playerNum) < -0.1f)
+					desiredMoveDirection += Input::getGamepadLeftStickY(player.playerNum) * -playerTransform.getForward();
 
-			if (Input::getGamepadLeftStickY(player.playerNum) > 0.1f || Input::getGamepadLeftStickY(player.playerNum) < -0.1f)
-				desiredMoveDirection += Input::getGamepadLeftStickY(player.playerNum) * -playerTransform.getForward();
-
-			if (Input::getGamepadLeftStickX(player.playerNum) > 0.1f || Input::getGamepadLeftStickX(player.playerNum) < -0.1f)
-				desiredMoveDirection += Input::getGamepadLeftStickX(player.playerNum) * playerTransform.getRight();
+				if (Input::getGamepadLeftStickX(player.playerNum) > 0.1f || Input::getGamepadLeftStickX(player.playerNum) < -0.1f)
+					desiredMoveDirection += Input::getGamepadLeftStickX(player.playerNum) * playerTransform.getRight();
+			}
 
 		    //check if it's 0 because if we normalize a vector with 0 magnitude it breaks
 		    if (desiredMoveDirection == glm::vec3(0.0f))
@@ -434,53 +437,56 @@ public:
 			else
 				player.moveDirection = glm::normalize(desiredMoveDirection);
 
+			
 
-			//camera movement
-
-			glm::vec2 rightStick = Input::getGamepadRightStick(player.controllerNum);
-
-			//deadzone check
-			if (rightStick.x > 0.1f || rightStick.x < -0.1f)
+			if (player.playerNum <= -1)
 			{
-				playerTransform.rotate(glm::vec3(0.0f, -rightStick.x * 4.0f, 0.0f));
+				//camera movement
+				glm::vec2 rightStick = Input::getGamepadRightStick(player.controllerNum);
 
-				if (player.yRotationClamp > 1)
-				{
-					if (playerTransform.getRotationEulerY() < player.yRotationClamp)
-						playerTransform.setRotationEulerY(player.yRotationClamp);
-				}
-				else if (player.yRotationClamp < -1)
-				{
-					if (playerTransform.getRotationEulerY() > player.yRotationClamp)
-						playerTransform.setRotationEulerY(player.yRotationClamp);
-				}
-			}
-
-			auto playerCameraView = registry->view<component::PlayerCamera, component::Transform, component::Parent>();
-			for (auto& cameraEntity : playerCameraView)
-			{
-				auto& camera          = registry->get<component::PlayerCamera>(cameraEntity);
-				auto& cameraTransform = registry->get<component::Transform>(cameraEntity);
-				auto& cameraParent    = registry->get<component::Parent>(cameraEntity);
-
-				if (cameraParent.parent != playerEntity)
-					continue;
-				
 				//deadzone check
-				if (rightStick.y > 0.1f || rightStick.y < -0.1f)
+				if (rightStick.x > 0.1f || rightStick.x < -0.1f)
 				{
-					cameraTransform.rotate(glm::vec3(-rightStick.y * 4.0f, 0.0f, 0.0f));
+					playerTransform.rotate(glm::vec3(0.0f, -rightStick.x * 4.0f, 0.0f));
 
-					//clamp camera up/down rotation
-					float cameraRotationClampValue = 70.0f;
-
-					if (cameraTransform.getRotationEulerX() > cameraRotationClampValue)
-						cameraTransform.setRotationEulerX(cameraRotationClampValue);
-					else if (cameraTransform.getRotationEulerX() < -cameraRotationClampValue)
-						cameraTransform.setRotationEulerX(-cameraRotationClampValue);
+					if (player.yRotationClamp > 1)
+					{
+						if (playerTransform.getRotationEulerY() < player.yRotationClamp)
+							playerTransform.setRotationEulerY(player.yRotationClamp);
+					}
+					else if (player.yRotationClamp < -1)
+					{
+						if (playerTransform.getRotationEulerY() > player.yRotationClamp)
+							playerTransform.setRotationEulerY(player.yRotationClamp);
+					}
 				}
 
-				break;
+				auto playerCameraView = registry->view<component::PlayerCamera, component::Transform, component::Parent>();
+				for (auto& cameraEntity : playerCameraView)
+				{
+					auto& camera = registry->get<component::PlayerCamera>(cameraEntity);
+					auto& cameraTransform = registry->get<component::Transform>(cameraEntity);
+					auto& cameraParent = registry->get<component::Parent>(cameraEntity);
+
+					if (cameraParent.parent != playerEntity)
+						continue;
+
+					//deadzone check
+					if (rightStick.y > 0.1f || rightStick.y < -0.1f)
+					{
+						cameraTransform.rotate(glm::vec3(-rightStick.y * 4.0f, 0.0f, 0.0f));
+
+						//clamp camera up/down rotation
+						float cameraRotationClampValue = 70.0f;
+
+						if (cameraTransform.getRotationEulerX() > cameraRotationClampValue)
+							cameraTransform.setRotationEulerX(cameraRotationClampValue);
+						else if (cameraTransform.getRotationEulerX() < -cameraRotationClampValue)
+							cameraTransform.setRotationEulerX(-cameraRotationClampValue);
+					}
+
+					break;
+				}
 			}
 		}
 	}
