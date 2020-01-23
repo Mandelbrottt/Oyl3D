@@ -103,15 +103,14 @@ namespace oyl
             for (auto camera : camView)
             {
                 PlayerCamera& pc = camView.get<PlayerCamera>(camera);
-                
-                RenderCommand::setDrawRect(!!(pc.player & 1) * x, !(pc.player & 2) * y, width, height);
-                
-                pc.projection =
-                    glm::perspective(glm::radians(60.0f), (float) width / (float) height, 0.01f, 1000.0f);
 
-                glm::mat4 viewProj = pc.projection;
-                glm::mat4 tempView = camView.get<Transform>(camera).getMatrixGlobal();
-                viewProj *= glm::mat4(glm::inverse(glm::mat3(tempView)));
+                u32 playerNum = static_cast<u32>(pc.player);
+                RenderCommand::setDrawRect(!!(playerNum & 1) * x, !(playerNum & 2) * y, width, height);
+                
+                pc.aspect((float) width / (float) height);
+
+                glm::mat4 viewProj = pc.projectionMatrix();
+                viewProj *= glm::mat4(glm::mat3(pc.viewMatrix()));
                 
                 shader->bind();
                 shader->setUniformMat4("u_viewProjection", viewProj);
@@ -131,19 +130,17 @@ namespace oyl
                     
                     if (!isRenderableValid(mr))
                         break;
+
+                    if (!(mr.cullingMask & pc.cullingMask))
+                        continue;
                     
                     if (mr.material != boundMaterial)
                     {
                         boundMaterial = mr.material;
-
-                        glm::mat4 viewMatrix = camView.get<Transform>(camera).getMatrixGlobal();
-                        viewMatrix = inverse(viewMatrix);
-
-                        const glm::mat4& projectionMatrix = camView.get<PlayerCamera>(camera).projection;
                         
-                        boundMaterial->setUniformMat4("u_view", viewMatrix);
-                        boundMaterial->setUniformMat4("u_viewProjection", projectionMatrix * viewMatrix);
-                        glm::mat4 viewNormal = inverse(transpose(viewMatrix));
+                        boundMaterial->setUniformMat4("u_view", pc.viewMatrix());
+                        boundMaterial->setUniformMat4("u_viewProjection", pc.viewProjectionMatrix());
+                        glm::mat4 viewNormal = inverse(transpose(pc.viewMatrix()));
                         boundMaterial->setUniformMat3("u_viewNormal", glm::mat3(viewNormal));
 
                         auto lightView = registry->view<PointLight>();
@@ -154,7 +151,7 @@ namespace oyl
                             auto lightTransform = registry->get<Transform>(light);
                             
                             boundMaterial->setUniform3f("u_pointLight[" + std::to_string(count) + "].position",
-                                                        viewMatrix * glm::vec4(lightTransform.getPositionGlobal(), 1.0f));
+                                                        pc.viewMatrix() * glm::vec4(lightTransform.getPositionGlobal(), 1.0f));
                             boundMaterial->setUniform3f("u_pointLight[" + std::to_string(count) + "].ambient",
                                                         lightProps.ambient);
                             boundMaterial->setUniform3f("u_pointLight[" + std::to_string(count) + "].diffuse",
@@ -236,7 +233,6 @@ namespace oyl
                 0, 3, 2
             };
 
-            // TEMPORARY: move to onEnter()
             m_vao = VertexArray::create();
             Ref<VertexBuffer> vbo = VertexBuffer::create(vertices, sizeof(vertices));
             vbo->setLayout({
@@ -254,6 +250,7 @@ namespace oyl
         {
             using component::GuiRenderable;
             using component::Transform;
+            using component::PlayerCamera;
 
             registry->sort<GuiRenderable>(
                 [this](const entt::entity lhs, const entt::entity rhs)
@@ -283,36 +280,46 @@ namespace oyl
 
             RenderCommand::setDepthDraw(false);
 
-            auto view = registry->view<Transform, GuiRenderable>();
-            for (auto entity : view)
-            {
-                auto& transform = view.get<Transform>(entity);
-                auto& gui = view.get<GuiRenderable>(entity);
+            auto camView = registry->view<PlayerCamera>();
+            
+            for (auto camera : camView)
+            {                
+                auto& pc = camView.get(camera);
 
-                if (!gui.enabled || !gui.texture)
-                    break;
-
-                if ((!boundTexture || boundTexture != gui.texture) && gui.texture->isLoaded())
+                auto view = registry->view<Transform, GuiRenderable>();
+                for (auto entity : view)
                 {
-                    boundTexture = gui.texture;
-                    boundTexture->bind(0);
+                    auto& transform = view.get<Transform>(entity);
+                    auto& gui = view.get<GuiRenderable>(entity);
+
+                    if (!gui.enabled || !gui.texture)
+                        break;
+
+                    if (!(gui.cullingMask & pc.cullingMask))
+                        continue;
+
+                    if ((!boundTexture || boundTexture != gui.texture) && gui.texture->isLoaded())
+                    {
+                        boundTexture = gui.texture;
+                        boundTexture->bind(0);
+                    }
+
+                    glm::vec3 texSize = glm::vec3(0.0f);
+                    texSize.x = (float) gui.texture->getWidth() / (float) gui.texture->getHeight();
+                    texSize.y = 1.0f;
+
+                    glm::vec3 pos = transform.getPosition();
+                    pos.y = -pos.y;
+                    pos.z = 0.99f;
+                    
+                    glm::mat4 model = glm::mat4(1.0f);
+                    model = glm::translate(model, pos);
+                    model = glm::rotate(model, glm::radians(transform.getRotationEuler().z), glm::vec3(0.0f, 0.0f, -1.0f));
+                    model = glm::scale(model, transform.getScale());
+                    model = glm::scale(model, texSize);
+
+                    Renderer::submit(m_shader, m_vao, model);
                 }
-
-                glm::vec3 texSize = glm::vec3(0.0f);
-                texSize.x = (float) gui.texture->getWidth() / (float) gui.texture->getHeight();
-                texSize.y = 1.0f;
-
-                glm::vec3 pos = transform.getPosition();
-                pos.y = -pos.y;
-                pos.z = 0.99f;
-                
-                glm::mat4 model = glm::mat4(1.0f);
-                model = glm::translate(model, pos);
-                model = glm::rotate(model, glm::radians(transform.getRotationEuler().z), glm::vec3(0.0f, 0.0f, -1.0f));
-                model = glm::scale(model, transform.getScale());
-                model = glm::scale(model, texSize);
-
-                Renderer::submit(m_shader, m_vao, model);
             }
 
             RenderCommand::setDepthDraw(true);
