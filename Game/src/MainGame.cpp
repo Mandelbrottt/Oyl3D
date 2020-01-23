@@ -422,7 +422,7 @@ public:
 					desiredMoveDirection += playerTransform.getRight();
 			}
 			
-			if (player.playerNum <= -1)
+			if (player.controllerNum <= 1)
 			{
 				if (Input::getGamepadLeftStickY(player.playerNum) > 0.1f || Input::getGamepadLeftStickY(player.playerNum) < -0.1f)
 					desiredMoveDirection += Input::getGamepadLeftStickY(player.playerNum) * -playerTransform.getForward();
@@ -439,7 +439,7 @@ public:
 
 			
 
-			if (player.playerNum <= -1)
+			if (player.controllerNum <= 1)
 			{
 				//camera movement
 				glm::vec2 rightStick = Input::getGamepadRightStick(player.controllerNum);
@@ -447,7 +447,7 @@ public:
 				//deadzone check
 				if (rightStick.x > 0.1f || rightStick.x < -0.1f)
 				{
-					playerTransform.rotate(glm::vec3(0.0f, -rightStick.x * 4.0f, 0.0f));
+					playerTransform.rotate(glm::vec3(0.0f, -rightStick.x * 200.0f * Time::deltaTime(), 0.0f));
 
 					if (player.yRotationClamp > 1)
 					{
@@ -474,7 +474,7 @@ public:
 					//deadzone check
 					if (rightStick.y > 0.1f || rightStick.y < -0.1f)
 					{
-						cameraTransform.rotate(glm::vec3(-rightStick.y * 4.0f, 0.0f, 0.0f));
+						cameraTransform.rotate(glm::vec3(-rightStick.y * 200.0f * Time::deltaTime(), 0.0f, 0.0f));
 
 						//clamp camera up/down rotation
 						float cameraRotationClampValue = 70.0f;
