@@ -1056,8 +1056,8 @@ namespace oyl::internal
                     strcpy(shapeID, "Capsule");
                 else if (shape.getType() == ColliderType::Cylinder)
                     strcpy(shapeID, "Cylinder");
-                else if (shape.getType() == ColliderType::Mesh)
-                    strcpy(shapeID, "Mesh");
+                //else if (shape.getType() == ColliderType::Mesh)
+                //    strcpy(shapeID, "Mesh");
 
                 sprintf(shapeID, "%s##ColliderPropertiesShape%d", shapeID, count);
 
@@ -1081,9 +1081,9 @@ namespace oyl::internal
                         sprintf(temp, "Cylinder##Cylinder%d", count);
                         if (ImGui::Selectable(temp))
                             shape.setType(ColliderType::Cylinder);
-                        sprintf(temp, "Mesh##Mesh%d", count);
-                        if (ImGui::Selectable(temp))
-                            shape.setType(ColliderType::Mesh);
+                        //sprintf(temp, "Mesh##Mesh%d", count);
+                        //if (ImGui::Selectable(temp))
+                        //    shape.setType(ColliderType::Mesh);
 
                         ImGui::EndCombo();
                     }   
@@ -1378,7 +1378,9 @@ namespace oyl::internal
         bool isRGB = a_texture->getProfile() == TextureProfile::RGB;
         const char* profilePreview = isRGB ? "RGB" : "sRGB";
         ImGui::SetNextItemWidth(100);
-        if (ImGui::BeginCombo("Texture Profile##AlbedoTexProfile", profilePreview))
+        char profileID[256];
+        sprintf_s(profileID, 256, "Texture Profile##%sTexProfile", a_texture->getFilePath().c_str());
+        if (ImGui::BeginCombo(profileID, profilePreview))
         {
             if (ImGui::Selectable("RGB", isRGB) && !isRGB)
                 a_texture->setProfile(TextureProfile::RGB);
