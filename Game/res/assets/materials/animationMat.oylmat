@@ -14,7 +14,7 @@
         },
         "Textures": {
             "Albedo": {
-                "Alias": "archer",
+                "Alias": null,
                 "FilePath": "res\\assets\\textures\\archer.png",
                 "guid": null
             },

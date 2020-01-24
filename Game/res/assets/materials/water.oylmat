@@ -14,7 +14,7 @@
         },
         "Textures": {
             "Albedo": {
-                "Alias": "container2_specular",
+                "Alias": null,
                 "FilePath": "res\\assets\\textures\\water.png",
                 "guid": null
             },

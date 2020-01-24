@@ -17,7 +17,6 @@ void SandboxLayer::onEnter()
         component::Renderable mr;
         mr.mesh     = mesh;
         mr.material = mat;
-
 		/////////////////////////////////////////////////////
 		///////////////////// BLUE TEAM /////////////////////
 		{
@@ -112,7 +111,7 @@ void SandboxLayer::onEnter()
 			mr.mesh = Mesh::cache("res/assets/models/cannon.obj");
 
 			//TEMP MATERIAL INIT LOCATION UNTIL SYSTEM OVERHAUL
-			mr.material = Material::cache(Material::create(), "planks");
+			/*mr.material = Material::cache(Material::create(), "planks");
 			mr.material->shader = Shader::get(LIGHTING_SHADER_ALIAS);
 			mr.material->albedoMap = Texture2D::cache("res/assets/textures/woodPlanks.png");
 			mr.material->specularMap = Texture2D::cache("res/assets/textures/tempSpec.jpg");
@@ -164,13 +163,13 @@ void SandboxLayer::onEnter()
 
 			mr.material = Material::cache((Material::create()), "siding");
 			mr.material->shader = Shader::get(LIGHTING_SHADER_ALIAS);
-			mr.material->albedoMap = Texture2D::cache("res/assets/textures/woodPlankSiding2.png");
+			mr.material->albedoMap = Texture2D::cache("res/assets/textures/woodPlankSiding.png");
 			mr.material->specularMap = Material::get("planks")->specularMap;
 
 			mr.material = Material::cache((Material::create()), "atlasMaterial");
 			mr.material->shader = Shader::get(LIGHTING_SHADER_ALIAS);
 			mr.material->albedoMap = Texture2D::cache("res/assets/textures/shipAtlas.png");
-			mr.material->specularMap = Material::get("planks")->specularMap;
+			mr.material->specularMap = Material::get("planks")->specularMap;*/
 
 
 

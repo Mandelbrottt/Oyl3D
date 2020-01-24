@@ -14,7 +14,7 @@
         },
         "Textures": {
             "Albedo": {
-                "Alias": "ship",
+                "Alias": null,
                 "FilePath": "res\\assets\\textures\\ship.png",
                 "guid": null
             },

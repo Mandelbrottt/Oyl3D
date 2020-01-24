@@ -4,7 +4,7 @@
         "Shader": null,
         "Textures": {
             "Albedo": {
-                "Alias": "Oyl UV-Grid",
+                "Alias": null,
                 "FilePath": "../Engine/res/textures/uvgrid.png",
                 "guid": null
             },
