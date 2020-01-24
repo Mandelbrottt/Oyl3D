@@ -195,33 +195,34 @@ namespace oyl
 
 // Frame Buffer //////////////////////////////////////////////////////////////
 
-    static uint TextUniqueReformatToGLFormat(Texture::Format format)
+    static uint TextUniqueReformatToGLFormat(TextureFormat format)
     {
         switch (format)
         {
-            case Texture::RGB8:  return GL_RGB8;
-            case Texture::RGBA8: return GL_RGBA8;
+            case TextureFormat::RGB8:  return GL_RGB8;
+            case TextureFormat::RGBA8: return GL_RGBA8;
         }
         return 0;
     }
 
-    static uint TextUniqueRefilterToGLFilter(Texture::Filter filter)
+    static uint TextUniqueRefilterToGLFilter(TextureFilter filter)
     {
         switch (filter)
         {
-            case Texture::Linear:  return GL_LINEAR;
-            case Texture::Nearest: return GL_NEAREST;
+            case TextureFilter::Linear:  return GL_LINEAR;
+            case TextureFilter::Nearest: return GL_NEAREST;
         }
         return 0;
     }
 
-    static uint TextureWrapToGLWrap(Texture::Wrap wrap)
+    static uint TextureWrapToGLWrap(TextureWrap wrap)
     {
         switch (wrap)
         {
-            case Texture::Clamp:  return GL_CLAMP_TO_EDGE;
-            case Texture::Mirror: return GL_MIRRORED_REPEAT;
-            case Texture::Repeat: return GL_REPEAT;
+            case TextureWrap::Repeat:         return GL_REPEAT;
+            case TextureWrap::Mirror:         return GL_MIRRORED_REPEAT;
+            case TextureWrap::ClampToEdge:    return GL_CLAMP_TO_EDGE;
+            case TextureWrap::ClampToBorder:  return GL_CLAMP_TO_BORDER;
         }
         return 0;
     }
@@ -314,9 +315,9 @@ namespace oyl
     void OpenGLFrameBuffer::initColorTexture(uint index,
                                              int  width, 
                                              int  height,
-                                             Texture::Format format,
-                                             Texture::Filter filter,
-                                             Texture::Wrap   wrap)
+                                             TextureFormat format,
+                                             TextureFilter filter,
+                                             TextureWrap   wrap)
     {
         OYL_ASSERT(index < m_numColorAttachments, "Invalid index!");
 

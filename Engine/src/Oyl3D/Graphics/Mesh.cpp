@@ -105,35 +105,83 @@ namespace oyl
         }
         file.close();
 
-        std::vector<float> unpackedData;
-        unpackedData.reserve(faceData.size() * 8 * 3);
+        struct BufferData
+        {
+            glm::vec3 position;
+            glm::vec2 UVs;
+            glm::vec3 normal;
+            glm::vec3 tangent;
+            glm::vec3 biTangent;
+        };
+
+        const size_t numFloats = sizeof(BufferData) / sizeof(float);
+        
+        std::vector<BufferData> unpackedData;
+        unpackedData.reserve(faceData.size() * 3);
 
         for (auto& face : faceData)
         {
             for (auto& attribute : face)
             {
-                unpackedData.push_back(positionData[attribute[0] - 1].x);
-                unpackedData.push_back(positionData[attribute[0] - 1].y);
-                unpackedData.push_back(positionData[attribute[0] - 1].z);
+                BufferData data = {};
 
-                unpackedData.push_back(textureData[attribute[1] - 1].x);
-                unpackedData.push_back(textureData[attribute[1] - 1].y);
+                data.position = positionData[attribute[0] - 1];
+                //unpackedData.push_back(positionData[attribute[0] - 1].x);
+                //unpackedData.push_back(positionData[attribute[0] - 1].y);
+                //unpackedData.push_back(positionData[attribute[0] - 1].z);
 
-                unpackedData.push_back(normalData[attribute[2] - 1].x);
-                unpackedData.push_back(normalData[attribute[2] - 1].y);
-                unpackedData.push_back(normalData[attribute[2] - 1].z);
+                data.UVs = textureData[attribute[1] - 1];
+                //unpackedData.push_back(textureData[attribute[1] - 1].x);
+                //unpackedData.push_back(textureData[attribute[1] - 1].y);
+
+                data.normal = normalData[attribute[2] - 1];
+                //unpackedData.push_back(normalData[attribute[2] - 1].x);
+                //unpackedData.push_back(normalData[attribute[2] - 1].y);
+                //unpackedData.push_back(normalData[attribute[2] - 1].z);
+
+                unpackedData.push_back(data);
             }
+        }
+
+        for (size_t i = 0; i < unpackedData.size(); i += 3)
+        {
+            BufferData* data = &unpackedData[i];
+
+            glm::vec3 edge1 = data[1].position - data[0].position;
+            glm::vec3 edge2 = data[2].position - data[0].position;
+            glm::vec2 deltaUV1  = data[1].UVs - data[0].UVs;
+            glm::vec2 deltaUV2  = data[2].UVs - data[0].UVs;
+
+            float f = 1.0f / (deltaUV1.x * deltaUV2.y - deltaUV1.y * deltaUV2.x);
+
+            glm::vec3 tangent = {};
+            tangent.x = f * (deltaUV2.y * edge1.x - deltaUV1.y * edge2.x);
+            tangent.y = f * (deltaUV2.y * edge1.y - deltaUV1.y * edge2.y);
+            tangent.z = f * (deltaUV2.y * edge1.z - deltaUV1.y * edge2.z);
+            tangent = glm::normalize(tangent);
+
+            glm::vec3 bitangent = {};
+            bitangent.x = f * (-deltaUV2.x * edge1.x + deltaUV1.x * edge2.x);
+            bitangent.y = f * (-deltaUV2.x * edge1.y + deltaUV1.x * edge2.y);
+            bitangent.z = f * (-deltaUV2.x * edge1.z + deltaUV1.x * edge2.z);
+            bitangent = glm::normalize(bitangent);
+
+            for (int j = 0; j < 3; j++)
+                data[j].tangent = tangent, data[j].biTangent = bitangent;
         }
 
         m_numFaces    = faceData.size();
         m_numVertices = m_numFaces * 3;
 
-        m_vbo = VertexBuffer::create(unpackedData.data(), unpackedData.size() * sizeof(float));
+        m_vbo = VertexBuffer::create(reinterpret_cast<float*>(unpackedData.data()), 
+                                     unpackedData.size() * numFloats * sizeof(float));
 
         BufferLayout layout = {
-            { DataType::Float3, "a_position" },
-            { DataType::Float2, "a_textureUV" },
-            { DataType::Float3, "a_normal" },
+            { DataType::Float3, "in_position" },
+            { DataType::Float2, "in_textureUV" },
+            { DataType::Float3, "in_normal" },
+            { DataType::Float3, "in_tangent" },
+            { DataType::Float3, "in_biTangent" },
         };
 
         m_vbo->setLayout(layout);

@@ -501,7 +501,7 @@
                 "Alias": null
             },
             "Mesh": {
-                "FilePath": null
+                "FilePath": "../Engine/res/models/monkey.obj"
             }
         },
         "Transform": {
@@ -522,9 +522,9 @@
                 "qZ": 0.0
             },
             "Scale": {
-                "X": 1.0,
-                "Y": 1.0,
-                "Z": 1.0
+                "X": 0.30000001192092896,
+                "Y": 0.30000001192092896,
+                "Z": 0.30000001192092896
             }
         }
     },
@@ -539,6 +539,11 @@
                 "FilePath": "res\\assets\\models\\garbage.obj"
             }
         },
+        "RigidBody": {
+            "Friction": 5.0,
+            "Mass": 1.0,
+            "Properties": 126
+        },
         "Transform": {
             "Mirror": {
                 "X": false,
@@ -549,6 +554,44 @@
                 "X": 5.58795166015625,
                 "Y": 0.10000000149011612,
                 "Z": -1.5169984102249146
+            },
+            "Rotation": {
+                "qW": 0.9314937591552734,
+                "qX": 0.3381527066230774,
+                "qY": 0.09847122430801392,
+                "qZ": 0.09096963703632355
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Gui Renderable": {
+        "Collidable": {
+            "Shapes": []
+        },
+        "Parent": null,
+        "Renderable": {
+            "Enabled": true,
+            "Material": {
+                "Alias": null
+            },
+            "Mesh": {
+                "FilePath": null
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": 0.0,
+                "Y": 0.0,
+                "Z": 0.0
             },
             "Rotation": {
                 "qW": 1.0,
@@ -3172,6 +3215,11 @@
                 "FilePath": "res\\assets\\models\\Cork.obj"
             }
         },
+        "RigidBody": {
+            "Friction": 0.5,
+            "Mass": 0.0,
+            "Properties": 98
+        },
         "Transform": {
             "Mirror": {
                 "X": false,
@@ -3184,9 +3232,9 @@
                 "Z": 0.0
             },
             "Rotation": {
-                "qW": 1.0,
-                "qX": 0.0,
-                "qY": 0.0,
+                "qW": 0.9940076470375061,
+                "qX": -0.10931035876274109,
+                "qY": -0.0,
                 "qZ": 0.0
             },
             "Scale": {
@@ -3251,9 +3299,9 @@
                 "Z": false
             },
             "Position": {
-                "X": 0.0,
-                "Y": 0.0,
-                "Z": 0.0
+                "X": -0.027547240257263184,
+                "Y": -0.023946285247802734,
+                "Z": 3.6298446655273438
             },
             "Rotation": {
                 "qW": 1.0,
@@ -4444,15 +4492,34 @@
         }
     },
     "Sphere 1": {
+        "Collidable": {
+            "Shapes": [
+                {
+                    "Center": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Radius": 0.5,
+                    "Trigger": false,
+                    "Type": 1
+                }
+            ]
+        },
         "Parent": null,
         "Renderable": {
             "Enabled": true,
             "Material": {
-                "Alias": "container"
+                "Alias": "animationMat"
             },
             "Mesh": {
                 "FilePath": "res\\assets\\models\\sphere.obj"
             }
+        },
+        "RigidBody": {
+            "Friction": 0.5,
+            "Mass": 1.0,
+            "Properties": 98
         },
         "Transform": {
             "Mirror": {
@@ -4479,15 +4546,34 @@
         }
     },
     "Sphere 2": {
+        "Collidable": {
+            "Shapes": [
+                {
+                    "Center": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Radius": 0.5,
+                    "Trigger": false,
+                    "Type": 1
+                }
+            ]
+        },
         "Parent": null,
         "Renderable": {
             "Enabled": true,
             "Material": {
-                "Alias": "container"
+                "Alias": "sphereMat"
             },
             "Mesh": {
                 "FilePath": "res\\assets\\models\\sphere.obj"
             }
+        },
+        "RigidBody": {
+            "Friction": 0.5,
+            "Mass": 1.0,
+            "Properties": 98
         },
         "Transform": {
             "Mirror": {

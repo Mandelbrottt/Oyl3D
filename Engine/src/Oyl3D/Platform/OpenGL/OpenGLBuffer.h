@@ -119,9 +119,9 @@ namespace oyl
         void initColorTexture(uint index,
                               int  width, 
                               int  height,
-                              Texture::Format format,
-                              Texture::Filter filter,
-                              Texture::Wrap   wrap) override;
+                              TextureFormat format,
+                              TextureFilter filter,
+                              TextureWrap   wrap) override;
 
         void updateViewport(int width, int height) override;
         void clear() override;
@@ -142,9 +142,9 @@ namespace oyl
         uint m_colorAttachmentIDs[maxColorAttachments]{ 0 };
         uint m_bufs[maxColorAttachments]{ 0 };
 
-        Texture::Format m_formats[maxColorAttachments]{ Texture::RGB8 };
-        Texture::Filter m_filters[maxColorAttachments]{ Texture::Linear };
-        Texture::Wrap   m_wraps[maxColorAttachments]{ Texture::Repeat };
+        TextureFormat m_formats[maxColorAttachments]{ TextureFormat::RGB8 };
+        TextureFilter m_filters[maxColorAttachments]{ TextureFilter::Linear };
+        TextureWrap   m_wraps[maxColorAttachments]{ TextureWrap::Repeat };
 
         uint m_numColorAttachments = 0;
 

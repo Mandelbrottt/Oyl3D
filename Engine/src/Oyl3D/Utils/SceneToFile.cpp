@@ -2,6 +2,7 @@
 #include "SceneToFile.h"
 
 #include "Components/Collidable.h"
+#include "Components/Lights.h"
 #include "Components/Misc.h"
 #include "Components/Renderable.h"
 #include "Components/RigidBody.h"
@@ -14,7 +15,20 @@
 
 #include "Scenes/Scene.h"
 
-// TODO: Store materials separately from entities
+namespace glm
+{
+    void to_json(json& j, const vec3& v)
+    {
+        j = json({ v.x, v.y, v.z });
+    }
+
+    void from_json(const json& j, vec3& v)
+    {
+        int i = 0;
+        for (const auto& it : j)
+            it.get_to(v[i++]);
+    }
+}
 
 namespace oyl::internal
 {
@@ -176,9 +190,6 @@ namespace oyl::internal
     {
         using component::EntityInfo;
         using component::Renderable;
-
-        if (!registry.has<Renderable>(entity))
-            return;
         
         auto& re = registry.get<Renderable>(entity);
 
@@ -206,14 +217,80 @@ namespace oyl::internal
         }
     }
 
-    static void saveColliders(json& j, entt::registry& registry)
+    static void saveCollidable(entt::entity entity, entt::registry& registry, json& j)
     {
-        
+        using component::EntityInfo;
+        using component::Collidable;
+
+        auto& co = registry.get<Collidable>(entity);
+
+        auto& jSha = j["Shapes"];
+        jSha = json::array();
+
+        for (auto& info : co)
+        {
+            json shape = json::object();
+
+            shape["Trigger"] = info.isTrigger();
+            shape["Type"] = static_cast<uint>(info.getType());
+
+            switch (info.getType())
+            {
+                case ColliderType::Box:
+                    shape["Center"] = info.box.getCenter();
+                    shape["Size"]   = info.box.getSize();
+                    break;
+                case ColliderType::Sphere:
+                    shape["Center"] = info.sphere.getCenter();
+                    shape["Radius"] = info.sphere.getRadius();
+                    break;
+                case ColliderType::Capsule:
+                    shape["Center"]    = info.capsule.getCenter();
+                    shape["Direction"] = static_cast<uint>(info.capsule.getDirection());
+                    shape["Height"]    = info.capsule.getHeight();
+                    shape["Radius"]    = info.capsule.getRadius();
+                    break;
+                case ColliderType::Cylinder:
+                    shape["Center"]    = info.cylinder.getCenter();
+                    shape["Direction"] = static_cast<uint>(info.cylinder.getDirection());
+                    shape["Height"]    = info.cylinder.getHeight();
+                    shape["Radius"]    = info.cylinder.getRadius();
+                    break;
+                case ColliderType::Mesh:
+                    break;
+            }
+
+            jSha.push_back(std::move(shape));
+        }
     }
     
-    static void saveRigidBodies(json& j, entt::registry& registry)
+    static void saveRigidBody(entt::entity entity, entt::registry& registry, json& j)
     {
+        using component::RigidBody;
+
+        auto& rb = registry.get<RigidBody>(entity);
+
+        j["Mass"] = rb.getMass();
+        j["Friction"] = rb.getFriction();
+        j["Properties"] = rb.getPropertyFlags();
+    }
+
+    static void saveLightSource(entt::entity entity, entt::registry& registry, json& j)
+    {
+        using component::PointLight;
+
+        auto& ls = registry.get<PointLight>(entity);
+
+        j = json::array();
+
+        json jLight = json::object();
         
+        jLight["Ambient"] = ls.ambient;
+        jLight["Diffuse"] = ls.diffuse;
+        jLight["Specular"] = ls.specular;
+        jLight["Attenuation"] = ls.attenuation;
+
+        j.push_back(std::move(jLight));
     }
 
     void loadTransform(entt::entity entity, entt::registry& registry, const json& j)
@@ -356,14 +433,97 @@ namespace oyl::internal
         }
     }
 
-    static void loadCollider(entt::entity entity, entt::registry& registry, const json& j)
+    static void loadCollidable(entt::entity entity, entt::registry& registry, const json& j)
     {
-        
+        using component::Collidable;
+
+        auto& co = registry.assign_or_replace<Collidable>(entity);
+
+        if (const auto sIt = j.find("Shapes"); sIt != j.end() && sIt->is_array())
+        {
+            for (const auto& jShape : sIt.value())
+            {
+                ColliderType type = static_cast<ColliderType>(jShape.at("Type").get<uint>());
+                auto& shape = co.pushShape(type);
+                shape.setIsTrigger(jShape.at("Trigger").get<bool>());
+
+                switch (type)
+                {
+                    case ColliderType::Box:
+                        if (auto it = jShape.find("Center"); it != jShape.end())
+                            shape.box.setCenter(it->get<glm::vec3>());
+                        if (auto it = jShape.find("Size"); it != jShape.end())
+                            shape.box.setSize(it->get<glm::vec3>());
+                        break;
+                    case ColliderType::Sphere:
+                        if (auto it = jShape.find("Center"); it != jShape.end())
+                            shape.sphere.setCenter(it->get<glm::vec3>());
+                        if (auto it = jShape.find("Radius"); it != jShape.end())
+                            shape.sphere.setRadius(it->get<float>());
+                        break;
+                    case ColliderType::Capsule:
+                        if (auto it = jShape.find("Center"); it != jShape.end())
+                            shape.capsule.setCenter(it->get<glm::vec3>());
+                        if (auto it = jShape.find("Direction"); it != jShape.end())
+                            shape.capsule.setDirection(static_cast<Direction>(it->get<uint>()));
+                        if (auto it = jShape.find("Height"); it != jShape.end())
+                            shape.capsule.setHeight(it->get<float>());
+                        if (auto it = jShape.find("Radius"); it != jShape.end())
+                            shape.capsule.setRadius(it->get<float>());
+                        break;
+                    case ColliderType::Cylinder:
+                        if (auto it = jShape.find("Center"); it != jShape.end())
+                            shape.cylinder.setCenter(it->get<glm::vec3>());
+                        if (auto it = jShape.find("Direction"); it != jShape.end())
+                            shape.cylinder.setDirection(static_cast<Direction>(it->get<uint>()));
+                        if (auto it = jShape.find("Height"); it != jShape.end())
+                            shape.cylinder.setHeight(it->get<float>());
+                        if (auto it = jShape.find("Radius"); it != jShape.end())
+                            shape.cylinder.setRadius(it->get<float>());
+                        break;
+                    case ColliderType::Mesh:
+                        break;
+                }
+            }
+        }
     }
     
     static void loadRigidBody(entt::entity entity, entt::registry& registry, const json& j)
     {
+        using component::RigidBody;
+
+        auto& rb = registry.get_or_assign<RigidBody>(entity);
+
+        if (auto it = j.find("Friction"); it != j.end() && it->is_number_float())
+            rb.setFriction(it->get<float>());
+
+        if (auto it = j.find("Mass"); it != j.end() && it->is_number_float())
+            rb.setMass(it->get<float>());
+
+        if (auto it = j.find("Properties"); it != j.end() && it->is_number_unsigned())
+            rb.setPropertyFlags(it->get<uint>());
+    }
+
+    static void loadLightSource(entt::entity entity, entt::registry& registry, const json& j)
+    {
+        using component::PointLight;
+
+        auto& ls = registry.assign_or_replace<PointLight>(entity);
+
+        if (!j.is_array()) 
+            return;
         
+        for (const auto& jLight : j)
+        {
+            if (const auto it = jLight.find("Ambient"); it != jLight.end())
+                it->get_to(ls.ambient);
+            if (const auto it = jLight.find("Diffuse"); it != jLight.end())
+                it->get_to(ls.diffuse);
+            if (const auto it = jLight.find("Specular"); it != jLight.end())
+                it->get_to(ls.specular);
+            if (const auto it = jLight.find("Attenuation"); it != jLight.end())
+                it->get_to(ls.attenuation);
+        }
     }
 
     static void entityToJson(entt::entity entity, entt::registry& registry, json& j);
@@ -380,11 +540,6 @@ namespace oyl::internal
             EntityInfo& info = registry.get<EntityInfo>(entity);
             entityToJson(entity, registry, sceneJson[info.name]);
         });
-        //for (auto entity : registry)
-        //{
-        //    EntityInfo& info = registry.get<EntityInfo>(entity);
-        //    entityToJson(entity, registry, sceneJson[info.name]);
-        //}
 
         std::string sceneFilePath = "res/scenes/" + sceneName + ".oylscene";
         std::ofstream sceneFile(sceneFilePath);
@@ -462,7 +617,18 @@ namespace oyl::internal
     {
         saveTransform(entity, registry, j["Transform"]);
         saveParent(entity, registry, j["Parent"]);
-        saveRenderable(entity, registry, j["Renderable"]);
+
+        if (registry.has<component::Renderable>(entity))
+            saveRenderable(entity, registry, j["Renderable"]);
+
+        if (registry.has<component::Collidable>(entity))
+            saveCollidable(entity, registry, j["Collidable"]);
+
+        if (registry.has<component::RigidBody>(entity))
+            saveRigidBody(entity, registry, j["RigidBody"]);
+
+        if (registry.has<component::PointLight>(entity))
+            saveLightSource(entity, registry, j["LightSource"]);
     }
 
     static void entityFromJson(entt::entity entity, entt::registry& registry, json& j)
@@ -475,6 +641,15 @@ namespace oyl::internal
 
         if (auto it = j.find("Renderable"); it != j.end())
             loadRenderable(entity, registry, it.value());
+
+        if (auto it = j.find("Collidable"); it != j.end())
+            loadCollidable(entity, registry, it.value());
+
+        if (auto it = j.find("RigidBody"); it != j.end())
+            loadRigidBody(entity, registry, it.value());
+
+        if (auto it = j.find("LightSource"); it != j.end())
+            loadLightSource(entity, registry, it.value());
     }
 
     Ref<Material> materialFromFile(const std::string& filepath)
@@ -500,7 +675,7 @@ namespace oyl::internal
             std::string alias;
             if (auto alIt = it->find("Alias"); alIt != it->end() && alIt->is_string())
             {
-                alias = alIt->get<std::string>();
+                alIt->get_to(alias);
                 if (Shader::exists(alias))
                     material->shader = Shader::get(alias);
                 else
@@ -535,7 +710,7 @@ namespace oyl::internal
                 pushBackFn("Pixel",          Shader::Type::Fragment);
 
                 if (!alias.empty())
-                    material->shader = Shader::cache(infos, alias);
+                    material->shader = Shader::cache(infos, alias, true);
                 else
                     material->shader = Shader::create(infos);
             }
@@ -548,7 +723,7 @@ namespace oyl::internal
                 std::string tFilepath = {};
                 if (auto filepathIt = it->find("FilePath");
                     filepathIt != it->end() && filepathIt->is_string())
-                    tFilepath = filepathIt->get<std::string>();
+                    filepathIt->get_to(tFilepath);
 
                 if (auto aliasIt = it->find("Alias"); aliasIt != it->end() && aliasIt->is_string())
                 {
@@ -556,7 +731,13 @@ namespace oyl::internal
                     if (Texture2D::exists(alias))
                         return Texture2D::get(alias);
                     else
-                        return Texture2D::cache(tFilepath, alias);
+                    {
+                        // HACK: Incorporate properties into cache function somehow
+                        auto& tex = Texture2D::cache(tFilepath, alias);
+                        if (auto prIt = it->find("Profile"); prIt != it->end() && prIt->is_number_unsigned())
+                            tex->setProfile(static_cast<TextureProfile>(prIt->get<uint>()));
+                        return tex;
+                    }
                 }
                 else if (!tFilepath.empty())
                     return Texture2D::create(tFilepath);
@@ -580,10 +761,7 @@ namespace oyl::internal
             if (Material::exists(alias))
             {
                 auto testMat = Material::get(alias);
-                if (material->shader == testMat->shader &&
-                    material->albedoMap == testMat->albedoMap &&
-                    material->specularMap == testMat->specularMap &&
-                    material->normalMap == testMat->normalMap)
+                if (*material == *testMat)
                 {
                     material = testMat;
                 }
@@ -595,6 +773,14 @@ namespace oyl::internal
 
     void materialToFile(const Ref<Material>& material, const std::string& filepath)
     {
+        if (!material)
+            return;
+
+        // TEMPORARY: Uncomment when no more changes to material file formatting are to be made
+        //if (auto tempMat = materialFromFile(filepath); 
+        //    tempMat != nullptr && *material == *tempMat)
+        //    return;
+        
         json jFile;
         json& jMaterial = jFile["Material"];
 
@@ -655,44 +841,25 @@ namespace oyl::internal
 
         json& jTextures = jMaterial["Textures"];
 
-        json& jAlbedo = jTextures["Albedo"];
-        if (material->albedoMap)
+        auto _texToJson = [](const Ref<Texture2D>& texture, json& jTex)
         {
-            jAlbedo["guid"];
+            if (!texture) return;
+            
+            jTex["guid"];
 
             // TEMPORARY:
-            jAlbedo["FilePath"] = material->albedoMap->getFilePath();
+            jTex["FilePath"] = texture->getFilePath();
 
-            json& jAlias = jAlbedo["Alias"];
-            if (auto alias = Texture2D::getAlias(material->albedoMap); alias != INVALID_ALIAS)
+            json& jAlias = jTex["Alias"];
+            if (auto alias = Texture2D::getAlias(texture); alias != INVALID_ALIAS)
                 jAlias = alias;
-        }
 
-        json& jSpecular = jTextures["Specular"];
-        if (material->specularMap)
-        {
-            jSpecular["guid"];
+            jTex["Profile"] = static_cast<uint>(texture->getProfile());
+        };
 
-            // TEMPORARY:
-            jSpecular["FilePath"] = material->specularMap->getFilePath();
-
-            json& jAlias = jAlbedo["Alias"];
-            if (auto alias = Texture2D::getAlias(material->specularMap); alias != INVALID_ALIAS)
-                jAlias = alias;
-        }
-
-        json& jNormal = jTextures["Normal"];
-        if (material->normalMap)
-        {
-            jNormal["guid"];
-
-            // TEMPORARY:
-            jNormal["FilePath"] = material->normalMap->getFilePath();
-
-            json& jAlias = jAlbedo["Alias"];
-            if (auto alias = Texture2D::getAlias(material->normalMap); alias != INVALID_ALIAS)
-                jAlias = alias;
-        }
+        _texToJson(material->albedoMap, jTextures["Albedo"]);
+        _texToJson(material->specularMap, jTextures["Specular"]);
+        _texToJson(material->normalMap, jTextures["Normal"]);
 
         std::ofstream materialFile(filepath);
         if (materialFile)

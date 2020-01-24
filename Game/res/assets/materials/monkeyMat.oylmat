@@ -6,6 +6,7 @@
             "Albedo": {
                 "Alias": null,
                 "FilePath": "../Engine/res/textures/white.png",
+                "Profile": 0,
                 "guid": null
             },
             "Normal": null,

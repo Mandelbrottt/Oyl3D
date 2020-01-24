@@ -17,45 +17,57 @@ namespace oyl
     const char* internal::AssetCache<Texture3D>::s_typename      = "Texture3D";
     const char* internal::AssetCache<TextureCubeMap>::s_typename = "TextureCubeMap";
     
-    Ref<Texture1D> Texture1D::create(const std::string& filePath)
+    Ref<Texture1D> Texture1D::create(const std::string& filePath,
+                                     TextureFilter a_filter,
+                                     TextureWrap a_wrap,
+                                     TextureProfile a_profile)
     {
         switch (Renderer::getAPI())
         {
             case RendererAPI::OpenGL:
-                auto ogl = Ref<OpenGLTexture1D>::create(filePath);
+                auto ogl = Ref<OpenGLTexture1D>::create(filePath, a_filter, a_wrap, a_profile);
                 return ogl->isLoaded() ? ogl : s_cache.get(INVALID_ALIAS);
         }
         return nullptr;
     }
 
-    Ref<Texture2D> Texture2D::create(const std::string& filePath)
+    Ref<Texture2D> Texture2D::create(const std::string& filePath,
+                                     TextureFilter a_filter,
+                                     TextureWrap a_wrap,
+                                     TextureProfile a_profile)
     {
         switch (Renderer::getAPI())
         {
             case RendererAPI::OpenGL:
-                auto ogl = Ref<OpenGLTexture2D>::create(filePath);
+                auto ogl = Ref<OpenGLTexture2D>::create(filePath, a_filter, a_wrap, a_profile);
                 return ogl->isLoaded() ? ogl : s_cache.get(INVALID_ALIAS);
         }
         return nullptr;
     }
 
-    Ref<Texture3D> Texture3D::create(const std::string& filePath)
+    Ref<Texture3D> Texture3D::create(const std::string& filePath,
+                                     TextureFilter a_filter,
+                                     TextureWrap a_wrap,
+                                     TextureProfile a_profile)
     {
         switch (Renderer::getAPI())
         {
             case RendererAPI::OpenGL:
-                auto ogl = Ref<OpenGLTexture3D>::create(filePath);
+                auto ogl = Ref<OpenGLTexture3D>::create(filePath, a_filter, a_wrap, a_profile);
                 return ogl->isLoaded() ? ogl : s_cache.get(INVALID_ALIAS);
         }
         return nullptr;
     }
 
-    Ref<TextureCubeMap> TextureCubeMap::create(const std::string& filePath)
+    Ref<TextureCubeMap> TextureCubeMap::create(const std::string& filePath,
+                                               TextureFilter a_filter,
+                                               TextureWrap a_wrap,
+                                               TextureProfile a_profile)
     {
         switch (Renderer::getAPI())
         {
             case RendererAPI::OpenGL:
-                auto ogl = Ref<OpenGLTextureCubeMap>::create(filePath);
+                auto ogl = Ref<OpenGLTextureCubeMap>::create(filePath, a_filter, a_wrap, a_profile);
                 return ogl->isLoaded() ? ogl : s_cache.get(INVALID_ALIAS);
         }
         return nullptr;

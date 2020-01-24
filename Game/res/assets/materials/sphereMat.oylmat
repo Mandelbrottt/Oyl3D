@@ -1,6 +1,6 @@
 {
     "Material": {
-        "Alias": "lmao",
+        "Alias": "sphereMat",
         "Shader": {
             "Alias": "Oyl Lighting",
             "Pixel": {
@@ -14,8 +14,9 @@
         },
         "Textures": {
             "Albedo": {
-                "Alias": null,
-                "FilePath": "../Engine/res/textures/uvgrid.png",
+                "Alias": "brickwall",
+                "FilePath": "res\\assets\\textures\\brickwall.jpg",
+                "Profile": 0,
                 "guid": null
             },
             "Normal": {

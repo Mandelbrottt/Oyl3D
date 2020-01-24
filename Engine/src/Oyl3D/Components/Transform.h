@@ -66,6 +66,9 @@ namespace oyl::component
     
         const glm::mat4& getMatrix()       const;
         glm::mat4        getMatrixGlobal() const;
+
+        const glm::mat4& getInverseMatrix()       const;
+        glm::mat4        getInverseMatrixGlobal() const;
     
         glm::vec3 getForward() const;
         glm::vec3 getRight()   const;
@@ -110,6 +113,7 @@ namespace oyl::component
         void setMirrorZ(bool mirror);
         
         bool isLocalDirty() const;
+        bool isDirty() const;
 
     private:
         friend oyl::Scene;
@@ -129,6 +133,10 @@ namespace oyl::component
         glm::vec3 m_deltaScale    = glm::vec3(0.0f);
     
         mutable glm::mat4 m_localMatrix = glm::mat4(1.0f);
+        mutable glm::mat4 m_globalMatrix = glm::mat4(1.0f);
+
+        mutable glm::mat4 m_localInverseMatrix = glm::mat4(1.0f);
+        mutable glm::mat4 m_globalInverseMatrix = glm::mat4(1.0f);
     
         //Ref<Transform>     m_localRef;
         //WeakRef<Transform> m_parentRef = WeakRef<Transform>{};

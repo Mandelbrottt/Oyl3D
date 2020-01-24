@@ -25,7 +25,7 @@ namespace oyl
 
     bool Win32Input::isGamepadButtonPressedImpl(Gamepad button, uint gid)
     {
-        OYL_ASSERT(glfwJoystickPresent(gid) == GLFW_TRUE, "Joystick should be present!");
+        // OYL_ASSERT(glfwJoystickPresent(gid) == GLFW_TRUE, "Joystick should be present!");
 
         static GLFWgamepadstate state;
 
@@ -57,7 +57,7 @@ namespace oyl
 
     glm::vec2 Win32Input::getGamepadLeftStickImpl(uint gid)
     {
-        OYL_ASSERT(glfwJoystickPresent(gid) == GLFW_TRUE, "Joystick should be present!");
+        // OYL_ASSERT(glfwJoystickPresent(gid) == GLFW_TRUE, "Joystick should be present!");
 
         static GLFWgamepadstate state;
 
@@ -83,7 +83,7 @@ namespace oyl
 
     glm::vec2 Win32Input::getGamepadRightStickImpl(uint gid)
     {
-        OYL_ASSERT(glfwJoystickPresent(gid) == GLFW_TRUE, "Joystick should be present!");
+        // OYL_ASSERT(glfwJoystickPresent(gid) == GLFW_TRUE, "Joystick should be present!");
 
         static GLFWgamepadstate state;
 
@@ -109,7 +109,7 @@ namespace oyl
 
     float Win32Input::getGamepadLeftTriggerImpl(uint gid)
     {
-        OYL_ASSERT(glfwJoystickPresent(gid) == GLFW_TRUE, "Joystick should be present!");
+        // OYL_ASSERT(glfwJoystickPresent(gid) == GLFW_TRUE, "Joystick should be present!");
 
         static GLFWgamepadstate state;
 
@@ -124,7 +124,7 @@ namespace oyl
 
     float Win32Input::getGamepadRightTriggerImpl(uint gid)
     {
-        OYL_ASSERT(glfwJoystickPresent(gid) == GLFW_TRUE, "Joystick should be present!");
+        // OYL_ASSERT(glfwJoystickPresent(gid) == GLFW_TRUE, "Joystick should be present!");
 
         static GLFWgamepadstate state;
 

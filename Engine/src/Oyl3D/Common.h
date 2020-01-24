@@ -103,7 +103,7 @@
 #pragma region Debug Macros
     #pragma warning(disable: 4002 4003)
     
-    #if defined(OYL_DEBUG)
+    #if !defined(OYL_DISTRIBUTION)
         #define OYL_ENABLE_ASSERTS
         #if defined(_MSC_VER)
             #define OYL_BREAKPOINT ::__debugbreak()

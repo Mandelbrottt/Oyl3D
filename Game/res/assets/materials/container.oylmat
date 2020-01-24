@@ -14,13 +14,16 @@
         },
         "Textures": {
             "Albedo": {
-                "Alias": "container2_specular",
-                "FilePath": "res\\assets\\textures\\container2.jpg",
+                "Alias": "container2",
+                "FilePath": "res\\assets\\textures\\container2.png",
+                "Profile": 1,
                 "guid": null
             },
             "Normal": null,
             "Specular": {
-                "FilePath": "res\\assets\\textures\\container2.jpg",
+                "Alias": "container2_specular",
+                "FilePath": "res\\assets\\textures\\container2_specular.png",
+                "Profile": 0,
                 "guid": null
             }
         }
