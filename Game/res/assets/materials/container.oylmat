@@ -20,7 +20,7 @@
             },
             "Normal": null,
             "Specular": {
-                "FilePath": "res\\assets\\textures\\container2_specular.jpg",
+                "FilePath": "res\\assets\\textures\\container2.jpg",
                 "guid": null
             }
         }
