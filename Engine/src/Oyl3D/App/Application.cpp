@@ -109,9 +109,9 @@ namespace oyl
         m_mainBuffer->initDepthTexture(m_window->getWidth(), m_window->getHeight());
 
         m_mainBuffer->initColorTexture(0, m_window->getWidth(), m_window->getHeight(),
-                                       Texture::RGBA8,
-                                       Texture::Nearest,
-                                       Texture::Clamp);
+                                       TextureFormat::RGBA8,
+                                       TextureFilter::Nearest,
+                                       TextureWrap::ClampToEdge);
 
         ViewportHandleChangedEvent hcEvent;
         hcEvent.handle = m_mainBuffer->getColorHandle(0);
