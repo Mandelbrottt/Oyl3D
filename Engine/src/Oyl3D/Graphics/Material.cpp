@@ -191,9 +191,11 @@ namespace oyl
             specularMap->bind(1);
         setUniform1i("u_material.specular", 1);
 
-        //if (normalMap)
-        //    normalMap->bind(2);
-        //setUniform1i("u_material.normal", 2);
+        if (normalMap)
+            normalMap->bind(2);
+        else
+            Texture2D::get(DEFAULT_NORMAL_TEXTURE_ALIAS)->bind(2);
+        setUniform1i("u_material.normal", 2);
     }
 
     void Material::unbind()

@@ -1,6 +1,6 @@
 {
     "Material": {
-        "Alias": "lmao",
+        "Alias": "sphereMat",
         "Shader": {
             "Alias": "Oyl Lighting",
             "Pixel": {

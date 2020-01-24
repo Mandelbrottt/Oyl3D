@@ -1409,6 +1409,8 @@ namespace oyl::internal
         if (tempAlias == INVALID_ALIAS) tempAlias = "None";
         if (ImGui::BeginCombo("Albedo Map", tempAlias.c_str()))
         {
+            if (ImGui::Selectable("None", material->albedoMap == nullptr))
+                material->albedoMap = nullptr;
             for (const auto& [alias, albedo] : Texture2D::getCache())
                 if (ImGui::Selectable(alias.c_str(), albedo == material->albedoMap))
                     material->albedoMap = albedo;
@@ -1422,6 +1424,8 @@ namespace oyl::internal
         if (tempAlias == INVALID_ALIAS) tempAlias = "None";
         if (ImGui::BeginCombo("Specular Map", tempAlias.c_str()))
         {
+            if (ImGui::Selectable("None", material->specularMap == nullptr))
+                material->specularMap = nullptr;
             for (const auto& [alias, specular] : Texture2D::getCache())
                 if (ImGui::Selectable(alias.c_str(), specular == material->specularMap))
                     material->specularMap = specular;
@@ -1435,6 +1439,8 @@ namespace oyl::internal
         if (tempAlias == INVALID_ALIAS) tempAlias = "None";
         if (ImGui::BeginCombo("Normal Map", tempAlias.c_str()))
         {
+            if (ImGui::Selectable("None", material->normalMap == nullptr))
+                material->normalMap = nullptr;
             for (const auto& [alias, normal] : Texture2D::getCache())
                 if (ImGui::Selectable(alias.c_str(), normal == material->normalMap))
                     material->normalMap = normal;

@@ -38,9 +38,15 @@ struct SpotLight
 	vec3 specular;
 };
 
-layout(location = 0) in vec3 in_position;
-layout(location = 1) in vec2 in_texCoords;
-layout(location = 2) in vec3 in_normal;
+// layout(location = 0) in vec3 in_position;
+// layout(location = 1) in vec2 in_texCoords;
+// layout(location = 2) in vec3 in_normal;
+
+in VS_OUT {
+	vec3 position;
+	vec2 texCoord;
+	mat3 TBN;
+} fs_in;
 
 layout(location = 0) out vec4 out_color;
 
@@ -55,21 +61,25 @@ void main()
 	vec3 specular = vec3(0.0);
 	for (int i = 0; i < NUM_LIGHTS; i++) 
 	{
-		vec3 norm = normalize(in_normal);
-		vec3 lightDir = normalize(u_pointLight[i].position - in_position);
+		vec3 norm;
+		norm = texture(u_material.normal, fs_in.texCoord).rgb;
+		norm = normalize(norm * 2.0 - 1.0);
+		norm = normalize(fs_in.TBN * norm);
+
+		vec3 lightDir = normalize(u_pointLight[i].position - fs_in.position);
 
 		float diff = max(dot(norm, lightDir), 0.0);
 
-		vec3 viewDir = normalize(-in_position);
+		vec3 viewDir = normalize(-fs_in.position);
 		vec3 halfwayDir = normalize(lightDir + viewDir);
 
 		float spec = pow(max(dot(norm, halfwayDir), 0.0), 32);
 
-    	vec3 tempambient  = u_pointLight[i].ambient  *        vec3(texture(u_material.albedo,   in_texCoords));
-		vec3 tempdiffuse  = u_pointLight[i].diffuse  * diff * vec3(texture(u_material.albedo,   in_texCoords));
-		vec3 tempspecular = u_pointLight[i].specular * spec * vec3(texture(u_material.specular, in_texCoords));
+    	vec3 tempambient  = u_pointLight[i].ambient  *        vec3(texture(u_material.albedo,   fs_in.texCoord));
+		vec3 tempdiffuse  = u_pointLight[i].diffuse  * diff * vec3(texture(u_material.albedo,   fs_in.texCoord));
+		vec3 tempspecular = u_pointLight[i].specular * spec * vec3(texture(u_material.specular, fs_in.texCoord));
 
-		float dist = length(u_pointLight[i].position - in_position);
+		float dist = length(u_pointLight[i].position - fs_in.position);
 		float attenuation = 1.0 / (1.0 + 0.01 * dist * dist);
 		
 		tempdiffuse  *= attenuation;
@@ -81,7 +91,7 @@ void main()
 	}
 	
 	out_color = vec4((ambient + diffuse + specular), 1.0);
-	// out_color += vec4(in_normal, 1.0);
+	// out_color += vec4(fs_in.normal, 1.0);
 
 	// Gamma Correction
 	vec3 gamma = vec3(1.0 / 2.2);
