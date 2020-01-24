@@ -3036,8 +3036,8 @@
             },
             "Position": {
                 "X": 0.0,
-                "Y": 0.0,
-                "Z": 0.0
+                "Y": 0.800000011920929,
+                "Z": -0.4000000059604645
             },
             "Rotation": {
                 "qW": 1.0,
@@ -3169,7 +3169,7 @@
                 "Alias": "container"
             },
             "Mesh": {
-                "FilePath": "res\\assets\\models\\crateTemp.obj"
+                "FilePath": "res\\assets\\models\\Cork.obj"
             }
         },
         "Transform": {
@@ -3241,7 +3241,7 @@
                 "Alias": "container"
             },
             "Mesh": {
-                "FilePath": "res\\assets\\models\\crateTemp.obj"
+                "FilePath": "res\\assets\\models\\Cork.obj"
             }
         },
         "Transform": {
