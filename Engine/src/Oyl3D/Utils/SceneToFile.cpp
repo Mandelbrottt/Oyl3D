@@ -731,7 +731,13 @@ namespace oyl::internal
                     if (Texture2D::exists(alias))
                         return Texture2D::get(alias);
                     else
-                        return Texture2D::cache(tFilepath, alias);
+                    {
+                        // HACK: Incorporate properties into cache function somehow
+                        auto& tex = Texture2D::cache(tFilepath, alias);
+                        if (auto prIt = it->find("Profile"); prIt != it->end() && prIt->is_number_unsigned())
+                            tex->setProfile(static_cast<TextureProfile>(prIt->get<uint>()));
+                        return tex;
+                    }
                 }
                 else if (!tFilepath.empty())
                     return Texture2D::create(tFilepath);
@@ -770,9 +776,10 @@ namespace oyl::internal
         if (!material)
             return;
 
-        if (auto tempMat = materialFromFile(filepath); 
-            tempMat != nullptr && *material == *tempMat)
-            return;
+        // TEMPORARY: Uncomment when no more changes to material file formatting are to be made
+        //if (auto tempMat = materialFromFile(filepath); 
+        //    tempMat != nullptr && *material == *tempMat)
+        //    return;
         
         json jFile;
         json& jMaterial = jFile["Material"];
@@ -834,44 +841,25 @@ namespace oyl::internal
 
         json& jTextures = jMaterial["Textures"];
 
-        json& jAlbedo = jTextures["Albedo"];
-        if (material->albedoMap)
+        auto _texToJson = [](const Ref<Texture2D>& texture, json& jTex)
         {
-            jAlbedo["guid"];
+            if (!texture) return;
+            
+            jTex["guid"];
 
             // TEMPORARY:
-            jAlbedo["FilePath"] = material->albedoMap->getFilePath();
+            jTex["FilePath"] = texture->getFilePath();
 
-            json& jAlias = jAlbedo["Alias"];
-            if (auto alias = Texture2D::getAlias(material->albedoMap); alias != INVALID_ALIAS)
+            json& jAlias = jTex["Alias"];
+            if (auto alias = Texture2D::getAlias(texture); alias != INVALID_ALIAS)
                 jAlias = alias;
-        }
 
-        json& jSpecular = jTextures["Specular"];
-        if (material->specularMap)
-        {
-            jSpecular["guid"];
+            jTex["Profile"] = static_cast<uint>(texture->getProfile());
+        };
 
-            // TEMPORARY:
-            jSpecular["FilePath"] = material->specularMap->getFilePath();
-
-            json& jAlias = jSpecular["Alias"];
-            if (auto alias = Texture2D::getAlias(material->specularMap); alias != INVALID_ALIAS)
-                jAlias = alias;
-        }
-
-        json& jNormal = jTextures["Normal"];
-        if (material->normalMap)
-        {
-            jNormal["guid"];
-
-            // TEMPORARY:
-            jNormal["FilePath"] = material->normalMap->getFilePath();
-
-            json& jAlias = jNormal["Alias"];
-            if (auto alias = Texture2D::getAlias(material->normalMap); alias != INVALID_ALIAS)
-                jAlias = alias;
-        }
+        _texToJson(material->albedoMap, jTextures["Albedo"]);
+        _texToJson(material->specularMap, jTextures["Specular"]);
+        _texToJson(material->normalMap, jTextures["Normal"]);
 
         std::ofstream materialFile(filepath);
         if (materialFile)

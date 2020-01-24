@@ -4,28 +4,38 @@
 
 namespace oyl
 {
+    enum class TextureProfile : u32
+    {
+        RGB, SRGB
+    };
+    
+    enum class TextureFormat : u32
+    {
+        R8 = 0, RG8, RGB8, RGBA8, SR8, SRG8, SRGB8, SRGBA8
+    };
+
+    enum class TextureFilter : u32
+    {
+        Nearest, Linear,
+    };
+
+    enum class TextureWrap : u32
+    {
+        Repeat, Mirror, ClampToEdge, ClampToBorder
+    };
+
     class Texture
     {
     public:
-        enum Format
-        {
-            RGB8, RGBA8, SRGB8, SRGBA8
-        };
-
-        enum Filter
-        {
-            Nearest, Linear,
-        };
-
-        enum Wrap
-        {
-            Clamp, Mirror, Repeat    
-        };
         
     public:
         virtual ~Texture() = default;
 
-        virtual bool load(const std::string& filePath) = 0;
+        virtual bool load(const std::string& filePath,
+                          TextureFilter a_filter,
+                          TextureWrap a_wrap,
+                          TextureProfile a_profile) = 0;
+        
         virtual void unload() = 0;
 
         virtual void bind(uint slot = 0) const = 0;
@@ -35,8 +45,35 @@ namespace oyl
 
         const std::string& getFilePath() const { return m_filePath; }
 
+        TextureFormat getFormat() const
+        {
+            using Fmt = TextureFormat;
+            u8 fmt = static_cast<u8>(m_format);
+            u8 offset = static_cast<u8>(m_profile == TextureProfile::SRGB ? TextureFormat::SR8 : TextureFormat::R8);
+            return static_cast<Fmt>(fmt + offset);
+        }
+
+        uint getChannels() const { return m_nChannels; }
+
+        TextureFilter getFilter() const { return m_filter; }
+        virtual void setFilter(TextureFilter a_filter) = 0;
+
+        TextureWrap getWrap() const { return m_wrap; }
+        virtual void setWrap(TextureWrap a_wrap) = 0;
+
+        TextureProfile getProfile() const { return m_profile; }
+        virtual void setProfile(TextureProfile a_profile) = 0;
+
     protected:
         std::string m_filePath;
+
+        uint m_nChannels = 0;
+
+        TextureFormat m_format = {};
+        TextureFilter m_filter = TextureFilter::Nearest;
+        TextureWrap   m_wrap   = TextureWrap::Repeat;
+
+        TextureProfile m_profile = TextureProfile::RGB;
 
     private:
         static void init();
@@ -52,7 +89,10 @@ namespace oyl
 
         virtual uint getLength() const = 0;
 
-        static Ref<Texture1D> create(const std::string& filePath);
+        static Ref<Texture1D> create(const std::string& filePath,
+                                     TextureFilter a_filter   = TextureFilter::Nearest,
+                                     TextureWrap a_wrap       = TextureWrap::Repeat,
+                                     TextureProfile a_profile = TextureProfile::RGB);
 
         static const Ref<Texture1D>& cache(const std::string& filePath,
                                            const CacheAlias& alias = "",
@@ -91,7 +131,10 @@ namespace oyl
         virtual uint getWidth() const = 0;
         virtual uint getHeight() const = 0;
 
-        static Ref<Texture2D> create(const std::string& filePath);
+        static Ref<Texture2D> create(const std::string& filePath,
+                                     TextureFilter a_filter   = TextureFilter::Nearest,
+                                     TextureWrap a_wrap       = TextureWrap::Repeat,
+                                     TextureProfile a_profile = TextureProfile::RGB);
 
         static const Ref<Texture2D>& cache(const std::string& filePath,
                                            const CacheAlias& alias = "",
@@ -131,7 +174,10 @@ namespace oyl
         virtual uint getHeight() const = 0;
         virtual uint getDepth() const = 0;
 
-        static Ref<Texture3D> create(const std::string& filePath);
+        static Ref<Texture3D> create(const std::string& filePath,
+                                     TextureFilter a_filter   = TextureFilter::Nearest,
+                                     TextureWrap a_wrap       = TextureWrap::Repeat,
+                                     TextureProfile a_profile = TextureProfile::RGB);
 
         static const Ref<Texture3D>& cache(const std::string& filePath,
                                            const CacheAlias& alias = "",
@@ -170,7 +216,10 @@ namespace oyl
         virtual uint getWidth() const = 0;
         virtual uint getHeight() const = 0;
 
-        static Ref<TextureCubeMap> create(const std::string& filePath);
+        static Ref<TextureCubeMap> create(const std::string& filePath,
+                                          TextureFilter a_filter   = TextureFilter::Nearest,
+                                          TextureWrap a_wrap       = TextureWrap::Repeat,
+                                          TextureProfile a_profile = TextureProfile::RGB);
 
         static const Ref<TextureCubeMap>& cache(const std::string& filePath,
                                                 const CacheAlias& alias = "",

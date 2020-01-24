@@ -1337,7 +1337,10 @@ namespace oyl
 
             m_editorViewportBuffer = FrameBuffer::create(1);
             m_editorViewportBuffer->initDepthTexture(1, 1);
-            m_editorViewportBuffer->initColorTexture(0, 1, 1, Texture::RGBA8, Texture::Nearest, Texture::Clamp);
+            m_editorViewportBuffer->initColorTexture(0, 1, 1, 
+                                                     TextureFormat::RGBA8, 
+                                                     TextureFilter::Nearest, 
+                                                     TextureWrap::ClampToEdge);
 
             EditorViewportHandleChangedEvent handleChanged;
             handleChanged.handle = m_editorViewportBuffer->getColorHandle(0);
