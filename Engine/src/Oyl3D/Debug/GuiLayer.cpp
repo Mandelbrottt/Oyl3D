@@ -1291,6 +1291,21 @@ namespace oyl::internal
             if (isKinematic != rb.getProperty(RigidBody::IS_KINEMATIC))
                 rb.setProperties(RigidBody::IS_KINEMATIC, isKinematic);
 
+            bool isFrozenX = rb.getProperty(RigidBody::FREEZE_ROTATION_X);
+            ImGui::Checkbox("Freeze Rotation X##InspectorRigidBodyFreezeRotXCheckbox", &isFrozenX);
+            if (isFrozenX != rb.getProperty(RigidBody::FREEZE_ROTATION_X))
+                rb.setProperties(RigidBody::FREEZE_ROTATION_X, isFrozenX);
+
+            bool isFrozenY = rb.getProperty(RigidBody::FREEZE_ROTATION_Y);
+            ImGui::Checkbox("Freeze Rotation Y##InspectorRigidBodyFreezeRotYCheckbox", &isFrozenY);
+            if (isFrozenY != rb.getProperty(RigidBody::FREEZE_ROTATION_Y))
+                rb.setProperties(RigidBody::FREEZE_ROTATION_Y, isFrozenY);
+
+            bool isFrozenZ = rb.getProperty(RigidBody::FREEZE_ROTATION_Z);
+            ImGui::Checkbox("Freeze Rotation Z##InspectorRigidBodyFreezeRotZCheckbox", &isFrozenZ);
+            if (isFrozenZ != rb.getProperty(RigidBody::FREEZE_ROTATION_Z))
+                rb.setProperties(RigidBody::FREEZE_ROTATION_Z, isFrozenZ);
+
             float mass = rb.getMass();
             ImGui::Text("Mass");
             ImGui::SameLine();

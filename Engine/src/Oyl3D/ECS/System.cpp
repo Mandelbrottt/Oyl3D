@@ -543,7 +543,7 @@ namespace oyl
             gContactStartedCallback   = contactStartedCallback;
             gContactEndedCallback     = contactEndedCallback;
             gContactProcessedCallback = contactProcessedCallback;
-
+            
             g_dispatcher = m_dispatcher;
 
             g_currentRegistry = registry;
@@ -651,7 +651,7 @@ namespace oyl
                 }
                 if (rigidBody.m_isDirty)
                 {
-                    //m_world->removeRigidBody(cachedBody.body.get());
+                    //m_btWorld->removeRigidBody(cachedBody.body.get());
                     
                     // Velocity
                     cachedBody.body->setLinearVelocity(btVector3(rigidBody.m_velocity.x,
@@ -673,7 +673,7 @@ namespace oyl
                     // Flags
                     int flags = cachedBody.body->getCollisionFlags();
 
-                    if (rigidBody.getProperty(RigidBody::IS_KINEMATIC))
+                    if (rigidBody.getProperty(RigidBody::IS_KINEMATIC) || rigidBody.getMass() == 0.0f)
                     {
                         flags |= btRigidBody::CF_KINEMATIC_OBJECT;
                         cachedBody.body->setActivationState(DISABLE_DEACTIVATION);
@@ -703,6 +703,7 @@ namespace oyl
 
                     cachedBody.body->setCollisionFlags(flags);
 
+
                     //// Rotation Locking
                     //btVector3 inertiaTensor = {};
 
@@ -713,8 +714,6 @@ namespace oyl
                     //cachedBody.body->setInvInertiaDiagLocal(inertiaTensor);
 
                     //cachedBody.body->updateInertiaTensor();
-
-                    //m_world->addRigidBody(cachedBody.body.get());
 
                     // Gravity
                     if (rigidBody.getProperty(RigidBody::USE_GRAVITY))
@@ -728,6 +727,17 @@ namespace oyl
 
                     rigidBody.m_isDirty = false;
                 }
+
+                m_btWorld->removeRigidBody(cachedBody.body.get());
+
+                float x = rigidBody.getProperty(RigidBody::FREEZE_ROTATION_X) ? 0.0f : 1.0f;
+                float y = rigidBody.getProperty(RigidBody::FREEZE_ROTATION_Y) ? 0.0f : 1.0f;
+                float z = rigidBody.getProperty(RigidBody::FREEZE_ROTATION_Z) ? 0.0f : 1.0f;
+                
+                //cachedBody.body->setLinearFactor(btVector3(1, 1, 1));
+                cachedBody.body->setAngularFactor(btVector3(x, y, z));
+
+                m_btWorld->addRigidBody(cachedBody.body.get());
 
                 if (transform.m_isPositionOverridden || 
                     transform.m_isRotationOverridden ||
