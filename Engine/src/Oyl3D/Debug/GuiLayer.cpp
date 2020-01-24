@@ -709,48 +709,7 @@ namespace oyl::internal
             }
             else if (m_currentSelection.type() == Selectable::Type::Material)
             {
-                auto& material = m_currentSelection.material();
-
-                std::string tempAlias = Shader::getAlias(material->shader);
-                if (tempAlias == INVALID_ALIAS) tempAlias = "None";
-                if (ImGui::BeginCombo("Shader", tempAlias.c_str()))
-                {
-                    for (const auto& [alias, shader] : Shader::getCache())
-                        if (ImGui::Selectable(alias.c_str(), shader == material->shader))
-                            material->shader = shader;
-
-                    ImGui::EndCombo();
-                }
-                tempAlias = Texture2D::getAlias(material->albedoMap);
-                if (tempAlias == INVALID_ALIAS) tempAlias = "None";
-                if (ImGui::BeginCombo("Albedo Map", tempAlias.c_str()))
-                {
-                    for (const auto& [alias, albedo] : Texture2D::getCache())
-                        if (ImGui::Selectable(alias.c_str(), albedo == material->albedoMap))
-                            material->albedoMap = albedo;
-
-                    ImGui::EndCombo();
-                }
-                tempAlias = Texture2D::getAlias(material->specularMap);
-                if (tempAlias == INVALID_ALIAS) tempAlias = "None";
-                if (ImGui::BeginCombo("Specular Map", tempAlias.c_str()))
-                {
-                    for (const auto& [alias, specular] : Texture2D::getCache())
-                        if (ImGui::Selectable(alias.c_str(), specular == material->specularMap))
-                            material->specularMap = specular;
-
-                    ImGui::EndCombo();
-                }
-                tempAlias = Texture2D::getAlias(material->normalMap);
-                if (tempAlias == INVALID_ALIAS) tempAlias = "None";
-                if (ImGui::BeginCombo("Normal Map", tempAlias.c_str()))
-                {
-                    for (const auto& [alias, normal] : Texture2D::getCache())
-                        if (ImGui::Selectable(alias.c_str(), normal == material->normalMap))
-                            material->normalMap = normal;
-
-                    ImGui::EndCombo();
-                }
+                drawInspectorMaterial();
             }
         }
         ImGui::End();
@@ -832,92 +791,96 @@ namespace oyl::internal
             ImGui::PushItemWidth(newWidth);
 
             {
+                bool changed = false;
                 glm::vec3 position = transform.getPosition();
 
                 const float posDragSpeed = 0.02f;
                 ImGui::Text("Position");
                 ImGui::SameLine(ImGui::GetWindowContentRegionWidth() - (15 * 3 + newWidth * 3 + 27));
                 ImGui::SetNextItemWidth(15);
-                ImGui::DragFloat("##XPos", &position.x, posDragSpeed, 0, 0, "X");
+                changed |= ImGui::DragFloat("##XPos", &position.x, posDragSpeed, 0, 0, "X");
                 ImGui::SameLine();
-                ImGui::InputFloat("##XPosInput", &position.x, 0, 0, "%.2f", flags);
-                ImGui::SameLine();
-                ImGui::SetNextItemWidth(15);
-                ImGui::DragFloat("##YPos", &position.y, posDragSpeed, 0, 0, "Y");
-                ImGui::SameLine();
-                ImGui::InputFloat("##YPosInput", &position.y, 0, 0, "%.2f", flags);
+                changed |= ImGui::InputFloat("##XPosInput", &position.x, 0, 0, "%.2f", flags);
                 ImGui::SameLine();
                 ImGui::SetNextItemWidth(15);
-                ImGui::DragFloat("##ZPos", &position.z, posDragSpeed, 0, 0, "Z");
+                changed |= ImGui::DragFloat("##YPos", &position.y, posDragSpeed, 0, 0, "Y");
                 ImGui::SameLine();
-                ImGui::InputFloat("##ZPosInput", &position.z, 0, 0, "%.2f", flags);
+                changed |= ImGui::InputFloat("##YPosInput", &position.y, 0, 0, "%.2f", flags);
+                ImGui::SameLine();
+                ImGui::SetNextItemWidth(15);
+                changed |= ImGui::DragFloat("##ZPos", &position.z, posDragSpeed, 0, 0, "Z");
+                ImGui::SameLine();
+                changed |= ImGui::InputFloat("##ZPosInput", &position.z, 0, 0, "%.2f", flags);
 
-                if (position != transform.getPosition())
+                if (changed)
                     transform.setPosition(position);
             }
             {
+                bool changed = false;
                 glm::vec3 rotation = transform.getRotationEuler();
 
                 const float rotDragSpeed = 0.5f;
                 ImGui::Text("Rotation");
                 ImGui::SameLine(ImGui::GetWindowContentRegionWidth() - (15 * 3 + newWidth * 3 + 27));
                 ImGui::SetNextItemWidth(15);
-                ImGui::DragFloat("##XRot", &rotation.x, rotDragSpeed, 0, 0, "X");
+                changed |= ImGui::DragFloat("##XRot", &rotation.x, rotDragSpeed, 0, 0, "X");
                 ImGui::SameLine();
-                ImGui::InputFloat("##XRotInput", &rotation.x, 0, 0, "%.2f", flags);
-                ImGui::SameLine();
-                ImGui::SetNextItemWidth(15);
-                ImGui::DragFloat("##YRot", &rotation.y, rotDragSpeed, 0, 0, "Y");
-                ImGui::SameLine();
-                ImGui::InputFloat("##YRotInput", &rotation.y, 0, 0, "%.2f", flags);
+                changed |= ImGui::InputFloat("##XRotInput", &rotation.x, 0, 0, "%.2f", flags);
                 ImGui::SameLine();
                 ImGui::SetNextItemWidth(15);
-                ImGui::DragFloat("##ZRot", &rotation.z, rotDragSpeed, 0, 0, "Z");
+                changed |= ImGui::DragFloat("##YRot", &rotation.y, rotDragSpeed, 0, 0, "Y");
                 ImGui::SameLine();
-                ImGui::InputFloat("##ZRotInput", &rotation.z, 0, 0, "%.2f", flags);
+                changed |= ImGui::InputFloat("##YRotInput", &rotation.y, 0, 0, "%.2f", flags);
+                ImGui::SameLine();
+                ImGui::SetNextItemWidth(15);
+                changed |= ImGui::DragFloat("##ZRot", &rotation.z, rotDragSpeed, 0, 0, "Z");
+                ImGui::SameLine();
+                changed |= ImGui::InputFloat("##ZRotInput", &rotation.z, 0, 0, "%.2f", flags);
 
-                if (rotation != transform.getRotationEuler())
-                    transform.setRotationEuler(rotation);
+                if (changed)
+                    transform.setRotation(glm::quat(rotation));
             }
             {
+                bool changed = false;
                 glm::vec3 scale = transform.getScale();
 
                 const float scaleDragSpeed = 0.02f;
                 ImGui::Text("Scale");
                 ImGui::SameLine(ImGui::GetWindowContentRegionWidth() - (15 * 3 + newWidth * 3 + 27));
                 ImGui::SetNextItemWidth(15);
-                ImGui::DragFloat("##XSca", &scale.x, scaleDragSpeed, 0, 0, "X");
+                changed |= ImGui::DragFloat("##XSca", &scale.x, scaleDragSpeed, 0, 0, "X");
                 ImGui::SameLine();
-                ImGui::InputFloat("##XScaInput", &scale.x, 0, 0, "%.2f", flags);
-                ImGui::SameLine();
-                ImGui::SetNextItemWidth(15);
-                ImGui::DragFloat("##YSca", &scale.y, scaleDragSpeed, 0, 0, "Y");
-                ImGui::SameLine();
-                ImGui::InputFloat("##YScaInput", &scale.y, 0, 0, "%.2f", flags);
+                changed |= ImGui::InputFloat("##XScaInput", &scale.x, 0, 0, "%.2f", flags);
                 ImGui::SameLine();
                 ImGui::SetNextItemWidth(15);
-                ImGui::DragFloat("##ZSca", &scale.z, scaleDragSpeed, 0, 0, "Z");
+                changed |= ImGui::DragFloat("##YSca", &scale.y, scaleDragSpeed, 0, 0, "Y");
                 ImGui::SameLine();
-                ImGui::InputFloat("##ZScaInput", &scale.z, 0, 0, "%.2f", flags);
+                changed |= ImGui::InputFloat("##YScaInput", &scale.y, 0, 0, "%.2f", flags);
+                ImGui::SameLine();
+                ImGui::SetNextItemWidth(15);
+                changed |= ImGui::DragFloat("##ZSca", &scale.z, scaleDragSpeed, 0, 0, "Z");
+                ImGui::SameLine();
+                changed |= ImGui::InputFloat("##ZScaInput", &scale.z, 0, 0, "%.2f", flags);
 
-                if (scale != transform.getScale())
+                if (changed)
                     transform.setScale(scale);
             }
             {
+                bool changed = false;
                 glm::bvec3 mirror = transform.getMirror();
 
                 ImGui::Text("Mirror");
                 ImGui::SameLine(ImGui::GetWindowContentRegionWidth() - (15 * 3 + newWidth * 3 + 27));
                 ImGui::SetNextItemWidth(15);
-                ImGui::Checkbox("X##XMir", &mirror.x);
+                changed |= ImGui::Checkbox("X##XMir", &mirror.x);
                 ImGui::SameLine();
                 ImGui::SetNextItemWidth(15);
-                ImGui::Checkbox("Y##YMir", &mirror.y);
+                changed |= ImGui::Checkbox("Y##YMir", &mirror.y);
                 ImGui::SameLine();
                 ImGui::SetNextItemWidth(15);
-                ImGui::Checkbox("Z##ZMir", &mirror.z);
-                
-                if (mirror != transform.getMirror())
+                changed |= ImGui::Checkbox("Z##ZMir", &mirror.z);
+
+                if (changed)
                     transform.setMirror(mirror);
             }
 
@@ -1278,11 +1241,29 @@ namespace oyl::internal
             
             // TODO: Add more property checkboxes
             bool useGravity = rb.getProperty(RigidBody::USE_GRAVITY);
-            ImGui::Text("Use Gravity");
-            ImGui::SameLine();
-            ImGui::Checkbox("##InspectorRigidBodyGravityCheckbox", &useGravity);
+            ImGui::Checkbox("Use Gravity##InspectorRigidBodyGravityCheckbox", &useGravity);
             if (useGravity != rb.getProperty(RigidBody::USE_GRAVITY))
                 rb.setProperties(RigidBody::USE_GRAVITY, useGravity);
+
+            bool isKinematic = rb.getProperty(RigidBody::IS_KINEMATIC);
+            ImGui::Checkbox("Is Kinematic##InspectorRigidBodyKinematicCheckbox", &isKinematic);
+            if (isKinematic != rb.getProperty(RigidBody::IS_KINEMATIC))
+                rb.setProperties(RigidBody::IS_KINEMATIC, isKinematic);
+
+            bool isFrozenX = rb.getProperty(RigidBody::FREEZE_ROTATION_X);
+            ImGui::Checkbox("Freeze Rotation X##InspectorRigidBodyFreezeRotXCheckbox", &isFrozenX);
+            if (isFrozenX != rb.getProperty(RigidBody::FREEZE_ROTATION_X))
+                rb.setProperties(RigidBody::FREEZE_ROTATION_X, isFrozenX);
+
+            bool isFrozenY = rb.getProperty(RigidBody::FREEZE_ROTATION_Y);
+            ImGui::Checkbox("Freeze Rotation Y##InspectorRigidBodyFreezeRotYCheckbox", &isFrozenY);
+            if (isFrozenY != rb.getProperty(RigidBody::FREEZE_ROTATION_Y))
+                rb.setProperties(RigidBody::FREEZE_ROTATION_Y, isFrozenY);
+
+            bool isFrozenZ = rb.getProperty(RigidBody::FREEZE_ROTATION_Z);
+            ImGui::Checkbox("Freeze Rotation Z##InspectorRigidBodyFreezeRotZCheckbox", &isFrozenZ);
+            if (isFrozenZ != rb.getProperty(RigidBody::FREEZE_ROTATION_Z))
+                rb.setProperties(RigidBody::FREEZE_ROTATION_Z, isFrozenZ);
 
             float mass = rb.getMass();
             ImGui::Text("Mass");
@@ -1388,6 +1369,87 @@ namespace oyl::internal
             
             ImGui::EndCombo();
         }
+    }
+
+    static void _setTextureProfile(const Ref<Texture2D>& a_texture)
+    {
+        if (!a_texture) return;
+        
+        bool isRGB = a_texture->getProfile() == TextureProfile::RGB;
+        const char* profilePreview = isRGB ? "RGB" : "sRGB";
+        ImGui::SetNextItemWidth(100);
+        if (ImGui::BeginCombo("Texture Profile##AlbedoTexProfile", profilePreview))
+        {
+            if (ImGui::Selectable("RGB", isRGB) && !isRGB)
+                a_texture->setProfile(TextureProfile::RGB);
+            if (ImGui::Selectable("sRGB", !isRGB) && isRGB)
+                a_texture->setProfile(TextureProfile::SRGB);
+
+            ImGui::EndCombo();
+        }
+    }
+
+    void GuiLayer::drawInspectorMaterial()
+    {
+        auto& material = m_currentSelection.material();
+
+        std::string tempAlias = Shader::getAlias(material->shader);
+        if (tempAlias == INVALID_ALIAS) tempAlias = "None";
+        if (ImGui::BeginCombo("Shader", tempAlias.c_str()))
+        {
+            for (const auto& [alias, shader] : Shader::getCache())
+                if (ImGui::Selectable(alias.c_str(), shader == material->shader))
+                    material->shader = shader;
+
+            ImGui::EndCombo();
+        }
+        ImGui::NewLine();
+        
+        tempAlias = Texture2D::getAlias(material->albedoMap);
+        if (tempAlias == INVALID_ALIAS) tempAlias = "None";
+        if (ImGui::BeginCombo("Albedo Map", tempAlias.c_str()))
+        {
+            if (ImGui::Selectable("None", material->albedoMap == nullptr))
+                material->albedoMap = nullptr;
+            for (const auto& [alias, albedo] : Texture2D::getCache())
+                if (ImGui::Selectable(alias.c_str(), albedo == material->albedoMap))
+                    material->albedoMap = albedo;
+
+            ImGui::EndCombo();
+        }
+        _setTextureProfile(material->albedoMap);
+        ImGui::NewLine();
+
+        tempAlias = Texture2D::getAlias(material->specularMap);
+        if (tempAlias == INVALID_ALIAS) tempAlias = "None";
+        if (ImGui::BeginCombo("Specular Map", tempAlias.c_str()))
+        {
+            if (ImGui::Selectable("None", material->specularMap == nullptr))
+                material->specularMap = nullptr;
+            for (const auto& [alias, specular] : Texture2D::getCache())
+                if (ImGui::Selectable(alias.c_str(), specular == material->specularMap))
+                    material->specularMap = specular;
+
+            ImGui::EndCombo();
+        }
+        _setTextureProfile(material->specularMap);
+        ImGui::NewLine();
+
+        tempAlias = Texture2D::getAlias(material->normalMap);
+        if (tempAlias == INVALID_ALIAS) tempAlias = "None";
+        if (ImGui::BeginCombo("Normal Map", tempAlias.c_str()))
+        {
+            if (ImGui::Selectable("None", material->normalMap == nullptr))
+                material->normalMap = nullptr;
+            for (const auto& [alias, normal] : Texture2D::getCache())
+                if (ImGui::Selectable(alias.c_str(), normal == material->normalMap))
+                    material->normalMap = normal;
+
+            ImGui::EndCombo();
+        }
+        _setTextureProfile(material->normalMap);
+        ImGui::NewLine();
+
     }
 
     void GuiLayer::drawAssetList()
@@ -1941,25 +2003,28 @@ namespace oyl::internal
                     case ImGuizmo::TRANSLATE:
                     {
                         //UniqueRef<EditorTranslateEntityCommand>
-                        model.m_localPosition        = tComponents[0];
-                        model.m_isPositionOverridden = true;
+                        model.setPosition(tComponents[0]);
+                        //model.m_localPosition        = tComponents[0];
+                        //model.m_isPositionOverridden = true;
                         break;
                     }
                     case ImGuizmo::ROTATE:
                     {
-                        model.m_localRotation        = glm::quat(radians(tComponents[1]));
-                        model.m_isRotationOverridden = true;
+                        model.setRotation(glm::quat(radians(tComponents[1])));
+                        //model.m_localRotation        = glm::quat(radians(tComponents[1]));
+                        //model.m_isRotationOverridden = true;
                         break;
                     }
                     case ImGuizmo::SCALE:
                     {
-                        model.m_localScale        = tComponents[2];
-                        model.m_isScaleOverridden = true;
+                        model.setScale(tComponents[2]);
+                        //model.m_localScale        = tComponents[2];
+                        //model.m_isScaleOverridden = true;
                         break;
                     }
                 }
 
-                model.m_isLocalDirty = true;
+                //model.m_isLocalDirty = true;
             }
         }
     }

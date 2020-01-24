@@ -14,14 +14,21 @@
         },
         "Textures": {
             "Albedo": {
-                "Alias": "Oyl UV-Grid",
-                "FilePath": "../Engine/res/textures/uvgrid.png",
+                "Alias": "brickwall",
+                "FilePath": "res\\assets\\textures\\brickwall.jpg",
+                "Profile": 0,
                 "guid": null
             },
-            "Normal": null,
+            "Normal": {
+                "Alias": "brickwall_normal",
+                "FilePath": "res\\assets\\textures\\brickwall_normal.jpg",
+                "Profile": 0,
+                "guid": null
+            },
             "Specular": {
-                "Alias": "container2_specular",
-                "FilePath": "res\\assets\\textures\\container2_specular.png",
+                "Alias": "Oyl White",
+                "FilePath": "../Engine/res/textures/white.png",
+                "Profile": 0,
                 "guid": null
             }
         }

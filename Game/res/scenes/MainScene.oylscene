@@ -812,7 +812,7 @@
         "RigidBody": {
             "Friction": 5.0,
             "Mass": 1.0,
-            "Properties": 63
+            "Properties": 126
         },
         "Transform": {
             "Mirror": {
@@ -826,10 +826,10 @@
                 "Z": -1.5169984102249146
             },
             "Rotation": {
-                "qW": 1.0,
-                "qX": 0.0,
-                "qY": 0.0,
-                "qZ": 0.0
+                "qW": 0.9314937591552734,
+                "qX": 0.3381527066230774,
+                "qY": 0.09847122430801392,
+                "qZ": 0.09096963703632355
             },
             "Scale": {
                 "X": 0.5,
@@ -986,7 +986,7 @@
         "RigidBody": {
             "Friction": 0.5,
             "Mass": 1.0,
-            "Properties": 49
+            "Properties": 48
         },
         "Transform": {
             "Mirror": {
@@ -1044,7 +1044,7 @@
         "RigidBody": {
             "Friction": 0.5,
             "Mass": 1.0,
-            "Properties": 49
+            "Properties": 48
         },
         "Transform": {
             "Mirror": {
@@ -1102,7 +1102,7 @@
         "RigidBody": {
             "Friction": 0.5,
             "Mass": 1.0,
-            "Properties": 49
+            "Properties": 48
         },
         "Transform": {
             "Mirror": {
@@ -1160,7 +1160,7 @@
         "RigidBody": {
             "Friction": 0.5,
             "Mass": 1.0,
-            "Properties": 49
+            "Properties": 32
         },
         "Transform": {
             "Mirror": {
@@ -3360,7 +3360,7 @@
         "RigidBody": {
             "Friction": 1.0,
             "Mass": 5.0,
-            "Properties": 63
+            "Properties": 54
         },
         "Transform": {
             "Mirror": {
@@ -3370,7 +3370,7 @@
             },
             "Position": {
                 "X": 1.5435608625411987,
-                "Y": 0.5396883487701416,
+                "Y": 3.759688138961792,
                 "Z": -0.5130671858787537
             },
             "Rotation": {
@@ -3574,9 +3574,9 @@
                 "Z": -0.4000000059604645
             },
             "Rotation": {
-                "qW": 1.0,
-                "qX": 0.0,
-                "qY": 0.0,
+                "qW": 0.9940076470375061,
+                "qX": -0.10931035876274109,
+                "qY": -0.0,
                 "qZ": 0.0
             },
             "Scale": {
@@ -4973,6 +4973,96 @@
                 "X": -11.826237678527832,
                 "Y": 5.021702289581299,
                 "Z": -1.7796382904052734
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Sphere 1": {
+        "Collidable": {
+            "Shapes": [
+                {
+                    "Center": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Radius": 0.5,
+                    "Trigger": false,
+                    "Type": 1
+                }
+            ]
+        },
+        "Parent": null,
+        "RigidBody": {
+            "Friction": 0.5,
+            "Mass": 1.0,
+            "Properties": 98
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -3.0,
+                "Y": -1.0,
+                "Z": -2.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Sphere 2": {
+        "Collidable": {
+            "Shapes": [
+                {
+                    "Center": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Radius": 0.5,
+                    "Trigger": false,
+                    "Type": 1
+                }
+            ]
+        },
+        "Parent": null,
+        "RigidBody": {
+            "Friction": 0.5,
+            "Mass": 1.0,
+            "Properties": 98
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -3.0,
+                "Y": -1.0,
+                "Z": -2.0
             },
             "Rotation": {
                 "qW": 1.0,

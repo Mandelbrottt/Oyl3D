@@ -543,7 +543,7 @@ namespace oyl
             gContactStartedCallback   = contactStartedCallback;
             gContactEndedCallback     = contactEndedCallback;
             gContactProcessedCallback = contactProcessedCallback;
-
+            
             g_dispatcher = m_dispatcher;
 
             g_currentRegistry = registry;
@@ -611,16 +611,21 @@ namespace oyl
                     //m_world->removeRigidBody(m_rigidBodies[entity]->body.get());
                     //this->addRigidBody(entity, transform, rigidBody);
                     
-                    btTransform t = cachedBody.body->getWorldTransform();
+                    btTransform t;
+                    if (cachedBody.body->getCollisionFlags() & btCollisionObject::CF_KINEMATIC_OBJECT)
+                        cachedBody.motion->getWorldTransform(t);
+                    else
+                        t = cachedBody.body->getWorldTransform();
 
                     t.setOrigin(btVector3(transform.getPositionXGlobal(),
                                           transform.getPositionYGlobal(),
                                           transform.getPositionZGlobal()));
                     
-                    cachedBody.body->setWorldTransform(t);
-
-					cachedBody.body->activate();
-
+                    if (cachedBody.body->getCollisionFlags() & btCollisionObject::CF_KINEMATIC_OBJECT)
+                        cachedBody.motion->setWorldTransform(t);
+                    else
+                        cachedBody.body->setWorldTransform(t);
+                    
                     transform.m_isPositionOverridden = false;
 
                     // TODO: Recursively recalculate every child transform
@@ -651,7 +656,7 @@ namespace oyl
                 }
                 if (rigidBody.m_isDirty)
                 {
-                    //m_world->removeRigidBody(cachedBody.body.get());
+                    //m_btWorld->removeRigidBody(cachedBody.body.get());
                     
                     // Velocity
                     cachedBody.body->setLinearVelocity(btVector3(rigidBody.m_velocity.x,
@@ -673,10 +678,11 @@ namespace oyl
                     // Flags
                     int flags = cachedBody.body->getCollisionFlags();
 
-                    if (rigidBody.getProperty(RigidBody::IS_KINEMATIC))
+                    if (rigidBody.getProperty(RigidBody::IS_KINEMATIC) || rigidBody.getMass() == 0.0f)
                     {
                         flags |= btRigidBody::CF_KINEMATIC_OBJECT;
                         cachedBody.body->setActivationState(DISABLE_DEACTIVATION);
+                        cachedBody.body->activate(true);
                         cachedBody.body->setMassProps(0.0f, btVector3(0.0f, 0.0f, 0.0f));
                         cachedBody.body->setLinearVelocity({ 0.0f, 0.0f, 0.0f });
                         cachedBody.body->setAngularVelocity({ 0.0f, 0.0f, 0.0f });
@@ -702,6 +708,7 @@ namespace oyl
 
                     cachedBody.body->setCollisionFlags(flags);
 
+
                     //// Rotation Locking
                     //btVector3 inertiaTensor = {};
 
@@ -712,8 +719,6 @@ namespace oyl
                     //cachedBody.body->setInvInertiaDiagLocal(inertiaTensor);
 
                     //cachedBody.body->updateInertiaTensor();
-
-                    //m_world->addRigidBody(cachedBody.body.get());
 
                     // Gravity
                     if (rigidBody.getProperty(RigidBody::USE_GRAVITY))
@@ -727,6 +732,17 @@ namespace oyl
 
                     rigidBody.m_isDirty = false;
                 }
+
+                m_btWorld->removeRigidBody(cachedBody.body.get());
+
+                float x = rigidBody.getProperty(RigidBody::FREEZE_ROTATION_X) ? 0.0f : 1.0f;
+                float y = rigidBody.getProperty(RigidBody::FREEZE_ROTATION_Y) ? 0.0f : 1.0f;
+                float z = rigidBody.getProperty(RigidBody::FREEZE_ROTATION_Z) ? 0.0f : 1.0f;
+                
+                //cachedBody.body->setLinearFactor(btVector3(1, 1, 1));
+                cachedBody.body->setAngularFactor(btVector3(x, y, z));
+
+                m_btWorld->addRigidBody(cachedBody.body.get());
 
                 if (transform.m_isPositionOverridden || 
                     transform.m_isRotationOverridden ||
@@ -753,6 +769,9 @@ namespace oyl
             {
                 auto& transform = view.get<Transform>(entity);
                 auto& rigidBody = view.get<RigidBody>(entity);
+
+                if (rigidBody.getProperty(RigidBody::IS_KINEMATIC))
+                    continue;
 
                 RigidBodyInfo& cachedBody = *m_rigidBodies[entity];
                 
@@ -1325,7 +1344,10 @@ namespace oyl
 
             m_editorViewportBuffer = FrameBuffer::create(1);
             m_editorViewportBuffer->initDepthTexture(1, 1);
-            m_editorViewportBuffer->initColorTexture(0, 1, 1, Texture::RGBA8, Texture::Nearest, Texture::Clamp);
+            m_editorViewportBuffer->initColorTexture(0, 1, 1, 
+                                                     TextureFormat::RGBA8, 
+                                                     TextureFilter::Nearest, 
+                                                     TextureWrap::ClampToEdge);
 
             EditorViewportHandleChangedEvent handleChanged;
             handleChanged.handle = m_editorViewportBuffer->getColorHandle(0);

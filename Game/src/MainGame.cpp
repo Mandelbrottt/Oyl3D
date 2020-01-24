@@ -32,9 +32,9 @@ public:
 		this->listenForEventCategory(EventCategory::Gamepad);
 		this->listenForEventCategory((EventCategory) CategoryGarbagePile);
 
-		listenForEventType(EventType::PhysicsCollisionEnter);
-		listenForEventType(EventType::PhysicsCollisionStay);
-		listenForEventType(EventType::PhysicsCollisionExit);
+		// listenForEventType(EventType::PhysicsCollisionEnter);
+		// listenForEventType(EventType::PhysicsCollisionStay);
+		// listenForEventType(EventType::PhysicsCollisionExit);
 
 		scheduleSystemUpdate<PlayerSystem>();
 		scheduleSystemUpdate<CannonSystem>();
@@ -576,7 +576,9 @@ public:
 
 				break;
 			}
+			
 			}
+			break;
 		}
 
 		case EventType::GamepadButtonPressed:

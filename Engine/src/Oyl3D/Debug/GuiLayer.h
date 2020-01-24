@@ -57,6 +57,8 @@ namespace oyl::internal
         void drawInspectorLightSource();
         void drawInspectorAddComponent();
 
+        void drawInspectorMaterial();
+
         void drawAssetList();
         void drawAssetNode(const std::filesystem::directory_iterator& dir);
 

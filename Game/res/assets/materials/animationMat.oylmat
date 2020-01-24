@@ -14,8 +14,9 @@
         },
         "Textures": {
             "Albedo": {
-                "Alias": "archer",
-                "FilePath": "res\\assets\\textures\\archer.png",
+                "Alias": "brickwall",
+                "FilePath": "res\\assets\\textures\\brickwall.jpg",
+                "Profile": 0,
                 "guid": null
             },
             "Normal": null,

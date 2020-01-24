@@ -1,6 +1,6 @@
 {
     "Material": {
-        "Alias": "siding",
+        "Alias": "sphereMat",
         "Shader": {
             "Alias": "Oyl Lighting",
             "Pixel": {
@@ -14,15 +14,20 @@
         },
         "Textures": {
             "Albedo": {
-                "Alias": "woodPlankSiding2",
-                "FilePath": "res\\assets\\textures\\woodPlankSiding2.png",
+                "Alias": "brickwall",
+                "FilePath": "res\\assets\\textures\\brickwall.jpg",
                 "Profile": 0,
                 "guid": null
             },
-            "Normal": null,
+            "Normal": {
+                "Alias": "brickwall_normal",
+                "FilePath": "res\\assets\\textures\\brickwall_normal.jpg",
+                "Profile": 0,
+                "guid": null
+            },
             "Specular": {
-                "Alias": "tempSpec",
-                "FilePath": "res\\assets\\textures\\tempSpec.jpg",
+                "Alias": "Oyl White",
+                "FilePath": "../Engine/res/textures/white.png",
                 "Profile": 0,
                 "guid": null
             }
