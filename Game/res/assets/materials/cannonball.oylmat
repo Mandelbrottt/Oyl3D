@@ -23,7 +23,7 @@
             "Specular": {
                 "Alias": "tempSpec",
                 "FilePath": "res\\assets\\textures\\tempSpec.jpg",
-                "Profile": 0,
+                "Profile": 1,
                 "guid": null
             }
         }

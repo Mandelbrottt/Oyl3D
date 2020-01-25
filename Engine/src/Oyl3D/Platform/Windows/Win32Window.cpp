@@ -5,10 +5,10 @@
 
 #include "Events/Event.h"
 
+#include "Utils/Deadzones.h"
+
 #include <glfw/glfw3.h>
 #include <glad/glad.h>
-
-#include <glm/gtx/norm.hpp>
 
 #include <Xinput.h>
 
@@ -16,9 +16,6 @@
 
 // HACK:
 static void* _oylGamepadUserPointer = 0;
-
-static glm::vec2 _radialDeadZone(glm::vec2 rawInput, float deadZone);
-static glm::vec2 _crossDeadZone(glm::vec2 rawInput, float deadZone);
 
 namespace oyl
 {
@@ -306,8 +303,8 @@ namespace oyl
                     float px = prevState[jid].axes[2 * i];
                     float py = prevState[jid].axes[2 * i + 1];
 
-                    glm::vec2 dz  = _radialDeadZone(_crossDeadZone({ x, y }, deadZone * 0.5f), deadZone * 0.5f);
-                    glm::vec2 pdz = _radialDeadZone(_crossDeadZone({ px, py }, deadZone * 0.5f), deadZone * 0.5f);
+                    glm::vec2 dz  = radialDeadZone(crossDeadZone({ x, y }, deadZone * 0.5f), deadZone * 0.5f);
+                    glm::vec2 pdz = radialDeadZone(crossDeadZone({ px, py }, deadZone * 0.5f), deadZone * 0.5f);
 
                     if (glm::length2(dz) > 1.0f) dz = glm::normalize(dz);
                     if (glm::length2(pdz) > 1.0f) pdz = glm::normalize(pdz);
@@ -438,29 +435,4 @@ namespace oyl
     {
         m_context->updateViewport(width, height);
     }
-}
-
-glm::vec2 _radialDeadZone(glm::vec2 rawInput, float deadZone)
-{
-    if (glm::length2(rawInput) < deadZone * deadZone)
-        return glm::vec2(0.0f);
-    else
-        return glm::normalize(rawInput) * (glm::length(rawInput) - deadZone) / (1 - deadZone);
-}
-
-glm::vec2 _crossDeadZone(glm::vec2 rawInput, float deadZone)
-{
-    glm::vec2 newInput = rawInput;
-
-    if (abs(rawInput.x) < deadZone)
-        newInput.x = 0;
-    else
-        newInput.x = glm::sign(rawInput.x) * (abs(rawInput.x) - deadZone) / (1 - deadZone);
-
-    if (abs(rawInput.y) < deadZone)
-        newInput.y = 0;
-    else
-        newInput.y = glm::sign(rawInput.y) * (abs(rawInput.y) - deadZone) / (1 - deadZone);
-
-    return newInput;
 }

@@ -105,7 +105,7 @@
         "RigidBody": {
             "Friction": 0.5,
             "Mass": 0.0,
-            "Properties": 49
+            "Properties": 32
         },
         "Transform": {
             "Mirror": {
@@ -159,7 +159,7 @@
         "RigidBody": {
             "Friction": 0.5,
             "Mass": 1.0,
-            "Properties": 49
+            "Properties": 32
         },
         "Transform": {
             "Mirror": {
@@ -213,7 +213,7 @@
         "RigidBody": {
             "Friction": 0.5,
             "Mass": 1.0,
-            "Properties": 49
+            "Properties": 32
         },
         "Transform": {
             "Mirror": {
@@ -267,7 +267,7 @@
         "RigidBody": {
             "Friction": 0.5,
             "Mass": 1.0,
-            "Properties": 49
+            "Properties": 32
         },
         "Transform": {
             "Mirror": {
@@ -321,7 +321,7 @@
         "RigidBody": {
             "Friction": 0.5,
             "Mass": 1.0,
-            "Properties": 49
+            "Properties": 32
         },
         "Transform": {
             "Mirror": {
@@ -375,7 +375,7 @@
         "RigidBody": {
             "Friction": 0.5,
             "Mass": 1.0,
-            "Properties": 49
+            "Properties": 32
         },
         "Transform": {
             "Mirror": {
@@ -429,7 +429,7 @@
         "RigidBody": {
             "Friction": 0.5,
             "Mass": 1.0,
-            "Properties": 49
+            "Properties": 32
         },
         "Transform": {
             "Mirror": {
@@ -487,7 +487,7 @@
         "RigidBody": {
             "Friction": 0.5,
             "Mass": 0.0,
-            "Properties": 49
+            "Properties": 32
         },
         "Transform": {
             "Mirror": {
@@ -545,7 +545,7 @@
         "RigidBody": {
             "Friction": 0.5,
             "Mass": 1.0,
-            "Properties": 49
+            "Properties": 32
         },
         "Transform": {
             "Mirror": {
@@ -603,7 +603,7 @@
         "RigidBody": {
             "Friction": 0.5,
             "Mass": 1.0,
-            "Properties": 49
+            "Properties": 32
         },
         "Transform": {
             "Mirror": {
@@ -661,7 +661,7 @@
         "RigidBody": {
             "Friction": 0.5,
             "Mass": 1.0,
-            "Properties": 49
+            "Properties": 32
         },
         "Transform": {
             "Mirror": {
@@ -719,7 +719,7 @@
         "RigidBody": {
             "Friction": 0.5,
             "Mass": 1.0,
-            "Properties": 49
+            "Properties": 32
         },
         "Transform": {
             "Mirror": {
@@ -811,8 +811,8 @@
         },
         "RigidBody": {
             "Friction": 5.0,
-            "Mass": 1.0,
-            "Properties": 126
+            "Mass": 0.0,
+            "Properties": 34
         },
         "Transform": {
             "Mirror": {
@@ -826,10 +826,10 @@
                 "Z": -1.5169984102249146
             },
             "Rotation": {
-                "qW": 0.9314937591552734,
-                "qX": 0.3381527066230774,
-                "qY": 0.09847122430801392,
-                "qZ": 0.09096963703632355
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": -0.0,
+                "qZ": -4.067273948749062e-06
             },
             "Scale": {
                 "X": 1.0,
@@ -870,7 +870,7 @@
         "RigidBody": {
             "Friction": 0.5,
             "Mass": 0.0,
-            "Properties": 49
+            "Properties": 32
         },
         "Transform": {
             "Mirror": {
@@ -928,7 +928,7 @@
         "RigidBody": {
             "Friction": 0.5,
             "Mass": 0.0,
-            "Properties": 49
+            "Properties": 32
         },
         "Transform": {
             "Mirror": {
@@ -986,7 +986,7 @@
         "RigidBody": {
             "Friction": 0.5,
             "Mass": 1.0,
-            "Properties": 48
+            "Properties": 32
         },
         "Transform": {
             "Mirror": {
@@ -1044,7 +1044,7 @@
         "RigidBody": {
             "Friction": 0.5,
             "Mass": 1.0,
-            "Properties": 48
+            "Properties": 32
         },
         "Transform": {
             "Mirror": {
@@ -1102,7 +1102,7 @@
         "RigidBody": {
             "Friction": 0.5,
             "Mass": 1.0,
-            "Properties": 48
+            "Properties": 32
         },
         "Transform": {
             "Mirror": {
@@ -1253,7 +1253,7 @@
         "RigidBody": {
             "Friction": 0.5,
             "Mass": 1.0,
-            "Properties": 49
+            "Properties": 32
         },
         "Transform": {
             "Mirror": {
@@ -1447,7 +1447,7 @@
             "Position": {
                 "X": 0.0,
                 "Y": 0.0,
-                "Z": -0.5664392709732056
+                "Z": -0.5544283986091614
             },
             "Rotation": {
                 "qW": 1.0,
@@ -1573,15 +1573,6 @@
     },
     "Cannon Firing Message": {
         "Parent": null,
-        "Renderable": {
-            "Enabled": true,
-            "Material": {
-                "Alias": null
-            },
-            "Mesh": {
-                "FilePath": null
-            }
-        },
         "Transform": {
             "Mirror": {
                 "X": false,
@@ -1589,7 +1580,111 @@
                 "Z": false
             },
             "Position": {
-                "X": -24.0,
+                "X": -30.0,
+                "Y": -2.5,
+                "Z": 0.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Cannon Firing Message1": {
+        "Parent": null,
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -30.0,
+                "Y": -2.5,
+                "Z": 0.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Cannon Firing Message2": {
+        "Parent": null,
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -30.0,
+                "Y": -2.5,
+                "Z": 0.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Cannon Firing Message3": {
+        "Parent": null,
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -30.0,
+                "Y": -2.5,
+                "Z": 0.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Cannon Firing Message4": {
+        "Parent": null,
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -30.0,
                 "Y": -2.5,
                 "Z": 0.0
             },
@@ -1626,9 +1721,9 @@
                 "Z": true
             },
             "Position": {
-                "X": -9.961164474487305,
+                "X": -10.03441047668457,
                 "Y": -3.088313579559326,
-                "Z": -7.527631759643555
+                "Z": -7.491742134094238
             },
             "Rotation": {
                 "qW": 1.0,
@@ -1663,9 +1758,9 @@
                 "Z": true
             },
             "Position": {
-                "X": -1.9854516983032227,
+                "X": -2.1463704109191895,
                 "Y": -3.088313579559326,
-                "Z": -7.527631759643555
+                "Z": -7.5218305587768555
             },
             "Rotation": {
                 "qW": 1.0,
@@ -1697,12 +1792,12 @@
             "Mirror": {
                 "X": false,
                 "Y": false,
-                "Z": false
+                "Z": true
             },
             "Position": {
-                "X": -2.0278196334838867,
+                "X": -10.03441047668457,
                 "Y": -3.088313579559326,
-                "Z": 3.520254135131836
+                "Z": -7.491742134094238
             },
             "Rotation": {
                 "qW": 1.0,
@@ -1774,9 +1869,9 @@
                 "Z": true
             },
             "Position": {
-                "X": 4.984394550323486,
+                "X": 4.826782703399658,
                 "Y": -3.088313579559326,
-                "Z": -7.527631759643555
+                "Z": -7.517038345336914
             },
             "Rotation": {
                 "qW": 1.0,
@@ -1919,12 +2014,12 @@
             "Mirror": {
                 "X": false,
                 "Y": false,
-                "Z": true
+                "Z": false
             },
             "Position": {
-                "X": -9.961164474487305,
+                "X": -2.0278196334838867,
                 "Y": -3.088313579559326,
-                "Z": -7.527631759643555
+                "Z": 3.520254135131836
             },
             "Rotation": {
                 "qW": 1.0,
@@ -1940,80 +2035,6 @@
         }
     },
     "CannonPortTrim 7": {
-        "Parent": {
-            "Name": "Boat Root L"
-        },
-        "Renderable": {
-            "Enabled": true,
-            "Material": {
-                "Alias": "atlasMaterial"
-            },
-            "Mesh": {
-                "FilePath": "res\\assets\\models\\Decorative\\cannonWindowTrim.obj"
-            }
-        },
-        "Transform": {
-            "Mirror": {
-                "X": false,
-                "Y": false,
-                "Z": true
-            },
-            "Position": {
-                "X": -1.9854516983032227,
-                "Y": -3.088313579559326,
-                "Z": -7.527631759643555
-            },
-            "Rotation": {
-                "qW": 1.0,
-                "qX": 0.0,
-                "qY": 0.0,
-                "qZ": 0.0
-            },
-            "Scale": {
-                "X": 1.0,
-                "Y": 1.0,
-                "Z": 1.0
-            }
-        }
-    },
-    "CannonPortTrim 8": {
-        "Parent": {
-            "Name": "Boat Root L"
-        },
-        "Renderable": {
-            "Enabled": true,
-            "Material": {
-                "Alias": "atlasMaterial"
-            },
-            "Mesh": {
-                "FilePath": "res\\assets\\models\\Decorative\\cannonWindowTrim.obj"
-            }
-        },
-        "Transform": {
-            "Mirror": {
-                "X": false,
-                "Y": false,
-                "Z": true
-            },
-            "Position": {
-                "X": 4.984394550323486,
-                "Y": -3.088313579559326,
-                "Z": -7.527631759643555
-            },
-            "Rotation": {
-                "qW": 1.0,
-                "qX": 0.0,
-                "qY": 0.0,
-                "qZ": 0.0
-            },
-            "Scale": {
-                "X": 1.0,
-                "Y": 1.0,
-                "Z": 1.0
-            }
-        }
-    },
-    "CannonPortTrim 9": {
         "Parent": {
             "Name": "Boat Root L"
         },
@@ -2050,17 +2071,82 @@
             }
         }
     },
-    "Cannonball Crate Message": {
-        "Parent": null,
+    "CannonPortTrim 8": {
+        "Parent": {
+            "Name": "Boat Root L"
+        },
         "Renderable": {
             "Enabled": true,
             "Material": {
-                "Alias": null
+                "Alias": "atlasMaterial"
             },
             "Mesh": {
-                "FilePath": null
+                "FilePath": "res\\assets\\models\\Decorative\\cannonWindowTrim.obj"
             }
         },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": true
+            },
+            "Position": {
+                "X": 4.826782703399658,
+                "Y": -3.088313579559326,
+                "Z": -7.517038345336914
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "CannonPortTrim 9": {
+        "Parent": {
+            "Name": "Boat Root L"
+        },
+        "Renderable": {
+            "Enabled": true,
+            "Material": {
+                "Alias": "atlasMaterial"
+            },
+            "Mesh": {
+                "FilePath": "res\\assets\\models\\Decorative\\cannonWindowTrim.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": true
+            },
+            "Position": {
+                "X": -2.1463704109191895,
+                "Y": -3.088313579559326,
+                "Z": -7.5218305587768555
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Cannonball Crate Message1": {
+        "Parent": null,
         "Transform": {
             "Mirror": {
                 "X": false,
@@ -2068,7 +2154,85 @@
                 "Z": false
             },
             "Position": {
-                "X": -24.119998931884766,
+                "X": -30.0,
+                "Y": -2.5,
+                "Z": 0.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 2.0,
+                "Y": 2.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Cannonball Crate Message2": {
+        "Parent": null,
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -30.0,
+                "Y": -2.5,
+                "Z": 0.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 2.0,
+                "Y": 2.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Cannonball Crate Message3": {
+        "Parent": null,
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -30.0,
+                "Y": -2.5,
+                "Z": 0.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 2.0,
+                "Y": 2.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Cannonball Crate Message4": {
+        "Parent": null,
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -30.0,
                 "Y": -2.5,
                 "Z": 0.0
             },
@@ -2286,17 +2450,8 @@
             }
         }
     },
-    "Clean Garbage Message": {
+    "Clean Garbage Message1": {
         "Parent": null,
-        "Renderable": {
-            "Enabled": true,
-            "Material": {
-                "Alias": null
-            },
-            "Mesh": {
-                "FilePath": null
-            }
-        },
         "Transform": {
             "Mirror": {
                 "X": false,
@@ -2304,7 +2459,7 @@
                 "Z": false
             },
             "Position": {
-                "X": -23.760000228881836,
+                "X": -30.0,
                 "Y": -2.5,
                 "Z": 0.0
             },
@@ -2321,17 +2476,86 @@
             }
         }
     },
-    "Cleaning Quicktime Event Background": {
+    "Clean Garbage Message2": {
         "Parent": null,
-        "Renderable": {
-            "Enabled": true,
-            "Material": {
-                "Alias": null
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
             },
-            "Mesh": {
-                "FilePath": null
+            "Position": {
+                "X": -30.0,
+                "Y": -2.5,
+                "Z": 0.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
             }
-        },
+        }
+    },
+    "Clean Garbage Message3": {
+        "Parent": null,
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -30.0,
+                "Y": -2.5,
+                "Z": 0.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Clean Garbage Message4": {
+        "Parent": null,
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -30.0,
+                "Y": -2.5,
+                "Z": 0.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Cleaning Quicktime Event Background1": {
+        "Parent": null,
         "Transform": {
             "Mirror": {
                 "X": false,
@@ -2356,17 +2580,86 @@
             }
         }
     },
-    "Cleaning Quicktime Event Indicator": {
+    "Cleaning Quicktime Event Background2": {
         "Parent": null,
-        "Renderable": {
-            "Enabled": true,
-            "Material": {
-                "Alias": null
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
             },
-            "Mesh": {
-                "FilePath": null
+            "Position": {
+                "X": -30.0,
+                "Y": 3.5,
+                "Z": 0.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 2.0,
+                "Y": 1.5,
+                "Z": 1.0
             }
-        },
+        }
+    },
+    "Cleaning Quicktime Event Background3": {
+        "Parent": null,
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -30.0,
+                "Y": 3.5,
+                "Z": 0.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 2.0,
+                "Y": 1.5,
+                "Z": 1.0
+            }
+        }
+    },
+    "Cleaning Quicktime Event Background4": {
+        "Parent": null,
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -30.0,
+                "Y": 3.5,
+                "Z": 0.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 2.0,
+                "Y": 1.5,
+                "Z": 1.0
+            }
+        }
+    },
+    "Cleaning Quicktime Event Indicator1": {
+        "Parent": null,
         "Transform": {
             "Mirror": {
                 "X": false,
@@ -2376,7 +2669,85 @@
             "Position": {
                 "X": -30.0,
                 "Y": 3.5999999046325684,
-                "Z": 0.0
+                "Z": -1.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.5,
+                "Y": 2.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Cleaning Quicktime Event Indicator2": {
+        "Parent": null,
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -30.0,
+                "Y": 3.5999999046325684,
+                "Z": -1.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.5,
+                "Y": 2.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Cleaning Quicktime Event Indicator3": {
+        "Parent": null,
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -30.0,
+                "Y": 3.5999999046325684,
+                "Z": -1.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.5,
+                "Y": 2.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Cleaning Quicktime Event Indicator4": {
+        "Parent": null,
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -30.0,
+                "Y": 3.5999999046325684,
+                "Z": -1.0
             },
             "Rotation": {
                 "qW": 1.0,
@@ -2541,15 +2912,6 @@
     },
     "Garbage Tick0": {
         "Parent": null,
-        "Renderable": {
-            "Enabled": true,
-            "Material": {
-                "Alias": null
-            },
-            "Mesh": {
-                "FilePath": null
-            }
-        },
         "Transform": {
             "Mirror": {
                 "X": false,
@@ -2557,9 +2919,9 @@
                 "Z": false
             },
             "Position": {
-                "X": -100.0,
-                "Y": -100.0,
-                "Z": -200.0
+                "X": -30.0,
+                "Y": 3.5999999046325684,
+                "Z": -1.0
             },
             "Rotation": {
                 "qW": 1.0,
@@ -2568,78 +2930,8 @@
                 "qZ": 0.0
             },
             "Scale": {
-                "X": 1.0,
-                "Y": 1.0,
-                "Z": 1.0
-            }
-        }
-    },
-    "Garbage Tick1": {
-        "Parent": null,
-        "Renderable": {
-            "Enabled": true,
-            "Material": {
-                "Alias": null
-            },
-            "Mesh": {
-                "FilePath": null
-            }
-        },
-        "Transform": {
-            "Mirror": {
-                "X": false,
-                "Y": false,
-                "Z": false
-            },
-            "Position": {
-                "X": -100.0,
-                "Y": -100.0,
-                "Z": -200.0
-            },
-            "Rotation": {
-                "qW": 1.0,
-                "qX": 0.0,
-                "qY": 0.0,
-                "qZ": 0.0
-            },
-            "Scale": {
-                "X": 1.0,
-                "Y": 1.0,
-                "Z": 1.0
-            }
-        }
-    },
-    "Garbage Tick2": {
-        "Parent": null,
-        "Renderable": {
-            "Enabled": true,
-            "Material": {
-                "Alias": null
-            },
-            "Mesh": {
-                "FilePath": null
-            }
-        },
-        "Transform": {
-            "Mirror": {
-                "X": false,
-                "Y": false,
-                "Z": false
-            },
-            "Position": {
-                "X": -100.0,
-                "Y": -100.0,
-                "Z": -200.0
-            },
-            "Rotation": {
-                "qW": 1.0,
-                "qX": 0.0,
-                "qY": 0.0,
-                "qZ": 0.0
-            },
-            "Scale": {
-                "X": 1.0,
-                "Y": 1.0,
+                "X": 1.5,
+                "Y": 2.0,
                 "Z": 1.0
             }
         }
@@ -2904,17 +3196,8 @@
             }
         }
     },
-    "Invalid Reticle": {
+    "Invalid Reticle1": {
         "Parent": null,
-        "Renderable": {
-            "Enabled": true,
-            "Material": {
-                "Alias": null
-            },
-            "Mesh": {
-                "FilePath": null
-            }
-        },
         "Transform": {
             "Mirror": {
                 "X": false,
@@ -2922,9 +3205,87 @@
                 "Z": false
             },
             "Position": {
-                "X": -14.899999618530273,
-                "Y": 0.0,
-                "Z": 0.0
+                "X": -30.0,
+                "Y": -1.0,
+                "Z": -2.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 0.5,
+                "Y": 0.5,
+                "Z": 1.0
+            }
+        }
+    },
+    "Invalid Reticle2": {
+        "Parent": null,
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -30.0,
+                "Y": -1.0,
+                "Z": -2.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 0.5,
+                "Y": 0.5,
+                "Z": 1.0
+            }
+        }
+    },
+    "Invalid Reticle3": {
+        "Parent": null,
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -30.0,
+                "Y": -1.0,
+                "Z": -2.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 0.5,
+                "Y": 0.5,
+                "Z": 1.0
+            }
+        }
+    },
+    "Invalid Reticle4": {
+        "Parent": null,
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -30.0,
+                "Y": -1.0,
+                "Z": -2.0
             },
             "Rotation": {
                 "qW": 1.0,
@@ -2998,17 +3359,8 @@
             }
         }
     },
-    "Load Cannon Message": {
+    "Load Cannon Message1": {
         "Parent": null,
-        "Renderable": {
-            "Enabled": true,
-            "Material": {
-                "Alias": null
-            },
-            "Mesh": {
-                "FilePath": null
-            }
-        },
         "Transform": {
             "Mirror": {
                 "X": false,
@@ -3016,7 +3368,85 @@
                 "Z": false
             },
             "Position": {
-                "X": -21.100000381469727,
+                "X": -30.0,
+                "Y": -2.5,
+                "Z": 0.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Load Cannon Message2": {
+        "Parent": null,
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -30.0,
+                "Y": -2.5,
+                "Z": 0.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Load Cannon Message3": {
+        "Parent": null,
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -30.0,
+                "Y": -2.5,
+                "Z": 0.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Load Cannon Message4": {
+        "Parent": null,
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -30.0,
                 "Y": -2.5,
                 "Z": 0.0
             },
@@ -3142,17 +3572,8 @@
             }
         }
     },
-    "Normal Reticle": {
+    "Normal Reticle1": {
         "Parent": null,
-        "Renderable": {
-            "Enabled": true,
-            "Material": {
-                "Alias": null
-            },
-            "Mesh": {
-                "FilePath": null
-            }
-        },
         "Transform": {
             "Mirror": {
                 "X": false,
@@ -3160,8 +3581,8 @@
                 "Z": false
             },
             "Position": {
-                "X": -10.859999656677246,
-                "Y": 0.7199999690055847,
+                "X": -30.0,
+                "Y": -1.0,
                 "Z": -2.0
             },
             "Rotation": {
@@ -3177,17 +3598,8 @@
             }
         }
     },
-    "Pickup Cannonball Message": {
+    "Normal Reticle2": {
         "Parent": null,
-        "Renderable": {
-            "Enabled": true,
-            "Material": {
-                "Alias": null
-            },
-            "Mesh": {
-                "FilePath": null
-            }
-        },
         "Transform": {
             "Mirror": {
                 "X": false,
@@ -3195,7 +3607,85 @@
                 "Z": false
             },
             "Position": {
-                "X": -20.84000015258789,
+                "X": -30.0,
+                "Y": -1.0,
+                "Z": -2.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 0.20000000298023224,
+                "Y": 0.20000000298023224,
+                "Z": 1.0
+            }
+        }
+    },
+    "Normal Reticle3": {
+        "Parent": null,
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -30.0,
+                "Y": -1.0,
+                "Z": -2.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 0.20000000298023224,
+                "Y": 0.20000000298023224,
+                "Z": 1.0
+            }
+        }
+    },
+    "Normal Reticle4": {
+        "Parent": null,
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -30.0,
+                "Y": -1.0,
+                "Z": -2.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 0.20000000298023224,
+                "Y": 0.20000000298023224,
+                "Z": 1.0
+            }
+        }
+    },
+    "Pickup Cannonball Message1": {
+        "Parent": null,
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -30.0,
                 "Y": -2.5,
                 "Z": 0.0
             },
@@ -3212,17 +3702,8 @@
             }
         }
     },
-    "Pickup Cleaning Solution Message": {
+    "Pickup Cannonball Message2": {
         "Parent": null,
-        "Renderable": {
-            "Enabled": true,
-            "Material": {
-                "Alias": null
-            },
-            "Mesh": {
-                "FilePath": null
-            }
-        },
         "Transform": {
             "Mirror": {
                 "X": false,
@@ -3230,7 +3711,7 @@
                 "Z": false
             },
             "Position": {
-                "X": -27.0,
+                "X": -30.0,
                 "Y": -2.5,
                 "Z": 0.0
             },
@@ -3247,17 +3728,8 @@
             }
         }
     },
-    "Pickup Gloop Message": {
+    "Pickup Cannonball Message3": {
         "Parent": null,
-        "Renderable": {
-            "Enabled": true,
-            "Material": {
-                "Alias": null
-            },
-            "Mesh": {
-                "FilePath": null
-            }
-        },
         "Transform": {
             "Mirror": {
                 "X": false,
@@ -3265,7 +3737,163 @@
                 "Z": false
             },
             "Position": {
-                "X": -27.0,
+                "X": -30.0,
+                "Y": -2.5,
+                "Z": 0.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 0.800000011920929,
+                "Y": 0.800000011920929,
+                "Z": 1.0
+            }
+        }
+    },
+    "Pickup Cannonball Message4": {
+        "Parent": null,
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -30.0,
+                "Y": -2.5,
+                "Z": 0.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 0.800000011920929,
+                "Y": 0.800000011920929,
+                "Z": 1.0
+            }
+        }
+    },
+    "Pickup Cleaning Solution Message1": {
+        "Parent": null,
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -30.0,
+                "Y": -2.5,
+                "Z": 0.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 0.800000011920929,
+                "Y": 0.800000011920929,
+                "Z": 1.0
+            }
+        }
+    },
+    "Pickup Cleaning Solution Message2": {
+        "Parent": null,
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -30.0,
+                "Y": -2.5,
+                "Z": 0.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 0.800000011920929,
+                "Y": 0.800000011920929,
+                "Z": 1.0
+            }
+        }
+    },
+    "Pickup Cleaning Solution Message3": {
+        "Parent": null,
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -30.0,
+                "Y": -2.5,
+                "Z": 0.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 0.800000011920929,
+                "Y": 0.800000011920929,
+                "Z": 1.0
+            }
+        }
+    },
+    "Pickup Cleaning Solution Message4": {
+        "Parent": null,
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -30.0,
+                "Y": -2.5,
+                "Z": 0.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 0.800000011920929,
+                "Y": 0.800000011920929,
+                "Z": 1.0
+            }
+        }
+    },
+    "Pickup Gloop Message1": {
+        "Parent": null,
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -30.0,
                 "Y": -2.5,
                 "Z": 0.0
             },
@@ -3282,17 +3910,8 @@
             }
         }
     },
-    "Pickup Mop Message": {
+    "Pickup Gloop Message2": {
         "Parent": null,
-        "Renderable": {
-            "Enabled": true,
-            "Material": {
-                "Alias": null
-            },
-            "Mesh": {
-                "FilePath": null
-            }
-        },
         "Transform": {
             "Mirror": {
                 "X": false,
@@ -3300,7 +3919,163 @@
                 "Z": false
             },
             "Position": {
-                "X": -23.260000228881836,
+                "X": -30.0,
+                "Y": -2.5,
+                "Z": 0.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Pickup Gloop Message3": {
+        "Parent": null,
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -30.0,
+                "Y": -2.5,
+                "Z": 0.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Pickup Gloop Message4": {
+        "Parent": null,
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -30.0,
+                "Y": -2.5,
+                "Z": 0.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Pickup Mop Message1": {
+        "Parent": null,
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -30.0,
+                "Y": -2.5,
+                "Z": 0.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Pickup Mop Message2": {
+        "Parent": null,
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -30.0,
+                "Y": -2.5,
+                "Z": 0.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Pickup Mop Message3": {
+        "Parent": null,
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -30.0,
+                "Y": -2.5,
+                "Z": 0.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Pickup Mop Message4": {
+        "Parent": null,
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -30.0,
                 "Y": -2.5,
                 "Z": 0.0
             },
@@ -3349,7 +4124,7 @@
         "RigidBody": {
             "Friction": 1.0,
             "Mass": 0.0,
-            "Properties": 49
+            "Properties": 32
         },
         "Transform": {
             "Mirror": {
@@ -3409,7 +4184,7 @@
         "RigidBody": {
             "Friction": 1.0,
             "Mass": 0.0,
-            "Properties": 49
+            "Properties": 32
         },
         "Transform": {
             "Mirror": {
@@ -3467,7 +4242,7 @@
         "RigidBody": {
             "Friction": 1.0,
             "Mass": 0.0,
-            "Properties": 49
+            "Properties": 32
         },
         "Transform": {
             "Mirror": {
@@ -3477,7 +4252,7 @@
             },
             "Position": {
                 "X": -1.9938584566116333,
-                "Y": -0.030644237995147705,
+                "Y": -0.05576205253601074,
                 "Z": 7.498205184936523
             },
             "Rotation": {
@@ -3525,7 +4300,7 @@
         "RigidBody": {
             "Friction": 1.0,
             "Mass": 0.0,
-            "Properties": 49
+            "Properties": 32
         },
         "Transform": {
             "Mirror": {
@@ -3552,6 +4327,24 @@
         }
     },
     "Plane 4": {
+        "Collidable": {
+            "Shapes": [
+                {
+                    "Center": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Size": [
+                        20.0,
+                        0.10000000149011612,
+                        20.0
+                    ],
+                    "Trigger": false,
+                    "Type": 0
+                }
+            ]
+        },
         "Parent": {
             "Name": "Boat Root L"
         },
@@ -3563,6 +4356,11 @@
             "Mesh": {
                 "FilePath": "res\\assets\\models\\plane.obj"
             }
+        },
+        "RigidBody": {
+            "Friction": 1.0,
+            "Mass": 0.0,
+            "Properties": 32
         },
         "Transform": {
             "Mirror": {
@@ -3668,7 +4466,7 @@
             "Position": {
                 "X": 0.0,
                 "Y": 0.800000011920929,
-                "Z": -0.4000000059604645
+                "Z": -0.5
             },
             "Rotation": {
                 "qW": 1.0,
@@ -3705,7 +4503,7 @@
             "Position": {
                 "X": 0.0,
                 "Y": 0.800000011920929,
-                "Z": -0.4000000059604645
+                "Z": -0.5
             },
             "Rotation": {
                 "qW": 1.0,
@@ -3750,9 +4548,9 @@
             }
         },
         "RigidBody": {
-            "Friction": 0.5,
-            "Mass": 0.0,
-            "Properties": 98
+            "Friction": 1.0,
+            "Mass": 5.0,
+            "Properties": 62
         },
         "Transform": {
             "Mirror": {
@@ -3761,14 +4559,14 @@
                 "Z": false
             },
             "Position": {
-                "X": 0.0,
-                "Y": 0.0,
-                "Z": 0.0
+                "X": -4.415224075317383,
+                "Y": 0.3625483512878418,
+                "Z": 0.10107147693634033
             },
             "Rotation": {
-                "qW": 0.9940076470375061,
-                "qX": -0.10931035876274109,
-                "qY": -0.0,
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
                 "qZ": 0.0
             },
             "Scale": {
@@ -3810,7 +4608,7 @@
         "RigidBody": {
             "Friction": 1.0,
             "Mass": 5.0,
-            "Properties": 126
+            "Properties": 62
         },
         "Transform": {
             "Mirror": {
@@ -3819,9 +4617,9 @@
                 "Z": false
             },
             "Position": {
-                "X": 0.0,
+                "X": -2.3376967906951904,
                 "Y": 0.800000011920929,
-                "Z": -0.4000000059604645
+                "Z": -2.0278282165527344
             },
             "Rotation": {
                 "qW": 1.0,
@@ -3886,7 +4684,7 @@
             "Position": {
                 "X": 0.0,
                 "Y": 0.800000011920929,
-                "Z": -0.4000000059604645
+                "Z": -0.5
             },
             "Rotation": {
                 "qW": 1.0,
@@ -3933,7 +4731,7 @@
         "RigidBody": {
             "Friction": 1.0,
             "Mass": 5.0,
-            "Properties": 63
+            "Properties": 62
         },
         "Transform": {
             "Mirror": {
@@ -3943,7 +4741,7 @@
             },
             "Position": {
                 "X": -0.027547240257263184,
-                "Y": -0.023946285247802734,
+                "Y": 0.550000011920929,
                 "Z": 3.6298446655273438
             },
             "Rotation": {
@@ -3959,17 +4757,8 @@
             }
         }
     },
-    "Push Cannon Message": {
+    "Push Cannon Message1": {
         "Parent": null,
-        "Renderable": {
-            "Enabled": true,
-            "Material": {
-                "Alias": null
-            },
-            "Mesh": {
-                "FilePath": null
-            }
-        },
         "Transform": {
             "Mirror": {
                 "X": false,
@@ -3977,7 +4766,85 @@
                 "Z": false
             },
             "Position": {
-                "X": -24.0,
+                "X": -30.0,
+                "Y": -2.5,
+                "Z": 0.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Push Cannon Message2": {
+        "Parent": null,
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -30.0,
+                "Y": -2.5,
+                "Z": 0.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Push Cannon Message3": {
+        "Parent": null,
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -30.0,
+                "Y": -2.5,
+                "Z": 0.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Push Cannon Message4": {
+        "Parent": null,
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -30.0,
                 "Y": -2.5,
                 "Z": 0.0
             },
@@ -4100,7 +4967,7 @@
         "RigidBody": {
             "Friction": 0.5,
             "Mass": 0.0,
-            "Properties": 49
+            "Properties": 32
         },
         "Transform": {
             "Mirror": {
@@ -4154,7 +5021,7 @@
         "RigidBody": {
             "Friction": 0.5,
             "Mass": 1.0,
-            "Properties": 49
+            "Properties": 32
         },
         "Transform": {
             "Mirror": {
@@ -4208,7 +5075,7 @@
         "RigidBody": {
             "Friction": 0.5,
             "Mass": 1.0,
-            "Properties": 49
+            "Properties": 32
         },
         "Transform": {
             "Mirror": {
@@ -4262,7 +5129,7 @@
         "RigidBody": {
             "Friction": 0.5,
             "Mass": 1.0,
-            "Properties": 49
+            "Properties": 32
         },
         "Transform": {
             "Mirror": {
@@ -4316,7 +5183,7 @@
         "RigidBody": {
             "Friction": 0.5,
             "Mass": 1.0,
-            "Properties": 49
+            "Properties": 32
         },
         "Transform": {
             "Mirror": {
@@ -4370,7 +5237,7 @@
         "RigidBody": {
             "Friction": 0.5,
             "Mass": 1.0,
-            "Properties": 49
+            "Properties": 32
         },
         "Transform": {
             "Mirror": {
@@ -4424,7 +5291,7 @@
         "RigidBody": {
             "Friction": 0.5,
             "Mass": 1.0,
-            "Properties": 49
+            "Properties": 32
         },
         "Transform": {
             "Mirror": {
@@ -4482,7 +5349,7 @@
         "RigidBody": {
             "Friction": 0.5,
             "Mass": 0.0,
-            "Properties": 49
+            "Properties": 32
         },
         "Transform": {
             "Mirror": {
@@ -4540,7 +5407,7 @@
         "RigidBody": {
             "Friction": 0.5,
             "Mass": 1.0,
-            "Properties": 49
+            "Properties": 32
         },
         "Transform": {
             "Mirror": {
@@ -4598,7 +5465,7 @@
         "RigidBody": {
             "Friction": 0.5,
             "Mass": 1.0,
-            "Properties": 49
+            "Properties": 32
         },
         "Transform": {
             "Mirror": {
@@ -4656,7 +5523,7 @@
         "RigidBody": {
             "Friction": 0.5,
             "Mass": 1.0,
-            "Properties": 49
+            "Properties": 32
         },
         "Transform": {
             "Mirror": {
@@ -4714,7 +5581,7 @@
         "RigidBody": {
             "Friction": 0.5,
             "Mass": 1.0,
-            "Properties": 49
+            "Properties": 32
         },
         "Transform": {
             "Mirror": {
@@ -4807,7 +5674,7 @@
         "RigidBody": {
             "Friction": 0.5,
             "Mass": 0.0,
-            "Properties": 49
+            "Properties": 32
         },
         "Transform": {
             "Mirror": {
@@ -4865,7 +5732,7 @@
         "RigidBody": {
             "Friction": 0.5,
             "Mass": 0.0,
-            "Properties": 49
+            "Properties": 32
         },
         "Transform": {
             "Mirror": {
@@ -4923,7 +5790,7 @@
         "RigidBody": {
             "Friction": 0.5,
             "Mass": 0.0,
-            "Properties": 49
+            "Properties": 32
         },
         "Transform": {
             "Mirror": {
@@ -4981,7 +5848,7 @@
         "RigidBody": {
             "Friction": 0.5,
             "Mass": 1.0,
-            "Properties": 49
+            "Properties": 32
         },
         "Transform": {
             "Mirror": {
@@ -5039,7 +5906,7 @@
         "RigidBody": {
             "Friction": 0.5,
             "Mass": 1.0,
-            "Properties": 49
+            "Properties": 32
         },
         "Transform": {
             "Mirror": {
@@ -5097,7 +5964,7 @@
         "RigidBody": {
             "Friction": 0.5,
             "Mass": 1.0,
-            "Properties": 49
+            "Properties": 32
         },
         "Transform": {
             "Mirror": {
@@ -5155,7 +6022,7 @@
         "RigidBody": {
             "Friction": 0.5,
             "Mass": 1.0,
-            "Properties": 49
+            "Properties": 32
         },
         "Transform": {
             "Mirror": {
@@ -5248,7 +6115,7 @@
         "RigidBody": {
             "Friction": 0.5,
             "Mass": 1.0,
-            "Properties": 49
+            "Properties": 32
         },
         "Transform": {
             "Mirror": {
@@ -6048,17 +6915,8 @@
             }
         }
     },
-    "Use Gloop Message": {
+    "Use Gloop Message1": {
         "Parent": null,
-        "Renderable": {
-            "Enabled": true,
-            "Material": {
-                "Alias": null
-            },
-            "Mesh": {
-                "FilePath": null
-            }
-        },
         "Transform": {
             "Mirror": {
                 "X": false,
@@ -6066,7 +6924,85 @@
                 "Z": false
             },
             "Position": {
-                "X": -28.0,
+                "X": -30.0,
+                "Y": -2.5,
+                "Z": 0.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Use Gloop Message2": {
+        "Parent": null,
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -30.0,
+                "Y": -2.5,
+                "Z": 0.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Use Gloop Message3": {
+        "Parent": null,
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -30.0,
+                "Y": -2.5,
+                "Z": 0.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Use Gloop Message4": {
+        "Parent": null,
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -30.0,
                 "Y": -2.5,
                 "Z": 0.0
             },

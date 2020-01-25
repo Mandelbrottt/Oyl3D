@@ -46,321 +46,337 @@ public:
 		scheduleSystemUpdate<GloopSystem>();
 		scheduleSystemUpdate<CleaningQuicktimeEventSystem>();
 		scheduleSystemUpdate<ItemRespawnSystem>();
-
+		for (int i = 0; i < 4; i++)
 		{
-			auto e = registry->create();
+			{
+				auto e = registry->create();
 
-            auto& t = registry->assign<component::Transform>(e);
-            t.setPosition(glm::vec3(0.0f, -2.5f, 0.0f));
-            t.setScale(glm::vec3(1.0f, 1.0f, 1.0f));
+				auto& t = registry->assign<component::Transform>(e);
+				t.setPosition(glm::vec3(-30.0f, -2.5f, 0.0f));
+				t.setScale(glm::vec3(1.0f, 1.0f, 1.0f));
 
-			auto& uiType = registry->assign<PlayerInteractionType>(e);
-			uiType.type = PlayerInteractionResult::pushCannon;
+				auto& uiType = registry->assign<PlayerInteractionType>(e);
+				uiType.type = PlayerInteractionResult::pushCannon;
 
-			auto& HUDElement = registry->assign<PlayerHUDElement>(e);
-			HUDElement.positionWhenActive = glm::vec3(0.0f, 2.0f, 0.0f);
-			HUDElement.playerNum = PlayerNumber::One;
+				auto& HUDElement = registry->assign<PlayerHUDElement>(e);
+				HUDElement.positionWhenActive = glm::vec3(0.0f, 2.0f, 0.0f);
+				HUDElement.playerNum = (PlayerNumber)i;
 
-            auto& so = registry->assign<component::EntityInfo>(e);
-            so.name = "Push Cannon Message";
-            
-            auto& gui = registry->assign<component::GuiRenderable>(e);
-            gui.texture = Texture2D::cache("res/assets/textures/gui/pushCannon.png");
-        }
-        
-        {
-            auto e = registry->create();
+				auto& so = registry->assign<component::EntityInfo>(e);
+				so.name = "Push Cannon Message" + std::to_string(i + 1);
 
-            auto& t = registry->assign<component::Transform>(e);
-            t.setPosition(glm::vec3(0.0f, -2.5f, 0.0f));
-            t.setScale(glm::vec3(1.0f, 1.0f, 1.0f));
+				auto& gui = registry->assign<component::GuiRenderable>(e);
+				gui.texture = Texture2D::cache("res/assets/textures/gui/pushCannon.png");
+				gui.cullingMask = 0b1 << i;
+			}
 
-			auto& uiType = registry->assign<PlayerInteractionType>(e);
-			uiType.type = PlayerInteractionResult::loadCannon;
+			{
+				auto e = registry->create();
 
-			auto& HUDElement = registry->assign<PlayerHUDElement>(e);
-			HUDElement.positionWhenActive = glm::vec3(0.0f, 2.0f, 0.0f);
-			HUDElement.playerNum = PlayerNumber::One;
+				auto& t = registry->assign<component::Transform>(e);
+				t.setPosition(glm::vec3(-30.0f, -2.5f, 0.0f));
+				t.setScale(glm::vec3(1.0f, 1.0f, 1.0f));
 
-            auto& so = registry->assign<component::EntityInfo>(e);
-            so.name = "Load Cannon Message";
+				auto& uiType = registry->assign<PlayerInteractionType>(e);
+				uiType.type = PlayerInteractionResult::loadCannon;
 
-            auto& gui = registry->assign<component::GuiRenderable>(e);
-            gui.texture = Texture2D::cache("res/assets/textures/gui/loadCannon.png"); 
-        }
+				auto& HUDElement = registry->assign<PlayerHUDElement>(e);
+				HUDElement.positionWhenActive = glm::vec3(0.0f, 2.0f, 0.0f);
+				HUDElement.playerNum = (PlayerNumber)i;
 
-        {
-            auto e = registry->create();
+				auto& so = registry->assign<component::EntityInfo>(e);
+				so.name = "Load Cannon Message" + std::to_string(i + 1);
 
-            auto& t = registry->assign<component::Transform>(e);
-            t.setPosition(glm::vec3(0.0f, -2.5f, 0.0f));
-            t.setScale(glm::vec3(2.0f, 2.0f, 1.0f));
+				auto& gui = registry->assign<component::GuiRenderable>(e);
+				gui.texture = Texture2D::cache("res/assets/textures/gui/loadCannon.png");
+				gui.cullingMask = 0b1 << i;
+			}
 
-			auto& uiType = registry->assign<PlayerInteractionType>(e);
-			uiType.type = PlayerInteractionResult::takeCannonballFromCrate;
+			{
+				auto e = registry->create();
 
-			auto& HUDElement = registry->assign<PlayerHUDElement>(e);
-			HUDElement.positionWhenActive = glm::vec3(0.0f, 2.0f, 0.0f);
-			HUDElement.playerNum = PlayerNumber::One;
+				auto& t = registry->assign<component::Transform>(e);
+				t.setPosition(glm::vec3(-30.0f, -2.5f, 0.0f));
+				t.setScale(glm::vec3(2.0f, 2.0f, 1.0f));
 
-            auto& so = registry->assign<component::EntityInfo>(e);
-            so.name = "Cannonball Crate Message";
+				auto& uiType = registry->assign<PlayerInteractionType>(e);
+				uiType.type = PlayerInteractionResult::takeCannonballFromCrate;
 
-            auto& gui = registry->assign<component::GuiRenderable>(e);
-            gui.texture = Texture2D::cache("res/assets/textures/gui/cannonballCrate.png");
-        }
+				auto& HUDElement = registry->assign<PlayerHUDElement>(e);
+				HUDElement.positionWhenActive = glm::vec3(0.0f, 2.0f, 0.0f);
+				HUDElement.playerNum = (PlayerNumber)i;
 
-		{
-			auto e = registry->create();
+				auto& so = registry->assign<component::EntityInfo>(e);
+				so.name = "Cannonball Crate Message" + std::to_string(i + 1);
 
-			auto& t = registry->assign<component::Transform>(e);
-			t.setPosition(glm::vec3(0.0f, -2.5f, 0.0f));
-			t.setScale(glm::vec3(0.8f, 0.8f, 1.0f));
+				auto& gui = registry->assign<component::GuiRenderable>(e);
+				gui.texture = Texture2D::cache("res/assets/textures/gui/cannonballCrate.png");
+				gui.cullingMask = 0b1 << i;
+			}
 
-			auto& uiType = registry->assign<PlayerInteractionType>(e);
-			uiType.type = PlayerInteractionResult::pickUpCannonball;
+			{
+				auto e = registry->create();
 
-			auto& HUDElement = registry->assign<PlayerHUDElement>(e);
-			HUDElement.positionWhenActive = glm::vec3(0.0f, 2.0f, 0.0f);
-			HUDElement.playerNum = PlayerNumber::One;
+				auto& t = registry->assign<component::Transform>(e);
+				t.setPosition(glm::vec3(-30.0f, -2.5f, 0.0f));
+				t.setScale(glm::vec3(0.8f, 0.8f, 1.0f));
 
-			auto& so = registry->assign<component::EntityInfo>(e);
-			so.name = "Pickup Cannonball Message";
+				auto& uiType = registry->assign<PlayerInteractionType>(e);
+				uiType.type = PlayerInteractionResult::pickUpCannonball;
 
-			auto& gui = registry->assign<component::GuiRenderable>(e);
-			gui.texture = Texture2D::cache("res/assets/textures/gui/pickupCannonball.png");
-		}
+				auto& HUDElement = registry->assign<PlayerHUDElement>(e);
+				HUDElement.positionWhenActive = glm::vec3(0.0f, 2.0f, 0.0f);
+				HUDElement.playerNum = (PlayerNumber)i;
 
-        {
-            auto e = registry->create();
+				auto& so = registry->assign<component::EntityInfo>(e);
+				so.name = "Pickup Cannonball Message" + std::to_string(i + 1);
 
-            auto& t = registry->assign<component::Transform>(e);
-            t.setPosition(glm::vec3(0.0f, -2.5f, 0.0f));
-            t.setScale(glm::vec3(1.0f, 1.0f, 1.0f));
+				auto& gui = registry->assign<component::GuiRenderable>(e);
+				gui.texture = Texture2D::cache("res/assets/textures/gui/pickupCannonball.png");
+				gui.cullingMask = 0b1 << i;
+			}
 
-			auto& uiType = registry->assign<PlayerInteractionType>(e);
-			uiType.type = PlayerInteractionResult::pickUpMop;
+			{
+				auto e = registry->create();
 
-			auto& HUDElement = registry->assign<PlayerHUDElement>(e);
-			HUDElement.positionWhenActive = glm::vec3(0.0f, 2.0f, 0.0f);
-			HUDElement.playerNum = PlayerNumber::One;
+				auto& t = registry->assign<component::Transform>(e);
+				t.setPosition(glm::vec3(-30.0f, -2.5f, 0.0f));
+				t.setScale(glm::vec3(1.0f, 1.0f, 1.0f));
 
-            auto& so = registry->assign<component::EntityInfo>(e);
-            so.name = "Pickup Mop Message";
+				auto& uiType = registry->assign<PlayerInteractionType>(e);
+				uiType.type = PlayerInteractionResult::pickUpMop;
 
-            auto& gui = registry->assign<component::GuiRenderable>(e);
-            gui.texture = Texture2D::cache("res/assets/textures/gui/pickupMop.png");
-        }
+				auto& HUDElement = registry->assign<PlayerHUDElement>(e);
+				HUDElement.positionWhenActive = glm::vec3(0.0f, 2.0f, 0.0f);
+				HUDElement.playerNum = (PlayerNumber)i;
 
-		{
-			auto e = registry->create();
+				auto& so = registry->assign<component::EntityInfo>(e);
+				so.name = "Pickup Mop Message" + std::to_string(i + 1);
 
-			auto& t = registry->assign<component::Transform>(e);
-			t.setPosition(glm::vec3(0.0f, -2.5f, 0.0f));
-			t.setScale(glm::vec3(0.8f, 0.8f, 1.0f));
+				auto& gui = registry->assign<component::GuiRenderable>(e);
+				gui.texture = Texture2D::cache("res/assets/textures/gui/pickupMop.png");
+				gui.cullingMask = 0b1 << i;
+			}
 
-			auto& uiType = registry->assign<PlayerInteractionType>(e);
-			uiType.type = PlayerInteractionResult::pickUpCleaningSolution;
+			{
+				auto e = registry->create();
 
-			auto& HUDElement = registry->assign<PlayerHUDElement>(e);
-			HUDElement.positionWhenActive = glm::vec3(0.0f, 2.0f, 0.0f);
-			HUDElement.playerNum = PlayerNumber::One;
+				auto& t = registry->assign<component::Transform>(e);
+				t.setPosition(glm::vec3(-30.0f, -2.5f, 0.0f));
+				t.setScale(glm::vec3(0.8f, 0.8f, 1.0f));
 
-			auto& so = registry->assign<component::EntityInfo>(e);
-			so.name = "Pickup Cleaning Solution Message";
+				auto& uiType = registry->assign<PlayerInteractionType>(e);
+				uiType.type = PlayerInteractionResult::pickUpCleaningSolution;
 
-			auto& gui = registry->assign<component::GuiRenderable>(e);
-			gui.texture = Texture2D::cache("res/assets/textures/gui/pickupCleaningSolution.png");
-		}
+				auto& HUDElement = registry->assign<PlayerHUDElement>(e);
+				HUDElement.positionWhenActive = glm::vec3(0.0f, 2.0f, 0.0f);
+				HUDElement.playerNum = (PlayerNumber)i;
 
-		{
-			auto e = registry->create();
+				auto& so = registry->assign<component::EntityInfo>(e);
+				so.name = "Pickup Cleaning Solution Message" + std::to_string(i + 1);
 
-			auto& t = registry->assign<component::Transform>(e);
-			t.setPosition(glm::vec3(0.0f, -2.5f, 0.0f));
-			t.setScale(glm::vec3(1.0f, 1.0f, 1.0f));
+				auto& gui = registry->assign<component::GuiRenderable>(e);
+				gui.texture = Texture2D::cache("res/assets/textures/gui/pickupCleaningSolution.png");
+				gui.cullingMask = 0b1 << i;
+			}
 
-			auto& uiType = registry->assign<PlayerInteractionType>(e);
-			uiType.type = PlayerInteractionResult::pickUpGloop;
+			{
+				auto e = registry->create();
 
-			auto& HUDElement = registry->assign<PlayerHUDElement>(e);
-			HUDElement.positionWhenActive = glm::vec3(0.0f, 2.0f, 0.0f);
-			HUDElement.playerNum = PlayerNumber::One;
+				auto& t = registry->assign<component::Transform>(e);
+				t.setPosition(glm::vec3(-30.0f, -2.5f, 0.0f));
+				t.setScale(glm::vec3(1.0f, 1.0f, 1.0f));
 
-			auto& so = registry->assign<component::EntityInfo>(e);
-			so.name = "Pickup Gloop Message";
+				auto& uiType = registry->assign<PlayerInteractionType>(e);
+				uiType.type = PlayerInteractionResult::pickUpGloop;
 
-			auto& gui = registry->assign<component::GuiRenderable>(e);
-			gui.texture = Texture2D::cache("res/assets/textures/gui/pickUpGloop.png");
-		}
+				auto& HUDElement = registry->assign<PlayerHUDElement>(e);
+				HUDElement.positionWhenActive = glm::vec3(0.0f, 2.0f, 0.0f);
+				HUDElement.playerNum = (PlayerNumber)i;
 
-		{
-			auto e = registry->create();
+				auto& so = registry->assign<component::EntityInfo>(e);
+				so.name = "Pickup Gloop Message" + std::to_string(i + 1);
 
-			auto& t = registry->assign<component::Transform>(e);
-			t.setPosition(glm::vec3(0.0f, -2.5f, 0.0f));
-			t.setScale(glm::vec3(1.0f, 1.0f, 1.0f));
+				auto& gui = registry->assign<component::GuiRenderable>(e);
+				gui.texture = Texture2D::cache("res/assets/textures/gui/pickUpGloop.png");
+				gui.cullingMask = 0b1 << i;
+			}
 
-			auto& uiType = registry->assign<PlayerInteractionType>(e);
-			uiType.type = PlayerInteractionResult::useGloop;
+			{
+				auto e = registry->create();
 
-			auto& HUDElement = registry->assign<PlayerHUDElement>(e);
-			HUDElement.positionWhenActive = glm::vec3(0.0f, 2.0f, 0.0f);
-			HUDElement.playerNum = PlayerNumber::One;
+				auto& t = registry->assign<component::Transform>(e);
+				t.setPosition(glm::vec3(-30.0f, -2.5f, 0.0f));
+				t.setScale(glm::vec3(1.0f, 1.0f, 1.0f));
 
-			auto& so = registry->assign<component::EntityInfo>(e);
-			so.name = "Use Gloop Message";
+				auto& uiType = registry->assign<PlayerInteractionType>(e);
+				uiType.type = PlayerInteractionResult::useGloop;
 
-			auto& gui = registry->assign<component::GuiRenderable>(e);
-			gui.texture = Texture2D::cache("res/assets/textures/gui/useGloop.png");
-		}
+				auto& HUDElement = registry->assign<PlayerHUDElement>(e);
+				HUDElement.positionWhenActive = glm::vec3(0.0f, 2.0f, 0.0f);
+				HUDElement.playerNum = (PlayerNumber)i;
 
-        {
-            auto e = registry->create();
+				auto& so = registry->assign<component::EntityInfo>(e);
+				so.name = "Use Gloop Message" + std::to_string(i + 1);
 
-            auto& t = registry->assign<component::Transform>(e);
-            t.setPosition(glm::vec3(0.0f, -2.5f, 0.0f));
-            t.setScale(glm::vec3(1.0f, 1.0f, 1.0f));
+				auto& gui = registry->assign<component::GuiRenderable>(e);
+				gui.texture = Texture2D::cache("res/assets/textures/gui/useGloop.png");
+				gui.cullingMask = 0b1 << i;
+			}
 
-			auto& uiType = registry->assign<PlayerInteractionType>(e);
-			uiType.type = PlayerInteractionResult::cleanGarbagePile;
+			{
+				auto e = registry->create();
 
-			auto& HUDElement = registry->assign<PlayerHUDElement>(e);
-			HUDElement.positionWhenActive = glm::vec3(0.0f, 2.0f, 0.0f);
-			HUDElement.playerNum = PlayerNumber::One;
+				auto& t = registry->assign<component::Transform>(e);
+				t.setPosition(glm::vec3(-30.0f, -2.5f, 0.0f));
+				t.setScale(glm::vec3(1.0f, 1.0f, 1.0f));
 
-            auto& so = registry->assign<component::EntityInfo>(e);
-            so.name = "Clean Garbage Message";
+				auto& uiType = registry->assign<PlayerInteractionType>(e);
+				uiType.type = PlayerInteractionResult::cleanGarbagePile;
 
-            auto& gui = registry->assign<component::GuiRenderable>(e);
-            gui.texture = Texture2D::cache("res/assets/textures/gui/cleanGarbage.png");
-        }
+				auto& HUDElement = registry->assign<PlayerHUDElement>(e);
+				HUDElement.positionWhenActive = glm::vec3(0.0f, 2.0f, 0.0f);
+				HUDElement.playerNum = (PlayerNumber)i;
 
-        {
-            auto e = registry->create();
+				auto& so = registry->assign<component::EntityInfo>(e);
+				so.name = "Clean Garbage Message" + std::to_string(i + 1);
 
-            auto& t = registry->assign<component::Transform>(e);
-            t.setPosition(glm::vec3(0.0f, -2.5f, 0.0f));
-            t.setScale(glm::vec3(1.0f, 1.0f, 1.0f));
+				auto& gui = registry->assign<component::GuiRenderable>(e);
+				gui.texture = Texture2D::cache("res/assets/textures/gui/cleanGarbage.png");
+				gui.cullingMask = 0b1 << i;
+			}
 
-			auto& uiType = registry->assign<PlayerInteractionType>(e);
-			uiType.type = PlayerInteractionResult::cannonFiringSoon;
+			{
+				auto e = registry->create();
 
-			auto& HUDElement = registry->assign<PlayerHUDElement>(e);
-			HUDElement.positionWhenActive = glm::vec3(0.0f, 2.0f, 0.0f);
-			HUDElement.playerNum = PlayerNumber::One;
+				auto& t = registry->assign<component::Transform>(e);
+				t.setPosition(glm::vec3(-30.0f, -2.5f, 0.0f));
+				t.setScale(glm::vec3(1.0f, 1.0f, 1.0f));
 
-            auto& so = registry->assign<component::EntityInfo>(e);
-            so.name = "Cannon Firing Message";
-            
-            auto& gui = registry->assign<component::GuiRenderable>(e);
-            gui.texture = Texture2D::cache("res/assets/textures/gui/cannonFiring.png");
-        }
+				auto& uiType = registry->assign<PlayerInteractionType>(e);
+				uiType.type = PlayerInteractionResult::cannonFiringSoon;
 
-		{
-			entt::entity e = registry->create();
-			auto& gui = registry->assign<component::GuiRenderable>(e);
-			gui.texture = Texture2D::cache("res/assets/textures/gui/reticle.png");
+				auto& HUDElement = registry->assign<PlayerHUDElement>(e);
+				HUDElement.positionWhenActive = glm::vec3(0.0f, 2.0f, 0.0f);
+				HUDElement.playerNum = (PlayerNumber)i;
 
-			auto& reticle = registry->assign<Reticle>(e);
-			reticle.type = ReticleType::normal;
+				auto& so = registry->assign<component::EntityInfo>(e);
+				so.name = "Cannon Firing Message" + std::to_string(i + 1);
 
-			auto& HUDElement = registry->assign<PlayerHUDElement>(e);
-			HUDElement.positionWhenActive = glm::vec3(0.0f, 0.0f, 0.0f);
-			HUDElement.playerNum = PlayerNumber::One;
+				auto& gui = registry->assign<component::GuiRenderable>(e);
+				gui.texture = Texture2D::cache("res/assets/textures/gui/cannonFiring.png");
+				gui.cullingMask = 0b1 << i;
+			}
 
-			component::Transform t;
-			t.setPosition(glm::vec3(-3.0f, -1.0f, -2.0f));
-			t.setScale(glm::vec3(0.2f, 0.2f, 1.0f));
-			registry->assign<component::Transform>(e, t);
-
-			auto& so = registry->assign<component::EntityInfo>(e);
-			so.name = "Normal Reticle";
-		}
-
-		{
-			entt::entity e = registry->create();
-			auto& gui = registry->assign<component::GuiRenderable>(e);
-			gui.texture = Texture2D::cache("res/assets/textures/gui/invalid_reticle.png");
-
-			auto& reticle = registry->assign<Reticle>(e);
-			reticle.type = ReticleType::invalid;
-
-			auto& HUDElement = registry->assign<PlayerHUDElement>(e);
-			HUDElement.positionWhenActive = glm::vec3(0.0f, 0.0f, 0.0f);
-			HUDElement.playerNum = PlayerNumber::One;
-
-			component::Transform t;
-			t.setPosition(glm::vec3(-3.0f, -1.0f, -2.0f));
-			t.setScale(glm::vec3(0.5f, 0.5f, 1.0f));
-			registry->assign<component::Transform>(e, t);
-
-			auto& so = registry->assign<component::EntityInfo>(e);
-			so.name = "Invalid Reticle";
-		}
-
-		{
-			for (int i = 0; i < 3; i++)
 			{
 				entt::entity e = registry->create();
 				auto& gui = registry->assign<component::GuiRenderable>(e);
-				gui.texture = Texture2D::cache("res/assets/textures/gui/garbageTick.png");
+				gui.texture = Texture2D::cache("res/assets/textures/gui/reticle.png");
+				gui.cullingMask = 0b1 << i;
 
-				auto& garbageTick = registry->assign<GarbageTick>(e);
+				auto& reticle = registry->assign<Reticle>(e);
+				reticle.type = ReticleType::normal;
 
-				component::Transform garbageTickTransform;
-				garbageTickTransform.setPosition(glm::vec3(-100.0f, -100.0f, -200.0f));
-				registry->assign<component::Transform>(e, garbageTickTransform);
+				auto& HUDElement = registry->assign<PlayerHUDElement>(e);
+				HUDElement.positionWhenActive = glm::vec3(0.0f, 0.0f, 0.0f);
+				HUDElement.playerNum = (PlayerNumber)i;
+
+				component::Transform t;
+				t.setPosition(glm::vec3(-30.0f, -1.0f, -2.0f));
+				t.setScale(glm::vec3(0.2f, 0.2f, 1.0f));
+				registry->assign<component::Transform>(e, t);
 
 				auto& so = registry->assign<component::EntityInfo>(e);
-				so.name = "Garbage Tick" + std::to_string(i);
+				so.name = "Normal Reticle" + std::to_string(i + 1);
 			}
-		}
 
-		{
-			//background for cleaning quicktime event
-			entt::entity cleaningQuicktimeEventBackgroundEntity = registry->create();
-			auto& backgroundGUI = registry->assign<component::GuiRenderable>(cleaningQuicktimeEventBackgroundEntity);
-			backgroundGUI.texture = Texture2D::cache("res/assets/textures/gui/cleaningQuicktimeEventBackground.png");
+			{
+				entt::entity e = registry->create();
+				auto& gui = registry->assign<component::GuiRenderable>(e);
+				gui.texture = Texture2D::cache("res/assets/textures/gui/invalid_reticle.png");
+				gui.cullingMask = 0b1 << i;
 
-			component::Transform backgroundTransform;
-			backgroundTransform.setPosition(glm::vec3(-30.0f, 3.5f, 0.0f));
-			backgroundTransform.setScale(glm::vec3(2.0f, 1.5f, 1.0f));
-			registry->assign<component::Transform>(cleaningQuicktimeEventBackgroundEntity, backgroundTransform);
+				auto& reticle = registry->assign<Reticle>(e);
+				reticle.type = ReticleType::invalid;
 
-			auto& backgroundHUDElement = registry->assign<PlayerHUDElement>(cleaningQuicktimeEventBackgroundEntity);
-			backgroundHUDElement.positionWhenActive = glm::vec3(0.0f, 3.5f, 0.0f);
-			backgroundHUDElement.playerNum = PlayerNumber::One;
+				auto& HUDElement = registry->assign<PlayerHUDElement>(e);
+				HUDElement.positionWhenActive = glm::vec3(0.0f, 0.0f, 0.0f);
+				HUDElement.playerNum = (PlayerNumber)i;
 
-			auto& backgroundSceneObject = registry->assign<component::EntityInfo>(cleaningQuicktimeEventBackgroundEntity);
-			backgroundSceneObject.name = "Cleaning Quicktime Event Background";
+				component::Transform t;
+				t.setPosition(glm::vec3(-30.0f, -1.0f, -2.0f));
+				t.setScale(glm::vec3(0.5f, 0.5f, 1.0f));
+				registry->assign<component::Transform>(e, t);
+
+				auto& so = registry->assign<component::EntityInfo>(e);
+				so.name = "Invalid Reticle" + std::to_string(i + 1);
+			}
+
+			{
+				/*for (int i = 0; i < 3; i++)
+				{
+					entt::entity e = registry->create();
+					auto& gui = registry->assign<component::GuiRenderable>(e);
+					gui.texture = Texture2D::cache("res/assets/textures/gui/garbageTick.png");
+
+					auto& garbageTick = registry->assign<GarbageTick>(e);
+
+					component::Transform garbageTickTransform;
+					garbageTickTransform.setPosition(glm::vec3(-100.0f, -100.0f, -200.0f));
+					registry->assign<component::Transform>(e, garbageTickTransform);
+
+					auto& so = registry->assign<component::EntityInfo>(e);
+					so.name = "Garbage Tick" + std::to_string(i) + " For Player " + std::to_string(i + 1);
+				}*/
+			}
+
+			{
+				//background for cleaning quicktime event
+				entt::entity cleaningQuicktimeEventBackgroundEntity = registry->create();
+				auto& backgroundGUI = registry->assign<component::GuiRenderable>(cleaningQuicktimeEventBackgroundEntity);
+				backgroundGUI.texture = Texture2D::cache("res/assets/textures/gui/cleaningQuicktimeEventBackground.png");
+				backgroundGUI.cullingMask = 0b1 << i;
+
+				component::Transform backgroundTransform;
+				backgroundTransform.setPosition(glm::vec3(-30.0f, 3.5f, 0.0f));
+				backgroundTransform.setScale(glm::vec3(2.0f, 1.5f, 1.0f));
+				registry->assign<component::Transform>(cleaningQuicktimeEventBackgroundEntity, backgroundTransform);
+
+				auto& backgroundHUDElement = registry->assign<PlayerHUDElement>(cleaningQuicktimeEventBackgroundEntity);
+				backgroundHUDElement.positionWhenActive = glm::vec3(0.0f, 3.5f, 0.0f);
+				backgroundHUDElement.playerNum = (PlayerNumber)i;
+
+				auto& backgroundSceneObject = registry->assign<component::EntityInfo>(cleaningQuicktimeEventBackgroundEntity);
+				backgroundSceneObject.name = "Cleaning Quicktime Event Background" + std::to_string(i + 1);
 
 
 
-			//indicator for cleaning quicktime event
-			entt::entity cleaningQuicktimeEventIndicatorEntity = registry->create();
-			auto& indicatorGUI = registry->assign<component::GuiRenderable>(cleaningQuicktimeEventIndicatorEntity);
-			indicatorGUI.texture = Texture2D::cache("res/assets/textures/gui/cleaningQuicktimeEventIndicator.png");
+				//indicator for cleaning quicktime event
+				entt::entity cleaningQuicktimeEventIndicatorEntity = registry->create();
+				auto& indicatorGUI = registry->assign<component::GuiRenderable>(cleaningQuicktimeEventIndicatorEntity);
+				indicatorGUI.texture = Texture2D::cache("res/assets/textures/gui/cleaningQuicktimeEventIndicator.png");
+				indicatorGUI.cullingMask = 0b1 << i;
 
-			component::Transform indicatorTransform;
-			indicatorTransform.setPosition(glm::vec3(-30.0f, 3.6f, -1.0f));
-			indicatorTransform.setScale(glm::vec3(1.5f, 2.0f, 1.0f));
-			registry->assign<component::Transform>(cleaningQuicktimeEventIndicatorEntity, indicatorTransform);
+				component::Transform indicatorTransform;
+				indicatorTransform.setPosition(glm::vec3(-30.0f, 3.6f, -1.0f));
+				indicatorTransform.setScale(glm::vec3(1.5f, 2.0f, 1.0f));
+				registry->assign<component::Transform>(cleaningQuicktimeEventIndicatorEntity, indicatorTransform);
 
-			CleaningQuicktimeEventIndicator cleaningQuicktimeEventIndicator;
-			cleaningQuicktimeEventIndicator.lerpInformation.startPos = glm::vec3(-4.95f, 3.6f, -1.0f);
-			cleaningQuicktimeEventIndicator.lerpInformation.destinationPos = glm::vec3(4.95f, 3.6f, -1.0f);
-			cleaningQuicktimeEventIndicator.lerpInformation.speed = 2.2f;
+				CleaningQuicktimeEventIndicator cleaningQuicktimeEventIndicator;
+				cleaningQuicktimeEventIndicator.lerpInformation.startPos = glm::vec3(-4.95f, 3.6f, -1.0f);
+				cleaningQuicktimeEventIndicator.lerpInformation.destinationPos = glm::vec3(4.95f, 3.6f, -1.0f);
+				cleaningQuicktimeEventIndicator.lerpInformation.speed = 2.2f;
 
-			cleaningQuicktimeEventIndicator.cleaningQuicktimeEventBackground = cleaningQuicktimeEventBackgroundEntity;
-			registry->assign<CleaningQuicktimeEventIndicator>(cleaningQuicktimeEventIndicatorEntity, cleaningQuicktimeEventIndicator);
+				cleaningQuicktimeEventIndicator.cleaningQuicktimeEventBackground = cleaningQuicktimeEventBackgroundEntity;
+				registry->assign<CleaningQuicktimeEventIndicator>(cleaningQuicktimeEventIndicatorEntity, cleaningQuicktimeEventIndicator);
 
-			auto& indicatorHUDElement = registry->assign<PlayerHUDElement>(cleaningQuicktimeEventIndicatorEntity);
-			indicatorHUDElement.positionWhenActive = glm::vec3(-4.95f, 3.6f, -1.0f);
-			indicatorHUDElement.playerNum = PlayerNumber::One;
+				auto& indicatorHUDElement = registry->assign<PlayerHUDElement>(cleaningQuicktimeEventIndicatorEntity);
+				indicatorHUDElement.positionWhenActive = glm::vec3(-4.95f, 3.6f, -1.0f);
+				indicatorHUDElement.playerNum = (PlayerNumber)i;
 
-			auto& indicatorSceneObject = registry->assign<component::EntityInfo>(cleaningQuicktimeEventIndicatorEntity);
-			indicatorSceneObject.name = "Cleaning Quicktime Event Indicator";
+				auto& indicatorSceneObject = registry->assign<component::EntityInfo>(cleaningQuicktimeEventIndicatorEntity);
+				indicatorSceneObject.name = "Cleaning Quicktime Event Indicator" + std::to_string(i + 1);
+			}
 		}
 
 		{
@@ -422,14 +438,12 @@ public:
 					desiredMoveDirection += playerTransform.getRight();
 			}
 			
-			if (player.controllerNum <= 1)
-			{
-				if (Input::getGamepadLeftStickY((uint)player.playerNum) > 0.1f || Input::getGamepadLeftStickY((uint)player.playerNum) < -0.1f)
-					desiredMoveDirection += Input::getGamepadLeftStickY((uint)player.playerNum) * -playerTransform.getForward();
 
-				if (Input::getGamepadLeftStickX((uint)player.playerNum) > 0.1f || Input::getGamepadLeftStickX((uint)player.playerNum) < -0.1f)
-					desiredMoveDirection += Input::getGamepadLeftStickX((uint)player.playerNum) * playerTransform.getRight();
-			}
+			//if (Input::getGamepadLeftStickY((uint)player.playerNum) > 0.1f || Input::getGamepadLeftStickY((uint)player.playerNum) < -0.1f)
+				desiredMoveDirection += Input::getGamepadLeftStickY((uint)player.playerNum) * -playerTransform.getForward();
+
+			//if (Input::getGamepadLeftStickX((uint)player.playerNum) > 0.1f || Input::getGamepadLeftStickX((uint)player.playerNum) < -0.1f)
+				desiredMoveDirection += Input::getGamepadLeftStickX((uint)player.playerNum) * playerTransform.getRight();
 
 		    //check if it's 0 because if we normalize a vector with 0 magnitude it breaks
 		    if (desiredMoveDirection == glm::vec3(0.0f))
@@ -439,54 +453,51 @@ public:
 
 			
 
-			if (player.controllerNum <= 1)
+			//camera movement
+			glm::vec2 rightStick = Input::getGamepadRightStick(player.controllerNum);
+
+			//deadzone check
+			//if (rightStick.x > 0.1f || rightStick.x < -0.1f)
 			{
-				//camera movement
-				glm::vec2 rightStick = Input::getGamepadRightStick(player.controllerNum);
+				playerTransform.rotate(glm::vec3(0.0f, -rightStick.x * 200.0f * Time::deltaTime(), 0.0f));
+
+				if (player.yRotationClamp > 1)
+				{
+					if (playerTransform.getRotationEulerY() < player.yRotationClamp)
+						playerTransform.setRotationEulerY(player.yRotationClamp);
+				}
+				else if (player.yRotationClamp < -1)
+				{
+					if (playerTransform.getRotationEulerY() > player.yRotationClamp)
+						playerTransform.setRotationEulerY(player.yRotationClamp);
+				}
+			}
+
+			auto playerCameraView = registry->view<component::PlayerCamera, component::Transform, component::Parent>();
+			for (auto& cameraEntity : playerCameraView)
+			{
+				auto& camera = registry->get<component::PlayerCamera>(cameraEntity);
+				auto& cameraTransform = registry->get<component::Transform>(cameraEntity);
+				auto& cameraParent = registry->get<component::Parent>(cameraEntity);
+
+				if (cameraParent.parent != playerEntity)
+					continue;
 
 				//deadzone check
-				if (rightStick.x > 0.1f || rightStick.x < -0.1f)
+				//if (rightStick.y > 0.1f || rightStick.y < -0.1f)
 				{
-					playerTransform.rotate(glm::vec3(0.0f, -rightStick.x * 200.0f * Time::deltaTime(), 0.0f));
+					cameraTransform.rotate(glm::vec3(-rightStick.y * 200.0f * Time::deltaTime(), 0.0f, 0.0f));
 
-					if (player.yRotationClamp > 1)
-					{
-						if (playerTransform.getRotationEulerY() < player.yRotationClamp)
-							playerTransform.setRotationEulerY(player.yRotationClamp);
-					}
-					else if (player.yRotationClamp < -1)
-					{
-						if (playerTransform.getRotationEulerY() > player.yRotationClamp)
-							playerTransform.setRotationEulerY(player.yRotationClamp);
-					}
+					//clamp camera up/down rotation
+					float cameraRotationClampValue = 70.0f;
+
+					if (cameraTransform.getRotationEulerX() > cameraRotationClampValue)
+						cameraTransform.setRotationEulerX(cameraRotationClampValue);
+					else if (cameraTransform.getRotationEulerX() < -cameraRotationClampValue)
+						cameraTransform.setRotationEulerX(-cameraRotationClampValue);
 				}
 
-				auto playerCameraView = registry->view<component::PlayerCamera, component::Transform, component::Parent>();
-				for (auto& cameraEntity : playerCameraView)
-				{
-					auto& camera = registry->get<component::PlayerCamera>(cameraEntity);
-					auto& cameraTransform = registry->get<component::Transform>(cameraEntity);
-					auto& cameraParent = registry->get<component::Parent>(cameraEntity);
-
-					if (cameraParent.parent != playerEntity)
-						continue;
-
-					//deadzone check
-					if (rightStick.y > 0.1f || rightStick.y < -0.1f)
-					{
-						cameraTransform.rotate(glm::vec3(-rightStick.y * 200.0f * Time::deltaTime(), 0.0f, 0.0f));
-
-						//clamp camera up/down rotation
-						float cameraRotationClampValue = 70.0f;
-
-						if (cameraTransform.getRotationEulerX() > cameraRotationClampValue)
-							cameraTransform.setRotationEulerX(cameraRotationClampValue);
-						else if (cameraTransform.getRotationEulerX() < -cameraRotationClampValue)
-							cameraTransform.setRotationEulerX(-cameraRotationClampValue);
-					}
-
-					break;
-				}
+				break;
 			}
 		}
 	}
