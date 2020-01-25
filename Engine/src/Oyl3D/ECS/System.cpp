@@ -649,9 +649,8 @@ namespace oyl
 
                     transform.m_isScaleOverridden = false;
                 }
-                if (rigidBody.m_isDirty)
+                //if (rigidBody.m_isDirty)
                 {
-                    //m_btWorld->removeRigidBody(cachedBody.body.get());
                     
                     // Velocity
                     cachedBody.body->setLinearVelocity(btVector3(rigidBody.m_velocity.x,
@@ -659,16 +658,18 @@ namespace oyl
                                                                  rigidBody.m_velocity.z));
 
                     // Forces
-                    cachedBody.body->clearForces();
+                    //cachedBody.body->clearForces();
+
+                    m_btWorld->removeRigidBody(cachedBody.body.get());
 
                     // Friction
                     cachedBody.body->setFriction(rigidBody.m_friction);
-                    cachedBody.body->setSpinningFriction(rigidBody.m_friction);
-                    cachedBody.body->setAnisotropicFriction(btVector3(rigidBody.m_friction, 
-                                                                      rigidBody.m_friction, 
-                                                                      rigidBody.m_friction), 
-                                                            btCollisionObject::CF_ANISOTROPIC_FRICTION);
-                    cachedBody.body->setRollingFriction(rigidBody.m_friction);
+                    //cachedBody.body->setSpinningFriction(rigidBody.m_friction);
+                    //cachedBody.body->setAnisotropicFriction(btVector3(rigidBody.m_friction, 
+                    //                                                  rigidBody.m_friction, 
+                    //                                                  rigidBody.m_friction), 
+                    //                                        btCollisionObject::CF_ANISOTROPIC_FRICTION);
+                    //cachedBody.body->setRollingFriction(rigidBody.m_friction);
 
                     // Flags
                     int flags = cachedBody.body->getCollisionFlags();
@@ -703,6 +704,7 @@ namespace oyl
 
                     cachedBody.body->setCollisionFlags(flags);
 
+                    //m_btWorld->addRigidBody(cachedBody.body.get());
 
                     //// Rotation Locking
                     //btVector3 inertiaTensor = {};
@@ -724,11 +726,9 @@ namespace oyl
                     {
                         cachedBody.body->setGravity({ 0.0f, 0.0f, 0.0f });
                     }
-
-                    rigidBody.m_isDirty = false;
                 }
-
-                m_btWorld->removeRigidBody(cachedBody.body.get());
+                
+                cachedBody.body->setFriction(rigidBody.m_friction);
 
                 float x = rigidBody.getProperty(RigidBody::FREEZE_ROTATION_X) ? 0.0f : 1.0f;
                 float y = rigidBody.getProperty(RigidBody::FREEZE_ROTATION_Y) ? 0.0f : 1.0f;
