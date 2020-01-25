@@ -25,7 +25,7 @@ namespace oyl
         Sphere,
         Capsule,
         Cylinder,
-        Mesh
+        //Mesh
     };
 }
 
@@ -112,21 +112,21 @@ namespace oyl::component
             Direction m_direction = Direction::Y_AXIS;
         };
 
-        class OYL_DEPRECATED("Not fully implemented.")
-            MeshCollider : public BaseCollider
-        {
-        public:
-            MeshCollider() = default;
-            ~MeshCollider() = default;
-            MeshCollider(const MeshCollider& other) : BaseCollider(other), m_mesh(other.m_mesh) {}
+        //class OYL_DEPRECATED("Not fully implemented.")
+        //    MeshCollider : public BaseCollider
+        //{
+        //public:
+        //    MeshCollider() = default;
+        //    ~MeshCollider() = default;
+        //    MeshCollider(const MeshCollider& other) : BaseCollider(other), m_mesh(other.m_mesh) {}
 
-            const Ref<Mesh>& getMesh() const;
+        //    const Ref<Mesh>& getMesh() const;
 
-            void setMesh(Ref<Mesh> mesh);
+        //    void setMesh(Ref<Mesh> mesh);
 
-        private:
-            Ref<Mesh> m_mesh = nullptr;
-        };
+        //private:
+        //    Ref<Mesh> m_mesh = nullptr;
+        //};
     }
 
     class Collidable
@@ -156,7 +156,7 @@ namespace oyl::component
                 internal::SphereCollider   sphere;
                 internal::CapsuleCollider  capsule;
                 internal::CylinderCollider cylinder;
-                internal::MeshCollider     mesh;
+                //internal::MeshCollider     mesh;
             };
 
         private:
