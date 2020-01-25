@@ -143,7 +143,7 @@ void PlayerInteractionValidationSystem::performRaycastAndValidateForPlayer(entt:
 	}
 	if (!registry->valid(playersCameraEntity))
 	{
-		std::cout << "WARNING: PLAYER " << player.playerNum << " DOES NOT HAVE AN ASSOCIATED CAMERA\n";
+		std::cout << "WARNING: PLAYER " << (uint)player.playerNum << " DOES NOT HAVE AN ASSOCIATED CAMERA\n";
 		return;
 	}
 

@@ -74,6 +74,24 @@
         }
     },
     "BlueCannon": {
+        "Collidable": {
+            "Shapes": [
+                {
+                    "Center": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Size": [
+                        2.3499999046325684,
+                        4.150000095367432,
+                        2.5999999046325684
+                    ],
+                    "Trigger": false,
+                    "Type": 0
+                }
+            ]
+        },
         "Parent": null,
         "Renderable": {
             "Enabled": true,
@@ -83,6 +101,11 @@
             "Mesh": {
                 "FilePath": "res\\assets\\models\\cannon.obj"
             }
+        },
+        "RigidBody": {
+            "Friction": 0.5,
+            "Mass": 0.0,
+            "Properties": 49
         },
         "Transform": {
             "Mirror": {
@@ -109,6 +132,20 @@
         }
     },
     "BlueCannonball0": {
+        "Collidable": {
+            "Shapes": [
+                {
+                    "Center": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Radius": 0.5,
+                    "Trigger": false,
+                    "Type": 1
+                }
+            ]
+        },
         "Parent": null,
         "Renderable": {
             "Enabled": true,
@@ -118,6 +155,11 @@
             "Mesh": {
                 "FilePath": "res\\assets\\models\\sphere.obj"
             }
+        },
+        "RigidBody": {
+            "Friction": 0.5,
+            "Mass": 1.0,
+            "Properties": 49
         },
         "Transform": {
             "Mirror": {
@@ -144,6 +186,20 @@
         }
     },
     "BlueCannonball1": {
+        "Collidable": {
+            "Shapes": [
+                {
+                    "Center": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Radius": 0.5,
+                    "Trigger": false,
+                    "Type": 1
+                }
+            ]
+        },
         "Parent": null,
         "Renderable": {
             "Enabled": true,
@@ -153,6 +209,11 @@
             "Mesh": {
                 "FilePath": "res\\assets\\models\\sphere.obj"
             }
+        },
+        "RigidBody": {
+            "Friction": 0.5,
+            "Mass": 1.0,
+            "Properties": 49
         },
         "Transform": {
             "Mirror": {
@@ -179,6 +240,20 @@
         }
     },
     "BlueCannonball2": {
+        "Collidable": {
+            "Shapes": [
+                {
+                    "Center": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Radius": 0.5,
+                    "Trigger": false,
+                    "Type": 1
+                }
+            ]
+        },
         "Parent": null,
         "Renderable": {
             "Enabled": true,
@@ -188,6 +263,11 @@
             "Mesh": {
                 "FilePath": "res\\assets\\models\\sphere.obj"
             }
+        },
+        "RigidBody": {
+            "Friction": 0.5,
+            "Mass": 1.0,
+            "Properties": 49
         },
         "Transform": {
             "Mirror": {
@@ -214,6 +294,20 @@
         }
     },
     "BlueCannonball3": {
+        "Collidable": {
+            "Shapes": [
+                {
+                    "Center": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Radius": 0.5,
+                    "Trigger": false,
+                    "Type": 1
+                }
+            ]
+        },
         "Parent": null,
         "Renderable": {
             "Enabled": true,
@@ -223,6 +317,11 @@
             "Mesh": {
                 "FilePath": "res\\assets\\models\\sphere.obj"
             }
+        },
+        "RigidBody": {
+            "Friction": 0.5,
+            "Mass": 1.0,
+            "Properties": 49
         },
         "Transform": {
             "Mirror": {
@@ -249,6 +348,20 @@
         }
     },
     "BlueCannonball4": {
+        "Collidable": {
+            "Shapes": [
+                {
+                    "Center": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Radius": 0.5,
+                    "Trigger": false,
+                    "Type": 1
+                }
+            ]
+        },
         "Parent": null,
         "Renderable": {
             "Enabled": true,
@@ -258,6 +371,11 @@
             "Mesh": {
                 "FilePath": "res\\assets\\models\\sphere.obj"
             }
+        },
+        "RigidBody": {
+            "Friction": 0.5,
+            "Mass": 1.0,
+            "Properties": 49
         },
         "Transform": {
             "Mirror": {
@@ -284,6 +402,20 @@
         }
     },
     "BlueCannonball5": {
+        "Collidable": {
+            "Shapes": [
+                {
+                    "Center": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Radius": 0.5,
+                    "Trigger": false,
+                    "Type": 1
+                }
+            ]
+        },
         "Parent": null,
         "Renderable": {
             "Enabled": true,
@@ -293,6 +425,11 @@
             "Mesh": {
                 "FilePath": "res\\assets\\models\\sphere.obj"
             }
+        },
+        "RigidBody": {
+            "Friction": 0.5,
+            "Mass": 1.0,
+            "Properties": 49
         },
         "Transform": {
             "Mirror": {
@@ -319,6 +456,24 @@
         }
     },
     "BlueCannonballCrate": {
+        "Collidable": {
+            "Shapes": [
+                {
+                    "Center": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Size": [
+                        2.0,
+                        2.700000047683716,
+                        1.2000000476837158
+                    ],
+                    "Trigger": false,
+                    "Type": 0
+                }
+            ]
+        },
         "Parent": null,
         "Renderable": {
             "Enabled": true,
@@ -328,6 +483,11 @@
             "Mesh": {
                 "FilePath": "res\\assets\\models\\crateTemp.obj"
             }
+        },
+        "RigidBody": {
+            "Friction": 0.5,
+            "Mass": 0.0,
+            "Properties": 49
         },
         "Transform": {
             "Mirror": {
@@ -354,6 +514,24 @@
         }
     },
     "BlueCleaningSolution0": {
+        "Collidable": {
+            "Shapes": [
+                {
+                    "Center": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Size": [
+                        0.800000011920929,
+                        1.0,
+                        0.8500000238418579
+                    ],
+                    "Trigger": false,
+                    "Type": 0
+                }
+            ]
+        },
         "Parent": null,
         "Renderable": {
             "Enabled": true,
@@ -363,6 +541,11 @@
             "Mesh": {
                 "FilePath": "res\\assets\\models\\Pirax.obj"
             }
+        },
+        "RigidBody": {
+            "Friction": 0.5,
+            "Mass": 1.0,
+            "Properties": 49
         },
         "Transform": {
             "Mirror": {
@@ -389,6 +572,24 @@
         }
     },
     "BlueCleaningSolution1": {
+        "Collidable": {
+            "Shapes": [
+                {
+                    "Center": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Size": [
+                        0.800000011920929,
+                        1.0,
+                        0.8500000238418579
+                    ],
+                    "Trigger": false,
+                    "Type": 0
+                }
+            ]
+        },
         "Parent": null,
         "Renderable": {
             "Enabled": true,
@@ -398,6 +599,11 @@
             "Mesh": {
                 "FilePath": "res\\assets\\models\\Pirax.obj"
             }
+        },
+        "RigidBody": {
+            "Friction": 0.5,
+            "Mass": 1.0,
+            "Properties": 49
         },
         "Transform": {
             "Mirror": {
@@ -424,6 +630,24 @@
         }
     },
     "BlueCleaningSolution2": {
+        "Collidable": {
+            "Shapes": [
+                {
+                    "Center": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Size": [
+                        0.800000011920929,
+                        1.0,
+                        0.8500000238418579
+                    ],
+                    "Trigger": false,
+                    "Type": 0
+                }
+            ]
+        },
         "Parent": null,
         "Renderable": {
             "Enabled": true,
@@ -433,6 +657,11 @@
             "Mesh": {
                 "FilePath": "res\\assets\\models\\Pirax.obj"
             }
+        },
+        "RigidBody": {
+            "Friction": 0.5,
+            "Mass": 1.0,
+            "Properties": 49
         },
         "Transform": {
             "Mirror": {
@@ -459,6 +688,24 @@
         }
     },
     "BlueCleaningSolutionPrefab": {
+        "Collidable": {
+            "Shapes": [
+                {
+                    "Center": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Size": [
+                        0.800000011920929,
+                        1.0,
+                        0.8500000238418579
+                    ],
+                    "Trigger": false,
+                    "Type": 0
+                }
+            ]
+        },
         "Parent": null,
         "Renderable": {
             "Enabled": true,
@@ -468,6 +715,11 @@
             "Mesh": {
                 "FilePath": "res\\assets\\models\\Pirax.obj"
             }
+        },
+        "RigidBody": {
+            "Friction": 0.5,
+            "Mass": 1.0,
+            "Properties": 49
         },
         "Transform": {
             "Mirror": {
@@ -529,6 +781,24 @@
         }
     },
     "BlueGarbagePile0": {
+        "Collidable": {
+            "Shapes": [
+                {
+                    "Center": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Size": [
+                        3.4000000953674316,
+                        1.0,
+                        3.200000047683716
+                    ],
+                    "Trigger": false,
+                    "Type": 0
+                }
+            ]
+        },
         "Parent": null,
         "Renderable": {
             "Enabled": true,
@@ -607,6 +877,24 @@
         }
     },
     "BlueGarbagePile1": {
+        "Collidable": {
+            "Shapes": [
+                {
+                    "Center": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Size": [
+                        3.4000000953674316,
+                        1.0,
+                        3.200000047683716
+                    ],
+                    "Trigger": false,
+                    "Type": 0
+                }
+            ]
+        },
         "Parent": null,
         "Renderable": {
             "Enabled": true,
@@ -616,6 +904,11 @@
             "Mesh": {
                 "FilePath": "res\\assets\\models\\garbage.obj"
             }
+        },
+        "RigidBody": {
+            "Friction": 0.5,
+            "Mass": 0.0,
+            "Properties": 49
         },
         "Transform": {
             "Mirror": {
@@ -642,6 +935,24 @@
         }
     },
     "BlueGarbagePile2": {
+        "Collidable": {
+            "Shapes": [
+                {
+                    "Center": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Size": [
+                        3.4000000953674316,
+                        1.0,
+                        3.200000047683716
+                    ],
+                    "Trigger": false,
+                    "Type": 0
+                }
+            ]
+        },
         "Parent": null,
         "Renderable": {
             "Enabled": true,
@@ -651,6 +962,11 @@
             "Mesh": {
                 "FilePath": "res\\assets\\models\\garbage.obj"
             }
+        },
+        "RigidBody": {
+            "Friction": 0.5,
+            "Mass": 0.0,
+            "Properties": 49
         },
         "Transform": {
             "Mirror": {
@@ -677,6 +993,24 @@
         }
     },
     "BlueGloopA0": {
+        "Collidable": {
+            "Shapes": [
+                {
+                    "Center": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Size": [
+                        1.5499999523162842,
+                        2.6500000953674316,
+                        1.0
+                    ],
+                    "Trigger": false,
+                    "Type": 0
+                }
+            ]
+        },
         "Parent": null,
         "Renderable": {
             "Enabled": true,
@@ -686,6 +1020,11 @@
             "Mesh": {
                 "FilePath": "res\\assets\\models\\Gloop.obj"
             }
+        },
+        "RigidBody": {
+            "Friction": 0.5,
+            "Mass": 1.0,
+            "Properties": 48
         },
         "Transform": {
             "Mirror": {
@@ -712,6 +1051,24 @@
         }
     },
     "BlueGloopA1": {
+        "Collidable": {
+            "Shapes": [
+                {
+                    "Center": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Size": [
+                        1.5499999523162842,
+                        2.6500000953674316,
+                        1.0
+                    ],
+                    "Trigger": false,
+                    "Type": 0
+                }
+            ]
+        },
         "Parent": null,
         "Renderable": {
             "Enabled": true,
@@ -721,6 +1078,11 @@
             "Mesh": {
                 "FilePath": "res\\assets\\models\\Gloop.obj"
             }
+        },
+        "RigidBody": {
+            "Friction": 0.5,
+            "Mass": 1.0,
+            "Properties": 48
         },
         "Transform": {
             "Mirror": {
@@ -747,6 +1109,24 @@
         }
     },
     "BlueGloopA2": {
+        "Collidable": {
+            "Shapes": [
+                {
+                    "Center": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Size": [
+                        1.5499999523162842,
+                        2.6500000953674316,
+                        1.0
+                    ],
+                    "Trigger": false,
+                    "Type": 0
+                }
+            ]
+        },
         "Parent": null,
         "Renderable": {
             "Enabled": true,
@@ -756,6 +1136,11 @@
             "Mesh": {
                 "FilePath": "res\\assets\\models\\Gloop.obj"
             }
+        },
+        "RigidBody": {
+            "Friction": 0.5,
+            "Mass": 1.0,
+            "Properties": 48
         },
         "Transform": {
             "Mirror": {
@@ -782,6 +1167,24 @@
         }
     },
     "BlueGloopPrefab": {
+        "Collidable": {
+            "Shapes": [
+                {
+                    "Center": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Size": [
+                        1.5499999523162842,
+                        2.6500000953674316,
+                        1.0
+                    ],
+                    "Trigger": false,
+                    "Type": 0
+                }
+            ]
+        },
         "Parent": null,
         "Renderable": {
             "Enabled": true,
@@ -791,6 +1194,11 @@
             "Mesh": {
                 "FilePath": "res\\assets\\models\\Gloop.obj"
             }
+        },
+        "RigidBody": {
+            "Friction": 0.5,
+            "Mass": 1.0,
+            "Properties": 32
         },
         "Transform": {
             "Mirror": {
@@ -852,6 +1260,24 @@
         }
     },
     "BlueMop": {
+        "Collidable": {
+            "Shapes": [
+                {
+                    "Center": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Size": [
+                        2.0,
+                        0.20000000298023224,
+                        0.5
+                    ],
+                    "Trigger": false,
+                    "Type": 0
+                }
+            ]
+        },
         "Parent": null,
         "Renderable": {
             "Enabled": true,
@@ -861,6 +1287,11 @@
             "Mesh": {
                 "FilePath": "res\\assets\\models\\mop.obj"
             }
+        },
+        "RigidBody": {
+            "Friction": 0.5,
+            "Mass": 1.0,
+            "Properties": 49
         },
         "Transform": {
             "Mirror": {
@@ -1841,6 +2272,24 @@
         }
     },
     "Character": {
+        "Collidable": {
+            "Shapes": [
+                {
+                    "Center": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Size": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "Trigger": false,
+                    "Type": 0
+                }
+            ]
+        },
         "Parent": null,
         "Renderable": {
             "Enabled": true,
@@ -2491,6 +2940,30 @@
         }
     },
     "Light 1": {
+        "LightSource": [
+            {
+                "Ambient": [
+                    0.75,
+                    0.75,
+                    0.75
+                ],
+                "Attenuation": [
+                    1.0,
+                    0.3499999940395355,
+                    0.4399999976158142
+                ],
+                "Diffuse": [
+                    0.5,
+                    0.5,
+                    0.5
+                ],
+                "Specular": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            }
+        ],
         "Parent": null,
         "Renderable": {
             "Enabled": true,
@@ -2845,6 +3318,24 @@
         }
     },
     "Plane 0": {
+        "Collidable": {
+            "Shapes": [
+                {
+                    "Center": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Size": [
+                        20.0,
+                        0.10000000149011612,
+                        20.0
+                    ],
+                    "Trigger": false,
+                    "Type": 0
+                }
+            ]
+        },
         "Parent": null,
         "Renderable": {
             "Enabled": true,
@@ -2854,6 +3345,11 @@
             "Mesh": {
                 "FilePath": "res\\assets\\models\\plane.obj"
             }
+        },
+        "RigidBody": {
+            "Friction": 1.0,
+            "Mass": 0.0,
+            "Properties": 49
         },
         "Transform": {
             "Mirror": {
@@ -2880,6 +3376,24 @@
         }
     },
     "Plane 1": {
+        "Collidable": {
+            "Shapes": [
+                {
+                    "Center": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Size": [
+                        20.0,
+                        0.10000000149011612,
+                        20.0
+                    ],
+                    "Trigger": false,
+                    "Type": 0
+                }
+            ]
+        },
         "Parent": {
             "Name": "Boat Root R"
         },
@@ -2891,6 +3405,11 @@
             "Mesh": {
                 "FilePath": "res\\assets\\models\\plane.obj"
             }
+        },
+        "RigidBody": {
+            "Friction": 1.0,
+            "Mass": 0.0,
+            "Properties": 49
         },
         "Transform": {
             "Mirror": {
@@ -2917,6 +3436,24 @@
         }
     },
     "Plane 2": {
+        "Collidable": {
+            "Shapes": [
+                {
+                    "Center": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Size": [
+                        20.0,
+                        0.10000000149011612,
+                        20.0
+                    ],
+                    "Trigger": false,
+                    "Type": 0
+                }
+            ]
+        },
         "Parent": null,
         "Renderable": {
             "Enabled": true,
@@ -2926,6 +3463,11 @@
             "Mesh": {
                 "FilePath": "res\\assets\\models\\plane.obj"
             }
+        },
+        "RigidBody": {
+            "Friction": 1.0,
+            "Mass": 0.0,
+            "Properties": 49
         },
         "Transform": {
             "Mirror": {
@@ -2952,6 +3494,24 @@
         }
     },
     "Plane 3": {
+        "Collidable": {
+            "Shapes": [
+                {
+                    "Center": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Size": [
+                        20.0,
+                        0.10000000149011612,
+                        20.0
+                    ],
+                    "Trigger": false,
+                    "Type": 0
+                }
+            ]
+        },
         "Parent": null,
         "Renderable": {
             "Enabled": true,
@@ -2961,6 +3521,11 @@
             "Mesh": {
                 "FilePath": "res\\assets\\models\\plane.obj"
             }
+        },
+        "RigidBody": {
+            "Friction": 1.0,
+            "Mass": 0.0,
+            "Properties": 49
         },
         "Transform": {
             "Mirror": {
@@ -3023,7 +3588,25 @@
             }
         }
     },
-    "Player0 Blue": {
+    "Player1 Blue": {
+        "Collidable": {
+            "Shapes": [
+                {
+                    "Center": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Size": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "Trigger": false,
+                    "Type": 0
+                }
+            ]
+        },
         "Parent": null,
         "Renderable": {
             "Enabled": true,
@@ -3033,6 +3616,11 @@
             "Mesh": {
                 "FilePath": "res\\assets\\models\\cube.obj"
             }
+        },
+        "RigidBody": {
+            "Friction": 1.0,
+            "Mass": 5.0,
+            "Properties": 54
         },
         "Transform": {
             "Mirror": {
@@ -3058,9 +3646,9 @@
             }
         }
     },
-    "Player0 Camera": {
+    "Player1 Camera": {
         "Parent": {
-            "Name": "Player0 Blue"
+            "Name": "Player1 Blue"
         },
         "Renderable": {
             "Enabled": true,
@@ -3095,7 +3683,7 @@
             }
         }
     },
-    "Player1 Camera": {
+    "Player2 Camera": {
         "Parent": {
             "Name": "Player2 Red"
         },
@@ -3132,7 +3720,25 @@
             }
         }
     },
-    "Player2 Blue": {
+    "Player2 Red": {
+        "Collidable": {
+            "Shapes": [
+                {
+                    "Center": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Size": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "Trigger": false,
+                    "Type": 0
+                }
+            ]
+        },
         "Parent": null,
         "Renderable": {
             "Enabled": true,
@@ -3142,6 +3748,11 @@
             "Mesh": {
                 "FilePath": "res\\assets\\models\\cube.obj"
             }
+        },
+        "RigidBody": {
+            "Friction": 1.0,
+            "Mass": 5.0,
+            "Properties": 63
         },
         "Transform": {
             "Mirror": {
@@ -3167,9 +3778,24 @@
             }
         }
     },
-    "Player2 Camera": {
-        "Parent": {
-            "Name": "Player2 Blue"
+    "Player3 Blue": {
+        "Collidable": {
+            "Shapes": [
+                {
+                    "Center": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Size": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "Trigger": false,
+                    "Type": 0
+                }
+            ]
         },
         "Renderable": {
             "Enabled": true,
@@ -3244,9 +3870,9 @@
             }
         }
     },
-    "Player3 Camera": {
+    "Player4 Camera": {
         "Parent": {
-            "Name": "Player3 Red"
+            "Name": "Player4 Red"
         },
         "Renderable": {
             "Enabled": true,
@@ -3281,7 +3907,25 @@
             }
         }
     },
-    "Player3 Red": {
+    "Player4 Red": {
+        "Collidable": {
+            "Shapes": [
+                {
+                    "Center": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Size": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "Trigger": false,
+                    "Type": 0
+                }
+            ]
+        },
         "Parent": null,
         "Renderable": {
             "Enabled": true,
@@ -3291,6 +3935,11 @@
             "Mesh": {
                 "FilePath": "res\\assets\\models\\Cork.obj"
             }
+        },
+        "RigidBody": {
+            "Friction": 1.0,
+            "Mass": 5.0,
+            "Properties": 63
         },
         "Transform": {
             "Mirror": {
@@ -3426,6 +4075,24 @@
         }
     },
     "RedCannon": {
+        "Collidable": {
+            "Shapes": [
+                {
+                    "Center": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Size": [
+                        2.3499999046325684,
+                        4.150000095367432,
+                        2.5999999046325684
+                    ],
+                    "Trigger": false,
+                    "Type": 0
+                }
+            ]
+        },
         "Parent": null,
         "Renderable": {
             "Enabled": true,
@@ -3435,6 +4102,11 @@
             "Mesh": {
                 "FilePath": "res\\assets\\models\\cannon.obj"
             }
+        },
+        "RigidBody": {
+            "Friction": 0.5,
+            "Mass": 0.0,
+            "Properties": 49
         },
         "Transform": {
             "Mirror": {
@@ -3461,6 +4133,20 @@
         }
     },
     "RedCannonball0": {
+        "Collidable": {
+            "Shapes": [
+                {
+                    "Center": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Radius": 0.5,
+                    "Trigger": false,
+                    "Type": 1
+                }
+            ]
+        },
         "Parent": null,
         "Renderable": {
             "Enabled": true,
@@ -3470,6 +4156,11 @@
             "Mesh": {
                 "FilePath": "res\\assets\\models\\sphere.obj"
             }
+        },
+        "RigidBody": {
+            "Friction": 0.5,
+            "Mass": 1.0,
+            "Properties": 49
         },
         "Transform": {
             "Mirror": {
@@ -3496,6 +4187,20 @@
         }
     },
     "RedCannonball1": {
+        "Collidable": {
+            "Shapes": [
+                {
+                    "Center": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Radius": 0.5,
+                    "Trigger": false,
+                    "Type": 1
+                }
+            ]
+        },
         "Parent": null,
         "Renderable": {
             "Enabled": true,
@@ -3505,6 +4210,11 @@
             "Mesh": {
                 "FilePath": "res\\assets\\models\\sphere.obj"
             }
+        },
+        "RigidBody": {
+            "Friction": 0.5,
+            "Mass": 1.0,
+            "Properties": 49
         },
         "Transform": {
             "Mirror": {
@@ -3531,6 +4241,20 @@
         }
     },
     "RedCannonball2": {
+        "Collidable": {
+            "Shapes": [
+                {
+                    "Center": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Radius": 0.5,
+                    "Trigger": false,
+                    "Type": 1
+                }
+            ]
+        },
         "Parent": null,
         "Renderable": {
             "Enabled": true,
@@ -3540,6 +4264,11 @@
             "Mesh": {
                 "FilePath": "res\\assets\\models\\sphere.obj"
             }
+        },
+        "RigidBody": {
+            "Friction": 0.5,
+            "Mass": 1.0,
+            "Properties": 49
         },
         "Transform": {
             "Mirror": {
@@ -3566,6 +4295,20 @@
         }
     },
     "RedCannonball3": {
+        "Collidable": {
+            "Shapes": [
+                {
+                    "Center": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Radius": 0.5,
+                    "Trigger": false,
+                    "Type": 1
+                }
+            ]
+        },
         "Parent": null,
         "Renderable": {
             "Enabled": true,
@@ -3575,6 +4318,11 @@
             "Mesh": {
                 "FilePath": "res\\assets\\models\\sphere.obj"
             }
+        },
+        "RigidBody": {
+            "Friction": 0.5,
+            "Mass": 1.0,
+            "Properties": 49
         },
         "Transform": {
             "Mirror": {
@@ -3601,6 +4349,20 @@
         }
     },
     "RedCannonball4": {
+        "Collidable": {
+            "Shapes": [
+                {
+                    "Center": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Radius": 0.5,
+                    "Trigger": false,
+                    "Type": 1
+                }
+            ]
+        },
         "Parent": null,
         "Renderable": {
             "Enabled": true,
@@ -3610,6 +4372,11 @@
             "Mesh": {
                 "FilePath": "res\\assets\\models\\sphere.obj"
             }
+        },
+        "RigidBody": {
+            "Friction": 0.5,
+            "Mass": 1.0,
+            "Properties": 49
         },
         "Transform": {
             "Mirror": {
@@ -3636,6 +4403,20 @@
         }
     },
     "RedCannonball5": {
+        "Collidable": {
+            "Shapes": [
+                {
+                    "Center": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Radius": 0.5,
+                    "Trigger": false,
+                    "Type": 1
+                }
+            ]
+        },
         "Parent": null,
         "Renderable": {
             "Enabled": true,
@@ -3645,6 +4426,11 @@
             "Mesh": {
                 "FilePath": "res\\assets\\models\\sphere.obj"
             }
+        },
+        "RigidBody": {
+            "Friction": 0.5,
+            "Mass": 1.0,
+            "Properties": 49
         },
         "Transform": {
             "Mirror": {
@@ -3671,6 +4457,24 @@
         }
     },
     "RedCannonballCrate": {
+        "Collidable": {
+            "Shapes": [
+                {
+                    "Center": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Size": [
+                        2.0,
+                        2.700000047683716,
+                        1.2000000476837158
+                    ],
+                    "Trigger": false,
+                    "Type": 0
+                }
+            ]
+        },
         "Parent": null,
         "Renderable": {
             "Enabled": true,
@@ -3680,6 +4484,11 @@
             "Mesh": {
                 "FilePath": "res\\assets\\models\\crateTemp.obj"
             }
+        },
+        "RigidBody": {
+            "Friction": 0.5,
+            "Mass": 0.0,
+            "Properties": 49
         },
         "Transform": {
             "Mirror": {
@@ -3706,6 +4515,24 @@
         }
     },
     "RedCleaningSolution0": {
+        "Collidable": {
+            "Shapes": [
+                {
+                    "Center": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Size": [
+                        0.800000011920929,
+                        1.0,
+                        0.8500000238418579
+                    ],
+                    "Trigger": false,
+                    "Type": 0
+                }
+            ]
+        },
         "Parent": null,
         "Renderable": {
             "Enabled": true,
@@ -3715,6 +4542,11 @@
             "Mesh": {
                 "FilePath": "res\\assets\\models\\Pirax.obj"
             }
+        },
+        "RigidBody": {
+            "Friction": 0.5,
+            "Mass": 1.0,
+            "Properties": 49
         },
         "Transform": {
             "Mirror": {
@@ -3741,6 +4573,24 @@
         }
     },
     "RedCleaningSolution1": {
+        "Collidable": {
+            "Shapes": [
+                {
+                    "Center": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Size": [
+                        0.800000011920929,
+                        1.0,
+                        0.8500000238418579
+                    ],
+                    "Trigger": false,
+                    "Type": 0
+                }
+            ]
+        },
         "Parent": null,
         "Renderable": {
             "Enabled": true,
@@ -3750,6 +4600,11 @@
             "Mesh": {
                 "FilePath": "res\\assets\\models\\Pirax.obj"
             }
+        },
+        "RigidBody": {
+            "Friction": 0.5,
+            "Mass": 1.0,
+            "Properties": 49
         },
         "Transform": {
             "Mirror": {
@@ -3776,6 +4631,24 @@
         }
     },
     "RedCleaningSolution2": {
+        "Collidable": {
+            "Shapes": [
+                {
+                    "Center": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Size": [
+                        0.800000011920929,
+                        1.0,
+                        0.8500000238418579
+                    ],
+                    "Trigger": false,
+                    "Type": 0
+                }
+            ]
+        },
         "Parent": null,
         "Renderable": {
             "Enabled": true,
@@ -3785,6 +4658,11 @@
             "Mesh": {
                 "FilePath": "res\\assets\\models\\Pirax.obj"
             }
+        },
+        "RigidBody": {
+            "Friction": 0.5,
+            "Mass": 1.0,
+            "Properties": 49
         },
         "Transform": {
             "Mirror": {
@@ -3811,6 +4689,24 @@
         }
     },
     "RedCleaningSolutionPrefab": {
+        "Collidable": {
+            "Shapes": [
+                {
+                    "Center": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Size": [
+                        0.800000011920929,
+                        1.0,
+                        0.8500000238418579
+                    ],
+                    "Trigger": false,
+                    "Type": 0
+                }
+            ]
+        },
         "Parent": null,
         "Renderable": {
             "Enabled": true,
@@ -3820,6 +4716,11 @@
             "Mesh": {
                 "FilePath": "res\\assets\\models\\Pirax.obj"
             }
+        },
+        "RigidBody": {
+            "Friction": 0.5,
+            "Mass": 1.0,
+            "Properties": 49
         },
         "Transform": {
             "Mirror": {
@@ -3881,6 +4782,24 @@
         }
     },
     "RedGarbagePile0": {
+        "Collidable": {
+            "Shapes": [
+                {
+                    "Center": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Size": [
+                        3.4000000953674316,
+                        1.0,
+                        3.200000047683716
+                    ],
+                    "Trigger": false,
+                    "Type": 0
+                }
+            ]
+        },
         "Parent": null,
         "Renderable": {
             "Enabled": true,
@@ -3890,6 +4809,11 @@
             "Mesh": {
                 "FilePath": "res\\assets\\models\\garbage.obj"
             }
+        },
+        "RigidBody": {
+            "Friction": 0.5,
+            "Mass": 0.0,
+            "Properties": 49
         },
         "Transform": {
             "Mirror": {
@@ -3916,6 +4840,24 @@
         }
     },
     "RedGarbagePile1": {
+        "Collidable": {
+            "Shapes": [
+                {
+                    "Center": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Size": [
+                        3.4000000953674316,
+                        1.0,
+                        3.200000047683716
+                    ],
+                    "Trigger": false,
+                    "Type": 0
+                }
+            ]
+        },
         "Parent": null,
         "Renderable": {
             "Enabled": true,
@@ -3925,6 +4867,11 @@
             "Mesh": {
                 "FilePath": "res\\assets\\models\\garbage.obj"
             }
+        },
+        "RigidBody": {
+            "Friction": 0.5,
+            "Mass": 0.0,
+            "Properties": 49
         },
         "Transform": {
             "Mirror": {
@@ -3951,6 +4898,24 @@
         }
     },
     "RedGarbagePile2": {
+        "Collidable": {
+            "Shapes": [
+                {
+                    "Center": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Size": [
+                        3.4000000953674316,
+                        1.0,
+                        3.200000047683716
+                    ],
+                    "Trigger": false,
+                    "Type": 0
+                }
+            ]
+        },
         "Parent": null,
         "Renderable": {
             "Enabled": true,
@@ -3960,6 +4925,11 @@
             "Mesh": {
                 "FilePath": "res\\assets\\models\\garbage.obj"
             }
+        },
+        "RigidBody": {
+            "Friction": 0.5,
+            "Mass": 0.0,
+            "Properties": 49
         },
         "Transform": {
             "Mirror": {
@@ -3986,6 +4956,24 @@
         }
     },
     "RedGloopA0": {
+        "Collidable": {
+            "Shapes": [
+                {
+                    "Center": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Size": [
+                        1.5499999523162842,
+                        2.6500000953674316,
+                        1.0
+                    ],
+                    "Trigger": false,
+                    "Type": 0
+                }
+            ]
+        },
         "Parent": null,
         "Renderable": {
             "Enabled": true,
@@ -3995,6 +4983,11 @@
             "Mesh": {
                 "FilePath": "res\\assets\\models\\Gloop.obj"
             }
+        },
+        "RigidBody": {
+            "Friction": 0.5,
+            "Mass": 1.0,
+            "Properties": 49
         },
         "Transform": {
             "Mirror": {
@@ -4021,6 +5014,24 @@
         }
     },
     "RedGloopA1": {
+        "Collidable": {
+            "Shapes": [
+                {
+                    "Center": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Size": [
+                        1.5499999523162842,
+                        2.6500000953674316,
+                        1.0
+                    ],
+                    "Trigger": false,
+                    "Type": 0
+                }
+            ]
+        },
         "Parent": null,
         "Renderable": {
             "Enabled": true,
@@ -4030,6 +5041,11 @@
             "Mesh": {
                 "FilePath": "res\\assets\\models\\Gloop.obj"
             }
+        },
+        "RigidBody": {
+            "Friction": 0.5,
+            "Mass": 1.0,
+            "Properties": 49
         },
         "Transform": {
             "Mirror": {
@@ -4056,6 +5072,24 @@
         }
     },
     "RedGloopA2": {
+        "Collidable": {
+            "Shapes": [
+                {
+                    "Center": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Size": [
+                        1.5499999523162842,
+                        2.6500000953674316,
+                        1.0
+                    ],
+                    "Trigger": false,
+                    "Type": 0
+                }
+            ]
+        },
         "Parent": null,
         "Renderable": {
             "Enabled": true,
@@ -4065,6 +5099,11 @@
             "Mesh": {
                 "FilePath": "res\\assets\\models\\Gloop.obj"
             }
+        },
+        "RigidBody": {
+            "Friction": 0.5,
+            "Mass": 1.0,
+            "Properties": 49
         },
         "Transform": {
             "Mirror": {
@@ -4091,6 +5130,24 @@
         }
     },
     "RedGloopPrefab": {
+        "Collidable": {
+            "Shapes": [
+                {
+                    "Center": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Size": [
+                        1.5499999523162842,
+                        2.6500000953674316,
+                        1.0
+                    ],
+                    "Trigger": false,
+                    "Type": 0
+                }
+            ]
+        },
         "Parent": null,
         "Renderable": {
             "Enabled": true,
@@ -4100,6 +5157,11 @@
             "Mesh": {
                 "FilePath": "res\\assets\\models\\Gloop.obj"
             }
+        },
+        "RigidBody": {
+            "Friction": 0.5,
+            "Mass": 1.0,
+            "Properties": 49
         },
         "Transform": {
             "Mirror": {
@@ -4161,6 +5223,24 @@
         }
     },
     "RedMop": {
+        "Collidable": {
+            "Shapes": [
+                {
+                    "Center": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Size": [
+                        2.0,
+                        0.20000000298023224,
+                        0.5
+                    ],
+                    "Trigger": false,
+                    "Type": 0
+                }
+            ]
+        },
         "Parent": null,
         "Renderable": {
             "Enabled": true,
@@ -4170,6 +5250,11 @@
             "Mesh": {
                 "FilePath": "res\\assets\\models\\mop.obj"
             }
+        },
+        "RigidBody": {
+            "Friction": 0.5,
+            "Mass": 1.0,
+            "Properties": 49
         },
         "Transform": {
             "Mirror": {

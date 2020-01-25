@@ -116,7 +116,7 @@ bool UIManagerSystem::onEvent(const Event& event)
 	return false;
 }
 
-void UIManagerSystem::enableValidUIType(PlayerInteractionResult a_type, int a_playerNum)
+void UIManagerSystem::enableValidUIType(PlayerInteractionResult a_type, PlayerNumber a_playerNum)
 {
 	auto hudView = registry->view<component::GuiRenderable, component::Transform, PlayerInteractionType, PlayerHUDElement>();
 	for (auto& guiEntity : hudView)
@@ -151,7 +151,7 @@ void UIManagerSystem::enableValidUIType(PlayerInteractionResult a_type, int a_pl
 	}
 }
 
-void UIManagerSystem::enableInvalidUIType(PlayerInteractionResult a_type, int a_playerNum)
+void UIManagerSystem::enableInvalidUIType(PlayerInteractionResult a_type, PlayerNumber a_playerNum)
 {
 	auto hudView = registry->view<component::GuiRenderable, component::Transform, PlayerInteractionType>();
 	for (auto& guiEntity : hudView)

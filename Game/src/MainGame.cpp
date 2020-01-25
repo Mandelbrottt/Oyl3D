@@ -32,9 +32,9 @@ public:
 		this->listenForEventCategory(EventCategory::Gamepad);
 		this->listenForEventCategory((EventCategory) CategoryGarbagePile);
 
-		listenForEventType(EventType::PhysicsCollisionEnter);
-		listenForEventType(EventType::PhysicsCollisionStay);
-		listenForEventType(EventType::PhysicsCollisionExit);
+		// listenForEventType(EventType::PhysicsCollisionEnter);
+		// listenForEventType(EventType::PhysicsCollisionStay);
+		// listenForEventType(EventType::PhysicsCollisionExit);
 
 		scheduleSystemUpdate<PlayerSystem>();
 		scheduleSystemUpdate<CannonSystem>();
@@ -59,7 +59,7 @@ public:
 
 			auto& HUDElement = registry->assign<PlayerHUDElement>(e);
 			HUDElement.positionWhenActive = glm::vec3(0.0f, 2.0f, 0.0f);
-			HUDElement.playerNum = 0;
+			HUDElement.playerNum = PlayerNumber::One;
 
             auto& so = registry->assign<component::EntityInfo>(e);
             so.name = "Push Cannon Message";
@@ -80,7 +80,7 @@ public:
 
 			auto& HUDElement = registry->assign<PlayerHUDElement>(e);
 			HUDElement.positionWhenActive = glm::vec3(0.0f, 2.0f, 0.0f);
-			HUDElement.playerNum = 0;
+			HUDElement.playerNum = PlayerNumber::One;
 
             auto& so = registry->assign<component::EntityInfo>(e);
             so.name = "Load Cannon Message";
@@ -101,7 +101,7 @@ public:
 
 			auto& HUDElement = registry->assign<PlayerHUDElement>(e);
 			HUDElement.positionWhenActive = glm::vec3(0.0f, 2.0f, 0.0f);
-			HUDElement.playerNum = 0;
+			HUDElement.playerNum = PlayerNumber::One;
 
             auto& so = registry->assign<component::EntityInfo>(e);
             so.name = "Cannonball Crate Message";
@@ -122,7 +122,7 @@ public:
 
 			auto& HUDElement = registry->assign<PlayerHUDElement>(e);
 			HUDElement.positionWhenActive = glm::vec3(0.0f, 2.0f, 0.0f);
-			HUDElement.playerNum = 0;
+			HUDElement.playerNum = PlayerNumber::One;
 
 			auto& so = registry->assign<component::EntityInfo>(e);
 			so.name = "Pickup Cannonball Message";
@@ -143,7 +143,7 @@ public:
 
 			auto& HUDElement = registry->assign<PlayerHUDElement>(e);
 			HUDElement.positionWhenActive = glm::vec3(0.0f, 2.0f, 0.0f);
-			HUDElement.playerNum = 0;
+			HUDElement.playerNum = PlayerNumber::One;
 
             auto& so = registry->assign<component::EntityInfo>(e);
             so.name = "Pickup Mop Message";
@@ -164,7 +164,7 @@ public:
 
 			auto& HUDElement = registry->assign<PlayerHUDElement>(e);
 			HUDElement.positionWhenActive = glm::vec3(0.0f, 2.0f, 0.0f);
-			HUDElement.playerNum = 0;
+			HUDElement.playerNum = PlayerNumber::One;
 
 			auto& so = registry->assign<component::EntityInfo>(e);
 			so.name = "Pickup Cleaning Solution Message";
@@ -185,7 +185,7 @@ public:
 
 			auto& HUDElement = registry->assign<PlayerHUDElement>(e);
 			HUDElement.positionWhenActive = glm::vec3(0.0f, 2.0f, 0.0f);
-			HUDElement.playerNum = 0;
+			HUDElement.playerNum = PlayerNumber::One;
 
 			auto& so = registry->assign<component::EntityInfo>(e);
 			so.name = "Pickup Gloop Message";
@@ -206,7 +206,7 @@ public:
 
 			auto& HUDElement = registry->assign<PlayerHUDElement>(e);
 			HUDElement.positionWhenActive = glm::vec3(0.0f, 2.0f, 0.0f);
-			HUDElement.playerNum = 0;
+			HUDElement.playerNum = PlayerNumber::One;
 
 			auto& so = registry->assign<component::EntityInfo>(e);
 			so.name = "Use Gloop Message";
@@ -227,7 +227,7 @@ public:
 
 			auto& HUDElement = registry->assign<PlayerHUDElement>(e);
 			HUDElement.positionWhenActive = glm::vec3(0.0f, 2.0f, 0.0f);
-			HUDElement.playerNum = 0;
+			HUDElement.playerNum = PlayerNumber::One;
 
             auto& so = registry->assign<component::EntityInfo>(e);
             so.name = "Clean Garbage Message";
@@ -247,8 +247,8 @@ public:
 			uiType.type = PlayerInteractionResult::cannonFiringSoon;
 
 			auto& HUDElement = registry->assign<PlayerHUDElement>(e);
-			HUDElement.positionWhenActive = glm::vec3(5.0f, 2.0f, 0.0f);
-			HUDElement.playerNum = 0;
+			HUDElement.positionWhenActive = glm::vec3(0.0f, 2.0f, 0.0f);
+			HUDElement.playerNum = PlayerNumber::One;
 
             auto& so = registry->assign<component::EntityInfo>(e);
             so.name = "Cannon Firing Message";
@@ -267,7 +267,7 @@ public:
 
 			auto& HUDElement = registry->assign<PlayerHUDElement>(e);
 			HUDElement.positionWhenActive = glm::vec3(0.0f, 0.0f, 0.0f);
-			HUDElement.playerNum = 0;
+			HUDElement.playerNum = PlayerNumber::One;
 
 			component::Transform t;
 			t.setPosition(glm::vec3(-3.0f, -1.0f, -2.0f));
@@ -288,7 +288,7 @@ public:
 
 			auto& HUDElement = registry->assign<PlayerHUDElement>(e);
 			HUDElement.positionWhenActive = glm::vec3(0.0f, 0.0f, 0.0f);
-			HUDElement.playerNum = 0;
+			HUDElement.playerNum = PlayerNumber::One;
 
 			component::Transform t;
 			t.setPosition(glm::vec3(-3.0f, -1.0f, -2.0f));
@@ -330,7 +330,7 @@ public:
 
 			auto& backgroundHUDElement = registry->assign<PlayerHUDElement>(cleaningQuicktimeEventBackgroundEntity);
 			backgroundHUDElement.positionWhenActive = glm::vec3(0.0f, 3.5f, 0.0f);
-			backgroundHUDElement.playerNum = 0;
+			backgroundHUDElement.playerNum = PlayerNumber::One;
 
 			auto& backgroundSceneObject = registry->assign<component::EntityInfo>(cleaningQuicktimeEventBackgroundEntity);
 			backgroundSceneObject.name = "Cleaning Quicktime Event Background";
@@ -350,14 +350,14 @@ public:
 			CleaningQuicktimeEventIndicator cleaningQuicktimeEventIndicator;
 			cleaningQuicktimeEventIndicator.lerpInformation.startPos = glm::vec3(-4.95f, 3.6f, -1.0f);
 			cleaningQuicktimeEventIndicator.lerpInformation.destinationPos = glm::vec3(4.95f, 3.6f, -1.0f);
-			cleaningQuicktimeEventIndicator.lerpInformation.speed = 1.0f;
+			cleaningQuicktimeEventIndicator.lerpInformation.speed = 2.2f;
 
 			cleaningQuicktimeEventIndicator.cleaningQuicktimeEventBackground = cleaningQuicktimeEventBackgroundEntity;
 			registry->assign<CleaningQuicktimeEventIndicator>(cleaningQuicktimeEventIndicatorEntity, cleaningQuicktimeEventIndicator);
 
 			auto& indicatorHUDElement = registry->assign<PlayerHUDElement>(cleaningQuicktimeEventIndicatorEntity);
 			indicatorHUDElement.positionWhenActive = glm::vec3(-4.95f, 3.6f, -1.0f);
-			indicatorHUDElement.playerNum = 0;
+			indicatorHUDElement.playerNum = PlayerNumber::One;
 
 			auto& indicatorSceneObject = registry->assign<component::EntityInfo>(cleaningQuicktimeEventIndicatorEntity);
 			indicatorSceneObject.name = "Cleaning Quicktime Event Indicator";
@@ -407,7 +407,7 @@ public:
 			//player movement
 			glm::vec3 desiredMoveDirection = glm::vec3(0.0f);
 
-			if (player.playerNum == 0)
+			if (player.playerNum == PlayerNumber::One)
 			{
 				if (Input::isKeyPressed(Key::W))
 					desiredMoveDirection += playerTransform.getForward();
@@ -424,11 +424,11 @@ public:
 			
 			if (player.controllerNum <= 1)
 			{
-				if (Input::getGamepadLeftStickY(player.playerNum) > 0.1f || Input::getGamepadLeftStickY(player.playerNum) < -0.1f)
-					desiredMoveDirection += Input::getGamepadLeftStickY(player.playerNum) * -playerTransform.getForward();
+				if (Input::getGamepadLeftStickY((uint)player.playerNum) > 0.1f || Input::getGamepadLeftStickY((uint)player.playerNum) < -0.1f)
+					desiredMoveDirection += Input::getGamepadLeftStickY((uint)player.playerNum) * -playerTransform.getForward();
 
-				if (Input::getGamepadLeftStickX(player.playerNum) > 0.1f || Input::getGamepadLeftStickX(player.playerNum) < -0.1f)
-					desiredMoveDirection += Input::getGamepadLeftStickX(player.playerNum) * playerTransform.getRight();
+				if (Input::getGamepadLeftStickX((uint)player.playerNum) > 0.1f || Input::getGamepadLeftStickX((uint)player.playerNum) < -0.1f)
+					desiredMoveDirection += Input::getGamepadLeftStickX((uint)player.playerNum) * playerTransform.getRight();
 			}
 
 		    //check if it's 0 because if we normalize a vector with 0 magnitude it breaks
@@ -576,7 +576,9 @@ public:
 
 				break;
 			}
+			
 			}
+			break;
 		}
 
 		case EventType::GamepadButtonPressed:
@@ -638,7 +640,7 @@ public:
 				auto& player          = registry->get<Player>(playerEntity);
 				auto& playerTransform = registry->get<component::Transform>(playerEntity);
 
-				if (player.playerNum != 0)
+				if (player.playerNum != PlayerNumber::One)
 					continue;
 
 				playerTransform.rotate(glm::vec3(0.0f, -evt.dx * 0.5f, 0.0f));
@@ -661,7 +663,7 @@ public:
 				auto& camera          = registry->get<component::PlayerCamera>(cameraEntity);
 				auto& cameraTransform = registry->get<component::Transform>(cameraEntity);
 
-				if (camera.player != 0)
+				if (camera.player != PlayerNumber::One)
 					continue;
 
 				cameraTransform.rotate(glm::vec3(-evt.dy * 0.5f, 0.0f, 0.0f));

@@ -111,7 +111,7 @@ bool CleaningQuicktimeEventSystem::onEvent(const Event& event)
 				auto& indicatorTransform  = registry->get<component::Transform>(cleaningQuicktimeEventIndicatorEntity);
 				auto& indicatorHUDElement = registry->get<PlayerHUDElement>(cleaningQuicktimeEventIndicatorEntity);
 
-				int playerNum = registry->get<Player>(evt.playerEntity).playerNum;
+				PlayerNumber playerNum = registry->get<Player>(evt.playerEntity).playerNum;
 
 				if (playerNum != indicatorHUDElement.playerNum || !indicator.isActive)
 					continue;

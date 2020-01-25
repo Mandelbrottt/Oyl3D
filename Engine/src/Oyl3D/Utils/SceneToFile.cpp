@@ -256,8 +256,8 @@ namespace oyl::internal
                     shape["Height"]    = info.cylinder.getHeight();
                     shape["Radius"]    = info.cylinder.getRadius();
                     break;
-                case ColliderType::Mesh:
-                    break;
+                //case ColliderType::Mesh:
+                //    break;
             }
 
             jSha.push_back(std::move(shape));
@@ -481,8 +481,8 @@ namespace oyl::internal
                         if (auto it = jShape.find("Radius"); it != jShape.end())
                             shape.cylinder.setRadius(it->get<float>());
                         break;
-                    case ColliderType::Mesh:
-                        break;
+                    //case ColliderType::Mesh:
+                    //    break;
                 }
             }
         }

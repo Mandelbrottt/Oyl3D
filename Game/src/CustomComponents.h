@@ -1,6 +1,8 @@
 #pragma once
 #include "Oyl3D.h"
 
+using oyl::PlayerNumber;
+
 enum class Team
 {
 	blue,
@@ -69,7 +71,7 @@ struct MoveableUsingLerp
 
 struct Player
 {
-	int playerNum = -1; //should always correspond with appropriate PlayerCamera player number
+	PlayerNumber playerNum = PlayerNumber::One; //should always correspond with appropriate PlayerCamera player number
 	int controllerNum = -1; //the gid of the controller that will be used to control the player
 
 	Team team;
@@ -114,7 +116,7 @@ struct Cannon
 	MoveableUsingLerp pushStateData;
 
 	float WAIT_BEFORE_BEING_PUSHED_DURATION = 0.3f;
-	float waitBeforeBeingPushedCountdown = WAIT_BEFORE_BEING_PUSHED_DURATION;
+	float waitBeforeBeingPushedCountdown    = WAIT_BEFORE_BEING_PUSHED_DURATION;
 };
 
 struct CarryableItem
@@ -197,7 +199,7 @@ struct PlayerInteractionType
 
 struct PlayerHUDElement
 {
-	int playerNum = -1; //should always correspond with player camera's player number
+	PlayerNumber playerNum = PlayerNumber::One; //should always correspond with player camera's player number
 	glm::vec3 positionWhenActive;
 };
 
@@ -223,8 +225,8 @@ struct CleaningQuicktimeEventIndicator
 
 	bool isActive = false;
 
-	float LOWER_BOUND_FOR_SUCCESS = 0.4f;
-	float UPPER_BOUND_FOR_SUCCESS = 0.6f;
+	float LOWER_BOUND_FOR_SUCCESS = 0.37f;
+	float UPPER_BOUND_FOR_SUCCESS = 0.63f;
 
 	MoveableUsingLerp lerpInformation;
 

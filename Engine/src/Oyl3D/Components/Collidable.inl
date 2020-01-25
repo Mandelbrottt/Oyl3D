@@ -45,9 +45,9 @@ namespace oyl::component
             case ColliderType::Cylinder:
                 this->cylinder = shapeInfo.cylinder;
                 break;
-            case ColliderType::Mesh:
-                this->mesh = shapeInfo.mesh;
-                break;
+            //case ColliderType::Mesh:
+            //    this->mesh = shapeInfo.mesh;
+            //    break;
         }
 
         m_isDirty = true;
@@ -79,9 +79,9 @@ namespace oyl::component
                 cylinder.setHeight(1.0f);
                 cylinder.setDirection(Direction::Y_AXIS);
                 break;
-            case ColliderType::Mesh:
-                mesh = {};
-                break;
+            //case ColliderType::Mesh:
+            //    mesh = {};
+            //    break;
         }
 
         m_isDirty = true;
@@ -118,7 +118,7 @@ namespace oyl::component
     inline bool Collidable::ShapeInfo::isDirty() const
     {
         return m_isDirty || box.isDirty() || sphere.isDirty() || 
-               capsule.isDirty() || cylinder.isDirty() || mesh.isDirty();
+               capsule.isDirty() || cylinder.isDirty() /*|| mesh.isDirty()*/;
     }
 
     inline Collidable::ShapeInfo& Collidable::pushShape(ShapeInfo shape)

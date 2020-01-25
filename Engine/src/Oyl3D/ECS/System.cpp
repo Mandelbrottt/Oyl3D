@@ -882,7 +882,7 @@ namespace oyl
                     shape.sphere.m_isDirty   = false;
                     shape.capsule.m_isDirty  = false;
                     shape.cylinder.m_isDirty = false;
-                    shape.mesh.m_isDirty     = false;
+                    //shape.mesh.m_isDirty     = false;
                 }
             }
             
