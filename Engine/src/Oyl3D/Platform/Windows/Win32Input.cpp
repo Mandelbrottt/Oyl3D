@@ -3,6 +3,8 @@
 
 #include "Oyl3D/App/Application.h"
 
+#include "Utils/Deadzones.h"
+
 #include <GLFW/glfw3.h>
 
 namespace oyl
@@ -66,7 +68,8 @@ namespace oyl
             glfwGetGamepadState(gid, &state);
             float xpos = state.axes[GLFW_GAMEPAD_AXIS_LEFT_X];
             float ypos = state.axes[GLFW_GAMEPAD_AXIS_LEFT_Y];
-            return { xpos, ypos };
+            // TODO: Make use of configurable deadzone
+            return radialDeadZone(crossDeadZone({ xpos, ypos }, 0.15f), 0.15f);
         }
         return { 0, 0 };
     }
@@ -92,7 +95,7 @@ namespace oyl
             glfwGetGamepadState(gid, &state);
             float xpos = state.axes[GLFW_GAMEPAD_AXIS_RIGHT_X];
             float ypos = state.axes[GLFW_GAMEPAD_AXIS_RIGHT_Y];
-            return { xpos, ypos };
+            return radialDeadZone(crossDeadZone({ xpos, ypos }, 0.15f), 0.15f);
         }
         return { 0, 0 };
     }

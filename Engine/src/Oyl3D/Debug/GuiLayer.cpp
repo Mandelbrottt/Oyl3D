@@ -1389,6 +1389,34 @@ namespace oyl::internal
 
             ImGui::EndCombo();
         }
+        switch (a_texture->getFilter())
+        {
+            case TextureFilter::Nearest: profilePreview = "Nearest"; break;
+            case TextureFilter::Linear: profilePreview = "Linear"; break;
+        }
+        sprintf_s(profileID, 256, "Texture Filtering##%sTexFilter", a_texture->getFilePath().c_str());
+        if (ImGui::BeginCombo(profileID, profilePreview))
+        {
+            if (ImGui::Selectable("Nearest", a_texture->getFilter() == TextureFilter::Nearest))
+                a_texture->setFilter(TextureFilter::Nearest);
+            if (ImGui::Selectable("Linear", a_texture->getFilter() == TextureFilter::Linear))
+                a_texture->setFilter(TextureFilter::Nearest);
+
+            ImGui::EndCombo();
+        }
+        switch (a_texture->getWrap())
+        {
+            case TextureWrap::Repeat: profilePreview = "Nearest"; break;
+            case TextureWrap::Mirror: profilePreview = "Mirror"; break;
+            case TextureWrap::ClampToEdge: profilePreview = "Clamp to Edge"; break;
+            case TextureWrap::ClampToBorder: profilePreview = "Clamp to Border"; break;
+        }
+        sprintf_s(profileID, 256, "Texture Wrapping##%sTexWrap", a_texture->getFilePath().c_str());
+        if (ImGui::BeginCombo(profileID, profilePreview))
+        {
+
+            ImGui::EndCombo();
+        }
     }
 
     void GuiLayer::drawInspectorMaterial()
