@@ -838,44 +838,6 @@
             }
         }
     },
-    "Gui Renderable": {
-        "Collidable": {
-            "Shapes": []
-        },
-        "Parent": null,
-        "Renderable": {
-            "Enabled": true,
-            "Material": {
-                "Alias": null
-            },
-            "Mesh": {
-                "FilePath": null
-            }
-        },
-        "Transform": {
-            "Mirror": {
-                "X": false,
-                "Y": false,
-                "Z": false
-            },
-            "Position": {
-                "X": 0.0,
-                "Y": 0.0,
-                "Z": 0.0
-            },
-            "Rotation": {
-                "qW": 1.0,
-                "qX": 0.0,
-                "qY": 0.0,
-                "qZ": 0.0
-            },
-            "Scale": {
-                "X": 0.5,
-                "Y": 0.5,
-                "Z": 0.5
-            }
-        }
-    },
     "BlueGarbagePile1": {
         "Collidable": {
             "Shapes": [
@@ -2756,6 +2718,44 @@
             }
         }
     },
+    "Gui Renderable": {
+        "Collidable": {
+            "Shapes": []
+        },
+        "Parent": null,
+        "Renderable": {
+            "Enabled": true,
+            "Material": {
+                "Alias": null
+            },
+            "Mesh": {
+                "FilePath": null
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": 0.0,
+                "Y": 0.0,
+                "Z": 0.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 0.5,
+                "Y": 0.5,
+                "Z": 0.5
+            }
+        }
+    },
     "Head": {
         "Parent": {
             "Name": "Boat Root R"
@@ -3620,7 +3620,7 @@
         "RigidBody": {
             "Friction": 1.0,
             "Mass": 5.0,
-            "Properties": 54
+            "Properties": 62
         },
         "Transform": {
             "Mirror": {
@@ -3746,13 +3746,13 @@
                 "Alias": "container"
             },
             "Mesh": {
-                "FilePath": "res\\assets\\models\\cube.obj"
+                "FilePath": "res\\assets\\models\\Cork.obj"
             }
         },
         "RigidBody": {
-            "Friction": 1.0,
-            "Mass": 5.0,
-            "Properties": 63
+            "Friction": 0.5,
+            "Mass": 0.0,
+            "Properties": 98
         },
         "Transform": {
             "Mirror": {
@@ -3766,9 +3766,9 @@
                 "Z": 0.0
             },
             "Rotation": {
-                "qW": 1.0,
-                "qX": 0.0,
-                "qY": 0.0,
+                "qW": 0.9940076470375061,
+                "qX": -0.10931035876274109,
+                "qY": -0.0,
                 "qZ": 0.0
             },
             "Scale": {
@@ -3797,14 +3797,20 @@
                 }
             ]
         },
+        "Parent": null,
         "Renderable": {
             "Enabled": true,
             "Material": {
-                "Alias": null
+                "Alias": "container"
             },
             "Mesh": {
-                "FilePath": null
+                "FilePath": "res\\assets\\models\\cube.obj"
             }
+        },
+        "RigidBody": {
+            "Friction": 1.0,
+            "Mass": 5.0,
+            "Properties": 126
         },
         "Transform": {
             "Mirror": {
@@ -3830,21 +3836,9 @@
             }
         }
     },
-    "Player2 Red": {
-        "Parent": null,
-        "Renderable": {
-            "Enabled": true,
-            "Material": {
-                "Alias": "container"
-            },
-            "Mesh": {
-                "FilePath": "res\\assets\\models\\Cork.obj"
-            }
-        },
-        "RigidBody": {
-            "Friction": 0.5,
-            "Mass": 0.0,
-            "Properties": 98
+    "Player3 Camera": {
+        "Parent": {
+            "Name": "Player3 Blue"
         },
         "Transform": {
             "Mirror": {
@@ -3858,9 +3852,9 @@
                 "Z": 0.0
             },
             "Rotation": {
-                "qW": 0.9940076470375061,
-                "qX": -0.10931035876274109,
-                "qY": -0.0,
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
                 "qZ": 0.0
             },
             "Scale": {

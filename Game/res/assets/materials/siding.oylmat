@@ -14,13 +14,16 @@
         },
         "Textures": {
             "Albedo": {
-                "Alias": "woodPlankSiding",
-                "FilePath": "res\\assets\\textures\\woodPlankSiding.png",
+                "Alias": "woodPlankSiding3",
+                "FilePath": "res\\assets\\textures\\woodPlankSiding3.png",
+                "Profile": 1,
                 "guid": null
             },
             "Normal": null,
             "Specular": {
-                "FilePath": "res\\assets\\textures\\woodPlankSiding.png",
+                "Alias": "tempSpec",
+                "FilePath": "res\\assets\\textures\\tempSpec.jpg",
+                "Profile": 0,
                 "guid": null
             }
         }

@@ -14,14 +14,16 @@
         },
         "Textures": {
             "Albedo": {
-                "Alias": null,
+                "Alias": "cannonTemp",
                 "FilePath": "res\\assets\\textures\\cannonTemp.png",
                 "Profile": 0,
                 "guid": null
             },
             "Normal": null,
             "Specular": {
-                "FilePath": "res\\assets\\textures\\shipAtlas.png",
+                "Alias": "tempSpec",
+                "FilePath": "res\\assets\\textures\\tempSpec.jpg",
+                "Profile": 0,
                 "guid": null
             }
         }
