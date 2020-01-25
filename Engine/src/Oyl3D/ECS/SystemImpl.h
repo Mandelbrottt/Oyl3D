@@ -53,6 +53,8 @@ namespace oyl::internal
         virtual bool onEvent(const Event& event) override;
 
     private:
+        glm::ivec2 m_windowSize;
+        
         Ref<Shader> m_shader;
 
         Ref<VertexArray> m_vao;

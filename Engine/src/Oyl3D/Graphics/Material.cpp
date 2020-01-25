@@ -10,10 +10,12 @@ namespace oyl
 {
     internal::AssetCache<Material> Material::s_cache;
 
+    const char* internal::AssetCache<Material>::s_typename = "Material";
+
     Material::Material(_Material) {}
 
-    Material::Material(_Material, const std::string& filepath)
-        : m_filepath(filepath) {}
+    Material::Material(_Material, std::string filepath)
+        : m_filepath(std::move(filepath)) {}
 
     //Material::Material(_Material, Ref<Shader> shader)
     //    : shader(std::move(shader)) {}
@@ -26,6 +28,14 @@ namespace oyl
     Ref<Material> Material::create()
     {
         return Ref<Material>::create(_Material{});
+    }
+
+    bool Material::operator==(const Material& material)
+    {
+        return (this->shader == material.shader &&
+                this->albedoMap == material.albedoMap &&
+                this->specularMap == material.specularMap &&
+                this->normalMap == material.normalMap);
     }
 
     Ref<Material> Material::create(const std::string& filepath)
@@ -181,9 +191,11 @@ namespace oyl
             specularMap->bind(1);
         setUniform1i("u_material.specular", 1);
 
-        //if (normalMap)
-        //    normalMap->bind(2);
-        //setUniform1i("u_material.normal", 2);
+        if (normalMap)
+            normalMap->bind(2);
+        else
+            Texture2D::get(DEFAULT_NORMAL_TEXTURE_ALIAS)->bind(2);
+        setUniform1i("u_material.normal", 2);
     }
 
     void Material::unbind()

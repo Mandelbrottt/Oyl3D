@@ -41,7 +41,7 @@ namespace oyl::component
         return m_propertyFlags & prop;
     }
 
-    inline bool RigidBody::getPropertyFlags() const
+    inline u32 RigidBody::getPropertyFlags() const
     {
         return m_propertyFlags;
     }
@@ -103,7 +103,7 @@ namespace oyl::component
         m_friction = friction;
     }
 
-    inline void RigidBody::overwritePropertyFlags(u32 flags)
+    inline void RigidBody::setPropertyFlags(u32 flags)
     {
         m_isDirty |= m_propertyFlags != flags;
         

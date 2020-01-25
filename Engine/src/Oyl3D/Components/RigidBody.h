@@ -18,13 +18,13 @@ namespace oyl::component
     public:
         enum Property : u32
         {
-            IS_KINEMATIC      = 0x00,
-            DETECT_COLLISIONS = 0x01,
-            FREEZE_ROTATION_X = 0x02,
-            FREEZE_ROTATION_Y = 0x04,
-            FREEZE_ROTATION_Z = 0x08,
-            DO_INTERPOLATION  = 0x10,
-            USE_GRAVITY       = 0x20,
+            IS_KINEMATIC      = 0x01,
+            DETECT_COLLISIONS = 0x02,
+            FREEZE_ROTATION_X = 0x04,
+            FREEZE_ROTATION_Y = 0x08,
+            FREEZE_ROTATION_Z = 0x10,
+            DO_INTERPOLATION  = 0x20,
+            USE_GRAVITY       = 0x40,
         };
         
         // TODO: Add getVelocityX() and so on
@@ -37,7 +37,7 @@ namespace oyl::component
         f32 getFriction() const;
 
         bool getProperty(Property prop) const;
-        bool getPropertyFlags() const;
+        u32 getPropertyFlags() const;
 
         void setVelocity(glm::vec3 velocity);
         void addVelocity(glm::vec3 velocity);
@@ -53,7 +53,7 @@ namespace oyl::component
         void setMass(f32 mass);
         void setFriction(f32 friction);
 
-        void overwritePropertyFlags(u32 flags);
+        void setPropertyFlags(u32 flags);
         void setProperties(u32 flags, bool value);
 
     private:

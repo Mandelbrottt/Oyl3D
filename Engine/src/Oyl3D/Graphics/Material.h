@@ -13,10 +13,12 @@ namespace oyl
 
     public:
         explicit Material(_Material);
-        explicit Material(_Material, const std::string& filepath);
+        explicit Material(_Material, std::string filepath);
         //explicit Material(_Material, Ref<Shader> shader);
         
         virtual ~Material() = default;
+
+        bool operator==(const Material& material);
 
         static Ref<Material> create(const std::string& filepath);
         static Ref<Material> create();

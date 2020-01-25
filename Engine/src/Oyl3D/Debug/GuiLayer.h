@@ -50,12 +50,14 @@ namespace oyl::internal
         
         void drawInspector();
         void drawInspectorObjectName();
-        void drawInspectorParent();
         void drawInspectorTransform();
         void drawInspectorCollidable();
         void drawInspectorRenderable();
         void drawInspectorRigidBody();
+        void drawInspectorLightSource();
         void drawInspectorAddComponent();
+
+        void drawInspectorMaterial();
 
         void drawAssetList();
         void drawAssetNode(const std::filesystem::directory_iterator& dir);
