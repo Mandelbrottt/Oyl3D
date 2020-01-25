@@ -28,7 +28,8 @@ void SandboxLayer::onEnter()
 			player.controllerNum = (uint)player.playerNum;
 			player.team          = Team::blue;
 
-			registry->assign<component::Renderable>(player1BlueEntity, mr);
+			auto& renderable = registry->assign<component::Renderable>(player1BlueEntity, mr);
+			renderable.cullingMask = ~0b0001;
 
 			component::Transform t2;
 			t2.setPosition(glm::vec3(0.0f));
@@ -53,6 +54,7 @@ void SandboxLayer::onEnter()
 
 			auto& camera = registry->assign<component::PlayerCamera>(playerCameraEntity);
 			camera.player = player.playerNum;
+			camera.cullingMask = 0b0001;
 
 			auto& cameraParent = registry->assign<component::Parent>(playerCameraEntity);
 			cameraParent.parent = player1BlueEntity;
@@ -69,7 +71,8 @@ void SandboxLayer::onEnter()
 			player.controllerNum = (uint)player.playerNum;
 			player.team = Team::blue;
 
-			registry->assign<component::Renderable>(player3BlueEntity, mr);
+			auto& renderable = registry->assign<component::Renderable>(player3BlueEntity, mr);
+			renderable.cullingMask = ~0b0100;
 
 			component::Transform t2;
 			t2.setPosition(glm::vec3(0.0f));
@@ -97,6 +100,7 @@ void SandboxLayer::onEnter()
 
 			auto& camera = registry->assign<component::PlayerCamera>(playerCameraEntity);
 			camera.player = player.playerNum;
+			camera.cullingMask = 0b0100;
 
 			auto& cameraParent = registry->assign<component::Parent>(playerCameraEntity);
 			cameraParent.parent = player3BlueEntity;
@@ -482,7 +486,8 @@ void SandboxLayer::onEnter()
 			player.controllerNum = (uint)player.playerNum;
 			player.team = Team::red;
 
-			registry->assign<component::Renderable>(player2RedEntity, mr);
+			auto& renderable = registry->assign<component::Renderable>(player2RedEntity, mr);
+			renderable.cullingMask = ~0b0010;
 
 			component::Transform t2;
 			t2.setPosition(glm::vec3(0.0f));
@@ -510,6 +515,7 @@ void SandboxLayer::onEnter()
 
 			auto& camera = registry->assign<component::PlayerCamera>(playerCameraEntity);
 			camera.player = player.playerNum;
+			camera.cullingMask = 0b0010;
 
 			auto& cameraParent = registry->assign<component::Parent>(playerCameraEntity);
 			cameraParent.parent = player2RedEntity;
@@ -526,7 +532,8 @@ void SandboxLayer::onEnter()
 			player.controllerNum = (uint)player.playerNum;
 			player.team = Team::red;
 
-			registry->assign<component::Renderable>(player4RedEntity, mr);
+			auto& renderable = registry->assign<component::Renderable>(player4RedEntity, mr);
+			renderable.cullingMask = ~0b1000;
 
 			component::Transform t2;
 			t2.setPosition(glm::vec3(0.0f));
@@ -547,13 +554,14 @@ void SandboxLayer::onEnter()
 			auto& shapeInfo = playerCollider.pushShape(ColliderType::Box);
 			shapeInfo.box.setSize({ 1.0f, 1.0f, 1.0f });
 
-			//PLAYER 3 CAMERA
+			//PLAYER 4 CAMERA
 			auto playerCameraEntity = registry->create();
 
 			registry->assign<component::Transform>(playerCameraEntity);
 
 			auto& camera = registry->assign<component::PlayerCamera>(playerCameraEntity);
 			camera.player = player.playerNum;
+			camera.cullingMask = 0b1000;
 
 			auto& cameraParent = registry->assign<component::Parent>(playerCameraEntity);
 			cameraParent.parent = player4RedEntity;
