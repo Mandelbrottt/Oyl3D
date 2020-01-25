@@ -52,7 +52,7 @@ public:
 				auto e = registry->create();
 
 				auto& t = registry->assign<component::Transform>(e);
-				t.setPosition(glm::vec3(0.0f, -2.5f, 0.0f));
+				t.setPosition(glm::vec3(-30.0f, -2.5f, 0.0f));
 				t.setScale(glm::vec3(1.0f, 1.0f, 1.0f));
 
 				auto& uiType = registry->assign<PlayerInteractionType>(e);
@@ -74,7 +74,7 @@ public:
 				auto e = registry->create();
 
 				auto& t = registry->assign<component::Transform>(e);
-				t.setPosition(glm::vec3(0.0f, -2.5f, 0.0f));
+				t.setPosition(glm::vec3(-30.0f, -2.5f, 0.0f));
 				t.setScale(glm::vec3(1.0f, 1.0f, 1.0f));
 
 				auto& uiType = registry->assign<PlayerInteractionType>(e);
@@ -96,7 +96,7 @@ public:
 				auto e = registry->create();
 
 				auto& t = registry->assign<component::Transform>(e);
-				t.setPosition(glm::vec3(0.0f, -2.5f, 0.0f));
+				t.setPosition(glm::vec3(-30.0f, -2.5f, 0.0f));
 				t.setScale(glm::vec3(2.0f, 2.0f, 1.0f));
 
 				auto& uiType = registry->assign<PlayerInteractionType>(e);
@@ -118,7 +118,7 @@ public:
 				auto e = registry->create();
 
 				auto& t = registry->assign<component::Transform>(e);
-				t.setPosition(glm::vec3(0.0f, -2.5f, 0.0f));
+				t.setPosition(glm::vec3(-30.0f, -2.5f, 0.0f));
 				t.setScale(glm::vec3(0.8f, 0.8f, 1.0f));
 
 				auto& uiType = registry->assign<PlayerInteractionType>(e);
@@ -140,7 +140,7 @@ public:
 				auto e = registry->create();
 
 				auto& t = registry->assign<component::Transform>(e);
-				t.setPosition(glm::vec3(0.0f, -2.5f, 0.0f));
+				t.setPosition(glm::vec3(-30.0f, -2.5f, 0.0f));
 				t.setScale(glm::vec3(1.0f, 1.0f, 1.0f));
 
 				auto& uiType = registry->assign<PlayerInteractionType>(e);
@@ -162,7 +162,7 @@ public:
 				auto e = registry->create();
 
 				auto& t = registry->assign<component::Transform>(e);
-				t.setPosition(glm::vec3(0.0f, -2.5f, 0.0f));
+				t.setPosition(glm::vec3(-30.0f, -2.5f, 0.0f));
 				t.setScale(glm::vec3(0.8f, 0.8f, 1.0f));
 
 				auto& uiType = registry->assign<PlayerInteractionType>(e);
@@ -184,7 +184,7 @@ public:
 				auto e = registry->create();
 
 				auto& t = registry->assign<component::Transform>(e);
-				t.setPosition(glm::vec3(0.0f, -2.5f, 0.0f));
+				t.setPosition(glm::vec3(-30.0f, -2.5f, 0.0f));
 				t.setScale(glm::vec3(1.0f, 1.0f, 1.0f));
 
 				auto& uiType = registry->assign<PlayerInteractionType>(e);
@@ -206,7 +206,7 @@ public:
 				auto e = registry->create();
 
 				auto& t = registry->assign<component::Transform>(e);
-				t.setPosition(glm::vec3(0.0f, -2.5f, 0.0f));
+				t.setPosition(glm::vec3(-30.0f, -2.5f, 0.0f));
 				t.setScale(glm::vec3(1.0f, 1.0f, 1.0f));
 
 				auto& uiType = registry->assign<PlayerInteractionType>(e);
@@ -228,7 +228,7 @@ public:
 				auto e = registry->create();
 
 				auto& t = registry->assign<component::Transform>(e);
-				t.setPosition(glm::vec3(0.0f, -2.5f, 0.0f));
+				t.setPosition(glm::vec3(-30.0f, -2.5f, 0.0f));
 				t.setScale(glm::vec3(1.0f, 1.0f, 1.0f));
 
 				auto& uiType = registry->assign<PlayerInteractionType>(e);
@@ -250,7 +250,7 @@ public:
 				auto e = registry->create();
 
 				auto& t = registry->assign<component::Transform>(e);
-				t.setPosition(glm::vec3(0.0f, -2.5f, 0.0f));
+				t.setPosition(glm::vec3(-30.0f, -2.5f, 0.0f));
 				t.setScale(glm::vec3(1.0f, 1.0f, 1.0f));
 
 				auto& uiType = registry->assign<PlayerInteractionType>(e);
@@ -282,7 +282,7 @@ public:
 				HUDElement.playerNum = (PlayerNumber)i;
 
 				component::Transform t;
-				t.setPosition(glm::vec3(-3.0f, -1.0f, -2.0f));
+				t.setPosition(glm::vec3(-30.0f, -1.0f, -2.0f));
 				t.setScale(glm::vec3(0.2f, 0.2f, 1.0f));
 				registry->assign<component::Transform>(e, t);
 
@@ -304,7 +304,7 @@ public:
 				HUDElement.playerNum = (PlayerNumber)i;
 
 				component::Transform t;
-				t.setPosition(glm::vec3(-3.0f, -1.0f, -2.0f));
+				t.setPosition(glm::vec3(-30.0f, -1.0f, -2.0f));
 				t.setScale(glm::vec3(0.5f, 0.5f, 1.0f));
 				registry->assign<component::Transform>(e, t);
 
@@ -439,10 +439,10 @@ public:
 			}
 			
 
-			if (Input::getGamepadLeftStickY((uint)player.playerNum) > 0.1f || Input::getGamepadLeftStickY((uint)player.playerNum) < -0.1f)
+			//if (Input::getGamepadLeftStickY((uint)player.playerNum) > 0.1f || Input::getGamepadLeftStickY((uint)player.playerNum) < -0.1f)
 				desiredMoveDirection += Input::getGamepadLeftStickY((uint)player.playerNum) * -playerTransform.getForward();
 
-			if (Input::getGamepadLeftStickX((uint)player.playerNum) > 0.1f || Input::getGamepadLeftStickX((uint)player.playerNum) < -0.1f)
+			//if (Input::getGamepadLeftStickX((uint)player.playerNum) > 0.1f || Input::getGamepadLeftStickX((uint)player.playerNum) < -0.1f)
 				desiredMoveDirection += Input::getGamepadLeftStickX((uint)player.playerNum) * playerTransform.getRight();
 
 		    //check if it's 0 because if we normalize a vector with 0 magnitude it breaks
@@ -457,7 +457,7 @@ public:
 			glm::vec2 rightStick = Input::getGamepadRightStick(player.controllerNum);
 
 			//deadzone check
-			if (rightStick.x > 0.1f || rightStick.x < -0.1f)
+			//if (rightStick.x > 0.1f || rightStick.x < -0.1f)
 			{
 				playerTransform.rotate(glm::vec3(0.0f, -rightStick.x * 200.0f * Time::deltaTime(), 0.0f));
 
@@ -484,7 +484,7 @@ public:
 					continue;
 
 				//deadzone check
-				if (rightStick.y > 0.1f || rightStick.y < -0.1f)
+				//if (rightStick.y > 0.1f || rightStick.y < -0.1f)
 				{
 					cameraTransform.rotate(glm::vec3(-rightStick.y * 200.0f * Time::deltaTime(), 0.0f, 0.0f));
 
