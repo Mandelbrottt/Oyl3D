@@ -3872,7 +3872,7 @@
         "RigidBody": {
             "Friction": 1.0,
             "Mass": 0.0,
-            "Properties": 32
+            "Properties": 34
         },
         "Transform": {
             "Mirror": {
