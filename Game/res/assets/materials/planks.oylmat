@@ -16,7 +16,7 @@
             "Albedo": {
                 "Alias": "woodPlanks",
                 "FilePath": "res\\assets\\textures\\woodPlanks.png",
-                "Profile": 0,
+                "Profile": 1,
                 "guid": null
             },
             "Normal": {
