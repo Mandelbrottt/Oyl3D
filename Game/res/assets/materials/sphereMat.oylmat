@@ -28,7 +28,7 @@
             "Specular": {
                 "Alias": "Oyl White",
                 "FilePath": "../Engine/res/textures/white.png",
-                "Profile": 1,
+                "Profile": 0,
                 "guid": null
             }
         }

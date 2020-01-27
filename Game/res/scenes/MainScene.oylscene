@@ -1355,12 +1355,12 @@
     },
     "Boat Hull Inner 1": {
         "Parent": {
-            "Name": "Boat Root R"
+            "Name": "Boat Hull 1"
         },
         "Renderable": {
             "Enabled": true,
             "Material": {
-                "Alias": "planks"
+                "Alias": "siding"
             },
             "Mesh": {
                 "FilePath": "res\\assets\\models\\BoatHullFlipped.obj"
@@ -1373,9 +1373,9 @@
                 "Z": false
             },
             "Position": {
-                "X": -21.0,
+                "X": 0.033496856689453125,
                 "Y": 0.0,
-                "Z": -2.0
+                "Z": 0.0
             },
             "Rotation": {
                 "qW": 1.0,
@@ -1392,7 +1392,7 @@
     },
     "Boat Hull Inner 2": {
         "Parent": {
-            "Name": "Boat Root L"
+            "Name": "Boat Hull 2"
         },
         "Renderable": {
             "Enabled": true,
@@ -1410,9 +1410,9 @@
                 "Z": false
             },
             "Position": {
-                "X": -21.0,
+                "X": 0.033496856689453125,
                 "Y": 0.0,
-                "Z": -2.0
+                "Z": 0.0
             },
             "Rotation": {
                 "qW": 1.0,
@@ -1447,7 +1447,7 @@
             "Position": {
                 "X": 0.0,
                 "Y": 0.0,
-                "Z": -0.5544283986091614
+                "Z": 19.0
             },
             "Rotation": {
                 "qW": 1.0,
@@ -1482,7 +1482,7 @@
             "Position": {
                 "X": 0.0,
                 "Y": 0.0,
-                "Z": 19.0
+                "Z": -0.5926440358161926
             },
             "Rotation": {
                 "qW": 1.0,
@@ -1499,7 +1499,7 @@
     },
     "Bottom Deck": {
         "Parent": {
-            "Name": "Boat Root R"
+            "Name": "Boat Hull 1"
         },
         "Renderable": {
             "Enabled": true,
@@ -1517,9 +1517,9 @@
                 "Z": false
             },
             "Position": {
-                "X": 3.0,
+                "X": 24.0001163482666,
                 "Y": -4.179999828338623,
-                "Z": 2.4755020141601563
+                "Z": 4.475502014160156
             },
             "Rotation": {
                 "qW": 1.0,
@@ -1536,7 +1536,7 @@
     },
     "Bottom Deck 1": {
         "Parent": {
-            "Name": "Boat Root L"
+            "Name": "Boat Hull 2"
         },
         "Renderable": {
             "Enabled": true,
@@ -1554,9 +1554,9 @@
                 "Z": false
             },
             "Position": {
-                "X": 3.0,
+                "X": 24.0001163482666,
                 "Y": -4.179999828338623,
-                "Z": 2.4755020141601563
+                "Z": 4.475502014160156
             },
             "Rotation": {
                 "qW": 1.0,
@@ -1721,9 +1721,9 @@
                 "Z": true
             },
             "Position": {
-                "X": -10.03441047668457,
+                "X": -10.085075378417969,
                 "Y": -3.088313579559326,
-                "Z": -7.491742134094238
+                "Z": -7.49174165725708
             },
             "Rotation": {
                 "qW": 1.0,
@@ -1740,7 +1740,7 @@
     },
     "CannonPortTrim 1": {
         "Parent": {
-            "Name": "Boat Root R"
+            "Name": "CannonPortTrim"
         },
         "Renderable": {
             "Enabled": true,
@@ -1755,12 +1755,12 @@
             "Mirror": {
                 "X": false,
                 "Y": false,
-                "Z": true
+                "Z": false
             },
             "Position": {
-                "X": -2.1463704109191895,
-                "Y": -3.088313579559326,
-                "Z": -7.5218305587768555
+                "X": 8.051238059997559,
+                "Y": 0.0,
+                "Z": -0.011318206787109375
             },
             "Rotation": {
                 "qW": 1.0,
@@ -1777,7 +1777,7 @@
     },
     "CannonPortTrim 10": {
         "Parent": {
-            "Name": "Boat Root L"
+            "Name": "CannonPortTrim 6"
         },
         "Renderable": {
             "Enabled": true,
@@ -1792,12 +1792,12 @@
             "Mirror": {
                 "X": false,
                 "Y": false,
-                "Z": true
+                "Z": false
             },
             "Position": {
-                "X": -10.03441047668457,
-                "Y": -3.088313579559326,
-                "Z": -7.491742134094238
+                "X": 15.019976615905762,
+                "Y": 0.0,
+                "Z": 0.02529621124267578
             },
             "Rotation": {
                 "qW": 1.0,
@@ -1814,7 +1814,44 @@
     },
     "CannonPortTrim 11": {
         "Parent": {
-            "Name": "Boat Root L"
+            "Name": "CannonPortTrim 6"
+        },
+        "Renderable": {
+            "Enabled": true,
+            "Material": {
+                "Alias": "atlasMaterial"
+            },
+            "Mesh": {
+                "FilePath": "res\\assets\\models\\Decorative\\cannonWindowTrim.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": true,
+                "Z": false
+            },
+            "Position": {
+                "X": 0.038628578186035156,
+                "Y": 0.0,
+                "Z": -11.011996269226074
+            },
+            "Rotation": {
+                "qW": -4.371138828673793e-08,
+                "qX": 1.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "CannonPortTrim 2": {
+        "Parent": {
+            "Name": "CannonPortTrim"
         },
         "Renderable": {
             "Enabled": true,
@@ -1832,46 +1869,9 @@
                 "Z": false
             },
             "Position": {
-                "X": -10.042670249938965,
-                "Y": -3.088313579559326,
-                "Z": 3.520254135131836
-            },
-            "Rotation": {
-                "qW": 1.0,
-                "qX": 0.0,
-                "qY": 0.0,
-                "qZ": 0.0
-            },
-            "Scale": {
-                "X": 1.0,
-                "Y": 1.0,
-                "Z": 1.0
-            }
-        }
-    },
-    "CannonPortTrim 2": {
-        "Parent": {
-            "Name": "Boat Root R"
-        },
-        "Renderable": {
-            "Enabled": true,
-            "Material": {
-                "Alias": "atlasMaterial"
-            },
-            "Mesh": {
-                "FilePath": "res\\assets\\models\\Decorative\\cannonWindowTrim.obj"
-            }
-        },
-        "Transform": {
-            "Mirror": {
-                "X": false,
-                "Y": false,
-                "Z": true
-            },
-            "Position": {
-                "X": 4.826782703399658,
-                "Y": -3.088313579559326,
-                "Z": -7.517038345336914
+                "X": 14.997562408447266,
+                "Y": 0.0,
+                "Z": 0.02529621124267578
             },
             "Rotation": {
                 "qW": 1.0,
@@ -1888,7 +1888,7 @@
     },
     "CannonPortTrim 3": {
         "Parent": {
-            "Name": "Boat Root R"
+            "Name": "CannonPortTrim"
         },
         "Renderable": {
             "Enabled": true,
@@ -1902,17 +1902,17 @@
         "Transform": {
             "Mirror": {
                 "X": false,
-                "Y": false,
+                "Y": true,
                 "Z": false
             },
             "Position": {
-                "X": 4.984394550323486,
-                "Y": -3.088313579559326,
-                "Z": 3.520254135131836
+                "X": 15.001569747924805,
+                "Y": 0.0,
+                "Z": -11.011996269226074
             },
             "Rotation": {
-                "qW": 1.0,
-                "qX": 0.0,
+                "qW": -4.371138828673793e-08,
+                "qX": 1.0,
                 "qY": 0.0,
                 "qZ": 0.0
             },
@@ -1925,7 +1925,7 @@
     },
     "CannonPortTrim 4": {
         "Parent": {
-            "Name": "Boat Root R"
+            "Name": "CannonPortTrim"
         },
         "Renderable": {
             "Enabled": true,
@@ -1939,17 +1939,17 @@
         "Transform": {
             "Mirror": {
                 "X": false,
-                "Y": false,
+                "Y": true,
                 "Z": false
             },
             "Position": {
-                "X": -2.0278196334838867,
-                "Y": -3.088313579559326,
-                "Z": 3.520254135131836
+                "X": 8.054388046264648,
+                "Y": 0.0,
+                "Z": -11.004712104797363
             },
             "Rotation": {
-                "qW": 1.0,
-                "qX": 0.0,
+                "qW": -4.371138828673793e-08,
+                "qX": 1.0,
                 "qY": 0.0,
                 "qZ": 0.0
             },
@@ -1962,7 +1962,7 @@
     },
     "CannonPortTrim 5": {
         "Parent": {
-            "Name": "Boat Root R"
+            "Name": "CannonPortTrim"
         },
         "Renderable": {
             "Enabled": true,
@@ -1976,17 +1976,17 @@
         "Transform": {
             "Mirror": {
                 "X": false,
-                "Y": false,
+                "Y": true,
                 "Z": false
             },
             "Position": {
-                "X": -10.042670249938965,
-                "Y": -3.088313579559326,
-                "Z": 3.520254135131836
+                "X": 0.038628578186035156,
+                "Y": 0.0,
+                "Z": -11.011996269226074
             },
             "Rotation": {
-                "qW": 1.0,
-                "qX": 0.0,
+                "qW": -4.371138828673793e-08,
+                "qX": 1.0,
                 "qY": 0.0,
                 "qZ": 0.0
             },
@@ -2014,12 +2014,12 @@
             "Mirror": {
                 "X": false,
                 "Y": false,
-                "Z": false
+                "Z": true
             },
             "Position": {
-                "X": -2.0278196334838867,
+                "X": -10.103102684020996,
                 "Y": -3.088313579559326,
-                "Z": 3.520254135131836
+                "Z": -7.491742134094238
             },
             "Rotation": {
                 "qW": 1.0,
@@ -2036,7 +2036,44 @@
     },
     "CannonPortTrim 7": {
         "Parent": {
-            "Name": "Boat Root L"
+            "Name": "CannonPortTrim 6"
+        },
+        "Renderable": {
+            "Enabled": true,
+            "Material": {
+                "Alias": "atlasMaterial"
+            },
+            "Mesh": {
+                "FilePath": "res\\assets\\models\\Decorative\\cannonWindowTrim.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": true,
+                "Z": false
+            },
+            "Position": {
+                "X": 8.059965133666992,
+                "Y": 0.0,
+                "Z": -11.011996269226074
+            },
+            "Rotation": {
+                "qW": -4.371138828673793e-08,
+                "qX": 1.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "CannonPortTrim 8": {
+        "Parent": {
+            "Name": "CannonPortTrim 6"
         },
         "Renderable": {
             "Enabled": true,
@@ -2054,46 +2091,9 @@
                 "Z": false
             },
             "Position": {
-                "X": 4.984394550323486,
-                "Y": -3.088313579559326,
-                "Z": 3.520254135131836
-            },
-            "Rotation": {
-                "qW": 1.0,
-                "qX": 0.0,
-                "qY": 0.0,
-                "qZ": 0.0
-            },
-            "Scale": {
-                "X": 1.0,
-                "Y": 1.0,
-                "Z": 1.0
-            }
-        }
-    },
-    "CannonPortTrim 8": {
-        "Parent": {
-            "Name": "Boat Root L"
-        },
-        "Renderable": {
-            "Enabled": true,
-            "Material": {
-                "Alias": "atlasMaterial"
-            },
-            "Mesh": {
-                "FilePath": "res\\assets\\models\\Decorative\\cannonWindowTrim.obj"
-            }
-        },
-        "Transform": {
-            "Mirror": {
-                "X": false,
-                "Y": false,
-                "Z": true
-            },
-            "Position": {
-                "X": 4.826782703399658,
-                "Y": -3.088313579559326,
-                "Z": -7.517038345336914
+                "X": 7.950347900390625,
+                "Y": 0.0,
+                "Z": 0.030088424682617188
             },
             "Rotation": {
                 "qW": 1.0,
@@ -2110,7 +2110,7 @@
     },
     "CannonPortTrim 9": {
         "Parent": {
-            "Name": "Boat Root L"
+            "Name": "CannonPortTrim 6"
         },
         "Renderable": {
             "Enabled": true,
@@ -2124,17 +2124,17 @@
         "Transform": {
             "Mirror": {
                 "X": false,
-                "Y": false,
-                "Z": true
+                "Y": true,
+                "Z": false
             },
             "Position": {
-                "X": -2.1463704109191895,
-                "Y": -3.088313579559326,
-                "Z": -7.5218305587768555
+                "X": 15.001569747924805,
+                "Y": 0.0,
+                "Z": -11.011996269226074
             },
             "Rotation": {
-                "qW": 1.0,
-                "qX": 0.0,
+                "qW": -4.371138828673793e-08,
+                "qX": 1.0,
                 "qY": 0.0,
                 "qZ": 0.0
             },
@@ -3124,12 +3124,12 @@
     },
     "Hull Detailing": {
         "Parent": {
-            "Name": "Boat Root R"
+            "Name": "Boat Hull 1"
         },
         "Renderable": {
             "Enabled": true,
             "Material": {
-                "Alias": "siding"
+                "Alias": "shipMat"
             },
             "Mesh": {
                 "FilePath": "res\\assets\\models\\HullDetailing.obj"
@@ -3142,9 +3142,9 @@
                 "Z": false
             },
             "Position": {
-                "X": -21.0,
+                "X": 0.0,
                 "Y": 0.0,
-                "Z": -2.0
+                "Z": 0.0
             },
             "Rotation": {
                 "qW": 1.0,
@@ -3161,12 +3161,12 @@
     },
     "Hull Detailing 1": {
         "Parent": {
-            "Name": "Boat Root L"
+            "Name": "Boat Hull 2"
         },
         "Renderable": {
             "Enabled": true,
             "Material": {
-                "Alias": "siding"
+                "Alias": "shipMat"
             },
             "Mesh": {
                 "FilePath": "res\\assets\\models\\HullDetailing.obj"
@@ -3179,9 +3179,9 @@
                 "Z": false
             },
             "Position": {
-                "X": -21.0,
+                "X": 0.0,
                 "Y": 0.0,
-                "Z": -2.0
+                "Z": 0.0
             },
             "Rotation": {
                 "qW": 1.0,
@@ -3505,7 +3505,7 @@
         "Renderable": {
             "Enabled": true,
             "Material": {
-                "Alias": "atlasMaterial"
+                "Alias": "Natural Wood"
             },
             "Mesh": {
                 "FilePath": "res\\assets\\models\\Decorative\\mast_temporary.obj"
@@ -3542,7 +3542,7 @@
         "Renderable": {
             "Enabled": true,
             "Material": {
-                "Alias": "atlasMaterial"
+                "Alias": "Natural Wood"
             },
             "Mesh": {
                 "FilePath": "res\\assets\\models\\Decorative\\mast_temporary.obj"
@@ -4868,7 +4868,7 @@
         "Renderable": {
             "Enabled": true,
             "Material": {
-                "Alias": "cubeMat"
+                "Alias": "Natural Wood"
             },
             "Mesh": {
                 "FilePath": "res\\assets\\models\\Decorative\\doorFrame.obj"
@@ -4905,7 +4905,7 @@
         "Renderable": {
             "Enabled": true,
             "Material": {
-                "Alias": "cubeMat"
+                "Alias": "Natural Wood"
             },
             "Mesh": {
                 "FilePath": "res\\assets\\models\\Decorative\\doorFrame.obj"
@@ -6141,6 +6141,80 @@
             }
         }
     },
+    "Rigging": {
+        "Parent": {
+            "Name": "Mast"
+        },
+        "Renderable": {
+            "Enabled": true,
+            "Material": {
+                "Alias": "atlasMaterial"
+            },
+            "Mesh": {
+                "FilePath": "res\\assets\\models\\Rigging.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": 0.0,
+                "Y": 0.0,
+                "Z": 0.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Rigging 1": {
+        "Parent": {
+            "Name": "Mast 1"
+        },
+        "Renderable": {
+            "Enabled": true,
+            "Material": {
+                "Alias": "atlasMaterial"
+            },
+            "Mesh": {
+                "FilePath": "res\\assets\\models\\Rigging.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": 0.0,
+                "Y": 0.0,
+                "Z": 0.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
     "RopeDetail": {
         "Parent": {
             "Name": "Boat Root R"
@@ -6291,7 +6365,7 @@
     },
     "Sails": {
         "Parent": {
-            "Name": "Boat Root R"
+            "Name": "Mast"
         },
         "Renderable": {
             "Enabled": true,
@@ -6309,9 +6383,9 @@
                 "Z": false
             },
             "Position": {
-                "X": -11.826237678527832,
-                "Y": 5.021702289581299,
-                "Z": -1.7796382904052734
+                "X": 0.0,
+                "Y": 0.0,
+                "Z": 0.0
             },
             "Rotation": {
                 "qW": 1.0,
@@ -6328,7 +6402,7 @@
     },
     "Sails 1": {
         "Parent": {
-            "Name": "Boat Root L"
+            "Name": "Mast 1"
         },
         "Renderable": {
             "Enabled": true,
@@ -6346,9 +6420,9 @@
                 "Z": false
             },
             "Position": {
-                "X": -11.826237678527832,
-                "Y": 5.021702289581299,
-                "Z": -1.7796382904052734
+                "X": 0.0,
+                "Y": 0.0,
+                "Z": 0.0
             },
             "Rotation": {
                 "qW": 1.0,

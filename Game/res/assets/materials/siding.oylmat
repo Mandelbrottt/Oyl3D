@@ -14,15 +14,20 @@
         },
         "Textures": {
             "Albedo": {
-                "Alias": "woodPlankSiding",
-                "FilePath": "res\\assets\\textures\\woodPlankSiding.png",
+                "Alias": "woodPlankSiding4",
+                "FilePath": "res\\assets\\textures\\woodPlankSiding4.png",
                 "Profile": 1,
                 "guid": null
             },
-            "Normal": null,
+            "Normal": {
+                "Alias": "woodPlankSiding4Normal",
+                "FilePath": "res\\assets\\textures\\woodPlankSiding4Normal.png",
+                "Profile": 1,
+                "guid": null
+            },
             "Specular": {
-                "Alias": "tempSpec",
-                "FilePath": "res\\assets\\textures\\tempSpec.jpg",
+                "Alias": "woodPlankSiding4Spec",
+                "FilePath": "res\\assets\\textures\\woodPlankSiding4Spec.png",
                 "Profile": 1,
                 "guid": null
             }
