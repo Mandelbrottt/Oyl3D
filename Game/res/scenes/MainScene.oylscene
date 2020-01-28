@@ -1251,9 +1251,9 @@
             }
         },
         "RigidBody": {
-            "Friction": 0.5,
-            "Mass": 1.0,
-            "Properties": 32
+            "Friction": 0.6000000238418579,
+            "Mass": 2.0,
+            "Properties": 34
         },
         "Transform": {
             "Mirror": {
@@ -5677,9 +5677,9 @@
             }
         },
         "RigidBody": {
-            "Friction": 0.5,
-            "Mass": 1.0,
-            "Properties": 32
+            "Friction": 0.6000000238418579,
+            "Mass": 2.0,
+            "Properties": 34
         },
         "Transform": {
             "Mirror": {

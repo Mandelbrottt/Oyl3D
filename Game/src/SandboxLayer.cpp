@@ -283,16 +283,14 @@ void SandboxLayer::onEnter()
 			carryableItem.type = CarryableItemType::mop;
 
 			auto& rb = registry->assign<component::RigidBody>(mopEntity);
+			rb.setMass(2.0f);
+			rb.setFriction(0.6f);
 
 			mr.mesh = Mesh::get("cube");
 			registry->assign<component::Renderable>(mopEntity, mr);
 
 			auto& so2 = registry->assign<component::EntityInfo>(mopEntity);
 			so2.name = "BlueMop";
-
-			/*auto& rb = registry->assign<component::RigidBody>(mopBlueEntity);
-			rb.setMass(2.0f);
-			rb.setFriction(1.0f);*/
 
 			auto& mopCollider = registry->assign<component::Collidable>(mopEntity);
 			auto& shapeInfo = mopCollider.pushShape(ColliderType::Box);
@@ -680,16 +678,14 @@ void SandboxLayer::onEnter()
 			carryableItem.type = CarryableItemType::mop;
 
 			auto& rb = registry->assign<component::RigidBody>(mopEntity);
+			rb.setMass(2.0f);
+			rb.setFriction(0.6f);
 
 			mr.mesh = Mesh::get("cube");
 			registry->assign<component::Renderable>(mopEntity, mr);
 
 			auto& so2 = registry->assign<component::EntityInfo>(mopEntity);
 			so2.name = "RedMop";
-
-			/*auto& rb = registry->assign<component::RigidBody>(mopBlueEntity);
-			rb.setMass(2.0f);
-			rb.setFriction(1.0f);*/
 
 			auto& mopCollider = registry->assign<component::Collidable>(mopEntity);
 			auto& shapeInfo = mopCollider.pushShape(ColliderType::Box);
