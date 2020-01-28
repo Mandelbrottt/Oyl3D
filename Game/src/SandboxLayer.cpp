@@ -40,7 +40,7 @@ void SandboxLayer::onEnter()
 
 			auto& rb = registry->assign<component::RigidBody>(player1BlueEntity);
 			rb.setMass(5.0f);
-			rb.setFriction(1.0f);
+			rb.setFriction(0.9f);
 			//rb.setProperties(component::RigidBody::Property::IS_KINEMATIC, true);
 
 			auto& playerCollider = registry->assign<component::Collidable>(player1BlueEntity);
@@ -83,7 +83,7 @@ void SandboxLayer::onEnter()
 
 			auto& rb = registry->assign<component::RigidBody>(player3BlueEntity);
 			rb.setMass(5.0f);
-			rb.setFriction(1.0f);
+			rb.setFriction(0.9f);
 			rb.setProperties(component::RigidBody::Property::FREEZE_ROTATION_X, true);
 			rb.setProperties(component::RigidBody::Property::FREEZE_ROTATION_Y, true);
 			rb.setProperties(component::RigidBody::Property::FREEZE_ROTATION_Z, true);
@@ -498,7 +498,7 @@ void SandboxLayer::onEnter()
 
 			auto& rb = registry->assign<component::RigidBody>(player2RedEntity);
 			rb.setMass(5.0f);
-			rb.setFriction(1.0f);
+			rb.setFriction(0.9f);
 			rb.setProperties(component::RigidBody::Property::FREEZE_ROTATION_X, true);
 			rb.setProperties(component::RigidBody::Property::FREEZE_ROTATION_Y, true);
 			rb.setProperties(component::RigidBody::Property::FREEZE_ROTATION_Z, true);
@@ -544,7 +544,7 @@ void SandboxLayer::onEnter()
 
 			auto& rb = registry->assign<component::RigidBody>(player4RedEntity);
 			rb.setMass(5.0f);
-			rb.setFriction(1.0f);
+			rb.setFriction(0.9f);
 			rb.setProperties(component::RigidBody::Property::FREEZE_ROTATION_X, true);
 			rb.setProperties(component::RigidBody::Property::FREEZE_ROTATION_Y, true);
 			rb.setProperties(component::RigidBody::Property::FREEZE_ROTATION_Z, true);
