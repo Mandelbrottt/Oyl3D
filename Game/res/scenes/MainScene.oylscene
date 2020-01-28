@@ -105,7 +105,7 @@
         "RigidBody": {
             "Friction": 0.5,
             "Mass": 0.0,
-            "Properties": 32
+            "Properties": 34
         },
         "Transform": {
             "Mirror": {
@@ -159,7 +159,7 @@
         "RigidBody": {
             "Friction": 0.5,
             "Mass": 1.0,
-            "Properties": 32
+            "Properties": 34
         },
         "Transform": {
             "Mirror": {
@@ -213,7 +213,7 @@
         "RigidBody": {
             "Friction": 0.5,
             "Mass": 1.0,
-            "Properties": 32
+            "Properties": 34
         },
         "Transform": {
             "Mirror": {
@@ -267,7 +267,7 @@
         "RigidBody": {
             "Friction": 0.5,
             "Mass": 1.0,
-            "Properties": 32
+            "Properties": 34
         },
         "Transform": {
             "Mirror": {
@@ -321,7 +321,7 @@
         "RigidBody": {
             "Friction": 0.5,
             "Mass": 1.0,
-            "Properties": 32
+            "Properties": 34
         },
         "Transform": {
             "Mirror": {
@@ -375,7 +375,7 @@
         "RigidBody": {
             "Friction": 0.5,
             "Mass": 1.0,
-            "Properties": 32
+            "Properties": 34
         },
         "Transform": {
             "Mirror": {
@@ -429,7 +429,7 @@
         "RigidBody": {
             "Friction": 0.5,
             "Mass": 1.0,
-            "Properties": 32
+            "Properties": 34
         },
         "Transform": {
             "Mirror": {
@@ -487,7 +487,7 @@
         "RigidBody": {
             "Friction": 0.5,
             "Mass": 0.0,
-            "Properties": 32
+            "Properties": 34
         },
         "Transform": {
             "Mirror": {
@@ -4531,7 +4531,7 @@
         "RigidBody": {
             "Friction": 0.5,
             "Mass": 0.0,
-            "Properties": 32
+            "Properties": 34
         },
         "Transform": {
             "Mirror": {
@@ -4585,7 +4585,7 @@
         "RigidBody": {
             "Friction": 0.5,
             "Mass": 1.0,
-            "Properties": 32
+            "Properties": 34
         },
         "Transform": {
             "Mirror": {
@@ -4639,7 +4639,7 @@
         "RigidBody": {
             "Friction": 0.5,
             "Mass": 1.0,
-            "Properties": 32
+            "Properties": 34
         },
         "Transform": {
             "Mirror": {
@@ -4693,7 +4693,7 @@
         "RigidBody": {
             "Friction": 0.5,
             "Mass": 1.0,
-            "Properties": 32
+            "Properties": 34
         },
         "Transform": {
             "Mirror": {
@@ -4747,7 +4747,7 @@
         "RigidBody": {
             "Friction": 0.5,
             "Mass": 1.0,
-            "Properties": 32
+            "Properties": 34
         },
         "Transform": {
             "Mirror": {
@@ -4801,7 +4801,7 @@
         "RigidBody": {
             "Friction": 0.5,
             "Mass": 1.0,
-            "Properties": 32
+            "Properties": 34
         },
         "Transform": {
             "Mirror": {
@@ -4855,7 +4855,7 @@
         "RigidBody": {
             "Friction": 0.5,
             "Mass": 1.0,
-            "Properties": 32
+            "Properties": 34
         },
         "Transform": {
             "Mirror": {
@@ -4913,7 +4913,7 @@
         "RigidBody": {
             "Friction": 0.5,
             "Mass": 0.0,
-            "Properties": 32
+            "Properties": 34
         },
         "Transform": {
             "Mirror": {
