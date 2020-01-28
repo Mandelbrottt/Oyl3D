@@ -1791,17 +1791,17 @@
         "Transform": {
             "Mirror": {
                 "X": false,
-                "Y": true,
+                "Y": false,
                 "Z": false
             },
             "Position": {
-                "X": 8.054388046264648,
+                "X": 14.997562408447266,
                 "Y": 0.0,
-                "Z": -11.004712104797363
+                "Z": 0.02529621124267578
             },
             "Rotation": {
-                "qW": -4.371138828673793e-08,
-                "qX": 1.0,
+                "qW": 1.0,
+                "qX": 0.0,
                 "qY": 0.0,
                 "qZ": 0.0
             },
@@ -2050,17 +2050,17 @@
         "Transform": {
             "Mirror": {
                 "X": false,
-                "Y": false,
+                "Y": true,
                 "Z": false
             },
             "Position": {
-                "X": 8.051238059997559,
+                "X": 8.054388046264648,
                 "Y": 0.0,
-                "Z": -0.011318206787109375
+                "Z": -11.004712104797363
             },
             "Rotation": {
-                "qW": 1.0,
-                "qX": 0.0,
+                "qW": -4.371138828673793e-08,
+                "qX": 1.0,
                 "qY": 0.0,
                 "qZ": 0.0
             },
@@ -2091,9 +2091,9 @@
                 "Z": false
             },
             "Position": {
-                "X": 14.997562408447266,
+                "X": 8.051238059997559,
                 "Y": 0.0,
-                "Z": 0.02529621124267578
+                "Z": -0.011318206787109375
             },
             "Rotation": {
                 "qW": 1.0,
@@ -2269,14 +2269,14 @@
                 "Z": false
             },
             "Position": {
-                "X": 8.0,
+                "X": 8.000000953674316,
                 "Y": 1.0,
-                "Z": -3.0
+                "Z": -3.000000238418579
             },
             "Rotation": {
                 "qW": 1.0,
-                "qX": 0.0,
-                "qY": 0.0,
+                "qX": -3.5527132552840273e-15,
+                "qY": -0.0,
                 "qZ": 0.0
             },
             "Scale": {
@@ -2306,14 +2306,14 @@
                 "Z": false
             },
             "Position": {
-                "X": 8.0,
+                "X": 8.000000953674316,
                 "Y": 1.0,
-                "Z": -3.0
+                "Z": -3.000000238418579
             },
             "Rotation": {
                 "qW": 1.0,
-                "qX": 0.0,
-                "qY": 0.0,
+                "qX": -3.5527132552840273e-15,
+                "qY": -0.0,
                 "qZ": 0.0
             },
             "Scale": {
@@ -2330,7 +2330,7 @@
         "Renderable": {
             "Enabled": true,
             "Material": {
-                "Alias": "atlasMaterial"
+                "Alias": "cubeMat"
             },
             "Mesh": {
                 "FilePath": "res\\assets\\models\\QuartersRail.obj"
@@ -2349,8 +2349,8 @@
             },
             "Rotation": {
                 "qW": 1.0,
-                "qX": 0.0,
-                "qY": 0.0,
+                "qX": -2.1175821157002612e-22,
+                "qY": -0.0,
                 "qZ": 0.0
             },
             "Scale": {
@@ -2367,7 +2367,7 @@
         "Renderable": {
             "Enabled": true,
             "Material": {
-                "Alias": "atlasMaterial"
+                "Alias": "cubeMat"
             },
             "Mesh": {
                 "FilePath": "res\\assets\\models\\QuartersRail.obj"
@@ -2386,7 +2386,81 @@
             },
             "Rotation": {
                 "qW": 1.0,
-                "qX": 0.0,
+                "qX": -2.1175821157002612e-22,
+                "qY": -0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Captains Quarters Rail Front": {
+        "Parent": {
+            "Name": "Captains Quarters Rail 1"
+        },
+        "Renderable": {
+            "Enabled": true,
+            "Material": {
+                "Alias": "cubeMat"
+            },
+            "Mesh": {
+                "FilePath": "res\\assets\\models\\QuartersRail2.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": 0.0,
+                "Y": 0.0,
+                "Z": 0.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 1.2621773731219804e-29,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Captains Quarters Rail Front 1": {
+        "Parent": {
+            "Name": "Captains Quarters Rail 2"
+        },
+        "Renderable": {
+            "Enabled": true,
+            "Material": {
+                "Alias": "cubeMat"
+            },
+            "Mesh": {
+                "FilePath": "res\\assets\\models\\QuartersRail2.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": 0.0,
+                "Y": 0.0,
+                "Z": 0.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 1.2621773731219804e-29,
                 "qY": 0.0,
                 "qZ": 0.0
             },
@@ -2843,7 +2917,7 @@
         "Renderable": {
             "Enabled": true,
             "Material": {
-                "Alias": "siding"
+                "Alias": "cubeMat"
             },
             "Mesh": {
                 "FilePath": "res\\assets\\models\\DeckRail2.obj"
@@ -2880,7 +2954,7 @@
         "Renderable": {
             "Enabled": true,
             "Material": {
-                "Alias": "siding"
+                "Alias": "cubeMat"
             },
             "Mesh": {
                 "FilePath": "res\\assets\\models\\DeckRail2.obj"
@@ -3203,7 +3277,7 @@
         "Renderable": {
             "Enabled": true,
             "Material": {
-                "Alias": "shipMat"
+                "Alias": "cubeMat"
             },
             "Mesh": {
                 "FilePath": "res\\assets\\models\\HullDetailing.obj"
@@ -3240,7 +3314,7 @@
         "Renderable": {
             "Enabled": true,
             "Material": {
-                "Alias": "shipMat"
+                "Alias": "cubeMat"
             },
             "Mesh": {
                 "FilePath": "res\\assets\\models\\HullDetailing.obj"
@@ -6605,7 +6679,7 @@
                 "Z": true
             },
             "Position": {
-                "X": 15.33404541015625,
+                "X": 15.415227890014648,
                 "Y": -0.02385503053665161,
                 "Z": -0.1395587921142578
             },
@@ -6642,7 +6716,7 @@
                 "Z": true
             },
             "Position": {
-                "X": 15.33404541015625,
+                "X": 15.415227890014648,
                 "Y": -0.02385503053665161,
                 "Z": -0.1395587921142578
             },
@@ -6848,7 +6922,7 @@
         "Renderable": {
             "Enabled": true,
             "Material": {
-                "Alias": "atlasMaterial"
+                "Alias": "cubeMat"
             },
             "Mesh": {
                 "FilePath": "res\\assets\\models\\stairs.obj"
@@ -6885,7 +6959,7 @@
         "Renderable": {
             "Enabled": true,
             "Material": {
-                "Alias": "atlasMaterial"
+                "Alias": "cubeMat"
             },
             "Mesh": {
                 "FilePath": "res\\assets\\models\\stairs.obj"
@@ -6922,7 +6996,7 @@
         "Renderable": {
             "Enabled": true,
             "Material": {
-                "Alias": "atlasMaterial"
+                "Alias": "cubeMat"
             },
             "Mesh": {
                 "FilePath": "res\\assets\\models\\stairsDown.obj"
@@ -6959,7 +7033,7 @@
         "Renderable": {
             "Enabled": true,
             "Material": {
-                "Alias": "atlasMaterial"
+                "Alias": "cubeMat"
             },
             "Mesh": {
                 "FilePath": "res\\assets\\models\\stairs.obj"
@@ -6996,7 +7070,7 @@
         "Renderable": {
             "Enabled": true,
             "Material": {
-                "Alias": "atlasMaterial"
+                "Alias": "cubeMat"
             },
             "Mesh": {
                 "FilePath": "res\\assets\\models\\stairs.obj"
@@ -7033,7 +7107,7 @@
         "Renderable": {
             "Enabled": true,
             "Material": {
-                "Alias": "atlasMaterial"
+                "Alias": "cubeMat"
             },
             "Mesh": {
                 "FilePath": "res\\assets\\models\\stairsDown.obj"
