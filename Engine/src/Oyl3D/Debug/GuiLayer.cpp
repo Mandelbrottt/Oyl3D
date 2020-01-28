@@ -1663,8 +1663,9 @@ namespace oyl::internal
                                             [](void* data)
                                             {
                                                 auto& shaderRef = *reinterpret_cast<Ref<Shader>*>(data);
-                                                auto  shader    = Shader::create(shaderRef->getShaderInfos());
-                                                if (!shader->getShaderInfos().empty()) shaderRef = shader;
+                                                //auto  shader    = Shader::create(shaderRef->getShaderInfos());
+                                                //if (!shader->getShaderInfos().empty()) *shaderRef = *shader;
+                                                shaderRef->load(shaderRef->getShaderInfos());
                                             }, (void*) &kvp.second))
                             {
                                 break;

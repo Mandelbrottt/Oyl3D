@@ -291,6 +291,9 @@ namespace oyl
 
             int height = m_windowSize.y;
             if (camView.size() > 2) height /= 2;
+
+            glm::vec2 lastLowerClipping = glm::vec2(0.0f);
+            glm::vec2 lastUpperClipping = glm::vec2(0.0f);
             
             for (auto camera : camView)
             {                
@@ -317,6 +320,14 @@ namespace oyl
                     {
                         boundTexture = gui.texture;
                         boundTexture->bind(0);
+                    }
+
+                    if (lastLowerClipping != gui.lowerClipping || lastUpperClipping != gui.upperClipping)
+                    {
+                        lastLowerClipping = gui.lowerClipping;
+                        lastUpperClipping = gui.upperClipping;
+                        glm::vec4 clippingRect = { lastLowerClipping, lastUpperClipping };
+                        m_shader->setUniform4f("u_clippingCoords", clippingRect);
                     }
 
                     glm::vec3 texSize = glm::vec3(0.0f);
