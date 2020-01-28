@@ -3582,7 +3582,7 @@
                 "Alias": "Natural Wood"
             },
             "Mesh": {
-                "FilePath": "res\\assets\\models\\Decorative\\mast_temporary.obj"
+                "FilePath": "res\\assets\\models\\Decorative\\mast_wood.obj"
             }
         },
         "Transform": {
@@ -3619,7 +3619,7 @@
                 "Alias": "Natural Wood"
             },
             "Mesh": {
-                "FilePath": "res\\assets\\models\\Decorative\\mast_temporary.obj"
+                "FilePath": "res\\assets\\models\\Decorative\\mast_wood.obj"
             }
         },
         "Transform": {
