@@ -245,7 +245,7 @@ struct CameraBreathing
 {
 	float startPosY;
 
-	float cameraHeightVariance = 0.13f;
+	float cameraHeightVariance = 0.07f;
 	float interpolationParam = 0.5f; //start halfway up (default camera height)
 	float speed = 0.4f;
 
