@@ -183,8 +183,8 @@ struct GarbagePile
 	int MAX_GARBAGE_LEVEL = 5;
 	int garbageLevel = 1;
 
-	float GARBAGE_TICKS_PER_LEVEL = 3.0f;
-	float garbageTicks = 3.0f;
+	float GARBAGE_TICKS_PER_LEVEL = 4.0f;
+	float garbageTicks = GARBAGE_TICKS_PER_LEVEL;
 
 	float DELAY_BEFORE_ADDING_GARBAGE_DURATION = 1.0f;
 	float delayBeforeAddingGarbageCountdown    = DELAY_BEFORE_ADDING_GARBAGE_DURATION;
