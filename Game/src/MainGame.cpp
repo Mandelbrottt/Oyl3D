@@ -13,6 +13,7 @@
 #include "GloopSystem.h"
 #include "CleaningQuicktimeEventSystem.h"
 #include "ItemRespawnSystem.h"
+#include "CameraBreathingSystem.h"
 
 using namespace oyl;
 
@@ -46,6 +47,8 @@ public:
 		scheduleSystemUpdate<GloopSystem>();
 		scheduleSystemUpdate<CleaningQuicktimeEventSystem>();
 		scheduleSystemUpdate<ItemRespawnSystem>();
+		scheduleSystemUpdate<CameraBreathingSystem>();
+
 		for (int i = 0; i < 4; i++)
 		{
 			{
@@ -438,12 +441,8 @@ public:
 					desiredMoveDirection += playerTransform.getRight();
 			}
 			
-
-			//if (Input::getGamepadLeftStickY((uint)player.playerNum) > 0.1f || Input::getGamepadLeftStickY((uint)player.playerNum) < -0.1f)
-				desiredMoveDirection += Input::getGamepadLeftStickY((uint)player.playerNum) * -playerTransform.getForward();
-
-			//if (Input::getGamepadLeftStickX((uint)player.playerNum) > 0.1f || Input::getGamepadLeftStickX((uint)player.playerNum) < -0.1f)
-				desiredMoveDirection += Input::getGamepadLeftStickX((uint)player.playerNum) * playerTransform.getRight();
+			desiredMoveDirection += Input::getGamepadLeftStickY((uint)player.controllerNum) * -playerTransform.getForward();
+			desiredMoveDirection += Input::getGamepadLeftStickX((uint)player.controllerNum) * playerTransform.getRight();
 
 		    //check if it's 0 because if we normalize a vector with 0 magnitude it breaks
 		    if (desiredMoveDirection == glm::vec3(0.0f))
@@ -456,46 +455,38 @@ public:
 			//camera movement
 			glm::vec2 rightStick = Input::getGamepadRightStick(player.controllerNum);
 
-			//deadzone check
-			//if (rightStick.x > 0.1f || rightStick.x < -0.1f)
-			{
-				playerTransform.rotate(glm::vec3(0.0f, -rightStick.x * 200.0f * Time::deltaTime(), 0.0f));
+			playerTransform.rotate(glm::vec3(0.0f, -rightStick.x * 200.0f * Time::deltaTime(), 0.0f));
 
-				if (player.yRotationClamp > 1)
-				{
-					if (playerTransform.getRotationEulerY() < player.yRotationClamp)
-						playerTransform.setRotationEulerY(player.yRotationClamp);
-				}
-				else if (player.yRotationClamp < -1)
-				{
-					if (playerTransform.getRotationEulerY() > player.yRotationClamp)
-						playerTransform.setRotationEulerY(player.yRotationClamp);
-				}
+			if (player.yRotationClamp > 1)
+			{
+				if (playerTransform.getRotationEulerY() < player.yRotationClamp)
+					playerTransform.setRotationEulerY(player.yRotationClamp);
+			}
+			else if (player.yRotationClamp < -1)
+			{
+				if (playerTransform.getRotationEulerY() > player.yRotationClamp)
+					playerTransform.setRotationEulerY(player.yRotationClamp);
 			}
 
 			auto playerCameraView = registry->view<component::PlayerCamera, component::Transform, component::Parent>();
 			for (auto& cameraEntity : playerCameraView)
 			{
-				auto& camera = registry->get<component::PlayerCamera>(cameraEntity);
+				auto& camera          = registry->get<component::PlayerCamera>(cameraEntity);
 				auto& cameraTransform = registry->get<component::Transform>(cameraEntity);
-				auto& cameraParent = registry->get<component::Parent>(cameraEntity);
+				auto& cameraParent    = registry->get<component::Parent>(cameraEntity);
 
 				if (cameraParent.parent != playerEntity)
 					continue;
 
-				//deadzone check
-				//if (rightStick.y > 0.1f || rightStick.y < -0.1f)
-				{
-					cameraTransform.rotate(glm::vec3(-rightStick.y * 200.0f * Time::deltaTime(), 0.0f, 0.0f));
+				cameraTransform.rotate(glm::vec3(-rightStick.y * 200.0f * Time::deltaTime(), 0.0f, 0.0f));
 
-					//clamp camera up/down rotation
-					float cameraRotationClampValue = 70.0f;
+				//clamp camera up/down rotation
+				float cameraRotationClampValueX = 70.0f;
 
-					if (cameraTransform.getRotationEulerX() > cameraRotationClampValue)
-						cameraTransform.setRotationEulerX(cameraRotationClampValue);
-					else if (cameraTransform.getRotationEulerX() < -cameraRotationClampValue)
-						cameraTransform.setRotationEulerX(-cameraRotationClampValue);
-				}
+				if (cameraTransform.getRotationEulerX() > cameraRotationClampValueX)
+					cameraTransform.setRotationEulerX(cameraRotationClampValueX);
+				else if (cameraTransform.getRotationEulerX() < -cameraRotationClampValueX)
+					cameraTransform.setRotationEulerX(-cameraRotationClampValueX);
 
 				break;
 			}
@@ -553,6 +544,7 @@ public:
 
 				break;
 			}
+
 			case oyl::Key::F:
 			{
 				auto playerView = registry->view<Player>();
@@ -565,6 +557,7 @@ public:
 
 				break;
 			}
+
 			case oyl::Key::G:
 			{
 				//G key changes player's teams for debugging TODO: remove for working version
@@ -588,6 +581,24 @@ public:
 				break;
 			}
 			
+			case oyl::Key::Space:
+			{
+				auto playerView = registry->view<Player>();
+				for (entt::entity playerEntity : playerView)
+				{
+					auto& player = registry->get<Player>(playerEntity);
+
+					if (player.playerNum == PlayerNumber::One)
+					{
+						PlayerJumpEvent playerJump;
+						playerJump.playerEntity = playerEntity;
+						postEvent(playerJump);
+						break;
+					}
+				}
+
+				break;
+			}
 			}
 			break;
 		}
@@ -610,7 +621,9 @@ public:
 				{
 				case Gamepad::A:
 				{
-					//make the player jump
+					PlayerJumpEvent playerJump;
+					playerJump.playerEntity = playerEntity;
+					postEvent(playerJump);
 
 					break;
 				}

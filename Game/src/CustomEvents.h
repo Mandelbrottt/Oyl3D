@@ -14,6 +14,7 @@ enum CustomEventsCategories : int
 enum CustomEventTypes : int
 {
     TypePlayerMove = (int)oyl::EventType::CustomStart,
+	TypePlayerJump,
 	TypePlayerInteractResult,
     TypePlayerInteractionRequest,
 	TypePlayerDropItem,
@@ -33,6 +34,11 @@ OYL_EVENT_STRUCT(PlayerMoveEvent, (oyl::EventType) TypePlayerMove, (oyl::EventCa
 	{
 		entt::entity playerEntity;
 		glm::vec3    direction;
+	});
+
+OYL_EVENT_STRUCT(PlayerJumpEvent, (oyl::EventType) TypePlayerJump, (oyl::EventCategory) CategoryPlayer,
+	{
+		entt::entity playerEntity;
 	});
 
 OYL_EVENT_STRUCT(PlayerInteractResultEvent, (oyl::EventType) TypePlayerInteractResult, (oyl::EventCategory) CategoryPlayer,
