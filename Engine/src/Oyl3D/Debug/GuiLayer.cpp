@@ -1374,12 +1374,14 @@ namespace oyl::internal
     static void _setTextureProfile(const Ref<Texture2D>& a_texture)
     {
         if (!a_texture) return;
+
+        ImGui::Indent(10);
         
         bool isRGB = a_texture->getProfile() == TextureProfile::RGB;
         const char* profilePreview = isRGB ? "RGB" : "sRGB";
-        ImGui::SetNextItemWidth(100);
         char profileID[256];
         sprintf_s(profileID, 256, "Texture Profile##%sTexProfile", a_texture->getFilePath().c_str());
+        ImGui::SetNextItemWidth(100);
         if (ImGui::BeginCombo(profileID, profilePreview))
         {
             if (ImGui::Selectable("RGB", isRGB) && !isRGB)
@@ -1395,6 +1397,7 @@ namespace oyl::internal
             case TextureFilter::Linear: profilePreview = "Linear"; break;
         }
         sprintf_s(profileID, 256, "Texture Filtering##%sTexFilter", a_texture->getFilePath().c_str());
+        ImGui::SetNextItemWidth(100);
         if (ImGui::BeginCombo(profileID, profilePreview))
         {
             if (ImGui::Selectable("Nearest", a_texture->getFilter() == TextureFilter::Nearest))
@@ -1412,11 +1415,22 @@ namespace oyl::internal
             case TextureWrap::ClampToBorder: profilePreview = "Clamp to Border"; break;
         }
         sprintf_s(profileID, 256, "Texture Wrapping##%sTexWrap", a_texture->getFilePath().c_str());
+        ImGui::SetNextItemWidth(100);
         if (ImGui::BeginCombo(profileID, profilePreview))
         {
-
+            if (ImGui::Selectable("Repeat", a_texture->getWrap() == TextureWrap::Repeat))
+                a_texture->setWrap(TextureWrap::Repeat);
+            if (ImGui::Selectable("Mirror", a_texture->getWrap() == TextureWrap::Mirror))
+                a_texture->setWrap(TextureWrap::Mirror);
+            if (ImGui::Selectable("Clamp to Edge", a_texture->getWrap() == TextureWrap::ClampToEdge))
+                a_texture->setWrap(TextureWrap::ClampToEdge);
+            if (ImGui::Selectable("Clamp to Border", a_texture->getWrap() == TextureWrap::ClampToBorder))
+                a_texture->setWrap(TextureWrap::ClampToBorder);
+            
             ImGui::EndCombo();
         }
+
+        ImGui::Unindent(10);
     }
 
     void GuiLayer::drawInspectorMaterial()
