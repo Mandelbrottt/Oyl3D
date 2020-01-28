@@ -305,6 +305,8 @@ namespace oyl
                      {
                          entt::entity entity1;
                          entt::entity entity2;
+
+                         glm::vec3 contactPoint;
                      });
 
     OYL_EVENT_STRUCT(PhysicsCollisionEnterEvent, EventType::PhysicsCollisionEnter, EventCategory::Physics,
@@ -323,6 +325,8 @@ namespace oyl
                      {
                          entt::entity entity1;
                          entt::entity entity2;
+
+                         glm::vec3 contactPoint;
                      });
 
     OYL_EVENT_STRUCT(PhysicsResetWorldEvent, EventType::PhysicsResetWorld, EventCategory::Physics,

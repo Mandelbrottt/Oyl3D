@@ -451,6 +451,7 @@ namespace oyl
         static Ref<EventDispatcher> g_dispatcher;
         static Ref<entt::registry>  g_currentRegistry;
 
+        static int g_phase = 0;
         static void* g_obj1 = 0;
         static void* g_obj2 = 0;
 
@@ -459,9 +460,10 @@ namespace oyl
             auto body1 = manifold->getBody0();
             auto body2 = manifold->getBody1();
 
-            if (body1 == g_obj1 && body2 == g_obj2)
+            if (g_phase == 0 && body1 == g_obj1 && body2 == g_obj2)
                 return;
-            
+
+            g_phase = 0;
             g_obj1 = (void*) body1;
             g_obj2 = (void*) body2;
             
@@ -489,9 +491,10 @@ namespace oyl
             auto body1 = manifold->getBody0();
             auto body2 = manifold->getBody1();
 
-            if (body1 == g_obj1 && body2 == g_obj2)
+            if (g_phase == 1 && body1 == g_obj1 && body2 == g_obj2)
                 return;
 
+            g_phase = 1;
             g_obj1 = (void*) body1;
             g_obj2 = (void*) body2;
             
@@ -519,9 +522,10 @@ namespace oyl
             auto body1 = reinterpret_cast<btCollisionObject*>(obj1);
             auto body2 = reinterpret_cast<btCollisionObject*>(obj2);
 
-            if (body1 == g_obj1 && body2 == g_obj2)
+            if (g_phase == 2 && body1 == g_obj1 && body2 == g_obj2)
                 return false;
 
+            g_phase = 2;
             g_obj1 = (void*) body1;
             g_obj2 = (void*) body2;
 
@@ -531,10 +535,15 @@ namespace oyl
             if (!g_currentRegistry->valid(entity1) || !g_currentRegistry->valid(entity2))
                 return false;
 
+            auto avgCp = (cp.getPositionWorldOnA() + cp.getPositionWorldOnB()) * 0.5f;
+            
             PhysicsCollisionStayEvent event;
             event.entity1 = entity1;
             event.entity2 = entity2;
-
+            event.contactPoint = {
+                avgCp.x(), avgCp.y(), avgCp.z()
+            };
+            
             if (body1->getCollisionFlags() & btCollisionObject::CF_NO_CONTACT_RESPONSE ||
                 body2->getCollisionFlags() & btCollisionObject::CF_NO_CONTACT_RESPONSE)
             {
@@ -569,7 +578,7 @@ namespace oyl
                                                                    m_btBroadphase.get(),
                                                                    m_btSolver.get(),
                                                                    m_btCollisionConfig.get());
-
+            
             m_rigidBodies.clear();
             
             //m_world->setGravity(btVector3(0.0f, -9.81f, 0.0f));
