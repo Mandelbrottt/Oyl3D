@@ -1,0 +1,31 @@
+{
+    "Material": {
+        "Alias": "metal",
+        "Shader": {
+            "Alias": "Oyl Lighting",
+            "Pixel": {
+                "FilePath": "../Engine/res/shaders/lighting.frag",
+                "guid": null
+            },
+            "Vertex": {
+                "FilePath": "../Engine/res/shaders/lighting.vert",
+                "guid": null
+            }
+        },
+        "Textures": {
+            "Albedo": {
+                "Alias": "metal",
+                "FilePath": "res\\assets\\textures\\metal.png",
+                "Profile": 1,
+                "guid": null
+            },
+            "Normal": null,
+            "Specular": {
+                "Alias": "metal",
+                "FilePath": "res\\assets\\textures\\metal.png",
+                "Profile": 1,
+                "guid": null
+            }
+        }
+    }
+}
