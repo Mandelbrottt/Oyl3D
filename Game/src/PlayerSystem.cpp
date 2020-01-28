@@ -97,7 +97,7 @@ void PlayerSystem::onUpdate()
 
 			case PlayerState::cleaning:
 			{
-				performBasicMovement(playerEntity, player.speedForce * 0.5f, Time::deltaTime());
+				performBasicMovement(playerEntity, player.speedForce * 0.7f, Time::deltaTime());
 
 				player.cleaningTimeCountdown -= Time::deltaTime();
 				if (player.cleaningTimeCountdown < 0.0f)
