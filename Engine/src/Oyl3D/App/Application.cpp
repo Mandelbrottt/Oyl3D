@@ -287,10 +287,10 @@ namespace oyl
                 m_guiLayer->onUpdateSystems();
                 m_guiLayer->onUpdate();
             #else
-                m_systemsLayer->onUpdateSystems(timestep);
-                m_systemsLayer->onUpdate(timestep);
+                m_systemsLayer->onUpdateSystems();
+                m_systemsLayer->onUpdate();
 
-                m_currentScene->onUpdate(timestep);
+                m_currentScene->onUpdate();
             #endif
 
                 RenderCommand::setClearColor(0.1f, 0.1f, 0.1f, 1.0f);

@@ -291,6 +291,9 @@ namespace oyl
 
             int height = m_windowSize.y;
             if (camView.size() > 2) height /= 2;
+
+            glm::vec2 lastLowerClipping = glm::vec2(0.0f);
+            glm::vec2 lastUpperClipping = glm::vec2(0.0f);
             
             for (auto camera : camView)
             {                
@@ -317,6 +320,14 @@ namespace oyl
                     {
                         boundTexture = gui.texture;
                         boundTexture->bind(0);
+                    }
+
+                    if (lastLowerClipping != gui.lowerClipping || lastUpperClipping != gui.upperClipping)
+                    {
+                        lastLowerClipping = gui.lowerClipping;
+                        lastUpperClipping = gui.upperClipping;
+                        glm::vec4 clippingRect = { lastLowerClipping, lastUpperClipping };
+                        m_shader->setUniform4f("u_clippingCoords", clippingRect);
                     }
 
                     glm::vec3 texSize = glm::vec3(0.0f);
@@ -440,6 +451,7 @@ namespace oyl
         static Ref<EventDispatcher> g_dispatcher;
         static Ref<entt::registry>  g_currentRegistry;
 
+        static int g_phase = 0;
         static void* g_obj1 = 0;
         static void* g_obj2 = 0;
 
@@ -448,9 +460,10 @@ namespace oyl
             auto body1 = manifold->getBody0();
             auto body2 = manifold->getBody1();
 
-            if (body1 == g_obj1 && body2 == g_obj2)
+            if (g_phase == 0 && body1 == g_obj1 && body2 == g_obj2)
                 return;
-            
+
+            g_phase = 0;
             g_obj1 = (void*) body1;
             g_obj2 = (void*) body2;
             
@@ -478,9 +491,10 @@ namespace oyl
             auto body1 = manifold->getBody0();
             auto body2 = manifold->getBody1();
 
-            if (body1 == g_obj1 && body2 == g_obj2)
+            if (g_phase == 1 && body1 == g_obj1 && body2 == g_obj2)
                 return;
 
+            g_phase = 1;
             g_obj1 = (void*) body1;
             g_obj2 = (void*) body2;
             
@@ -508,9 +522,10 @@ namespace oyl
             auto body1 = reinterpret_cast<btCollisionObject*>(obj1);
             auto body2 = reinterpret_cast<btCollisionObject*>(obj2);
 
-            if (body1 == g_obj1 && body2 == g_obj2)
+            if (g_phase == 2 && body1 == g_obj1 && body2 == g_obj2)
                 return false;
 
+            g_phase = 2;
             g_obj1 = (void*) body1;
             g_obj2 = (void*) body2;
 
@@ -520,10 +535,15 @@ namespace oyl
             if (!g_currentRegistry->valid(entity1) || !g_currentRegistry->valid(entity2))
                 return false;
 
+            auto avgCp = (cp.getPositionWorldOnA() + cp.getPositionWorldOnB()) * 0.5f;
+            
             PhysicsCollisionStayEvent event;
             event.entity1 = entity1;
             event.entity2 = entity2;
-
+            event.contactPoint = {
+                avgCp.x(), avgCp.y(), avgCp.z()
+            };
+            
             if (body1->getCollisionFlags() & btCollisionObject::CF_NO_CONTACT_RESPONSE ||
                 body2->getCollisionFlags() & btCollisionObject::CF_NO_CONTACT_RESPONSE)
             {
@@ -558,7 +578,7 @@ namespace oyl
                                                                    m_btBroadphase.get(),
                                                                    m_btSolver.get(),
                                                                    m_btCollisionConfig.get());
-
+            
             m_rigidBodies.clear();
             
             //m_world->setGravity(btVector3(0.0f, -9.81f, 0.0f));
@@ -920,15 +940,6 @@ namespace oyl
                             };
 
                             shape = Ref<btBoxShape>::create(halfExtents);
-
-                            RigidBodyInfo::ChildShapeInfo info;
-
-                            info.btShape = shape;
-
-                            info.shapeInfo = shapeThing.m_selfRef;
-
-                            m_rigidBodies[entity]->children.push_back(info);
-
                             break;
                         }
                         case ColliderType::Sphere:
@@ -942,19 +953,45 @@ namespace oyl
                             });
 
                             shape = Ref<btSphereShape>::create(shapeThing.sphere.getRadius());
+                            break;
+                        }
+                        case ColliderType::Capsule:
+                        {
+                            t.setIdentity();
 
-                            RigidBodyInfo::ChildShapeInfo info;
-
-                            info.btShape = shape;
-
-                            info.shapeInfo = shapeThing.m_selfRef;
-
-                            m_rigidBodies[entity]->children.emplace_back(info);
-
+                            t.setOrigin({
+                                shapeThing.capsule.getCenter().x,
+                                shapeThing.capsule.getCenter().y,
+                                shapeThing.capsule.getCenter().z
+                            });
+                            
+                            switch (shapeThing.capsule.getDirection())
+                            {
+                                case Direction::X_AXIS:
+                                    shape = Ref<btCapsuleShapeX>::create(shapeThing.capsule.getRadius(),
+                                                                         shapeThing.capsule.getHeight());
+                                    break;
+                                case Direction::Y_AXIS:
+                                    shape = Ref<btCapsuleShape>::create(shapeThing.capsule.getRadius(),
+                                                                        shapeThing.capsule.getHeight());
+                                    break;
+                                case Direction::Z_AXIS:
+                                    shape = Ref<btCapsuleShapeZ>::create(shapeThing.capsule.getRadius(),
+                                                                         shapeThing.capsule.getHeight());
+                                    break;
+                            }
                             break;
                         }
                     }
                     
+                    RigidBodyInfo::ChildShapeInfo cInfo;
+
+                    cInfo.btShape = shape;
+
+                    cInfo.shapeInfo = shapeThing.m_selfRef;
+
+                    m_rigidBodies[entity]->children.emplace_back(cInfo);
+
                     // TEMPORARY: Make relative to collider
                     t.setIdentity();
                     
@@ -991,6 +1028,7 @@ namespace oyl
                 else
                 {
                     auto workingShape = Ref<btCompoundShape>::create();
+                    Ref<btCollisionShape> childShape;
                     auto childIter = colliderComponent.begin();
                     for (; childIter != colliderComponent.end(); ++childIter)
                     {
@@ -1014,17 +1052,8 @@ namespace oyl
                                     childIter->box.getSize().z / 2.0f
                                 };
                                 
-                                auto childShape = Ref<btBoxShape>::create(halfExtents);
+                                childShape = Ref<btBoxShape>::create(halfExtents);
                                 workingShape->addChildShape(t, childShape.get());
-
-                                RigidBodyInfo::ChildShapeInfo info;
-
-                                info.btShape = childShape;
-
-                                info.shapeInfo = childIter->m_selfRef;
-
-                                m_rigidBodies[entity]->children.emplace_back(info);
-
                                 break;
                             }
                             case ColliderType::Sphere:
@@ -1039,20 +1068,49 @@ namespace oyl
                                     childIter->sphere.getCenter().z
                                 });
 
-                                auto childShape = Ref<btSphereShape>::create(childIter->sphere.getRadius());
+                                childShape = Ref<btSphereShape>::create(childIter->sphere.getRadius());
                                 workingShape->addChildShape(t, childShape.get());
+                                break;
+                            }
+                            case ColliderType::Capsule:
+                            {
+                                btTransform t;
 
-                                RigidBodyInfo::ChildShapeInfo info;
+                                t.setIdentity();
 
-                                info.btShape = childShape;
+                                t.setOrigin({
+                                    childIter->capsule.getCenter().x,
+                                    childIter->capsule.getCenter().y,
+                                    childIter->capsule.getCenter().z
+                                });
 
-                                info.shapeInfo = childIter->m_selfRef;
-
-                                m_rigidBodies[entity]->children.emplace_back(info);
-
+                                switch (childIter->capsule.getDirection())
+                                {
+                                    case Direction::X_AXIS:
+                                        childShape = Ref<btCapsuleShapeX>::create(childIter->capsule.getRadius(), 
+                                                                                  childIter->capsule.getHeight());
+                                        break;
+                                    case Direction::Y_AXIS:
+                                        childShape = Ref<btCapsuleShape>::create(childIter->capsule.getRadius(),
+                                                                                 childIter->capsule.getHeight());
+                                        break;
+                                    case Direction::Z_AXIS:
+                                        childShape = Ref<btCapsuleShapeZ>::create(childIter->capsule.getRadius(),
+                                                                                  childIter->capsule.getHeight());
+                                        break;
+                                }
+                                workingShape->addChildShape(t, childShape.get());
                                 break;
                             }
                         }
+
+                        RigidBodyInfo::ChildShapeInfo info;
+
+                        info.btShape = childShape;
+
+                        info.shapeInfo = childIter->m_selfRef;
+
+                        m_rigidBodies[entity]->children.emplace_back(info);
                     }
 
                     shape = workingShape;
