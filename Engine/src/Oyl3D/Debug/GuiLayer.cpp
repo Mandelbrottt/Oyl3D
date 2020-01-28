@@ -1175,6 +1175,48 @@ namespace oyl::internal
 
                             break;
                         }
+                        case ColliderType::Capsule:
+                        {
+                            float radius = shape.capsule.getRadius();
+                            const float posDragSpeed = 0.01f;
+                            ImGui::TextUnformatted("Radius");
+                            ImGui::SameLine(ImGui::GetWindowContentRegionWidth() - (15 * 3 + newWidth * 3 + 27));
+                            ImGui::SetNextItemWidth(15);
+                            sprintf(temp, "##Radius%d", count);
+                            ImGui::DragFloat(temp, &radius, posDragSpeed, 0, 0, "R");
+                            ImGui::SameLine();
+                            sprintf(temp, "##RadiusInput%d", count);
+                            ImGui::InputFloat(temp, &radius, 0, 0, "%.2f", flags);
+
+                            radius = glm::max(radius, 0.1f);
+                            if (radius != shape.capsule.getRadius())
+                                shape.capsule.setRadius(radius);
+                            
+                            float height = shape.capsule.getHeight();
+                            ImGui::TextUnformatted("Height");
+                            ImGui::SameLine(ImGui::GetWindowContentRegionWidth() - (15 * 3 + newWidth * 3 + 27));
+                            ImGui::SetNextItemWidth(15);
+                            sprintf(temp, "##Height%d", count);
+                            ImGui::DragFloat(temp, &height, posDragSpeed, 0, 0, "R");
+                            ImGui::SameLine();
+                            sprintf(temp, "##HeightInput%d", count);
+                            ImGui::InputFloat(temp, &height, 0, 0, "%.2f", flags);
+
+                            height = glm::max(height, 0.1f);
+                            if (height != shape.capsule.getHeight())
+                                shape.capsule.setHeight(height);
+
+                            int direction = static_cast<int>(shape.capsule.getDirection());
+                            ImGui::TextUnformatted("Direction"); ImGui::SameLine();
+                            ImGui::RadioButton("X##DirectionRadioX", &direction, static_cast<int>(Direction::X_AXIS));
+                            ImGui::SameLine();
+                            ImGui::RadioButton("Y##DirectionRadioY", &direction, static_cast<int>(Direction::Y_AXIS));
+                            ImGui::SameLine();
+                            ImGui::RadioButton("Z##DirectionRadioZ", &direction, static_cast<int>(Direction::Z_AXIS));
+                            shape.capsule.setDirection(static_cast<Direction>(direction));
+                            
+                            break;
+                        }
                     }
 
                     ImGui::Unindent(10);
@@ -1240,39 +1282,50 @@ namespace oyl::internal
             // TODO: Make boxes relative to right side of window like transforms are
             
             // TODO: Add more property checkboxes
-            bool useGravity = rb.getProperty(RigidBody::USE_GRAVITY);
-            ImGui::Checkbox("Use Gravity##InspectorRigidBodyGravityCheckbox", &useGravity);
-            if (useGravity != rb.getProperty(RigidBody::USE_GRAVITY))
-                rb.setProperties(RigidBody::USE_GRAVITY, useGravity);
 
-            bool isKinematic = rb.getProperty(RigidBody::IS_KINEMATIC);
-            ImGui::Checkbox("Is Kinematic##InspectorRigidBodyKinematicCheckbox", &isKinematic);
-            if (isKinematic != rb.getProperty(RigidBody::IS_KINEMATIC))
-                rb.setProperties(RigidBody::IS_KINEMATIC, isKinematic);
+            auto doCheckbox = [&](const char* name, RigidBody::Property prop)
+            {
+                ImGui::TextUnformatted(name);
+                ImGui::SameLine();
+                bool ret = rb.getProperty(prop);
+                char id[128];
+                sprintf_s(id, sizeof(id), "##InspectorRigidBody%sCheckbox", name);
+                ImGui::Checkbox(id, &ret);
+                if (ret != rb.getProperty(prop))
+                    rb.setProperties(prop, ret);
+                return ret;
+            };
 
-            bool isFrozenX = rb.getProperty(RigidBody::FREEZE_ROTATION_X);
-            ImGui::Checkbox("Freeze Rotation X##InspectorRigidBodyFreezeRotXCheckbox", &isFrozenX);
-            if (isFrozenX != rb.getProperty(RigidBody::FREEZE_ROTATION_X))
-                rb.setProperties(RigidBody::FREEZE_ROTATION_X, isFrozenX);
+            bool useGravity = doCheckbox("Use Gravity", RigidBody::USE_GRAVITY);
+            bool isKinematic = doCheckbox("Is Kinematic", RigidBody::IS_KINEMATIC);
+            bool doCollisions = doCheckbox("Detect Collisions", RigidBody::DETECT_COLLISIONS);
 
-            bool isFrozenY = rb.getProperty(RigidBody::FREEZE_ROTATION_Y);
-            ImGui::Checkbox("Freeze Rotation Y##InspectorRigidBodyFreezeRotYCheckbox", &isFrozenY);
-            if (isFrozenY != rb.getProperty(RigidBody::FREEZE_ROTATION_Y))
-                rb.setProperties(RigidBody::FREEZE_ROTATION_Y, isFrozenY);
+            glm::bvec3 isFrozen = {
+                rb.getProperty(RigidBody::FREEZE_ROTATION_X),
+                rb.getProperty(RigidBody::FREEZE_ROTATION_Y),
+                rb.getProperty(RigidBody::FREEZE_ROTATION_Z)
+            };
 
-            bool isFrozenZ = rb.getProperty(RigidBody::FREEZE_ROTATION_Z);
-            ImGui::Checkbox("Freeze Rotation Z##InspectorRigidBodyFreezeRotZCheckbox", &isFrozenZ);
-            if (isFrozenZ != rb.getProperty(RigidBody::FREEZE_ROTATION_Z))
-                rb.setProperties(RigidBody::FREEZE_ROTATION_Z, isFrozenZ);
+            ImGui::TextUnformatted("Freeze Rotation");
+            ImGui::SameLine();
+            ImGui::Checkbox("X##InspectorRigidBodyFreezeRotXCheckbox", &isFrozen.x);
+            ImGui::SameLine();
+            ImGui::Checkbox("Y##InspectorRigidBodyFreezeRotYCheckbox", &isFrozen.y);
+            ImGui::SameLine();
+            ImGui::Checkbox("Z##InspectorRigidBodyFreezeRotZCheckbox", &isFrozen.z);
 
-            float mass = rb.getMass();
+            rb.setProperties(RigidBody::FREEZE_ROTATION_X, isFrozen.x);
+            rb.setProperties(RigidBody::FREEZE_ROTATION_Y, isFrozen.y);
+            rb.setProperties(RigidBody::FREEZE_ROTATION_Z, isFrozen.z);
+
+            float mass = isKinematic ? 0.0f : rb.getMass();
             ImGui::Text("Mass");
             ImGui::SameLine();
             ImGui::SetNextItemWidth(15);
-            ImGui::DragFloat("##DragMass", &mass, 0.02f, 0.0f, 1000.0f, "M");
+            ImGui::DragFloat("##DragMass", &mass, isKinematic ? 0.0f : 0.02f, 0.0f, 1000.0f, "M");
             ImGui::SameLine();
-            ImGui::InputFloat("##MassInput", &mass, 0, 0, "%.2f");
-            if (mass != rb.getMass())
+            ImGui::InputFloat("##MassInput", &mass, 0, 0, "%.2f", isKinematic ? ImGuiInputTextFlags_ReadOnly : 0);
+            if (!isKinematic && mass != rb.getMass())
                 rb.setMass(mass);
 
             float friction = rb.getFriction();
@@ -1374,12 +1427,14 @@ namespace oyl::internal
     static void _setTextureProfile(const Ref<Texture2D>& a_texture)
     {
         if (!a_texture) return;
+
+        ImGui::Indent(10);
         
         bool isRGB = a_texture->getProfile() == TextureProfile::RGB;
         const char* profilePreview = isRGB ? "RGB" : "sRGB";
-        ImGui::SetNextItemWidth(100);
         char profileID[256];
         sprintf_s(profileID, 256, "Texture Profile##%sTexProfile", a_texture->getFilePath().c_str());
+        ImGui::SetNextItemWidth(100);
         if (ImGui::BeginCombo(profileID, profilePreview))
         {
             if (ImGui::Selectable("RGB", isRGB) && !isRGB)
@@ -1395,6 +1450,7 @@ namespace oyl::internal
             case TextureFilter::Linear: profilePreview = "Linear"; break;
         }
         sprintf_s(profileID, 256, "Texture Filtering##%sTexFilter", a_texture->getFilePath().c_str());
+        ImGui::SetNextItemWidth(100);
         if (ImGui::BeginCombo(profileID, profilePreview))
         {
             if (ImGui::Selectable("Nearest", a_texture->getFilter() == TextureFilter::Nearest))
@@ -1406,17 +1462,28 @@ namespace oyl::internal
         }
         switch (a_texture->getWrap())
         {
-            case TextureWrap::Repeat: profilePreview = "Nearest"; break;
+            case TextureWrap::Repeat: profilePreview = "Repeat"; break;
             case TextureWrap::Mirror: profilePreview = "Mirror"; break;
             case TextureWrap::ClampToEdge: profilePreview = "Clamp to Edge"; break;
             case TextureWrap::ClampToBorder: profilePreview = "Clamp to Border"; break;
         }
         sprintf_s(profileID, 256, "Texture Wrapping##%sTexWrap", a_texture->getFilePath().c_str());
+        ImGui::SetNextItemWidth(100);
         if (ImGui::BeginCombo(profileID, profilePreview))
         {
-
+            if (ImGui::Selectable("Repeat", a_texture->getWrap() == TextureWrap::Repeat))
+                a_texture->setWrap(TextureWrap::Repeat);
+            if (ImGui::Selectable("Mirror", a_texture->getWrap() == TextureWrap::Mirror))
+                a_texture->setWrap(TextureWrap::Mirror);
+            if (ImGui::Selectable("Clamp to Edge", a_texture->getWrap() == TextureWrap::ClampToEdge))
+                a_texture->setWrap(TextureWrap::ClampToEdge);
+            if (ImGui::Selectable("Clamp to Border", a_texture->getWrap() == TextureWrap::ClampToBorder))
+                a_texture->setWrap(TextureWrap::ClampToBorder);
+            
             ImGui::EndCombo();
         }
+
+        ImGui::Unindent(10);
     }
 
     void GuiLayer::drawInspectorMaterial()
@@ -1480,6 +1547,40 @@ namespace oyl::internal
         _setTextureProfile(material->normalMap);
         ImGui::NewLine();
 
+        auto flags = ImGuiInputTextFlags_EnterReturnsTrue;
+
+        glm::vec2& tiling = material->mainTextureProps.tiling;
+        glm::vec2& offset = material->mainTextureProps.offset;
+
+        const float posDragSpeed = 0.02f;
+        float newWidth = ImGui::GetWindowContentRegionWidth() / 6;
+        ImGui::PushItemWidth(newWidth);
+
+        ImGui::TextUnformatted("Tiling");
+        ImGui::SameLine(ImGui::GetWindowContentRegionWidth() - (15 * 3 + newWidth * 3 + 27));
+        ImGui::SetNextItemWidth(15);
+        ImGui::DragFloat("##TilingX", &tiling.x, posDragSpeed, 0, 0, "X");
+        ImGui::SameLine();
+        ImGui::InputFloat("##TilingInputX", &tiling.x, 0, 0, "%.2f", flags);
+        ImGui::SameLine();
+        ImGui::SetNextItemWidth(15);
+        ImGui::DragFloat("##TilingY", &tiling.y, posDragSpeed, 0, 0, "Y");
+        ImGui::SameLine();
+        ImGui::InputFloat("##TilingInputY", &tiling.y, 0, 0, "%.2f", flags);
+
+        ImGui::TextUnformatted("Offset");
+        ImGui::SameLine(ImGui::GetWindowContentRegionWidth() - (15 * 3 + newWidth * 3 + 27));
+        ImGui::SetNextItemWidth(15);
+        ImGui::DragFloat("##OffsetX", &offset.x, posDragSpeed, 0, 0, "X");
+        ImGui::SameLine();
+        ImGui::InputFloat("##OffsetInputX", &offset.x, 0, 0, "%.2f", flags);
+        ImGui::SameLine();
+        ImGui::SetNextItemWidth(15);
+        ImGui::DragFloat("##OffsetY", &offset.y, posDragSpeed, 0, 0, "Y");
+        ImGui::SameLine();
+        ImGui::InputFloat("##OffsetInputY", &offset.y, 0, 0, "%.2f", flags);
+
+        ImGui::PopItemWidth();
     }
 
     void GuiLayer::drawAssetList()
@@ -1638,8 +1739,9 @@ namespace oyl::internal
                                             [](void* data)
                                             {
                                                 auto& shaderRef = *reinterpret_cast<Ref<Shader>*>(data);
-                                                auto  shader    = Shader::create(shaderRef->getShaderInfos());
-                                                if (!shader->getShaderInfos().empty()) shaderRef = shader;
+                                                //auto  shader    = Shader::create(shaderRef->getShaderInfos());
+                                                //if (!shader->getShaderInfos().empty()) *shaderRef = *shader;
+                                                shaderRef->load(shaderRef->getShaderInfos());
                                             }, (void*) &kvp.second))
                             {
                                 break;

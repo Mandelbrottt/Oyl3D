@@ -183,19 +183,25 @@ namespace oyl
         if (shader)
             shader->bind();
 
-        if (albedoMap)
-            albedoMap->bind(0);
-        setUniform1i("u_material.albedo", 0);
+        auto bindTex = [this](const Ref<Texture2D>& tex, 
+                              const std::string&    alias, 
+                              const std::string&    inShaderName, 
+                              int                   bindNum)
+        {
+            if (albedoMap)
+                albedoMap->bind(bindNum);
+            else if (!alias.empty())
+                Texture2D::get(alias)->bind(bindNum);
+            setUniform1i(inShaderName, bindNum);
+        };
 
-        if (specularMap)
-            specularMap->bind(1);
-        setUniform1i("u_material.specular", 1);
+        int bindNum = 0;
+        bindTex(albedoMap, WHITE_TEXTURE_ALIAS, "u_material.albedo", bindNum++);
+        bindTex(specularMap, BLACK_TEXTURE_ALIAS, "u_material.specular", bindNum++);
+        bindTex(albedoMap, DEFAULT_NORMAL_TEXTURE_ALIAS, "u_material.normal", bindNum++);
 
-        if (normalMap)
-            normalMap->bind(2);
-        else
-            Texture2D::get(DEFAULT_NORMAL_TEXTURE_ALIAS)->bind(2);
-        setUniform1i("u_material.normal", 2);
+        setUniform2f("u_material.offset", mainTextureProps.offset);
+        setUniform2f("u_material.tiling", mainTextureProps.tiling);
     }
 
     void Material::unbind()
@@ -209,8 +215,8 @@ namespace oyl
         if (specularMap)
             specularMap->unbind();
 
-        //if (normalMap)
-        //    normalMap->unbind();
+        if (normalMap)
+            normalMap->unbind();
     }
 
     void Material::applyUniforms()
