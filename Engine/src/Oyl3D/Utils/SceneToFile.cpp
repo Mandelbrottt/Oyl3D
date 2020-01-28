@@ -28,6 +28,18 @@ namespace glm
         for (const auto& it : j)
             it.get_to(v[i++]);
     }
+
+    void to_json(json& j, const vec2& v)
+    {
+        j = json({ v.x, v.y });
+    }
+
+    void from_json(const json& j, vec2& v)
+    {
+        int i = 0;
+        for (const auto& it : j)
+            it.get_to(v[i++]);
+    }
 }
 
 namespace oyl::internal
@@ -430,9 +442,7 @@ namespace oyl::internal
                 if (Material::exists(alias))
                     re.material = Material::get(alias);
                 else
-                {
                     re.material = materialFromFile("res/assets/materials/" + alias + ".oylmat");
-                }
             }
         }
     }
@@ -771,6 +781,14 @@ namespace oyl::internal
                 }
             }
         }
+
+        if (auto it = jMaterial.find("MainProperties"); it != jMaterial.end() && it->is_object())
+        {
+            if (auto tileIt = it->find("Tiling"); tileIt != it->end() && tileIt->is_array())
+                tileIt->get_to(material->mainTextureProps.tiling);
+            if (auto offIt = it->find("Offset"); offIt != it->end() && offIt->is_array())
+                offIt->get_to(material->mainTextureProps.offset);
+        }
         
         return material;
     }
@@ -864,6 +882,12 @@ namespace oyl::internal
         _texToJson(material->albedoMap, jTextures["Albedo"]);
         _texToJson(material->specularMap, jTextures["Specular"]);
         _texToJson(material->normalMap, jTextures["Normal"]);
+
+        auto& jMainProps = jMaterial["MainProperties"];
+        {
+            jMainProps["Tiling"] = material->mainTextureProps.tiling;
+            jMainProps["Offset"] = material->mainTextureProps.offset;
+        }
 
         std::ofstream materialFile(filepath);
         if (materialFile)
