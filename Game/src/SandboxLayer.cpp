@@ -50,11 +50,15 @@ void SandboxLayer::onEnter()
 			//PLAYER 1 CAMERA
 			auto playerCameraEntity = registry->create();
 
-			registry->assign<component::Transform>(playerCameraEntity);
+			auto& cameraTransform = registry->assign<component::Transform>(playerCameraEntity);
+			cameraTransform.setPosition(glm::vec3(0.0f, 0.8f, -0.5f));
 
 			auto& camera = registry->assign<component::PlayerCamera>(playerCameraEntity);
 			camera.player = player.playerNum;
 			camera.cullingMask = 0b0001;
+
+			auto& cameraBreathing = registry->assign<CameraBreathing>(playerCameraEntity);
+			cameraBreathing.startPosY = cameraTransform.getPositionY();
 
 			auto& cameraParent = registry->assign<component::Parent>(playerCameraEntity);
 			cameraParent.parent = player1BlueEntity;
@@ -96,11 +100,15 @@ void SandboxLayer::onEnter()
 			//PLAYER 3 CAMERA
 			auto playerCameraEntity = registry->create();
 
-			registry->assign<component::Transform>(playerCameraEntity);
+			auto& cameraTransform = registry->assign<component::Transform>(playerCameraEntity);
+			cameraTransform.setPosition(glm::vec3(0.0f, 0.8f, -0.5f));
 
 			auto& camera = registry->assign<component::PlayerCamera>(playerCameraEntity);
 			camera.player = player.playerNum;
 			camera.cullingMask = 0b0100;
+
+			auto& cameraBreathing = registry->assign<CameraBreathing>(playerCameraEntity);
+			cameraBreathing.startPosY = cameraTransform.getPositionY();
 
 			auto& cameraParent = registry->assign<component::Parent>(playerCameraEntity);
 			cameraParent.parent = player3BlueEntity;
@@ -509,11 +517,15 @@ void SandboxLayer::onEnter()
 			//PLAYER 2 CAMERA
 			auto playerCameraEntity = registry->create();
 
-			registry->assign<component::Transform>(playerCameraEntity);
+			auto& cameraTransform = registry->assign<component::Transform>(playerCameraEntity);
+			cameraTransform.setPosition(glm::vec3(0.0f, 0.8f, -0.5f));
 
 			auto& camera = registry->assign<component::PlayerCamera>(playerCameraEntity);
 			camera.player = player.playerNum;
 			camera.cullingMask = 0b0010;
+
+			auto& cameraBreathing = registry->assign<CameraBreathing>(playerCameraEntity);
+			cameraBreathing.startPosY = cameraTransform.getPositionY();
 
 			auto& cameraParent = registry->assign<component::Parent>(playerCameraEntity);
 			cameraParent.parent = player2RedEntity;
@@ -555,11 +567,15 @@ void SandboxLayer::onEnter()
 			//PLAYER 4 CAMERA
 			auto playerCameraEntity = registry->create();
 
-			registry->assign<component::Transform>(playerCameraEntity);
+			auto& cameraTransform = registry->assign<component::Transform>(playerCameraEntity);
+			cameraTransform.setPosition(glm::vec3(0.0f, 0.8f, -0.5f));
 
 			auto& camera = registry->assign<component::PlayerCamera>(playerCameraEntity);
 			camera.player = player.playerNum;
 			camera.cullingMask = 0b1000;
+
+			auto& cameraBreathing = registry->assign<CameraBreathing>(playerCameraEntity);
+			cameraBreathing.startPosY = cameraTransform.getPositionY();
 
 			auto& cameraParent = registry->assign<component::Parent>(playerCameraEntity);
 			cameraParent.parent = player4RedEntity;

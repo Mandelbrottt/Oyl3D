@@ -233,9 +233,21 @@ struct CleaningQuicktimeEventIndicator
 	float DELAY_BEFORE_DISAPPEARING_DURATION = 0.3f;
 	float delayBeforeDisappearingCountdown   = 0.0f;
 
-	bool shouldShake                = false;
+	bool shouldShake          = false;
+	bool isNumberOfShakesEven = true;
+
 	float SHAKE_START_VALUE         = 0.3f;
 	float SHAKE_DECREASE_PER_SECOND = 1.0f;
 	float currentShakeValue         = SHAKE_START_VALUE;
-	bool isNumberOfShakesEven       = true;
+};
+
+struct CameraBreathing
+{
+	float startPosY;
+
+	float cameraHeightVariance = 0.13f;
+	float interpolationParam = 0.5f; //start halfway up (default camera height)
+	float speed = 0.4f;
+
+	bool isMovingUp = true;
 };
