@@ -1175,6 +1175,48 @@ namespace oyl::internal
 
                             break;
                         }
+                        case ColliderType::Capsule:
+                        {
+                            float radius = shape.capsule.getRadius();
+                            const float posDragSpeed = 0.01f;
+                            ImGui::TextUnformatted("Radius");
+                            ImGui::SameLine(ImGui::GetWindowContentRegionWidth() - (15 * 3 + newWidth * 3 + 27));
+                            ImGui::SetNextItemWidth(15);
+                            sprintf(temp, "##Radius%d", count);
+                            ImGui::DragFloat(temp, &radius, posDragSpeed, 0, 0, "R");
+                            ImGui::SameLine();
+                            sprintf(temp, "##RadiusInput%d", count);
+                            ImGui::InputFloat(temp, &radius, 0, 0, "%.2f", flags);
+
+                            radius = glm::max(radius, 0.1f);
+                            if (radius != shape.capsule.getRadius())
+                                shape.capsule.setRadius(radius);
+                            
+                            float height = shape.capsule.getHeight();
+                            ImGui::TextUnformatted("Height");
+                            ImGui::SameLine(ImGui::GetWindowContentRegionWidth() - (15 * 3 + newWidth * 3 + 27));
+                            ImGui::SetNextItemWidth(15);
+                            sprintf(temp, "##Height%d", count);
+                            ImGui::DragFloat(temp, &height, posDragSpeed, 0, 0, "R");
+                            ImGui::SameLine();
+                            sprintf(temp, "##HeightInput%d", count);
+                            ImGui::InputFloat(temp, &height, 0, 0, "%.2f", flags);
+
+                            height = glm::max(height, 0.1f);
+                            if (height != shape.capsule.getHeight())
+                                shape.capsule.setHeight(height);
+
+                            int direction = static_cast<int>(shape.capsule.getDirection());
+                            ImGui::TextUnformatted("Direction"); ImGui::SameLine();
+                            ImGui::RadioButton("X##DirectionRadioX", &direction, static_cast<int>(Direction::X_AXIS));
+                            ImGui::SameLine();
+                            ImGui::RadioButton("Y##DirectionRadioY", &direction, static_cast<int>(Direction::Y_AXIS));
+                            ImGui::SameLine();
+                            ImGui::RadioButton("Z##DirectionRadioZ", &direction, static_cast<int>(Direction::Z_AXIS));
+                            shape.capsule.setDirection(static_cast<Direction>(direction));
+                            
+                            break;
+                        }
                     }
 
                     ImGui::Unindent(10);
