@@ -199,6 +199,9 @@ namespace oyl
         bindTex(albedoMap, WHITE_TEXTURE_ALIAS, "u_material.albedo", bindNum++);
         bindTex(specularMap, BLACK_TEXTURE_ALIAS, "u_material.specular", bindNum++);
         bindTex(albedoMap, DEFAULT_NORMAL_TEXTURE_ALIAS, "u_material.normal", bindNum++);
+
+        setUniform2f("u_material.offset", mainTextureProps.offset);
+        setUniform2f("u_material.tiling", mainTextureProps.tiling);
     }
 
     void Material::unbind()

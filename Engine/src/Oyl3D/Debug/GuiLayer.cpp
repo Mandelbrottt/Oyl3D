@@ -1420,7 +1420,7 @@ namespace oyl::internal
         }
         switch (a_texture->getWrap())
         {
-            case TextureWrap::Repeat: profilePreview = "Nearest"; break;
+            case TextureWrap::Repeat: profilePreview = "Repeat"; break;
             case TextureWrap::Mirror: profilePreview = "Mirror"; break;
             case TextureWrap::ClampToEdge: profilePreview = "Clamp to Edge"; break;
             case TextureWrap::ClampToBorder: profilePreview = "Clamp to Border"; break;
@@ -1505,6 +1505,40 @@ namespace oyl::internal
         _setTextureProfile(material->normalMap);
         ImGui::NewLine();
 
+        auto flags = ImGuiInputTextFlags_EnterReturnsTrue;
+
+        glm::vec2& tiling = material->mainTextureProps.tiling;
+        glm::vec2& offset = material->mainTextureProps.offset;
+
+        const float posDragSpeed = 0.02f;
+        float newWidth = ImGui::GetWindowContentRegionWidth() / 6;
+        ImGui::PushItemWidth(newWidth);
+
+        ImGui::TextUnformatted("Tiling");
+        ImGui::SameLine(ImGui::GetWindowContentRegionWidth() - (15 * 3 + newWidth * 3 + 27));
+        ImGui::SetNextItemWidth(15);
+        ImGui::DragFloat("##TilingX", &tiling.x, posDragSpeed, 0, 0, "X");
+        ImGui::SameLine();
+        ImGui::InputFloat("##TilingInputX", &tiling.x, 0, 0, "%.2f", flags);
+        ImGui::SameLine();
+        ImGui::SetNextItemWidth(15);
+        ImGui::DragFloat("##TilingY", &tiling.y, posDragSpeed, 0, 0, "Y");
+        ImGui::SameLine();
+        ImGui::InputFloat("##TilingInputY", &tiling.y, 0, 0, "%.2f", flags);
+
+        ImGui::TextUnformatted("Offset");
+        ImGui::SameLine(ImGui::GetWindowContentRegionWidth() - (15 * 3 + newWidth * 3 + 27));
+        ImGui::SetNextItemWidth(15);
+        ImGui::DragFloat("##OffsetX", &offset.x, posDragSpeed, 0, 0, "X");
+        ImGui::SameLine();
+        ImGui::InputFloat("##OffsetInputX", &offset.x, 0, 0, "%.2f", flags);
+        ImGui::SameLine();
+        ImGui::SetNextItemWidth(15);
+        ImGui::DragFloat("##OffsetY", &offset.y, posDragSpeed, 0, 0, "Y");
+        ImGui::SameLine();
+        ImGui::InputFloat("##OffsetInputY", &offset.y, 0, 0, "%.2f", flags);
+
+        ImGui::PopItemWidth();
     }
 
     void GuiLayer::drawAssetList()
