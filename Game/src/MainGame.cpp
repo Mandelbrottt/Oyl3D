@@ -544,6 +544,7 @@ public:
 
 				break;
 			}
+
 			case oyl::Key::F:
 			{
 				auto playerView = registry->view<Player>();
@@ -556,6 +557,7 @@ public:
 
 				break;
 			}
+
 			case oyl::Key::G:
 			{
 				//G key changes player's teams for debugging TODO: remove for working version
@@ -579,6 +581,24 @@ public:
 				break;
 			}
 			
+			case oyl::Key::Space:
+			{
+				auto playerView = registry->view<Player>();
+				for (entt::entity playerEntity : playerView)
+				{
+					auto& player = registry->get<Player>(playerEntity);
+
+					if (player.playerNum == PlayerNumber::One)
+					{
+						PlayerJumpEvent playerJump;
+						playerJump.playerEntity = playerEntity;
+						postEvent(playerJump);
+						break;
+					}
+				}
+
+				break;
+			}
 			}
 			break;
 		}
@@ -601,7 +621,9 @@ public:
 				{
 				case Gamepad::A:
 				{
-					//make the player jump
+					PlayerJumpEvent playerJump;
+					playerJump.playerEntity = playerEntity;
+					postEvent(playerJump);
 
 					break;
 				}

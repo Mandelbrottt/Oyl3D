@@ -82,6 +82,7 @@ struct Player
 	PlayerState state = PlayerState::idle;
 
 	float speedForce = 12.0f;
+	float jumpForce  = 20.0f;
 	glm::vec3 moveDirection = glm::vec3(0.0f);
 
 	float adjustingPositionSpeed = 3.333f;
