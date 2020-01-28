@@ -1240,39 +1240,50 @@ namespace oyl::internal
             // TODO: Make boxes relative to right side of window like transforms are
             
             // TODO: Add more property checkboxes
-            bool useGravity = rb.getProperty(RigidBody::USE_GRAVITY);
-            ImGui::Checkbox("Use Gravity##InspectorRigidBodyGravityCheckbox", &useGravity);
-            if (useGravity != rb.getProperty(RigidBody::USE_GRAVITY))
-                rb.setProperties(RigidBody::USE_GRAVITY, useGravity);
 
-            bool isKinematic = rb.getProperty(RigidBody::IS_KINEMATIC);
-            ImGui::Checkbox("Is Kinematic##InspectorRigidBodyKinematicCheckbox", &isKinematic);
-            if (isKinematic != rb.getProperty(RigidBody::IS_KINEMATIC))
-                rb.setProperties(RigidBody::IS_KINEMATIC, isKinematic);
+            auto doCheckbox = [&](const char* name, RigidBody::Property prop)
+            {
+                ImGui::TextUnformatted(name);
+                ImGui::SameLine();
+                bool ret = rb.getProperty(prop);
+                char id[128];
+                sprintf_s(id, sizeof(id), "##InspectorRigidBody%sCheckbox", name);
+                ImGui::Checkbox(id, &ret);
+                if (ret != rb.getProperty(prop))
+                    rb.setProperties(prop, ret);
+                return ret;
+            };
 
-            bool isFrozenX = rb.getProperty(RigidBody::FREEZE_ROTATION_X);
-            ImGui::Checkbox("Freeze Rotation X##InspectorRigidBodyFreezeRotXCheckbox", &isFrozenX);
-            if (isFrozenX != rb.getProperty(RigidBody::FREEZE_ROTATION_X))
-                rb.setProperties(RigidBody::FREEZE_ROTATION_X, isFrozenX);
+            bool useGravity = doCheckbox("Use Gravity", RigidBody::USE_GRAVITY);
+            bool isKinematic = doCheckbox("Is Kinematic", RigidBody::IS_KINEMATIC);
+            bool doCollisions = doCheckbox("Detect Collisions", RigidBody::DETECT_COLLISIONS);
 
-            bool isFrozenY = rb.getProperty(RigidBody::FREEZE_ROTATION_Y);
-            ImGui::Checkbox("Freeze Rotation Y##InspectorRigidBodyFreezeRotYCheckbox", &isFrozenY);
-            if (isFrozenY != rb.getProperty(RigidBody::FREEZE_ROTATION_Y))
-                rb.setProperties(RigidBody::FREEZE_ROTATION_Y, isFrozenY);
+            glm::bvec3 isFrozen = {
+                rb.getProperty(RigidBody::FREEZE_ROTATION_X),
+                rb.getProperty(RigidBody::FREEZE_ROTATION_Y),
+                rb.getProperty(RigidBody::FREEZE_ROTATION_Z)
+            };
 
-            bool isFrozenZ = rb.getProperty(RigidBody::FREEZE_ROTATION_Z);
-            ImGui::Checkbox("Freeze Rotation Z##InspectorRigidBodyFreezeRotZCheckbox", &isFrozenZ);
-            if (isFrozenZ != rb.getProperty(RigidBody::FREEZE_ROTATION_Z))
-                rb.setProperties(RigidBody::FREEZE_ROTATION_Z, isFrozenZ);
+            ImGui::TextUnformatted("Freeze Rotation");
+            ImGui::SameLine();
+            ImGui::Checkbox("X##InspectorRigidBodyFreezeRotXCheckbox", &isFrozen.x);
+            ImGui::SameLine();
+            ImGui::Checkbox("Y##InspectorRigidBodyFreezeRotYCheckbox", &isFrozen.y);
+            ImGui::SameLine();
+            ImGui::Checkbox("Z##InspectorRigidBodyFreezeRotZCheckbox", &isFrozen.z);
 
-            float mass = rb.getMass();
+            rb.setProperties(RigidBody::FREEZE_ROTATION_X, isFrozen.x);
+            rb.setProperties(RigidBody::FREEZE_ROTATION_Y, isFrozen.y);
+            rb.setProperties(RigidBody::FREEZE_ROTATION_Z, isFrozen.z);
+
+            float mass = isKinematic ? 0.0f : rb.getMass();
             ImGui::Text("Mass");
             ImGui::SameLine();
             ImGui::SetNextItemWidth(15);
-            ImGui::DragFloat("##DragMass", &mass, 0.02f, 0.0f, 1000.0f, "M");
+            ImGui::DragFloat("##DragMass", &mass, isKinematic ? 0.0f : 0.02f, 0.0f, 1000.0f, "M");
             ImGui::SameLine();
-            ImGui::InputFloat("##MassInput", &mass, 0, 0, "%.2f");
-            if (mass != rb.getMass())
+            ImGui::InputFloat("##MassInput", &mass, 0, 0, "%.2f", isKinematic ? ImGuiInputTextFlags_ReadOnly : 0);
+            if (!isKinematic && mass != rb.getMass())
                 rb.setMass(mass);
 
             float friction = rb.getFriction();
