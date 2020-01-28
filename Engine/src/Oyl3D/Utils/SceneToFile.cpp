@@ -429,6 +429,10 @@ namespace oyl::internal
                 std::string alias = it->get<std::string>();
                 if (Material::exists(alias))
                     re.material = Material::get(alias);
+                else
+                {
+                    re.material = materialFromFile("res/assets/materials/" + alias + ".oylmat");
+                }
             }
         }
     }
