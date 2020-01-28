@@ -1,0 +1,31 @@
+{
+    "Material": {
+        "Alias": "WoodRed",
+        "Shader": {
+            "Alias": "Oyl Lighting",
+            "Pixel": {
+                "FilePath": "../Engine/res/shaders/lighting.frag",
+                "guid": null
+            },
+            "Vertex": {
+                "FilePath": "../Engine/res/shaders/lighting.vert",
+                "guid": null
+            }
+        },
+        "Textures": {
+            "Albedo": {
+                "Alias": "redWood",
+                "FilePath": "res\\assets\\textures\\redWood.png",
+                "Profile": 1,
+                "guid": null
+            },
+            "Normal": null,
+            "Specular": {
+                "Alias": "tempSpec",
+                "FilePath": "res\\assets\\textures\\tempSpec.jpg",
+                "Profile": 1,
+                "guid": null
+            }
+        }
+    }
+}

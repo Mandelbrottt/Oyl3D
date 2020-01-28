@@ -1795,9 +1795,9 @@
                 "Z": false
             },
             "Position": {
-                "X": 14.997562408447266,
+                "X": 8.051238059997559,
                 "Y": 0.0,
-                "Z": 0.02529621124267578
+                "Z": -0.011318206787109375
             },
             "Rotation": {
                 "qW": 1.0,
@@ -1832,7 +1832,7 @@
                 "Z": false
             },
             "Position": {
-                "X": 0.038628578186035156,
+                "X": 15.001569747924805,
                 "Y": 0.0,
                 "Z": -11.011996269226074
             },
@@ -2050,17 +2050,17 @@
         "Transform": {
             "Mirror": {
                 "X": false,
-                "Y": true,
+                "Y": false,
                 "Z": false
             },
             "Position": {
-                "X": 8.054388046264648,
+                "X": 14.997562408447266,
                 "Y": 0.0,
-                "Z": -11.004712104797363
+                "Z": 0.02529621124267578
             },
             "Rotation": {
-                "qW": -4.371138828673793e-08,
-                "qX": 1.0,
+                "qW": 1.0,
+                "qX": 0.0,
                 "qY": 0.0,
                 "qZ": 0.0
             },
@@ -2087,17 +2087,17 @@
         "Transform": {
             "Mirror": {
                 "X": false,
-                "Y": false,
+                "Y": true,
                 "Z": false
             },
             "Position": {
-                "X": 8.051238059997559,
+                "X": 0.038628578186035156,
                 "Y": 0.0,
-                "Z": -0.011318206787109375
+                "Z": -11.011996269226074
             },
             "Rotation": {
-                "qW": 1.0,
-                "qX": 0.0,
+                "qW": -4.371138828673793e-08,
+                "qX": 1.0,
                 "qY": 0.0,
                 "qZ": 0.0
             },
@@ -2128,9 +2128,9 @@
                 "Z": false
             },
             "Position": {
-                "X": 15.001569747924805,
+                "X": 8.054388046264648,
                 "Y": 0.0,
-                "Z": -11.011996269226074
+                "Z": -11.004712104797363
             },
             "Rotation": {
                 "qW": -4.371138828673793e-08,
@@ -2917,7 +2917,7 @@
         "Renderable": {
             "Enabled": true,
             "Material": {
-                "Alias": "cubeMat"
+                "Alias": "WoodRed"
             },
             "Mesh": {
                 "FilePath": "res\\assets\\models\\DeckRail2.obj"
@@ -2954,7 +2954,7 @@
         "Renderable": {
             "Enabled": true,
             "Material": {
-                "Alias": "cubeMat"
+                "Alias": "WoodBlue"
             },
             "Mesh": {
                 "FilePath": "res\\assets\\models\\DeckRail2.obj"
@@ -3277,7 +3277,7 @@
         "Renderable": {
             "Enabled": true,
             "Material": {
-                "Alias": "cubeMat"
+                "Alias": "WoodRed"
             },
             "Mesh": {
                 "FilePath": "res\\assets\\models\\HullDetailing.obj"
@@ -3314,7 +3314,7 @@
         "Renderable": {
             "Enabled": true,
             "Material": {
-                "Alias": "cubeMat"
+                "Alias": "WoodBlue"
             },
             "Mesh": {
                 "FilePath": "res\\assets\\models\\HullDetailing.obj"
