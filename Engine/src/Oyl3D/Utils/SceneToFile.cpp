@@ -207,14 +207,14 @@ namespace oyl::internal
 
         j["Enabled"] = re.enabled;
         
+        auto& jMesh = j["Mesh"];
         if (re.mesh)
         {
-            auto& jMesh = j["Mesh"];
             jMesh["FilePath"] = re.mesh->getFilePath();
-        }
-        else
-        {
-            j["Mesh"]["FilePath"];
+            const auto& alias = Mesh::getAlias(re.mesh);
+            auto& jAlias = jMesh["Alias"];
+            if (alias != INVALID_ALIAS)
+                jAlias = alias;
         }
 
         json& jMat = j["Material"];
@@ -227,6 +227,30 @@ namespace oyl::internal
                 jAlias = alias;
             }
         }
+    }
+
+    static void saveGuiRenderable(entt::entity entity, entt::registry& registry, json& j)
+    {
+        using component::EntityInfo;
+        using component::GuiRenderable;
+
+        auto& re = registry.get<GuiRenderable>(entity);
+
+        j["Enabled"] = re.enabled;
+
+        auto& jTexture = j["Texture"];
+        if (re.texture)
+        {
+            jTexture["FilePath"] = re.texture->getFilePath();
+            const auto& alias = Texture2D::getAlias(re.texture);
+            auto& jAlias = jTexture["Alias"];
+            if (alias != INVALID_ALIAS)
+                jAlias = alias;
+        }
+
+        auto& jClip = j["Clipping"];
+        jClip["Lower"] = re.lowerClipping;
+        jClip["Upper"] = re.upperClipping;
     }
 
     static void saveCollidable(entt::entity entity, entt::registry& registry, json& j)
@@ -415,7 +439,16 @@ namespace oyl::internal
 
         if (auto it = j.find("Mesh"); it != j.end() && !it->is_null())
         {
-            if (auto fpIt = it->find("FilePath"); fpIt != it->end() && !fpIt->is_null())
+            bool doLoad = false;
+            if (auto alIt = it->find("Alias"); alIt != it->end() && alIt->is_string())
+            {
+                if (Mesh::exists(alIt->get<std::string>()))
+                    re.mesh = Mesh::get(alIt->get<std::string>());
+                else
+                    doLoad = true;
+            } else doLoad = true;
+            
+            if (auto fpIt = it->find("FilePath"); doLoad && fpIt != it->end() && !fpIt->is_null())
             {
                 auto filePath = fpIt->get<std::string>();
 
@@ -444,6 +477,51 @@ namespace oyl::internal
                 else
                     re.material = materialFromFile("res/assets/materials/" + alias + ".oylmat");
             }
+        }
+    }
+
+    static void loadGuiRenderable(entt::entity entity, entt::registry& registry, const json& j)
+    {
+        using component::GuiRenderable;
+
+        auto& re = registry.get_or_assign<GuiRenderable>(entity);
+
+        if (auto it = j.find("Enabled"); it != j.end())
+            it->get_to(re.enabled);
+
+        if (auto it = j.find("Texture"); it != j.end() && !it->is_null())
+        {
+            bool doLoad = false;
+            if (auto alIt = it->find("Alias"); alIt != it->end() && alIt->is_string())
+            {
+                if (Texture2D::exists(alIt->get<std::string>()))
+                    re.texture = Texture2D::get(alIt->get<std::string>());
+                else
+                    doLoad = true;
+            } else doLoad = true;
+            
+            if (auto fpIt = it->find("FilePath"); doLoad && fpIt != it->end() && !fpIt->is_null())
+            {
+                auto filePath = fpIt->get<std::string>();
+
+                bool meshFound = false;
+                for (const auto& [alias, texture] : Texture2D::getCache())
+                {
+                    if (texture->getFilePath() == filePath)
+                        meshFound = true, re.texture = texture;
+                }
+
+                if (!meshFound && (!re.texture || re.texture && re.texture->getFilePath() != filePath))
+                    re.texture = Texture2D::cache(filePath);
+            }
+        } else re.texture = nullptr;
+
+        if (auto it = j.find("Clipping"); it != j.end() && it->is_object())
+        {
+            if (auto clIt = it->find("Lower"); clIt != it->end() && it->is_array())
+                clIt->get_to(re.lowerClipping);
+            if (auto clIt = it->find("Upper"); clIt != it->end() && it->is_array())
+                clIt->get_to(re.upperClipping);
         }
     }
 
@@ -635,6 +713,9 @@ namespace oyl::internal
         if (registry.has<component::Renderable>(entity))
             saveRenderable(entity, registry, j["Renderable"]);
 
+        if (registry.has<component::GuiRenderable>(entity))
+            saveGuiRenderable(entity, registry, j["GuiRenderable"]);
+
         if (registry.has<component::Collidable>(entity))
             saveCollidable(entity, registry, j["Collidable"]);
 
@@ -655,6 +736,9 @@ namespace oyl::internal
 
         if (auto it = j.find("Renderable"); it != j.end())
             loadRenderable(entity, registry, it.value());
+
+        if (auto it = j.find("GuiRenderable"); it != j.end())
+            loadGuiRenderable(entity, registry, it.value());
 
         if (auto it = j.find("Collidable"); it != j.end())
             loadCollidable(entity, registry, it.value());

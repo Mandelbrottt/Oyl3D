@@ -53,6 +53,7 @@ namespace oyl::internal
         void drawInspectorTransform();
         void drawInspectorCollidable();
         void drawInspectorRenderable();
+        void drawInspectorGuiRenderable();
         void drawInspectorRigidBody();
         void drawInspectorLightSource();
         void drawInspectorAddComponent();

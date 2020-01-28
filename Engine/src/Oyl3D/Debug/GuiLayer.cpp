@@ -702,6 +702,7 @@ namespace oyl::internal
                 drawInspectorObjectName();
                 drawInspectorTransform();
                 drawInspectorRenderable();
+                drawInspectorGuiRenderable();
                 drawInspectorCollidable();
                 drawInspectorRigidBody();
                 drawInspectorLightSource();
@@ -923,30 +924,10 @@ namespace oyl::internal
             ImGui::Checkbox("Enabled", &renderable.enabled);
             
             CacheAlias currentName;
-            if (renderable.mesh)
-            {
-                currentName.assign(Mesh::getAlias(renderable.mesh));
-                if (currentName == INVALID_ALIAS && 
-                    renderable.mesh != Mesh::get(INVALID_ALIAS))
-                {
-                    int count = 1;
-                    char newNameTemp[512];
-                    CacheAlias newName;
-                    do 
-                    {
-                        sprintf(newNameTemp, "%s %d", currentName.c_str(), count);
-                        newName.assign(newNameTemp);
-                        count++;
-                    }
-                    while (!Mesh::exists(newName));
+            if (currentName.assign(Mesh::getAlias(renderable.mesh)); !renderable.mesh || currentName == INVALID_ALIAS)
+                currentName.assign("None");
 
-                    Mesh::cache(renderable.mesh, newName);
-                    currentName = newName;
-                }
-            }
-            else currentName.assign("None");
-
-            ImGui::Text("Current Mesh");
+            ImGui::TextUnformatted("Current Mesh");
             ImGui::SameLine();
             ImGui::SetNextItemWidth(ImGui::GetWindowWidth() - ImGui::GetCursorPosX());
             if (ImGui::BeginCombo("##RenderablePropertiesCurrentMesh", currentName.c_str()))
@@ -967,28 +948,10 @@ namespace oyl::internal
                 ImGui::EndCombo();
             }
             
-            if (renderable.material)
-            {
-                currentName.assign(Material::getAlias(renderable.material));
-                if (currentName == INVALID_ALIAS && 
-                    renderable.material != Material::get(INVALID_ALIAS))
-                {
-                    int count = 1;
-                    char newNameTemp[512];
-                    CacheAlias newName;
-                    do
-                    {
-                        sprintf(newNameTemp, "%s %d", currentName.c_str(), count);
-                        newName.assign(newNameTemp);
-                        count++;
-                    } while (!Shader::exists(newName));
-
-                    Material::cache(renderable.material, newName);
-                    currentName.assign(newName);
-                }
-            } else currentName.assign("None");
-            
-            ImGui::Text("Current Material");
+            if (currentName.assign(Material::getAlias(renderable.material)); !renderable.material || currentName == INVALID_ALIAS)
+                currentName.assign("None");
+                        
+            ImGui::TextUnformatted("Current Material");
             ImGui::SameLine();
             ImGui::SetNextItemWidth(ImGui::GetWindowWidth() - ImGui::GetCursorPosX());
             if (ImGui::BeginCombo("##RenderablePropertiesCurrentMaterial", currentName.c_str()))
@@ -1009,6 +972,103 @@ namespace oyl::internal
                 ImGui::EndCombo();
             }
 
+            ImGui::Unindent(10);
+
+            ImGui::Separator();
+            ImGui::NewLine();
+        }
+    }
+
+    void GuiLayer::drawInspectorGuiRenderable()
+    {
+        using component::GuiRenderable;
+        using component::EntityInfo;
+
+        if (!registry->has<GuiRenderable>(m_currentSelection.entity())) return;
+
+        ImGui::SetNextTreeNodeOpen(true, ImGuiCond_Once);
+
+        bool open = ImGui::CollapsingHeader("Renderable##InspectorRenderableProperties");
+
+        if (ImGui::BeginPopupContextItem())
+        {
+            if (ImGui::Selectable("Delete Component"))
+            {
+                registry->remove<GuiRenderable>(m_currentSelection.entity());
+                open = false;
+            }
+            ImGui::EndPopup();
+        }
+
+        if (open)
+        {
+            ImGui::Indent(10);
+
+            auto& gui = registry->get<GuiRenderable>(m_currentSelection.entity());
+
+            ImGui::Checkbox("Enabled##GuiRenderableEnabled", &gui.enabled);
+
+            CacheAlias currentName;
+            if (currentName.assign(Texture2D::getAlias(gui.texture)); !gui.texture || currentName == INVALID_ALIAS)
+                currentName.assign("None");
+            
+            ImGui::TextUnformatted("Current Texture");
+            ImGui::SameLine();
+            ImGui::SetNextItemWidth(ImGui::GetWindowWidth() - ImGui::GetCursorPosX());
+            if (ImGui::BeginCombo("##GuiRenderablePropertiesCurrentTexture", currentName.c_str()))
+            {
+                if (ImGui::Selectable("None", !gui.texture || currentName == INVALID_ALIAS))
+                    gui.texture.reset();
+
+                const auto& textureCache = Texture2D::getCache();
+                for (const auto& [alias, texture] : textureCache)
+                {
+                    if (alias != INVALID_ALIAS &&
+                        ImGui::Selectable(alias.c_str(), gui.texture == texture))
+                    {
+                        gui.texture = texture;
+                    }
+                }
+
+                ImGui::EndCombo();
+            }
+
+            int flags = ImGuiInputTextFlags_EnterReturnsTrue;
+            const float posDragSpeed = 0.02f;
+            float newWidth = ImGui::GetWindowContentRegionWidth() / 6;
+            ImGui::PushItemWidth(newWidth);
+
+            ImGui::TextUnformatted("Clipping");
+            {
+                ImGui::Indent(10);
+            
+                ImGui::TextUnformatted("Lower");
+                ImGui::SameLine(ImGui::GetWindowContentRegionWidth() - (15 * 3 + newWidth * 3 + 27));
+                ImGui::SetNextItemWidth(15);
+                ImGui::DragFloat("##LowerClippingX", &gui.lowerClipping.x, posDragSpeed, 0, 1.0f, "X");
+                ImGui::SameLine();
+                ImGui::InputFloat("##LowerClippingInputX", &gui.lowerClipping.x, 0, 0, "%.2f", flags);
+                ImGui::SameLine();
+                ImGui::SetNextItemWidth(15);
+                ImGui::DragFloat("##LowerClippingY", &gui.lowerClipping.y, posDragSpeed, 0, 1.0f, "Y");
+                ImGui::SameLine();
+                ImGui::InputFloat("##LowerClippingInputY", &gui.lowerClipping.y, 0, 0, "%.2f", flags);
+
+                ImGui::TextUnformatted("Upper");
+                ImGui::SameLine(ImGui::GetWindowContentRegionWidth() - (15 * 3 + newWidth * 3 + 27));
+                ImGui::SetNextItemWidth(15);
+                ImGui::DragFloat("##UpperClippingX", &gui.upperClipping.x, posDragSpeed, 0, 1.0f, "X");
+                ImGui::SameLine();
+                ImGui::InputFloat("##UpperClippingInputX", &gui.upperClipping.x, 0, 0, "%.2f", flags);
+                ImGui::SameLine();
+                ImGui::SetNextItemWidth(15);
+                ImGui::DragFloat("##UpperClippingY", &gui.upperClipping.y, posDragSpeed, 0, 1.0f, "Y");
+                ImGui::SameLine();
+                ImGui::InputFloat("##UpperClippingInputY", &gui.upperClipping.y, 0, 0, "%.2f", flags);
+
+                ImGui::Unindent(10);
+            }
+            
             ImGui::Unindent(10);
 
             ImGui::Separator();
@@ -1396,22 +1456,27 @@ namespace oyl::internal
     void GuiLayer::drawInspectorAddComponent()
     {
         using component::Collidable;
+        using component::GuiRenderable;
+        using component::PointLight;
         using component::Renderable;
         using component::RigidBody;
-        using component::PointLight;
         
         if (ImGui::BeginCombo("##InspectorAddComponent", "Add Component", ImGuiComboFlags_NoArrowButton))
         {
             auto entity = m_currentSelection.entity();
             
-            if (!registry->has<Collidable>(entity) &&
-                ImGui::Selectable("Collider"))
-                registry->assign<Collidable>(entity);
-            
             if (!registry->has<Renderable>(entity) &&
                 ImGui::Selectable("Renderable"))
                 registry->assign<Renderable>(entity);
 
+            if (!registry->has<GuiRenderable>(entity) &&
+                ImGui::Selectable("GuiRenderable"))
+                registry->assign<GuiRenderable>(entity);
+            
+            if (!registry->has<Collidable>(entity) &&
+                ImGui::Selectable("Collider"))
+                registry->assign<Collidable>(entity);
+            
             if (!registry->has<RigidBody>(entity) &&
                 ImGui::Selectable("RigidBody"))
                 registry->assign<RigidBody>(entity);
@@ -1419,7 +1484,7 @@ namespace oyl::internal
             if (!registry->has<PointLight>(entity) &&
                 ImGui::Selectable("Point Light"))
                 registry->assign<PointLight>(entity);
-            
+
             ImGui::EndCombo();
         }
     }
