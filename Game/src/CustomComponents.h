@@ -81,9 +81,11 @@ struct Player
     
 	PlayerState state = PlayerState::idle;
 
+	glm::vec3 moveDirection = glm::vec3(0.0f);
+
 	float speedForce = 12.0f;
 	float jumpForce  = 20.0f;
-	glm::vec3 moveDirection = glm::vec3(0.0f);
+	bool isJumping   = false;
 
 	float adjustingPositionSpeed = 3.333f;
 	float pushingSpeed = 0.2f;
@@ -246,9 +248,9 @@ struct CameraBreathing
 {
 	float startPosY;
 
-	float cameraHeightVariance = 0.07f;
-	float interpolationParam = 0.5f; //start halfway up (default camera height)
-	float speed = 0.4f;
+	float cameraHeightVariance = 0.04f;
+	float interpolationParam   = 0.5f; //start halfway up (default camera height)
+	float speed = 0.45f;
 
 	bool isMovingUp = true;
 };

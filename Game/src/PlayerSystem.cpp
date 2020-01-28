@@ -3,6 +3,7 @@
 void PlayerSystem::onEnter()
 {
 	this->listenForEventCategory((EventCategory)CategoryPlayer);
+	this->listenForEventType(EventType::PhysicsCollisionStay);
 }
 
 void PlayerSystem::onExit()
@@ -130,7 +131,11 @@ bool PlayerSystem::onEvent(const Event& event)
 			auto& player   = registry->get<Player>(evt.playerEntity);
 			auto& playerRB = registry->get<component::RigidBody>(evt.playerEntity);
 
-			playerRB.addImpulse(glm::vec3(0.0f, 1.0f, 0.0f) * player.jumpForce);
+			if (!player.isJumping)
+			{
+				playerRB.addImpulse(glm::vec3(0.0f, 1.0f, 0.0f) * player.jumpForce);
+				player.isJumping = true;
+			}
 
 			break;
 		}
@@ -165,6 +170,39 @@ bool PlayerSystem::onEvent(const Event& event)
 			}
 
 			break;
+		}
+
+		case EventType::PhysicsCollisionStay:
+		{
+			auto evt = event_cast<PhysicsCollisionStayEvent>(event);
+
+			entt::entity playerEntity = entt::null;
+
+			//check if there is no player involved in the collision
+			if (!registry->has<Player>(evt.entity1) && !registry->has<Player>(evt.entity2))
+				break;
+			//check if they are both players
+			else if (registry->has<Player>(evt.entity1) && registry->has<Player>(evt.entity2))
+			{
+				auto& player1Transform = registry->get<component::Transform>(evt.entity1);
+				auto& player2Transform = registry->get<component::Transform>(evt.entity2);
+
+				//figure out which player is above the other
+				if (player1Transform.getPositionY() > player2Transform.getPositionY())
+					playerEntity = evt.entity1;
+				else
+					playerEntity = evt.entity2;
+			}
+			else if (registry->has<Player>(evt.entity1))
+				playerEntity = evt.entity1;
+			else //entity 2 is a player
+				playerEntity = evt.entity2;
+
+			auto& playerCollidable = registry->get<component::Collidable>(playerEntity);
+			float playerHeight     = playerCollidable.getShape(0).box.getSize().y;
+
+			//check if contact point is below player
+			
 		}
 	}
 	return false;
