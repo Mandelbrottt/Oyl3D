@@ -35,7 +35,8 @@ namespace oyl
         return (this->shader == material.shader &&
                 this->albedoMap == material.albedoMap &&
                 this->specularMap == material.specularMap &&
-                this->normalMap == material.normalMap);
+                this->normalMap == material.normalMap &&
+                this->emissionMap == material.emissionMap);
     }
 
     Ref<Material> Material::create(const std::string& filepath)
@@ -156,10 +157,7 @@ namespace oyl
             }
 
             // Warn the user if they are overiding a mesh of a different type
-            if (currIt->second->shader != newIt->second->shader ||
-                currIt->second->albedoMap != newIt->second->albedoMap ||
-                currIt->second->specularMap != newIt->second->specularMap || 
-                currIt->second->normalMap != newIt->second->normalMap)
+            if (*currIt->second == *newIt->second)
             {
                 OYL_LOG_WARN("Material '{0}' was replaced by '{1}'.",
                              newIt->first, currIt->first, newAlias);
@@ -199,6 +197,7 @@ namespace oyl
         bindTex(albedoMap, WHITE_TEXTURE_ALIAS, "u_material.albedo", bindNum++);
         bindTex(specularMap, BLACK_TEXTURE_ALIAS, "u_material.specular", bindNum++);
         bindTex(normalMap, DEFAULT_NORMAL_TEXTURE_ALIAS, "u_material.normal", bindNum++);
+        bindTex(emissionMap, BLACK_TEXTURE_ALIAS, "u_material.emission", bindNum++);
 
         setUniform2f("u_material.offset", mainTextureProps.offset);
         setUniform2f("u_material.tiling", mainTextureProps.tiling);
@@ -217,6 +216,9 @@ namespace oyl
 
         if (normalMap)
             normalMap->unbind();
+
+        if (emissionMap)
+            emissionMap->unbind();
     }
 
     void Material::applyUniforms()

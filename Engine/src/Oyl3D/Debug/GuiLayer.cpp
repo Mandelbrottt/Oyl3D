@@ -1638,7 +1638,7 @@ namespace oyl::internal
             if (ImGui::Selectable("Nearest", a_texture->getFilter() == TextureFilter::Nearest))
                 a_texture->setFilter(TextureFilter::Nearest);
             if (ImGui::Selectable("Linear", a_texture->getFilter() == TextureFilter::Linear))
-                a_texture->setFilter(TextureFilter::Nearest);
+                a_texture->setFilter(TextureFilter::Linear);
 
             ImGui::EndCombo();
         }
@@ -1683,50 +1683,37 @@ namespace oyl::internal
             ImGui::EndCombo();
         }
         ImGui::NewLine();
-        
-        tempAlias = Texture2D::getAlias(material->albedoMap);
-        if (tempAlias == INVALID_ALIAS) tempAlias = "None";
-        if (ImGui::BeginCombo("Albedo Map", tempAlias.c_str()))
-        {
-            if (ImGui::Selectable("None", material->albedoMap == nullptr))
-                material->albedoMap = nullptr;
-            for (const auto& [alias, albedo] : Texture2D::getCache())
-                if (ImGui::Selectable(alias.c_str(), albedo == material->albedoMap))
-                    material->albedoMap = albedo;
 
-            ImGui::EndCombo();
-        }
+        auto _selectTexture = [&tempAlias](Ref<Texture2D>& a_texture, const char* type)
+        {
+            tempAlias = Texture2D::getAlias(a_texture);
+            if (tempAlias == INVALID_ALIAS) tempAlias = "None";
+            if (ImGui::BeginCombo(type, tempAlias.c_str()))
+            {
+                if (ImGui::Selectable("None", a_texture == nullptr))
+                    a_texture = nullptr;
+                for (const auto& [alias, texture] : Texture2D::getCache())
+                    if (ImGui::Selectable(alias.c_str(), texture == a_texture))
+                        a_texture = texture;
+
+                ImGui::EndCombo();
+            }
+        };
+        
+        _selectTexture(material->albedoMap, "Albedo Map");
         _setTextureProfile(material->albedoMap);
         ImGui::NewLine();
 
-        tempAlias = Texture2D::getAlias(material->specularMap);
-        if (tempAlias == INVALID_ALIAS) tempAlias = "None";
-        if (ImGui::BeginCombo("Specular Map", tempAlias.c_str()))
-        {
-            if (ImGui::Selectable("None", material->specularMap == nullptr))
-                material->specularMap = nullptr;
-            for (const auto& [alias, specular] : Texture2D::getCache())
-                if (ImGui::Selectable(alias.c_str(), specular == material->specularMap))
-                    material->specularMap = specular;
-
-            ImGui::EndCombo();
-        }
+        _selectTexture(material->specularMap, "Specular Map");
         _setTextureProfile(material->specularMap);
         ImGui::NewLine();
 
-        tempAlias = Texture2D::getAlias(material->normalMap);
-        if (tempAlias == INVALID_ALIAS) tempAlias = "None";
-        if (ImGui::BeginCombo("Normal Map", tempAlias.c_str()))
-        {
-            if (ImGui::Selectable("None", material->normalMap == nullptr))
-                material->normalMap = nullptr;
-            for (const auto& [alias, normal] : Texture2D::getCache())
-                if (ImGui::Selectable(alias.c_str(), normal == material->normalMap))
-                    material->normalMap = normal;
-
-            ImGui::EndCombo();
-        }
+        _selectTexture(material->normalMap, "Normal Map");
         _setTextureProfile(material->normalMap);
+        ImGui::NewLine();
+
+        _selectTexture(material->emissionMap, "Emission Map");
+        _setTextureProfile(material->emissionMap);
         ImGui::NewLine();
 
         auto flags = ImGuiInputTextFlags_EnterReturnsTrue;
