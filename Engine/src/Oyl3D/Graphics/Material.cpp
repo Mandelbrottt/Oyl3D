@@ -188,8 +188,8 @@ namespace oyl
                               const std::string&    inShaderName, 
                               int                   bindNum)
         {
-            if (albedoMap)
-                albedoMap->bind(bindNum);
+            if (tex)
+                tex->bind(bindNum);
             else if (!alias.empty())
                 Texture2D::get(alias)->bind(bindNum);
             setUniform1i(inShaderName, bindNum);
@@ -198,7 +198,7 @@ namespace oyl
         int bindNum = 0;
         bindTex(albedoMap, WHITE_TEXTURE_ALIAS, "u_material.albedo", bindNum++);
         bindTex(specularMap, BLACK_TEXTURE_ALIAS, "u_material.specular", bindNum++);
-        bindTex(albedoMap, DEFAULT_NORMAL_TEXTURE_ALIAS, "u_material.normal", bindNum++);
+        bindTex(normalMap, DEFAULT_NORMAL_TEXTURE_ALIAS, "u_material.normal", bindNum++);
 
         setUniform2f("u_material.offset", mainTextureProps.offset);
         setUniform2f("u_material.tiling", mainTextureProps.tiling);
