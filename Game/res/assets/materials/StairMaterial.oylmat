@@ -1,0 +1,31 @@
+{
+    "Material": {
+        "Alias": "StairMaterial",
+        "Shader": {
+            "Alias": "Oyl Lighting",
+            "Pixel": {
+                "FilePath": "../Engine/res/shaders/lighting.frag",
+                "guid": null
+            },
+            "Vertex": {
+                "FilePath": "../Engine/res/shaders/lighting.vert",
+                "guid": null
+            }
+        },
+        "Textures": {
+            "Albedo": {
+                "Alias": "stairTexture",
+                "FilePath": "res\\assets\\textures\\stairTexture.png",
+                "Profile": 1,
+                "guid": null
+            },
+            "Normal": null,
+            "Specular": {
+                "Alias": "stairTexture",
+                "FilePath": "res\\assets\\textures\\stairTexture.png",
+                "Profile": 1,
+                "guid": null
+            }
+        }
+    }
+}
