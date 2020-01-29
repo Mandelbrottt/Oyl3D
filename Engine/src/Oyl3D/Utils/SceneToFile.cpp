@@ -206,6 +206,7 @@ namespace oyl::internal
         auto& re = registry.get<Renderable>(entity);
 
         j["Enabled"] = re.enabled;
+        j["CullingMask"] = re.cullingMask;
         
         auto& jMesh = j["Mesh"];
         if (re.mesh)
@@ -237,6 +238,7 @@ namespace oyl::internal
         auto& re = registry.get<GuiRenderable>(entity);
 
         j["Enabled"] = re.enabled;
+        j["CullingMask"] = re.cullingMask;
 
         auto& jTexture = j["Texture"];
         if (re.texture)
@@ -434,8 +436,11 @@ namespace oyl::internal
 
         auto& re = registry.get_or_assign<Renderable>(entity);
 
-        if (j.contains("Enabled"))
-            re.enabled = j["Enabled"].get<bool>();
+        if (auto it = j.find("Enabled"); it != j.end())
+            it->get_to(re.enabled);
+
+        if (auto it = j.find("CullingMask"); it != j.end() && it->is_number_unsigned())
+            it->get_to(re.cullingMask);
 
         if (auto it = j.find("Mesh"); it != j.end() && !it->is_null())
         {
@@ -488,6 +493,9 @@ namespace oyl::internal
 
         if (auto it = j.find("Enabled"); it != j.end())
             it->get_to(re.enabled);
+
+        if (auto it = j.find("CullingMask"); it != j.end() && it->is_number_unsigned())
+            it->get_to(re.cullingMask);
 
         if (auto it = j.find("Texture"); it != j.end() && !it->is_null())
         {

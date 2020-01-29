@@ -22,7 +22,7 @@ namespace oyl
             
             PlayerNumber player = PlayerNumber::One;
 
-            u32 cullingMask = 0xFFFFFFFF;
+            u32 cullingMask = 0x0b1;
     
             Ref<TextureCubeMap> skybox;
 

@@ -54,6 +54,13 @@ static const char* g_inspectorWindowName = "Inspector##EditorInspector";
 
 static const char* g_mainDockSpaceName = "_DockSpace";
 
+static const char* g_numbersList[32] = {
+    "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight",
+    "Nine", "Ten", "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen",
+    "Seventeen", "Eighteen", "Nineteen", "Twenty", "Twenty One", "Twenty Two", "Twenty Three", "Twenty Four",
+    "Twenty Five", "Twenty Six", "Twenty Seven", "Twenty Eight", "Twenty Nine", "Thirty", "Thirty One", "Thirty Two",
+};
+
 namespace oyl::internal
 {
     void GuiLayer::init()
@@ -922,6 +929,17 @@ namespace oyl::internal
             auto& renderable = registry->get<Renderable>(m_currentSelection.entity());
             
             ImGui::Checkbox("Enabled", &renderable.enabled);
+
+            ImGui::TextUnformatted("Culling Mask"); ImGui::SameLine();
+            if (ImGui::BeginCombo("##RenderableCullingMaskCombo", std::to_string(renderable.cullingMask).c_str()))
+            {
+                for (int i = 0; i < 32; i++)
+                {
+                    if (ImGui::Selectable(g_numbersList[i], renderable.cullingMask & 1u << i, ImGuiSelectableFlags_DontClosePopups))
+                        renderable.cullingMask ^= 1u << i;
+                }
+                ImGui::EndCombo();
+            }
             
             CacheAlias currentName;
             if (currentName.assign(Mesh::getAlias(renderable.mesh)); !renderable.mesh || currentName == INVALID_ALIAS)
@@ -988,7 +1006,7 @@ namespace oyl::internal
 
         ImGui::SetNextTreeNodeOpen(true, ImGuiCond_Once);
 
-        bool open = ImGui::CollapsingHeader("Renderable##InspectorRenderableProperties");
+        bool open = ImGui::CollapsingHeader("GuiRenderable##InspectorGuiRenderableProperties");
 
         if (ImGui::BeginPopupContextItem())
         {
@@ -1007,6 +1025,17 @@ namespace oyl::internal
             auto& gui = registry->get<GuiRenderable>(m_currentSelection.entity());
 
             ImGui::Checkbox("Enabled##GuiRenderableEnabled", &gui.enabled);
+
+            ImGui::TextUnformatted("Culling Mask"); ImGui::SameLine();
+            if (ImGui::BeginCombo("##GuiRenderableCullingMaskCombo", std::to_string(gui.cullingMask).c_str()))
+            {
+                for (int i = 0; i < 32; i++)
+                {
+                    if (ImGui::Selectable(g_numbersList[i], gui.cullingMask & 1u << i, ImGuiSelectableFlags_DontClosePopups))
+                        gui.cullingMask ^= 1u << i;
+                }
+                ImGui::EndCombo();
+            }
 
             CacheAlias currentName;
             if (currentName.assign(Texture2D::getAlias(gui.texture)); !gui.texture || currentName == INVALID_ALIAS)
