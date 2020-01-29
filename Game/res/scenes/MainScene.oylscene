@@ -38,7 +38,7 @@
     },
     "Anchor 1": {
         "Parent": {
-            "Name": "Boat Root R 1"
+            "Name": "Boat Root L"
         },
         "Renderable": {
             "Enabled": true,
@@ -1318,7 +1318,7 @@
     },
     "Boat Hull 2": {
         "Parent": {
-            "Name": "Boat Root R 1"
+            "Name": "Boat Root L"
         },
         "Renderable": {
             "Enabled": true,
@@ -1427,6 +1427,41 @@
             }
         }
     },
+    "Boat Root L": {
+        "Parent": null,
+        "Renderable": {
+            "Enabled": true,
+            "Material": {
+                "Alias": null
+            },
+            "Mesh": {
+                "FilePath": null
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": 0.0,
+                "Y": 0.0,
+                "Z": 19.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
     "Boat Root R": {
         "Parent": null,
         "Renderable": {
@@ -1448,41 +1483,6 @@
                 "X": 0.0,
                 "Y": 0.0,
                 "Z": -0.5926440358161926
-            },
-            "Rotation": {
-                "qW": 1.0,
-                "qX": 0.0,
-                "qY": 0.0,
-                "qZ": 0.0
-            },
-            "Scale": {
-                "X": 1.0,
-                "Y": 1.0,
-                "Z": 1.0
-            }
-        }
-    },
-    "Boat Root R 1": {
-        "Parent": null,
-        "Renderable": {
-            "Enabled": true,
-            "Material": {
-                "Alias": null
-            },
-            "Mesh": {
-                "FilePath": null
-            }
-        },
-        "Transform": {
-            "Mirror": {
-                "X": false,
-                "Y": false,
-                "Z": false
-            },
-            "Position": {
-                "X": 0.0,
-                "Y": 0.0,
-                "Z": 19.0
             },
             "Rotation": {
                 "qW": 1.0,
@@ -1999,7 +1999,7 @@
     },
     "CannonPortTrim 6": {
         "Parent": {
-            "Name": "Boat Root R 1"
+            "Name": "Boat Root L"
         },
         "Renderable": {
             "Enabled": true,
@@ -2288,7 +2288,7 @@
     },
     "Captains Quarters 2": {
         "Parent": {
-            "Name": "Boat Root R 1"
+            "Name": "Boat Root L"
         },
         "Renderable": {
             "Enabled": true,
@@ -2330,7 +2330,7 @@
         "Renderable": {
             "Enabled": true,
             "Material": {
-                "Alias": "cubeMat"
+                "Alias": "StairMaterial"
             },
             "Mesh": {
                 "FilePath": "res\\assets\\models\\QuartersRail.obj"
@@ -2362,12 +2362,12 @@
     },
     "Captains Quarters Rail 2": {
         "Parent": {
-            "Name": "Boat Root R 1"
+            "Name": "Boat Root L"
         },
         "Renderable": {
             "Enabled": true,
             "Material": {
-                "Alias": "cubeMat"
+                "Alias": "StairMaterial"
             },
             "Mesh": {
                 "FilePath": "res\\assets\\models\\QuartersRail.obj"
@@ -2404,7 +2404,7 @@
         "Renderable": {
             "Enabled": true,
             "Material": {
-                "Alias": "cubeMat"
+                "Alias": "StairMaterial"
             },
             "Mesh": {
                 "FilePath": "res\\assets\\models\\QuartersRail2.obj"
@@ -2441,7 +2441,7 @@
         "Renderable": {
             "Enabled": true,
             "Material": {
-                "Alias": "cubeMat"
+                "Alias": "StairMaterial"
             },
             "Mesh": {
                 "FilePath": "res\\assets\\models\\QuartersRail2.obj"
@@ -2875,7 +2875,7 @@
     },
     "DeckRail 2": {
         "Parent": {
-            "Name": "Boat Root R 1"
+            "Name": "Boat Root L"
         },
         "Renderable": {
             "Enabled": true,
@@ -2949,7 +2949,7 @@
     },
     "Deckrail Top 1": {
         "Parent": {
-            "Name": "Boat Root R 1"
+            "Name": "Boat Root L"
         },
         "Renderable": {
             "Enabled": true,
@@ -3049,7 +3049,7 @@
     },
     "GarbageCanDetail 1": {
         "Parent": {
-            "Name": "Boat Root R 1"
+            "Name": "Boat Root L"
         },
         "Renderable": {
             "Enabled": true,
@@ -3161,7 +3161,7 @@
     },
     "Head 1": {
         "Parent": {
-            "Name": "Boat Root R 1"
+            "Name": "Boat Root L"
         },
         "Renderable": {
             "Enabled": true,
@@ -3685,7 +3685,7 @@
     },
     "Mast 1": {
         "Parent": {
-            "Name": "Boat Root R 1"
+            "Name": "Boat Root L"
         },
         "Renderable": {
             "Enabled": true,
@@ -4568,7 +4568,7 @@
             ]
         },
         "Parent": {
-            "Name": "Boat Root R 1"
+            "Name": "Boat Root L"
         },
         "Renderable": {
             "Enabled": false,
@@ -5122,7 +5122,7 @@
     },
     "Quarters Trim 1": {
         "Parent": {
-            "Name": "Boat Root R 1"
+            "Name": "Boat Root L"
         },
         "Renderable": {
             "Enabled": true,
@@ -6513,7 +6513,7 @@
     },
     "RopeDetail 2": {
         "Parent": {
-            "Name": "Boat Root R 1"
+            "Name": "Boat Root L"
         },
         "Renderable": {
             "Enabled": true,
@@ -6550,7 +6550,7 @@
     },
     "RopeDetail 3": {
         "Parent": {
-            "Name": "Boat Root R 1"
+            "Name": "Boat Root L"
         },
         "Renderable": {
             "Enabled": true,
@@ -6698,7 +6698,7 @@
     },
     "Spawn Door 1": {
         "Parent": {
-            "Name": "Boat Root R 1"
+            "Name": "Boat Root L"
         },
         "Renderable": {
             "Enabled": true,
@@ -6880,7 +6880,7 @@
     },
     "Stair Trim 1": {
         "Parent": {
-            "Name": "Boat Root R 1"
+            "Name": "Boat Root L"
         },
         "Renderable": {
             "Enabled": true,
@@ -7028,7 +7028,7 @@
     },
     "Stairs 3": {
         "Parent": {
-            "Name": "Boat Root R 1"
+            "Name": "Boat Root L"
         },
         "Renderable": {
             "Enabled": true,
@@ -7065,7 +7065,7 @@
     },
     "Stairs 4": {
         "Parent": {
-            "Name": "Boat Root R 1"
+            "Name": "Boat Root L"
         },
         "Renderable": {
             "Enabled": true,
@@ -7102,7 +7102,7 @@
     },
     "Stairs 5": {
         "Parent": {
-            "Name": "Boat Root R 1"
+            "Name": "Boat Root L"
         },
         "Renderable": {
             "Enabled": true,
@@ -7176,7 +7176,7 @@
     },
     "Top Deck 2": {
         "Parent": {
-            "Name": "Boat Root R 1"
+            "Name": "Boat Root L"
         },
         "Renderable": {
             "Enabled": true,
@@ -7354,7 +7354,7 @@
     },
     "Wheel 1": {
         "Parent": {
-            "Name": "Boat Root R 1"
+            "Name": "Boat Root L"
         },
         "Renderable": {
             "Enabled": true,
@@ -7537,7 +7537,7 @@
     },
     "thingy Metal 1": {
         "Parent": {
-            "Name": "Boat Root R 1"
+            "Name": "Boat Root L"
         },
         "Renderable": {
             "Enabled": true,
