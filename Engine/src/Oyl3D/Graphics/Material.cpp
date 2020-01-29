@@ -185,7 +185,7 @@ namespace oyl
 
         auto bindTex = [this](const Ref<Texture2D>& tex, 
                               const std::string&    alias, 
-                              const std::string&    inShaderName, 
+                              const std::string&    inShaderName,
                               int                   bindNum)
         {
             if (tex)

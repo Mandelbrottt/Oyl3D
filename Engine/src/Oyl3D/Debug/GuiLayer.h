@@ -7,7 +7,7 @@
 
 namespace oyl
 {
-    class Camera;
+    class EditorCamera;
 }
 
 namespace oyl::internal
@@ -47,6 +47,9 @@ namespace oyl::internal
         void recursiveDelete(entt::entity entity);
 
         void setEntityParent(entt::entity entity, entt::entity parent);
+
+        template<class T>
+        bool userRemoveComponent();
         
         void drawInspector();
         void drawInspectorObjectName();
@@ -56,6 +59,7 @@ namespace oyl::internal
         void drawInspectorGuiRenderable();
         void drawInspectorRigidBody();
         void drawInspectorLightSource();
+        void drawInspectorCamera();
         void drawInspectorAddComponent();
 
         void drawInspectorMaterial();
@@ -79,13 +83,11 @@ namespace oyl::internal
 
         void applyCustomColorTheme();
 
-    private:
         ImGuiID m_consoleDockSpaceId;
 
         u32 m_editorViewportHandle;
         u32 m_gameViewportHandle;
 
-        // TODO: Make wrapper object with getters and setters for current selection, setters set other object to null
         Selectable m_currentSelection;
 
         ImGuizmo::OPERATION m_currentOp = ImGuizmo::TRANSLATE;
@@ -108,6 +110,20 @@ namespace oyl::internal
         std::unordered_map<std::string, std::fs::file_time_type> m_fileSaveTimes;
         decltype(m_fileSaveTimes)::iterator m_fileSaveTimeIt;
         
-        Ref<Camera> m_editorCamera;
+        Ref<EditorCamera> m_editorCamera;
     };
+
+    template<class T>
+    bool GuiLayer::userRemoveComponent()
+    {
+        if (ImGui::BeginPopupContextItem())
+        {
+            bool removed = false;
+            if (ImGui::Selectable("Delete Component"))
+                registry->remove<T>(m_currentSelection.entity()), removed = true;
+            return ImGui::EndPopup(), removed;
+        }
+        return false;
+    }
+
 }
