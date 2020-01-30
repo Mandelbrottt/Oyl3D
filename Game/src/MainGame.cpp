@@ -114,8 +114,6 @@ public:
                 }
                 break;
             }
-<<<<<<< Updated upstream
-=======
             case EventType::PhysicsCollisionStay:
             {
                 auto e = event_cast<PhysicsCollisionStayEvent>(event);
@@ -135,7 +133,6 @@ public:
 
                 break;
             }
->>>>>>> Stashed changes
         }
         return false;
     }
