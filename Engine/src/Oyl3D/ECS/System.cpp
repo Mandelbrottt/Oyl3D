@@ -259,9 +259,9 @@ namespace oyl
                     auto& lguir = registry->get<GuiRenderable>(lhs);
                     auto& rguir = registry->get<GuiRenderable>(rhs);
 
-                    if (rguir.texture == nullptr)
+                    if (!rguir.enabled || rguir.texture == nullptr)
                         return false;
-                    if (lguir.texture == nullptr)
+                    if (!lguir.enabled || lguir.texture == nullptr)
                         return true;
 
                     auto& lt = registry->get<Transform>(lhs);

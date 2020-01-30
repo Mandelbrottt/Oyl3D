@@ -10,6 +10,9 @@ public:
     void onEnter() override
     {
         listenForEventType(EventType::KeyReleased);
+        listenForEventType(EventType::PhysicsCollisionEnter);
+        listenForEventType(EventType::PhysicsCollisionExit);
+        listenForEventType(EventType::PhysicsCollisionStay);
 
         {
             auto e = registry->create();
@@ -21,9 +24,6 @@ public:
             
             auto& so = registry->assign<component::EntityInfo>(e);
             so.name = "Light 1";
-
-            auto& re = registry->assign<component::Renderable>(e);
-            re.cullingMask = 0b0010;
         }
         {
             auto e = registry->create();
@@ -31,23 +31,9 @@ public:
             auto& camera = registry->assign<component::PlayerCamera>(e);
             camera.player = PlayerNumber::One;
             camera.skybox = TextureCubeMap::get(DEFAULT_SKYBOX_ALIAS);
-
-            camera.cullingMask = 0b0001;
             
             auto& so = registry->assign<component::EntityInfo>(e);
             so.name = "Player Camera";
-        }
-        {
-            auto e = registry->create();
-
-            auto& camera = registry->assign<component::PlayerCamera>(e);
-            camera.player = PlayerNumber::Two;
-            camera.skybox = TextureCubeMap::get(DEFAULT_SKYBOX_ALIAS);
-
-            camera.cullingMask = 0b0010;
-
-            auto& so = registry->assign<component::EntityInfo>(e);
-            so.name = "Player Camera 2";
         }
         {
             entt::entity e = registry->create();
@@ -71,32 +57,38 @@ public:
             auto& shi = cl.pushShape(ColliderType::Box); 
             shi.box.setSize({ 1.0f, 1.0f, 1.0f });
         }
-        {
-            auto e = registry->create();
-            auto& gr = registry->assign<component::GuiRenderable>(e);
-            gr.texture = Texture2D::get("archer");
-
-            gr.cullingMask = 0b0010;
-            
-            auto& ei = registry->assign<component::EntityInfo>(e);
-            ei.name = "Gui Renderable";
-        }
+        //{
+        //    auto e = registry->create();
+        //    auto& gr = registry->assign<component::GuiRenderable>(e);
+        //    gr.texture = Texture2D::get("archer");
+        //}
     }
 
     void onUpdate() override
     {
+        using component::EntityInfo;
         using component::Transform;
-        using component::PlayerCamera;
-        using component::GuiRenderable;
-        auto view = registry->view<PlayerCamera>();
-        view.each([this](PlayerCamera& pc)
+        using component::RigidBody;
+        auto view = registry->view<EntityInfo>();
+        for (auto entity : view)
         {
-            registry->view<GuiRenderable, Transform>().each([&](GuiRenderable& gr, Transform& t)
+            if (view.get(entity).name == "Capsule")
             {
-                glm::vec3 ss = pc.worldToScreenSpace(glm::vec3(0.0f));
-                t.setPosition(ss);
-            });
-        });
+                auto& transform = registry->get<Transform>(entity);
+                auto& rigidbody = registry->get<RigidBody>(entity);
+
+                if (Input::isKeyPressed(Key::W))
+                    rigidbody.addImpulse(transform.getForwardGlobal());
+                if (Input::isKeyPressed(Key::S))
+                    rigidbody.addImpulse(-transform.getForwardGlobal());
+                if (Input::isKeyPressed(Key::A))
+                    rigidbody.addImpulse(-transform.getRightGlobal());
+                if (Input::isKeyPressed(Key::D))
+                    rigidbody.addImpulse(transform.getRightGlobal());
+                if (Input::isKeyPressed(Key::Space))
+                    rigidbody.addImpulse(transform.getUpGlobal());
+            }
+        }
     }
 
     bool onEvent(const Event& event) override
