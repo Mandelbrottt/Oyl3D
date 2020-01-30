@@ -20,6 +20,8 @@ void PlayerSystem::onUpdate()
 		auto& playerTransform = registry->get<component::Transform>(playerEntity);
 		auto& playerRB        = registry->get<component::RigidBody>(playerEntity);
 
+		player.jumpCooldownTimer -= Time::deltaTime();
+
 		switch (player.state)
 		{
 		    case PlayerState::idle:
@@ -198,11 +200,17 @@ bool PlayerSystem::onEvent(const Event& event)
 			else //entity 2 is a player
 				playerEntity = evt.entity2;
 
+			auto& player           = registry->get<Player>(playerEntity);
+			auto& playerTransform  = registry->get<component::Transform>(playerEntity);
 			auto& playerCollidable = registry->get<component::Collidable>(playerEntity);
 			float playerHeight     = playerCollidable.getShape(0).box.getSize().y;
 
 			//check if contact point is below player
-			
+			if (evt.contactPoint.y <= (playerTransform.getPositionY() - playerHeight / 2.0f + 0.01f) && player.jumpCooldownTimer < 0.0f)
+			{
+				player.isJumping = false;
+				player.jumpCooldownTimer = player.JUMP_COOLDOWN_DURATION;
+			}
 		}
 	}
 	return false;

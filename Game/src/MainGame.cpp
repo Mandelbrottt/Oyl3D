@@ -7,13 +7,13 @@
 #include "CustomEvents.h"
 #include "PlayerInteractionValidation.h"
 #include "GarbagePileSystem.h"
-#include "GarbageTickSystem.h"
 #include "UIManagerSystem.h"
 #include "CannonballSystem.h"
 #include "GloopSystem.h"
 #include "CleaningQuicktimeEventSystem.h"
 #include "ItemRespawnSystem.h"
 #include "CameraBreathingSystem.h"
+#include "GarbagePileHealthBarSystem.h"
 
 using namespace oyl;
 
@@ -41,13 +41,13 @@ public:
 		scheduleSystemUpdate<CannonSystem>();
 		scheduleSystemUpdate<PlayerInteractionValidationSystem>();
 		scheduleSystemUpdate<GarbagePileSystem>();
-		scheduleSystemUpdate<GarbageTickSystem>();
 		scheduleSystemUpdate<UIManagerSystem>();
 		scheduleSystemUpdate<CannonballSystem>();
 		scheduleSystemUpdate<GloopSystem>();
 		scheduleSystemUpdate<CleaningQuicktimeEventSystem>();
 		scheduleSystemUpdate<ItemRespawnSystem>();
 		scheduleSystemUpdate<CameraBreathingSystem>();
+		scheduleSystemUpdate<GarbagePileHealthBarSystem>();
 
 		for (int i = 0; i < 4; i++)
 		{
@@ -379,6 +379,35 @@ public:
 
 				auto& indicatorSceneObject = registry->assign<component::EntityInfo>(cleaningQuicktimeEventIndicatorEntity);
 				indicatorSceneObject.name = "Cleaning Quicktime Event Indicator" + std::to_string(i + 1);
+			}
+
+			{
+				for (int k = 0; k < 3; k++)
+				{
+					entt::entity e = registry->create();
+					auto& gui = registry->assign<component::GuiRenderable>(e);
+					gui.texture = Texture2D::cache("res/assets/textures/gui/healthBarTest.png");
+					gui.cullingMask = 0b1 << i;
+
+					//gui.upperClipping.y = 0.5f;
+
+					auto& garbageHPBar = registry->assign<GarbagePileHealthBar>(e);
+					garbageHPBar.garbagePileNum = k - 1;
+					garbageHPBar.playerNum      = (PlayerNumber)i;
+
+					if (garbageHPBar.playerNum == PlayerNumber::One || garbageHPBar.playerNum == PlayerNumber::Three) //1 and 3 are on blue team
+						garbageHPBar.team = Team::blue;
+					else
+						garbageHPBar.team = Team::red;
+
+					component::Transform transform;
+					transform.setPosition(glm::vec3(-30.0f, 0.0f, 0.0f));
+					transform.setScale(glm::vec3(4.0f, 4.0f, 4.0f));
+					registry->assign<component::Transform>(e, transform);
+
+					auto& so = registry->assign<component::EntityInfo>(e);
+					so.name = "testHP" + std::to_string(k) + " For Player" + std::to_string(i);
+				}
 			}
 		}
 

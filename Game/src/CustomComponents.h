@@ -87,6 +87,9 @@ struct Player
 	float jumpForce  = 20.0f;
 	bool isJumping   = false;
 
+	float JUMP_COOLDOWN_DURATION = 0.1f;
+	float jumpCooldownTimer      = 0.0f;
+
 	float adjustingPositionSpeed = 3.333f;
 	float pushingSpeed = 0.2f;
 
@@ -216,10 +219,11 @@ struct EndScreen
 	bool isLoseScreen;
 };
 
-struct GarbageTick
+struct GarbagePileHealthBar
 {
-	float ON_SCREEN_DURATION = 2.5f;
-	float onScreenCountdown = ON_SCREEN_DURATION;
+	Team team;
+	PlayerNumber playerNum = PlayerNumber::One; //player to render to
+	int garbagePileNum = 0;
 };
 
 struct CleaningQuicktimeEventIndicator
