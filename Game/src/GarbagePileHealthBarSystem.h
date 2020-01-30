@@ -4,9 +4,9 @@
 
 using namespace oyl;
 
-class GarbageTickSystem : public System
+class GarbagePileHealthBarSystem : public System
 {
-	OYL_CTOR(GarbageTickSystem, System)
+	OYL_CTOR(GarbagePileHealthBarSystem, System)
 
 	void onEnter() override;
 	void onExit() override;

@@ -88,29 +88,6 @@ bool UIManagerSystem::onEvent(const Event& event)
 
 			break;
 		}
-		case (EventType)TypeGarbageCleaned:
-		{
-			auto evt = event_cast<GarbageCleanedEvent>(event);
-
-			auto garbageTickView = registry->view<component::Transform, GarbageTick>();
-			int i = 0;
-			for (auto& garbageTickEntity : garbageTickView)
-			{
-				auto& garbageTick = registry->get<GarbageTick>(garbageTickEntity);
-				auto& garbageTickTransform = registry->get<component::Transform>(garbageTickEntity);
-
-				garbageTickTransform.setPosition(glm::vec3(100.0f));
-
-				if (evt.numGarbageTicksToDisplay >= i + 1)
-				{
-					garbageTick.onScreenCountdown = garbageTick.ON_SCREEN_DURATION;
-					garbageTickTransform.setPosition(glm::vec3((i * 3.0f) - 3.0f, 4.0f, 0.0f));
-				}
-
-				i++;
-			}
-			break;
-		}
 	}
 
 	return false;
