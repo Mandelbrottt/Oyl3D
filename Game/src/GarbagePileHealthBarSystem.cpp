@@ -19,25 +19,29 @@ void GarbagePileHealthBarSystem::onUpdate()
 		auto& garbageHPBarGui       = registry->get<component::GuiRenderable>(garbageHPBarEntity);
 		auto& garbageHPBarTransform = registry->get<component::Transform>(garbageHPBarEntity);
 
+		//go thru each garbage pile
 		auto garbagePileView = registry->view<GarbagePile, component::Transform>();
 		for (auto garbagePileEntity : garbagePileView)
 		{
 			auto& garbagePile          = registry->get<GarbagePile>(garbagePileEntity);
 			auto& garbagePileTransform = registry->get<component::Transform>(garbagePileEntity);
 
+			//check if the garbage pile is the one that the HP bar is attached to
 			if (garbageHPBar.garbagePileNum == garbagePile.relativePositionOnShip && garbageHPBar.team == garbagePile.team)
 			{
+				//set the HP bar position to the garbage pile's position
 				garbageHPBarTransform.setPosition(garbagePileTransform.getPosition() + glm::vec3(0.0f, 1.0f, 0.0f));
 				break;
 			}
 		}
 
-		auto playerCameraView = registry->view<component::PlayerCamera>();
+		auto playerCameraView = registry->view<component::Camera>();
 		for (auto playerCameraEntity : playerCameraView)
 		{
-			auto& playerCamera          = registry->get<component::PlayerCamera>(playerCameraEntity);
+			auto& playerCamera          = registry->get<component::Camera>(playerCameraEntity);
 			auto& playerCameraTransform = registry->get<component::Transform>(playerCameraEntity);
 
+			//check if the camera should see the HP bar
 			if (playerCamera.player == garbageHPBar.playerNum)
 			{
 				glm::vec3 garbagePileDirection = garbageHPBarTransform.getPosition() - playerCameraTransform.getPositionGlobal();
@@ -45,16 +49,10 @@ void GarbagePileHealthBarSystem::onUpdate()
 					garbagePileDirection = normalize(garbagePileDirection);
 
 				float playerLookDotGarbagePileDirection = glm::dot(playerCameraTransform.getForwardGlobal(), garbagePileDirection);
-
-				if (playerCamera.player == PlayerNumber::One && garbageHPBarGui.enabled)
-					std::cout << playerLookDotGarbagePileDirection << "\n";
-
+				//set screen space position for the HP bar (we set the world position based on the garbage pile position above)
 				garbageHPBarTransform.setPosition(playerCamera.worldToScreenSpace(garbageHPBarTransform.getPosition()));
 
 				garbageHPBarGui.enabled = playerLookDotGarbagePileDirection > 0.0f;
-
-				/*garbageHPBarTransform.setPosition(playerCamera.worldToScreenSpace(garbageHPBarTransform.getPosition()));
-				garbageHPBarGui.enabled = !(garbageHPBarTransform.getPositionZGlobal() < 0.0f);*/
 
 				break;
 			}

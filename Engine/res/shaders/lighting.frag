@@ -7,6 +7,7 @@ struct Material
 	sampler2D albedo;
 	sampler2D specular;
 	sampler2D normal;
+	sampler2D emission;
 
 	vec2 tiling;
 	vec2 offset;
@@ -91,6 +92,7 @@ void main()
 	}
 	
 	out_color = vec4((ambient + diffuse + specular), 1.0);
+	out_color += texture(u_material.emission, mainTexCoord);
 
 	// Gamma Correction
 	vec3 gamma = vec3(1.0 / 2.2);

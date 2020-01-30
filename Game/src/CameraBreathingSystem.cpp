@@ -12,7 +12,7 @@ void CameraBreathingSystem::onExit()
 
 void CameraBreathingSystem::onUpdate()
 {
-	auto playerCameraView = registry->view<component::PlayerCamera, CameraBreathing, component::Transform>();
+	auto playerCameraView = registry->view<component::Camera, CameraBreathing, component::Transform>();
 	for (auto& cameraEntity : playerCameraView)
 	{
 		auto& cameraTransform = registry->get<component::Transform>(cameraEntity);

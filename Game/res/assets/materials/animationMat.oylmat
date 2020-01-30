@@ -1,8 +1,18 @@
 {
     "Material": {
         "Alias": "animationMat",
+        "MainProperties": {
+            "Offset": [
+                0.0,
+                0.0
+            ],
+            "Tiling": [
+                1.0,
+                1.0
+            ]
+        },
         "Shader": {
-            "Alias": "animation",
+            "Alias": null,
             "Pixel": {
                 "FilePath": "../Engine/res/shaders/lighting.frag",
                 "guid": null
@@ -14,13 +24,23 @@
         },
         "Textures": {
             "Albedo": {
-                "Alias": "brickwall",
-                "FilePath": "res\\assets\\textures\\brickwall.jpg",
+                "Alias": "Bark_Pine_baseColor",
+                "FilePath": "res\\assets\\textures\\Bark_Pine_baseColor.jpg",
+                "Profile": 1,
+                "guid": null
+            },
+            "Normal": {
+                "Alias": "Bark_Pine_normal",
+                "FilePath": "res\\assets\\textures\\Bark_Pine_normal.jpg",
                 "Profile": 0,
                 "guid": null
             },
-            "Normal": null,
-            "Specular": null
+            "Specular": {
+                "Alias": "Oyl Black",
+                "FilePath": "../Engine/res/textures/black.png",
+                "Profile": 0,
+                "guid": null
+            }
         }
     }
 }

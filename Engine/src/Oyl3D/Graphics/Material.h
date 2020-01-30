@@ -103,6 +103,7 @@ namespace oyl
         Ref<Texture2D> albedoMap;
         Ref<Texture2D> specularMap;
         Ref<Texture2D> normalMap;
+        Ref<Texture2D> emissionMap;
 
         TextureProps mainTextureProps;
 

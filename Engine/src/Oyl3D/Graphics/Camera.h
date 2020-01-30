@@ -1,16 +1,13 @@
 #pragma once
 #include <glm/common.hpp>
-#include "Camera.h"
 
 namespace oyl
 {
-
-// TODO: have a dirty flag
-    class Camera
+    class EditorCamera
     {
     public:
-        explicit Camera()  = default;
-        virtual  ~Camera() = default;
+        explicit EditorCamera()  = default;
+        virtual  ~EditorCamera() = default;
 
         const glm::mat4& getViewMatrix() const;
         glm::mat4        getViewProjectionMatrix() const;

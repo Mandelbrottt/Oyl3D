@@ -59,7 +59,7 @@ namespace oyl
         {
             using component::Transform;
             using component::Renderable;
-            using component::PlayerCamera;
+            using component::Camera;
             using component::PointLight;
 
             const auto& skybox = TextureCubeMap::get(DEFAULT_SKYBOX_ALIAS);
@@ -89,7 +89,7 @@ namespace oyl
 
             Ref<Material> boundMaterial;
 
-            auto camView = registry->view<Transform, PlayerCamera>();
+            auto camView = registry->view<Transform, Camera>();
             
             int x = m_windowSize.x / 2;
             int y = camView.size() > 2 ? m_windowSize.y / 2 : 0;
@@ -102,7 +102,7 @@ namespace oyl
             
             for (auto camera : camView)
             {
-                PlayerCamera& pc = camView.get<PlayerCamera>(camera);
+                Camera& pc = camView.get<Camera>(camera);
 
                 u32 playerNum = static_cast<u32>(pc.player);
                 RenderCommand::setDrawRect(!!(playerNum & 1) * x, !(playerNum & 2) * y, width, height);
@@ -251,7 +251,7 @@ namespace oyl
         {
             using component::GuiRenderable;
             using component::Transform;
-            using component::PlayerCamera;
+            using component::Camera;
 
             registry->sort<GuiRenderable>(
                 [this](const entt::entity lhs, const entt::entity rhs)
@@ -259,9 +259,9 @@ namespace oyl
                     auto& lguir = registry->get<GuiRenderable>(lhs);
                     auto& rguir = registry->get<GuiRenderable>(rhs);
 
-                    if (rguir.texture == nullptr)
+                    if (!lguir.enabled || lguir.texture == nullptr)
                         return false;
-                    if (lguir.texture == nullptr)
+                    if (!rguir.enabled || rguir.texture == nullptr)
                         return true;
 
                     auto& lt = registry->get<Transform>(lhs);
@@ -281,7 +281,7 @@ namespace oyl
 
             RenderCommand::setDepthDraw(false);
 
-            auto camView = registry->view<PlayerCamera>();
+            auto camView = registry->view<Camera>();
 
             int x = m_windowSize.x / 2;
             int y = camView.size() > 2 ? m_windowSize.y / 2 : 0;
@@ -1260,7 +1260,7 @@ namespace oyl
             listenForEventType(EventType::EditorViewportResized);
             listenForEventType(EventType::EditorCameraMoveRequest);
 
-            m_camera = Ref<Camera>::create();
+            m_camera = Ref<EditorCamera>::create();
             m_camera->setProjection(glm::perspective(glm::radians(60.0f), 16.0f / 9.0f, 0.1f, 1000.0f));
             m_camera->setPosition(glm::vec3(10.0f, 5.0f, 10.0f));
             m_camera->lookAt(glm::vec3(0.0f, 0.0f, 0.0f));
@@ -1418,7 +1418,7 @@ namespace oyl
         {
             using component::Transform;
             using component::Renderable;
-            using component::PlayerCamera;
+            using component::Camera;
             using component::PointLight;
             
             m_editorViewportBuffer->clear();

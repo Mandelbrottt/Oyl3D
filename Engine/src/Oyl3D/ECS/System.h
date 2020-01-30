@@ -8,7 +8,7 @@
 
 namespace oyl
 {
-    class Camera;
+    class EditorCamera;
 
     class ISystem : public virtual Node
     {

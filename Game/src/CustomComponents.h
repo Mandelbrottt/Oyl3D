@@ -224,6 +224,10 @@ struct GarbagePileHealthBar
 	Team team;
 	PlayerNumber playerNum = PlayerNumber::One; //player to render to
 	int garbagePileNum = 0;
+
+	float interpolationSpeed = 1.2f;
+	float interpolationParam = 1.0f; //start with the bar full
+	float targetValue        = 1.0f;
 };
 
 struct CleaningQuicktimeEventIndicator
