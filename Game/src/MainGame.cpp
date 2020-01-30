@@ -316,24 +316,6 @@ public:
 			}
 
 			{
-				/*for (int i = 0; i < 3; i++)
-				{
-					entt::entity e = registry->create();
-					auto& gui = registry->assign<component::GuiRenderable>(e);
-					gui.texture = Texture2D::cache("res/assets/textures/gui/garbageTick.png");
-
-					auto& garbageTick = registry->assign<GarbageTick>(e);
-
-					component::Transform garbageTickTransform;
-					garbageTickTransform.setPosition(glm::vec3(-100.0f, -100.0f, -200.0f));
-					registry->assign<component::Transform>(e, garbageTickTransform);
-
-					auto& so = registry->assign<component::EntityInfo>(e);
-					so.name = "Garbage Tick" + std::to_string(i) + " For Player " + std::to_string(i + 1);
-				}*/
-			}
-
-			{
 				//background for cleaning quicktime event
 				entt::entity cleaningQuicktimeEventBackgroundEntity = registry->create();
 				auto& backgroundGUI = registry->assign<component::GuiRenderable>(cleaningQuicktimeEventBackgroundEntity);
@@ -386,10 +368,10 @@ public:
 				{
 					entt::entity e = registry->create();
 					auto& gui = registry->assign<component::GuiRenderable>(e);
-					gui.texture = Texture2D::cache("res/assets/textures/gui/healthBarTest.png");
+					gui.texture = Texture2D::cache("res/assets/textures/gui/garbagePileHPBar.png");
 					gui.cullingMask = 0b1 << i;
 
-					//gui.upperClipping.y = 0.5f;
+					//gui.upperClipping.y = 0.8f;
 
 					auto& garbageHPBar = registry->assign<GarbagePileHealthBar>(e);
 					garbageHPBar.garbagePileNum = k - 1;
