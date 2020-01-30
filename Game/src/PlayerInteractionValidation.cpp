@@ -128,10 +128,10 @@ void PlayerInteractionValidationSystem::performRaycastAndValidateForPlayer(entt:
 	//get the camera associated with the player
 	entt::entity playersCameraEntity = entt::null;
 
-	auto cameraView = registry->view<component::PlayerCamera, component::Transform>();
+	auto cameraView = registry->view<component::Camera, component::Transform>();
 	for (entt::entity cameraEntity : cameraView)
 	{
-		if (player.playerNum == registry->get<component::PlayerCamera>(cameraEntity).player)
+		if (player.playerNum == registry->get<component::Camera>(cameraEntity).player)
 		{
 			playersCameraEntity = cameraEntity;
 			//set the camera parent to the player in case it hasn't already been done

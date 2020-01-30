@@ -273,11 +273,11 @@ namespace oyl
                          entt::entity entity;
                      });
 
-    class Camera;
+    class EditorCamera;
     
     OYL_EVENT_STRUCT(EditorCameraChangedEvent, EventType::EditorCameraChanged, EventCategory::Editor,
                      {
-                         Ref<Camera>* camera;
+                         Ref<EditorCamera>* camera;
                      });
 
     OYL_EVENT_STRUCT(EditorCameraMoveRequestEvent, EventType::EditorCameraMoveRequest, EventCategory::Editor,

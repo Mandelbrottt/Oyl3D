@@ -497,10 +497,10 @@ public:
 					playerTransform.setRotationEulerY(player.yRotationClamp);
 			}
 
-			auto playerCameraView = registry->view<component::PlayerCamera, component::Transform, component::Parent>();
+			auto playerCameraView = registry->view<component::Camera, component::Transform, component::Parent>();
 			for (auto& cameraEntity : playerCameraView)
 			{
-				auto& camera          = registry->get<component::PlayerCamera>(cameraEntity);
+				auto& camera          = registry->get<component::Camera>(cameraEntity);
 				auto& cameraTransform = registry->get<component::Transform>(cameraEntity);
 				auto& cameraParent    = registry->get<component::Parent>(cameraEntity);
 
@@ -710,10 +710,10 @@ public:
 				}
 			}
 
-			auto playerCameraView = registry->view<component::PlayerCamera, component::Transform>();
+			auto playerCameraView = registry->view<component::Camera, component::Transform>();
 			for (auto& cameraEntity : playerCameraView)
 			{
-				auto& camera          = registry->get<component::PlayerCamera>(cameraEntity);
+				auto& camera          = registry->get<component::Camera>(cameraEntity);
 				auto& cameraTransform = registry->get<component::Transform>(cameraEntity);
 
 				if (camera.player != PlayerNumber::One)

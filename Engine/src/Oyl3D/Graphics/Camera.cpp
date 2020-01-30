@@ -3,17 +3,17 @@
 
 namespace oyl
 {
-    const glm::mat4& Camera::getViewMatrix() const
+    const glm::mat4& EditorCamera::getViewMatrix() const
     {
         return m_view;
     }
 
-    glm::mat4 Camera::getViewProjectionMatrix() const
+    glm::mat4 EditorCamera::getViewProjectionMatrix() const
     {
         return m_projection * m_view;
     }
 
-    void Camera::setPosition(glm::vec3 position)
+    void EditorCamera::setPosition(glm::vec3 position)
     {
         glm::vec3 temp = glm::vec4(-glm::mat3(m_view) * position, 1.0f);
 
@@ -24,7 +24,7 @@ namespace oyl
         m_position = position;
     }
 
-    void Camera::setRotation(const glm::quat& rot)
+    void EditorCamera::setRotation(const glm::quat& rot)
     {
         m_view = glm::mat4(1.0f);
 
@@ -32,7 +32,7 @@ namespace oyl
         m_view = glm::mat4_cast(rot) * m_view;
     }
 
-    void Camera::setRotation(glm::vec3 rot)
+    void EditorCamera::setRotation(glm::vec3 rot)
     {
         rot = glm::radians(rot);
 
@@ -48,12 +48,12 @@ namespace oyl
         m_view = temp * m_view;
     }
 
-    void Camera::lookAt(const glm::vec3& target, const glm::vec3& up)
+    void EditorCamera::lookAt(const glm::vec3& target, const glm::vec3& up)
     {
         m_view = glm::lookAt(m_position, target, up);
     }
 
-    void Camera::rotate(const glm::quat& rot)
+    void EditorCamera::rotate(const glm::quat& rot)
     {
         if (rot != glm::quat(glm::vec3(0.0f)))
         {
@@ -61,13 +61,13 @@ namespace oyl
         }
     }
 
-    void Camera::rotate(glm::vec3 rot)
+    void EditorCamera::rotate(glm::vec3 rot)
     {
         rot = glm::radians(rot);
         rotate(glm::quat(rot));
     }
     
-    void Camera::move(const glm::vec3& local)
+    void EditorCamera::move(const glm::vec3& local)
     {
         if (local != glm::vec3(0.0f))
         {

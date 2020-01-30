@@ -32,10 +32,10 @@ void GarbagePileHealthBarSystem::onUpdate()
 			}
 		}
 
-		auto playerCameraView = registry->view<component::PlayerCamera>();
+		auto playerCameraView = registry->view<component::Camera>();
 		for (auto playerCameraEntity : playerCameraView)
 		{
-			auto& playerCamera          = registry->get<component::PlayerCamera>(playerCameraEntity);
+			auto& playerCamera          = registry->get<component::Camera>(playerCameraEntity);
 			auto& playerCameraTransform = registry->get<component::Transform>(playerCameraEntity);
 
 			if (playerCamera.player == garbageHPBar.playerNum)
@@ -51,7 +51,7 @@ void GarbagePileHealthBarSystem::onUpdate()
 
 				garbageHPBarTransform.setPosition(playerCamera.worldToScreenSpace(garbageHPBarTransform.getPosition()));
 
-				garbageHPBarGui.enabled = playerLookDotGarbagePileDirection > 0.0f;
+				//garbageHPBarGui.enabled = playerLookDotGarbagePileDirection > 0.0f;
 
 				/*garbageHPBarTransform.setPosition(playerCamera.worldToScreenSpace(garbageHPBarTransform.getPosition()));
 				garbageHPBarGui.enabled = !(garbageHPBarTransform.getPositionZGlobal() < 0.0f);*/

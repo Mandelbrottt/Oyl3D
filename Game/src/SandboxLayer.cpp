@@ -53,7 +53,7 @@ void SandboxLayer::onEnter()
 			auto& cameraTransform = registry->assign<component::Transform>(playerCameraEntity);
 			cameraTransform.setPosition(glm::vec3(0.0f, 0.8f, -0.5f));
 
-			auto& camera = registry->assign<component::PlayerCamera>(playerCameraEntity);
+			auto& camera = registry->assign<component::Camera>(playerCameraEntity);
 			camera.player = player.playerNum;
 			camera.cullingMask = 0b0001;
 
@@ -103,7 +103,7 @@ void SandboxLayer::onEnter()
 			auto& cameraTransform = registry->assign<component::Transform>(playerCameraEntity);
 			cameraTransform.setPosition(glm::vec3(0.0f, 0.8f, -0.5f));
 
-			auto& camera = registry->assign<component::PlayerCamera>(playerCameraEntity);
+			auto& camera = registry->assign<component::Camera>(playerCameraEntity);
 			camera.player = player.playerNum;
 			camera.cullingMask = 0b0100;
 
@@ -520,7 +520,7 @@ void SandboxLayer::onEnter()
 			auto& cameraTransform = registry->assign<component::Transform>(playerCameraEntity);
 			cameraTransform.setPosition(glm::vec3(0.0f, 0.8f, -0.5f));
 
-			auto& camera = registry->assign<component::PlayerCamera>(playerCameraEntity);
+			auto& camera = registry->assign<component::Camera>(playerCameraEntity);
 			camera.player = player.playerNum;
 			camera.cullingMask = 0b0010;
 
@@ -570,7 +570,7 @@ void SandboxLayer::onEnter()
 			auto& cameraTransform = registry->assign<component::Transform>(playerCameraEntity);
 			cameraTransform.setPosition(glm::vec3(0.0f, 0.8f, -0.5f));
 
-			auto& camera = registry->assign<component::PlayerCamera>(playerCameraEntity);
+			auto& camera = registry->assign<component::Camera>(playerCameraEntity);
 			camera.player = player.playerNum;
 			camera.cullingMask = 0b1000;
 
