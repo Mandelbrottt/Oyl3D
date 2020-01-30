@@ -114,6 +114,28 @@ public:
                 }
                 break;
             }
+<<<<<<< Updated upstream
+=======
+            case EventType::PhysicsCollisionStay:
+            {
+                auto e = event_cast<PhysicsCollisionStayEvent>(event);
+
+                component::Transform* t;
+                if (registry->has<entt::tag<"container"_hs>>(e.entity1))
+                    t = &registry->get<component::Transform>(e.entity1);
+                else if (registry->has<entt::tag<"container"_hs>>(e.entity2))
+                    t = &registry->get<component::Transform>(e.entity2);
+                else
+                    break;
+                
+                float dot = glm::dot(glm::vec3(0, -1, 0), normalize(e.contactPoint - t->getPositionGlobal()));
+
+                OYL_LOG("Contact Point: ({0}, {1}, {2})", e.contactPoint.x, e.contactPoint.y, e.contactPoint.z);
+                OYL_LOG("Dot: {0}", dot);
+
+                break;
+            }
+>>>>>>> Stashed changes
         }
         return false;
     }
