@@ -28,7 +28,7 @@ public:
         {
             auto e = registry->create();
 
-            auto& camera = registry->assign<component::PlayerCamera>(e);
+            auto& camera = registry->assign<component::Camera>(e);
             camera.player = PlayerNumber::One;
             camera.skybox = TextureCubeMap::get(DEFAULT_SKYBOX_ALIAS);
             
@@ -40,6 +40,8 @@ public:
 
             auto& so = registry->assign<component::EntityInfo>(e);
             so.name = "Container";
+
+            registry->assign<entt::tag<"container"_hs>>(e);
 
             auto& rb = registry->assign<component::RigidBody>(e);
             rb.setMass(0.0f);
@@ -69,24 +71,24 @@ public:
         using component::EntityInfo;
         using component::Transform;
         using component::RigidBody;
-        auto view = registry->view<EntityInfo>();
+        auto view = registry->view<entt::tag<"container"_hs>>();
         for (auto entity : view)
         {
-            if (view.get(entity).name == "Capsule")
-            {
-                auto& transform = registry->get<Transform>(entity);
-                auto& rigidbody = registry->get<RigidBody>(entity);
+            Transform& transform = registry->get<Transform>(entity);
+            RigidBody& rigidbody = registry->get<RigidBody>(entity);
 
-                if (Input::isKeyPressed(Key::W))
-                    rigidbody.addImpulse(transform.getForwardGlobal());
-                if (Input::isKeyPressed(Key::S))
-                    rigidbody.addImpulse(-transform.getForwardGlobal());
-                if (Input::isKeyPressed(Key::A))
-                    rigidbody.addImpulse(-transform.getRightGlobal());
-                if (Input::isKeyPressed(Key::D))
-                    rigidbody.addImpulse(transform.getRightGlobal());
-                if (Input::isKeyPressed(Key::Space))
-                    rigidbody.addImpulse(transform.getUpGlobal());
+            if (Input::isKeyPressed(Key::W))
+                rigidbody.addImpulse(transform.getForwardGlobal());
+            if (Input::isKeyPressed(Key::S))
+                rigidbody.addImpulse(-transform.getForwardGlobal());
+            if (Input::isKeyPressed(Key::A))
+                rigidbody.addImpulse(-transform.getRightGlobal());
+            if (Input::isKeyPressed(Key::D))
+                rigidbody.addImpulse(transform.getRightGlobal());
+            if (Input::isKeyPressed(Key::Space) && registry->has<entt::tag<"CanJump"_hs>>(entity))
+            {
+                rigidbody.addImpulse(glm::vec3(0.0f, 5.0f, 0.0f));
+                registry->remove<entt::tag<"CanJump"_hs>>(entity);
             }
         }
     }
@@ -117,19 +119,20 @@ public:
             case EventType::PhysicsCollisionStay:
             {
                 auto e = event_cast<PhysicsCollisionStayEvent>(event);
-
+                entt::entity container;
+                
                 component::Transform* t;
                 if (registry->has<entt::tag<"container"_hs>>(e.entity1))
-                    t = &registry->get<component::Transform>(e.entity1);
+                    container = e.entity1, t = &registry->get<component::Transform>(e.entity1);
                 else if (registry->has<entt::tag<"container"_hs>>(e.entity2))
-                    t = &registry->get<component::Transform>(e.entity2);
+                    container = e.entity2, t = &registry->get<component::Transform>(e.entity2);
                 else
                     break;
                 
                 float dot = glm::dot(glm::vec3(0, -1, 0), normalize(e.contactPoint - t->getPositionGlobal()));
 
-                OYL_LOG("Contact Point: ({0}, {1}, {2})", e.contactPoint.x, e.contactPoint.y, e.contactPoint.z);
-                OYL_LOG("Dot: {0}", dot);
+                if (dot > 0.6f && !registry->has<entt::tag<"CanJump"_hs>>(container))
+                    registry->assign<entt::tag<"CanJump"_hs>>(container);
 
                 break;
             }
