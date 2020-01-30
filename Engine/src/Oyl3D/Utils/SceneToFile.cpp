@@ -1,6 +1,7 @@
 #include "oylpch.h"
 #include "SceneToFile.h"
 
+#include "Components/Camera.h"
 #include "Components/Collidable.h"
 #include "Components/Lights.h"
 #include "Components/Misc.h"
@@ -39,6 +40,19 @@ namespace glm
         int i = 0;
         for (const auto& it : j)
             it.get_to(v[i++]);
+    }
+}
+
+namespace oyl
+{
+    void to_json(json& j, const PlayerNumber& num)
+    {
+        j = static_cast<uint>(num);
+    }
+    
+    void from_json(const json& j, PlayerNumber& num)
+    {
+        num = static_cast<PlayerNumber>(j.get<uint>());
     }
 }
 
@@ -329,6 +343,38 @@ namespace oyl::internal
         jLight["Attenuation"] = ls.attenuation;
 
         j.push_back(std::move(jLight));
+    }
+
+    static void saveCamera(entt::entity entity, entt::registry& registry, json& j)
+    {
+        using component::Camera;
+
+        auto& camera = registry.get<Camera>(entity);
+
+        j["CullingMask"]  = camera.cullingMask;
+        j["Player"]       = camera.player;
+        j["Enabled"]      = camera.enabled;
+        j["Fov"]          = camera.fov();
+        j["NearClipping"] = camera.nearClipping();
+        j["FarClipping"]  = camera.farClipping();
+
+        auto& jClear = j["ClearProps"];
+        {
+            auto& jSkybox = jClear["Skybox"];
+            if (camera.skybox)
+            {
+                auto& jAlias = jSkybox["Alias"];
+                if (const std::string& alias = TextureCubeMap::getAlias(camera.skybox); alias != INVALID_ALIAS)
+                    jAlias = alias;
+
+                auto& jFile = jSkybox["FilePath"];
+                if (!camera.skybox->getFilePath().empty())
+                    jFile = camera.skybox->getFilePath();
+            }
+        }
+
+        // TODO: Add lower and upper bounds
+
     }
 
     void loadTransform(entt::entity entity, entt::registry& registry, const json& j)
@@ -626,6 +672,61 @@ namespace oyl::internal
         }
     }
 
+    static void loadCamera(entt::entity entity, entt::registry& registry, const json& j)
+    {
+        using component::Camera;
+
+        auto& re = registry.get_or_assign<Camera>(entity);
+
+        if (auto it = j.find("Enabled"); it != j.end())
+            it->get_to(re.enabled);
+
+        if (auto it = j.find("CullingMask"); it != j.end() && it->is_number_unsigned())
+            it->get_to(re.cullingMask);
+
+        if (auto it = j.find("Enabled"); it != j.end() && it->is_boolean())
+            it->get_to(re.cullingMask);
+
+        if (auto it = j.find("Fov"); it != j.end() && it->is_number_float())
+            re.fov(it->get<float>());
+
+        if (auto it = j.find("NearClipping"); it != j.end() && it->is_number_float())
+            re.nearClipping(it->get<float>());
+
+        if (auto it = j.find("FarClipping"); it != j.end() && it->is_number_float())
+            re.farClipping(it->get<float>());
+
+        if (auto it = j.find("ClearProps"); it != j.end() && it->is_object())
+        {
+            if (auto sIt = it->find("Skybox"); sIt != it->end() && sIt->is_object())
+            {
+                bool doLoad = false;
+                if (auto alIt = it->find("Alias"); alIt != it->end() && alIt->is_string())
+                {
+                    if (TextureCubeMap::exists(alIt->get<std::string>()))
+                        re.skybox = TextureCubeMap::get(alIt->get<std::string>());
+                    else
+                        doLoad = true;
+                } else doLoad = true;
+
+                if (auto fpIt = it->find("FilePath"); doLoad && fpIt != it->end() && !fpIt->is_null())
+                {
+                    auto filePath = fpIt->get<std::string>();
+
+                    bool meshFound = false;
+                    for (const auto& [alias, cubemap] : TextureCubeMap::getCache())
+                    {
+                        if (cubemap->getFilePath() == filePath)
+                            meshFound = true, re.skybox = cubemap;
+                    }
+
+                    if (!meshFound && (!re.skybox || re.skybox && re.skybox->getFilePath() != filePath))
+                        re.skybox = TextureCubeMap::cache(filePath);
+                }
+            } else re.skybox = nullptr;
+        }
+    }
+
     static void entityToJson(entt::entity entity, entt::registry& registry, json& j);
     
     static void entityFromJson(entt::entity entity, entt::registry& registry, json& j);
@@ -732,6 +833,9 @@ namespace oyl::internal
 
         if (registry.has<component::PointLight>(entity))
             saveLightSource(entity, registry, j["LightSource"]);
+
+        if (registry.has<component::Camera>(entity))
+            saveCamera(entity, registry, j["Camera"]);
     }
 
     static void entityFromJson(entt::entity entity, entt::registry& registry, json& j)
@@ -756,6 +860,9 @@ namespace oyl::internal
 
         if (auto it = j.find("LightSource"); it != j.end())
             loadLightSource(entity, registry, it.value());
+
+        if (auto it = j.find("Camera"); it != j.end())
+            loadCamera(entity, registry, it.value());
     }
 
     Ref<Material> materialFromFile(const std::string& filepath)

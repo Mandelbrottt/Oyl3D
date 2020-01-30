@@ -713,6 +713,7 @@ namespace oyl::internal
                 drawInspectorCollidable();
                 drawInspectorRigidBody();
                 drawInspectorLightSource();
+                drawInspectorCamera();
                 drawInspectorAddComponent();
             }
             else if (m_currentSelection.type() == Selectable::Type::Material)
@@ -904,7 +905,6 @@ namespace oyl::internal
     void GuiLayer::drawInspectorRenderable()
     {
         using component::Renderable;
-        using component::EntityInfo;
 
         if (!registry->has<Renderable>(m_currentSelection.entity())) return;
 
@@ -912,16 +912,8 @@ namespace oyl::internal
 
         bool open = ImGui::CollapsingHeader("Renderable##InspectorRenderableProperties");
 
-        if (ImGui::BeginPopupContextItem())
-        {
-            if (ImGui::Selectable("Delete Component"))
-            {
-                registry->remove<Renderable>(m_currentSelection.entity());
-                open = false;
-            }
-            ImGui::EndPopup();
-        }
-        
+        open |= !userRemoveComponent<Renderable>();
+
         if (open)
         {
             ImGui::Indent(10);
@@ -931,7 +923,10 @@ namespace oyl::internal
             ImGui::Checkbox("Enabled", &renderable.enabled);
 
             ImGui::TextUnformatted("Culling Mask"); ImGui::SameLine();
-            if (ImGui::BeginCombo("##RenderableCullingMaskCombo", std::to_string(renderable.cullingMask).c_str()))
+            char preview[33]{ 0 };
+            for (size_t i = 0; i < sizeof(preview); i++)
+                preview[i] = char('0' + !!(renderable.cullingMask & 1u << (32u - i)));
+            if (ImGui::BeginCombo("##RenderableCullingMaskCombo", preview))
             {
                 for (int i = 0; i < 32; i++)
                 {
@@ -1000,7 +995,6 @@ namespace oyl::internal
     void GuiLayer::drawInspectorGuiRenderable()
     {
         using component::GuiRenderable;
-        using component::EntityInfo;
 
         if (!registry->has<GuiRenderable>(m_currentSelection.entity())) return;
 
@@ -1008,15 +1002,7 @@ namespace oyl::internal
 
         bool open = ImGui::CollapsingHeader("GuiRenderable##InspectorGuiRenderableProperties");
 
-        if (ImGui::BeginPopupContextItem())
-        {
-            if (ImGui::Selectable("Delete Component"))
-            {
-                registry->remove<GuiRenderable>(m_currentSelection.entity());
-                open = false;
-            }
-            ImGui::EndPopup();
-        }
+        open |= !userRemoveComponent<GuiRenderable>();
 
         if (open)
         {
@@ -1027,7 +1013,10 @@ namespace oyl::internal
             ImGui::Checkbox("Enabled##GuiRenderableEnabled", &gui.enabled);
 
             ImGui::TextUnformatted("Culling Mask"); ImGui::SameLine();
-            if (ImGui::BeginCombo("##GuiRenderableCullingMaskCombo", std::to_string(gui.cullingMask).c_str()))
+            char preview[33]{ 0 };
+            for (size_t i = 0; i < sizeof(preview); i++)
+                preview[i] = char('0' + !!(gui.cullingMask & 1u << (32u - i)));
+            if (ImGui::BeginCombo("##GuiRenderableCullingMaskCombo", preview))
             {
                 for (int i = 0; i < 32; i++)
                 {
@@ -1065,10 +1054,10 @@ namespace oyl::internal
             int flags = ImGuiInputTextFlags_EnterReturnsTrue;
             const float posDragSpeed = 0.02f;
             float newWidth = ImGui::GetWindowContentRegionWidth() / 6;
-            ImGui::PushItemWidth(newWidth);
 
             ImGui::TextUnformatted("Clipping");
             {
+                ImGui::PushItemWidth(newWidth);
                 ImGui::Indent(10);
             
                 ImGui::TextUnformatted("Lower");
@@ -1096,6 +1085,7 @@ namespace oyl::internal
                 ImGui::InputFloat("##UpperClippingInputY", &gui.upperClipping.y, 0, 0, "%.2f", flags);
 
                 ImGui::Unindent(10);
+                ImGui::PopItemWidth();
             }
             
             ImGui::Unindent(10);
@@ -1117,16 +1107,8 @@ namespace oyl::internal
 
         bool open = ImGui::CollapsingHeader("Collidable##InspectorColliderProperties");
 
-        if (ImGui::BeginPopupContextItem())
-        {
-            if (ImGui::Selectable("Delete Component"))
-            {
-                registry->remove<Collidable>(m_currentSelection.entity());
-                open = false;
-            }
-            ImGui::EndPopup();
-        }
-        
+        open |= !userRemoveComponent<Collidable>();
+
         if (open)
         {
             ImGui::Indent(10);
@@ -1352,15 +1334,7 @@ namespace oyl::internal
 
         bool open = ImGui::CollapsingHeader("RigidBody##InspectorRigidBody");
 
-        if (ImGui::BeginPopupContextItem())
-        {
-            if (ImGui::Selectable("Delete Component"))
-            {
-                registry->remove<RigidBody>(m_currentSelection.entity());
-                open = false;
-            }
-            ImGui::EndPopup();
-        }
+        open |= !userRemoveComponent<RigidBody>();
         
         if (open)
         {
@@ -1455,15 +1429,7 @@ namespace oyl::internal
 
         bool open = ImGui::CollapsingHeader("Light Source##InspectorLightSource");
 
-        if (ImGui::BeginPopupContextItem())
-        {
-            if (ImGui::Selectable("Delete Component"))
-            {
-                registry->remove<PointLight>(m_currentSelection.entity());
-                open = false;
-            }
-            ImGui::EndPopup();
-        }
+        open |= !userRemoveComponent<PointLight>();
 
         if (open)
         {
@@ -1482,6 +1448,105 @@ namespace oyl::internal
         }
     }
 
+    void GuiLayer::drawInspectorCamera()
+    {
+        // TEMPORARY: Change when adding LightSource component
+        using component::Camera;
+
+        if (!registry->has<Camera>(m_currentSelection.entity()))
+            return;
+
+        ImGui::SetNextItemOpen(true, ImGuiCond_Once);
+
+        bool open = ImGui::CollapsingHeader("Camera##InspectorCamera");
+
+        open |= !userRemoveComponent<Camera>();
+
+        if (open)
+        {
+            ImGui::Indent(10);
+
+            auto& camera = registry->get<Camera>(m_currentSelection.entity());
+
+            ImGui::Checkbox("Enabled##CameraEnabled", &camera.enabled);
+
+            ImGui::TextUnformatted("Culling Mask"); ImGui::SameLine();
+            char preview[33]{ 0 };
+            for (size_t i = 0; i < sizeof(preview); i++)
+                preview[i] = char('0' + !!(camera.cullingMask & 1u << (32u - i)));
+            if (ImGui::BeginCombo("##CameraCullingMaskCombo", preview))
+            {
+                for (int i = 0; i < 32; i++)
+                {
+                    if (ImGui::Selectable(g_numbersList[i], camera.cullingMask & 1u << i, ImGuiSelectableFlags_DontClosePopups))
+                        camera.cullingMask ^= 1u << i;
+                }
+                ImGui::EndCombo();
+            }
+
+            // TEMPORARY:
+            ImGui::TextUnformatted("Player Number");
+            if (ImGui::BeginCombo("##CameraPlayerNumber", g_numbersList[static_cast<uint>(camera.player)]))
+            {
+                for (uint i = 0; i < static_cast<uint>(PlayerNumber::Four); i++)
+                {
+                    if (ImGui::Selectable(g_numbersList[i], i == static_cast<uint>(camera.player)))
+                    {
+                        registry->view<Camera>().each([&](Camera& a_camera)
+                        {
+                            if (a_camera.player == camera.player)
+                                std::swap(a_camera.player, camera.player);
+                        });
+                    }
+                }
+                ImGui::EndCombo();
+            }
+            {
+                bool changed = false;
+                float fov = camera.fov();
+                ImGui::TextUnformatted("Field of View");
+                ImGui::SameLine();
+                ImGui::SetNextItemWidth(15);
+                changed |= ImGui::DragFloat("##DragFov", &fov, 0.2f, 0.0f, 1000.0f, "F");
+                ImGui::SameLine();
+                changed |= ImGui::InputFloat("##FovInput", &fov, 0, 0, "%.2f");
+                if (changed)
+                    camera.fov(fov);
+            }
+            {
+                bool changed = false;
+                float nearClipping = camera.nearClipping();
+                ImGui::TextUnformatted("Near Clipping Plane");
+                ImGui::SameLine();
+                ImGui::SetNextItemWidth(15);
+                changed |= ImGui::DragFloat("##DragNearClipping", &nearClipping, 0.2f, 0.0f, 1000.0f, "Z");
+                ImGui::SameLine();
+                changed |= ImGui::InputFloat("##NearClippingInput", &nearClipping, 0, 0, "%.2f");
+                if (changed)
+                    camera.nearClipping(nearClipping);
+            }
+            {
+                bool changed = false;
+                float farClipping = camera.farClipping();
+                ImGui::TextUnformatted("Field of View");
+                ImGui::SameLine();
+                ImGui::SetNextItemWidth(15);
+                changed |= ImGui::DragFloat("##FarClippingFov", &farClipping, 0.2f, 0.0f, 1000.0f, "Z");
+                ImGui::SameLine();
+                changed |= ImGui::InputFloat("##FarClippingInput", &farClipping, 0, 0, "%.2f");
+                if (changed)
+                    camera.farClipping(farClipping);
+            }
+
+            // TODO: Upper and Lower Coords
+
+            ImGui::Unindent(10);
+
+            ImGui::Separator();
+            ImGui::NewLine();
+        }
+    }
+
     void GuiLayer::drawInspectorAddComponent()
     {
         using component::Collidable;
@@ -1489,6 +1554,7 @@ namespace oyl::internal
         using component::PointLight;
         using component::Renderable;
         using component::RigidBody;
+        using component::Camera;
         
         if (ImGui::BeginCombo("##InspectorAddComponent", "Add Component", ImGuiComboFlags_NoArrowButton))
         {
@@ -1513,6 +1579,28 @@ namespace oyl::internal
             if (!registry->has<PointLight>(entity) &&
                 ImGui::Selectable("Point Light"))
                 registry->assign<PointLight>(entity);
+
+            int camFlags = 0;
+            if (registry->size<Camera>() >= 4)
+                camFlags |= ImGuiSelectableFlags_Disabled;
+            if (!registry->has<Camera>(entity) &&
+                ImGui::Selectable("Camera", false, camFlags))
+            {
+                auto& cam = registry->assign<Camera>(entity);
+                bool valid = true;
+                do
+                {
+                    valid = true;  
+                    registry->view<Camera>().each([&](entt::entity a_entity, auto& a_camera)
+                    {
+                        if (a_entity != entity && cam.player == a_camera.player)
+                        {
+                            cam.player = static_cast<PlayerNumber>(static_cast<uint>(cam.player) + 1u);
+                            valid = false;
+                        }
+                    });
+                } while (!valid && cam.player != PlayerNumber::Four);
+            }
 
             ImGui::EndCombo();
         }
@@ -1550,7 +1638,7 @@ namespace oyl::internal
             if (ImGui::Selectable("Nearest", a_texture->getFilter() == TextureFilter::Nearest))
                 a_texture->setFilter(TextureFilter::Nearest);
             if (ImGui::Selectable("Linear", a_texture->getFilter() == TextureFilter::Linear))
-                a_texture->setFilter(TextureFilter::Nearest);
+                a_texture->setFilter(TextureFilter::Linear);
 
             ImGui::EndCombo();
         }
@@ -1595,50 +1683,37 @@ namespace oyl::internal
             ImGui::EndCombo();
         }
         ImGui::NewLine();
-        
-        tempAlias = Texture2D::getAlias(material->albedoMap);
-        if (tempAlias == INVALID_ALIAS) tempAlias = "None";
-        if (ImGui::BeginCombo("Albedo Map", tempAlias.c_str()))
-        {
-            if (ImGui::Selectable("None", material->albedoMap == nullptr))
-                material->albedoMap = nullptr;
-            for (const auto& [alias, albedo] : Texture2D::getCache())
-                if (ImGui::Selectable(alias.c_str(), albedo == material->albedoMap))
-                    material->albedoMap = albedo;
 
-            ImGui::EndCombo();
-        }
+        auto _selectTexture = [&tempAlias](Ref<Texture2D>& a_texture, const char* type)
+        {
+            tempAlias = Texture2D::getAlias(a_texture);
+            if (tempAlias == INVALID_ALIAS) tempAlias = "None";
+            if (ImGui::BeginCombo(type, tempAlias.c_str()))
+            {
+                if (ImGui::Selectable("None", a_texture == nullptr))
+                    a_texture = nullptr;
+                for (const auto& [alias, texture] : Texture2D::getCache())
+                    if (ImGui::Selectable(alias.c_str(), texture == a_texture))
+                        a_texture = texture;
+
+                ImGui::EndCombo();
+            }
+        };
+        
+        _selectTexture(material->albedoMap, "Albedo Map");
         _setTextureProfile(material->albedoMap);
         ImGui::NewLine();
 
-        tempAlias = Texture2D::getAlias(material->specularMap);
-        if (tempAlias == INVALID_ALIAS) tempAlias = "None";
-        if (ImGui::BeginCombo("Specular Map", tempAlias.c_str()))
-        {
-            if (ImGui::Selectable("None", material->specularMap == nullptr))
-                material->specularMap = nullptr;
-            for (const auto& [alias, specular] : Texture2D::getCache())
-                if (ImGui::Selectable(alias.c_str(), specular == material->specularMap))
-                    material->specularMap = specular;
-
-            ImGui::EndCombo();
-        }
+        _selectTexture(material->specularMap, "Specular Map");
         _setTextureProfile(material->specularMap);
         ImGui::NewLine();
 
-        tempAlias = Texture2D::getAlias(material->normalMap);
-        if (tempAlias == INVALID_ALIAS) tempAlias = "None";
-        if (ImGui::BeginCombo("Normal Map", tempAlias.c_str()))
-        {
-            if (ImGui::Selectable("None", material->normalMap == nullptr))
-                material->normalMap = nullptr;
-            for (const auto& [alias, normal] : Texture2D::getCache())
-                if (ImGui::Selectable(alias.c_str(), normal == material->normalMap))
-                    material->normalMap = normal;
-
-            ImGui::EndCombo();
-        }
+        _selectTexture(material->normalMap, "Normal Map");
         _setTextureProfile(material->normalMap);
+        ImGui::NewLine();
+
+        _selectTexture(material->emissionMap, "Emission Map");
+        _setTextureProfile(material->emissionMap);
         ImGui::NewLine();
 
         auto flags = ImGuiInputTextFlags_EnterReturnsTrue;
@@ -2046,7 +2121,7 @@ namespace oyl::internal
             );
 
             if (registry->valid(m_currentSelection.entity()) && 
-                registry->has<component::PlayerCamera>(m_currentSelection.entity()))
+                registry->has<component::Camera>(m_currentSelection.entity()))
             {
                 auto [posx, posy] = ImGui::GetItemRectMin();
 
