@@ -16,7 +16,7 @@
 #include "Events/EventListener.h"
 #include "Events/EventDispatcher.h"
 
-#include "Graphics/Camera.h"
+#include "Graphics/EditorCamera.h"
 #include "Graphics/Material.h"
 #include "Graphics/Shader.h"
 #include "Graphics/Texture.h"
@@ -72,6 +72,54 @@ namespace oyl
         void RenderSystem::onEnter()
         {
             listenForEventType(EventType::WindowResized);
+
+            m_forwardFrameBuffer = FrameBuffer::create(1);
+
+            m_forwardFrameBuffer->initColorTexture(0, 1, 1,
+                                                   TextureFormat::RGBA8,
+                                                   TextureFilter::Nearest,
+                                                   TextureWrap::ClampToEdge);
+
+            m_intermediateFrameBuffer = FrameBuffer::create(1);
+
+            m_intermediateFrameBuffer->initColorTexture(0, 1, 1,
+                                                        TextureFormat::RGBA8,
+                                                        TextureFilter::Nearest,
+                                                        TextureWrap::ClampToEdge);
+
+            ViewportHandleChangedEvent hcEvent;
+            hcEvent.handle = m_forwardFrameBuffer->getColorHandle(0);
+            m_dispatcher->postEvent(hcEvent);
+
+            m_shader = Shader::create(
+                {
+                    { Shader::Vertex, ENGINE_RES + "shaders/fbopassthrough.vert" },
+                    { Shader::Pixel, ENGINE_RES + "shaders/fbopassthrough.frag" }
+                });
+
+            float vertices[] = {
+                -1.0f, -1.0f, 0.0f, 0.0f, 0.0f,
+                 1.0f, -1.0f, 0.0f, 1.0f, 0.0f,
+                 1.0f,  1.0f, 0.0f, 1.0f, 1.0f,
+                -1.0f,  1.0f, 0.0f, 0.0f, 1.0f
+            };
+
+            u32 indices[] = {
+                0, 1, 2,
+                0, 2, 3
+            };
+
+            m_vao = VertexArray::create();
+
+            Ref<VertexBuffer> vbo = VertexBuffer::create(vertices, sizeof(vertices));
+            vbo->setLayout({
+                { DataType::Float3, "in_position" },
+                { DataType::Float2, "in_texCoord" }
+            });
+
+            Ref<IndexBuffer> ebo = IndexBuffer::create(indices, 6);
+            m_vao->addVertexBuffer(vbo);
+            m_vao->addIndexBuffer(ebo);
         }
 
         void RenderSystem::onExit() { }
@@ -110,6 +158,8 @@ namespace oyl
 
             Ref<Material> boundMaterial;
 
+            static size_t lastNumCameras = 0;
+            
             auto camView = registry->view<Transform, Camera>();
             
             int x = m_windowSize.x / 2;
@@ -125,10 +175,24 @@ namespace oyl
             {
                 Camera& pc = camView.get<Camera>(camera);
 
-                u32 playerNum = static_cast<u32>(pc.player);
-                RenderCommand::setDrawRect(!!(playerNum & 1) * x, !(playerNum & 2) * y, width, height);
+                if (!pc.m_forwardFrameBuffer)
+                    pc.m_forwardFrameBuffer = FrameBuffer::create(1);
+
+                if (lastNumCameras != camView.size())
+                {
+                    pc.m_forwardFrameBuffer->updateViewport(width, height);
+
+                    pc.aspect((float) width / (float) height);
+                }
+
+                if (m_intermediateFrameBuffer->getWidth() != width || 
+                    m_intermediateFrameBuffer->getHeight() != height)
+                    m_intermediateFrameBuffer->updateViewport(width, height);
+
+                pc.m_forwardFrameBuffer->clear();
+                pc.m_forwardFrameBuffer->bind();
                 
-                pc.aspect((float) width / (float) height);
+                RenderCommand::setDrawRect(0, 0, width, height);
 
                 glm::mat4 viewProj = pc.projectionMatrix();
                 viewProj *= glm::mat4(glm::mat3(pc.viewMatrix()));
@@ -216,7 +280,94 @@ namespace oyl
                         Renderer::submit(mr.mesh, boundMaterial, transform);
                     }
                 }
+
+                m_vao->bind();
+                
+                RenderCommand::setDepthDraw(false);
+                Shader* boundShader = nullptr;
+
+                bool needsBlit = false;
+                
+                for (auto pass : pc.postProcessingPasses)
+                {
+                    if (!pass.shader) continue;
+
+                    if (!needsBlit)
+                    {
+                        m_intermediateFrameBuffer->bind(FrameBufferContext::Write);
+                        pc.m_forwardFrameBuffer->bind(FrameBufferContext::Read);
+                        pc.m_forwardFrameBuffer->bindColorAttachment(0);
+                    }
+                    else
+                    {
+                        pc.m_forwardFrameBuffer->bind(FrameBufferContext::Write);
+                        m_intermediateFrameBuffer->bind(FrameBufferContext::Read);
+                        m_intermediateFrameBuffer->bindColorAttachment(0);
+                    }
+
+                    needsBlit ^= 1;
+                    
+                    if (boundShader != pass.shader.get())
+                    {
+                        boundShader = pass.shader.get();
+                        boundShader->bind();
+                        boundShader->setUniform1i(0, 0);
+                    }
+                    pass.applyUniforms();
+
+                    RenderCommand::drawIndexed(m_vao);
+                }
+                RenderCommand::setDepthDraw(true);
+
+                if (needsBlit)
+                    m_intermediateFrameBuffer->blit(pc.m_forwardFrameBuffer);
             }
+            
+            RenderCommand::setDepthDraw(false);
+            RenderCommand::setDrawRect(0, 0, m_windowSize.x, m_windowSize.y);
+
+            m_forwardFrameBuffer->clear();
+            m_forwardFrameBuffer->bind(FrameBufferContext::Write);
+            m_shader->bind();
+            
+            for (auto camera : camView)
+            {
+                auto& pc = camView.get<Camera>(camera);
+
+                pc.m_forwardFrameBuffer->bindColorAttachment(0);
+
+                m_shader->setUniform1i("u_texture", 0);
+
+                glm::vec3 translation(0.0f);
+                glm::vec3 scale(1.0f);
+
+                if (camView.size() > 1)
+                    translation.x = 0.5f, scale.x = 0.5f;
+                if (camView.size() > 2)
+                    translation.y = 0.5f, scale.y = 0.5f;
+
+                uint playerNum = static_cast<uint>(pc.player);
+
+                if (playerNum ^ 0x01)
+                    translation.x *= -1;
+                if (playerNum ^ 0x02)
+                    translation.y *= -1;
+
+                glm::mat4 model = glm::translate(glm::mat4(1.0f), translation);
+                model = glm::scale(model, scale);
+
+                Renderer::submit(m_shader, m_vao, model);
+            }
+
+            m_forwardFrameBuffer->unbind();
+
+            #if defined(OYL_DISTRIBUTION)
+            m_forwardFrameBuffer->blit();
+            #endif
+            
+            RenderCommand::setDepthDraw(true);
+
+            lastNumCameras = camView.size();
         }
 
         void RenderSystem::onGuiRender() { }
@@ -228,6 +379,14 @@ namespace oyl
                 case EventType::WindowResized:
                     auto e = event_cast<WindowResizedEvent>(event);
                     m_windowSize = { e.width, e.height };
+
+                    m_forwardFrameBuffer->updateViewport(e.width, e.height);
+                    //m_intermediateFrameBuffer->updateViewport(e.width, e.height);
+
+                    ViewportHandleChangedEvent hcEvent;
+                    hcEvent.handle = m_forwardFrameBuffer->getColorHandle(0);
+                    m_dispatcher->postEvent(hcEvent);
+
                     break;
             }
             return false;
@@ -240,8 +399,12 @@ namespace oyl
         void GuiRenderSystem::onEnter()
         {
             listenForEventType(EventType::WindowResized);
-            
-            m_shader = Shader::get("texturedQuad");
+
+            m_shader = Shader::create(
+                {
+                    { Shader::Vertex, ENGINE_RES + "shaders/gui.vert" },
+                    { Shader::Pixel, ENGINE_RES + "shaders/gui.frag" }
+                });
 
             float vertices[] = {
                 -0.5f, -0.5f, 0.0f, 0.0f, 1.0f,
