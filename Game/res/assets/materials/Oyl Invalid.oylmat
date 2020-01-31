@@ -1,6 +1,16 @@
 {
     "Material": {
         "Alias": null,
+        "MainProperties": {
+            "Offset": [
+                0.0,
+                0.0
+            ],
+            "Tiling": [
+                1.0,
+                1.0
+            ]
+        },
         "Shader": null,
         "Textures": {
             "Albedo": null,

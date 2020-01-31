@@ -12,7 +12,7 @@
             ]
         },
         "Shader": {
-            "Alias": null,
+            "Alias": "Oyl Lighting",
             "Pixel": {
                 "FilePath": "../Engine/res/shaders/lighting.frag",
                 "guid": null
