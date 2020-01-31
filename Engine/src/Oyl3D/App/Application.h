@@ -36,7 +36,7 @@ namespace oyl
 
         // TODO: Make Refs
         inline Window&      getWindow() { return *m_window; }
-        inline FrameBuffer& getMainFrameBuffer() { return *m_mainBuffer; }
+        //inline FrameBuffer& getMainFrameBuffer() { return *m_mainBuffer; }
 
         inline static Application& get() { return *s_instance; }
 
@@ -46,7 +46,7 @@ namespace oyl
     private:
         Ref<Window>      m_window;
         Ref<Scene>       m_currentScene;
-        Ref<FrameBuffer> m_mainBuffer;
+        //Ref<FrameBuffer> m_mainBuffer;
         
     #if !defined(OYL_DISTRIBUTION)
         Ref<internal::GuiLayer> m_guiLayer;

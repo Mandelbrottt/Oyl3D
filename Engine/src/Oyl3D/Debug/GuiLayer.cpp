@@ -17,7 +17,7 @@
 
 #include "ECS/SystemImpl.h"
 
-#include "Graphics/Camera.h"
+#include "Graphics/EditorCamera.h"
 #include "Graphics/Material.h"
 #include "Graphics/Mesh.h"
 #include "Graphics/Shader.h"
@@ -2120,8 +2120,18 @@ namespace oyl::internal
                 ImVec2(0, 1), ImVec2(1, 0)
             );
 
-            if (registry->valid(m_currentSelection.entity()) && 
-                registry->has<component::Camera>(m_currentSelection.entity()))
+            using component::Camera;
+
+            Camera* camera = nullptr;
+
+            if (registry->valid(m_currentSelection.entity()))
+                camera = registry->try_get<Camera>(m_currentSelection.entity());
+
+            Ref<const FrameBuffer> buffer;
+
+            if (camera) buffer = camera->forwardFrameBuffer();
+            
+            if (buffer && buffer->getColorHandle(0))
             {
                 auto [posx, posy] = ImGui::GetItemRectMin();
 
@@ -2129,19 +2139,20 @@ namespace oyl::internal
                 float camY = posy + y - 20;
 
                 ImGui::SetNextWindowPos(ImVec2(camX, camY), 0, ImVec2(1, 1));
-                ImVec2 cameraWindowSize = ImVec2((16.0f / 9.0f) * y / 4.0f, y / 4.0f);
+                ImVec2 cameraWindowSize = ImVec2(camera->aspect() * y / 4.0f, y / 4.0f + 20);
                 ImGui::SetNextWindowSize(cameraWindowSize);
 
-                ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImGui::GetStyle().WindowPadding);
+                ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
                 if (ImGui::Begin("Camera Preview##ViewportCameraPreview", nullptr,
                                  ImGuiWindowFlags_NoScrollbar |
+                                 ImGuiWindowFlags_NoScrollWithMouse |
                                  ImGuiWindowFlags_NoResize |
                                  ImGuiWindowFlags_NoMove |
                                  ImGuiWindowFlags_NoCollapse))
                 {
                     ImGui::Image(
-                        (void*) m_gameViewportHandle,
-                        ImGui::GetWindowSize(),
+                        (void*) buffer->getColorHandle(0),
+                        ImGui::GetWindowContentRegionMax() - ImVec2(0, 10),
                         ImVec2(0, 1), ImVec2(1, 0)
                     );
                 }
