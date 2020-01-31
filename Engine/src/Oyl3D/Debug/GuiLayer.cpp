@@ -2139,19 +2139,20 @@ namespace oyl::internal
                 float camY = posy + y - 20;
 
                 ImGui::SetNextWindowPos(ImVec2(camX, camY), 0, ImVec2(1, 1));
-                ImVec2 cameraWindowSize = ImVec2(camera->aspect() * y / 4.0f, y / 4.0f);
-                ImGui::SetNextWindowContentSize(cameraWindowSize);
+                ImVec2 cameraWindowSize = ImVec2(camera->aspect() * y / 4.0f, y / 4.0f + 20);
+                ImGui::SetNextWindowSize(cameraWindowSize);
 
-                ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImGui::GetStyle().WindowPadding);
+                ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
                 if (ImGui::Begin("Camera Preview##ViewportCameraPreview", nullptr,
                                  ImGuiWindowFlags_NoScrollbar |
+                                 ImGuiWindowFlags_NoScrollWithMouse |
                                  ImGuiWindowFlags_NoResize |
                                  ImGuiWindowFlags_NoMove |
                                  ImGuiWindowFlags_NoCollapse))
                 {
                     ImGui::Image(
                         (void*) buffer->getColorHandle(0),
-                        ImGui::GetWindowSize(),
+                        ImGui::GetWindowContentRegionMax() - ImVec2(0, 10),
                         ImVec2(0, 1), ImVec2(1, 0)
                     );
                 }

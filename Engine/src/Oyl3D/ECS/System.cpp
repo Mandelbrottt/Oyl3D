@@ -176,9 +176,16 @@ namespace oyl
                 Camera& pc = camView.get<Camera>(camera);
 
                 if (!pc.m_forwardFrameBuffer)
+                {
                     pc.m_forwardFrameBuffer = FrameBuffer::create(1);
+                    pc.m_forwardFrameBuffer->initDepthTexture(1, 1);
+                    pc.m_forwardFrameBuffer->initColorTexture(0, 1, 1,
+                                                              TextureFormat::RGBA8,
+                                                              TextureFilter::Nearest,
+                                                              TextureWrap::ClampToEdge);
+                }
 
-                if (lastNumCameras != camView.size())
+                if (m_camerasNeedUpdate || lastNumCameras != camView.size())
                 {
                     pc.m_forwardFrameBuffer->updateViewport(width, height);
 
@@ -368,6 +375,7 @@ namespace oyl
             RenderCommand::setDepthDraw(true);
 
             lastNumCameras = camView.size();
+            m_camerasNeedUpdate = false;
         }
 
         void RenderSystem::onGuiRender() { }
@@ -386,6 +394,8 @@ namespace oyl
                     ViewportHandleChangedEvent hcEvent;
                     hcEvent.handle = m_forwardFrameBuffer->getColorHandle(0);
                     m_dispatcher->postEvent(hcEvent);
+
+                    m_camerasNeedUpdate = true;
 
                     break;
             }

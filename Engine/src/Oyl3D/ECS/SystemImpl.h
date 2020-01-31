@@ -42,6 +42,8 @@ namespace oyl::internal
         Ref<FrameBuffer> m_intermediateFrameBuffer;
         Ref<VertexArray> m_vao;
         Ref<Shader>      m_shader;
+
+        bool m_camerasNeedUpdate = false;
     };
 
     class GuiRenderSystem : public System
