@@ -912,7 +912,7 @@ namespace oyl::internal
 
         bool open = ImGui::CollapsingHeader("Renderable##InspectorRenderableProperties");
 
-        open |= !userRemoveComponent<Renderable>();
+        open &= !userRemoveComponent<Renderable>();
 
         if (open)
         {
@@ -1002,7 +1002,7 @@ namespace oyl::internal
 
         bool open = ImGui::CollapsingHeader("GuiRenderable##InspectorGuiRenderableProperties");
 
-        open |= !userRemoveComponent<GuiRenderable>();
+        open &= !userRemoveComponent<GuiRenderable>();
 
         if (open)
         {
@@ -1107,7 +1107,7 @@ namespace oyl::internal
 
         bool open = ImGui::CollapsingHeader("Collidable##InspectorColliderProperties");
 
-        open |= !userRemoveComponent<Collidable>();
+        open &= !userRemoveComponent<Collidable>();
 
         if (open)
         {
@@ -1334,7 +1334,7 @@ namespace oyl::internal
 
         bool open = ImGui::CollapsingHeader("RigidBody##InspectorRigidBody");
 
-        open |= !userRemoveComponent<RigidBody>();
+        open &= !userRemoveComponent<RigidBody>();
         
         if (open)
         {
@@ -1429,7 +1429,7 @@ namespace oyl::internal
 
         bool open = ImGui::CollapsingHeader("Light Source##InspectorLightSource");
 
-        open |= !userRemoveComponent<PointLight>();
+        open &= !userRemoveComponent<PointLight>();
 
         if (open)
         {
@@ -1460,7 +1460,7 @@ namespace oyl::internal
 
         bool open = ImGui::CollapsingHeader("Camera##InspectorCamera");
 
-        open |= !userRemoveComponent<Camera>();
+        open &= !userRemoveComponent<Camera>();
 
         if (open)
         {

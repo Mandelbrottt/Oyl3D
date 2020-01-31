@@ -30,6 +30,27 @@
 #include <btBulletDynamicsCommon.h>
 #include <btBulletCollisionCommon.h>
 
+namespace std
+{
+    template<>
+    struct hash<std::pair<entt::entity, entt::entity>>
+    {
+        std::size_t operator()(const std::pair<entt::entity, entt::entity>& k) const noexcept
+        {
+            using std::size_t;
+            using std::hash;
+            using oyl::u32;
+
+            // Compute individual hash values for first,
+            // second and third and combine them using XOR
+            // and bit shifting:
+
+            return ((hash<u32>()(static_cast<u32>(k.first))
+                     ^ (hash<u32>()(static_cast<u32>(k.second)) << 1)) >> 1);
+        }
+    };
+}
+
 namespace oyl
 {
     // vvv Generic System vvv //
@@ -451,6 +472,9 @@ namespace oyl
         static Ref<EventDispatcher> g_dispatcher;
         static Ref<entt::registry>  g_currentRegistry;
 
+        
+        static std::unordered_map<std::pair<entt::entity, entt::entity>, std::pair<int, glm::vec3>> g_contactMap;
+
         static int g_phase = 0;
         static void* g_obj1 = 0;
         static void* g_obj2 = 0;
@@ -522,35 +546,43 @@ namespace oyl
             auto body1 = reinterpret_cast<btCollisionObject*>(obj1);
             auto body2 = reinterpret_cast<btCollisionObject*>(obj2);
 
-            if (g_phase == 2 && body1 == g_obj1 && body2 == g_obj2)
-                return false;
-
-            g_phase = 2;
-            g_obj1 = (void*) body1;
-            g_obj2 = (void*) body2;
-
             auto entity1 = (entt::entity) reinterpret_cast<ENTT_ID_TYPE>(body1->getUserPointer());
             auto entity2 = (entt::entity) reinterpret_cast<ENTT_ID_TYPE>(body2->getUserPointer());
 
             if (!g_currentRegistry->valid(entity1) || !g_currentRegistry->valid(entity2))
                 return false;
 
-            auto avgCp = (cp.getPositionWorldOnA() + cp.getPositionWorldOnB()) * 0.5f;
+            //static PhysicsCollisionStayEvent event;
             
-            PhysicsCollisionStayEvent event;
-            event.entity1 = entity1;
-            event.entity2 = entity2;
-            event.contactPoint = {
-                avgCp.x(), avgCp.y(), avgCp.z()
-            };
-            
-            if (body1->getCollisionFlags() & btCollisionObject::CF_NO_CONTACT_RESPONSE ||
-                body2->getCollisionFlags() & btCollisionObject::CF_NO_CONTACT_RESPONSE)
-            {
-                event.type = EventType::PhysicsTriggerStay;
-            }
+            //if (g_phase == 2 && obj1 == g_obj1 && obj2 == g_obj2)
+            //    numPoints++;
+            //else
+            //{
+            //    event.entity1 = entity1;
+            //    event.entity2 = entity2;
+            //    
+            //    event.contactPoint = avgContactPoint / static_cast<float>(numPoints);
+            //    
+            //    if (body1->getCollisionFlags() & btCollisionObject::CF_NO_CONTACT_RESPONSE ||
+            //        body2->getCollisionFlags() & btCollisionObject::CF_NO_CONTACT_RESPONSE)
+            //    {
+            //        event.type = EventType::PhysicsTriggerStay;
+            //    }
 
-            g_dispatcher->postEvent(event);
+            //    g_dispatcher->postEvent(event);
+            //    
+            //    avgContactPoint = glm::vec3(0.0f);
+            //    numPoints = 1;
+            //}
+
+            auto avgCp = (cp.getPositionWorldOnA() + cp.getPositionWorldOnB()) * 0.5f;
+
+            auto pair = std::make_pair(entity1, entity2);
+            if (auto it = g_contactMap.find(pair); it != g_contactMap.end())
+                it->second.first++, it->second.second += glm::vec3(avgCp.x(), avgCp.y(), avgCp.z());
+            else
+                g_contactMap[pair] = std::make_pair(1, glm::vec3(avgCp.x(), avgCp.y(), avgCp.z()));
+            
             return false;
         }
 
@@ -783,7 +815,27 @@ namespace oyl
             // TODO: Iterate over ghost objects with tick callback
             m_btWorld->stepSimulation(Time::deltaTime(), 10, m_fixedTimeStep);
 
+            for (auto& [entities, point] : g_contactMap)
+            {
+                PhysicsCollisionStayEvent event;
+                auto rb1 = registry->try_get<RigidBody>(entities.first);
+                auto rb2 = registry->try_get<RigidBody>(entities.second);
+                if (rb1 && !rb1->getProperty(RigidBody::DETECT_COLLISIONS) ||
+                    rb2 && !rb2->getProperty(RigidBody::DETECT_COLLISIONS))
+                {
+                    event.type = EventType::PhysicsTriggerStay;
+                }
+
+                event.entity1 = entities.first;
+                event.entity2 = entities.second;
+
+                event.contactPoint = point.second / static_cast<float>(point.first);
+
+                postEvent(event);
+            }
+
             g_obj1 = g_obj2 = 0;
+            g_contactMap.clear();
 
             for (auto entity : view)
             {

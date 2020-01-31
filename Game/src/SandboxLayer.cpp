@@ -220,7 +220,7 @@ void SandboxLayer::onEnter()
 
 				component::Transform garbagePileTransform;
 				garbagePileTransform.setPosition(glm::vec3(-3.0f, 0.2f, 0.0f));
-				garbagePileTransform.setScale(glm::vec3(3.0f, 0.4f, 3.0f));
+				garbagePileTransform.setScale(glm::vec3(0.43f, 0.4f, 0.43f));
 				registry->assign<component::Transform>(garbagePileEntity, garbagePileTransform);
 
 				auto& garbagePile = registry->assign<GarbagePile>(garbagePileEntity);
@@ -622,7 +622,7 @@ void SandboxLayer::onEnter()
 
 				component::Transform garbagePileTransform;
 				garbagePileTransform.setPosition(glm::vec3(-3.0f, 0.2f, 0.0f));
-				garbagePileTransform.setScale(glm::vec3(3.0f, 0.4f, 3.0f));
+				garbagePileTransform.setScale(glm::vec3(0.43f, 0.4f, 0.43f));
 				registry->assign<component::Transform>(garbagePileEntity, garbagePileTransform);
 
 				auto& garbagePile = registry->assign<GarbagePile>(garbagePileEntity);
