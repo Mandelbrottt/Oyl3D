@@ -11,7 +11,6 @@
 #include <btBulletDynamicsCommon.h>
 #include <btBulletCollisionCommon.h>
 
-
 namespace oyl
 {
     class Shader;
@@ -38,6 +37,13 @@ namespace oyl::internal
 
     private:
         glm::ivec2 m_windowSize;
+
+        Ref<FrameBuffer> m_forwardFrameBuffer;
+        Ref<FrameBuffer> m_intermediateFrameBuffer;
+        Ref<VertexArray> m_vao;
+        Ref<Shader>      m_shader;
+
+        bool m_camerasNeedUpdate = false;
     };
 
     class GuiRenderSystem : public System

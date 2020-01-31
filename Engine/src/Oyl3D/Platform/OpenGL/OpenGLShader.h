@@ -33,6 +33,14 @@ namespace oyl
         void setUniformMat3(const std::string& name, const glm::mat3& m) override;
         void setUniformMat4(const std::string& name, const glm::mat4& m) override;
 
+        void setUniform1i(int location, int v) override;
+        void setUniform1f(int location, float v) override;
+        void setUniform2f(int location, const glm::vec2& v) override;
+        void setUniform3f(int location, const glm::vec3& v) override;
+        void setUniform4f(int location, const glm::vec4& v) override;
+        void setUniformMat3(int location, const glm::mat3& m) override;
+        void setUniformMat4(int location, const glm::mat4& m) override;
+
         static Ref<Shader> create(const std::vector<ShaderInfo>& infos)
         {
             return Ref<OpenGLShader>::create(_OpenGLShader{}, infos);
