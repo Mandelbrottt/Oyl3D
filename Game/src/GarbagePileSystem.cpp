@@ -16,7 +16,6 @@ void GarbagePileSystem::onUpdate()
 	//TODO: change to add to a random garbage pile rather than all of them for the final version
 	bool addGarbageLevel = false;
 	passiveGarbageBuildupCountdown -= Time::deltaTime();
-	std::cout << passiveGarbageBuildupCountdown << "\n";
 	if (passiveGarbageBuildupCountdown < 0.0f)
 	{
 		addGarbageLevel = true;

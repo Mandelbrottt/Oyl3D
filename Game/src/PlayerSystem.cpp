@@ -136,7 +136,8 @@ bool PlayerSystem::onEvent(const Event& event)
 			if (!player.isJumping)
 			{
 				playerRB.addImpulse(glm::vec3(0.0f, 1.0f, 0.0f) * player.jumpForce);
-				player.isJumping = true;
+				player.isJumping         = true;
+				player.jumpCooldownTimer = player.JUMP_COOLDOWN_DURATION;
 			}
 
 			break;
@@ -205,7 +206,7 @@ bool PlayerSystem::onEvent(const Event& event)
 			auto& playerCollidable = registry->get<component::Collidable>(playerEntity);
 			float playerHeight     = playerCollidable.getShape(0).box.getSize().y;
 
-			//check if contact point is below player
+			//check if the player is valid to jump
 			if (evt.contactPoint.y <= (playerTransform.getPositionY() - playerHeight / 2.0f + 0.01f) && player.jumpCooldownTimer < 0.0f)
 			{
 				player.isJumping = false;
