@@ -31,6 +31,14 @@ public:
             auto& camera = registry->assign<component::Camera>(e);
             camera.player = PlayerNumber::One;
             camera.skybox = TextureCubeMap::get(DEFAULT_SKYBOX_ALIAS);
+
+            PostProcessingPass pass;
+            pass.shader = Shader::create({
+                { Shader::Type::Vertex, "res/assets/shaders/passthrough.vert" },
+                { Shader::Type::Fragment, "res/assets/shaders/postEffect.frag" }
+            });
+            
+            camera.postProcessingPasses.push_back(std::move(pass));
             
             auto& so = registry->assign<component::EntityInfo>(e);
             so.name = "Player Camera";
