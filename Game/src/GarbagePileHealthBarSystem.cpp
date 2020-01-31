@@ -72,7 +72,7 @@ void GarbagePileHealthBarSystem::onUpdate()
 				if (garbageHPBar.garbagePileNum == garbagePile.relativePositionOnShip && garbageHPBar.team == garbagePile.team)
 				{
 					//set the HP bar position to the garbage pile's position
-					garbageHPBarTransform.setPosition(garbagePileTransform.getPosition() + glm::vec3(0.0f, 0.5f, 0.0f));
+					garbageHPBarTransform.setPosition(garbagePileTransform.getPosition() + glm::vec3(0.0f, 0.8f, 0.0f));
 					break;
 				}
 			}
