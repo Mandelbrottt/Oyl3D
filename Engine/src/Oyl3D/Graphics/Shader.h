@@ -73,6 +73,14 @@ namespace oyl
         virtual void setUniformMat3(const std::string& name, const glm::mat3& v) = 0;
         virtual void setUniformMat4(const std::string& name, const glm::mat4& v) = 0;
 
+        virtual void setUniform1i(int location, int v) = 0;
+        virtual void setUniform1f(int location, float v) = 0;
+        virtual void setUniform2f(int location, const glm::vec2& v) = 0;
+        virtual void setUniform3f(int location, const glm::vec3& v) = 0;
+        virtual void setUniform4f(int location, const glm::vec4& v) = 0;
+        virtual void setUniformMat3(int location, const glm::mat3& v) = 0;
+        virtual void setUniformMat4(int location, const glm::mat4& v) = 0;
+
         const std::vector<ShaderInfo>& getShaderInfos() { return m_shaderInfos; }
 
     protected:
