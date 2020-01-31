@@ -1,49 +1,16 @@
 #pragma once
 
+#include "Oyl3D/oylpch.h"
+
 #include "Transform.h"
 
 namespace oyl
 {
     class TextureCubeMap;
-    class FrameBuffer;
-    class Shader;
-
-    namespace internal
-    {
-        class RenderSystem;        
-    }
 
     enum class PlayerNumber : u32
     {
         One = 0, Two, Three, Four
-    };
-
-    class PostProcessingPass
-    {
-    public:
-        PostProcessingPass() = default;
-        explicit PostProcessingPass(Ref<Shader> a_shader);
-
-        Ref<Shader> shader = nullptr;
-        
-        void setUniform1i(const std::string& name, i32 value) { m_uniformInts[name] = value; }
-        void setUniform1f(const std::string& name, f32 value) { m_uniformFloats[name] = value; }
-        void setUniform3f(const std::string& name, glm::vec3 value) { m_uniformVec3s[name] = value; }
-        void setUniform2f(const std::string& name, glm::vec2 value) { m_uniformVec2s[name] = value; }
-        void setUniform4f(const std::string& name, glm::vec4 value) { m_uniformVec4s[name] = value; }
-        void setUniformMat4(const std::string& name, glm::mat4 value) { m_uniformMat4s[name] = value; }
-        void setUniformMat3(const std::string& name, glm::mat3 value) { m_uniformMat3s[name] = value; }
-
-        void applyUniforms();
-
-    private:
-        std::unordered_map<std::string, glm::mat4> m_uniformMat4s;
-        std::unordered_map<std::string, glm::mat3> m_uniformMat3s;
-        std::unordered_map<std::string, glm::vec4> m_uniformVec4s;
-        std::unordered_map<std::string, glm::vec3> m_uniformVec3s;
-        std::unordered_map<std::string, glm::vec2> m_uniformVec2s;
-        std::unordered_map<std::string, f32>       m_uniformFloats;
-        std::unordered_map<std::string, i32>       m_uniformInts;
     };
 
     namespace component
@@ -58,8 +25,6 @@ namespace oyl
             u32 cullingMask = 0x0F;
     
             Ref<TextureCubeMap> skybox;
-
-            std::vector<PostProcessingPass> postProcessingPasses;
 
             // Returns the current field of view
             float fov() const;
@@ -97,8 +62,6 @@ namespace oyl
             // Sets the current upper right corner of the camera's screen space coordinate system
             glm::vec2 upperCoords(glm::vec2 a_upperCoords);
 
-            Ref<const FrameBuffer> forwardFrameBuffer() { return m_forwardFrameBuffer; }
-
             const glm::mat4& viewMatrix() const;
             const glm::mat4& projectionMatrix() const;
             const glm::mat4& viewProjectionMatrix() const;
@@ -129,10 +92,6 @@ namespace oyl
             
             mutable bool m_projectionDirty = true;
             mutable bool m_orthoDirty = true;
-
-            Ref<FrameBuffer> m_forwardFrameBuffer = nullptr;
-
-            friend ::oyl::internal::RenderSystem; 
         };
 
         inline float Camera::fov() const

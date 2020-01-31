@@ -1,5 +1,5 @@
 #include "oylpch.h"
-#include "Graphics/EditorCamera.h"
+#include "Camera.h"
 
 namespace oyl
 {

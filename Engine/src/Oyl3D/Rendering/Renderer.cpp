@@ -19,7 +19,7 @@ namespace oyl
         material->bind();
         
         // TEMPORARY:
-        material->shader->setUniformMat4("u_model", transform);
+        material->getShader()->setUniformMat4("u_model", transform);
         
         RenderCommand::drawArrays(vao, count);
     }
@@ -42,7 +42,7 @@ namespace oyl
         material->bind();
         
         // TEMPORARY:
-        material->shader->setUniformMat4("u_model", transform);
+        material->getShader()->setUniformMat4("u_model", transform);
 
         RenderCommand::drawMesh(mesh);
     }

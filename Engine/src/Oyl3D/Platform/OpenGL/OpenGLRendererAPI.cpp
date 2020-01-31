@@ -17,11 +17,6 @@ namespace oyl
 
     void OpenGLRendererAPI::setDepthDraw(bool value)
     {
-        if (value)
-            glEnable(GL_DEPTH_TEST);
-        else
-            glDisable(GL_DEPTH_TEST);
-        
         glDepthMask(value ? GL_TRUE : GL_FALSE);
     }
 

@@ -25,7 +25,7 @@
 #include <Oyl3D/Events/EventListener.h>
 
 #include <Oyl3D/Graphics/Buffer.h>
-#include <Oyl3D/Graphics/EditorCamera.h>
+#include <Oyl3D/Graphics/Camera.h>
 #include <Oyl3D/Graphics/Material.h>
 #include <Oyl3D/Graphics/Mesh.h>
 #include <Oyl3D/Graphics/Shader.h>

@@ -205,7 +205,7 @@ namespace oyl
         return 0;
     }
 
-    static uint TexturefilterToGLFilter(TextureFilter filter)
+    static uint TextUniqueRefilterToGLFilter(TextureFilter filter)
     {
         switch (filter)
         {
@@ -281,43 +281,15 @@ namespace oyl
         glDeleteFramebuffers(1, &m_rendererID);
     }
 
-    void OpenGLFrameBuffer::bind(FrameBufferContext a_context)
+    void OpenGLFrameBuffer::bind()
     {
-        GLenum context = GL_NONE;
-        switch (a_context)
-        {
-            case FrameBufferContext::ReadWrite: context = GL_FRAMEBUFFER; break;
-            case FrameBufferContext::Read: context = GL_READ_FRAMEBUFFER; break;
-            case FrameBufferContext::Write: context = GL_DRAW_FRAMEBUFFER; break;
-        }
-        glBindFramebuffer(context, m_rendererID);
+        glBindFramebuffer(GL_FRAMEBUFFER, m_rendererID);
         glDrawBuffers(m_numColorAttachments, m_bufs);
     }
 
-    void OpenGLFrameBuffer::unbind(FrameBufferContext a_context)
+    void OpenGLFrameBuffer::unbind()
     {
-        GLenum context = GL_NONE;
-        switch (a_context)
-        {
-            case FrameBufferContext::ReadWrite: context = GL_FRAMEBUFFER; break;
-            case FrameBufferContext::Read: context = GL_READ_FRAMEBUFFER; break;
-            case FrameBufferContext::Write: context = GL_DRAW_FRAMEBUFFER; break;
-        }
-        glBindFramebuffer(context, GL_NONE);
-    }
-
-    void OpenGLFrameBuffer::bindColorAttachment(uint index, uint slot)
-    {
-        glBindFramebuffer(GL_READ_FRAMEBUFFER, m_rendererID);
-        glActiveTexture(GL_TEXTURE0 + slot);
-        glBindTexture(GL_TEXTURE_2D, m_colorAttachmentIDs[index]);
-    }
-    
-    void OpenGLFrameBuffer::unbindColorAttachment(uint index, uint slot)
-    {
-        glBindFramebuffer(GL_READ_FRAMEBUFFER, m_rendererID);
-        glActiveTexture(GL_TEXTURE0 + slot);
-        glBindTexture(GL_TEXTURE_2D, GL_NONE);
+        glBindFramebuffer(GL_FRAMEBUFFER, GL_NONE);
     }
 
     void OpenGLFrameBuffer::initDepthTexture(int width, int height)
@@ -352,8 +324,6 @@ namespace oyl
         m_formats[index] = format;
         m_filters[index] = filter;
         m_wraps[index]   = wrap;
-        m_widths[index] = width;
-        m_heights[index] = height;
 
         glBindFramebuffer(GL_FRAMEBUFFER, m_rendererID);
 
@@ -362,8 +332,8 @@ namespace oyl
         glBindTexture(GL_TEXTURE_2D, m_colorAttachmentIDs[index]);
         glTexStorage2D(GL_TEXTURE_2D, 1, TextUniqueReformatToGLFormat(format), width, height);
 
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, TexturefilterToGLFilter(filter));
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, TexturefilterToGLFilter(filter));
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, TextUniqueRefilterToGLFilter(filter));
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, TextUniqueRefilterToGLFilter(filter));
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, TextureWrapToGLWrap(wrap));
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, TextureWrapToGLWrap(wrap));
 
@@ -400,26 +370,12 @@ namespace oyl
         glBindFramebuffer(GL_FRAMEBUFFER, GL_NONE);
     }
 
-    void OpenGLFrameBuffer::blit(const Ref<FrameBuffer>& other)
+    void OpenGLFrameBuffer::moveToBackBuffer(int width, int height)
     {
-        OpenGLFrameBuffer* otherPtr = reinterpret_cast<OpenGLFrameBuffer*>(other.get());
-        
         glBindFramebuffer(GL_READ_FRAMEBUFFER, m_rendererID);
-        if (other)
-        {
-            glBindFramebuffer(GL_DRAW_FRAMEBUFFER, otherPtr->m_rendererID);
-            glBlitFramebuffer(0, 0, m_widths[0], m_heights[0], 
-                              0, 0, otherPtr->m_widths[0], otherPtr->m_heights[0], 
-                              GL_COLOR_BUFFER_BIT, GL_NEAREST);
-            
-        }
-        else
-        {
-            glBindFramebuffer(GL_READ_FRAMEBUFFER, GL_NONE);
-            glBlitFramebuffer(0, 0, m_widths[0], m_heights[0], 
-                              0, 0, m_widths[0], m_heights[0],
-                              GL_COLOR_BUFFER_BIT, GL_NEAREST);
-        }
+        glBindFramebuffer(GL_DRAW_FRAMEBUFFER, GL_NONE);
+
+        glBlitFramebuffer(0, 0, width, height, 0, 0, width, height, GL_COLOR_BUFFER_BIT, GL_NEAREST);
 
         glBindFramebuffer(GL_FRAMEBUFFER, GL_NONE);
     }

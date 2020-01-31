@@ -180,13 +180,6 @@ namespace oyl
 
 // FrameBuffer ////////////////////////////////////////////////////////////////////////////
 
-    enum class FrameBufferContext
-    {
-        ReadWrite,
-        Read,
-        Write
-    };
-
     class FrameBuffer
     {
     public:
@@ -195,11 +188,8 @@ namespace oyl
         virtual void load(uint numColorAttachments) = 0;
         virtual void unload() = 0;
 
-        virtual void bind(FrameBufferContext a_context = FrameBufferContext::ReadWrite) = 0;
-        virtual void unbind(FrameBufferContext a_context = FrameBufferContext::ReadWrite) = 0;
-
-        virtual void bindColorAttachment(uint index, uint slot = 0) = 0;
-        virtual void unbindColorAttachment(uint index, uint slot = 0) = 0;
+        virtual void bind() = 0;
+        virtual void unbind() = 0;
 
         virtual void initDepthTexture(int width, int height) = 0;
         virtual void initColorTexture(uint index,
@@ -212,13 +202,10 @@ namespace oyl
         virtual void updateViewport(int width, int height) = 0;
         virtual void clear() = 0;
 
-        virtual void blit(const Ref<FrameBuffer>& other = nullptr) = 0;
+        virtual void moveToBackBuffer(int width, int height) = 0;
 
         virtual uint getDepthHandle() const = 0;
         virtual uint getColorHandle(int index) const = 0;
-
-        virtual uint getWidth(uint index = 0) const = 0;
-        virtual uint getHeight(uint index = 0) const = 0;
 
         virtual bool isLoaded() const = 0;
 

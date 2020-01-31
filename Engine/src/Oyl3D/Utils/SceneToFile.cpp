@@ -683,6 +683,10 @@ namespace oyl::internal
 
         if (auto it = j.find("CullingMask"); it != j.end() && it->is_number_unsigned())
             it->get_to(re.cullingMask);
+
+        if (auto it = j.find("Enabled"); it != j.end() && it->is_boolean())
+            it->get_to(re.cullingMask);
+
         if (auto it = j.find("Fov"); it != j.end() && it->is_number_float())
             re.fov(it->get<float>());
 

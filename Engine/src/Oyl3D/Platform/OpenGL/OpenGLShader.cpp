@@ -280,39 +280,4 @@ namespace oyl
         if (GLint location = getUniformLocation(name); location != -1)
             glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(m));
     }
-
-    void OpenGLShader::setUniform1i(int location, int v)
-    {
-        glUniform1i(location, v);
-    }
-    
-    void OpenGLShader::setUniform1f(int location, float v)
-    {
-        glUniform1f(location, v);
-    }
-    
-    void OpenGLShader::setUniform2f(int location, const glm::vec2& v)
-    {
-        glUniform2fv(location, 1, glm::value_ptr(v));
-    }
-
-    void OpenGLShader::setUniform3f(int location, const glm::vec3& v)
-    {
-        glUniform3fv(location, 1, glm::value_ptr(v));
-    }
-
-    void OpenGLShader::setUniform4f(int location, const glm::vec4& v)
-    {
-        glUniform4fv(location, 1, glm::value_ptr(v));
-    }
-
-    void OpenGLShader::setUniformMat3(int location, const glm::mat3& m)
-    {
-        glUniformMatrix3fv(location, 1, GL_FALSE, glm::value_ptr(m));
-    }
-
-    void OpenGLShader::setUniformMat4(int location, const glm::mat4& m)
-    {
-        glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(m));
-    }
 }
