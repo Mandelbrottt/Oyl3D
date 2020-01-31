@@ -294,7 +294,19 @@ void PlayerInteractionValidationSystem::validateGarbagePileInteraction(entt::ent
 	auto& garbagePile          = registry->get<GarbagePile>(a_garbagePileEntity);
 	auto& garbagePileTransform = registry->get<component::Transform>(a_garbagePileEntity);
 
-	if (garbagePile.garbageLevel > 0)
+	if (garbagePile.garbageLevel <= 0)
+	{
+		//there is no garbage pile there to even interact with (so it shouldn't even count as invalid, just nothing)
+		player.interactableEntity = entt::null;
+
+		PlayerInteractResultEvent playerInteractResult;
+		playerInteractResult.interactionType = PlayerInteractionResult::nothing;
+		playerInteractResult.playerNum       = player.playerNum;
+		postEvent(playerInteractResult);
+
+		return;
+	}
+	else //garbageLevel > 0
 	{
 		if (garbagePile.team == player.team)
 		{

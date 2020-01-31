@@ -20,4 +20,6 @@ class GarbagePileSystem : public System
 	bool onEvent(const Event& event) override;
 
 	void increaseGarbageLevel(entt::entity a_garbagePileEntity);
+	void decreaseGarbageLevel(entt::entity a_garbagePileEntity);
+	void updateGarbagePileVisualSize(entt::entity a_garbagePileEntity);
 };
