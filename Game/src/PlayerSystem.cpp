@@ -270,3 +270,15 @@ void PlayerSystem::performBasicMovement(entt::entity a_playerEntity, const float
 	glm::vec3 deltaVelocity = (player.moveDirection * a_speedForce) - playerRB.getVelocity();
 	playerRB.addImpulse(playerRB.getMass() * deltaVelocity * static_cast<float>(a_dt));
 }
+
+void PlayerSystem::checkAndResolveSlopeCollision(entt::entity a_playerEntity)
+{
+	auto& playerTransform = registry->get<component::Transform>(a_playerEntity);
+	auto& palyerRB        = registry->get<component::RigidBody>(a_playerEntity);
+
+	auto ray = RayTest::Closest(playerTransform.getPositionGlobal(), glm::vec3(0.0f, -1.0f, 0.0f), 0.5001f);
+	if (ray->hasHit && registry->valid(ray->hitObject.entity))
+	{
+		entt::entity raycastHitEntity = ray->hitObject.entity;
+	}
+}

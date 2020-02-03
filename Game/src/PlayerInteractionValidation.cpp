@@ -154,12 +154,6 @@ void PlayerInteractionValidationSystem::performRaycastAndValidateForPlayer(entt:
 	{
 		entt::entity raycastHitEntity = ray->hitObject.entity;
 
-		/*if (registry->has<component::EntityInfo>(raycastHitEntity))
-		{
-			auto& ei = registry->get<component::EntityInfo>(raycastHitEntity);
-			OYL_LOG("RAYCAST HIT ENTITY: {}", ei.name);
-		}*/
-
 		if (registry->has<CarryableItem>(raycastHitEntity))
 			validateCarryableItemInteraction(a_playerEntity, raycastHitEntity);
 
