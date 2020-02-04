@@ -12,6 +12,8 @@ namespace oyl
     namespace internal
     {
         class RenderSystem;        
+        class GuiRenderSystem;        
+        class PostRenderSystem;        
     }
 
     enum class PlayerNumber : u32
@@ -142,6 +144,8 @@ namespace oyl
             Ref<FrameBuffer> m_forwardFrameBuffer = nullptr;
 
             friend ::oyl::internal::RenderSystem; 
+            friend ::oyl::internal::GuiRenderSystem; 
+            friend ::oyl::internal::PostRenderSystem; 
         };
 
         inline float Camera::fov() const

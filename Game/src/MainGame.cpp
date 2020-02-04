@@ -28,7 +28,7 @@ public:
         {
             auto e = registry->create();
 
-            auto& camera = registry->assign<component::PlayerCamera>(e);
+            auto& camera = registry->assign<component::Camera>(e);
             camera.player = PlayerNumber::One;
             camera.skybox = TextureCubeMap::get(DEFAULT_SKYBOX_ALIAS);
             
