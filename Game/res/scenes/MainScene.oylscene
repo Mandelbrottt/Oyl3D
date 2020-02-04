@@ -6110,13 +6110,11 @@
                         0.0,
                         0.0
                     ],
-                    "Size": [
-                        1.0,
-                        1.0,
-                        1.0
-                    ],
+                    "Direction": 1,
+                    "Height": 1.0,
+                    "Radius": 0.5,
                     "Trigger": false,
-                    "Type": 0
+                    "Type": 2
                 }
             ]
         },
@@ -6128,8 +6126,8 @@
                 "Alias": "container"
             },
             "Mesh": {
-                "Alias": "cube",
-                "FilePath": "res\\assets\\models\\cube.obj"
+                "Alias": "capsule",
+                "FilePath": "res\\assets\\models\\capsule.obj"
             }
         },
         "RigidBody": {
@@ -6145,7 +6143,7 @@
             },
             "Position": {
                 "X": 1.5435608625411987,
-                "Y": 0.5287392139434814,
+                "Y": 1.0499999523162842,
                 "Z": -0.5130671858787537
             },
             "Rotation": {
@@ -6205,7 +6203,7 @@
             "ClearProps": {
                 "Skybox": null
             },
-            "CullingMask": 2,
+            "CullingMask": 1,
             "Enabled": true,
             "FarClipping": 1000.0,
             "Fov": 60.0,
@@ -6248,13 +6246,11 @@
                         0.0,
                         0.0
                     ],
-                    "Size": [
-                        1.0,
-                        1.0,
-                        1.0
-                    ],
+                    "Direction": 1,
+                    "Height": 1.0,
+                    "Radius": 0.5,
                     "Trigger": false,
-                    "Type": 0
+                    "Type": 2
                 }
             ]
         },
@@ -6266,8 +6262,8 @@
                 "Alias": "container"
             },
             "Mesh": {
-                "Alias": "cube",
-                "FilePath": "res\\assets\\models\\cube.obj"
+                "Alias": "capsule",
+                "FilePath": "res\\assets\\models\\capsule.obj"
             }
         },
         "RigidBody": {
@@ -6283,7 +6279,7 @@
             },
             "Position": {
                 "X": -0.3366532325744629,
-                "Y": 0.5444000959396362,
+                "Y": 1.0499999523162842,
                 "Z": 14.233682632446289
             },
             "Rotation": {
@@ -6308,13 +6304,11 @@
                         0.0,
                         0.0
                     ],
-                    "Size": [
-                        1.0,
-                        1.0,
-                        1.0
-                    ],
+                    "Direction": 1,
+                    "Height": 1.0,
+                    "Radius": 0.5,
                     "Trigger": false,
-                    "Type": 0
+                    "Type": 2
                 }
             ]
         },
@@ -6326,8 +6320,8 @@
                 "Alias": "container"
             },
             "Mesh": {
-                "Alias": "cube",
-                "FilePath": "res\\assets\\models\\cube.obj"
+                "Alias": "capsule",
+                "FilePath": "res\\assets\\models\\capsule.obj"
             }
         },
         "RigidBody": {
@@ -6343,7 +6337,7 @@
             },
             "Position": {
                 "X": -5.471190452575684,
-                "Y": 0.5338047742843628,
+                "Y": 1.0499999523162842,
                 "Z": 1.030623435974121
             },
             "Rotation": {
@@ -6364,7 +6358,7 @@
             "ClearProps": {
                 "Skybox": null
             },
-            "CullingMask": 4,
+            "CullingMask": 1,
             "Enabled": true,
             "FarClipping": 1000.0,
             "Fov": 60.0,
@@ -6403,7 +6397,7 @@
             "ClearProps": {
                 "Skybox": null
             },
-            "CullingMask": 8,
+            "CullingMask": 1,
             "Enabled": true,
             "FarClipping": 1000.0,
             "Fov": 60.0,
@@ -6446,13 +6440,11 @@
                         0.0,
                         0.0
                     ],
-                    "Size": [
-                        1.0,
-                        1.0,
-                        1.0
-                    ],
+                    "Direction": 1,
+                    "Height": 1.0,
+                    "Radius": 0.5,
                     "Trigger": false,
-                    "Type": 0
+                    "Type": 2
                 }
             ]
         },
@@ -6464,8 +6456,8 @@
                 "Alias": "container"
             },
             "Mesh": {
-                "Alias": "cube",
-                "FilePath": "res\\assets\\models\\cube.obj"
+                "Alias": "capsule",
+                "FilePath": "res\\assets\\models\\capsule.obj"
             }
         },
         "RigidBody": {
@@ -6481,7 +6473,7 @@
             },
             "Position": {
                 "X": -5.671812057495117,
-                "Y": 0.5299999713897705,
+                "Y": 1.0499999523162842,
                 "Z": 14.429326057434082
             },
             "Rotation": {

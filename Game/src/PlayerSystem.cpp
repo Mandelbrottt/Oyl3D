@@ -119,6 +119,7 @@ bool PlayerSystem::onEvent(const Event& event)
 		case (EventType)TypePlayerMove:
 		{
 			auto evt = event_cast<PlayerMoveEvent>(event);
+
 			auto& player = registry->get<Player>(evt.playerEntity);
 
 			player.moveDirection += evt.direction;
@@ -130,6 +131,7 @@ bool PlayerSystem::onEvent(const Event& event)
 		case (EventType)TypePlayerJump:
 		{
 			auto evt = event_cast<PlayerJumpEvent>(event);
+
 			auto& player   = registry->get<Player>(evt.playerEntity);
 			auto& playerRB = registry->get<component::RigidBody>(evt.playerEntity);
 
@@ -209,7 +211,7 @@ bool PlayerSystem::onEvent(const Event& event)
 			//check if the player is valid to jump
 			if (evt.contactPoint.y <= (playerTransform.getPositionY() - playerHeight / 2.0f + 0.01f) && player.jumpCooldownTimer < 0.0f)
 			{
-				player.isJumping = false;
+				player.isJumping         = false;
 				player.jumpCooldownTimer = player.JUMP_COOLDOWN_DURATION;
 			}
 		}
@@ -242,10 +244,10 @@ void PlayerSystem::changeToFalling(Player* a_player)
 void PlayerSystem::changeToPushing(Player* a_player)
 {    
 	a_player->adjustingPositionStateData.interpolationParam = 0.0f;
-	a_player->adjustingPositionStateData.speed  = a_player->adjustingPositionSpeed;
+	a_player->adjustingPositionStateData.speed              = a_player->adjustingPositionSpeed;
     
 	a_player->pushingStateData.interpolationParam = 0.0f;
-	a_player->pushingStateData.speed = a_player->pushingSpeed;
+	a_player->pushingStateData.speed              = a_player->pushingSpeed;
     
 	a_player->state = PlayerState::pushing;
 }
