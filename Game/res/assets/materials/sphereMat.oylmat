@@ -26,9 +26,10 @@
             "Albedo": {
                 "Alias": "brickwall",
                 "FilePath": "res\\assets\\textures\\brickwall.jpg",
-                "Profile": 0,
+                "Profile": 1,
                 "guid": null
             },
+            "Emission": null,
             "Normal": {
                 "Alias": "brickwall_normal",
                 "FilePath": "res\\assets\\textures\\brickwall_normal.jpg",
@@ -38,7 +39,7 @@
             "Specular": {
                 "Alias": "brickwall",
                 "FilePath": "res\\assets\\textures\\brickwall.jpg",
-                "Profile": 0,
+                "Profile": 1,
                 "guid": null
             }
         }

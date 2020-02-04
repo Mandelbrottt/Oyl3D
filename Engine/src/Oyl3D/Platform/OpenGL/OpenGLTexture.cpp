@@ -62,19 +62,123 @@ namespace oyl
                                TextureWrap    a_wrap,
                                TextureProfile a_profile)
     {
-        return false;
+        if (m_loaded) unload();
+
+        glGenTextures(1, &m_rendererID);
+        glBindTexture(GL_TEXTURE_1D, m_rendererID);
+
+        GLenum filter = FilterToGL(a_filter);
+        GLenum wrap = WrapToGL(a_wrap);
+
+        int width, height, nrChannels;
+        stbi_set_flip_vertically_on_load(true);
+        u8* data = stbi_load(filename.c_str(), &width, &height, &nrChannels, 0);
+        if (data && (width == 1 || height == 1))
+        {
+            m_loaded = true;
+            int length = m_length = std::max(width, height);
+
+            GLenum texStorageFormat = GL_NONE;
+            GLenum texSubFormat = GL_NONE;
+
+            switch (nrChannels)
+            {
+                case 1:
+                    texStorageFormat = GL_R8;
+                    texSubFormat = GL_RED;
+                    break;
+                case 2:
+                    texStorageFormat = GL_RG8;
+                    texSubFormat = GL_RG;
+                    break;
+                case 3:
+                    texStorageFormat = a_profile == TextureProfile::SRGB ? GL_SRGB8 : GL_RGB8;
+                    texSubFormat = GL_RGB;
+                    break;
+                case 4:
+                    texStorageFormat = a_profile == TextureProfile::SRGB ? GL_SRGB8_ALPHA8 : GL_RGBA8;
+                    texSubFormat = GL_RGBA;
+                    break;
+            }
+
+            if (texStorageFormat != GL_NONE && texSubFormat != GL_NONE)
+            {
+                glTexStorage1D(GL_TEXTURE_1D, 1, texStorageFormat, length);
+                glTexSubImage1D(GL_TEXTURE_1D, 0, 0, length, texSubFormat, GL_UNSIGNED_BYTE, data);
+            }
+        } else
+        {
+            OYL_LOG_ERROR("Texture '{0}' failed to load!", filename);
+
+            u8 err[12] =
+            {
+                0xFF, 0x00, 0xFF, 0xFF, 0xFF, 0x00,
+                0xFF, 0xFF, 0x00, 0xFF, 0x00, 0xFF
+            };
+
+            filter = GL_NEAREST;
+            wrap = GL_REPEAT;
+
+            glTexStorage1D(GL_TEXTURE_1D, 1, GL_RGB8, 2);
+            glTexSubImage1D(GL_TEXTURE_1D, 0, 0, 2, GL_RGB, GL_UNSIGNED_BYTE, err);
+        }
+        stbi_image_free(data);
+
+        glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_MAG_FILTER, filter);
+        glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_MIN_FILTER, filter);
+
+        glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_WRAP_S, wrap);
+
+        return m_loaded;
     }
 
     void OpenGLTexture1D::unload()
     {
+        if (!m_loaded) return;
+        m_loaded = false;
+
+        glDeleteTextures(1, &m_rendererID);
     }
 
     void OpenGLTexture1D::bind(uint slot) const
     {
+        glActiveTexture(GL_TEXTURE0 + slot);
+        glBindTexture(GL_TEXTURE_1D, m_rendererID);
     }
 
     void OpenGLTexture1D::unbind(uint slot) const
     {
+        glActiveTexture(GL_TEXTURE0 + slot);
+        glBindTexture(GL_TEXTURE_1D, GL_NONE);
+    }
+
+    void OpenGLTexture1D::setFilter(TextureFilter a_filter)
+    {
+        glBindTexture(GL_TEXTURE_1D, m_rendererID);
+
+        GLenum filter = FilterToGL(a_filter);
+
+        glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_MAG_FILTER, filter);
+        glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_MIN_FILTER, filter);
+
+        m_filter = a_filter;
+    }
+
+    void OpenGLTexture1D::setWrap(TextureWrap a_wrap)
+    {
+        glBindTexture(GL_TEXTURE_1D, m_rendererID);
+
+        GLenum wrap = WrapToGL(a_wrap);
+
+        glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_WRAP_S, wrap);
+
+        m_wrap = a_wrap;
+    }
+
+    void OpenGLTexture1D::setProfile(TextureProfile a_profile)
+    {
+        if (m_loaded && load(m_filePath, m_filter, m_wrap, a_profile))
+            m_profile = a_profile;
     }
 
     OpenGLTexture2D::OpenGLTexture2D(const std::string& filename,

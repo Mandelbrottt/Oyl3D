@@ -28,9 +28,9 @@ namespace oyl
 
         virtual uint getLength() const override { return m_length; }
 
-        void setFilter(TextureFilter a_filter) override {}
-        void setWrap(TextureWrap a_wrap) override {}
-        void setProfile(TextureProfile a_profile) override {}
+        void setFilter(TextureFilter a_filter) override;
+        void setWrap(TextureWrap a_wrap) override;
+        void setProfile(TextureProfile a_profile) override;
 
     protected:
         uint m_rendererID = 0;

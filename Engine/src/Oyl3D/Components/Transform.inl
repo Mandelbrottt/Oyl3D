@@ -458,7 +458,7 @@ namespace oyl::component
     {
         m_isLocalDirty |= euler != glm::vec3(0.0f);
         euler = radians(euler);
-        m_localRotation = glm::quat(euler) * m_localRotation;
+        m_localRotation = m_localRotation * glm::quat(euler);
         m_isRotationOverridden = true;
     }
 

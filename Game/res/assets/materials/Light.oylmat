@@ -29,6 +29,12 @@
                 "Profile": 0,
                 "guid": null
             },
+            "Emission": {
+                "Alias": "matrix",
+                "FilePath": "res\\assets\\textures\\matrix.jpg",
+                "Profile": 0,
+                "guid": null
+            },
             "Normal": null,
             "Specular": null
         }

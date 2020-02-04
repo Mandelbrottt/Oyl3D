@@ -29,6 +29,7 @@
                 "Profile": 1,
                 "guid": null
             },
+            "Emission": null,
             "Normal": {
                 "Alias": "Bark_Pine_normal",
                 "FilePath": "res\\assets\\textures\\Bark_Pine_normal.jpg",

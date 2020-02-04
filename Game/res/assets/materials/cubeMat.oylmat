@@ -19,6 +19,7 @@
                 "Profile": 0,
                 "guid": null
             },
+            "Emission": null,
             "Normal": null,
             "Specular": null
         }

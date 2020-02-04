@@ -29,11 +29,12 @@
                 "Profile": 1,
                 "guid": null
             },
+            "Emission": null,
             "Normal": null,
             "Specular": {
-                "Alias": "Oyl White",
-                "FilePath": "../Engine/res/textures/white.png",
-                "Profile": 0,
+                "Alias": "ship",
+                "FilePath": "res\\assets\\textures\\ship.png",
+                "Profile": 1,
                 "guid": null
             }
         }
