@@ -2,9 +2,10 @@
 
 #include "Transform.h"
 
+#include "Oyl3D/Graphics/Texture.h"
+
 namespace oyl
 {
-    class TextureCubeMap;
     class FrameBuffer;
     class Shader;
 
@@ -33,17 +34,25 @@ namespace oyl
         void setUniform4f(const std::string& name, glm::vec4 value) { m_uniformVec4s[name] = value; }
         void setUniformMat4(const std::string& name, glm::mat4 value) { m_uniformMat4s[name] = value; }
         void setUniformMat3(const std::string& name, glm::mat3 value) { m_uniformMat3s[name] = value; }
+        void setUniformTexture1D(const std::string& name, Ref<Texture1D> value) { m_uniformTex1Ds[name] = std::move(value); }
+        void setUniformTexture2D(const std::string& name, Ref<Texture2D> value) { m_uniformTex2Ds[name] = std::move(value); }
+        void setUniformTexture3D(const std::string& name, Ref<Texture3D> value) { m_uniformTex3Ds[name] = std::move(value); }
+        void setUniformCubeMap(const std::string& name, Ref<TextureCubeMap> value) { m_uniformTexCMs[name] = std::move(value); }
 
         void applyUniforms();
 
     private:
-        std::unordered_map<std::string, glm::mat4> m_uniformMat4s;
-        std::unordered_map<std::string, glm::mat3> m_uniformMat3s;
-        std::unordered_map<std::string, glm::vec4> m_uniformVec4s;
-        std::unordered_map<std::string, glm::vec3> m_uniformVec3s;
-        std::unordered_map<std::string, glm::vec2> m_uniformVec2s;
-        std::unordered_map<std::string, f32>       m_uniformFloats;
-        std::unordered_map<std::string, i32>       m_uniformInts;
+        std::unordered_map<std::string, i32>                 m_uniformInts;
+        std::unordered_map<std::string, f32>                 m_uniformFloats;
+        std::unordered_map<std::string, glm::vec2>           m_uniformVec2s;
+        std::unordered_map<std::string, glm::vec3>           m_uniformVec3s;
+        std::unordered_map<std::string, glm::vec4>           m_uniformVec4s;
+        std::unordered_map<std::string, glm::mat3>           m_uniformMat3s;
+        std::unordered_map<std::string, glm::mat4>           m_uniformMat4s;
+        std::unordered_map<std::string, Ref<Texture1D>>      m_uniformTex1Ds;
+        std::unordered_map<std::string, Ref<Texture2D>>      m_uniformTex2Ds;
+        std::unordered_map<std::string, Ref<Texture3D>>      m_uniformTex3Ds;
+        std::unordered_map<std::string, Ref<TextureCubeMap>> m_uniformTexCMs;
     };
 
     namespace component
