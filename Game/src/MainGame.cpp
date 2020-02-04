@@ -32,14 +32,23 @@ public:
             camera.player = PlayerNumber::One;
             camera.skybox = TextureCubeMap::get(DEFAULT_SKYBOX_ALIAS);
 
-            PostProcessingPass pass;
-            pass.shader = Shader::create({
+            //PostProcessingPass pass;
+            //pass.shader = Shader::create({
+            //    { Shader::Type::Vertex, "res/assets/shaders/passthrough.vert" },
+            //    { Shader::Type::Fragment, "res/assets/shaders/postEffect.frag" }
+            //});
+            //camera.postProcessingPasses.push_back(std::move(pass));
+            
+            PostProcessingPass pass2;
+            pass2.shader = Shader::cache(Shader::create({
                 { Shader::Type::Vertex, "res/assets/shaders/passthrough.vert" },
-                { Shader::Type::Fragment, "res/assets/shaders/postEffect.frag" }
-            });
+                { Shader::Type::Fragment, "res/assets/shaders/postLUT.frag" }
+            }), "LUT");
+            auto lut = Texture3D::create("res/assets/textures/Hyla 68.CUBE");
+            pass2.setUniformTexture3D("u_lut", lut);
             
-            camera.postProcessingPasses.push_back(std::move(pass));
-            
+            camera.postProcessingPasses.push_back(std::move(pass2));
+
             auto& so = registry->assign<component::EntityInfo>(e);
             so.name = "Player Camera";
         }
