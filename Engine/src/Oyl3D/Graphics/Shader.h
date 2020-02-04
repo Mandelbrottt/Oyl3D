@@ -34,9 +34,14 @@ namespace oyl
         virtual void bind() const = 0;
         virtual void unbind() const = 0;
 
+        static Ref<Shader> create(const std::string& filename);
         static Ref<Shader> create(const std::vector<ShaderInfo>& infos);
         static Ref<Shader> create(const std::initializer_list<ShaderInfo>& files);
 
+        static const Ref<Shader>& cache(const std::string& filename,
+                                        const CacheAlias& alias,
+                                        bool overwrite = false);
+        
         static const Ref<Shader>& cache(const std::initializer_list<ShaderInfo>& files, 
                                         const CacheAlias& alias, 
                                         bool overwrite = false);
@@ -81,10 +86,10 @@ namespace oyl
         virtual void setUniformMat3(int location, const glm::mat3& v) = 0;
         virtual void setUniformMat4(int location, const glm::mat4& v) = 0;
 
-        const std::vector<ShaderInfo>& getShaderInfos() { return m_shaderInfos; }
-
+        const std::vector<ShaderInfo>& getShaderInfos() const { return m_shaderInfos; }
     protected:
         std::vector<ShaderInfo> m_shaderInfos;
+        std::string m_filename;
 
     private:
         static Ref<Shader> s_invalid;

@@ -223,6 +223,7 @@ namespace oyl
 
     void Material::applyUniforms()
     {
+        int currActive = 0;
         for (const auto& kvp : m_uniformMat4s)
             shader->setUniformMat4(kvp.first, kvp.second);
         for (const auto& kvp : m_uniformMat3s)
@@ -237,6 +238,32 @@ namespace oyl
             shader->setUniform1f(kvp.first, kvp.second);
         for (const auto& kvp : m_uniformInts)
             shader->setUniform1i(kvp.first, kvp.second);
+
+        currActive += albedoMap   != nullptr ? 1 : 0;
+        currActive += specularMap != nullptr ? 1 : 0;
+        currActive += normalMap   != nullptr ? 1 : 0;
+        currActive += emissionMap != nullptr ? 1 : 0;
+
+        for (const auto& kvp : m_uniformTex1Ds)
+        {
+            kvp.second->bind(currActive);
+            shader->setUniform1i(kvp.first, currActive++);
+        }
+        for (const auto& kvp : m_uniformTex2Ds)
+        {
+            kvp.second->bind(currActive);
+            shader->setUniform1i(kvp.first, currActive++);
+        }
+        for (const auto& kvp : m_uniformTex3Ds) 
+        {
+            kvp.second->bind(currActive);
+            shader->setUniform1i(kvp.first, currActive++);
+        }
+        for (const auto& kvp : m_uniformTexCMs)
+        {
+            kvp.second->bind(currActive);
+            shader->setUniform1i(kvp.first, currActive++);
+        }
     }
 
     void Material::init()

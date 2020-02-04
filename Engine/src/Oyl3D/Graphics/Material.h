@@ -1,12 +1,10 @@
 #pragma once
 
-#include "Oyl3D/Utils/AssetCache.h"
+#include "Oyl3D/Graphics/Shader.h"
+#include "Oyl3D/Graphics/Texture.h"
 
 namespace oyl
 {
-    class Shader;
-    class Texture2D;
-
     class Material
     {
         struct _Material {};
@@ -56,30 +54,6 @@ namespace oyl
         virtual void unbind();
 
         virtual void applyUniforms();
-
-        OYL_DEPRECATED("Access 'shader' directly instead.")
-        const Ref<Shader>& getShader() const { return shader; }
-
-        OYL_DEPRECATED("Access 'shader' directly instead.")
-        void setShader(Ref<Shader> shader) { this->shader = std::move(shader); }
-
-        OYL_DEPRECATED("Access 'albedoMap' directly instead")
-        const Ref<Texture2D>& getAlbedoMap() const { return albedoMap; }
-
-        OYL_DEPRECATED("Access 'specularMap' directly instead")
-        const Ref<Texture2D>& getSpecularMap() const { return specularMap; }
-
-        OYL_DEPRECATED("Access 'normalMap' directly instead")
-        const Ref<Texture2D>& getNormalMap() const { return normalMap; }
-
-        OYL_DEPRECATED("Access 'albedoMap' directly instead")
-        void setAlbedoMap(Ref<Texture2D> albedo) { albedoMap = std::move(albedo); }
-
-        OYL_DEPRECATED("Access 'specularMap' directly instead")
-        void setSpecularMap(Ref<Texture2D> specular) { specularMap = std::move(specular); }
-
-        OYL_DEPRECATED("Access 'normalMap' directly instead")
-        void setNormalMap(Ref<Texture2D> normal) { normalMap = std::move(normal); }
         
         void setUniform1i(const std::string& name, i32 value) { m_uniformInts[name] = value; }
         void setUniform1f(const std::string& name, f32 value) { m_uniformFloats[name] = value; }
@@ -88,6 +62,10 @@ namespace oyl
         void setUniform4f(const std::string& name, glm::vec4 value) { m_uniformVec4s[name] = value; }
         void setUniformMat4(const std::string& name, glm::mat4 value) { m_uniformMat4s[name] = value; }
         void setUniformMat3(const std::string& name, glm::mat3 value) { m_uniformMat3s[name] = value; }
+        void setUniformTexture1D(const std::string& name, Ref<Texture1D> value) { m_uniformTex1Ds[name] = std::move(value); }
+        void setUniformTexture2D(const std::string& name, Ref<Texture2D> value) { m_uniformTex2Ds[name] = std::move(value); }
+        void setUniformTexture3D(const std::string& name, Ref<Texture3D> value) { m_uniformTex3Ds[name] = std::move(value); }
+        void setUniformCubeMap(const std::string& name, Ref<TextureCubeMap> value) { m_uniformTexCMs[name] = std::move(value); }
 
         const std::string& getFilePath() { return m_filepath; }
 
@@ -113,13 +91,17 @@ namespace oyl
         
         // TODO: Implement in custom data structure
         // TODO: Add textures
-        std::unordered_map<std::string, glm::mat4> m_uniformMat4s;
-        std::unordered_map<std::string, glm::mat3> m_uniformMat3s;
-        std::unordered_map<std::string, glm::vec4> m_uniformVec4s;
-        std::unordered_map<std::string, glm::vec3> m_uniformVec3s;
-        std::unordered_map<std::string, glm::vec2> m_uniformVec2s;
-        std::unordered_map<std::string, f32>       m_uniformFloats;
-        std::unordered_map<std::string, i32>       m_uniformInts;
+        std::unordered_map<std::string, Ref<Texture1D>>      m_uniformTex1Ds;
+        std::unordered_map<std::string, Ref<Texture2D>>      m_uniformTex2Ds;
+        std::unordered_map<std::string, Ref<Texture3D>>      m_uniformTex3Ds;
+        std::unordered_map<std::string, Ref<TextureCubeMap>> m_uniformTexCMs;
+        std::unordered_map<std::string, glm::mat4>           m_uniformMat4s;
+        std::unordered_map<std::string, glm::mat3>           m_uniformMat3s;
+        std::unordered_map<std::string, glm::vec4>           m_uniformVec4s;
+        std::unordered_map<std::string, glm::vec3>           m_uniformVec3s;
+        std::unordered_map<std::string, glm::vec2>           m_uniformVec2s;
+        std::unordered_map<std::string, f32>                 m_uniformFloats;
+        std::unordered_map<std::string, i32>                 m_uniformInts;
 
         static void init();
         
