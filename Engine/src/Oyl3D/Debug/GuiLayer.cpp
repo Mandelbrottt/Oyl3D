@@ -1488,7 +1488,7 @@ namespace oyl::internal
             ImGui::TextUnformatted("Player Number");
             if (ImGui::BeginCombo("##CameraPlayerNumber", g_numbersList[static_cast<uint>(camera.player)]))
             {
-                for (uint i = 0; i < static_cast<uint>(PlayerNumber::Four); i++)
+                for (uint i = 0; i <= static_cast<uint>(PlayerNumber::Four); i++)
                 {
                     if (ImGui::Selectable(g_numbersList[i], i == static_cast<uint>(camera.player)))
                     {
