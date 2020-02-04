@@ -264,6 +264,8 @@ namespace oyl
         keyword.reserve(256);
         
         std::ifstream file(filename, std::ios::binary);
+        if (!file) return false;
+        
         while (!file.eof())
         {
             size_t linePos = file.tellg();

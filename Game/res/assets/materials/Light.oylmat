@@ -1,6 +1,6 @@
 {
     "Material": {
-        "Alias": "monkeyMat",
+        "Alias": "Light",
         "MainProperties": {
             "Offset": [
                 0.0,
