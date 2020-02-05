@@ -16,15 +16,10 @@
             "Albedo": {
                 "Alias": "wood",
                 "FilePath": "res\\assets\\textures\\wood.png",
-                "Profile": 1,
+                "Profile": 0,
                 "guid": null
             },
-            "Normal": {
-                "Alias": "woodNormal",
-                "FilePath": "res\\assets\\textures\\woodNormal.png",
-                "Profile": 1,
-                "guid": null
-            },
+            "Normal": null,
             "Specular": {
                 "Alias": "Oyl White",
                 "FilePath": "../Engine/res/textures/white.png",

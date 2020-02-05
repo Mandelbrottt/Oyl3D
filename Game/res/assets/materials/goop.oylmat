@@ -14,9 +14,9 @@
         },
         "Textures": {
             "Albedo": {
-                "Alias": "goopTemp",
-                "FilePath": "res\\assets\\textures\\goopTemp.png",
-                "Profile": 1,
+                "Alias": "GoopNI",
+                "FilePath": "res\\assets\\textures\\GoopNI.png",
+                "Profile": 0,
                 "guid": null
             },
             "Normal": null,

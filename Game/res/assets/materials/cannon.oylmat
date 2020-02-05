@@ -14,9 +14,9 @@
         },
         "Textures": {
             "Albedo": {
-                "Alias": "cannonTemp",
-                "FilePath": "res\\assets\\textures\\cannonTemp.png",
-                "Profile": 1,
+                "Alias": "CannonNI",
+                "FilePath": "res\\assets\\textures\\CannonNI.png",
+                "Profile": 0,
                 "guid": null
             },
             "Normal": null,

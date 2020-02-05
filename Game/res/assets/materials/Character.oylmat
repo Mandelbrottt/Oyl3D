@@ -1,22 +1,22 @@
 {
     "Material": {
-        "Alias": "animationMat",
+        "Alias": "Character",
         "Shader": {
-            "Alias": "animation",
+            "Alias": "Oyl Lighting",
             "Pixel": {
                 "FilePath": "../Engine/res/shaders/lighting.frag",
                 "guid": null
             },
             "Vertex": {
-                "FilePath": "../Engine/res/shaders/morphTargetLighting.vert",
+                "FilePath": "../Engine/res/shaders/lighting.vert",
                 "guid": null
             }
         },
         "Textures": {
             "Albedo": {
-                "Alias": null,
-                "FilePath": "../Engine/res/textures/invalid.png",
-                "Profile": 0,
+                "Alias": "characterTex",
+                "FilePath": "res\\assets\\textures\\characterTex.png",
+                "Profile": 1,
                 "guid": null
             },
             "Normal": null,

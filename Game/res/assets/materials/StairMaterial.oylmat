@@ -16,14 +16,14 @@
             "Albedo": {
                 "Alias": "stairTexture",
                 "FilePath": "res\\assets\\textures\\stairTexture.png",
-                "Profile": 1,
+                "Profile": 0,
                 "guid": null
             },
             "Normal": null,
             "Specular": {
                 "Alias": "stairTexture",
                 "FilePath": "res\\assets\\textures\\stairTexture.png",
-                "Profile": 1,
+                "Profile": 0,
                 "guid": null
             }
         }

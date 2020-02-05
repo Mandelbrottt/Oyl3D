@@ -14,9 +14,9 @@
         },
         "Textures": {
             "Albedo": {
-                "Alias": "binTemp",
-                "FilePath": "res\\assets\\textures\\binTemp.png",
-                "Profile": 1,
+                "Alias": "BinTempNI",
+                "FilePath": "res\\assets\\textures\\BinTempNI.png",
+                "Profile": 0,
                 "guid": null
             },
             "Normal": null,

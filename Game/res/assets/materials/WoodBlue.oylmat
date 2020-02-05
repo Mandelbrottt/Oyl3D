@@ -14,9 +14,9 @@
         },
         "Textures": {
             "Albedo": {
-                "Alias": "bluewood",
-                "FilePath": "res\\assets\\textures\\bluewood.png",
-                "Profile": 1,
+                "Alias": "Bluewood",
+                "FilePath": "res\\assets\\textures\\Bluewood.png",
+                "Profile": 0,
                 "guid": null
             },
             "Normal": null,

@@ -6733,60 +6733,6 @@
             }
         }
     },
-    "Sphere 1": {
-        "Collidable": {
-            "Shapes": [
-                {
-                    "Center": [
-                        0.0,
-                        0.0,
-                        0.0
-                    ],
-                    "Radius": 0.5,
-                    "Trigger": false,
-                    "Type": 1
-                }
-            ]
-        },
-        "Parent": null,
-        "Renderable": {
-            "Enabled": true,
-            "Material": {
-                "Alias": "animationMat"
-            },
-            "Mesh": {
-                "FilePath": "res\\assets\\models\\sphere.obj"
-            }
-        },
-        "RigidBody": {
-            "Friction": 0.5,
-            "Mass": 1.0,
-            "Properties": 98
-        },
-        "Transform": {
-            "Mirror": {
-                "X": false,
-                "Y": false,
-                "Z": false
-            },
-            "Position": {
-                "X": 1.652702808380127,
-                "Y": -1.9591906070709229,
-                "Z": -3.5488104820251465
-            },
-            "Rotation": {
-                "qW": 1.0,
-                "qX": 0.0,
-                "qY": 0.0,
-                "qZ": 0.0
-            },
-            "Scale": {
-                "X": 1.0,
-                "Y": 1.0,
-                "Z": 1.0
-            }
-        }
-    },
     "Sphere 2": {
         "Collidable": {
             "Shapes": [

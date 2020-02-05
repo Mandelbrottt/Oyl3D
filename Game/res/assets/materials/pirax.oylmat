@@ -14,9 +14,9 @@
         },
         "Textures": {
             "Albedo": {
-                "Alias": "piraxTemp",
-                "FilePath": "res\\assets\\textures\\piraxTemp.png",
-                "Profile": 1,
+                "Alias": "PiraxNI",
+                "FilePath": "res\\assets\\textures\\PiraxNI.png",
+                "Profile": 0,
                 "guid": null
             },
             "Normal": null,

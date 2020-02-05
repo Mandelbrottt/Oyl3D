@@ -14,9 +14,9 @@
         },
         "Textures": {
             "Albedo": {
-                "Alias": "mopTemp",
-                "FilePath": "res\\assets\\textures\\mopTemp.png",
-                "Profile": 1,
+                "Alias": "Mop",
+                "FilePath": "res\\assets\\textures\\Mop.png",
+                "Profile": 0,
                 "guid": null
             },
             "Normal": null,

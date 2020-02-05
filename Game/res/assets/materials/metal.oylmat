@@ -16,14 +16,14 @@
             "Albedo": {
                 "Alias": "metal",
                 "FilePath": "res\\assets\\textures\\metal.png",
-                "Profile": 1,
+                "Profile": 0,
                 "guid": null
             },
             "Normal": null,
             "Specular": {
                 "Alias": "metal",
                 "FilePath": "res\\assets\\textures\\metal.png",
-                "Profile": 1,
+                "Profile": 0,
                 "guid": null
             }
         }
