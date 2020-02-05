@@ -29,6 +29,7 @@
                 "Profile": 0,
                 "guid": null
             },
+            "Normal": null,
             "Specular": {
                 "Alias": "Oyl Black",
                 "FilePath": "../Engine/res/textures/black.png",
