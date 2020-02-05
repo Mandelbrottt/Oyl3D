@@ -64,7 +64,7 @@ project "OylEngine"
 	}
 
 	postbuildcommands {
-		"{COPY} %{prj.location}res/ %{wks.location}bin/" .. outputdir .. "/Engine/res/"
+		"{COPY} \"%{prj.location}res\" \"%{wks.location}bin/" .. outputdir .. "/Engine/res\""
 	}
 
 	includedirs {
@@ -184,7 +184,7 @@ project "OylGame"
 	}
 
 	postbuildcommands {
-		"{COPY} %{prj.location}res/ %{wks.location}bin/"..outputdir.."/Game/res/"
+		"{COPY} \"%{prj.location}res\" \"%{wks.location}bin/"..outputdir.."/Game/res/\""
 	}
 	
 	filter "system:windows"
