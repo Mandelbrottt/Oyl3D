@@ -46,7 +46,7 @@ namespace oyl
         PhysicsResetWorld,
         
         EditorViewportResized, EditorViewportHandleChanged, EditorEntitySelected,
-        EditorCameraChanged,
+        EditorCameraChanged, EditorCameraMoveRequest,
 
         CustomStart,
     };
@@ -273,11 +273,16 @@ namespace oyl
                          entt::entity entity;
                      });
 
-    class Camera;
+    class EditorCamera;
     
     OYL_EVENT_STRUCT(EditorCameraChangedEvent, EventType::EditorCameraChanged, EventCategory::Editor,
                      {
-                         Ref<Camera>* camera;
+                         Ref<EditorCamera>* camera;
+                     });
+
+    OYL_EVENT_STRUCT(EditorCameraMoveRequestEvent, EventType::EditorCameraMoveRequest, EventCategory::Editor,
+                     {
+                         bool doMove;
                      });
 
     //-Editor Events-//////////////////////////////////////////////////////
@@ -300,6 +305,8 @@ namespace oyl
                      {
                          entt::entity entity1;
                          entt::entity entity2;
+
+                         glm::vec3 contactPoint;
                      });
 
     OYL_EVENT_STRUCT(PhysicsCollisionEnterEvent, EventType::PhysicsCollisionEnter, EventCategory::Physics,
@@ -318,6 +325,8 @@ namespace oyl
                      {
                          entt::entity entity1;
                          entt::entity entity2;
+
+                         glm::vec3 contactPoint;
                      });
 
     OYL_EVENT_STRUCT(PhysicsResetWorldEvent, EventType::PhysicsResetWorld, EventCategory::Physics,

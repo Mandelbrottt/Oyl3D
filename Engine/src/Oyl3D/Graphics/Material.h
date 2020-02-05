@@ -13,10 +13,12 @@ namespace oyl
 
     public:
         explicit Material(_Material);
-        explicit Material(_Material, const std::string& filepath);
+        explicit Material(_Material, std::string filepath);
         //explicit Material(_Material, Ref<Shader> shader);
         
         virtual ~Material() = default;
+
+        bool operator==(const Material& material);
 
         static Ref<Material> create(const std::string& filepath);
         static Ref<Material> create();
@@ -78,12 +80,6 @@ namespace oyl
 
         OYL_DEPRECATED("Access 'normalMap' directly instead")
         void setNormalMap(Ref<Texture2D> normal) { normalMap = std::move(normal); }
-
-        OYL_DEPRECATED("Access 'shader' directly instead")
-        float getSpecularScalar() const { return specularScalar; }
-
-        OYL_DEPRECATED("Access 'shader' directly instead")
-        void  setSpecularScalar(float specular) { specularScalar = specular; }
         
         void setUniform1i(const std::string& name, i32 value) { m_uniformInts[name] = value; }
         void setUniform1f(const std::string& name, f32 value) { m_uniformFloats[name] = value; }
@@ -96,13 +92,20 @@ namespace oyl
         const std::string& getFilePath() { return m_filepath; }
 
     public:
+        struct TextureProps
+        {
+            glm::vec2 tiling = glm::vec2(1.0f);
+            glm::vec2 offset = glm::vec2(0.0f);
+        };
+        
         Ref<Shader> shader;
 
         Ref<Texture2D> albedoMap;
         Ref<Texture2D> specularMap;
         Ref<Texture2D> normalMap;
-        
-        float specularScalar = 0.5f;
+        Ref<Texture2D> emissionMap;
+
+        TextureProps mainTextureProps;
 
     private:
 

@@ -1,0 +1,41 @@
+{
+    "Material": {
+        "Alias": "atlasMaterial",
+        "MainProperties": {
+            "Offset": [
+                0.0,
+                0.0
+            ],
+            "Tiling": [
+                1.0,
+                1.0
+            ]
+        },
+        "Shader": {
+            "Alias": "Oyl Lighting",
+            "Pixel": {
+                "FilePath": "../Engine/res/shaders/lighting.frag",
+                "guid": null
+            },
+            "Vertex": {
+                "FilePath": "../Engine/res/shaders/lighting.vert",
+                "guid": null
+            }
+        },
+        "Textures": {
+            "Albedo": {
+                "Alias": "shipAtlas",
+                "FilePath": "res\\assets\\textures\\shipAtlas.png",
+                "Profile": 0,
+                "guid": null
+            },
+            "Normal": null,
+            "Specular": {
+                "Alias": "tempSpec",
+                "FilePath": "res\\assets\\textures\\tempSpec.jpg",
+                "Profile": 0,
+                "guid": null
+            }
+        }
+    }
+}

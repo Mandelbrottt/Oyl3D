@@ -15,7 +15,7 @@
 namespace oyl
 {
     class Shader;
-    class Camera;
+    class EditorCamera;
 
     struct RaycastResult;
     struct ClosestRaycastResult;
@@ -53,6 +53,8 @@ namespace oyl::internal
         virtual bool onEvent(const Event& event) override;
 
     private:
+        glm::ivec2 m_windowSize;
+        
         Ref<Shader> m_shader;
 
         Ref<VertexArray> m_vao;
@@ -143,7 +145,7 @@ namespace oyl::internal
         virtual bool onEvent(const Event& event) override;
 
     private:
-        Ref<Camera> m_camera;
+        Ref<EditorCamera> m_camera;
 
         glm::vec3 m_cameraMove        = glm::vec3(0.0f);
         float     m_cameraMoveSpeed   = 15.0f;
@@ -171,7 +173,7 @@ namespace oyl::internal
     private:
         Ref<FrameBuffer> m_editorViewportBuffer;
 
-        Ref<Camera> m_targetCamera;
+        Ref<EditorCamera> m_targetCamera;
 
         glm::ivec2 m_windowSize;
     };

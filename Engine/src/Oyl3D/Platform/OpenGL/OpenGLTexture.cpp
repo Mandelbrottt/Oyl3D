@@ -6,10 +6,49 @@
 #include <glad/glad.h>
 
 namespace oyl
-{
-    OpenGLTexture1D::OpenGLTexture1D(const std::string& filename)
+{   
+    static GLenum FilterToGL(TextureFilter a_filter)
     {
-        if (load(filename))
+        GLenum filter = GL_NONE;
+        switch (a_filter)
+        {
+            case TextureFilter::Nearest:
+                filter = GL_NEAREST;
+                break;
+            case TextureFilter::Linear:
+                filter = GL_LINEAR;
+                break;
+        }
+        return filter;
+    }
+
+    static GLenum WrapToGL(TextureWrap a_wrap)
+    {
+        GLenum wrap = GL_NONE;
+        switch (a_wrap)
+        {
+            case TextureWrap::Repeat:
+                wrap = GL_REPEAT;
+                break;
+            case TextureWrap::Mirror:
+                wrap = GL_MIRRORED_REPEAT;
+                break;
+            case TextureWrap::ClampToEdge:
+                wrap = GL_CLAMP_TO_EDGE;
+                break;
+            case TextureWrap::ClampToBorder:
+                wrap = GL_CLAMP_TO_BORDER;
+                break;
+        }
+        return wrap;
+    }
+
+    OpenGLTexture1D::OpenGLTexture1D(const std::string& filename,
+                                     TextureFilter  a_filter,
+                                     TextureWrap    a_wrap,
+                                     TextureProfile a_profile)
+    {
+        if (load(filename, a_filter, a_wrap, a_profile))
             m_filePath = filename;
     }
 
@@ -18,7 +57,10 @@ namespace oyl
         unload();
     }
 
-    bool OpenGLTexture1D::load(const std::string& filename)
+    bool OpenGLTexture1D::load(const std::string& filename,
+                               TextureFilter  a_filter,
+                               TextureWrap    a_wrap,
+                               TextureProfile a_profile)
     {
         return false;
     }
@@ -35,10 +77,18 @@ namespace oyl
     {
     }
 
-    OpenGLTexture2D::OpenGLTexture2D(const std::string& filename)
+    OpenGLTexture2D::OpenGLTexture2D(const std::string& filename,
+                                     TextureFilter  a_filter,
+                                     TextureWrap    a_wrap,
+                                     TextureProfile a_profile)
     {
-        if (load(filename))
+        if (load(filename, a_filter, a_wrap, a_profile))
+        {
             m_filePath = filename;
+            m_filter = a_filter;
+            m_wrap = a_wrap;
+            m_profile = a_profile;
+        }
     }
 
     OpenGLTexture2D::~OpenGLTexture2D()
@@ -46,16 +96,19 @@ namespace oyl
         unload();
     }
 
-    bool OpenGLTexture2D::load(const std::string& filename)
+    bool OpenGLTexture2D::load(const std::string& filename,
+                               TextureFilter  a_filter,
+                               TextureWrap    a_wrap,
+                               TextureProfile a_profile)
     {
         if (m_loaded) unload();
 
         glGenTextures(1, &m_rendererID);
         glBindTexture(GL_TEXTURE_2D, m_rendererID);
 
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        
+        GLenum filter = FilterToGL(a_filter);
+        GLenum wrap = WrapToGL(a_wrap);
+
         int width, height, nrChannels;
         stbi_set_flip_vertically_on_load(true);
         u8* data = stbi_load(filename.c_str(), &width, &height, &nrChannels, 0);
@@ -64,13 +117,36 @@ namespace oyl
             m_loaded = true;
             m_width  = width;
             m_height = height;
-            
-            auto texStorageFormat = nrChannels == 3 ? GL_SRGB8 : GL_SRGB8_ALPHA8;
-            auto texSubFormat     = nrChannels == 3 ? GL_RGB : GL_RGBA;
 
-            glTexStorage2D(GL_TEXTURE_2D, 1, texStorageFormat, width, height);
-            glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, width, height, texSubFormat, GL_UNSIGNED_BYTE, data);
-            glGenerateMipmap(GL_TEXTURE_2D);
+            GLenum texStorageFormat = GL_NONE;
+            GLenum texSubFormat     = GL_NONE;
+
+            switch (nrChannels)
+            {
+                case 1:
+                    texStorageFormat = GL_R8;
+                    texSubFormat     = GL_RED;
+                    break;
+                case 2:
+                    texStorageFormat = GL_RG8;
+                    texSubFormat     = GL_RG;
+                    break;
+                case 3:
+                    texStorageFormat = a_profile == TextureProfile::SRGB ? GL_SRGB8 : GL_RGB8;
+                    texSubFormat     = GL_RGB;
+                    break;
+                case 4:
+                    texStorageFormat = a_profile == TextureProfile::SRGB ? GL_SRGB8_ALPHA8 : GL_RGBA8;
+                    texSubFormat     = GL_RGBA;
+                    break;
+            }
+
+            if (texStorageFormat != GL_NONE && texSubFormat != GL_NONE)
+            {
+                glTexStorage2D(GL_TEXTURE_2D, 1, texStorageFormat, width, height);
+                glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, width, height, texSubFormat, GL_UNSIGNED_BYTE, data);
+                glGenerateMipmap(GL_TEXTURE_2D);
+            }
         }
         else
         {
@@ -82,10 +158,19 @@ namespace oyl
                 0xFF, 0xFF, 0x00, 0xFF, 0x00, 0xFF
             };
 
+            filter = GL_NEAREST;
+            wrap = GL_REPEAT;
+
             glTexStorage2D(GL_TEXTURE_2D, 1, GL_RGB8, 2, 2);
             glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 2, 2, GL_RGB, GL_UNSIGNED_BYTE, err);
         }
         stbi_image_free(data);
+
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, filter);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, filter);
+
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrap);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrap);
 
         return m_loaded;
     }
@@ -110,9 +195,42 @@ namespace oyl
         glBindTexture(GL_TEXTURE_2D, GL_NONE);
     }
 
-    OpenGLTexture3D::OpenGLTexture3D(const std::string& filename)
+    void OpenGLTexture2D::setFilter(TextureFilter a_filter)
     {
-        if (load(filename))
+        glBindTexture(GL_TEXTURE_2D, m_rendererID);
+        
+        GLenum filter = FilterToGL(a_filter);
+
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, filter);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, filter);
+        
+        m_filter = a_filter;
+    }
+    
+    void OpenGLTexture2D::setWrap(TextureWrap a_wrap)
+    {
+        glBindTexture(GL_TEXTURE_2D, m_rendererID);
+
+        GLenum wrap = WrapToGL(a_wrap);
+
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrap);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrap);
+
+        m_wrap = a_wrap;
+    }
+
+    void OpenGLTexture2D::setProfile(TextureProfile a_profile)
+    {
+        if (m_loaded && load(m_filePath, m_filter, m_wrap, a_profile))
+            m_profile = a_profile;
+    }
+
+    OpenGLTexture3D::OpenGLTexture3D(const std::string& filename,
+                                     TextureFilter  a_filter,
+                                     TextureWrap    a_wrap,
+                                     TextureProfile a_profile)
+    {
+        if (load(filename, a_filter, a_wrap, a_profile))
             m_filePath = filename;
     }
 
@@ -121,7 +239,10 @@ namespace oyl
         unload();
     }
 
-    bool OpenGLTexture3D::load(const std::string& filename)
+    bool OpenGLTexture3D::load(const std::string& filename,
+                               TextureFilter  a_filter,
+                               TextureWrap    a_wrap,
+                               TextureProfile a_profile)
     {
         return false;
     }
@@ -132,9 +253,12 @@ namespace oyl
 
     void OpenGLTexture3D::unbind(uint slot) const { }
 
-    OpenGLTextureCubeMap::OpenGLTextureCubeMap(const std::string& filename)
+    OpenGLTextureCubeMap::OpenGLTextureCubeMap(const std::string& filename,
+                                               TextureFilter  a_filter,
+                                               TextureWrap    a_wrap,
+                                               TextureProfile a_profile)
     {
-        if (load(filename))
+        if (load(filename, a_filter, a_wrap, a_profile))
             m_filePath = filename;
     }
     
@@ -143,7 +267,10 @@ namespace oyl
         unload();
     }
 
-    bool OpenGLTextureCubeMap::load(const std::string& filename)
+    bool OpenGLTextureCubeMap::load(const std::string& filename, 
+                                    TextureFilter  a_filter,
+                                    TextureWrap    a_wrap,
+                                    TextureProfile a_profile)
     {
         if (m_loaded) unload();
 

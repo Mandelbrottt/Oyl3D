@@ -69,12 +69,17 @@ void ItemRespawnSystem::spawnItem(entt::entity a_respawnManagerEntity)
 	auto& newCarryableItem = registry->get<CarryableItem>(newEntity);
 	auto& newRespawnable   = registry->get<Respawnable>(newEntity);
 	auto& newTransform     = registry->get<component::Transform>(newEntity);
+	auto& newRigidbody     = registry->get<component::RigidBody>(newEntity);
 	auto& newEntityInfo    = registry->get<component::EntityInfo>(newEntity);
 
 	newCarryableItem.hasBeenCarried = false;
 
 	newTransform.setPosition(newRespawnable.spawnPosition);
 	newTransform.setRotation(newRespawnable.spawnRotation);
+
+	//reset acceleration/velocity for the newly spawned item so it doesnt go flying down
+	newRigidbody.setAcceleration(glm::vec3(0.0f)); 
+	newRigidbody.setVelocity(glm::vec3(0.0f));
 
 	std::string itemTeamName = respawnManager.team == Team::blue ? "Blue" : "Red";
 

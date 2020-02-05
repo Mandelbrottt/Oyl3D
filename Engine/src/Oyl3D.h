@@ -40,6 +40,7 @@
 
 #include <Oyl3D/Scenes/Layer.h>
 
+#include <Oyl3D/Utils/Deadzones.h>
 #include <Oyl3D/Utils/Logging.h>
 #include <Oyl3D/Utils/Refs.h>
 #include <Oyl3D/Utils/Timestep.h>

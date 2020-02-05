@@ -1,0 +1,46 @@
+{
+    "Material": {
+        "Alias": "sphereMat",
+        "MainProperties": {
+            "Offset": [
+                0.0,
+                0.0
+            ],
+            "Tiling": [
+                1.0,
+                1.0
+            ]
+        },
+        "Shader": {
+            "Alias": null,
+            "Pixel": {
+                "FilePath": "../Engine/res/shaders/lighting.frag",
+                "guid": null
+            },
+            "Vertex": {
+                "FilePath": "../Engine/res/shaders/lighting.vert",
+                "guid": null
+            }
+        },
+        "Textures": {
+            "Albedo": {
+                "Alias": "brickwall",
+                "FilePath": "res\\assets\\textures\\brickwall.jpg",
+                "Profile": 0,
+                "guid": null
+            },
+            "Normal": {
+                "Alias": "brickwall_normal",
+                "FilePath": "res\\assets\\textures\\brickwall_normal.jpg",
+                "Profile": 0,
+                "guid": null
+            },
+            "Specular": {
+                "Alias": "brickwall",
+                "FilePath": "res\\assets\\textures\\brickwall.jpg",
+                "Profile": 0,
+                "guid": null
+            }
+        }
+    }
+}

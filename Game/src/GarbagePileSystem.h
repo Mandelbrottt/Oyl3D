@@ -8,7 +8,7 @@ class GarbagePileSystem : public System
 {
 	OYL_CTOR(GarbagePileSystem, System)
 
-	const float PASSIVE_GARBAGE_BUILDUP_TIME = 20.0f;
+	const float PASSIVE_GARBAGE_BUILDUP_TIME = 30.0f;
 	float passiveGarbageBuildupCountdown = PASSIVE_GARBAGE_BUILDUP_TIME;
 	int numBuildUpsAccumulated = 0;
 
@@ -20,4 +20,6 @@ class GarbagePileSystem : public System
 	bool onEvent(const Event& event) override;
 
 	void increaseGarbageLevel(entt::entity a_garbagePileEntity);
+	void decreaseGarbageLevel(entt::entity a_garbagePileEntity);
+	void updateGarbagePileVisualSize(entt::entity a_garbagePileEntity);
 };

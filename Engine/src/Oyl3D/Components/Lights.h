@@ -15,6 +15,9 @@ namespace oyl::component
 
         struct AttenuationLight
         {
+            AttenuationLight()
+                : attenuation(1.0f, 0.35f, 0.44f) {}
+
             void setRange(f32 range)
             {
                 attenConst = 1.0f;
@@ -22,9 +25,17 @@ namespace oyl::component
                 attenQuad  = 75.0f / range;
             }
 
-            f32 attenConst = 1.0f;
-            f32 attenLin   = 0.35f;
-            f32 attenQuad  = 0.44f;
+            union
+            {
+                struct
+                {
+                    f32 attenConst;
+                    f32 attenLin;
+                    f32 attenQuad;
+                };
+                
+                glm::vec3 attenuation;
+            };
         };
     }
 

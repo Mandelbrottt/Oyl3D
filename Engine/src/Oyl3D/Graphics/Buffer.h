@@ -195,9 +195,9 @@ namespace oyl
         virtual void initColorTexture(uint index,
                                       int  width, 
                                       int  height,
-                                      Texture::Format format,
-                                      Texture::Filter filter,
-                                      Texture::Wrap   wrap) = 0;
+                                      TextureFormat format,
+                                      TextureFilter filter,
+                                      TextureWrap   wrap) = 0;
 
         virtual void updateViewport(int width, int height) = 0;
         virtual void clear() = 0;

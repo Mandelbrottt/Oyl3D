@@ -81,7 +81,7 @@ namespace oyl
     private:
         static Ref<Shader> s_invalid;
 
-        static std::unordered_map<CacheAlias, Ref<Shader>> s_cache;
+        static std::map<CacheAlias, Ref<Shader>> s_cache;
     };
 
     struct ShaderInfo

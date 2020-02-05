@@ -1,7 +1,9 @@
 #include "oylpch.h"
 #include "SceneToFile.h"
 
+#include "Components/Camera.h"
 #include "Components/Collidable.h"
+#include "Components/Lights.h"
 #include "Components/Misc.h"
 #include "Components/Renderable.h"
 #include "Components/RigidBody.h"
@@ -14,7 +16,45 @@
 
 #include "Scenes/Scene.h"
 
-// TODO: Store materials separately from entities
+namespace glm
+{
+    void to_json(json& j, const vec3& v)
+    {
+        j = json({ v.x, v.y, v.z });
+    }
+
+    void from_json(const json& j, vec3& v)
+    {
+        int i = 0;
+        for (const auto& it : j)
+            it.get_to(v[i++]);
+    }
+
+    void to_json(json& j, const vec2& v)
+    {
+        j = json({ v.x, v.y });
+    }
+
+    void from_json(const json& j, vec2& v)
+    {
+        int i = 0;
+        for (const auto& it : j)
+            it.get_to(v[i++]);
+    }
+}
+
+namespace oyl
+{
+    void to_json(json& j, const PlayerNumber& num)
+    {
+        j = static_cast<uint>(num);
+    }
+    
+    void from_json(const json& j, PlayerNumber& num)
+    {
+        num = static_cast<PlayerNumber>(j.get<uint>());
+    }
+}
 
 namespace oyl::internal
 {
@@ -176,22 +216,20 @@ namespace oyl::internal
     {
         using component::EntityInfo;
         using component::Renderable;
-
-        if (!registry.has<Renderable>(entity))
-            return;
         
         auto& re = registry.get<Renderable>(entity);
 
         j["Enabled"] = re.enabled;
+        j["CullingMask"] = re.cullingMask;
         
+        auto& jMesh = j["Mesh"];
         if (re.mesh)
         {
-            auto& jMesh = j["Mesh"];
             jMesh["FilePath"] = re.mesh->getFilePath();
-        }
-        else
-        {
-            j["Mesh"]["FilePath"];
+            const auto& alias = Mesh::getAlias(re.mesh);
+            auto& jAlias = jMesh["Alias"];
+            if (alias != INVALID_ALIAS)
+                jAlias = alias;
         }
 
         json& jMat = j["Material"];
@@ -206,14 +244,137 @@ namespace oyl::internal
         }
     }
 
-    static void saveColliders(json& j, entt::registry& registry)
+    static void saveGuiRenderable(entt::entity entity, entt::registry& registry, json& j)
     {
-        
+        using component::EntityInfo;
+        using component::GuiRenderable;
+
+        auto& re = registry.get<GuiRenderable>(entity);
+
+        j["Enabled"] = re.enabled;
+        j["CullingMask"] = re.cullingMask;
+
+        auto& jTexture = j["Texture"];
+        if (re.texture)
+        {
+            jTexture["FilePath"] = re.texture->getFilePath();
+            const auto& alias = Texture2D::getAlias(re.texture);
+            auto& jAlias = jTexture["Alias"];
+            if (alias != INVALID_ALIAS)
+                jAlias = alias;
+        }
+
+        auto& jClip = j["Clipping"];
+        jClip["Lower"] = re.lowerClipping;
+        jClip["Upper"] = re.upperClipping;
+    }
+
+    static void saveCollidable(entt::entity entity, entt::registry& registry, json& j)
+    {
+        using component::EntityInfo;
+        using component::Collidable;
+
+        auto& co = registry.get<Collidable>(entity);
+
+        auto& jSha = j["Shapes"];
+        jSha = json::array();
+
+        for (auto& info : co)
+        {
+            json shape = json::object();
+
+            shape["Trigger"] = info.isTrigger();
+            shape["Type"] = static_cast<uint>(info.getType());
+
+            switch (info.getType())
+            {
+                case ColliderType::Box:
+                    shape["Center"] = info.box.getCenter();
+                    shape["Size"]   = info.box.getSize();
+                    break;
+                case ColliderType::Sphere:
+                    shape["Center"] = info.sphere.getCenter();
+                    shape["Radius"] = info.sphere.getRadius();
+                    break;
+                case ColliderType::Capsule:
+                    shape["Center"]    = info.capsule.getCenter();
+                    shape["Direction"] = static_cast<uint>(info.capsule.getDirection());
+                    shape["Height"]    = info.capsule.getHeight();
+                    shape["Radius"]    = info.capsule.getRadius();
+                    break;
+                case ColliderType::Cylinder:
+                    shape["Center"]    = info.cylinder.getCenter();
+                    shape["Direction"] = static_cast<uint>(info.cylinder.getDirection());
+                    shape["Height"]    = info.cylinder.getHeight();
+                    shape["Radius"]    = info.cylinder.getRadius();
+                    break;
+                //case ColliderType::Mesh:
+                //    break;
+            }
+
+            jSha.push_back(std::move(shape));
+        }
     }
     
-    static void saveRigidBodies(json& j, entt::registry& registry)
+    static void saveRigidBody(entt::entity entity, entt::registry& registry, json& j)
     {
+        using component::RigidBody;
+
+        auto& rb = registry.get<RigidBody>(entity);
+
+        j["Mass"] = rb.getMass();
+        j["Friction"] = rb.getFriction();
+        j["Properties"] = rb.getPropertyFlags();
+    }
+
+    static void saveLightSource(entt::entity entity, entt::registry& registry, json& j)
+    {
+        using component::PointLight;
+
+        auto& ls = registry.get<PointLight>(entity);
+
+        j = json::array();
+
+        json jLight = json::object();
         
+        jLight["Ambient"] = ls.ambient;
+        jLight["Diffuse"] = ls.diffuse;
+        jLight["Specular"] = ls.specular;
+        jLight["Attenuation"] = ls.attenuation;
+
+        j.push_back(std::move(jLight));
+    }
+
+    static void saveCamera(entt::entity entity, entt::registry& registry, json& j)
+    {
+        using component::Camera;
+
+        auto& camera = registry.get<Camera>(entity);
+
+        j["CullingMask"]  = camera.cullingMask;
+        j["Player"]       = camera.player;
+        j["Enabled"]      = camera.enabled;
+        j["Fov"]          = camera.fov();
+        j["NearClipping"] = camera.nearClipping();
+        j["FarClipping"]  = camera.farClipping();
+
+        auto& jClear = j["ClearProps"];
+        {
+            auto& jSkybox = jClear["Skybox"];
+            if (camera.skybox)
+            {
+                auto& jAlias = jSkybox["Alias"];
+                if (const std::string& alias = TextureCubeMap::getAlias(camera.skybox); alias != INVALID_ALIAS)
+                    jAlias = alias;
+
+                auto& jFile = jSkybox["FilePath"];
+                if (!camera.skybox->getFilePath().empty())
+                    jFile = camera.skybox->getFilePath();
+            }
+        }
+
+        // TODO: Add lower and upper bounds
+
     }
 
     void loadTransform(entt::entity entity, entt::registry& registry, const json& j)
@@ -248,14 +409,14 @@ namespace oyl::internal
                 rotIt->contains("qY") &&
                 rotIt->contains("qZ"))
             {
-                //glm::quat rotation = {
-                //    rotIt->at("qW").get<float>(),
-                //    rotIt->at("qX").get<float>(),
-                //    rotIt->at("qY").get<float>(),
-                //    rotIt->at("qZ").get<float>(),
-                //};
-                //
-                //t.setRotation(rotation);
+                glm::quat rotation = {
+                    rotIt->at("qW").get<float>(),
+                    rotIt->at("qX").get<float>(),
+                    rotIt->at("qY").get<float>(),
+                    rotIt->at("qZ").get<float>(),
+                };
+                
+                t.setRotation(rotation);
             }
         }
         {
@@ -321,12 +482,24 @@ namespace oyl::internal
 
         auto& re = registry.get_or_assign<Renderable>(entity);
 
-        if (j.contains("Enabled"))
-            re.enabled = j["Enabled"].get<bool>();
+        if (auto it = j.find("Enabled"); it != j.end())
+            it->get_to(re.enabled);
+
+        if (auto it = j.find("CullingMask"); it != j.end() && it->is_number_unsigned())
+            it->get_to(re.cullingMask);
 
         if (auto it = j.find("Mesh"); it != j.end() && !it->is_null())
         {
-            if (auto fpIt = it->find("FilePath"); fpIt != it->end() && !fpIt->is_null())
+            bool doLoad = false;
+            if (auto alIt = it->find("Alias"); alIt != it->end() && alIt->is_string())
+            {
+                if (Mesh::exists(alIt->get<std::string>()))
+                    re.mesh = Mesh::get(alIt->get<std::string>());
+                else
+                    doLoad = true;
+            } else doLoad = true;
+            
+            if (auto fpIt = it->find("FilePath"); doLoad && fpIt != it->end() && !fpIt->is_null())
             {
                 auto filePath = fpIt->get<std::string>();
 
@@ -352,18 +525,206 @@ namespace oyl::internal
                 std::string alias = it->get<std::string>();
                 if (Material::exists(alias))
                     re.material = Material::get(alias);
+                else
+                    re.material = materialFromFile("res/assets/materials/" + alias + ".oylmat");
             }
         }
     }
 
-    static void loadCollider(entt::entity entity, entt::registry& registry, const json& j)
+    static void loadGuiRenderable(entt::entity entity, entt::registry& registry, const json& j)
     {
-        
+        using component::GuiRenderable;
+
+        auto& re = registry.get_or_assign<GuiRenderable>(entity);
+
+        if (auto it = j.find("Enabled"); it != j.end())
+            it->get_to(re.enabled);
+
+        if (auto it = j.find("CullingMask"); it != j.end() && it->is_number_unsigned())
+            it->get_to(re.cullingMask);
+
+        if (auto it = j.find("Texture"); it != j.end() && !it->is_null())
+        {
+            bool doLoad = false;
+            if (auto alIt = it->find("Alias"); alIt != it->end() && alIt->is_string())
+            {
+                if (Texture2D::exists(alIt->get<std::string>()))
+                    re.texture = Texture2D::get(alIt->get<std::string>());
+                else
+                    doLoad = true;
+            } else doLoad = true;
+            
+            if (auto fpIt = it->find("FilePath"); doLoad && fpIt != it->end() && !fpIt->is_null())
+            {
+                auto filePath = fpIt->get<std::string>();
+
+                bool meshFound = false;
+                for (const auto& [alias, texture] : Texture2D::getCache())
+                {
+                    if (texture->getFilePath() == filePath)
+                        meshFound = true, re.texture = texture;
+                }
+
+                if (!meshFound && (!re.texture || re.texture && re.texture->getFilePath() != filePath))
+                    re.texture = Texture2D::cache(filePath);
+            }
+        } else re.texture = nullptr;
+
+        if (auto it = j.find("Clipping"); it != j.end() && it->is_object())
+        {
+            if (auto clIt = it->find("Lower"); clIt != it->end() && it->is_array())
+                clIt->get_to(re.lowerClipping);
+            if (auto clIt = it->find("Upper"); clIt != it->end() && it->is_array())
+                clIt->get_to(re.upperClipping);
+        }
+    }
+
+    static void loadCollidable(entt::entity entity, entt::registry& registry, const json& j)
+    {
+        using component::Collidable;
+
+        auto& co = registry.assign_or_replace<Collidable>(entity);
+
+        if (const auto sIt = j.find("Shapes"); sIt != j.end() && sIt->is_array())
+        {
+            for (const auto& jShape : sIt.value())
+            {
+                ColliderType type = static_cast<ColliderType>(jShape.at("Type").get<uint>());
+                auto& shape = co.pushShape(type);
+                shape.setIsTrigger(jShape.at("Trigger").get<bool>());
+
+                switch (type)
+                {
+                    case ColliderType::Box:
+                        if (auto it = jShape.find("Center"); it != jShape.end())
+                            shape.box.setCenter(it->get<glm::vec3>());
+                        if (auto it = jShape.find("Size"); it != jShape.end())
+                            shape.box.setSize(it->get<glm::vec3>());
+                        break;
+                    case ColliderType::Sphere:
+                        if (auto it = jShape.find("Center"); it != jShape.end())
+                            shape.sphere.setCenter(it->get<glm::vec3>());
+                        if (auto it = jShape.find("Radius"); it != jShape.end())
+                            shape.sphere.setRadius(it->get<float>());
+                        break;
+                    case ColliderType::Capsule:
+                        if (auto it = jShape.find("Center"); it != jShape.end())
+                            shape.capsule.setCenter(it->get<glm::vec3>());
+                        if (auto it = jShape.find("Direction"); it != jShape.end())
+                            shape.capsule.setDirection(static_cast<Direction>(it->get<uint>()));
+                        if (auto it = jShape.find("Height"); it != jShape.end())
+                            shape.capsule.setHeight(it->get<float>());
+                        if (auto it = jShape.find("Radius"); it != jShape.end())
+                            shape.capsule.setRadius(it->get<float>());
+                        break;
+                    case ColliderType::Cylinder:
+                        if (auto it = jShape.find("Center"); it != jShape.end())
+                            shape.cylinder.setCenter(it->get<glm::vec3>());
+                        if (auto it = jShape.find("Direction"); it != jShape.end())
+                            shape.cylinder.setDirection(static_cast<Direction>(it->get<uint>()));
+                        if (auto it = jShape.find("Height"); it != jShape.end())
+                            shape.cylinder.setHeight(it->get<float>());
+                        if (auto it = jShape.find("Radius"); it != jShape.end())
+                            shape.cylinder.setRadius(it->get<float>());
+                        break;
+                    //case ColliderType::Mesh:
+                    //    break;
+                }
+            }
+        }
     }
     
     static void loadRigidBody(entt::entity entity, entt::registry& registry, const json& j)
     {
+        using component::RigidBody;
+
+        auto& rb = registry.get_or_assign<RigidBody>(entity);
+
+        if (auto it = j.find("Friction"); it != j.end() && it->is_number_float())
+            rb.setFriction(it->get<float>());
+
+        if (auto it = j.find("Mass"); it != j.end() && it->is_number_float())
+            rb.setMass(it->get<float>());
+
+        if (auto it = j.find("Properties"); it != j.end() && it->is_number_unsigned())
+            rb.setPropertyFlags(it->get<uint>());
+    }
+
+    static void loadLightSource(entt::entity entity, entt::registry& registry, const json& j)
+    {
+        using component::PointLight;
+
+        auto& ls = registry.assign_or_replace<PointLight>(entity);
+
+        if (!j.is_array()) 
+            return;
         
+        for (const auto& jLight : j)
+        {
+            if (const auto it = jLight.find("Ambient"); it != jLight.end())
+                it->get_to(ls.ambient);
+            if (const auto it = jLight.find("Diffuse"); it != jLight.end())
+                it->get_to(ls.diffuse);
+            if (const auto it = jLight.find("Specular"); it != jLight.end())
+                it->get_to(ls.specular);
+            if (const auto it = jLight.find("Attenuation"); it != jLight.end())
+                it->get_to(ls.attenuation);
+        }
+    }
+
+    static void loadCamera(entt::entity entity, entt::registry& registry, const json& j)
+    {
+        using component::Camera;
+
+        auto& re = registry.get_or_assign<Camera>(entity);
+
+        if (auto it = j.find("Enabled"); it != j.end())
+            it->get_to(re.enabled);
+
+        if (auto it = j.find("CullingMask"); it != j.end() && it->is_number_unsigned())
+            it->get_to(re.cullingMask);
+
+        if (auto it = j.find("Enabled"); it != j.end() && it->is_boolean())
+            it->get_to(re.cullingMask);
+
+        if (auto it = j.find("Fov"); it != j.end() && it->is_number_float())
+            re.fov(it->get<float>());
+
+        if (auto it = j.find("NearClipping"); it != j.end() && it->is_number_float())
+            re.nearClipping(it->get<float>());
+
+        if (auto it = j.find("FarClipping"); it != j.end() && it->is_number_float())
+            re.farClipping(it->get<float>());
+
+        if (auto it = j.find("ClearProps"); it != j.end() && it->is_object())
+        {
+            if (auto sIt = it->find("Skybox"); sIt != it->end() && sIt->is_object())
+            {
+                bool doLoad = false;
+                if (auto alIt = it->find("Alias"); alIt != it->end() && alIt->is_string())
+                {
+                    if (TextureCubeMap::exists(alIt->get<std::string>()))
+                        re.skybox = TextureCubeMap::get(alIt->get<std::string>());
+                    else
+                        doLoad = true;
+                } else doLoad = true;
+
+                if (auto fpIt = it->find("FilePath"); doLoad && fpIt != it->end() && !fpIt->is_null())
+                {
+                    auto filePath = fpIt->get<std::string>();
+
+                    bool meshFound = false;
+                    for (const auto& [alias, cubemap] : TextureCubeMap::getCache())
+                    {
+                        if (cubemap->getFilePath() == filePath)
+                            meshFound = true, re.skybox = cubemap;
+                    }
+
+                    if (!meshFound && (!re.skybox || re.skybox && re.skybox->getFilePath() != filePath))
+                        re.skybox = TextureCubeMap::cache(filePath);
+                }
+            } else re.skybox = nullptr;
+        }
     }
 
     static void entityToJson(entt::entity entity, entt::registry& registry, json& j);
@@ -380,11 +741,6 @@ namespace oyl::internal
             EntityInfo& info = registry.get<EntityInfo>(entity);
             entityToJson(entity, registry, sceneJson[info.name]);
         });
-        //for (auto entity : registry)
-        //{
-        //    EntityInfo& info = registry.get<EntityInfo>(entity);
-        //    entityToJson(entity, registry, sceneJson[info.name]);
-        //}
 
         std::string sceneFilePath = "res/scenes/" + sceneName + ".oylscene";
         std::ofstream sceneFile(sceneFilePath);
@@ -462,7 +818,24 @@ namespace oyl::internal
     {
         saveTransform(entity, registry, j["Transform"]);
         saveParent(entity, registry, j["Parent"]);
-        saveRenderable(entity, registry, j["Renderable"]);
+
+        if (registry.has<component::Renderable>(entity))
+            saveRenderable(entity, registry, j["Renderable"]);
+
+        if (registry.has<component::GuiRenderable>(entity))
+            saveGuiRenderable(entity, registry, j["GuiRenderable"]);
+
+        if (registry.has<component::Collidable>(entity))
+            saveCollidable(entity, registry, j["Collidable"]);
+
+        if (registry.has<component::RigidBody>(entity))
+            saveRigidBody(entity, registry, j["RigidBody"]);
+
+        if (registry.has<component::PointLight>(entity))
+            saveLightSource(entity, registry, j["LightSource"]);
+
+        if (registry.has<component::Camera>(entity))
+            saveCamera(entity, registry, j["Camera"]);
     }
 
     static void entityFromJson(entt::entity entity, entt::registry& registry, json& j)
@@ -475,6 +848,21 @@ namespace oyl::internal
 
         if (auto it = j.find("Renderable"); it != j.end())
             loadRenderable(entity, registry, it.value());
+
+        if (auto it = j.find("GuiRenderable"); it != j.end())
+            loadGuiRenderable(entity, registry, it.value());
+
+        if (auto it = j.find("Collidable"); it != j.end())
+            loadCollidable(entity, registry, it.value());
+
+        if (auto it = j.find("RigidBody"); it != j.end())
+            loadRigidBody(entity, registry, it.value());
+
+        if (auto it = j.find("LightSource"); it != j.end())
+            loadLightSource(entity, registry, it.value());
+
+        if (auto it = j.find("Camera"); it != j.end())
+            loadCamera(entity, registry, it.value());
     }
 
     Ref<Material> materialFromFile(const std::string& filepath)
@@ -500,7 +888,7 @@ namespace oyl::internal
             std::string alias;
             if (auto alIt = it->find("Alias"); alIt != it->end() && alIt->is_string())
             {
-                alias = alIt->get<std::string>();
+                alIt->get_to(alias);
                 if (Shader::exists(alias))
                     material->shader = Shader::get(alias);
                 else
@@ -535,7 +923,7 @@ namespace oyl::internal
                 pushBackFn("Pixel",          Shader::Type::Fragment);
 
                 if (!alias.empty())
-                    material->shader = Shader::cache(infos, alias);
+                    material->shader = Shader::cache(infos, alias, true);
                 else
                     material->shader = Shader::create(infos);
             }
@@ -548,7 +936,7 @@ namespace oyl::internal
                 std::string tFilepath = {};
                 if (auto filepathIt = it->find("FilePath");
                     filepathIt != it->end() && filepathIt->is_string())
-                    tFilepath = filepathIt->get<std::string>();
+                    filepathIt->get_to(tFilepath);
 
                 if (auto aliasIt = it->find("Alias"); aliasIt != it->end() && aliasIt->is_string())
                 {
@@ -556,7 +944,13 @@ namespace oyl::internal
                     if (Texture2D::exists(alias))
                         return Texture2D::get(alias);
                     else
-                        return Texture2D::cache(tFilepath, alias);
+                    {
+                        // HACK: Incorporate properties into cache function somehow
+                        auto& tex = Texture2D::cache(tFilepath, alias);
+                        if (auto prIt = it->find("Profile"); prIt != it->end() && prIt->is_number_unsigned())
+                            tex->setProfile(static_cast<TextureProfile>(prIt->get<uint>()));
+                        return tex;
+                    }
                 }
                 else if (!tFilepath.empty())
                     return Texture2D::create(tFilepath);
@@ -580,14 +974,19 @@ namespace oyl::internal
             if (Material::exists(alias))
             {
                 auto testMat = Material::get(alias);
-                if (material->shader == testMat->shader &&
-                    material->albedoMap == testMat->albedoMap &&
-                    material->specularMap == testMat->specularMap &&
-                    material->normalMap == testMat->normalMap)
+                if (*material == *testMat)
                 {
                     material = testMat;
                 }
             }
+        }
+
+        if (auto it = jMaterial.find("MainProperties"); it != jMaterial.end() && it->is_object())
+        {
+            if (auto tileIt = it->find("Tiling"); tileIt != it->end() && tileIt->is_array())
+                tileIt->get_to(material->mainTextureProps.tiling);
+            if (auto offIt = it->find("Offset"); offIt != it->end() && offIt->is_array())
+                offIt->get_to(material->mainTextureProps.offset);
         }
         
         return material;
@@ -595,6 +994,14 @@ namespace oyl::internal
 
     void materialToFile(const Ref<Material>& material, const std::string& filepath)
     {
+        if (!material)
+            return;
+
+        // TEMPORARY: Uncomment when no more changes to material file formatting are to be made
+        //if (auto tempMat = materialFromFile(filepath); 
+        //    tempMat != nullptr && *material == *tempMat)
+        //    return;
+        
         json jFile;
         json& jMaterial = jFile["Material"];
 
@@ -655,43 +1062,30 @@ namespace oyl::internal
 
         json& jTextures = jMaterial["Textures"];
 
-        json& jAlbedo = jTextures["Albedo"];
-        if (material->albedoMap)
+        auto _texToJson = [](const Ref<Texture2D>& texture, json& jTex)
         {
-            jAlbedo["guid"];
+            if (!texture) return;
+            
+            jTex["guid"];
 
             // TEMPORARY:
-            jAlbedo["FilePath"] = material->albedoMap->getFilePath();
+            jTex["FilePath"] = texture->getFilePath();
 
-            json& jAlias = jAlbedo["Alias"];
-            if (auto alias = Texture2D::getAlias(material->albedoMap); alias != INVALID_ALIAS)
+            json& jAlias = jTex["Alias"];
+            if (auto alias = Texture2D::getAlias(texture); alias != INVALID_ALIAS)
                 jAlias = alias;
-        }
 
-        json& jSpecular = jTextures["Specular"];
-        if (material->specularMap)
+            jTex["Profile"] = static_cast<uint>(texture->getProfile());
+        };
+
+        _texToJson(material->albedoMap, jTextures["Albedo"]);
+        _texToJson(material->specularMap, jTextures["Specular"]);
+        _texToJson(material->normalMap, jTextures["Normal"]);
+
+        auto& jMainProps = jMaterial["MainProperties"];
         {
-            jSpecular["guid"];
-
-            // TEMPORARY:
-            jSpecular["FilePath"] = material->specularMap->getFilePath();
-
-            json& jAlias = jAlbedo["Alias"];
-            if (auto alias = Texture2D::getAlias(material->specularMap); alias != INVALID_ALIAS)
-                jAlias = alias;
-        }
-
-        json& jNormal = jTextures["Normal"];
-        if (material->normalMap)
-        {
-            jNormal["guid"];
-
-            // TEMPORARY:
-            jNormal["FilePath"] = material->normalMap->getFilePath();
-
-            json& jAlias = jAlbedo["Alias"];
-            if (auto alias = Texture2D::getAlias(material->normalMap); alias != INVALID_ALIAS)
-                jAlias = alias;
+            jMainProps["Tiling"] = material->mainTextureProps.tiling;
+            jMainProps["Offset"] = material->mainTextureProps.offset;
         }
 
         std::ofstream materialFile(filepath);

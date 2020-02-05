@@ -15,6 +15,8 @@ namespace oyl::component
     {
         Ref<Mesh>      mesh;
         Ref<Material>  material;
+
+        u32 cullingMask = 0x0F;
     
         bool enabled = true;
     };
@@ -22,6 +24,11 @@ namespace oyl::component
     struct GuiRenderable
     {
         Ref<Texture2D> texture;
+
+        u32 cullingMask = 0x0F;
+
+        glm::vec2 lowerClipping = glm::vec2(0.0f);
+        glm::vec2 upperClipping = glm::vec2(1.0f);
     
         bool enabled = true;
     };

@@ -35,7 +35,7 @@ namespace oyl::internal
                              bool overwrite = false);
 
     protected:
-        std::unordered_map<CacheAlias, Ref<T>> m_cache;
+        std::map<CacheAlias, Ref<T>> m_cache;
 
         static const char* s_typename;
     };

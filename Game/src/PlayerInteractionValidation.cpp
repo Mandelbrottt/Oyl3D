@@ -128,10 +128,10 @@ void PlayerInteractionValidationSystem::performRaycastAndValidateForPlayer(entt:
 	//get the camera associated with the player
 	entt::entity playersCameraEntity = entt::null;
 
-	auto cameraView = registry->view<component::PlayerCamera, component::Transform>();
+	auto cameraView = registry->view<component::Camera, component::Transform>();
 	for (entt::entity cameraEntity : cameraView)
 	{
-		if (player.playerNum == registry->get<component::PlayerCamera>(cameraEntity).player)
+		if (player.playerNum == registry->get<component::Camera>(cameraEntity).player)
 		{
 			playersCameraEntity = cameraEntity;
 			//set the camera parent to the player in case it hasn't already been done
@@ -143,22 +143,16 @@ void PlayerInteractionValidationSystem::performRaycastAndValidateForPlayer(entt:
 	}
 	if (!registry->valid(playersCameraEntity))
 	{
-		std::cout << "WARNING: PLAYER " << player.playerNum << " DOES NOT HAVE AN ASSOCIATED CAMERA\n";
+		std::cout << "WARNING: PLAYER " << (uint)player.playerNum << " DOES NOT HAVE AN ASSOCIATED CAMERA\n";
 		return;
 	}
 
 	auto& playerCameraTransform = registry->get<component::Transform>(playersCameraEntity);
 
-	auto ray = RayTest::Closest(playerCameraTransform.getPositionGlobal(), playerCameraTransform.getForwardGlobal(), 1.4f);
+	auto ray = RayTest::Closest(playerCameraTransform.getPositionGlobal(), playerCameraTransform.getForwardGlobal(), 1.9f);
 	if (ray->hasHit && registry->valid(ray->hitObject.entity))
 	{
 		entt::entity raycastHitEntity = ray->hitObject.entity;
-
-		/*if (registry->has<component::EntityInfo>(raycastHitEntity))
-		{
-			auto& ei = registry->get<component::EntityInfo>(raycastHitEntity);
-			OYL_LOG("RAYCAST HIT ENTITY: {}", ei.name);
-		}*/
 
 		if (registry->has<CarryableItem>(raycastHitEntity))
 			validateCarryableItemInteraction(a_playerEntity, raycastHitEntity);
@@ -294,7 +288,19 @@ void PlayerInteractionValidationSystem::validateGarbagePileInteraction(entt::ent
 	auto& garbagePile          = registry->get<GarbagePile>(a_garbagePileEntity);
 	auto& garbagePileTransform = registry->get<component::Transform>(a_garbagePileEntity);
 
-	if (garbagePile.garbageLevel > 0)
+	if (garbagePile.garbageLevel <= 0)
+	{
+		//there is no garbage pile there to even interact with (so it shouldn't even count as invalid, just nothing)
+		player.interactableEntity = entt::null;
+
+		PlayerInteractResultEvent playerInteractResult;
+		playerInteractResult.interactionType = PlayerInteractionResult::nothing;
+		playerInteractResult.playerNum       = player.playerNum;
+		postEvent(playerInteractResult);
+
+		return;
+	}
+	else //garbageLevel > 0
 	{
 		if (garbagePile.team == player.team)
 		{
@@ -723,7 +729,7 @@ void PlayerInteractionValidationSystem::performCannonInteraction(entt::entity a_
 
 		player.adjustingPositionStateData.startPos         = playerTransform.getPosition();
 		player.adjustingPositionStateData.destinationPos.y = playerTransform.getPositionY(); //don't change the player's y position
-
+		
 		player.pushingStateData.startPos         = player.adjustingPositionStateData.destinationPos;
 		player.pushingStateData.destinationPos.y = playerTransform.getPositionY(); //don't change the player's y position
 
@@ -732,13 +738,13 @@ void PlayerInteractionValidationSystem::performCannonInteraction(entt::entity a_
 		//hacky way to limit the camera but it works
 		if (playerTransform.getPositionX() > cannonTransform.getPositionX())
 		{
-			player.yRotationClamp = 10.0f;
+			player.yRotationClamp = 30.0f;
 			if (playerTransform.getRotationEulerY() < player.yRotationClamp)
 				playerTransform.setRotationEulerY(player.yRotationClamp);
 		}
 		else
 		{
-			player.yRotationClamp = -10.0f;
+			player.yRotationClamp = -30.0f;
 			if (playerTransform.getRotationEulerY() > player.yRotationClamp)
 				playerTransform.setRotationEulerY(player.yRotationClamp);
 		}

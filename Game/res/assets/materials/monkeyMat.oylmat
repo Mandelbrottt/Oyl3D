@@ -1,0 +1,26 @@
+{
+    "Material": {
+        "Alias": "monkeyMat",
+        "MainProperties": {
+            "Offset": [
+                0.0,
+                0.0
+            ],
+            "Tiling": [
+                1.0,
+                1.0
+            ]
+        },
+        "Shader": null,
+        "Textures": {
+            "Albedo": {
+                "Alias": "Oyl White",
+                "FilePath": "../Engine/res/textures/white.png",
+                "Profile": 0,
+                "guid": null
+            },
+            "Normal": null,
+            "Specular": null
+        }
+    }
+}

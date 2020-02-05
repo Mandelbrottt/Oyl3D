@@ -98,6 +98,7 @@ namespace oyl
         Texture2D::cache(ENGINE_RES + WHITE_TEXTURE_PATH, WHITE_TEXTURE_ALIAS);
         Texture2D::cache(ENGINE_RES + BLACK_TEXTURE_PATH, BLACK_TEXTURE_ALIAS);
         Texture2D::cache(ENGINE_RES + UV_TEXTURE_PATH, UV_TEXTURE_ALIAS);
+        Texture2D::cache(ENGINE_RES + DEFAULT_NORMAL_TEXTURE_PATH, DEFAULT_NORMAL_TEXTURE_ALIAS);
 
         TextureCubeMap::cache(ENGINE_RES + DEFAULT_SKYBOX_PATH, DEFAULT_SKYBOX_ALIAS);
 
@@ -112,9 +113,9 @@ namespace oyl
         m_mainBuffer->initDepthTexture(m_window->getWidth(), m_window->getHeight());
 
         m_mainBuffer->initColorTexture(0, m_window->getWidth(), m_window->getHeight(),
-                                       Texture::RGBA8,
-                                       Texture::Nearest,
-                                       Texture::Clamp);
+                                       TextureFormat::RGBA8,
+                                       TextureFilter::Nearest,
+                                       TextureWrap::ClampToEdge);
 
         ViewportHandleChangedEvent hcEvent;
         hcEvent.handle = m_mainBuffer->getColorHandle(0);
@@ -286,10 +287,10 @@ namespace oyl
                 m_guiLayer->onUpdateSystems();
                 m_guiLayer->onUpdate();
             #else
-                m_systemsLayer->onUpdateSystems(timestep);
-                m_systemsLayer->onUpdate(timestep);
+                m_systemsLayer->onUpdateSystems();
+                m_systemsLayer->onUpdate();
 
-                m_currentScene->onUpdate(timestep);
+                m_currentScene->onUpdate();
             #endif
 
                 RenderCommand::setClearColor(0.1f, 0.1f, 0.1f, 1.0f);
