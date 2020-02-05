@@ -963,6 +963,9 @@ namespace oyl::internal
             
             if (auto normalIt = it->find("Normal"); normalIt != it->end())
                 material->normalMap = getTextureFn(normalIt);
+
+            if (auto emissionIt = it->find("Emission"); emissionIt != it->end())
+                material->emissionMap = getTextureFn(emissionIt);
         }
 
         if (auto it = jMaterial.find("Alias"); it != jMaterial.end() && it->is_string())
@@ -1075,9 +1078,11 @@ namespace oyl::internal
             jTex["Profile"] = static_cast<uint>(texture->getProfile());
         };
 
+        // TODO: Add to_json and from_json
         _texToJson(material->albedoMap, jTextures["Albedo"]);
         _texToJson(material->specularMap, jTextures["Specular"]);
         _texToJson(material->normalMap, jTextures["Normal"]);
+        _texToJson(material->emissionMap, jTextures["Emission"]);
 
         auto& jMainProps = jMaterial["MainProperties"];
         {

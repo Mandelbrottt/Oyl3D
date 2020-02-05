@@ -16,6 +16,7 @@ namespace oyl
     {   
         class RenderSystem;  
         class GuiRenderSystem;  
+        class PostRenderSystem;  
         class ApplicationListener;
         class GamepadListener;
         class SystemsLayer;
@@ -56,6 +57,7 @@ namespace oyl
         // TODO: Put in systems layer
         Ref<internal::RenderSystem> m_renderSystem;
         Ref<internal::GuiRenderSystem> m_guiRenderSystem;
+        Ref<internal::PostRenderSystem> m_postRenderSystem;
 
         float m_lastFrameTime = 0;
 

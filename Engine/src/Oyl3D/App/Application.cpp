@@ -109,6 +109,7 @@ namespace oyl
 
         m_renderSystem    = internal::RenderSystem::create();
         m_guiRenderSystem = internal::GuiRenderSystem::create();
+        m_postRenderSystem = internal::PostRenderSystem::create();
 
         initEventListeners();
 
@@ -208,6 +209,12 @@ namespace oyl
 
         m_dispatcher->registerListener(m_guiRenderSystem);
 
+        m_postRenderSystem->setDispatcher(m_dispatcher);
+        m_postRenderSystem->setRegistry(m_currentScene->m_registry);
+        m_postRenderSystem->onEnter();
+
+        m_dispatcher->registerListener(m_postRenderSystem);
+
         if (!m_systemsLayer)
         {
             m_systemsLayer = internal::SystemsLayer::create();
@@ -289,6 +296,7 @@ namespace oyl
                 
                 m_renderSystem->onUpdate();
                 m_guiRenderSystem->onUpdate();
+                m_postRenderSystem->onUpdate();
 
                 Renderer::endScene();                
             }
@@ -298,6 +306,7 @@ namespace oyl
 
             m_renderSystem->onGuiRender();
             m_guiRenderSystem->onGuiRender();
+            m_postRenderSystem->onGuiRender();
 
             m_guiLayer->onGuiRenderSystems();
             m_guiLayer->onGuiRender();
