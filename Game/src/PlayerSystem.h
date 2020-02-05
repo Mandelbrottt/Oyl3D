@@ -23,4 +23,5 @@ class PlayerSystem : public System
 	void changeToCleaning(Player* a_player);
 
 	void performBasicMovement(entt::entity a_playerEntity, const float a_speedForce, const float a_dt);
+	void checkAndResolveSlopeCollision(entt::entity a_playerEntity);
 };

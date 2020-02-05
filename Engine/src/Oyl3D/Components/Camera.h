@@ -15,14 +15,14 @@ namespace oyl
 
     namespace component
     {
-        class PlayerCamera
+        class Camera
         {
         public:
             bool enabled = true;
             
             PlayerNumber player = PlayerNumber::One;
 
-            u32 cullingMask = 0xFFFFFFFF;
+            u32 cullingMask = 0x0F;
     
             Ref<TextureCubeMap> skybox;
 
@@ -70,7 +70,7 @@ namespace oyl
             
             glm::vec3 worldToScreenSpace(const glm::vec3& a_pos) const;
 
-            static void on_construct(entt::entity entity, entt::registry& registry, PlayerCamera& camera);
+            static void on_construct(entt::entity entity, entt::registry& registry, Camera& camera);
             
         private:
             float m_fov          = 60.0f;
@@ -94,73 +94,73 @@ namespace oyl
             mutable bool m_orthoDirty = true;
         };
 
-        inline float PlayerCamera::fov() const
+        inline float Camera::fov() const
         {
             return m_fov;
         }
 
-        inline float PlayerCamera::fov(float a_fov)
+        inline float Camera::fov(float a_fov)
         {
             m_projectionDirty |= m_fov != a_fov;
             return m_fov = a_fov;
         }
 
-        inline float PlayerCamera::aspect() const
+        inline float Camera::aspect() const
         {
             return m_aspect;
         }
 
-        inline float PlayerCamera::aspect(float a_aspect)
+        inline float Camera::aspect(float a_aspect)
         {
             m_projectionDirty |= m_aspect != a_aspect;
             return m_aspect = a_aspect;
         }
 
-        inline float PlayerCamera::nearClipping() const
+        inline float Camera::nearClipping() const
         {
             return m_nearClipping;
         }
 
-        inline float PlayerCamera::nearClipping(float a_nearClipping)
+        inline float Camera::nearClipping(float a_nearClipping)
         {
             m_projectionDirty |= m_nearClipping != a_nearClipping;
             return m_nearClipping = a_nearClipping;
         }
 
-        inline float PlayerCamera::farClipping() const
+        inline float Camera::farClipping() const
         {
             return m_farClipping;
         }
 
-        inline float PlayerCamera::farClipping(float a_farClipping)
+        inline float Camera::farClipping(float a_farClipping)
         {
             m_projectionDirty |= m_farClipping != a_farClipping;
             return m_farClipping = a_farClipping;
         }
 
-        inline glm::vec2 PlayerCamera::lowerCoords() const
+        inline glm::vec2 Camera::lowerCoords() const
         {
             return m_lowerCoords;
         }
 
-        inline glm::vec2 PlayerCamera::lowerCoords(glm::vec2 a_lowerCoords)
+        inline glm::vec2 Camera::lowerCoords(glm::vec2 a_lowerCoords)
         {
             m_orthoDirty |= m_lowerCoords != a_lowerCoords;
             return m_lowerCoords = a_lowerCoords;
         }
 
-        inline glm::vec2 PlayerCamera::upperCoords() const
+        inline glm::vec2 Camera::upperCoords() const
         {
             return m_upperCoords;
         }
 
-        inline glm::vec2 PlayerCamera::upperCoords(glm::vec2 a_upperCoords)
+        inline glm::vec2 Camera::upperCoords(glm::vec2 a_upperCoords)
         {
             m_orthoDirty |= m_upperCoords != a_upperCoords;
             return m_upperCoords = a_upperCoords;
         }
 
-        inline const glm::mat4& PlayerCamera::viewMatrix() const
+        inline const glm::mat4& Camera::viewMatrix() const
         {
             using component::Transform;
 
@@ -175,7 +175,7 @@ namespace oyl
             return m_view;
         }
         
-        inline const glm::mat4& PlayerCamera::projectionMatrix() const
+        inline const glm::mat4& Camera::projectionMatrix() const
         {
             if (m_projectionDirty)
             {
@@ -187,7 +187,7 @@ namespace oyl
             return m_projection;
         }
 
-        inline const glm::mat4& PlayerCamera::viewProjectionMatrix() const
+        inline const glm::mat4& Camera::viewProjectionMatrix() const
         {
             using component::Transform;
 
@@ -206,7 +206,7 @@ namespace oyl
             return m_viewProjection;
         }
 
-        inline const glm::mat4& PlayerCamera::orthoMatrix() const
+        inline const glm::mat4& Camera::orthoMatrix() const
         {
             if (m_orthoDirty)
             {
@@ -217,15 +217,15 @@ namespace oyl
             return m_ortho;
         }
 
-        inline glm::vec3 PlayerCamera::worldToScreenSpace(const glm::vec3& a_pos) const
+        inline glm::vec3 Camera::worldToScreenSpace(const glm::vec3& a_pos) const
         {
             glm::vec4 ndc = viewProjectionMatrix() * glm::vec4(a_pos, 1.0f);
             ndc /= ndc.w;
             ndc = (ndc + 1.0f) * 0.5f;
-            return glm::vec3(m_lowerCoords, 0.0f) + ndc.xyz * glm::vec3(m_upperCoords - m_lowerCoords, 0.0f);
+            return glm::vec3(m_lowerCoords, 0.0f) + ndc.xyz * glm::vec3(m_upperCoords - m_lowerCoords, 1.0f);
         }
         
-        inline void PlayerCamera::on_construct(entt::entity entity, entt::registry& registry, PlayerCamera& camera)
+        inline void Camera::on_construct(entt::entity entity, entt::registry& registry, Camera& camera)
         {
             camera.m_owner = entity;
             camera.m_registry = &registry;

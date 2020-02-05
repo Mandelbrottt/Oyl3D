@@ -1,6 +1,16 @@
 {
     "Material": {
         "Alias": "atlasMaterial",
+        "MainProperties": {
+            "Offset": [
+                0.0,
+                0.0
+            ],
+            "Tiling": [
+                1.0,
+                1.0
+            ]
+        },
         "Shader": {
             "Alias": "Oyl Lighting",
             "Pixel": {
@@ -14,8 +24,8 @@
         },
         "Textures": {
             "Albedo": {
-                "Alias": "shipAtlas",
-                "FilePath": "res\\assets\\textures\\shipAtlas.png",
+                "Alias": "Atlas",
+                "FilePath": "res\\assets\\textures\\Atlas.png",
                 "Profile": 0,
                 "guid": null
             },
@@ -23,7 +33,7 @@
             "Specular": {
                 "Alias": "tempSpec",
                 "FilePath": "res\\assets\\textures\\tempSpec.jpg",
-                "Profile": 0,
+                "Profile": 1,
                 "guid": null
             }
         }

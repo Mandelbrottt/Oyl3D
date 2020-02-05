@@ -1,8 +1,18 @@
 {
     "Material": {
         "Alias": "lmao",
+        "MainProperties": {
+            "Offset": [
+                0.0,
+                0.0
+            ],
+            "Tiling": [
+                1.0,
+                1.0
+            ]
+        },
         "Shader": {
-            "Alias": "Oyl Lighting",
+            "Alias": null,
             "Pixel": {
                 "FilePath": "../Engine/res/shaders/lighting.frag",
                 "guid": null
@@ -14,8 +24,8 @@
         },
         "Textures": {
             "Albedo": {
-                "Alias": "brickwall",
-                "FilePath": "res\\assets\\textures\\brickwall.jpg",
+                "Alias": null,
+                "FilePath": "../Engine/res/textures/uvgrid.png",
                 "Profile": 0,
                 "guid": null
             },
@@ -26,8 +36,8 @@
                 "guid": null
             },
             "Specular": {
-                "Alias": "Oyl White",
-                "FilePath": "../Engine/res/textures/white.png",
+                "Alias": "brickwall",
+                "FilePath": "res\\assets\\textures\\brickwall.jpg",
                 "Profile": 0,
                 "guid": null
             }

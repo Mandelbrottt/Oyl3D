@@ -1,8 +1,18 @@
 {
     "Material": {
         "Alias": "shipMat",
+        "MainProperties": {
+            "Offset": [
+                0.0,
+                0.0
+            ],
+            "Tiling": [
+                1.0,
+                1.0
+            ]
+        },
         "Shader": {
-            "Alias": "Oyl Lighting",
+            "Alias": null,
             "Pixel": {
                 "FilePath": "../Engine/res/shaders/lighting.frag",
                 "guid": null
@@ -14,13 +24,18 @@
         },
         "Textures": {
             "Albedo": {
-                "Alias": "ship",
-                "FilePath": "res\\assets\\textures\\ship.png",
-                "Profile": 1,
+                "Alias": null,
+                "FilePath": "../Engine/res/textures/invalid.png",
+                "Profile": 0,
                 "guid": null
             },
             "Normal": null,
-            "Specular": null
+            "Specular": {
+                "Alias": "Oyl White",
+                "FilePath": "../Engine/res/textures/white.png",
+                "Profile": 0,
+                "guid": null
+            }
         }
     }
 }

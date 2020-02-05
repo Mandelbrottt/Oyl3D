@@ -7,13 +7,13 @@
 #include "CustomEvents.h"
 #include "PlayerInteractionValidation.h"
 #include "GarbagePileSystem.h"
-#include "GarbageTickSystem.h"
 #include "UIManagerSystem.h"
 #include "CannonballSystem.h"
 #include "GloopSystem.h"
 #include "CleaningQuicktimeEventSystem.h"
 #include "ItemRespawnSystem.h"
 #include "CameraBreathingSystem.h"
+#include "GarbagePileHealthBarSystem.h"
 
 using namespace oyl;
 
@@ -31,7 +31,7 @@ public:
 		this->listenForEventCategory(EventCategory::Keyboard);
 		this->listenForEventCategory(EventCategory::Mouse);
 		this->listenForEventCategory(EventCategory::Gamepad);
-		this->listenForEventCategory((EventCategory) CategoryGarbagePile);
+		this->listenForEventCategory((EventCategory)CategoryGarbagePile);
 
 		// listenForEventType(EventType::PhysicsCollisionEnter);
 		// listenForEventType(EventType::PhysicsCollisionStay);
@@ -41,13 +41,13 @@ public:
 		scheduleSystemUpdate<CannonSystem>();
 		scheduleSystemUpdate<PlayerInteractionValidationSystem>();
 		scheduleSystemUpdate<GarbagePileSystem>();
-		scheduleSystemUpdate<GarbageTickSystem>();
 		scheduleSystemUpdate<UIManagerSystem>();
 		scheduleSystemUpdate<CannonballSystem>();
 		scheduleSystemUpdate<GloopSystem>();
 		scheduleSystemUpdate<CleaningQuicktimeEventSystem>();
 		scheduleSystemUpdate<ItemRespawnSystem>();
 		scheduleSystemUpdate<CameraBreathingSystem>();
+		scheduleSystemUpdate<GarbagePileHealthBarSystem>();
 
 		for (int i = 0; i < 4; i++)
 		{
@@ -316,24 +316,6 @@ public:
 			}
 
 			{
-				/*for (int i = 0; i < 3; i++)
-				{
-					entt::entity e = registry->create();
-					auto& gui = registry->assign<component::GuiRenderable>(e);
-					gui.texture = Texture2D::cache("res/assets/textures/gui/garbageTick.png");
-
-					auto& garbageTick = registry->assign<GarbageTick>(e);
-
-					component::Transform garbageTickTransform;
-					garbageTickTransform.setPosition(glm::vec3(-100.0f, -100.0f, -200.0f));
-					registry->assign<component::Transform>(e, garbageTickTransform);
-
-					auto& so = registry->assign<component::EntityInfo>(e);
-					so.name = "Garbage Tick" + std::to_string(i) + " For Player " + std::to_string(i + 1);
-				}*/
-			}
-
-			{
 				//background for cleaning quicktime event
 				entt::entity cleaningQuicktimeEventBackgroundEntity = registry->create();
 				auto& backgroundGUI = registry->assign<component::GuiRenderable>(cleaningQuicktimeEventBackgroundEntity);
@@ -341,12 +323,12 @@ public:
 				backgroundGUI.cullingMask = 0b1 << i;
 
 				component::Transform backgroundTransform;
-				backgroundTransform.setPosition(glm::vec3(-30.0f, 3.5f, 0.0f));
+				backgroundTransform.setPosition(glm::vec3(-30.0f, 3.5f, -10.0f));
 				backgroundTransform.setScale(glm::vec3(2.0f, 1.5f, 1.0f));
 				registry->assign<component::Transform>(cleaningQuicktimeEventBackgroundEntity, backgroundTransform);
 
 				auto& backgroundHUDElement = registry->assign<PlayerHUDElement>(cleaningQuicktimeEventBackgroundEntity);
-				backgroundHUDElement.positionWhenActive = glm::vec3(0.0f, 3.5f, 0.0f);
+				backgroundHUDElement.positionWhenActive = glm::vec3(0.0f, 3.5f, -10.0f);
 				backgroundHUDElement.playerNum = (PlayerNumber)i;
 
 				auto& backgroundSceneObject = registry->assign<component::EntityInfo>(cleaningQuicktimeEventBackgroundEntity);
@@ -361,24 +343,119 @@ public:
 				indicatorGUI.cullingMask = 0b1 << i;
 
 				component::Transform indicatorTransform;
-				indicatorTransform.setPosition(glm::vec3(-30.0f, 3.6f, -1.0f));
+				indicatorTransform.setPosition(glm::vec3(-30.0f, 3.6f, -11.0f));
 				indicatorTransform.setScale(glm::vec3(1.5f, 2.0f, 1.0f));
 				registry->assign<component::Transform>(cleaningQuicktimeEventIndicatorEntity, indicatorTransform);
 
 				CleaningQuicktimeEventIndicator cleaningQuicktimeEventIndicator;
-				cleaningQuicktimeEventIndicator.lerpInformation.startPos = glm::vec3(-4.95f, 3.6f, -1.0f);
-				cleaningQuicktimeEventIndicator.lerpInformation.destinationPos = glm::vec3(4.95f, 3.6f, -1.0f);
+				cleaningQuicktimeEventIndicator.lerpInformation.startPos = glm::vec3(-4.95f, 3.6f, -11.0f);
+				cleaningQuicktimeEventIndicator.lerpInformation.destinationPos = glm::vec3(4.95f, 3.6f, -11.0f);
 				cleaningQuicktimeEventIndicator.lerpInformation.speed = 2.2f;
 
 				cleaningQuicktimeEventIndicator.cleaningQuicktimeEventBackground = cleaningQuicktimeEventBackgroundEntity;
 				registry->assign<CleaningQuicktimeEventIndicator>(cleaningQuicktimeEventIndicatorEntity, cleaningQuicktimeEventIndicator);
 
 				auto& indicatorHUDElement = registry->assign<PlayerHUDElement>(cleaningQuicktimeEventIndicatorEntity);
-				indicatorHUDElement.positionWhenActive = glm::vec3(-4.95f, 3.6f, -1.0f);
+				indicatorHUDElement.positionWhenActive = glm::vec3(-4.95f, 3.6f, -11.0f);
 				indicatorHUDElement.playerNum = (PlayerNumber)i;
 
 				auto& indicatorSceneObject = registry->assign<component::EntityInfo>(cleaningQuicktimeEventIndicatorEntity);
 				indicatorSceneObject.name = "Cleaning Quicktime Event Indicator" + std::to_string(i + 1);
+			}
+
+			{
+				for (int k = 0; k < 3; k++)
+				{
+					//garbage pile heath bar outline
+					entt::entity outlineEntity = registry->create();
+					auto& outlineGui = registry->assign<component::GuiRenderable>(outlineEntity);
+					outlineGui.texture = Texture2D::cache("res/assets/textures/gui/garbagePileHPBarOutline.png");
+					outlineGui.cullingMask = 0b1 << i;
+
+					component::Transform outlineTransform;
+					outlineTransform.setPosition(glm::vec3(-30.0f, 0.0f, 0.0f));
+					outlineTransform.setScale(glm::vec3(4.0f, 4.0f, 4.0f));
+					registry->assign<component::Transform>(outlineEntity, outlineTransform);
+
+					auto& outlineEi = registry->assign<component::EntityInfo>(outlineEntity);
+					outlineEi.name = "GarbageHPBarOutline" + std::to_string(k) + " For Player" + std::to_string(i);
+
+
+
+					//garbage pile health bar fill
+					entt::entity fillEntity = registry->create();
+					auto& fillGui = registry->assign<component::GuiRenderable>(fillEntity);
+					fillGui.texture = Texture2D::cache("res/assets/textures/gui/garbagePileHPBarFill.png");
+					fillGui.cullingMask = 0b1 << i;
+
+					auto& garbageHPBar = registry->assign<GarbagePileHealthBar>(fillEntity);
+					garbageHPBar.garbagePileNum = k - 1;
+					garbageHPBar.playerNum      = (PlayerNumber)i;
+					garbageHPBar.outlineEntity  = outlineEntity;
+
+					if (garbageHPBar.playerNum == PlayerNumber::One || garbageHPBar.playerNum == PlayerNumber::Three) //1 and 3 are on blue team
+						garbageHPBar.team = Team::blue;
+					else
+						garbageHPBar.team = Team::red;
+
+					component::Transform fillTransform;
+					fillTransform.setPosition(glm::vec3(-30.0f, 0.0f, 0.0f));
+					fillTransform.setScale(glm::vec3(4.0f, 4.0f, 4.0f));
+					registry->assign<component::Transform>(fillEntity, fillTransform);
+
+					auto& fillEi = registry->assign<component::EntityInfo>(fillEntity);
+					fillEi.name = "GarbageHPBarFill" + std::to_string(k) + " For Player" + std::to_string(i);
+				}
+			}
+
+			{
+				//garbage meter outline
+				entt::entity outlineEntity = registry->create();
+				auto& outlineGui = registry->assign<component::GuiRenderable>(outlineEntity);
+				outlineGui.texture = Texture2D::cache("res/assets/textures/gui/garbageMeterOutline.png");
+				outlineGui.cullingMask = 0b1 << i;
+
+				auto& garbageMeter = registry->assign<GarbageMeterDisplay>(outlineEntity);
+				garbageMeter.playerNum = (PlayerNumber)i;
+
+				if (garbageMeter.playerNum == PlayerNumber::One || garbageMeter.playerNum == PlayerNumber::Three) //1 and 3 are on blue team
+					garbageMeter.team = Team::blue;
+				else
+					garbageMeter.team = Team::red;
+
+				component::Transform outlineTransform;
+				outlineTransform.setPosition(glm::vec3(0.0f, 3.8f, 12.0f));
+				outlineTransform.setScale(glm::vec3(2.0f, 2.0f, 1.0f));
+				registry->assign<component::Transform>(outlineEntity, outlineTransform);
+
+				auto& outlineEi = registry->assign<component::EntityInfo>(outlineEntity);
+				outlineEi.name = "GarbageMeterOutline" + std::to_string(i);
+
+				for (int k = 0; k < 3; k++)
+				{
+					//garbage meter fill bars
+					entt::entity fillEntity = registry->create();
+
+					garbageMeter.garbageMeterBars[k] = fillEntity;
+
+					auto& fillParent = registry->assign<component::Parent>(fillEntity);
+					fillParent.parent = outlineEntity;
+
+					auto& fillGui = registry->assign<component::GuiRenderable>(fillEntity);
+					fillGui.texture = Texture2D::cache("res/assets/textures/gui/garbageMeterBar.png");
+					fillGui.cullingMask = 0b1 << i;
+
+					auto& garbageMeterBar = registry->assign<GarbageMeterBar>(fillEntity);
+					garbageMeterBar.garbagePileNum = k - 1;
+
+					component::Transform fillTransform;
+					fillTransform.setPosition(glm::vec3(0.65f * k - 0.65f, 3.8f, 10.0f));
+					fillTransform.setScale(glm::vec3(2.0f, 2.0f, 1.0f));
+					registry->assign<component::Transform>(fillEntity, fillTransform);
+
+					auto& fillEi = registry->assign<component::EntityInfo>(fillEntity);
+					fillEi.name = "GarbageMeterBar" + std::to_string(k) + " For Player" + std::to_string(i);
+				}
 			}
 		}
 
@@ -468,10 +545,10 @@ public:
 					playerTransform.setRotationEulerY(player.yRotationClamp);
 			}
 
-			auto playerCameraView = registry->view<component::PlayerCamera, component::Transform, component::Parent>();
+			auto playerCameraView = registry->view<component::Camera, component::Transform, component::Parent>();
 			for (auto& cameraEntity : playerCameraView)
 			{
-				auto& camera          = registry->get<component::PlayerCamera>(cameraEntity);
+				auto& camera          = registry->get<component::Camera>(cameraEntity);
 				auto& cameraTransform = registry->get<component::Transform>(cameraEntity);
 				auto& cameraParent    = registry->get<component::Parent>(cameraEntity);
 
@@ -681,10 +758,10 @@ public:
 				}
 			}
 
-			auto playerCameraView = registry->view<component::PlayerCamera, component::Transform>();
+			auto playerCameraView = registry->view<component::Camera, component::Transform>();
 			for (auto& cameraEntity : playerCameraView)
 			{
-				auto& camera          = registry->get<component::PlayerCamera>(cameraEntity);
+				auto& camera          = registry->get<component::Camera>(cameraEntity);
 				auto& cameraTransform = registry->get<component::Transform>(cameraEntity);
 
 				if (camera.player != PlayerNumber::One)

@@ -20,6 +20,8 @@ void PlayerSystem::onUpdate()
 		auto& playerTransform = registry->get<component::Transform>(playerEntity);
 		auto& playerRB        = registry->get<component::RigidBody>(playerEntity);
 
+		player.jumpCooldownTimer -= Time::deltaTime();
+
 		switch (player.state)
 		{
 		    case PlayerState::idle:
@@ -117,6 +119,7 @@ bool PlayerSystem::onEvent(const Event& event)
 		case (EventType)TypePlayerMove:
 		{
 			auto evt = event_cast<PlayerMoveEvent>(event);
+
 			auto& player = registry->get<Player>(evt.playerEntity);
 
 			player.moveDirection += evt.direction;
@@ -128,13 +131,15 @@ bool PlayerSystem::onEvent(const Event& event)
 		case (EventType)TypePlayerJump:
 		{
 			auto evt = event_cast<PlayerJumpEvent>(event);
+
 			auto& player   = registry->get<Player>(evt.playerEntity);
 			auto& playerRB = registry->get<component::RigidBody>(evt.playerEntity);
 
 			if (!player.isJumping)
 			{
 				playerRB.addImpulse(glm::vec3(0.0f, 1.0f, 0.0f) * player.jumpForce);
-				player.isJumping = true;
+				player.isJumping         = true;
+				player.jumpCooldownTimer = player.JUMP_COOLDOWN_DURATION;
 			}
 
 			break;
@@ -198,11 +203,17 @@ bool PlayerSystem::onEvent(const Event& event)
 			else //entity 2 is a player
 				playerEntity = evt.entity2;
 
+			auto& player           = registry->get<Player>(playerEntity);
+			auto& playerTransform  = registry->get<component::Transform>(playerEntity);
 			auto& playerCollidable = registry->get<component::Collidable>(playerEntity);
-			float playerHeight     = playerCollidable.getShape(0).box.getSize().y;
+			float halfPlayerHeight = playerCollidable.getShape(0).capsule.getHeight();
 
-			//check if contact point is below player
-			
+			//check if the player is valid to jump
+			if (evt.contactPoint.y <= (playerTransform.getPositionY() - halfPlayerHeight + 0.01f) && player.jumpCooldownTimer < 0.0f)
+			{
+				player.isJumping         = false;
+				player.jumpCooldownTimer = player.JUMP_COOLDOWN_DURATION;
+			}
 		}
 	}
 	return false;
@@ -233,10 +244,10 @@ void PlayerSystem::changeToFalling(Player* a_player)
 void PlayerSystem::changeToPushing(Player* a_player)
 {    
 	a_player->adjustingPositionStateData.interpolationParam = 0.0f;
-	a_player->adjustingPositionStateData.speed  = a_player->adjustingPositionSpeed;
+	a_player->adjustingPositionStateData.speed              = a_player->adjustingPositionSpeed;
     
 	a_player->pushingStateData.interpolationParam = 0.0f;
-	a_player->pushingStateData.speed = a_player->pushingSpeed;
+	a_player->pushingStateData.speed              = a_player->pushingSpeed;
     
 	a_player->state = PlayerState::pushing;
 }
@@ -260,4 +271,16 @@ void PlayerSystem::performBasicMovement(entt::entity a_playerEntity, const float
 
 	glm::vec3 deltaVelocity = (player.moveDirection * a_speedForce) - playerRB.getVelocity();
 	playerRB.addImpulse(playerRB.getMass() * deltaVelocity * static_cast<float>(a_dt));
+}
+
+void PlayerSystem::checkAndResolveSlopeCollision(entt::entity a_playerEntity)
+{
+	auto& playerTransform = registry->get<component::Transform>(a_playerEntity);
+	auto& palyerRB        = registry->get<component::RigidBody>(a_playerEntity);
+
+	auto ray = RayTest::Closest(playerTransform.getPositionGlobal(), glm::vec3(0.0f, -1.0f, 0.0f), 0.5001f);
+	if (ray->hasHit && registry->valid(ray->hitObject.entity))
+	{
+		entt::entity raycastHitEntity = ray->hitObject.entity;
+	}
 }

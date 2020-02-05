@@ -1,6 +1,16 @@
 {
     "Material": {
         "Alias": "planks",
+        "MainProperties": {
+            "Offset": [
+                0.0,
+                0.0
+            ],
+            "Tiling": [
+                1.0,
+                1.0
+            ]
+        },
         "Shader": {
             "Alias": "Oyl Lighting",
             "Pixel": {
@@ -14,18 +24,13 @@
         },
         "Textures": {
             "Albedo": {
-                "Alias": "woodPlanks",
-                "FilePath": "res\\assets\\textures\\woodPlanks.png",
+                "Alias": "WoodPlanks2",
+                "FilePath": "res\\assets\\textures\\WoodPlanks2.png",
                 "Profile": 0,
                 "guid": null
             },
             "Normal": null,
-            "Specular": {
-                "Alias": "tempSpec",
-                "FilePath": "res\\assets\\textures\\tempSpec.jpg",
-                "Profile": 0,
-                "guid": null
-            }
+            "Specular": null
         }
     }
 }

@@ -35,7 +35,8 @@ namespace oyl
         return (this->shader == material.shader &&
                 this->albedoMap == material.albedoMap &&
                 this->specularMap == material.specularMap &&
-                this->normalMap == material.normalMap);
+                this->normalMap == material.normalMap &&
+                this->emissionMap == material.emissionMap);
     }
 
     Ref<Material> Material::create(const std::string& filepath)
@@ -156,10 +157,7 @@ namespace oyl
             }
 
             // Warn the user if they are overiding a mesh of a different type
-            if (currIt->second->shader != newIt->second->shader ||
-                currIt->second->albedoMap != newIt->second->albedoMap ||
-                currIt->second->specularMap != newIt->second->specularMap || 
-                currIt->second->normalMap != newIt->second->normalMap)
+            if (*currIt->second == *newIt->second)
             {
                 OYL_LOG_WARN("Material '{0}' was replaced by '{1}'.",
                              newIt->first, currIt->first, newAlias);
@@ -183,19 +181,26 @@ namespace oyl
         if (shader)
             shader->bind();
 
-        if (albedoMap)
-            albedoMap->bind(0);
-        setUniform1i("u_material.albedo", 0);
+        auto bindTex = [this](const Ref<Texture2D>& tex, 
+                              const std::string&    alias, 
+                              const std::string&    inShaderName,
+                              int                   bindNum)
+        {
+            if (tex)
+                tex->bind(bindNum);
+            else if (!alias.empty())
+                Texture2D::get(alias)->bind(bindNum);
+            setUniform1i(inShaderName, bindNum);
+        };
 
-        if (specularMap)
-            specularMap->bind(1);
-        setUniform1i("u_material.specular", 1);
+        int bindNum = 0;
+        bindTex(albedoMap, WHITE_TEXTURE_ALIAS, "u_material.albedo", bindNum++);
+        bindTex(specularMap, BLACK_TEXTURE_ALIAS, "u_material.specular", bindNum++);
+        bindTex(normalMap, DEFAULT_NORMAL_TEXTURE_ALIAS, "u_material.normal", bindNum++);
+        bindTex(emissionMap, BLACK_TEXTURE_ALIAS, "u_material.emission", bindNum++);
 
-        if (normalMap)
-            normalMap->bind(2);
-        else
-            Texture2D::get(DEFAULT_NORMAL_TEXTURE_ALIAS)->bind(2);
-        setUniform1i("u_material.normal", 2);
+        setUniform2f("u_material.offset", mainTextureProps.offset);
+        setUniform2f("u_material.tiling", mainTextureProps.tiling);
     }
 
     void Material::unbind()
@@ -209,8 +214,11 @@ namespace oyl
         if (specularMap)
             specularMap->unbind();
 
-        //if (normalMap)
-        //    normalMap->unbind();
+        if (normalMap)
+            normalMap->unbind();
+
+        if (emissionMap)
+            emissionMap->unbind();
     }
 
     void Material::applyUniforms()

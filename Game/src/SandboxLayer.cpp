@@ -53,7 +53,7 @@ void SandboxLayer::onEnter()
 			auto& cameraTransform = registry->assign<component::Transform>(playerCameraEntity);
 			cameraTransform.setPosition(glm::vec3(0.0f, 0.8f, -0.5f));
 
-			auto& camera = registry->assign<component::PlayerCamera>(playerCameraEntity);
+			auto& camera = registry->assign<component::Camera>(playerCameraEntity);
 			camera.player = player.playerNum;
 			camera.cullingMask = 0b0001;
 
@@ -103,7 +103,7 @@ void SandboxLayer::onEnter()
 			auto& cameraTransform = registry->assign<component::Transform>(playerCameraEntity);
 			cameraTransform.setPosition(glm::vec3(0.0f, 0.8f, -0.5f));
 
-			auto& camera = registry->assign<component::PlayerCamera>(playerCameraEntity);
+			auto& camera = registry->assign<component::Camera>(playerCameraEntity);
 			camera.player = player.playerNum;
 			camera.cullingMask = 0b0100;
 
@@ -119,70 +119,7 @@ void SandboxLayer::onEnter()
         
 		{
 			mr.mesh = Mesh::cache("res/assets/models/cannon.obj");
-
-			//TEMP MATERIAL INIT LOCATION UNTIL SYSTEM OVERHAUL
-			mr.material = Material::cache(Material::create(), "planks");
-			mr.material->shader = Shader::get(LIGHTING_SHADER_ALIAS);
-			mr.material->albedoMap = Texture2D::cache("res/assets/textures/woodPlanks.png");
-			mr.material->specularMap = Texture2D::cache("res/assets/textures/tempSpec.jpg");
-
-			mr.material = Material::cache(Material::create(), "cannonball");
-			mr.material->shader = Shader::get(LIGHTING_SHADER_ALIAS);
-			mr.material->albedoMap = Texture2D::cache("res/assets/textures/cannonballTemp.png");
-			mr.material->specularMap = Material::get("planks")->specularMap;
-
-			mr.material = Material::cache(Material::create(), "goop");
-			mr.material->shader = Shader::get(LIGHTING_SHADER_ALIAS);
-			mr.material->albedoMap = Texture2D::cache("res/assets/textures/goopTemp.png");
-			mr.material->specularMap = Material::get("planks")->specularMap;
-
-			mr.material = Material::cache(Material::create(), "pirax");
-			mr.material->shader = Shader::get(LIGHTING_SHADER_ALIAS);
-			mr.material->albedoMap = Texture2D::cache("res/assets/textures/piraxTemp.png");
-			mr.material->specularMap = Material::get("planks")->specularMap;
-
-			mr.material = Material::cache(Material::create(), "garbage");
-			mr.material->shader = Shader::get(LIGHTING_SHADER_ALIAS);
-			mr.material->albedoMap = Texture2D::cache("res/assets/textures/garbageTemp.png");
-			mr.material->specularMap = Material::get("planks")->specularMap;
-
-			mr.material = Material::cache(Material::create(), "crate");
-			mr.material->shader = Shader::get(LIGHTING_SHADER_ALIAS);
-			mr.material->albedoMap = Texture2D::cache("res/assets/textures/binTemp.png");
-			mr.material->specularMap = Material::get("planks")->specularMap;
-
-			mr.material = Material::cache(Material::create(), "mop");
-			mr.material->shader = Shader::get(LIGHTING_SHADER_ALIAS);
-			mr.material->albedoMap = Texture2D::cache("res/assets/textures/mopTemp.png");
-			mr.material->specularMap = Material::get("planks")->specularMap;
-
-			mr.material = Material::cache(Material::create(), "cannon");
-			mr.material->shader = Shader::get(LIGHTING_SHADER_ALIAS);
-			mr.material->albedoMap = Texture2D::cache("res/assets/textures/cannonTemp.png");
-			mr.material->specularMap = Material::get("planks")->specularMap;
-
-			mr.material = Material::cache((Material::create()), "lamp");
-			mr.material->shader = Shader::get(LIGHTING_SHADER_ALIAS);
-			mr.material->albedoMap = Texture2D::cache("res/assets/textures/lampTemp.png");
-			mr.material->specularMap = Material::get("planks")->specularMap;
-
-			mr.material = Material::cache((Material::create()), "water");
-			mr.material->shader = Shader::get(LIGHTING_SHADER_ALIAS);
-			mr.material->albedoMap = Texture2D::cache("res/assets/textures/water.png");
-			mr.material->specularMap = Material::get("container")->specularMap;
-
-			mr.material = Material::cache((Material::create()), "siding");
-			mr.material->shader = Shader::get(LIGHTING_SHADER_ALIAS);
-			mr.material->albedoMap = Texture2D::cache("res/assets/textures/woodPlankSiding2.png");
-			mr.material->specularMap = Material::get("planks")->specularMap;
-
-			mr.material = Material::cache((Material::create()), "atlasMaterial");
-			mr.material->shader = Shader::get(LIGHTING_SHADER_ALIAS);
-			mr.material->albedoMap = Texture2D::cache("res/assets/textures/shipAtlas.png");
-			mr.material->specularMap = Material::get("planks")->specularMap;
-
-
-
+            
 			//CANNON
 			entt::entity cannonEntity = registry->create();
 			mr.material = Material::get("cannon");
@@ -220,7 +157,7 @@ void SandboxLayer::onEnter()
 
 				component::Transform garbagePileTransform;
 				garbagePileTransform.setPosition(glm::vec3(-3.0f, 0.2f, 0.0f));
-				garbagePileTransform.setScale(glm::vec3(3.0f, 0.4f, 3.0f));
+				garbagePileTransform.setScale(glm::vec3(0.43f, 0.4f, 0.43f));
 				registry->assign<component::Transform>(garbagePileEntity, garbagePileTransform);
 
 				auto& garbagePile = registry->assign<GarbagePile>(garbagePileEntity);
@@ -520,7 +457,7 @@ void SandboxLayer::onEnter()
 			auto& cameraTransform = registry->assign<component::Transform>(playerCameraEntity);
 			cameraTransform.setPosition(glm::vec3(0.0f, 0.8f, -0.5f));
 
-			auto& camera = registry->assign<component::PlayerCamera>(playerCameraEntity);
+			auto& camera = registry->assign<component::Camera>(playerCameraEntity);
 			camera.player = player.playerNum;
 			camera.cullingMask = 0b0010;
 
@@ -570,7 +507,7 @@ void SandboxLayer::onEnter()
 			auto& cameraTransform = registry->assign<component::Transform>(playerCameraEntity);
 			cameraTransform.setPosition(glm::vec3(0.0f, 0.8f, -0.5f));
 
-			auto& camera = registry->assign<component::PlayerCamera>(playerCameraEntity);
+			auto& camera = registry->assign<component::Camera>(playerCameraEntity);
 			camera.player = player.playerNum;
 			camera.cullingMask = 0b1000;
 
@@ -622,7 +559,7 @@ void SandboxLayer::onEnter()
 
 				component::Transform garbagePileTransform;
 				garbagePileTransform.setPosition(glm::vec3(-3.0f, 0.2f, 0.0f));
-				garbagePileTransform.setScale(glm::vec3(3.0f, 0.4f, 3.0f));
+				garbagePileTransform.setScale(glm::vec3(0.43f, 0.4f, 0.43f));
 				registry->assign<component::Transform>(garbagePileEntity, garbagePileTransform);
 
 				auto& garbagePile = registry->assign<GarbagePile>(garbagePileEntity);

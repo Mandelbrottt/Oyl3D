@@ -1,6 +1,16 @@
 {
     "Material": {
         "Alias": "garbage",
+        "MainProperties": {
+            "Offset": [
+                0.0,
+                0.0
+            ],
+            "Tiling": [
+                1.0,
+                1.0
+            ]
+        },
         "Shader": {
             "Alias": "Oyl Lighting",
             "Pixel": {
@@ -16,14 +26,14 @@
             "Albedo": {
                 "Alias": "garbageTemp",
                 "FilePath": "res\\assets\\textures\\garbageTemp.png",
-                "Profile": 0,
+                "Profile": 1,
                 "guid": null
             },
             "Normal": null,
             "Specular": {
                 "Alias": "tempSpec",
                 "FilePath": "res\\assets\\textures\\tempSpec.jpg",
-                "Profile": 0,
+                "Profile": 1,
                 "guid": null
             }
         }

@@ -1,10 +1,20 @@
 {
     "Material": {
         "Alias": "cubeMat",
+        "MainProperties": {
+            "Offset": [
+                0.0,
+                0.0
+            ],
+            "Tiling": [
+                1.0,
+                1.0
+            ]
+        },
         "Shader": null,
         "Textures": {
             "Albedo": {
-                "Alias": "Oyl UV-Grid",
+                "Alias": null,
                 "FilePath": "../Engine/res/textures/uvgrid.png",
                 "Profile": 0,
                 "guid": null
