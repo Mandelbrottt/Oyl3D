@@ -1492,11 +1492,14 @@ namespace oyl::internal
                 {
                     if (ImGui::Selectable(g_numbersList[i], i == static_cast<uint>(camera.player)))
                     {
+                        bool didSwap = false;
                         registry->view<Camera>().each([&](Camera& a_camera)
                         {
-                            if (a_camera.player == camera.player)
-                                std::swap(a_camera.player, camera.player);
+                            if (a_camera.player == static_cast<PlayerNumber>(i))
+                                std::swap(a_camera.player, camera.player), didSwap = true;
                         });
+                        if (!didSwap)
+                            camera.player = static_cast<PlayerNumber>(i);
                     }
                 }
                 ImGui::EndCombo();

@@ -560,9 +560,9 @@ namespace oyl
 
                 uint playerNum = static_cast<uint>(pc.player);
 
-                if (playerNum ^ 0x01)
+                if (!(playerNum & 0x01))
                     translation.x *= -1;
-                if (playerNum ^ 0x02)
+                if (playerNum & 0x02)
                     translation.y *= -1;
 
                 glm::mat4 model = glm::translate(glm::mat4(1.0f), translation);
