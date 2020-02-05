@@ -202,6 +202,12 @@ namespace oyl
                                                         lightProps.diffuse);
                             boundMaterial->setUniform3f("u_pointLight[" + std::to_string(count) + "].specular",
                                                         lightProps.specular);
+                            boundMaterial->setUniform1f("u_pointLight[" + std::to_string(count) + "].attenK",
+                                                        lightProps.attenuation.x);
+                            boundMaterial->setUniform1f("u_pointLight[" + std::to_string(count) + "].attenL",
+                                                        lightProps.attenuation.y);
+                            boundMaterial->setUniform1f("u_pointLight[" + std::to_string(count) + "].attenQ",
+                                                        lightProps.attenuation.z);
                             count++;
                         }
 

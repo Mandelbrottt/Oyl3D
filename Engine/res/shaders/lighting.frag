@@ -20,6 +20,10 @@ struct PointLight
 	vec3 ambient;
 	vec3 diffuse;
 	vec3 specular;
+
+	float attenK;
+	float attenL;
+	float attenQ;
 };
 
 struct DirectionalLight 
@@ -81,10 +85,18 @@ void main()
 		vec3 tempspecular = u_pointLight[i].specular * spec * vec3(texture(u_material.specular, mainTexCoord));
 
 		float dist = length(u_pointLight[i].position - fs_in.position);
-		float attenuation = 1.0 / (1.0 + 0.01 * dist * dist);
+		float Kc = u_pointLight[i].attenK;
+		float Kl = u_pointLight[i].attenL * dist;
+		float Kq = u_pointLight[i].attenQ * dist * dist;
+		float attenuation = 0.0;
+		if (Kc + Kl + Kq != 0)
+			attenuation = 1.0 / (Kc + Kl + Kq);
+		// float attenuation = 1.0 / (1.0 + 0.1 * dist * dist);
+
 		
 		tempdiffuse  *= attenuation;
 		tempspecular *= attenuation;
+		// tempdiffuse = vec3(Kc, Kl, Kq);
 		
 		ambient += tempambient;
 		diffuse += tempdiffuse;

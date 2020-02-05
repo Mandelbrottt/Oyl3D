@@ -1441,6 +1441,32 @@ namespace oyl::internal
             ImGui::ColorEdit3("Diffuse##LightSourceAmbient",  value_ptr(pl.diffuse));
             ImGui::ColorEdit3("Specular##LightSourceAmbient", value_ptr(pl.specular));
 
+            float newWidth = ImGui::GetWindowContentRegionWidth() / 6;
+
+            ImGui::PushItemWidth(newWidth);
+
+            {
+                const float posDragSpeed = 0.01f;
+                ImGui::Text("Attenuation");
+                ImGui::SameLine(ImGui::GetWindowContentRegionWidth() - (15 * 3 + newWidth * 3 + 27));
+                ImGui::SetNextItemWidth(15);
+                ImGui::DragFloat("##AttenK", &pl.attenConst, posDragSpeed, 0.0f, 999.0f, "K");
+                ImGui::SameLine();
+                ImGui::InputFloat("##AttenKInput", &pl.attenConst, 0, 0, "%.2f");
+                ImGui::SameLine();
+                ImGui::SetNextItemWidth(15);
+                ImGui::DragFloat("##AttenL", &pl.attenLin, posDragSpeed, 0, 999.0f, "L");
+                ImGui::SameLine();
+                ImGui::InputFloat("##AttenLInput", &pl.attenLin, 0, 0, "%.2f");
+                ImGui::SameLine();
+                ImGui::SetNextItemWidth(15);
+                ImGui::DragFloat("##AttenQ", &pl.attenQuad, posDragSpeed, 0, 999.0f, "Q");
+                ImGui::SameLine();
+                ImGui::InputFloat("##AttenQInput", &pl.attenQuad, 0, 0, "%.2f");
+                pl.attenuation = max(glm::vec3(0.0f, 0.0f, 0.0f), pl.attenuation);
+            }
+            ImGui::PopItemWidth();
+            
             ImGui::Unindent(10);
 
             ImGui::Separator();
