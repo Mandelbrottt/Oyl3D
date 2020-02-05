@@ -26,7 +26,7 @@
             "Albedo": {
                 "Alias": "water",
                 "FilePath": "res\\assets\\textures\\water.png",
-                "Profile": 0,
+                "Profile": 1,
                 "guid": null
             },
             "Normal": null,

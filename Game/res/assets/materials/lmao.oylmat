@@ -24,8 +24,8 @@
         },
         "Textures": {
             "Albedo": {
-                "Alias": "brickwall",
-                "FilePath": "res\\assets\\textures\\brickwall.jpg",
+                "Alias": null,
+                "FilePath": "../Engine/res/textures/uvgrid.png",
                 "Profile": 0,
                 "guid": null
             },

@@ -14,7 +14,7 @@
         "Shader": null,
         "Textures": {
             "Albedo": {
-                "Alias": "Oyl White",
+                "Alias": null,
                 "FilePath": "../Engine/res/textures/white.png",
                 "Profile": 0,
                 "guid": null

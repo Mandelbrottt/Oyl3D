@@ -1,0 +1,157 @@
+# Blender MTL File: 'Boat2.0 - Joined.blend'
+# Material Count: 14
+
+newmtl Material
+Ns 225.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd C:\\Users\\Marcus\\OneDrive\\Game Models\\Mock2\\textures\\shipTexMap.png
+
+newmtl Material.001
+Ns 225.000000
+Ka 0.904545 0.904545 0.904545
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 3
+map_Bump C:\\Users\\Marcus\\Documents\\repos\\Oyl3d\\Game\\res\\assets\\textures\\woodPlanksNormal.png
+map_Kd C:\\Users\\Marcus\\Documents\\repos\\Oyl3d\\Game\\res\\assets\\textures\\woodPlanks.png
+map_Ns C:\\Users\\Marcus\\Documents\\repos\\Oyl3d\\Game\\res\\assets\\textures\\woodPlanksSpecular.png
+
+newmtl Material.002
+Ns 225.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd C:\\Users\\Marcus\\OneDrive\\Game Models\\Mock2\\textures\\Untitled
+
+newmtl Material.003
+Ns 225.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd C:\\Users\\Marcus\\OneDrive\\Game Models\\Mock2\\textures\\shipTexMap.png
+
+newmtl Material.005
+Ns 225.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd C:\\Users\\Marcus\\OneDrive\\Game Models\\Mock2\\textures\\shipTexMap.png
+
+newmtl Material.006
+Ns 225.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd C:\\Users\\Marcus\\OneDrive\\Game Models\\Mock2\\textures\\shipTexMap.png
+
+newmtl Material.009
+Ns 225.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd C:\\Users\\Marcus\\OneDrive\\Game Models\\Mock2\\textures\\shipTexMap.png
+
+newmtl Material.010
+Ns 225.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd C:\\Users\\Marcus\\OneDrive\\Game Models\\Mock2\\textures\\shipAtlas.png
+
+newmtl Material.011
+Ns 225.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Bump C:\\Users\\Marcus\\Documents\\repos\\Oyl3d\\Game\\res\\assets\\textures\\woodPlankSiding4Normal.png
+map_Kd C:\\Users\\Marcus\\Documents\\repos\\Oyl3d\\Game\\res\\assets\\textures\\woodPlankSiding4.png
+map_Ns C:\\Users\\Marcus\\Documents\\repos\\Oyl3d\\Game\\res\\assets\\textures\\woodPlankSiding4Spec.png
+
+newmtl Material.012
+Ns 225.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd C:\\Users\\Marcus\\OneDrive\\Game Models\\Mock2\\textures\\shipTexMap.png
+
+newmtl Material.013
+Ns 225.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd C:\\Users\\Marcus\\Documents\\repos\\Oyl3D\\Game\\res\\assets\\textures\\wood.png
+
+newmtl Material.014
+Ns 225.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.413832 0.445970
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd C:\\Users\\Marcus\\Documents\\repos\\Oyl3D\\Game\\res\\assets\\textures\\metal.png
+
+newmtl Material.020
+Ns 225.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd C:\\Users\\Marcus\\OneDrive\\Game Models\\Mock2\\textures\\shipTexMap.png
+
+newmtl None
+Ns 500
+Ka 0.8 0.8 0.8
+Kd 0.8 0.8 0.8
+Ks 0.8 0.8 0.8
+d 1
+illum 2

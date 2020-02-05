@@ -1,0 +1,31 @@
+{
+    "Material": {
+        "Alias": "Natural Wood",
+        "Shader": {
+            "Alias": "Oyl Lighting",
+            "Pixel": {
+                "FilePath": "../Engine/res/shaders/lighting.frag",
+                "guid": null
+            },
+            "Vertex": {
+                "FilePath": "../Engine/res/shaders/lighting.vert",
+                "guid": null
+            }
+        },
+        "Textures": {
+            "Albedo": {
+                "Alias": "wood",
+                "FilePath": "res\\assets\\textures\\wood.png",
+                "Profile": 0,
+                "guid": null
+            },
+            "Normal": null,
+            "Specular": {
+                "Alias": "Oyl White",
+                "FilePath": "../Engine/res/textures/white.png",
+                "Profile": 0,
+                "guid": null
+            }
+        }
+    }
+}

@@ -24,18 +24,13 @@
         },
         "Textures": {
             "Albedo": {
-                "Alias": "woodPlanks",
-                "FilePath": "res\\assets\\textures\\woodPlanks.png",
+                "Alias": "WoodPlanks2",
+                "FilePath": "res\\assets\\textures\\WoodPlanks2.png",
                 "Profile": 0,
                 "guid": null
             },
             "Normal": null,
-            "Specular": {
-                "Alias": "tempSpec",
-                "FilePath": "res\\assets\\textures\\tempSpec.jpg",
-                "Profile": 0,
-                "guid": null
-            }
+            "Specular": null
         }
     }
 }
