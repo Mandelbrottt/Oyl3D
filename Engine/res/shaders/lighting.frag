@@ -53,13 +53,24 @@ uniform Material u_material;
 
 uniform PointLight u_pointLight[NUM_LIGHTS];
 
+uniform sampler1D u_ramp;
+
+uniform bool u_doLighting     = true;
+uniform bool u_doAmbient      = true;
+uniform bool u_doSpecular     = true;
+uniform bool u_doRim          = true;
+uniform bool u_doDiffuseRamp  = false;
+uniform bool u_doSpecularRamp = false;
+
 void main() 
 {
 	vec2 mainTexCoord = fs_in.texCoord * u_material.tiling + u_material.offset;
 
-	vec3 ambient = vec3(0.0);
-	vec3 diffuse = vec3(0.0);
+	vec3 ambient  = vec3(0.0);
+	vec3 diffuse  = vec3(0.0);
 	vec3 specular = vec3(0.0);
+	vec3 rim      = vec3(0.0);
+
 	for (int i = 0; i < NUM_LIGHTS; i++) 
 	{
 		vec3 normal;
@@ -71,27 +82,54 @@ void main()
 
 		float diff = max(dot(normal, lightDir), 0.0);
 
+		if (u_doDiffuseRamp)
+			diff = texture(u_ramp, diff).r;
+
 		vec3 viewDir = normalize(-fs_in.position);
 		vec3 halfwayDir = normalize(lightDir + viewDir);
 
-		float spec = pow(max(dot(normal, halfwayDir), 0.0), 128);
+		float spec = max(dot(normal, halfwayDir), 0.0);
+		spec = pow(spec, 128);
+		
+		if (u_doSpecularRamp)
+			spec = texture(u_ramp, spec).r;
 
     	vec3 tempambient  = u_pointLight[i].ambient  *        vec3(texture(u_material.albedo,   mainTexCoord));
 		vec3 tempdiffuse  = u_pointLight[i].diffuse  * diff * vec3(texture(u_material.albedo,   mainTexCoord));
 		vec3 tempspecular = u_pointLight[i].specular * spec * vec3(texture(u_material.specular, mainTexCoord));
+
+		vec3 rimColor = (vec3(u_pointLight[i].diffuse) ) / 1;
+		float rimVal = 1 - max(dot(normal, -normalize(fs_in.position)), 0.0);
+		rimVal = smoothstep(0.4, 1.0, rimVal);
+		vec3 tempRim = diff * rimColor * vec3(rimVal, rimVal, rimVal);
 
 		float dist = length(u_pointLight[i].position - fs_in.position);
 		float attenuation = 1.0 / (1.0 + 0.01 * dist * dist);
 		
 		tempdiffuse  *= attenuation;
 		tempspecular *= attenuation;
-		
-		ambient += tempambient;
+		tempRim *= attenuation;
+
+		if (u_doAmbient)
+			ambient += tempambient;
+
 		diffuse += tempdiffuse;
-		specular += tempspecular;
+
+		if (u_doSpecular)
+			specular += tempspecular;
+		
+		if (u_doRim)
+			rim += tempRim;
 	}
 	
-	out_color = vec4((ambient + diffuse + specular), 1.0);
+	if (!u_doLighting) {
+		rim      = vec3(0);
+		ambient  = vec3(0);
+		specular = vec3(0);
+		diffuse = texture(u_material.albedo, mainTexCoord).rgb;
+	}
+
+	out_color = vec4((rim + ambient + diffuse + specular), 1.0);
 	out_color += texture(u_material.emission, mainTexCoord);
 
 	// Gamma Correction

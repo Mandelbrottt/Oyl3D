@@ -105,6 +105,7 @@ namespace oyl
             {
                 glTexStorage1D(GL_TEXTURE_1D, 1, texStorageFormat, length);
                 glTexSubImage1D(GL_TEXTURE_1D, 0, 0, length, texSubFormat, GL_UNSIGNED_BYTE, data);
+                glGenerateMipmap(GL_TEXTURE_1D);
             }
         } else
         {
@@ -128,6 +129,8 @@ namespace oyl
         glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_MIN_FILTER, filter);
 
         glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_WRAP_S, wrap);
+
+        glBindTexture(GL_TEXTURE_1D, GL_NONE);
 
         return m_loaded;
     }
@@ -161,6 +164,8 @@ namespace oyl
         glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_MAG_FILTER, filter);
         glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_MIN_FILTER, filter);
 
+        glBindTexture(GL_TEXTURE_1D, GL_NONE);
+
         m_filter = a_filter;
     }
 
@@ -171,6 +176,8 @@ namespace oyl
         GLenum wrap = WrapToGL(a_wrap);
 
         glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_WRAP_S, wrap);
+
+        glBindTexture(GL_TEXTURE_1D, GL_NONE);
 
         m_wrap = a_wrap;
     }
@@ -276,6 +283,8 @@ namespace oyl
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrap);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrap);
 
+        glBindTexture(GL_TEXTURE_2D, GL_NONE);
+
         return m_loaded;
     }
 
@@ -307,6 +316,8 @@ namespace oyl
 
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, filter);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, filter);
+
+        glBindTexture(GL_TEXTURE_2D, GL_NONE);
         
         m_filter = a_filter;
     }
@@ -319,6 +330,8 @@ namespace oyl
 
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrap);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrap);
+
+        glBindTexture(GL_TEXTURE_2D, GL_NONE);
 
         m_wrap = a_wrap;
     }

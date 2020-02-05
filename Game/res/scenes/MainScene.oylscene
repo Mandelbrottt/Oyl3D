@@ -9,7 +9,7 @@
             },
             "Position": {
                 "X": 0.0,
-                "Y": 3.918325901031494,
+                "Y": 0.0,
                 "Z": 0.0
             },
             "Rotation": {
@@ -25,13 +25,13 @@
             }
         }
     },
-    "Ground": {
+    "Entity 10": {
         "Parent": null,
         "Renderable": {
             "CullingMask": 15,
             "Enabled": true,
             "Material": {
-                "Alias": "lmao"
+                "Alias": "animationMat"
             },
             "Mesh": {
                 "Alias": "plane",
@@ -46,8 +46,8 @@
             },
             "Position": {
                 "X": 0.0,
-                "Y": 0.0,
-                "Z": 0.0
+                "Y": -1.7137032747268677,
+                "Z": -8.041348457336426
             },
             "Rotation": {
                 "qW": 1.0,
@@ -56,9 +56,9 @@
                 "qZ": 0.0
             },
             "Scale": {
-                "X": 2.0,
+                "X": 1.0,
                 "Y": 1.0,
-                "Z": 2.0
+                "Z": 0.20000000298023224
             }
         }
     },
@@ -76,9 +76,9 @@
                     0.4399999976158142
                 ],
                 "Diffuse": [
-                    0.9999899864196777,
-                    1.0,
-                    0.9999908208847046
+                    0.37972238659858704,
+                    0.6162161827087402,
+                    0.39942988753318787
                 ],
                 "Specular": [
                     1.0,
@@ -106,9 +106,9 @@
                 "Z": false
             },
             "Position": {
-                "X": 4.464811325073242,
-                "Y": 2.611558437347412,
-                "Z": -7.368928909301758
+                "X": -6.0,
+                "Y": 0.0,
+                "Z": -8.0
             },
             "Rotation": {
                 "qW": 1.0,
@@ -117,9 +117,9 @@
                 "qZ": 0.0
             },
             "Scale": {
-                "X": 0.5,
-                "Y": 0.5,
-                "Z": 0.5
+                "X": 0.30000001192092896,
+                "Y": 0.30000001192092896,
+                "Z": 0.30000001192092896
             }
         }
     },
@@ -127,9 +127,9 @@
         "LightSource": [
             {
                 "Ambient": [
-                    9.999999974752427e-07,
-                    9.999899930335232e-07,
-                    9.999899930335232e-07
+                    0.2108108401298523,
+                    0.21080872416496277,
+                    0.21080872416496277
                 ],
                 "Attenuation": [
                     1.0,
@@ -137,9 +137,9 @@
                     0.4399999976158142
                 ],
                 "Diffuse": [
-                    0.9999899864196777,
-                    0.9999991655349731,
-                    1.0
+                    0.37972238659858704,
+                    0.6162161827087402,
+                    0.39942988753318787
                 ],
                 "Specular": [
                     1.0,
@@ -167,9 +167,9 @@
                 "Z": false
             },
             "Position": {
-                "X": -3.5200958251953125,
-                "Y": 2.8381154537200928,
-                "Z": 5.8701066970825195
+                "X": 6.0,
+                "Y": 0.0,
+                "Z": -8.0
             },
             "Rotation": {
                 "qW": 1.0,
@@ -178,9 +178,135 @@
                 "qZ": 0.0
             },
             "Scale": {
-                "X": 0.5,
-                "Y": 0.5,
-                "Z": 0.5
+                "X": 0.2999999523162842,
+                "Y": 0.2999999523162842,
+                "Z": 0.2999999523162842
+            }
+        }
+    },
+    "Light 3": {
+        "LightSource": [
+            {
+                "Ambient": [
+                    0.2108108401298523,
+                    0.21080872416496277,
+                    0.21080872416496277
+                ],
+                "Attenuation": [
+                    1.0,
+                    0.3499999940395355,
+                    0.4399999976158142
+                ],
+                "Diffuse": [
+                    0.37972238659858704,
+                    0.6162161827087402,
+                    0.39942988753318787
+                ],
+                "Specular": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            }
+        ],
+        "Parent": {
+            "Name": "Taurus 3"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "Light"
+            },
+            "Mesh": {
+                "Alias": "sphere",
+                "FilePath": "res\\assets\\models\\sphere.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -1.5894570424279664e-06,
+                "Y": 0.0,
+                "Z": 0.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 0.9999998211860657,
+                "Y": 0.9999998211860657,
+                "Z": 0.9999998211860657
+            }
+        }
+    },
+    "Light 4": {
+        "LightSource": [
+            {
+                "Ambient": [
+                    0.2108108401298523,
+                    0.21080872416496277,
+                    0.21080872416496277
+                ],
+                "Attenuation": [
+                    1.0,
+                    0.3499999940395355,
+                    0.4399999976158142
+                ],
+                "Diffuse": [
+                    0.37972238659858704,
+                    0.6162161827087402,
+                    0.39942988753318787
+                ],
+                "Specular": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            }
+        ],
+        "Parent": {
+            "Name": "Taurus 4"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "Light"
+            },
+            "Mesh": {
+                "Alias": "sphere",
+                "FilePath": "res\\assets\\models\\sphere.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -1.5894570424279664e-06,
+                "Y": 0.0,
+                "Z": 0.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
             }
         }
     },
@@ -234,17 +360,19 @@
             }
         }
     },
-    "Rim Lit Object": {
-        "Parent": null,
+    "Taurus 1": {
+        "Parent": {
+            "Name": "Light 1"
+        },
         "Renderable": {
             "CullingMask": 15,
             "Enabled": true,
             "Material": {
-                "Alias": "shipMat"
+                "Alias": "lmao"
             },
             "Mesh": {
-                "Alias": "ship2",
-                "FilePath": "res\\assets\\models\\ship2.obj"
+                "Alias": "Taurus",
+                "FilePath": "res\\assets\\models\\Taurus.obj"
             }
         },
         "Transform": {
@@ -257,6 +385,119 @@
                 "X": 0.0,
                 "Y": 0.0,
                 "Z": 0.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 0.9999999403953552,
+                "Y": 0.9999999403953552,
+                "Z": 0.9999999403953552
+            }
+        }
+    },
+    "Taurus 2": {
+        "Parent": {
+            "Name": "Light 2"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "lmao"
+            },
+            "Mesh": {
+                "Alias": "Taurus",
+                "FilePath": "res\\assets\\models\\Taurus.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": 0.0,
+                "Y": 0.0,
+                "Z": 0.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Taurus 3": {
+        "Parent": null,
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "lmao"
+            },
+            "Mesh": {
+                "Alias": "Taurus",
+                "FilePath": "res\\assets\\models\\Taurus.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -1.0,
+                "Y": 0.0,
+                "Z": -8.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 0.30000001192092896,
+                "Y": 0.30000001192092896,
+                "Z": 0.30000001192092896
+            }
+        }
+    },
+    "Taurus 4": {
+        "Parent": null,
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "animationMat"
+            },
+            "Mesh": {
+                "Alias": "Taurus",
+                "FilePath": "res\\assets\\models\\Taurus.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": 1.0,
+                "Y": 0.0,
+                "Z": -8.0
             },
             "Rotation": {
                 "qW": 1.0,

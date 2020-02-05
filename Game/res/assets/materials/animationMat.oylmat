@@ -12,33 +12,28 @@
             ]
         },
         "Shader": {
-            "Alias": null,
+            "Alias": "Oyl Lighting",
             "Pixel": {
                 "FilePath": "../Engine/res/shaders/lighting.frag",
                 "guid": null
             },
             "Vertex": {
-                "FilePath": "../Engine/res/shaders/morphTargetLighting.vert",
+                "FilePath": "../Engine/res/shaders/lighting.vert",
                 "guid": null
             }
         },
         "Textures": {
             "Albedo": {
-                "Alias": "Bark_Pine_baseColor",
-                "FilePath": "res\\assets\\textures\\Bark_Pine_baseColor.jpg",
-                "Profile": 1,
-                "guid": null
-            },
-            "Emission": null,
-            "Normal": {
-                "Alias": "Bark_Pine_normal",
-                "FilePath": "res\\assets\\textures\\Bark_Pine_normal.jpg",
+                "Alias": "Oyl Black",
+                "FilePath": "../Engine/res/textures/black.png",
                 "Profile": 0,
                 "guid": null
             },
+            "Emission": null,
+            "Normal": null,
             "Specular": {
-                "Alias": "Oyl Black",
-                "FilePath": "../Engine/res/textures/black.png",
+                "Alias": "Oyl White",
+                "FilePath": "../Engine/res/textures/white.png",
                 "Profile": 0,
                 "guid": null
             }

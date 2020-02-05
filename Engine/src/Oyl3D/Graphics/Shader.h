@@ -70,6 +70,7 @@ namespace oyl
 
         static const auto& getCache() { return s_cache; }
 
+        virtual void setUniform1b(const std::string& name, bool v) = 0;
         virtual void setUniform1i(const std::string& name, int v) = 0;
         virtual void setUniform1f(const std::string& name, float v) = 0;
         virtual void setUniform2f(const std::string& name, const glm::vec2& v) = 0;
@@ -78,6 +79,7 @@ namespace oyl
         virtual void setUniformMat3(const std::string& name, const glm::mat3& v) = 0;
         virtual void setUniformMat4(const std::string& name, const glm::mat4& v) = 0;
 
+        virtual void setUniform1b(int location, bool v) = 0;
         virtual void setUniform1i(int location, int v) = 0;
         virtual void setUniform1f(int location, float v) = 0;
         virtual void setUniform2f(int location, const glm::vec2& v) = 0;

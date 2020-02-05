@@ -52,7 +52,7 @@ namespace oyl
     const std::string DEFAULT_NORMAL_TEXTURE_PATH = "textures/default_normal.png";
     
     const CacheAlias  DEFAULT_SKYBOX_ALIAS = "Oyl Default Skybox";
-    const std::string DEFAULT_SKYBOX_PATH  = "textures/sea/sea.jpg";
+    const std::string DEFAULT_SKYBOX_PATH  = "textures/miramar/miramar.tga";
 
     // ^^^ Textures ^^^ //
 }

@@ -25,6 +25,7 @@ namespace oyl
         void bind() const override;
         void unbind() const override;
 
+        void setUniform1b(const std::string& name, bool v) override;
         void setUniform1i(const std::string& name, int v) override;
         void setUniform1f(const std::string& name, float v) override;
         void setUniform2f(const std::string& name, const glm::vec2& v) override;
@@ -33,6 +34,7 @@ namespace oyl
         void setUniformMat3(const std::string& name, const glm::mat3& m) override;
         void setUniformMat4(const std::string& name, const glm::mat4& m) override;
 
+        void setUniform1b(int location, bool v) override;
         void setUniform1i(int location, int v) override;
         void setUniform1f(int location, float v) override;
         void setUniform2f(int location, const glm::vec2& v) override;

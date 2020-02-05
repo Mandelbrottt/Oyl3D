@@ -2,7 +2,7 @@
 
 #include <Oyl3D.h>
 
-class CGLayer : oyl::Layer
+class CGLayer : public oyl::Layer
 {
     OYL_CTOR(CGLayer, oyl::Layer)
 

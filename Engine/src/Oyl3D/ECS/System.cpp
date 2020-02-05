@@ -574,7 +574,7 @@ namespace oyl
             m_forwardFrameBuffer->unbind();
 
             #if defined(OYL_DISTRIBUTION)
-                    m_forwardFrameBuffer->blit();
+            m_forwardFrameBuffer->blit();
             #endif
 
             RenderCommand::setDepthDraw(true);

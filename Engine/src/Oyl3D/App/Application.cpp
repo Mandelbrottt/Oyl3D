@@ -157,7 +157,7 @@ namespace oyl
             {
                 auto e = event_cast<WindowFocusedEvent>(event);
             #if defined(OYL_DISTRIBUTION)
-                m_doUpdate = e.focused;
+                //m_doUpdate = e.focused;
             #endif
                 break;
             }
@@ -317,7 +317,7 @@ namespace oyl
             m_guiLayer->end();
         #else
             // TODO: Turn into Renderer Call
-            m_mainBuffer->moveToBackBuffer(m_window->getWidth(), m_window->getHeight());
+            //m_mainBuffer->moveToBackBuffer(m_window->getWidth(), m_window->getHeight());
         #endif
 
             m_window->onUpdate(m_doUpdate);

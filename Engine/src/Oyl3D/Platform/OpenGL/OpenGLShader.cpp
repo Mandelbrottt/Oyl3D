@@ -239,6 +239,11 @@ namespace oyl
         return location;
     }
 
+    void OpenGLShader::setUniform1b(const std::string& name, bool v)
+    {
+        setUniform1i(name, (int) v);
+    }
+
     void OpenGLShader::setUniform1i(const std::string& name, int v)
     {
         if (GLint location = getUniformLocation(name); location != -1)
@@ -279,6 +284,11 @@ namespace oyl
     {
         if (GLint location = getUniformLocation(name); location != -1)
             glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(m));
+    }
+
+    void OpenGLShader::setUniform1b(int location, bool v)
+    {
+        setUniform1i(location, (int) v);
     }
 
     void OpenGLShader::setUniform1i(int location, int v)

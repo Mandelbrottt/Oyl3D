@@ -1,5 +1,7 @@
 #include <Oyl3D.h>
 
+#include "CGLayer.h"
+
 using namespace oyl;
 using namespace component;
 
@@ -19,6 +21,17 @@ public:
 
     PostProcessingPass* m_currPass;
 
+    Ref<Shader> m_lighting;
+
+    Ref<Texture1D> m_ramp;
+
+    bool m_doLighting     = true;
+    bool m_doAmbient      = true;
+    bool m_doSpecular     = true;
+    bool m_doRim          = true;
+    bool m_doDiffuseRamp  = false;
+    bool m_doSpecularRamp = false;
+    
     void onEnter() override
     {
         listenForEventType(EventType::KeyPressed);
@@ -45,6 +58,14 @@ public:
 
         m_cust.shader = shader;
         m_cust.setUniformTexture3D("u_lut", Texture3D::create("res/assets/textures/CUST_LUT.CUBE"));
+
+        m_lighting = Shader::get(LIGHTING_SHADER_ALIAS);
+
+        m_lighting->bind();
+
+        m_ramp = Texture1D::create("res/assets/textures/ramp.png");
+        m_ramp->bind(10);
+        m_lighting->setUniform1i("u_ramp", 10);
     }
 
     void onUpdate() override
@@ -77,6 +98,14 @@ public:
 
             m_cameraRotate = glm::vec3(0.0f);
         });
+
+        m_lighting->bind();
+        m_lighting->setUniform1b("u_doLighting",     m_doLighting);
+        m_lighting->setUniform1b("u_doAmbient",      m_doAmbient);
+        m_lighting->setUniform1b("u_doSpecular",     m_doSpecular);
+        m_lighting->setUniform1b("u_doRim",          m_doRim);
+        m_lighting->setUniform1b("u_doDiffuseRamp",  m_doDiffuseRamp);
+        m_lighting->setUniform1b("u_doSpecularRamp", m_doSpecularRamp);
     }
 
     bool onEvent(const Event& event) override
@@ -106,6 +135,44 @@ public:
 
                     if (e.keycode == Key::Escape) hideCursor();
 
+                    if (e.keycode == Key::Alpha1)
+                        m_doLighting = false;
+                    if (e.keycode == Key::Alpha2)
+                    {
+                        m_doLighting = true;
+                        m_doAmbient  = true;
+                        m_doSpecular = false;
+                        m_doRim      = false;
+                    }
+                    if (e.keycode == Key::Alpha3)
+                    {
+                        m_doLighting = true;
+                        m_doAmbient  = false;
+                        m_doSpecular = true;
+                        m_doRim      = false;
+                    }
+                    if (e.keycode == Key::Alpha4)
+                    {
+                        m_doLighting = true;
+                        m_doAmbient  = false;
+                        m_doSpecular = true;
+                        m_doRim      = true;
+                    }
+                    if (e.keycode == Key::Alpha5)
+                    {
+                        m_doLighting = true;
+                        m_doAmbient  = true;
+                        m_doSpecular = true;
+                        m_doRim      = true;
+                    }
+                    if (e.keycode == Key::Alpha6)
+                    {
+                        m_doDiffuseRamp ^= true;
+                    }
+                    if (e.keycode == Key::Alpha7)
+                    {
+                        m_doSpecularRamp ^= true;
+                    }
                     if (e.keycode == Key::Alpha8)
                         setPostPass(&m_warm);
                     if (e.keycode == Key::Alpha9)
@@ -207,6 +274,7 @@ public:
     virtual void onEnter() override
     {
         pushLayer(MainLayer::create());
+        pushLayer(CGLayer::create());
     }
 };
 
