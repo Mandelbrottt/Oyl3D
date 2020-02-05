@@ -44,7 +44,7 @@ public:
                 { Shader::Type::Vertex, "res/assets/shaders/passthrough.vert" },
                 { Shader::Type::Fragment, "res/assets/shaders/postLUT.frag" }
             }), "LUT");
-            auto lut = Texture3D::create("res/assets/textures/Hyla 68.CUBE");
+            auto lut = Texture3D::create("res/assets/textures/Candlelight.CUBE");
             pass2.setUniformTexture3D("u_lut", lut);
             
             camera.postProcessingPasses.push_back(std::move(pass2));

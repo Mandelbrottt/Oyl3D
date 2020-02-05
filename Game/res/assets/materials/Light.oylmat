@@ -1,6 +1,6 @@
 {
     "Material": {
-        "Alias": "animationMat",
+        "Alias": "Light",
         "MainProperties": {
             "Offset": [
                 0.0,
@@ -12,36 +12,31 @@
             ]
         },
         "Shader": {
-            "Alias": null,
+            "Alias": "Oyl Lighting",
             "Pixel": {
                 "FilePath": "../Engine/res/shaders/lighting.frag",
                 "guid": null
             },
             "Vertex": {
-                "FilePath": "../Engine/res/shaders/morphTargetLighting.vert",
+                "FilePath": "../Engine/res/shaders/lighting.vert",
                 "guid": null
             }
         },
         "Textures": {
             "Albedo": {
-                "Alias": "Bark_Pine_baseColor",
-                "FilePath": "res\\assets\\textures\\Bark_Pine_baseColor.jpg",
+                "Alias": "container2",
+                "FilePath": "res\\assets\\textures\\container2.png",
                 "Profile": 1,
                 "guid": null
             },
-            "Emission": null,
-            "Normal": {
-                "Alias": "Bark_Pine_normal",
-                "FilePath": "res\\assets\\textures\\Bark_Pine_normal.jpg",
+            "Emission": {
+                "Alias": "Oyl White",
+                "FilePath": "../Engine/res/textures/white.png",
                 "Profile": 0,
                 "guid": null
             },
-            "Specular": {
-                "Alias": "Oyl Black",
-                "FilePath": "../Engine/res/textures/black.png",
-                "Profile": 0,
-                "guid": null
-            }
+            "Normal": null,
+            "Specular": null
         }
     }
 }

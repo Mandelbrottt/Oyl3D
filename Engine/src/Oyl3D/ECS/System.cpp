@@ -496,6 +496,7 @@ namespace oyl
                 if (m_intermediateFrameBuffer->getWidth() != width ||
                     m_intermediateFrameBuffer->getHeight() != height)
                     m_intermediateFrameBuffer->updateViewport(width, height);
+                RenderCommand::setDrawRect(0, 0, width, height);
                 
                 m_vao->bind();
 
