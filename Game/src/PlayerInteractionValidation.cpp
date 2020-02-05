@@ -149,7 +149,7 @@ void PlayerInteractionValidationSystem::performRaycastAndValidateForPlayer(entt:
 
 	auto& playerCameraTransform = registry->get<component::Transform>(playersCameraEntity);
 
-	auto ray = RayTest::Closest(playerCameraTransform.getPositionGlobal(), playerCameraTransform.getForwardGlobal(), 1.4f);
+	auto ray = RayTest::Closest(playerCameraTransform.getPositionGlobal(), playerCameraTransform.getForwardGlobal(), 1.9f);
 	if (ray->hasHit && registry->valid(ray->hitObject.entity))
 	{
 		entt::entity raycastHitEntity = ray->hitObject.entity;
@@ -729,7 +729,7 @@ void PlayerInteractionValidationSystem::performCannonInteraction(entt::entity a_
 
 		player.adjustingPositionStateData.startPos         = playerTransform.getPosition();
 		player.adjustingPositionStateData.destinationPos.y = playerTransform.getPositionY(); //don't change the player's y position
-
+		
 		player.pushingStateData.startPos         = player.adjustingPositionStateData.destinationPos;
 		player.pushingStateData.destinationPos.y = playerTransform.getPositionY(); //don't change the player's y position
 
@@ -738,13 +738,13 @@ void PlayerInteractionValidationSystem::performCannonInteraction(entt::entity a_
 		//hacky way to limit the camera but it works
 		if (playerTransform.getPositionX() > cannonTransform.getPositionX())
 		{
-			player.yRotationClamp = 10.0f;
+			player.yRotationClamp = 30.0f;
 			if (playerTransform.getRotationEulerY() < player.yRotationClamp)
 				playerTransform.setRotationEulerY(player.yRotationClamp);
 		}
 		else
 		{
-			player.yRotationClamp = -10.0f;
+			player.yRotationClamp = -30.0f;
 			if (playerTransform.getRotationEulerY() > player.yRotationClamp)
 				playerTransform.setRotationEulerY(player.yRotationClamp);
 		}

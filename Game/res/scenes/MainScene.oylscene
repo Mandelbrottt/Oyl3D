@@ -109,7 +109,7 @@
             }
         },
         "RigidBody": {
-            "Friction": 0.5,
+            "Friction": 0.10000000149011612,
             "Mass": 0.0,
             "Properties": 34
         },
@@ -505,7 +505,7 @@
             }
         },
         "RigidBody": {
-            "Friction": 0.5,
+            "Friction": 0.10000000149011612,
             "Mass": 0.0,
             "Properties": 34
         },
@@ -5914,7 +5914,7 @@
             }
         },
         "RigidBody": {
-            "Friction": 0.8999999761581421,
+            "Friction": 0.949999988079071,
             "Mass": 0.0,
             "Properties": 34
         },
@@ -6697,7 +6697,7 @@
             }
         },
         "RigidBody": {
-            "Friction": 0.5,
+            "Friction": 0.10000000149011612,
             "Mass": 0.0,
             "Properties": 34
         },
@@ -7093,7 +7093,7 @@
             }
         },
         "RigidBody": {
-            "Friction": 0.5,
+            "Friction": 0.10000000149011612,
             "Mass": 0.0,
             "Properties": 34
         },

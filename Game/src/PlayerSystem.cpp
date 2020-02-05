@@ -206,10 +206,10 @@ bool PlayerSystem::onEvent(const Event& event)
 			auto& player           = registry->get<Player>(playerEntity);
 			auto& playerTransform  = registry->get<component::Transform>(playerEntity);
 			auto& playerCollidable = registry->get<component::Collidable>(playerEntity);
-			float playerHeight     = playerCollidable.getShape(0).box.getSize().y;
+			float halfPlayerHeight = playerCollidable.getShape(0).capsule.getHeight();
 
 			//check if the player is valid to jump
-			if (evt.contactPoint.y <= (playerTransform.getPositionY() - playerHeight / 2.0f + 0.01f) && player.jumpCooldownTimer < 0.0f)
+			if (evt.contactPoint.y <= (playerTransform.getPositionY() - halfPlayerHeight + 0.01f) && player.jumpCooldownTimer < 0.0f)
 			{
 				player.isJumping         = false;
 				player.jumpCooldownTimer = player.JUMP_COOLDOWN_DURATION;

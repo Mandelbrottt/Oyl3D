@@ -83,7 +83,7 @@ struct Player
 
 	glm::vec3 moveDirection = glm::vec3(0.0f);
 
-	float speedForce = 12.0f;
+	float speedForce = 13.0f;
 	float jumpForce  = 20.0f;
 	bool isJumping   = false;
 
@@ -227,8 +227,8 @@ struct GarbagePileHealthBar
 	entt::entity outlineEntity; //the outline of the HP bar
 
 	Team team;
+	int garbagePileNum     = 0;
 	PlayerNumber playerNum = PlayerNumber::One; //player to render to
-	int garbagePileNum = 0;
 
 	float interpolationSpeed = 0.8f; //this should be relative to the player's time it takes to clean (1 / (time it takes to clean) = the value this variable should be)
 	float interpolationParam = 0.0f;
@@ -266,8 +266,25 @@ struct CameraBreathing
 	float startPosY;
 
 	float cameraHeightVariance = 0.04f;
-	float interpolationParam   = 0.5f; //start halfway up (default camera height)
+	float interpolationParam   = 0.5f; //start halfway up (at the default camera height)
 	float speed = 0.45f;
 
 	bool isMovingUp = true;
+};
+
+struct GarbageMeterBar
+{
+	float interpolationSpeed = 0.8f;
+	float interpolationParam = 0.0f;
+	float startValue  = 0.0f; //garbage meter starts empty
+	float targetValue = 0.0f;
+	int garbagePileNum = 0;
+};
+
+struct GarbageMeterDisplay
+{
+	entt::entity garbageMeterBars[3];
+
+	Team team;
+	PlayerNumber playerNum = PlayerNumber::One; //player to render to
 };
