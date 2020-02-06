@@ -14,6 +14,7 @@ enum CustomEventsCategories : int
 enum CustomEventTypes : int
 {
     TypePlayerMove = (int)oyl::EventType::CustomStart,
+	TypePlayerJump,
 	TypePlayerInteractResult,
     TypePlayerInteractionRequest,
 	TypePlayerDropItem,
@@ -23,6 +24,7 @@ enum CustomEventTypes : int
 	TypeTotalGarbageCount,
 	TypeRequestToCleanGarbage,
 	TypeGarbageCleaned,
+	TypeGarbageReappeared,
 	TypeSpawnCannonballForPlayer,
 	TypeUseGloop,
 	TypeQuicktimeCleaningEventResult,
@@ -33,6 +35,11 @@ OYL_EVENT_STRUCT(PlayerMoveEvent, (oyl::EventType) TypePlayerMove, (oyl::EventCa
 	{
 		entt::entity playerEntity;
 		glm::vec3    direction;
+	});
+
+OYL_EVENT_STRUCT(PlayerJumpEvent, (oyl::EventType) TypePlayerJump, (oyl::EventCategory) CategoryPlayer,
+	{
+		entt::entity playerEntity;
 	});
 
 OYL_EVENT_STRUCT(PlayerInteractResultEvent, (oyl::EventType) TypePlayerInteractResult, (oyl::EventCategory) CategoryPlayer,
@@ -80,8 +87,12 @@ OYL_EVENT_STRUCT(RequestToCleanGarbageEvent, (oyl::EventType) TypeRequestToClean
 
 OYL_EVENT_STRUCT(GarbageCleanedEvent, (oyl::EventType) TypeGarbageCleaned, (oyl::EventCategory) CategoryGarbagePile,
 	{
-		float numGarbageTicksToDisplay;
-		bool  displayGlooped;
+		entt::entity garbagePileEntity;
+	}); 
+
+OYL_EVENT_STRUCT(GarbageReappearedEvent, (oyl::EventType) TypeGarbageReappeared, (oyl::EventCategory) CategoryGarbagePile,
+	{
+		entt::entity garbagePileEntity;
 	});
 
 OYL_EVENT_STRUCT(SpawnCannonballForPlayerEvent, (oyl::EventType) TypeSpawnCannonballForPlayer, (oyl::EventCategory) CategoryCannonball,

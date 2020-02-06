@@ -40,7 +40,7 @@ void SandboxLayer::onEnter()
 
 			auto& rb = registry->assign<component::RigidBody>(player1BlueEntity);
 			rb.setMass(5.0f);
-			rb.setFriction(1.0f);
+			rb.setFriction(0.9f);
 			//rb.setProperties(component::RigidBody::Property::IS_KINEMATIC, true);
 
 			auto& playerCollider = registry->assign<component::Collidable>(player1BlueEntity);
@@ -50,11 +50,15 @@ void SandboxLayer::onEnter()
 			//PLAYER 1 CAMERA
 			auto playerCameraEntity = registry->create();
 
-			registry->assign<component::Transform>(playerCameraEntity);
+			auto& cameraTransform = registry->assign<component::Transform>(playerCameraEntity);
+			cameraTransform.setPosition(glm::vec3(0.0f, 0.8f, -0.5f));
 
-			auto& camera = registry->assign<component::PlayerCamera>(playerCameraEntity);
+			auto& camera = registry->assign<component::Camera>(playerCameraEntity);
 			camera.player = player.playerNum;
 			camera.cullingMask = 0b0001;
+
+			auto& cameraBreathing = registry->assign<CameraBreathing>(playerCameraEntity);
+			cameraBreathing.startPosY = cameraTransform.getPositionY();
 
 			auto& cameraParent = registry->assign<component::Parent>(playerCameraEntity);
 			cameraParent.parent = player1BlueEntity;
@@ -83,7 +87,7 @@ void SandboxLayer::onEnter()
 
 			auto& rb = registry->assign<component::RigidBody>(player3BlueEntity);
 			rb.setMass(5.0f);
-			rb.setFriction(1.0f);
+			rb.setFriction(0.9f);
 			rb.setProperties(component::RigidBody::Property::FREEZE_ROTATION_X, true);
 			rb.setProperties(component::RigidBody::Property::FREEZE_ROTATION_Y, true);
 			rb.setProperties(component::RigidBody::Property::FREEZE_ROTATION_Z, true);
@@ -96,11 +100,15 @@ void SandboxLayer::onEnter()
 			//PLAYER 3 CAMERA
 			auto playerCameraEntity = registry->create();
 
-			registry->assign<component::Transform>(playerCameraEntity);
+			auto& cameraTransform = registry->assign<component::Transform>(playerCameraEntity);
+			cameraTransform.setPosition(glm::vec3(0.0f, 0.8f, -0.5f));
 
-			auto& camera = registry->assign<component::PlayerCamera>(playerCameraEntity);
+			auto& camera = registry->assign<component::Camera>(playerCameraEntity);
 			camera.player = player.playerNum;
 			camera.cullingMask = 0b0100;
+
+			auto& cameraBreathing = registry->assign<CameraBreathing>(playerCameraEntity);
+			cameraBreathing.startPosY = cameraTransform.getPositionY();
 
 			auto& cameraParent = registry->assign<component::Parent>(playerCameraEntity);
 			cameraParent.parent = player3BlueEntity;
@@ -149,7 +157,7 @@ void SandboxLayer::onEnter()
 
 				component::Transform garbagePileTransform;
 				garbagePileTransform.setPosition(glm::vec3(-3.0f, 0.2f, 0.0f));
-				garbagePileTransform.setScale(glm::vec3(3.0f, 0.4f, 3.0f));
+				garbagePileTransform.setScale(glm::vec3(0.43f, 0.4f, 0.43f));
 				registry->assign<component::Transform>(garbagePileEntity, garbagePileTransform);
 
 				auto& garbagePile = registry->assign<GarbagePile>(garbagePileEntity);
@@ -220,16 +228,14 @@ void SandboxLayer::onEnter()
 			carryableItem.type = CarryableItemType::mop;
 
 			auto& rb = registry->assign<component::RigidBody>(mopEntity);
+			rb.setMass(2.0f);
+			rb.setFriction(0.6f);
 
 			mr.mesh = Mesh::get("cube");
 			registry->assign<component::Renderable>(mopEntity, mr);
 
 			auto& so2 = registry->assign<component::EntityInfo>(mopEntity);
 			so2.name = "BlueMop";
-
-			/*auto& rb = registry->assign<component::RigidBody>(mopBlueEntity);
-			rb.setMass(2.0f);
-			rb.setFriction(1.0f);*/
 
 			auto& mopCollider = registry->assign<component::Collidable>(mopEntity);
 			auto& shapeInfo = mopCollider.pushShape(ColliderType::Box);
@@ -435,7 +441,7 @@ void SandboxLayer::onEnter()
 
 			auto& rb = registry->assign<component::RigidBody>(player2RedEntity);
 			rb.setMass(5.0f);
-			rb.setFriction(1.0f);
+			rb.setFriction(0.9f);
 			rb.setProperties(component::RigidBody::Property::FREEZE_ROTATION_X, true);
 			rb.setProperties(component::RigidBody::Property::FREEZE_ROTATION_Y, true);
 			rb.setProperties(component::RigidBody::Property::FREEZE_ROTATION_Z, true);
@@ -448,11 +454,15 @@ void SandboxLayer::onEnter()
 			//PLAYER 2 CAMERA
 			auto playerCameraEntity = registry->create();
 
-			registry->assign<component::Transform>(playerCameraEntity);
+			auto& cameraTransform = registry->assign<component::Transform>(playerCameraEntity);
+			cameraTransform.setPosition(glm::vec3(0.0f, 0.8f, -0.5f));
 
-			auto& camera = registry->assign<component::PlayerCamera>(playerCameraEntity);
+			auto& camera = registry->assign<component::Camera>(playerCameraEntity);
 			camera.player = player.playerNum;
 			camera.cullingMask = 0b0010;
+
+			auto& cameraBreathing = registry->assign<CameraBreathing>(playerCameraEntity);
+			cameraBreathing.startPosY = cameraTransform.getPositionY();
 
 			auto& cameraParent = registry->assign<component::Parent>(playerCameraEntity);
 			cameraParent.parent = player2RedEntity;
@@ -481,7 +491,7 @@ void SandboxLayer::onEnter()
 
 			auto& rb = registry->assign<component::RigidBody>(player4RedEntity);
 			rb.setMass(5.0f);
-			rb.setFriction(1.0f);
+			rb.setFriction(0.9f);
 			rb.setProperties(component::RigidBody::Property::FREEZE_ROTATION_X, true);
 			rb.setProperties(component::RigidBody::Property::FREEZE_ROTATION_Y, true);
 			rb.setProperties(component::RigidBody::Property::FREEZE_ROTATION_Z, true);
@@ -494,11 +504,15 @@ void SandboxLayer::onEnter()
 			//PLAYER 4 CAMERA
 			auto playerCameraEntity = registry->create();
 
-			registry->assign<component::Transform>(playerCameraEntity);
+			auto& cameraTransform = registry->assign<component::Transform>(playerCameraEntity);
+			cameraTransform.setPosition(glm::vec3(0.0f, 0.8f, -0.5f));
 
-			auto& camera = registry->assign<component::PlayerCamera>(playerCameraEntity);
+			auto& camera = registry->assign<component::Camera>(playerCameraEntity);
 			camera.player = player.playerNum;
 			camera.cullingMask = 0b1000;
+
+			auto& cameraBreathing = registry->assign<CameraBreathing>(playerCameraEntity);
+			cameraBreathing.startPosY = cameraTransform.getPositionY();
 
 			auto& cameraParent = registry->assign<component::Parent>(playerCameraEntity);
 			cameraParent.parent = player4RedEntity;
@@ -545,7 +559,7 @@ void SandboxLayer::onEnter()
 
 				component::Transform garbagePileTransform;
 				garbagePileTransform.setPosition(glm::vec3(-3.0f, 0.2f, 0.0f));
-				garbagePileTransform.setScale(glm::vec3(3.0f, 0.4f, 3.0f));
+				garbagePileTransform.setScale(glm::vec3(0.43f, 0.4f, 0.43f));
 				registry->assign<component::Transform>(garbagePileEntity, garbagePileTransform);
 
 				auto& garbagePile = registry->assign<GarbagePile>(garbagePileEntity);
@@ -617,16 +631,14 @@ void SandboxLayer::onEnter()
 			carryableItem.type = CarryableItemType::mop;
 
 			auto& rb = registry->assign<component::RigidBody>(mopEntity);
+			rb.setMass(2.0f);
+			rb.setFriction(0.6f);
 
 			mr.mesh = Mesh::get("cube");
 			registry->assign<component::Renderable>(mopEntity, mr);
 
 			auto& so2 = registry->assign<component::EntityInfo>(mopEntity);
 			so2.name = "RedMop";
-
-			/*auto& rb = registry->assign<component::RigidBody>(mopBlueEntity);
-			rb.setMass(2.0f);
-			rb.setFriction(1.0f);*/
 
 			auto& mopCollider = registry->assign<component::Collidable>(mopEntity);
 			auto& shapeInfo = mopCollider.pushShape(ColliderType::Box);

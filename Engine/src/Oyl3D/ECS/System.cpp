@@ -30,6 +30,27 @@
 #include <btBulletDynamicsCommon.h>
 #include <btBulletCollisionCommon.h>
 
+namespace std
+{
+    template<>
+    struct hash<std::pair<entt::entity, entt::entity>>
+    {
+        std::size_t operator()(const std::pair<entt::entity, entt::entity>& k) const noexcept
+        {
+            using std::size_t;
+            using std::hash;
+            using oyl::u32;
+
+            // Compute individual hash values for first,
+            // second and third and combine them using XOR
+            // and bit shifting:
+
+            return ((hash<u32>()(static_cast<u32>(k.first))
+                     ^ (hash<u32>()(static_cast<u32>(k.second)) << 1)) >> 1);
+        }
+    };
+}
+
 namespace oyl
 {
     // vvv Generic System vvv //
@@ -59,7 +80,7 @@ namespace oyl
         {
             using component::Transform;
             using component::Renderable;
-            using component::PlayerCamera;
+            using component::Camera;
             using component::PointLight;
 
             const auto& skybox = TextureCubeMap::get(DEFAULT_SKYBOX_ALIAS);
@@ -89,7 +110,7 @@ namespace oyl
 
             Ref<Material> boundMaterial;
 
-            auto camView = registry->view<Transform, PlayerCamera>();
+            auto camView = registry->view<Transform, Camera>();
             
             int x = m_windowSize.x / 2;
             int y = camView.size() > 2 ? m_windowSize.y / 2 : 0;
@@ -102,7 +123,7 @@ namespace oyl
             
             for (auto camera : camView)
             {
-                PlayerCamera& pc = camView.get<PlayerCamera>(camera);
+                Camera& pc = camView.get<Camera>(camera);
 
                 u32 playerNum = static_cast<u32>(pc.player);
                 RenderCommand::setDrawRect(!!(playerNum & 1) * x, !(playerNum & 2) * y, width, height);
@@ -251,7 +272,7 @@ namespace oyl
         {
             using component::GuiRenderable;
             using component::Transform;
-            using component::PlayerCamera;
+            using component::Camera;
 
             registry->sort<GuiRenderable>(
                 [this](const entt::entity lhs, const entt::entity rhs)
@@ -259,9 +280,9 @@ namespace oyl
                     auto& lguir = registry->get<GuiRenderable>(lhs);
                     auto& rguir = registry->get<GuiRenderable>(rhs);
 
-                    if (rguir.texture == nullptr)
+                    if (!lguir.enabled || lguir.texture == nullptr)
                         return false;
-                    if (lguir.texture == nullptr)
+                    if (!rguir.enabled || rguir.texture == nullptr)
                         return true;
 
                     auto& lt = registry->get<Transform>(lhs);
@@ -281,7 +302,7 @@ namespace oyl
 
             RenderCommand::setDepthDraw(false);
 
-            auto camView = registry->view<PlayerCamera>();
+            auto camView = registry->view<Camera>();
 
             int x = m_windowSize.x / 2;
             int y = camView.size() > 2 ? m_windowSize.y / 2 : 0;
@@ -291,6 +312,9 @@ namespace oyl
 
             int height = m_windowSize.y;
             if (camView.size() > 2) height /= 2;
+
+            glm::vec2 lastLowerClipping = glm::vec2(0.0f);
+            glm::vec2 lastUpperClipping = glm::vec2(0.0f);
             
             for (auto camera : camView)
             {                
@@ -317,6 +341,14 @@ namespace oyl
                     {
                         boundTexture = gui.texture;
                         boundTexture->bind(0);
+                    }
+
+                    if (lastLowerClipping != gui.lowerClipping || lastUpperClipping != gui.upperClipping)
+                    {
+                        lastLowerClipping = gui.lowerClipping;
+                        lastUpperClipping = gui.upperClipping;
+                        glm::vec4 clippingRect = { lastLowerClipping, lastUpperClipping };
+                        m_shader->setUniform4f("u_clippingCoords", clippingRect);
                     }
 
                     glm::vec3 texSize = glm::vec3(0.0f);
@@ -440,6 +472,10 @@ namespace oyl
         static Ref<EventDispatcher> g_dispatcher;
         static Ref<entt::registry>  g_currentRegistry;
 
+        
+        static std::unordered_map<std::pair<entt::entity, entt::entity>, std::pair<int, glm::vec3>> g_contactMap;
+
+        static int g_phase = 0;
         static void* g_obj1 = 0;
         static void* g_obj2 = 0;
 
@@ -448,9 +484,10 @@ namespace oyl
             auto body1 = manifold->getBody0();
             auto body2 = manifold->getBody1();
 
-            if (body1 == g_obj1 && body2 == g_obj2)
+            if (g_phase == 0 && body1 == g_obj1 && body2 == g_obj2)
                 return;
-            
+
+            g_phase = 0;
             g_obj1 = (void*) body1;
             g_obj2 = (void*) body2;
             
@@ -478,9 +515,10 @@ namespace oyl
             auto body1 = manifold->getBody0();
             auto body2 = manifold->getBody1();
 
-            if (body1 == g_obj1 && body2 == g_obj2)
+            if (g_phase == 1 && body1 == g_obj1 && body2 == g_obj2)
                 return;
 
+            g_phase = 1;
             g_obj1 = (void*) body1;
             g_obj2 = (void*) body2;
             
@@ -508,29 +546,43 @@ namespace oyl
             auto body1 = reinterpret_cast<btCollisionObject*>(obj1);
             auto body2 = reinterpret_cast<btCollisionObject*>(obj2);
 
-            if (body1 == g_obj1 && body2 == g_obj2)
-                return false;
-
-            g_obj1 = (void*) body1;
-            g_obj2 = (void*) body2;
-
             auto entity1 = (entt::entity) reinterpret_cast<ENTT_ID_TYPE>(body1->getUserPointer());
             auto entity2 = (entt::entity) reinterpret_cast<ENTT_ID_TYPE>(body2->getUserPointer());
 
             if (!g_currentRegistry->valid(entity1) || !g_currentRegistry->valid(entity2))
                 return false;
 
-            PhysicsCollisionStayEvent event;
-            event.entity1 = entity1;
-            event.entity2 = entity2;
+            //static PhysicsCollisionStayEvent event;
+            
+            //if (g_phase == 2 && obj1 == g_obj1 && obj2 == g_obj2)
+            //    numPoints++;
+            //else
+            //{
+            //    event.entity1 = entity1;
+            //    event.entity2 = entity2;
+            //    
+            //    event.contactPoint = avgContactPoint / static_cast<float>(numPoints);
+            //    
+            //    if (body1->getCollisionFlags() & btCollisionObject::CF_NO_CONTACT_RESPONSE ||
+            //        body2->getCollisionFlags() & btCollisionObject::CF_NO_CONTACT_RESPONSE)
+            //    {
+            //        event.type = EventType::PhysicsTriggerStay;
+            //    }
 
-            if (body1->getCollisionFlags() & btCollisionObject::CF_NO_CONTACT_RESPONSE ||
-                body2->getCollisionFlags() & btCollisionObject::CF_NO_CONTACT_RESPONSE)
-            {
-                event.type = EventType::PhysicsTriggerStay;
-            }
+            //    g_dispatcher->postEvent(event);
+            //    
+            //    avgContactPoint = glm::vec3(0.0f);
+            //    numPoints = 1;
+            //}
 
-            g_dispatcher->postEvent(event);
+            auto avgCp = (cp.getPositionWorldOnA() + cp.getPositionWorldOnB()) * 0.5f;
+
+            auto pair = std::make_pair(entity1, entity2);
+            if (auto it = g_contactMap.find(pair); it != g_contactMap.end())
+                it->second.first++, it->second.second += glm::vec3(avgCp.x(), avgCp.y(), avgCp.z());
+            else
+                g_contactMap[pair] = std::make_pair(1, glm::vec3(avgCp.x(), avgCp.y(), avgCp.z()));
+            
             return false;
         }
 
@@ -558,7 +610,7 @@ namespace oyl
                                                                    m_btBroadphase.get(),
                                                                    m_btSolver.get(),
                                                                    m_btCollisionConfig.get());
-
+            
             m_rigidBodies.clear();
             
             //m_world->setGravity(btVector3(0.0f, -9.81f, 0.0f));
@@ -654,9 +706,8 @@ namespace oyl
                     
                     transform.m_isScaleOverridden = false;
                 }
-                if (rigidBody.m_isDirty)
+                //if (rigidBody.m_isDirty)
                 {
-                    //m_btWorld->removeRigidBody(cachedBody.body.get());
                     
                     // Velocity
                     cachedBody.body->setLinearVelocity(btVector3(rigidBody.m_velocity.x,
@@ -664,16 +715,18 @@ namespace oyl
                                                                  rigidBody.m_velocity.z));
 
                     // Forces
-                    cachedBody.body->clearForces();
+                    //cachedBody.body->clearForces();
+
+                    m_btWorld->removeRigidBody(cachedBody.body.get());
 
                     // Friction
                     cachedBody.body->setFriction(rigidBody.m_friction);
-                    cachedBody.body->setSpinningFriction(rigidBody.m_friction);
-                    cachedBody.body->setAnisotropicFriction(btVector3(rigidBody.m_friction, 
-                                                                      rigidBody.m_friction, 
-                                                                      rigidBody.m_friction), 
-                                                            btCollisionObject::CF_ANISOTROPIC_FRICTION);
-                    cachedBody.body->setRollingFriction(rigidBody.m_friction);
+                    //cachedBody.body->setSpinningFriction(rigidBody.m_friction);
+                    //cachedBody.body->setAnisotropicFriction(btVector3(rigidBody.m_friction, 
+                    //                                                  rigidBody.m_friction, 
+                    //                                                  rigidBody.m_friction), 
+                    //                                        btCollisionObject::CF_ANISOTROPIC_FRICTION);
+                    //cachedBody.body->setRollingFriction(rigidBody.m_friction);
 
                     // Flags
                     int flags = cachedBody.body->getCollisionFlags();
@@ -708,6 +761,7 @@ namespace oyl
 
                     cachedBody.body->setCollisionFlags(flags);
 
+                    //m_btWorld->addRigidBody(cachedBody.body.get());
 
                     //// Rotation Locking
                     //btVector3 inertiaTensor = {};
@@ -729,11 +783,9 @@ namespace oyl
                     {
                         cachedBody.body->setGravity({ 0.0f, 0.0f, 0.0f });
                     }
-
-                    rigidBody.m_isDirty = false;
                 }
-
-                m_btWorld->removeRigidBody(cachedBody.body.get());
+                
+                cachedBody.body->setFriction(rigidBody.m_friction);
 
                 float x = rigidBody.getProperty(RigidBody::FREEZE_ROTATION_X) ? 0.0f : 1.0f;
                 float y = rigidBody.getProperty(RigidBody::FREEZE_ROTATION_Y) ? 0.0f : 1.0f;
@@ -763,7 +815,27 @@ namespace oyl
             // TODO: Iterate over ghost objects with tick callback
             m_btWorld->stepSimulation(Time::deltaTime(), 10, m_fixedTimeStep);
 
+            for (auto& [entities, point] : g_contactMap)
+            {
+                PhysicsCollisionStayEvent event;
+                auto rb1 = registry->try_get<RigidBody>(entities.first);
+                auto rb2 = registry->try_get<RigidBody>(entities.second);
+                if (rb1 && !rb1->getProperty(RigidBody::DETECT_COLLISIONS) ||
+                    rb2 && !rb2->getProperty(RigidBody::DETECT_COLLISIONS))
+                {
+                    event.type = EventType::PhysicsTriggerStay;
+                }
+
+                event.entity1 = entities.first;
+                event.entity2 = entities.second;
+
+                event.contactPoint = point.second / static_cast<float>(point.first);
+
+                postEvent(event);
+            }
+
             g_obj1 = g_obj2 = 0;
+            g_contactMap.clear();
 
             for (auto entity : view)
             {
@@ -920,15 +992,6 @@ namespace oyl
                             };
 
                             shape = Ref<btBoxShape>::create(halfExtents);
-
-                            RigidBodyInfo::ChildShapeInfo info;
-
-                            info.btShape = shape;
-
-                            info.shapeInfo = shapeThing.m_selfRef;
-
-                            m_rigidBodies[entity]->children.push_back(info);
-
                             break;
                         }
                         case ColliderType::Sphere:
@@ -942,19 +1005,45 @@ namespace oyl
                             });
 
                             shape = Ref<btSphereShape>::create(shapeThing.sphere.getRadius());
+                            break;
+                        }
+                        case ColliderType::Capsule:
+                        {
+                            t.setIdentity();
 
-                            RigidBodyInfo::ChildShapeInfo info;
-
-                            info.btShape = shape;
-
-                            info.shapeInfo = shapeThing.m_selfRef;
-
-                            m_rigidBodies[entity]->children.emplace_back(info);
-
+                            t.setOrigin({
+                                shapeThing.capsule.getCenter().x,
+                                shapeThing.capsule.getCenter().y,
+                                shapeThing.capsule.getCenter().z
+                            });
+                            
+                            switch (shapeThing.capsule.getDirection())
+                            {
+                                case Direction::X_AXIS:
+                                    shape = Ref<btCapsuleShapeX>::create(shapeThing.capsule.getRadius(),
+                                                                         shapeThing.capsule.getHeight());
+                                    break;
+                                case Direction::Y_AXIS:
+                                    shape = Ref<btCapsuleShape>::create(shapeThing.capsule.getRadius(),
+                                                                        shapeThing.capsule.getHeight());
+                                    break;
+                                case Direction::Z_AXIS:
+                                    shape = Ref<btCapsuleShapeZ>::create(shapeThing.capsule.getRadius(),
+                                                                         shapeThing.capsule.getHeight());
+                                    break;
+                            }
                             break;
                         }
                     }
                     
+                    RigidBodyInfo::ChildShapeInfo cInfo;
+
+                    cInfo.btShape = shape;
+
+                    cInfo.shapeInfo = shapeThing.m_selfRef;
+
+                    m_rigidBodies[entity]->children.emplace_back(cInfo);
+
                     // TEMPORARY: Make relative to collider
                     t.setIdentity();
                     
@@ -991,6 +1080,7 @@ namespace oyl
                 else
                 {
                     auto workingShape = Ref<btCompoundShape>::create();
+                    Ref<btCollisionShape> childShape;
                     auto childIter = colliderComponent.begin();
                     for (; childIter != colliderComponent.end(); ++childIter)
                     {
@@ -1014,17 +1104,8 @@ namespace oyl
                                     childIter->box.getSize().z / 2.0f
                                 };
                                 
-                                auto childShape = Ref<btBoxShape>::create(halfExtents);
+                                childShape = Ref<btBoxShape>::create(halfExtents);
                                 workingShape->addChildShape(t, childShape.get());
-
-                                RigidBodyInfo::ChildShapeInfo info;
-
-                                info.btShape = childShape;
-
-                                info.shapeInfo = childIter->m_selfRef;
-
-                                m_rigidBodies[entity]->children.emplace_back(info);
-
                                 break;
                             }
                             case ColliderType::Sphere:
@@ -1039,20 +1120,49 @@ namespace oyl
                                     childIter->sphere.getCenter().z
                                 });
 
-                                auto childShape = Ref<btSphereShape>::create(childIter->sphere.getRadius());
+                                childShape = Ref<btSphereShape>::create(childIter->sphere.getRadius());
                                 workingShape->addChildShape(t, childShape.get());
+                                break;
+                            }
+                            case ColliderType::Capsule:
+                            {
+                                btTransform t;
 
-                                RigidBodyInfo::ChildShapeInfo info;
+                                t.setIdentity();
 
-                                info.btShape = childShape;
+                                t.setOrigin({
+                                    childIter->capsule.getCenter().x,
+                                    childIter->capsule.getCenter().y,
+                                    childIter->capsule.getCenter().z
+                                });
 
-                                info.shapeInfo = childIter->m_selfRef;
-
-                                m_rigidBodies[entity]->children.emplace_back(info);
-
+                                switch (childIter->capsule.getDirection())
+                                {
+                                    case Direction::X_AXIS:
+                                        childShape = Ref<btCapsuleShapeX>::create(childIter->capsule.getRadius(), 
+                                                                                  childIter->capsule.getHeight());
+                                        break;
+                                    case Direction::Y_AXIS:
+                                        childShape = Ref<btCapsuleShape>::create(childIter->capsule.getRadius(),
+                                                                                 childIter->capsule.getHeight());
+                                        break;
+                                    case Direction::Z_AXIS:
+                                        childShape = Ref<btCapsuleShapeZ>::create(childIter->capsule.getRadius(),
+                                                                                  childIter->capsule.getHeight());
+                                        break;
+                                }
+                                workingShape->addChildShape(t, childShape.get());
                                 break;
                             }
                         }
+
+                        RigidBodyInfo::ChildShapeInfo info;
+
+                        info.btShape = childShape;
+
+                        info.shapeInfo = childIter->m_selfRef;
+
+                        m_rigidBodies[entity]->children.emplace_back(info);
                     }
 
                     shape = workingShape;
@@ -1202,7 +1312,7 @@ namespace oyl
             listenForEventType(EventType::EditorViewportResized);
             listenForEventType(EventType::EditorCameraMoveRequest);
 
-            m_camera = Ref<Camera>::create();
+            m_camera = Ref<EditorCamera>::create();
             m_camera->setProjection(glm::perspective(glm::radians(60.0f), 16.0f / 9.0f, 0.1f, 1000.0f));
             m_camera->setPosition(glm::vec3(10.0f, 5.0f, 10.0f));
             m_camera->lookAt(glm::vec3(0.0f, 0.0f, 0.0f));
@@ -1360,7 +1470,7 @@ namespace oyl
         {
             using component::Transform;
             using component::Renderable;
-            using component::PlayerCamera;
+            using component::Camera;
             using component::PointLight;
             
             m_editorViewportBuffer->clear();

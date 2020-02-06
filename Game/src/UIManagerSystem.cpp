@@ -29,49 +29,9 @@ bool UIManagerSystem::onEvent(const Event& event)
 					enableValidUIType(PlayerInteractionResult::nothing, evt.playerNum);
 					break;
 				}
-				case PlayerInteractionResult::cannonFiringSoon:
+				case PlayerInteractionResult::invalid:
 				{
-					enableInvalidUIType(PlayerInteractionResult::cannonFiringSoon, evt.playerNum);
-					break;
-				}
-				case PlayerInteractionResult::loadCannon:
-				{
-					enableValidUIType(PlayerInteractionResult::loadCannon, evt.playerNum);
-					break;
-				}
-				case PlayerInteractionResult::pushCannon:
-				{
-					enableValidUIType(PlayerInteractionResult::pushCannon, evt.playerNum);
-					break;
-				}
-				case PlayerInteractionResult::takeCannonballFromCrate:
-				{
-					enableValidUIType(PlayerInteractionResult::takeCannonballFromCrate, evt.playerNum);
-					break;
-				}
-				case PlayerInteractionResult::pickUpCannonball:
-				{
-					enableValidUIType(PlayerInteractionResult::pickUpCannonball, evt.playerNum);
-					break;
-				}
-				case PlayerInteractionResult::pickUpMop:
-				{
-					enableValidUIType(PlayerInteractionResult::pickUpMop, evt.playerNum);
-					break;
-				}
-				case PlayerInteractionResult::pickUpCleaningSolution:
-				{
-					enableValidUIType(PlayerInteractionResult::pickUpCleaningSolution, evt.playerNum);
-					break;
-				}
-				case PlayerInteractionResult::pickUpGloop:
-				{
-					enableValidUIType(PlayerInteractionResult::pickUpGloop, evt.playerNum);
-					break;
-				}
-				case PlayerInteractionResult::useGloop:
-				{
-					enableValidUIType(PlayerInteractionResult::useGloop, evt.playerNum);
+					enableInvalidUIType(PlayerInteractionResult::invalid, evt.playerNum);
 					break;
 				}
 				case PlayerInteractionResult::cleanGarbagePile:
@@ -79,36 +39,53 @@ bool UIManagerSystem::onEvent(const Event& event)
 					enableValidUIType(PlayerInteractionResult::cleanGarbagePile, evt.playerNum);
 					break;
 				}
-				case PlayerInteractionResult::invalid:
+				case PlayerInteractionResult::takeCannonballFromCrate:
 				{
-					enableInvalidUIType(PlayerInteractionResult::invalid, evt.playerNum);
+					enableValidUIType(PlayerInteractionResult::takeCannonballFromCrate, evt.playerNum);
+					break;
+				}
+				case PlayerInteractionResult::pickUpCleaningSolution:
+				{
+					enableValidUIType(PlayerInteractionResult::pickUpCleaningSolution, evt.playerNum);
+					break;
+				}
+				case PlayerInteractionResult::pickUpMop:
+				{
+					enableValidUIType(PlayerInteractionResult::pickUpMop, evt.playerNum);
+					break;
+				}
+				case PlayerInteractionResult::pickUpGloop:
+				{
+					enableValidUIType(PlayerInteractionResult::pickUpGloop, evt.playerNum);
+					break;
+				}
+				case PlayerInteractionResult::pickUpCannonball:
+				{
+					enableValidUIType(PlayerInteractionResult::pickUpCannonball, evt.playerNum);
+					break;
+				}
+				case PlayerInteractionResult::useGloop:
+				{
+					enableValidUIType(PlayerInteractionResult::useGloop, evt.playerNum);
+					break;
+				}
+				case PlayerInteractionResult::loadCannon:
+				{
+					enableValidUIType(PlayerInteractionResult::loadCannon, evt.playerNum);
+					break;
+				}
+				case PlayerInteractionResult::cannonFiringSoon:
+				{
+					enableInvalidUIType(PlayerInteractionResult::cannonFiringSoon, evt.playerNum);
+					break;
+				}
+				case PlayerInteractionResult::pushCannon:
+				{
+					enableValidUIType(PlayerInteractionResult::pushCannon, evt.playerNum);
 					break;
 				}
 			}
 
-			break;
-		}
-		case (EventType)TypeGarbageCleaned:
-		{
-			auto evt = event_cast<GarbageCleanedEvent>(event);
-
-			auto garbageTickView = registry->view<component::Transform, GarbageTick>();
-			int i = 0;
-			for (auto& garbageTickEntity : garbageTickView)
-			{
-				auto& garbageTick = registry->get<GarbageTick>(garbageTickEntity);
-				auto& garbageTickTransform = registry->get<component::Transform>(garbageTickEntity);
-
-				garbageTickTransform.setPosition(glm::vec3(100.0f));
-
-				if (evt.numGarbageTicksToDisplay >= i + 1)
-				{
-					garbageTick.onScreenCountdown = garbageTick.ON_SCREEN_DURATION;
-					garbageTickTransform.setPosition(glm::vec3((i * 3.0f) - 3.0f, 4.0f, 0.0f));
-				}
-
-				i++;
-			}
 			break;
 		}
 	}

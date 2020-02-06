@@ -26,12 +26,15 @@ void GarbagePileSystem::onUpdate()
 	int lastFrameTotalGarbageLevel = totalGarbageLevel; //get the last frame's total garbage level so we can compare them later
 	totalGarbageLevel = 0; //reset the total garbage level and recalculate every frame
 
-	auto view = registry->view<GarbagePile, component::Renderable, component::Transform>();
-	for (auto& garbagePileEntity : view)
+	auto garbagePileView = registry->view<GarbagePile, component::Renderable, component::Transform>();
+	for (auto& garbagePileEntity : garbagePileView)
 	{
 		auto& garbagePile           = registry->get<GarbagePile>(garbagePileEntity);
 		auto& garbagePileRenderable = registry->get<component::Renderable>(garbagePileEntity);
 		auto& garbagePileTransform  = registry->get<component::Transform>(garbagePileEntity);
+
+		if (addGarbageLevel)
+			increaseGarbageLevel(garbagePileEntity);
 
 		if (garbagePile.delayBeforeAddingGarbageCountdown > 0.0f)
 		{
@@ -41,11 +44,13 @@ void GarbagePileSystem::onUpdate()
 				increaseGarbageLevel(garbagePileEntity);
 		}
 
-		if (addGarbageLevel)
-			increaseGarbageLevel(garbagePileEntity);
+		if (garbagePile.delayBeforeRemovingGarbageCountdown > 0.0f)
+		{
+			garbagePile.delayBeforeRemovingGarbageCountdown -= Time::deltaTime();
 
-		garbagePileTransform.setScaleX(0.03f * garbagePile.garbageLevel + 0.4f);
-		garbagePileTransform.setScaleZ(0.03f * garbagePile.garbageLevel + 0.4f);
+			if (garbagePile.delayBeforeRemovingGarbageCountdown < 0.0f)
+				updateGarbagePileVisualSize(garbagePileEntity);
+		}
 
 		totalGarbageLevel += garbagePile.garbageLevel;
 
@@ -69,34 +74,14 @@ bool GarbagePileSystem::onEvent(const Event& event)
 		{
 			auto evt = event_cast<RequestToCleanGarbageEvent>(event);
 
-			auto& garbagePile           = registry->get<GarbagePile>(evt.garbagePileEntity);
-			auto& garbagePileRenderable = registry->get<component::Renderable>(evt.garbagePileEntity);
+			auto& garbagePile = registry->get<GarbagePile>(evt.garbagePileEntity);
+			garbagePile.delayBeforeRemovingGarbageCountdown = garbagePile.DELAY_BEFORE_REMOVING_GARBAGE_DURATION;
 
-			if (garbagePile.garbageTicks < garbagePile.GARBAGE_TICKS_PER_LEVEL)
-				garbagePile.garbageTicks -= garbagePile.isGlooped ? 0.5f : 1.0f;
-			else //garbage ticks >= MAX TICKS
-				garbagePile.garbageTicks -= 1.0f;
-
-			if (garbagePile.garbageTicks <= 0.0f)
-			{
-				garbagePile.garbageLevel--;
-				if (garbagePile.garbageLevel > 0)
-					garbagePile.garbageTicks = garbagePile.GARBAGE_TICKS_PER_LEVEL;
-				else //garbagePile.garbageLevel == 0
-				{
-					garbagePile.garbageTicks      = 0;
-					garbagePileRenderable.enabled = false;
-
-					if (registry->has<component::RigidBody>(evt.garbagePileEntity))
-						registry->remove<component::RigidBody>(evt.garbagePileEntity);
-				}
-				
-				garbagePile.isGlooped = false;
-			}
+			decreaseGarbageLevel(evt.garbagePileEntity);
+			//don't update the visual size of the garbage pile till AFTER the delay before removing garbage countdown hits 0.0s
 
 			GarbageCleanedEvent garbageCleaned;
-			garbageCleaned.numGarbageTicksToDisplay = garbagePile.garbageTicks;
-			garbageCleaned.displayGlooped           = garbagePile.isGlooped;
+			garbageCleaned.garbagePileEntity = evt.garbagePileEntity;
 			postEvent(garbageCleaned);
 
 			break;
@@ -129,24 +114,60 @@ bool GarbagePileSystem::onEvent(const Event& event)
 
 void GarbagePileSystem::increaseGarbageLevel(entt::entity a_garbagePileEntity)
 {
-	auto& garbagePile           = registry->get<GarbagePile>(a_garbagePileEntity);
-	auto& garbagePileRenderable = registry->get<component::Renderable>(a_garbagePileEntity);
+	auto& garbagePile = registry->get<GarbagePile>(a_garbagePileEntity);
 
 	if (garbagePile.garbageLevel == 0)
 	{
 		garbagePile.garbageLevel++;
 		garbagePile.garbageTicks = garbagePile.GARBAGE_TICKS_PER_LEVEL;
 
-		garbagePileRenderable.enabled = true;
-		auto& garbagePileRB = registry->get_or_assign<component::RigidBody>(a_garbagePileEntity);
-		garbagePileRB.setMass(0.0f);
+		GarbageReappearedEvent garbageReappeared;
+		garbageReappeared.garbagePileEntity = a_garbagePileEntity;
+		postEvent(garbageReappeared);
 	}
 	else if (garbagePile.garbageLevel < garbagePile.MAX_GARBAGE_LEVEL)
-	{
 		garbagePile.garbageLevel++;
-	}
 	else //garbage level == MAX
-	{
 		garbagePile.garbageTicks = garbagePile.GARBAGE_TICKS_PER_LEVEL;
+
+	updateGarbagePileVisualSize(a_garbagePileEntity); //update size whenever garbage is added
+}
+
+void GarbagePileSystem::decreaseGarbageLevel(entt::entity a_garbagePileEntity)
+{
+	auto& garbagePile = registry->get<GarbagePile>(a_garbagePileEntity);
+
+	if (garbagePile.garbageTicks < garbagePile.GARBAGE_TICKS_PER_LEVEL)
+		garbagePile.garbageTicks -= garbagePile.isGlooped ? 0.5f : 1.0f;
+	else //garbage ticks >= MAX TICKS
+		garbagePile.garbageTicks -= 1.0f;
+
+	if (garbagePile.garbageTicks <= 0.0f)
+	{
+		garbagePile.garbageLevel--;
+		if (garbagePile.garbageLevel > 0)
+			garbagePile.garbageTicks = garbagePile.GARBAGE_TICKS_PER_LEVEL;
+		else //garbagePile.garbageLevel == 0
+			garbagePile.garbageTicks = 0;
+
+		garbagePile.isGlooped = false;
 	}
+
+	//dont update garbage pile size yet because this should be done after the delay before removing garbage countdown reaches 0.0s.
+	//if you want to update the garbage pile size right away, do it after calling this function
+}
+
+void GarbagePileSystem::updateGarbagePileVisualSize(entt::entity a_garbagePileEntity)
+{
+	auto& garbagePile           = registry->get<GarbagePile>(a_garbagePileEntity);
+	auto& garbagePileRenderable = registry->get<component::Renderable>(a_garbagePileEntity);
+	auto& garbagePileTransform  = registry->get<component::Transform>(a_garbagePileEntity);
+
+	garbagePileTransform.setScaleX(0.03f * garbagePile.garbageLevel + 0.4f);
+	garbagePileTransform.setScaleZ(0.03f * garbagePile.garbageLevel + 0.4f);
+
+	if (garbagePile.garbageLevel == 0)
+		garbagePileRenderable.enabled = false;
+	else
+		garbagePileRenderable.enabled = true;
 }

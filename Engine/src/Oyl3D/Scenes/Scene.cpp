@@ -18,9 +18,9 @@ namespace oyl
         : m_registry(Ref<entt::registry>::create())
     {
         using component::Transform;
-        using component::PlayerCamera;
+        using component::Camera;
         m_registry->on_construct<Transform>().connect<&Transform::on_construct>();
-        m_registry->on_construct<PlayerCamera>().connect<&PlayerCamera::on_construct>();
+        m_registry->on_construct<Camera>().connect<&Camera::on_construct>();
     }
 
     Scene::~Scene() {}

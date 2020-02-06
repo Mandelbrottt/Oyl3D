@@ -4,9 +4,9 @@
 
 using namespace oyl;
 
-class GarbageTickSystem : public System
+class CameraBreathingSystem : public System
 {
-	OYL_CTOR(GarbageTickSystem, System)
+	OYL_CTOR(CameraBreathingSystem, System)
 
 	void onEnter() override;
 	void onExit() override;

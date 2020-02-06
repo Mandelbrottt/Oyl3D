@@ -4,11 +4,13 @@
             "Name": "Boat Root R"
         },
         "Renderable": {
+            "CullingMask": 15,
             "Enabled": true,
             "Material": {
                 "Alias": "metal"
             },
             "Mesh": {
+                "Alias": "anchor",
                 "FilePath": "res\\assets\\models\\Decorative\\anchor.obj"
             }
         },
@@ -41,11 +43,13 @@
             "Name": "Boat Root L"
         },
         "Renderable": {
+            "CullingMask": 15,
             "Enabled": true,
             "Material": {
                 "Alias": "metal"
             },
             "Mesh": {
+                "Alias": "anchor",
                 "FilePath": "res\\assets\\models\\Decorative\\anchor.obj"
             }
         },
@@ -94,18 +98,20 @@
         },
         "Parent": null,
         "Renderable": {
+            "CullingMask": 15,
             "Enabled": true,
             "Material": {
                 "Alias": "cannon"
             },
             "Mesh": {
+                "Alias": "cannon",
                 "FilePath": "res\\assets\\models\\cannon.obj"
             }
         },
         "RigidBody": {
-            "Friction": 0.5,
+            "Friction": 0.10000000149011612,
             "Mass": 0.0,
-            "Properties": 32
+            "Properties": 34
         },
         "Transform": {
             "Mirror": {
@@ -148,18 +154,20 @@
         },
         "Parent": null,
         "Renderable": {
+            "CullingMask": 15,
             "Enabled": true,
             "Material": {
                 "Alias": "cannonball"
             },
             "Mesh": {
+                "Alias": "sphere",
                 "FilePath": "res\\assets\\models\\sphere.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.5,
             "Mass": 1.0,
-            "Properties": 32
+            "Properties": 34
         },
         "Transform": {
             "Mirror": {
@@ -202,18 +210,20 @@
         },
         "Parent": null,
         "Renderable": {
+            "CullingMask": 15,
             "Enabled": true,
             "Material": {
                 "Alias": "cannonball"
             },
             "Mesh": {
+                "Alias": "sphere",
                 "FilePath": "res\\assets\\models\\sphere.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.5,
             "Mass": 1.0,
-            "Properties": 32
+            "Properties": 34
         },
         "Transform": {
             "Mirror": {
@@ -256,18 +266,20 @@
         },
         "Parent": null,
         "Renderable": {
+            "CullingMask": 15,
             "Enabled": true,
             "Material": {
                 "Alias": "cannonball"
             },
             "Mesh": {
+                "Alias": "sphere",
                 "FilePath": "res\\assets\\models\\sphere.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.5,
             "Mass": 1.0,
-            "Properties": 32
+            "Properties": 34
         },
         "Transform": {
             "Mirror": {
@@ -310,18 +322,20 @@
         },
         "Parent": null,
         "Renderable": {
+            "CullingMask": 15,
             "Enabled": true,
             "Material": {
                 "Alias": "cannonball"
             },
             "Mesh": {
+                "Alias": "sphere",
                 "FilePath": "res\\assets\\models\\sphere.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.5,
             "Mass": 1.0,
-            "Properties": 32
+            "Properties": 34
         },
         "Transform": {
             "Mirror": {
@@ -364,18 +378,20 @@
         },
         "Parent": null,
         "Renderable": {
+            "CullingMask": 15,
             "Enabled": true,
             "Material": {
                 "Alias": "cannonball"
             },
             "Mesh": {
+                "Alias": "sphere",
                 "FilePath": "res\\assets\\models\\sphere.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.5,
             "Mass": 1.0,
-            "Properties": 32
+            "Properties": 34
         },
         "Transform": {
             "Mirror": {
@@ -418,18 +434,20 @@
         },
         "Parent": null,
         "Renderable": {
+            "CullingMask": 15,
             "Enabled": true,
             "Material": {
                 "Alias": "cannonball"
             },
             "Mesh": {
+                "Alias": "sphere",
                 "FilePath": "res\\assets\\models\\sphere.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.5,
             "Mass": 1.0,
-            "Properties": 32
+            "Properties": 34
         },
         "Transform": {
             "Mirror": {
@@ -476,18 +494,20 @@
         },
         "Parent": null,
         "Renderable": {
+            "CullingMask": 15,
             "Enabled": true,
             "Material": {
                 "Alias": "crate"
             },
             "Mesh": {
+                "Alias": "crateTemp",
                 "FilePath": "res\\assets\\models\\crateTemp.obj"
             }
         },
         "RigidBody": {
-            "Friction": 0.5,
+            "Friction": 0.10000000149011612,
             "Mass": 0.0,
-            "Properties": 32
+            "Properties": 34
         },
         "Transform": {
             "Mirror": {
@@ -496,9 +516,9 @@
                 "Z": true
             },
             "Position": {
-                "X": -4.342803478240967,
+                "X": -4.011833190917969,
                 "Y": 0.0,
-                "Z": -2.368924856185913
+                "Z": -2.030989646911621
             },
             "Rotation": {
                 "qW": 0.5253219604492188,
@@ -534,18 +554,20 @@
         },
         "Parent": null,
         "Renderable": {
+            "CullingMask": 15,
             "Enabled": true,
             "Material": {
                 "Alias": "pirax"
             },
             "Mesh": {
+                "Alias": "Pirax",
                 "FilePath": "res\\assets\\models\\Pirax.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.5,
             "Mass": 1.0,
-            "Properties": 32
+            "Properties": 34
         },
         "Transform": {
             "Mirror": {
@@ -592,18 +614,20 @@
         },
         "Parent": null,
         "Renderable": {
+            "CullingMask": 15,
             "Enabled": true,
             "Material": {
                 "Alias": "pirax"
             },
             "Mesh": {
+                "Alias": "Pirax",
                 "FilePath": "res\\assets\\models\\Pirax.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.5,
             "Mass": 1.0,
-            "Properties": 32
+            "Properties": 34
         },
         "Transform": {
             "Mirror": {
@@ -650,18 +674,20 @@
         },
         "Parent": null,
         "Renderable": {
+            "CullingMask": 15,
             "Enabled": true,
             "Material": {
                 "Alias": "pirax"
             },
             "Mesh": {
+                "Alias": "Pirax",
                 "FilePath": "res\\assets\\models\\Pirax.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.5,
             "Mass": 1.0,
-            "Properties": 32
+            "Properties": 34
         },
         "Transform": {
             "Mirror": {
@@ -708,18 +734,20 @@
         },
         "Parent": null,
         "Renderable": {
+            "CullingMask": 15,
             "Enabled": true,
             "Material": {
                 "Alias": "pirax"
             },
             "Mesh": {
+                "Alias": "Pirax",
                 "FilePath": "res\\assets\\models\\Pirax.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.5,
             "Mass": 1.0,
-            "Properties": 32
+            "Properties": 34
         },
         "Transform": {
             "Mirror": {
@@ -748,11 +776,13 @@
     "BlueCleaningSolutionSpawner": {
         "Parent": null,
         "Renderable": {
+            "CullingMask": 15,
             "Enabled": true,
             "Material": {
                 "Alias": null
             },
             "Mesh": {
+                "Alias": "Oyl Monkey",
                 "FilePath": "../Engine/res/models/monkey.obj"
             }
         },
@@ -801,18 +831,20 @@
         },
         "Parent": null,
         "Renderable": {
+            "CullingMask": 15,
             "Enabled": true,
             "Material": {
                 "Alias": "garbage"
             },
             "Mesh": {
+                "Alias": "garbage",
                 "FilePath": "res\\assets\\models\\garbage.obj"
             }
         },
         "RigidBody": {
             "Friction": 5.0,
             "Mass": 0.0,
-            "Properties": 34
+            "Properties": 32
         },
         "Transform": {
             "Mirror": {
@@ -859,11 +891,13 @@
         },
         "Parent": null,
         "Renderable": {
+            "CullingMask": 15,
             "Enabled": true,
             "Material": {
                 "Alias": "garbage"
             },
             "Mesh": {
+                "Alias": "garbage",
                 "FilePath": "res\\assets\\models\\garbage.obj"
             }
         },
@@ -890,9 +924,9 @@
                 "qZ": 0.0
             },
             "Scale": {
-                "X": 0.5,
+                "X": 0.4300000071525574,
                 "Y": 0.5,
-                "Z": 0.5
+                "Z": 0.4300000071525574
             }
         }
     },
@@ -917,11 +951,13 @@
         },
         "Parent": null,
         "Renderable": {
+            "CullingMask": 15,
             "Enabled": true,
             "Material": {
                 "Alias": "garbage"
             },
             "Mesh": {
+                "Alias": "garbage",
                 "FilePath": "res\\assets\\models\\garbage.obj"
             }
         },
@@ -948,9 +984,9 @@
                 "qZ": 0.0
             },
             "Scale": {
-                "X": 0.5,
+                "X": 0.4300000071525574,
                 "Y": 0.5,
-                "Z": 0.5
+                "Z": 0.4300000071525574
             }
         }
     },
@@ -975,18 +1011,20 @@
         },
         "Parent": null,
         "Renderable": {
+            "CullingMask": 15,
             "Enabled": true,
             "Material": {
                 "Alias": "goop"
             },
             "Mesh": {
+                "Alias": "Gloop",
                 "FilePath": "res\\assets\\models\\Gloop.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.5,
             "Mass": 1.0,
-            "Properties": 32
+            "Properties": 34
         },
         "Transform": {
             "Mirror": {
@@ -1033,18 +1071,20 @@
         },
         "Parent": null,
         "Renderable": {
+            "CullingMask": 15,
             "Enabled": true,
             "Material": {
                 "Alias": "goop"
             },
             "Mesh": {
+                "Alias": "Gloop",
                 "FilePath": "res\\assets\\models\\Gloop.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.5,
             "Mass": 1.0,
-            "Properties": 32
+            "Properties": 34
         },
         "Transform": {
             "Mirror": {
@@ -1091,18 +1131,20 @@
         },
         "Parent": null,
         "Renderable": {
+            "CullingMask": 15,
             "Enabled": true,
             "Material": {
                 "Alias": "goop"
             },
             "Mesh": {
+                "Alias": "Gloop",
                 "FilePath": "res\\assets\\models\\Gloop.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.5,
             "Mass": 1.0,
-            "Properties": 32
+            "Properties": 34
         },
         "Transform": {
             "Mirror": {
@@ -1149,18 +1191,20 @@
         },
         "Parent": null,
         "Renderable": {
+            "CullingMask": 15,
             "Enabled": true,
             "Material": {
                 "Alias": "goop"
             },
             "Mesh": {
+                "Alias": "Gloop",
                 "FilePath": "res\\assets\\models\\Gloop.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.5,
             "Mass": 1.0,
-            "Properties": 32
+            "Properties": 34
         },
         "Transform": {
             "Mirror": {
@@ -1189,13 +1233,12 @@
     "BlueGloopSpawner": {
         "Parent": null,
         "Renderable": {
+            "CullingMask": 15,
             "Enabled": true,
             "Material": {
                 "Alias": null
             },
-            "Mesh": {
-                "FilePath": null
-            }
+            "Mesh": null
         },
         "Transform": {
             "Mirror": {
@@ -1242,18 +1285,20 @@
         },
         "Parent": null,
         "Renderable": {
+            "CullingMask": 15,
             "Enabled": true,
             "Material": {
                 "Alias": "mop"
             },
             "Mesh": {
+                "Alias": "mop",
                 "FilePath": "res\\assets\\models\\mop.obj"
             }
         },
         "RigidBody": {
-            "Friction": 0.5,
-            "Mass": 1.0,
-            "Properties": 32
+            "Friction": 0.6000000238418579,
+            "Mass": 2.0,
+            "Properties": 34
         },
         "Transform": {
             "Mirror": {
@@ -1284,11 +1329,13 @@
             "Name": "Boat Root R"
         },
         "Renderable": {
+            "CullingMask": 15,
             "Enabled": true,
             "Material": {
                 "Alias": "siding"
             },
             "Mesh": {
+                "Alias": "BoatHull",
                 "FilePath": "res\\assets\\models\\BoatHull.obj"
             }
         },
@@ -1321,11 +1368,13 @@
             "Name": "Boat Root L"
         },
         "Renderable": {
+            "CullingMask": 15,
             "Enabled": true,
             "Material": {
                 "Alias": "testMat"
             },
             "Mesh": {
+                "Alias": "BoatHull",
                 "FilePath": "res\\assets\\models\\BoatHull.obj"
             }
         },
@@ -1358,11 +1407,13 @@
             "Name": "Boat Hull 1"
         },
         "Renderable": {
+            "CullingMask": 15,
             "Enabled": true,
             "Material": {
                 "Alias": "siding"
             },
             "Mesh": {
+                "Alias": "BoatHullFlipped",
                 "FilePath": "res\\assets\\models\\BoatHullFlipped.obj"
             }
         },
@@ -1395,11 +1446,13 @@
             "Name": "Boat Hull 2"
         },
         "Renderable": {
+            "CullingMask": 15,
             "Enabled": true,
             "Material": {
                 "Alias": "testMat"
             },
             "Mesh": {
+                "Alias": "BoatHullFlipped",
                 "FilePath": "res\\assets\\models\\BoatHullFlipped.obj"
             }
         },
@@ -1430,13 +1483,12 @@
     "Boat Root L": {
         "Parent": null,
         "Renderable": {
+            "CullingMask": 15,
             "Enabled": true,
             "Material": {
                 "Alias": null
             },
-            "Mesh": {
-                "FilePath": null
-            }
+            "Mesh": null
         },
         "Transform": {
             "Mirror": {
@@ -1465,13 +1517,12 @@
     "Boat Root R": {
         "Parent": null,
         "Renderable": {
+            "CullingMask": 15,
             "Enabled": true,
             "Material": {
                 "Alias": null
             },
-            "Mesh": {
-                "FilePath": null
-            }
+            "Mesh": null
         },
         "Transform": {
             "Mirror": {
@@ -1502,11 +1553,13 @@
             "Name": "Boat Hull 1"
         },
         "Renderable": {
+            "CullingMask": 15,
             "Enabled": true,
             "Material": {
                 "Alias": "planks"
             },
             "Mesh": {
+                "Alias": "BottomDeck",
                 "FilePath": "res\\assets\\models\\BottomDeck.obj"
             }
         },
@@ -1539,11 +1592,13 @@
             "Name": "Boat Hull 2"
         },
         "Renderable": {
+            "CullingMask": 15,
             "Enabled": true,
             "Material": {
                 "Alias": "planks"
             },
             "Mesh": {
+                "Alias": "BottomDeck",
                 "FilePath": "res\\assets\\models\\BottomDeck.obj"
             }
         },
@@ -1598,6 +1653,24 @@
         }
     },
     "Cannon Firing Message1": {
+        "GuiRenderable": {
+            "Clipping": {
+                "Lower": [
+                    0.0,
+                    0.0
+                ],
+                "Upper": [
+                    1.0,
+                    1.0
+                ]
+            },
+            "CullingMask": 1,
+            "Enabled": true,
+            "Texture": {
+                "Alias": "cannonFiring",
+                "FilePath": "res\\assets\\textures\\gui\\cannonFiring.png"
+            }
+        },
         "Parent": null,
         "Transform": {
             "Mirror": {
@@ -1624,6 +1697,24 @@
         }
     },
     "Cannon Firing Message2": {
+        "GuiRenderable": {
+            "Clipping": {
+                "Lower": [
+                    0.0,
+                    0.0
+                ],
+                "Upper": [
+                    1.0,
+                    1.0
+                ]
+            },
+            "CullingMask": 2,
+            "Enabled": true,
+            "Texture": {
+                "Alias": "cannonFiring",
+                "FilePath": "res\\assets\\textures\\gui\\cannonFiring.png"
+            }
+        },
         "Parent": null,
         "Transform": {
             "Mirror": {
@@ -1650,6 +1741,24 @@
         }
     },
     "Cannon Firing Message3": {
+        "GuiRenderable": {
+            "Clipping": {
+                "Lower": [
+                    0.0,
+                    0.0
+                ],
+                "Upper": [
+                    1.0,
+                    1.0
+                ]
+            },
+            "CullingMask": 4,
+            "Enabled": true,
+            "Texture": {
+                "Alias": "cannonFiring",
+                "FilePath": "res\\assets\\textures\\gui\\cannonFiring.png"
+            }
+        },
         "Parent": null,
         "Transform": {
             "Mirror": {
@@ -1676,6 +1785,24 @@
         }
     },
     "Cannon Firing Message4": {
+        "GuiRenderable": {
+            "Clipping": {
+                "Lower": [
+                    0.0,
+                    0.0
+                ],
+                "Upper": [
+                    1.0,
+                    1.0
+                ]
+            },
+            "CullingMask": 8,
+            "Enabled": true,
+            "Texture": {
+                "Alias": "cannonFiring",
+                "FilePath": "res\\assets\\textures\\gui\\cannonFiring.png"
+            }
+        },
         "Parent": null,
         "Transform": {
             "Mirror": {
@@ -1706,11 +1833,13 @@
             "Name": "Boat Root R"
         },
         "Renderable": {
+            "CullingMask": 15,
             "Enabled": true,
             "Material": {
                 "Alias": "metal"
             },
             "Mesh": {
+                "Alias": "cannonWindowTrim_metal",
                 "FilePath": "res\\assets\\models\\Decorative\\cannonWindowTrim_metal.obj"
             }
         },
@@ -1743,11 +1872,13 @@
             "Name": "CannonPortTrim"
         },
         "Renderable": {
+            "CullingMask": 15,
             "Enabled": true,
             "Material": {
                 "Alias": "metal"
             },
             "Mesh": {
+                "Alias": "cannonWindowTrim_metal",
                 "FilePath": "res\\assets\\models\\Decorative\\cannonWindowTrim_metal.obj"
             }
         },
@@ -1780,11 +1911,13 @@
             "Name": "CannonPortTrim 6"
         },
         "Renderable": {
+            "CullingMask": 15,
             "Enabled": true,
             "Material": {
                 "Alias": "metal"
             },
             "Mesh": {
+                "Alias": "cannonWindowTrim_metal",
                 "FilePath": "res\\assets\\models\\Decorative\\cannonWindowTrim_metal.obj"
             }
         },
@@ -1817,11 +1950,13 @@
             "Name": "CannonPortTrim 6"
         },
         "Renderable": {
+            "CullingMask": 15,
             "Enabled": true,
             "Material": {
                 "Alias": "metal"
             },
             "Mesh": {
+                "Alias": "cannonWindowTrim_metal",
                 "FilePath": "res\\assets\\models\\Decorative\\cannonWindowTrim_metal.obj"
             }
         },
@@ -1854,11 +1989,13 @@
             "Name": "CannonPortTrim"
         },
         "Renderable": {
+            "CullingMask": 15,
             "Enabled": true,
             "Material": {
                 "Alias": "metal"
             },
             "Mesh": {
+                "Alias": "cannonWindowTrim_metal",
                 "FilePath": "res\\assets\\models\\Decorative\\cannonWindowTrim_metal.obj"
             }
         },
@@ -1891,11 +2028,13 @@
             "Name": "CannonPortTrim"
         },
         "Renderable": {
+            "CullingMask": 15,
             "Enabled": true,
             "Material": {
                 "Alias": "metal"
             },
             "Mesh": {
+                "Alias": "cannonWindowTrim_metal",
                 "FilePath": "res\\assets\\models\\Decorative\\cannonWindowTrim_metal.obj"
             }
         },
@@ -1928,11 +2067,13 @@
             "Name": "CannonPortTrim"
         },
         "Renderable": {
+            "CullingMask": 15,
             "Enabled": true,
             "Material": {
                 "Alias": "metal"
             },
             "Mesh": {
+                "Alias": "cannonWindowTrim_metal",
                 "FilePath": "res\\assets\\models\\Decorative\\cannonWindowTrim_metal.obj"
             }
         },
@@ -1965,11 +2106,13 @@
             "Name": "CannonPortTrim"
         },
         "Renderable": {
+            "CullingMask": 15,
             "Enabled": true,
             "Material": {
                 "Alias": "metal"
             },
             "Mesh": {
+                "Alias": "cannonWindowTrim_metal",
                 "FilePath": "res\\assets\\models\\Decorative\\cannonWindowTrim_metal.obj"
             }
         },
@@ -2002,11 +2145,13 @@
             "Name": "Boat Root L"
         },
         "Renderable": {
+            "CullingMask": 15,
             "Enabled": true,
             "Material": {
                 "Alias": "metal"
             },
             "Mesh": {
+                "Alias": "cannonWindowTrim_metal",
                 "FilePath": "res\\assets\\models\\Decorative\\cannonWindowTrim_metal.obj"
             }
         },
@@ -2039,11 +2184,13 @@
             "Name": "CannonPortTrim 6"
         },
         "Renderable": {
+            "CullingMask": 15,
             "Enabled": true,
             "Material": {
                 "Alias": "metal"
             },
             "Mesh": {
+                "Alias": "cannonWindowTrim_metal",
                 "FilePath": "res\\assets\\models\\Decorative\\cannonWindowTrim_metal.obj"
             }
         },
@@ -2076,11 +2223,13 @@
             "Name": "CannonPortTrim 6"
         },
         "Renderable": {
+            "CullingMask": 15,
             "Enabled": true,
             "Material": {
                 "Alias": "metal"
             },
             "Mesh": {
+                "Alias": "cannonWindowTrim_metal",
                 "FilePath": "res\\assets\\models\\Decorative\\cannonWindowTrim_metal.obj"
             }
         },
@@ -2113,11 +2262,13 @@
             "Name": "CannonPortTrim 6"
         },
         "Renderable": {
+            "CullingMask": 15,
             "Enabled": true,
             "Material": {
                 "Alias": "metal"
             },
             "Mesh": {
+                "Alias": "cannonWindowTrim_metal",
                 "FilePath": "res\\assets\\models\\Decorative\\cannonWindowTrim_metal.obj"
             }
         },
@@ -2146,6 +2297,24 @@
         }
     },
     "Cannonball Crate Message1": {
+        "GuiRenderable": {
+            "Clipping": {
+                "Lower": [
+                    0.0,
+                    0.0
+                ],
+                "Upper": [
+                    1.0,
+                    1.0
+                ]
+            },
+            "CullingMask": 1,
+            "Enabled": true,
+            "Texture": {
+                "Alias": "cannonballCrate",
+                "FilePath": "res\\assets\\textures\\gui\\cannonballCrate.png"
+            }
+        },
         "Parent": null,
         "Transform": {
             "Mirror": {
@@ -2172,6 +2341,24 @@
         }
     },
     "Cannonball Crate Message2": {
+        "GuiRenderable": {
+            "Clipping": {
+                "Lower": [
+                    0.0,
+                    0.0
+                ],
+                "Upper": [
+                    1.0,
+                    1.0
+                ]
+            },
+            "CullingMask": 2,
+            "Enabled": true,
+            "Texture": {
+                "Alias": "cannonballCrate",
+                "FilePath": "res\\assets\\textures\\gui\\cannonballCrate.png"
+            }
+        },
         "Parent": null,
         "Transform": {
             "Mirror": {
@@ -2198,6 +2385,24 @@
         }
     },
     "Cannonball Crate Message3": {
+        "GuiRenderable": {
+            "Clipping": {
+                "Lower": [
+                    0.0,
+                    0.0
+                ],
+                "Upper": [
+                    1.0,
+                    1.0
+                ]
+            },
+            "CullingMask": 4,
+            "Enabled": true,
+            "Texture": {
+                "Alias": "cannonballCrate",
+                "FilePath": "res\\assets\\textures\\gui\\cannonballCrate.png"
+            }
+        },
         "Parent": null,
         "Transform": {
             "Mirror": {
@@ -2224,6 +2429,24 @@
         }
     },
     "Cannonball Crate Message4": {
+        "GuiRenderable": {
+            "Clipping": {
+                "Lower": [
+                    0.0,
+                    0.0
+                ],
+                "Upper": [
+                    1.0,
+                    1.0
+                ]
+            },
+            "CullingMask": 8,
+            "Enabled": true,
+            "Texture": {
+                "Alias": "cannonballCrate",
+                "FilePath": "res\\assets\\textures\\gui\\cannonballCrate.png"
+            }
+        },
         "Parent": null,
         "Transform": {
             "Mirror": {
@@ -2254,11 +2477,13 @@
             "Name": "Boat Root R"
         },
         "Renderable": {
+            "CullingMask": 15,
             "Enabled": true,
             "Material": {
                 "Alias": "siding"
             },
             "Mesh": {
+                "Alias": "CapQuarters",
                 "FilePath": "res\\assets\\models\\CapQuarters.obj"
             }
         },
@@ -2291,11 +2516,13 @@
             "Name": "Boat Root L"
         },
         "Renderable": {
+            "CullingMask": 15,
             "Enabled": true,
             "Material": {
                 "Alias": "testMat"
             },
             "Mesh": {
+                "Alias": "CapQuarters",
                 "FilePath": "res\\assets\\models\\CapQuarters.obj"
             }
         },
@@ -2328,11 +2555,13 @@
             "Name": "Boat Root R"
         },
         "Renderable": {
+            "CullingMask": 15,
             "Enabled": true,
             "Material": {
                 "Alias": "WoodBlue"
             },
             "Mesh": {
+                "Alias": "QuartersRail",
                 "FilePath": "res\\assets\\models\\QuartersRail.obj"
             }
         },
@@ -2365,11 +2594,13 @@
             "Name": "Boat Root L"
         },
         "Renderable": {
+            "CullingMask": 15,
             "Enabled": true,
             "Material": {
                 "Alias": "WoodRed"
             },
             "Mesh": {
+                "Alias": "QuartersRail",
                 "FilePath": "res\\assets\\models\\QuartersRail.obj"
             }
         },
@@ -2402,11 +2633,13 @@
             "Name": "Captains Quarters Rail 1"
         },
         "Renderable": {
+            "CullingMask": 15,
             "Enabled": true,
             "Material": {
                 "Alias": "WoodBlue"
             },
             "Mesh": {
+                "Alias": "QuartersRail2",
                 "FilePath": "res\\assets\\models\\QuartersRail2.obj"
             }
         },
@@ -2439,11 +2672,13 @@
             "Name": "Captains Quarters Rail 2"
         },
         "Renderable": {
+            "CullingMask": 15,
             "Enabled": true,
             "Material": {
                 "Alias": "WoodRed"
             },
             "Mesh": {
+                "Alias": "QuartersRail2",
                 "FilePath": "res\\assets\\models\\QuartersRail2.obj"
             }
         },
@@ -2492,11 +2727,13 @@
         },
         "Parent": null,
         "Renderable": {
+            "CullingMask": 15,
             "Enabled": true,
             "Material": {
                 "Alias": "lamp"
             },
             "Mesh": {
+                "Alias": "character",
                 "FilePath": "res\\assets\\models\\character.obj"
             }
         },
@@ -2525,6 +2762,24 @@
         }
     },
     "Clean Garbage Message1": {
+        "GuiRenderable": {
+            "Clipping": {
+                "Lower": [
+                    0.0,
+                    0.0
+                ],
+                "Upper": [
+                    1.0,
+                    1.0
+                ]
+            },
+            "CullingMask": 1,
+            "Enabled": true,
+            "Texture": {
+                "Alias": "cleanGarbage",
+                "FilePath": "res\\assets\\textures\\gui\\cleanGarbage.png"
+            }
+        },
         "Parent": null,
         "Transform": {
             "Mirror": {
@@ -2551,6 +2806,24 @@
         }
     },
     "Clean Garbage Message2": {
+        "GuiRenderable": {
+            "Clipping": {
+                "Lower": [
+                    0.0,
+                    0.0
+                ],
+                "Upper": [
+                    1.0,
+                    1.0
+                ]
+            },
+            "CullingMask": 2,
+            "Enabled": true,
+            "Texture": {
+                "Alias": "cleanGarbage",
+                "FilePath": "res\\assets\\textures\\gui\\cleanGarbage.png"
+            }
+        },
         "Parent": null,
         "Transform": {
             "Mirror": {
@@ -2577,6 +2850,24 @@
         }
     },
     "Clean Garbage Message3": {
+        "GuiRenderable": {
+            "Clipping": {
+                "Lower": [
+                    0.0,
+                    0.0
+                ],
+                "Upper": [
+                    1.0,
+                    1.0
+                ]
+            },
+            "CullingMask": 4,
+            "Enabled": true,
+            "Texture": {
+                "Alias": "cleanGarbage",
+                "FilePath": "res\\assets\\textures\\gui\\cleanGarbage.png"
+            }
+        },
         "Parent": null,
         "Transform": {
             "Mirror": {
@@ -2603,6 +2894,24 @@
         }
     },
     "Clean Garbage Message4": {
+        "GuiRenderable": {
+            "Clipping": {
+                "Lower": [
+                    0.0,
+                    0.0
+                ],
+                "Upper": [
+                    1.0,
+                    1.0
+                ]
+            },
+            "CullingMask": 8,
+            "Enabled": true,
+            "Texture": {
+                "Alias": "cleanGarbage",
+                "FilePath": "res\\assets\\textures\\gui\\cleanGarbage.png"
+            }
+        },
         "Parent": null,
         "Transform": {
             "Mirror": {
@@ -2629,6 +2938,24 @@
         }
     },
     "Cleaning Quicktime Event Background1": {
+        "GuiRenderable": {
+            "Clipping": {
+                "Lower": [
+                    0.0,
+                    0.0
+                ],
+                "Upper": [
+                    1.0,
+                    1.0
+                ]
+            },
+            "CullingMask": 1,
+            "Enabled": true,
+            "Texture": {
+                "Alias": "cleaningQuicktimeEventBackground",
+                "FilePath": "res\\assets\\textures\\gui\\cleaningQuicktimeEventBackground.png"
+            }
+        },
         "Parent": null,
         "Transform": {
             "Mirror": {
@@ -2655,6 +2982,24 @@
         }
     },
     "Cleaning Quicktime Event Background2": {
+        "GuiRenderable": {
+            "Clipping": {
+                "Lower": [
+                    0.0,
+                    0.0
+                ],
+                "Upper": [
+                    1.0,
+                    1.0
+                ]
+            },
+            "CullingMask": 2,
+            "Enabled": true,
+            "Texture": {
+                "Alias": "cleaningQuicktimeEventBackground",
+                "FilePath": "res\\assets\\textures\\gui\\cleaningQuicktimeEventBackground.png"
+            }
+        },
         "Parent": null,
         "Transform": {
             "Mirror": {
@@ -2681,6 +3026,24 @@
         }
     },
     "Cleaning Quicktime Event Background3": {
+        "GuiRenderable": {
+            "Clipping": {
+                "Lower": [
+                    0.0,
+                    0.0
+                ],
+                "Upper": [
+                    1.0,
+                    1.0
+                ]
+            },
+            "CullingMask": 4,
+            "Enabled": true,
+            "Texture": {
+                "Alias": "cleaningQuicktimeEventBackground",
+                "FilePath": "res\\assets\\textures\\gui\\cleaningQuicktimeEventBackground.png"
+            }
+        },
         "Parent": null,
         "Transform": {
             "Mirror": {
@@ -2707,6 +3070,24 @@
         }
     },
     "Cleaning Quicktime Event Background4": {
+        "GuiRenderable": {
+            "Clipping": {
+                "Lower": [
+                    0.0,
+                    0.0
+                ],
+                "Upper": [
+                    1.0,
+                    1.0
+                ]
+            },
+            "CullingMask": 8,
+            "Enabled": true,
+            "Texture": {
+                "Alias": "cleaningQuicktimeEventBackground",
+                "FilePath": "res\\assets\\textures\\gui\\cleaningQuicktimeEventBackground.png"
+            }
+        },
         "Parent": null,
         "Transform": {
             "Mirror": {
@@ -2733,6 +3114,24 @@
         }
     },
     "Cleaning Quicktime Event Indicator1": {
+        "GuiRenderable": {
+            "Clipping": {
+                "Lower": [
+                    0.0,
+                    0.0
+                ],
+                "Upper": [
+                    1.0,
+                    1.0
+                ]
+            },
+            "CullingMask": 1,
+            "Enabled": true,
+            "Texture": {
+                "Alias": "cleaningQuicktimeEventIndicator",
+                "FilePath": "res\\assets\\textures\\gui\\cleaningQuicktimeEventIndicator.png"
+            }
+        },
         "Parent": null,
         "Transform": {
             "Mirror": {
@@ -2759,6 +3158,24 @@
         }
     },
     "Cleaning Quicktime Event Indicator2": {
+        "GuiRenderable": {
+            "Clipping": {
+                "Lower": [
+                    0.0,
+                    0.0
+                ],
+                "Upper": [
+                    1.0,
+                    1.0
+                ]
+            },
+            "CullingMask": 2,
+            "Enabled": true,
+            "Texture": {
+                "Alias": "cleaningQuicktimeEventIndicator",
+                "FilePath": "res\\assets\\textures\\gui\\cleaningQuicktimeEventIndicator.png"
+            }
+        },
         "Parent": null,
         "Transform": {
             "Mirror": {
@@ -2785,6 +3202,24 @@
         }
     },
     "Cleaning Quicktime Event Indicator3": {
+        "GuiRenderable": {
+            "Clipping": {
+                "Lower": [
+                    0.0,
+                    0.0
+                ],
+                "Upper": [
+                    1.0,
+                    1.0
+                ]
+            },
+            "CullingMask": 4,
+            "Enabled": true,
+            "Texture": {
+                "Alias": "cleaningQuicktimeEventIndicator",
+                "FilePath": "res\\assets\\textures\\gui\\cleaningQuicktimeEventIndicator.png"
+            }
+        },
         "Parent": null,
         "Transform": {
             "Mirror": {
@@ -2811,6 +3246,24 @@
         }
     },
     "Cleaning Quicktime Event Indicator4": {
+        "GuiRenderable": {
+            "Clipping": {
+                "Lower": [
+                    0.0,
+                    0.0
+                ],
+                "Upper": [
+                    1.0,
+                    1.0
+                ]
+            },
+            "CullingMask": 8,
+            "Enabled": true,
+            "Texture": {
+                "Alias": "cleaningQuicktimeEventIndicator",
+                "FilePath": "res\\assets\\textures\\gui\\cleaningQuicktimeEventIndicator.png"
+            }
+        },
         "Parent": null,
         "Transform": {
             "Mirror": {
@@ -2841,11 +3294,13 @@
             "Name": "Boat Root R"
         },
         "Renderable": {
+            "CullingMask": 15,
             "Enabled": true,
             "Material": {
                 "Alias": "siding"
             },
             "Mesh": {
+                "Alias": "DeckRail",
                 "FilePath": "res\\assets\\models\\DeckRail.obj"
             }
         },
@@ -2878,11 +3333,13 @@
             "Name": "Boat Root L"
         },
         "Renderable": {
+            "CullingMask": 15,
             "Enabled": true,
             "Material": {
                 "Alias": "siding"
             },
             "Mesh": {
+                "Alias": "DeckRail",
                 "FilePath": "res\\assets\\models\\DeckRail.obj"
             }
         },
@@ -2915,11 +3372,13 @@
             "Name": "Boat Root R"
         },
         "Renderable": {
+            "CullingMask": 15,
             "Enabled": true,
             "Material": {
                 "Alias": "WoodBlue"
             },
             "Mesh": {
+                "Alias": "DeckRail2",
                 "FilePath": "res\\assets\\models\\DeckRail2.obj"
             }
         },
@@ -2952,11 +3411,13 @@
             "Name": "Boat Root L"
         },
         "Renderable": {
+            "CullingMask": 15,
             "Enabled": true,
             "Material": {
                 "Alias": "WoodRed"
             },
             "Mesh": {
+                "Alias": "DeckRail2",
                 "FilePath": "res\\assets\\models\\DeckRail2.obj"
             }
         },
@@ -3015,11 +3476,13 @@
             "Name": "Boat Root R"
         },
         "Renderable": {
+            "CullingMask": 15,
             "Enabled": true,
             "Material": {
                 "Alias": "cubeMat"
             },
             "Mesh": {
+                "Alias": "EnvironmentGarbageCan",
                 "FilePath": "res\\assets\\models\\Decorative\\EnvironmentGarbageCan.obj"
             }
         },
@@ -3052,11 +3515,13 @@
             "Name": "Boat Root L"
         },
         "Renderable": {
+            "CullingMask": 15,
             "Enabled": true,
             "Material": {
                 "Alias": "cubeMat"
             },
             "Mesh": {
+                "Alias": "EnvironmentGarbageCan",
                 "FilePath": "res\\assets\\models\\Decorative\\EnvironmentGarbageCan.obj"
             }
         },
@@ -3084,19 +3549,1802 @@
             }
         }
     },
+    "GarbageHPBarFill0 For Player0": {
+        "GuiRenderable": {
+            "Clipping": {
+                "Lower": [
+                    0.0,
+                    0.0
+                ],
+                "Upper": [
+                    1.0,
+                    1.0
+                ]
+            },
+            "CullingMask": 1,
+            "Enabled": true,
+            "Texture": {
+                "Alias": "garbagePileHPBarFill",
+                "FilePath": "res\\assets\\textures\\gui\\garbagePileHPBarFill.png"
+            }
+        },
+        "Parent": null,
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -30.0,
+                "Y": 0.0,
+                "Z": 0.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 4.0,
+                "Y": 4.0,
+                "Z": 4.0
+            }
+        }
+    },
+    "GarbageHPBarFill0 For Player1": {
+        "GuiRenderable": {
+            "Clipping": {
+                "Lower": [
+                    0.0,
+                    0.0
+                ],
+                "Upper": [
+                    1.0,
+                    1.0
+                ]
+            },
+            "CullingMask": 2,
+            "Enabled": true,
+            "Texture": {
+                "Alias": "garbagePileHPBarFill",
+                "FilePath": "res\\assets\\textures\\gui\\garbagePileHPBarFill.png"
+            }
+        },
+        "Parent": null,
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -30.0,
+                "Y": 0.0,
+                "Z": 0.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 4.0,
+                "Y": 4.0,
+                "Z": 4.0
+            }
+        }
+    },
+    "GarbageHPBarFill0 For Player2": {
+        "GuiRenderable": {
+            "Clipping": {
+                "Lower": [
+                    0.0,
+                    0.0
+                ],
+                "Upper": [
+                    1.0,
+                    1.0
+                ]
+            },
+            "CullingMask": 4,
+            "Enabled": true,
+            "Texture": {
+                "Alias": "garbagePileHPBarFill",
+                "FilePath": "res\\assets\\textures\\gui\\garbagePileHPBarFill.png"
+            }
+        },
+        "Parent": null,
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -30.0,
+                "Y": 0.0,
+                "Z": 0.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 4.0,
+                "Y": 4.0,
+                "Z": 4.0
+            }
+        }
+    },
+    "GarbageHPBarFill0 For Player3": {
+        "GuiRenderable": {
+            "Clipping": {
+                "Lower": [
+                    0.0,
+                    0.0
+                ],
+                "Upper": [
+                    1.0,
+                    1.0
+                ]
+            },
+            "CullingMask": 8,
+            "Enabled": true,
+            "Texture": {
+                "Alias": "garbagePileHPBarFill",
+                "FilePath": "res\\assets\\textures\\gui\\garbagePileHPBarFill.png"
+            }
+        },
+        "Parent": null,
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -30.0,
+                "Y": 0.0,
+                "Z": 0.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 4.0,
+                "Y": 4.0,
+                "Z": 4.0
+            }
+        }
+    },
+    "GarbageHPBarFill1 For Player0": {
+        "GuiRenderable": {
+            "Clipping": {
+                "Lower": [
+                    0.0,
+                    0.0
+                ],
+                "Upper": [
+                    1.0,
+                    1.0
+                ]
+            },
+            "CullingMask": 1,
+            "Enabled": true,
+            "Texture": {
+                "Alias": "garbagePileHPBarFill",
+                "FilePath": "res\\assets\\textures\\gui\\garbagePileHPBarFill.png"
+            }
+        },
+        "Parent": null,
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -30.0,
+                "Y": 0.0,
+                "Z": 0.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 4.0,
+                "Y": 4.0,
+                "Z": 4.0
+            }
+        }
+    },
+    "GarbageHPBarFill1 For Player1": {
+        "GuiRenderable": {
+            "Clipping": {
+                "Lower": [
+                    0.0,
+                    0.0
+                ],
+                "Upper": [
+                    1.0,
+                    1.0
+                ]
+            },
+            "CullingMask": 2,
+            "Enabled": true,
+            "Texture": {
+                "Alias": "garbagePileHPBarFill",
+                "FilePath": "res\\assets\\textures\\gui\\garbagePileHPBarFill.png"
+            }
+        },
+        "Parent": null,
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -30.0,
+                "Y": 0.0,
+                "Z": 0.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 4.0,
+                "Y": 4.0,
+                "Z": 4.0
+            }
+        }
+    },
+    "GarbageHPBarFill1 For Player2": {
+        "GuiRenderable": {
+            "Clipping": {
+                "Lower": [
+                    0.0,
+                    0.0
+                ],
+                "Upper": [
+                    1.0,
+                    1.0
+                ]
+            },
+            "CullingMask": 4,
+            "Enabled": true,
+            "Texture": {
+                "Alias": "garbagePileHPBarFill",
+                "FilePath": "res\\assets\\textures\\gui\\garbagePileHPBarFill.png"
+            }
+        },
+        "Parent": null,
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -30.0,
+                "Y": 0.0,
+                "Z": 0.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 4.0,
+                "Y": 4.0,
+                "Z": 4.0
+            }
+        }
+    },
+    "GarbageHPBarFill1 For Player3": {
+        "GuiRenderable": {
+            "Clipping": {
+                "Lower": [
+                    0.0,
+                    0.0
+                ],
+                "Upper": [
+                    1.0,
+                    1.0
+                ]
+            },
+            "CullingMask": 8,
+            "Enabled": true,
+            "Texture": {
+                "Alias": "garbagePileHPBarFill",
+                "FilePath": "res\\assets\\textures\\gui\\garbagePileHPBarFill.png"
+            }
+        },
+        "Parent": null,
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -30.0,
+                "Y": 0.0,
+                "Z": 0.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 4.0,
+                "Y": 4.0,
+                "Z": 4.0
+            }
+        }
+    },
+    "GarbageHPBarFill2 For Player0": {
+        "GuiRenderable": {
+            "Clipping": {
+                "Lower": [
+                    0.0,
+                    0.0
+                ],
+                "Upper": [
+                    1.0,
+                    1.0
+                ]
+            },
+            "CullingMask": 1,
+            "Enabled": true,
+            "Texture": {
+                "Alias": "garbagePileHPBarFill",
+                "FilePath": "res\\assets\\textures\\gui\\garbagePileHPBarFill.png"
+            }
+        },
+        "Parent": null,
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -30.0,
+                "Y": 0.0,
+                "Z": 0.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 4.0,
+                "Y": 4.0,
+                "Z": 4.0
+            }
+        }
+    },
+    "GarbageHPBarFill2 For Player1": {
+        "GuiRenderable": {
+            "Clipping": {
+                "Lower": [
+                    0.0,
+                    0.0
+                ],
+                "Upper": [
+                    1.0,
+                    1.0
+                ]
+            },
+            "CullingMask": 2,
+            "Enabled": true,
+            "Texture": {
+                "Alias": "garbagePileHPBarFill",
+                "FilePath": "res\\assets\\textures\\gui\\garbagePileHPBarFill.png"
+            }
+        },
+        "Parent": null,
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -30.0,
+                "Y": 0.0,
+                "Z": 0.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 4.0,
+                "Y": 4.0,
+                "Z": 4.0
+            }
+        }
+    },
+    "GarbageHPBarFill2 For Player2": {
+        "GuiRenderable": {
+            "Clipping": {
+                "Lower": [
+                    0.0,
+                    0.0
+                ],
+                "Upper": [
+                    1.0,
+                    1.0
+                ]
+            },
+            "CullingMask": 4,
+            "Enabled": true,
+            "Texture": {
+                "Alias": "garbagePileHPBarFill",
+                "FilePath": "res\\assets\\textures\\gui\\garbagePileHPBarFill.png"
+            }
+        },
+        "Parent": null,
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -30.0,
+                "Y": 0.0,
+                "Z": 0.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 4.0,
+                "Y": 4.0,
+                "Z": 4.0
+            }
+        }
+    },
+    "GarbageHPBarFill2 For Player3": {
+        "GuiRenderable": {
+            "Clipping": {
+                "Lower": [
+                    0.0,
+                    0.0
+                ],
+                "Upper": [
+                    1.0,
+                    1.0
+                ]
+            },
+            "CullingMask": 8,
+            "Enabled": true,
+            "Texture": {
+                "Alias": "garbagePileHPBarFill",
+                "FilePath": "res\\assets\\textures\\gui\\garbagePileHPBarFill.png"
+            }
+        },
+        "Parent": null,
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -30.0,
+                "Y": 0.0,
+                "Z": 0.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 4.0,
+                "Y": 4.0,
+                "Z": 4.0
+            }
+        }
+    },
+    "GarbageHPBarOutline0 For Player0": {
+        "GuiRenderable": {
+            "Clipping": {
+                "Lower": [
+                    0.0,
+                    0.0
+                ],
+                "Upper": [
+                    1.0,
+                    1.0
+                ]
+            },
+            "CullingMask": 1,
+            "Enabled": true,
+            "Texture": {
+                "Alias": "garbagePileHPBarOutline",
+                "FilePath": "res\\assets\\textures\\gui\\garbagePileHPBarOutline.png"
+            }
+        },
+        "Parent": null,
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -30.0,
+                "Y": 0.0,
+                "Z": 0.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 4.0,
+                "Y": 4.0,
+                "Z": 4.0
+            }
+        }
+    },
+    "GarbageHPBarOutline0 For Player1": {
+        "GuiRenderable": {
+            "Clipping": {
+                "Lower": [
+                    0.0,
+                    0.0
+                ],
+                "Upper": [
+                    1.0,
+                    1.0
+                ]
+            },
+            "CullingMask": 2,
+            "Enabled": true,
+            "Texture": {
+                "Alias": "garbagePileHPBarOutline",
+                "FilePath": "res\\assets\\textures\\gui\\garbagePileHPBarOutline.png"
+            }
+        },
+        "Parent": null,
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -30.0,
+                "Y": 0.0,
+                "Z": 0.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 4.0,
+                "Y": 4.0,
+                "Z": 4.0
+            }
+        }
+    },
+    "GarbageHPBarOutline0 For Player2": {
+        "GuiRenderable": {
+            "Clipping": {
+                "Lower": [
+                    0.0,
+                    0.0
+                ],
+                "Upper": [
+                    1.0,
+                    1.0
+                ]
+            },
+            "CullingMask": 4,
+            "Enabled": true,
+            "Texture": {
+                "Alias": "garbagePileHPBarOutline",
+                "FilePath": "res\\assets\\textures\\gui\\garbagePileHPBarOutline.png"
+            }
+        },
+        "Parent": null,
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -30.0,
+                "Y": 0.0,
+                "Z": 0.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 4.0,
+                "Y": 4.0,
+                "Z": 4.0
+            }
+        }
+    },
+    "GarbageHPBarOutline0 For Player3": {
+        "GuiRenderable": {
+            "Clipping": {
+                "Lower": [
+                    0.0,
+                    0.0
+                ],
+                "Upper": [
+                    1.0,
+                    1.0
+                ]
+            },
+            "CullingMask": 8,
+            "Enabled": true,
+            "Texture": {
+                "Alias": "garbagePileHPBarOutline",
+                "FilePath": "res\\assets\\textures\\gui\\garbagePileHPBarOutline.png"
+            }
+        },
+        "Parent": null,
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -30.0,
+                "Y": 0.0,
+                "Z": 0.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 4.0,
+                "Y": 4.0,
+                "Z": 4.0
+            }
+        }
+    },
+    "GarbageHPBarOutline1 For Player0": {
+        "GuiRenderable": {
+            "Clipping": {
+                "Lower": [
+                    0.0,
+                    0.0
+                ],
+                "Upper": [
+                    1.0,
+                    1.0
+                ]
+            },
+            "CullingMask": 1,
+            "Enabled": true,
+            "Texture": {
+                "Alias": "garbagePileHPBarOutline",
+                "FilePath": "res\\assets\\textures\\gui\\garbagePileHPBarOutline.png"
+            }
+        },
+        "Parent": null,
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -30.0,
+                "Y": 0.0,
+                "Z": 0.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 4.0,
+                "Y": 4.0,
+                "Z": 4.0
+            }
+        }
+    },
+    "GarbageHPBarOutline1 For Player1": {
+        "GuiRenderable": {
+            "Clipping": {
+                "Lower": [
+                    0.0,
+                    0.0
+                ],
+                "Upper": [
+                    1.0,
+                    1.0
+                ]
+            },
+            "CullingMask": 2,
+            "Enabled": true,
+            "Texture": {
+                "Alias": "garbagePileHPBarOutline",
+                "FilePath": "res\\assets\\textures\\gui\\garbagePileHPBarOutline.png"
+            }
+        },
+        "Parent": null,
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -30.0,
+                "Y": 0.0,
+                "Z": 0.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 4.0,
+                "Y": 4.0,
+                "Z": 4.0
+            }
+        }
+    },
+    "GarbageHPBarOutline1 For Player2": {
+        "GuiRenderable": {
+            "Clipping": {
+                "Lower": [
+                    0.0,
+                    0.0
+                ],
+                "Upper": [
+                    1.0,
+                    1.0
+                ]
+            },
+            "CullingMask": 4,
+            "Enabled": true,
+            "Texture": {
+                "Alias": "garbagePileHPBarOutline",
+                "FilePath": "res\\assets\\textures\\gui\\garbagePileHPBarOutline.png"
+            }
+        },
+        "Parent": null,
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -30.0,
+                "Y": 0.0,
+                "Z": 0.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 4.0,
+                "Y": 4.0,
+                "Z": 4.0
+            }
+        }
+    },
+    "GarbageHPBarOutline1 For Player3": {
+        "GuiRenderable": {
+            "Clipping": {
+                "Lower": [
+                    0.0,
+                    0.0
+                ],
+                "Upper": [
+                    1.0,
+                    1.0
+                ]
+            },
+            "CullingMask": 8,
+            "Enabled": true,
+            "Texture": {
+                "Alias": "garbagePileHPBarOutline",
+                "FilePath": "res\\assets\\textures\\gui\\garbagePileHPBarOutline.png"
+            }
+        },
+        "Parent": null,
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -30.0,
+                "Y": 0.0,
+                "Z": 0.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 4.0,
+                "Y": 4.0,
+                "Z": 4.0
+            }
+        }
+    },
+    "GarbageHPBarOutline2 For Player0": {
+        "GuiRenderable": {
+            "Clipping": {
+                "Lower": [
+                    0.0,
+                    0.0
+                ],
+                "Upper": [
+                    1.0,
+                    1.0
+                ]
+            },
+            "CullingMask": 1,
+            "Enabled": true,
+            "Texture": {
+                "Alias": "garbagePileHPBarOutline",
+                "FilePath": "res\\assets\\textures\\gui\\garbagePileHPBarOutline.png"
+            }
+        },
+        "Parent": null,
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -30.0,
+                "Y": 0.0,
+                "Z": 0.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 4.0,
+                "Y": 4.0,
+                "Z": 4.0
+            }
+        }
+    },
+    "GarbageHPBarOutline2 For Player1": {
+        "GuiRenderable": {
+            "Clipping": {
+                "Lower": [
+                    0.0,
+                    0.0
+                ],
+                "Upper": [
+                    1.0,
+                    1.0
+                ]
+            },
+            "CullingMask": 2,
+            "Enabled": true,
+            "Texture": {
+                "Alias": "garbagePileHPBarOutline",
+                "FilePath": "res\\assets\\textures\\gui\\garbagePileHPBarOutline.png"
+            }
+        },
+        "Parent": null,
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -30.0,
+                "Y": 0.0,
+                "Z": 0.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 4.0,
+                "Y": 4.0,
+                "Z": 4.0
+            }
+        }
+    },
+    "GarbageHPBarOutline2 For Player2": {
+        "GuiRenderable": {
+            "Clipping": {
+                "Lower": [
+                    0.0,
+                    0.0
+                ],
+                "Upper": [
+                    1.0,
+                    1.0
+                ]
+            },
+            "CullingMask": 4,
+            "Enabled": true,
+            "Texture": {
+                "Alias": "garbagePileHPBarOutline",
+                "FilePath": "res\\assets\\textures\\gui\\garbagePileHPBarOutline.png"
+            }
+        },
+        "Parent": null,
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -30.0,
+                "Y": 0.0,
+                "Z": 0.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 4.0,
+                "Y": 4.0,
+                "Z": 4.0
+            }
+        }
+    },
+    "GarbageHPBarOutline2 For Player3": {
+        "GuiRenderable": {
+            "Clipping": {
+                "Lower": [
+                    0.0,
+                    0.0
+                ],
+                "Upper": [
+                    1.0,
+                    1.0
+                ]
+            },
+            "CullingMask": 8,
+            "Enabled": true,
+            "Texture": {
+                "Alias": "garbagePileHPBarOutline",
+                "FilePath": "res\\assets\\textures\\gui\\garbagePileHPBarOutline.png"
+            }
+        },
+        "Parent": null,
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -30.0,
+                "Y": 0.0,
+                "Z": 0.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 4.0,
+                "Y": 4.0,
+                "Z": 4.0
+            }
+        }
+    },
+    "GarbageMeterBar0 For Player0": {
+        "GuiRenderable": {
+            "Clipping": {
+                "Lower": [
+                    0.0,
+                    0.0
+                ],
+                "Upper": [
+                    1.0,
+                    1.0
+                ]
+            },
+            "CullingMask": 1,
+            "Enabled": true,
+            "Texture": {
+                "Alias": "garbageMeterBar",
+                "FilePath": "res\\assets\\textures\\gui\\garbageMeterBar.png"
+            }
+        },
+        "Parent": {
+            "Name": "GarbageMeterOutline0"
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -0.6499999761581421,
+                "Y": 3.799999952316284,
+                "Z": 10.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 2.0,
+                "Y": 2.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "GarbageMeterBar0 For Player1": {
+        "GuiRenderable": {
+            "Clipping": {
+                "Lower": [
+                    0.0,
+                    0.0
+                ],
+                "Upper": [
+                    1.0,
+                    1.0
+                ]
+            },
+            "CullingMask": 2,
+            "Enabled": true,
+            "Texture": {
+                "Alias": "garbageMeterBar",
+                "FilePath": "res\\assets\\textures\\gui\\garbageMeterBar.png"
+            }
+        },
+        "Parent": {
+            "Name": "GarbageMeterOutline1"
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -0.6499999761581421,
+                "Y": 3.799999952316284,
+                "Z": 10.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 2.0,
+                "Y": 2.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "GarbageMeterBar0 For Player2": {
+        "GuiRenderable": {
+            "Clipping": {
+                "Lower": [
+                    0.0,
+                    0.0
+                ],
+                "Upper": [
+                    1.0,
+                    1.0
+                ]
+            },
+            "CullingMask": 4,
+            "Enabled": true,
+            "Texture": {
+                "Alias": "garbageMeterBar",
+                "FilePath": "res\\assets\\textures\\gui\\garbageMeterBar.png"
+            }
+        },
+        "Parent": {
+            "Name": "GarbageMeterOutline2"
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -0.6499999761581421,
+                "Y": 3.799999952316284,
+                "Z": 10.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 2.0,
+                "Y": 2.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "GarbageMeterBar0 For Player3": {
+        "GuiRenderable": {
+            "Clipping": {
+                "Lower": [
+                    0.0,
+                    0.0
+                ],
+                "Upper": [
+                    1.0,
+                    1.0
+                ]
+            },
+            "CullingMask": 8,
+            "Enabled": true,
+            "Texture": {
+                "Alias": "garbageMeterBar",
+                "FilePath": "res\\assets\\textures\\gui\\garbageMeterBar.png"
+            }
+        },
+        "Parent": {
+            "Name": "GarbageMeterOutline3"
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -0.6499999761581421,
+                "Y": 3.799999952316284,
+                "Z": 10.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 2.0,
+                "Y": 2.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "GarbageMeterBar1 For Player0": {
+        "GuiRenderable": {
+            "Clipping": {
+                "Lower": [
+                    0.0,
+                    0.0
+                ],
+                "Upper": [
+                    1.0,
+                    1.0
+                ]
+            },
+            "CullingMask": 1,
+            "Enabled": true,
+            "Texture": {
+                "Alias": "garbageMeterBar",
+                "FilePath": "res\\assets\\textures\\gui\\garbageMeterBar.png"
+            }
+        },
+        "Parent": {
+            "Name": "GarbageMeterOutline0"
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": 0.0,
+                "Y": 3.799999952316284,
+                "Z": 10.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 2.0,
+                "Y": 2.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "GarbageMeterBar1 For Player1": {
+        "GuiRenderable": {
+            "Clipping": {
+                "Lower": [
+                    0.0,
+                    0.0
+                ],
+                "Upper": [
+                    1.0,
+                    1.0
+                ]
+            },
+            "CullingMask": 2,
+            "Enabled": true,
+            "Texture": {
+                "Alias": "garbageMeterBar",
+                "FilePath": "res\\assets\\textures\\gui\\garbageMeterBar.png"
+            }
+        },
+        "Parent": {
+            "Name": "GarbageMeterOutline1"
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": 0.0,
+                "Y": 3.799999952316284,
+                "Z": 10.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 2.0,
+                "Y": 2.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "GarbageMeterBar1 For Player2": {
+        "GuiRenderable": {
+            "Clipping": {
+                "Lower": [
+                    0.0,
+                    0.0
+                ],
+                "Upper": [
+                    1.0,
+                    1.0
+                ]
+            },
+            "CullingMask": 4,
+            "Enabled": true,
+            "Texture": {
+                "Alias": "garbageMeterBar",
+                "FilePath": "res\\assets\\textures\\gui\\garbageMeterBar.png"
+            }
+        },
+        "Parent": {
+            "Name": "GarbageMeterOutline2"
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": 0.0,
+                "Y": 3.799999952316284,
+                "Z": 10.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 2.0,
+                "Y": 2.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "GarbageMeterBar1 For Player3": {
+        "GuiRenderable": {
+            "Clipping": {
+                "Lower": [
+                    0.0,
+                    0.0
+                ],
+                "Upper": [
+                    1.0,
+                    1.0
+                ]
+            },
+            "CullingMask": 8,
+            "Enabled": true,
+            "Texture": {
+                "Alias": "garbageMeterBar",
+                "FilePath": "res\\assets\\textures\\gui\\garbageMeterBar.png"
+            }
+        },
+        "Parent": {
+            "Name": "GarbageMeterOutline3"
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": 0.0,
+                "Y": 3.799999952316284,
+                "Z": 10.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 2.0,
+                "Y": 2.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "GarbageMeterBar2 For Player0": {
+        "GuiRenderable": {
+            "Clipping": {
+                "Lower": [
+                    0.0,
+                    0.0
+                ],
+                "Upper": [
+                    1.0,
+                    1.0
+                ]
+            },
+            "CullingMask": 1,
+            "Enabled": true,
+            "Texture": {
+                "Alias": "garbageMeterBar",
+                "FilePath": "res\\assets\\textures\\gui\\garbageMeterBar.png"
+            }
+        },
+        "Parent": {
+            "Name": "GarbageMeterOutline0"
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": 0.6499999761581421,
+                "Y": 3.799999952316284,
+                "Z": 10.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 2.0,
+                "Y": 2.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "GarbageMeterBar2 For Player1": {
+        "GuiRenderable": {
+            "Clipping": {
+                "Lower": [
+                    0.0,
+                    0.0
+                ],
+                "Upper": [
+                    1.0,
+                    1.0
+                ]
+            },
+            "CullingMask": 2,
+            "Enabled": true,
+            "Texture": {
+                "Alias": "garbageMeterBar",
+                "FilePath": "res\\assets\\textures\\gui\\garbageMeterBar.png"
+            }
+        },
+        "Parent": {
+            "Name": "GarbageMeterOutline1"
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": 0.6499999761581421,
+                "Y": 3.799999952316284,
+                "Z": 10.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 2.0,
+                "Y": 2.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "GarbageMeterBar2 For Player2": {
+        "GuiRenderable": {
+            "Clipping": {
+                "Lower": [
+                    0.0,
+                    0.0
+                ],
+                "Upper": [
+                    1.0,
+                    1.0
+                ]
+            },
+            "CullingMask": 4,
+            "Enabled": true,
+            "Texture": {
+                "Alias": "garbageMeterBar",
+                "FilePath": "res\\assets\\textures\\gui\\garbageMeterBar.png"
+            }
+        },
+        "Parent": {
+            "Name": "GarbageMeterOutline2"
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": 0.6499999761581421,
+                "Y": 3.799999952316284,
+                "Z": 10.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 2.0,
+                "Y": 2.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "GarbageMeterBar2 For Player3": {
+        "GuiRenderable": {
+            "Clipping": {
+                "Lower": [
+                    0.0,
+                    0.0
+                ],
+                "Upper": [
+                    1.0,
+                    1.0
+                ]
+            },
+            "CullingMask": 8,
+            "Enabled": true,
+            "Texture": {
+                "Alias": "garbageMeterBar",
+                "FilePath": "res\\assets\\textures\\gui\\garbageMeterBar.png"
+            }
+        },
+        "Parent": {
+            "Name": "GarbageMeterOutline3"
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": 0.6499999761581421,
+                "Y": 3.799999952316284,
+                "Z": 10.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 2.0,
+                "Y": 2.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "GarbageMeterOutline0": {
+        "GuiRenderable": {
+            "Clipping": {
+                "Lower": [
+                    0.0,
+                    0.0
+                ],
+                "Upper": [
+                    1.0,
+                    1.0
+                ]
+            },
+            "CullingMask": 1,
+            "Enabled": true,
+            "Texture": {
+                "Alias": "garbageMeterOutline",
+                "FilePath": "res\\assets\\textures\\gui\\garbageMeterOutline.png"
+            }
+        },
+        "Parent": null,
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": 0.0,
+                "Y": 3.799999952316284,
+                "Z": 12.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 2.0,
+                "Y": 2.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "GarbageMeterOutline1": {
+        "GuiRenderable": {
+            "Clipping": {
+                "Lower": [
+                    0.0,
+                    0.0
+                ],
+                "Upper": [
+                    1.0,
+                    1.0
+                ]
+            },
+            "CullingMask": 2,
+            "Enabled": true,
+            "Texture": {
+                "Alias": "garbageMeterOutline",
+                "FilePath": "res\\assets\\textures\\gui\\garbageMeterOutline.png"
+            }
+        },
+        "Parent": null,
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": 0.0,
+                "Y": 3.799999952316284,
+                "Z": 12.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 2.0,
+                "Y": 2.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "GarbageMeterOutline2": {
+        "GuiRenderable": {
+            "Clipping": {
+                "Lower": [
+                    0.0,
+                    0.0
+                ],
+                "Upper": [
+                    1.0,
+                    1.0
+                ]
+            },
+            "CullingMask": 4,
+            "Enabled": true,
+            "Texture": {
+                "Alias": "garbageMeterOutline",
+                "FilePath": "res\\assets\\textures\\gui\\garbageMeterOutline.png"
+            }
+        },
+        "Parent": null,
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": 0.0,
+                "Y": 3.799999952316284,
+                "Z": 12.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 2.0,
+                "Y": 2.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "GarbageMeterOutline3": {
+        "GuiRenderable": {
+            "Clipping": {
+                "Lower": [
+                    0.0,
+                    0.0
+                ],
+                "Upper": [
+                    1.0,
+                    1.0
+                ]
+            },
+            "CullingMask": 8,
+            "Enabled": true,
+            "Texture": {
+                "Alias": "garbageMeterOutline",
+                "FilePath": "res\\assets\\textures\\gui\\garbageMeterOutline.png"
+            }
+        },
+        "Parent": null,
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": 0.0,
+                "Y": 3.799999952316284,
+                "Z": 12.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 2.0,
+                "Y": 2.0,
+                "Z": 1.0
+            }
+        }
+    },
     "Gui Renderable": {
         "Collidable": {
             "Shapes": []
         },
         "Parent": null,
         "Renderable": {
+            "CullingMask": 15,
             "Enabled": true,
             "Material": {
                 "Alias": null
             },
-            "Mesh": {
-                "FilePath": null
-            }
+            "Mesh": null
         },
         "Transform": {
             "Mirror": {
@@ -3127,11 +5375,13 @@
             "Name": "Boat Root R"
         },
         "Renderable": {
+            "CullingMask": 15,
             "Enabled": true,
             "Material": {
                 "Alias": "Natural Wood"
             },
             "Mesh": {
+                "Alias": "headPiece_wood",
                 "FilePath": "res\\assets\\models\\Decorative\\headPiece_wood.obj"
             }
         },
@@ -3164,11 +5414,13 @@
             "Name": "Boat Root L"
         },
         "Renderable": {
+            "CullingMask": 15,
             "Enabled": true,
             "Material": {
                 "Alias": "Natural Wood"
             },
             "Mesh": {
+                "Alias": "headPiece_wood",
                 "FilePath": "res\\assets\\models\\Decorative\\headPiece_wood.obj"
             }
         },
@@ -3201,11 +5453,13 @@
             "Name": "Head"
         },
         "Renderable": {
+            "CullingMask": 15,
             "Enabled": true,
             "Material": {
                 "Alias": "metal"
             },
             "Mesh": {
+                "Alias": "headPiece_metal",
                 "FilePath": "res\\assets\\models\\Decorative\\headPiece_metal.obj"
             }
         },
@@ -3238,11 +5492,13 @@
             "Name": "Head 1"
         },
         "Renderable": {
+            "CullingMask": 15,
             "Enabled": true,
             "Material": {
                 "Alias": "metal"
             },
             "Mesh": {
+                "Alias": "headPiece_metal",
                 "FilePath": "res\\assets\\models\\Decorative\\headPiece_metal.obj"
             }
         },
@@ -3275,11 +5531,13 @@
             "Name": "Boat Hull 1"
         },
         "Renderable": {
+            "CullingMask": 15,
             "Enabled": true,
             "Material": {
                 "Alias": "WoodBlue"
             },
             "Mesh": {
+                "Alias": "HullDetailing",
                 "FilePath": "res\\assets\\models\\HullDetailing.obj"
             }
         },
@@ -3312,11 +5570,13 @@
             "Name": "Boat Hull 2"
         },
         "Renderable": {
+            "CullingMask": 15,
             "Enabled": true,
             "Material": {
                 "Alias": "WoodRed"
             },
             "Mesh": {
+                "Alias": "HullDetailing",
                 "FilePath": "res\\assets\\models\\HullDetailing.obj"
             }
         },
@@ -3345,6 +5605,24 @@
         }
     },
     "Invalid Reticle1": {
+        "GuiRenderable": {
+            "Clipping": {
+                "Lower": [
+                    0.0,
+                    0.0
+                ],
+                "Upper": [
+                    1.0,
+                    1.0
+                ]
+            },
+            "CullingMask": 1,
+            "Enabled": true,
+            "Texture": {
+                "Alias": "invalid_reticle",
+                "FilePath": "res\\assets\\textures\\gui\\invalid_reticle.png"
+            }
+        },
         "Parent": null,
         "Transform": {
             "Mirror": {
@@ -3371,6 +5649,24 @@
         }
     },
     "Invalid Reticle2": {
+        "GuiRenderable": {
+            "Clipping": {
+                "Lower": [
+                    0.0,
+                    0.0
+                ],
+                "Upper": [
+                    1.0,
+                    1.0
+                ]
+            },
+            "CullingMask": 2,
+            "Enabled": true,
+            "Texture": {
+                "Alias": "invalid_reticle",
+                "FilePath": "res\\assets\\textures\\gui\\invalid_reticle.png"
+            }
+        },
         "Parent": null,
         "Transform": {
             "Mirror": {
@@ -3397,6 +5693,24 @@
         }
     },
     "Invalid Reticle3": {
+        "GuiRenderable": {
+            "Clipping": {
+                "Lower": [
+                    0.0,
+                    0.0
+                ],
+                "Upper": [
+                    1.0,
+                    1.0
+                ]
+            },
+            "CullingMask": 4,
+            "Enabled": true,
+            "Texture": {
+                "Alias": "invalid_reticle",
+                "FilePath": "res\\assets\\textures\\gui\\invalid_reticle.png"
+            }
+        },
         "Parent": null,
         "Transform": {
             "Mirror": {
@@ -3423,6 +5737,24 @@
         }
     },
     "Invalid Reticle4": {
+        "GuiRenderable": {
+            "Clipping": {
+                "Lower": [
+                    0.0,
+                    0.0
+                ],
+                "Upper": [
+                    1.0,
+                    1.0
+                ]
+            },
+            "CullingMask": 8,
+            "Enabled": true,
+            "Texture": {
+                "Alias": "invalid_reticle",
+                "FilePath": "res\\assets\\textures\\gui\\invalid_reticle.png"
+            }
+        },
         "Parent": null,
         "Transform": {
             "Mirror": {
@@ -3475,11 +5807,13 @@
         ],
         "Parent": null,
         "Renderable": {
+            "CullingMask": 15,
             "Enabled": true,
             "Material": {
                 "Alias": "lamp"
             },
             "Mesh": {
+                "Alias": "lamp",
                 "FilePath": "res\\assets\\models\\lamp.obj"
             }
         },
@@ -3508,6 +5842,24 @@
         }
     },
     "Load Cannon Message1": {
+        "GuiRenderable": {
+            "Clipping": {
+                "Lower": [
+                    0.0,
+                    0.0
+                ],
+                "Upper": [
+                    1.0,
+                    1.0
+                ]
+            },
+            "CullingMask": 1,
+            "Enabled": true,
+            "Texture": {
+                "Alias": "loadCannon",
+                "FilePath": "res\\assets\\textures\\gui\\loadCannon.png"
+            }
+        },
         "Parent": null,
         "Transform": {
             "Mirror": {
@@ -3534,6 +5886,24 @@
         }
     },
     "Load Cannon Message2": {
+        "GuiRenderable": {
+            "Clipping": {
+                "Lower": [
+                    0.0,
+                    0.0
+                ],
+                "Upper": [
+                    1.0,
+                    1.0
+                ]
+            },
+            "CullingMask": 2,
+            "Enabled": true,
+            "Texture": {
+                "Alias": "loadCannon",
+                "FilePath": "res\\assets\\textures\\gui\\loadCannon.png"
+            }
+        },
         "Parent": null,
         "Transform": {
             "Mirror": {
@@ -3560,6 +5930,24 @@
         }
     },
     "Load Cannon Message3": {
+        "GuiRenderable": {
+            "Clipping": {
+                "Lower": [
+                    0.0,
+                    0.0
+                ],
+                "Upper": [
+                    1.0,
+                    1.0
+                ]
+            },
+            "CullingMask": 4,
+            "Enabled": true,
+            "Texture": {
+                "Alias": "loadCannon",
+                "FilePath": "res\\assets\\textures\\gui\\loadCannon.png"
+            }
+        },
         "Parent": null,
         "Transform": {
             "Mirror": {
@@ -3586,6 +5974,24 @@
         }
     },
     "Load Cannon Message4": {
+        "GuiRenderable": {
+            "Clipping": {
+                "Lower": [
+                    0.0,
+                    0.0
+                ],
+                "Upper": [
+                    1.0,
+                    1.0
+                ]
+            },
+            "CullingMask": 8,
+            "Enabled": true,
+            "Texture": {
+                "Alias": "loadCannon",
+                "FilePath": "res\\assets\\textures\\gui\\loadCannon.png"
+            }
+        },
         "Parent": null,
         "Transform": {
             "Mirror": {
@@ -3612,15 +6018,32 @@
         }
     },
     "Lose Screen": {
+        "GuiRenderable": {
+            "Clipping": {
+                "Lower": [
+                    0.0,
+                    0.0
+                ],
+                "Upper": [
+                    1.0,
+                    1.0
+                ]
+            },
+            "CullingMask": 15,
+            "Enabled": true,
+            "Texture": {
+                "Alias": "YouLose",
+                "FilePath": "res\\assets\\textures\\gui\\YouLose.jpg"
+            }
+        },
         "Parent": null,
         "Renderable": {
+            "CullingMask": 15,
             "Enabled": true,
             "Material": {
                 "Alias": null
             },
-            "Mesh": {
-                "FilePath": null
-            }
+            "Mesh": null
         },
         "Transform": {
             "Mirror": {
@@ -3651,11 +6074,13 @@
             "Name": "Boat Root R"
         },
         "Renderable": {
+            "CullingMask": 15,
             "Enabled": true,
             "Material": {
                 "Alias": "Natural Wood"
             },
             "Mesh": {
+                "Alias": "mast_wood",
                 "FilePath": "res\\assets\\models\\Decorative\\mast_wood.obj"
             }
         },
@@ -3688,11 +6113,13 @@
             "Name": "Boat Root L"
         },
         "Renderable": {
+            "CullingMask": 15,
             "Enabled": true,
             "Material": {
                 "Alias": "Natural Wood"
             },
             "Mesh": {
+                "Alias": "mast_wood",
                 "FilePath": "res\\assets\\models\\Decorative\\mast_wood.obj"
             }
         },
@@ -3725,11 +6152,13 @@
             "Name": "Mast"
         },
         "Renderable": {
+            "CullingMask": 15,
             "Enabled": true,
             "Material": {
                 "Alias": "metal"
             },
             "Mesh": {
+                "Alias": "mast_metal",
                 "FilePath": "res\\assets\\models\\Decorative\\mast_metal.obj"
             }
         },
@@ -3762,11 +6191,13 @@
             "Name": "Mast 1"
         },
         "Renderable": {
+            "CullingMask": 15,
             "Enabled": true,
             "Material": {
                 "Alias": "metal"
             },
             "Mesh": {
+                "Alias": "mast_metal",
                 "FilePath": "res\\assets\\models\\Decorative\\mast_metal.obj"
             }
         },
@@ -3795,6 +6226,24 @@
         }
     },
     "Normal Reticle1": {
+        "GuiRenderable": {
+            "Clipping": {
+                "Lower": [
+                    0.0,
+                    0.0
+                ],
+                "Upper": [
+                    1.0,
+                    1.0
+                ]
+            },
+            "CullingMask": 1,
+            "Enabled": true,
+            "Texture": {
+                "Alias": "reticle",
+                "FilePath": "res\\assets\\textures\\gui\\reticle.png"
+            }
+        },
         "Parent": null,
         "Transform": {
             "Mirror": {
@@ -3821,6 +6270,24 @@
         }
     },
     "Normal Reticle2": {
+        "GuiRenderable": {
+            "Clipping": {
+                "Lower": [
+                    0.0,
+                    0.0
+                ],
+                "Upper": [
+                    1.0,
+                    1.0
+                ]
+            },
+            "CullingMask": 2,
+            "Enabled": true,
+            "Texture": {
+                "Alias": "reticle",
+                "FilePath": "res\\assets\\textures\\gui\\reticle.png"
+            }
+        },
         "Parent": null,
         "Transform": {
             "Mirror": {
@@ -3847,6 +6314,24 @@
         }
     },
     "Normal Reticle3": {
+        "GuiRenderable": {
+            "Clipping": {
+                "Lower": [
+                    0.0,
+                    0.0
+                ],
+                "Upper": [
+                    1.0,
+                    1.0
+                ]
+            },
+            "CullingMask": 4,
+            "Enabled": true,
+            "Texture": {
+                "Alias": "reticle",
+                "FilePath": "res\\assets\\textures\\gui\\reticle.png"
+            }
+        },
         "Parent": null,
         "Transform": {
             "Mirror": {
@@ -3873,6 +6358,24 @@
         }
     },
     "Normal Reticle4": {
+        "GuiRenderable": {
+            "Clipping": {
+                "Lower": [
+                    0.0,
+                    0.0
+                ],
+                "Upper": [
+                    1.0,
+                    1.0
+                ]
+            },
+            "CullingMask": 8,
+            "Enabled": true,
+            "Texture": {
+                "Alias": "reticle",
+                "FilePath": "res\\assets\\textures\\gui\\reticle.png"
+            }
+        },
         "Parent": null,
         "Transform": {
             "Mirror": {
@@ -3899,6 +6402,24 @@
         }
     },
     "Pickup Cannonball Message1": {
+        "GuiRenderable": {
+            "Clipping": {
+                "Lower": [
+                    0.0,
+                    0.0
+                ],
+                "Upper": [
+                    1.0,
+                    1.0
+                ]
+            },
+            "CullingMask": 1,
+            "Enabled": true,
+            "Texture": {
+                "Alias": "pickupCannonball",
+                "FilePath": "res\\assets\\textures\\gui\\pickupCannonball.png"
+            }
+        },
         "Parent": null,
         "Transform": {
             "Mirror": {
@@ -3925,6 +6446,24 @@
         }
     },
     "Pickup Cannonball Message2": {
+        "GuiRenderable": {
+            "Clipping": {
+                "Lower": [
+                    0.0,
+                    0.0
+                ],
+                "Upper": [
+                    1.0,
+                    1.0
+                ]
+            },
+            "CullingMask": 2,
+            "Enabled": true,
+            "Texture": {
+                "Alias": "pickupCannonball",
+                "FilePath": "res\\assets\\textures\\gui\\pickupCannonball.png"
+            }
+        },
         "Parent": null,
         "Transform": {
             "Mirror": {
@@ -3951,6 +6490,24 @@
         }
     },
     "Pickup Cannonball Message3": {
+        "GuiRenderable": {
+            "Clipping": {
+                "Lower": [
+                    0.0,
+                    0.0
+                ],
+                "Upper": [
+                    1.0,
+                    1.0
+                ]
+            },
+            "CullingMask": 4,
+            "Enabled": true,
+            "Texture": {
+                "Alias": "pickupCannonball",
+                "FilePath": "res\\assets\\textures\\gui\\pickupCannonball.png"
+            }
+        },
         "Parent": null,
         "Transform": {
             "Mirror": {
@@ -3977,6 +6534,24 @@
         }
     },
     "Pickup Cannonball Message4": {
+        "GuiRenderable": {
+            "Clipping": {
+                "Lower": [
+                    0.0,
+                    0.0
+                ],
+                "Upper": [
+                    1.0,
+                    1.0
+                ]
+            },
+            "CullingMask": 8,
+            "Enabled": true,
+            "Texture": {
+                "Alias": "pickupCannonball",
+                "FilePath": "res\\assets\\textures\\gui\\pickupCannonball.png"
+            }
+        },
         "Parent": null,
         "Transform": {
             "Mirror": {
@@ -4003,6 +6578,24 @@
         }
     },
     "Pickup Cleaning Solution Message1": {
+        "GuiRenderable": {
+            "Clipping": {
+                "Lower": [
+                    0.0,
+                    0.0
+                ],
+                "Upper": [
+                    1.0,
+                    1.0
+                ]
+            },
+            "CullingMask": 1,
+            "Enabled": true,
+            "Texture": {
+                "Alias": "pickupCleaningSolution",
+                "FilePath": "res\\assets\\textures\\gui\\pickupCleaningSolution.png"
+            }
+        },
         "Parent": null,
         "Transform": {
             "Mirror": {
@@ -4029,6 +6622,24 @@
         }
     },
     "Pickup Cleaning Solution Message2": {
+        "GuiRenderable": {
+            "Clipping": {
+                "Lower": [
+                    0.0,
+                    0.0
+                ],
+                "Upper": [
+                    1.0,
+                    1.0
+                ]
+            },
+            "CullingMask": 2,
+            "Enabled": true,
+            "Texture": {
+                "Alias": "pickupCleaningSolution",
+                "FilePath": "res\\assets\\textures\\gui\\pickupCleaningSolution.png"
+            }
+        },
         "Parent": null,
         "Transform": {
             "Mirror": {
@@ -4055,6 +6666,24 @@
         }
     },
     "Pickup Cleaning Solution Message3": {
+        "GuiRenderable": {
+            "Clipping": {
+                "Lower": [
+                    0.0,
+                    0.0
+                ],
+                "Upper": [
+                    1.0,
+                    1.0
+                ]
+            },
+            "CullingMask": 4,
+            "Enabled": true,
+            "Texture": {
+                "Alias": "pickupCleaningSolution",
+                "FilePath": "res\\assets\\textures\\gui\\pickupCleaningSolution.png"
+            }
+        },
         "Parent": null,
         "Transform": {
             "Mirror": {
@@ -4081,6 +6710,24 @@
         }
     },
     "Pickup Cleaning Solution Message4": {
+        "GuiRenderable": {
+            "Clipping": {
+                "Lower": [
+                    0.0,
+                    0.0
+                ],
+                "Upper": [
+                    1.0,
+                    1.0
+                ]
+            },
+            "CullingMask": 8,
+            "Enabled": true,
+            "Texture": {
+                "Alias": "pickupCleaningSolution",
+                "FilePath": "res\\assets\\textures\\gui\\pickupCleaningSolution.png"
+            }
+        },
         "Parent": null,
         "Transform": {
             "Mirror": {
@@ -4107,6 +6754,24 @@
         }
     },
     "Pickup Gloop Message1": {
+        "GuiRenderable": {
+            "Clipping": {
+                "Lower": [
+                    0.0,
+                    0.0
+                ],
+                "Upper": [
+                    1.0,
+                    1.0
+                ]
+            },
+            "CullingMask": 1,
+            "Enabled": true,
+            "Texture": {
+                "Alias": "pickUpGloop",
+                "FilePath": "res/assets/textures/gui/pickUpGloop.png"
+            }
+        },
         "Parent": null,
         "Transform": {
             "Mirror": {
@@ -4133,6 +6798,24 @@
         }
     },
     "Pickup Gloop Message2": {
+        "GuiRenderable": {
+            "Clipping": {
+                "Lower": [
+                    0.0,
+                    0.0
+                ],
+                "Upper": [
+                    1.0,
+                    1.0
+                ]
+            },
+            "CullingMask": 2,
+            "Enabled": true,
+            "Texture": {
+                "Alias": "pickUpGloop",
+                "FilePath": "res/assets/textures/gui/pickUpGloop.png"
+            }
+        },
         "Parent": null,
         "Transform": {
             "Mirror": {
@@ -4159,6 +6842,24 @@
         }
     },
     "Pickup Gloop Message3": {
+        "GuiRenderable": {
+            "Clipping": {
+                "Lower": [
+                    0.0,
+                    0.0
+                ],
+                "Upper": [
+                    1.0,
+                    1.0
+                ]
+            },
+            "CullingMask": 4,
+            "Enabled": true,
+            "Texture": {
+                "Alias": "pickUpGloop",
+                "FilePath": "res/assets/textures/gui/pickUpGloop.png"
+            }
+        },
         "Parent": null,
         "Transform": {
             "Mirror": {
@@ -4185,6 +6886,24 @@
         }
     },
     "Pickup Gloop Message4": {
+        "GuiRenderable": {
+            "Clipping": {
+                "Lower": [
+                    0.0,
+                    0.0
+                ],
+                "Upper": [
+                    1.0,
+                    1.0
+                ]
+            },
+            "CullingMask": 8,
+            "Enabled": true,
+            "Texture": {
+                "Alias": "pickUpGloop",
+                "FilePath": "res/assets/textures/gui/pickUpGloop.png"
+            }
+        },
         "Parent": null,
         "Transform": {
             "Mirror": {
@@ -4211,6 +6930,24 @@
         }
     },
     "Pickup Mop Message1": {
+        "GuiRenderable": {
+            "Clipping": {
+                "Lower": [
+                    0.0,
+                    0.0
+                ],
+                "Upper": [
+                    1.0,
+                    1.0
+                ]
+            },
+            "CullingMask": 1,
+            "Enabled": true,
+            "Texture": {
+                "Alias": "pickupMop",
+                "FilePath": "res\\assets\\textures\\gui\\pickupMop.png"
+            }
+        },
         "Parent": null,
         "Transform": {
             "Mirror": {
@@ -4237,6 +6974,24 @@
         }
     },
     "Pickup Mop Message2": {
+        "GuiRenderable": {
+            "Clipping": {
+                "Lower": [
+                    0.0,
+                    0.0
+                ],
+                "Upper": [
+                    1.0,
+                    1.0
+                ]
+            },
+            "CullingMask": 2,
+            "Enabled": true,
+            "Texture": {
+                "Alias": "pickupMop",
+                "FilePath": "res\\assets\\textures\\gui\\pickupMop.png"
+            }
+        },
         "Parent": null,
         "Transform": {
             "Mirror": {
@@ -4263,6 +7018,24 @@
         }
     },
     "Pickup Mop Message3": {
+        "GuiRenderable": {
+            "Clipping": {
+                "Lower": [
+                    0.0,
+                    0.0
+                ],
+                "Upper": [
+                    1.0,
+                    1.0
+                ]
+            },
+            "CullingMask": 4,
+            "Enabled": true,
+            "Texture": {
+                "Alias": "pickupMop",
+                "FilePath": "res\\assets\\textures\\gui\\pickupMop.png"
+            }
+        },
         "Parent": null,
         "Transform": {
             "Mirror": {
@@ -4289,6 +7062,24 @@
         }
     },
     "Pickup Mop Message4": {
+        "GuiRenderable": {
+            "Clipping": {
+                "Lower": [
+                    0.0,
+                    0.0
+                ],
+                "Upper": [
+                    1.0,
+                    1.0
+                ]
+            },
+            "CullingMask": 8,
+            "Enabled": true,
+            "Texture": {
+                "Alias": "pickupMop",
+                "FilePath": "res\\assets\\textures\\gui\\pickupMop.png"
+            }
+        },
         "Parent": null,
         "Transform": {
             "Mirror": {
@@ -4335,11 +7126,13 @@
         },
         "Parent": null,
         "Renderable": {
+            "CullingMask": 15,
             "Enabled": true,
             "Material": {
                 "Alias": null
             },
             "Mesh": {
+                "Alias": "plane",
                 "FilePath": "res\\assets\\models\\plane.obj"
             }
         },
@@ -4356,7 +7149,7 @@
             },
             "Position": {
                 "X": 0.0,
-                "Y": -5.0,
+                "Y": -4.645476341247559,
                 "Z": 0.0
             },
             "Rotation": {
@@ -4395,18 +7188,20 @@
             "Name": "Boat Root R"
         },
         "Renderable": {
+            "CullingMask": 15,
             "Enabled": false,
             "Material": {
                 "Alias": null
             },
             "Mesh": {
+                "Alias": "plane",
                 "FilePath": "res\\assets\\models\\plane.obj"
             }
         },
         "RigidBody": {
-            "Friction": 1.0,
+            "Friction": 0.949999988079071,
             "Mass": 0.0,
-            "Properties": 32
+            "Properties": 34
         },
         "Transform": {
             "Mirror": {
@@ -4417,7 +7212,7 @@
             "Position": {
                 "X": -1.0,
                 "Y": 0.0,
-                "Z": -13.043793678283691
+                "Z": 3.936285972595215
             },
             "Rotation": {
                 "qW": 1.0,
@@ -4453,18 +7248,20 @@
         },
         "Parent": null,
         "Renderable": {
+            "CullingMask": 15,
             "Enabled": true,
             "Material": {
                 "Alias": "container"
             },
             "Mesh": {
+                "Alias": "plane",
                 "FilePath": "res\\assets\\models\\plane.obj"
             }
         },
         "RigidBody": {
             "Friction": 1.0,
             "Mass": 0.0,
-            "Properties": 32
+            "Properties": 34
         },
         "Transform": {
             "Mirror": {
@@ -4511,11 +7308,13 @@
         },
         "Parent": null,
         "Renderable": {
+            "CullingMask": 15,
             "Enabled": true,
             "Material": {
                 "Alias": "water"
             },
             "Mesh": {
+                "Alias": "plane",
                 "FilePath": "res\\assets\\models\\plane.obj"
             }
         },
@@ -4571,11 +7370,13 @@
             "Name": "Boat Root L"
         },
         "Renderable": {
+            "CullingMask": 15,
             "Enabled": false,
             "Material": {
                 "Alias": null
             },
             "Mesh": {
+                "Alias": "plane",
                 "FilePath": "res\\assets\\models\\plane.obj"
             }
         },
@@ -4617,28 +7418,28 @@
                         0.0,
                         0.0
                     ],
-                    "Size": [
-                        1.0,
-                        1.0,
-                        1.0
-                    ],
+                    "Direction": 1,
+                    "Height": 1.0,
+                    "Radius": 0.5,
                     "Trigger": false,
-                    "Type": 0
+                    "Type": 2
                 }
             ]
         },
         "Parent": null,
         "Renderable": {
+            "CullingMask": 4294967294,
             "Enabled": true,
             "Material": {
                 "Alias": "container"
             },
             "Mesh": {
-                "FilePath": "res\\assets\\models\\cube.obj"
+                "Alias": "capsule",
+                "FilePath": "res\\assets\\models\\capsule.obj"
             }
         },
         "RigidBody": {
-            "Friction": 1.0,
+            "Friction": 0.8999999761581421,
             "Mass": 5.0,
             "Properties": 62
         },
@@ -4650,7 +7451,7 @@
             },
             "Position": {
                 "X": 0.0,
-                "Y": 0.0,
+                "Y": 1.0499999523162842,
                 "Z": 0.0
             },
             "Rotation": {
@@ -4667,17 +7468,27 @@
         }
     },
     "Player1 Camera": {
+        "Camera": {
+            "ClearProps": {
+                "Skybox": null
+            },
+            "CullingMask": 1,
+            "Enabled": true,
+            "FarClipping": 1000.0,
+            "Fov": 60.0,
+            "NearClipping": 0.029999999329447746,
+            "Player": 0
+        },
         "Parent": {
             "Name": "Player1 Blue"
         },
         "Renderable": {
+            "CullingMask": 1,
             "Enabled": true,
             "Material": {
                 "Alias": null
             },
-            "Mesh": {
-                "FilePath": null
-            }
+            "Mesh": null
         },
         "Transform": {
             "Mirror": {
@@ -4704,17 +7515,27 @@
         }
     },
     "Player2 Camera": {
+        "Camera": {
+            "ClearProps": {
+                "Skybox": null
+            },
+            "CullingMask": 2,
+            "Enabled": true,
+            "FarClipping": 1000.0,
+            "Fov": 60.0,
+            "NearClipping": 0.029999999329447746,
+            "Player": 1
+        },
         "Parent": {
             "Name": "Player2 Red"
         },
         "Renderable": {
+            "CullingMask": 2,
             "Enabled": true,
             "Material": {
                 "Alias": null
             },
-            "Mesh": {
-                "FilePath": null
-            }
+            "Mesh": null
         },
         "Transform": {
             "Mirror": {
@@ -4749,28 +7570,28 @@
                         0.0,
                         0.0
                     ],
-                    "Size": [
-                        1.0,
-                        1.0,
-                        1.0
-                    ],
+                    "Direction": 1,
+                    "Height": 1.0,
+                    "Radius": 0.5,
                     "Trigger": false,
-                    "Type": 0
+                    "Type": 2
                 }
             ]
         },
         "Parent": null,
         "Renderable": {
+            "CullingMask": 4294967293,
             "Enabled": true,
             "Material": {
                 "Alias": "container"
             },
             "Mesh": {
+                "Alias": "Cork",
                 "FilePath": "res\\assets\\models\\Cork.obj"
             }
         },
         "RigidBody": {
-            "Friction": 1.0,
+            "Friction": 0.8999999761581421,
             "Mass": 5.0,
             "Properties": 62
         },
@@ -4782,7 +7603,7 @@
             },
             "Position": {
                 "X": -4.415224075317383,
-                "Y": 0.3625483512878418,
+                "Y": 1.0499999523162842,
                 "Z": 0.10107147693634033
             },
             "Rotation": {
@@ -4807,28 +7628,28 @@
                         0.0,
                         0.0
                     ],
-                    "Size": [
-                        1.0,
-                        1.0,
-                        1.0
-                    ],
+                    "Direction": 1,
+                    "Height": 1.0,
+                    "Radius": 0.5,
                     "Trigger": false,
-                    "Type": 0
+                    "Type": 2
                 }
             ]
         },
         "Parent": null,
         "Renderable": {
+            "CullingMask": 4294967291,
             "Enabled": true,
             "Material": {
                 "Alias": "container"
             },
             "Mesh": {
-                "FilePath": "res\\assets\\models\\cube.obj"
+                "Alias": "capsule",
+                "FilePath": "res\\assets\\models\\capsule.obj"
             }
         },
         "RigidBody": {
-            "Friction": 1.0,
+            "Friction": 0.8999999761581421,
             "Mass": 5.0,
             "Properties": 62
         },
@@ -4840,7 +7661,7 @@
             },
             "Position": {
                 "X": -2.3376967906951904,
-                "Y": 0.800000011920929,
+                "Y": 1.0499999523162842,
                 "Z": -2.0278282165527344
             },
             "Rotation": {
@@ -4857,6 +7678,17 @@
         }
     },
     "Player3 Camera": {
+        "Camera": {
+            "ClearProps": {
+                "Skybox": null
+            },
+            "CullingMask": 4,
+            "Enabled": true,
+            "FarClipping": 1000.0,
+            "Fov": 60.0,
+            "NearClipping": 0.029999999329447746,
+            "Player": 2
+        },
         "Parent": {
             "Name": "Player3 Blue"
         },
@@ -4885,17 +7717,27 @@
         }
     },
     "Player4 Camera": {
+        "Camera": {
+            "ClearProps": {
+                "Skybox": null
+            },
+            "CullingMask": 8,
+            "Enabled": true,
+            "FarClipping": 1000.0,
+            "Fov": 60.0,
+            "NearClipping": 0.029999999329447746,
+            "Player": 3
+        },
         "Parent": {
             "Name": "Player4 Red"
         },
         "Renderable": {
+            "CullingMask": 8,
             "Enabled": true,
             "Material": {
                 "Alias": null
             },
-            "Mesh": {
-                "FilePath": null
-            }
+            "Mesh": null
         },
         "Transform": {
             "Mirror": {
@@ -4930,28 +7772,28 @@
                         0.0,
                         0.0
                     ],
-                    "Size": [
-                        1.0,
-                        1.0,
-                        1.0
-                    ],
+                    "Direction": 1,
+                    "Height": 1.0,
+                    "Radius": 0.5,
                     "Trigger": false,
-                    "Type": 0
+                    "Type": 2
                 }
             ]
         },
         "Parent": null,
         "Renderable": {
+            "CullingMask": 4294967287,
             "Enabled": true,
             "Material": {
                 "Alias": "container"
             },
             "Mesh": {
+                "Alias": "Cork",
                 "FilePath": "res\\assets\\models\\Cork.obj"
             }
         },
         "RigidBody": {
-            "Friction": 1.0,
+            "Friction": 0.8999999761581421,
             "Mass": 5.0,
             "Properties": 62
         },
@@ -4963,7 +7805,7 @@
             },
             "Position": {
                 "X": -0.027547240257263184,
-                "Y": 0.550000011920929,
+                "Y": 1.0499999523162842,
                 "Z": 3.6298446655273438
             },
             "Rotation": {
@@ -4980,6 +7822,24 @@
         }
     },
     "Push Cannon Message1": {
+        "GuiRenderable": {
+            "Clipping": {
+                "Lower": [
+                    0.0,
+                    0.0
+                ],
+                "Upper": [
+                    1.0,
+                    1.0
+                ]
+            },
+            "CullingMask": 1,
+            "Enabled": true,
+            "Texture": {
+                "Alias": "pushCannon",
+                "FilePath": "res\\assets\\textures\\gui\\pushCannon.png"
+            }
+        },
         "Parent": null,
         "Transform": {
             "Mirror": {
@@ -5006,6 +7866,24 @@
         }
     },
     "Push Cannon Message2": {
+        "GuiRenderable": {
+            "Clipping": {
+                "Lower": [
+                    0.0,
+                    0.0
+                ],
+                "Upper": [
+                    1.0,
+                    1.0
+                ]
+            },
+            "CullingMask": 2,
+            "Enabled": true,
+            "Texture": {
+                "Alias": "pushCannon",
+                "FilePath": "res\\assets\\textures\\gui\\pushCannon.png"
+            }
+        },
         "Parent": null,
         "Transform": {
             "Mirror": {
@@ -5019,19 +7897,37 @@
                 "Z": 0.0
             },
             "Rotation": {
-                "qW": 1.0,
-                "qX": 0.0,
-                "qY": 0.0,
-                "qZ": 0.0
+                "qW": 0.9390614032745361,
+                "qX": -0.34374937415122986,
+                "qY": 1.5292731274027527e-12,
+                "qZ": -5.595784252632185e-13
             },
             "Scale": {
                 "X": 1.0,
-                "Y": 1.0,
-                "Z": 1.0
+                "Y": 0.9999999403953552,
+                "Z": 0.9999999403953552
             }
         }
     },
     "Push Cannon Message3": {
+        "GuiRenderable": {
+            "Clipping": {
+                "Lower": [
+                    0.0,
+                    0.0
+                ],
+                "Upper": [
+                    1.0,
+                    1.0
+                ]
+            },
+            "CullingMask": 4,
+            "Enabled": true,
+            "Texture": {
+                "Alias": "pushCannon",
+                "FilePath": "res\\assets\\textures\\gui\\pushCannon.png"
+            }
+        },
         "Parent": null,
         "Transform": {
             "Mirror": {
@@ -5058,6 +7954,24 @@
         }
     },
     "Push Cannon Message4": {
+        "GuiRenderable": {
+            "Clipping": {
+                "Lower": [
+                    0.0,
+                    0.0
+                ],
+                "Upper": [
+                    1.0,
+                    1.0
+                ]
+            },
+            "CullingMask": 8,
+            "Enabled": true,
+            "Texture": {
+                "Alias": "pushCannon",
+                "FilePath": "res\\assets\\textures\\gui\\pushCannon.png"
+            }
+        },
         "Parent": null,
         "Transform": {
             "Mirror": {
@@ -5088,11 +8002,13 @@
             "Name": "Boat Root R"
         },
         "Renderable": {
+            "CullingMask": 15,
             "Enabled": true,
             "Material": {
                 "Alias": "WoodBlue"
             },
             "Mesh": {
+                "Alias": "doorFrame",
                 "FilePath": "res\\assets\\models\\Decorative\\doorFrame.obj"
             }
         },
@@ -5125,11 +8041,13 @@
             "Name": "Boat Root L"
         },
         "Renderable": {
+            "CullingMask": 15,
             "Enabled": true,
             "Material": {
                 "Alias": "WoodRed"
             },
             "Mesh": {
+                "Alias": "doorFrame",
                 "FilePath": "res\\assets\\models\\Decorative\\doorFrame.obj"
             }
         },
@@ -5178,18 +8096,20 @@
         },
         "Parent": null,
         "Renderable": {
+            "CullingMask": 15,
             "Enabled": true,
             "Material": {
                 "Alias": "cannon"
             },
             "Mesh": {
+                "Alias": "cannon",
                 "FilePath": "res\\assets\\models\\cannon.obj"
             }
         },
         "RigidBody": {
-            "Friction": 0.5,
+            "Friction": 0.10000000149011612,
             "Mass": 0.0,
-            "Properties": 32
+            "Properties": 34
         },
         "Transform": {
             "Mirror": {
@@ -5232,18 +8152,20 @@
         },
         "Parent": null,
         "Renderable": {
+            "CullingMask": 15,
             "Enabled": true,
             "Material": {
                 "Alias": "cannonball"
             },
             "Mesh": {
+                "Alias": "sphere",
                 "FilePath": "res\\assets\\models\\sphere.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.5,
             "Mass": 1.0,
-            "Properties": 32
+            "Properties": 34
         },
         "Transform": {
             "Mirror": {
@@ -5286,18 +8208,20 @@
         },
         "Parent": null,
         "Renderable": {
+            "CullingMask": 15,
             "Enabled": true,
             "Material": {
                 "Alias": "cannonball"
             },
             "Mesh": {
+                "Alias": "sphere",
                 "FilePath": "res\\assets\\models\\sphere.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.5,
             "Mass": 1.0,
-            "Properties": 32
+            "Properties": 34
         },
         "Transform": {
             "Mirror": {
@@ -5340,18 +8264,20 @@
         },
         "Parent": null,
         "Renderable": {
+            "CullingMask": 15,
             "Enabled": true,
             "Material": {
                 "Alias": "cannonball"
             },
             "Mesh": {
+                "Alias": "sphere",
                 "FilePath": "res\\assets\\models\\sphere.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.5,
             "Mass": 1.0,
-            "Properties": 32
+            "Properties": 34
         },
         "Transform": {
             "Mirror": {
@@ -5394,18 +8320,20 @@
         },
         "Parent": null,
         "Renderable": {
+            "CullingMask": 15,
             "Enabled": true,
             "Material": {
                 "Alias": "cannonball"
             },
             "Mesh": {
+                "Alias": "sphere",
                 "FilePath": "res\\assets\\models\\sphere.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.5,
             "Mass": 1.0,
-            "Properties": 32
+            "Properties": 34
         },
         "Transform": {
             "Mirror": {
@@ -5448,18 +8376,20 @@
         },
         "Parent": null,
         "Renderable": {
+            "CullingMask": 15,
             "Enabled": true,
             "Material": {
                 "Alias": "cannonball"
             },
             "Mesh": {
+                "Alias": "sphere",
                 "FilePath": "res\\assets\\models\\sphere.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.5,
             "Mass": 1.0,
-            "Properties": 32
+            "Properties": 34
         },
         "Transform": {
             "Mirror": {
@@ -5502,18 +8432,20 @@
         },
         "Parent": null,
         "Renderable": {
+            "CullingMask": 15,
             "Enabled": true,
             "Material": {
                 "Alias": "cannonball"
             },
             "Mesh": {
+                "Alias": "sphere",
                 "FilePath": "res\\assets\\models\\sphere.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.5,
             "Mass": 1.0,
-            "Properties": 32
+            "Properties": 34
         },
         "Transform": {
             "Mirror": {
@@ -5560,18 +8492,20 @@
         },
         "Parent": null,
         "Renderable": {
+            "CullingMask": 15,
             "Enabled": true,
             "Material": {
                 "Alias": "crate"
             },
             "Mesh": {
+                "Alias": "crateTemp",
                 "FilePath": "res\\assets\\models\\crateTemp.obj"
             }
         },
         "RigidBody": {
-            "Friction": 0.5,
+            "Friction": 0.10000000149011612,
             "Mass": 0.0,
-            "Properties": 32
+            "Properties": 34
         },
         "Transform": {
             "Mirror": {
@@ -5618,18 +8552,20 @@
         },
         "Parent": null,
         "Renderable": {
+            "CullingMask": 15,
             "Enabled": true,
             "Material": {
                 "Alias": "pirax"
             },
             "Mesh": {
+                "Alias": "Pirax",
                 "FilePath": "res\\assets\\models\\Pirax.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.5,
             "Mass": 1.0,
-            "Properties": 32
+            "Properties": 34
         },
         "Transform": {
             "Mirror": {
@@ -5676,18 +8612,20 @@
         },
         "Parent": null,
         "Renderable": {
+            "CullingMask": 15,
             "Enabled": true,
             "Material": {
                 "Alias": "pirax"
             },
             "Mesh": {
+                "Alias": "Pirax",
                 "FilePath": "res\\assets\\models\\Pirax.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.5,
             "Mass": 1.0,
-            "Properties": 32
+            "Properties": 34
         },
         "Transform": {
             "Mirror": {
@@ -5734,18 +8672,20 @@
         },
         "Parent": null,
         "Renderable": {
+            "CullingMask": 15,
             "Enabled": true,
             "Material": {
                 "Alias": "pirax"
             },
             "Mesh": {
+                "Alias": "Pirax",
                 "FilePath": "res\\assets\\models\\Pirax.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.5,
             "Mass": 1.0,
-            "Properties": 32
+            "Properties": 34
         },
         "Transform": {
             "Mirror": {
@@ -5792,18 +8732,20 @@
         },
         "Parent": null,
         "Renderable": {
+            "CullingMask": 15,
             "Enabled": true,
             "Material": {
                 "Alias": "pirax"
             },
             "Mesh": {
+                "Alias": "Pirax",
                 "FilePath": "res\\assets\\models\\Pirax.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.5,
             "Mass": 1.0,
-            "Properties": 32
+            "Properties": 34
         },
         "Transform": {
             "Mirror": {
@@ -5832,13 +8774,12 @@
     "RedCleaningSolutionSpawner": {
         "Parent": null,
         "Renderable": {
+            "CullingMask": 15,
             "Enabled": true,
             "Material": {
                 "Alias": null
             },
-            "Mesh": {
-                "FilePath": null
-            }
+            "Mesh": null
         },
         "Transform": {
             "Mirror": {
@@ -5885,11 +8826,13 @@
         },
         "Parent": null,
         "Renderable": {
+            "CullingMask": 15,
             "Enabled": true,
             "Material": {
                 "Alias": "garbage"
             },
             "Mesh": {
+                "Alias": "garbage",
                 "FilePath": "res\\assets\\models\\garbage.obj"
             }
         },
@@ -5916,9 +8859,9 @@
                 "qZ": 0.0
             },
             "Scale": {
-                "X": 0.5,
+                "X": 0.4300000071525574,
                 "Y": 0.5,
-                "Z": 0.5
+                "Z": 0.4300000071525574
             }
         }
     },
@@ -5943,11 +8886,13 @@
         },
         "Parent": null,
         "Renderable": {
+            "CullingMask": 15,
             "Enabled": true,
             "Material": {
                 "Alias": "garbage"
             },
             "Mesh": {
+                "Alias": "garbage",
                 "FilePath": "res\\assets\\models\\garbage.obj"
             }
         },
@@ -5974,9 +8919,9 @@
                 "qZ": 0.0
             },
             "Scale": {
-                "X": 0.5,
+                "X": 0.4300000071525574,
                 "Y": 0.5,
-                "Z": 0.5
+                "Z": 0.4300000071525574
             }
         }
     },
@@ -6001,11 +8946,13 @@
         },
         "Parent": null,
         "Renderable": {
+            "CullingMask": 15,
             "Enabled": true,
             "Material": {
                 "Alias": "garbage"
             },
             "Mesh": {
+                "Alias": "garbage",
                 "FilePath": "res\\assets\\models\\garbage.obj"
             }
         },
@@ -6032,9 +8979,9 @@
                 "qZ": 0.0
             },
             "Scale": {
-                "X": 0.5,
+                "X": 0.4300000071525574,
                 "Y": 0.5,
-                "Z": 0.5
+                "Z": 0.4300000071525574
             }
         }
     },
@@ -6059,18 +9006,20 @@
         },
         "Parent": null,
         "Renderable": {
+            "CullingMask": 15,
             "Enabled": true,
             "Material": {
                 "Alias": "goop"
             },
             "Mesh": {
+                "Alias": "Gloop",
                 "FilePath": "res\\assets\\models\\Gloop.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.5,
             "Mass": 1.0,
-            "Properties": 32
+            "Properties": 34
         },
         "Transform": {
             "Mirror": {
@@ -6117,18 +9066,20 @@
         },
         "Parent": null,
         "Renderable": {
+            "CullingMask": 15,
             "Enabled": true,
             "Material": {
                 "Alias": "goop"
             },
             "Mesh": {
+                "Alias": "Gloop",
                 "FilePath": "res\\assets\\models\\Gloop.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.5,
             "Mass": 1.0,
-            "Properties": 32
+            "Properties": 34
         },
         "Transform": {
             "Mirror": {
@@ -6175,18 +9126,20 @@
         },
         "Parent": null,
         "Renderable": {
+            "CullingMask": 15,
             "Enabled": true,
             "Material": {
                 "Alias": "goop"
             },
             "Mesh": {
+                "Alias": "Gloop",
                 "FilePath": "res\\assets\\models\\Gloop.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.5,
             "Mass": 1.0,
-            "Properties": 32
+            "Properties": 34
         },
         "Transform": {
             "Mirror": {
@@ -6233,18 +9186,20 @@
         },
         "Parent": null,
         "Renderable": {
+            "CullingMask": 15,
             "Enabled": true,
             "Material": {
                 "Alias": "goop"
             },
             "Mesh": {
+                "Alias": "Gloop",
                 "FilePath": "res\\assets\\models\\Gloop.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.5,
             "Mass": 1.0,
-            "Properties": 32
+            "Properties": 34
         },
         "Transform": {
             "Mirror": {
@@ -6273,13 +9228,12 @@
     "RedGloopSpawner": {
         "Parent": null,
         "Renderable": {
+            "CullingMask": 15,
             "Enabled": true,
             "Material": {
                 "Alias": null
             },
-            "Mesh": {
-                "FilePath": null
-            }
+            "Mesh": null
         },
         "Transform": {
             "Mirror": {
@@ -6326,18 +9280,20 @@
         },
         "Parent": null,
         "Renderable": {
+            "CullingMask": 15,
             "Enabled": true,
             "Material": {
                 "Alias": "mop"
             },
             "Mesh": {
+                "Alias": "mop",
                 "FilePath": "res\\assets\\models\\mop.obj"
             }
         },
         "RigidBody": {
-            "Friction": 0.5,
-            "Mass": 1.0,
-            "Properties": 32
+            "Friction": 0.6000000238418579,
+            "Mass": 2.0,
+            "Properties": 34
         },
         "Transform": {
             "Mirror": {
@@ -6346,7 +9302,7 @@
                 "Z": false
             },
             "Position": {
-                "X": -0.29999053478240967,
+                "X": 0.7341985702514648,
                 "Y": 0.20000000298023224,
                 "Z": 17.357601165771484
             },
@@ -6368,11 +9324,13 @@
             "Name": "Mast"
         },
         "Renderable": {
+            "CullingMask": 15,
             "Enabled": true,
             "Material": {
                 "Alias": "atlasMaterial"
             },
             "Mesh": {
+                "Alias": "Rigging",
                 "FilePath": "res\\assets\\models\\Rigging.obj"
             }
         },
@@ -6405,11 +9363,13 @@
             "Name": "Mast 1"
         },
         "Renderable": {
+            "CullingMask": 15,
             "Enabled": true,
             "Material": {
                 "Alias": "atlasMaterial"
             },
             "Mesh": {
+                "Alias": "Rigging",
                 "FilePath": "res\\assets\\models\\Rigging.obj"
             }
         },
@@ -6442,11 +9402,13 @@
             "Name": "Boat Root R"
         },
         "Renderable": {
+            "CullingMask": 15,
             "Enabled": true,
             "Material": {
                 "Alias": "cubeMat"
             },
             "Mesh": {
+                "Alias": "Environtment Rope",
                 "FilePath": "res\\assets\\models\\Decorative\\Environtment Rope.obj"
             }
         },
@@ -6479,11 +9441,13 @@
             "Name": "Boat Root R"
         },
         "Renderable": {
+            "CullingMask": 15,
             "Enabled": true,
             "Material": {
                 "Alias": "cubeMat"
             },
             "Mesh": {
+                "Alias": "Environtment Rope",
                 "FilePath": "res\\assets\\models\\Decorative\\Environtment Rope.obj"
             }
         },
@@ -6516,11 +9480,13 @@
             "Name": "Boat Root L"
         },
         "Renderable": {
+            "CullingMask": 15,
             "Enabled": true,
             "Material": {
                 "Alias": "cubeMat"
             },
             "Mesh": {
+                "Alias": "Environtment Rope",
                 "FilePath": "res\\assets\\models\\Decorative\\Environtment Rope.obj"
             }
         },
@@ -6553,11 +9519,13 @@
             "Name": "Boat Root L"
         },
         "Renderable": {
+            "CullingMask": 15,
             "Enabled": true,
             "Material": {
                 "Alias": "cubeMat"
             },
             "Mesh": {
+                "Alias": "Environtment Rope",
                 "FilePath": "res\\assets\\models\\Decorative\\Environtment Rope.obj"
             }
         },
@@ -6590,11 +9558,13 @@
             "Name": "Mast"
         },
         "Renderable": {
+            "CullingMask": 15,
             "Enabled": true,
             "Material": {
                 "Alias": "atlasMaterial"
             },
             "Mesh": {
+                "Alias": "sails_temporary",
                 "FilePath": "res\\assets\\models\\Decorative\\sails_temporary.obj"
             }
         },
@@ -6627,11 +9597,13 @@
             "Name": "Mast 1"
         },
         "Renderable": {
+            "CullingMask": 15,
             "Enabled": true,
             "Material": {
                 "Alias": "atlasMaterial"
             },
             "Mesh": {
+                "Alias": "sails_temporary",
                 "FilePath": "res\\assets\\models\\Decorative\\sails_temporary.obj"
             }
         },
@@ -6664,11 +9636,13 @@
             "Name": "Boat Root R"
         },
         "Renderable": {
+            "CullingMask": 15,
             "Enabled": true,
             "Material": {
                 "Alias": "cubeMat"
             },
             "Mesh": {
+                "Alias": "SpawnDoor",
                 "FilePath": "res\\assets\\models\\Decorative\\SpawnDoor.obj"
             }
         },
@@ -6701,11 +9675,13 @@
             "Name": "Boat Root L"
         },
         "Renderable": {
+            "CullingMask": 15,
             "Enabled": true,
             "Material": {
                 "Alias": "cubeMat"
             },
             "Mesh": {
+                "Alias": "SpawnDoor",
                 "FilePath": "res\\assets\\models\\Decorative\\SpawnDoor.obj"
             }
         },
@@ -6795,11 +9771,13 @@
         },
         "Parent": null,
         "Renderable": {
+            "CullingMask": 15,
             "Enabled": true,
             "Material": {
                 "Alias": "sphereMat"
             },
             "Mesh": {
+                "Alias": "sphere",
                 "FilePath": "res\\assets\\models\\sphere.obj"
             }
         },
@@ -6837,11 +9815,13 @@
             "Name": "Boat Root R"
         },
         "Renderable": {
+            "CullingMask": 15,
             "Enabled": true,
             "Material": {
                 "Alias": "metal"
             },
             "Mesh": {
+                "Alias": "StairTrim_metal",
                 "FilePath": "res\\assets\\models\\StairTrim_metal.obj"
             }
         },
@@ -6874,11 +9854,13 @@
             "Name": "Boat Root L"
         },
         "Renderable": {
+            "CullingMask": 15,
             "Enabled": true,
             "Material": {
                 "Alias": "metal"
             },
             "Mesh": {
+                "Alias": "StairTrim_metal",
                 "FilePath": "res\\assets\\models\\StairTrim_metal.obj"
             }
         },
@@ -6911,11 +9893,13 @@
             "Name": "Boat Root R"
         },
         "Renderable": {
+            "CullingMask": 15,
             "Enabled": true,
             "Material": {
                 "Alias": "WoodBlue"
             },
             "Mesh": {
+                "Alias": "stairs",
                 "FilePath": "res\\assets\\models\\stairs.obj"
             }
         },
@@ -6948,11 +9932,13 @@
             "Name": "Boat Root R"
         },
         "Renderable": {
+            "CullingMask": 15,
             "Enabled": true,
             "Material": {
                 "Alias": "WoodBlue"
             },
             "Mesh": {
+                "Alias": "stairs",
                 "FilePath": "res\\assets\\models\\stairs.obj"
             }
         },
@@ -6985,11 +9971,13 @@
             "Name": "Boat Root R"
         },
         "Renderable": {
+            "CullingMask": 15,
             "Enabled": true,
             "Material": {
                 "Alias": "WoodBlue"
             },
             "Mesh": {
+                "Alias": "stairsDown",
                 "FilePath": "res\\assets\\models\\stairsDown.obj"
             }
         },
@@ -7022,11 +10010,13 @@
             "Name": "Boat Root L"
         },
         "Renderable": {
+            "CullingMask": 15,
             "Enabled": true,
             "Material": {
                 "Alias": "WoodRed"
             },
             "Mesh": {
+                "Alias": "stairs",
                 "FilePath": "res\\assets\\models\\stairs.obj"
             }
         },
@@ -7059,11 +10049,13 @@
             "Name": "Boat Root L"
         },
         "Renderable": {
+            "CullingMask": 15,
             "Enabled": true,
             "Material": {
                 "Alias": "WoodRed"
             },
             "Mesh": {
+                "Alias": "stairs",
                 "FilePath": "res\\assets\\models\\stairs.obj"
             }
         },
@@ -7096,11 +10088,13 @@
             "Name": "Boat Root L"
         },
         "Renderable": {
+            "CullingMask": 15,
             "Enabled": true,
             "Material": {
                 "Alias": "WoodRed"
             },
             "Mesh": {
+                "Alias": "stairsDown",
                 "FilePath": "res\\assets\\models\\stairsDown.obj"
             }
         },
@@ -7133,11 +10127,13 @@
             "Name": "Boat Root R"
         },
         "Renderable": {
+            "CullingMask": 15,
             "Enabled": true,
             "Material": {
                 "Alias": "planks"
             },
             "Mesh": {
+                "Alias": "TopDeck",
                 "FilePath": "res\\assets\\models\\TopDeck.obj"
             }
         },
@@ -7170,11 +10166,13 @@
             "Name": "Boat Root L"
         },
         "Renderable": {
+            "CullingMask": 15,
             "Enabled": true,
             "Material": {
                 "Alias": "shipMat"
             },
             "Mesh": {
+                "Alias": "TopDeck",
                 "FilePath": "res\\assets\\models\\TopDeck.obj"
             }
         },
@@ -7203,6 +10201,24 @@
         }
     },
     "Use Gloop Message1": {
+        "GuiRenderable": {
+            "Clipping": {
+                "Lower": [
+                    0.0,
+                    0.0
+                ],
+                "Upper": [
+                    1.0,
+                    1.0
+                ]
+            },
+            "CullingMask": 1,
+            "Enabled": true,
+            "Texture": {
+                "Alias": "useGloop",
+                "FilePath": "res\\assets\\textures\\gui\\useGloop.png"
+            }
+        },
         "Parent": null,
         "Transform": {
             "Mirror": {
@@ -7229,6 +10245,24 @@
         }
     },
     "Use Gloop Message2": {
+        "GuiRenderable": {
+            "Clipping": {
+                "Lower": [
+                    0.0,
+                    0.0
+                ],
+                "Upper": [
+                    1.0,
+                    1.0
+                ]
+            },
+            "CullingMask": 2,
+            "Enabled": true,
+            "Texture": {
+                "Alias": "useGloop",
+                "FilePath": "res\\assets\\textures\\gui\\useGloop.png"
+            }
+        },
         "Parent": null,
         "Transform": {
             "Mirror": {
@@ -7255,6 +10289,24 @@
         }
     },
     "Use Gloop Message3": {
+        "GuiRenderable": {
+            "Clipping": {
+                "Lower": [
+                    0.0,
+                    0.0
+                ],
+                "Upper": [
+                    1.0,
+                    1.0
+                ]
+            },
+            "CullingMask": 4,
+            "Enabled": true,
+            "Texture": {
+                "Alias": "useGloop",
+                "FilePath": "res\\assets\\textures\\gui\\useGloop.png"
+            }
+        },
         "Parent": null,
         "Transform": {
             "Mirror": {
@@ -7281,6 +10333,24 @@
         }
     },
     "Use Gloop Message4": {
+        "GuiRenderable": {
+            "Clipping": {
+                "Lower": [
+                    0.0,
+                    0.0
+                ],
+                "Upper": [
+                    1.0,
+                    1.0
+                ]
+            },
+            "CullingMask": 8,
+            "Enabled": true,
+            "Texture": {
+                "Alias": "useGloop",
+                "FilePath": "res\\assets\\textures\\gui\\useGloop.png"
+            }
+        },
         "Parent": null,
         "Transform": {
             "Mirror": {
@@ -7311,11 +10381,13 @@
             "Name": "Boat Root R"
         },
         "Renderable": {
+            "CullingMask": 15,
             "Enabled": true,
             "Material": {
                 "Alias": "atlasMaterial"
             },
             "Mesh": {
+                "Alias": "wheel",
                 "FilePath": "res\\assets\\models\\Decorative\\wheel.obj"
             }
         },
@@ -7348,11 +10420,13 @@
             "Name": "Boat Root L"
         },
         "Renderable": {
+            "CullingMask": 15,
             "Enabled": true,
             "Material": {
                 "Alias": "atlasMaterial"
             },
             "Mesh": {
+                "Alias": "wheel",
                 "FilePath": "res\\assets\\models\\Decorative\\wheel.obj"
             }
         },
@@ -7381,15 +10455,32 @@
         }
     },
     "Win Screen": {
+        "GuiRenderable": {
+            "Clipping": {
+                "Lower": [
+                    0.0,
+                    0.0
+                ],
+                "Upper": [
+                    1.0,
+                    1.0
+                ]
+            },
+            "CullingMask": 15,
+            "Enabled": true,
+            "Texture": {
+                "Alias": "VictoryScreen",
+                "FilePath": "res\\assets\\textures\\gui\\VictoryScreen.jpg"
+            }
+        },
         "Parent": null,
         "Renderable": {
+            "CullingMask": 15,
             "Enabled": true,
             "Material": {
                 "Alias": null
             },
-            "Mesh": {
-                "FilePath": null
-            }
+            "Mesh": null
         },
         "Transform": {
             "Mirror": {
@@ -7420,11 +10511,13 @@
             "Name": "thingy Metal"
         },
         "Renderable": {
+            "CullingMask": 15,
             "Enabled": true,
             "Material": {
                 "Alias": "cubeMat"
             },
             "Mesh": {
+                "Alias": "weirdThingy_wood",
                 "FilePath": "res\\assets\\models\\Decorative\\weirdThingy_wood.obj"
             }
         },
@@ -7457,11 +10550,13 @@
             "Name": "thingy Metal 1"
         },
         "Renderable": {
+            "CullingMask": 15,
             "Enabled": true,
             "Material": {
                 "Alias": "cubeMat"
             },
             "Mesh": {
+                "Alias": "weirdThingy_wood",
                 "FilePath": "res\\assets\\models\\Decorative\\weirdThingy_wood.obj"
             }
         },
@@ -7494,11 +10589,13 @@
             "Name": "Boat Root R"
         },
         "Renderable": {
+            "CullingMask": 15,
             "Enabled": true,
             "Material": {
                 "Alias": "metal"
             },
             "Mesh": {
+                "Alias": "weirdThingy_metal",
                 "FilePath": "res\\assets\\models\\Decorative\\weirdThingy_metal.obj"
             }
         },
@@ -7531,11 +10628,13 @@
             "Name": "Boat Root L"
         },
         "Renderable": {
+            "CullingMask": 15,
             "Enabled": true,
             "Material": {
                 "Alias": "metal"
             },
             "Mesh": {
+                "Alias": "weirdThingy_metal",
                 "FilePath": "res\\assets\\models\\Decorative\\weirdThingy_metal.obj"
             }
         },

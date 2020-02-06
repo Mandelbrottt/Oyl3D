@@ -81,8 +81,14 @@ struct Player
     
 	PlayerState state = PlayerState::idle;
 
-	float speedForce = 7.0f;
 	glm::vec3 moveDirection = glm::vec3(0.0f);
+
+	float speedForce = 13.0f;
+	float jumpForce  = 20.0f;
+	bool isJumping   = false;
+
+	float JUMP_COOLDOWN_DURATION = 0.1f;
+	float jumpCooldownTimer      = 0.0f;
 
 	float adjustingPositionSpeed = 3.333f;
 	float pushingSpeed = 0.2f;
@@ -90,7 +96,7 @@ struct Player
 	MoveableUsingLerp adjustingPositionStateData;
 	MoveableUsingLerp pushingStateData;
 
-	float CLEANING_TIME_DURATION = 1.2f;
+	float CLEANING_TIME_DURATION = 1.2f; //IF YOU CHANGE THIS, MAKE SURE TO ALSO CHANGE THE DEPENDANT VALUES IN GARBAGE PILE AND GARBAGE HP BAR COMPONENETS (check the comments in those components to figure out which ones)
 	float cleaningTimeCountdown = CLEANING_TIME_DURATION;
 
 	float yRotationClamp = 0.0f;
@@ -183,11 +189,14 @@ struct GarbagePile
 	int MAX_GARBAGE_LEVEL = 5;
 	int garbageLevel = 1;
 
-	float GARBAGE_TICKS_PER_LEVEL = 3.0f;
-	float garbageTicks = 3.0f;
+	float GARBAGE_TICKS_PER_LEVEL = 4.0f;
+	float garbageTicks = GARBAGE_TICKS_PER_LEVEL;
 
-	float DELAY_BEFORE_ADDING_GARBAGE_DURATION = 1.0f;
-	float delayBeforeAddingGarbageCountdown    = DELAY_BEFORE_ADDING_GARBAGE_DURATION;
+	float DELAY_BEFORE_ADDING_GARBAGE_DURATION = 1.0f; //this is used to add garbage to a pile that a cannon has shot at, or any other reason a delay could be wanted before adding garbage
+	float delayBeforeAddingGarbageCountdown    = -1.0f; //timer shouldnt start at the beginning of the game
+
+	float DELAY_BEFORE_REMOVING_GARBAGE_DURATION = 1.2f;  //this should be equal to the player's time it takes to clean
+	float delayBeforeRemovingGarbageCountdown    = -1.0f; //timer shouldnt start at the beginning of the game
 
 	int relativePositionOnShip = -10; //this will be -1 (left), 0 (middle), or 1 (right) to mirror the cannon track position. It is used to determine which pile the cannons are firing at
 };
@@ -213,10 +222,21 @@ struct EndScreen
 	bool isLoseScreen;
 };
 
-struct GarbageTick
+struct GarbagePileHealthBar
 {
-	float ON_SCREEN_DURATION = 2.5f;
-	float onScreenCountdown = ON_SCREEN_DURATION;
+	entt::entity outlineEntity; //the outline of the HP bar
+
+	Team team;
+	int garbagePileNum     = 0;
+	PlayerNumber playerNum = PlayerNumber::One; //player to render to
+
+	float interpolationSpeed = 0.8f; //this should be relative to the player's time it takes to clean (1 / (time it takes to clean) = the value this variable should be)
+	float interpolationParam = 0.0f;
+	float startValue         = 1.0f; //health bar starts at full
+	float targetValue        = 1.0f;
+
+	bool shouldHideAfterInterpolating = false;
+	bool shouldBeHidden               = false;
 };
 
 struct CleaningQuicktimeEventIndicator
@@ -233,9 +253,38 @@ struct CleaningQuicktimeEventIndicator
 	float DELAY_BEFORE_DISAPPEARING_DURATION = 0.3f;
 	float delayBeforeDisappearingCountdown   = 0.0f;
 
-	bool shouldShake                = false;
+	bool shouldShake          = false;
+	bool isNumberOfShakesEven = true;
+
 	float SHAKE_START_VALUE         = 0.3f;
 	float SHAKE_DECREASE_PER_SECOND = 1.0f;
 	float currentShakeValue         = SHAKE_START_VALUE;
-	bool isNumberOfShakesEven       = true;
+};
+
+struct CameraBreathing
+{
+	float startPosY;
+
+	float cameraHeightVariance = 0.04f;
+	float interpolationParam   = 0.5f; //start halfway up (at the default camera height)
+	float speed = 0.45f;
+
+	bool isMovingUp = true;
+};
+
+struct GarbageMeterBar
+{
+	float interpolationSpeed = 0.8f;
+	float interpolationParam = 0.0f;
+	float startValue  = 0.0f; //garbage meter starts empty
+	float targetValue = 0.0f;
+	int garbagePileNum = 0;
+};
+
+struct GarbageMeterDisplay
+{
+	entt::entity garbageMeterBars[3];
+
+	Team team;
+	PlayerNumber playerNum = PlayerNumber::One; //player to render to
 };
