@@ -14,6 +14,7 @@
 #include "ItemRespawnSystem.h"
 #include "CameraBreathingSystem.h"
 #include "GarbagePileHealthBarSystem.h"
+#include "GarbageMeterSystem.h"
 
 using namespace oyl;
 
@@ -48,6 +49,7 @@ public:
 		scheduleSystemUpdate<ItemRespawnSystem>();
 		scheduleSystemUpdate<CameraBreathingSystem>();
 		scheduleSystemUpdate<GarbagePileHealthBarSystem>();
+		scheduleSystemUpdate<GarbageMeterSystem>();
 
 		for (int i = 0; i < 4; i++)
 		{

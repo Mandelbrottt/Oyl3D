@@ -186,8 +186,8 @@ struct GarbagePile
 
 	bool isGlooped = false;
 
-	int MAX_GARBAGE_LEVEL = 5;
-	int garbageLevel = 1;
+	int MAX_GARBAGE_LEVEL = 5; //IF YOU CHANGE THIS, UPDATE INITIAL TARGET VALUE IN GarbageMeterBar
+	int garbageLevel      = 1; //IF YOU CHANGE THIS, UPDATE INITIAL TARGET VALUE IN GarbageMeterBar
 
 	float GARBAGE_TICKS_PER_LEVEL = 4.0f;
 	float garbageTicks = GARBAGE_TICKS_PER_LEVEL;
@@ -232,8 +232,9 @@ struct GarbagePileHealthBar
 
 	float interpolationSpeed = 0.8f; //this should be relative to the player's time it takes to clean (1 / (time it takes to clean) = the value this variable should be)
 	float interpolationParam = 0.0f;
-	float startValue         = 1.0f; //health bar starts at full
-	float targetValue        = 1.0f;
+
+	float startValue  = 1.0f; //health bar starts at full
+	float targetValue = 1.0f;
 
 	bool shouldHideAfterInterpolating = false;
 	bool shouldBeHidden               = false;
@@ -276,8 +277,10 @@ struct GarbageMeterBar
 {
 	float interpolationSpeed = 0.8f;
 	float interpolationParam = 0.0f;
-	float startValue  = 0.0f; //garbage meter starts empty
-	float targetValue = 0.0f;
+
+	float startValue  = 0.0f; 
+	float targetValue = 1.0f / 5.0f; //garbage piles start at level 1.. needs to be updated if starting or max garbage level changes
+
 	int garbagePileNum = 0;
 };
 
