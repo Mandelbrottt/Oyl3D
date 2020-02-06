@@ -1324,6 +1324,66 @@
             }
         }
     },
+    "Board": {
+        "Collidable": {
+            "Shapes": [
+                {
+                    "Center": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Size": [
+                        20.0,
+                        1.0,
+                        20.0
+                    ],
+                    "Trigger": false,
+                    "Type": 0
+                }
+            ]
+        },
+        "Parent": null,
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "Board"
+            },
+            "Mesh": {
+                "Alias": "Board",
+                "FilePath": "res\\assets\\models\\Board.obj"
+            }
+        },
+        "RigidBody": {
+            "Friction": 1.0,
+            "Mass": 0.0,
+            "Properties": 34
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -3.0399999618530273,
+                "Y": -0.05576205253601074,
+                "Z": 7.138205051422119
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.2400000095367432,
+                "Y": 1.0,
+                "Z": 1.3199999332427979
+            }
+        }
+    },
     "Boat Hull 1": {
         "Parent": {
             "Name": "Boat Root R"
@@ -7251,7 +7311,7 @@
             "CullingMask": 15,
             "Enabled": true,
             "Material": {
-                "Alias": "container"
+                "Alias": null
             },
             "Mesh": {
                 "Alias": "plane",
@@ -7261,7 +7321,7 @@
         "RigidBody": {
             "Friction": 1.0,
             "Mass": 0.0,
-            "Properties": 34
+            "Properties": 98
         },
         "Transform": {
             "Mirror": {
@@ -7270,9 +7330,9 @@
                 "Z": false
             },
             "Position": {
-                "X": -1.9938584566116333,
-                "Y": -0.05576205253601074,
-                "Z": 7.498205184936523
+                "X": 0.0,
+                "Y": -5.0,
+                "Z": 0.0
             },
             "Rotation": {
                 "qW": 1.0,
@@ -7281,9 +7341,9 @@
                 "qZ": 0.0
             },
             "Scale": {
-                "X": 0.11039278656244278,
-                "Y": 1.0,
-                "Z": 0.4699999988079071
+                "X": 1.899999976158142,
+                "Y": 0.20000000298023224,
+                "Z": 0.5
             }
         }
     },
@@ -7511,7 +7571,7 @@
             "ClearProps": {
                 "Skybox": null
             },
-            "CullingMask": 2,
+            "CullingMask": 1,
             "Enabled": true,
             "FarClipping": 1000.0,
             "Fov": 60.0,
@@ -7666,7 +7726,7 @@
             "ClearProps": {
                 "Skybox": null
             },
-            "CullingMask": 4,
+            "CullingMask": 1,
             "Enabled": true,
             "FarClipping": 1000.0,
             "Fov": 60.0,
@@ -7705,7 +7765,7 @@
             "ClearProps": {
                 "Skybox": null
             },
-            "CullingMask": 8,
+            "CullingMask": 1,
             "Enabled": true,
             "FarClipping": 1000.0,
             "Fov": 60.0,

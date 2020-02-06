@@ -1,6 +1,6 @@
 {
     "Material": {
-        "Alias": "testMat",
+        "Alias": "Board",
         "MainProperties": {
             "Offset": [
                 0.0,
@@ -24,18 +24,13 @@
         },
         "Textures": {
             "Albedo": {
-                "Alias": "WoodPlanks3",
-                "FilePath": "res\\assets\\textures\\WoodPlanks3.png",
+                "Alias": "Board",
+                "FilePath": "res\\assets\\textures\\Board.png",
                 "Profile": 0,
                 "guid": null
             },
             "Normal": null,
-            "Specular": {
-                "Alias": "Oyl Black",
-                "FilePath": "../Engine/res/textures/black.png",
-                "Profile": 0,
-                "guid": null
-            }
+            "Specular": null
         }
     }
 }
