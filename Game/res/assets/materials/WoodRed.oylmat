@@ -16,7 +16,7 @@
             "Albedo": {
                 "Alias": "redWood",
                 "FilePath": "res\\assets\\textures\\redWood.png",
-                "Profile": 1,
+                "Profile": 0,
                 "guid": null
             },
             "Normal": null,

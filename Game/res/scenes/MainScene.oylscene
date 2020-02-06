@@ -1323,7 +1323,7 @@
         "Renderable": {
             "Enabled": true,
             "Material": {
-                "Alias": "siding"
+                "Alias": "testMat"
             },
             "Mesh": {
                 "FilePath": "res\\assets\\models\\BoatHull.obj"
@@ -1397,7 +1397,7 @@
         "Renderable": {
             "Enabled": true,
             "Material": {
-                "Alias": "siding"
+                "Alias": "testMat"
             },
             "Mesh": {
                 "FilePath": "res\\assets\\models\\BoatHullFlipped.obj"
@@ -2293,7 +2293,7 @@
         "Renderable": {
             "Enabled": true,
             "Material": {
-                "Alias": "siding"
+                "Alias": "testMat"
             },
             "Mesh": {
                 "FilePath": "res\\assets\\models\\CapQuarters.obj"
@@ -2917,7 +2917,7 @@
         "Renderable": {
             "Enabled": true,
             "Material": {
-                "Alias": "WoodRed"
+                "Alias": "WoodBlue"
             },
             "Mesh": {
                 "FilePath": "res\\assets\\models\\DeckRail2.obj"
@@ -2954,7 +2954,7 @@
         "Renderable": {
             "Enabled": true,
             "Material": {
-                "Alias": "WoodBlue"
+                "Alias": "WoodRed"
             },
             "Mesh": {
                 "FilePath": "res\\assets\\models\\DeckRail2.obj"
@@ -3277,7 +3277,7 @@
         "Renderable": {
             "Enabled": true,
             "Material": {
-                "Alias": "WoodRed"
+                "Alias": "WoodBlue"
             },
             "Mesh": {
                 "FilePath": "res\\assets\\models\\HullDetailing.obj"
@@ -3314,7 +3314,7 @@
         "Renderable": {
             "Enabled": true,
             "Material": {
-                "Alias": "WoodBlue"
+                "Alias": "WoodRed"
             },
             "Mesh": {
                 "FilePath": "res\\assets\\models\\HullDetailing.obj"
@@ -6733,6 +6733,51 @@
             }
         }
     },
+    "Sphere 1": {
+        "Collidable": {
+            "Shapes": [
+                {
+                    "Center": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Radius": 0.5,
+                    "Trigger": false,
+                    "Type": 1
+                }
+            ]
+        },
+        "Parent": null,
+        "RigidBody": {
+            "Friction": 0.5,
+            "Mass": 1.0,
+            "Properties": 98
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -3.0,
+                "Y": -1.0,
+                "Z": -2.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
     "Sphere 2": {
         "Collidable": {
             "Shapes": [
@@ -7127,7 +7172,7 @@
         "Renderable": {
             "Enabled": true,
             "Material": {
-                "Alias": "planks"
+                "Alias": "shipMat"
             },
             "Mesh": {
                 "FilePath": "res\\assets\\models\\TopDeck.obj"
