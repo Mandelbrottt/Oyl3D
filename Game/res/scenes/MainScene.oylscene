@@ -1371,7 +1371,7 @@
             "CullingMask": 15,
             "Enabled": true,
             "Material": {
-                "Alias": "siding"
+                "Alias": "testMat"
             },
             "Mesh": {
                 "Alias": "BoatHull",
@@ -1449,7 +1449,7 @@
             "CullingMask": 15,
             "Enabled": true,
             "Material": {
-                "Alias": "siding"
+                "Alias": "testMat"
             },
             "Mesh": {
                 "Alias": "BoatHullFlipped",
@@ -1967,9 +1967,9 @@
                 "Z": false
             },
             "Position": {
-                "X": 15.001569747924805,
+                "X": 14.969743728637695,
                 "Y": 0.0,
-                "Z": -11.011996269226074
+                "Z": -11.01199722290039
             },
             "Rotation": {
                 "qW": -4.371138828673793e-08,
@@ -2519,7 +2519,7 @@
             "CullingMask": 15,
             "Enabled": true,
             "Material": {
-                "Alias": "siding"
+                "Alias": "testMat"
             },
             "Mesh": {
                 "Alias": "CapQuarters",
@@ -2558,7 +2558,7 @@
             "CullingMask": 15,
             "Enabled": true,
             "Material": {
-                "Alias": "StairMaterial"
+                "Alias": "WoodBlue"
             },
             "Mesh": {
                 "Alias": "QuartersRail",
@@ -2597,7 +2597,7 @@
             "CullingMask": 15,
             "Enabled": true,
             "Material": {
-                "Alias": "StairMaterial"
+                "Alias": "WoodRed"
             },
             "Mesh": {
                 "Alias": "QuartersRail",
@@ -2636,7 +2636,7 @@
             "CullingMask": 15,
             "Enabled": true,
             "Material": {
-                "Alias": "StairMaterial"
+                "Alias": "WoodBlue"
             },
             "Mesh": {
                 "Alias": "QuartersRail2",
@@ -2675,7 +2675,7 @@
             "CullingMask": 15,
             "Enabled": true,
             "Material": {
-                "Alias": "StairMaterial"
+                "Alias": "WoodRed"
             },
             "Mesh": {
                 "Alias": "QuartersRail2",
@@ -3375,7 +3375,7 @@
             "CullingMask": 15,
             "Enabled": true,
             "Material": {
-                "Alias": "WoodRed"
+                "Alias": "WoodBlue"
             },
             "Mesh": {
                 "Alias": "DeckRail2",
@@ -3414,7 +3414,7 @@
             "CullingMask": 15,
             "Enabled": true,
             "Material": {
-                "Alias": "WoodBlue"
+                "Alias": "WoodRed"
             },
             "Mesh": {
                 "Alias": "DeckRail2",
@@ -5534,7 +5534,7 @@
             "CullingMask": 15,
             "Enabled": true,
             "Material": {
-                "Alias": "WoodRed"
+                "Alias": "WoodBlue"
             },
             "Mesh": {
                 "Alias": "HullDetailing",
@@ -5573,7 +5573,7 @@
             "CullingMask": 15,
             "Enabled": true,
             "Material": {
-                "Alias": "WoodBlue"
+                "Alias": "WoodRed"
             },
             "Mesh": {
                 "Alias": "HullDetailing",
@@ -7981,7 +7981,7 @@
             "CullingMask": 15,
             "Enabled": true,
             "Material": {
-                "Alias": "Natural Wood"
+                "Alias": "WoodBlue"
             },
             "Mesh": {
                 "Alias": "doorFrame",
@@ -8020,7 +8020,7 @@
             "CullingMask": 15,
             "Enabled": true,
             "Material": {
-                "Alias": "Natural Wood"
+                "Alias": "WoodRed"
             },
             "Mesh": {
                 "Alias": "doorFrame",
@@ -9872,7 +9872,7 @@
             "CullingMask": 15,
             "Enabled": true,
             "Material": {
-                "Alias": "StairMaterial"
+                "Alias": "WoodBlue"
             },
             "Mesh": {
                 "Alias": "stairs",
@@ -9911,7 +9911,7 @@
             "CullingMask": 15,
             "Enabled": true,
             "Material": {
-                "Alias": "StairMaterial"
+                "Alias": "WoodBlue"
             },
             "Mesh": {
                 "Alias": "stairs",
@@ -9950,7 +9950,7 @@
             "CullingMask": 15,
             "Enabled": true,
             "Material": {
-                "Alias": "StairMaterial"
+                "Alias": "WoodBlue"
             },
             "Mesh": {
                 "Alias": "stairsDown",
@@ -9989,7 +9989,7 @@
             "CullingMask": 15,
             "Enabled": true,
             "Material": {
-                "Alias": "StairMaterial"
+                "Alias": "WoodRed"
             },
             "Mesh": {
                 "Alias": "stairs",
@@ -10028,7 +10028,7 @@
             "CullingMask": 15,
             "Enabled": true,
             "Material": {
-                "Alias": "StairMaterial"
+                "Alias": "WoodRed"
             },
             "Mesh": {
                 "Alias": "stairs",
@@ -10067,7 +10067,7 @@
             "CullingMask": 15,
             "Enabled": true,
             "Material": {
-                "Alias": "StairMaterial"
+                "Alias": "WoodRed"
             },
             "Mesh": {
                 "Alias": "stairsDown",
@@ -10145,7 +10145,7 @@
             "CullingMask": 15,
             "Enabled": true,
             "Material": {
-                "Alias": "planks"
+                "Alias": "shipMat"
             },
             "Mesh": {
                 "Alias": "TopDeck",
