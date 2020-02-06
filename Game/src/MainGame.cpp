@@ -83,6 +83,21 @@ public:
         //}
     }
 
+    float m_speed   = 5.0f;
+    float m_jump    = 5.0f;
+    float m_factor  = 1.0f;
+
+    void onGuiRender() override
+    {
+        ImGui::Begin("Character Movement");
+
+        ImGui::SliderFloat("Speed", &m_speed, 0.1f, 30.0f);
+        ImGui::SliderFloat("Jump", &m_jump, 0.1f, 30.0f);
+        ImGui::SliderFloat("Factor", &m_factor, 0.0f, 1.0f);
+        
+        ImGui::End();
+    }
+
     void onUpdate() override
     {
         using component::EntityInfo;
@@ -94,19 +109,30 @@ public:
             Transform& transform = registry->get<Transform>(entity);
             RigidBody& rigidbody = registry->get<RigidBody>(entity);
 
+            glm::vec3 desiredVel = glm::vec3(0.0f, 0.0f, 0.0f);
+
             if (Input::isKeyPressed(Key::W))
-                rigidbody.addImpulse(transform.getForwardGlobal());
+                desiredVel += transform.getForwardGlobal();
             if (Input::isKeyPressed(Key::S))
-                rigidbody.addImpulse(-transform.getForwardGlobal());
+                desiredVel -= transform.getForwardGlobal();
             if (Input::isKeyPressed(Key::A))
-                rigidbody.addImpulse(-transform.getRightGlobal());
+                desiredVel -= transform.getRightGlobal();
             if (Input::isKeyPressed(Key::D))
-                rigidbody.addImpulse(transform.getRightGlobal());
+                desiredVel += transform.getRightGlobal();
+            
             if (Input::isKeyPressed(Key::Space) && registry->has<entt::tag<"CanJump"_hs>>(entity))
             {
-                rigidbody.addImpulse(glm::vec3(0.0f, 5.0f, 0.0f));
+                rigidbody.addImpulse(glm::vec3(0.0f, m_jump, 0.0f));
                 registry->remove<entt::tag<"CanJump"_hs>>(entity);
             }
+
+            if (desiredVel != glm::vec3(0.0f))
+                desiredVel = normalize(desiredVel);
+            
+            glm::vec3 velChange = m_speed * desiredVel - rigidbody.getVelocity();
+            velChange.y = 0.0f;
+            velChange *= m_factor;
+            rigidbody.addImpulse(velChange);
         }
     }
 
