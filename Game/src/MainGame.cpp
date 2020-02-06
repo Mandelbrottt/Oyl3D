@@ -40,10 +40,11 @@ public:
             //camera.postProcessingPasses.push_back(std::move(pass));
             
             PostProcessingPass pass2;
-            pass2.shader = Shader::cache(Shader::create({
-                { Shader::Type::Vertex, "res/assets/shaders/passthrough.vert" },
-                { Shader::Type::Fragment, "res/assets/shaders/postLUT.frag" }
-            }), "LUT");
+            //pass2.shader = Shader::cache(Shader::create({
+            //    { Shader::Type::Vertex, "res/assets/shaders/passthrough.vert" },
+            //    { Shader::Type::Fragment, "res/assets/shaders/postLUT.frag" }
+            //}), "LUT");
+            pass2.shader = Shader::cache(Shader::create("res/assets/shaders/postLUT.oylshader"), "LUT");
             auto lut = Texture3D::create("res/assets/textures/Candlelight.CUBE");
             pass2.setUniformTexture3D("u_lut", lut);
             
