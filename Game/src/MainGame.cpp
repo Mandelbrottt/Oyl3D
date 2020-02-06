@@ -83,9 +83,10 @@ public:
         //}
     }
 
-    float m_speed   = 5.0f;
-    float m_jump    = 5.0f;
-    float m_factor  = 1.0f;
+    float m_speed        = 5.0f;
+    float m_jump         = 5.0f;
+    float m_factor       = 1.0f;
+    float m_groundStick  = 1.0f;
 
     void onGuiRender() override
     {
@@ -94,6 +95,7 @@ public:
         ImGui::SliderFloat("Speed", &m_speed, 0.1f, 30.0f);
         ImGui::SliderFloat("Jump", &m_jump, 0.1f, 30.0f);
         ImGui::SliderFloat("Factor", &m_factor, 0.0f, 1.0f);
+        ImGui::SliderFloat("Ground Stick", &m_groundStick, 0.0f, 10.0f);
         
         ImGui::End();
     }
@@ -120,10 +122,18 @@ public:
             if (Input::isKeyPressed(Key::D))
                 desiredVel += transform.getRightGlobal();
             
-            if (Input::isKeyPressed(Key::Space) && registry->has<entt::tag<"CanJump"_hs>>(entity))
+            if (registry->has<entt::tag<"CanJump"_hs>>(entity))
             {
-                rigidbody.addImpulse(glm::vec3(0.0f, m_jump, 0.0f));
-                registry->remove<entt::tag<"CanJump"_hs>>(entity);
+                if (Input::isKeyPressed(Key::Space))
+                {
+                    rigidbody.addImpulse(glm::vec3(0.0f, m_jump, 0.0f));
+                    registry->remove<entt::tag<"CanJump"_hs>>(entity);
+                }
+                else
+                {
+                    //rigidbody.addImpulse(glm::vec3(0.0f, -m_groundStick, 0.0f));
+                    //rigidbody.setG
+                }
             }
 
             if (desiredVel != glm::vec3(0.0f))

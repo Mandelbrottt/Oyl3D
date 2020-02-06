@@ -29,8 +29,8 @@
             }
         },
         "RigidBody": {
-            "Friction": 2.0,
-            "Mass": 3.0,
+            "Friction": 0.0,
+            "Mass": 1.0,
             "Properties": 126
         },
         "Transform": {
@@ -54,6 +54,62 @@
                 "X": 1.0,
                 "Y": 1.0,
                 "Z": 1.0
+            }
+        }
+    },
+    "Entity 9": {
+        "Collidable": {
+            "Shapes": [
+                {
+                    "Center": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Radius": 0.5,
+                    "Trigger": false,
+                    "Type": 1
+                }
+            ]
+        },
+        "Parent": null,
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "cubeMat"
+            },
+            "Mesh": {
+                "Alias": "Oyl Monkey",
+                "FilePath": "../Engine/res/models/monkey.obj"
+            }
+        },
+        "RigidBody": {
+            "Friction": 0.5,
+            "Mass": 1.0,
+            "Properties": 98
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -3.949617862701416,
+                "Y": 0.9810568690299988,
+                "Z": 0.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 0.30000001192092896,
+                "Y": 0.30000001192092896,
+                "Z": 0.30000001192092896
             }
         }
     },
@@ -441,6 +497,66 @@
                 "X": 1.0,
                 "Y": 1.0,
                 "Z": 1.0
+            }
+        }
+    },
+    "Ramp": {
+        "Collidable": {
+            "Shapes": [
+                {
+                    "Center": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Size": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "Trigger": false,
+                    "Type": 0
+                }
+            ]
+        },
+        "Parent": null,
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "lmao"
+            },
+            "Mesh": {
+                "Alias": "Oyl Cube",
+                "FilePath": "../Engine/res/models/cube.obj"
+            }
+        },
+        "RigidBody": {
+            "Friction": 0.5,
+            "Mass": 1.0,
+            "Properties": 35
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": 0.0,
+                "Y": 1.3070985078811646,
+                "Z": -11.044837951660156
+            },
+            "Rotation": {
+                "qW": 0.9435541033744812,
+                "qX": 0.33121851086616516,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 7.3990020751953125,
+                "Y": 0.23711447417736053,
+                "Z": 9.062886238098145
             }
         }
     }
