@@ -202,6 +202,12 @@ namespace oyl
                                                         lightProps.diffuse);
                             boundMaterial->setUniform3f("u_pointLight[" + std::to_string(count) + "].specular",
                                                         lightProps.specular);
+                            boundMaterial->setUniform1f("u_pointLight[" + std::to_string(count) + "].attenK",
+                                                        lightProps.attenuation.x);
+                            boundMaterial->setUniform1f("u_pointLight[" + std::to_string(count) + "].attenL",
+                                                        lightProps.attenuation.y);
+                            boundMaterial->setUniform1f("u_pointLight[" + std::to_string(count) + "].attenQ",
+                                                        lightProps.attenuation.z);
                             count++;
                         }
 
@@ -561,9 +567,9 @@ namespace oyl
 
                 uint playerNum = static_cast<uint>(pc.player);
 
-                if (playerNum ^ 0x01)
+                if (!(playerNum & 0x01))
                     translation.x *= -1;
-                if (playerNum ^ 0x02)
+                if (playerNum & 0x02)
                     translation.y *= -1;
 
                 glm::mat4 model = glm::translate(glm::mat4(1.0f), translation);
