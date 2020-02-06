@@ -16,7 +16,7 @@
             "Albedo": {
                 "Alias": "garbageTemp",
                 "FilePath": "res\\assets\\textures\\garbageTemp.png",
-                "Profile": 1,
+                "Profile": 0,
                 "guid": null
             },
             "Normal": null,

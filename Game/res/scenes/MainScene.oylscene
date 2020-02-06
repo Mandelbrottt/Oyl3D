@@ -1832,9 +1832,9 @@
                 "Z": false
             },
             "Position": {
-                "X": 15.001569747924805,
+                "X": 14.969743728637695,
                 "Y": 0.0,
-                "Z": -11.011996269226074
+                "Z": -11.01199722290039
             },
             "Rotation": {
                 "qW": -4.371138828673793e-08,
@@ -2330,7 +2330,7 @@
         "Renderable": {
             "Enabled": true,
             "Material": {
-                "Alias": "StairMaterial"
+                "Alias": "WoodBlue"
             },
             "Mesh": {
                 "FilePath": "res\\assets\\models\\QuartersRail.obj"
@@ -2367,7 +2367,7 @@
         "Renderable": {
             "Enabled": true,
             "Material": {
-                "Alias": "StairMaterial"
+                "Alias": "WoodRed"
             },
             "Mesh": {
                 "FilePath": "res\\assets\\models\\QuartersRail.obj"
@@ -2404,7 +2404,7 @@
         "Renderable": {
             "Enabled": true,
             "Material": {
-                "Alias": "StairMaterial"
+                "Alias": "WoodBlue"
             },
             "Mesh": {
                 "FilePath": "res\\assets\\models\\QuartersRail2.obj"
@@ -2441,7 +2441,7 @@
         "Renderable": {
             "Enabled": true,
             "Material": {
-                "Alias": "StairMaterial"
+                "Alias": "WoodRed"
             },
             "Mesh": {
                 "FilePath": "res\\assets\\models\\QuartersRail2.obj"
@@ -5090,7 +5090,7 @@
         "Renderable": {
             "Enabled": true,
             "Material": {
-                "Alias": "Natural Wood"
+                "Alias": "WoodBlue"
             },
             "Mesh": {
                 "FilePath": "res\\assets\\models\\Decorative\\doorFrame.obj"
@@ -5127,7 +5127,7 @@
         "Renderable": {
             "Enabled": true,
             "Material": {
-                "Alias": "Natural Wood"
+                "Alias": "WoodRed"
             },
             "Mesh": {
                 "FilePath": "res\\assets\\models\\Decorative\\doorFrame.obj"
@@ -6913,7 +6913,7 @@
         "Renderable": {
             "Enabled": true,
             "Material": {
-                "Alias": "StairMaterial"
+                "Alias": "WoodBlue"
             },
             "Mesh": {
                 "FilePath": "res\\assets\\models\\stairs.obj"
@@ -6950,7 +6950,7 @@
         "Renderable": {
             "Enabled": true,
             "Material": {
-                "Alias": "StairMaterial"
+                "Alias": "WoodBlue"
             },
             "Mesh": {
                 "FilePath": "res\\assets\\models\\stairs.obj"
@@ -6987,7 +6987,7 @@
         "Renderable": {
             "Enabled": true,
             "Material": {
-                "Alias": "StairMaterial"
+                "Alias": "WoodBlue"
             },
             "Mesh": {
                 "FilePath": "res\\assets\\models\\stairsDown.obj"
@@ -7024,7 +7024,7 @@
         "Renderable": {
             "Enabled": true,
             "Material": {
-                "Alias": "StairMaterial"
+                "Alias": "WoodRed"
             },
             "Mesh": {
                 "FilePath": "res\\assets\\models\\stairs.obj"
@@ -7061,7 +7061,7 @@
         "Renderable": {
             "Enabled": true,
             "Material": {
-                "Alias": "StairMaterial"
+                "Alias": "WoodRed"
             },
             "Mesh": {
                 "FilePath": "res\\assets\\models\\stairs.obj"
@@ -7098,7 +7098,7 @@
         "Renderable": {
             "Enabled": true,
             "Material": {
-                "Alias": "StairMaterial"
+                "Alias": "WoodRed"
             },
             "Mesh": {
                 "FilePath": "res\\assets\\models\\stairsDown.obj"
