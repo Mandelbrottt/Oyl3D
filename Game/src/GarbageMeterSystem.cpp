@@ -30,10 +30,6 @@ void GarbageMeterSystem::onUpdate()
 				float currentFillAmount = glm::mix(bar.startValue, bar.targetValue, bar.interpolationParam);
 
 				barGui.upperClipping.y = currentFillAmount;
-				if (meter.team == Team::blue && meter.playerNum == PlayerNumber::One && bar.targetValue < 0.1f)
-				{
-					//std::cout << "start: " << bar.startValue << " target: " << bar.targetValue << "\n";
-				}
 
 				if (bar.interpolationParam >= 1.0f)
 				{
@@ -88,7 +84,12 @@ void GarbageMeterSystem::updateMeterBarsForGarbagePile(entt::entity a_garbagePil
 			auto& bar = registry->get<GarbageMeterBar>(barEntity);
 
 			if (bar.garbagePileNum == garbagePile.relativePositionOnShip)
+			{
+				bar.interpolationParam = 0.0f; //reset interpolation parameter in case the bar was already moving
+
+				bar.startValue  = glm::mix(bar.startValue, bar.targetValue, bar.interpolationParam); //set the current value to the start value
 				bar.targetValue = (float)garbagePile.garbageLevel / (float)garbagePile.MAX_GARBAGE_LEVEL;
+			}
 		}
 	}
 }
