@@ -12,4 +12,6 @@ class GarbageMeterSystem : public System
 	void onExit() override;
 	void onUpdate() override;
 	bool onEvent(const Event& event) override;
+
+	void updateMeterBarsForGarbagePile(entt::entity a_garbagePileEntity);
 };

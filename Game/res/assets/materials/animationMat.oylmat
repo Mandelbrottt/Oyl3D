@@ -24,17 +24,12 @@
         },
         "Textures": {
             "Albedo": {
-                "Alias": "Bark_Pine_baseColor",
-                "FilePath": "res\\assets\\textures\\Bark_Pine_baseColor.jpg",
-                "Profile": 1,
-                "guid": null
-            },
-            "Normal": {
-                "Alias": "Bark_Pine_normal",
-                "FilePath": "res\\assets\\textures\\Bark_Pine_normal.jpg",
+                "Alias": null,
+                "FilePath": "../Engine/res/textures/invalid.png",
                 "Profile": 0,
                 "guid": null
             },
+            "Normal": null,
             "Specular": {
                 "Alias": "Oyl Black",
                 "FilePath": "../Engine/res/textures/black.png",

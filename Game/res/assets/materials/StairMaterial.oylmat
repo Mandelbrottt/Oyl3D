@@ -1,0 +1,41 @@
+{
+    "Material": {
+        "Alias": "StairMaterial",
+        "MainProperties": {
+            "Offset": [
+                0.0,
+                0.0
+            ],
+            "Tiling": [
+                1.0,
+                1.0
+            ]
+        },
+        "Shader": {
+            "Alias": "Oyl Lighting",
+            "Pixel": {
+                "FilePath": "../Engine/res/shaders/lighting.frag",
+                "guid": null
+            },
+            "Vertex": {
+                "FilePath": "../Engine/res/shaders/lighting.vert",
+                "guid": null
+            }
+        },
+        "Textures": {
+            "Albedo": {
+                "Alias": "wood",
+                "FilePath": "res\\assets\\textures\\wood.png",
+                "Profile": 0,
+                "guid": null
+            },
+            "Normal": null,
+            "Specular": {
+                "Alias": "Oyl Black",
+                "FilePath": "../Engine/res/textures/black.png",
+                "Profile": 0,
+                "guid": null
+            }
+        }
+    }
+}
