@@ -31,8 +31,8 @@
             },
             "Normal": null,
             "Specular": {
-                "Alias": "Oyl White",
-                "FilePath": "../Engine/res/textures/white.png",
+                "Alias": "Oyl Black",
+                "FilePath": "../Engine/res/textures/black.png",
                 "Profile": 0,
                 "guid": null
             }
