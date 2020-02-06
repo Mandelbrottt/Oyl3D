@@ -864,9 +864,9 @@
                 "qZ": -4.067273948749062e-06
             },
             "Scale": {
-                "X": 1.0,
-                "Y": 1.0,
-                "Z": 1.0
+                "X": 0.4300000071525574,
+                "Y": 0.5,
+                "Z": 0.4300000071525574
             }
         }
     },
@@ -7441,7 +7441,7 @@
         "RigidBody": {
             "Friction": 0.8999999761581421,
             "Mass": 5.0,
-            "Properties": 62
+            "Properties": 126
         },
         "Transform": {
             "Mirror": {
@@ -7482,14 +7482,6 @@
         "Parent": {
             "Name": "Player1 Blue"
         },
-        "Renderable": {
-            "CullingMask": 1,
-            "Enabled": true,
-            "Material": {
-                "Alias": null
-            },
-            "Mesh": null
-        },
         "Transform": {
             "Mirror": {
                 "X": false,
@@ -7528,14 +7520,6 @@
         },
         "Parent": {
             "Name": "Player2 Red"
-        },
-        "Renderable": {
-            "CullingMask": 2,
-            "Enabled": true,
-            "Material": {
-                "Alias": null
-            },
-            "Mesh": null
         },
         "Transform": {
             "Mirror": {
@@ -7586,14 +7570,14 @@
                 "Alias": "container"
             },
             "Mesh": {
-                "Alias": "Cork",
-                "FilePath": "res\\assets\\models\\Cork.obj"
+                "Alias": "capsule",
+                "FilePath": "res\\assets\\models\\capsule.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.8999999761581421,
             "Mass": 5.0,
-            "Properties": 62
+            "Properties": 126
         },
         "Transform": {
             "Mirror": {
@@ -7602,9 +7586,9 @@
                 "Z": false
             },
             "Position": {
-                "X": -4.415224075317383,
+                "X": -3.2330355644226074,
                 "Y": 1.0499999523162842,
-                "Z": 0.10107147693634033
+                "Z": 17.366722106933594
             },
             "Rotation": {
                 "qW": 1.0,
@@ -7651,7 +7635,7 @@
         "RigidBody": {
             "Friction": 0.8999999761581421,
             "Mass": 5.0,
-            "Properties": 62
+            "Properties": 126
         },
         "Transform": {
             "Mirror": {
@@ -7731,14 +7715,6 @@
         "Parent": {
             "Name": "Player4 Red"
         },
-        "Renderable": {
-            "CullingMask": 8,
-            "Enabled": true,
-            "Material": {
-                "Alias": null
-            },
-            "Mesh": null
-        },
         "Transform": {
             "Mirror": {
                 "X": false,
@@ -7788,14 +7764,14 @@
                 "Alias": "container"
             },
             "Mesh": {
-                "Alias": "Cork",
-                "FilePath": "res\\assets\\models\\Cork.obj"
+                "Alias": "capsule",
+                "FilePath": "res\\assets\\models\\capsule.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.8999999761581421,
             "Mass": 5.0,
-            "Properties": 62
+            "Properties": 126
         },
         "Transform": {
             "Mirror": {
@@ -7804,9 +7780,9 @@
                 "Z": false
             },
             "Position": {
-                "X": -0.027547240257263184,
+                "X": -7.452012062072754,
                 "Y": 1.0499999523162842,
-                "Z": 3.6298446655273438
+                "Z": 13.626511573791504
             },
             "Rotation": {
                 "qW": 1.0,

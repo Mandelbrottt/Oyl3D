@@ -121,7 +121,7 @@ void GarbagePileSystem::increaseGarbageLevel(entt::entity a_garbagePileEntity)
 		garbagePile.garbageLevel++;
 		garbagePile.garbageTicks = garbagePile.GARBAGE_TICKS_PER_LEVEL;
 
-		GarbageReappearedEvent garbageReappeared;
+		GarbagePileReappearedEvent garbageReappeared;
 		garbageReappeared.garbagePileEntity = a_garbagePileEntity;
 		postEvent(garbageReappeared);
 	}
@@ -131,6 +131,10 @@ void GarbagePileSystem::increaseGarbageLevel(entt::entity a_garbagePileEntity)
 		garbagePile.garbageTicks = garbagePile.GARBAGE_TICKS_PER_LEVEL;
 
 	updateGarbagePileVisualSize(a_garbagePileEntity); //update size whenever garbage is added
+
+	IncreasedGarbageLevelEvent increasedGarbageLevel;
+	increasedGarbageLevel.garbagePileEntity = a_garbagePileEntity;
+	postEvent(increasedGarbageLevel);
 }
 
 void GarbagePileSystem::decreaseGarbageLevel(entt::entity a_garbagePileEntity)

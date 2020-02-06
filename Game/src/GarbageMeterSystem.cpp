@@ -30,6 +30,10 @@ void GarbageMeterSystem::onUpdate()
 				float currentFillAmount = glm::mix(bar.startValue, bar.targetValue, bar.interpolationParam);
 
 				barGui.upperClipping.y = currentFillAmount;
+				if (meter.team == Team::blue && meter.playerNum == PlayerNumber::One && bar.targetValue < 0.1f)
+				{
+					//std::cout << "start: " << bar.startValue << " target: " << bar.targetValue << "\n";
+				}
 
 				if (bar.interpolationParam >= 1.0f)
 				{
@@ -45,32 +49,46 @@ bool GarbageMeterSystem::onEvent(const Event& event)
 {
 	switch (event.type)
 	{
+		case (EventType)TypeIncreasedGarbageLevel:
+		{
+			auto evt = event_cast<IncreasedGarbageLevelEvent>(event);
+
+			updateMeterBarsForGarbagePile(evt.garbagePileEntity);
+
+			break;
+		}
+
 		case (EventType)TypeGarbageCleaned:
 		{
 			auto evt = event_cast<GarbageCleanedEvent>(event);
 
-			const auto& garbagePile = registry->get<GarbagePile>(evt.garbagePileEntity);
-
-			auto garbageHPBarView = registry->view<GarbagePileHealthBar, component::GuiRenderable, component::Transform>();
-			for (auto garbageHPBarEntity : garbageHPBarView)
-			{
-				auto& garbageHPBar = registry->get<GarbagePileHealthBar>(garbageHPBarEntity);
-
-				if (garbageHPBar.garbagePileNum == garbagePile.relativePositionOnShip && garbageHPBar.team == garbagePile.team)
-				{
-					if (garbagePile.garbageTicks == garbagePile.GARBAGE_TICKS_PER_LEVEL)
-						garbageHPBar.targetValue = 0.0f;
-					else
-						garbageHPBar.targetValue = garbagePile.garbageTicks / garbagePile.GARBAGE_TICKS_PER_LEVEL;
-
-					if (garbagePile.garbageLevel == 0)
-						garbageHPBar.shouldHideAfterInterpolating = true;
-				}
-			}
+			updateMeterBarsForGarbagePile(evt.garbagePileEntity);
 
 			break;
 		}
 	}
 
 	return false;
+}
+
+void GarbageMeterSystem::updateMeterBarsForGarbagePile(entt::entity a_garbagePileEntity)
+{
+	const auto& garbagePile = registry->get<GarbagePile>(a_garbagePileEntity);
+
+	auto garbageMeterView = registry->view<GarbageMeterDisplay, component::Transform>();
+	for (auto garbageMeterEntity : garbageMeterView)
+	{
+		auto& garbageMeter = registry->get<GarbageMeterDisplay>(garbageMeterEntity);
+
+		if (garbageMeter.team != garbagePile.team)
+			continue;
+
+		for (auto barEntity : garbageMeter.garbageMeterBars)
+		{
+			auto& bar = registry->get<GarbageMeterBar>(barEntity);
+
+			if (bar.garbagePileNum == garbagePile.relativePositionOnShip)
+				bar.targetValue = (float)garbagePile.garbageLevel / (float)garbagePile.MAX_GARBAGE_LEVEL;
+		}
+	}
 }
