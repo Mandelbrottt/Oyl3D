@@ -24,8 +24,8 @@
         },
         "Textures": {
             "Albedo": {
-                "Alias": null,
-                "FilePath": "../Engine/res/textures/invalid.png",
+                "Alias": "woodPlanks",
+                "FilePath": "res\\assets\\textures\\woodPlanks.png",
                 "Profile": 0,
                 "guid": null
             },

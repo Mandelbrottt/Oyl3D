@@ -149,7 +149,7 @@ void SandboxLayer::onEnter()
 			//GARBAGE PILES
 			//NOTE: MAKE SURE THESE ARE ARRANGED SO THE FIRST ONE (BlueGarbagePile0) IS ON THE LEFTMOST SIDE RELATIVE TO THE POSITIVE Z AXIS
 			//      AND THE LAST ONE IS ON THE RIGHT SO THAT THE OPPOSING CANNON FIRES AT THE CORRECT GARBAGE PILE
-			mr.mesh = Mesh::cache("res/assets/models/garbage.obj");
+			mr.mesh = Mesh::cache("res/assets/models/garbageTiny.obj");
 			mr.material = Material::get("garbage");
 			for (int i = 0; i < 3; i++)
 			{
@@ -215,31 +215,34 @@ void SandboxLayer::onEnter()
         {
 			mr.mesh = Mesh::cache("res/assets/models/mop.obj");
 			mr.material = Material::get("mop");
-			//MOP
-			entt::entity mopEntity = registry->create();
+			//MOPS
+			for (int i = 0; i < 2; i++)
+			{
+				entt::entity mopEntity = registry->create();
 
-			component::Transform mopTransform;
-			mopTransform.setPosition(glm::vec3(3.0f, 0.1f, 0.0f));
-			mopTransform.setScale(glm::vec3(2.0f, 0.2f, 0.2f));
-			registry->assign<component::Transform>(mopEntity, mopTransform);
+				component::Transform mopTransform;
+				mopTransform.setPosition(glm::vec3(3.0f, 0.1f, 0.0f));
+				mopTransform.setScale(glm::vec3(2.0f, 0.2f, 0.2f));
+				registry->assign<component::Transform>(mopEntity, mopTransform);
 
-			auto& carryableItem = registry->assign<CarryableItem>(mopEntity);
-			carryableItem.team = Team::blue;
-			carryableItem.type = CarryableItemType::mop;
+				auto& carryableItem = registry->assign<CarryableItem>(mopEntity);
+				carryableItem.team = Team::blue;
+				carryableItem.type = CarryableItemType::mop;
 
-			auto& rb = registry->assign<component::RigidBody>(mopEntity);
-			rb.setMass(2.0f);
-			rb.setFriction(0.6f);
+				auto& rb = registry->assign<component::RigidBody>(mopEntity);
+				rb.setMass(2.0f);
+				rb.setFriction(0.6f);
 
-			mr.mesh = Mesh::get("cube");
-			registry->assign<component::Renderable>(mopEntity, mr);
+				mr.mesh = Mesh::get("cube");
+				registry->assign<component::Renderable>(mopEntity, mr);
 
-			auto& so2 = registry->assign<component::EntityInfo>(mopEntity);
-			so2.name = "BlueMop";
+				auto& so2 = registry->assign<component::EntityInfo>(mopEntity);
+				so2.name = "BlueMop " + std::to_string(i+1);
 
-			auto& mopCollider = registry->assign<component::Collidable>(mopEntity);
-			auto& shapeInfo = mopCollider.pushShape(ColliderType::Box);
-			shapeInfo.box.setSize({ 2.0f, 0.2f, 0.5f });
+				auto& mopCollider = registry->assign<component::Collidable>(mopEntity);
+				auto& shapeInfo = mopCollider.pushShape(ColliderType::Box);
+				shapeInfo.box.setSize({ 2.0f, 0.2f, 0.5f });
+			}
         }
 
 		{
@@ -616,33 +619,36 @@ void SandboxLayer::onEnter()
 
 		{
 			//MOP
-			mr.mesh = Mesh::get("mop");
-			mr.material = Material::get("mop");
+			for (int i = 0; i < 2; i++)
+			{
+				mr.mesh = Mesh::get("mop");
+				mr.material = Material::get("mop");
 
-			entt::entity mopEntity = registry->create();
+				entt::entity mopEntity = registry->create();
 
-			component::Transform mopTransform;
-			mopTransform.setPosition(glm::vec3(3.0f, 0.1f, 0.0f));
-			mopTransform.setScale(glm::vec3(2.0f, 0.2f, 0.2f));
-			registry->assign<component::Transform>(mopEntity, mopTransform);
+				component::Transform mopTransform;
+				mopTransform.setPosition(glm::vec3(3.0f, 0.1f, 0.0f));
+				mopTransform.setScale(glm::vec3(2.0f, 0.2f, 0.2f));
+				registry->assign<component::Transform>(mopEntity, mopTransform);
 
-			auto& carryableItem = registry->assign<CarryableItem>(mopEntity);
-			carryableItem.team = Team::red;
-			carryableItem.type = CarryableItemType::mop;
+				auto& carryableItem = registry->assign<CarryableItem>(mopEntity);
+				carryableItem.team = Team::red;
+				carryableItem.type = CarryableItemType::mop;
 
-			auto& rb = registry->assign<component::RigidBody>(mopEntity);
-			rb.setMass(2.0f);
-			rb.setFriction(0.6f);
+				auto& rb = registry->assign<component::RigidBody>(mopEntity);
+				rb.setMass(2.0f);
+				rb.setFriction(0.6f);
 
-			mr.mesh = Mesh::get("cube");
-			registry->assign<component::Renderable>(mopEntity, mr);
+				mr.mesh = Mesh::get("cube");
+				registry->assign<component::Renderable>(mopEntity, mr);
 
-			auto& so2 = registry->assign<component::EntityInfo>(mopEntity);
-			so2.name = "RedMop";
+				auto& so2 = registry->assign<component::EntityInfo>(mopEntity);
+				so2.name = "RedMop " + std::to_string(i+1);
 
-			auto& mopCollider = registry->assign<component::Collidable>(mopEntity);
-			auto& shapeInfo = mopCollider.pushShape(ColliderType::Box);
-			shapeInfo.box.setSize({ 2.0f, 0.2f, 0.5f });
+				auto& mopCollider = registry->assign<component::Collidable>(mopEntity);
+				auto& shapeInfo = mopCollider.pushShape(ColliderType::Box);
+				shapeInfo.box.setSize({ 2.0f, 0.2f, 0.5f });
+			}
 		}
 
 		{

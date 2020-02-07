@@ -150,9 +150,31 @@ bool GarbagePileHealthBarSystem::onEvent(const Event& event)
 			break;
 		}
 
-		case (EventType)TypeGarbageReappeared:
+		case (EventType)TypeIncreasedGarbageLevel:
 		{
-			auto evt = event_cast<GarbageReappearedEvent>(event);
+			auto evt = event_cast<IncreasedGarbageLevelEvent>(event);
+
+			const auto& garbagePile = registry->get<GarbagePile>(evt.garbagePileEntity);
+
+			//we only want to keep going if the garbage level and ticks are maxed out (garbage will no longer be cleanable)
+			if (garbagePile.garbageLevel != garbagePile.MAX_GARBAGE_LEVEL || garbagePile.garbageTicks != garbagePile.GARBAGE_TICKS_PER_LEVEL)
+				break;
+
+			auto garbageHPBarView = registry->view<GarbagePileHealthBar, component::GuiRenderable, component::Transform>();
+			for (auto garbageHPBarEntity : garbageHPBarView)
+			{
+				auto& garbageHPBar = registry->get<GarbagePileHealthBar>(garbageHPBarEntity);
+
+				if (garbageHPBar.garbagePileNum == garbagePile.relativePositionOnShip && garbageHPBar.team == garbagePile.team)
+					garbageHPBar.shouldBeHidden = true;
+			}
+
+			break;
+		}
+
+		case (EventType)TypeGarbagePileReappeared:
+		{
+			auto evt = event_cast<GarbagePileReappearedEvent>(event);
 
 			const auto& garbagePile = registry->get<GarbagePile>(evt.garbagePileEntity);
 
