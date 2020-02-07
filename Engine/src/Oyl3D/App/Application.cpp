@@ -6,7 +6,7 @@
 
 #include "Debug/GuiLayer.h"
 
-#include "ECS/SystemImpl.h"
+#include "Rendering/RenderSystems.h"
 
 #include "Events/EventDispatcher.h"
 #include "Events/EventListener.h"
@@ -22,8 +22,6 @@
 #include "Rendering/Renderer.h"
 
 #include "Utils/SceneToFile.h"
-
-#include <imgui.h>
 
 namespace oyl
 {

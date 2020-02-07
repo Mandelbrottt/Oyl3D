@@ -15,7 +15,7 @@
 #include "Components/RigidBody.h"
 #include "Components/Transform.h"
 
-#include "ECS/SystemImpl.h"
+#include "Scenes/System.h"
 
 #include "Graphics/EditorCamera.h"
 #include "Graphics/Material.h"
@@ -33,6 +33,7 @@
 #include <imgui_internal.h>
 
 #include <GLFW/glfw3.h>
+#include "EditorSystems.h"
 
 static bool isTexture(const char* ext);
 static bool isMesh(const char* ext);
@@ -936,8 +937,8 @@ namespace oyl::internal
                 ImGui::EndCombo();
             }
             
-            CacheAlias currentName;
-            if (currentName.assign(Mesh::getAlias(renderable.mesh)); !renderable.mesh || currentName == INVALID_ALIAS)
+            CacheAlias currentName = Mesh::getAlias(renderable.mesh);
+            if (!renderable.mesh || currentName == INVALID_ALIAS)
                 currentName.assign("None");
 
             ImGui::TextUnformatted("Current Mesh");
@@ -960,8 +961,9 @@ namespace oyl::internal
 
                 ImGui::EndCombo();
             }
-            
-            if (currentName.assign(Material::getAlias(renderable.material)); !renderable.material || currentName == INVALID_ALIAS)
+
+            currentName.assign(Material::getAlias(renderable.material));
+            if (!renderable.material || currentName == INVALID_ALIAS)
                 currentName.assign("None");
                         
             ImGui::TextUnformatted("Current Material");
@@ -1026,8 +1028,8 @@ namespace oyl::internal
                 ImGui::EndCombo();
             }
 
-            CacheAlias currentName;
-            if (currentName.assign(Texture2D::getAlias(gui.texture)); !gui.texture || currentName == INVALID_ALIAS)
+            CacheAlias currentName = Texture2D::getAlias(gui.texture);
+            if (!gui.texture || currentName == INVALID_ALIAS)
                 currentName.assign("None");
             
             ImGui::TextUnformatted("Current Texture");
