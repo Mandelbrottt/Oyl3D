@@ -209,7 +209,7 @@ bool PlayerSystem::onEvent(const Event& event)
 			float halfPlayerHeight = playerCollidable.getShape(0).capsule.getHeight();
 
 			//check if the player is valid to jump
-			if (evt.contactPoint.y <= (playerTransform.getPositionY() - halfPlayerHeight + 0.01f) && player.jumpCooldownTimer < 0.0f)
+			if (evt.contactPoint.y <= (playerTransform.getPositionY() - halfPlayerHeight + 0.15f) && player.jumpCooldownTimer < 0.0f)
 			{
 				player.isJumping         = false;
 				player.jumpCooldownTimer = player.JUMP_COOLDOWN_DURATION;
