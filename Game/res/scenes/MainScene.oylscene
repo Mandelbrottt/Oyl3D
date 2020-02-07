@@ -77,7 +77,7 @@
             }
         }
     },
-    "BetweenShipsCollider 1": {
+    "BetweenShipsColliderLower 1": {
         "Collidable": {
             "Shapes": [
                 {
@@ -103,7 +103,7 @@
             "CullingMask": 15,
             "Enabled": false,
             "Material": {
-                "Alias": "container"
+                "Alias": null
             },
             "Mesh": {
                 "Alias": "cube",
@@ -122,7 +122,7 @@
                 "Z": false
             },
             "Position": {
-                "X": 1.1997101306915283,
+                "X": 1.1924550533294678,
                 "Y": 3.1068921089172363e-06,
                 "Z": 0.0
             },
@@ -139,7 +139,7 @@
             }
         }
     },
-    "BetweenShipsCollider 2": {
+    "BetweenShipsColliderLower 2": {
         "Collidable": {
             "Shapes": [
                 {
@@ -165,7 +165,7 @@
             "CullingMask": 15,
             "Enabled": false,
             "Material": {
-                "Alias": "container"
+                "Alias": null
             },
             "Mesh": {
                 "Alias": "cube",
@@ -184,7 +184,7 @@
                 "Z": false
             },
             "Position": {
-                "X": -5.960464477539063e-08,
+                "X": 0.0017586350440979004,
                 "Y": 0.0,
                 "Z": 0.0
             },
@@ -195,13 +195,13 @@
                 "qZ": 0.0
             },
             "Scale": {
-                "X": 1.0,
+                "X": 1.0128506422042847,
                 "Y": 1.0,
                 "Z": 1.0294109582901
             }
         }
     },
-    "BetweenShipsCollider 3": {
+    "BetweenShipsColliderLower 3": {
         "Collidable": {
             "Shapes": [
                 {
@@ -260,6 +260,130 @@
                 "X": 1.0,
                 "Y": 0.6231107711791992,
                 "Z": 1.028589129447937
+            }
+        }
+    },
+    "BetweenShipsColliderMid 1": {
+        "Collidable": {
+            "Shapes": [
+                {
+                    "Center": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Size": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "Trigger": false,
+                    "Type": 0
+                }
+            ]
+        },
+        "Parent": {
+            "Name": "BetweenShipsColliders"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": false,
+            "Material": {
+                "Alias": null
+            },
+            "Mesh": {
+                "Alias": "cube",
+                "FilePath": "res\\assets\\models\\cube.obj"
+            }
+        },
+        "RigidBody": {
+            "Friction": 0.0,
+            "Mass": 0.0,
+            "Properties": 34
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": 0.001758575439453125,
+                "Y": 0.0,
+                "Z": 0.003382384777069092
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0165730714797974,
+                "Y": 1.0,
+                "Z": 1.1315711736679077
+            }
+        }
+    },
+    "BetweenShipsColliderUpper 1": {
+        "Collidable": {
+            "Shapes": [
+                {
+                    "Center": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Size": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "Trigger": false,
+                    "Type": 0
+                }
+            ]
+        },
+        "Parent": {
+            "Name": "BetweenShipsColliders"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": false,
+            "Material": {
+                "Alias": null
+            },
+            "Mesh": {
+                "Alias": "cube",
+                "FilePath": "res\\assets\\models\\cube.obj"
+            }
+        },
+        "RigidBody": {
+            "Friction": 0.0,
+            "Mass": 0.0,
+            "Properties": 34
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": 1.1924550533294678,
+                "Y": 0.1638144999742508,
+                "Z": 0.009061157703399658
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.009742259979248,
+                "Y": 0.554162859916687,
+                "Z": 1.1309099197387695
             }
         }
     },
@@ -2107,7 +2231,7 @@
             "CullingMask": 15,
             "Enabled": false,
             "Material": {
-                "Alias": "container"
+                "Alias": null
             },
             "Mesh": {
                 "Alias": "cube",
@@ -2177,7 +2301,7 @@
             }
         },
         "RigidBody": {
-            "Friction": 0.0,
+            "Friction": 0.949999988079071,
             "Mass": 0.0,
             "Properties": 34
         },
@@ -2188,20 +2312,20 @@
                 "Z": false
             },
             "Position": {
-                "X": 0.16361194849014282,
-                "Y": -0.3579484224319458,
-                "Z": -1.1594114303588867
+                "X": 0.12361752986907959,
+                "Y": -0.3166912794113159,
+                "Z": -0.9652480483055115
             },
             "Rotation": {
-                "qW": 0.9999994039535522,
-                "qX": -0.0010926041286438704,
-                "qY": -0.00017053019837476313,
-                "qZ": 2.9094788260408677e-05
+                "qW": 0.9270836710929871,
+                "qX": 0.37485450506210327,
+                "qY": -0.0001538255310151726,
+                "qZ": 3.028041828656569e-05
             },
             "Scale": {
-                "X": 0.10432486981153488,
-                "Y": 0.028750762343406677,
-                "Z": 0.658072292804718
+                "X": 0.09919191151857376,
+                "Y": 0.02875063568353653,
+                "Z": 0.9197502732276917
             }
         }
     },
@@ -6860,6 +6984,592 @@
             }
         }
     },
+    "MidDeckCollider 1": {
+        "Collidable": {
+            "Shapes": [
+                {
+                    "Center": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Size": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "Trigger": false,
+                    "Type": 0
+                }
+            ]
+        },
+        "Parent": {
+            "Name": "MidDeckColliders"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": false,
+            "Material": {
+                "Alias": null
+            },
+            "Mesh": {
+                "Alias": "cube",
+                "FilePath": "res\\assets\\models\\cube.obj"
+            }
+        },
+        "RigidBody": {
+            "Friction": 0.949999988079071,
+            "Mass": 0.0,
+            "Properties": 34
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -1.4901161193847656e-08,
+                "Y": 2.9802322387695313e-08,
+                "Z": 0.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 0.9999998807907104,
+                "Y": 0.9999998211860657,
+                "Z": 0.9999998807907104
+            }
+        }
+    },
+    "MidDeckCollider 2": {
+        "Collidable": {
+            "Shapes": [
+                {
+                    "Center": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Size": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "Trigger": false,
+                    "Type": 0
+                }
+            ]
+        },
+        "Parent": {
+            "Name": "MidDeckColliders"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": false,
+            "Material": {
+                "Alias": null
+            },
+            "Mesh": {
+                "Alias": "cube",
+                "FilePath": "res\\assets\\models\\cube.obj"
+            }
+        },
+        "RigidBody": {
+            "Friction": 0.949999988079071,
+            "Mass": 0.0,
+            "Properties": 34
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -0.7220457792282104,
+                "Y": 5.960464477539063e-08,
+                "Z": 0.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 0.33869844675064087,
+                "Y": 0.9999997615814209,
+                "Z": 0.9999998211860657
+            }
+        }
+    },
+    "MidDeckCollider 3": {
+        "Collidable": {
+            "Shapes": [
+                {
+                    "Center": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Size": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "Trigger": false,
+                    "Type": 0
+                }
+            ]
+        },
+        "Parent": {
+            "Name": "MidDeckColliders"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": false,
+            "Material": {
+                "Alias": null
+            },
+            "Mesh": {
+                "Alias": "cube",
+                "FilePath": "res\\assets\\models\\cube.obj"
+            }
+        },
+        "RigidBody": {
+            "Friction": 0.949999988079071,
+            "Mass": 0.0,
+            "Properties": 34
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -0.5081836581230164,
+                "Y": 5.960464477539063e-08,
+                "Z": -0.331839382648468
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 0.13382548093795776,
+                "Y": 0.9999997615814209,
+                "Z": 0.23921896517276764
+            }
+        }
+    },
+    "MidDeckCollider 5": {
+        "Collidable": {
+            "Shapes": [
+                {
+                    "Center": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Size": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "Trigger": false,
+                    "Type": 0
+                }
+            ]
+        },
+        "Parent": {
+            "Name": "MidDeckColliders"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": false,
+            "Material": {
+                "Alias": null
+            },
+            "Mesh": {
+                "Alias": "cube",
+                "FilePath": "res\\assets\\models\\cube.obj"
+            }
+        },
+        "RigidBody": {
+            "Friction": 0.949999988079071,
+            "Mass": 0.0,
+            "Properties": 34
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -0.5081836581230164,
+                "Y": 5.960464477539063e-08,
+                "Z": 0.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 0.13382545113563538,
+                "Y": 0.9999997615814209,
+                "Z": 0.2874446213245392
+            }
+        }
+    },
+    "MidDeckColliders": {
+        "Parent": {
+            "Name": "Colliders"
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": 2.847209930419922,
+                "Y": -0.4999578893184662,
+                "Z": 2.068734645843506
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 18.392993927001953,
+                "Y": 0.9999998211860657,
+                "Z": 29.999998092651367
+            }
+        }
+    },
+    "MidDeckFrontCollider 1": {
+        "Collidable": {
+            "Shapes": [
+                {
+                    "Center": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Size": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "Trigger": false,
+                    "Type": 0
+                }
+            ]
+        },
+        "Parent": {
+            "Name": "MidDeckColliders"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": false,
+            "Material": {
+                "Alias": "container"
+            },
+            "Mesh": {
+                "Alias": "cube",
+                "FilePath": "res\\assets\\models\\cube.obj"
+            }
+        },
+        "RigidBody": {
+            "Friction": 0.0,
+            "Mass": 0.0,
+            "Properties": 34
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -0.6197655200958252,
+                "Y": 10.958137512207031,
+                "Z": -0.09321324527263641
+            },
+            "Rotation": {
+                "qW": 0.9958527684211731,
+                "qX": 0.0,
+                "qY": -0.09097955375909805,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 0.2659918963909149,
+                "Y": 21.30924415588379,
+                "Z": 0.03129281476140022
+            }
+        }
+    },
+    "MidDeckFrontCollider 2": {
+        "Collidable": {
+            "Shapes": [
+                {
+                    "Center": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Size": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "Trigger": false,
+                    "Type": 0
+                }
+            ]
+        },
+        "Parent": {
+            "Name": "MidDeckColliders"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": false,
+            "Material": {
+                "Alias": "container"
+            },
+            "Mesh": {
+                "Alias": "cube",
+                "FilePath": "res\\assets\\models\\cube.obj"
+            }
+        },
+        "RigidBody": {
+            "Friction": 0.0,
+            "Mass": 0.0,
+            "Properties": 34
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -0.6619877815246582,
+                "Y": 10.958137512207031,
+                "Z": -0.11021523177623749
+            },
+            "Rotation": {
+                "qW": 0.9570329785346985,
+                "qX": 0.0,
+                "qY": -0.2899791896343231,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 0.2659918963909149,
+                "Y": 21.30924415588379,
+                "Z": 0.03129281476140022
+            }
+        }
+    },
+    "MidDeckFrontCollider 3": {
+        "Collidable": {
+            "Shapes": [
+                {
+                    "Center": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Size": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "Trigger": false,
+                    "Type": 0
+                }
+            ]
+        },
+        "Parent": {
+            "Name": "MidDeckColliders"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": false,
+            "Material": {
+                "Alias": "container"
+            },
+            "Mesh": {
+                "Alias": "cube",
+                "FilePath": "res\\assets\\models\\cube.obj"
+            }
+        },
+        "RigidBody": {
+            "Friction": 0.0,
+            "Mass": 0.0,
+            "Properties": 34
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -0.7303365468978882,
+                "Y": 10.958137512207031,
+                "Z": -0.12748512625694275
+            },
+            "Rotation": {
+                "qW": 0.722161591053009,
+                "qX": 0.0,
+                "qY": -0.691724419593811,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 0.2659918963909149,
+                "Y": 21.30924415588379,
+                "Z": 0.03129281476140022
+            }
+        }
+    },
+    "MidDeckFrontCollider 4": {
+        "Collidable": {
+            "Shapes": [
+                {
+                    "Center": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Size": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "Trigger": false,
+                    "Type": 0
+                }
+            ]
+        },
+        "Parent": {
+            "Name": "MidDeckColliders"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": false,
+            "Material": {
+                "Alias": "container"
+            },
+            "Mesh": {
+                "Alias": "cube",
+                "FilePath": "res\\assets\\models\\cube.obj"
+            }
+        },
+        "RigidBody": {
+            "Friction": 0.0,
+            "Mass": 0.0,
+            "Properties": 34
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -0.565414547920227,
+                "Y": 10.958137512207031,
+                "Z": -0.2648724913597107
+            },
+            "Rotation": {
+                "qW": 1.0779814374473062e-06,
+                "qX": 0.10668866336345673,
+                "qY": -1.7113458170570084e-06,
+                "qZ": 0.9942924976348877
+            },
+            "Scale": {
+                "X": 0.2659918963909149,
+                "Y": 21.30924415588379,
+                "Z": 0.03129281476140022
+            }
+        }
+    },
+    "MidDeckFrontCollider 5": {
+        "Collidable": {
+            "Shapes": [
+                {
+                    "Center": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Size": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "Trigger": false,
+                    "Type": 0
+                }
+            ]
+        },
+        "Parent": {
+            "Name": "MidDeckColliders"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": false,
+            "Material": {
+                "Alias": "container"
+            },
+            "Mesh": {
+                "Alias": "cube",
+                "FilePath": "res\\assets\\models\\cube.obj"
+            }
+        },
+        "RigidBody": {
+            "Friction": 0.0,
+            "Mass": 0.0,
+            "Properties": 34
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -0.6598246097564697,
+                "Y": 10.958137512207031,
+                "Z": -0.24947214126586914
+            },
+            "Rotation": {
+                "qW": 1.4309478046925506e-06,
+                "qX": 0.3743472099304199,
+                "qY": -1.7950594610738335e-06,
+                "qZ": 0.9272885918617249
+            },
+            "Scale": {
+                "X": 0.2659918963909149,
+                "Y": 21.30924415588379,
+                "Z": 0.03129281476140022
+            }
+        }
+    },
     "Normal Reticle1": {
         "GuiRenderable": {
             "Clipping": {
@@ -8083,9 +8793,9 @@
                 "Z": false
             },
             "Position": {
-                "X": 0.0,
-                "Y": 1.0499999523162842,
-                "Z": 0.0
+                "X": 14.286969184875488,
+                "Y": 5.780167102813721,
+                "Z": -5.167041301727295
             },
             "Rotation": {
                 "qW": 1.0,
@@ -10588,7 +11298,7 @@
             "Position": {
                 "X": -13.358362197875977,
                 "Y": -4.134646415710449,
-                "Z": 0.1790142059326172
+                "Z": 0.608013391494751
             },
             "Rotation": {
                 "qW": 1.0,
@@ -10798,7 +11508,7 @@
             }
         }
     },
-    "TopDeckCollider 1": {
+    "UpperColliderBack 1": {
         "Collidable": {
             "Shapes": [
                 {
@@ -10818,7 +11528,7 @@
             ]
         },
         "Parent": {
-            "Name": "TopDeckColliders"
+            "Name": "UpperDeckColliders"
         },
         "Renderable": {
             "CullingMask": 15,
@@ -10832,7 +11542,7 @@
             }
         },
         "RigidBody": {
-            "Friction": 0.949999988079071,
+            "Friction": 0.0,
             "Mass": 0.0,
             "Properties": 34
         },
@@ -10843,24 +11553,24 @@
                 "Z": false
             },
             "Position": {
-                "X": -1.4901161193847656e-08,
-                "Y": 2.9802322387695313e-08,
-                "Z": 0.0
+                "X": 0.3651255965232849,
+                "Y": 32.0677490234375,
+                "Z": -0.263155072927475
             },
             "Rotation": {
-                "qW": 1.0,
+                "qW": 0.9842044711112976,
                 "qX": 0.0,
-                "qY": 0.0,
+                "qY": -0.17703548073768616,
                 "qZ": 0.0
             },
             "Scale": {
-                "X": 0.9999998807907104,
-                "Y": 0.9999998211860657,
-                "Z": 0.9999998807907104
+                "X": 0.2845120429992676,
+                "Y": 25.39065933227539,
+                "Z": 0.03152207285165787
             }
         }
     },
-    "TopDeckCollider 2": {
+    "UpperColliderBack 2": {
         "Collidable": {
             "Shapes": [
                 {
@@ -10880,7 +11590,7 @@
             ]
         },
         "Parent": {
-            "Name": "TopDeckColliders"
+            "Name": "UpperDeckColliders"
         },
         "Renderable": {
             "CullingMask": 15,
@@ -10894,7 +11604,7 @@
             }
         },
         "RigidBody": {
-            "Friction": 0.949999988079071,
+            "Friction": 0.0,
             "Mass": 0.0,
             "Properties": 34
         },
@@ -10905,24 +11615,24 @@
                 "Z": false
             },
             "Position": {
-                "X": -0.7220457792282104,
-                "Y": 5.960464477539063e-08,
-                "Z": 0.0
+                "X": 0.41434600949287415,
+                "Y": 32.064781188964844,
+                "Z": -0.24231034517288208
             },
             "Rotation": {
-                "qW": 1.0,
+                "qW": 0.9285262227058411,
                 "qX": 0.0,
-                "qY": 0.0,
+                "qY": -0.37126675248146057,
                 "qZ": 0.0
             },
             "Scale": {
-                "X": 0.33869844675064087,
-                "Y": 0.9999997615814209,
-                "Z": 0.9999998211860657
+                "X": 0.2845120429992676,
+                "Y": 25.39065933227539,
+                "Z": 0.03152207285165787
             }
         }
     },
-    "TopDeckCollider 3": {
+    "UpperColliderBack 3": {
         "Collidable": {
             "Shapes": [
                 {
@@ -10942,7 +11652,7 @@
             ]
         },
         "Parent": {
-            "Name": "TopDeckColliders"
+            "Name": "UpperDeckColliders"
         },
         "Renderable": {
             "CullingMask": 15,
@@ -10956,7 +11666,7 @@
             }
         },
         "RigidBody": {
-            "Friction": 0.949999988079071,
+            "Friction": 0.0,
             "Mass": 0.0,
             "Properties": 34
         },
@@ -10967,24 +11677,24 @@
                 "Z": false
             },
             "Position": {
-                "X": -0.5081836581230164,
-                "Y": 5.960464477539063e-08,
-                "Z": -0.331839382648468
+                "X": 0.43114206194877625,
+                "Y": 32.06340408325195,
+                "Z": -0.229890376329422
             },
             "Rotation": {
-                "qW": 1.0,
+                "qW": 0.8940642476081848,
                 "qX": 0.0,
-                "qY": 0.0,
+                "qY": -0.4479387700557709,
                 "qZ": 0.0
             },
             "Scale": {
-                "X": 0.13382548093795776,
-                "Y": 0.9999997615814209,
-                "Z": 0.23921896517276764
+                "X": 0.2845120429992676,
+                "Y": 25.39065933227539,
+                "Z": 0.03152207285165787
             }
         }
     },
-    "TopDeckCollider 4": {
+    "UpperColliderBack 4": {
         "Collidable": {
             "Shapes": [
                 {
@@ -11004,7 +11714,7 @@
             ]
         },
         "Parent": {
-            "Name": "TopDeckColliders"
+            "Name": "UpperDeckColliders"
         },
         "Renderable": {
             "CullingMask": 15,
@@ -11018,7 +11728,7 @@
             }
         },
         "RigidBody": {
-            "Friction": 0.949999988079071,
+            "Friction": 0.0,
             "Mass": 0.0,
             "Properties": 34
         },
@@ -11029,9 +11739,195 @@
                 "Z": false
             },
             "Position": {
-                "X": -0.5081836581230164,
-                "Y": 5.960464477539063e-08,
-                "Z": 0.0
+                "X": 0.45838889479637146,
+                "Y": 32.05958938598633,
+                "Z": -0.15666517615318298
+            },
+            "Rotation": {
+                "qW": -0.5007715821266174,
+                "qX": -2.377564669586718e-06,
+                "qY": 0.8655794858932495,
+                "qZ": -3.203846063115634e-06
+            },
+            "Scale": {
+                "X": 0.2845120429992676,
+                "Y": 25.39065933227539,
+                "Z": 0.03152207285165787
+            }
+        }
+    },
+    "UpperColliderBack 5": {
+        "Collidable": {
+            "Shapes": [
+                {
+                    "Center": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Size": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "Trigger": false,
+                    "Type": 0
+                }
+            ]
+        },
+        "Parent": {
+            "Name": "UpperDeckColliders"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": false,
+            "Material": {
+                "Alias": "container"
+            },
+            "Mesh": {
+                "Alias": "cube",
+                "FilePath": "res\\assets\\models\\cube.obj"
+            }
+        },
+        "RigidBody": {
+            "Friction": 0.0,
+            "Mass": 0.0,
+            "Properties": 34
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": 0.3542097806930542,
+                "Y": 32.055213928222656,
+                "Z": -0.08959642052650452
+            },
+            "Rotation": {
+                "qW": -0.13810718059539795,
+                "qX": -1.3397249176705373e-06,
+                "qY": 0.9904173016548157,
+                "qZ": -3.2701873351470567e-06
+            },
+            "Scale": {
+                "X": 0.2845120429992676,
+                "Y": 25.39065933227539,
+                "Z": 0.03152207285165787
+            }
+        }
+    },
+    "UpperColliderBack 6": {
+        "Collidable": {
+            "Shapes": [
+                {
+                    "Center": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Size": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "Trigger": false,
+                    "Type": 0
+                }
+            ]
+        },
+        "Parent": {
+            "Name": "UpperDeckColliders"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": false,
+            "Material": {
+                "Alias": "container"
+            },
+            "Mesh": {
+                "Alias": "cube",
+                "FilePath": "res\\assets\\models\\cube.obj"
+            }
+        },
+        "RigidBody": {
+            "Friction": 0.0,
+            "Mass": 0.0,
+            "Properties": 34
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": 0.4377557337284088,
+                "Y": 32.058616638183594,
+                "Z": -0.1312956064939499
+            },
+            "Rotation": {
+                "qW": -0.40474092960357666,
+                "qX": -2.1171265416342067e-06,
+                "qY": 0.9144313931465149,
+                "qZ": -3.271563400630839e-06
+            },
+            "Scale": {
+                "X": 0.2845120429992676,
+                "Y": 25.39065933227539,
+                "Z": 0.03152207285165787
+            }
+        }
+    },
+    "UpperColliderOuter": {
+        "Collidable": {
+            "Shapes": [
+                {
+                    "Center": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Size": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "Trigger": false,
+                    "Type": 0
+                }
+            ]
+        },
+        "Parent": {
+            "Name": "UpperDeckColliders"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": false,
+            "Material": {
+                "Alias": null
+            },
+            "Mesh": {
+                "Alias": "cube",
+                "FilePath": "res\\assets\\models\\cube.obj"
+            }
+        },
+        "RigidBody": {
+            "Friction": 0.0,
+            "Mass": 0.0,
+            "Properties": 34
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -0.13811233639717102,
+                "Y": 21.56770133972168,
+                "Z": -0.27494674921035767
             },
             "Rotation": {
                 "qW": 1.0,
@@ -11040,13 +11936,323 @@
                 "qZ": 0.0
             },
             "Scale": {
-                "X": 0.13382545113563538,
-                "Y": 0.9999997615814209,
-                "Z": 0.2874446213245392
+                "X": 1.3530985116958618,
+                "Y": 43.97031784057617,
+                "Z": 0.03152207285165787
             }
         }
     },
-    "TopDeckColliders": {
+    "UpperColliderStairRail 1": {
+        "Collidable": {
+            "Shapes": [
+                {
+                    "Center": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Size": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "Trigger": false,
+                    "Type": 0
+                }
+            ]
+        },
+        "Parent": {
+            "Name": "UpperDeckColliders"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": null
+            },
+            "Mesh": {
+                "Alias": "cube",
+                "FilePath": "res\\assets\\models\\cube.obj"
+            }
+        },
+        "RigidBody": {
+            "Friction": 0.0,
+            "Mass": 0.0,
+            "Properties": 34
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": 0.09449535608291626,
+                "Y": 21.75442886352539,
+                "Z": -0.2203865349292755
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 0.04552474617958069,
+                "Y": 8.093342781066895,
+                "Z": 0.004999999888241291
+            }
+        }
+    },
+    "UpperColliderStairRail 2": {
+        "Collidable": {
+            "Shapes": [
+                {
+                    "Center": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Size": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "Trigger": false,
+                    "Type": 0
+                }
+            ]
+        },
+        "Parent": {
+            "Name": "UpperDeckColliders"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": null
+            },
+            "Mesh": {
+                "Alias": "cube",
+                "FilePath": "res\\assets\\models\\cube.obj"
+            }
+        },
+        "RigidBody": {
+            "Friction": 0.0,
+            "Mass": 0.0,
+            "Properties": 34
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": 0.05092465877532959,
+                "Y": 16.787580490112305,
+                "Z": -0.2204592227935791
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 0.05522265285253525,
+                "Y": 9.5443696975708,
+                "Z": 0.004999999888241291
+            }
+        }
+    },
+    "UpperColliderStairRail 3": {
+        "Collidable": {
+            "Shapes": [
+                {
+                    "Center": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Size": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "Trigger": false,
+                    "Type": 0
+                }
+            ]
+        },
+        "Parent": {
+            "Name": "UpperDeckColliders"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": null
+            },
+            "Mesh": {
+                "Alias": "cube",
+                "FilePath": "res\\assets\\models\\cube.obj"
+            }
+        },
+        "RigidBody": {
+            "Friction": 0.0,
+            "Mass": 0.0,
+            "Properties": 34
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": 0.018622875213623047,
+                "Y": 7.5699462890625,
+                "Z": -0.22053003311157227
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 0.055664051324129105,
+                "Y": 14.5430326461792,
+                "Z": 0.004999999888241291
+            }
+        }
+    },
+    "UpperColliderWheel": {
+        "Collidable": {
+            "Shapes": [
+                {
+                    "Center": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Size": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "Trigger": false,
+                    "Type": 0
+                }
+            ]
+        },
+        "Parent": {
+            "Name": "UpperDeckColliders"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": null
+            },
+            "Mesh": {
+                "Alias": "cube",
+                "FilePath": "res\\assets\\models\\cube.obj"
+            }
+        },
+        "RigidBody": {
+            "Friction": 0.0,
+            "Mass": 0.0,
+            "Properties": 34
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": 0.14048275351524353,
+                "Y": 23.39921760559082,
+                "Z": -0.17680752277374268
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 0.021100211888551712,
+                "Y": 5.743411064147949,
+                "Z": 0.026336951181292534
+            }
+        }
+    },
+    "UpperColliderWheelRail": {
+        "Collidable": {
+            "Shapes": [
+                {
+                    "Center": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Size": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "Trigger": false,
+                    "Type": 0
+                }
+            ]
+        },
+        "Parent": {
+            "Name": "UpperDeckColliders"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": null
+            },
+            "Mesh": {
+                "Alias": "cube",
+                "FilePath": "res\\assets\\models\\cube.obj"
+            }
+        },
+        "RigidBody": {
+            "Friction": 0.0,
+            "Mass": 0.0,
+            "Properties": 34
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": 0.12501254677772522,
+                "Y": 23.401262283325195,
+                "Z": -0.17680752277374268
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 0.010973948985338211,
+                "Y": 5.743411064147949,
+                "Z": 0.08912835270166397
+            }
+        }
+    },
+    "UpperDeckColliders": {
         "Parent": {
             "Name": "Colliders"
         },
@@ -11071,6 +12277,68 @@
                 "X": 18.392993927001953,
                 "Y": 0.9999998211860657,
                 "Z": 29.999998092651367
+            }
+        }
+    },
+    "UpperDeckFloor": {
+        "Collidable": {
+            "Shapes": [
+                {
+                    "Center": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Size": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "Trigger": false,
+                    "Type": 0
+                }
+            ]
+        },
+        "Parent": {
+            "Name": "UpperDeckColliders"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": false,
+            "Material": {
+                "Alias": null
+            },
+            "Mesh": {
+                "Alias": "cube",
+                "FilePath": "res\\assets\\models\\cube.obj"
+            }
+        },
+        "RigidBody": {
+            "Friction": 0.949999988079071,
+            "Mass": 0.0,
+            "Properties": 34
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": 0.3028150498867035,
+                "Y": 18.0,
+                "Z": -0.20416203141212463
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 0.3624175190925598,
+                "Y": 5.0,
+                "Z": 0.2874446213245392
             }
         }
     },
