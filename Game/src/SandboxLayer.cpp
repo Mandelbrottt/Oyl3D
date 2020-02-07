@@ -149,7 +149,7 @@ void SandboxLayer::onEnter()
 			//GARBAGE PILES
 			//NOTE: MAKE SURE THESE ARE ARRANGED SO THE FIRST ONE (BlueGarbagePile0) IS ON THE LEFTMOST SIDE RELATIVE TO THE POSITIVE Z AXIS
 			//      AND THE LAST ONE IS ON THE RIGHT SO THAT THE OPPOSING CANNON FIRES AT THE CORRECT GARBAGE PILE
-			mr.mesh = Mesh::cache("res/assets/models/garbage.obj");
+			mr.mesh = Mesh::cache("res/assets/models/garbageTiny.obj");
 			mr.material = Material::get("garbage");
 			for (int i = 0; i < 3; i++)
 			{

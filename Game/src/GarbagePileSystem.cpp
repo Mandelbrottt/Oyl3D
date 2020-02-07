@@ -165,10 +165,22 @@ void GarbagePileSystem::updateGarbagePileVisualSize(entt::entity a_garbagePileEn
 {
 	auto& garbagePile           = registry->get<GarbagePile>(a_garbagePileEntity);
 	auto& garbagePileRenderable = registry->get<component::Renderable>(a_garbagePileEntity);
-	auto& garbagePileTransform  = registry->get<component::Transform>(a_garbagePileEntity);
 
-	garbagePileTransform.setScaleX(0.03f * garbagePile.garbageLevel + 0.4f);
-	garbagePileTransform.setScaleZ(0.03f * garbagePile.garbageLevel + 0.4f);
+	if (garbagePile.garbageLevel == garbagePile.MAX_GARBAGE_LEVEL)
+	{
+		if (garbagePile.garbageTicks == garbagePile.GARBAGE_TICKS_PER_LEVEL)
+			garbagePileRenderable.mesh = Mesh::get("garbageSurrender");
+		else
+			garbagePileRenderable.mesh = Mesh::get("garbageMaximum");
+	}
+	else if (garbagePile.garbageLevel == garbagePile.MAX_GARBAGE_LEVEL - 1)
+		garbagePileRenderable.mesh = Mesh::get("garbageMedium");
+	else if (garbagePile.garbageLevel == garbagePile.MAX_GARBAGE_LEVEL - 2)
+		garbagePileRenderable.mesh = Mesh::get("garbageSmall");
+	else if (garbagePile.garbageLevel == garbagePile.MAX_GARBAGE_LEVEL - 3)
+		garbagePileRenderable.mesh = Mesh::get("garbageTiny");
+	else 
+		garbagePileRenderable.mesh = Mesh::get("garbageTiny");
 
 	if (garbagePile.garbageLevel == 0)
 		garbagePileRenderable.enabled = false;
