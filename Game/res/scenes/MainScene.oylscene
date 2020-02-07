@@ -1726,66 +1726,6 @@
             }
         }
     },
-    "BlueMop": {
-        "Collidable": {
-            "Shapes": [
-                {
-                    "Center": [
-                        0.0,
-                        0.0,
-                        0.0
-                    ],
-                    "Size": [
-                        2.0,
-                        0.20000000298023224,
-                        0.5
-                    ],
-                    "Trigger": false,
-                    "Type": 0
-                }
-            ]
-        },
-        "Parent": null,
-        "Renderable": {
-            "CullingMask": 15,
-            "Enabled": true,
-            "Material": {
-                "Alias": "mop"
-            },
-            "Mesh": {
-                "Alias": "cube",
-                "FilePath": "res\\assets\\models\\cube.obj"
-            }
-        },
-        "RigidBody": {
-            "Friction": 0.6000000238418579,
-            "Mass": 2.0,
-            "Properties": 98
-        },
-        "Transform": {
-            "Mirror": {
-                "X": false,
-                "Y": false,
-                "Z": false
-            },
-            "Position": {
-                "X": 3.0,
-                "Y": 0.10000000149011612,
-                "Z": 0.0
-            },
-            "Rotation": {
-                "qW": 1.0,
-                "qX": 0.0,
-                "qY": 0.0,
-                "qZ": 0.0
-            },
-            "Scale": {
-                "X": 2.0,
-                "Y": 0.20000000298023224,
-                "Z": 0.20000000298023224
-            }
-        }
-    },
     "BlueMop 1": {
         "Collidable": {
             "Shapes": [
@@ -10233,7 +10173,7 @@
             "ClearProps": {
                 "Skybox": null
             },
-            "CullingMask": 1,
+            "CullingMask": 2,
             "Enabled": true,
             "FarClipping": 1000.0,
             "Fov": 60.0,
@@ -12046,66 +11986,6 @@
                 "X": 1.0,
                 "Y": 1.0,
                 "Z": 1.0
-            }
-        }
-    },
-    "RedMop": {
-        "Collidable": {
-            "Shapes": [
-                {
-                    "Center": [
-                        0.0,
-                        0.0,
-                        0.0
-                    ],
-                    "Size": [
-                        2.0,
-                        0.20000000298023224,
-                        0.5
-                    ],
-                    "Trigger": false,
-                    "Type": 0
-                }
-            ]
-        },
-        "Parent": null,
-        "Renderable": {
-            "CullingMask": 15,
-            "Enabled": true,
-            "Material": {
-                "Alias": "mop"
-            },
-            "Mesh": {
-                "Alias": "cube",
-                "FilePath": "res\\assets\\models\\cube.obj"
-            }
-        },
-        "RigidBody": {
-            "Friction": 0.6000000238418579,
-            "Mass": 2.0,
-            "Properties": 98
-        },
-        "Transform": {
-            "Mirror": {
-                "X": false,
-                "Y": false,
-                "Z": false
-            },
-            "Position": {
-                "X": 3.0,
-                "Y": 0.10000000149011612,
-                "Z": 0.0
-            },
-            "Rotation": {
-                "qW": 1.0,
-                "qX": 0.0,
-                "qY": 0.0,
-                "qZ": 0.0
-            },
-            "Scale": {
-                "X": 2.0,
-                "Y": 0.20000000298023224,
-                "Z": 0.20000000298023224
             }
         }
     },
