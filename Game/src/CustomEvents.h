@@ -9,7 +9,8 @@ enum CustomEventsCategories : int
 	CategoryGarbagePile,
 	CategoryCannonball,
 	CategoryGloop,
-	CategoryQuicktimeCleaningEvent
+	CategoryQuicktimeCleaningEvent,
+	CategoryGameState
 };
 enum CustomEventTypes : int
 {
@@ -21,7 +22,6 @@ enum CustomEventTypes : int
 	TypePlayerStateChange,
     TypeCannonStateChange,
 	TypeCannonFired,
-	TypeTotalGarbageCount,
 	TypeRequestToCleanGarbage,
 	TypeGarbageCleaned,
 	TypeGarbagePileReappeared,
@@ -29,7 +29,15 @@ enum CustomEventTypes : int
 	TypeSpawnCannonballForPlayer,
 	TypeUseGloop,
 	TypeQuicktimeCleaningEventResult,
-	TypeCancelQuicktimeCleaningEvent
+	TypeCancelQuicktimeCleaningEvent,
+	TypeGameEnd
+};
+
+enum GameEndResult
+{
+	blueWin,
+	redWin,
+	tie
 };
 
 OYL_EVENT_STRUCT(PlayerMoveEvent, (oyl::EventType) TypePlayerMove, (oyl::EventCategory) CategoryPlayer,
@@ -76,11 +84,6 @@ OYL_EVENT_STRUCT(CannonFiredEvent, (oyl::EventType) TypeCannonFired, (oyl::Event
 		entt::entity cannonEntity;
 	});
 
-OYL_EVENT_STRUCT(TotalGarbageCountEvent, (oyl::EventType) TypeTotalGarbageCount, (oyl::EventCategory) CategoryGarbagePile,
-	{
-		int totalGarbageCount;
-	});
-
 OYL_EVENT_STRUCT(RequestToCleanGarbageEvent, (oyl::EventType) TypeRequestToCleanGarbage, (oyl::EventCategory) CategoryGarbagePile,
 	{
 		entt::entity garbagePileEntity;
@@ -121,4 +124,9 @@ OYL_EVENT_STRUCT(QuicktimeCleaningEventResultEvent, (oyl::EventType) TypeQuickti
 OYL_EVENT_STRUCT(CancelQuicktimeCleaningEventEvent, (oyl::EventType) TypeCancelQuicktimeCleaningEvent, (oyl::EventCategory) CategoryQuicktimeCleaningEvent,
 	{
 		PlayerNumber playerNum;
+	});
+
+OYL_EVENT_STRUCT(GameEndEvent, (oyl::EventType) TypeGameEnd, (oyl::EventCategory) CategoryGameState,
+	{
+		GameEndResult result;
 	});
