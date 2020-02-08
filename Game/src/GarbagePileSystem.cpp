@@ -157,16 +157,14 @@ void GarbagePileSystem::updateGarbagePileVisualSize(entt::entity a_garbagePileEn
 		if (garbagePile.garbageTicks == garbagePile.GARBAGE_TICKS_PER_LEVEL)
 			garbagePileRenderable.mesh = Mesh::get("garbageSurrender");
 		else
-			garbagePileRenderable.mesh = Mesh::get("garbageMaximum");
+			garbagePileRenderable.mesh = Mesh::get("garbageMassive");
 	}
 	else if (garbagePile.garbageLevel == garbagePile.MAX_GARBAGE_LEVEL - 1)
-		garbagePileRenderable.mesh = Mesh::get("garbageMedium");
-
+		garbagePileRenderable.mesh = Mesh::get("garbageLarge");
 	else if (garbagePile.garbageLevel == garbagePile.MAX_GARBAGE_LEVEL - 2)
-		garbagePileRenderable.mesh = Mesh::get("garbageSmall");
-
+		garbagePileRenderable.mesh = Mesh::get("garbageMedium");
 	else if (garbagePile.garbageLevel == garbagePile.MAX_GARBAGE_LEVEL - 3)
-		garbagePileRenderable.mesh = Mesh::get("garbageTiny");
+		garbagePileRenderable.mesh = Mesh::get("garbageSmall");
 	else 
 		garbagePileRenderable.mesh = Mesh::get("garbageTiny");
 
