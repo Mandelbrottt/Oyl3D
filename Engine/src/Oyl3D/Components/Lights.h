@@ -2,10 +2,15 @@
 
 #include "Oyl3D/oylpch.h"
 
-namespace oyl::component
+namespace oyl
 {
+    class FrameBuffer;
+    
     namespace internal
     {
+        class RenderSystem;
+        class ShadowRenderSystem;
+
         struct ColorLight
         {
             glm::vec3 ambient  = glm::vec3(0.2f);
@@ -37,22 +42,47 @@ namespace oyl::component
                 glm::vec3 attenuation;
             };
         };
+
+        struct PositionalLight
+        {
+            glm::vec3 offset;
+        };
+
+        struct FrameBufferLight
+        {
+            bool castShadows = true;
+            
+        private:
+            bool m_didCastShadows = false;
+            
+            Ref<FrameBuffer> m_frameBuffer;
+
+            friend RenderSystem;
+            friend ShadowRenderSystem;
+        };
     }
 
-    struct PointLight
-        : public internal::ColorLight,
-          public internal::AttenuationLight {};
-    
-    struct DirectionalLight : public internal::ColorLight
+    namespace component
     {
-        glm::vec3 direction = glm::vec3(0.0f);
-    };
+        struct PointLight
+            : internal::ColorLight,
+              internal::PositionalLight,
+              internal::AttenuationLight,
+              internal::FrameBufferLight {};
     
-    struct SpotLight
-        : public internal::ColorLight,
-          public internal::AttenuationLight
-    {
-        glm::vec3 direction;
-        f32       angle;
-    };
+        struct DirectionalLight
+            : internal::ColorLight,
+              internal::FrameBufferLight
+        {
+            glm::vec3 direction = glm::vec3(0.0f);
+        };
+    
+        struct SpotLight
+            : DirectionalLight,
+              internal::AttenuationLight,
+              internal::FrameBufferLight
+        {
+            f32 angle;
+        };
+    }
 }

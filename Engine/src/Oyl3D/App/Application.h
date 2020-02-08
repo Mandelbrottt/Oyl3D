@@ -14,9 +14,11 @@ namespace oyl
     
     namespace internal
     {   
+        class PreRenderSystem;  
         class RenderSystem;  
         class GuiRenderSystem;  
-        class PostRenderSystem;  
+        class ShadowRenderSystem;  
+        class UserPostRenderSystem;  
         class ApplicationListener;
         class GamepadListener;
         class SystemsLayer;
@@ -55,9 +57,11 @@ namespace oyl
 
         Ref<internal::SystemsLayer> m_systemsLayer;
         // TODO: Put in systems layer
+        Ref<internal::PreRenderSystem> m_preRenderSystem;
+        Ref<internal::ShadowRenderSystem> m_shadowRenderSystem;
         Ref<internal::RenderSystem> m_renderSystem;
         Ref<internal::GuiRenderSystem> m_guiRenderSystem;
-        Ref<internal::PostRenderSystem> m_postRenderSystem;
+        Ref<internal::UserPostRenderSystem> m_postRenderSystem;
 
         float m_lastFrameTime = 0;
 

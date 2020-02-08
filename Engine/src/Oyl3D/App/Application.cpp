@@ -105,9 +105,11 @@ namespace oyl
 
         TextureCubeMap::cache(ENGINE_RES + DEFAULT_SKYBOX_PATH, DEFAULT_SKYBOX_ALIAS);
 
-        m_renderSystem    = internal::RenderSystem::create();
-        m_guiRenderSystem = internal::GuiRenderSystem::create();
-        m_postRenderSystem = internal::PostRenderSystem::create();
+        m_preRenderSystem    = internal::PreRenderSystem::create();
+        m_shadowRenderSystem = internal::ShadowRenderSystem::create();
+        m_renderSystem       = internal::RenderSystem::create();
+        m_guiRenderSystem    = internal::GuiRenderSystem::create();
+        m_postRenderSystem   = internal::UserPostRenderSystem::create();
 
         initEventListeners();
 
@@ -195,22 +197,29 @@ namespace oyl
 
         Scene::s_current = m_currentScene;
 
+        m_preRenderSystem->setDispatcher(m_dispatcher);
+        m_preRenderSystem->setRegistry(m_currentScene->m_registry);
+        m_preRenderSystem->onEnter();
+        m_dispatcher->registerListener(m_preRenderSystem);
+
+        m_shadowRenderSystem->setDispatcher(m_dispatcher);
+        m_shadowRenderSystem->setRegistry(m_currentScene->m_registry);
+        m_shadowRenderSystem->onEnter();
+        m_dispatcher->registerListener(m_shadowRenderSystem);
+
         m_renderSystem->setDispatcher(m_dispatcher);
         m_renderSystem->setRegistry(m_currentScene->m_registry);
         m_renderSystem->onEnter();
-
         m_dispatcher->registerListener(m_renderSystem);
 
         m_guiRenderSystem->setDispatcher(m_dispatcher);
         m_guiRenderSystem->setRegistry(m_currentScene->m_registry);
         m_guiRenderSystem->onEnter();
-
         m_dispatcher->registerListener(m_guiRenderSystem);
 
         m_postRenderSystem->setDispatcher(m_dispatcher);
         m_postRenderSystem->setRegistry(m_currentScene->m_registry);
         m_postRenderSystem->onEnter();
-
         m_dispatcher->registerListener(m_postRenderSystem);
 
         if (!m_systemsLayer)
@@ -255,8 +264,7 @@ namespace oyl
         m_currentScene->onEnter();
         
         //internal::loadSceneFromFile(*m_currentScene);
-        internal::registryFromSceneFile(*m_currentScene->m_registry, m_currentScene->m_name);
-        
+        internal::registryFromSceneFile(*m_currentScene->m_registry, m_currentScene->m_name); 
     }
 
     void Application::run()
@@ -292,6 +300,8 @@ namespace oyl
 
                 Renderer::beginScene();
                 
+                m_preRenderSystem->onUpdate();
+                m_shadowRenderSystem->onUpdate();
                 m_renderSystem->onUpdate();
                 m_guiRenderSystem->onUpdate();
                 m_postRenderSystem->onUpdate();
@@ -302,6 +312,8 @@ namespace oyl
         #if !defined(OYL_DISTRIBUTION)
             m_guiLayer->begin();
 
+            m_preRenderSystem->onGuiRender();
+            m_shadowRenderSystem->onGuiRender();
             m_renderSystem->onGuiRender();
             m_guiRenderSystem->onGuiRender();
             m_postRenderSystem->onGuiRender();

@@ -18,7 +18,9 @@ namespace oyl::component
 
         u32 cullingMask = 0x0F;
     
-        bool enabled = true;
+        bool enabled        = true;
+        bool castShadows    = true;
+        //bool receiveShadows = true;
     };
     
     struct GuiRenderable

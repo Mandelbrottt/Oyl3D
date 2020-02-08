@@ -13,7 +13,7 @@ namespace oyl
     {
         class RenderSystem;        
         class GuiRenderSystem;        
-        class PostRenderSystem;        
+        class UserPostRenderSystem;        
     }
 
     enum class PlayerNumber : u32
@@ -62,8 +62,6 @@ namespace oyl
         class Camera
         {
         public:
-            bool enabled = true;
-            
             PlayerNumber player = PlayerNumber::One;
 
             u32 cullingMask = 0x0F;
@@ -71,6 +69,10 @@ namespace oyl
             Ref<TextureCubeMap> skybox;
 
             std::vector<PostProcessingPass> postProcessingPasses;
+            
+            bool enabled = true;
+
+            bool renderShadows = true; 
 
             // Returns the current field of view
             float fov() const;
@@ -145,7 +147,7 @@ namespace oyl
 
             friend ::oyl::internal::RenderSystem; 
             friend ::oyl::internal::GuiRenderSystem; 
-            friend ::oyl::internal::PostRenderSystem; 
+            friend ::oyl::internal::UserPostRenderSystem; 
         };
 
         inline float Camera::fov() const

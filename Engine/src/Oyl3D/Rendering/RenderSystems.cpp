@@ -21,6 +21,36 @@
 
 namespace oyl::internal
 {
+    static bool isRenderableValid(const component::Renderable& r)
+    {
+        return r.enabled && r.mesh && r.material && r.material->shader && r.material->albedoMap;
+    }
+
+    // vvv Pre Render System vvv //
+
+    void PreRenderSystem::onUpdate()
+    {
+        using component::Renderable;
+
+        // We sort our mesh renderers based on material properties
+        // This will group all of our meshes based on shader first, then material second
+        registry->sort<Renderable>(
+            [](const Renderable& lhs, const Renderable& rhs)
+            {
+                if (!isRenderableValid(lhs))
+                    return false;
+                if (!isRenderableValid(rhs))
+                    return true;
+                if (lhs.material->shader != rhs.material->shader)
+                    return lhs.material->shader < rhs.material->shader;
+                if (lhs.material->albedoMap != rhs.material->albedoMap)
+                    return lhs.material->albedoMap < rhs.material->albedoMap;
+                return lhs.material < rhs.material;
+            });
+    }
+
+    // ^^^ Pre Render System ^^^ //
+
     // vvv Render System vvv //
 
     void RenderSystem::onEnter()
@@ -36,31 +66,12 @@ namespace oyl::internal
         using component::Renderable;
         using component::Camera;
         using component::PointLight;
+        using component::DirectionalLight;
+        using component::SpotLight;
 
         const auto& skybox = TextureCubeMap::get(DEFAULT_SKYBOX_ALIAS);
         const auto& shader = Shader::get(SKYBOX_SHADER_ALIAS);
         const auto& mesh   = Mesh::get(CUBE_MESH_ALIAS);
-
-        auto isRenderableValid = [](const Renderable& r)
-        {
-            return r.enabled && r.mesh && r.material && r.material->shader && r.material->albedoMap;
-        };
-
-        // We sort our mesh renderers based on material properties
-        // This will group all of our meshes based on shader first, then material second
-        registry->sort<Renderable>(
-            [&isRenderableValid](const Renderable& lhs, const Renderable& rhs)
-            {
-                if (!isRenderableValid(lhs))
-                    return false;
-                if (!isRenderableValid(rhs))
-                    return true;
-                if (lhs.material->shader != rhs.material->shader)
-                    return lhs.material->shader < rhs.material->shader;
-                if (lhs.material->albedoMap != rhs.material->albedoMap)
-                    return lhs.material->albedoMap < rhs.material->albedoMap;
-                return lhs.material < rhs.material;
-            });
 
         Ref<Material> boundMaterial;
 
@@ -141,30 +152,76 @@ namespace oyl::internal
                     glm::mat4 viewNormal = inverse(transpose(pc.viewMatrix()));
                     boundMaterial->setUniformMat3("u_viewNormal", glm::mat3(viewNormal));
 
-                    auto lightView = registry->view<PointLight>();
+                    int shadowIndex = 0;
+
+                    auto pointLightView = registry->view<PointLight>();
                     int  count     = 0;
-                    for (auto light : lightView)
+                    for (auto light : pointLightView)
                     {
-                        auto lightProps     = lightView.get(light);
+                        PointLight& lightProps     = pointLightView.get(light);
                         auto lightTransform = registry->get<Transform>(light);
 
-                        boundMaterial->setUniform3f("u_pointLight[" + std::to_string(count) + "].position",
+                        std::string pointLightName = "u_pointLight[" + std::to_string(count) + "]";
+
+                        boundMaterial->setUniform3f(pointLightName + ".position",
                                                     pc.viewMatrix() * glm::vec4(lightTransform.getPositionGlobal(), 1.0f));
-                        boundMaterial->setUniform3f("u_pointLight[" + std::to_string(count) + "].ambient",
+                        boundMaterial->setUniform3f(pointLightName + ".ambient",
                                                     lightProps.ambient);
-                        boundMaterial->setUniform3f("u_pointLight[" + std::to_string(count) + "].diffuse",
+                        boundMaterial->setUniform3f(pointLightName + ".diffuse",
                                                     lightProps.diffuse);
-                        boundMaterial->setUniform3f("u_pointLight[" + std::to_string(count) + "].specular",
+                        boundMaterial->setUniform3f(pointLightName + ".specular",
                                                     lightProps.specular);
-                        boundMaterial->setUniform1f("u_pointLight[" + std::to_string(count) + "].attenK",
+                        boundMaterial->setUniform1f(pointLightName + ".attenK",
                                                     lightProps.attenuation.x);
-                        boundMaterial->setUniform1f("u_pointLight[" + std::to_string(count) + "].attenL",
+                        boundMaterial->setUniform1f(pointLightName + ".attenL",
                                                     lightProps.attenuation.y);
-                        boundMaterial->setUniform1f("u_pointLight[" + std::to_string(count) + "].attenQ",
+                        boundMaterial->setUniform1f(pointLightName + ".attenQ",
                                                     lightProps.attenuation.z);
+
                         count++;
+                        if (count >= 8)
+                            break;
                     }
 
+                    auto dirLightView = registry->view<DirectionalLight>();
+                    count = 0;
+                    for (auto light : dirLightView)
+                    {
+                        PointLight& lightProps = pointLightView.get(light);
+                        auto lightTransform = registry->get<Transform>(light);
+
+                        std::string pointLightName = "u_pointLight[" + std::to_string(count) + "]";
+
+                        boundMaterial->setUniform3f(pointLightName + ".position",
+                                                    pc.viewMatrix() * glm::vec4(lightTransform.getPositionGlobal(), 1.0f));
+                        boundMaterial->setUniform3f(pointLightName + ".ambient",
+                                                    lightProps.ambient);
+                        boundMaterial->setUniform3f(pointLightName + ".diffuse",
+                                                    lightProps.diffuse);
+                        boundMaterial->setUniform3f(pointLightName + ".specular",
+                                                    lightProps.specular);
+                        boundMaterial->setUniform1f(pointLightName + ".attenK",
+                                                    lightProps.attenuation.x);
+                        boundMaterial->setUniform1f(pointLightName + ".attenL",
+                                                    lightProps.attenuation.y);
+                        boundMaterial->setUniform1f(pointLightName + ".attenQ",
+                                                    lightProps.attenuation.z);
+
+                        if (lightProps.castShadows && shadowIndex < 3)
+                        {
+                            std::string shadowName = "u_shadow[" + std::to_string(shadowIndex) + "]";
+                            boundMaterial->setUniform1i(shadowName + ".type", 2);
+                            boundMaterial->setUniform1i(shadowName + ".map", 5 + shadowIndex);
+                            lightProps.m_frameBuffer->bindDepthAttachment(5 + shadowIndex);
+
+                            shadowIndex++;
+                        }
+
+                        count++;
+                        if (count >= 8)
+                            break;
+                    }
+                    
                     // TEMPORARY:
                     boundMaterial->bind();
                     boundMaterial->applyUniforms();
@@ -389,7 +446,75 @@ namespace oyl::internal
         return false;
     }
 
-    void PostRenderSystem::onEnter()
+    void ShadowRenderSystem::onEnter()
+    {
+        m_shader = Shader::create(ENGINE_RES + "shaders/shadowMapping.oylshader");
+    }
+
+    void ShadowRenderSystem::onExit() {}
+    
+    void ShadowRenderSystem::onUpdate()
+    {
+        using component::Transform;
+        using component::Renderable;
+        using component::PointLight;
+        using component::DirectionalLight;
+        using component::SpotLight;
+
+        m_shader->bind();
+
+        RenderCommand::setDepthDraw(true);
+
+        auto view = registry->view<DirectionalLight>();
+        int count = 0;
+        for (auto light : view)
+        {
+            auto& dl = view.get(light);
+            if (dl.castShadows)
+            {
+                if (count >= 3) break;
+
+                if (!dl.m_frameBuffer)
+                {
+                    dl.m_frameBuffer = FrameBuffer::create(0);
+                    dl.m_frameBuffer->initDepthTexture(1024, 1024);
+                }
+
+                RenderCommand::setDrawRect(0, 0, dl.m_frameBuffer->getDepthWidth(), dl.m_frameBuffer->getDepthHeight());
+                dl.m_frameBuffer->bind();
+                dl.m_frameBuffer->clear();
+
+                auto& t = registry->get<Transform>(light);
+
+                float projDist = 100.0f;
+                glm::mat4 lightProjection = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, 0.0f, projDist);
+                glm::mat4 lightView = glm::lookAt(-dl.direction * projDist * 0.5f,
+                                                  glm::vec3(0.0f),
+                                                  glm::vec3(0.0f, 1.0f, 0.0f));
+
+                m_shader->setUniformMat4(0, lightProjection * lightView);
+
+                registry->view<Transform, Renderable>().each([&](Transform& transform, Renderable& renderable)
+                {
+                    if (!renderable.castShadows || !renderable.enabled) return;
+
+                    m_shader->setUniformMat4(4, transform.getMatrixGlobal());
+                    RenderCommand::drawArrays(renderable.mesh->getVertexArray(), renderable.mesh->getNumVertices());
+                });
+
+                count++;
+            }
+        }
+    }
+
+    void ShadowRenderSystem::onGuiRender() {}
+
+    bool ShadowRenderSystem::onEvent(const Event& event)
+    {
+        return false;
+    }
+
+    void UserPostRenderSystem::onEnter()
     {
         listenForEventType(EventType::WindowResized);
 
@@ -442,9 +567,9 @@ namespace oyl::internal
         m_vao->addIndexBuffer(ebo);
     }
 
-    void PostRenderSystem::onExit() {}
+    void UserPostRenderSystem::onExit() {}
 
-    void PostRenderSystem::onUpdate()
+    void UserPostRenderSystem::onUpdate()
     {
         using component::Camera;
 
@@ -452,9 +577,9 @@ namespace oyl::internal
 
         registry->view<Camera>().each([&](Camera& pc)
         {
-            uint width = pc.m_forwardFrameBuffer->getWidth(), height = pc.m_forwardFrameBuffer->getHeight();
-            if (m_intermediateFrameBuffer->getWidth() != width ||
-                m_intermediateFrameBuffer->getHeight() != height)
+            uint width = pc.m_forwardFrameBuffer->getColorWidth(), height = pc.m_forwardFrameBuffer->getColorHeight();
+            if (m_intermediateFrameBuffer->getColorWidth() != width ||
+                m_intermediateFrameBuffer->getColorHeight() != height)
                 m_intermediateFrameBuffer->updateViewport(width, height);
             RenderCommand::setDrawRect(0, 0, width, height);
 
@@ -541,9 +666,9 @@ namespace oyl::internal
         RenderCommand::setDepthDraw(true);
     }
 
-    void PostRenderSystem::onGuiRender() {}
+    void UserPostRenderSystem::onGuiRender() {}
 
-    bool PostRenderSystem::onEvent(const Event& event)
+    bool UserPostRenderSystem::onEvent(const Event& event)
     {
         switch (event.type)
         {
