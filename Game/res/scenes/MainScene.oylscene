@@ -12675,7 +12675,7 @@
             "CullingMask": 15,
             "Enabled": true,
             "Material": {
-                "Alias": "WoodBlue"
+                "Alias": "StairsBlue"
             },
             "Mesh": {
                 "Alias": "stairs",
@@ -12714,7 +12714,7 @@
             "CullingMask": 15,
             "Enabled": true,
             "Material": {
-                "Alias": "WoodBlue"
+                "Alias": "StairsBlue"
             },
             "Mesh": {
                 "Alias": "stairs",
@@ -12753,7 +12753,7 @@
             "CullingMask": 15,
             "Enabled": true,
             "Material": {
-                "Alias": "WoodBlue"
+                "Alias": "container"
             },
             "Mesh": {
                 "Alias": "stairsDown",
@@ -12792,7 +12792,7 @@
             "CullingMask": 15,
             "Enabled": true,
             "Material": {
-                "Alias": "WoodRed"
+                "Alias": "StairsRed"
             },
             "Mesh": {
                 "Alias": "stairs",
@@ -12831,7 +12831,7 @@
             "CullingMask": 15,
             "Enabled": true,
             "Material": {
-                "Alias": "WoodRed"
+                "Alias": "StairsRed"
             },
             "Mesh": {
                 "Alias": "stairs",
@@ -12870,7 +12870,7 @@
             "CullingMask": 15,
             "Enabled": true,
             "Material": {
-                "Alias": "WoodRed"
+                "Alias": "container"
             },
             "Mesh": {
                 "Alias": "stairsDown",
