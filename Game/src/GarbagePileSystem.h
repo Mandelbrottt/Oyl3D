@@ -12,8 +12,6 @@ class GarbagePileSystem : public System
 	float passiveGarbageBuildupCountdown = PASSIVE_GARBAGE_BUILDUP_TIME;
 	int numBuildUpsAccumulated = 0;
 
-	int totalGarbageLevel = 0;
-
 	void onEnter() override;
 	void onExit() override;
 	void onUpdate() override;

@@ -23,9 +23,6 @@ void GarbagePileSystem::onUpdate()
 		numBuildUpsAccumulated++;
 	}
 
-	int lastFrameTotalGarbageLevel = totalGarbageLevel; //get the last frame's total garbage level so we can compare them later
-	totalGarbageLevel = 0; //reset the total garbage level and recalculate every frame
-
 	auto garbagePileView = registry->view<GarbagePile, component::Renderable, component::Transform>();
 	for (auto& garbagePileEntity : garbagePileView)
 	{
@@ -51,18 +48,6 @@ void GarbagePileSystem::onUpdate()
 			if (garbagePile.delayBeforeRemovingGarbageCountdown < 0.0f)
 				updateGarbagePileVisualSize(garbagePileEntity);
 		}
-
-		totalGarbageLevel += garbagePile.garbageLevel;
-
-		//if (totalGarbageLevel >= 15)
-			//totalGarbageLevel = 500;
-	}
-
-	if (totalGarbageLevel != lastFrameTotalGarbageLevel)
-	{
-		TotalGarbageCountEvent totalGarbageUpdate;
-		totalGarbageUpdate.totalGarbageCount = totalGarbageLevel;
-		postEvent(totalGarbageUpdate);
 	}
 }
 
@@ -166,6 +151,7 @@ void GarbagePileSystem::updateGarbagePileVisualSize(entt::entity a_garbagePileEn
 	auto& garbagePile           = registry->get<GarbagePile>(a_garbagePileEntity);
 	auto& garbagePileRenderable = registry->get<component::Renderable>(a_garbagePileEntity);
 
+	//determine which mesh to set based on garbage level
 	if (garbagePile.garbageLevel == garbagePile.MAX_GARBAGE_LEVEL)
 	{
 		if (garbagePile.garbageTicks == garbagePile.GARBAGE_TICKS_PER_LEVEL)
@@ -175,8 +161,10 @@ void GarbagePileSystem::updateGarbagePileVisualSize(entt::entity a_garbagePileEn
 	}
 	else if (garbagePile.garbageLevel == garbagePile.MAX_GARBAGE_LEVEL - 1)
 		garbagePileRenderable.mesh = Mesh::get("garbageMedium");
+
 	else if (garbagePile.garbageLevel == garbagePile.MAX_GARBAGE_LEVEL - 2)
 		garbagePileRenderable.mesh = Mesh::get("garbageSmall");
+
 	else if (garbagePile.garbageLevel == garbagePile.MAX_GARBAGE_LEVEL - 3)
 		garbagePileRenderable.mesh = Mesh::get("garbageTiny");
 	else 
