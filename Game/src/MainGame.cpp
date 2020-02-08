@@ -430,7 +430,7 @@ public:
 					garbageMeter.team = Team::red;
 
 				component::Transform outlineTransform;
-				outlineTransform.setPosition(glm::vec3(0.0f, 3.8f, 12.0f));
+				outlineTransform.setPosition(glm::vec3(0.0f, 3.8f, -20.0f));
 				outlineTransform.setScale(glm::vec3(2.0f, 2.0f, 1.0f));
 				registry->assign<component::Transform>(outlineEntity, outlineTransform);
 
@@ -455,7 +455,7 @@ public:
 					garbageMeterBar.garbagePileNum = (k - 1) * -1; //flip the sign so that the left is the front of the ship and the right is the back
 
 					component::Transform fillTransform;
-					fillTransform.setPosition(glm::vec3(0.65f * k - 0.65f, 3.8f, 10.0f));
+					fillTransform.setPosition(glm::vec3(0.65f * k - 0.65f, 3.8f, 1.0f));
 					fillTransform.setScale(glm::vec3(2.0f, 2.0f, 1.0f));
 					registry->assign<component::Transform>(fillEntity, fillTransform);
 
