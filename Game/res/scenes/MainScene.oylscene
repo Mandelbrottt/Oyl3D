@@ -10173,7 +10173,7 @@
             "ClearProps": {
                 "Skybox": null
             },
-            "CullingMask": 1,
+            "CullingMask": 2,
             "Enabled": true,
             "FarClipping": 1000.0,
             "Fov": 60.0,
@@ -10356,7 +10356,7 @@
             "ClearProps": {
                 "Skybox": null
             },
-            "CullingMask": 1,
+            "CullingMask": 4,
             "Enabled": true,
             "FarClipping": 1000.0,
             "Fov": 60.0,
@@ -10423,7 +10423,7 @@
             "ClearProps": {
                 "Skybox": null
             },
-            "CullingMask": 1,
+            "CullingMask": 8,
             "Enabled": true,
             "FarClipping": 1000.0,
             "Fov": 60.0,

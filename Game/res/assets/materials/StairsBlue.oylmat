@@ -29,6 +29,7 @@
                 "Profile": 0,
                 "guid": null
             },
+            "Emission": null,
             "Normal": {
                 "Alias": "StairsBlueNormal",
                 "FilePath": "res\\assets\\textures\\StairsBlueNormal.png",

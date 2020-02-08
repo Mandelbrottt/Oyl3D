@@ -175,7 +175,7 @@ namespace oyl
         virtual uint getDepth() const = 0;
 
         static Ref<Texture3D> create(const std::string& filePath,
-                                     TextureFilter a_filter   = TextureFilter::Nearest,
+                                     TextureFilter a_filter   = TextureFilter::Linear,
                                      TextureWrap a_wrap       = TextureWrap::Repeat,
                                      TextureProfile a_profile = TextureProfile::RGB);
 

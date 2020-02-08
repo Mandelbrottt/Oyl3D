@@ -8,8 +8,6 @@
 
 namespace oyl
 {
-    class EditorCamera;
-
     class ISystem : public virtual Node
     {
     public:
@@ -32,11 +30,11 @@ namespace oyl
         virtual ~System() = default;
 
         // TODO: Differentiate with onCreate, onDestroy, etc.
-        virtual void onEnter() override;
-        virtual void onExit() override;
+        virtual void onEnter() override {}
+        virtual void onExit() override {}
 
-        virtual void onUpdate() override;
-        virtual void onGuiRender() override;
+        virtual void onUpdate() override {}
+        virtual void onGuiRender() override {}
 
         void setRegistry(const Ref<entt::registry>& reg) { registry = reg; }
 

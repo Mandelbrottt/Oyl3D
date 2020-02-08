@@ -3,8 +3,8 @@
         "Alias": "water",
         "MainProperties": {
             "Offset": [
-                -18.976234436035156,
-                9.488117218017578
+                -25.795059204101563,
+                10.170005798339844
             ],
             "Tiling": [
                 15.0,
@@ -29,6 +29,7 @@
                 "Profile": 1,
                 "guid": null
             },
+            "Emission": null,
             "Normal": null,
             "Specular": {
                 "Alias": "Oyl Black",

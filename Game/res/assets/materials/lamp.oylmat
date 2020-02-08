@@ -29,6 +29,7 @@
                 "Profile": 1,
                 "guid": null
             },
+            "Emission": null,
             "Normal": null,
             "Specular": {
                 "Alias": "tempSpec",
