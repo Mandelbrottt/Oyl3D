@@ -14,6 +14,7 @@ out VS_OUT {
 	vec3 position;
 	vec2 texCoord;
 	mat3 TBN;
+	mat3 viewNormal;
 	vec4 lightSpacePosition;
 } vs_out;
 
@@ -42,6 +43,8 @@ void main()
 	vec3 N = normalize(viewNormalModel * in_normal);
 
 	vs_out.TBN = mat3(T, B, N);
+
+	vs_out.viewNormal = u_viewNormal;
 
 	// out_normal = u_viewNormal * mat3(u_model) * in_normal;
 }

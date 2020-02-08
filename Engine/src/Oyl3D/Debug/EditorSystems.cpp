@@ -277,7 +277,6 @@ namespace oyl::internal
                 for (auto light : dirLightView)
                 {
                     auto& dirLightProps = dirLightView.get(light);
-                    auto lightTransform = registry->get<Transform>(light);
 
                     std::string dirLightName = "u_dirLight[" + std::to_string(count) + "]";
 
