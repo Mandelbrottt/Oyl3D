@@ -306,6 +306,20 @@ namespace oyl
         glBindFramebuffer(context, GL_NONE);
     }
 
+    void OpenGLFrameBuffer::bindDepthAttachment(uint slot)
+    {
+        glBindFramebuffer(GL_READ_FRAMEBUFFER, m_rendererID);
+        glActiveTexture(GL_TEXTURE0 + slot);
+        glBindTexture(GL_TEXTURE_2D, m_depthAttachmentID);
+    }
+    
+    void OpenGLFrameBuffer::unbindDepthAttachment(uint slot)
+    {
+        glBindFramebuffer(GL_READ_FRAMEBUFFER, m_rendererID);
+        glActiveTexture(GL_TEXTURE0 + slot);
+        glBindTexture(GL_TEXTURE_2D, GL_NONE);
+    }
+
     void OpenGLFrameBuffer::bindColorAttachment(uint index, uint slot)
     {
         glBindFramebuffer(GL_READ_FRAMEBUFFER, m_rendererID);
@@ -322,20 +336,25 @@ namespace oyl
 
     void OpenGLFrameBuffer::initDepthTexture(int width, int height)
     {
+        m_depthWidth = width;
+        m_depthHeight = height;
+
         glBindFramebuffer(GL_FRAMEBUFFER, m_rendererID);
 	
         // Create depth texture
         glGenTextures(1, &m_depthAttachmentID);
         glBindTexture(GL_TEXTURE_2D, m_depthAttachmentID);
-        glTexStorage2D(GL_TEXTURE_2D, 1, GL_DEPTH_COMPONENT24, width, height);
+        glTexImage2D(GL_TEXTURE_2D, 1, GL_DEPTH_COMPONENT, width, height, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
 
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
         // Bind texture to FBO
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, m_depthAttachmentID, 0);
+        glDrawBuffer(GL_NONE);
+        glReadBuffer(GL_NONE);
 
         glBindFramebuffer(GL_FRAMEBUFFER, GL_NONE);
     }
@@ -352,8 +371,8 @@ namespace oyl
         m_formats[index] = format;
         m_filters[index] = filter;
         m_wraps[index]   = wrap;
-        m_widths[index] = width;
-        m_heights[index] = height;
+        m_colorWidths[index] = width;
+        m_colorHeights[index] = height;
 
         glBindFramebuffer(GL_FRAMEBUFFER, m_rendererID);
 
@@ -408,16 +427,15 @@ namespace oyl
         if (other)
         {
             glBindFramebuffer(GL_DRAW_FRAMEBUFFER, otherPtr->m_rendererID);
-            glBlitFramebuffer(0, 0, m_widths[0], m_heights[0], 
-                              0, 0, otherPtr->m_widths[0], otherPtr->m_heights[0], 
+            glBlitFramebuffer(0, 0, m_colorWidths[0], m_colorHeights[0], 
+                              0, 0, otherPtr->m_colorWidths[0], otherPtr->m_colorHeights[0],
                               GL_COLOR_BUFFER_BIT, GL_NEAREST);
-            
         }
         else
         {
             glBindFramebuffer(GL_READ_FRAMEBUFFER, GL_NONE);
-            glBlitFramebuffer(0, 0, m_widths[0], m_heights[0], 
-                              0, 0, m_widths[0], m_heights[0],
+            glBlitFramebuffer(0, 0, m_colorWidths[0], m_colorHeights[0],
+                              0, 0, m_colorWidths[0], m_colorHeights[0],
                               GL_COLOR_BUFFER_BIT, GL_NEAREST);
         }
 

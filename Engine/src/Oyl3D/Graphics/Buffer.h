@@ -198,6 +198,9 @@ namespace oyl
         virtual void bind(FrameBufferContext a_context = FrameBufferContext::ReadWrite) = 0;
         virtual void unbind(FrameBufferContext a_context = FrameBufferContext::ReadWrite) = 0;
 
+        virtual void bindDepthAttachment(uint slot = 0) = 0;
+        virtual void unbindDepthAttachment(uint slot = 0) = 0;
+
         virtual void bindColorAttachment(uint index, uint slot = 0) = 0;
         virtual void unbindColorAttachment(uint index, uint slot = 0) = 0;
 
@@ -217,8 +220,11 @@ namespace oyl
         virtual uint getDepthHandle() const = 0;
         virtual uint getColorHandle(int index) const = 0;
 
-        virtual uint getWidth(uint index = 0) const = 0;
-        virtual uint getHeight(uint index = 0) const = 0;
+        virtual uint getDepthWidth() const = 0;
+        virtual uint getDepthHeight() const = 0;
+        
+        virtual uint getColorWidth(uint index = 0) const = 0;
+        virtual uint getColorHeight(uint index = 0) const = 0;
 
         virtual bool isLoaded() const = 0;
 

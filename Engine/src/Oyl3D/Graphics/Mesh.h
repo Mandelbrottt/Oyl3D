@@ -60,6 +60,9 @@ namespace oyl
 
         static const auto& getCache() { return s_cache.m_cache; }
 
+        const Ref<VertexArray>& getVertexArray() const { return m_vao; }
+        const Ref<VertexBuffer>& getVertexBuffer() const { return m_vbo; }
+
         uint getNumFaces() const { return m_numFaces; }
         uint getNumVertices() const { return m_numVertices; }
         
