@@ -1,14 +1,14 @@
 {
     "Material": {
-        "Alias": "water",
+        "Alias": "StairsBlue",
         "MainProperties": {
             "Offset": [
-                -18.976234436035156,
-                9.488117218017578
+                0.0,
+                0.0
             ],
             "Tiling": [
-                15.0,
-                10.0
+                1.0,
+                1.0
             ]
         },
         "Shader": {
@@ -24,18 +24,18 @@
         },
         "Textures": {
             "Albedo": {
-                "Alias": "water",
-                "FilePath": "res\\assets\\textures\\water.png",
+                "Alias": "StairsBlue",
+                "FilePath": "res\\assets\\textures\\StairsBlue.png",
+                "Profile": 0,
+                "guid": null
+            },
+            "Normal": {
+                "Alias": "StairsBlueNormal",
+                "FilePath": "res\\assets\\textures\\StairsBlueNormal.png",
                 "Profile": 1,
                 "guid": null
             },
-            "Normal": null,
-            "Specular": {
-                "Alias": "Oyl Black",
-                "FilePath": "../Engine/res/textures/black.png",
-                "Profile": 0,
-                "guid": null
-            }
+            "Specular": null
         }
     }
 }

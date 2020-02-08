@@ -2,6 +2,7 @@
 
 void GameOverCheckSystem::onEnter()
 {
+	isGameOver = false;
 }
 
 void GameOverCheckSystem::onExit()
