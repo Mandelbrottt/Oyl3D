@@ -7,6 +7,7 @@
 #include "Debug/GuiLayer.h"
 
 #include "Rendering/RenderSystems.h"
+#include "Debug/EditorSystems.h"
 
 #include "Events/EventDispatcher.h"
 #include "Events/EventListener.h"
@@ -105,6 +106,7 @@ namespace oyl
 
         TextureCubeMap::cache(ENGINE_RES + DEFAULT_SKYBOX_PATH, DEFAULT_SKYBOX_ALIAS);
 
+        m_editorRenderSystem = internal::EditorRenderSystem::create();
         m_preRenderSystem    = internal::PreRenderSystem::create();
         m_shadowRenderSystem = internal::ShadowRenderSystem::create();
         m_renderSystem       = internal::RenderSystem::create();
@@ -196,6 +198,11 @@ namespace oyl
         m_currentScene = std::move(scene);
 
         Scene::s_current = m_currentScene;
+
+        m_editorRenderSystem->setDispatcher(m_dispatcher);
+        m_editorRenderSystem->setRegistry(m_currentScene->m_registry);
+        m_editorRenderSystem->onEnter();
+        m_dispatcher->registerListener(m_editorRenderSystem);
 
         m_preRenderSystem->setDispatcher(m_dispatcher);
         m_preRenderSystem->setRegistry(m_currentScene->m_registry);
@@ -302,6 +309,7 @@ namespace oyl
                 
                 m_preRenderSystem->onUpdate();
                 m_shadowRenderSystem->onUpdate();
+                m_editorRenderSystem->onUpdate();
                 m_renderSystem->onUpdate();
                 m_guiRenderSystem->onUpdate();
                 m_postRenderSystem->onUpdate();
@@ -319,6 +327,7 @@ namespace oyl
             m_postRenderSystem->onGuiRender();
 
             m_guiLayer->onGuiRenderSystems();
+            m_editorRenderSystem->onGuiRender();
             m_guiLayer->onGuiRender();
 
             if (m_guiLayer->doGameUpdate())

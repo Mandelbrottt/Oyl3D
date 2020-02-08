@@ -26,12 +26,14 @@ uniform mat4 u_lightSpaceMatrix;
 
 void main() 
 {
-	gl_Position = u_viewProjection * u_model * vec4(in_position, 1.0);
+	vec4 modelPosition = u_model * vec4(in_position, 1.0);
 
-	vs_out.position = vec3(u_view * u_model * vec4(in_position, 1.0));
+	gl_Position = u_viewProjection * modelPosition;
+
+	vs_out.position = vec3(u_view * modelPosition);
 	vs_out.texCoord = in_texCoord;
 
-	vs_out.lightSpacePosition = u_lightSpaceMatrix * vec4(vs_out.position, 1.0);
+	vs_out.lightSpacePosition = u_lightSpaceMatrix * modelPosition;
 
 	mat3 viewNormalModel = u_viewNormal * mat3(u_model);
 

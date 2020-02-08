@@ -82,7 +82,7 @@ namespace oyl::internal
     void GuiLayer::onEnter()
     {
         scheduleSystemUpdate<EditorCameraSystem>();
-        scheduleSystemUpdate<EditorRenderSystem>();
+        //scheduleSystemUpdate<EditorRenderSystem>();
 
         listenForAllEvents();
 

@@ -192,9 +192,10 @@ namespace oyl::internal
         using component::Renderable;
         using component::Camera;
         using component::PointLight;
+        using component::DirectionalLight;
 
-        m_editorViewportBuffer->clear();
         m_editorViewportBuffer->bind();
+        m_editorViewportBuffer->clear();
 
         RenderCommand::setDrawRect(0, 0, m_windowSize.x, m_windowSize.y);
 
@@ -251,6 +252,8 @@ namespace oyl::internal
                 viewNormal           = inverse(transpose(viewNormal));
                 boundMaterial->setUniformMat3("u_viewNormal", viewNormal);
 
+                int shadowIndex = 0;
+
                 auto lightView = registry->view<PointLight>();
                 int  count     = 0;
                 for (auto light : lightView)
@@ -267,6 +270,41 @@ namespace oyl::internal
                     boundMaterial->setUniform3f("u_pointLight[" + std::to_string(count) + "].specular",
                                                 lightProps.specular);
                     count++;
+                }
+
+                auto dirLightView = registry->view<DirectionalLight>();
+                count = 0;
+                for (auto light : dirLightView)
+                {
+                    auto& dirLightProps = dirLightView.get(light);
+                    auto lightTransform = registry->get<Transform>(light);
+
+                    std::string dirLightName = "u_dirLight[" + std::to_string(count) + "]";
+
+                    boundMaterial->setUniform3f(dirLightName + ".direction",
+                                                dirLightProps.direction);
+                    boundMaterial->setUniform3f(dirLightName + ".ambient",
+                                                dirLightProps.ambient);
+                    boundMaterial->setUniform3f(dirLightName + ".diffuse",
+                                                dirLightProps.diffuse);
+                    boundMaterial->setUniform3f(dirLightName + ".specular",
+                                                dirLightProps.specular);
+
+                    if (dirLightProps.castShadows && shadowIndex < 3)
+                    {
+                        boundMaterial->setUniformMat4("u_lightSpaceMatrix", dirLightProps.m_lightSpaceMatrix);
+
+                        std::string shadowName = "u_shadow[" + std::to_string(shadowIndex) + "]";
+                        boundMaterial->setUniform1i(shadowName + ".type", 2);
+                        boundMaterial->setUniform1i(shadowName + ".map", 5 + shadowIndex);
+                        dirLightProps.m_frameBuffer->bindDepthAttachment(5 + shadowIndex);
+
+                        shadowIndex++;
+                    }
+
+                    count++;
+                    if (count >= 8)
+                        break;
                 }
 
                 boundMaterial->bind();
@@ -300,7 +338,7 @@ namespace oyl::internal
                 auto e = event_cast<WindowResizedEvent>(event);
                 m_editorViewportBuffer->updateViewport(e.width, e.height);
                 m_windowSize = { e.width, e.height };
-                return true;
+                return false;
             }
             case EventType::EditorCameraChanged:
             {

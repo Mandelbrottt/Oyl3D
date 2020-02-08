@@ -12,6 +12,7 @@ namespace oyl
 
     void OpenGLRendererAPI::clear()
     {
+        glBindFramebuffer(GL_FRAMEBUFFER, GL_NONE);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     }
 
@@ -41,6 +42,7 @@ namespace oyl
 
     void OpenGLRendererAPI::drawArrays(const Ref<VertexArray>& vao, u32 count)
     {
+        vao->bind();
         glDrawArrays(GL_TRIANGLES, 0, count);
     }
 

@@ -14,6 +14,7 @@ namespace oyl
     
     namespace internal
     {   
+        class EditorRenderSystem;  
         class PreRenderSystem;  
         class RenderSystem;  
         class GuiRenderSystem;  
@@ -57,6 +58,7 @@ namespace oyl
 
         Ref<internal::SystemsLayer> m_systemsLayer;
         // TODO: Put in systems layer
+        Ref<internal::EditorRenderSystem> m_editorRenderSystem;
         Ref<internal::PreRenderSystem> m_preRenderSystem;
         Ref<internal::ShadowRenderSystem> m_shadowRenderSystem;
         Ref<internal::RenderSystem> m_renderSystem;

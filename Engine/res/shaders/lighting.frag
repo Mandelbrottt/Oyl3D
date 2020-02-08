@@ -165,7 +165,7 @@ vec3 calculatePointLight(PointLight light, vec3 fragPos, vec3 normal, vec2 texCo
 	diffuse  *= attenuation;
 	specular *= attenuation;
 	
-	float shadow = 1.0;
+	float shadow = 0.0;
 	if (shadowIndex < NUM_SHADOW_MAPS && u_shadow[shadowIndex].type == POINT_SHADOW)
 		shadow = shadowCalculation(fs_in.lightSpacePosition, u_shadow[shadowIndex].map);
 	return ambient + (1.0 - shadow) * (diffuse + specular);
@@ -187,7 +187,7 @@ vec3 calculateDirLight(DirLight light, vec3 fragPos, vec3 normal, vec2 texCoord,
 	vec3 diffuse  = light.diffuse  * diff * vec3(texture(u_material.albedo,   texCoord));
 	vec3 specular = light.specular * spec * vec3(texture(u_material.specular, texCoord));
 
-	float shadow = 1.0;
+	float shadow = 0.0;
 	if (shadowIndex < NUM_SHADOW_MAPS && u_shadow[shadowIndex].type == DIR_SHADOW)
 		shadow = shadowCalculation(fs_in.lightSpacePosition, u_shadow[shadowIndex].map);
 	return ambient + (1.0 - shadow) * (diffuse + specular);
@@ -230,7 +230,7 @@ vec3 calculateSpotLight(SpotLight light, vec3 fragPos, vec3 normal, vec2 texCoor
 		diffuse  *= attenuation * intensity;
 		specular *= attenuation * intensity;
 		
-		float shadow = 1.0;
+		float shadow = 0.0;
 		if (shadowIndex < NUM_SHADOW_MAPS && u_shadow[shadowIndex].type == SPOT_SHADOW)
 			shadow = shadowCalculation(fs_in.lightSpacePosition, u_shadow[shadowIndex].map);
 		return ambient + (1.0 - shadow) * (diffuse + specular);
@@ -241,7 +241,7 @@ vec3 calculateSpotLight(SpotLight light, vec3 fragPos, vec3 normal, vec2 texCoor
 	}
 }
 
-float ShadowCalculation(vec4 lightSpacePosition, sampler2D shadowMap)
+float shadowCalculation(vec4 lightSpacePosition, sampler2D shadowMap)
 {
 	// Transform into NDC then into [0,1]
     vec3 projCoords = lightSpacePosition.xyz / lightSpacePosition.w;

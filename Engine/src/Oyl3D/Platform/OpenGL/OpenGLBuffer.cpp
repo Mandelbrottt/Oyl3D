@@ -251,6 +251,14 @@ namespace oyl
         }
 
         m_numColorAttachments = numColorAttachments;
+
+        if (numColorAttachments == 0)
+        {
+            glBindFramebuffer(GL_FRAMEBUFFER, m_rendererID);
+            glDrawBuffer(GL_NONE);
+            glReadBuffer(GL_NONE);
+            glBindFramebuffer(GL_FRAMEBUFFER, GL_NONE);
+        }
     }
 
     void OpenGLFrameBuffer::unload()
@@ -344,7 +352,7 @@ namespace oyl
         // Create depth texture
         glGenTextures(1, &m_depthAttachmentID);
         glBindTexture(GL_TEXTURE_2D, m_depthAttachmentID);
-        glTexImage2D(GL_TEXTURE_2D, 1, GL_DEPTH_COMPONENT, width, height, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, width, height, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
 
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
@@ -353,8 +361,6 @@ namespace oyl
 
         // Bind texture to FBO
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, m_depthAttachmentID, 0);
-        glDrawBuffer(GL_NONE);
-        glReadBuffer(GL_NONE);
 
         glBindFramebuffer(GL_FRAMEBUFFER, GL_NONE);
     }
@@ -416,7 +422,6 @@ namespace oyl
 
         glBindFramebuffer(GL_FRAMEBUFFER, m_rendererID);
         glClear(temp);
-        glBindFramebuffer(GL_FRAMEBUFFER, GL_NONE);
     }
 
     void OpenGLFrameBuffer::blit(const Ref<FrameBuffer>& other)
