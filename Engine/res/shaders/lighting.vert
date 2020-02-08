@@ -14,6 +14,7 @@ out VS_OUT {
 	vec3 position;
 	vec2 texCoord;
 	mat3 TBN;
+	vec4 lightSpacePosition;
 } vs_out;
 
 uniform mat4 u_model;
@@ -21,6 +22,7 @@ uniform mat4 u_model;
 uniform mat4 u_view;
 uniform mat4 u_viewProjection;
 uniform mat3 u_viewNormal;
+uniform mat4 u_lightSpaceMatrix;
 
 void main() 
 {
@@ -28,6 +30,8 @@ void main()
 
 	vs_out.position = vec3(u_view * u_model * vec4(in_position, 1.0));
 	vs_out.texCoord = in_texCoord;
+
+	vs_out.lightSpacePosition = u_lightSpaceMatrix * vec4(vs_out.position, 1.0);
 
 	mat3 viewNormalModel = u_viewNormal * mat3(u_model);
 
