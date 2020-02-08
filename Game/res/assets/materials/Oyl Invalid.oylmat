@@ -14,6 +14,7 @@
         "Shader": null,
         "Textures": {
             "Albedo": null,
+            "Emission": null,
             "Normal": null,
             "Specular": null
         }

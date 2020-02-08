@@ -6,12 +6,11 @@
 
 #include "Debug/GuiLayer.h"
 
-#include "ECS/SystemImpl.h"
+#include "Rendering/RenderSystems.h"
 
 #include "Events/EventDispatcher.h"
 #include "Events/EventListener.h"
 
-#include "Graphics/Material.h"
 #include "Graphics/Shader.h"
 #include "Graphics/Texture.h"
 
@@ -23,8 +22,6 @@
 #include "Rendering/Renderer.h"
 
 #include "Utils/SceneToFile.h"
-
-#include <imgui.h>
 
 namespace oyl
 {
@@ -80,11 +77,17 @@ namespace oyl
                 { Shader::Pixel, ENGINE_RES + LIGHTING_SHADER_FRAGMENT_PATH },
             }, "animation");
 
-        Shader::cache(
-            {
-                { Shader::Vertex, ENGINE_RES + "shaders/texturedQuad.vert" },
-                { Shader::Pixel, ENGINE_RES + "shaders/texturedQuad.frag" }
-            }, "texturedQuad");
+        //Shader::cache(
+        //    {
+        //        { Shader::Vertex, ENGINE_RES + "shaders/gui.vert" },
+        //        { Shader::Pixel, ENGINE_RES + "shaders/gui.frag" }
+        //    }, "Oyl UI");
+
+        //Shader::cache(
+        //    {
+        //        { Shader::Vertex, ENGINE_RES + "shaders/fbopassthrough.vert" },
+        //        { Shader::Pixel, ENGINE_RES + "shaders/fbopassthrough.frag" }
+        //    }, "Oyl PassThrough");
 
         Shader::cache(
             {
@@ -102,25 +105,11 @@ namespace oyl
 
         TextureCubeMap::cache(ENGINE_RES + DEFAULT_SKYBOX_PATH, DEFAULT_SKYBOX_ALIAS);
 
-		Material::cache(Material::create(), INVALID_ALIAS);
-
         m_renderSystem    = internal::RenderSystem::create();
         m_guiRenderSystem = internal::GuiRenderSystem::create();
+        m_postRenderSystem = internal::PostRenderSystem::create();
 
         initEventListeners();
-
-        m_mainBuffer = FrameBuffer::create(1);
-        m_mainBuffer->initDepthTexture(m_window->getWidth(), m_window->getHeight());
-
-        m_mainBuffer->initColorTexture(0, m_window->getWidth(), m_window->getHeight(),
-                                       TextureFormat::RGBA8,
-                                       TextureFilter::Nearest,
-                                       TextureWrap::ClampToEdge);
-
-        ViewportHandleChangedEvent hcEvent;
-        hcEvent.handle = m_mainBuffer->getColorHandle(0);
-
-        m_dispatcher->postEvent(hcEvent);
 
         WindowResizedEvent wrEvent;
         wrEvent.width = 1280;
@@ -160,7 +149,6 @@ namespace oyl
             {
                 auto e = event_cast<WindowResizedEvent>(event);
                 m_window->updateViewport(e.width, e.height);
-                m_mainBuffer->updateViewport(e.width, e.height);
                 break;
             }
             case EventType::WindowFocused:
@@ -218,6 +206,12 @@ namespace oyl
         m_guiRenderSystem->onEnter();
 
         m_dispatcher->registerListener(m_guiRenderSystem);
+
+        m_postRenderSystem->setDispatcher(m_dispatcher);
+        m_postRenderSystem->setRegistry(m_currentScene->m_registry);
+        m_postRenderSystem->onEnter();
+
+        m_dispatcher->registerListener(m_postRenderSystem);
 
         if (!m_systemsLayer)
         {
@@ -296,16 +290,13 @@ namespace oyl
                 RenderCommand::setClearColor(0.1f, 0.1f, 0.1f, 1.0f);
                 RenderCommand::clear();
 
-                m_mainBuffer->clear();
-                m_mainBuffer->bind();
-
                 Renderer::beginScene();
                 
                 m_renderSystem->onUpdate();
                 m_guiRenderSystem->onUpdate();
+                m_postRenderSystem->onUpdate();
 
-                Renderer::endScene();
-                m_mainBuffer->unbind();
+                Renderer::endScene();                
             }
 
         #if !defined(OYL_DISTRIBUTION)
@@ -313,6 +304,7 @@ namespace oyl
 
             m_renderSystem->onGuiRender();
             m_guiRenderSystem->onGuiRender();
+            m_postRenderSystem->onGuiRender();
 
             m_guiLayer->onGuiRenderSystems();
             m_guiLayer->onGuiRender();

@@ -48,6 +48,8 @@ namespace oyl
         EditorViewportResized, EditorViewportHandleChanged, EditorEntitySelected,
         EditorCameraChanged, EditorCameraMoveRequest,
 
+        RenderForwardBufferChanged,
+
         CustomStart,
     };
 
@@ -64,6 +66,7 @@ namespace oyl
         Audio,
         Physics,
         Editor,
+        Render,
         CustomStart,
     };
     
@@ -332,6 +335,17 @@ namespace oyl
     OYL_EVENT_STRUCT(PhysicsResetWorldEvent, EventType::PhysicsResetWorld, EventCategory::Physics,
                      {
                          i32 _noArgs;
+                     });
+
+    //-Physics Events-/////////////////////////////////////////////////////
+
+    // Physics Events /////////////////////////////////////////////////////
+
+    class FrameBuffer;
+    
+    OYL_EVENT_STRUCT(RenderForwardBufferChangedEvent, EventType::RenderForwardBufferChanged, EventCategory::Render,
+                     {
+                         Ref<FrameBuffer>* forwardBuffer;
                      });
 
     //-Physics Events-/////////////////////////////////////////////////////

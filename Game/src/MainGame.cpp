@@ -15,6 +15,7 @@
 #include "CameraBreathingSystem.h"
 #include "GarbagePileHealthBarSystem.h"
 #include "GarbageMeterSystem.h"
+#include "GameOverCheckSystem.h"
 #include "ScrollingTextureLayer.h"
 
 using namespace oyl;
@@ -34,6 +35,7 @@ public:
 		this->listenForEventCategory(EventCategory::Mouse);
 		this->listenForEventCategory(EventCategory::Gamepad);
 		this->listenForEventCategory((EventCategory)CategoryGarbagePile);
+		this->listenForEventCategory((EventCategory)CategoryGameState);
 
 		// listenForEventType(EventType::PhysicsCollisionEnter);
 		// listenForEventType(EventType::PhysicsCollisionStay);
@@ -51,6 +53,7 @@ public:
 		scheduleSystemUpdate<CameraBreathingSystem>();
 		scheduleSystemUpdate<GarbagePileHealthBarSystem>();
 		scheduleSystemUpdate<GarbageMeterSystem>();
+		scheduleSystemUpdate<GameOverCheckSystem>();
 
 		for (int i = 0; i < 4; i++)
 		{
@@ -449,7 +452,7 @@ public:
 					fillGui.cullingMask = 0b1 << i;
 
 					auto& garbageMeterBar = registry->assign<GarbageMeterBar>(fillEntity);
-					garbageMeterBar.garbagePileNum = k - 1;
+					garbageMeterBar.garbagePileNum = (k - 1) * -1; //flip the sign so that the left is the front of the ship and the right is the back
 
 					component::Transform fillTransform;
 					fillTransform.setPosition(glm::vec3(0.65f * k - 0.65f, 3.8f, 10.0f));
@@ -784,35 +787,28 @@ public:
 			break;
 		}
 
-		/*case TypeTotalGarbageCount:
+		case (EventType)TypeGameEnd:
 		{
-			auto evt = (TotalGarbageCountEvent)* event;
-			if (evt.totalGarbageCount >= 15)
-			{
-				auto guiView = registry->view<component::GuiRenderable, component::Transform>();
-				for (auto& guiEntity : guiView)
-				{
-					auto& renderableTransform = registry->get<component::Transform>(guiEntity);
-					renderableTransform.setPosition(glm::vec3(100.0f, 100.0f, 100.0f));
-				}
+			auto evt = event_cast<GameEndEvent>(event);
 
-				auto endScreensView = registry->view<component::GuiRenderable, component::Transform, EndScreen>();
-				for (auto& endScreenEntity : endScreensView)
-				{
-					auto& renderableTransform = registry->get<component::Transform>(endScreenEntity);
-					auto& endScreen = registry->get<EndScreen>(endScreenEntity);
+			auto e = registry->create();
 
-					renderableTransform.setPosition(glm::vec3(100.0f, 100.0f, 100.0f));
+			auto& t = registry->assign<component::Transform>(e);
+			t.setPosition(glm::vec3(0.0f, 0.0f, -100.0f));
+			t.setScale(glm::vec3(10.0f, 10.0f, 10.0f));
 
-					if (endScreen.isLoseScreen)
-					{
-						renderableTransform.setPosition(glm::vec3(0.0f, 0.0f, 0.0f));
-					}
-				}
-			}
+			auto& so = registry->assign<component::EntityInfo>(e);
+			so.name = "Game Over Message";
 
-			break;
-		}*/
+			auto& gui = registry->assign<component::GuiRenderable>(e);
+
+			if (evt.result == GameEndResult::blueWin)
+				gui.texture = Texture2D::cache("res/assets/textures/gui/blueWins.png");
+			else if (evt.result == GameEndResult::redWin)
+				gui.texture = Texture2D::cache("res/assets/textures/gui/redWins.png");
+			else //tie game
+				gui.texture = Texture2D::cache("res/assets/textures/gui/draw.png");
+		}
 		}
 		return false;
 	}

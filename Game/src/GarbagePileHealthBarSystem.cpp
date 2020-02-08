@@ -89,7 +89,7 @@ void GarbagePileHealthBarSystem::onUpdate()
 					//find distance between camera and garbage pile
 					glm::vec3 playerToGarbagePile = playerCameraTransform.getPositionGlobal() - garbageHPBarTransform.getPositionGlobal();
 					//disable the HP bar if the player's camera is too far away
-					if (glm::length(playerToGarbagePile) > 5.0f)
+					if (glm::length(playerToGarbagePile) > 15.0f)
 					{
 						garbageHPBarGui.enabled        = false;
 						garbageHPBarOutlineGui.enabled = false;
