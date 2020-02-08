@@ -15,6 +15,7 @@
 #include "CameraBreathingSystem.h"
 #include "GarbagePileHealthBarSystem.h"
 #include "GarbageMeterSystem.h"
+#include "ScrollingTextureLayer.h"
 
 using namespace oyl;
 
@@ -826,6 +827,7 @@ public:
 	{
 		pushLayer(MainLayer::create());
 		pushLayer(SandboxLayer::create());
+		pushLayer(ScrollingTextureLayer::create());
 	}
 };
 

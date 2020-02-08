@@ -3436,7 +3436,7 @@
             "CullingMask": 15,
             "Enabled": true,
             "Material": {
-                "Alias": "WoodBlue"
+                "Alias": "StairsBlue"
             },
             "Mesh": {
                 "Alias": "QuartersRail",
@@ -3475,7 +3475,7 @@
             "CullingMask": 15,
             "Enabled": true,
             "Material": {
-                "Alias": "WoodRed"
+                "Alias": "StairsRed"
             },
             "Mesh": {
                 "Alias": "QuartersRail",
@@ -3514,7 +3514,7 @@
             "CullingMask": 15,
             "Enabled": true,
             "Material": {
-                "Alias": "WoodBlue"
+                "Alias": "StairsBlue"
             },
             "Mesh": {
                 "Alias": "QuartersRail2",
@@ -3553,7 +3553,7 @@
             "CullingMask": 15,
             "Enabled": true,
             "Material": {
-                "Alias": "WoodRed"
+                "Alias": "StairsRed"
             },
             "Mesh": {
                 "Alias": "QuartersRail2",
@@ -16331,9 +16331,9 @@
                 "qZ": 0.0
             },
             "Scale": {
-                "X": 6.420000076293945,
+                "X": 100.0,
                 "Y": 1.9399996995925903,
-                "Z": 5.400000095367432
+                "Z": 100.0
             }
         }
     },

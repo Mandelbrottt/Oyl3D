@@ -3,12 +3,12 @@
         "Alias": "water",
         "MainProperties": {
             "Offset": [
-                0.0,
-                0.0
+                -18.976234436035156,
+                9.488117218017578
             ],
             "Tiling": [
-                1.0,
-                1.0
+                15.0,
+                10.0
             ]
         },
         "Shader": {
@@ -31,8 +31,8 @@
             },
             "Normal": null,
             "Specular": {
-                "Alias": "container2_specular",
-                "FilePath": "res\\assets\\textures\\container2_specular.png",
+                "Alias": "Oyl Black",
+                "FilePath": "../Engine/res/textures/black.png",
                 "Profile": 0,
                 "guid": null
             }
