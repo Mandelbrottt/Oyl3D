@@ -316,14 +316,16 @@ namespace oyl::internal
         glm::vec2 lastLowerClipping = glm::vec2(0.0f);
         glm::vec2 lastUpperClipping = glm::vec2(0.0f);
 
+        RenderCommand::setDrawRect(0, 0, width, height);
+
         for (auto camera : camView)
         {
             auto& pc = camView.get(camera);
 
             pc.m_forwardFrameBuffer->bind();
 
-            u32 playerNum = static_cast<u32>(pc.player);
-            RenderCommand::setDrawRect(!!(playerNum & 1) * x, !(playerNum & 2) * y, width, height);
+            //u32 playerNum = static_cast<u32>(pc.player);
+            //RenderCommand::setDrawRect(!!(playerNum & 1) * x, !(playerNum & 2) * y, width, height);
 
             m_shader->setUniformMat4("u_projection", pc.orthoMatrix());
 
@@ -456,6 +458,9 @@ namespace oyl::internal
             if (m_intermediateFrameBuffer->getWidth() != width ||
                 m_intermediateFrameBuffer->getHeight() != height)
                 m_intermediateFrameBuffer->updateViewport(width, height);
+
+            m_intermediateFrameBuffer->clear();
+            
             RenderCommand::setDrawRect(0, 0, width, height);
 
             m_vao->bind();
