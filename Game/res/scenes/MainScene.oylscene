@@ -433,7 +433,7 @@
             },
             "Position": {
                 "X": 0.001758575439453125,
-                "Y": 0.0,
+                "Y": 0.3800315856933594,
                 "Z": 0.003382384777069092
             },
             "Rotation": {
@@ -1299,8 +1299,8 @@
                 "Alias": "garbage"
             },
             "Mesh": {
-                "Alias": "garbage",
-                "FilePath": "res\\assets\\models\\garbage.obj"
+                "Alias": "garbageTiny",
+                "FilePath": "res\\assets\\models\\Garbage\\garbageTiny.obj"
             }
         },
         "RigidBody": {
@@ -1359,8 +1359,8 @@
                 "Alias": "garbage"
             },
             "Mesh": {
-                "Alias": "garbage",
-                "FilePath": "res\\assets\\models\\garbage.obj"
+                "Alias": "garbageTiny",
+                "FilePath": "res\\assets\\models\\Garbage\\garbageTiny.obj"
             }
         },
         "RigidBody": {
@@ -1419,8 +1419,8 @@
                 "Alias": "garbage"
             },
             "Mesh": {
-                "Alias": "garbage",
-                "FilePath": "res\\assets\\models\\garbage.obj"
+                "Alias": "garbageTiny",
+                "FilePath": "res\\assets\\models\\Garbage\\garbageTiny.obj"
             }
         },
         "RigidBody": {
@@ -10173,7 +10173,7 @@
             "ClearProps": {
                 "Skybox": null
             },
-            "CullingMask": 2,
+            "CullingMask": 1,
             "Enabled": true,
             "FarClipping": 1000.0,
             "Fov": 60.0,
@@ -11562,8 +11562,8 @@
                 "Alias": "garbage"
             },
             "Mesh": {
-                "Alias": "garbage",
-                "FilePath": "res\\assets\\models\\garbage.obj"
+                "Alias": "garbageTiny",
+                "FilePath": "res\\assets\\models\\Garbage\\garbageTiny.obj"
             }
         },
         "RigidBody": {
@@ -11622,8 +11622,8 @@
                 "Alias": "garbage"
             },
             "Mesh": {
-                "Alias": "garbage",
-                "FilePath": "res\\assets\\models\\garbage.obj"
+                "Alias": "garbageTiny",
+                "FilePath": "res\\assets\\models\\Garbage\\garbageTiny.obj"
             }
         },
         "RigidBody": {
@@ -11682,8 +11682,8 @@
                 "Alias": "garbage"
             },
             "Mesh": {
-                "Alias": "garbage",
-                "FilePath": "res\\assets\\models\\garbage.obj"
+                "Alias": "garbageTiny",
+                "FilePath": "res\\assets\\models\\Garbage\\garbageTiny.obj"
             }
         },
         "RigidBody": {
