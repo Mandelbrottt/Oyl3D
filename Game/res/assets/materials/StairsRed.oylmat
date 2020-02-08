@@ -1,6 +1,6 @@
 {
     "Material": {
-        "Alias": "WoodRed",
+        "Alias": "StairsRed",
         "MainProperties": {
             "Offset": [
                 0.0,
@@ -24,18 +24,18 @@
         },
         "Textures": {
             "Albedo": {
-                "Alias": "redWood",
-                "FilePath": "res\\assets\\textures\\redWood.png",
+                "Alias": "StairsRed",
+                "FilePath": "res\\assets\\textures\\StairsRed.png",
                 "Profile": 1,
                 "guid": null
             },
-            "Normal": null,
-            "Specular": {
-                "Alias": "tempSpec",
-                "FilePath": "res\\assets\\textures\\tempSpec.jpg",
+            "Normal": {
+                "Alias": "StairsRedNormal",
+                "FilePath": "res\\assets\\textures\\StairsRedNormal.png",
                 "Profile": 1,
                 "guid": null
-            }
+            },
+            "Specular": null
         }
     }
 }
