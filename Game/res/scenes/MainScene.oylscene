@@ -4864,9 +4864,9 @@
                 "qZ": 0.0
             },
             "Scale": {
-                "X": 4.0,
-                "Y": 4.0,
-                "Z": 4.0
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
             }
         }
     },
@@ -4903,9 +4903,9 @@
                 "qZ": 0.0
             },
             "Scale": {
-                "X": 4.0,
-                "Y": 4.0,
-                "Z": 4.0
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
             }
         }
     },
@@ -7581,6 +7581,66 @@
                 "X": 0.5577686429023743,
                 "Y": 7.666258335113525,
                 "Z": 2.3373219966888428
+            }
+        }
+    },
+    "Marcus' Mepps": {
+        "Collidable": {
+            "Shapes": [
+                {
+                    "Center": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Size": [
+                        20.0,
+                        0.10000000149011612,
+                        20.0
+                    ],
+                    "Trigger": false,
+                    "Type": 0
+                }
+            ]
+        },
+        "Parent": null,
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "Mepps"
+            },
+            "Mesh": {
+                "Alias": "MARCUS MEPPS5",
+                "FilePath": "res\\assets\\models\\Decorative\\MARCUS MEPPS5.obj"
+            }
+        },
+        "RigidBody": {
+            "Friction": 1.0,
+            "Mass": 0.0,
+            "Properties": 32
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": 78.66731262207031,
+                "Y": 64.8123550415039,
+                "Z": 59.70904541015625
+            },
+            "Rotation": {
+                "qW": 0.4190298914909363,
+                "qX": 0.15168118476867676,
+                "qY": -0.8938217163085938,
+                "qZ": 0.049894608557224274
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
             }
         }
     },
@@ -12421,6 +12481,84 @@
             }
         }
     },
+    "Shelving": {
+        "Parent": {
+            "Name": "Boat Root R"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "StairsBlue"
+            },
+            "Mesh": {
+                "Alias": "shelving",
+                "FilePath": "res\\assets\\models\\Decorative\\shelving.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": 9.733275413513184,
+                "Y": -0.02385503053665161,
+                "Z": -5.181350231170654
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Shelving 1": {
+        "Parent": {
+            "Name": "Boat Root L"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "StairsRed"
+            },
+            "Mesh": {
+                "Alias": "shelving",
+                "FilePath": "res\\assets\\models\\Decorative\\shelving.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": 9.74651050567627,
+                "Y": -0.02385503053665161,
+                "Z": -5.158007621765137
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
     "Spawn Door": {
         "Parent": {
             "Name": "Boat Root R"
@@ -12440,12 +12578,12 @@
             "Mirror": {
                 "X": false,
                 "Y": false,
-                "Z": true
+                "Z": false
             },
             "Position": {
-                "X": 15.415227890014648,
+                "X": 15.406606674194336,
                 "Y": -0.02385503053665161,
-                "Z": -0.1395587921142578
+                "Z": -0.08722472190856934
             },
             "Rotation": {
                 "qW": 1.0,
@@ -12454,8 +12592,8 @@
                 "qZ": 0.0
             },
             "Scale": {
-                "X": 0.800000011920929,
-                "Y": 0.800000011920929,
+                "X": 1.0,
+                "Y": 1.0,
                 "Z": 1.0
             }
         }
@@ -12479,12 +12617,12 @@
             "Mirror": {
                 "X": false,
                 "Y": false,
-                "Z": true
+                "Z": false
             },
             "Position": {
-                "X": 15.415227890014648,
+                "X": 15.399296760559082,
                 "Y": -0.02385503053665161,
-                "Z": -0.1395587921142578
+                "Z": -0.08844375610351563
             },
             "Rotation": {
                 "qW": 1.0,
@@ -12493,8 +12631,8 @@
                 "qZ": 0.0
             },
             "Scale": {
-                "X": 0.800000011920929,
-                "Y": 0.800000011920929,
+                "X": 1.0,
+                "Y": 1.0,
                 "Z": 1.0
             }
         }
@@ -12745,45 +12883,6 @@
             }
         }
     },
-    "Stairs 2": {
-        "Parent": {
-            "Name": "Boat Root R"
-        },
-        "Renderable": {
-            "CullingMask": 15,
-            "Enabled": true,
-            "Material": {
-                "Alias": "container"
-            },
-            "Mesh": {
-                "Alias": "stairsDown",
-                "FilePath": "res\\assets\\models\\stairsDown.obj"
-            }
-        },
-        "Transform": {
-            "Mirror": {
-                "X": false,
-                "Y": false,
-                "Z": false
-            },
-            "Position": {
-                "X": -13.358362197875977,
-                "Y": -4.134646415710449,
-                "Z": 0.608013391494751
-            },
-            "Rotation": {
-                "qW": 1.0,
-                "qX": 0.0,
-                "qY": 0.0,
-                "qZ": 0.0
-            },
-            "Scale": {
-                "X": 1.0,
-                "Y": 1.0,
-                "Z": 1.0
-            }
-        }
-    },
     "Stairs 3": {
         "Parent": {
             "Name": "Boat Root L"
@@ -12862,7 +12961,46 @@
             }
         }
     },
-    "Stairs 5": {
+    "Stairs Down": {
+        "Parent": {
+            "Name": "Boat Root R"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "StairsBlue"
+            },
+            "Mesh": {
+                "Alias": "stairsDown",
+                "FilePath": "res\\assets\\models\\stairsDown.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -13.358362197875977,
+                "Y": -4.134646415710449,
+                "Z": 0.608013391494751
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Stairs Down 1": {
         "Parent": {
             "Name": "Boat Root L"
         },
@@ -12870,7 +13008,7 @@
             "CullingMask": 15,
             "Enabled": true,
             "Material": {
-                "Alias": "container"
+                "Alias": "StairsRed"
             },
             "Mesh": {
                 "Alias": "stairsDown",
@@ -16322,12 +16460,12 @@
             "Position": {
                 "X": 0.0,
                 "Y": -6.693500518798828,
-                "Z": 7.517473220825195
+                "Z": 7.639679908752441
             },
             "Rotation": {
-                "qW": 1.0,
+                "qW": 0.5253219604492188,
                 "qX": 0.0,
-                "qY": 0.0,
+                "qY": 0.8509035110473633,
                 "qZ": 0.0
             },
             "Scale": {
