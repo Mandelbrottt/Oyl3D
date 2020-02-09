@@ -528,7 +528,7 @@ void PlayerInteractionValidationSystem::performCarryableItemInteraction(entt::en
 
 			std::cout << "PICKED UP MOP!\n";
 
-			itemNewPosition = glm::vec3(0.45f, 0.2f, -0.5f);
+			itemNewPosition = glm::vec3(0.45f, 0.3f, -0.35f);
 			itemNewRotation = glm::vec3(-107.0f, -69.5f, 106.0f);
 
 			break;
@@ -539,7 +539,8 @@ void PlayerInteractionValidationSystem::performCarryableItemInteraction(entt::en
 
 			std::cout << "PICKED UP CLEANING SOLUTION!\n";
 
-			itemNewPosition = glm::vec3(-0.21f, 0.4f, -0.66f);
+			//itemNewPosition = glm::vec3(-0.21f, 0.4f, -0.66f);
+			itemNewPosition = glm::vec3(-0.2f, 0.5f, -0.55f);
 			itemNewRotation = glm::vec3(0.0f, 0.0f, 0.0f);
 
 			break;
@@ -550,7 +551,7 @@ void PlayerInteractionValidationSystem::performCarryableItemInteraction(entt::en
 
 			std::cout << "PICKED UP GLOOP!\n";
 
-			itemNewPosition = glm::vec3(0.0f, 0.45f, -0.65f);
+			itemNewPosition = glm::vec3(0.0f, 0.5f, -0.5f);
 			itemNewRotation = glm::vec3(0.0f, 0.0f, 0.0f);
 
 			break;
@@ -625,7 +626,7 @@ void PlayerInteractionValidationSystem::performGarbagePileInteraction(entt::enti
 
 		PlayerStateChangeEvent playerStateChange;
 		playerStateChange.playerEntity = a_playerEntity;
-		playerStateChange.newState     = PlayerState::cleaning; //not exactly cleaning but.. close enough. We want the same delay and movement slow effect anyway so might as well reuse it
+		playerStateChange.newState     = PlayerState::cleaning; //not exactly cleaning but close enough. We want the same delay and movement slow effect anyway so might as well reuse it
 		postEvent(playerStateChange);
 	}
 }
@@ -804,7 +805,7 @@ void PlayerInteractionValidationSystem::dropPlayerCarriedItems(entt::entity a_pl
 					std::cout << "DROPPED MOP!\n";
 					player.primaryCarriedItem = entt::null;
 
-					newPosition += playerTransform.getForward() * 0.6f;
+					newPosition += playerTransform.getForward() * 0.4f;
 					newPosition += playerTransform.getRight()   * 0.7f;
 					newPosition.y = playerTransform.getPositionY();
 
@@ -817,9 +818,9 @@ void PlayerInteractionValidationSystem::dropPlayerCarriedItems(entt::entity a_pl
 					std::cout << "DROPPED CLEANING SOLUTION!\n";
 					player.secondaryCarriedItem = entt::null;
 
-					newPosition += playerTransform.getForward() * 0.7f;
+					newPosition += playerTransform.getForward() * 0.63f;
 					newPosition += playerTransform.getRight()   * -0.2f;
-					newPosition += playerTransform.getUp()      * 0.3f;
+					newPosition += playerTransform.getUp()      * 0.4f;
 
 					break;
 				}
@@ -828,8 +829,8 @@ void PlayerInteractionValidationSystem::dropPlayerCarriedItems(entt::entity a_pl
 					std::cout << "DROPPED GLOOP!\n";
 					player.primaryCarriedItem = entt::null;
 
-					newPosition += playerTransform.getForward() * 0.8f;
-					newPosition.y = playerTransform.getPositionY();
+					newPosition += playerTransform.getForward() * 0.7f;
+					newPosition += playerTransform.getUp()      * 0.2f;
 
 					break;
 				}
