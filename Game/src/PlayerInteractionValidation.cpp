@@ -57,49 +57,6 @@ bool PlayerInteractionValidationSystem::onEvent(const Event& event)
 			
 			break;
 		}
-		case (EventType)TypeQuicktimeCleaningEventResult:
-		{
-			auto evt = event_cast<QuicktimeCleaningEventResultEvent>(event);
-			if (evt.wasSuccessful)
-			{
-				auto& player = registry->get<Player>(evt.playerEntity);
-				if (!registry->valid(player.interactableEntity) || !registry->has<GarbagePile>(player.interactableEntity))
-				{
-					std::cout << "WARNING: PLAYER'S INTERACTABLE ENTITY AFTER COMPLETING CLEANING QUICKTIME EVENT WAS AN INVALID ENTITY!\n";
-					break;
-				}
-				auto& garbagePile = registry->get<GarbagePile>(player.interactableEntity);
-
-				std::cout << "CLEANING!\n";
-
-				if (garbagePile.garbageTicks < garbagePile.GARBAGE_TICKS_PER_LEVEL)
-				{
-					//if only a mop is needed for cleaning, drop the cleaning solution if the player is carrying one (mop animation uses both hands)
-					if (registry->valid(player.secondaryCarriedItem) && registry->get<CarryableItem>(player.secondaryCarriedItem).type == CarryableItemType::cleaningSolution)
-						dropPlayerCarriedItems(evt.playerEntity, true, CarryableItemType::cleaningSolution);
-				}
-
-				RequestToCleanGarbageEvent requestToCleanGarbage;
-				requestToCleanGarbage.garbagePileEntity = player.interactableEntity;
-				postEvent(requestToCleanGarbage);
-
-				PlayerStateChangeEvent playerStateChange;
-				playerStateChange.playerEntity = evt.playerEntity;
-				playerStateChange.newState = PlayerState::cleaning;
-				postEvent(playerStateChange);
-			}
-			else //!wasSuccessful
-			{
-				dropPlayerCarriedItems(evt.playerEntity);
-
-				PlayerStateChangeEvent playerStateChange;
-				playerStateChange.playerEntity = evt.playerEntity;
-				playerStateChange.newState = PlayerState::idle;
-				postEvent(playerStateChange);
-			}
-
-			break;
-		}
 	}
 
 	return false;
@@ -316,31 +273,37 @@ void PlayerInteractionValidationSystem::validateGarbagePileInteraction(entt::ent
 	{
 		if (garbagePile.team == player.team)
 		{
-			//garbage ticks less than max means the player needs a mop to clean and the cleaning quicktime event will be activated
-			if (garbagePile.garbageTicks < garbagePile.GARBAGE_TICKS_PER_LEVEL)
+			if (garbagePile.garbageTicks <= garbagePile.GARBAGE_TICKS_PER_LEVEL * 0.75f) //75% or lower requires mop to clean
 			{
+				//garbage ticks less than max means the player needs a mop to clean
 				if (   registry->valid(player.primaryCarriedItem)
 					&& registry->get<CarryableItem>(player.primaryCarriedItem).type == CarryableItemType::mop
 					&& registry->get<CarryableItem>(player.primaryCarriedItem).team == player.team)
 				{
 					player.interactableEntity = a_garbagePileEntity;
 
-					PlayerInteractResultEvent playerInteractResult;
-					playerInteractResult.interactionType = PlayerInteractionResult::activateCleaningQuicktimeEvent;
-					playerInteractResult.playerNum       = player.playerNum;
-					postEvent(playerInteractResult);
-
-					PlayerStateChangeEvent playerStateChange;
-					playerStateChange.playerEntity = a_playerEntity;
-					playerStateChange.newState     = PlayerState::inCleaningQuicktimeEvent;
-					postEvent(playerStateChange);
+					if (player.state == PlayerState::inCleaningQuicktimeEvent)
+					{
+						//if they're already in the QTE, we don't want to keep showing them the message
+						PlayerInteractResultEvent playerInteractResult;
+						playerInteractResult.interactionType = PlayerInteractionResult::nothing;
+						playerInteractResult.playerNum       = player.playerNum;
+						postEvent(playerInteractResult);
+					}
+					else
+					{
+						PlayerInteractResultEvent playerInteractResult;
+						playerInteractResult.interactionType = PlayerInteractionResult::cleanGarbagePile;
+						playerInteractResult.playerNum       = player.playerNum;
+						postEvent(playerInteractResult);
+					}
 
 					return;
 				}
 			}
-			//garbage ticks at max means the player needs cleaning solution to be able to clean (cleaning quicktime event is not displayed in this case)
-			else //garbage ticks at max
+			else //garbage ticks at cleaning solution required threshold
 			{
+				//garbage ticks at max means the player needs cleaning solution to be able to clean (cleaning quicktime event is not displayed in this case)
 				if (   registry->valid(player.secondaryCarriedItem)
 					&& registry->get<CarryableItem>(player.secondaryCarriedItem).type == CarryableItemType::cleaningSolution
 					&& registry->get<CarryableItem>(player.secondaryCarriedItem).team == player.team)
@@ -615,11 +578,26 @@ void PlayerInteractionValidationSystem::performGarbagePileInteraction(entt::enti
 
 	if (garbagePile.team == player.team)
 	{
-		//if garbage pile is at max ticks, use cleaning solution
-		//NOTE: if garbage pile is not at max ticks, cleaning is handled in the OnEvent function in this file under the cleaning quicktime event
-		if (garbagePile.garbageTicks >= garbagePile.GARBAGE_TICKS_PER_LEVEL)
+		//75% or lower requires mop to clean
+		if (garbagePile.garbageTicks <= garbagePile.GARBAGE_TICKS_PER_LEVEL * 0.75f) 
 		{
-			auto& carryableItem          = registry->get<CarryableItem>(player.secondaryCarriedItem);
+			//only a mop is needed for cleaning, drop the cleaning solution if the player is carrying one (mop animation uses both hands)
+			if (registry->valid(player.secondaryCarriedItem) && registry->get<CarryableItem>(player.secondaryCarriedItem).type == CarryableItemType::cleaningSolution)
+				dropPlayerCarriedItems(a_playerEntity, true, CarryableItemType::cleaningSolution);
+
+			PlayerStateChangeEvent playerStateChange;
+			playerStateChange.playerEntity = a_playerEntity;
+			playerStateChange.newState = PlayerState::inCleaningQuicktimeEvent;
+			postEvent(playerStateChange);
+
+			ActivateQuicktimeCleaningEventEvent activateCleaningQTE;
+			activateCleaningQTE.playerNum = player.playerNum;
+			activateCleaningQTE.garbagePileEntity = player.interactableEntity;
+			postEvent(activateCleaningQTE);
+		}
+		else //cleaning solution is required
+		{
+			auto& carryableItem = registry->get<CarryableItem>(player.secondaryCarriedItem);
 			auto& carryableItemTransform = registry->get<component::Transform>(player.secondaryCarriedItem);
 
 			registry->destroy(player.secondaryCarriedItem);
@@ -631,7 +609,7 @@ void PlayerInteractionValidationSystem::performGarbagePileInteraction(entt::enti
 
 			PlayerStateChangeEvent playerStateChange;
 			playerStateChange.playerEntity = a_playerEntity;
-			playerStateChange.newState     = PlayerState::cleaning;
+			playerStateChange.newState = PlayerState::cleaning;
 			postEvent(playerStateChange);
 		}
 	}

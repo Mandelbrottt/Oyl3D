@@ -126,10 +126,10 @@ void GarbagePileSystem::decreaseGarbageLevel(entt::entity a_garbagePileEntity)
 {
 	auto& garbagePile = registry->get<GarbagePile>(a_garbagePileEntity);
 
-	if (garbagePile.garbageTicks < garbagePile.GARBAGE_TICKS_PER_LEVEL)
+	if (garbagePile.garbageTicks <= garbagePile.GARBAGE_TICKS_PER_LEVEL * 0.75f)
+		garbagePile.garbageTicks -= garbagePile.isGlooped ? 0.04f : 0.08f;
+	else //garbage ticks >= 75% of the max
 		garbagePile.garbageTicks -= garbagePile.isGlooped ? 0.5f : 1.0f;
-	else //garbage ticks >= MAX TICKS
-		garbagePile.garbageTicks -= 1.0f;
 
 	if (garbagePile.garbageTicks <= 0.0f)
 	{
@@ -142,6 +142,7 @@ void GarbagePileSystem::decreaseGarbageLevel(entt::entity a_garbagePileEntity)
 		garbagePile.isGlooped = false;
 	}
 
+	updateGarbagePileVisualSize(a_garbagePileEntity);
 	//dont update garbage pile size yet because this should be done after the delay before removing garbage countdown reaches 0.0s.
 	//if you want to update the garbage pile size right away, do it after calling this function
 }

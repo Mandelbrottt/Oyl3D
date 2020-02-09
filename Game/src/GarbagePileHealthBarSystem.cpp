@@ -25,18 +25,27 @@ void GarbagePileHealthBarSystem::onUpdate()
 		//check if we need to interpolate the health bar fill (increase or decrease of garbage pile health)
 		if (garbageHPBar.startValue != garbageHPBar.targetValue)
 		{
-			garbageHPBar.interpolationParam += garbageHPBar.interpolationSpeed * Time::deltaTime();
-			float currentFillAmount = glm::mix(garbageHPBar.startValue, garbageHPBar.targetValue, garbageHPBar.interpolationParam);
+			if (garbageHPBar.currentFillAmount > 0.75f)
+				garbageHPBar.interpolationSpeed = garbageHPBar.baseInterpolationSpeed;
+			else //current fill amount < 3/4
+			{
+				garbageHPBar.interpolationSpeed = garbageHPBar.baseInterpolationSpeed
+					+ (pow(1.0f + abs(garbageHPBar.targetValue - garbageHPBar.startValue), 5.0f) - 1.0f) * 10.0f;
+			}
 
-			garbageHPBarGui.upperClipping.y = currentFillAmount;
+			garbageHPBar.interpolationParam += garbageHPBar.interpolationSpeed * Time::deltaTime();
+
+			garbageHPBar.currentFillAmount = glm::mix(garbageHPBar.startValue, garbageHPBar.targetValue, garbageHPBar.interpolationParam);
+
+			garbageHPBarGui.upperClipping.y = garbageHPBar.currentFillAmount;
 			
-			if (garbageHPBar.interpolationParam >= 1.0f)
+			if (garbageHPBar.interpolationParam >= 1.0f || garbageHPBar.currentFillAmount < 0.0f)
 			{
 				garbageHPBar.startValue         = garbageHPBar.targetValue;
 				garbageHPBar.interpolationParam = 0.0f;
 
 				//check if the bar has been fully depleted
-				if (garbageHPBar.startValue <= 0.001f) //add a small buffer
+				if (garbageHPBar.currentFillAmount <= 0.001f) //add a small buffer
 				{
 					//reset the bar to full
 					garbageHPBar.startValue         = 1.0f;
@@ -137,10 +146,14 @@ bool GarbagePileHealthBarSystem::onEvent(const Event& event)
 
 				if (garbageHPBar.garbagePileNum == garbagePile.relativePositionOnShip && garbageHPBar.team == garbagePile.team)
 				{
+					garbageHPBar.startValue = glm::mix(garbageHPBar.startValue, garbageHPBar.targetValue, garbageHPBar.interpolationParam); //set the current value to the start value
+
 					if (garbagePile.garbageTicks == garbagePile.GARBAGE_TICKS_PER_LEVEL)
-						garbageHPBar.targetValue = 0.0f;
+						garbageHPBar.targetValue -= 0.06f;
 					else
 						garbageHPBar.targetValue = garbagePile.garbageTicks / garbagePile.GARBAGE_TICKS_PER_LEVEL;
+
+					garbageHPBar.interpolationParam = 0.0f; //reset interpolation param
 
 					if (garbagePile.garbageLevel == 0)
 						garbageHPBar.shouldHideAfterInterpolating = true;

@@ -3879,7 +3879,7 @@
             }
         }
     },
-    "Cleaning Quicktime Event Background1": {
+    "Cleaning Quicktime Event Display1": {
         "GuiRenderable": {
             "Clipping": {
                 "Lower": [
@@ -3892,10 +3892,10 @@
                 ]
             },
             "CullingMask": 1,
-            "Enabled": true,
+            "Enabled": false,
             "Texture": {
-                "Alias": "cleaningQuicktimeEventBackground",
-                "FilePath": "res\\assets\\textures\\gui\\cleaningQuicktimeEventBackground.png"
+                "Alias": "cleaningQTEUp",
+                "FilePath": "res\\assets\\textures\\gui\\cleaningQTEUp.png"
             }
         },
         "Parent": {
@@ -3908,9 +3908,9 @@
                 "Z": false
             },
             "Position": {
-                "X": -30.0,
-                "Y": 3.5,
-                "Z": 0.0
+                "X": 0.0,
+                "Y": 0.0,
+                "Z": -20.0
             },
             "Rotation": {
                 "qW": 1.0,
@@ -3919,13 +3919,13 @@
                 "qZ": 0.0
             },
             "Scale": {
-                "X": 2.0,
-                "Y": 1.5,
+                "X": 3.0,
+                "Y": 3.0,
                 "Z": 1.0
             }
         }
     },
-    "Cleaning Quicktime Event Background2": {
+    "Cleaning Quicktime Event Display2": {
         "GuiRenderable": {
             "Clipping": {
                 "Lower": [
@@ -3938,10 +3938,10 @@
                 ]
             },
             "CullingMask": 2,
-            "Enabled": true,
+            "Enabled": false,
             "Texture": {
-                "Alias": "cleaningQuicktimeEventBackground",
-                "FilePath": "res\\assets\\textures\\gui\\cleaningQuicktimeEventBackground.png"
+                "Alias": "cleaningQTEUp",
+                "FilePath": "res\\assets\\textures\\gui\\cleaningQTEUp.png"
             }
         },
         "Parent": {
@@ -3954,9 +3954,9 @@
                 "Z": false
             },
             "Position": {
-                "X": -30.0,
-                "Y": 3.5,
-                "Z": 0.0
+                "X": 0.0,
+                "Y": 0.0,
+                "Z": -20.0
             },
             "Rotation": {
                 "qW": 1.0,
@@ -3965,13 +3965,13 @@
                 "qZ": 0.0
             },
             "Scale": {
-                "X": 2.0,
-                "Y": 1.5,
+                "X": 3.0,
+                "Y": 3.0,
                 "Z": 1.0
             }
         }
     },
-    "Cleaning Quicktime Event Background3": {
+    "Cleaning Quicktime Event Display3": {
         "GuiRenderable": {
             "Clipping": {
                 "Lower": [
@@ -3984,10 +3984,10 @@
                 ]
             },
             "CullingMask": 4,
-            "Enabled": true,
+            "Enabled": false,
             "Texture": {
-                "Alias": "cleaningQuicktimeEventBackground",
-                "FilePath": "res\\assets\\textures\\gui\\cleaningQuicktimeEventBackground.png"
+                "Alias": "cleaningQTEUp",
+                "FilePath": "res\\assets\\textures\\gui\\cleaningQTEUp.png"
             }
         },
         "Parent": {
@@ -4000,9 +4000,9 @@
                 "Z": false
             },
             "Position": {
-                "X": -30.0,
-                "Y": 3.5,
-                "Z": 0.0
+                "X": 0.0,
+                "Y": 0.0,
+                "Z": -20.0
             },
             "Rotation": {
                 "qW": 1.0,
@@ -4011,13 +4011,13 @@
                 "qZ": 0.0
             },
             "Scale": {
-                "X": 2.0,
-                "Y": 1.5,
+                "X": 3.0,
+                "Y": 3.0,
                 "Z": 1.0
             }
         }
     },
-    "Cleaning Quicktime Event Background4": {
+    "Cleaning Quicktime Event Display4": {
         "GuiRenderable": {
             "Clipping": {
                 "Lower": [
@@ -4030,10 +4030,10 @@
                 ]
             },
             "CullingMask": 8,
-            "Enabled": true,
+            "Enabled": false,
             "Texture": {
-                "Alias": "cleaningQuicktimeEventBackground",
-                "FilePath": "res\\assets\\textures\\gui\\cleaningQuicktimeEventBackground.png"
+                "Alias": "cleaningQTEUp",
+                "FilePath": "res\\assets\\textures\\gui\\cleaningQTEUp.png"
             }
         },
         "Parent": {
@@ -4046,9 +4046,9 @@
                 "Z": false
             },
             "Position": {
-                "X": -30.0,
-                "Y": 3.5,
-                "Z": 0.0
+                "X": 0.0,
+                "Y": 0.0,
+                "Z": -20.0
             },
             "Rotation": {
                 "qW": 1.0,
@@ -4057,192 +4057,8 @@
                 "qZ": 0.0
             },
             "Scale": {
-                "X": 2.0,
-                "Y": 1.5,
-                "Z": 1.0
-            }
-        }
-    },
-    "Cleaning Quicktime Event Indicator1": {
-        "GuiRenderable": {
-            "Clipping": {
-                "Lower": [
-                    0.0,
-                    0.0
-                ],
-                "Upper": [
-                    1.0,
-                    1.0
-                ]
-            },
-            "CullingMask": 1,
-            "Enabled": true,
-            "Texture": {
-                "Alias": "cleaningQuicktimeEventIndicator",
-                "FilePath": "res\\assets\\textures\\gui\\cleaningQuicktimeEventIndicator.png"
-            }
-        },
-        "Parent": {
-            "Name": "Player1UI"
-        },
-        "Transform": {
-            "Mirror": {
-                "X": false,
-                "Y": false,
-                "Z": false
-            },
-            "Position": {
-                "X": -30.0,
-                "Y": 3.5999999046325684,
-                "Z": -1.0
-            },
-            "Rotation": {
-                "qW": 1.0,
-                "qX": 0.0,
-                "qY": 0.0,
-                "qZ": 0.0
-            },
-            "Scale": {
-                "X": 1.5,
-                "Y": 2.0,
-                "Z": 1.0
-            }
-        }
-    },
-    "Cleaning Quicktime Event Indicator2": {
-        "GuiRenderable": {
-            "Clipping": {
-                "Lower": [
-                    0.0,
-                    0.0
-                ],
-                "Upper": [
-                    1.0,
-                    1.0
-                ]
-            },
-            "CullingMask": 2,
-            "Enabled": true,
-            "Texture": {
-                "Alias": "cleaningQuicktimeEventIndicator",
-                "FilePath": "res\\assets\\textures\\gui\\cleaningQuicktimeEventIndicator.png"
-            }
-        },
-        "Parent": {
-            "Name": "Player2UI"
-        },
-        "Transform": {
-            "Mirror": {
-                "X": false,
-                "Y": false,
-                "Z": false
-            },
-            "Position": {
-                "X": -30.0,
-                "Y": 3.5999999046325684,
-                "Z": -1.0
-            },
-            "Rotation": {
-                "qW": 1.0,
-                "qX": 0.0,
-                "qY": 0.0,
-                "qZ": 0.0
-            },
-            "Scale": {
-                "X": 1.5,
-                "Y": 2.0,
-                "Z": 1.0
-            }
-        }
-    },
-    "Cleaning Quicktime Event Indicator3": {
-        "GuiRenderable": {
-            "Clipping": {
-                "Lower": [
-                    0.0,
-                    0.0
-                ],
-                "Upper": [
-                    1.0,
-                    1.0
-                ]
-            },
-            "CullingMask": 4,
-            "Enabled": true,
-            "Texture": {
-                "Alias": "cleaningQuicktimeEventIndicator",
-                "FilePath": "res\\assets\\textures\\gui\\cleaningQuicktimeEventIndicator.png"
-            }
-        },
-        "Parent": {
-            "Name": "Player3UI"
-        },
-        "Transform": {
-            "Mirror": {
-                "X": false,
-                "Y": false,
-                "Z": false
-            },
-            "Position": {
-                "X": -30.0,
-                "Y": 3.5999999046325684,
-                "Z": -1.0
-            },
-            "Rotation": {
-                "qW": 1.0,
-                "qX": 0.0,
-                "qY": 0.0,
-                "qZ": 0.0
-            },
-            "Scale": {
-                "X": 1.5,
-                "Y": 2.0,
-                "Z": 1.0
-            }
-        }
-    },
-    "Cleaning Quicktime Event Indicator4": {
-        "GuiRenderable": {
-            "Clipping": {
-                "Lower": [
-                    0.0,
-                    0.0
-                ],
-                "Upper": [
-                    1.0,
-                    1.0
-                ]
-            },
-            "CullingMask": 8,
-            "Enabled": true,
-            "Texture": {
-                "Alias": "cleaningQuicktimeEventIndicator",
-                "FilePath": "res\\assets\\textures\\gui\\cleaningQuicktimeEventIndicator.png"
-            }
-        },
-        "Parent": {
-            "Name": "Player4UI"
-        },
-        "Transform": {
-            "Mirror": {
-                "X": false,
-                "Y": false,
-                "Z": false
-            },
-            "Position": {
-                "X": -30.0,
-                "Y": 3.5999999046325684,
-                "Z": -1.0
-            },
-            "Rotation": {
-                "qW": 1.0,
-                "qX": 0.0,
-                "qY": 0.0,
-                "qZ": 0.0
-            },
-            "Scale": {
-                "X": 1.5,
-                "Y": 2.0,
+                "X": 3.0,
+                "Y": 3.0,
                 "Z": 1.0
             }
         }

@@ -55,6 +55,9 @@ public:
 		scheduleSystemUpdate<GarbageMeterSystem>();
 		scheduleSystemUpdate<GameOverCheckSystem>();
 
+		Texture2D::cache("res/assets/textures/gui/cleaningQTEUp.png");
+		Texture2D::cache("res/assets/textures/gui/cleaningQTEDown.png");
+
 		for (int i = 0; i < 4; i++)
 		{
 			{
@@ -322,51 +325,24 @@ public:
 			}
 
 			{
-				//background for cleaning quicktime event
-				entt::entity cleaningQuicktimeEventBackgroundEntity = registry->create();
-				auto& backgroundGUI = registry->assign<component::GuiRenderable>(cleaningQuicktimeEventBackgroundEntity);
-				backgroundGUI.texture = Texture2D::cache("res/assets/textures/gui/cleaningQuicktimeEventBackground.png");
-				backgroundGUI.cullingMask = 0b1 << i;
+				//one cleaning QTE entity for each player
+				entt::entity cleaningQTEEntity = registry->create();
 
-				component::Transform backgroundTransform;
-				backgroundTransform.setPosition(glm::vec3(-30.0f, 3.5f, -10.0f));
-				backgroundTransform.setScale(glm::vec3(2.0f, 1.5f, 1.0f));
-				registry->assign<component::Transform>(cleaningQuicktimeEventBackgroundEntity, backgroundTransform);
+				auto& cleaningQTEGui = registry->assign<component::GuiRenderable>(cleaningQTEEntity);
+				cleaningQTEGui.texture      = Texture2D::get("cleaningQTEUp");
+				cleaningQTEGui.cullingMask  = 0b1 << i;
+				cleaningQTEGui.enabled      = false;
 
-				auto& backgroundHUDElement = registry->assign<PlayerHUDElement>(cleaningQuicktimeEventBackgroundEntity);
-				backgroundHUDElement.positionWhenActive = glm::vec3(0.0f, 3.5f, -10.0f);
-				backgroundHUDElement.playerNum = (PlayerNumber)i;
+				component::Transform cleaningQTETransform;
+				cleaningQTETransform.setPosition(glm::vec3(0.0f, 0.0f, -20.0f));
+				cleaningQTETransform.setScale(glm::vec3(3.0f, 3.0f, 1.0f));
+				registry->assign<component::Transform>(cleaningQTEEntity, cleaningQTETransform);
 
-				auto& backgroundSceneObject = registry->assign<component::EntityInfo>(cleaningQuicktimeEventBackgroundEntity);
-				backgroundSceneObject.name = "Cleaning Quicktime Event Background" + std::to_string(i + 1);
+				auto& cleaningQTE = registry->assign<CleaningQuicktimeEvent>(cleaningQTEEntity);
+				cleaningQTE.playerNum = (PlayerNumber)i;
 
-
-
-				//indicator for cleaning quicktime event
-				entt::entity cleaningQuicktimeEventIndicatorEntity = registry->create();
-				auto& indicatorGUI = registry->assign<component::GuiRenderable>(cleaningQuicktimeEventIndicatorEntity);
-				indicatorGUI.texture = Texture2D::cache("res/assets/textures/gui/cleaningQuicktimeEventIndicator.png");
-				indicatorGUI.cullingMask = 0b1 << i;
-
-				component::Transform indicatorTransform;
-				indicatorTransform.setPosition(glm::vec3(-30.0f, 3.6f, -11.0f));
-				indicatorTransform.setScale(glm::vec3(1.5f, 2.0f, 1.0f));
-				registry->assign<component::Transform>(cleaningQuicktimeEventIndicatorEntity, indicatorTransform);
-
-				CleaningQuicktimeEventIndicator cleaningQuicktimeEventIndicator;
-				cleaningQuicktimeEventIndicator.lerpInformation.startPos = glm::vec3(-4.95f, 3.6f, -11.0f);
-				cleaningQuicktimeEventIndicator.lerpInformation.destinationPos = glm::vec3(4.95f, 3.6f, -11.0f);
-				cleaningQuicktimeEventIndicator.lerpInformation.speed = 2.2f;
-
-				cleaningQuicktimeEventIndicator.cleaningQuicktimeEventBackground = cleaningQuicktimeEventBackgroundEntity;
-				registry->assign<CleaningQuicktimeEventIndicator>(cleaningQuicktimeEventIndicatorEntity, cleaningQuicktimeEventIndicator);
-
-				auto& indicatorHUDElement = registry->assign<PlayerHUDElement>(cleaningQuicktimeEventIndicatorEntity);
-				indicatorHUDElement.positionWhenActive = glm::vec3(-4.95f, 3.6f, -11.0f);
-				indicatorHUDElement.playerNum = (PlayerNumber)i;
-
-				auto& indicatorSceneObject = registry->assign<component::EntityInfo>(cleaningQuicktimeEventIndicatorEntity);
-				indicatorSceneObject.name = "Cleaning Quicktime Event Indicator" + std::to_string(i + 1);
+				auto& cleaningQTEEntityInfo = registry->assign<component::EntityInfo>(cleaningQTEEntity);
+				cleaningQTEEntityInfo.name = "Cleaning Quicktime Event Display" + std::to_string(i + 1);
 			}
 
 			{
@@ -534,44 +510,46 @@ public:
 				player.moveDirection = glm::normalize(desiredMoveDirection);
 
 			
-
-			//camera movement
-			glm::vec2 rightStick = Input::getGamepadRightStick(player.controllerNum);
-
-			playerTransform.rotate(glm::vec3(0.0f, -rightStick.x * 200.0f * Time::deltaTime(), 0.0f));
-
-			if (player.yRotationClamp > 1)
+			if (!player.isCameraLocked)
 			{
-				if (playerTransform.getRotationEulerY() < player.yRotationClamp)
-					playerTransform.setRotationEulerY(player.yRotationClamp);
-			}
-			else if (player.yRotationClamp < -1)
-			{
-				if (playerTransform.getRotationEulerY() > player.yRotationClamp)
-					playerTransform.setRotationEulerY(player.yRotationClamp);
-			}
+				//camera movement
+				glm::vec2 rightStick = Input::getGamepadRightStick(player.controllerNum);
 
-			auto playerCameraView = registry->view<component::Camera, component::Transform, component::Parent>();
-			for (auto& cameraEntity : playerCameraView)
-			{
-				auto& camera          = registry->get<component::Camera>(cameraEntity);
-				auto& cameraTransform = registry->get<component::Transform>(cameraEntity);
-				auto& cameraParent    = registry->get<component::Parent>(cameraEntity);
+				playerTransform.rotate(glm::vec3(0.0f, -rightStick.x * 200.0f * Time::deltaTime(), 0.0f));
 
-				if (cameraParent.parent != playerEntity)
-					continue;
+				if (player.yRotationClamp > 1)
+				{
+					if (playerTransform.getRotationEulerY() < player.yRotationClamp)
+						playerTransform.setRotationEulerY(player.yRotationClamp);
+				}
+				else if (player.yRotationClamp < -1)
+				{
+					if (playerTransform.getRotationEulerY() > player.yRotationClamp)
+						playerTransform.setRotationEulerY(player.yRotationClamp);
+				}
 
-				cameraTransform.rotate(glm::vec3(-rightStick.y * 200.0f * Time::deltaTime(), 0.0f, 0.0f));
+				auto playerCameraView = registry->view<component::Camera, component::Transform, component::Parent>();
+				for (auto& cameraEntity : playerCameraView)
+				{
+					auto& camera = registry->get<component::Camera>(cameraEntity);
+					auto& cameraTransform = registry->get<component::Transform>(cameraEntity);
+					auto& cameraParent = registry->get<component::Parent>(cameraEntity);
 
-				//clamp camera up/down rotation
-				float cameraRotationClampValueX = 70.0f;
+					if (cameraParent.parent != playerEntity)
+						continue;
 
-				if (cameraTransform.getRotationEulerX() > cameraRotationClampValueX)
-					cameraTransform.setRotationEulerX(cameraRotationClampValueX);
-				else if (cameraTransform.getRotationEulerX() < -cameraRotationClampValueX)
-					cameraTransform.setRotationEulerX(-cameraRotationClampValueX);
+					cameraTransform.rotate(glm::vec3(-rightStick.y * 200.0f * Time::deltaTime(), 0.0f, 0.0f));
 
-				break;
+					//clamp camera up/down rotation
+					float cameraRotationClampValueX = 70.0f;
+
+					if (cameraTransform.getRotationEulerX() > cameraRotationClampValueX)
+						cameraTransform.setRotationEulerX(cameraRotationClampValueX);
+					else if (cameraTransform.getRotationEulerX() < -cameraRotationClampValueX)
+						cameraTransform.setRotationEulerX(-cameraRotationClampValueX);
+
+					break;
+				}
 			}
 		}
 	}
@@ -747,7 +725,7 @@ public:
 				auto& player          = registry->get<Player>(playerEntity);
 				auto& playerTransform = registry->get<component::Transform>(playerEntity);
 
-				if (player.playerNum != PlayerNumber::One)
+				if (player.playerNum != PlayerNumber::One || player.isCameraLocked)
 					continue;
 
 				playerTransform.rotate(glm::vec3(0.0f, -evt.dx * 0.5f, 0.0f));

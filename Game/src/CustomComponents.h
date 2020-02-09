@@ -99,6 +99,7 @@ struct Player
 	float CLEANING_TIME_DURATION = 1.2f; //IF YOU CHANGE THIS, MAKE SURE TO ALSO CHANGE THE DEPENDANT VALUES IN GARBAGE PILE AND GARBAGE HP BAR COMPONENETS (check the comments in those components to figure out which ones)
 	float cleaningTimeCountdown = CLEANING_TIME_DURATION;
 
+	bool isCameraLocked  = false;
 	float yRotationClamp = 0.0f;
 
 	entt::entity interactableEntity = entt::null;
@@ -230,36 +231,25 @@ struct GarbagePileHealthBar
 	int garbagePileNum     = 0;
 	PlayerNumber playerNum = PlayerNumber::One; //player to render to
 
-	float interpolationSpeed = 0.8f; //this should be relative to the player's time it takes to clean (1 / (time it takes to clean) = the value this variable should be)
-	float interpolationParam = 0.0f;
+	float baseInterpolationSpeed = 0.8f; //this should be relative to the player's time it takes to clean (1 / (time it takes to clean) = the value this variable should be)
+	float interpolationSpeed     = baseInterpolationSpeed;
+	float interpolationParam     = 0.0f;
 
 	float startValue  = 1.0f; //health bar starts at full
 	float targetValue = 1.0f;
+	float currentFillAmount = startValue;
 
 	bool shouldHideAfterInterpolating = false;
 	bool shouldBeHidden               = false;
 };
 
-struct CleaningQuicktimeEventIndicator
+struct CleaningQuicktimeEvent
 {
-	entt::entity cleaningQuicktimeEventBackground;
+	PlayerNumber playerNum;
+	entt::entity garbagePileBeingCleaned = entt::null;
 
-	bool isActive = false;
-
-	float LOWER_BOUND_FOR_SUCCESS = 0.37f;
-	float UPPER_BOUND_FOR_SUCCESS = 0.63f;
-
-	MoveableUsingLerp lerpInformation;
-
-	float DELAY_BEFORE_DISAPPEARING_DURATION = 0.3f;
-	float delayBeforeDisappearingCountdown   = 0.0f;
-
-	bool shouldShake          = false;
-	bool isNumberOfShakesEven = true;
-
-	float SHAKE_START_VALUE         = 0.3f;
-	float SHAKE_DECREASE_PER_SECOND = 1.0f;
-	float currentShakeValue         = SHAKE_START_VALUE;
+	bool isActive     = false;
+	bool isPointingUp = true;
 };
 
 struct CameraBreathing
