@@ -403,7 +403,7 @@ namespace oyl::internal
         {
             const auto rotIt = j.find("Rotation");
 
-            if (rotIt != j.end()      &&
+            if (rotIt != j.end()     &&
                 rotIt->contains("qW") &&
                 rotIt->contains("qX") &&
                 rotIt->contains("qY") &&
@@ -684,9 +684,9 @@ namespace oyl::internal
         if (auto it = j.find("CullingMask"); it != j.end() && it->is_number_unsigned())
             it->get_to(re.cullingMask);
 
-        if (auto it = j.find("Enabled"); it != j.end() && it->is_boolean())
-            it->get_to(re.cullingMask);
-
+        if (auto it = j.find("Player"); it != j.end() && it->is_number_unsigned())
+            it->get_to(re.player);
+        
         if (auto it = j.find("Fov"); it != j.end() && it->is_number_float())
             re.fov(it->get<float>());
 
@@ -966,6 +966,9 @@ namespace oyl::internal
             
             if (auto normalIt = it->find("Normal"); normalIt != it->end())
                 material->normalMap = getTextureFn(normalIt);
+
+            if (auto emissionIt = it->find("Emission"); emissionIt != it->end())
+                material->emissionMap = getTextureFn(emissionIt);
         }
 
         if (auto it = jMaterial.find("Alias"); it != jMaterial.end() && it->is_string())
@@ -1078,9 +1081,11 @@ namespace oyl::internal
             jTex["Profile"] = static_cast<uint>(texture->getProfile());
         };
 
+        // TODO: Add to_json and from_json
         _texToJson(material->albedoMap, jTextures["Albedo"]);
         _texToJson(material->specularMap, jTextures["Specular"]);
         _texToJson(material->normalMap, jTextures["Normal"]);
+        _texToJson(material->emissionMap, jTextures["Emission"]);
 
         auto& jMainProps = jMaterial["MainProperties"];
         {

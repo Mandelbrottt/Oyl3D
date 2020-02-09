@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Oyl3D/ECS/System.h"
+#include "Oyl3D/Scenes/System.h"
 
 #include "Oyl3D/Events/EventDispatcher.h"
 #include "Oyl3D/Events/EventListener.h"

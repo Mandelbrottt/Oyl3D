@@ -11,6 +11,17 @@ namespace oyl
     
     std::map<CacheAlias, Ref<Shader>> Shader::s_cache;
 
+    Ref<Shader> Shader::create(const std::string& filename)
+    {
+        switch (Renderer::getAPI())
+        {
+            case RendererAPI::OpenGL:
+                return OpenGLShader::create(filename);
+        }
+        OYL_ASSERT(false, "Invalid API!");
+        return nullptr;
+    }
+
     Ref<Shader> Shader::create(const std::vector<ShaderInfo>& infos)
     {
         switch (Renderer::getAPI())

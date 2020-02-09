@@ -244,14 +244,149 @@ namespace oyl
                                TextureWrap    a_wrap,
                                TextureProfile a_profile)
     {
-        return false;
+        if (m_loaded) unload();
+
+        glGenTextures(1, &m_rendererID);
+        glBindTexture(GL_TEXTURE_3D, m_rendererID);
+
+        GLenum filter = FilterToGL(a_filter);
+        GLenum wrap = WrapToGL(a_wrap);
+
+        std::vector<u8> lut;
+
+        int size = 0;
+        bool is1D = false;
+        glm::vec3 lowDomain(0.0f), highDomain(1.0f);
+        
+        std::string line;
+        line.reserve(256);
+        std::string keyword;
+        keyword.reserve(256);
+        
+        std::ifstream file(filename, std::ios::binary);
+        while (!file.eof())
+        {
+            size_t linePos = file.tellg();
+            std::getline(file, line);
+
+            if (line[0] == '#')
+                continue;
+
+            std::istringstream stream(line);
+            stream >> keyword;
+
+            if ("+" < keyword && keyword < ":")
+            {
+                file.seekg(linePos);
+                break;
+            }
+            else if (keyword == "LUT_1D_SIZE")
+            {
+                stream >> size;
+                if (size < 2 || size > 65536)
+                    return false;
+                lut.resize(size);
+                is1D = true;
+            }
+            else if (keyword == "LUT_3D_SIZE")
+            {
+                stream >> size;
+                if (size < 2 || size > 256)
+                    return false;
+                lut.resize(size * size * size * 3);
+            }
+            else if (keyword == "DOMAIN_MIN")
+            {
+                stream >> lowDomain.x >> lowDomain.y >> lowDomain.z;
+            }
+            else if (keyword == "DOMAIN_MAX")
+            {
+                stream >> highDomain.x >> highDomain.y >> highDomain.z;
+            }
+        }
+
+        if (is1D)
+        {
+            for (int i =  0; i < size && !file.eof(); i++)
+            {
+                glm::vec3 input;
+                glm::vec<3, u8> store{};
+                std::getline(file, line);
+                if (file.fail()) return false;
+
+                std::istringstream stream(line);
+                stream >> input.r >> input.g >> input.b;
+                input -= lowDomain;
+                input /= highDomain - lowDomain;
+                store = input;
+                lut[i] = store.r, lut[i + 1] = store.g, lut[i + 2] = store.b;
+            }
+        }
+        else
+        {
+            for (int b = 0; b < size; b++)
+                for (int g = 0; g < size; g++)
+                    for (int r = 0; r < size; r++)
+                    {
+                        glm::vec3 input;
+                        glm::vec<3, u8> store{};
+                        std::getline(file, line);
+                        if (file.fail()) return false;
+
+                        std::istringstream stream(line);
+                        stream >> input.r >> input.g >> input.b;
+                        input -= lowDomain;
+                        input /= highDomain - lowDomain;
+                        store = input * 255.0f;
+                        int index = 3 * (r + size * g + size * size * b);
+                        lut[index] = store.r, lut[index + 1] = store.g, lut[index + 2] = store.b;
+                    }
+        }
+
+        m_loaded = true;
+        
+        GLenum texStorageFormat = GL_RGB8;
+        GLenum texSubFormat = GL_RGB;
+
+        glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+
+        if (texStorageFormat != GL_NONE && texSubFormat != GL_NONE)
+        {
+            glTexStorage3D(GL_TEXTURE_3D, 1, texStorageFormat, size, size, size);
+            glTexSubImage3D(GL_TEXTURE_3D, 0, 0, 0, 0, size, size, size, texSubFormat, GL_UNSIGNED_BYTE, lut.data());
+        }
+
+        glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
+
+        glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MAG_FILTER, filter);
+        glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MIN_FILTER, filter);
+
+        glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_S, wrap);
+        glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_T, wrap);
+        glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_R, wrap);
+
+        return m_loaded;
     }
 
-    void OpenGLTexture3D::unload() { }
+    void OpenGLTexture3D::unload()
+    {
+        if (!m_loaded) return;
+        m_loaded = false;
 
-    void OpenGLTexture3D::bind(uint slot) const { }
+        glDeleteTextures(1, &m_rendererID);
+    }
 
-    void OpenGLTexture3D::unbind(uint slot) const { }
+    void OpenGLTexture3D::bind(uint slot) const
+    {
+        glActiveTexture(GL_TEXTURE0 + slot);
+        glBindTexture(GL_TEXTURE_3D, m_rendererID);
+    }
+
+    void OpenGLTexture3D::unbind(uint slot) const
+    {
+        glActiveTexture(GL_TEXTURE0 + slot);
+        glBindTexture(GL_TEXTURE_3D, GL_NONE);
+    }
 
     OpenGLTextureCubeMap::OpenGLTextureCubeMap(const std::string& filename,
                                                TextureFilter  a_filter,

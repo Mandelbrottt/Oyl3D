@@ -14,11 +14,12 @@ namespace oyl
 
         friend class Shader;
     public:
+        explicit OpenGLShader(_OpenGLShader, const std::string& filename);
         explicit OpenGLShader(_OpenGLShader, const std::vector<ShaderInfo>& infos);
         virtual  ~OpenGLShader();
 
+        bool load(const std::string& filename) override;
         bool load(const std::vector<ShaderInfo>& infos) override;
-        bool load(const std::initializer_list<ShaderInfo>& infos) override;
 
         void unload() override;
 
@@ -33,13 +34,27 @@ namespace oyl
         void setUniformMat3(const std::string& name, const glm::mat3& m) override;
         void setUniformMat4(const std::string& name, const glm::mat4& m) override;
 
+        void setUniform1i(int location, int v) override;
+        void setUniform1f(int location, float v) override;
+        void setUniform2f(int location, const glm::vec2& v) override;
+        void setUniform3f(int location, const glm::vec3& v) override;
+        void setUniform4f(int location, const glm::vec4& v) override;
+        void setUniformMat3(int location, const glm::mat3& m) override;
+        void setUniformMat4(int location, const glm::mat4& m) override;
+
         static Ref<Shader> create(const std::vector<ShaderInfo>& infos)
         {
             return Ref<OpenGLShader>::create(_OpenGLShader{}, infos);
         }
 
+        static Ref<Shader> create(const std::string& filename)
+        {
+            return Ref<OpenGLShader>::create(_OpenGLShader{}, filename);
+        }
+
     private:
         void processShaders(const std::array<std::string, NumShaderTypes>& shaderSrcs);
+        void processShaders(const std::string& compoundSrc);
         uint compileShader(Shader::Type type, const std::string& src);
         uint linkShaders(const std::array<u32, NumShaderTypes>& shaders);
 

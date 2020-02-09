@@ -21,22 +21,28 @@ namespace oyl
             Pixel,
             Fragment = Pixel,
             NumShaderTypes,
+            Compound,
         };
         
     public:
         virtual ~Shader() = default;
 
+        virtual bool load(const std::string& infos) = 0;
         virtual bool load(const std::vector<ShaderInfo>& infos) = 0;
-        virtual bool load(const std::initializer_list<ShaderInfo>& infos) = 0;
 
         virtual void unload() = 0;
 
         virtual void bind() const = 0;
         virtual void unbind() const = 0;
 
+        static Ref<Shader> create(const std::string& filename);
         static Ref<Shader> create(const std::vector<ShaderInfo>& infos);
         static Ref<Shader> create(const std::initializer_list<ShaderInfo>& files);
 
+        static const Ref<Shader>& cache(const std::string& filename,
+                                        const CacheAlias& alias,
+                                        bool overwrite = false);
+        
         static const Ref<Shader>& cache(const std::initializer_list<ShaderInfo>& files, 
                                         const CacheAlias& alias, 
                                         bool overwrite = false);
@@ -73,8 +79,15 @@ namespace oyl
         virtual void setUniformMat3(const std::string& name, const glm::mat3& v) = 0;
         virtual void setUniformMat4(const std::string& name, const glm::mat4& v) = 0;
 
-        const std::vector<ShaderInfo>& getShaderInfos() { return m_shaderInfos; }
+        virtual void setUniform1i(int location, int v) = 0;
+        virtual void setUniform1f(int location, float v) = 0;
+        virtual void setUniform2f(int location, const glm::vec2& v) = 0;
+        virtual void setUniform3f(int location, const glm::vec3& v) = 0;
+        virtual void setUniform4f(int location, const glm::vec4& v) = 0;
+        virtual void setUniformMat3(int location, const glm::mat3& v) = 0;
+        virtual void setUniformMat4(int location, const glm::mat4& v) = 0;
 
+        const std::vector<ShaderInfo>& getShaderInfos() const { return m_shaderInfos; }
     protected:
         std::vector<ShaderInfo> m_shaderInfos;
 
