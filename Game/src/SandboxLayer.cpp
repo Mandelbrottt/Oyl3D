@@ -350,7 +350,7 @@ void SandboxLayer::onEnter()
 			entt::entity cleaningSolutionSpawnerEntity = registry->create();
 
 			auto& spawner = registry->assign<RespawnManager>(cleaningSolutionSpawnerEntity);
-			spawner.respawnTimerDuration = 10.0f;
+			spawner.respawnTimerDuration = 5.0f;
 			spawner.team = Team::blue;
 			spawner.type = CarryableItemType::cleaningSolution;
 
@@ -388,7 +388,7 @@ void SandboxLayer::onEnter()
 			entt::entity gloopSpawnerEntity = registry->create();
 
 			auto& spawner = registry->assign<RespawnManager>(gloopSpawnerEntity);
-			spawner.respawnTimerDuration = 20.0f;
+			spawner.respawnTimerDuration = 10.0f;
 			spawner.team = Team::blue;
 			spawner.type = CarryableItemType::gloop;
 
@@ -756,7 +756,7 @@ void SandboxLayer::onEnter()
 			entt::entity cleaningSolutionSpawnerEntity = registry->create();
 
 			auto& spawner = registry->assign<RespawnManager>(cleaningSolutionSpawnerEntity);
-			spawner.respawnTimerDuration = 10.0f;
+			spawner.respawnTimerDuration = 5.0f;
 			spawner.team = Team::red;
 			spawner.type = CarryableItemType::cleaningSolution;
 
@@ -794,7 +794,7 @@ void SandboxLayer::onEnter()
 			entt::entity gloopSpawnerEntity = registry->create();
 
 			auto& spawner = registry->assign<RespawnManager>(gloopSpawnerEntity);
-			spawner.respawnTimerDuration = 20.0f;
+			spawner.respawnTimerDuration = 10.0f;
 			spawner.team = Team::red;
 			spawner.type = CarryableItemType::gloop;
 
