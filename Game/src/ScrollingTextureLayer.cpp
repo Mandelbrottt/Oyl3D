@@ -7,6 +7,15 @@ void ScrollingTextureLayer::onEnter()
 
 void ScrollingTextureLayer::onExit()
 {
+	auto view = registry->view<EntityInfo, Transform, Renderable>();
+	view.each([&](EntityInfo& info, Transform& transform, Renderable& renderable)
+		{
+			if (info.name == "Water")
+			{
+				renderable.material->mainTextureProps.offset.y = 0.0f;
+				renderable.material->mainTextureProps.offset.x = 0.0f;
+			}
+		});
 }
 
 void ScrollingTextureLayer::onUpdate()
