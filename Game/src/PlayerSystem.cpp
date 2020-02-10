@@ -116,18 +116,6 @@ bool PlayerSystem::onEvent(const Event& event)
 {
 	switch (event.type)
 	{
-		case (EventType)TypePlayerMove:
-		{
-			auto evt = event_cast<PlayerMoveEvent>(event);
-
-			auto& player = registry->get<Player>(evt.playerEntity);
-
-			player.moveDirection += evt.direction;
-			changeToWalking(&player);
-
-			break;
-		}
-
 		case (EventType)TypePlayerJump:
 		{
 			auto evt = event_cast<PlayerJumpEvent>(event);
