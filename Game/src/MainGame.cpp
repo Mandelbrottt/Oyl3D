@@ -614,9 +614,12 @@ public:
 				auto playerView = registry->view<Player>();
 				for (entt::entity playerEntity : playerView)
 				{
-					PlayerInteractionRequestEvent playerInteractionRequest;
-					playerInteractionRequest.playerEntity = playerEntity;
-					postEvent(playerInteractionRequest);
+					if (registry->get<Player>(playerEntity).playerNum == PlayerNumber::One)
+					{
+						PlayerInteractionRequestEvent playerInteractionRequest;
+						playerInteractionRequest.playerEntity = playerEntity;
+						postEvent(playerInteractionRequest);
+					}
 				}
 
 				break;
@@ -627,9 +630,12 @@ public:
 				auto playerView = registry->view<Player>();
 				for (entt::entity playerEntity : playerView)
 				{
-					CancelButtonPressedEvent cancelButtonPressed;
-					cancelButtonPressed.playerEntity = playerEntity;
-					postEvent(cancelButtonPressed);
+					if (registry->get<Player>(playerEntity).playerNum == PlayerNumber::One)
+					{
+						CancelButtonPressedEvent cancelButtonPressed;
+						cancelButtonPressed.playerEntity = playerEntity;
+						postEvent(cancelButtonPressed);
+					}
 				}
 
 				break;
