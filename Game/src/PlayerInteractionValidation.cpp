@@ -50,10 +50,25 @@ bool PlayerInteractionValidationSystem::onEvent(const Event& event)
 	        
 			break;
 	    }
-		case (EventType)TypePlayerDropItem:
+		case (EventType)TypeCancelButtonPressed:
 		{
-			auto evt = event_cast<PlayerDropItemEvent>(event);
-			dropPlayerCarriedItems(evt.playerEntity);
+			auto evt = event_cast<CancelButtonPressedEvent>(event);
+
+			auto& player = registry->get<Player>(evt.playerEntity);
+
+			if (player.state == PlayerState::inCleaningQuicktimeEvent)
+			{
+				CancelQuicktimeCleaningEventEvent cancelQTE;
+				cancelQTE.playerNum = player.playerNum;
+				postEvent(cancelQTE);
+
+				PlayerStateChangeEvent playerStateChange;
+				playerStateChange.playerEntity = evt.playerEntity;
+				playerStateChange.newState     = PlayerState::idle;
+				postEvent(playerStateChange);
+			}
+			else
+				dropPlayerCarriedItems(evt.playerEntity);
 			
 			break;
 		}
@@ -106,7 +121,7 @@ void PlayerInteractionValidationSystem::performRaycastAndValidateForPlayer(entt:
 
 	auto& playerCameraTransform = registry->get<component::Transform>(playersCameraEntity);
 
-	auto ray = RayTest::Closest(playerCameraTransform.getPositionGlobal(), playerCameraTransform.getForwardGlobal(), 1.9f);
+	auto ray = RayTest::Closest(playerCameraTransform.getPositionGlobal(), playerCameraTransform.getForwardGlobal(), 2.0f);
 	if (ray->hasHit && registry->valid(ray->hitObject.entity))
 	{
 		entt::entity raycastHitEntity = ray->hitObject.entity;
@@ -517,7 +532,7 @@ void PlayerInteractionValidationSystem::performCarryableItemInteraction(entt::en
 
 			std::cout << "PICKED UP CANNONBALL!\n";
 
-			itemNewPosition = glm::vec3(0.0f, 0.3f, -0.8f);
+			itemNewPosition = glm::vec3(0.0f, 0.4f, -0.7f);
 			itemNewRotation = glm::vec3(0.0f, 0.0f, 0.0f);
 
 			break;
@@ -528,8 +543,8 @@ void PlayerInteractionValidationSystem::performCarryableItemInteraction(entt::en
 
 			std::cout << "PICKED UP MOP!\n";
 
-			itemNewPosition = glm::vec3(0.45f, 0.3f, -0.35f);
-			itemNewRotation = glm::vec3(-107.0f, -69.5f, 106.0f);
+			itemNewPosition = glm::vec3(0.45f, 0.45f, -0.35f);
+			itemNewRotation = glm::vec3(-100.0f, -54.7f, 99.0f);
 
 			break;
 		}
@@ -539,8 +554,7 @@ void PlayerInteractionValidationSystem::performCarryableItemInteraction(entt::en
 
 			std::cout << "PICKED UP CLEANING SOLUTION!\n";
 
-			//itemNewPosition = glm::vec3(-0.21f, 0.4f, -0.66f);
-			itemNewPosition = glm::vec3(-0.2f, 0.5f, -0.55f);
+			itemNewPosition = glm::vec3(-0.2f, 0.45f, -0.55f);
 			itemNewRotation = glm::vec3(0.0f, 0.0f, 0.0f);
 
 			break;
@@ -796,7 +810,7 @@ void PlayerInteractionValidationSystem::dropPlayerCarriedItems(entt::entity a_pl
 					std::cout << "DROPPED CANNONBALL!\n";
 					player.primaryCarriedItem = entt::null;
 
-					newPosition += playerTransform.getForward() * 0.8f;
+					newPosition += playerTransform.getForward() * 0.75f;
 
 					break;
 				}

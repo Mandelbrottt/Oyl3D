@@ -196,9 +196,6 @@ struct GarbagePile
 	float DELAY_BEFORE_ADDING_GARBAGE_DURATION = 1.0f; //this is used to add garbage to a pile that a cannon has shot at, or any other reason a delay could be wanted before adding garbage
 	float delayBeforeAddingGarbageCountdown    = -1.0f; //timer shouldnt start at the beginning of the game
 
-	float DELAY_BEFORE_REMOVING_GARBAGE_DURATION = 1.2f;  //this should be equal to the player's time it takes to clean
-	float delayBeforeRemovingGarbageCountdown    = -1.0f; //timer shouldnt start at the beginning of the game
-
 	int relativePositionOnShip = -10; //this will be -1 (left), 0 (middle), or 1 (right) to mirror the cannon track position. It is used to determine which pile the cannons are firing at
 };
 
@@ -245,6 +242,8 @@ struct GarbagePileHealthBar
 
 struct CleaningQuicktimeEvent
 {
+	entt::entity cancelPromptEntity = entt::null; //the prompt that tells the player how to cancel the cleaning QTE
+
 	PlayerNumber playerNum;
 	entt::entity garbagePileBeingCleaned = entt::null;
 

@@ -78,16 +78,19 @@ bool CleaningQuicktimeEventSystem::onEvent(const Event& event)
 			auto cleaningQTEView = registry->view<component::Transform, CleaningQuicktimeEvent>();
 			for (auto& cleaningQTEEntity : cleaningQTEView)
 			{
-				auto& cleaningQTE = registry->get<CleaningQuicktimeEvent>(cleaningQTEEntity);
-				auto& cleaningQTERenderable = registry->get<component::GuiRenderable>(cleaningQTEEntity);
+				auto& cleaningQTE    = registry->get<CleaningQuicktimeEvent>(cleaningQTEEntity);
+				auto& cleaningQTEGui = registry->get<component::GuiRenderable>(cleaningQTEEntity);
+
+				auto& cancelQTEPromptGui = registry->get<component::GuiRenderable>(cleaningQTE.cancelPromptEntity);
 
 				if (cleaningQTE.playerNum == evt.playerNum && !cleaningQTE.isActive)
 				{
 					cleaningQTE.garbagePileBeingCleaned = evt.garbagePileEntity;
 
-					cleaningQTE.isActive          = true;
-					cleaningQTE.isPointingUp      = true; //always start with it pointing up
-					cleaningQTERenderable.enabled = true;
+					cleaningQTE.isActive       = true;
+					cleaningQTE.isPointingUp   = true; //always start with it pointing up
+					cleaningQTEGui.enabled     = true;
+					cancelQTEPromptGui.enabled = true;
 
 					auto& playerView = registry->view<Player>();
 					for (auto& playerEntity : playerView)
@@ -114,14 +117,17 @@ bool CleaningQuicktimeEventSystem::onEvent(const Event& event)
 			for (auto& cleaningQTEEntity : cleaningQTEView)
 			{
 				auto& cleaningQTE           = registry->get<CleaningQuicktimeEvent>(cleaningQTEEntity);
-				auto& cleaningQTERenderable = registry->get<component::GuiRenderable>(cleaningQTEEntity);
+				auto& cleaningQTEGui = registry->get<component::GuiRenderable>(cleaningQTEEntity);
+
+				auto& cancelQTEPromptGui = registry->get<component::GuiRenderable>(cleaningQTE.cancelPromptEntity);
 
 				if (cleaningQTE.playerNum == evt.playerNum && cleaningQTE.isActive)
 				{
 					cleaningQTE.garbagePileBeingCleaned = entt::null;
 
-					cleaningQTE.isActive          = false;
-					cleaningQTERenderable.enabled = false;
+					cleaningQTE.isActive       = false;
+					cleaningQTEGui.enabled     = false;
+					cancelQTEPromptGui.enabled = false;
 
 					auto& playerView = registry->view<Player>();
 					for (auto& playerEntity : playerView)

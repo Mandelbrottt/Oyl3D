@@ -325,24 +325,40 @@ public:
 			}
 
 			{
-				//one cleaning QTE entity for each player
-				entt::entity cleaningQTEEntity = registry->create();
+				//cleaning QTE-related stuff (each player gets one)
+				entt::entity cancelQTEPromptEntity = registry->create();
 
-				auto& cleaningQTEGui = registry->assign<component::GuiRenderable>(cleaningQTEEntity);
-				cleaningQTEGui.texture      = Texture2D::get("cleaningQTEUp");
-				cleaningQTEGui.cullingMask  = 0b1 << i;
-				cleaningQTEGui.enabled      = false;
+				auto& cancelQTEPromptGui = registry->assign<component::GuiRenderable>(cancelQTEPromptEntity);
+				cancelQTEPromptGui.texture     = Texture2D::cache("res/assets/textures/gui/cancelCleaningQTEPrompt.png");
+				cancelQTEPromptGui.cullingMask = 0b1 << i;
+				cancelQTEPromptGui.enabled     = false;
 
-				component::Transform cleaningQTETransform;
-				cleaningQTETransform.setPosition(glm::vec3(0.0f, 0.0f, -20.0f));
-				cleaningQTETransform.setScale(glm::vec3(3.0f, 3.0f, 1.0f));
-				registry->assign<component::Transform>(cleaningQTEEntity, cleaningQTETransform);
+				auto& cancelQTETransform = registry->assign<component::Transform>(cancelQTEPromptEntity);
+				cancelQTETransform.setPosition(glm::vec3(0.0f, -2.0f, -20.0f));
+				cancelQTETransform.setScale(glm::vec3(0.7f, 0.7f, 1.0f));
 
-				auto& cleaningQTE = registry->assign<CleaningQuicktimeEvent>(cleaningQTEEntity);
+				auto& cancelQTEEntityInfo = registry->assign<component::EntityInfo>(cancelQTEPromptEntity);
+				cancelQTEEntityInfo.name  = "Cancel Cleaning Prompt" + std::to_string(i + 1);
+
+
+
+				entt::entity QTEEntity = registry->create();
+
+				auto& QTEGui = registry->assign<component::GuiRenderable>(QTEEntity);
+				QTEGui.texture      = Texture2D::get("cleaningQTEUp");
+				QTEGui.cullingMask  = 0b1 << i;
+				QTEGui.enabled      = false;
+
+				auto& QTETransform = registry->assign<component::Transform>(QTEEntity);
+				QTETransform.setPosition(glm::vec3(0.0f, 0.0f, -20.0f));
+				QTETransform.setScale(glm::vec3(3.0f, 3.0f, 1.0f));
+
+				auto& cleaningQTE = registry->assign<CleaningQuicktimeEvent>(QTEEntity);
 				cleaningQTE.playerNum = (PlayerNumber)i;
+				cleaningQTE.cancelPromptEntity = cancelQTEPromptEntity;
 
-				auto& cleaningQTEEntityInfo = registry->assign<component::EntityInfo>(cleaningQTEEntity);
-				cleaningQTEEntityInfo.name = "Cleaning Quicktime Event Display" + std::to_string(i + 1);
+				auto& QTEEntityInfo = registry->assign<component::EntityInfo>(QTEEntity);
+				QTEEntityInfo.name = "Cleaning Quicktime Event Display" + std::to_string(i + 1);
 			}
 
 			{
@@ -611,9 +627,9 @@ public:
 				auto playerView = registry->view<Player>();
 				for (entt::entity playerEntity : playerView)
 				{
-					PlayerDropItemEvent playerDropItem;
-					playerDropItem.playerEntity = playerEntity;
-					postEvent(playerDropItem);
+					CancelButtonPressedEvent cancelButtonPressed;
+					cancelButtonPressed.playerEntity = playerEntity;
+					postEvent(cancelButtonPressed);
 				}
 
 				break;
@@ -698,9 +714,9 @@ public:
 				}
 				case Gamepad::B:
 				{
-					PlayerDropItemEvent playerDropItem;
-					playerDropItem.playerEntity = playerEntity;
-					postEvent(playerDropItem);
+					CancelButtonPressedEvent cancelButtonPressed;
+					cancelButtonPressed.playerEntity = playerEntity;
+					postEvent(cancelButtonPressed);
 
 					break;
 				}
