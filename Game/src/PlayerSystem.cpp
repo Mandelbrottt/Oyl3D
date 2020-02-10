@@ -152,6 +152,9 @@ bool PlayerSystem::onEvent(const Event& event)
 
 			switch (evt.newState)
 			{
+				if (player.isCameraLocked)
+					player.isCameraLocked = false;
+
 				case PlayerState::idle:
 			    {
 					changeToIdle(&player);
@@ -254,7 +257,12 @@ void PlayerSystem::changeToPushing(Player* a_player)
 
 void PlayerSystem::changeToInCleaningQuicktimeEvent(Player* a_player)
 {
-	a_player->state = PlayerState::inCleaningQuicktimeEvent;
+	a_player->state          = PlayerState::inCleaningQuicktimeEvent;
+	a_player->isCameraLocked = true;
+
+	ActivateQuicktimeCleaningEventEvent activateQTE;
+	activateQTE.playerNum = a_player->playerNum;
+	postEvent(activateQTE);
 }
 
 void PlayerSystem::changeToCleaning(Player* a_player)
