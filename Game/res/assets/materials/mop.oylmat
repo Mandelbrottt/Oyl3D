@@ -26,7 +26,7 @@
             "Albedo": {
                 "Alias": "Mop",
                 "FilePath": "res\\assets\\textures\\Mop.png",
-                "Profile": 0,
+                "Profile": 1,
                 "guid": null
             },
             "Emission": null,

@@ -7,6 +7,7 @@ void ScrollingTextureLayer::onEnter()
 
 void ScrollingTextureLayer::onExit()
 {
+	//this doesn't actually do anything
 	auto view = registry->view<EntityInfo, Transform, Renderable>();
 	view.each([&](EntityInfo& info, Transform& transform, Renderable& renderable)
 		{

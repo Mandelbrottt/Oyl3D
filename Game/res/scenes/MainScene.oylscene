@@ -1971,11 +1971,11 @@
             "CullingMask": 15,
             "Enabled": true,
             "Material": {
-                "Alias": "cannonball"
+                "Alias": "DecorationAtlas"
             },
             "Mesh": {
-                "Alias": "sphere",
-                "FilePath": "res\\assets\\models\\sphere.obj"
+                "Alias": "garbageBall",
+                "FilePath": "res\\assets\\models\\garbageBall.obj"
             }
         },
         "RigidBody": {
@@ -2001,9 +2001,9 @@
                 "qZ": 0.0
             },
             "Scale": {
-                "X": 0.5,
-                "Y": 0.5,
-                "Z": 0.5
+                "X": 2.0,
+                "Y": 2.0,
+                "Z": 2.0
             }
         }
     },
@@ -2027,11 +2027,11 @@
             "CullingMask": 15,
             "Enabled": true,
             "Material": {
-                "Alias": "cannonball"
+                "Alias": "DecorationAtlas"
             },
             "Mesh": {
-                "Alias": "sphere",
-                "FilePath": "res\\assets\\models\\sphere.obj"
+                "Alias": "garbageBall",
+                "FilePath": "res\\assets\\models\\garbageBall.obj"
             }
         },
         "RigidBody": {
@@ -2057,9 +2057,9 @@
                 "qZ": 0.0
             },
             "Scale": {
-                "X": 0.5,
-                "Y": 0.5,
-                "Z": 0.5
+                "X": 2.0,
+                "Y": 2.0,
+                "Z": 2.0
             }
         }
     },
@@ -2083,11 +2083,11 @@
             "CullingMask": 15,
             "Enabled": true,
             "Material": {
-                "Alias": "cannonball"
+                "Alias": "DecorationAtlas"
             },
             "Mesh": {
-                "Alias": "sphere",
-                "FilePath": "res\\assets\\models\\sphere.obj"
+                "Alias": "garbageBall",
+                "FilePath": "res\\assets\\models\\garbageBall.obj"
             }
         },
         "RigidBody": {
@@ -2113,9 +2113,9 @@
                 "qZ": 0.0
             },
             "Scale": {
-                "X": 0.5,
-                "Y": 0.5,
-                "Z": 0.5
+                "X": 2.0,
+                "Y": 2.0,
+                "Z": 2.0
             }
         }
     },
@@ -2139,11 +2139,11 @@
             "CullingMask": 15,
             "Enabled": true,
             "Material": {
-                "Alias": "cannonball"
+                "Alias": "DecorationAtlas"
             },
             "Mesh": {
-                "Alias": "sphere",
-                "FilePath": "res\\assets\\models\\sphere.obj"
+                "Alias": "garbageBall",
+                "FilePath": "res\\assets\\models\\garbageBall.obj"
             }
         },
         "RigidBody": {
@@ -2169,9 +2169,9 @@
                 "qZ": 0.0
             },
             "Scale": {
-                "X": 0.5,
-                "Y": 0.5,
-                "Z": 0.5
+                "X": 2.0,
+                "Y": 2.0,
+                "Z": 2.0
             }
         }
     },
@@ -2195,11 +2195,11 @@
             "CullingMask": 15,
             "Enabled": true,
             "Material": {
-                "Alias": "cannonball"
+                "Alias": "DecorationAtlas"
             },
             "Mesh": {
-                "Alias": "sphere",
-                "FilePath": "res\\assets\\models\\sphere.obj"
+                "Alias": "garbageBall",
+                "FilePath": "res\\assets\\models\\garbageBall.obj"
             }
         },
         "RigidBody": {
@@ -2225,9 +2225,9 @@
                 "qZ": 0.0
             },
             "Scale": {
-                "X": 0.5,
-                "Y": 0.5,
-                "Z": 0.5
+                "X": 2.0,
+                "Y": 2.0,
+                "Z": 2.0
             }
         }
     },
@@ -2251,11 +2251,11 @@
             "CullingMask": 15,
             "Enabled": true,
             "Material": {
-                "Alias": "cannonball"
+                "Alias": "DecorationAtlas"
             },
             "Mesh": {
-                "Alias": "sphere",
-                "FilePath": "res\\assets\\models\\sphere.obj"
+                "Alias": "garbageBall",
+                "FilePath": "res\\assets\\models\\garbageBall.obj"
             }
         },
         "RigidBody": {
@@ -2281,9 +2281,9 @@
                 "qZ": 0.0
             },
             "Scale": {
-                "X": 0.5,
-                "Y": 0.5,
-                "Z": 0.5
+                "X": 2.0,
+                "Y": 2.0,
+                "Z": 2.0
             }
         }
     },
@@ -2801,6 +2801,123 @@
                 "X": 0.4300000071525574,
                 "Y": 0.5,
                 "Z": 0.4300000071525574
+            }
+        }
+    },
+    "BlueGarbagePileFly0": {
+        "Parent": {
+            "Name": "BlueGarbagePile0"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "container"
+            },
+            "Mesh": {
+                "Alias": "cube",
+                "FilePath": "res\\assets\\models\\cube.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": 0.0,
+                "Y": 0.0,
+                "Z": 0.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "BlueGarbagePileFly1": {
+        "Parent": {
+            "Name": "BlueGarbagePile1"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "container"
+            },
+            "Mesh": {
+                "Alias": "cube",
+                "FilePath": "res\\assets\\models\\cube.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": 0.0,
+                "Y": 0.0,
+                "Z": 0.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "BlueGarbagePileFly2": {
+        "Parent": {
+            "Name": "BlueGarbagePile2"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "container"
+            },
+            "Mesh": {
+                "Alias": "cube",
+                "FilePath": "res\\assets\\models\\cube.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": 0.0,
+                "Y": 0.0,
+                "Z": 0.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
             }
         }
     },
@@ -4673,6 +4790,182 @@
                 "X": 12.248290061950684,
                 "Y": 74.42253112792969,
                 "Z": 5.0
+            }
+        }
+    },
+    "Cancel Cleaning Prompt1": {
+        "GuiRenderable": {
+            "Clipping": {
+                "Lower": [
+                    0.0,
+                    0.0
+                ],
+                "Upper": [
+                    1.0,
+                    1.0
+                ]
+            },
+            "CullingMask": 1,
+            "Enabled": false,
+            "Texture": {
+                "Alias": "cancelCleaningQTEPrompt",
+                "FilePath": "res\\assets\\textures\\gui\\cancelCleaningQTEPrompt.png"
+            }
+        },
+        "Parent": null,
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": 0.0,
+                "Y": -2.0,
+                "Z": -20.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 0.699999988079071,
+                "Y": 0.699999988079071,
+                "Z": 1.0
+            }
+        }
+    },
+    "Cancel Cleaning Prompt2": {
+        "GuiRenderable": {
+            "Clipping": {
+                "Lower": [
+                    0.0,
+                    0.0
+                ],
+                "Upper": [
+                    1.0,
+                    1.0
+                ]
+            },
+            "CullingMask": 2,
+            "Enabled": false,
+            "Texture": {
+                "Alias": "cancelCleaningQTEPrompt",
+                "FilePath": "res\\assets\\textures\\gui\\cancelCleaningQTEPrompt.png"
+            }
+        },
+        "Parent": null,
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": 0.0,
+                "Y": -2.0,
+                "Z": -20.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 0.699999988079071,
+                "Y": 0.699999988079071,
+                "Z": 1.0
+            }
+        }
+    },
+    "Cancel Cleaning Prompt3": {
+        "GuiRenderable": {
+            "Clipping": {
+                "Lower": [
+                    0.0,
+                    0.0
+                ],
+                "Upper": [
+                    1.0,
+                    1.0
+                ]
+            },
+            "CullingMask": 4,
+            "Enabled": false,
+            "Texture": {
+                "Alias": "cancelCleaningQTEPrompt",
+                "FilePath": "res\\assets\\textures\\gui\\cancelCleaningQTEPrompt.png"
+            }
+        },
+        "Parent": null,
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": 0.0,
+                "Y": -2.0,
+                "Z": -20.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 0.699999988079071,
+                "Y": 0.699999988079071,
+                "Z": 1.0
+            }
+        }
+    },
+    "Cancel Cleaning Prompt4": {
+        "GuiRenderable": {
+            "Clipping": {
+                "Lower": [
+                    0.0,
+                    0.0
+                ],
+                "Upper": [
+                    1.0,
+                    1.0
+                ]
+            },
+            "CullingMask": 8,
+            "Enabled": false,
+            "Texture": {
+                "Alias": "cancelCleaningQTEPrompt",
+                "FilePath": "res\\assets\\textures\\gui\\cancelCleaningQTEPrompt.png"
+            }
+        },
+        "Parent": null,
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": 0.0,
+                "Y": -2.0,
+                "Z": -20.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 0.699999988079071,
+                "Y": 0.699999988079071,
+                "Z": 1.0
             }
         }
     },
@@ -9919,6 +10212,534 @@
             }
         }
     },
+    "Gloop Indicator 0 For Player0": {
+        "GuiRenderable": {
+            "Clipping": {
+                "Lower": [
+                    0.0,
+                    0.0
+                ],
+                "Upper": [
+                    1.0,
+                    1.0
+                ]
+            },
+            "CullingMask": 1,
+            "Enabled": true,
+            "Texture": {
+                "Alias": "gloopIndicator",
+                "FilePath": "res\\assets\\textures\\gui\\gloopIndicator.png"
+            }
+        },
+        "Parent": null,
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -30.0,
+                "Y": 0.0,
+                "Z": -5.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 2.0,
+                "Y": 2.0,
+                "Z": 2.0
+            }
+        }
+    },
+    "Gloop Indicator 0 For Player1": {
+        "GuiRenderable": {
+            "Clipping": {
+                "Lower": [
+                    0.0,
+                    0.0
+                ],
+                "Upper": [
+                    1.0,
+                    1.0
+                ]
+            },
+            "CullingMask": 2,
+            "Enabled": true,
+            "Texture": {
+                "Alias": "gloopIndicator",
+                "FilePath": "res\\assets\\textures\\gui\\gloopIndicator.png"
+            }
+        },
+        "Parent": null,
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -30.0,
+                "Y": 0.0,
+                "Z": -5.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 2.0,
+                "Y": 2.0,
+                "Z": 2.0
+            }
+        }
+    },
+    "Gloop Indicator 0 For Player2": {
+        "GuiRenderable": {
+            "Clipping": {
+                "Lower": [
+                    0.0,
+                    0.0
+                ],
+                "Upper": [
+                    1.0,
+                    1.0
+                ]
+            },
+            "CullingMask": 4,
+            "Enabled": true,
+            "Texture": {
+                "Alias": "gloopIndicator",
+                "FilePath": "res\\assets\\textures\\gui\\gloopIndicator.png"
+            }
+        },
+        "Parent": null,
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -30.0,
+                "Y": 0.0,
+                "Z": -5.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 2.0,
+                "Y": 2.0,
+                "Z": 2.0
+            }
+        }
+    },
+    "Gloop Indicator 0 For Player3": {
+        "GuiRenderable": {
+            "Clipping": {
+                "Lower": [
+                    0.0,
+                    0.0
+                ],
+                "Upper": [
+                    1.0,
+                    1.0
+                ]
+            },
+            "CullingMask": 8,
+            "Enabled": true,
+            "Texture": {
+                "Alias": "gloopIndicator",
+                "FilePath": "res\\assets\\textures\\gui\\gloopIndicator.png"
+            }
+        },
+        "Parent": null,
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -30.0,
+                "Y": 0.0,
+                "Z": -5.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 2.0,
+                "Y": 2.0,
+                "Z": 2.0
+            }
+        }
+    },
+    "Gloop Indicator 1 For Player0": {
+        "GuiRenderable": {
+            "Clipping": {
+                "Lower": [
+                    0.0,
+                    0.0
+                ],
+                "Upper": [
+                    1.0,
+                    1.0
+                ]
+            },
+            "CullingMask": 1,
+            "Enabled": true,
+            "Texture": {
+                "Alias": "gloopIndicator",
+                "FilePath": "res\\assets\\textures\\gui\\gloopIndicator.png"
+            }
+        },
+        "Parent": null,
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -30.0,
+                "Y": 0.0,
+                "Z": -5.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 2.0,
+                "Y": 2.0,
+                "Z": 2.0
+            }
+        }
+    },
+    "Gloop Indicator 1 For Player1": {
+        "GuiRenderable": {
+            "Clipping": {
+                "Lower": [
+                    0.0,
+                    0.0
+                ],
+                "Upper": [
+                    1.0,
+                    1.0
+                ]
+            },
+            "CullingMask": 2,
+            "Enabled": true,
+            "Texture": {
+                "Alias": "gloopIndicator",
+                "FilePath": "res\\assets\\textures\\gui\\gloopIndicator.png"
+            }
+        },
+        "Parent": null,
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -30.0,
+                "Y": 0.0,
+                "Z": -5.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 2.0,
+                "Y": 2.0,
+                "Z": 2.0
+            }
+        }
+    },
+    "Gloop Indicator 1 For Player2": {
+        "GuiRenderable": {
+            "Clipping": {
+                "Lower": [
+                    0.0,
+                    0.0
+                ],
+                "Upper": [
+                    1.0,
+                    1.0
+                ]
+            },
+            "CullingMask": 4,
+            "Enabled": true,
+            "Texture": {
+                "Alias": "gloopIndicator",
+                "FilePath": "res\\assets\\textures\\gui\\gloopIndicator.png"
+            }
+        },
+        "Parent": null,
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -30.0,
+                "Y": 0.0,
+                "Z": -5.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 2.0,
+                "Y": 2.0,
+                "Z": 2.0
+            }
+        }
+    },
+    "Gloop Indicator 1 For Player3": {
+        "GuiRenderable": {
+            "Clipping": {
+                "Lower": [
+                    0.0,
+                    0.0
+                ],
+                "Upper": [
+                    1.0,
+                    1.0
+                ]
+            },
+            "CullingMask": 8,
+            "Enabled": true,
+            "Texture": {
+                "Alias": "gloopIndicator",
+                "FilePath": "res\\assets\\textures\\gui\\gloopIndicator.png"
+            }
+        },
+        "Parent": null,
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -30.0,
+                "Y": 0.0,
+                "Z": -5.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 2.0,
+                "Y": 2.0,
+                "Z": 2.0
+            }
+        }
+    },
+    "Gloop Indicator 2 For Player0": {
+        "GuiRenderable": {
+            "Clipping": {
+                "Lower": [
+                    0.0,
+                    0.0
+                ],
+                "Upper": [
+                    1.0,
+                    1.0
+                ]
+            },
+            "CullingMask": 1,
+            "Enabled": true,
+            "Texture": {
+                "Alias": "gloopIndicator",
+                "FilePath": "res\\assets\\textures\\gui\\gloopIndicator.png"
+            }
+        },
+        "Parent": null,
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -30.0,
+                "Y": 0.0,
+                "Z": -5.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 2.0,
+                "Y": 2.0,
+                "Z": 2.0
+            }
+        }
+    },
+    "Gloop Indicator 2 For Player1": {
+        "GuiRenderable": {
+            "Clipping": {
+                "Lower": [
+                    0.0,
+                    0.0
+                ],
+                "Upper": [
+                    1.0,
+                    1.0
+                ]
+            },
+            "CullingMask": 2,
+            "Enabled": true,
+            "Texture": {
+                "Alias": "gloopIndicator",
+                "FilePath": "res\\assets\\textures\\gui\\gloopIndicator.png"
+            }
+        },
+        "Parent": null,
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -30.0,
+                "Y": 0.0,
+                "Z": -5.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 2.0,
+                "Y": 2.0,
+                "Z": 2.0
+            }
+        }
+    },
+    "Gloop Indicator 2 For Player2": {
+        "GuiRenderable": {
+            "Clipping": {
+                "Lower": [
+                    0.0,
+                    0.0
+                ],
+                "Upper": [
+                    1.0,
+                    1.0
+                ]
+            },
+            "CullingMask": 4,
+            "Enabled": true,
+            "Texture": {
+                "Alias": "gloopIndicator",
+                "FilePath": "res\\assets\\textures\\gui\\gloopIndicator.png"
+            }
+        },
+        "Parent": null,
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -30.0,
+                "Y": 0.0,
+                "Z": -5.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 2.0,
+                "Y": 2.0,
+                "Z": 2.0
+            }
+        }
+    },
+    "Gloop Indicator 2 For Player3": {
+        "GuiRenderable": {
+            "Clipping": {
+                "Lower": [
+                    0.0,
+                    0.0
+                ],
+                "Upper": [
+                    1.0,
+                    1.0
+                ]
+            },
+            "CullingMask": 8,
+            "Enabled": true,
+            "Texture": {
+                "Alias": "gloopIndicator",
+                "FilePath": "res\\assets\\textures\\gui\\gloopIndicator.png"
+            }
+        },
+        "Parent": null,
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -30.0,
+                "Y": 0.0,
+                "Z": -5.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 2.0,
+                "Y": 2.0,
+                "Z": 2.0
+            }
+        }
+    },
     "Head": {
         "Parent": {
             "Name": "Boat Root R"
@@ -14925,11 +15746,11 @@
             "CullingMask": 15,
             "Enabled": true,
             "Material": {
-                "Alias": "cannonball"
+                "Alias": "DecorationAtlas"
             },
             "Mesh": {
-                "Alias": "sphere",
-                "FilePath": "res\\assets\\models\\sphere.obj"
+                "Alias": "garbageBall",
+                "FilePath": "res\\assets\\models\\garbageBall.obj"
             }
         },
         "RigidBody": {
@@ -14955,9 +15776,9 @@
                 "qZ": 0.0
             },
             "Scale": {
-                "X": 0.5,
-                "Y": 0.5,
-                "Z": 0.5
+                "X": 2.0,
+                "Y": 2.0,
+                "Z": 2.0
             }
         }
     },
@@ -14981,11 +15802,11 @@
             "CullingMask": 15,
             "Enabled": true,
             "Material": {
-                "Alias": "cannonball"
+                "Alias": "DecorationAtlas"
             },
             "Mesh": {
-                "Alias": "sphere",
-                "FilePath": "res\\assets\\models\\sphere.obj"
+                "Alias": "garbageBall",
+                "FilePath": "res\\assets\\models\\garbageBall.obj"
             }
         },
         "RigidBody": {
@@ -15011,9 +15832,9 @@
                 "qZ": 0.0
             },
             "Scale": {
-                "X": 0.5,
-                "Y": 0.5,
-                "Z": 0.5
+                "X": 2.0,
+                "Y": 2.0,
+                "Z": 2.0
             }
         }
     },
@@ -15037,11 +15858,11 @@
             "CullingMask": 15,
             "Enabled": true,
             "Material": {
-                "Alias": "cannonball"
+                "Alias": "DecorationAtlas"
             },
             "Mesh": {
-                "Alias": "sphere",
-                "FilePath": "res\\assets\\models\\sphere.obj"
+                "Alias": "garbageBall",
+                "FilePath": "res\\assets\\models\\garbageBall.obj"
             }
         },
         "RigidBody": {
@@ -15067,9 +15888,9 @@
                 "qZ": 0.0
             },
             "Scale": {
-                "X": 0.5,
-                "Y": 0.5,
-                "Z": 0.5
+                "X": 2.0,
+                "Y": 2.0,
+                "Z": 2.0
             }
         }
     },
@@ -15093,11 +15914,11 @@
             "CullingMask": 15,
             "Enabled": true,
             "Material": {
-                "Alias": "cannonball"
+                "Alias": "DecorationAtlas"
             },
             "Mesh": {
-                "Alias": "sphere",
-                "FilePath": "res\\assets\\models\\sphere.obj"
+                "Alias": "garbageBall",
+                "FilePath": "res\\assets\\models\\garbageBall.obj"
             }
         },
         "RigidBody": {
@@ -15123,9 +15944,9 @@
                 "qZ": 0.0
             },
             "Scale": {
-                "X": 0.5,
-                "Y": 0.5,
-                "Z": 0.5
+                "X": 2.0,
+                "Y": 2.0,
+                "Z": 2.0
             }
         }
     },
@@ -15149,11 +15970,11 @@
             "CullingMask": 15,
             "Enabled": true,
             "Material": {
-                "Alias": "cannonball"
+                "Alias": "DecorationAtlas"
             },
             "Mesh": {
-                "Alias": "sphere",
-                "FilePath": "res\\assets\\models\\sphere.obj"
+                "Alias": "garbageBall",
+                "FilePath": "res\\assets\\models\\garbageBall.obj"
             }
         },
         "RigidBody": {
@@ -15179,9 +16000,9 @@
                 "qZ": 0.0
             },
             "Scale": {
-                "X": 0.5,
-                "Y": 0.5,
-                "Z": 0.5
+                "X": 2.0,
+                "Y": 2.0,
+                "Z": 2.0
             }
         }
     },
@@ -15205,11 +16026,11 @@
             "CullingMask": 15,
             "Enabled": true,
             "Material": {
-                "Alias": "cannonball"
+                "Alias": "DecorationAtlas"
             },
             "Mesh": {
-                "Alias": "sphere",
-                "FilePath": "res\\assets\\models\\sphere.obj"
+                "Alias": "garbageBall",
+                "FilePath": "res\\assets\\models\\garbageBall.obj"
             }
         },
         "RigidBody": {
@@ -15235,9 +16056,9 @@
                 "qZ": 0.0
             },
             "Scale": {
-                "X": 0.5,
-                "Y": 0.5,
-                "Z": 0.5
+                "X": 2.0,
+                "Y": 2.0,
+                "Z": 2.0
             }
         }
     },
@@ -15752,6 +16573,123 @@
                 "X": 0.4300000071525574,
                 "Y": 0.5,
                 "Z": 0.4300000071525574
+            }
+        }
+    },
+    "RedGarbagePileFly0": {
+        "Parent": {
+            "Name": "RedGarbagePile0"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "container"
+            },
+            "Mesh": {
+                "Alias": "cube",
+                "FilePath": "res\\assets\\models\\cube.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": 0.0,
+                "Y": 0.0,
+                "Z": 0.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "RedGarbagePileFly1": {
+        "Parent": {
+            "Name": "RedGarbagePile1"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "container"
+            },
+            "Mesh": {
+                "Alias": "cube",
+                "FilePath": "res\\assets\\models\\cube.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": 0.0,
+                "Y": 0.0,
+                "Z": 0.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "RedGarbagePileFly2": {
+        "Parent": {
+            "Name": "RedGarbagePile2"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "container"
+            },
+            "Mesh": {
+                "Alias": "cube",
+                "FilePath": "res\\assets\\models\\cube.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": 0.0,
+                "Y": 0.0,
+                "Z": 0.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
             }
         }
     },
@@ -17224,9 +18162,9 @@
                 "Z": false
             },
             "Position": {
-                "X": 9.733275413513184,
+                "X": 9.719103813171387,
                 "Y": -0.02385503053665161,
-                "Z": -5.181350231170654
+                "Z": -5.1813507080078125
             },
             "Rotation": {
                 "qW": 1.0,

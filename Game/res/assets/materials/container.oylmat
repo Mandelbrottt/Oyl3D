@@ -24,9 +24,9 @@
         },
         "Textures": {
             "Albedo": {
-                "Alias": "container2",
-                "FilePath": "res\\assets\\textures\\container2.png",
-                "Profile": 1,
+                "Alias": "Mop",
+                "FilePath": "res\\assets\\textures\\Mop.png",
+                "Profile": 0,
                 "guid": null
             },
             "Emission": null,
