@@ -186,7 +186,7 @@
             "Position": {
                 "X": -0.1662050038576126,
                 "Y": 3.4743025302886963,
-                "Z": -0.1717042326927185
+                "Z": -0.17199668288230896
             },
             "Rotation": {
                 "qW": 1.0,
@@ -197,7 +197,1021 @@
             "Scale": {
                 "X": 0.022438399493694305,
                 "Y": 5.940906524658203,
-                "Z": 0.014202077873051167
+                "Z": 0.014202078804373741
+            }
+        }
+    },
+    "Barrel": {
+        "Parent": {
+            "Name": "Decorations"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "DecorationAtlas"
+            },
+            "Mesh": {
+                "Alias": "Barrel",
+                "FilePath": "res\\assets\\models\\Decorative\\Barrel.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": 0.13479042053222656,
+                "Y": 0.016468919813632965,
+                "Z": -5.414001941680908
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Barrel 1": {
+        "Parent": {
+            "Name": "Decorations"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "DecorationAtlas"
+            },
+            "Mesh": {
+                "Alias": "Barrel",
+                "FilePath": "res\\assets\\models\\Decorative\\Barrel.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -7.65077018737793,
+                "Y": 0.016468919813632965,
+                "Z": -4.606307506561279
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Barrel 10": {
+        "Parent": {
+            "Name": "Decorations"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "DecorationAtlas"
+            },
+            "Mesh": {
+                "Alias": "Barrel",
+                "FilePath": "res\\assets\\models\\Decorative\\Barrel.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -27.125774383544922,
+                "Y": 0.02338486909866333,
+                "Z": 2.237229585647583
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Barrel 11": {
+        "Parent": {
+            "Name": "Decorations"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "DecorationAtlas"
+            },
+            "Mesh": {
+                "Alias": "Barrel",
+                "FilePath": "res\\assets\\models\\Decorative\\Barrel.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -26.058456420898438,
+                "Y": 0.019999999552965164,
+                "Z": 2.237229585647583
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Barrel 12": {
+        "Parent": {
+            "Name": "Decorations"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "DecorationAtlas"
+            },
+            "Mesh": {
+                "Alias": "Barrel",
+                "FilePath": "res\\assets\\models\\Decorative\\Barrel.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -21.2062931060791,
+                "Y": 0.019999999552965164,
+                "Z": -5.874434471130371
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Barrel 13": {
+        "Parent": {
+            "Name": "Decorations 1"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "DecorationAtlas"
+            },
+            "Mesh": {
+                "Alias": "Barrel",
+                "FilePath": "res\\assets\\models\\Decorative\\Barrel.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": 0.13479042053222656,
+                "Y": 0.016468919813632965,
+                "Z": -5.414001941680908
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Barrel 14": {
+        "Parent": {
+            "Name": "Decorations 1"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "DecorationAtlas"
+            },
+            "Mesh": {
+                "Alias": "Barrel",
+                "FilePath": "res\\assets\\models\\Decorative\\Barrel.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -7.65077018737793,
+                "Y": 0.016468919813632965,
+                "Z": -4.606307506561279
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Barrel 15": {
+        "Parent": {
+            "Name": "Decorations 1"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "DecorationAtlas"
+            },
+            "Mesh": {
+                "Alias": "Barrel",
+                "FilePath": "res\\assets\\models\\Decorative\\Barrel.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -9.327153205871582,
+                "Y": 0.016468919813632965,
+                "Z": 2.3338210582733154
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Barrel 16": {
+        "Parent": {
+            "Name": "Decorations 1"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "DecorationAtlas"
+            },
+            "Mesh": {
+                "Alias": "Barrel",
+                "FilePath": "res\\assets\\models\\Decorative\\Barrel.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -29.510419845581055,
+                "Y": -4.164158821105957,
+                "Z": -3.9703025817871094
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Barrel 17": {
+        "Parent": {
+            "Name": "Decorations 1"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "DecorationAtlas"
+            },
+            "Mesh": {
+                "Alias": "Barrel",
+                "FilePath": "res\\assets\\models\\Decorative\\Barrel.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -6.513976097106934,
+                "Y": -4.164158821105957,
+                "Z": -4.5621442794799805
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Barrel 18": {
+        "Parent": {
+            "Name": "Decorations 1"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "DecorationAtlas"
+            },
+            "Mesh": {
+                "Alias": "Barrel",
+                "FilePath": "res\\assets\\models\\Decorative\\Barrel.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -5.116473197937012,
+                "Y": -4.18194055557251,
+                "Z": 2.5712947845458984
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Barrel 19": {
+        "Parent": {
+            "Name": "Decorations 1"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "DecorationAtlas"
+            },
+            "Mesh": {
+                "Alias": "Barrel",
+                "FilePath": "res\\assets\\models\\Decorative\\Barrel.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -5.116473197937012,
+                "Y": -3.085942506790161,
+                "Z": 2.5712947845458984
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Barrel 2": {
+        "Parent": {
+            "Name": "Decorations"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "DecorationAtlas"
+            },
+            "Mesh": {
+                "Alias": "Barrel",
+                "FilePath": "res\\assets\\models\\Decorative\\Barrel.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -9.327153205871582,
+                "Y": 0.016468919813632965,
+                "Z": 2.3338210582733154
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Barrel 20": {
+        "Parent": {
+            "Name": "Decorations 1"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "DecorationAtlas"
+            },
+            "Mesh": {
+                "Alias": "Barrel",
+                "FilePath": "res\\assets\\models\\Decorative\\Barrel.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -7.346623420715332,
+                "Y": -4.164158821105957,
+                "Z": -6.558623313903809
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Barrel 21": {
+        "Parent": {
+            "Name": "Decorations 1"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "DecorationAtlas"
+            },
+            "Mesh": {
+                "Alias": "Barrel",
+                "FilePath": "res\\assets\\models\\Decorative\\Barrel.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -29.339385986328125,
+                "Y": -4.164158821105957,
+                "Z": -6.558623313903809
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Barrel 22": {
+        "Parent": {
+            "Name": "Decorations 1"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "DecorationAtlas"
+            },
+            "Mesh": {
+                "Alias": "Barrel",
+                "FilePath": "res\\assets\\models\\Decorative\\Barrel.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -30.71295738220215,
+                "Y": -4.164158821105957,
+                "Z": -2.876410961151123
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Barrel 23": {
+        "Parent": {
+            "Name": "Decorations 1"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "DecorationAtlas"
+            },
+            "Mesh": {
+                "Alias": "Barrel",
+                "FilePath": "res\\assets\\models\\Decorative\\Barrel.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -27.125774383544922,
+                "Y": 0.02338486909866333,
+                "Z": 2.237229585647583
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Barrel 24": {
+        "Parent": {
+            "Name": "Decorations 1"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "DecorationAtlas"
+            },
+            "Mesh": {
+                "Alias": "Barrel",
+                "FilePath": "res\\assets\\models\\Decorative\\Barrel.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -26.058456420898438,
+                "Y": 0.019999999552965164,
+                "Z": 2.237229585647583
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Barrel 25": {
+        "Parent": {
+            "Name": "Decorations 1"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "DecorationAtlas"
+            },
+            "Mesh": {
+                "Alias": "Barrel",
+                "FilePath": "res\\assets\\models\\Decorative\\Barrel.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -21.2062931060791,
+                "Y": 0.019999999552965164,
+                "Z": -5.874434471130371
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Barrel 3": {
+        "Parent": {
+            "Name": "Decorations"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "DecorationAtlas"
+            },
+            "Mesh": {
+                "Alias": "Barrel",
+                "FilePath": "res\\assets\\models\\Decorative\\Barrel.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -6.513976097106934,
+                "Y": -4.164158821105957,
+                "Z": -4.5621442794799805
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Barrel 4": {
+        "Parent": {
+            "Name": "Decorations"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "DecorationAtlas"
+            },
+            "Mesh": {
+                "Alias": "Barrel",
+                "FilePath": "res\\assets\\models\\Decorative\\Barrel.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -5.116473197937012,
+                "Y": -4.18194055557251,
+                "Z": 2.5712947845458984
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Barrel 5": {
+        "Parent": {
+            "Name": "Decorations"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "DecorationAtlas"
+            },
+            "Mesh": {
+                "Alias": "Barrel",
+                "FilePath": "res\\assets\\models\\Decorative\\Barrel.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -5.116473197937012,
+                "Y": -3.085942506790161,
+                "Z": 2.5712947845458984
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Barrel 6": {
+        "Parent": {
+            "Name": "Decorations"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "DecorationAtlas"
+            },
+            "Mesh": {
+                "Alias": "Barrel",
+                "FilePath": "res\\assets\\models\\Decorative\\Barrel.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -7.346623420715332,
+                "Y": -4.164158821105957,
+                "Z": -6.558623313903809
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Barrel 7": {
+        "Parent": {
+            "Name": "Decorations"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "DecorationAtlas"
+            },
+            "Mesh": {
+                "Alias": "Barrel",
+                "FilePath": "res\\assets\\models\\Decorative\\Barrel.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -29.339385986328125,
+                "Y": -4.164158821105957,
+                "Z": -6.558623313903809
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Barrel 8": {
+        "Parent": {
+            "Name": "Decorations"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "DecorationAtlas"
+            },
+            "Mesh": {
+                "Alias": "Barrel",
+                "FilePath": "res\\assets\\models\\Decorative\\Barrel.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -30.71295738220215,
+                "Y": -4.164158821105957,
+                "Z": -2.876410961151123
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Barrel 9": {
+        "Parent": {
+            "Name": "Decorations"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "DecorationAtlas"
+            },
+            "Mesh": {
+                "Alias": "Barrel",
+                "FilePath": "res\\assets\\models\\Decorative\\Barrel.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -29.510419845581055,
+                "Y": -4.164158821105957,
+                "Z": -3.9703025817871094
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
             }
         }
     },
@@ -387,6 +1401,192 @@
             }
         }
     },
+    "BetweenShipsColliderLower 4": {
+        "Collidable": {
+            "Shapes": [
+                {
+                    "Center": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Size": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "Trigger": false,
+                    "Type": 0
+                }
+            ]
+        },
+        "Parent": {
+            "Name": "BetweenShipsColliders 1"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": false,
+            "Material": {
+                "Alias": null
+            },
+            "Mesh": {
+                "Alias": "cube",
+                "FilePath": "res\\assets\\models\\cube.obj"
+            }
+        },
+        "RigidBody": {
+            "Friction": 0.0,
+            "Mass": 0.0,
+            "Properties": 34
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": 1.1924550533294678,
+                "Y": 3.1068921089172363e-06,
+                "Z": 0.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 0.9999999403953552,
+                "Z": 1.0299999713897705
+            }
+        }
+    },
+    "BetweenShipsColliderLower 5": {
+        "Collidable": {
+            "Shapes": [
+                {
+                    "Center": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Size": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "Trigger": false,
+                    "Type": 0
+                }
+            ]
+        },
+        "Parent": {
+            "Name": "BetweenShipsColliders 1"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": false,
+            "Material": {
+                "Alias": null
+            },
+            "Mesh": {
+                "Alias": "cube",
+                "FilePath": "res\\assets\\models\\cube.obj"
+            }
+        },
+        "RigidBody": {
+            "Friction": 0.0,
+            "Mass": 0.0,
+            "Properties": 34
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": 0.0017586350440979004,
+                "Y": 0.0,
+                "Z": 0.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0128506422042847,
+                "Y": 1.0,
+                "Z": 1.0294109582901
+            }
+        }
+    },
+    "BetweenShipsColliderLower 6": {
+        "Collidable": {
+            "Shapes": [
+                {
+                    "Center": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Size": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "Trigger": false,
+                    "Type": 0
+                }
+            ]
+        },
+        "Parent": {
+            "Name": "BetweenShipsColliders 1"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": false,
+            "Material": {
+                "Alias": null
+            },
+            "Mesh": {
+                "Alias": "cube",
+                "FilePath": "res\\assets\\models\\cube.obj"
+            }
+        },
+        "RigidBody": {
+            "Friction": 0.0,
+            "Mass": 0.0,
+            "Properties": 34
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": 0.4418014585971832,
+                "Y": -0.42337852716445923,
+                "Z": 0.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 0.6231107711791992,
+                "Z": 1.028589129447937
+            }
+        }
+    },
     "BetweenShipsColliderMid 1": {
         "Collidable": {
             "Shapes": [
@@ -408,6 +1608,68 @@
         },
         "Parent": {
             "Name": "BetweenShipsColliders"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": false,
+            "Material": {
+                "Alias": null
+            },
+            "Mesh": {
+                "Alias": "cube",
+                "FilePath": "res\\assets\\models\\cube.obj"
+            }
+        },
+        "RigidBody": {
+            "Friction": 0.0,
+            "Mass": 0.0,
+            "Properties": 34
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": 0.001758575439453125,
+                "Y": 0.3800315856933594,
+                "Z": 0.003382384777069092
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0165730714797974,
+                "Y": 1.0,
+                "Z": 1.1315711736679077
+            }
+        }
+    },
+    "BetweenShipsColliderMid 2": {
+        "Collidable": {
+            "Shapes": [
+                {
+                    "Center": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Size": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "Trigger": false,
+                    "Type": 0
+                }
+            ]
+        },
+        "Parent": {
+            "Name": "BetweenShipsColliders 1"
         },
         "Renderable": {
             "CullingMask": 15,
@@ -511,9 +1773,99 @@
             }
         }
     },
+    "BetweenShipsColliderUpper 2": {
+        "Collidable": {
+            "Shapes": [
+                {
+                    "Center": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Size": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "Trigger": false,
+                    "Type": 0
+                }
+            ]
+        },
+        "Parent": {
+            "Name": "BetweenShipsColliders 1"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": false,
+            "Material": {
+                "Alias": null
+            },
+            "Mesh": {
+                "Alias": "cube",
+                "FilePath": "res\\assets\\models\\cube.obj"
+            }
+        },
+        "RigidBody": {
+            "Friction": 0.0,
+            "Mass": 0.0,
+            "Properties": 34
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": 1.1924550533294678,
+                "Y": 0.1638144999742508,
+                "Z": 0.009061157703399658
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.009742259979248,
+                "Y": 0.554162859916687,
+                "Z": 1.1309099197387695
+            }
+        }
+    },
     "BetweenShipsColliders": {
         "Parent": {
             "Name": "Colliders"
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -8.36246395111084,
+                "Y": 7.926042556762695,
+                "Z": 2.068734645843506
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 12.248290061950684,
+                "Y": 74.42253112792969,
+                "Z": 5.0
+            }
+        }
+    },
+    "BetweenShipsColliders 1": {
+        "Parent": {
+            "Name": "Colliders 1"
         },
         "Transform": {
             "Mirror": {
@@ -975,18 +2327,18 @@
             "Mirror": {
                 "X": false,
                 "Y": false,
-                "Z": true
+                "Z": false
             },
             "Position": {
-                "X": -4.092511177062988,
+                "X": -5.09020471572876,
                 "Y": -4.1751389503479,
-                "Z": -5.408578395843506
+                "Z": -6.6472625732421875
             },
             "Rotation": {
-                "qW": -0.015078539960086346,
-                "qX": -0.004553273320198059,
-                "qY": 0.9980192184448242,
-                "qZ": -0.060906197875738144
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
             },
             "Scale": {
                 "X": 1.5,
@@ -1893,7 +3245,7 @@
             "CullingMask": 15,
             "Enabled": true,
             "Material": {
-                "Alias": "testMat"
+                "Alias": "siding"
             },
             "Mesh": {
                 "Alias": "BoatHull",
@@ -1971,7 +3323,7 @@
             "CullingMask": 15,
             "Enabled": true,
             "Material": {
-                "Alias": "testMat"
+                "Alias": "siding"
             },
             "Mesh": {
                 "Alias": "BoatHullFlipped",
@@ -2016,12 +3368,12 @@
             "Mirror": {
                 "X": false,
                 "Y": false,
-                "Z": false
+                "Z": true
             },
             "Position": {
                 "X": 0.0,
                 "Y": 0.0,
-                "Z": 19.0
+                "Z": 15.048690795898438
             },
             "Rotation": {
                 "qW": 1.0,
@@ -2056,6 +3408,630 @@
                 "X": 0.0,
                 "Y": 0.0,
                 "Z": -0.5926440358161926
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Bottles": {
+        "Parent": {
+            "Name": "Decorations"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "DecorationAtlas"
+            },
+            "Mesh": {
+                "Alias": "Bottles",
+                "FilePath": "res\\assets\\models\\Decorative\\Bottles.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -22.165021896362305,
+                "Y": 0.03584951162338257,
+                "Z": -5.885008811950684
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Bottles 1": {
+        "Parent": {
+            "Name": "Decorations"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "DecorationAtlas"
+            },
+            "Mesh": {
+                "Alias": "Bottles",
+                "FilePath": "res\\assets\\models\\Decorative\\Bottles.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": 3.785877227783203,
+                "Y": 4.975388526916504,
+                "Z": -3.067498207092285
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Bottles 10": {
+        "Parent": {
+            "Name": "Decorations 1"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "DecorationAtlas"
+            },
+            "Mesh": {
+                "Alias": "Bottles",
+                "FilePath": "res\\assets\\models\\Decorative\\Bottles.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -35.31487274169922,
+                "Y": 0.03584951162338257,
+                "Z": -2.098334312438965
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Bottles 11": {
+        "Parent": {
+            "Name": "Decorations 1"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "DecorationAtlas"
+            },
+            "Mesh": {
+                "Alias": "Bottles",
+                "FilePath": "res\\assets\\models\\Decorative\\Bottles.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": true,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -5.70756721496582,
+                "Y": -4.1526780128479,
+                "Z": 0.1009056568145752
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Bottles 12": {
+        "Parent": {
+            "Name": "Decorations 1"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "DecorationAtlas"
+            },
+            "Mesh": {
+                "Alias": "Bottles",
+                "FilePath": "res\\assets\\models\\Decorative\\Bottles.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": true,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -22.57784652709961,
+                "Y": -4.1535186767578125,
+                "Z": -5.7640380859375
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Bottles 13": {
+        "Parent": {
+            "Name": "Decorations 1"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "DecorationAtlas"
+            },
+            "Mesh": {
+                "Alias": "Bottles",
+                "FilePath": "res\\assets\\models\\Decorative\\Bottles.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -35.22019958496094,
+                "Y": 0.03584951162338257,
+                "Z": -2.634587049484253
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Bottles 14": {
+        "Parent": {
+            "Name": "Decorations 1"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "DecorationAtlas"
+            },
+            "Mesh": {
+                "Alias": "Bottles",
+                "FilePath": "res\\assets\\models\\Decorative\\Bottles.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": 3.785877227783203,
+                "Y": 4.975388526916504,
+                "Z": -3.067498207092285
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Bottles 15": {
+        "Parent": {
+            "Name": "Decorations 1"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "DecorationAtlas"
+            },
+            "Mesh": {
+                "Alias": "Bottles",
+                "FilePath": "res\\assets\\models\\Decorative\\Bottles.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -22.165021896362305,
+                "Y": 0.03584951162338257,
+                "Z": -5.885008811950684
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Bottles 2": {
+        "Parent": {
+            "Name": "Decorations"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "DecorationAtlas"
+            },
+            "Mesh": {
+                "Alias": "Bottles",
+                "FilePath": "res\\assets\\models\\Decorative\\Bottles.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -35.22019958496094,
+                "Y": 0.03584951162338257,
+                "Z": -2.634587049484253
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Bottles 3": {
+        "Parent": {
+            "Name": "Decorations"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "DecorationAtlas"
+            },
+            "Mesh": {
+                "Alias": "Bottles",
+                "FilePath": "res\\assets\\models\\Decorative\\Bottles.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": true
+            },
+            "Position": {
+                "X": -25.078527450561523,
+                "Y": 0.03584951162338257,
+                "Z": 2.2170753479003906
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Bottles 4": {
+        "Parent": {
+            "Name": "Decorations"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "DecorationAtlas"
+            },
+            "Mesh": {
+                "Alias": "Bottles",
+                "FilePath": "res\\assets\\models\\Decorative\\Bottles.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -30.198883056640625,
+                "Y": -3.161689281463623,
+                "Z": -4.028017044067383
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Bottles 5": {
+        "Parent": {
+            "Name": "Decorations"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "DecorationAtlas"
+            },
+            "Mesh": {
+                "Alias": "Bottles",
+                "FilePath": "res\\assets\\models\\Decorative\\Bottles.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -35.31487274169922,
+                "Y": 0.03584951162338257,
+                "Z": -2.098334312438965
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Bottles 6": {
+        "Parent": {
+            "Name": "Decorations"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "DecorationAtlas"
+            },
+            "Mesh": {
+                "Alias": "Bottles",
+                "FilePath": "res\\assets\\models\\Decorative\\Bottles.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": true,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -5.70756721496582,
+                "Y": -4.1526780128479,
+                "Z": 0.1009056568145752
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Bottles 7": {
+        "Parent": {
+            "Name": "Decorations"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "DecorationAtlas"
+            },
+            "Mesh": {
+                "Alias": "Bottles",
+                "FilePath": "res\\assets\\models\\Decorative\\Bottles.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": true,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -22.57784652709961,
+                "Y": -4.1535186767578125,
+                "Z": -5.7640380859375
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Bottles 8": {
+        "Parent": {
+            "Name": "Decorations 1"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "DecorationAtlas"
+            },
+            "Mesh": {
+                "Alias": "Bottles",
+                "FilePath": "res\\assets\\models\\Decorative\\Bottles.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": true
+            },
+            "Position": {
+                "X": -25.078527450561523,
+                "Y": 0.03584951162338257,
+                "Z": 2.2170753479003906
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Bottles 9": {
+        "Parent": {
+            "Name": "Decorations 1"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "DecorationAtlas"
+            },
+            "Mesh": {
+                "Alias": "Bottles",
+                "FilePath": "res\\assets\\models\\Decorative\\Bottles.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -30.198883056640625,
+                "Y": -3.161689281463623,
+                "Z": -4.028017044067383
             },
             "Rotation": {
                 "qW": 1.0,
@@ -2210,6 +4186,68 @@
             }
         }
     },
+    "BottomDeckColliderBack 1": {
+        "Collidable": {
+            "Shapes": [
+                {
+                    "Center": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Size": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "Trigger": false,
+                    "Type": 0
+                }
+            ]
+        },
+        "Parent": {
+            "Name": "BottomDeckColliders 1"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": false,
+            "Material": {
+                "Alias": null
+            },
+            "Mesh": {
+                "Alias": "cube",
+                "FilePath": "res\\assets\\models\\cube.obj"
+            }
+        },
+        "RigidBody": {
+            "Friction": 0.0,
+            "Mass": 0.0,
+            "Properties": 34
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": 1.4041190147399902,
+                "Y": -0.28940147161483765,
+                "Z": 0.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 0.41427934169769287,
+                "Y": 0.3429940640926361,
+                "Z": 6.143187522888184
+            }
+        }
+    },
     "BottomDeckColliderFront 2": {
         "Collidable": {
             "Shapes": [
@@ -2272,6 +4310,68 @@
             }
         }
     },
+    "BottomDeckColliderFront 3": {
+        "Collidable": {
+            "Shapes": [
+                {
+                    "Center": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Size": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "Trigger": false,
+                    "Type": 0
+                }
+            ]
+        },
+        "Parent": {
+            "Name": "BottomDeckColliders 1"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": false,
+            "Material": {
+                "Alias": null
+            },
+            "Mesh": {
+                "Alias": "cube",
+                "FilePath": "res\\assets\\models\\cube.obj"
+            }
+        },
+        "RigidBody": {
+            "Friction": 0.0,
+            "Mass": 0.0,
+            "Properties": 34
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -0.16182208061218262,
+                "Y": -0.28940147161483765,
+                "Z": 0.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 0.41427934169769287,
+                "Y": 0.3429940640926361,
+                "Z": 6.143187522888184
+            }
+        }
+    },
     "BottomDeckColliderGround": {
         "Collidable": {
             "Shapes": [
@@ -2293,6 +4393,68 @@
         },
         "Parent": {
             "Name": "BottomDeckColliders"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": false,
+            "Material": {
+                "Alias": null
+            },
+            "Mesh": {
+                "Alias": "cube",
+                "FilePath": "res\\assets\\models\\cube.obj"
+            }
+        },
+        "RigidBody": {
+            "Friction": 0.949999988079071,
+            "Mass": 0.0,
+            "Properties": 34
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": 0.6827453970909119,
+                "Y": -0.39404791593551636,
+                "Z": 0.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 2.4493215084075928,
+                "Y": 0.013436791487038136,
+                "Z": 6.0
+            }
+        }
+    },
+    "BottomDeckColliderGround 1": {
+        "Collidable": {
+            "Shapes": [
+                {
+                    "Center": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Size": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "Trigger": false,
+                    "Type": 0
+                }
+            ]
+        },
+        "Parent": {
+            "Name": "BottomDeckColliders 1"
         },
         "Renderable": {
             "CullingMask": 15,
@@ -2497,9 +4659,9 @@
                 "Z": false
             },
             "Position": {
-                "X": -16.888681411743164,
-                "Y": 1.585208535194397,
-                "Z": 45.667457580566406
+                "X": -8.36246395111084,
+                "Y": 7.926042556762695,
+                "Z": 2.068734645843506
             },
             "Rotation": {
                 "qW": 1.0,
@@ -2508,9 +4670,9 @@
                 "qZ": 0.0
             },
             "Scale": {
-                "X": 23.271751403808594,
-                "Y": 14.884506225585938,
-                "Z": 9.181982040405273
+                "X": 12.248290061950684,
+                "Y": 74.42253112792969,
+                "Z": 5.0
             }
         }
     },
@@ -2794,17 +4956,17 @@
         "Transform": {
             "Mirror": {
                 "X": false,
-                "Y": false,
+                "Y": true,
                 "Z": false
             },
             "Position": {
-                "X": 8.051238059997559,
+                "X": 8.054388046264648,
                 "Y": 0.0,
-                "Z": -0.011318206787109375
+                "Z": -11.004712104797363
             },
             "Rotation": {
-                "qW": 1.0,
-                "qX": 0.0,
+                "qW": -4.371138828673793e-08,
+                "qX": 1.0,
                 "qY": 0.0,
                 "qZ": 0.0
             },
@@ -2837,9 +4999,9 @@
                 "Z": false
             },
             "Position": {
-                "X": 14.969743728637695,
+                "X": 0.038628578186035156,
                 "Y": 0.0,
-                "Z": -11.01199722290039
+                "Z": -11.011996269226074
             },
             "Rotation": {
                 "qW": -4.371138828673793e-08,
@@ -3071,9 +5233,9 @@
                 "Z": false
             },
             "Position": {
-                "X": 14.997562408447266,
+                "X": 8.051238059997559,
                 "Y": 0.0,
-                "Z": 0.02529621124267578
+                "Z": -0.011318206787109375
             },
             "Rotation": {
                 "qW": 1.0,
@@ -3106,17 +5268,17 @@
         "Transform": {
             "Mirror": {
                 "X": false,
-                "Y": true,
+                "Y": false,
                 "Z": false
             },
             "Position": {
-                "X": 0.038628578186035156,
+                "X": 14.997562408447266,
                 "Y": 0.0,
-                "Z": -11.011996269226074
+                "Z": 0.02529621124267578
             },
             "Rotation": {
-                "qW": -4.371138828673793e-08,
-                "qX": 1.0,
+                "qW": 1.0,
+                "qX": 0.0,
                 "qY": 0.0,
                 "qZ": 0.0
             },
@@ -3149,9 +5311,9 @@
                 "Z": false
             },
             "Position": {
-                "X": 8.054388046264648,
+                "X": 15.001569747924805,
                 "Y": 0.0,
-                "Z": -11.004712104797363
+                "Z": -11.011996269226074
             },
             "Rotation": {
                 "qW": -4.371138828673793e-08,
@@ -3397,7 +5559,7 @@
             "CullingMask": 15,
             "Enabled": true,
             "Material": {
-                "Alias": "testMat"
+                "Alias": "siding"
             },
             "Mesh": {
                 "Alias": "CapQuarters",
@@ -4247,6 +6409,786 @@
             }
         }
     },
+    "Cleet": {
+        "Parent": {
+            "Name": "Decorations"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "metal"
+            },
+            "Mesh": {
+                "Alias": "cleet",
+                "FilePath": "res\\assets\\models\\Decorative\\cleet.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": true
+            },
+            "Position": {
+                "X": -12.625926971435547,
+                "Y": 1.0161161422729492,
+                "Z": 2.9589908123016357
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": -6.114703410275979e-06,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Cleet 1": {
+        "Parent": {
+            "Name": "Decorations"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "metal"
+            },
+            "Mesh": {
+                "Alias": "cleet",
+                "FilePath": "res\\assets\\models\\Decorative\\cleet.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": true
+            },
+            "Position": {
+                "X": -15.596771240234375,
+                "Y": 1.0161161422729492,
+                "Z": 2.9589908123016357
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": -6.114703410275979e-06,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Cleet 10": {
+        "Parent": {
+            "Name": "Decorations 1"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "metal"
+            },
+            "Mesh": {
+                "Alias": "cleet",
+                "FilePath": "res\\assets\\models\\Decorative\\cleet.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": true
+            },
+            "Position": {
+                "X": -12.625926971435547,
+                "Y": 1.0161161422729492,
+                "Z": 2.9589908123016357
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": -6.114703410275979e-06,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Cleet 11": {
+        "Parent": {
+            "Name": "Decorations 1"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "metal"
+            },
+            "Mesh": {
+                "Alias": "cleet",
+                "FilePath": "res\\assets\\models\\Decorative\\cleet.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": true
+            },
+            "Position": {
+                "X": -15.596771240234375,
+                "Y": 1.0161161422729492,
+                "Z": 2.9589908123016357
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": -6.114703410275979e-06,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Cleet 12": {
+        "Parent": {
+            "Name": "Decorations 1"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "metal"
+            },
+            "Mesh": {
+                "Alias": "cleet",
+                "FilePath": "res\\assets\\models\\Decorative\\cleet.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": true
+            },
+            "Position": {
+                "X": -20.88400650024414,
+                "Y": 1.0161161422729492,
+                "Z": 2.9589908123016357
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": -6.114703410275979e-06,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Cleet 13": {
+        "Parent": {
+            "Name": "Decorations 1"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "metal"
+            },
+            "Mesh": {
+                "Alias": "cleet",
+                "FilePath": "res\\assets\\models\\Decorative\\cleet.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": true
+            },
+            "Position": {
+                "X": -23.808591842651367,
+                "Y": 1.0161161422729492,
+                "Z": 2.9589908123016357
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": -6.114703410275979e-06,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Cleet 14": {
+        "Parent": {
+            "Name": "Decorations 1"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "metal"
+            },
+            "Mesh": {
+                "Alias": "cleet",
+                "FilePath": "res\\assets\\models\\Decorative\\cleet.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": true
+            },
+            "Position": {
+                "X": -28.63345718383789,
+                "Y": 1.0161161422729492,
+                "Z": 2.9589908123016357
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": -6.114703410275979e-06,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Cleet 15": {
+        "Parent": {
+            "Name": "Decorations 1"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "metal"
+            },
+            "Mesh": {
+                "Alias": "cleet",
+                "FilePath": "res\\assets\\models\\Decorative\\cleet.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": true
+            },
+            "Position": {
+                "X": -28.63345718383789,
+                "Y": 1.0161161422729492,
+                "Z": -6.7273335456848145
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": -6.114703410275979e-06,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Cleet 16": {
+        "Parent": {
+            "Name": "Decorations 1"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "metal"
+            },
+            "Mesh": {
+                "Alias": "cleet",
+                "FilePath": "res\\assets\\models\\Decorative\\cleet.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": true
+            },
+            "Position": {
+                "X": -24.193056106567383,
+                "Y": 1.0161161422729492,
+                "Z": -6.7273335456848145
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": -6.114703410275979e-06,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Cleet 17": {
+        "Parent": {
+            "Name": "Decorations 1"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "metal"
+            },
+            "Mesh": {
+                "Alias": "cleet",
+                "FilePath": "res\\assets\\models\\Decorative\\cleet.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": true
+            },
+            "Position": {
+                "X": -20.91301727294922,
+                "Y": 1.0161161422729492,
+                "Z": -6.7273335456848145
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": -6.114703410275979e-06,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Cleet 18": {
+        "Parent": {
+            "Name": "Decorations 1"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "metal"
+            },
+            "Mesh": {
+                "Alias": "cleet",
+                "FilePath": "res\\assets\\models\\Decorative\\cleet.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": true
+            },
+            "Position": {
+                "X": -15.899284362792969,
+                "Y": 1.0161161422729492,
+                "Z": -6.7273335456848145
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": -6.114703410275979e-06,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Cleet 19": {
+        "Parent": {
+            "Name": "Decorations 1"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "metal"
+            },
+            "Mesh": {
+                "Alias": "cleet",
+                "FilePath": "res\\assets\\models\\Decorative\\cleet.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": true
+            },
+            "Position": {
+                "X": -12.8113431930542,
+                "Y": 1.0161161422729492,
+                "Z": -6.7273335456848145
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": -6.114703410275979e-06,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Cleet 2": {
+        "Parent": {
+            "Name": "Decorations"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "metal"
+            },
+            "Mesh": {
+                "Alias": "cleet",
+                "FilePath": "res\\assets\\models\\Decorative\\cleet.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": true
+            },
+            "Position": {
+                "X": -20.88400650024414,
+                "Y": 1.0161161422729492,
+                "Z": 2.9589908123016357
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": -6.114703410275979e-06,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Cleet 3": {
+        "Parent": {
+            "Name": "Decorations"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "metal"
+            },
+            "Mesh": {
+                "Alias": "cleet",
+                "FilePath": "res\\assets\\models\\Decorative\\cleet.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": true
+            },
+            "Position": {
+                "X": -23.808591842651367,
+                "Y": 1.0161161422729492,
+                "Z": 2.9589908123016357
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": -6.114703410275979e-06,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Cleet 4": {
+        "Parent": {
+            "Name": "Decorations"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "metal"
+            },
+            "Mesh": {
+                "Alias": "cleet",
+                "FilePath": "res\\assets\\models\\Decorative\\cleet.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": true
+            },
+            "Position": {
+                "X": -28.63345718383789,
+                "Y": 1.0161161422729492,
+                "Z": 2.9589908123016357
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": -6.114703410275979e-06,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Cleet 5": {
+        "Parent": {
+            "Name": "Decorations"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "metal"
+            },
+            "Mesh": {
+                "Alias": "cleet",
+                "FilePath": "res\\assets\\models\\Decorative\\cleet.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": true
+            },
+            "Position": {
+                "X": -28.63345718383789,
+                "Y": 1.0161161422729492,
+                "Z": -6.7273335456848145
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": -6.114703410275979e-06,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Cleet 6": {
+        "Parent": {
+            "Name": "Decorations"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "metal"
+            },
+            "Mesh": {
+                "Alias": "cleet",
+                "FilePath": "res\\assets\\models\\Decorative\\cleet.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": true
+            },
+            "Position": {
+                "X": -24.193056106567383,
+                "Y": 1.0161161422729492,
+                "Z": -6.7273335456848145
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": -6.114703410275979e-06,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Cleet 7": {
+        "Parent": {
+            "Name": "Decorations"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "metal"
+            },
+            "Mesh": {
+                "Alias": "cleet",
+                "FilePath": "res\\assets\\models\\Decorative\\cleet.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": true
+            },
+            "Position": {
+                "X": -20.91301727294922,
+                "Y": 1.0161161422729492,
+                "Z": -6.7273335456848145
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": -6.114703410275979e-06,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Cleet 8": {
+        "Parent": {
+            "Name": "Decorations"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "metal"
+            },
+            "Mesh": {
+                "Alias": "cleet",
+                "FilePath": "res\\assets\\models\\Decorative\\cleet.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": true
+            },
+            "Position": {
+                "X": -15.899284362792969,
+                "Y": 1.0161161422729492,
+                "Z": -6.7273335456848145
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": -6.114703410275979e-06,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Cleet 9": {
+        "Parent": {
+            "Name": "Decorations"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "metal"
+            },
+            "Mesh": {
+                "Alias": "cleet",
+                "FilePath": "res\\assets\\models\\Decorative\\cleet.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": true
+            },
+            "Position": {
+                "X": -12.8113431930542,
+                "Y": 1.0161161422729492,
+                "Z": -6.7273335456848145
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": -6.114703410275979e-06,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
     "Colliders": {
         "Parent": {
             "Name": "Boat Root R"
@@ -4286,9 +7228,9 @@
                 "Z": false
             },
             "Position": {
-                "X": 0.0,
+                "X": -1.0,
                 "Y": 0.0,
-                "Z": -19.0
+                "Z": 3.936285972595215
             },
             "Rotation": {
                 "qW": 1.0,
@@ -4297,9 +7239,9 @@
                 "qZ": 0.0
             },
             "Scale": {
-                "X": 1.0,
-                "Y": 1.0,
-                "Z": 1.0
+                "X": 1.899999976158142,
+                "Y": 0.20000000298023224,
+                "Z": 1.836396336555481
             }
         }
     },
@@ -4445,6 +7387,78 @@
                 "X": -14.0,
                 "Y": 1.0,
                 "Z": 2.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Decorations": {
+        "Parent": {
+            "Name": "Boat Root R"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": null
+            },
+            "Mesh": null
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": 15.406606674194336,
+                "Y": -0.02385503053665161,
+                "Z": -0.08722472190856934
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Decorations 1": {
+        "Parent": {
+            "Name": "Boat Root L"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": null
+            },
+            "Mesh": null
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": 15.406606674194336,
+                "Y": -0.02385503053665161,
+                "Z": -0.08722472190856934
             },
             "Rotation": {
                 "qW": 1.0,
@@ -4752,9 +7766,9 @@
                 "Z": false
             },
             "Position": {
-                "X": 8.712873458862305,
-                "Y": 1.714797854423523,
-                "Z": -5.924708366394043
+                "X": 8.710381507873535,
+                "Y": 1.7147600650787354,
+                "Z": 0.7042446732521057
             },
             "Rotation": {
                 "qW": 1.0,
@@ -4763,8 +7777,8 @@
                 "qZ": 0.0
             },
             "Scale": {
-                "X": 0.8062030673027039,
-                "Y": 3.491943120956421,
+                "X": 0.8134227395057678,
+                "Y": 3.491943597793579,
                 "Z": 4.056914329528809
             }
         }
@@ -4814,9 +7828,9 @@
                 "Z": false
             },
             "Position": {
-                "X": 8.710381507873535,
-                "Y": 1.7147600650787354,
-                "Z": 0.7042446732521057
+                "X": 8.712873458862305,
+                "Y": 1.714797854423523,
+                "Z": -5.924708366394043
             },
             "Rotation": {
                 "qW": 1.0,
@@ -4825,21 +7839,21 @@
                 "qZ": 0.0
             },
             "Scale": {
-                "X": 0.8134227395057678,
-                "Y": 3.491943597793579,
+                "X": 0.8062030673027039,
+                "Y": 3.491943120956421,
                 "Z": 4.056914329528809
             }
         }
     },
-    "GarbageCanDetail": {
+    "Garbage Can": {
         "Parent": {
-            "Name": "Boat Root R"
+            "Name": "Decorations"
         },
         "Renderable": {
             "CullingMask": 15,
             "Enabled": true,
             "Material": {
-                "Alias": "cubeMat"
+                "Alias": "DecorationAtlas"
             },
             "Mesh": {
                 "Alias": "EnvironmentGarbageCan",
@@ -4850,12 +7864,12 @@
             "Mirror": {
                 "X": false,
                 "Y": false,
-                "Z": true
+                "Z": false
             },
             "Position": {
-                "X": 15.484801292419434,
-                "Y": 0.023412317037582397,
-                "Z": -4.636775970458984
+                "X": -28.479406356811523,
+                "Y": -4.178339958190918,
+                "Z": -1.127763032913208
             },
             "Rotation": {
                 "qW": 1.0,
@@ -4870,15 +7884,15 @@
             }
         }
     },
-    "GarbageCanDetail 1": {
+    "Garbage Can 1": {
         "Parent": {
-            "Name": "Boat Root L"
+            "Name": "Decorations"
         },
         "Renderable": {
             "CullingMask": 15,
             "Enabled": true,
             "Material": {
-                "Alias": "cubeMat"
+                "Alias": "DecorationAtlas"
             },
             "Mesh": {
                 "Alias": "EnvironmentGarbageCan",
@@ -4889,12 +7903,168 @@
             "Mirror": {
                 "X": false,
                 "Y": false,
-                "Z": true
+                "Z": false
             },
             "Position": {
-                "X": 15.484801292419434,
-                "Y": 0.023412317037582397,
-                "Z": -4.636775970458984
+                "X": 0.219268798828125,
+                "Y": 0.016468919813632965,
+                "Z": -4.460633754730225
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Garbage Can 2": {
+        "Parent": {
+            "Name": "Decorations"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "DecorationAtlas"
+            },
+            "Mesh": {
+                "Alias": "EnvironmentGarbageCan",
+                "FilePath": "res\\assets\\models\\Decorative\\EnvironmentGarbageCan.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -12.320244789123535,
+                "Y": -4.178339958190918,
+                "Z": -6.671876430511475
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Garbage Can 3": {
+        "Parent": {
+            "Name": "Decorations 1"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "DecorationAtlas"
+            },
+            "Mesh": {
+                "Alias": "EnvironmentGarbageCan",
+                "FilePath": "res\\assets\\models\\Decorative\\EnvironmentGarbageCan.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -28.479406356811523,
+                "Y": -4.178339958190918,
+                "Z": -1.127763032913208
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Garbage Can 4": {
+        "Parent": {
+            "Name": "Decorations 1"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "DecorationAtlas"
+            },
+            "Mesh": {
+                "Alias": "EnvironmentGarbageCan",
+                "FilePath": "res\\assets\\models\\Decorative\\EnvironmentGarbageCan.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": 0.219268798828125,
+                "Y": 0.016468919813632965,
+                "Z": -4.460633754730225
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Garbage Can 5": {
+        "Parent": {
+            "Name": "Decorations 1"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "DecorationAtlas"
+            },
+            "Mesh": {
+                "Alias": "EnvironmentGarbageCan",
+                "FilePath": "res\\assets\\models\\Decorative\\EnvironmentGarbageCan.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -12.320244789123535,
+                "Y": -4.178339958190918,
+                "Z": -6.671876430511475
             },
             "Rotation": {
                 "qW": 1.0,
@@ -7905,7 +11075,7 @@
             "Position": {
                 "X": -0.2783105969429016,
                 "Y": 9.812602043151855,
-                "Z": -0.17214059829711914
+                "Z": -0.17279386520385742
             },
             "Rotation": {
                 "qW": 1.0,
@@ -7959,9 +11129,9 @@
                 "Z": false
             },
             "Position": {
-                "X": 4.409698963165283,
-                "Y": -0.0999915823340416,
-                "Z": 26.717817306518555
+                "X": 2.847209930419922,
+                "Y": -0.4999578893184662,
+                "Z": 2.068734645843506
             },
             "Rotation": {
                 "qW": 1.0,
@@ -7970,9 +11140,9 @@
                 "qZ": 0.0
             },
             "Scale": {
-                "X": 34.94668960571289,
-                "Y": 0.19999997317790985,
-                "Z": 55.091888427734375
+                "X": 18.392993927001953,
+                "Y": 0.9999998211860657,
+                "Z": 29.999998092651367
             }
         }
     },
@@ -8596,68 +11766,6 @@
             }
         }
     },
-    "MidDeckGroundCollider": {
-        "Collidable": {
-            "Shapes": [
-                {
-                    "Center": [
-                        0.0,
-                        0.0,
-                        0.0
-                    ],
-                    "Size": [
-                        1.0,
-                        1.0,
-                        1.0
-                    ],
-                    "Trigger": false,
-                    "Type": 0
-                }
-            ]
-        },
-        "Parent": {
-            "Name": "MidDeckColliders 1"
-        },
-        "Renderable": {
-            "CullingMask": 15,
-            "Enabled": false,
-            "Material": {
-                "Alias": null
-            },
-            "Mesh": {
-                "Alias": "cube",
-                "FilePath": "res\\assets\\models\\cube.obj"
-            }
-        },
-        "RigidBody": {
-            "Friction": 0.949999988079071,
-            "Mass": 0.0,
-            "Properties": 34
-        },
-        "Transform": {
-            "Mirror": {
-                "X": false,
-                "Y": false,
-                "Z": false
-            },
-            "Position": {
-                "X": -0.5081836581230164,
-                "Y": 5.960464477539063e-08,
-                "Z": 0.0
-            },
-            "Rotation": {
-                "qW": 1.0,
-                "qX": 0.0,
-                "qY": 0.0,
-                "qZ": 0.0
-            },
-            "Scale": {
-                "X": 0.13382543623447418,
-                "Y": 0.9999997615814209,
-                "Z": 0.29103851318359375
-            }
-        }
-    },
     "MidDeckGroundCollider 1": {
         "Collidable": {
             "Shapes": [
@@ -8906,6 +12014,254 @@
             }
         }
     },
+    "MidDeckGroundCollider 5": {
+        "Collidable": {
+            "Shapes": [
+                {
+                    "Center": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Size": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "Trigger": false,
+                    "Type": 0
+                }
+            ]
+        },
+        "Parent": {
+            "Name": "MidDeckColliders 1"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": false,
+            "Material": {
+                "Alias": null
+            },
+            "Mesh": {
+                "Alias": "cube",
+                "FilePath": "res\\assets\\models\\cube.obj"
+            }
+        },
+        "RigidBody": {
+            "Friction": 0.949999988079071,
+            "Mass": 0.0,
+            "Properties": 34
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": 0.01558724045753479,
+                "Y": 2.9802322387695313e-08,
+                "Z": 0.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0357950925827026,
+                "Y": 0.9999998211860657,
+                "Z": 0.9999998211860657
+            }
+        }
+    },
+    "MidDeckGroundCollider 6": {
+        "Collidable": {
+            "Shapes": [
+                {
+                    "Center": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Size": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "Trigger": false,
+                    "Type": 0
+                }
+            ]
+        },
+        "Parent": {
+            "Name": "MidDeckColliders 1"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": false,
+            "Material": {
+                "Alias": null
+            },
+            "Mesh": {
+                "Alias": "cube",
+                "FilePath": "res\\assets\\models\\cube.obj"
+            }
+        },
+        "RigidBody": {
+            "Friction": 0.949999988079071,
+            "Mass": 0.0,
+            "Properties": 34
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -0.7236343622207642,
+                "Y": 5.960464477539063e-08,
+                "Z": 0.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 0.34434428811073303,
+                "Y": 0.9999997615814209,
+                "Z": 0.9999997615814209
+            }
+        }
+    },
+    "MidDeckGroundCollider 7": {
+        "Collidable": {
+            "Shapes": [
+                {
+                    "Center": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Size": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "Trigger": false,
+                    "Type": 0
+                }
+            ]
+        },
+        "Parent": {
+            "Name": "MidDeckColliders 1"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": false,
+            "Material": {
+                "Alias": null
+            },
+            "Mesh": {
+                "Alias": "cube",
+                "FilePath": "res\\assets\\models\\cube.obj"
+            }
+        },
+        "RigidBody": {
+            "Friction": 0.949999988079071,
+            "Mass": 0.0,
+            "Properties": 34
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -0.5081836581230164,
+                "Y": 5.960464477539063e-08,
+                "Z": -0.331839382648468
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 0.13382548093795776,
+                "Y": 0.9999997615814209,
+                "Z": 0.23921896517276764
+            }
+        }
+    },
+    "MidDeckGroundCollider 8": {
+        "Collidable": {
+            "Shapes": [
+                {
+                    "Center": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Size": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "Trigger": false,
+                    "Type": 0
+                }
+            ]
+        },
+        "Parent": {
+            "Name": "MidDeckColliders 1"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": false,
+            "Material": {
+                "Alias": null
+            },
+            "Mesh": {
+                "Alias": "cube",
+                "FilePath": "res\\assets\\models\\cube.obj"
+            }
+        },
+        "RigidBody": {
+            "Friction": 0.949999988079071,
+            "Mass": 0.0,
+            "Properties": 34
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -0.5081836581230164,
+                "Y": 5.960464477539063e-08,
+                "Z": -0.0006506145000457764
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 0.13382543623447418,
+                "Y": 0.9999997615814209,
+                "Z": 0.2883965075016022
+            }
+        }
+    },
     "Normal Reticle1": {
         "GuiRenderable": {
             "Clipping": {
@@ -9086,6 +12442,630 @@
             "Scale": {
                 "X": 0.20000000298023224,
                 "Y": 0.20000000298023224,
+                "Z": 1.0
+            }
+        }
+    },
+    "O ring": {
+        "Parent": {
+            "Name": "Decorations"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "DecorationAtlas"
+            },
+            "Mesh": {
+                "Alias": "o ring",
+                "FilePath": "res\\assets\\models\\Decorative\\o ring.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": true
+            },
+            "Position": {
+                "X": -12.308103561401367,
+                "Y": 0.08419331908226013,
+                "Z": 2.545301675796509
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": -6.114703410275979e-06,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "O ring 1": {
+        "Parent": {
+            "Name": "Decorations"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "DecorationAtlas"
+            },
+            "Mesh": {
+                "Alias": "o ring",
+                "FilePath": "res\\assets\\models\\Decorative\\o ring.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": true
+            },
+            "Position": {
+                "X": -16.155277252197266,
+                "Y": 0.08419331908226013,
+                "Z": 2.545301675796509
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": -6.114703410275979e-06,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "O ring 10": {
+        "Parent": {
+            "Name": "Decorations 1"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "DecorationAtlas"
+            },
+            "Mesh": {
+                "Alias": "o ring",
+                "FilePath": "res\\assets\\models\\Decorative\\o ring.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": true
+            },
+            "Position": {
+                "X": -16.155277252197266,
+                "Y": 0.08419331908226013,
+                "Z": 2.545301675796509
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": -6.114703410275979e-06,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "O ring 11": {
+        "Parent": {
+            "Name": "Decorations 1"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "DecorationAtlas"
+            },
+            "Mesh": {
+                "Alias": "o ring",
+                "FilePath": "res\\assets\\models\\Decorative\\o ring.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -20.57891845703125,
+                "Y": 0.08419331908226013,
+                "Z": -6.314897060394287
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": -6.114703410275979e-06,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "O ring 12": {
+        "Parent": {
+            "Name": "Decorations 1"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "DecorationAtlas"
+            },
+            "Mesh": {
+                "Alias": "o ring",
+                "FilePath": "res\\assets\\models\\Decorative\\o ring.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": true
+            },
+            "Position": {
+                "X": -20.679473876953125,
+                "Y": 0.08419331908226013,
+                "Z": 2.545301675796509
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": -6.114703410275979e-06,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "O ring 13": {
+        "Parent": {
+            "Name": "Decorations 1"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "DecorationAtlas"
+            },
+            "Mesh": {
+                "Alias": "o ring",
+                "FilePath": "res\\assets\\models\\Decorative\\o ring.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -16.143518447875977,
+                "Y": 0.08419331908226013,
+                "Z": -6.314897060394287
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": -6.114703410275979e-06,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "O ring 14": {
+        "Parent": {
+            "Name": "Decorations 1"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "DecorationAtlas"
+            },
+            "Mesh": {
+                "Alias": "o ring",
+                "FilePath": "res\\assets\\models\\Decorative\\o ring.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -12.276968002319336,
+                "Y": 0.08419331908226013,
+                "Z": -6.314897060394287
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": -6.114703410275979e-06,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "O ring 15": {
+        "Parent": {
+            "Name": "Decorations 1"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "DecorationAtlas"
+            },
+            "Mesh": {
+                "Alias": "o ring",
+                "FilePath": "res\\assets\\models\\Decorative\\o ring.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": true
+            },
+            "Position": {
+                "X": -24.20765495300293,
+                "Y": 0.08419331908226013,
+                "Z": 2.545301675796509
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": -6.114703410275979e-06,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "O ring 2": {
+        "Parent": {
+            "Name": "Decorations"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "DecorationAtlas"
+            },
+            "Mesh": {
+                "Alias": "o ring",
+                "FilePath": "res\\assets\\models\\Decorative\\o ring.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": true
+            },
+            "Position": {
+                "X": -20.679473876953125,
+                "Y": 0.08419331908226013,
+                "Z": 2.545301675796509
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": -6.114703410275979e-06,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "O ring 3": {
+        "Parent": {
+            "Name": "Decorations"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "DecorationAtlas"
+            },
+            "Mesh": {
+                "Alias": "o ring",
+                "FilePath": "res\\assets\\models\\Decorative\\o ring.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": true
+            },
+            "Position": {
+                "X": -24.20765495300293,
+                "Y": 0.08419331908226013,
+                "Z": 2.545301675796509
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": -6.114703410275979e-06,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "O ring 4": {
+        "Parent": {
+            "Name": "Decorations"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "DecorationAtlas"
+            },
+            "Mesh": {
+                "Alias": "o ring",
+                "FilePath": "res\\assets\\models\\Decorative\\o ring.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -24.20765495300293,
+                "Y": 0.08419331908226013,
+                "Z": -6.314897060394287
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": -6.114703410275979e-06,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "O ring 5": {
+        "Parent": {
+            "Name": "Decorations"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "DecorationAtlas"
+            },
+            "Mesh": {
+                "Alias": "o ring",
+                "FilePath": "res\\assets\\models\\Decorative\\o ring.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -20.57891845703125,
+                "Y": 0.08419331908226013,
+                "Z": -6.314897060394287
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": -6.114703410275979e-06,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "O ring 6": {
+        "Parent": {
+            "Name": "Decorations"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "DecorationAtlas"
+            },
+            "Mesh": {
+                "Alias": "o ring",
+                "FilePath": "res\\assets\\models\\Decorative\\o ring.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -16.143518447875977,
+                "Y": 0.08419331908226013,
+                "Z": -6.314897060394287
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": -6.114703410275979e-06,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "O ring 7": {
+        "Parent": {
+            "Name": "Decorations"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "DecorationAtlas"
+            },
+            "Mesh": {
+                "Alias": "o ring",
+                "FilePath": "res\\assets\\models\\Decorative\\o ring.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -12.276968002319336,
+                "Y": 0.08419331908226013,
+                "Z": -6.314897060394287
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": -6.114703410275979e-06,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "O ring 8": {
+        "Parent": {
+            "Name": "Decorations 1"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "DecorationAtlas"
+            },
+            "Mesh": {
+                "Alias": "o ring",
+                "FilePath": "res\\assets\\models\\Decorative\\o ring.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": true
+            },
+            "Position": {
+                "X": -12.308103561401367,
+                "Y": 0.08419331908226013,
+                "Z": 2.545301675796509
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": -6.114703410275979e-06,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "O ring 9": {
+        "Parent": {
+            "Name": "Decorations 1"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "DecorationAtlas"
+            },
+            "Mesh": {
+                "Alias": "o ring",
+                "FilePath": "res\\assets\\models\\Decorative\\o ring.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -24.20765495300293,
+                "Y": 0.08419331908226013,
+                "Z": -6.314897060394287
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": -6.114703410275979e-06,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
                 "Z": 1.0
             }
         }
@@ -12247,15 +16227,15 @@
             }
         }
     },
-    "RopeDetail": {
+    "RopePile": {
         "Parent": {
-            "Name": "Boat Root R"
+            "Name": "Decorations"
         },
         "Renderable": {
             "CullingMask": 15,
             "Enabled": true,
             "Material": {
-                "Alias": "cubeMat"
+                "Alias": "DecorationAtlas"
             },
             "Mesh": {
                 "Alias": "Environtment Rope",
@@ -12269,53 +16249,14 @@
                 "Z": false
             },
             "Position": {
-                "X": -0.08978962898254395,
-                "Y": 0.023412317037582397,
-                "Z": -6.024791717529297
+                "X": 2.8393726348876953,
+                "Y": 4.023021221160889,
+                "Z": 0.9855180382728577
             },
             "Rotation": {
-                "qW": 0.8850693702697754,
-                "qX": -1.8341781427011483e-08,
-                "qY": 0.46545907855033875,
-                "qZ": -1.8341781427011483e-08
-            },
-            "Scale": {
-                "X": 1.0,
-                "Y": 1.0,
-                "Z": 1.0
-            }
-        }
-    },
-    "RopeDetail 1": {
-        "Parent": {
-            "Name": "Boat Root R"
-        },
-        "Renderable": {
-            "CullingMask": 15,
-            "Enabled": true,
-            "Material": {
-                "Alias": "cubeMat"
-            },
-            "Mesh": {
-                "Alias": "Environtment Rope",
-                "FilePath": "res\\assets\\models\\Decorative\\Environtment Rope.obj"
-            }
-        },
-        "Transform": {
-            "Mirror": {
-                "X": false,
-                "Y": false,
-                "Z": true
-            },
-            "Position": {
-                "X": 0.3570900559425354,
-                "Y": 0.023412317037582397,
-                "Z": -6.146539688110352
-            },
-            "Rotation": {
-                "qW": 1.0,
+                "qW": 0.5403022766113281,
                 "qX": 0.0,
-                "qY": 0.0,
+                "qY": -0.8414709568023682,
                 "qZ": 0.0
             },
             "Scale": {
@@ -12325,15 +16266,15 @@
             }
         }
     },
-    "RopeDetail 2": {
+    "RopePile 1": {
         "Parent": {
-            "Name": "Boat Root L"
+            "Name": "Decorations"
         },
         "Renderable": {
             "CullingMask": 15,
             "Enabled": true,
             "Material": {
-                "Alias": "cubeMat"
+                "Alias": "DecorationAtlas"
             },
             "Mesh": {
                 "Alias": "Environtment Rope",
@@ -12347,15 +16288,15 @@
                 "Z": false
             },
             "Position": {
-                "X": -0.08978962898254395,
-                "Y": 0.023412317037582397,
-                "Z": -6.024791717529297
+                "X": 3.031269073486328,
+                "Y": 4.023021221160889,
+                "Z": 0.42952972650527954
             },
             "Rotation": {
-                "qW": 0.8850693702697754,
-                "qX": -1.8341781427011483e-08,
-                "qY": 0.46545907855033875,
-                "qZ": -1.8341781427011483e-08
+                "qW": 0.5403022766113281,
+                "qX": 0.0,
+                "qY": -0.8414709568023682,
+                "qZ": 0.0
             },
             "Scale": {
                 "X": 1.0,
@@ -12364,15 +16305,15 @@
             }
         }
     },
-    "RopeDetail 3": {
+    "RopePile 10": {
         "Parent": {
-            "Name": "Boat Root L"
+            "Name": "Decorations"
         },
         "Renderable": {
             "CullingMask": 15,
             "Enabled": true,
             "Material": {
-                "Alias": "cubeMat"
+                "Alias": "DecorationAtlas"
             },
             "Mesh": {
                 "Alias": "Environtment Rope",
@@ -12383,17 +16324,758 @@
             "Mirror": {
                 "X": false,
                 "Y": false,
-                "Z": true
+                "Z": false
             },
             "Position": {
-                "X": 0.3570900559425354,
-                "Y": 0.023412317037582397,
-                "Z": -6.146539688110352
+                "X": -28.508474349975586,
+                "Y": -4.122061729431152,
+                "Z": -6.620427131652832
+            },
+            "Rotation": {
+                "qW": 0.5403022766113281,
+                "qX": 0.0,
+                "qY": 0.8414709568023682,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "RopePile 11": {
+        "Parent": {
+            "Name": "Decorations 1"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "DecorationAtlas"
+            },
+            "Mesh": {
+                "Alias": "Environtment Rope",
+                "FilePath": "res\\assets\\models\\Decorative\\Environtment Rope.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": 2.8393726348876953,
+                "Y": 4.023021221160889,
+                "Z": 0.9855180382728577
+            },
+            "Rotation": {
+                "qW": 0.5403022766113281,
+                "qX": 0.0,
+                "qY": -0.8414709568023682,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "RopePile 12": {
+        "Parent": {
+            "Name": "Decorations 1"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "DecorationAtlas"
+            },
+            "Mesh": {
+                "Alias": "Environtment Rope",
+                "FilePath": "res\\assets\\models\\Decorative\\Environtment Rope.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": 3.031269073486328,
+                "Y": 4.023021221160889,
+                "Z": 0.42952972650527954
+            },
+            "Rotation": {
+                "qW": 0.5403022766113281,
+                "qX": 0.0,
+                "qY": -0.8414709568023682,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "RopePile 13": {
+        "Parent": {
+            "Name": "Decorations 1"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "DecorationAtlas"
+            },
+            "Mesh": {
+                "Alias": "Environtment Rope",
+                "FilePath": "res\\assets\\models\\Decorative\\Environtment Rope.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -8.16058349609375,
+                "Y": 0.05000000074505806,
+                "Z": 1.90958571434021
             },
             "Rotation": {
                 "qW": 1.0,
                 "qX": 0.0,
-                "qY": 0.0,
+                "qY": -6.114703410275979e-06,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "RopePile 14": {
+        "Parent": {
+            "Name": "Decorations 1"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "DecorationAtlas"
+            },
+            "Mesh": {
+                "Alias": "Environtment Rope",
+                "FilePath": "res\\assets\\models\\Decorative\\Environtment Rope.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -15.750903129577637,
+                "Y": 0.05000000074505806,
+                "Z": 1.90958571434021
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": -6.114703410275979e-06,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "RopePile 15": {
+        "Parent": {
+            "Name": "Decorations 1"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "DecorationAtlas"
+            },
+            "Mesh": {
+                "Alias": "Environtment Rope",
+                "FilePath": "res\\assets\\models\\Decorative\\Environtment Rope.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -20.12887954711914,
+                "Y": 0.051957935094833374,
+                "Z": -6.13705587387085
+            },
+            "Rotation": {
+                "qW": 0.5403022766113281,
+                "qX": 0.0,
+                "qY": 0.8414709568023682,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "RopePile 16": {
+        "Parent": {
+            "Name": "Decorations 1"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "DecorationAtlas"
+            },
+            "Mesh": {
+                "Alias": "Environtment Rope",
+                "FilePath": "res\\assets\\models\\Decorative\\Environtment Rope.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -15.12289047241211,
+                "Y": 0.05000000074505806,
+                "Z": 1.90958571434021
+            },
+            "Rotation": {
+                "qW": 0.5403022766113281,
+                "qX": 0.0,
+                "qY": 0.8414709568023682,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "RopePile 17": {
+        "Parent": {
+            "Name": "Decorations 1"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "DecorationAtlas"
+            },
+            "Mesh": {
+                "Alias": "Environtment Rope",
+                "FilePath": "res\\assets\\models\\Decorative\\Environtment Rope.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -21.20821762084961,
+                "Y": 1.1354846954345703,
+                "Z": -5.878519535064697
+            },
+            "Rotation": {
+                "qW": 0.5403022766113281,
+                "qX": 0.0,
+                "qY": 0.8414709568023682,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "RopePile 18": {
+        "Parent": {
+            "Name": "Decorations 1"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "DecorationAtlas"
+            },
+            "Mesh": {
+                "Alias": "Environtment Rope",
+                "FilePath": "res\\assets\\models\\Decorative\\Environtment Rope.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -6.763192176818848,
+                "Y": -4.122061729431152,
+                "Z": 1.730743169784546
+            },
+            "Rotation": {
+                "qW": 0.5403022766113281,
+                "qX": 0.0,
+                "qY": 0.8414709568023682,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "RopePile 19": {
+        "Parent": {
+            "Name": "Decorations 1"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "DecorationAtlas"
+            },
+            "Mesh": {
+                "Alias": "Environtment Rope",
+                "FilePath": "res\\assets\\models\\Decorative\\Environtment Rope.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -4.918999671936035,
+                "Y": -4.122061729431152,
+                "Z": -3.2959916591644287
+            },
+            "Rotation": {
+                "qW": 0.5403022766113281,
+                "qX": 0.0,
+                "qY": 0.8414709568023682,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "RopePile 2": {
+        "Parent": {
+            "Name": "Decorations"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "DecorationAtlas"
+            },
+            "Mesh": {
+                "Alias": "Environtment Rope",
+                "FilePath": "res\\assets\\models\\Decorative\\Environtment Rope.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -8.16058349609375,
+                "Y": 0.05000000074505806,
+                "Z": 1.90958571434021
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": -6.114703410275979e-06,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "RopePile 20": {
+        "Parent": {
+            "Name": "Decorations 1"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "DecorationAtlas"
+            },
+            "Mesh": {
+                "Alias": "Environtment Rope",
+                "FilePath": "res\\assets\\models\\Decorative\\Environtment Rope.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -4.918999671936035,
+                "Y": -4.122061729431152,
+                "Z": 0.612916886806488
+            },
+            "Rotation": {
+                "qW": 0.5403022766113281,
+                "qX": 0.0,
+                "qY": 0.8414709568023682,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "RopePile 21": {
+        "Parent": {
+            "Name": "Decorations 1"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "DecorationAtlas"
+            },
+            "Mesh": {
+                "Alias": "Environtment Rope",
+                "FilePath": "res\\assets\\models\\Decorative\\Environtment Rope.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -28.508474349975586,
+                "Y": -4.122061729431152,
+                "Z": -6.620427131652832
+            },
+            "Rotation": {
+                "qW": 0.5403022766113281,
+                "qX": 0.0,
+                "qY": 0.8414709568023682,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "RopePile 3": {
+        "Parent": {
+            "Name": "Decorations"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "DecorationAtlas"
+            },
+            "Mesh": {
+                "Alias": "Environtment Rope",
+                "FilePath": "res\\assets\\models\\Decorative\\Environtment Rope.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -15.750903129577637,
+                "Y": 0.05000000074505806,
+                "Z": 1.90958571434021
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": -6.114703410275979e-06,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "RopePile 4": {
+        "Parent": {
+            "Name": "Decorations"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "DecorationAtlas"
+            },
+            "Mesh": {
+                "Alias": "Environtment Rope",
+                "FilePath": "res\\assets\\models\\Decorative\\Environtment Rope.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -20.12887954711914,
+                "Y": 0.051957935094833374,
+                "Z": -6.13705587387085
+            },
+            "Rotation": {
+                "qW": 0.5403022766113281,
+                "qX": 0.0,
+                "qY": 0.8414709568023682,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "RopePile 5": {
+        "Parent": {
+            "Name": "Decorations"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "DecorationAtlas"
+            },
+            "Mesh": {
+                "Alias": "Environtment Rope",
+                "FilePath": "res\\assets\\models\\Decorative\\Environtment Rope.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -15.12289047241211,
+                "Y": 0.05000000074505806,
+                "Z": 1.90958571434021
+            },
+            "Rotation": {
+                "qW": 0.5403022766113281,
+                "qX": 0.0,
+                "qY": 0.8414709568023682,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "RopePile 6": {
+        "Parent": {
+            "Name": "Decorations"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "DecorationAtlas"
+            },
+            "Mesh": {
+                "Alias": "Environtment Rope",
+                "FilePath": "res\\assets\\models\\Decorative\\Environtment Rope.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -21.20821762084961,
+                "Y": 1.1354846954345703,
+                "Z": -5.878519535064697
+            },
+            "Rotation": {
+                "qW": 0.5403022766113281,
+                "qX": 0.0,
+                "qY": 0.8414709568023682,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "RopePile 7": {
+        "Parent": {
+            "Name": "Decorations"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "DecorationAtlas"
+            },
+            "Mesh": {
+                "Alias": "Environtment Rope",
+                "FilePath": "res\\assets\\models\\Decorative\\Environtment Rope.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -6.763192176818848,
+                "Y": -4.122061729431152,
+                "Z": 1.730743169784546
+            },
+            "Rotation": {
+                "qW": 0.5403022766113281,
+                "qX": 0.0,
+                "qY": 0.8414709568023682,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "RopePile 8": {
+        "Parent": {
+            "Name": "Decorations"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "DecorationAtlas"
+            },
+            "Mesh": {
+                "Alias": "Environtment Rope",
+                "FilePath": "res\\assets\\models\\Decorative\\Environtment Rope.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -4.918999671936035,
+                "Y": -4.122061729431152,
+                "Z": -3.2959916591644287
+            },
+            "Rotation": {
+                "qW": 0.5403022766113281,
+                "qX": 0.0,
+                "qY": 0.8414709568023682,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "RopePile 9": {
+        "Parent": {
+            "Name": "Decorations"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "DecorationAtlas"
+            },
+            "Mesh": {
+                "Alias": "Environtment Rope",
+                "FilePath": "res\\assets\\models\\Decorative\\Environtment Rope.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -4.918999671936035,
+                "Y": -4.122061729431152,
+                "Z": 0.612916886806488
+            },
+            "Rotation": {
+                "qW": 0.5403022766113281,
+                "qX": 0.0,
+                "qY": 0.8414709568023682,
                 "qZ": 0.0
             },
             "Scale": {
@@ -12542,9 +17224,9 @@
                 "Z": false
             },
             "Position": {
-                "X": 9.74651050567627,
+                "X": 9.733275413513184,
                 "Y": -0.02385503053665161,
-                "Z": -5.158007621765137
+                "Z": -5.181350231170654
             },
             "Rotation": {
                 "qW": 1.0,
@@ -12559,15 +17241,15 @@
             }
         }
     },
-    "Spawn Door": {
+    "SpawnDoor": {
         "Parent": {
-            "Name": "Boat Root R"
+            "Name": "Decorations"
         },
         "Renderable": {
             "CullingMask": 15,
             "Enabled": true,
             "Material": {
-                "Alias": "cubeMat"
+                "Alias": "DecorationAtlas"
             },
             "Mesh": {
                 "Alias": "SpawnDoor",
@@ -12581,9 +17263,9 @@
                 "Z": false
             },
             "Position": {
-                "X": 15.406606674194336,
-                "Y": -0.02385503053665161,
-                "Z": -0.08722472190856934
+                "X": 0.0,
+                "Y": 0.0,
+                "Z": 0.0
             },
             "Rotation": {
                 "qW": 1.0,
@@ -12598,15 +17280,15 @@
             }
         }
     },
-    "Spawn Door 1": {
+    "SpawnDoor 1": {
         "Parent": {
-            "Name": "Boat Root L"
+            "Name": "Decorations 1"
         },
         "Renderable": {
             "CullingMask": 15,
             "Enabled": true,
             "Material": {
-                "Alias": "cubeMat"
+                "Alias": "DecorationAtlas"
             },
             "Mesh": {
                 "Alias": "SpawnDoor",
@@ -12620,9 +17302,9 @@
                 "Z": false
             },
             "Position": {
-                "X": 15.399296760559082,
-                "Y": -0.02385503053665161,
-                "Z": -0.08844375610351563
+                "X": 0.0,
+                "Y": 0.0,
+                "Z": 0.0
             },
             "Rotation": {
                 "qW": 1.0,
@@ -12883,7 +17565,7 @@
             }
         }
     },
-    "Stairs 3": {
+    "Stairs 2": {
         "Parent": {
             "Name": "Boat Root L"
         },
@@ -12922,7 +17604,7 @@
             }
         }
     },
-    "Stairs 4": {
+    "Stairs 3": {
         "Parent": {
             "Name": "Boat Root L"
         },
@@ -13024,7 +17706,7 @@
             "Position": {
                 "X": -13.358362197875977,
                 "Y": -4.134646415710449,
-                "Z": 0.1790142059326172
+                "Z": 0.608013391494751
             },
             "Rotation": {
                 "qW": 1.0,
@@ -13086,7 +17768,7 @@
             "CullingMask": 15,
             "Enabled": true,
             "Material": {
-                "Alias": "shipMat"
+                "Alias": "planks"
             },
             "Mesh": {
                 "Alias": "TopDeck",
@@ -13995,8 +18677,8 @@
             },
             "Position": {
                 "X": -0.13811233639717102,
-                "Y": 21.567699432373047,
-                "Z": -0.07740148901939392
+                "Y": 21.56770133972168,
+                "Z": -0.27494674921035767
             },
             "Rotation": {
                 "qW": 1.0,
@@ -14298,9 +18980,9 @@
                 "Z": false
             },
             "Position": {
-                "X": 4.409698963165283,
-                "Y": -0.0999915823340416,
-                "Z": 26.73932647705078
+                "X": 2.847209930419922,
+                "Y": -0.4999578893184662,
+                "Z": 2.068734645843506
             },
             "Rotation": {
                 "qW": 1.0,
@@ -14309,9 +18991,9 @@
                 "qZ": 0.0
             },
             "Scale": {
-                "X": 34.94668960571289,
-                "Y": 0.19999997317790985,
-                "Z": 55.091888427734375
+                "X": 18.392993927001953,
+                "Y": 0.9999998211860657,
+                "Z": 29.999998092651367
             }
         }
     },
@@ -14974,19 +19656,19 @@
                 "Z": false
             },
             "Position": {
-                "X": 8.547019004821777,
-                "Y": 3.994636058807373,
+                "X": 6.556074142456055,
+                "Y": 2.5222721099853516,
                 "Z": -0.15202005207538605
             },
             "Rotation": {
-                "qW": 1.0,
+                "qW": 0.9095484018325806,
                 "qX": 0.0,
-                "qY": 0.0,
-                "qZ": 0.0
+                "qY": -0.0,
+                "qZ": -0.41559797525405884
             },
             "Scale": {
-                "X": 0.8354165554046631,
-                "Y": 1.625876545906067,
+                "X": 1.4255071878433228,
+                "Y": 5.317380905151367,
                 "Z": 0.20000003278255463
             }
         }
@@ -15098,19 +19780,19 @@
                 "Z": false
             },
             "Position": {
-                "X": 6.556074142456055,
-                "Y": 2.5222721099853516,
+                "X": 8.547019004821777,
+                "Y": 3.994636058807373,
                 "Z": -0.15202005207538605
             },
             "Rotation": {
-                "qW": 0.9095484018325806,
+                "qW": 1.0,
                 "qX": 0.0,
-                "qY": -0.0,
-                "qZ": -0.41559797525405884
+                "qY": 0.0,
+                "qZ": 0.0
             },
             "Scale": {
-                "X": 1.4255071878433228,
-                "Y": 5.317380905151367,
+                "X": 0.8354165554046631,
+                "Y": 1.625876545906067,
                 "Z": 0.20000003278255463
             }
         }
@@ -15346,19 +20028,19 @@
                 "Z": false
             },
             "Position": {
-                "X": 8.547019004821777,
-                "Y": 3.9985885620117188,
-                "Z": -5.0107269287109375
+                "X": 6.556074142456055,
+                "Y": 2.524306058883667,
+                "Z": -5.007968902587891
             },
             "Rotation": {
-                "qW": 1.0,
+                "qW": 0.9095484018325806,
                 "qX": 0.0,
-                "qY": 0.0,
-                "qZ": 0.0
+                "qY": -0.0,
+                "qZ": -0.41559797525405884
             },
             "Scale": {
-                "X": 0.8354165554046631,
-                "Y": 1.625876545906067,
+                "X": 1.4255071878433228,
+                "Y": 5.317380905151367,
                 "Z": 0.20000003278255463
             }
         }
@@ -15470,19 +20152,19 @@
                 "Z": false
             },
             "Position": {
-                "X": 6.556074142456055,
-                "Y": 2.524306058883667,
-                "Z": -5.007968902587891
+                "X": 8.547019004821777,
+                "Y": 3.9985885620117188,
+                "Z": -5.0107269287109375
             },
             "Rotation": {
-                "qW": 0.9095484018325806,
+                "qW": 1.0,
                 "qX": 0.0,
-                "qY": -0.0,
-                "qZ": -0.41559797525405884
+                "qY": 0.0,
+                "qZ": 0.0
             },
             "Scale": {
-                "X": 1.4255071878433228,
-                "Y": 5.317380905151367,
+                "X": 0.8354165554046631,
+                "Y": 1.625876545906067,
                 "Z": 0.20000003278255463
             }
         }
@@ -15778,24 +20460,86 @@
                 "Z": false
             },
             "Position": {
-                "X": 12.754769325256348,
-                "Y": 1.7154326438903809,
-                "Z": -6.731877326965332
+                "X": 14.185101509094238,
+                "Y": 1.7157310247421265,
+                "Z": -0.5840641260147095
             },
             "Rotation": {
-                "qW": 0.7121203541755676,
-                "qX": -2.56724888458848e-07,
-                "qY": 0.702057421207428,
-                "qZ": -2.637771103763953e-07
+                "qW": 0.7105087637901306,
+                "qX": -4.78383299196139e-07,
+                "qY": 0.703688383102417,
+                "qZ": -4.804387572221458e-07
             },
             "Scale": {
-                "X": 0.4257809817790985,
-                "Y": 3.4919450283050537,
-                "Z": 7.508082866668701
+                "X": 0.42381930351257324,
+                "Y": 3.491945505142212,
+                "Z": 4.385832786560059
             }
         }
     },
     "WallCollider 11": {
+        "Collidable": {
+            "Shapes": [
+                {
+                    "Center": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Size": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "Trigger": false,
+                    "Type": 0
+                }
+            ]
+        },
+        "Parent": {
+            "Name": "CaptainsQuartersColliders 1"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": false,
+            "Material": {
+                "Alias": null
+            },
+            "Mesh": {
+                "Alias": "cube",
+                "FilePath": "res\\assets\\models\\cube.obj"
+            }
+        },
+        "RigidBody": {
+            "Friction": 0.0,
+            "Mass": 0.0,
+            "Properties": 34
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": 12.35112190246582,
+                "Y": 1.7152495384216309,
+                "Z": 0.3614800274372101
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 0.8062032461166382,
+                "Y": 3.491943836212158,
+                "Z": 2.3656136989593506
+            }
+        }
+    },
+    "WallCollider 12": {
         "Collidable": {
             "Shapes": [
                 {
@@ -15854,68 +20598,6 @@
                 "X": 0.42188140749931335,
                 "Y": 3.49194598197937,
                 "Z": 3.012113094329834
-            }
-        }
-    },
-    "WallCollider 12": {
-        "Collidable": {
-            "Shapes": [
-                {
-                    "Center": [
-                        0.0,
-                        0.0,
-                        0.0
-                    ],
-                    "Size": [
-                        1.0,
-                        1.0,
-                        1.0
-                    ],
-                    "Trigger": false,
-                    "Type": 0
-                }
-            ]
-        },
-        "Parent": {
-            "Name": "CaptainsQuartersColliders 1"
-        },
-        "Renderable": {
-            "CullingMask": 15,
-            "Enabled": false,
-            "Material": {
-                "Alias": null
-            },
-            "Mesh": {
-                "Alias": "cube",
-                "FilePath": "res\\assets\\models\\cube.obj"
-            }
-        },
-        "RigidBody": {
-            "Friction": 0.0,
-            "Mass": 0.0,
-            "Properties": 34
-        },
-        "Transform": {
-            "Mirror": {
-                "X": false,
-                "Y": false,
-                "Z": false
-            },
-            "Position": {
-                "X": 10.003287315368652,
-                "Y": 1.7151484489440918,
-                "Z": -4.763535976409912
-            },
-            "Rotation": {
-                "qW": 0.7121203541755676,
-                "qX": -2.56724888458848e-07,
-                "qY": 0.702057421207428,
-                "qZ": -2.637771103763953e-07
-            },
-            "Scale": {
-                "X": 0.4249582588672638,
-                "Y": 3.4919445514678955,
-                "Z": 2.163698673248291
             }
         }
     },
@@ -16274,20 +20956,20 @@
                 "Z": false
             },
             "Position": {
-                "X": 12.35112190246582,
-                "Y": 1.7152495384216309,
-                "Z": 0.3614800274372101
+                "X": 10.003287315368652,
+                "Y": 1.7151484489440918,
+                "Z": -4.763535976409912
             },
             "Rotation": {
-                "qW": 1.0,
-                "qX": 0.0,
-                "qY": 0.0,
-                "qZ": 0.0
+                "qW": 0.7121203541755676,
+                "qX": -2.56724888458848e-07,
+                "qY": 0.702057421207428,
+                "qZ": -2.637771103763953e-07
             },
             "Scale": {
-                "X": 0.8062032461166382,
-                "Y": 3.491943836212158,
-                "Z": 2.3656136989593506
+                "X": 0.4249582588672638,
+                "Y": 3.4919445514678955,
+                "Z": 2.163698673248291
             }
         }
     },
@@ -16336,9 +21018,9 @@
                 "Z": false
             },
             "Position": {
-                "X": 14.185101509094238,
-                "Y": 1.7157310247421265,
-                "Z": -0.5840641260147095
+                "X": 12.754769325256348,
+                "Y": 1.7154326438903809,
+                "Z": -6.731877326965332
             },
             "Rotation": {
                 "qW": 0.7121203541755676,
@@ -16347,9 +21029,9 @@
                 "qZ": -2.637771103763953e-07
             },
             "Scale": {
-                "X": 0.42381930351257324,
-                "Y": 3.491945505142212,
-                "Z": 4.385832786560059
+                "X": 0.4257809817790985,
+                "Y": 3.4919450283050537,
+                "Z": 7.508082866668701
             }
         }
     },
@@ -16483,7 +21165,7 @@
             "CullingMask": 15,
             "Enabled": true,
             "Material": {
-                "Alias": "atlasMaterial"
+                "Alias": "DecorationAtlas"
             },
             "Mesh": {
                 "Alias": "wheel",
@@ -16522,7 +21204,7 @@
             "CullingMask": 15,
             "Enabled": true,
             "Material": {
-                "Alias": "atlasMaterial"
+                "Alias": "DecorationAtlas"
             },
             "Mesh": {
                 "Alias": "wheel",
@@ -16605,6 +21287,1254 @@
             }
         }
     },
+    "WoodCrate": {
+        "Parent": {
+            "Name": "Decorations"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "DecorationAtlas"
+            },
+            "Mesh": {
+                "Alias": "WoodCrate",
+                "FilePath": "res\\assets\\models\\Decorative\\WoodCrate.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -29.922588348388672,
+                "Y": -4.178339958190918,
+                "Z": -1.9691102504730225
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "WoodCrate 1": {
+        "Parent": {
+            "Name": "Decorations"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "DecorationAtlas"
+            },
+            "Mesh": {
+                "Alias": "WoodCrate",
+                "FilePath": "res\\assets\\models\\Decorative\\WoodCrate.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -28.986108779907227,
+                "Y": -4.178339958190918,
+                "Z": -2.929574728012085
+            },
+            "Rotation": {
+                "qW": 0.9601702690124512,
+                "qX": 0.0,
+                "qY": -0.279415488243103,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "WoodCrate 10": {
+        "Parent": {
+            "Name": "Decorations"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "DecorationAtlas"
+            },
+            "Mesh": {
+                "Alias": "WoodCrate",
+                "FilePath": "res\\assets\\models\\Decorative\\WoodCrate.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -8.580930709838867,
+                "Y": 0.03419750928878784,
+                "Z": -5.767171382904053
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "WoodCrate 11": {
+        "Parent": {
+            "Name": "Decorations"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "DecorationAtlas"
+            },
+            "Mesh": {
+                "Alias": "WoodCrate",
+                "FilePath": "res\\assets\\models\\Decorative\\WoodCrate.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -7.9980950355529785,
+                "Y": 1.030332326889038,
+                "Z": -5.767171382904053
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "WoodCrate 12": {
+        "Parent": {
+            "Name": "Decorations"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "DecorationAtlas"
+            },
+            "Mesh": {
+                "Alias": "WoodCrate",
+                "FilePath": "res\\assets\\models\\Decorative\\WoodCrate.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -9.210777282714844,
+                "Y": 0.023645848035812378,
+                "Z": -4.570372104644775
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "WoodCrate 13": {
+        "Parent": {
+            "Name": "Decorations"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "DecorationAtlas"
+            },
+            "Mesh": {
+                "Alias": "WoodCrate",
+                "FilePath": "res\\assets\\models\\Decorative\\WoodCrate.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": 3.5587539672851563,
+                "Y": 4.023021221160889,
+                "Z": -3.161679744720459
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "WoodCrate 14": {
+        "Parent": {
+            "Name": "Decorations"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "DecorationAtlas"
+            },
+            "Mesh": {
+                "Alias": "WoodCrate",
+                "FilePath": "res\\assets\\models\\Decorative\\WoodCrate.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": 4.17103385925293,
+                "Y": 4.023021221160889,
+                "Z": -1.9953246116638184
+            },
+            "Rotation": {
+                "qW": 0.5403022766113281,
+                "qX": 0.0,
+                "qY": 0.8414709568023682,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "WoodCrate 15": {
+        "Parent": {
+            "Name": "Decorations"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "DecorationAtlas"
+            },
+            "Mesh": {
+                "Alias": "WoodCrate",
+                "FilePath": "res\\assets\\models\\Decorative\\WoodCrate.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": 3.6219100952148438,
+                "Y": 4.023021221160889,
+                "Z": -0.7759348750114441
+            },
+            "Rotation": {
+                "qW": 0.5403022766113281,
+                "qX": 0.0,
+                "qY": -0.8414709568023682,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "WoodCrate 16": {
+        "Parent": {
+            "Name": "Decorations 1"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "DecorationAtlas"
+            },
+            "Mesh": {
+                "Alias": "WoodCrate",
+                "FilePath": "res\\assets\\models\\Decorative\\WoodCrate.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -30.678287506103516,
+                "Y": -3.2056941986083984,
+                "Z": -5.443912982940674
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 0.6800000071525574,
+                "Y": 0.5799999833106995,
+                "Z": 1.540000081062317
+            }
+        }
+    },
+    "WoodCrate 17": {
+        "Parent": {
+            "Name": "Decorations 1"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "DecorationAtlas"
+            },
+            "Mesh": {
+                "Alias": "WoodCrate",
+                "FilePath": "res\\assets\\models\\Decorative\\WoodCrate.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -28.986108779907227,
+                "Y": -4.178339958190918,
+                "Z": -2.929574728012085
+            },
+            "Rotation": {
+                "qW": 0.9601702690124512,
+                "qX": 0.0,
+                "qY": -0.279415488243103,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "WoodCrate 18": {
+        "Parent": {
+            "Name": "Decorations 1"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "DecorationAtlas"
+            },
+            "Mesh": {
+                "Alias": "WoodCrate",
+                "FilePath": "res\\assets\\models\\Decorative\\WoodCrate.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -30.474613189697266,
+                "Y": -4.178339958190918,
+                "Z": -5.1899847984313965
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 2.440000057220459
+            }
+        }
+    },
+    "WoodCrate 19": {
+        "Parent": {
+            "Name": "Decorations 1"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "DecorationAtlas"
+            },
+            "Mesh": {
+                "Alias": "WoodCrate",
+                "FilePath": "res\\assets\\models\\Decorative\\WoodCrate.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -29.922588348388672,
+                "Y": -4.178339958190918,
+                "Z": -1.9691102504730225
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "WoodCrate 2": {
+        "Parent": {
+            "Name": "Decorations"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "DecorationAtlas"
+            },
+            "Mesh": {
+                "Alias": "WoodCrate",
+                "FilePath": "res\\assets\\models\\Decorative\\WoodCrate.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -30.474613189697266,
+                "Y": -4.178339958190918,
+                "Z": -5.1899847984313965
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 2.440000057220459
+            }
+        }
+    },
+    "WoodCrate 20": {
+        "Parent": {
+            "Name": "Decorations 1"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "DecorationAtlas"
+            },
+            "Mesh": {
+                "Alias": "WoodCrate",
+                "FilePath": "res\\assets\\models\\Decorative\\WoodCrate.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -5.711798667907715,
+                "Y": -4.178339958190918,
+                "Z": -6.181550025939941
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 2.0,
+                "Y": 2.0,
+                "Z": 2.0
+            }
+        }
+    },
+    "WoodCrate 21": {
+        "Parent": {
+            "Name": "Decorations 1"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "DecorationAtlas"
+            },
+            "Mesh": {
+                "Alias": "WoodCrate",
+                "FilePath": "res\\assets\\models\\Decorative\\WoodCrate.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -5.120916366577148,
+                "Y": -4.178339958190918,
+                "Z": -4.204218864440918
+            },
+            "Rotation": {
+                "qW": 0.9601702690124512,
+                "qX": 0.0,
+                "qY": 0.279415488243103,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "WoodCrate 22": {
+        "Parent": {
+            "Name": "Decorations 1"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "DecorationAtlas"
+            },
+            "Mesh": {
+                "Alias": "WoodCrate",
+                "FilePath": "res\\assets\\models\\Decorative\\WoodCrate.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -5.608038902282715,
+                "Y": -4.178339958190918,
+                "Z": 1.3862454891204834
+            },
+            "Rotation": {
+                "qW": -0.9899924993515015,
+                "qX": -0.0,
+                "qY": 0.14112000167369843,
+                "qZ": -0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "WoodCrate 23": {
+        "Parent": {
+            "Name": "Decorations 1"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "DecorationAtlas"
+            },
+            "Mesh": {
+                "Alias": "WoodCrate",
+                "FilePath": "res\\assets\\models\\Decorative\\WoodCrate.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": 3.5587539672851563,
+                "Y": 4.023021221160889,
+                "Z": -3.161679744720459
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "WoodCrate 24": {
+        "Parent": {
+            "Name": "Decorations 1"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "DecorationAtlas"
+            },
+            "Mesh": {
+                "Alias": "WoodCrate",
+                "FilePath": "res\\assets\\models\\Decorative\\WoodCrate.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": 4.17103385925293,
+                "Y": 4.023021221160889,
+                "Z": -1.9953246116638184
+            },
+            "Rotation": {
+                "qW": 0.5403022766113281,
+                "qX": 0.0,
+                "qY": 0.8414709568023682,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "WoodCrate 25": {
+        "Parent": {
+            "Name": "Decorations 1"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "DecorationAtlas"
+            },
+            "Mesh": {
+                "Alias": "WoodCrate",
+                "FilePath": "res\\assets\\models\\Decorative\\WoodCrate.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": 3.6219100952148438,
+                "Y": 4.023021221160889,
+                "Z": -0.7759348750114441
+            },
+            "Rotation": {
+                "qW": 0.5403022766113281,
+                "qX": 0.0,
+                "qY": -0.8414709568023682,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "WoodCrate 26": {
+        "Parent": {
+            "Name": "Decorations 1"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "DecorationAtlas"
+            },
+            "Mesh": {
+                "Alias": "WoodCrate",
+                "FilePath": "res\\assets\\models\\Decorative\\WoodCrate.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -6.469301223754883,
+                "Y": -4.178339958190918,
+                "Z": 2.6421353816986084
+            },
+            "Rotation": {
+                "qW": 0.9601702690124512,
+                "qX": 0.0,
+                "qY": 0.279415488243103,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "WoodCrate 27": {
+        "Parent": {
+            "Name": "Decorations 1"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "DecorationAtlas"
+            },
+            "Mesh": {
+                "Alias": "WoodCrate",
+                "FilePath": "res\\assets\\models\\Decorative\\WoodCrate.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -7.396086692810059,
+                "Y": 0.03419750928878784,
+                "Z": -5.959432601928711
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "WoodCrate 28": {
+        "Parent": {
+            "Name": "Decorations 1"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "DecorationAtlas"
+            },
+            "Mesh": {
+                "Alias": "WoodCrate",
+                "FilePath": "res\\assets\\models\\Decorative\\WoodCrate.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -5.319300651550293,
+                "Y": -2.251488208770752,
+                "Z": -6.2831315994262695
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "WoodCrate 29": {
+        "Parent": {
+            "Name": "Decorations 1"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "DecorationAtlas"
+            },
+            "Mesh": {
+                "Alias": "WoodCrate",
+                "FilePath": "res\\assets\\models\\Decorative\\WoodCrate.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -8.580930709838867,
+                "Y": 0.03419750928878784,
+                "Z": -5.767171382904053
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "WoodCrate 3": {
+        "Parent": {
+            "Name": "Decorations"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "DecorationAtlas"
+            },
+            "Mesh": {
+                "Alias": "WoodCrate",
+                "FilePath": "res\\assets\\models\\Decorative\\WoodCrate.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -30.678287506103516,
+                "Y": -3.2056941986083984,
+                "Z": -5.443912982940674
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 0.6800000071525574,
+                "Y": 0.5799999833106995,
+                "Z": 1.540000081062317
+            }
+        }
+    },
+    "WoodCrate 30": {
+        "Parent": {
+            "Name": "Decorations 1"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "DecorationAtlas"
+            },
+            "Mesh": {
+                "Alias": "WoodCrate",
+                "FilePath": "res\\assets\\models\\Decorative\\WoodCrate.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -7.9980950355529785,
+                "Y": 1.030332326889038,
+                "Z": -5.767171382904053
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "WoodCrate 31": {
+        "Parent": {
+            "Name": "Decorations 1"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "DecorationAtlas"
+            },
+            "Mesh": {
+                "Alias": "WoodCrate",
+                "FilePath": "res\\assets\\models\\Decorative\\WoodCrate.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -9.210777282714844,
+                "Y": 0.023645848035812378,
+                "Z": -4.570372104644775
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "WoodCrate 4": {
+        "Parent": {
+            "Name": "Decorations"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "DecorationAtlas"
+            },
+            "Mesh": {
+                "Alias": "WoodCrate",
+                "FilePath": "res\\assets\\models\\Decorative\\WoodCrate.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -5.711798667907715,
+                "Y": -4.178339958190918,
+                "Z": -6.181550025939941
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 2.0,
+                "Y": 2.0,
+                "Z": 2.0
+            }
+        }
+    },
+    "WoodCrate 5": {
+        "Parent": {
+            "Name": "Decorations"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "DecorationAtlas"
+            },
+            "Mesh": {
+                "Alias": "WoodCrate",
+                "FilePath": "res\\assets\\models\\Decorative\\WoodCrate.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -5.120916366577148,
+                "Y": -4.178339958190918,
+                "Z": -4.204218864440918
+            },
+            "Rotation": {
+                "qW": 0.9601702690124512,
+                "qX": 0.0,
+                "qY": 0.279415488243103,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "WoodCrate 6": {
+        "Parent": {
+            "Name": "Decorations"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "DecorationAtlas"
+            },
+            "Mesh": {
+                "Alias": "WoodCrate",
+                "FilePath": "res\\assets\\models\\Decorative\\WoodCrate.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -5.608038902282715,
+                "Y": -4.178339958190918,
+                "Z": 1.3862454891204834
+            },
+            "Rotation": {
+                "qW": -0.9899924993515015,
+                "qX": -0.0,
+                "qY": 0.14112000167369843,
+                "qZ": -0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "WoodCrate 7": {
+        "Parent": {
+            "Name": "Decorations"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "DecorationAtlas"
+            },
+            "Mesh": {
+                "Alias": "WoodCrate",
+                "FilePath": "res\\assets\\models\\Decorative\\WoodCrate.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -6.469301223754883,
+                "Y": -4.178339958190918,
+                "Z": 2.6421353816986084
+            },
+            "Rotation": {
+                "qW": 0.9601702690124512,
+                "qX": 0.0,
+                "qY": 0.279415488243103,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "WoodCrate 8": {
+        "Parent": {
+            "Name": "Decorations"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "DecorationAtlas"
+            },
+            "Mesh": {
+                "Alias": "WoodCrate",
+                "FilePath": "res\\assets\\models\\Decorative\\WoodCrate.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -7.396086692810059,
+                "Y": 0.03419750928878784,
+                "Z": -5.959432601928711
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "WoodCrate 9": {
+        "Parent": {
+            "Name": "Decorations"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "DecorationAtlas"
+            },
+            "Mesh": {
+                "Alias": "WoodCrate",
+                "FilePath": "res\\assets\\models\\Decorative\\WoodCrate.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -5.319300651550293,
+                "Y": -2.251488208770752,
+                "Z": -6.2831315994262695
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
     "thingy 1": {
         "Parent": {
             "Name": "thingy Metal"
@@ -16613,7 +22543,7 @@
             "CullingMask": 15,
             "Enabled": true,
             "Material": {
-                "Alias": "cubeMat"
+                "Alias": "DecorationAtlas"
             },
             "Mesh": {
                 "Alias": "weirdThingy_wood",
@@ -16652,7 +22582,7 @@
             "CullingMask": 15,
             "Enabled": true,
             "Material": {
-                "Alias": "cubeMat"
+                "Alias": "DecorationAtlas"
             },
             "Mesh": {
                 "Alias": "weirdThingy_wood",
