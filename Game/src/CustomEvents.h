@@ -18,7 +18,7 @@ enum CustomEventTypes : int
 	TypePlayerJump,
 	TypePlayerInteractResult,
     TypePlayerInteractionRequest,
-	TypePlayerDropItem,
+	TypeCancelButtonPressed,
 	TypePlayerStateChange,
     TypeCannonStateChange,
 	TypeCannonFired,
@@ -28,7 +28,7 @@ enum CustomEventTypes : int
 	TypeIncreasedGarbageLevel,
 	TypeSpawnCannonballForPlayer,
 	TypeUseGloop,
-	TypeQuicktimeCleaningEventResult,
+	TypeActivateQuicktimeCleaningEvent,
 	TypeCancelQuicktimeCleaningEvent,
 	TypeGameEnd
 };
@@ -62,7 +62,7 @@ OYL_EVENT_STRUCT(PlayerInteractionRequestEvent, (oyl::EventType) TypePlayerInter
 		entt::entity playerEntity;
 	});
 
-OYL_EVENT_STRUCT(PlayerDropItemEvent, (oyl::EventType) TypePlayerDropItem, (oyl::EventCategory) CategoryPlayer,
+OYL_EVENT_STRUCT(CancelButtonPressedEvent, (oyl::EventType) TypeCancelButtonPressed, (oyl::EventCategory) CategoryPlayer,
 	{
 		entt::entity playerEntity;
 	});
@@ -115,10 +115,10 @@ OYL_EVENT_STRUCT(UseGloopEvent, (oyl::EventType) TypeUseGloop, (oyl::EventCatego
 		entt::entity gloopEntity;
 	});
 
-OYL_EVENT_STRUCT(QuicktimeCleaningEventResultEvent, (oyl::EventType) TypeQuicktimeCleaningEventResult, (oyl::EventCategory) CategoryQuicktimeCleaningEvent,
+OYL_EVENT_STRUCT(ActivateQuicktimeCleaningEventEvent, (oyl::EventType) TypeActivateQuicktimeCleaningEvent, (oyl::EventCategory) CategoryQuicktimeCleaningEvent,
 	{
-		entt::entity playerEntity;
-		bool         wasSuccessful;
+		PlayerNumber playerNum;
+		entt::entity garbagePileEntity;
 	});
 
 OYL_EVENT_STRUCT(CancelQuicktimeCleaningEventEvent, (oyl::EventType) TypeCancelQuicktimeCleaningEvent, (oyl::EventCategory) CategoryQuicktimeCleaningEvent,
