@@ -492,6 +492,16 @@ void PlayerInteractionValidationSystem::performInteractionForPlayer(entt::entity
 {
 	auto& player = registry->get<Player>(a_playerEntity);
 
+	//TODO: get rid of this for final version, it's only for testing. Mashing e will clean, only here so that you can still clean piles on KBM for testing
+	if (player.state == PlayerState::inCleaningQuicktimeEvent && player.playerNum == PlayerNumber::One)
+	{
+		RequestToCleanGarbageEvent requestToCleanGarbage;
+		requestToCleanGarbage.garbagePileEntity = player.interactableEntity;
+		postEvent(requestToCleanGarbage);
+
+		return;
+	}
+
 	//check if there's a valid entity the player can interact with first
 	if (player.interactableEntity == entt::null)
 		return;
@@ -602,11 +612,11 @@ void PlayerInteractionValidationSystem::performGarbagePileInteraction(entt::enti
 
 			PlayerStateChangeEvent playerStateChange;
 			playerStateChange.playerEntity = a_playerEntity;
-			playerStateChange.newState = PlayerState::inCleaningQuicktimeEvent;
+			playerStateChange.newState     = PlayerState::inCleaningQuicktimeEvent;
 			postEvent(playerStateChange);
 
 			ActivateQuicktimeCleaningEventEvent activateCleaningQTE;
-			activateCleaningQTE.playerNum = player.playerNum;
+			activateCleaningQTE.playerNum         = player.playerNum;
 			activateCleaningQTE.garbagePileEntity = player.interactableEntity;
 			postEvent(activateCleaningQTE);
 		}

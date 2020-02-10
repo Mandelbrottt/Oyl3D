@@ -225,8 +225,8 @@ struct GarbagePileHealthBar
 	entt::entity outlineEntity; //the outline of the HP bar
 
 	Team team;
-	int garbagePileNum     = 0;
-	PlayerNumber playerNum = PlayerNumber::One; //player to render to
+	int garbagePileNum;
+	PlayerNumber playerNum; //player to render to
 
 	float baseInterpolationSpeed = 0.8f; //this should be relative to the player's time it takes to clean (1 / (time it takes to clean) = the value this variable should be)
 	float interpolationSpeed     = baseInterpolationSpeed;
@@ -238,6 +238,15 @@ struct GarbagePileHealthBar
 
 	bool shouldHideAfterInterpolating = false;
 	bool shouldBeHidden               = false;
+};
+
+struct GarbagePileGloopIndicator
+{
+	Team team;
+	int garbagePileNum;
+	PlayerNumber playerNum; //player to render to
+
+	bool shouldBeHidden = false;
 };
 
 struct CleaningQuicktimeEvent
