@@ -612,11 +612,11 @@ void PlayerInteractionValidationSystem::performGarbagePileInteraction(entt::enti
 
 			PlayerStateChangeEvent playerStateChange;
 			playerStateChange.playerEntity = a_playerEntity;
-			playerStateChange.newState = PlayerState::inCleaningQuicktimeEvent;
+			playerStateChange.newState     = PlayerState::inCleaningQuicktimeEvent;
 			postEvent(playerStateChange);
 
 			ActivateQuicktimeCleaningEventEvent activateCleaningQTE;
-			activateCleaningQTE.playerNum = player.playerNum;
+			activateCleaningQTE.playerNum         = player.playerNum;
 			activateCleaningQTE.garbagePileEntity = player.interactableEntity;
 			postEvent(activateCleaningQTE);
 		}

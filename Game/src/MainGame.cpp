@@ -14,6 +14,7 @@
 #include "ItemRespawnSystem.h"
 #include "CameraBreathingSystem.h"
 #include "GarbagePileHealthBarSystem.h"
+#include "GarbagePileGloopIndicatorSystem.h"
 #include "GarbageMeterSystem.h"
 #include "GameOverCheckSystem.h"
 #include "ScrollingTextureLayer.h"
@@ -52,6 +53,7 @@ public:
 		scheduleSystemUpdate<ItemRespawnSystem>();
 		scheduleSystemUpdate<CameraBreathingSystem>();
 		scheduleSystemUpdate<GarbagePileHealthBarSystem>();
+		scheduleSystemUpdate<GarbagePileGloopIndicatorSystem>();
 		scheduleSystemUpdate<GarbageMeterSystem>();
 		scheduleSystemUpdate<GameOverCheckSystem>();
 
@@ -403,6 +405,34 @@ public:
 
 					auto& fillEi = registry->assign<component::EntityInfo>(fillEntity);
 					fillEi.name = "GarbageHPBarFill" + std::to_string(k) + " For Player" + std::to_string(i);
+				}
+			}
+			{
+				for (int k = 0; k < 3; k++)
+				{
+					//garbage pile gloop indicator
+					entt::entity indicatorEntity = registry->create();
+
+					auto& indicatorGui = registry->assign<component::GuiRenderable>(indicatorEntity);
+					indicatorGui.texture = Texture2D::cache("res/assets/textures/gui/gloopIndicator.png");
+					indicatorGui.cullingMask = 0b1 << i;
+
+					auto& gloopIndicator = registry->assign<GarbagePileGloopIndicator>(indicatorEntity);
+					gloopIndicator.garbagePileNum = k - 1;
+					gloopIndicator.playerNum = (PlayerNumber)i;
+
+					if (gloopIndicator.playerNum == PlayerNumber::One || gloopIndicator.playerNum == PlayerNumber::Three) //1 and 3 are on blue team
+						gloopIndicator.team = Team::blue;
+					else
+						gloopIndicator.team = Team::red;
+
+					component::Transform indicatorTransform;
+					indicatorTransform.setPosition(glm::vec3(-30.0f, 0.0f, -5.0f));
+					indicatorTransform.setScale(glm::vec3(2.0f, 2.0f, 2.0f));
+					registry->assign<component::Transform>(indicatorEntity, indicatorTransform);
+
+					auto& indicatorEi = registry->assign<component::EntityInfo>(indicatorEntity);
+					indicatorEi.name = "Gloop Indicator " + std::to_string(k) + " For Player" + std::to_string(i);
 				}
 			}
 
