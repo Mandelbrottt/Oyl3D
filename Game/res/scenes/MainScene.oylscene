@@ -457,9 +457,9 @@
                 "Z": false
             },
             "Position": {
-                "X": -21.2062931060791,
+                "X": -19.319982528686523,
                 "Y": 0.019999999552965164,
-                "Z": -5.874434471130371
+                "Z": -5.874433517456055
             },
             "Rotation": {
                 "qW": 1.0,
@@ -1973,7 +1973,7 @@
             "CullingMask": 15,
             "Enabled": true,
             "Material": {
-                "Alias": null
+                "Alias": "BinBlue"
             },
             "Mesh": {
                 "Alias": "crateTemp",
@@ -3256,9 +3256,9 @@
                 "Z": false
             },
             "Position": {
-                "X": -22.165021896362305,
+                "X": -17.957542419433594,
                 "Y": 0.03584951162338257,
-                "Z": -5.885008811950684
+                "Z": -5.885007858276367
             },
             "Rotation": {
                 "qW": 1.0,
@@ -5564,7 +5564,7 @@
             },
             "Position": {
                 "X": 71.5628662109375,
-                "Y": 59.20879364013672,
+                "Y": 63.28093338012695,
                 "Z": 64.41939544677734
             },
             "Rotation": {
@@ -5574,9 +5574,9 @@
                 "qZ": 0.07879658043384552
             },
             "Scale": {
-                "X": 1.0,
-                "Y": 1.0,
-                "Z": 1.0
+                "X": 3.0,
+                "Y": 3.0,
+                "Z": 3.0
             }
         }
     },
@@ -6126,9 +6126,9 @@
                 "Z": true
             },
             "Position": {
-                "X": -20.88400650024414,
+                "X": -19.79651641845703,
                 "Y": 1.0161161422729492,
-                "Z": 2.9589908123016357
+                "Z": 2.9589900970458984
             },
             "Rotation": {
                 "qW": 1.0,
@@ -6165,9 +6165,9 @@
                 "Z": true
             },
             "Position": {
-                "X": -23.808591842651367,
+                "X": -25.0733642578125,
                 "Y": 1.0161161422729492,
-                "Z": 2.9589908123016357
+                "Z": 2.9589900970458984
             },
             "Rotation": {
                 "qW": 1.0,
@@ -6282,9 +6282,9 @@
                 "Z": true
             },
             "Position": {
-                "X": -24.193056106567383,
+                "X": -25.049297332763672,
                 "Y": 1.0161161422729492,
-                "Z": -6.7273335456848145
+                "Z": -6.727333068847656
             },
             "Rotation": {
                 "qW": 1.0,
@@ -6321,9 +6321,9 @@
                 "Z": true
             },
             "Position": {
-                "X": -20.91301727294922,
+                "X": -19.811241149902344,
                 "Y": 1.0161161422729492,
-                "Z": -6.7273335456848145
+                "Z": -6.727333068847656
             },
             "Rotation": {
                 "qW": 1.0,
@@ -6438,7 +6438,7 @@
                 "Z": true
             },
             "Position": {
-                "X": -20.88400650024414,
+                "X": -19.822860717773438,
                 "Y": 1.0161161422729492,
                 "Z": 2.9589908123016357
             },
@@ -6477,7 +6477,7 @@
                 "Z": true
             },
             "Position": {
-                "X": -23.808591842651367,
+                "X": -24.868175506591797,
                 "Y": 1.0161161422729492,
                 "Z": 2.9589908123016357
             },
@@ -6594,7 +6594,7 @@
                 "Z": true
             },
             "Position": {
-                "X": -24.193056106567383,
+                "X": -24.974079132080078,
                 "Y": 1.0161161422729492,
                 "Z": -6.7273335456848145
             },
@@ -6633,7 +6633,7 @@
                 "Z": true
             },
             "Position": {
-                "X": -20.91301727294922,
+                "X": -19.8135986328125,
                 "Y": 1.0161161422729492,
                 "Z": -6.7273335456848145
             },
@@ -10428,6 +10428,66 @@
             }
         }
     },
+    "Kristian's POD": {
+        "Collidable": {
+            "Shapes": [
+                {
+                    "Center": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Size": [
+                        20.0,
+                        0.10000000149011612,
+                        20.0
+                    ],
+                    "Trigger": false,
+                    "Type": 0
+                }
+            ]
+        },
+        "Parent": null,
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "PoD"
+            },
+            "Mesh": {
+                "Alias": "KRISTIAN POD",
+                "FilePath": "res\\assets\\models\\Decorative\\KRISTIAN POD.obj"
+            }
+        },
+        "RigidBody": {
+            "Friction": 1.0,
+            "Mass": 0.0,
+            "Properties": 32
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": 64.57012939453125,
+                "Y": 67.47142028808594,
+                "Z": 71.41944885253906
+            },
+            "Rotation": {
+                "qW": 0.4190298914909363,
+                "qX": 0.15168118476867676,
+                "qY": -0.8938217163085938,
+                "qZ": 0.049894608557224274
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
     "Light 1": {
         "LightSource": [
             {
@@ -10837,8 +10897,8 @@
             },
             "Position": {
                 "X": 78.66731262207031,
-                "Y": 64.8123550415039,
-                "Z": 59.70904541015625
+                "Y": 64.8885498046875,
+                "Z": 44.19033432006836
             },
             "Rotation": {
                 "qW": 0.4190298914909363,
@@ -12301,6 +12361,66 @@
             }
         }
     },
+    "Myles' Barqs": {
+        "Collidable": {
+            "Shapes": [
+                {
+                    "Center": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Size": [
+                        20.0,
+                        0.10000000149011612,
+                        20.0
+                    ],
+                    "Trigger": false,
+                    "Type": 0
+                }
+            ]
+        },
+        "Parent": null,
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "Barqs"
+            },
+            "Mesh": {
+                "Alias": "MYLES BARQS",
+                "FilePath": "res\\assets\\models\\Decorative\\MYLES BARQS.obj"
+            }
+        },
+        "RigidBody": {
+            "Friction": 1.0,
+            "Mass": 0.0,
+            "Properties": 32
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": 78.66731262207031,
+                "Y": 64.8123550415039,
+                "Z": 56.05419921875
+            },
+            "Rotation": {
+                "qW": 0.6133663654327393,
+                "qX": 0.26440221071243286,
+                "qY": -0.6185534000396729,
+                "qZ": 0.41384148597717285
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
     "Normal Reticle1": {
         "GuiRenderable": {
             "Clipping": {
@@ -12819,7 +12939,7 @@
                 "Z": true
             },
             "Position": {
-                "X": -20.679473876953125,
+                "X": -19.998228073120117,
                 "Y": 0.08419331908226013,
                 "Z": 2.545301675796509
             },
@@ -12858,7 +12978,7 @@
                 "Z": true
             },
             "Position": {
-                "X": -24.20765495300293,
+                "X": -24.667564392089844,
                 "Y": 0.08419331908226013,
                 "Z": 2.545301675796509
             },
@@ -14144,11 +14264,11 @@
             "CullingMask": 4294967294,
             "Enabled": true,
             "Material": {
-                "Alias": null
+                "Alias": "Character Short Blue"
             },
             "Mesh": {
-                "Alias": "capsule",
-                "FilePath": "res\\assets\\models\\capsule.obj"
+                "Alias": "character",
+                "FilePath": "res\\assets\\models\\character.obj"
             }
         },
         "RigidBody": {
@@ -14308,11 +14428,11 @@
             "CullingMask": 4294967293,
             "Enabled": true,
             "Material": {
-                "Alias": null
+                "Alias": "Character Short Red"
             },
             "Mesh": {
-                "Alias": "capsule",
-                "FilePath": "res\\assets\\models\\capsule.obj"
+                "Alias": "character",
+                "FilePath": "res\\assets\\models\\character.obj"
             }
         },
         "RigidBody": {
@@ -14394,11 +14514,11 @@
             "CullingMask": 4294967291,
             "Enabled": true,
             "Material": {
-                "Alias": null
+                "Alias": "Character Tall Blue"
             },
             "Mesh": {
-                "Alias": "capsule",
-                "FilePath": "res\\assets\\models\\capsule.obj"
+                "Alias": "characterTall",
+                "FilePath": "res\\assets\\models\\characterTall.obj"
             }
         },
         "RigidBody": {
@@ -14558,11 +14678,11 @@
             "CullingMask": 4294967287,
             "Enabled": true,
             "Material": {
-                "Alias": null
+                "Alias": "Character Tall Red"
             },
             "Mesh": {
-                "Alias": "capsule",
-                "FilePath": "res\\assets\\models\\capsule.obj"
+                "Alias": "characterTall",
+                "FilePath": "res\\assets\\models\\characterTall.obj"
             }
         },
         "RigidBody": {
@@ -15304,7 +15424,7 @@
             "CullingMask": 15,
             "Enabled": true,
             "Material": {
-                "Alias": null
+                "Alias": "BinRed"
             },
             "Mesh": {
                 "Alias": "crateTemp",
@@ -16477,9 +16597,9 @@
                 "Z": false
             },
             "Position": {
-                "X": -20.12887954711914,
+                "X": -18.44985008239746,
                 "Y": 0.051957935094833374,
-                "Z": -6.13705587387085
+                "Z": -6.137056350708008
             },
             "Rotation": {
                 "qW": 0.5403022766113281,
@@ -16555,9 +16675,9 @@
                 "Z": false
             },
             "Position": {
-                "X": -21.20821762084961,
+                "X": -19.356842041015625,
                 "Y": 1.1354846954345703,
-                "Z": -5.878519535064697
+                "Z": -5.878519058227539
             },
             "Rotation": {
                 "qW": 0.5403022766113281,
