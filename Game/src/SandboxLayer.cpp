@@ -174,7 +174,7 @@ void SandboxLayer::onEnter()
 					Animation::KeyPose kp;
 					kp.duration = 1.0f / 30.0f; // duration in seconds
 
-					sprintf(filename, "res/assets/models/Animation/Garbage/GarbageTiny/GarbageTinyAnim_%06d.obj", i + 1);
+					sprintf(filename, "res/assets/animation/Garbage/GarbageTiny/GarbageTinyAnim_%06d.obj", i + 1);
 					s.assign(filename); // you have to load each mesh yourself for now
 										// the "%06d" is because by default blender exports
 										// frames as "animationName_000001.obj" and so on counting up
@@ -192,7 +192,7 @@ void SandboxLayer::onEnter()
 					Animation::KeyPose kp;
 					kp.duration = 1.0f / 30.0f; // duration in seconds
 
-					sprintf(filename, "res/assets/models/Animation/Garbage/GarbageSmall/GarbageSmallAnim_%06d.obj", i + 1);
+					sprintf(filename, "res/assets/animation/Garbage/GarbageSmall/GarbageSmallAnim_%06d.obj", i + 1);
 					s.assign(filename); // you have to load each mesh yourself for now
 										// the "%06d" is because by default blender exports
 										// frames as "animationName_000001.obj" and so on counting up
@@ -210,7 +210,7 @@ void SandboxLayer::onEnter()
 					Animation::KeyPose kp;
 					kp.duration = 1.0f / 30.0f; // duration in seconds
 
-					sprintf(filename, "res/assets/models/Animation/Garbage/GarbageMedium/GarbageMediumAnim_%06d.obj", i + 1);
+					sprintf(filename, "res/assets/animation/Garbage/GarbageMedium/GarbageMediumAnim_%06d.obj", i + 1);
 					s.assign(filename); // you have to load each mesh yourself for now
 										// the "%06d" is because by default blender exports
 										// frames as "animationName_000001.obj" and so on counting up
@@ -228,7 +228,7 @@ void SandboxLayer::onEnter()
 					Animation::KeyPose kp;
 					kp.duration = 1.0f / 30.0f; // duration in seconds
 
-					sprintf(filename, "res/assets/models/Animation/Garbage/GarbageLarge/GarbageLargeAnim_%06d.obj", i + 1);
+					sprintf(filename, "res/assets/animation/Garbage/GarbageLarge/GarbageLargeAnim_%06d.obj", i + 1);
 					s.assign(filename); // you have to load each mesh yourself for now
 										// the "%06d" is because by default blender exports
 										// frames as "animationName_000001.obj" and so on counting up
@@ -246,7 +246,7 @@ void SandboxLayer::onEnter()
 					Animation::KeyPose kp;
 					kp.duration = 1.0f / 30.0f; // duration in seconds
 
-					sprintf(filename, "res/assets/models/Animation/Garbage/GarbageMassive/GarbageMassiveAnim_%06d.obj", i + 1);
+					sprintf(filename, "res/assets/animation/Garbage/GarbageMassive/GarbageMassiveAnim_%06d.obj", i + 1);
 					s.assign(filename); // you have to load each mesh yourself for now
 										// the "%06d" is because by default blender exports
 										// frames as "animationName_000001.obj" and so on counting up
@@ -264,7 +264,7 @@ void SandboxLayer::onEnter()
 					Animation::KeyPose kp;
 					kp.duration = 1.0f / 30.0f; // duration in seconds
 
-					sprintf(filename, "res/assets/models/Animation/Garbage/GarbageSurrender/GarbageSurrenderAnim_%06d.obj", i + 1);
+					sprintf(filename, "res/assets/animation/Garbage/GarbageSurrender/GarbageSurrenderAnim_%06d.obj", i + 1);
 					s.assign(filename); // you have to load each mesh yourself for now
 										// the "%06d" is because by default blender exports
 										// frames as "animationName_000001.obj" and so on counting up
@@ -696,7 +696,7 @@ void SandboxLayer::onEnter()
 					Animation::KeyPose kp;
 					kp.duration = 1.0f / 30.0f; // duration in seconds
 
-					sprintf(filename, "res/assets/models/Animation/Garbage/GarbageTiny/GarbageTinyAnim_%06d.obj", i + 1);
+					sprintf(filename, "res/assets/animation/Garbage/GarbageTiny/GarbageTinyAnim_%06d.obj", i + 1);
 					s.assign(filename); // you have to load each mesh yourself for now
 										// the "%06d" is because by default blender exports
 										// frames as "animationName_000001.obj" and so on counting up
@@ -714,7 +714,7 @@ void SandboxLayer::onEnter()
 					Animation::KeyPose kp;
 					kp.duration = 1.0f / 30.0f; // duration in seconds
 
-					sprintf(filename, "res/assets/models/Animation/Garbage/GarbageSmall/GarbageSmallAnim_%06d.obj", i + 1);
+					sprintf(filename, "res/assets/animation/Garbage/GarbageSmall/GarbageSmallAnim_%06d.obj", i + 1);
 					s.assign(filename); // you have to load each mesh yourself for now
 										// the "%06d" is because by default blender exports
 										// frames as "animationName_000001.obj" and so on counting up
@@ -732,7 +732,7 @@ void SandboxLayer::onEnter()
 					Animation::KeyPose kp;
 					kp.duration = 1.0f / 30.0f; // duration in seconds
 
-					sprintf(filename, "res/assets/models/Animation/Garbage/GarbageMedium/GarbageMediumAnim_%06d.obj", i + 1);
+					sprintf(filename, "res/assets/animation/Garbage/GarbageMedium/GarbageMediumAnim_%06d.obj", i + 1);
 					s.assign(filename); // you have to load each mesh yourself for now
 										// the "%06d" is because by default blender exports
 										// frames as "animationName_000001.obj" and so on counting up
@@ -750,7 +750,7 @@ void SandboxLayer::onEnter()
 					Animation::KeyPose kp;
 					kp.duration = 1.0f / 30.0f; // duration in seconds
 
-					sprintf(filename, "res/assets/models/Animation/Garbage/GarbageLarge/GarbageLargeAnim_%06d.obj", i + 1);
+					sprintf(filename, "res/assets/animation/Garbage/GarbageLarge/GarbageLargeAnim_%06d.obj", i + 1);
 					s.assign(filename); // you have to load each mesh yourself for now
 										// the "%06d" is because by default blender exports
 										// frames as "animationName_000001.obj" and so on counting up
@@ -768,7 +768,7 @@ void SandboxLayer::onEnter()
 					Animation::KeyPose kp;
 					kp.duration = 1.0f / 30.0f; // duration in seconds
 
-					sprintf(filename, "res/assets/models/Animation/Garbage/GarbageMassive/GarbageMassiveAnim_%06d.obj", i + 1);
+					sprintf(filename, "res/assets/animation/Garbage/GarbageMassive/GarbageMassiveAnim_%06d.obj", i + 1);
 					s.assign(filename); // you have to load each mesh yourself for now
 										// the "%06d" is because by default blender exports
 										// frames as "animationName_000001.obj" and so on counting up
@@ -786,7 +786,7 @@ void SandboxLayer::onEnter()
 					Animation::KeyPose kp;
 					kp.duration = 1.0f / 30.0f; // duration in seconds
 
-					sprintf(filename, "res/assets/models/Animation/Garbage/GarbageSurrender/GarbageSurrenderAnim_%06d.obj", i + 1);
+					sprintf(filename, "res/assets/animation/Garbage/GarbageSurrender/GarbageSurrenderAnim_%06d.obj", i + 1);
 					s.assign(filename); // you have to load each mesh yourself for now
 										// the "%06d" is because by default blender exports
 										// frames as "animationName_000001.obj" and so on counting up
