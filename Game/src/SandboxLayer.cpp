@@ -6,17 +6,17 @@ using namespace oyl;
 
 void SandboxLayer::onEnter()
 {
-    auto mesh = Mesh::cache("res/assets/models/cube.obj");
-    
-    auto& mat = Material::cache(Material::create(), "container");
-	mat->shader = Shader::get(LIGHTING_SHADER_ALIAS);
-    mat->albedoMap   = Texture2D::cache("res/assets/textures/container2.jpg");
-    mat->specularMap = Texture2D::cache("res/assets/textures/container2_specular.jpg");
+	//any meshes that aren't loaded in the scene need to be cached here for distribution mode
+	auto mesh = Mesh::cache("res/assets/models/cube.obj");
+	mesh = Mesh::cache("res/assets/models/Garbage/garbageSmall.obj");
+	mesh = Mesh::cache("res/assets/models/Garbage/garbageMedium.obj");
+    mesh = Mesh::cache("res/assets/models/Garbage/garbageLarge.obj");
+    mesh = Mesh::cache("res/assets/models/Garbage/garbageMassive.obj");
+    mesh = Mesh::cache("res/assets/models/Garbage/garbageSurrender.obj");
 
     {
         component::Renderable mr;
         mr.mesh     = mesh;
-        mr.material = mat;
 
 		/////////////////////////////////////////////////////
 		///////////////////// BLUE TEAM /////////////////////
@@ -118,11 +118,9 @@ void SandboxLayer::onEnter()
 		}
         
 		{
-			mr.mesh = Mesh::cache("res/assets/models/cannon.obj");
             
 			//CANNON
 			entt::entity cannonEntity = registry->create();
-			mr.material = Material::get("cannon");
 
 			component::Transform cannonTransform;
 			cannonTransform.setPosition(glm::vec3(0.0f));
@@ -149,10 +147,138 @@ void SandboxLayer::onEnter()
 			//GARBAGE PILES
 			//NOTE: MAKE SURE THESE ARE ARRANGED SO THE FIRST ONE (BlueGarbagePile0) IS ON THE LEFTMOST SIDE RELATIVE TO THE POSITIVE Z AXIS
 			//      AND THE LAST ONE IS ON THE RIGHT SO THAT THE OPPOSING CANNON FIRES AT THE CORRECT GARBAGE PILE
-			mr.mesh = Mesh::cache("res/assets/models/garbageTiny.obj");
-			mr.material = Material::get("garbage");
 			for (int i = 0; i < 3; i++)
 			{
+				//creating the fly
+				entt::entity garbagePileFlyEntity = registry->create();
+
+				component::Transform garbagePileFlyTransform;
+				garbagePileFlyTransform.setPosition(glm::vec3(0.0f, 0.0f, 0.0f));
+
+				registry->assign<component::Transform>(garbagePileFlyEntity, garbagePileFlyTransform);
+				registry->assign<component::Renderable>(garbagePileFlyEntity, mr);
+
+				auto& so1 = registry->assign<component::EntityInfo>(garbagePileFlyEntity);
+				so1.name = "BlueGarbagePileFly" + std::to_string(i);
+
+				char filename[512];
+				std::string s;
+				s.reserve(512);
+				const int numFrames = 100; // however many frames you exported
+				auto& animator = registry->assign<component::Animatable>(garbagePileFlyEntity);
+
+				//loading fly animations
+				auto tinyAnimation = Ref<Animation>::create();
+				for (int i = 0; i < numFrames; i++)
+				{
+					Animation::KeyPose kp;
+					kp.duration = 1.0f / 30.0f; // duration in seconds
+
+					sprintf(filename, "res/assets/models/Animation/Garbage/GarbageTiny/GarbageTinyAnim_%06d.obj", i + 1);
+					s.assign(filename); // you have to load each mesh yourself for now
+										// the "%06d" is because by default blender exports
+										// frames as "animationName_000001.obj" and so on counting up
+
+					kp.mesh = Mesh::create(s);
+					tinyAnimation->poses.push_back(kp); // Add the keyframe to the animation
+
+				}
+				animator.pushAnimation("GarbageTinyAnim", tinyAnimation); // add the animation to the animator
+
+				//Small Garbage fly anim
+				auto smallAnimation = Ref<Animation>::create();
+				for (int i = 0; i < numFrames; i++)
+				{
+					Animation::KeyPose kp;
+					kp.duration = 1.0f / 30.0f; // duration in seconds
+
+					sprintf(filename, "res/assets/models/Animation/Garbage/GarbageSmall/GarbageSmallAnim_%06d.obj", i + 1);
+					s.assign(filename); // you have to load each mesh yourself for now
+										// the "%06d" is because by default blender exports
+										// frames as "animationName_000001.obj" and so on counting up
+
+					kp.mesh = Mesh::create(s);
+					smallAnimation->poses.push_back(kp); // Add the keyframe to the animation
+
+				}
+				animator.pushAnimation("GarbageSmallAnim", smallAnimation); // add the animation to the animator
+
+				//Medium Garbage fly anim
+				auto mediumAnimation = Ref<Animation>::create();
+				for (int i = 0; i < numFrames; i++)
+				{
+					Animation::KeyPose kp;
+					kp.duration = 1.0f / 30.0f; // duration in seconds
+
+					sprintf(filename, "res/assets/models/Animation/Garbage/GarbageMedium/GarbageMediumAnim_%06d.obj", i + 1);
+					s.assign(filename); // you have to load each mesh yourself for now
+										// the "%06d" is because by default blender exports
+										// frames as "animationName_000001.obj" and so on counting up
+
+					kp.mesh = Mesh::create(s);
+					mediumAnimation->poses.push_back(kp); // Add the keyframe to the animation
+
+				}
+				animator.pushAnimation("GarbageMediumAnim", mediumAnimation); // add the animation to the animator
+
+				//Large Garbage fly anim
+				auto largeAnimation = Ref<Animation>::create();
+				for (int i = 0; i < numFrames; i++)
+				{
+					Animation::KeyPose kp;
+					kp.duration = 1.0f / 30.0f; // duration in seconds
+
+					sprintf(filename, "res/assets/models/Animation/Garbage/GarbageLarge/GarbageLargeAnim_%06d.obj", i + 1);
+					s.assign(filename); // you have to load each mesh yourself for now
+										// the "%06d" is because by default blender exports
+										// frames as "animationName_000001.obj" and so on counting up
+
+					kp.mesh = Mesh::create(s);
+					largeAnimation->poses.push_back(kp); // Add the keyframe to the animation
+
+				}
+				animator.pushAnimation("GarbageLargeAnim", largeAnimation); // add the animation to the animator
+
+				//Massive Garbage fly anim
+				auto massiveAnimation = Ref<Animation>::create();
+				for (int i = 0; i < numFrames; i++)
+				{
+					Animation::KeyPose kp;
+					kp.duration = 1.0f / 30.0f; // duration in seconds
+
+					sprintf(filename, "res/assets/models/Animation/Garbage/GarbageMassive/GarbageMassiveAnim_%06d.obj", i + 1);
+					s.assign(filename); // you have to load each mesh yourself for now
+										// the "%06d" is because by default blender exports
+										// frames as "animationName_000001.obj" and so on counting up
+
+					kp.mesh = Mesh::create(s);
+					massiveAnimation->poses.push_back(kp); // Add the keyframe to the animation
+
+				}
+				animator.pushAnimation("GarbageMassiveAnim", massiveAnimation); // add the animation to the animator
+
+				//Surrender Garbage fly anim
+				auto surrenderAnimation = Ref<Animation>::create();
+				for (int i = 0; i < numFrames; i++)
+				{
+					Animation::KeyPose kp;
+					kp.duration = 1.0f / 30.0f; // duration in seconds
+
+					sprintf(filename, "res/assets/models/Animation/Garbage/GarbageSurrender/GarbageSurrenderAnim_%06d.obj", i + 1);
+					s.assign(filename); // you have to load each mesh yourself for now
+										// the "%06d" is because by default blender exports
+										// frames as "animationName_000001.obj" and so on counting up
+
+					kp.mesh = Mesh::create(s);
+					surrenderAnimation->poses.push_back(kp); // Add the keyframe to the animation
+
+				}
+				animator.pushAnimation("GarbageSurrenderAnim", surrenderAnimation); // add the animation to the animator
+
+				//set default
+				animator.setNextAnimation("GarbageTinyAnim");
+
+				//garbage
 				entt::entity garbagePileEntity = registry->create();
 
 				component::Transform garbagePileTransform;
@@ -163,6 +289,7 @@ void SandboxLayer::onEnter()
 				auto& garbagePile = registry->assign<GarbagePile>(garbagePileEntity);
 				garbagePile.team = Team::blue;
 				garbagePile.relativePositionOnShip = i - 1;
+				garbagePile.flyEntity = garbagePileFlyEntity;
 
 				auto& rb = registry->assign<component::RigidBody>(garbagePileEntity);
 				rb.setMass(0.0f);
@@ -175,13 +302,15 @@ void SandboxLayer::onEnter()
 				auto& garbagePileCollider = registry->assign<component::Collidable>(garbagePileEntity);
 				auto& shapeInfo = garbagePileCollider.pushShape(ColliderType::Box);
 				shapeInfo.box.setSize({ 3.4f, 1.0f, 3.2f });
+
+				//Parenting the fly to the garbage
+				auto& flyParent = registry->assign<component::Parent>(garbagePileFlyEntity);
+				flyParent.parent = garbagePileEntity;
 			}
 		}
 
 		{
 			//CANNONBALLS
-			mr.mesh = Mesh::cache("res/assets/models/sphere.obj");
-			mr.material = Material::get("cannonball");
 			for (int i = 0; i < 6; i++)
 			{
 				entt::entity cannonballEntity = registry->create();
@@ -213,8 +342,6 @@ void SandboxLayer::onEnter()
 		}
 
         {
-			mr.mesh = Mesh::cache("res/assets/models/mop.obj");
-			mr.material = Material::get("mop");
 			//MOPS
 			for (int i = 0; i < 2; i++)
 			{
@@ -246,78 +373,66 @@ void SandboxLayer::onEnter()
         }
 
 		{
-			mr.mesh = Mesh::cache("res/assets/models/Pirax.obj");
-			mr.material = Material::get("pirax");
 			//CLEANING SOLUTION
-			for (int i = 0; i < 3; i++)
-			{
-				entt::entity cleaningSolutionEntity = registry->create();
+			entt::entity cleaningSolutionEntity = registry->create();
 
-				component::Transform cleaningSolutionTransform;
-				cleaningSolutionTransform.setPosition(glm::vec3(3.0f, 0.31f, 3.0f));
-				cleaningSolutionTransform.setScale(glm::vec3(0.3f, 0.3f, 0.3f));
-				registry->assign<component::Transform>(cleaningSolutionEntity, cleaningSolutionTransform);
+			component::Transform cleaningSolutionTransform;
+			cleaningSolutionTransform.setPosition(glm::vec3(9.43f, 0.99f, -5.56f));
+			cleaningSolutionTransform.setScale(glm::vec3(0.3f, 0.3f, 0.3f));
+			registry->assign<component::Transform>(cleaningSolutionEntity, cleaningSolutionTransform);
 
-				auto& carryableItem = registry->assign<CarryableItem>(cleaningSolutionEntity);
-				carryableItem.team = Team::blue;
-				carryableItem.type = CarryableItemType::cleaningSolution;
+			auto& carryableItem = registry->assign<CarryableItem>(cleaningSolutionEntity);
+			carryableItem.team = Team::blue;
+			carryableItem.type = CarryableItemType::cleaningSolution;
 
-				auto& respawnable = registry->assign<Respawnable>(cleaningSolutionEntity);
-				respawnable.spawnPosition = glm::vec3(2.8f, 0.31f, 0.65f);
-				respawnable.spawnRotation = glm::vec3(0.0f);
+			auto& respawnable = registry->assign<Respawnable>(cleaningSolutionEntity);
+			respawnable.spawnPosition = glm::vec3(9.43f, 0.99f, -5.56f);
+			respawnable.spawnRotation = glm::vec3(0.0f);
 
-				auto& rb = registry->assign<component::RigidBody>(cleaningSolutionEntity);
+			auto& rb = registry->assign<component::RigidBody>(cleaningSolutionEntity);
 
-				registry->assign<component::Renderable>(cleaningSolutionEntity, mr);
+			registry->assign<component::Renderable>(cleaningSolutionEntity, mr);
 
-				auto& so2 = registry->assign<component::EntityInfo>(cleaningSolutionEntity);
-				so2.name = "BlueCleaningSolution" + std::to_string(i);
+			auto& so2 = registry->assign<component::EntityInfo>(cleaningSolutionEntity);
+			so2.name = "BlueCleaningSolution 0";
 
-				auto& cleaningSolutionCollider = registry->assign<component::Collidable>(cleaningSolutionEntity);
-				auto& shapeInfo = cleaningSolutionCollider.pushShape(ColliderType::Box);
-				shapeInfo.box.setSize({ 0.8f, 1.0f, 0.85f });
-			}
+			auto& cleaningSolutionCollider = registry->assign<component::Collidable>(cleaningSolutionEntity);
+			auto& shapeInfo = cleaningSolutionCollider.pushShape(ColliderType::Box);
+			shapeInfo.box.setSize({ 0.8f, 1.0f, 0.85f });
 		}
 
 		{
-			mr.mesh = Mesh::cache("res/assets/models/Gloop.obj");
-			mr.material = Material::get("goop");
 			//GLOOP
-			for (int i = 0; i < 3; i++)
-			{
-				entt::entity gloopEntity = registry->create();
+			entt::entity gloopEntity = registry->create();
 
-				component::Transform gloopTransform;
-				gloopTransform.setPosition(glm::vec3(3.0f, 0.2f, 3.0f));
-				gloopTransform.setScale(glm::vec3(0.1f, 0.1f, 0.1f));
-				registry->assign<component::Transform>(gloopEntity, gloopTransform);
+			component::Transform gloopTransform;
+			gloopTransform.setPosition(glm::vec3(9.46f, 2.0f, -5.95f));
+			gloopTransform.setScale(glm::vec3(0.1f, 0.1f, 0.1f));
+			registry->assign<component::Transform>(gloopEntity, gloopTransform);
 
-				auto& carryableItem = registry->assign<CarryableItem>(gloopEntity);
-				carryableItem.team = Team::blue;
-				carryableItem.type = CarryableItemType::gloop;
+			auto& carryableItem = registry->assign<CarryableItem>(gloopEntity);
+			carryableItem.team = Team::blue;
+			carryableItem.type = CarryableItemType::gloop;
 
-				auto& respawnable = registry->assign<Respawnable>(gloopEntity);
-				respawnable.spawnPosition = glm::vec3(1.4f, 0.2f, 1.6f);
-				respawnable.spawnRotation = glm::vec3(0.0f);
+			auto& respawnable = registry->assign<Respawnable>(gloopEntity);
+			respawnable.spawnPosition = glm::vec3(9.46f, 2.0f, -5.95f);
+			respawnable.spawnRotation = glm::vec3(83.82f);
 
-				auto& rb = registry->assign<component::RigidBody>(gloopEntity);
+			auto& rb = registry->assign<component::RigidBody>(gloopEntity);
 
-				registry->assign<Gloop>(gloopEntity);
+			registry->assign<Gloop>(gloopEntity);
 
-				registry->assign<component::Renderable>(gloopEntity, mr);
+			registry->assign<component::Renderable>(gloopEntity, mr);
 
-				auto& so2 = registry->assign<component::EntityInfo>(gloopEntity);
-				so2.name = "BlueGloopA" + std::to_string(i);
+			auto& so2 = registry->assign<component::EntityInfo>(gloopEntity);
+			so2.name = "BlueGloop 0";
 
-				auto& gloopCollider = registry->assign<component::Collidable>(gloopEntity);
-				auto& shapeInfo = gloopCollider.pushShape(ColliderType::Box);
-				shapeInfo.box.setSize({ 1.55f, 2.65f, 1.0f });
-			}
+			auto& gloopCollider = registry->assign<component::Collidable>(gloopEntity);
+			auto& shapeInfo = gloopCollider.pushShape(ColliderType::Box);
+			shapeInfo.box.setSize({ 1.55f, 2.65f, 1.0f });
 		}
 
 		{
-			mr.mesh = Mesh::cache("res/assets/models/crateTemp.obj");
-			mr.material = Material::get("planks");
 			//CANNONBALL CRATE
 			entt::entity cannonballCrateEntity = registry->create();
 
@@ -330,7 +445,7 @@ void SandboxLayer::onEnter()
 			auto& cannonballCrate = registry->assign<CannonballCrate>(cannonballCrateEntity);
 			cannonballCrate.team = Team::blue;
 
-			mr.material = mat;
+			//mr.material = mat;
 			registry->assign<component::Renderable>(cannonballCrateEntity, mr);
 
 			auto& so2 = registry->assign<component::EntityInfo>(cannonballCrateEntity);
@@ -526,7 +641,6 @@ void SandboxLayer::onEnter()
 
 		{
 			//CANNON
-			mr.material = Material::get("cannon");
 			entt::entity cannonEntity = registry->create();
 
 			component::Transform cannonTransform;
@@ -554,10 +668,138 @@ void SandboxLayer::onEnter()
 			//GARBAGE PILES
 			//NOTE: MAKE SURE THESE ARE ARRANGED SO THE FIRST ONE (RedGarbagePile0) IS ON THE LEFTMOST SIDE RELATIVE TO THE POSITIVE Z AXIS
 			//      AND THE LAST ONE IS ON THE RIGHT SO THAT THE OPPOSING CANNON FIRES AT THE CORRECT GARBAGE PILE
-			mr.material = Material::get("garbage");
 
 			for (int i = 0; i < 3; i++)
 			{
+				//creating the fly
+				entt::entity garbagePileFlyEntity = registry->create();
+
+				component::Transform garbagePileFlyTransform;
+				garbagePileFlyTransform.setPosition(glm::vec3(0.0f, 0.0f, 0.0f));
+				registry->assign<component::Transform>(garbagePileFlyEntity, garbagePileFlyTransform);
+
+				registry->assign<component::Renderable>(garbagePileFlyEntity, mr);
+
+				auto& so1 = registry->assign<component::EntityInfo>(garbagePileFlyEntity);
+				so1.name = "RedGarbagePileFly" + std::to_string(i);
+
+				char filename[512];
+				std::string s;
+				s.reserve(512);
+				const int numFrames = 100; // however many frames you exported
+				auto& animator = registry->assign<component::Animatable>(garbagePileFlyEntity);
+
+				//loading fly animations
+				auto tinyAnimation = Ref<Animation>::create();
+				for (int i = 0; i < numFrames; i++)
+				{
+					Animation::KeyPose kp;
+					kp.duration = 1.0f / 30.0f; // duration in seconds
+
+					sprintf(filename, "res/assets/models/Animation/Garbage/GarbageTiny/GarbageTinyAnim_%06d.obj", i + 1);
+					s.assign(filename); // you have to load each mesh yourself for now
+										// the "%06d" is because by default blender exports
+										// frames as "animationName_000001.obj" and so on counting up
+
+					kp.mesh = Mesh::create(s);
+					tinyAnimation->poses.push_back(kp); // Add the keyframe to the animation
+
+				}
+				animator.pushAnimation("GarbageTinyAnim", tinyAnimation); // add the animation to the animator
+
+				//Small Garbage fly anim
+				auto smallAnimation = Ref<Animation>::create();
+				for (int i = 0; i < numFrames; i++)
+				{
+					Animation::KeyPose kp;
+					kp.duration = 1.0f / 30.0f; // duration in seconds
+
+					sprintf(filename, "res/assets/models/Animation/Garbage/GarbageSmall/GarbageSmallAnim_%06d.obj", i + 1);
+					s.assign(filename); // you have to load each mesh yourself for now
+										// the "%06d" is because by default blender exports
+										// frames as "animationName_000001.obj" and so on counting up
+
+					kp.mesh = Mesh::create(s);
+					smallAnimation->poses.push_back(kp); // Add the keyframe to the animation
+
+				}
+				animator.pushAnimation("GarbageSmallAnim", smallAnimation); // add the animation to the animator
+
+				//Medium Garbage fly anim
+				auto mediumAnimation = Ref<Animation>::create();
+				for (int i = 0; i < numFrames; i++)
+				{
+					Animation::KeyPose kp;
+					kp.duration = 1.0f / 30.0f; // duration in seconds
+
+					sprintf(filename, "res/assets/models/Animation/Garbage/GarbageMedium/GarbageMediumAnim_%06d.obj", i + 1);
+					s.assign(filename); // you have to load each mesh yourself for now
+										// the "%06d" is because by default blender exports
+										// frames as "animationName_000001.obj" and so on counting up
+
+					kp.mesh = Mesh::create(s);
+					mediumAnimation->poses.push_back(kp); // Add the keyframe to the animation
+
+				}
+				animator.pushAnimation("GarbageMediumAnim", mediumAnimation); // add the animation to the animator
+
+				//Large Garbage fly anim
+				auto largeAnimation = Ref<Animation>::create();
+				for (int i = 0; i < numFrames; i++)
+				{
+					Animation::KeyPose kp;
+					kp.duration = 1.0f / 30.0f; // duration in seconds
+
+					sprintf(filename, "res/assets/models/Animation/Garbage/GarbageLarge/GarbageLargeAnim_%06d.obj", i + 1);
+					s.assign(filename); // you have to load each mesh yourself for now
+										// the "%06d" is because by default blender exports
+										// frames as "animationName_000001.obj" and so on counting up
+
+					kp.mesh = Mesh::create(s);
+					largeAnimation->poses.push_back(kp); // Add the keyframe to the animation
+
+				}
+				animator.pushAnimation("GarbageLargeAnim", largeAnimation); // add the animation to the animator
+
+				//Massive Garbage fly anim
+				auto massiveAnimation = Ref<Animation>::create();
+				for (int i = 0; i < numFrames; i++)
+				{
+					Animation::KeyPose kp;
+					kp.duration = 1.0f / 30.0f; // duration in seconds
+
+					sprintf(filename, "res/assets/models/Animation/Garbage/GarbageMassive/GarbageMassiveAnim_%06d.obj", i + 1);
+					s.assign(filename); // you have to load each mesh yourself for now
+										// the "%06d" is because by default blender exports
+										// frames as "animationName_000001.obj" and so on counting up
+
+					kp.mesh = Mesh::create(s);
+					massiveAnimation->poses.push_back(kp); // Add the keyframe to the animation
+
+				}
+				animator.pushAnimation("GarbageMassiveAnim", massiveAnimation); // add the animation to the animator
+
+				//Surrender Garbage fly anim
+				auto surrenderAnimation = Ref<Animation>::create();
+				for (int i = 0; i < numFrames; i++)
+				{
+					Animation::KeyPose kp;
+					kp.duration = 1.0f / 30.0f; // duration in seconds
+
+					sprintf(filename, "res/assets/models/Animation/Garbage/GarbageSurrender/GarbageSurrenderAnim_%06d.obj", i + 1);
+					s.assign(filename); // you have to load each mesh yourself for now
+										// the "%06d" is because by default blender exports
+										// frames as "animationName_000001.obj" and so on counting up
+
+					kp.mesh = Mesh::create(s);
+					surrenderAnimation->poses.push_back(kp); // Add the keyframe to the animation
+
+				}
+				animator.pushAnimation("GarbageSurrenderAnim", surrenderAnimation); // add the animation to the animator
+
+				animator.setNextAnimation("GarbageTinyAnim");
+
+				//creating the garbage
 				entt::entity garbagePileEntity = registry->create();
 
 				component::Transform garbagePileTransform;
@@ -568,6 +810,7 @@ void SandboxLayer::onEnter()
 				auto& garbagePile = registry->assign<GarbagePile>(garbagePileEntity);
 				garbagePile.team = Team::red;
 				garbagePile.relativePositionOnShip = i - 1;
+				garbagePile.flyEntity = garbagePileFlyEntity;
 
 				auto& rb = registry->assign<component::RigidBody>(garbagePileEntity);
 				rb.setMass(0.0f);
@@ -580,13 +823,17 @@ void SandboxLayer::onEnter()
 				auto& garbagePileCollider = registry->assign<component::Collidable>(garbagePileEntity);
 				auto& shapeInfo = garbagePileCollider.pushShape(ColliderType::Box);
 				shapeInfo.box.setSize({ 3.4f, 1.0f, 3.2f });
+
+				//Parenting the fly to the garbage
+				auto& flyParent = registry->assign<component::Parent>(garbagePileFlyEntity);
+				flyParent.parent = garbagePileEntity;
+
+
 			}
 		}
 
 		{
 			//CANNONBALLS
-			mr.mesh = Mesh::cache("res/assets/models/sphere.obj");
-			mr.material = Material::get("cannonball");
 			for (int i = 0; i < 6; i++)
 			{
 				entt::entity cannonballEntity = registry->create();
@@ -621,8 +868,6 @@ void SandboxLayer::onEnter()
 			//MOP
 			for (int i = 0; i < 2; i++)
 			{
-				mr.mesh = Mesh::get("mop");
-				mr.material = Material::get("mop");
 
 				entt::entity mopEntity = registry->create();
 
@@ -653,76 +898,67 @@ void SandboxLayer::onEnter()
 
 		{
 			//CLEANING SOLUTION
-			mr.material = Material::get("pirax");
-			for (int i = 0; i < 3; i++)
-			{
-				entt::entity cleaningSolutionEntity = registry->create();
+			entt::entity cleaningSolutionEntity = registry->create();
 
-				component::Transform cleaningSolutionTransform;
-				cleaningSolutionTransform.setPosition(glm::vec3(3.0f, 0.22f, 3.0f));
-				cleaningSolutionTransform.setScale(glm::vec3(0.3f, 0.3f, 0.3f));
-				registry->assign<component::Transform>(cleaningSolutionEntity, cleaningSolutionTransform);
+			component::Transform cleaningSolutionTransform;
+			cleaningSolutionTransform.setPosition(glm::vec3(9.54f, 0.99f, 26.34f));
+			cleaningSolutionTransform.setScale(glm::vec3(0.3f, 0.3f, 0.3f));
+			registry->assign<component::Transform>(cleaningSolutionEntity, cleaningSolutionTransform);
 
-				auto& carryableItem = registry->assign<CarryableItem>(cleaningSolutionEntity);
-				carryableItem.team = Team::red;
-				carryableItem.type = CarryableItemType::cleaningSolution;
+			auto& carryableItem = registry->assign<CarryableItem>(cleaningSolutionEntity);
+			carryableItem.team = Team::red;
+			carryableItem.type = CarryableItemType::cleaningSolution;
 
-				auto& respawnable = registry->assign<Respawnable>(cleaningSolutionEntity);
-				respawnable.spawnPosition = glm::vec3(1.7f, 0.2f, 15.4f);
-				respawnable.spawnRotation = glm::vec3(0.0f);
+			auto& respawnable = registry->assign<Respawnable>(cleaningSolutionEntity);
+			respawnable.spawnPosition = glm::vec3(9.54f, 0.99f, 26.34f);
+			respawnable.spawnRotation = glm::vec3(0.0f);
 
-				auto& rb = registry->assign<component::RigidBody>(cleaningSolutionEntity);
+			auto& rb = registry->assign<component::RigidBody>(cleaningSolutionEntity);
 
-				registry->assign<component::Renderable>(cleaningSolutionEntity, mr);
+			registry->assign<component::Renderable>(cleaningSolutionEntity, mr);
 
-				auto& so2 = registry->assign<component::EntityInfo>(cleaningSolutionEntity);
-				so2.name = "RedCleaningSolution" + std::to_string(i);
+			auto& so2 = registry->assign<component::EntityInfo>(cleaningSolutionEntity);
+			so2.name = "RedCleaningSolution 0";
 
-				auto& cleaningSolutionCollider = registry->assign<component::Collidable>(cleaningSolutionEntity);
-				auto& shapeInfo = cleaningSolutionCollider.pushShape(ColliderType::Box);
-				shapeInfo.box.setSize({ 0.8f, 1.0f, 0.85f });
-			}
+			auto& cleaningSolutionCollider = registry->assign<component::Collidable>(cleaningSolutionEntity);
+			auto& shapeInfo = cleaningSolutionCollider.pushShape(ColliderType::Box);
+			shapeInfo.box.setSize({ 0.8f, 1.0f, 0.85f });
 		}
 
 		{
 			//GLOOP
-			mr.material = Material::get("goop");
-			for (int i = 0; i < 3; i++)
-			{
-				entt::entity gloopEntity = registry->create();
+			entt::entity gloopEntity = registry->create();
 
-				component::Transform gloopTransform;
-				gloopTransform.setPosition(glm::vec3(3.0f, 0.27f, 3.0f));
-				gloopTransform.setScale(glm::vec3(0.1f, 0.1f, 0.1f));
-				registry->assign<component::Transform>(gloopEntity, gloopTransform);
+			component::Transform gloopTransform;
+			gloopTransform.setPosition(glm::vec3(9.61f, 2.1f, 25.89f));
+			gloopTransform.setScale(glm::vec3(0.1f, 0.1f, 0.1f));
+			registry->assign<component::Transform>(gloopEntity, gloopTransform);
 
-				auto& carryableItem = registry->assign<CarryableItem>(gloopEntity);
-				carryableItem.team = Team::red;
-				carryableItem.type = CarryableItemType::gloop;
+			auto& carryableItem = registry->assign<CarryableItem>(gloopEntity);
+			carryableItem.team = Team::red;
+			carryableItem.type = CarryableItemType::gloop;
 
-				auto& respawnable = registry->assign<Respawnable>(gloopEntity);
-				respawnable.spawnPosition = glm::vec3(2.4f, 0.2f, 14.0f);
-				respawnable.spawnRotation = glm::vec3(0.0f);
+			auto& respawnable = registry->assign<Respawnable>(gloopEntity);
+			respawnable.spawnPosition = glm::vec3(9.61f, 2.0f, 25.89f);
+			respawnable.spawnRotation = glm::vec3(0.0f, 88.34f, 0.0f);
 
-				auto& rb = registry->assign<component::RigidBody>(gloopEntity);
+			auto& rb = registry->assign<component::RigidBody>(gloopEntity);
 
-				registry->assign<Gloop>(gloopEntity);
+			registry->assign<Gloop>(gloopEntity);
 
-				mr.mesh = Mesh::get("Gloop");
-				registry->assign<component::Renderable>(gloopEntity, mr);
+			mr.mesh = Mesh::get("Gloop");
+			registry->assign<component::Renderable>(gloopEntity, mr);
 
-				auto& so2 = registry->assign<component::EntityInfo>(gloopEntity);
-				so2.name = "RedGloopA" + std::to_string(i);
+			auto& so2 = registry->assign<component::EntityInfo>(gloopEntity);
+			so2.name = "RedGloop 0";
 
-				auto& gloopCollider = registry->assign<component::Collidable>(gloopEntity);
-				auto& shapeInfo = gloopCollider.pushShape(ColliderType::Box);
-				shapeInfo.box.setSize({ 1.55f, 2.65f, 1.0f });
-			}
+			auto& gloopCollider = registry->assign<component::Collidable>(gloopEntity);
+			auto& shapeInfo = gloopCollider.pushShape(ColliderType::Box);
+			shapeInfo.box.setSize({ 1.55f, 2.65f, 1.0f });
 		}
 
 		{
 			//CANNONBALL CRATE
-			mr.material = Material::get("crate");
 
 			entt::entity cannonballCrateEntity = registry->create();
 
@@ -735,8 +971,6 @@ void SandboxLayer::onEnter()
 			auto& cannonballCrate = registry->assign<CannonballCrate>(cannonballCrateEntity);
 			cannonballCrate.team = Team::red;
 
-			mr.mesh = Mesh::get("cube");
-			mr.material = mat;
 			registry->assign<component::Renderable>(cannonballCrateEntity, mr);
 
 			auto& so2 = registry->assign<component::EntityInfo>(cannonballCrateEntity);
@@ -830,8 +1064,6 @@ void SandboxLayer::onEnter()
 
 		{
 			//LAMP
-			mr.mesh = Mesh::cache("res/assets/models/lamp.obj");
-			mr.material = Material::get("lamp");
 
 			component::Collidable boxCollider;
 			auto& shi = boxCollider.pushShape(ColliderType::Box);
@@ -862,7 +1094,7 @@ void SandboxLayer::onEnter()
 			mopTransform.setScale(glm::vec3(1.0f, 1.0f, 1.0f));
 			registry->assign<component::Transform>(characterEntity, mopTransform);
 
-			mr.mesh = Mesh::cache("res/assets/models/character.obj");
+			//mr.mesh = Mesh::cache("res/assets/models/character.obj");
 			registry->assign<component::Renderable>(characterEntity, mr);
 
 			auto& so2 = registry->assign<component::EntityInfo>(characterEntity);
@@ -883,7 +1115,6 @@ void SandboxLayer::onEnter()
 		for (int i = 0; i < 4; i++)
 		{
 			component::Renderable mr;
-			mr.mesh = Mesh::cache("res/assets/models/plane.obj");
 			mr.material = nullptr;
 
 			entt::entity e = registry->create();
@@ -912,8 +1143,6 @@ void SandboxLayer::onEnter()
 		//RANDOM SPHERES
 
         component::Renderable mr;
-        mr.mesh = Mesh::get("sphere");
-        mr.material = mat;
 
         entt::entity e = registry->create();
         //registry->assign<component::Renderable>(e, mr);
@@ -934,9 +1163,6 @@ void SandboxLayer::onEnter()
         shi.sphere.setRadius(0.5f);
     }
     {
-        //component::Renderable mr;
-        //mr.mesh = Mesh::get("sphere");
-        //mr.material = mat;
 
         entt::entity e = registry->create();
         //registry->assign<component::Renderable>(e, mr);
