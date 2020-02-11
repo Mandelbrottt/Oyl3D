@@ -418,9 +418,9 @@
                 "Z": false
             },
             "Position": {
-                "X": 0.13479042053222656,
-                "Y": 0.016468919813632965,
-                "Z": -5.414001941680908
+                "X": -27.125774383544922,
+                "Y": 0.02338486909866333,
+                "Z": 2.237229585647583
             },
             "Rotation": {
                 "qW": 1.0,
@@ -457,9 +457,9 @@
                 "Z": false
             },
             "Position": {
-                "X": -7.65077018737793,
-                "Y": 0.016468919813632965,
-                "Z": -4.606307506561279
+                "X": -21.2062931060791,
+                "Y": 0.019999999552965164,
+                "Z": -5.874434471130371
             },
             "Rotation": {
                 "qW": 1.0,
@@ -496,9 +496,9 @@
                 "Z": false
             },
             "Position": {
-                "X": -9.327153205871582,
-                "Y": 0.016468919813632965,
-                "Z": 2.3338210582733154
+                "X": -26.058456420898438,
+                "Y": 0.019999999552965164,
+                "Z": 2.237229585647583
             },
             "Rotation": {
                 "qW": 1.0,
@@ -574,9 +574,9 @@
                 "Z": false
             },
             "Position": {
-                "X": -6.513976097106934,
+                "X": -30.71295738220215,
                 "Y": -4.164158821105957,
-                "Z": -4.5621442794799805
+                "Z": -2.876410961151123
             },
             "Rotation": {
                 "qW": 1.0,
@@ -613,9 +613,9 @@
                 "Z": false
             },
             "Position": {
-                "X": -5.116473197937012,
-                "Y": -4.18194055557251,
-                "Z": 2.5712947845458984
+                "X": -29.339385986328125,
+                "Y": -4.164158821105957,
+                "Z": -6.558623313903809
             },
             "Rotation": {
                 "qW": 1.0,
@@ -652,9 +652,9 @@
                 "Z": false
             },
             "Position": {
-                "X": -5.116473197937012,
-                "Y": -3.085942506790161,
-                "Z": 2.5712947845458984
+                "X": -7.346623420715332,
+                "Y": -4.164158821105957,
+                "Z": -6.558623313903809
             },
             "Rotation": {
                 "qW": 1.0,
@@ -730,9 +730,9 @@
                 "Z": false
             },
             "Position": {
-                "X": -7.346623420715332,
-                "Y": -4.164158821105957,
-                "Z": -6.558623313903809
+                "X": -5.116473197937012,
+                "Y": -3.085942506790161,
+                "Z": 2.5712947845458984
             },
             "Rotation": {
                 "qW": 1.0,
@@ -769,9 +769,9 @@
                 "Z": false
             },
             "Position": {
-                "X": -29.339385986328125,
-                "Y": -4.164158821105957,
-                "Z": -6.558623313903809
+                "X": -5.116473197937012,
+                "Y": -4.18194055557251,
+                "Z": 2.5712947845458984
             },
             "Rotation": {
                 "qW": 1.0,
@@ -808,9 +808,9 @@
                 "Z": false
             },
             "Position": {
-                "X": -30.71295738220215,
+                "X": -6.513976097106934,
                 "Y": -4.164158821105957,
-                "Z": -2.876410961151123
+                "Z": -4.5621442794799805
             },
             "Rotation": {
                 "qW": 1.0,
@@ -847,9 +847,9 @@
                 "Z": false
             },
             "Position": {
-                "X": -27.125774383544922,
-                "Y": 0.02338486909866333,
-                "Z": 2.237229585647583
+                "X": -7.65077018737793,
+                "Y": 0.016468919813632965,
+                "Z": -4.606307506561279
             },
             "Rotation": {
                 "qW": 1.0,
@@ -886,9 +886,9 @@
                 "Z": false
             },
             "Position": {
-                "X": -26.058456420898438,
-                "Y": 0.019999999552965164,
-                "Z": 2.237229585647583
+                "X": 0.13479042053222656,
+                "Y": 0.016468919813632965,
+                "Z": -5.414001941680908
             },
             "Rotation": {
                 "qW": 1.0,
@@ -925,9 +925,9 @@
                 "Z": false
             },
             "Position": {
-                "X": -21.2062931060791,
-                "Y": 0.019999999552965164,
-                "Z": -5.874434471130371
+                "X": -9.327153205871582,
+                "Y": 0.016468919813632965,
+                "Z": 2.3338210582733154
             },
             "Rotation": {
                 "qW": 1.0,
@@ -1401,192 +1401,6 @@
             }
         }
     },
-    "BetweenShipsColliderLower 4": {
-        "Collidable": {
-            "Shapes": [
-                {
-                    "Center": [
-                        0.0,
-                        0.0,
-                        0.0
-                    ],
-                    "Size": [
-                        1.0,
-                        1.0,
-                        1.0
-                    ],
-                    "Trigger": false,
-                    "Type": 0
-                }
-            ]
-        },
-        "Parent": {
-            "Name": "BetweenShipsColliders 1"
-        },
-        "Renderable": {
-            "CullingMask": 15,
-            "Enabled": false,
-            "Material": {
-                "Alias": null
-            },
-            "Mesh": {
-                "Alias": "cube",
-                "FilePath": "res\\assets\\models\\cube.obj"
-            }
-        },
-        "RigidBody": {
-            "Friction": 0.0,
-            "Mass": 0.0,
-            "Properties": 34
-        },
-        "Transform": {
-            "Mirror": {
-                "X": false,
-                "Y": false,
-                "Z": false
-            },
-            "Position": {
-                "X": 1.1924550533294678,
-                "Y": 3.1068921089172363e-06,
-                "Z": 0.0
-            },
-            "Rotation": {
-                "qW": 1.0,
-                "qX": 0.0,
-                "qY": 0.0,
-                "qZ": 0.0
-            },
-            "Scale": {
-                "X": 1.0,
-                "Y": 0.9999999403953552,
-                "Z": 1.0299999713897705
-            }
-        }
-    },
-    "BetweenShipsColliderLower 5": {
-        "Collidable": {
-            "Shapes": [
-                {
-                    "Center": [
-                        0.0,
-                        0.0,
-                        0.0
-                    ],
-                    "Size": [
-                        1.0,
-                        1.0,
-                        1.0
-                    ],
-                    "Trigger": false,
-                    "Type": 0
-                }
-            ]
-        },
-        "Parent": {
-            "Name": "BetweenShipsColliders 1"
-        },
-        "Renderable": {
-            "CullingMask": 15,
-            "Enabled": false,
-            "Material": {
-                "Alias": null
-            },
-            "Mesh": {
-                "Alias": "cube",
-                "FilePath": "res\\assets\\models\\cube.obj"
-            }
-        },
-        "RigidBody": {
-            "Friction": 0.0,
-            "Mass": 0.0,
-            "Properties": 34
-        },
-        "Transform": {
-            "Mirror": {
-                "X": false,
-                "Y": false,
-                "Z": false
-            },
-            "Position": {
-                "X": 0.0017586350440979004,
-                "Y": 0.0,
-                "Z": 0.0
-            },
-            "Rotation": {
-                "qW": 1.0,
-                "qX": 0.0,
-                "qY": 0.0,
-                "qZ": 0.0
-            },
-            "Scale": {
-                "X": 1.0128506422042847,
-                "Y": 1.0,
-                "Z": 1.0294109582901
-            }
-        }
-    },
-    "BetweenShipsColliderLower 6": {
-        "Collidable": {
-            "Shapes": [
-                {
-                    "Center": [
-                        0.0,
-                        0.0,
-                        0.0
-                    ],
-                    "Size": [
-                        1.0,
-                        1.0,
-                        1.0
-                    ],
-                    "Trigger": false,
-                    "Type": 0
-                }
-            ]
-        },
-        "Parent": {
-            "Name": "BetweenShipsColliders 1"
-        },
-        "Renderable": {
-            "CullingMask": 15,
-            "Enabled": false,
-            "Material": {
-                "Alias": null
-            },
-            "Mesh": {
-                "Alias": "cube",
-                "FilePath": "res\\assets\\models\\cube.obj"
-            }
-        },
-        "RigidBody": {
-            "Friction": 0.0,
-            "Mass": 0.0,
-            "Properties": 34
-        },
-        "Transform": {
-            "Mirror": {
-                "X": false,
-                "Y": false,
-                "Z": false
-            },
-            "Position": {
-                "X": 0.4418014585971832,
-                "Y": -0.42337852716445923,
-                "Z": 0.0
-            },
-            "Rotation": {
-                "qW": 1.0,
-                "qX": 0.0,
-                "qY": 0.0,
-                "qZ": 0.0
-            },
-            "Scale": {
-                "X": 1.0,
-                "Y": 0.6231107711791992,
-                "Z": 1.028589129447937
-            }
-        }
-    },
     "BetweenShipsColliderMid 1": {
         "Collidable": {
             "Shapes": [
@@ -1608,68 +1422,6 @@
         },
         "Parent": {
             "Name": "BetweenShipsColliders"
-        },
-        "Renderable": {
-            "CullingMask": 15,
-            "Enabled": false,
-            "Material": {
-                "Alias": null
-            },
-            "Mesh": {
-                "Alias": "cube",
-                "FilePath": "res\\assets\\models\\cube.obj"
-            }
-        },
-        "RigidBody": {
-            "Friction": 0.0,
-            "Mass": 0.0,
-            "Properties": 34
-        },
-        "Transform": {
-            "Mirror": {
-                "X": false,
-                "Y": false,
-                "Z": false
-            },
-            "Position": {
-                "X": 0.001758575439453125,
-                "Y": 0.3800315856933594,
-                "Z": 0.003382384777069092
-            },
-            "Rotation": {
-                "qW": 1.0,
-                "qX": 0.0,
-                "qY": 0.0,
-                "qZ": 0.0
-            },
-            "Scale": {
-                "X": 1.0165730714797974,
-                "Y": 1.0,
-                "Z": 1.1315711736679077
-            }
-        }
-    },
-    "BetweenShipsColliderMid 2": {
-        "Collidable": {
-            "Shapes": [
-                {
-                    "Center": [
-                        0.0,
-                        0.0,
-                        0.0
-                    ],
-                    "Size": [
-                        1.0,
-                        1.0,
-                        1.0
-                    ],
-                    "Trigger": false,
-                    "Type": 0
-                }
-            ]
-        },
-        "Parent": {
-            "Name": "BetweenShipsColliders 1"
         },
         "Renderable": {
             "CullingMask": 15,
@@ -1773,99 +1525,9 @@
             }
         }
     },
-    "BetweenShipsColliderUpper 2": {
-        "Collidable": {
-            "Shapes": [
-                {
-                    "Center": [
-                        0.0,
-                        0.0,
-                        0.0
-                    ],
-                    "Size": [
-                        1.0,
-                        1.0,
-                        1.0
-                    ],
-                    "Trigger": false,
-                    "Type": 0
-                }
-            ]
-        },
-        "Parent": {
-            "Name": "BetweenShipsColliders 1"
-        },
-        "Renderable": {
-            "CullingMask": 15,
-            "Enabled": false,
-            "Material": {
-                "Alias": null
-            },
-            "Mesh": {
-                "Alias": "cube",
-                "FilePath": "res\\assets\\models\\cube.obj"
-            }
-        },
-        "RigidBody": {
-            "Friction": 0.0,
-            "Mass": 0.0,
-            "Properties": 34
-        },
-        "Transform": {
-            "Mirror": {
-                "X": false,
-                "Y": false,
-                "Z": false
-            },
-            "Position": {
-                "X": 1.1924550533294678,
-                "Y": 0.1638144999742508,
-                "Z": 0.009061157703399658
-            },
-            "Rotation": {
-                "qW": 1.0,
-                "qX": 0.0,
-                "qY": 0.0,
-                "qZ": 0.0
-            },
-            "Scale": {
-                "X": 1.009742259979248,
-                "Y": 0.554162859916687,
-                "Z": 1.1309099197387695
-            }
-        }
-    },
     "BetweenShipsColliders": {
         "Parent": {
             "Name": "Colliders"
-        },
-        "Transform": {
-            "Mirror": {
-                "X": false,
-                "Y": false,
-                "Z": false
-            },
-            "Position": {
-                "X": -8.36246395111084,
-                "Y": 7.926042556762695,
-                "Z": 2.068734645843506
-            },
-            "Rotation": {
-                "qW": 1.0,
-                "qX": 0.0,
-                "qY": 0.0,
-                "qZ": 0.0
-            },
-            "Scale": {
-                "X": 12.248290061950684,
-                "Y": 74.42253112792969,
-                "Z": 5.0
-            }
-        }
-    },
-    "BetweenShipsColliders 1": {
-        "Parent": {
-            "Name": "Colliders 1"
         },
         "Transform": {
             "Mirror": {
@@ -2812,11 +2474,11 @@
             "CullingMask": 15,
             "Enabled": true,
             "Material": {
-                "Alias": "container"
+                "Alias": "garbage"
             },
             "Mesh": {
-                "Alias": "cube",
-                "FilePath": "res\\assets\\models\\cube.obj"
+                "Alias": "GarbageSurrenderAnim_000009",
+                "FilePath": "res\\assets\\models\\Animation\\Garbage\\GarbageSurrender\\GarbageSurrenderAnim_000009.obj"
             }
         },
         "Transform": {
@@ -2851,11 +2513,11 @@
             "CullingMask": 15,
             "Enabled": true,
             "Material": {
-                "Alias": "container"
+                "Alias": "garbage"
             },
             "Mesh": {
-                "Alias": "cube",
-                "FilePath": "res\\assets\\models\\cube.obj"
+                "Alias": "GarbageSurrenderAnim_000014",
+                "FilePath": "res\\assets\\models\\Animation\\Garbage\\GarbageSurrender\\GarbageSurrenderAnim_000014.obj"
             }
         },
         "Transform": {
@@ -2890,11 +2552,11 @@
             "CullingMask": 15,
             "Enabled": true,
             "Material": {
-                "Alias": "container"
+                "Alias": "garbage"
             },
             "Mesh": {
-                "Alias": "cube",
-                "FilePath": "res\\assets\\models\\cube.obj"
+                "Alias": "GarbageSurrenderAnim_000014",
+                "FilePath": "res\\assets\\models\\Animation\\Garbage\\GarbageSurrender\\GarbageSurrenderAnim_000014.obj"
             }
         },
         "Transform": {
@@ -3454,7 +3116,7 @@
                 "Z": false
             },
             "Position": {
-                "X": 0.033496856689453125,
+                "X": 0.13871383666992188,
                 "Y": 0.0,
                 "Z": 0.0
             },
@@ -3490,7 +3152,7 @@
             "Position": {
                 "X": 0.0,
                 "Y": 0.0,
-                "Z": 15.048690795898438
+                "Z": 15.0
             },
             "Rotation": {
                 "qW": 1.0,
@@ -3639,6 +3301,45 @@
                 "Z": false
             },
             "Position": {
+                "X": -30.198883056640625,
+                "Y": -3.161689281463623,
+                "Z": -4.028017044067383
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Bottles 11": {
+        "Parent": {
+            "Name": "Decorations 1"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "DecorationAtlas"
+            },
+            "Mesh": {
+                "Alias": "Bottles",
+                "FilePath": "res\\assets\\models\\Decorative\\Bottles.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
                 "X": -35.31487274169922,
                 "Y": 0.03584951162338257,
                 "Z": -2.098334312438965
@@ -3656,7 +3357,7 @@
             }
         }
     },
-    "Bottles 11": {
+    "Bottles 12": {
         "Parent": {
             "Name": "Decorations 1"
         },
@@ -3695,7 +3396,7 @@
             }
         }
     },
-    "Bottles 12": {
+    "Bottles 13": {
         "Parent": {
             "Name": "Decorations 1"
         },
@@ -3720,45 +3421,6 @@
                 "X": -22.57784652709961,
                 "Y": -4.1535186767578125,
                 "Z": -5.7640380859375
-            },
-            "Rotation": {
-                "qW": 1.0,
-                "qX": 0.0,
-                "qY": 0.0,
-                "qZ": 0.0
-            },
-            "Scale": {
-                "X": 1.0,
-                "Y": 1.0,
-                "Z": 1.0
-            }
-        }
-    },
-    "Bottles 13": {
-        "Parent": {
-            "Name": "Decorations 1"
-        },
-        "Renderable": {
-            "CullingMask": 15,
-            "Enabled": true,
-            "Material": {
-                "Alias": "DecorationAtlas"
-            },
-            "Mesh": {
-                "Alias": "Bottles",
-                "FilePath": "res\\assets\\models\\Decorative\\Bottles.obj"
-            }
-        },
-        "Transform": {
-            "Mirror": {
-                "X": false,
-                "Y": false,
-                "Z": false
-            },
-            "Position": {
-                "X": -35.22019958496094,
-                "Y": 0.03584951162338257,
-                "Z": -2.634587049484253
             },
             "Rotation": {
                 "qW": 1.0,
@@ -4104,12 +3766,12 @@
             "Mirror": {
                 "X": false,
                 "Y": false,
-                "Z": true
+                "Z": false
             },
             "Position": {
-                "X": -25.078527450561523,
+                "X": -35.22019958496094,
                 "Y": 0.03584951162338257,
-                "Z": 2.2170753479003906
+                "Z": -2.634587049484253
             },
             "Rotation": {
                 "qW": 1.0,
@@ -4143,12 +3805,12 @@
             "Mirror": {
                 "X": false,
                 "Y": false,
-                "Z": false
+                "Z": true
             },
             "Position": {
-                "X": -30.198883056640625,
-                "Y": -3.161689281463623,
-                "Z": -4.028017044067383
+                "X": -25.078527450561523,
+                "Y": 0.03584951162338257,
+                "Z": 2.2170753479003906
             },
             "Rotation": {
                 "qW": 1.0,
@@ -5175,7 +4837,7 @@
                 "Z": true
             },
             "Position": {
-                "X": -10.085075378417969,
+                "X": -11.086613655090332,
                 "Y": -3.088313579559326,
                 "Z": -7.49174165725708
             },
@@ -5253,9 +4915,9 @@
                 "Z": false
             },
             "Position": {
-                "X": 8.054388046264648,
+                "X": 0.03571796417236328,
                 "Y": 0.0,
-                "Z": -11.004712104797363
+                "Z": -11.011996269226074
             },
             "Rotation": {
                 "qW": -4.371138828673793e-08,
@@ -5271,240 +4933,6 @@
         }
     },
     "CannonPortTrim 11": {
-        "Parent": {
-            "Name": "CannonPortTrim 6"
-        },
-        "Renderable": {
-            "CullingMask": 15,
-            "Enabled": true,
-            "Material": {
-                "Alias": "metal"
-            },
-            "Mesh": {
-                "Alias": "cannonWindowTrim_metal",
-                "FilePath": "res\\assets\\models\\Decorative\\cannonWindowTrim_metal.obj"
-            }
-        },
-        "Transform": {
-            "Mirror": {
-                "X": false,
-                "Y": true,
-                "Z": false
-            },
-            "Position": {
-                "X": 0.038628578186035156,
-                "Y": 0.0,
-                "Z": -11.011996269226074
-            },
-            "Rotation": {
-                "qW": -4.371138828673793e-08,
-                "qX": 1.0,
-                "qY": 0.0,
-                "qZ": 0.0
-            },
-            "Scale": {
-                "X": 1.0,
-                "Y": 1.0,
-                "Z": 1.0
-            }
-        }
-    },
-    "CannonPortTrim 2": {
-        "Parent": {
-            "Name": "CannonPortTrim"
-        },
-        "Renderable": {
-            "CullingMask": 15,
-            "Enabled": true,
-            "Material": {
-                "Alias": "metal"
-            },
-            "Mesh": {
-                "Alias": "cannonWindowTrim_metal",
-                "FilePath": "res\\assets\\models\\Decorative\\cannonWindowTrim_metal.obj"
-            }
-        },
-        "Transform": {
-            "Mirror": {
-                "X": false,
-                "Y": false,
-                "Z": false
-            },
-            "Position": {
-                "X": 14.997562408447266,
-                "Y": 0.0,
-                "Z": 0.02529621124267578
-            },
-            "Rotation": {
-                "qW": 1.0,
-                "qX": 0.0,
-                "qY": 0.0,
-                "qZ": 0.0
-            },
-            "Scale": {
-                "X": 1.0,
-                "Y": 1.0,
-                "Z": 1.0
-            }
-        }
-    },
-    "CannonPortTrim 3": {
-        "Parent": {
-            "Name": "CannonPortTrim"
-        },
-        "Renderable": {
-            "CullingMask": 15,
-            "Enabled": true,
-            "Material": {
-                "Alias": "metal"
-            },
-            "Mesh": {
-                "Alias": "cannonWindowTrim_metal",
-                "FilePath": "res\\assets\\models\\Decorative\\cannonWindowTrim_metal.obj"
-            }
-        },
-        "Transform": {
-            "Mirror": {
-                "X": false,
-                "Y": true,
-                "Z": false
-            },
-            "Position": {
-                "X": 15.001569747924805,
-                "Y": 0.0,
-                "Z": -11.011996269226074
-            },
-            "Rotation": {
-                "qW": -4.371138828673793e-08,
-                "qX": 1.0,
-                "qY": 0.0,
-                "qZ": 0.0
-            },
-            "Scale": {
-                "X": 1.0,
-                "Y": 1.0,
-                "Z": 1.0
-            }
-        }
-    },
-    "CannonPortTrim 4": {
-        "Parent": {
-            "Name": "CannonPortTrim"
-        },
-        "Renderable": {
-            "CullingMask": 15,
-            "Enabled": true,
-            "Material": {
-                "Alias": "metal"
-            },
-            "Mesh": {
-                "Alias": "cannonWindowTrim_metal",
-                "FilePath": "res\\assets\\models\\Decorative\\cannonWindowTrim_metal.obj"
-            }
-        },
-        "Transform": {
-            "Mirror": {
-                "X": false,
-                "Y": true,
-                "Z": false
-            },
-            "Position": {
-                "X": 8.054388046264648,
-                "Y": 0.0,
-                "Z": -11.004712104797363
-            },
-            "Rotation": {
-                "qW": -4.371138828673793e-08,
-                "qX": 1.0,
-                "qY": 0.0,
-                "qZ": 0.0
-            },
-            "Scale": {
-                "X": 1.0,
-                "Y": 1.0,
-                "Z": 1.0
-            }
-        }
-    },
-    "CannonPortTrim 5": {
-        "Parent": {
-            "Name": "CannonPortTrim"
-        },
-        "Renderable": {
-            "CullingMask": 15,
-            "Enabled": true,
-            "Material": {
-                "Alias": "metal"
-            },
-            "Mesh": {
-                "Alias": "cannonWindowTrim_metal",
-                "FilePath": "res\\assets\\models\\Decorative\\cannonWindowTrim_metal.obj"
-            }
-        },
-        "Transform": {
-            "Mirror": {
-                "X": false,
-                "Y": true,
-                "Z": false
-            },
-            "Position": {
-                "X": 0.038628578186035156,
-                "Y": 0.0,
-                "Z": -11.011996269226074
-            },
-            "Rotation": {
-                "qW": -4.371138828673793e-08,
-                "qX": 1.0,
-                "qY": 0.0,
-                "qZ": 0.0
-            },
-            "Scale": {
-                "X": 1.0,
-                "Y": 1.0,
-                "Z": 1.0
-            }
-        }
-    },
-    "CannonPortTrim 6": {
-        "Parent": {
-            "Name": "Boat Root L"
-        },
-        "Renderable": {
-            "CullingMask": 15,
-            "Enabled": true,
-            "Material": {
-                "Alias": "metal"
-            },
-            "Mesh": {
-                "Alias": "cannonWindowTrim_metal",
-                "FilePath": "res\\assets\\models\\Decorative\\cannonWindowTrim_metal.obj"
-            }
-        },
-        "Transform": {
-            "Mirror": {
-                "X": false,
-                "Y": false,
-                "Z": true
-            },
-            "Position": {
-                "X": -10.085075378417969,
-                "Y": -3.088313579559326,
-                "Z": -7.49174165725708
-            },
-            "Rotation": {
-                "qW": 1.0,
-                "qX": 0.0,
-                "qY": 0.0,
-                "qZ": 0.0
-            },
-            "Scale": {
-                "X": 1.0,
-                "Y": 1.0,
-                "Z": 1.0
-            }
-        }
-    },
-    "CannonPortTrim 7": {
         "Parent": {
             "Name": "CannonPortTrim 6"
         },
@@ -5543,7 +4971,202 @@
             }
         }
     },
-    "CannonPortTrim 8": {
+    "CannonPortTrim 2": {
+        "Parent": {
+            "Name": "CannonPortTrim"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "metal"
+            },
+            "Mesh": {
+                "Alias": "cannonWindowTrim_metal",
+                "FilePath": "res\\assets\\models\\Decorative\\cannonWindowTrim_metal.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": 15.997085571289063,
+                "Y": 0.0,
+                "Z": 0.02529621124267578
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "CannonPortTrim 3": {
+        "Parent": {
+            "Name": "CannonPortTrim"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "metal"
+            },
+            "Mesh": {
+                "Alias": "cannonWindowTrim_metal",
+                "FilePath": "res\\assets\\models\\Decorative\\cannonWindowTrim_metal.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": true,
+                "Z": false
+            },
+            "Position": {
+                "X": 16.003021240234375,
+                "Y": 0.0,
+                "Z": -10.999106407165527
+            },
+            "Rotation": {
+                "qW": -4.371138828673793e-08,
+                "qX": 1.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "CannonPortTrim 4": {
+        "Parent": {
+            "Name": "CannonPortTrim"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "metal"
+            },
+            "Mesh": {
+                "Alias": "cannonWindowTrim_metal",
+                "FilePath": "res\\assets\\models\\Decorative\\cannonWindowTrim_metal.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": true,
+                "Z": false
+            },
+            "Position": {
+                "X": 8.049223899841309,
+                "Y": 0.0,
+                "Z": -11.004712104797363
+            },
+            "Rotation": {
+                "qW": -4.371138828673793e-08,
+                "qX": 1.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "CannonPortTrim 5": {
+        "Parent": {
+            "Name": "CannonPortTrim"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "metal"
+            },
+            "Mesh": {
+                "Alias": "cannonWindowTrim_metal",
+                "FilePath": "res\\assets\\models\\Decorative\\cannonWindowTrim_metal.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": true,
+                "Z": false
+            },
+            "Position": {
+                "X": 0.03571796417236328,
+                "Y": 0.0,
+                "Z": -11.011996269226074
+            },
+            "Rotation": {
+                "qW": -4.371138828673793e-08,
+                "qX": 1.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "CannonPortTrim 6": {
+        "Parent": {
+            "Name": "Boat Root L"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "metal"
+            },
+            "Mesh": {
+                "Alias": "cannonWindowTrim_metal",
+                "FilePath": "res\\assets\\models\\Decorative\\cannonWindowTrim_metal.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": true
+            },
+            "Position": {
+                "X": -11.027315139770508,
+                "Y": -3.088313579559326,
+                "Z": -7.491741180419922
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "CannonPortTrim 7": {
         "Parent": {
             "Name": "CannonPortTrim 6"
         },
@@ -5565,13 +5188,52 @@
                 "Z": false
             },
             "Position": {
-                "X": 14.997562408447266,
+                "X": 15.997085571289063,
                 "Y": 0.0,
                 "Z": 0.02529621124267578
             },
             "Rotation": {
                 "qW": 1.0,
                 "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "CannonPortTrim 8": {
+        "Parent": {
+            "Name": "CannonPortTrim 6"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "metal"
+            },
+            "Mesh": {
+                "Alias": "cannonWindowTrim_metal",
+                "FilePath": "res\\assets\\models\\Decorative\\cannonWindowTrim_metal.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": true,
+                "Z": false
+            },
+            "Position": {
+                "X": 16.003021240234375,
+                "Y": 0.0,
+                "Z": -10.999106407165527
+            },
+            "Rotation": {
+                "qW": -4.371138828673793e-08,
+                "qX": 1.0,
                 "qY": 0.0,
                 "qZ": 0.0
             },
@@ -5604,9 +5266,9 @@
                 "Z": false
             },
             "Position": {
-                "X": 15.001569747924805,
+                "X": 8.049223899841309,
                 "Y": 0.0,
-                "Z": -11.011996269226074
+                "Z": -11.004712104797363
             },
             "Rotation": {
                 "qW": -4.371138828673793e-08,
@@ -13367,7 +13029,7 @@
                 "Z": true
             },
             "Position": {
-                "X": -16.155277252197266,
+                "X": -20.679473876953125,
                 "Y": 0.08419331908226013,
                 "Z": 2.545301675796509
             },
@@ -13385,6 +13047,84 @@
         }
     },
     "O ring 11": {
+        "Parent": {
+            "Name": "Decorations 1"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "DecorationAtlas"
+            },
+            "Mesh": {
+                "Alias": "o ring",
+                "FilePath": "res\\assets\\models\\Decorative\\o ring.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": true
+            },
+            "Position": {
+                "X": -24.20765495300293,
+                "Y": 0.08419331908226013,
+                "Z": 2.545301675796509
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": -6.114703410275979e-06,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "O ring 12": {
+        "Parent": {
+            "Name": "Decorations 1"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "DecorationAtlas"
+            },
+            "Mesh": {
+                "Alias": "o ring",
+                "FilePath": "res\\assets\\models\\Decorative\\o ring.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -24.20765495300293,
+                "Y": 0.08419331908226013,
+                "Z": -6.314897060394287
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": -6.114703410275979e-06,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "O ring 13": {
         "Parent": {
             "Name": "Decorations 1"
         },
@@ -13423,46 +13163,7 @@
             }
         }
     },
-    "O ring 12": {
-        "Parent": {
-            "Name": "Decorations 1"
-        },
-        "Renderable": {
-            "CullingMask": 15,
-            "Enabled": true,
-            "Material": {
-                "Alias": "DecorationAtlas"
-            },
-            "Mesh": {
-                "Alias": "o ring",
-                "FilePath": "res\\assets\\models\\Decorative\\o ring.obj"
-            }
-        },
-        "Transform": {
-            "Mirror": {
-                "X": false,
-                "Y": false,
-                "Z": true
-            },
-            "Position": {
-                "X": -20.679473876953125,
-                "Y": 0.08419331908226013,
-                "Z": 2.545301675796509
-            },
-            "Rotation": {
-                "qW": 1.0,
-                "qX": 0.0,
-                "qY": -6.114703410275979e-06,
-                "qZ": 0.0
-            },
-            "Scale": {
-                "X": 1.0,
-                "Y": 1.0,
-                "Z": 1.0
-            }
-        }
-    },
-    "O ring 13": {
+    "O ring 14": {
         "Parent": {
             "Name": "Decorations 1"
         },
@@ -13501,7 +13202,7 @@
             }
         }
     },
-    "O ring 14": {
+    "O ring 15": {
         "Parent": {
             "Name": "Decorations 1"
         },
@@ -13526,45 +13227,6 @@
                 "X": -12.276968002319336,
                 "Y": 0.08419331908226013,
                 "Z": -6.314897060394287
-            },
-            "Rotation": {
-                "qW": 1.0,
-                "qX": 0.0,
-                "qY": -6.114703410275979e-06,
-                "qZ": 0.0
-            },
-            "Scale": {
-                "X": 1.0,
-                "Y": 1.0,
-                "Z": 1.0
-            }
-        }
-    },
-    "O ring 15": {
-        "Parent": {
-            "Name": "Decorations 1"
-        },
-        "Renderable": {
-            "CullingMask": 15,
-            "Enabled": true,
-            "Material": {
-                "Alias": "DecorationAtlas"
-            },
-            "Mesh": {
-                "Alias": "o ring",
-                "FilePath": "res\\assets\\models\\Decorative\\o ring.obj"
-            }
-        },
-        "Transform": {
-            "Mirror": {
-                "X": false,
-                "Y": false,
-                "Z": true
-            },
-            "Position": {
-                "X": -24.20765495300293,
-                "Y": 0.08419331908226013,
-                "Z": 2.545301675796509
             },
             "Rotation": {
                 "qW": 1.0,
@@ -13871,12 +13533,12 @@
             "Mirror": {
                 "X": false,
                 "Y": false,
-                "Z": false
+                "Z": true
             },
             "Position": {
-                "X": -24.20765495300293,
+                "X": -16.155277252197266,
                 "Y": 0.08419331908226013,
-                "Z": -6.314897060394287
+                "Z": 2.545301675796509
             },
             "Rotation": {
                 "qW": 1.0,
@@ -16584,11 +16246,11 @@
             "CullingMask": 15,
             "Enabled": true,
             "Material": {
-                "Alias": "container"
+                "Alias": "garbage"
             },
             "Mesh": {
-                "Alias": "cube",
-                "FilePath": "res\\assets\\models\\cube.obj"
+                "Alias": "GarbageSurrenderAnim_000010",
+                "FilePath": "res\\assets\\models\\Animation\\Garbage\\GarbageSurrender\\GarbageSurrenderAnim_000010.obj"
             }
         },
         "Transform": {
@@ -16623,11 +16285,11 @@
             "CullingMask": 15,
             "Enabled": true,
             "Material": {
-                "Alias": "container"
+                "Alias": "garbage"
             },
             "Mesh": {
-                "Alias": "cube",
-                "FilePath": "res\\assets\\models\\cube.obj"
+                "Alias": "GarbageSurrenderAnim_000078",
+                "FilePath": "res\\assets\\models\\Animation\\Garbage\\GarbageSurrender\\GarbageSurrenderAnim_000078.obj"
             }
         },
         "Transform": {
@@ -16662,11 +16324,11 @@
             "CullingMask": 15,
             "Enabled": true,
             "Material": {
-                "Alias": "container"
+                "Alias": "garbage"
             },
             "Mesh": {
-                "Alias": "cube",
-                "FilePath": "res\\assets\\models\\cube.obj"
+                "Alias": "GarbageSurrenderAnim_000001",
+                "FilePath": "res\\assets\\models\\Animation\\Garbage\\GarbageSurrender\\GarbageSurrenderAnim_000001.obj"
             }
         },
         "Transform": {
@@ -17382,14 +17044,14 @@
                 "Z": false
             },
             "Position": {
-                "X": -8.16058349609375,
-                "Y": 0.05000000074505806,
-                "Z": 1.90958571434021
+                "X": -28.508474349975586,
+                "Y": -4.122061729431152,
+                "Z": -6.620427131652832
             },
             "Rotation": {
-                "qW": 1.0,
+                "qW": 0.5403022766113281,
                 "qX": 0.0,
-                "qY": -6.114703410275979e-06,
+                "qY": 0.8414709568023682,
                 "qZ": 0.0
             },
             "Scale": {
@@ -17421,7 +17083,7 @@
                 "Z": false
             },
             "Position": {
-                "X": -15.750903129577637,
+                "X": -8.16058349609375,
                 "Y": 0.05000000074505806,
                 "Z": 1.90958571434021
             },
@@ -17460,6 +17122,45 @@
                 "Z": false
             },
             "Position": {
+                "X": -15.750903129577637,
+                "Y": 0.05000000074505806,
+                "Z": 1.90958571434021
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": -6.114703410275979e-06,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "RopePile 16": {
+        "Parent": {
+            "Name": "Decorations 1"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "DecorationAtlas"
+            },
+            "Mesh": {
+                "Alias": "Environtment Rope",
+                "FilePath": "res\\assets\\models\\Decorative\\Environtment Rope.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
                 "X": -20.12887954711914,
                 "Y": 0.051957935094833374,
                 "Z": -6.13705587387085
@@ -17477,7 +17178,7 @@
             }
         }
     },
-    "RopePile 16": {
+    "RopePile 17": {
         "Parent": {
             "Name": "Decorations 1"
         },
@@ -17516,7 +17217,7 @@
             }
         }
     },
-    "RopePile 17": {
+    "RopePile 18": {
         "Parent": {
             "Name": "Decorations 1"
         },
@@ -17555,7 +17256,7 @@
             }
         }
     },
-    "RopePile 18": {
+    "RopePile 19": {
         "Parent": {
             "Name": "Decorations 1"
         },
@@ -17580,45 +17281,6 @@
                 "X": -6.763192176818848,
                 "Y": -4.122061729431152,
                 "Z": 1.730743169784546
-            },
-            "Rotation": {
-                "qW": 0.5403022766113281,
-                "qX": 0.0,
-                "qY": 0.8414709568023682,
-                "qZ": 0.0
-            },
-            "Scale": {
-                "X": 1.0,
-                "Y": 1.0,
-                "Z": 1.0
-            }
-        }
-    },
-    "RopePile 19": {
-        "Parent": {
-            "Name": "Decorations 1"
-        },
-        "Renderable": {
-            "CullingMask": 15,
-            "Enabled": true,
-            "Material": {
-                "Alias": "DecorationAtlas"
-            },
-            "Mesh": {
-                "Alias": "Environtment Rope",
-                "FilePath": "res\\assets\\models\\Decorative\\Environtment Rope.obj"
-            }
-        },
-        "Transform": {
-            "Mirror": {
-                "X": false,
-                "Y": false,
-                "Z": false
-            },
-            "Position": {
-                "X": -4.918999671936035,
-                "Y": -4.122061729431152,
-                "Z": -3.2959916591644287
             },
             "Rotation": {
                 "qW": 0.5403022766113281,
@@ -17696,7 +17358,7 @@
             "Position": {
                 "X": -4.918999671936035,
                 "Y": -4.122061729431152,
-                "Z": 0.612916886806488
+                "Z": -3.2959916591644287
             },
             "Rotation": {
                 "qW": 0.5403022766113281,
@@ -17733,9 +17395,9 @@
                 "Z": false
             },
             "Position": {
-                "X": -28.508474349975586,
+                "X": -4.918999671936035,
                 "Y": -4.122061729431152,
-                "Z": -6.620427131652832
+                "Z": 0.612916886806488
             },
             "Rotation": {
                 "qW": 0.5403022766113281,
@@ -18162,9 +17824,9 @@
                 "Z": false
             },
             "Position": {
-                "X": 9.719103813171387,
+                "X": 9.733275413513184,
                 "Y": -0.02385503053665161,
-                "Z": -5.1813507080078125
+                "Z": -5.181350231170654
             },
             "Rotation": {
                 "qW": 1.0,
@@ -22559,9 +22221,9 @@
                 "Z": false
             },
             "Position": {
-                "X": -30.678287506103516,
-                "Y": -3.2056941986083984,
-                "Z": -5.443912982940674
+                "X": -29.922588348388672,
+                "Y": -4.178339958190918,
+                "Z": -1.9691102504730225
             },
             "Rotation": {
                 "qW": 1.0,
@@ -22570,9 +22232,9 @@
                 "qZ": 0.0
             },
             "Scale": {
-                "X": 0.6800000071525574,
-                "Y": 0.5799999833106995,
-                "Z": 1.540000081062317
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
             }
         }
     },
@@ -22637,9 +22299,9 @@
                 "Z": false
             },
             "Position": {
-                "X": -30.474613189697266,
-                "Y": -4.178339958190918,
-                "Z": -5.1899847984313965
+                "X": -8.580930709838867,
+                "Y": 0.03419750928878784,
+                "Z": -5.767171382904053
             },
             "Rotation": {
                 "qW": 1.0,
@@ -22650,7 +22312,7 @@
             "Scale": {
                 "X": 1.0,
                 "Y": 1.0,
-                "Z": 2.440000057220459
+                "Z": 1.0
             }
         }
     },
@@ -22676,9 +22338,9 @@
                 "Z": false
             },
             "Position": {
-                "X": -29.922588348388672,
-                "Y": -4.178339958190918,
-                "Z": -1.9691102504730225
+                "X": -7.9980950355529785,
+                "Y": 1.030332326889038,
+                "Z": -5.767171382904053
             },
             "Rotation": {
                 "qW": 1.0,
@@ -22754,9 +22416,9 @@
                 "Z": false
             },
             "Position": {
-                "X": -5.711798667907715,
-                "Y": -4.178339958190918,
-                "Z": -6.181550025939941
+                "X": -9.210777282714844,
+                "Y": 0.023645848035812378,
+                "Z": -4.570372104644775
             },
             "Rotation": {
                 "qW": 1.0,
@@ -22765,91 +22427,13 @@
                 "qZ": 0.0
             },
             "Scale": {
-                "X": 2.0,
-                "Y": 2.0,
-                "Z": 2.0
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
             }
         }
     },
     "WoodCrate 21": {
-        "Parent": {
-            "Name": "Decorations 1"
-        },
-        "Renderable": {
-            "CullingMask": 15,
-            "Enabled": true,
-            "Material": {
-                "Alias": "DecorationAtlas"
-            },
-            "Mesh": {
-                "Alias": "WoodCrate",
-                "FilePath": "res\\assets\\models\\Decorative\\WoodCrate.obj"
-            }
-        },
-        "Transform": {
-            "Mirror": {
-                "X": false,
-                "Y": false,
-                "Z": false
-            },
-            "Position": {
-                "X": -5.120916366577148,
-                "Y": -4.178339958190918,
-                "Z": -4.204218864440918
-            },
-            "Rotation": {
-                "qW": 0.9601702690124512,
-                "qX": 0.0,
-                "qY": 0.279415488243103,
-                "qZ": 0.0
-            },
-            "Scale": {
-                "X": 1.0,
-                "Y": 1.0,
-                "Z": 1.0
-            }
-        }
-    },
-    "WoodCrate 22": {
-        "Parent": {
-            "Name": "Decorations 1"
-        },
-        "Renderable": {
-            "CullingMask": 15,
-            "Enabled": true,
-            "Material": {
-                "Alias": "DecorationAtlas"
-            },
-            "Mesh": {
-                "Alias": "WoodCrate",
-                "FilePath": "res\\assets\\models\\Decorative\\WoodCrate.obj"
-            }
-        },
-        "Transform": {
-            "Mirror": {
-                "X": false,
-                "Y": false,
-                "Z": false
-            },
-            "Position": {
-                "X": -5.608038902282715,
-                "Y": -4.178339958190918,
-                "Z": 1.3862454891204834
-            },
-            "Rotation": {
-                "qW": -0.9899924993515015,
-                "qX": -0.0,
-                "qY": 0.14112000167369843,
-                "qZ": -0.0
-            },
-            "Scale": {
-                "X": 1.0,
-                "Y": 1.0,
-                "Z": 1.0
-            }
-        }
-    },
-    "WoodCrate 23": {
         "Parent": {
             "Name": "Decorations 1"
         },
@@ -22888,7 +22472,7 @@
             }
         }
     },
-    "WoodCrate 24": {
+    "WoodCrate 22": {
         "Parent": {
             "Name": "Decorations 1"
         },
@@ -22927,7 +22511,7 @@
             }
         }
     },
-    "WoodCrate 25": {
+    "WoodCrate 23": {
         "Parent": {
             "Name": "Decorations 1"
         },
@@ -22966,6 +22550,84 @@
             }
         }
     },
+    "WoodCrate 24": {
+        "Parent": {
+            "Name": "Decorations 1"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "DecorationAtlas"
+            },
+            "Mesh": {
+                "Alias": "WoodCrate",
+                "FilePath": "res\\assets\\models\\Decorative\\WoodCrate.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -30.474613189697266,
+                "Y": -4.178339958190918,
+                "Z": -5.1899847984313965
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 2.440000057220459
+            }
+        }
+    },
+    "WoodCrate 25": {
+        "Parent": {
+            "Name": "Decorations 1"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "DecorationAtlas"
+            },
+            "Mesh": {
+                "Alias": "WoodCrate",
+                "FilePath": "res\\assets\\models\\Decorative\\WoodCrate.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -30.678287506103516,
+                "Y": -3.2056941986083984,
+                "Z": -5.443912982940674
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 0.6800000071525574,
+                "Y": 0.5799999833106995,
+                "Z": 1.540000081062317
+            }
+        }
+    },
     "WoodCrate 26": {
         "Parent": {
             "Name": "Decorations 1"
@@ -22988,20 +22650,20 @@
                 "Z": false
             },
             "Position": {
-                "X": -6.469301223754883,
+                "X": -5.711798667907715,
                 "Y": -4.178339958190918,
-                "Z": 2.6421353816986084
+                "Z": -6.181550025939941
             },
             "Rotation": {
-                "qW": 0.9601702690124512,
+                "qW": 1.0,
                 "qX": 0.0,
-                "qY": 0.279415488243103,
+                "qY": 0.0,
                 "qZ": 0.0
             },
             "Scale": {
-                "X": 1.0,
-                "Y": 1.0,
-                "Z": 1.0
+                "X": 2.0,
+                "Y": 2.0,
+                "Z": 2.0
             }
         }
     },
@@ -23027,14 +22689,14 @@
                 "Z": false
             },
             "Position": {
-                "X": -7.396086692810059,
-                "Y": 0.03419750928878784,
-                "Z": -5.959432601928711
+                "X": -5.120916366577148,
+                "Y": -4.178339958190918,
+                "Z": -4.204218864440918
             },
             "Rotation": {
-                "qW": 1.0,
+                "qW": 0.9601702690124512,
                 "qX": 0.0,
-                "qY": 0.0,
+                "qY": 0.279415488243103,
                 "qZ": 0.0
             },
             "Scale": {
@@ -23066,15 +22728,15 @@
                 "Z": false
             },
             "Position": {
-                "X": -5.319300651550293,
-                "Y": -2.251488208770752,
-                "Z": -6.2831315994262695
+                "X": -5.608038902282715,
+                "Y": -4.178339958190918,
+                "Z": 1.3862454891204834
             },
             "Rotation": {
-                "qW": 1.0,
-                "qX": 0.0,
-                "qY": 0.0,
-                "qZ": 0.0
+                "qW": -0.9899924993515015,
+                "qX": -0.0,
+                "qY": 0.14112000167369843,
+                "qZ": -0.0
             },
             "Scale": {
                 "X": 1.0,
@@ -23105,14 +22767,14 @@
                 "Z": false
             },
             "Position": {
-                "X": -8.580930709838867,
-                "Y": 0.03419750928878784,
-                "Z": -5.767171382904053
+                "X": -6.469301223754883,
+                "Y": -4.178339958190918,
+                "Z": 2.6421353816986084
             },
             "Rotation": {
-                "qW": 1.0,
+                "qW": 0.9601702690124512,
                 "qX": 0.0,
-                "qY": 0.0,
+                "qY": 0.279415488243103,
                 "qZ": 0.0
             },
             "Scale": {
@@ -23183,9 +22845,9 @@
                 "Z": false
             },
             "Position": {
-                "X": -7.9980950355529785,
-                "Y": 1.030332326889038,
-                "Z": -5.767171382904053
+                "X": -7.396086692810059,
+                "Y": 0.03419750928878784,
+                "Z": -5.959432601928711
             },
             "Rotation": {
                 "qW": 1.0,
@@ -23222,9 +22884,9 @@
                 "Z": false
             },
             "Position": {
-                "X": -9.210777282714844,
-                "Y": 0.023645848035812378,
-                "Z": -4.570372104644775
+                "X": -5.319300651550293,
+                "Y": -2.251488208770752,
+                "Z": -6.2831315994262695
             },
             "Rotation": {
                 "qW": 1.0,

@@ -186,6 +186,6 @@ void GarbagePileSystem::updateGarbagePileVisualSize(entt::entity a_garbagePileEn
 	else
 	{
 		garbagePileRenderable.enabled = true;
-		flyRenderable.enabled = false;
+		flyRenderable.enabled = true;
 	}
 }

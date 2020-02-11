@@ -6,19 +6,17 @@ using namespace oyl;
 
 void SandboxLayer::onEnter()
 {
-    auto mesh = Mesh::cache("res/assets/models/cube.obj");
-    
-    //auto& mat = Material::cache(Material::create(), "container");
-	//mat->shader = Shader::get(LIGHTING_SHADER_ALIAS);
-    //mat->albedoMap   = Texture2D::cache("res/assets/textures/container2.jpg");
-    //mat->specularMap = Texture2D::cache("res/assets/textures/container2_specular.jpg");
+	//any meshes that aren't loaded in the scene need to be cached here for distribution mode
+	auto mesh = Mesh::cache("res/assets/models/cube.obj");
+	mesh = Mesh::cache("res/assets/models/Garbage/garbageSmall.obj");
+	mesh = Mesh::cache("res/assets/models/Garbage/garbageMedium.obj");
+    mesh = Mesh::cache("res/assets/models/Garbage/garbageLarge.obj");
+    mesh = Mesh::cache("res/assets/models/Garbage/garbageMassive.obj");
+    mesh = Mesh::cache("res/assets/models/Garbage/garbageSurrender.obj");
 
     {
         component::Renderable mr;
         mr.mesh     = mesh;
-        //mr.material = mat;
-
-
 
 		/////////////////////////////////////////////////////
 		///////////////////// BLUE TEAM /////////////////////
@@ -120,11 +118,9 @@ void SandboxLayer::onEnter()
 		}
         
 		{
-			//mr.mesh = Mesh::cache("res/assets/models/cannon.obj");
             
 			//CANNON
 			entt::entity cannonEntity = registry->create();
-			//mr.material = Material::cache("res/assets/materials/cannon.oylmat");
 
 			component::Transform cannonTransform;
 			cannonTransform.setPosition(glm::vec3(0.0f));
@@ -151,8 +147,6 @@ void SandboxLayer::onEnter()
 			//GARBAGE PILES
 			//NOTE: MAKE SURE THESE ARE ARRANGED SO THE FIRST ONE (BlueGarbagePile0) IS ON THE LEFTMOST SIDE RELATIVE TO THE POSITIVE Z AXIS
 			//      AND THE LAST ONE IS ON THE RIGHT SO THAT THE OPPOSING CANNON FIRES AT THE CORRECT GARBAGE PILE
-			/*mr.mesh = Mesh::cache("res/assets/models/garbageTiny.obj");
-			mr.material = Material::cache("res/assets/materials/garbage.oylmat");*/
 			for (int i = 0; i < 3; i++)
 			{
 				//creating the fly
@@ -160,8 +154,8 @@ void SandboxLayer::onEnter()
 
 				component::Transform garbagePileFlyTransform;
 				garbagePileFlyTransform.setPosition(glm::vec3(0.0f, 0.0f, 0.0f));
-				registry->assign<component::Transform>(garbagePileFlyEntity, garbagePileFlyTransform);
 
+				registry->assign<component::Transform>(garbagePileFlyEntity, garbagePileFlyTransform);
 				registry->assign<component::Renderable>(garbagePileFlyEntity, mr);
 
 				auto& so1 = registry->assign<component::EntityInfo>(garbagePileFlyEntity);
@@ -173,15 +167,32 @@ void SandboxLayer::onEnter()
 				const int numFrames = 100; // however many frames you exported
 				auto& animator = registry->assign<component::Animatable>(garbagePileFlyEntity);
 
-				//Small Garbage fly anim
-				auto smallAnimation = Ref<Animation>::create();
-
+				//loading fly animations
+				auto tinyAnimation = Ref<Animation>::create();
 				for (int i = 0; i < numFrames; i++)
 				{
 					Animation::KeyPose kp;
 					kp.duration = 1.0f / 30.0f; // duration in seconds
 
-					sprintf(filename, "res/assets/models/Animation/Garbage/GarbageSmallAnim/GarbageSmallAnim_%06d.obj", i + 1);
+					sprintf(filename, "res/assets/models/Animation/Garbage/GarbageTiny/GarbageTinyAnim_%06d.obj", i + 1);
+					s.assign(filename); // you have to load each mesh yourself for now
+										// the "%06d" is because by default blender exports
+										// frames as "animationName_000001.obj" and so on counting up
+
+					kp.mesh = Mesh::create(s);
+					tinyAnimation->poses.push_back(kp); // Add the keyframe to the animation
+
+				}
+				animator.pushAnimation("GarbageTinyAnim", tinyAnimation); // add the animation to the animator
+
+				//Small Garbage fly anim
+				auto smallAnimation = Ref<Animation>::create();
+				for (int i = 0; i < numFrames; i++)
+				{
+					Animation::KeyPose kp;
+					kp.duration = 1.0f / 30.0f; // duration in seconds
+
+					sprintf(filename, "res/assets/models/Animation/Garbage/GarbageSmall/GarbageSmallAnim_%06d.obj", i + 1);
 					s.assign(filename); // you have to load each mesh yourself for now
 										// the "%06d" is because by default blender exports
 										// frames as "animationName_000001.obj" and so on counting up
@@ -193,33 +204,31 @@ void SandboxLayer::onEnter()
 				animator.pushAnimation("GarbageSmallAnim", smallAnimation); // add the animation to the animator
 
 				//Medium Garbage fly anim
-				auto MediumAnimation = Ref<Animation>::create();
-
+				auto mediumAnimation = Ref<Animation>::create();
 				for (int i = 0; i < numFrames; i++)
 				{
 					Animation::KeyPose kp;
 					kp.duration = 1.0f / 30.0f; // duration in seconds
 
-					sprintf(filename, "res/assets/models/Animation/Garbage/GarbageMediumAnim/GarbageMediumAnim_%06d.obj", i + 1);
+					sprintf(filename, "res/assets/models/Animation/Garbage/GarbageMedium/GarbageMediumAnim_%06d.obj", i + 1);
 					s.assign(filename); // you have to load each mesh yourself for now
 										// the "%06d" is because by default blender exports
 										// frames as "animationName_000001.obj" and so on counting up
 
 					kp.mesh = Mesh::create(s);
-					MediumAnimation->poses.push_back(kp); // Add the keyframe to the animation
+					mediumAnimation->poses.push_back(kp); // Add the keyframe to the animation
 
 				}
-				animator.pushAnimation("GarbageMediumAnim", MediumAnimation); // add the animation to the animator
+				animator.pushAnimation("GarbageMediumAnim", mediumAnimation); // add the animation to the animator
 
 				//Large Garbage fly anim
 				auto largeAnimation = Ref<Animation>::create();
-
 				for (int i = 0; i < numFrames; i++)
 				{
 					Animation::KeyPose kp;
 					kp.duration = 1.0f / 30.0f; // duration in seconds
 
-					sprintf(filename, "res/assets/models/Animation/Garbage/GarbageLargeAnim/GarbageLargeAnim_%06d.obj", i + 1);
+					sprintf(filename, "res/assets/models/Animation/Garbage/GarbageLarge/GarbageLargeAnim_%06d.obj", i + 1);
 					s.assign(filename); // you have to load each mesh yourself for now
 										// the "%06d" is because by default blender exports
 										// frames as "animationName_000001.obj" and so on counting up
@@ -232,13 +241,12 @@ void SandboxLayer::onEnter()
 
 				//Massive Garbage fly anim
 				auto massiveAnimation = Ref<Animation>::create();
-
 				for (int i = 0; i < numFrames; i++)
 				{
 					Animation::KeyPose kp;
 					kp.duration = 1.0f / 30.0f; // duration in seconds
 
-					sprintf(filename, "res/assets/models/Animation/Garbage/GarbageMassiveAnim/GarbageMassiveAnim_%06d.obj", i + 1);
+					sprintf(filename, "res/assets/models/Animation/Garbage/GarbageMassive/GarbageMassiveAnim_%06d.obj", i + 1);
 					s.assign(filename); // you have to load each mesh yourself for now
 										// the "%06d" is because by default blender exports
 										// frames as "animationName_000001.obj" and so on counting up
@@ -251,13 +259,12 @@ void SandboxLayer::onEnter()
 
 				//Surrender Garbage fly anim
 				auto surrenderAnimation = Ref<Animation>::create();
-
 				for (int i = 0; i < numFrames; i++)
 				{
 					Animation::KeyPose kp;
 					kp.duration = 1.0f / 30.0f; // duration in seconds
 
-					sprintf(filename, "res/assets/models/Animation/Garbage/GarbageSurrenderAnim/GarbageSurrenderAnim_%06d.obj", i + 1);
+					sprintf(filename, "res/assets/models/Animation/Garbage/GarbageSurrender/GarbageSurrenderAnim_%06d.obj", i + 1);
 					s.assign(filename); // you have to load each mesh yourself for now
 										// the "%06d" is because by default blender exports
 										// frames as "animationName_000001.obj" and so on counting up
@@ -268,26 +275,8 @@ void SandboxLayer::onEnter()
 				}
 				animator.pushAnimation("GarbageSurrenderAnim", surrenderAnimation); // add the animation to the animator
 
-				//loading fly animations
-				auto tinyAnimation = Ref<Animation>::create();
-
-				for (int i = 0; i < numFrames; i++)
-				{
-					Animation::KeyPose kp;
-					kp.duration = 1.0f / 30.0f; // duration in seconds
-
-					sprintf(filename, "res/assets/models/Animation/Garbage/GarbageTinyAnim/GarbageTinyAnim_%06d.obj", i + 1);
-					s.assign(filename); // you have to load each mesh yourself for now
-										// the "%06d" is because by default blender exports
-										// frames as "animationName_000001.obj" and so on counting up
-
-					kp.mesh = Mesh::create(s);
-					tinyAnimation->poses.push_back(kp); // Add the keyframe to the animation
-
-				}
-				animator.pushAnimation("GarbageTinyAnim", tinyAnimation); // add the animation to the animator
-
-
+				//set default
+				animator.setNextAnimation("GarbageTinyAnim");
 
 				//garbage
 				entt::entity garbagePileEntity = registry->create();
@@ -322,8 +311,6 @@ void SandboxLayer::onEnter()
 
 		{
 			//CANNONBALLS
-			/*mr.mesh = Mesh::cache("res/assets/models/sphere.obj");
-			mr.material = Material::cache("res/assets/materials/DecorationAtlas.oylmat");*/
 			for (int i = 0; i < 6; i++)
 			{
 				entt::entity cannonballEntity = registry->create();
@@ -355,8 +342,6 @@ void SandboxLayer::onEnter()
 		}
 
         {
-			/*mr.mesh = Mesh::cache("res/assets/models/mop.obj");
-			mr.material = Material::cache("res/assets/materials/mop.oylmat");*/
 			//MOPS
 			for (int i = 0; i < 2; i++)
 			{
@@ -388,8 +373,6 @@ void SandboxLayer::onEnter()
         }
 
 		{
-			/*mr.mesh = Mesh::cache("res/assets/models/Pirax.obj");
-			mr.material = Material::cache("res/assets/materials/pirax.oylmat");*/
 			//CLEANING SOLUTION
 			for (int i = 0; i < 3; i++)
 			{
@@ -422,8 +405,6 @@ void SandboxLayer::onEnter()
 		}
 
 		{
-		/*	mr.mesh = Mesh::cache("res/assets/models/Gloop.obj");
-			mr.material = Material::cache("res/assets/materials/goop.oylmat");*/
 			//GLOOP
 			for (int i = 0; i < 3; i++)
 			{
@@ -458,8 +439,6 @@ void SandboxLayer::onEnter()
 		}
 
 		{
-			//mr.mesh = Mesh::cache("res/assets/models/crateTemp.obj");
-			//mr.material = Material::cache("res/assets/materials/planks.oylmat");
 			//CANNONBALL CRATE
 			entt::entity cannonballCrateEntity = registry->create();
 
@@ -695,7 +674,6 @@ void SandboxLayer::onEnter()
 			//GARBAGE PILES
 			//NOTE: MAKE SURE THESE ARE ARRANGED SO THE FIRST ONE (RedGarbagePile0) IS ON THE LEFTMOST SIDE RELATIVE TO THE POSITIVE Z AXIS
 			//      AND THE LAST ONE IS ON THE RIGHT SO THAT THE OPPOSING CANNON FIRES AT THE CORRECT GARBAGE PILE
-			//mr.material = Material::get("garbage");
 
 			for (int i = 0; i < 3; i++)
 			{
@@ -717,15 +695,32 @@ void SandboxLayer::onEnter()
 				const int numFrames = 100; // however many frames you exported
 				auto& animator = registry->assign<component::Animatable>(garbagePileFlyEntity);
 
-				//Small Garbage fly anim
-				auto smallAnimation = Ref<Animation>::create();
-
+				//loading fly animations
+				auto tinyAnimation = Ref<Animation>::create();
 				for (int i = 0; i < numFrames; i++)
 				{
 					Animation::KeyPose kp;
 					kp.duration = 1.0f / 30.0f; // duration in seconds
 
-					sprintf(filename, "res/assets/models/Animation/Garbage/GarbageSmallAnim/GarbageSmallAnim_%06d.obj", i + 1);
+					sprintf(filename, "res/assets/models/Animation/Garbage/GarbageTiny/GarbageTinyAnim_%06d.obj", i + 1);
+					s.assign(filename); // you have to load each mesh yourself for now
+										// the "%06d" is because by default blender exports
+										// frames as "animationName_000001.obj" and so on counting up
+
+					kp.mesh = Mesh::create(s);
+					tinyAnimation->poses.push_back(kp); // Add the keyframe to the animation
+
+				}
+				animator.pushAnimation("GarbageTinyAnim", tinyAnimation); // add the animation to the animator
+
+				//Small Garbage fly anim
+				auto smallAnimation = Ref<Animation>::create();
+				for (int i = 0; i < numFrames; i++)
+				{
+					Animation::KeyPose kp;
+					kp.duration = 1.0f / 30.0f; // duration in seconds
+
+					sprintf(filename, "res/assets/models/Animation/Garbage/GarbageSmall/GarbageSmallAnim_%06d.obj", i + 1);
 					s.assign(filename); // you have to load each mesh yourself for now
 										// the "%06d" is because by default blender exports
 										// frames as "animationName_000001.obj" and so on counting up
@@ -737,33 +732,31 @@ void SandboxLayer::onEnter()
 				animator.pushAnimation("GarbageSmallAnim", smallAnimation); // add the animation to the animator
 
 				//Medium Garbage fly anim
-				auto MediumAnimation = Ref<Animation>::create();
-
+				auto mediumAnimation = Ref<Animation>::create();
 				for (int i = 0; i < numFrames; i++)
 				{
 					Animation::KeyPose kp;
 					kp.duration = 1.0f / 30.0f; // duration in seconds
 
-					sprintf(filename, "res/assets/models/Animation/Garbage/GarbageMediumAnim/GarbageMediumAnim_%06d.obj", i + 1);
+					sprintf(filename, "res/assets/models/Animation/Garbage/GarbageMedium/GarbageMediumAnim_%06d.obj", i + 1);
 					s.assign(filename); // you have to load each mesh yourself for now
 										// the "%06d" is because by default blender exports
 										// frames as "animationName_000001.obj" and so on counting up
 
 					kp.mesh = Mesh::create(s);
-					MediumAnimation->poses.push_back(kp); // Add the keyframe to the animation
+					mediumAnimation->poses.push_back(kp); // Add the keyframe to the animation
 
 				}
-				animator.pushAnimation("GarbageMediumAnim", MediumAnimation); // add the animation to the animator
+				animator.pushAnimation("GarbageMediumAnim", mediumAnimation); // add the animation to the animator
 
 				//Large Garbage fly anim
 				auto largeAnimation = Ref<Animation>::create();
-
 				for (int i = 0; i < numFrames; i++)
 				{
 					Animation::KeyPose kp;
 					kp.duration = 1.0f / 30.0f; // duration in seconds
 
-					sprintf(filename, "res/assets/models/Animation/Garbage/GarbageLargeAnim/GarbageLargeAnim_%06d.obj", i + 1);
+					sprintf(filename, "res/assets/models/Animation/Garbage/GarbageLarge/GarbageLargeAnim_%06d.obj", i + 1);
 					s.assign(filename); // you have to load each mesh yourself for now
 										// the "%06d" is because by default blender exports
 										// frames as "animationName_000001.obj" and so on counting up
@@ -776,13 +769,12 @@ void SandboxLayer::onEnter()
 
 				//Massive Garbage fly anim
 				auto massiveAnimation = Ref<Animation>::create();
-
 				for (int i = 0; i < numFrames; i++)
 				{
 					Animation::KeyPose kp;
 					kp.duration = 1.0f / 30.0f; // duration in seconds
 
-					sprintf(filename, "res/assets/models/Animation/Garbage/GarbageMassiveAnim/GarbageMassiveAnim_%06d.obj", i + 1);
+					sprintf(filename, "res/assets/models/Animation/Garbage/GarbageMassive/GarbageMassiveAnim_%06d.obj", i + 1);
 					s.assign(filename); // you have to load each mesh yourself for now
 										// the "%06d" is because by default blender exports
 										// frames as "animationName_000001.obj" and so on counting up
@@ -795,13 +787,12 @@ void SandboxLayer::onEnter()
 
 				//Surrender Garbage fly anim
 				auto surrenderAnimation = Ref<Animation>::create();
-
 				for (int i = 0; i < numFrames; i++)
 				{
 					Animation::KeyPose kp;
 					kp.duration = 1.0f / 30.0f; // duration in seconds
 
-					sprintf(filename, "res/assets/models/Animation/Garbage/GarbageSurrenderAnim/GarbageSurrenderAnim_%06d.obj", i + 1);
+					sprintf(filename, "res/assets/models/Animation/Garbage/GarbageSurrender/GarbageSurrenderAnim_%06d.obj", i + 1);
 					s.assign(filename); // you have to load each mesh yourself for now
 										// the "%06d" is because by default blender exports
 										// frames as "animationName_000001.obj" and so on counting up
@@ -812,25 +803,7 @@ void SandboxLayer::onEnter()
 				}
 				animator.pushAnimation("GarbageSurrenderAnim", surrenderAnimation); // add the animation to the animator
 
-				//loading fly animations
-				auto tinyAnimation = Ref<Animation>::create();
-
-				for (int i = 0; i < numFrames; i++)
-				{
-					Animation::KeyPose kp;
-					kp.duration = 1.0f / 30.0f; // duration in seconds
-
-					sprintf(filename, "res/assets/models/Animation/Garbage/GarbageTinyAnim/GarbageTinyAnim_%06d.obj", i + 1);
-					s.assign(filename); // you have to load each mesh yourself for now
-										// the "%06d" is because by default blender exports
-										// frames as "animationName_000001.obj" and so on counting up
-
-					kp.mesh = Mesh::create(s);
-					tinyAnimation->poses.push_back(kp); // Add the keyframe to the animation
-
-				}			
-				animator.pushAnimation("GarbageTinyAnim", tinyAnimation); // add the animation to the animator
-
+				animator.setNextAnimation("GarbageTinyAnim");
 
 				//creating the garbage
 				entt::entity garbagePileEntity = registry->create();
@@ -867,8 +840,6 @@ void SandboxLayer::onEnter()
 
 		{
 			//CANNONBALLS
-			//mr.mesh = Mesh::cache("res/assets/models/sphere.obj");
-			//mr.material = Material::get("cannonball");
 			for (int i = 0; i < 6; i++)
 			{
 				entt::entity cannonballEntity = registry->create();
@@ -903,8 +874,6 @@ void SandboxLayer::onEnter()
 			//MOP
 			for (int i = 0; i < 2; i++)
 			{
-				//mr.mesh = Mesh::get("mop");
-				//mr.material = Material::get("mop");
 
 				entt::entity mopEntity = registry->create();
 
@@ -935,7 +904,6 @@ void SandboxLayer::onEnter()
 
 		{
 			//CLEANING SOLUTION
-			//mr.material = Material::get("pirax");
 			for (int i = 0; i < 3; i++)
 			{
 				entt::entity cleaningSolutionEntity = registry->create();
@@ -968,7 +936,6 @@ void SandboxLayer::onEnter()
 
 		{
 			//GLOOP
-			//mr.material = Material::get("goop");
 			for (int i = 0; i < 3; i++)
 			{
 				entt::entity gloopEntity = registry->create();
@@ -1004,7 +971,6 @@ void SandboxLayer::onEnter()
 
 		{
 			//CANNONBALL CRATE
-			//mr.material = Material::get("crate");
 
 			entt::entity cannonballCrateEntity = registry->create();
 
@@ -1017,8 +983,6 @@ void SandboxLayer::onEnter()
 			auto& cannonballCrate = registry->assign<CannonballCrate>(cannonballCrateEntity);
 			cannonballCrate.team = Team::red;
 
-			//mr.mesh = Mesh::get("cube");
-			//mr.material = mat;
 			registry->assign<component::Renderable>(cannonballCrateEntity, mr);
 
 			auto& so2 = registry->assign<component::EntityInfo>(cannonballCrateEntity);
@@ -1112,8 +1076,6 @@ void SandboxLayer::onEnter()
 
 		{
 			//LAMP
-			//mr.mesh = Mesh::cache("res/assets/models/lamp.obj");
-			//mr.material = Material::get("lamp");
 
 			component::Collidable boxCollider;
 			auto& shi = boxCollider.pushShape(ColliderType::Box);
@@ -1165,7 +1127,6 @@ void SandboxLayer::onEnter()
 		for (int i = 0; i < 4; i++)
 		{
 			component::Renderable mr;
-			//mr.mesh = Mesh::cache("res/assets/models/plane.obj");
 			mr.material = nullptr;
 
 			entt::entity e = registry->create();
@@ -1194,8 +1155,6 @@ void SandboxLayer::onEnter()
 		//RANDOM SPHERES
 
         component::Renderable mr;
-       // mr.mesh = Mesh::get("sphere");
-        //mr.material = mat;
 
         entt::entity e = registry->create();
         //registry->assign<component::Renderable>(e, mr);
@@ -1216,9 +1175,6 @@ void SandboxLayer::onEnter()
         shi.sphere.setRadius(0.5f);
     }
     {
-        //component::Renderable mr;
-        //mr.mesh = Mesh::get("sphere");
-        //mr.material = mat;
 
         entt::entity e = registry->create();
         //registry->assign<component::Renderable>(e, mr);
