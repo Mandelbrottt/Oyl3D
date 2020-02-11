@@ -26,6 +26,8 @@ void PlayerSystem::onUpdate()
 		{
 		    case PlayerState::idle:
 		    {
+				performBasicMovement(playerEntity, player.speedForce, Time::deltaTime());
+
 				if (player.moveDirection != glm::vec3(0.0f))
 					changeToWalking(&player);
 		        
@@ -100,7 +102,7 @@ void PlayerSystem::onUpdate()
 
 			case PlayerState::cleaning:
 			{
-				performBasicMovement(playerEntity, player.speedForce * 0.73f, Time::deltaTime());
+				performBasicMovement(playerEntity, player.speedForce * 0.3f, Time::deltaTime());
 
 				player.cleaningTimeCountdown -= Time::deltaTime();
 				if (player.cleaningTimeCountdown < 0.0f)
@@ -266,13 +268,13 @@ void PlayerSystem::performBasicMovement(entt::entity a_playerEntity, const float
 	auto& playerRB = registry->get<component::RigidBody>(a_playerEntity);
 
 	glm::vec3 deltaVelocity = (player.moveDirection * a_speedForce) - playerRB.getVelocity();
-	playerRB.addImpulse(playerRB.getMass() * deltaVelocity * static_cast<float>(a_dt));
+	deltaVelocity.y = 0;
+	playerRB.addImpulse(deltaVelocity * 0.4f);
 }
 
 void PlayerSystem::checkAndResolveSlopeCollision(entt::entity a_playerEntity)
 {
 	auto& playerTransform = registry->get<component::Transform>(a_playerEntity);
-	auto& palyerRB        = registry->get<component::RigidBody>(a_playerEntity);
 
 	auto ray = RayTest::Closest(playerTransform.getPositionGlobal(), glm::vec3(0.0f, -1.0f, 0.0f), 0.5001f);
 	if (ray->hasHit && registry->valid(ray->hitObject.entity))
