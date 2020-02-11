@@ -438,9 +438,9 @@ namespace oyl
         }
         else
         {
-            glBindFramebuffer(GL_READ_FRAMEBUFFER, GL_NONE);
-            glBlitFramebuffer(0, 0, m_colorWidths[0], m_colorHeights[0],
-                              0, 0, m_colorWidths[0], m_colorHeights[0],
+            glBindFramebuffer(GL_DRAW_FRAMEBUFFER, GL_NONE);
+            glBlitFramebuffer(0, 0, m_widths[0], m_heights[0], 
+                              0, 0, m_widths[0], m_heights[0],
                               GL_COLOR_BUFFER_BIT, GL_NEAREST);
         }
 
