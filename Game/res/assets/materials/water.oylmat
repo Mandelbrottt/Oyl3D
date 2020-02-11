@@ -3,8 +3,8 @@
         "Alias": "water",
         "MainProperties": {
             "Offset": [
-                116.59730529785156,
-                114.9548568725586
+                123.9570083618164,
+                122.21076965332031
             ],
             "Tiling": [
                 15.0,
@@ -34,7 +34,7 @@
             "Specular": {
                 "Alias": "Oyl Black",
                 "FilePath": "../Engine/res/textures/black.png",
-                "Profile": 0,
+                "Profile": 1,
                 "guid": null
             }
         }

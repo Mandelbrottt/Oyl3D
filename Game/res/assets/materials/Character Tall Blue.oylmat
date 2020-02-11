@@ -1,0 +1,42 @@
+{
+    "Material": {
+        "Alias": "Character Tall Blue",
+        "MainProperties": {
+            "Offset": [
+                0.0,
+                0.0
+            ],
+            "Tiling": [
+                1.0,
+                1.0
+            ]
+        },
+        "Shader": {
+            "Alias": "Oyl Lighting",
+            "Pixel": {
+                "FilePath": "../Engine/res/shaders/lighting.frag",
+                "guid": null
+            },
+            "Vertex": {
+                "FilePath": "../Engine/res/shaders/lighting.vert",
+                "guid": null
+            }
+        },
+        "Textures": {
+            "Albedo": {
+                "Alias": "PirateTallBlue",
+                "FilePath": "res\\assets\\textures\\PirateTallBlue.png",
+                "Profile": 1,
+                "guid": null
+            },
+            "Emission": null,
+            "Normal": null,
+            "Specular": {
+                "Alias": "Oyl Black",
+                "FilePath": "../Engine/res/textures/black.png",
+                "Profile": 1,
+                "guid": null
+            }
+        }
+    }
+}
