@@ -15,22 +15,22 @@ void GarbagePileGloopIndicatorSystem::onUpdate()
 	auto gloopIndicatorView = registry->view<GarbagePileGloopIndicator, component::GuiRenderable, component::Transform>();
 	for (auto gloopIndicatorEntity : gloopIndicatorView)
 	{
-		auto& gloopIndicator = registry->get<GarbagePileGloopIndicator>(gloopIndicatorEntity);
-		auto& gloopIndicatorGui = registry->get<component::GuiRenderable>(gloopIndicatorEntity);
+		auto& gloopIndicator          = registry->get<GarbagePileGloopIndicator>(gloopIndicatorEntity);
+		auto& gloopIndicatorGui       = registry->get<component::GuiRenderable>(gloopIndicatorEntity);
 		auto& gloopIndicatorTransform = registry->get<component::Transform>(gloopIndicatorEntity);
 
 		//go thru each garbage pile
 		auto garbagePileView = registry->view<GarbagePile, component::Transform>();
 		for (auto garbagePileEntity : garbagePileView)
 		{
-			auto& garbagePile = registry->get<GarbagePile>(garbagePileEntity);
+			auto& garbagePile          = registry->get<GarbagePile>(garbagePileEntity);
 			auto& garbagePileTransform = registry->get<component::Transform>(garbagePileEntity);
 
 			//check if the garbage pile is the one that the gloop indicator is attached to
 			if (gloopIndicator.garbagePileNum == garbagePile.relativePositionOnShip && gloopIndicator.team != garbagePile.team)
 			{
 				//check if the garbage pile can be glooped
-				if (!garbagePile.isGlooped
+				if (   !garbagePile.isGlooped
 					&& garbagePile.garbageLevel > 0
 					&& (garbagePile.garbageLevel < garbagePile.MAX_GARBAGE_LEVEL || garbagePile.garbageTicks < garbagePile.GARBAGE_TICKS_PER_LEVEL))
 				{
@@ -53,8 +53,12 @@ void GarbagePileGloopIndicatorSystem::onUpdate()
 
 			if (player.playerNum == gloopIndicator.playerNum)
 			{
-				if (!(registry->valid(player.primaryCarriedItem)) || !(registry->get<CarryableItem>(player.primaryCarriedItem).type == CarryableItemType::gloop))
+				if (   !(registry->valid(player.primaryCarriedItem)) 
+					|| !(registry->get<CarryableItem>(player.primaryCarriedItem).type == CarryableItemType::gloop)
+					|| registry->get<CarryableItem>(player.primaryCarriedItem).team != player.team)
+				{
 					gloopIndicator.shouldBeHidden = true;
+				}
 
 				break;
 			}
@@ -67,7 +71,7 @@ void GarbagePileGloopIndicatorSystem::onUpdate()
 			auto playerCameraView = registry->view<component::Camera>();
 			for (auto playerCameraEntity : playerCameraView)
 			{
-				auto& playerCamera = registry->get<component::Camera>(playerCameraEntity);
+				auto& playerCamera          = registry->get<component::Camera>(playerCameraEntity);
 				auto& playerCameraTransform = registry->get<component::Transform>(playerCameraEntity);
 
 				//check if the camera should see the gloop indicator

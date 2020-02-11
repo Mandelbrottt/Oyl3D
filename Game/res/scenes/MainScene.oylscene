@@ -1260,9 +1260,9 @@
                 "Z": false
             },
             "Position": {
-                "X": 1.1924550533294678,
+                "X": 1.0331625938415527,
                 "Y": 3.1068921089172363e-06,
-                "Z": 0.0
+                "Z": 0.33170944452285767
             },
             "Rotation": {
                 "qW": 1.0,
@@ -1273,7 +1273,7 @@
             "Scale": {
                 "X": 1.0,
                 "Y": 0.9999999403953552,
-                "Z": 1.0299999713897705
+                "Z": 1.6951076984405518
             }
         }
     },
@@ -1322,9 +1322,9 @@
                 "Z": false
             },
             "Position": {
-                "X": 0.0017586350440979004,
+                "X": -0.17499220371246338,
                 "Y": 0.0,
-                "Z": 0.0
+                "Z": 0.33000001311302185
             },
             "Rotation": {
                 "qW": 1.0,
@@ -1335,7 +1335,7 @@
             "Scale": {
                 "X": 1.0128506422042847,
                 "Y": 1.0,
-                "Z": 1.0294109582901
+                "Z": 1.6930631399154663
             }
         }
     },
@@ -1386,7 +1386,7 @@
             "Position": {
                 "X": 0.4418014585971832,
                 "Y": -0.42337852716445923,
-                "Z": 0.0
+                "Z": 0.3332834839820862
             },
             "Rotation": {
                 "qW": 1.0,
@@ -1397,7 +1397,7 @@
             "Scale": {
                 "X": 1.0,
                 "Y": 0.6231107711791992,
-                "Z": 1.028589129447937
+                "Z": 1.6859911680221558
             }
         }
     },
@@ -1446,9 +1446,9 @@
                 "Z": false
             },
             "Position": {
-                "X": 0.001758575439453125,
+                "X": -0.16522932052612305,
                 "Y": 0.3800315856933594,
-                "Z": 0.003382384777069092
+                "Z": 0.33204013109207153
             },
             "Rotation": {
                 "qW": 1.0,
@@ -1459,7 +1459,7 @@
             "Scale": {
                 "X": 1.0165730714797974,
                 "Y": 1.0,
-                "Z": 1.1315711736679077
+                "Z": 1.7873377799987793
             }
         }
     },
@@ -1508,9 +1508,9 @@
                 "Z": false
             },
             "Position": {
-                "X": 1.1924550533294678,
+                "X": 1.0152802467346191,
                 "Y": 0.1638144999742508,
-                "Z": 0.009061157703399658
+                "Z": 0.3337704539299011
             },
             "Rotation": {
                 "qW": 1.0,
@@ -1521,7 +1521,7 @@
             "Scale": {
                 "X": 1.009742259979248,
                 "Y": 0.554162859916687,
-                "Z": 1.1309099197387695
+                "Z": 1.7913105487823486
             }
         }
     },
@@ -1596,7 +1596,7 @@
                 "Z": true
             },
             "Position": {
-                "X": -2.0528433322906494,
+                "X": -3.0848259925842285,
                 "Y": -4.18979549407959,
                 "Z": 1.9129912853240967
             },
@@ -1973,7 +1973,7 @@
             "CullingMask": 15,
             "Enabled": true,
             "Material": {
-                "Alias": "crate"
+                "Alias": null
             },
             "Mesh": {
                 "Alias": "crateTemp",
@@ -2009,7 +2009,7 @@
             }
         }
     },
-    "BlueCleaningSolution0": {
+    "BlueCleaningSolution 0": {
         "Collidable": {
             "Shapes": [
                 {
@@ -2033,7 +2033,7 @@
             "CullingMask": 15,
             "Enabled": true,
             "Material": {
-                "Alias": "pirax"
+                "Alias": "PiraxBlue"
             },
             "Mesh": {
                 "Alias": "Pirax",
@@ -2043,7 +2043,7 @@
         "RigidBody": {
             "Friction": 0.5,
             "Mass": 1.0,
-            "Properties": 34
+            "Properties": 98
         },
         "Transform": {
             "Mirror": {
@@ -2052,129 +2052,9 @@
                 "Z": false
             },
             "Position": {
-                "X": 2.8278794288635254,
-                "Y": 0.3100000023841858,
-                "Z": 0.6259580850601196
-            },
-            "Rotation": {
-                "qW": 1.0,
-                "qX": 0.0,
-                "qY": 0.0,
-                "qZ": 0.0
-            },
-            "Scale": {
-                "X": 0.30000001192092896,
-                "Y": 0.30000001192092896,
-                "Z": 0.30000001192092896
-            }
-        }
-    },
-    "BlueCleaningSolution1": {
-        "Collidable": {
-            "Shapes": [
-                {
-                    "Center": [
-                        0.0,
-                        0.0,
-                        0.0
-                    ],
-                    "Size": [
-                        0.800000011920929,
-                        1.0,
-                        0.8500000238418579
-                    ],
-                    "Trigger": false,
-                    "Type": 0
-                }
-            ]
-        },
-        "Parent": null,
-        "Renderable": {
-            "CullingMask": 15,
-            "Enabled": true,
-            "Material": {
-                "Alias": "pirax"
-            },
-            "Mesh": {
-                "Alias": "Pirax",
-                "FilePath": "res\\assets\\models\\Pirax.obj"
-            }
-        },
-        "RigidBody": {
-            "Friction": 0.5,
-            "Mass": 1.0,
-            "Properties": 34
-        },
-        "Transform": {
-            "Mirror": {
-                "X": false,
-                "Y": false,
-                "Z": false
-            },
-            "Position": {
-                "X": 3.318744659423828,
-                "Y": 0.3100000023841858,
-                "Z": 0.4091641306877136
-            },
-            "Rotation": {
-                "qW": 1.0,
-                "qX": 0.0,
-                "qY": 0.0,
-                "qZ": 0.0
-            },
-            "Scale": {
-                "X": 0.30000001192092896,
-                "Y": 0.30000001192092896,
-                "Z": 0.30000001192092896
-            }
-        }
-    },
-    "BlueCleaningSolution2": {
-        "Collidable": {
-            "Shapes": [
-                {
-                    "Center": [
-                        0.0,
-                        0.0,
-                        0.0
-                    ],
-                    "Size": [
-                        0.800000011920929,
-                        1.0,
-                        0.8500000238418579
-                    ],
-                    "Trigger": false,
-                    "Type": 0
-                }
-            ]
-        },
-        "Parent": null,
-        "Renderable": {
-            "CullingMask": 15,
-            "Enabled": true,
-            "Material": {
-                "Alias": "pirax"
-            },
-            "Mesh": {
-                "Alias": "Pirax",
-                "FilePath": "res\\assets\\models\\Pirax.obj"
-            }
-        },
-        "RigidBody": {
-            "Friction": 0.5,
-            "Mass": 1.0,
-            "Properties": 34
-        },
-        "Transform": {
-            "Mirror": {
-                "X": false,
-                "Y": false,
-                "Z": false
-            },
-            "Position": {
-                "X": 2.8527729511260986,
-                "Y": 0.3100000023841858,
-                "Z": 0.02576392889022827
+                "X": 9.430000305175781,
+                "Y": 0.9900000095367432,
+                "Z": -5.559999942779541
             },
             "Rotation": {
                 "qW": 1.0,
@@ -2213,7 +2093,7 @@
             "CullingMask": 15,
             "Enabled": true,
             "Material": {
-                "Alias": "pirax"
+                "Alias": "PiraxBlue"
             },
             "Mesh": {
                 "Alias": "Pirax",
@@ -2478,7 +2358,7 @@
             },
             "Mesh": {
                 "Alias": "GarbageSurrenderAnim_000009",
-                "FilePath": "res\\assets\\models\\Animation\\Garbage\\GarbageSurrender\\GarbageSurrenderAnim_000009.obj"
+                "FilePath": "res\\assets\\animation\\Garbage\\GarbageSurrender\\GarbageSurrenderAnim_000009.obj"
             }
         },
         "Transform": {
@@ -2517,7 +2397,7 @@
             },
             "Mesh": {
                 "Alias": "GarbageSurrenderAnim_000014",
-                "FilePath": "res\\assets\\models\\Animation\\Garbage\\GarbageSurrender\\GarbageSurrenderAnim_000014.obj"
+                "FilePath": "res\\assets\\animation\\Garbage\\GarbageSurrender\\GarbageSurrenderAnim_000014.obj"
             }
         },
         "Transform": {
@@ -2556,7 +2436,7 @@
             },
             "Mesh": {
                 "Alias": "GarbageSurrenderAnim_000014",
-                "FilePath": "res\\assets\\models\\Animation\\Garbage\\GarbageSurrender\\GarbageSurrenderAnim_000014.obj"
+                "FilePath": "res\\assets\\animation\\Garbage\\GarbageSurrender\\GarbageSurrenderAnim_000014.obj"
             }
         },
         "Transform": {
@@ -2583,7 +2463,7 @@
             }
         }
     },
-    "BlueGloopA0": {
+    "BlueGloop 0": {
         "Collidable": {
             "Shapes": [
                 {
@@ -2607,7 +2487,7 @@
             "CullingMask": 15,
             "Enabled": true,
             "Material": {
-                "Alias": "goop"
+                "Alias": "GoopBlue"
             },
             "Mesh": {
                 "Alias": "Gloop",
@@ -2617,7 +2497,7 @@
         "RigidBody": {
             "Friction": 0.5,
             "Mass": 1.0,
-            "Properties": 34
+            "Properties": 98
         },
         "Transform": {
             "Mirror": {
@@ -2626,135 +2506,15 @@
                 "Z": false
             },
             "Position": {
-                "X": 1.2264628410339355,
-                "Y": 0.27000001072883606,
-                "Z": 1.3732361793518066
+                "X": 9.460000038146973,
+                "Y": 2.0,
+                "Z": -5.949999809265137
             },
             "Rotation": {
-                "qW": 1.0,
-                "qX": 0.0,
-                "qY": 0.0,
-                "qZ": 0.0
-            },
-            "Scale": {
-                "X": 0.10000000149011612,
-                "Y": 0.10000000149011612,
-                "Z": 0.10000000149011612
-            }
-        }
-    },
-    "BlueGloopA1": {
-        "Collidable": {
-            "Shapes": [
-                {
-                    "Center": [
-                        0.0,
-                        0.0,
-                        0.0
-                    ],
-                    "Size": [
-                        1.5499999523162842,
-                        2.6500000953674316,
-                        1.0
-                    ],
-                    "Trigger": false,
-                    "Type": 0
-                }
-            ]
-        },
-        "Parent": null,
-        "Renderable": {
-            "CullingMask": 15,
-            "Enabled": true,
-            "Material": {
-                "Alias": "goop"
-            },
-            "Mesh": {
-                "Alias": "Gloop",
-                "FilePath": "res\\assets\\models\\Gloop.obj"
-            }
-        },
-        "RigidBody": {
-            "Friction": 0.5,
-            "Mass": 1.0,
-            "Properties": 34
-        },
-        "Transform": {
-            "Mirror": {
-                "X": false,
-                "Y": false,
-                "Z": false
-            },
-            "Position": {
-                "X": 1.595083475112915,
-                "Y": 0.27000001072883606,
-                "Z": 1.2137778997421265
-            },
-            "Rotation": {
-                "qW": 1.0,
-                "qX": 0.0,
-                "qY": 0.0,
-                "qZ": 0.0
-            },
-            "Scale": {
-                "X": 0.10000000149011612,
-                "Y": 0.10000000149011612,
-                "Z": 0.10000000149011612
-            }
-        }
-    },
-    "BlueGloopA2": {
-        "Collidable": {
-            "Shapes": [
-                {
-                    "Center": [
-                        0.0,
-                        0.0,
-                        0.0
-                    ],
-                    "Size": [
-                        1.5499999523162842,
-                        2.6500000953674316,
-                        1.0
-                    ],
-                    "Trigger": false,
-                    "Type": 0
-                }
-            ]
-        },
-        "Parent": null,
-        "Renderable": {
-            "CullingMask": 15,
-            "Enabled": true,
-            "Material": {
-                "Alias": "goop"
-            },
-            "Mesh": {
-                "Alias": "Gloop",
-                "FilePath": "res\\assets\\models\\Gloop.obj"
-            }
-        },
-        "RigidBody": {
-            "Friction": 0.5,
-            "Mass": 1.0,
-            "Properties": 34
-        },
-        "Transform": {
-            "Mirror": {
-                "X": false,
-                "Y": false,
-                "Z": false
-            },
-            "Position": {
-                "X": 1.0946576595306396,
-                "Y": 0.27000001072883606,
-                "Z": 1.1341346502304077
-            },
-            "Rotation": {
-                "qW": 1.0,
-                "qX": 0.0,
-                "qY": 0.0,
-                "qZ": 0.0
+                "qW": 0.7205056548118591,
+                "qX": -9.508380571787711e-08,
+                "qY": 0.693449079990387,
+                "qZ": -9.981317816709634e-08
             },
             "Scale": {
                 "X": 0.10000000149011612,
@@ -2787,7 +2547,7 @@
             "CullingMask": 15,
             "Enabled": true,
             "Material": {
-                "Alias": "goop"
+                "Alias": "GoopBlue"
             },
             "Mesh": {
                 "Alias": "Gloop",
@@ -2881,7 +2641,7 @@
             "CullingMask": 15,
             "Enabled": true,
             "Material": {
-                "Alias": "mop"
+                "Alias": "MopBlue"
             },
             "Mesh": {
                 "Alias": "mop",
@@ -2900,15 +2660,15 @@
                 "Z": false
             },
             "Position": {
-                "X": 3.5025463104248047,
-                "Y": 0.20000000298023224,
-                "Z": -1.4537962675094604
+                "X": 9.780712127685547,
+                "Y": 0.7341029644012451,
+                "Z": -0.48578566312789917
             },
             "Rotation": {
-                "qW": 1.0,
-                "qX": 0.0,
-                "qY": 0.0,
-                "qZ": 0.0
+                "qW": 0.021640822291374207,
+                "qX": -0.3976238965988159,
+                "qY": -0.9172453284263611,
+                "qZ": -0.009380259551107883
             },
             "Scale": {
                 "X": 1.0,
@@ -2941,7 +2701,7 @@
             "CullingMask": 15,
             "Enabled": true,
             "Material": {
-                "Alias": "mop"
+                "Alias": "MopBlue"
             },
             "Mesh": {
                 "Alias": "mop",
@@ -2960,15 +2720,15 @@
                 "Z": false
             },
             "Position": {
-                "X": 9.634659767150879,
+                "X": 9.756892204284668,
                 "Y": 0.7216199040412903,
-                "Z": -5.690544605255127
+                "Z": 0.12773576378822327
             },
             "Rotation": {
-                "qW": 0.6268503665924072,
-                "qX": -0.28841912746429443,
-                "qY": -0.6792916059494019,
-                "qZ": 0.24987199902534485
+                "qW": 0.031354181468486786,
+                "qX": 0.3807976543903351,
+                "qY": 0.9237910509109497,
+                "qZ": 0.024900833144783974
             },
             "Scale": {
                 "X": 1.0,
@@ -3152,7 +2912,7 @@
             "Position": {
                 "X": 0.0,
                 "Y": 0.0,
-                "Z": 15.0
+                "Z": 21.0
             },
             "Rotation": {
                 "qW": 1.0,
@@ -4474,7 +4234,9 @@
                 "FilePath": "res\\assets\\textures\\gui\\cancelCleaningQTEPrompt.png"
             }
         },
-        "Parent": null,
+        "Parent": {
+            "Name": "Player1UI"
+        },
         "Transform": {
             "Mirror": {
                 "X": false,
@@ -4518,7 +4280,9 @@
                 "FilePath": "res\\assets\\textures\\gui\\cancelCleaningQTEPrompt.png"
             }
         },
-        "Parent": null,
+        "Parent": {
+            "Name": "Player2UI"
+        },
         "Transform": {
             "Mirror": {
                 "X": false,
@@ -4562,7 +4326,9 @@
                 "FilePath": "res\\assets\\textures\\gui\\cancelCleaningQTEPrompt.png"
             }
         },
-        "Parent": null,
+        "Parent": {
+            "Name": "Player3UI"
+        },
         "Transform": {
             "Mirror": {
                 "X": false,
@@ -4606,7 +4372,9 @@
                 "FilePath": "res\\assets\\textures\\gui\\cancelCleaningQTEPrompt.png"
             }
         },
-        "Parent": null,
+        "Parent": {
+            "Name": "Player4UI"
+        },
         "Transform": {
             "Mirror": {
                 "X": false,
@@ -6176,190 +5944,6 @@
             "Scale": {
                 "X": 3.0,
                 "Y": 3.0,
-                "Z": 1.0
-            }
-        }
-    },
-    "Cleaning Quicktime Event Indicator1": {
-        "GuiRenderable": {
-            "Clipping": {
-                "Lower": [
-                    0.0,
-                    0.0
-                ],
-                "Upper": [
-                    1.0,
-                    1.0
-                ]
-            },
-            "CullingMask": 1,
-            "Enabled": true,
-            "Texture": {
-                "Alias": "cleaningQuicktimeEventIndicator",
-                "FilePath": "res\\assets\\textures\\gui\\cleaningQuicktimeEventIndicator.png"
-            }
-        },
-        "Parent": {
-            "Name": "Player1UI"
-        },
-        "Transform": {
-            "Mirror": {
-                "X": false,
-                "Y": false,
-                "Z": false
-            },
-            "Position": {
-                "X": -30.0,
-                "Y": 3.5999999046325684,
-                "Z": -1.0
-            },
-            "Rotation": {
-                "qW": 1.0,
-                "qX": 0.0,
-                "qY": 0.0,
-                "qZ": 0.0
-            },
-            "Scale": {
-                "X": 1.5,
-                "Y": 2.0,
-                "Z": 1.0
-            }
-        }
-    },
-    "Cleaning Quicktime Event Indicator2": {
-        "GuiRenderable": {
-            "Clipping": {
-                "Lower": [
-                    0.0,
-                    0.0
-                ],
-                "Upper": [
-                    1.0,
-                    1.0
-                ]
-            },
-            "CullingMask": 2,
-            "Enabled": true,
-            "Texture": {
-                "Alias": "cleaningQuicktimeEventIndicator",
-                "FilePath": "res\\assets\\textures\\gui\\cleaningQuicktimeEventIndicator.png"
-            }
-        },
-        "Parent": {
-            "Name": "Player2UI"
-        },
-        "Transform": {
-            "Mirror": {
-                "X": false,
-                "Y": false,
-                "Z": false
-            },
-            "Position": {
-                "X": -30.0,
-                "Y": 3.5999999046325684,
-                "Z": -1.0
-            },
-            "Rotation": {
-                "qW": 1.0,
-                "qX": 0.0,
-                "qY": 0.0,
-                "qZ": 0.0
-            },
-            "Scale": {
-                "X": 1.5,
-                "Y": 2.0,
-                "Z": 1.0
-            }
-        }
-    },
-    "Cleaning Quicktime Event Indicator3": {
-        "GuiRenderable": {
-            "Clipping": {
-                "Lower": [
-                    0.0,
-                    0.0
-                ],
-                "Upper": [
-                    1.0,
-                    1.0
-                ]
-            },
-            "CullingMask": 4,
-            "Enabled": true,
-            "Texture": {
-                "Alias": "cleaningQuicktimeEventIndicator",
-                "FilePath": "res\\assets\\textures\\gui\\cleaningQuicktimeEventIndicator.png"
-            }
-        },
-        "Parent": {
-            "Name": "Player3UI"
-        },
-        "Transform": {
-            "Mirror": {
-                "X": false,
-                "Y": false,
-                "Z": false
-            },
-            "Position": {
-                "X": -30.0,
-                "Y": 3.5999999046325684,
-                "Z": -1.0
-            },
-            "Rotation": {
-                "qW": 1.0,
-                "qX": 0.0,
-                "qY": 0.0,
-                "qZ": 0.0
-            },
-            "Scale": {
-                "X": 1.5,
-                "Y": 2.0,
-                "Z": 1.0
-            }
-        }
-    },
-    "Cleaning Quicktime Event Indicator4": {
-        "GuiRenderable": {
-            "Clipping": {
-                "Lower": [
-                    0.0,
-                    0.0
-                ],
-                "Upper": [
-                    1.0,
-                    1.0
-                ]
-            },
-            "CullingMask": 8,
-            "Enabled": true,
-            "Texture": {
-                "Alias": "cleaningQuicktimeEventIndicator",
-                "FilePath": "res\\assets\\textures\\gui\\cleaningQuicktimeEventIndicator.png"
-            }
-        },
-        "Parent": {
-            "Name": "Player4UI"
-        },
-        "Transform": {
-            "Mirror": {
-                "X": false,
-                "Y": false,
-                "Z": false
-            },
-            "Position": {
-                "X": -30.0,
-                "Y": 3.5999999046325684,
-                "Z": -1.0
-            },
-            "Rotation": {
-                "qW": 1.0,
-                "qX": 0.0,
-                "qY": 0.0,
-                "qZ": 0.0
-            },
-            "Scale": {
-                "X": 1.5,
-                "Y": 2.0,
                 "Z": 1.0
             }
         }
@@ -8074,9 +7658,9 @@
                 "qZ": 0.0
             },
             "Scale": {
-                "X": 3.999999523162842,
-                "Y": 3.999999523162842,
-                "Z": 4.0
+                "X": 3.0,
+                "Y": 3.0,
+                "Z": 0.0
             }
         }
     },
@@ -8120,9 +7704,9 @@
                 "qZ": 0.0
             },
             "Scale": {
-                "X": 3.999999523162842,
-                "Y": 3.999999523162842,
-                "Z": 4.0
+                "X": 3.0,
+                "Y": 3.0,
+                "Z": 0.0
             }
         }
     },
@@ -8166,9 +7750,9 @@
                 "qZ": 0.0
             },
             "Scale": {
-                "X": 3.999999523162842,
-                "Y": 3.999999523162842,
-                "Z": 4.0
+                "X": 3.0,
+                "Y": 3.0,
+                "Z": 0.0
             }
         }
     },
@@ -8212,9 +7796,9 @@
                 "qZ": 0.0
             },
             "Scale": {
-                "X": 3.9999992847442627,
-                "Y": 3.9999992847442627,
-                "Z": 4.0
+                "X": 3.0,
+                "Y": 3.0,
+                "Z": 0.0
             }
         }
     },
@@ -8258,9 +7842,9 @@
                 "qZ": 0.0
             },
             "Scale": {
-                "X": 3.999999523162842,
-                "Y": 3.999999523162842,
-                "Z": 4.0
+                "X": 3.0,
+                "Y": 3.0,
+                "Z": 0.0
             }
         }
     },
@@ -8304,9 +7888,9 @@
                 "qZ": 0.0
             },
             "Scale": {
-                "X": 3.999999523162842,
-                "Y": 3.999999523162842,
-                "Z": 4.0
+                "X": 3.0,
+                "Y": 3.0,
+                "Z": 0.0
             }
         }
     },
@@ -8350,9 +7934,9 @@
                 "qZ": 0.0
             },
             "Scale": {
-                "X": 3.999999523162842,
-                "Y": 3.999999523162842,
-                "Z": 4.0
+                "X": 3.0,
+                "Y": 3.0,
+                "Z": 0.0
             }
         }
     },
@@ -8396,9 +7980,9 @@
                 "qZ": 0.0
             },
             "Scale": {
-                "X": 3.9999985694885254,
-                "Y": 3.9999985694885254,
-                "Z": 4.0
+                "X": 3.0,
+                "Y": 3.0,
+                "Z": 0.0
             }
         }
     },
@@ -8442,9 +8026,9 @@
                 "qZ": 0.0
             },
             "Scale": {
-                "X": 3.999999523162842,
-                "Y": 3.999999523162842,
-                "Z": 4.0
+                "X": 3.0,
+                "Y": 3.0,
+                "Z": 0.0
             }
         }
     },
@@ -8488,9 +8072,9 @@
                 "qZ": 0.0
             },
             "Scale": {
-                "X": 3.9999988079071045,
-                "Y": 3.9999988079071045,
-                "Z": 4.0
+                "X": 3.0,
+                "Y": 3.0,
+                "Z": 0.0
             }
         }
     },
@@ -8534,9 +8118,9 @@
                 "qZ": 0.0
             },
             "Scale": {
-                "X": 3.999999523162842,
-                "Y": 3.999999523162842,
-                "Z": 4.0
+                "X": 3.0,
+                "Y": 3.0,
+                "Z": 0.0
             }
         }
     },
@@ -8580,9 +8164,9 @@
                 "qZ": 0.0
             },
             "Scale": {
-                "X": 3.999999523162842,
-                "Y": 3.999999523162842,
-                "Z": 4.0
+                "X": 3.0,
+                "Y": 3.0,
+                "Z": 0.0
             }
         }
     },
@@ -8610,7 +8194,7 @@
         },
         "Transform": {
             "Mirror": {
-                "X": false,
+                "X": true,
                 "Y": false,
                 "Z": false
             },
@@ -8626,9 +8210,9 @@
                 "qZ": 0.0
             },
             "Scale": {
-                "X": 4.0,
-                "Y": 4.0,
-                "Z": 4.0
+                "X": 3.0,
+                "Y": 3.0,
+                "Z": 0.0
             }
         }
     },
@@ -8672,9 +8256,9 @@
                 "qZ": 0.0
             },
             "Scale": {
-                "X": 4.0,
-                "Y": 4.0,
-                "Z": 4.0
+                "X": 3.0,
+                "Y": 3.0,
+                "Z": 0.0
             }
         }
     },
@@ -8718,9 +8302,9 @@
                 "qZ": 0.0
             },
             "Scale": {
-                "X": 4.0,
-                "Y": 4.0,
-                "Z": 4.0
+                "X": 3.0,
+                "Y": 3.0,
+                "Z": 0.0
             }
         }
     },
@@ -8764,9 +8348,9 @@
                 "qZ": 0.0
             },
             "Scale": {
-                "X": 4.0,
-                "Y": 4.0,
-                "Z": 4.0
+                "X": 3.0,
+                "Y": 3.0,
+                "Z": 0.0
             }
         }
     },
@@ -8810,9 +8394,9 @@
                 "qZ": 0.0
             },
             "Scale": {
-                "X": 4.0,
-                "Y": 4.0,
-                "Z": 4.0
+                "X": 3.0,
+                "Y": 3.0,
+                "Z": 0.0
             }
         }
     },
@@ -8856,9 +8440,9 @@
                 "qZ": 0.0
             },
             "Scale": {
-                "X": 4.0,
-                "Y": 4.0,
-                "Z": 4.0
+                "X": 3.0,
+                "Y": 3.0,
+                "Z": 0.0
             }
         }
     },
@@ -8902,9 +8486,9 @@
                 "qZ": 0.0
             },
             "Scale": {
-                "X": 4.0,
-                "Y": 4.0,
-                "Z": 4.0
+                "X": 3.0,
+                "Y": 3.0,
+                "Z": 0.0
             }
         }
     },
@@ -8948,9 +8532,9 @@
                 "qZ": 0.0
             },
             "Scale": {
-                "X": 4.0,
-                "Y": 4.0,
-                "Z": 4.0
+                "X": 3.0,
+                "Y": 3.0,
+                "Z": 0.0
             }
         }
     },
@@ -8994,9 +8578,9 @@
                 "qZ": 0.0
             },
             "Scale": {
-                "X": 4.0,
-                "Y": 4.0,
-                "Z": 4.0
+                "X": 3.0,
+                "Y": 3.0,
+                "Z": 0.0
             }
         }
     },
@@ -9040,9 +8624,9 @@
                 "qZ": 0.0
             },
             "Scale": {
-                "X": 4.0,
-                "Y": 4.0,
-                "Z": 4.0
+                "X": 3.0,
+                "Y": 3.0,
+                "Z": 0.0
             }
         }
     },
@@ -9086,9 +8670,9 @@
                 "qZ": 0.0
             },
             "Scale": {
-                "X": 4.0,
-                "Y": 4.0,
-                "Z": 4.0
+                "X": 3.0,
+                "Y": 3.0,
+                "Z": 0.0
             }
         }
     },
@@ -9132,9 +8716,9 @@
                 "qZ": 0.0
             },
             "Scale": {
-                "X": 4.0,
-                "Y": 4.0,
-                "Z": 4.0
+                "X": 3.0,
+                "Y": 3.0,
+                "Z": 0.0
             }
         }
     },
@@ -9893,7 +9477,9 @@
                 "FilePath": "res\\assets\\textures\\gui\\gloopIndicator.png"
             }
         },
-        "Parent": null,
+        "Parent": {
+            "Name": "Player1UI"
+        },
         "Transform": {
             "Mirror": {
                 "X": false,
@@ -9937,7 +9523,9 @@
                 "FilePath": "res\\assets\\textures\\gui\\gloopIndicator.png"
             }
         },
-        "Parent": null,
+        "Parent": {
+            "Name": "Player2UI"
+        },
         "Transform": {
             "Mirror": {
                 "X": false,
@@ -9981,7 +9569,9 @@
                 "FilePath": "res\\assets\\textures\\gui\\gloopIndicator.png"
             }
         },
-        "Parent": null,
+        "Parent": {
+            "Name": "Player3UI"
+        },
         "Transform": {
             "Mirror": {
                 "X": false,
@@ -10025,7 +9615,9 @@
                 "FilePath": "res\\assets\\textures\\gui\\gloopIndicator.png"
             }
         },
-        "Parent": null,
+        "Parent": {
+            "Name": "Player4UI"
+        },
         "Transform": {
             "Mirror": {
                 "X": false,
@@ -10069,7 +9661,9 @@
                 "FilePath": "res\\assets\\textures\\gui\\gloopIndicator.png"
             }
         },
-        "Parent": null,
+        "Parent": {
+            "Name": "Player1UI"
+        },
         "Transform": {
             "Mirror": {
                 "X": false,
@@ -10113,7 +9707,9 @@
                 "FilePath": "res\\assets\\textures\\gui\\gloopIndicator.png"
             }
         },
-        "Parent": null,
+        "Parent": {
+            "Name": "Player2UI"
+        },
         "Transform": {
             "Mirror": {
                 "X": false,
@@ -10157,7 +9753,9 @@
                 "FilePath": "res\\assets\\textures\\gui\\gloopIndicator.png"
             }
         },
-        "Parent": null,
+        "Parent": {
+            "Name": "Player3UI"
+        },
         "Transform": {
             "Mirror": {
                 "X": false,
@@ -10201,7 +9799,9 @@
                 "FilePath": "res\\assets\\textures\\gui\\gloopIndicator.png"
             }
         },
-        "Parent": null,
+        "Parent": {
+            "Name": "Player4UI"
+        },
         "Transform": {
             "Mirror": {
                 "X": false,
@@ -10245,7 +9845,9 @@
                 "FilePath": "res\\assets\\textures\\gui\\gloopIndicator.png"
             }
         },
-        "Parent": null,
+        "Parent": {
+            "Name": "Player1UI"
+        },
         "Transform": {
             "Mirror": {
                 "X": false,
@@ -10289,7 +9891,9 @@
                 "FilePath": "res\\assets\\textures\\gui\\gloopIndicator.png"
             }
         },
-        "Parent": null,
+        "Parent": {
+            "Name": "Player2UI"
+        },
         "Transform": {
             "Mirror": {
                 "X": false,
@@ -10333,7 +9937,9 @@
                 "FilePath": "res\\assets\\textures\\gui\\gloopIndicator.png"
             }
         },
-        "Parent": null,
+        "Parent": {
+            "Name": "Player3UI"
+        },
         "Transform": {
             "Mirror": {
                 "X": false,
@@ -10377,7 +9983,9 @@
                 "FilePath": "res\\assets\\textures\\gui\\gloopIndicator.png"
             }
         },
-        "Parent": null,
+        "Parent": {
+            "Name": "Player4UI"
+        },
         "Transform": {
             "Mirror": {
                 "X": false,
@@ -11065,58 +10673,6 @@
             }
         }
     },
-    "Lose Screen": {
-        "GuiRenderable": {
-            "Clipping": {
-                "Lower": [
-                    0.0,
-                    0.0
-                ],
-                "Upper": [
-                    1.0,
-                    1.0
-                ]
-            },
-            "CullingMask": 15,
-            "Enabled": true,
-            "Texture": {
-                "Alias": "YouLose",
-                "FilePath": "res\\assets\\textures\\gui\\YouLose.jpg"
-            }
-        },
-        "Parent": null,
-        "Renderable": {
-            "CullingMask": 15,
-            "Enabled": true,
-            "Material": {
-                "Alias": null
-            },
-            "Mesh": null
-        },
-        "Transform": {
-            "Mirror": {
-                "X": false,
-                "Y": false,
-                "Z": false
-            },
-            "Position": {
-                "X": -100.0,
-                "Y": -100.0,
-                "Z": -200.0
-            },
-            "Rotation": {
-                "qW": 1.0,
-                "qX": 0.0,
-                "qY": 0.0,
-                "qZ": 0.0
-            },
-            "Scale": {
-                "X": 11.0,
-                "Y": 10.0,
-                "Z": 1.0
-            }
-        }
-    },
     "LowerStairsColliderL": {
         "Collidable": {
             "Shapes": [
@@ -11161,14 +10717,14 @@
             },
             "Position": {
                 "X": -13.966184616088867,
-                "Y": -2.8502349853515625,
-                "Z": 17.61451530456543
+                "Y": -2.7659752368927,
+                "Z": 22.280000686645508
             },
             "Rotation": {
-                "qW": 0.6441704034805298,
-                "qX": -0.28310132026672363,
-                "qY": 0.6544687747955322,
-                "qZ": -0.2767106294631958
+                "qW": 0.648283064365387,
+                "qX": 0.2909155488014221,
+                "qY": -0.6378411054611206,
+                "qZ": -0.29707908630371094
             },
             "Scale": {
                 "X": 0.6792049407958984,
@@ -14549,9 +14105,9 @@
                 "Z": false
             },
             "Position": {
-                "X": -3.0399999618530273,
-                "Y": -0.05576205253601074,
-                "Z": 7.138205051422119
+                "X": -7.039496898651123,
+                "Y": -0.04903686046600342,
+                "Z": 10.140000343322754
             },
             "Rotation": {
                 "qW": 1.0,
@@ -14562,7 +14118,7 @@
             "Scale": {
                 "X": 1.2400000095367432,
                 "Y": 1.0,
-                "Z": 1.3199999332427979
+                "Z": 2.2799997329711914
             }
         }
     },
@@ -14588,7 +14144,7 @@
             "CullingMask": 4294967294,
             "Enabled": true,
             "Material": {
-                "Alias": "container"
+                "Alias": null
             },
             "Mesh": {
                 "Alias": "capsule",
@@ -14596,7 +14152,7 @@
             }
         },
         "RigidBody": {
-            "Friction": 0.8999999761581421,
+            "Friction": 0.0,
             "Mass": 5.0,
             "Properties": 126
         },
@@ -14607,15 +14163,15 @@
                 "Z": false
             },
             "Position": {
-                "X": 3.687077760696411,
+                "X": 15.365219116210938,
                 "Y": 1.0499999523162842,
-                "Z": -3.2709097862243652
+                "Z": -2.1759090423583984
             },
             "Rotation": {
-                "qW": 1.0,
-                "qX": 0.0,
-                "qY": 0.0,
-                "qZ": 0.0
+                "qW": 0.7014285922050476,
+                "qX": -1.0292694696545368e-08,
+                "qY": 0.7127397060394287,
+                "qZ": -1.0292694696545368e-08
             },
             "Scale": {
                 "X": 1.0,
@@ -14752,7 +14308,7 @@
             "CullingMask": 4294967293,
             "Enabled": true,
             "Material": {
-                "Alias": "container"
+                "Alias": null
             },
             "Mesh": {
                 "Alias": "capsule",
@@ -14760,7 +14316,7 @@
             }
         },
         "RigidBody": {
-            "Friction": 0.8999999761581421,
+            "Friction": 0.0,
             "Mass": 5.0,
             "Properties": 126
         },
@@ -14771,15 +14327,15 @@
                 "Z": false
             },
             "Position": {
-                "X": -0.49752914905548096,
+                "X": 15.330766677856445,
                 "Y": 1.0499999523162842,
-                "Z": 15.712687492370605
+                "Z": 24.380056381225586
             },
             "Rotation": {
-                "qW": 1.0,
-                "qX": 0.0,
-                "qY": 0.0,
-                "qZ": 0.0
+                "qW": 0.7003018260002136,
+                "qX": -2.141623554052785e-07,
+                "qY": 0.7138468623161316,
+                "qZ": -2.141623554052785e-07
             },
             "Scale": {
                 "X": 1.0,
@@ -14838,7 +14394,7 @@
             "CullingMask": 4294967291,
             "Enabled": true,
             "Material": {
-                "Alias": "container"
+                "Alias": null
             },
             "Mesh": {
                 "Alias": "capsule",
@@ -14846,7 +14402,7 @@
             }
         },
         "RigidBody": {
-            "Friction": 0.8999999761581421,
+            "Friction": 0.0,
             "Mass": 5.0,
             "Properties": 126
         },
@@ -14857,15 +14413,15 @@
                 "Z": false
             },
             "Position": {
-                "X": -6.983270645141602,
+                "X": 15.361164093017578,
                 "Y": 1.0499999523162842,
-                "Z": -2.0278282165527344
+                "Z": -3.7874622344970703
             },
             "Rotation": {
-                "qW": 1.0,
-                "qX": 0.0,
-                "qY": 0.0,
-                "qZ": 0.0
+                "qW": 0.6945565938949585,
+                "qX": -3.3408105082344264e-07,
+                "qY": 0.7194380164146423,
+                "qZ": -3.3408105082344264e-07
             },
             "Scale": {
                 "X": 1.0,
@@ -15002,7 +14558,7 @@
             "CullingMask": 4294967287,
             "Enabled": true,
             "Material": {
-                "Alias": "container"
+                "Alias": null
             },
             "Mesh": {
                 "Alias": "capsule",
@@ -15010,7 +14566,7 @@
             }
         },
         "RigidBody": {
-            "Friction": 0.8999999761581421,
+            "Friction": 0.0,
             "Mass": 5.0,
             "Properties": 126
         },
@@ -15021,15 +14577,15 @@
                 "Z": false
             },
             "Position": {
-                "X": -7.452012062072754,
+                "X": 15.279980659484863,
                 "Y": 1.0499999523162842,
-                "Z": 13.626511573791504
+                "Z": 22.724031448364258
             },
             "Rotation": {
-                "qW": 1.0,
-                "qX": 0.0,
-                "qY": 0.0,
-                "qZ": 0.0
+                "qW": 0.6508892178535461,
+                "qX": -9.633968147682026e-07,
+                "qY": 0.7591727375984192,
+                "qZ": -9.633968147682026e-07
             },
             "Scale": {
                 "X": 1.0,
@@ -15371,9 +14927,9 @@
                 "Z": false
             },
             "Position": {
-                "X": -2.0570218563079834,
+                "X": -2.9807941913604736,
                 "Y": -4.190000057220459,
-                "Z": 12.502532005310059
+                "Z": 18.474714279174805
             },
             "Rotation": {
                 "qW": 1.0,
@@ -15748,7 +15304,7 @@
             "CullingMask": 15,
             "Enabled": true,
             "Material": {
-                "Alias": "crate"
+                "Alias": null
             },
             "Mesh": {
                 "Alias": "crateTemp",
@@ -15769,7 +15325,7 @@
             "Position": {
                 "X": -3.9311070442199707,
                 "Y": -4.162660598754883,
-                "Z": 20.10306739807129
+                "Z": 26.100000381469727
             },
             "Rotation": {
                 "qW": 0.01413887832313776,
@@ -15784,7 +15340,7 @@
             }
         }
     },
-    "RedCleaningSolution0": {
+    "RedCleaningSolution 0": {
         "Collidable": {
             "Shapes": [
                 {
@@ -15808,7 +15364,7 @@
             "CullingMask": 15,
             "Enabled": true,
             "Material": {
-                "Alias": "pirax"
+                "Alias": "PiraxRed"
             },
             "Mesh": {
                 "Alias": "Pirax",
@@ -15818,7 +15374,7 @@
         "RigidBody": {
             "Friction": 0.5,
             "Mass": 1.0,
-            "Properties": 34
+            "Properties": 98
         },
         "Transform": {
             "Mirror": {
@@ -15827,129 +15383,9 @@
                 "Z": false
             },
             "Position": {
-                "X": 3.018202781677246,
-                "Y": 0.3100000023841858,
-                "Z": 15.460844039916992
-            },
-            "Rotation": {
-                "qW": 1.0,
-                "qX": 0.0,
-                "qY": 0.0,
-                "qZ": 0.0
-            },
-            "Scale": {
-                "X": 0.30000001192092896,
-                "Y": 0.30000001192092896,
-                "Z": 0.30000001192092896
-            }
-        }
-    },
-    "RedCleaningSolution1": {
-        "Collidable": {
-            "Shapes": [
-                {
-                    "Center": [
-                        0.0,
-                        0.0,
-                        0.0
-                    ],
-                    "Size": [
-                        0.800000011920929,
-                        1.0,
-                        0.8500000238418579
-                    ],
-                    "Trigger": false,
-                    "Type": 0
-                }
-            ]
-        },
-        "Parent": null,
-        "Renderable": {
-            "CullingMask": 15,
-            "Enabled": true,
-            "Material": {
-                "Alias": "pirax"
-            },
-            "Mesh": {
-                "Alias": "Pirax",
-                "FilePath": "res\\assets\\models\\Pirax.obj"
-            }
-        },
-        "RigidBody": {
-            "Friction": 0.5,
-            "Mass": 1.0,
-            "Properties": 34
-        },
-        "Transform": {
-            "Mirror": {
-                "X": false,
-                "Y": false,
-                "Z": false
-            },
-            "Position": {
-                "X": 3.654895305633545,
-                "Y": 0.3100000023841858,
-                "Z": 15.577291488647461
-            },
-            "Rotation": {
-                "qW": 1.0,
-                "qX": 0.0,
-                "qY": 0.0,
-                "qZ": 0.0
-            },
-            "Scale": {
-                "X": 0.30000001192092896,
-                "Y": 0.30000001192092896,
-                "Z": 0.30000001192092896
-            }
-        }
-    },
-    "RedCleaningSolution2": {
-        "Collidable": {
-            "Shapes": [
-                {
-                    "Center": [
-                        0.0,
-                        0.0,
-                        0.0
-                    ],
-                    "Size": [
-                        0.800000011920929,
-                        1.0,
-                        0.8500000238418579
-                    ],
-                    "Trigger": false,
-                    "Type": 0
-                }
-            ]
-        },
-        "Parent": null,
-        "Renderable": {
-            "CullingMask": 15,
-            "Enabled": true,
-            "Material": {
-                "Alias": "pirax"
-            },
-            "Mesh": {
-                "Alias": "Pirax",
-                "FilePath": "res\\assets\\models\\Pirax.obj"
-            }
-        },
-        "RigidBody": {
-            "Friction": 0.5,
-            "Mass": 1.0,
-            "Properties": 34
-        },
-        "Transform": {
-            "Mirror": {
-                "X": false,
-                "Y": false,
-                "Z": false
-            },
-            "Position": {
-                "X": 3.4367835521698,
-                "Y": 0.3100000023841858,
-                "Z": 15.107736587524414
+                "X": 9.539999961853027,
+                "Y": 0.9900000095367432,
+                "Z": 26.34000015258789
             },
             "Rotation": {
                 "qW": 1.0,
@@ -15988,7 +15424,7 @@
             "CullingMask": 15,
             "Enabled": true,
             "Material": {
-                "Alias": "pirax"
+                "Alias": "PiraxRed"
             },
             "Mesh": {
                 "Alias": "Pirax",
@@ -16103,7 +15539,7 @@
             "Position": {
                 "X": 13.802732467651367,
                 "Y": 4.199999809265137,
-                "Z": 16.996196746826172
+                "Z": 23.0
             },
             "Rotation": {
                 "qW": 1.0,
@@ -16163,7 +15599,7 @@
             "Position": {
                 "X": 1.0269949436187744,
                 "Y": 0.10000000149011612,
-                "Z": 18.01170539855957
+                "Z": 24.010000228881836
             },
             "Rotation": {
                 "qW": 1.0,
@@ -16223,7 +15659,7 @@
             "Position": {
                 "X": -17.431373596191406,
                 "Y": 0.10000000149011612,
-                "Z": 16.832475662231445
+                "Z": 22.829999923706055
             },
             "Rotation": {
                 "qW": 1.0,
@@ -16250,7 +15686,7 @@
             },
             "Mesh": {
                 "Alias": "GarbageSurrenderAnim_000010",
-                "FilePath": "res\\assets\\models\\Animation\\Garbage\\GarbageSurrender\\GarbageSurrenderAnim_000010.obj"
+                "FilePath": "res\\assets\\animation\\Garbage\\GarbageSurrender\\GarbageSurrenderAnim_000010.obj"
             }
         },
         "Transform": {
@@ -16289,7 +15725,7 @@
             },
             "Mesh": {
                 "Alias": "GarbageSurrenderAnim_000078",
-                "FilePath": "res\\assets\\models\\Animation\\Garbage\\GarbageSurrender\\GarbageSurrenderAnim_000078.obj"
+                "FilePath": "res\\assets\\animation\\Garbage\\GarbageSurrender\\GarbageSurrenderAnim_000078.obj"
             }
         },
         "Transform": {
@@ -16328,7 +15764,7 @@
             },
             "Mesh": {
                 "Alias": "GarbageSurrenderAnim_000001",
-                "FilePath": "res\\assets\\models\\Animation\\Garbage\\GarbageSurrender\\GarbageSurrenderAnim_000001.obj"
+                "FilePath": "res\\assets\\animation\\Garbage\\GarbageSurrender\\GarbageSurrenderAnim_000001.obj"
             }
         },
         "Transform": {
@@ -16355,7 +15791,7 @@
             }
         }
     },
-    "RedGloopA0": {
+    "RedGloop 0": {
         "Collidable": {
             "Shapes": [
                 {
@@ -16379,7 +15815,7 @@
             "CullingMask": 15,
             "Enabled": true,
             "Material": {
-                "Alias": "goop"
+                "Alias": "GloopRed"
             },
             "Mesh": {
                 "Alias": "Gloop",
@@ -16389,7 +15825,7 @@
         "RigidBody": {
             "Friction": 0.5,
             "Mass": 1.0,
-            "Properties": 34
+            "Properties": 98
         },
         "Transform": {
             "Mirror": {
@@ -16398,134 +15834,14 @@
                 "Z": false
             },
             "Position": {
-                "X": 1.3567394018173218,
-                "Y": 0.27000001072883606,
-                "Z": 14.250576972961426
+                "X": 9.609999656677246,
+                "Y": 2.006235122680664,
+                "Z": 25.889999389648438
             },
             "Rotation": {
-                "qW": 1.0,
+                "qW": 0.7147743105888367,
                 "qX": 0.0,
-                "qY": 0.0,
-                "qZ": 0.0
-            },
-            "Scale": {
-                "X": 0.10000000149011612,
-                "Y": 0.10000000149011612,
-                "Z": 0.10000000149011612
-            }
-        }
-    },
-    "RedGloopA1": {
-        "Collidable": {
-            "Shapes": [
-                {
-                    "Center": [
-                        0.0,
-                        0.0,
-                        0.0
-                    ],
-                    "Size": [
-                        1.5499999523162842,
-                        2.6500000953674316,
-                        1.0
-                    ],
-                    "Trigger": false,
-                    "Type": 0
-                }
-            ]
-        },
-        "Parent": null,
-        "Renderable": {
-            "CullingMask": 15,
-            "Enabled": true,
-            "Material": {
-                "Alias": "goop"
-            },
-            "Mesh": {
-                "Alias": "Gloop",
-                "FilePath": "res\\assets\\models\\Gloop.obj"
-            }
-        },
-        "RigidBody": {
-            "Friction": 0.5,
-            "Mass": 1.0,
-            "Properties": 34
-        },
-        "Transform": {
-            "Mirror": {
-                "X": false,
-                "Y": false,
-                "Z": false
-            },
-            "Position": {
-                "X": 1.5808879137039185,
-                "Y": 0.27000001072883606,
-                "Z": 13.947959899902344
-            },
-            "Rotation": {
-                "qW": 1.0,
-                "qX": 0.0,
-                "qY": 0.0,
-                "qZ": 0.0
-            },
-            "Scale": {
-                "X": 0.10000000149011612,
-                "Y": 0.10000000149011612,
-                "Z": 0.10000000149011612
-            }
-        }
-    },
-    "RedGloopA2": {
-        "Collidable": {
-            "Shapes": [
-                {
-                    "Center": [
-                        0.0,
-                        0.0,
-                        0.0
-                    ],
-                    "Size": [
-                        1.5499999523162842,
-                        2.6500000953674316,
-                        1.0
-                    ],
-                    "Trigger": false,
-                    "Type": 0
-                }
-            ]
-        },
-        "Parent": null,
-        "Renderable": {
-            "CullingMask": 15,
-            "Enabled": true,
-            "Material": {
-                "Alias": "goop"
-            },
-            "Mesh": {
-                "Alias": "Gloop",
-                "FilePath": "res\\assets\\models\\Gloop.obj"
-            }
-        },
-        "RigidBody": {
-            "Friction": 0.5,
-            "Mass": 1.0,
-            "Properties": 34
-        },
-        "Transform": {
-            "Mirror": {
-                "X": false,
-                "Y": false,
-                "Z": false
-            },
-            "Position": {
-                "X": 1.136847972869873,
-                "Y": 0.27000001072883606,
-                "Z": 13.881453514099121
-            },
-            "Rotation": {
-                "qW": 1.0,
-                "qX": 0.0,
-                "qY": 0.0,
+                "qY": 0.6993551850318909,
                 "qZ": 0.0
             },
             "Scale": {
@@ -16559,7 +15875,7 @@
             "CullingMask": 15,
             "Enabled": true,
             "Material": {
-                "Alias": "goop"
+                "Alias": "GloopRed"
             },
             "Mesh": {
                 "Alias": "Gloop",
@@ -16653,7 +15969,7 @@
             "CullingMask": 15,
             "Enabled": true,
             "Material": {
-                "Alias": "mop"
+                "Alias": "MopRed"
             },
             "Mesh": {
                 "Alias": "mop",
@@ -16672,15 +15988,15 @@
                 "Z": false
             },
             "Position": {
-                "X": 1.6780734062194824,
-                "Y": 0.20000000298023224,
-                "Z": 14.971184730529785
+                "X": 9.80676555633545,
+                "Y": 0.7215801477432251,
+                "Z": 20.83606719970703
             },
             "Rotation": {
-                "qW": 1.0,
-                "qX": 0.0,
-                "qY": 0.0,
-                "qZ": 0.0
+                "qW": 1.5150510535022477e-07,
+                "qX": -0.37285807728767395,
+                "qY": -0.9278883934020996,
+                "qZ": 3.4892761959781637e-06
             },
             "Scale": {
                 "X": 1.0,
@@ -16713,7 +16029,7 @@
             "CullingMask": 15,
             "Enabled": true,
             "Material": {
-                "Alias": "mop"
+                "Alias": "MopRed"
             },
             "Mesh": {
                 "Alias": "mop",
@@ -16732,15 +16048,15 @@
                 "Z": false
             },
             "Position": {
-                "X": 9.672597885131836,
+                "X": 9.843777656555176,
                 "Y": 0.7275826930999756,
-                "Z": 13.938289642333984
+                "Z": 20.204008102416992
             },
             "Rotation": {
-                "qW": 0.6493419408798218,
-                "qX": -0.2621261179447174,
-                "qY": -0.6619923114776611,
-                "qZ": 0.26722872257232666
+                "qW": -0.0006725529674440622,
+                "qX": -0.39064639806747437,
+                "qY": -0.9205119609832764,
+                "qZ": 0.007253712043166161
             },
             "Scale": {
                 "X": 1.0,
@@ -17758,6 +17074,806 @@
             },
             "Scale": {
                 "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "ShelfCollider 1": {
+        "Collidable": {
+            "Shapes": [
+                {
+                    "Center": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Size": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "Trigger": false,
+                    "Type": 0
+                }
+            ]
+        },
+        "Parent": {
+            "Name": "ShelfColliders"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": false,
+            "Material": {
+                "Alias": null
+            },
+            "Mesh": {
+                "Alias": "cube",
+                "FilePath": "res\\assets\\models\\cube.obj"
+            }
+        },
+        "RigidBody": {
+            "Friction": 0.0,
+            "Mass": 0.0,
+            "Properties": 34
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": 9.350214004516602,
+                "Y": 1.7149016857147217,
+                "Z": -5.029796600341797
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 0.8062030673027039,
+                "Y": 3.5412607192993164,
+                "Z": 0.22744011878967285
+            }
+        }
+    },
+    "ShelfCollider 10": {
+        "Collidable": {
+            "Shapes": [
+                {
+                    "Center": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Size": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "Trigger": false,
+                    "Type": 0
+                }
+            ]
+        },
+        "Parent": {
+            "Name": "ShelfColliders 1"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": false,
+            "Material": {
+                "Alias": null
+            },
+            "Mesh": {
+                "Alias": "cube",
+                "FilePath": "res\\assets\\models\\cube.obj"
+            }
+        },
+        "RigidBody": {
+            "Friction": 0.0,
+            "Mass": 0.0,
+            "Properties": 34
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": 9.350214004516602,
+                "Y": -0.38180112838745117,
+                "Z": -5.760519027709961
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 0.8062030673027039,
+                "Y": 0.12602917850017548,
+                "Z": 1.4050910472869873
+            }
+        }
+    },
+    "ShelfCollider 11": {
+        "Collidable": {
+            "Shapes": [
+                {
+                    "Center": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Size": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "Trigger": false,
+                    "Type": 0
+                }
+            ]
+        },
+        "Parent": {
+            "Name": "ShelfColliders 1"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": false,
+            "Material": {
+                "Alias": null
+            },
+            "Mesh": {
+                "Alias": "cube",
+                "FilePath": "res\\assets\\models\\cube.obj"
+            }
+        },
+        "RigidBody": {
+            "Friction": 0.0,
+            "Mass": 0.0,
+            "Properties": 34
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": 9.350214004516602,
+                "Y": 0.9290894269943237,
+                "Z": -6.511251449584961
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 0.8062030673027039,
+                "Y": 3.5412607192993164,
+                "Z": 0.22744011878967285
+            }
+        }
+    },
+    "ShelfCollider 12": {
+        "Collidable": {
+            "Shapes": [
+                {
+                    "Center": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Size": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "Trigger": false,
+                    "Type": 0
+                }
+            ]
+        },
+        "Parent": {
+            "Name": "ShelfColliders 1"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": false,
+            "Material": {
+                "Alias": null
+            },
+            "Mesh": {
+                "Alias": "cube",
+                "FilePath": "res\\assets\\models\\cube.obj"
+            }
+        },
+        "RigidBody": {
+            "Friction": 0.0,
+            "Mass": 0.0,
+            "Properties": 34
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": 9.350214004516602,
+                "Y": 0.7848951816558838,
+                "Z": -5.031150817871094
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 0.8062030673027039,
+                "Y": 3.5412607192993164,
+                "Z": 0.22744011878967285
+            }
+        }
+    },
+    "ShelfCollider 2": {
+        "Collidable": {
+            "Shapes": [
+                {
+                    "Center": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Size": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "Trigger": false,
+                    "Type": 0
+                }
+            ]
+        },
+        "Parent": {
+            "Name": "ShelfColliders"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": false,
+            "Material": {
+                "Alias": null
+            },
+            "Mesh": {
+                "Alias": "cube",
+                "FilePath": "res\\assets\\models\\cube.obj"
+            }
+        },
+        "RigidBody": {
+            "Friction": 0.0,
+            "Mass": 0.0,
+            "Properties": 34
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": 9.350214004516602,
+                "Y": 1.7149016857147217,
+                "Z": -6.510756969451904
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 0.8062030673027039,
+                "Y": 3.5412607192993164,
+                "Z": 0.22744011878967285
+            }
+        }
+    },
+    "ShelfCollider 3": {
+        "Collidable": {
+            "Shapes": [
+                {
+                    "Center": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Size": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "Trigger": false,
+                    "Type": 0
+                }
+            ]
+        },
+        "Parent": {
+            "Name": "ShelfColliders"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": false,
+            "Material": {
+                "Alias": null
+            },
+            "Mesh": {
+                "Alias": "cube",
+                "FilePath": "res\\assets\\models\\cube.obj"
+            }
+        },
+        "RigidBody": {
+            "Friction": 0.0,
+            "Mass": 0.0,
+            "Properties": 34
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": 9.350214004516602,
+                "Y": 0.04741904139518738,
+                "Z": -5.759325981140137
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 0.8062030673027039,
+                "Y": 0.10694801807403564,
+                "Z": 1.4050911664962769
+            }
+        }
+    },
+    "ShelfCollider 4": {
+        "Collidable": {
+            "Shapes": [
+                {
+                    "Center": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Size": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "Trigger": false,
+                    "Type": 0
+                }
+            ]
+        },
+        "Parent": {
+            "Name": "ShelfColliders"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": false,
+            "Material": {
+                "Alias": null
+            },
+            "Mesh": {
+                "Alias": "cube",
+                "FilePath": "res\\assets\\models\\cube.obj"
+            }
+        },
+        "RigidBody": {
+            "Friction": 0.0,
+            "Mass": 0.0,
+            "Properties": 34
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": 9.350214004516602,
+                "Y": 0.7405363321304321,
+                "Z": -5.759325981140137
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 0.8062030673027039,
+                "Y": 0.1593519151210785,
+                "Z": 1.4050911664962769
+            }
+        }
+    },
+    "ShelfCollider 5": {
+        "Collidable": {
+            "Shapes": [
+                {
+                    "Center": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Size": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "Trigger": false,
+                    "Type": 0
+                }
+            ]
+        },
+        "Parent": {
+            "Name": "ShelfColliders"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": false,
+            "Material": {
+                "Alias": null
+            },
+            "Mesh": {
+                "Alias": "cube",
+                "FilePath": "res\\assets\\models\\cube.obj"
+            }
+        },
+        "RigidBody": {
+            "Friction": 0.0,
+            "Mass": 0.0,
+            "Properties": 34
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": 9.350214004516602,
+                "Y": 1.7773303985595703,
+                "Z": -5.759325981140137
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 0.8062030673027039,
+                "Y": 0.1593519151210785,
+                "Z": 1.4050911664962769
+            }
+        }
+    },
+    "ShelfCollider 6": {
+        "Collidable": {
+            "Shapes": [
+                {
+                    "Center": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Size": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "Trigger": false,
+                    "Type": 0
+                }
+            ]
+        },
+        "Parent": {
+            "Name": "ShelfColliders"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": false,
+            "Material": {
+                "Alias": null
+            },
+            "Mesh": {
+                "Alias": "cube",
+                "FilePath": "res\\assets\\models\\cube.obj"
+            }
+        },
+        "RigidBody": {
+            "Friction": 0.0,
+            "Mass": 0.0,
+            "Properties": 34
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": 9.350214004516602,
+                "Y": 2.9268810749053955,
+                "Z": -5.759325981140137
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 0.8062030673027039,
+                "Y": 0.1593519151210785,
+                "Z": 1.4050911664962769
+            }
+        }
+    },
+    "ShelfCollider 7": {
+        "Collidable": {
+            "Shapes": [
+                {
+                    "Center": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Size": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "Trigger": false,
+                    "Type": 0
+                }
+            ]
+        },
+        "Parent": {
+            "Name": "ShelfColliders 1"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": false,
+            "Material": {
+                "Alias": null
+            },
+            "Mesh": {
+                "Alias": "cube",
+                "FilePath": "res\\assets\\models\\cube.obj"
+            }
+        },
+        "RigidBody": {
+            "Friction": 0.0,
+            "Mass": 0.0,
+            "Properties": 34
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": 9.350214004516602,
+                "Y": 2.5131421089172363,
+                "Z": -5.759731292724609
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 0.8062030673027039,
+                "Y": 0.1593519151210785,
+                "Z": 1.4050911664962769
+            }
+        }
+    },
+    "ShelfCollider 8": {
+        "Collidable": {
+            "Shapes": [
+                {
+                    "Center": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Size": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "Trigger": false,
+                    "Type": 0
+                }
+            ]
+        },
+        "Parent": {
+            "Name": "ShelfColliders 1"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": false,
+            "Material": {
+                "Alias": null
+            },
+            "Mesh": {
+                "Alias": "cube",
+                "FilePath": "res\\assets\\models\\cube.obj"
+            }
+        },
+        "RigidBody": {
+            "Friction": 0.0,
+            "Mass": 0.0,
+            "Properties": 34
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": 9.350214004516602,
+                "Y": 1.787086009979248,
+                "Z": -5.759548187255859
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 0.8062030673027039,
+                "Y": 0.1593519151210785,
+                "Z": 1.4050911664962769
+            }
+        }
+    },
+    "ShelfCollider 9": {
+        "Collidable": {
+            "Shapes": [
+                {
+                    "Center": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Size": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "Trigger": false,
+                    "Type": 0
+                }
+            ]
+        },
+        "Parent": {
+            "Name": "ShelfColliders 1"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": false,
+            "Material": {
+                "Alias": null
+            },
+            "Mesh": {
+                "Alias": "cube",
+                "FilePath": "res\\assets\\models\\cube.obj"
+            }
+        },
+        "RigidBody": {
+            "Friction": 0.0,
+            "Mass": 0.0,
+            "Properties": 34
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": 9.350214004516602,
+                "Y": 0.7497209310531616,
+                "Z": -5.759731292724609
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 0.8062030673027039,
+                "Y": 0.1593519151210785,
+                "Z": 1.4050911664962769
+            }
+        }
+    },
+    "ShelfColliders": {
+        "Parent": {
+            "Name": "CaptainsQuartersColliders"
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": 0.0,
+                "Y": 7.450581485102248e-09,
+                "Z": -4.768372150465439e-07
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0000001192092896,
+                "Y": 1.0000001192092896,
+                "Z": 1.0000001192092896
+            }
+        }
+    },
+    "ShelfColliders 1": {
+        "Parent": {
+            "Name": "CaptainsQuartersColliders 1"
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -0.015237350016832352,
+                "Y": 2.5287842750549316,
+                "Z": -11.531009674072266
+            },
+            "Rotation": {
+                "qW": -4.371138828673793e-08,
+                "qX": 1.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0000001192092896,
                 "Y": 1.0,
                 "Z": 1.0
             }
@@ -21831,58 +21947,6 @@
             "Scale": {
                 "X": 1.0,
                 "Y": 1.0,
-                "Z": 1.0
-            }
-        }
-    },
-    "Win Screen": {
-        "GuiRenderable": {
-            "Clipping": {
-                "Lower": [
-                    0.0,
-                    0.0
-                ],
-                "Upper": [
-                    1.0,
-                    1.0
-                ]
-            },
-            "CullingMask": 15,
-            "Enabled": true,
-            "Texture": {
-                "Alias": "VictoryScreen",
-                "FilePath": "res\\assets\\textures\\gui\\VictoryScreen.jpg"
-            }
-        },
-        "Parent": null,
-        "Renderable": {
-            "CullingMask": 15,
-            "Enabled": true,
-            "Material": {
-                "Alias": null
-            },
-            "Mesh": null
-        },
-        "Transform": {
-            "Mirror": {
-                "X": false,
-                "Y": false,
-                "Z": false
-            },
-            "Position": {
-                "X": -100.0,
-                "Y": -100.0,
-                "Z": -200.0
-            },
-            "Rotation": {
-                "qW": 1.0,
-                "qX": 0.0,
-                "qY": 0.0,
-                "qZ": 0.0
-            },
-            "Scale": {
-                "X": 10.0,
-                "Y": 10.0,
                 "Z": 1.0
             }
         }
