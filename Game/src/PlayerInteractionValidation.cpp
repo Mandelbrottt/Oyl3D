@@ -553,7 +553,7 @@ void PlayerInteractionValidationSystem::performCarryableItemInteraction(entt::en
 
 			std::cout << "PICKED UP MOP!\n";
 
-			itemNewPosition = glm::vec3(0.45f, 0.45f, -0.35f);
+			itemNewPosition = glm::vec3(0.45f, 0.55f, -0.35f);
 			itemNewRotation = glm::vec3(-100.0f, -54.7f, 99.0f);
 
 			break;
@@ -575,7 +575,7 @@ void PlayerInteractionValidationSystem::performCarryableItemInteraction(entt::en
 
 			std::cout << "PICKED UP GLOOP!\n";
 
-			itemNewPosition = glm::vec3(0.0f, 0.5f, -0.5f);
+			itemNewPosition = glm::vec3(0.0f, 0.58f, -0.55f);
 			itemNewRotation = glm::vec3(0.0f, 0.0f, 0.0f);
 
 			break;
@@ -854,7 +854,7 @@ void PlayerInteractionValidationSystem::dropPlayerCarriedItems(entt::entity a_pl
 					player.primaryCarriedItem = entt::null;
 
 					newPosition += playerTransform.getForward() * 0.7f;
-					newPosition += playerTransform.getUp()      * 0.2f;
+					newPosition += playerTransform.getUp()      * 0.4f;
 
 					break;
 				}
