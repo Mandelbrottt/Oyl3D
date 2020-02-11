@@ -72,7 +72,7 @@ struct MoveableUsingLerp
 struct Player
 {
 	PlayerNumber playerNum = PlayerNumber::One; //should always correspond with appropriate PlayerCamera player number
-	int controllerNum = -1; //the gid of the controller that will be used to control the player
+	int controllerNum      = -1; //the gid of the controller that will be used to control the player
 
 	Team team;
 
@@ -83,9 +83,9 @@ struct Player
 
 	glm::vec3 moveDirection = glm::vec3(0.0f);
 
-	float speedForce = 13.0f;
+	float speedForce = 4.7f;
 	float jumpForce  = 20.0f;
-	bool isJumping   = false;
+	bool  isJumping  = false;
 
 	float JUMP_COOLDOWN_DURATION = 0.1f;
 	float jumpCooldownTimer      = 0.0f;
@@ -99,7 +99,7 @@ struct Player
 	float CLEANING_TIME_DURATION = 1.2f; //IF YOU CHANGE THIS, MAKE SURE TO ALSO CHANGE THE DEPENDANT VALUES IN GARBAGE PILE AND GARBAGE HP BAR COMPONENETS (check the comments in those components to figure out which ones)
 	float cleaningTimeCountdown = CLEANING_TIME_DURATION;
 
-	bool isCameraLocked  = false;
+	bool  isCameraLocked = false;
 	float yRotationClamp = 0.0f;
 
 	entt::entity interactableEntity = entt::null;

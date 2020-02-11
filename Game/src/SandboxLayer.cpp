@@ -374,68 +374,62 @@ void SandboxLayer::onEnter()
 
 		{
 			//CLEANING SOLUTION
-			for (int i = 0; i < 3; i++)
-			{
-				entt::entity cleaningSolutionEntity = registry->create();
+			entt::entity cleaningSolutionEntity = registry->create();
 
-				component::Transform cleaningSolutionTransform;
-				cleaningSolutionTransform.setPosition(glm::vec3(3.0f, 0.31f, 3.0f));
-				cleaningSolutionTransform.setScale(glm::vec3(0.3f, 0.3f, 0.3f));
-				registry->assign<component::Transform>(cleaningSolutionEntity, cleaningSolutionTransform);
+			component::Transform cleaningSolutionTransform;
+			cleaningSolutionTransform.setPosition(glm::vec3(9.43f, 0.99f, -5.56f));
+			cleaningSolutionTransform.setScale(glm::vec3(0.3f, 0.3f, 0.3f));
+			registry->assign<component::Transform>(cleaningSolutionEntity, cleaningSolutionTransform);
 
-				auto& carryableItem = registry->assign<CarryableItem>(cleaningSolutionEntity);
-				carryableItem.team = Team::blue;
-				carryableItem.type = CarryableItemType::cleaningSolution;
+			auto& carryableItem = registry->assign<CarryableItem>(cleaningSolutionEntity);
+			carryableItem.team = Team::blue;
+			carryableItem.type = CarryableItemType::cleaningSolution;
 
-				auto& respawnable = registry->assign<Respawnable>(cleaningSolutionEntity);
-				respawnable.spawnPosition = glm::vec3(2.8f, 0.31f, 0.65f);
-				respawnable.spawnRotation = glm::vec3(0.0f);
+			auto& respawnable = registry->assign<Respawnable>(cleaningSolutionEntity);
+			respawnable.spawnPosition = glm::vec3(9.43f, 0.99f, -5.56f);
+			respawnable.spawnRotation = glm::vec3(0.0f);
 
-				auto& rb = registry->assign<component::RigidBody>(cleaningSolutionEntity);
+			auto& rb = registry->assign<component::RigidBody>(cleaningSolutionEntity);
 
-				registry->assign<component::Renderable>(cleaningSolutionEntity, mr);
+			registry->assign<component::Renderable>(cleaningSolutionEntity, mr);
 
-				auto& so2 = registry->assign<component::EntityInfo>(cleaningSolutionEntity);
-				so2.name = "BlueCleaningSolution" + std::to_string(i);
+			auto& so2 = registry->assign<component::EntityInfo>(cleaningSolutionEntity);
+			so2.name = "BlueCleaningSolution 0";
 
-				auto& cleaningSolutionCollider = registry->assign<component::Collidable>(cleaningSolutionEntity);
-				auto& shapeInfo = cleaningSolutionCollider.pushShape(ColliderType::Box);
-				shapeInfo.box.setSize({ 0.8f, 1.0f, 0.85f });
-			}
+			auto& cleaningSolutionCollider = registry->assign<component::Collidable>(cleaningSolutionEntity);
+			auto& shapeInfo = cleaningSolutionCollider.pushShape(ColliderType::Box);
+			shapeInfo.box.setSize({ 0.8f, 1.0f, 0.85f });
 		}
 
 		{
 			//GLOOP
-			for (int i = 0; i < 3; i++)
-			{
-				entt::entity gloopEntity = registry->create();
+			entt::entity gloopEntity = registry->create();
 
-				component::Transform gloopTransform;
-				gloopTransform.setPosition(glm::vec3(3.0f, 0.2f, 3.0f));
-				gloopTransform.setScale(glm::vec3(0.1f, 0.1f, 0.1f));
-				registry->assign<component::Transform>(gloopEntity, gloopTransform);
+			component::Transform gloopTransform;
+			gloopTransform.setPosition(glm::vec3(9.46f, 2.0f, -5.95f));
+			gloopTransform.setScale(glm::vec3(0.1f, 0.1f, 0.1f));
+			registry->assign<component::Transform>(gloopEntity, gloopTransform);
 
-				auto& carryableItem = registry->assign<CarryableItem>(gloopEntity);
-				carryableItem.team = Team::blue;
-				carryableItem.type = CarryableItemType::gloop;
+			auto& carryableItem = registry->assign<CarryableItem>(gloopEntity);
+			carryableItem.team = Team::blue;
+			carryableItem.type = CarryableItemType::gloop;
 
-				auto& respawnable = registry->assign<Respawnable>(gloopEntity);
-				respawnable.spawnPosition = glm::vec3(1.4f, 0.2f, 1.6f);
-				respawnable.spawnRotation = glm::vec3(0.0f);
+			auto& respawnable = registry->assign<Respawnable>(gloopEntity);
+			respawnable.spawnPosition = glm::vec3(9.46f, 2.0f, -5.95f);
+			respawnable.spawnRotation = glm::vec3(83.82f);
 
-				auto& rb = registry->assign<component::RigidBody>(gloopEntity);
+			auto& rb = registry->assign<component::RigidBody>(gloopEntity);
 
-				registry->assign<Gloop>(gloopEntity);
+			registry->assign<Gloop>(gloopEntity);
 
-				registry->assign<component::Renderable>(gloopEntity, mr);
+			registry->assign<component::Renderable>(gloopEntity, mr);
 
-				auto& so2 = registry->assign<component::EntityInfo>(gloopEntity);
-				so2.name = "BlueGloopA" + std::to_string(i);
+			auto& so2 = registry->assign<component::EntityInfo>(gloopEntity);
+			so2.name = "BlueGloop 0";
 
-				auto& gloopCollider = registry->assign<component::Collidable>(gloopEntity);
-				auto& shapeInfo = gloopCollider.pushShape(ColliderType::Box);
-				shapeInfo.box.setSize({ 1.55f, 2.65f, 1.0f });
-			}
+			auto& gloopCollider = registry->assign<component::Collidable>(gloopEntity);
+			auto& shapeInfo = gloopCollider.pushShape(ColliderType::Box);
+			shapeInfo.box.setSize({ 1.55f, 2.65f, 1.0f });
 		}
 
 		{
@@ -904,69 +898,63 @@ void SandboxLayer::onEnter()
 
 		{
 			//CLEANING SOLUTION
-			for (int i = 0; i < 3; i++)
-			{
-				entt::entity cleaningSolutionEntity = registry->create();
+			entt::entity cleaningSolutionEntity = registry->create();
 
-				component::Transform cleaningSolutionTransform;
-				cleaningSolutionTransform.setPosition(glm::vec3(3.0f, 0.22f, 3.0f));
-				cleaningSolutionTransform.setScale(glm::vec3(0.3f, 0.3f, 0.3f));
-				registry->assign<component::Transform>(cleaningSolutionEntity, cleaningSolutionTransform);
+			component::Transform cleaningSolutionTransform;
+			cleaningSolutionTransform.setPosition(glm::vec3(9.54f, 0.99f, 26.34f));
+			cleaningSolutionTransform.setScale(glm::vec3(0.3f, 0.3f, 0.3f));
+			registry->assign<component::Transform>(cleaningSolutionEntity, cleaningSolutionTransform);
 
-				auto& carryableItem = registry->assign<CarryableItem>(cleaningSolutionEntity);
-				carryableItem.team = Team::red;
-				carryableItem.type = CarryableItemType::cleaningSolution;
+			auto& carryableItem = registry->assign<CarryableItem>(cleaningSolutionEntity);
+			carryableItem.team = Team::red;
+			carryableItem.type = CarryableItemType::cleaningSolution;
 
-				auto& respawnable = registry->assign<Respawnable>(cleaningSolutionEntity);
-				respawnable.spawnPosition = glm::vec3(1.7f, 0.2f, 15.4f);
-				respawnable.spawnRotation = glm::vec3(0.0f);
+			auto& respawnable = registry->assign<Respawnable>(cleaningSolutionEntity);
+			respawnable.spawnPosition = glm::vec3(9.54f, 0.99f, 26.34f);
+			respawnable.spawnRotation = glm::vec3(0.0f);
 
-				auto& rb = registry->assign<component::RigidBody>(cleaningSolutionEntity);
+			auto& rb = registry->assign<component::RigidBody>(cleaningSolutionEntity);
 
-				registry->assign<component::Renderable>(cleaningSolutionEntity, mr);
+			registry->assign<component::Renderable>(cleaningSolutionEntity, mr);
 
-				auto& so2 = registry->assign<component::EntityInfo>(cleaningSolutionEntity);
-				so2.name = "RedCleaningSolution" + std::to_string(i);
+			auto& so2 = registry->assign<component::EntityInfo>(cleaningSolutionEntity);
+			so2.name = "RedCleaningSolution 0";
 
-				auto& cleaningSolutionCollider = registry->assign<component::Collidable>(cleaningSolutionEntity);
-				auto& shapeInfo = cleaningSolutionCollider.pushShape(ColliderType::Box);
-				shapeInfo.box.setSize({ 0.8f, 1.0f, 0.85f });
-			}
+			auto& cleaningSolutionCollider = registry->assign<component::Collidable>(cleaningSolutionEntity);
+			auto& shapeInfo = cleaningSolutionCollider.pushShape(ColliderType::Box);
+			shapeInfo.box.setSize({ 0.8f, 1.0f, 0.85f });
 		}
 
 		{
 			//GLOOP
-			for (int i = 0; i < 3; i++)
-			{
-				entt::entity gloopEntity = registry->create();
+			entt::entity gloopEntity = registry->create();
 
-				component::Transform gloopTransform;
-				gloopTransform.setPosition(glm::vec3(3.0f, 0.27f, 3.0f));
-				gloopTransform.setScale(glm::vec3(0.1f, 0.1f, 0.1f));
-				registry->assign<component::Transform>(gloopEntity, gloopTransform);
+			component::Transform gloopTransform;
+			gloopTransform.setPosition(glm::vec3(9.61f, 2.1f, 25.89f));
+			gloopTransform.setScale(glm::vec3(0.1f, 0.1f, 0.1f));
+			registry->assign<component::Transform>(gloopEntity, gloopTransform);
 
-				auto& carryableItem = registry->assign<CarryableItem>(gloopEntity);
-				carryableItem.team = Team::red;
-				carryableItem.type = CarryableItemType::gloop;
+			auto& carryableItem = registry->assign<CarryableItem>(gloopEntity);
+			carryableItem.team = Team::red;
+			carryableItem.type = CarryableItemType::gloop;
 
-				auto& respawnable = registry->assign<Respawnable>(gloopEntity);
-				respawnable.spawnPosition = glm::vec3(2.4f, 0.2f, 14.0f);
-				respawnable.spawnRotation = glm::vec3(0.0f);
+			auto& respawnable = registry->assign<Respawnable>(gloopEntity);
+			respawnable.spawnPosition = glm::vec3(9.61f, 2.0f, 25.89f);
+			respawnable.spawnRotation = glm::vec3(0.0f, 88.34f, 0.0f);
 
-				auto& rb = registry->assign<component::RigidBody>(gloopEntity);
+			auto& rb = registry->assign<component::RigidBody>(gloopEntity);
 
-				registry->assign<Gloop>(gloopEntity);
+			registry->assign<Gloop>(gloopEntity);
 
-				mr.mesh = Mesh::get("Gloop");
-				registry->assign<component::Renderable>(gloopEntity, mr);
+			mr.mesh = Mesh::get("Gloop");
+			registry->assign<component::Renderable>(gloopEntity, mr);
 
-				auto& so2 = registry->assign<component::EntityInfo>(gloopEntity);
-				so2.name = "RedGloopA" + std::to_string(i);
+			auto& so2 = registry->assign<component::EntityInfo>(gloopEntity);
+			so2.name = "RedGloop 0";
 
-				auto& gloopCollider = registry->assign<component::Collidable>(gloopEntity);
-				auto& shapeInfo = gloopCollider.pushShape(ColliderType::Box);
-				shapeInfo.box.setSize({ 1.55f, 2.65f, 1.0f });
-			}
+			auto& gloopCollider = registry->assign<component::Collidable>(gloopEntity);
+			auto& shapeInfo = gloopCollider.pushShape(ColliderType::Box);
+			shapeInfo.box.setSize({ 1.55f, 2.65f, 1.0f });
 		}
 
 		{
