@@ -14,7 +14,7 @@ void CannonSystem::onUpdate()
 	auto view = registry->view<Cannon, component::Transform>();
 	for (auto& cannonEntity : view)
 	{
-		auto& cannon = registry->get<Cannon>(cannonEntity);
+		auto& cannon          = registry->get<Cannon>(cannonEntity);
 	    auto& cannonTransform = registry->get<component::Transform>(cannonEntity);
 	    
 	    //update fuse for every cannon
