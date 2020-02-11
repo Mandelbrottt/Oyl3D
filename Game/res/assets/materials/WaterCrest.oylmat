@@ -1,14 +1,14 @@
 {
     "Material": {
-        "Alias": "water",
+        "Alias": "WaterCrest",
         "MainProperties": {
             "Offset": [
-                166.931396484375,
-                164.58197021484375
+                0.0,
+                0.0
             ],
             "Tiling": [
-                15.0,
-                10.0
+                1.0,
+                1.0
             ]
         },
         "Shader": {
@@ -24,16 +24,16 @@
         },
         "Textures": {
             "Albedo": {
-                "Alias": "water",
-                "FilePath": "res\\assets\\textures\\water.png",
-                "Profile": 1,
+                "Alias": "WaterCrest",
+                "FilePath": "res\\assets\\textures\\WaterCrest.png",
+                "Profile": 0,
                 "guid": null
             },
             "Emission": null,
             "Normal": null,
             "Specular": {
-                "Alias": "Oyl Black",
-                "FilePath": "../Engine/res/textures/black.png",
+                "Alias": "Oyl White",
+                "FilePath": "../Engine/res/textures/white.png",
                 "Profile": 0,
                 "guid": null
             }
