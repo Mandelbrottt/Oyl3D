@@ -486,38 +486,6 @@ public:
 				}
 			}
 		}
-
-		{
-			entt::entity e = registry->create();
-			auto& gui = registry->assign<component::GuiRenderable>(e);
-			gui.texture = Texture2D::cache("res/assets/textures/gui/VictoryScreen.jpg");
-
-			component::Transform winScreenTransform;
-			winScreenTransform.setPosition(glm::vec3(-100.0f, -100.0f, -200.0f));
-			registry->assign<component::Transform>(e, winScreenTransform);
-
-			auto& endScreen = registry->assign<EndScreen>(e);
-			endScreen.isLoseScreen = false;
-
-			auto& so = registry->assign<component::EntityInfo>(e);
-			so.name = "Win Screen";
-		}
-
-		{
-			entt::entity e = registry->create();
-			auto& gui = registry->assign<component::GuiRenderable>(e);
-			gui.texture = Texture2D::cache("res/assets/textures/gui/YouLose.jpg");
-
-			auto& endScreen = registry->assign<EndScreen>(e);
-			endScreen.isLoseScreen = true;
-
-			component::Transform loseScreenTransform;
-			loseScreenTransform.setPosition(glm::vec3(-100.0f, -100.0f, -200.0f));
-			registry->assign<component::Transform>(e, loseScreenTransform);
-
-			auto& so = registry->assign<component::EntityInfo>(e);
-			so.name = "Lose Screen";
-		}
 	}
 
 	void onUpdate() override
