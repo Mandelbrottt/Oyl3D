@@ -116,7 +116,7 @@ bool CleaningQuicktimeEventSystem::onEvent(const Event& event)
 			auto cleaningQTEView = registry->view<component::Transform, CleaningQuicktimeEvent>();
 			for (auto& cleaningQTEEntity : cleaningQTEView)
 			{
-				auto& cleaningQTE           = registry->get<CleaningQuicktimeEvent>(cleaningQTEEntity);
+				auto& cleaningQTE    = registry->get<CleaningQuicktimeEvent>(cleaningQTEEntity);
 				auto& cleaningQTEGui = registry->get<component::GuiRenderable>(cleaningQTEEntity);
 
 				auto& cancelQTEPromptGui = registry->get<component::GuiRenderable>(cleaningQTE.cancelPromptEntity);

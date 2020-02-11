@@ -72,7 +72,7 @@ struct MoveableUsingLerp
 struct Player
 {
 	PlayerNumber playerNum = PlayerNumber::One; //should always correspond with appropriate PlayerCamera player number
-	int controllerNum = -1; //the gid of the controller that will be used to control the player
+	int controllerNum      = -1; //the gid of the controller that will be used to control the player
 
 	Team team;
 
@@ -83,15 +83,15 @@ struct Player
 
 	glm::vec3 moveDirection = glm::vec3(0.0f);
 
-	float speedForce = 5.5f;
+	float speedForce = 4.7f;
 	float jumpForce  = 20.0f;
-	bool isJumping   = false;
+	bool  isJumping  = false;
 
 	float JUMP_COOLDOWN_DURATION = 0.1f;
 	float jumpCooldownTimer      = 0.0f;
 
 	float adjustingPositionSpeed = 3.333f;
-	float pushingSpeed = 0.2f;
+	float pushingSpeed = 0.3f;
 
 	MoveableUsingLerp adjustingPositionStateData;
 	MoveableUsingLerp pushingStateData;
@@ -99,7 +99,7 @@ struct Player
 	float CLEANING_TIME_DURATION = 1.2f; //IF YOU CHANGE THIS, MAKE SURE TO ALSO CHANGE THE DEPENDANT VALUES IN GARBAGE PILE AND GARBAGE HP BAR COMPONENETS (check the comments in those components to figure out which ones)
 	float cleaningTimeCountdown = CLEANING_TIME_DURATION;
 
-	bool isCameraLocked  = false;
+	bool  isCameraLocked = false;
 	float yRotationClamp = 0.0f;
 
 	entt::entity interactableEntity = entt::null;
@@ -118,8 +118,8 @@ struct Cannon
 	glm::vec3 firingDirection = glm::vec3(1.0f, 1.0f, 1.0f);
 
 	int cannonTrackPosition = 0;
-	float pushDistance      = 10.0f;
-	float beingPushedSpeed  = 0.2f;
+	float pushDistance      = 11.4f;
+	float beingPushedSpeed  = 0.3f;
 	MoveableUsingLerp pushStateData;
 
 	float WAIT_BEFORE_BEING_PUSHED_DURATION = 0.3f;
@@ -185,6 +185,8 @@ struct GarbagePile
 {
 	Team team;
 
+	entt::entity flyEntity;
+
 	bool isGlooped = false;
 
 	int MAX_GARBAGE_LEVEL = 5; //IF YOU CHANGE THIS, UPDATE INITIAL TARGET VALUE IN GarbageMeterBar
@@ -197,6 +199,7 @@ struct GarbagePile
 	float delayBeforeAddingGarbageCountdown    = -1.0f; //timer shouldnt start at the beginning of the game
 
 	int relativePositionOnShip = -10; //this will be -1 (left), 0 (middle), or 1 (right) to mirror the cannon track position. It is used to determine which pile the cannons are firing at
+
 };
 
 struct PlayerInteractionType
