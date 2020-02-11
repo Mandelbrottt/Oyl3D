@@ -4676,6 +4676,182 @@
             }
         }
     },
+    "Cancel Cleaning Prompt1": {
+        "GuiRenderable": {
+            "Clipping": {
+                "Lower": [
+                    0.0,
+                    0.0
+                ],
+                "Upper": [
+                    1.0,
+                    1.0
+                ]
+            },
+            "CullingMask": 1,
+            "Enabled": false,
+            "Texture": {
+                "Alias": "cancelCleaningQTEPrompt",
+                "FilePath": "res\\assets\\textures\\gui\\cancelCleaningQTEPrompt.png"
+            }
+        },
+        "Parent": null,
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": 0.0,
+                "Y": -2.0,
+                "Z": -20.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 0.699999988079071,
+                "Y": 0.699999988079071,
+                "Z": 1.0
+            }
+        }
+    },
+    "Cancel Cleaning Prompt2": {
+        "GuiRenderable": {
+            "Clipping": {
+                "Lower": [
+                    0.0,
+                    0.0
+                ],
+                "Upper": [
+                    1.0,
+                    1.0
+                ]
+            },
+            "CullingMask": 2,
+            "Enabled": false,
+            "Texture": {
+                "Alias": "cancelCleaningQTEPrompt",
+                "FilePath": "res\\assets\\textures\\gui\\cancelCleaningQTEPrompt.png"
+            }
+        },
+        "Parent": null,
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": 0.0,
+                "Y": -2.0,
+                "Z": -20.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 0.699999988079071,
+                "Y": 0.699999988079071,
+                "Z": 1.0
+            }
+        }
+    },
+    "Cancel Cleaning Prompt3": {
+        "GuiRenderable": {
+            "Clipping": {
+                "Lower": [
+                    0.0,
+                    0.0
+                ],
+                "Upper": [
+                    1.0,
+                    1.0
+                ]
+            },
+            "CullingMask": 4,
+            "Enabled": false,
+            "Texture": {
+                "Alias": "cancelCleaningQTEPrompt",
+                "FilePath": "res\\assets\\textures\\gui\\cancelCleaningQTEPrompt.png"
+            }
+        },
+        "Parent": null,
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": 0.0,
+                "Y": -2.0,
+                "Z": -20.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 0.699999988079071,
+                "Y": 0.699999988079071,
+                "Z": 1.0
+            }
+        }
+    },
+    "Cancel Cleaning Prompt4": {
+        "GuiRenderable": {
+            "Clipping": {
+                "Lower": [
+                    0.0,
+                    0.0
+                ],
+                "Upper": [
+                    1.0,
+                    1.0
+                ]
+            },
+            "CullingMask": 8,
+            "Enabled": false,
+            "Texture": {
+                "Alias": "cancelCleaningQTEPrompt",
+                "FilePath": "res\\assets\\textures\\gui\\cancelCleaningQTEPrompt.png"
+            }
+        },
+        "Parent": null,
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": 0.0,
+                "Y": -2.0,
+                "Z": -20.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 0.699999988079071,
+                "Y": 0.699999988079071,
+                "Z": 1.0
+            }
+        }
+    },
     "Cannon Firing Message1": {
         "GuiRenderable": {
             "Clipping": {
@@ -6041,7 +6217,7 @@
             }
         }
     },
-    "Cleaning Quicktime Event Background1": {
+    "Cleaning Quicktime Event Display1": {
         "GuiRenderable": {
             "Clipping": {
                 "Lower": [
@@ -6054,10 +6230,10 @@
                 ]
             },
             "CullingMask": 1,
-            "Enabled": true,
+            "Enabled": false,
             "Texture": {
-                "Alias": "cleaningQuicktimeEventBackground",
-                "FilePath": "res\\assets\\textures\\gui\\cleaningQuicktimeEventBackground.png"
+                "Alias": "cleaningQTEUp",
+                "FilePath": "res\\assets\\textures\\gui\\cleaningQTEUp.png"
             }
         },
         "Parent": {
@@ -6070,9 +6246,9 @@
                 "Z": false
             },
             "Position": {
-                "X": -30.0,
-                "Y": 3.5,
-                "Z": 0.0
+                "X": 0.0,
+                "Y": 0.0,
+                "Z": -20.0
             },
             "Rotation": {
                 "qW": 1.0,
@@ -6081,13 +6257,13 @@
                 "qZ": 0.0
             },
             "Scale": {
-                "X": 2.0,
-                "Y": 1.5,
+                "X": 3.0,
+                "Y": 3.0,
                 "Z": 1.0
             }
         }
     },
-    "Cleaning Quicktime Event Background2": {
+    "Cleaning Quicktime Event Display2": {
         "GuiRenderable": {
             "Clipping": {
                 "Lower": [
@@ -6100,10 +6276,10 @@
                 ]
             },
             "CullingMask": 2,
-            "Enabled": true,
+            "Enabled": false,
             "Texture": {
-                "Alias": "cleaningQuicktimeEventBackground",
-                "FilePath": "res\\assets\\textures\\gui\\cleaningQuicktimeEventBackground.png"
+                "Alias": "cleaningQTEUp",
+                "FilePath": "res\\assets\\textures\\gui\\cleaningQTEUp.png"
             }
         },
         "Parent": {
@@ -6116,9 +6292,9 @@
                 "Z": false
             },
             "Position": {
-                "X": -30.0,
-                "Y": 3.5,
-                "Z": 0.0
+                "X": 0.0,
+                "Y": 0.0,
+                "Z": -20.0
             },
             "Rotation": {
                 "qW": 1.0,
@@ -6127,13 +6303,13 @@
                 "qZ": 0.0
             },
             "Scale": {
-                "X": 2.0,
-                "Y": 1.5,
+                "X": 3.0,
+                "Y": 3.0,
                 "Z": 1.0
             }
         }
     },
-    "Cleaning Quicktime Event Background3": {
+    "Cleaning Quicktime Event Display3": {
         "GuiRenderable": {
             "Clipping": {
                 "Lower": [
@@ -6146,10 +6322,10 @@
                 ]
             },
             "CullingMask": 4,
-            "Enabled": true,
+            "Enabled": false,
             "Texture": {
-                "Alias": "cleaningQuicktimeEventBackground",
-                "FilePath": "res\\assets\\textures\\gui\\cleaningQuicktimeEventBackground.png"
+                "Alias": "cleaningQTEUp",
+                "FilePath": "res\\assets\\textures\\gui\\cleaningQTEUp.png"
             }
         },
         "Parent": {
@@ -6162,9 +6338,9 @@
                 "Z": false
             },
             "Position": {
-                "X": -30.0,
-                "Y": 3.5,
-                "Z": 0.0
+                "X": 0.0,
+                "Y": 0.0,
+                "Z": -20.0
             },
             "Rotation": {
                 "qW": 1.0,
@@ -6173,13 +6349,13 @@
                 "qZ": 0.0
             },
             "Scale": {
-                "X": 2.0,
-                "Y": 1.5,
+                "X": 3.0,
+                "Y": 3.0,
                 "Z": 1.0
             }
         }
     },
-    "Cleaning Quicktime Event Background4": {
+    "Cleaning Quicktime Event Display4": {
         "GuiRenderable": {
             "Clipping": {
                 "Lower": [
@@ -6192,10 +6368,10 @@
                 ]
             },
             "CullingMask": 8,
-            "Enabled": true,
+            "Enabled": false,
             "Texture": {
-                "Alias": "cleaningQuicktimeEventBackground",
-                "FilePath": "res\\assets\\textures\\gui\\cleaningQuicktimeEventBackground.png"
+                "Alias": "cleaningQTEUp",
+                "FilePath": "res\\assets\\textures\\gui\\cleaningQTEUp.png"
             }
         },
         "Parent": {
@@ -6208,9 +6384,9 @@
                 "Z": false
             },
             "Position": {
-                "X": -30.0,
-                "Y": 3.5,
-                "Z": 0.0
+                "X": 0.0,
+                "Y": 0.0,
+                "Z": -20.0
             },
             "Rotation": {
                 "qW": 1.0,
@@ -6219,8 +6395,8 @@
                 "qZ": 0.0
             },
             "Scale": {
-                "X": 2.0,
-                "Y": 1.5,
+                "X": 3.0,
+                "Y": 3.0,
                 "Z": 1.0
             }
         }
@@ -9916,6 +10092,534 @@
                 "X": 1.9999995231628418,
                 "Y": 1.9999995231628418,
                 "Z": 1.0
+            }
+        }
+    },
+    "Gloop Indicator 0 For Player0": {
+        "GuiRenderable": {
+            "Clipping": {
+                "Lower": [
+                    0.0,
+                    0.0
+                ],
+                "Upper": [
+                    1.0,
+                    1.0
+                ]
+            },
+            "CullingMask": 1,
+            "Enabled": true,
+            "Texture": {
+                "Alias": "gloopIndicator",
+                "FilePath": "res\\assets\\textures\\gui\\gloopIndicator.png"
+            }
+        },
+        "Parent": null,
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -30.0,
+                "Y": 0.0,
+                "Z": -5.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 2.0,
+                "Y": 2.0,
+                "Z": 2.0
+            }
+        }
+    },
+    "Gloop Indicator 0 For Player1": {
+        "GuiRenderable": {
+            "Clipping": {
+                "Lower": [
+                    0.0,
+                    0.0
+                ],
+                "Upper": [
+                    1.0,
+                    1.0
+                ]
+            },
+            "CullingMask": 2,
+            "Enabled": true,
+            "Texture": {
+                "Alias": "gloopIndicator",
+                "FilePath": "res\\assets\\textures\\gui\\gloopIndicator.png"
+            }
+        },
+        "Parent": null,
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -30.0,
+                "Y": 0.0,
+                "Z": -5.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 2.0,
+                "Y": 2.0,
+                "Z": 2.0
+            }
+        }
+    },
+    "Gloop Indicator 0 For Player2": {
+        "GuiRenderable": {
+            "Clipping": {
+                "Lower": [
+                    0.0,
+                    0.0
+                ],
+                "Upper": [
+                    1.0,
+                    1.0
+                ]
+            },
+            "CullingMask": 4,
+            "Enabled": true,
+            "Texture": {
+                "Alias": "gloopIndicator",
+                "FilePath": "res\\assets\\textures\\gui\\gloopIndicator.png"
+            }
+        },
+        "Parent": null,
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -30.0,
+                "Y": 0.0,
+                "Z": -5.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 2.0,
+                "Y": 2.0,
+                "Z": 2.0
+            }
+        }
+    },
+    "Gloop Indicator 0 For Player3": {
+        "GuiRenderable": {
+            "Clipping": {
+                "Lower": [
+                    0.0,
+                    0.0
+                ],
+                "Upper": [
+                    1.0,
+                    1.0
+                ]
+            },
+            "CullingMask": 8,
+            "Enabled": true,
+            "Texture": {
+                "Alias": "gloopIndicator",
+                "FilePath": "res\\assets\\textures\\gui\\gloopIndicator.png"
+            }
+        },
+        "Parent": null,
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -30.0,
+                "Y": 0.0,
+                "Z": -5.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 2.0,
+                "Y": 2.0,
+                "Z": 2.0
+            }
+        }
+    },
+    "Gloop Indicator 1 For Player0": {
+        "GuiRenderable": {
+            "Clipping": {
+                "Lower": [
+                    0.0,
+                    0.0
+                ],
+                "Upper": [
+                    1.0,
+                    1.0
+                ]
+            },
+            "CullingMask": 1,
+            "Enabled": true,
+            "Texture": {
+                "Alias": "gloopIndicator",
+                "FilePath": "res\\assets\\textures\\gui\\gloopIndicator.png"
+            }
+        },
+        "Parent": null,
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -30.0,
+                "Y": 0.0,
+                "Z": -5.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 2.0,
+                "Y": 2.0,
+                "Z": 2.0
+            }
+        }
+    },
+    "Gloop Indicator 1 For Player1": {
+        "GuiRenderable": {
+            "Clipping": {
+                "Lower": [
+                    0.0,
+                    0.0
+                ],
+                "Upper": [
+                    1.0,
+                    1.0
+                ]
+            },
+            "CullingMask": 2,
+            "Enabled": true,
+            "Texture": {
+                "Alias": "gloopIndicator",
+                "FilePath": "res\\assets\\textures\\gui\\gloopIndicator.png"
+            }
+        },
+        "Parent": null,
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -30.0,
+                "Y": 0.0,
+                "Z": -5.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 2.0,
+                "Y": 2.0,
+                "Z": 2.0
+            }
+        }
+    },
+    "Gloop Indicator 1 For Player2": {
+        "GuiRenderable": {
+            "Clipping": {
+                "Lower": [
+                    0.0,
+                    0.0
+                ],
+                "Upper": [
+                    1.0,
+                    1.0
+                ]
+            },
+            "CullingMask": 4,
+            "Enabled": true,
+            "Texture": {
+                "Alias": "gloopIndicator",
+                "FilePath": "res\\assets\\textures\\gui\\gloopIndicator.png"
+            }
+        },
+        "Parent": null,
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -30.0,
+                "Y": 0.0,
+                "Z": -5.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 2.0,
+                "Y": 2.0,
+                "Z": 2.0
+            }
+        }
+    },
+    "Gloop Indicator 1 For Player3": {
+        "GuiRenderable": {
+            "Clipping": {
+                "Lower": [
+                    0.0,
+                    0.0
+                ],
+                "Upper": [
+                    1.0,
+                    1.0
+                ]
+            },
+            "CullingMask": 8,
+            "Enabled": true,
+            "Texture": {
+                "Alias": "gloopIndicator",
+                "FilePath": "res\\assets\\textures\\gui\\gloopIndicator.png"
+            }
+        },
+        "Parent": null,
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -30.0,
+                "Y": 0.0,
+                "Z": -5.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 2.0,
+                "Y": 2.0,
+                "Z": 2.0
+            }
+        }
+    },
+    "Gloop Indicator 2 For Player0": {
+        "GuiRenderable": {
+            "Clipping": {
+                "Lower": [
+                    0.0,
+                    0.0
+                ],
+                "Upper": [
+                    1.0,
+                    1.0
+                ]
+            },
+            "CullingMask": 1,
+            "Enabled": true,
+            "Texture": {
+                "Alias": "gloopIndicator",
+                "FilePath": "res\\assets\\textures\\gui\\gloopIndicator.png"
+            }
+        },
+        "Parent": null,
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -30.0,
+                "Y": 0.0,
+                "Z": -5.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 2.0,
+                "Y": 2.0,
+                "Z": 2.0
+            }
+        }
+    },
+    "Gloop Indicator 2 For Player1": {
+        "GuiRenderable": {
+            "Clipping": {
+                "Lower": [
+                    0.0,
+                    0.0
+                ],
+                "Upper": [
+                    1.0,
+                    1.0
+                ]
+            },
+            "CullingMask": 2,
+            "Enabled": true,
+            "Texture": {
+                "Alias": "gloopIndicator",
+                "FilePath": "res\\assets\\textures\\gui\\gloopIndicator.png"
+            }
+        },
+        "Parent": null,
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -30.0,
+                "Y": 0.0,
+                "Z": -5.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 2.0,
+                "Y": 2.0,
+                "Z": 2.0
+            }
+        }
+    },
+    "Gloop Indicator 2 For Player2": {
+        "GuiRenderable": {
+            "Clipping": {
+                "Lower": [
+                    0.0,
+                    0.0
+                ],
+                "Upper": [
+                    1.0,
+                    1.0
+                ]
+            },
+            "CullingMask": 4,
+            "Enabled": true,
+            "Texture": {
+                "Alias": "gloopIndicator",
+                "FilePath": "res\\assets\\textures\\gui\\gloopIndicator.png"
+            }
+        },
+        "Parent": null,
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -30.0,
+                "Y": 0.0,
+                "Z": -5.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 2.0,
+                "Y": 2.0,
+                "Z": 2.0
+            }
+        }
+    },
+    "Gloop Indicator 2 For Player3": {
+        "GuiRenderable": {
+            "Clipping": {
+                "Lower": [
+                    0.0,
+                    0.0
+                ],
+                "Upper": [
+                    1.0,
+                    1.0
+                ]
+            },
+            "CullingMask": 8,
+            "Enabled": true,
+            "Texture": {
+                "Alias": "gloopIndicator",
+                "FilePath": "res\\assets\\textures\\gui\\gloopIndicator.png"
+            }
+        },
+        "Parent": null,
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -30.0,
+                "Y": 0.0,
+                "Z": -5.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 2.0,
+                "Y": 2.0,
+                "Z": 2.0
             }
         }
     },
@@ -14113,7 +14817,7 @@
             }
         },
         "RigidBody": {
-            "Friction": 0.8999999761581421,
+            "Friction": 0.0,
             "Mass": 5.0,
             "Properties": 126
         },
@@ -14277,7 +14981,7 @@
             }
         },
         "RigidBody": {
-            "Friction": 0.8999999761581421,
+            "Friction": 0.0,
             "Mass": 5.0,
             "Properties": 126
         },
@@ -14363,7 +15067,7 @@
             }
         },
         "RigidBody": {
-            "Friction": 0.8999999761581421,
+            "Friction": 0.0,
             "Mass": 5.0,
             "Properties": 126
         },
@@ -14527,7 +15231,7 @@
             }
         },
         "RigidBody": {
-            "Friction": 0.8999999761581421,
+            "Friction": 0.0,
             "Mass": 5.0,
             "Properties": 126
         },

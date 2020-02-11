@@ -13,64 +13,55 @@ void CleaningQuicktimeEventSystem::onExit()
 
 void CleaningQuicktimeEventSystem::onUpdate()
 {
-	//the indicators LERP continuously back and forth between the start and end positions
-	auto cleaningQuicktimeEventIndicatorView = registry->view<component::Transform, CleaningQuicktimeEventIndicator>();
-	for (auto& cleaningQuicktimeEventIndicatorEntity : cleaningQuicktimeEventIndicatorView)
+	auto cleaningQTEView = registry->view<component::Transform, CleaningQuicktimeEvent>();
+	for (auto& cleaningQTEEntity : cleaningQTEView)
 	{
-		auto& indicator = registry->get<CleaningQuicktimeEventIndicator>(cleaningQuicktimeEventIndicatorEntity);
-		auto& indicatorTransform = registry->get<component::Transform>(cleaningQuicktimeEventIndicatorEntity);
+		auto& cleaningQTE           = registry->get<CleaningQuicktimeEvent>(cleaningQTEEntity);
+		auto& cleaningQTERenderable = registry->get<component::GuiRenderable>(cleaningQTEEntity);
 
-		auto& backgroundTransform = registry->get<component::Transform>(indicator.cleaningQuicktimeEventBackground);
-
-		if (indicator.isActive)
+		if (cleaningQTE.isActive)
 		{
-			if (indicator.lerpInformation.isMovingForward)
-				indicator.lerpInformation.interpolationParam += indicator.lerpInformation.speed * Time::deltaTime();
-			else //!isMovingForward
-				indicator.lerpInformation.interpolationParam -= indicator.lerpInformation.speed * Time::deltaTime();
+			int controllerNum;
 
-			if (indicator.lerpInformation.interpolationParam < 0.0f || indicator.lerpInformation.interpolationParam > 1.0f)
+			auto& playerView = registry->view<Player>();
+			for (auto& playerEntity : playerView)
 			{
-				indicator.lerpInformation.isMovingForward = !indicator.lerpInformation.isMovingForward;
-				indicator.lerpInformation.interpolationParam = std::round(indicator.lerpInformation.interpolationParam); //round so it doesnt go below 0 or above 1
+				auto& player = registry->get<Player>(playerEntity);
+
+				if (player.playerNum == cleaningQTE.playerNum)
+				{
+					controllerNum = player.controllerNum;
+					break;
+				}
 			}
 
-			indicatorTransform.setPosition(glm::mix(
-				indicator.lerpInformation.startPos,
-				indicator.lerpInformation.destinationPos,
-				indicator.lerpInformation.interpolationParam));
-		}
-		else if (indicator.delayBeforeDisappearingCountdown > 0.0f)
-		{
-			if (indicator.shouldShake)
+			glm::vec2 rightStick = Input::getGamepadRightStick(controllerNum);
+
+			if (cleaningQTE.isPointingUp)
 			{
+				cleaningQTERenderable.texture = Texture2D::get("cleaningQTEUp");
+
+				if (rightStick.y < -0.9f)
 				{
-					float newIndicatorPositionY = indicator.isNumberOfShakesEven
-						? indicatorTransform.getPositionY() + indicator.currentShakeValue
-						: indicatorTransform.getPositionY() - indicator.currentShakeValue;
+					cleaningQTE.isPointingUp = false;
 
-					indicatorTransform.setPositionY(newIndicatorPositionY);
+					RequestToCleanGarbageEvent requestToCleanGarbage;
+					requestToCleanGarbage.garbagePileEntity = cleaningQTE.garbagePileBeingCleaned;
+					postEvent(requestToCleanGarbage);
 				}
-
-				{
-					float newBackgroundPositionY = indicator.isNumberOfShakesEven
-						? backgroundTransform.getPositionY() + indicator.currentShakeValue
-						: backgroundTransform.getPositionY() - indicator.currentShakeValue;
-
-					backgroundTransform.setPositionY(newBackgroundPositionY);
-				}
-
-				indicator.currentShakeValue -= indicator.SHAKE_DECREASE_PER_SECOND * Time::deltaTime();
-				indicator.currentShakeValue = std::max(indicator.currentShakeValue, 0.0f);
-
-				indicator.isNumberOfShakesEven = !indicator.isNumberOfShakesEven;
 			}
-
-			indicator.delayBeforeDisappearingCountdown -= Time::deltaTime();
-			if (indicator.delayBeforeDisappearingCountdown < 0.0f)
+			else //!isPointingUp
 			{
-				indicator.shouldShake = false;
-				deactivateCleaningQuicktimeEvent(cleaningQuicktimeEventIndicatorEntity);
+				cleaningQTERenderable.texture = Texture2D::get("cleaningQTEDown");
+
+				if (rightStick.y > 0.9f)
+				{
+					cleaningQTE.isPointingUp = true;
+
+					RequestToCleanGarbageEvent requestToCleanGarbage;
+					requestToCleanGarbage.garbagePileEntity = cleaningQTE.garbagePileBeingCleaned;
+					postEvent(requestToCleanGarbage);
+				}
 			}
 		}
 	}
@@ -80,88 +71,75 @@ bool CleaningQuicktimeEventSystem::onEvent(const Event& event)
 {
 	switch (event.type)
 	{
-		case (EventType)TypePlayerInteractResult:
+		case (EventType)TypeActivateQuicktimeCleaningEvent:
 		{
-			auto evt = event_cast<PlayerInteractResultEvent>(event);
+			auto evt = event_cast<ActivateQuicktimeCleaningEventEvent>(event);
 
-			//check if we need to activate the cleaning quicktime event
-			if (evt.interactionType == PlayerInteractionResult::activateCleaningQuicktimeEvent)
+			auto cleaningQTEView = registry->view<component::Transform, CleaningQuicktimeEvent>();
+			for (auto& cleaningQTEEntity : cleaningQTEView)
 			{
-				auto cleaningQuicktimeEventIndicatorView = registry->view<component::Transform, CleaningQuicktimeEventIndicator>();
-				for (auto& cleaningQuicktimeEventIndicatorEntity : cleaningQuicktimeEventIndicatorView)
-				{
-					auto& indicator           = registry->get<CleaningQuicktimeEventIndicator>(cleaningQuicktimeEventIndicatorEntity);
-					auto& indicatorHUDElement = registry->get<PlayerHUDElement>(cleaningQuicktimeEventIndicatorEntity);
+				auto& cleaningQTE    = registry->get<CleaningQuicktimeEvent>(cleaningQTEEntity);
+				auto& cleaningQTEGui = registry->get<component::GuiRenderable>(cleaningQTEEntity);
 
-					if (evt.playerNum == indicatorHUDElement.playerNum && !indicator.isActive)
-						activateCleaningQuicktimeEvent(cleaningQuicktimeEventIndicatorEntity);
+				auto& cancelQTEPromptGui = registry->get<component::GuiRenderable>(cleaningQTE.cancelPromptEntity);
+
+				if (cleaningQTE.playerNum == evt.playerNum && !cleaningQTE.isActive)
+				{
+					cleaningQTE.garbagePileBeingCleaned = evt.garbagePileEntity;
+
+					cleaningQTE.isActive       = true;
+					cleaningQTE.isPointingUp   = true; //always start with it pointing up
+					cleaningQTEGui.enabled     = true;
+					cancelQTEPromptGui.enabled = true;
+
+					auto& playerView = registry->view<Player>();
+					for (auto& playerEntity : playerView)
+					{
+						auto& player = registry->get<Player>(playerEntity);
+
+						if (player.playerNum == cleaningQTE.playerNum)
+						{
+							player.isCameraLocked = true;
+							break;
+						}
+					}
 				}
 			}
 
 			break;
 		}
-		case (EventType)TypePlayerInteractionRequest: //player pressed the interact button
-		{
-			auto evt = event_cast<PlayerInteractionRequestEvent>(event);
-
-			auto cleaningQuicktimeEventIndicatorView = registry->view<component::Transform, CleaningQuicktimeEventIndicator, PlayerHUDElement>();
-			for (auto& cleaningQuicktimeEventIndicatorEntity : cleaningQuicktimeEventIndicatorView)
-			{
-				auto& indicator           = registry->get<CleaningQuicktimeEventIndicator>(cleaningQuicktimeEventIndicatorEntity);
-				auto& indicatorTransform  = registry->get<component::Transform>(cleaningQuicktimeEventIndicatorEntity);
-				auto& indicatorHUDElement = registry->get<PlayerHUDElement>(cleaningQuicktimeEventIndicatorEntity);
-
-				PlayerNumber playerNum = registry->get<Player>(evt.playerEntity).playerNum;
-
-				if (playerNum != indicatorHUDElement.playerNum || !indicator.isActive)
-					continue;
-
-				//create an event that stores whether or not the quicktime event interaction was successful
-				QuicktimeCleaningEventResultEvent quicktimeCleaningEventResult;
-				quicktimeCleaningEventResult.playerEntity = evt.playerEntity;
-
-				//check if the indicator was in the successful range
-				if (   indicator.lerpInformation.interpolationParam >= indicator.LOWER_BOUND_FOR_SUCCESS
-					&& indicator.lerpInformation.interpolationParam <= indicator.UPPER_BOUND_FOR_SUCCESS)
-				{
-					quicktimeCleaningEventResult.wasSuccessful = true;
-
-					indicator.shouldShake = false;
-				}
-				else
-				{
-					quicktimeCleaningEventResult.wasSuccessful = false;
-
-					//the cleaning quicktime event UI does a little shake animation on failure to add some juice
-					indicator.shouldShake       = true;
-					indicator.currentShakeValue = indicator.SHAKE_START_VALUE;
-				}
-
-				postEvent(quicktimeCleaningEventResult); //send the event out
-
-				//set timer to hide quicktime cleaning event after player attempt
-				indicator.delayBeforeDisappearingCountdown = indicator.DELAY_BEFORE_DISAPPEARING_DURATION;
-				indicator.isActive = false;
-			}
-
-			break;
-		}
+		
 		case (EventType)TypeCancelQuicktimeCleaningEvent:
 		{
 			auto evt = event_cast<CancelQuicktimeCleaningEventEvent>(event);
 
-			auto cleaningQuicktimeEventIndicatorView = registry->view<component::Transform, CleaningQuicktimeEventIndicator>();
-			for (auto& cleaningQuicktimeEventIndicatorEntity : cleaningQuicktimeEventIndicatorView)
+			auto cleaningQTEView = registry->view<component::Transform, CleaningQuicktimeEvent>();
+			for (auto& cleaningQTEEntity : cleaningQTEView)
 			{
-				auto& indicator           = registry->get<CleaningQuicktimeEventIndicator>(cleaningQuicktimeEventIndicatorEntity);
-				auto& indicatorHUDElement = registry->get<PlayerHUDElement>(cleaningQuicktimeEventIndicatorEntity);
+				auto& cleaningQTE    = registry->get<CleaningQuicktimeEvent>(cleaningQTEEntity);
+				auto& cleaningQTEGui = registry->get<component::GuiRenderable>(cleaningQTEEntity);
 
-				if (evt.playerNum == indicatorHUDElement.playerNum)
+				auto& cancelQTEPromptGui = registry->get<component::GuiRenderable>(cleaningQTE.cancelPromptEntity);
+
+				if (cleaningQTE.playerNum == evt.playerNum && cleaningQTE.isActive)
 				{
-					if (indicator.delayBeforeDisappearingCountdown <= 0.0f)
-						deactivateCleaningQuicktimeEvent(cleaningQuicktimeEventIndicatorEntity);
+					cleaningQTE.garbagePileBeingCleaned = entt::null;
 
-					break;
+					cleaningQTE.isActive       = false;
+					cleaningQTEGui.enabled     = false;
+					cancelQTEPromptGui.enabled = false;
+
+					auto& playerView = registry->view<Player>();
+					for (auto& playerEntity : playerView)
+					{
+						auto& player = registry->get<Player>(playerEntity);
+
+						if (player.playerNum == cleaningQTE.playerNum)
+						{
+							player.isCameraLocked = false;
+							break;
+						}
+					}
 				}
 			}
 
@@ -169,34 +147,4 @@ bool CleaningQuicktimeEventSystem::onEvent(const Event& event)
 		}
 	}
 	return false;
-}
-
-void CleaningQuicktimeEventSystem::activateCleaningQuicktimeEvent(entt::entity a_cleaningQuicktimeEventIndicatorEntity)
-{
-	auto& indicator           = registry->get<CleaningQuicktimeEventIndicator>(a_cleaningQuicktimeEventIndicatorEntity);
-	auto& indicatorTransform  = registry->get<component::Transform>(a_cleaningQuicktimeEventIndicatorEntity);
-	auto& indicatorHUDElement = registry->get<PlayerHUDElement>(a_cleaningQuicktimeEventIndicatorEntity);
-
-	auto& backgroundTransform = registry->get<component::Transform>(indicator.cleaningQuicktimeEventBackground);
-	auto& backgroundHUDElement = registry->get<PlayerHUDElement>(indicator.cleaningQuicktimeEventBackground);
-
-	indicator.isActive = true;
-
-	indicatorTransform.setPosition(indicatorHUDElement.positionWhenActive);
-	indicator.lerpInformation.interpolationParam = (rand() % 99) / 100.0f; //random number between 1% and 100% for the starting interpolation param
-	backgroundTransform.setPosition(backgroundHUDElement.positionWhenActive);
-}
-
-void CleaningQuicktimeEventSystem::deactivateCleaningQuicktimeEvent(entt::entity a_cleaningQuicktimeEventIndicatorEntity)
-{
-	auto& indicator          = registry->get<CleaningQuicktimeEventIndicator>(a_cleaningQuicktimeEventIndicatorEntity);
-	auto& indicatorTransform = registry->get<component::Transform>(a_cleaningQuicktimeEventIndicatorEntity);
-
-	auto& backgroundTransform = registry->get<component::Transform>(indicator.cleaningQuicktimeEventBackground);
-
-	indicator.isActive = false;
-
-	//yeet them off the screen
-	indicatorTransform.setPositionX(-30.0f);
-	backgroundTransform.setPositionX(-30.0f);
 }

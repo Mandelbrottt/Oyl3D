@@ -40,14 +40,6 @@ void GarbagePileSystem::onUpdate()
 			if (garbagePile.delayBeforeAddingGarbageCountdown < 0.0f)
 				increaseGarbageLevel(garbagePileEntity);
 		}
-
-		if (garbagePile.delayBeforeRemovingGarbageCountdown > 0.0f)
-		{
-			garbagePile.delayBeforeRemovingGarbageCountdown -= Time::deltaTime();
-
-			if (garbagePile.delayBeforeRemovingGarbageCountdown < 0.0f)
-				updateGarbagePileVisualSize(garbagePileEntity);
-		}
 	}
 }
 
@@ -60,10 +52,8 @@ bool GarbagePileSystem::onEvent(const Event& event)
 			auto evt = event_cast<RequestToCleanGarbageEvent>(event);
 
 			auto& garbagePile = registry->get<GarbagePile>(evt.garbagePileEntity);
-			garbagePile.delayBeforeRemovingGarbageCountdown = garbagePile.DELAY_BEFORE_REMOVING_GARBAGE_DURATION;
 
 			decreaseGarbageLevel(evt.garbagePileEntity);
-			//don't update the visual size of the garbage pile till AFTER the delay before removing garbage countdown hits 0.0s
 
 			GarbageCleanedEvent garbageCleaned;
 			garbageCleaned.garbagePileEntity = evt.garbagePileEntity;
@@ -126,10 +116,10 @@ void GarbagePileSystem::decreaseGarbageLevel(entt::entity a_garbagePileEntity)
 {
 	auto& garbagePile = registry->get<GarbagePile>(a_garbagePileEntity);
 
-	if (garbagePile.garbageTicks < garbagePile.GARBAGE_TICKS_PER_LEVEL)
+	if (garbagePile.garbageTicks <= garbagePile.GARBAGE_TICKS_PER_LEVEL * 0.75f)
+		garbagePile.garbageTicks -= garbagePile.isGlooped ? 0.04f : 0.08f;
+	else //garbage ticks >= 75% of the max
 		garbagePile.garbageTicks -= garbagePile.isGlooped ? 0.5f : 1.0f;
-	else //garbage ticks >= MAX TICKS
-		garbagePile.garbageTicks -= 1.0f;
 
 	if (garbagePile.garbageTicks <= 0.0f)
 	{
@@ -142,8 +132,7 @@ void GarbagePileSystem::decreaseGarbageLevel(entt::entity a_garbagePileEntity)
 		garbagePile.isGlooped = false;
 	}
 
-	//dont update garbage pile size yet because this should be done after the delay before removing garbage countdown reaches 0.0s.
-	//if you want to update the garbage pile size right away, do it after calling this function
+	updateGarbagePileVisualSize(a_garbagePileEntity);
 }
 
 void GarbagePileSystem::updateGarbagePileVisualSize(entt::entity a_garbagePileEntity)

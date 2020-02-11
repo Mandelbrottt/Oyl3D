@@ -4,9 +4,9 @@
 
 using namespace oyl;
 
-class CleaningQuicktimeEventSystem : public System
+class GarbagePileGloopIndicatorSystem : public System
 {
-	OYL_CTOR(CleaningQuicktimeEventSystem, System)
+	OYL_CTOR(GarbagePileGloopIndicatorSystem, System)
 
 	void onEnter() override;
 	void onExit() override;
