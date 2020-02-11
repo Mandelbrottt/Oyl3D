@@ -14,11 +14,12 @@ namespace oyl
 
         friend class Shader;
     public:
+        explicit OpenGLShader(_OpenGLShader, const std::string& filename);
         explicit OpenGLShader(_OpenGLShader, const std::vector<ShaderInfo>& infos);
         virtual  ~OpenGLShader();
 
+        bool load(const std::string& filename) override;
         bool load(const std::vector<ShaderInfo>& infos) override;
-        bool load(const std::initializer_list<ShaderInfo>& infos) override;
 
         void unload() override;
 
@@ -46,8 +47,14 @@ namespace oyl
             return Ref<OpenGLShader>::create(_OpenGLShader{}, infos);
         }
 
+        static Ref<Shader> create(const std::string& filename)
+        {
+            return Ref<OpenGLShader>::create(_OpenGLShader{}, filename);
+        }
+
     private:
         void processShaders(const std::array<std::string, NumShaderTypes>& shaderSrcs);
+        void processShaders(const std::string& compoundSrc);
         uint compileShader(Shader::Type type, const std::string& src);
         uint linkShaders(const std::array<u32, NumShaderTypes>& shaders);
 

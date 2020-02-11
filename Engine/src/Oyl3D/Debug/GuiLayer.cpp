@@ -15,7 +15,7 @@
 #include "Components/RigidBody.h"
 #include "Components/Transform.h"
 
-#include "ECS/SystemImpl.h"
+#include "Scenes/System.h"
 
 #include "Graphics/EditorCamera.h"
 #include "Graphics/Material.h"
@@ -33,6 +33,7 @@
 #include <imgui_internal.h>
 
 #include <GLFW/glfw3.h>
+#include "EditorSystems.h"
 
 static bool isTexture(const char* ext);
 static bool isMesh(const char* ext);
@@ -936,8 +937,8 @@ namespace oyl::internal
                 ImGui::EndCombo();
             }
             
-            CacheAlias currentName;
-            if (currentName.assign(Mesh::getAlias(renderable.mesh)); !renderable.mesh || currentName == INVALID_ALIAS)
+            CacheAlias currentName = Mesh::getAlias(renderable.mesh);
+            if (!renderable.mesh || currentName == INVALID_ALIAS)
                 currentName.assign("None");
 
             ImGui::TextUnformatted("Current Mesh");
@@ -960,8 +961,9 @@ namespace oyl::internal
 
                 ImGui::EndCombo();
             }
-            
-            if (currentName.assign(Material::getAlias(renderable.material)); !renderable.material || currentName == INVALID_ALIAS)
+
+            currentName.assign(Material::getAlias(renderable.material));
+            if (!renderable.material || currentName == INVALID_ALIAS)
                 currentName.assign("None");
                         
             ImGui::TextUnformatted("Current Material");
@@ -1026,8 +1028,8 @@ namespace oyl::internal
                 ImGui::EndCombo();
             }
 
-            CacheAlias currentName;
-            if (currentName.assign(Texture2D::getAlias(gui.texture)); !gui.texture || currentName == INVALID_ALIAS)
+            CacheAlias currentName = Texture2D::getAlias(gui.texture);
+            if (!gui.texture || currentName == INVALID_ALIAS)
                 currentName.assign("None");
             
             ImGui::TextUnformatted("Current Texture");
@@ -1441,6 +1443,32 @@ namespace oyl::internal
             ImGui::ColorEdit3("Diffuse##LightSourceAmbient",  value_ptr(pl.diffuse));
             ImGui::ColorEdit3("Specular##LightSourceAmbient", value_ptr(pl.specular));
 
+            float newWidth = ImGui::GetWindowContentRegionWidth() / 6;
+
+            ImGui::PushItemWidth(newWidth);
+
+            {
+                const float posDragSpeed = 0.01f;
+                ImGui::Text("Attenuation");
+                ImGui::SameLine(ImGui::GetWindowContentRegionWidth() - (15 * 3 + newWidth * 3 + 27));
+                ImGui::SetNextItemWidth(15);
+                ImGui::DragFloat("##AttenK", &pl.attenConst, posDragSpeed, 0.0f, 999.0f, "K");
+                ImGui::SameLine();
+                ImGui::InputFloat("##AttenKInput", &pl.attenConst, 0, 0, "%.2f");
+                ImGui::SameLine();
+                ImGui::SetNextItemWidth(15);
+                ImGui::DragFloat("##AttenL", &pl.attenLin, posDragSpeed, 0, 999.0f, "L");
+                ImGui::SameLine();
+                ImGui::InputFloat("##AttenLInput", &pl.attenLin, 0, 0, "%.2f");
+                ImGui::SameLine();
+                ImGui::SetNextItemWidth(15);
+                ImGui::DragFloat("##AttenQ", &pl.attenQuad, posDragSpeed, 0, 999.0f, "Q");
+                ImGui::SameLine();
+                ImGui::InputFloat("##AttenQInput", &pl.attenQuad, 0, 0, "%.2f");
+                pl.attenuation = max(glm::vec3(0.0f, 0.0f, 0.0f), pl.attenuation);
+            }
+            ImGui::PopItemWidth();
+            
             ImGui::Unindent(10);
 
             ImGui::Separator();
@@ -1492,11 +1520,14 @@ namespace oyl::internal
                 {
                     if (ImGui::Selectable(g_numbersList[i], i == static_cast<uint>(camera.player)))
                     {
+                        bool didSwap = false;
                         registry->view<Camera>().each([&](Camera& a_camera)
                         {
-                            if (a_camera.player == camera.player)
-                                std::swap(a_camera.player, camera.player);
+                            if (a_camera.player == static_cast<PlayerNumber>(i))
+                                std::swap(a_camera.player, camera.player), didSwap = true;
                         });
+                        if (!didSwap)
+                            camera.player = static_cast<PlayerNumber>(i);
                     }
                 }
                 ImGui::EndCombo();

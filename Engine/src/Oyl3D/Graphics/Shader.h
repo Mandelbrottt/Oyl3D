@@ -21,13 +21,14 @@ namespace oyl
             Pixel,
             Fragment = Pixel,
             NumShaderTypes,
+            Compound,
         };
         
     public:
         virtual ~Shader() = default;
 
+        virtual bool load(const std::string& infos) = 0;
         virtual bool load(const std::vector<ShaderInfo>& infos) = 0;
-        virtual bool load(const std::initializer_list<ShaderInfo>& infos) = 0;
 
         virtual void unload() = 0;
 
@@ -89,7 +90,6 @@ namespace oyl
         const std::vector<ShaderInfo>& getShaderInfos() const { return m_shaderInfos; }
     protected:
         std::vector<ShaderInfo> m_shaderInfos;
-        std::string m_filename;
 
     private:
         static Ref<Shader> s_invalid;

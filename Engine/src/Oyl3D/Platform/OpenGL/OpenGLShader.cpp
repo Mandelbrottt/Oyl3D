@@ -142,6 +142,61 @@ namespace oyl
         m_rendererID = failed ? 0 : linkShaders(shaders);
     }
 
+    void OpenGLShader::processShaders(const std::string& compoundSrc)
+    {
+        std::array<uint, NumShaderTypes> shaders{ 0 };
+
+        bool failed = false;
+
+        enum TypeMask : uint { NONE = 0x00, VERT = 0x01, TESC = 0x02, TESE = 0x04, GEOM = 0x08, FRAG = 0x10 };
+
+        uint foundMask = NONE;
+        foundMask |= compoundSrc.find("OYL_VERT") != std::string::npos ? VERT : 0;
+        foundMask |= compoundSrc.find("OYL_TESC") != std::string::npos ? TESC : 0;
+        foundMask |= compoundSrc.find("OYL_TESE") != std::string::npos ? TESE : 0;
+        foundMask |= compoundSrc.find("OYL_GEOM") != std::string::npos ? GEOM : 0;
+        foundMask |= compoundSrc.find("OYL_FRAG") != std::string::npos ? FRAG : 0;
+
+        std::string define = "#define OYL_VERT 1\r\n";
+        
+        std::string modifiedSrc;
+        modifiedSrc.reserve(compoundSrc.length() + define.length());
+        size_t pos = compoundSrc.find("#version");
+        pos = compoundSrc.find_first_of("\r\n", pos) + 1;
+        modifiedSrc.assign(compoundSrc, 0, pos);
+        modifiedSrc.append(define);
+        modifiedSrc.append(compoundSrc, pos);
+        
+        // Get the IDs for all of the present shaders
+        for (uint i = 0; i < NumShaderTypes; i++)
+        {
+            if (foundMask & (1u << i))
+            {
+                shaders[i] = compileShader((Type) i, modifiedSrc);
+                failed |= shaders[i] == -1u;
+            }
+
+            switch (static_cast<Type>(i))
+            {
+                case Vertex:
+                    modifiedSrc.replace(pos, define.length(), "#define OYL_TESC 1\r\n"); break;
+                case TessControl:
+                    modifiedSrc.replace(pos, define.length(), "#define OYL_TESE 1\r\n"); break;
+                case TessEvaluation:
+                    modifiedSrc.replace(pos, define.length(), "#define OYL_GEOM 1\r\n"); break;
+                case Geometry:
+                    modifiedSrc.replace(pos, define.length(), "#define OYL_FRAG 1\r\n"); break;
+            }
+        }
+
+        m_rendererID = failed ? 0 : linkShaders(shaders);
+    }
+
+    OpenGLShader::OpenGLShader(_OpenGLShader, const std::string& filename)
+    {
+        OpenGLShader::load(filename);
+    }
+    
     OpenGLShader::OpenGLShader(_OpenGLShader, const std::vector<ShaderInfo>& infos)
     {
         OpenGLShader::load(infos);
@@ -152,8 +207,48 @@ namespace oyl
         OpenGLShader::unload();
     }
 
+    bool OpenGLShader::load(const std::string& filename)
+    {
+        std::array<std::string, NumShaderTypes> srcs{ "" };
+        
+        std::ifstream in(filename);
+        // Return if the file is not opened correctly
+        if (!in)
+        {
+            OYL_LOG_ERROR("Shader \"{0}\" could not open!", filename.c_str());
+            return false;
+        }
+
+        // Dump the entire file contents into the corresponding source string
+        std::stringstream ss;
+        ss << in.rdbuf();
+        std::string src = ss.str();
+
+        uint prevRendererID = m_rendererID;
+
+        // Compile and link the given shader source codes into one program
+        processShaders(src);
+
+        if (!m_rendererID)
+        {
+            m_rendererID = prevRendererID;
+            return false;
+        }
+
+        m_uniformLocations.clear();
+
+        if (prevRendererID)
+            glDeleteProgram(prevRendererID);
+
+        m_shaderInfos = { { Type::Compound, filename } };
+        return true;
+    }
+
     bool OpenGLShader::load(const std::vector<ShaderInfo>& infos)
     {
+        if (infos.size() == 1 && infos[0].type == Shader::Type::Compound)
+            return OpenGLShader::load(infos[0].filename);
+        
         std::array<std::string, NumShaderTypes> srcs{ "" };
         for (auto& info : infos)
         {
@@ -190,16 +285,11 @@ namespace oyl
 
         m_uniformLocations.clear();
 
-        if (prevRendererID)
+        if (prevRendererID) 
             glDeleteProgram(prevRendererID);
         
         m_shaderInfos = infos;
         return true;
-    }
-    
-    bool OpenGLShader::load(const std::initializer_list<ShaderInfo>& infos)
-    {
-        return load(infos);
     }
     
     void OpenGLShader::unload()
