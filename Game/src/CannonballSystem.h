@@ -8,6 +8,11 @@ class CannonballSystem : public System
 {
 	OYL_CTOR(CannonballSystem, System)
 
+
+	glm::vec3 frontSplines[8];
+	glm::vec3 middleSplines[8];
+	glm::vec3 backSplines[8];
+
 	void onEnter() override;
 	void onExit() override;
 	void onUpdate() override;

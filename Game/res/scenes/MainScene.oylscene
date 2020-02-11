@@ -1973,7 +1973,7 @@
             "CullingMask": 15,
             "Enabled": true,
             "Material": {
-                "Alias": "crate"
+                "Alias": null
             },
             "Mesh": {
                 "Alias": "crateTemp",
@@ -2033,7 +2033,7 @@
             "CullingMask": 15,
             "Enabled": true,
             "Material": {
-                "Alias": "pirax"
+                "Alias": "PiraxBlue"
             },
             "Mesh": {
                 "Alias": "Pirax",
@@ -2093,7 +2093,7 @@
             "CullingMask": 15,
             "Enabled": true,
             "Material": {
-                "Alias": "pirax"
+                "Alias": "PiraxBlue"
             },
             "Mesh": {
                 "Alias": "Pirax",
@@ -2358,7 +2358,7 @@
             },
             "Mesh": {
                 "Alias": "GarbageSurrenderAnim_000009",
-                "FilePath": "res\\assets\\models\\Animation\\Garbage\\GarbageSurrender\\GarbageSurrenderAnim_000009.obj"
+                "FilePath": "res\\assets\\animation\\Garbage\\GarbageSurrender\\GarbageSurrenderAnim_000009.obj"
             }
         },
         "Transform": {
@@ -2397,7 +2397,7 @@
             },
             "Mesh": {
                 "Alias": "GarbageSurrenderAnim_000014",
-                "FilePath": "res\\assets\\models\\Animation\\Garbage\\GarbageSurrender\\GarbageSurrenderAnim_000014.obj"
+                "FilePath": "res\\assets\\animation\\Garbage\\GarbageSurrender\\GarbageSurrenderAnim_000014.obj"
             }
         },
         "Transform": {
@@ -2436,7 +2436,7 @@
             },
             "Mesh": {
                 "Alias": "GarbageSurrenderAnim_000014",
-                "FilePath": "res\\assets\\models\\Animation\\Garbage\\GarbageSurrender\\GarbageSurrenderAnim_000014.obj"
+                "FilePath": "res\\assets\\animation\\Garbage\\GarbageSurrender\\GarbageSurrenderAnim_000014.obj"
             }
         },
         "Transform": {
@@ -2487,7 +2487,7 @@
             "CullingMask": 15,
             "Enabled": true,
             "Material": {
-                "Alias": "goop"
+                "Alias": "GoopBlue"
             },
             "Mesh": {
                 "Alias": "Gloop",
@@ -2547,7 +2547,7 @@
             "CullingMask": 15,
             "Enabled": true,
             "Material": {
-                "Alias": "goop"
+                "Alias": "GoopBlue"
             },
             "Mesh": {
                 "Alias": "Gloop",
@@ -2641,7 +2641,7 @@
             "CullingMask": 15,
             "Enabled": true,
             "Material": {
-                "Alias": "mop"
+                "Alias": "MopBlue"
             },
             "Mesh": {
                 "Alias": "mop",
@@ -2701,7 +2701,7 @@
             "CullingMask": 15,
             "Enabled": true,
             "Material": {
-                "Alias": "mop"
+                "Alias": "MopBlue"
             },
             "Mesh": {
                 "Alias": "mop",
@@ -14144,7 +14144,7 @@
             "CullingMask": 4294967294,
             "Enabled": true,
             "Material": {
-                "Alias": "container"
+                "Alias": null
             },
             "Mesh": {
                 "Alias": "capsule",
@@ -14308,7 +14308,7 @@
             "CullingMask": 4294967293,
             "Enabled": true,
             "Material": {
-                "Alias": "container"
+                "Alias": null
             },
             "Mesh": {
                 "Alias": "capsule",
@@ -14394,7 +14394,7 @@
             "CullingMask": 4294967291,
             "Enabled": true,
             "Material": {
-                "Alias": "container"
+                "Alias": null
             },
             "Mesh": {
                 "Alias": "capsule",
@@ -14558,7 +14558,7 @@
             "CullingMask": 4294967287,
             "Enabled": true,
             "Material": {
-                "Alias": "container"
+                "Alias": null
             },
             "Mesh": {
                 "Alias": "capsule",
@@ -15304,7 +15304,7 @@
             "CullingMask": 15,
             "Enabled": true,
             "Material": {
-                "Alias": "crate"
+                "Alias": null
             },
             "Mesh": {
                 "Alias": "crateTemp",
@@ -15364,7 +15364,7 @@
             "CullingMask": 15,
             "Enabled": true,
             "Material": {
-                "Alias": "pirax"
+                "Alias": "PiraxRed"
             },
             "Mesh": {
                 "Alias": "Pirax",
@@ -15424,7 +15424,7 @@
             "CullingMask": 15,
             "Enabled": true,
             "Material": {
-                "Alias": "pirax"
+                "Alias": "PiraxRed"
             },
             "Mesh": {
                 "Alias": "Pirax",
@@ -15686,7 +15686,7 @@
             },
             "Mesh": {
                 "Alias": "GarbageSurrenderAnim_000010",
-                "FilePath": "res\\assets\\models\\Animation\\Garbage\\GarbageSurrender\\GarbageSurrenderAnim_000010.obj"
+                "FilePath": "res\\assets\\animation\\Garbage\\GarbageSurrender\\GarbageSurrenderAnim_000010.obj"
             }
         },
         "Transform": {
@@ -15725,7 +15725,7 @@
             },
             "Mesh": {
                 "Alias": "GarbageSurrenderAnim_000078",
-                "FilePath": "res\\assets\\models\\Animation\\Garbage\\GarbageSurrender\\GarbageSurrenderAnim_000078.obj"
+                "FilePath": "res\\assets\\animation\\Garbage\\GarbageSurrender\\GarbageSurrenderAnim_000078.obj"
             }
         },
         "Transform": {
@@ -15764,7 +15764,7 @@
             },
             "Mesh": {
                 "Alias": "GarbageSurrenderAnim_000001",
-                "FilePath": "res\\assets\\models\\Animation\\Garbage\\GarbageSurrender\\GarbageSurrenderAnim_000001.obj"
+                "FilePath": "res\\assets\\animation\\Garbage\\GarbageSurrender\\GarbageSurrenderAnim_000001.obj"
             }
         },
         "Transform": {
@@ -15815,7 +15815,7 @@
             "CullingMask": 15,
             "Enabled": true,
             "Material": {
-                "Alias": "goop"
+                "Alias": "GloopRed"
             },
             "Mesh": {
                 "Alias": "Gloop",
@@ -15875,7 +15875,7 @@
             "CullingMask": 15,
             "Enabled": true,
             "Material": {
-                "Alias": "goop"
+                "Alias": "GloopRed"
             },
             "Mesh": {
                 "Alias": "Gloop",
@@ -15969,7 +15969,7 @@
             "CullingMask": 15,
             "Enabled": true,
             "Material": {
-                "Alias": "mop"
+                "Alias": "MopRed"
             },
             "Mesh": {
                 "Alias": "mop",
@@ -16029,7 +16029,7 @@
             "CullingMask": 15,
             "Enabled": true,
             "Material": {
-                "Alias": "mop"
+                "Alias": "MopRed"
             },
             "Mesh": {
                 "Alias": "mop",

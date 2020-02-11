@@ -4,6 +4,15 @@ void CannonballSystem::onEnter()
 {
 	this->listenForEventCategory((EventCategory)CategoryCannon);
 	this->listenForEventCategory((EventCategory)CategoryCannonball);
+	
+	middleSplines[0] = { -3.03f, -2.68f, 2.33f };
+	middleSplines[1] = { -2.88f,  0.0f,  0.0f };
+	middleSplines[2] = { -2.39f,  4.03f, 9.94f };
+	middleSplines[3] = { -1.47f,  5.7f,  13.03f };
+	middleSplines[4] = { -0.5f,   5.37f, 16.08f };
+	middleSplines[5] = {  0.23f,  4.54f, 19.19f };
+	middleSplines[6] = {  0.69f,  2.8f,  21.92f };
+	middleSplines[7] = {  1.03f,  0.23f, 23.91f };
 }
 
 void CannonballSystem::onExit()

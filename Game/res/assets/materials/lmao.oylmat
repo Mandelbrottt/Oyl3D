@@ -31,14 +31,14 @@
             },
             "Emission": null,
             "Normal": {
-                "Alias": "brickwall_normal",
-                "FilePath": "res\\assets\\textures\\brickwall_normal.jpg",
+                "Alias": null,
+                "FilePath": "../Engine/res/textures/invalid.png",
                 "Profile": 0,
                 "guid": null
             },
             "Specular": {
-                "Alias": "brickwall",
-                "FilePath": "res\\assets\\textures\\brickwall.jpg",
+                "Alias": null,
+                "FilePath": "../Engine/res/textures/invalid.png",
                 "Profile": 0,
                 "guid": null
             }
