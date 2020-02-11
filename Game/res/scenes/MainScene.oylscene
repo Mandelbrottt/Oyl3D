@@ -12259,6 +12259,66 @@
             }
         }
     },
+    "Michelle's Tail": {
+        "Collidable": {
+            "Shapes": [
+                {
+                    "Center": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Size": [
+                        20.0,
+                        0.10000000149011612,
+                        20.0
+                    ],
+                    "Trigger": false,
+                    "Type": 0
+                }
+            ]
+        },
+        "Parent": null,
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "ToothlessTail"
+            },
+            "Mesh": {
+                "Alias": "MICHELLE TAIL",
+                "FilePath": "res\\assets\\models\\Decorative\\MICHELLE TAIL.obj"
+            }
+        },
+        "RigidBody": {
+            "Friction": 1.0,
+            "Mass": 0.0,
+            "Properties": 32
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": 60.779640197753906,
+                "Y": 86.62860107421875,
+                "Z": 74.90158081054688
+            },
+            "Rotation": {
+                "qW": -0.30441486835479736,
+                "qX": 0.43390601873397827,
+                "qY": 0.8428866863250732,
+                "qZ": -0.09273132681846619
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
     "MidDeckColliders": {
         "Parent": {
             "Name": "Colliders"
@@ -23060,6 +23120,80 @@
                 "X": 100.0,
                 "Y": 1.9399996995925903,
                 "Z": 100.0
+            }
+        }
+    },
+    "WaterCrest0": {
+        "Parent": null,
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "WaterCrest"
+            },
+            "Mesh": {
+                "Alias": "WaterCrestAnim_000001",
+                "FilePath": "res\\assets\\animation\\WaterCrest\\WaterCrestAnim_000001.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -19.903972625732422,
+                "Y": -6.649357795715332,
+                "Z": -2.1830859184265137
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "WaterCrest1": {
+        "Parent": null,
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "WaterCrest"
+            },
+            "Mesh": {
+                "Alias": "WaterCrestAnim_000001",
+                "FilePath": "res\\assets\\animation\\WaterCrest\\WaterCrestAnim_000001.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -20.039384841918945,
+                "Y": -6.700423240661621,
+                "Z": 23.178590774536133
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
             }
         }
     },
