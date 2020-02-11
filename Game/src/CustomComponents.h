@@ -185,6 +185,8 @@ struct GarbagePile
 {
 	Team team;
 
+	entt::entity flyEntity;
+
 	bool isGlooped = false;
 
 	int MAX_GARBAGE_LEVEL = 5; //IF YOU CHANGE THIS, UPDATE INITIAL TARGET VALUE IN GarbageMeterBar
@@ -197,6 +199,7 @@ struct GarbagePile
 	float delayBeforeAddingGarbageCountdown    = -1.0f; //timer shouldnt start at the beginning of the game
 
 	int relativePositionOnShip = -10; //this will be -1 (left), 0 (middle), or 1 (right) to mirror the cannon track position. It is used to determine which pile the cannons are firing at
+
 };
 
 struct PlayerInteractionType
