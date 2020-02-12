@@ -51,12 +51,15 @@ namespace oyl
 
         struct ShadowLight
         {
+            ShadowLight() : m_frameBuffer(nullptr) {}
+            ~ShadowLight() { m_frameBuffer = nullptr; }
+            
             bool castShadows = true;
             
         private:
-            Ref<FrameBuffer> m_frameBuffer;
+            glm::mat4 m_lightSpaceMatrix{};
 
-            glm::mat4 m_lightSpaceMatrix;
+            Ref<FrameBuffer> m_frameBuffer;
 
             friend RenderSystem;
             friend ShadowRenderSystem;
@@ -64,28 +67,83 @@ namespace oyl
         };
     }
 
+    struct PointLight
+        : internal::ColorLight,
+          internal::ShadowLight,
+          internal::PositionalLight,
+          internal::AttenuationLight {};
+    
+    struct DirectionalLight
+        : internal::ColorLight,
+          internal::ShadowLight
+    {
+        glm::vec3 direction = glm::vec3(0.0f);
+    };
+    
+    struct SpotLight
+        : DirectionalLight,
+        internal::AttenuationLight
+    {
+        f32 innerCutoff = 10.0f;
+        f32 outerCutoff = 15.0f;
+    };
+        
+
+    enum class LightType
+    {
+        Point,
+        Directional,
+        Spot
+    };
+
     namespace component
     {
-        struct PointLight
-            : ::oyl::internal::ColorLight,
-              ::oyl::internal::PositionalLight,
-              ::oyl::internal::AttenuationLight,
-              ::oyl::internal::ShadowLight {};
-    
-        struct DirectionalLight
-            : ::oyl::internal::ColorLight,
-              ::oyl::internal::ShadowLight
+        class LightSource
         {
-            glm::vec3 direction = glm::vec3(0.0f);
-        };
-    
-        struct SpotLight
-            : DirectionalLight,
-              ::oyl::internal::AttenuationLight,
-              ::oyl::internal::ShadowLight
-        {
-            f32 innerCutoff = 10.0f;
-            f32 outerCutoff = 15.0f;
+        public:
+            struct LightInfo
+            {
+                LightInfo();
+                explicit LightInfo(LightType type);
+                LightInfo(const LightInfo& info);
+                ~LightInfo() {}
+
+                LightInfo& operator=(const LightInfo& info);
+                
+                union
+                {
+                    PointLight       point;
+                    DirectionalLight directional;
+                    SpotLight        spot;
+                };
+
+                LightType type = LightType::Point;
+
+            private:
+                void defaultInit();
+            };
+
+            LightInfo& pushLight(LightInfo info);
+            LightInfo& pushLight(LightType type);
+            void eraseShape(u32 index);
+            
+            LightInfo& getLight(u32 index);
+            const LightInfo& getLight(u32 index) const;
+            
+            std::vector<LightInfo>& getLights();
+            const std::vector<LightInfo>& getLights() const;
+            
+            std::size_t size() const;
+            bool empty() const;
+            
+            std::vector<LightInfo>::iterator begin();
+            std::vector<LightInfo>::iterator end();
+                        
+            std::vector<LightInfo>::const_iterator begin() const;
+            std::vector<LightInfo>::const_iterator end()   const;
+
+        private:
+            std::vector<LightInfo> m_lights;
         };
     }
 }
