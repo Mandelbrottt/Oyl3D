@@ -58,7 +58,9 @@ namespace oyl::internal
         void drawInspectorRenderable();
         void drawInspectorGuiRenderable();
         void drawInspectorRigidBody();
-        void drawInspectorLightSource();
+        void drawInspectorPointLight();
+        void drawInspectorDirectionalLight();
+        void drawInspectorSpotLight();
         void drawInspectorCamera();
         void drawInspectorAddComponent();
 

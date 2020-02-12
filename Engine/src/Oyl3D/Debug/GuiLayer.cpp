@@ -1431,58 +1431,58 @@ namespace oyl::internal
 
     void GuiLayer::drawInspectorSpotLight()
     {
-        //using component::PointLight;
+        using component::PointLight;
 
-        //if (!registry->has<PointLight>(m_currentSelection.entity()))
-        //    return;
+        if (!registry->has<PointLight>(m_currentSelection.entity()))
+            return;
 
-        //ImGui::SetNextItemOpen(true, ImGuiCond_Once);
+        ImGui::SetNextItemOpen(true, ImGuiCond_Once);
 
-        //bool open = ImGui::CollapsingHeader("Light Source##InspectorLightSource");
+        bool open = ImGui::CollapsingHeader("Light Source##InspectorLightSource");
 
-        //open &= !userRemoveComponent<PointLight>();
+        open &= !userRemoveComponent<PointLight>();
 
-        //if (open)
-        //{
-        //    ImGui::Indent(10);
+        if (open)
+        {
+            ImGui::Indent(10);
 
-        //    auto& pl = registry->get<PointLight>(m_currentSelection.entity());
+            auto& pl = registry->get<PointLight>(m_currentSelection.entity());
 
-        //    ImGui::ColorEdit3("Ambient##LightSourceAmbient",  value_ptr(pl.ambient));
-        //    ImGui::ColorEdit3("Diffuse##LightSourceAmbient",  value_ptr(pl.diffuse));
-        //    ImGui::ColorEdit3("Specular##LightSourceAmbient", value_ptr(pl.specular));
+            ImGui::ColorEdit3("Ambient##LightSourceAmbient",  value_ptr(pl.ambient));
+            ImGui::ColorEdit3("Diffuse##LightSourceAmbient",  value_ptr(pl.diffuse));
+            ImGui::ColorEdit3("Specular##LightSourceAmbient", value_ptr(pl.specular));
 
-        //    float newWidth = ImGui::GetWindowContentRegionWidth() / 6;
+            float newWidth = ImGui::GetWindowContentRegionWidth() / 6;
 
-        //    ImGui::PushItemWidth(newWidth);
+            ImGui::PushItemWidth(newWidth);
 
-        //    {
-        //        const float posDragSpeed = 0.01f;
-        //        ImGui::Text("Attenuation");
-        //        ImGui::SameLine(ImGui::GetWindowContentRegionWidth() - (15 * 3 + newWidth * 3 + 27));
-        //        ImGui::SetNextItemWidth(15);
-        //        ImGui::DragFloat("##AttenK", &pl.attenConst, posDragSpeed, 0.0f, 999.0f, "K");
-        //        ImGui::SameLine();
-        //        ImGui::InputFloat("##AttenKInput", &pl.attenConst, 0, 0, "%.2f");
-        //        ImGui::SameLine();
-        //        ImGui::SetNextItemWidth(15);
-        //        ImGui::DragFloat("##AttenL", &pl.attenLin, posDragSpeed, 0, 999.0f, "L");
-        //        ImGui::SameLine();
-        //        ImGui::InputFloat("##AttenLInput", &pl.attenLin, 0, 0, "%.2f");
-        //        ImGui::SameLine();
-        //        ImGui::SetNextItemWidth(15);
-        //        ImGui::DragFloat("##AttenQ", &pl.attenQuad, posDragSpeed, 0, 999.0f, "Q");
-        //        ImGui::SameLine();
-        //        ImGui::InputFloat("##AttenQInput", &pl.attenQuad, 0, 0, "%.2f");
-        //        pl.attenuation = max(glm::vec3(0.0f, 0.0f, 0.0f), pl.attenuation);
-        //    }
-        //    ImGui::PopItemWidth();
-        //    
-        //    ImGui::Unindent(10);
+            {
+                const float posDragSpeed = 0.01f;
+                ImGui::Text("Attenuation");
+                ImGui::SameLine(ImGui::GetWindowContentRegionWidth() - (15 * 3 + newWidth * 3 + 27));
+                ImGui::SetNextItemWidth(15);
+                ImGui::DragFloat("##AttenK", &pl.attenConst, posDragSpeed, 0.0f, 999.0f, "K");
+                ImGui::SameLine();
+                ImGui::InputFloat("##AttenKInput", &pl.attenConst, 0, 0, "%.2f");
+                ImGui::SameLine();
+                ImGui::SetNextItemWidth(15);
+                ImGui::DragFloat("##AttenL", &pl.attenLin, posDragSpeed, 0, 999.0f, "L");
+                ImGui::SameLine();
+                ImGui::InputFloat("##AttenLInput", &pl.attenLin, 0, 0, "%.2f");
+                ImGui::SameLine();
+                ImGui::SetNextItemWidth(15);
+                ImGui::DragFloat("##AttenQ", &pl.attenQuad, posDragSpeed, 0, 999.0f, "Q");
+                ImGui::SameLine();
+                ImGui::InputFloat("##AttenQInput", &pl.attenQuad, 0, 0, "%.2f");
+                pl.attenuation = max(glm::vec3(0.0f, 0.0f, 0.0f), pl.attenuation);
+            }
+            ImGui::PopItemWidth();
+            
+            ImGui::Unindent(10);
 
-        //    ImGui::Separator();
-        //    ImGui::NewLine();
-        //}
+            ImGui::Separator();
+            ImGui::NewLine();
+        }
     }
 
     void GuiLayer::drawInspectorLightSource()
