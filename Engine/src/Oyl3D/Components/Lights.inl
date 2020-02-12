@@ -44,16 +44,13 @@ namespace oyl::component
         switch (type)
         {
             case LightType::Point:
-                point.~PointLight();
-                new(&point) ::oyl::internal::PointLight();
+                new(&point) ::oyl::PointLight();
                 break;
             case LightType::Directional:
-                directional.~DirectionalLight();
-                new(&directional) ::oyl::internal::DirectionalLight();
+                new(&directional) ::oyl::DirectionalLight();
                 break;
             case LightType::Spot:
-                spot.~SpotLight();
-                new(&spot) ::oyl::internal::SpotLight();
+                new(&spot) ::oyl::SpotLight();
                 break;
         }
     }

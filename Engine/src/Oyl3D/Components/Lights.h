@@ -22,13 +22,19 @@ namespace oyl
         struct AttenuationLight
         {
             AttenuationLight()
-                : attenuation(1.0f, 0.35f, 0.44f) {}
+            {
+                range(5.0f);
+            }
 
-            void setRange(f32 range)
+            float range() const { return m_range; }
+
+            void range(f32 range)
             {
                 attenConst = 1.0f;
                 attenLin   = 4.5f / range;
                 attenQuad  = 75.0f / range;
+
+                m_range = range;
             }
 
             union
@@ -42,6 +48,9 @@ namespace oyl
                 
                 glm::vec3 attenuation;
             };
+
+        private:
+            f32 m_range = 1.0f;
         };
 
         struct PositionalLight
@@ -68,10 +77,10 @@ namespace oyl
     }
 
     struct PointLight
-        : internal::ColorLight,
-          internal::ShadowLight,
-          internal::PositionalLight,
-          internal::AttenuationLight {};
+        : internal::PositionalLight,
+          internal::AttenuationLight,
+          internal::ColorLight,
+          internal::ShadowLight {};
     
     struct DirectionalLight
         : internal::ColorLight,
@@ -81,14 +90,14 @@ namespace oyl
     };
     
     struct SpotLight
-        : DirectionalLight,
-        internal::AttenuationLight
+        : internal::PositionalLight,
+          internal::AttenuationLight,
+          DirectionalLight
     {
         f32 innerCutoff = 10.0f;
         f32 outerCutoff = 15.0f;
     };
-        
-
+    
     enum class LightType
     {
         Point,
@@ -121,6 +130,8 @@ namespace oyl
 
             private:
                 void defaultInit();
+
+                friend ::oyl::internal::GuiLayer;
             };
 
             LightInfo& pushLight(LightInfo info);
