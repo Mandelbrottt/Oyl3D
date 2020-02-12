@@ -19,6 +19,52 @@ void SandboxLayer::onEnter()
         mr.mesh     = mesh;
 
 		/////////////////////////////////////////////////////
+		//////////// SINGLE INSTANCE ANIMATIONS /////////////
+		{
+			for (int i = 0; i < 2; i++)
+			{
+				entt::entity waterCrestEntity = registry->create();
+
+				component::Transform waterCrestTransform;
+				waterCrestTransform.setPosition(glm::vec3(0.0f, 0.0f, 0.0f));
+
+				registry->assign<component::Transform>(waterCrestEntity, waterCrestTransform);
+				registry->assign<component::Renderable>(waterCrestEntity, mr);
+
+				auto& so1 = registry->assign<component::EntityInfo>(waterCrestEntity);
+				so1.name = "WaterCrest" + std::to_string(i);
+
+				char filename[512];
+				std::string s;
+				s.reserve(512);
+				const int numFrames = 2; // however many frames you exported
+				auto& animator = registry->assign<component::Animatable>(waterCrestEntity);
+
+				//loading animation
+				auto waterCrestAnimation = Ref<Animation>::create();
+				for (int i = 0; i < numFrames; i++)
+				{
+					Animation::KeyPose kp;
+					kp.duration = 1.0f / 5.0f; // duration in seconds
+
+					sprintf(filename, "res/assets/animation/WaterCrest/WaterCrestAnim_%06d.obj", i + 1);
+					s.assign(filename); // you have to load each mesh yourself for now
+										// the "%06d" is because by default blender exports
+										// frames as "animationName_000001.obj" and so on counting up
+
+					kp.mesh = Mesh::create(s);
+					waterCrestAnimation->poses.push_back(kp); // Add the keyframe to the animation
+
+				}
+				animator.pushAnimation("WaterCrestAnim", waterCrestAnimation); // add the animation to the animator
+			}
+		}
+
+
+
+
+
+		/////////////////////////////////////////////////////
 		///////////////////// BLUE TEAM /////////////////////
 		{
 			//PLAYER 1

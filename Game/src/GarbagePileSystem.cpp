@@ -19,7 +19,7 @@ void GarbagePileSystem::onUpdate()
 	if (passiveGarbageBuildupCountdown < 0.0f)
 	{
 		addGarbageLevel = true;
-		passiveGarbageBuildupCountdown = PASSIVE_GARBAGE_BUILDUP_TIME - numBuildUpsAccumulated * 0.1f; //TODO: come up with a better equation for time scaling
+		passiveGarbageBuildupCountdown = PASSIVE_GARBAGE_BUILDUP_TIME - numBuildUpsAccumulated * 0.5f; //TODO: come up with a better equation for time scaling
 		numBuildUpsAccumulated++;
 	}
 
