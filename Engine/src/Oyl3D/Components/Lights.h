@@ -29,7 +29,7 @@ namespace oyl
             ShadowLight() : m_frameBuffer(nullptr) {}
             ~ShadowLight() { m_frameBuffer = nullptr; }
             
-            bool castShadows = true;
+            bool castShadows = false;
             
         private:
             glm::mat4 m_lightSpaceMatrix{};

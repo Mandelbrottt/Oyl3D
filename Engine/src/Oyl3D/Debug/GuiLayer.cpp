@@ -923,7 +923,8 @@ namespace oyl::internal
 
             auto& renderable = registry->get<Renderable>(m_currentSelection.entity());
             
-            ImGui::Checkbox("Enabled", &renderable.enabled);
+            ImGui::Checkbox("Enabled##RenderableEnabled", &renderable.enabled);
+            ImGui::Checkbox("Cast Shadows##RenderableCastShadows", &renderable.castShadows);
 
             ImGui::TextUnformatted("Culling Mask"); ImGui::SameLine();
             char preview[33]{ 0 };

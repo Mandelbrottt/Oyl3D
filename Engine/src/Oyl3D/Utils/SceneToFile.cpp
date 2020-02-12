@@ -220,6 +220,7 @@ namespace oyl::internal
         auto& re = registry.get<Renderable>(entity);
 
         j["Enabled"] = re.enabled;
+        j["CastShadows"] = re.castShadows;
         j["CullingMask"] = re.cullingMask;
         
         auto& jMesh = j["Mesh"];
@@ -524,6 +525,9 @@ namespace oyl::internal
 
         if (auto it = j.find("Enabled"); it != j.end())
             it->get_to(re.enabled);
+        
+        if (auto it = j.find("CastShadows"); it != j.end())
+            it->get_to(re.castShadows);
 
         if (auto it = j.find("CullingMask"); it != j.end() && it->is_number_unsigned())
             it->get_to(re.cullingMask);
