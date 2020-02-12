@@ -281,7 +281,7 @@ namespace oyl::internal
                     std::string dirLightName = "u_dirLight[" + std::to_string(count) + "]";
 
                     boundMaterial->setUniform3f(dirLightName + ".direction",
-                                                dirLightProps.direction);
+                                                viewNormal * registry->get<Transform>(light).getForwardGlobal());
                     boundMaterial->setUniform3f(dirLightName + ".ambient",
                                                 dirLightProps.ambient);
                     boundMaterial->setUniform3f(dirLightName + ".diffuse",

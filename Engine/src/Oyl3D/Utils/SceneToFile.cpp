@@ -327,20 +327,60 @@ namespace oyl::internal
         j["Properties"] = rb.getPropertyFlags();
     }
 
-    static void saveLightSource(entt::entity entity, entt::registry& registry, json& j)
+    static void savePointLight(entt::entity entity, entt::registry& registry, json& j)
     {
         using component::PointLight;
 
-        auto& ls = registry.get<PointLight>(entity);
+        auto& pl = registry.get<PointLight>(entity);
 
         j = json::array();
 
         json jLight = json::object();
         
-        jLight["Ambient"] = ls.ambient;
-        jLight["Diffuse"] = ls.diffuse;
-        jLight["Specular"] = ls.specular;
-        jLight["Attenuation"] = ls.attenuation;
+        jLight["Range"] = pl.range;
+        jLight["Ambient"] = pl.ambient;
+        jLight["Diffuse"] = pl.diffuse;
+        jLight["Specular"] = pl.specular;
+        jLight["CastShadows"] = pl.castShadows;
+
+        j.push_back(std::move(jLight));
+    }
+
+    static void saveDirectionalLight(entt::entity entity, entt::registry& registry, json& j)
+    {
+        using component::DirectionalLight;
+
+        auto& dl = registry.get<DirectionalLight>(entity);
+
+        j = json::array();
+
+        json jLight = json::object();
+
+        jLight["Ambient"] = dl.ambient;
+        jLight["Diffuse"] = dl.diffuse;
+        jLight["Specular"] = dl.specular;
+        jLight["CastShadows"] = dl.castShadows;
+
+        j.push_back(std::move(jLight));
+    }
+
+    static void saveSpotLight(entt::entity entity, entt::registry& registry, json& j)
+    {
+        using component::SpotLight;
+
+        auto& sl = registry.get<SpotLight>(entity);
+
+        j = json::array();
+
+        json jLight = json::object();
+
+        jLight["Range"] = sl.range;
+        jLight["Ambient"] = sl.ambient;
+        jLight["Diffuse"] = sl.diffuse;
+        jLight["Specular"] = sl.specular;
+        jLight["CastShadows"] = sl.castShadows;
+        jLight["InnerCutoff"] = sl.innerCutoff;
+        jLight["OuterCutoff"] = sl.outerCutoff;
 
         j.push_back(std::move(jLight));
     }
@@ -650,7 +690,7 @@ namespace oyl::internal
             rb.setPropertyFlags(it->get<uint>());
     }
 
-    static void loadLightSource(entt::entity entity, entt::registry& registry, const json& j)
+    static void loadPointLight(entt::entity entity, entt::registry& registry, const json& j)
     {
         using component::PointLight;
 
@@ -667,8 +707,60 @@ namespace oyl::internal
                 it->get_to(ls.diffuse);
             if (const auto it = jLight.find("Specular"); it != jLight.end())
                 it->get_to(ls.specular);
-            if (const auto it = jLight.find("Attenuation"); it != jLight.end())
-                it->get_to(ls.attenuation);
+            if (const auto it = jLight.find("CastShadows"); it != jLight.end())
+                it->get_to(ls.castShadows);
+            if (const auto it = jLight.find("Range"); it != jLight.end())
+                it->get_to(ls.range);
+        }
+    }
+
+    static void loadDirectionalLight(entt::entity entity, entt::registry& registry, const json& j)
+    {
+        using component::DirectionalLight;
+
+        auto& ls = registry.assign_or_replace<DirectionalLight>(entity);
+
+        if (!j.is_array())
+            return;
+
+        for (const auto& jLight : j)
+        {
+            if (const auto it = jLight.find("Ambient"); it != jLight.end())
+                it->get_to(ls.ambient);
+            if (const auto it = jLight.find("Diffuse"); it != jLight.end())
+                it->get_to(ls.diffuse);
+            if (const auto it = jLight.find("Specular"); it != jLight.end())
+                it->get_to(ls.specular);
+            if (const auto it = jLight.find("CastShadows"); it != jLight.end())
+                it->get_to(ls.castShadows);
+        }
+    }
+
+    static void loadSpotLight(entt::entity entity, entt::registry& registry, const json& j)
+    {
+        using component::SpotLight;
+
+        auto& ls = registry.assign_or_replace<SpotLight>(entity);
+
+        if (!j.is_array())
+            return;
+
+        for (const auto& jLight : j)
+        {
+            if (const auto it = jLight.find("Ambient"); it != jLight.end())
+                it->get_to(ls.ambient);
+            if (const auto it = jLight.find("Diffuse"); it != jLight.end())
+                it->get_to(ls.diffuse);
+            if (const auto it = jLight.find("Specular"); it != jLight.end())
+                it->get_to(ls.specular);
+            if (const auto it = jLight.find("CastShadows"); it != jLight.end())
+                it->get_to(ls.castShadows);
+            if (const auto it = jLight.find("Range"); it != jLight.end())
+                it->get_to(ls.range);
+            if (const auto it = jLight.find("InnerCutoff"); it != jLight.end())
+                it->get_to(ls.innerCutoff);
+            if (const auto it = jLight.find("OuterCutoff"); it != jLight.end())
+                it->get_to(ls.outerCutoff);
         }
     }
 
@@ -832,7 +924,13 @@ namespace oyl::internal
             saveRigidBody(entity, registry, j["RigidBody"]);
 
         if (registry.has<component::PointLight>(entity))
-            saveLightSource(entity, registry, j["LightSource"]);
+            savePointLight(entity, registry, j["PointLight"]);
+
+        if (registry.has<component::DirectionalLight>(entity))
+            saveDirectionalLight(entity, registry, j["DirectionalLight"]);
+
+        if (registry.has<component::SpotLight>(entity))
+            saveSpotLight(entity, registry, j["SpotLight"]);
 
         if (registry.has<component::Camera>(entity))
             saveCamera(entity, registry, j["Camera"]);
@@ -858,9 +956,15 @@ namespace oyl::internal
         if (auto it = j.find("RigidBody"); it != j.end())
             loadRigidBody(entity, registry, it.value());
 
-        if (auto it = j.find("LightSource"); it != j.end())
-            loadLightSource(entity, registry, it.value());
+        if (auto it = j.find("PointLight"); it != j.end())
+            loadPointLight(entity, registry, it.value());
 
+        if (auto it = j.find("DirectionalLight"); it != j.end())
+            loadDirectionalLight(entity, registry, it.value());
+
+        if (auto it = j.find("SpotLight"); it != j.end())
+            loadSpotLight(entity, registry, it.value());
+        
         if (auto it = j.find("Camera"); it != j.end())
             loadCamera(entity, registry, it.value());
     }

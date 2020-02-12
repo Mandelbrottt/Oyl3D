@@ -30,9 +30,7 @@ struct PointLight
 	vec3 diffuse;
 	vec3 specular;
 
-	float attenK;
-	float attenL;
-	float attenQ;
+	float range;
 };
 
 struct DirLight 
@@ -53,9 +51,7 @@ struct SpotLight
 	vec3 diffuse;
 	vec3 specular;
 	
-	float attenK;
-	float attenL;
-	float attenQ;
+	float range;
 
 	float innerCutoff;
 	float outerCutoff;
@@ -71,7 +67,6 @@ in VS_OUT {
 	vec3 position;
 	vec2 texCoord;
 	mat3 TBN;
-	mat3 viewNormal;
 	vec4 lightSpacePosition;
 } fs_in;
 
@@ -154,14 +149,8 @@ vec3 calculatePointLight(PointLight light, vec3 fragPos, vec3 normal, vec2 texCo
 	
 	float dist = length(light.position - fragPos);
 	
-	float Kc = light.attenK;
-	float Kl = light.attenL * dist;
-	float Kq = light.attenQ * dist * dist;
-	
-	float attenuation = 0.0;
-	
-	if (Kc + Kl + Kq != 0)
-		attenuation = 1.0 / (Kc + Kl + Kq);
+	float attenuation = clamp(1.0 - (dist * dist) / (light.range * light.range), 0.0, 1.0); 
+	attenuation *= attenuation;
 
 	diffuse  *= attenuation;
 	specular *= attenuation;
@@ -174,7 +163,7 @@ vec3 calculatePointLight(PointLight light, vec3 fragPos, vec3 normal, vec2 texCo
 
 vec3 calculateDirLight(DirLight light, vec3 fragPos, vec3 normal, vec2 texCoord, inout int shadowIndex)
 {
-	vec3 lightDir = normalize(-(fs_in.viewNormal * light.direction));
+	vec3 lightDir = normalize(-light.direction);
 
 	// Diffuse Shading
 	float diff = max(dot(normal, lightDir), 0.0);
@@ -214,14 +203,8 @@ vec3 calculateSpotLight(SpotLight light, vec3 fragPos, vec3 normal, vec2 texCoor
 		// Attenuation
 		float dist = length(light.position - fragPos);
 	
-		float Kc = light.attenK;
-		float Kl = light.attenL * dist;
-		float Kq = light.attenQ * dist * dist;
-
-		float attenuation = 0.0;
-
-		if (Kc + Kl + Kq != 0)
-			attenuation = 1.0 / (Kc + Kl + Kq);
+		float attenuation = clamp(1.0 - (dist * dist) / (light.range * light.range), 0.0, 1.0); 
+		attenuation *= attenuation;
 
 		// Combine Results
 		vec3 ambient  = light.ambient  *        vec3(texture(u_material.albedo,   texCoord));

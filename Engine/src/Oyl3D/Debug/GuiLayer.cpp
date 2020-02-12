@@ -6,7 +6,6 @@
 #include "App/Application.h"
 #include "App/Window.h"
 
-#include "Components/Animatable.h"
 #include "Components/Collidable.h"
 #include "Components/Camera.h"
 #include "Components/Lights.h"
@@ -713,7 +712,10 @@ namespace oyl::internal
                 drawInspectorGuiRenderable();
                 drawInspectorCollidable();
                 drawInspectorRigidBody();
-                drawInspectorLightSource();
+                //drawInspectorLightSource();
+                drawInspectorPointLight();
+                drawInspectorDirectionalLight();
+                drawInspectorSpotLight();
                 drawInspectorCamera();
                 drawInspectorAddComponent();
             }
@@ -1421,24 +1423,14 @@ namespace oyl::internal
 
     void GuiLayer::drawInspectorPointLight()
     {
-        
-    }
-    
-    void GuiLayer::drawInspectorDirectionalLight()
-    {
-        
-    }
-
-    void GuiLayer::drawInspectorSpotLight()
-    {
         using component::PointLight;
-
+        
         if (!registry->has<PointLight>(m_currentSelection.entity()))
             return;
 
         ImGui::SetNextItemOpen(true, ImGuiCond_Once);
 
-        bool open = ImGui::CollapsingHeader("Light Source##InspectorLightSource");
+        bool open = ImGui::CollapsingHeader("Point Light##InspectorPointLight");
 
         open &= !userRemoveComponent<PointLight>();
 
@@ -1448,310 +1440,61 @@ namespace oyl::internal
 
             auto& pl = registry->get<PointLight>(m_currentSelection.entity());
 
-            ImGui::ColorEdit3("Ambient##LightSourceAmbient",  value_ptr(pl.ambient));
-            ImGui::ColorEdit3("Diffuse##LightSourceAmbient",  value_ptr(pl.diffuse));
-            ImGui::ColorEdit3("Specular##LightSourceAmbient", value_ptr(pl.specular));
-
+            ImGui::TextUnformatted("Cast Shadows");
+            ImGui::SameLine();
+            ImGui::Checkbox("##CastShadowsPointLight", &pl.castShadows);
+            
             float newWidth = ImGui::GetWindowContentRegionWidth() / 6;
-
+            
             ImGui::PushItemWidth(newWidth);
-
             {
                 const float posDragSpeed = 0.01f;
-                ImGui::Text("Attenuation");
-                ImGui::SameLine(ImGui::GetWindowContentRegionWidth() - (15 * 3 + newWidth * 3 + 27));
+                ImGui::TextUnformatted("Range");
+                ImGui::SameLine(ImGui::GetWindowContentRegionWidth() - (15 + newWidth + 27));
                 ImGui::SetNextItemWidth(15);
-                ImGui::DragFloat("##AttenK", &pl.attenConst, posDragSpeed, 0.0f, 999.0f, "K");
+                ImGui::DragFloat("##PointLightRange", &pl.range, posDragSpeed, 0.0f, 999.0f, "R");
                 ImGui::SameLine();
-                ImGui::InputFloat("##AttenKInput", &pl.attenConst, 0, 0, "%.2f");
-                ImGui::SameLine();
-                ImGui::SetNextItemWidth(15);
-                ImGui::DragFloat("##AttenL", &pl.attenLin, posDragSpeed, 0, 999.0f, "L");
-                ImGui::SameLine();
-                ImGui::InputFloat("##AttenLInput", &pl.attenLin, 0, 0, "%.2f");
-                ImGui::SameLine();
-                ImGui::SetNextItemWidth(15);
-                ImGui::DragFloat("##AttenQ", &pl.attenQuad, posDragSpeed, 0, 999.0f, "Q");
-                ImGui::SameLine();
-                ImGui::InputFloat("##AttenQInput", &pl.attenQuad, 0, 0, "%.2f");
-                pl.attenuation = max(glm::vec3(0.0f, 0.0f, 0.0f), pl.attenuation);
+                ImGui::InputFloat("##PointLightRangeInput", &pl.range, 0, 0, "%.2f");
             }
             ImGui::PopItemWidth();
-            
+
+            ImGui::ColorEdit3("Ambient##PointLightAmbient", value_ptr(pl.ambient));
+            ImGui::ColorEdit3("Diffuse##PointLightDiffuse", value_ptr(pl.diffuse));
+            ImGui::ColorEdit3("Specular##PointLightSpecular", value_ptr(pl.specular));
+
             ImGui::Unindent(10);
 
             ImGui::Separator();
             ImGui::NewLine();
         }
     }
-
-    void GuiLayer::drawInspectorLightSource()
+    
+    void GuiLayer::drawInspectorDirectionalLight()
     {
-        // TEMPORARY: Change when adding LightSource component
-        //using component::PointLight;
+        using component::DirectionalLight;
+        
+        if (!registry->has<DirectionalLight>(m_currentSelection.entity()))
+            return;
 
-        //if (!registry->has<PointLight>(m_currentSelection.entity()))
-        //    return;
+        ImGui::SetNextItemOpen(true, ImGuiCond_Once);
 
-        //ImGui::SetNextItemOpen(true, ImGuiCond_Once);
+        bool open = ImGui::CollapsingHeader("Directional Light##InspectorDirectionalLight");
 
-        //bool open = ImGui::CollapsingHeader("Light Source##InspectorLightSource");
-
-        //open &= !userRemoveComponent<PointLight>();
-
-        //if (open)
-        //{
-        //    ImGui::Indent(10);
-
-        //    auto& pl = registry->get<PointLight>(m_currentSelection.entity());
-
-        //    ImGui::ColorEdit3("Ambient##LightSourceAmbient",  value_ptr(pl.ambient));
-        //    ImGui::ColorEdit3("Diffuse##LightSourceAmbient",  value_ptr(pl.diffuse));
-        //    ImGui::ColorEdit3("Specular##LightSourceAmbient", value_ptr(pl.specular));
-
-        //    float newWidth = ImGui::GetWindowContentRegionWidth() / 6;
-
-        //    ImGui::PushItemWidth(newWidth);
-
-        //    {
-        //        const float posDragSpeed = 0.01f;
-        //        ImGui::Text("Attenuation");
-        //        ImGui::SameLine(ImGui::GetWindowContentRegionWidth() - (15 * 3 + newWidth * 3 + 27));
-        //        ImGui::SetNextItemWidth(15);
-        //        ImGui::DragFloat("##AttenK", &pl.attenConst, posDragSpeed, 0.0f, 999.0f, "K");
-        //        ImGui::SameLine();
-        //        ImGui::InputFloat("##AttenKInput", &pl.attenConst, 0, 0, "%.2f");
-        //        ImGui::SameLine();
-        //        ImGui::SetNextItemWidth(15);
-        //        ImGui::DragFloat("##AttenL", &pl.attenLin, posDragSpeed, 0, 999.0f, "L");
-        //        ImGui::SameLine();
-        //        ImGui::InputFloat("##AttenLInput", &pl.attenLin, 0, 0, "%.2f");
-        //        ImGui::SameLine();
-        //        ImGui::SetNextItemWidth(15);
-        //        ImGui::DragFloat("##AttenQ", &pl.attenQuad, posDragSpeed, 0, 999.0f, "Q");
-        //        ImGui::SameLine();
-        //        ImGui::InputFloat("##AttenQInput", &pl.attenQuad, 0, 0, "%.2f");
-        //        pl.attenuation = max(glm::vec3(0.0f, 0.0f, 0.0f), pl.attenuation);
-        //    }
-        //    ImGui::PopItemWidth();
-        //    
-        //    ImGui::Unindent(10);
-
-        //    ImGui::Separator();
-        //    ImGui::NewLine();
-        //}
-
-        using component::LightSource;
-
-        if (!registry->has<LightSource>(m_currentSelection.entity())) return;
-
-        ImGui::SetNextTreeNodeOpen(true, ImGuiCond_Once);
-
-        auto flags = ImGuiInputTextFlags_EnterReturnsTrue;
-
-        bool open = ImGui::CollapsingHeader("Collidable##InspectorColliderProperties");
-
-        open &= !userRemoveComponent<LightSource>();
+        open &= !userRemoveComponent<DirectionalLight>();
 
         if (open)
         {
             ImGui::Indent(10);
 
-            auto& lightSource = registry->get<LightSource>(m_currentSelection.entity());
-            int   count = 0;
-            char  shapeID[512];
-            char  temp[128];
-            for (auto& light : lightSource)
-            {
-                if (light.type == LightType::Point)
-                    strcpy(shapeID, "Point");
-                else if (light.type == LightType::Directional)
-                    strcpy(shapeID, "Directional");
-                else if (light.type == LightType::Spot)
-                    strcpy(shapeID, "Spot");
+            auto& dl = registry->get<DirectionalLight>(m_currentSelection.entity());
 
-                sprintf(shapeID, "%s##LightSourcePropertiesType%d", shapeID, count);
+            ImGui::TextUnformatted("Cast Shadows");
+            ImGui::SameLine();
+            ImGui::Checkbox("##CastShadowsDirectionalLight", &dl.castShadows);
 
-                ImGui::SetNextTreeNodeOpen(true, ImGuiCond_Once);
-                if (ImGui::CollapsingHeader(shapeID))
-                {
-                    ImGui::Indent(10);
-
-                    sprintf(temp, "##LightSourceChangeType%d", count);
-                    if (ImGui::BeginCombo(temp, "Set Type"))
-                    {
-                        bool didChange = false;
-                        
-                        sprintf(temp, "Point##Point%d", count);
-                        if (ImGui::Selectable(temp))
-                            light.type = LightType::Point;
-                        sprintf(temp, "Directional##Directional%d", count);
-                        if (ImGui::Selectable(temp))
-                            light.type = LightType::Directional;
-                        sprintf(temp, "Spot##Spot%d", count);
-                        if (ImGui::Selectable(temp))
-                            light.type = LightType::Spot;
-                        
-                        ImGui::EndCombo();
-                    }
-
-                    float newWidth = ImGui::GetWindowContentRegionWidth() / 6;
-
-                    ImGui::PushItemWidth(newWidth);
-
-                    glm::vec3 ambient = light.point.;
-                    const float posDragSpeed = 0.02f;
-                    ImGui::Text("Size");
-                    ImGui::SameLine(ImGui::GetWindowContentRegionWidth() - (15 * 3 + newWidth * 3 + 27));
-                    ImGui::SetNextItemWidth(15);
-                    sprintf(temp, "##XSize%d", count);
-                    ImGui::DragFloat(temp, &size.x, posDragSpeed, 0, 0, "X");
-                    ImGui::SameLine();
-                    sprintf(temp, "##XSizeInput%d", count);
-                    ImGui::InputFloat(temp, &size.x, 0, 0, "%.2f", flags);
-                    ImGui::SameLine();
-                    ImGui::SetNextItemWidth(15);
-                    sprintf(temp, "##YSize%d", count);
-                    ImGui::DragFloat(temp, &size.y, posDragSpeed, 0, 0, "Y");
-                    ImGui::SameLine();
-                    sprintf(temp, "##YSizeInput%d", count);
-                    ImGui::InputFloat(temp, &size.y, 0, 0, "%.2f", flags);
-                    ImGui::SameLine();
-                    ImGui::SetNextItemWidth(15);
-                    sprintf(temp, "##ZSize%d", count);
-                    ImGui::DragFloat(temp, &size.z, posDragSpeed, 0, 0, "Z");
-                    ImGui::SameLine();
-                    sprintf(temp, "##ZSizeInput%d", count);
-                    ImGui::InputFloat(temp, &size.z, 0, 0, "%.2f", flags);
-
-                    if (size != light.box.getSize())
-                        light.box.setSize(size);
-
-                    break;
-
-                    switch (light.type)
-                    {
-                        case ColliderType::Box:
-                        {
-                            glm::vec3   size         = light.box.getSize();
-                            const float posDragSpeed = 0.02f;
-                            ImGui::Text("Size");
-                            ImGui::SameLine(ImGui::GetWindowContentRegionWidth() - (15 * 3 + newWidth * 3 + 27));
-                            ImGui::SetNextItemWidth(15);
-                            sprintf(temp, "##XSize%d", count);
-                            ImGui::DragFloat(temp, &size.x, posDragSpeed, 0, 0, "X");
-                            ImGui::SameLine();
-                            sprintf(temp, "##XSizeInput%d", count);
-                            ImGui::InputFloat(temp, &size.x, 0, 0, "%.2f", flags);
-                            ImGui::SameLine();
-                            ImGui::SetNextItemWidth(15);
-                            sprintf(temp, "##YSize%d", count);
-                            ImGui::DragFloat(temp, &size.y, posDragSpeed, 0, 0, "Y");
-                            ImGui::SameLine();
-                            sprintf(temp, "##YSizeInput%d", count);
-                            ImGui::InputFloat(temp, &size.y, 0, 0, "%.2f", flags);
-                            ImGui::SameLine();
-                            ImGui::SetNextItemWidth(15);
-                            sprintf(temp, "##ZSize%d", count);
-                            ImGui::DragFloat(temp, &size.z, posDragSpeed, 0, 0, "Z");
-                            ImGui::SameLine();
-                            sprintf(temp, "##ZSizeInput%d", count);
-                            ImGui::InputFloat(temp, &size.z, 0, 0, "%.2f", flags);
-
-                            if (size != light.box.getSize())
-                                light.box.setSize(size);
-
-                            break;
-                        }
-                        case ColliderType::Sphere:
-                        {
-                            float       radius       = light.sphere.getRadius();
-                            const float posDragSpeed = 0.01f;
-                            ImGui::Text("Radius");
-                            ImGui::SameLine(ImGui::GetWindowContentRegionWidth() - (15 * 3 + newWidth * 3 + 27));
-                            ImGui::SetNextItemWidth(15);
-                            sprintf(temp, "##Radius%d", count);
-                            ImGui::DragFloat(temp, &radius, posDragSpeed, 0, 0, "R");
-                            ImGui::SameLine();
-                            sprintf(temp, "##RadiusInput%d", count);
-                            ImGui::InputFloat(temp, &radius, 0, 0, "%.2f", flags);
-
-                            radius = glm::max(radius, 0.1f);
-                            if (radius != light.sphere.getRadius())
-                                light.sphere.setRadius(radius);
-
-                            break;
-                        }
-                        case ColliderType::Capsule:
-                        {
-                            float       radius       = light.capsule.getRadius();
-                            const float posDragSpeed = 0.01f;
-                            ImGui::TextUnformatted("Radius");
-                            ImGui::SameLine(ImGui::GetWindowContentRegionWidth() - (15 * 3 + newWidth * 3 + 27));
-                            ImGui::SetNextItemWidth(15);
-                            sprintf(temp, "##Radius%d", count);
-                            ImGui::DragFloat(temp, &radius, posDragSpeed, 0, 0, "R");
-                            ImGui::SameLine();
-                            sprintf(temp, "##RadiusInput%d", count);
-                            ImGui::InputFloat(temp, &radius, 0, 0, "%.2f", flags);
-
-                            radius = glm::max(radius, 0.1f);
-                            if (radius != light.capsule.getRadius())
-                                light.capsule.setRadius(radius);
-
-                            float height = light.capsule.getHeight();
-                            ImGui::TextUnformatted("Height");
-                            ImGui::SameLine(ImGui::GetWindowContentRegionWidth() - (15 * 3 + newWidth * 3 + 27));
-                            ImGui::SetNextItemWidth(15);
-                            sprintf(temp, "##Height%d", count);
-                            ImGui::DragFloat(temp, &height, posDragSpeed, 0, 0, "R");
-                            ImGui::SameLine();
-                            sprintf(temp, "##HeightInput%d", count);
-                            ImGui::InputFloat(temp, &height, 0, 0, "%.2f", flags);
-
-                            height = glm::max(height, 0.1f);
-                            if (height != light.capsule.getHeight())
-                                light.capsule.setHeight(height);
-
-                            int direction = static_cast<int>(light.capsule.getDirection());
-                            ImGui::TextUnformatted("Direction");
-                            ImGui::SameLine();
-                            ImGui::RadioButton("X##DirectionRadioX", &direction, static_cast<int>(Direction::X_AXIS));
-                            ImGui::SameLine();
-                            ImGui::RadioButton("Y##DirectionRadioY", &direction, static_cast<int>(Direction::Y_AXIS));
-                            ImGui::SameLine();
-                            ImGui::RadioButton("Z##DirectionRadioZ", &direction, static_cast<int>(Direction::Z_AXIS));
-                            light.capsule.setDirection(static_cast<Direction>(direction));
-
-                            break;
-                        }
-                    }
-
-                    ImGui::Unindent(10);
-
-                    ImGui::PopItemWidth();
-                }
-
-                ++count;
-            }
-
-            ImGui::NewLine();
-
-            if (ImGui::BeginCombo("##InspectorCollidableAddShape", "Add Shape", ImGuiComboFlags_NoArrowButton))
-            {
-                if (ImGui::Selectable("Box"))
-                    lightSource.pushShape(ColliderType::Box);
-                if (ImGui::Selectable("Sphere"))
-                    lightSource.pushShape(ColliderType::Sphere);
-                if (ImGui::Selectable("Capsule"))
-                    lightSource.pushShape(ColliderType::Capsule);
-                if (ImGui::Selectable("Cylinder"))
-                    lightSource.pushShape(ColliderType::Cylinder);
-                if (ImGui::Selectable("Mesh"))
-                    lightSource.pushShape(ColliderType::Sphere);
-
-                ImGui::EndCombo();
-            }
+            ImGui::ColorEdit3("Ambient##DirectionalLightAmbient", value_ptr(dl.ambient));
+            ImGui::ColorEdit3("Diffuse##DirectionalLightDiffuse", value_ptr(dl.diffuse));
+            ImGui::ColorEdit3("Specular##DirectionalLightSpecular", value_ptr(dl.specular));
 
             ImGui::Unindent(10);
 
@@ -1760,6 +1503,70 @@ namespace oyl::internal
         }
     }
 
+    void GuiLayer::drawInspectorSpotLight()
+    {
+        using component::SpotLight;
+        
+        if (!registry->has<SpotLight>(m_currentSelection.entity()))
+            return;
+
+        ImGui::SetNextItemOpen(true, ImGuiCond_Once);
+
+        bool open = ImGui::CollapsingHeader("Spot Light##InspectorSpotLight");
+
+        open &= !userRemoveComponent<SpotLight>();
+
+        if (open)
+        {
+            ImGui::Indent(10);
+
+            auto& sl = registry->get<SpotLight>(m_currentSelection.entity());
+
+            ImGui::TextUnformatted("Cast Shadows");
+            ImGui::SameLine();
+            ImGui::Checkbox("##CastShadowsSpotLight", &sl.castShadows);
+
+            float newWidth = ImGui::GetWindowContentRegionWidth() / 6;
+
+            ImGui::PushItemWidth(newWidth);
+            {
+                const float posDragSpeed = 0.01f;
+                ImGui::TextUnformatted("Range");
+                ImGui::SameLine(ImGui::GetWindowContentRegionWidth() - (15 + newWidth + 27));
+                ImGui::SetNextItemWidth(15);
+                ImGui::DragFloat("##RangeSpotLight", &sl.range, posDragSpeed, 0.0f, 999.0f, "R");
+                ImGui::SameLine();
+                ImGui::InputFloat("##RangeInputSpotLight", &sl.range, 0, 0, "%.2f");
+            }
+            {
+                const float posDragSpeed = 0.01f;
+                ImGui::TextUnformatted("Outer Cutoff");
+                ImGui::SameLine(ImGui::GetWindowContentRegionWidth() - (15 * 2 + newWidth * 2 + 27));
+                ImGui::SetNextItemWidth(15);
+                ImGui::DragFloat("##OuterCutoff", &sl.outerCutoff, posDragSpeed, 0.0f, 999.0f, "K");
+                ImGui::SameLine();
+                ImGui::InputFloat("##OutCutoffInput", &sl.outerCutoff, 0, 0, "%.2f");
+
+                ImGui::TextUnformatted("Inner Cutoff");
+                ImGui::SameLine(ImGui::GetWindowContentRegionWidth() - (15 * 2 + newWidth * 2 + 27));
+                ImGui::SetNextItemWidth(15);
+                ImGui::DragFloat("##InnerCutoff", &sl.outerCutoff, posDragSpeed, 0.0f, 999.0f, "I");
+                ImGui::SameLine();
+                ImGui::InputFloat("##InnerCutoffInput", &sl.outerCutoff, 0, 0, "%.2f");
+            }
+            ImGui::PopItemWidth();
+
+            ImGui::ColorEdit3("Ambient##SpotLightAmbient", value_ptr(sl.ambient));
+            ImGui::ColorEdit3("Diffuse##SpotLightDiffuse", value_ptr(sl.diffuse));
+            ImGui::ColorEdit3("Specular##SpotLightSpecular", value_ptr(sl.specular));
+
+            ImGui::Unindent(10);
+
+            ImGui::Separator();
+            ImGui::NewLine();
+        }
+    }
+    
     void GuiLayer::drawInspectorCamera()
     {
         // TEMPORARY: Change when adding LightSource component
@@ -1868,6 +1675,9 @@ namespace oyl::internal
         using component::GuiRenderable;
         using component::Renderable;
         using component::RigidBody;
+        using component::PointLight;
+        using component::DirectionalLight;
+        using component::SpotLight;
         using component::Camera;
         
         if (ImGui::BeginCombo("##InspectorAddComponent", "Add Component", ImGuiComboFlags_NoArrowButton))
@@ -1894,6 +1704,14 @@ namespace oyl::internal
                 ImGui::Selectable("Point Light"))
                 registry->assign<PointLight>(entity);
 
+            if (!registry->has<DirectionalLight>(entity) &&
+                ImGui::Selectable("Directional Light"))
+                registry->assign<DirectionalLight>(entity);
+
+            if (!registry->has<DirectionalLight>(entity) &&
+                ImGui::Selectable("Spot Light"))
+                registry->assign<DirectionalLight>(entity);
+            
             int camFlags = 0;
             if (registry->size<Camera>() >= 4)
                 camFlags |= ImGuiSelectableFlags_Disabled;

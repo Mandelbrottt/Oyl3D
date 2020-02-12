@@ -149,8 +149,8 @@ namespace oyl::internal
 
                     boundMaterial->setUniformMat4("u_view", pc.viewMatrix());
                     boundMaterial->setUniformMat4("u_viewProjection", pc.viewProjectionMatrix());
-                    glm::mat4 viewNormal = inverse(transpose(pc.viewMatrix()));
-                    boundMaterial->setUniformMat3("u_viewNormal", glm::mat3(viewNormal));
+                    glm::mat3 viewNormal = glm::mat3(inverse(transpose(pc.viewMatrix())));
+                    boundMaterial->setUniformMat3("u_viewNormal", viewNormal);
 
                     int shadowIndex = 0;
 
@@ -171,12 +171,8 @@ namespace oyl::internal
                                                     pointLightProps.diffuse);
                         boundMaterial->setUniform3f(pointLightName + ".specular",
                                                     pointLightProps.specular);
-                        boundMaterial->setUniform1f(pointLightName + ".attenK",
-                                                    pointLightProps.attenuation.x);
-                        boundMaterial->setUniform1f(pointLightName + ".attenL",
-                                                    pointLightProps.attenuation.y);
-                        boundMaterial->setUniform1f(pointLightName + ".attenQ",
-                                                    pointLightProps.attenuation.z);
+                        boundMaterial->setUniform1f(pointLightName + ".range",
+                                                    pointLightProps.range);
 
                         count++;
                         if (count >= 8)
@@ -188,12 +184,12 @@ namespace oyl::internal
                     for (auto light : dirLightView)
                     {
                         auto& dirLightProps = dirLightView.get(light);
-                        auto lightTransform = registry->get<Transform>(light);
+                        auto& lightTransform = registry->get<Transform>(light);
 
                         std::string dirLightName = "u_dirLight[" + std::to_string(count) + "]";
 
                         boundMaterial->setUniform3f(dirLightName + ".direction",
-                                                    dirLightProps.direction);
+                                                    viewNormal * lightTransform.getForwardGlobal());
                         boundMaterial->setUniform3f(dirLightName + ".ambient",
                                                     dirLightProps.ambient);
                         boundMaterial->setUniform3f(dirLightName + ".diffuse",
@@ -468,25 +464,27 @@ namespace oyl::internal
         for (auto light : view)
         {
             auto& dl = view.get(light);
+
+            if (!dl.m_frameBuffer)
+            {
+                dl.m_frameBuffer = FrameBuffer::create(0);
+                dl.m_frameBuffer->initDepthTexture(1024, 1024);
+            }
+
+            dl.m_frameBuffer->bind();
+            dl.m_frameBuffer->clear();
+            
             if (dl.castShadows)
             {
                 if (count >= 3) break;
 
-                if (!dl.m_frameBuffer)
-                {
-                    dl.m_frameBuffer = FrameBuffer::create(0);
-                    dl.m_frameBuffer->initDepthTexture(1024, 1024);
-                }
-
                 RenderCommand::setDrawRect(0, 0, dl.m_frameBuffer->getDepthWidth(), dl.m_frameBuffer->getDepthHeight());
-                dl.m_frameBuffer->bind();
-                dl.m_frameBuffer->clear();
 
                 auto& t = registry->get<Transform>(light);
 
                 float projDist = 100.0f;
                 glm::mat4 lightProjection = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, 0.0f, projDist);
-                glm::mat4 lightView = glm::lookAt(-dl.direction * projDist * 0.5f,
+                glm::mat4 lightView = glm::lookAt(-t.getForwardGlobal() * projDist * 0.5f,
                                                   glm::vec3(0.0f),
                                                   glm::vec3(0.0f, 1.0f, 0.0f));
 
