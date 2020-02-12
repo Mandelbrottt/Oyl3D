@@ -5,14 +5,14 @@ void CannonballSystem::onEnter()
 	this->listenForEventCategory((EventCategory)CategoryCannon);
 	this->listenForEventCategory((EventCategory)CategoryCannonball);
 	
-	middleSplines[0] = { -3.03f, -2.68f, 2.33f };
-	middleSplines[1] = { -2.88f,  0.0f,  0.0f };
-	middleSplines[2] = { -2.39f,  4.03f, 9.94f };
-	middleSplines[3] = { -1.47f,  5.7f,  13.03f };
-	middleSplines[4] = { -0.5f,   5.37f, 16.08f };
-	middleSplines[5] = {  0.23f,  4.54f, 19.19f };
-	middleSplines[6] = {  0.69f,  2.8f,  21.92f };
-	middleSplines[7] = {  1.03f,  0.23f, 23.91f };
+	blueMiddleSplines.push_back({ -3.03f, -2.68f, 2.33f });
+	blueMiddleSplines.push_back({ -2.88f,  0.0f,  0.0f });
+	blueMiddleSplines.push_back({ -2.39f,  4.03f, 9.94f });
+	blueMiddleSplines.push_back({ -1.47f,  5.7f,  13.03f });
+	blueMiddleSplines.push_back({ -0.5f,   5.37f, 16.08f });
+	blueMiddleSplines.push_back({  0.23f,  4.54f, 19.19f });
+	blueMiddleSplines.push_back({  0.69f,  2.8f,  21.92f });
+	blueMiddleSplines.push_back({  1.03f,  0.23f, 23.91f });
 }
 
 void CannonballSystem::onExit()
@@ -31,19 +31,48 @@ void CannonballSystem::onUpdate()
 
 		if (cannonball.isBeingFired)
 		{
+			if (cannonball.currentSplineIndex)
+
 			cannonball.interpolationParam = std::min(
-				cannonball.interpolationParam + cannonball.speedWhenFired * Time::deltaTime(),
+				cannonball.interpolationParam + cannonball.interpolationSpeed * Time::deltaTime(),
 				1.0f);
 			
-			cannonballTransform.setPosition(glm::catmullRom(
-				cannonball.v1, 
-				cannonball.v2, 
-				cannonball.v3, 
-				cannonball.v4, 
-				cannonball.interpolationParam));
+			glm::vec3 v1, v2, v3, v4;
+
+			if (cannonball.currentSplineIndex == 0)
+				v1 = cannonball.splineFollowedWhenFired[0];
+			else
+				v1 = cannonball.splineFollowedWhenFired[cannonball.currentSplineIndex - 1];
+
+			v2 = cannonball.splineFollowedWhenFired[cannonball.currentSplineIndex];
+
+			if (cannonball.currentSplineIndex == cannonball.splineFollowedWhenFired.size() - 1)
+			{
+				v3 = cannonball.splineFollowedWhenFired[cannonball.currentSplineIndex];
+				v4 = cannonball.splineFollowedWhenFired[cannonball.currentSplineIndex];
+			}
+			else
+			{
+				v3 = cannonball.splineFollowedWhenFired[cannonball.currentSplineIndex + 1];
+
+				if (cannonball.currentSplineIndex == cannonball.splineFollowedWhenFired.size() - 2)
+					v4 = cannonball.splineFollowedWhenFired[cannonball.currentSplineIndex + 1];
+				else
+					v4 = cannonball.splineFollowedWhenFired[cannonball.currentSplineIndex + 2];
+			}
+
+			cannonballTransform.setPosition(glm::catmullRom(v1, v2, v3, v4, cannonball.interpolationParam));
 
 			if (cannonball.interpolationParam >= 1.0f)
-				registry->destroy(cannonballEntity);
+			{
+				if (cannonball.currentSplineIndex >= cannonball.splineFollowedWhenFired.size() - 1)
+					registry->destroy(cannonballEntity);
+				else
+				{
+					cannonball.currentSplineIndex++;
+					cannonball.interpolationParam = 0.0f;
+				}
+			}
 		}
 	}
 }
@@ -116,10 +145,15 @@ bool CannonballSystem::onEvent(const Event& event)
 					cannonball.isBeingFired       = true;
 					cannonball.isWaitingToBeFired = false;
 
-					cannonball.v1 = cannonTransform.getPosition() + glm::vec3(0.0f, -1.0f, 0.0f) * cannon.firingDirection;
-					cannonball.v2 = cannonball.v1 + glm::vec3(0.0f, 2.5f, 1.0f)   * cannon.firingDirection;
-					cannonball.v3 = cannonball.v2 + glm::vec3(0.0f, 3.0f, 18.0f)  * cannon.firingDirection;
-					cannonball.v4 = cannonball.v3 + glm::vec3(0.0f, -5.0f, 15.0f) * cannon.firingDirection;
+					cannonball.currentSplineIndex = 0;
+
+					if (cannon.cannonTrackPosition == 0)
+					{
+						if (cannon.team == Team::blue)
+							cannonball.splineFollowedWhenFired = blueMiddleSplines;
+						else
+							cannonball.splineFollowedWhenFired = redMiddleSplines;
+					}
 
 					break;
 				}

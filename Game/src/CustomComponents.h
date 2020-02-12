@@ -162,13 +162,11 @@ struct Cannonball
 	bool isWaitingToBeFired = false;
 	bool isBeingFired       = false;
 
-	glm::vec3 v1;
-	glm::vec3 v2;
-	glm::vec3 v3;
-	glm::vec3 v4;
+	std::vector<glm::vec3> splineFollowedWhenFired;
+	int currentSplineIndex = 0;
 
 	float interpolationParam = 0.0f;
-	float speedWhenFired     = 0.7f;
+	float interpolationSpeed = 2.0f;
 };
 
 struct Gloop
