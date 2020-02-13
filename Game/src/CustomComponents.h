@@ -166,7 +166,7 @@ struct Cannonball
 	int currentSplineIndex = 0;
 
 	float interpolationParam = 0.0f;
-	float interpolationSpeed = 2.0f;
+	float interpolationSpeed = 3.5f;
 };
 
 struct Gloop
@@ -193,7 +193,7 @@ struct GarbagePile
 	float GARBAGE_TICKS_PER_LEVEL = 4.0f;
 	float garbageTicks = GARBAGE_TICKS_PER_LEVEL;
 
-	float DELAY_BEFORE_ADDING_GARBAGE_DURATION = 1.0f; //this is used to add garbage to a pile that a cannon has shot at, or any other reason a delay could be wanted before adding garbage
+	float DELAY_BEFORE_ADDING_GARBAGE_DURATION = 1.75f; //this is used to add garbage to a pile that a cannon has shot at, or any other reason a delay could be wanted before adding garbage
 	float delayBeforeAddingGarbageCountdown    = -1.0f; //timer shouldnt start at the beginning of the game
 
 	int relativePositionOnShip = -10; //this will be -1 (left), 0 (middle), or 1 (right) to mirror the cannon track position. It is used to determine which pile the cannons are firing at

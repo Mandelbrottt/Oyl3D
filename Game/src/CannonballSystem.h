@@ -22,4 +22,6 @@ class CannonballSystem : public System
 	bool onEvent(const Event& event) override;
 
 	void setCannonballToCarriedForPlayer(entt::entity a_playerEntity, entt::entity a_cannonballEntity);
+
+	void initFiringSplines();
 };

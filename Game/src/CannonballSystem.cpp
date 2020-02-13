@@ -4,15 +4,8 @@ void CannonballSystem::onEnter()
 {
 	this->listenForEventCategory((EventCategory)CategoryCannon);
 	this->listenForEventCategory((EventCategory)CategoryCannonball);
-	
-	blueMiddleSplines.push_back({ -3.03f, -2.68f, 2.33f });
-	blueMiddleSplines.push_back({ -2.88f,  0.0f,  0.0f });
-	blueMiddleSplines.push_back({ -2.39f,  4.03f, 9.94f });
-	blueMiddleSplines.push_back({ -1.47f,  5.7f,  13.03f });
-	blueMiddleSplines.push_back({ -0.5f,   5.37f, 16.08f });
-	blueMiddleSplines.push_back({  0.23f,  4.54f, 19.19f });
-	blueMiddleSplines.push_back({  0.69f,  2.8f,  21.92f });
-	blueMiddleSplines.push_back({  1.03f,  0.23f, 23.91f });
+
+	initFiringSplines();
 }
 
 void CannonballSystem::onExit()
@@ -31,8 +24,6 @@ void CannonballSystem::onUpdate()
 
 		if (cannonball.isBeingFired)
 		{
-			if (cannonball.currentSplineIndex)
-
 			cannonball.interpolationParam = std::min(
 				cannonball.interpolationParam + cannonball.interpolationSpeed * Time::deltaTime(),
 				1.0f);
@@ -62,10 +53,11 @@ void CannonballSystem::onUpdate()
 			}
 
 			cannonballTransform.setPosition(glm::catmullRom(v1, v2, v3, v4, cannonball.interpolationParam));
+			cannonballTransform.rotate(glm::vec3(390.0f, 0.0f, 150.0f) * Time::deltaTime());
 
 			if (cannonball.interpolationParam >= 1.0f)
 			{
-				if (cannonball.currentSplineIndex >= cannonball.splineFollowedWhenFired.size() - 1)
+				if (cannonball.currentSplineIndex >= cannonball.splineFollowedWhenFired.size() - 3)
 					registry->destroy(cannonballEntity);
 				else
 				{
@@ -135,7 +127,7 @@ bool CannonballSystem::onEvent(const Event& event)
 			
 			auto cannonballView = registry->view<Cannonball, CarryableItem, component::Transform>();
 			for (auto& cannonballEntity : cannonballView)
-			{
+ 			{
 				auto& cannonball          = registry->get<Cannonball>(cannonballEntity);
 				auto& cannonballCarryable = registry->get<CarryableItem>(cannonballEntity);
 				auto& cannonballTransform = registry->get<component::Transform>(cannonballEntity);
@@ -147,7 +139,15 @@ bool CannonballSystem::onEvent(const Event& event)
 
 					cannonball.currentSplineIndex = 0;
 
-					if (cannon.cannonTrackPosition == 0)
+					std::cout << cannon.cannonTrackPosition << "\n";
+					if (cannon.cannonTrackPosition == -1)
+					{
+						if (cannon.team == Team::blue)
+							cannonball.splineFollowedWhenFired = blueFrontSplines;
+						else
+							cannonball.splineFollowedWhenFired = redFrontSplines;
+					}
+					else if (cannon.cannonTrackPosition == 0)
 					{
 						if (cannon.team == Team::blue)
 							cannonball.splineFollowedWhenFired = blueMiddleSplines;
@@ -192,4 +192,25 @@ void CannonballSystem::setCannonballToCarriedForPlayer(entt::entity a_playerEnti
 
 	cannonballTransform.setRotationEuler(glm::vec3(0.0f));
 	cannonballTransform.setPosition(glm::vec3(0.0f, 0.3f, -0.8f));
+}
+
+void CannonballSystem::initFiringSplines()
+{
+	blueFrontSplines.push_back({ -11.04f, -2.68f, 2.33f });
+	blueFrontSplines.push_back({ -11.45f,  3.25f, 8.13f });
+	blueFrontSplines.push_back({ -12.06f,  5.74f, 13.03f });
+	blueFrontSplines.push_back({ -13.03f,  6.41f, 16.15f });
+	blueFrontSplines.push_back({ -14.08f,  5.77f, 19.18f });
+	blueFrontSplines.push_back({ -15.36f,  4.13f, 21.25f });
+	blueFrontSplines.push_back({ -17.44f,  0.23f, 22.77f });
+	blueFrontSplines.push_back({ -17.44f, -2.0f,  22.77f });
+
+	blueMiddleSplines.push_back({ -3.03f, -2.68f, 2.33f });
+	blueMiddleSplines.push_back({ -2.58f,  3.25f, 8.13f });
+	blueMiddleSplines.push_back({ -2.1f,   5.74f, 12.3f });
+	blueMiddleSplines.push_back({ -1.32f,  6.41f, 16.19f });
+	blueMiddleSplines.push_back({ -0.54f,  5.77f, 19.46f });
+	blueMiddleSplines.push_back({  0.34f,  4.13f, 21.92f });
+	blueMiddleSplines.push_back({  1.03f,  0.23f, 23.91f });
+	blueMiddleSplines.push_back({  1.03f,  -2.0f, 23.91f });
 }
