@@ -25,6 +25,7 @@ IncludeDir["gainput"] = "Engine/vendor/gainput/lib/include/"
 IncludeDir["entt"] = "Engine/vendor/entt/src/"
 IncludeDir["json"] = "Engine/vendor/nlohmann/single_include/"
 IncludeDir["bullet"] = "Engine/vendor/bullet3/src/"
+IncludeDir["assimp"] = "Engine/vendor/assimp/include/"
 
 group "Dependencies"
 	include "Engine/vendor/glad/"
@@ -82,11 +83,13 @@ project "OylEngine"
 		"%{IncludeDir.gainput}",
 		"%{IncludeDir.entt}",
 		"%{IncludeDir.json}",
-		"%{IncludeDir.bullet}"
+		"%{IncludeDir.bullet}",
+		"%{IncludeDir.assimp}"
 	}
 
 	libdirs {
-		"Engine/vendor/fmod/lib/"
+		"Engine/vendor/fmod/lib/",
+		"Engine/vendor/assimp/lib/",
 	}
 
 	links {
@@ -120,7 +123,8 @@ project "OylEngine"
 		symbols "on"
 		links {
 			"fmodL_vc.lib",
-			"fmodstudioL_vc.lib"
+			"fmodstudioL_vc.lib",
+			"assimp-vc142-mt.lib"
 		}
 
 	filter "configurations:Development"
@@ -136,7 +140,8 @@ project "OylEngine"
 	filter "configurations:not Debug"
 		links {
 			"fmod_vc.lib",
-			"fmodstudio_vc.lib"
+			"fmodstudio_vc.lib",
+			"assimp-vc142-mt.lib"
 		}
 
 	filter "configurations:not Development"
