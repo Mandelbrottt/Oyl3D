@@ -59,7 +59,7 @@ namespace oyl
     void loadModel()
     {
         Assimp::Importer importer;
-        const aiScene* scene = importer.ReadFile("res/assets/models/cube.obj", aiProcess_Triangulate | aiProcess_FlipUVs);
+        const aiScene* scene = importer.ReadFile("res/assets/models/test.fbx", aiProcess_Triangulate | aiProcess_FlipUVs);
 
         if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
         {
