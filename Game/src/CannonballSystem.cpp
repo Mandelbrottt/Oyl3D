@@ -53,7 +53,11 @@ void CannonballSystem::onUpdate()
 			}
 
 			cannonballTransform.setPosition(glm::catmullRom(v1, v2, v3, v4, cannonball.interpolationParam));
-			cannonballTransform.rotate(glm::vec3(390.0f, 0.0f, 150.0f) * Time::deltaTime());
+			
+			if (cannonballCarryable.team == Team::blue)
+				cannonballTransform.rotate(glm::vec3(410.0f, 0.0f, 160.0f) * Time::deltaTime());
+			else
+				cannonballTransform.rotate(glm::vec3(-410.0f, 0.0f, -160.0f) * Time::deltaTime());
 
 			if (cannonball.interpolationParam >= 1.0f)
 			{
@@ -143,16 +147,23 @@ bool CannonballSystem::onEvent(const Event& event)
 					if (cannon.cannonTrackPosition == -1)
 					{
 						if (cannon.team == Team::blue)
-							cannonball.splineFollowedWhenFired = blueFrontSplines;
+							cannonball.splineFollowedWhenFired = blueFrontSpline;
 						else
-							cannonball.splineFollowedWhenFired = redFrontSplines;
+							cannonball.splineFollowedWhenFired = redFrontSpline;
 					}
 					else if (cannon.cannonTrackPosition == 0)
 					{
 						if (cannon.team == Team::blue)
-							cannonball.splineFollowedWhenFired = blueMiddleSplines;
+							cannonball.splineFollowedWhenFired = blueMiddleSpline;
 						else
-							cannonball.splineFollowedWhenFired = redMiddleSplines;
+							cannonball.splineFollowedWhenFired = redMiddleSpline;
+					}
+					else //cannon track position = 1
+					{
+						if (cannon.team == Team::blue)
+							cannonball.splineFollowedWhenFired = blueBackSpline;
+						else
+							cannonball.splineFollowedWhenFired = redBackSpline;
 					}
 
 					break;
@@ -196,21 +207,41 @@ void CannonballSystem::setCannonballToCarriedForPlayer(entt::entity a_playerEnti
 
 void CannonballSystem::initFiringSplines()
 {
-	blueFrontSplines.push_back({ -11.04f, -2.68f, 2.33f });
-	blueFrontSplines.push_back({ -11.45f,  3.25f, 8.13f });
-	blueFrontSplines.push_back({ -12.06f,  5.74f, 13.03f });
-	blueFrontSplines.push_back({ -13.03f,  6.41f, 16.15f });
-	blueFrontSplines.push_back({ -14.08f,  5.77f, 19.18f });
-	blueFrontSplines.push_back({ -15.36f,  4.13f, 21.25f });
-	blueFrontSplines.push_back({ -17.44f,  0.23f, 22.77f });
-	blueFrontSplines.push_back({ -17.44f, -2.0f,  22.77f });
+	//blue side
+	blueFrontSpline.push_back({ -11.04f, -2.68f, 2.33f });
+	blueFrontSpline.push_back({ -11.45f,  3.25f, 8.13f });
+	blueFrontSpline.push_back({ -12.06f,  5.74f, 13.03f });
+	blueFrontSpline.push_back({ -13.03f,  6.41f, 16.15f });
+	blueFrontSpline.push_back({ -14.08f,  5.77f, 19.18f });
+	blueFrontSpline.push_back({ -15.36f,  4.13f, 21.25f });
+	blueFrontSpline.push_back({ -17.44f,  0.23f, 22.77f });
+	blueFrontSpline.push_back({ -17.44f, -2.0f,  22.77f });
 
-	blueMiddleSplines.push_back({ -3.03f, -2.68f, 2.33f });
-	blueMiddleSplines.push_back({ -2.58f,  3.25f, 8.13f });
-	blueMiddleSplines.push_back({ -2.1f,   5.74f, 12.3f });
-	blueMiddleSplines.push_back({ -1.32f,  6.41f, 16.19f });
-	blueMiddleSplines.push_back({ -0.54f,  5.77f, 19.46f });
-	blueMiddleSplines.push_back({  0.34f,  4.13f, 21.92f });
-	blueMiddleSplines.push_back({  1.03f,  0.23f, 23.91f });
-	blueMiddleSplines.push_back({  1.03f,  -2.0f, 23.91f });
+	blueMiddleSpline.push_back({ -3.03f, -2.68f, 2.33f });
+	blueMiddleSpline.push_back({ -2.58f,  3.25f, 8.13f });
+	blueMiddleSpline.push_back({ -2.1f,   5.74f, 12.3f });
+	blueMiddleSpline.push_back({ -1.32f,  6.41f, 16.19f });
+	blueMiddleSpline.push_back({ -0.54f,  5.77f, 19.46f });
+	blueMiddleSpline.push_back({  0.34f,  4.13f, 21.92f });
+	blueMiddleSpline.push_back({  1.03f,  0.23f, 23.91f });
+	blueMiddleSpline.push_back({  1.03f,  -2.0f, 23.91f });
+
+	blueBackSpline.push_back({ 5.0f,  -2.68f, 2.33f });
+	blueBackSpline.push_back({ 6.34f,  4.5f,  8.44f });
+	blueBackSpline.push_back({ 7.92f,  7.16f, 13.78f });
+	blueBackSpline.push_back({ 9.57f,  8.09f, 17.33f });
+	blueBackSpline.push_back({ 11.33f, 8.29f, 19.83f });
+	blueBackSpline.push_back({ 12.87f, 7.02f, 21.92f });
+	blueBackSpline.push_back({ 13.85f, 4.33f, 22.99f });
+	blueBackSpline.push_back({ 13.85f, 2.33f, 22.99f });
+
+	//red side
+	redMiddleSpline.push_back({ -3.03f, -2.68f,  18.09f });
+	redMiddleSpline.push_back({ -2.58f,  3.25f,  12.29f });
+	redMiddleSpline.push_back({ -2.1f,   5.74f,  8.12f });
+	redMiddleSpline.push_back({ -1.32f,  6.41f,  4.07f, });
+	redMiddleSpline.push_back({ -0.54f,  5.77f,  0.81f, });
+	redMiddleSpline.push_back({  0.34f,  4.13f, -1.65f });
+	redMiddleSpline.push_back({  0.89f,  0.2f,  -3.79f });
+	redMiddleSpline.push_back({  0.89f, -1.8f,  -3.79f });
 }

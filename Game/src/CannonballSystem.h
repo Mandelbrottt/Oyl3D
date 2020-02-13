@@ -8,13 +8,13 @@ class CannonballSystem : public System
 {
 	OYL_CTOR(CannonballSystem, System)
 
-	std::vector<glm::vec3> blueFrontSplines;
-	std::vector<glm::vec3> blueMiddleSplines;
-	std::vector<glm::vec3> blueBackSplines;
+	std::vector<glm::vec3> blueFrontSpline;
+	std::vector<glm::vec3> blueMiddleSpline;
+	std::vector<glm::vec3> blueBackSpline;
 
-	std::vector<glm::vec3> redFrontSplines;
-	std::vector<glm::vec3> redMiddleSplines;
-	std::vector<glm::vec3> redBackSplines;
+	std::vector<glm::vec3> redFrontSpline;
+	std::vector<glm::vec3> redMiddleSpline;
+	std::vector<glm::vec3> redBackSpline;
 
 	void onEnter() override;
 	void onExit() override;
