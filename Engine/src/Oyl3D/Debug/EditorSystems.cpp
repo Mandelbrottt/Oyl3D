@@ -11,8 +11,10 @@
 #include "Events/Event.h"
 #include "Events/EventListener.h"
 
+#include "Graphics/Buffer.h"
 #include "Graphics/EditorCamera.h"
 #include "Graphics/Material.h"
+#include "Graphics/Model.h"
 #include "Graphics/Shader.h"
 #include "Graphics/Texture.h"
 
@@ -199,18 +201,21 @@ namespace oyl::internal
 
         RenderCommand::setDrawRect(0, 0, m_windowSize.x, m_windowSize.y);
 
-        const auto& skybox = TextureCubeMap::get(DEFAULT_SKYBOX_ALIAS);
-        const auto& shader = Shader::get(SKYBOX_SHADER_ALIAS);
-        const auto& mesh   = Mesh::get(CUBE_MESH_ALIAS);
+        static const auto& skybox = TextureCubeMap::get(DEFAULT_SKYBOX_ALIAS);
+        static const auto& shader = Shader::get(SKYBOX_SHADER_ALIAS);
+        static const auto& mesh   = Model::get(CUBE_MODEL_ALIAS)->getMeshes()[0];
 
         glm::mat4 viewProj = m_targetCamera->getProjectionMatrix();
         viewProj *= glm::mat4(glm::mat3(m_targetCamera->getViewMatrix()));
         shader->bind();
         shader->setUniformMat4("u_viewProjection", viewProj);
 
+        skybox->bind(0);
+        shader->setUniform1i("u_skybox", 0);
+        
         RenderCommand::setDepthDraw(false);
         RenderCommand::setBackfaceCulling(false);
-        Renderer::submit(mesh, shader, skybox);
+        RenderCommand::drawArrays(mesh.getVertexArray(), mesh.getNumVertices());
         RenderCommand::setBackfaceCulling(true);
         RenderCommand::setDepthDraw(true);
 
@@ -219,9 +224,9 @@ namespace oyl::internal
         registry->sort<Renderable>(
             [](const Renderable& lhs, const Renderable& rhs)
             {
-                if (lhs.material == nullptr || lhs.mesh == nullptr)
+                if (lhs.material == nullptr || lhs.model == nullptr)
                     return false;
-                if (rhs.material == nullptr || rhs.mesh == nullptr)
+                if (rhs.material == nullptr || rhs.model == nullptr)
                     return true;
                 if (lhs.material->shader != rhs.material->shader)
                     return lhs.material->shader < rhs.material->shader;
@@ -238,7 +243,7 @@ namespace oyl::internal
         {
             Renderable& mr = view.get<Renderable>(entity);
 
-            if (mr.mesh == nullptr || mr.material == nullptr)
+            if (mr.model == nullptr || mr.material == nullptr)
                 break;
 
             if (mr.material != boundMaterial)
@@ -320,7 +325,7 @@ namespace oyl::internal
                 RenderCommand::setBackfaceCulling(doCulling);
             }
 
-            Renderer::submit(mr.mesh, boundMaterial, transform);
+            Renderer::submit(mr.model, boundMaterial, transform);
         }
 
         m_editorViewportBuffer->unbind();

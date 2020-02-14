@@ -47,11 +47,11 @@ namespace oyl
             s_rendererAPI->drawIndexed(vao);
         }
 
-        // TEMPORARY: Make more robust
-        inline static void drawMesh(const Ref<Mesh>& mesh)
-        {
-            s_rendererAPI->drawMesh(mesh);
-        }
+        //// TEMPORARY: Make more robust
+        //inline static void drawModel(const Ref<Model>& mesh)
+        //{
+        //    s_rendererAPI->drawMesh(mesh);
+        //}1
 
     private:
         static RendererAPI* s_rendererAPI;

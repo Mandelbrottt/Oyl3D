@@ -3,7 +3,7 @@
 Open Asset Import Library (assimp)
 ---------------------------------------------------------------------------
 
-Copyright (c) 2006-2019, assimp team
+Copyright (c) 2006-2018, assimp team
 
 
 
@@ -46,12 +46,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #ifdef ASSIMP_BUILD_DEBUG
 #   include <assert.h>
-#   define ai_assert(expression) assert( expression )
-#   define ai_assert_entry()     assert( false )
+#   define  ai_assert(expression) assert(expression)
 #else
 #   define  ai_assert(expression)
-#   define  ai_assert_entry() 
-#endif // ASSIMP_BUILD_DEBUG
+#endif // 
 
 #endif // AI_ASSERT_H_INC
-

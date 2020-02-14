@@ -64,6 +64,8 @@ namespace oyl
         TextureProfile getProfile() const { return m_profile; }
         virtual void setProfile(TextureProfile a_profile) = 0;
 
+        static void init();
+
     protected:
         std::string m_filePath;
 
@@ -74,11 +76,6 @@ namespace oyl
         TextureWrap   m_wrap   = TextureWrap::Repeat;
 
         TextureProfile m_profile = TextureProfile::RGB;
-
-    private:
-        static void init();
-
-        friend class Application;
     };
 
     class Texture1D : public Texture

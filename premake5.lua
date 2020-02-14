@@ -33,6 +33,9 @@ group "Dependencies"
 	include "Engine/vendor/imgui/"
 	include "Engine/vendor/gainput/"
 
+	group "Dependencies/Assimp"
+		include "Engine/vendor/assimp/"
+
 	group "Dependencies/Bullet3"
 		include "Engine/vendor/bullet3/src/BulletDynamics"
 		include "Engine/vendor/bullet3/src/BulletCollision"
@@ -89,11 +92,10 @@ project "OylEngine"
 
 	libdirs {
 		"Engine/vendor/fmod/lib/",
-		"Engine/vendor/assimp/lib/",
+		"Engine/vendor/assimp/bin/",
 	}
 
 	links {
-		"assimp-vc142-mt.lib",
 		"GLFW",
 		"Glad",
 		"ImGui",
@@ -124,7 +126,8 @@ project "OylEngine"
 		symbols "on"
 		links {
 			"fmodL_vc.lib",
-			"fmodstudioL_vc.lib"
+			"fmodstudioL_vc.lib",
+			"AssimpL"
 		}
 
 	filter "configurations:Development"
@@ -140,7 +143,8 @@ project "OylEngine"
 	filter "configurations:not Debug"
 		links {
 			"fmod_vc.lib",
-			"fmodstudio_vc.lib"
+			"fmodstudio_vc.lib",
+			"Assimp"
 		}
 
 	filter "configurations:not Development"
@@ -181,10 +185,16 @@ project "OylGame"
 		"%{IncludeDir.imgui}",
 		"%{IncludeDir.entt}",
 		"%{IncludeDir.json}",
+		"%{IncludeDir.assimp}",
 	}
 
+	-- libdirs {
+	-- 	"Engine/vendor/fmod/lib/",
+	-- 	"Engine/vendor/assimp/lib/",
+	-- }
+
 	links {
-		"OylEngine"
+		"OylEngine",
 	}
 
 	postbuildcommands {
