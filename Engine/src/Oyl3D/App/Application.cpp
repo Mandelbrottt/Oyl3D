@@ -24,10 +24,6 @@
 
 #include "Utils/SceneToFile.h"
 
-#include <assimp/Importer.hpp>
-#include <assimp/scene.h>
-#include <assimp/postprocess.h>
-
 namespace oyl
 {
     namespace internal
@@ -55,18 +51,6 @@ namespace oyl
     }
 
     Application* Application::s_instance = nullptr;
-
-    void loadModel()
-    {
-        Assimp::Importer importer;
-        const aiScene* scene = importer.ReadFile("res/assets/models/test.fbx", aiProcess_Triangulate | aiProcess_FlipUVs);
-
-        if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
-        {
-            OYL_LOG_ERROR("WRONG");
-            return;
-        }
-    }
 
     Application::Application()
     {
@@ -137,8 +121,6 @@ namespace oyl
         m_dispatcher->postEvent(wrEvent);
 
         m_window->setVsync(false);
-
-        loadModel();
     }
 
     Application::~Application()
@@ -354,7 +336,7 @@ namespace oyl
             m_guiLayer->end();
         #else
             // TODO: Turn into Renderer Call
-            m_mainBuffer->moveToBackBuffer(m_window->getWidth(), m_window->getHeight());
+            //m_mainBuffer->moveToBackBuffer(m_window->getWidth(), m_window->getHeight());
         #endif
 
             m_window->onUpdate(m_doUpdate);

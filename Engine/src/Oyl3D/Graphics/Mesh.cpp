@@ -5,6 +5,10 @@
 
 #include "Utils/AssetCache.h"
 
+#include <assimp/Importer.hpp>
+#include <assimp/scene.h>
+#include <assimp/postprocess.h>
+
 namespace oyl
 {
     //Ref<Mesh> Mesh::s_invalid;
@@ -17,7 +21,7 @@ namespace oyl
     
     Mesh::Mesh(_Mesh, const std::string& filePath)
     {
-        if (loadFromFile(filePath))
+        if (loadFromFile_(filePath))
             m_filePath = filePath;
     }
 
@@ -193,6 +197,117 @@ namespace oyl
         m_vao->unbind();
 
         return true;
+    }
+
+    bool Mesh::loadFromFile_(const std::string& filepath)
+    {
+        auto flags = (aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_CalcTangentSpace);
+
+        Assimp::Importer importer;
+        const aiScene* scene = importer.ReadFile(filepath, flags);
+
+        if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
+        {
+            OYL_LOG_ERROR("Assimp Error: {}", importer.GetErrorString());
+            return false;
+        }
+
+        aiMesh* mesh = scene->mMeshes[0];
+
+        std::vector<glm::vec3> positions;     positions.reserve(mesh->mNumVertices);
+        std::vector<glm::vec2> textureCoords; textureCoords.reserve(mesh->mNumVertices);
+        std::vector<glm::vec3> normals;       normals.reserve(mesh->mNumVertices);
+        std::vector<glm::vec3> tangents;      tangents.reserve(mesh->mNumVertices);
+        std::vector<glm::vec3> bitangents;    bitangents.reserve(mesh->mNumVertices);
+
+        for (uint i = 0; i < mesh->mNumVertices; i++)
+        {
+            glm::vec3 temp;
+            if (mesh->HasPositions())
+            {
+                temp.x = mesh->mVertices[i].x, temp.y = mesh->mVertices[i].y, temp.z = mesh->mVertices[i].z;
+                positions.push_back(temp);
+            }
+            if (mesh->HasTextureCoords(0))
+            {
+                temp.x = mesh->mTextureCoords[0][i].x, temp.y = mesh->mTextureCoords[0][i].y;
+                textureCoords.push_back(temp.xy);
+            }
+            if (mesh->HasNormals())
+            {
+                temp.x = mesh->mNormals[i].x, temp.y = mesh->mNormals[i].y, temp.z = mesh->mNormals[i].z;
+                normals.push_back(temp);
+            }
+            if (mesh->HasTangentsAndBitangents())
+            {
+                temp.x = mesh->mTangents[i].x, temp.y = mesh->mTangents[i].y, temp.z = mesh->mTangents[i].z;
+                tangents.push_back(temp);
+
+                temp.x = mesh->mBitangents[i].x, temp.y = mesh->mBitangents[i].y, temp.z = mesh->mBitangents[i].z;
+                bitangents.push_back(temp);
+            }
+        }
+
+        struct VertexData
+        {
+            glm::vec3 position{};
+            glm::vec2 textureCoords{};
+            glm::vec3 normal{};
+            glm::vec3 tangent{};
+            glm::vec3 biTangent{};
+        };
+        
+        std::vector<VertexData> unpackedData;
+        unpackedData.reserve(mesh->mNumFaces * 3);
+
+        for (uint i = 0; i < mesh->mNumFaces; i++)
+        {
+            aiFace face = mesh->mFaces[i];
+            for (uint j = 0; j < face.mNumIndices; j++)
+            {
+                VertexData data{};
+                
+                if (mesh->HasPositions())
+                    data.position = positions[face.mIndices[j]];
+
+                if (mesh->HasTextureCoords(0))
+                    data.textureCoords = textureCoords[face.mIndices[j]];
+
+                if (mesh->HasNormals())
+                    data.normal = normals[face.mIndices[j]];
+
+                if (mesh->HasTangentsAndBitangents())
+                {   
+                    data.tangent   = tangents[face.mIndices[j]];
+                    data.biTangent = bitangents[face.mIndices[j]];
+                }
+
+                unpackedData.push_back(data);
+            }
+        }
+
+        m_numFaces = mesh->mNumFaces;
+        m_numVertices = m_numFaces * 3;
+
+        m_vbo = VertexBuffer::create(reinterpret_cast<float*>(unpackedData.data()), unpackedData.size() * sizeof(VertexData));
+
+        BufferLayout layout = {
+            { DataType::Float3, "in_position" },
+            { DataType::Float2, "in_textureUV" },
+            { DataType::Float3, "in_normal" },
+            { DataType::Float3, "in_tangent" },
+            { DataType::Float3, "in_biTangent" },
+        };
+
+        m_vbo->setLayout(layout);
+
+        m_vao = VertexArray::create();
+        m_vao->addVertexBuffer(m_vbo);
+
+        m_vbo->unbind();
+        m_vao->unbind();
+        
+        return false;
     }
 
     void Mesh::unload()

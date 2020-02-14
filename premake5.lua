@@ -93,6 +93,7 @@ project "OylEngine"
 	}
 
 	links {
+		"assimp-vc142-mt.lib",
 		"GLFW",
 		"Glad",
 		"ImGui",
@@ -123,8 +124,7 @@ project "OylEngine"
 		symbols "on"
 		links {
 			"fmodL_vc.lib",
-			"fmodstudioL_vc.lib",
-			"assimp-vc142-mt.lib"
+			"fmodstudioL_vc.lib"
 		}
 
 	filter "configurations:Development"
@@ -140,8 +140,7 @@ project "OylEngine"
 	filter "configurations:not Debug"
 		links {
 			"fmod_vc.lib",
-			"fmodstudio_vc.lib",
-			"assimp-vc142-mt.lib"
+			"fmodstudio_vc.lib"
 		}
 
 	filter "configurations:not Development"

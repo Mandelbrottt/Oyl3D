@@ -2608,7 +2608,8 @@ static bool isTexture(const char* ext)
 
 static bool isMesh(const char* ext)
 {
-    return strcmp(ext, ".obj") == 0;
+    return strcmp(ext, ".obj") == 0 ||
+           strcmp(ext, ".fbx") == 0;
 }
 
 static bool isShader(const char* ext)

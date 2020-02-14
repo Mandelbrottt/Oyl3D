@@ -28,6 +28,7 @@ namespace oyl
         explicit Mesh(_Mesh, const std::string& filePath);
 
         bool loadFromFile(const std::string& filePath);
+        bool loadFromFile_(const std::string& filepath);
         void unload();
 
         void bind();
