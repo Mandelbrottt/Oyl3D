@@ -93,7 +93,7 @@ project "OylEngine"
 	}
 
 	links {
-		"assimp-vc142-mt.lib",
+		"assimp",
 		"GLFW",
 		"Glad",
 		"ImGui",
@@ -181,10 +181,17 @@ project "OylGame"
 		"%{IncludeDir.imgui}",
 		"%{IncludeDir.entt}",
 		"%{IncludeDir.json}",
+		"%{IncludeDir.assimp}",
+	}
+
+	libdirs {
+		"Engine/vendor/fmod/lib/",
+		"Engine/vendor/assimp/lib/",
 	}
 
 	links {
-		"OylEngine"
+		"OylEngine",
+		"assimp",
 	}
 
 	postbuildcommands {

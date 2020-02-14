@@ -18,7 +18,7 @@
 
 #include "Graphics/EditorCamera.h"
 #include "Graphics/Material.h"
-#include "Graphics/Mesh.h"
+#include "Graphics/Model.h"
 #include "Graphics/Shader.h"
 #include "Graphics/Texture.h"
 
@@ -35,7 +35,7 @@
 #include "EditorSystems.h"
 
 static bool isTexture(const char* ext);
-static bool isMesh(const char* ext);
+static bool isModel(const char* ext);
 static bool isShader(const char* ext);
 static bool isMaterial(const char* ext);
 static bool isScene(const char* ext);
@@ -940,25 +940,25 @@ namespace oyl::internal
                 ImGui::EndCombo();
             }
             
-            CacheAlias currentName = Mesh::getAlias(renderable.mesh);
-            if (!renderable.mesh || currentName == INVALID_ALIAS)
+            CacheAlias currentName = Model::getAlias(renderable.model);
+            if (!renderable.model || currentName == INVALID_ALIAS)
                 currentName.assign("None");
 
-            ImGui::TextUnformatted("Current Mesh");
+            ImGui::TextUnformatted("Current Model");
             ImGui::SameLine();
             ImGui::SetNextItemWidth(ImGui::GetWindowWidth() - ImGui::GetCursorPosX());
             if (ImGui::BeginCombo("##RenderablePropertiesCurrentMesh", currentName.c_str()))
             {
-                if (ImGui::Selectable("None", renderable.mesh == nullptr))
-                    renderable.mesh.reset();    
+                if (ImGui::Selectable("None", renderable.model == nullptr))
+                    renderable.model.reset();
                 
-                const auto& meshCache = Mesh::getCache();
+                const auto& meshCache = Model::getCache();
                 for (const auto& kvp : meshCache)
                 {
                     if (kvp.first != INVALID_ALIAS &&
-                        ImGui::Selectable(kvp.first.c_str(), renderable.mesh == kvp.second))
+                        ImGui::Selectable(kvp.first.c_str(), renderable.model == kvp.second))
                     {
-                        renderable.mesh = kvp.second;
+                        renderable.model = kvp.second;
                     }
                 }
 
@@ -1935,7 +1935,7 @@ namespace oyl::internal
                 flags |= ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_NoTreePushOnOpen;
 
                 if      (isTexture(ext))  typeName = "Texture";
-                else if (isMesh(ext))     typeName = "Mesh";
+                else if (isModel(ext))     typeName = "Mesh";
                 else if (isShader(ext))   typeName = "Shader";
                 else if (isMaterial(ext)) typeName = "Material";
                 else if (isScene(ext))    typeName = "Scene";
@@ -2012,10 +2012,10 @@ namespace oyl::internal
                             if (pathStr == texture->getFilePath())
                                 Texture2D::discard(alias);
 
-                    if (isMesh(ext.c_str()))
-                        for (const auto& [alias, mesh] : Mesh::getCache())
+                    if (isModel(ext.c_str()))
+                        for (const auto& [alias, mesh] : Model::getCache())
                             if (pathStr == mesh->getFilePath())
-                                Mesh::discard(alias);
+                                Model::discard(alias);
 
                     if (isMaterial(ext.c_str()))
                         for (const auto& [alias, material] : Material::getCache())
@@ -2063,14 +2063,14 @@ namespace oyl::internal
                             break;
                         }
 
-                if (isMesh(ext))
-                    for (auto& [alias, mesh] : Mesh::getCache())
+                if (isModel(ext))
+                    for (auto& [alias, mesh] : Model::getCache())
                         if (updateAsset(mesh->getFilePath(),
                                         [](void* data)
                                         {
-                                            auto& meshRef = *reinterpret_cast<Ref<Mesh>*>(data);
-                                            auto  mesh    = Mesh::create(meshRef->getFilePath());
-                                            if (mesh != Mesh::get(INVALID_ALIAS)) *meshRef = *mesh;
+                                            auto& modelRef = *reinterpret_cast<Ref<Model>*>(data);
+                                            auto  mesh     = Model::create(modelRef->getFilePath());
+                                            if (mesh != Model::get(INVALID_ALIAS)) *modelRef = *mesh;
                                         }, (void*) &mesh))
                         {
                             break;
@@ -2107,7 +2107,7 @@ namespace oyl::internal
                     const char* ext             = relPathStr.c_str() + relPathStr.find_last_of('.');
 
                     if (isTexture(ext))  Texture2D::cache(relPathStr);
-                    if (isMesh(ext))     Mesh::cache(relPathStr);
+                    if (isModel(ext))     Model::cache(relPathStr);
                     if (isMaterial(ext)) Material::cache(relPathStr);
                 }
             }
@@ -2133,8 +2133,8 @@ namespace oyl::internal
             for (const auto& [alias, material] : Material::getCache())
                 addToFileSaveTimes(material->getFilePath());
 
-            for (const auto& [alias, mesh] : Mesh::getCache())
-                addToFileSaveTimes(mesh->getFilePath());
+            for (const auto& [alias, model] : Model::getCache())
+                addToFileSaveTimes(model->getFilePath());
 
             // TEMPORARY: Uncomment when 1D and 3D textures are supported
             //for (const auto& [alias, texture1D] : Texture1D::getCache())
@@ -2606,7 +2606,7 @@ static bool isTexture(const char* ext)
            strcmp(ext, ".bmp") == 0;
 }
 
-static bool isMesh(const char* ext)
+static bool isModel(const char* ext)
 {
     return strcmp(ext, ".obj") == 0 ||
            strcmp(ext, ".fbx") == 0;

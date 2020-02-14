@@ -2,18 +2,15 @@
 
 #include "Oyl3D/oylpch.h"
 
-namespace oyl
-{
-    class Mesh;
-    class Material;
-    class Texture2D;    
-}
+#include "Oyl3D/Graphics/Material.h"
+#include "Oyl3D/Graphics/Model.h"
+#include "Oyl3D/Graphics/Texture.h"
 
 namespace oyl::component
 {
     struct Renderable
     {
-        Ref<Mesh>      mesh;
+        Ref<Model>     model;
         Ref<Material>  material;
 
         u32 cullingMask = 0x0F;

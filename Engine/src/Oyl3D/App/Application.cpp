@@ -14,6 +14,7 @@
 
 #include "Graphics/Shader.h"
 #include "Graphics/Texture.h"
+#include "Graphics/Model.h"
 
 #include "Input/GamepadListener.h"
 
@@ -63,7 +64,7 @@ namespace oyl
 
         m_window = Window::create();
 
-        Mesh::init();
+        Model::init();
         Texture::init();
 
         Shader::cache(
@@ -72,23 +73,11 @@ namespace oyl
                 { Shader::Pixel, ENGINE_RES + LIGHTING_SHADER_FRAGMENT_PATH },
             }, LIGHTING_SHADER_ALIAS);
 
-        Shader::cache(
-            {
-                { Shader::Vertex, ENGINE_RES + "shaders/morphTargetLighting.vert" },
-                { Shader::Pixel, ENGINE_RES + LIGHTING_SHADER_FRAGMENT_PATH },
-            }, "animation");
-
         //Shader::cache(
         //    {
-        //        { Shader::Vertex, ENGINE_RES + "shaders/gui.vert" },
-        //        { Shader::Pixel, ENGINE_RES + "shaders/gui.frag" }
-        //    }, "Oyl UI");
-
-        //Shader::cache(
-        //    {
-        //        { Shader::Vertex, ENGINE_RES + "shaders/fbopassthrough.vert" },
-        //        { Shader::Pixel, ENGINE_RES + "shaders/fbopassthrough.frag" }
-        //    }, "Oyl PassThrough");
+        //        { Shader::Vertex, ENGINE_RES + "shaders/morphTargetLighting.vert" },
+        //        { Shader::Pixel, ENGINE_RES + LIGHTING_SHADER_FRAGMENT_PATH },
+        //    }, "animation");
 
         Shader::cache(
             {
@@ -96,8 +85,8 @@ namespace oyl
                 { Shader::Pixel, ENGINE_RES + SKYBOX_SHADER_FRAGMENT_PATH }
             }, SKYBOX_SHADER_ALIAS);
 
-        Mesh::cache(ENGINE_RES + CUBE_MESH_PATH, CUBE_MESH_ALIAS);
-        Mesh::cache(ENGINE_RES + MONKEY_MESH_PATH, MONKEY_MESH_ALIAS);
+        Model::cache(ENGINE_RES + CUBE_MODEL_PATH, CUBE_MODEL_ALIAS);
+        Model::cache(ENGINE_RES + MONKEY_MODEL_PATH, MONKEY_MODEL_ALIAS);
 
         Texture2D::cache(ENGINE_RES + WHITE_TEXTURE_PATH, WHITE_TEXTURE_ALIAS);
         Texture2D::cache(ENGINE_RES + BLACK_TEXTURE_PATH, BLACK_TEXTURE_ALIAS);

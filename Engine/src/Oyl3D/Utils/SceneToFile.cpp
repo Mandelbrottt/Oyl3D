@@ -10,7 +10,7 @@
 #include "Components/Transform.h"
 
 #include "Graphics/Material.h"
-#include "Graphics/Mesh.h"
+#include "Graphics/Model.h"
 #include "Graphics/Shader.h"
 #include "Graphics/Texture.h"
 
@@ -224,10 +224,10 @@ namespace oyl::internal
         j["CullingMask"] = re.cullingMask;
         
         auto& jMesh = j["Mesh"];
-        if (re.mesh)
+        if (re.model)
         {
-            jMesh["FilePath"] = re.mesh->getFilePath();
-            const auto& alias = Mesh::getAlias(re.mesh);
+            jMesh["FilePath"] = re.model->getFilePath();
+            const auto& alias = Model::getAlias(re.model);
             auto& jAlias = jMesh["Alias"];
             if (alias != INVALID_ALIAS)
                 jAlias = alias;
@@ -537,8 +537,8 @@ namespace oyl::internal
             bool doLoad = false;
             if (auto alIt = it->find("Alias"); alIt != it->end() && alIt->is_string())
             {
-                if (Mesh::exists(alIt->get<std::string>()))
-                    re.mesh = Mesh::get(alIt->get<std::string>());
+                if (Model::exists(alIt->get<std::string>()))
+                    re.model = Model::get(alIt->get<std::string>());
                 else
                     doLoad = true;
             } else doLoad = true;
@@ -548,17 +548,17 @@ namespace oyl::internal
                 auto filePath = fpIt->get<std::string>();
 
                 bool meshFound = false;
-                for (const auto& [alias, mesh] : Mesh::getCache())
+                for (const auto& [alias, mesh] : Model::getCache())
                 {
                     if (mesh->getFilePath() == filePath)
-                        meshFound = true, re.mesh = mesh;
+                        meshFound = true, re.model = mesh;
                 }
 
-                if (!meshFound && (!re.mesh || re.mesh && re.mesh->getFilePath() != filePath))
-                    re.mesh = Mesh::cache(filePath);
+                if (!meshFound && (!re.model || re.model && re.model->getFilePath() != filePath))
+                    re.model = Model::cache(filePath);
             }
         }
-        else re.mesh = nullptr;
+        else re.model = nullptr;
 
         if (j.find("Material") != j.end())
         {
