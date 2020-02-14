@@ -8546,6 +8546,318 @@
             }
         }
     },
+    "Entity 546": {
+        "Parent": {
+            "Name": "RedBackSplines"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "metal"
+            },
+            "Mesh": {
+                "Alias": "sphere",
+                "FilePath": "res\\assets\\models\\sphere.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": 4.906797409057617,
+                "Y": -2.680000066757202,
+                "Z": 18.09000015258789
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 0.5,
+                "Y": 0.5,
+                "Z": 0.5
+            }
+        }
+    },
+    "Entity 547": {
+        "Parent": {
+            "Name": "RedBackSplines"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "metal"
+            },
+            "Mesh": {
+                "Alias": "sphere",
+                "FilePath": "res\\assets\\models\\sphere.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": 6.340631484985352,
+                "Y": 4.5032854080200195,
+                "Z": 11.979999542236328
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 0.5,
+                "Y": 0.5,
+                "Z": 0.5
+            }
+        }
+    },
+    "Entity 548": {
+        "Parent": {
+            "Name": "RedBackSplines"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "metal"
+            },
+            "Mesh": {
+                "Alias": "sphere",
+                "FilePath": "res\\assets\\models\\sphere.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": 7.919951915740967,
+                "Y": 7.157800674438477,
+                "Z": 6.5886030197143555
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 0.5,
+                "Y": 0.5,
+                "Z": 0.5
+            }
+        }
+    },
+    "Entity 549": {
+        "Parent": {
+            "Name": "RedBackSplines"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "metal"
+            },
+            "Mesh": {
+                "Alias": "sphere",
+                "FilePath": "res\\assets\\models\\sphere.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": 9.570918083190918,
+                "Y": 8.087153434753418,
+                "Z": 3.058548927307129
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 0.5,
+                "Y": 0.5,
+                "Z": 0.5
+            }
+        }
+    },
+    "Entity 550": {
+        "Parent": {
+            "Name": "RedBackSplines"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "metal"
+            },
+            "Mesh": {
+                "Alias": "sphere",
+                "FilePath": "res\\assets\\models\\sphere.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": 11.330731391906738,
+                "Y": 8.292243957519531,
+                "Z": 0.5417956709861755
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 0.5,
+                "Y": 0.5,
+                "Z": 0.5
+            }
+        }
+    },
+    "Entity 551": {
+        "Parent": {
+            "Name": "RedBackSplines"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "metal"
+            },
+            "Mesh": {
+                "Alias": "sphere",
+                "FilePath": "res\\assets\\models\\sphere.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": 12.874491691589355,
+                "Y": 7.019375801086426,
+                "Z": -1.5294692516326904
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 0.5,
+                "Y": 0.5,
+                "Z": 0.5
+            }
+        }
+    },
+    "Entity 552": {
+        "Parent": {
+            "Name": "RedBackSplines"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "metal"
+            },
+            "Mesh": {
+                "Alias": "sphere",
+                "FilePath": "res\\assets\\models\\sphere.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": 13.846824645996094,
+                "Y": 4.2343058586120605,
+                "Z": -2.6661579608917236
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 0.5,
+                "Y": 0.5,
+                "Z": 0.5
+            }
+        }
+    },
+    "Entity 553": {
+        "Parent": {
+            "Name": "RedBackSplines"
+        },
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "metal"
+            },
+            "Mesh": {
+                "Alias": "sphere",
+                "FilePath": "res\\assets\\models\\sphere.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": 13.850000381469727,
+                "Y": 2.3299999237060547,
+                "Z": -2.6700000762939453
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 0.5,
+                "Y": 0.5,
+                "Z": 0.5
+            }
+        }
+    },
     "FrameCollider 1": {
         "Collidable": {
             "Shapes": [
@@ -16770,6 +17082,34 @@
                 "X": 8.518457412719727,
                 "Y": 2.9262430667877197,
                 "Z": -2.0118484497070313
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "RedBackSplines": {
+        "Parent": {
+            "Name": "BlueBackSplines"
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": 0.0,
+                "Y": 0.0,
+                "Z": 0.0
             },
             "Rotation": {
                 "qW": 1.0,
