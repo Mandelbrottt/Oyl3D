@@ -1109,6 +1109,37 @@ void SandboxLayer::onEnter()
 		/////////////////////////////////////////////////////
 
 		{
+			//THROWABLE BOTTLE
+			entt::entity bottleEntity = registry->create();
+
+			component::Transform bottleTransform;
+			bottleTransform.setPosition(glm::vec3(-7.04f, 0.2f, 10.14f));
+			bottleTransform.setScale(glm::vec3(0.2f, 0.2f, 0.2f));
+			registry->assign<component::Transform>(bottleEntity, bottleTransform);
+
+			auto& carryableItem = registry->assign<CarryableItem>(bottleEntity);
+			carryableItem.type = CarryableItemType::throwableBottle;
+
+			auto& respawnable = registry->assign<Respawnable>(bottleEntity);
+			respawnable.spawnPosition = glm::vec3(-7.04f, 0.2f, 10.14f);
+			respawnable.spawnRotation = glm::vec3(0.0f, 0.0f, 0.0f);
+
+			auto& rb = registry->assign<component::RigidBody>(bottleEntity);
+
+			registry->assign<Gloop>(bottleEntity);
+
+			mr.mesh = Mesh::get("Gloop");
+			registry->assign<component::Renderable>(bottleEntity, mr);
+
+			auto& so2 = registry->assign<component::EntityInfo>(bottleEntity);
+			so2.name = "Throwable Bottle";
+
+			auto& gloopCollider = registry->assign<component::Collidable>(bottleEntity);
+			auto& shapeInfo = gloopCollider.pushShape(ColliderType::Box);
+			shapeInfo.box.setSize({ 1.0f, 1.0f, 1.0f });
+		}
+
+		{
 			//LAMP
 
 			component::Collidable boxCollider;

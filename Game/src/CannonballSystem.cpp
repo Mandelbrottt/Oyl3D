@@ -189,7 +189,8 @@ void CannonballSystem::setCannonballToCarriedForPlayer(entt::entity a_playerEnti
 	if (registry->has<component::RigidBody>(a_cannonballEntity))
 		registry->remove<component::RigidBody>(a_cannonballEntity);
 
-	player.primaryCarriedItem = a_cannonballEntity;
+	player.primaryCarriedItem   = a_cannonballEntity;
+	player.secondaryCarriedItem = a_cannonballEntity;
 
 	cannonball.isWaitingToBeFired = false;
 

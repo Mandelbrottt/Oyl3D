@@ -210,8 +210,7 @@ void PlayerInteractionValidationSystem::validateCarryableItemInteraction(entt::e
 			}
 			case CarryableItemType::cleaningSolution:
 			{
-				if (!registry->valid(player.secondaryCarriedItem)
-					&& (!registry->valid(player.primaryCarriedItem) || registry->get<CarryableItem>(player.primaryCarriedItem).type == CarryableItemType::mop))
+				if (!registry->valid(player.secondaryCarriedItem))
 				{
 					player.interactableEntity = a_carryableItemEntity;
 
@@ -227,7 +226,7 @@ void PlayerInteractionValidationSystem::validateCarryableItemInteraction(entt::e
 			}
 			case CarryableItemType::gloop:
 			{
-				if (!registry->valid(player.primaryCarriedItem) && !registry->valid(player.secondaryCarriedItem))
+				if (!registry->valid(player.secondaryCarriedItem))
 				{
 					player.interactableEntity = a_carryableItemEntity;
 
@@ -337,9 +336,9 @@ void PlayerInteractionValidationSystem::validateGarbagePileInteraction(entt::ent
 		else //garbagePile.team != player.team
 		{
 			if (   !garbagePile.isGlooped
-				&& registry->valid(player.primaryCarriedItem)
-				&& registry->get<CarryableItem>(player.primaryCarriedItem).type == CarryableItemType::gloop
-				&& registry->get<CarryableItem>(player.primaryCarriedItem).team == player.team)
+				&& registry->valid(player.secondaryCarriedItem)
+				&& registry->get<CarryableItem>(player.secondaryCarriedItem).type == CarryableItemType::gloop
+				&& registry->get<CarryableItem>(player.secondaryCarriedItem).team == player.team)
 			{
 				player.interactableEntity = a_garbagePileEntity;
 
@@ -398,7 +397,7 @@ void PlayerInteractionValidationSystem::validateCannonInteraction(entt::entity a
 	auto& player          = registry->get<Player>(a_playerEntity);
 	auto& playerTransform = registry->get<component::Transform>(a_playerEntity);
 
-	auto& cannon = registry->get<Cannon>(a_cannonEntity);
+	auto& cannon          = registry->get<Cannon>(a_cannonEntity);
 	auto& cannonTransform = registry->get<component::Transform>(a_cannonEntity);
 
 	if (player.team == cannon.team)
@@ -538,7 +537,8 @@ void PlayerInteractionValidationSystem::performCarryableItemInteraction(entt::en
 	{
 		case CarryableItemType::cannonball:
 		{
-			player.primaryCarriedItem = a_carryableItemEntity;
+			player.primaryCarriedItem   = a_carryableItemEntity;
+			player.secondaryCarriedItem = a_carryableItemEntity;
 
 			std::cout << "PICKED UP CANNONBALL!\n";
 
@@ -571,11 +571,11 @@ void PlayerInteractionValidationSystem::performCarryableItemInteraction(entt::en
 		}
 		case CarryableItemType::gloop:
 		{
-			player.primaryCarriedItem = a_carryableItemEntity;
+			player.secondaryCarriedItem = a_carryableItemEntity;
 
 			std::cout << "PICKED UP GLOOP!\n";
 
-			itemNewPosition = glm::vec3(0.0f, 0.58f, -0.55f);
+			itemNewPosition = glm::vec3(-0.2f, 0.58f, -0.55f);
 			itemNewRotation = glm::vec3(0.0f, 0.0f, 0.0f);
 
 			break;
@@ -606,9 +606,9 @@ void PlayerInteractionValidationSystem::performGarbagePileInteraction(entt::enti
 		//75% or lower requires mop to clean
 		if (garbagePile.garbageTicks <= garbagePile.GARBAGE_TICKS_PER_LEVEL * 0.75f) 
 		{
-			//only a mop is needed for cleaning, drop the cleaning solution if the player is carrying one (mop animation uses both hands)
-			if (registry->valid(player.secondaryCarriedItem) && registry->get<CarryableItem>(player.secondaryCarriedItem).type == CarryableItemType::cleaningSolution)
-				dropPlayerCarriedItems(a_playerEntity, true, CarryableItemType::cleaningSolution);
+			//only a mop is needed for cleaning, drop the secondary item if the player is carrying one (mop animation uses both hands)
+			if (registry->valid(player.secondaryCarriedItem))
+				dropPlayerCarriedItems(a_playerEntity, true, registry->get<CarryableItem>(player.secondaryCarriedItem).type);
 
 			PlayerStateChangeEvent playerStateChange;
 			playerStateChange.playerEntity = a_playerEntity;
@@ -645,7 +645,7 @@ void PlayerInteractionValidationSystem::performGarbagePileInteraction(entt::enti
 		garbagePile.isGlooped = true;
 
 		UseGloopEvent useGloop;
-		useGloop.gloopEntity = player.primaryCarriedItem;
+		useGloop.gloopEntity = player.secondaryCarriedItem;
 		postEvent(useGloop);
 
 		PlayerStateChangeEvent playerStateChange;
@@ -693,8 +693,9 @@ void PlayerInteractionValidationSystem::performCannonInteraction(entt::entity a_
 		{
 			std::cout << "LOADED CANNON!\n";
 
-			carriedItemParent.parent  = entt::null;
-			player.primaryCarriedItem = entt::null;
+			carriedItemParent.parent    = entt::null;
+			player.primaryCarriedItem   = entt::null;
+			player.secondaryCarriedItem = entt::null;
 			
 			cannonball.isWaitingToBeFired = true;
 
@@ -799,7 +800,7 @@ void PlayerInteractionValidationSystem::dropPlayerCarriedItems(entt::entity a_pl
 
 		if (dropSpecificItemType && carriedItem.type != itemTypeToDrop)
 			continue;
-		//dont let player drop items while cleaning (will prevent weird edge cases that aren't worth dealing with)
+		//dont let player drop items while cleaning
 		if (player.state == PlayerState::cleaning)
 			continue;
 
@@ -807,7 +808,7 @@ void PlayerInteractionValidationSystem::dropPlayerCarriedItems(entt::entity a_pl
 		{
 			auto& carriedItemRB = registry->get_or_assign<component::RigidBody>(carriedItemEntity); //add the rigidbody back for the item when it's dropped
 
-			carriedItemParent.parent = entt::null;
+			carriedItemParent.parent   = entt::null;
 			carriedItem.isBeingCarried = false;
 
 			glm::vec3 newPosition = playerTransform.getPosition();
@@ -818,7 +819,8 @@ void PlayerInteractionValidationSystem::dropPlayerCarriedItems(entt::entity a_pl
 				case CarryableItemType::cannonball:
 				{
 					std::cout << "DROPPED CANNONBALL!\n";
-					player.primaryCarriedItem = entt::null;
+					player.primaryCarriedItem   = entt::null;
+					player.secondaryCarriedItem = entt::null;
 
 					newPosition += playerTransform.getForward() * 0.75f;
 
@@ -851,9 +853,10 @@ void PlayerInteractionValidationSystem::dropPlayerCarriedItems(entt::entity a_pl
 				case CarryableItemType::gloop:
 				{
 					std::cout << "DROPPED GLOOP!\n";
-					player.primaryCarriedItem = entt::null;
+					player.secondaryCarriedItem = entt::null;
 
 					newPosition += playerTransform.getForward() * 0.7f;
+					newPosition += playerTransform.getRight()   * -0.2f;
 					newPosition += playerTransform.getUp()      * 0.4f;
 
 					break;

@@ -53,9 +53,9 @@ void GarbagePileGloopIndicatorSystem::onUpdate()
 
 			if (player.playerNum == gloopIndicator.playerNum)
 			{
-				if (   !(registry->valid(player.primaryCarriedItem)) 
-					|| !(registry->get<CarryableItem>(player.primaryCarriedItem).type == CarryableItemType::gloop)
-					|| registry->get<CarryableItem>(player.primaryCarriedItem).team != player.team)
+				if (   !(registry->valid(player.secondaryCarriedItem)) 
+					|| !(registry->get<CarryableItem>(player.secondaryCarriedItem).type == CarryableItemType::gloop)
+					|| registry->get<CarryableItem>(player.secondaryCarriedItem).team != player.team)
 				{
 					gloopIndicator.shouldBeHidden = true;
 				}

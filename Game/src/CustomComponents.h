@@ -33,7 +33,8 @@ enum class CarryableItemType
 	cannonball,
 	mop,
 	cleaningSolution,
-	gloop
+	gloop,
+	throwableBottle
 };
 
 enum class PlayerInteractionResult
@@ -172,6 +173,11 @@ struct Cannonball
 struct Gloop
 {
 	int numUses = 2;
+};
+
+struct ThrowableBottle
+{
+	bool isBeingThrown = false;
 };
 
 struct CannonballCrate
