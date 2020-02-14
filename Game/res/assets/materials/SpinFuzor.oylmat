@@ -1,14 +1,14 @@
 {
     "Material": {
-        "Alias": "water",
+        "Alias": "SpinFuzor",
         "MainProperties": {
             "Offset": [
-                186.5386962890625,
-                183.91204833984375
+                0.0,
+                0.0
             ],
             "Tiling": [
-                15.0,
-                10.0
+                1.0,
+                1.0
             ]
         },
         "Shader": {
@@ -24,17 +24,17 @@
         },
         "Textures": {
             "Albedo": {
-                "Alias": "water",
-                "FilePath": "res\\assets\\textures\\water.png",
+                "Alias": "Juggernaut_Spin_disk",
+                "FilePath": "res\\assets\\textures\\Juggernaut_Spin_disk.png",
                 "Profile": 1,
                 "guid": null
             },
             "Emission": null,
             "Normal": null,
             "Specular": {
-                "Alias": "Oyl Black",
-                "FilePath": "../Engine/res/textures/black.png",
-                "Profile": 0,
+                "Alias": "Juggernaut_Spin_disk",
+                "FilePath": "res\\assets\\textures\\Juggernaut_Spin_disk.png",
+                "Profile": 1,
                 "guid": null
             }
         }

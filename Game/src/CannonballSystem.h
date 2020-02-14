@@ -8,10 +8,13 @@ class CannonballSystem : public System
 {
 	OYL_CTOR(CannonballSystem, System)
 
+	std::vector<glm::vec3> blueFrontSpline;
+	std::vector<glm::vec3> blueMiddleSpline;
+	std::vector<glm::vec3> blueBackSpline;
 
-	glm::vec3 frontSplines[8];
-	glm::vec3 middleSplines[8];
-	glm::vec3 backSplines[8];
+	std::vector<glm::vec3> redFrontSpline;
+	std::vector<glm::vec3> redMiddleSpline;
+	std::vector<glm::vec3> redBackSpline;
 
 	void onEnter() override;
 	void onExit() override;
@@ -19,4 +22,6 @@ class CannonballSystem : public System
 	bool onEvent(const Event& event) override;
 
 	void setCannonballToCarriedForPlayer(entt::entity a_playerEntity, entt::entity a_cannonballEntity);
+
+	void initFiringSplines();
 };
