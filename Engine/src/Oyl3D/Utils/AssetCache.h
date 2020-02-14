@@ -11,6 +11,7 @@ namespace oyl::internal
     class AssetCache
     {
         friend T;
+        using Cache = std::map<CacheAlias, Ref<T>>;
     public:
         const Ref<T>& cache(const std::string& filePath,
                             CacheAlias alias = "",
@@ -24,12 +25,18 @@ namespace oyl::internal
 
         const Ref<T>& get(const CacheAlias& alias);
 
+        bool isCached(const Ref<T>& existing);
+
+        bool exists(const CacheAlias& alias);
+
+        const CacheAlias& getAlias(const Ref<T>& existing);
+
         const Ref<T>& rename(const CacheAlias& currentAlias,
                              const CacheAlias& newAlias,
                              bool overwrite = false);
 
     protected:
-        std::unordered_map<CacheAlias, Ref<T>> m_cache;
+        Cache m_cache;
 
         static const char* s_typename;
     };

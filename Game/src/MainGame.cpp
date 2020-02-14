@@ -1,7 +1,5 @@
 #include <Oyl3D.h>
 
-#include "SandboxLayer.h"
-
 using namespace oyl;
 
 class MainLayer : public Layer
@@ -11,37 +9,110 @@ public:
 
     void onEnter() override
     {
-        auto lightShader = Shader::get(LIGHTING_SHADER_ALIAS);
+        listenForEventType(EventType::KeyReleased);
+        listenForEventType(EventType::PhysicsCollisionEnter);
+        listenForEventType(EventType::PhysicsCollisionExit);
+        listenForEventType(EventType::PhysicsCollisionStay);
 
-        Material::cache(lightShader, nullptr, "monkeyMat");
+        {
+            auto e = registry->create();
 
-        auto textureShader = Shader::get(TEXTURE_SHADER_ALIAS);
-        auto uv = Texture2D::get(UV_TEXTURE_ALIAS);
-        
-        Material::cache(textureShader, uv, "cubeMat");
+            auto& l = registry->assign<component::PointLight>(e);
+            l.ambient = { 0.3f, 0.3f, 0.3f };
+            l.diffuse = { 1.0f, 1.0f, 1.0f };
+            l.specular = { 1.0f, 1.0f, 1.0f };
+            
+            auto& so = registry->assign<component::EntityInfo>(e);
+            so.name = "Light 1";
+        }
+        {
+            auto e = registry->create();
+
+            auto& camera = registry->assign<component::Camera>(e);
+            camera.player = PlayerNumber::One;
+            camera.skybox = TextureCubeMap::get(DEFAULT_SKYBOX_ALIAS);
+            
+            auto& so = registry->assign<component::EntityInfo>(e);
+            so.name = "Player Camera";
+        }
+        {
+            entt::entity e = registry->create();
+
+            auto& so = registry->assign<component::EntityInfo>(e);
+            so.name = "Container";
+
+            auto& rb = registry->assign<component::RigidBody>(e);
+            rb.setMass(0.0f);
+            rb.setFriction(5.0f);
+            rb.setProperties(component::RigidBody::FREEZE_ROTATION_X |
+                             component::RigidBody::FREEZE_ROTATION_Y |
+                             component::RigidBody::FREEZE_ROTATION_Z, true);
+
+            rb.setProperties(component::RigidBody::IS_KINEMATIC, true);
+
+            //rb.setProperties(component::RigidBody::DETECT_COLLISIONS, false);
+
+            auto& cl = registry->assign<component::Collidable>(e);
+
+            auto& shi = cl.pushShape(ColliderType::Box); 
+            shi.box.setSize({ 1.0f, 1.0f, 1.0f });
+        }
+        //{
+        //    auto e = registry->create();
+        //    auto& gr = registry->assign<component::GuiRenderable>(e);
+        //    gr.texture = Texture2D::get("archer");
+        //}
     }
 
-    bool onEvent(Ref<Event> event) override
+    void onUpdate() override
     {
-        switch (event->type)
+        using component::EntityInfo;
+        using component::Transform;
+        using component::RigidBody;
+        auto view = registry->view<EntityInfo>();
+        for (auto entity : view)
         {
-            case TypeKeyReleased:
+            if (view.get(entity).name == "Capsule")
             {
-                Window& window = oyl::Application::get().getWindow();
+                auto& transform = registry->get<Transform>(entity);
+                auto& rigidbody = registry->get<RigidBody>(entity);
 
-                auto e = (oyl::KeyReleasedEvent) *event;
-                if (e.keycode == oyl::Key_F11)
+                if (Input::isKeyPressed(Key::W))
+                    rigidbody.addImpulse(transform.getForwardGlobal());
+                if (Input::isKeyPressed(Key::S))
+                    rigidbody.addImpulse(-transform.getForwardGlobal());
+                if (Input::isKeyPressed(Key::A))
+                    rigidbody.addImpulse(-transform.getRightGlobal());
+                if (Input::isKeyPressed(Key::D))
+                    rigidbody.addImpulse(transform.getRightGlobal());
+                if (Input::isKeyPressed(Key::Space))
+                    rigidbody.addImpulse(transform.getUpGlobal());
+            }
+        }
+    }
+
+    bool onEvent(const Event& event) override
+    {
+        switch (event.type)
+        {
+            case EventType::KeyReleased:
+            {
+                Window& window = Application::get().getWindow();
+
+                auto e = event_cast<KeyReleasedEvent>(event);
+                if (e.keycode == Key::F11)
                 {
                     // TODO: Make Event Request
-                    if (window.getFullscreenType() == oyl::Windowed)
-                        window.setFullscreenType(oyl::Fullscreen);
+                    if (window.getWindowState() == WindowState::Windowed)
+                        window.setWindowState(WindowState::Fullscreen);
                     else
-                        window.setFullscreenType(oyl::Windowed);
+                        window.setWindowState(WindowState::Windowed);
                 }
-                else if (e.keycode == oyl::Key_F7)
+                else if (e.keycode == Key::F7)
                 {
                     window.setVsync(!window.isVsync());
                 }
+                break;
             }
         }
         return false;
@@ -56,7 +127,6 @@ public:
     virtual void onEnter() override
     {
         pushLayer(MainLayer::create());
-        pushLayer(SandboxLayer::create());
     }
 };
 
@@ -68,9 +138,7 @@ public:
         pushScene(MainScene::create());
     }
 
-    virtual void onExit()
-    {
-    }
+    virtual void onExit() { }
 };
 
 oyl::Application* oyl::createApplication()

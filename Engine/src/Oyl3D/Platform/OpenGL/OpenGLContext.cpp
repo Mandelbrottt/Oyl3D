@@ -53,6 +53,9 @@ namespace oyl
         glEnable(GL_DEPTH_TEST);
         glEnable(GL_CULL_FACE);
 
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
         OYL_LOG_INFO("OpenGL Info:");
         OYL_LOG_INFO("  Vendor: {0}", glGetString(GL_VENDOR));
         OYL_LOG_INFO("  Renderer: {0}", glGetString(GL_RENDERER));

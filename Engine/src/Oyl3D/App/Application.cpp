@@ -6,21 +6,24 @@
 
 #include "Debug/GuiLayer.h"
 
+#include "Rendering/RenderSystems.h"
+#include "Debug/EditorSystems.h"
+
 #include "Events/EventDispatcher.h"
 #include "Events/EventListener.h"
 
 #include "Graphics/Shader.h"
 #include "Graphics/Texture.h"
+#include "Graphics/Model.h"
 
 #include "Input/GamepadListener.h"
 
-#include "System/Platform.h"
-
 #include "Scenes/Scene.h"
+#include "Scenes/SystemsLayer.h"
 
 #include "Rendering/Renderer.h"
 
-#include <imgui.h>
+#include "Utils/SceneToFile.h"
 
 namespace oyl
 {
@@ -28,23 +31,23 @@ namespace oyl
     {
         class ApplicationListener : public EventListener
         {
-            friend class oyl::Application;
+            friend Application;
         public:
             ApplicationListener()
             {
-                addToCategoryMask(CategoryWindow);
-                addToCategoryMask(CategoryKeyboard);
-                addToCategoryMask(CategoryMouse);
-                addToCategoryMask(CategoryCursorStateRequest);
+                listenForEventCategory(EventCategory::Window);
+                listenForEventCategory(EventCategory::Keyboard);
+                listenForEventCategory(EventCategory::Mouse);
+                listenForEventCategory(EventCategory::Cursor);
             }
 
         private:
-            virtual bool onEvent(Ref<Event> event) override
+            virtual bool onEvent(const Event& event) override
             {
                 return app->onEvent(event);
             }
 
-            oyl::Application* app = nullptr;
+            Application* app = nullptr;
         };
     }
 
@@ -55,47 +58,56 @@ namespace oyl
         OYL_ASSERT(!s_instance, "Application already exists!");
         s_instance = this;
 
+        Time::init();
+        
         Log::init();
 
         m_window = Window::create();
 
-        Mesh::init();
+        Model::init();
         Texture::init();
 
         Shader::cache(
             {
-                { VertexShader, ENGINE_RES + LIGHTING_SHADER_VERTEX_PATH },
-                { FragmentShader, ENGINE_RES + LIGHTING_SHADER_FRAGMENT_PATH },
+                { Shader::Vertex, ENGINE_RES + LIGHTING_SHADER_VERTEX_PATH },
+                { Shader::Pixel, ENGINE_RES + LIGHTING_SHADER_FRAGMENT_PATH },
             }, LIGHTING_SHADER_ALIAS);
+
+        //Shader::cache(
+        //    {
+        //        { Shader::Vertex, ENGINE_RES + "shaders/morphTargetLighting.vert" },
+        //        { Shader::Pixel, ENGINE_RES + LIGHTING_SHADER_FRAGMENT_PATH },
+        //    }, "animation");
 
         Shader::cache(
             {
-                { VertexShader, ENGINE_RES +   TEXTURE_SHADER_VERTEX_PATH },
-                { FragmentShader, ENGINE_RES + TEXTURE_SHADER_FRAGMENT_PATH },
-            }, TEXTURE_SHADER_ALIAS);
+                { Shader::Vertex, ENGINE_RES + SKYBOX_SHADER_VERTEX_PATH },
+                { Shader::Pixel, ENGINE_RES + SKYBOX_SHADER_FRAGMENT_PATH }
+            }, SKYBOX_SHADER_ALIAS);
 
-        Mesh::cache(ENGINE_RES + CUBE_MESH_PATH, CUBE_MESH_ALIAS);
-        Mesh::cache(ENGINE_RES + MONKEY_MESH_PATH, MONKEY_MESH_ALIAS);
+        Model::cache(ENGINE_RES + CUBE_MODEL_PATH, CUBE_MODEL_ALIAS);
+        Model::cache(ENGINE_RES + MONKEY_MODEL_PATH, MONKEY_MODEL_ALIAS);
 
         Texture2D::cache(ENGINE_RES + WHITE_TEXTURE_PATH, WHITE_TEXTURE_ALIAS);
+        Texture2D::cache(ENGINE_RES + BLACK_TEXTURE_PATH, BLACK_TEXTURE_ALIAS);
         Texture2D::cache(ENGINE_RES + UV_TEXTURE_PATH, UV_TEXTURE_ALIAS);
+        Texture2D::cache(ENGINE_RES + DEFAULT_NORMAL_TEXTURE_PATH, DEFAULT_NORMAL_TEXTURE_ALIAS);
 
-        m_guiLayer = GuiLayer::create();
+        TextureCubeMap::cache(ENGINE_RES + DEFAULT_SKYBOX_PATH, DEFAULT_SKYBOX_ALIAS);
+
+        m_editorRenderSystem = internal::EditorRenderSystem::create();
+        m_preRenderSystem    = internal::PreRenderSystem::create();
+        m_shadowRenderSystem = internal::ShadowRenderSystem::create();
+        m_renderSystem       = internal::RenderSystem::create();
+        m_guiRenderSystem    = internal::GuiRenderSystem::create();
+        m_postRenderSystem   = internal::UserPostRenderSystem::create();
 
         initEventListeners();
 
-        m_mainBuffer = FrameBuffer::create(1);
-        m_mainBuffer->initDepthTexture(m_window->getWidth(), m_window->getHeight());
-
-        m_mainBuffer->initColorTexture(0, m_window->getWidth(), m_window->getHeight(),
-                                       oyl::RGBA8,
-                                       oyl::Nearest,
-                                       oyl::Clamp);
-
-        ViewportHandleChangedEvent handleChanged;
-        handleChanged.handle = m_mainBuffer->getColorHandle(0);
-        
-        m_dispatcher->postEvent(Event::create(handleChanged));
+        WindowResizedEvent wrEvent;
+        wrEvent.width = 1280;
+        wrEvent.height = 720;
+        m_dispatcher->postEvent(wrEvent);
 
         m_window->setVsync(false);
     }
@@ -103,116 +115,222 @@ namespace oyl
     Application::~Application()
     {
         m_currentScene->onExit();
+
+    #if !defined(OYL_DISTRIBUTION)
+        m_guiLayer->onExit();
+        m_guiLayer->shutdown();
+    #endif
+
+        m_systemsLayer->onExit();
+        
+        m_renderSystem->onExit();
     }
 
-    bool Application::onEvent(const Ref<Event>& event)
+    bool Application::onEvent(const Event& event)
     {
         bool handled = false;
 
-        switch (event->type)
+        switch (event.type)
         {
-            case TypeWindowClosed:
+            case EventType::WindowClosed:
             {
                 m_running = false;
                 handled   = true;
                 break;
             }
-            case TypeWindowResized:
+            case EventType::WindowResized:
             {
-                auto e = (WindowResizedEvent) *event;
+                auto e = event_cast<WindowResizedEvent>(event);
                 m_window->updateViewport(e.width, e.height);
-                m_mainBuffer->updateViewport(e.width, e.height);
                 break;
             }
-            case TypeWindowFocused:
+            case EventType::WindowFocused:
             {
-                auto e = (WindowFocusedEvent) *event;
+                auto e = event_cast<WindowFocusedEvent>(event);
             #if defined(OYL_DISTRIBUTION)
                 m_doUpdate = e.focused;
             #endif
                 break;
             }
-            case TypeCursorStateRequest:
+            case EventType::CursorStateRequest:
             {
-                auto e = (CursorStateRequestEvent) *event;
+                auto e = event_cast<CursorStateRequestEvent>(event);
                 if (m_window->getCursorState() != e.state)
                     m_window->setCursorState(e.state);
                 break;
             }
         }
 
-        handled |= m_doUpdate;
+        handled |= !m_doUpdate;
 
         return handled;
     }
 
     void Application::pushScene(Ref<Scene> scene)
-    {
+    {        
         if (m_currentScene)
         {
             m_currentScene->onExit();
             m_currentScene = nullptr;
+
+        #if !defined(OYL_DISTRIBUTION)
+            m_guiLayer->onExit();
+        #endif
+
+            m_systemsLayer->onExit();
+            
+            m_renderSystem->onExit();
         }
 
-        if (scene)
+        OYL_ASSERT(scene, "Pushed scene must be initialized!");
+
+        m_currentScene = std::move(scene);
+
+        Scene::s_current = m_currentScene;
+
+        m_editorRenderSystem->setDispatcher(m_dispatcher);
+        m_editorRenderSystem->setRegistry(m_currentScene->m_registry);
+        m_editorRenderSystem->onEnter();
+        m_dispatcher->registerListener(m_editorRenderSystem);
+
+        m_preRenderSystem->setDispatcher(m_dispatcher);
+        m_preRenderSystem->setRegistry(m_currentScene->m_registry);
+        m_preRenderSystem->onEnter();
+        m_dispatcher->registerListener(m_preRenderSystem);
+
+        m_shadowRenderSystem->setDispatcher(m_dispatcher);
+        m_shadowRenderSystem->setRegistry(m_currentScene->m_registry);
+        m_shadowRenderSystem->onEnter();
+        m_dispatcher->registerListener(m_shadowRenderSystem);
+
+        m_renderSystem->setDispatcher(m_dispatcher);
+        m_renderSystem->setRegistry(m_currentScene->m_registry);
+        m_renderSystem->onEnter();
+        m_dispatcher->registerListener(m_renderSystem);
+
+        m_guiRenderSystem->setDispatcher(m_dispatcher);
+        m_guiRenderSystem->setRegistry(m_currentScene->m_registry);
+        m_guiRenderSystem->onEnter();
+        m_dispatcher->registerListener(m_guiRenderSystem);
+
+        m_postRenderSystem->setDispatcher(m_dispatcher);
+        m_postRenderSystem->setRegistry(m_currentScene->m_registry);
+        m_postRenderSystem->onEnter();
+        m_dispatcher->registerListener(m_postRenderSystem);
+
+        if (!m_systemsLayer)
         {
-            m_currentScene = std::move(scene);
+            m_systemsLayer = internal::SystemsLayer::create();
+            
+            m_systemsLayer->setDispatcher(m_dispatcher);
+            m_systemsLayer->setRegistry(m_currentScene->m_registry);
+            m_systemsLayer->onEnter();
 
-            Scene::s_current = m_currentScene;
-
-            m_dispatcher->registerListener(m_currentScene);
-            m_currentScene->setDispatcher(m_dispatcher);
-
-            m_currentScene->initDefaultSystems();
-
-            m_currentScene->pushOverlay(m_guiLayer);
-            m_currentScene->onEnter();
-
-            m_currentScene->loadSceneFromFile();
+            m_dispatcher->registerListener(m_systemsLayer);
         }
+        else
+        {
+            m_systemsLayer->setRegistry(m_currentScene->m_registry);
+            m_systemsLayer->onEnter();
+        }
+
+    #if !defined(OYL_DISTRIBUTION)
+        if (!m_guiLayer)
+        {
+            m_guiLayer = internal::GuiLayer::create();
+            m_guiLayer->init();
+
+            m_guiLayer->setDispatcher(m_dispatcher);
+            m_guiLayer->setRegistry(m_currentScene->m_registry);
+            m_guiLayer->onEnter();
+            
+            m_dispatcher->registerListener(m_guiLayer);
+        }
+        else
+        {
+            m_guiLayer->setRegistry(m_currentScene->m_registry);
+            m_guiLayer->onEnter();
+        }
+    #endif
+
+        m_dispatcher->registerListener(m_currentScene);
+        m_currentScene->setDispatcher(m_dispatcher);
+
+        m_currentScene->Scene::onEnter();
+        m_currentScene->onEnter();
+        
+        //internal::loadSceneFromFile(*m_currentScene);
+        internal::registryFromSceneFile(*m_currentScene->m_registry, m_currentScene->m_name); 
     }
 
     void Application::run()
-    {
+    {        
         while (m_running)
         {
-            auto     time = (float) Platform::getTime();
-            Timestep realTimestep(time - m_lastFrameTime);
-            Timestep timestep(abs(realTimestep) > 1.0f / 30.0f ? 1.0f / 30.0f : realTimestep);
-            m_lastFrameTime = time;
-
+            Time::update();
+            
             if (m_doUpdate)
             {
+                m_dispatcher->dispatchEvents();
+
+            #if !defined(OYL_DISTRIBUTION)
+                if (m_guiLayer->doGameUpdate())
+                {
+                    m_systemsLayer->onUpdateSystems();
+                    m_systemsLayer->onUpdate();
+
+                    m_currentScene->onUpdate();
+                }
+                
+                m_guiLayer->onUpdateSystems();
+                m_guiLayer->onUpdate();
+            #else
+                m_systemsLayer->onUpdateSystems();
+                m_systemsLayer->onUpdate();
+
+                m_currentScene->onUpdate();
+            #endif
+
                 RenderCommand::setClearColor(0.1f, 0.1f, 0.1f, 1.0f);
                 RenderCommand::clear();
 
-                m_mainBuffer->clear();
-                m_mainBuffer->bind();
-
                 Renderer::beginScene();
+                
+                m_preRenderSystem->onUpdate();
+                m_shadowRenderSystem->onUpdate();
+                m_editorRenderSystem->onUpdate();
+                m_renderSystem->onUpdate();
+                m_guiRenderSystem->onUpdate();
+                m_postRenderSystem->onUpdate();
 
-                m_dispatcher->dispatchEvents();
-
-                m_currentScene->onUpdate(timestep);
-
-                Renderer::endScene();
-                m_mainBuffer->unbind();
+                Renderer::endScene();                
             }
 
-#if !defined(OYL_DISTRIBUTION)
+        #if !defined(OYL_DISTRIBUTION)
             m_guiLayer->begin();
 
-            m_currentScene->onGuiRender(timestep);
+            m_preRenderSystem->onGuiRender();
+            m_shadowRenderSystem->onGuiRender();
+            m_renderSystem->onGuiRender();
+            m_guiRenderSystem->onGuiRender();
+            m_postRenderSystem->onGuiRender();
+
+            m_guiLayer->onGuiRenderSystems();
+            m_editorRenderSystem->onGuiRender();
+            m_guiLayer->onGuiRender();
+
+            if (m_guiLayer->doGameUpdate())
+                m_currentScene->onGuiRender();
 
             m_guiLayer->end();
-
-#else
-            m_mainBuffer->moveToBackBuffer(m_window->getWidth(), m_window->getHeight());
-#endif
+        #else
+            // TODO: Turn into Renderer Call
+            //m_mainBuffer->moveToBackBuffer(m_window->getWidth(), m_window->getHeight());
+        #endif
 
             m_window->onUpdate(m_doUpdate);
 
-            m_vibrationListener->onUpdate(timestep);
+            m_vibrationListener->onUpdate();
         }
     }
 
@@ -226,8 +344,10 @@ namespace oyl
         m_appListener      = Ref<internal::ApplicationListener>::create();
         m_appListener->app = this;
         m_dispatcher->registerListener(m_appListener);
+        m_appListener->setDispatcher(m_dispatcher);
 
         m_vibrationListener = internal::GamepadListener::create();
         m_dispatcher->registerListener(m_vibrationListener);
+        m_vibrationListener->setDispatcher(m_dispatcher);
     }
 }

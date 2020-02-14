@@ -1,15 +1,224 @@
 {
-    "Container": {
+    "Animation Object": {
+        "Parent": null,
+        "Renderable": {
+            "Enabled": true,
+            "Material": {
+                "Alias": "shipMat"
+            },
+            "Mesh": {
+                "Alias": "Oyl Monkey",
+                "FilePath": "../Engine/res/models/monkey.obj"
+            }
+        },
         "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
             "Position": {
                 "X": 0.0,
-                "Y": -3.1388261318206787,
+                "Y": 0.0,
                 "Z": 0.0
             },
             "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 0.30000001192092896,
+                "Y": 0.30000001192092896,
+                "Z": 0.30000001192092896
+            }
+        }
+    },
+    "Capsule": {
+        "Collidable": {
+            "Shapes": [
+                {
+                    "Center": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Direction": 1,
+                    "Height": 1.0,
+                    "Radius": 0.5,
+                    "Trigger": false,
+                    "Type": 2
+                }
+            ]
+        },
+        "Parent": null,
+        "Renderable": {
+            "Enabled": true,
+            "Material": {
+                "Alias": "sphereMat"
+            },
+            "Mesh": {
+                "Alias": "capsule",
+                "FilePath": "res\\assets\\models\\capsule.obj"
+            }
+        },
+        "RigidBody": {
+            "Friction": 0.5,
+            "Mass": 1.0,
+            "Properties": 126
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": 3.6986730098724365,
+                "Y": 3.1149790287017822,
+                "Z": -1.2851614952087402
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Container": {
+        "Collidable": {
+            "Shapes": [
+                {
+                    "Center": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Size": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "Trigger": false,
+                    "Type": 0
+                }
+            ]
+        },
+        "Parent": null,
+        "Renderable": {
+            "Enabled": true,
+            "Material": {
+                "Alias": "lmao"
+            },
+            "Mesh": {
+                "Alias": "cube",
+                "FilePath": "res\\assets\\models\\cube.obj"
+            }
+        },
+        "RigidBody": {
+            "Friction": 1.0,
+            "Mass": 1.0,
+            "Properties": 98
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": 5.130334854125977,
+                "Y": 5.829868316650391,
+                "Z": -1.312644124031067
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Gui Renderable": {
+        "GuiRenderable": {
+            "Clipping": {
+                "Lower": [
+                    0.0,
+                    0.0
+                ],
+                "Upper": [
+                    1.0,
+                    1.0
+                ]
+            },
+            "Enabled": true,
+            "Texture": {
+                "Alias": "Oyl UV-Grid",
+                "FilePath": "../Engine/res/textures/uvgrid.png"
+            }
+        },
+        "Parent": null,
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
                 "X": 0.0,
-                "Y": -0.0,
+                "Y": 0.0,
                 "Z": 0.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 5.0,
+                "Y": 5.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Gui Thing": {
+        "Parent": null,
+        "Renderable": {
+            "Enabled": true,
+            "Material": {
+                "Alias": null
+            },
+            "Mesh": null
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": 0.0,
+                "Y": 0.0,
+                "Z": 0.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
             },
             "Scale": {
                 "X": 1.0,
@@ -19,21 +228,273 @@
         }
     },
     "Light 1": {
+        "LightSource": [
+            {
+                "Ambient": [
+                    0.18378376960754395,
+                    0.1837819218635559,
+                    0.1837819218635559
+                ],
+                "Attenuation": [
+                    1.0,
+                    0.3499999940395355,
+                    0.4399999976158142
+                ],
+                "Diffuse": [
+                    1.0,
+                    1.0,
+                    1.0
+                ],
+                "Specular": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            }
+        ],
+        "Parent": null,
+        "Renderable": {
+            "Enabled": true,
+            "Material": {
+                "Alias": "container"
+            },
+            "Mesh": {
+                "Alias": "cube",
+                "FilePath": "res\\assets\\models\\cube.obj"
+            }
+        },
         "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
             "Position": {
-                "X": -1.4385483264923096,
-                "Y": -3.5886600017547607,
-                "Z": 2.999999523162842
+                "X": 2.8709919452667236,
+                "Y": 12.525193214416504,
+                "Z": -2.5366904735565186
             },
             "Rotation": {
-                "X": 58.373294830322266,
-                "Y": 34.413490295410156,
-                "Z": 0.0
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
             },
             "Scale": {
-                "X": 0.3000001907348633,
-                "Y": 0.2999999523162842,
-                "Z": 0.29999998211860657
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Light 2": {
+        "Parent": null,
+        "Renderable": {
+            "Enabled": true,
+            "Material": {
+                "Alias": "container"
+            },
+            "Mesh": {
+                "Alias": "cube",
+                "FilePath": "res\\assets\\models\\cube.obj"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": 11.507938385009766,
+                "Y": 5.317399501800537,
+                "Z": -3.1965951919555664
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Plane": {
+        "Collidable": {
+            "Shapes": [
+                {
+                    "Center": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Size": [
+                        20.0,
+                        0.009999999776482582,
+                        20.0
+                    ],
+                    "Trigger": false,
+                    "Type": 0
+                }
+            ]
+        },
+        "Parent": null,
+        "Renderable": {
+            "Enabled": true,
+            "Material": {
+                "Alias": "container"
+            },
+            "Mesh": {
+                "Alias": "plane",
+                "FilePath": "res\\assets\\models\\plane.obj"
+            }
+        },
+        "RigidBody": {
+            "Friction": 0.5,
+            "Mass": 0.0,
+            "Properties": 98
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": 0.0,
+                "Y": 0.0,
+                "Z": 0.0
+            },
+            "Rotation": {
+                "qW": 0.9962254762649536,
+                "qX": -0.08680302649736404,
+                "qY": -0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Player Camera": {
+        "Parent": {
+            "Name": "Capsule"
+        },
+        "Renderable": {
+            "Enabled": true,
+            "Material": {
+                "Alias": null
+            },
+            "Mesh": null
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": 0.9599999785423279,
+                "Y": 1.100000023841858,
+                "Z": 3.359999895095825
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Player Camera 2": {
+        "Parent": null,
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": 3.123335838317871,
+                "Y": 6.595512866973877,
+                "Z": 6.387890338897705
+            },
+            "Rotation": {
+                "qW": 0.9390614032745361,
+                "qX": -0.34374937415122986,
+                "qY": 1.5292731274027527e-12,
+                "qZ": -5.595784252632185e-13
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 0.9999999403953552,
+                "Z": 0.9999999403953552
+            }
+        }
+    },
+    "Sphere 1": {
+        "Collidable": {
+            "Shapes": [
+                {
+                    "Center": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Radius": 0.5,
+                    "Trigger": false,
+                    "Type": 1
+                }
+            ]
+        },
+        "Parent": null,
+        "Renderable": {
+            "Enabled": true,
+            "Material": {
+                "Alias": "animationMat"
+            },
+            "Mesh": {
+                "Alias": "sphere",
+                "FilePath": "res\\assets\\models\\sphere.obj"
+            }
+        },
+        "RigidBody": {
+            "Friction": 0.5,
+            "Mass": 1.0,
+            "Properties": 98
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -0.9729946255683899,
+                "Y": 3.227280616760254,
+                "Z": -1.2272382974624634
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
             }
         }
     }

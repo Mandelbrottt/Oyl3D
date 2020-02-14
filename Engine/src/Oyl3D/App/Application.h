@@ -11,12 +11,19 @@ namespace oyl
 {
     class EventListener;
     class Scene;
-    class GuiLayer;
-
+    
     namespace internal
-    {
+    {   
+        class EditorRenderSystem;  
+        class PreRenderSystem;  
+        class RenderSystem;  
+        class GuiRenderSystem;  
+        class ShadowRenderSystem;  
+        class UserPostRenderSystem;  
         class ApplicationListener;
         class GamepadListener;
+        class SystemsLayer;
+        class GuiLayer;
     }
 
     class Application
@@ -27,13 +34,13 @@ namespace oyl
 
         void run();
 
-        bool onEvent(const Ref<Event>& event);
+        bool onEvent(const Event& event);
 
         void pushScene(Ref<Scene> scene);
 
         // TODO: Make Refs
         inline Window&      getWindow() { return *m_window; }
-        inline FrameBuffer& getMainFrameBuffer() { return *m_mainBuffer; }
+        //inline FrameBuffer& getMainFrameBuffer() { return *m_mainBuffer; }
 
         inline static Application& get() { return *s_instance; }
 
@@ -43,8 +50,20 @@ namespace oyl
     private:
         Ref<Window>      m_window;
         Ref<Scene>       m_currentScene;
-        Ref<GuiLayer>    m_guiLayer;
-        Ref<FrameBuffer> m_mainBuffer;
+        //Ref<FrameBuffer> m_mainBuffer;
+        
+    #if !defined(OYL_DISTRIBUTION)
+        Ref<internal::GuiLayer> m_guiLayer;
+    #endif
+
+        Ref<internal::SystemsLayer> m_systemsLayer;
+        // TODO: Put in systems layer
+        Ref<internal::EditorRenderSystem> m_editorRenderSystem;
+        Ref<internal::PreRenderSystem> m_preRenderSystem;
+        Ref<internal::ShadowRenderSystem> m_shadowRenderSystem;
+        Ref<internal::RenderSystem> m_renderSystem;
+        Ref<internal::GuiRenderSystem> m_guiRenderSystem;
+        Ref<internal::UserPostRenderSystem> m_postRenderSystem;
 
         float m_lastFrameTime = 0;
 

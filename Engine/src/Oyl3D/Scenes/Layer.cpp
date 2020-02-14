@@ -2,8 +2,7 @@
 
 #include "Layer.h"
 
-#include "ECS/Registry.h"
-#include "ECS/System.h"
+#include "Scenes/System.h"
 
 namespace oyl
 {
@@ -15,50 +14,37 @@ namespace oyl
         }
     }
 
-    void Layer::onEnter()
-    {
-    }
+    void Layer::onEnter() { }
 
-    void Layer::onExit()
-    {
-    }
+    void Layer::onExit() { }
 
-    void Layer::onUpdate(Timestep dt)
-    {
-    }
+    void Layer::onUpdate() { }
 
-    void Layer::onGuiRender(Timestep dt)
-    {
-    }
+    void Layer::onGuiRender() { }
 
-    bool Layer::onEvent(Ref<Event> event)
+    bool Layer::onEvent(const Event& event)
     {
         return false;
     }
 
-    void Layer::onUpdateSystems(Timestep dt)
+    void Layer::onUpdateSystems()
     {
         for (auto& system : m_systems)
         {
-            system->onUpdate(dt);
+            system->onUpdate();
         }
     }
 
-    void Layer::onGuiRenderSystems(Timestep dt)
+    void Layer::onGuiRenderSystems()
     {
         for (auto& system : m_systems)
         {
-            system->onGuiRender(dt);
+            system->onGuiRender();
         }
     }
 
-    const Ref<ECS::Registry>& Layer::getRegistry()
+    void Layer::setRegistry(const Ref<entt::registry>& reg)
     {
-        return registry;
-    }
-
-    void Layer::setRegistry(Ref<ECS::Registry> reg)
-    {
-        registry = std::move(reg);
+        registry = reg;
     }
 }

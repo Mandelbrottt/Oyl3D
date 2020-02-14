@@ -1,7 +1,5 @@
 #pragma once
 
-//#include "Oyl3D/ECS/Registry.h"
-
 //#include "Oyl3D/Events/Event.h"
 //#include "Oyl3D/Events/EventListener.h"
 
@@ -10,54 +8,47 @@
 
 namespace oyl
 {
-    namespace ECS
+    class Scene;
+    
+    namespace internal
     {
-        class Registry;
-        class RenderSystem;
+        class GuiLayer;
+        class SceneToFile;
     }
 
     class Scene : public EventListener, public virtual Node
     {
-        friend class Application;
     protected:
         explicit Scene();
-
     public:
         virtual ~Scene();
 
         virtual void onEnter() override;
         virtual void onExit() override;
 
-        virtual void onUpdate(Timestep dt) override;
-        virtual void onGuiRender(Timestep dt) override;
+        virtual void onUpdate() override;
+        virtual void onGuiRender() override;
         
         void pushLayer(Ref<Layer> layer);
         void pushOverlay(Ref<Layer> overlay);
         void popLayer(const Ref<Layer>& layer);
         void popOverlay(const Ref<Layer>& overlay);
 
-        void loadSceneFromFile();
-        void saveSceneToFile();
-
         static Ref<Scene> current() { return s_current.lock(); }
 
-        const Ref<ECS::Registry>& getRegistry();
+        const Ref<entt::registry>& getRegistry() { return m_registry; }
 
-        virtual bool onEvent(Ref<Event> event) override;
+        virtual bool onEvent(const Event& event) override;
 
     private:
-        void initDefaultSystems();
-
-        void saveSceneBackupToFile();
-
         static WeakRef<Scene> s_current;
 
-    private:
         // TODO: Put in internal namespace
         LayerStack m_layerStack;
 
-        Ref<ECS::Registry> m_registry;
+        Ref<entt::registry> m_registry;
 
-        Ref<ECS::RenderSystem> m_renderSystem;
+        friend class Application;
+        friend internal::GuiLayer;
     };
 }

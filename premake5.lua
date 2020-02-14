@@ -13,6 +13,7 @@ outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
 -- Include directories relative to root folder (solution directory)
 IncludeDir = {}
+IncludeDir["spdlog"] = "Engine/vendor/spdlog/include/"
 IncludeDir["glfw"] = "Engine/vendor/glfw/include/"
 IncludeDir["glad"] = "Engine/vendor/glad/include/"
 IncludeDir["imgui"] = "Engine/vendor/imgui/"
@@ -23,12 +24,23 @@ IncludeDir["fmod"] = "Engine/vendor/fmod/include/"
 IncludeDir["gainput"] = "Engine/vendor/gainput/lib/include/"
 IncludeDir["entt"] = "Engine/vendor/entt/src/"
 IncludeDir["json"] = "Engine/vendor/nlohmann/single_include/"
+IncludeDir["bullet"] = "Engine/vendor/bullet3/src/"
+IncludeDir["assimp"] = "Engine/vendor/assimp/include/"
 
 group "Dependencies"
 	include "Engine/vendor/glad/"
 	include "Engine/vendor/glfw/"
 	include "Engine/vendor/imgui/"
 	include "Engine/vendor/gainput/"
+
+	group "Dependencies/Assimp"
+		include "Engine/vendor/assimp/"
+
+	group "Dependencies/Bullet3"
+		include "Engine/vendor/bullet3/src/BulletDynamics"
+		include "Engine/vendor/bullet3/src/BulletCollision"
+		include "Engine/vendor/bullet3/src/LinearMath"
+
 group ""
 
 project "OylEngine"
@@ -46,7 +58,8 @@ project "OylEngine"
 
 	files {
 		"Engine/src/**.h",
-		"Engine/src/**.cpp"
+		"Engine/src/**.cpp",
+		"Engine/src/**.inl"
 	}
 
 	defines {
@@ -55,13 +68,14 @@ project "OylEngine"
 	}
 
 	postbuildcommands {
-		"{COPY} %{prj.location}res/ %{wks.location}bin/" .. outputdir .. "/Engine/res/"
+		"{COPY} \"%{prj.location}res\" \"%{wks.location}bin/" .. outputdir .. "/Engine/res\""
 	}
 
 	includedirs {
 		"Engine/src/",
 		"Engine/src/Oyl3D/",
-		"Engine/vendor/spdlog/include/",
+		"Engine/vendor/",
+		"%{IncludeDir.spdlog}",
 		"%{IncludeDir.glfw}",
 		"%{IncludeDir.glad}",
 		"%{IncludeDir.imgui}",
@@ -71,11 +85,14 @@ project "OylEngine"
 		"%{IncludeDir.fmod}",
 		"%{IncludeDir.gainput}",
 		"%{IncludeDir.entt}",
-		"%{IncludeDir.json}"
+		"%{IncludeDir.json}",
+		"%{IncludeDir.bullet}",
+		"%{IncludeDir.assimp}"
 	}
 
 	libdirs {
-		"Engine/vendor/fmod/lib/"
+		"Engine/vendor/fmod/lib/",
+		"Engine/vendor/assimp/bin/",
 	}
 
 	links {
@@ -83,7 +100,11 @@ project "OylEngine"
 		"Glad",
 		"ImGui",
 		"Gainput",
-		"opengl32.lib"
+		"BulletDynamics",
+		"BulletCollision",
+		"LinearMath",
+		"opengl32",
+		"Xinput9_1_0.lib"
 	}
 
 	filter "system:windows"
@@ -93,6 +114,11 @@ project "OylEngine"
 			"GLFW_INCLUDE_NONE", 
 			"WIN32_LEAN_AND_MEAN"
 		}
+		
+		-- TODO: Find way to stop build process if it changes
+		-- prebuildcommands {
+		-- 	"%{wks.location}scripts/windows/GenerateVSProjects.bat"
+		-- }
 
 	filter "configurations:Debug"
 		defines { "OYL_DEBUG" }
@@ -100,7 +126,8 @@ project "OylEngine"
 		symbols "on"
 		links {
 			"fmodL_vc.lib",
-			"fmodstudioL_vc.lib"
+			"fmodstudioL_vc.lib",
+			"AssimpL"
 		}
 
 	filter "configurations:Development"
@@ -116,7 +143,8 @@ project "OylEngine"
 	filter "configurations:not Debug"
 		links {
 			"fmod_vc.lib",
-			"fmodstudio_vc.lib"
+			"fmodstudio_vc.lib",
+			"Assimp"
 		}
 
 	filter "configurations:not Development"
@@ -136,33 +164,41 @@ project "OylGame"
 
 	files {
 		"Game/src/**.h",
-		"Game/src/**.cpp"
+		"Game/src/**.cpp",
+		"Game/src/**.inl"
 	}
 
 	excludes { "**/ClientAppTemplate.cpp" }
 
 	defines {
 		"OYL_GAME",
-		"_CRT_SECURE_NO_WARNINGS"
+		"_CRT_SECURE_NO_WARNINGS",
+		"IMGUI_DEFINE_MATH_OPERATORS"
 	}
 
 	includedirs {
-		"Engine/vendor/spdlog/include",
 		"Engine/src/",
 		"Engine/vendor/",
+		"%{IncludeDir.spdlog}",
 		"%{IncludeDir.glm}",
 		"%{IncludeDir.stb}",
-		"%{IncludeDir.imgui}", 
+		"%{IncludeDir.imgui}",
 		"%{IncludeDir.entt}",
-		"%{IncludeDir.json}"
+		"%{IncludeDir.json}",
+		"%{IncludeDir.assimp}",
 	}
 
+	-- libdirs {
+	-- 	"Engine/vendor/fmod/lib/",
+	-- 	"Engine/vendor/assimp/lib/",
+	-- }
+
 	links {
-		"OylEngine"
+		"OylEngine",
 	}
 
 	postbuildcommands {
-		"{COPY} %{prj.location}res/ %{wks.location}bin/"..outputdir.."/Game/res/"
+		"{COPY} \"%{prj.location}res\" \"%{wks.location}bin/"..outputdir.."/Game/res/\""
 	}
 	
 	filter "system:windows"

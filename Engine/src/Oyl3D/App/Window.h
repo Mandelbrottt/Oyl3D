@@ -5,29 +5,42 @@
 
 namespace oyl
 {
+    enum class WindowState : i32
+    {
+        Windowed,
+        Fullscreen,
+        Borderless = Fullscreen,
+    };
+
+    enum class CursorState : i32
+    {
+        Normal,
+        Disabled,
+        Hidden,
+    };
+    
     struct WindowProps
     {
         std::string title;
         int         width;
         int         height;
         bool        vsync;
-        uint        type;
+        WindowState  type;
 
         WindowProps(std::string title  = "Oyl3D",
                     int         width  = 1280,
                     int         height = 720,
                     bool        vsync  = true,
-                    OylEnum     type   = Windowed)
-            : title(title), width(width), height(height),
-              vsync(vsync), type(type)
-        {
-        }
+                    WindowState  type   = WindowState::Windowed)
+            : title(std::move(title)),
+              width(width), height(height),
+              vsync(vsync), type(type) {}
     };
 
     class Window
     {
     public:
-        using EventCallbackFn = std::function<void(UniqueRef<Event>)>;
+        using EventCallbackFn = std::function<void(const Event&)>;
     public:
         virtual ~Window() = default;
 
@@ -41,17 +54,17 @@ namespace oyl
         virtual void setVsync(bool enabled) = 0;
         virtual bool isVsync() const = 0;
 
-        virtual void    setFullscreenType(OylEnum type) = 0;
-        virtual OylEnum getFullscreenType() const = 0;
+        virtual void setWindowState(WindowState state) = 0;
+        virtual WindowState getWindowState() const = 0;
 
-        virtual OylEnum getCursorState() const = 0;
-        virtual void setCursorState(OylEnum state) = 0;
+        virtual CursorState getCursorState() const = 0;
+        virtual void setCursorState(CursorState state) = 0;
 
         // Isn't handled until the next frame
         virtual void updateViewport(int width, int height) = 0;
 
         virtual void* getNativeWindow() const = 0;
 
-        static Ref<Window> create(const WindowProps& props = WindowProps());
+        static Ref<Window> create(const WindowProps& props = {});
     };
 }

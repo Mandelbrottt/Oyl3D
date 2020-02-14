@@ -4,52 +4,64 @@
 #include "Graphics/Texture.h"
 #include "Graphics/Shader.h"
 
+#include "Utils/SceneToFile.h"
+
 namespace oyl
 {
     internal::AssetCache<Material> Material::s_cache;
-    
-    Material::Material(_Material)
-        : m_shader(nullptr), m_albedo(nullptr)
-    {
-    }
 
-    Material::Material(_Material, Ref<Shader> shader, Ref<Texture> texture)
-        : m_shader(std::move(shader)), m_albedo(std::move(texture))
-    {
-    }
+    const char* internal::AssetCache<Material>::s_typename = "Material";
 
-    Material::Material(_Material, Ref<Texture> texture)
-        : m_shader(nullptr), m_albedo(std::move(texture))
-    {
-    }
+    Material::Material(_Material) {}
 
-    Ref<Material> Material::create(const Ref<Shader>& shader, const Ref<Texture>& texture)
-    {
-        return Ref<Material>::create(_Material{}, shader, texture);
-    }
+    Material::Material(_Material, std::string filepath)
+        : m_filepath(std::move(filepath)) {}
 
-    Ref<Material> Material::create(const Ref<Texture>& texture)
-    {
-        return Ref<Material>::create(_Material{}, std::move(texture));
-    }
+    //Material::Material(_Material, Ref<Shader> shader)
+    //    : shader(std::move(shader)) {}
+
+    //Ref<Material> Material::create(const Ref<Shader>& shader)
+    //{
+    //    return Ref<Material>::create(_Material{}, shader);
+    //}
 
     Ref<Material> Material::create()
     {
         return Ref<Material>::create(_Material{});
     }
 
+    bool Material::operator==(const Material& material)
+    {
+        return (this->shader == material.shader &&
+                this->albedoMap == material.albedoMap &&
+                this->specularMap == material.specularMap &&
+                this->normalMap == material.normalMap &&
+                this->emissionMap == material.emissionMap);
+    }
+
+    Ref<Material> Material::create(const std::string& filepath)
+    {
+        auto ret = internal::materialFromFile(filepath);
+        if (ret) ret->m_filepath = filepath;
+        return ret;
+    }
+
     template<>
     const Ref<Material>& internal::AssetCache<Material>::cache(const Ref<Material>& existing,
-                                                               const CacheAlias& alias,
+                                                               const CacheAlias&    alias,
                                                                bool overwrite)
     {
+        if (!existing) return existing;
+        
         Ref<Material> alreadyCached = nullptr;
 
         for (auto& kvp : m_cache)
         {
             if (kvp.second == existing ||
-                (kvp.second->getShader() == existing->getShader() &&
-                 kvp.second->getAlbedoMap() == existing->getAlbedoMap()))
+                (kvp.second->shader == existing->shader &&
+                 kvp.second->albedoMap == existing->albedoMap &&
+                 kvp.second->specularMap == existing->specularMap &&
+                 kvp.second->normalMap == existing->normalMap))
             {
                 alreadyCached = kvp.second;
             }
@@ -60,7 +72,7 @@ namespace oyl
         {
             if (!overwrite)
             {
-                OYL_LOG_ERROR("Material '{1}' is already cached!", alias);
+                OYL_LOG_WARN("Material '{1}' is already cached!", alias);
                 return it->second;
             }
 
@@ -73,20 +85,26 @@ namespace oyl
     }
 
     const Ref<Material>& Material::cache(const Ref<Material>& material, 
-                                         const CacheAlias& alias, 
-                                         bool overwrite)
+                                         const CacheAlias&    alias, 
+                                         bool                 overwrite)
     {
         return s_cache.cache(material, alias, overwrite);
     }
 
-    const Ref<Material>& Material::cache(const Ref<Shader>& shader, 
-                                         const Ref<Texture>& texture, 
-                                         const CacheAlias& alias, 
-                                         bool overwrite)
+    const Ref<Material>& Material::cache(const std::string&   filepath,
+                                         const CacheAlias&    alias,
+                                         bool                 overwrite)
     {
-        auto mat = Material::create(shader, texture);
-        return s_cache.cache(mat, alias, overwrite);
+        return s_cache.cache(filepath, alias, overwrite);
     }
+
+    //const Ref<Material>& Material::cache(const Ref<Shader>& shader,
+    //                                     const CacheAlias&  alias,
+    //                                     bool overwrite)
+    //{
+    //    Ref<Material> mat = Material::create(shader);
+    //    return s_cache.cache(mat, alias, overwrite);
+    //}
 
     void Material::discard(const CacheAlias& alias)
     {
@@ -96,6 +114,21 @@ namespace oyl
     const Ref<Material>& Material::get(const CacheAlias& alias)
     {
         return s_cache.get(alias);
+    }
+
+    bool Material::isCached(const Ref<Material>& existing)
+    {
+        return s_cache.isCached(existing);
+    }
+
+    bool Material::exists(const CacheAlias& alias)
+    {
+        return s_cache.exists(alias);
+    }
+
+    const CacheAlias& Material::getAlias(const Ref<Material>& existing)
+    {
+        return s_cache.getAlias(existing);
     }
 
     const Ref<Material>& internal::AssetCache<Material>::rename(const CacheAlias& currentAlias,
@@ -124,8 +157,7 @@ namespace oyl
             }
 
             // Warn the user if they are overiding a mesh of a different type
-            if (currIt->second->getShader() != newIt->second->getShader() ||
-                currIt->second->getAlbedoMap() != newIt->second->getAlbedoMap())
+            if (*currIt->second == *newIt->second)
             {
                 OYL_LOG_WARN("Material '{0}' was replaced by '{1}'.",
                              newIt->first, currIt->first, newAlias);
@@ -146,78 +178,99 @@ namespace oyl
 
     void Material::bind()
     {
-        if (m_shader)
-            m_shader->bind();
+        if (shader)
+            shader->bind();
 
-        if (m_albedo)
-            m_albedo->bind(0);
-        setUniform1i("u_material.albedo", 0);
+        auto bindTex = [this](const Ref<Texture2D>& tex, 
+                              const std::string&    alias, 
+                              const std::string&    inShaderName,
+                              int                   bindNum)
+        {
+            if (tex)
+                tex->bind(bindNum);
+            else if (!alias.empty())
+                Texture2D::get(alias)->bind(bindNum);
+            setUniform1i(inShaderName, bindNum);
+        };
 
-        if (m_specular)
-            m_specular->bind(1);
-        setUniform1i("u_material.specular", 1);
+        int bindNum = 0;
+        bindTex(albedoMap, WHITE_TEXTURE_ALIAS, "u_material.albedo", bindNum++);
+        bindTex(specularMap, BLACK_TEXTURE_ALIAS, "u_material.specular", bindNum++);
+        bindTex(normalMap, DEFAULT_NORMAL_TEXTURE_ALIAS, "u_material.normal", bindNum++);
+        bindTex(emissionMap, BLACK_TEXTURE_ALIAS, "u_material.emission", bindNum++);
 
-        //if (m_normal)
-        //    m_normal->bind(2);
-        //setUniform1i("u_material.normal", 2);
+        setUniform2f("u_material.offset", mainTextureProps.offset);
+        setUniform2f("u_material.tiling", mainTextureProps.tiling);
     }
 
     void Material::unbind()
     {
-        if (m_shader) 
-            m_shader->unbind();
+        if (shader) 
+            shader->unbind();
 
-        if (m_albedo)
-            m_albedo->unbind();
+        if (albedoMap)
+            albedoMap->unbind();
 
-        if (m_specular)
-            m_specular->unbind();
+        if (specularMap)
+            specularMap->unbind();
 
-        //if (m_normal)
-        //    m_normal->unbind();
+        if (normalMap)
+            normalMap->unbind();
+
+        if (emissionMap)
+            emissionMap->unbind();
     }
 
     void Material::applyUniforms()
     {
+        int currActive = 0;
         for (const auto& kvp : m_uniformMat4s)
-            m_shader->setUniformMat4(kvp.first, kvp.second);
+            shader->setUniformMat4(kvp.first, kvp.second);
         for (const auto& kvp : m_uniformMat3s)
-            m_shader->setUniformMat3(kvp.first, kvp.second);
+            shader->setUniformMat3(kvp.first, kvp.second);
         for (const auto& kvp : m_uniformVec4s)
-            m_shader->setUniform4f(kvp.first, kvp.second);
+            shader->setUniform4f(kvp.first, kvp.second);
         for (const auto& kvp : m_uniformVec3s)
-            m_shader->setUniform3f(kvp.first, kvp.second);
+            shader->setUniform3f(kvp.first, kvp.second);
         for (const auto& kvp : m_uniformVec2s)
-            m_shader->setUniform2f(kvp.first, kvp.second);
+            shader->setUniform2f(kvp.first, kvp.second);
         for (const auto& kvp : m_uniformFloats)
-            m_shader->setUniform1f(kvp.first, kvp.second);
+            shader->setUniform1f(kvp.first, kvp.second);
         for (const auto& kvp : m_uniformInts)
-            m_shader->setUniform1i(kvp.first, kvp.second);
+            shader->setUniform1i(kvp.first, kvp.second);
+
+        currActive += albedoMap   != nullptr ? 1 : 0;
+        currActive += specularMap != nullptr ? 1 : 0;
+        currActive += normalMap   != nullptr ? 1 : 0;
+        currActive += emissionMap != nullptr ? 1 : 0;
+
+        for (const auto& kvp : m_uniformTex1Ds)
+        {
+            kvp.second->bind(currActive);
+            shader->setUniform1i(kvp.first, currActive++);
+        }
+        for (const auto& kvp : m_uniformTex2Ds)
+        {
+            kvp.second->bind(currActive);
+            shader->setUniform1i(kvp.first, currActive++);
+        }
+        for (const auto& kvp : m_uniformTex3Ds) 
+        {
+            kvp.second->bind(currActive);
+            shader->setUniform1i(kvp.first, currActive++);
+        }
+        for (const auto& kvp : m_uniformTexCMs)
+        {
+            kvp.second->bind(currActive);
+            shader->setUniform1i(kvp.first, currActive++);
+        }
     }
 
-    void Material::loadTexture(const std::string& filename)
+    void Material::init()
     {
-        unloadTexture();
-        m_albedo = Texture2D::create(filename);
-    }
-
-    void Material::loadTexture(Ref<Texture> texture)
-    {
-        unloadTexture();
-        m_albedo = std::move(texture);
-    }
-
-    void Material::unloadTexture()
-    {
-        m_albedo.reset();
-    }
-
-    template<> [[deprecated]]
-    const Ref<Material>& internal::AssetCache<Material>::cache(const std::string& filePath,
-                                                               CacheAlias alias,
-                                                               bool overwrite)
-    {
-        OYL_ASSERT("How are you running this");
-        return nullptr;
+        auto mat = Material::create();
+        mat->shader = Shader::get(LIGHTING_SHADER_ALIAS);
+        mat->albedoMap = Texture2D::get(INVALID_ALIAS);
+        Material::cache(mat, INVALID_ALIAS);
     }
 }

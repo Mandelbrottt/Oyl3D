@@ -1,23 +1,37 @@
 #pragma once
 
+#include "Texture.h"
+
 namespace oyl
 {
-    static uint shaderDataTypeSize(OylEnum type)
+    enum class DataType
+    {
+        Bool,
+        Uint, Uint2, Uint3, Uint4,
+        Int, Int2, Int3, Int4,
+        Float, Float2, Float3, Float4,
+        Mat3, Mat4,
+    };
+    
+    static uint shaderDataTypeSize(DataType type)
     {
         switch (type)
         {
-            case UInt:   return 4;
-            case Int:    return 4;
-            case Int2:   return 4 * 2;
-            case Int3:   return 4 * 3;
-            case Int4:   return 4 * 4;
-            case Float:  return 4;
-            case Float2: return 4 * 2;
-            case Float3: return 4 * 3;
-            case Float4: return 4 * 4;
-            case Mat3:   return 4 * 3 * 3;
-            case Mat4:   return 4 * 4 * 4;
-            case Bool:   return 1;
+            case DataType::Bool:   return 1;
+            case DataType::Uint:
+            case DataType::Float:
+            case DataType::Int:    return 4;
+            case DataType::Uint2:
+            case DataType::Int2:   
+            case DataType::Float2: return 4 * 2;
+            case DataType::Uint3:
+            case DataType::Int3:   
+            case DataType::Float3: return 4 * 3;
+            case DataType::Uint4:
+            case DataType::Int4:   return 4 * 4;
+            case DataType::Float4: return 4 * 4;
+            case DataType::Mat3:   return 4 * 3 * 3;
+            case DataType::Mat4:   return 4 * 4 * 4;
         }
         OYL_ASSERT(false, "Unknown Type!");
         return 0;
@@ -27,36 +41,39 @@ namespace oyl
     {
         BufferElement() = default;
 
-        BufferElement(OylEnum type, const std::string& name, bool normalized = false)
-            : name(name), type(type), size(shaderDataTypeSize(type)), offset(0), normalized(normalized)
-        {
-        }
+        BufferElement(DataType type, std::string name, bool normalized = false)
+            : name(std::move(name)), type(type),
+              size(shaderDataTypeSize(type)),
+              offset(0), normalized(normalized) {}
 
         uint getElementCount() const
         {
             switch (type)
             {
-                case UInt:   return 1;
-                case Int:    return 1;
-                case Int2:   return 2;
-                case Int3:   return 3;
-                case Int4:   return 4;
-                case Float:  return 1;
-                case Float2: return 2;
-                case Float3: return 3;
-                case Float4: return 4;
-                case Mat3:   return 3 * 3;
-                case Mat4:   return 4 * 4;
-                case Bool:   return 1;
+                case DataType::Bool:   
+                case DataType::Uint:   
+                case DataType::Int:    
+                case DataType::Float:  return 1;
+                case DataType::Uint2: 
+                case DataType::Int2:
+                case DataType::Float2: return 2;
+                case DataType::Uint3: 
+                case DataType::Int3:   
+                case DataType::Float3: return 3;
+                case DataType::Uint4: 
+                case DataType::Int4:
+                case DataType::Float4: return 4;
+                case DataType::Mat3:   return 3 * 3;
+                case DataType::Mat4:   return 4 * 4;
             }
             OYL_ASSERT(false, "Unknown Type!");
             return 0;
         }
 
         std::string name;
-        OylEnum     type;
-        uint        size;
-        uint        offset;
+        DataType    type;
+        u32         size;
+        u32         offset;
         bool        normalized;
     };
 
@@ -65,10 +82,8 @@ namespace oyl
     class BufferLayout
     {
     public:
-        BufferLayout()
-        {
-        }
-
+        BufferLayout() = default;
+        
         BufferLayout(const std::initializer_list<BufferElement>& elements)
             : m_elements(elements)
         {
@@ -82,15 +97,16 @@ namespace oyl
             }
         }
 
-        inline uint getStride() const { return m_stride; }
+        uint getStride() const { return m_stride; }
         
-        inline const std::vector<BufferElement>& getElements() const { return m_elements; }
+        const std::vector<BufferElement>& getElements() const { return m_elements; }
 
         std::vector<BufferElement>::iterator begin() { return m_elements.begin(); }
         std::vector<BufferElement>::iterator end()   { return m_elements.end(); }
 
         std::vector<BufferElement>::const_iterator begin() const { return m_elements.begin(); }
         std::vector<BufferElement>::const_iterator end() const   { return m_elements.end(); }
+
     private:
         std::vector<BufferElement> m_elements;
         uint                       m_stride = 0;
@@ -110,7 +126,7 @@ namespace oyl
         virtual void unbind() const = 0;
 
         virtual BufferLayout getLayout() const = 0;
-        virtual void         setLayout(const BufferLayout& layout) = 0;
+        virtual void setLayout(const BufferLayout& layout) = 0;
 
         virtual bool isLoaded() const = 0;
 
@@ -150,6 +166,7 @@ namespace oyl
         virtual void bind() const = 0;
         virtual void unbind() const = 0;
 
+        // TODO: Add remove and reset functions for buffers
         virtual void addVertexBuffer(const Ref<VertexBuffer>& vbo) = 0;
         virtual void addIndexBuffer(const Ref<IndexBuffer>& ebo) = 0;
 
@@ -163,6 +180,13 @@ namespace oyl
 
 // FrameBuffer ////////////////////////////////////////////////////////////////////////////
 
+    enum class FrameBufferContext
+    {
+        ReadWrite,
+        Read,
+        Write
+    };
+
     class FrameBuffer
     {
     public:
@@ -171,24 +195,36 @@ namespace oyl
         virtual void load(uint numColorAttachments) = 0;
         virtual void unload() = 0;
 
-        virtual void bind() = 0;
-        virtual void unbind() = 0;
+        virtual void bind(FrameBufferContext a_context = FrameBufferContext::ReadWrite) = 0;
+        virtual void unbind(FrameBufferContext a_context = FrameBufferContext::ReadWrite) = 0;
+
+        virtual void bindDepthAttachment(uint slot = 0) = 0;
+        virtual void unbindDepthAttachment(uint slot = 0) = 0;
+
+        virtual void bindColorAttachment(uint index, uint slot = 0) = 0;
+        virtual void unbindColorAttachment(uint index, uint slot = 0) = 0;
 
         virtual void initDepthTexture(int width, int height) = 0;
-        virtual void initColorTexture(uint    index,
-                                      int     width, 
-                                      int     height,
-                                      OylEnum format,
-                                      OylEnum filter,
-                                      OylEnum wrap) = 0;
+        virtual void initColorTexture(uint index,
+                                      int  width, 
+                                      int  height,
+                                      TextureFormat format,
+                                      TextureFilter filter,
+                                      TextureWrap   wrap) = 0;
 
         virtual void updateViewport(int width, int height) = 0;
         virtual void clear() = 0;
 
-        virtual void moveToBackBuffer(int width, int height) = 0;
+        virtual void blit(const Ref<FrameBuffer>& other = nullptr) = 0;
 
         virtual uint getDepthHandle() const = 0;
         virtual uint getColorHandle(int index) const = 0;
+
+        virtual uint getDepthWidth() const = 0;
+        virtual uint getDepthHeight() const = 0;
+        
+        virtual uint getColorWidth(uint index = 0) const = 0;
+        virtual uint getColorHeight(uint index = 0) const = 0;
 
         virtual bool isLoaded() const = 0;
 

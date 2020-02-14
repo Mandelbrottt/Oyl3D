@@ -8,14 +8,14 @@ namespace oyl
 
 // VertexBuffer //////////////////////////////////////////////////////////////
 
-    OpenGLVertexBuffer::OpenGLVertexBuffer(float* vertices, uint size)
+    OpenGLVertexBuffer::OpenGLVertexBuffer(_OpenGLVertexBuffer, float* vertices, uint size)
     {
-        load(vertices, size);
+        OpenGLVertexBuffer::load(vertices, size);
     }
 
     OpenGLVertexBuffer::~OpenGLVertexBuffer()
     {
-        unload();
+        OpenGLVertexBuffer::unload();
     }
 
     void OpenGLVertexBuffer::load(float* vertices, uint size)
@@ -50,15 +50,15 @@ namespace oyl
 
 // IndexBuffer ///////////////////////////////////////////////////////////////
 
-    OpenGLIndexBuffer::OpenGLIndexBuffer(uint* indices, uint count)
+    OpenGLIndexBuffer::OpenGLIndexBuffer(_OpenGLIndexBuffer, uint* indices, uint count)
         : m_count(count)
     {
-        load(indices, count);
+        OpenGLIndexBuffer::load(indices, count);
     }
 
     OpenGLIndexBuffer::~OpenGLIndexBuffer()
     {
-        unload();
+        OpenGLIndexBuffer::unload();
     }
 
     void OpenGLIndexBuffer::load(uint* indices, uint count)
@@ -93,7 +93,7 @@ namespace oyl
 
 // Vertex Array //////////////////////////////////////////////////////////////
 
-    OpenGLVertexArray::OpenGLVertexArray()
+    OpenGLVertexArray::OpenGLVertexArray(_OpenGLVertexArray)
     {
         load();
     }
@@ -105,7 +105,7 @@ namespace oyl
 
     void OpenGLVertexArray::load()
     {
-        if (m_loaded) return;
+        if (m_loaded) unload();
         m_loaded = true;
 
         glGenVertexArrays(1, &m_rendererID);
@@ -117,6 +117,8 @@ namespace oyl
         m_loaded = false;
 
         glDeleteVertexArrays(1, &m_rendererID);
+        m_vertexBuffers.clear();
+        m_indexBuffer.reset();
     }
 
     void OpenGLVertexArray::bind() const
@@ -129,19 +131,23 @@ namespace oyl
         glBindVertexArray(GL_NONE);
     }
 
-    static GLenum ShaderDataTypeToGLType(OylEnum type);
+    static GLenum ShaderDataTypeToGLType(DataType type);
 
     void OpenGLVertexArray::addVertexBuffer(const Ref<VertexBuffer>& vbo)
     {
         OYL_ASSERT(!vbo->getLayout().getElements().empty(), "Layout is Empty!");
 
         glBindVertexArray(m_rendererID);
+
+        u32 index  = 0;
+
+        for (const auto& tVbo : m_vertexBuffers)
+            index += tVbo->getLayout().getElements().size();
+
         vbo->bind();
 
-        // Setup the vertex buffer's layout
-        uint        index  = 0;
         const auto& layout = vbo->getLayout();
-        for (const auto& element : vbo->getLayout())
+        for (const auto& element : layout)
         {
             glEnableVertexAttribArray(index);
             glVertexAttribPointer(index,
@@ -152,7 +158,7 @@ namespace oyl
                                   (const void*) element.offset);
             index++;
         }
-
+        
         m_vertexBuffers.push_back(vbo);
         glBindVertexArray(GL_NONE);
     }
@@ -166,22 +172,22 @@ namespace oyl
         glBindVertexArray(GL_NONE);
     }
 
-    static GLenum ShaderDataTypeToGLType(OylEnum type)
+    static GLenum ShaderDataTypeToGLType(DataType type)
     {
         switch (type)
         {
-            case UInt:   return GL_UNSIGNED_INT;
-            case Int:    return GL_INT;
-            case Int2:   return GL_INT;
-            case Int3:   return GL_INT;
-            case Int4:   return GL_INT;
-            case Float:  return GL_FLOAT;
-            case Float2: return GL_FLOAT;
-            case Float3: return GL_FLOAT;
-            case Float4: return GL_FLOAT;
-            case Mat3:   return GL_FLOAT;
-            case Mat4:   return GL_FLOAT;
-            case Bool:   return GL_BOOL;
+            case DataType::Uint:   return GL_UNSIGNED_INT;
+            case DataType::Int:    return GL_INT;
+            case DataType::Int2:   return GL_INT;
+            case DataType::Int3:   return GL_INT;
+            case DataType::Int4:   return GL_INT;
+            case DataType::Float:  return GL_FLOAT;
+            case DataType::Float2: return GL_FLOAT;
+            case DataType::Float3: return GL_FLOAT;
+            case DataType::Float4: return GL_FLOAT;
+            case DataType::Mat3:   return GL_FLOAT;
+            case DataType::Mat4:   return GL_FLOAT;
+            case DataType::Bool:   return GL_BOOL;
         }
         OYL_ASSERT(false, "Unknown Type!");
         return 0;
@@ -189,45 +195,46 @@ namespace oyl
 
 // Frame Buffer //////////////////////////////////////////////////////////////
 
-    static uint TextUniqueReformatToGLFormat(OylEnum format)
+    static uint TextUniqueReformatToGLFormat(TextureFormat format)
     {
         switch (format)
         {
-            case RGB8:  return GL_RGB8;
-            case RGBA8: return GL_RGBA8;
+            case TextureFormat::RGB8:  return GL_RGB8;
+            case TextureFormat::RGBA8: return GL_RGBA8;
         }
         return 0;
     }
 
-    static uint TextUniqueRefilterToGLFilter(OylEnum filter)
+    static uint TexturefilterToGLFilter(TextureFilter filter)
     {
         switch (filter)
         {
-            case Linear:  return GL_LINEAR;
-            case Nearest: return GL_NEAREST;
+            case TextureFilter::Linear:  return GL_LINEAR;
+            case TextureFilter::Nearest: return GL_NEAREST;
         }
         return 0;
     }
 
-    static uint TextureWrapToGLWrap(OylEnum wrap)
+    static uint TextureWrapToGLWrap(TextureWrap wrap)
     {
         switch (wrap)
         {
-            case Clamp:  return GL_CLAMP_TO_EDGE;
-            case Mirror: return GL_MIRRORED_REPEAT;
-            case Repeat: return GL_REPEAT;
+            case TextureWrap::Repeat:         return GL_REPEAT;
+            case TextureWrap::Mirror:         return GL_MIRRORED_REPEAT;
+            case TextureWrap::ClampToEdge:    return GL_CLAMP_TO_EDGE;
+            case TextureWrap::ClampToBorder:  return GL_CLAMP_TO_BORDER;
         }
         return 0;
     }
 
-    OpenGLFrameBuffer::OpenGLFrameBuffer(int numColorAttachments)
+    OpenGLFrameBuffer::OpenGLFrameBuffer(_OpenGLFrameBuffer, int numColorAttachments)
     {
-        load(numColorAttachments);
+        OpenGLFrameBuffer::load(numColorAttachments);
     }
 
     OpenGLFrameBuffer::~OpenGLFrameBuffer()
     {
-        unload();
+        OpenGLFrameBuffer::unload();
     }
 
     void OpenGLFrameBuffer::load(uint numColorAttachments)
@@ -244,6 +251,14 @@ namespace oyl
         }
 
         m_numColorAttachments = numColorAttachments;
+
+        if (numColorAttachments == 0)
+        {
+            glBindFramebuffer(GL_FRAMEBUFFER, m_rendererID);
+            glDrawBuffer(GL_NONE);
+            glReadBuffer(GL_NONE);
+            glBindFramebuffer(GL_FRAMEBUFFER, GL_NONE);
+        }
     }
 
     void OpenGLFrameBuffer::unload()
@@ -274,30 +289,77 @@ namespace oyl
         glDeleteFramebuffers(1, &m_rendererID);
     }
 
-    void OpenGLFrameBuffer::bind()
+    void OpenGLFrameBuffer::bind(FrameBufferContext a_context)
     {
-        glBindFramebuffer(GL_FRAMEBUFFER, m_rendererID);
+        GLenum context = GL_NONE;
+        switch (a_context)
+        {
+            case FrameBufferContext::ReadWrite: context = GL_FRAMEBUFFER; break;
+            case FrameBufferContext::Read: context = GL_READ_FRAMEBUFFER; break;
+            case FrameBufferContext::Write: context = GL_DRAW_FRAMEBUFFER; break;
+        }
+        glBindFramebuffer(context, m_rendererID);
         glDrawBuffers(m_numColorAttachments, m_bufs);
     }
 
-    void OpenGLFrameBuffer::unbind()
+    void OpenGLFrameBuffer::unbind(FrameBufferContext a_context)
     {
-        glBindFramebuffer(GL_FRAMEBUFFER, GL_NONE);
+        GLenum context = GL_NONE;
+        switch (a_context)
+        {
+            case FrameBufferContext::ReadWrite: context = GL_FRAMEBUFFER; break;
+            case FrameBufferContext::Read: context = GL_READ_FRAMEBUFFER; break;
+            case FrameBufferContext::Write: context = GL_DRAW_FRAMEBUFFER; break;
+        }
+        glBindFramebuffer(context, GL_NONE);
+    }
+
+    void OpenGLFrameBuffer::bindDepthAttachment(uint slot)
+    {
+        glBindFramebuffer(GL_READ_FRAMEBUFFER, m_rendererID);
+        glActiveTexture(GL_TEXTURE0 + slot);
+        glBindTexture(GL_TEXTURE_2D, m_depthAttachmentID);
+    }
+    
+    void OpenGLFrameBuffer::unbindDepthAttachment(uint slot)
+    {
+        glBindFramebuffer(GL_READ_FRAMEBUFFER, m_rendererID);
+        glActiveTexture(GL_TEXTURE0 + slot);
+        glBindTexture(GL_TEXTURE_2D, GL_NONE);
+    }
+
+    void OpenGLFrameBuffer::bindColorAttachment(uint index, uint slot)
+    {
+        glBindFramebuffer(GL_READ_FRAMEBUFFER, m_rendererID);
+        glActiveTexture(GL_TEXTURE0 + slot);
+        glBindTexture(GL_TEXTURE_2D, m_colorAttachmentIDs[index]);
+    }
+    
+    void OpenGLFrameBuffer::unbindColorAttachment(uint index, uint slot)
+    {
+        glBindFramebuffer(GL_READ_FRAMEBUFFER, m_rendererID);
+        glActiveTexture(GL_TEXTURE0 + slot);
+        glBindTexture(GL_TEXTURE_2D, GL_NONE);
     }
 
     void OpenGLFrameBuffer::initDepthTexture(int width, int height)
     {
+        m_depthWidth = width;
+        m_depthHeight = height;
+
         glBindFramebuffer(GL_FRAMEBUFFER, m_rendererID);
 	
         // Create depth texture
         glGenTextures(1, &m_depthAttachmentID);
         glBindTexture(GL_TEXTURE_2D, m_depthAttachmentID);
-        glTexStorage2D(GL_TEXTURE_2D, 1, GL_DEPTH_COMPONENT24, width, height);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, width, height, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
 
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+        float borderColor[] = { 1.0f, 1.0f, 1.0f, 1.0f };
+        glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
 
         // Bind texture to FBO
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, m_depthAttachmentID, 0);
@@ -305,18 +367,20 @@ namespace oyl
         glBindFramebuffer(GL_FRAMEBUFFER, GL_NONE);
     }
 
-    void OpenGLFrameBuffer::initColorTexture(uint    index,
-                                             int     width, 
-                                             int     height,
-                                             OylEnum format,
-                                             OylEnum filter,
-                                             OylEnum wrap)
+    void OpenGLFrameBuffer::initColorTexture(uint index,
+                                             int  width, 
+                                             int  height,
+                                             TextureFormat format,
+                                             TextureFilter filter,
+                                             TextureWrap   wrap)
     {
         OYL_ASSERT(index < m_numColorAttachments, "Invalid index!");
 
         m_formats[index] = format;
         m_filters[index] = filter;
         m_wraps[index]   = wrap;
+        m_colorWidths[index] = width;
+        m_colorHeights[index] = height;
 
         glBindFramebuffer(GL_FRAMEBUFFER, m_rendererID);
 
@@ -325,8 +389,8 @@ namespace oyl
         glBindTexture(GL_TEXTURE_2D, m_colorAttachmentIDs[index]);
         glTexStorage2D(GL_TEXTURE_2D, 1, TextUniqueReformatToGLFormat(format), width, height);
 
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, TextUniqueRefilterToGLFilter(filter));
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, TextUniqueRefilterToGLFilter(filter));
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, TexturefilterToGLFilter(filter));
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, TexturefilterToGLFilter(filter));
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, TextureWrapToGLWrap(wrap));
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, TextureWrapToGLWrap(wrap));
 
@@ -360,15 +424,27 @@ namespace oyl
 
         glBindFramebuffer(GL_FRAMEBUFFER, m_rendererID);
         glClear(temp);
-        glBindFramebuffer(GL_FRAMEBUFFER, GL_NONE);
     }
 
-    void OpenGLFrameBuffer::moveToBackBuffer(int width, int height)
+    void OpenGLFrameBuffer::blit(const Ref<FrameBuffer>& other)
     {
+        OpenGLFrameBuffer* otherPtr = reinterpret_cast<OpenGLFrameBuffer*>(other.get());
+        
         glBindFramebuffer(GL_READ_FRAMEBUFFER, m_rendererID);
-        glBindFramebuffer(GL_DRAW_FRAMEBUFFER, GL_NONE);
-
-        glBlitFramebuffer(0, 0, width, height, 0, 0, width, height, GL_COLOR_BUFFER_BIT, GL_NEAREST);
+        if (other)
+        {
+            glBindFramebuffer(GL_DRAW_FRAMEBUFFER, otherPtr->m_rendererID);
+            glBlitFramebuffer(0, 0, m_colorWidths[0], m_colorHeights[0], 
+                              0, 0, otherPtr->m_colorWidths[0], otherPtr->m_colorHeights[0],
+                              GL_COLOR_BUFFER_BIT, GL_NEAREST);
+        }
+        else
+        {
+            glBindFramebuffer(GL_DRAW_FRAMEBUFFER, GL_NONE);
+            glBlitFramebuffer(0, 0, m_colorWidths[0], m_colorHeights[0], 
+                              0, 0, m_colorWidths[0], m_colorHeights[0],
+                              GL_COLOR_BUFFER_BIT, GL_NEAREST);
+        }
 
         glBindFramebuffer(GL_FRAMEBUFFER, GL_NONE);
     }
@@ -377,8 +453,7 @@ namespace oyl
     {
         glBindFramebuffer(GL_FRAMEBUFFER, m_rendererID);
 
-        GLenum status;
-        status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
+        GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
         if (status != GL_FRAMEBUFFER_COMPLETE)
         {
             unload();
