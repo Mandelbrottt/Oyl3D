@@ -72,10 +72,7 @@ namespace oyl::internal
 
         static const auto& skybox = TextureCubeMap::get(DEFAULT_SKYBOX_ALIAS);
         static const auto& shader = Shader::get(SKYBOX_SHADER_ALIAS);
-        static const auto& model  = Model::get(CUBE_MODEL_ALIAS);
-
-        static auto skyboxMaterial = Material::create();
-        skyboxMaterial->shader = shader;
+        static const auto& mesh   = Model::get(CUBE_MODEL_ALIAS)->getMeshes()[0];
 
         Ref<Material> boundMaterial;
 
@@ -113,10 +110,6 @@ namespace oyl::internal
                 pc.aspect((float) width / (float) height);
             }
 
-            //if (m_intermediateFrameBuffer->getWidth() != width || 
-            //    m_intermediateFrameBuffer->getHeight() != height)
-            //    m_intermediateFrameBuffer->updateViewport(width, height);
-
             pc.m_forwardFrameBuffer->clear();
             pc.m_forwardFrameBuffer->bind();
 
@@ -128,12 +121,13 @@ namespace oyl::internal
             shader->bind();
             shader->setUniformMat4("u_viewProjection", viewProj);
 
+            //pc.skybox->bind(0);
             skybox->bind(0);
             shader->setUniform1i("u_skybox", 0);
 
             RenderCommand::setDepthDraw(false);
             RenderCommand::setBackfaceCulling(false);
-            Renderer::submit(model, skyboxMaterial);
+            RenderCommand::drawArrays(mesh.getVertexArray(), mesh.getNumVertices());
             RenderCommand::setBackfaceCulling(true);
             RenderCommand::setDepthDraw(true);
 

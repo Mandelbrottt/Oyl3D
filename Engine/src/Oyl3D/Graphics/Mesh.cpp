@@ -143,7 +143,7 @@ namespace oyl
 
     void Mesh::loadFromVertices(VertexData* a_vertices, uint a_numVertices)
     {
-        if (!a_vertices || a_numVertices)
+        if (!a_vertices || a_numVertices == 0)
             return;
         
         m_vbo = VertexBuffer::create(reinterpret_cast<float*>(a_vertices), a_numVertices * sizeof(VertexData));

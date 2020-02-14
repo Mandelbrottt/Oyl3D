@@ -203,10 +203,7 @@ namespace oyl::internal
 
         static const auto& skybox = TextureCubeMap::get(DEFAULT_SKYBOX_ALIAS);
         static const auto& shader = Shader::get(SKYBOX_SHADER_ALIAS);
-        static const auto& model   = Model::get(CUBE_MODEL_ALIAS);
-
-        static auto skyboxMaterial = Material::create();
-        skyboxMaterial->shader = shader;
+        static const auto& mesh   = Model::get(CUBE_MODEL_ALIAS)->getMeshes()[0];
 
         glm::mat4 viewProj = m_targetCamera->getProjectionMatrix();
         viewProj *= glm::mat4(glm::mat3(m_targetCamera->getViewMatrix()));
@@ -218,7 +215,7 @@ namespace oyl::internal
         
         RenderCommand::setDepthDraw(false);
         RenderCommand::setBackfaceCulling(false);
-        Renderer::submit(model, skyboxMaterial);
+        RenderCommand::drawArrays(mesh.getVertexArray(), mesh.getNumVertices());
         RenderCommand::setBackfaceCulling(true);
         RenderCommand::setDepthDraw(true);
 

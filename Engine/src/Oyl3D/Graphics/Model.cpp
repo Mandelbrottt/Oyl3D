@@ -21,6 +21,9 @@ namespace oyl
     
     void Model::loadFromFile(const std::string& filepath)
     {
+        if (!m_meshes.empty())
+            m_meshes.clear();
+
         auto flags = (aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_CalcTangentSpace);
 
         Assimp::Importer importer;
@@ -33,7 +36,13 @@ namespace oyl
             return;
         }
 
-        processNode(scene->mRootNode, scene);
+        if (scene->mRootNode->mNumMeshes > 0)
+            processNode(scene->mRootNode, scene);
+        else if (scene->mNumMeshes > 0)
+        {
+            for (uint i = 0; i < scene->mNumMeshes; i++)
+                m_meshes.push_back(processMesh(scene->mMeshes[i], scene));
+        }
     }
 
     //void Model::bind()
