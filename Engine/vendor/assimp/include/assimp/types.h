@@ -3,7 +3,7 @@
 Open Asset Import Library (assimp)
 ---------------------------------------------------------------------------
 
-Copyright (c) 2006-2019, assimp team
+Copyright (c) 2006-2018, assimp team
 
 
 
@@ -53,7 +53,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <stddef.h>
 #include <string.h>
 #include <limits.h>
-#include <stdint.h>
 
 // Our compile configuration
 #include "defs.h"
@@ -66,14 +65,10 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "matrix4x4.h"
 #include "quaternion.h"
 
-typedef int32_t ai_int32;
-typedef uint32_t ai_uint32 ;
-
 #ifdef __cplusplus
 #include <cstring>
 #include <new>      // for std::nothrow_t
 #include <string>   // for aiString::Set(const std::string&)
-
 
 namespace Assimp    {
     //! @cond never
@@ -124,9 +119,10 @@ extern "C" {
 // ----------------------------------------------------------------------------------
 /** Represents a plane in a three-dimensional, euclidean space
 */
-struct aiPlane {
+struct aiPlane
+{
 #ifdef __cplusplus
-    aiPlane () AI_NO_EXCEPT : a(0.f), b(0.f), c(0.f), d(0.f) {}
+    aiPlane () : a(0.f), b(0.f), c(0.f), d(0.f) {}
     aiPlane (ai_real _a, ai_real _b, ai_real _c, ai_real _d)
         : a(_a), b(_b), c(_c), d(_d) {}
 
@@ -141,9 +137,10 @@ struct aiPlane {
 // ----------------------------------------------------------------------------------
 /** Represents a ray
 */
-struct aiRay {
+struct aiRay
+{
 #ifdef __cplusplus
-    aiRay () AI_NO_EXCEPT {}
+    aiRay () {}
     aiRay (const aiVector3D& _pos, const aiVector3D& _dir)
         : pos(_pos), dir(_dir) {}
 
@@ -161,19 +158,12 @@ struct aiRay {
 struct aiColor3D
 {
 #ifdef __cplusplus
-    aiColor3D () AI_NO_EXCEPT : r(0.0f), g(0.0f), b(0.0f) {}
+    aiColor3D () : r(0.0f), g(0.0f), b(0.0f) {}
     aiColor3D (ai_real _r, ai_real _g, ai_real _b) : r(_r), g(_g), b(_b) {}
     explicit aiColor3D (ai_real _r) : r(_r), g(_r), b(_r) {}
     aiColor3D (const aiColor3D& o) : r(o.r), g(o.g), b(o.b) {}
 
-	aiColor3D &operator=(const aiColor3D &o) {
-		r = o.r;
-		g = o.g;
-		b = o.b;
-		return *this;
-	}
-
-	/** Component-wise comparison */
+    /** Component-wise comparison */
     // TODO: add epsilon?
     bool operator == (const aiColor3D& other) const
         {return r == other.r && g == other.g && b == other.b;}
@@ -263,8 +253,9 @@ struct aiString
 {
 #ifdef __cplusplus
     /** Default constructor, the string is set to have zero length */
-    aiString() AI_NO_EXCEPT
-    : length( 0 ) {
+    aiString() :
+        length(0)
+    {
         data[0] = '\0';
 
 #ifdef ASSIMP_BUILD_DEBUG
@@ -274,8 +265,8 @@ struct aiString
     }
 
     /** Copy constructor */
-    aiString(const aiString& rOther)
-    : length(rOther.length)
+    aiString(const aiString& rOther) :
+        length(rOther.length)
     {
         // Crop the string to the maximum length
         length = length>=MAXLEN?MAXLEN-1:length;
@@ -285,7 +276,7 @@ struct aiString
 
     /** Constructor from std::string */
     explicit aiString(const std::string& pString) :
-        length( (ai_uint32) pString.length())
+        length(pString.length())
     {
         length = length>=MAXLEN?MAXLEN-1:length;
         memcpy( data, pString.c_str(), length);
@@ -297,15 +288,15 @@ struct aiString
         if( pString.length() > MAXLEN - 1) {
             return;
         }
-        length = (ai_uint32)pString.length();
+        length = pString.length();
         memcpy( data, pString.c_str(), length);
         data[length] = 0;
     }
 
     /** Copy a const char* to the aiString */
     void Set( const char* sz) {
-        const ai_int32 len = (ai_uint32) ::strlen(sz);
-        if( len > (ai_int32)MAXLEN - 1) {
+        const size_t len = ::strlen(sz);
+        if( len > MAXLEN - 1) {
             return;
         }
         length = len;
@@ -314,7 +305,7 @@ struct aiString
     }
 
 
-    /** Assignment operator */
+    /** Assigment operator */
     aiString& operator = (const aiString &rOther) {
         if (this == &rOther) {
             return *this;
@@ -351,7 +342,7 @@ struct aiString
 
     /** Append a string to the string */
     void Append (const char* app)   {
-        const ai_uint32 len = (ai_uint32) ::strlen(app);
+        const size_t len = ::strlen(app);
         if (!len) {
             return;
         }
@@ -382,9 +373,9 @@ struct aiString
 #endif // !__cplusplus
 
     /** Binary length of the string excluding the terminal 0. This is NOT the
-     *  logical length of strings containing UTF-8 multi-byte sequences! It's
+     *  logical length of strings containing UTF-8 multibyte sequences! It's
      *  the number of bytes from the beginning of the string to its end.*/
-    ai_uint32 length;
+    size_t length;
 
     /** String buffer. Size limit is MAXLEN */
     char data[MAXLEN];
@@ -488,7 +479,7 @@ struct aiMemoryInfo
 #ifdef __cplusplus
 
     /** Default constructor */
-    aiMemoryInfo() AI_NO_EXCEPT
+    aiMemoryInfo()
         : textures   (0)
         , materials  (0)
         , meshes     (0)
