@@ -130,9 +130,9 @@ void GarbagePileSystem::decreaseGarbageLevel(entt::entity a_garbagePileEntity)
 			garbagePile.garbageTicks = 0;
 
 		garbagePile.isGlooped = false;
-	}
 
-	updateGarbagePileVisualSize(a_garbagePileEntity);
+		updateGarbagePileVisualSize(a_garbagePileEntity);
+	}
 }
 
 void GarbagePileSystem::updateGarbagePileVisualSize(entt::entity a_garbagePileEntity)
