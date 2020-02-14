@@ -244,4 +244,13 @@ void CannonballSystem::initFiringSplines()
 	redMiddleSpline.push_back({  0.34f,  4.13f, -1.65f });
 	redMiddleSpline.push_back({  0.89f,  0.2f,  -3.79f });
 	redMiddleSpline.push_back({  0.89f, -1.8f,  -3.79f });
+
+	redBackSpline.push_back({ 4.91f, -2.68f,  18.09f });
+	redBackSpline.push_back({ 6.34f,  4.5f,   11.98f });
+	redBackSpline.push_back({ 7.92f,  7.16f,  6.59f });
+	redBackSpline.push_back({ 9.57f,  8.09f,  3.06f });
+	redBackSpline.push_back({ 11.33f, 8.29f,  0.54f });
+	redBackSpline.push_back({ 12.87f, 7.02f, -1.53f });
+	redBackSpline.push_back({ 13.85f, 4.23f, -2.67f });
+	redBackSpline.push_back({ 13.85f, 2.33f, -2.67f });
 }
