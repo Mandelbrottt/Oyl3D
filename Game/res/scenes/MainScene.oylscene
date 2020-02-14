@@ -2437,32 +2437,6 @@
             }
         }
     },
-    "BlueBackSplines": {
-        "Parent": null,
-        "Transform": {
-            "Mirror": {
-                "X": false,
-                "Y": false,
-                "Z": false
-            },
-            "Position": {
-                "X": 0.0,
-                "Y": 0.0,
-                "Z": 0.0
-            },
-            "Rotation": {
-                "qW": 1.0,
-                "qX": 0.0,
-                "qY": 0.0,
-                "qZ": 0.0
-            },
-            "Scale": {
-                "X": 1.0,
-                "Y": 1.0,
-                "Z": 1.0
-            }
-        }
-    },
     "BlueCannon": {
         "Collidable": {
             "Shapes": [
@@ -3529,32 +3503,6 @@
             },
             "Mesh": null
         },
-        "Transform": {
-            "Mirror": {
-                "X": false,
-                "Y": false,
-                "Z": false
-            },
-            "Position": {
-                "X": 0.0,
-                "Y": 0.0,
-                "Z": 0.0
-            },
-            "Rotation": {
-                "qW": 1.0,
-                "qX": 0.0,
-                "qY": 0.0,
-                "qZ": 0.0
-            },
-            "Scale": {
-                "X": 1.0,
-                "Y": 1.0,
-                "Z": 1.0
-            }
-        }
-    },
-    "BlueMiddleSplines": {
-        "Parent": null,
         "Transform": {
             "Mirror": {
                 "X": false,
@@ -7974,201 +7922,6 @@
             }
         }
     },
-    "Entity 514": {
-        "Parent": {
-            "Name": "BlueMiddleSplines"
-        },
-        "Renderable": {
-            "CullingMask": 15,
-            "Enabled": true,
-            "Material": {
-                "Alias": "metal"
-            },
-            "Mesh": {
-                "Alias": "sphere",
-                "FilePath": "res\\assets\\models\\sphere.obj"
-            }
-        },
-        "Transform": {
-            "Mirror": {
-                "X": false,
-                "Y": false,
-                "Z": false
-            },
-            "Position": {
-                "X": -3.0299999713897705,
-                "Y": -2.680000066757202,
-                "Z": 2.3299999237060547
-            },
-            "Rotation": {
-                "qW": 1.0,
-                "qX": 0.0,
-                "qY": 0.0,
-                "qZ": 0.0
-            },
-            "Scale": {
-                "X": 0.5,
-                "Y": 0.5,
-                "Z": 0.5
-            }
-        }
-    },
-    "Entity 515": {
-        "Parent": {
-            "Name": "BlueMiddleSplines"
-        },
-        "Renderable": {
-            "CullingMask": 15,
-            "Enabled": true,
-            "Material": {
-                "Alias": "metal"
-            },
-            "Mesh": {
-                "Alias": "sphere",
-                "FilePath": "res\\assets\\models\\sphere.obj"
-            }
-        },
-        "Transform": {
-            "Mirror": {
-                "X": false,
-                "Y": false,
-                "Z": false
-            },
-            "Position": {
-                "X": -2.5768518447875977,
-                "Y": 3.2470507621765137,
-                "Z": 8.129100799560547
-            },
-            "Rotation": {
-                "qW": 1.0,
-                "qX": 0.0,
-                "qY": 0.0,
-                "qZ": 0.0
-            },
-            "Scale": {
-                "X": 0.5,
-                "Y": 0.5,
-                "Z": 0.5
-            }
-        }
-    },
-    "Entity 516": {
-        "Parent": {
-            "Name": "BlueMiddleSplines"
-        },
-        "Renderable": {
-            "CullingMask": 15,
-            "Enabled": true,
-            "Material": {
-                "Alias": "metal"
-            },
-            "Mesh": {
-                "Alias": "sphere",
-                "FilePath": "res\\assets\\models\\sphere.obj"
-            }
-        },
-        "Transform": {
-            "Mirror": {
-                "X": false,
-                "Y": false,
-                "Z": false
-            },
-            "Position": {
-                "X": -2.1034412384033203,
-                "Y": 5.743386745452881,
-                "Z": 12.29981517791748
-            },
-            "Rotation": {
-                "qW": 1.0,
-                "qX": 0.0,
-                "qY": 0.0,
-                "qZ": 0.0
-            },
-            "Scale": {
-                "X": 0.5,
-                "Y": 0.5,
-                "Z": 0.5
-            }
-        }
-    },
-    "Entity 517": {
-        "Parent": {
-            "Name": "BlueMiddleSplines"
-        },
-        "Renderable": {
-            "CullingMask": 15,
-            "Enabled": true,
-            "Material": {
-                "Alias": "metal"
-            },
-            "Mesh": {
-                "Alias": "sphere",
-                "FilePath": "res\\assets\\models\\sphere.obj"
-            }
-        },
-        "Transform": {
-            "Mirror": {
-                "X": false,
-                "Y": false,
-                "Z": false
-            },
-            "Position": {
-                "X": -1.3191672563552856,
-                "Y": 6.4065375328063965,
-                "Z": 16.186973571777344
-            },
-            "Rotation": {
-                "qW": 1.0,
-                "qX": 0.0,
-                "qY": 0.0,
-                "qZ": 0.0
-            },
-            "Scale": {
-                "X": 0.5,
-                "Y": 0.5,
-                "Z": 0.5
-            }
-        }
-    },
-    "Entity 518": {
-        "Parent": {
-            "Name": "BlueMiddleSplines"
-        },
-        "Renderable": {
-            "CullingMask": 15,
-            "Enabled": true,
-            "Material": {
-                "Alias": "metal"
-            },
-            "Mesh": {
-                "Alias": "sphere",
-                "FilePath": "res\\assets\\models\\sphere.obj"
-            }
-        },
-        "Transform": {
-            "Mirror": {
-                "X": false,
-                "Y": false,
-                "Z": false
-            },
-            "Position": {
-                "X": -0.5363199710845947,
-                "Y": 5.7714643478393555,
-                "Z": 19.455219268798828
-            },
-            "Rotation": {
-                "qW": 1.0,
-                "qX": 0.0,
-                "qY": 0.0,
-                "qZ": 0.0
-            },
-            "Scale": {
-                "X": 0.5,
-                "Y": 0.5,
-                "Z": 0.5
-            }
-        }
-    },
     "Entity 519": {
         "Parent": {
             "Name": "BlueFrontSplines"
@@ -8210,7 +7963,7 @@
     },
     "Entity 520": {
         "Parent": {
-            "Name": "BlueMiddleSplines"
+            "Name": "RedFrontSplines"
         },
         "Renderable": {
             "CullingMask": 15,
@@ -8230,87 +7983,9 @@
                 "Z": false
             },
             "Position": {
-                "X": 0.3402470350265503,
-                "Y": 4.132722854614258,
-                "Z": 21.92312240600586
-            },
-            "Rotation": {
-                "qW": 1.0,
-                "qX": 0.0,
-                "qY": 0.0,
-                "qZ": 0.0
-            },
-            "Scale": {
-                "X": 0.5,
-                "Y": 0.5,
-                "Z": 0.5
-            }
-        }
-    },
-    "Entity 521": {
-        "Parent": {
-            "Name": "BlueMiddleSplines"
-        },
-        "Renderable": {
-            "CullingMask": 15,
-            "Enabled": true,
-            "Material": {
-                "Alias": "metal"
-            },
-            "Mesh": {
-                "Alias": "sphere",
-                "FilePath": "res\\assets\\models\\sphere.obj"
-            }
-        },
-        "Transform": {
-            "Mirror": {
-                "X": false,
-                "Y": false,
-                "Z": false
-            },
-            "Position": {
-                "X": 1.0299999713897705,
-                "Y": 0.23000000417232513,
-                "Z": 23.90999984741211
-            },
-            "Rotation": {
-                "qW": 1.0,
-                "qX": 0.0,
-                "qY": 0.0,
-                "qZ": 0.0
-            },
-            "Scale": {
-                "X": 0.5,
-                "Y": 0.5,
-                "Z": 0.5
-            }
-        }
-    },
-    "Entity 522": {
-        "Parent": {
-            "Name": "BlueMiddleSplines"
-        },
-        "Renderable": {
-            "CullingMask": 15,
-            "Enabled": true,
-            "Material": {
-                "Alias": "metal"
-            },
-            "Mesh": {
-                "Alias": "sphere",
-                "FilePath": "res\\assets\\models\\sphere.obj"
-            }
-        },
-        "Transform": {
-            "Mirror": {
-                "X": false,
-                "Y": false,
-                "Z": false
-            },
-            "Position": {
-                "X": 1.0299999713897705,
-                "Y": -2.0,
-                "Z": 23.90999984741211
+                "X": -11.039999961853027,
+                "Y": -2.680000066757202,
+                "Z": 18.059999465942383
             },
             "Rotation": {
                 "qW": 1.0,
@@ -8600,7 +8275,7 @@
     },
     "Entity 530": {
         "Parent": {
-            "Name": "BlueBackSplines"
+            "Name": "RedFrontSplines"
         },
         "Renderable": {
             "CullingMask": 15,
@@ -8620,9 +8295,9 @@
                 "Z": false
             },
             "Position": {
-                "X": 4.998805999755859,
-                "Y": -2.680000066757202,
-                "Z": 2.3299999237060547
+                "X": -11.45110034942627,
+                "Y": 3.2470507621765137,
+                "Z": 12.260000228881836
             },
             "Rotation": {
                 "qW": 1.0,
@@ -8639,7 +8314,7 @@
     },
     "Entity 531": {
         "Parent": {
-            "Name": "BlueBackSplines"
+            "Name": "RedFrontSplines"
         },
         "Renderable": {
             "CullingMask": 15,
@@ -8659,9 +8334,9 @@
                 "Z": false
             },
             "Position": {
-                "X": 6.340631484985352,
-                "Y": 4.5032854080200195,
-                "Z": 8.441169738769531
+                "X": -12.062474250793457,
+                "Y": 5.951125144958496,
+                "Z": 7.360000133514404
             },
             "Rotation": {
                 "qW": 1.0,
@@ -8678,7 +8353,7 @@
     },
     "Entity 532": {
         "Parent": {
-            "Name": "BlueBackSplines"
+            "Name": "RedFrontSplines"
         },
         "Renderable": {
             "CullingMask": 15,
@@ -8698,9 +8373,9 @@
                 "Z": false
             },
             "Position": {
-                "X": 7.919951915740967,
-                "Y": 7.157800674438477,
-                "Z": 13.775690078735352
+                "X": -13.033040046691895,
+                "Y": 6.4065375328063965,
+                "Z": 4.239999771118164
             },
             "Rotation": {
                 "qW": 1.0,
@@ -8717,7 +8392,7 @@
     },
     "Entity 533": {
         "Parent": {
-            "Name": "BlueBackSplines"
+            "Name": "RedFrontSplines"
         },
         "Renderable": {
             "CullingMask": 15,
@@ -8737,9 +8412,9 @@
                 "Z": false
             },
             "Position": {
-                "X": 9.570918083190918,
-                "Y": 8.087153434753418,
-                "Z": 17.334291458129883
+                "X": -14.080755233764648,
+                "Y": 5.7714643478393555,
+                "Z": 1.1811338663101196
             },
             "Rotation": {
                 "qW": 1.0,
@@ -8756,7 +8431,7 @@
     },
     "Entity 534": {
         "Parent": {
-            "Name": "BlueBackSplines"
+            "Name": "RedFrontSplines"
         },
         "Renderable": {
             "CullingMask": 15,
@@ -8776,9 +8451,9 @@
                 "Z": false
             },
             "Position": {
-                "X": 11.330731391906738,
-                "Y": 8.292243957519531,
-                "Z": 19.82862663269043
+                "X": -15.359999656677246,
+                "Y": 4.132722854614258,
+                "Z": -0.8823471069335938
             },
             "Rotation": {
                 "qW": 1.0,
@@ -8795,7 +8470,7 @@
     },
     "Entity 535": {
         "Parent": {
-            "Name": "BlueBackSplines"
+            "Name": "RedFrontSplines"
         },
         "Renderable": {
             "CullingMask": 15,
@@ -8815,9 +8490,9 @@
                 "Z": false
             },
             "Position": {
-                "X": 12.874491691589355,
-                "Y": 7.019375801086426,
-                "Z": 21.92312240600586
+                "X": -17.440000534057617,
+                "Y": 0.23000000417232513,
+                "Z": -2.5905988216400146
             },
             "Rotation": {
                 "qW": 1.0,
@@ -8834,7 +8509,7 @@
     },
     "Entity 536": {
         "Parent": {
-            "Name": "BlueBackSplines"
+            "Name": "RedFrontSplines"
         },
         "Renderable": {
             "CullingMask": 15,
@@ -8854,360 +8529,9 @@
                 "Z": false
             },
             "Position": {
-                "X": 13.846824645996094,
-                "Y": 4.33086633682251,
-                "Z": 22.9907283782959
-            },
-            "Rotation": {
-                "qW": 1.0,
-                "qX": 0.0,
-                "qY": 0.0,
-                "qZ": 0.0
-            },
-            "Scale": {
-                "X": 0.5,
-                "Y": 0.5,
-                "Z": 0.5
-            }
-        }
-    },
-    "Entity 537": {
-        "Parent": {
-            "Name": "BlueBackSplines"
-        },
-        "Renderable": {
-            "CullingMask": 15,
-            "Enabled": true,
-            "Material": {
-                "Alias": "metal"
-            },
-            "Mesh": {
-                "Alias": "sphere",
-                "FilePath": "res\\assets\\models\\sphere.obj"
-            }
-        },
-        "Transform": {
-            "Mirror": {
-                "X": false,
-                "Y": false,
-                "Z": false
-            },
-            "Position": {
-                "X": 13.850000381469727,
-                "Y": 2.3299999237060547,
-                "Z": 22.989999771118164
-            },
-            "Rotation": {
-                "qW": 1.0,
-                "qX": 0.0,
-                "qY": 0.0,
-                "qZ": 0.0
-            },
-            "Scale": {
-                "X": 0.5,
-                "Y": 0.5,
-                "Z": 0.5
-            }
-        }
-    },
-    "Entity 538": {
-        "Parent": {
-            "Name": "RedMiddleSplines"
-        },
-        "Renderable": {
-            "CullingMask": 15,
-            "Enabled": true,
-            "Material": {
-                "Alias": "metal"
-            },
-            "Mesh": {
-                "Alias": "sphere",
-                "FilePath": "res\\assets\\models\\sphere.obj"
-            }
-        },
-        "Transform": {
-            "Mirror": {
-                "X": false,
-                "Y": false,
-                "Z": false
-            },
-            "Position": {
-                "X": -3.0299999713897705,
-                "Y": -2.679999828338623,
-                "Z": 18.089759826660156
-            },
-            "Rotation": {
-                "qW": 1.0,
-                "qX": 0.0,
-                "qY": 0.0,
-                "qZ": 0.0
-            },
-            "Scale": {
-                "X": 0.5,
-                "Y": 0.5,
-                "Z": 0.5
-            }
-        }
-    },
-    "Entity 539": {
-        "Parent": {
-            "Name": "RedMiddleSplines"
-        },
-        "Renderable": {
-            "CullingMask": 15,
-            "Enabled": true,
-            "Material": {
-                "Alias": "metal"
-            },
-            "Mesh": {
-                "Alias": "sphere",
-                "FilePath": "res\\assets\\models\\sphere.obj"
-            }
-        },
-        "Transform": {
-            "Mirror": {
-                "X": false,
-                "Y": false,
-                "Z": false
-            },
-            "Position": {
-                "X": -2.5768518447875977,
-                "Y": 3.2470507621765137,
-                "Z": 12.289999961853027
-            },
-            "Rotation": {
-                "qW": 1.0,
-                "qX": 0.0,
-                "qY": 0.0,
-                "qZ": 0.0
-            },
-            "Scale": {
-                "X": 0.5,
-                "Y": 0.5,
-                "Z": 0.5
-            }
-        }
-    },
-    "Entity 540": {
-        "Parent": {
-            "Name": "RedMiddleSplines"
-        },
-        "Renderable": {
-            "CullingMask": 15,
-            "Enabled": true,
-            "Material": {
-                "Alias": "metal"
-            },
-            "Mesh": {
-                "Alias": "sphere",
-                "FilePath": "res\\assets\\models\\sphere.obj"
-            }
-        },
-        "Transform": {
-            "Mirror": {
-                "X": false,
-                "Y": false,
-                "Z": false
-            },
-            "Position": {
-                "X": -2.1034412384033203,
-                "Y": 5.743386745452881,
-                "Z": 8.119999885559082
-            },
-            "Rotation": {
-                "qW": 1.0,
-                "qX": 0.0,
-                "qY": 0.0,
-                "qZ": 0.0
-            },
-            "Scale": {
-                "X": 0.5,
-                "Y": 0.5,
-                "Z": 0.5
-            }
-        }
-    },
-    "Entity 541": {
-        "Parent": {
-            "Name": "RedMiddleSplines"
-        },
-        "Renderable": {
-            "CullingMask": 15,
-            "Enabled": true,
-            "Material": {
-                "Alias": "metal"
-            },
-            "Mesh": {
-                "Alias": "sphere",
-                "FilePath": "res\\assets\\models\\sphere.obj"
-            }
-        },
-        "Transform": {
-            "Mirror": {
-                "X": false,
-                "Y": false,
-                "Z": false
-            },
-            "Position": {
-                "X": -1.3191672563552856,
-                "Y": 6.4065375328063965,
-                "Z": 4.0744171142578125
-            },
-            "Rotation": {
-                "qW": 1.0,
-                "qX": 0.0,
-                "qY": 0.0,
-                "qZ": 0.0
-            },
-            "Scale": {
-                "X": 0.5,
-                "Y": 0.5,
-                "Z": 0.5
-            }
-        }
-    },
-    "Entity 542": {
-        "Parent": {
-            "Name": "RedMiddleSplines"
-        },
-        "Renderable": {
-            "CullingMask": 15,
-            "Enabled": true,
-            "Material": {
-                "Alias": "metal"
-            },
-            "Mesh": {
-                "Alias": "sphere",
-                "FilePath": "res\\assets\\models\\sphere.obj"
-            }
-        },
-        "Transform": {
-            "Mirror": {
-                "X": false,
-                "Y": false,
-                "Z": false
-            },
-            "Position": {
-                "X": -0.5363199710845947,
-                "Y": 5.7714643478393555,
-                "Z": 0.8124550580978394
-            },
-            "Rotation": {
-                "qW": 1.0,
-                "qX": 0.0,
-                "qY": 0.0,
-                "qZ": 0.0
-            },
-            "Scale": {
-                "X": 0.5,
-                "Y": 0.5,
-                "Z": 0.5
-            }
-        }
-    },
-    "Entity 543": {
-        "Parent": {
-            "Name": "RedMiddleSplines"
-        },
-        "Renderable": {
-            "CullingMask": 15,
-            "Enabled": true,
-            "Material": {
-                "Alias": "metal"
-            },
-            "Mesh": {
-                "Alias": "sphere",
-                "FilePath": "res\\assets\\models\\sphere.obj"
-            }
-        },
-        "Transform": {
-            "Mirror": {
-                "X": false,
-                "Y": false,
-                "Z": false
-            },
-            "Position": {
-                "X": 0.3402470350265503,
-                "Y": 4.132722854614258,
-                "Z": -1.6464439630508423
-            },
-            "Rotation": {
-                "qW": 1.0,
-                "qX": 0.0,
-                "qY": 0.0,
-                "qZ": 0.0
-            },
-            "Scale": {
-                "X": 0.5,
-                "Y": 0.5,
-                "Z": 0.5
-            }
-        }
-    },
-    "Entity 544": {
-        "Parent": {
-            "Name": "RedMiddleSplines"
-        },
-        "Renderable": {
-            "CullingMask": 15,
-            "Enabled": true,
-            "Material": {
-                "Alias": "metal"
-            },
-            "Mesh": {
-                "Alias": "sphere",
-                "FilePath": "res\\assets\\models\\sphere.obj"
-            }
-        },
-        "Transform": {
-            "Mirror": {
-                "X": false,
-                "Y": false,
-                "Z": false
-            },
-            "Position": {
-                "X": 0.8864356279373169,
-                "Y": 0.19617265462875366,
-                "Z": -3.789475440979004
-            },
-            "Rotation": {
-                "qW": 1.0,
-                "qX": 0.0,
-                "qY": 0.0,
-                "qZ": 0.0
-            },
-            "Scale": {
-                "X": 0.5,
-                "Y": 0.5,
-                "Z": 0.5
-            }
-        }
-    },
-    "Entity 545": {
-        "Parent": {
-            "Name": "RedMiddleSplines"
-        },
-        "Renderable": {
-            "CullingMask": 15,
-            "Enabled": true,
-            "Material": {
-                "Alias": "metal"
-            },
-            "Mesh": {
-                "Alias": "sphere",
-                "FilePath": "res\\assets\\models\\sphere.obj"
-            }
-        },
-        "Transform": {
-            "Mirror": {
-                "X": false,
-                "Y": false,
-                "Z": false
-            },
-            "Position": {
-                "X": 0.8899999856948853,
-                "Y": -1.7999999523162842,
-                "Z": -3.7899999618530273
+                "X": -17.440000534057617,
+                "Y": -2.0,
+                "Z": -2.5899999141693115
             },
             "Rotation": {
                 "qW": 1.0,
@@ -18070,6 +17394,32 @@
             }
         }
     },
+    "RedFrontSplines": {
+        "Parent": null,
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": 0.0,
+                "Y": 0.0,
+                "Z": 0.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
     "RedGarbagePile0": {
         "Collidable": {
             "Shapes": [
@@ -18497,32 +17847,6 @@
             },
             "Mesh": null
         },
-        "Transform": {
-            "Mirror": {
-                "X": false,
-                "Y": false,
-                "Z": false
-            },
-            "Position": {
-                "X": 0.0,
-                "Y": 0.0,
-                "Z": 0.0
-            },
-            "Rotation": {
-                "qW": 1.0,
-                "qX": 0.0,
-                "qY": 0.0,
-                "qZ": 0.0
-            },
-            "Scale": {
-                "X": 1.0,
-                "Y": 1.0,
-                "Z": 1.0
-            }
-        }
-    },
-    "RedMiddleSplines": {
-        "Parent": null,
         "Transform": {
             "Mirror": {
                 "X": false,
