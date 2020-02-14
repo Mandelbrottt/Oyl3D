@@ -1,9 +1,10 @@
 #include "oylpch.h"
 #include "Renderer.h"
 
+#include "Graphics/Buffer.h"
 #include "Graphics/Material.h"
+#include "Graphics/Model.h"
 #include "Graphics/Shader.h"
-#include "Graphics/Texture.h"
 
 namespace oyl
 {
@@ -14,8 +15,6 @@ namespace oyl
     // TEMPORARY:
     void Renderer::submit(const Ref<Material>& material, const Ref<VertexArray>& vao, u32 count, glm::mat4 transform)
     {
-        vao->bind();
-
         material->bind();
         
         // TEMPORARY:
@@ -26,8 +25,6 @@ namespace oyl
     
     void Renderer::submit(const Ref<Shader>& shader, const Ref<VertexArray>& vao, glm::mat4 transform)
     {
-        vao->bind();
-        
         shader->bind();
 
         shader->setUniformMat4("u_model", transform);
@@ -35,27 +32,27 @@ namespace oyl
         RenderCommand::drawIndexed(vao);
     }
 
-    void Renderer::submit(const Ref<Mesh>& mesh, const Ref<Material>& material, glm::mat4 transform)
+    void Renderer::submit(const Ref<Model>& model, const Ref<Material>& material, glm::mat4 transform)
     {
-        mesh->bind();
-
         material->bind();
         
-        // TEMPORARY:
         material->shader->setUniformMat4("u_model", transform);
 
-        RenderCommand::drawMesh(mesh);
+        for (const auto& mesh : model->getMeshes())
+        {
+            RenderCommand::drawArrays(mesh.getVertexArray(), mesh.getNumVertices());
+        }
     }
 
-    void Renderer::submit(const Ref<Mesh>& mesh, const Ref<Shader>& shader, const Ref<TextureCubeMap>& cubemap)
-    {
-        mesh->bind();
+    //void Renderer::submit(const Ref<Mesh>& mesh, const Ref<Shader>& shader, const Ref<TextureCubeMap>& cubemap)
+    //{
+    //    mesh->bind();
 
-        shader->bind();
+    //    shader->bind();
 
-        cubemap->bind(0);
-        shader->setUniform1i("u_skybox", 0);
+    //    cubemap->bind(0);
+    //    shader->setUniform1i("u_skybox", 0);
 
-        RenderCommand::drawMesh(mesh);
-    }
+    //    RenderCommand::drawModel(mesh);
+    //}
 }

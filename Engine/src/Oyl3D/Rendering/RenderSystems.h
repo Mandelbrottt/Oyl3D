@@ -1,6 +1,8 @@
 #pragma once
 
 #include "Scenes/System.h"
+#include "Graphics/Material.h"
+#include "Utils/Logging.h"
 
 namespace oyl
 {

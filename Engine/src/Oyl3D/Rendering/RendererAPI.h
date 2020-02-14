@@ -1,10 +1,10 @@
 #pragma once
 
-#include "Oyl3D/Graphics/Buffer.h"
-#include "Oyl3D/Graphics/Mesh.h"
-
 namespace oyl
 {
+    class VertexArray;
+    class Mesh;
+    
     class RendererAPI
     {
     public:
@@ -28,7 +28,6 @@ namespace oyl
 
         virtual void drawArrays(const Ref<VertexArray>& vao, u32 count) = 0;
         virtual void drawIndexed(const Ref<VertexArray>& vao) = 0;
-        virtual void drawMesh(const Ref<Mesh>& mesh) = 0;
 
         static API getAPI() { return s_API; }
 

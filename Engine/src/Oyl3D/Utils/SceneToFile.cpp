@@ -10,7 +10,7 @@
 #include "Components/Transform.h"
 
 #include "Graphics/Material.h"
-#include "Graphics/Mesh.h"
+#include "Graphics/Model.h"
 #include "Graphics/Shader.h"
 #include "Graphics/Texture.h"
 
@@ -224,10 +224,10 @@ namespace oyl::internal
         j["CullingMask"] = re.cullingMask;
         
         auto& jMesh = j["Mesh"];
-        if (re.mesh)
+        if (re.model)
         {
-            jMesh["FilePath"] = re.mesh->getFilePath();
-            const auto& alias = Mesh::getAlias(re.mesh);
+            jMesh["FilePath"] = re.model->getFilePath();
+            const auto& alias = Model::getAlias(re.model);
             auto& jAlias = jMesh["Alias"];
             if (alias != INVALID_ALIAS)
                 jAlias = alias;
@@ -537,8 +537,8 @@ namespace oyl::internal
             bool doLoad = false;
             if (auto alIt = it->find("Alias"); alIt != it->end() && alIt->is_string())
             {
-                if (Mesh::exists(alIt->get<std::string>()))
-                    re.mesh = Mesh::get(alIt->get<std::string>());
+                if (Model::exists(alIt->get<std::string>()))
+                    re.model = Model::get(alIt->get<std::string>());
                 else
                     doLoad = true;
             } else doLoad = true;
@@ -548,17 +548,17 @@ namespace oyl::internal
                 auto filePath = fpIt->get<std::string>();
 
                 bool meshFound = false;
-                for (const auto& [alias, mesh] : Mesh::getCache())
+                for (const auto& [alias, mesh] : Model::getCache())
                 {
                     if (mesh->getFilePath() == filePath)
-                        meshFound = true, re.mesh = mesh;
+                        meshFound = true, re.model = mesh;
                 }
 
-                if (!meshFound && (!re.mesh || re.mesh && re.mesh->getFilePath() != filePath))
-                    re.mesh = Mesh::cache(filePath);
+                if (!meshFound && (!re.model || re.model && re.model->getFilePath() != filePath))
+                    re.model = Model::cache(filePath);
             }
         }
-        else re.mesh = nullptr;
+        else re.model = nullptr;
 
         if (j.find("Material") != j.end())
         {
@@ -1021,16 +1021,20 @@ namespace oyl::internal
                         info.filename = sIt->at("FilePath").get<std::string>();
 
                         infos.push_back(std::move(info));
+                        return true;
                     }
+                    return false;
                 };
 
-                pushBackFn("Vertex",         Shader::Type::Vertex);
-                pushBackFn("Geometry",       Shader::Type::Geometry);
-                pushBackFn("TessControl",    Shader::Type::TessControl);
-                pushBackFn("TessEvaluation", Shader::Type::TessEvaluation);
-                pushBackFn("Pixel",          Shader::Type::Fragment);
+                bool hasMultiple = false;
+                
+                hasMultiple |= pushBackFn("Vertex",         Shader::Type::Vertex);
+                hasMultiple |= pushBackFn("Geometry",       Shader::Type::Geometry);
+                hasMultiple |= pushBackFn("TessControl",    Shader::Type::TessControl);
+                hasMultiple |= pushBackFn("TessEvaluation", Shader::Type::TessEvaluation);
+                hasMultiple |= pushBackFn("Pixel",          Shader::Type::Fragment);
 
-                if (!alias.empty())
+                if (!alias.empty() || !hasMultiple)
                     material->shader = Shader::cache(infos, alias, true);
                 else
                     material->shader = Shader::create(infos);
@@ -1132,6 +1136,12 @@ namespace oyl::internal
             {
                 switch (info.type)
                 {
+                    case Shader::Type::Compound:
+                    {
+                        jShader["guid"];
+                        jShader["FilePath"] = info.filename;
+                        break;
+                    }
                     case Shader::Type::Vertex:
                     {
                         json& jVert = jShader["Vertex"];

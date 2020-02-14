@@ -13,7 +13,7 @@
 
 #include "Graphics/Buffer.h"
 #include "Graphics/Material.h"
-#include "Graphics/Mesh.h"
+#include "Graphics/Model.h"
 #include "Graphics/Shader.h"
 #include "Graphics/Texture.h"
 
@@ -23,7 +23,7 @@ namespace oyl::internal
 {
     static bool isRenderableValid(const component::Renderable& r)
     {
-        return r.enabled && r.mesh && r.material && r.material->shader && r.material->albedoMap;
+        return r.enabled && r.model && r.material && r.material->shader && r.material->albedoMap;
     }
 
     // vvv Pre Render System vvv //
@@ -56,6 +56,7 @@ namespace oyl::internal
     void RenderSystem::onEnter()
     {
         listenForEventType(EventType::WindowResized);
+
     }
 
     void RenderSystem::onExit() { }
@@ -69,9 +70,9 @@ namespace oyl::internal
         using component::DirectionalLight;
         using component::SpotLight;
 
-        const auto& skybox = TextureCubeMap::get(DEFAULT_SKYBOX_ALIAS);
-        const auto& shader = Shader::get(SKYBOX_SHADER_ALIAS);
-        const auto& mesh   = Mesh::get(CUBE_MESH_ALIAS);
+        static const auto& skybox = TextureCubeMap::get(DEFAULT_SKYBOX_ALIAS);
+        static const auto& shader = Shader::get(SKYBOX_SHADER_ALIAS);
+        static const auto& mesh   = Model::get(CUBE_MODEL_ALIAS)->getMeshes()[0];
 
         Ref<Material> boundMaterial;
 
@@ -109,10 +110,6 @@ namespace oyl::internal
                 pc.aspect((float) width / (float) height);
             }
 
-            //if (m_intermediateFrameBuffer->getWidth() != width || 
-            //    m_intermediateFrameBuffer->getHeight() != height)
-            //    m_intermediateFrameBuffer->updateViewport(width, height);
-
             pc.m_forwardFrameBuffer->clear();
             pc.m_forwardFrameBuffer->bind();
 
@@ -124,9 +121,13 @@ namespace oyl::internal
             shader->bind();
             shader->setUniformMat4("u_viewProjection", viewProj);
 
+            //pc.skybox->bind(0);
+            skybox->bind(0);
+            shader->setUniform1i("u_skybox", 0);
+
             RenderCommand::setDepthDraw(false);
             RenderCommand::setBackfaceCulling(false);
-            Renderer::submit(mesh, shader, skybox);
+            RenderCommand::drawArrays(mesh.getVertexArray(), mesh.getNumVertices());
             RenderCommand::setBackfaceCulling(true);
             RenderCommand::setDepthDraw(true);
 
@@ -240,12 +241,12 @@ namespace oyl::internal
                         boundMaterial->shader->setUniform1f("lerpT_curr", glm::mod(anim.m_currentElapsed, 1.0f));
                         boundMaterial->shader->setUniform1f("lerpT_trans", glm::mod(anim.m_transitionElapsed, 1.0f));
 
-                        Renderer::submit(boundMaterial, anim.m_vao, mr.mesh->getNumVertices(), transform);
+                        //Renderer::submit(boundMaterial, anim.m_vao, mr.mesh->getNumVertices(), transform);
                     }
                 }
                 else
                 {
-                    Renderer::submit(mr.mesh, boundMaterial, transform);
+                    Renderer::submit(mr.model, boundMaterial, transform);
                 }
             }
         }
@@ -497,7 +498,8 @@ namespace oyl::internal
                     if (!renderable.castShadows || !isRenderableValid(renderable)) return;
 
                     m_shader->setUniformMat4(4, transform.getMatrixGlobal());
-                    RenderCommand::drawArrays(renderable.mesh->getVertexArray(), renderable.mesh->getNumVertices());
+                    for (const auto& mesh : renderable.model->getMeshes())
+                        RenderCommand::drawArrays(mesh.getVertexArray(), mesh.getNumVertices());
                 });
 
                 count++;
