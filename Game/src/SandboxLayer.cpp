@@ -1124,9 +1124,9 @@ void SandboxLayer::onEnter()
 			respawnable.spawnPosition = glm::vec3(-7.04f, 0.2f, 10.14f);
 			respawnable.spawnRotation = glm::vec3(0.0f, 0.0f, 0.0f);
 
-			auto& rb = registry->assign<component::RigidBody>(bottleEntity);
+			auto& throwableBottle = registry->assign<ThrowableBottle>(bottleEntity);
 
-			registry->assign<Gloop>(bottleEntity);
+			auto& rb = registry->assign<component::RigidBody>(bottleEntity);
 
 			mr.mesh = Mesh::get("Gloop");
 			registry->assign<component::Renderable>(bottleEntity, mr);

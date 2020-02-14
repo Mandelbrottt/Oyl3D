@@ -239,6 +239,22 @@ void PlayerInteractionValidationSystem::validateCarryableItemInteraction(entt::e
 				}
 				break;
 			}
+			case CarryableItemType::throwableBottle:
+			{
+				if (!registry->valid(player.primaryCarriedItem))
+				{
+					player.interactableEntity = a_carryableItemEntity;
+
+					PlayerInteractResultEvent playerInteractResult;
+					playerInteractResult.interactionType = PlayerInteractionResult::pickUpThrowableBottle;
+					playerInteractResult.playerNum       = player.playerNum;
+					postEvent(playerInteractResult);
+
+					return;
+				}
+
+				break;
+			}
 		}
 	}
 

@@ -49,6 +49,7 @@ enum class PlayerInteractionResult
 	pickUpMop,
 	pickUpCleaningSolution,
 	pickUpGloop,
+	pickUpThrowableBottle,
 	useGloop,
 	cleanGarbagePile,
 	activateCleaningQuicktimeEvent
