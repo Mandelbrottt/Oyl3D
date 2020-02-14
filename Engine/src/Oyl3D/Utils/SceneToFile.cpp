@@ -1021,16 +1021,20 @@ namespace oyl::internal
                         info.filename = sIt->at("FilePath").get<std::string>();
 
                         infos.push_back(std::move(info));
+                        return true;
                     }
+                    return false;
                 };
 
-                pushBackFn("Vertex",         Shader::Type::Vertex);
-                pushBackFn("Geometry",       Shader::Type::Geometry);
-                pushBackFn("TessControl",    Shader::Type::TessControl);
-                pushBackFn("TessEvaluation", Shader::Type::TessEvaluation);
-                pushBackFn("Pixel",          Shader::Type::Fragment);
+                bool hasMultiple = false;
+                
+                hasMultiple |= pushBackFn("Vertex",         Shader::Type::Vertex);
+                hasMultiple |= pushBackFn("Geometry",       Shader::Type::Geometry);
+                hasMultiple |= pushBackFn("TessControl",    Shader::Type::TessControl);
+                hasMultiple |= pushBackFn("TessEvaluation", Shader::Type::TessEvaluation);
+                hasMultiple |= pushBackFn("Pixel",          Shader::Type::Fragment);
 
-                if (!alias.empty())
+                if (!alias.empty() || !hasMultiple)
                     material->shader = Shader::cache(infos, alias, true);
                 else
                     material->shader = Shader::create(infos);
@@ -1132,6 +1136,12 @@ namespace oyl::internal
             {
                 switch (info.type)
                 {
+                    case Shader::Type::Compound:
+                    {
+                        jShader["guid"];
+                        jShader["FilePath"] = info.filename;
+                        break;
+                    }
                     case Shader::Type::Vertex:
                     {
                         json& jVert = jShader["Vertex"];

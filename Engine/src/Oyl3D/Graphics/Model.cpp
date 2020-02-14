@@ -45,22 +45,6 @@ namespace oyl
         }
     }
 
-    //void Model::bind()
-    //{
-    //    for (auto& mesh : m_meshes)
-    //    {
-    //        mesh.bind();
-    //    }
-    //}
-
-    //void Model::unbind()
-    //{
-    //    for (auto& mesh : m_meshes)
-    //    {
-    //        mesh.unbind();
-    //    }
-    //}
-
     void Model::processNode(aiNode* a_node, const aiScene* a_scene)
     {
         // Process all (if any) of the node's meshes
