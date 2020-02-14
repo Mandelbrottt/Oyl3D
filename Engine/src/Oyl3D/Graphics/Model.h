@@ -4,9 +4,9 @@
 
 #include "Oyl3D/Utils/AssetCache.h"
 
-class aiMesh;
-class aiNode;
-class aiScene;
+struct aiMesh;
+struct aiNode;
+struct aiScene;
 
 namespace oyl
 {    
