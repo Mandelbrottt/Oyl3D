@@ -596,6 +596,17 @@ void PlayerInteractionValidationSystem::performCarryableItemInteraction(entt::en
 
 			break;
 		}
+		case CarryableItemType::throwableBottle:
+		{
+			player.primaryCarriedItem = a_carryableItemEntity;
+
+			std::cout << "PICKED UP THROWABLE BOTTLE!\n";
+
+			itemNewPosition = glm::vec3(0.3f, 0.55f, -0.55f);
+			itemNewRotation = glm::vec3(0.0f, 0.0f, 0.0f);
+
+			break;
+		}
 		default:
 		{
 			std::cout << "INVALID ITEM TYPE: TRIED TO PICK UP AN ITEM BUT THE ITEM TYPE WAS NOT A VALID OPTION!\n";
@@ -873,6 +884,17 @@ void PlayerInteractionValidationSystem::dropPlayerCarriedItems(entt::entity a_pl
 
 					newPosition += playerTransform.getForward() * 0.7f;
 					newPosition += playerTransform.getRight()   * -0.2f;
+					newPosition += playerTransform.getUp()      * 0.4f;
+
+					break;
+				}
+				case CarryableItemType::throwableBottle:
+				{
+					std::cout << "DROPPED THROWABLE BOTTLE!\n";
+					player.primaryCarriedItem = entt::null;
+
+					newPosition += playerTransform.getForward() * 0.7f;
+					newPosition += playerTransform.getRight()   * 0.2f;
 					newPosition += playerTransform.getUp()      * 0.4f;
 
 					break;

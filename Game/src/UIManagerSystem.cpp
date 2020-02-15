@@ -59,6 +59,11 @@ bool UIManagerSystem::onEvent(const Event& event)
 					enableValidUIType(PlayerInteractionResult::pickUpGloop, evt.playerNum);
 					break;
 				}
+				case PlayerInteractionResult::pickUpThrowableBottle:
+				{
+					enableValidUIType(PlayerInteractionResult::pickUpThrowableBottle, evt.playerNum);
+					break;
+				}
 				case PlayerInteractionResult::pickUpCannonball:
 				{
 					enableValidUIType(PlayerInteractionResult::pickUpCannonball, evt.playerNum);

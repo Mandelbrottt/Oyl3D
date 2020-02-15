@@ -1114,7 +1114,7 @@ void SandboxLayer::onEnter()
 
 			component::Transform bottleTransform;
 			bottleTransform.setPosition(glm::vec3(-7.04f, 0.2f, 10.14f));
-			bottleTransform.setScale(glm::vec3(0.2f, 0.2f, 0.2f));
+			bottleTransform.setScale(glm::vec3(0.5f, 0.5f, 0.5f));
 			registry->assign<component::Transform>(bottleEntity, bottleTransform);
 
 			auto& carryableItem = registry->assign<CarryableItem>(bottleEntity);

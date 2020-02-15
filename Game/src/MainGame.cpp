@@ -18,6 +18,7 @@
 #include "GarbageMeterSystem.h"
 #include "GameOverCheckSystem.h"
 #include "ScrollingTextureLayer.h"
+#include "ThrowableBottleSystem.h"
 
 using namespace oyl;
 
@@ -55,7 +56,8 @@ public:
 		scheduleSystemUpdate<GarbagePileHealthBarSystem>();
 		scheduleSystemUpdate<GarbagePileGloopIndicatorSystem>();
 		scheduleSystemUpdate<GarbageMeterSystem>();
-		scheduleSystemUpdate<GameOverCheckSystem>();
+		scheduleSystemUpdate<GameOverCheckSystem>(); 
+		scheduleSystemUpdate<ThrowableBottleSystem>();
 
 		Texture2D::cache("res/assets/textures/gui/cleaningQTEUp.png");
 		Texture2D::cache("res/assets/textures/gui/cleaningQTEDown.png");
@@ -213,6 +215,28 @@ public:
 
 				auto& gui = registry->assign<component::GuiRenderable>(e);
 				gui.texture = Texture2D::cache("res/assets/textures/gui/pickUpGloop.png");
+				gui.cullingMask = 0b1 << i;
+			}
+
+			{
+				auto e = registry->create();
+
+				auto& t = registry->assign<component::Transform>(e);
+				t.setPosition(glm::vec3(-30.0f, 2.0f, 0.0f));
+				t.setScale(glm::vec3(1.0f, 1.0f, 1.0f));
+
+				auto& uiType = registry->assign<PlayerInteractionType>(e);
+				uiType.type = PlayerInteractionResult::pickUpThrowableBottle;
+
+				auto& HUDElement = registry->assign<PlayerHUDElement>(e);
+				HUDElement.positionWhenActive = glm::vec3(0.0f, 2.0f, 0.0f);
+				HUDElement.playerNum = (PlayerNumber)i;
+
+				auto& so = registry->assign<component::EntityInfo>(e);
+				so.name = "Pickup Bottle Message" + std::to_string(i + 1);
+
+				auto& gui = registry->assign<component::GuiRenderable>(e);
+				gui.texture = Texture2D::cache("res/assets/textures/gui/pickUpBottle.png");
 				gui.cullingMask = 0b1 << i;
 			}
 

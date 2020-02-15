@@ -178,7 +178,10 @@ struct Gloop
 
 struct ThrowableBottle
 {
+	float throwSpeed   = 10.0f;
 	bool isBeingThrown = false;
+
+	entt::entity playerThrowingEntity = entt::null;
 };
 
 struct CannonballCrate
