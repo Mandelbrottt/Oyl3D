@@ -6,7 +6,8 @@ using oyl::PlayerNumber;
 enum class Team
 {
 	blue,
-	red
+	red,
+	neutral
 };
 
 enum class PlayerState

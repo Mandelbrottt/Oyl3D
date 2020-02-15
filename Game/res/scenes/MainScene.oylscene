@@ -14359,6 +14359,182 @@
             }
         }
     },
+    "Pickup Bottle Message1": {
+        "GuiRenderable": {
+            "Clipping": {
+                "Lower": [
+                    0.0,
+                    0.0
+                ],
+                "Upper": [
+                    1.0,
+                    1.0
+                ]
+            },
+            "CullingMask": 1,
+            "Enabled": true,
+            "Texture": {
+                "Alias": "pickUpBottle",
+                "FilePath": "res/assets/textures/gui/pickUpBottle.png"
+            }
+        },
+        "Parent": null,
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -30.0,
+                "Y": 2.0,
+                "Z": 0.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Pickup Bottle Message2": {
+        "GuiRenderable": {
+            "Clipping": {
+                "Lower": [
+                    0.0,
+                    0.0
+                ],
+                "Upper": [
+                    1.0,
+                    1.0
+                ]
+            },
+            "CullingMask": 2,
+            "Enabled": true,
+            "Texture": {
+                "Alias": "pickUpBottle",
+                "FilePath": "res/assets/textures/gui/pickUpBottle.png"
+            }
+        },
+        "Parent": null,
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -30.0,
+                "Y": 2.0,
+                "Z": 0.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Pickup Bottle Message3": {
+        "GuiRenderable": {
+            "Clipping": {
+                "Lower": [
+                    0.0,
+                    0.0
+                ],
+                "Upper": [
+                    1.0,
+                    1.0
+                ]
+            },
+            "CullingMask": 4,
+            "Enabled": true,
+            "Texture": {
+                "Alias": "pickUpBottle",
+                "FilePath": "res/assets/textures/gui/pickUpBottle.png"
+            }
+        },
+        "Parent": null,
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -30.0,
+                "Y": 2.0,
+                "Z": 0.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Pickup Bottle Message4": {
+        "GuiRenderable": {
+            "Clipping": {
+                "Lower": [
+                    0.0,
+                    0.0
+                ],
+                "Upper": [
+                    1.0,
+                    1.0
+                ]
+            },
+            "CullingMask": 8,
+            "Enabled": true,
+            "Texture": {
+                "Alias": "pickUpBottle",
+                "FilePath": "res/assets/textures/gui/pickUpBottle.png"
+            }
+        },
+        "Parent": null,
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -30.0,
+                "Y": 2.0,
+                "Z": 0.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
     "Pickup Cannonball Message1": {
         "GuiRenderable": {
             "Clipping": {
@@ -19673,6 +19849,152 @@
                 "X": -13.358362197875977,
                 "Y": -4.134646415710449,
                 "Z": 0.608013391494751
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "ThrowableBottle": {
+        "Collidable": {
+            "Shapes": [
+                {
+                    "Center": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Size": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "Trigger": false,
+                    "Type": 0
+                }
+            ]
+        },
+        "Parent": null,
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "metal"
+            },
+            "Mesh": {
+                "Alias": "cube",
+                "FilePath": "res\\assets\\models\\cube.obj"
+            }
+        },
+        "RigidBody": {
+            "Friction": 0.5,
+            "Mass": 1.0,
+            "Properties": 98
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -7.039999961853027,
+                "Y": 0.3700000047683716,
+                "Z": 10.140000343322754
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 0.25,
+                "Y": 0.6000000238418579,
+                "Z": 0.25
+            }
+        }
+    },
+    "ThrowableBottlePrefab": {
+        "Collidable": {
+            "Shapes": [
+                {
+                    "Center": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Size": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "Trigger": false,
+                    "Type": 0
+                }
+            ]
+        },
+        "Parent": null,
+        "Renderable": {
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "metal"
+            },
+            "Mesh": {
+                "Alias": "cube",
+                "FilePath": "res\\assets\\models\\cube.obj"
+            }
+        },
+        "RigidBody": {
+            "Friction": 0.5,
+            "Mass": 1.0,
+            "Properties": 98
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -99999.0,
+                "Y": -99999.0,
+                "Z": -99999.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 0.25,
+                "Y": 0.6000000238418579,
+                "Z": 0.25
+            }
+        }
+    },
+    "ThrowableBottleSpawner": {
+        "Parent": null,
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": 0.0,
+                "Y": 0.0,
+                "Z": 0.0
             },
             "Rotation": {
                 "qW": 1.0,
