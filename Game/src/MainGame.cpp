@@ -520,6 +520,21 @@ public:
 			auto& player          = registry->get<Player>(playerEntity);
 			auto& playerTransform = registry->get<component::Transform>(playerEntity);
 
+			if (Input::getGamepadRightTrigger((uint)player.controllerNum) > 0.9f)
+			{
+				PlayerInteractionRequestEvent playerInteractionRequest;
+				playerInteractionRequest.playerEntity = playerEntity;
+				playerInteractionRequest.itemClassifiatonToUse = PlayerItemClassifiation::primary;
+				postEvent(playerInteractionRequest);
+			}
+			if (Input::getGamepadLeftTrigger((uint)player.controllerNum) > 0.9f)
+			{
+				PlayerInteractionRequestEvent playerInteractionRequest;
+				playerInteractionRequest.playerEntity = playerEntity;
+				playerInteractionRequest.itemClassifiatonToUse = PlayerItemClassifiation::secondary;
+				postEvent(playerInteractionRequest);
+			}
+
 			//player movement
 			glm::vec3 desiredMoveDirection = glm::vec3(0.0f);
 
@@ -547,7 +562,6 @@ public:
 			else
 				player.moveDirection = glm::normalize(desiredMoveDirection);
 
-			
 			if (!player.isCameraLocked)
 			{
 				//camera movement
@@ -639,7 +653,8 @@ public:
 					if (registry->get<Player>(playerEntity).playerNum == PlayerNumber::One)
 					{
 						PlayerInteractionRequestEvent playerInteractionRequest;
-						playerInteractionRequest.playerEntity = playerEntity;
+						playerInteractionRequest.playerEntity          = playerEntity;
+						playerInteractionRequest.itemClassifiatonToUse = PlayerItemClassifiation::any;
 						postEvent(playerInteractionRequest);
 					}
 				}
@@ -708,6 +723,49 @@ public:
 			break;
 		}
 
+		/*case EventType::GamepadTriggerPressed:
+		{
+			auto evt = event_cast<GamepadTriggerPressedEvent>(event);
+			auto playerView = registry->view<Player>();
+			for (entt::entity playerEntity : playerView)
+			{
+				auto& player = registry->get<Player>(playerEntity);
+
+				if (player.controllerNum != evt.gid || evt.dx < 0.0f)
+					continue;
+
+				switch (evt.trigger)
+				{
+				case Gamepad::LeftTrigger:
+				{
+					if (evt.x > 0.9f)
+					{
+						PlayerInteractionRequestEvent playerInteractionRequest;
+						playerInteractionRequest.playerEntity          = playerEntity;
+						playerInteractionRequest.itemClassifiatonToUse = PlayerItemClassifiation::primary;
+						postEvent(playerInteractionRequest);
+					}
+
+					break;
+				}
+				case Gamepad::RightTrigger:
+				{
+					if (evt.x > 0.9f)
+					{
+						PlayerInteractionRequestEvent playerInteractionRequest;
+						playerInteractionRequest.playerEntity          = playerEntity;
+						playerInteractionRequest.itemClassifiatonToUse = PlayerItemClassifiation::secondary;
+						postEvent(playerInteractionRequest);
+					}
+
+					break;
+				}
+				}
+			}
+
+			break;
+		}*/
+
 		case EventType::GamepadButtonPressed:
 		{
 			auto evt = event_cast<GamepadButtonPressedEvent>(event);
@@ -735,7 +793,8 @@ public:
 				case Gamepad::X:
 				{
 					PlayerInteractionRequestEvent playerInteractionRequest;
-					playerInteractionRequest.playerEntity = playerEntity;
+					playerInteractionRequest.playerEntity          = playerEntity;
+					playerInteractionRequest.itemClassifiatonToUse = PlayerItemClassifiation::any;
 					postEvent(playerInteractionRequest);
 
 					break;
@@ -745,6 +804,24 @@ public:
 					CancelButtonPressedEvent cancelButtonPressed;
 					cancelButtonPressed.playerEntity = playerEntity;
 					postEvent(cancelButtonPressed);
+
+					break;
+				}
+				case Gamepad::RightBumper:
+				{
+					PlayerDropItemRequestEvent playerDropItemRequest;
+					playerDropItemRequest.playerEntity             = playerEntity;
+					playerDropItemRequest.itemClassificationToDrop = PlayerItemClassifiation::primary;
+					postEvent(playerDropItemRequest);
+
+					break;
+				}
+				case Gamepad::LeftBumper:
+				{
+					PlayerDropItemRequestEvent playerDropItemRequest;
+					playerDropItemRequest.playerEntity             = playerEntity;
+					playerDropItemRequest.itemClassificationToDrop = PlayerItemClassifiation::secondary;
+					postEvent(playerDropItemRequest);
 
 					break;
 				}
@@ -841,7 +918,7 @@ class MainScene : public oyl::Scene
 public:
 	OYL_CTOR(MainScene, oyl::Scene)
 
-		virtual void onEnter() override
+	virtual void onEnter() override
 	{
 		pushLayer(MainLayer::create());
 		pushLayer(SandboxLayer::create());

@@ -21,6 +21,13 @@ enum class PlayerState
 	cleaning
 };
 
+enum class PlayerItemClassifiation
+{
+	primary,
+	secondary,
+	any
+};
+
 enum class CannonState
 {
 	doingNothing,

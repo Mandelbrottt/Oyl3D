@@ -19,6 +19,7 @@ enum CustomEventTypes : int
 	TypePlayerJump,
 	TypePlayerInteractResult,
     TypePlayerInteractionRequest,
+	TypePlayerDropItemRequest,
 	TypeCancelButtonPressed,
 	TypePlayerStateChange,
     TypeCannonStateChange,
@@ -56,6 +57,13 @@ OYL_EVENT_STRUCT(PlayerInteractResultEvent, (oyl::EventType) TypePlayerInteractR
 OYL_EVENT_STRUCT(PlayerInteractionRequestEvent, (oyl::EventType) TypePlayerInteractionRequest, (oyl::EventCategory) CategoryPlayer,
 	{
 		entt::entity playerEntity;
+		PlayerItemClassifiation itemClassifiatonToUse;
+	});
+
+OYL_EVENT_STRUCT(PlayerDropItemRequestEvent, (oyl::EventType) TypePlayerDropItemRequest, (oyl::EventCategory) CategoryPlayer,
+	{
+		entt::entity playerEntity;
+		PlayerItemClassifiation itemClassificationToDrop;
 	});
 
 OYL_EVENT_STRUCT(CancelButtonPressedEvent, (oyl::EventType) TypeCancelButtonPressed, (oyl::EventCategory) CategoryPlayer,
