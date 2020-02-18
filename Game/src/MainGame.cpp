@@ -520,7 +520,7 @@ public:
 			auto& player          = registry->get<Player>(playerEntity);
 			auto& playerTransform = registry->get<component::Transform>(playerEntity);
 
-			if (Input::getGamepadRightTrigger((uint)player.controllerNum) > 0.9f)
+			/*if (Input::getGamepadRightTrigger((uint)player.controllerNum) > 0.9f)
 			{
 				PlayerInteractionRequestEvent playerInteractionRequest;
 				playerInteractionRequest.playerEntity = playerEntity;
@@ -533,7 +533,7 @@ public:
 				playerInteractionRequest.playerEntity = playerEntity;
 				playerInteractionRequest.itemClassifiatonToUse = PlayerItemClassifiation::secondary;
 				postEvent(playerInteractionRequest);
-			}
+			}*/
 
 			//player movement
 			glm::vec3 desiredMoveDirection = glm::vec3(0.0f);
@@ -723,7 +723,7 @@ public:
 			break;
 		}
 
-		/*case EventType::GamepadTriggerPressed:
+		case EventType::GamepadTriggerPressed:
 		{
 			auto evt = event_cast<GamepadTriggerPressedEvent>(event);
 			auto playerView = registry->view<Player>();
@@ -736,9 +736,9 @@ public:
 
 				switch (evt.trigger)
 				{
-				case Gamepad::LeftTrigger:
+				case Gamepad(1):
 				{
-					if (evt.x > 0.9f)
+					//if (evt.x > 0.9f)
 					{
 						PlayerInteractionRequestEvent playerInteractionRequest;
 						playerInteractionRequest.playerEntity          = playerEntity;
@@ -748,9 +748,9 @@ public:
 
 					break;
 				}
-				case Gamepad::RightTrigger:
+				case Gamepad(0):
 				{
-					if (evt.x > 0.9f)
+					//if (evt.x > 0.9f)
 					{
 						PlayerInteractionRequestEvent playerInteractionRequest;
 						playerInteractionRequest.playerEntity          = playerEntity;
@@ -764,7 +764,7 @@ public:
 			}
 
 			break;
-		}*/
+		}
 
 		case EventType::GamepadButtonPressed:
 		{

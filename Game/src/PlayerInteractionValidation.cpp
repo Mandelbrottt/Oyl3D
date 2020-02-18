@@ -48,7 +48,7 @@ bool PlayerInteractionValidationSystem::onEvent(const Event& event)
 			auto evt = event_cast<PlayerInteractionRequestEvent>(event);
 			auto& player = registry->get<Player>(evt.playerEntity);
 
-			/*if (   registry->valid(player.primaryCarriedItem) 
+			if (   registry->valid(player.primaryCarriedItem) 
 				&& registry->get<CarryableItem>(player.primaryCarriedItem).type == CarryableItemType::throwableBottle
 				&& evt.itemClassifiatonToUse == PlayerItemClassifiation::primary)
 			{
@@ -56,8 +56,13 @@ bool PlayerInteractionValidationSystem::onEvent(const Event& event)
 				throwBottle.bottleEntity         = player.primaryCarriedItem;
 				throwBottle.playerThrowingEntity = evt.playerEntity;
 				postEvent(throwBottle);
+
+				registry->get<component::Parent>(player.primaryCarriedItem).parent     = entt::null;
+				registry->get<CarryableItem>(player.primaryCarriedItem).isBeingCarried = false;
+
+				player.primaryCarriedItem = entt::null;
 			}
-			else*/
+			else
 				performInteractionForPlayer(evt.playerEntity, evt.itemClassifiatonToUse);
 	        
 			break;
@@ -907,7 +912,7 @@ void PlayerInteractionValidationSystem::dropPlayerCarriedItems(entt::entity a_pl
 			case CarryableItemType::cannonball:
 			{
 				std::cout << "DROPPED CANNONBALL!\n";
-				player.primaryCarriedItem = entt::null;
+				player.primaryCarriedItem   = entt::null;
 				player.secondaryCarriedItem = entt::null;
 
 				newPosition += playerTransform.getForward() * 0.75f;
@@ -919,8 +924,8 @@ void PlayerInteractionValidationSystem::dropPlayerCarriedItems(entt::entity a_pl
 				std::cout << "DROPPED MOP!\n";
 				player.primaryCarriedItem = entt::null;
 
-				newPosition += playerTransform.getForward() * 0.4f;
-				newPosition += playerTransform.getRight() * 0.7f;
+				newPosition += playerTransform.getForward() * 0.15f;
+				newPosition += playerTransform.getRight() * 0.3f;
 				newPosition.y = playerTransform.getPositionY();
 
 				newRotation.y += playerTransform.getForward().z > 0.0f ? 90.0f : -90.0f;
