@@ -910,6 +910,7 @@ namespace oyl::internal
                 auto entity = registry.create();
                 EntityInfo info = { key };
                 registry.assign<EntityInfo>(entity, info);
+                registry.assign<component::Transform>(entity);
             }
         }
 

@@ -80,6 +80,10 @@ namespace oyl
                              void*              userData);
 
             void drawAssetCache();
+            void drawAnimationCache();
+            void drawMaterialCache();
+            void drawMeshCache();
+            void drawTextureCache();
 
             void drawSceneViewport();
             void drawGameViewport();

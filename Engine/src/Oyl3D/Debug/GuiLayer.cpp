@@ -347,10 +347,10 @@ namespace oyl::internal
                     // TEMPORARY: Let name be accessed through a getter
                     registryToSceneFile(*registry, Scene::current()->m_name);
 
-                    for (const auto& [alias, material] : Material::getCache())
-                    {
-                        materialToFile(material, "res/assets/materials/" + alias + ".oylmat");
-                    }
+                    //for (const auto& [alias, material] : Material::getCache())
+                    //{
+                    //    materialToFile(material, "res/assets/materials/" + alias + ".oylmat");
+                    //}
                 }
                 showReloadDialogue = 
                     ImGui::MenuItem("Reload##MainMenuReload", "Ctrl+Shift+S", false, m_editorOverrideUpdate);
@@ -1904,6 +1904,9 @@ namespace oyl::internal
         ImGui::InputFloat("##OffsetInputY", &offset.y, 0, 0, "%.2f", flags);
 
         ImGui::PopItemWidth();
+
+        if (ImGui::IsWindowHovered() && ImGui::IsAnyMouseDown())
+            materialToFile(material, material->getFilePath());
     }
 
     void GuiLayer::drawAssetList()
@@ -2015,33 +2018,37 @@ namespace oyl::internal
             {
                 stillExists = true;
                 auto path   = std::fs::path(m_fileSaveTimeIt->first);
-                if (exists(path))
+
+                if (!path.empty())
                 {
-                    lastWriteTimeNew = last_write_time(path);
-                }
-                else
-                {
-                    auto pathStr = path.string();
+                    if (exists(path))
+                    {
+                        lastWriteTimeNew = last_write_time(path);
+                    }
+                    else
+                    {
+                        auto pathStr = path.string();
                     
-                    m_fileSaveTimeIt = m_fileSaveTimes.erase(m_fileSaveTimeIt);
-                    stillExists      = false;
+                        m_fileSaveTimeIt = m_fileSaveTimes.erase(m_fileSaveTimeIt);
+                        stillExists      = false;
 
-                    std::string ext = path.extension().string();
+                        std::string ext = path.extension().string();
 
-                    if (isTexture(ext.c_str()))
-                        for (const auto& [alias, texture] : Texture2D::getCache())
-                            if (pathStr == texture->getFilePath())
-                                Texture2D::discard(alias);
+                        if (isTexture(ext.c_str()))
+                            for (const auto& [alias, texture] : Texture2D::getCache())
+                                if (pathStr == texture->getFilePath())
+                                    Texture2D::discard(alias);
 
-                    if (isModel(ext.c_str()))
-                        for (const auto& [alias, mesh] : Model::getCache())
-                            if (pathStr == mesh->getFilePath())
-                                Model::discard(alias);
+                        if (isModel(ext.c_str()))
+                            for (const auto& [alias, mesh] : Model::getCache())
+                                if (pathStr == mesh->getFilePath())
+                                    Model::discard(alias);
 
-                    if (isMaterial(ext.c_str()))
-                        for (const auto& [alias, material] : Material::getCache())
-                            if (pathStr == material->getFilePath())
-                                Material::discard(alias);
+                        if (isMaterial(ext.c_str()))
+                            for (const auto& [alias, material] : Material::getCache())
+                                if (pathStr == material->getFilePath())
+                                    Material::discard(alias);
+                    }
                 }
             } while (!stillExists);
             
@@ -2119,7 +2126,9 @@ namespace oyl::internal
         {
             std::fs::recursive_directory_iterator res("res");
             for (const auto& dirEntry : res)
-            {   
+            {
+                if (!dirEntry.exists()) continue;
+                
                 auto        relPath    = relative(dirEntry.path());
                 std::string relPathStr = relPath.string();
                 if (m_fileSaveTimes.find(relPathStr) == m_fileSaveTimes.end())
@@ -2138,7 +2147,7 @@ namespace oyl::internal
             // Helper function, return true if was not present in the list, return false otherwise
             auto addToFileSaveTimes = [this](const std::string& filename)
             {
-                if (filename.empty()) return;
+                if (filename.empty() || !std::fs::exists(filename)) return;
                 auto relPath    = std::fs::relative(filename);
                 auto relPathStr = relPath.string();
                 if (m_fileSaveTimes.find(relPathStr) == m_fileSaveTimes.end())
@@ -2185,52 +2194,114 @@ namespace oyl::internal
         return false;
     }
 
+    enum class TabMask
+    {
+        Material,
+        Mesh,
+        Texture,
+        Animation,
+    };
+
     inline void GuiLayer::drawAssetCache()
     {
+        static TabMask tabMask = TabMask::Material;
+        
         if (ImGui::Begin("AssetCache##DrawAssetCache"))
         {
-            const int buf_size = 128;
-            static char name[buf_size]{ 0 };
-            static bool showDialogue = false;
-            if (!showDialogue)
+            switch (tabMask)
             {
-                if (ImGui::Button("Add Material"))
-                    showDialogue = true;
-            }
-            else
-            {
-                if (ImGui::InputText("Name##AssetCacheAddMatName", name, buf_size, ImGuiInputTextFlags_EnterReturnsTrue)
-                    && name[0] != 0)
-                {
-                    bool valid = true;
-                    for (const auto& [alias, material] : Material::getCache())
-                        if (strcmp(name, alias.c_str()) == 0)
-                        {
-                            valid = false;
-                            break;
-                        }
-
-                    if (valid)
-                    {
-                        Material::cache(Material::create(), name);
-
-                        memset(name, 0, sizeof(name));
-                        showDialogue = false;
-                    }
-                }
-            }
-            
-            for (const auto& [alias, material] : Material::getCache())
-            {
-                if (ImGui::Selectable(alias.c_str(), m_currentSelection.material() == material, 
-                                      ImGuiSelectableFlags_PressedOnClick))
-                {
-                    m_currentSelection = material;
-                }
+                case TabMask::Material:
+                    drawMaterialCache(); break;
+                case TabMask::Mesh:
+                    drawMeshCache(); break;
+                case TabMask::Texture:
+                    drawTextureCache(); break;
+                case TabMask::Animation:
+                    drawAnimationCache(); break;
             }
         }
         ImGui::End();
     }
+
+    void GuiLayer::drawAnimationCache()
+    {
+        
+    }
+
+    void GuiLayer::drawMaterialCache()
+    {
+        const int   buf_size = 128;
+        static char name[buf_size]{ 0 };
+        static bool showDialogue = false;
+        if (!showDialogue)
+        {
+            if (ImGui::Button("Add Material"))
+                showDialogue = true;
+        }
+        else
+        {
+            bool isOpen = ImGui::InputText("Name##AssetCacheAddMatName", name, buf_size, ImGuiInputTextFlags_EnterReturnsTrue);
+
+            if (ImGui::IsAnyMouseDown() && !ImGui::IsItemHovered() || Input::isKeyPressed(Key::Escape))
+                memset(name, 0, sizeof(name)), showDialogue = false;
+
+            if (isOpen && name[0] != 0)
+            {
+                bool valid = true;
+                for (const auto& [alias, material] : Material::getCache())
+                    if (strcmp(name, alias.c_str()) == 0)
+                    {
+                        valid = false;
+                        break;
+                    }
+
+                if (valid)
+                {
+                    auto mat = Material::create();
+                    mat->m_filepath = "res/assets/materials/.oylmat";
+                    mat->m_filepath.insert(mat->m_filepath.find_last_of('.'), name);
+                    materialToFile(mat, mat->m_filepath);
+                    Material::cache(mat, name);
+
+                    memset(name, 0, sizeof(name));
+                    showDialogue = false;
+                }
+            }
+        }
+
+        for (const auto& [alias, material] : Material::getCache())
+        {
+            bool selected = ImGui::Selectable(alias.c_str(), m_currentSelection.material() == material,
+                                              ImGuiSelectableFlags_PressedOnClick);
+
+            if (ImGui::BeginPopupContextItem())
+            {
+                int flags = 0;
+                if (m_gameUpdate)
+                    flags |= ImGuiSelectableFlags_Disabled;
+                
+                if (ImGui::Selectable("Delete Material", false, flags))
+                {
+                    if (std::fs::exists(material->getFilePath()))
+                        std::fs::remove(material->getFilePath());
+
+                    // Remove every reference to the material
+                    using component::Renderable;
+                    registry->view<Renderable>().each([&](auto entity, Renderable& renderable)
+                    {
+                        if (renderable.material == material)
+                            renderable.material = nullptr;
+                    });
+                }
+                ImGui::EndPopup();
+            }
+            else if (selected) m_currentSelection = material;
+        }
+    }
+
+    void GuiLayer::drawMeshCache() {}
+
+    void GuiLayer::drawTextureCache() {}
 
     void GuiLayer::drawSceneViewport()
     {
@@ -2238,7 +2309,7 @@ namespace oyl::internal
         if constexpr (false)
             ImGui::ShowDemoWindow();
 
-        // HACK: Make scene window the default on open
+        // HACK: Make scene window the default on open somehow
         {
             static bool _first = true;
             if (static bool _second = true; !_first && _second)
