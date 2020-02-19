@@ -195,20 +195,30 @@ namespace oyl::internal
             jMir["Y"] = mirror.y;
             jMir["Z"] = mirror.z;
         }
+        {
+            using component::EntityInfo;
+            auto& jPar = j["Parent"];
+            if (auto parent = t.getParent(); parent != nullptr)
+            {
+                auto& info = registry.get<EntityInfo>(parent->entity());
+                jPar = info.name;
+            }
+        }
     }
 
     void saveParent(entt::entity entity, entt::registry& registry, json& j)
     {
         using component::EntityInfo;
-        using component::Parent;
+        using component::Transform;
 
-        if (!registry.has<Parent>(entity))
-            return;
-        
-        auto& pa = registry.get<Parent>(entity);
+        auto& transform = registry.get<Transform>(entity);
 
-        if (registry.valid(pa.parent))
-            j["Name"] = registry.get<EntityInfo>(pa.parent).name;
+        json& jPar = j["Parent"];
+        if (transform.hasParent())
+        {
+            auto& ei = registry.get<EntityInfo>(transform.getParentEntity());
+            jPar = ei.name;
+        }
         
     }
 
@@ -494,12 +504,34 @@ namespace oyl::internal
                 t.setMirror(mirror);
             }
         }
+        {
+            using component::EntityInfo;
+
+            const auto parIt = j.find("Parent");
+
+            if (parIt != j.end() &&
+                parIt->is_string())
+            {
+                std::string parentName = parIt->get<std::string>();
+                auto view = registry.view<EntityInfo, Transform>();
+                for (auto e : view)
+                {
+                    auto& info = view.get<EntityInfo>(e);
+                    if (info.name == parentName)
+                    {
+                        view.get<Transform>(entity).setParent(e);
+                        break;
+                    }
+                }
+            }
+        }
     }
     
     void loadParent(entt::entity entity, entt::registry& registry, const json& j)
     {
         using component::EntityInfo;
-        using component::Parent;
+        using component::Transform;
+        //using component::Parent;
         
         const auto it = j.find("Name");
         if (it != j.end() && !it->is_null() && it->is_string())
@@ -510,8 +542,8 @@ namespace oyl::internal
             {
                 if (view.get(e).name == name)
                 {
-                    auto& p = registry.get_or_assign<Parent>(entity);
-                    p.parent = e;
+                    auto& p = registry.get<Transform>(entity);
+                    p.setParent(e);
                 }
             }
         }   
@@ -913,7 +945,7 @@ namespace oyl::internal
     static void entityToJson(entt::entity entity, entt::registry& registry, json& j)
     {
         saveTransform(entity, registry, j["Transform"]);
-        saveParent(entity, registry, j["Parent"]);
+        //saveParent(entity, registry, j["Parent"]);
 
         if (registry.has<component::Renderable>(entity))
             saveRenderable(entity, registry, j["Renderable"]);

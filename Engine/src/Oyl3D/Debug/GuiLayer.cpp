@@ -178,7 +178,6 @@ namespace oyl::internal
     void GuiLayer::onUpdate()
     {
         using component::Transform;
-        using component::Parent;
         using component::EntityInfo;
 
         auto deleteView = registry->view<entt::tag<"_delete"_hs>>();
@@ -414,7 +413,6 @@ namespace oyl::internal
     {
         using component::Transform;
         using component::EntityInfo;
-        using component::Parent;
         
         if (ImGui::Begin(g_hierarchyWindowName, nullptr, ImGuiWindowFlags_NoCollapse))
         {
@@ -447,25 +445,21 @@ namespace oyl::internal
 
             ImGui::SetCursorPos(ImGui::GetWindowContentRegionMin());
             
-            registry->view<EntityInfo>().each(
-                [&](auto entity, auto& info)
+            registry->view<EntityInfo, Transform>().each(
+                [&](auto entity, auto& info, auto& transform)
                 {
-                    Parent* p = registry->try_get<Parent>(entity);
-                    if (!(p && registry->valid(p->parent)))
+                    if (!transform.hasParent())
                     {
-                        this->drawEntityNode(entity);
+                        this->drawEntityNode(entity, info, transform);
                     }
                 });
         }
         ImGui::End();
     }
 
-    void GuiLayer::drawEntityNode(entt::entity entity)
+    void GuiLayer::drawEntityNode(entt::entity entity, component::EntityInfo& info, component::Transform& transform)
     {
-        using component::EntityInfo;
-        using component::Parent;
-        
-        auto& so = registry->get<EntityInfo>(entity);
+        using component::Transform;
         
         auto nodeFlags = ImGuiTreeNodeFlags_OpenOnDoubleClick |
                          ImGuiTreeNodeFlags_OpenOnArrow |
@@ -474,18 +468,25 @@ namespace oyl::internal
         if (entity == m_currentSelection.entity())
             nodeFlags |= ImGuiTreeNodeFlags_Selected;
 
-        nodeFlags |= ImGuiTreeNodeFlags_Leaf;
-        auto parentView = registry->view<Parent>();
-        for (auto child : parentView)
-            if (parentView.get(child).parent == entity)
-            {
-                nodeFlags &= ~ImGuiTreeNodeFlags_Leaf;
-                break;
-            }
+        //nodeFlags |= ImGuiTreeNodeFlags_Leaf;
+        //auto parentView = registry->view<Parent>();
+        //for (auto child : parentView)
+        //    if (parentView.get(child).parent == entity)
+        //    {
+        //        nodeFlags &= ~ImGuiTreeNodeFlags_Leaf;
+        //        break;
+        //    }
+        
+        const std::vector<Transform*>& children = transform.getChildren();
+        if (children.empty())
+        {
+            nodeFlags |= ImGuiTreeNodeFlags_Leaf;
+        }
 
-        bool treeNode = ImGui::TreeNodeEx((const void*) entity, nodeFlags, g_entityNodeFmt, so.name.c_str());
+        bool treeNode = ImGui::TreeNodeEx((const void*) entity, nodeFlags, g_entityNodeFmt, info.name.c_str());
         bool clicked = ImGui::IsItemClicked(0);
         float testValue = ImGui::GetMousePos().x - ImGui::GetItemRectMin().x;
+
         if (treeNode)
         {
             if (ImGui::BeginPopupContextItem())
@@ -507,9 +508,14 @@ namespace oyl::internal
                 {                    
                     auto copy = registry->create();
                     registry->stomp(copy, entity, *registry);
+                    auto& ct = registry->get<Transform>(copy);
+                    ct.clearChildren();
+                    ct.setParent(entt::null);
+                    ct.setParent(transform.getParentEntity());
+                    
                     recursiveCopy(copy, entity);
 
-                    m_currentSelection = Selectable(entity);
+                    m_currentSelection = Selectable(copy);
                 }
 
                 if (ImGui::Selectable("Delete Entity##HierarchyContextDeleteEntity", false))
@@ -524,7 +530,7 @@ namespace oyl::internal
             {
                 if (ImGui::BeginDragDropSource())
                 {
-                    ImGui::Text("%s", so.name.c_str());
+                    ImGui::Text("%s", info.name.c_str());
                     ImGui::SetDragDropPayload("HierarchyEntity", &entity, sizeof(entt::entity));
                     ImGui::EndDragDropSource();
                 }
@@ -539,13 +545,18 @@ namespace oyl::internal
                     ImGui::EndDragDropTarget();
                 }
 
-                parentView.each([&](auto child, Parent& p)
+                //parentView.each([&](auto child, Parent& p)
+                //{
+                //    if (registry->valid(p.parent) && p.parent == entity)
+                //    {
+                //        this->drawEntityNode(child);
+                //    }
+                //});
+                for (auto child : children)
                 {
-                    if (registry->valid(p.parent) && p.parent == entity)
-                    {
-                        this->drawEntityNode(child);
-                    }
-                });
+                    using component::EntityInfo;
+                    this->drawEntityNode(child->entity(), registry->get<EntityInfo>(child->entity()), *child);
+                }
             }
 
             ImGui::TreePop();
@@ -562,7 +573,6 @@ namespace oyl::internal
     void GuiLayer::recursiveCopy(entt::entity copy, entt::entity original)
     {
         using component::EntityInfo;
-        using component::Parent;
 
         auto& copyEI = registry->get<EntityInfo>(copy);
 
@@ -598,31 +608,44 @@ namespace oyl::internal
             }
         } while (!isValid);
         
-        auto view = registry->view<Parent>();
-        for (auto child : view)
+        //auto view = registry->view<Parent>();
+        using component::Transform;
+        const auto& children = registry->get<Transform>(original).getChildren();
+        for (auto child : children)
         {
-            if (view.get(child).parent == original)
-            {
-                auto e = registry->create();
-                registry->stomp(e, child, *registry);
-                registry->get<Parent>(e).parent = copy;
-                recursiveCopy(e, child);
-            }
+            //if (view.get(child).parent == original)
+            //{
+            auto e = registry->create();
+            registry->stomp(e, child->entity(), *registry);
+            //registry->get<Parent>(e).parent = copy;
+            auto& transform = registry->get<Transform>(e);
+            transform.clearChildren();
+            transform.setParent(copy);
+            recursiveCopy(e, child->entity());
+            //}
         }
     }
 
     void GuiLayer::recursiveDelete(entt::entity entity)
     {
-        using component::Parent;
+        using component::Transform;
         
-        auto view = registry->view<Parent>();
-        view.each([this, entity](auto child, Parent& p)
+        //auto view = registry->view<Parent>();
+        const auto& children = registry->get<Transform>(entity).getChildren();
+        for (auto child : children)
         {
-            if (p.parent == entity && !registry->has<entt::tag<"_delete"_hs>>(child))
+            if (!registry->has<entt::tag<"_delete"_hs>>(child->entity()))
             {
-                this->recursiveDelete(child);
+                this->recursiveDelete(child->entity());
             }
-        });
+        }
+        //view.each([this, entity](auto child, Parent& p)
+        //{
+        //    if (p.parent == entity && !registry->has<entt::tag<"_delete"_hs>>(child))
+        //    {
+        //        this->recursiveDelete(child);
+        //    }
+        //});
 
         registry->assign_or_replace<entt::tag<"_delete"_hs>>(entity);
 
@@ -633,17 +656,15 @@ namespace oyl::internal
 
     void GuiLayer::setEntityParent(entt::entity entity, entt::entity parent)
     {
-        using component::Parent;
         using component::Transform;
         
-        auto& p = registry->get_or_assign<Parent>(entity);
+        //auto& p = registry->get_or_assign<Parent>(entity);
+        auto& ct = registry->get<Transform>(entity);
 
-        if (parent == p.parent) return;
+        if (parent == ct.getParentEntity()) return;
         
-        if (parent == entt::null && p.parent != entt::null)
+        if (parent == entt::null && ct.getParentEntity() != entt::null)
         {
-            auto& ct = registry->get<Transform>(entity);
-
             glm::mat4 tempChild = ct.getMatrixGlobal();
 
             glm::vec3 tComponents[3];
@@ -668,7 +689,6 @@ namespace oyl::internal
         }
         else
         {
-            auto& ct = registry->get<Transform>(entity);
             auto& pt = registry->get<Transform>(parent);
 
             glm::mat4 tempChild = ct.getMatrixGlobal();
@@ -696,7 +716,8 @@ namespace oyl::internal
 
             ct.m_isLocalDirty = true;
         }
-        p.parent = parent;
+        //p.parent = parent;
+        ct.setParent(parent);
     }
 
     void GuiLayer::drawInspector()
@@ -2422,13 +2443,14 @@ namespace oyl::internal
             if (ImGuizmo::IsUsing())
             {
                 glm::mat4 tempLocal;
-                
-                if (auto* p = registry->try_get<component::Parent>(m_currentSelection.entity());
-                    p && registry->valid(p->parent))
-                {   
-                    auto& parentTransform = registry->get<Transform>(p->parent);
 
-                    tempLocal = glm::inverse(parentTransform.getMatrixGlobal()) * gizmoMatrix;
+                auto* parent = registry->get<Transform>(m_currentSelection.entity()).getParent();
+                
+                if (parent)
+                {   
+                    //auto& parentTransform = registry->get<Transform>(p->parent);
+
+                    tempLocal = glm::inverse(parent->getMatrixGlobal()) * gizmoMatrix;
                 }
                 else
                 {
