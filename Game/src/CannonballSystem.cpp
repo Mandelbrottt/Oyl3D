@@ -2,8 +2,8 @@
 
 void CannonballSystem::onEnter()
 {
-	this->listenForEventCategory((EventCategory)CategoryCannon);
-	this->listenForEventCategory((EventCategory)CategoryCannonball);
+	listenForEventCategory((EventCategory)CategoryCannon);
+	listenForEventCategory((EventCategory)CategoryCannonball);
 
 	initFiringSplines();
 }
@@ -106,8 +106,6 @@ bool CannonballSystem::onEvent(const Event& event)
 
 			if (!isThereAnInactiveCannonball)
 			{
-				std::cout << registry->get<component::EntityInfo>(cannonballEntityToCopyFrom).name << "\n";
-
 				auto newCannonballEntity = registry->create();
 				registry->stomp(newCannonballEntity, cannonballEntityToCopyFrom, *registry);
 
@@ -143,7 +141,6 @@ bool CannonballSystem::onEvent(const Event& event)
 
 					cannonball.currentSplineIndex = 0;
 
-					std::cout << cannon.cannonTrackPosition << "\n";
 					if (cannon.cannonTrackPosition == -1)
 					{
 						if (cannon.team == Team::blue)
@@ -197,7 +194,7 @@ void CannonballSystem::setCannonballToCarriedForPlayer(entt::entity a_playerEnti
 	cannonballCarryable.isBeingCarried = true;
 	cannonballCarryable.isActive       = true;
 
-	std::cout << "OBTAINED CANNONBALL!\n";
+	OYL_LOG("OBTAINED CANNONBALL!");
 
 	auto& cannonballParent  = registry->get_or_assign<component::Parent>(a_cannonballEntity);
 	cannonballParent.parent = a_playerEntity;

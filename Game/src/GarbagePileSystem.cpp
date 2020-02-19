@@ -2,8 +2,8 @@
 
 void GarbagePileSystem::onEnter()
 {
-	this->listenForEventCategory((EventCategory)CategoryGarbagePile);
-	this->listenForEventCategory((EventCategory)CategoryCannon);
+	listenForEventCategory((EventCategory)CategoryGarbagePile);
+	listenForEventCategory((EventCategory)CategoryCannon);
 }
 
 void GarbagePileSystem::onExit()

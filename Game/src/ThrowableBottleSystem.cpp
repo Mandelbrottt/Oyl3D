@@ -2,8 +2,8 @@
 
 void ThrowableBottleSystem::onEnter()
 {
-	this->listenForEventCategory((EventCategory)CategoryThrowableBottle);
-	this->listenForEventCategory((EventCategory)CategoryPlayer);
+	listenForEventCategory((EventCategory)CategoryThrowableBottle);
+	listenForEventType(EventType::PhysicsCollisionStay);
 }
 
 void ThrowableBottleSystem::onExit()
@@ -22,14 +22,29 @@ bool ThrowableBottleSystem::onEvent(const Event& event)
 	{
 		case (EventType)TypeThrowBottle:
 		{
-			/*auto evt = event_cast<ThrowBottleEvent>(event);
+			auto evt = event_cast<ThrowBottleEvent>(event);
 
-			auto& bottle   = registry->get<ThrowableBottle>(evt.bottleEntity);
-			auto& bottleRB = registry->get<component::RigidBody>(evt.bottleEntity);
+			auto& bottle          = registry->get<ThrowableBottle>(evt.bottleEntity);
+			auto& bottleTransform = registry->get<component::Transform>(evt.bottleEntity);
+			auto& bottleRB        = registry->get_or_assign<component::RigidBody>(evt.bottleEntity); //add the rigidbody back
 
+			registry->get<component::Parent>(evt.bottleEntity).parent     = entt::null;
+			registry->get<CarryableItem>(evt.bottleEntity).isBeingCarried = false;
+
+			bottle.isBeingThrown        = true;
 			bottle.playerThrowingEntity = evt.playerThrowingEntity;
 
-			auto& player = registry->get<Player>(evt.playerThrowingEntity);
+			auto& player          = registry->get<Player>(evt.playerThrowingEntity);
+			auto& playerTransform = registry->get<component::Transform>(evt.playerThrowingEntity);
+
+			glm::vec3 newPosition = playerTransform.getPosition();
+			newPosition += playerTransform.getForward() * 0.7f;
+			newPosition += playerTransform.getRight()   * 0.25f;
+			newPosition += playerTransform.getUp()      * 0.8f;
+
+			bottleTransform.setPosition(newPosition);
+			bottleTransform.setRotationEuler(playerTransform.getRotationEuler());
+
 			auto cameraView = registry->view<component::Camera>();
 			for (auto cameraEntity : cameraView)
 			{
@@ -38,87 +53,60 @@ bool ThrowableBottleSystem::onEvent(const Event& event)
 
 				if (camera.player == player.playerNum)
 				{
-					bottleRB.addImpulse(cameraTransform.getForwardGlobal() * bottle.throwSpeed);
+					glm::vec3 throwDir = normalize(cameraTransform.getForwardGlobal() + glm::vec3(0.0f, 0.2f, 0.0f));
+					bottleRB.addImpulse(throwDir * bottle.throwSpeed);
 					break;
 				}
 			}
 
-			break;*/
+			break;
 		}
-		
-		/*case (EventType)TypePlayerInteractionRequest:
+
+		case EventType::PhysicsCollisionStay:
 		{
-			auto evt = event_cast<PlayerInteractionRequestEvent>(event);
-			auto& player = registry->get<Player>(evt.playerEntity);
+			auto evt = event_cast<PhysicsCollisionStayEvent>(event);
 
-			if (   registry->valid(player.primaryCarriedItem)
-				&& registry->get<CarryableItem>(player.primaryCarriedItem).type == CarryableItemType::throwableBottle
-				&& evt.itemClassifiatonToUse == PlayerItemClassifiation::primary)
+			//ensure the entities in the collision are valid
+			if (!registry->valid(evt.entity1) || !registry->valid(evt.entity2))
+				break;
+
+			entt::entity bottleEntity = entt::null;
+			entt::entity playerEntity = entt::null;
+
+			if (registry->has<ThrowableBottle>(evt.entity1))
+				bottleEntity = evt.entity1;
+			else if (registry->has<ThrowableBottle>(evt.entity2))
+				bottleEntity = evt.entity2;
+			else //no bottle involved in the collision
+				break;
+
+			auto& bottle = registry->get<ThrowableBottle>(bottleEntity);
+
+			if (bottle.isBeingThrown)
 			{
-				auto& bottle   = registry->get<ThrowableBottle>(player.primaryCarriedItem);
-				auto& bottleRB = registry->get<component::RigidBody>(player.primaryCarriedItem);
-
-				registry->get<component::Parent>(player.primaryCarriedItem).parent     = entt::null;
-				registry->get<CarryableItem>(player.primaryCarriedItem).isBeingCarried = false;
-
-				player.primaryCarriedItem = entt::null;
-
-				bottle.playerThrowingEntity = evt.playerEntity;
-
-				auto cameraView = registry->view<component::Camera>();
-				for (auto cameraEntity : cameraView)
+				if (registry->has<Player>(evt.entity1))
+					playerEntity = evt.entity1;
+				else if (registry->has<Player>(evt.entity2))
+					playerEntity = evt.entity2;
+				else //no player involved in the collision
 				{
-					auto& camera          = registry->get<component::Camera>(cameraEntity);
-					auto& cameraTransform = registry->get<component::Transform>(cameraEntity);
+					registry->destroy(bottleEntity); //the bottle breaks
+					break;
+				}
 
-					if (camera.player == player.playerNum)
-					{
-						bottleRB.addImpulse(cameraTransform.getForwardGlobal() * bottle.throwSpeed);
-						break;
-					}
+				if (bottle.playerThrowingEntity != playerEntity)
+				{
+					auto& player = registry->get<Player>(playerEntity);
+					OYL_LOG("PLAYER {} WAS HIT BY A BOTTLE!", (int)player.playerNum + 1);
+					registry->destroy(bottleEntity); //the bottle breaks
+
+					//bottle stuns the player hit
+
 				}
 			}
 
 			break;
-		}*/
-
-		//case EventType::PhysicsCollisionStay:
-		//{
-		//	auto evt = event_cast<PhysicsCollisionStayEvent>(event);
-
-		//	entt::entity bottleEntity = entt::null;
-		//	entt::entity playerEntity = entt::null;
-
-		//	if (registry->has<ThrowableBottle>(evt.entity1))
-		//		bottleEntity = evt.entity1;
-		//	else if (registry->has<ThrowableBottle>(evt.entity2))
-		//		bottleEntity = evt.entity2;
-		//	else //no bottle involved in the collision
-		//		break;
-
-		//	auto& bottle = registry->get<ThrowableBottle>(bottleEntity);
-
-		//	if (bottle.isBeingThrown)
-		//	{
-		//		if (registry->has<Player>(evt.entity1))
-		//			playerEntity = evt.entity1;
-		//		else if (registry->has<Player>(evt.entity2))
-		//			playerEntity = evt.entity2;
-		//		else //no player involved in the collision
-		//		{
-		//			registry->destroy(bottleEntity); //the bottle breaks
-		//			break;
-		//		}
-
-		//		if (bottle.playerThrowingEntity != playerEntity)
-		//		{
-		//			//bottle stuns the player hit
-
-		//		}
-		//	}
-
-		//	break;
-		//}
+		}
 	}
 
 	return false;

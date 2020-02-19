@@ -2,8 +2,8 @@
 
 void UIManagerSystem::onEnter()
 {
-	this->listenForEventCategory((EventCategory)CategoryPlayer);
-	this->listenForEventCategory((EventCategory)CategoryGarbagePile);
+	listenForEventCategory((EventCategory)CategoryPlayer);
+	listenForEventCategory((EventCategory)CategoryGarbagePile);
 }
 
 void UIManagerSystem::onExit()

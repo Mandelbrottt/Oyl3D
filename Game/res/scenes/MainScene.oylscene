@@ -3240,10 +3240,7 @@
             "Material": {
                 "Alias": "garbage"
             },
-            "Mesh": {
-                "Alias": "GarbageSurrenderAnim_000009",
-                "FilePath": "res\\assets\\animation\\Garbage\\GarbageSurrender\\GarbageSurrenderAnim_000009.obj"
-            }
+            "Mesh": null
         },
         "Transform": {
             "Mirror": {
@@ -3279,10 +3276,7 @@
             "Material": {
                 "Alias": "garbage"
             },
-            "Mesh": {
-                "Alias": "GarbageSurrenderAnim_000014",
-                "FilePath": "res\\assets\\animation\\Garbage\\GarbageSurrender\\GarbageSurrenderAnim_000014.obj"
-            }
+            "Mesh": null
         },
         "Transform": {
             "Mirror": {
@@ -3318,10 +3312,7 @@
             "Material": {
                 "Alias": "garbage"
             },
-            "Mesh": {
-                "Alias": "GarbageSurrenderAnim_000014",
-                "FilePath": "res\\assets\\animation\\Garbage\\GarbageSurrender\\GarbageSurrenderAnim_000014.obj"
-            }
+            "Mesh": null
         },
         "Transform": {
             "Mirror": {
@@ -17110,10 +17101,7 @@
             "Material": {
                 "Alias": "garbage"
             },
-            "Mesh": {
-                "Alias": "GarbageSurrenderAnim_000010",
-                "FilePath": "res\\assets\\animation\\Garbage\\GarbageSurrender\\GarbageSurrenderAnim_000010.obj"
-            }
+            "Mesh": null
         },
         "Transform": {
             "Mirror": {
@@ -17149,10 +17137,7 @@
             "Material": {
                 "Alias": "garbage"
             },
-            "Mesh": {
-                "Alias": "GarbageSurrenderAnim_000078",
-                "FilePath": "res\\assets\\animation\\Garbage\\GarbageSurrender\\GarbageSurrenderAnim_000078.obj"
-            }
+            "Mesh": null
         },
         "Transform": {
             "Mirror": {
@@ -17188,10 +17173,7 @@
             "Material": {
                 "Alias": "garbage"
             },
-            "Mesh": {
-                "Alias": "GarbageSurrenderAnim_000001",
-                "FilePath": "res\\assets\\animation\\Garbage\\GarbageSurrender\\GarbageSurrenderAnim_000001.obj"
-            }
+            "Mesh": null
         },
         "Transform": {
             "Mirror": {
@@ -23453,10 +23435,7 @@
             "Material": {
                 "Alias": "WaterCrest"
             },
-            "Mesh": {
-                "Alias": "WaterCrestAnim_000001",
-                "FilePath": "res\\assets\\animation\\WaterCrest\\WaterCrestAnim_000001.obj"
-            }
+            "Mesh": null
         },
         "Transform": {
             "Mirror": {
@@ -23490,10 +23469,7 @@
             "Material": {
                 "Alias": "WaterCrest"
             },
-            "Mesh": {
-                "Alias": "WaterCrestAnim_000001",
-                "FilePath": "res\\assets\\animation\\WaterCrest\\WaterCrestAnim_000001.obj"
-            }
+            "Mesh": null
         },
         "Transform": {
             "Mirror": {

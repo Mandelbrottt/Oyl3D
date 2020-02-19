@@ -2,8 +2,8 @@
 
 void PlayerSystem::onEnter()
 {
-	this->listenForEventCategory((EventCategory)CategoryPlayer);
-	this->listenForEventType(EventType::PhysicsCollisionStay);
+	listenForEventCategory((EventCategory)CategoryPlayer);
+	listenForEventType(EventType::PhysicsCollisionStay);
 }
 
 void PlayerSystem::onExit()
@@ -176,6 +176,9 @@ bool PlayerSystem::onEvent(const Event& event)
 
 			entt::entity playerEntity = entt::null;
 
+			//ensure the entities in the collision are valid
+			if (!registry->valid(evt.entity1) || !registry->valid(evt.entity2))
+				break;
 			//check if there is no player involved in the collision
 			if (!registry->has<Player>(evt.entity1) && !registry->has<Player>(evt.entity2))
 				break;

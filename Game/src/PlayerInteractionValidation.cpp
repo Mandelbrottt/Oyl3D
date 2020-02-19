@@ -2,8 +2,8 @@
 
 void PlayerInteractionValidationSystem::onEnter()
 {
-	this->listenForEventCategory((EventCategory)CategoryPlayer);
-	this->listenForEventCategory((EventCategory)CategoryQuicktimeCleaningEvent);
+	listenForEventCategory((EventCategory)CategoryPlayer);
+	listenForEventCategory((EventCategory)CategoryQuicktimeCleaningEvent);
 }
 
 void PlayerInteractionValidationSystem::onExit()
@@ -56,9 +56,6 @@ bool PlayerInteractionValidationSystem::onEvent(const Event& event)
 				throwBottle.bottleEntity         = player.primaryCarriedItem;
 				throwBottle.playerThrowingEntity = evt.playerEntity;
 				postEvent(throwBottle);
-
-				registry->get<component::Parent>(player.primaryCarriedItem).parent     = entt::null;
-				registry->get<CarryableItem>(player.primaryCarriedItem).isBeingCarried = false;
 
 				player.primaryCarriedItem = entt::null;
 			}
@@ -161,7 +158,7 @@ void PlayerInteractionValidationSystem::performRaycastAndValidateForPlayer(entt:
 	}
 	if (!registry->valid(playersCameraEntity))
 	{
-		std::cout << "WARNING: PLAYER " << (uint)player.playerNum << " DOES NOT HAVE AN ASSOCIATED CAMERA\n";
+		OYL_LOG("WARNING: PLAYER {} DOES NOT HAVE AN ASSOCIATED CAMERA", (uint)player.playerNum + 1);
 		return;
 	}
 
@@ -287,7 +284,7 @@ void PlayerInteractionValidationSystem::validateCarryableItemInteraction(entt::e
 			}
 			case CarryableItemType::throwableBottle:
 			{
-				if (!registry->valid(player.primaryCarriedItem))
+				if (!registry->valid(player.primaryCarriedItem) && registry->get<ThrowableBottle>(a_carryableItemEntity).isBeingThrown == false)
 				{
 					player.interactableEntity = a_carryableItemEntity;
 
@@ -597,7 +594,7 @@ void PlayerInteractionValidationSystem::performCarryableItemInteraction(entt::en
 			player.primaryCarriedItem   = a_carryableItemEntity;
 			player.secondaryCarriedItem = a_carryableItemEntity;
 
-			std::cout << "PICKED UP CANNONBALL!\n";
+			OYL_LOG("PICKED UP CANNONBALL!");
 
 			itemNewPosition = glm::vec3(0.0f, 0.4f, -0.7f);
 			itemNewRotation = glm::vec3(0.0f, 0.0f, 0.0f);
@@ -611,7 +608,7 @@ void PlayerInteractionValidationSystem::performCarryableItemInteraction(entt::en
 
 			player.primaryCarriedItem = a_carryableItemEntity;
 
-			std::cout << "PICKED UP MOP!\n";
+			OYL_LOG("PICKED UP MOP!");
 
 			itemNewPosition = glm::vec3(0.45f, 0.55f, -0.35f);
 			itemNewRotation = glm::vec3(-100.0f, -54.7f, 99.0f);
@@ -625,7 +622,7 @@ void PlayerInteractionValidationSystem::performCarryableItemInteraction(entt::en
 
 			player.secondaryCarriedItem = a_carryableItemEntity;
 
-			std::cout << "PICKED UP CLEANING SOLUTION!\n";
+			OYL_LOG("PICKED UP CLEANING SOLUTION!");
 
 			itemNewPosition = glm::vec3(-0.2f, 0.45f, -0.55f);
 			itemNewRotation = glm::vec3(0.0f, 0.0f, 0.0f);
@@ -639,7 +636,7 @@ void PlayerInteractionValidationSystem::performCarryableItemInteraction(entt::en
 
 			player.secondaryCarriedItem = a_carryableItemEntity;
 
-			std::cout << "PICKED UP GLOOP!\n";
+			OYL_LOG("PICKED UP GLOOP!");
 
 			itemNewPosition = glm::vec3(-0.2f, 0.58f, -0.55f);
 			itemNewRotation = glm::vec3(0.0f, 0.0f, 0.0f);
@@ -653,7 +650,7 @@ void PlayerInteractionValidationSystem::performCarryableItemInteraction(entt::en
 
 			player.primaryCarriedItem = a_carryableItemEntity;
 
-			std::cout << "PICKED UP THROWABLE BOTTLE!\n";
+			OYL_LOG("PICKED UP THROWABLE BOTTLE!");
 
 			itemNewPosition = glm::vec3(0.3f, 0.55f, -0.55f);
 			itemNewRotation = glm::vec3(0.0f, 0.0f, 0.0f);
@@ -662,7 +659,7 @@ void PlayerInteractionValidationSystem::performCarryableItemInteraction(entt::en
 		}
 		default:
 		{
-			std::cout << "INVALID ITEM TYPE: TRIED TO PICK UP AN ITEM BUT THE ITEM TYPE WAS NOT A VALID OPTION!\n";
+			OYL_LOG("INVALID ITEM TYPE: TRIED TO PICK UP AN ITEM BUT THE ITEM TYPE WAS NOT A VALID OPTION!");
 			break;
 		}
 	}
@@ -734,7 +731,7 @@ void PlayerInteractionValidationSystem::performGarbagePileInteraction(entt::enti
 	{
 		if (itemClassification == PlayerItemClassifiation::secondary || itemClassification == PlayerItemClassifiation::any)
 		{
-			std::cout << "USED GLOOP\n";
+			OYL_LOG("USED GLOOP");
 
 			garbagePile.isGlooped = true;
 
@@ -786,7 +783,7 @@ void PlayerInteractionValidationSystem::performCannonInteraction(entt::entity a_
 
 		if (carriedItemParent.parent == a_playerEntity)
 		{
-			std::cout << "LOADED CANNON!\n";
+			OYL_LOG("LOADED CANNON!");
 
 			carriedItemParent.parent    = entt::null;
 			player.primaryCarriedItem   = entt::null;
@@ -809,7 +806,7 @@ void PlayerInteractionValidationSystem::performCannonInteraction(entt::entity a_
 		bool isCannonOnRightSideOfTrack = (cannon.cannonTrackPosition == 1)
 			? true : false;
 
-		std::cout << "dot: " << playerForwardDotCannonRight << "\n";
+		OYL_LOG("PLAYER FORWARD DOT PRODUCT W/ CANNON RIGHT: {}", playerForwardDotCannonRight);
 
 		//check if player is on the right side of the cannon (will be pushing towards the left)
 		if (playerForwardDotCannonRight < -0.1f)
@@ -836,7 +833,7 @@ void PlayerInteractionValidationSystem::performCannonInteraction(entt::entity a_
 			cannon.cannonTrackPosition++;
 		}
 
-		std::cout << "PUSHING!\n";
+		OYL_LOG("PUSHING!");
 
 		player.adjustingPositionStateData.startPos         = playerTransform.getPosition();
 		player.adjustingPositionStateData.destinationPos.y = playerTransform.getPositionY(); //don't change the player's y position
@@ -911,7 +908,7 @@ void PlayerInteractionValidationSystem::dropPlayerCarriedItems(entt::entity a_pl
 		{
 			case CarryableItemType::cannonball:
 			{
-				std::cout << "DROPPED CANNONBALL!\n";
+				OYL_LOG("DROPPED CANNONBALL!");
 				player.primaryCarriedItem   = entt::null;
 				player.secondaryCarriedItem = entt::null;
 
@@ -921,7 +918,7 @@ void PlayerInteractionValidationSystem::dropPlayerCarriedItems(entt::entity a_pl
 			}
 			case CarryableItemType::mop:
 			{
-				std::cout << "DROPPED MOP!\n";
+				OYL_LOG("DROPPED MOP!");
 				player.primaryCarriedItem = entt::null;
 
 				newPosition += playerTransform.getForward() * 0.15f;
@@ -934,7 +931,7 @@ void PlayerInteractionValidationSystem::dropPlayerCarriedItems(entt::entity a_pl
 			}
 			case CarryableItemType::cleaningSolution:
 			{
-				std::cout << "DROPPED CLEANING SOLUTION!\n";
+				OYL_LOG("DROPPED CLEANING SOLUTION!");
 				player.secondaryCarriedItem = entt::null;
 
 				newPosition += playerTransform.getForward() * 0.63f;
@@ -945,7 +942,7 @@ void PlayerInteractionValidationSystem::dropPlayerCarriedItems(entt::entity a_pl
 			}
 			case CarryableItemType::gloop:
 			{
-				std::cout << "DROPPED GLOOP!\n";
+				OYL_LOG("DROPPED GLOOP!");
 				player.secondaryCarriedItem = entt::null;
 
 				newPosition += playerTransform.getForward() * 0.7f;
@@ -956,12 +953,12 @@ void PlayerInteractionValidationSystem::dropPlayerCarriedItems(entt::entity a_pl
 			}
 			case CarryableItemType::throwableBottle:
 			{
-				std::cout << "DROPPED THROWABLE BOTTLE!\n";
+				OYL_LOG("DROPPED THROWABLE BOTTLE!");
 				player.primaryCarriedItem = entt::null;
 
 				newPosition += playerTransform.getForward() * 0.7f;
-				newPosition += playerTransform.getRight() * 0.2f;
-				newPosition += playerTransform.getUp() * 0.4f;
+				newPosition += playerTransform.getRight() * 0.25f;
+				newPosition += playerTransform.getUp() * 0.45f;
 
 				break;
 			}

@@ -2,7 +2,7 @@
 
 void GarbagePileGloopIndicatorSystem::onEnter()
 {
-	this->listenForEventCategory((EventCategory)CategoryGarbagePile);
+	listenForEventCategory((EventCategory)CategoryGarbagePile);
 }
 
 void GarbagePileGloopIndicatorSystem::onExit()

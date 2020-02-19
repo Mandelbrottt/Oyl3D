@@ -33,11 +33,11 @@ public:
 	{
 		srand(time(NULL));
 
-		this->listenForEventCategory(EventCategory::Keyboard);
-		this->listenForEventCategory(EventCategory::Mouse);
-		this->listenForEventCategory(EventCategory::Gamepad);
-		this->listenForEventCategory((EventCategory)CategoryGarbagePile);
-		this->listenForEventCategory((EventCategory)CategoryGameState);
+		listenForEventCategory(EventCategory::Keyboard);
+		listenForEventCategory(EventCategory::Mouse);
+		listenForEventCategory(EventCategory::Gamepad);
+		listenForEventCategory((EventCategory)CategoryGarbagePile);
+		listenForEventCategory((EventCategory)CategoryGameState);
 
 		// listenForEventType(EventType::PhysicsCollisionEnter);
 		// listenForEventType(EventType::PhysicsCollisionStay);
@@ -689,12 +689,31 @@ public:
 					if (player.team == Team::blue)
 					{
 						player.team = Team::red;
-						std::cout << "SWITCHED TO RED TEAM\n";
+						OYL_LOG("SWITCHED TO RED TEAM");
 					}
 					else
 					{
 						player.team = Team::blue;
-						std::cout << "SWITCHED TO BLUE TEAM\n";
+						OYL_LOG("SWITCHED TO BLUE TEAM");
+					}
+				}
+
+				break;
+			}
+
+			case oyl::Key::T:
+			{
+				auto playerView = registry->view<Player>();
+				for (entt::entity playerEntity : playerView)
+				{
+					if (registry->get<Player>(playerEntity).playerNum == PlayerNumber::One)
+					{
+						PlayerInteractionRequestEvent playerInteractionRequest;
+						playerInteractionRequest.playerEntity          = playerEntity;
+						playerInteractionRequest.itemClassifiatonToUse = PlayerItemClassifiation::primary;
+						postEvent(playerInteractionRequest);
+
+						break;
 					}
 				}
 
