@@ -5,7 +5,9 @@
 
 #include "Events/Event.h"
 
+#include "Graphics/Buffer.h"
 #include "Graphics/EditorCamera.h"
+#include "Graphics/Mesh.h"
 
 #include "Rendering/Renderer.h"
 
@@ -29,8 +31,8 @@ namespace oyl::internal
             {
                 anim.m_vao = VertexArray::create();
 
-                anim.m_vao->addVertexBuffer(anim.m_currentAnimation->poses[0].mesh->m_vbo);
-                anim.m_vao->addVertexBuffer(anim.m_currentAnimation->poses[1].mesh->m_vbo);
+                anim.m_vao->addVertexBuffer(anim.m_currentAnimation->poses[0].mesh->getVertexBuffer());
+                anim.m_vao->addVertexBuffer(anim.m_currentAnimation->poses[1].mesh->getVertexBuffer());
             }
 
             if (anim.m_nextAnimation)
@@ -62,8 +64,8 @@ namespace oyl::internal
                 ++lastVal %= anim.m_currentAnimation->poses.size();
                 ++currVal %= anim.m_currentAnimation->poses.size();
 
-                auto lastMeshVbo = anim.m_currentAnimation->poses[lastVal].mesh->m_vbo;
-                auto currMeshVbo = anim.m_currentAnimation->poses[currVal].mesh->m_vbo;
+                auto lastMeshVbo = anim.m_currentAnimation->poses[lastVal].mesh->getVertexBuffer();
+                auto currMeshVbo = anim.m_currentAnimation->poses[currVal].mesh->getVertexBuffer();
 
                 anim.m_vao->unload();
                 anim.m_vao->load();
@@ -72,7 +74,7 @@ namespace oyl::internal
                 anim.m_vao->addVertexBuffer(currMeshVbo);
                 if (anim.m_nextAnimation)
                 {
-                    auto transMeshVbo = anim.m_nextAnimation->poses[0].mesh->m_vbo;
+                    auto transMeshVbo = anim.m_nextAnimation->poses[0].mesh->getVertexBuffer();
                     anim.m_vao->addVertexBuffer(transMeshVbo);
                 }
             }

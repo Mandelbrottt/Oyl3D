@@ -5,6 +5,11 @@
 
 namespace oyl
 {
+    namespace internal
+    {
+        class GuiLayer;
+    }
+    
     class Material
     {
         struct _Material {};
@@ -108,5 +113,6 @@ namespace oyl
         static internal::AssetCache<Material> s_cache;
 
         friend Application;
+        friend internal::GuiLayer;
     };
 }
