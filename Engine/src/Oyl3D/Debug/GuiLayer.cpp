@@ -2194,30 +2194,33 @@ namespace oyl::internal
         return false;
     }
 
-    enum class TabMask
-    {
-        Material,
-        Mesh,
-        Texture,
-        Animation,
-    };
-
     inline void GuiLayer::drawAssetCache()
     {
-        static TabMask tabMask = TabMask::Material;
-        
         if (ImGui::Begin("AssetCache##DrawAssetCache"))
         {
-            switch (tabMask)
+            if (ImGui::BeginTabBar("##AssetCacheTabBar"))
             {
-                case TabMask::Material:
-                    drawMaterialCache(); break;
-                case TabMask::Mesh:
-                    drawMeshCache(); break;
-                case TabMask::Texture:
-                    drawTextureCache(); break;
-                case TabMask::Animation:
-                    drawAnimationCache(); break;
+                if (ImGui::BeginTabItem("Material"))
+                {
+                    drawMaterialCache();
+                    ImGui::EndTabItem();
+                }
+                if (ImGui::BeginTabItem("Mesh"))
+                {
+                    drawMeshCache();
+                    ImGui::EndTabItem();
+                }
+                if (ImGui::BeginTabItem("Texture"))
+                {
+                    drawTextureCache();
+                    ImGui::EndTabItem();
+                }
+                if (ImGui::BeginTabItem("Animation"))
+                {
+                    drawAnimationCache();
+                    ImGui::EndTabItem();
+                }
+                ImGui::EndTabBar();
             }
         }
         ImGui::End();
@@ -2233,40 +2236,70 @@ namespace oyl::internal
         const int   buf_size = 128;
         static char name[buf_size]{ 0 };
         static bool showDialogue = false;
-        if (!showDialogue)
-        {
-            if (ImGui::Button("Add Material"))
-                showDialogue = true;
-        }
-        else
-        {
-            bool isOpen = ImGui::InputText("Name##AssetCacheAddMatName", name, buf_size, ImGuiInputTextFlags_EnterReturnsTrue);
 
-            if (ImGui::IsAnyMouseDown() && !ImGui::IsItemHovered() || Input::isKeyPressed(Key::Escape))
-                memset(name, 0, sizeof(name)), showDialogue = false;
-
-            if (isOpen && name[0] != 0)
+        static bool needsFocus = false;
+        
+        if (ImGui::BeginPopupContextWindow())
+        {
+            if (!showDialogue)
             {
-                bool valid = true;
-                for (const auto& [alias, material] : Material::getCache())
-                    if (strcmp(name, alias.c_str()) == 0)
-                    {
-                        valid = false;
-                        break;
-                    }
-
-                if (valid)
-                {
-                    auto mat = Material::create();
-                    mat->m_filepath = "res/assets/materials/.oylmat";
-                    mat->m_filepath.insert(mat->m_filepath.find_last_of('.'), name);
-                    materialToFile(mat, mat->m_filepath);
-                    Material::cache(mat, name);
-
-                    memset(name, 0, sizeof(name));
-                    showDialogue = false;
-                }
+                showDialogue = ImGui::Selectable("Add Material", false, ImGuiSelectableFlags_DontClosePopups);
+                needsFocus = true;
+                //if (ImGui::Button("Add Material"))
+                //    showDialogue = true;
             }
+            else
+            {
+                if (needsFocus)
+                    ImGui::SetKeyboardFocusHere(), needsFocus = false;
+
+                bool isOpen = ImGui::InputText("Name##AssetCacheAddMatName", name, buf_size, ImGuiInputTextFlags_EnterReturnsTrue);
+
+                if (ImGui::IsAnyMouseDown() && !ImGui::IsItemHovered() || Input::isKeyPressed(Key::Escape))
+                    memset(name, 0, sizeof(name)), showDialogue = false;
+
+                if (isOpen && name[0] != 0)
+                {
+                    bool valid = true;
+                    for (const auto& [alias, material] : Material::getCache())
+                        if (strlen(name) == alias.length())
+                        {
+                            bool iequal = true;
+                            for (uint i = 0; i < alias.length(); i++)
+                            {
+                                if (std::tolower(name[i]) != std::tolower(alias[i]))
+                                {
+                                    iequal = false;
+                                    break;
+                                }
+                            }
+
+                            if (iequal)
+                            {
+                                valid = false;
+                                break;
+                            }
+                        }
+
+                    if (valid)
+                    {
+                        auto mat        = Material::create();
+                        mat->m_filepath = "res/assets/materials/.oylmat";
+                        mat->m_filepath.insert(mat->m_filepath.find_last_of('.'), name);
+                        materialToFile(mat, mat->m_filepath);
+                        Material::cache(mat, name);
+
+                        m_currentSelection = mat;
+
+                        memset(name, 0, sizeof(name));
+                        showDialogue = false;
+                    }
+                }
+
+                if (!showDialogue)
+                    ImGui::CloseCurrentPopup();
+            }
+            ImGui::EndPopup();
         }
 
         for (const auto& [alias, material] : Material::getCache())
@@ -2284,6 +2317,9 @@ namespace oyl::internal
                 {
                     if (std::fs::exists(material->getFilePath()))
                         std::fs::remove(material->getFilePath());
+
+                    if (m_currentSelection.material() == material)
+                        m_currentSelection = {};
 
                     // Remove every reference to the material
                     using component::Renderable;
