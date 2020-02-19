@@ -2205,9 +2205,9 @@ namespace oyl::internal
                     drawMaterialCache();
                     ImGui::EndTabItem();
                 }
-                if (ImGui::BeginTabItem("Mesh"))
+                if (ImGui::BeginTabItem("Model"))
                 {
-                    drawMeshCache();
+                    drawModelCache();
                     ImGui::EndTabItem();
                 }
                 if (ImGui::BeginTabItem("Texture"))
@@ -2335,7 +2335,7 @@ namespace oyl::internal
         }
     }
 
-    void GuiLayer::drawMeshCache() {}
+    void GuiLayer::drawModelCache() {}
 
     void GuiLayer::drawTextureCache() {}
 
