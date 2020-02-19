@@ -127,9 +127,9 @@ void PlayerInteractionValidationSystem::performRaycastAndValidateForPlayer(entt:
 	auto& player          = registry->get<Player>(a_playerEntity);
 	auto& playerTransform = registry->get<component::Transform>(a_playerEntity);
 
-	if (player.state == PlayerState::pushing || player.state == PlayerState::cleaning)
+	if (player.state == PlayerState::pushing || player.state == PlayerState::cleaning || player.state == PlayerState::stunned)
 	{
-		//player cannot switch out of pushing or cleaning states
+		//player cannot switch out of those states states
 		player.interactableEntity = entt::null;
 
 		PlayerInteractResultEvent playerInteractResult;

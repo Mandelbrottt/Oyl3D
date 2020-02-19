@@ -13,7 +13,15 @@ void ThrowableBottleSystem::onExit()
 
 void ThrowableBottleSystem::onUpdate()
 {
+	auto bottleView = registry->view<ThrowableBottle>();
+	for (auto bottleEntity : bottleView)
+	{
+		auto& bottle          = registry->get<ThrowableBottle>(bottleEntity);
+		auto& bottleTransform = registry->get<component::Transform>(bottleEntity);
 
+		if (bottle.isBeingThrown)
+			bottleTransform.rotate(bottleTransform.getRight() * -100.0f);
+	}
 }
 
 bool ThrowableBottleSystem::onEvent(const Event& event)
@@ -43,7 +51,7 @@ bool ThrowableBottleSystem::onEvent(const Event& event)
 			newPosition += playerTransform.getUp()      * 0.8f;
 
 			bottleTransform.setPosition(newPosition);
-			bottleTransform.setRotationEuler(playerTransform.getRotationEuler());
+			bottleTransform.setRotation(playerTransform.getRotation());
 
 			auto cameraView = registry->view<component::Camera>();
 			for (auto cameraEntity : cameraView)
@@ -100,8 +108,16 @@ bool ThrowableBottleSystem::onEvent(const Event& event)
 					OYL_LOG("PLAYER {} WAS HIT BY A BOTTLE!", (int)player.playerNum + 1);
 					registry->destroy(bottleEntity); //the bottle breaks
 
-					//bottle stuns the player hit
+					//bottle stuns the player hit and makes them drop their carried items
+					PlayerDropItemRequestEvent playerDropItemRequest;
+					playerDropItemRequest.playerEntity             = playerEntity;
+					playerDropItemRequest.itemClassificationToDrop = PlayerItemClassifiation::any;
+					postEvent(playerDropItemRequest);
 
+					PlayerStateChangeEvent playerStateChange;
+					playerStateChange.playerEntity = playerEntity;
+					playerStateChange.newState     = PlayerState::stunned;
+					postEvent(playerStateChange);
 				}
 			}
 

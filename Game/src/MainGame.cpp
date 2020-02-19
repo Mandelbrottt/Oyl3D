@@ -520,6 +520,9 @@ public:
 			auto& player          = registry->get<Player>(playerEntity);
 			auto& playerTransform = registry->get<component::Transform>(playerEntity);
 
+			if (player.state == PlayerState::stunned)
+				continue;
+
 			/*if (Input::getGamepadRightTrigger((uint)player.controllerNum) > 0.9f)
 			{
 				PlayerInteractionRequestEvent playerInteractionRequest;

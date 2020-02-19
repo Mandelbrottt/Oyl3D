@@ -18,7 +18,8 @@ enum class PlayerState
 	falling,
 	pushing,
 	inCleaningQuicktimeEvent,
-	cleaning
+	cleaning,
+	stunned
 };
 
 enum class PlayerItemClassifiation
@@ -107,7 +108,10 @@ struct Player
 	MoveableUsingLerp pushingStateData;
 
 	float CLEANING_TIME_DURATION = 1.2f; //IF YOU CHANGE THIS, MAKE SURE TO ALSO CHANGE THE DEPENDANT VALUES IN GARBAGE PILE AND GARBAGE HP BAR COMPONENETS (check the comments in those components to figure out which ones)
-	float cleaningTimeCountdown = CLEANING_TIME_DURATION;
+	float cleaningTimeCountdown  = CLEANING_TIME_DURATION;
+
+	float STUNNED_TIME_DURATION = 2.0f;
+	float stunnedTimeCountdown  = CLEANING_TIME_DURATION;
 
 	bool  isCameraLocked = false;
 	float yRotationClamp = 0.0f;
