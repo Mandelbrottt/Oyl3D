@@ -307,6 +307,28 @@ public:
 			}
 
 			{
+				//throw bottle prompt
+				auto e = registry->create();
+
+				auto& t = registry->assign<component::Transform>(e);
+				t.setPosition(glm::vec3(-30.0f, -2.0f, 0.0f));
+				t.setScale(glm::vec3(0.7f, 0.7f, 1.0f));
+
+				auto& HUDElement = registry->assign<PlayerHUDElement>(e);
+				HUDElement.positionWhenActive = glm::vec3(0.0f, -2.0f, 0.0f);
+				HUDElement.playerNum          = (PlayerNumber)i;
+
+				auto& throwBottlePrompt = registry->assign<ThrowBottlePrompt>(e);
+
+				auto& so = registry->assign<component::EntityInfo>(e);
+				so.name = "Throw Bottle Prompt " + std::to_string(i + 1);
+
+				auto& gui = registry->assign<component::GuiRenderable>(e);
+				gui.texture = Texture2D::cache("res/assets/textures/gui/throwBottlePrompt.png");
+				gui.cullingMask = 0b1 << i;
+			}
+
+			{
 				entt::entity e = registry->create();
 				auto& gui = registry->assign<component::GuiRenderable>(e);
 				gui.texture = Texture2D::cache("res/assets/textures/gui/reticle.png");
@@ -683,7 +705,7 @@ public:
 
 			case oyl::Key::G:
 			{
-				//G key changes player's teams for debugging TODO: remove for working version
+				//G key changes player's teams for debugging TODO: remove for final version
 				auto playerView = registry->view<Player>();
 				for (entt::entity playerEntity : playerView)
 				{

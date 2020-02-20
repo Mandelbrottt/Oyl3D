@@ -13,14 +13,28 @@ void ThrowableBottleSystem::onExit()
 
 void ThrowableBottleSystem::onUpdate()
 {
-	auto bottleView = registry->view<ThrowableBottle>();
+	auto bottleView = registry->view<ThrowableBottle, CarryableItem>();
 	for (auto bottleEntity : bottleView)
 	{
 		auto& bottle          = registry->get<ThrowableBottle>(bottleEntity);
 		auto& bottleTransform = registry->get<component::Transform>(bottleEntity);
+		auto& bottleCarryable = registry->get<CarryableItem>(bottleEntity);
+		auto& bottleParent    = registry->get_or_assign<component::Parent>(bottleEntity);
 
 		if (bottle.isBeingThrown)
 			bottleTransform.rotate(bottleTransform.getRight() * -100.0f);
+
+		auto bottlePromptView = registry->view<ThrowBottlePrompt, PlayerHUDElement>();
+		for (auto bottlePromptEntity : bottlePromptView)
+		{
+			auto& promptTransform  = registry->get<component::Transform>(bottlePromptEntity);
+			auto& promptHudElement = registry->get<PlayerHUDElement>(bottlePromptEntity);
+
+			if (bottleCarryable.isBeingCarried && promptHudElement.playerNum == registry->get<Player>(bottleParent.parent).playerNum)
+				promptTransform.setPosition(promptHudElement.positionWhenActive);
+			else
+				promptTransform.setPositionX(-30.0f);
+		}
 	}
 }
 

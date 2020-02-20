@@ -200,6 +200,11 @@ struct ThrowableBottle
 	entt::entity playerThrowingEntity = entt::null;
 };
 
+struct ThrowBottlePrompt
+{
+
+};
+
 struct CannonballCrate
 {
 	Team team;
