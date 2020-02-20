@@ -19,6 +19,7 @@ enum class PlayerState
 	pushing,
 	inCleaningQuicktimeEvent,
 	cleaning,
+	throwingBottle,
 	stunned
 };
 
@@ -109,6 +110,9 @@ struct Player
 
 	float CLEANING_TIME_DURATION = 1.2f; //IF YOU CHANGE THIS, MAKE SURE TO ALSO CHANGE THE DEPENDANT VALUES IN GARBAGE PILE AND GARBAGE HP BAR COMPONENETS (check the comments in those components to figure out which ones)
 	float cleaningTimeCountdown  = CLEANING_TIME_DURATION;
+
+	float THROWING_DELAY_DURATION      = 0.5f;
+	float delayBeforeThrowingCountdown = THROWING_DELAY_DURATION;
 
 	float STUNNED_TIME_DURATION = 2.0f;
 	float stunnedTimeCountdown  = CLEANING_TIME_DURATION;

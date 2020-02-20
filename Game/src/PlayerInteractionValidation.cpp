@@ -50,14 +50,13 @@ bool PlayerInteractionValidationSystem::onEvent(const Event& event)
 
 			if (   registry->valid(player.primaryCarriedItem) 
 				&& registry->get<CarryableItem>(player.primaryCarriedItem).type == CarryableItemType::throwableBottle
-				&& evt.itemClassifiatonToUse == PlayerItemClassifiation::primary)
+				&& evt.itemClassifiatonToUse == PlayerItemClassifiation::primary
+				&& player.state != PlayerState::throwingBottle)
 			{
-				ThrowBottleEvent throwBottle;
-				throwBottle.bottleEntity         = player.primaryCarriedItem;
-				throwBottle.playerThrowingEntity = evt.playerEntity;
-				postEvent(throwBottle);
-
-				player.primaryCarriedItem = entt::null;
+				PlayerStateChangeEvent playerStateChange;
+				playerStateChange.playerEntity = evt.playerEntity;
+				playerStateChange.newState     = PlayerState::throwingBottle;
+				postEvent(playerStateChange);
 			}
 			else
 				performInteractionForPlayer(evt.playerEntity, evt.itemClassifiatonToUse);

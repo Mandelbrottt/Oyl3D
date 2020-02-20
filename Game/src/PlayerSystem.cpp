@@ -59,6 +59,7 @@ void PlayerSystem::onUpdate()
 			case PlayerState::falling:
 			{
 				changeToIdle(&player);
+
 				break;
 			}
 
@@ -117,18 +118,35 @@ void PlayerSystem::onUpdate()
 				break;
 			}
 
+			case PlayerState::throwingBottle:
+			{
+				performBasicMovement(playerEntity, player.speedForce * 0.5f);
+
+				player.delayBeforeThrowingCountdown -= Time::deltaTime();
+				if (player.delayBeforeThrowingCountdown < 0.0f)
+				{
+					changeToIdle(&player);
+
+					ThrowBottleEvent throwBottle;
+					throwBottle.bottleEntity         = player.primaryCarriedItem;
+					throwBottle.playerThrowingEntity = playerEntity;
+					postEvent(throwBottle);
+
+					player.primaryCarriedItem = entt::null;
+				}
+
+				break;
+			}
+
 			case PlayerState::stunned:
 			{
-				//still apply movement to fake friction for the player
+				//still apply movement (with no direction) to fake friction for the player
 				player.moveDirection = glm::vec3(0.0f, 0.0f, 0.0f);
 				performBasicMovement(playerEntity, player.speedForce * 0.7f);
 
 				player.stunnedTimeCountdown -= Time::deltaTime();
 				if (player.stunnedTimeCountdown < 0.0f)
-				{
 					changeToIdle(&player);
-					OYL_LOG("No longer stunned");
-				}
 
 				break;
 			}
@@ -147,11 +165,18 @@ bool PlayerSystem::onEvent(const Event& event)
 			auto& player   = registry->get<Player>(evt.playerEntity);
 			auto& playerRB = registry->get<component::RigidBody>(evt.playerEntity);
 
-			if (!player.isJumping && player.state != PlayerState::stunned && player.state != PlayerState::pushing && player.state != PlayerState::cleaning)
+			if (   !player.isJumping 
+				&& player.state != PlayerState::stunned 
+				&& player.state != PlayerState::pushing 
+				&& player.state != PlayerState::cleaning)
 			{
 				playerRB.addImpulse(glm::vec3(0.0f, 1.0f, 0.0f) * player.jumpForce);
 
-				changeToJumping(&player);
+				player.isJumping         = true;
+				player.jumpCooldownTimer = player.JUMP_COOLDOWN_DURATION;
+
+				if (player.state != PlayerState::throwingBottle)
+					changeToJumping(&player);
 			}
 
 			break;
@@ -159,8 +184,11 @@ bool PlayerSystem::onEvent(const Event& event)
 
 		case (EventType) TypePlayerStateChange:
 		{
-			auto evt     = event_cast<PlayerStateChangeEvent>(event);
+			auto evt = event_cast<PlayerStateChangeEvent>(event);
 			auto& player = registry->get<Player>(evt.playerEntity);
+
+			if (player.state == PlayerState::pushing || player.state == PlayerState::stunned || player.state == PlayerState::throwingBottle)
+				break;
 
 			switch (evt.newState)
 			{
@@ -185,6 +213,11 @@ bool PlayerSystem::onEvent(const Event& event)
 				case PlayerState::cleaning:
 				{
 					changeToCleaning(&player);
+					break;
+				}
+				case PlayerState::throwingBottle:
+				{
+					changeToThrowingBottle(&player);
 					break;
 				}
 				case PlayerState::stunned:
@@ -254,9 +287,6 @@ void PlayerSystem::changeToWalking(Player* a_player)
 
 void PlayerSystem::changeToJumping(Player* a_player)
 {
-	a_player->isJumping         = true;
-	a_player->jumpCooldownTimer = a_player->JUMP_COOLDOWN_DURATION;
-
 	a_player->state = PlayerState::jumping;
 }
 
@@ -292,6 +322,13 @@ void PlayerSystem::changeToCleaning(Player* a_player)
 	a_player->cleaningTimeCountdown = a_player->CLEANING_TIME_DURATION;
 
 	a_player->state = PlayerState::cleaning;
+}
+
+void PlayerSystem::changeToThrowingBottle(Player* a_player)
+{
+	a_player->delayBeforeThrowingCountdown = a_player->THROWING_DELAY_DURATION;
+
+	a_player->state = PlayerState::throwingBottle;
 }
 
 void PlayerSystem::changeToStunned(Player* a_player)
