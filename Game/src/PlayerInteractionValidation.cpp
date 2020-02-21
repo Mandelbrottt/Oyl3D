@@ -221,81 +221,111 @@ void PlayerInteractionValidationSystem::validateCarryableItemInteraction(entt::e
 		{
 			case CarryableItemType::cannonball:
 			{
+				PlayerInteractResultEvent playerInteractResult;
+				playerInteractResult.playerNum = player.playerNum;
+
 				if (!registry->valid(player.primaryCarriedItem) && !registry->valid(player.secondaryCarriedItem))
 				{
 					player.interactableEntity = a_carryableItemEntity;
 
-					PlayerInteractResultEvent playerInteractResult;
 					playerInteractResult.interactionType = PlayerInteractionResult::pickUpCannonball;
-					playerInteractResult.playerNum       = player.playerNum;
-					postEvent(playerInteractResult);
-
-					return;
 				}
-				break;
+				else //player is carrying items
+				{
+					player.interactableEntity = entt::null;
+
+					playerInteractResult.interactionType = PlayerInteractionResult::needToDropItems;
+				}
+
+				postEvent(playerInteractResult);
+				return;
 			}
 			case CarryableItemType::mop:
 			{
+				PlayerInteractResultEvent playerInteractResult;
+				playerInteractResult.playerNum = player.playerNum;
+
 				if (!registry->valid(player.primaryCarriedItem))
 				{
 					player.interactableEntity = a_carryableItemEntity;
 
-					PlayerInteractResultEvent playerInteractResult;
 					playerInteractResult.interactionType = PlayerInteractionResult::pickUpMop;
-					playerInteractResult.playerNum       = player.playerNum;
-					postEvent(playerInteractResult);
+				}
+				else //player is carrying a primary item
+				{
+					player.interactableEntity = entt::null;
 
-					return;
+					playerInteractResult.interactionType = PlayerInteractionResult::needToDropItems;
 				}
 
-				break;
+				postEvent(playerInteractResult);
+				return;
 			}
 			case CarryableItemType::cleaningSolution:
 			{
+				PlayerInteractResultEvent playerInteractResult;
+				playerInteractResult.playerNum = player.playerNum;
+
 				if (!registry->valid(player.secondaryCarriedItem))
 				{
 					player.interactableEntity = a_carryableItemEntity;
 
-					PlayerInteractResultEvent playerInteractResult;
 					playerInteractResult.interactionType = PlayerInteractionResult::pickUpCleaningSolution;
-					playerInteractResult.playerNum       = player.playerNum;
-					postEvent(playerInteractResult);
+				}
+				else //player is carrying a secondary item
+				{
+					player.interactableEntity = entt::null;
 
-					return;
+					playerInteractResult.interactionType = PlayerInteractionResult::needToDropItems;
 				}
 
-				break;
+				postEvent(playerInteractResult);
+				return;
 			}
 			case CarryableItemType::gloop:
 			{
+				PlayerInteractResultEvent playerInteractResult;
+				playerInteractResult.playerNum = player.playerNum;
+
 				if (!registry->valid(player.secondaryCarriedItem))
 				{
 					player.interactableEntity = a_carryableItemEntity;
 
-					PlayerInteractResultEvent playerInteractResult;
 					playerInteractResult.interactionType = PlayerInteractionResult::pickUpGloop;
-					playerInteractResult.playerNum       = player.playerNum;
-					postEvent(playerInteractResult);
-
-					return;
 				}
-				break;
+				else //player is carrying a secondary item
+				{
+					player.interactableEntity = entt::null;
+
+					playerInteractResult.interactionType = PlayerInteractionResult::needToDropItems;
+				}
+
+				postEvent(playerInteractResult);
+				return;
 			}
 			case CarryableItemType::throwableBottle:
 			{
-				if (!registry->valid(player.primaryCarriedItem) && registry->get<ThrowableBottle>(a_carryableItemEntity).isBeingThrown == false)
+				PlayerInteractResultEvent playerInteractResult;
+				playerInteractResult.playerNum = player.playerNum;
+
+				if (!registry->valid(player.primaryCarriedItem))
 				{
+					if (registry->get<ThrowableBottle>(a_carryableItemEntity).isBeingThrown) //cannot pick up a bottle while it's being thrown
+						break;
+
 					player.interactableEntity = a_carryableItemEntity;
 
-					PlayerInteractResultEvent playerInteractResult;
 					playerInteractResult.interactionType = PlayerInteractionResult::pickUpThrowableBottle;
-					playerInteractResult.playerNum       = player.playerNum;
-					postEvent(playerInteractResult);
+				}
+				else //player is carrying a primary item
+				{
+					player.interactableEntity = entt::null;
 
-					return;
+					playerInteractResult.interactionType = PlayerInteractionResult::needToDropItems;
 				}
 
-				break;
+				postEvent(playerInteractResult);
+				return;
 			}
 		}
 	}
@@ -347,7 +377,6 @@ void PlayerInteractionValidationSystem::validateGarbagePileInteraction(entt::ent
 		{
 			if (garbagePile.garbageTicks <= garbagePile.GARBAGE_TICKS_PER_LEVEL * 0.75f) //75% or lower requires mop to clean
 			{
-				//garbage ticks less than max means the player needs a mop to clean
 				if (   registry->valid(player.primaryCarriedItem)
 					&& registry->get<CarryableItem>(player.primaryCarriedItem).type == CarryableItemType::mop
 					&& registry->get<CarryableItem>(player.primaryCarriedItem).team == player.team)
@@ -372,6 +401,17 @@ void PlayerInteractionValidationSystem::validateGarbagePileInteraction(entt::ent
 
 					return;
 				}
+				else //player is not carrying mop
+				{
+					player.interactableEntity = entt::null;
+
+					PlayerInteractResultEvent playerInteractResult;
+					playerInteractResult.interactionType = PlayerInteractionResult::needMop;
+					playerInteractResult.playerNum       = player.playerNum;
+					postEvent(playerInteractResult);
+
+					return;
+				}
 			}
 			else //garbage ticks at cleaning solution required threshold
 			{
@@ -384,6 +424,17 @@ void PlayerInteractionValidationSystem::validateGarbagePileInteraction(entt::ent
 
 					PlayerInteractResultEvent playerInteractResult;
 					playerInteractResult.interactionType = PlayerInteractionResult::cleanGarbagePile;
+					playerInteractResult.playerNum       = player.playerNum;
+					postEvent(playerInteractResult);
+
+					return;
+				}
+				else //player is not carrying cleaning solution
+				{
+					player.interactableEntity = entt::null;
+
+					PlayerInteractResultEvent playerInteractResult;
+					playerInteractResult.interactionType = PlayerInteractionResult::needCleaningSolution;
 					playerInteractResult.playerNum       = player.playerNum;
 					postEvent(playerInteractResult);
 
@@ -428,13 +479,26 @@ void PlayerInteractionValidationSystem::validateCannonballCrateInteraction(entt:
 	auto& cannonballCrateTransform = registry->get<component::Transform>(a_cannonballCrateEntity);
 
 	if (   !registry->valid(player.primaryCarriedItem)
-		&& !registry->valid(player.secondaryCarriedItem)
-		&& cannonballCrate.team == player.team)
+		&& !registry->valid(player.secondaryCarriedItem))
 	{
-		player.interactableEntity = a_cannonballCrateEntity;
+		if (cannonballCrate.team == player.team)
+		{
+			player.interactableEntity = a_cannonballCrateEntity;
+
+			PlayerInteractResultEvent playerInteractResult;
+			playerInteractResult.interactionType = PlayerInteractionResult::takeCannonballFromCrate;
+			playerInteractResult.playerNum       = player.playerNum;
+			postEvent(playerInteractResult);
+
+			return;
+		}
+	}
+	else //player is carrying items
+	{
+		player.interactableEntity = entt::null;
 
 		PlayerInteractResultEvent playerInteractResult;
-		playerInteractResult.interactionType = PlayerInteractionResult::takeCannonballFromCrate;
+		playerInteractResult.interactionType = PlayerInteractionResult::needToDropItems;
 		playerInteractResult.playerNum       = player.playerNum;
 		postEvent(playerInteractResult);
 
@@ -486,10 +550,21 @@ void PlayerInteractionValidationSystem::validateCannonInteraction(entt::entity a
 
 			return;
 		}
-		else if (   cannon.state == CannonState::doingNothing
-			     && !registry->valid(player.primaryCarriedItem)
-			     && !registry->valid(player.secondaryCarriedItem))
+		else if (cannon.state == CannonState::doingNothing)
 		{
+			if (registry->valid(player.primaryCarriedItem) || registry->valid(player.secondaryCarriedItem))
+			{
+				//the player cannot push the cannon while carrying item(s)
+				player.interactableEntity = entt::null;
+
+				PlayerInteractResultEvent playerInteractResult;
+				playerInteractResult.interactionType = PlayerInteractionResult::needToDropItems;
+				playerInteractResult.playerNum       = player.playerNum;
+				postEvent(playerInteractResult);
+
+				return;
+			}
+
 			float playerForwardDotCannonRight = glm::dot(playerTransform.getForward(), cannonTransform.getRight());
 
 			bool isCannonOnLeftSideOfTrack  = (cannon.cannonTrackPosition == -1)

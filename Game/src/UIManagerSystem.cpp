@@ -74,14 +74,31 @@ bool UIManagerSystem::onEvent(const Event& event)
 					enableValidUIType(PlayerInteractionResult::useGloop, evt.playerNum);
 					break;
 				}
-				case PlayerInteractionResult::loadCannon:
+
+				case PlayerInteractionResult::needCleaningSolution:
 				{
-					enableValidUIType(PlayerInteractionResult::loadCannon, evt.playerNum);
+					enableInvalidUIType(PlayerInteractionResult::needCleaningSolution, evt.playerNum);
+					break;
+				}
+				case PlayerInteractionResult::needMop:
+				{
+					enableInvalidUIType(PlayerInteractionResult::needMop, evt.playerNum);
+					break;
+				}
+				case PlayerInteractionResult::needToDropItems:
+				{
+					enableInvalidUIType(PlayerInteractionResult::needToDropItems, evt.playerNum);
 					break;
 				}
 				case PlayerInteractionResult::cannonFiringSoon:
 				{
 					enableInvalidUIType(PlayerInteractionResult::cannonFiringSoon, evt.playerNum);
+					break;
+				}
+
+				case PlayerInteractionResult::loadCannon:
+				{
+					enableValidUIType(PlayerInteractionResult::loadCannon, evt.playerNum);
 					break;
 				}
 				case PlayerInteractionResult::pushCannon:

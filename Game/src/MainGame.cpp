@@ -307,6 +307,78 @@ public:
 			}
 
 			{
+				auto e = registry->create();
+
+				auto& t = registry->assign<component::Transform>(e);
+				t.setPosition(glm::vec3(-30.0f, -2.5f, 0.0f));
+				t.setScale(glm::vec3(1.0f, 1.0f, 1.0f));
+
+				auto& uiType = registry->assign<PlayerInteractionType>(e);
+				uiType.type = PlayerInteractionResult::needToDropItems;
+
+				auto& HUDElement = registry->assign<PlayerHUDElement>(e);
+				HUDElement.positionWhenActive = glm::vec3(0.0f, 2.0f, 0.0f);
+				HUDElement.playerNum = (PlayerNumber)i;
+
+				auto& so = registry->assign<component::EntityInfo>(e);
+				so.name = "Drop Items Prompt" + std::to_string(i + 1);
+
+				auto& gui = registry->assign<component::GuiRenderable>(e);
+				gui.texture = Texture2D::cache("res/assets/textures/gui/dropItemsPrompt.png");
+				gui.cullingMask = 0b1 << i;
+			}
+
+			{
+				auto e = registry->create();
+
+				auto& t = registry->assign<component::Transform>(e);
+				t.setPosition(glm::vec3(-30.0f, -2.5f, 0.0f));
+				t.setScale(glm::vec3(2.5f, 2.0f, 1.0f));
+
+				auto& uiType = registry->assign<PlayerInteractionType>(e);
+				uiType.type = PlayerInteractionResult::needCleaningSolution;
+
+				auto& HUDElement = registry->assign<PlayerHUDElement>(e);
+				HUDElement.positionWhenActive = glm::vec3(1.5f, 0.0f, 0.0f);
+				HUDElement.playerNum = (PlayerNumber)i;
+
+				auto& so = registry->assign<component::EntityInfo>(e);
+				so.name = "Cleaning Solution Icon Prompt" + std::to_string(i + 1);
+
+				auto& gui = registry->assign<component::GuiRenderable>(e);
+				if (HUDElement.playerNum == PlayerNumber::One || HUDElement.playerNum == PlayerNumber::Three)
+					gui.texture =  Texture2D::cache("res/assets/textures/gui/blueCleaningSolutionIcon.png");
+				else
+					gui.texture = Texture2D::cache("res/assets/textures/gui/redCleaningSolutionIcon.png");
+				gui.cullingMask = 0b1 << i;
+			}
+
+			{
+				auto e = registry->create();
+
+				auto& t = registry->assign<component::Transform>(e);
+				t.setPosition(glm::vec3(-30.0f, -2.5f, 0.0f));
+				t.setScale(glm::vec3(3.0f, 3.0f, 1.0f));
+
+				auto& uiType = registry->assign<PlayerInteractionType>(e);
+				uiType.type = PlayerInteractionResult::needMop;
+
+				auto& HUDElement = registry->assign<PlayerHUDElement>(e);
+				HUDElement.positionWhenActive = glm::vec3(1.3f, 0.0f, 0.0f);
+				HUDElement.playerNum = (PlayerNumber)i;
+
+				auto& so = registry->assign<component::EntityInfo>(e);
+				so.name = "Mop Icon Prompt" + std::to_string(i + 1);
+
+				auto& gui = registry->assign<component::GuiRenderable>(e);
+				if (HUDElement.playerNum == PlayerNumber::One || HUDElement.playerNum == PlayerNumber::Three)
+					gui.texture = Texture2D::cache("res/assets/textures/gui/blueMopIcon.png");
+				else
+					gui.texture = Texture2D::cache("res/assets/textures/gui/redMopIcon.png");
+				gui.cullingMask = 0b1 << i;
+			}
+
+			{
 				//throw bottle prompt
 				auto e = registry->create();
 

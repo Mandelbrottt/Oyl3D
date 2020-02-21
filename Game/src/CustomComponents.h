@@ -50,8 +50,16 @@ enum class CarryableItemType
 enum class PlayerInteractionResult
 {
 	nothing,
+
+	//"invalid" results (invalid reticle is displayed)
 	invalid,
 	cannonFiringSoon,
+	needCleaningSolution,
+	needMop,
+	needGloop,
+	needToDropItems,
+
+	//"valid" results (normal reticle is displayed)
 	loadCannon,
 	pushCannon,
 	takeCannonballFromCrate,
@@ -61,8 +69,7 @@ enum class PlayerInteractionResult
 	pickUpGloop,
 	pickUpThrowableBottle,
 	useGloop,
-	cleanGarbagePile,
-	activateCleaningQuicktimeEvent
+	cleanGarbagePile
 };
 
 enum class ReticleType

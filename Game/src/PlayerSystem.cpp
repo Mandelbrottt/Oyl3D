@@ -166,6 +166,7 @@ bool PlayerSystem::onEvent(const Event& event)
 			auto& playerRB = registry->get<component::RigidBody>(evt.playerEntity);
 
 			if (   !player.isJumping 
+				//&& playerRB.getVelocity().y >= -2.0f //add a small buffer 
 				&& player.state != PlayerState::stunned 
 				&& player.state != PlayerState::pushing 
 				&& player.state != PlayerState::cleaning)
