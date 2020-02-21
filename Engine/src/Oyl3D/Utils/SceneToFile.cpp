@@ -894,6 +894,12 @@ namespace oyl::internal
         sceneFile.close();
 
         using component::EntityInfo;
+
+        registry.each([&registry](auto entity)
+        {
+            if (!registry.has<component::Transform>(entity))
+                registry.assign<component::Transform>(entity);
+        });
         
         std::unordered_set<std::string> processedEntities;
         processedEntities.reserve(sceneJson.size());
