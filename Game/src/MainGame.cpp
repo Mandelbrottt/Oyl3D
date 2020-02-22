@@ -347,7 +347,7 @@ public:
 
 				auto& gui = registry->assign<component::GuiRenderable>(e);
 				if (HUDElement.playerNum == PlayerNumber::One || HUDElement.playerNum == PlayerNumber::Three)
-					gui.texture =  Texture2D::cache("res/assets/textures/gui/blueCleaningSolutionIcon.png");
+					gui.texture = Texture2D::cache("res/assets/textures/gui/blueCleaningSolutionIcon.png");
 				else
 					gui.texture = Texture2D::cache("res/assets/textures/gui/redCleaningSolutionIcon.png");
 				gui.cullingMask = 0b1 << i;

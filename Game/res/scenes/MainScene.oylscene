@@ -173,7 +173,7 @@
             }
         },
         "RigidBody": {
-            "Friction": 0.0,
+            "Friction": 0.949999988079071,
             "Mass": 0.0,
             "Properties": 34
         },
@@ -299,7 +299,7 @@
         "RigidBody": {
             "Friction": 0.949999988079071,
             "Mass": 0.0,
-            "Properties": 54
+            "Properties": 62
         },
         "Transform": {
             "Mirror": {
@@ -335,9 +335,9 @@
                         0.0
                     ],
                     "Size": [
-                        0.6000000238418579,
+                        0.8999999761581421,
                         2.200000047683716,
-                        0.6000000238418579
+                        0.8999999761581421
                     ],
                     "Trigger": false,
                     "Type": 0
@@ -1999,192 +1999,6 @@
             }
         }
     },
-    "BetweenShipsColliderLower 4": {
-        "Collidable": {
-            "Shapes": [
-                {
-                    "Center": [
-                        0.0,
-                        0.0,
-                        0.0
-                    ],
-                    "Size": [
-                        1.0,
-                        1.0,
-                        1.0
-                    ],
-                    "Trigger": false,
-                    "Type": 0
-                }
-            ]
-        },
-        "Parent": {
-            "Name": "BetweenShipsColliders 1"
-        },
-        "Renderable": {
-            "CullingMask": 15,
-            "Enabled": false,
-            "Material": {
-                "Alias": null
-            },
-            "Mesh": {
-                "Alias": "cube",
-                "FilePath": "res\\assets\\models\\cube.obj"
-            }
-        },
-        "RigidBody": {
-            "Friction": 0.0,
-            "Mass": 0.0,
-            "Properties": 34
-        },
-        "Transform": {
-            "Mirror": {
-                "X": false,
-                "Y": false,
-                "Z": false
-            },
-            "Position": {
-                "X": 0.4418014585971832,
-                "Y": -0.42337852716445923,
-                "Z": 0.3332834839820862
-            },
-            "Rotation": {
-                "qW": 1.0,
-                "qX": 0.0,
-                "qY": 0.0,
-                "qZ": 0.0
-            },
-            "Scale": {
-                "X": 1.0,
-                "Y": 0.6231107711791992,
-                "Z": 1.6859911680221558
-            }
-        }
-    },
-    "BetweenShipsColliderLower 5": {
-        "Collidable": {
-            "Shapes": [
-                {
-                    "Center": [
-                        0.0,
-                        0.0,
-                        0.0
-                    ],
-                    "Size": [
-                        1.0,
-                        1.0,
-                        1.0
-                    ],
-                    "Trigger": false,
-                    "Type": 0
-                }
-            ]
-        },
-        "Parent": {
-            "Name": "BetweenShipsColliders 1"
-        },
-        "Renderable": {
-            "CullingMask": 15,
-            "Enabled": false,
-            "Material": {
-                "Alias": null
-            },
-            "Mesh": {
-                "Alias": "cube",
-                "FilePath": "res\\assets\\models\\cube.obj"
-            }
-        },
-        "RigidBody": {
-            "Friction": 0.0,
-            "Mass": 0.0,
-            "Properties": 34
-        },
-        "Transform": {
-            "Mirror": {
-                "X": false,
-                "Y": false,
-                "Z": false
-            },
-            "Position": {
-                "X": -0.17499220371246338,
-                "Y": 0.0,
-                "Z": 0.33000001311302185
-            },
-            "Rotation": {
-                "qW": 1.0,
-                "qX": 0.0,
-                "qY": 0.0,
-                "qZ": 0.0
-            },
-            "Scale": {
-                "X": 1.0128506422042847,
-                "Y": 1.0,
-                "Z": 1.6930631399154663
-            }
-        }
-    },
-    "BetweenShipsColliderLower 6": {
-        "Collidable": {
-            "Shapes": [
-                {
-                    "Center": [
-                        0.0,
-                        0.0,
-                        0.0
-                    ],
-                    "Size": [
-                        1.0,
-                        1.0,
-                        1.0
-                    ],
-                    "Trigger": false,
-                    "Type": 0
-                }
-            ]
-        },
-        "Parent": {
-            "Name": "BetweenShipsColliders 1"
-        },
-        "Renderable": {
-            "CullingMask": 15,
-            "Enabled": false,
-            "Material": {
-                "Alias": null
-            },
-            "Mesh": {
-                "Alias": "cube",
-                "FilePath": "res\\assets\\models\\cube.obj"
-            }
-        },
-        "RigidBody": {
-            "Friction": 0.0,
-            "Mass": 0.0,
-            "Properties": 34
-        },
-        "Transform": {
-            "Mirror": {
-                "X": false,
-                "Y": false,
-                "Z": false
-            },
-            "Position": {
-                "X": 1.0331625938415527,
-                "Y": 3.1068921089172363e-06,
-                "Z": 0.33170944452285767
-            },
-            "Rotation": {
-                "qW": 1.0,
-                "qX": 0.0,
-                "qY": 0.0,
-                "qZ": 0.0
-            },
-            "Scale": {
-                "X": 1.0,
-                "Y": 0.9999999403953552,
-                "Z": 1.6951076984405518
-            }
-        }
-    },
     "BetweenShipsColliderMid 1": {
         "Collidable": {
             "Shapes": [
@@ -2206,68 +2020,6 @@
         },
         "Parent": {
             "Name": "BetweenShipsColliders"
-        },
-        "Renderable": {
-            "CullingMask": 15,
-            "Enabled": false,
-            "Material": {
-                "Alias": null
-            },
-            "Mesh": {
-                "Alias": "cube",
-                "FilePath": "res\\assets\\models\\cube.obj"
-            }
-        },
-        "RigidBody": {
-            "Friction": 0.0,
-            "Mass": 0.0,
-            "Properties": 34
-        },
-        "Transform": {
-            "Mirror": {
-                "X": false,
-                "Y": false,
-                "Z": false
-            },
-            "Position": {
-                "X": -0.16522932052612305,
-                "Y": 0.3800315856933594,
-                "Z": 0.33204013109207153
-            },
-            "Rotation": {
-                "qW": 1.0,
-                "qX": 0.0,
-                "qY": 0.0,
-                "qZ": 0.0
-            },
-            "Scale": {
-                "X": 1.0165730714797974,
-                "Y": 1.0,
-                "Z": 1.7873377799987793
-            }
-        }
-    },
-    "BetweenShipsColliderMid 2": {
-        "Collidable": {
-            "Shapes": [
-                {
-                    "Center": [
-                        0.0,
-                        0.0,
-                        0.0
-                    ],
-                    "Size": [
-                        1.0,
-                        1.0,
-                        1.0
-                    ],
-                    "Trigger": false,
-                    "Type": 0
-                }
-            ]
-        },
-        "Parent": {
-            "Name": "BetweenShipsColliders 1"
         },
         "Renderable": {
             "CullingMask": 15,
@@ -2371,99 +2123,9 @@
             }
         }
     },
-    "BetweenShipsColliderUpper 2": {
-        "Collidable": {
-            "Shapes": [
-                {
-                    "Center": [
-                        0.0,
-                        0.0,
-                        0.0
-                    ],
-                    "Size": [
-                        1.0,
-                        1.0,
-                        1.0
-                    ],
-                    "Trigger": false,
-                    "Type": 0
-                }
-            ]
-        },
-        "Parent": {
-            "Name": "BetweenShipsColliders 1"
-        },
-        "Renderable": {
-            "CullingMask": 15,
-            "Enabled": false,
-            "Material": {
-                "Alias": null
-            },
-            "Mesh": {
-                "Alias": "cube",
-                "FilePath": "res\\assets\\models\\cube.obj"
-            }
-        },
-        "RigidBody": {
-            "Friction": 0.0,
-            "Mass": 0.0,
-            "Properties": 34
-        },
-        "Transform": {
-            "Mirror": {
-                "X": false,
-                "Y": false,
-                "Z": false
-            },
-            "Position": {
-                "X": 1.0152802467346191,
-                "Y": 0.1638144999742508,
-                "Z": 0.3337704539299011
-            },
-            "Rotation": {
-                "qW": 1.0,
-                "qX": 0.0,
-                "qY": 0.0,
-                "qZ": 0.0
-            },
-            "Scale": {
-                "X": 1.009742259979248,
-                "Y": 0.554162859916687,
-                "Z": 1.7913105487823486
-            }
-        }
-    },
     "BetweenShipsColliders": {
         "Parent": {
             "Name": "Colliders"
-        },
-        "Transform": {
-            "Mirror": {
-                "X": false,
-                "Y": false,
-                "Z": false
-            },
-            "Position": {
-                "X": -8.36246395111084,
-                "Y": 7.926042556762695,
-                "Z": 2.068734645843506
-            },
-            "Rotation": {
-                "qW": 1.0,
-                "qX": 0.0,
-                "qY": 0.0,
-                "qZ": 0.0
-            },
-            "Scale": {
-                "X": 12.248290061950684,
-                "Y": 74.42253112792969,
-                "Z": 5.0
-            }
-        }
-    },
-    "BetweenShipsColliders 1": {
-        "Parent": {
-            "Name": "Colliders 1"
         },
         "Transform": {
             "Mirror": {
@@ -4676,68 +4338,6 @@
             }
         }
     },
-    "BottomDeckColliderBack 1": {
-        "Collidable": {
-            "Shapes": [
-                {
-                    "Center": [
-                        0.0,
-                        0.0,
-                        0.0
-                    ],
-                    "Size": [
-                        1.0,
-                        1.0,
-                        1.0
-                    ],
-                    "Trigger": false,
-                    "Type": 0
-                }
-            ]
-        },
-        "Parent": {
-            "Name": "BottomDeckColliders 1"
-        },
-        "Renderable": {
-            "CullingMask": 15,
-            "Enabled": false,
-            "Material": {
-                "Alias": null
-            },
-            "Mesh": {
-                "Alias": "cube",
-                "FilePath": "res\\assets\\models\\cube.obj"
-            }
-        },
-        "RigidBody": {
-            "Friction": 0.0,
-            "Mass": 0.0,
-            "Properties": 34
-        },
-        "Transform": {
-            "Mirror": {
-                "X": false,
-                "Y": false,
-                "Z": false
-            },
-            "Position": {
-                "X": 1.4041190147399902,
-                "Y": -0.28940147161483765,
-                "Z": 0.0
-            },
-            "Rotation": {
-                "qW": 1.0,
-                "qX": 0.0,
-                "qY": 0.0,
-                "qZ": 0.0
-            },
-            "Scale": {
-                "X": 0.41427934169769287,
-                "Y": 0.3429940640926361,
-                "Z": 6.143187522888184
-            }
-        }
-    },
     "BottomDeckColliderFront 2": {
         "Collidable": {
             "Shapes": [
@@ -4800,68 +4400,6 @@
             }
         }
     },
-    "BottomDeckColliderFront 3": {
-        "Collidable": {
-            "Shapes": [
-                {
-                    "Center": [
-                        0.0,
-                        0.0,
-                        0.0
-                    ],
-                    "Size": [
-                        1.0,
-                        1.0,
-                        1.0
-                    ],
-                    "Trigger": false,
-                    "Type": 0
-                }
-            ]
-        },
-        "Parent": {
-            "Name": "BottomDeckColliders 1"
-        },
-        "Renderable": {
-            "CullingMask": 15,
-            "Enabled": false,
-            "Material": {
-                "Alias": null
-            },
-            "Mesh": {
-                "Alias": "cube",
-                "FilePath": "res\\assets\\models\\cube.obj"
-            }
-        },
-        "RigidBody": {
-            "Friction": 0.0,
-            "Mass": 0.0,
-            "Properties": 34
-        },
-        "Transform": {
-            "Mirror": {
-                "X": false,
-                "Y": false,
-                "Z": false
-            },
-            "Position": {
-                "X": -0.16182208061218262,
-                "Y": -0.28940147161483765,
-                "Z": 0.0
-            },
-            "Rotation": {
-                "qW": 1.0,
-                "qX": 0.0,
-                "qY": 0.0,
-                "qZ": 0.0
-            },
-            "Scale": {
-                "X": 0.41427934169769287,
-                "Y": 0.3429940640926361,
-                "Z": 6.143187522888184
-            }
-        }
-    },
     "BottomDeckColliderGround": {
         "Collidable": {
             "Shapes": [
@@ -4883,68 +4421,6 @@
         },
         "Parent": {
             "Name": "BottomDeckColliders"
-        },
-        "Renderable": {
-            "CullingMask": 15,
-            "Enabled": false,
-            "Material": {
-                "Alias": null
-            },
-            "Mesh": {
-                "Alias": "cube",
-                "FilePath": "res\\assets\\models\\cube.obj"
-            }
-        },
-        "RigidBody": {
-            "Friction": 0.949999988079071,
-            "Mass": 0.0,
-            "Properties": 34
-        },
-        "Transform": {
-            "Mirror": {
-                "X": false,
-                "Y": false,
-                "Z": false
-            },
-            "Position": {
-                "X": 0.6827453970909119,
-                "Y": -0.39404791593551636,
-                "Z": 0.0
-            },
-            "Rotation": {
-                "qW": 1.0,
-                "qX": 0.0,
-                "qY": 0.0,
-                "qZ": 0.0
-            },
-            "Scale": {
-                "X": 2.4493215084075928,
-                "Y": 0.013436791487038136,
-                "Z": 6.0
-            }
-        }
-    },
-    "BottomDeckColliderGround 1": {
-        "Collidable": {
-            "Shapes": [
-                {
-                    "Center": [
-                        0.0,
-                        0.0,
-                        0.0
-                    ],
-                    "Size": [
-                        1.0,
-                        1.0,
-                        1.0
-                    ],
-                    "Trigger": false,
-                    "Type": 0
-                }
-            ]
-        },
-        "Parent": {
-            "Name": "BottomDeckColliders 1"
         },
         "Renderable": {
             "CullingMask": 15,
@@ -13675,7 +13151,7 @@
             "Position": {
                 "X": -0.5081836581230164,
                 "Y": 5.960464477539063e-08,
-                "Z": -0.0006506145000457764
+                "Z": 0.05530060827732086
             },
             "Rotation": {
                 "qW": 1.0,
@@ -13686,131 +13162,7 @@
             "Scale": {
                 "X": 0.13382543623447418,
                 "Y": 0.9999997615814209,
-                "Z": 0.2883965075016022
-            }
-        }
-    },
-    "MidDeckGroundCollider 5": {
-        "Collidable": {
-            "Shapes": [
-                {
-                    "Center": [
-                        0.0,
-                        0.0,
-                        0.0
-                    ],
-                    "Size": [
-                        1.0,
-                        1.0,
-                        1.0
-                    ],
-                    "Trigger": false,
-                    "Type": 0
-                }
-            ]
-        },
-        "Parent": {
-            "Name": "MidDeckColliders 1"
-        },
-        "Renderable": {
-            "CullingMask": 15,
-            "Enabled": false,
-            "Material": {
-                "Alias": null
-            },
-            "Mesh": {
-                "Alias": "cube",
-                "FilePath": "res\\assets\\models\\cube.obj"
-            }
-        },
-        "RigidBody": {
-            "Friction": 0.949999988079071,
-            "Mass": 0.0,
-            "Properties": 34
-        },
-        "Transform": {
-            "Mirror": {
-                "X": false,
-                "Y": false,
-                "Z": false
-            },
-            "Position": {
-                "X": 0.01558724045753479,
-                "Y": 2.9802322387695313e-08,
-                "Z": 0.0
-            },
-            "Rotation": {
-                "qW": 1.0,
-                "qX": 0.0,
-                "qY": 0.0,
-                "qZ": 0.0
-            },
-            "Scale": {
-                "X": 1.0357950925827026,
-                "Y": 0.9999998211860657,
-                "Z": 0.9999998211860657
-            }
-        }
-    },
-    "MidDeckGroundCollider 6": {
-        "Collidable": {
-            "Shapes": [
-                {
-                    "Center": [
-                        0.0,
-                        0.0,
-                        0.0
-                    ],
-                    "Size": [
-                        1.0,
-                        1.0,
-                        1.0
-                    ],
-                    "Trigger": false,
-                    "Type": 0
-                }
-            ]
-        },
-        "Parent": {
-            "Name": "MidDeckColliders 1"
-        },
-        "Renderable": {
-            "CullingMask": 15,
-            "Enabled": false,
-            "Material": {
-                "Alias": null
-            },
-            "Mesh": {
-                "Alias": "cube",
-                "FilePath": "res\\assets\\models\\cube.obj"
-            }
-        },
-        "RigidBody": {
-            "Friction": 0.949999988079071,
-            "Mass": 0.0,
-            "Properties": 34
-        },
-        "Transform": {
-            "Mirror": {
-                "X": false,
-                "Y": false,
-                "Z": false
-            },
-            "Position": {
-                "X": -0.7236343622207642,
-                "Y": 5.960464477539063e-08,
-                "Z": 0.0
-            },
-            "Rotation": {
-                "qW": 1.0,
-                "qX": 0.0,
-                "qY": 0.0,
-                "qZ": 0.0
-            },
-            "Scale": {
-                "X": 0.34434428811073303,
-                "Y": 0.9999997615814209,
-                "Z": 0.9999997615814209
+                "Z": 0.4021139442920685
             }
         }
     },
@@ -13873,68 +13225,6 @@
                 "X": 0.13382548093795776,
                 "Y": 0.9999997615814209,
                 "Z": 0.23921896517276764
-            }
-        }
-    },
-    "MidDeckGroundCollider 8": {
-        "Collidable": {
-            "Shapes": [
-                {
-                    "Center": [
-                        0.0,
-                        0.0,
-                        0.0
-                    ],
-                    "Size": [
-                        1.0,
-                        1.0,
-                        1.0
-                    ],
-                    "Trigger": false,
-                    "Type": 0
-                }
-            ]
-        },
-        "Parent": {
-            "Name": "MidDeckColliders 1"
-        },
-        "Renderable": {
-            "CullingMask": 15,
-            "Enabled": false,
-            "Material": {
-                "Alias": null
-            },
-            "Mesh": {
-                "Alias": "cube",
-                "FilePath": "res\\assets\\models\\cube.obj"
-            }
-        },
-        "RigidBody": {
-            "Friction": 0.949999988079071,
-            "Mass": 0.0,
-            "Properties": 34
-        },
-        "Transform": {
-            "Mirror": {
-                "X": false,
-                "Y": false,
-                "Z": false
-            },
-            "Position": {
-                "X": -0.5081836581230164,
-                "Y": 5.960464477539063e-08,
-                "Z": -0.0006506145000457764
-            },
-            "Rotation": {
-                "qW": 1.0,
-                "qX": 0.0,
-                "qY": 0.0,
-                "qZ": 0.0
-            },
-            "Scale": {
-                "X": 0.13382543623447418,
-                "Y": 0.9999997615814209,
-                "Z": 0.2883965075016022
             }
         }
     },
@@ -19335,7 +18625,7 @@
             }
         },
         "RigidBody": {
-            "Friction": 0.0,
+            "Friction": 0.949999988079071,
             "Mass": 0.0,
             "Properties": 34
         },
@@ -19397,7 +18687,7 @@
             }
         },
         "RigidBody": {
-            "Friction": 0.0,
+            "Friction": 0.949999988079071,
             "Mass": 0.0,
             "Properties": 34
         },
@@ -19955,7 +19245,7 @@
             }
         },
         "RigidBody": {
-            "Friction": 0.0,
+            "Friction": 0.949999988079071,
             "Mass": 0.0,
             "Properties": 34
         },
@@ -21995,7 +21285,7 @@
             }
         },
         "RigidBody": {
-            "Friction": 0.0,
+            "Friction": 0.949999988079071,
             "Mass": 0.0,
             "Properties": 34
         },
@@ -22119,7 +21409,7 @@
             }
         },
         "RigidBody": {
-            "Friction": 0.0,
+            "Friction": 0.949999988079071,
             "Mass": 0.0,
             "Properties": 34
         },
@@ -22479,7 +21769,7 @@
             }
         },
         "RigidBody": {
-            "Friction": 0.0,
+            "Friction": 0.949999988079071,
             "Mass": 0.0,
             "Properties": 34
         },
@@ -22603,7 +21893,7 @@
             }
         },
         "RigidBody": {
-            "Friction": 0.0,
+            "Friction": 0.949999988079071,
             "Mass": 0.0,
             "Properties": 34
         },
@@ -22851,7 +22141,7 @@
             }
         },
         "RigidBody": {
-            "Friction": 0.0,
+            "Friction": 0.10000000149011612,
             "Mass": 0.0,
             "Properties": 34
         },
@@ -22913,7 +22203,7 @@
             }
         },
         "RigidBody": {
-            "Friction": 0.0,
+            "Friction": 0.10000000149011612,
             "Mass": 0.0,
             "Properties": 34
         },
@@ -22975,7 +22265,7 @@
             }
         },
         "RigidBody": {
-            "Friction": 0.0,
+            "Friction": 0.10000000149011612,
             "Mass": 0.0,
             "Properties": 34
         },
@@ -23037,7 +22327,7 @@
             }
         },
         "RigidBody": {
-            "Friction": 0.800000011920929,
+            "Friction": 0.10000000149011612,
             "Mass": 0.0,
             "Properties": 34
         },
@@ -23099,7 +22389,7 @@
             }
         },
         "RigidBody": {
-            "Friction": 0.800000011920929,
+            "Friction": 0.10000000149011612,
             "Mass": 0.0,
             "Properties": 34
         },
@@ -23161,7 +22451,7 @@
             }
         },
         "RigidBody": {
-            "Friction": 0.800000011920929,
+            "Friction": 0.10000000149011612,
             "Mass": 0.0,
             "Properties": 34
         },
@@ -23223,7 +22513,7 @@
             }
         },
         "RigidBody": {
-            "Friction": 0.0,
+            "Friction": 0.10000000149011612,
             "Mass": 0.0,
             "Properties": 34
         },
@@ -23285,7 +22575,7 @@
             }
         },
         "RigidBody": {
-            "Friction": 0.0,
+            "Friction": 0.10000000149011612,
             "Mass": 0.0,
             "Properties": 34
         },
@@ -23347,7 +22637,7 @@
             }
         },
         "RigidBody": {
-            "Friction": 0.0,
+            "Friction": 0.10000000149011612,
             "Mass": 0.0,
             "Properties": 34
         },
@@ -24762,7 +24052,7 @@
             "Shapes": [
                 {
                     "Center": [
-                        1.0,
+                        0.0,
                         0.0,
                         0.0
                     ],
@@ -25016,7 +24306,7 @@
                     ],
                     "Size": [
                         1.0,
-                        1.0,
+                        2.0,
                         1.0
                     ],
                     "Trigger": false,
@@ -25039,7 +24329,7 @@
             }
         },
         "RigidBody": {
-            "Friction": 0.0,
+            "Friction": 0.949999988079071,
             "Mass": 0.0,
             "Properties": 62
         },
@@ -25078,7 +24368,7 @@
                     ],
                     "Size": [
                         1.0,
-                        1.0,
+                        2.0,
                         1.0
                     ],
                     "Trigger": false,
@@ -25101,7 +24391,7 @@
             }
         },
         "RigidBody": {
-            "Friction": 0.0,
+            "Friction": 0.949999988079071,
             "Mass": 0.0,
             "Properties": 62
         },
@@ -25130,6 +24420,24 @@
         }
     },
     "WoodCrate 18": {
+        "Collidable": {
+            "Shapes": [
+                {
+                    "Center": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Size": [
+                        1.0,
+                        2.0,
+                        1.0
+                    ],
+                    "Trigger": false,
+                    "Type": 0
+                }
+            ]
+        },
         "Parent": {
             "Name": "Decorations 1"
         },
@@ -25143,6 +24451,11 @@
                 "Alias": "WoodCrate",
                 "FilePath": "res\\assets\\models\\Decorative\\WoodCrate.obj"
             }
+        },
+        "RigidBody": {
+            "Friction": 0.949999988079071,
+            "Mass": 0.0,
+            "Properties": 62
         },
         "Transform": {
             "Mirror": {
@@ -25169,6 +24482,24 @@
         }
     },
     "WoodCrate 19": {
+        "Collidable": {
+            "Shapes": [
+                {
+                    "Center": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Size": [
+                        1.0,
+                        2.0,
+                        1.0
+                    ],
+                    "Trigger": false,
+                    "Type": 0
+                }
+            ]
+        },
         "Parent": {
             "Name": "Decorations 1"
         },
@@ -25182,6 +24513,11 @@
                 "Alias": "WoodCrate",
                 "FilePath": "res\\assets\\models\\Decorative\\WoodCrate.obj"
             }
+        },
+        "RigidBody": {
+            "Friction": 0.949999988079071,
+            "Mass": 0.0,
+            "Properties": 62
         },
         "Transform": {
             "Mirror": {
@@ -25274,13 +24610,13 @@
             "Shapes": [
                 {
                     "Center": [
-                        1.0,
+                        0.0,
                         0.0,
                         0.0
                     ],
                     "Size": [
                         1.0,
-                        3.0,
+                        2.0,
                         1.0
                     ],
                     "Trigger": false,
@@ -25303,7 +24639,7 @@
             }
         },
         "RigidBody": {
-            "Friction": 0.0,
+            "Friction": 0.949999988079071,
             "Mass": 0.0,
             "Properties": 62
         },
@@ -25342,7 +24678,7 @@
                     ],
                     "Size": [
                         1.0,
-                        1.0,
+                        2.0,
                         1.0
                     ],
                     "Trigger": false,
@@ -25365,7 +24701,7 @@
             }
         },
         "RigidBody": {
-            "Friction": 0.0,
+            "Friction": 0.949999988079071,
             "Mass": 0.0,
             "Properties": 62
         },
@@ -25404,7 +24740,7 @@
                     ],
                     "Size": [
                         1.0,
-                        1.0,
+                        2.0,
                         1.0
                     ],
                     "Trigger": false,
@@ -25427,7 +24763,7 @@
             }
         },
         "RigidBody": {
-            "Friction": 0.0,
+            "Friction": 0.949999988079071,
             "Mass": 0.0,
             "Properties": 62
         },
@@ -25466,7 +24802,7 @@
                     ],
                     "Size": [
                         1.0,
-                        1.0,
+                        2.0,
                         1.0
                     ],
                     "Trigger": false,
@@ -25489,7 +24825,7 @@
             }
         },
         "RigidBody": {
-            "Friction": 0.0,
+            "Friction": 0.949999988079071,
             "Mass": 0.0,
             "Properties": 62
         },
@@ -25528,7 +24864,7 @@
                     ],
                     "Size": [
                         1.0,
-                        5.0,
+                        2.0,
                         1.0
                     ],
                     "Trigger": false,
@@ -25551,7 +24887,7 @@
             }
         },
         "RigidBody": {
-            "Friction": 0.0,
+            "Friction": 0.949999988079071,
             "Mass": 0.0,
             "Properties": 62
         },
@@ -25580,6 +24916,24 @@
         }
     },
     "WoodCrate 25": {
+        "Collidable": {
+            "Shapes": [
+                {
+                    "Center": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Size": [
+                        1.0,
+                        2.0,
+                        1.0
+                    ],
+                    "Trigger": false,
+                    "Type": 0
+                }
+            ]
+        },
         "Parent": {
             "Name": "Decorations 1"
         },
@@ -25593,6 +24947,11 @@
                 "Alias": "WoodCrate",
                 "FilePath": "res\\assets\\models\\Decorative\\WoodCrate.obj"
             }
+        },
+        "RigidBody": {
+            "Friction": 0.949999988079071,
+            "Mass": 0.0,
+            "Properties": 62
         },
         "Transform": {
             "Mirror": {
@@ -25628,9 +24987,9 @@
                         0.0
                     ],
                     "Size": [
-                        1.5,
+                        1.0,
                         2.0,
-                        1.5
+                        1.0
                     ],
                     "Trigger": false,
                     "Type": 0
@@ -25652,7 +25011,7 @@
             }
         },
         "RigidBody": {
-            "Friction": 0.0,
+            "Friction": 0.949999988079071,
             "Mass": 0.0,
             "Properties": 62
         },
@@ -25691,7 +25050,7 @@
                     ],
                     "Size": [
                         1.0,
-                        1.0,
+                        2.0,
                         1.0
                     ],
                     "Trigger": false,
@@ -25714,7 +25073,7 @@
             }
         },
         "RigidBody": {
-            "Friction": 0.0,
+            "Friction": 0.949999988079071,
             "Mass": 0.0,
             "Properties": 62
         },
@@ -25753,7 +25112,7 @@
                     ],
                     "Size": [
                         1.0,
-                        1.0,
+                        2.0,
                         1.0
                     ],
                     "Trigger": false,
@@ -25776,7 +25135,7 @@
             }
         },
         "RigidBody": {
-            "Friction": 0.0,
+            "Friction": 0.949999988079071,
             "Mass": 0.0,
             "Properties": 62
         },
@@ -25815,7 +25174,7 @@
                     ],
                     "Size": [
                         1.0,
-                        1.0,
+                        2.0,
                         1.0
                     ],
                     "Trigger": false,
@@ -25838,7 +25197,7 @@
             }
         },
         "RigidBody": {
-            "Friction": 0.0,
+            "Friction": 0.949999988079071,
             "Mass": 0.0,
             "Properties": 62
         },
@@ -25929,6 +25288,24 @@
         }
     },
     "WoodCrate 30": {
+        "Collidable": {
+            "Shapes": [
+                {
+                    "Center": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Size": [
+                        1.0,
+                        2.0,
+                        1.0
+                    ],
+                    "Trigger": false,
+                    "Type": 0
+                }
+            ]
+        },
         "Parent": {
             "Name": "Decorations 1"
         },
@@ -25942,6 +25319,11 @@
                 "Alias": "WoodCrate",
                 "FilePath": "res\\assets\\models\\Decorative\\WoodCrate.obj"
             }
+        },
+        "RigidBody": {
+            "Friction": 0.949999988079071,
+            "Mass": 0.0,
+            "Properties": 62
         },
         "Transform": {
             "Mirror": {
@@ -25978,7 +25360,7 @@
                     ],
                     "Size": [
                         1.0,
-                        1.0,
+                        2.0,
                         1.0
                     ],
                     "Trigger": false,
@@ -26001,7 +25383,7 @@
             }
         },
         "RigidBody": {
-            "Friction": 0.0,
+            "Friction": 0.949999988079071,
             "Mass": 0.0,
             "Properties": 62
         },
@@ -26074,7 +25456,7 @@
                 "Z": false
             },
             "Position": {
-                "X": -5.711798667907715,
+                "X": -5.711799621582031,
                 "Y": -4.178339958190918,
                 "Z": -6.181550025939941
             },
@@ -26086,8 +25468,8 @@
             },
             "Scale": {
                 "X": 2.0,
-                "Y": 2.0,
-                "Z": 2.0
+                "Y": 1.9999998807907104,
+                "Z": 1.9999998807907104
             }
         }
     },
