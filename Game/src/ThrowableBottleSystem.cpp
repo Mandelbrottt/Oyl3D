@@ -22,7 +22,7 @@ void ThrowableBottleSystem::onUpdate()
 		auto& bottleParent    = registry->get_or_assign<component::Parent>(bottleEntity);
 
 		if (bottle.isBeingThrown)
-			bottleTransform.rotate(bottleTransform.getRight() * -100.0f);
+			bottleTransform.rotate(glm::vec3(-1100.0f, 0.0f, 0.0f) * Time::deltaTime());
 
 		auto bottlePromptView = registry->view<ThrowBottlePrompt, PlayerHUDElement>();
 		for (auto bottlePromptEntity : bottlePromptView)

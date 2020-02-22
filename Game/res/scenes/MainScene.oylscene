@@ -210,11 +210,13 @@
                         0.0,
                         0.0
                     ],
-                    "Direction": 1,
-                    "Height": 1.0,
-                    "Radius": 0.5,
+                    "Size": [
+                        0.8999999761581421,
+                        2.200000047683716,
+                        0.8999999761581421
+                    ],
                     "Trigger": false,
-                    "Type": 2
+                    "Type": 0
                 }
             ]
         },
@@ -233,7 +235,7 @@
             }
         },
         "RigidBody": {
-            "Friction": 0.0,
+            "Friction": 0.949999988079071,
             "Mass": 0.0,
             "Properties": 62
         },
@@ -270,11 +272,13 @@
                         0.0,
                         0.0
                     ],
-                    "Direction": 1,
-                    "Height": 1.0,
-                    "Radius": 0.5,
+                    "Size": [
+                        0.8999999761581421,
+                        2.200000047683716,
+                        0.8999999761581421
+                    ],
                     "Trigger": false,
-                    "Type": 2
+                    "Type": 0
                 }
             ]
         },
@@ -293,7 +297,7 @@
             }
         },
         "RigidBody": {
-            "Friction": 0.0,
+            "Friction": 0.949999988079071,
             "Mass": 0.0,
             "Properties": 54
         },
@@ -330,11 +334,13 @@
                         0.0,
                         0.0
                     ],
-                    "Direction": 1,
-                    "Height": 1.0,
-                    "Radius": 0.5,
+                    "Size": [
+                        0.6000000238418579,
+                        2.200000047683716,
+                        0.6000000238418579
+                    ],
                     "Trigger": false,
-                    "Type": 2
+                    "Type": 0
                 }
             ]
         },
@@ -353,7 +359,7 @@
             }
         },
         "RigidBody": {
-            "Friction": 0.0,
+            "Friction": 0.949999988079071,
             "Mass": 0.0,
             "Properties": 62
         },
@@ -390,11 +396,13 @@
                         0.0,
                         0.0
                     ],
-                    "Direction": 1,
-                    "Height": 1.0,
-                    "Radius": 0.5,
+                    "Size": [
+                        0.8999999761581421,
+                        2.200000047683716,
+                        0.8999999761581421
+                    ],
                     "Trigger": false,
-                    "Type": 2
+                    "Type": 0
                 }
             ]
         },
@@ -413,7 +421,7 @@
             }
         },
         "RigidBody": {
-            "Friction": 0.0,
+            "Friction": 0.949999988079071,
             "Mass": 0.0,
             "Properties": 62
         },
@@ -450,11 +458,13 @@
                         0.0,
                         0.0
                     ],
-                    "Direction": 1,
-                    "Height": 1.0,
-                    "Radius": 0.5,
+                    "Size": [
+                        0.8999999761581421,
+                        2.299999952316284,
+                        0.8999999761581421
+                    ],
                     "Trigger": false,
-                    "Type": 2
+                    "Type": 0
                 }
             ]
         },
@@ -473,7 +483,7 @@
             }
         },
         "RigidBody": {
-            "Friction": 0.0,
+            "Friction": 0.949999988079071,
             "Mass": 0.0,
             "Properties": 62
         },
@@ -510,11 +520,13 @@
                         0.0,
                         0.0
                     ],
-                    "Direction": 1,
-                    "Height": 1.0,
-                    "Radius": 0.5,
+                    "Size": [
+                        0.8999999761581421,
+                        2.200000047683716,
+                        0.8999999761581421
+                    ],
                     "Trigger": false,
-                    "Type": 2
+                    "Type": 0
                 }
             ]
         },
@@ -533,7 +545,7 @@
             }
         },
         "RigidBody": {
-            "Friction": 0.0,
+            "Friction": 0.949999988079071,
             "Mass": 0.0,
             "Properties": 62
         },
@@ -570,11 +582,13 @@
                         0.0,
                         0.0
                     ],
-                    "Direction": 1,
-                    "Height": 1.0,
-                    "Radius": 0.5,
+                    "Size": [
+                        0.8999999761581421,
+                        2.200000047683716,
+                        0.8999999761581421
+                    ],
                     "Trigger": false,
-                    "Type": 2
+                    "Type": 0
                 }
             ]
         },
@@ -593,7 +607,7 @@
             }
         },
         "RigidBody": {
-            "Friction": 0.0,
+            "Friction": 0.949999988079071,
             "Mass": 0.0,
             "Properties": 62
         },
@@ -630,11 +644,13 @@
                         0.0,
                         0.0
                     ],
-                    "Direction": 1,
-                    "Height": 1.0,
-                    "Radius": 0.5,
+                    "Size": [
+                        0.8999999761581421,
+                        2.200000047683716,
+                        0.8999999761581421
+                    ],
                     "Trigger": false,
-                    "Type": 2
+                    "Type": 0
                 }
             ]
         },
@@ -653,7 +669,7 @@
             }
         },
         "RigidBody": {
-            "Friction": 0.0,
+            "Friction": 0.949999988079071,
             "Mass": 0.0,
             "Properties": 62
         },
@@ -690,11 +706,13 @@
                         0.0,
                         0.0
                     ],
-                    "Direction": 1,
-                    "Height": 1.0,
-                    "Radius": 0.5,
+                    "Size": [
+                        0.8999999761581421,
+                        2.200000047683716,
+                        0.8999999761581421
+                    ],
                     "Trigger": false,
-                    "Type": 2
+                    "Type": 0
                 }
             ]
         },
@@ -713,7 +731,7 @@
             }
         },
         "RigidBody": {
-            "Friction": 0.0,
+            "Friction": 0.949999988079071,
             "Mass": 0.0,
             "Properties": 62
         },
@@ -750,11 +768,13 @@
                         0.0,
                         0.0
                     ],
-                    "Direction": 1,
-                    "Height": 1.0,
-                    "Radius": 0.5,
+                    "Size": [
+                        0.8999999761581421,
+                        2.299999952316284,
+                        0.8999999761581421
+                    ],
                     "Trigger": false,
-                    "Type": 2
+                    "Type": 0
                 }
             ]
         },
@@ -773,7 +793,7 @@
             }
         },
         "RigidBody": {
-            "Friction": 0.0,
+            "Friction": 0.949999988079071,
             "Mass": 0.0,
             "Properties": 62
         },
@@ -810,11 +830,13 @@
                         0.0,
                         0.0
                     ],
-                    "Direction": 1,
-                    "Height": 1.0,
-                    "Radius": 0.5,
+                    "Size": [
+                        0.8999999761581421,
+                        2.200000047683716,
+                        0.8999999761581421
+                    ],
                     "Trigger": false,
-                    "Type": 2
+                    "Type": 0
                 }
             ]
         },
@@ -833,7 +855,7 @@
             }
         },
         "RigidBody": {
-            "Friction": 0.0,
+            "Friction": 0.949999988079071,
             "Mass": 0.0,
             "Properties": 62
         },
@@ -870,11 +892,13 @@
                         0.0,
                         0.0
                     ],
-                    "Direction": 1,
-                    "Height": 1.0,
-                    "Radius": 0.5,
+                    "Size": [
+                        0.8999999761581421,
+                        2.200000047683716,
+                        0.8999999761581421
+                    ],
                     "Trigger": false,
-                    "Type": 2
+                    "Type": 0
                 }
             ]
         },
@@ -893,7 +917,7 @@
             }
         },
         "RigidBody": {
-            "Friction": 0.0,
+            "Friction": 0.949999988079071,
             "Mass": 0.0,
             "Properties": 62
         },
@@ -930,11 +954,13 @@
                         0.0,
                         0.0
                     ],
-                    "Direction": 1,
-                    "Height": 1.0,
-                    "Radius": 0.5,
+                    "Size": [
+                        0.8999999761581421,
+                        2.200000047683716,
+                        0.8999999761581421
+                    ],
                     "Trigger": false,
-                    "Type": 2
+                    "Type": 0
                 }
             ]
         },
@@ -953,7 +979,7 @@
             }
         },
         "RigidBody": {
-            "Friction": 0.0,
+            "Friction": 0.949999988079071,
             "Mass": 0.0,
             "Properties": 62
         },
@@ -990,11 +1016,13 @@
                         0.0,
                         0.0
                     ],
-                    "Direction": 1,
-                    "Height": 1.0,
-                    "Radius": 0.5,
+                    "Size": [
+                        0.8999999761581421,
+                        2.200000047683716,
+                        0.8999999761581421
+                    ],
                     "Trigger": false,
-                    "Type": 2
+                    "Type": 0
                 }
             ]
         },
@@ -1013,7 +1041,7 @@
             }
         },
         "RigidBody": {
-            "Friction": 0.0,
+            "Friction": 0.949999988079071,
             "Mass": 0.0,
             "Properties": 54
         },
@@ -1050,11 +1078,13 @@
                         0.0,
                         0.0
                     ],
-                    "Direction": 1,
-                    "Height": 1.0,
-                    "Radius": 0.5,
+                    "Size": [
+                        0.8999999761581421,
+                        2.200000047683716,
+                        0.8999999761581421
+                    ],
                     "Trigger": false,
-                    "Type": 2
+                    "Type": 0
                 }
             ]
         },
@@ -1073,7 +1103,7 @@
             }
         },
         "RigidBody": {
-            "Friction": 0.0,
+            "Friction": 0.949999988079071,
             "Mass": 0.0,
             "Properties": 62
         },
@@ -1110,11 +1140,13 @@
                         0.0,
                         0.0
                     ],
-                    "Direction": 1,
-                    "Height": 1.0,
-                    "Radius": 0.5,
+                    "Size": [
+                        0.8999999761581421,
+                        2.200000047683716,
+                        0.8999999761581421
+                    ],
                     "Trigger": false,
-                    "Type": 2
+                    "Type": 0
                 }
             ]
         },
@@ -1133,7 +1165,7 @@
             }
         },
         "RigidBody": {
-            "Friction": 0.0,
+            "Friction": 0.949999988079071,
             "Mass": 0.0,
             "Properties": 62
         },
@@ -1170,11 +1202,13 @@
                         0.0,
                         0.0
                     ],
-                    "Direction": 1,
-                    "Height": 1.0,
-                    "Radius": 0.5,
+                    "Size": [
+                        0.8999999761581421,
+                        2.200000047683716,
+                        0.8999999761581421
+                    ],
                     "Trigger": false,
-                    "Type": 2
+                    "Type": 0
                 }
             ]
         },
@@ -1193,7 +1227,7 @@
             }
         },
         "RigidBody": {
-            "Friction": 0.0,
+            "Friction": 0.949999988079071,
             "Mass": 0.0,
             "Properties": 62
         },
@@ -1230,11 +1264,13 @@
                         0.0,
                         0.0
                     ],
-                    "Direction": 1,
-                    "Height": 1.0,
-                    "Radius": 0.5,
+                    "Size": [
+                        0.8999999761581421,
+                        2.200000047683716,
+                        0.8999999761581421
+                    ],
                     "Trigger": false,
-                    "Type": 2
+                    "Type": 0
                 }
             ]
         },
@@ -1253,7 +1289,7 @@
             }
         },
         "RigidBody": {
-            "Friction": 0.0,
+            "Friction": 0.949999988079071,
             "Mass": 0.0,
             "Properties": 62
         },
@@ -1290,11 +1326,13 @@
                         0.0,
                         0.0
                     ],
-                    "Direction": 1,
-                    "Height": 1.0,
-                    "Radius": 0.5,
+                    "Size": [
+                        0.8999999761581421,
+                        2.200000047683716,
+                        0.8999999761581421
+                    ],
                     "Trigger": false,
-                    "Type": 2
+                    "Type": 0
                 }
             ]
         },
@@ -1313,7 +1351,7 @@
             }
         },
         "RigidBody": {
-            "Friction": 0.0,
+            "Friction": 0.949999988079071,
             "Mass": 0.0,
             "Properties": 62
         },
@@ -1350,11 +1388,13 @@
                         0.0,
                         0.0
                     ],
-                    "Direction": 1,
-                    "Height": 1.0,
-                    "Radius": 0.5,
+                    "Size": [
+                        0.8999999761581421,
+                        2.200000047683716,
+                        0.8999999761581421
+                    ],
                     "Trigger": false,
-                    "Type": 2
+                    "Type": 0
                 }
             ]
         },
@@ -1373,7 +1413,7 @@
             }
         },
         "RigidBody": {
-            "Friction": 0.0,
+            "Friction": 0.949999988079071,
             "Mass": 0.0,
             "Properties": 62
         },
@@ -1410,11 +1450,13 @@
                         0.0,
                         0.0
                     ],
-                    "Direction": 1,
-                    "Height": 1.0,
-                    "Radius": 0.5,
+                    "Size": [
+                        0.8999999761581421,
+                        2.200000047683716,
+                        0.8999999761581421
+                    ],
                     "Trigger": false,
-                    "Type": 2
+                    "Type": 0
                 }
             ]
         },
@@ -1433,7 +1475,7 @@
             }
         },
         "RigidBody": {
-            "Friction": 0.0,
+            "Friction": 0.949999988079071,
             "Mass": 0.0,
             "Properties": 62
         },
@@ -1470,11 +1512,13 @@
                         0.0,
                         0.0
                     ],
-                    "Direction": 1,
-                    "Height": 1.0,
-                    "Radius": 0.5,
+                    "Size": [
+                        0.8999999761581421,
+                        2.200000047683716,
+                        0.8999999761581421
+                    ],
                     "Trigger": false,
-                    "Type": 2
+                    "Type": 0
                 }
             ]
         },
@@ -1493,7 +1537,7 @@
             }
         },
         "RigidBody": {
-            "Friction": 0.0,
+            "Friction": 0.949999988079071,
             "Mass": 0.0,
             "Properties": 62
         },
@@ -1530,11 +1574,13 @@
                         0.0,
                         0.0
                     ],
-                    "Direction": 1,
-                    "Height": 1.0,
-                    "Radius": 0.5,
+                    "Size": [
+                        0.8999999761581421,
+                        2.200000047683716,
+                        0.8999999761581421
+                    ],
                     "Trigger": false,
-                    "Type": 2
+                    "Type": 0
                 }
             ]
         },
@@ -1553,7 +1599,7 @@
             }
         },
         "RigidBody": {
-            "Friction": 0.0,
+            "Friction": 0.949999988079071,
             "Mass": 0.0,
             "Properties": 62
         },
@@ -1590,11 +1636,13 @@
                         0.0,
                         0.0
                     ],
-                    "Direction": 1,
-                    "Height": 1.0,
-                    "Radius": 0.5,
+                    "Size": [
+                        0.8999999761581421,
+                        2.200000047683716,
+                        0.8999999761581421
+                    ],
                     "Trigger": false,
-                    "Type": 2
+                    "Type": 0
                 }
             ]
         },
@@ -1613,7 +1661,7 @@
             }
         },
         "RigidBody": {
-            "Friction": 0.0,
+            "Friction": 0.949999988079071,
             "Mass": 0.0,
             "Properties": 62
         },
@@ -1650,11 +1698,13 @@
                         0.0,
                         0.0
                     ],
-                    "Direction": 1,
-                    "Height": 1.0,
-                    "Radius": 0.5,
+                    "Size": [
+                        0.8999999761581421,
+                        2.200000047683716,
+                        0.8999999761581421
+                    ],
                     "Trigger": false,
-                    "Type": 2
+                    "Type": 0
                 }
             ]
         },
@@ -1673,7 +1723,7 @@
             }
         },
         "RigidBody": {
-            "Friction": 0.0,
+            "Friction": 0.949999988079071,
             "Mass": 0.0,
             "Properties": 62
         },
@@ -1710,11 +1760,13 @@
                         0.0,
                         0.0
                     ],
-                    "Direction": 1,
-                    "Height": 1.0,
-                    "Radius": 0.5,
+                    "Size": [
+                        0.8999999761581421,
+                        2.200000047683716,
+                        0.8999999761581421
+                    ],
                     "Trigger": false,
-                    "Type": 2
+                    "Type": 0
                 }
             ]
         },
@@ -1733,7 +1785,7 @@
             }
         },
         "RigidBody": {
-            "Friction": 0.0,
+            "Friction": 0.949999988079071,
             "Mass": 0.0,
             "Properties": 62
         },
@@ -2448,8 +2500,8 @@
                     ],
                     "Size": [
                         2.3499999046325684,
-                        4.150000095367432,
-                        2.5999999046325684
+                        6.199999809265137,
+                        3.299999952316284
                     ],
                     "Trigger": false,
                     "Type": 0
@@ -2506,9 +2558,13 @@
                         0.0,
                         0.0
                     ],
-                    "Radius": 0.5,
+                    "Size": [
+                        0.4000000059604645,
+                        0.4000000059604645,
+                        0.4000000059604645
+                    ],
                     "Trigger": false,
-                    "Type": 1
+                    "Type": 0
                 }
             ]
         },
@@ -2525,7 +2581,7 @@
             }
         },
         "RigidBody": {
-            "Friction": 0.5,
+            "Friction": 0.8999999761581421,
             "Mass": 1.0,
             "Properties": 34
         },
@@ -2562,9 +2618,13 @@
                         0.0,
                         0.0
                     ],
-                    "Radius": 0.5,
+                    "Size": [
+                        0.4000000059604645,
+                        0.4000000059604645,
+                        0.4000000059604645
+                    ],
                     "Trigger": false,
-                    "Type": 1
+                    "Type": 0
                 }
             ]
         },
@@ -2581,7 +2641,7 @@
             }
         },
         "RigidBody": {
-            "Friction": 0.5,
+            "Friction": 0.8999999761581421,
             "Mass": 1.0,
             "Properties": 34
         },
@@ -2618,9 +2678,13 @@
                         0.0,
                         0.0
                     ],
-                    "Radius": 0.5,
+                    "Size": [
+                        0.4000000059604645,
+                        0.4000000059604645,
+                        0.4000000059604645
+                    ],
                     "Trigger": false,
-                    "Type": 1
+                    "Type": 0
                 }
             ]
         },
@@ -2637,7 +2701,7 @@
             }
         },
         "RigidBody": {
-            "Friction": 0.5,
+            "Friction": 0.8999999761581421,
             "Mass": 1.0,
             "Properties": 34
         },
@@ -2674,9 +2738,13 @@
                         0.0,
                         0.0
                     ],
-                    "Radius": 0.5,
+                    "Size": [
+                        0.4000000059604645,
+                        0.4000000059604645,
+                        0.4000000059604645
+                    ],
                     "Trigger": false,
-                    "Type": 1
+                    "Type": 0
                 }
             ]
         },
@@ -2693,7 +2761,7 @@
             }
         },
         "RigidBody": {
-            "Friction": 0.5,
+            "Friction": 0.8999999761581421,
             "Mass": 1.0,
             "Properties": 34
         },
@@ -2730,9 +2798,13 @@
                         0.0,
                         0.0
                     ],
-                    "Radius": 0.5,
+                    "Size": [
+                        0.4000000059604645,
+                        0.4000000059604645,
+                        0.4000000059604645
+                    ],
                     "Trigger": false,
-                    "Type": 1
+                    "Type": 0
                 }
             ]
         },
@@ -2749,7 +2821,7 @@
             }
         },
         "RigidBody": {
-            "Friction": 0.5,
+            "Friction": 0.8999999761581421,
             "Mass": 1.0,
             "Properties": 34
         },
@@ -2786,9 +2858,13 @@
                         0.0,
                         0.0
                     ],
-                    "Radius": 0.5,
+                    "Size": [
+                        0.4000000059604645,
+                        0.4000000059604645,
+                        0.4000000059604645
+                    ],
                     "Trigger": false,
-                    "Type": 1
+                    "Type": 0
                 }
             ]
         },
@@ -2805,7 +2881,7 @@
             }
         },
         "RigidBody": {
-            "Friction": 0.5,
+            "Friction": 0.8999999761581421,
             "Mass": 1.0,
             "Properties": 34
         },
@@ -2876,9 +2952,9 @@
                 "Z": false
             },
             "Position": {
-                "X": -5.09020471572876,
+                "X": -4.562251091003418,
                 "Y": -4.1751389503479,
-                "Z": -6.6472625732421875
+                "Z": -5.8272624015808105
             },
             "Rotation": {
                 "qW": 1.0,
@@ -3094,7 +3170,7 @@
             },
             "Position": {
                 "X": 13.86149787902832,
-                "Y": 4.099999904632568,
+                "Y": 4.0,
                 "Z": -2.674968957901001
             },
             "Rotation": {
@@ -3154,7 +3230,7 @@
             },
             "Position": {
                 "X": 0.873400092124939,
-                "Y": 0.10000000149011612,
+                "Y": 0.0,
                 "Z": -3.778933048248291
             },
             "Rotation": {
@@ -3214,7 +3290,7 @@
             },
             "Position": {
                 "X": -17.463232040405273,
-                "Y": 0.10000000149011612,
+                "Y": 0.0,
                 "Z": -2.62058424949646
             },
             "Rotation": {
@@ -6823,6 +6899,190 @@
             }
         }
     },
+    "Cleaning Solution Icon Prompt1": {
+        "GuiRenderable": {
+            "Clipping": {
+                "Lower": [
+                    0.0,
+                    0.0
+                ],
+                "Upper": [
+                    1.0,
+                    1.0
+                ]
+            },
+            "CullingMask": 1,
+            "Enabled": true,
+            "Texture": {
+                "Alias": "blueCleaningSolutionIcon",
+                "FilePath": "res\\assets\\textures\\gui\\blueCleaningSolutionIcon.png"
+            }
+        },
+        "Parent": {
+            "Name": "Player1UI"
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -30.0,
+                "Y": -2.5,
+                "Z": 0.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 2.5,
+                "Y": 2.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Cleaning Solution Icon Prompt2": {
+        "GuiRenderable": {
+            "Clipping": {
+                "Lower": [
+                    0.0,
+                    0.0
+                ],
+                "Upper": [
+                    1.0,
+                    1.0
+                ]
+            },
+            "CullingMask": 2,
+            "Enabled": true,
+            "Texture": {
+                "Alias": "redCleaningSolutionIcon",
+                "FilePath": "res\\assets\\textures\\gui\\redCleaningSolutionIcon.png"
+            }
+        },
+        "Parent": {
+            "Name": "Player2UI"
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -30.0,
+                "Y": -2.5,
+                "Z": 0.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 2.5,
+                "Y": 2.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Cleaning Solution Icon Prompt3": {
+        "GuiRenderable": {
+            "Clipping": {
+                "Lower": [
+                    0.0,
+                    0.0
+                ],
+                "Upper": [
+                    1.0,
+                    1.0
+                ]
+            },
+            "CullingMask": 4,
+            "Enabled": true,
+            "Texture": {
+                "Alias": "blueCleaningSolutionIcon",
+                "FilePath": "res\\assets\\textures\\gui\\blueCleaningSolutionIcon.png"
+            }
+        },
+        "Parent": {
+            "Name": "Player3UI"
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -30.0,
+                "Y": -2.5,
+                "Z": 0.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 2.5,
+                "Y": 2.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Cleaning Solution Icon Prompt4": {
+        "GuiRenderable": {
+            "Clipping": {
+                "Lower": [
+                    0.0,
+                    0.0
+                ],
+                "Upper": [
+                    1.0,
+                    1.0
+                ]
+            },
+            "CullingMask": 8,
+            "Enabled": true,
+            "Texture": {
+                "Alias": "redCleaningSolutionIcon",
+                "FilePath": "res\\assets\\textures\\gui\\redCleaningSolutionIcon.png"
+            }
+        },
+        "Parent": {
+            "Name": "Player4UI"
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -30.0,
+                "Y": -2.5,
+                "Z": 0.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 2.5,
+                "Y": 2.0,
+                "Z": 1.0
+            }
+        }
+    },
     "Cleet": {
         "Parent": {
             "Name": "Decorations"
@@ -7887,6 +8147,190 @@
             }
         }
     },
+    "Drop Items Prompt1": {
+        "GuiRenderable": {
+            "Clipping": {
+                "Lower": [
+                    0.0,
+                    0.0
+                ],
+                "Upper": [
+                    1.0,
+                    1.0
+                ]
+            },
+            "CullingMask": 1,
+            "Enabled": true,
+            "Texture": {
+                "Alias": "dropItemsPrompt",
+                "FilePath": "res\\assets\\textures\\gui\\dropItemsPrompt.png"
+            }
+        },
+        "Parent": {
+            "Name": "Player1UI"
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -30.0,
+                "Y": -2.5,
+                "Z": 0.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Drop Items Prompt2": {
+        "GuiRenderable": {
+            "Clipping": {
+                "Lower": [
+                    0.0,
+                    0.0
+                ],
+                "Upper": [
+                    1.0,
+                    1.0
+                ]
+            },
+            "CullingMask": 2,
+            "Enabled": true,
+            "Texture": {
+                "Alias": "dropItemsPrompt",
+                "FilePath": "res\\assets\\textures\\gui\\dropItemsPrompt.png"
+            }
+        },
+        "Parent": {
+            "Name": "Player2UI"
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -30.0,
+                "Y": -2.5,
+                "Z": 0.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Drop Items Prompt3": {
+        "GuiRenderable": {
+            "Clipping": {
+                "Lower": [
+                    0.0,
+                    0.0
+                ],
+                "Upper": [
+                    1.0,
+                    1.0
+                ]
+            },
+            "CullingMask": 4,
+            "Enabled": true,
+            "Texture": {
+                "Alias": "dropItemsPrompt",
+                "FilePath": "res\\assets\\textures\\gui\\dropItemsPrompt.png"
+            }
+        },
+        "Parent": {
+            "Name": "Player3UI"
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -30.0,
+                "Y": -2.5,
+                "Z": 0.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Drop Items Prompt4": {
+        "GuiRenderable": {
+            "Clipping": {
+                "Lower": [
+                    0.0,
+                    0.0
+                ],
+                "Upper": [
+                    1.0,
+                    1.0
+                ]
+            },
+            "CullingMask": 8,
+            "Enabled": true,
+            "Texture": {
+                "Alias": "dropItemsPrompt",
+                "FilePath": "res\\assets\\textures\\gui\\dropItemsPrompt.png"
+            }
+        },
+        "Parent": {
+            "Name": "Player4UI"
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -30.0,
+                "Y": -2.5,
+                "Z": 0.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
     "FrameCollider 1": {
         "Collidable": {
             "Shapes": [
@@ -8268,11 +8712,13 @@
                         0.0,
                         0.0
                     ],
-                    "Direction": 1,
-                    "Height": 0.699999988079071,
-                    "Radius": 0.5,
+                    "Size": [
+                        0.6000000238418579,
+                        1.5499999523162842,
+                        0.6000000238418579
+                    ],
                     "Trigger": false,
-                    "Type": 2
+                    "Type": 0
                 }
             ]
         },
@@ -8291,7 +8737,7 @@
             }
         },
         "RigidBody": {
-            "Friction": 0.0,
+            "Friction": 0.949999988079071,
             "Mass": 0.0,
             "Properties": 62
         },
@@ -8328,11 +8774,13 @@
                         0.0,
                         0.0
                     ],
-                    "Direction": 1,
-                    "Height": 0.699999988079071,
-                    "Radius": 0.5,
+                    "Size": [
+                        0.6000000238418579,
+                        1.5499999523162842,
+                        0.6000000238418579
+                    ],
                     "Trigger": false,
-                    "Type": 2
+                    "Type": 0
                 }
             ]
         },
@@ -8351,7 +8799,7 @@
             }
         },
         "RigidBody": {
-            "Friction": 0.0,
+            "Friction": 0.949999988079071,
             "Mass": 0.0,
             "Properties": 62
         },
@@ -8388,11 +8836,13 @@
                         0.0,
                         0.0
                     ],
-                    "Direction": 1,
-                    "Height": 0.699999988079071,
-                    "Radius": 0.5,
+                    "Size": [
+                        0.6000000238418579,
+                        1.5499999523162842,
+                        0.6000000238418579
+                    ],
                     "Trigger": false,
-                    "Type": 2
+                    "Type": 0
                 }
             ]
         },
@@ -8411,7 +8861,7 @@
             }
         },
         "RigidBody": {
-            "Friction": 0.0,
+            "Friction": 0.949999988079071,
             "Mass": 0.0,
             "Properties": 62
         },
@@ -8448,11 +8898,13 @@
                         0.0,
                         0.0
                     ],
-                    "Direction": 1,
-                    "Height": 0.699999988079071,
-                    "Radius": 0.5,
+                    "Size": [
+                        0.6000000238418579,
+                        1.5499999523162842,
+                        0.6000000238418579
+                    ],
                     "Trigger": false,
-                    "Type": 2
+                    "Type": 0
                 }
             ]
         },
@@ -8471,7 +8923,7 @@
             }
         },
         "RigidBody": {
-            "Friction": 0.0,
+            "Friction": 0.949999988079071,
             "Mass": 0.0,
             "Properties": 62
         },
@@ -8508,11 +8960,13 @@
                         0.0,
                         0.0
                     ],
-                    "Direction": 1,
-                    "Height": 0.699999988079071,
-                    "Radius": 0.5,
+                    "Size": [
+                        0.6000000238418579,
+                        1.5499999523162842,
+                        0.6000000238418579
+                    ],
                     "Trigger": false,
-                    "Type": 2
+                    "Type": 0
                 }
             ]
         },
@@ -8531,7 +8985,7 @@
             }
         },
         "RigidBody": {
-            "Friction": 0.0,
+            "Friction": 0.949999988079071,
             "Mass": 0.0,
             "Properties": 62
         },
@@ -8568,11 +9022,13 @@
                         0.0,
                         0.0
                     ],
-                    "Direction": 1,
-                    "Height": 0.699999988079071,
-                    "Radius": 0.5,
+                    "Size": [
+                        0.6000000238418579,
+                        1.5499999523162842,
+                        0.6000000238418579
+                    ],
                     "Trigger": false,
-                    "Type": 2
+                    "Type": 0
                 }
             ]
         },
@@ -8591,7 +9047,7 @@
             }
         },
         "RigidBody": {
-            "Friction": 0.0,
+            "Friction": 0.949999988079071,
             "Mass": 0.0,
             "Properties": 62
         },
@@ -13482,6 +13938,190 @@
             }
         }
     },
+    "Mop Icon Prompt1": {
+        "GuiRenderable": {
+            "Clipping": {
+                "Lower": [
+                    0.0,
+                    0.0
+                ],
+                "Upper": [
+                    1.0,
+                    1.0
+                ]
+            },
+            "CullingMask": 1,
+            "Enabled": true,
+            "Texture": {
+                "Alias": "blueMopIcon",
+                "FilePath": "res\\assets\\textures\\gui\\blueMopIcon.png"
+            }
+        },
+        "Parent": {
+            "Name": "Player1UI"
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -30.0,
+                "Y": -2.5,
+                "Z": 0.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 3.0,
+                "Y": 3.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Mop Icon Prompt2": {
+        "GuiRenderable": {
+            "Clipping": {
+                "Lower": [
+                    0.0,
+                    0.0
+                ],
+                "Upper": [
+                    1.0,
+                    1.0
+                ]
+            },
+            "CullingMask": 2,
+            "Enabled": true,
+            "Texture": {
+                "Alias": "redMopIcon",
+                "FilePath": "res\\assets\\textures\\gui\\redMopIcon.png"
+            }
+        },
+        "Parent": {
+            "Name": "Player2UI"
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -30.0,
+                "Y": -2.5,
+                "Z": 0.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 3.0,
+                "Y": 3.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Mop Icon Prompt3": {
+        "GuiRenderable": {
+            "Clipping": {
+                "Lower": [
+                    0.0,
+                    0.0
+                ],
+                "Upper": [
+                    1.0,
+                    1.0
+                ]
+            },
+            "CullingMask": 4,
+            "Enabled": true,
+            "Texture": {
+                "Alias": "blueMopIcon",
+                "FilePath": "res\\assets\\textures\\gui\\blueMopIcon.png"
+            }
+        },
+        "Parent": {
+            "Name": "Player3UI"
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -30.0,
+                "Y": -2.5,
+                "Z": 0.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 3.0,
+                "Y": 3.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Mop Icon Prompt4": {
+        "GuiRenderable": {
+            "Clipping": {
+                "Lower": [
+                    0.0,
+                    0.0
+                ],
+                "Upper": [
+                    1.0,
+                    1.0
+                ]
+            },
+            "CullingMask": 8,
+            "Enabled": true,
+            "Texture": {
+                "Alias": "redMopIcon",
+                "FilePath": "res\\assets\\textures\\gui\\redMopIcon.png"
+            }
+        },
+        "Parent": {
+            "Name": "Player4UI"
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -30.0,
+                "Y": -2.5,
+                "Z": 0.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 3.0,
+                "Y": 3.0,
+                "Z": 1.0
+            }
+        }
+    },
     "Myles' Barqs": {
         "Collidable": {
             "Shapes": [
@@ -14369,7 +15009,9 @@
                 "FilePath": "res/assets/textures/gui/pickUpBottle.png"
             }
         },
-        "Parent": null,
+        "Parent": {
+            "Name": "Player1UI"
+        },
         "Transform": {
             "Mirror": {
                 "X": false,
@@ -14413,7 +15055,9 @@
                 "FilePath": "res/assets/textures/gui/pickUpBottle.png"
             }
         },
-        "Parent": null,
+        "Parent": {
+            "Name": "Player2UI"
+        },
         "Transform": {
             "Mirror": {
                 "X": false,
@@ -14457,7 +15101,9 @@
                 "FilePath": "res/assets/textures/gui/pickUpBottle.png"
             }
         },
-        "Parent": null,
+        "Parent": {
+            "Name": "Player3UI"
+        },
         "Transform": {
             "Mirror": {
                 "X": false,
@@ -14501,7 +15147,9 @@
                 "FilePath": "res/assets/textures/gui/pickUpBottle.png"
             }
         },
-        "Parent": null,
+        "Parent": {
+            "Name": "Player4UI"
+        },
         "Transform": {
             "Mirror": {
                 "X": false,
@@ -16312,8 +16960,8 @@
                     ],
                     "Size": [
                         2.3499999046325684,
-                        4.150000095367432,
-                        2.5999999046325684
+                        6.199999809265137,
+                        3.299999952316284
                     ],
                     "Trigger": false,
                     "Type": 0
@@ -16370,9 +17018,13 @@
                         0.0,
                         0.0
                     ],
-                    "Radius": 0.5,
+                    "Size": [
+                        0.4000000059604645,
+                        0.4000000059604645,
+                        0.4000000059604645
+                    ],
                     "Trigger": false,
-                    "Type": 1
+                    "Type": 0
                 }
             ]
         },
@@ -16389,7 +17041,7 @@
             }
         },
         "RigidBody": {
-            "Friction": 0.5,
+            "Friction": 0.8999999761581421,
             "Mass": 1.0,
             "Properties": 34
         },
@@ -16426,9 +17078,13 @@
                         0.0,
                         0.0
                     ],
-                    "Radius": 0.5,
+                    "Size": [
+                        0.4000000059604645,
+                        0.4000000059604645,
+                        0.4000000059604645
+                    ],
                     "Trigger": false,
-                    "Type": 1
+                    "Type": 0
                 }
             ]
         },
@@ -16445,7 +17101,7 @@
             }
         },
         "RigidBody": {
-            "Friction": 0.5,
+            "Friction": 0.8999999761581421,
             "Mass": 1.0,
             "Properties": 34
         },
@@ -16482,9 +17138,13 @@
                         0.0,
                         0.0
                     ],
-                    "Radius": 0.5,
+                    "Size": [
+                        0.4000000059604645,
+                        0.4000000059604645,
+                        0.4000000059604645
+                    ],
                     "Trigger": false,
-                    "Type": 1
+                    "Type": 0
                 }
             ]
         },
@@ -16501,7 +17161,7 @@
             }
         },
         "RigidBody": {
-            "Friction": 0.5,
+            "Friction": 0.8999999761581421,
             "Mass": 1.0,
             "Properties": 34
         },
@@ -16538,9 +17198,13 @@
                         0.0,
                         0.0
                     ],
-                    "Radius": 0.5,
+                    "Size": [
+                        0.4000000059604645,
+                        0.4000000059604645,
+                        0.4000000059604645
+                    ],
                     "Trigger": false,
-                    "Type": 1
+                    "Type": 0
                 }
             ]
         },
@@ -16557,7 +17221,7 @@
             }
         },
         "RigidBody": {
-            "Friction": 0.5,
+            "Friction": 0.8999999761581421,
             "Mass": 1.0,
             "Properties": 34
         },
@@ -16594,9 +17258,13 @@
                         0.0,
                         0.0
                     ],
-                    "Radius": 0.5,
+                    "Size": [
+                        0.4000000059604645,
+                        0.4000000059604645,
+                        0.4000000059604645
+                    ],
                     "Trigger": false,
-                    "Type": 1
+                    "Type": 0
                 }
             ]
         },
@@ -16613,7 +17281,7 @@
             }
         },
         "RigidBody": {
-            "Friction": 0.5,
+            "Friction": 0.8999999761581421,
             "Mass": 1.0,
             "Properties": 34
         },
@@ -16650,9 +17318,13 @@
                         0.0,
                         0.0
                     ],
-                    "Radius": 0.5,
+                    "Size": [
+                        0.4000000059604645,
+                        0.4000000059604645,
+                        0.4000000059604645
+                    ],
                     "Trigger": false,
-                    "Type": 1
+                    "Type": 0
                 }
             ]
         },
@@ -16669,7 +17341,7 @@
             }
         },
         "RigidBody": {
-            "Friction": 0.5,
+            "Friction": 0.8999999761581421,
             "Mass": 1.0,
             "Properties": 34
         },
@@ -16955,7 +17627,7 @@
             },
             "Position": {
                 "X": 13.802732467651367,
-                "Y": 4.199999809265137,
+                "Y": 4.0,
                 "Z": 23.0
             },
             "Rotation": {
@@ -17015,7 +17687,7 @@
             },
             "Position": {
                 "X": 1.0269949436187744,
-                "Y": 0.10000000149011612,
+                "Y": 0.0,
                 "Z": 24.010000228881836
             },
             "Rotation": {
@@ -17075,7 +17747,7 @@
             },
             "Position": {
                 "X": -17.431373596191406,
-                "Y": 0.10000000149011612,
+                "Y": 0.0,
                 "Z": 22.829999923706055
             },
             "Rotation": {
@@ -19845,6 +20517,190 @@
             }
         }
     },
+    "Throw Bottle Prompt 1": {
+        "GuiRenderable": {
+            "Clipping": {
+                "Lower": [
+                    0.0,
+                    0.0
+                ],
+                "Upper": [
+                    1.0,
+                    1.0
+                ]
+            },
+            "CullingMask": 1,
+            "Enabled": true,
+            "Texture": {
+                "Alias": "throwBottlePrompt",
+                "FilePath": "res\\assets\\textures\\gui\\throwBottlePrompt.png"
+            }
+        },
+        "Parent": {
+            "Name": "Player1UI"
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -30.0,
+                "Y": -2.0,
+                "Z": 0.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 0.699999988079071,
+                "Y": 0.699999988079071,
+                "Z": 1.0
+            }
+        }
+    },
+    "Throw Bottle Prompt 2": {
+        "GuiRenderable": {
+            "Clipping": {
+                "Lower": [
+                    0.0,
+                    0.0
+                ],
+                "Upper": [
+                    1.0,
+                    1.0
+                ]
+            },
+            "CullingMask": 2,
+            "Enabled": true,
+            "Texture": {
+                "Alias": "throwBottlePrompt",
+                "FilePath": "res\\assets\\textures\\gui\\throwBottlePrompt.png"
+            }
+        },
+        "Parent": {
+            "Name": "Player2UI"
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -30.0,
+                "Y": -2.0,
+                "Z": 0.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 0.699999988079071,
+                "Y": 0.699999988079071,
+                "Z": 1.0
+            }
+        }
+    },
+    "Throw Bottle Prompt 3": {
+        "GuiRenderable": {
+            "Clipping": {
+                "Lower": [
+                    0.0,
+                    0.0
+                ],
+                "Upper": [
+                    1.0,
+                    1.0
+                ]
+            },
+            "CullingMask": 4,
+            "Enabled": true,
+            "Texture": {
+                "Alias": "throwBottlePrompt",
+                "FilePath": "res\\assets\\textures\\gui\\throwBottlePrompt.png"
+            }
+        },
+        "Parent": {
+            "Name": "Player3UI"
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -30.0,
+                "Y": -2.0,
+                "Z": 0.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 0.699999988079071,
+                "Y": 0.699999988079071,
+                "Z": 1.0
+            }
+        }
+    },
+    "Throw Bottle Prompt 4": {
+        "GuiRenderable": {
+            "Clipping": {
+                "Lower": [
+                    0.0,
+                    0.0
+                ],
+                "Upper": [
+                    1.0,
+                    1.0
+                ]
+            },
+            "CullingMask": 8,
+            "Enabled": true,
+            "Texture": {
+                "Alias": "throwBottlePrompt",
+                "FilePath": "res\\assets\\textures\\gui\\throwBottlePrompt.png"
+            }
+        },
+        "Parent": {
+            "Name": "Player4UI"
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Position": {
+                "X": -30.0,
+                "Y": -2.0,
+                "Z": 0.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 0.699999988079071,
+                "Y": 0.699999988079071,
+                "Z": 1.0
+            }
+        }
+    },
     "ThrowableBottle": {
         "Collidable": {
             "Shapes": [
@@ -21009,7 +21865,7 @@
             },
             "Position": {
                 "X": 0.14048275351524353,
-                "Y": 23.39921760559082,
+                "Y": 23.76226043701172,
                 "Z": -0.17680752277374268
             },
             "Rotation": {
@@ -21020,7 +21876,7 @@
             },
             "Scale": {
                 "X": 0.021100211888551712,
-                "Y": 5.743411064147949,
+                "Y": 6.163410663604736,
                 "Z": 0.026336951181292534
             }
         }
@@ -21071,8 +21927,8 @@
             },
             "Position": {
                 "X": 0.14048275351524353,
-                "Y": 23.39921760559082,
-                "Z": -0.17680752277374268
+                "Y": 23.690122604370117,
+                "Z": -0.1768074929714203
             },
             "Rotation": {
                 "qW": 1.0,
@@ -21082,7 +21938,7 @@
             },
             "Scale": {
                 "X": 0.021100211888551712,
-                "Y": 5.743411064147949,
+                "Y": 6.323410987854004,
                 "Z": 0.026336951181292534
             }
         }
@@ -21133,7 +21989,7 @@
             },
             "Position": {
                 "X": 0.12501254677772522,
-                "Y": 22.43783187866211,
+                "Y": 22.997793197631836,
                 "Z": -0.17680752277374268
             },
             "Rotation": {
@@ -21144,7 +22000,7 @@
             },
             "Scale": {
                 "X": 0.010973948985338211,
-                "Y": 4.131462574005127,
+                "Y": 4.971462726593018,
                 "Z": 0.08912835270166397
             }
         }
@@ -21195,8 +22051,8 @@
             },
             "Position": {
                 "X": 0.12501254677772522,
-                "Y": 22.43783187866211,
-                "Z": -0.17680752277374268
+                "Y": 23.007007598876953,
+                "Z": -0.1768074929714203
             },
             "Rotation": {
                 "qW": 1.0,
@@ -21206,7 +22062,7 @@
             },
             "Scale": {
                 "X": 0.010973948985338211,
-                "Y": 4.131462574005127,
+                "Y": 4.991462707519531,
                 "Z": 0.08912835270166397
             }
         }
@@ -23584,7 +24440,7 @@
                     ],
                     "Size": [
                         1.0,
-                        1.0,
+                        2.0,
                         1.0
                     ],
                     "Trigger": false,
@@ -23607,7 +24463,7 @@
             }
         },
         "RigidBody": {
-            "Friction": 0.0,
+            "Friction": 0.949999988079071,
             "Mass": 0.0,
             "Properties": 62
         },
@@ -23646,7 +24502,7 @@
                     ],
                     "Size": [
                         1.0,
-                        1.0,
+                        2.0,
                         1.0
                     ],
                     "Trigger": false,
@@ -23669,7 +24525,7 @@
             }
         },
         "RigidBody": {
-            "Friction": 0.0,
+            "Friction": 0.949999988079071,
             "Mass": 0.0,
             "Properties": 62
         },
@@ -23698,6 +24554,24 @@
         }
     },
     "WoodCrate 10": {
+        "Collidable": {
+            "Shapes": [
+                {
+                    "Center": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Size": [
+                        1.0,
+                        2.0,
+                        1.0
+                    ],
+                    "Trigger": false,
+                    "Type": 0
+                }
+            ]
+        },
         "Parent": {
             "Name": "Decorations"
         },
@@ -23711,6 +24585,11 @@
                 "Alias": "WoodCrate",
                 "FilePath": "res\\assets\\models\\Decorative\\WoodCrate.obj"
             }
+        },
+        "RigidBody": {
+            "Friction": 0.949999988079071,
+            "Mass": 0.0,
+            "Properties": 62
         },
         "Transform": {
             "Mirror": {
@@ -23737,6 +24616,24 @@
         }
     },
     "WoodCrate 11": {
+        "Collidable": {
+            "Shapes": [
+                {
+                    "Center": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Size": [
+                        1.0,
+                        2.0,
+                        1.0
+                    ],
+                    "Trigger": false,
+                    "Type": 0
+                }
+            ]
+        },
         "Parent": {
             "Name": "Decorations"
         },
@@ -23750,6 +24647,11 @@
                 "Alias": "WoodCrate",
                 "FilePath": "res\\assets\\models\\Decorative\\WoodCrate.obj"
             }
+        },
+        "RigidBody": {
+            "Friction": 0.949999988079071,
+            "Mass": 0.0,
+            "Properties": 62
         },
         "Transform": {
             "Mirror": {
@@ -23786,7 +24688,7 @@
                     ],
                     "Size": [
                         1.0,
-                        3.0,
+                        2.0,
                         1.0
                     ],
                     "Trigger": false,
@@ -23809,7 +24711,7 @@
             }
         },
         "RigidBody": {
-            "Friction": 0.0,
+            "Friction": 0.949999988079071,
             "Mass": 0.0,
             "Properties": 62
         },
@@ -23848,7 +24750,7 @@
                     ],
                     "Size": [
                         1.0,
-                        1.0,
+                        2.0,
                         1.0
                     ],
                     "Trigger": false,
@@ -23871,7 +24773,7 @@
             }
         },
         "RigidBody": {
-            "Friction": 0.0,
+            "Friction": 0.949999988079071,
             "Mass": 0.0,
             "Properties": 62
         },
@@ -23910,7 +24812,7 @@
                     ],
                     "Size": [
                         1.0,
-                        1.0,
+                        2.0,
                         1.0
                     ],
                     "Trigger": false,
@@ -23933,7 +24835,7 @@
             }
         },
         "RigidBody": {
-            "Friction": 0.0,
+            "Friction": 0.949999988079071,
             "Mass": 0.0,
             "Properties": 62
         },
@@ -23972,7 +24874,7 @@
                     ],
                     "Size": [
                         1.0,
-                        1.0,
+                        2.0,
                         1.0
                     ],
                     "Trigger": false,
@@ -23995,7 +24897,7 @@
             }
         },
         "RigidBody": {
-            "Friction": 0.0,
+            "Friction": 0.949999988079071,
             "Mass": 0.0,
             "Properties": 62
         },
@@ -24236,7 +25138,7 @@
                     ],
                     "Size": [
                         1.0,
-                        5.0,
+                        2.0,
                         1.0
                     ],
                     "Trigger": false,
@@ -24259,7 +25161,7 @@
             }
         },
         "RigidBody": {
-            "Friction": 0.0,
+            "Friction": 0.949999988079071,
             "Mass": 0.0,
             "Properties": 62
         },
@@ -24885,6 +25787,24 @@
         }
     },
     "WoodCrate 3": {
+        "Collidable": {
+            "Shapes": [
+                {
+                    "Center": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Size": [
+                        1.0,
+                        2.0,
+                        1.0
+                    ],
+                    "Trigger": false,
+                    "Type": 0
+                }
+            ]
+        },
         "Parent": {
             "Name": "Decorations"
         },
@@ -24898,6 +25818,11 @@
                 "Alias": "WoodCrate",
                 "FilePath": "res\\assets\\models\\Decorative\\WoodCrate.obj"
             }
+        },
+        "RigidBody": {
+            "Friction": 0.949999988079071,
+            "Mass": 0.0,
+            "Properties": 62
         },
         "Transform": {
             "Mirror": {
@@ -25034,9 +25959,9 @@
                         0.0
                     ],
                     "Size": [
-                        1.5,
+                        1.0,
                         2.0,
-                        1.5
+                        1.0
                     ],
                     "Trigger": false,
                     "Type": 0
@@ -25058,7 +25983,7 @@
             }
         },
         "RigidBody": {
-            "Friction": 0.0,
+            "Friction": 0.949999988079071,
             "Mass": 0.0,
             "Properties": 62
         },
@@ -25097,7 +26022,7 @@
                     ],
                     "Size": [
                         1.0,
-                        1.0,
+                        2.0,
                         1.0
                     ],
                     "Trigger": false,
@@ -25120,7 +26045,7 @@
             }
         },
         "RigidBody": {
-            "Friction": 0.0,
+            "Friction": 0.949999988079071,
             "Mass": 0.0,
             "Properties": 62
         },
@@ -25159,7 +26084,7 @@
                     ],
                     "Size": [
                         1.0,
-                        1.0,
+                        2.0,
                         1.0
                     ],
                     "Trigger": false,
@@ -25182,7 +26107,7 @@
             }
         },
         "RigidBody": {
-            "Friction": 0.0,
+            "Friction": 0.949999988079071,
             "Mass": 0.0,
             "Properties": 62
         },
@@ -25221,7 +26146,7 @@
                     ],
                     "Size": [
                         1.0,
-                        1.0,
+                        2.0,
                         1.0
                     ],
                     "Trigger": false,
@@ -25244,7 +26169,7 @@
             }
         },
         "RigidBody": {
-            "Friction": 0.0,
+            "Friction": 0.949999988079071,
             "Mass": 0.0,
             "Properties": 62
         },
@@ -25273,6 +26198,24 @@
         }
     },
     "WoodCrate 8": {
+        "Collidable": {
+            "Shapes": [
+                {
+                    "Center": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Size": [
+                        1.0,
+                        2.0,
+                        1.0
+                    ],
+                    "Trigger": false,
+                    "Type": 0
+                }
+            ]
+        },
         "Parent": {
             "Name": "Decorations"
         },
@@ -25286,6 +26229,11 @@
                 "Alias": "WoodCrate",
                 "FilePath": "res\\assets\\models\\Decorative\\WoodCrate.obj"
             }
+        },
+        "RigidBody": {
+            "Friction": 0.949999988079071,
+            "Mass": 0.0,
+            "Properties": 126
         },
         "Transform": {
             "Mirror": {
@@ -25322,7 +26270,7 @@
                     ],
                     "Size": [
                         1.0,
-                        1.0,
+                        2.0,
                         1.0
                     ],
                     "Trigger": false,
@@ -25345,7 +26293,7 @@
             }
         },
         "RigidBody": {
-            "Friction": 0.0,
+            "Friction": 0.949999988079071,
             "Mass": 0.0,
             "Properties": 62
         },
