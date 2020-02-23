@@ -26,9 +26,9 @@ void GarbagePileSystem::onUpdate()
 	auto garbagePileView = registry->view<GarbagePile, component::Renderable, component::Transform>();
 	for (auto& garbagePileEntity : garbagePileView)
 	{
-		auto& garbagePile = registry->get<GarbagePile>(garbagePileEntity);
+		auto& garbagePile           = registry->get<GarbagePile>(garbagePileEntity);
 		auto& garbagePileRenderable = registry->get<component::Renderable>(garbagePileEntity);
-		auto& garbagePileTransform = registry->get<component::Transform>(garbagePileEntity);
+		auto& garbagePileTransform  = registry->get<component::Transform>(garbagePileEntity);
 
 		if (addGarbageLevel)
 			increaseGarbageLevel(garbagePileEntity);
@@ -138,10 +138,16 @@ void GarbagePileSystem::decreaseGarbageLevel(entt::entity a_garbagePileEntity)
 void GarbagePileSystem::updateGarbagePileVisualSize(entt::entity a_garbagePileEntity)
 {
 	auto& garbagePile			 = registry->get<GarbagePile>(a_garbagePileEntity);
+	auto& garbagePileCollidable  = registry->get<component::Collidable>(a_garbagePileEntity);
 	auto& garbagePileRenderable	 = registry->get<component::Renderable>(a_garbagePileEntity);
-	auto& flyAnimator = registry->get<component::Animatable>(garbagePile.flyEntity);
+
+	auto& flyAnimator   = registry->get<component::Animatable>(garbagePile.flyEntity);
 	auto& flyRenderable = registry->get<component::Renderable>(garbagePile.flyEntity);
 
+	//reset collider sizes (the ones that need to be set will be set just below, based on garbage pile size)
+	garbagePileCollidable.getShape(0).box.setSize(glm::vec3(0.0f, 0.0f, 0.0f));
+	garbagePileCollidable.getShape(1).box.setSize(glm::vec3(0.0f, 0.0f, 0.0f));
+	garbagePileCollidable.getShape(2).box.setSize(glm::vec3(0.0f, 0.0f, 0.0f));
 
 	//determine which mesh to set based on garbage level
 	if (garbagePile.garbageLevel == garbagePile.MAX_GARBAGE_LEVEL)
@@ -150,42 +156,60 @@ void GarbagePileSystem::updateGarbagePileVisualSize(entt::entity a_garbagePileEn
 		{
 			garbagePileRenderable.mesh = Mesh::get("garbageSurrender");
 			flyAnimator.setNextAnimation("GarbageSurrenderAnim");
+
+			garbagePileCollidable.getShape(0).box.setSize(glm::vec3(3.36f, 7.5f, 7.56f));
+			garbagePileCollidable.getShape(1).box.setSize(glm::vec3(13.63f, 3.51f, 2.46f));
 		}
 		else
 		{
 			garbagePileRenderable.mesh = Mesh::get("garbageMassive");
 			flyAnimator.setNextAnimation("GarbageMassiveAnim");
+
+			garbagePileCollidable.getShape(0).box.setSize(glm::vec3(4.04f, 7.65f, 5.58f));
+			garbagePileCollidable.getShape(1).box.setSize(glm::vec3(7.84f, 4.25f, 7.68f));
 		}
 	}
 	else if (garbagePile.garbageLevel == garbagePile.MAX_GARBAGE_LEVEL - 1)
 	{
 		garbagePileRenderable.mesh = Mesh::get("garbageLarge");
 		flyAnimator.setNextAnimation("GarbageLargeAnim");
+
+		garbagePileCollidable.getShape(0).box.setSize(glm::vec3(2.73f, 5.01f, 3.15f));
+		garbagePileCollidable.getShape(1).box.setSize(glm::vec3(5.27f, 2.93f, 5.1f));
 	}
 	else if (garbagePile.garbageLevel == garbagePile.MAX_GARBAGE_LEVEL - 2)
 	{
 		garbagePileRenderable.mesh = Mesh::get("garbageMedium");
 		flyAnimator.setNextAnimation("GarbageMediumAnim");
+
+		garbagePileCollidable.getShape(0).box.setSize(glm::vec3(4.0f, 2.01f, 3.99f));
+		garbagePileCollidable.getShape(1).box.setSize(glm::vec3(2.03f, 2.6f, 2.42f));
 	}
 	else if (garbagePile.garbageLevel == garbagePile.MAX_GARBAGE_LEVEL - 3)
 	{
 		garbagePileRenderable.mesh = Mesh::get("garbageSmall");
 		flyAnimator.setNextAnimation("GarbageSmallAnim");
+
+		garbagePileCollidable.getShape(0).box.setSize(glm::vec3(2.7f, 1.11f, 2.66f));
 	}
 	else
 	{
 		garbagePileRenderable.mesh = Mesh::get("garbageTiny");
 		flyAnimator.setNextAnimation("GarbageTinyAnim");
+
+		garbagePileCollidable.getShape(0).box.setSize(glm::vec3(2.22f, 0.59f, 2.19f));
 	}
 
 	if (garbagePile.garbageLevel == 0)
 	{
 		garbagePileRenderable.enabled = false;
-		flyRenderable.enabled = false;
+		flyRenderable.enabled         = false;
+
+		garbagePileCollidable.getShape(0).box.setSize(glm::vec3(0.0f, 0.0f, 0.0f));
 	}
 	else
 	{
 		garbagePileRenderable.enabled = true;
-		flyRenderable.enabled = true;
+		flyRenderable.enabled         = true;
 	}
 }
