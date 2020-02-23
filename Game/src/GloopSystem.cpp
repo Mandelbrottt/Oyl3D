@@ -2,7 +2,7 @@
 
 void GloopSystem::onEnter()
 {
-	this->listenForEventCategory((EventCategory)CategoryGloop);
+	listenForEventCategory((EventCategory)CategoryGloop);
 }
 
 void GloopSystem::onExit()

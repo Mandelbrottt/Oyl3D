@@ -18,6 +18,7 @@
 #include "GarbageMeterSystem.h"
 #include "GameOverCheckSystem.h"
 #include "ScrollingTextureLayer.h"
+#include "ThrowableBottleSystem.h"
 
 using namespace oyl;
 
@@ -32,11 +33,11 @@ public:
 	{
 		srand(time(NULL));
 
-		this->listenForEventCategory(EventCategory::Keyboard);
-		this->listenForEventCategory(EventCategory::Mouse);
-		this->listenForEventCategory(EventCategory::Gamepad);
-		this->listenForEventCategory((EventCategory)CategoryGarbagePile);
-		this->listenForEventCategory((EventCategory)CategoryGameState);
+		listenForEventCategory(EventCategory::Keyboard);
+		listenForEventCategory(EventCategory::Mouse);
+		listenForEventCategory(EventCategory::Gamepad);
+		listenForEventCategory((EventCategory)CategoryGarbagePile);
+		listenForEventCategory((EventCategory)CategoryGameState);
 
 		// listenForEventType(EventType::PhysicsCollisionEnter);
 		// listenForEventType(EventType::PhysicsCollisionStay);
@@ -55,7 +56,8 @@ public:
 		scheduleSystemUpdate<GarbagePileHealthBarSystem>();
 		scheduleSystemUpdate<GarbagePileGloopIndicatorSystem>();
 		scheduleSystemUpdate<GarbageMeterSystem>();
-		scheduleSystemUpdate<GameOverCheckSystem>();
+		scheduleSystemUpdate<GameOverCheckSystem>(); 
+		scheduleSystemUpdate<ThrowableBottleSystem>();
 
 		Texture2D::cache("res/assets/textures/gui/cleaningQTEUp.png");
 		Texture2D::cache("res/assets/textures/gui/cleaningQTEDown.png");
@@ -220,6 +222,28 @@ public:
 				auto e = registry->create();
 
 				auto& t = registry->assign<component::Transform>(e);
+				t.setPosition(glm::vec3(-30.0f, 2.0f, 0.0f));
+				t.setScale(glm::vec3(1.0f, 1.0f, 1.0f));
+
+				auto& uiType = registry->assign<PlayerInteractionType>(e);
+				uiType.type = PlayerInteractionResult::pickUpThrowableBottle;
+
+				auto& HUDElement = registry->assign<PlayerHUDElement>(e);
+				HUDElement.positionWhenActive = glm::vec3(0.0f, 2.0f, 0.0f);
+				HUDElement.playerNum = (PlayerNumber)i;
+
+				auto& so = registry->assign<component::EntityInfo>(e);
+				so.name = "Pickup Bottle Message" + std::to_string(i + 1);
+
+				auto& gui = registry->assign<component::GuiRenderable>(e);
+				gui.texture = Texture2D::cache("res/assets/textures/gui/pickUpBottle.png");
+				gui.cullingMask = 0b1 << i;
+			}
+
+			{
+				auto e = registry->create();
+
+				auto& t = registry->assign<component::Transform>(e);
 				t.setPosition(glm::vec3(-30.0f, -2.5f, 0.0f));
 				t.setScale(glm::vec3(1.0f, 1.0f, 1.0f));
 
@@ -279,6 +303,100 @@ public:
 
 				auto& gui = registry->assign<component::GuiRenderable>(e);
 				gui.texture = Texture2D::cache("res/assets/textures/gui/cannonFiring.png");
+				gui.cullingMask = 0b1 << i;
+			}
+
+			{
+				auto e = registry->create();
+
+				auto& t = registry->assign<component::Transform>(e);
+				t.setPosition(glm::vec3(-30.0f, -2.5f, 0.0f));
+				t.setScale(glm::vec3(1.0f, 1.0f, 1.0f));
+
+				auto& uiType = registry->assign<PlayerInteractionType>(e);
+				uiType.type = PlayerInteractionResult::needToDropItems;
+
+				auto& HUDElement = registry->assign<PlayerHUDElement>(e);
+				HUDElement.positionWhenActive = glm::vec3(0.0f, 2.0f, 0.0f);
+				HUDElement.playerNum = (PlayerNumber)i;
+
+				auto& so = registry->assign<component::EntityInfo>(e);
+				so.name = "Drop Items Prompt" + std::to_string(i + 1);
+
+				auto& gui = registry->assign<component::GuiRenderable>(e);
+				gui.texture = Texture2D::cache("res/assets/textures/gui/dropItemsPrompt.png");
+				gui.cullingMask = 0b1 << i;
+			}
+
+			{
+				auto e = registry->create();
+
+				auto& t = registry->assign<component::Transform>(e);
+				t.setPosition(glm::vec3(-30.0f, -2.5f, 0.0f));
+				t.setScale(glm::vec3(2.5f, 2.0f, 1.0f));
+
+				auto& uiType = registry->assign<PlayerInteractionType>(e);
+				uiType.type = PlayerInteractionResult::needCleaningSolution;
+
+				auto& HUDElement = registry->assign<PlayerHUDElement>(e);
+				HUDElement.positionWhenActive = glm::vec3(1.5f, 0.0f, 0.0f);
+				HUDElement.playerNum = (PlayerNumber)i;
+
+				auto& so = registry->assign<component::EntityInfo>(e);
+				so.name = "Cleaning Solution Icon Prompt" + std::to_string(i + 1);
+
+				auto& gui = registry->assign<component::GuiRenderable>(e);
+				if (HUDElement.playerNum == PlayerNumber::One || HUDElement.playerNum == PlayerNumber::Three)
+					gui.texture = Texture2D::cache("res/assets/textures/gui/blueCleaningSolutionIcon.png");
+				else
+					gui.texture = Texture2D::cache("res/assets/textures/gui/redCleaningSolutionIcon.png");
+				gui.cullingMask = 0b1 << i;
+			}
+
+			{
+				auto e = registry->create();
+
+				auto& t = registry->assign<component::Transform>(e);
+				t.setPosition(glm::vec3(-30.0f, -2.5f, 0.0f));
+				t.setScale(glm::vec3(3.0f, 3.0f, 1.0f));
+
+				auto& uiType = registry->assign<PlayerInteractionType>(e);
+				uiType.type = PlayerInteractionResult::needMop;
+
+				auto& HUDElement = registry->assign<PlayerHUDElement>(e);
+				HUDElement.positionWhenActive = glm::vec3(1.3f, 0.0f, 0.0f);
+				HUDElement.playerNum = (PlayerNumber)i;
+
+				auto& so = registry->assign<component::EntityInfo>(e);
+				so.name = "Mop Icon Prompt" + std::to_string(i + 1);
+
+				auto& gui = registry->assign<component::GuiRenderable>(e);
+				if (HUDElement.playerNum == PlayerNumber::One || HUDElement.playerNum == PlayerNumber::Three)
+					gui.texture = Texture2D::cache("res/assets/textures/gui/blueMopIcon.png");
+				else
+					gui.texture = Texture2D::cache("res/assets/textures/gui/redMopIcon.png");
+				gui.cullingMask = 0b1 << i;
+			}
+
+			{
+				//throw bottle prompt
+				auto e = registry->create();
+
+				auto& t = registry->assign<component::Transform>(e);
+				t.setPosition(glm::vec3(-30.0f, -2.0f, 0.0f));
+				t.setScale(glm::vec3(0.7f, 0.7f, 1.0f));
+
+				auto& HUDElement = registry->assign<PlayerHUDElement>(e);
+				HUDElement.positionWhenActive = glm::vec3(0.0f, -2.0f, 0.0f);
+				HUDElement.playerNum          = (PlayerNumber)i;
+
+				auto& throwBottlePrompt = registry->assign<ThrowBottlePrompt>(e);
+
+				auto& so = registry->assign<component::EntityInfo>(e);
+				so.name = "Throw Bottle Prompt " + std::to_string(i + 1);
+
+				auto& gui = registry->assign<component::GuiRenderable>(e);
+				gui.texture = Texture2D::cache("res/assets/textures/gui/throwBottlePrompt.png");
 				gui.cullingMask = 0b1 << i;
 			}
 
@@ -496,6 +614,24 @@ public:
 			auto& player          = registry->get<Player>(playerEntity);
 			auto& playerTransform = registry->get<component::Transform>(playerEntity);
 
+			if (player.state == PlayerState::stunned)
+				continue;
+
+			/*if (Input::getGamepadRightTrigger((uint)player.controllerNum) > 0.9f)
+			{
+				PlayerInteractionRequestEvent playerInteractionRequest;
+				playerInteractionRequest.playerEntity = playerEntity;
+				playerInteractionRequest.itemClassifiatonToUse = PlayerItemClassifiation::primary;
+				postEvent(playerInteractionRequest);
+			}
+			if (Input::getGamepadLeftTrigger((uint)player.controllerNum) > 0.9f)
+			{
+				PlayerInteractionRequestEvent playerInteractionRequest;
+				playerInteractionRequest.playerEntity = playerEntity;
+				playerInteractionRequest.itemClassifiatonToUse = PlayerItemClassifiation::secondary;
+				postEvent(playerInteractionRequest);
+			}*/
+
 			//player movement
 			glm::vec3 desiredMoveDirection = glm::vec3(0.0f);
 
@@ -523,7 +659,6 @@ public:
 			else
 				player.moveDirection = glm::normalize(desiredMoveDirection);
 
-			
 			if (!player.isCameraLocked)
 			{
 				//camera movement
@@ -615,7 +750,8 @@ public:
 					if (registry->get<Player>(playerEntity).playerNum == PlayerNumber::One)
 					{
 						PlayerInteractionRequestEvent playerInteractionRequest;
-						playerInteractionRequest.playerEntity = playerEntity;
+						playerInteractionRequest.playerEntity          = playerEntity;
+						playerInteractionRequest.itemClassifiatonToUse = PlayerItemClassifiation::any;
 						postEvent(playerInteractionRequest);
 					}
 				}
@@ -641,7 +777,7 @@ public:
 
 			case oyl::Key::G:
 			{
-				//G key changes player's teams for debugging TODO: remove for working version
+				//G key changes player's teams for debugging TODO: remove for final version
 				auto playerView = registry->view<Player>();
 				for (entt::entity playerEntity : playerView)
 				{
@@ -650,12 +786,31 @@ public:
 					if (player.team == Team::blue)
 					{
 						player.team = Team::red;
-						std::cout << "SWITCHED TO RED TEAM\n";
+						OYL_LOG("SWITCHED TO RED TEAM");
 					}
 					else
 					{
 						player.team = Team::blue;
-						std::cout << "SWITCHED TO BLUE TEAM\n";
+						OYL_LOG("SWITCHED TO BLUE TEAM");
+					}
+				}
+
+				break;
+			}
+
+			case oyl::Key::T:
+			{
+				auto playerView = registry->view<Player>();
+				for (entt::entity playerEntity : playerView)
+				{
+					if (registry->get<Player>(playerEntity).playerNum == PlayerNumber::One)
+					{
+						PlayerInteractionRequestEvent playerInteractionRequest;
+						playerInteractionRequest.playerEntity          = playerEntity;
+						playerInteractionRequest.itemClassifiatonToUse = PlayerItemClassifiation::primary;
+						postEvent(playerInteractionRequest);
+
+						break;
 					}
 				}
 
@@ -681,6 +836,49 @@ public:
 				break;
 			}
 			}
+			break;
+		}
+
+		case EventType::GamepadTriggerPressed:
+		{
+			auto evt = event_cast<GamepadTriggerPressedEvent>(event);
+			auto playerView = registry->view<Player>();
+			for (entt::entity playerEntity : playerView)
+			{
+				auto& player = registry->get<Player>(playerEntity);
+
+				if (player.controllerNum != evt.gid || evt.dx < 0.0f)
+					continue;
+
+				switch (evt.trigger)
+				{
+				case Gamepad(1):
+				{
+					//if (evt.x > 0.9f)
+					{
+						PlayerInteractionRequestEvent playerInteractionRequest;
+						playerInteractionRequest.playerEntity          = playerEntity;
+						playerInteractionRequest.itemClassifiatonToUse = PlayerItemClassifiation::primary;
+						postEvent(playerInteractionRequest);
+					}
+
+					break;
+				}
+				case Gamepad(0):
+				{
+					//if (evt.x > 0.9f)
+					{
+						PlayerInteractionRequestEvent playerInteractionRequest;
+						playerInteractionRequest.playerEntity          = playerEntity;
+						playerInteractionRequest.itemClassifiatonToUse = PlayerItemClassifiation::secondary;
+						postEvent(playerInteractionRequest);
+					}
+
+					break;
+				}
+				}
+			}
+
 			break;
 		}
 
@@ -711,7 +909,8 @@ public:
 				case Gamepad::X:
 				{
 					PlayerInteractionRequestEvent playerInteractionRequest;
-					playerInteractionRequest.playerEntity = playerEntity;
+					playerInteractionRequest.playerEntity          = playerEntity;
+					playerInteractionRequest.itemClassifiatonToUse = PlayerItemClassifiation::any;
 					postEvent(playerInteractionRequest);
 
 					break;
@@ -721,6 +920,24 @@ public:
 					CancelButtonPressedEvent cancelButtonPressed;
 					cancelButtonPressed.playerEntity = playerEntity;
 					postEvent(cancelButtonPressed);
+
+					break;
+				}
+				case Gamepad::RightBumper:
+				{
+					PlayerDropItemRequestEvent playerDropItemRequest;
+					playerDropItemRequest.playerEntity             = playerEntity;
+					playerDropItemRequest.itemClassificationToDrop = PlayerItemClassifiation::primary;
+					postEvent(playerDropItemRequest);
+
+					break;
+				}
+				case Gamepad::LeftBumper:
+				{
+					PlayerDropItemRequestEvent playerDropItemRequest;
+					playerDropItemRequest.playerEntity             = playerEntity;
+					playerDropItemRequest.itemClassificationToDrop = PlayerItemClassifiation::secondary;
+					postEvent(playerDropItemRequest);
 
 					break;
 				}
@@ -817,7 +1034,7 @@ class MainScene : public oyl::Scene
 public:
 	OYL_CTOR(MainScene, oyl::Scene)
 
-		virtual void onEnter() override
+	virtual void onEnter() override
 	{
 		pushLayer(MainLayer::create());
 		pushLayer(SandboxLayer::create());

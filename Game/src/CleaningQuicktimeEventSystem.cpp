@@ -2,8 +2,8 @@
 
 void CleaningQuicktimeEventSystem::onEnter()
 {
-	this->listenForEventCategory((EventCategory)CategoryPlayer);
-	this->listenForEventCategory((EventCategory)CategoryQuicktimeCleaningEvent);
+	listenForEventCategory((EventCategory)CategoryPlayer);
+	listenForEventCategory((EventCategory)CategoryQuicktimeCleaningEvent);
 }
 
 void CleaningQuicktimeEventSystem::onExit()

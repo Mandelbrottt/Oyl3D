@@ -28,6 +28,7 @@ void ItemRespawnSystem::onUpdate()
 		}
 		else //respawn timer is not active
 		{
+			//check if we need to activate the respawn timer
 			bool areAnyItemsInSpawn = false;
 
 			auto respawnablesView = registry->view<Respawnable, CarryableItem>();
@@ -81,13 +82,20 @@ void ItemRespawnSystem::spawnItem(entt::entity a_respawnManagerEntity)
 	newRigidbody.setAcceleration(glm::vec3(0.0f)); 
 	newRigidbody.setVelocity(glm::vec3(0.0f));
 
-	std::string itemTeamName = respawnManager.team == Team::blue ? "Blue" : "Red";
+	std::string itemTeamName = "";
+
+	if (respawnManager.team == Team::blue)
+		itemTeamName = "Blue";
+	else if (respawnManager.team == Team::red)
+		itemTeamName = "Red";
 
 	std::string itemTypeName;
 	if (newCarryableItem.type == CarryableItemType::cleaningSolution)
 		itemTypeName = "CleaningSolution";
 	else if (newCarryableItem.type == CarryableItemType::gloop)
 		itemTypeName = "Gloop";
+	else if (newCarryableItem.type == CarryableItemType::throwableBottle)
+		itemTypeName = "ThrowableBottle";
 
 	auto respawnableItemsView = registry->view<Respawnable, CarryableItem, component::Transform>();
 	newEntityInfo.name = itemTeamName + itemTypeName + std::to_string(respawnableItemsView.size());

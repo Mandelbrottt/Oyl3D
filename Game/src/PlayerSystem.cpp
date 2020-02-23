@@ -2,8 +2,8 @@
 
 void PlayerSystem::onEnter()
 {
-	this->listenForEventCategory((EventCategory)CategoryPlayer);
-	this->listenForEventType(EventType::PhysicsCollisionStay);
+	listenForEventCategory((EventCategory)CategoryPlayer);
+	listenForEventType(EventType::PhysicsCollisionStay);
 }
 
 void PlayerSystem::onExit()
@@ -26,7 +26,7 @@ void PlayerSystem::onUpdate()
 		{
 		    case PlayerState::idle:
 		    {
-				performBasicMovement(playerEntity, player.speedForce, Time::deltaTime());
+				performBasicMovement(playerEntity, player.speedForce);
 
 				if (player.moveDirection != glm::vec3(0.0f))
 					changeToWalking(&player);
@@ -36,7 +36,7 @@ void PlayerSystem::onUpdate()
 		    
 		    case PlayerState::walking:
 			{
-				performBasicMovement(playerEntity, player.speedForce, Time::deltaTime());
+				performBasicMovement(playerEntity, player.speedForce);
 
 				if (player.moveDirection == glm::vec3(0.0f))
 					changeToIdle(&player);
@@ -46,12 +46,19 @@ void PlayerSystem::onUpdate()
 
 			case PlayerState::jumping:
 			{
-		        
+				performBasicMovement(playerEntity, player.speedForce);
+
+				if (playerRB.getVelocity().y < 0.0f)
+					changeToFalling(&player);
+				else if (!player.isJumping)
+					changeToIdle(&player);
+
 				break;
 			}
 
 			case PlayerState::falling:
 			{
+				changeToIdle(&player);
 
 				break;
 			}
@@ -95,17 +102,50 @@ void PlayerSystem::onUpdate()
 
 			case PlayerState::inCleaningQuicktimeEvent:
 			{
-				performBasicMovement(playerEntity, player.speedForce, Time::deltaTime());
+				performBasicMovement(playerEntity, player.speedForce);
 
 				break;
 			}
 
 			case PlayerState::cleaning:
 			{
-				performBasicMovement(playerEntity, player.speedForce * 0.3f, Time::deltaTime());
+				performBasicMovement(playerEntity, player.speedForce * 0.3f);
 
 				player.cleaningTimeCountdown -= Time::deltaTime();
 				if (player.cleaningTimeCountdown < 0.0f)
+					changeToIdle(&player);
+
+				break;
+			}
+
+			case PlayerState::throwingBottle:
+			{
+				performBasicMovement(playerEntity, player.speedForce * 0.5f);
+
+				player.delayBeforeThrowingCountdown -= Time::deltaTime();
+				if (player.delayBeforeThrowingCountdown < 0.0f)
+				{
+					changeToIdle(&player);
+
+					ThrowBottleEvent throwBottle;
+					throwBottle.bottleEntity         = player.primaryCarriedItem;
+					throwBottle.playerThrowingEntity = playerEntity;
+					postEvent(throwBottle);
+
+					player.primaryCarriedItem = entt::null;
+				}
+
+				break;
+			}
+
+			case PlayerState::stunned:
+			{
+				//still apply movement (with no direction) to fake friction for the player
+				player.moveDirection = glm::vec3(0.0f, 0.0f, 0.0f);
+				performBasicMovement(playerEntity, player.speedForce * 0.7f);
+
+				player.stunnedTimeCountdown -= Time::deltaTime();
+				if (player.stunnedTimeCountdown < 0.0f)
 					changeToIdle(&player);
 
 				break;
@@ -125,11 +165,19 @@ bool PlayerSystem::onEvent(const Event& event)
 			auto& player   = registry->get<Player>(evt.playerEntity);
 			auto& playerRB = registry->get<component::RigidBody>(evt.playerEntity);
 
-			if (!player.isJumping)
+			if (   !player.isJumping 
+				//&& playerRB.getVelocity().y >= -2.0f //add a small buffer 
+				&& player.state != PlayerState::stunned 
+				&& player.state != PlayerState::pushing 
+				&& player.state != PlayerState::cleaning)
 			{
 				playerRB.addImpulse(glm::vec3(0.0f, 1.0f, 0.0f) * player.jumpForce);
+
 				player.isJumping         = true;
 				player.jumpCooldownTimer = player.JUMP_COOLDOWN_DURATION;
+
+				if (player.state != PlayerState::throwingBottle)
+					changeToJumping(&player);
 			}
 
 			break;
@@ -137,8 +185,11 @@ bool PlayerSystem::onEvent(const Event& event)
 
 		case (EventType) TypePlayerStateChange:
 		{
-			auto evt     = event_cast<PlayerStateChangeEvent>(event);
+			auto evt = event_cast<PlayerStateChangeEvent>(event);
 			auto& player = registry->get<Player>(evt.playerEntity);
+
+			if (player.state == PlayerState::pushing || player.state == PlayerState::stunned || player.state == PlayerState::throwingBottle)
+				break;
 
 			switch (evt.newState)
 			{
@@ -165,6 +216,16 @@ bool PlayerSystem::onEvent(const Event& event)
 					changeToCleaning(&player);
 					break;
 				}
+				case PlayerState::throwingBottle:
+				{
+					changeToThrowingBottle(&player);
+					break;
+				}
+				case PlayerState::stunned:
+				{
+					changeToStunned(&player);
+					break;
+				}
 			}
 
 			break;
@@ -176,6 +237,9 @@ bool PlayerSystem::onEvent(const Event& event)
 
 			entt::entity playerEntity = entt::null;
 
+			//ensure the entities in the collision are valid
+			if (!registry->valid(evt.entity1) || !registry->valid(evt.entity2))
+				break;
 			//check if there is no player involved in the collision
 			if (!registry->has<Player>(evt.entity1) && !registry->has<Player>(evt.entity2))
 				break;
@@ -204,8 +268,7 @@ bool PlayerSystem::onEvent(const Event& event)
 			//check if the player is valid to jump
 			if (evt.contactPoint.y <= (playerTransform.getPositionY() - halfPlayerHeight + 0.15f) && player.jumpCooldownTimer < 0.0f)
 			{
-				player.isJumping         = false;
-				player.jumpCooldownTimer = player.JUMP_COOLDOWN_DURATION;
+				player.isJumping = false;
 			}
 		}
 	}
@@ -262,7 +325,23 @@ void PlayerSystem::changeToCleaning(Player* a_player)
 	a_player->state = PlayerState::cleaning;
 }
 
-void PlayerSystem::performBasicMovement(entt::entity a_playerEntity, const float a_speedForce, const float a_dt)
+void PlayerSystem::changeToThrowingBottle(Player* a_player)
+{
+	a_player->delayBeforeThrowingCountdown = a_player->THROWING_DELAY_DURATION;
+
+	a_player->state = PlayerState::throwingBottle;
+}
+
+void PlayerSystem::changeToStunned(Player* a_player)
+{
+	a_player->stunnedTimeCountdown = a_player->STUNNED_TIME_DURATION;
+
+	a_player->state = PlayerState::stunned;
+}
+
+
+
+void PlayerSystem::performBasicMovement(entt::entity a_playerEntity, const float a_speedForce)
 {
 	auto& player   = registry->get<Player>(a_playerEntity);
 	auto& playerRB = registry->get<component::RigidBody>(a_playerEntity);
@@ -270,15 +349,4 @@ void PlayerSystem::performBasicMovement(entt::entity a_playerEntity, const float
 	glm::vec3 deltaVelocity = (player.moveDirection * a_speedForce) - playerRB.getVelocity();
 	deltaVelocity.y = 0;
 	playerRB.addImpulse(deltaVelocity * 0.85f);
-}
-
-void PlayerSystem::checkAndResolveSlopeCollision(entt::entity a_playerEntity)
-{
-	auto& playerTransform = registry->get<component::Transform>(a_playerEntity);
-
-	auto ray = RayTest::Closest(playerTransform.getPositionGlobal(), glm::vec3(0.0f, -1.0f, 0.0f), 0.5001f);
-	if (ray->hasHit && registry->valid(ray->hitObject.entity))
-	{
-		entt::entity raycastHitEntity = ray->hitObject.entity;
-	}
 }
