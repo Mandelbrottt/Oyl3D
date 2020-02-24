@@ -9,7 +9,7 @@
             },
             "Mesh": {
                 "Alias": "Oyl Monkey",
-                "FilePath": ""
+                "FilePath": "../Engine/res/models/monkey.obj"
             }
         },
         "Transform": {
@@ -62,8 +62,8 @@
                 "Alias": "Archer"
             },
             "Mesh": {
-                "Alias": "cuby",
-                "FilePath": ""
+                "Alias": "arissa@JazzDancing",
+                "FilePath": "res\\assets\\models\\arissa@JazzDancing.fbx"
             }
         },
         "RigidBody": {
@@ -79,9 +79,9 @@
             },
             "Parent": null,
             "Position": {
-                "X": 3.6986730098724365,
-                "Y": 3.1149790287017822,
-                "Z": -1.2851614952087402
+                "X": 4.746994972229004,
+                "Y": 6.22156286239624,
+                "Z": 11.18663215637207
             },
             "Rotation": {
                 "qW": 1.0,
@@ -124,7 +124,7 @@
             },
             "Mesh": {
                 "Alias": "cube",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\cube.obj"
             }
         },
         "RigidBody": {
@@ -267,7 +267,7 @@
             },
             "Mesh": {
                 "Alias": "cube",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\cube.obj"
             }
         },
         "Transform": {
@@ -305,7 +305,7 @@
             },
             "Mesh": {
                 "Alias": "cube",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\cube.obj"
             }
         },
         "Transform": {
@@ -361,7 +361,7 @@
             },
             "Mesh": {
                 "Alias": "plane",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\plane.obj"
             }
         },
         "RigidBody": {
@@ -426,9 +426,9 @@
             },
             "Parent": null,
             "Position": {
-                "X": 64.21867370605469,
-                "Y": 98.19497680664063,
-                "Z": 208.47482299804688
+                "X": 4.887356758117676,
+                "Y": 8.756509780883789,
+                "Z": 14.473645210266113
             },
             "Rotation": {
                 "qW": 0.9825016260147095,
@@ -444,6 +444,17 @@
         }
     },
     "Player Camera 2": {
+        "Camera": {
+            "ClearProps": {
+                "Skybox": null
+            },
+            "CullingMask": 15,
+            "Enabled": true,
+            "FarClipping": 1000.0,
+            "Fov": 60.0,
+            "NearClipping": 0.029999999329447746,
+            "Player": 1
+        },
         "Transform": {
             "Mirror": {
                 "X": false,
@@ -452,15 +463,15 @@
             },
             "Parent": null,
             "Position": {
-                "X": 3.123335838317871,
-                "Y": 6.595512866973877,
-                "Z": 6.387890338897705
+                "X": 219.52333068847656,
+                "Y": -102.20448303222656,
+                "Z": 203.7878875732422
             },
             "Rotation": {
-                "qW": 0.9390614032745361,
-                "qX": -0.34374937415122986,
-                "qY": 1.5292731274027527e-12,
-                "qZ": -5.595784252632185e-13
+                "qW": 0.9242045879364014,
+                "qX": 0.03084752894937992,
+                "qY": 0.38043808937072754,
+                "qZ": -0.012699146755039692
             },
             "Scale": {
                 "X": 1.0,
@@ -493,7 +504,7 @@
             },
             "Mesh": {
                 "Alias": "sphere",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\sphere.obj"
             }
         },
         "RigidBody": {

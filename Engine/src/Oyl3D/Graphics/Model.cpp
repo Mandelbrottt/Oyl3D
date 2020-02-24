@@ -7,10 +7,10 @@
 static glm::mat4 aiToGlm(const aiMatrix4x4& v)
 {
     return {
-        v.a1, v.a2, v.a3, v.a4,
-        v.b1, v.b2, v.b3, v.b4,
-        v.c1, v.c2, v.c3, v.c4,
-        v.d1, v.d2, v.d3, v.d4, 
+        v.a1, v.b1, v.c1, v.d1,
+        v.a2, v.b2, v.c2, v.d2,
+        v.a3, v.b3, v.c3, v.d3,
+        v.a4, v.b4, v.c4, v.d4,
     };
 }
 
@@ -46,15 +46,25 @@ namespace oyl
         const auto flags = (aiProcess_Triangulate | aiProcess_CalcTangentSpace | aiProcess_GlobalScale);
 
         m_scene = m_importer->ReadFile(filepath.c_str(), flags);
-        //const aiScene* scene = nullptr;
-
-        m_globalInverseTransform = inverse(aiToGlm(m_scene->mRootNode->mTransformation));
-
+        
         if (!m_scene || m_scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !m_scene->mRootNode)
         {
             OYL_LOG_ERROR("Assimp Error: {}", m_importer->GetErrorString());
             return;
         }
+
+        if (m_scene->mMetaData)
+        {
+            double tempInputScale;
+            if (m_scene->mMetaData->Get("UnitScaleFactor", tempInputScale))
+                m_unitScale = static_cast<float>(tempInputScale) * 0.01f;
+        }
+
+        m_globalInverseTransform = aiToGlm(m_scene->mRootNode->mTransformation);
+        m_globalInverseTransform[3] *= m_unitScale;
+        m_globalInverseTransform[3].w = 1.0f;
+        m_globalInverseTransform = inverse(m_globalInverseTransform);
+        //m_globalInverseTransform = inverse(aiToGlm(m_scene->mRootNode->mTransformation));
 
         m_filepath = filepath;
         
@@ -90,7 +100,8 @@ namespace oyl
             if (a_mesh->HasPositions())
             {
                 temp.x = a_mesh->mVertices[i].x, temp.y = a_mesh->mVertices[i].y, temp.z = a_mesh->mVertices[i].z;
-                positions.push_back(temp);
+                positions.push_back(temp * m_unitScale);
+                //positions.push_back(temp);
             }
             if (a_mesh->HasTextureCoords(0))
             {
@@ -156,6 +167,10 @@ namespace oyl
 
                 m_boneIndices[boneName] = boneIndex;
                 m_boneInfos[boneIndex].inverseTransform = aiToGlm(a_mesh->mBones[i]->mOffsetMatrix);
+                m_boneInfos[boneIndex].inverseTransform[3] *= m_unitScale;
+                m_boneInfos[boneIndex].inverseTransform[3].w = 1.0f;
+                
+                //m_boneInfos[boneIndex].inverseTransform = aiToGlm(a_mesh->mBones[i]->mOffsetMatrix);
 
                 for (uint j = 0; j < a_mesh->mBones[i]->mNumWeights; j++)
                 {
@@ -245,6 +260,9 @@ namespace oyl
         std::string nodeName = a_node->mName.C_Str();
 
         glm::mat4 nodeTransform = aiToGlm(a_node->mTransformation);
+        nodeTransform[3] *= m_unitScale;
+        nodeTransform[3].w = 1.0f;
+        //glm::mat4 nodeTransform = aiToGlm(a_node->mTransformation);
 
         const aiNodeAnim* nodeAnim = nullptr;
         for (uint i = 0; i < anim->mNumChannels; i++)
@@ -272,11 +290,11 @@ namespace oyl
         {
             uint boneIndex = it->second;
             m_boneInfos[boneIndex].finalTransform = m_globalInverseTransform * globalTransform * m_boneInfos[boneIndex].inverseTransform;
+            //m_boneInfos[boneIndex].finalTransform *= glm::scale(glm::mat4(1.0f), glm::vec3(m_unitScale));
         }
 
         for (uint i = 0; i < a_node->mNumChildren; i++)
             readNodeHierarchy(animation, a_animTime, a_node->mChildren[i], globalTransform);
-        
     }
 
     glm::vec3 Model::calcInterpolatedPosition(float a_animTime, const aiNodeAnim* a_nodeAnim)
@@ -285,8 +303,9 @@ namespace oyl
             return glm::vec3(0.0f);
         if (a_nodeAnim->mNumPositionKeys == 1)
         {
-            auto val = a_nodeAnim->mPositionKeys[0].mValue;
-            return { val.x, val.y, val.z };
+            const auto& val = a_nodeAnim->mPositionKeys[0].mValue;
+            return glm::vec3(val.x, val.y, val.z) * m_unitScale;
+            //return glm::vec3(val.x, val.y, val.z);
         }
 
         uint positionIndex = 0;
@@ -310,7 +329,8 @@ namespace oyl
 
         glm::vec3 start = { aiStart.x, aiStart.y, aiStart.z };
         glm::vec3 end = { aiEnd.x, aiEnd.y, aiEnd.z };
-        return glm::mix(start, end, factor);
+        return glm::mix(start, end, factor) * m_unitScale;
+        //return glm::mix(start, end, factor);
     }
 
     glm::quat Model::calcInterpolatedRotation(float a_animTime, const aiNodeAnim* a_nodeAnim)

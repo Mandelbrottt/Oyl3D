@@ -71,6 +71,7 @@ namespace oyl
         std::vector<Mesh> m_meshes;
 
         std::string m_filepath;
+        float m_unitScale = 1.0f;
 
         static internal::AssetCache<Model> s_cache;
 
