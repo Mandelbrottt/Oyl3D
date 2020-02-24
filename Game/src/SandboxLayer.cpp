@@ -1122,7 +1122,7 @@ void SandboxLayer::onEnter()
 			carryableItem.team = Team::neutral;
 
 			auto& respawnable = registry->assign<Respawnable>(bottleEntity);
-			respawnable.spawnPosition = glm::vec3(-7.04f, 0.37f, 10.14f);
+			respawnable.spawnPosition = glm::vec3(-7.04f, 0.61f, 10.14f);
 			respawnable.spawnRotation = glm::vec3(0.0f, 0.0f, 0.0f);
 
 			auto& throwableBottle = registry->assign<ThrowableBottle>(bottleEntity);
@@ -1146,7 +1146,7 @@ void SandboxLayer::onEnter()
 			entt::entity bottleSpawnerEntity = registry->create();
 
 			auto& spawner = registry->assign<RespawnManager>(bottleSpawnerEntity);
-			spawner.respawnTimerDuration = 5.0f;
+			spawner.respawnTimerDuration = 30.0f;
 			spawner.type = CarryableItemType::throwableBottle;
 			spawner.team = Team::neutral;
 			spawner.entityPrefab = registry->create();

@@ -1,14 +1,14 @@
 {
     "Material": {
-        "Alias": "water",
+        "Alias": "ThrowableBottle",
         "MainProperties": {
             "Offset": [
-                687.2874755859375,
-                677.5545654296875
+                0.0,
+                0.0
             ],
             "Tiling": [
-                15.0,
-                10.0
+                1.0,
+                1.0
             ]
         },
         "Shader": {
@@ -24,8 +24,8 @@
         },
         "Textures": {
             "Albedo": {
-                "Alias": "water",
-                "FilePath": "res\\assets\\textures\\water.png",
+                "Alias": "ThrowBottleTex",
+                "FilePath": "res\\assets\\textures\\ThrowBottleTex.png",
                 "Profile": 1,
                 "guid": null
             },

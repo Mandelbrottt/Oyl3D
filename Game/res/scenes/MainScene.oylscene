@@ -3062,7 +3062,10 @@
             "Material": {
                 "Alias": "garbage"
             },
-            "Mesh": null
+            "Mesh": {
+                "Alias": "GarbageSurrenderAnim_000001",
+                "FilePath": "res\\assets\\animation\\Garbage\\GarbageSurrender\\GarbageSurrenderAnim_000001.obj"
+            }
         },
         "Transform": {
             "Mirror": {
@@ -3098,7 +3101,10 @@
             "Material": {
                 "Alias": "garbage"
             },
-            "Mesh": null
+            "Mesh": {
+                "Alias": "GarbageSurrenderAnim_000001",
+                "FilePath": "res\\assets\\animation\\Garbage\\GarbageSurrender\\GarbageSurrenderAnim_000001.obj"
+            }
         },
         "Transform": {
             "Mirror": {
@@ -3134,7 +3140,10 @@
             "Material": {
                 "Alias": "garbage"
             },
-            "Mesh": null
+            "Mesh": {
+                "Alias": "GarbageSurrenderAnim_000001",
+                "FilePath": "res\\assets\\animation\\Garbage\\GarbageSurrender\\GarbageSurrenderAnim_000001.obj"
+            }
         },
         "Transform": {
             "Mirror": {
@@ -17311,7 +17320,10 @@
             "Material": {
                 "Alias": "garbage"
             },
-            "Mesh": null
+            "Mesh": {
+                "Alias": "GarbageSurrenderAnim_000001",
+                "FilePath": "res\\assets\\animation\\Garbage\\GarbageSurrender\\GarbageSurrenderAnim_000001.obj"
+            }
         },
         "Transform": {
             "Mirror": {
@@ -17347,7 +17359,10 @@
             "Material": {
                 "Alias": "garbage"
             },
-            "Mesh": null
+            "Mesh": {
+                "Alias": "GarbageSurrenderAnim_000001",
+                "FilePath": "res\\assets\\animation\\Garbage\\GarbageSurrender\\GarbageSurrenderAnim_000001.obj"
+            }
         },
         "Transform": {
             "Mirror": {
@@ -17383,7 +17398,10 @@
             "Material": {
                 "Alias": "garbage"
             },
-            "Mesh": null
+            "Mesh": {
+                "Alias": "GarbageSurrenderAnim_000001",
+                "FilePath": "res\\assets\\animation\\Garbage\\GarbageSurrender\\GarbageSurrenderAnim_000001.obj"
+            }
         },
         "Transform": {
             "Mirror": {
@@ -20249,9 +20267,9 @@
                         0.0
                     ],
                     "Size": [
-                        1.0,
-                        1.0,
-                        1.0
+                        0.44999998807907104,
+                        1.149999976158142,
+                        0.44999998807907104
                     ],
                     "Trigger": false,
                     "Type": 0
@@ -20263,15 +20281,15 @@
             "CullingMask": 15,
             "Enabled": true,
             "Material": {
-                "Alias": "metal"
+                "Alias": "ThrowableBottle"
             },
             "Mesh": {
-                "Alias": "cube",
-                "FilePath": "res\\assets\\models\\cube.obj"
+                "Alias": "ThrowBottle",
+                "FilePath": "res\\assets\\models\\ThrowBottle.obj"
             }
         },
         "RigidBody": {
-            "Friction": 0.5,
+            "Friction": 0.800000011920929,
             "Mass": 1.0,
             "Properties": 98
         },
@@ -20283,7 +20301,7 @@
             },
             "Position": {
                 "X": -7.039999961853027,
-                "Y": 0.3700000047683716,
+                "Y": 0.6114949584007263,
                 "Z": 10.140000343322754
             },
             "Rotation": {
@@ -20293,9 +20311,9 @@
                 "qZ": 0.0
             },
             "Scale": {
-                "X": 0.25,
-                "Y": 0.6000000238418579,
-                "Z": 0.25
+                "X": 0.699999988079071,
+                "Y": 0.699999988079071,
+                "Z": 0.699999988079071
             }
         }
     },
@@ -20309,9 +20327,9 @@
                         0.0
                     ],
                     "Size": [
-                        1.0,
-                        1.0,
-                        1.0
+                        0.44999998807907104,
+                        1.149999976158142,
+                        0.44999998807907104
                     ],
                     "Trigger": false,
                     "Type": 0
@@ -20323,15 +20341,15 @@
             "CullingMask": 15,
             "Enabled": true,
             "Material": {
-                "Alias": "metal"
+                "Alias": "ThrowableBottle"
             },
             "Mesh": {
-                "Alias": "cube",
-                "FilePath": "res\\assets\\models\\cube.obj"
+                "Alias": "ThrowBottle",
+                "FilePath": "res\\assets\\models\\ThrowBottle.obj"
             }
         },
         "RigidBody": {
-            "Friction": 0.5,
+            "Friction": 0.800000011920929,
             "Mass": 1.0,
             "Properties": 98
         },
@@ -20353,9 +20371,9 @@
                 "qZ": 0.0
             },
             "Scale": {
-                "X": 0.25,
-                "Y": 0.6000000238418579,
-                "Z": 0.25
+                "X": 0.699999988079071,
+                "Y": 0.699999988079071,
+                "Z": 0.699999988079071
             }
         }
     },
@@ -24947,9 +24965,9 @@
                 "Z": -1.9953246116638184
             },
             "Rotation": {
-                "qW": 0.5403022766113281,
+                "qW": 0.9925684332847595,
                 "qX": 0.0,
-                "qY": 0.8414709568023682,
+                "qY": 0.12168761342763901,
                 "qZ": 0.0
             },
             "Scale": {
@@ -25009,9 +25027,9 @@
                 "Z": -0.7759348750114441
             },
             "Rotation": {
-                "qW": 0.5403022766113281,
+                "qW": 0.9871383905410767,
                 "qX": 0.0,
-                "qY": -0.8414709568023682,
+                "qY": -0.1598680317401886,
                 "qZ": 0.0
             },
             "Scale": {

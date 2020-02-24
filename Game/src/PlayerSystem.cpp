@@ -123,7 +123,7 @@ void PlayerSystem::onUpdate()
 				performBasicMovement(playerEntity, player.speedForce * 0.5f);
 
 				player.delayBeforeThrowingCountdown -= Time::deltaTime();
-				if (player.delayBeforeThrowingCountdown < 0.0f)
+				//if (player.delayBeforeThrowingCountdown < 0.0f)
 				{
 					changeToIdle(&player);
 
@@ -334,6 +334,14 @@ void PlayerSystem::changeToThrowingBottle(Player* a_player)
 
 void PlayerSystem::changeToStunned(Player* a_player)
 {
+	if (a_player->state == PlayerState::inCleaningQuicktimeEvent)
+	{
+		//deactivate CleaningQuicktimeEvent UI for player
+		CancelQuicktimeCleaningEventEvent cancelQuicktimeCleaningEvent;
+		cancelQuicktimeCleaningEvent.playerNum = a_player->playerNum;
+		postEvent(cancelQuicktimeCleaningEvent);
+	}
+
 	a_player->stunnedTimeCountdown = a_player->STUNNED_TIME_DURATION;
 
 	a_player->state = PlayerState::stunned;
