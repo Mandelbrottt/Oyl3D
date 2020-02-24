@@ -1109,6 +1109,65 @@ void SandboxLayer::onEnter()
 		/////////////////////////////////////////////////////
 
 		{
+			//THROWABLE BOTTLE
+			entt::entity bottleEntity = registry->create();
+
+			component::Transform bottleTransform;
+			bottleTransform.setPosition(glm::vec3(-7.04f, 0.37f, 10.14f));
+			bottleTransform.setScale(glm::vec3(0.25f, 0.6f, 0.25f));
+			registry->assign<component::Transform>(bottleEntity, bottleTransform);
+
+			auto& carryableItem = registry->assign<CarryableItem>(bottleEntity);
+			carryableItem.type = CarryableItemType::throwableBottle;
+			carryableItem.team = Team::neutral;
+
+			auto& respawnable = registry->assign<Respawnable>(bottleEntity);
+			respawnable.spawnPosition = glm::vec3(-7.04f, 0.61f, 10.14f);
+			respawnable.spawnRotation = glm::vec3(0.0f, 0.0f, 0.0f);
+
+			auto& throwableBottle = registry->assign<ThrowableBottle>(bottleEntity);
+
+			auto& rb = registry->assign<component::RigidBody>(bottleEntity);
+
+			mr.mesh = Mesh::get("Gloop");
+			registry->assign<component::Renderable>(bottleEntity, mr);
+
+			auto& so2 = registry->assign<component::EntityInfo>(bottleEntity);
+			so2.name = "ThrowableBottle";
+
+			auto& gloopCollider = registry->assign<component::Collidable>(bottleEntity);
+			auto& shapeInfo = gloopCollider.pushShape(ColliderType::Box);
+			shapeInfo.box.setSize({ 1.0f, 1.0f, 1.0f });
+
+
+			
+			//THROWABLE BOTTLE SPAWNER
+			//NOTE: MAKE SURE THIS IS INITIALIZED AFTER THROWABLE BOTTLE ENTITY
+			entt::entity bottleSpawnerEntity = registry->create();
+
+			auto& spawner = registry->assign<RespawnManager>(bottleSpawnerEntity);
+			spawner.respawnTimerDuration = 30.0f;
+			spawner.type = CarryableItemType::throwableBottle;
+			spawner.team = Team::neutral;
+			spawner.entityPrefab = registry->create();
+			registry->stomp(spawner.entityPrefab, bottleEntity, *registry);
+
+			auto& newTransform  = registry->get<component::Transform>(spawner.entityPrefab);
+			auto& newEntityInfo = registry->get<component::EntityInfo>(spawner.entityPrefab);
+			auto& newCarryable  = registry->get<CarryableItem>(spawner.entityPrefab);
+
+			newCarryable.hasBeenCarried = true; //we have to do this or else the prefab entity will stop this spawner from ever spawning an item
+			newTransform.setPosition(glm::vec3(-99999.0f));
+			newEntityInfo.name = "ThrowableBottlePrefab";
+
+			auto& spawnerTransform = registry->assign<component::Transform>(bottleSpawnerEntity);
+			spawnerTransform.setPosition(glm::vec3(0.0f));
+
+			auto& spawnerInfo = registry->assign<component::EntityInfo>(bottleSpawnerEntity);
+			spawnerInfo.name  = "ThrowableBottleSpawner";
+		}
+
+		{
 			//LAMP
 
 			component::Collidable boxCollider;

@@ -9,6 +9,7 @@ enum CustomEventsCategories : int
 	CategoryGarbagePile,
 	CategoryCannonball,
 	CategoryGloop,
+	CategoryThrowableBottle,
 	CategoryQuicktimeCleaningEvent,
 	CategoryGameState
 };
@@ -18,6 +19,7 @@ enum CustomEventTypes : int
 	TypePlayerJump,
 	TypePlayerInteractResult,
     TypePlayerInteractionRequest,
+	TypePlayerDropItemRequest,
 	TypeCancelButtonPressed,
 	TypePlayerStateChange,
     TypeCannonStateChange,
@@ -28,6 +30,7 @@ enum CustomEventTypes : int
 	TypeIncreasedGarbageLevel,
 	TypeSpawnCannonballForPlayer,
 	TypeUseGloop,
+	TypeThrowBottle,
 	TypeActivateQuicktimeCleaningEvent,
 	TypeCancelQuicktimeCleaningEvent,
 	TypeGameEnd
@@ -54,6 +57,13 @@ OYL_EVENT_STRUCT(PlayerInteractResultEvent, (oyl::EventType) TypePlayerInteractR
 OYL_EVENT_STRUCT(PlayerInteractionRequestEvent, (oyl::EventType) TypePlayerInteractionRequest, (oyl::EventCategory) CategoryPlayer,
 	{
 		entt::entity playerEntity;
+		PlayerItemClassifiation itemClassifiatonToUse;
+	});
+
+OYL_EVENT_STRUCT(PlayerDropItemRequestEvent, (oyl::EventType) TypePlayerDropItemRequest, (oyl::EventCategory) CategoryPlayer,
+	{
+		entt::entity playerEntity;
+		PlayerItemClassifiation itemClassificationToDrop;
 	});
 
 OYL_EVENT_STRUCT(CancelButtonPressedEvent, (oyl::EventType) TypeCancelButtonPressed, (oyl::EventCategory) CategoryPlayer,
@@ -107,6 +117,12 @@ OYL_EVENT_STRUCT(SpawnCannonballForPlayerEvent, (oyl::EventType) TypeSpawnCannon
 OYL_EVENT_STRUCT(UseGloopEvent, (oyl::EventType) TypeUseGloop, (oyl::EventCategory) CategoryGloop,
 	{
 		entt::entity gloopEntity;
+	});
+
+OYL_EVENT_STRUCT(ThrowBottleEvent, (oyl::EventType) TypeThrowBottle, (oyl::EventCategory) CategoryThrowableBottle,
+	{
+		entt::entity bottleEntity;
+		entt::entity playerThrowingEntity;
 	});
 
 OYL_EVENT_STRUCT(ActivateQuicktimeCleaningEventEvent, (oyl::EventType) TypeActivateQuicktimeCleaningEvent, (oyl::EventCategory) CategoryQuicktimeCleaningEvent,

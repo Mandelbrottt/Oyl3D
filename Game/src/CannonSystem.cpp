@@ -2,7 +2,7 @@
 
 void CannonSystem::onEnter()
 {
-	this->listenForEventCategory((EventCategory)CategoryCannon);
+	listenForEventCategory((EventCategory)CategoryCannon);
 }
 
 void CannonSystem::onExit()
@@ -14,7 +14,7 @@ void CannonSystem::onUpdate()
 	auto view = registry->view<Cannon, component::Transform>();
 	for (auto& cannonEntity : view)
 	{
-		auto& cannon = registry->get<Cannon>(cannonEntity);
+		auto& cannon          = registry->get<Cannon>(cannonEntity);
 	    auto& cannonTransform = registry->get<component::Transform>(cannonEntity);
 	    
 	    //update fuse for every cannon
@@ -103,7 +103,7 @@ void CannonSystem::changeToFiringSoon(Cannon* a_cannon)
 {
 	a_cannon->state = CannonState::firingSoon;
 
-	std::cout << "FIRING SOON!\n";
+	OYL_LOG("FIRING SOON!");
 }
 
 void CannonSystem::updateFuse(float dt, entt::entity a_cannonEntity)
@@ -135,7 +135,7 @@ void CannonSystem::fireCannon(entt::entity a_cannonEntity)
 
 	if (cannon.isLoaded)
 	{
-		std::cout << "CANNON FIRED!\n";
+		OYL_LOG("CANNON FIRED!");
 		cannon.isLoaded = false;
 		changeToDoingNothing(&cannon);
 
@@ -145,6 +145,6 @@ void CannonSystem::fireCannon(entt::entity a_cannonEntity)
 	}
 	else
 	{
-		std::cout << "CANNON MISFIRE! (UNLOADED CANNON FIRED)\n";
+		OYL_LOG("CANNON MISFIRE! (UNLOADED CANNON FIRED)");
 	}
 }

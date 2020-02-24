@@ -2,7 +2,7 @@
 
 void GarbagePileHealthBarSystem::onEnter()
 {
-	this->listenForEventCategory((EventCategory)CategoryGarbagePile);
+	listenForEventCategory((EventCategory)CategoryGarbagePile);
 }
 
 void GarbagePileHealthBarSystem::onExit()
@@ -70,6 +70,8 @@ void GarbagePileHealthBarSystem::onUpdate()
 		}
 		else
 		{
+			bool rightgarbagepile = false;
+
 			//go thru each garbage pile
 			auto garbagePileView = registry->view<GarbagePile, component::Transform>();
 			for (auto garbagePileEntity : garbagePileView)
@@ -80,6 +82,8 @@ void GarbagePileHealthBarSystem::onUpdate()
 				//check if the garbage pile is the one that the HP bar is attached to
 				if (garbageHPBar.garbagePileNum == garbagePile.relativePositionOnShip && garbageHPBar.team == garbagePile.team)
 				{
+					if (garbagePile.relativePositionOnShip == 0)
+						rightgarbagepile = true;
 					//set the HP bar position to the garbage pile's position
 					garbageHPBarTransform.setPosition(garbagePileTransform.getPosition() + glm::vec3(0.0f, 0.8f, 0.0f));
 					break;
@@ -95,12 +99,50 @@ void GarbagePileHealthBarSystem::onUpdate()
 				//check if the camera should see the HP bar
 				if (playerCamera.player == garbageHPBar.playerNum)
 				{
+					bool hideHPBar = false;
+
 					//find distance between camera and garbage pile
-					glm::vec3 playerToGarbagePile = playerCameraTransform.getPositionGlobal() - garbageHPBarTransform.getPositionGlobal();
-					//disable the HP bar if the player's camera is too far away
+					glm::vec3 playerToGarbagePile = garbageHPBarTransform.getPositionGlobal() - playerCameraTransform.getPositionGlobal();
+
+					//hide the HP bar if the player's camera is too far away
 					if (glm::length(playerToGarbagePile) > 15.0f)
+						hideHPBar = true;
+
+					//hide the HP bar if the player cannot see the garbage pile
+					auto ray = RayTest::Closest(playerCameraTransform.getPositionGlobal(), normalize(playerToGarbagePile), 20.0f);
+					//if (!ray->hasHit || !registry->valid(ray->hitObject.entity) || !registry->has<GarbagePile>(ray->hitObject.entity))
+						//hideHPBar = true;
+					/*if (playerCamera.player == PlayerNumber::One && rightgarbagepile)
 					{
-						garbageHPBarGui.enabled        = false;
+						if (!ray->hasHit)
+						{
+							OYL_LOG("No hit");
+							hideHPBar = true;
+						}
+						else if (!registry->valid(ray->hitObject.entity))
+						{
+							OYL_LOG("Invalid hit");
+							hideHPBar = true;
+						}
+						else if (registry->has<Player>(ray->hitObject.entity))
+						{
+							OYL_LOG("Player hit");
+							hideHPBar = true;
+						}
+						else if (!registry->has<GarbagePile>(ray->hitObject.entity))
+						{
+							OYL_LOG("Not a garbage pile hit");
+							hideHPBar = true;
+						}
+						else
+						{
+							OYL_LOG("Garbage pile hit!");
+						}
+					}*/
+
+					if (hideHPBar)
+					{
+						garbageHPBarGui.enabled = false;
 						garbageHPBarOutlineGui.enabled = false;
 					}
 					else //camera is in range of garbage pile
