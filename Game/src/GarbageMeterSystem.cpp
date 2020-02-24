@@ -2,7 +2,7 @@
 
 void GarbageMeterSystem::onEnter()
 {
-	this->listenForEventCategory((EventCategory)CategoryGarbagePile);
+	listenForEventCategory((EventCategory)CategoryGarbagePile);
 }
 
 void GarbageMeterSystem::onExit()

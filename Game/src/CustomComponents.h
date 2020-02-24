@@ -6,7 +6,8 @@ using oyl::PlayerNumber;
 enum class Team
 {
 	blue,
-	red
+	red,
+	neutral
 };
 
 enum class PlayerState
@@ -17,7 +18,16 @@ enum class PlayerState
 	falling,
 	pushing,
 	inCleaningQuicktimeEvent,
-	cleaning
+	cleaning,
+	throwingBottle,
+	stunned
+};
+
+enum class PlayerItemClassifiation
+{
+	primary,
+	secondary,
+	any
 };
 
 enum class CannonState
@@ -33,14 +43,23 @@ enum class CarryableItemType
 	cannonball,
 	mop,
 	cleaningSolution,
-	gloop
+	gloop,
+	throwableBottle
 };
 
 enum class PlayerInteractionResult
 {
 	nothing,
+
+	//"invalid" results (invalid reticle is displayed)
 	invalid,
 	cannonFiringSoon,
+	needCleaningSolution,
+	needMop,
+	needGloop,
+	needToDropItems,
+
+	//"valid" results (normal reticle is displayed)
 	loadCannon,
 	pushCannon,
 	takeCannonballFromCrate,
@@ -48,9 +67,9 @@ enum class PlayerInteractionResult
 	pickUpMop,
 	pickUpCleaningSolution,
 	pickUpGloop,
+	pickUpThrowableBottle,
 	useGloop,
-	cleanGarbagePile,
-	activateCleaningQuicktimeEvent
+	cleanGarbagePile
 };
 
 enum class ReticleType
@@ -97,7 +116,13 @@ struct Player
 	MoveableUsingLerp pushingStateData;
 
 	float CLEANING_TIME_DURATION = 1.2f; //IF YOU CHANGE THIS, MAKE SURE TO ALSO CHANGE THE DEPENDANT VALUES IN GARBAGE PILE AND GARBAGE HP BAR COMPONENETS (check the comments in those components to figure out which ones)
-	float cleaningTimeCountdown = CLEANING_TIME_DURATION;
+	float cleaningTimeCountdown  = CLEANING_TIME_DURATION;
+
+	float THROWING_DELAY_DURATION      = 0.5f;
+	float delayBeforeThrowingCountdown = THROWING_DELAY_DURATION;
+
+	float STUNNED_TIME_DURATION = 2.0f;
+	float stunnedTimeCountdown  = CLEANING_TIME_DURATION;
 
 	bool  isCameraLocked = false;
 	float yRotationClamp = 0.0f;
@@ -162,18 +187,29 @@ struct Cannonball
 	bool isWaitingToBeFired = false;
 	bool isBeingFired       = false;
 
-	glm::vec3 v1;
-	glm::vec3 v2;
-	glm::vec3 v3;
-	glm::vec3 v4;
+	std::vector<glm::vec3> splineFollowedWhenFired;
+	int currentSplineIndex = 0;
 
 	float interpolationParam = 0.0f;
-	float speedWhenFired     = 0.7f;
+	float interpolationSpeed = 3.5f;
 };
 
 struct Gloop
 {
 	int numUses = 2;
+};
+
+struct ThrowableBottle
+{
+	float throwSpeed   = 16.0f;
+	bool isBeingThrown = false;
+
+	entt::entity playerThrowingEntity = entt::null;
+};
+
+struct ThrowBottlePrompt
+{
+
 };
 
 struct CannonballCrate
@@ -195,7 +231,7 @@ struct GarbagePile
 	float GARBAGE_TICKS_PER_LEVEL = 4.0f;
 	float garbageTicks = GARBAGE_TICKS_PER_LEVEL;
 
-	float DELAY_BEFORE_ADDING_GARBAGE_DURATION = 1.0f; //this is used to add garbage to a pile that a cannon has shot at, or any other reason a delay could be wanted before adding garbage
+	float DELAY_BEFORE_ADDING_GARBAGE_DURATION = 1.75f; //this is used to add garbage to a pile that a cannon has shot at, or any other reason a delay could be wanted before adding garbage
 	float delayBeforeAddingGarbageCountdown    = -1.0f; //timer shouldnt start at the beginning of the game
 
 	int relativePositionOnShip = -10; //this will be -1 (left), 0 (middle), or 1 (right) to mirror the cannon track position. It is used to determine which pile the cannons are firing at
