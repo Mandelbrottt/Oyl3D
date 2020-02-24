@@ -20249,9 +20249,9 @@
                         0.0
                     ],
                     "Size": [
+                        0.4000000059604645,
                         1.0,
-                        1.0,
-                        1.0
+                        0.4000000059604645
                     ],
                     "Trigger": false,
                     "Type": 0
@@ -20263,15 +20263,15 @@
             "CullingMask": 15,
             "Enabled": true,
             "Material": {
-                "Alias": "metal"
+                "Alias": "DecorationAtlas"
             },
             "Mesh": {
-                "Alias": "cube",
-                "FilePath": "res\\assets\\models\\cube.obj"
+                "Alias": "ThrowBottle",
+                "FilePath": "res\\assets\\models\\ThrowBottle.obj"
             }
         },
         "RigidBody": {
-            "Friction": 0.5,
+            "Friction": 0.800000011920929,
             "Mass": 1.0,
             "Properties": 98
         },
@@ -20283,7 +20283,7 @@
             },
             "Position": {
                 "X": -7.039999961853027,
-                "Y": 0.3700000047683716,
+                "Y": 0.3600791096687317,
                 "Z": 10.140000343322754
             },
             "Rotation": {
@@ -20293,9 +20293,9 @@
                 "qZ": 0.0
             },
             "Scale": {
-                "X": 0.25,
+                "X": 0.6000000238418579,
                 "Y": 0.6000000238418579,
-                "Z": 0.25
+                "Z": 0.6000000238418579
             }
         }
     },
@@ -20309,9 +20309,9 @@
                         0.0
                     ],
                     "Size": [
+                        0.4000000059604645,
                         1.0,
-                        1.0,
-                        1.0
+                        0.4000000059604645
                     ],
                     "Trigger": false,
                     "Type": 0
@@ -20323,15 +20323,15 @@
             "CullingMask": 15,
             "Enabled": true,
             "Material": {
-                "Alias": "metal"
+                "Alias": "DecorationAtlas"
             },
             "Mesh": {
-                "Alias": "cube",
-                "FilePath": "res\\assets\\models\\cube.obj"
+                "Alias": "ThrowBottle",
+                "FilePath": "res\\assets\\models\\ThrowBottle.obj"
             }
         },
         "RigidBody": {
-            "Friction": 0.5,
+            "Friction": 0.800000011920929,
             "Mass": 1.0,
             "Properties": 98
         },
@@ -20353,9 +20353,9 @@
                 "qZ": 0.0
             },
             "Scale": {
-                "X": 0.25,
+                "X": 0.6000000238418579,
                 "Y": 0.6000000238418579,
-                "Z": 0.25
+                "Z": 0.6000000238418579
             }
         }
     },
