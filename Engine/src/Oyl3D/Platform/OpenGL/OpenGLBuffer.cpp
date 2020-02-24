@@ -149,13 +149,37 @@ namespace oyl
         const auto& layout = vbo->getLayout();
         for (const auto& element : layout)
         {
-            glEnableVertexAttribArray(index);
-            glVertexAttribPointer(index,
-                                  element.getElementCount(),
-                                  ShaderDataTypeToGLType(element.type),
-                                  element.normalized ? GL_TRUE : GL_FALSE,
-                                  layout.getStride(),
-                                  (const void*) element.offset);
+            switch (element.type)
+            {
+                case DataType::Bool:
+                case DataType::Int:
+                case DataType::Int2:
+                case DataType::Int3:
+                case DataType::Int4:
+                case DataType::Uint:
+                case DataType::Uint2:
+                case DataType::Uint3:
+                case DataType::Uint4:
+                    if (!element.normalized)
+                    {
+                        glEnableVertexAttribArray(index);
+                        glVertexAttribIPointer(index,
+                                               element.getElementCount(),
+                                               ShaderDataTypeToGLType(element.type),
+                                               layout.getStride(),
+                                               (const void*) element.offset);
+                        break;
+                    }
+                default:
+                    glEnableVertexAttribArray(index);
+                    glVertexAttribPointer(index,
+                                          element.getElementCount(),
+                                          ShaderDataTypeToGLType(element.type),
+                                          element.normalized ? GL_TRUE : GL_FALSE,
+                                          layout.getStride(),
+                                          (const void*) element.offset);
+                    break;
+            }
             index++;
         }
         

@@ -23,6 +23,8 @@ namespace oyl
             { DataType::Float3, "in_normal" },
             { DataType::Float3, "in_tangent" },
             { DataType::Float3, "in_biTangent" },
+            { DataType::Int4,   "in_bones", false },
+            { DataType::Float4, "in_boneWeights" },
         };
 
         m_vbo->setLayout(layout);

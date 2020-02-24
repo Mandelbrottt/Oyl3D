@@ -6,6 +6,7 @@
 #include "App/Application.h"
 #include "App/Window.h"
 
+#include "Components/Animatable.h"
 #include "Components/Collidable.h"
 #include "Components/Camera.h"
 #include "Components/Lights.h"
@@ -387,12 +388,12 @@ namespace oyl::internal
                     ImGui::Indent(ImGui::GetWindowContentRegionWidth() / 2 - 55);
                     if (ImGui::Button("Reload##ReloadConfirmationReload"))
                     {
-                        //for (const auto& [alias, material] : Material::getCache())
-                        //{
-                        //    if (!material->getFilePath().empty() && 
-                        //        std::fs::exists(material->getFilePath()))
-                        //        *material = *materialFromFile(material->getFilePath());
-                        //}
+                        for (const auto& [alias, material] : Material::getCache())
+                        {
+                            if (!material->getFilePath().empty() && 
+                                std::fs::exists(material->getFilePath()))
+                                *material = *materialFromFile(material->getFilePath());
+                        }
                         
                         registryFromSceneFile(*registry, Scene::current()->m_name);
                         m_currentSelection = entt::entity(entt::null);
@@ -738,6 +739,7 @@ namespace oyl::internal
                 drawInspectorDirectionalLight();
                 drawInspectorSpotLight();
                 drawInspectorCamera();
+                drawInspectorSkeletonAnimatable();
                 drawInspectorAddComponent();
             }
             else if (m_currentSelection.type() == Selectable::Type::Material)
@@ -1691,6 +1693,80 @@ namespace oyl::internal
         }
     }
 
+    void GuiLayer::drawInspectorSkeletonAnimatable()
+    {
+        using component::Renderable;
+        using component::SkeletonAnimatable;
+
+        if (!registry->has<SkeletonAnimatable>(m_currentSelection.entity())) return;
+
+        ImGui::SetNextTreeNodeOpen(true, ImGuiCond_Once);
+
+        bool open = ImGui::CollapsingHeader("Skeleton Animatable##InspectorSkeletonAnimatableProperties");
+
+        open &= !userRemoveComponent<SkeletonAnimatable>();
+
+        if (open)
+        {
+            ImGui::Indent(10);
+
+            auto& skeletonAnimatable = registry->get<SkeletonAnimatable>(m_currentSelection.entity());
+
+            ImGui::Checkbox("Enabled##SkeletonAnimatableEnabled", &skeletonAnimatable.enabled);
+
+            ImGui::TextUnformatted("Current Animation");
+            ImGui::SameLine();
+            ImGui::SetNextItemWidth(ImGui::GetWindowWidth() - ImGui::GetCursorPosX());
+
+            std::string currentName = "None";
+            auto* renderablePtr = registry->try_get<Renderable>(m_currentSelection.entity());
+
+            Ref<Model> model;
+            if (renderablePtr)
+                model = renderablePtr->model;
+            
+            if (model)
+            {
+                for (const auto& [name, _] : model->getAnimations())
+                {
+                    if (skeletonAnimatable.animation == name)
+                        currentName = name;
+                }
+            }
+            
+            if (ImGui::BeginCombo("##SkeletonAnimationPropertiesCurrentAnimation", currentName.c_str()))
+            {
+                if (ImGui::Selectable("None", currentName == "None"))
+                    skeletonAnimatable.animation.clear();
+
+                if (model)
+                {
+                    for (const auto& [name, _] : model->getAnimations())
+                    {
+                        if (ImGui::Selectable(name.c_str(), skeletonAnimatable.animation == name))
+                        {
+                            skeletonAnimatable.animation = name;
+                        }
+                    }
+                }
+                ImGui::EndCombo();
+            }
+
+            if (model && currentName != "None")
+            {
+                const auto& anim = model->getAnimations().at(currentName);
+                float max = static_cast<float>(anim->mDuration / anim->mTicksPerSecond);
+                //float max = 1.0f;
+                ImGui::SliderFloat("Time##SkeletonAnimatorTime", &skeletonAnimatable.time, 0.0f, max, "%.2f");
+            }
+
+            ImGui::Unindent(10);
+
+            ImGui::Separator();
+            ImGui::NewLine();
+        }
+    }
+
     void GuiLayer::drawInspectorAddComponent()
     {
         using component::Collidable;
@@ -1700,6 +1776,7 @@ namespace oyl::internal
         using component::PointLight;
         using component::DirectionalLight;
         using component::SpotLight;
+        using component::SkeletonAnimatable;
         using component::Camera;
         
         if (ImGui::BeginCombo("##InspectorAddComponent", "Add Component", ImGuiComboFlags_NoArrowButton))
@@ -1730,9 +1807,13 @@ namespace oyl::internal
                 ImGui::Selectable("Directional Light"))
                 registry->assign<DirectionalLight>(entity);
 
-            if (!registry->has<DirectionalLight>(entity) &&
+            if (!registry->has<SpotLight>(entity) &&
                 ImGui::Selectable("Spot Light"))
-                registry->assign<DirectionalLight>(entity);
+                registry->assign<SpotLight>(entity);
+
+            if (!registry->has<SkeletonAnimatable>(entity) &&
+                ImGui::Selectable("Skeleton Animatable"))
+                registry->assign<SkeletonAnimatable>(entity);
             
             int camFlags = 0;
             if (registry->size<Camera>() >= 4)
@@ -2738,6 +2819,8 @@ static bool isTexture(const char* ext)
 static bool isModel(const char* ext)
 {
     return strcmp(ext, ".obj") == 0 ||
+           strcmp(ext, ".gltf") == 0 ||
+           strcmp(ext, ".glb") == 0 ||
            strcmp(ext, ".fbx") == 0;
 }
 
@@ -2747,7 +2830,8 @@ static bool isShader(const char* ext)
            strcmp(ext, ".tesc") == 0 ||
            strcmp(ext, ".tese") == 0 ||
            strcmp(ext, ".geom") == 0 ||
-           strcmp(ext, ".frag") == 0;
+           strcmp(ext, ".frag") == 0 ||
+           strcmp(ext, ".oylshader") == 0;
 }
 
 static bool isMaterial(const char* ext)

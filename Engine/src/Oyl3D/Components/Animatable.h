@@ -11,6 +11,7 @@ namespace oyl
     {
         class AnimationSystem;
         class RenderSystem;
+        class SkeletalAnimationSystem;
     }
     
     struct Animation
@@ -18,7 +19,7 @@ namespace oyl
         struct KeyPose
         {
             Ref<Mesh> mesh;
-            f32       duration;
+            f32       duration = 0.0f;
         };
 
         std::vector<KeyPose> poses;
@@ -27,8 +28,7 @@ namespace oyl
 
 namespace oyl::component
 {    
-
-    class Animatable
+    class VertexAnimatable
     {
     public:
         void pushAnimation(const std::string& alias, const Ref<Animation>& animation);
@@ -55,6 +55,20 @@ namespace oyl::component
 
         f32 m_transitionElapsed  = 0.0f;
         f32 m_transitionDuration = 0.0f;
+    };
+
+    struct SkeletonAnimatable
+    {
+        bool enabled = true;
+        
+        std::string animation;
+
+        float time = 0.0f;
+
+    private:
+        std::string prevAnimation;
+
+        friend ::oyl::internal::SkeletalAnimationSystem;
     };
 }
 

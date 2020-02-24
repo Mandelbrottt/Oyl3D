@@ -6,6 +6,7 @@
 
 #include "Debug/GuiLayer.h"
 
+#include "Animation/AnimationSystems.h"
 #include "Rendering/RenderSystems.h"
 #include "Debug/EditorSystems.h"
 
@@ -69,6 +70,11 @@ namespace oyl
 
         Shader::cache(
             {
+                { Shader::Compound, ENGINE_RES + "shaders/skeletal.oylshader" },
+            }, "Oyl Skeletal");
+
+        Shader::cache(
+            {
                 { Shader::Vertex, ENGINE_RES + LIGHTING_SHADER_VERTEX_PATH },
                 { Shader::Pixel, ENGINE_RES + LIGHTING_SHADER_FRAGMENT_PATH },
             }, LIGHTING_SHADER_ALIAS);
@@ -95,6 +101,7 @@ namespace oyl
 
         TextureCubeMap::cache(ENGINE_RES + DEFAULT_SKYBOX_PATH, DEFAULT_SKYBOX_ALIAS);
 
+        m_skeletalAnimationSystem = internal::SkeletalAnimationSystem::create();
         m_editorRenderSystem = internal::EditorRenderSystem::create();
         m_preRenderSystem    = internal::PreRenderSystem::create();
         m_shadowRenderSystem = internal::ShadowRenderSystem::create();
@@ -187,6 +194,11 @@ namespace oyl
         m_currentScene = std::move(scene);
 
         Scene::s_current = m_currentScene;
+
+        m_skeletalAnimationSystem->setDispatcher(m_dispatcher);
+        m_skeletalAnimationSystem->setRegistry(m_currentScene->m_registry);
+        m_skeletalAnimationSystem->onEnter();
+        m_dispatcher->registerListener(m_skeletalAnimationSystem);
 
         m_editorRenderSystem->setDispatcher(m_dispatcher);
         m_editorRenderSystem->setRegistry(m_currentScene->m_registry);
@@ -296,6 +308,7 @@ namespace oyl
 
                 Renderer::beginScene();
                 
+                m_skeletalAnimationSystem->onUpdate();
                 m_preRenderSystem->onUpdate();
                 m_shadowRenderSystem->onUpdate();
                 m_editorRenderSystem->onUpdate();
@@ -309,6 +322,7 @@ namespace oyl
         #if !defined(OYL_DISTRIBUTION)
             m_guiLayer->begin();
 
+            m_skeletalAnimationSystem->onGuiRender();
             m_preRenderSystem->onGuiRender();
             m_shadowRenderSystem->onGuiRender();
             m_renderSystem->onGuiRender();
