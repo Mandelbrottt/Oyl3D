@@ -11,8 +11,10 @@
 #include "Events/Event.h"
 #include "Events/EventListener.h"
 
+#include "Graphics/Buffer.h"
 #include "Graphics/EditorCamera.h"
 #include "Graphics/Material.h"
+#include "Graphics/Model.h"
 #include "Graphics/Shader.h"
 #include "Graphics/Texture.h"
 
@@ -192,24 +194,28 @@ namespace oyl::internal
         using component::Renderable;
         using component::Camera;
         using component::PointLight;
+        using component::DirectionalLight;
 
-        m_editorViewportBuffer->clear();
         m_editorViewportBuffer->bind();
+        m_editorViewportBuffer->clear();
 
         RenderCommand::setDrawRect(0, 0, m_windowSize.x, m_windowSize.y);
 
-        const auto& skybox = TextureCubeMap::get(DEFAULT_SKYBOX_ALIAS);
-        const auto& shader = Shader::get(SKYBOX_SHADER_ALIAS);
-        const auto& mesh   = Mesh::get(CUBE_MESH_ALIAS);
+        static const auto& skybox = TextureCubeMap::get(DEFAULT_SKYBOX_ALIAS);
+        static const auto& shader = Shader::get(SKYBOX_SHADER_ALIAS);
+        static const auto& mesh   = Model::get(CUBE_MODEL_ALIAS)->getMeshes()[0];
 
         glm::mat4 viewProj = m_targetCamera->getProjectionMatrix();
         viewProj *= glm::mat4(glm::mat3(m_targetCamera->getViewMatrix()));
         shader->bind();
         shader->setUniformMat4("u_viewProjection", viewProj);
 
+        skybox->bind(0);
+        shader->setUniform1i("u_skybox", 0);
+        
         RenderCommand::setDepthDraw(false);
         RenderCommand::setBackfaceCulling(false);
-        Renderer::submit(mesh, shader, skybox);
+        RenderCommand::drawArrays(mesh.getVertexArray(), mesh.getNumVertices());
         RenderCommand::setBackfaceCulling(true);
         RenderCommand::setDepthDraw(true);
 
@@ -218,9 +224,9 @@ namespace oyl::internal
         registry->sort<Renderable>(
             [](const Renderable& lhs, const Renderable& rhs)
             {
-                if (lhs.material == nullptr || lhs.mesh == nullptr)
+                if (lhs.material == nullptr || lhs.model == nullptr)
                     return false;
-                if (rhs.material == nullptr || rhs.mesh == nullptr)
+                if (rhs.material == nullptr || rhs.model == nullptr)
                     return true;
                 if (lhs.material->shader != rhs.material->shader)
                     return lhs.material->shader < rhs.material->shader;
@@ -237,7 +243,7 @@ namespace oyl::internal
         {
             Renderable& mr = view.get<Renderable>(entity);
 
-            if (mr.mesh == nullptr || mr.material == nullptr)
+            if (mr.model == nullptr || mr.material == nullptr)
                 break;
 
             if (mr.material != boundMaterial)
@@ -250,6 +256,8 @@ namespace oyl::internal
                 glm::mat3 viewNormal = glm::mat3(m_targetCamera->getViewMatrix());
                 viewNormal           = inverse(transpose(viewNormal));
                 boundMaterial->setUniformMat3("u_viewNormal", viewNormal);
+
+                int shadowIndex = 0;
 
                 auto lightView = registry->view<PointLight>();
                 int  count     = 0;
@@ -269,6 +277,40 @@ namespace oyl::internal
                     count++;
                 }
 
+                auto dirLightView = registry->view<DirectionalLight>();
+                count = 0;
+                for (auto light : dirLightView)
+                {
+                    auto& dirLightProps = dirLightView.get(light);
+
+                    std::string dirLightName = "u_dirLight[" + std::to_string(count) + "]";
+
+                    boundMaterial->setUniform3f(dirLightName + ".direction",
+                                                viewNormal * registry->get<Transform>(light).getForwardGlobal());
+                    boundMaterial->setUniform3f(dirLightName + ".ambient",
+                                                dirLightProps.ambient);
+                    boundMaterial->setUniform3f(dirLightName + ".diffuse",
+                                                dirLightProps.diffuse);
+                    boundMaterial->setUniform3f(dirLightName + ".specular",
+                                                dirLightProps.specular);
+
+                    if (dirLightProps.castShadows && shadowIndex < 3)
+                    {
+                        boundMaterial->setUniformMat4("u_lightSpaceMatrix", dirLightProps.m_lightSpaceMatrix);
+
+                        std::string shadowName = "u_shadow[" + std::to_string(shadowIndex) + "]";
+                        boundMaterial->setUniform1i(shadowName + ".type", 2);
+                        boundMaterial->setUniform1i(shadowName + ".map", 5 + shadowIndex);
+                        dirLightProps.m_frameBuffer->bindDepthAttachment(5 + shadowIndex);
+
+                        shadowIndex++;
+                    }
+
+                    count++;
+                    if (count >= 8)
+                        break;
+                }
+
                 boundMaterial->bind();
                 boundMaterial->applyUniforms();
             }
@@ -283,7 +325,7 @@ namespace oyl::internal
                 RenderCommand::setBackfaceCulling(doCulling);
             }
 
-            Renderer::submit(mr.mesh, boundMaterial, transform);
+            Renderer::submit(mr.model, boundMaterial, transform);
         }
 
         m_editorViewportBuffer->unbind();
@@ -300,7 +342,7 @@ namespace oyl::internal
                 auto e = event_cast<WindowResizedEvent>(event);
                 m_editorViewportBuffer->updateViewport(e.width, e.height);
                 m_windowSize = { e.width, e.height };
-                return true;
+                return false;
             }
             case EventType::EditorCameraChanged:
             {

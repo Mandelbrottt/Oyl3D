@@ -28,6 +28,7 @@
 #include <Oyl3D/Graphics/EditorCamera.h>
 #include <Oyl3D/Graphics/Material.h>
 #include <Oyl3D/Graphics/Mesh.h>
+#include <Oyl3D/Graphics/Model.h>
 #include <Oyl3D/Graphics/Shader.h>
 #include <Oyl3D/Graphics/Texture.h>
 

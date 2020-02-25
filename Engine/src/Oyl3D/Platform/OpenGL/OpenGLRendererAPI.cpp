@@ -1,6 +1,8 @@
 #include "oylpch.h"
 #include "OpenGLRendererAPI.h"
 
+#include "Graphics/Buffer.h"
+
 #include <glad/glad.h>
 
 namespace oyl
@@ -12,6 +14,7 @@ namespace oyl
 
     void OpenGLRendererAPI::clear()
     {
+        glBindFramebuffer(GL_FRAMEBUFFER, GL_NONE);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     }
 
@@ -41,16 +44,18 @@ namespace oyl
 
     void OpenGLRendererAPI::drawArrays(const Ref<VertexArray>& vao, u32 count)
     {
+        vao->bind();
         glDrawArrays(GL_TRIANGLES, 0, count);
     }
 
     void OpenGLRendererAPI::drawIndexed(const Ref<VertexArray>& vao)
     {
+        vao->bind();
         glDrawElements(GL_TRIANGLES, vao->getIndexBuffer()->getCount(), GL_UNSIGNED_INT, nullptr);
     }
 
-    void OpenGLRendererAPI::drawMesh(const Ref<Mesh>& mesh)
-    {
-        glDrawArrays(GL_TRIANGLES, 0, mesh->getNumVertices());
-    }
+    //void OpenGLRendererAPI::drawMesh(const Ref<Mesh>& mesh)
+    //{
+    //    glDrawArrays(GL_TRIANGLES, 0, mesh->getNumVertices());
+    //}
 }

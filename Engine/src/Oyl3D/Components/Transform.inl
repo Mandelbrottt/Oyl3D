@@ -28,17 +28,12 @@ namespace oyl::component
 
     inline glm::vec3 Transform::getPositionGlobal() const
     {
-        using component::Parent;
-
-        entt::entity parent;
-        
         // Check if the owner has a parent
-        if (!m_registry->has<Parent>(m_owner) || 
-            (parent = m_registry->get<Parent>(m_owner).parent) == entt::null)
+        if (!m_registry->valid(m_parent))
         {
             return m_localPosition;
         }
-        auto& parentTransform = m_registry->get<Transform>(parent);
+        auto& parentTransform = m_registry->get<Transform>(m_parent);
         return parentTransform.getMatrixGlobal() * glm::vec4(m_localPosition, 1.0f);
     }
 
@@ -84,17 +79,12 @@ namespace oyl::component
 
     inline glm::vec3 Transform::getRotationEulerGlobal() const
     {
-        using component::Parent;
-
-        entt::entity parent;
-
         // Check if the owner has a parent
-        if (!m_registry->has<Parent>(m_owner) ||
-            (parent = m_registry->get<Parent>(m_owner).parent) == entt::null)
+        if (!m_registry->valid(m_parent))
         {
             return getRotationEuler();
         }
-        auto& parentTransform = m_registry->get<Transform>(parent);
+        auto& parentTransform = m_registry->get<Transform>(m_parent);
         glm::quat globalQuat = parentTransform.getRotationGlobal() * m_localRotation;
         return degrees(eulerAngles(globalQuat));
     }
@@ -116,17 +106,12 @@ namespace oyl::component
 
     inline glm::quat Transform::getRotationGlobal() const
     {
-        using component::Parent;
-
-        entt::entity parent;
-
         // Check if the owner has a parent
-        if (!m_registry->has<Parent>(m_owner) ||
-            (parent = m_registry->get<Parent>(m_owner).parent) == entt::null)
+        if (!m_registry->valid(m_parent))
         {
             return getRotation();
         }
-        auto& parentTransform = m_registry->get<Transform>(parent);
+        auto& parentTransform = m_registry->get<Transform>(m_parent);
         return parentTransform.getRotationGlobal() * m_localRotation;
     }
 
@@ -152,17 +137,12 @@ namespace oyl::component
 
     inline glm::vec3 Transform::getScaleGlobal() const
     {
-        using component::Parent;
-
-        entt::entity parent;
-
         // Check if the owner has a parent
-        if (!m_registry->has<Parent>(m_owner) ||
-            (parent = m_registry->get<Parent>(m_owner).parent) == entt::null)
+        if (!m_registry->valid(m_parent))
         {
             return getScale();
         }
-        auto& parentTransform = m_registry->get<Transform>(parent);
+        auto& parentTransform = m_registry->get<Transform>(m_parent);
         return parentTransform.getScaleGlobal() * m_localScale;
     }
 
@@ -203,17 +183,12 @@ namespace oyl::component
 
     inline glm::bvec3 Transform::getMirrorGlobal() const
     {
-        using component::Parent;
-
-        entt::entity parent;
-
         // Check if the owner has a parent
-        if (!m_registry->has<Parent>(m_owner) ||
-            (parent = m_registry->get<Parent>(m_owner).parent) == entt::null)
+        if (!m_registry->valid(m_parent))
         {
             return getMirror();
         }
-        auto& parentTransform = m_registry->get<Transform>(parent);
+        auto& parentTransform = m_registry->get<Transform>(m_parent);
         glm::bvec3 ret = parentTransform.getMirrorGlobal();
 
         for (int i = 0; i < 3; ++i)
@@ -259,15 +234,12 @@ namespace oyl::component
 
     inline glm::mat4 Transform::getMatrixGlobal() const
     {
-        using component::Parent;
-
         // Check if the owner has a parent
-        Parent* p = m_registry->try_get<Parent>(m_owner);
-        if (!p || !m_registry->valid(p->parent))
+        if (!m_registry->valid(m_parent))
         {
             return getMatrix();
         }
-        auto& parentTransform = m_registry->get<Transform>(p->parent);
+        auto& parentTransform = m_registry->get<Transform>(m_parent);
         return parentTransform.getMatrixGlobal() * getMatrix();
     }
 
@@ -345,27 +317,88 @@ namespace oyl::component
 
     inline bool Transform::hasParent() const
     {
-        using component::Parent;
-
-        return m_registry->has<Parent>(m_owner) && m_registry->get<Parent>(m_owner).parent != entt::null;
+        return m_registry->valid(m_parent);
     }
     
     inline Transform* Transform::getParent()
     {
-        using component::Parent;
-
         if (hasParent())
-            return &m_registry->get<Transform>(m_registry->get<Parent>(m_owner).parent);
+            return &m_registry->get<Transform>(m_parent);
         return nullptr;
     }
     
     inline const Transform* Transform::getParent() const
     {
-        using component::Parent;
-
         if (hasParent())
-            return &m_registry->get<Transform>(m_registry->get<Parent>(m_owner).parent);
+            return &m_registry->get<Transform>(m_parent);
         return nullptr;
+    }
+
+    inline void Transform::setParent(entt::entity entity)
+    {
+        if (entity == m_parent || entity == m_owner) return;
+
+        if (m_registry->valid(m_parent))
+        {
+            auto& pc = m_registry->get<Transform>(m_parent).m_childrenEntities;
+            pc.erase(remove(pc.begin(), pc.end(), m_owner), pc.end());
+        }
+
+        m_parent = entity;
+        
+        if (m_registry->valid(entity))
+        {
+
+            auto& pt = m_registry->get<Transform>(entity);
+            auto it = std::find(pt.m_childrenEntities.begin(), pt.m_childrenEntities.end(), m_owner);
+            if (it == pt.m_childrenEntities.end())
+                pt.m_childrenEntities.push_back(m_owner);
+        }
+    }
+    
+    inline entt::entity Transform::entity() const
+    {
+        return m_owner;
+    }
+    
+    inline entt::entity Transform::getParentEntity() const
+    {
+        if (m_registry->valid(m_parent))
+            return m_parent;
+        return entt::null;
+    }
+
+    inline const std::vector<Transform*>& Transform::getChildren() const
+    {
+        m_children.clear();
+        for (auto child : getChildrenEntities())
+        {
+            m_children.push_back(&m_registry->get<Transform>(child));
+        }
+        return m_children;
+    }
+
+    inline const std::vector<entt::entity>& Transform::getChildrenEntities() const
+    {
+        auto it = m_childrenEntities.begin();
+        for (; it != m_childrenEntities.end(); ++it)
+        {
+            if (!m_registry->valid(*it))
+                it = m_childrenEntities.erase(it);
+        }
+        return m_childrenEntities;
+    }
+
+    inline void Transform::clearChildren()
+    {
+        for (auto child : getChildren())
+        {
+            if (child->getParentEntity() == m_owner)
+                child->setParent(entt::null);
+        }
+        
+        m_childrenEntities.clear();
+        m_children.clear();
     }
 
     inline void Transform::setPosition(glm::vec3 position)
@@ -458,7 +491,7 @@ namespace oyl::component
     {
         m_isLocalDirty |= euler != glm::vec3(0.0f);
         euler = radians(euler);
-        m_localRotation =  m_localRotation * glm::quat(euler);
+        m_localRotation = m_localRotation * glm::quat(euler);
         m_isRotationOverridden = true;
     }
 
@@ -487,6 +520,13 @@ namespace oyl::component
     {
         m_isLocalDirty |= m_localScale.z != z;
         m_localScale.z = z;
+        m_isScaleOverridden = true;
+    }
+
+    inline void Transform::scale(glm::vec3 scale)
+    {
+        m_isLocalDirty |= scale != glm::vec3(1.0f);
+        m_localScale *= scale;
         m_isScaleOverridden = true;
     }
 

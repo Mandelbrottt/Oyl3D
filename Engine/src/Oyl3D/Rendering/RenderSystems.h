@@ -1,6 +1,8 @@
 #pragma once
 
 #include "Scenes/System.h"
+#include "Graphics/Material.h"
+#include "Utils/Logging.h"
 
 namespace oyl
 {
@@ -10,6 +12,13 @@ namespace oyl
     
     namespace internal
     {
+        class PreRenderSystem : public System
+        {
+            OYL_CTOR(PreRenderSystem, System)
+
+            virtual void onUpdate() override;
+        };
+        
         class RenderSystem : public System
         {
             OYL_CTOR(RenderSystem, System)
@@ -48,9 +57,25 @@ namespace oyl
             Ref<VertexArray> m_vao;
         };
 
-        class PostRenderSystem : public System
+        class ShadowRenderSystem : public System
         {
-            OYL_CTOR(PostRenderSystem, System)
+            OYL_CTOR(ShadowRenderSystem, System)
+
+            virtual void onEnter() override;
+            virtual void onExit() override;
+
+            virtual void onUpdate() override;
+            virtual void onGuiRender() override;
+
+            virtual bool onEvent(const Event& event) override;
+
+        private:
+            Ref<Shader> m_shader;
+        };
+
+        class UserPostRenderSystem : public System
+        {
+            OYL_CTOR(UserPostRenderSystem, System)
 
             virtual void onEnter() override;
             virtual void onExit() override;

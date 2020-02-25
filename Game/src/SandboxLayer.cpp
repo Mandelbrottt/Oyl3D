@@ -7,16 +7,16 @@ using namespace oyl;
 void SandboxLayer::onEnter()
 {
 	//any meshes that aren't loaded in the scene need to be cached here for distribution mode
-	auto mesh = Mesh::cache("res/assets/models/cube.obj");
-	mesh = Mesh::cache("res/assets/models/Garbage/garbageSmall.obj");
-	mesh = Mesh::cache("res/assets/models/Garbage/garbageMedium.obj");
-    mesh = Mesh::cache("res/assets/models/Garbage/garbageLarge.obj");
-    mesh = Mesh::cache("res/assets/models/Garbage/garbageMassive.obj");
-    mesh = Mesh::cache("res/assets/models/Garbage/garbageSurrender.obj");
+	auto mesh = Model::cache("res/assets/models/cube.obj");
+	mesh = Model::cache("res/assets/models/Garbage/garbageSmall.obj");
+	mesh = Model::cache("res/assets/models/Garbage/garbageMedium.obj");
+    mesh = Model::cache("res/assets/models/Garbage/garbageLarge.obj");
+    mesh = Model::cache("res/assets/models/Garbage/garbageMassive.obj");
+    mesh = Model::cache("res/assets/models/Garbage/garbageSurrender.obj");
 
     {
         component::Renderable mr;
-        mr.mesh     = mesh;
+        mr.model     = mesh;
 
 		/////////////////////////////////////////////////////
 		//////////// SINGLE INSTANCE ANIMATIONS /////////////
@@ -41,22 +41,22 @@ void SandboxLayer::onEnter()
 				auto& animator = registry->assign<component::Animatable>(waterCrestEntity);
 
 				//loading animation
-				auto waterCrestAnimation = Ref<Animation>::create();
-				for (int i = 0; i < numFrames; i++)
-				{
-					Animation::KeyPose kp;
-					kp.duration = 1.0f / 5.0f; // duration in seconds
+				//auto waterCrestAnimation = Ref<Animation>::create();
+				//for (int i = 0; i < numFrames; i++)
+				//{
+				//	Animation::KeyPose kp;
+				//	kp.duration = 1.0f / 5.0f; // duration in seconds
 
-					sprintf(filename, "res/assets/animation/WaterCrest/WaterCrestAnim_%06d.obj", i + 1);
-					s.assign(filename); // you have to load each mesh yourself for now
-										// the "%06d" is because by default blender exports
-										// frames as "animationName_000001.obj" and so on counting up
+				//	sprintf(filename, "res/assets/animation/WaterCrest/WaterCrestAnim_%06d.obj", i + 1);
+				//	s.assign(filename); // you have to load each mesh yourself for now
+				//						// the "%06d" is because by default blender exports
+				//						// frames as "animationName_000001.obj" and so on counting up
 
-					kp.mesh = Mesh::create(s);
-					waterCrestAnimation->poses.push_back(kp); // Add the keyframe to the animation
+				//	kp.model = Model::create(s);
+				//	waterCrestAnimation->poses.push_back(kp); // Add the keyframe to the animation
 
-				}
-				animator.pushAnimation("WaterCrestAnim", waterCrestAnimation); // add the animation to the animator
+				//}
+				//animator.pushAnimation("WaterCrestAnim", waterCrestAnimation); // add the animation to the animator
 			}
 		}
 
@@ -98,6 +98,7 @@ void SandboxLayer::onEnter()
 
 			auto& cameraTransform = registry->assign<component::Transform>(playerCameraEntity);
 			cameraTransform.setPosition(glm::vec3(0.0f, 0.8f, -0.5f));
+			cameraTransform.setParent(player1BlueEntity);
 
 			auto& camera = registry->assign<component::Camera>(playerCameraEntity);
 			camera.player = player.playerNum;
@@ -105,9 +106,9 @@ void SandboxLayer::onEnter()
 
 			auto& cameraBreathing = registry->assign<CameraBreathing>(playerCameraEntity);
 			cameraBreathing.startPosY = cameraTransform.getPositionY();
-
+/*
 			auto& cameraParent = registry->assign<component::Parent>(playerCameraEntity);
-			cameraParent.parent = player1BlueEntity;
+			cameraParent.parent = player1BlueEntity;*/
 
 			auto& cameraEI = registry->assign<component::EntityInfo>(playerCameraEntity);
 			cameraEI.name = "Player1 Camera";
@@ -148,6 +149,7 @@ void SandboxLayer::onEnter()
 
 			auto& cameraTransform = registry->assign<component::Transform>(playerCameraEntity);
 			cameraTransform.setPosition(glm::vec3(0.0f, 0.8f, -0.5f));
+			cameraTransform.setParent(player3BlueEntity);
 
 			auto& camera = registry->assign<component::Camera>(playerCameraEntity);
 			camera.player = player.playerNum;
@@ -155,9 +157,9 @@ void SandboxLayer::onEnter()
 
 			auto& cameraBreathing = registry->assign<CameraBreathing>(playerCameraEntity);
 			cameraBreathing.startPosY = cameraTransform.getPositionY();
-
+/*
 			auto& cameraParent = registry->assign<component::Parent>(playerCameraEntity);
-			cameraParent.parent = player3BlueEntity;
+			cameraParent.parent = player3BlueEntity;*/
 
 			auto& cameraEI = registry->assign<component::EntityInfo>(playerCameraEntity);
 			cameraEI.name = "Player3 Camera";
@@ -213,116 +215,116 @@ void SandboxLayer::onEnter()
 				const int numFrames = 100; // however many frames you exported
 				auto& animator = registry->assign<component::Animatable>(garbagePileFlyEntity);
 
-				//loading fly animations
-				auto tinyAnimation = Ref<Animation>::create();
-				for (int i = 0; i < numFrames; i++)
-				{
-					Animation::KeyPose kp;
-					kp.duration = 1.0f / 30.0f; // duration in seconds
+				////loading fly animations
+				//auto tinyAnimation = Ref<Animation>::create();
+				//for (int i = 0; i < numFrames; i++)
+				//{
+				//	Animation::KeyPose kp;
+				//	kp.duration = 1.0f / 30.0f; // duration in seconds
 
-					sprintf(filename, "res/assets/animation/Garbage/GarbageTiny/GarbageTinyAnim_%06d.obj", i + 1);
-					s.assign(filename); // you have to load each mesh yourself for now
-										// the "%06d" is because by default blender exports
-										// frames as "animationName_000001.obj" and so on counting up
+				//	sprintf(filename, "res/assets/animation/Garbage/GarbageTiny/GarbageTinyAnim_%06d.obj", i + 1);
+				//	s.assign(filename); // you have to load each mesh yourself for now
+				//						// the "%06d" is because by default blender exports
+				//						// frames as "animationName_000001.obj" and so on counting up
 
-					kp.mesh = Mesh::create(s);
-					tinyAnimation->poses.push_back(kp); // Add the keyframe to the animation
+				//	kp.model = Model::create(s);
+				//	tinyAnimation->poses.push_back(kp); // Add the keyframe to the animation
 
-				}
-				animator.pushAnimation("GarbageTinyAnim", tinyAnimation); // add the animation to the animator
+				//}
+				//animator.pushAnimation("GarbageTinyAnim", tinyAnimation); // add the animation to the animator
 
-				//Small Garbage fly anim
-				auto smallAnimation = Ref<Animation>::create();
-				for (int i = 0; i < numFrames; i++)
-				{
-					Animation::KeyPose kp;
-					kp.duration = 1.0f / 30.0f; // duration in seconds
+				////Small Garbage fly anim
+				//auto smallAnimation = Ref<Animation>::create();
+				//for (int i = 0; i < numFrames; i++)
+				//{
+				//	Animation::KeyPose kp;
+				//	kp.duration = 1.0f / 30.0f; // duration in seconds
 
-					sprintf(filename, "res/assets/animation/Garbage/GarbageSmall/GarbageSmallAnim_%06d.obj", i + 1);
-					s.assign(filename); // you have to load each mesh yourself for now
-										// the "%06d" is because by default blender exports
-										// frames as "animationName_000001.obj" and so on counting up
+				//	sprintf(filename, "res/assets/animation/Garbage/GarbageSmall/GarbageSmallAnim_%06d.obj", i + 1);
+				//	s.assign(filename); // you have to load each mesh yourself for now
+				//						// the "%06d" is because by default blender exports
+				//						// frames as "animationName_000001.obj" and so on counting up
 
-					kp.mesh = Mesh::create(s);
-					smallAnimation->poses.push_back(kp); // Add the keyframe to the animation
+				//	kp.model = Model::create(s);
+				//	smallAnimation->poses.push_back(kp); // Add the keyframe to the animation
 
-				}
-				animator.pushAnimation("GarbageSmallAnim", smallAnimation); // add the animation to the animator
+				//}
+				//animator.pushAnimation("GarbageSmallAnim", smallAnimation); // add the animation to the animator
 
-				//Medium Garbage fly anim
-				auto mediumAnimation = Ref<Animation>::create();
-				for (int i = 0; i < numFrames; i++)
-				{
-					Animation::KeyPose kp;
-					kp.duration = 1.0f / 30.0f; // duration in seconds
+				////Medium Garbage fly anim
+				//auto mediumAnimation = Ref<Animation>::create();
+				//for (int i = 0; i < numFrames; i++)
+				//{
+				//	Animation::KeyPose kp;
+				//	kp.duration = 1.0f / 30.0f; // duration in seconds
 
-					sprintf(filename, "res/assets/animation/Garbage/GarbageMedium/GarbageMediumAnim_%06d.obj", i + 1);
-					s.assign(filename); // you have to load each mesh yourself for now
-										// the "%06d" is because by default blender exports
-										// frames as "animationName_000001.obj" and so on counting up
+				//	sprintf(filename, "res/assets/animation/Garbage/GarbageMedium/GarbageMediumAnim_%06d.obj", i + 1);
+				//	s.assign(filename); // you have to load each mesh yourself for now
+				//						// the "%06d" is because by default blender exports
+				//						// frames as "animationName_000001.obj" and so on counting up
 
-					kp.mesh = Mesh::create(s);
-					mediumAnimation->poses.push_back(kp); // Add the keyframe to the animation
+				//	kp.model = Model::create(s);
+				//	mediumAnimation->poses.push_back(kp); // Add the keyframe to the animation
 
-				}
-				animator.pushAnimation("GarbageMediumAnim", mediumAnimation); // add the animation to the animator
+				//}
+				//animator.pushAnimation("GarbageMediumAnim", mediumAnimation); // add the animation to the animator
 
-				//Large Garbage fly anim
-				auto largeAnimation = Ref<Animation>::create();
-				for (int i = 0; i < numFrames; i++)
-				{
-					Animation::KeyPose kp;
-					kp.duration = 1.0f / 30.0f; // duration in seconds
+				////Large Garbage fly anim
+				//auto largeAnimation = Ref<Animation>::create();
+				//for (int i = 0; i < numFrames; i++)
+				//{
+				//	Animation::KeyPose kp;
+				//	kp.duration = 1.0f / 30.0f; // duration in seconds
 
-					sprintf(filename, "res/assets/animation/Garbage/GarbageLarge/GarbageLargeAnim_%06d.obj", i + 1);
-					s.assign(filename); // you have to load each mesh yourself for now
-										// the "%06d" is because by default blender exports
-										// frames as "animationName_000001.obj" and so on counting up
+				//	sprintf(filename, "res/assets/animation/Garbage/GarbageLarge/GarbageLargeAnim_%06d.obj", i + 1);
+				//	s.assign(filename); // you have to load each mesh yourself for now
+				//						// the "%06d" is because by default blender exports
+				//						// frames as "animationName_000001.obj" and so on counting up
 
-					kp.mesh = Mesh::create(s);
-					largeAnimation->poses.push_back(kp); // Add the keyframe to the animation
+				//	kp.model = Model::create(s);
+				//	largeAnimation->poses.push_back(kp); // Add the keyframe to the animation
 
-				}
-				animator.pushAnimation("GarbageLargeAnim", largeAnimation); // add the animation to the animator
+				//}
+				//animator.pushAnimation("GarbageLargeAnim", largeAnimation); // add the animation to the animator
 
-				//Massive Garbage fly anim
-				auto massiveAnimation = Ref<Animation>::create();
-				for (int i = 0; i < numFrames; i++)
-				{
-					Animation::KeyPose kp;
-					kp.duration = 1.0f / 30.0f; // duration in seconds
+				////Massive Garbage fly anim
+				//auto massiveAnimation = Ref<Animation>::create();
+				//for (int i = 0; i < numFrames; i++)
+				//{
+				//	Animation::KeyPose kp;
+				//	kp.duration = 1.0f / 30.0f; // duration in seconds
 
-					sprintf(filename, "res/assets/animation/Garbage/GarbageMassive/GarbageMassiveAnim_%06d.obj", i + 1);
-					s.assign(filename); // you have to load each mesh yourself for now
-										// the "%06d" is because by default blender exports
-										// frames as "animationName_000001.obj" and so on counting up
+				//	sprintf(filename, "res/assets/animation/Garbage/GarbageMassive/GarbageMassiveAnim_%06d.obj", i + 1);
+				//	s.assign(filename); // you have to load each mesh yourself for now
+				//						// the "%06d" is because by default blender exports
+				//						// frames as "animationName_000001.obj" and so on counting up
 
-					kp.mesh = Mesh::create(s);
-					massiveAnimation->poses.push_back(kp); // Add the keyframe to the animation
+				//	kp.model = Model::create(s);
+				//	massiveAnimation->poses.push_back(kp); // Add the keyframe to the animation
 
-				}
-				animator.pushAnimation("GarbageMassiveAnim", massiveAnimation); // add the animation to the animator
+				//}
+				//animator.pushAnimation("GarbageMassiveAnim", massiveAnimation); // add the animation to the animator
 
-				//Surrender Garbage fly anim
-				auto surrenderAnimation = Ref<Animation>::create();
-				for (int i = 0; i < numFrames; i++)
-				{
-					Animation::KeyPose kp;
-					kp.duration = 1.0f / 30.0f; // duration in seconds
+				////Surrender Garbage fly anim
+				//auto surrenderAnimation = Ref<Animation>::create();
+				//for (int i = 0; i < numFrames; i++)
+				//{
+				//	Animation::KeyPose kp;
+				//	kp.duration = 1.0f / 30.0f; // duration in seconds
 
-					sprintf(filename, "res/assets/animation/Garbage/GarbageSurrender/GarbageSurrenderAnim_%06d.obj", i + 1);
-					s.assign(filename); // you have to load each mesh yourself for now
-										// the "%06d" is because by default blender exports
-										// frames as "animationName_000001.obj" and so on counting up
+				//	sprintf(filename, "res/assets/animation/Garbage/GarbageSurrender/GarbageSurrenderAnim_%06d.obj", i + 1);
+				//	s.assign(filename); // you have to load each mesh yourself for now
+				//						// the "%06d" is because by default blender exports
+				//						// frames as "animationName_000001.obj" and so on counting up
 
-					kp.mesh = Mesh::create(s);
-					surrenderAnimation->poses.push_back(kp); // Add the keyframe to the animation
+				//	kp.model = Model::create(s);
+				//	surrenderAnimation->poses.push_back(kp); // Add the keyframe to the animation
 
-				}
-				animator.pushAnimation("GarbageSurrenderAnim", surrenderAnimation); // add the animation to the animator
+				//}
+				//animator.pushAnimation("GarbageSurrenderAnim", surrenderAnimation); // add the animation to the animator
 
-				//set default
-				animator.setNextAnimation("GarbageTinyAnim");
+				////set default
+				//animator.setNextAnimation("GarbageTinyAnim");
 
 				//garbage
 				entt::entity garbagePileEntity = registry->create();
@@ -350,8 +352,9 @@ void SandboxLayer::onEnter()
 				shapeInfo.box.setSize({ 3.4f, 1.0f, 3.2f });
 
 				//Parenting the fly to the garbage
-				auto& flyParent = registry->assign<component::Parent>(garbagePileFlyEntity);
-				flyParent.parent = garbagePileEntity;
+				/*auto& flyParent = registry->assign<component::Parent>(garbagePileFlyEntity);
+				flyParent.parent = garbagePileEntity;*/
+
 			}
 		}
 
@@ -375,7 +378,7 @@ void SandboxLayer::onEnter()
 
 				auto& cannonball = registry->assign<Cannonball>(cannonballEntity);
 
-				mr.mesh = Mesh::get("sphere");
+				mr.model = Model::get("sphere");
 				registry->assign<component::Renderable>(cannonballEntity, mr);
 
 				auto& so2 = registry->assign<component::EntityInfo>(cannonballEntity);
@@ -406,7 +409,7 @@ void SandboxLayer::onEnter()
 				rb.setMass(2.0f);
 				rb.setFriction(0.6f);
 
-				mr.mesh = Mesh::get("cube");
+				mr.model = Model::get("cube");
 				registry->assign<component::Renderable>(mopEntity, mr);
 
 				auto& so2 = registry->assign<component::EntityInfo>(mopEntity);
@@ -620,6 +623,7 @@ void SandboxLayer::onEnter()
 
 			auto& cameraTransform = registry->assign<component::Transform>(playerCameraEntity);
 			cameraTransform.setPosition(glm::vec3(0.0f, 0.8f, -0.5f));
+			cameraTransform.setParent(player2RedEntity);
 
 			auto& camera = registry->assign<component::Camera>(playerCameraEntity);
 			camera.player = player.playerNum;
@@ -627,9 +631,9 @@ void SandboxLayer::onEnter()
 
 			auto& cameraBreathing = registry->assign<CameraBreathing>(playerCameraEntity);
 			cameraBreathing.startPosY = cameraTransform.getPositionY();
-
+/*
 			auto& cameraParent = registry->assign<component::Parent>(playerCameraEntity);
-			cameraParent.parent = player2RedEntity;
+			cameraParent.parent = player2RedEntity;*/
 
 			auto& cameraEI = registry->assign<component::EntityInfo>(playerCameraEntity);
 			cameraEI.name = "Player2 Camera";
@@ -670,6 +674,7 @@ void SandboxLayer::onEnter()
 
 			auto& cameraTransform = registry->assign<component::Transform>(playerCameraEntity);
 			cameraTransform.setPosition(glm::vec3(0.0f, 0.8f, -0.5f));
+			cameraTransform.setParent(player4RedEntity);
 
 			auto& camera = registry->assign<component::Camera>(playerCameraEntity);
 			camera.player = player.playerNum;
@@ -678,9 +683,9 @@ void SandboxLayer::onEnter()
 			auto& cameraBreathing = registry->assign<CameraBreathing>(playerCameraEntity);
 			cameraBreathing.startPosY = cameraTransform.getPositionY();
 
-			auto& cameraParent = registry->assign<component::Parent>(playerCameraEntity);
+			/*auto& cameraParent = registry->assign<component::Parent>(playerCameraEntity);
 			cameraParent.parent = player4RedEntity;
-
+*/
 			auto& cameraEI = registry->assign<component::EntityInfo>(playerCameraEntity);
 			cameraEI.name = "Player4 Camera";
 		}
@@ -736,114 +741,114 @@ void SandboxLayer::onEnter()
 				auto& animator = registry->assign<component::Animatable>(garbagePileFlyEntity);
 
 				//loading fly animations
-				auto tinyAnimation = Ref<Animation>::create();
-				for (int i = 0; i < numFrames; i++)
-				{
-					Animation::KeyPose kp;
-					kp.duration = 1.0f / 30.0f; // duration in seconds
+				//auto tinyAnimation = Ref<Animation>::create();
+				//for (int i = 0; i < numFrames; i++)
+				//{
+				//	Animation::KeyPose kp;
+				//	kp.duration = 1.0f / 30.0f; // duration in seconds
 
-					sprintf(filename, "res/assets/animation/Garbage/GarbageTiny/GarbageTinyAnim_%06d.obj", i + 1);
-					s.assign(filename); // you have to load each mesh yourself for now
-										// the "%06d" is because by default blender exports
-										// frames as "animationName_000001.obj" and so on counting up
+				//	sprintf(filename, "res/assets/animation/Garbage/GarbageTiny/GarbageTinyAnim_%06d.obj", i + 1);
+				//	s.assign(filename); // you have to load each mesh yourself for now
+				//						// the "%06d" is because by default blender exports
+				//						// frames as "animationName_000001.obj" and so on counting up
 
-					kp.mesh = Mesh::create(s);
-					tinyAnimation->poses.push_back(kp); // Add the keyframe to the animation
+				//	kp.model = Model::create(s);
+				//	tinyAnimation->poses.push_back(kp); // Add the keyframe to the animation
 
-				}
-				animator.pushAnimation("GarbageTinyAnim", tinyAnimation); // add the animation to the animator
+				//}
+				//animator.pushAnimation("GarbageTinyAnim", tinyAnimation); // add the animation to the animator
 
-				//Small Garbage fly anim
-				auto smallAnimation = Ref<Animation>::create();
-				for (int i = 0; i < numFrames; i++)
-				{
-					Animation::KeyPose kp;
-					kp.duration = 1.0f / 30.0f; // duration in seconds
+				////Small Garbage fly anim
+				//auto smallAnimation = Ref<Animation>::create();
+				//for (int i = 0; i < numFrames; i++)
+				//{
+				//	Animation::KeyPose kp;
+				//	kp.duration = 1.0f / 30.0f; // duration in seconds
 
-					sprintf(filename, "res/assets/animation/Garbage/GarbageSmall/GarbageSmallAnim_%06d.obj", i + 1);
-					s.assign(filename); // you have to load each mesh yourself for now
-										// the "%06d" is because by default blender exports
-										// frames as "animationName_000001.obj" and so on counting up
+				//	sprintf(filename, "res/assets/animation/Garbage/GarbageSmall/GarbageSmallAnim_%06d.obj", i + 1);
+				//	s.assign(filename); // you have to load each mesh yourself for now
+				//						// the "%06d" is because by default blender exports
+				//						// frames as "animationName_000001.obj" and so on counting up
 
-					kp.mesh = Mesh::create(s);
-					smallAnimation->poses.push_back(kp); // Add the keyframe to the animation
+				//	kp.model = Model::create(s);
+				//	smallAnimation->poses.push_back(kp); // Add the keyframe to the animation
 
-				}
-				animator.pushAnimation("GarbageSmallAnim", smallAnimation); // add the animation to the animator
+				//}
+				//animator.pushAnimation("GarbageSmallAnim", smallAnimation); // add the animation to the animator
 
-				//Medium Garbage fly anim
-				auto mediumAnimation = Ref<Animation>::create();
-				for (int i = 0; i < numFrames; i++)
-				{
-					Animation::KeyPose kp;
-					kp.duration = 1.0f / 30.0f; // duration in seconds
+				////Medium Garbage fly anim
+				//auto mediumAnimation = Ref<Animation>::create();
+				//for (int i = 0; i < numFrames; i++)
+				//{
+				//	Animation::KeyPose kp;
+				//	kp.duration = 1.0f / 30.0f; // duration in seconds
 
-					sprintf(filename, "res/assets/animation/Garbage/GarbageMedium/GarbageMediumAnim_%06d.obj", i + 1);
-					s.assign(filename); // you have to load each mesh yourself for now
-										// the "%06d" is because by default blender exports
-										// frames as "animationName_000001.obj" and so on counting up
+				//	sprintf(filename, "res/assets/animation/Garbage/GarbageMedium/GarbageMediumAnim_%06d.obj", i + 1);
+				//	s.assign(filename); // you have to load each mesh yourself for now
+				//						// the "%06d" is because by default blender exports
+				//						// frames as "animationName_000001.obj" and so on counting up
 
-					kp.mesh = Mesh::create(s);
-					mediumAnimation->poses.push_back(kp); // Add the keyframe to the animation
+				//	kp.model = Model::create(s);
+				//	mediumAnimation->poses.push_back(kp); // Add the keyframe to the animation
 
-				}
-				animator.pushAnimation("GarbageMediumAnim", mediumAnimation); // add the animation to the animator
+				//}
+				//animator.pushAnimation("GarbageMediumAnim", mediumAnimation); // add the animation to the animator
 
-				//Large Garbage fly anim
-				auto largeAnimation = Ref<Animation>::create();
-				for (int i = 0; i < numFrames; i++)
-				{
-					Animation::KeyPose kp;
-					kp.duration = 1.0f / 30.0f; // duration in seconds
+				////Large Garbage fly anim
+				//auto largeAnimation = Ref<Animation>::create();
+				//for (int i = 0; i < numFrames; i++)
+				//{
+				//	Animation::KeyPose kp;
+				//	kp.duration = 1.0f / 30.0f; // duration in seconds
 
-					sprintf(filename, "res/assets/animation/Garbage/GarbageLarge/GarbageLargeAnim_%06d.obj", i + 1);
-					s.assign(filename); // you have to load each mesh yourself for now
-										// the "%06d" is because by default blender exports
-										// frames as "animationName_000001.obj" and so on counting up
+				//	sprintf(filename, "res/assets/animation/Garbage/GarbageLarge/GarbageLargeAnim_%06d.obj", i + 1);
+				//	s.assign(filename); // you have to load each mesh yourself for now
+				//						// the "%06d" is because by default blender exports
+				//						// frames as "animationName_000001.obj" and so on counting up
 
-					kp.mesh = Mesh::create(s);
-					largeAnimation->poses.push_back(kp); // Add the keyframe to the animation
+				//	kp.model = Model::create(s);
+				//	largeAnimation->poses.push_back(kp); // Add the keyframe to the animation
 
-				}
-				animator.pushAnimation("GarbageLargeAnim", largeAnimation); // add the animation to the animator
+				//}
+				//animator.pushAnimation("GarbageLargeAnim", largeAnimation); // add the animation to the animator
 
-				//Massive Garbage fly anim
-				auto massiveAnimation = Ref<Animation>::create();
-				for (int i = 0; i < numFrames; i++)
-				{
-					Animation::KeyPose kp;
-					kp.duration = 1.0f / 30.0f; // duration in seconds
+				////Massive Garbage fly anim
+				//auto massiveAnimation = Ref<Animation>::create();
+				//for (int i = 0; i < numFrames; i++)
+				//{
+				//	Animation::KeyPose kp;
+				//	kp.duration = 1.0f / 30.0f; // duration in seconds
 
-					sprintf(filename, "res/assets/animation/Garbage/GarbageMassive/GarbageMassiveAnim_%06d.obj", i + 1);
-					s.assign(filename); // you have to load each mesh yourself for now
-										// the "%06d" is because by default blender exports
-										// frames as "animationName_000001.obj" and so on counting up
+				//	sprintf(filename, "res/assets/animation/Garbage/GarbageMassive/GarbageMassiveAnim_%06d.obj", i + 1);
+				//	s.assign(filename); // you have to load each mesh yourself for now
+				//						// the "%06d" is because by default blender exports
+				//						// frames as "animationName_000001.obj" and so on counting up
 
-					kp.mesh = Mesh::create(s);
-					massiveAnimation->poses.push_back(kp); // Add the keyframe to the animation
+				//	kp.model = Model::create(s);
+				//	massiveAnimation->poses.push_back(kp); // Add the keyframe to the animation
 
-				}
-				animator.pushAnimation("GarbageMassiveAnim", massiveAnimation); // add the animation to the animator
+				//}
+				//animator.pushAnimation("GarbageMassiveAnim", massiveAnimation); // add the animation to the animator
 
-				//Surrender Garbage fly anim
-				auto surrenderAnimation = Ref<Animation>::create();
-				for (int i = 0; i < numFrames; i++)
-				{
-					Animation::KeyPose kp;
-					kp.duration = 1.0f / 30.0f; // duration in seconds
+				////Surrender Garbage fly anim
+				//auto surrenderAnimation = Ref<Animation>::create();
+				//for (int i = 0; i < numFrames; i++)
+				//{
+				//	Animation::KeyPose kp;
+				//	kp.duration = 1.0f / 30.0f; // duration in seconds
 
-					sprintf(filename, "res/assets/animation/Garbage/GarbageSurrender/GarbageSurrenderAnim_%06d.obj", i + 1);
-					s.assign(filename); // you have to load each mesh yourself for now
-										// the "%06d" is because by default blender exports
-										// frames as "animationName_000001.obj" and so on counting up
+				//	sprintf(filename, "res/assets/animation/Garbage/GarbageSurrender/GarbageSurrenderAnim_%06d.obj", i + 1);
+				//	s.assign(filename); // you have to load each mesh yourself for now
+				//						// the "%06d" is because by default blender exports
+				//						// frames as "animationName_000001.obj" and so on counting up
 
-					kp.mesh = Mesh::create(s);
-					surrenderAnimation->poses.push_back(kp); // Add the keyframe to the animation
+				//	kp.model = Model::create(s);
+				//	surrenderAnimation->poses.push_back(kp); // Add the keyframe to the animation
 
-				}
-				animator.pushAnimation("GarbageSurrenderAnim", surrenderAnimation); // add the animation to the animator
+				//}
+				//animator.pushAnimation("GarbageSurrenderAnim", surrenderAnimation); // add the animation to the animator
 
-				animator.setNextAnimation("GarbageTinyAnim");
+				//animator.setNextAnimation("GarbageTinyAnim");
 
 				//creating the garbage
 				entt::entity garbagePileEntity = registry->create();
@@ -871,8 +876,8 @@ void SandboxLayer::onEnter()
 				shapeInfo.box.setSize({ 3.4f, 1.0f, 3.2f });
 
 				//Parenting the fly to the garbage
-				auto& flyParent = registry->assign<component::Parent>(garbagePileFlyEntity);
-				flyParent.parent = garbagePileEntity;
+				/*auto& flyParent = registry->assign<component::Parent>(garbagePileFlyEntity);
+				flyParent.parent = garbagePileEntity;*/
 
 
 			}
@@ -898,7 +903,7 @@ void SandboxLayer::onEnter()
 
 				auto& cannonball = registry->assign<Cannonball>(cannonballEntity);
 
-				mr.mesh = Mesh::get("sphere");
+				mr.model = Model::get("sphere");
 				registry->assign<component::Renderable>(cannonballEntity, mr);
 
 				auto& so2 = registry->assign<component::EntityInfo>(cannonballEntity);
@@ -930,7 +935,7 @@ void SandboxLayer::onEnter()
 				rb.setMass(2.0f);
 				rb.setFriction(0.6f);
 
-				mr.mesh = Mesh::get("cube");
+				mr.model = Model::get("cube");
 				registry->assign<component::Renderable>(mopEntity, mr);
 
 				auto& so2 = registry->assign<component::EntityInfo>(mopEntity);
@@ -992,7 +997,7 @@ void SandboxLayer::onEnter()
 
 			registry->assign<Gloop>(gloopEntity);
 
-			mr.mesh = Mesh::get("Gloop");
+			mr.model = Model::get("Gloop");
 			registry->assign<component::Renderable>(gloopEntity, mr);
 
 			auto& so2 = registry->assign<component::EntityInfo>(gloopEntity);
@@ -1129,7 +1134,7 @@ void SandboxLayer::onEnter()
 
 			auto& rb = registry->assign<component::RigidBody>(bottleEntity);
 
-			mr.mesh = Mesh::get("Gloop");
+			mr.model = Model::get("Gloop");
 			registry->assign<component::Renderable>(bottleEntity, mr);
 
 			auto& so2 = registry->assign<component::EntityInfo>(bottleEntity);
@@ -1199,7 +1204,7 @@ void SandboxLayer::onEnter()
 			mopTransform.setScale(glm::vec3(1.0f, 1.0f, 1.0f));
 			registry->assign<component::Transform>(characterEntity, mopTransform);
 
-			//mr.mesh = Mesh::cache("res/assets/models/character.obj");
+			//mr.mesh = Model::cache("res/assets/models/character.obj");
 			registry->assign<component::Renderable>(characterEntity, mr);
 
 			auto& so2 = registry->assign<component::EntityInfo>(characterEntity);
