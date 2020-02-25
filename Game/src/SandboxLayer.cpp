@@ -432,8 +432,8 @@ void SandboxLayer::onEnter()
 			carryableItem.type = CarryableItemType::cleaningSolution;
 
 			auto& respawnable = registry->assign<Respawnable>(cleaningSolutionEntity);
-			respawnable.spawnPosition = glm::vec3(9.43f, 0.99f, -5.56f);
-			respawnable.spawnRotation = glm::vec3(0.0f);
+			respawnable.spawnPosition = glm::vec3(9.43f, 1.04f, -5.56f);
+			respawnable.spawnRotation = glm::vec3(0.0f, 87.7f, 0.0f);
 
 			auto& rb = registry->assign<component::RigidBody>(cleaningSolutionEntity);
 
@@ -461,8 +461,8 @@ void SandboxLayer::onEnter()
 			carryableItem.type = CarryableItemType::gloop;
 
 			auto& respawnable = registry->assign<Respawnable>(gloopEntity);
-			respawnable.spawnPosition = glm::vec3(9.46f, 2.0f, -5.95f);
-			respawnable.spawnRotation = glm::vec3(83.82f);
+			respawnable.spawnPosition = glm::vec3(9.46f, 2.07f, -5.95f);
+			respawnable.spawnRotation = glm::vec3(0.0f, 83.82f, 0.0f);
 
 			auto& rb = registry->assign<component::RigidBody>(gloopEntity);
 
@@ -956,8 +956,8 @@ void SandboxLayer::onEnter()
 			carryableItem.type = CarryableItemType::cleaningSolution;
 
 			auto& respawnable = registry->assign<Respawnable>(cleaningSolutionEntity);
-			respawnable.spawnPosition = glm::vec3(9.54f, 0.99f, 26.34f);
-			respawnable.spawnRotation = glm::vec3(0.0f);
+			respawnable.spawnPosition = glm::vec3(9.54f, 1.04f, 26.34f);
+			respawnable.spawnRotation = glm::vec3(0.0f, 87.7f, 0.0f);
 
 			auto& rb = registry->assign<component::RigidBody>(cleaningSolutionEntity);
 
@@ -985,7 +985,7 @@ void SandboxLayer::onEnter()
 			carryableItem.type = CarryableItemType::gloop;
 
 			auto& respawnable = registry->assign<Respawnable>(gloopEntity);
-			respawnable.spawnPosition = glm::vec3(9.61f, 2.0f, 25.89f);
+			respawnable.spawnPosition = glm::vec3(9.61f, 2.07f, 25.89f);
 			respawnable.spawnRotation = glm::vec3(0.0f, 88.34f, 0.0f);
 
 			auto& rb = registry->assign<component::RigidBody>(gloopEntity);
