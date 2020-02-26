@@ -387,12 +387,12 @@ namespace oyl::internal
                     ImGui::Indent(ImGui::GetWindowContentRegionWidth() / 2 - 55);
                     if (ImGui::Button("Reload##ReloadConfirmationReload"))
                     {
-                        for (const auto& [alias, material] : Material::getCache())
-                        {
-                            if (!material->getFilePath().empty() && 
-                                std::fs::exists(material->getFilePath()))
-                                *material = *materialFromFile(material->getFilePath());
-                        }
+                        //for (const auto& [alias, material] : Material::getCache())
+                        //{
+                        //    if (!material->getFilePath().empty() && 
+                        //        std::fs::exists(material->getFilePath()))
+                        //        *material = *materialFromFile(material->getFilePath());
+                        //}
                         
                         registryFromSceneFile(*registry, Scene::current()->m_name);
                         m_currentSelection = entt::entity(entt::null);
