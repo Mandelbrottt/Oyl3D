@@ -584,9 +584,6 @@ public:
 
 					garbageMeter.garbageMeterBars[k] = fillEntity;
 
-					auto& fillParent = registry->assign<component::Parent>(fillEntity);
-					fillParent.parent = outlineEntity;
-
 					auto& fillGui = registry->assign<component::GuiRenderable>(fillEntity);
 					fillGui.texture = Texture2D::cache("res/assets/textures/gui/garbageMeterBar.png");
 					fillGui.cullingMask = 0b1 << i;
@@ -594,10 +591,10 @@ public:
 					auto& garbageMeterBar = registry->assign<GarbageMeterBar>(fillEntity);
 					garbageMeterBar.garbagePileNum = (k - 1) * -1; //flip the sign so that the left is the front of the ship and the right is the back
 
-					component::Transform fillTransform;
+					auto& fillTransform = registry->assign<component::Transform>(fillEntity);
 					fillTransform.setPosition(glm::vec3(0.65f * k - 0.65f, 3.8f, 1.0f));
 					fillTransform.setScale(glm::vec3(2.0f, 2.0f, 1.0f));
-					registry->assign<component::Transform>(fillEntity, fillTransform);
+					fillTransform.setParent(outlineEntity);
 
 					auto& fillEi = registry->assign<component::EntityInfo>(fillEntity);
 					fillEi.name = "GarbageMeterBar" + std::to_string(k) + " For Player" + std::to_string(i);
@@ -677,14 +674,13 @@ public:
 						playerTransform.setRotationEulerY(player.yRotationClamp);
 				}
 
-				auto playerCameraView = registry->view<component::Camera, component::Transform, component::Parent>();
+				auto playerCameraView = registry->view<component::Camera, component::Transform>();
 				for (auto& cameraEntity : playerCameraView)
 				{
-					auto& camera = registry->get<component::Camera>(cameraEntity);
+					auto& camera          = registry->get<component::Camera>(cameraEntity);
 					auto& cameraTransform = registry->get<component::Transform>(cameraEntity);
-					auto& cameraParent = registry->get<component::Parent>(cameraEntity);
 
-					if (cameraParent.parent != playerEntity)
+					if (cameraTransform.getParentEntity() != playerEntity)
 						continue;
 
 					cameraTransform.rotate(glm::vec3(-rightStick.y * 200.0f * Time::deltaTime(), 0.0f, 0.0f));

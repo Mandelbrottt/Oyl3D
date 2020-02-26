@@ -9,8 +9,8 @@ namespace oyl::component
         std::string name;
     };
 
-    struct Parent
-    {
-        entt::entity parent = entt::null;
-    };
+    //struct Parent
+    //{
+    //    entt::entity parent = entt::null;
+    //};
 }

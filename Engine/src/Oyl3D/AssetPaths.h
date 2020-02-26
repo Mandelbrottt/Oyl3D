@@ -26,13 +26,13 @@ namespace oyl
     // ^^^ Shaders ^^^ //
     // vvv Meshes vvv //
 
-    const std::string INVALID_MESH_PATH = "models/invalid.obj";
+    const std::string INVALID_MODEL_PATH = "models/invalid.obj";
 
-    const CacheAlias  CUBE_MESH_ALIAS = "Oyl Cube";
-    const std::string CUBE_MESH_PATH  = "models/cube.obj";
+    const CacheAlias  CUBE_MODEL_ALIAS = "Oyl Cube";
+    const std::string CUBE_MODEL_PATH  = "models/cube.obj";
 
-    const CacheAlias  MONKEY_MESH_ALIAS = "Oyl Monkey";
-    const std::string MONKEY_MESH_PATH  = "models/monkey.obj";
+    const CacheAlias  MONKEY_MODEL_ALIAS = "Oyl Monkey";
+    const std::string MONKEY_MODEL_PATH  = "models/monkey.obj";
 
     // ^^^ Shaders ^^^ //
     // vvv Textures vvv //
