@@ -196,8 +196,7 @@ void CannonballSystem::setCannonballToCarriedForPlayer(entt::entity a_playerEnti
 
 	OYL_LOG("OBTAINED CANNONBALL!");
 
-	auto& cannonballParent  = registry->get_or_assign<component::Parent>(a_cannonballEntity);
-	cannonballParent.parent = a_playerEntity;
+	cannonballTransform.setParent(a_playerEntity);
 
 	cannonballTransform.setRotationEuler(glm::vec3(0.0f));
 	cannonballTransform.setPosition(glm::vec3(0.0f, 0.3f, -0.8f));

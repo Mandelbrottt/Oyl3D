@@ -385,6 +385,8 @@ namespace oyl::component
         {
             if (!m_registry->valid(*it))
                 it = m_childrenEntities.erase(it);
+            if (it == m_childrenEntities.end())
+                break;
         }
         return m_childrenEntities;
     }

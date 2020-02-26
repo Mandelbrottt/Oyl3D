@@ -38,7 +38,7 @@ void SandboxLayer::onEnter()
 				std::string s;
 				s.reserve(512);
 				const int numFrames = 2; // however many frames you exported
-				auto& animator = registry->assign<component::Animatable>(waterCrestEntity);
+				//auto& animator = registry->assign<component::Animatable>(waterCrestEntity);
 
 				//loading animation
 				//auto waterCrestAnimation = Ref<Animation>::create();
@@ -106,9 +106,6 @@ void SandboxLayer::onEnter()
 
 			auto& cameraBreathing = registry->assign<CameraBreathing>(playerCameraEntity);
 			cameraBreathing.startPosY = cameraTransform.getPositionY();
-/*
-			auto& cameraParent = registry->assign<component::Parent>(playerCameraEntity);
-			cameraParent.parent = player1BlueEntity;*/
 
 			auto& cameraEI = registry->assign<component::EntityInfo>(playerCameraEntity);
 			cameraEI.name = "Player1 Camera";
@@ -157,9 +154,6 @@ void SandboxLayer::onEnter()
 
 			auto& cameraBreathing = registry->assign<CameraBreathing>(playerCameraEntity);
 			cameraBreathing.startPosY = cameraTransform.getPositionY();
-/*
-			auto& cameraParent = registry->assign<component::Parent>(playerCameraEntity);
-			cameraParent.parent = player3BlueEntity;*/
 
 			auto& cameraEI = registry->assign<component::EntityInfo>(playerCameraEntity);
 			cameraEI.name = "Player3 Camera";
@@ -213,7 +207,7 @@ void SandboxLayer::onEnter()
 				std::string s;
 				s.reserve(512);
 				const int numFrames = 100; // however many frames you exported
-				auto& animator = registry->assign<component::Animatable>(garbagePileFlyEntity);
+				//auto& animator = registry->assign<component::Animatable>(garbagePileFlyEntity);
 
 				////loading fly animations
 				//auto tinyAnimation = Ref<Animation>::create();
@@ -631,9 +625,6 @@ void SandboxLayer::onEnter()
 
 			auto& cameraBreathing = registry->assign<CameraBreathing>(playerCameraEntity);
 			cameraBreathing.startPosY = cameraTransform.getPositionY();
-/*
-			auto& cameraParent = registry->assign<component::Parent>(playerCameraEntity);
-			cameraParent.parent = player2RedEntity;*/
 
 			auto& cameraEI = registry->assign<component::EntityInfo>(playerCameraEntity);
 			cameraEI.name = "Player2 Camera";
@@ -683,9 +674,6 @@ void SandboxLayer::onEnter()
 			auto& cameraBreathing = registry->assign<CameraBreathing>(playerCameraEntity);
 			cameraBreathing.startPosY = cameraTransform.getPositionY();
 
-			/*auto& cameraParent = registry->assign<component::Parent>(playerCameraEntity);
-			cameraParent.parent = player4RedEntity;
-*/
 			auto& cameraEI = registry->assign<component::EntityInfo>(playerCameraEntity);
 			cameraEI.name = "Player4 Camera";
 		}
@@ -738,7 +726,7 @@ void SandboxLayer::onEnter()
 				std::string s;
 				s.reserve(512);
 				const int numFrames = 100; // however many frames you exported
-				auto& animator = registry->assign<component::Animatable>(garbagePileFlyEntity);
+				//auto& animator = registry->assign<component::Animatable>(garbagePileFlyEntity);
 
 				//loading fly animations
 				//auto tinyAnimation = Ref<Animation>::create();
@@ -1204,7 +1192,7 @@ void SandboxLayer::onEnter()
 			mopTransform.setScale(glm::vec3(1.0f, 1.0f, 1.0f));
 			registry->assign<component::Transform>(characterEntity, mopTransform);
 
-			//mr.mesh = Model::cache("res/assets/models/character.obj");
+			//mr.model = Model::cache("res/assets/models/character.obj");
 			registry->assign<component::Renderable>(characterEntity, mr);
 
 			auto& so2 = registry->assign<component::EntityInfo>(characterEntity);

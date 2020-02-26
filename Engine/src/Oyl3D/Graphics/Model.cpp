@@ -24,7 +24,7 @@ namespace oyl
         if (!m_meshes.empty())
             m_meshes.clear();
 
-        auto flags = (aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_CalcTangentSpace);
+        auto flags = (aiProcess_Triangulate | aiProcess_CalcTangentSpace);
 
         Assimp::Importer importer;
         const aiScene* scene = importer.ReadFile(filepath.c_str(), flags);
