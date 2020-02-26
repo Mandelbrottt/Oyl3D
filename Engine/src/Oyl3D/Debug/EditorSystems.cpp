@@ -277,6 +277,14 @@ namespace oyl::internal
                     count++;
                 }
 
+                for (; count < 8; count++)
+                {
+                    boundMaterial->setUniform3f("u_pointLight[" + std::to_string(count) + "].position", {});
+                    boundMaterial->setUniform3f("u_pointLight[" + std::to_string(count) + "].ambient",  {});
+                    boundMaterial->setUniform3f("u_pointLight[" + std::to_string(count) + "].diffuse",  {});
+                    boundMaterial->setUniform3f("u_pointLight[" + std::to_string(count) + "].specular", {});
+                }
+
                 auto dirLightView = registry->view<DirectionalLight>();
                 count = 0;
                 for (auto light : dirLightView)
@@ -309,6 +317,16 @@ namespace oyl::internal
                     count++;
                     if (count >= 8)
                         break;
+                }
+
+                for (; count < 8; count++)
+                {
+                    std::string dirLightName = "u_dirLight[" + std::to_string(count) + "]";
+
+                    boundMaterial->setUniform3f(dirLightName + ".direction", {});
+                    boundMaterial->setUniform3f(dirLightName + ".ambient",   {});
+                    boundMaterial->setUniform3f(dirLightName + ".diffuse",   {});
+                    boundMaterial->setUniform3f(dirLightName + ".specular",  {});
                 }
 
                 boundMaterial->bind();
