@@ -41,7 +41,7 @@ void CleaningQuicktimeEventSystem::onUpdate()
 			{
 				cleaningQTERenderable.texture = Texture2D::get("cleaningQTEUp");
 
-				if (rightStick.y < -0.9f)
+				if (rightStick.y < -0.6f)
 				{
 					cleaningQTE.isPointingUp = false;
 
@@ -54,7 +54,7 @@ void CleaningQuicktimeEventSystem::onUpdate()
 			{
 				cleaningQTERenderable.texture = Texture2D::get("cleaningQTEDown");
 
-				if (rightStick.y > 0.9f)
+				if (rightStick.y > 0.6f)
 				{
 					cleaningQTE.isPointingUp = true;
 

@@ -429,8 +429,8 @@ void SandboxLayer::onEnter()
 			carryableItem.type = CarryableItemType::cleaningSolution;
 
 			auto& respawnable = registry->assign<Respawnable>(cleaningSolutionEntity);
-			respawnable.spawnPosition = glm::vec3(9.43f, 0.99f, -5.56f);
-			respawnable.spawnRotation = glm::vec3(0.0f);
+			respawnable.spawnPosition = glm::vec3(9.43f, 1.06f, -5.56f);
+			respawnable.spawnRotation = glm::vec3(0.0f, 87.7f, 0.0f);
 
 			auto& rb = registry->assign<component::RigidBody>(cleaningSolutionEntity);
 
@@ -458,8 +458,8 @@ void SandboxLayer::onEnter()
 			carryableItem.type = CarryableItemType::gloop;
 
 			auto& respawnable = registry->assign<Respawnable>(gloopEntity);
-			respawnable.spawnPosition = glm::vec3(9.46f, 2.0f, -5.95f);
-			respawnable.spawnRotation = glm::vec3(83.82f);
+			respawnable.spawnPosition = glm::vec3(9.46f, 2.08f, -5.95f);
+			respawnable.spawnRotation = glm::vec3(0.0f, 83.82f, 0.0f);
 
 			auto& rb = registry->assign<component::RigidBody>(gloopEntity);
 
@@ -508,7 +508,7 @@ void SandboxLayer::onEnter()
 			entt::entity cleaningSolutionSpawnerEntity = registry->create();
 
 			auto& spawner = registry->assign<RespawnManager>(cleaningSolutionSpawnerEntity);
-			spawner.respawnTimerDuration = 5.0f;
+			spawner.respawnTimerDuration = 3.0f;
 			spawner.team = Team::blue;
 			spawner.type = CarryableItemType::cleaningSolution;
 
@@ -949,8 +949,8 @@ void SandboxLayer::onEnter()
 			carryableItem.type = CarryableItemType::cleaningSolution;
 
 			auto& respawnable = registry->assign<Respawnable>(cleaningSolutionEntity);
-			respawnable.spawnPosition = glm::vec3(9.54f, 0.99f, 26.34f);
-			respawnable.spawnRotation = glm::vec3(0.0f);
+			respawnable.spawnPosition = glm::vec3(9.54f, 1.06f, 26.34f);
+			respawnable.spawnRotation = glm::vec3(0.0f, 87.7f, 0.0f);
 
 			auto& rb = registry->assign<component::RigidBody>(cleaningSolutionEntity);
 
@@ -978,7 +978,7 @@ void SandboxLayer::onEnter()
 			carryableItem.type = CarryableItemType::gloop;
 
 			auto& respawnable = registry->assign<Respawnable>(gloopEntity);
-			respawnable.spawnPosition = glm::vec3(9.61f, 2.0f, 25.89f);
+			respawnable.spawnPosition = glm::vec3(9.61f, 2.08f, 25.89f);
 			respawnable.spawnRotation = glm::vec3(0.0f, 88.34f, 0.0f);
 
 			auto& rb = registry->assign<component::RigidBody>(gloopEntity);
@@ -1029,7 +1029,7 @@ void SandboxLayer::onEnter()
 			entt::entity cleaningSolutionSpawnerEntity = registry->create();
 
 			auto& spawner = registry->assign<RespawnManager>(cleaningSolutionSpawnerEntity);
-			spawner.respawnTimerDuration = 5.0f;
+			spawner.respawnTimerDuration = 3.0f;
 			spawner.team = Team::red;
 			spawner.type = CarryableItemType::cleaningSolution;
 
@@ -1116,13 +1116,12 @@ void SandboxLayer::onEnter()
 
 			auto& respawnable = registry->assign<Respawnable>(bottleEntity);
 			respawnable.spawnPosition = glm::vec3(-7.04f, 0.61f, 10.14f);
-			respawnable.spawnRotation = glm::vec3(0.0f, 0.0f, 0.0f);
+			respawnable.spawnRotation = glm::vec3(0.0f, 89.7f, 0.0f);
 
 			auto& throwableBottle = registry->assign<ThrowableBottle>(bottleEntity);
 
 			auto& rb = registry->assign<component::RigidBody>(bottleEntity);
 
-			mr.model = Model::get("Gloop");
 			registry->assign<component::Renderable>(bottleEntity, mr);
 
 			auto& so2 = registry->assign<component::EntityInfo>(bottleEntity);
