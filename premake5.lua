@@ -25,12 +25,16 @@ IncludeDir["gainput"] = "Engine/vendor/gainput/lib/include/"
 IncludeDir["entt"] = "Engine/vendor/entt/src/"
 IncludeDir["json"] = "Engine/vendor/nlohmann/single_include/"
 IncludeDir["bullet"] = "Engine/vendor/bullet3/src/"
+IncludeDir["assimp"] = "Engine/vendor/assimp/include/"
 
 group "Dependencies"
 	include "Engine/vendor/glad/"
 	include "Engine/vendor/glfw/"
 	include "Engine/vendor/imgui/"
 	include "Engine/vendor/gainput/"
+
+	group "Dependencies/Assimp"
+		include "Engine/vendor/assimp/"
 
 	group "Dependencies/Bullet3"
 		include "Engine/vendor/bullet3/src/BulletDynamics"
@@ -64,7 +68,7 @@ project "OylEngine"
 	}
 
 	postbuildcommands {
-		"{COPY} %{prj.location}res/ %{wks.location}bin/" .. outputdir .. "/Engine/res/"
+		"{COPY} \"%{prj.location}res\" \"%{wks.location}bin/" .. outputdir .. "/Engine/res\""
 	}
 
 	includedirs {
@@ -82,11 +86,13 @@ project "OylEngine"
 		"%{IncludeDir.gainput}",
 		"%{IncludeDir.entt}",
 		"%{IncludeDir.json}",
-		"%{IncludeDir.bullet}"
+		"%{IncludeDir.bullet}",
+		"%{IncludeDir.assimp}"
 	}
 
 	libdirs {
-		"Engine/vendor/fmod/lib/"
+		"Engine/vendor/fmod/lib/",
+		"Engine/vendor/assimp/bin/",
 	}
 
 	links {
@@ -120,7 +126,8 @@ project "OylEngine"
 		symbols "on"
 		links {
 			"fmodL_vc.lib",
-			"fmodstudioL_vc.lib"
+			"fmodstudioL_vc.lib",
+			"AssimpL"
 		}
 
 	filter "configurations:Development"
@@ -136,7 +143,8 @@ project "OylEngine"
 	filter "configurations:not Debug"
 		links {
 			"fmod_vc.lib",
-			"fmodstudio_vc.lib"
+			"fmodstudio_vc.lib",
+			"Assimp"
 		}
 
 	filter "configurations:not Development"
@@ -177,14 +185,20 @@ project "OylGame"
 		"%{IncludeDir.imgui}",
 		"%{IncludeDir.entt}",
 		"%{IncludeDir.json}",
+		"%{IncludeDir.assimp}",
 	}
 
+	-- libdirs {
+	-- 	"Engine/vendor/fmod/lib/",
+	-- 	"Engine/vendor/assimp/lib/",
+	-- }
+
 	links {
-		"OylEngine"
+		"OylEngine",
 	}
 
 	postbuildcommands {
-		"{COPY} %{prj.location}res/ %{wks.location}bin/"..outputdir.."/Game/res/"
+		"{COPY} \"%{prj.location}res\" \"%{wks.location}bin/"..outputdir.."/Game/res/\""
 	}
 	
 	filter "system:windows"

@@ -115,6 +115,9 @@ namespace oyl
         void bind(FrameBufferContext a_context) override;
         void unbind(FrameBufferContext a_context) override;
 
+        void bindDepthAttachment(uint slot = 0) override;
+        void unbindDepthAttachment(uint slot = 0) override;
+
         void bindColorAttachment(uint index, uint slot = 0) override;
         void unbindColorAttachment(uint index, uint slot = 0) override;
 
@@ -133,9 +136,12 @@ namespace oyl
 
         uint getDepthHandle() const override { return m_depthAttachmentID; }
         uint getColorHandle(int index) const override { return m_colorAttachmentIDs[index]; }
-
-        uint getWidth(uint index) const override { return m_widths[index]; }
-        uint getHeight(uint index) const override { return m_heights[index]; }
+        
+        uint getDepthWidth() const override { return m_depthWidth; }
+        uint getDepthHeight() const override { return m_depthHeight; }
+        
+        uint getColorWidth(uint index) const override { return m_colorWidths[index]; }
+        uint getColorHeight(uint index) const override { return m_colorHeights[index]; }
         
         bool isLoaded() const override { return m_loaded; }
 
@@ -145,10 +151,12 @@ namespace oyl
     private:
         uint m_rendererID        = 0;
         uint m_depthAttachmentID = 0;
+        uint m_depthWidth        = 0;
+        uint m_depthHeight       = 0;
         uint m_colorAttachmentIDs[maxColorAttachments]{ 0 };
         uint m_bufs[maxColorAttachments]{ 0 };
-        uint m_widths[maxColorAttachments]{ 0 };
-        uint m_heights[maxColorAttachments]{ 0 };
+        uint m_colorWidths[maxColorAttachments]{ 0 };
+        uint m_colorHeights[maxColorAttachments]{ 0 };
 
         TextureFormat m_formats[maxColorAttachments]{ TextureFormat::RGB8 };
         TextureFilter m_filters[maxColorAttachments]{ TextureFilter::Linear };

@@ -19,22 +19,36 @@ void ThrowableBottleSystem::onUpdate()
 		auto& bottle          = registry->get<ThrowableBottle>(bottleEntity);
 		auto& bottleTransform = registry->get<component::Transform>(bottleEntity);
 		auto& bottleCarryable = registry->get<CarryableItem>(bottleEntity);
-		auto& bottleParent    = registry->get_or_assign<component::Parent>(bottleEntity);
 
 		if (bottle.isBeingThrown)
 			bottleTransform.rotate(glm::vec3(-1100.0f, 0.0f, 0.0f) * Time::deltaTime());
+	}
 
-		auto bottlePromptView = registry->view<ThrowBottlePrompt, PlayerHUDElement>();
-		for (auto bottlePromptEntity : bottlePromptView)
+	//figure out if any "throw bottle" prompts need to be displayed (displayed when player is carrying a throwable bottle
+	auto bottlePromptView = registry->view<ThrowBottlePrompt, PlayerHUDElement>();
+	for (auto bottlePromptEntity : bottlePromptView)
+	{
+		bool shouldBeShown = false;
+
+		auto& promptTransform  = registry->get<component::Transform>(bottlePromptEntity);
+		auto& promptHudElement = registry->get<PlayerHUDElement>(bottlePromptEntity);
+
+		auto playerView = registry->view<Player>();
+		for (auto playerEntity : playerView)
 		{
-			auto& promptTransform  = registry->get<component::Transform>(bottlePromptEntity);
-			auto& promptHudElement = registry->get<PlayerHUDElement>(bottlePromptEntity);
+			auto& player = registry->get<Player>(playerEntity);
 
-			if (bottleCarryable.isBeingCarried && promptHudElement.playerNum == registry->get<Player>(bottleParent.parent).playerNum)
-				promptTransform.setPosition(promptHudElement.positionWhenActive);
-			else
-				promptTransform.setPositionX(-30.0f);
+			if (player.playerNum != promptHudElement.playerNum)
+				continue;
+
+			if (registry->valid(player.primaryCarriedItem) && registry->has<ThrowableBottle>(player.primaryCarriedItem))
+				shouldBeShown = true;
 		}
+
+		if (shouldBeShown)
+			promptTransform.setPosition(promptHudElement.positionWhenActive);
+		else
+			promptTransform.setPositionX(-30.0f);
 	}
 }
 
@@ -49,9 +63,10 @@ bool ThrowableBottleSystem::onEvent(const Event& event)
 			auto& bottle          = registry->get<ThrowableBottle>(evt.bottleEntity);
 			auto& bottleTransform = registry->get<component::Transform>(evt.bottleEntity);
 			auto& bottleRB        = registry->get_or_assign<component::RigidBody>(evt.bottleEntity); //add the rigidbody back
+			auto& bottleCarryable = registry->get<CarryableItem>(evt.bottleEntity);
 
-			registry->get<component::Parent>(evt.bottleEntity).parent     = entt::null;
-			registry->get<CarryableItem>(evt.bottleEntity).isBeingCarried = false;
+			bottleTransform.setParent(entt::null);
+			bottleCarryable.isBeingCarried = false;
 
 			bottle.isBeingThrown        = true;
 			bottle.playerThrowingEntity = evt.playerThrowingEntity;

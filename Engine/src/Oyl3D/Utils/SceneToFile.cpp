@@ -10,7 +10,7 @@
 #include "Components/Transform.h"
 
 #include "Graphics/Material.h"
-#include "Graphics/Mesh.h"
+#include "Graphics/Model.h"
 #include "Graphics/Shader.h"
 #include "Graphics/Texture.h"
 
@@ -195,20 +195,30 @@ namespace oyl::internal
             jMir["Y"] = mirror.y;
             jMir["Z"] = mirror.z;
         }
+        {
+            using component::EntityInfo;
+            auto& jPar = j["Parent"];
+            if (auto parent = t.getParent(); parent != nullptr)
+            {
+                auto& info = registry.get<EntityInfo>(parent->entity());
+                jPar = info.name;
+            }
+        }
     }
 
     void saveParent(entt::entity entity, entt::registry& registry, json& j)
     {
         using component::EntityInfo;
-        using component::Parent;
+        using component::Transform;
 
-        if (!registry.has<Parent>(entity))
-            return;
-        
-        auto& pa = registry.get<Parent>(entity);
+        auto& transform = registry.get<Transform>(entity);
 
-        if (registry.valid(pa.parent))
-            j["Name"] = registry.get<EntityInfo>(pa.parent).name;
+        json& jPar = j["Parent"];
+        if (transform.hasParent())
+        {
+            auto& ei = registry.get<EntityInfo>(transform.getParentEntity());
+            jPar = ei.name;
+        }
         
     }
 
@@ -220,13 +230,14 @@ namespace oyl::internal
         auto& re = registry.get<Renderable>(entity);
 
         j["Enabled"] = re.enabled;
+        j["CastShadows"] = re.castShadows;
         j["CullingMask"] = re.cullingMask;
         
         auto& jMesh = j["Mesh"];
-        if (re.mesh)
+        if (re.model)
         {
-            jMesh["FilePath"] = re.mesh->getFilePath();
-            const auto& alias = Mesh::getAlias(re.mesh);
+            jMesh["FilePath"] = re.model->getFilePath();
+            const auto& alias = Model::getAlias(re.model);
             auto& jAlias = jMesh["Alias"];
             if (alias != INVALID_ALIAS)
                 jAlias = alias;
@@ -327,20 +338,60 @@ namespace oyl::internal
         j["Properties"] = rb.getPropertyFlags();
     }
 
-    static void saveLightSource(entt::entity entity, entt::registry& registry, json& j)
+    static void savePointLight(entt::entity entity, entt::registry& registry, json& j)
     {
         using component::PointLight;
 
-        auto& ls = registry.get<PointLight>(entity);
+        auto& pl = registry.get<PointLight>(entity);
 
         j = json::array();
 
         json jLight = json::object();
         
-        jLight["Ambient"] = ls.ambient;
-        jLight["Diffuse"] = ls.diffuse;
-        jLight["Specular"] = ls.specular;
-        jLight["Attenuation"] = ls.attenuation;
+        jLight["Range"] = pl.range;
+        jLight["Ambient"] = pl.ambient;
+        jLight["Diffuse"] = pl.diffuse;
+        jLight["Specular"] = pl.specular;
+        jLight["CastShadows"] = pl.castShadows;
+
+        j.push_back(std::move(jLight));
+    }
+
+    static void saveDirectionalLight(entt::entity entity, entt::registry& registry, json& j)
+    {
+        using component::DirectionalLight;
+
+        auto& dl = registry.get<DirectionalLight>(entity);
+
+        j = json::array();
+
+        json jLight = json::object();
+
+        jLight["Ambient"] = dl.ambient;
+        jLight["Diffuse"] = dl.diffuse;
+        jLight["Specular"] = dl.specular;
+        jLight["CastShadows"] = dl.castShadows;
+
+        j.push_back(std::move(jLight));
+    }
+
+    static void saveSpotLight(entt::entity entity, entt::registry& registry, json& j)
+    {
+        using component::SpotLight;
+
+        auto& sl = registry.get<SpotLight>(entity);
+
+        j = json::array();
+
+        json jLight = json::object();
+
+        jLight["Range"] = sl.range;
+        jLight["Ambient"] = sl.ambient;
+        jLight["Diffuse"] = sl.diffuse;
+        jLight["Specular"] = sl.specular;
+        jLight["CastShadows"] = sl.castShadows;
+        jLight["InnerCutoff"] = sl.innerCutoff;
+        jLight["OuterCutoff"] = sl.outerCutoff;
 
         j.push_back(std::move(jLight));
     }
@@ -453,12 +504,34 @@ namespace oyl::internal
                 t.setMirror(mirror);
             }
         }
+        {
+            using component::EntityInfo;
+
+            const auto parIt = j.find("Parent");
+
+            if (parIt != j.end() &&
+                parIt->is_string())
+            {
+                std::string parentName = parIt->get<std::string>();
+                auto view = registry.view<EntityInfo, Transform>();
+                for (auto e : view)
+                {
+                    auto& info = view.get<EntityInfo>(e);
+                    if (info.name == parentName)
+                    {
+                        view.get<Transform>(entity).setParent(e);
+                        break;
+                    }
+                }
+            }
+        }
     }
     
     void loadParent(entt::entity entity, entt::registry& registry, const json& j)
     {
         using component::EntityInfo;
-        using component::Parent;
+        using component::Transform;
+        //using component::Parent;
         
         const auto it = j.find("Name");
         if (it != j.end() && !it->is_null() && it->is_string())
@@ -469,8 +542,8 @@ namespace oyl::internal
             {
                 if (view.get(e).name == name)
                 {
-                    auto& p = registry.get_or_assign<Parent>(entity);
-                    p.parent = e;
+                    auto& p = registry.get<Transform>(entity);
+                    p.setParent(e);
                 }
             }
         }   
@@ -484,6 +557,9 @@ namespace oyl::internal
 
         if (auto it = j.find("Enabled"); it != j.end())
             it->get_to(re.enabled);
+        
+        if (auto it = j.find("CastShadows"); it != j.end())
+            it->get_to(re.castShadows);
 
         if (auto it = j.find("CullingMask"); it != j.end() && it->is_number_unsigned())
             it->get_to(re.cullingMask);
@@ -493,8 +569,8 @@ namespace oyl::internal
             bool doLoad = false;
             if (auto alIt = it->find("Alias"); alIt != it->end() && alIt->is_string())
             {
-                if (Mesh::exists(alIt->get<std::string>()))
-                    re.mesh = Mesh::get(alIt->get<std::string>());
+                if (Model::exists(alIt->get<std::string>()))
+                    re.model = Model::get(alIt->get<std::string>());
                 else
                     doLoad = true;
             } else doLoad = true;
@@ -504,17 +580,17 @@ namespace oyl::internal
                 auto filePath = fpIt->get<std::string>();
 
                 bool meshFound = false;
-                for (const auto& [alias, mesh] : Mesh::getCache())
+                for (const auto& [alias, mesh] : Model::getCache())
                 {
                     if (mesh->getFilePath() == filePath)
-                        meshFound = true, re.mesh = mesh;
+                        meshFound = true, re.model = mesh;
                 }
 
-                if (!meshFound && (!re.mesh || re.mesh && re.mesh->getFilePath() != filePath))
-                    re.mesh = Mesh::cache(filePath);
+                if (!meshFound && (!re.model || re.model && re.model->getFilePath() != filePath))
+                    re.model = Model::cache(filePath);
             }
         }
-        else re.mesh = nullptr;
+        else re.model = nullptr;
 
         if (j.find("Material") != j.end())
         {
@@ -650,7 +726,7 @@ namespace oyl::internal
             rb.setPropertyFlags(it->get<uint>());
     }
 
-    static void loadLightSource(entt::entity entity, entt::registry& registry, const json& j)
+    static void loadPointLight(entt::entity entity, entt::registry& registry, const json& j)
     {
         using component::PointLight;
 
@@ -667,8 +743,60 @@ namespace oyl::internal
                 it->get_to(ls.diffuse);
             if (const auto it = jLight.find("Specular"); it != jLight.end())
                 it->get_to(ls.specular);
-            if (const auto it = jLight.find("Attenuation"); it != jLight.end())
-                it->get_to(ls.attenuation);
+            if (const auto it = jLight.find("CastShadows"); it != jLight.end())
+                it->get_to(ls.castShadows);
+            if (const auto it = jLight.find("Range"); it != jLight.end())
+                it->get_to(ls.range);
+        }
+    }
+
+    static void loadDirectionalLight(entt::entity entity, entt::registry& registry, const json& j)
+    {
+        using component::DirectionalLight;
+
+        auto& ls = registry.assign_or_replace<DirectionalLight>(entity);
+
+        if (!j.is_array())
+            return;
+
+        for (const auto& jLight : j)
+        {
+            if (const auto it = jLight.find("Ambient"); it != jLight.end())
+                it->get_to(ls.ambient);
+            if (const auto it = jLight.find("Diffuse"); it != jLight.end())
+                it->get_to(ls.diffuse);
+            if (const auto it = jLight.find("Specular"); it != jLight.end())
+                it->get_to(ls.specular);
+            if (const auto it = jLight.find("CastShadows"); it != jLight.end())
+                it->get_to(ls.castShadows);
+        }
+    }
+
+    static void loadSpotLight(entt::entity entity, entt::registry& registry, const json& j)
+    {
+        using component::SpotLight;
+
+        auto& ls = registry.assign_or_replace<SpotLight>(entity);
+
+        if (!j.is_array())
+            return;
+
+        for (const auto& jLight : j)
+        {
+            if (const auto it = jLight.find("Ambient"); it != jLight.end())
+                it->get_to(ls.ambient);
+            if (const auto it = jLight.find("Diffuse"); it != jLight.end())
+                it->get_to(ls.diffuse);
+            if (const auto it = jLight.find("Specular"); it != jLight.end())
+                it->get_to(ls.specular);
+            if (const auto it = jLight.find("CastShadows"); it != jLight.end())
+                it->get_to(ls.castShadows);
+            if (const auto it = jLight.find("Range"); it != jLight.end())
+                it->get_to(ls.range);
+            if (const auto it = jLight.find("InnerCutoff"); it != jLight.end())
+                it->get_to(ls.innerCutoff);
+            if (const auto it = jLight.find("OuterCutoff"); it != jLight.end())
+                it->get_to(ls.outerCutoff);
         }
     }
 
@@ -766,6 +894,12 @@ namespace oyl::internal
         sceneFile.close();
 
         using component::EntityInfo;
+
+        registry.each([&registry](auto entity)
+        {
+            if (!registry.has<component::Transform>(entity))
+                registry.assign<component::Transform>(entity);
+        });
         
         std::unordered_set<std::string> processedEntities;
         processedEntities.reserve(sceneJson.size());
@@ -782,6 +916,7 @@ namespace oyl::internal
                 auto entity = registry.create();
                 EntityInfo info = { key };
                 registry.assign<EntityInfo>(entity, info);
+                registry.assign<component::Transform>(entity);
             }
         }
 
@@ -817,7 +952,7 @@ namespace oyl::internal
     static void entityToJson(entt::entity entity, entt::registry& registry, json& j)
     {
         saveTransform(entity, registry, j["Transform"]);
-        saveParent(entity, registry, j["Parent"]);
+        //saveParent(entity, registry, j["Parent"]);
 
         if (registry.has<component::Renderable>(entity))
             saveRenderable(entity, registry, j["Renderable"]);
@@ -832,7 +967,13 @@ namespace oyl::internal
             saveRigidBody(entity, registry, j["RigidBody"]);
 
         if (registry.has<component::PointLight>(entity))
-            saveLightSource(entity, registry, j["LightSource"]);
+            savePointLight(entity, registry, j["PointLight"]);
+
+        if (registry.has<component::DirectionalLight>(entity))
+            saveDirectionalLight(entity, registry, j["DirectionalLight"]);
+
+        if (registry.has<component::SpotLight>(entity))
+            saveSpotLight(entity, registry, j["SpotLight"]);
 
         if (registry.has<component::Camera>(entity))
             saveCamera(entity, registry, j["Camera"]);
@@ -858,9 +999,15 @@ namespace oyl::internal
         if (auto it = j.find("RigidBody"); it != j.end())
             loadRigidBody(entity, registry, it.value());
 
-        if (auto it = j.find("LightSource"); it != j.end())
-            loadLightSource(entity, registry, it.value());
+        if (auto it = j.find("PointLight"); it != j.end())
+            loadPointLight(entity, registry, it.value());
 
+        if (auto it = j.find("DirectionalLight"); it != j.end())
+            loadDirectionalLight(entity, registry, it.value());
+
+        if (auto it = j.find("SpotLight"); it != j.end())
+            loadSpotLight(entity, registry, it.value());
+        
         if (auto it = j.find("Camera"); it != j.end())
             loadCamera(entity, registry, it.value());
     }
@@ -913,16 +1060,20 @@ namespace oyl::internal
                         info.filename = sIt->at("FilePath").get<std::string>();
 
                         infos.push_back(std::move(info));
+                        return true;
                     }
+                    return false;
                 };
 
-                pushBackFn("Vertex",         Shader::Type::Vertex);
-                pushBackFn("Geometry",       Shader::Type::Geometry);
-                pushBackFn("TessControl",    Shader::Type::TessControl);
-                pushBackFn("TessEvaluation", Shader::Type::TessEvaluation);
-                pushBackFn("Pixel",          Shader::Type::Fragment);
+                bool hasMultiple = false;
+                
+                hasMultiple |= pushBackFn("Vertex",         Shader::Type::Vertex);
+                hasMultiple |= pushBackFn("Geometry",       Shader::Type::Geometry);
+                hasMultiple |= pushBackFn("TessControl",    Shader::Type::TessControl);
+                hasMultiple |= pushBackFn("TessEvaluation", Shader::Type::TessEvaluation);
+                hasMultiple |= pushBackFn("Pixel",          Shader::Type::Fragment);
 
-                if (!alias.empty())
+                if (!alias.empty() || !hasMultiple)
                     material->shader = Shader::cache(infos, alias, true);
                 else
                     material->shader = Shader::create(infos);
@@ -1024,6 +1175,12 @@ namespace oyl::internal
             {
                 switch (info.type)
                 {
+                    case Shader::Type::Compound:
+                    {
+                        jShader["guid"];
+                        jShader["FilePath"] = info.filename;
+                        break;
+                    }
                     case Shader::Type::Vertex:
                     {
                         json& jVert = jShader["Vertex"];

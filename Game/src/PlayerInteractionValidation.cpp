@@ -149,8 +149,8 @@ void PlayerInteractionValidationSystem::performRaycastAndValidateForPlayer(entt:
 		{
 			playersCameraEntity = cameraEntity;
 			//set the camera parent to the player in case it hasn't already been done
-			auto& cameraParent  = registry->get_or_assign<component::Parent>(cameraEntity);
-			cameraParent.parent = a_playerEntity;
+			auto& cameraTransform  = registry->get<component::Transform>(cameraEntity);
+			cameraTransform.setParent(a_playerEntity);
 			
 			break;
 		}
@@ -737,16 +737,13 @@ void PlayerInteractionValidationSystem::performCarryableItemInteraction(entt::en
 			break;
 		}
 	}
-
-	auto& carryableItemParent = registry->get_or_assign<component::Parent>(a_carryableItemEntity);
-
 	//remove rigidbody when item is carried
 	if (registry->has<component::RigidBody>(a_carryableItemEntity))
 		registry->remove<component::RigidBody>(a_carryableItemEntity);
 
 	carryableItem.isBeingCarried = true;
 	carryableItem.hasBeenCarried = true;
-	carryableItemParent.parent   = a_playerEntity;
+	carryableItemTransform.setParent(a_playerEntity);
 
 	carryableItemTransform.setRotationEuler(itemNewRotation);
 	carryableItemTransform.setPosition(itemNewPosition);
@@ -852,14 +849,13 @@ void PlayerInteractionValidationSystem::performCannonInteraction(entt::entity a_
 
 		auto& cannonball           = registry->get<Cannonball>(player.primaryCarriedItem);
 		auto& carriedItem          = registry->get<CarryableItem>(player.primaryCarriedItem);
-		auto& carriedItemParent    = registry->get<component::Parent>(player.primaryCarriedItem);
 		auto& carriedItemTransform = registry->get<component::Transform>(player.primaryCarriedItem);
 
-		if (carriedItemParent.parent == a_playerEntity)
+		if (carriedItemTransform.getParent() == &playerTransform)
 		{
 			OYL_LOG("LOADED CANNON!");
 
-			carriedItemParent.parent    = entt::null;
+			carriedItemTransform.setParent(entt::null);
 			player.primaryCarriedItem   = entt::null;
 			player.secondaryCarriedItem = entt::null;
 			
@@ -957,23 +953,22 @@ void PlayerInteractionValidationSystem::dropPlayerCarriedItems(entt::entity a_pl
 	auto& player          = registry->get<Player>(a_playerEntity);
 	auto& playerTransform = registry->get<component::Transform>(a_playerEntity);
 
-	auto carriedItemsView = registry->view<CarryableItem, component::Parent, component::Transform>();
+	auto carriedItemsView = registry->view<CarryableItem, component::Transform>();
 	for (entt::entity carriedItemEntity : carriedItemsView)
 	{
 		auto& carriedItem          = registry->get<CarryableItem>(carriedItemEntity);
-		auto& carriedItemParent    = registry->get<component::Parent>(carriedItemEntity);
 		auto& carriedItemTransform = registry->get<component::Transform>(carriedItemEntity);
 
 		if (dropSpecificItemType && carriedItem.type != itemTypeToDrop)
 			continue;
 		//dont let player drop items while cleaning and check parent
-		if (player.state == PlayerState::cleaning || carriedItemParent.parent != a_playerEntity)
+		if (player.state == PlayerState::cleaning || carriedItemTransform.getParentEntity() != a_playerEntity)
 			continue;
 
 		auto& carriedItemRB = registry->get_or_assign<component::RigidBody>(carriedItemEntity); //add the rigidbody back for the item when it's dropped
-		carriedItemRB.setFriction(0.8f);
+		carriedItemRB.setFriction(0.9f);
 
-		carriedItemParent.parent   = entt::null;
+		carriedItemTransform.setParent(entt::null);
 		carriedItem.isBeingCarried = false;
 
 		glm::vec3 newPosition = playerTransform.getPosition();

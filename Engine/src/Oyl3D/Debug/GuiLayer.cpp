@@ -6,7 +6,6 @@
 #include "App/Application.h"
 #include "App/Window.h"
 
-#include "Components/Animatable.h"
 #include "Components/Collidable.h"
 #include "Components/Camera.h"
 #include "Components/Lights.h"
@@ -19,7 +18,7 @@
 
 #include "Graphics/EditorCamera.h"
 #include "Graphics/Material.h"
-#include "Graphics/Mesh.h"
+#include "Graphics/Model.h"
 #include "Graphics/Shader.h"
 #include "Graphics/Texture.h"
 
@@ -36,7 +35,7 @@
 #include "EditorSystems.h"
 
 static bool isTexture(const char* ext);
-static bool isMesh(const char* ext);
+static bool isModel(const char* ext);
 static bool isShader(const char* ext);
 static bool isMaterial(const char* ext);
 static bool isScene(const char* ext);
@@ -82,7 +81,7 @@ namespace oyl::internal
     void GuiLayer::onEnter()
     {
         scheduleSystemUpdate<EditorCameraSystem>();
-        scheduleSystemUpdate<EditorRenderSystem>();
+        //scheduleSystemUpdate<EditorRenderSystem>();
 
         listenForAllEvents();
 
@@ -179,7 +178,6 @@ namespace oyl::internal
     void GuiLayer::onUpdate()
     {
         using component::Transform;
-        using component::Parent;
         using component::EntityInfo;
 
         auto deleteView = registry->view<entt::tag<"_delete"_hs>>();
@@ -349,10 +347,10 @@ namespace oyl::internal
                     // TEMPORARY: Let name be accessed through a getter
                     registryToSceneFile(*registry, Scene::current()->m_name);
 
-                    for (const auto& [alias, material] : Material::getCache())
-                    {
-                        materialToFile(material, "res/assets/materials/" + alias + ".oylmat");
-                    }
+                    //for (const auto& [alias, material] : Material::getCache())
+                    //{
+                    //    materialToFile(material, "res/assets/materials/" + alias + ".oylmat");
+                    //}
                 }
                 showReloadDialogue = 
                     ImGui::MenuItem("Reload##MainMenuReload", "Ctrl+Shift+S", false, m_editorOverrideUpdate);
@@ -389,12 +387,12 @@ namespace oyl::internal
                     ImGui::Indent(ImGui::GetWindowContentRegionWidth() / 2 - 55);
                     if (ImGui::Button("Reload##ReloadConfirmationReload"))
                     {
-                        for (const auto& [alias, material] : Material::getCache())
-                        {
-                            if (!material->getFilePath().empty() && 
-                                std::fs::exists(material->getFilePath()))
-                                *material = *materialFromFile(material->getFilePath());
-                        }
+                        //for (const auto& [alias, material] : Material::getCache())
+                        //{
+                        //    if (!material->getFilePath().empty() && 
+                        //        std::fs::exists(material->getFilePath()))
+                        //        *material = *materialFromFile(material->getFilePath());
+                        //}
                         
                         registryFromSceneFile(*registry, Scene::current()->m_name);
                         m_currentSelection = entt::entity(entt::null);
@@ -415,7 +413,6 @@ namespace oyl::internal
     {
         using component::Transform;
         using component::EntityInfo;
-        using component::Parent;
         
         if (ImGui::Begin(g_hierarchyWindowName, nullptr, ImGuiWindowFlags_NoCollapse))
         {
@@ -448,25 +445,21 @@ namespace oyl::internal
 
             ImGui::SetCursorPos(ImGui::GetWindowContentRegionMin());
             
-            registry->view<EntityInfo>().each(
-                [&](auto entity, auto& info)
+            registry->view<EntityInfo, Transform>().each(
+                [&](auto entity, auto& info, auto& transform)
                 {
-                    Parent* p = registry->try_get<Parent>(entity);
-                    if (!(p && registry->valid(p->parent)))
+                    if (!transform.hasParent())
                     {
-                        this->drawEntityNode(entity);
+                        this->drawEntityNode(entity, info, transform);
                     }
                 });
         }
         ImGui::End();
     }
 
-    void GuiLayer::drawEntityNode(entt::entity entity)
+    void GuiLayer::drawEntityNode(entt::entity entity, component::EntityInfo& info, component::Transform& transform)
     {
-        using component::EntityInfo;
-        using component::Parent;
-        
-        auto& so = registry->get<EntityInfo>(entity);
+        using component::Transform;
         
         auto nodeFlags = ImGuiTreeNodeFlags_OpenOnDoubleClick |
                          ImGuiTreeNodeFlags_OpenOnArrow |
@@ -475,18 +468,25 @@ namespace oyl::internal
         if (entity == m_currentSelection.entity())
             nodeFlags |= ImGuiTreeNodeFlags_Selected;
 
-        nodeFlags |= ImGuiTreeNodeFlags_Leaf;
-        auto parentView = registry->view<Parent>();
-        for (auto child : parentView)
-            if (parentView.get(child).parent == entity)
-            {
-                nodeFlags &= ~ImGuiTreeNodeFlags_Leaf;
-                break;
-            }
+        //nodeFlags |= ImGuiTreeNodeFlags_Leaf;
+        //auto parentView = registry->view<Parent>();
+        //for (auto child : parentView)
+        //    if (parentView.get(child).parent == entity)
+        //    {
+        //        nodeFlags &= ~ImGuiTreeNodeFlags_Leaf;
+        //        break;
+        //    }
+        
+        const std::vector<Transform*>& children = transform.getChildren();
+        if (children.empty())
+        {
+            nodeFlags |= ImGuiTreeNodeFlags_Leaf;
+        }
 
-        bool treeNode = ImGui::TreeNodeEx((const void*) entity, nodeFlags, g_entityNodeFmt, so.name.c_str());
+        bool treeNode = ImGui::TreeNodeEx((const void*) entity, nodeFlags, g_entityNodeFmt, info.name.c_str());
         bool clicked = ImGui::IsItemClicked(0);
         float testValue = ImGui::GetMousePos().x - ImGui::GetItemRectMin().x;
+
         if (treeNode)
         {
             if (ImGui::BeginPopupContextItem())
@@ -508,9 +508,14 @@ namespace oyl::internal
                 {                    
                     auto copy = registry->create();
                     registry->stomp(copy, entity, *registry);
+                    auto& ct = registry->get<Transform>(copy);
+                    ct.clearChildren();
+                    ct.setParent(entt::null);
+                    ct.setParent(transform.getParentEntity());
+                    
                     recursiveCopy(copy, entity);
 
-                    m_currentSelection = Selectable(entity);
+                    m_currentSelection = Selectable(copy);
                 }
 
                 if (ImGui::Selectable("Delete Entity##HierarchyContextDeleteEntity", false))
@@ -525,7 +530,7 @@ namespace oyl::internal
             {
                 if (ImGui::BeginDragDropSource())
                 {
-                    ImGui::Text("%s", so.name.c_str());
+                    ImGui::Text("%s", info.name.c_str());
                     ImGui::SetDragDropPayload("HierarchyEntity", &entity, sizeof(entt::entity));
                     ImGui::EndDragDropSource();
                 }
@@ -540,13 +545,18 @@ namespace oyl::internal
                     ImGui::EndDragDropTarget();
                 }
 
-                parentView.each([&](auto child, Parent& p)
+                //parentView.each([&](auto child, Parent& p)
+                //{
+                //    if (registry->valid(p.parent) && p.parent == entity)
+                //    {
+                //        this->drawEntityNode(child);
+                //    }
+                //});
+                for (auto child : children)
                 {
-                    if (registry->valid(p.parent) && p.parent == entity)
-                    {
-                        this->drawEntityNode(child);
-                    }
-                });
+                    using component::EntityInfo;
+                    this->drawEntityNode(child->entity(), registry->get<EntityInfo>(child->entity()), *child);
+                }
             }
 
             ImGui::TreePop();
@@ -563,7 +573,6 @@ namespace oyl::internal
     void GuiLayer::recursiveCopy(entt::entity copy, entt::entity original)
     {
         using component::EntityInfo;
-        using component::Parent;
 
         auto& copyEI = registry->get<EntityInfo>(copy);
 
@@ -599,31 +608,44 @@ namespace oyl::internal
             }
         } while (!isValid);
         
-        auto view = registry->view<Parent>();
-        for (auto child : view)
+        //auto view = registry->view<Parent>();
+        using component::Transform;
+        const auto& children = registry->get<Transform>(original).getChildren();
+        for (auto child : children)
         {
-            if (view.get(child).parent == original)
-            {
-                auto e = registry->create();
-                registry->stomp(e, child, *registry);
-                registry->get<Parent>(e).parent = copy;
-                recursiveCopy(e, child);
-            }
+            //if (view.get(child).parent == original)
+            //{
+            auto e = registry->create();
+            registry->stomp(e, child->entity(), *registry);
+            //registry->get<Parent>(e).parent = copy;
+            auto& transform = registry->get<Transform>(e);
+            transform.clearChildren();
+            transform.setParent(copy);
+            recursiveCopy(e, child->entity());
+            //}
         }
     }
 
     void GuiLayer::recursiveDelete(entt::entity entity)
     {
-        using component::Parent;
+        using component::Transform;
         
-        auto view = registry->view<Parent>();
-        view.each([this, entity](auto child, Parent& p)
+        //auto view = registry->view<Parent>();
+        const auto& children = registry->get<Transform>(entity).getChildren();
+        for (auto child : children)
         {
-            if (p.parent == entity && !registry->has<entt::tag<"_delete"_hs>>(child))
+            if (!registry->has<entt::tag<"_delete"_hs>>(child->entity()))
             {
-                this->recursiveDelete(child);
+                this->recursiveDelete(child->entity());
             }
-        });
+        }
+        //view.each([this, entity](auto child, Parent& p)
+        //{
+        //    if (p.parent == entity && !registry->has<entt::tag<"_delete"_hs>>(child))
+        //    {
+        //        this->recursiveDelete(child);
+        //    }
+        //});
 
         registry->assign_or_replace<entt::tag<"_delete"_hs>>(entity);
 
@@ -634,17 +656,15 @@ namespace oyl::internal
 
     void GuiLayer::setEntityParent(entt::entity entity, entt::entity parent)
     {
-        using component::Parent;
         using component::Transform;
         
-        auto& p = registry->get_or_assign<Parent>(entity);
+        //auto& p = registry->get_or_assign<Parent>(entity);
+        auto& ct = registry->get<Transform>(entity);
 
-        if (parent == p.parent) return;
+        if (parent == ct.getParentEntity()) return;
         
-        if (parent == entt::null && p.parent != entt::null)
+        if (parent == entt::null && ct.getParentEntity() != entt::null)
         {
-            auto& ct = registry->get<Transform>(entity);
-
             glm::mat4 tempChild = ct.getMatrixGlobal();
 
             glm::vec3 tComponents[3];
@@ -669,7 +689,6 @@ namespace oyl::internal
         }
         else
         {
-            auto& ct = registry->get<Transform>(entity);
             auto& pt = registry->get<Transform>(parent);
 
             glm::mat4 tempChild = ct.getMatrixGlobal();
@@ -697,7 +716,8 @@ namespace oyl::internal
 
             ct.m_isLocalDirty = true;
         }
-        p.parent = parent;
+        //p.parent = parent;
+        ct.setParent(parent);
     }
 
     void GuiLayer::drawInspector()
@@ -713,7 +733,10 @@ namespace oyl::internal
                 drawInspectorGuiRenderable();
                 drawInspectorCollidable();
                 drawInspectorRigidBody();
-                drawInspectorLightSource();
+                //drawInspectorLightSource();
+                drawInspectorPointLight();
+                drawInspectorDirectionalLight();
+                drawInspectorSpotLight();
                 drawInspectorCamera();
                 drawInspectorAddComponent();
             }
@@ -921,7 +944,8 @@ namespace oyl::internal
 
             auto& renderable = registry->get<Renderable>(m_currentSelection.entity());
             
-            ImGui::Checkbox("Enabled", &renderable.enabled);
+            ImGui::Checkbox("Enabled##RenderableEnabled", &renderable.enabled);
+            ImGui::Checkbox("Cast Shadows##RenderableCastShadows", &renderable.castShadows);
 
             ImGui::TextUnformatted("Culling Mask"); ImGui::SameLine();
             char preview[33]{ 0 };
@@ -937,25 +961,25 @@ namespace oyl::internal
                 ImGui::EndCombo();
             }
             
-            CacheAlias currentName = Mesh::getAlias(renderable.mesh);
-            if (!renderable.mesh || currentName == INVALID_ALIAS)
+            CacheAlias currentName = Model::getAlias(renderable.model);
+            if (!renderable.model || currentName == INVALID_ALIAS)
                 currentName.assign("None");
 
-            ImGui::TextUnformatted("Current Mesh");
+            ImGui::TextUnformatted("Current Model");
             ImGui::SameLine();
             ImGui::SetNextItemWidth(ImGui::GetWindowWidth() - ImGui::GetCursorPosX());
             if (ImGui::BeginCombo("##RenderablePropertiesCurrentMesh", currentName.c_str()))
             {
-                if (ImGui::Selectable("None", renderable.mesh == nullptr))
-                    renderable.mesh.reset();    
+                if (ImGui::Selectable("None", renderable.model == nullptr))
+                    renderable.model.reset();
                 
-                const auto& meshCache = Mesh::getCache();
+                const auto& meshCache = Model::getCache();
                 for (const auto& kvp : meshCache)
                 {
                     if (kvp.first != INVALID_ALIAS &&
-                        ImGui::Selectable(kvp.first.c_str(), renderable.mesh == kvp.second))
+                        ImGui::Selectable(kvp.first.c_str(), renderable.model == kvp.second))
                     {
-                        renderable.mesh = kvp.second;
+                        renderable.model = kvp.second;
                     }
                 }
 
@@ -1419,17 +1443,16 @@ namespace oyl::internal
         }
     }
 
-    void GuiLayer::drawInspectorLightSource()
+    void GuiLayer::drawInspectorPointLight()
     {
-        // TEMPORARY: Change when adding LightSource component
         using component::PointLight;
-
+        
         if (!registry->has<PointLight>(m_currentSelection.entity()))
             return;
 
         ImGui::SetNextItemOpen(true, ImGuiCond_Once);
 
-        bool open = ImGui::CollapsingHeader("Light Source##InspectorLightSource");
+        bool open = ImGui::CollapsingHeader("Point Light##InspectorPointLight");
 
         open &= !userRemoveComponent<PointLight>();
 
@@ -1439,36 +1462,62 @@ namespace oyl::internal
 
             auto& pl = registry->get<PointLight>(m_currentSelection.entity());
 
-            ImGui::ColorEdit3("Ambient##LightSourceAmbient",  value_ptr(pl.ambient));
-            ImGui::ColorEdit3("Diffuse##LightSourceAmbient",  value_ptr(pl.diffuse));
-            ImGui::ColorEdit3("Specular##LightSourceAmbient", value_ptr(pl.specular));
-
+            ImGui::TextUnformatted("Cast Shadows");
+            ImGui::SameLine();
+            ImGui::Checkbox("##CastShadowsPointLight", &pl.castShadows);
+            
             float newWidth = ImGui::GetWindowContentRegionWidth() / 6;
-
+            
             ImGui::PushItemWidth(newWidth);
-
             {
                 const float posDragSpeed = 0.01f;
-                ImGui::Text("Attenuation");
-                ImGui::SameLine(ImGui::GetWindowContentRegionWidth() - (15 * 3 + newWidth * 3 + 27));
+                ImGui::TextUnformatted("Range");
+                ImGui::SameLine(ImGui::GetWindowContentRegionWidth() - (15 + newWidth + 27));
                 ImGui::SetNextItemWidth(15);
-                ImGui::DragFloat("##AttenK", &pl.attenConst, posDragSpeed, 0.0f, 999.0f, "K");
+                ImGui::DragFloat("##PointLightRange", &pl.range, posDragSpeed, 0.0f, 999.0f, "R");
                 ImGui::SameLine();
-                ImGui::InputFloat("##AttenKInput", &pl.attenConst, 0, 0, "%.2f");
-                ImGui::SameLine();
-                ImGui::SetNextItemWidth(15);
-                ImGui::DragFloat("##AttenL", &pl.attenLin, posDragSpeed, 0, 999.0f, "L");
-                ImGui::SameLine();
-                ImGui::InputFloat("##AttenLInput", &pl.attenLin, 0, 0, "%.2f");
-                ImGui::SameLine();
-                ImGui::SetNextItemWidth(15);
-                ImGui::DragFloat("##AttenQ", &pl.attenQuad, posDragSpeed, 0, 999.0f, "Q");
-                ImGui::SameLine();
-                ImGui::InputFloat("##AttenQInput", &pl.attenQuad, 0, 0, "%.2f");
-                pl.attenuation = max(glm::vec3(0.0f, 0.0f, 0.0f), pl.attenuation);
+                ImGui::InputFloat("##PointLightRangeInput", &pl.range, 0, 0, "%.2f");
             }
             ImGui::PopItemWidth();
-            
+
+            ImGui::ColorEdit3("Ambient##PointLightAmbient", value_ptr(pl.ambient));
+            ImGui::ColorEdit3("Diffuse##PointLightDiffuse", value_ptr(pl.diffuse));
+            ImGui::ColorEdit3("Specular##PointLightSpecular", value_ptr(pl.specular));
+
+            ImGui::Unindent(10);
+
+            ImGui::Separator();
+            ImGui::NewLine();
+        }
+    }
+    
+    void GuiLayer::drawInspectorDirectionalLight()
+    {
+        using component::DirectionalLight;
+        
+        if (!registry->has<DirectionalLight>(m_currentSelection.entity()))
+            return;
+
+        ImGui::SetNextItemOpen(true, ImGuiCond_Once);
+
+        bool open = ImGui::CollapsingHeader("Directional Light##InspectorDirectionalLight");
+
+        open &= !userRemoveComponent<DirectionalLight>();
+
+        if (open)
+        {
+            ImGui::Indent(10);
+
+            auto& dl = registry->get<DirectionalLight>(m_currentSelection.entity());
+
+            ImGui::TextUnformatted("Cast Shadows");
+            ImGui::SameLine();
+            ImGui::Checkbox("##CastShadowsDirectionalLight", &dl.castShadows);
+
+            ImGui::ColorEdit3("Ambient##DirectionalLightAmbient", value_ptr(dl.ambient));
+            ImGui::ColorEdit3("Diffuse##DirectionalLightDiffuse", value_ptr(dl.diffuse));
+            ImGui::ColorEdit3("Specular##DirectionalLightSpecular", value_ptr(dl.specular));
+
             ImGui::Unindent(10);
 
             ImGui::Separator();
@@ -1476,6 +1525,70 @@ namespace oyl::internal
         }
     }
 
+    void GuiLayer::drawInspectorSpotLight()
+    {
+        using component::SpotLight;
+        
+        if (!registry->has<SpotLight>(m_currentSelection.entity()))
+            return;
+
+        ImGui::SetNextItemOpen(true, ImGuiCond_Once);
+
+        bool open = ImGui::CollapsingHeader("Spot Light##InspectorSpotLight");
+
+        open &= !userRemoveComponent<SpotLight>();
+
+        if (open)
+        {
+            ImGui::Indent(10);
+
+            auto& sl = registry->get<SpotLight>(m_currentSelection.entity());
+
+            ImGui::TextUnformatted("Cast Shadows");
+            ImGui::SameLine();
+            ImGui::Checkbox("##CastShadowsSpotLight", &sl.castShadows);
+
+            float newWidth = ImGui::GetWindowContentRegionWidth() / 6;
+
+            ImGui::PushItemWidth(newWidth);
+            {
+                const float posDragSpeed = 0.01f;
+                ImGui::TextUnformatted("Range");
+                ImGui::SameLine(ImGui::GetWindowContentRegionWidth() - (15 + newWidth + 27));
+                ImGui::SetNextItemWidth(15);
+                ImGui::DragFloat("##RangeSpotLight", &sl.range, posDragSpeed, 0.0f, 999.0f, "R");
+                ImGui::SameLine();
+                ImGui::InputFloat("##RangeInputSpotLight", &sl.range, 0, 0, "%.2f");
+            }
+            {
+                const float posDragSpeed = 0.01f;
+                ImGui::TextUnformatted("Outer Cutoff");
+                ImGui::SameLine(ImGui::GetWindowContentRegionWidth() - (15 * 2 + newWidth * 2 + 27));
+                ImGui::SetNextItemWidth(15);
+                ImGui::DragFloat("##OuterCutoff", &sl.outerCutoff, posDragSpeed, 0.0f, 999.0f, "K");
+                ImGui::SameLine();
+                ImGui::InputFloat("##OutCutoffInput", &sl.outerCutoff, 0, 0, "%.2f");
+
+                ImGui::TextUnformatted("Inner Cutoff");
+                ImGui::SameLine(ImGui::GetWindowContentRegionWidth() - (15 * 2 + newWidth * 2 + 27));
+                ImGui::SetNextItemWidth(15);
+                ImGui::DragFloat("##InnerCutoff", &sl.outerCutoff, posDragSpeed, 0.0f, 999.0f, "I");
+                ImGui::SameLine();
+                ImGui::InputFloat("##InnerCutoffInput", &sl.outerCutoff, 0, 0, "%.2f");
+            }
+            ImGui::PopItemWidth();
+
+            ImGui::ColorEdit3("Ambient##SpotLightAmbient", value_ptr(sl.ambient));
+            ImGui::ColorEdit3("Diffuse##SpotLightDiffuse", value_ptr(sl.diffuse));
+            ImGui::ColorEdit3("Specular##SpotLightSpecular", value_ptr(sl.specular));
+
+            ImGui::Unindent(10);
+
+            ImGui::Separator();
+            ImGui::NewLine();
+        }
+    }
+    
     void GuiLayer::drawInspectorCamera()
     {
         // TEMPORARY: Change when adding LightSource component
@@ -1582,9 +1695,11 @@ namespace oyl::internal
     {
         using component::Collidable;
         using component::GuiRenderable;
-        using component::PointLight;
         using component::Renderable;
         using component::RigidBody;
+        using component::PointLight;
+        using component::DirectionalLight;
+        using component::SpotLight;
         using component::Camera;
         
         if (ImGui::BeginCombo("##InspectorAddComponent", "Add Component", ImGuiComboFlags_NoArrowButton))
@@ -1611,6 +1726,14 @@ namespace oyl::internal
                 ImGui::Selectable("Point Light"))
                 registry->assign<PointLight>(entity);
 
+            if (!registry->has<DirectionalLight>(entity) &&
+                ImGui::Selectable("Directional Light"))
+                registry->assign<DirectionalLight>(entity);
+
+            if (!registry->has<DirectionalLight>(entity) &&
+                ImGui::Selectable("Spot Light"))
+                registry->assign<DirectionalLight>(entity);
+            
             int camFlags = 0;
             if (registry->size<Camera>() >= 4)
                 camFlags |= ImGuiSelectableFlags_Disabled;
@@ -1781,6 +1904,9 @@ namespace oyl::internal
         ImGui::InputFloat("##OffsetInputY", &offset.y, 0, 0, "%.2f", flags);
 
         ImGui::PopItemWidth();
+
+        if (ImGui::IsWindowHovered() && ImGui::IsAnyMouseDown())
+            materialToFile(material, material->getFilePath());
     }
 
     void GuiLayer::drawAssetList()
@@ -1833,7 +1959,7 @@ namespace oyl::internal
                 flags |= ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_NoTreePushOnOpen;
 
                 if      (isTexture(ext))  typeName = "Texture";
-                else if (isMesh(ext))     typeName = "Mesh";
+                else if (isModel(ext))     typeName = "Mesh";
                 else if (isShader(ext))   typeName = "Shader";
                 else if (isMaterial(ext)) typeName = "Material";
                 else if (isScene(ext))    typeName = "Scene";
@@ -1892,33 +2018,37 @@ namespace oyl::internal
             {
                 stillExists = true;
                 auto path   = std::fs::path(m_fileSaveTimeIt->first);
-                if (exists(path))
+
+                if (!path.empty())
                 {
-                    lastWriteTimeNew = last_write_time(path);
-                }
-                else
-                {
-                    auto pathStr = path.string();
+                    if (exists(path))
+                    {
+                        lastWriteTimeNew = last_write_time(path);
+                    }
+                    else
+                    {
+                        auto pathStr = path.string();
                     
-                    m_fileSaveTimeIt = m_fileSaveTimes.erase(m_fileSaveTimeIt);
-                    stillExists      = false;
+                        m_fileSaveTimeIt = m_fileSaveTimes.erase(m_fileSaveTimeIt);
+                        stillExists      = false;
 
-                    std::string ext = path.extension().string();
+                        std::string ext = path.extension().string();
 
-                    if (isTexture(ext.c_str()))
-                        for (const auto& [alias, texture] : Texture2D::getCache())
-                            if (pathStr == texture->getFilePath())
-                                Texture2D::discard(alias);
+                        if (isTexture(ext.c_str()))
+                            for (const auto& [alias, texture] : Texture2D::getCache())
+                                if (pathStr == texture->getFilePath())
+                                    Texture2D::discard(alias);
 
-                    if (isMesh(ext.c_str()))
-                        for (const auto& [alias, mesh] : Mesh::getCache())
-                            if (pathStr == mesh->getFilePath())
-                                Mesh::discard(alias);
+                        if (isModel(ext.c_str()))
+                            for (const auto& [alias, mesh] : Model::getCache())
+                                if (pathStr == mesh->getFilePath())
+                                    Model::discard(alias);
 
-                    if (isMaterial(ext.c_str()))
-                        for (const auto& [alias, material] : Material::getCache())
-                            if (pathStr == material->getFilePath())
-                                Material::discard(alias);
+                        if (isMaterial(ext.c_str()))
+                            for (const auto& [alias, material] : Material::getCache())
+                                if (pathStr == material->getFilePath())
+                                    Material::discard(alias);
+                    }
                 }
             } while (!stillExists);
             
@@ -1961,14 +2091,14 @@ namespace oyl::internal
                             break;
                         }
 
-                if (isMesh(ext))
-                    for (auto& [alias, mesh] : Mesh::getCache())
+                if (isModel(ext))
+                    for (auto& [alias, mesh] : Model::getCache())
                         if (updateAsset(mesh->getFilePath(),
                                         [](void* data)
                                         {
-                                            auto& meshRef = *reinterpret_cast<Ref<Mesh>*>(data);
-                                            auto  mesh    = Mesh::create(meshRef->getFilePath());
-                                            if (mesh != Mesh::get(INVALID_ALIAS)) *meshRef = *mesh;
+                                            auto& modelRef = *reinterpret_cast<Ref<Model>*>(data);
+                                            auto  mesh     = Model::create(modelRef->getFilePath());
+                                            if (mesh != Model::get(INVALID_ALIAS)) *modelRef = *mesh;
                                         }, (void*) &mesh))
                         {
                             break;
@@ -1996,7 +2126,9 @@ namespace oyl::internal
         {
             std::fs::recursive_directory_iterator res("res");
             for (const auto& dirEntry : res)
-            {   
+            {
+                if (!dirEntry.exists()) continue;
+                
                 auto        relPath    = relative(dirEntry.path());
                 std::string relPathStr = relPath.string();
                 if (m_fileSaveTimes.find(relPathStr) == m_fileSaveTimes.end())
@@ -2005,7 +2137,7 @@ namespace oyl::internal
                     const char* ext             = relPathStr.c_str() + relPathStr.find_last_of('.');
 
                     if (isTexture(ext))  Texture2D::cache(relPathStr);
-                    if (isMesh(ext))     Mesh::cache(relPathStr);
+                    if (isModel(ext))     Model::cache(relPathStr);
                     if (isMaterial(ext)) Material::cache(relPathStr);
                 }
             }
@@ -2015,7 +2147,7 @@ namespace oyl::internal
             // Helper function, return true if was not present in the list, return false otherwise
             auto addToFileSaveTimes = [this](const std::string& filename)
             {
-                if (filename.empty()) return;
+                if (filename.empty() || !std::fs::exists(filename)) return;
                 auto relPath    = std::fs::relative(filename);
                 auto relPathStr = relPath.string();
                 if (m_fileSaveTimes.find(relPathStr) == m_fileSaveTimes.end())
@@ -2031,8 +2163,8 @@ namespace oyl::internal
             for (const auto& [alias, material] : Material::getCache())
                 addToFileSaveTimes(material->getFilePath());
 
-            for (const auto& [alias, mesh] : Mesh::getCache())
-                addToFileSaveTimes(mesh->getFilePath());
+            for (const auto& [alias, model] : Model::getCache())
+                addToFileSaveTimes(model->getFilePath());
 
             // TEMPORARY: Uncomment when 1D and 3D textures are supported
             //for (const auto& [alias, texture1D] : Texture1D::getCache())
@@ -2066,48 +2198,146 @@ namespace oyl::internal
     {
         if (ImGui::Begin("AssetCache##DrawAssetCache"))
         {
-            const int buf_size = 128;
-            static char name[buf_size]{ 0 };
-            static bool showDialogue = false;
+            if (ImGui::BeginTabBar("##AssetCacheTabBar"))
+            {
+                if (ImGui::BeginTabItem("Material"))
+                {
+                    drawMaterialCache();
+                    ImGui::EndTabItem();
+                }
+                if (ImGui::BeginTabItem("Model"))
+                {
+                    drawModelCache();
+                    ImGui::EndTabItem();
+                }
+                if (ImGui::BeginTabItem("Texture"))
+                {
+                    drawTextureCache();
+                    ImGui::EndTabItem();
+                }
+                if (ImGui::BeginTabItem("Animation"))
+                {
+                    drawAnimationCache();
+                    ImGui::EndTabItem();
+                }
+                ImGui::EndTabBar();
+            }
+        }
+        ImGui::End();
+    }
+
+    void GuiLayer::drawAnimationCache()
+    {
+        
+    }
+
+    void GuiLayer::drawMaterialCache()
+    {
+        const int   buf_size = 128;
+        static char name[buf_size]{ 0 };
+        static bool showDialogue = false;
+
+        static bool needsFocus = false;
+        
+        if (ImGui::BeginPopupContextWindow())
+        {
             if (!showDialogue)
             {
-                if (ImGui::Button("Add Material"))
-                    showDialogue = true;
+                showDialogue = ImGui::Selectable("Add Material", false, ImGuiSelectableFlags_DontClosePopups);
+                needsFocus = true;
+                //if (ImGui::Button("Add Material"))
+                //    showDialogue = true;
             }
             else
             {
-                if (ImGui::InputText("Name##AssetCacheAddMatName", name, buf_size, ImGuiInputTextFlags_EnterReturnsTrue)
-                    && name[0] != 0)
+                if (needsFocus)
+                    ImGui::SetKeyboardFocusHere(), needsFocus = false;
+
+                bool isOpen = ImGui::InputText("Name##AssetCacheAddMatName", name, buf_size, ImGuiInputTextFlags_EnterReturnsTrue);
+
+                if (ImGui::IsAnyMouseDown() && !ImGui::IsItemHovered() || Input::isKeyPressed(Key::Escape))
+                    memset(name, 0, sizeof(name)), showDialogue = false;
+
+                if (isOpen && name[0] != 0)
                 {
                     bool valid = true;
                     for (const auto& [alias, material] : Material::getCache())
-                        if (strcmp(name, alias.c_str()) == 0)
+                        if (strlen(name) == alias.length())
                         {
-                            valid = false;
-                            break;
+                            bool iequal = true;
+                            for (uint i = 0; i < alias.length(); i++)
+                            {
+                                if (std::tolower(name[i]) != std::tolower(alias[i]))
+                                {
+                                    iequal = false;
+                                    break;
+                                }
+                            }
+
+                            if (iequal)
+                            {
+                                valid = false;
+                                break;
+                            }
                         }
 
                     if (valid)
                     {
-                        Material::cache(Material::create(), name);
+                        auto mat        = Material::create();
+                        mat->m_filepath = "res/assets/materials/.oylmat";
+                        mat->m_filepath.insert(mat->m_filepath.find_last_of('.'), name);
+                        materialToFile(mat, mat->m_filepath);
+                        Material::cache(mat, name);
+
+                        m_currentSelection = mat;
 
                         memset(name, 0, sizeof(name));
                         showDialogue = false;
                     }
                 }
+
+                if (!showDialogue)
+                    ImGui::CloseCurrentPopup();
             }
-            
-            for (const auto& [alias, material] : Material::getCache())
-            {
-                if (ImGui::Selectable(alias.c_str(), m_currentSelection.material() == material, 
-                                      ImGuiSelectableFlags_PressedOnClick))
-                {
-                    m_currentSelection = material;
-                }
-            }
+            ImGui::EndPopup();
         }
-        ImGui::End();
+
+        for (const auto& [alias, material] : Material::getCache())
+        {
+            bool selected = ImGui::Selectable(alias.c_str(), m_currentSelection.material() == material,
+                                              ImGuiSelectableFlags_PressedOnClick);
+
+            if (ImGui::BeginPopupContextItem())
+            {
+                int flags = 0;
+                if (m_gameUpdate)
+                    flags |= ImGuiSelectableFlags_Disabled;
+                
+                if (ImGui::Selectable("Delete Material", false, flags))
+                {
+                    if (std::fs::exists(material->getFilePath()))
+                        std::fs::remove(material->getFilePath());
+
+                    if (m_currentSelection.material() == material)
+                        m_currentSelection = {};
+
+                    // Remove every reference to the material
+                    using component::Renderable;
+                    registry->view<Renderable>().each([&](auto entity, Renderable& renderable)
+                    {
+                        if (renderable.material == material)
+                            renderable.material = nullptr;
+                    });
+                }
+                ImGui::EndPopup();
+            }
+            else if (selected) m_currentSelection = material;
+        }
     }
+
+    void GuiLayer::drawModelCache() {}
+
+    void GuiLayer::drawTextureCache() {}
 
     void GuiLayer::drawSceneViewport()
     {
@@ -2115,7 +2345,7 @@ namespace oyl::internal
         if constexpr (false)
             ImGui::ShowDemoWindow();
 
-        // HACK: Make scene window the default on open
+        // HACK: Make scene window the default on open somehow
         {
             static bool _first = true;
             if (static bool _second = true; !_first && _second)
@@ -2320,13 +2550,14 @@ namespace oyl::internal
             if (ImGuizmo::IsUsing())
             {
                 glm::mat4 tempLocal;
-                
-                if (auto* p = registry->try_get<component::Parent>(m_currentSelection.entity());
-                    p && registry->valid(p->parent))
-                {   
-                    auto& parentTransform = registry->get<Transform>(p->parent);
 
-                    tempLocal = glm::inverse(parentTransform.getMatrixGlobal()) * gizmoMatrix;
+                auto* parent = registry->get<Transform>(m_currentSelection.entity()).getParent();
+                
+                if (parent)
+                {   
+                    //auto& parentTransform = registry->get<Transform>(p->parent);
+
+                    tempLocal = glm::inverse(parent->getMatrixGlobal()) * gizmoMatrix;
                 }
                 else
                 {
@@ -2504,9 +2735,10 @@ static bool isTexture(const char* ext)
            strcmp(ext, ".bmp") == 0;
 }
 
-static bool isMesh(const char* ext)
+static bool isModel(const char* ext)
 {
-    return strcmp(ext, ".obj") == 0;
+    return strcmp(ext, ".obj") == 0 ||
+           strcmp(ext, ".fbx") == 0;
 }
 
 static bool isShader(const char* ext)
