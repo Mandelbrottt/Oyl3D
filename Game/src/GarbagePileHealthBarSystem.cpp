@@ -82,6 +82,11 @@ void GarbagePileHealthBarSystem::onUpdate()
 				//check if the garbage pile is the one that the HP bar is attached to
 				if (garbageHPBar.garbagePileNum == garbagePile.relativePositionOnShip && garbageHPBar.team == garbagePile.team)
 				{
+					if (garbagePile.isGlooped)
+						garbageHPBarOutlineGui.texture = Texture2D::get("garbagePileHPBarOutlineGlooped");
+					else
+						garbageHPBarOutlineGui.texture = Texture2D::get("garbagePileHPBarOutline");
+
 					if (garbagePile.relativePositionOnShip == 0)
 						rightgarbagepile = true;
 					//set the HP bar position to the garbage pile's position
