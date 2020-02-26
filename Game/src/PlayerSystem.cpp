@@ -356,5 +356,5 @@ void PlayerSystem::performBasicMovement(entt::entity a_playerEntity, const float
 
 	glm::vec3 deltaVelocity = (player.moveDirection * a_speedForce) - playerRB.getVelocity();
 	deltaVelocity.y = 0;
-	playerRB.addImpulse(deltaVelocity * 0.98f);
+	playerRB.addImpulse(deltaVelocity * 0.85f);
 }
