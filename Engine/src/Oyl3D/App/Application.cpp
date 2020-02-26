@@ -95,7 +95,10 @@ namespace oyl
 
         TextureCubeMap::cache(ENGINE_RES + DEFAULT_SKYBOX_PATH, DEFAULT_SKYBOX_ALIAS);
 
+    #if !defined OYL_DISTRIBUTION
         m_editorRenderSystem = internal::EditorRenderSystem::create();
+    #endif
+
         m_preRenderSystem    = internal::PreRenderSystem::create();
         m_shadowRenderSystem = internal::ShadowRenderSystem::create();
         m_renderSystem       = internal::RenderSystem::create();
@@ -188,11 +191,13 @@ namespace oyl
 
         Scene::s_current = m_currentScene;
 
+    #if !defined OYL_DISTRIBUTION
         m_editorRenderSystem->setDispatcher(m_dispatcher);
         m_editorRenderSystem->setRegistry(m_currentScene->m_registry);
         m_editorRenderSystem->onEnter();
         m_dispatcher->registerListener(m_editorRenderSystem);
-
+    #endif
+        
         m_preRenderSystem->setDispatcher(m_dispatcher);
         m_preRenderSystem->setRegistry(m_currentScene->m_registry);
         m_preRenderSystem->onEnter();
@@ -298,7 +303,11 @@ namespace oyl
                 
                 m_preRenderSystem->onUpdate();
                 m_shadowRenderSystem->onUpdate();
+
+            #if !defined OYL_DISTRIBUTION
                 m_editorRenderSystem->onUpdate();
+            #endif
+                
                 m_renderSystem->onUpdate();
                 m_guiRenderSystem->onUpdate();
                 m_postRenderSystem->onUpdate();
