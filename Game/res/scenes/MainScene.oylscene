@@ -2634,7 +2634,7 @@
             }
         },
         "RigidBody": {
-            "Friction": 0.5,
+            "Friction": 0.8999999761581421,
             "Mass": 1.0,
             "Properties": 98
         },
@@ -2647,7 +2647,7 @@
             "Parent": null,
             "Position": {
                 "X": 9.430000305175781,
-                "Y": 1.0405044555664063,
+                "Y": 1.0591199398040771,
                 "Z": -5.559999942779541
             },
             "Rotation": {
@@ -2657,9 +2657,9 @@
                 "qZ": -8.47837782202987e-08
             },
             "Scale": {
-                "X": 0.3799999952316284,
-                "Y": 0.3799999952316284,
-                "Z": 0.3799999952316284
+                "X": 0.41999998688697815,
+                "Y": 0.41999998688697815,
+                "Z": 0.41999998688697815
             }
         }
     },
@@ -2695,7 +2695,7 @@
             }
         },
         "RigidBody": {
-            "Friction": 0.5,
+            "Friction": 0.8999999761581421,
             "Mass": 1.0,
             "Properties": 34
         },
@@ -2718,9 +2718,9 @@
                 "qZ": 0.0
             },
             "Scale": {
-                "X": 0.3799999952316284,
-                "Y": 0.3799999952316284,
-                "Z": 0.3799999952316284
+                "X": 0.41999998688697815,
+                "Y": 0.41999998688697815,
+                "Z": 0.41999998688697815
             }
         }
     },
@@ -3029,6 +3029,120 @@
             }
         }
     },
+    "BlueGarbagePileFly0": {
+        "Renderable": {
+            "CastShadows": true,
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": null
+            },
+            "Mesh": {
+                "Alias": "garbageSurrender",
+                "FilePath": ""
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Parent": null,
+            "Position": {
+                "X": 0.0,
+                "Y": 0.0,
+                "Z": 0.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "BlueGarbagePileFly1": {
+        "Renderable": {
+            "CastShadows": true,
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": null
+            },
+            "Mesh": {
+                "Alias": "garbageSurrender",
+                "FilePath": ""
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Parent": null,
+            "Position": {
+                "X": 0.0,
+                "Y": 0.0,
+                "Z": 0.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "BlueGarbagePileFly2": {
+        "Renderable": {
+            "CastShadows": true,
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": null
+            },
+            "Mesh": {
+                "Alias": "garbageSurrender",
+                "FilePath": ""
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Parent": null,
+            "Position": {
+                "X": 0.0,
+                "Y": 0.0,
+                "Z": 0.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
     "BlueGloop 0": {
         "Collidable": {
             "Shapes": [
@@ -3061,7 +3175,7 @@
             }
         },
         "RigidBody": {
-            "Friction": 0.5,
+            "Friction": 0.8999999761581421,
             "Mass": 1.0,
             "Properties": 98
         },
@@ -3074,7 +3188,7 @@
             "Parent": null,
             "Position": {
                 "X": 9.460000038146973,
-                "Y": 2.0672454833984375,
+                "Y": 2.0776209831237793,
                 "Z": -5.949999809265137
             },
             "Rotation": {
@@ -3084,9 +3198,9 @@
                 "qZ": -9.981317816709634e-08
             },
             "Scale": {
-                "X": 0.14000000059604645,
-                "Y": 0.14000000059604645,
-                "Z": 0.14000000059604645
+                "X": 0.1599999964237213,
+                "Y": 0.1599999964237213,
+                "Z": 0.1599999964237213
             }
         }
     },
@@ -3122,7 +3236,7 @@
             }
         },
         "RigidBody": {
-            "Friction": 0.5,
+            "Friction": 0.8999999761581421,
             "Mass": 1.0,
             "Properties": 34
         },
@@ -3145,9 +3259,9 @@
                 "qZ": 0.0
             },
             "Scale": {
-                "X": 0.14000000059604645,
-                "Y": 0.14000000059604645,
-                "Z": 0.14000000059604645
+                "X": 0.1599999964237213,
+                "Y": 0.1599999964237213,
+                "Z": 0.1599999964237213
             }
         }
     },
@@ -3218,7 +3332,7 @@
             }
         },
         "RigidBody": {
-            "Friction": 0.6000000238418579,
+            "Friction": 0.8999999761581421,
             "Mass": 2.0,
             "Properties": 34
         },
@@ -3279,7 +3393,7 @@
             }
         },
         "RigidBody": {
-            "Friction": 0.6000000238418579,
+            "Friction": 0.8999999761581421,
             "Mass": 2.0,
             "Properties": 34
         },
@@ -16413,7 +16527,7 @@
             }
         },
         "RigidBody": {
-            "Friction": 0.5,
+            "Friction": 0.8999999761581421,
             "Mass": 1.0,
             "Properties": 98
         },
@@ -16426,7 +16540,7 @@
             "Parent": null,
             "Position": {
                 "X": 9.539999961853027,
-                "Y": 1.0399999618530273,
+                "Y": 1.059999942779541,
                 "Z": 26.34000015258789
             },
             "Rotation": {
@@ -16436,9 +16550,9 @@
                 "qZ": -7.577568794658873e-08
             },
             "Scale": {
-                "X": 0.3799999952316284,
-                "Y": 0.3799999952316284,
-                "Z": 0.3799999952316284
+                "X": 0.41999998688697815,
+                "Y": 0.41999998688697815,
+                "Z": 0.41999998688697815
             }
         }
     },
@@ -16474,7 +16588,7 @@
             }
         },
         "RigidBody": {
-            "Friction": 0.5,
+            "Friction": 0.8999999761581421,
             "Mass": 1.0,
             "Properties": 34
         },
@@ -16497,9 +16611,9 @@
                 "qZ": 0.0
             },
             "Scale": {
-                "X": 0.3799999952316284,
-                "Y": 0.3799999952316284,
-                "Z": 0.3799999952316284
+                "X": 0.41999998688697815,
+                "Y": 0.41999998688697815,
+                "Z": 0.41999998688697815
             }
         }
     },
@@ -16805,6 +16919,120 @@
             }
         }
     },
+    "RedGarbagePileFly0": {
+        "Renderable": {
+            "CastShadows": true,
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": null
+            },
+            "Mesh": {
+                "Alias": "cube",
+                "FilePath": ""
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Parent": null,
+            "Position": {
+                "X": 0.0,
+                "Y": 0.0,
+                "Z": 0.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "RedGarbagePileFly1": {
+        "Renderable": {
+            "CastShadows": true,
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": null
+            },
+            "Mesh": {
+                "Alias": "cube",
+                "FilePath": ""
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Parent": null,
+            "Position": {
+                "X": 0.0,
+                "Y": 0.0,
+                "Z": 0.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "RedGarbagePileFly2": {
+        "Renderable": {
+            "CastShadows": true,
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": null
+            },
+            "Mesh": {
+                "Alias": "cube",
+                "FilePath": ""
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Parent": null,
+            "Position": {
+                "X": 0.0,
+                "Y": 0.0,
+                "Z": 0.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
     "RedGloop 0": {
         "Collidable": {
             "Shapes": [
@@ -16837,7 +17065,7 @@
             }
         },
         "RigidBody": {
-            "Friction": 0.5,
+            "Friction": 0.8999999761581421,
             "Mass": 1.0,
             "Properties": 98
         },
@@ -16850,7 +17078,7 @@
             "Parent": null,
             "Position": {
                 "X": 9.609999656677246,
-                "Y": 2.069999933242798,
+                "Y": 2.0799999237060547,
                 "Z": 25.889999389648438
             },
             "Rotation": {
@@ -16860,9 +17088,9 @@
                 "qZ": 0.0
             },
             "Scale": {
-                "X": 0.14000000059604645,
-                "Y": 0.14000000059604645,
-                "Z": 0.14000000059604645
+                "X": 0.1599999964237213,
+                "Y": 0.1599999964237213,
+                "Z": 0.1599999964237213
             }
         }
     },
@@ -16898,7 +17126,7 @@
             }
         },
         "RigidBody": {
-            "Friction": 0.5,
+            "Friction": 0.8999999761581421,
             "Mass": 1.0,
             "Properties": 34
         },
@@ -16921,9 +17149,9 @@
                 "qZ": 0.0
             },
             "Scale": {
-                "X": 0.14000000059604645,
-                "Y": 0.14000000059604645,
-                "Z": 0.14000000059604645
+                "X": 0.1599999964237213,
+                "Y": 0.1599999964237213,
+                "Z": 0.1599999964237213
             }
         }
     },
@@ -16994,7 +17222,7 @@
             }
         },
         "RigidBody": {
-            "Friction": 0.6000000238418579,
+            "Friction": 0.8999999761581421,
             "Mass": 2.0,
             "Properties": 34
         },
@@ -17055,7 +17283,7 @@
             }
         },
         "RigidBody": {
-            "Friction": 0.6000000238418579,
+            "Friction": 0.8999999761581421,
             "Mass": 2.0,
             "Properties": 34
         },
@@ -19610,7 +19838,7 @@
             }
         },
         "RigidBody": {
-            "Friction": 0.800000011920929,
+            "Friction": 0.8999999761581421,
             "Mass": 1.0,
             "Properties": 98
         },
@@ -19627,10 +19855,10 @@
                 "Z": 10.140000343322754
             },
             "Rotation": {
-                "qW": 1.0,
-                "qX": 0.0,
-                "qY": 0.0,
-                "qZ": 0.0
+                "qW": 0.7024542093276978,
+                "qX": -1.949592842720449e-08,
+                "qY": 0.7117289304733276,
+                "qZ": -1.949592842720449e-08
             },
             "Scale": {
                 "X": 0.699999988079071,
@@ -19671,7 +19899,7 @@
             }
         },
         "RigidBody": {
-            "Friction": 0.800000011920929,
+            "Friction": 0.8999999761581421,
             "Mass": 1.0,
             "Properties": 98
         },

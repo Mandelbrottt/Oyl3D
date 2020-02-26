@@ -966,7 +966,7 @@ void PlayerInteractionValidationSystem::dropPlayerCarriedItems(entt::entity a_pl
 			continue;
 
 		auto& carriedItemRB = registry->get_or_assign<component::RigidBody>(carriedItemEntity); //add the rigidbody back for the item when it's dropped
-		carriedItemRB.setFriction(0.8f);
+		carriedItemRB.setFriction(0.9f);
 
 		carriedItemTransform.setParent(entt::null);
 		carriedItem.isBeingCarried = false;
