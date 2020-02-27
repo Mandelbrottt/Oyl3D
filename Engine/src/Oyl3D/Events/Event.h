@@ -46,9 +46,11 @@ namespace oyl
         PhysicsResetWorld,
         
         EditorViewportResized, EditorViewportHandleChanged, EditorEntitySelected,
-        EditorCameraChanged, EditorCameraMoveRequest,
+        EditorCameraChanged, EditorCameraMoveRequest, EditorBackButton,
 
         RenderForwardBufferChanged,
+
+        SceneChanged,
 
         CustomStart,
     };
@@ -67,6 +69,7 @@ namespace oyl
         Physics,
         Editor,
         Render,
+        Scene,
         CustomStart,
     };
     
@@ -288,6 +291,11 @@ namespace oyl
                          bool doMove;
                      });
 
+    OYL_EVENT_STRUCT(EditorBackButtonEvent, EventType::EditorBackButton, EventCategory::Editor,
+                     {
+                         int _noArgs;
+                     });
+
     //-Editor Events-//////////////////////////////////////////////////////
 
     // Physics Events /////////////////////////////////////////////////////
@@ -339,7 +347,7 @@ namespace oyl
 
     //-Physics Events-/////////////////////////////////////////////////////
 
-    // Physics Events /////////////////////////////////////////////////////
+    // Render Events /////////////////////////////////////////////////////
 
     class FrameBuffer;
     
@@ -348,5 +356,14 @@ namespace oyl
                          Ref<FrameBuffer>* forwardBuffer;
                      });
 
-    //-Physics Events-/////////////////////////////////////////////////////
+    //-Render Events-/////////////////////////////////////////////////////
+
+    // Scene Events /////////////////////////////////////////////////////
+
+    OYL_EVENT_STRUCT(SceneChangedEvent, EventType::SceneChanged, EventCategory::Scene,
+                     {
+                         const char* name;
+                     });
+    
+    //-Scene Events-/////////////////////////////////////////////////////
 }

@@ -37,21 +37,29 @@ namespace oyl
 
         bool onEvent(const Event& event);
 
-        void pushScene(Ref<Scene> scene);
+        void changeScene(const std::string& name);
 
         // TODO: Make Refs
-        inline Window&      getWindow() { return *m_window; }
+        Window& getWindow() { return *m_window; }
         //inline FrameBuffer& getMainFrameBuffer() { return *m_mainBuffer; }
 
-        inline static Application& get() { return *s_instance; }
+        static Application& get() { return *s_instance; }
 
+    protected:
+        template<class T, std::enable_if_t<std::is_base_of<Scene, T>::value, int> = 0>
+        void registerScene();
+        
     private:
         void initEventListeners();
+        void pushScene(const Ref<Scene>& scene, bool callOnEnter = true);
 
     private:
-        Ref<Window>      m_window;
-        Ref<Scene>       m_currentScene;
-        //Ref<FrameBuffer> m_mainBuffer;
+        Ref<Window> m_window;
+        
+        std::string m_currentScene;
+        std::string m_nextScene;
+
+        std::unordered_map<std::string, Ref<Scene>> m_registeredScenes;
         
     #if !defined(OYL_DISTRIBUTION)
         Ref<internal::GuiLayer> m_guiLayer;
@@ -67,8 +75,6 @@ namespace oyl
         Ref<internal::GuiRenderSystem> m_guiRenderSystem;
         Ref<internal::UserPostRenderSystem> m_postRenderSystem;
 
-        float m_lastFrameTime = 0;
-
         bool m_running  = true;
         bool m_doUpdate = true;
 
@@ -79,7 +85,25 @@ namespace oyl
 
         Ref<internal::ApplicationListener> m_appListener;
         Ref<internal::GamepadListener>     m_vibrationListener;
+
+        friend internal::GuiLayer;
     };
+
+    template<class S, std::enable_if_t<std::is_base_of<Scene, S>::value, int>>
+    void Application::registerScene()
+    {
+        Ref<Scene> newScene = S::create();
+        if (m_registeredScenes.find(newScene->m_name) != m_registeredScenes.end())
+            return;
+
+        if (m_registeredScenes.empty())
+        {
+            m_nextScene = newScene->m_name;
+            pushScene(newScene);
+        }
+
+        m_registeredScenes[newScene->m_name] = std::move(newScene);
+    }
 
     Application* createApplication();
 }

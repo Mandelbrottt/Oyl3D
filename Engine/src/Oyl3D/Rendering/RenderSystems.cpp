@@ -56,7 +56,7 @@ namespace oyl::internal
     void RenderSystem::onEnter()
     {
         listenForEventType(EventType::WindowResized);
-
+        listenForEventType(EventType::SceneChanged);
     }
 
     void RenderSystem::onExit() { }
@@ -282,6 +282,7 @@ namespace oyl::internal
         switch (event.type)
         {
             case EventType::WindowResized:
+            {
                 auto e = event_cast<WindowResizedEvent>(event);
                 m_windowSize = { e.width, e.height };
 
@@ -295,6 +296,11 @@ namespace oyl::internal
                 m_camerasNeedUpdate = true;
 
                 break;
+            }
+            case EventType::SceneChanged:
+            {
+                m_camerasNeedUpdate = true;
+            }
         }
         return false;
     }

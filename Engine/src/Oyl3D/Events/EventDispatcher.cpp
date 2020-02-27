@@ -74,11 +74,13 @@ namespace oyl
     void EventDispatcher::validateListeners()
     {
         {
-            auto it = m_listeners.begin();
-            for (; it != m_listeners.end(); ++it)
+            auto it = m_listeners.begin();            
+            while (it != m_listeners.end())
             {
                 if (it->listener.expired())
                     it = m_listeners.erase(it);
+                else 
+                    ++it;
             }
         }
 
@@ -146,6 +148,8 @@ namespace oyl
         for (const auto& listener : m_listeners)
         {
             auto li = listener.listener.lock();
+
+            if (!li) continue;
             
             if (li->getEventMask()[(i32) event->type] ||
                 li->getCategoryMask()[(i32) event->category])

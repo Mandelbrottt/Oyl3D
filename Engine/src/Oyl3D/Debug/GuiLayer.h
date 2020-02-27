@@ -20,6 +20,7 @@ namespace oyl
         class GuiLayer : public Layer
         {
             friend class EditorCommand;
+            friend class Application;
         public:
             OYL_CTOR(GuiLayer, Layer)
 
@@ -110,8 +111,9 @@ namespace oyl
             glm::vec3 m_scaleSnap{ 0.2f };
             glm::vec3 m_snap;
 
-            entt::registry m_registryRestore;
-            entt::registry m_prefabRegistry;
+            std::string m_originalScene;
+            std::unordered_map<std::string, entt::registry> m_registryRestores;
+            //entt::registry m_registryRestore;
 
             bool m_doSnap               = false;
             bool m_editorOverrideUpdate = true;

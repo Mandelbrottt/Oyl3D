@@ -124,9 +124,36 @@ class MainScene : public Scene
 public:
     OYL_CTOR(MainScene, Scene)
 
-    virtual void onEnter() override
+    void onEnter() override
     {
         pushLayer(MainLayer::create());
+    }
+
+    void onUpdate() override
+    {
+        if (Input::isKeyPressed(Key::N))
+            Application::get().changeScene("SecondScene");
+    }
+};
+
+class SecondScene : public Scene
+{
+public:
+    OYL_CTOR(SecondScene, Scene)
+
+    void onEnter() override
+    {
+        OYL_LOG("Enter Second Scene");
+
+        auto e = m_registry->create<component::Camera>();
+    }
+
+    void onUpdate() override
+    {
+        OYL_LOG("Update Second Scene");
+
+        if (Input::isKeyPressed(Key::M))
+            Application::get().changeScene("MainScene");
     }
 };
 
@@ -135,7 +162,10 @@ class Game : public oyl::Application
 public:
     Game()
     {
-        pushScene(MainScene::create());
+        // pushScene(MainScene::create());
+
+        registerScene<MainScene>();
+        registerScene<SecondScene>();
     }
 
     virtual void onExit() { }

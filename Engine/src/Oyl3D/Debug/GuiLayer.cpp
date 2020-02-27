@@ -2704,7 +2704,12 @@ namespace oyl::internal
                     
                     m_editorOverrideUpdate = false;
                     m_gameUpdate           = true;
-                    m_registryRestore      = Scene::current()->getRegistry()->clone();
+                    
+                    for (const auto& [name, scene] : Application::get().m_registeredScenes)
+                        m_registryRestores[name] = scene->m_registry->clone();
+
+                    m_originalScene = Application::get().m_currentScene;
+
                     m_currentSelection     = entt::entity(entt::null);
                 }
             } else
@@ -2718,8 +2723,11 @@ namespace oyl::internal
 
                     // HACK: Send as event
                     // TODO: Store backup registry in scene?
-                    *Scene::current()->m_registry = m_registryRestore.clone();
+                    //Application::get().changeScene(m_originalScene);
+                    //for (const auto& [name, registry] : m_registryRestores)
+                    //    *Application::get().m_registeredScenes[name]->m_registry = registry.clone();
 
+                    postEvent(EditorBackButtonEvent{});
                     postEvent(PhysicsResetWorldEvent{});
 
                     m_currentSelection = entt::entity(entt::null);
