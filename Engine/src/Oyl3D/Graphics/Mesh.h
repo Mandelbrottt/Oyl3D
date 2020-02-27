@@ -7,11 +7,13 @@ namespace oyl
     
     struct VertexData
     {
-        glm::vec3 position{};
-        glm::vec2 textureCoords{};
-        glm::vec3 normal{};
-        glm::vec3 tangent{};
-        glm::vec3 biTangent{};
+        glm::vec3  position{};
+        glm::vec2  textureCoords{};
+        glm::vec3  normal{};
+        glm::vec3  tangent{};
+        glm::vec3  biTangent{};
+        glm::ivec4 bones{};
+        glm::vec4  boneWeights{};
     };
     
     class Mesh

@@ -14,6 +14,7 @@ namespace oyl
     
     namespace internal
     {   
+        class SkeletalAnimationSystem;  
         class EditorRenderSystem;  
         class PreRenderSystem;  
         class RenderSystem;  
@@ -58,6 +59,7 @@ namespace oyl
 
         Ref<internal::SystemsLayer> m_systemsLayer;
         // TODO: Put in systems layer
+        Ref<internal::SkeletalAnimationSystem> m_skeletalAnimationSystem;
         Ref<internal::EditorRenderSystem> m_editorRenderSystem;
         Ref<internal::PreRenderSystem> m_preRenderSystem;
         Ref<internal::ShadowRenderSystem> m_shadowRenderSystem;

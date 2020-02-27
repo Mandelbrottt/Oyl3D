@@ -6,6 +6,7 @@
 
 #include "Debug/GuiLayer.h"
 
+#include "Animation/AnimationSystems.h"
 #include "Rendering/RenderSystems.h"
 #include "Debug/EditorSystems.h"
 
@@ -69,6 +70,11 @@ namespace oyl
 
         Shader::cache(
             {
+                { Shader::Compound, ENGINE_RES + "shaders/skeletal.oylshader" },
+            }, "Oyl Skeletal");
+
+        Shader::cache(
+            {
                 { Shader::Vertex, ENGINE_RES + LIGHTING_SHADER_VERTEX_PATH },
                 { Shader::Pixel, ENGINE_RES + LIGHTING_SHADER_FRAGMENT_PATH },
             }, LIGHTING_SHADER_ALIAS);
@@ -99,11 +105,12 @@ namespace oyl
         m_editorRenderSystem = internal::EditorRenderSystem::create();
     #endif
 
-        m_preRenderSystem    = internal::PreRenderSystem::create();
-        m_shadowRenderSystem = internal::ShadowRenderSystem::create();
-        m_renderSystem       = internal::RenderSystem::create();
-        m_guiRenderSystem    = internal::GuiRenderSystem::create();
-        m_postRenderSystem   = internal::UserPostRenderSystem::create();
+        m_skeletalAnimationSystem = internal::SkeletalAnimationSystem::create();
+        m_preRenderSystem         = internal::PreRenderSystem::create();
+        m_shadowRenderSystem      = internal::ShadowRenderSystem::create();
+        m_renderSystem            = internal::RenderSystem::create();
+        m_guiRenderSystem         = internal::GuiRenderSystem::create();
+        m_postRenderSystem        = internal::UserPostRenderSystem::create();
 
         initEventListeners();
 
@@ -198,6 +205,11 @@ namespace oyl
         m_dispatcher->registerListener(m_editorRenderSystem);
     #endif
         
+        m_skeletalAnimationSystem->setDispatcher(m_dispatcher);
+        m_skeletalAnimationSystem->setRegistry(m_currentScene->m_registry);
+        m_skeletalAnimationSystem->onEnter();
+        m_dispatcher->registerListener(m_skeletalAnimationSystem);
+
         m_preRenderSystem->setDispatcher(m_dispatcher);
         m_preRenderSystem->setRegistry(m_currentScene->m_registry);
         m_preRenderSystem->onEnter();
@@ -301,6 +313,7 @@ namespace oyl
 
                 Renderer::beginScene();
                 
+                m_skeletalAnimationSystem->onUpdate();
                 m_preRenderSystem->onUpdate();
                 m_shadowRenderSystem->onUpdate();
 
@@ -318,6 +331,7 @@ namespace oyl
         #if !defined(OYL_DISTRIBUTION)
             m_guiLayer->begin();
 
+            m_skeletalAnimationSystem->onGuiRender();
             m_preRenderSystem->onGuiRender();
             m_shadowRenderSystem->onGuiRender();
             m_renderSystem->onGuiRender();

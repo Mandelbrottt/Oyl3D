@@ -12,7 +12,7 @@
             ]
         },
         "Shader": {
-            "Alias": null,
+            "Alias": "Oyl Lighting",
             "Pixel": {
                 "FilePath": "../Engine/res/shaders/lighting.frag",
                 "guid": null
@@ -29,6 +29,7 @@
                 "Profile": 0,
                 "guid": null
             },
+            "Emission": null,
             "Normal": {
                 "Alias": "brickwall_normal",
                 "FilePath": "res\\assets\\textures\\brickwall_normal.jpg",

@@ -250,9 +250,9 @@ namespace oyl::internal
                     RenderCommand::setBackfaceCulling(doCulling);
                 }
 
-                if (registry->has<component::Animatable>(entity))
+                if (registry->has<component::VertexAnimatable>(entity))
                 {
-                    auto& anim = registry->get<component::Animatable>(entity);
+                    auto& anim = registry->get<component::VertexAnimatable>(entity);
                     if (anim.getVertexArray())
                     {
                         anim.m_vao->bind();

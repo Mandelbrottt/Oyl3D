@@ -6,6 +6,7 @@
 #include "App/Application.h"
 #include "App/Window.h"
 
+#include "Components/Animatable.h"
 #include "Components/Collidable.h"
 #include "Components/Camera.h"
 #include "Components/Lights.h"
@@ -387,12 +388,12 @@ namespace oyl::internal
                     ImGui::Indent(ImGui::GetWindowContentRegionWidth() / 2 - 55);
                     if (ImGui::Button("Reload##ReloadConfirmationReload"))
                     {
-                        //for (const auto& [alias, material] : Material::getCache())
-                        //{
-                        //    if (!material->getFilePath().empty() && 
-                        //        std::fs::exists(material->getFilePath()))
-                        //        *material = *materialFromFile(material->getFilePath());
-                        //}
+                        for (const auto& [alias, material] : Material::getCache())
+                        {
+                            if (!material->getFilePath().empty() && 
+                                std::fs::exists(material->getFilePath()))
+                                *material = *materialFromFile(material->getFilePath());
+                        }
                         
                         registryFromSceneFile(*registry, Scene::current()->m_name);
                         m_currentSelection = entt::entity(entt::null);
@@ -738,6 +739,7 @@ namespace oyl::internal
                 drawInspectorDirectionalLight();
                 drawInspectorSpotLight();
                 drawInspectorCamera();
+                drawInspectorSkeletonAnimatable();
                 drawInspectorAddComponent();
             }
             else if (m_currentSelection.type() == Selectable::Type::Material)
@@ -1691,6 +1693,80 @@ namespace oyl::internal
         }
     }
 
+    void GuiLayer::drawInspectorSkeletonAnimatable()
+    {
+        using component::Renderable;
+        using component::SkeletonAnimatable;
+
+        if (!registry->has<SkeletonAnimatable>(m_currentSelection.entity())) return;
+
+        ImGui::SetNextTreeNodeOpen(true, ImGuiCond_Once);
+
+        bool open = ImGui::CollapsingHeader("Skeleton Animatable##InspectorSkeletonAnimatableProperties");
+
+        open &= !userRemoveComponent<SkeletonAnimatable>();
+
+        if (open)
+        {
+            ImGui::Indent(10);
+
+            auto& skeletonAnimatable = registry->get<SkeletonAnimatable>(m_currentSelection.entity());
+
+            ImGui::Checkbox("Enabled##SkeletonAnimatableEnabled", &skeletonAnimatable.enabled);
+
+            ImGui::TextUnformatted("Current Animation");
+            ImGui::SameLine();
+            ImGui::SetNextItemWidth(ImGui::GetWindowWidth() - ImGui::GetCursorPosX());
+
+            std::string currentName = "None";
+            auto* renderablePtr = registry->try_get<Renderable>(m_currentSelection.entity());
+
+            Ref<Model> model;
+            if (renderablePtr)
+                model = renderablePtr->model;
+            
+            if (model)
+            {
+                for (const auto& [name, _] : model->getAnimations())
+                {
+                    if (skeletonAnimatable.animation == name)
+                        currentName = name;
+                }
+            }
+            
+            if (ImGui::BeginCombo("##SkeletonAnimationPropertiesCurrentAnimation", currentName.c_str()))
+            {
+                if (ImGui::Selectable("None", currentName == "None"))
+                    skeletonAnimatable.animation.clear();
+
+                if (model)
+                {
+                    for (const auto& [name, _] : model->getAnimations())
+                    {
+                        if (ImGui::Selectable(name.c_str(), skeletonAnimatable.animation == name))
+                        {
+                            skeletonAnimatable.animation = name;
+                        }
+                    }
+                }
+                ImGui::EndCombo();
+            }
+
+            if (model && currentName != "None")
+            {
+                const auto& anim = model->getAnimations().at(currentName);
+                float max = static_cast<float>(anim->mDuration / anim->mTicksPerSecond);
+                //float max = 1.0f;
+                ImGui::SliderFloat("Time##SkeletonAnimatorTime", &skeletonAnimatable.time, 0.0f, max, "%.2f");
+            }
+
+            ImGui::Unindent(10);
+
+            ImGui::Separator();
+            ImGui::NewLine();
+        }
+    }
+
     void GuiLayer::drawInspectorAddComponent()
     {
         using component::Collidable;
@@ -1700,6 +1776,7 @@ namespace oyl::internal
         using component::PointLight;
         using component::DirectionalLight;
         using component::SpotLight;
+        using component::SkeletonAnimatable;
         using component::Camera;
         
         if (ImGui::BeginCombo("##InspectorAddComponent", "Add Component", ImGuiComboFlags_NoArrowButton))
@@ -1730,9 +1807,13 @@ namespace oyl::internal
                 ImGui::Selectable("Directional Light"))
                 registry->assign<DirectionalLight>(entity);
 
-            if (!registry->has<DirectionalLight>(entity) &&
+            if (!registry->has<SpotLight>(entity) &&
                 ImGui::Selectable("Spot Light"))
-                registry->assign<DirectionalLight>(entity);
+                registry->assign<SpotLight>(entity);
+
+            if (!registry->has<SkeletonAnimatable>(entity) &&
+                ImGui::Selectable("Skeleton Animatable"))
+                registry->assign<SkeletonAnimatable>(entity);
             
             int camFlags = 0;
             if (registry->size<Camera>() >= 4)
@@ -1760,9 +1841,11 @@ namespace oyl::internal
         }
     }
 
-    static void _setTextureProfile(const Ref<Texture2D>& a_texture)
+    static bool _setTextureProfile(const Ref<Texture2D>& a_texture)
     {
-        if (!a_texture) return;
+        if (!a_texture) return false;
+
+        bool selected = false;
 
         ImGui::Indent(10);
         
@@ -1774,9 +1857,9 @@ namespace oyl::internal
         if (ImGui::BeginCombo(profileID, profilePreview))
         {
             if (ImGui::Selectable("RGB", isRGB) && !isRGB)
-                a_texture->setProfile(TextureProfile::RGB);
+                a_texture->setProfile(TextureProfile::RGB), selected = true;
             if (ImGui::Selectable("sRGB", !isRGB) && isRGB)
-                a_texture->setProfile(TextureProfile::SRGB);
+                a_texture->setProfile(TextureProfile::SRGB), selected = true;
 
             ImGui::EndCombo();
         }
@@ -1790,9 +1873,9 @@ namespace oyl::internal
         if (ImGui::BeginCombo(profileID, profilePreview))
         {
             if (ImGui::Selectable("Nearest", a_texture->getFilter() == TextureFilter::Nearest))
-                a_texture->setFilter(TextureFilter::Nearest);
+                a_texture->setFilter(TextureFilter::Nearest), selected = true;
             if (ImGui::Selectable("Linear", a_texture->getFilter() == TextureFilter::Linear))
-                a_texture->setFilter(TextureFilter::Linear);
+                a_texture->setFilter(TextureFilter::Linear), selected = true;
 
             ImGui::EndCombo();
         }
@@ -1808,31 +1891,35 @@ namespace oyl::internal
         if (ImGui::BeginCombo(profileID, profilePreview))
         {
             if (ImGui::Selectable("Repeat", a_texture->getWrap() == TextureWrap::Repeat))
-                a_texture->setWrap(TextureWrap::Repeat);
+                a_texture->setWrap(TextureWrap::Repeat), selected = true;
             if (ImGui::Selectable("Mirror", a_texture->getWrap() == TextureWrap::Mirror))
-                a_texture->setWrap(TextureWrap::Mirror);
+                a_texture->setWrap(TextureWrap::Mirror), selected = true;
             if (ImGui::Selectable("Clamp to Edge", a_texture->getWrap() == TextureWrap::ClampToEdge))
-                a_texture->setWrap(TextureWrap::ClampToEdge);
+                a_texture->setWrap(TextureWrap::ClampToEdge), selected = true;
             if (ImGui::Selectable("Clamp to Border", a_texture->getWrap() == TextureWrap::ClampToBorder))
-                a_texture->setWrap(TextureWrap::ClampToBorder);
+                a_texture->setWrap(TextureWrap::ClampToBorder), selected = true;
             
             ImGui::EndCombo();
         }
 
         ImGui::Unindent(10);
+
+        return selected;
     }
 
     void GuiLayer::drawInspectorMaterial()
-    {
+    {        
         auto& material = m_currentSelection.material();
 
+        bool selected = false;
+        
         std::string tempAlias = Shader::getAlias(material->shader);
         if (tempAlias == INVALID_ALIAS) tempAlias = "None";
         if (ImGui::BeginCombo("Shader", tempAlias.c_str()))
         {
             for (const auto& [alias, shader] : Shader::getCache())
                 if (ImGui::Selectable(alias.c_str(), shader == material->shader))
-                    material->shader = shader;
+                    material->shader = shader, selected = true;
 
             ImGui::EndCombo();
         }
@@ -1840,34 +1927,36 @@ namespace oyl::internal
 
         auto _selectTexture = [&tempAlias](Ref<Texture2D>& a_texture, const char* type)
         {
+            bool selected = false;
             tempAlias = Texture2D::getAlias(a_texture);
             if (tempAlias == INVALID_ALIAS) tempAlias = "None";
             if (ImGui::BeginCombo(type, tempAlias.c_str()))
             {
                 if (ImGui::Selectable("None", a_texture == nullptr))
-                    a_texture = nullptr;
+                    a_texture = nullptr, selected = true;
                 for (const auto& [alias, texture] : Texture2D::getCache())
                     if (ImGui::Selectable(alias.c_str(), texture == a_texture))
-                        a_texture = texture;
+                        a_texture = texture, selected = true;
 
                 ImGui::EndCombo();
             }
+            return selected;
         };
         
-        _selectTexture(material->albedoMap, "Albedo Map");
-        _setTextureProfile(material->albedoMap);
+        selected |= _selectTexture(material->albedoMap, "Albedo Map");
+        selected |= _setTextureProfile(material->albedoMap);
         ImGui::NewLine();
 
-        _selectTexture(material->specularMap, "Specular Map");
-        _setTextureProfile(material->specularMap);
+        selected |= _selectTexture(material->specularMap, "Specular Map");
+        selected |= _setTextureProfile(material->specularMap);
         ImGui::NewLine();
 
-        _selectTexture(material->normalMap, "Normal Map");
-        _setTextureProfile(material->normalMap);
+        selected |= _selectTexture(material->normalMap, "Normal Map");
+        selected |= _setTextureProfile(material->normalMap);
         ImGui::NewLine();
 
-        _selectTexture(material->emissionMap, "Emission Map");
-        _setTextureProfile(material->emissionMap);
+        selected |= _selectTexture(material->emissionMap, "Emission Map");
+        selected |= _setTextureProfile(material->emissionMap);
         ImGui::NewLine();
 
         auto flags = ImGuiInputTextFlags_EnterReturnsTrue;
@@ -1882,30 +1971,30 @@ namespace oyl::internal
         ImGui::TextUnformatted("Tiling");
         ImGui::SameLine(ImGui::GetWindowContentRegionWidth() - (15 * 3 + newWidth * 3 + 27));
         ImGui::SetNextItemWidth(15);
-        ImGui::DragFloat("##TilingX", &tiling.x, posDragSpeed, 0, 0, "X");
+        selected |= ImGui::DragFloat("##TilingX", &tiling.x, posDragSpeed, 0, 0, "X");
         ImGui::SameLine();
-        ImGui::InputFloat("##TilingInputX", &tiling.x, 0, 0, "%.2f", flags);
+        selected |= ImGui::InputFloat("##TilingInputX", &tiling.x, 0, 0, "%.2f", flags);
         ImGui::SameLine();
         ImGui::SetNextItemWidth(15);
-        ImGui::DragFloat("##TilingY", &tiling.y, posDragSpeed, 0, 0, "Y");
+        selected |= ImGui::DragFloat("##TilingY", &tiling.y, posDragSpeed, 0, 0, "Y");
         ImGui::SameLine();
-        ImGui::InputFloat("##TilingInputY", &tiling.y, 0, 0, "%.2f", flags);
+        selected |= ImGui::InputFloat("##TilingInputY", &tiling.y, 0, 0, "%.2f", flags);
 
         ImGui::TextUnformatted("Offset");
         ImGui::SameLine(ImGui::GetWindowContentRegionWidth() - (15 * 3 + newWidth * 3 + 27));
         ImGui::SetNextItemWidth(15);
-        ImGui::DragFloat("##OffsetX", &offset.x, posDragSpeed, 0, 0, "X");
+        selected |= ImGui::DragFloat("##OffsetX", &offset.x, posDragSpeed, 0, 0, "X");
         ImGui::SameLine();
-        ImGui::InputFloat("##OffsetInputX", &offset.x, 0, 0, "%.2f", flags);
+        selected |= ImGui::InputFloat("##OffsetInputX", &offset.x, 0, 0, "%.2f", flags);
         ImGui::SameLine();
         ImGui::SetNextItemWidth(15);
-        ImGui::DragFloat("##OffsetY", &offset.y, posDragSpeed, 0, 0, "Y");
+        selected |= ImGui::DragFloat("##OffsetY", &offset.y, posDragSpeed, 0, 0, "Y");
         ImGui::SameLine();
-        ImGui::InputFloat("##OffsetInputY", &offset.y, 0, 0, "%.2f", flags);
+        selected |= ImGui::InputFloat("##OffsetInputY", &offset.y, 0, 0, "%.2f", flags);
 
         ImGui::PopItemWidth();
 
-        if (ImGui::IsWindowHovered() && ImGui::IsAnyMouseDown())
+        if (selected)
             materialToFile(material, material->getFilePath());
     }
 
@@ -2738,6 +2827,8 @@ static bool isTexture(const char* ext)
 static bool isModel(const char* ext)
 {
     return strcmp(ext, ".obj") == 0 ||
+           strcmp(ext, ".gltf") == 0 ||
+           strcmp(ext, ".glb") == 0 ||
            strcmp(ext, ".fbx") == 0;
 }
 
@@ -2747,7 +2838,8 @@ static bool isShader(const char* ext)
            strcmp(ext, ".tesc") == 0 ||
            strcmp(ext, ".tese") == 0 ||
            strcmp(ext, ".geom") == 0 ||
-           strcmp(ext, ".frag") == 0;
+           strcmp(ext, ".frag") == 0 ||
+           strcmp(ext, ".oylshader") == 0;
 }
 
 static bool isMaterial(const char* ext)

@@ -12,13 +12,13 @@
             ]
         },
         "Shader": {
-            "Alias": null,
+            "Alias": "Oyl Lighting",
             "Pixel": {
                 "FilePath": "../Engine/res/shaders/lighting.frag",
                 "guid": null
             },
             "Vertex": {
-                "FilePath": "../Engine/res/shaders/morphTargetLighting.vert",
+                "FilePath": "../Engine/res/shaders/lighting.vert",
                 "guid": null
             }
         },
@@ -29,6 +29,7 @@
                 "Profile": 1,
                 "guid": null
             },
+            "Emission": null,
             "Normal": {
                 "Alias": "Bark_Pine_normal",
                 "FilePath": "res\\assets\\textures\\Bark_Pine_normal.jpg",
