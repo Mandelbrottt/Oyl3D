@@ -86,7 +86,7 @@ void GarbagePileHealthBarSystem::onUpdate()
 						garbageHPBarOutlineGui.texture = Texture2D::get("garbagePileHPBarOutline");
 
 					//set the HP bar position to the garbage pile's position
-					garbageHPBarTransform.setPosition(garbagePileTransform.getPosition() + glm::vec3(0.0f, 0.8f, 0.0f));
+					garbageHPBarTransform.setPosition(garbagePileTransform.getPosition() + glm::vec3(0.0f, 1.1f, 0.0f));
 					break;
 				}
 			}
@@ -111,16 +111,16 @@ void GarbagePileHealthBarSystem::onUpdate()
 						hideHPBar = true;
 
 					//hide the HP bar if the player cannot see the garbage pile
-					auto ray = RayTest::Closest(playerCameraTransform.getPositionGlobal(), normalize(playerToGarbagePile + glm::vec3(0.0f, -0.8f, 0.0f)), 20.0f);
+					auto ray = RayTest::Closest(playerCameraTransform.getPositionGlobal(), normalize(playerToGarbagePile + glm::vec3(0.0f, -1.1f, 0.0f)), 20.0f);
 					if (!ray->hasHit || !registry->valid(ray->hitObject.entity) || !registry->has<GarbagePile>(ray->hitObject.entity))
 						hideHPBar = true;
 
 					if (hideHPBar)
 					{
-						garbageHPBarGui.enabled = false;
+						garbageHPBarGui.enabled        = false;
 						garbageHPBarOutlineGui.enabled = false;
 					}
-					else //camera is in range of garbage pile
+					else //figure out where to position the garbage hp bar
 					{
 						glm::vec3 garbagePileDirection = garbageHPBarTransform.getPosition() - playerCameraTransform.getPositionGlobal();
 						if (garbagePileDirection != glm::vec3(0.0f, 0.0f, 0.0f))
@@ -133,7 +133,9 @@ void GarbagePileHealthBarSystem::onUpdate()
 						garbageHPBarTransform.       setPosition(newPosition);
 						garbageHPBarOutlineTransform.setPosition(newPosition + glm::vec3(0.0f, 0.0f, -1.0f)); //make sure the outline is drawn above the fill so we can see it
 
-						float newScale = 4.0f * (1.0f / playerToGarbagePileLength);
+						if (playerToGarbagePileLength == 0.0f)
+							playerToGarbagePileLength = 0.001f; //ensure we dont divide by zero
+						float newScale = 1.0f + (1.0f / (playerToGarbagePileLength / 4.0f));
 						garbageHPBarTransform.setScale       (glm::vec3(newScale, newScale, 1.0f));
 						garbageHPBarOutlineTransform.setScale(glm::vec3(newScale, newScale, 1.0f));
 

@@ -23323,24 +23323,6 @@
         }
     },
     "Water": {
-        "Collidable": {
-            "Shapes": [
-                {
-                    "Center": [
-                        0.0,
-                        0.0,
-                        0.0
-                    ],
-                    "Size": [
-                        20.0,
-                        0.10000000149011612,
-                        20.0
-                    ],
-                    "Trigger": false,
-                    "Type": 0
-                }
-            ]
-        },
         "Renderable": {
             "CastShadows": true,
             "CullingMask": 15,
@@ -23352,11 +23334,6 @@
                 "Alias": "plane",
                 "FilePath": ""
             }
-        },
-        "RigidBody": {
-            "Friction": 1.0,
-            "Mass": 0.0,
-            "Properties": 32
         },
         "Transform": {
             "Mirror": {

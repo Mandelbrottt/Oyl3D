@@ -35,7 +35,7 @@ void GarbagePileGloopIndicatorSystem::onUpdate()
 					&& (garbagePile.garbageLevel < garbagePile.MAX_GARBAGE_LEVEL || garbagePile.garbageTicks < garbagePile.GARBAGE_TICKS_PER_LEVEL))
 				{
 					//set the gloop indicator's position to the garbage pile's position
-					gloopIndicatorTransform.setPosition(garbagePileTransform.getPosition() + glm::vec3(0.0f, 1.8f, 0.0f));
+					gloopIndicatorTransform.setPosition(garbagePileTransform.getPosition() + glm::vec3(0.0f, 0.9f, 0.0f));
 					gloopIndicator.shouldBeHidden = false;
 				}
 				else
@@ -83,6 +83,10 @@ void GarbagePileGloopIndicatorSystem::onUpdate()
 
 					float playerLookDotGarbagePileDirection = glm::dot(playerCameraTransform.getForwardGlobal(), garbagePileDirection);
 
+					glm::vec3 playerToGarbagePile = gloopIndicatorTransform.getPositionGlobal() - playerCameraTransform.getPositionGlobal();
+					float playerToGarbagePileLength = glm::length(playerToGarbagePile);
+
+					gloopIndicatorTransform.setPositionY(gloopIndicatorTransform.getPositionY() + (playerToGarbagePileLength / 8.0f));
 					//set screen space position for the gloop indicator (we set the world position based on the garbage pile position above)
 					glm::vec3 newPosition = playerCamera.worldToScreenSpace(gloopIndicatorTransform.getPosition());
 					gloopIndicatorTransform.setPosition(newPosition);
