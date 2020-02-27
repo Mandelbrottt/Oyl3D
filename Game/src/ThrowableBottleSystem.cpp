@@ -117,7 +117,8 @@ bool ThrowableBottleSystem::onEvent(const Event& event)
 			else //no bottle involved in the collision
 				break;
 
-			auto& bottle = registry->get<ThrowableBottle>(bottleEntity);
+			auto& bottle          = registry->get<ThrowableBottle>(bottleEntity);
+			auto& bottleTransform = registry->get<component::Transform>(bottleEntity);
 
 			if (bottle.isBeingThrown)
 			{
@@ -133,9 +134,17 @@ bool ThrowableBottleSystem::onEvent(const Event& event)
 
 				if (bottle.playerThrowingEntity != playerEntity)
 				{
-					auto& player = registry->get<Player>(playerEntity);
+					auto& player          = registry->get<Player>(playerEntity);
+					auto& playerTransform = registry->get<component::Transform>(playerEntity);
+					auto& playerRB        = registry->get<component::RigidBody>(playerEntity);
 
 					OYL_LOG("PLAYER {} WAS HIT BY A BOTTLE!", (int)player.playerNum + 1);
+
+					//apply knockback when hit by bottle
+					glm::vec3 forceDirection = playerTransform.getPositionGlobal() - bottleTransform.getPositionGlobal();
+					forceDirection.y = 0.0f;
+					playerRB.addImpulse(forceDirection * 120.0f);
+
 					registry->destroy(bottleEntity); //the bottle breaks
 
 					//bottle stuns the player hit and makes them drop their carried items
