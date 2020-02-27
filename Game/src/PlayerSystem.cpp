@@ -142,7 +142,7 @@ void PlayerSystem::onUpdate()
 			{
 				//still apply movement (with no direction) to fake friction for the player
 				player.moveDirection = glm::vec3(0.0f, 0.0f, 0.0f);
-				performBasicMovement(playerEntity, player.speedForce * 0.7f);
+				performBasicMovement(playerEntity, player.speedForce);
 
 				player.stunnedTimeCountdown -= Time::deltaTime();
 				if (player.stunnedTimeCountdown < 0.0f)

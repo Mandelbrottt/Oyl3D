@@ -134,6 +134,7 @@ bool ThrowableBottleSystem::onEvent(const Event& event)
 				if (bottle.playerThrowingEntity != playerEntity)
 				{
 					auto& player = registry->get<Player>(playerEntity);
+
 					OYL_LOG("PLAYER {} WAS HIT BY A BOTTLE!", (int)player.playerNum + 1);
 					registry->destroy(bottleEntity); //the bottle breaks
 
@@ -147,6 +148,14 @@ bool ThrowableBottleSystem::onEvent(const Event& event)
 					playerStateChange.playerEntity = playerEntity;
 					playerStateChange.newState     = PlayerState::stunned;
 					postEvent(playerStateChange);
+
+					GamepadVibrationRequestEvent gamepadVibration;
+					gamepadVibration.gid = player.controllerNum;
+					gamepadVibration.leftTime   = 0.38f;
+					gamepadVibration.rightTime  = 0.38f;
+					gamepadVibration.leftMotor  = 1.0f;
+					gamepadVibration.rightMotor = 1.0f;
+					postEvent(gamepadVibration);
 				}
 			}
 
