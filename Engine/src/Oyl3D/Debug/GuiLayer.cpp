@@ -346,7 +346,13 @@ namespace oyl::internal
                 {
                     //saveSceneToFile(*Scene::current());
                     // TEMPORARY: Let name be accessed through a getter
-                    registryToSceneFile(*registry, Scene::current()->m_name);
+
+                    //registryToSceneFile(*registry, Scene::current()->m_name);
+
+                    for (auto& [name, scene] : Application::get().m_registeredScenes)
+                    {
+                        registryToSceneFile(*scene->m_registry, name);
+                    }
 
                     //for (const auto& [alias, material] : Material::getCache())
                     //{
@@ -2289,6 +2295,11 @@ namespace oyl::internal
         {
             if (ImGui::BeginTabBar("##AssetCacheTabBar"))
             {
+                if (ImGui::BeginTabItem("Scene"))
+                {
+                    drawSceneCache();
+                    ImGui::EndTabItem();
+                }
                 if (ImGui::BeginTabItem("Material"))
                 {
                     drawMaterialCache();
@@ -2304,11 +2315,11 @@ namespace oyl::internal
                     drawTextureCache();
                     ImGui::EndTabItem();
                 }
-                if (ImGui::BeginTabItem("Animation"))
-                {
-                    drawAnimationCache();
-                    ImGui::EndTabItem();
-                }
+                //if (ImGui::BeginTabItem("Animation"))
+                //{
+                //    drawAnimationCache();
+                //    ImGui::EndTabItem();
+                //}
                 ImGui::EndTabBar();
             }
         }
@@ -2427,6 +2438,24 @@ namespace oyl::internal
     void GuiLayer::drawModelCache() {}
 
     void GuiLayer::drawTextureCache() {}
+
+    void GuiLayer::drawSceneCache()
+    {
+        auto& app = Application::get();
+
+        OYL_ASSERT(!app.m_registeredScenes.empty());
+
+        for (const auto& [name, scene] : app.m_registeredScenes)
+        {
+            if (ImGui::Selectable(name.c_str(), name == app.m_currentScene,
+                                  ImGuiSelectableFlags_PressedOnClick) &&
+                name != app.m_currentScene)
+            {
+                app.m_nextScene = name;
+                app.pushScene(name, false);
+            }
+        }
+    }
 
     void GuiLayer::drawSceneViewport()
     {
@@ -2705,10 +2734,14 @@ namespace oyl::internal
                     m_editorOverrideUpdate = false;
                     m_gameUpdate           = true;
                     
-                    for (const auto& [name, scene] : Application::get().m_registeredScenes)
-                        m_registryRestores[name] = scene->m_registry->clone();
-
                     m_originalScene = Application::get().m_currentScene;
+
+                    for (auto& [name, scene] : Application::get().m_registeredScenes)
+                    {
+                        m_registryRestores[name] = scene->m_registry->clone();
+                        if (name != m_originalScene)
+                            scene->m_registry->reset();
+                    }
 
                     m_currentSelection     = entt::entity(entt::null);
                 }

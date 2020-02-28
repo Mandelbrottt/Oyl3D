@@ -300,6 +300,7 @@ namespace oyl::internal
             case EventType::SceneChanged:
             {
                 m_camerasNeedUpdate = true;
+                break;
             }
         }
         return false;

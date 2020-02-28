@@ -210,7 +210,7 @@ namespace oyl
                 if (m_currentScene != m_guiLayer->m_originalScene)
                 {
                     m_nextScene = m_guiLayer->m_originalScene;
-                    pushScene(m_registeredScenes[m_guiLayer->m_originalScene], false);
+                    pushScene(m_guiLayer->m_originalScene, false);
                 }
                 
                 for (const auto& [name, registry] : m_guiLayer->m_registryRestores)
@@ -233,31 +233,35 @@ namespace oyl
         m_nextScene = name;
     }
 
-    void Application::pushScene(const Ref<Scene>& scene, bool callOnEnter)
+    void Application::pushScene(const std::string& scene, bool callOnEnter)
     {    
-        OYL_ASSERT(scene, "Pushed scene must be initialized!");
+        OYL_ASSERT(m_registeredScenes.find(scene) != m_registeredScenes.end(), "Pushed scene must exist!");
 
-        if (!m_currentScene.empty())
+        if (callOnEnter && !m_currentScene.empty())
         {
             m_registeredScenes[m_currentScene]->Scene::onExit();
             m_registeredScenes[m_currentScene]->onExit();
         }
 
-        m_currentScene = m_nextScene;
-        m_nextScene.clear();
+        m_currentScene = scene;
 
-        Scene::s_current = scene;
+        Scene::s_current = m_registeredScenes.at(scene);
 
         SceneChangedEvent sceneChangedEvent;
         sceneChangedEvent.name = m_currentScene.c_str();
         m_dispatcher->postEvent(sceneChangedEvent);
 
-        m_editorRenderSystem->setRegistry(scene->m_registry);
-        m_skeletalAnimationSystem->setRegistry(scene->m_registry);
-        m_preRenderSystem->setRegistry(scene->m_registry);
-        m_shadowRenderSystem->setRegistry(scene->m_registry);
-        m_renderSystem->setRegistry(scene->m_registry);
-        m_postRenderSystem->setRegistry(scene->m_registry);
+        auto& pScene = m_registeredScenes[m_currentScene];
+
+    #if !defined OYL_DISTRIBUTION
+        m_editorRenderSystem->setRegistry(pScene->m_registry);
+    #endif
+        
+        m_skeletalAnimationSystem->setRegistry(pScene->m_registry);
+        m_preRenderSystem->setRegistry(pScene->m_registry);
+        m_shadowRenderSystem->setRegistry(pScene->m_registry);
+        m_renderSystem->setRegistry(pScene->m_registry);
+        m_postRenderSystem->setRegistry(pScene->m_registry);
 
         if (m_systemsLayer)
             m_systemsLayer->onExit();
@@ -265,8 +269,10 @@ namespace oyl
         m_systemsLayer = internal::SystemsLayer::create();
         
         m_systemsLayer->setDispatcher(m_dispatcher);
-        m_systemsLayer->setRegistry(scene->m_registry);
-        m_systemsLayer->onEnter();
+        m_systemsLayer->setRegistry(pScene->m_registry);
+
+        //if (callOnEnter)
+            m_systemsLayer->onEnter();
 
         m_dispatcher->registerListener(m_systemsLayer);
         
@@ -277,35 +283,45 @@ namespace oyl
             m_guiLayer->init();
 
             m_guiLayer->setDispatcher(m_dispatcher);
-            m_guiLayer->setRegistry(scene->m_registry);
+            m_guiLayer->setRegistry(pScene->m_registry);
             m_guiLayer->onEnter();
             
             m_dispatcher->registerListener(m_guiLayer);
         }
         else
         {
-            m_guiLayer->onExit();
-            m_guiLayer->setRegistry(scene->m_registry);
-            m_guiLayer->onEnter();
+            if (callOnEnter)
+            {
+                m_guiLayer->onExit();
+                m_guiLayer->onEnter();
+            }
+
+            m_guiLayer->setRegistry(pScene->m_registry);
         }
 
-        m_guiRenderSystem->setRegistry(scene->m_registry);
+        m_guiRenderSystem->setRegistry(pScene->m_registry);
     #endif
 
-        m_dispatcher->registerListener(scene);
-        scene->setDispatcher(m_dispatcher);
+        m_dispatcher->registerListener(pScene);
+        pScene->setDispatcher(m_dispatcher);
 
         if (callOnEnter)
         {
-            scene->Scene::onEnter();
-            scene->onEnter();
+            pScene->Scene::onEnter();
+            pScene->onEnter();
         
-            internal::registryFromSceneFile(*scene->m_registry, m_currentScene);
+            internal::registryFromSceneFile(*pScene->m_registry, m_currentScene);
         }
     }
 
     void Application::run()
-    {        
+    {
+        OYL_ASSERT(!m_nextScene.empty());
+
+        //m_registeredScenes[m_nextScene]->m_registry->reset();
+        pushScene(m_nextScene, false);
+        m_nextScene.clear();
+        
         while (m_running)
         {
             Time::update();
@@ -315,7 +331,11 @@ namespace oyl
                 m_dispatcher->dispatchEvents();
 
                 if (!m_nextScene.empty() && m_nextScene != m_currentScene)
-                    pushScene(m_registeredScenes[m_nextScene]);
+                {
+                    m_registeredScenes[m_currentScene]->m_registry->reset();
+                    pushScene(m_nextScene);
+                    m_nextScene.clear();
+                }
                 
             #if !defined(OYL_DISTRIBUTION)
                 if (m_guiLayer->doGameUpdate())

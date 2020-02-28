@@ -1122,6 +1122,14 @@ namespace oyl::internal
                 material->emissionMap = getTextureFn(emissionIt);
         }
 
+        if (auto it = jMaterial.find("MainProperties"); it != jMaterial.end() && it->is_object())
+        {
+            if (auto tileIt = it->find("Tiling"); tileIt != it->end() && tileIt->is_array())
+                tileIt->get_to(material->mainTextureProps.tiling);
+            if (auto offIt = it->find("Offset"); offIt != it->end() && offIt->is_array())
+                offIt->get_to(material->mainTextureProps.offset);
+        }
+
         if (auto it = jMaterial.find("Alias"); it != jMaterial.end() && it->is_string())
         {
             std::string alias = it->get<std::string>();
@@ -1132,17 +1140,17 @@ namespace oyl::internal
                 {
                     material = testMat;
                 }
+                else
+                {
+                    *testMat = *material;
+                    material = testMat;
+                }
+            }
+            else
+            {
+                Material::cache(material, alias);
             }
         }
-
-        if (auto it = jMaterial.find("MainProperties"); it != jMaterial.end() && it->is_object())
-        {
-            if (auto tileIt = it->find("Tiling"); tileIt != it->end() && tileIt->is_array())
-                tileIt->get_to(material->mainTextureProps.tiling);
-            if (auto offIt = it->find("Offset"); offIt != it->end() && offIt->is_array())
-                offIt->get_to(material->mainTextureProps.offset);
-        }
-        
         return material;
     }
 

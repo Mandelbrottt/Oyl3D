@@ -7,6 +7,8 @@
 #include "Oyl3D/Graphics/Buffer.h"
 #include "Oyl3D/Scenes/Scene.h"
 
+#include "Oyl3D/Utils/SceneToFile.h"
+
 namespace oyl
 {
     class EventListener;
@@ -51,7 +53,7 @@ namespace oyl
         
     private:
         void initEventListeners();
-        void pushScene(const Ref<Scene>& scene, bool callOnEnter = true);
+        void pushScene(const std::string& scene, bool callOnEnter = true);
 
     private:
         Ref<Window> m_window;
@@ -96,13 +98,26 @@ namespace oyl
         if (m_registeredScenes.find(newScene->m_name) != m_registeredScenes.end())
             return;
 
-        if (m_registeredScenes.empty())
-        {
-            m_nextScene = newScene->m_name;
-            pushScene(newScene);
-        }
+        std::string name = newScene->m_name;
 
-        m_registeredScenes[newScene->m_name] = std::move(newScene);
+        newScene->setDispatcher(m_dispatcher);
+        
+        newScene->Scene::onEnter();
+        newScene->onEnter();
+
+        internal::registryFromSceneFile(*newScene->m_registry, name);
+
+        bool swapToScene = m_registeredScenes.empty();
+
+        m_registeredScenes[name] = std::move(newScene);
+
+        //pushScene(name, !swapToScene);
+
+        if (swapToScene)
+        {
+            m_nextScene = name;
+            //pushScene(name);
+        }
     }
 
     Application* createApplication();

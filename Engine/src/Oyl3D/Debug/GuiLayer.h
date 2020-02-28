@@ -86,6 +86,7 @@ namespace oyl
             void drawMaterialCache();
             void drawModelCache();
             void drawTextureCache();
+            void drawSceneCache();
 
             void drawSceneViewport();
             void drawGameViewport();
