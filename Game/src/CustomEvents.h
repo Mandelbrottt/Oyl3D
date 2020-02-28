@@ -36,7 +36,7 @@ enum CustomEventTypes : int
 	TypeGameEnd
 };
 
-enum GameEndResult
+enum class GameEndResult
 {
 	blueWin,
 	redWin,
