@@ -12,8 +12,18 @@ void GameOverCheckSystem::onExit()
 
 void GameOverCheckSystem::onUpdate()
 {
-	if (isGameOver)
-		return;
+	if (startGameEndTimer)
+	{
+		waitBeforeEndingCountdown -= Time::deltaTime();
+		if (waitBeforeEndingCountdown < 0.0f && !isGameOver)
+		{
+			GameEndEvent gameEnd;
+			gameEnd.result = gameResult;
+			postEvent(gameEnd);
+
+			isGameOver = true;
+		}
+	}
 
 	int numMaxedPilesBlueTeam = 0;
 	int numMaxedPilesRedTeam  = 0;
@@ -34,24 +44,18 @@ void GameOverCheckSystem::onUpdate()
 
 	if (numMaxedPilesBlueTeam == 3)
 	{
-		GameEndEvent gameEnd;
-
 		if (numMaxedPilesRedTeam == 3)
-			gameEnd.result = GameEndResult::tie;
+			gameResult = GameEndResult::tie;
 		else //red team isn't maxed out
-			gameEnd.result = GameEndResult::redWin;
+			gameResult = GameEndResult::redWin;
 
-		postEvent(gameEnd);
-
-		isGameOver = true;
+		startGameEndTimer = true;
 	}
 	else if (numMaxedPilesRedTeam == 3)
 	{
-		GameEndEvent gameEnd;
-		gameEnd.result = GameEndResult::blueWin;
-		postEvent(gameEnd);
+		gameResult = GameEndResult::blueWin;
 
-		isGameOver = true;
+		startGameEndTimer = true;
 	}
 }
 

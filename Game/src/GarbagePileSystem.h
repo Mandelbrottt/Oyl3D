@@ -8,8 +8,8 @@ class GarbagePileSystem : public System
 {
 	OYL_CTOR(GarbagePileSystem, System)
 
-	float bluePassiveBuildupWait = 10.0f;
-	float redPassiveBuildupWait  = 10.0f;
+	float bluePassiveBuildupWait = 13.0f;
+	float redPassiveBuildupWait  = 13.0f;
 
 	float bluePassiveBuildupCountdown = bluePassiveBuildupWait;
 	float redPassiveBuildupCountdown  = redPassiveBuildupWait;

@@ -13,24 +13,38 @@ void GarbagePileSystem::onExit()
 
 void GarbagePileSystem::onUpdate()
 {
+	OYL_LOG("Blue: {}", bluePassiveBuildupWait);
+	OYL_LOG("Red:  {}", redPassiveBuildupWait);
+
 	bool addBlueGarbageLevel = false;
 	bool addRedGarbageLevel  = false;
 
 	bluePassiveBuildupCountdown -= Time::deltaTime();
 	redPassiveBuildupCountdown  -= Time::deltaTime();
 
+	int blueRandomGarbagePileNum = -5; // initialize to invalid
+	int redRandomGarbagePileNum  = -5; // initialize to invalid
+
 	if (bluePassiveBuildupCountdown < 0.0f)
 	{
 		addBlueGarbageLevel = true;
-		bluePassiveBuildupWait -= 0.15f;
+		bluePassiveBuildupWait -= 0.2f;
 		bluePassiveBuildupCountdown = bluePassiveBuildupWait;
+
+		//ensure we don't divide by zero
+		if (blueActivePileNums.size() > 0)
+			blueRandomGarbagePileNum = blueActivePileNums[rand() % blueActivePileNums.size()];
 	}
 
 	if (redPassiveBuildupCountdown < 0.0f)
 	{
 		addRedGarbageLevel = true;
-		redPassiveBuildupWait -= 0.15f;
+		redPassiveBuildupWait -= 0.2f;
 		redPassiveBuildupCountdown = redPassiveBuildupWait;
+
+		//ensure we don't divide by zero
+		if (redActivePileNums.size() > 0)
+			redRandomGarbagePileNum = redActivePileNums[rand() % redActivePileNums.size()];
 	}
 
 	auto garbagePileView = registry->view<GarbagePile, component::Renderable, component::Transform>();
@@ -40,9 +54,9 @@ void GarbagePileSystem::onUpdate()
 		auto& garbagePileRenderable = registry->get<component::Renderable>(garbagePileEntity);
 		auto& garbagePileTransform  = registry->get<component::Transform>(garbagePileEntity);
 
-		if (addBlueGarbageLevel && garbagePile.team == Team::blue)
+		if (addBlueGarbageLevel && garbagePile.team == Team::blue && garbagePile.relativePositionOnShip == blueRandomGarbagePileNum)
 			increaseGarbageLevel(garbagePileEntity);
-		else if (addRedGarbageLevel && garbagePile.team == Team::red)
+		else if (addRedGarbageLevel && garbagePile.team == Team::red && garbagePile.relativePositionOnShip == redRandomGarbagePileNum)
 			increaseGarbageLevel(garbagePileEntity);
 
 		if (garbagePile.delayBeforeAddingGarbageCountdown > 0.0f)
@@ -103,6 +117,9 @@ void GarbagePileSystem::increaseGarbageLevel(entt::entity a_garbagePileEntity)
 {
 	auto& garbagePile = registry->get<GarbagePile>(a_garbagePileEntity);
 
+	//if garbage pile is already maxed, it wasn't maxed out this iteration
+	bool isMaxedOutThisIteration = (garbagePile.garbageLevel != garbagePile.MAX_GARBAGE_LEVEL || garbagePile.garbageTicks != garbagePile.GARBAGE_TICKS_PER_LEVEL);
+
 	if (garbagePile.garbageLevel == 0)
 	{
 		garbagePile.garbageLevel++;
@@ -116,6 +133,27 @@ void GarbagePileSystem::increaseGarbageLevel(entt::entity a_garbagePileEntity)
 		garbagePile.garbageLevel++;
 	else //garbage level == MAX
 		garbagePile.garbageTicks = garbagePile.GARBAGE_TICKS_PER_LEVEL;
+
+	//check if garbage pile was maxed out after the garbage was just added
+	if (garbagePile.garbageLevel == garbagePile.MAX_GARBAGE_LEVEL && garbagePile.garbageTicks == garbagePile.GARBAGE_TICKS_PER_LEVEL && isMaxedOutThisIteration)
+	{
+		if (garbagePile.team == Team::blue)
+		{
+			blueActivePileNums.erase(
+				std::remove(blueActivePileNums.begin(), blueActivePileNums.end(), garbagePile.relativePositionOnShip),
+				blueActivePileNums.end());
+
+			bluePassiveBuildupWait += 3.5f; //add some more time every time a pile maxes out to prevent quick snowballing
+		}
+		else //team == red
+		{
+			redActivePileNums.erase(
+				std::remove(redActivePileNums.begin(), redActivePileNums.end(), garbagePile.relativePositionOnShip),
+				redActivePileNums.end());
+
+			redPassiveBuildupWait += 3.5f; //add some more time every time a pile maxes out to prevent quick snowballing
+		}
+	}
 
 	updateGarbagePileVisualSize(a_garbagePileEntity); //update size whenever garbage is added
 

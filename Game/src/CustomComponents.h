@@ -256,11 +256,6 @@ struct Reticle
 	ReticleType type;
 };
 
-struct EndScreen
-{
-	bool isLoseScreen;
-};
-
 struct GarbagePileHealthBar
 {
 	entt::entity outlineEntity; //the outline of the HP bar
