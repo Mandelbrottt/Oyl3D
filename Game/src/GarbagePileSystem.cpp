@@ -13,14 +13,24 @@ void GarbagePileSystem::onExit()
 
 void GarbagePileSystem::onUpdate()
 {
-	//TODO: change to add to a random garbage pile rather than all of them for the final version
-	bool addGarbageLevel = false;
-	passiveGarbageBuildupCountdown -= Time::deltaTime();
-	if (passiveGarbageBuildupCountdown < 0.0f)
+	bool addBlueGarbageLevel = false;
+	bool addRedGarbageLevel  = false;
+
+	bluePassiveBuildupCountdown -= Time::deltaTime();
+	redPassiveBuildupCountdown  -= Time::deltaTime();
+
+	if (bluePassiveBuildupCountdown < 0.0f)
 	{
-		addGarbageLevel = true;
-		passiveGarbageBuildupCountdown = PASSIVE_GARBAGE_BUILDUP_TIME - numBuildUpsAccumulated * 0.4f; //TODO: come up with a better equation for time scaling
-		numBuildUpsAccumulated++;
+		addBlueGarbageLevel = true;
+		bluePassiveBuildupWait -= 0.15f;
+		bluePassiveBuildupCountdown = bluePassiveBuildupWait;
+	}
+
+	if (redPassiveBuildupCountdown < 0.0f)
+	{
+		addRedGarbageLevel = true;
+		redPassiveBuildupWait -= 0.15f;
+		redPassiveBuildupCountdown = redPassiveBuildupWait;
 	}
 
 	auto garbagePileView = registry->view<GarbagePile, component::Renderable, component::Transform>();
@@ -30,7 +40,9 @@ void GarbagePileSystem::onUpdate()
 		auto& garbagePileRenderable = registry->get<component::Renderable>(garbagePileEntity);
 		auto& garbagePileTransform  = registry->get<component::Transform>(garbagePileEntity);
 
-		if (addGarbageLevel)
+		if (addBlueGarbageLevel && garbagePile.team == Team::blue)
+			increaseGarbageLevel(garbagePileEntity);
+		else if (addRedGarbageLevel && garbagePile.team == Team::red)
 			increaseGarbageLevel(garbagePileEntity);
 
 		if (garbagePile.delayBeforeAddingGarbageCountdown > 0.0f)

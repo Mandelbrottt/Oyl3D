@@ -8,9 +8,14 @@ class GarbagePileSystem : public System
 {
 	OYL_CTOR(GarbagePileSystem, System)
 
-	const float PASSIVE_GARBAGE_BUILDUP_TIME = 40.0f;
-	float passiveGarbageBuildupCountdown = PASSIVE_GARBAGE_BUILDUP_TIME;
-	int numBuildUpsAccumulated = 0;
+	float bluePassiveBuildupWait = 10.0f;
+	float redPassiveBuildupWait  = 10.0f;
+
+	float bluePassiveBuildupCountdown = bluePassiveBuildupWait;
+	float redPassiveBuildupCountdown  = redPassiveBuildupWait;
+
+	std::vector<int> blueActivePileNums{ -1, 0, 1 };
+	std::vector<int> redActivePileNums{ -1, 0, 1 };
 
 	void onEnter() override;
 	void onExit() override;
