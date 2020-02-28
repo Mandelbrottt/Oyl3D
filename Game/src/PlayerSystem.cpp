@@ -22,6 +22,9 @@ void PlayerSystem::onUpdate()
 
 		player.jumpCooldownTimer -= Time::deltaTime();
 
+		if (player.transitionIntoQTE && player.state != PlayerState::cleaning)
+			player.transitionIntoQTE = false;
+
 		switch (player.state)
 		{
 		    case PlayerState::idle:

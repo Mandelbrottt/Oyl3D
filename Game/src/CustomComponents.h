@@ -100,6 +100,8 @@ struct Player
     
 	PlayerState state = PlayerState::idle;
 
+	bool transitionIntoQTE = false;
+
 	glm::vec3 moveDirection = glm::vec3(0.0f);
 
 	float speedForce = 5.6f;

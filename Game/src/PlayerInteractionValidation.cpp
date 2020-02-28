@@ -383,7 +383,28 @@ void PlayerInteractionValidationSystem::validateGarbagePileInteraction(entt::ent
 				{
 					player.interactableEntity = a_garbagePileEntity;
 
-					if (player.state == PlayerState::inCleaningQuicktimeEvent)
+					//check if the player should transition directly into the QTE from their previous state
+					if (player.transitionIntoQTE)
+					{
+						PlayerInteractResultEvent playerInteractResult;
+						playerInteractResult.interactionType = PlayerInteractionResult::nothing;
+						playerInteractResult.playerNum       = player.playerNum;
+						postEvent(playerInteractResult);
+
+						PlayerStateChangeEvent playerStateChange;
+						playerStateChange.playerEntity = a_playerEntity;
+						playerStateChange.newState     = PlayerState::inCleaningQuicktimeEvent;
+						postEvent(playerStateChange);
+
+						ActivateQuicktimeCleaningEventEvent activateCleaningQTE;
+						activateCleaningQTE.playerNum         = player.playerNum;
+						activateCleaningQTE.garbagePileEntity = player.interactableEntity;
+						postEvent(activateCleaningQTE);
+
+						return;
+					}
+
+					if (player.state == PlayerState::inCleaningQuicktimeEvent || player.transitionIntoQTE)
 					{
 						//if they're already in the QTE, we don't want to keep showing them the message
 						PlayerInteractResultEvent playerInteractResult;
@@ -795,6 +816,14 @@ void PlayerInteractionValidationSystem::performGarbagePileInteraction(entt::enti
 				playerStateChange.playerEntity = a_playerEntity;
 				playerStateChange.newState = PlayerState::cleaning;
 				postEvent(playerStateChange);
+
+				//if the player is holding a mop, they can directly transition into the cleaning QTE
+				if (   registry->valid(player.primaryCarriedItem)
+					&& registry->get<CarryableItem>(player.primaryCarriedItem).type == CarryableItemType::mop
+					&& registry->get<CarryableItem>(player.primaryCarriedItem).team == player.team)
+				{
+					player.transitionIntoQTE = true;
+				}
 			}
 		}
 	}
