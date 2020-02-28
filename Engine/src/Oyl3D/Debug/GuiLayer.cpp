@@ -90,6 +90,7 @@ namespace oyl::internal
         {
             system->setRegistry(registry);
             system->setDispatcher(m_dispatcher);
+            m_dispatcher->registerListener(system, -1u);
         }
 
         m_fileSaveTimeIt = m_fileSaveTimes.end();
@@ -332,7 +333,6 @@ namespace oyl::internal
                     updateAssetList();
             }
         }
-        return m_editorOverrideUpdate;
     }
 
     void GuiLayer::drawMenuBar()
@@ -2445,10 +2445,13 @@ namespace oyl::internal
 
         OYL_ASSERT(!app.m_registeredScenes.empty());
 
+        int flags = ImGuiSelectableFlags_PressedOnClick;
+        if (m_gameUpdate)
+            flags |= ImGuiSelectableFlags_Disabled;
+
         for (const auto& [name, scene] : app.m_registeredScenes)
         {
-            if (ImGui::Selectable(name.c_str(), name == app.m_currentScene,
-                                  ImGuiSelectableFlags_PressedOnClick) &&
+            if (ImGui::Selectable(name.c_str(), name == app.m_currentScene, flags) &&
                 name != app.m_currentScene)
             {
                 app.m_nextScene = name;

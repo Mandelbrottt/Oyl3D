@@ -121,32 +121,32 @@ namespace oyl
     #if !defined OYL_DISTRIBUTION
         m_editorRenderSystem->setDispatcher(m_dispatcher);
         m_editorRenderSystem->onEnter();
-        m_dispatcher->registerListener(m_editorRenderSystem);
+        m_dispatcher->registerListener(m_editorRenderSystem, -1u);
     #endif
 
         m_skeletalAnimationSystem->setDispatcher(m_dispatcher);
         m_skeletalAnimationSystem->onEnter();
-        m_dispatcher->registerListener(m_skeletalAnimationSystem);
+        m_dispatcher->registerListener(m_skeletalAnimationSystem, -1u);
 
         m_preRenderSystem->setDispatcher(m_dispatcher);
         m_preRenderSystem->onEnter();
-        m_dispatcher->registerListener(m_preRenderSystem);
+        m_dispatcher->registerListener(m_preRenderSystem, -1u);
 
         m_shadowRenderSystem->setDispatcher(m_dispatcher);
         m_shadowRenderSystem->onEnter();
-        m_dispatcher->registerListener(m_shadowRenderSystem);
+        m_dispatcher->registerListener(m_shadowRenderSystem, -1u);
 
         m_renderSystem->setDispatcher(m_dispatcher);
         m_renderSystem->onEnter();
-        m_dispatcher->registerListener(m_renderSystem);
+        m_dispatcher->registerListener(m_renderSystem, -1u);
 
         m_guiRenderSystem->setDispatcher(m_dispatcher);
         m_guiRenderSystem->onEnter();
-        m_dispatcher->registerListener(m_guiRenderSystem);
+        m_dispatcher->registerListener(m_guiRenderSystem, -1u);
 
         m_postRenderSystem->setDispatcher(m_dispatcher);
         m_postRenderSystem->onEnter();
-        m_dispatcher->registerListener(m_postRenderSystem);
+        m_dispatcher->registerListener(m_postRenderSystem, -1u);
 
         WindowResizedEvent wrEvent;
         wrEvent.width = 1280;
@@ -206,12 +206,7 @@ namespace oyl
         #if !defined OYL_DISTRIBUTION
             case EventType::EditorBackButton:
             {
-                //m_nextScene = m_guiLayer->m_originalScene;
-                if (m_currentScene != m_guiLayer->m_originalScene)
-                {
-                    m_nextScene = m_guiLayer->m_originalScene;
-                    pushScene(m_guiLayer->m_originalScene, false);
-                }
+                pushScene(m_guiLayer->m_originalScene, false);
                 
                 for (const auto& [name, registry] : m_guiLayer->m_registryRestores)
                     *m_registeredScenes[name]->m_registry = registry.clone();
@@ -271,8 +266,7 @@ namespace oyl
         m_systemsLayer->setDispatcher(m_dispatcher);
         m_systemsLayer->setRegistry(pScene->m_registry);
 
-        //if (callOnEnter)
-            m_systemsLayer->onEnter();
+        m_systemsLayer->onEnter();
 
         m_dispatcher->registerListener(m_systemsLayer);
         
@@ -284,20 +278,20 @@ namespace oyl
 
             m_guiLayer->setDispatcher(m_dispatcher);
             m_guiLayer->setRegistry(pScene->m_registry);
-            m_guiLayer->onEnter();
-            
-            m_dispatcher->registerListener(m_guiLayer);
+            m_guiLayer->onEnter();    
         }
         else
         {
+            m_guiLayer->setDispatcher(m_dispatcher);
+            m_guiLayer->setRegistry(pScene->m_registry);
+
             if (callOnEnter)
             {
                 m_guiLayer->onExit();
                 m_guiLayer->onEnter();
             }
-
-            m_guiLayer->setRegistry(pScene->m_registry);
         }
+        m_dispatcher->registerListener(m_guiLayer, -2u);
 
         m_guiRenderSystem->setRegistry(pScene->m_registry);
     #endif
@@ -413,11 +407,11 @@ namespace oyl
 
         m_appListener      = Ref<internal::ApplicationListener>::create();
         m_appListener->app = this;
-        m_dispatcher->registerListener(m_appListener);
+        m_dispatcher->registerListener(m_appListener, -1u);
         m_appListener->setDispatcher(m_dispatcher);
 
         m_vibrationListener = internal::GamepadListener::create();
-        m_dispatcher->registerListener(m_vibrationListener);
+        m_dispatcher->registerListener(m_vibrationListener, -1u);
         m_vibrationListener->setDispatcher(m_dispatcher);
     }
 }

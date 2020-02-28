@@ -119,7 +119,7 @@ namespace oyl
 
                 if (listener.priority > it->priority)
                 {
-                    m_listeners.insert(it, listener);
+                    it = m_listeners.insert(it, listener);
                     break;
                 }
             }
