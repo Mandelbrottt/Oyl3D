@@ -87,6 +87,9 @@ public:
                     rigidbody.addImpulse(transform.getRightGlobal());
                 if (Input::isKeyPressed(Key::Space))
                     rigidbody.addImpulse(transform.getUpGlobal());
+
+                auto ray = RayTest::Closest(transform.getPosition(), transform.getForward(), 50.0f, 0b10);
+                if (ray->hasHit) OYL_LOG_INFO("HIT");
             }
         }
     }
@@ -128,33 +131,6 @@ public:
     {
         pushLayer(MainLayer::create());
     }
-
-    void onUpdate() override
-    {
-        if (Input::isKeyPressed(Key::N))
-            Application::get().changeScene("SecondScene");
-    }
-};
-
-class SecondScene : public Scene
-{
-public:
-    OYL_CTOR(SecondScene, Scene)
-
-    void onEnter() override
-    {
-        OYL_LOG("Enter Second Scene");
-
-        auto e = m_registry->create<component::Camera>();
-    }
-
-    void onUpdate() override
-    {
-        OYL_LOG("Update Second Scene");
-
-        if (Input::isKeyPressed(Key::M))
-            Application::get().changeScene("MainScene");
-    }
 };
 
 class Game : public oyl::Application
@@ -165,7 +141,6 @@ public:
         // pushScene(MainScene::create());
 
         registerScene<MainScene>();
-        registerScene<SecondScene>();
     }
 
     virtual void onExit() { }

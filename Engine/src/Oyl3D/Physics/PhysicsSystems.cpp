@@ -783,18 +783,21 @@ namespace oyl::internal
         }
     }
 
-    Ref<ClosestRaycastResult> PhysicsSystem::raytestClosest(glm::vec3 position, glm::vec3 direction, f32 distance)
+    Ref<ClosestRaycastResult> PhysicsSystem::raytestClosest(glm::vec3 position, glm::vec3 direction, f32 distance, u16 mask)
     {
         glm::vec3 endPos = position + direction * distance;
         btVector3 from   = { position.x, position.y, position.z };
         btVector3 to     = { endPos.x, endPos.y, endPos.z };
 
         btCollisionWorld::ClosestRayResultCallback rayCallback(from, to);
+        rayCallback.m_collisionFilterGroup = -1u;
+        rayCallback.m_collisionFilterMask = mask;
         g_currentPhysicsSystem->m_btWorld->rayTest(from, to, rayCallback);
 
         RaycastResult::HitObject obj = {};
 
-        if (rayCallback.hasHit())
+        bool hasHit = rayCallback.hasHit();
+        if (hasHit)
         {
             obj.hitPosition = {
                 rayCallback.m_hitPointWorld.x(),
@@ -825,7 +828,7 @@ namespace oyl::internal
         }
 
         Ref<ClosestRaycastResult> result =
-            Ref<ClosestRaycastResult>::create(position, endPos, rayCallback.hasHit(), std::move(obj));
+            Ref<ClosestRaycastResult>::create(position, endPos, hasHit, std::move(obj));
 
         return result;
     }

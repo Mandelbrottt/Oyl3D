@@ -68,8 +68,10 @@
         },
         "RigidBody": {
             "Friction": 0.5,
-            "Mass": 1.0,
-            "Properties": 126
+            "Group": 1,
+            "Mask": 1,
+            "Mass": 0.0,
+            "Properties": 62
         },
         "Transform": {
             "Mirror": {
@@ -84,9 +86,9 @@
                 "Z": 11.18663215637207
             },
             "Rotation": {
-                "qW": 1.0,
-                "qX": 0.0,
-                "qY": 0.0,
+                "qW": 0.9502798318862915,
+                "qX": -0.31139716506004333,
+                "qY": -0.0,
                 "qZ": 0.0
             },
             "Scale": {
@@ -129,6 +131,8 @@
         },
         "RigidBody": {
             "Friction": 1.0,
+            "Group": 2,
+            "Mask": 2,
             "Mass": 1.0,
             "Properties": 98
         },
@@ -141,7 +145,70 @@
             "Parent": null,
             "Position": {
                 "X": 5.130334854125977,
-                "Y": 5.829868316650391,
+                "Y": 7.760108470916748,
+                "Z": -1.312644124031067
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Container 1": {
+        "Collidable": {
+            "Shapes": [
+                {
+                    "Center": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Size": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "Trigger": false,
+                    "Type": 0
+                }
+            ]
+        },
+        "Renderable": {
+            "CastShadows": true,
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "lmao"
+            },
+            "Mesh": {
+                "Alias": "cube",
+                "FilePath": "res\\assets\\models\\cube.obj"
+            }
+        },
+        "RigidBody": {
+            "Friction": 1.0,
+            "Group": 1,
+            "Mask": 3,
+            "Mass": 1.0,
+            "Properties": 98
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Parent": null,
+            "Position": {
+                "X": 5.130334854125977,
+                "Y": 4.435361385345459,
                 "Z": -1.312644124031067
             },
             "Rotation": {
@@ -366,6 +433,8 @@
         },
         "RigidBody": {
             "Friction": 0.5,
+            "Group": 3,
+            "Mask": 3,
             "Mass": 0.0,
             "Properties": 98
         },
@@ -472,6 +541,8 @@
         },
         "RigidBody": {
             "Friction": 0.5,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 1.0,
             "Properties": 98
         },
