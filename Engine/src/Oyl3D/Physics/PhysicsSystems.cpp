@@ -531,116 +531,116 @@ namespace oyl::internal
 
             m_rigidBodies[entity] = Ref<RigidBodyInfo>::create();
 
-            if (colliderComponent.size() == 1)
-            {
-                btTransform t;
+            //if (colliderComponent.size() == 1)
+            //{
+            //    btTransform t;
 
-                const auto& shapeThing = colliderComponent.getShape(0);
-                switch (shapeThing.m_type)
-                {
-                    case ColliderType::Box:
-                    {
-                        t.setIdentity();
+            //    const auto& shapeThing = colliderComponent.getShape(0);
+            //    switch (shapeThing.m_type)
+            //    {
+            //        case ColliderType::Box:
+            //        {
+            //            t.setIdentity();
 
-                        t.setOrigin({
-                            shapeThing.box.getCenter().x,
-                            shapeThing.box.getCenter().y,
-                            shapeThing.box.getCenter().z
-                        });
+            //            t.setOrigin({
+            //                shapeThing.box.getCenter().x,
+            //                shapeThing.box.getCenter().y,
+            //                shapeThing.box.getCenter().z
+            //            });
 
-                        btVector3 halfExtents = {
-                            shapeThing.box.getSize().x / 2.0f,
-                            shapeThing.box.getSize().y / 2.0f,
-                            shapeThing.box.getSize().z / 2.0f
-                        };
+            //            btVector3 halfExtents = {
+            //                shapeThing.box.getSize().x / 2.0f,
+            //                shapeThing.box.getSize().y / 2.0f,
+            //                shapeThing.box.getSize().z / 2.0f
+            //            };
 
-                        shape = Ref<btBoxShape>::create(halfExtents);
-                        break;
-                    }
-                    case ColliderType::Sphere:
-                    {
-                        t.setIdentity();
+            //            shape = Ref<btBoxShape>::create(halfExtents);
+            //            break;
+            //        }
+            //        case ColliderType::Sphere:
+            //        {
+            //            t.setIdentity();
 
-                        t.setOrigin({
-                            shapeThing.sphere.getCenter().x,
-                            shapeThing.sphere.getCenter().y,
-                            shapeThing.sphere.getCenter().z
-                        });
+            //            t.setOrigin({
+            //                shapeThing.sphere.getCenter().x,
+            //                shapeThing.sphere.getCenter().y,
+            //                shapeThing.sphere.getCenter().z
+            //            });
 
-                        shape = Ref<btSphereShape>::create(shapeThing.sphere.getRadius());
-                        break;
-                    }
-                    case ColliderType::Capsule:
-                    {
-                        t.setIdentity();
+            //            shape = Ref<btSphereShape>::create(shapeThing.sphere.getRadius());
+            //            break;
+            //        }
+            //        case ColliderType::Capsule:
+            //        {
+            //            t.setIdentity();
 
-                        t.setOrigin({
-                            shapeThing.capsule.getCenter().x,
-                            shapeThing.capsule.getCenter().y,
-                            shapeThing.capsule.getCenter().z
-                        });
+            //            t.setOrigin({
+            //                shapeThing.capsule.getCenter().x,
+            //                shapeThing.capsule.getCenter().y,
+            //                shapeThing.capsule.getCenter().z
+            //            });
 
-                        switch (shapeThing.capsule.getDirection())
-                        {
-                            case Direction::X_AXIS:
-                                shape = Ref<btCapsuleShapeX>::create(shapeThing.capsule.getRadius(),
-                                                                     shapeThing.capsule.getHeight());
-                                break;
-                            case Direction::Y_AXIS:
-                                shape = Ref<btCapsuleShape>::create(shapeThing.capsule.getRadius(),
-                                                                    shapeThing.capsule.getHeight());
-                                break;
-                            case Direction::Z_AXIS:
-                                shape = Ref<btCapsuleShapeZ>::create(shapeThing.capsule.getRadius(),
-                                                                     shapeThing.capsule.getHeight());
-                                break;
-                        }
-                        break;
-                    }
-                }
+            //            switch (shapeThing.capsule.getDirection())
+            //            {
+            //                case Direction::X_AXIS:
+            //                    shape = Ref<btCapsuleShapeX>::create(shapeThing.capsule.getRadius(),
+            //                                                         shapeThing.capsule.getHeight());
+            //                    break;
+            //                case Direction::Y_AXIS:
+            //                    shape = Ref<btCapsuleShape>::create(shapeThing.capsule.getRadius(),
+            //                                                        shapeThing.capsule.getHeight());
+            //                    break;
+            //                case Direction::Z_AXIS:
+            //                    shape = Ref<btCapsuleShapeZ>::create(shapeThing.capsule.getRadius(),
+            //                                                         shapeThing.capsule.getHeight());
+            //                    break;
+            //            }
+            //            break;
+            //        }
+            //    }
 
-                RigidBodyInfo::ChildShapeInfo cInfo;
+            //    RigidBodyInfo::ChildShapeInfo cInfo;
 
-                cInfo.btShape = shape;
+            //    cInfo.btShape = shape;
 
-                cInfo.shapeInfo = shapeThing.m_selfRef;
+            //    cInfo.shapeInfo = shapeThing.m_selfRef;
 
-                m_rigidBodies[entity]->children.emplace_back(cInfo);
+            //    m_rigidBodies[entity]->children.emplace_back(cInfo);
 
-                // TEMPORARY: Make relative to collider
-                t.setIdentity();
+            //    // TEMPORARY: Make relative to collider
+            //    t.setIdentity();
 
-                //t.setFromOpenGLMatrix(value_ptr(transformComponent.getMatrixGlobal()));
+            //    //t.setFromOpenGLMatrix(value_ptr(transformComponent.getMatrixGlobal()));
 
-                t.setOrigin(btVector3(transformComponent.getPositionXGlobal(),
-                                      transformComponent.getPositionYGlobal(),
-                                      transformComponent.getPositionZGlobal()));
+            //    t.setOrigin(btVector3(transformComponent.getPositionXGlobal(),
+            //                          transformComponent.getPositionYGlobal(),
+            //                          transformComponent.getPositionZGlobal()));
 
-                glm::quat q = transformComponent.getRotationGlobal();
+            //    glm::quat q = transformComponent.getRotationGlobal();
 
-                btQuaternion btq = btQuaternion(q.x, q.y, q.z, q.w);
-                t.setRotation(btq);
+            //    btQuaternion btq = btQuaternion(q.x, q.y, q.z, q.w);
+            //    t.setRotation(btq);
 
-                btVector3 inertia = { 0, 0, 0 };
-                if (rigidBodyComponent.getMass() != 0.0f)
-                    shape->calculateLocalInertia(rigidBodyComponent.getMass(), inertia);
+            //    btVector3 inertia = { 0, 0, 0 };
+            //    if (rigidBodyComponent.getMass() != 0.0f)
+            //        shape->calculateLocalInertia(rigidBodyComponent.getMass(), inertia);
 
-                shape->setLocalScaling({
-                    transformComponent.getScaleXGlobal(),
-                    transformComponent.getScaleYGlobal(),
-                    transformComponent.getScaleZGlobal()
-                });
+            //    shape->setLocalScaling({
+            //        transformComponent.getScaleXGlobal(),
+            //        transformComponent.getScaleYGlobal(),
+            //        transformComponent.getScaleZGlobal()
+            //    });
 
-                motion = Ref<btDefaultMotionState>::create(t);
+            //    motion = Ref<btDefaultMotionState>::create(t);
 
-                btRigidBody::btRigidBodyConstructionInfo info(rigidBodyComponent.getMass(),
-                                                              motion.get(),
-                                                              shape.get(),
-                                                              inertia);
+            //    btRigidBody::btRigidBodyConstructionInfo info(rigidBodyComponent.getMass(),
+            //                                                  motion.get(),
+            //                                                  shape.get(),
+            //                                                  inertia);
 
-                body = Ref<btRigidBody>::create(info);
-            }
-            else
+            //    body = Ref<btRigidBody>::create(info);
+            //}
+            //else
             {
                 auto                  workingShape = Ref<btCompoundShape>::create();
                 Ref<btCollisionShape> childShape;
@@ -762,7 +762,7 @@ namespace oyl::internal
 
                 body = Ref<btRigidBody>::create(info);
 
-                body->setRestitution(1.0f);
+                //body->setRestitution(1.0f);
             }
 
             body->setCollisionFlags(body->getCollisionFlags() |
