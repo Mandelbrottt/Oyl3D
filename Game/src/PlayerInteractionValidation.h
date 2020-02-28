@@ -22,11 +22,11 @@ private:
 	void validateCannonballCrateInteraction(entt::entity a_playerEntity, entt::entity a_cannonballCrateEntity);
 	void validateCannonInteraction(entt::entity a_playerEntity, entt::entity a_cannonEntity);
 
-	void performInteractionForPlayer(entt::entity a_playerEntity, PlayerItemClassifiation itemClassification);
-	void performCarryableItemInteraction(entt::entity a_playerEntity, entt::entity a_carryableItemEntity, PlayerItemClassifiation itemClassification);
-	void performGarbagePileInteraction(entt::entity a_playerEntity, entt::entity a_garbagePileEntity, PlayerItemClassifiation itemClassification);
-	void performCannonballCrateInteraction(entt::entity a_playerEntity, entt::entity a_cannonballCrateEntity, PlayerItemClassifiation itemClassification);
-	void performCannonInteraction(entt::entity a_playerEntity, entt::entity a_cannonEntity, PlayerItemClassifiation itemClassification);
+	void performInteractionForPlayer(entt::entity a_playerEntity, PlayerItemClassification itemClassification);
+	void performCarryableItemInteraction(entt::entity a_playerEntity, entt::entity a_carryableItemEntity, PlayerItemClassification itemClassification);
+	void performGarbagePileInteraction(entt::entity a_playerEntity, entt::entity a_garbagePileEntity, PlayerItemClassification itemClassification);
+	void performCannonballCrateInteraction(entt::entity a_playerEntity, entt::entity a_cannonballCrateEntity, PlayerItemClassification itemClassification);
+	void performCannonInteraction(entt::entity a_playerEntity, entt::entity a_cannonEntity, PlayerItemClassification itemClassification);
 
 	void dropPlayerCarriedItems(entt::entity a_playerEntity, bool dropSpecificItemType = false, CarryableItemType itemTypeToDrop = CarryableItemType::invalid);
 };

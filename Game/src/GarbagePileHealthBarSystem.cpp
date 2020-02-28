@@ -48,6 +48,7 @@ void GarbagePileHealthBarSystem::onUpdate()
 				if (garbageHPBar.currentFillAmount <= 0.001f) //add a small buffer
 				{
 					//reset the bar to full
+					garbageHPBar.currentFillAmount  = 1.0f;
 					garbageHPBar.startValue         = 1.0f;
 					garbageHPBar.targetValue        = 1.0f;
 					garbageHPBarGui.upperClipping.y = 1.0f;
@@ -70,8 +71,6 @@ void GarbagePileHealthBarSystem::onUpdate()
 		}
 		else
 		{
-			bool rightgarbagepile = false;
-
 			//go thru each garbage pile
 			auto garbagePileView = registry->view<GarbagePile, component::Transform>();
 			for (auto garbagePileEntity : garbagePileView)
@@ -82,10 +81,13 @@ void GarbagePileHealthBarSystem::onUpdate()
 				//check if the garbage pile is the one that the HP bar is attached to
 				if (garbageHPBar.garbagePileNum == garbagePile.relativePositionOnShip && garbageHPBar.team == garbagePile.team)
 				{
-					if (garbagePile.relativePositionOnShip == 0)
-						rightgarbagepile = true;
+					if (garbagePile.isGlooped)
+						garbageHPBarOutlineGui.texture = Texture2D::get("garbagePileHPBarOutlineGlooped");
+					else
+						garbageHPBarOutlineGui.texture = Texture2D::get("garbagePileHPBarOutline");
+
 					//set the HP bar position to the garbage pile's position
-					garbageHPBarTransform.setPosition(garbagePileTransform.getPosition() + glm::vec3(0.0f, 0.8f, 0.0f));
+					garbageHPBarTransform.setPosition(garbagePileTransform.getPosition() + glm::vec3(0.0f, 0.9f, 0.0f));
 					break;
 				}
 			}
@@ -103,49 +105,23 @@ void GarbagePileHealthBarSystem::onUpdate()
 
 					//find distance between camera and garbage pile
 					glm::vec3 playerToGarbagePile = garbageHPBarTransform.getPositionGlobal() - playerCameraTransform.getPositionGlobal();
+					float playerToGarbagePileLength = glm::length(playerToGarbagePile);
 
 					//hide the HP bar if the player's camera is too far away
-					if (glm::length(playerToGarbagePile) > 15.0f)
+					if (playerToGarbagePileLength > 15.0f)
 						hideHPBar = true;
 
 					//hide the HP bar if the player cannot see the garbage pile
-					auto ray = RayTest::Closest(playerCameraTransform.getPositionGlobal(), normalize(playerToGarbagePile), 20.0f);
-					//if (!ray->hasHit || !registry->valid(ray->hitObject.entity) || !registry->has<GarbagePile>(ray->hitObject.entity))
-						//hideHPBar = true;
-					/*if (playerCamera.player == PlayerNumber::One && rightgarbagepile)
-					{
-						if (!ray->hasHit)
-						{
-							OYL_LOG("No hit");
-							hideHPBar = true;
-						}
-						else if (!registry->valid(ray->hitObject.entity))
-						{
-							OYL_LOG("Invalid hit");
-							hideHPBar = true;
-						}
-						else if (registry->has<Player>(ray->hitObject.entity))
-						{
-							OYL_LOG("Player hit");
-							hideHPBar = true;
-						}
-						else if (!registry->has<GarbagePile>(ray->hitObject.entity))
-						{
-							OYL_LOG("Not a garbage pile hit");
-							hideHPBar = true;
-						}
-						else
-						{
-							OYL_LOG("Garbage pile hit!");
-						}
-					}*/
+					auto ray = RayTest::Closest(playerCameraTransform.getPositionGlobal(), normalize(playerToGarbagePile + glm::vec3(0.0f, -0.9f, 0.0f)), 20.0f);
+					if (!ray->hasHit || !registry->valid(ray->hitObject.entity) || !registry->has<GarbagePile>(ray->hitObject.entity))
+						hideHPBar = true;
 
 					if (hideHPBar)
 					{
-						garbageHPBarGui.enabled = false;
+						garbageHPBarGui.enabled        = false;
 						garbageHPBarOutlineGui.enabled = false;
 					}
-					else //camera is in range of garbage pile
+					else //figure out where to position the garbage hp bar
 					{
 						glm::vec3 garbagePileDirection = garbageHPBarTransform.getPosition() - playerCameraTransform.getPositionGlobal();
 						if (garbagePileDirection != glm::vec3(0.0f, 0.0f, 0.0f))
@@ -157,6 +133,12 @@ void GarbagePileHealthBarSystem::onUpdate()
 						glm::vec3 newPosition = playerCamera.worldToScreenSpace(garbageHPBarTransform.getPosition());
 						garbageHPBarTransform.       setPosition(newPosition);
 						garbageHPBarOutlineTransform.setPosition(newPosition + glm::vec3(0.0f, 0.0f, -1.0f)); //make sure the outline is drawn above the fill so we can see it
+
+						if (playerToGarbagePileLength == 0.0f)
+							playerToGarbagePileLength = 0.001f; //ensure we dont divide by zero
+						float newScale = 1.3f + (1.0f / (playerToGarbagePileLength / 3.0f));
+						garbageHPBarTransform.setScale       (glm::vec3(newScale, newScale, 1.0f));
+						garbageHPBarOutlineTransform.setScale(glm::vec3(newScale, newScale, 1.0f));
 
 						//disable any HP bars that are behind the camera
 						bool newEnabled = playerLookDotGarbagePileDirection > 0.0f;

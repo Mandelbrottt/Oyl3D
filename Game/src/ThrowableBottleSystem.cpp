@@ -117,7 +117,8 @@ bool ThrowableBottleSystem::onEvent(const Event& event)
 			else //no bottle involved in the collision
 				break;
 
-			auto& bottle = registry->get<ThrowableBottle>(bottleEntity);
+			auto& bottle          = registry->get<ThrowableBottle>(bottleEntity);
+			auto& bottleTransform = registry->get<component::Transform>(bottleEntity);
 
 			if (bottle.isBeingThrown)
 			{
@@ -133,20 +134,37 @@ bool ThrowableBottleSystem::onEvent(const Event& event)
 
 				if (bottle.playerThrowingEntity != playerEntity)
 				{
-					auto& player = registry->get<Player>(playerEntity);
+					auto& player          = registry->get<Player>(playerEntity);
+					auto& playerTransform = registry->get<component::Transform>(playerEntity);
+					auto& playerRB        = registry->get<component::RigidBody>(playerEntity);
+
 					OYL_LOG("PLAYER {} WAS HIT BY A BOTTLE!", (int)player.playerNum + 1);
+
+					//apply knockback when hit by bottle
+					glm::vec3 forceDirection = playerTransform.getPositionGlobal() - bottleTransform.getPositionGlobal();
+					forceDirection.y = 0.0f;
+					playerRB.addImpulse(forceDirection * 140.0f);
+
 					registry->destroy(bottleEntity); //the bottle breaks
 
 					//bottle stuns the player hit and makes them drop their carried items
 					PlayerDropItemRequestEvent playerDropItemRequest;
 					playerDropItemRequest.playerEntity             = playerEntity;
-					playerDropItemRequest.itemClassificationToDrop = PlayerItemClassifiation::any;
+					playerDropItemRequest.itemClassificationToDrop = PlayerItemClassification::any;
 					postEvent(playerDropItemRequest);
 
 					PlayerStateChangeEvent playerStateChange;
 					playerStateChange.playerEntity = playerEntity;
 					playerStateChange.newState     = PlayerState::stunned;
 					postEvent(playerStateChange);
+
+					GamepadVibrationRequestEvent gamepadVibration;
+					gamepadVibration.gid = player.controllerNum;
+					gamepadVibration.leftTime   = 0.38f;
+					gamepadVibration.rightTime  = 0.38f;
+					gamepadVibration.leftMotor  = 1.0f;
+					gamepadVibration.rightMotor = 1.0f;
+					postEvent(gamepadVibration);
 				}
 			}
 
