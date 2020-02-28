@@ -48,6 +48,7 @@ void GarbagePileHealthBarSystem::onUpdate()
 				if (garbageHPBar.currentFillAmount <= 0.001f) //add a small buffer
 				{
 					//reset the bar to full
+					garbageHPBar.currentFillAmount  = 1.0f;
 					garbageHPBar.startValue         = 1.0f;
 					garbageHPBar.targetValue        = 1.0f;
 					garbageHPBarGui.upperClipping.y = 1.0f;
