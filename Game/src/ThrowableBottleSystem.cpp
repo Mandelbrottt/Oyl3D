@@ -143,14 +143,14 @@ bool ThrowableBottleSystem::onEvent(const Event& event)
 					//apply knockback when hit by bottle
 					glm::vec3 forceDirection = playerTransform.getPositionGlobal() - bottleTransform.getPositionGlobal();
 					forceDirection.y = 0.0f;
-					playerRB.addImpulse(forceDirection * 120.0f);
+					playerRB.addImpulse(forceDirection * 140.0f);
 
 					registry->destroy(bottleEntity); //the bottle breaks
 
 					//bottle stuns the player hit and makes them drop their carried items
 					PlayerDropItemRequestEvent playerDropItemRequest;
 					playerDropItemRequest.playerEntity             = playerEntity;
-					playerDropItemRequest.itemClassificationToDrop = PlayerItemClassifiation::any;
+					playerDropItemRequest.itemClassificationToDrop = PlayerItemClassification::any;
 					postEvent(playerDropItemRequest);
 
 					PlayerStateChangeEvent playerStateChange;

@@ -23,7 +23,7 @@ enum class PlayerState
 	stunned
 };
 
-enum class PlayerItemClassifiation
+enum class PlayerItemClassification
 {
 	primary,
 	secondary,

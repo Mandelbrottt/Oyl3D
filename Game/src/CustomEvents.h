@@ -57,13 +57,13 @@ OYL_EVENT_STRUCT(PlayerInteractResultEvent, (oyl::EventType) TypePlayerInteractR
 OYL_EVENT_STRUCT(PlayerInteractionRequestEvent, (oyl::EventType) TypePlayerInteractionRequest, (oyl::EventCategory) CategoryPlayer,
 	{
 		entt::entity playerEntity;
-		PlayerItemClassifiation itemClassifiatonToUse;
+		PlayerItemClassification itemClassificatonToUse;
 	});
 
 OYL_EVENT_STRUCT(PlayerDropItemRequestEvent, (oyl::EventType) TypePlayerDropItemRequest, (oyl::EventCategory) CategoryPlayer,
 	{
 		entt::entity playerEntity;
-		PlayerItemClassifiation itemClassificationToDrop;
+		PlayerItemClassification itemClassificationToDrop;
 	});
 
 OYL_EVENT_STRUCT(CancelButtonPressedEvent, (oyl::EventType) TypeCancelButtonPressed, (oyl::EventCategory) CategoryPlayer,
