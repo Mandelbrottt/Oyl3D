@@ -10,7 +10,12 @@ class GameOverCheckSystem : public System
 {
 	OYL_CTOR(GameOverCheckSystem, System)
 
-	bool isGameOver = false;
+	bool isGameOver        = false;
+	bool startGameEndTimer = false;
+
+	float waitBeforeEndingCountdown = 1.5f;
+
+	GameEndResult gameResult;
 
 	void onEnter() override;
 	void onExit() override;

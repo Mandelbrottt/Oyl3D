@@ -23,7 +23,7 @@ enum class PlayerState
 	stunned
 };
 
-enum class PlayerItemClassifiation
+enum class PlayerItemClassification
 {
 	primary,
 	secondary,
@@ -99,6 +99,8 @@ struct Player
 	entt::entity secondaryCarriedItem = entt::null;
     
 	PlayerState state = PlayerState::idle;
+
+	bool transitionIntoQTE = false;
 
 	glm::vec3 moveDirection = glm::vec3(0.0f);
 
@@ -252,11 +254,6 @@ struct PlayerHUDElement
 struct Reticle
 {
 	ReticleType type;
-};
-
-struct EndScreen
-{
-	bool isLoseScreen;
 };
 
 struct GarbagePileHealthBar

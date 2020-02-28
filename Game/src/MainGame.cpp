@@ -747,7 +747,7 @@ public:
 					{
 						PlayerInteractionRequestEvent playerInteractionRequest;
 						playerInteractionRequest.playerEntity          = playerEntity;
-						playerInteractionRequest.itemClassifiatonToUse = PlayerItemClassifiation::any;
+						playerInteractionRequest.itemClassificatonToUse = PlayerItemClassification::any;
 						postEvent(playerInteractionRequest);
 					}
 				}
@@ -803,7 +803,7 @@ public:
 					{
 						PlayerInteractionRequestEvent playerInteractionRequest;
 						playerInteractionRequest.playerEntity          = playerEntity;
-						playerInteractionRequest.itemClassifiatonToUse = PlayerItemClassifiation::primary;
+						playerInteractionRequest.itemClassificatonToUse = PlayerItemClassification::primary;
 						postEvent(playerInteractionRequest);
 
 						break;
@@ -854,7 +854,7 @@ public:
 					{
 						PlayerInteractionRequestEvent playerInteractionRequest;
 						playerInteractionRequest.playerEntity          = playerEntity;
-						playerInteractionRequest.itemClassifiatonToUse = PlayerItemClassifiation::primary;
+						playerInteractionRequest.itemClassificatonToUse = PlayerItemClassification::primary;
 						postEvent(playerInteractionRequest);
 					}
 
@@ -866,7 +866,7 @@ public:
 					{
 						PlayerInteractionRequestEvent playerInteractionRequest;
 						playerInteractionRequest.playerEntity          = playerEntity;
-						playerInteractionRequest.itemClassifiatonToUse = PlayerItemClassifiation::secondary;
+						playerInteractionRequest.itemClassificatonToUse = PlayerItemClassification::secondary;
 						postEvent(playerInteractionRequest);
 					}
 
@@ -906,7 +906,7 @@ public:
 				{
 					PlayerInteractionRequestEvent playerInteractionRequest;
 					playerInteractionRequest.playerEntity          = playerEntity;
-					playerInteractionRequest.itemClassifiatonToUse = PlayerItemClassifiation::any;
+					playerInteractionRequest.itemClassificatonToUse = PlayerItemClassification::any;
 					postEvent(playerInteractionRequest);
 
 					break;
@@ -923,7 +923,7 @@ public:
 				{
 					PlayerDropItemRequestEvent playerDropItemRequest;
 					playerDropItemRequest.playerEntity             = playerEntity;
-					playerDropItemRequest.itemClassificationToDrop = PlayerItemClassifiation::primary;
+					playerDropItemRequest.itemClassificationToDrop = PlayerItemClassification::primary;
 					postEvent(playerDropItemRequest);
 
 					break;
@@ -932,7 +932,7 @@ public:
 				{
 					PlayerDropItemRequestEvent playerDropItemRequest;
 					playerDropItemRequest.playerEntity             = playerEntity;
-					playerDropItemRequest.itemClassificationToDrop = PlayerItemClassifiation::secondary;
+					playerDropItemRequest.itemClassificationToDrop = PlayerItemClassification::secondary;
 					postEvent(playerDropItemRequest);
 
 					break;
