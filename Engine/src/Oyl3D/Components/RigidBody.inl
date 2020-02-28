@@ -46,6 +46,16 @@ namespace oyl::component
         return m_propertyFlags;
     }
 
+    inline u16 RigidBody::getCollisionGroup() const
+    {
+        return m_collisionGroup;
+    }
+    
+    inline u16 RigidBody::getCollisionMask() const
+    {
+        return m_collisionMask;
+    }
+
     inline void RigidBody::setVelocity(glm::vec3 velocity)
     {
         m_isDirty |= m_velocity != velocity;
@@ -118,5 +128,17 @@ namespace oyl::component
             m_propertyFlags |= flags;
         else
             m_propertyFlags &= ~flags;
+    }
+
+    inline void RigidBody::setCollisionGroup(u16 group)
+    {
+        m_isDirty = true;
+        m_collisionGroup = group;
+    }
+
+    inline void RigidBody::setCollisionMask(u16 mask)
+    {
+        m_isDirty = true;
+        m_collisionMask = mask;
     }
 }

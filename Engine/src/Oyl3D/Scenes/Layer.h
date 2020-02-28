@@ -52,6 +52,12 @@ namespace oyl
         //static bool isInitialized = false;
         //OYL_ASSERT(!isInitialized, "Systems should only be initialized once!");
 
+        for (const auto& system : m_systems)
+        {
+            if (dynamic_cast<SYSTEM*>(system.get()))
+                return;
+        }
+        
         Ref<System> newSystem = SYSTEM::create();
         
         newSystem->setRegistry(registry);

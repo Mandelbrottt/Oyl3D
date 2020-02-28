@@ -359,7 +359,7 @@ namespace oyl::internal
             //cachedBody.body->setLinearFactor(btVector3(1, 1, 1));
             cachedBody.body->setAngularFactor(btVector3(x, y, z));
 
-            m_btWorld->addRigidBody(cachedBody.body.get());
+            m_btWorld->addRigidBody(cachedBody.body.get(), rigidBody.getCollisionGroup(), rigidBody.getCollisionMask());
 
             if (transform.m_isPositionOverridden ||
                 transform.m_isRotationOverridden ||
@@ -768,7 +768,7 @@ namespace oyl::internal
             body->setCollisionFlags(body->getCollisionFlags() |
                                     btCollisionObject::CF_CUSTOM_MATERIAL_CALLBACK);
 
-            m_btWorld->addRigidBody(body.get());
+            m_btWorld->addRigidBody(body.get(), rigidBodyComponent.m_collisionGroup, rigidBodyComponent.m_collisionMask);
 
             m_rigidBodies[entity]->entity = entity;
             m_rigidBodies[entity]->body   = body;

@@ -81,17 +81,16 @@ namespace oyl::internal
     
     void GuiLayer::onEnter()
     {
-        scheduleSystemUpdate<EditorCameraSystem>();
+        scheduleSystemUpdate<EditorCameraSystem>(-1u);
         //scheduleSystemUpdate<EditorRenderSystem>();
 
         listenForAllEvents();
 
-        for (auto& system : m_systems)
-        {
-            system->setRegistry(registry);
-            system->setDispatcher(m_dispatcher);
-            m_dispatcher->registerListener(system, -1u);
-        }
+        //for (auto& system : m_systems)
+        //{
+        //    system->setRegistry(registry);
+        //    system->setDispatcher(m_dispatcher);
+        //}
 
         m_fileSaveTimeIt = m_fileSaveTimes.end();
         updateAssetList();
@@ -957,8 +956,8 @@ namespace oyl::internal
 
             ImGui::TextUnformatted("Culling Mask"); ImGui::SameLine();
             char preview[33]{ 0 };
-            for (size_t i = 0; i < sizeof(preview); i++)
-                preview[i] = char('0' + !!(renderable.cullingMask & 1u << (32u - i)));
+            for (size_t i = 0; i < sizeof(preview) - 1; i++)
+                preview[i] = char('0' + !!(renderable.cullingMask & 1u << (31u - i)));
             if (ImGui::BeginCombo("##RenderableCullingMaskCombo", preview))
             {
                 for (int i = 0; i < 32; i++)
@@ -1048,8 +1047,8 @@ namespace oyl::internal
 
             ImGui::TextUnformatted("Culling Mask"); ImGui::SameLine();
             char preview[33]{ 0 };
-            for (size_t i = 0; i < sizeof(preview); i++)
-                preview[i] = char('0' + !!(gui.cullingMask & 1u << (32u - i)));
+            for (size_t i = 0; i < sizeof(preview) - 1; i++)
+                preview[i] = char('0' + !!(gui.cullingMask & 1u << (31u - i)));
             if (ImGui::BeginCombo("##GuiRenderableCullingMaskCombo", preview))
             {
                 for (int i = 0; i < 32; i++)
@@ -1396,6 +1395,46 @@ namespace oyl::internal
             bool useGravity = doCheckbox("Use Gravity", RigidBody::USE_GRAVITY);
             bool isKinematic = doCheckbox("Is Kinematic", RigidBody::IS_KINEMATIC);
             bool doCollisions = doCheckbox("Detect Collisions", RigidBody::DETECT_COLLISIONS);
+
+            if (doCollisions)
+            {
+                {
+                    u16 group = rb.getCollisionGroup();
+                    ImGui::TextUnformatted("Collision Group"); ImGui::SameLine();
+                    char preview[17]{ 0 };
+                    for (size_t i = 0; i < sizeof(preview) - 1; i++)
+                        preview[i] = char('0' + !!(group & 1u << (15u - i)));
+                    if (ImGui::BeginCombo("##RigidBodyCollisionGroupCombo", preview))
+                    {
+                        for (int i = 0; i < 16; i++)
+                        {
+                            if (ImGui::Selectable(g_numbersList[i], group & 1u << i, ImGuiSelectableFlags_DontClosePopups))
+                                group ^= 1u << i;
+                        }
+                        ImGui::EndCombo();
+                    }
+                    if (group != rb.getCollisionGroup())
+                        rb.setCollisionGroup(group);
+                }
+                {
+                    u16 mask = rb.getCollisionMask();
+                    ImGui::TextUnformatted("Collision Mask"); ImGui::SameLine();
+                    char preview[17]{ 0 };
+                    for (size_t i = 0; i < sizeof(preview) - 1; i++)
+                        preview[i] = char('0' + !!(mask & 1u << (15u - i)));
+                    if (ImGui::BeginCombo("##RigidBodyCollisionMaskCombo", preview))
+                    {
+                        for (int i = 0; i < 16; i++)
+                        {
+                            if (ImGui::Selectable(g_numbersList[i], mask & 1u << i, ImGuiSelectableFlags_DontClosePopups))
+                                mask ^= 1u << i;
+                        }
+                        ImGui::EndCombo();
+                    }
+                    if (mask != rb.getCollisionMask())
+                        rb.setCollisionMask(mask);
+                }
+            }
 
             glm::bvec3 isFrozen = {
                 rb.getProperty(RigidBody::FREEZE_ROTATION_X),

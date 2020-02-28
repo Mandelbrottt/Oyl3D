@@ -336,6 +336,8 @@ namespace oyl::internal
         j["Mass"] = rb.getMass();
         j["Friction"] = rb.getFriction();
         j["Properties"] = rb.getPropertyFlags();
+        j["Group"] = rb.getCollisionGroup();
+        j["Mask"] = rb.getCollisionMask();
     }
 
     static void savePointLight(entt::entity entity, entt::registry& registry, json& j)
@@ -703,8 +705,6 @@ namespace oyl::internal
                         if (auto it = jShape.find("Radius"); it != jShape.end())
                             shape.cylinder.setRadius(it->get<float>());
                         break;
-                    //case ColliderType::Mesh:
-                    //    break;
                 }
             }
         }
@@ -724,6 +724,12 @@ namespace oyl::internal
 
         if (auto it = j.find("Properties"); it != j.end() && it->is_number_unsigned())
             rb.setPropertyFlags(it->get<uint>());
+
+        if (auto it = j.find("Group"); it != j.end() && it->is_number_unsigned())
+            rb.setCollisionGroup(it->get<u16>());
+
+        if (auto it = j.find("Mask"); it != j.end() && it->is_number_unsigned())
+            rb.setCollisionMask(it->get<u16>());
     }
 
     static void loadPointLight(entt::entity entity, entt::registry& registry, const json& j)
@@ -864,9 +870,8 @@ namespace oyl::internal
         json sceneJson;
         
         using component::EntityInfo;
-        registry.each([&registry, &sceneJson](const entt::entity entity)
+        registry.view<EntityInfo>().each([&registry, &sceneJson](entt::entity entity, EntityInfo& info)
         {
-            EntityInfo& info = registry.get<EntityInfo>(entity);
             entityToJson(entity, registry, sceneJson[info.name]);
         });
 
