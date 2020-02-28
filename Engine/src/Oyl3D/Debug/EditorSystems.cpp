@@ -301,6 +301,8 @@ namespace oyl::internal
                         std::string shadowName = "u_shadow[" + std::to_string(shadowIndex) + "]";
                         boundMaterial->setUniform1i(shadowName + ".type", 2);
                         boundMaterial->setUniform1i(shadowName + ".map", 5 + shadowIndex);
+                        glm::vec2 biasMinMax = { dirLightProps.biasMin, dirLightProps.biasMax };
+                        boundMaterial->setUniform2f(shadowName + ".biasMinMax", biasMinMax);
                         dirLightProps.m_frameBuffer->bindDepthAttachment(5 + shadowIndex);
 
                         shadowIndex++;

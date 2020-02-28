@@ -348,6 +348,12 @@ namespace oyl
         m_depthHeight = height;
 
         glBindFramebuffer(GL_FRAMEBUFFER, m_rendererID);
+
+        if (m_depthAttachmentID)
+        {
+            glDeleteTextures(1, &m_depthAttachmentID);
+            m_depthAttachmentID = 0;
+        }
 	
         // Create depth texture
         glGenTextures(1, &m_depthAttachmentID);

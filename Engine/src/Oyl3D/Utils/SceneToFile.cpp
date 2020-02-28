@@ -370,8 +370,17 @@ namespace oyl::internal
         jLight["Ambient"] = dl.ambient;
         jLight["Diffuse"] = dl.diffuse;
         jLight["Specular"] = dl.specular;
-        jLight["CastShadows"] = dl.castShadows;
 
+        auto& jShadow = jLight["Shadow"];
+        if (dl.castShadows)
+        {
+            jShadow["Resolution"]  = dl.resolution;
+            jShadow["LowerBounds"] = dl.lowerBounds;
+            jShadow["UpperBounds"] = dl.upperBounds;
+            jShadow["ClipLength"]  = dl.clipLength;
+            jShadow["Bias"]        = glm::vec2(dl.biasMin, dl.biasMax);
+        }
+        
         j.push_back(std::move(jLight));
     }
 
@@ -767,7 +776,26 @@ namespace oyl::internal
                 it->get_to(ls.diffuse);
             if (const auto it = jLight.find("Specular"); it != jLight.end())
                 it->get_to(ls.specular);
-            if (const auto it = jLight.find("CastShadows"); it != jLight.end())
+            if (const auto sIt = jLight.find("Shadow"); sIt != jLight.end() && sIt->is_object())
+            {
+                ls.castShadows = true;
+                
+                if (const auto it = sIt->find("Resolution"); it != sIt->end())
+                    it->get_to(ls.resolution);
+                if (const auto it = sIt->find("LowerBounds"); it != sIt->end())
+                    it->get_to(ls.lowerBounds);
+                if (const auto it = sIt->find("UpperBounds"); it != sIt->end())
+                    it->get_to(ls.upperBounds);
+                if (const auto it = sIt->find("ClipLength"); it != sIt->end())
+                    it->get_to(ls.clipLength);
+                if (const auto it = sIt->find("Bias"); it != sIt->end())
+                {
+                    auto bias = it->get<glm::vec2>();
+                    ls.biasMin = bias.x, ls.biasMax = bias.y;
+                }
+            }
+            else ls.castShadows = false;
+            if (const auto it = jLight.find("CastShadows"); it != jLight.end() && it->is_boolean())
                 it->get_to(ls.castShadows);
         }
     }

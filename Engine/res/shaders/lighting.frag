@@ -59,8 +59,9 @@ struct SpotLight
 
 struct Shadow
 {
-	int type;
+	int       type;
 	sampler2D map;
+	vec2      biasMinMax;
 };
 
 in VS_OUT {
@@ -84,7 +85,7 @@ vec3 calculateDirLight(DirLight light, vec3 fragPos, vec3 normal, vec2 texCoord,
 vec3 calculatePointLight(PointLight light, vec3 fragPos, vec3 normal, vec2 texCoord, inout int shadowIndex);
 vec3 calculateSpotLight(SpotLight light, vec3 fragPos, vec3 normal, vec2 texCoord, inout int shadowIndex);
 
-float shadowCalculation(vec4 lightSpacePosition, sampler2D shadowMap, vec3 normal, vec3 lightDir);
+float shadowCalculation(vec4 lightSpacePosition, sampler2D shadowMap, vec2 biasMinMax, vec3 normal, vec3 lightDir);
 
 void main() 
 {
@@ -157,7 +158,7 @@ vec3 calculatePointLight(PointLight light, vec3 fragPos, vec3 normal, vec2 texCo
 	
 	float shadow = 0.0;
 	if (shadowIndex < NUM_SHADOW_MAPS && u_shadow[shadowIndex].type == POINT_SHADOW)
-		shadow = shadowCalculation(fs_in.lightSpacePosition, u_shadow[shadowIndex].map, normal, lightDir);
+		shadow = shadowCalculation(fs_in.lightSpacePosition, u_shadow[shadowIndex].map, u_shadow[shadowIndex].biasMinMax, normal, lightDir);
 	return ambient + (1.0 - shadow) * (diffuse + specular);
 }
 
@@ -179,7 +180,7 @@ vec3 calculateDirLight(DirLight light, vec3 fragPos, vec3 normal, vec2 texCoord,
 
 	float shadow = 0.0;
 	if (shadowIndex < NUM_SHADOW_MAPS && u_shadow[shadowIndex].type == DIR_SHADOW)
-		shadow = shadowCalculation(fs_in.lightSpacePosition, u_shadow[shadowIndex].map, normal, lightDir);
+		shadow = shadowCalculation(fs_in.lightSpacePosition, u_shadow[shadowIndex].map, u_shadow[shadowIndex].biasMinMax, normal, lightDir);
 	return ambient + (1.0 - shadow) * (diffuse + specular);
 }
 
@@ -216,7 +217,7 @@ vec3 calculateSpotLight(SpotLight light, vec3 fragPos, vec3 normal, vec2 texCoor
 		
 		float shadow = 0.0;
 		if (shadowIndex < NUM_SHADOW_MAPS && u_shadow[shadowIndex].type == SPOT_SHADOW)
-			shadow = shadowCalculation(fs_in.lightSpacePosition, u_shadow[shadowIndex].map, normal, lightDir);
+			shadow = shadowCalculation(fs_in.lightSpacePosition, u_shadow[shadowIndex].map, u_shadow[shadowIndex].biasMinMax, normal, lightDir);
 		return ambient + (1.0 - shadow) * (diffuse + specular);
 	}
 	else 
@@ -225,7 +226,7 @@ vec3 calculateSpotLight(SpotLight light, vec3 fragPos, vec3 normal, vec2 texCoor
 	}
 }
 
-float shadowCalculation(vec4 lightSpacePosition, sampler2D shadowMap, vec3 normal, vec3 lightDir)
+float shadowCalculation(vec4 lightSpacePosition, sampler2D shadowMap, vec2 biasMinMax, vec3 normal, vec3 lightDir)
 {
 	// Transform into NDC then into [0,1]
     vec3 projCoords = lightSpacePosition.xyz / lightSpacePosition.w;
@@ -235,8 +236,8 @@ float shadowCalculation(vec4 lightSpacePosition, sampler2D shadowMap, vec3 norma
     float currentDepth = projCoords.z;
 	
 	// Check the test depth against the current depth
-	float biasMin = 0.001, biasMax = 0.005;
-	float bias = max(biasMax * (1.0 - dot(normal, lightDir)), biasMin); 
+	// float biasMin = 0.001, biasMax = 0.005;
+	float bias = max(biasMinMax.y * (1.0 - dot(normal, lightDir)), biasMinMax.x); 
     // float shadow = currentDepth - bias > closestDepth  ? 1.0 : 0.0;
 
 	float shadow = 0.0;
@@ -251,6 +252,7 @@ float shadowCalculation(vec4 lightSpacePosition, sampler2D shadowMap, vec3 norma
 	}
 	shadow /= 9.0;
 
+	// TODO: Do Variance Shadow Mapping
 
 	// if (projCoords.x < 0.0 || projCoords.x > 1.0 ||
 	//     projCoords.y < 0.0 || projCoords.y > 1.0)

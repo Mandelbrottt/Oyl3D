@@ -1514,6 +1514,77 @@ namespace oyl::internal
             ImGui::SameLine();
             ImGui::Checkbox("##CastShadowsDirectionalLight", &dl.castShadows);
 
+            if (dl.castShadows)
+            {
+                ImGui::Indent(10);
+
+                auto flags = ImGuiInputTextFlags_EnterReturnsTrue;
+
+                float newWidth = ImGui::GetWindowContentRegionWidth() / 6;
+
+                ImGui::PushItemWidth(newWidth);
+
+                const float posDragSpeed = 0.2f;
+                ImGui::TextUnformatted("Resolution");
+                ImGui::SameLine(ImGui::GetWindowContentRegionWidth() - (15 * 2 + newWidth * 2 + 27));
+                ImGui::SetNextItemWidth(15);
+                ImGui::DragFloat("##XShadowResolution", &dl.resolution.x, posDragSpeed, 0, 0, "X");
+                ImGui::SameLine();
+                ImGui::InputFloat("##XShadowResolutionInput", &dl.resolution.x, 0, 0, "%.2f", flags);
+                ImGui::SameLine();
+                ImGui::SetNextItemWidth(15);
+                ImGui::DragFloat("##YShadowResolution", &dl.resolution.y, posDragSpeed, 0, 0, "Y");
+                ImGui::SameLine();
+                ImGui::InputFloat("##YShadowResolutionInput", &dl.resolution.y, 0, 0, "%.2f", flags);
+
+                ImGui::TextUnformatted("Lower Size Bounds");
+                ImGui::SameLine(ImGui::GetWindowContentRegionWidth() - (15 * 2 + newWidth * 2 + 27));
+                ImGui::SetNextItemWidth(15);
+                ImGui::DragFloat("##XShadowLowerBounds", &dl.lowerBounds.x, posDragSpeed, 0, 0, "X");
+                ImGui::SameLine();
+                ImGui::InputFloat("##XShadowLowerBoundsInput", &dl.lowerBounds.x, 0, 0, "%.2f", flags);
+                ImGui::SameLine();
+                ImGui::SetNextItemWidth(15);
+                ImGui::DragFloat("##YShadowLowerBounds", &dl.lowerBounds.y, posDragSpeed, 0, 0, "Y");
+                ImGui::SameLine();
+                ImGui::InputFloat("##YShadowLowerBoundsInput", &dl.lowerBounds.y, 0, 0, "%.2f", flags);
+
+                ImGui::TextUnformatted("Upper Size Bounds");
+                ImGui::SameLine(ImGui::GetWindowContentRegionWidth() - (15 * 2 + newWidth * 2 + 27));
+                ImGui::SetNextItemWidth(15);
+                ImGui::DragFloat("##XShadowUpperBounds", &dl.upperBounds.x, posDragSpeed, 0, 0, "X");
+                ImGui::SameLine();
+                ImGui::InputFloat("##XShadowUpperBoundsInput", &dl.upperBounds.x, 0, 0, "%.2f", flags);
+                ImGui::SameLine();
+                ImGui::SetNextItemWidth(15);
+                ImGui::DragFloat("##YShadowUpperBounds", &dl.upperBounds.y, posDragSpeed, 0, 0, "Y");
+                ImGui::SameLine();
+                ImGui::InputFloat("##YShadowUpperBoundsInput", &dl.upperBounds.y, 0, 0, "%.2f", flags);
+
+                ImGui::TextUnformatted("Shadow Bias");
+                ImGui::SameLine(ImGui::GetWindowContentRegionWidth() - (30 * 2 + newWidth * 2 + 27));
+                ImGui::SetNextItemWidth(30);
+                ImGui::DragFloat("##XShadowBiasMin", &dl.biasMin, 0.001f, 0, 1.0f, "Min");
+                ImGui::SameLine();
+                ImGui::InputFloat("##XShadowBiasMinInput", &dl.biasMin, 0, 0, "%.3f", flags);
+                ImGui::SameLine();
+                ImGui::SetNextItemWidth(30);
+                ImGui::DragFloat("##YShadowBiasMaxBounds", &dl.biasMax, 0.001f, 0, 1.0f, "Max");
+                ImGui::SameLine();
+                ImGui::InputFloat("##YShadowBiasMaxInput", &dl.biasMax, 0, 0, "%.3f", flags);
+
+                ImGui::PopItemWidth();
+
+                ImGui::TextUnformatted("Clip Length");
+                ImGui::SameLine(ImGui::GetWindowContentRegionWidth() - (15 * 2 + newWidth * 2 + 27));
+                ImGui::SetNextItemWidth(15);
+                ImGui::DragFloat("##ShadowClipLength", &dl.clipLength, 0.02f, 0, 0, "L");
+                ImGui::SameLine();
+                ImGui::InputFloat("##ShadowClipLengthInput", &dl.clipLength, 0, 0, "%.2f", flags);
+
+                ImGui::Unindent(10);
+            }
+
             ImGui::ColorEdit3("Ambient##DirectionalLightAmbient", value_ptr(dl.ambient));
             ImGui::ColorEdit3("Diffuse##DirectionalLightDiffuse", value_ptr(dl.diffuse));
             ImGui::ColorEdit3("Specular##DirectionalLightSpecular", value_ptr(dl.specular));
@@ -2433,7 +2504,13 @@ namespace oyl::internal
             if (ImGui::IsMouseClicked(1) || ImGui::IsMouseReleased(1))
             {
                 EditorCameraMoveRequestEvent event;
-                event.doMove = ImGui::IsItemClicked(1);
+                event.doMove = !ImGuizmo::IsUsing() && ImGui::IsItemClicked(1);
+                postEvent(event);
+            }
+            else if (ImGuizmo::IsUsing())
+            {
+                EditorCameraMoveRequestEvent event;
+                event.doMove = false;
                 postEvent(event);
             }
     
