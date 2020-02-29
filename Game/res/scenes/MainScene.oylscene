@@ -15325,6 +15325,44 @@
             }
         }
     },
+    "Player1 Arms": {
+        "Renderable": {
+            "CastShadows": false,
+            "CullingMask": 1,
+            "Enabled": true,
+            "Material": {
+                "Alias": "Character Tall Blue"
+            },
+            "Mesh": {
+                "Alias": "Firstperson_Mesh",
+                "FilePath": ""
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": true
+            },
+            "Parent": "Player1 Camera",
+            "Position": {
+                "X": 0.0,
+                "Y": 0.0,
+                "Z": -0.019999999552965164
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 0.009999999776482582,
+                "Y": 0.009999999776482582,
+                "Z": 0.009999999776482582
+            }
+        }
+    },
     "Player1 Blue": {
         "Collidable": {
             "Shapes": [
@@ -15444,6 +15482,44 @@
                 "X": 1.0000001192092896,
                 "Y": 1.0000001192092896,
                 "Z": 1.0
+            }
+        }
+    },
+    "Player2 Arms": {
+        "Renderable": {
+            "CastShadows": false,
+            "CullingMask": 2,
+            "Enabled": true,
+            "Material": {
+                "Alias": "Character Tall Red"
+            },
+            "Mesh": {
+                "Alias": "Firstperson_Mesh",
+                "FilePath": ""
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": true
+            },
+            "Parent": "Player2 Camera",
+            "Position": {
+                "X": 0.0,
+                "Y": 0.0,
+                "Z": -0.019999999552965164
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": -0.0,
+                "qZ": -1.2432549738150556e-05
+            },
+            "Scale": {
+                "X": 0.009999999776482582,
+                "Y": 0.009999999776482582,
+                "Z": 0.009999999776482582
             }
         }
     },
@@ -15569,6 +15645,44 @@
             }
         }
     },
+    "Player3 Arms": {
+        "Renderable": {
+            "CastShadows": false,
+            "CullingMask": 4,
+            "Enabled": true,
+            "Material": {
+                "Alias": "Character Tall Blue"
+            },
+            "Mesh": {
+                "Alias": "Firstperson_Mesh",
+                "FilePath": ""
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": true
+            },
+            "Parent": "Player3 Camera",
+            "Position": {
+                "X": 0.0,
+                "Y": 0.0,
+                "Z": -0.019999999552965164
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 0.010000001639127731,
+                "Y": 0.009999999776482582,
+                "Z": 0.010000001639127731
+            }
+        }
+    },
     "Player3 Blue": {
         "Collidable": {
             "Shapes": [
@@ -15688,6 +15802,44 @@
                 "X": 1.0000001192092896,
                 "Y": 1.0000001192092896,
                 "Z": 1.0
+            }
+        }
+    },
+    "Player4 Arms": {
+        "Renderable": {
+            "CastShadows": false,
+            "CullingMask": 8,
+            "Enabled": true,
+            "Material": {
+                "Alias": "Character Tall Red"
+            },
+            "Mesh": {
+                "Alias": "Firstperson_Mesh",
+                "FilePath": ""
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": true
+            },
+            "Parent": "Player4 Camera",
+            "Position": {
+                "X": 0.0,
+                "Y": 0.0,
+                "Z": -0.019999999552965164
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 0.009999999776482582,
+                "Y": 0.009999999776482582,
+                "Z": 0.009999999776482582
             }
         }
     },
