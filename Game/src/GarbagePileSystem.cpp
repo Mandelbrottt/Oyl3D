@@ -13,9 +13,6 @@ void GarbagePileSystem::onExit()
 
 void GarbagePileSystem::onUpdate()
 {
-	OYL_LOG("Blue: {}", bluePassiveBuildupWait);
-	OYL_LOG("Red:  {}", redPassiveBuildupWait);
-
 	bool addBlueGarbageLevel = false;
 	bool addRedGarbageLevel  = false;
 
