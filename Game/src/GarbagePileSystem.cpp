@@ -13,22 +13,19 @@ void GarbagePileSystem::onExit()
 
 void GarbagePileSystem::onUpdate()
 {
-	OYL_LOG("Blue: {}", bluePassiveBuildupWait);
-	OYL_LOG("Red:  {}", redPassiveBuildupWait);
-
 	bool addBlueGarbageLevel = false;
 	bool addRedGarbageLevel  = false;
 
 	bluePassiveBuildupCountdown -= Time::deltaTime();
 	redPassiveBuildupCountdown  -= Time::deltaTime();
 
-	int blueRandomGarbagePileNum = -5; // initialize to invalid
-	int redRandomGarbagePileNum  = -5; // initialize to invalid
+	int blueRandomGarbagePileNum = -5; //initialize to invalid
+	int redRandomGarbagePileNum  = -5; //initialize to invalid
 
 	if (bluePassiveBuildupCountdown < 0.0f)
 	{
 		addBlueGarbageLevel = true;
-		bluePassiveBuildupWait -= 0.2f;
+		bluePassiveBuildupWait -= 0.25f;
 		bluePassiveBuildupCountdown = bluePassiveBuildupWait;
 
 		//ensure we don't divide by zero
@@ -39,7 +36,7 @@ void GarbagePileSystem::onUpdate()
 	if (redPassiveBuildupCountdown < 0.0f)
 	{
 		addRedGarbageLevel = true;
-		redPassiveBuildupWait -= 0.2f;
+		redPassiveBuildupWait -= 0.25f;
 		redPassiveBuildupCountdown = redPassiveBuildupWait;
 
 		//ensure we don't divide by zero
