@@ -1871,7 +1871,7 @@ namespace oyl::internal
             if (model && currentName != "None")
             {
                 const auto& anim = model->getAnimations().at(currentName);
-                float max = static_cast<float>(anim->mDuration / anim->mTicksPerSecond);
+                float max = anim.duration;
                 //float max = 1.0f;
                 ImGui::SliderFloat("Time##SkeletonAnimatorTime", &skeletonAnimatable.time, 0.0f, max, "%.2f");
             }

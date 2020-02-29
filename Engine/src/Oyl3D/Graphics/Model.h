@@ -4,9 +4,12 @@
 
 #include "Oyl3D/Utils/AssetCache.h"
 
-#include <assimp/Importer.hpp>
-#include <assimp/postprocess.h>
-#include <assimp/scene.h>
+#include "Oyl3D/Animation/SkeletonAnimation.h"
+
+struct aiAnimation;
+struct aiMesh;
+struct aiNode;
+struct aiScene;
 
 namespace oyl
 {    
@@ -16,25 +19,16 @@ namespace oyl
 
     public:
         explicit Model(_Model, const std::string& filepath);
-        ~Model();
 
         void loadFromFile(const std::string& filepath);
 
-        //void bind();
-        //void unbind();
+        void getBoneTransforms(const std::string& name, float time, std::vector<glm::mat4>& out) const;
 
+        const std::unordered_map<std::string, SkeletonAnimation>& getAnimations() const { return m_animations; }
+        
         const std::vector<Mesh>& getMeshes() const { return m_meshes; }
 
         const std::string& getFilePath() const { return m_filepath; }
-
-        void getBoneTransforms(const std::string& animation, float animTime, std::vector<glm::mat4>& transforms);
-        void readNodeHierarchy(const std::string& animation, float a_animTime, const aiNode* a_node, glm::mat4 a_parentTransform);
-
-        const std::unordered_map<std::string, const aiAnimation*>& getAnimations() const { return m_animations; }
-
-        glm::vec3 calcInterpolatedPosition(float a_animTime, const aiNodeAnim* a_nodeAnim);
-        glm::quat calcInterpolatedRotation(float a_animTime, const aiNodeAnim* a_nodeAnim);
-        glm::vec3 calcInterpolatedScale(float a_animTime, const aiNodeAnim* a_nodeAnim);
 
         static void init();
 
@@ -65,35 +59,33 @@ namespace oyl
         static const auto& getCache() { return s_cache.m_cache; }
 
     private:
-        //void processNode(aiNode* a_node, const aiScene* a_scene);
         Mesh processMesh(aiMesh* a_mesh, const aiScene* a_scene);
+        void processNode(aiNode* a_node);
+        void processAnimation(aiAnimation* a_animation);
+
+        void calculateFinalTransform(const SkeletonAnimation& animation,
+                                     float                    time,
+                                     uint                     bone,
+                                     const glm::mat4&         parentTransform) const;
+
+        glm::vec3 calcInterpolatedPosition(float time, const BoneChannel& channel) const;
+        glm::quat calcInterpolatedRotation(float time, const BoneChannel& channel) const;
+        glm::vec3 calcInterpolatedScale(float time, const BoneChannel& channel) const;
         
         std::vector<Mesh> m_meshes;
 
         std::string m_filepath;
-        float m_unitScale = 1.0f;
-
-        static internal::AssetCache<Model> s_cache;
 
         glm::mat4 m_globalInverseTransform = glm::mat4(1.0f);
 
-        std::unordered_map<std::string, uint> m_boneIndices;
-        uint m_numBones = 0;
+        std::unordered_map<std::string, uint> m_boneIDs;
 
-        struct BoneInfo
-        {
-            glm::mat4 transform;
-            glm::mat4 inverseTransform;
-            glm::mat4 finalTransform;
-        };
+        std::vector<Bone> m_bones;
 
-        std::vector<BoneInfo> m_boneInfos;
+        std::unordered_map<std::string, SkeletonAnimation> m_animations;
 
-        std::unordered_map<std::string, const aiAnimation*> m_animations;
+        float m_unitScale = 1.0f;
 
-        // Assimp specific
-        Assimp::Importer* m_importer = nullptr;
-
-        const aiScene* m_scene = nullptr;
+        static internal::AssetCache<Model> s_cache;
     };
 }
