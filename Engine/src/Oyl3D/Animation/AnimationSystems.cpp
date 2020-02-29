@@ -102,14 +102,51 @@ namespace oyl::internal
                 if (auto it = renderable.model->getAnimations().find(sa.animation); 
                     it != renderable.model->getAnimations().end())
                 {
+                    auto& animation = it->second;
+
                     std::vector<glm::mat4> boneTransforms;
                     renderable.model->getBoneTransforms(sa.animation, sa.time, boneTransforms);
 
-                    for (uint i = 0; i < boneTransforms.size(); i++)
+                    renderable.material->shader->bind();
+                    for (uint i = 0; i < 64; i++)
                     {
-                        renderable.material->shader->bind();
-                        renderable.material->shader->setUniformMat4("u_boneTransforms[" + std::to_string(i) + "]", boneTransforms[i]);
+                        glm::mat4 uniform = glm::mat4(1.0f);
+                        if (i < boneTransforms.size())
+                            uniform = boneTransforms[i];
+                        
+                        renderable.material->shader->setUniformMat4("u_boneTransforms[" + std::to_string(i) + "]", uniform);
                     }
+
+                    if (sa.play)
+                    {
+                        float dt = Time::deltaTime();
+                        if (sa.reverse) dt *= -1.0f;
+
+                        sa.time += dt * sa.timeScale;
+
+                        float t_mod_d = abs(fmod(sa.time, animation.duration));
+                        
+                        if (sa.time < 0.0f)
+                        {
+                            sa.time = animation.duration - t_mod_d;
+
+                            if (!sa.loop) 
+                                sa.play = false;
+                        }
+                        else
+                        {
+                            if (sa.time > animation.duration && !sa.loop) 
+                                sa.play = false;
+                            
+                            sa.time = t_mod_d;
+                        }
+                    }
+                }
+                else
+                {
+                    renderable.material->shader->bind();
+                    for (uint i = 0; i < 64; i++)
+                        renderable.material->shader->setUniformMat4("u_boneTransforms[" + std::to_string(i) + "]", glm::mat4(1.0f));
                 }
             }
         });

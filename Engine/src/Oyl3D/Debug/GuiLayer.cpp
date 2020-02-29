@@ -1826,9 +1826,28 @@ namespace oyl::internal
         {
             ImGui::Indent(10);
 
-            auto& skeletonAnimatable = registry->get<SkeletonAnimatable>(m_currentSelection.entity());
+            auto& sa = registry->get<SkeletonAnimatable>(m_currentSelection.entity());
 
-            ImGui::Checkbox("Enabled##SkeletonAnimatableEnabled", &skeletonAnimatable.enabled);
+            ImGui::TextUnformatted("Play   "); ImGui::SameLine();
+            ImGui::Checkbox("##SkeletonAnimatablePlay", &sa.play);
+
+            ImGui::TextUnformatted("Reverse"); ImGui::SameLine();
+            ImGui::Checkbox("##SkeletonAnimatableReverse", &sa.reverse);
+
+            ImGui::TextUnformatted("Loop   "); ImGui::SameLine();
+            ImGui::Checkbox("##SkeletonAnimatableLoop", &sa.loop);
+
+            {
+                float newWidth = ImGui::GetWindowContentRegionWidth() / 6;
+                const float posDragSpeed = 0.01f;
+                ImGui::TextUnformatted("Time Scale");
+                ImGui::SameLine(ImGui::GetWindowContentRegionWidth() - (20 + newWidth + 27));
+                ImGui::SetNextItemWidth(20);
+                ImGui::DragFloat("##TimeScaleAnimation", &sa.timeScale, posDragSpeed, 0.0f, 999.0f, "TS");
+                ImGui::SameLine();
+                ImGui::SetNextItemWidth(newWidth);
+                ImGui::InputFloat("##TimeScaleInputAnimation", &sa.timeScale, 0, 0, "%.2f");
+            }
 
             ImGui::TextUnformatted("Current Animation");
             ImGui::SameLine();
@@ -1845,7 +1864,7 @@ namespace oyl::internal
             {
                 for (const auto& [name, _] : model->getAnimations())
                 {
-                    if (skeletonAnimatable.animation == name)
+                    if (sa.animation == name)
                         currentName = name;
                 }
             }
@@ -1853,15 +1872,15 @@ namespace oyl::internal
             if (ImGui::BeginCombo("##SkeletonAnimationPropertiesCurrentAnimation", currentName.c_str()))
             {
                 if (ImGui::Selectable("None", currentName == "None"))
-                    skeletonAnimatable.animation.clear();
+                    sa.animation.clear();
 
                 if (model)
                 {
                     for (const auto& [name, _] : model->getAnimations())
                     {
-                        if (ImGui::Selectable(name.c_str(), skeletonAnimatable.animation == name))
+                        if (ImGui::Selectable(name.c_str(), sa.animation == name))
                         {
-                            skeletonAnimatable.animation = name;
+                            sa.animation = name;
                         }
                     }
                 }
@@ -1870,10 +1889,13 @@ namespace oyl::internal
 
             if (model && currentName != "None")
             {
+                ImGui::Indent(10);
+
                 const auto& anim = model->getAnimations().at(currentName);
                 float max = anim.duration;
-                //float max = 1.0f;
-                ImGui::SliderFloat("Time##SkeletonAnimatorTime", &skeletonAnimatable.time, 0.0f, max, "%.2f");
+                ImGui::SliderFloat("Time##SkeletonAnimatorTime", &sa.time, 0.0f, max, "%.2f");
+
+                ImGui::Unindent(10);
             }
 
             ImGui::Unindent(10);

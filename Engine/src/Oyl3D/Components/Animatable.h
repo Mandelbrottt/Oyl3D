@@ -59,12 +59,15 @@ namespace oyl::component
 
     struct SkeletonAnimatable
     {
-        bool enabled = true;
-        
-        std::string animation;
+        bool play    = true;
+        bool reverse = false;
+        bool loop    = true;
 
         float time = 0.0f;
-
+        float timeScale = 1.0f;
+        
+        std::string animation;
+        
     private:
         std::string prevAnimation;
 
