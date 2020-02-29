@@ -15342,7 +15342,7 @@
             "Mirror": {
                 "X": false,
                 "Y": false,
-                "Z": true
+                "Z": false
             },
             "Parent": "Player1 Camera",
             "Position": {
@@ -15502,7 +15502,7 @@
             "Mirror": {
                 "X": false,
                 "Y": false,
-                "Z": true
+                "Z": false
             },
             "Parent": "Player2 Camera",
             "Position": {
@@ -15662,7 +15662,7 @@
             "Mirror": {
                 "X": false,
                 "Y": false,
-                "Z": true
+                "Z": false
             },
             "Parent": "Player3 Camera",
             "Position": {
@@ -15822,7 +15822,7 @@
             "Mirror": {
                 "X": false,
                 "Y": false,
-                "Z": true
+                "Z": false
             },
             "Parent": "Player4 Camera",
             "Position": {
