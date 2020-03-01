@@ -9,6 +9,7 @@
 
 #include "Components/Transform.h"
 #include "Components/Camera.h"
+#include "Components/Animatable.h"
 
 namespace oyl
 {
@@ -19,8 +20,11 @@ namespace oyl
     {
         using component::Transform;
         using component::Camera;
+        using component::BoneTarget;
+        
         m_registry->on_construct<Transform>().connect<&Transform::on_construct>();
         m_registry->on_construct<Camera>().connect<&Camera::on_construct>();
+        m_registry->on_construct<BoneTarget>().connect<&BoneTarget::on_construct>();
     }
 
     Scene::~Scene() {}

@@ -48,10 +48,12 @@
 #define GLM_FORCE_ALIGNED_GENTYPES  1
 #define GLM_FORCE_SWIZZLE 1
 #include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtx/matrix_decompose.hpp>
 #include <glm/gtc/matrix_inverse.hpp>
-#include <glm/gtc/type_ptr.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtx/quaternion.hpp>
 #include <glm/gtx/spline.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 #define IMGUI_DEFINE_MATH_OPERATORS 1
 #include <imgui.h>

@@ -22,7 +22,11 @@ namespace oyl
 
         void loadFromFile(const std::string& filepath);
 
-        void getBoneTransforms(const std::string& name, float time, std::vector<glm::mat4>& out) const;
+        void getBoneTransforms(const std::string& animation, float time, std::vector<glm::mat4>& out) const;
+
+        glm::mat4 getBoneTransform(const std::string& animation, const std::string& bone, float time) const;
+
+        const std::unordered_map<std::string, uint>& getBones() const { return m_boneIDs; }
 
         const std::unordered_map<std::string, SkeletonAnimation>& getAnimations() const { return m_animations; }
         
@@ -71,6 +75,8 @@ namespace oyl
         glm::vec3 calcInterpolatedPosition(float time, const BoneChannel& channel) const;
         glm::quat calcInterpolatedRotation(float time, const BoneChannel& channel) const;
         glm::vec3 calcInterpolatedScale(float time, const BoneChannel& channel) const;
+
+        glm::mat4 _getBoneTransform(const SkeletonAnimation& a_animation, uint a_bone, float a_time) const;
         
         std::vector<Mesh> m_meshes;
 

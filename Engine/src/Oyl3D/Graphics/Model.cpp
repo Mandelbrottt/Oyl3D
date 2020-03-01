@@ -282,38 +282,43 @@ namespace oyl
         for (uint i = 0; i < a_animation->mNumChannels; i++)
         {
             aiNodeAnim* channel = a_animation->mChannels[i];
-            BoneChannel bc = {};
 
-            for (uint j = 0; j < channel->mNumPositionKeys; j++)
-            {
-                auto pair = std::make_pair<float, glm::vec3>(0.0f, {});
-                pair.first = static_cast<float>(channel->mPositionKeys[j].mTime) * oneOverTickRate;
-                auto pos = channel->mPositionKeys[j].mValue;
-                pair.second = { pos.x, pos.y, pos.z };
-                pair.second *= m_unitScale;
-                bc.positionKeys.push_back(pair);
-            }
-            
-            for (uint j = 0; j < channel->mNumRotationKeys; j++)
-            {
-                auto pair = std::make_pair<float, glm::quat>(0.0f, {});
-                pair.first = static_cast<float>(channel->mRotationKeys[j].mTime) * oneOverTickRate;
-                auto pos = channel->mRotationKeys[j].mValue;
-                pair.second = { pos.w, pos.x, pos.y, pos.z };
-                bc.rotationKeys.push_back(pair);
-            }
-            
-            for (uint j = 0; j < channel->mNumScalingKeys; j++)
-            {
-                auto pair = std::make_pair<float, glm::vec3>(0.0f, {});
-                pair.first = static_cast<float>(channel->mScalingKeys[j].mTime) * oneOverTickRate;
-                auto pos = channel->mScalingKeys[j].mValue;
-                pair.second = { pos.x, pos.y, pos.z };
-                bc.scaleKeys.push_back(pair);
-            }
-        
             std::string nodeName(channel->mNodeName.C_Str());
-            sAnim.channels[m_boneIDs[nodeName]] = std::move(bc);
+            if (auto it = m_boneIDs.find(nodeName); it != m_boneIDs.end())
+            {
+                BoneChannel& bc = sAnim.channels[it->second];
+                
+                bc.positionKeys.reserve(channel->mNumPositionKeys);
+                for (uint j = 0; j < channel->mNumPositionKeys; j++)
+                {
+                    auto pair   = std::make_pair<float, glm::vec3>(0.0f, {});
+                    pair.first  = static_cast<float>(channel->mPositionKeys[j].mTime) * oneOverTickRate;
+                    auto pos    = channel->mPositionKeys[j].mValue;
+                    pair.second = { pos.x, pos.y, pos.z };
+                    pair.second *= m_unitScale;
+                    bc.positionKeys.push_back(pair);
+                }
+
+                bc.rotationKeys.reserve(channel->mNumRotationKeys);
+                for (uint j = 0; j < channel->mNumRotationKeys; j++)
+                {
+                    auto pair   = std::make_pair<float, glm::quat>(0.0f, {});
+                    pair.first  = static_cast<float>(channel->mRotationKeys[j].mTime) * oneOverTickRate;
+                    auto pos    = channel->mRotationKeys[j].mValue;
+                    pair.second = normalize(glm::quat(pos.w, pos.x, pos.y, pos.z));
+                    bc.rotationKeys.push_back(pair);
+                }
+
+                bc.scaleKeys.reserve(channel->mNumScalingKeys);
+                for (uint j = 0; j < channel->mNumScalingKeys; j++)
+                {
+                    auto pair   = std::make_pair<float, glm::vec3>(0.0f, {});
+                    pair.first  = static_cast<float>(channel->mScalingKeys[j].mTime) * oneOverTickRate;
+                    auto pos    = channel->mScalingKeys[j].mValue;
+                    pair.second = { pos.x, pos.y, pos.z };
+                    bc.scaleKeys.push_back(pair);
+                }
+            }
         }
 
         std::string animName(a_animation->mName.C_Str());
@@ -332,9 +337,9 @@ namespace oyl
             m_animations[animName] = std::move(sAnim);
     }
 
-    void Model::getBoneTransforms(const std::string& name, float time, std::vector<glm::mat4>& out) const
+    void Model::getBoneTransforms(const std::string& animation, float time, std::vector<glm::mat4>& out) const
     {
-        if (m_animations.find(name) == m_animations.end())
+        if (m_animations.find(animation) == m_animations.end())
             return;
 
         out.clear();
@@ -344,7 +349,7 @@ namespace oyl
         {
             if (m_bones[i].parent == -1u)
             {
-                calculateFinalTransform(m_animations.at(name), time, i, glm::mat4(1.0f));
+                calculateFinalTransform(m_animations.at(animation), time, i, glm::mat4(1.0f));
                 break;
             }
         }
@@ -357,13 +362,48 @@ namespace oyl
         return;
     }
 
+    glm::mat4 Model::getBoneTransform(const std::string& animation, const std::string& bone, float time) const
+    {
+        auto animIt = m_animations.find(animation);
+        auto boneIt = m_boneIDs.find(bone);
+
+        if (animIt == m_animations.end() || boneIt == m_boneIDs.end())
+            return glm::mat4(1.0f);
+
+        return _getBoneTransform(animIt->second, boneIt->second, time);
+    }
+
+    inline glm::mat4 Model::_getBoneTransform(const SkeletonAnimation& a_animation, uint a_bone, float a_time) const
+    {
+        OYL_ASSERT(a_bone < m_bones.size());
+
+        const auto& bone = m_bones[a_bone];
+
+        auto& animNode = a_animation.channels[a_bone];
+
+        glm::mat4 nodeTransform = glm::mat4(1.0f);
+
+        glm::vec3 position = calcInterpolatedPosition(a_time, animNode);
+        nodeTransform = translate(nodeTransform, position);
+
+        glm::quat rotation = calcInterpolatedRotation(a_time, animNode);
+        nodeTransform *= mat4_cast(rotation);
+
+        glm::vec3 scaling = calcInterpolatedScale(a_time, animNode);
+        nodeTransform = scale(nodeTransform, scaling);
+
+        if (bone.parent == -1u)
+            return nodeTransform;
+
+        return _getBoneTransform(a_animation, bone.parent, a_time) * nodeTransform;
+    }
+    
     void Model::calculateFinalTransform(const SkeletonAnimation& animation,
                                         float                    time,
                                         uint                     bone,
                                         const glm::mat4&         parentTransform) const
     {
-        /// glm::mat4 nodeTransform = m_bones[bone].transform;
-        glm::mat4 nodeTransform = glm::mat4(1.0f);
+        glm::mat4 nodeTransform = m_bones[bone].transform;
 
         auto& animNode = animation.channels[bone];
  
@@ -371,7 +411,7 @@ namespace oyl
         nodeTransform = translate(glm::mat4(1.0f), position);
  
         glm::quat rotation = calcInterpolatedRotation(time, animNode);
-        nodeTransform = nodeTransform * mat4_cast(rotation);
+        nodeTransform *= mat4_cast(rotation);
  
         glm::vec3 scaling = calcInterpolatedScale(time, animNode);
         nodeTransform = scale(nodeTransform, scaling);
@@ -428,8 +468,8 @@ namespace oyl
 
         glm::quat start = channel.rotationKeys[rotationIndex].second;
         glm::quat end = channel.rotationKeys[nextRotationIndex].second;
-
-        return glm::slerp(start, end, factor);
+        
+        return slerp(start, end, factor);
     }
 
     glm::vec3 Model::calcInterpolatedScale(float time, const BoneChannel& channel) const

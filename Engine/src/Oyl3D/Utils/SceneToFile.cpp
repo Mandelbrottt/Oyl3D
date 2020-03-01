@@ -1,6 +1,7 @@
 #include "oylpch.h"
 #include "SceneToFile.h"
 
+#include "Components/Animatable.h"
 #include "Components/Camera.h"
 #include "Components/Collidable.h"
 #include "Components/Lights.h"
@@ -407,6 +408,36 @@ namespace oyl::internal
         j.push_back(std::move(jLight));
     }
 
+    void saveSkeletonAnimatable(entt::entity entity, const entt::registry& registry, json& j)
+    {
+        using component::SkeletonAnimatable;
+
+        auto& sa = registry.get<SkeletonAnimatable>(entity);
+
+        j["Play"] = sa.play;
+        j["Reverse"] = sa.reverse;
+        j["Loop"] = sa.loop;
+        j["Animation"] = sa.animation;
+        j["Time"] = sa.time;
+        j["TimeScale"] = sa.timeScale;
+    }
+
+    void saveBoneTarget(entt::entity entity, const entt::registry& registry, json& j)
+    {
+        using component::BoneTarget;
+        using component::EntityInfo;
+
+        auto& sa = registry.get<BoneTarget>(entity);
+
+        auto& jTar = j["Target"];
+        if (registry.valid(sa.target))
+            jTar = registry.get<EntityInfo>(sa.target).name;
+
+        auto& jBone = j["Bone"];
+        if (!sa.bone.empty() && sa.bone != "None")
+            jBone = sa.bone;
+    }
+    
     static void saveCamera(entt::entity entity, entt::registry& registry, json& j)
     {
         using component::Camera;
@@ -834,6 +865,51 @@ namespace oyl::internal
         }
     }
 
+    void loadSkeletonAnimatable(entt::entity entity, entt::registry& registry, const json& j)
+    {
+        using component::SkeletonAnimatable;
+
+        auto& sa = registry.assign_or_replace<SkeletonAnimatable>(entity);
+
+        if (auto it = j.find("Play"); it != j.end())
+            it->get_to(sa.play);
+        if (auto it = j.find("Reverse"); it != j.end())
+            it->get_to(sa.reverse);
+        if (auto it = j.find("Loop"); it != j.end())
+            it->get_to(sa.loop);
+        if (auto it = j.find("Animation"); it != j.end())
+            it->get_to(sa.animation);
+        if (auto it = j.find("Time"); it != j.end())
+            it->get_to(sa.time);
+        if (auto it = j.find("TimeScale"); it != j.end())
+            it->get_to(sa.timeScale);
+    }
+
+    void loadBoneTarget(entt::entity entity, entt::registry& registry, const json& j)
+    {
+        using component::BoneTarget;
+        using component::EntityInfo;
+
+        auto& target = registry.assign_or_replace<BoneTarget>(entity);
+
+        if (auto it = j.find("Target"); it != j.end() && it->is_string())
+        {
+            std::string name = it->get<std::string>();
+            auto view = registry.view<EntityInfo>();
+            for (auto e : view)
+            {
+                if (view.get(e).name == name)
+                {
+                    target.target = e;
+                    break;
+                }
+            }
+        }
+
+        if (auto it = j.find("Bone"); it != j.end() && it->is_string())
+            it->get_to(target.bone);
+    }
+
     static void loadCamera(entt::entity entity, entt::registry& registry, const json& j)
     {
         using component::Camera;
@@ -1008,6 +1084,12 @@ namespace oyl::internal
         if (registry.has<component::SpotLight>(entity))
             saveSpotLight(entity, registry, j["SpotLight"]);
 
+        if (registry.has<component::SkeletonAnimatable>(entity))
+            saveSkeletonAnimatable(entity, registry, j["SkeletonAnimatable"]);
+
+        if (registry.has<component::BoneTarget>(entity))
+            saveBoneTarget(entity, registry, j["BoneTarget"]);
+
         if (registry.has<component::Camera>(entity))
             saveCamera(entity, registry, j["Camera"]);
     }
@@ -1041,6 +1123,12 @@ namespace oyl::internal
         if (auto it = j.find("SpotLight"); it != j.end())
             loadSpotLight(entity, registry, it.value());
         
+        if (auto it = j.find("SkeletonAnimatable"); it != j.end())
+            loadSkeletonAnimatable(entity, registry, it.value());
+
+        if (auto it = j.find("BoneTarget"); it != j.end())
+            loadBoneTarget(entity, registry, it.value());
+
         if (auto it = j.find("Camera"); it != j.end())
             loadCamera(entity, registry, it.value());
     }

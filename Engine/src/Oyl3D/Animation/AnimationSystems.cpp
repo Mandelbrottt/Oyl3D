@@ -150,6 +150,11 @@ namespace oyl::internal
                 }
             }
         });
+
+        registry->view<component::BoneTarget>().each([&](component::BoneTarget& boneTarget)
+        {
+            boneTarget.forceUpdateTransform();
+        });
     }
 
     void SkeletalAnimationSystem::onGuiRender() {}
