@@ -91,6 +91,9 @@ bool PlayerInteractionValidationSystem::onEvent(const Event& event)
 
 			auto& player = registry->get<Player>(evt.playerEntity);
 
+			if (player.state == PlayerState::inCleaningQuicktimeEvent)
+				break;
+
 			switch (evt.itemClassificationToDrop)
 			{
 				case PlayerItemClassification::any:

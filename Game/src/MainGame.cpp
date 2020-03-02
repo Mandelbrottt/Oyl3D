@@ -34,6 +34,7 @@ public:
 		srand(time(NULL));
 
 		listenForEventCategory(EventCategory::Keyboard);
+		listenForEventType(EventType::KeyReleased);
 		listenForEventCategory(EventCategory::Mouse);
 		listenForEventCategory(EventCategory::Gamepad);
 		listenForEventCategory((EventCategory)CategoryGarbagePile);

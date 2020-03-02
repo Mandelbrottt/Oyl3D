@@ -332,6 +332,7 @@ namespace oyl::internal
                     updateAssetList();
             }
         }
+        return false;
     }
 
     void GuiLayer::drawMenuBar()

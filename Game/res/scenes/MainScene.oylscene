@@ -9,7 +9,7 @@
             },
             "Mesh": {
                 "Alias": "anchor",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Decorative\\anchor.obj"
             }
         },
         "Transform": {
@@ -47,7 +47,7 @@
             },
             "Mesh": {
                 "Alias": "anchor",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Decorative\\anchor.obj"
             }
         },
         "Transform": {
@@ -103,11 +103,13 @@
             },
             "Mesh": {
                 "Alias": "cube",
-                "FilePath": ""
+                "FilePath": "res/assets/models/cube.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.949999988079071,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 34
         },
@@ -164,11 +166,13 @@
             },
             "Mesh": {
                 "Alias": "cube",
-                "FilePath": ""
+                "FilePath": "res/assets/models/cube.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.949999988079071,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 34
         },
@@ -225,11 +229,13 @@
             },
             "Mesh": {
                 "Alias": "Barrel",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Decorative\\Barrel.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.949999988079071,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 62
         },
@@ -286,11 +292,13 @@
             },
             "Mesh": {
                 "Alias": "Barrel",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Decorative\\Barrel.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.949999988079071,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 62
         },
@@ -347,11 +355,13 @@
             },
             "Mesh": {
                 "Alias": "Barrel",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Decorative\\Barrel.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.949999988079071,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 62
         },
@@ -408,11 +418,13 @@
             },
             "Mesh": {
                 "Alias": "Barrel",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Decorative\\Barrel.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.949999988079071,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 62
         },
@@ -469,11 +481,13 @@
             },
             "Mesh": {
                 "Alias": "Barrel",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Decorative\\Barrel.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.949999988079071,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 62
         },
@@ -530,11 +544,13 @@
             },
             "Mesh": {
                 "Alias": "Barrel",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Decorative\\Barrel.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.949999988079071,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 62
         },
@@ -591,11 +607,13 @@
             },
             "Mesh": {
                 "Alias": "Barrel",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Decorative\\Barrel.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.949999988079071,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 62
         },
@@ -652,11 +670,13 @@
             },
             "Mesh": {
                 "Alias": "Barrel",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Decorative\\Barrel.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.949999988079071,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 62
         },
@@ -713,11 +733,13 @@
             },
             "Mesh": {
                 "Alias": "Barrel",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Decorative\\Barrel.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.949999988079071,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 62
         },
@@ -774,11 +796,13 @@
             },
             "Mesh": {
                 "Alias": "Barrel",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Decorative\\Barrel.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.949999988079071,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 62
         },
@@ -835,11 +859,13 @@
             },
             "Mesh": {
                 "Alias": "Barrel",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Decorative\\Barrel.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.949999988079071,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 62
         },
@@ -896,11 +922,13 @@
             },
             "Mesh": {
                 "Alias": "Barrel",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Decorative\\Barrel.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.949999988079071,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 62
         },
@@ -957,11 +985,13 @@
             },
             "Mesh": {
                 "Alias": "Barrel",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Decorative\\Barrel.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.949999988079071,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 62
         },
@@ -1018,11 +1048,13 @@
             },
             "Mesh": {
                 "Alias": "Barrel",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Decorative\\Barrel.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.949999988079071,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 54
         },
@@ -1079,11 +1111,13 @@
             },
             "Mesh": {
                 "Alias": "Barrel",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Decorative\\Barrel.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.949999988079071,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 62
         },
@@ -1140,11 +1174,13 @@
             },
             "Mesh": {
                 "Alias": "Barrel",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Decorative\\Barrel.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.949999988079071,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 62
         },
@@ -1201,11 +1237,13 @@
             },
             "Mesh": {
                 "Alias": "Barrel",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Decorative\\Barrel.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.949999988079071,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 62
         },
@@ -1262,11 +1300,13 @@
             },
             "Mesh": {
                 "Alias": "Barrel",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Decorative\\Barrel.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.949999988079071,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 62
         },
@@ -1323,11 +1363,13 @@
             },
             "Mesh": {
                 "Alias": "Barrel",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Decorative\\Barrel.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.949999988079071,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 62
         },
@@ -1384,11 +1426,13 @@
             },
             "Mesh": {
                 "Alias": "Barrel",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Decorative\\Barrel.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.949999988079071,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 62
         },
@@ -1445,11 +1489,13 @@
             },
             "Mesh": {
                 "Alias": "Barrel",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Decorative\\Barrel.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.949999988079071,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 62
         },
@@ -1506,11 +1552,13 @@
             },
             "Mesh": {
                 "Alias": "Barrel",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Decorative\\Barrel.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.949999988079071,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 62
         },
@@ -1567,11 +1615,13 @@
             },
             "Mesh": {
                 "Alias": "Barrel",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Decorative\\Barrel.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.949999988079071,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 62
         },
@@ -1628,11 +1678,13 @@
             },
             "Mesh": {
                 "Alias": "Barrel",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Decorative\\Barrel.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.949999988079071,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 62
         },
@@ -1689,11 +1741,13 @@
             },
             "Mesh": {
                 "Alias": "Barrel",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Decorative\\Barrel.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.949999988079071,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 62
         },
@@ -1750,11 +1804,13 @@
             },
             "Mesh": {
                 "Alias": "Barrel",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Decorative\\Barrel.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.949999988079071,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 62
         },
@@ -1811,11 +1867,13 @@
             },
             "Mesh": {
                 "Alias": "cube",
-                "FilePath": ""
+                "FilePath": "res/assets/models/cube.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.0,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 34
         },
@@ -1872,11 +1930,13 @@
             },
             "Mesh": {
                 "Alias": "cube",
-                "FilePath": ""
+                "FilePath": "res/assets/models/cube.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.0,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 34
         },
@@ -1933,11 +1993,13 @@
             },
             "Mesh": {
                 "Alias": "cube",
-                "FilePath": ""
+                "FilePath": "res/assets/models/cube.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.0,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 34
         },
@@ -1994,11 +2056,13 @@
             },
             "Mesh": {
                 "Alias": "cube",
-                "FilePath": ""
+                "FilePath": "res/assets/models/cube.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.0,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 34
         },
@@ -2055,11 +2119,13 @@
             },
             "Mesh": {
                 "Alias": "cube",
-                "FilePath": ""
+                "FilePath": "res/assets/models/cube.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.0,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 34
         },
@@ -2142,11 +2208,13 @@
             },
             "Mesh": {
                 "Alias": "cannon",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\cannon.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.949999988079071,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 34
         },
@@ -2203,11 +2271,13 @@
             },
             "Mesh": {
                 "Alias": "garbageBall",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\garbageBall.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.8999999761581421,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 1.0,
             "Properties": 34
         },
@@ -2264,11 +2334,13 @@
             },
             "Mesh": {
                 "Alias": "garbageBall",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\garbageBall.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.8999999761581421,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 1.0,
             "Properties": 34
         },
@@ -2325,11 +2397,13 @@
             },
             "Mesh": {
                 "Alias": "garbageBall",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\garbageBall.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.8999999761581421,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 1.0,
             "Properties": 34
         },
@@ -2386,11 +2460,13 @@
             },
             "Mesh": {
                 "Alias": "garbageBall",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\garbageBall.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.8999999761581421,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 1.0,
             "Properties": 34
         },
@@ -2447,11 +2523,13 @@
             },
             "Mesh": {
                 "Alias": "garbageBall",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\garbageBall.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.8999999761581421,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 1.0,
             "Properties": 34
         },
@@ -2508,11 +2586,13 @@
             },
             "Mesh": {
                 "Alias": "garbageBall",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\garbageBall.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.8999999761581421,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 1.0,
             "Properties": 34
         },
@@ -2569,11 +2649,13 @@
             },
             "Mesh": {
                 "Alias": "crateTemp",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\crateTemp.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.949999988079071,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 34
         },
@@ -2630,11 +2712,13 @@
             },
             "Mesh": {
                 "Alias": "Pirax",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Pirax.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.8999999761581421,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 1.0,
             "Properties": 98
         },
@@ -2691,11 +2775,13 @@
             },
             "Mesh": {
                 "Alias": "Pirax",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Pirax.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.8999999761581421,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 1.0,
             "Properties": 34
         },
@@ -2734,7 +2820,7 @@
             },
             "Mesh": {
                 "Alias": "Oyl Monkey",
-                "FilePath": ""
+                "FilePath": "../Engine/res/models/monkey.obj"
             }
         },
         "Transform": {
@@ -2818,11 +2904,13 @@
             },
             "Mesh": {
                 "Alias": "garbageTiny",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Garbage\\garbageTiny.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.949999988079071,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 62
         },
@@ -2907,11 +2995,13 @@
             },
             "Mesh": {
                 "Alias": "garbageTiny",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Garbage\\garbageTiny.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.949999988079071,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 62
         },
@@ -2996,11 +3086,13 @@
             },
             "Mesh": {
                 "Alias": "garbageTiny",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Garbage\\garbageTiny.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.949999988079071,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 62
         },
@@ -3039,7 +3131,7 @@
             },
             "Mesh": {
                 "Alias": "garbageSurrender",
-                "FilePath": ""
+                "FilePath": "res/assets/models/Garbage/garbageSurrender.obj"
             }
         },
         "Transform": {
@@ -3077,7 +3169,7 @@
             },
             "Mesh": {
                 "Alias": "garbageSurrender",
-                "FilePath": ""
+                "FilePath": "res/assets/models/Garbage/garbageSurrender.obj"
             }
         },
         "Transform": {
@@ -3115,7 +3207,7 @@
             },
             "Mesh": {
                 "Alias": "garbageSurrender",
-                "FilePath": ""
+                "FilePath": "res/assets/models/Garbage/garbageSurrender.obj"
             }
         },
         "Transform": {
@@ -3171,11 +3263,13 @@
             },
             "Mesh": {
                 "Alias": "Gloop",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Gloop.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.8999999761581421,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 1.0,
             "Properties": 98
         },
@@ -3232,11 +3326,13 @@
             },
             "Mesh": {
                 "Alias": "Gloop",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Gloop.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.8999999761581421,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 1.0,
             "Properties": 34
         },
@@ -3328,11 +3424,13 @@
             },
             "Mesh": {
                 "Alias": "mop",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\mop.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.8999999761581421,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 34
         },
@@ -3389,11 +3487,13 @@
             },
             "Mesh": {
                 "Alias": "mop",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\mop.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.8999999761581421,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 34
         },
@@ -3432,7 +3532,7 @@
             },
             "Mesh": {
                 "Alias": "BoatHull",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\BoatHull.obj"
             }
         },
         "Transform": {
@@ -3470,7 +3570,7 @@
             },
             "Mesh": {
                 "Alias": "BoatHull",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\BoatHull.obj"
             }
         },
         "Transform": {
@@ -3508,7 +3608,7 @@
             },
             "Mesh": {
                 "Alias": "BoatHullFlipped",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\BoatHullFlipped.obj"
             }
         },
         "Transform": {
@@ -3546,7 +3646,7 @@
             },
             "Mesh": {
                 "Alias": "BoatHullFlipped",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\BoatHullFlipped.obj"
             }
         },
         "Transform": {
@@ -3654,7 +3754,7 @@
             },
             "Mesh": {
                 "Alias": "Bottles",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Decorative\\Bottles.obj"
             }
         },
         "Transform": {
@@ -3692,7 +3792,7 @@
             },
             "Mesh": {
                 "Alias": "Bottles",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Decorative\\Bottles.obj"
             }
         },
         "Transform": {
@@ -3730,7 +3830,7 @@
             },
             "Mesh": {
                 "Alias": "Bottles",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Decorative\\Bottles.obj"
             }
         },
         "Transform": {
@@ -3768,7 +3868,7 @@
             },
             "Mesh": {
                 "Alias": "Bottles",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Decorative\\Bottles.obj"
             }
         },
         "Transform": {
@@ -3806,7 +3906,7 @@
             },
             "Mesh": {
                 "Alias": "Bottles",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Decorative\\Bottles.obj"
             }
         },
         "Transform": {
@@ -3844,7 +3944,7 @@
             },
             "Mesh": {
                 "Alias": "Bottles",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Decorative\\Bottles.obj"
             }
         },
         "Transform": {
@@ -3882,7 +3982,7 @@
             },
             "Mesh": {
                 "Alias": "Bottles",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Decorative\\Bottles.obj"
             }
         },
         "Transform": {
@@ -3920,7 +4020,7 @@
             },
             "Mesh": {
                 "Alias": "Bottles",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Decorative\\Bottles.obj"
             }
         },
         "Transform": {
@@ -3958,7 +4058,7 @@
             },
             "Mesh": {
                 "Alias": "Bottles",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Decorative\\Bottles.obj"
             }
         },
         "Transform": {
@@ -3996,7 +4096,7 @@
             },
             "Mesh": {
                 "Alias": "Bottles",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Decorative\\Bottles.obj"
             }
         },
         "Transform": {
@@ -4034,7 +4134,7 @@
             },
             "Mesh": {
                 "Alias": "Bottles",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Decorative\\Bottles.obj"
             }
         },
         "Transform": {
@@ -4072,7 +4172,7 @@
             },
             "Mesh": {
                 "Alias": "Bottles",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Decorative\\Bottles.obj"
             }
         },
         "Transform": {
@@ -4110,7 +4210,7 @@
             },
             "Mesh": {
                 "Alias": "Bottles",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Decorative\\Bottles.obj"
             }
         },
         "Transform": {
@@ -4148,7 +4248,7 @@
             },
             "Mesh": {
                 "Alias": "Bottles",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Decorative\\Bottles.obj"
             }
         },
         "Transform": {
@@ -4186,7 +4286,7 @@
             },
             "Mesh": {
                 "Alias": "Bottles",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Decorative\\Bottles.obj"
             }
         },
         "Transform": {
@@ -4224,7 +4324,7 @@
             },
             "Mesh": {
                 "Alias": "Bottles",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Decorative\\Bottles.obj"
             }
         },
         "Transform": {
@@ -4262,7 +4362,7 @@
             },
             "Mesh": {
                 "Alias": "BottomDeck",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\BottomDeck.obj"
             }
         },
         "Transform": {
@@ -4300,7 +4400,7 @@
             },
             "Mesh": {
                 "Alias": "BottomDeck",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\BottomDeck.obj"
             }
         },
         "Transform": {
@@ -4356,11 +4456,13 @@
             },
             "Mesh": {
                 "Alias": "cube",
-                "FilePath": ""
+                "FilePath": "res/assets/models/cube.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.0,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 34
         },
@@ -4417,11 +4519,13 @@
             },
             "Mesh": {
                 "Alias": "cube",
-                "FilePath": ""
+                "FilePath": "res/assets/models/cube.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.0,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 34
         },
@@ -4478,11 +4582,13 @@
             },
             "Mesh": {
                 "Alias": "cube",
-                "FilePath": ""
+                "FilePath": "res/assets/models/cube.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.949999988079071,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 34
         },
@@ -4539,11 +4645,13 @@
             },
             "Mesh": {
                 "Alias": "cube",
-                "FilePath": ""
+                "FilePath": "res/assets/models/cube.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.0,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 34
         },
@@ -4600,11 +4708,13 @@
             },
             "Mesh": {
                 "Alias": "cube",
-                "FilePath": ""
+                "FilePath": "res/assets/models/cube.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.0,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 34
         },
@@ -4701,7 +4811,7 @@
             "Enabled": false,
             "Texture": {
                 "Alias": "cancelCleaningQTEPrompt",
-                "FilePath": "res\\assets\\textures\\gui\\cancelCleaningQTEPrompt.png"
+                "FilePath": "res/assets/textures/gui/cancelCleaningQTEPrompt.png"
             }
         },
         "Transform": {
@@ -4745,7 +4855,7 @@
             "Enabled": false,
             "Texture": {
                 "Alias": "cancelCleaningQTEPrompt",
-                "FilePath": "res\\assets\\textures\\gui\\cancelCleaningQTEPrompt.png"
+                "FilePath": "res/assets/textures/gui/cancelCleaningQTEPrompt.png"
             }
         },
         "Transform": {
@@ -4789,7 +4899,7 @@
             "Enabled": false,
             "Texture": {
                 "Alias": "cancelCleaningQTEPrompt",
-                "FilePath": "res\\assets\\textures\\gui\\cancelCleaningQTEPrompt.png"
+                "FilePath": "res/assets/textures/gui/cancelCleaningQTEPrompt.png"
             }
         },
         "Transform": {
@@ -4833,7 +4943,7 @@
             "Enabled": false,
             "Texture": {
                 "Alias": "cancelCleaningQTEPrompt",
-                "FilePath": "res\\assets\\textures\\gui\\cancelCleaningQTEPrompt.png"
+                "FilePath": "res/assets/textures/gui/cancelCleaningQTEPrompt.png"
             }
         },
         "Transform": {
@@ -4877,7 +4987,7 @@
             "Enabled": true,
             "Texture": {
                 "Alias": "cannonFiring",
-                "FilePath": "res\\assets\\textures\\gui\\cannonFiring.png"
+                "FilePath": "res/assets/textures/gui/cannonFiring.png"
             }
         },
         "Transform": {
@@ -4921,7 +5031,7 @@
             "Enabled": true,
             "Texture": {
                 "Alias": "cannonFiring",
-                "FilePath": "res\\assets\\textures\\gui\\cannonFiring.png"
+                "FilePath": "res/assets/textures/gui/cannonFiring.png"
             }
         },
         "Transform": {
@@ -4965,7 +5075,7 @@
             "Enabled": true,
             "Texture": {
                 "Alias": "cannonFiring",
-                "FilePath": "res\\assets\\textures\\gui\\cannonFiring.png"
+                "FilePath": "res/assets/textures/gui/cannonFiring.png"
             }
         },
         "Transform": {
@@ -5009,7 +5119,7 @@
             "Enabled": true,
             "Texture": {
                 "Alias": "cannonFiring",
-                "FilePath": "res\\assets\\textures\\gui\\cannonFiring.png"
+                "FilePath": "res/assets/textures/gui/cannonFiring.png"
             }
         },
         "Transform": {
@@ -5047,7 +5157,7 @@
             },
             "Mesh": {
                 "Alias": "cannonWindowTrim_metal",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Decorative\\cannonWindowTrim_metal.obj"
             }
         },
         "Transform": {
@@ -5085,7 +5195,7 @@
             },
             "Mesh": {
                 "Alias": "cannonWindowTrim_metal",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Decorative\\cannonWindowTrim_metal.obj"
             }
         },
         "Transform": {
@@ -5123,7 +5233,7 @@
             },
             "Mesh": {
                 "Alias": "cannonWindowTrim_metal",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Decorative\\cannonWindowTrim_metal.obj"
             }
         },
         "Transform": {
@@ -5161,7 +5271,7 @@
             },
             "Mesh": {
                 "Alias": "cannonWindowTrim_metal",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Decorative\\cannonWindowTrim_metal.obj"
             }
         },
         "Transform": {
@@ -5199,7 +5309,7 @@
             },
             "Mesh": {
                 "Alias": "cannonWindowTrim_metal",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Decorative\\cannonWindowTrim_metal.obj"
             }
         },
         "Transform": {
@@ -5237,7 +5347,7 @@
             },
             "Mesh": {
                 "Alias": "cannonWindowTrim_metal",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Decorative\\cannonWindowTrim_metal.obj"
             }
         },
         "Transform": {
@@ -5275,7 +5385,7 @@
             },
             "Mesh": {
                 "Alias": "cannonWindowTrim_metal",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Decorative\\cannonWindowTrim_metal.obj"
             }
         },
         "Transform": {
@@ -5313,7 +5423,7 @@
             },
             "Mesh": {
                 "Alias": "cannonWindowTrim_metal",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Decorative\\cannonWindowTrim_metal.obj"
             }
         },
         "Transform": {
@@ -5351,7 +5461,7 @@
             },
             "Mesh": {
                 "Alias": "cannonWindowTrim_metal",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Decorative\\cannonWindowTrim_metal.obj"
             }
         },
         "Transform": {
@@ -5389,7 +5499,7 @@
             },
             "Mesh": {
                 "Alias": "cannonWindowTrim_metal",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Decorative\\cannonWindowTrim_metal.obj"
             }
         },
         "Transform": {
@@ -5427,7 +5537,7 @@
             },
             "Mesh": {
                 "Alias": "cannonWindowTrim_metal",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Decorative\\cannonWindowTrim_metal.obj"
             }
         },
         "Transform": {
@@ -5465,7 +5575,7 @@
             },
             "Mesh": {
                 "Alias": "cannonWindowTrim_metal",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Decorative\\cannonWindowTrim_metal.obj"
             }
         },
         "Transform": {
@@ -5509,7 +5619,7 @@
             "Enabled": true,
             "Texture": {
                 "Alias": "cannonballCrate",
-                "FilePath": "res\\assets\\textures\\gui\\cannonballCrate.png"
+                "FilePath": "res/assets/textures/gui/cannonballCrate.png"
             }
         },
         "Transform": {
@@ -5553,7 +5663,7 @@
             "Enabled": true,
             "Texture": {
                 "Alias": "cannonballCrate",
-                "FilePath": "res\\assets\\textures\\gui\\cannonballCrate.png"
+                "FilePath": "res/assets/textures/gui/cannonballCrate.png"
             }
         },
         "Transform": {
@@ -5597,7 +5707,7 @@
             "Enabled": true,
             "Texture": {
                 "Alias": "cannonballCrate",
-                "FilePath": "res\\assets\\textures\\gui\\cannonballCrate.png"
+                "FilePath": "res/assets/textures/gui/cannonballCrate.png"
             }
         },
         "Transform": {
@@ -5641,7 +5751,7 @@
             "Enabled": true,
             "Texture": {
                 "Alias": "cannonballCrate",
-                "FilePath": "res\\assets\\textures\\gui\\cannonballCrate.png"
+                "FilePath": "res/assets/textures/gui/cannonballCrate.png"
             }
         },
         "Transform": {
@@ -5679,7 +5789,7 @@
             },
             "Mesh": {
                 "Alias": "CapQuarters",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\CapQuarters.obj"
             }
         },
         "Transform": {
@@ -5717,7 +5827,7 @@
             },
             "Mesh": {
                 "Alias": "CapQuarters",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\CapQuarters.obj"
             }
         },
         "Transform": {
@@ -5755,7 +5865,7 @@
             },
             "Mesh": {
                 "Alias": "QuartersRail",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\QuartersRail.obj"
             }
         },
         "Transform": {
@@ -5793,7 +5903,7 @@
             },
             "Mesh": {
                 "Alias": "QuartersRail",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\QuartersRail.obj"
             }
         },
         "Transform": {
@@ -5831,7 +5941,7 @@
             },
             "Mesh": {
                 "Alias": "QuartersRail2",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\QuartersRail2.obj"
             }
         },
         "Transform": {
@@ -5869,7 +5979,7 @@
             },
             "Mesh": {
                 "Alias": "QuartersRail2",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\QuartersRail2.obj"
             }
         },
         "Transform": {
@@ -5977,7 +6087,7 @@
             },
             "Mesh": {
                 "Alias": "character",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\character.obj"
             }
         },
         "Transform": {
@@ -6021,7 +6131,7 @@
             "Enabled": true,
             "Texture": {
                 "Alias": "cleanGarbage",
-                "FilePath": "res\\assets\\textures\\gui\\cleanGarbage.png"
+                "FilePath": "res/assets/textures/gui/cleanGarbage.png"
             }
         },
         "Transform": {
@@ -6065,7 +6175,7 @@
             "Enabled": true,
             "Texture": {
                 "Alias": "cleanGarbage",
-                "FilePath": "res\\assets\\textures\\gui\\cleanGarbage.png"
+                "FilePath": "res/assets/textures/gui/cleanGarbage.png"
             }
         },
         "Transform": {
@@ -6109,7 +6219,7 @@
             "Enabled": true,
             "Texture": {
                 "Alias": "cleanGarbage",
-                "FilePath": "res\\assets\\textures\\gui\\cleanGarbage.png"
+                "FilePath": "res/assets/textures/gui/cleanGarbage.png"
             }
         },
         "Transform": {
@@ -6153,7 +6263,7 @@
             "Enabled": true,
             "Texture": {
                 "Alias": "cleanGarbage",
-                "FilePath": "res\\assets\\textures\\gui\\cleanGarbage.png"
+                "FilePath": "res/assets/textures/gui/cleanGarbage.png"
             }
         },
         "Transform": {
@@ -6197,7 +6307,7 @@
             "Enabled": false,
             "Texture": {
                 "Alias": "cleaningQTEUp",
-                "FilePath": "res\\assets\\textures\\gui\\cleaningQTEUp.png"
+                "FilePath": "res/assets/textures/gui/cleaningQTEUp.png"
             }
         },
         "Transform": {
@@ -6241,7 +6351,7 @@
             "Enabled": false,
             "Texture": {
                 "Alias": "cleaningQTEUp",
-                "FilePath": "res\\assets\\textures\\gui\\cleaningQTEUp.png"
+                "FilePath": "res/assets/textures/gui/cleaningQTEUp.png"
             }
         },
         "Transform": {
@@ -6285,7 +6395,7 @@
             "Enabled": false,
             "Texture": {
                 "Alias": "cleaningQTEUp",
-                "FilePath": "res\\assets\\textures\\gui\\cleaningQTEUp.png"
+                "FilePath": "res/assets/textures/gui/cleaningQTEUp.png"
             }
         },
         "Transform": {
@@ -6329,7 +6439,7 @@
             "Enabled": false,
             "Texture": {
                 "Alias": "cleaningQTEUp",
-                "FilePath": "res\\assets\\textures\\gui\\cleaningQTEUp.png"
+                "FilePath": "res/assets/textures/gui/cleaningQTEUp.png"
             }
         },
         "Transform": {
@@ -6373,7 +6483,7 @@
             "Enabled": true,
             "Texture": {
                 "Alias": "blueCleaningSolutionIcon",
-                "FilePath": "res\\assets\\textures\\gui\\blueCleaningSolutionIcon.png"
+                "FilePath": "res/assets/textures/gui/blueCleaningSolutionIcon.png"
             }
         },
         "Transform": {
@@ -6417,7 +6527,7 @@
             "Enabled": true,
             "Texture": {
                 "Alias": "redCleaningSolutionIcon",
-                "FilePath": "res\\assets\\textures\\gui\\redCleaningSolutionIcon.png"
+                "FilePath": "res/assets/textures/gui/redCleaningSolutionIcon.png"
             }
         },
         "Transform": {
@@ -6461,7 +6571,7 @@
             "Enabled": true,
             "Texture": {
                 "Alias": "blueCleaningSolutionIcon",
-                "FilePath": "res\\assets\\textures\\gui\\blueCleaningSolutionIcon.png"
+                "FilePath": "res/assets/textures/gui/blueCleaningSolutionIcon.png"
             }
         },
         "Transform": {
@@ -6505,7 +6615,7 @@
             "Enabled": true,
             "Texture": {
                 "Alias": "redCleaningSolutionIcon",
-                "FilePath": "res\\assets\\textures\\gui\\redCleaningSolutionIcon.png"
+                "FilePath": "res/assets/textures/gui/redCleaningSolutionIcon.png"
             }
         },
         "Transform": {
@@ -6543,7 +6653,7 @@
             },
             "Mesh": {
                 "Alias": "cleet",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Decorative\\cleet.obj"
             }
         },
         "Transform": {
@@ -6581,7 +6691,7 @@
             },
             "Mesh": {
                 "Alias": "cleet",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Decorative\\cleet.obj"
             }
         },
         "Transform": {
@@ -6619,7 +6729,7 @@
             },
             "Mesh": {
                 "Alias": "cleet",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Decorative\\cleet.obj"
             }
         },
         "Transform": {
@@ -6657,7 +6767,7 @@
             },
             "Mesh": {
                 "Alias": "cleet",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Decorative\\cleet.obj"
             }
         },
         "Transform": {
@@ -6695,7 +6805,7 @@
             },
             "Mesh": {
                 "Alias": "cleet",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Decorative\\cleet.obj"
             }
         },
         "Transform": {
@@ -6733,7 +6843,7 @@
             },
             "Mesh": {
                 "Alias": "cleet",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Decorative\\cleet.obj"
             }
         },
         "Transform": {
@@ -6771,7 +6881,7 @@
             },
             "Mesh": {
                 "Alias": "cleet",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Decorative\\cleet.obj"
             }
         },
         "Transform": {
@@ -6809,7 +6919,7 @@
             },
             "Mesh": {
                 "Alias": "cleet",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Decorative\\cleet.obj"
             }
         },
         "Transform": {
@@ -6847,7 +6957,7 @@
             },
             "Mesh": {
                 "Alias": "cleet",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Decorative\\cleet.obj"
             }
         },
         "Transform": {
@@ -6885,7 +6995,7 @@
             },
             "Mesh": {
                 "Alias": "cleet",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Decorative\\cleet.obj"
             }
         },
         "Transform": {
@@ -6923,7 +7033,7 @@
             },
             "Mesh": {
                 "Alias": "cleet",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Decorative\\cleet.obj"
             }
         },
         "Transform": {
@@ -6961,7 +7071,7 @@
             },
             "Mesh": {
                 "Alias": "cleet",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Decorative\\cleet.obj"
             }
         },
         "Transform": {
@@ -6999,7 +7109,7 @@
             },
             "Mesh": {
                 "Alias": "cleet",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Decorative\\cleet.obj"
             }
         },
         "Transform": {
@@ -7037,7 +7147,7 @@
             },
             "Mesh": {
                 "Alias": "cleet",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Decorative\\cleet.obj"
             }
         },
         "Transform": {
@@ -7075,7 +7185,7 @@
             },
             "Mesh": {
                 "Alias": "cleet",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Decorative\\cleet.obj"
             }
         },
         "Transform": {
@@ -7113,7 +7223,7 @@
             },
             "Mesh": {
                 "Alias": "cleet",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Decorative\\cleet.obj"
             }
         },
         "Transform": {
@@ -7151,7 +7261,7 @@
             },
             "Mesh": {
                 "Alias": "cleet",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Decorative\\cleet.obj"
             }
         },
         "Transform": {
@@ -7189,7 +7299,7 @@
             },
             "Mesh": {
                 "Alias": "cleet",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Decorative\\cleet.obj"
             }
         },
         "Transform": {
@@ -7227,7 +7337,7 @@
             },
             "Mesh": {
                 "Alias": "cleet",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Decorative\\cleet.obj"
             }
         },
         "Transform": {
@@ -7265,7 +7375,7 @@
             },
             "Mesh": {
                 "Alias": "cleet",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Decorative\\cleet.obj"
             }
         },
         "Transform": {
@@ -7355,7 +7465,7 @@
             },
             "Mesh": {
                 "Alias": "DeckRail",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\DeckRail.obj"
             }
         },
         "Transform": {
@@ -7393,7 +7503,7 @@
             },
             "Mesh": {
                 "Alias": "DeckRail",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\DeckRail.obj"
             }
         },
         "Transform": {
@@ -7431,7 +7541,7 @@
             },
             "Mesh": {
                 "Alias": "DeckRail2",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\DeckRail2.obj"
             }
         },
         "Transform": {
@@ -7469,7 +7579,7 @@
             },
             "Mesh": {
                 "Alias": "DeckRail2",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\DeckRail2.obj"
             }
         },
         "Transform": {
@@ -7583,7 +7693,7 @@
             "Enabled": true,
             "Texture": {
                 "Alias": "dropItemsPrompt",
-                "FilePath": "res\\assets\\textures\\gui\\dropItemsPrompt.png"
+                "FilePath": "res/assets/textures/gui/dropItemsPrompt.png"
             }
         },
         "Transform": {
@@ -7627,7 +7737,7 @@
             "Enabled": true,
             "Texture": {
                 "Alias": "dropItemsPrompt",
-                "FilePath": "res\\assets\\textures\\gui\\dropItemsPrompt.png"
+                "FilePath": "res/assets/textures/gui/dropItemsPrompt.png"
             }
         },
         "Transform": {
@@ -7671,7 +7781,7 @@
             "Enabled": true,
             "Texture": {
                 "Alias": "dropItemsPrompt",
-                "FilePath": "res\\assets\\textures\\gui\\dropItemsPrompt.png"
+                "FilePath": "res/assets/textures/gui/dropItemsPrompt.png"
             }
         },
         "Transform": {
@@ -7715,7 +7825,7 @@
             "Enabled": true,
             "Texture": {
                 "Alias": "dropItemsPrompt",
-                "FilePath": "res\\assets\\textures\\gui\\dropItemsPrompt.png"
+                "FilePath": "res/assets/textures/gui/dropItemsPrompt.png"
             }
         },
         "Transform": {
@@ -7771,11 +7881,13 @@
             },
             "Mesh": {
                 "Alias": "cube",
-                "FilePath": ""
+                "FilePath": "res/assets/models/cube.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.0,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 34
         },
@@ -7832,11 +7944,13 @@
             },
             "Mesh": {
                 "Alias": "cube",
-                "FilePath": ""
+                "FilePath": "res/assets/models/cube.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.0,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 34
         },
@@ -7893,11 +8007,13 @@
             },
             "Mesh": {
                 "Alias": "cube",
-                "FilePath": ""
+                "FilePath": "res/assets/models/cube.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.0,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 34
         },
@@ -7954,11 +8070,13 @@
             },
             "Mesh": {
                 "Alias": "cube",
-                "FilePath": ""
+                "FilePath": "res/assets/models/cube.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.0,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 34
         },
@@ -8015,11 +8133,13 @@
             },
             "Mesh": {
                 "Alias": "cube",
-                "FilePath": ""
+                "FilePath": "res/assets/models/cube.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.0,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 34
         },
@@ -8076,11 +8196,13 @@
             },
             "Mesh": {
                 "Alias": "cube",
-                "FilePath": ""
+                "FilePath": "res/assets/models/cube.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.0,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 34
         },
@@ -8137,11 +8259,13 @@
             },
             "Mesh": {
                 "Alias": "EnvironmentGarbageCan",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Decorative\\EnvironmentGarbageCan.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.949999988079071,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 62
         },
@@ -8198,11 +8322,13 @@
             },
             "Mesh": {
                 "Alias": "EnvironmentGarbageCan",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Decorative\\EnvironmentGarbageCan.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.949999988079071,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 62
         },
@@ -8259,11 +8385,13 @@
             },
             "Mesh": {
                 "Alias": "EnvironmentGarbageCan",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Decorative\\EnvironmentGarbageCan.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.949999988079071,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 62
         },
@@ -8320,11 +8448,13 @@
             },
             "Mesh": {
                 "Alias": "EnvironmentGarbageCan",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Decorative\\EnvironmentGarbageCan.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.949999988079071,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 62
         },
@@ -8381,11 +8511,13 @@
             },
             "Mesh": {
                 "Alias": "EnvironmentGarbageCan",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Decorative\\EnvironmentGarbageCan.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.949999988079071,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 62
         },
@@ -8442,11 +8574,13 @@
             },
             "Mesh": {
                 "Alias": "EnvironmentGarbageCan",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Decorative\\EnvironmentGarbageCan.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.949999988079071,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 62
         },
@@ -8491,7 +8625,7 @@
             "Enabled": true,
             "Texture": {
                 "Alias": "garbagePileHPBarFill",
-                "FilePath": "res\\assets\\textures\\gui\\garbagePileHPBarFill.png"
+                "FilePath": "res/assets/textures/gui/garbagePileHPBarFill.png"
             }
         },
         "Transform": {
@@ -8535,7 +8669,7 @@
             "Enabled": true,
             "Texture": {
                 "Alias": "garbagePileHPBarFill",
-                "FilePath": "res\\assets\\textures\\gui\\garbagePileHPBarFill.png"
+                "FilePath": "res/assets/textures/gui/garbagePileHPBarFill.png"
             }
         },
         "Transform": {
@@ -8579,7 +8713,7 @@
             "Enabled": true,
             "Texture": {
                 "Alias": "garbagePileHPBarFill",
-                "FilePath": "res\\assets\\textures\\gui\\garbagePileHPBarFill.png"
+                "FilePath": "res/assets/textures/gui/garbagePileHPBarFill.png"
             }
         },
         "Transform": {
@@ -8623,7 +8757,7 @@
             "Enabled": true,
             "Texture": {
                 "Alias": "garbagePileHPBarFill",
-                "FilePath": "res\\assets\\textures\\gui\\garbagePileHPBarFill.png"
+                "FilePath": "res/assets/textures/gui/garbagePileHPBarFill.png"
             }
         },
         "Transform": {
@@ -8667,7 +8801,7 @@
             "Enabled": true,
             "Texture": {
                 "Alias": "garbagePileHPBarFill",
-                "FilePath": "res\\assets\\textures\\gui\\garbagePileHPBarFill.png"
+                "FilePath": "res/assets/textures/gui/garbagePileHPBarFill.png"
             }
         },
         "Transform": {
@@ -8711,7 +8845,7 @@
             "Enabled": true,
             "Texture": {
                 "Alias": "garbagePileHPBarFill",
-                "FilePath": "res\\assets\\textures\\gui\\garbagePileHPBarFill.png"
+                "FilePath": "res/assets/textures/gui/garbagePileHPBarFill.png"
             }
         },
         "Transform": {
@@ -8755,7 +8889,7 @@
             "Enabled": true,
             "Texture": {
                 "Alias": "garbagePileHPBarFill",
-                "FilePath": "res\\assets\\textures\\gui\\garbagePileHPBarFill.png"
+                "FilePath": "res/assets/textures/gui/garbagePileHPBarFill.png"
             }
         },
         "Transform": {
@@ -8799,7 +8933,7 @@
             "Enabled": true,
             "Texture": {
                 "Alias": "garbagePileHPBarFill",
-                "FilePath": "res\\assets\\textures\\gui\\garbagePileHPBarFill.png"
+                "FilePath": "res/assets/textures/gui/garbagePileHPBarFill.png"
             }
         },
         "Transform": {
@@ -8843,7 +8977,7 @@
             "Enabled": true,
             "Texture": {
                 "Alias": "garbagePileHPBarFill",
-                "FilePath": "res\\assets\\textures\\gui\\garbagePileHPBarFill.png"
+                "FilePath": "res/assets/textures/gui/garbagePileHPBarFill.png"
             }
         },
         "Transform": {
@@ -8887,7 +9021,7 @@
             "Enabled": true,
             "Texture": {
                 "Alias": "garbagePileHPBarFill",
-                "FilePath": "res\\assets\\textures\\gui\\garbagePileHPBarFill.png"
+                "FilePath": "res/assets/textures/gui/garbagePileHPBarFill.png"
             }
         },
         "Transform": {
@@ -8931,7 +9065,7 @@
             "Enabled": true,
             "Texture": {
                 "Alias": "garbagePileHPBarFill",
-                "FilePath": "res\\assets\\textures\\gui\\garbagePileHPBarFill.png"
+                "FilePath": "res/assets/textures/gui/garbagePileHPBarFill.png"
             }
         },
         "Transform": {
@@ -8975,7 +9109,7 @@
             "Enabled": true,
             "Texture": {
                 "Alias": "garbagePileHPBarFill",
-                "FilePath": "res\\assets\\textures\\gui\\garbagePileHPBarFill.png"
+                "FilePath": "res/assets/textures/gui/garbagePileHPBarFill.png"
             }
         },
         "Transform": {
@@ -9019,7 +9153,7 @@
             "Enabled": true,
             "Texture": {
                 "Alias": "garbagePileHPBarOutline",
-                "FilePath": "res\\assets\\textures\\gui\\garbagePileHPBarOutline.png"
+                "FilePath": "res/assets/textures/gui/garbagePileHPBarOutline.png"
             }
         },
         "Transform": {
@@ -9063,7 +9197,7 @@
             "Enabled": true,
             "Texture": {
                 "Alias": "garbagePileHPBarOutline",
-                "FilePath": "res\\assets\\textures\\gui\\garbagePileHPBarOutline.png"
+                "FilePath": "res/assets/textures/gui/garbagePileHPBarOutline.png"
             }
         },
         "Transform": {
@@ -9107,7 +9241,7 @@
             "Enabled": true,
             "Texture": {
                 "Alias": "garbagePileHPBarOutline",
-                "FilePath": "res\\assets\\textures\\gui\\garbagePileHPBarOutline.png"
+                "FilePath": "res/assets/textures/gui/garbagePileHPBarOutline.png"
             }
         },
         "Transform": {
@@ -9151,7 +9285,7 @@
             "Enabled": true,
             "Texture": {
                 "Alias": "garbagePileHPBarOutline",
-                "FilePath": "res\\assets\\textures\\gui\\garbagePileHPBarOutline.png"
+                "FilePath": "res/assets/textures/gui/garbagePileHPBarOutline.png"
             }
         },
         "Transform": {
@@ -9195,7 +9329,7 @@
             "Enabled": true,
             "Texture": {
                 "Alias": "garbagePileHPBarOutline",
-                "FilePath": "res\\assets\\textures\\gui\\garbagePileHPBarOutline.png"
+                "FilePath": "res/assets/textures/gui/garbagePileHPBarOutline.png"
             }
         },
         "Transform": {
@@ -9239,7 +9373,7 @@
             "Enabled": true,
             "Texture": {
                 "Alias": "garbagePileHPBarOutline",
-                "FilePath": "res\\assets\\textures\\gui\\garbagePileHPBarOutline.png"
+                "FilePath": "res/assets/textures/gui/garbagePileHPBarOutline.png"
             }
         },
         "Transform": {
@@ -9283,7 +9417,7 @@
             "Enabled": true,
             "Texture": {
                 "Alias": "garbagePileHPBarOutline",
-                "FilePath": "res\\assets\\textures\\gui\\garbagePileHPBarOutline.png"
+                "FilePath": "res/assets/textures/gui/garbagePileHPBarOutline.png"
             }
         },
         "Transform": {
@@ -9327,7 +9461,7 @@
             "Enabled": true,
             "Texture": {
                 "Alias": "garbagePileHPBarOutline",
-                "FilePath": "res\\assets\\textures\\gui\\garbagePileHPBarOutline.png"
+                "FilePath": "res/assets/textures/gui/garbagePileHPBarOutline.png"
             }
         },
         "Transform": {
@@ -9371,7 +9505,7 @@
             "Enabled": true,
             "Texture": {
                 "Alias": "garbagePileHPBarOutline",
-                "FilePath": "res\\assets\\textures\\gui\\garbagePileHPBarOutline.png"
+                "FilePath": "res/assets/textures/gui/garbagePileHPBarOutline.png"
             }
         },
         "Transform": {
@@ -9415,7 +9549,7 @@
             "Enabled": true,
             "Texture": {
                 "Alias": "garbagePileHPBarOutline",
-                "FilePath": "res\\assets\\textures\\gui\\garbagePileHPBarOutline.png"
+                "FilePath": "res/assets/textures/gui/garbagePileHPBarOutline.png"
             }
         },
         "Transform": {
@@ -9459,7 +9593,7 @@
             "Enabled": true,
             "Texture": {
                 "Alias": "garbagePileHPBarOutline",
-                "FilePath": "res\\assets\\textures\\gui\\garbagePileHPBarOutline.png"
+                "FilePath": "res/assets/textures/gui/garbagePileHPBarOutline.png"
             }
         },
         "Transform": {
@@ -9503,7 +9637,7 @@
             "Enabled": true,
             "Texture": {
                 "Alias": "garbagePileHPBarOutline",
-                "FilePath": "res\\assets\\textures\\gui\\garbagePileHPBarOutline.png"
+                "FilePath": "res/assets/textures/gui/garbagePileHPBarOutline.png"
             }
         },
         "Transform": {
@@ -9547,7 +9681,7 @@
             "Enabled": true,
             "Texture": {
                 "Alias": "garbageMeterBar",
-                "FilePath": "res\\assets\\textures\\gui\\garbageMeterBar.png"
+                "FilePath": "res/assets/textures/gui/garbageMeterBar.png"
             }
         },
         "Transform": {
@@ -9591,7 +9725,7 @@
             "Enabled": true,
             "Texture": {
                 "Alias": "garbageMeterBar",
-                "FilePath": "res\\assets\\textures\\gui\\garbageMeterBar.png"
+                "FilePath": "res/assets/textures/gui/garbageMeterBar.png"
             }
         },
         "Transform": {
@@ -9635,7 +9769,7 @@
             "Enabled": true,
             "Texture": {
                 "Alias": "garbageMeterBar",
-                "FilePath": "res\\assets\\textures\\gui\\garbageMeterBar.png"
+                "FilePath": "res/assets/textures/gui/garbageMeterBar.png"
             }
         },
         "Transform": {
@@ -9679,7 +9813,7 @@
             "Enabled": true,
             "Texture": {
                 "Alias": "garbageMeterBar",
-                "FilePath": "res\\assets\\textures\\gui\\garbageMeterBar.png"
+                "FilePath": "res/assets/textures/gui/garbageMeterBar.png"
             }
         },
         "Transform": {
@@ -9723,7 +9857,7 @@
             "Enabled": true,
             "Texture": {
                 "Alias": "garbageMeterBar",
-                "FilePath": "res\\assets\\textures\\gui\\garbageMeterBar.png"
+                "FilePath": "res/assets/textures/gui/garbageMeterBar.png"
             }
         },
         "Transform": {
@@ -9767,7 +9901,7 @@
             "Enabled": true,
             "Texture": {
                 "Alias": "garbageMeterBar",
-                "FilePath": "res\\assets\\textures\\gui\\garbageMeterBar.png"
+                "FilePath": "res/assets/textures/gui/garbageMeterBar.png"
             }
         },
         "Transform": {
@@ -9811,7 +9945,7 @@
             "Enabled": true,
             "Texture": {
                 "Alias": "garbageMeterBar",
-                "FilePath": "res\\assets\\textures\\gui\\garbageMeterBar.png"
+                "FilePath": "res/assets/textures/gui/garbageMeterBar.png"
             }
         },
         "Transform": {
@@ -9855,7 +9989,7 @@
             "Enabled": true,
             "Texture": {
                 "Alias": "garbageMeterBar",
-                "FilePath": "res\\assets\\textures\\gui\\garbageMeterBar.png"
+                "FilePath": "res/assets/textures/gui/garbageMeterBar.png"
             }
         },
         "Transform": {
@@ -9899,7 +10033,7 @@
             "Enabled": true,
             "Texture": {
                 "Alias": "garbageMeterBar",
-                "FilePath": "res\\assets\\textures\\gui\\garbageMeterBar.png"
+                "FilePath": "res/assets/textures/gui/garbageMeterBar.png"
             }
         },
         "Transform": {
@@ -9943,7 +10077,7 @@
             "Enabled": true,
             "Texture": {
                 "Alias": "garbageMeterBar",
-                "FilePath": "res\\assets\\textures\\gui\\garbageMeterBar.png"
+                "FilePath": "res/assets/textures/gui/garbageMeterBar.png"
             }
         },
         "Transform": {
@@ -9987,7 +10121,7 @@
             "Enabled": true,
             "Texture": {
                 "Alias": "garbageMeterBar",
-                "FilePath": "res\\assets\\textures\\gui\\garbageMeterBar.png"
+                "FilePath": "res/assets/textures/gui/garbageMeterBar.png"
             }
         },
         "Transform": {
@@ -10031,7 +10165,7 @@
             "Enabled": true,
             "Texture": {
                 "Alias": "garbageMeterBar",
-                "FilePath": "res\\assets\\textures\\gui\\garbageMeterBar.png"
+                "FilePath": "res/assets/textures/gui/garbageMeterBar.png"
             }
         },
         "Transform": {
@@ -10075,7 +10209,7 @@
             "Enabled": true,
             "Texture": {
                 "Alias": "garbageMeterOutline",
-                "FilePath": "res\\assets\\textures\\gui\\garbageMeterOutline.png"
+                "FilePath": "res/assets/textures/gui/garbageMeterOutline.png"
             }
         },
         "Transform": {
@@ -10119,7 +10253,7 @@
             "Enabled": true,
             "Texture": {
                 "Alias": "garbageMeterOutline",
-                "FilePath": "res\\assets\\textures\\gui\\garbageMeterOutline.png"
+                "FilePath": "res/assets/textures/gui/garbageMeterOutline.png"
             }
         },
         "Transform": {
@@ -10163,7 +10297,7 @@
             "Enabled": true,
             "Texture": {
                 "Alias": "garbageMeterOutline",
-                "FilePath": "res\\assets\\textures\\gui\\garbageMeterOutline.png"
+                "FilePath": "res/assets/textures/gui/garbageMeterOutline.png"
             }
         },
         "Transform": {
@@ -10207,7 +10341,7 @@
             "Enabled": true,
             "Texture": {
                 "Alias": "garbageMeterOutline",
-                "FilePath": "res\\assets\\textures\\gui\\garbageMeterOutline.png"
+                "FilePath": "res/assets/textures/gui/garbageMeterOutline.png"
             }
         },
         "Transform": {
@@ -10251,7 +10385,7 @@
             "Enabled": true,
             "Texture": {
                 "Alias": "gloopIndicator",
-                "FilePath": "res\\assets\\textures\\gui\\gloopIndicator.png"
+                "FilePath": "res/assets/textures/gui/gloopIndicator.png"
             }
         },
         "Transform": {
@@ -10295,7 +10429,7 @@
             "Enabled": true,
             "Texture": {
                 "Alias": "gloopIndicator",
-                "FilePath": "res\\assets\\textures\\gui\\gloopIndicator.png"
+                "FilePath": "res/assets/textures/gui/gloopIndicator.png"
             }
         },
         "Transform": {
@@ -10339,7 +10473,7 @@
             "Enabled": true,
             "Texture": {
                 "Alias": "gloopIndicator",
-                "FilePath": "res\\assets\\textures\\gui\\gloopIndicator.png"
+                "FilePath": "res/assets/textures/gui/gloopIndicator.png"
             }
         },
         "Transform": {
@@ -10383,7 +10517,7 @@
             "Enabled": true,
             "Texture": {
                 "Alias": "gloopIndicator",
-                "FilePath": "res\\assets\\textures\\gui\\gloopIndicator.png"
+                "FilePath": "res/assets/textures/gui/gloopIndicator.png"
             }
         },
         "Transform": {
@@ -10427,7 +10561,7 @@
             "Enabled": true,
             "Texture": {
                 "Alias": "gloopIndicator",
-                "FilePath": "res\\assets\\textures\\gui\\gloopIndicator.png"
+                "FilePath": "res/assets/textures/gui/gloopIndicator.png"
             }
         },
         "Transform": {
@@ -10471,7 +10605,7 @@
             "Enabled": true,
             "Texture": {
                 "Alias": "gloopIndicator",
-                "FilePath": "res\\assets\\textures\\gui\\gloopIndicator.png"
+                "FilePath": "res/assets/textures/gui/gloopIndicator.png"
             }
         },
         "Transform": {
@@ -10515,7 +10649,7 @@
             "Enabled": true,
             "Texture": {
                 "Alias": "gloopIndicator",
-                "FilePath": "res\\assets\\textures\\gui\\gloopIndicator.png"
+                "FilePath": "res/assets/textures/gui/gloopIndicator.png"
             }
         },
         "Transform": {
@@ -10559,7 +10693,7 @@
             "Enabled": true,
             "Texture": {
                 "Alias": "gloopIndicator",
-                "FilePath": "res\\assets\\textures\\gui\\gloopIndicator.png"
+                "FilePath": "res/assets/textures/gui/gloopIndicator.png"
             }
         },
         "Transform": {
@@ -10603,7 +10737,7 @@
             "Enabled": true,
             "Texture": {
                 "Alias": "gloopIndicator",
-                "FilePath": "res\\assets\\textures\\gui\\gloopIndicator.png"
+                "FilePath": "res/assets/textures/gui/gloopIndicator.png"
             }
         },
         "Transform": {
@@ -10647,7 +10781,7 @@
             "Enabled": true,
             "Texture": {
                 "Alias": "gloopIndicator",
-                "FilePath": "res\\assets\\textures\\gui\\gloopIndicator.png"
+                "FilePath": "res/assets/textures/gui/gloopIndicator.png"
             }
         },
         "Transform": {
@@ -10691,7 +10825,7 @@
             "Enabled": true,
             "Texture": {
                 "Alias": "gloopIndicator",
-                "FilePath": "res\\assets\\textures\\gui\\gloopIndicator.png"
+                "FilePath": "res/assets/textures/gui/gloopIndicator.png"
             }
         },
         "Transform": {
@@ -10735,7 +10869,7 @@
             "Enabled": true,
             "Texture": {
                 "Alias": "gloopIndicator",
-                "FilePath": "res\\assets\\textures\\gui\\gloopIndicator.png"
+                "FilePath": "res/assets/textures/gui/gloopIndicator.png"
             }
         },
         "Transform": {
@@ -10773,7 +10907,7 @@
             },
             "Mesh": {
                 "Alias": "headPiece_wood",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Decorative\\headPiece_wood.obj"
             }
         },
         "Transform": {
@@ -10811,7 +10945,7 @@
             },
             "Mesh": {
                 "Alias": "headPiece_wood",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Decorative\\headPiece_wood.obj"
             }
         },
         "Transform": {
@@ -10849,7 +10983,7 @@
             },
             "Mesh": {
                 "Alias": "headPiece_metal",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Decorative\\headPiece_metal.obj"
             }
         },
         "Transform": {
@@ -10887,7 +11021,7 @@
             },
             "Mesh": {
                 "Alias": "headPiece_metal",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Decorative\\headPiece_metal.obj"
             }
         },
         "Transform": {
@@ -10925,7 +11059,7 @@
             },
             "Mesh": {
                 "Alias": "HullDetailing",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\HullDetailing.obj"
             }
         },
         "Transform": {
@@ -10963,7 +11097,7 @@
             },
             "Mesh": {
                 "Alias": "HullDetailing",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\HullDetailing.obj"
             }
         },
         "Transform": {
@@ -11007,7 +11141,7 @@
             "Enabled": true,
             "Texture": {
                 "Alias": "invalid_reticle",
-                "FilePath": "res\\assets\\textures\\gui\\invalid_reticle.png"
+                "FilePath": "res/assets/textures/gui/invalid_reticle.png"
             }
         },
         "Transform": {
@@ -11051,7 +11185,7 @@
             "Enabled": true,
             "Texture": {
                 "Alias": "invalid_reticle",
-                "FilePath": "res\\assets\\textures\\gui\\invalid_reticle.png"
+                "FilePath": "res/assets/textures/gui/invalid_reticle.png"
             }
         },
         "Transform": {
@@ -11095,7 +11229,7 @@
             "Enabled": true,
             "Texture": {
                 "Alias": "invalid_reticle",
-                "FilePath": "res\\assets\\textures\\gui\\invalid_reticle.png"
+                "FilePath": "res/assets/textures/gui/invalid_reticle.png"
             }
         },
         "Transform": {
@@ -11139,7 +11273,7 @@
             "Enabled": true,
             "Texture": {
                 "Alias": "invalid_reticle",
-                "FilePath": "res\\assets\\textures\\gui\\invalid_reticle.png"
+                "FilePath": "res/assets/textures/gui/invalid_reticle.png"
             }
         },
         "Transform": {
@@ -11195,11 +11329,13 @@
             },
             "Mesh": {
                 "Alias": "KRISTIAN POD",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Decorative\\KRISTIAN POD.obj"
             }
         },
         "RigidBody": {
             "Friction": 1.0,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 32
         },
@@ -11259,7 +11395,7 @@
             },
             "Mesh": {
                 "Alias": "lamp",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\lamp.obj"
             }
         },
         "Transform": {
@@ -11295,12 +11431,30 @@
                     0.3921568691730499,
                     0.3921568691730499
                 ],
-                "CastShadows": true,
                 "Diffuse": [
                     0.5,
                     0.5,
                     0.5
                 ],
+                "Shadow": {
+                    "Bias": [
+                        0.0010000000474974513,
+                        0.004999999888241291
+                    ],
+                    "ClipLength": 100.0,
+                    "LowerBounds": [
+                        -10.0,
+                        -10.0
+                    ],
+                    "Resolution": [
+                        1024.0,
+                        1024.0
+                    ],
+                    "UpperBounds": [
+                        10.0,
+                        10.0
+                    ]
+                },
                 "Specular": [
                     1.0,
                     1.0,
@@ -11317,7 +11471,7 @@
             },
             "Mesh": {
                 "Alias": "lamp",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\lamp.obj"
             }
         },
         "Transform": {
@@ -11361,7 +11515,7 @@
             "Enabled": true,
             "Texture": {
                 "Alias": "loadCannon",
-                "FilePath": "res\\assets\\textures\\gui\\loadCannon.png"
+                "FilePath": "res/assets/textures/gui/loadCannon.png"
             }
         },
         "Transform": {
@@ -11405,7 +11559,7 @@
             "Enabled": true,
             "Texture": {
                 "Alias": "loadCannon",
-                "FilePath": "res\\assets\\textures\\gui\\loadCannon.png"
+                "FilePath": "res/assets/textures/gui/loadCannon.png"
             }
         },
         "Transform": {
@@ -11449,7 +11603,7 @@
             "Enabled": true,
             "Texture": {
                 "Alias": "loadCannon",
-                "FilePath": "res\\assets\\textures\\gui\\loadCannon.png"
+                "FilePath": "res/assets/textures/gui/loadCannon.png"
             }
         },
         "Transform": {
@@ -11493,7 +11647,7 @@
             "Enabled": true,
             "Texture": {
                 "Alias": "loadCannon",
-                "FilePath": "res\\assets\\textures\\gui\\loadCannon.png"
+                "FilePath": "res/assets/textures/gui/loadCannon.png"
             }
         },
         "Transform": {
@@ -11549,11 +11703,13 @@
             },
             "Mesh": {
                 "Alias": "cube",
-                "FilePath": ""
+                "FilePath": "res/assets/models/cube.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.0,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 34
         },
@@ -11610,11 +11766,13 @@
             },
             "Mesh": {
                 "Alias": "cube",
-                "FilePath": ""
+                "FilePath": "res/assets/models/cube.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.0,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 34
         },
@@ -11671,11 +11829,13 @@
             },
             "Mesh": {
                 "Alias": "MARCUS MEPPS5",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Decorative\\MARCUS MEPPS5.obj"
             }
         },
         "RigidBody": {
             "Friction": 1.0,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 32
         },
@@ -11714,7 +11874,7 @@
             },
             "Mesh": {
                 "Alias": "mast_wood",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Decorative\\mast_wood.obj"
             }
         },
         "Transform": {
@@ -11752,7 +11912,7 @@
             },
             "Mesh": {
                 "Alias": "mast_wood",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Decorative\\mast_wood.obj"
             }
         },
         "Transform": {
@@ -11790,7 +11950,7 @@
             },
             "Mesh": {
                 "Alias": "mast_metal",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Decorative\\mast_metal.obj"
             }
         },
         "Transform": {
@@ -11828,7 +11988,7 @@
             },
             "Mesh": {
                 "Alias": "mast_metal",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Decorative\\mast_metal.obj"
             }
         },
         "Transform": {
@@ -11882,11 +12042,13 @@
             },
             "Mesh": {
                 "Alias": "cube",
-                "FilePath": ""
+                "FilePath": "res/assets/models/cube.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.0,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 34
         },
@@ -11941,11 +12103,13 @@
             },
             "Mesh": {
                 "Alias": "cube",
-                "FilePath": ""
+                "FilePath": "res/assets/models/cube.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.0,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 34
         },
@@ -12002,11 +12166,13 @@
             },
             "Mesh": {
                 "Alias": "MAT SPINFUZOR",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Decorative\\MAT SPINFUZOR.obj"
             }
         },
         "RigidBody": {
             "Friction": 1.0,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 32
         },
@@ -12063,11 +12229,13 @@
             },
             "Mesh": {
                 "Alias": "MICHELLE TAIL",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Decorative\\MICHELLE TAIL.obj"
             }
         },
         "RigidBody": {
             "Friction": 1.0,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 32
         },
@@ -12176,11 +12344,13 @@
             },
             "Mesh": {
                 "Alias": "cube",
-                "FilePath": ""
+                "FilePath": "res/assets/models/cube.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.0,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 34
         },
@@ -12237,11 +12407,13 @@
             },
             "Mesh": {
                 "Alias": "cube",
-                "FilePath": ""
+                "FilePath": "res/assets/models/cube.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.0,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 34
         },
@@ -12298,11 +12470,13 @@
             },
             "Mesh": {
                 "Alias": "cube",
-                "FilePath": ""
+                "FilePath": "res/assets/models/cube.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.0,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 34
         },
@@ -12359,11 +12533,13 @@
             },
             "Mesh": {
                 "Alias": "cube",
-                "FilePath": ""
+                "FilePath": "res/assets/models/cube.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.0,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 34
         },
@@ -12420,11 +12596,13 @@
             },
             "Mesh": {
                 "Alias": "cube",
-                "FilePath": ""
+                "FilePath": "res/assets/models/cube.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.0,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 34
         },
@@ -12481,11 +12659,13 @@
             },
             "Mesh": {
                 "Alias": "cube",
-                "FilePath": ""
+                "FilePath": "res/assets/models/cube.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.0,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 34
         },
@@ -12542,11 +12722,13 @@
             },
             "Mesh": {
                 "Alias": "cube",
-                "FilePath": ""
+                "FilePath": "res/assets/models/cube.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.0,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 34
         },
@@ -12603,11 +12785,13 @@
             },
             "Mesh": {
                 "Alias": "cube",
-                "FilePath": ""
+                "FilePath": "res/assets/models/cube.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.0,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 34
         },
@@ -12664,11 +12848,13 @@
             },
             "Mesh": {
                 "Alias": "cube",
-                "FilePath": ""
+                "FilePath": "res/assets/models/cube.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.0,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 34
         },
@@ -12725,11 +12911,13 @@
             },
             "Mesh": {
                 "Alias": "cube",
-                "FilePath": ""
+                "FilePath": "res/assets/models/cube.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.0,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 34
         },
@@ -12786,11 +12974,13 @@
             },
             "Mesh": {
                 "Alias": "cube",
-                "FilePath": ""
+                "FilePath": "res/assets/models/cube.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.949999988079071,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 34
         },
@@ -12847,11 +13037,13 @@
             },
             "Mesh": {
                 "Alias": "cube",
-                "FilePath": ""
+                "FilePath": "res/assets/models/cube.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.949999988079071,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 34
         },
@@ -12908,11 +13100,13 @@
             },
             "Mesh": {
                 "Alias": "cube",
-                "FilePath": ""
+                "FilePath": "res/assets/models/cube.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.949999988079071,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 34
         },
@@ -12969,11 +13163,13 @@
             },
             "Mesh": {
                 "Alias": "cube",
-                "FilePath": ""
+                "FilePath": "res/assets/models/cube.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.949999988079071,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 34
         },
@@ -13030,11 +13226,13 @@
             },
             "Mesh": {
                 "Alias": "cube",
-                "FilePath": ""
+                "FilePath": "res/assets/models/cube.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.949999988079071,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 34
         },
@@ -13079,7 +13277,7 @@
             "Enabled": true,
             "Texture": {
                 "Alias": "blueMopIcon",
-                "FilePath": "res\\assets\\textures\\gui\\blueMopIcon.png"
+                "FilePath": "res/assets/textures/gui/blueMopIcon.png"
             }
         },
         "Transform": {
@@ -13123,7 +13321,7 @@
             "Enabled": true,
             "Texture": {
                 "Alias": "redMopIcon",
-                "FilePath": "res\\assets\\textures\\gui\\redMopIcon.png"
+                "FilePath": "res/assets/textures/gui/redMopIcon.png"
             }
         },
         "Transform": {
@@ -13167,7 +13365,7 @@
             "Enabled": true,
             "Texture": {
                 "Alias": "blueMopIcon",
-                "FilePath": "res\\assets\\textures\\gui\\blueMopIcon.png"
+                "FilePath": "res/assets/textures/gui/blueMopIcon.png"
             }
         },
         "Transform": {
@@ -13211,7 +13409,7 @@
             "Enabled": true,
             "Texture": {
                 "Alias": "redMopIcon",
-                "FilePath": "res\\assets\\textures\\gui\\redMopIcon.png"
+                "FilePath": "res/assets/textures/gui/redMopIcon.png"
             }
         },
         "Transform": {
@@ -13267,11 +13465,13 @@
             },
             "Mesh": {
                 "Alias": "MYLES BARQS",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Decorative\\MYLES BARQS.obj"
             }
         },
         "RigidBody": {
             "Friction": 1.0,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 32
         },
@@ -13316,7 +13516,7 @@
             "Enabled": true,
             "Texture": {
                 "Alias": "reticle",
-                "FilePath": "res\\assets\\textures\\gui\\reticle.png"
+                "FilePath": "res/assets/textures/gui/reticle.png"
             }
         },
         "Transform": {
@@ -13360,7 +13560,7 @@
             "Enabled": true,
             "Texture": {
                 "Alias": "reticle",
-                "FilePath": "res\\assets\\textures\\gui\\reticle.png"
+                "FilePath": "res/assets/textures/gui/reticle.png"
             }
         },
         "Transform": {
@@ -13404,7 +13604,7 @@
             "Enabled": true,
             "Texture": {
                 "Alias": "reticle",
-                "FilePath": "res\\assets\\textures\\gui\\reticle.png"
+                "FilePath": "res/assets/textures/gui/reticle.png"
             }
         },
         "Transform": {
@@ -13448,7 +13648,7 @@
             "Enabled": true,
             "Texture": {
                 "Alias": "reticle",
-                "FilePath": "res\\assets\\textures\\gui\\reticle.png"
+                "FilePath": "res/assets/textures/gui/reticle.png"
             }
         },
         "Transform": {
@@ -13486,7 +13686,7 @@
             },
             "Mesh": {
                 "Alias": "o ring",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Decorative\\o ring.obj"
             }
         },
         "Transform": {
@@ -13524,7 +13724,7 @@
             },
             "Mesh": {
                 "Alias": "o ring",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Decorative\\o ring.obj"
             }
         },
         "Transform": {
@@ -13562,7 +13762,7 @@
             },
             "Mesh": {
                 "Alias": "o ring",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Decorative\\o ring.obj"
             }
         },
         "Transform": {
@@ -13600,7 +13800,7 @@
             },
             "Mesh": {
                 "Alias": "o ring",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Decorative\\o ring.obj"
             }
         },
         "Transform": {
@@ -13638,7 +13838,7 @@
             },
             "Mesh": {
                 "Alias": "o ring",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Decorative\\o ring.obj"
             }
         },
         "Transform": {
@@ -13676,7 +13876,7 @@
             },
             "Mesh": {
                 "Alias": "o ring",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Decorative\\o ring.obj"
             }
         },
         "Transform": {
@@ -13714,7 +13914,7 @@
             },
             "Mesh": {
                 "Alias": "o ring",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Decorative\\o ring.obj"
             }
         },
         "Transform": {
@@ -13752,7 +13952,7 @@
             },
             "Mesh": {
                 "Alias": "o ring",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Decorative\\o ring.obj"
             }
         },
         "Transform": {
@@ -13790,7 +13990,7 @@
             },
             "Mesh": {
                 "Alias": "o ring",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Decorative\\o ring.obj"
             }
         },
         "Transform": {
@@ -13828,7 +14028,7 @@
             },
             "Mesh": {
                 "Alias": "o ring",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Decorative\\o ring.obj"
             }
         },
         "Transform": {
@@ -13866,7 +14066,7 @@
             },
             "Mesh": {
                 "Alias": "o ring",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Decorative\\o ring.obj"
             }
         },
         "Transform": {
@@ -13904,7 +14104,7 @@
             },
             "Mesh": {
                 "Alias": "o ring",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Decorative\\o ring.obj"
             }
         },
         "Transform": {
@@ -13942,7 +14142,7 @@
             },
             "Mesh": {
                 "Alias": "o ring",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Decorative\\o ring.obj"
             }
         },
         "Transform": {
@@ -13980,7 +14180,7 @@
             },
             "Mesh": {
                 "Alias": "o ring",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Decorative\\o ring.obj"
             }
         },
         "Transform": {
@@ -14018,7 +14218,7 @@
             },
             "Mesh": {
                 "Alias": "o ring",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Decorative\\o ring.obj"
             }
         },
         "Transform": {
@@ -14056,7 +14256,7 @@
             },
             "Mesh": {
                 "Alias": "o ring",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Decorative\\o ring.obj"
             }
         },
         "Transform": {
@@ -14276,7 +14476,7 @@
             "Enabled": true,
             "Texture": {
                 "Alias": "pickupCannonball",
-                "FilePath": "res\\assets\\textures\\gui\\pickupCannonball.png"
+                "FilePath": "res/assets/textures/gui/pickupCannonball.png"
             }
         },
         "Transform": {
@@ -14320,7 +14520,7 @@
             "Enabled": true,
             "Texture": {
                 "Alias": "pickupCannonball",
-                "FilePath": "res\\assets\\textures\\gui\\pickupCannonball.png"
+                "FilePath": "res/assets/textures/gui/pickupCannonball.png"
             }
         },
         "Transform": {
@@ -14364,7 +14564,7 @@
             "Enabled": true,
             "Texture": {
                 "Alias": "pickupCannonball",
-                "FilePath": "res\\assets\\textures\\gui\\pickupCannonball.png"
+                "FilePath": "res/assets/textures/gui/pickupCannonball.png"
             }
         },
         "Transform": {
@@ -14408,7 +14608,7 @@
             "Enabled": true,
             "Texture": {
                 "Alias": "pickupCannonball",
-                "FilePath": "res\\assets\\textures\\gui\\pickupCannonball.png"
+                "FilePath": "res/assets/textures/gui/pickupCannonball.png"
             }
         },
         "Transform": {
@@ -14452,7 +14652,7 @@
             "Enabled": true,
             "Texture": {
                 "Alias": "pickupCleaningSolution",
-                "FilePath": "res\\assets\\textures\\gui\\pickupCleaningSolution.png"
+                "FilePath": "res/assets/textures/gui/pickupCleaningSolution.png"
             }
         },
         "Transform": {
@@ -14496,7 +14696,7 @@
             "Enabled": true,
             "Texture": {
                 "Alias": "pickupCleaningSolution",
-                "FilePath": "res\\assets\\textures\\gui\\pickupCleaningSolution.png"
+                "FilePath": "res/assets/textures/gui/pickupCleaningSolution.png"
             }
         },
         "Transform": {
@@ -14540,7 +14740,7 @@
             "Enabled": true,
             "Texture": {
                 "Alias": "pickupCleaningSolution",
-                "FilePath": "res\\assets\\textures\\gui\\pickupCleaningSolution.png"
+                "FilePath": "res/assets/textures/gui/pickupCleaningSolution.png"
             }
         },
         "Transform": {
@@ -14584,7 +14784,7 @@
             "Enabled": true,
             "Texture": {
                 "Alias": "pickupCleaningSolution",
-                "FilePath": "res\\assets\\textures\\gui\\pickupCleaningSolution.png"
+                "FilePath": "res/assets/textures/gui/pickupCleaningSolution.png"
             }
         },
         "Transform": {
@@ -14804,7 +15004,7 @@
             "Enabled": true,
             "Texture": {
                 "Alias": "pickupMop",
-                "FilePath": "res\\assets\\textures\\gui\\pickupMop.png"
+                "FilePath": "res/assets/textures/gui/pickupMop.png"
             }
         },
         "Transform": {
@@ -14848,7 +15048,7 @@
             "Enabled": true,
             "Texture": {
                 "Alias": "pickupMop",
-                "FilePath": "res\\assets\\textures\\gui\\pickupMop.png"
+                "FilePath": "res/assets/textures/gui/pickupMop.png"
             }
         },
         "Transform": {
@@ -14892,7 +15092,7 @@
             "Enabled": true,
             "Texture": {
                 "Alias": "pickupMop",
-                "FilePath": "res\\assets\\textures\\gui\\pickupMop.png"
+                "FilePath": "res/assets/textures/gui/pickupMop.png"
             }
         },
         "Transform": {
@@ -14936,7 +15136,7 @@
             "Enabled": true,
             "Texture": {
                 "Alias": "pickupMop",
-                "FilePath": "res\\assets\\textures\\gui\\pickupMop.png"
+                "FilePath": "res/assets/textures/gui/pickupMop.png"
             }
         },
         "Transform": {
@@ -14992,11 +15192,13 @@
             },
             "Mesh": {
                 "Alias": "plane",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\plane.obj"
             }
         },
         "RigidBody": {
             "Friction": 1.0,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 98
         },
@@ -15053,11 +15255,13 @@
             },
             "Mesh": {
                 "Alias": "plane",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\plane.obj"
             }
         },
         "RigidBody": {
             "Friction": 1.0,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 98
         },
@@ -15114,11 +15318,13 @@
             },
             "Mesh": {
                 "Alias": "plane",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\plane.obj"
             }
         },
         "RigidBody": {
             "Friction": 1.0,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 98
         },
@@ -15175,11 +15381,13 @@
             },
             "Mesh": {
                 "Alias": "plane",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\plane.obj"
             }
         },
         "RigidBody": {
             "Friction": 1.0,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 98
         },
@@ -15236,7 +15444,7 @@
             },
             "Mesh": {
                 "Alias": "Board",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Board.obj"
             }
         },
         "Transform": {
@@ -15292,11 +15500,13 @@
             },
             "Mesh": {
                 "Alias": "cube",
-                "FilePath": ""
+                "FilePath": "res/assets/models/cube.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.949999988079071,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 62
         },
@@ -15351,11 +15561,13 @@
             },
             "Mesh": {
                 "Alias": "character",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\character.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.0,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 5.0,
             "Properties": 126
         },
@@ -15372,15 +15584,15 @@
                 "Z": -1.781553030014038
             },
             "Rotation": {
-                "qW": 0.7014285922050476,
-                "qX": -1.0292694696545368e-08,
-                "qY": 0.7127397060394287,
-                "qZ": -1.0292694696545368e-08
+                "qW": 0.7053109407424927,
+                "qX": -1.138892002927605e-08,
+                "qY": 0.7088980674743652,
+                "qZ": -1.138892002927605e-08
             },
             "Scale": {
                 "X": 1.0,
                 "Y": 1.0,
-                "Z": 10.0
+                "Z": 1.0
             }
         }
     },
@@ -15409,8 +15621,8 @@
                 "Z": -0.3499999940395355
             },
             "Rotation": {
-                "qW": 1.0,
-                "qX": 0.0,
+                "qW": 0.9908657670021057,
+                "qX": -0.13485091924667358,
                 "qY": 0.0,
                 "qZ": 0.0
             },
@@ -15510,11 +15722,13 @@
             },
             "Mesh": {
                 "Alias": "character",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\character.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.0,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 5.0,
             "Properties": 126
         },
@@ -15595,11 +15809,13 @@
             },
             "Mesh": {
                 "Alias": "characterTall",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\characterTall.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.0,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 5.0,
             "Properties": 126
         },
@@ -15754,11 +15970,13 @@
             },
             "Mesh": {
                 "Alias": "characterTall",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\characterTall.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.0,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 5.0,
             "Properties": 126
         },
@@ -15829,7 +16047,7 @@
             "Enabled": true,
             "Texture": {
                 "Alias": "pushCannon",
-                "FilePath": "res\\assets\\textures\\gui\\pushCannon.png"
+                "FilePath": "res/assets/textures/gui/pushCannon.png"
             }
         },
         "Transform": {
@@ -15873,7 +16091,7 @@
             "Enabled": true,
             "Texture": {
                 "Alias": "pushCannon",
-                "FilePath": "res\\assets\\textures\\gui\\pushCannon.png"
+                "FilePath": "res/assets/textures/gui/pushCannon.png"
             }
         },
         "Transform": {
@@ -15917,7 +16135,7 @@
             "Enabled": true,
             "Texture": {
                 "Alias": "pushCannon",
-                "FilePath": "res\\assets\\textures\\gui\\pushCannon.png"
+                "FilePath": "res/assets/textures/gui/pushCannon.png"
             }
         },
         "Transform": {
@@ -15961,7 +16179,7 @@
             "Enabled": true,
             "Texture": {
                 "Alias": "pushCannon",
-                "FilePath": "res\\assets\\textures\\gui\\pushCannon.png"
+                "FilePath": "res/assets/textures/gui/pushCannon.png"
             }
         },
         "Transform": {
@@ -15999,7 +16217,7 @@
             },
             "Mesh": {
                 "Alias": "doorFrame",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Decorative\\doorFrame.obj"
             }
         },
         "Transform": {
@@ -16037,7 +16255,7 @@
             },
             "Mesh": {
                 "Alias": "doorFrame",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Decorative\\doorFrame.obj"
             }
         },
         "Transform": {
@@ -16093,11 +16311,13 @@
             },
             "Mesh": {
                 "Alias": "cannon",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\cannon.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.949999988079071,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 34
         },
@@ -16154,11 +16374,13 @@
             },
             "Mesh": {
                 "Alias": "garbageBall",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\garbageBall.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.8999999761581421,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 1.0,
             "Properties": 34
         },
@@ -16215,11 +16437,13 @@
             },
             "Mesh": {
                 "Alias": "garbageBall",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\garbageBall.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.8999999761581421,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 1.0,
             "Properties": 34
         },
@@ -16276,11 +16500,13 @@
             },
             "Mesh": {
                 "Alias": "garbageBall",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\garbageBall.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.8999999761581421,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 1.0,
             "Properties": 34
         },
@@ -16337,11 +16563,13 @@
             },
             "Mesh": {
                 "Alias": "garbageBall",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\garbageBall.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.8999999761581421,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 1.0,
             "Properties": 34
         },
@@ -16398,11 +16626,13 @@
             },
             "Mesh": {
                 "Alias": "garbageBall",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\garbageBall.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.8999999761581421,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 1.0,
             "Properties": 34
         },
@@ -16459,11 +16689,13 @@
             },
             "Mesh": {
                 "Alias": "garbageBall",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\garbageBall.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.8999999761581421,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 1.0,
             "Properties": 34
         },
@@ -16520,11 +16752,13 @@
             },
             "Mesh": {
                 "Alias": "crateTemp",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\crateTemp.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.949999988079071,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 34
         },
@@ -16581,11 +16815,13 @@
             },
             "Mesh": {
                 "Alias": "Pirax",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Pirax.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.8999999761581421,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 1.0,
             "Properties": 98
         },
@@ -16642,11 +16878,13 @@
             },
             "Mesh": {
                 "Alias": "Pirax",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Pirax.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.8999999761581421,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 1.0,
             "Properties": 34
         },
@@ -16766,11 +17004,13 @@
             },
             "Mesh": {
                 "Alias": "garbageTiny",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Garbage\\garbageTiny.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.949999988079071,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 62
         },
@@ -16855,11 +17095,13 @@
             },
             "Mesh": {
                 "Alias": "garbageTiny",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Garbage\\garbageTiny.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.949999988079071,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 62
         },
@@ -16944,11 +17186,13 @@
             },
             "Mesh": {
                 "Alias": "garbageTiny",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Garbage\\garbageTiny.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.949999988079071,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 62
         },
@@ -16987,7 +17231,7 @@
             },
             "Mesh": {
                 "Alias": "cube",
-                "FilePath": ""
+                "FilePath": "res/assets/models/cube.obj"
             }
         },
         "Transform": {
@@ -17025,7 +17269,7 @@
             },
             "Mesh": {
                 "Alias": "cube",
-                "FilePath": ""
+                "FilePath": "res/assets/models/cube.obj"
             }
         },
         "Transform": {
@@ -17063,7 +17307,7 @@
             },
             "Mesh": {
                 "Alias": "cube",
-                "FilePath": ""
+                "FilePath": "res/assets/models/cube.obj"
             }
         },
         "Transform": {
@@ -17119,11 +17363,13 @@
             },
             "Mesh": {
                 "Alias": "Gloop",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Gloop.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.8999999761581421,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 1.0,
             "Properties": 98
         },
@@ -17180,11 +17426,13 @@
             },
             "Mesh": {
                 "Alias": "Gloop",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Gloop.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.8999999761581421,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 1.0,
             "Properties": 34
         },
@@ -17276,11 +17524,13 @@
             },
             "Mesh": {
                 "Alias": "mop",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\mop.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.8999999761581421,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 34
         },
@@ -17337,11 +17587,13 @@
             },
             "Mesh": {
                 "Alias": "mop",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\mop.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.8999999761581421,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 34
         },
@@ -17380,7 +17632,7 @@
             },
             "Mesh": {
                 "Alias": "Rigging",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Rigging.obj"
             }
         },
         "Transform": {
@@ -17418,7 +17670,7 @@
             },
             "Mesh": {
                 "Alias": "Rigging",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Rigging.obj"
             }
         },
         "Transform": {
@@ -17456,7 +17708,7 @@
             },
             "Mesh": {
                 "Alias": "Environtment Rope",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Decorative\\Environtment Rope.obj"
             }
         },
         "Transform": {
@@ -17494,7 +17746,7 @@
             },
             "Mesh": {
                 "Alias": "Environtment Rope",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Decorative\\Environtment Rope.obj"
             }
         },
         "Transform": {
@@ -17532,7 +17784,7 @@
             },
             "Mesh": {
                 "Alias": "Environtment Rope",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Decorative\\Environtment Rope.obj"
             }
         },
         "Transform": {
@@ -17570,7 +17822,7 @@
             },
             "Mesh": {
                 "Alias": "Environtment Rope",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Decorative\\Environtment Rope.obj"
             }
         },
         "Transform": {
@@ -17608,7 +17860,7 @@
             },
             "Mesh": {
                 "Alias": "Environtment Rope",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Decorative\\Environtment Rope.obj"
             }
         },
         "Transform": {
@@ -17646,7 +17898,7 @@
             },
             "Mesh": {
                 "Alias": "Environtment Rope",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Decorative\\Environtment Rope.obj"
             }
         },
         "Transform": {
@@ -17684,7 +17936,7 @@
             },
             "Mesh": {
                 "Alias": "Environtment Rope",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Decorative\\Environtment Rope.obj"
             }
         },
         "Transform": {
@@ -17722,7 +17974,7 @@
             },
             "Mesh": {
                 "Alias": "Environtment Rope",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Decorative\\Environtment Rope.obj"
             }
         },
         "Transform": {
@@ -17760,7 +18012,7 @@
             },
             "Mesh": {
                 "Alias": "Environtment Rope",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Decorative\\Environtment Rope.obj"
             }
         },
         "Transform": {
@@ -17798,7 +18050,7 @@
             },
             "Mesh": {
                 "Alias": "Environtment Rope",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Decorative\\Environtment Rope.obj"
             }
         },
         "Transform": {
@@ -17836,7 +18088,7 @@
             },
             "Mesh": {
                 "Alias": "Environtment Rope",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Decorative\\Environtment Rope.obj"
             }
         },
         "Transform": {
@@ -17874,7 +18126,7 @@
             },
             "Mesh": {
                 "Alias": "Environtment Rope",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Decorative\\Environtment Rope.obj"
             }
         },
         "Transform": {
@@ -17912,7 +18164,7 @@
             },
             "Mesh": {
                 "Alias": "Environtment Rope",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Decorative\\Environtment Rope.obj"
             }
         },
         "Transform": {
@@ -17950,7 +18202,7 @@
             },
             "Mesh": {
                 "Alias": "Environtment Rope",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Decorative\\Environtment Rope.obj"
             }
         },
         "Transform": {
@@ -17988,7 +18240,7 @@
             },
             "Mesh": {
                 "Alias": "Environtment Rope",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Decorative\\Environtment Rope.obj"
             }
         },
         "Transform": {
@@ -18026,7 +18278,7 @@
             },
             "Mesh": {
                 "Alias": "Environtment Rope",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Decorative\\Environtment Rope.obj"
             }
         },
         "Transform": {
@@ -18064,7 +18316,7 @@
             },
             "Mesh": {
                 "Alias": "Environtment Rope",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Decorative\\Environtment Rope.obj"
             }
         },
         "Transform": {
@@ -18102,7 +18354,7 @@
             },
             "Mesh": {
                 "Alias": "Environtment Rope",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Decorative\\Environtment Rope.obj"
             }
         },
         "Transform": {
@@ -18140,7 +18392,7 @@
             },
             "Mesh": {
                 "Alias": "Environtment Rope",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Decorative\\Environtment Rope.obj"
             }
         },
         "Transform": {
@@ -18178,7 +18430,7 @@
             },
             "Mesh": {
                 "Alias": "Environtment Rope",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Decorative\\Environtment Rope.obj"
             }
         },
         "Transform": {
@@ -18216,7 +18468,7 @@
             },
             "Mesh": {
                 "Alias": "Environtment Rope",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Decorative\\Environtment Rope.obj"
             }
         },
         "Transform": {
@@ -18254,7 +18506,7 @@
             },
             "Mesh": {
                 "Alias": "Environtment Rope",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Decorative\\Environtment Rope.obj"
             }
         },
         "Transform": {
@@ -18292,7 +18544,7 @@
             },
             "Mesh": {
                 "Alias": "sails_temporary",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Decorative\\sails_temporary.obj"
             }
         },
         "Transform": {
@@ -18330,7 +18582,7 @@
             },
             "Mesh": {
                 "Alias": "sails_temporary",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Decorative\\sails_temporary.obj"
             }
         },
         "Transform": {
@@ -18386,11 +18638,13 @@
             },
             "Mesh": {
                 "Alias": "cube",
-                "FilePath": ""
+                "FilePath": "res/assets/models/cube.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.0,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 34
         },
@@ -18447,11 +18701,13 @@
             },
             "Mesh": {
                 "Alias": "cube",
-                "FilePath": ""
+                "FilePath": "res/assets/models/cube.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.949999988079071,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 34
         },
@@ -18508,11 +18764,13 @@
             },
             "Mesh": {
                 "Alias": "cube",
-                "FilePath": ""
+                "FilePath": "res/assets/models/cube.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.949999988079071,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 34
         },
@@ -18569,11 +18827,13 @@
             },
             "Mesh": {
                 "Alias": "cube",
-                "FilePath": ""
+                "FilePath": "res/assets/models/cube.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.0,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 34
         },
@@ -18630,11 +18890,13 @@
             },
             "Mesh": {
                 "Alias": "cube",
-                "FilePath": ""
+                "FilePath": "res/assets/models/cube.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.0,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 34
         },
@@ -18691,11 +18953,13 @@
             },
             "Mesh": {
                 "Alias": "cube",
-                "FilePath": ""
+                "FilePath": "res/assets/models/cube.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.949999988079071,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 34
         },
@@ -18752,11 +19016,13 @@
             },
             "Mesh": {
                 "Alias": "cube",
-                "FilePath": ""
+                "FilePath": "res/assets/models/cube.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.949999988079071,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 34
         },
@@ -18813,11 +19079,13 @@
             },
             "Mesh": {
                 "Alias": "cube",
-                "FilePath": ""
+                "FilePath": "res/assets/models/cube.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.949999988079071,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 34
         },
@@ -18874,11 +19142,13 @@
             },
             "Mesh": {
                 "Alias": "cube",
-                "FilePath": ""
+                "FilePath": "res/assets/models/cube.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.0,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 34
         },
@@ -18935,11 +19205,13 @@
             },
             "Mesh": {
                 "Alias": "cube",
-                "FilePath": ""
+                "FilePath": "res/assets/models/cube.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.0,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 34
         },
@@ -18996,11 +19268,13 @@
             },
             "Mesh": {
                 "Alias": "cube",
-                "FilePath": ""
+                "FilePath": "res/assets/models/cube.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.0,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 34
         },
@@ -19057,11 +19331,13 @@
             },
             "Mesh": {
                 "Alias": "cube",
-                "FilePath": ""
+                "FilePath": "res/assets/models/cube.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.949999988079071,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 34
         },
@@ -19152,7 +19428,7 @@
             },
             "Mesh": {
                 "Alias": "shelving",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Decorative\\shelving.obj"
             }
         },
         "Transform": {
@@ -19190,7 +19466,7 @@
             },
             "Mesh": {
                 "Alias": "shelving",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Decorative\\shelving.obj"
             }
         },
         "Transform": {
@@ -19228,7 +19504,7 @@
             },
             "Mesh": {
                 "Alias": "SpawnDoor",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Decorative\\SpawnDoor.obj"
             }
         },
         "Transform": {
@@ -19266,7 +19542,7 @@
             },
             "Mesh": {
                 "Alias": "SpawnDoor",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Decorative\\SpawnDoor.obj"
             }
         },
         "Transform": {
@@ -19311,6 +19587,8 @@
         },
         "RigidBody": {
             "Friction": 0.5,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 1.0,
             "Properties": 98
         },
@@ -19356,6 +19634,8 @@
         },
         "RigidBody": {
             "Friction": 0.5,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 1.0,
             "Properties": 98
         },
@@ -19394,7 +19674,7 @@
             },
             "Mesh": {
                 "Alias": "StairTrim_metal",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\StairTrim_metal.obj"
             }
         },
         "Transform": {
@@ -19432,7 +19712,7 @@
             },
             "Mesh": {
                 "Alias": "StairTrim_metal",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\StairTrim_metal.obj"
             }
         },
         "Transform": {
@@ -19470,7 +19750,7 @@
             },
             "Mesh": {
                 "Alias": "stairs",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\stairs.obj"
             }
         },
         "Transform": {
@@ -19508,7 +19788,7 @@
             },
             "Mesh": {
                 "Alias": "stairs",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\stairs.obj"
             }
         },
         "Transform": {
@@ -19546,7 +19826,7 @@
             },
             "Mesh": {
                 "Alias": "stairs",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\stairs.obj"
             }
         },
         "Transform": {
@@ -19584,7 +19864,7 @@
             },
             "Mesh": {
                 "Alias": "stairs",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\stairs.obj"
             }
         },
         "Transform": {
@@ -19622,7 +19902,7 @@
             },
             "Mesh": {
                 "Alias": "stairsDown",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\stairsDown.obj"
             }
         },
         "Transform": {
@@ -19660,7 +19940,7 @@
             },
             "Mesh": {
                 "Alias": "stairsDown",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\stairsDown.obj"
             }
         },
         "Transform": {
@@ -19704,7 +19984,7 @@
             "Enabled": true,
             "Texture": {
                 "Alias": "throwBottlePrompt",
-                "FilePath": "res\\assets\\textures\\gui\\throwBottlePrompt.png"
+                "FilePath": "res/assets/textures/gui/throwBottlePrompt.png"
             }
         },
         "Transform": {
@@ -19748,7 +20028,7 @@
             "Enabled": true,
             "Texture": {
                 "Alias": "throwBottlePrompt",
-                "FilePath": "res\\assets\\textures\\gui\\throwBottlePrompt.png"
+                "FilePath": "res/assets/textures/gui/throwBottlePrompt.png"
             }
         },
         "Transform": {
@@ -19792,7 +20072,7 @@
             "Enabled": true,
             "Texture": {
                 "Alias": "throwBottlePrompt",
-                "FilePath": "res\\assets\\textures\\gui\\throwBottlePrompt.png"
+                "FilePath": "res/assets/textures/gui/throwBottlePrompt.png"
             }
         },
         "Transform": {
@@ -19836,7 +20116,7 @@
             "Enabled": true,
             "Texture": {
                 "Alias": "throwBottlePrompt",
-                "FilePath": "res\\assets\\textures\\gui\\throwBottlePrompt.png"
+                "FilePath": "res/assets/textures/gui/throwBottlePrompt.png"
             }
         },
         "Transform": {
@@ -19892,11 +20172,13 @@
             },
             "Mesh": {
                 "Alias": "ThrowBottle",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\ThrowBottle.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.8999999761581421,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 1.0,
             "Properties": 98
         },
@@ -19953,11 +20235,13 @@
             },
             "Mesh": {
                 "Alias": "ThrowBottle",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\ThrowBottle.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.8999999761581421,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 1.0,
             "Properties": 98
         },
@@ -20022,7 +20306,7 @@
             },
             "Mesh": {
                 "Alias": "TopDeck",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\TopDeck.obj"
             }
         },
         "Transform": {
@@ -20060,7 +20344,7 @@
             },
             "Mesh": {
                 "Alias": "TopDeck",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\TopDeck.obj"
             }
         },
         "Transform": {
@@ -20142,11 +20426,13 @@
             },
             "Mesh": {
                 "Alias": "cube",
-                "FilePath": ""
+                "FilePath": "res/assets/models/cube.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.0,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 34
         },
@@ -20203,11 +20489,13 @@
             },
             "Mesh": {
                 "Alias": "cube",
-                "FilePath": ""
+                "FilePath": "res/assets/models/cube.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.0,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 34
         },
@@ -20264,11 +20552,13 @@
             },
             "Mesh": {
                 "Alias": "cube",
-                "FilePath": ""
+                "FilePath": "res/assets/models/cube.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.0,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 34
         },
@@ -20325,11 +20615,13 @@
             },
             "Mesh": {
                 "Alias": "cube",
-                "FilePath": ""
+                "FilePath": "res/assets/models/cube.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.0,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 34
         },
@@ -20386,11 +20678,13 @@
             },
             "Mesh": {
                 "Alias": "cube",
-                "FilePath": ""
+                "FilePath": "res/assets/models/cube.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.0,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 34
         },
@@ -20447,11 +20741,13 @@
             },
             "Mesh": {
                 "Alias": "cube",
-                "FilePath": ""
+                "FilePath": "res/assets/models/cube.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.0,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 34
         },
@@ -20508,11 +20804,13 @@
             },
             "Mesh": {
                 "Alias": "cube",
-                "FilePath": ""
+                "FilePath": "res/assets/models/cube.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.0,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 34
         },
@@ -20569,11 +20867,13 @@
             },
             "Mesh": {
                 "Alias": "cube",
-                "FilePath": ""
+                "FilePath": "res/assets/models/cube.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.0,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 34
         },
@@ -20630,11 +20930,13 @@
             },
             "Mesh": {
                 "Alias": "cube",
-                "FilePath": ""
+                "FilePath": "res/assets/models/cube.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.0,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 34
         },
@@ -20691,11 +20993,13 @@
             },
             "Mesh": {
                 "Alias": "cube",
-                "FilePath": ""
+                "FilePath": "res/assets/models/cube.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.0,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 34
         },
@@ -20752,11 +21056,13 @@
             },
             "Mesh": {
                 "Alias": "cube",
-                "FilePath": ""
+                "FilePath": "res/assets/models/cube.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.0,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 34
         },
@@ -20813,11 +21119,13 @@
             },
             "Mesh": {
                 "Alias": "cube",
-                "FilePath": ""
+                "FilePath": "res/assets/models/cube.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.0,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 34
         },
@@ -20874,11 +21182,13 @@
             },
             "Mesh": {
                 "Alias": "cube",
-                "FilePath": ""
+                "FilePath": "res/assets/models/cube.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.0,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 34
         },
@@ -20935,11 +21245,13 @@
             },
             "Mesh": {
                 "Alias": "cube",
-                "FilePath": ""
+                "FilePath": "res/assets/models/cube.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.0,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 34
         },
@@ -20996,11 +21308,13 @@
             },
             "Mesh": {
                 "Alias": "cube",
-                "FilePath": ""
+                "FilePath": "res/assets/models/cube.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.949999988079071,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 34
         },
@@ -21057,11 +21371,13 @@
             },
             "Mesh": {
                 "Alias": "cube",
-                "FilePath": ""
+                "FilePath": "res/assets/models/cube.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.949999988079071,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 34
         },
@@ -21118,11 +21434,13 @@
             },
             "Mesh": {
                 "Alias": "cube",
-                "FilePath": ""
+                "FilePath": "res/assets/models/cube.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.949999988079071,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 34
         },
@@ -21179,11 +21497,13 @@
             },
             "Mesh": {
                 "Alias": "cube",
-                "FilePath": ""
+                "FilePath": "res/assets/models/cube.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.949999988079071,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 34
         },
@@ -21292,11 +21612,13 @@
             },
             "Mesh": {
                 "Alias": "cube",
-                "FilePath": ""
+                "FilePath": "res/assets/models/cube.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.949999988079071,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 34
         },
@@ -21353,11 +21675,13 @@
             },
             "Mesh": {
                 "Alias": "cube",
-                "FilePath": ""
+                "FilePath": "res/assets/models/cube.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.949999988079071,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 34
         },
@@ -21466,11 +21790,13 @@
             },
             "Mesh": {
                 "Alias": "cube",
-                "FilePath": ""
+                "FilePath": "res/assets/models/cube.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.800000011920929,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 34
         },
@@ -21527,11 +21853,13 @@
             },
             "Mesh": {
                 "Alias": "cube",
-                "FilePath": ""
+                "FilePath": "res/assets/models/cube.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.949999988079071,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 34
         },
@@ -21588,11 +21916,13 @@
             },
             "Mesh": {
                 "Alias": "cube",
-                "FilePath": ""
+                "FilePath": "res/assets/models/cube.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.800000011920929,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 34
         },
@@ -21649,11 +21979,13 @@
             },
             "Mesh": {
                 "Alias": "cube",
-                "FilePath": ""
+                "FilePath": "res/assets/models/cube.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.949999988079071,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 34
         },
@@ -21710,11 +22042,13 @@
             },
             "Mesh": {
                 "Alias": "cube",
-                "FilePath": ""
+                "FilePath": "res/assets/models/cube.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.10000000149011612,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 34
         },
@@ -21771,11 +22105,13 @@
             },
             "Mesh": {
                 "Alias": "cube",
-                "FilePath": ""
+                "FilePath": "res/assets/models/cube.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.10000000149011612,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 34
         },
@@ -21832,11 +22168,13 @@
             },
             "Mesh": {
                 "Alias": "cube",
-                "FilePath": ""
+                "FilePath": "res/assets/models/cube.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.10000000149011612,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 34
         },
@@ -21893,11 +22231,13 @@
             },
             "Mesh": {
                 "Alias": "cube",
-                "FilePath": ""
+                "FilePath": "res/assets/models/cube.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.10000000149011612,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 34
         },
@@ -21954,11 +22294,13 @@
             },
             "Mesh": {
                 "Alias": "cube",
-                "FilePath": ""
+                "FilePath": "res/assets/models/cube.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.10000000149011612,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 34
         },
@@ -22015,11 +22357,13 @@
             },
             "Mesh": {
                 "Alias": "cube",
-                "FilePath": ""
+                "FilePath": "res/assets/models/cube.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.10000000149011612,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 34
         },
@@ -22076,11 +22420,13 @@
             },
             "Mesh": {
                 "Alias": "cube",
-                "FilePath": ""
+                "FilePath": "res/assets/models/cube.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.10000000149011612,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 34
         },
@@ -22137,11 +22483,13 @@
             },
             "Mesh": {
                 "Alias": "cube",
-                "FilePath": ""
+                "FilePath": "res/assets/models/cube.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.10000000149011612,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 34
         },
@@ -22198,11 +22546,13 @@
             },
             "Mesh": {
                 "Alias": "cube",
-                "FilePath": ""
+                "FilePath": "res/assets/models/cube.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.10000000149011612,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 34
         },
@@ -22259,11 +22609,13 @@
             },
             "Mesh": {
                 "Alias": "cube",
-                "FilePath": ""
+                "FilePath": "res/assets/models/cube.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.10000000149011612,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 34
         },
@@ -22320,11 +22672,13 @@
             },
             "Mesh": {
                 "Alias": "cube",
-                "FilePath": ""
+                "FilePath": "res/assets/models/cube.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.10000000149011612,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 34
         },
@@ -22381,11 +22735,13 @@
             },
             "Mesh": {
                 "Alias": "cube",
-                "FilePath": ""
+                "FilePath": "res/assets/models/cube.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.10000000149011612,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 34
         },
@@ -22430,7 +22786,7 @@
             "Enabled": true,
             "Texture": {
                 "Alias": "useGloop",
-                "FilePath": "res\\assets\\textures\\gui\\useGloop.png"
+                "FilePath": "res/assets/textures/gui/useGloop.png"
             }
         },
         "Transform": {
@@ -22474,7 +22830,7 @@
             "Enabled": true,
             "Texture": {
                 "Alias": "useGloop",
-                "FilePath": "res\\assets\\textures\\gui\\useGloop.png"
+                "FilePath": "res/assets/textures/gui/useGloop.png"
             }
         },
         "Transform": {
@@ -22518,7 +22874,7 @@
             "Enabled": true,
             "Texture": {
                 "Alias": "useGloop",
-                "FilePath": "res\\assets\\textures\\gui\\useGloop.png"
+                "FilePath": "res/assets/textures/gui/useGloop.png"
             }
         },
         "Transform": {
@@ -22562,7 +22918,7 @@
             "Enabled": true,
             "Texture": {
                 "Alias": "useGloop",
-                "FilePath": "res\\assets\\textures\\gui\\useGloop.png"
+                "FilePath": "res/assets/textures/gui/useGloop.png"
             }
         },
         "Transform": {
@@ -22618,11 +22974,13 @@
             },
             "Mesh": {
                 "Alias": "cube",
-                "FilePath": ""
+                "FilePath": "res/assets/models/cube.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.0,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 34
         },
@@ -22679,11 +23037,13 @@
             },
             "Mesh": {
                 "Alias": "cube",
-                "FilePath": ""
+                "FilePath": "res/assets/models/cube.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.0,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 34
         },
@@ -22740,11 +23100,13 @@
             },
             "Mesh": {
                 "Alias": "cube",
-                "FilePath": ""
+                "FilePath": "res/assets/models/cube.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.0,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 34
         },
@@ -22801,11 +23163,13 @@
             },
             "Mesh": {
                 "Alias": "cube",
-                "FilePath": ""
+                "FilePath": "res/assets/models/cube.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.0,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 34
         },
@@ -22862,11 +23226,13 @@
             },
             "Mesh": {
                 "Alias": "cube",
-                "FilePath": ""
+                "FilePath": "res/assets/models/cube.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.0,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 34
         },
@@ -22923,11 +23289,13 @@
             },
             "Mesh": {
                 "Alias": "cube",
-                "FilePath": ""
+                "FilePath": "res/assets/models/cube.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.0,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 34
         },
@@ -22984,11 +23352,13 @@
             },
             "Mesh": {
                 "Alias": "cube",
-                "FilePath": ""
+                "FilePath": "res/assets/models/cube.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.0,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 34
         },
@@ -23045,11 +23415,13 @@
             },
             "Mesh": {
                 "Alias": "cube",
-                "FilePath": ""
+                "FilePath": "res/assets/models/cube.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.0,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 34
         },
@@ -23106,11 +23478,13 @@
             },
             "Mesh": {
                 "Alias": "cube",
-                "FilePath": ""
+                "FilePath": "res/assets/models/cube.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.0,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 34
         },
@@ -23167,11 +23541,13 @@
             },
             "Mesh": {
                 "Alias": "cube",
-                "FilePath": ""
+                "FilePath": "res/assets/models/cube.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.0,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 34
         },
@@ -23228,11 +23604,13 @@
             },
             "Mesh": {
                 "Alias": "cube",
-                "FilePath": ""
+                "FilePath": "res/assets/models/cube.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.0,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 34
         },
@@ -23289,11 +23667,13 @@
             },
             "Mesh": {
                 "Alias": "cube",
-                "FilePath": ""
+                "FilePath": "res/assets/models/cube.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.0,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 34
         },
@@ -23332,7 +23712,7 @@
             },
             "Mesh": {
                 "Alias": "plane",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\plane.obj"
             }
         },
         "Transform": {
@@ -23440,7 +23820,7 @@
             },
             "Mesh": {
                 "Alias": "wheel",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Decorative\\wheel.obj"
             }
         },
         "Transform": {
@@ -23478,7 +23858,7 @@
             },
             "Mesh": {
                 "Alias": "wheel",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Decorative\\wheel.obj"
             }
         },
         "Transform": {
@@ -23534,11 +23914,13 @@
             },
             "Mesh": {
                 "Alias": "WoodCrate",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Decorative\\WoodCrate.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.949999988079071,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 62
         },
@@ -23595,11 +23977,13 @@
             },
             "Mesh": {
                 "Alias": "WoodCrate",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Decorative\\WoodCrate.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.949999988079071,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 62
         },
@@ -23656,11 +24040,13 @@
             },
             "Mesh": {
                 "Alias": "WoodCrate",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Decorative\\WoodCrate.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.949999988079071,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 62
         },
@@ -23717,11 +24103,13 @@
             },
             "Mesh": {
                 "Alias": "WoodCrate",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Decorative\\WoodCrate.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.949999988079071,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 62
         },
@@ -23778,11 +24166,13 @@
             },
             "Mesh": {
                 "Alias": "WoodCrate",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Decorative\\WoodCrate.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.949999988079071,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 62
         },
@@ -23839,11 +24229,13 @@
             },
             "Mesh": {
                 "Alias": "WoodCrate",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Decorative\\WoodCrate.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.949999988079071,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 62
         },
@@ -23900,11 +24292,13 @@
             },
             "Mesh": {
                 "Alias": "WoodCrate",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Decorative\\WoodCrate.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.949999988079071,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 62
         },
@@ -23961,11 +24355,13 @@
             },
             "Mesh": {
                 "Alias": "WoodCrate",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Decorative\\WoodCrate.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.949999988079071,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 62
         },
@@ -24022,11 +24418,13 @@
             },
             "Mesh": {
                 "Alias": "WoodCrate",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Decorative\\WoodCrate.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.949999988079071,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 62
         },
@@ -24083,11 +24481,13 @@
             },
             "Mesh": {
                 "Alias": "WoodCrate",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Decorative\\WoodCrate.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.949999988079071,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 62
         },
@@ -24144,11 +24544,13 @@
             },
             "Mesh": {
                 "Alias": "WoodCrate",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Decorative\\WoodCrate.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.949999988079071,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 62
         },
@@ -24205,11 +24607,13 @@
             },
             "Mesh": {
                 "Alias": "WoodCrate",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Decorative\\WoodCrate.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.949999988079071,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 62
         },
@@ -24266,11 +24670,13 @@
             },
             "Mesh": {
                 "Alias": "WoodCrate",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Decorative\\WoodCrate.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.949999988079071,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 62
         },
@@ -24327,11 +24733,13 @@
             },
             "Mesh": {
                 "Alias": "WoodCrate",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Decorative\\WoodCrate.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.949999988079071,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 62
         },
@@ -24388,11 +24796,13 @@
             },
             "Mesh": {
                 "Alias": "WoodCrate",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Decorative\\WoodCrate.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.949999988079071,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 62
         },
@@ -24449,11 +24859,13 @@
             },
             "Mesh": {
                 "Alias": "WoodCrate",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Decorative\\WoodCrate.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.949999988079071,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 62
         },
@@ -24510,11 +24922,13 @@
             },
             "Mesh": {
                 "Alias": "WoodCrate",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Decorative\\WoodCrate.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.949999988079071,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 62
         },
@@ -24571,11 +24985,13 @@
             },
             "Mesh": {
                 "Alias": "WoodCrate",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Decorative\\WoodCrate.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.949999988079071,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 62
         },
@@ -24632,11 +25048,13 @@
             },
             "Mesh": {
                 "Alias": "WoodCrate",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Decorative\\WoodCrate.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.949999988079071,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 62
         },
@@ -24693,11 +25111,13 @@
             },
             "Mesh": {
                 "Alias": "WoodCrate",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Decorative\\WoodCrate.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.949999988079071,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 62
         },
@@ -24754,11 +25174,13 @@
             },
             "Mesh": {
                 "Alias": "WoodCrate",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Decorative\\WoodCrate.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.949999988079071,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 62
         },
@@ -24815,11 +25237,13 @@
             },
             "Mesh": {
                 "Alias": "WoodCrate",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Decorative\\WoodCrate.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.949999988079071,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 62
         },
@@ -24876,11 +25300,13 @@
             },
             "Mesh": {
                 "Alias": "WoodCrate",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Decorative\\WoodCrate.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.949999988079071,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 62
         },
@@ -24937,11 +25363,13 @@
             },
             "Mesh": {
                 "Alias": "WoodCrate",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Decorative\\WoodCrate.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.949999988079071,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 62
         },
@@ -24998,11 +25426,13 @@
             },
             "Mesh": {
                 "Alias": "WoodCrate",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Decorative\\WoodCrate.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.949999988079071,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 62
         },
@@ -25059,11 +25489,13 @@
             },
             "Mesh": {
                 "Alias": "WoodCrate",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Decorative\\WoodCrate.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.949999988079071,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 62
         },
@@ -25120,11 +25552,13 @@
             },
             "Mesh": {
                 "Alias": "WoodCrate",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Decorative\\WoodCrate.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.949999988079071,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 62
         },
@@ -25181,11 +25615,13 @@
             },
             "Mesh": {
                 "Alias": "WoodCrate",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Decorative\\WoodCrate.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.949999988079071,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 62
         },
@@ -25242,11 +25678,13 @@
             },
             "Mesh": {
                 "Alias": "WoodCrate",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Decorative\\WoodCrate.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.949999988079071,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 62
         },
@@ -25303,11 +25741,13 @@
             },
             "Mesh": {
                 "Alias": "WoodCrate",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Decorative\\WoodCrate.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.949999988079071,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 62
         },
@@ -25364,11 +25804,13 @@
             },
             "Mesh": {
                 "Alias": "WoodCrate",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Decorative\\WoodCrate.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.949999988079071,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 126
         },
@@ -25425,11 +25867,13 @@
             },
             "Mesh": {
                 "Alias": "WoodCrate",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Decorative\\WoodCrate.obj"
             }
         },
         "RigidBody": {
             "Friction": 0.949999988079071,
+            "Group": 1,
+            "Mask": 1,
             "Mass": 0.0,
             "Properties": 62
         },
@@ -25468,7 +25912,7 @@
             },
             "Mesh": {
                 "Alias": "weirdThingy_wood",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Decorative\\weirdThingy_wood.obj"
             }
         },
         "Transform": {
@@ -25506,7 +25950,7 @@
             },
             "Mesh": {
                 "Alias": "weirdThingy_wood",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Decorative\\weirdThingy_wood.obj"
             }
         },
         "Transform": {
@@ -25544,7 +25988,7 @@
             },
             "Mesh": {
                 "Alias": "weirdThingy_metal",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Decorative\\weirdThingy_metal.obj"
             }
         },
         "Transform": {
@@ -25582,7 +26026,7 @@
             },
             "Mesh": {
                 "Alias": "weirdThingy_metal",
-                "FilePath": ""
+                "FilePath": "res\\assets\\models\\Decorative\\weirdThingy_metal.obj"
             }
         },
         "Transform": {
