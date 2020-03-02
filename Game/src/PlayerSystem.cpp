@@ -63,7 +63,10 @@ void PlayerSystem::onUpdate()
 
 			case PlayerState::falling:
 			{
-				changeToIdle(&player);
+				performBasicMovement(playerEntity, player.speedForce);
+
+				if (playerRB.getVelocity().y >= 0.0f)
+					changeToIdle(&player);
 
 				break;
 			}
@@ -274,6 +277,9 @@ bool PlayerSystem::onEvent(const Event& event)
 			if (evt.contactPoint.y <= (playerTransform.getPositionY() - halfPlayerHeight + 0.15f) && player.jumpCooldownTimer < 0.0f)
 			{
 				player.isJumping = false;
+
+				if (player.state == PlayerState::falling)
+					changeToIdle(&player);
 			}
 		}
 	}
