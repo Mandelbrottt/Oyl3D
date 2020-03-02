@@ -62,8 +62,8 @@
                 "Alias": "Archer"
             },
             "Mesh": {
-                "Alias": "arissa@JazzDancing",
-                "FilePath": "res\\assets\\models\\arissa@JazzDancing.fbx"
+                "Alias": "arissaMultipleActions",
+                "FilePath": "res\\assets\\models\\arissaMultipleActions.fbx"
             }
         },
         "RigidBody": {
@@ -208,7 +208,7 @@
             "Parent": null,
             "Position": {
                 "X": 5.130334854125977,
-                "Y": 4.435361385345459,
+                "Y": 2.7285454273223877,
                 "Z": -1.312644124031067
             },
             "Rotation": {
@@ -221,6 +221,44 @@
                 "X": 1.0,
                 "Y": 1.0,
                 "Z": 1.0
+            }
+        }
+    },
+    "Entity 12": {
+        "Renderable": {
+            "CastShadows": true,
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "lmao"
+            },
+            "Mesh": {
+                "Alias": "arissaMultipleActions",
+                "FilePath": "res\\assets\\models\\arissaMultipleActions.fbx"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Parent": null,
+            "Position": {
+                "X": 21.922950744628906,
+                "Y": 10.358539581298828,
+                "Z": 0.0
+            },
+            "Rotation": {
+                "qW": 0.8577473759651184,
+                "qX": 0.4490661323070526,
+                "qY": 0.13463258743286133,
+                "qZ": 0.21091033518314362
+            },
+            "Scale": {
+                "X": 10.0,
+                "Y": 10.0,
+                "Z": 10.0
             }
         }
     },
@@ -304,24 +342,62 @@
         }
     },
     "Light 1": {
-        "PointLight": [
+        "DirectionalLight": [
             {
                 "Ambient": [
-                    0.30000001192092896,
-                    0.30000001192092896,
-                    0.30000001192092896
+                    0.20000000298023224,
+                    0.20000000298023224,
+                    0.20000000298023224
                 ],
-                "CastShadows": false,
                 "Diffuse": [
-                    1.0,
-                    1.0,
-                    1.0
+                    0.5,
+                    0.5,
+                    0.5
                 ],
-                "Range": 5.0,
+                "Shadow": {
+                    "Bias": [
+                        0.0010000000474974513,
+                        0.004999999888241291
+                    ],
+                    "ClipLength": 100.0,
+                    "LowerBounds": [
+                        -36.20000457763672,
+                        -7.799999713897705
+                    ],
+                    "Resolution": [
+                        4096.0,
+                        4096.0
+                    ],
+                    "UpperBounds": [
+                        6.799998760223389,
+                        27.799999237060547
+                    ]
+                },
                 "Specular": [
                     1.0,
                     1.0,
                     1.0
+                ]
+            }
+        ],
+        "PointLight": [
+            {
+                "Ambient": [
+                    0.3019607961177826,
+                    0.3019607961177826,
+                    0.3019607961177826
+                ],
+                "CastShadows": false,
+                "Diffuse": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "Range": 5.0,
+                "Specular": [
+                    0.1411764770746231,
+                    0.2549019753932953,
+                    0.0
                 ]
             }
         ],
@@ -345,52 +421,14 @@
             },
             "Parent": null,
             "Position": {
-                "X": 2.8709919452667236,
-                "Y": 12.525193214416504,
-                "Z": -2.5366904735565186
+                "X": -7.249082565307617,
+                "Y": 0.5578759908676147,
+                "Z": -5.488791465759277
             },
             "Rotation": {
-                "qW": 1.0,
-                "qX": 0.0,
-                "qY": 0.0,
-                "qZ": 0.0
-            },
-            "Scale": {
-                "X": 1.0,
-                "Y": 1.0,
-                "Z": 1.0
-            }
-        }
-    },
-    "Light 2": {
-        "Renderable": {
-            "CastShadows": true,
-            "CullingMask": 15,
-            "Enabled": true,
-            "Material": {
-                "Alias": "container"
-            },
-            "Mesh": {
-                "Alias": "cube",
-                "FilePath": "res\\assets\\models\\cube.obj"
-            }
-        },
-        "Transform": {
-            "Mirror": {
-                "X": false,
-                "Y": false,
-                "Z": false
-            },
-            "Parent": null,
-            "Position": {
-                "X": 11.507938385009766,
-                "Y": 5.317399501800537,
-                "Z": -3.1965951919555664
-            },
-            "Rotation": {
-                "qW": 1.0,
-                "qX": 0.0,
-                "qY": 0.0,
+                "qW": 0.5599639415740967,
+                "qX": -0.8285170197486877,
+                "qY": -0.0,
                 "qZ": 0.0
             },
             "Scale": {
@@ -424,7 +462,7 @@
             "CullingMask": 15,
             "Enabled": true,
             "Material": {
-                "Alias": "container"
+                "Alias": "lmao"
             },
             "Mesh": {
                 "Alias": "plane",
@@ -463,6 +501,69 @@
             }
         }
     },
+    "Plane 1": {
+        "Collidable": {
+            "Shapes": [
+                {
+                    "Center": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Size": [
+                        20.0,
+                        0.009999999776482582,
+                        20.0
+                    ],
+                    "Trigger": false,
+                    "Type": 0
+                }
+            ]
+        },
+        "Renderable": {
+            "CastShadows": true,
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "monkeyMat"
+            },
+            "Mesh": {
+                "Alias": "plane",
+                "FilePath": "res\\assets\\models\\plane.obj"
+            }
+        },
+        "RigidBody": {
+            "Friction": 0.5,
+            "Group": 3,
+            "Mask": 3,
+            "Mass": 0.0,
+            "Properties": 98
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Parent": null,
+            "Position": {
+                "X": 0.0,
+                "Y": -15.93265151977539,
+                "Z": 2.7977256774902344
+            },
+            "Rotation": {
+                "qW": 0.9962254762649536,
+                "qX": -0.08680302649736404,
+                "qY": -0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 10.0,
+                "Y": 1.0,
+                "Z": 10.0
+            }
+        }
+    },
     "Player Camera": {
         "Camera": {
             "ClearProps": {
@@ -495,13 +596,13 @@
             },
             "Parent": null,
             "Position": {
-                "X": 4.887356758117676,
-                "Y": 8.756509780883789,
-                "Z": 14.473645210266113
+                "X": 9.63435173034668,
+                "Y": 21.845787048339844,
+                "Z": 17.670955657958984
             },
             "Rotation": {
-                "qW": 0.9825016260147095,
-                "qX": -0.1862541139125824,
+                "qW": 0.8756524920463562,
+                "qX": -0.4829416871070862,
                 "qY": -0.0,
                 "qZ": 0.0
             },
@@ -509,6 +610,32 @@
                 "X": 1.0,
                 "Y": 1.0,
                 "Z": 1.0
+            }
+        }
+    },
+    "Player Camera 2": {
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Parent": null,
+            "Position": {
+                "X": 3.123335838317871,
+                "Y": 6.595512866973877,
+                "Z": 6.387890338897705
+            },
+            "Rotation": {
+                "qW": 0.9390614032745361,
+                "qX": -0.34374937415122986,
+                "qY": 1.5292731274027527e-12,
+                "qZ": -5.595784252632185e-13
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 0.9999999403953552,
+                "Z": 0.9999999403953552
             }
         }
     },
