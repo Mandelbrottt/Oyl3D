@@ -256,6 +256,7 @@ namespace oyl
         m_preRenderSystem->setRegistry(pScene->m_registry);
         m_shadowRenderSystem->setRegistry(pScene->m_registry);
         m_renderSystem->setRegistry(pScene->m_registry);
+        m_guiRenderSystem->setRegistry(pScene->m_registry);
         m_postRenderSystem->setRegistry(pScene->m_registry);
 
         if (m_systemsLayer)
@@ -320,10 +321,10 @@ namespace oyl
         {
             Time::update();
             
+            m_dispatcher->dispatchEvents();
+
             if (m_doUpdate)
             {
-                m_dispatcher->dispatchEvents();
-
                 if (!m_nextScene.empty() && m_nextScene != m_currentScene)
                 {
                     m_registeredScenes[m_currentScene]->m_registry->reset();
@@ -346,7 +347,7 @@ namespace oyl
                 m_systemsLayer->onUpdateSystems();
                 m_systemsLayer->onUpdate();
 
-                m_currentScene->onUpdate();
+                m_registeredScenes[m_currentScene]->onUpdate();
             #endif
 
                 RenderCommand::setClearColor(0.1f, 0.1f, 0.1f, 1.0f);
