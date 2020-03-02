@@ -32,7 +32,7 @@ namespace oyl
     private:
         void validateListeners();
 
-        void dispatchEvent(UniqueRef<Event>&& event);
+        void dispatchEvent(Event event);
 
     private:
         std::vector<ListenerInfo> m_listeners;
