@@ -332,6 +332,7 @@ namespace oyl::internal
                     updateAssetList();
             }
         }
+        return false;
     }
 
     void GuiLayer::drawMenuBar()
@@ -1929,15 +1930,16 @@ namespace oyl::internal
 
             bool valid = false;
             Model* model = nullptr;
-
-            if (auto pRenderable = registry->try_get<Renderable>(target.target);
-                pRenderable && 
-                pRenderable->model &&
-                !pRenderable->model->getAnimations().empty())
-            {
-                valid = true;
-                model = pRenderable->model.get();
-            }
+            
+            if (registry->valid(target.target))
+                if (auto pRenderable = registry->try_get<Renderable>(target.target);
+                    pRenderable &&
+                    pRenderable->model &&
+                    !pRenderable->model->getAnimations().empty())
+                {
+                    valid = true;
+                    model = pRenderable->model.get();
+                }
             
             std::string currentTarget = "None";
             

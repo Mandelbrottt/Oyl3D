@@ -103,20 +103,7 @@ namespace oyl::internal
                     it != renderable.model->getAnimations().end())
                 {
                     auto& animation = it->second;
-
-                    std::vector<glm::mat4> boneTransforms;
-                    renderable.model->getBoneTransforms(sa.animation, sa.time, boneTransforms);
-
-                    renderable.material->shader->bind();
-                    for (uint i = 0; i < 64; i++)
-                    {
-                        glm::mat4 uniform = glm::mat4(1.0f);
-                        if (i < boneTransforms.size())
-                            uniform = boneTransforms[i];
-                        
-                        renderable.material->shader->setUniformMat4("u_boneTransforms[" + std::to_string(i) + "]", uniform);
-                    }
-
+                    
                     if (sa.play)
                     {
                         float dt = Time::deltaTime();
@@ -142,18 +129,7 @@ namespace oyl::internal
                         }
                     }
                 }
-                else
-                {
-                    renderable.material->shader->bind();
-                    for (uint i = 0; i < 64; i++)
-                        renderable.material->shader->setUniformMat4("u_boneTransforms[" + std::to_string(i) + "]", glm::mat4(1.0f));
-                }
             }
-        });
-
-        registry->view<component::BoneTarget>().each([&](component::BoneTarget& boneTarget)
-        {
-            boneTarget.forceUpdateTransform();
         });
     }
 
