@@ -381,10 +381,12 @@ namespace oyl::component
     inline const std::vector<entt::entity>& Transform::getChildrenEntities() const
     {
         auto it = m_childrenEntities.begin();
-        for (; it != m_childrenEntities.end(); ++it)
+        while (it != m_childrenEntities.end())
         {
             if (!m_registry->valid(*it))
                 it = m_childrenEntities.erase(it);
+            else
+                ++it;
         }
         return m_childrenEntities;
     }

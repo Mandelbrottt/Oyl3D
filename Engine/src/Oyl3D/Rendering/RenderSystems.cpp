@@ -69,6 +69,12 @@ namespace oyl::internal
         using component::PointLight;
         using component::DirectionalLight;
         using component::SpotLight;
+        using component::BoneTarget;
+
+        registry->view<BoneTarget>().each([&](BoneTarget& boneTarget)
+        {
+            boneTarget.forceUpdateTransform();
+        });
 
         static const auto& skybox = TextureCubeMap::get(DEFAULT_SKYBOX_ALIAS);
         static const auto& shader = Shader::get(SKYBOX_SHADER_ALIAS);
@@ -266,10 +272,12 @@ namespace oyl::internal
                         //Renderer::submit(boundMaterial, anim.m_vao, mr.mesh->getNumVertices(), transform);
                     }
                 }
-                else
+                else if (auto pSa = registry->try_get<component::SkeletonAnimatable>(entity); pSa) 
                 {
-                    Renderer::submit(mr.model, boundMaterial, transform);
+                    skeletonAnimate(entity, mr, *pSa);
                 }
+
+                Renderer::submit(mr.model, boundMaterial, transform);
             }
         }
 
@@ -306,6 +314,35 @@ namespace oyl::internal
             }
         }
         return false;
+    }
+
+    void RenderSystem::skeletonAnimate(entt::entity entity, component::Renderable& renderable, component::SkeletonAnimatable& sa)
+    {
+        if (renderable.model && renderable.material && renderable.material->shader == Shader::get("Oyl Skeletal"))
+        {
+            if (auto it = renderable.model->getAnimations().find(sa.animation);
+                it != renderable.model->getAnimations().end())
+            {
+                std::vector<glm::mat4> boneTransforms;
+                renderable.model->getBoneTransforms(sa.animation, sa.time, boneTransforms);
+
+                renderable.material->shader->bind();
+                for (uint i = 0; i < 64; i++)
+                {
+                    glm::mat4 uniform = glm::mat4(1.0f);
+                    if (i < boneTransforms.size())
+                        uniform = boneTransforms[i];
+
+                    renderable.material->shader->setUniformMat4("u_boneTransforms[" + std::to_string(i) + "]", uniform);
+                }
+            }
+            else
+            {
+                renderable.material->shader->bind();
+                for (uint i = 0; i < 64; i++)
+                    renderable.material->shader->setUniformMat4("u_boneTransforms[" + std::to_string(i) + "]", glm::mat4(1.0f));
+            }
+        }
     }
 
     // ^^^ Render System ^^^ //

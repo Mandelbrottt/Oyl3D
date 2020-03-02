@@ -69,6 +69,7 @@ namespace oyl
             void drawInspectorSpotLight();
             void drawInspectorCamera();
             void drawInspectorSkeletonAnimatable();
+            void drawInspectorBoneTarget();
             void drawInspectorAddComponent();
 
             void drawInspectorMaterial();
