@@ -569,7 +569,8 @@ namespace oyl::internal
         if (auto it = j.find("Mesh"); it != j.end() && !it->is_null())
         {
             bool doLoad = false;
-            if (auto alIt = it->find("Alias"); alIt != it->end() && alIt->is_string())
+            auto alIt = it->find("Alias");
+            if (alIt != it->end() && alIt->is_string())
             {
                 if (Model::exists(alIt->get<std::string>()))
                     re.model = Model::get(alIt->get<std::string>());
@@ -582,12 +583,39 @@ namespace oyl::internal
                 auto filePath = fpIt->get<std::string>();
 
                 bool meshFound = false;
-                for (const auto& [alias, mesh] : Model::getCache())
+                if (filePath.empty())
                 {
-                    if (mesh->getFilePath() == filePath)
-                        meshFound = true, re.model = mesh;
-                }
+                    auto alias = alIt->get<std::string>();
+                    std::filesystem::recursive_directory_iterator dirIt("res");
+                    for (const auto& dirEntry : dirIt)
+                    {
+                        if (!dirEntry.exists() || !dirEntry.is_regular_file()) continue;
 
+                        const auto& path = dirEntry.path();
+
+                        if (path.extension() != ".obj" &&
+                            path.extension() != ".fbx" && 
+                            path.extension() != ".gltf" && 
+                            path.extension() != ".glb") continue;
+
+                        auto stem = path.stem();
+                        
+                        if (stem == alias)
+                        {
+                            filePath = path.string();
+                            break;   
+                        }
+                    }
+                }
+                else
+                {
+                    for (const auto& [alias, mesh] : Model::getCache())
+                    {
+                        if (mesh->getFilePath() == filePath)
+                            meshFound = true, re.model = mesh;
+                    }
+                }
+                
                 if (!meshFound && (!re.model || re.model && re.model->getFilePath() != filePath))
                     re.model = Model::cache(filePath);
             }
