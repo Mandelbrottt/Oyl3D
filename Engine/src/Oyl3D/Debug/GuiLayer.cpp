@@ -744,8 +744,9 @@ namespace oyl::internal
                 drawInspectorPointLight();
                 drawInspectorDirectionalLight();
                 drawInspectorSpotLight();
-                drawInspectorCamera();
                 drawInspectorSkeletonAnimatable();
+                drawInspectorBoneTarget();
+                drawInspectorCamera();
                 drawInspectorAddComponent();
             }
             else if (m_currentSelection.type() == Selectable::Type::Material)
@@ -1827,9 +1828,28 @@ namespace oyl::internal
         {
             ImGui::Indent(10);
 
-            auto& skeletonAnimatable = registry->get<SkeletonAnimatable>(m_currentSelection.entity());
+            auto& sa = registry->get<SkeletonAnimatable>(m_currentSelection.entity());
 
-            ImGui::Checkbox("Enabled##SkeletonAnimatableEnabled", &skeletonAnimatable.enabled);
+            ImGui::TextUnformatted("Play   "); ImGui::SameLine();
+            ImGui::Checkbox("##SkeletonAnimatablePlay", &sa.play);
+
+            ImGui::TextUnformatted("Reverse"); ImGui::SameLine();
+            ImGui::Checkbox("##SkeletonAnimatableReverse", &sa.reverse);
+
+            ImGui::TextUnformatted("Loop   "); ImGui::SameLine();
+            ImGui::Checkbox("##SkeletonAnimatableLoop", &sa.loop);
+
+            {
+                float newWidth = ImGui::GetWindowContentRegionWidth() / 6;
+                const float posDragSpeed = 0.01f;
+                ImGui::TextUnformatted("Time Scale");
+                ImGui::SameLine(ImGui::GetWindowContentRegionWidth() - (20 + newWidth + 27));
+                ImGui::SetNextItemWidth(20);
+                ImGui::DragFloat("##TimeScaleAnimation", &sa.timeScale, posDragSpeed, 0.0f, 999.0f, "TS");
+                ImGui::SameLine();
+                ImGui::SetNextItemWidth(newWidth);
+                ImGui::InputFloat("##TimeScaleInputAnimation", &sa.timeScale, 0, 0, "%.2f");
+            }
 
             ImGui::TextUnformatted("Current Animation");
             ImGui::SameLine();
@@ -1846,7 +1866,7 @@ namespace oyl::internal
             {
                 for (const auto& [name, _] : model->getAnimations())
                 {
-                    if (skeletonAnimatable.animation == name)
+                    if (sa.animation == name)
                         currentName = name;
                 }
             }
@@ -1854,15 +1874,15 @@ namespace oyl::internal
             if (ImGui::BeginCombo("##SkeletonAnimationPropertiesCurrentAnimation", currentName.c_str()))
             {
                 if (ImGui::Selectable("None", currentName == "None"))
-                    skeletonAnimatable.animation.clear();
+                    sa.animation.clear();
 
                 if (model)
                 {
                     for (const auto& [name, _] : model->getAnimations())
                     {
-                        if (ImGui::Selectable(name.c_str(), skeletonAnimatable.animation == name))
+                        if (ImGui::Selectable(name.c_str(), sa.animation == name))
                         {
-                            skeletonAnimatable.animation = name;
+                            sa.animation = name;
                         }
                     }
                 }
@@ -1871,10 +1891,111 @@ namespace oyl::internal
 
             if (model && currentName != "None")
             {
+                ImGui::Indent(10);
+
                 const auto& anim = model->getAnimations().at(currentName);
-                float max = static_cast<float>(anim->mDuration / anim->mTicksPerSecond);
-                //float max = 1.0f;
-                ImGui::SliderFloat("Time##SkeletonAnimatorTime", &skeletonAnimatable.time, 0.0f, max, "%.2f");
+                float max = anim.duration;
+                ImGui::SliderFloat("Time##SkeletonAnimatorTime", &sa.time, 0.0f, max, "%.2f");
+
+                ImGui::Unindent(10);
+            }
+
+            ImGui::Unindent(10);
+
+            ImGui::Separator();
+            ImGui::NewLine();
+        }
+    }
+
+    void GuiLayer::drawInspectorBoneTarget()
+    {
+        using component::Renderable;
+        using component::SkeletonAnimatable;
+        using component::BoneTarget;
+        using component::EntityInfo;
+
+        if (!registry->has<BoneTarget>(m_currentSelection.entity())) return;
+
+        ImGui::SetNextTreeNodeOpen(true, ImGuiCond_Once);
+
+        bool open = ImGui::CollapsingHeader("Bone Target##InspectorBoneTargetProperties");
+
+        open &= !userRemoveComponent<BoneTarget>();
+
+        if (open)
+        {
+            ImGui::Indent(10);
+
+            auto& target = registry->get<BoneTarget>(m_currentSelection.entity());
+
+            bool valid = false;
+            Model* model = nullptr;
+            
+            if (registry->valid(target.target))
+                if (auto pRenderable = registry->try_get<Renderable>(target.target);
+                    pRenderable &&
+                    pRenderable->model &&
+                    !pRenderable->model->getAnimations().empty())
+                {
+                    valid = true;
+                    model = pRenderable->model.get();
+                }
+            
+            std::string currentTarget = "None";
+            
+            if (valid)
+                currentTarget = registry->get<EntityInfo>(target.target).name;
+
+            ImGui::TextUnformatted("Target Entity");
+            ImGui::SameLine();
+            ImGui::SetNextItemWidth(ImGui::GetWindowWidth() - ImGui::GetCursorPosX());
+
+            if (ImGui::BeginCombo("##BoneTargetPropertiesTargetEntity", currentTarget.c_str()))
+            {
+                if (ImGui::Selectable("None", currentTarget == "None"))
+                    target.target = entt::null;
+
+                auto view = registry->view<Renderable, EntityInfo>();
+                view.each([&](auto entity, Renderable& renderable, EntityInfo& info)
+                {
+                    if (renderable.model && !renderable.model->getAnimations().empty())
+                    {
+                        if (ImGui::Selectable(info.name.c_str(), currentTarget == info.name))
+                            target.target = entity;
+                    }
+                });
+                
+                ImGui::EndCombo();
+            }
+
+            if (model)
+            {
+                ImGui::Indent(10);
+                
+                std::string currentBone = "None";
+                const auto& bones = model->getBones();
+                if (bones.find(target.bone) != bones.end())
+                    currentBone = target.bone;
+                
+                ImGui::TextUnformatted("Target Bone");
+                ImGui::SameLine();
+                ImGui::SetNextItemWidth(ImGui::GetWindowWidth() - ImGui::GetCursorPosX());
+
+                if (ImGui::BeginCombo("##BoneTargetPropertiesTargetBone", currentBone.c_str()))
+                {
+                    if (ImGui::Selectable("None", currentBone == "None"))
+                        target.bone.clear();
+
+                    for (auto& [name, bone] : bones)
+                    {
+                        if (ImGui::Selectable(name.c_str(), name == target.bone))
+                            target.bone = name;
+                    }
+
+                    ImGui::EndCombo();
+                }
+
+                ImGui::Unindent(10);
             }
 
             ImGui::Unindent(10);
@@ -1894,6 +2015,7 @@ namespace oyl::internal
         using component::DirectionalLight;
         using component::SpotLight;
         using component::SkeletonAnimatable;
+        using component::BoneTarget;
         using component::Camera;
         
         if (ImGui::BeginCombo("##InspectorAddComponent", "Add Component", ImGuiComboFlags_NoArrowButton))
@@ -1931,6 +2053,10 @@ namespace oyl::internal
             if (!registry->has<SkeletonAnimatable>(entity) &&
                 ImGui::Selectable("Skeleton Animatable"))
                 registry->assign<SkeletonAnimatable>(entity);
+
+            if (!registry->has<BoneTarget>(entity) &&
+                ImGui::Selectable("Bone Target"))
+                registry->assign<BoneTarget>(entity);
             
             int camFlags = 0;
             if (registry->size<Camera>() >= 4)

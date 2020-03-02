@@ -102,13 +102,31 @@ namespace oyl::internal
                 if (auto it = renderable.model->getAnimations().find(sa.animation); 
                     it != renderable.model->getAnimations().end())
                 {
-                    std::vector<glm::mat4> boneTransforms;
-                    renderable.model->getBoneTransforms(sa.animation, sa.time, boneTransforms);
-
-                    for (uint i = 0; i < boneTransforms.size(); i++)
+                    auto& animation = it->second;
+                    
+                    if (sa.play)
                     {
-                        renderable.material->shader->bind();
-                        renderable.material->shader->setUniformMat4("u_boneTransforms[" + std::to_string(i) + "]", boneTransforms[i]);
+                        float dt = Time::deltaTime();
+                        if (sa.reverse) dt *= -1.0f;
+
+                        sa.time += dt * sa.timeScale;
+
+                        float t_mod_d = abs(fmod(sa.time, animation.duration));
+                        
+                        if (sa.time < 0.0f)
+                        {
+                            sa.time = animation.duration - t_mod_d;
+
+                            if (!sa.loop) 
+                                sa.play = false;
+                        }
+                        else
+                        {
+                            if (sa.time > animation.duration && !sa.loop) 
+                                sa.play = false;
+                            
+                            sa.time = t_mod_d;
+                        }
                     }
                 }
             }

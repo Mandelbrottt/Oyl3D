@@ -335,34 +335,29 @@ namespace oyl
             #if !defined(OYL_DISTRIBUTION)
                 if (m_guiLayer->doGameUpdate())
                 {
+            #endif
                     m_systemsLayer->onUpdateSystems();
                     m_systemsLayer->onUpdate();
 
                     m_registeredScenes[m_currentScene]->onUpdate();
+
+                    m_skeletalAnimationSystem->onUpdate();
+            #if !defined OYL_DISTRIBUTION
                 }
-                
                 m_guiLayer->onUpdateSystems();
                 m_guiLayer->onUpdate();
-            #else
-                m_systemsLayer->onUpdateSystems();
-                m_systemsLayer->onUpdate();
-
-                m_registeredScenes[m_currentScene]->onUpdate();
             #endif
-
+                
                 RenderCommand::setClearColor(0.1f, 0.1f, 0.1f, 1.0f);
                 RenderCommand::clear();
 
                 Renderer::beginScene();
                 
-                m_skeletalAnimationSystem->onUpdate();
                 m_preRenderSystem->onUpdate();
                 m_shadowRenderSystem->onUpdate();
-
             #if !defined OYL_DISTRIBUTION
                 m_editorRenderSystem->onUpdate();
             #endif
-                
                 m_renderSystem->onUpdate();
                 m_guiRenderSystem->onUpdate();
                 m_postRenderSystem->onUpdate();
@@ -373,12 +368,13 @@ namespace oyl
         #if !defined(OYL_DISTRIBUTION)
             m_guiLayer->begin();
 
-            m_skeletalAnimationSystem->onGuiRender();
             m_preRenderSystem->onGuiRender();
             m_shadowRenderSystem->onGuiRender();
             m_renderSystem->onGuiRender();
             m_guiRenderSystem->onGuiRender();
             m_postRenderSystem->onGuiRender();
+            
+            m_skeletalAnimationSystem->onGuiRender();
 
             m_guiLayer->onGuiRenderSystems();
             m_editorRenderSystem->onGuiRender();

@@ -4,6 +4,7 @@
 
 namespace oyl
 {
+    class Scene;
     class Mesh;
     class VertexArray;
     
@@ -59,16 +60,37 @@ namespace oyl::component
 
     struct SkeletonAnimatable
     {
-        bool enabled = true;
-        
-        std::string animation;
+        bool play    = true;
+        bool reverse = false;
+        bool loop    = true;
 
         float time = 0.0f;
-
+        float timeScale = 1.0f;
+        
+        std::string animation;
+        
     private:
         std::string prevAnimation;
 
         friend ::oyl::internal::SkeletalAnimationSystem;
+    };
+
+    struct BoneTarget
+    {
+        entt::entity target;
+
+        std::string bone;
+
+        glm::mat4 forceUpdateTransform();
+
+    private:
+        friend ::oyl::Scene;
+
+        static void on_construct(entt::entity entity, entt::registry& registry, BoneTarget& boneTarget);
+
+        entt::entity m_owner = entt::null;
+        
+        entt::registry* m_registry;
     };
 }
 
