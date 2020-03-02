@@ -15,4 +15,17 @@ namespace oyl::internal
 
         virtual bool onEvent(const Event& event) override;
     };
+
+    class SkeletalAnimationSystem : public System
+    {
+        OYL_CTOR(SkeletalAnimationSystem, System)
+
+        virtual void onEnter() override;
+        virtual void onExit() override;
+
+        virtual void onUpdate() override;
+        virtual void onGuiRender() override;
+
+        virtual bool onEvent(const Event& event) override;
+    };
 }

@@ -56,7 +56,7 @@ namespace oyl::internal
     void RenderSystem::onEnter()
     {
         listenForEventType(EventType::WindowResized);
-
+        listenForEventType(EventType::SceneChanged);
     }
 
     void RenderSystem::onExit() { }
@@ -180,6 +180,16 @@ namespace oyl::internal
                             break;
                     }
 
+                    for (; count < 8; count++)
+                    {
+                        std::string pointLightName = "u_pointLight[" + std::to_string(count) + "]";
+
+                        boundMaterial->setUniform3f(pointLightName + ".position", {});
+                        boundMaterial->setUniform3f(pointLightName + ".ambient",  {});
+                        boundMaterial->setUniform3f(pointLightName + ".diffuse",  {});
+                        boundMaterial->setUniform3f(pointLightName + ".specular", {});
+                    }
+
                     auto dirLightView = registry->view<DirectionalLight>();
                     count = 0;
                     for (auto light : dirLightView)
@@ -205,6 +215,8 @@ namespace oyl::internal
                             std::string shadowName = "u_shadow[" + std::to_string(shadowIndex) + "]";
                             boundMaterial->setUniform1i(shadowName + ".type", 2);
                             boundMaterial->setUniform1i(shadowName + ".map", 5 + shadowIndex);
+                            glm::vec2 biasMinMax = { dirLightProps.biasMin, dirLightProps.biasMax };
+                            boundMaterial->setUniform2f(shadowName + ".biasMinMax", biasMinMax);
                             dirLightProps.m_frameBuffer->bindDepthAttachment(5 + shadowIndex);
 
                             shadowIndex++;
@@ -213,6 +225,16 @@ namespace oyl::internal
                         count++;
                         if (count >= 8)
                             break;
+                    }
+                    
+                    for (; count < 8; count++)
+                    {
+                        std::string dirLightName = "u_dirLight[" + std::to_string(count) + "]";
+
+                        boundMaterial->setUniform3f(dirLightName + ".direction", {});
+                        boundMaterial->setUniform3f(dirLightName + ".ambient",   {});
+                        boundMaterial->setUniform3f(dirLightName + ".diffuse",   {});
+                        boundMaterial->setUniform3f(dirLightName + ".specular",  {});
                     }
                     
                     // TEMPORARY:
@@ -230,9 +252,9 @@ namespace oyl::internal
                     RenderCommand::setBackfaceCulling(doCulling);
                 }
 
-                if (registry->has<component::Animatable>(entity))
+                if (registry->has<component::VertexAnimatable>(entity))
                 {
-                    auto& anim = registry->get<component::Animatable>(entity);
+                    auto& anim = registry->get<component::VertexAnimatable>(entity);
                     if (anim.getVertexArray())
                     {
                         anim.m_vao->bind();
@@ -262,6 +284,7 @@ namespace oyl::internal
         switch (event.type)
         {
             case EventType::WindowResized:
+            {
                 auto e = event_cast<WindowResizedEvent>(event);
                 m_windowSize = { e.width, e.height };
 
@@ -275,6 +298,12 @@ namespace oyl::internal
                 m_camerasNeedUpdate = true;
 
                 break;
+            }
+            case EventType::SceneChanged:
+            {
+                m_camerasNeedUpdate = true;
+                break;
+            }
         }
         return false;
     }
@@ -469,7 +498,13 @@ namespace oyl::internal
             if (!dl.m_frameBuffer)
             {
                 dl.m_frameBuffer = FrameBuffer::create(0);
-                dl.m_frameBuffer->initDepthTexture(1024, 1024);
+                dl.m_frameBuffer->initDepthTexture(dl.resolution.x, dl.resolution.y);
+            }
+
+            if (dl.m_frameBuffer->getDepthWidth() != dl.resolution.x ||
+                dl.m_frameBuffer->getDepthHeight() != dl.resolution.y)
+            {
+                dl.m_frameBuffer->initDepthTexture(dl.resolution.x, dl.resolution.y);
             }
 
             dl.m_frameBuffer->bind();
@@ -483,10 +518,12 @@ namespace oyl::internal
 
                 auto& t = registry->get<Transform>(light);
 
-                float projDist = 100.0f;
-                glm::mat4 lightProjection = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, 0.0f, projDist);
-                glm::mat4 lightView = glm::lookAt(-t.getForwardGlobal() * projDist * 0.5f,
-                                                  glm::vec3(0.0f),
+                glm::mat4 lightProjection = glm::ortho(dl.lowerBounds.x, dl.upperBounds.x,
+                                                       dl.lowerBounds.y, dl.upperBounds.y,
+                                                       0.0f, dl.clipLength);
+                
+                glm::mat4 lightView = glm::lookAt(-t.getForwardGlobal() * dl.clipLength * 0.5f + t.getPositionGlobal(),
+                                                  t.getPositionGlobal(),
                                                   glm::vec3(0.0f, 1.0f, 0.0f));
 
                 dl.m_lightSpaceMatrix = lightProjection * lightView;

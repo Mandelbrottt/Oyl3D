@@ -20,6 +20,7 @@ namespace oyl
         class GuiLayer : public Layer
         {
             friend class EditorCommand;
+            friend class Application;
         public:
             OYL_CTOR(GuiLayer, Layer)
 
@@ -67,6 +68,7 @@ namespace oyl
             void drawInspectorDirectionalLight();
             void drawInspectorSpotLight();
             void drawInspectorCamera();
+            void drawInspectorSkeletonAnimatable();
             void drawInspectorAddComponent();
 
             void drawInspectorMaterial();
@@ -84,6 +86,7 @@ namespace oyl
             void drawMaterialCache();
             void drawModelCache();
             void drawTextureCache();
+            void drawSceneCache();
 
             void drawSceneViewport();
             void drawGameViewport();
@@ -109,8 +112,9 @@ namespace oyl
             glm::vec3 m_scaleSnap{ 0.2f };
             glm::vec3 m_snap;
 
-            entt::registry m_registryRestore;
-            entt::registry m_prefabRegistry;
+            std::string m_originalScene;
+            std::unordered_map<std::string, entt::registry> m_registryRestores;
+            //entt::registry m_registryRestore;
 
             bool m_doSnap               = false;
             bool m_editorOverrideUpdate = true;

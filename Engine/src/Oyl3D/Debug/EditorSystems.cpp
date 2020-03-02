@@ -73,7 +73,7 @@ namespace oyl::internal
     {
         ImGui::Begin("Camera##CameraSettings");
 
-        ImGui::SliderFloat("Move Speed", &m_cameraMoveSpeed, 5.0f, 30.f);
+        ImGui::SliderFloat("Move Speed", &m_cameraMoveSpeed, 5.0f, 100.f);
         ImGui::SliderFloat("Turn Speed", &m_cameraRotateSpeed, 0.1f, 50.0f);
 
         ImGui::End();
@@ -238,10 +238,10 @@ namespace oyl::internal
 
         bool doCulling = true;
 
-        auto view = registry->view<Renderable, Transform>();
+        auto view = registry->view<Renderable>();
         for (auto entity : view)
         {
-            Renderable& mr = view.get<Renderable>(entity);
+            Renderable& mr = view.get(entity);
 
             if (mr.model == nullptr || mr.material == nullptr)
                 break;
@@ -277,6 +277,14 @@ namespace oyl::internal
                     count++;
                 }
 
+                for (; count < 8; count++)
+                {
+                    boundMaterial->setUniform3f("u_pointLight[" + std::to_string(count) + "].position", {});
+                    boundMaterial->setUniform3f("u_pointLight[" + std::to_string(count) + "].ambient",  {});
+                    boundMaterial->setUniform3f("u_pointLight[" + std::to_string(count) + "].diffuse",  {});
+                    boundMaterial->setUniform3f("u_pointLight[" + std::to_string(count) + "].specular", {});
+                }
+
                 auto dirLightView = registry->view<DirectionalLight>();
                 count = 0;
                 for (auto light : dirLightView)
@@ -301,6 +309,8 @@ namespace oyl::internal
                         std::string shadowName = "u_shadow[" + std::to_string(shadowIndex) + "]";
                         boundMaterial->setUniform1i(shadowName + ".type", 2);
                         boundMaterial->setUniform1i(shadowName + ".map", 5 + shadowIndex);
+                        glm::vec2 biasMinMax = { dirLightProps.biasMin, dirLightProps.biasMax };
+                        boundMaterial->setUniform2f(shadowName + ".biasMinMax", biasMinMax);
                         dirLightProps.m_frameBuffer->bindDepthAttachment(5 + shadowIndex);
 
                         shadowIndex++;
@@ -311,11 +321,21 @@ namespace oyl::internal
                         break;
                 }
 
+                for (; count < 8; count++)
+                {
+                    std::string dirLightName = "u_dirLight[" + std::to_string(count) + "]";
+
+                    boundMaterial->setUniform3f(dirLightName + ".direction", {});
+                    boundMaterial->setUniform3f(dirLightName + ".ambient",   {});
+                    boundMaterial->setUniform3f(dirLightName + ".diffuse",   {});
+                    boundMaterial->setUniform3f(dirLightName + ".specular",  {});
+                }
+
                 boundMaterial->bind();
                 boundMaterial->applyUniforms();
             }
 
-            auto&     transformComponent = view.get<Transform>(entity);
+            auto&     transformComponent = registry->get<Transform>(entity);
             glm::mat4 transform          = transformComponent.getMatrixGlobal();
 
             glm::bvec3 mirror = transformComponent.getMirrorGlobal();

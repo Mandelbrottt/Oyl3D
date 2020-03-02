@@ -8,9 +8,9 @@ namespace oyl
 {
     namespace RayTest
     {
-        Ref<ClosestRaycastResult> Closest(glm::vec3 from, glm::vec3 direction, f32 distance)
+        Ref<ClosestRaycastResult> Closest(glm::vec3 from, glm::vec3 direction, f32 distance, u16 mask)
         {
-            return internal::PhysicsSystem::raytestClosest(from, direction, distance);
+            return internal::PhysicsSystem::raytestClosest(from, direction, distance, mask);
         }
     }
 }

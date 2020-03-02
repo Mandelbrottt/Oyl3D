@@ -39,6 +39,9 @@ namespace oyl::component
         bool getProperty(Property prop) const;
         u32 getPropertyFlags() const;
 
+        u16 getCollisionGroup() const;
+        u16 getCollisionMask() const;
+
         void setVelocity(glm::vec3 velocity);
         void addVelocity(glm::vec3 velocity);
 
@@ -56,6 +59,9 @@ namespace oyl::component
         void setPropertyFlags(u32 flags);
         void setProperties(u32 flags, bool value);
 
+        void setCollisionGroup(u16 group);
+        void setCollisionMask(u16 mask);
+
     private:
         // TODO: Add more stuff
         glm::vec3 m_velocity     = { 0, 0, 0 };
@@ -68,6 +74,9 @@ namespace oyl::component
         u32 m_propertyFlags = DETECT_COLLISIONS | 
                               DO_INTERPOLATION | 
                               USE_GRAVITY;
+
+        u16 m_collisionGroup = 1u;
+        u16 m_collisionMask  = 1u;
 
         bool m_isDirty = true;
     };

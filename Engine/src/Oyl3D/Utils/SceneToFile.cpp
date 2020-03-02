@@ -336,6 +336,8 @@ namespace oyl::internal
         j["Mass"] = rb.getMass();
         j["Friction"] = rb.getFriction();
         j["Properties"] = rb.getPropertyFlags();
+        j["Group"] = rb.getCollisionGroup();
+        j["Mask"] = rb.getCollisionMask();
     }
 
     static void savePointLight(entt::entity entity, entt::registry& registry, json& j)
@@ -370,8 +372,17 @@ namespace oyl::internal
         jLight["Ambient"] = dl.ambient;
         jLight["Diffuse"] = dl.diffuse;
         jLight["Specular"] = dl.specular;
-        jLight["CastShadows"] = dl.castShadows;
 
+        auto& jShadow = jLight["Shadow"];
+        if (dl.castShadows)
+        {
+            jShadow["Resolution"]  = dl.resolution;
+            jShadow["LowerBounds"] = dl.lowerBounds;
+            jShadow["UpperBounds"] = dl.upperBounds;
+            jShadow["ClipLength"]  = dl.clipLength;
+            jShadow["Bias"]        = glm::vec2(dl.biasMin, dl.biasMax);
+        }
+        
         j.push_back(std::move(jLight));
     }
 
@@ -567,7 +578,8 @@ namespace oyl::internal
         if (auto it = j.find("Mesh"); it != j.end() && !it->is_null())
         {
             bool doLoad = false;
-            if (auto alIt = it->find("Alias"); alIt != it->end() && alIt->is_string())
+            auto alIt = it->find("Alias");
+            if (alIt != it->end() && alIt->is_string())
             {
                 if (Model::exists(alIt->get<std::string>()))
                     re.model = Model::get(alIt->get<std::string>());
@@ -580,12 +592,39 @@ namespace oyl::internal
                 auto filePath = fpIt->get<std::string>();
 
                 bool meshFound = false;
-                for (const auto& [alias, mesh] : Model::getCache())
+                if (filePath.empty())
                 {
-                    if (mesh->getFilePath() == filePath)
-                        meshFound = true, re.model = mesh;
-                }
+                    auto alias = alIt->get<std::string>();
+                    std::filesystem::recursive_directory_iterator dirIt("res");
+                    for (const auto& dirEntry : dirIt)
+                    {
+                        if (!dirEntry.exists() || !dirEntry.is_regular_file()) continue;
 
+                        const auto& path = dirEntry.path();
+
+                        if (path.extension() != ".obj" &&
+                            path.extension() != ".fbx" && 
+                            path.extension() != ".gltf" && 
+                            path.extension() != ".glb") continue;
+
+                        auto stem = path.stem();
+                        
+                        if (stem == alias)
+                        {
+                            filePath = path.string();
+                            break;   
+                        }
+                    }
+                }
+                else
+                {
+                    for (const auto& [alias, mesh] : Model::getCache())
+                    {
+                        if (mesh->getFilePath() == filePath)
+                            meshFound = true, re.model = mesh;
+                    }
+                }
+                
                 if (!meshFound && (!re.model || re.model && re.model->getFilePath() != filePath))
                     re.model = Model::cache(filePath);
             }
@@ -703,8 +742,6 @@ namespace oyl::internal
                         if (auto it = jShape.find("Radius"); it != jShape.end())
                             shape.cylinder.setRadius(it->get<float>());
                         break;
-                    //case ColliderType::Mesh:
-                    //    break;
                 }
             }
         }
@@ -724,6 +761,12 @@ namespace oyl::internal
 
         if (auto it = j.find("Properties"); it != j.end() && it->is_number_unsigned())
             rb.setPropertyFlags(it->get<uint>());
+
+        if (auto it = j.find("Group"); it != j.end() && it->is_number_unsigned())
+            rb.setCollisionGroup(it->get<u16>());
+
+        if (auto it = j.find("Mask"); it != j.end() && it->is_number_unsigned())
+            rb.setCollisionMask(it->get<u16>());
     }
 
     static void loadPointLight(entt::entity entity, entt::registry& registry, const json& j)
@@ -767,7 +810,26 @@ namespace oyl::internal
                 it->get_to(ls.diffuse);
             if (const auto it = jLight.find("Specular"); it != jLight.end())
                 it->get_to(ls.specular);
-            if (const auto it = jLight.find("CastShadows"); it != jLight.end())
+            if (const auto sIt = jLight.find("Shadow"); sIt != jLight.end() && sIt->is_object())
+            {
+                ls.castShadows = true;
+                
+                if (const auto it = sIt->find("Resolution"); it != sIt->end())
+                    it->get_to(ls.resolution);
+                if (const auto it = sIt->find("LowerBounds"); it != sIt->end())
+                    it->get_to(ls.lowerBounds);
+                if (const auto it = sIt->find("UpperBounds"); it != sIt->end())
+                    it->get_to(ls.upperBounds);
+                if (const auto it = sIt->find("ClipLength"); it != sIt->end())
+                    it->get_to(ls.clipLength);
+                if (const auto it = sIt->find("Bias"); it != sIt->end())
+                {
+                    auto bias = it->get<glm::vec2>();
+                    ls.biasMin = bias.x, ls.biasMax = bias.y;
+                }
+            }
+            else ls.castShadows = false;
+            if (const auto it = jLight.find("CastShadows"); it != jLight.end() && it->is_boolean())
                 it->get_to(ls.castShadows);
         }
     }
@@ -864,9 +926,8 @@ namespace oyl::internal
         json sceneJson;
         
         using component::EntityInfo;
-        registry.each([&registry, &sceneJson](const entt::entity entity)
+        registry.view<EntityInfo>().each([&registry, &sceneJson](entt::entity entity, EntityInfo& info)
         {
-            EntityInfo& info = registry.get<EntityInfo>(entity);
             entityToJson(entity, registry, sceneJson[info.name]);
         });
 
@@ -1122,6 +1183,14 @@ namespace oyl::internal
                 material->emissionMap = getTextureFn(emissionIt);
         }
 
+        if (auto it = jMaterial.find("MainProperties"); it != jMaterial.end() && it->is_object())
+        {
+            if (auto tileIt = it->find("Tiling"); tileIt != it->end() && tileIt->is_array())
+                tileIt->get_to(material->mainTextureProps.tiling);
+            if (auto offIt = it->find("Offset"); offIt != it->end() && offIt->is_array())
+                offIt->get_to(material->mainTextureProps.offset);
+        }
+
         if (auto it = jMaterial.find("Alias"); it != jMaterial.end() && it->is_string())
         {
             std::string alias = it->get<std::string>();
@@ -1132,17 +1201,17 @@ namespace oyl::internal
                 {
                     material = testMat;
                 }
+                else
+                {
+                    *testMat = *material;
+                    material = testMat;
+                }
+            }
+            else
+            {
+                Material::cache(material, alias);
             }
         }
-
-        if (auto it = jMaterial.find("MainProperties"); it != jMaterial.end() && it->is_object())
-        {
-            if (auto tileIt = it->find("Tiling"); tileIt != it->end() && tileIt->is_array())
-                tileIt->get_to(material->mainTextureProps.tiling);
-            if (auto offIt = it->find("Offset"); offIt != it->end() && offIt->is_array())
-                offIt->get_to(material->mainTextureProps.offset);
-        }
-        
         return material;
     }
 

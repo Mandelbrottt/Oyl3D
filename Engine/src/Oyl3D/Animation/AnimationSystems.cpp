@@ -2,6 +2,7 @@
 #include "AnimationSystems.h"
 
 #include "Components/Animatable.h"
+#include "Components/Renderable.h"
 
 #include "Events/Event.h"
 
@@ -19,7 +20,7 @@ namespace oyl::internal
 
     void AnimationSystem::onUpdate()
     {
-        auto view = registry->view<component::Animatable>();
+        auto view = registry->view<component::VertexAnimatable>();
         for (auto entity : view)
         {
             auto& anim = view.get(entity);
@@ -84,4 +85,40 @@ namespace oyl::internal
     void AnimationSystem::onGuiRender() {}
 
     bool AnimationSystem::onEvent(const Event& event) { return false; }
+    
+    void SkeletalAnimationSystem::onEnter() {}
+
+    void SkeletalAnimationSystem::onExit() {}
+
+    void SkeletalAnimationSystem::onUpdate()
+    {
+        using component::SkeletonAnimatable;
+        using component::Renderable;
+        auto view = registry->view<SkeletonAnimatable, Renderable>();
+        view.each([](auto entity, SkeletonAnimatable& sa, Renderable& renderable)
+        {
+            if (renderable.model && renderable.material && renderable.material->shader == Shader::get("Oyl Skeletal"))
+            {
+                if (auto it = renderable.model->getAnimations().find(sa.animation); 
+                    it != renderable.model->getAnimations().end())
+                {
+                    std::vector<glm::mat4> boneTransforms;
+                    renderable.model->getBoneTransforms(sa.animation, sa.time, boneTransforms);
+
+                    for (uint i = 0; i < boneTransforms.size(); i++)
+                    {
+                        renderable.material->shader->bind();
+                        renderable.material->shader->setUniformMat4("u_boneTransforms[" + std::to_string(i) + "]", boneTransforms[i]);
+                    }
+                }
+            }
+        });
+    }
+
+    void SkeletalAnimationSystem::onGuiRender() {}
+
+    bool SkeletalAnimationSystem::onEvent(const Event& event)
+    {
+        return false;
+    }
 }

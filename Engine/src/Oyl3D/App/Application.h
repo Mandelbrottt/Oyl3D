@@ -7,6 +7,8 @@
 #include "Oyl3D/Graphics/Buffer.h"
 #include "Oyl3D/Scenes/Scene.h"
 
+#include "Oyl3D/Utils/SceneToFile.h"
+
 namespace oyl
 {
     class EventListener;
@@ -14,6 +16,7 @@ namespace oyl
     
     namespace internal
     {   
+        class SkeletalAnimationSystem;  
         class EditorRenderSystem;  
         class PreRenderSystem;  
         class RenderSystem;  
@@ -36,21 +39,29 @@ namespace oyl
 
         bool onEvent(const Event& event);
 
-        void pushScene(Ref<Scene> scene);
+        void changeScene(const std::string& name);
 
         // TODO: Make Refs
-        inline Window&      getWindow() { return *m_window; }
+        Window& getWindow() { return *m_window; }
         //inline FrameBuffer& getMainFrameBuffer() { return *m_mainBuffer; }
 
-        inline static Application& get() { return *s_instance; }
+        static Application& get() { return *s_instance; }
 
+    protected:
+        template<class T, std::enable_if_t<std::is_base_of<Scene, T>::value, int> = 0>
+        void registerScene();
+        
     private:
         void initEventListeners();
+        void pushScene(const std::string& scene, bool callOnEnter = true);
 
     private:
-        Ref<Window>      m_window;
-        Ref<Scene>       m_currentScene;
-        //Ref<FrameBuffer> m_mainBuffer;
+        Ref<Window> m_window;
+        
+        std::string m_currentScene;
+        std::string m_nextScene;
+
+        std::unordered_map<std::string, Ref<Scene>> m_registeredScenes;
         
     #if !defined(OYL_DISTRIBUTION)
         Ref<internal::GuiLayer> m_guiLayer;
@@ -58,14 +69,13 @@ namespace oyl
 
         Ref<internal::SystemsLayer> m_systemsLayer;
         // TODO: Put in systems layer
+        Ref<internal::SkeletalAnimationSystem> m_skeletalAnimationSystem;
         Ref<internal::EditorRenderSystem> m_editorRenderSystem;
         Ref<internal::PreRenderSystem> m_preRenderSystem;
         Ref<internal::ShadowRenderSystem> m_shadowRenderSystem;
         Ref<internal::RenderSystem> m_renderSystem;
         Ref<internal::GuiRenderSystem> m_guiRenderSystem;
         Ref<internal::UserPostRenderSystem> m_postRenderSystem;
-
-        float m_lastFrameTime = 0;
 
         bool m_running  = true;
         bool m_doUpdate = true;
@@ -77,7 +87,38 @@ namespace oyl
 
         Ref<internal::ApplicationListener> m_appListener;
         Ref<internal::GamepadListener>     m_vibrationListener;
+
+        friend internal::GuiLayer;
     };
+
+    template<class S, std::enable_if_t<std::is_base_of<Scene, S>::value, int>>
+    void Application::registerScene()
+    {
+        Ref<Scene> newScene = S::create();
+        if (m_registeredScenes.find(newScene->m_name) != m_registeredScenes.end())
+            return;
+
+        std::string name = newScene->m_name;
+
+        newScene->setDispatcher(m_dispatcher);
+        
+        newScene->Scene::onEnter();
+        newScene->onEnter();
+
+        internal::registryFromSceneFile(*newScene->m_registry, name);
+
+        bool swapToScene = m_registeredScenes.empty();
+
+        m_registeredScenes[name] = std::move(newScene);
+
+        //pushScene(name, !swapToScene);
+
+        if (swapToScene)
+        {
+            m_nextScene = name;
+            //pushScene(name);
+        }
+    }
 
     Application* createApplication();
 }

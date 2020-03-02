@@ -1041,10 +1041,12 @@ public:
 class Game : public oyl::Application
 {
 public:
-	Game()
-	{
-		pushScene(MainScene::create());
-	}
+    Game()
+    {
+        // pushScene(MainScene::create());
+
+        registerScene<MainScene>();
+    }
 
     virtual void onExit() { }
 };

@@ -33,8 +33,6 @@ namespace oyl
 
         // Reset the registry then reset the actual Ref
         m_registry->reset();
-        m_registry.reset();
-
     }
 
     void Scene::onUpdate()

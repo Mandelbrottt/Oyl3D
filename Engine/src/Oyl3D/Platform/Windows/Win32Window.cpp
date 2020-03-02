@@ -110,6 +110,7 @@ namespace oyl
             WindowData& data = *(WindowData*) glfwGetWindowUserPointer(window);
 
             WindowFocusedEvent event{};
+            event.focused = focused;
 
             data.eventCallback(event);
         });
