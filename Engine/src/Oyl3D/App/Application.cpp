@@ -355,12 +355,12 @@ namespace oyl
                 
                 m_preRenderSystem->onUpdate();
                 m_shadowRenderSystem->onUpdate();
-            #if !defined OYL_DISTRIBUTION
-                m_editorRenderSystem->onUpdate();
-            #endif
                 m_renderSystem->onUpdate();
                 m_guiRenderSystem->onUpdate();
                 m_postRenderSystem->onUpdate();
+            #if !defined OYL_DISTRIBUTION
+                m_editorRenderSystem->onUpdate();
+            #endif
 
                 Renderer::endScene();                
             }

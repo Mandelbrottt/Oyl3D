@@ -139,10 +139,10 @@ namespace oyl::internal
 
             bool doCulling = true;
 
-            auto view = registry->view<Renderable, Transform>();
+            auto view = registry->view<Renderable>();
             for (auto entity : view)
             {
-                Renderable& mr = view.get<Renderable>(entity);
+                Renderable& mr = view.get(entity);
 
                 if (!isRenderableValid(mr))
                     break;
@@ -248,7 +248,7 @@ namespace oyl::internal
                     boundMaterial->applyUniforms();
                 }
 
-                auto&     transformComponent = view.get<Transform>(entity);
+                auto&     transformComponent = registry->get<Transform>(entity);
                 glm::mat4 transform          = transformComponent.getMatrixGlobal();
 
                 glm::bvec3 mirror = transformComponent.getMirrorGlobal();
