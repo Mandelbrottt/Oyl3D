@@ -722,7 +722,7 @@ void PlayerInteractionValidationSystem::performCarryableItemInteraction(entt::en
 
 			OYL_LOG("PICKED UP CLEANING SOLUTION!");
 
-			itemNewPosition = glm::vec3(-0.2f, 0.45f, -0.55f);
+			itemNewPosition = glm::vec3(-0.35f, 0.37f, -0.67f);
 			itemNewRotation = glm::vec3(0.0f, 0.0f, 0.0f);
 
 			break;
@@ -736,7 +736,7 @@ void PlayerInteractionValidationSystem::performCarryableItemInteraction(entt::en
 
 			OYL_LOG("PICKED UP GLOOP!");
 
-			itemNewPosition = glm::vec3(-0.2f, 0.58f, -0.55f);
+			itemNewPosition = glm::vec3(-0.4f, 0.5f, -0.75f);
 			itemNewRotation = glm::vec3(0.0f, 0.0f, 0.0f);
 
 			break;
@@ -750,7 +750,7 @@ void PlayerInteractionValidationSystem::performCarryableItemInteraction(entt::en
 
 			OYL_LOG("PICKED UP THROWABLE BOTTLE!");
 
-			itemNewPosition = glm::vec3(0.3f, 0.55f, -0.55f);
+			itemNewPosition = glm::vec3(0.42f, 0.5f, -0.75f);
 			itemNewRotation = glm::vec3(0.0f, 0.0f, 0.0f);
 
 			break;
