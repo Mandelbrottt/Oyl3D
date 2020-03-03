@@ -350,7 +350,6 @@ namespace oyl
             if (m_bones[i].parent == -1u)
             {
                 calculateFinalTransform(m_animations.at(animation), time, i, glm::mat4(1.0f));
-                break;
             }
         }
 
