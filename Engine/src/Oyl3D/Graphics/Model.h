@@ -73,9 +73,17 @@ namespace oyl
                                      uint                     bone,
                                      const glm::mat4&         parentTransform) const;
 
-        glm::vec3 calcInterpolatedPosition(float time, const BoneChannel& channel) const;
-        glm::quat calcInterpolatedRotation(float time, const BoneChannel& channel) const;
-        glm::vec3 calcInterpolatedScale(float time, const BoneChannel& channel) const;
+        glm::vec3 calcInterpolatedPosition(float time, const BoneChannel& channel,
+                                           Interpolation::Type a_type,
+                                           Interpolation::EaseFn a_fn) const;
+        
+        glm::quat calcInterpolatedRotation(float time, const BoneChannel& channel,
+                                           Interpolation::Type a_type,
+                                           Interpolation::EaseFn a_fn) const;
+        
+        glm::vec3 calcInterpolatedScale(float time, const BoneChannel& channel,
+                                        Interpolation::Type a_type,
+                                        Interpolation::EaseFn a_fn) const;
 
         glm::mat4 _getBoneTransform(const SkeletonAnimation& a_animation, uint a_bone, float a_time) const;
         

@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Oyl3D/Utils/Interpolation.h"
+
 namespace oyl
 {
     struct Bone
@@ -25,5 +27,8 @@ namespace oyl
         
         float tickRate = 30.0f;
         float duration = 0.0f;
+
+        Interpolation::Type lerpType = Interpolation::Type::Linear;
+        Interpolation::EaseFn lerpFn = Interpolation::linear;
     };
 }

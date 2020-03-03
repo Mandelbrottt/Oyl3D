@@ -400,13 +400,13 @@ namespace oyl
         {
             const auto& animNode = it->second;
 
-            glm::vec3 position = calcInterpolatedPosition(a_time, animNode);
+            glm::vec3 position = calcInterpolatedPosition(a_time, animNode, a_animation.lerpType, a_animation.lerpFn);
             nodeTransform = translate(glm::mat4(1.0f), position);
 
-            glm::quat rotation = calcInterpolatedRotation(a_time, animNode);
+            glm::quat rotation = calcInterpolatedRotation(a_time, animNode, a_animation.lerpType, a_animation.lerpFn);
             nodeTransform *= mat4_cast(rotation);
 
-            glm::vec3 scaling = calcInterpolatedScale(a_time, animNode);
+            glm::vec3 scaling = calcInterpolatedScale(a_time, animNode, a_animation.lerpType, a_animation.lerpFn);
             nodeTransform = scale(nodeTransform, scaling);
         }
 
@@ -424,13 +424,13 @@ namespace oyl
         {
             const auto& animNode = it->second;
  
-            glm::vec3 position = calcInterpolatedPosition(time, animNode);
+            glm::vec3 position = calcInterpolatedPosition(time, animNode, animation.lerpType, animation.lerpFn);
             nodeTransform = translate(glm::mat4(1.0f), position);
  
-            glm::quat rotation = calcInterpolatedRotation(time, animNode);
+            glm::quat rotation = calcInterpolatedRotation(time, animNode, animation.lerpType, animation.lerpFn);
             nodeTransform *= mat4_cast(rotation);
  
-            glm::vec3 scaling = calcInterpolatedScale(time, animNode);
+            glm::vec3 scaling = calcInterpolatedScale(time, animNode, animation.lerpType, animation.lerpFn);
             nodeTransform = scale(nodeTransform, scaling);
         }
 
@@ -443,7 +443,9 @@ namespace oyl
             calculateFinalTransform(animation, time, b, globalTransform);
     }
 
-    glm::vec3 Model::calcInterpolatedPosition(float time, const BoneChannel& channel) const
+    glm::vec3 Model::calcInterpolatedPosition(float time, const BoneChannel& channel, 
+                                              Interpolation::Type a_type, 
+                                              Interpolation::EaseFn a_fn) const
     {
         if (channel.positionKeys.empty())
             return glm::vec3(0.0f);
@@ -461,13 +463,29 @@ namespace oyl
         float deltaTime = channel.positionKeys[nextPositionIndex].first - channel.positionKeys[positionIndex].first;
         float factor = (time - channel.positionKeys[positionIndex].first) / deltaTime;
 
+        if (a_fn) factor = a_fn(factor);
+        
         glm::vec3 start = channel.positionKeys[positionIndex].second;
         glm::vec3 end = channel.positionKeys[nextPositionIndex].second;
 
-        return glm::mix(start, end, factor);
+        if (a_type == Interpolation::Type::Cubic)
+        {
+            // Get the indices of the control points
+            uint v0i = positionIndex == 0 ? channel.positionKeys.size() - 1 : positionIndex - 1;
+            uint v3i = nextPositionIndex == channel.positionKeys.size() - 1 ? 0 : nextPositionIndex + 1;
+
+            // Get the control points
+            glm::vec3 v0 = channel.positionKeys[v0i].second,
+                      v3 = channel.positionKeys[v3i].second;
+            
+            return catmullRom(v0, start, end, v3, factor);
+        }
+        else return mix(start, end, factor);
     }
 
-    glm::quat Model::calcInterpolatedRotation(float time, const BoneChannel& channel) const
+    glm::quat Model::calcInterpolatedRotation(float time, const BoneChannel& channel,
+                                              Interpolation::Type a_type,
+                                              Interpolation::EaseFn a_fn) const
     {
         if (channel.rotationKeys.empty())
             return glm::quat(1.0f, 0.0f, 0.0f, 0.0f);
@@ -485,13 +503,35 @@ namespace oyl
         float deltaTime = channel.rotationKeys[nextRotationIndex].first - channel.rotationKeys[rotationIndex].first;
         float factor = (time - channel.rotationKeys[rotationIndex].first) / deltaTime;
 
+        if (a_fn) factor = a_fn(factor);
+        
         glm::quat start = channel.rotationKeys[rotationIndex].second;
         glm::quat end = channel.rotationKeys[nextRotationIndex].second;
+
+        if (a_type == Interpolation::Type::Cubic)
+        {
+            // Get the indices of the control points
+            uint v0i = rotationIndex == 0 ? channel.rotationKeys.size() - 1 : rotationIndex - 1;
+            uint v3i = nextRotationIndex == channel.rotationKeys.size() - 1 ? 0 : nextRotationIndex + 1;
+
+            // Get the control points
+            glm::quat v0 = channel.rotationKeys[v0i].second,
+                      v3 = channel.rotationKeys[v3i].second;
+
+            glm::quat mix1 = slerp(start, end, factor);
+            glm::quat mix2 = slerp(intermediate(v0, start, end), intermediate(start, end, v3), factor);
+            glm::quat ret  = slerp(mix1, mix2, 2.0f * (1.0f - factor) * factor);
+            
+            //return normalize(squad(start, end, intermediate(v0, start, end), intermediate(start, end, v3), factor));
+            return normalize(ret);
+        } else return fastMix(start, end, factor);
         
-        return slerp(start, end, factor);
+        //return slerp(start, end, factor);
     }
 
-    glm::vec3 Model::calcInterpolatedScale(float time, const BoneChannel& channel) const
+    glm::vec3 Model::calcInterpolatedScale(float time, const BoneChannel& channel,
+                                           Interpolation::Type a_type,
+                                           Interpolation::EaseFn a_fn) const
     {
         if (channel.scaleKeys.empty())
             return glm::vec3(1.0f);
@@ -509,10 +549,23 @@ namespace oyl
         float deltaTime = channel.scaleKeys[nextScaleIndex].first - channel.scaleKeys[scaleIndex].first;
         float factor = (time - channel.scaleKeys[scaleIndex].first) / deltaTime;
 
+        if (a_fn) factor = a_fn(factor);
+        
         glm::vec3 start = channel.scaleKeys[scaleIndex].second;
         glm::vec3 end = channel.scaleKeys[nextScaleIndex].second;
 
-        return glm::mix(start, end, factor);
+        if (a_type == Interpolation::Type::Cubic)
+        {
+            // Get the indices of the control points
+            uint v0i = scaleIndex == 0 ? channel.scaleKeys.size() - 1 : scaleIndex - 1;
+            uint v3i = nextScaleIndex == channel.scaleKeys.size() - 1 ? 0 : nextScaleIndex + 1;
+
+            // Get the control points
+            glm::vec3 v0 = channel.scaleKeys[v0i].second,
+                      v3 = channel.scaleKeys[v3i].second;
+
+            return catmullRom(v0, start, end, v3, factor);
+        } else return mix(start, end, factor);
     }
 
     void Model::init()
