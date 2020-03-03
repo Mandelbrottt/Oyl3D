@@ -21,7 +21,7 @@ namespace oyl
     
     struct SkeletonAnimation
     {
-        std::vector<BoneChannel> channels;
+        std::unordered_map<uint, BoneChannel> channels;
         
         float tickRate = 30.0f;
         float duration = 0.0f;

@@ -27,6 +27,7 @@ namespace oyl
         glm::mat4 getBoneTransform(const std::string& animation, const std::string& bone, float time) const;
 
         const std::unordered_map<std::string, uint>& getBones() const { return m_boneIDs; }
+        const std::vector<Bone>& getBoneInfos() const { return m_bones; }
 
         const std::unordered_map<std::string, SkeletonAnimation>& getAnimations() const { return m_animations; }
         
@@ -87,6 +88,8 @@ namespace oyl
         std::unordered_map<std::string, uint> m_boneIDs;
 
         std::vector<Bone> m_bones;
+
+        uint m_numMeshBones = 0;
 
         std::unordered_map<std::string, SkeletonAnimation> m_animations;
 

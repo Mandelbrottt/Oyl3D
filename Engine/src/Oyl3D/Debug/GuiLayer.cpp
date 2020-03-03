@@ -1986,10 +1986,11 @@ namespace oyl::internal
                     if (ImGui::Selectable("None", currentBone == "None"))
                         target.bone.clear();
 
-                    for (auto& [name, bone] : bones)
+                    const auto& boneInfos = model->getBoneInfos();
+
+                    if (auto it = bones.find("RootNode"); it != bones.end())
                     {
-                        if (ImGui::Selectable(name.c_str(), name == target.bone))
-                            target.bone = name;
+                        recurseBoneNode(target.bone, it->second, bones, boneInfos);
                     }
 
                     ImGui::EndCombo();
@@ -2002,6 +2003,49 @@ namespace oyl::internal
 
             ImGui::Separator();
             ImGui::NewLine();
+        }
+    }
+
+    void GuiLayer::recurseBoneNode(std::string& target, uint bone,
+                                   const std::unordered_map<std::string, uint>& bones,
+                                   const std::vector<Bone>&                     boneInfos)
+    {
+        const auto& b = boneInfos[bone];
+
+        auto nodeFlags = ImGuiTreeNodeFlags_OpenOnDoubleClick |
+                         ImGuiTreeNodeFlags_OpenOnArrow |
+                         ImGuiTreeNodeFlags_DefaultOpen;
+
+        if (b.children.empty())
+            nodeFlags |= ImGuiTreeNodeFlags_Leaf;
+        
+        std::string nodeName;
+        for (const auto& [name, index] : bones)
+            if (index == bone)
+            {
+                nodeName = name;
+                break;
+            }
+        
+        if (target == nodeName)
+            nodeFlags |= ImGuiTreeNodeFlags_Selected;
+
+        bool treeNode = ImGui::TreeNodeEx(nodeName.c_str(), nodeFlags);
+
+        bool clicked = ImGui::IsItemClicked(0);
+        float testValue = ImGui::GetMousePos().x - ImGui::GetItemRectMin().x;
+
+        if (treeNode)
+        {
+            for (auto child : b.children)
+                recurseBoneNode(target, child, bones, boneInfos);
+
+            ImGui::TreePop();
+        }
+
+        if (clicked && testValue > ImGui::GetTreeNodeToLabelSpacing())
+        {
+            target = nodeName;
         }
     }
 
