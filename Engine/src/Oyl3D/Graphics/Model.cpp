@@ -505,26 +505,29 @@ namespace oyl
 
         if (a_fn) factor = a_fn(factor);
         
-        glm::quat start = channel.rotationKeys[rotationIndex].second;
-        glm::quat end = channel.rotationKeys[nextRotationIndex].second;
+        glm::quat v0 = channel.rotationKeys[rotationIndex].second;
+        glm::quat v1 = channel.rotationKeys[nextRotationIndex].second;
 
         if (a_type == Interpolation::Type::Cubic)
         {
             // Get the indices of the control points
-            uint v0i = rotationIndex == 0 ? channel.rotationKeys.size() - 1 : rotationIndex - 1;
-            uint v3i = nextRotationIndex == channel.rotationKeys.size() - 1 ? 0 : nextRotationIndex + 1;
+            uint vn1i = rotationIndex == 0 ? channel.rotationKeys.size() - 1 : rotationIndex - 1;
+            uint v2i  = nextRotationIndex == channel.rotationKeys.size() - 1 ? 0 : nextRotationIndex + 1;
 
             // Get the control points
-            glm::quat v0 = channel.rotationKeys[v0i].second,
-                      v3 = channel.rotationKeys[v3i].second;
+            glm::quat vn1 = channel.rotationKeys[vn1i].second,
+                      v2  = channel.rotationKeys[v2i].second;
 
-            glm::quat mix1 = slerp(start, end, factor);
-            glm::quat mix2 = slerp(intermediate(v0, start, end), intermediate(start, end, v3), factor);
-            glm::quat ret  = slerp(mix1, mix2, 2.0f * (1.0f - factor) * factor);
+            //glm::quat mix1 = mix(start, end, factor);
+            //glm::quat mix2 = mix(intermediate(v0, start, end), intermediate(start, end, v3), factor);
+            //glm::quat ret  = mix(mix1, mix2, 2.0f * (1.0f - factor) * factor);
+            
+            glm::quat ret = squad(v0, v1, intermediate(vn1, v0, v1), intermediate(v0, v1, v2), factor);
+            //glm::quat ret = catmullRom(vn1, v0, v1, v2, factor);
             
             //return normalize(squad(start, end, intermediate(v0, start, end), intermediate(start, end, v3), factor));
             return normalize(ret);
-        } else return fastMix(start, end, factor);
+        } else return slerp(v0, v1, factor);
         
         //return slerp(start, end, factor);
     }
