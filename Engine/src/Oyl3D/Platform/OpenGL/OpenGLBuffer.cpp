@@ -219,12 +219,18 @@ namespace oyl
 
 // Frame Buffer //////////////////////////////////////////////////////////////
 
-    static uint TextUniqueReformatToGLFormat(TextureFormat format)
+    static uint TextureFormatToGLFormat(TextureFormat format)
     {
         switch (format)
         {
-            case TextureFormat::RGB8:  return GL_RGB8;
-            case TextureFormat::RGBA8: return GL_RGBA8;
+            case TextureFormat::R8:      return GL_R8;
+            case TextureFormat::RG8:     return GL_RG8;
+            case TextureFormat::RGB8:    return GL_RGB8;
+            case TextureFormat::RGBA8:   return GL_RGBA8;
+            case TextureFormat::RGBF16:  return GL_RGB16F;
+            case TextureFormat::RGBF32:  return GL_RGB32F;
+            case TextureFormat::RGBAF16: return GL_RGBA16F;
+            case TextureFormat::RGBAF32: return GL_RGBA32F;
         }
         return 0;
     }
@@ -417,7 +423,7 @@ namespace oyl
         // Create depth texture
         glGenTextures(1, &m_colorAttachmentIDs[index]);
         glBindTexture(GL_TEXTURE_2D, m_colorAttachmentIDs[index]);
-        glTexStorage2D(GL_TEXTURE_2D, 1, TextUniqueReformatToGLFormat(format), width, height);
+        glTexStorage2D(GL_TEXTURE_2D, 1, TextureFormatToGLFormat(format), width, height);
 
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, TexturefilterToGLFilter(filter));
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, TexturefilterToGLFilter(filter));
