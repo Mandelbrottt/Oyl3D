@@ -275,7 +275,7 @@ namespace oyl
         glGenFramebuffers(1, &m_rendererID);
 
         // m_bufs is required as a paramater for glDrawBuffers()
-        for (int i = 0; i < numColorAttachments; i++)
+        for (uint i = 0; i < sizeof(m_bufs) / sizeof(decltype(*m_bufs)); i++)
         {
             m_bufs[i] = GL_COLOR_ATTACHMENT0 + i;
         }

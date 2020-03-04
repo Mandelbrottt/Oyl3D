@@ -102,47 +102,51 @@ namespace oyl::internal
                 // Create deferred buffer with a buffer for
                 // position, albedo/specular, normals, emission/glossiness, light space position
                 camera.m_deferredFrameBuffer = FrameBuffer::create(5);
-                camera.m_mainFrameBuffer->initDepthTexture(1, 1);
-                
+                camera.m_deferredFrameBuffer->initDepthTexture(1, 1);
+
                 // Position buffer
-                camera.m_mainFrameBuffer->initColorTexture(0, 1, 1,
-                                                           TextureFormat::RGBF16,
-                                                           TextureFilter::Nearest,
-                                                           TextureWrap::ClampToEdge);
+                camera.m_deferredFrameBuffer->initColorTexture(0, 1, 1,
+                                                               TextureFormat::RGBF16,
+                                                               TextureFilter::Nearest,
+                                                               TextureWrap::ClampToEdge);
                 // Albedo/Specular buffer
-                camera.m_mainFrameBuffer->initColorTexture(0, 1, 1,
-                                                           TextureFormat::RGBAF16,
-                                                           TextureFilter::Nearest,
-                                                           TextureWrap::ClampToEdge);
+                camera.m_deferredFrameBuffer->initColorTexture(1, 1, 1,
+                                                               TextureFormat::RGBAF16,
+                                                               TextureFilter::Nearest,
+                                                               TextureWrap::ClampToEdge);
                 // Normal buffer
-                camera.m_mainFrameBuffer->initColorTexture(0, 1, 1,
-                                                           TextureFormat::RGBF16,
-                                                           TextureFilter::Nearest,
-                                                           TextureWrap::ClampToEdge);
+                camera.m_deferredFrameBuffer->initColorTexture(2, 1, 1,
+                                                               TextureFormat::RGBF16,
+                                                               TextureFilter::Nearest,
+                                                               TextureWrap::ClampToEdge);
                 // Emission/Glossiness buffer
-                camera.m_mainFrameBuffer->initColorTexture(0, 1, 1,
-                                                           TextureFormat::RGBAF16,
-                                                           TextureFilter::Nearest,
-                                                           TextureWrap::ClampToEdge);
+                camera.m_deferredFrameBuffer->initColorTexture(3, 1, 1,
+                                                               TextureFormat::RGBAF16,
+                                                               TextureFilter::Nearest,
+                                                               TextureWrap::ClampToEdge);
                 // Light Space Position buffer
-                camera.m_mainFrameBuffer->initColorTexture(0, 1, 1,
-                                                           TextureFormat::RGBAF16,
-                                                           TextureFilter::Nearest,
-                                                           TextureWrap::ClampToEdge);
+                camera.m_deferredFrameBuffer->initColorTexture(4, 1, 1,
+                                                               TextureFormat::RGBAF16,
+                                                               TextureFilter::Nearest,
+                                                               TextureWrap::ClampToEdge);
             }
             
             if (m_camerasNeedUpdate || lastNumCameras != camView.size())
             {
                 camera.m_mainFrameBuffer->updateViewport(width, height);
+                camera.m_deferredFrameBuffer->updateViewport(width, height);
             
                 camera.aspect((float) width / (float) height);
             }
+
+            camera.m_deferredFrameBuffer->clear();
             
             camera.m_mainFrameBuffer->clear();
             camera.m_mainFrameBuffer->bind();
 
             RenderCommand::setDrawRect(0, 0, camera.m_mainFrameBuffer->getColorWidth(), camera.m_mainFrameBuffer->getColorWidth());
-
+            RenderCommand::setAlphaBlend(false);
+            
             glm::mat4 viewProj = camera.projectionMatrix();
             viewProj *= glm::mat4(glm::mat3(camera.viewMatrix()));
 
@@ -397,7 +401,9 @@ namespace oyl::internal
         {
             Camera& pc = camView.get<Camera>(camera);
 
-            pc.m_mainFrameBuffer->bind();
+            RenderCommand::setDrawRect(0, 0, pc.m_deferredFrameBuffer->getColorWidth(), pc.m_deferredFrameBuffer->getColorHeight());
+            
+            pc.m_deferredFrameBuffer->bind();
 
             bool doCulling = true;
 
@@ -615,6 +621,7 @@ namespace oyl::internal
         m_shader->setUniform1i("u_texture", 0);
 
         RenderCommand::setDepthDraw(false);
+        RenderCommand::setAlphaBlend(true);
 
         auto camView = registry->view<Camera>();
 

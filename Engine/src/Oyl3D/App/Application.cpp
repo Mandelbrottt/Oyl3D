@@ -384,7 +384,7 @@ namespace oyl
                 m_guiLayer->onUpdate();
             #endif
                 
-                RenderCommand::setClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+                RenderCommand::setClearColor(0.0f, 0.0f, 0.0f, 1.0f);
                 RenderCommand::clear();
 
                 Renderer::beginScene();

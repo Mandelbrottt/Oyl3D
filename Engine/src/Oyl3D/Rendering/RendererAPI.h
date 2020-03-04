@@ -23,6 +23,7 @@ namespace oyl
 
         virtual void setDepthDraw(bool value) = 0;
         virtual void setBackfaceCulling(bool value) = 0;
+        virtual void setAlphaBlend(bool value) = 0;
 
         virtual void setDrawRect(int x, int y, int width, int height) = 0;
 
