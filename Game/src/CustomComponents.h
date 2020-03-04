@@ -105,7 +105,7 @@ struct Player
 	glm::vec3 moveDirection = glm::vec3(0.0f);
 
 	float speedForce = 5.6f;
-	float jumpForce  = 20.0f;
+	float jumpForce  = 27.0f;
 	bool  isJumping  = false;
 
 	float JUMP_COOLDOWN_DURATION = 0.1f;

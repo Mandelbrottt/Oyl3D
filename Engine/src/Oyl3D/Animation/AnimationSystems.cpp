@@ -2,6 +2,7 @@
 #include "AnimationSystems.h"
 
 #include "Components/Animatable.h"
+#include "Components/Renderable.h"
 
 #include "Events/Event.h"
 
@@ -19,7 +20,7 @@ namespace oyl::internal
 
     void AnimationSystem::onUpdate()
     {
-        auto view = registry->view<component::Animatable>();
+        auto view = registry->view<component::VertexAnimatable>();
         for (auto entity : view)
         {
             auto& anim = view.get(entity);
@@ -84,4 +85,58 @@ namespace oyl::internal
     void AnimationSystem::onGuiRender() {}
 
     bool AnimationSystem::onEvent(const Event& event) { return false; }
+    
+    void SkeletalAnimationSystem::onEnter() {}
+
+    void SkeletalAnimationSystem::onExit() {}
+
+    void SkeletalAnimationSystem::onUpdate()
+    {
+        using component::SkeletonAnimatable;
+        using component::Renderable;
+        auto view = registry->view<SkeletonAnimatable, Renderable>();
+        view.each([](auto entity, SkeletonAnimatable& sa, Renderable& renderable)
+        {
+            if (renderable.model && renderable.material && renderable.material->shader == Shader::get("Oyl Skeletal"))
+            {
+                if (auto it = renderable.model->getAnimations().find(sa.animation); 
+                    it != renderable.model->getAnimations().end())
+                {
+                    auto& animation = it->second;
+                    
+                    if (sa.play)
+                    {
+                        float dt = Time::deltaTime();
+                        if (sa.reverse) dt *= -1.0f;
+
+                        sa.time += dt * sa.timeScale;
+
+                        float t_mod_d = abs(fmod(sa.time, animation.duration));
+                        
+                        if (sa.time < 0.0f)
+                        {
+                            sa.time = animation.duration - t_mod_d;
+
+                            if (!sa.loop) 
+                                sa.play = false;
+                        }
+                        else
+                        {
+                            if (sa.time > animation.duration && !sa.loop) 
+                                sa.play = false;
+                            
+                            sa.time = t_mod_d;
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    void SkeletalAnimationSystem::onGuiRender() {}
+
+    bool SkeletalAnimationSystem::onEvent(const Event& event)
+    {
+        return false;
+    }
 }

@@ -1,18 +1,39 @@
 #pragma once
 #include "Scenes/System.h"
 
-namespace oyl::internal
+namespace oyl
 {
-    class AnimationSystem : public System
+    class FrameBuffer;
+
+    namespace internal
     {
-        OYL_CTOR(AnimationSystem, System)
+        class AnimationSystem : public System
+        {
+            OYL_CTOR(AnimationSystem, System)
 
-        virtual void onEnter() override;
-        virtual void onExit() override;
+            virtual void onEnter() override;
+            virtual void onExit() override;
 
-        virtual void onUpdate() override;
-        virtual void onGuiRender() override;
+            virtual void onUpdate() override;
+            virtual void onGuiRender() override;
 
-        virtual bool onEvent(const Event& event) override;
-    };
+            virtual bool onEvent(const Event& event) override;
+        };
+
+        class SkeletalAnimationSystem : public System
+        {
+            OYL_CTOR(SkeletalAnimationSystem, System)
+
+            virtual void onEnter() override;
+            virtual void onExit() override;
+
+            virtual void onUpdate() override;
+            virtual void onGuiRender() override;
+
+            virtual bool onEvent(const Event& event) override;
+
+        private:
+            Ref<::oyl::FrameBuffer> m_frameBuffer;
+        };
+    }
 }

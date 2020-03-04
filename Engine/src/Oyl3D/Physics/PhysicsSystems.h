@@ -31,7 +31,7 @@ namespace oyl
 
             virtual bool onEvent(const Event& event) override;
 
-            static Ref<ClosestRaycastResult> raytestClosest(glm::vec3 position, glm::vec3 direction, f32 distance);
+            static Ref<ClosestRaycastResult> raytestClosest(glm::vec3 position, glm::vec3 direction, f32 distance, u16 mask);
 
         public:
             struct RigidBodyInfo
