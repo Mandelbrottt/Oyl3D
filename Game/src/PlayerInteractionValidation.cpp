@@ -48,9 +48,9 @@ bool PlayerInteractionValidationSystem::onEvent(const Event& event)
 			auto evt = event_cast<PlayerInteractionRequestEvent>(event);
 			auto& player = registry->get<Player>(evt.playerEntity);
 
-			if (   registry->valid(player.primaryCarriedItem) 
+			if (   evt.itemClassificatonToUse == PlayerItemClassification::primary
+				&& registry->valid(player.primaryCarriedItem)
 				&& registry->get<CarryableItem>(player.primaryCarriedItem).type == CarryableItemType::throwableBottle
-				&& evt.itemClassificatonToUse == PlayerItemClassification::primary
 				&& player.state != PlayerState::throwingBottle)
 			{
 				PlayerStateChangeEvent playerStateChange;
@@ -677,6 +677,10 @@ void PlayerInteractionValidationSystem::performInteractionForPlayer(entt::entity
 
 void PlayerInteractionValidationSystem::performCarryableItemInteraction(entt::entity a_playerEntity, entt::entity a_carryableItemEntity, PlayerItemClassification itemClassification)
 {
+	//classification-specific actions cannot be used to pick up items (we can just use the generic interaction button for this)
+	if (itemClassification != PlayerItemClassification::any)
+		return;
+
 	auto& player = registry->get<Player>(a_playerEntity);
 
 	auto& carryableItem          = registry->get<CarryableItem>(a_carryableItemEntity);
@@ -701,9 +705,6 @@ void PlayerInteractionValidationSystem::performCarryableItemInteraction(entt::en
 		}
 		case CarryableItemType::mop:
 		{
-			if (itemClassification == PlayerItemClassification::secondary)
-				return;
-
 			player.primaryCarriedItem = a_carryableItemEntity;
 
 			OYL_LOG("PICKED UP MOP!");
@@ -715,9 +716,6 @@ void PlayerInteractionValidationSystem::performCarryableItemInteraction(entt::en
 		}
 		case CarryableItemType::cleaningSolution:
 		{
-			if (itemClassification == PlayerItemClassification::primary)
-				return;
-
 			player.secondaryCarriedItem = a_carryableItemEntity;
 
 			OYL_LOG("PICKED UP CLEANING SOLUTION!");
@@ -729,9 +727,6 @@ void PlayerInteractionValidationSystem::performCarryableItemInteraction(entt::en
 		}
 		case CarryableItemType::gloop:
 		{
-			if (itemClassification == PlayerItemClassification::primary)
-				return;
-
 			player.secondaryCarriedItem = a_carryableItemEntity;
 
 			OYL_LOG("PICKED UP GLOOP!");
@@ -743,9 +738,6 @@ void PlayerInteractionValidationSystem::performCarryableItemInteraction(entt::en
 		}
 		case CarryableItemType::throwableBottle:
 		{
-			if (itemClassification == PlayerItemClassification::secondary)
-				return;
-
 			player.primaryCarriedItem = a_carryableItemEntity;
 
 			OYL_LOG("PICKED UP THROWABLE BOTTLE!");
