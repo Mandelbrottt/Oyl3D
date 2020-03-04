@@ -64,6 +64,7 @@ OYL_EVENT_STRUCT(PlayerDropItemRequestEvent, (oyl::EventType) TypePlayerDropItem
 	{
 		entt::entity playerEntity;
 		PlayerItemClassification itemClassificationToDrop;
+		bool forceDrop; //if true, forces the player's item(s) to drop no matter what state they're in
 	});
 
 OYL_EVENT_STRUCT(CancelButtonPressedEvent, (oyl::EventType) TypeCancelButtonPressed, (oyl::EventCategory) CategoryPlayer,

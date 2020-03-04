@@ -46,5 +46,8 @@ namespace oyl
     void Layer::setRegistry(const Ref<entt::registry>& reg)
     {
         registry = reg;
+
+        for (auto& system : m_systems)
+            system->setRegistry(reg);
     }
 }

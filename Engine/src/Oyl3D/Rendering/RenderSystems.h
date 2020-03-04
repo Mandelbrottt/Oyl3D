@@ -9,6 +9,12 @@ namespace oyl
     class Shader;
     class VertexArray;
     class FrameBuffer;
+
+    namespace component
+    {
+        class Renderable;
+        class SkeletonAnimatable;
+    }
     
     namespace internal
     {
@@ -35,6 +41,8 @@ namespace oyl
             glm::ivec2 m_windowSize;
 
             bool m_camerasNeedUpdate = false;
+
+            void skeletonAnimate(entt::entity entity, component::Renderable& renderable, component::SkeletonAnimatable& sa);
         };
 
         class GuiRenderSystem : public System

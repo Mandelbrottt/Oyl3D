@@ -48,9 +48,9 @@ bool PlayerInteractionValidationSystem::onEvent(const Event& event)
 			auto evt = event_cast<PlayerInteractionRequestEvent>(event);
 			auto& player = registry->get<Player>(evt.playerEntity);
 
-			if (   registry->valid(player.primaryCarriedItem) 
+			if (   evt.itemClassificatonToUse == PlayerItemClassification::primary
+				&& registry->valid(player.primaryCarriedItem)
 				&& registry->get<CarryableItem>(player.primaryCarriedItem).type == CarryableItemType::throwableBottle
-				&& evt.itemClassificatonToUse == PlayerItemClassification::primary
 				&& player.state != PlayerState::throwingBottle)
 			{
 				PlayerStateChangeEvent playerStateChange;
@@ -90,6 +90,9 @@ bool PlayerInteractionValidationSystem::onEvent(const Event& event)
 			auto evt = event_cast<PlayerDropItemRequestEvent>(event);
 
 			auto& player = registry->get<Player>(evt.playerEntity);
+
+			if ((player.state == PlayerState::inCleaningQuicktimeEvent || player.state == PlayerState::cleaning) && !evt.forceDrop)
+				break;
 
 			switch (evt.itemClassificationToDrop)
 			{
@@ -674,6 +677,10 @@ void PlayerInteractionValidationSystem::performInteractionForPlayer(entt::entity
 
 void PlayerInteractionValidationSystem::performCarryableItemInteraction(entt::entity a_playerEntity, entt::entity a_carryableItemEntity, PlayerItemClassification itemClassification)
 {
+	//classification-specific actions cannot be used to pick up items (we can just use the generic interaction button for this)
+	if (itemClassification != PlayerItemClassification::any)
+		return;
+
 	auto& player = registry->get<Player>(a_playerEntity);
 
 	auto& carryableItem          = registry->get<CarryableItem>(a_carryableItemEntity);
@@ -698,9 +705,6 @@ void PlayerInteractionValidationSystem::performCarryableItemInteraction(entt::en
 		}
 		case CarryableItemType::mop:
 		{
-			if (itemClassification == PlayerItemClassification::secondary)
-				return;
-
 			player.primaryCarriedItem = a_carryableItemEntity;
 
 			OYL_LOG("PICKED UP MOP!");
@@ -712,42 +716,33 @@ void PlayerInteractionValidationSystem::performCarryableItemInteraction(entt::en
 		}
 		case CarryableItemType::cleaningSolution:
 		{
-			if (itemClassification == PlayerItemClassification::primary)
-				return;
-
 			player.secondaryCarriedItem = a_carryableItemEntity;
 
 			OYL_LOG("PICKED UP CLEANING SOLUTION!");
 
-			itemNewPosition = glm::vec3(-0.2f, 0.45f, -0.55f);
+			itemNewPosition = glm::vec3(-0.35f, 0.37f, -0.67f);
 			itemNewRotation = glm::vec3(0.0f, 0.0f, 0.0f);
 
 			break;
 		}
 		case CarryableItemType::gloop:
 		{
-			if (itemClassification == PlayerItemClassification::primary)
-				return;
-
 			player.secondaryCarriedItem = a_carryableItemEntity;
 
 			OYL_LOG("PICKED UP GLOOP!");
 
-			itemNewPosition = glm::vec3(-0.2f, 0.58f, -0.55f);
+			itemNewPosition = glm::vec3(-0.4f, 0.5f, -0.75f);
 			itemNewRotation = glm::vec3(0.0f, 0.0f, 0.0f);
 
 			break;
 		}
 		case CarryableItemType::throwableBottle:
 		{
-			if (itemClassification == PlayerItemClassification::secondary)
-				return;
-
 			player.primaryCarriedItem = a_carryableItemEntity;
 
 			OYL_LOG("PICKED UP THROWABLE BOTTLE!");
 
-			itemNewPosition = glm::vec3(0.3f, 0.55f, -0.55f);
+			itemNewPosition = glm::vec3(0.42f, 0.5f, -0.75f);
 			itemNewRotation = glm::vec3(0.0f, 0.0f, 0.0f);
 
 			break;
@@ -990,8 +985,8 @@ void PlayerInteractionValidationSystem::dropPlayerCarriedItems(entt::entity a_pl
 
 		if (dropSpecificItemType && carriedItem.type != itemTypeToDrop)
 			continue;
-		//dont let player drop items while cleaning and check parent
-		if (player.state == PlayerState::cleaning || carriedItemTransform.getParentEntity() != a_playerEntity)
+		//ensure the parent for the item is the player we're dropping items for
+		if (carriedItemTransform.getParentEntity() != a_playerEntity)
 			continue;
 
 		auto& carriedItemRB = registry->get_or_assign<component::RigidBody>(carriedItemEntity); //add the rigidbody back for the item when it's dropped

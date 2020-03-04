@@ -34,6 +34,7 @@ public:
 		srand(time(NULL));
 
 		listenForEventCategory(EventCategory::Keyboard);
+		listenForEventType(EventType::KeyReleased);
 		listenForEventCategory(EventCategory::Mouse);
 		listenForEventCategory(EventCategory::Gamepad);
 		listenForEventCategory((EventCategory)CategoryGarbagePile);
@@ -614,20 +615,7 @@ public:
 			if (player.state == PlayerState::stunned)
 				continue;
 
-			/*if (Input::getGamepadRightTrigger((uint)player.controllerNum) > 0.9f)
-			{
-				PlayerInteractionRequestEvent playerInteractionRequest;
-				playerInteractionRequest.playerEntity = playerEntity;
-				playerInteractionRequest.itemClassifiatonToUse = PlayerItemClassifiation::primary;
-				postEvent(playerInteractionRequest);
-			}
-			if (Input::getGamepadLeftTrigger((uint)player.controllerNum) > 0.9f)
-			{
-				PlayerInteractionRequestEvent playerInteractionRequest;
-				playerInteractionRequest.playerEntity = playerEntity;
-				playerInteractionRequest.itemClassifiatonToUse = PlayerItemClassifiation::secondary;
-				postEvent(playerInteractionRequest);
-			}*/
+			//Application::get().changeScene("MainScene");
 
 			//player movement
 			glm::vec3 desiredMoveDirection = glm::vec3(0.0f);
@@ -746,7 +734,7 @@ public:
 					if (registry->get<Player>(playerEntity).playerNum == PlayerNumber::One)
 					{
 						PlayerInteractionRequestEvent playerInteractionRequest;
-						playerInteractionRequest.playerEntity          = playerEntity;
+						playerInteractionRequest.playerEntity           = playerEntity;
 						playerInteractionRequest.itemClassificatonToUse = PlayerItemClassification::any;
 						postEvent(playerInteractionRequest);
 					}
@@ -802,7 +790,7 @@ public:
 					if (registry->get<Player>(playerEntity).playerNum == PlayerNumber::One)
 					{
 						PlayerInteractionRequestEvent playerInteractionRequest;
-						playerInteractionRequest.playerEntity          = playerEntity;
+						playerInteractionRequest.playerEntity           = playerEntity;
 						playerInteractionRequest.itemClassificatonToUse = PlayerItemClassification::primary;
 						postEvent(playerInteractionRequest);
 
@@ -843,32 +831,26 @@ public:
 			{
 				auto& player = registry->get<Player>(playerEntity);
 
-				if (player.controllerNum != evt.gid || evt.dx < 0.0f)
+				if (player.controllerNum != evt.gid || evt.dx <= 0.0f)
 					continue;
 
 				switch (evt.trigger)
 				{
 				case Gamepad(1):
 				{
-					//if (evt.x > 0.9f)
-					{
-						PlayerInteractionRequestEvent playerInteractionRequest;
-						playerInteractionRequest.playerEntity          = playerEntity;
-						playerInteractionRequest.itemClassificatonToUse = PlayerItemClassification::primary;
-						postEvent(playerInteractionRequest);
-					}
+					PlayerInteractionRequestEvent playerInteractionRequest;
+					playerInteractionRequest.playerEntity           = playerEntity;
+					playerInteractionRequest.itemClassificatonToUse = PlayerItemClassification::primary;
+					postEvent(playerInteractionRequest);
 
 					break;
 				}
 				case Gamepad(0):
 				{
-					//if (evt.x > 0.9f)
-					{
-						PlayerInteractionRequestEvent playerInteractionRequest;
-						playerInteractionRequest.playerEntity          = playerEntity;
-						playerInteractionRequest.itemClassificatonToUse = PlayerItemClassification::secondary;
-						postEvent(playerInteractionRequest);
-					}
+					PlayerInteractionRequestEvent playerInteractionRequest;
+					playerInteractionRequest.playerEntity           = playerEntity;
+					playerInteractionRequest.itemClassificatonToUse = PlayerItemClassification::secondary;
+					postEvent(playerInteractionRequest);
 
 					break;
 				}
@@ -905,7 +887,7 @@ public:
 				case Gamepad::X:
 				{
 					PlayerInteractionRequestEvent playerInteractionRequest;
-					playerInteractionRequest.playerEntity          = playerEntity;
+					playerInteractionRequest.playerEntity           = playerEntity;
 					playerInteractionRequest.itemClassificatonToUse = PlayerItemClassification::any;
 					postEvent(playerInteractionRequest);
 
@@ -924,6 +906,7 @@ public:
 					PlayerDropItemRequestEvent playerDropItemRequest;
 					playerDropItemRequest.playerEntity             = playerEntity;
 					playerDropItemRequest.itemClassificationToDrop = PlayerItemClassification::primary;
+					playerDropItemRequest.forceDrop                = false;
 					postEvent(playerDropItemRequest);
 
 					break;
@@ -933,6 +916,7 @@ public:
 					PlayerDropItemRequestEvent playerDropItemRequest;
 					playerDropItemRequest.playerEntity             = playerEntity;
 					playerDropItemRequest.itemClassificationToDrop = PlayerItemClassification::secondary;
+					playerDropItemRequest.forceDrop                = false;
 					postEvent(playerDropItemRequest);
 
 					break;
@@ -1041,10 +1025,12 @@ public:
 class Game : public oyl::Application
 {
 public:
-	Game()
-	{
-		pushScene(MainScene::create());
-	}
+    Game()
+    {
+        // pushScene(MainScene::create());
+
+        registerScene<MainScene>();
+    }
 
     virtual void onExit() { }
 };

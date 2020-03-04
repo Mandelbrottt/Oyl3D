@@ -40,13 +40,14 @@ namespace oyl
 
         virtual bool onEvent(const Event& event) override;
 
+    protected:
+        Ref<entt::registry> m_registry;
+        
     private:
         static WeakRef<Scene> s_current;
 
         // TODO: Put in internal namespace
         LayerStack m_layerStack;
-
-        Ref<entt::registry> m_registry;
 
         friend class Application;
         friend internal::GuiLayer;

@@ -74,11 +74,13 @@ namespace oyl
     void EventDispatcher::validateListeners()
     {
         {
-            auto it = m_listeners.begin();
-            for (; it != m_listeners.end(); ++it)
+            auto it = m_listeners.begin();            
+            while (it != m_listeners.end())
             {
                 if (it->listener.expired())
                     it = m_listeners.erase(it);
+                else 
+                    ++it;
             }
         }
 
@@ -117,7 +119,7 @@ namespace oyl
 
                 if (listener.priority > it->priority)
                 {
-                    m_listeners.insert(it, listener);
+                    it = m_listeners.insert(it, listener);
                     break;
                 }
             }
@@ -132,25 +134,27 @@ namespace oyl
     {
         validateListeners();
 
-        auto eventIt = m_eventQueue.begin();
-        for (; eventIt != m_eventQueue.end(); ++eventIt)
+        while (!m_eventQueue.empty())
         {
-            dispatchEvent(std::move(*eventIt));
+            dispatchEvent(**m_eventQueue.begin());
+            m_eventQueue.erase(m_eventQueue.begin());
         }
         
         m_eventQueue.clear();
     }
 
-    void EventDispatcher::dispatchEvent(UniqueRef<Event>&& event)
+    void EventDispatcher::dispatchEvent(Event event)
     {
         for (const auto& listener : m_listeners)
         {
             auto li = listener.listener.lock();
+
+            if (!li) continue;
             
-            if (li->getEventMask()[(i32) event->type] ||
-                li->getCategoryMask()[(i32) event->category])
+            if (li->getEventMask()[(i32) event.type] ||
+                li->getCategoryMask()[(i32) event.category])
             {
-                if (li->onEvent(*event))
+                if (li->onEvent(event))
                     break;
             }
         }
