@@ -1,6 +1,7 @@
 #include <Oyl3D.h>
 
-#include "SandboxLayer.h"
+#include "MainGameObjectsInit.h"
+#include "MainMenu.h"
 #include "PlayerSystem.h"
 #include "CannonSystem.h"
 #include "CustomComponents.h"
@@ -34,7 +35,6 @@ public:
 		srand(time(NULL));
 
 		listenForEventCategory(EventCategory::Keyboard);
-		listenForEventType(EventType::KeyReleased);
 		listenForEventCategory(EventCategory::Mouse);
 		listenForEventCategory(EventCategory::Gamepad);
 		listenForEventCategory((EventCategory)CategoryGarbagePile);
@@ -1017,7 +1017,7 @@ public:
 	virtual void onEnter() override
 	{
 		pushLayer(MainLayer::create());
-		pushLayer(SandboxLayer::create());
+		pushLayer(MainGameObjectsInitLayer::create());
 		pushLayer(ScrollingTextureLayer::create());
 	}
 };
@@ -1027,8 +1027,7 @@ class Game : public oyl::Application
 public:
     Game()
     {
-        // pushScene(MainScene::create());
-
+		//registerScene<MainMenuScene>();
         registerScene<MainScene>();
     }
 
