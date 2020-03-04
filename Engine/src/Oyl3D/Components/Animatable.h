@@ -13,6 +13,7 @@ namespace oyl
     namespace internal
     {
         class AnimationSystem;
+        class DeferredRenderSystem;
         class ForwardRenderSystem;
         class SkeletalAnimationSystem;
     }

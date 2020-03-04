@@ -8,11 +8,11 @@
 
     layout(location = 0) out vec2 out_texCoords;
 
-    uniform mat4 u_mvp;
+    uniform mat4 u_model;
 
     void main()
     {
-        gl_Position = u_mvp * vec4(in_position, 1.0);
+        gl_Position = u_model * vec4(in_position, 1.0);
 
         out_texCoords = in_texCoords;
     }

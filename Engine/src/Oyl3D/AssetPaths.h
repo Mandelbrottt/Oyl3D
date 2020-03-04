@@ -42,9 +42,7 @@ namespace oyl
     const std::string TEXTURE_SHADER_VERTEX_PATH   = "shaders/meshShader.vert";
     const std::string TEXTURE_SHADER_FRAGMENT_PATH = "shaders/meshShader.frag";
 
-    const CacheAlias  SKYBOX_SHADER_ALIAS         = "Oyl Skybox";
-    const std::string SKYBOX_SHADER_VERTEX_PATH   = "shaders/skybox.vert";
-    const std::string SKYBOX_SHADER_FRAGMENT_PATH = "shaders/skybox.frag";
+    const std::string SKYBOX_SHADER_PATH   = "shaders/Skybox.oylshader";
 
     // ^^^ Shaders ^^^ //
     // vvv Meshes vvv //

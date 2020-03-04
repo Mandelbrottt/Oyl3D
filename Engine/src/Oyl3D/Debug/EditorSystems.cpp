@@ -184,6 +184,11 @@ namespace oyl::internal
         EditorViewportHandleChangedEvent handleChanged;
         handleChanged.handle = m_editorViewportBuffer->getColorHandle(0);
         postEvent(handleChanged);
+
+        m_skyboxShader = Shader::create(
+            {
+                { Shader::Compound, ENGINE_RES + SKYBOX_SHADER_PATH },
+            });
     }
 
     void EditorRenderSystem::onExit() { }
@@ -202,16 +207,15 @@ namespace oyl::internal
         RenderCommand::setDrawRect(0, 0, m_windowSize.x, m_windowSize.y);
 
         static const auto& skybox = TextureCubeMap::get(DEFAULT_SKYBOX_ALIAS);
-        static const auto& shader = Shader::get(SKYBOX_SHADER_ALIAS);
         static const auto& mesh   = Model::get(CUBE_MODEL_ALIAS)->getMeshes()[0];
 
         glm::mat4 viewProj = m_targetCamera->getProjectionMatrix();
         viewProj *= glm::mat4(glm::mat3(m_targetCamera->getViewMatrix()));
-        shader->bind();
-        shader->setUniformMat4("u_viewProjection", viewProj);
+        m_skyboxShader->bind();
+        m_skyboxShader->setUniformMat4("u_viewProjection", viewProj);
 
         skybox->bind(0);
-        shader->setUniform1i("u_skybox", 0);
+        m_skyboxShader->setUniform1i("u_skybox", 0);
         
         RenderCommand::setDepthDraw(false);
         RenderCommand::setBackfaceCulling(false);
@@ -234,7 +238,7 @@ namespace oyl::internal
             });
 
         Ref<Material> boundMaterial = Material::create();
-        Ref<Shader>   tempShader    = Shader::get(LIGHTING_SHADER_ALIAS);
+        Ref<Shader>   tempShader    = Shader::get(FORWARD_STATIC_SHADER_ALIAS);
 
         bool doCulling = true;
 

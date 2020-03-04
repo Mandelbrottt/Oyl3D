@@ -22,25 +22,18 @@ namespace oyl
         {
             OYL_CTOR(PreRenderSystem, System)
 
-            void onUpdate() override;
-        };
-        
-        class CameraRenderSetupSystem : public System
-        {
-            OYL_CTOR(CameraRenderSetupSystem, System)
-
             void onEnter() override;
-            void onExit() override;
 
             void onUpdate() override;
-            void onGuiRender() override;
 
             bool onEvent(const Event& event) override;
-
+            
         private:
             glm::ivec2 m_windowSize;
 
             bool m_camerasNeedUpdate = false;
+
+            Ref<Shader> m_skyboxShader;
         };
 
         extern void skeletonAnimate(entt::entity entity, component::Renderable& renderable, component::SkeletonAnimatable& sa);
@@ -50,18 +43,8 @@ namespace oyl
             OYL_CTOR(ForwardRenderSystem, System)
 
             void onEnter() override;
-            void onExit() override;
 
             void onUpdate() override;
-            void onGuiRender() override;
-
-            bool onEvent(const Event& event) override;
-
-        private:
-            glm::ivec2 m_windowSize;
-
-            bool m_camerasNeedUpdate = false;
-
         };
 
         class DeferredRenderSystem : public System
@@ -69,19 +52,13 @@ namespace oyl
             OYL_CTOR(DeferredRenderSystem, System)
 
             void onEnter() override;
-            void onExit() override;
 
             void onUpdate() override;
-            void onGuiRender() override;
-
-            bool onEvent(const Event& event) override;
 
         private:
-            glm::ivec2 m_windowSize;
+            Ref<Shader> m_deferredPostShader;
 
-            bool m_camerasNeedUpdate = false;
-
-            void skeletonAnimate(entt::entity entity, component::Renderable& renderable, component::SkeletonAnimatable& sa);
+            Ref<VertexArray> m_fullscreenQuad;
         };
 
         class GuiRenderSystem : public System

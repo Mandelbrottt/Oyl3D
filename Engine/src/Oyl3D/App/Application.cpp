@@ -72,28 +72,58 @@ namespace oyl
         Model::init();
         Texture::init();
 
-        Shader::cache(
-            {
-                { Shader::Compound, ENGINE_RES + "shaders/skeletal.oylshader" },
-            }, "Oyl Skeletal");
+        //Shader::cache(
+        //    {
+        //        { Shader::Compound, ENGINE_RES + "shaders/skeletal.oylshader" },
+        //    }, "Oyl Skeletal");
 
-        Shader::cache(
-            {
-                { Shader::Vertex, ENGINE_RES + LIGHTING_SHADER_VERTEX_PATH },
-                { Shader::Pixel, ENGINE_RES + LIGHTING_SHADER_FRAGMENT_PATH },
-            }, LIGHTING_SHADER_ALIAS);
+        //Shader::cache(
+        //    {
+        //        { Shader::Vertex, ENGINE_RES + LIGHTING_SHADER_VERTEX_PATH },
+        //        { Shader::Pixel, ENGINE_RES + LIGHTING_SHADER_FRAGMENT_PATH },
+        //    }, LIGHTING_SHADER_ALIAS);
 
         //Shader::cache(
         //    {
         //        { Shader::Vertex, ENGINE_RES + "shaders/morphTargetLighting.vert" },
         //        { Shader::Pixel, ENGINE_RES + LIGHTING_SHADER_FRAGMENT_PATH },
         //    }, "animation");
+            
+        Shader::cache(
+            {
+                { Shader::Vertex, ENGINE_RES + FORWARD_STATIC_SHADER_VERTEX_PATH },
+                { Shader::Pixel, ENGINE_RES + FORWARD_STATIC_SHADER_FRAGMENT_PATH },
+            }, FORWARD_STATIC_SHADER_ALIAS);
 
         Shader::cache(
             {
-                { Shader::Vertex, ENGINE_RES + SKYBOX_SHADER_VERTEX_PATH },
-                { Shader::Pixel, ENGINE_RES + SKYBOX_SHADER_FRAGMENT_PATH }
-            }, SKYBOX_SHADER_ALIAS);
+                { Shader::Vertex, ENGINE_RES + FORWARD_VERTEX_SHADER_VERTEX_PATH },
+                { Shader::Pixel, ENGINE_RES +  FORWARD_VERTEX_SHADER_FRAGMENT_PATH },
+            }, FORWARD_VERTEX_SHADER_ALIAS);
+        
+        Shader::cache(
+            {
+                { Shader::Vertex, ENGINE_RES + FORWARD_SKELETAL_SHADER_VERTEX_PATH },
+                { Shader::Pixel, ENGINE_RES + FORWARD_SKELETAL_SHADER_FRAGMENT_PATH },
+            }, FORWARD_SKELETAL_SHADER_ALIAS);
+
+        Shader::cache(
+            {
+                { Shader::Vertex, ENGINE_RES + DEFERRED_STATIC_PRE_SHADER_VERTEX_PATH },
+                { Shader::Pixel, ENGINE_RES + DEFERRED_STATIC_PRE_SHADER_FRAGMENT_PATH },
+            }, DEFERRED_STATIC_PRE_SHADER_ALIAS);
+
+        Shader::cache(
+            {
+                { Shader::Vertex, ENGINE_RES + DEFERRED_VERTEX_PRE_SHADER_VERTEX_PATH },
+                { Shader::Pixel, ENGINE_RES + DEFERRED_VERTEX_PRE_SHADER_FRAGMENT_PATH },
+            }, DEFERRED_VERTEX_PRE_SHADER_ALIAS);
+
+        Shader::cache(
+            {
+                { Shader::Vertex, ENGINE_RES + DEFERRED_SKELETAL_PRE_SHADER_VERTEX_PATH },
+                { Shader::Pixel, ENGINE_RES + DEFERRED_SKELETAL_PRE_SHADER_FRAGMENT_PATH },
+            }, DEFERRED_SKELETAL_PRE_SHADER_ALIAS);
 
         Model::cache(ENGINE_RES + CUBE_MODEL_PATH, CUBE_MODEL_ALIAS);
         Model::cache(ENGINE_RES + MONKEY_MODEL_PATH, MONKEY_MODEL_ALIAS);
@@ -114,6 +144,7 @@ namespace oyl
         m_skeletalAnimationSystem = internal::SkeletalAnimationSystem::create();
         m_preRenderSystem         = internal::PreRenderSystem::create();
         m_shadowRenderSystem      = internal::ShadowRenderSystem::create();
+        m_deferredRenderSystem    = internal::DeferredRenderSystem::create();
         m_forwardRenderSystem     = internal::ForwardRenderSystem::create();
         m_guiRenderSystem         = internal::GuiRenderSystem::create();
         m_postRenderSystem        = internal::UserPostRenderSystem::create();
@@ -135,6 +166,10 @@ namespace oyl
         m_shadowRenderSystem->setDispatcher(m_dispatcher);
         m_shadowRenderSystem->onEnter();
         m_dispatcher->registerListener(m_shadowRenderSystem, -1u);
+
+        m_deferredRenderSystem->setDispatcher(m_dispatcher);
+        m_deferredRenderSystem->onEnter();
+        m_dispatcher->registerListener(m_deferredRenderSystem, -1u);
 
         m_forwardRenderSystem->setDispatcher(m_dispatcher);
         m_forwardRenderSystem->onEnter();
@@ -255,6 +290,7 @@ namespace oyl
         m_skeletalAnimationSystem->setRegistry(pScene->m_registry);
         m_preRenderSystem->setRegistry(pScene->m_registry);
         m_shadowRenderSystem->setRegistry(pScene->m_registry);
+        m_deferredRenderSystem->setRegistry(pScene->m_registry);
         m_forwardRenderSystem->setRegistry(pScene->m_registry);
         m_guiRenderSystem->setRegistry(pScene->m_registry);
         m_postRenderSystem->setRegistry(pScene->m_registry);
@@ -355,6 +391,7 @@ namespace oyl
                 
                 m_preRenderSystem->onUpdate();
                 m_shadowRenderSystem->onUpdate();
+                m_deferredRenderSystem->onUpdate();
                 m_forwardRenderSystem->onUpdate();
                 m_guiRenderSystem->onUpdate();
                 m_postRenderSystem->onUpdate();
@@ -370,6 +407,7 @@ namespace oyl
 
             m_preRenderSystem->onGuiRender();
             m_shadowRenderSystem->onGuiRender();
+            m_deferredRenderSystem->onGuiRender();
             m_forwardRenderSystem->onGuiRender();
             m_guiRenderSystem->onGuiRender();
             m_postRenderSystem->onGuiRender();

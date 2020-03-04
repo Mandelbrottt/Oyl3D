@@ -1,5 +1,9 @@
 {
     "Animation Object": {
+        "BoneTarget": {
+            "Bone": "arissa:Head",
+            "Target": "Capsule"
+        },
         "Renderable": {
             "CastShadows": true,
             "CullingMask": 15,
@@ -18,22 +22,22 @@
                 "Y": false,
                 "Z": false
             },
-            "Parent": null,
+            "Parent": "Dummy Bone Target",
             "Position": {
-                "X": 0.0,
-                "Y": 0.0,
-                "Z": 0.0
+                "X": 0.0024428663309663534,
+                "Y": 1.541610836982727,
+                "Z": -0.0632527768611908
             },
             "Rotation": {
-                "qW": 1.0,
-                "qX": 0.0,
-                "qY": 0.0,
-                "qZ": 0.0
+                "qW": 0.9998546242713928,
+                "qX": 0.012518215924501419,
+                "qY": -0.010776677168905735,
+                "qZ": 0.0042383670806884766
             },
             "Scale": {
                 "X": 0.30000001192092896,
-                "Y": 0.30000001192092896,
-                "Z": 0.30000001192092896
+                "Y": 0.29999998211860657,
+                "Z": 0.29999998211860657
             }
         }
     },
@@ -62,8 +66,8 @@
                 "Alias": "Archer"
             },
             "Mesh": {
-                "Alias": "arissaMultipleActions",
-                "FilePath": "res\\assets\\models\\arissaMultipleActions.fbx"
+                "Alias": "arissa@JazzDancing",
+                "FilePath": "res\\assets\\models\\arissa@JazzDancing.fbx"
             }
         },
         "RigidBody": {
@@ -72,6 +76,14 @@
             "Mask": 1,
             "Mass": 0.0,
             "Properties": 62
+        },
+        "SkeletonAnimatable": {
+            "Animation": "mixamo.com",
+            "Loop": true,
+            "Play": true,
+            "Reverse": false,
+            "Time": 0.0,
+            "TimeScale": 0.5
         },
         "Transform": {
             "Mirror": {
@@ -221,6 +233,96 @@
                 "X": 1.0,
                 "Y": 1.0,
                 "Z": 1.0
+            }
+        }
+    },
+    "Deferred Entity": {
+        "Renderable": {
+            "CastShadows": true,
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "Deferred"
+            },
+            "Mesh": {
+                "Alias": "arissaMultipleActions",
+                "FilePath": "res\\assets\\models\\arissaMultipleActions.fbx"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Parent": null,
+            "Position": {
+                "X": 3.790825843811035,
+                "Y": 3.5077219009399414,
+                "Z": 3.3516175746917725
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Dummy Bone Target": {
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Parent": "Capsule",
+            "Position": {
+                "X": 0.0,
+                "Y": 0.0,
+                "Z": 0.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0000001192092896,
+                "Z": 1.0000001192092896
+            }
+        }
+    },
+    "Dummy Camera": {
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Parent": "Capsule",
+            "Position": {
+                "X": 0.0,
+                "Y": 0.0,
+                "Z": 0.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0000001192092896,
+                "Z": 1.0000001192092896
             }
         }
     },
@@ -594,22 +696,22 @@
                 "Y": false,
                 "Z": false
             },
-            "Parent": null,
+            "Parent": "Dummy Camera",
             "Position": {
-                "X": 9.63435173034668,
-                "Y": 21.845787048339844,
-                "Z": 17.670955657958984
+                "X": 1.5847406387329102,
+                "Y": 1.4519692659378052,
+                "Z": 3.4114294052124023
             },
             "Rotation": {
-                "qW": 0.8756524920463562,
-                "qX": -0.4829416871070862,
-                "qY": -0.0,
-                "qZ": 0.0
+                "qW": 0.9596298933029175,
+                "qX": -0.00488913431763649,
+                "qY": 0.22752882540225983,
+                "qZ": 0.16527904570102692
             },
             "Scale": {
                 "X": 1.0,
-                "Y": 1.0,
-                "Z": 1.0
+                "Y": 0.9999998211860657,
+                "Z": 0.9999998211860657
             }
         }
     },

@@ -269,7 +269,7 @@ namespace oyl
     void Material::init()
     {
         auto mat = Material::create();
-        mat->shader = Shader::get(LIGHTING_SHADER_ALIAS);
+        mat->shader = Shader::get(FORWARD_STATIC_SHADER_ALIAS);
         mat->albedoMap = Texture2D::get(INVALID_ALIAS);
         Material::cache(mat, INVALID_ALIAS);
     }

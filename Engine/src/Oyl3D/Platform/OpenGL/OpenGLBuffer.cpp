@@ -444,7 +444,7 @@ namespace oyl
         load(tempNumColorAttachments);
 
         initDepthTexture(width, height);
-        for (int i = 0; i < tempNumColorAttachments; i++)
+        for (uint i = 0; i < tempNumColorAttachments; i++)
         {
             initColorTexture(i, width, height, m_formats[i], m_filters[i], m_wraps[i]);
         }
@@ -464,22 +464,36 @@ namespace oyl
 
     void OpenGLFrameBuffer::blit(const Ref<FrameBuffer>& other)
     {
-        OpenGLFrameBuffer* otherPtr = reinterpret_cast<OpenGLFrameBuffer*>(other.get());
-        
+        GLenum flags = GL_NONE;
+
         glBindFramebuffer(GL_READ_FRAMEBUFFER, m_rendererID);
         if (other)
         {
+            OpenGLFrameBuffer* otherPtr = reinterpret_cast<OpenGLFrameBuffer*>(other.get());
+
+            if (m_numColorAttachments == otherPtr->m_numColorAttachments)
+                flags |= GL_COLOR_BUFFER_BIT;
+
+            if (m_depthAttachmentID != 0 && otherPtr->m_depthAttachmentID != 0)
+                flags |= GL_DEPTH_BUFFER_BIT;
+            
             glBindFramebuffer(GL_DRAW_FRAMEBUFFER, otherPtr->m_rendererID);
             glBlitFramebuffer(0, 0, m_colorWidths[0], m_colorHeights[0], 
                               0, 0, otherPtr->m_colorWidths[0], otherPtr->m_colorHeights[0],
-                              GL_COLOR_BUFFER_BIT, GL_NEAREST);
+                              flags, GL_NEAREST);
         }
         else
         {
+            if (m_numColorAttachments != 0)
+                flags |= GL_COLOR_BUFFER_BIT;
+
+            if (m_depthAttachmentID != 0)
+                flags |= GL_DEPTH_BUFFER_BIT;
+            
             glBindFramebuffer(GL_DRAW_FRAMEBUFFER, GL_NONE);
             glBlitFramebuffer(0, 0, m_colorWidths[0], m_colorHeights[0], 
                               0, 0, m_colorWidths[0], m_colorHeights[0],
-                              GL_COLOR_BUFFER_BIT, GL_NEAREST);
+                              flags, GL_NEAREST);
         }
 
         glBindFramebuffer(GL_FRAMEBUFFER, GL_NONE);
