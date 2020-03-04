@@ -75,9 +75,9 @@ layout(location = 0) out vec4 out_color;
 
 uniform Material u_material;
 
-uniform PointLight       u_pointLight[NUM_POINT_LIGHTS];
-uniform DirLight 	     u_dirLight[NUM_DIR_LIGHTS];
-uniform SpotLight        u_spotLight[NUM_SPOT_LIGHTS];
+uniform PointLight u_pointLight[NUM_POINT_LIGHTS];
+uniform DirLight   u_dirLight[NUM_DIR_LIGHTS];
+uniform SpotLight  u_spotLight[NUM_SPOT_LIGHTS];
 
 uniform Shadow u_shadow[NUM_SHADOW_MAPS];
 
