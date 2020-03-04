@@ -8,7 +8,9 @@ namespace oyl
     
     namespace internal
     {
-        class RenderSystem;
+        class CameraRenderSetupSystem;
+        class ForwardRenderSystem;
+        class DeferredRenderSystem;
         class ShadowRenderSystem;
         class EditorRenderSystem;
 
@@ -46,7 +48,9 @@ namespace oyl
 
             Ref<FrameBuffer> m_frameBuffer;
 
-            friend RenderSystem;
+            friend CameraRenderSetupSystem;
+            friend ForwardRenderSystem;
+            friend DeferredRenderSystem;
             friend ShadowRenderSystem;
             friend EditorRenderSystem;
         };

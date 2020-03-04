@@ -53,15 +53,15 @@ namespace oyl::internal
 
     // vvv Render System vvv //
 
-    void RenderSystem::onEnter()
+    void ForwardRenderSystem::onEnter()
     {
         listenForEventType(EventType::WindowResized);
         listenForEventType(EventType::SceneChanged);
     }
 
-    void RenderSystem::onExit() { }
+    void ForwardRenderSystem::onExit() { }
 
-    void RenderSystem::onUpdate()
+    void ForwardRenderSystem::onUpdate()
     {
         using component::Transform;
         using component::Renderable;
@@ -285,9 +285,9 @@ namespace oyl::internal
         m_camerasNeedUpdate = false;
     }
 
-    void RenderSystem::onGuiRender() { }
+    void ForwardRenderSystem::onGuiRender() { }
 
-    bool RenderSystem::onEvent(const Event& event)
+    bool ForwardRenderSystem::onEvent(const Event& event)
     {
         switch (event.type)
         {
@@ -316,7 +316,7 @@ namespace oyl::internal
         return false;
     }
 
-    void RenderSystem::skeletonAnimate(entt::entity entity, component::Renderable& renderable, component::SkeletonAnimatable& sa)
+    void skeletonAnimate(entt::entity entity, component::Renderable& renderable, component::SkeletonAnimatable& sa)
     {
         if (renderable.model && renderable.material && renderable.material->shader == Shader::get("Oyl Skeletal"))
         {

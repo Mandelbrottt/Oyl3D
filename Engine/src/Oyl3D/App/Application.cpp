@@ -114,7 +114,7 @@ namespace oyl
         m_skeletalAnimationSystem = internal::SkeletalAnimationSystem::create();
         m_preRenderSystem         = internal::PreRenderSystem::create();
         m_shadowRenderSystem      = internal::ShadowRenderSystem::create();
-        m_renderSystem            = internal::RenderSystem::create();
+        m_forwardRenderSystem     = internal::ForwardRenderSystem::create();
         m_guiRenderSystem         = internal::GuiRenderSystem::create();
         m_postRenderSystem        = internal::UserPostRenderSystem::create();
 
@@ -136,9 +136,9 @@ namespace oyl
         m_shadowRenderSystem->onEnter();
         m_dispatcher->registerListener(m_shadowRenderSystem, -1u);
 
-        m_renderSystem->setDispatcher(m_dispatcher);
-        m_renderSystem->onEnter();
-        m_dispatcher->registerListener(m_renderSystem, -1u);
+        m_forwardRenderSystem->setDispatcher(m_dispatcher);
+        m_forwardRenderSystem->onEnter();
+        m_dispatcher->registerListener(m_forwardRenderSystem, -1u);
 
         m_guiRenderSystem->setDispatcher(m_dispatcher);
         m_guiRenderSystem->onEnter();
@@ -167,7 +167,7 @@ namespace oyl
 
         m_systemsLayer->onExit();
         
-        m_renderSystem->onExit();
+        m_forwardRenderSystem->onExit();
     }
 
     bool Application::onEvent(const Event& event)
@@ -255,7 +255,7 @@ namespace oyl
         m_skeletalAnimationSystem->setRegistry(pScene->m_registry);
         m_preRenderSystem->setRegistry(pScene->m_registry);
         m_shadowRenderSystem->setRegistry(pScene->m_registry);
-        m_renderSystem->setRegistry(pScene->m_registry);
+        m_forwardRenderSystem->setRegistry(pScene->m_registry);
         m_guiRenderSystem->setRegistry(pScene->m_registry);
         m_postRenderSystem->setRegistry(pScene->m_registry);
 
@@ -355,7 +355,7 @@ namespace oyl
                 
                 m_preRenderSystem->onUpdate();
                 m_shadowRenderSystem->onUpdate();
-                m_renderSystem->onUpdate();
+                m_forwardRenderSystem->onUpdate();
                 m_guiRenderSystem->onUpdate();
                 m_postRenderSystem->onUpdate();
             #if !defined OYL_DISTRIBUTION
@@ -370,7 +370,7 @@ namespace oyl
 
             m_preRenderSystem->onGuiRender();
             m_shadowRenderSystem->onGuiRender();
-            m_renderSystem->onGuiRender();
+            m_forwardRenderSystem->onGuiRender();
             m_guiRenderSystem->onGuiRender();
             m_postRenderSystem->onGuiRender();
             

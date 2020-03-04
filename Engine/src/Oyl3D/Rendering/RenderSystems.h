@@ -22,20 +22,59 @@ namespace oyl
         {
             OYL_CTOR(PreRenderSystem, System)
 
-            virtual void onUpdate() override;
+            void onUpdate() override;
         };
         
-        class RenderSystem : public System
+        class CameraRenderSetupSystem : public System
         {
-            OYL_CTOR(RenderSystem, System)
+            OYL_CTOR(CameraRenderSetupSystem, System)
 
-            virtual void onEnter() override;
-            virtual void onExit() override;
+            void onEnter() override;
+            void onExit() override;
 
-            virtual void onUpdate() override;
-            virtual void onGuiRender() override;
+            void onUpdate() override;
+            void onGuiRender() override;
 
-            virtual bool onEvent(const Event& event) override;
+            bool onEvent(const Event& event) override;
+
+        private:
+            glm::ivec2 m_windowSize;
+
+            bool m_camerasNeedUpdate = false;
+        };
+
+        extern void skeletonAnimate(entt::entity entity, component::Renderable& renderable, component::SkeletonAnimatable& sa);
+        
+        class ForwardRenderSystem : public System
+        {
+            OYL_CTOR(ForwardRenderSystem, System)
+
+            void onEnter() override;
+            void onExit() override;
+
+            void onUpdate() override;
+            void onGuiRender() override;
+
+            bool onEvent(const Event& event) override;
+
+        private:
+            glm::ivec2 m_windowSize;
+
+            bool m_camerasNeedUpdate = false;
+
+        };
+
+        class DeferredRenderSystem : public System
+        {
+            OYL_CTOR(DeferredRenderSystem, System)
+
+            void onEnter() override;
+            void onExit() override;
+
+            void onUpdate() override;
+            void onGuiRender() override;
+
+            bool onEvent(const Event& event) override;
 
         private:
             glm::ivec2 m_windowSize;
@@ -49,13 +88,13 @@ namespace oyl
         {
             OYL_CTOR(GuiRenderSystem, System)
 
-            virtual void onEnter() override;
-            virtual void onExit() override;
+            void onEnter() override;
+            void onExit() override;
 
-            virtual void onUpdate() override;
-            virtual void onGuiRender() override;
+            void onUpdate() override;
+            void onGuiRender() override;
 
-            virtual bool onEvent(const Event& event) override;
+            bool onEvent(const Event& event) override;
 
         private:
             glm::ivec2 m_windowSize;
@@ -69,13 +108,13 @@ namespace oyl
         {
             OYL_CTOR(ShadowRenderSystem, System)
 
-            virtual void onEnter() override;
-            virtual void onExit() override;
+            void onEnter() override;
+            void onExit() override;
 
-            virtual void onUpdate() override;
-            virtual void onGuiRender() override;
+            void onUpdate() override;
+            void onGuiRender() override;
 
-            virtual bool onEvent(const Event& event) override;
+            bool onEvent(const Event& event) override;
 
         private:
             Ref<Shader> m_shader;
@@ -85,13 +124,13 @@ namespace oyl
         {
             OYL_CTOR(UserPostRenderSystem, System)
 
-            virtual void onEnter() override;
-            virtual void onExit() override;
+            void onEnter() override;
+            void onExit() override;
 
-            virtual void onUpdate() override;
-            virtual void onGuiRender() override;
+            void onUpdate() override;
+            void onGuiRender() override;
 
-            virtual bool onEvent(const Event& event) override;
+            bool onEvent(const Event& event) override;
 
         private:
             glm::ivec2 m_windowSize;

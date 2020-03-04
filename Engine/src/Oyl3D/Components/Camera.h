@@ -11,7 +11,9 @@ namespace oyl
 
     namespace internal
     {
-        class RenderSystem;        
+        class CameraRenderSetupSystem;        
+        class ForwardRenderSystem;        
+        class DeferredRenderSystem;        
         class GuiRenderSystem;        
         class UserPostRenderSystem;        
     }
@@ -145,7 +147,9 @@ namespace oyl
 
             Ref<FrameBuffer> m_forwardFrameBuffer = nullptr;
 
-            friend ::oyl::internal::RenderSystem; 
+            friend ::oyl::internal::CameraRenderSetupSystem; 
+            friend ::oyl::internal::ForwardRenderSystem; 
+            friend ::oyl::internal::DeferredRenderSystem; 
             friend ::oyl::internal::GuiRenderSystem; 
             friend ::oyl::internal::UserPostRenderSystem; 
         };

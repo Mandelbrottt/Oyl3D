@@ -19,7 +19,7 @@ namespace oyl
         class SkeletalAnimationSystem;  
         class EditorRenderSystem;  
         class PreRenderSystem;  
-        class RenderSystem;  
+        class ForwardRenderSystem;  
         class GuiRenderSystem;  
         class ShadowRenderSystem;  
         class UserPostRenderSystem;  
@@ -73,7 +73,7 @@ namespace oyl
         Ref<internal::EditorRenderSystem> m_editorRenderSystem;
         Ref<internal::PreRenderSystem> m_preRenderSystem;
         Ref<internal::ShadowRenderSystem> m_shadowRenderSystem;
-        Ref<internal::RenderSystem> m_renderSystem;
+        Ref<internal::ForwardRenderSystem> m_forwardRenderSystem;
         Ref<internal::GuiRenderSystem> m_guiRenderSystem;
         Ref<internal::UserPostRenderSystem> m_postRenderSystem;
 
