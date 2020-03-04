@@ -91,7 +91,7 @@ bool PlayerInteractionValidationSystem::onEvent(const Event& event)
 
 			auto& player = registry->get<Player>(evt.playerEntity);
 
-			if (player.state == PlayerState::inCleaningQuicktimeEvent)
+			if ((player.state == PlayerState::inCleaningQuicktimeEvent || player.state == PlayerState::cleaning) && !evt.forceDrop)
 				break;
 
 			switch (evt.itemClassificationToDrop)
@@ -993,8 +993,8 @@ void PlayerInteractionValidationSystem::dropPlayerCarriedItems(entt::entity a_pl
 
 		if (dropSpecificItemType && carriedItem.type != itemTypeToDrop)
 			continue;
-		//dont let player drop items while cleaning and check parent
-		if (player.state == PlayerState::cleaning || carriedItemTransform.getParentEntity() != a_playerEntity)
+		//ensure the parent for the item is the player we're dropping items for
+		if (carriedItemTransform.getParentEntity() != a_playerEntity)
 			continue;
 
 		auto& carriedItemRB = registry->get_or_assign<component::RigidBody>(carriedItemEntity); //add the rigidbody back for the item when it's dropped

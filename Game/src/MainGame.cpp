@@ -925,6 +925,7 @@ public:
 					PlayerDropItemRequestEvent playerDropItemRequest;
 					playerDropItemRequest.playerEntity             = playerEntity;
 					playerDropItemRequest.itemClassificationToDrop = PlayerItemClassification::primary;
+					playerDropItemRequest.forceDrop                = false;
 					postEvent(playerDropItemRequest);
 
 					break;
@@ -934,6 +935,7 @@ public:
 					PlayerDropItemRequestEvent playerDropItemRequest;
 					playerDropItemRequest.playerEntity             = playerEntity;
 					playerDropItemRequest.itemClassificationToDrop = PlayerItemClassification::secondary;
+					playerDropItemRequest.forceDrop                = false;
 					postEvent(playerDropItemRequest);
 
 					break;
