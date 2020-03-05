@@ -8,6 +8,7 @@
 namespace oyl
 {
     class EditorCamera;
+    struct Bone;
 
     namespace component
     {
@@ -70,6 +71,9 @@ namespace oyl
             void drawInspectorCamera();
             void drawInspectorSkeletonAnimatable();
             void drawInspectorBoneTarget();
+            void recurseBoneNode(std::string& target, uint bone,
+                                 const std::unordered_map<std::string, uint>& bones,
+                                 const std::vector<Bone>&                     boneInfos);
             void drawInspectorAddComponent();
 
             void drawInspectorMaterial();

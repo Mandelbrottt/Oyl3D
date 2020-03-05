@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Oyl3D/Utils/Interpolation.h"
+
 namespace oyl
 {
     struct Bone
@@ -21,9 +23,12 @@ namespace oyl
     
     struct SkeletonAnimation
     {
-        std::vector<BoneChannel> channels;
+        std::unordered_map<uint, BoneChannel> channels;
         
         float tickRate = 30.0f;
         float duration = 0.0f;
+
+        Interpolation::Type lerpType = Interpolation::Type::Linear;
+        Interpolation::EaseFn lerpFn = Interpolation::linear;
     };
 }

@@ -27,6 +27,7 @@ namespace oyl
         glm::mat4 getBoneTransform(const std::string& animation, const std::string& bone, float time) const;
 
         const std::unordered_map<std::string, uint>& getBones() const { return m_boneIDs; }
+        const std::vector<Bone>& getBoneInfos() const { return m_bones; }
 
         const std::unordered_map<std::string, SkeletonAnimation>& getAnimations() const { return m_animations; }
         
@@ -72,9 +73,17 @@ namespace oyl
                                      uint                     bone,
                                      const glm::mat4&         parentTransform) const;
 
-        glm::vec3 calcInterpolatedPosition(float time, const BoneChannel& channel) const;
-        glm::quat calcInterpolatedRotation(float time, const BoneChannel& channel) const;
-        glm::vec3 calcInterpolatedScale(float time, const BoneChannel& channel) const;
+        glm::vec3 calcInterpolatedPosition(float time, const BoneChannel& channel,
+                                           Interpolation::Type a_type,
+                                           Interpolation::EaseFn a_fn) const;
+        
+        glm::quat calcInterpolatedRotation(float time, const BoneChannel& channel,
+                                           Interpolation::Type a_type,
+                                           Interpolation::EaseFn a_fn) const;
+        
+        glm::vec3 calcInterpolatedScale(float time, const BoneChannel& channel,
+                                        Interpolation::Type a_type,
+                                        Interpolation::EaseFn a_fn) const;
 
         glm::mat4 _getBoneTransform(const SkeletonAnimation& a_animation, uint a_bone, float a_time) const;
         
@@ -87,6 +96,8 @@ namespace oyl
         std::unordered_map<std::string, uint> m_boneIDs;
 
         std::vector<Bone> m_bones;
+
+        uint m_numMeshBones = 0;
 
         std::unordered_map<std::string, SkeletonAnimation> m_animations;
 

@@ -164,8 +164,9 @@ namespace oyl
 
             if (auto it = m_boneIDs.find(boneName); it == m_boneIDs.end())
             {
+                boneIndex = m_numMeshBones;
                 m_bones.emplace_back();
-                boneIndex = m_bones.size() - 1;
+                m_numMeshBones++;
             }
             else boneIndex = it->second;
 
@@ -231,36 +232,52 @@ namespace oyl
     {
         std::string name(a_node->mName.C_Str());
         auto it = m_boneIDs.find(name);
-        if (it != m_boneIDs.end())
+        if (it == m_boneIDs.end())
         {
-            auto& bone = m_bones[it->second];
-            bone.transform = aiToGlm(a_node->mTransformation);
-            bone.transform[3].xyz *= glm::vec3(m_unitScale);
-            
-            if (a_node->mParent)
+            auto pair = m_boneIDs.emplace(name, m_bones.size());
+
+            if (pair.second)
+                it = pair.first;
+            else
             {
-                std::string parentName(a_node->mParent->mName.C_Str());
-                if (auto pIt = m_boneIDs.find(parentName); pIt != m_boneIDs.end())
-                    bone.parent = pIt->second;
+                OYL_LOG_ERROR("Could not build the node graph for model {}!", m_filepath);
+                return;
             }
             
-            std::string childName;
-            for (uint i = 0; i < a_node->mNumChildren; i++)
+            it->second = m_bones.size();
+            m_bones.emplace_back();
+        }
+        
+        auto& bone = m_bones[it->second];
+        bone.transform = aiToGlm(a_node->mTransformation);
+        bone.transform[3].xyz *= glm::vec3(m_unitScale);
+        
+        if (a_node->mParent)
+        {
+            std::string parentName(a_node->mParent->mName.C_Str());
+            if (auto pIt = m_boneIDs.find(parentName); pIt != m_boneIDs.end())
             {
-                childName.assign(a_node->mChildren[i]->mName.C_Str());
-                if (auto cIt = m_boneIDs.find(childName); cIt != m_boneIDs.end())
-                    bone.children.push_back(cIt->second);
-            
-                processNode(a_node->mChildren[i]);
+                bone.parent = pIt->second;
+                m_bones[bone.parent].children.push_back(it->second);
             }
         }
-        else
+        
+        std::string childName;
+        for (uint i = 0; i < a_node->mNumChildren; i++)
         {
-            for (uint i = 0; i < a_node->mNumChildren; i++)
-            {
-                processNode(a_node->mChildren[i]);
-            }
+            //childName.assign(a_node->mChildren[i]->mName.C_Str());
+            //if (auto cIt = m_boneIDs.find(childName); cIt != m_boneIDs.end())
+            //    bone.children.push_back(cIt->second);
+        
+            processNode(a_node->mChildren[i]);
         }
+        //else
+        //{
+        //    for (uint i = 0; i < a_node->mNumChildren; i++)
+        //    {
+        //        processNode(a_node->mChildren[i]);
+        //    }
+        //}
     }
 
     void Model::processAnimation(aiAnimation* a_animation)
@@ -277,7 +294,7 @@ namespace oyl
         
         sAnim.duration = static_cast<float>(a_animation->mDuration) * oneOverTickRate;
 
-        sAnim.channels.resize(m_bones.size());
+        sAnim.channels.reserve(a_animation->mNumChannels);
 
         for (uint i = 0; i < a_animation->mNumChannels; i++)
         {
@@ -345,14 +362,7 @@ namespace oyl
         out.clear();
         out.reserve(m_bones.size());
 
-        for (uint i = 0; i < m_bones.size(); i++)
-        {
-            if (m_bones[i].parent == -1u)
-            {
-                calculateFinalTransform(m_animations.at(animation), time, i, glm::mat4(1.0f));
-                break;
-            }
-        }
+        calculateFinalTransform(m_animations.at(animation), time, m_numMeshBones, glm::mat4(1.0f));
 
         for (const auto& bone : m_bones)
         {
@@ -375,27 +385,25 @@ namespace oyl
 
     inline glm::mat4 Model::_getBoneTransform(const SkeletonAnimation& a_animation, uint a_bone, float a_time) const
     {
-        OYL_ASSERT(a_bone < m_bones.size());
+        if (a_bone > m_bones.size()) return glm::mat4(1.0f);
+        
+        glm::mat4 nodeTransform = m_bones[a_bone].transform;
 
-        const auto& bone = m_bones[a_bone];
+        if (const auto it = a_animation.channels.find(a_bone); it != a_animation.channels.end())
+        {
+            const auto& animNode = it->second;
 
-        auto& animNode = a_animation.channels[a_bone];
+            glm::vec3 position = calcInterpolatedPosition(a_time, animNode, a_animation.lerpType, a_animation.lerpFn);
+            nodeTransform = translate(glm::mat4(1.0f), position);
 
-        glm::mat4 nodeTransform = glm::mat4(1.0f);
+            glm::quat rotation = calcInterpolatedRotation(a_time, animNode, a_animation.lerpType, a_animation.lerpFn);
+            nodeTransform *= mat4_cast(rotation);
 
-        glm::vec3 position = calcInterpolatedPosition(a_time, animNode);
-        nodeTransform = translate(nodeTransform, position);
+            glm::vec3 scaling = calcInterpolatedScale(a_time, animNode, a_animation.lerpType, a_animation.lerpFn);
+            nodeTransform = scale(nodeTransform, scaling);
+        }
 
-        glm::quat rotation = calcInterpolatedRotation(a_time, animNode);
-        nodeTransform *= mat4_cast(rotation);
-
-        glm::vec3 scaling = calcInterpolatedScale(a_time, animNode);
-        nodeTransform = scale(nodeTransform, scaling);
-
-        if (bone.parent == -1u)
-            return nodeTransform;
-
-        return _getBoneTransform(a_animation, bone.parent, a_time) * nodeTransform;
+        return _getBoneTransform(a_animation, m_bones[a_bone].parent, a_time) * nodeTransform;
     }
     
     void Model::calculateFinalTransform(const SkeletonAnimation& animation,
@@ -405,26 +413,32 @@ namespace oyl
     {
         glm::mat4 nodeTransform = m_bones[bone].transform;
 
-        auto& animNode = animation.channels[bone];
+        if (const auto it = animation.channels.find(bone); it != animation.channels.end())
+        {
+            const auto& animNode = it->second;
  
-        glm::vec3 position = calcInterpolatedPosition(time, animNode);
-        nodeTransform = translate(glm::mat4(1.0f), position);
+            glm::vec3 position = calcInterpolatedPosition(time, animNode, animation.lerpType, animation.lerpFn);
+            nodeTransform = translate(glm::mat4(1.0f), position);
  
-        glm::quat rotation = calcInterpolatedRotation(time, animNode);
-        nodeTransform *= mat4_cast(rotation);
+            glm::quat rotation = calcInterpolatedRotation(time, animNode, animation.lerpType, animation.lerpFn);
+            nodeTransform *= mat4_cast(rotation);
  
-        glm::vec3 scaling = calcInterpolatedScale(time, animNode);
-        nodeTransform = scale(nodeTransform, scaling);
+            glm::vec3 scaling = calcInterpolatedScale(time, animNode, animation.lerpType, animation.lerpFn);
+            nodeTransform = scale(nodeTransform, scaling);
+        }
 
         glm::mat4 globalTransform = parentTransform * nodeTransform;
 
-        m_bones[bone].finalTransform = m_globalInverseTransform * globalTransform * m_bones[bone].inverseTransform;
+        if (bone < m_numMeshBones)
+            m_bones[bone].finalTransform = m_globalInverseTransform * globalTransform * m_bones[bone].inverseTransform;
 
         for (uint b : m_bones[bone].children)
             calculateFinalTransform(animation, time, b, globalTransform);
     }
 
-    glm::vec3 Model::calcInterpolatedPosition(float time, const BoneChannel& channel) const
+    glm::vec3 Model::calcInterpolatedPosition(float time, const BoneChannel& channel, 
+                                              Interpolation::Type a_type, 
+                                              Interpolation::EaseFn a_fn) const
     {
         if (channel.positionKeys.empty())
             return glm::vec3(0.0f);
@@ -442,13 +456,29 @@ namespace oyl
         float deltaTime = channel.positionKeys[nextPositionIndex].first - channel.positionKeys[positionIndex].first;
         float factor = (time - channel.positionKeys[positionIndex].first) / deltaTime;
 
+        if (a_fn) factor = a_fn(factor);
+        
         glm::vec3 start = channel.positionKeys[positionIndex].second;
         glm::vec3 end = channel.positionKeys[nextPositionIndex].second;
 
-        return glm::mix(start, end, factor);
+        if (a_type == Interpolation::Type::Cubic)
+        {
+            // Get the indices of the control points
+            uint v0i = positionIndex == 0 ? channel.positionKeys.size() - 1 : positionIndex - 1;
+            uint v3i = nextPositionIndex == channel.positionKeys.size() - 1 ? 0 : nextPositionIndex + 1;
+
+            // Get the control points
+            glm::vec3 v0 = channel.positionKeys[v0i].second,
+                      v3 = channel.positionKeys[v3i].second;
+            
+            return catmullRom(v0, start, end, v3, factor);
+        }
+        else return mix(start, end, factor);
     }
 
-    glm::quat Model::calcInterpolatedRotation(float time, const BoneChannel& channel) const
+    glm::quat Model::calcInterpolatedRotation(float time, const BoneChannel& channel,
+                                              Interpolation::Type a_type,
+                                              Interpolation::EaseFn a_fn) const
     {
         if (channel.rotationKeys.empty())
             return glm::quat(1.0f, 0.0f, 0.0f, 0.0f);
@@ -466,13 +496,38 @@ namespace oyl
         float deltaTime = channel.rotationKeys[nextRotationIndex].first - channel.rotationKeys[rotationIndex].first;
         float factor = (time - channel.rotationKeys[rotationIndex].first) / deltaTime;
 
-        glm::quat start = channel.rotationKeys[rotationIndex].second;
-        glm::quat end = channel.rotationKeys[nextRotationIndex].second;
+        if (a_fn) factor = a_fn(factor);
         
-        return slerp(start, end, factor);
+        glm::quat v0 = channel.rotationKeys[rotationIndex].second;
+        glm::quat v1 = channel.rotationKeys[nextRotationIndex].second;
+
+        if (a_type == Interpolation::Type::Cubic)
+        {
+            // Get the indices of the control points
+            uint vn1i = rotationIndex == 0 ? channel.rotationKeys.size() - 1 : rotationIndex - 1;
+            uint v2i  = nextRotationIndex == channel.rotationKeys.size() - 1 ? 0 : nextRotationIndex + 1;
+
+            // Get the control points
+            glm::quat vn1 = channel.rotationKeys[vn1i].second,
+                      v2  = channel.rotationKeys[v2i].second;
+
+            //glm::quat mix1 = mix(start, end, factor);
+            //glm::quat mix2 = mix(intermediate(v0, start, end), intermediate(start, end, v3), factor);
+            //glm::quat ret  = mix(mix1, mix2, 2.0f * (1.0f - factor) * factor);
+            
+            glm::quat ret = squad(v0, v1, intermediate(vn1, v0, v1), intermediate(v0, v1, v2), factor);
+            //glm::quat ret = catmullRom(vn1, v0, v1, v2, factor);
+            
+            //return normalize(squad(start, end, intermediate(v0, start, end), intermediate(start, end, v3), factor));
+            return normalize(ret);
+        } else return slerp(v0, v1, factor);
+        
+        //return slerp(start, end, factor);
     }
 
-    glm::vec3 Model::calcInterpolatedScale(float time, const BoneChannel& channel) const
+    glm::vec3 Model::calcInterpolatedScale(float time, const BoneChannel& channel,
+                                           Interpolation::Type a_type,
+                                           Interpolation::EaseFn a_fn) const
     {
         if (channel.scaleKeys.empty())
             return glm::vec3(1.0f);
@@ -490,10 +545,23 @@ namespace oyl
         float deltaTime = channel.scaleKeys[nextScaleIndex].first - channel.scaleKeys[scaleIndex].first;
         float factor = (time - channel.scaleKeys[scaleIndex].first) / deltaTime;
 
+        if (a_fn) factor = a_fn(factor);
+        
         glm::vec3 start = channel.scaleKeys[scaleIndex].second;
         glm::vec3 end = channel.scaleKeys[nextScaleIndex].second;
 
-        return glm::mix(start, end, factor);
+        if (a_type == Interpolation::Type::Cubic)
+        {
+            // Get the indices of the control points
+            uint v0i = scaleIndex == 0 ? channel.scaleKeys.size() - 1 : scaleIndex - 1;
+            uint v3i = nextScaleIndex == channel.scaleKeys.size() - 1 ? 0 : nextScaleIndex + 1;
+
+            // Get the control points
+            glm::vec3 v0 = channel.scaleKeys[v0i].second,
+                      v3 = channel.scaleKeys[v3i].second;
+
+            return catmullRom(v0, start, end, v3, factor);
+        } else return mix(start, end, factor);
     }
 
     void Model::init()
