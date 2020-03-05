@@ -134,55 +134,33 @@ namespace oyl
         Texture2D::cache(ENGINE_RES + DEFAULT_NORMAL_TEXTURE_PATH, DEFAULT_NORMAL_TEXTURE_ALIAS);
 
         TextureCubeMap::cache(ENGINE_RES + DEFAULT_SKYBOX_PATH, DEFAULT_SKYBOX_ALIAS);
-
-    #if !defined OYL_DISTRIBUTION
-        m_editorRenderSystem = internal::EditorRenderSystem::create();
-    #endif
-
+        
         initEventListeners();
 
         m_skeletalAnimationSystem = internal::SkeletalAnimationSystem::create();
-        m_preRenderSystem         = internal::PreRenderSystem::create();
-        m_shadowRenderSystem      = internal::ShadowRenderSystem::create();
-        m_deferredRenderSystem    = internal::DeferredRenderSystem::create();
-        m_forwardRenderSystem     = internal::ForwardRenderSystem::create();
-        m_guiRenderSystem         = internal::GuiRenderSystem::create();
-        m_postRenderSystem        = internal::UserPostRenderSystem::create();
-
+        
+        m_renderSystems.emplace_back(internal::PreRenderSystem::create());
+        m_renderSystems.emplace_back(internal::ShadowRenderSystem::create());
+        m_renderSystems.emplace_back(internal::DeferredRenderSystem::create());
+        m_renderSystems.emplace_back(internal::ForwardRenderSystem::create());
+        m_renderSystems.emplace_back(internal::PostRenderSystem::create());
+        m_renderSystems.emplace_back(internal::GuiRenderSystem::create());
+        m_renderSystems.emplace_back(internal::UserPostRenderSystem::create());
     #if !defined OYL_DISTRIBUTION
-        m_editorRenderSystem->setDispatcher(m_dispatcher);
-        m_editorRenderSystem->onEnter();
-        m_dispatcher->registerListener(m_editorRenderSystem, -1u);
+        m_renderSystems.emplace_back(internal::EditorRenderSystem::create());
     #endif
 
         m_skeletalAnimationSystem->setDispatcher(m_dispatcher);
         m_skeletalAnimationSystem->onEnter();
         m_dispatcher->registerListener(m_skeletalAnimationSystem, -1u);
 
-        m_preRenderSystem->setDispatcher(m_dispatcher);
-        m_preRenderSystem->onEnter();
-        m_dispatcher->registerListener(m_preRenderSystem, -1u);
-
-        m_shadowRenderSystem->setDispatcher(m_dispatcher);
-        m_shadowRenderSystem->onEnter();
-        m_dispatcher->registerListener(m_shadowRenderSystem, -1u);
-
-        m_deferredRenderSystem->setDispatcher(m_dispatcher);
-        m_deferredRenderSystem->onEnter();
-        m_dispatcher->registerListener(m_deferredRenderSystem, -1u);
-
-        m_forwardRenderSystem->setDispatcher(m_dispatcher);
-        m_forwardRenderSystem->onEnter();
-        m_dispatcher->registerListener(m_forwardRenderSystem, -1u);
-
-        m_guiRenderSystem->setDispatcher(m_dispatcher);
-        m_guiRenderSystem->onEnter();
-        m_dispatcher->registerListener(m_guiRenderSystem, -1u);
-
-        m_postRenderSystem->setDispatcher(m_dispatcher);
-        m_postRenderSystem->onEnter();
-        m_dispatcher->registerListener(m_postRenderSystem, -1u);
-
+        for (auto& system : m_renderSystems)
+        {
+            system->setDispatcher(m_dispatcher);
+            system->onEnter();
+            m_dispatcher->registerListener(system, -1u);
+        }
+        
         WindowResizedEvent wrEvent;
         wrEvent.width = 1280;
         wrEvent.height = 720;
@@ -201,8 +179,6 @@ namespace oyl
     #endif
 
         m_systemsLayer->onExit();
-        
-        m_forwardRenderSystem->onExit();
     }
 
     bool Application::onEvent(const Event& event)
@@ -283,18 +259,11 @@ namespace oyl
 
         auto& pScene = m_registeredScenes[m_currentScene];
 
-    #if !defined OYL_DISTRIBUTION
-        m_editorRenderSystem->setRegistry(pScene->m_registry);
-    #endif
-        
         m_skeletalAnimationSystem->setRegistry(pScene->m_registry);
-        m_preRenderSystem->setRegistry(pScene->m_registry);
-        m_shadowRenderSystem->setRegistry(pScene->m_registry);
-        m_deferredRenderSystem->setRegistry(pScene->m_registry);
-        m_forwardRenderSystem->setRegistry(pScene->m_registry);
-        m_guiRenderSystem->setRegistry(pScene->m_registry);
-        m_postRenderSystem->setRegistry(pScene->m_registry);
 
+        for (auto& system : m_renderSystems)
+            system->setRegistry(pScene->m_registry);
+        
         if (m_systemsLayer)
             m_systemsLayer->onExit();
         
@@ -329,8 +298,6 @@ namespace oyl
             }
         }
         m_dispatcher->registerListener(m_guiLayer, -2u);
-
-        m_guiRenderSystem->setRegistry(pScene->m_registry);
     #endif
 
         m_dispatcher->registerListener(pScene);
@@ -388,16 +355,9 @@ namespace oyl
                 RenderCommand::clear();
 
                 Renderer::beginScene();
-                
-                m_preRenderSystem->onUpdate();
-                m_shadowRenderSystem->onUpdate();
-                m_deferredRenderSystem->onUpdate();
-                m_forwardRenderSystem->onUpdate();
-                m_guiRenderSystem->onUpdate();
-                m_postRenderSystem->onUpdate();
-            #if !defined OYL_DISTRIBUTION
-                m_editorRenderSystem->onUpdate();
-            #endif
+
+                for (auto& system : m_renderSystems)
+                    system->onUpdate();
 
                 Renderer::endScene();                
             }
@@ -405,26 +365,18 @@ namespace oyl
         #if !defined(OYL_DISTRIBUTION)
             m_guiLayer->begin();
 
-            m_preRenderSystem->onGuiRender();
-            m_shadowRenderSystem->onGuiRender();
-            m_deferredRenderSystem->onGuiRender();
-            m_forwardRenderSystem->onGuiRender();
-            m_guiRenderSystem->onGuiRender();
-            m_postRenderSystem->onGuiRender();
-            
             m_skeletalAnimationSystem->onGuiRender();
 
+            for (auto& system : m_renderSystems)
+                system->onGuiRender();
+
             m_guiLayer->onGuiRenderSystems();
-            m_editorRenderSystem->onGuiRender();
             m_guiLayer->onGuiRender();
 
             if (m_guiLayer->doGameUpdate())
                 m_registeredScenes[m_currentScene]->onGuiRender();
 
             m_guiLayer->end();
-        #else
-            // TODO: Turn into Renderer Call
-            //m_mainBuffer->moveToBackBuffer(m_window->getWidth(), m_window->getHeight());
         #endif
 
             m_window->onUpdate(m_doUpdate);

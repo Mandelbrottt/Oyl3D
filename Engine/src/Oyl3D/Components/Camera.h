@@ -14,6 +14,7 @@ namespace oyl
         class PreRenderSystem;        
         class ForwardRenderSystem;        
         class DeferredRenderSystem;        
+        class PostRenderSystem;        
         class GuiRenderSystem;        
         class UserPostRenderSystem;        
     }
@@ -149,6 +150,7 @@ namespace oyl
             Ref<FrameBuffer> m_deferredFrameBuffer = nullptr;
 
             friend ::oyl::internal::PreRenderSystem; 
+            friend ::oyl::internal::PostRenderSystem; 
             friend ::oyl::internal::ForwardRenderSystem; 
             friend ::oyl::internal::DeferredRenderSystem; 
             friend ::oyl::internal::GuiRenderSystem; 

@@ -33,7 +33,7 @@ namespace oyl
 
             bool m_camerasNeedUpdate = false;
 
-            Ref<Shader> m_skyboxShader;
+            //Ref<Shader> m_skyboxShader;
         };
 
         extern void skeletonAnimate(entt::entity entity, component::Renderable& renderable, component::SkeletonAnimatable& sa);
@@ -79,6 +79,18 @@ namespace oyl
             Ref<Shader> m_shader;
 
             Ref<VertexArray> m_vao;
+        };
+
+        class PostRenderSystem : public System
+        {
+            OYL_CTOR(PostRenderSystem, System)
+
+            void onEnter() override;
+
+            void onUpdate() override;
+
+        private:
+            Ref<Shader> m_skyboxShader;
         };
 
         class ShadowRenderSystem : public System

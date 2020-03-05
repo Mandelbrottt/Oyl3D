@@ -9,7 +9,8 @@
 
     void main() {
         out_texCoords = in_position;
-        gl_Position = u_viewProjection * vec4(in_position, 1.0);
+        vec4 projPosition= u_viewProjection * vec4(in_position, 1.0);
+        gl_Position = projPosition.xyww;
     }  
 #elif defined(OYL_FRAG) || defined(TYPE_FRAGMENT)
     layout(location = 0) in vec3 in_texCoords;

@@ -12,9 +12,15 @@
             ]
         },
         "Shader": {
-            "Alias": "Oyl Forward Static",
-            "Pixel": null,
-            "Vertex": null
+            "Alias": "Oyl Deferred Static",
+            "Pixel": {
+                "FilePath": "../Engine/res/shaders/Lighting/Deferred_Pre_Normal_Shadow.frag",
+                "guid": null
+            },
+            "Vertex": {
+                "FilePath": "../Engine/res/shaders/Lighting/Static_Normal_Shadow.vert",
+                "guid": null
+            }
         },
         "Textures": {
             "Albedo": {

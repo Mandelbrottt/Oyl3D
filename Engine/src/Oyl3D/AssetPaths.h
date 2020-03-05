@@ -36,7 +36,7 @@ namespace oyl
     const std::string DEFERRED_SKELETAL_PRE_SHADER_FRAGMENT_PATH = "shaders/Lighting/Deferred_Pre_Normal_Shadow.frag";
 
     const std::string DEFERRED_POST_SHADER_VERTEX_PATH   = "shaders/ScreenSpace/FBO_Passthrough.vert";
-    const std::string DEFERRED_POST_SHADER_FRAGMENT_PATH = "shaders/Lighting/Deferred_Pre_Normal_Shadow.frag";
+    const std::string DEFERRED_POST_SHADER_FRAGMENT_PATH = "shaders/Lighting/Deferred_Post_Normal_Shadow.frag";
     
     const CacheAlias  TEXTURE_SHADER_ALIAS         = "Oyl Texture";
     const std::string TEXTURE_SHADER_VERTEX_PATH   = "shaders/meshShader.vert";

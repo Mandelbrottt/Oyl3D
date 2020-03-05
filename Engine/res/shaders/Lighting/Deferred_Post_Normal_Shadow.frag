@@ -1,5 +1,7 @@
 #version 420
 
+#extension GL_ARB_explicit_uniform_location : require
+
 #define NUM_POINT_LIGHTS 8
 #define NUM_DIR_LIGHTS   8
 #define NUM_SPOT_LIGHTS  8
@@ -55,11 +57,11 @@ layout(location = 0) in vec2 in_texCoords;
 
 layout(location = 0) out vec3 out_color;
 
-uniform sampler2D u_position;
-uniform sampler2D u_albedo3_specular1;
-uniform sampler2D u_normal;
-uniform sampler2D u_emission3_glossiness1;
-uniform sampler2D u_lightSpacePosition;
+layout(location = 0) uniform sampler2D u_position;
+layout(location = 1) uniform sampler2D u_albedo3_specular1;
+layout(location = 2) uniform sampler2D u_normal;
+layout(location = 3) uniform sampler2D u_emission3_glossiness1;
+layout(location = 4) uniform sampler2D u_lightSpacePosition;
 
 uniform PointLight u_pointLight[NUM_POINT_LIGHTS];
 uniform DirLight   u_dirLight[NUM_DIR_LIGHTS];
@@ -205,7 +207,7 @@ vec3 calculateSpotLight(SpotLight light, inout int shadowIndex)
 	}
 }
 
-float shadowCalculation(vec4 lightSpacePosition, sampler2D shadowMap, vec2 biasMinMax, vec3 normal, vec3 lightDir)
+float shadowCalculation(vec4 lightSpacePosition, sampler2D shadowMap, vec2 biasMinMax, vec3 lightDir)
 {
 	// Transform into NDC then into [0,1]
     vec3 projCoords = lightSpacePosition.xyz / lightSpacePosition.w;
@@ -216,7 +218,7 @@ float shadowCalculation(vec4 lightSpacePosition, sampler2D shadowMap, vec2 biasM
 	
 	// Check the test depth against the current depth
 	// float biasMin = 0.001, biasMax = 0.005;
-	float bias = max(biasMinMax.y * (1.0 - dot(normal, lightDir)), biasMinMax.x); 
+	float bias = max(biasMinMax.y * (1.0 - dot(g_normal, lightDir)), biasMinMax.x); 
     // float shadow = currentDepth - bias > closestDepth  ? 1.0 : 0.0;
 
 	float shadow = 0.0;
