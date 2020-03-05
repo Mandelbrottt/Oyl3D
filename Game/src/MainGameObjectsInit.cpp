@@ -1,10 +1,10 @@
 #include <Oyl3D.h>
 
-#include "SandboxLayer.h"
+#include "MainGameObjectsInit.h"
 
 using namespace oyl;
 
-void SandboxLayer::onEnter()
+void MainGameObjectsInitLayer::onEnter()
 {
 	//any meshes that aren't loaded in the scene need to be cached here for distribution mode
 	auto mesh = Model::cache("res/assets/models/cube.obj");
@@ -1270,7 +1270,7 @@ void SandboxLayer::onEnter()
 
         auto& so = registry->assign<component::EntityInfo>(e);
         so.name = "Sphere 2";
-
+		//69
         auto& rb = registry->assign<component::RigidBody>(e);
         rb.setMass(1.0f);
 
@@ -1281,12 +1281,12 @@ void SandboxLayer::onEnter()
     }
 }
 
-void SandboxLayer::onUpdate()
+void MainGameObjectsInitLayer::onUpdate()
 {
 
 }
 
-void SandboxLayer::onGuiRender()
+void MainGameObjectsInitLayer::onGuiRender()
 {
     /*ImGui::Begin("xdhaha");
 

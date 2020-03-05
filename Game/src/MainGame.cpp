@@ -1,6 +1,7 @@
 #include <Oyl3D.h>
 
-#include "SandboxLayer.h"
+#include "MainGameObjectsInit.h"
+#include "MainMenu.h"
 #include "PlayerSystem.h"
 #include "CannonSystem.h"
 #include "CustomComponents.h"
@@ -34,7 +35,6 @@ public:
 		srand(time(NULL));
 
 		listenForEventCategory(EventCategory::Keyboard);
-		listenForEventType(EventType::KeyReleased);
 		listenForEventCategory(EventCategory::Mouse);
 		listenForEventCategory(EventCategory::Gamepad);
 		listenForEventCategory((EventCategory)CategoryGarbagePile);
@@ -559,16 +559,21 @@ public:
 				//garbage meter outline
 				entt::entity outlineEntity = registry->create();
 				auto& outlineGui = registry->assign<component::GuiRenderable>(outlineEntity);
-				outlineGui.texture = Texture2D::cache("res/assets/textures/gui/garbageMeterOutline.png");
 				outlineGui.cullingMask = 0b1 << i;
 
 				auto& garbageMeter = registry->assign<GarbageMeterDisplay>(outlineEntity);
 				garbageMeter.playerNum = (PlayerNumber)i;
 
 				if (garbageMeter.playerNum == PlayerNumber::One || garbageMeter.playerNum == PlayerNumber::Three) //1 and 3 are on blue team
+				{
+					outlineGui.texture = Texture2D::cache("res/assets/textures/gui/garbageMeterOutlineBlue.png");
 					garbageMeter.team = Team::blue;
+				}
 				else
+				{
+					outlineGui.texture = Texture2D::cache("res/assets/textures/gui/garbageMeterOutlineRed.png");
 					garbageMeter.team = Team::red;
+				}
 
 				component::Transform outlineTransform;
 				outlineTransform.setPosition(glm::vec3(0.0f, 3.8f, -20.0f));
@@ -590,7 +595,7 @@ public:
 					fillGui.cullingMask = 0b1 << i;
 
 					auto& garbageMeterBar = registry->assign<GarbageMeterBar>(fillEntity);
-					garbageMeterBar.garbagePileNum = (k - 1) * -1; //flip the sign so that the left is the front of the ship and the right is the back
+					garbageMeterBar.garbagePileNum = (k - 1);
 
 					auto& fillTransform = registry->assign<component::Transform>(fillEntity);
 					fillTransform.setPosition(glm::vec3(0.65f * k - 0.65f, 3.8f, 1.0f));
@@ -1017,7 +1022,7 @@ public:
 	virtual void onEnter() override
 	{
 		pushLayer(MainLayer::create());
-		pushLayer(SandboxLayer::create());
+		pushLayer(MainGameObjectsInitLayer::create());
 		pushLayer(ScrollingTextureLayer::create());
 	}
 };
@@ -1027,8 +1032,7 @@ class Game : public oyl::Application
 public:
     Game()
     {
-        // pushScene(MainScene::create());
-
+		//registerScene<MainMenuScene>();
         registerScene<MainScene>();
     }
 

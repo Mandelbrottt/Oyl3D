@@ -4,16 +4,14 @@
 #include "CustomComponents.h"
 #include "CustomEvents.h"
 
-class SandboxLayer : public oyl::Layer
+class MainGameObjectsInitLayer : public oyl::Layer
 {
 public:
-    OYL_CTOR(SandboxLayer, Layer)
+    OYL_CTOR(MainGameObjectsInitLayer, Layer)
 
     virtual void onEnter() override;
 
     virtual void onUpdate() override;
 
     virtual void onGuiRender() override;
-
-    float forceSpeed = 2.0f;
 };
