@@ -192,6 +192,9 @@ namespace oyl::internal
         using component::SpotLight;
         using component::BoneTarget;
 
+        RenderCommand::setAlphaBlend(false);
+        RenderCommand::setDepthDraw(true);
+        
         Ref<Material> boundMaterial;
 
         auto camView = registry->view<Transform, Camera>();
@@ -364,15 +367,15 @@ namespace oyl::internal
             });
 
         float vertices[] = {
-            -1.f, -1.0f, 0.0f, 0.0f, 1.0f,
-            1.0f, -1.0f, 0.0f, 1.0f, 1.0f,
-            1.0f, 1.0f, 0.0f, 1.0f, 0.0f,
-            -1.0f, 1.0f, 0.0f, 0.0f, 0.0f
+            -1.0f, -1.0f, 0.0f, 0.0f, 0.0f,
+            1.0f, -1.0f, 0.0f, 1.0f, 0.0f,
+            1.0f, 1.0f, 0.0f, 1.0f, 1.0f,
+            -1.0f, 1.0f, 0.0f, 0.0f, 1.0f
         };
 
         u32 indices[] = {
-            0, 2, 1,
-            0, 3, 2
+            0, 1, 2,
+            2, 3, 0
         };
 
         m_fullscreenQuad = VertexArray::create();
@@ -564,8 +567,8 @@ namespace oyl::internal
                 pc.m_deferredFrameBuffer->bindColorAttachment(i, i), m_deferredPostShader->setUniform1i(i, i);
             
             RenderCommand::setDepthDraw(false);
+            RenderCommand::setAlphaBlend(false);
             Renderer::submit(m_deferredPostShader, m_fullscreenQuad, glm::mat4(1.0f));
-            RenderCommand::setDepthDraw(true);
 
             pc.m_deferredFrameBuffer->blit(pc.m_mainFrameBuffer);
         }
@@ -857,14 +860,14 @@ namespace oyl::internal
         m_forwardFrameBuffer = FrameBuffer::create(1);
 
         m_forwardFrameBuffer->initColorTexture(0, 1, 1,
-                                               TextureFormat::RGBA8,
+                                               TextureFormat::RGBF16,
                                                TextureFilter::Nearest,
                                                TextureWrap::ClampToEdge);
 
         m_intermediateFrameBuffer = FrameBuffer::create(1);
 
         m_intermediateFrameBuffer->initColorTexture(0, 1, 1,
-                                                    TextureFormat::RGBA8,
+                                                    TextureFormat::RGBF16,
                                                     TextureFilter::Nearest,
                                                     TextureWrap::ClampToEdge);
 
@@ -911,6 +914,9 @@ namespace oyl::internal
 
         m_forwardFrameBuffer->clear();
 
+        RenderCommand::setAlphaBlend(false);
+        RenderCommand::setDepthDraw(false);
+
         registry->view<Camera>().each([&](Camera& pc)
         {
             uint width = pc.m_mainFrameBuffer->getColorWidth(), height = pc.m_mainFrameBuffer->getColorHeight();
@@ -924,7 +930,6 @@ namespace oyl::internal
 
             m_vao->bind();
 
-            RenderCommand::setDepthDraw(false);
             Shader* boundShader = nullptr;
 
             bool needsBlit = false;
@@ -958,20 +963,19 @@ namespace oyl::internal
 
                 RenderCommand::drawIndexed(m_vao);
             }
-            RenderCommand::setDepthDraw(true);
 
             if (needsBlit)
                 m_intermediateFrameBuffer->blit(pc.m_mainFrameBuffer);
 
-            RenderCommand::setDepthDraw(false);
             RenderCommand::setDrawRect(0, 0, m_windowSize.x, m_windowSize.y);
 
-            m_forwardFrameBuffer->bind(FrameBufferContext::Write);
             m_shader->bind();
 
             //auto& pc = view.get<Camera>(camera);
 
+            pc.m_mainFrameBuffer->bind(FrameBufferContext::Read);
             pc.m_mainFrameBuffer->bindColorAttachment(0);
+            m_forwardFrameBuffer->bind(FrameBufferContext::Write);
 
             m_shader->setUniform1i("u_texture", 0);
 
@@ -1001,8 +1005,6 @@ namespace oyl::internal
     #if defined(OYL_DISTRIBUTION)
         m_forwardFrameBuffer->blit();
     #endif
-
-        RenderCommand::setDepthDraw(true);
     }
 
     void UserPostRenderSystem::onGuiRender() {}

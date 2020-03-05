@@ -177,7 +177,7 @@ namespace oyl::internal
         m_editorViewportBuffer = FrameBuffer::create(1);
         m_editorViewportBuffer->initDepthTexture(1, 1);
         m_editorViewportBuffer->initColorTexture(0, 1, 1,
-                                                 TextureFormat::RGBA8,
+                                                 TextureFormat::RGB8,
                                                  TextureFilter::Nearest,
                                                  TextureWrap::ClampToEdge);
 
@@ -201,27 +201,11 @@ namespace oyl::internal
         using component::PointLight;
         using component::DirectionalLight;
 
-        m_editorViewportBuffer->bind();
-        m_editorViewportBuffer->clear();
-
+        RenderCommand::setDepthDraw(true);
         RenderCommand::setDrawRect(0, 0, m_windowSize.x, m_windowSize.y);
 
-        static const auto& skybox = TextureCubeMap::get(DEFAULT_SKYBOX_ALIAS);
-        static const auto& mesh   = Model::get(CUBE_MODEL_ALIAS)->getMeshes()[0];
-
-        glm::mat4 viewProj = m_targetCamera->getProjectionMatrix();
-        viewProj *= glm::mat4(glm::mat3(m_targetCamera->getViewMatrix()));
-        m_skyboxShader->bind();
-        m_skyboxShader->setUniformMat4("u_viewProjection", viewProj);
-
-        skybox->bind(0);
-        m_skyboxShader->setUniform1i("u_skybox", 0);
-        
-        RenderCommand::setDepthDraw(false);
-        RenderCommand::setBackfaceCulling(false);
-        RenderCommand::drawArrays(mesh.getVertexArray(), mesh.getNumVertices());
-        RenderCommand::setBackfaceCulling(true);
-        RenderCommand::setDepthDraw(true);
+        m_editorViewportBuffer->bind();
+        m_editorViewportBuffer->clear();
 
         // We sort our mesh renderers based on material properties
         // This will group all of our meshes based on shader first, then material second
@@ -351,6 +335,21 @@ namespace oyl::internal
 
             Renderer::submit(mr.model, boundMaterial, transform);
         }
+        
+        static const auto& skybox = TextureCubeMap::get(DEFAULT_SKYBOX_ALIAS);
+        static const auto& mesh = Model::get(CUBE_MODEL_ALIAS)->getMeshes()[0];
+
+        glm::mat4 viewProj = m_targetCamera->getProjectionMatrix();
+        viewProj *= glm::mat4(glm::mat3(m_targetCamera->getViewMatrix()));
+        m_skyboxShader->bind();
+        m_skyboxShader->setUniformMat4("u_viewProjection", viewProj);
+
+        skybox->bind(0);
+        m_skyboxShader->setUniform1i("u_skybox", 0);
+
+        RenderCommand::setBackfaceCulling(false);
+        RenderCommand::drawArrays(mesh.getVertexArray(), mesh.getNumVertices());
+        RenderCommand::setBackfaceCulling(true);
 
         m_editorViewportBuffer->unbind();
     }
