@@ -136,6 +136,8 @@ namespace oyl::internal
                 camera.aspect((float) width / (float) height);
             }
 
+            RenderCommand::setDepthDraw(true);
+            
             camera.m_deferredFrameBuffer->clear();
             
             camera.m_mainFrameBuffer->clear();
