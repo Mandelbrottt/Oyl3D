@@ -332,7 +332,7 @@ namespace oyl::internal
                     updateAssetList();
             }
         }
-        return false;
+        return m_editorOverrideUpdate || !m_gameUpdate;
     }
 
     void GuiLayer::drawMenuBar()
