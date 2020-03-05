@@ -31,7 +31,7 @@ namespace oyl::internal
         //listenForEventType(EventType::MouseMoved);
         //listenForEventType(EventType::MousePressed);
         //listenForEventType(EventType::MouseReleased);
-        listenForEventType(EventType::EditorViewportResized);
+        listenForEventType(EventType::EditorSceneViewportResized);
         listenForEventType(EventType::EditorCameraMoveRequest);
 
         m_camera = Ref<EditorCamera>::create();
@@ -153,9 +153,10 @@ namespace oyl::internal
 
                 break;
             }
-            case EventType::EditorViewportResized:
+            case EventType::EditorSceneViewportResized:
             {
-                auto      e    = event_cast<EditorViewportResizedEvent>(event);
+                auto e = event_cast<EditorSceneViewportResizedEvent>(event);
+                
                 glm::mat4 proj = glm::perspective(glm::radians(60.0f), e.width / e.height, 0.1f, 1000.0f);
                 m_camera->setProjection(proj);
 
@@ -171,7 +172,8 @@ namespace oyl::internal
 
     void EditorRenderSystem::onEnter()
     {
-        listenForEventType(EventType::WindowResized);
+        //listenForEventType(EventType::WindowResized);
+        listenForEventType(EventType::EditorSceneViewportResized);
         listenForEventType(EventType::EditorCameraChanged);
 
         m_editorViewportBuffer = FrameBuffer::create(1);
@@ -360,9 +362,16 @@ namespace oyl::internal
     {
         switch (event.type)
         {
-            case EventType::WindowResized:
+            //case EventType::WindowResized:
+            //{
+            //    auto e = event_cast<WindowResizedEvent>(event);
+            //    m_editorViewportBuffer->updateViewport(e.width, e.height);
+            //    m_windowSize = { e.width, e.height };
+            //    return false;
+            //}
+            case EventType::EditorSceneViewportResized:
             {
-                auto e = event_cast<WindowResizedEvent>(event);
+                auto e = event_cast<EditorSceneViewportResizedEvent>(event);
                 m_editorViewportBuffer->updateViewport(e.width, e.height);
                 m_windowSize = { e.width, e.height };
                 return false;

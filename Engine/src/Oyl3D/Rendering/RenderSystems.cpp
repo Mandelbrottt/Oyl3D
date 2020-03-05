@@ -39,13 +39,13 @@ namespace oyl::internal
 
     void PreRenderSystem::onEnter()
     {
+    #if defined OYL_DISTRIBUTION
         listenForEventType(EventType::WindowResized);
+    #else
+        listenForEventType(EventType::EditorGameViewportResized);
+    #endif
+        
         listenForEventType(EventType::SceneChanged);
-
-        //m_skyboxShader = Shader::create(
-        //    {
-        //        { Shader::Compound, ENGINE_RES + SKYBOX_SHADER_PATH }
-        //    });
     }
 
     void PreRenderSystem::onUpdate()
@@ -72,9 +72,6 @@ namespace oyl::internal
             });
         
         static uint lastNumCameras = 0;
-
-        static const auto& skybox = TextureCubeMap::get(DEFAULT_SKYBOX_ALIAS);
-        static const auto& mesh = Model::get(CUBE_MODEL_ALIAS)->getMeshes()[0];
 
         using component::Camera;
         auto camView = registry->view<Camera>();
@@ -156,6 +153,7 @@ namespace oyl::internal
         switch (event.type)
         {
             case EventType::WindowResized:
+            case EventType::EditorGameViewportResized:
             {
                 auto e       = event_cast<WindowResizedEvent>(event);
                 m_windowSize = { e.width, e.height };
@@ -999,8 +997,6 @@ namespace oyl::internal
 
             Renderer::submit(m_shader, m_vao, model);
         });
-
-        m_forwardFrameBuffer->unbind(); 
 
     #if defined(OYL_DISTRIBUTION)
         m_forwardFrameBuffer->blit();

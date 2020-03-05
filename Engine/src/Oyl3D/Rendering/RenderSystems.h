@@ -29,7 +29,7 @@ namespace oyl
             bool onEvent(const Event& event) override;
             
         private:
-            glm::ivec2 m_windowSize;
+            glm::ivec2 m_windowSize = { 1, 1 };
 
             bool m_camerasNeedUpdate = false;
 
