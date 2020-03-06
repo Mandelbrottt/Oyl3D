@@ -254,19 +254,11 @@ namespace oyl::internal
                                                     pointLightProps.range);
 
                         count++;
-                        if (count >= 8)
+                        if (count >= 16)
                             break;
                     }
 
-                    for (; count < 8; count++)
-                    {
-                        std::string pointLightName = "u_pointLight[" + std::to_string(count) + "]";
-
-                        boundMaterial->setUniform3f(pointLightName + ".position", {});
-                        boundMaterial->setUniform3f(pointLightName + ".ambient",  {});
-                        boundMaterial->setUniform3f(pointLightName + ".diffuse",  {});
-                        boundMaterial->setUniform3f(pointLightName + ".specular", {});
-                    }
+                    boundMaterial->setUniform1i("u_numPointLights", count);
 
                     auto dirLightView = registry->view<DirectionalLight>();
                     count = 0;
@@ -301,19 +293,13 @@ namespace oyl::internal
                         }
 
                         count++;
-                        if (count >= 8)
+                        if (count >= 16)
                             break;
                     }
-                    
-                    for (; count < 8; count++)
-                    {
-                        std::string dirLightName = "u_dirLight[" + std::to_string(count) + "]";
 
-                        boundMaterial->setUniform3f(dirLightName + ".direction", {});
-                        boundMaterial->setUniform3f(dirLightName + ".ambient",   {});
-                        boundMaterial->setUniform3f(dirLightName + ".diffuse",   {});
-                        boundMaterial->setUniform3f(dirLightName + ".specular",  {});
-                    }
+                    boundMaterial->setUniform1i("u_numDirLights", count);
+
+                    boundMaterial->setUniform1i("u_numShadowMaps", shadowIndex);
                     
                     // TEMPORARY:
                     boundMaterial->bind();
@@ -499,20 +485,12 @@ namespace oyl::internal
                                                    pointLightProps.range);
 
                 count++;
-                if (count >= 8)
+                if (count >= 16)
                     break;
             }
 
-            for (; count < 8; count++)
-            {
-                std::string pointLightName = "u_pointLight[" + std::to_string(count) + "]";
-
-                m_deferredPostShader->setUniform3f(pointLightName + ".position", {});
-                m_deferredPostShader->setUniform3f(pointLightName + ".ambient", {});
-                m_deferredPostShader->setUniform3f(pointLightName + ".diffuse", {});
-                m_deferredPostShader->setUniform3f(pointLightName + ".specular", {});
-            }
-
+            m_deferredPostShader->setUniform1i("u_numPointLights", count);
+            
             auto dirLightView = registry->view<DirectionalLight>();
             count             = 0;
             for (auto light : dirLightView)
@@ -546,25 +524,19 @@ namespace oyl::internal
                 }
 
                 count++;
-                if (count >= 8)
+                if (count >= 16)
                     break;
             }
 
-            for (; count < 8; count++)
-            {
-                std::string dirLightName = "u_dirLight[" + std::to_string(count) + "]";
+            m_deferredPostShader->setUniform1i("u_numDirLights", count);
 
-                m_deferredPostShader->setUniform3f(dirLightName + ".direction", {});
-                m_deferredPostShader->setUniform3f(dirLightName + ".ambient", {});
-                m_deferredPostShader->setUniform3f(dirLightName + ".diffuse", {});
-                m_deferredPostShader->setUniform3f(dirLightName + ".specular", {});
-            }
-
+            m_deferredPostShader->setUniform1i("u_numShadowMaps", shadowIndex);
+            
             pc.m_deferredFrameBuffer->bind(FrameBufferContext::Read);
             pc.m_mainFrameBuffer->bind(FrameBufferContext::Write);
 
             for (uint i = 0; i < 5; i++)
-                pc.m_deferredFrameBuffer->bindColorAttachment(i, i), m_deferredPostShader->setUniform1i(i, i);
+                pc.m_deferredFrameBuffer->bindColorAttachment(i, i);
             
             RenderCommand::setDepthDraw(false);
             RenderCommand::setAlphaBlend(false);
@@ -751,7 +723,7 @@ namespace oyl::internal
         {
             camera.m_mainFrameBuffer->bind();
 
-            RenderCommand::setDrawRect(0, 0, camera.m_mainFrameBuffer->getColorWidth(), camera.m_mainFrameBuffer->getColorWidth());
+            RenderCommand::setDrawRect(0, 0, camera.m_mainFrameBuffer->getColorWidth(), camera.m_mainFrameBuffer->getColorHeight());
 
             glm::mat4 viewProj = camera.projectionMatrix();
             viewProj *= glm::mat4(glm::mat3(camera.viewMatrix()));

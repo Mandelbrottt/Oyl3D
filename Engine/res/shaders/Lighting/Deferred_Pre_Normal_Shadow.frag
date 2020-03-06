@@ -46,6 +46,7 @@ void main() {
 
     // Calculate the normal of the object based on the normal map
 	out_normal = texture(u_material.normal, adjustedTexCoords).rgb; 
+	out_normal = normalize(out_normal * 2.0 - 1.0);
 	out_normal = normalize(fs_in.TBN * out_normal);
 
     out_lightSpacePosition = fs_in.lightSpacePosition;

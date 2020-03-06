@@ -261,7 +261,7 @@ namespace oyl
                 m_view = inverse(t.getMatrixGlobal());
 
             if (m_projectionDirty)
-                m_projection = glm::perspective(m_fov, m_aspect, m_nearClipping, m_farClipping);
+                m_projection = glm::perspective(glm::radians(m_fov), m_aspect, m_nearClipping, m_farClipping);
 
             //if (m_projectionDirty)
                 m_viewProjection = projectionMatrix() * viewMatrix();
