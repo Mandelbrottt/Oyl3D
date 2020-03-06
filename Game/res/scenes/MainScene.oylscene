@@ -15543,7 +15543,7 @@
             "CullingMask": 1,
             "Enabled": true,
             "Material": {
-                "Alias": "Character Tall Blue"
+                "Alias": "Character Tall Blue Anim"
             },
             "Mesh": {
                 "Alias": "Arms",
@@ -15713,7 +15713,7 @@
             "CullingMask": 2,
             "Enabled": true,
             "Material": {
-                "Alias": "Character Tall Red"
+                "Alias": "Character Tall Red Anim"
             },
             "Mesh": {
                 "Alias": "Arms",
@@ -15883,7 +15883,7 @@
             "CullingMask": 4,
             "Enabled": true,
             "Material": {
-                "Alias": "Character Tall Blue"
+                "Alias": "Character Tall Blue Anim"
             },
             "Mesh": {
                 "Alias": "Arms",
@@ -15945,7 +15945,7 @@
             "CullingMask": 4294967291,
             "Enabled": true,
             "Material": {
-                "Alias": "Character Tall Blue"
+                "Alias": "Charactter Tall Blue"
             },
             "Mesh": {
                 "Alias": "characterTall",
@@ -16053,7 +16053,7 @@
             "CullingMask": 8,
             "Enabled": true,
             "Material": {
-                "Alias": "Character Tall Red"
+                "Alias": "Character Tall Red Anim"
             },
             "Mesh": {
                 "Alias": "Arms",
@@ -16152,7 +16152,7 @@
             "CullingMask": 4294967287,
             "Enabled": true,
             "Material": {
-                "Alias": "Character Tall Red"
+                "Alias": "Character Tall red"
             },
             "Mesh": {
                 "Alias": "characterTall",
