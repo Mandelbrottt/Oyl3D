@@ -31,7 +31,7 @@ namespace oyl::internal
         //listenForEventType(EventType::MouseMoved);
         //listenForEventType(EventType::MousePressed);
         //listenForEventType(EventType::MouseReleased);
-        listenForEventType(EventType::EditorViewportResized);
+        listenForEventType(EventType::EditorSceneViewportResized);
         listenForEventType(EventType::EditorCameraMoveRequest);
 
         m_camera = Ref<EditorCamera>::create();
@@ -153,9 +153,10 @@ namespace oyl::internal
 
                 break;
             }
-            case EventType::EditorViewportResized:
+            case EventType::EditorSceneViewportResized:
             {
-                auto      e    = event_cast<EditorViewportResizedEvent>(event);
+                auto e = event_cast<EditorSceneViewportResizedEvent>(event);
+                
                 glm::mat4 proj = glm::perspective(glm::radians(60.0f), e.width / e.height, 0.1f, 1000.0f);
                 m_camera->setProjection(proj);
 
@@ -171,19 +172,25 @@ namespace oyl::internal
 
     void EditorRenderSystem::onEnter()
     {
-        listenForEventType(EventType::WindowResized);
+        //listenForEventType(EventType::WindowResized);
+        listenForEventType(EventType::EditorSceneViewportResized);
         listenForEventType(EventType::EditorCameraChanged);
 
         m_editorViewportBuffer = FrameBuffer::create(1);
         m_editorViewportBuffer->initDepthTexture(1, 1);
         m_editorViewportBuffer->initColorTexture(0, 1, 1,
-                                                 TextureFormat::RGBA8,
+                                                 TextureFormat::RGB8,
                                                  TextureFilter::Nearest,
                                                  TextureWrap::ClampToEdge);
 
         EditorViewportHandleChangedEvent handleChanged;
         handleChanged.handle = m_editorViewportBuffer->getColorHandle(0);
         postEvent(handleChanged);
+
+        m_skyboxShader = Shader::create(
+            {
+                { Shader::Compound, ENGINE_RES + SKYBOX_SHADER_PATH },
+            });
     }
 
     void EditorRenderSystem::onExit() { }
@@ -196,28 +203,11 @@ namespace oyl::internal
         using component::PointLight;
         using component::DirectionalLight;
 
-        m_editorViewportBuffer->bind();
-        m_editorViewportBuffer->clear();
-
+        RenderCommand::setDepthDraw(true);
         RenderCommand::setDrawRect(0, 0, m_windowSize.x, m_windowSize.y);
 
-        static const auto& skybox = TextureCubeMap::get(DEFAULT_SKYBOX_ALIAS);
-        static const auto& shader = Shader::get(SKYBOX_SHADER_ALIAS);
-        static const auto& mesh   = Model::get(CUBE_MODEL_ALIAS)->getMeshes()[0];
-
-        glm::mat4 viewProj = m_targetCamera->getProjectionMatrix();
-        viewProj *= glm::mat4(glm::mat3(m_targetCamera->getViewMatrix()));
-        shader->bind();
-        shader->setUniformMat4("u_viewProjection", viewProj);
-
-        skybox->bind(0);
-        shader->setUniform1i("u_skybox", 0);
-        
-        RenderCommand::setDepthDraw(false);
-        RenderCommand::setBackfaceCulling(false);
-        RenderCommand::drawArrays(mesh.getVertexArray(), mesh.getNumVertices());
-        RenderCommand::setBackfaceCulling(true);
-        RenderCommand::setDepthDraw(true);
+        m_editorViewportBuffer->bind();
+        m_editorViewportBuffer->clear();
 
         // We sort our mesh renderers based on material properties
         // This will group all of our meshes based on shader first, then material second
@@ -234,7 +224,7 @@ namespace oyl::internal
             });
 
         Ref<Material> boundMaterial = Material::create();
-        Ref<Shader>   tempShader    = Shader::get(LIGHTING_SHADER_ALIAS);
+        Ref<Shader>   tempShader    = Shader::get(FORWARD_STATIC_SHADER_ALIAS);
 
         bool doCulling = true;
 
@@ -277,13 +267,7 @@ namespace oyl::internal
                     count++;
                 }
 
-                for (; count < 8; count++)
-                {
-                    boundMaterial->setUniform3f("u_pointLight[" + std::to_string(count) + "].position", {});
-                    boundMaterial->setUniform3f("u_pointLight[" + std::to_string(count) + "].ambient",  {});
-                    boundMaterial->setUniform3f("u_pointLight[" + std::to_string(count) + "].diffuse",  {});
-                    boundMaterial->setUniform3f("u_pointLight[" + std::to_string(count) + "].specular", {});
-                }
+                boundMaterial->setUniform1i("u_numPointLights", count);
 
                 auto dirLightView = registry->view<DirectionalLight>();
                 count = 0;
@@ -302,7 +286,7 @@ namespace oyl::internal
                     boundMaterial->setUniform3f(dirLightName + ".specular",
                                                 dirLightProps.specular);
 
-                    if (dirLightProps.castShadows && shadowIndex < 3)
+                    if (dirLightProps.castShadows && shadowIndex < 1)
                     {
                         boundMaterial->setUniformMat4("u_lightSpaceMatrix", dirLightProps.m_lightSpaceMatrix);
 
@@ -321,15 +305,9 @@ namespace oyl::internal
                         break;
                 }
 
-                for (; count < 8; count++)
-                {
-                    std::string dirLightName = "u_dirLight[" + std::to_string(count) + "]";
+                boundMaterial->setUniform1i("u_numDirLights", count);
 
-                    boundMaterial->setUniform3f(dirLightName + ".direction", {});
-                    boundMaterial->setUniform3f(dirLightName + ".ambient",   {});
-                    boundMaterial->setUniform3f(dirLightName + ".diffuse",   {});
-                    boundMaterial->setUniform3f(dirLightName + ".specular",  {});
-                }
+                boundMaterial->setUniform1i("u_numShadowMaps", shadowIndex);
 
                 boundMaterial->bind();
                 boundMaterial->applyUniforms();
@@ -347,6 +325,21 @@ namespace oyl::internal
 
             Renderer::submit(mr.model, boundMaterial, transform);
         }
+        
+        static const auto& skybox = TextureCubeMap::get(DEFAULT_SKYBOX_ALIAS);
+        static const auto& mesh = Model::get(CUBE_MODEL_ALIAS)->getMeshes()[0];
+
+        glm::mat4 viewProj = m_targetCamera->getProjectionMatrix();
+        viewProj *= glm::mat4(glm::mat3(m_targetCamera->getViewMatrix()));
+        m_skyboxShader->bind();
+        m_skyboxShader->setUniformMat4("u_viewProjection", viewProj);
+
+        skybox->bind(0);
+        m_skyboxShader->setUniform1i("u_skybox", 0);
+
+        RenderCommand::setBackfaceCulling(false);
+        RenderCommand::drawArrays(mesh.getVertexArray(), mesh.getNumVertices());
+        RenderCommand::setBackfaceCulling(true);
 
         m_editorViewportBuffer->unbind();
     }
@@ -357,9 +350,16 @@ namespace oyl::internal
     {
         switch (event.type)
         {
-            case EventType::WindowResized:
+            //case EventType::WindowResized:
+            //{
+            //    auto e = event_cast<WindowResizedEvent>(event);
+            //    m_editorViewportBuffer->updateViewport(e.width, e.height);
+            //    m_windowSize = { e.width, e.height };
+            //    return false;
+            //}
+            case EventType::EditorSceneViewportResized:
             {
-                auto e = event_cast<WindowResizedEvent>(event);
+                auto e = event_cast<EditorSceneViewportResizedEvent>(event);
                 m_editorViewportBuffer->updateViewport(e.width, e.height);
                 m_windowSize = { e.width, e.height };
                 return false;

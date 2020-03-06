@@ -2761,19 +2761,21 @@ namespace oyl::internal
         ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
         if (ImGui::Begin(g_sceneWindowName, nullptr, ImGuiWindowFlags_NoScrollbar))
         {
-            static ImVec2 lastSize = { 0, 0 };
+            static glm::ivec2 lastSize = { 0, 0 };
 
             auto [x, y]   = ImGui::GetWindowSize();
             auto [cx, cy] = ImGui::GetCursorPos();
 
-            if (lastSize.x != x || lastSize.y != y)
+            if (lastSize.x != static_cast<int>(x) || lastSize.y != static_cast<int>(y))
             {   
-                EditorViewportResizedEvent vrevent;
+                EditorSceneViewportResizedEvent vrevent;
                 vrevent.width  = x;
                 vrevent.height = y - cy;
                 
                 postEvent(vrevent);
             }
+
+            lastSize = { static_cast<int>(x), static_cast<int>(y) };
             
             y -= cy;
     
@@ -2860,7 +2862,10 @@ namespace oyl::internal
 
         if (ImGui::Begin(g_gameWindowName, NULL, ImGuiWindowFlags_NoScrollbar))
         {
+            static glm::ivec2 lastSize = { 0, 0 };
+
             auto [x, y] = ImGui::GetWindowSize();
+            auto [cx, cy] = ImGui::GetCursorPos();
 
             ImVec2 newPos = { 0, 0 };
 
@@ -2874,6 +2879,20 @@ namespace oyl::internal
                 newPos.x = (x - y * 16.0f / 9.0f) / 2.0f;
                 x        = y * 16.0f / 9.0f;
             }
+
+            if (lastSize.x != static_cast<int>(x) || lastSize.y != static_cast<int>(y))
+            {
+                EditorGameViewportResizedEvent vrevent;
+                vrevent.width = x;
+                vrevent.height = y;
+
+                postEvent(vrevent);
+            }
+
+            lastSize = { static_cast<int>(x), static_cast<int>(y) };
+
+            y -= cy;
+            newPos.y += cy;
 
             ImGui::SetCursorPos(newPos);
 

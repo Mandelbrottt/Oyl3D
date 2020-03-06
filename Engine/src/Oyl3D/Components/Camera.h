@@ -10,8 +10,11 @@ namespace oyl
     class Shader;
 
     namespace internal
-    {
-        class RenderSystem;        
+    {      
+        class PreRenderSystem;        
+        class ForwardRenderSystem;        
+        class DeferredRenderSystem;        
+        class PostRenderSystem;        
         class GuiRenderSystem;        
         class UserPostRenderSystem;        
     }
@@ -110,7 +113,7 @@ namespace oyl
             // Sets the current upper right corner of the camera's screen space coordinate system
             glm::vec2 upperCoords(glm::vec2 a_upperCoords);
 
-            Ref<const FrameBuffer> forwardFrameBuffer() { return m_forwardFrameBuffer; }
+            Ref<const FrameBuffer> forwardFrameBuffer() { return m_mainFrameBuffer; }
 
             const glm::mat4& viewMatrix() const;
             const glm::mat4& projectionMatrix() const;
@@ -143,9 +146,13 @@ namespace oyl
             mutable bool m_projectionDirty = true;
             mutable bool m_orthoDirty = true;
 
-            Ref<FrameBuffer> m_forwardFrameBuffer = nullptr;
+            Ref<FrameBuffer> m_mainFrameBuffer = nullptr;
+            Ref<FrameBuffer> m_deferredFrameBuffer = nullptr;
 
-            friend ::oyl::internal::RenderSystem; 
+            friend ::oyl::internal::PreRenderSystem; 
+            friend ::oyl::internal::PostRenderSystem; 
+            friend ::oyl::internal::ForwardRenderSystem; 
+            friend ::oyl::internal::DeferredRenderSystem; 
             friend ::oyl::internal::GuiRenderSystem; 
             friend ::oyl::internal::UserPostRenderSystem; 
         };
@@ -254,7 +261,7 @@ namespace oyl
                 m_view = inverse(t.getMatrixGlobal());
 
             if (m_projectionDirty)
-                m_projection = glm::perspective(m_fov, m_aspect, m_nearClipping, m_farClipping);
+                m_projection = glm::perspective(glm::radians(m_fov), m_aspect, m_nearClipping, m_farClipping);
 
             //if (m_projectionDirty)
                 m_viewProjection = projectionMatrix() * viewMatrix();

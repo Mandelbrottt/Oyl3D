@@ -19,7 +19,8 @@ namespace oyl
         class SkeletalAnimationSystem;  
         class EditorRenderSystem;  
         class PreRenderSystem;  
-        class RenderSystem;  
+        class DeferredRenderSystem;  
+        class ForwardRenderSystem;  
         class GuiRenderSystem;  
         class ShadowRenderSystem;  
         class UserPostRenderSystem;  
@@ -69,13 +70,17 @@ namespace oyl
 
         Ref<internal::SystemsLayer> m_systemsLayer;
         // TODO: Put in systems layer
+        
+        std::vector<Ref<System>> m_renderSystems;
+        
         Ref<internal::SkeletalAnimationSystem> m_skeletalAnimationSystem;
-        Ref<internal::EditorRenderSystem> m_editorRenderSystem;
-        Ref<internal::PreRenderSystem> m_preRenderSystem;
-        Ref<internal::ShadowRenderSystem> m_shadowRenderSystem;
-        Ref<internal::RenderSystem> m_renderSystem;
-        Ref<internal::GuiRenderSystem> m_guiRenderSystem;
-        Ref<internal::UserPostRenderSystem> m_postRenderSystem;
+        //Ref<internal::EditorRenderSystem> m_editorRenderSystem;
+        //Ref<internal::PreRenderSystem> m_preRenderSystem;
+        //Ref<internal::ShadowRenderSystem> m_shadowRenderSystem;
+        //Ref<internal::ForwardRenderSystem> m_forwardRenderSystem;
+        //Ref<internal::DeferredRenderSystem> m_deferredRenderSystem;
+        //Ref<internal::GuiRenderSystem> m_guiRenderSystem;
+        //Ref<internal::UserPostRenderSystem> m_postRenderSystem;
 
         bool m_running  = true;
         bool m_doUpdate = true;

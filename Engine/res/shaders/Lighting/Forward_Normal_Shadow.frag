@@ -1,10 +1,5 @@
 #version 420
 
-#define NUM_POINT_LIGHTS 8
-#define NUM_DIR_LIGHTS   8
-#define NUM_SPOT_LIGHTS  8
-#define NUM_SHADOW_MAPS  2
-
 #define POINT_SHADOW 1
 #define DIR_SHADOW   2
 #define SPOT_SHADOW  3
@@ -16,7 +11,7 @@ struct Material
 	sampler2D normal;
 	sampler2D emission;
 
-	// float shininess;
+	float glossiness;
 
 	vec2 tiling;
 	vec2 offset;
@@ -64,6 +59,11 @@ struct Shadow
 	vec2      biasMinMax;
 };
 
+const int MAX_POINT_LIGHTS = 16;
+const int MAX_DIR_LIGHTS   = 16;
+const int MAX_SPOT_LIGHTS  = 16;
+const int MAX_SHADOW_MAPS  = 3;
+
 in VS_OUT {
 	vec3 position;
 	vec2 texCoord;
@@ -73,19 +73,24 @@ in VS_OUT {
 
 layout(location = 0) out vec4 out_color;
 
+uniform int u_numPointLights = 0;
+uniform int u_numDirLights   = 0;
+uniform int u_numSpotLights  = 0;
+uniform int u_numShadowMaps  = 0;
+
 uniform Material u_material;
 
-uniform PointLight       u_pointLight[NUM_POINT_LIGHTS];
-uniform DirLight 	     u_dirLight[NUM_DIR_LIGHTS];
-uniform SpotLight        u_spotLight[NUM_SPOT_LIGHTS];
+uniform PointLight u_pointLight[MAX_POINT_LIGHTS];
+uniform DirLight   u_dirLight[MAX_DIR_LIGHTS];
+uniform SpotLight  u_spotLight[MAX_SPOT_LIGHTS];
 
-uniform Shadow u_shadow[NUM_SHADOW_MAPS];
+uniform Shadow u_shadow[MAX_SHADOW_MAPS];
 
 vec3 calculateDirLight(DirLight light, vec3 fragPos, vec3 normal, vec2 texCoord, inout int shadowIndex);
 vec3 calculatePointLight(PointLight light, vec3 fragPos, vec3 normal, vec2 texCoord, inout int shadowIndex);
 vec3 calculateSpotLight(SpotLight light, vec3 fragPos, vec3 normal, vec2 texCoord, inout int shadowIndex);
 
-float shadowCalculation(vec4 lightSpacePosition, sampler2D shadowMap, vec2 biasMinMax, vec3 normal, vec3 lightDir);
+float shadowCalculation(vec4 lightSpacePosition, Shadow shadow, vec3 normal, vec3 lightDir);
 
 void main() 
 {
@@ -102,7 +107,7 @@ void main()
 	int shadowIndex = 0;
 
 	// Calculate all point light effects
-	for (int i = 0; i < NUM_POINT_LIGHTS; i++) 
+	for (int i = 0; i < u_numPointLights; i++) 
 		out_color.rgb += calculatePointLight(u_pointLight[i], 
 											 fs_in.position, 
 											 normal, 
@@ -110,7 +115,7 @@ void main()
 											 shadowIndex);
 
 	// Calculate all directional light effects
-	for (int i = 0; i < NUM_DIR_LIGHTS; i++) 
+	for (int i = 0; i < u_numDirLights; i++) 
 		out_color.rgb += calculateDirLight(u_dirLight[i], 
 										   fs_in.position, 
 										   normal, 
@@ -118,7 +123,7 @@ void main()
 										   shadowIndex);
 
 	// Calculate all spot light effects
-	for (int i = 0; i < NUM_SPOT_LIGHTS; i++)
+	for (int i = 0; i < u_numSpotLights; i++)
 		out_color.rgb += calculateSpotLight(u_spotLight[i], 
 											fs_in.position, 
 											normal, 
@@ -157,8 +162,8 @@ vec3 calculatePointLight(PointLight light, vec3 fragPos, vec3 normal, vec2 texCo
 	specular *= attenuation;
 	
 	float shadow = 0.0;
-	if (shadowIndex < NUM_SHADOW_MAPS && u_shadow[shadowIndex].type == POINT_SHADOW)
-		shadow = shadowCalculation(fs_in.lightSpacePosition, u_shadow[shadowIndex].map, u_shadow[shadowIndex].biasMinMax, normal, lightDir);
+	if (shadowIndex < u_numShadowMaps && u_shadow[shadowIndex].type == POINT_SHADOW)
+		shadow = shadowCalculation(fs_in.lightSpacePosition, u_shadow[shadowIndex], normal, lightDir);
 	return ambient + (1.0 - shadow) * (diffuse + specular);
 }
 
@@ -170,8 +175,9 @@ vec3 calculateDirLight(DirLight light, vec3 fragPos, vec3 normal, vec2 texCoord,
 	float diff = max(dot(normal, lightDir), 0.0);
 
 	// Specular Shading
-	vec3 reflectDir = reflect(-lightDir, normal);
-	float spec 		= pow(max(dot(normalize(-fragPos), reflectDir), 0.0), 128);
+	vec3 viewDir    = normalize(-fragPos);
+	vec3 halfwayDir = normalize(lightDir + viewDir);
+	float spec 		= pow(max(dot(normal, halfwayDir), 0.0), 128);
 
 	// Combine Results
 	vec3 ambient  = light.ambient  *        vec3(texture(u_material.albedo,   texCoord));
@@ -179,8 +185,8 @@ vec3 calculateDirLight(DirLight light, vec3 fragPos, vec3 normal, vec2 texCoord,
 	vec3 specular = light.specular * spec * vec3(texture(u_material.specular, texCoord));
 
 	float shadow = 0.0;
-	if (shadowIndex < NUM_SHADOW_MAPS && u_shadow[shadowIndex].type == DIR_SHADOW)
-		shadow = shadowCalculation(fs_in.lightSpacePosition, u_shadow[shadowIndex].map, u_shadow[shadowIndex].biasMinMax, normal, lightDir);
+	if (shadowIndex < u_numShadowMaps && u_shadow[shadowIndex].type == DIR_SHADOW)
+		shadow = shadowCalculation(fs_in.lightSpacePosition, u_shadow[shadowIndex], normal, lightDir);
 	return ambient + (1.0 - shadow) * (diffuse + specular);
 }
 
@@ -197,9 +203,10 @@ vec3 calculateSpotLight(SpotLight light, vec3 fragPos, vec3 normal, vec2 texCoor
 		// Diffuse Shading
 		float diff = max(dot(normal, lightDir), 0.0);
 
-		// Specular Shading
-		vec3 reflectDir = reflect(-lightDir, normal);
-		float spec 		= pow(max(dot(normalize(-fragPos), reflectDir), 0.0), 128);
+		// Specular Shading	
+		vec3 viewDir    = normalize(-fragPos);
+		vec3 halfwayDir = normalize(lightDir + viewDir);
+		float spec 		= pow(max(dot(normal, halfwayDir), 0.0), 128);
 
 		// Attenuation
 		float dist = length(light.position - fragPos);
@@ -216,8 +223,8 @@ vec3 calculateSpotLight(SpotLight light, vec3 fragPos, vec3 normal, vec2 texCoor
 		specular *= attenuation * intensity;
 		
 		float shadow = 0.0;
-		if (shadowIndex < NUM_SHADOW_MAPS && u_shadow[shadowIndex].type == SPOT_SHADOW)
-			shadow = shadowCalculation(fs_in.lightSpacePosition, u_shadow[shadowIndex].map, u_shadow[shadowIndex].biasMinMax, normal, lightDir);
+		if (shadowIndex < u_numShadowMaps && u_shadow[shadowIndex].type == SPOT_SHADOW)
+			shadow = shadowCalculation(fs_in.lightSpacePosition, u_shadow[shadowIndex], normal, lightDir);
 		return ambient + (1.0 - shadow) * (diffuse + specular);
 	}
 	else 
@@ -226,7 +233,7 @@ vec3 calculateSpotLight(SpotLight light, vec3 fragPos, vec3 normal, vec2 texCoor
 	}
 }
 
-float shadowCalculation(vec4 lightSpacePosition, sampler2D shadowMap, vec2 biasMinMax, vec3 normal, vec3 lightDir)
+float shadowCalculation(vec4 lightSpacePosition, Shadow a_shadow, vec3 normal, vec3 lightDir)
 {
 	// Transform into NDC then into [0,1]
     vec3 projCoords = lightSpacePosition.xyz / lightSpacePosition.w;
@@ -237,16 +244,16 @@ float shadowCalculation(vec4 lightSpacePosition, sampler2D shadowMap, vec2 biasM
 	
 	// Check the test depth against the current depth
 	// float biasMin = 0.001, biasMax = 0.005;
-	float bias = max(biasMinMax.y * (1.0 - dot(normal, lightDir)), biasMinMax.x); 
+	float bias = max(a_shadow.biasMinMax.y * (1.0 - dot(normal, lightDir)), a_shadow.biasMinMax.x); 
     // float shadow = currentDepth - bias > closestDepth  ? 1.0 : 0.0;
 
 	float shadow = 0.0;
-	vec2 texelSize = 1.0 / textureSize(shadowMap, 0);
+	vec2 texelSize = 1.0 / textureSize(a_shadow.map, 0);
 	for(int x = -1; x <= 1; ++x)
 	{
 	    for(int y = -1; y <= 1; ++y)
 	    {
-	        float pcfDepth = texture(shadowMap, projCoords.xy + vec2(x, y) * texelSize).r; 
+	        float pcfDepth = texture(a_shadow.map, projCoords.xy + vec2(x, y) * texelSize).r; 
 	        shadow += currentDepth - bias > pcfDepth ? 1.0 : 0.0;        
 	    }    
 	}
@@ -254,8 +261,6 @@ float shadowCalculation(vec4 lightSpacePosition, sampler2D shadowMap, vec2 biasM
 
 	// TODO: Do Variance Shadow Mapping
 
-	// if (projCoords.x < 0.0 || projCoords.x > 1.0 ||
-	//     projCoords.y < 0.0 || projCoords.y > 1.0)
 	if (projCoords.z > 1.0)
 		shadow = 0.0;
 

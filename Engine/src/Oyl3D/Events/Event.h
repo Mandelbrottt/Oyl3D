@@ -45,7 +45,7 @@ namespace oyl
         PhysicsCollisionEnter, PhysicsCollisionExit, PhysicsCollisionStay,
         PhysicsResetWorld,
         
-        EditorViewportResized, EditorViewportHandleChanged, EditorEntitySelected,
+        EditorSceneViewportResized, EditorGameViewportResized, EditorViewportHandleChanged, EditorEntitySelected,
         EditorCameraChanged, EditorCameraMoveRequest, EditorBackButton,
 
         RenderForwardBufferChanged,
@@ -268,7 +268,13 @@ namespace oyl
                          i32 handle;
                      });
 
-    OYL_EVENT_STRUCT(EditorViewportResizedEvent, EventType::EditorViewportResized, EventCategory::Editor,
+    OYL_EVENT_STRUCT(EditorSceneViewportResizedEvent, EventType::EditorSceneViewportResized, EventCategory::Editor,
+                     {
+                         f32 width;
+                         f32 height;
+                     });
+    
+    OYL_EVENT_STRUCT(EditorGameViewportResizedEvent, EventType::EditorGameViewportResized, EventCategory::Editor,
                      {
                          f32 width;
                          f32 height;

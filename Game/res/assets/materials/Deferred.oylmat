@@ -1,6 +1,6 @@
 {
     "Material": {
-        "Alias": "cubeMat",
+        "Alias": "Deferred",
         "MainProperties": {
             "Offset": [
                 0.0,
@@ -24,14 +24,24 @@
         },
         "Textures": {
             "Albedo": {
-                "Alias": "Oyl UV-Grid",
-                "FilePath": "../Engine/res/textures/uvgrid.png",
+                "Alias": "brickwall",
+                "FilePath": "res\\assets\\textures\\brickwall.jpg",
                 "Profile": 0,
                 "guid": null
             },
             "Emission": null,
-            "Normal": null,
-            "Specular": null
+            "Normal": {
+                "Alias": "brickwall_normal",
+                "FilePath": "res\\assets\\textures\\brickwall_normal.jpg",
+                "Profile": 0,
+                "guid": null
+            },
+            "Specular": {
+                "Alias": "brickwall",
+                "FilePath": "res\\assets\\textures\\brickwall.jpg",
+                "Profile": 0,
+                "guid": null
+            }
         }
     }
 }

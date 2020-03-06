@@ -266,10 +266,25 @@ namespace oyl
         }
     }
 
+    void Material::clearUniforms()
+    {
+        m_uniformMat4s.clear();
+        m_uniformMat3s.clear();
+        m_uniformVec4s.clear();
+        m_uniformVec3s.clear();
+        m_uniformVec2s.clear();
+        m_uniformFloats.clear();
+        m_uniformInts.clear();
+        m_uniformTex1Ds.clear();
+        m_uniformTex2Ds.clear();
+        m_uniformTex3Ds.clear();
+        m_uniformTexCMs.clear();
+    }
+
     void Material::init()
     {
         auto mat = Material::create();
-        mat->shader = Shader::get(LIGHTING_SHADER_ALIAS);
+        mat->shader = Shader::get(FORWARD_STATIC_SHADER_ALIAS);
         mat->albedoMap = Texture2D::get(INVALID_ALIAS);
         Material::cache(mat, INVALID_ALIAS);
     }
