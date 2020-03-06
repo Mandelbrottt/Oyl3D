@@ -1034,10 +1034,10 @@ class Game : public oyl::Application
 public:
     Game()
     {
-		//registerScene<MainMenuScene>();
-		//registerScene<ControlsScreenScene>();
-		//registerScene<GameEndScene>();
+		registerScene<MainMenuScene>();
+		registerScene<ControlsScreenScene>();
         registerScene<MainScene>();
+		//registerScene<GameEndScene>();
     }
 
     virtual void onExit() { }

@@ -83,6 +83,7 @@ enum class MenuOption
 	playGame,
 	controls,
 	settings,
+	credits,
 	exit,
 	start,
 	pause,

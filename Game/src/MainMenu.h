@@ -11,7 +11,7 @@ public:
 
 	MenuOption selectedMenuItemType;
 
-	const float CHANGE_MENU_OPTION_DELAY = 0.1f;
+	const float CHANGE_MENU_OPTION_DELAY = 0.15f;
 	float changeMenuOptionCountdown      = 0.0f;
 
     virtual void onEnter() override;

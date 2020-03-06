@@ -47,7 +47,7 @@ void MainMenuLayer::onEnter()
 		so.name = "Play Game Prompt";
 
 		auto& gui = registry->assign<component::GuiRenderable>(e);
-		gui.texture = Texture2D::cache("res/assets/textures/menus/PlayGame.png");
+		gui.texture = Texture2D::cache("res/assets/textures/menus/PlayGamePrompt.png");
 	}
 
 	{
@@ -57,14 +57,48 @@ void MainMenuLayer::onEnter()
 		menuItem.type = MenuOption::controls;
 
 		auto& t = registry->assign<component::Transform>(e);
-		t.setPosition(glm::vec3(0.0f, -1.0f, -1.0f));
+		t.setPosition(glm::vec3(0.0f, -0.3f, -1.0f));
 		t.setScale(glm::vec3(1.0f, 1.0f, 1.0f));
 
 		auto& so = registry->assign<component::EntityInfo>(e);
 		so.name = "Controls Prompt";
 
 		auto& gui = registry->assign<component::GuiRenderable>(e);
-		gui.texture = Texture2D::cache("res/assets/textures/menus/Controls.png");
+		gui.texture = Texture2D::cache("res/assets/textures/menus/ControlsPrompt.png");
+	}
+
+	{
+		auto e = registry->create();
+
+		auto& menuItem = registry->assign<MenuItem>(e);
+		menuItem.type = MenuOption::settings;
+
+		auto& t = registry->assign<component::Transform>(e);
+		t.setPosition(glm::vec3(0.0f, -1.6f, -1.0f));
+		t.setScale(glm::vec3(1.0f, 1.0f, 1.0f));
+
+		auto& so = registry->assign<component::EntityInfo>(e);
+		so.name = "Settings Prompt";
+
+		auto& gui = registry->assign<component::GuiRenderable>(e);
+		gui.texture = Texture2D::cache("res/assets/textures/menus/SettingsPrompt.png");
+	}
+
+	{
+		auto e = registry->create();
+
+		auto& menuItem = registry->assign<MenuItem>(e);
+		menuItem.type = MenuOption::credits;
+
+		auto& t = registry->assign<component::Transform>(e);
+		t.setPosition(glm::vec3(0.0f, -2.9f, -1.0f));
+		t.setScale(glm::vec3(1.0f, 1.0f, 1.0f));
+
+		auto& so = registry->assign<component::EntityInfo>(e);
+		so.name = "Credits Prompt";
+
+		auto& gui = registry->assign<component::GuiRenderable>(e);
+		gui.texture = Texture2D::cache("res/assets/textures/menus/CreditsPrompt.png");
 	}
 
 	{
@@ -74,14 +108,14 @@ void MainMenuLayer::onEnter()
 		menuItem.type = MenuOption::exit;
 
 		auto& t = registry->assign<component::Transform>(e);
-		t.setPosition(glm::vec3(0.0f, -4.0f, -1.0f));
+		t.setPosition(glm::vec3(0.0f, -4.2f, -1.0f));
 		t.setScale(glm::vec3(1.0f, 1.0f, 1.0f));
 
 		auto& so = registry->assign<component::EntityInfo>(e);
 		so.name = "Exit Game Prompt";
 
 		auto& gui = registry->assign<component::GuiRenderable>(e);
-		gui.texture = Texture2D::cache("res/assets/textures/menus/Exit.png");
+		gui.texture = Texture2D::cache("res/assets/textures/menus/ExitPrompt.png");
 	}
 }
 
@@ -112,6 +146,7 @@ bool MainMenuLayer::onEvent(const Event& event)
 
 		switch (evt.keycode)
 		{
+		case oyl::Key::Down:
 		case oyl::Key::S:
 		{
 			if (changeMenuOptionCountdown > 0.0f)
@@ -128,6 +163,16 @@ bool MainMenuLayer::onEvent(const Event& event)
 			}
 			case MenuOption::controls:
 			{
+				selectedMenuItemType = MenuOption::settings;
+				break;
+			}
+			case MenuOption::settings:
+			{
+				selectedMenuItemType = MenuOption::credits;
+				break;
+			}
+			case MenuOption::credits:
+			{
 				selectedMenuItemType = MenuOption::exit;
 				break;
 			}
@@ -141,6 +186,7 @@ bool MainMenuLayer::onEvent(const Event& event)
 			break;
 		}
 
+		case oyl::Key::Up:
 		case oyl::Key::W:
 		{
 			if (changeMenuOptionCountdown > 0.0f)
@@ -160,9 +206,19 @@ bool MainMenuLayer::onEvent(const Event& event)
 				selectedMenuItemType = MenuOption::playGame;
 				break;
 			}
-			case MenuOption::exit:
+			case MenuOption::settings:
 			{
 				selectedMenuItemType = MenuOption::controls;
+				break;
+			}
+			case MenuOption::credits:
+			{
+				selectedMenuItemType = MenuOption::settings;
+				break;
+			}
+			case MenuOption::exit:
+			{
+				selectedMenuItemType = MenuOption::credits;
 				break;
 			}
 			}
@@ -181,7 +237,17 @@ bool MainMenuLayer::onEvent(const Event& event)
 			}
 			case MenuOption::controls:
 			{
-				Application::get().changeScene("ControlsScene");
+				Application::get().changeScene("ControlsScreenScene");
+				break;
+			}
+			case MenuOption::settings:
+			{
+				//Application::get().changeScene("SettingsScene");
+				break;
+			}
+			case MenuOption::credits:
+			{
+				//Application::get().changeScene("CreditsScene");
 				break;
 			}
 			case MenuOption::exit:
@@ -220,6 +286,16 @@ bool MainMenuLayer::onEvent(const Event& event)
 			}
 			case MenuOption::controls:
 			{
+				selectedMenuItemType = MenuOption::settings;
+				break;
+			}
+			case MenuOption::settings:
+			{
+				selectedMenuItemType = MenuOption::credits;
+				break;
+			}
+			case MenuOption::credits:
+			{
 				selectedMenuItemType = MenuOption::exit;
 				break;
 			}
@@ -245,9 +321,19 @@ bool MainMenuLayer::onEvent(const Event& event)
 				selectedMenuItemType = MenuOption::playGame;
 				break;
 			}
-			case MenuOption::exit:
+			case MenuOption::settings:
 			{
 				selectedMenuItemType = MenuOption::controls;
+				break;
+			}
+			case MenuOption::credits:
+			{
+				selectedMenuItemType = MenuOption::settings;
+				break;
+			}
+			case MenuOption::exit:
+			{
+				selectedMenuItemType = MenuOption::credits;
 				break;
 			}
 			}
@@ -274,7 +360,7 @@ bool MainMenuLayer::onEvent(const Event& event)
 			}
 			case MenuOption::controls:
 			{
-				Application::get().changeScene("ControlsScene");
+				Application::get().changeScene("ControlsScreenScene");
 				break;
 			}
 			case MenuOption::exit:

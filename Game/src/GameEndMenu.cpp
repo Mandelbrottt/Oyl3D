@@ -93,7 +93,8 @@ bool GameEndLayer::onEvent(const Event& event)
 
 		switch (evt.keycode)
 		{
-		case oyl::Key::W:
+		case oyl::Key::Down:
+		case oyl::Key::S:
 		{
 			if (changeMenuOptionCountdown > 0.0f)
 				break;
@@ -117,8 +118,14 @@ bool GameEndLayer::onEvent(const Event& event)
 			break;
 		}
 
-		case oyl::Key::S:
+		case oyl::Key::Up:
+		case oyl::Key::W:
 		{
+			if (changeMenuOptionCountdown > 0.0f)
+				break;
+
+			changeMenuOptionCountdown = CHANGE_MENU_OPTION_DELAY;
+
 			switch (selectedMenuItemType)
 			{
 			case MenuOption::goToMainMenu:
