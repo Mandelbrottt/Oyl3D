@@ -422,6 +422,18 @@ namespace oyl::internal
                     boundMaterial->setUniformMat4("u_viewProjection", pc.viewProjectionMatrix());
                     boundMaterial->setUniformMat3("u_viewNormal", viewNormal);
 
+                    auto dirLightView = registry->view<component::DirectionalLight>();
+                    for (auto e : dirLightView)
+                    {
+                        auto& light = dirLightView.get(e);
+
+                        if (light.castShadows)
+                        {
+                            boundMaterial->setUniformMat4("u_lightSpaceMatrix", light.m_lightSpaceMatrix);
+                            break;
+                        }
+                    }
+
                     boundMaterial->applyUniforms();
                 }
 
@@ -798,7 +810,7 @@ namespace oyl::internal
                 
                 glm::mat4 lightView = glm::lookAt(-t.getForwardGlobal() * dl.clipLength * 0.5f + t.getPositionGlobal(),
                                                   t.getPositionGlobal(),
-                                                  glm::vec3(0.0f, 1.0f, 0.0f));
+                                                  t.getUpGlobal());
 
                 dl.m_lightSpaceMatrix = lightProjection * lightView;
 
@@ -1003,7 +1015,11 @@ namespace oyl::internal
 
     void skeletonAnimate(entt::entity entity, component::Renderable& renderable, component::SkeletonAnimatable& sa)
     {
-        if (renderable.model && renderable.material && renderable.material->shader == Shader::get("Oyl Skeletal"))
+        static auto fSkeletal = Shader::get("Oyl Forward Skeletal");
+        static auto dSkeletal = Shader::get("Oyl Deferred Skeletal");
+        bool valid = renderable.model && renderable.material;
+        valid &= renderable.material->shader == fSkeletal || renderable.material->shader == dSkeletal;
+        if (valid)
         {
             if (auto it = renderable.model->getAnimations().find(sa.animation);
                 it != renderable.model->getAnimations().end())

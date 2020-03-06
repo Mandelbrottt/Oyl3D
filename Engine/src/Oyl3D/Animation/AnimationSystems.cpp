@@ -95,9 +95,15 @@ namespace oyl::internal
         using component::SkeletonAnimatable;
         using component::Renderable;
         auto view = registry->view<SkeletonAnimatable, Renderable>();
-        view.each([](auto entity, SkeletonAnimatable& sa, Renderable& renderable)
+
+        static auto fSkeletal = Shader::get("Oyl Forward Skeletal");
+        static auto dSkeletal = Shader::get("Oyl Deferred Skeletal");
+
+        view.each([&](auto entity, SkeletonAnimatable& sa, Renderable& renderable)
         {
-            if (renderable.model && renderable.material && renderable.material->shader == Shader::get("Oyl Skeletal"))
+            bool valid = renderable.model && renderable.material;
+            valid &= renderable.material->shader == fSkeletal || renderable.material->shader == dSkeletal;
+            if (valid)
             {
                 if (auto it = renderable.model->getAnimations().find(sa.animation); 
                     it != renderable.model->getAnimations().end())
