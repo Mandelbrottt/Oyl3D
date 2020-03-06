@@ -15654,7 +15654,7 @@
             "Play": true,
             "Reverse": false,
             "Time": 0.0,
-            "TimeScale": 0.5
+            "TimeScale": 1.0
         },
         "Transform": {
             "Mirror": {
@@ -15700,7 +15700,7 @@
             "Play": true,
             "Reverse": false,
             "Time": 0.0,
-            "TimeScale": 0.5
+            "TimeScale": 1.0
         },
         "Transform": {
             "Mirror": {
@@ -15809,7 +15809,7 @@
             "Play": true,
             "Reverse": false,
             "Time": 2.109999895095825,
-            "TimeScale": 0.5
+            "TimeScale": 1.0
         },
         "Transform": {
             "Mirror": {
@@ -15916,7 +15916,7 @@
             "Play": true,
             "Reverse": false,
             "Time": 2.109999895095825,
-            "TimeScale": 0.5
+            "TimeScale": 1.0
         },
         "Transform": {
             "Mirror": {
@@ -16086,7 +16086,7 @@
             "Play": true,
             "Reverse": false,
             "Time": 0.3400000035762787,
-            "TimeScale": 0.5
+            "TimeScale": 1.0
         },
         "Transform": {
             "Mirror": {
@@ -16132,7 +16132,7 @@
             "Play": true,
             "Reverse": false,
             "Time": 0.3400000035762787,
-            "TimeScale": 0.5
+            "TimeScale": 1.0
         },
         "Transform": {
             "Mirror": {
@@ -16241,7 +16241,7 @@
             "Play": true,
             "Reverse": false,
             "Time": 0.9399999976158142,
-            "TimeScale": 0.5
+            "TimeScale": 1.0
         },
         "Transform": {
             "Mirror": {
@@ -16290,7 +16290,7 @@
             "CullingMask": 4294967287,
             "Enabled": true,
             "Material": {
-                "Alias": "Character Tall red"
+                "Alias": "Character Tall Red"
             },
             "Mesh": {
                 "Alias": "characterTall",
@@ -16348,7 +16348,7 @@
             "Play": true,
             "Reverse": false,
             "Time": 0.9399999976158142,
-            "TimeScale": 0.5
+            "TimeScale": 1.0
         },
         "Transform": {
             "Mirror": {
