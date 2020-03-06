@@ -227,6 +227,7 @@ namespace oyl
             case TextureFormat::RG8:     return GL_RG8;
             case TextureFormat::RGB8:    return GL_RGB8;
             case TextureFormat::RGBA8:   return GL_RGBA8;
+            case TextureFormat::RGB10:   return GL_RGB10;
             case TextureFormat::RGBF16:  return GL_RGB16F;
             case TextureFormat::RGBF32:  return GL_RGB32F;
             case TextureFormat::RGBAF16: return GL_RGBA16F;
@@ -324,12 +325,13 @@ namespace oyl
         GLenum context = GL_NONE;
         switch (a_context)
         {
-            case FrameBufferContext::ReadWrite: context = GL_FRAMEBUFFER; break;
-            case FrameBufferContext::Read: context = GL_READ_FRAMEBUFFER; break;
-            case FrameBufferContext::Write: context = GL_DRAW_FRAMEBUFFER; break;
+            case FrameBufferContext::ReadWrite: context = GL_FRAMEBUFFER;      break;
+            case FrameBufferContext::Read:      context = GL_READ_FRAMEBUFFER; break;
+            case FrameBufferContext::Write:     context = GL_DRAW_FRAMEBUFFER; break;
         }
         glBindFramebuffer(context, m_rendererID);
-        glDrawBuffers(m_numColorAttachments, m_bufs);
+        if (context == GL_FRAMEBUFFER || context == GL_DRAW_FRAMEBUFFER)
+            glDrawBuffers(m_numColorAttachments, m_bufs);
     }
 
     void OpenGLFrameBuffer::unbind(FrameBufferContext a_context)
@@ -337,9 +339,9 @@ namespace oyl
         GLenum context = GL_NONE;
         switch (a_context)
         {
-            case FrameBufferContext::ReadWrite: context = GL_FRAMEBUFFER; break;
-            case FrameBufferContext::Read: context = GL_READ_FRAMEBUFFER; break;
-            case FrameBufferContext::Write: context = GL_DRAW_FRAMEBUFFER; break;
+            case FrameBufferContext::ReadWrite: context = GL_FRAMEBUFFER;      break;
+            case FrameBufferContext::Read:      context = GL_READ_FRAMEBUFFER; break;
+            case FrameBufferContext::Write:     context = GL_DRAW_FRAMEBUFFER; break;
         }
         glBindFramebuffer(context, GL_NONE);
     }

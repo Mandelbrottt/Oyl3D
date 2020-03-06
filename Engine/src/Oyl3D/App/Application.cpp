@@ -133,7 +133,11 @@ namespace oyl
         Texture2D::cache(ENGINE_RES + UV_TEXTURE_PATH, UV_TEXTURE_ALIAS);
         Texture2D::cache(ENGINE_RES + DEFAULT_NORMAL_TEXTURE_PATH, DEFAULT_NORMAL_TEXTURE_ALIAS);
 
-        TextureCubeMap::cache(ENGINE_RES + DEFAULT_SKYBOX_PATH, DEFAULT_SKYBOX_ALIAS);
+        auto defSkybox = TextureCubeMap::create(ENGINE_RES + DEFAULT_SKYBOX_PATH, 
+                                                TextureFilter::Nearest, 
+                                                TextureWrap::ClampToBorder, 
+                                                TextureProfile::SRGB);
+        TextureCubeMap::cache(std::move(defSkybox), DEFAULT_SKYBOX_ALIAS);
         
         initEventListeners();
 

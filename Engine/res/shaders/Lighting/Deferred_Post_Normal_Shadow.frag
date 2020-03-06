@@ -111,11 +111,8 @@ void main()
 	for (int i = 0; i < u_numSpotLights; i++)
 		out_color.rgb += calculateSpotLight(u_spotLight[i], shadowIndex);
 	
+	// Add emission
 	out_color.rgb += texture(u_emission3_glossiness1, in_texCoords).rgb;
-
-	// Gamma Correction
-	vec3 gamma = vec3(1.0 / 2.2);
-	out_color.rgb = pow(out_color.rgb, gamma);
 }
 
 vec3 calculatePointLight(PointLight light, inout int shadowIndex)

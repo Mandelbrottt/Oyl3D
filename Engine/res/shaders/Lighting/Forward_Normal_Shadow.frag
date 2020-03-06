@@ -132,9 +132,6 @@ void main()
 	
 	out_color += texture(u_material.emission, mainTexCoord);
 
-	// Gamma Correction
-	vec3 gamma = vec3(1.0 / 2.2);
-	out_color.rgb = pow(out_color.rgb, gamma);
 	out_color.a = 1.0;
 }
 

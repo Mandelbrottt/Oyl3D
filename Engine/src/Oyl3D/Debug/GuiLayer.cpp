@@ -1765,11 +1765,15 @@ namespace oyl::internal
                 }
                 ImGui::EndCombo();
             }
+
+            float newWidth = ImGui::GetWindowContentRegionWidth() / 5;
+
+            ImGui::PushItemWidth(newWidth);
             {
                 bool changed = false;
                 float fov = camera.fov();
                 ImGui::TextUnformatted("Field of View");
-                ImGui::SameLine();
+                ImGui::SameLine(ImGui::GetWindowContentRegionWidth() - (15 + newWidth + 27));
                 ImGui::SetNextItemWidth(15);
                 changed |= ImGui::DragFloat("##DragFov", &fov, 0.2f, 0.0f, 1000.0f, "F");
                 ImGui::SameLine();
@@ -1781,7 +1785,7 @@ namespace oyl::internal
                 bool changed = false;
                 float nearClipping = camera.nearClipping();
                 ImGui::TextUnformatted("Near Clipping Plane");
-                ImGui::SameLine();
+                ImGui::SameLine(ImGui::GetWindowContentRegionWidth() - (15 + newWidth + 27));
                 ImGui::SetNextItemWidth(15);
                 changed |= ImGui::DragFloat("##DragNearClipping", &nearClipping, 0.2f, 0.0f, 1000.0f, "Z");
                 ImGui::SameLine();
@@ -1793,7 +1797,7 @@ namespace oyl::internal
                 bool changed = false;
                 float farClipping = camera.farClipping();
                 ImGui::TextUnformatted("Field of View");
-                ImGui::SameLine();
+                ImGui::SameLine(ImGui::GetWindowContentRegionWidth() - (15 + newWidth + 27));
                 ImGui::SetNextItemWidth(15);
                 changed |= ImGui::DragFloat("##FarClippingFov", &farClipping, 0.2f, 0.0f, 1000.0f, "Z");
                 ImGui::SameLine();
@@ -1801,6 +1805,40 @@ namespace oyl::internal
                 if (changed)
                     camera.farClipping(farClipping);
             }
+            {
+                ImGui::TextUnformatted("Exposure");
+                ImGui::SameLine(ImGui::GetWindowContentRegionWidth() - (15 + newWidth + 27));
+                ImGui::SetNextItemWidth(15);
+                ImGui::DragFloat("##DragExposure", &camera.exposure, 0.02f, 0.0f, 1000.0f, "E");
+                ImGui::SameLine();
+                ImGui::InputFloat("##ExposureInput", &camera.exposure, 0, 0, "%.2f");
+            }
+            {
+                ImGui::TextUnformatted("Brightness");
+                ImGui::SameLine(ImGui::GetWindowContentRegionWidth() - (15 + newWidth + 27));
+                ImGui::SetNextItemWidth(15);
+                ImGui::DragFloat("##DragBrightness", &camera.brightness, 0.02f, 0.0f, 1000.0f, "B");
+                ImGui::SameLine();
+                ImGui::InputFloat("##BrightnessInput", &camera.brightness, 0, 0, "%.2f");
+            }
+            {
+                ImGui::TextUnformatted("Contrast");
+                ImGui::SameLine(ImGui::GetWindowContentRegionWidth() - (15 + newWidth + 27));
+                ImGui::SetNextItemWidth(15);
+                ImGui::DragFloat("##DragContrast", &camera.contrast, 0.02f, 0.0f, 1000.0f, "C");
+                ImGui::SameLine();
+                ImGui::InputFloat("##ContrastInput", &camera.contrast, 0, 0, "%.2f");
+            }
+            {
+                ImGui::TextUnformatted("Saturation");
+                ImGui::SameLine(ImGui::GetWindowContentRegionWidth() - (15 + newWidth + 27));
+                ImGui::SetNextItemWidth(15);
+                ImGui::DragFloat("##DragSaturation", &camera.saturation, 0.02f, 0.0f, 1000.0f, "S");
+                ImGui::SameLine();
+                ImGui::InputFloat("##SaturationInput", &camera.saturation, 0, 0, "%.2f");
+            }
+
+            ImGui::PopItemWidth();
 
             // TODO: Upper and Lower Coords
 

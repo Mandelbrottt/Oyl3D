@@ -89,7 +89,7 @@ namespace oyl::internal
                 camera.m_mainFrameBuffer = FrameBuffer::create(1);
                 camera.m_mainFrameBuffer->initDepthTexture(1, 1);
                 camera.m_mainFrameBuffer->initColorTexture(0, 1, 1,
-                                                           TextureFormat::RGBA8,
+                                                           TextureFormat::RGBF16,
                                                            TextureFilter::Nearest,
                                                            TextureWrap::ClampToEdge);
             }
@@ -720,40 +720,155 @@ namespace oyl::internal
         m_skyboxShader = Shader::create(
             {
                 { Shader::Compound, ENGINE_RES + SKYBOX_SHADER_PATH }
-            });
+            }
+        );
+
+        m_hdrShader = Shader::create(
+            {
+                { Shader::Vertex,   ENGINE_RES + HDR_SHADER_VERTEX_PATH },
+                { Shader::Fragment, ENGINE_RES + HDR_SHADER_FRAGMENT_PATH }
+            }
+        );
+
+        m_intermediateFrameBuffer = FrameBuffer::create(1);
+        m_intermediateFrameBuffer->initColorTexture(0, 1, 1, 
+                                                    TextureFormat::RGBF16, 
+                                                    TextureFilter::Nearest, 
+                                                    TextureWrap::ClampToBorder);
+
+        float vertices[] = {
+            -1.0f, -1.0f, 0.0f, 0.0f, 0.0f,
+            1.0f, -1.0f, 0.0f, 1.0f, 0.0f,
+            1.0f, 1.0f, 0.0f, 1.0f, 1.0f,
+            -1.0f, 1.0f, 0.0f, 0.0f, 1.0f
+        };
+
+        u32 indices[] = {
+            0, 1, 2,
+            2, 3, 0
+        };
+
+        m_fullscreenQuad = VertexArray::create();
+
+        Ref<VertexBuffer> vbo = VertexBuffer::create(vertices, sizeof(vertices));
+        vbo->setLayout({
+            { DataType::Float3, "in_position" },
+            { DataType::Float2, "in_texCoord" }
+        });
+        Ref<IndexBuffer> ebo = IndexBuffer::create(indices, 6);
+        m_fullscreenQuad->addVertexBuffer(vbo);
+        m_fullscreenQuad->addIndexBuffer(ebo);
     }
 
     void PostRenderSystem::onUpdate()
     {
-        static const auto& skybox = TextureCubeMap::get(DEFAULT_SKYBOX_ALIAS);
-        static const auto& mesh = Model::get(CUBE_MODEL_ALIAS)->getMeshes()[0];
-
         using component::Camera;
         auto camView = registry->view<Camera>();
 
         camView.each([&](Camera& camera)
         {
             camera.m_mainFrameBuffer->bind();
-
             RenderCommand::setDrawRect(0, 0, camera.m_mainFrameBuffer->getColorWidth(), camera.m_mainFrameBuffer->getColorHeight());
-
-            glm::mat4 viewProj = camera.projectionMatrix();
-            viewProj *= glm::mat4(glm::mat3(camera.viewMatrix()));
-
-            m_skyboxShader->bind();
-            m_skyboxShader->setUniformMat4("u_viewProjection", viewProj);
-
-            if (camera.skybox)
-                camera.skybox->bind(0);
-            else
-                skybox->bind(0);
-
-            m_skyboxShader->setUniform1i("u_skybox", 0);
-
             RenderCommand::setBackfaceCulling(false);
-            RenderCommand::drawArrays(mesh.getVertexArray(), mesh.getNumVertices());
-            RenderCommand::setBackfaceCulling(true);
+            RenderCommand::setAlphaBlend(false);
+
+            RenderCommand::setDepthDraw(true);
+            this->skyboxPass(camera);
+            RenderCommand::setDepthDraw(false);
+
+            if (camera.doHDR)
+                this->hdrPass(camera);
         });
+    }
+
+    void PostRenderSystem::skyboxPass(const component::Camera& camera)
+    {
+        static const auto& skybox = TextureCubeMap::get(DEFAULT_SKYBOX_ALIAS);
+        static const auto& mesh = Model::get(CUBE_MODEL_ALIAS)->getMeshes()[0];
+
+        glm::mat4 viewProj = camera.projectionMatrix();
+        viewProj *= glm::mat4(glm::mat3(camera.viewMatrix()));
+
+        m_skyboxShader->bind();
+        m_skyboxShader->setUniformMat4("u_viewProjection", viewProj);
+
+        if (camera.skybox)
+            camera.skybox->bind(0);
+        else
+            skybox->bind(0);
+
+        camera.m_mainFrameBuffer->bind();
+
+        RenderCommand::drawArrays(mesh.getVertexArray(), mesh.getNumVertices());
+    }
+
+    static glm::mat4 brightnessMatrix(float a_brightness)
+    {
+        return {
+            1.0f, 0.0f, 0.0f, 0.0f,
+            0.0f, 1.0f, 0.0f, 0.0f,
+            0.0f, 0.0f, 1.0f, 0.0f,
+            a_brightness, a_brightness, a_brightness, 1.0f
+        };
+    }
+    
+    static glm::mat4 contrastMatrix(float a_contrast)
+    {
+        float t = (1.0f - a_contrast) / 2.0f;
+
+        return {
+            a_contrast, 0.0f,       0.0f,       0.0f,
+            0.0f,       a_contrast, 0.0f,       0.0f,
+            0.0f,       0.0f,       a_contrast, 0.0f,
+            t,          t,          t,          1.0f
+        };
+    }
+    
+    static glm::mat4 saturationMatrix(float a_saturation)
+    {
+        glm::vec3 luminance = { 0.3086f, 0.6094f, 0.0820f };
+
+        float oneMinusSat = 1.0 - a_saturation;
+
+        glm::vec3 red = glm::vec3(luminance.x * oneMinusSat);
+        red += glm::vec3(a_saturation, 0, 0);
+
+        glm::vec3 green = glm::vec3(luminance.y * oneMinusSat);
+        green += glm::vec3(0, a_saturation, 0);
+
+        glm::vec3 blue = glm::vec3(luminance.z * oneMinusSat);
+        blue += glm::vec3(0, 0, a_saturation);
+
+        glm::mat4 ret(1.0f);
+        ret[0].rgb = red;
+        ret[1].rgb = green;
+        ret[2].rgb = blue;
+
+        return ret;
+    }
+
+    void PostRenderSystem::hdrPass(const component::Camera& camera)
+    {
+        if (m_intermediateFrameBuffer->getColorWidth() != camera.m_mainFrameBuffer->getColorWidth() ||
+            m_intermediateFrameBuffer->getColorHeight() != camera.m_mainFrameBuffer->getColorHeight())
+        {
+            m_intermediateFrameBuffer->updateViewport(camera.m_mainFrameBuffer->getColorWidth(), 
+                                                      camera.m_mainFrameBuffer->getColorHeight());
+        }
+
+        m_hdrShader->bind();
+        m_hdrShader->setUniform1f(0, camera.exposure);
+        m_hdrShader->setUniformMat4(1, brightnessMatrix(camera.brightness));
+        m_hdrShader->setUniformMat4(2, contrastMatrix(camera.contrast));
+        m_hdrShader->setUniformMat4(3, saturationMatrix(camera.saturation));
+
+        camera.m_mainFrameBuffer->bind(FrameBufferContext::Read);
+        camera.m_mainFrameBuffer->bindColorAttachment(0);
+        m_intermediateFrameBuffer->bind(FrameBufferContext::Write);
+
+        RenderCommand::drawIndexed(m_fullscreenQuad);
+
+        m_intermediateFrameBuffer->blit(camera.m_mainFrameBuffer);
     }
 
     void ShadowRenderSystem::onEnter()

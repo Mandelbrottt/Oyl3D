@@ -77,6 +77,13 @@ namespace oyl
 
             bool renderShadows = true; 
 
+            bool doHDR = true;
+
+            float exposure   = 1.0f;
+            float brightness = 0.15f;
+            float contrast   = 1.2f;
+            float saturation = 1.5f;
+
             // Returns the current field of view
             float fov() const;
 

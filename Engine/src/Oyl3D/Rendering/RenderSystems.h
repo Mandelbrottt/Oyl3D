@@ -14,6 +14,7 @@ namespace oyl
     {
         class Renderable;
         class SkeletonAnimatable;
+        class Camera;
     }
     
     namespace internal
@@ -91,6 +92,13 @@ namespace oyl
 
         private:
             Ref<Shader> m_skyboxShader;
+            Ref<Shader> m_hdrShader;
+            
+            Ref<VertexArray> m_fullscreenQuad;
+            Ref<FrameBuffer> m_intermediateFrameBuffer;
+
+            void skyboxPass(const component::Camera& camera);
+            void hdrPass(const component::Camera& camera);
         };
 
         class ShadowRenderSystem : public System
