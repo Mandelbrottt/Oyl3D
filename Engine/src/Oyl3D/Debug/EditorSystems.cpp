@@ -267,13 +267,7 @@ namespace oyl::internal
                     count++;
                 }
 
-                for (; count < 8; count++)
-                {
-                    boundMaterial->setUniform3f("u_pointLight[" + std::to_string(count) + "].position", {});
-                    boundMaterial->setUniform3f("u_pointLight[" + std::to_string(count) + "].ambient",  {});
-                    boundMaterial->setUniform3f("u_pointLight[" + std::to_string(count) + "].diffuse",  {});
-                    boundMaterial->setUniform3f("u_pointLight[" + std::to_string(count) + "].specular", {});
-                }
+                boundMaterial->setUniform1i("u_numPointLights", count);
 
                 auto dirLightView = registry->view<DirectionalLight>();
                 count = 0;
@@ -292,7 +286,7 @@ namespace oyl::internal
                     boundMaterial->setUniform3f(dirLightName + ".specular",
                                                 dirLightProps.specular);
 
-                    if (dirLightProps.castShadows && shadowIndex < 3)
+                    if (dirLightProps.castShadows && shadowIndex < 1)
                     {
                         boundMaterial->setUniformMat4("u_lightSpaceMatrix", dirLightProps.m_lightSpaceMatrix);
 
@@ -311,15 +305,9 @@ namespace oyl::internal
                         break;
                 }
 
-                for (; count < 8; count++)
-                {
-                    std::string dirLightName = "u_dirLight[" + std::to_string(count) + "]";
+                boundMaterial->setUniform1i("u_numDirLights", count);
 
-                    boundMaterial->setUniform3f(dirLightName + ".direction", {});
-                    boundMaterial->setUniform3f(dirLightName + ".ambient",   {});
-                    boundMaterial->setUniform3f(dirLightName + ".diffuse",   {});
-                    boundMaterial->setUniform3f(dirLightName + ".specular",  {});
-                }
+                boundMaterial->setUniform1i("u_numShadowMaps", shadowIndex);
 
                 boundMaterial->bind();
                 boundMaterial->applyUniforms();
