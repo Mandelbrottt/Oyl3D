@@ -15537,52 +15537,6 @@
             }
         }
     },
-    "Player1 Arms": {
-        "Renderable": {
-            "CastShadows": false,
-            "CullingMask": 1,
-            "Enabled": true,
-            "Material": {
-                "Alias": "Character Tall Blue Anim"
-            },
-            "Mesh": {
-                "Alias": "Arms",
-                "FilePath": "res\\assets\\models\\Animation\\Character\\Arms.fbx"
-            }
-        },
-        "SkeletonAnimatable": {
-            "Animation": "Thums Up",
-            "Loop": true,
-            "Play": true,
-            "Reverse": false,
-            "Time": 0.0,
-            "TimeScale": 1.0
-        },
-        "Transform": {
-            "Mirror": {
-                "X": false,
-                "Y": false,
-                "Z": false
-            },
-            "Parent": "Player1 Camera",
-            "Position": {
-                "X": 0.0,
-                "Y": 0.0,
-                "Z": -0.019999999552965164
-            },
-            "Rotation": {
-                "qW": 1.0,
-                "qX": 0.0,
-                "qY": 0.0,
-                "qZ": 0.0
-            },
-            "Scale": {
-                "X": 0.009999999776482582,
-                "Y": 0.009999999776482582,
-                "Z": 0.009999999776482582
-            }
-        }
-    },
     "Player1 Blue": {
         "Collidable": {
             "Shapes": [
@@ -15681,6 +15635,98 @@
             }
         }
     },
+    "Player1 LeftArm": {
+        "Renderable": {
+            "CastShadows": false,
+            "CullingMask": 1,
+            "Enabled": true,
+            "Material": {
+                "Alias": "Character Tall Blue Anim"
+            },
+            "Mesh": {
+                "Alias": "LeftArm",
+                "FilePath": "res\\assets\\models\\Animation\\Character\\LeftArm.fbx"
+            }
+        },
+        "SkeletonAnimatable": {
+            "Animation": "Idle_L",
+            "Loop": true,
+            "Play": true,
+            "Reverse": false,
+            "Time": 0.0,
+            "TimeScale": 0.5
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Parent": "Player1 Camera",
+            "Position": {
+                "X": 0.0,
+                "Y": 0.0,
+                "Z": -0.019999999552965164
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 0.009999999776482582,
+                "Y": 0.009999999776482582,
+                "Z": 0.009999999776482582
+            }
+        }
+    },
+    "Player1 RightArm": {
+        "Renderable": {
+            "CastShadows": false,
+            "CullingMask": 1,
+            "Enabled": true,
+            "Material": {
+                "Alias": "Character Tall Blue Anim"
+            },
+            "Mesh": {
+                "Alias": "RightArm",
+                "FilePath": "res\\assets\\models\\Animation\\Character\\RightArm.fbx"
+            }
+        },
+        "SkeletonAnimatable": {
+            "Animation": "Idle_R",
+            "Loop": true,
+            "Play": true,
+            "Reverse": false,
+            "Time": 0.0,
+            "TimeScale": 0.5
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Parent": "Player1 Camera",
+            "Position": {
+                "X": 0.0,
+                "Y": 0.0,
+                "Z": -0.019999999552965164
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 0.009999999776482582,
+                "Y": 0.009999999776482582,
+                "Z": 0.009999999776482582
+            }
+        }
+    },
     "Player1UI": {
         "Transform": {
             "Mirror": {
@@ -15704,52 +15750,6 @@
                 "X": 1.0000001192092896,
                 "Y": 1.0000001192092896,
                 "Z": 1.0
-            }
-        }
-    },
-    "Player2 Arms": {
-        "Renderable": {
-            "CastShadows": false,
-            "CullingMask": 2,
-            "Enabled": true,
-            "Material": {
-                "Alias": "Character Tall Red Anim"
-            },
-            "Mesh": {
-                "Alias": "Arms",
-                "FilePath": "res\\assets\\models\\Animation\\Character\\Arms.fbx"
-            }
-        },
-        "SkeletonAnimatable": {
-            "Animation": "IdleTest",
-            "Loop": true,
-            "Play": true,
-            "Reverse": false,
-            "Time": 2.109999895095825,
-            "TimeScale": 0.5
-        },
-        "Transform": {
-            "Mirror": {
-                "X": false,
-                "Y": false,
-                "Z": false
-            },
-            "Parent": "Player2 Camera",
-            "Position": {
-                "X": 0.0,
-                "Y": 0.0,
-                "Z": -0.019999999552965164
-            },
-            "Rotation": {
-                "qW": 1.0,
-                "qX": 0.0,
-                "qY": -0.0,
-                "qZ": -1.2432549738150556e-05
-            },
-            "Scale": {
-                "X": 0.009999999776482582,
-                "Y": 0.009999999776482582,
-                "Z": 0.009999999776482582
             }
         }
     },
@@ -15787,6 +15787,52 @@
                 "X": 1.0,
                 "Y": 1.0,
                 "Z": 1.0
+            }
+        }
+    },
+    "Player2 LeftArm": {
+        "Renderable": {
+            "CastShadows": false,
+            "CullingMask": 2,
+            "Enabled": true,
+            "Material": {
+                "Alias": "Character Tall Red Anim"
+            },
+            "Mesh": {
+                "Alias": "LeftArm",
+                "FilePath": "res\\assets\\models\\Animation\\Character\\LeftArm.fbx"
+            }
+        },
+        "SkeletonAnimatable": {
+            "Animation": "Idle_L",
+            "Loop": true,
+            "Play": true,
+            "Reverse": false,
+            "Time": 2.109999895095825,
+            "TimeScale": 0.5
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Parent": "Player2 Camera",
+            "Position": {
+                "X": 0.0,
+                "Y": 0.0,
+                "Z": -0.019999999552965164
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": -0.0,
+                "qZ": -1.2432549738150556e-05
+            },
+            "Scale": {
+                "X": 0.009999999776482582,
+                "Y": 0.009999999776482582,
+                "Z": 0.009999999776482582
             }
         }
     },
@@ -15851,6 +15897,52 @@
             }
         }
     },
+    "Player2 RightArm": {
+        "Renderable": {
+            "CastShadows": false,
+            "CullingMask": 2,
+            "Enabled": true,
+            "Material": {
+                "Alias": "Character Tall Red Anim"
+            },
+            "Mesh": {
+                "Alias": "RightArm",
+                "FilePath": "res\\assets\\models\\Animation\\Character\\RightArm.fbx"
+            }
+        },
+        "SkeletonAnimatable": {
+            "Animation": "Idle_R",
+            "Loop": true,
+            "Play": true,
+            "Reverse": false,
+            "Time": 2.109999895095825,
+            "TimeScale": 0.5
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Parent": "Player2 Camera",
+            "Position": {
+                "X": 0.0,
+                "Y": -1.1920928955078125e-07,
+                "Z": -0.020000457763671875
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": -0.0,
+                "qZ": -1.2432549738150556e-05
+            },
+            "Scale": {
+                "X": 0.009999999776482582,
+                "Y": 0.009999999776482582,
+                "Z": 0.009999999776482582
+            }
+        }
+    },
     "Player2UI": {
         "Transform": {
             "Mirror": {
@@ -15874,52 +15966,6 @@
                 "X": 1.0000001192092896,
                 "Y": 1.0000001192092896,
                 "Z": 1.0
-            }
-        }
-    },
-    "Player3 Arms": {
-        "Renderable": {
-            "CastShadows": false,
-            "CullingMask": 4,
-            "Enabled": true,
-            "Material": {
-                "Alias": "Character Tall Blue Anim"
-            },
-            "Mesh": {
-                "Alias": "Arms",
-                "FilePath": "res\\assets\\models\\Animation\\Character\\Arms.fbx"
-            }
-        },
-        "SkeletonAnimatable": {
-            "Animation": "IdleTest",
-            "Loop": true,
-            "Play": true,
-            "Reverse": false,
-            "Time": 0.3400000035762787,
-            "TimeScale": 0.5
-        },
-        "Transform": {
-            "Mirror": {
-                "X": false,
-                "Y": false,
-                "Z": false
-            },
-            "Parent": "Player3 Camera",
-            "Position": {
-                "X": 0.0,
-                "Y": 0.0,
-                "Z": -0.019999999552965164
-            },
-            "Rotation": {
-                "qW": 1.0,
-                "qX": 0.0,
-                "qY": 0.0,
-                "qZ": 0.0
-            },
-            "Scale": {
-                "X": 0.010000001639127731,
-                "Y": 0.009999999776482582,
-                "Z": 0.010000001639127731
             }
         }
     },
@@ -16021,6 +16067,98 @@
             }
         }
     },
+    "Player3 LeftArm": {
+        "Renderable": {
+            "CastShadows": false,
+            "CullingMask": 4,
+            "Enabled": true,
+            "Material": {
+                "Alias": "Character Tall Blue Anim"
+            },
+            "Mesh": {
+                "Alias": "LeftArm",
+                "FilePath": "res\\assets\\models\\Animation\\Character\\LeftArm.fbx"
+            }
+        },
+        "SkeletonAnimatable": {
+            "Animation": "Idle_L",
+            "Loop": true,
+            "Play": true,
+            "Reverse": false,
+            "Time": 0.3400000035762787,
+            "TimeScale": 0.5
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Parent": "Player3 Camera",
+            "Position": {
+                "X": 0.0,
+                "Y": 0.0,
+                "Z": -0.019999999552965164
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 0.010000001639127731,
+                "Y": 0.009999999776482582,
+                "Z": 0.010000001639127731
+            }
+        }
+    },
+    "Player3 RightArm": {
+        "Renderable": {
+            "CastShadows": false,
+            "CullingMask": 4,
+            "Enabled": true,
+            "Material": {
+                "Alias": "Character Tall Blue Anim"
+            },
+            "Mesh": {
+                "Alias": "RightArm",
+                "FilePath": "res\\assets\\models\\Animation\\Character\\RightArm.fbx"
+            }
+        },
+        "SkeletonAnimatable": {
+            "Animation": "Idle_R",
+            "Loop": true,
+            "Play": true,
+            "Reverse": false,
+            "Time": 0.3400000035762787,
+            "TimeScale": 0.5
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Parent": "Player3 Camera",
+            "Position": {
+                "X": 0.0,
+                "Y": 0.0,
+                "Z": -0.019999999552965164
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 0.010000001639127731,
+                "Y": 0.009999999776482582,
+                "Z": 0.010000001639127731
+            }
+        }
+    },
     "Player3UI": {
         "Transform": {
             "Mirror": {
@@ -16044,52 +16182,6 @@
                 "X": 1.0000001192092896,
                 "Y": 1.0000001192092896,
                 "Z": 1.0
-            }
-        }
-    },
-    "Player4 Arms": {
-        "Renderable": {
-            "CastShadows": false,
-            "CullingMask": 8,
-            "Enabled": true,
-            "Material": {
-                "Alias": "Character Tall Red Anim"
-            },
-            "Mesh": {
-                "Alias": "Arms",
-                "FilePath": "res\\assets\\models\\Animation\\Character\\Arms.fbx"
-            }
-        },
-        "SkeletonAnimatable": {
-            "Animation": "IdleTest",
-            "Loop": true,
-            "Play": true,
-            "Reverse": false,
-            "Time": 0.9399999976158142,
-            "TimeScale": 0.5
-        },
-        "Transform": {
-            "Mirror": {
-                "X": false,
-                "Y": false,
-                "Z": false
-            },
-            "Parent": "Player4 Camera",
-            "Position": {
-                "X": 0.0,
-                "Y": 0.0,
-                "Z": -0.019999999552965164
-            },
-            "Rotation": {
-                "qW": 1.0,
-                "qX": 0.0,
-                "qY": 0.0,
-                "qZ": 0.0
-            },
-            "Scale": {
-                "X": 0.009999999776482582,
-                "Y": 0.009999999776482582,
-                "Z": 0.009999999776482582
             }
         }
     },
@@ -16127,6 +16219,52 @@
                 "X": 1.0,
                 "Y": 1.0,
                 "Z": 1.0
+            }
+        }
+    },
+    "Player4 LeftArm": {
+        "Renderable": {
+            "CastShadows": false,
+            "CullingMask": 8,
+            "Enabled": true,
+            "Material": {
+                "Alias": "Character Tall Red Anim"
+            },
+            "Mesh": {
+                "Alias": "LeftArm",
+                "FilePath": "res\\assets\\models\\Animation\\Character\\LeftArm.fbx"
+            }
+        },
+        "SkeletonAnimatable": {
+            "Animation": "Idle_L",
+            "Loop": true,
+            "Play": true,
+            "Reverse": false,
+            "Time": 0.9399999976158142,
+            "TimeScale": 0.5
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Parent": "Player4 Camera",
+            "Position": {
+                "X": 0.0,
+                "Y": 0.0,
+                "Z": -0.019999999552965164
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 0.009999999776482582,
+                "Y": 0.009999999776482582,
+                "Z": 0.009999999776482582
             }
         }
     },
@@ -16188,6 +16326,52 @@
                 "X": 1.0,
                 "Y": 1.0,
                 "Z": 1.0
+            }
+        }
+    },
+    "Player4 RightArm": {
+        "Renderable": {
+            "CastShadows": false,
+            "CullingMask": 8,
+            "Enabled": true,
+            "Material": {
+                "Alias": "Character Tall Red Anim"
+            },
+            "Mesh": {
+                "Alias": "RightArm",
+                "FilePath": "res\\assets\\models\\Animation\\Character\\RightArm.fbx"
+            }
+        },
+        "SkeletonAnimatable": {
+            "Animation": "Idle_R",
+            "Loop": true,
+            "Play": true,
+            "Reverse": false,
+            "Time": 0.9399999976158142,
+            "TimeScale": 0.5
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Parent": "Player4 Camera",
+            "Position": {
+                "X": 0.0,
+                "Y": 0.0,
+                "Z": -0.019999999552965164
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 0.009999999776482582,
+                "Y": 0.009999999776482582,
+                "Z": 0.009999999776482582
             }
         }
     },
