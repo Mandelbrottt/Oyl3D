@@ -1527,6 +1527,15 @@ namespace oyl::internal
                 ImGui::SameLine();
                 ImGui::InputFloat("##PointLightRangeInput", &pl.range, 0, 0, "%.2f");
             }
+            {
+                const float posDragSpeed = 0.01f;
+                ImGui::TextUnformatted("Intensity");
+                ImGui::SameLine(ImGui::GetWindowContentRegionWidth() - (15 + newWidth + 27));
+                ImGui::SetNextItemWidth(15);
+                ImGui::DragFloat("##PointLightIntensity", &pl.intensity, posDragSpeed, 0.0f, 999.0f, "R");
+                ImGui::SameLine();
+                ImGui::InputFloat("##PointLightIntensityInput", &pl.intensity, 0, 0, "%.2f");
+            }
             ImGui::PopItemWidth();
 
             ImGui::ColorEdit3("Ambient##PointLightAmbient", value_ptr(pl.ambient));
@@ -1634,6 +1643,20 @@ namespace oyl::internal
                 ImGui::Unindent(10);
             }
 
+            float newWidth = ImGui::GetWindowContentRegionWidth() / 6;
+            
+            ImGui::PushItemWidth(newWidth);
+            {
+                const float posDragSpeed = 0.01f;
+                ImGui::TextUnformatted("Intensity");
+                ImGui::SameLine(ImGui::GetWindowContentRegionWidth() - (15 + newWidth + 27));
+                ImGui::SetNextItemWidth(15);
+                ImGui::DragFloat("##DirectionalLightIntensity", &dl.intensity, posDragSpeed, 0.0f, 999.0f, "R");
+                ImGui::SameLine();
+                ImGui::InputFloat("##DirectionalLightIntensityInput", &dl.intensity, 0, 0, "%.2f");
+            }
+            ImGui::PopItemWidth();
+
             ImGui::ColorEdit3("Ambient##DirectionalLightAmbient", value_ptr(dl.ambient));
             ImGui::ColorEdit3("Diffuse##DirectionalLightDiffuse", value_ptr(dl.diffuse));
             ImGui::ColorEdit3("Specular##DirectionalLightSpecular", value_ptr(dl.specular));
@@ -1679,6 +1702,15 @@ namespace oyl::internal
                 ImGui::DragFloat("##RangeSpotLight", &sl.range, posDragSpeed, 0.0f, 999.0f, "R");
                 ImGui::SameLine();
                 ImGui::InputFloat("##RangeInputSpotLight", &sl.range, 0, 0, "%.2f");
+            }
+            {
+                const float posDragSpeed = 0.01f;
+                ImGui::TextUnformatted("Intensity");
+                ImGui::SameLine(ImGui::GetWindowContentRegionWidth() - (15 + newWidth + 27));
+                ImGui::SetNextItemWidth(15);
+                ImGui::DragFloat("##SpotLightIntensity", &sl.intensity, posDragSpeed, 0.0f, 999.0f, "R");
+                ImGui::SameLine();
+                ImGui::InputFloat("##SpotLightIntensityInput", &sl.intensity, 0, 0, "%.2f");
             }
             {
                 const float posDragSpeed = 0.01f;

@@ -252,6 +252,8 @@ namespace oyl::internal
                                                     pointLightProps.specular);
                         boundMaterial->setUniform1f(pointLightName + ".range",
                                                     pointLightProps.range);
+                        boundMaterial->setUniform1f(pointLightName + ".intensity",
+                                                    pointLightProps.intensity);
 
                         count++;
                         if (count >= 16)
@@ -277,6 +279,8 @@ namespace oyl::internal
                                                     dirLightProps.diffuse);
                         boundMaterial->setUniform3f(dirLightName + ".specular",
                                                     dirLightProps.specular);
+                        boundMaterial->setUniform1f(dirLightName + ".intensity",
+                                                    dirLightProps.intensity);
 
                         if (dirLightProps.castShadows && shadowIndex < 3)
                         {
@@ -495,6 +499,8 @@ namespace oyl::internal
                                                    pointLightProps.specular);
                 m_deferredPostShader->setUniform1f(pointLightName + ".range",
                                                    pointLightProps.range);
+                m_deferredPostShader->setUniform1f(pointLightName + ".intensity",
+                                                   pointLightProps.intensity);
 
                 count++;
                 if (count >= 16)
@@ -520,6 +526,8 @@ namespace oyl::internal
                                                    dirLightProps.diffuse);
                 m_deferredPostShader->setUniform3f(dirLightName + ".specular",
                                                    dirLightProps.specular);
+                m_deferredPostShader->setUniform1f(dirLightName + ".intensity",
+                                                   dirLightProps.intensity);
 
                 if (dirLightProps.castShadows && shadowIndex < 3)
                 {

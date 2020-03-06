@@ -256,14 +256,20 @@ namespace oyl::internal
                     auto lightProps     = lightView.get(light);
                     auto lightTransform = registry->get<Transform>(light);
 
-                    boundMaterial->setUniform3f("u_pointLight[" + std::to_string(count) + "].position",
+                    std::string pointLightName = "u_pointLight[" + std::to_string(count) + "]";
+                    
+                    boundMaterial->setUniform3f(pointLightName + ".position",
                                                 m_targetCamera->getViewMatrix() * glm::vec4(lightTransform.getPositionGlobal(), 1.0f));
-                    boundMaterial->setUniform3f("u_pointLight[" + std::to_string(count) + "].ambient",
+                    boundMaterial->setUniform3f(pointLightName + ".ambient",
                                                 lightProps.ambient);
-                    boundMaterial->setUniform3f("u_pointLight[" + std::to_string(count) + "].diffuse",
+                    boundMaterial->setUniform3f(pointLightName + ".diffuse",
                                                 lightProps.diffuse);
-                    boundMaterial->setUniform3f("u_pointLight[" + std::to_string(count) + "].specular",
+                    boundMaterial->setUniform3f(pointLightName + ".specular",
                                                 lightProps.specular);
+                    boundMaterial->setUniform1f(pointLightName + ".range",
+                                                lightProps.range);
+                    boundMaterial->setUniform1f(pointLightName + ".intensity",
+                                                lightProps.intensity);
                     count++;
                 }
 
@@ -285,6 +291,8 @@ namespace oyl::internal
                                                 dirLightProps.diffuse);
                     boundMaterial->setUniform3f(dirLightName + ".specular",
                                                 dirLightProps.specular);
+                    boundMaterial->setUniform1f(dirLightName + ".intensity",
+                                                dirLightProps.intensity);
 
                     if (dirLightProps.castShadows && shadowIndex < 1)
                     {

@@ -95,11 +95,11 @@ namespace oyl
                 { Shader::Pixel, ENGINE_RES + FORWARD_STATIC_SHADER_FRAGMENT_PATH },
             }, FORWARD_STATIC_SHADER_ALIAS);
 
-        Shader::cache(
-            {
-                { Shader::Vertex, ENGINE_RES + FORWARD_VERTEX_SHADER_VERTEX_PATH },
-                { Shader::Pixel, ENGINE_RES +  FORWARD_VERTEX_SHADER_FRAGMENT_PATH },
-            }, FORWARD_VERTEX_SHADER_ALIAS);
+        //Shader::cache(
+        //    {
+        //        { Shader::Vertex, ENGINE_RES + FORWARD_VERTEX_SHADER_VERTEX_PATH },
+        //        { Shader::Pixel, ENGINE_RES +  FORWARD_VERTEX_SHADER_FRAGMENT_PATH },
+        //    }, FORWARD_VERTEX_SHADER_ALIAS);
         
         Shader::cache(
             {
@@ -113,11 +113,11 @@ namespace oyl
                 { Shader::Pixel, ENGINE_RES + DEFERRED_STATIC_PRE_SHADER_FRAGMENT_PATH },
             }, DEFERRED_STATIC_PRE_SHADER_ALIAS);
 
-        Shader::cache(
-            {
-                { Shader::Vertex, ENGINE_RES + DEFERRED_VERTEX_PRE_SHADER_VERTEX_PATH },
-                { Shader::Pixel, ENGINE_RES + DEFERRED_VERTEX_PRE_SHADER_FRAGMENT_PATH },
-            }, DEFERRED_VERTEX_PRE_SHADER_ALIAS);
+        //Shader::cache(
+        //    {
+        //        { Shader::Vertex, ENGINE_RES + DEFERRED_VERTEX_PRE_SHADER_VERTEX_PATH },
+        //        { Shader::Pixel, ENGINE_RES + DEFERRED_VERTEX_PRE_SHADER_FRAGMENT_PATH },
+        //    }, DEFERRED_VERTEX_PRE_SHADER_ALIAS);
 
         Shader::cache(
             {
