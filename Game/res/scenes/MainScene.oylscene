@@ -15551,7 +15551,7 @@
             }
         },
         "SkeletonAnimatable": {
-            "Animation": "Idle",
+            "Animation": "Thums Up",
             "Loop": true,
             "Play": true,
             "Reverse": false,
@@ -15721,12 +15721,12 @@
             }
         },
         "SkeletonAnimatable": {
-            "Animation": "Idle",
+            "Animation": "IdleTest",
             "Loop": true,
             "Play": true,
             "Reverse": false,
             "Time": 2.109999895095825,
-            "TimeScale": 1.0
+            "TimeScale": 0.5
         },
         "Transform": {
             "Mirror": {
@@ -15891,12 +15891,12 @@
             }
         },
         "SkeletonAnimatable": {
-            "Animation": "Idle",
+            "Animation": "IdleTest",
             "Loop": true,
             "Play": true,
             "Reverse": false,
             "Time": 0.3400000035762787,
-            "TimeScale": 1.0
+            "TimeScale": 0.5
         },
         "Transform": {
             "Mirror": {
@@ -16061,12 +16061,12 @@
             }
         },
         "SkeletonAnimatable": {
-            "Animation": "Idle",
+            "Animation": "IdleTest",
             "Loop": true,
             "Play": true,
             "Reverse": false,
             "Time": 0.9399999976158142,
-            "TimeScale": 1.0
+            "TimeScale": 0.5
         },
         "Transform": {
             "Mirror": {
