@@ -21,8 +21,9 @@ enum CustomEventTypes : int
     TypePlayerInteractionRequest,
 	TypePlayerDropItemRequest,
 	TypeCancelButtonPressed,
-	TypePlayerStateChange,
-    TypeCannonStateChange,
+	TypePlayerStateChangeRequest,
+	TypePlayerStateChanged,
+    TypeCannonStateChangeRequest,
 	TypeCannonFired,
 	TypeRequestToCleanGarbage,
 	TypeGarbageCleaned,
@@ -72,13 +73,19 @@ OYL_EVENT_STRUCT(CancelButtonPressedEvent, (oyl::EventType) TypeCancelButtonPres
 		entt::entity playerEntity;
 	});
 
-OYL_EVENT_STRUCT(PlayerStateChangeEvent, (oyl::EventType) TypePlayerStateChange, (oyl::EventCategory) CategoryPlayer,
+OYL_EVENT_STRUCT(PlayerStateChangeRequestEvent, (oyl::EventType) TypePlayerStateChangeRequest, (oyl::EventCategory) CategoryPlayer,
 	{
 		entt::entity playerEntity;
         PlayerState  newState;
 	});
 
-OYL_EVENT_STRUCT(CannonStateChangeEvent, (oyl::EventType) TypeCannonStateChange, (oyl::EventCategory) CategoryCannon,
+OYL_EVENT_STRUCT(PlayerStateChangedEvent, (oyl::EventType) TypePlayerStateChanged, (oyl::EventCategory) CategoryPlayer,
+	{
+		entt::entity playerEntity;
+		PlayerState  newState;
+	});
+
+OYL_EVENT_STRUCT(CannonStateChangeRequestEvent, (oyl::EventType) TypeCannonStateChangeRequest, (oyl::EventCategory) CategoryCannon,
 	{
 		entt::entity cannonEntity;
 		CannonState  newState;

@@ -78,6 +78,20 @@ enum class ReticleType
 	invalid
 };
 
+enum class MenuOption
+{
+	playGame,
+	controls,
+	settings,
+	exit,
+	start,
+	pause,
+	resume,
+	playAgain,
+	goToMainMenu
+};
+
+
 struct MoveableUsingLerp
 {
 	glm::vec3 startPos;
@@ -324,4 +338,9 @@ struct GarbageMeterDisplay
 
 	Team team;
 	PlayerNumber playerNum = PlayerNumber::One; //player to render to
+};
+
+struct MenuItem
+{
+	MenuOption type;
 };

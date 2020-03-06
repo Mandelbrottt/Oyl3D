@@ -191,9 +191,9 @@ bool PlayerSystem::onEvent(const Event& event)
 			break;
 		}
 
-		case (EventType) TypePlayerStateChange:
+		case (EventType) TypePlayerStateChangeRequest:
 		{
-			auto evt = event_cast<PlayerStateChangeEvent>(event);
+			auto evt = event_cast<PlayerStateChangeRequestEvent>(event);
 			auto& player = registry->get<Player>(evt.playerEntity);
 
 			if (player.state == PlayerState::pushing || player.state == PlayerState::stunned || player.state == PlayerState::throwingBottle)

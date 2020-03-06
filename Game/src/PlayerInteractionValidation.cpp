@@ -25,7 +25,7 @@ void PlayerInteractionValidationSystem::onUpdate()
 			if (   !registry->valid(player.interactableEntity)
 				|| !registry->has<GarbagePile>(player.interactableEntity))
 			{
-				PlayerStateChangeEvent playerStateChange;
+				PlayerStateChangeRequestEvent playerStateChange;
 				playerStateChange.playerEntity = playerEntity;
 				playerStateChange.newState     = PlayerState::idle;
 				postEvent(playerStateChange);
@@ -53,7 +53,7 @@ bool PlayerInteractionValidationSystem::onEvent(const Event& event)
 				&& registry->get<CarryableItem>(player.primaryCarriedItem).type == CarryableItemType::throwableBottle
 				&& player.state != PlayerState::throwingBottle)
 			{
-				PlayerStateChangeEvent playerStateChange;
+				PlayerStateChangeRequestEvent playerStateChange;
 				playerStateChange.playerEntity = evt.playerEntity;
 				playerStateChange.newState     = PlayerState::throwingBottle;
 				postEvent(playerStateChange);
@@ -75,7 +75,7 @@ bool PlayerInteractionValidationSystem::onEvent(const Event& event)
 				cancelQTE.playerNum = player.playerNum;
 				postEvent(cancelQTE);
 
-				PlayerStateChangeEvent playerStateChange;
+				PlayerStateChangeRequestEvent playerStateChange;
 				playerStateChange.playerEntity = evt.playerEntity;
 				playerStateChange.newState     = PlayerState::idle;
 				postEvent(playerStateChange);
@@ -394,7 +394,7 @@ void PlayerInteractionValidationSystem::validateGarbagePileInteraction(entt::ent
 						playerInteractResult.playerNum       = player.playerNum;
 						postEvent(playerInteractResult);
 
-						PlayerStateChangeEvent playerStateChange;
+						PlayerStateChangeRequestEvent playerStateChange;
 						playerStateChange.playerEntity = a_playerEntity;
 						playerStateChange.newState     = PlayerState::inCleaningQuicktimeEvent;
 						postEvent(playerStateChange);
@@ -782,13 +782,13 @@ void PlayerInteractionValidationSystem::performGarbagePileInteraction(entt::enti
 				if (registry->valid(player.secondaryCarriedItem))
 					dropPlayerCarriedItems(a_playerEntity, true, registry->get<CarryableItem>(player.secondaryCarriedItem).type);
 
-				PlayerStateChangeEvent playerStateChange;
+				PlayerStateChangeRequestEvent playerStateChange;
 				playerStateChange.playerEntity = a_playerEntity;
-				playerStateChange.newState = PlayerState::inCleaningQuicktimeEvent;
+				playerStateChange.newState     = PlayerState::inCleaningQuicktimeEvent;
 				postEvent(playerStateChange);
 
 				ActivateQuicktimeCleaningEventEvent activateCleaningQTE;
-				activateCleaningQTE.playerNum = player.playerNum;
+				activateCleaningQTE.playerNum         = player.playerNum;
 				activateCleaningQTE.garbagePileEntity = player.interactableEntity;
 				postEvent(activateCleaningQTE);
 			}
@@ -797,7 +797,7 @@ void PlayerInteractionValidationSystem::performGarbagePileInteraction(entt::enti
 		{
 			if (itemClassification == PlayerItemClassification::secondary || itemClassification == PlayerItemClassification::any)
 			{
-				auto& carryableItem = registry->get<CarryableItem>(player.secondaryCarriedItem);
+				auto& carryableItem          = registry->get<CarryableItem>(player.secondaryCarriedItem);
 				auto& carryableItemTransform = registry->get<component::Transform>(player.secondaryCarriedItem);
 
 				registry->destroy(player.secondaryCarriedItem);
@@ -807,9 +807,9 @@ void PlayerInteractionValidationSystem::performGarbagePileInteraction(entt::enti
 				requestToCleanGarbage.garbagePileEntity = a_garbagePileEntity;
 				postEvent(requestToCleanGarbage);
 
-				PlayerStateChangeEvent playerStateChange;
+				PlayerStateChangeRequestEvent playerStateChange;
 				playerStateChange.playerEntity = a_playerEntity;
-				playerStateChange.newState = PlayerState::cleaning;
+				playerStateChange.newState     = PlayerState::cleaning;
 				postEvent(playerStateChange);
 
 				//if the player is holding a mop, they can directly transition into the cleaning QTE
@@ -834,9 +834,9 @@ void PlayerInteractionValidationSystem::performGarbagePileInteraction(entt::enti
 			useGloop.gloopEntity = player.secondaryCarriedItem;
 			postEvent(useGloop);
 
-			PlayerStateChangeEvent playerStateChange;
+			PlayerStateChangeRequestEvent playerStateChange;
 			playerStateChange.playerEntity = a_playerEntity;
-			playerStateChange.newState = PlayerState::cleaning; //not exactly cleaning but close enough. We want the same delay and movement slow effect anyway so might as well reuse it
+			playerStateChange.newState     = PlayerState::cleaning; //not exactly cleaning but close enough. We want the same delay and movement slow effect anyway so might as well reuse it
 			postEvent(playerStateChange);
 		}
 	}
@@ -953,12 +953,12 @@ void PlayerInteractionValidationSystem::performCannonInteraction(entt::entity a_
 
 
 		//once all the new positions are set for the states, send out state change events
-		PlayerStateChangeEvent playerStateChange;
+		PlayerStateChangeRequestEvent playerStateChange;
 		playerStateChange.playerEntity = a_playerEntity;
 		playerStateChange.newState     = PlayerState::pushing;
 		postEvent(playerStateChange);
 
-		CannonStateChangeEvent cannonStateChange;
+		CannonStateChangeRequestEvent cannonStateChange;
 		cannonStateChange.cannonEntity = a_cannonEntity;
 		cannonStateChange.newState     = CannonState::beingPushed;
 		postEvent(cannonStateChange);
