@@ -812,6 +812,10 @@ void PlayerInteractionValidationSystem::performGarbagePileInteraction(entt::enti
 				playerStateChange.newState     = PlayerState::cleaning;
 				postEvent(playerStateChange);
 
+				CleaningSolutionUsedEvent cleaningSolutionUsed;
+				cleaningSolutionUsed.playerEntity = a_playerEntity;
+				postEvent(cleaningSolutionUsed);
+
 				//if the player is holding a mop, they can directly transition into the cleaning QTE
 				if (   registry->valid(player.primaryCarriedItem)
 					&& registry->get<CarryableItem>(player.primaryCarriedItem).type == CarryableItemType::mop
@@ -830,8 +834,9 @@ void PlayerInteractionValidationSystem::performGarbagePileInteraction(entt::enti
 
 			garbagePile.isGlooped = true;
 
-			UseGloopEvent useGloop;
-			useGloop.gloopEntity = player.secondaryCarriedItem;
+			UseGloopRequestEvent useGloop;
+			useGloop.playerEntity = a_playerEntity;
+			useGloop.gloopEntity  = player.secondaryCarriedItem;
 			postEvent(useGloop);
 
 			PlayerStateChangeRequestEvent playerStateChange;

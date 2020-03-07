@@ -8,6 +8,7 @@ enum CustomEventsCategories : int
 	CategoryCannon,
 	CategoryGarbagePile,
 	CategoryCannonball,
+	CategoryCleaningSolution,
 	CategoryGloop,
 	CategoryThrowableBottle,
 	CategoryQuicktimeCleaningEvent,
@@ -30,7 +31,9 @@ enum CustomEventTypes : int
 	TypeGarbagePileReappeared,
 	TypeIncreasedGarbageLevel,
 	TypeSpawnCannonballForPlayer,
-	TypeUseGloop,
+	TypeCleaningSolutionUsed,
+	TypeUseGloopRequest,
+	TypeGloopUsed,
 	TypeThrowBottle,
 	TypeActivateQuicktimeCleaningEvent,
 	TypeCancelQuicktimeCleaningEvent,
@@ -122,9 +125,21 @@ OYL_EVENT_STRUCT(SpawnCannonballForPlayerEvent, (oyl::EventType) TypeSpawnCannon
 		Team team;
 	});
 
-OYL_EVENT_STRUCT(UseGloopEvent, (oyl::EventType) TypeUseGloop, (oyl::EventCategory) CategoryGloop,
+OYL_EVENT_STRUCT(CleaningSolutionUsedEvent, (oyl::EventType) TypeCleaningSolutionUsed, (oyl::EventCategory) CategoryCannonball,
 	{
+		entt::entity playerEntity;
+	});
+
+OYL_EVENT_STRUCT(UseGloopRequestEvent, (oyl::EventType) TypeUseGloopRequest, (oyl::EventCategory) CategoryGloop,
+	{
+		entt::entity playerEntity;
 		entt::entity gloopEntity;
+	});
+
+OYL_EVENT_STRUCT(GloopedUsedEvent, (oyl::EventType) TypeGloopUsed, (oyl::EventCategory) CategoryGloop,
+	{
+		entt::entity playerEntity;
+		bool isLastUse;
 	});
 
 OYL_EVENT_STRUCT(ThrowBottleEvent, (oyl::EventType) TypeThrowBottle, (oyl::EventCategory) CategoryThrowableBottle,

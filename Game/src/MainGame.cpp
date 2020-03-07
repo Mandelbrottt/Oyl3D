@@ -1034,8 +1034,8 @@ class Game : public oyl::Application
 public:
     Game()
     {
-		registerScene<MainMenuScene>();
-		registerScene<ControlsScreenScene>();
+		//registerScene<MainMenuScene>();
+		//registerScene<ControlsScreenScene>();
         registerScene<MainScene>();
 		//registerScene<GameEndScene>();
     }
