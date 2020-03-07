@@ -261,10 +261,12 @@ void GarbagePileSystem::updateGarbagePileVisualSize(entt::entity a_garbagePileEn
 		garbagePileCollidable.getShape(0).box.setSize(glm::vec3(2.22f, 0.59f, 2.19f));
 	}
 
-	//if (garbagePile.isGlooped)
-		//garbageModelNameToSet.append("Glooped");
-
 	garbagePileRenderable.model = Model::get(garbageModelNameToSet);
+
+	if (garbagePile.isGlooped)
+		garbagePileRenderable.material = Material::get("garbageGlooped");
+	else
+		garbagePileRenderable.material = Material::get("garbage");
 
 	if (garbagePile.garbageLevel == 0)
 	{
