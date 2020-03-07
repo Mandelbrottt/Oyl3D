@@ -20,16 +20,19 @@ enum CustomEventTypes : int
 	TypePlayerJump,
 	TypePlayerInteractResult,
     TypePlayerInteractionRequest,
+	TypePlayerPickedUpItem,
 	TypePlayerDropItemRequest,
 	TypeCancelButtonPressed,
 	TypePlayerStateChangeRequest,
 	TypePlayerStateChanged,
     TypeCannonStateChangeRequest,
+	TypeCannonLoaded,
 	TypeCannonFired,
 	TypeRequestToCleanGarbage,
 	TypeGarbageCleaned,
 	TypeGarbagePileReappeared,
 	TypeIncreasedGarbageLevel,
+	TypeMopUsed,
 	TypeSpawnCannonballForPlayer,
 	TypeCleaningSolutionUsed,
 	TypeUseGloopRequest,
@@ -37,6 +40,7 @@ enum CustomEventTypes : int
 	TypeThrowBottle,
 	TypeActivateQuicktimeCleaningEvent,
 	TypeCancelQuicktimeCleaningEvent,
+	TypeStickMovedDuringQuicktimeCleaningEvent,
 	TypeGameEnd
 };
 
@@ -62,6 +66,12 @@ OYL_EVENT_STRUCT(PlayerInteractionRequestEvent, (oyl::EventType) TypePlayerInter
 	{
 		entt::entity playerEntity;
 		PlayerItemClassification itemClassificatonToUse;
+	});
+
+OYL_EVENT_STRUCT(PlayerPickedUpItemEvent, (oyl::EventType) TypePlayerPickedUpItem, (oyl::EventCategory) CategoryPlayer,
+	{
+		entt::entity playerEntity;
+		CarryableItemType itemType;
 	});
 
 OYL_EVENT_STRUCT(PlayerDropItemRequestEvent, (oyl::EventType) TypePlayerDropItemRequest, (oyl::EventCategory) CategoryPlayer,
@@ -92,6 +102,12 @@ OYL_EVENT_STRUCT(CannonStateChangeRequestEvent, (oyl::EventType) TypeCannonState
 	{
 		entt::entity cannonEntity;
 		CannonState  newState;
+	});
+
+OYL_EVENT_STRUCT(CannonLoadedEvent, (oyl::EventType) TypeCannonLoaded, (oyl::EventCategory) CategoryCannon,
+	{
+		entt::entity cannonEntity;
+		entt::entity playerEntity;
 	});
 
 OYL_EVENT_STRUCT(CannonFiredEvent, (oyl::EventType) TypeCannonFired, (oyl::EventCategory) CategoryCannon,
@@ -157,6 +173,12 @@ OYL_EVENT_STRUCT(ActivateQuicktimeCleaningEventEvent, (oyl::EventType) TypeActiv
 OYL_EVENT_STRUCT(CancelQuicktimeCleaningEventEvent, (oyl::EventType) TypeCancelQuicktimeCleaningEvent, (oyl::EventCategory) CategoryQuicktimeCleaningEvent,
 	{
 		PlayerNumber playerNum;
+	});
+
+OYL_EVENT_STRUCT(StickMovedDuringQuicktimeCleaningEventEvent, (oyl::EventType) TypeStickMovedDuringQuicktimeCleaningEvent, (oyl::EventCategory) CategoryQuicktimeCleaningEvent,
+	{
+		entt::entity playerEntity;
+		float stickPosY;
 	});
 
 OYL_EVENT_STRUCT(GameEndEvent, (oyl::EventType) TypeGameEnd, (oyl::EventCategory) CategoryGameState,
