@@ -22,6 +22,7 @@ enum CustomEventTypes : int
     TypePlayerInteractionRequest,
 	TypePlayerPickedUpItem,
 	TypePlayerDropItemRequest,
+	TypePlayerDroppedItem,
 	TypeCancelButtonPressed,
 	TypePlayerStateChangeRequest,
 	TypePlayerStateChanged,
@@ -80,6 +81,12 @@ OYL_EVENT_STRUCT(PlayerDropItemRequestEvent, (oyl::EventType) TypePlayerDropItem
 		entt::entity playerEntity;
 		PlayerItemClassification itemClassificationToDrop;
 		bool forceDrop; //if true, forces the player's item(s) to drop no matter what state they're in
+	});
+
+OYL_EVENT_STRUCT(PlayerDroppedItemEvent, (oyl::EventType) TypePlayerDroppedItem, (oyl::EventCategory) CategoryPlayer,
+	{
+		entt::entity playerEntity;
+		PlayerItemClassification itemClassificationToDrop;
 	});
 
 OYL_EVENT_STRUCT(CancelButtonPressedEvent, (oyl::EventType) TypeCancelButtonPressed, (oyl::EventCategory) CategoryPlayer,
@@ -147,7 +154,7 @@ OYL_EVENT_STRUCT(SpawnCannonballForPlayerEvent, (oyl::EventType) TypeSpawnCannon
 		Team team;
 	});
 
-OYL_EVENT_STRUCT(CleaningSolutionUsedEvent, (oyl::EventType) TypeCleaningSolutionUsed, (oyl::EventCategory) CategoryCannonball,
+OYL_EVENT_STRUCT(CleaningSolutionUsedEvent, (oyl::EventType) TypeCleaningSolutionUsed, (oyl::EventCategory) CategoryCleaningSolution,
 	{
 		entt::entity playerEntity;
 	});

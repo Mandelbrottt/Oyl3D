@@ -1015,6 +1015,9 @@ void PlayerInteractionValidationSystem::dropPlayerCarriedItems(entt::entity a_pl
 		glm::vec3 newPosition = playerTransform.getPosition();
 		glm::vec3 newRotation = playerTransform.getRotationEuler();
 
+		PlayerDroppedItemEvent droppedItemEvent;
+		droppedItemEvent.playerEntity = a_playerEntity;
+
 		switch (carriedItem.type)
 		{
 			case CarryableItemType::cannonball:
@@ -1024,6 +1027,8 @@ void PlayerInteractionValidationSystem::dropPlayerCarriedItems(entt::entity a_pl
 				player.secondaryCarriedItem = entt::null;
 
 				newPosition += playerTransform.getForward() * 0.75f;
+
+				droppedItemEvent.itemClassificationToDrop = PlayerItemClassification::any;
 
 				break;
 			}
@@ -1038,6 +1043,8 @@ void PlayerInteractionValidationSystem::dropPlayerCarriedItems(entt::entity a_pl
 
 				newRotation.y += playerTransform.getForward().z > 0.0f ? 90.0f : -90.0f;
 
+				droppedItemEvent.itemClassificationToDrop = PlayerItemClassification::primary;
+
 				break;
 			}
 			case CarryableItemType::cleaningSolution:
@@ -1048,6 +1055,8 @@ void PlayerInteractionValidationSystem::dropPlayerCarriedItems(entt::entity a_pl
 				newPosition += playerTransform.getForward() * 0.63f;
 				newPosition += playerTransform.getRight() * -0.2f;
 				newPosition += playerTransform.getUp() * 0.4f;
+
+				droppedItemEvent.itemClassificationToDrop = PlayerItemClassification::secondary;
 
 				break;
 			}
@@ -1060,6 +1069,8 @@ void PlayerInteractionValidationSystem::dropPlayerCarriedItems(entt::entity a_pl
 				newPosition += playerTransform.getRight() * -0.2f;
 				newPosition += playerTransform.getUp() * 0.4f;
 
+				droppedItemEvent.itemClassificationToDrop = PlayerItemClassification::secondary;
+
 				break;
 			}
 			case CarryableItemType::throwableBottle:
@@ -1071,8 +1082,12 @@ void PlayerInteractionValidationSystem::dropPlayerCarriedItems(entt::entity a_pl
 				newPosition += playerTransform.getRight() * 0.25f;
 				newPosition += playerTransform.getUp() * 0.45f;
 
+				droppedItemEvent.itemClassificationToDrop = PlayerItemClassification::primary;
+
 				break;
 			}
+
+			postEvent(droppedItemEvent);
 		}
 
 		carriedItemTransform.setPosition(newPosition);
