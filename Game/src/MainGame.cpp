@@ -2,6 +2,8 @@
 
 #include "MainGameObjectsInit.h"
 #include "MainMenu.h"
+#include "ControlsScreenScene.h"
+#include "GameEndMenu.h"
 #include "PlayerSystem.h"
 #include "CannonSystem.h"
 #include "CustomComponents.h"
@@ -1033,7 +1035,9 @@ public:
     Game()
     {
 		//registerScene<MainMenuScene>();
+		//registerScene<ControlsScreenScene>();
         registerScene<MainScene>();
+		//registerScene<GameEndScene>();
     }
 
     virtual void onExit() { }
