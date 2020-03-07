@@ -85,6 +85,18 @@ bool GarbagePileSystem::onEvent(const Event& event)
 		break;
 	}
 
+	case (EventType)TypeGarbageGlooped:
+	{
+		auto evt = event_cast<GarbageGloopedEvent>(event);
+
+		auto& garbagePile     = registry->get<GarbagePile>(evt.garbagePileEntity);
+		garbagePile.isGlooped = true;
+
+		updateGarbagePileVisualSize(evt.garbagePileEntity);
+
+		break;
+	}
+
 	case (EventType)TypeCannonFired:
 	{
 		auto evt = event_cast<CannonFiredEvent>(event);
@@ -196,12 +208,14 @@ void GarbagePileSystem::updateGarbagePileVisualSize(entt::entity a_garbagePileEn
 	garbagePileCollidable.getShape(1).box.setSize(glm::vec3(0.0f, 0.0f, 0.0f));
 	garbagePileCollidable.getShape(2).box.setSize(glm::vec3(0.0f, 0.0f, 0.0f));
 
+	std::string garbageModelNameToSet;
+
 	//determine which mesh to set based on garbage level
 	if (garbagePile.garbageLevel == garbagePile.MAX_GARBAGE_LEVEL)
 	{
 		if (garbagePile.garbageTicks == garbagePile.GARBAGE_TICKS_PER_LEVEL)
 		{
-			garbagePileRenderable.model = Model::get("garbageSurrender");
+			garbageModelNameToSet = "garbageSurrender";
 			//flyAnimator.setNextAnimation("GarbageSurrenderAnim");
 
 			garbagePileCollidable.getShape(0).box.setSize(glm::vec3(3.36f, 7.5f, 7.56f));
@@ -209,7 +223,7 @@ void GarbagePileSystem::updateGarbagePileVisualSize(entt::entity a_garbagePileEn
 		}
 		else
 		{
-			garbagePileRenderable.model = Model::get("garbageMassive");
+			garbageModelNameToSet = "garbageMassive";
 			//flyAnimator.setNextAnimation("GarbageMassiveAnim");
 
 			garbagePileCollidable.getShape(0).box.setSize(glm::vec3(4.04f, 7.65f, 5.58f));
@@ -218,7 +232,7 @@ void GarbagePileSystem::updateGarbagePileVisualSize(entt::entity a_garbagePileEn
 	}
 	else if (garbagePile.garbageLevel == garbagePile.MAX_GARBAGE_LEVEL - 1)
 	{
-		garbagePileRenderable.model = Model::get("garbageLarge");
+		garbageModelNameToSet = "garbageLarge";
 		//flyAnimator.setNextAnimation("GarbageLargeAnim");
 
 		garbagePileCollidable.getShape(0).box.setSize(glm::vec3(2.73f, 5.01f, 3.15f));
@@ -226,7 +240,7 @@ void GarbagePileSystem::updateGarbagePileVisualSize(entt::entity a_garbagePileEn
 	}
 	else if (garbagePile.garbageLevel == garbagePile.MAX_GARBAGE_LEVEL - 2)
 	{
-		garbagePileRenderable.model = Model::get("garbageMedium");
+		garbageModelNameToSet = "garbageMedium";
 		//flyAnimator.setNextAnimation("GarbageMediumAnim");
 
 		garbagePileCollidable.getShape(0).box.setSize(glm::vec3(4.0f, 2.01f, 3.99f));
@@ -234,18 +248,25 @@ void GarbagePileSystem::updateGarbagePileVisualSize(entt::entity a_garbagePileEn
 	}
 	else if (garbagePile.garbageLevel == garbagePile.MAX_GARBAGE_LEVEL - 3)
 	{
-		garbagePileRenderable.model = Model::get("garbageSmall");
+		garbageModelNameToSet = "garbageSmall";
 		//flyAnimator.setNextAnimation("GarbageSmallAnim");
 
 		garbagePileCollidable.getShape(0).box.setSize(glm::vec3(2.7f, 1.11f, 2.66f));
 	}
 	else
 	{
-		garbagePileRenderable.model = Model::get("garbageTiny");
+		garbageModelNameToSet = "garbageTiny";
 		//flyAnimator.setNextAnimation("GarbageTinyAnim");
 
 		garbagePileCollidable.getShape(0).box.setSize(glm::vec3(2.22f, 0.59f, 2.19f));
 	}
+
+	garbagePileRenderable.model = Model::get(garbageModelNameToSet);
+
+	if (garbagePile.isGlooped)
+		garbagePileRenderable.material = Material::get("garbageGlooped");
+	else
+		garbagePileRenderable.material = Material::get("garbage");
 
 	if (garbagePile.garbageLevel == 0)
 	{

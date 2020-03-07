@@ -23,6 +23,8 @@ void CleaningQuicktimeEventSystem::onUpdate()
 		{
 			int controllerNum;
 
+			entt::entity playerEntityForQTE = entt::null;
+
 			auto& playerView = registry->view<Player>();
 			for (auto& playerEntity : playerView)
 			{
@@ -31,11 +33,17 @@ void CleaningQuicktimeEventSystem::onUpdate()
 				if (player.playerNum == cleaningQTE.playerNum)
 				{
 					controllerNum = player.controllerNum;
+					playerEntityForQTE = playerEntity;
 					break;
 				}
 			}
 
 			glm::vec2 rightStick = Input::getGamepadRightStick(controllerNum);
+
+			StickMovedDuringQuicktimeCleaningEventEvent stickMoved;
+			stickMoved.playerEntity = playerEntityForQTE;
+			stickMoved.stickPosY    = rightStick.y;
+			postEvent(stickMoved);
 
 			if (cleaningQTE.isPointingUp)
 			{

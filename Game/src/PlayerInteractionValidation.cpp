@@ -761,6 +761,11 @@ void PlayerInteractionValidationSystem::performCarryableItemInteraction(entt::en
 	carryableItem.hasBeenCarried = true;
 	carryableItemTransform.setParent(a_playerEntity);
 
+	PlayerPickedUpItemEvent pickedUpItemEvent;
+	pickedUpItemEvent.playerEntity = a_playerEntity;
+	pickedUpItemEvent.itemType     = carryableItem.type;
+	postEvent(pickedUpItemEvent);
+
 	carryableItemTransform.setRotationEuler(itemNewRotation);
 	carryableItemTransform.setPosition(itemNewPosition);
 }
@@ -832,12 +837,14 @@ void PlayerInteractionValidationSystem::performGarbagePileInteraction(entt::enti
 		{
 			OYL_LOG("USED GLOOP");
 
-			garbagePile.isGlooped = true;
-
 			UseGloopRequestEvent useGloop;
 			useGloop.playerEntity = a_playerEntity;
 			useGloop.gloopEntity  = player.secondaryCarriedItem;
 			postEvent(useGloop);
+
+			GarbageGloopedEvent garbageGlooped;
+			garbageGlooped.garbagePileEntity = a_garbagePileEntity;
+			postEvent(garbageGlooped);
 
 			PlayerStateChangeRequestEvent playerStateChange;
 			playerStateChange.playerEntity = a_playerEntity;
@@ -874,15 +881,20 @@ void PlayerInteractionValidationSystem::performCannonInteraction(entt::entity a_
 		&& registry->has<Cannonball>(player.primaryCarriedItem)
 		&& cannon.isLoaded == false)
 	{
-		cannon.isLoaded = true;
-
 		auto& cannonball           = registry->get<Cannonball>(player.primaryCarriedItem);
 		auto& carriedItem          = registry->get<CarryableItem>(player.primaryCarriedItem);
 		auto& carriedItemTransform = registry->get<component::Transform>(player.primaryCarriedItem);
 
 		if (carriedItemTransform.getParent() == &playerTransform)
 		{
+			cannon.isLoaded = true;
+
 			OYL_LOG("LOADED CANNON!");
+
+			CannonLoadedEvent cannonLoaded;
+			cannonLoaded.cannonEntity = a_cannonEntity;
+			cannonLoaded.playerEntity = a_playerEntity;
+			postEvent(cannonLoaded);
 
 			carriedItemTransform.setParent(entt::null);
 			player.primaryCarriedItem   = entt::null;
