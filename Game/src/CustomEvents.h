@@ -30,6 +30,7 @@ enum CustomEventTypes : int
 	TypeCannonFired,
 	TypeRequestToCleanGarbage,
 	TypeGarbageCleaned,
+	TypeGarbageGlooped,
 	TypeGarbagePileReappeared,
 	TypeIncreasedGarbageLevel,
 	TypeMopUsed,
@@ -124,6 +125,11 @@ OYL_EVENT_STRUCT(GarbageCleanedEvent, (oyl::EventType) TypeGarbageCleaned, (oyl:
 	{
 		entt::entity garbagePileEntity;
 	}); 
+
+OYL_EVENT_STRUCT(GarbageGloopedEvent, (oyl::EventType) TypeGarbageGlooped, (oyl::EventCategory) CategoryGarbagePile,
+	{
+		entt::entity garbagePileEntity;
+	});
 
 OYL_EVENT_STRUCT(GarbagePileReappearedEvent, (oyl::EventType) TypeGarbagePileReappeared, (oyl::EventCategory) CategoryGarbagePile,
 	{

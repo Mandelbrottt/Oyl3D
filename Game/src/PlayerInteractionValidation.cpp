@@ -837,12 +837,14 @@ void PlayerInteractionValidationSystem::performGarbagePileInteraction(entt::enti
 		{
 			OYL_LOG("USED GLOOP");
 
-			garbagePile.isGlooped = true;
-
 			UseGloopRequestEvent useGloop;
 			useGloop.playerEntity = a_playerEntity;
 			useGloop.gloopEntity  = player.secondaryCarriedItem;
 			postEvent(useGloop);
+
+			GarbageGloopedEvent garbageGlooped;
+			garbageGlooped.garbagePileEntity = a_garbagePileEntity;
+			postEvent(garbageGlooped);
 
 			PlayerStateChangeRequestEvent playerStateChange;
 			playerStateChange.playerEntity = a_playerEntity;
