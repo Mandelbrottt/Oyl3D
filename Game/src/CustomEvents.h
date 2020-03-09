@@ -8,6 +8,7 @@ enum CustomEventsCategories : int
 	CategoryCannon,
 	CategoryGarbagePile,
 	CategoryCannonball,
+	CategoryCleaningSolution,
 	CategoryGloop,
 	CategoryThrowableBottle,
 	CategoryQuicktimeCleaningEvent,
@@ -19,20 +20,29 @@ enum CustomEventTypes : int
 	TypePlayerJump,
 	TypePlayerInteractResult,
     TypePlayerInteractionRequest,
+	TypePlayerPickedUpItem,
 	TypePlayerDropItemRequest,
+	TypePlayerDroppedItem,
 	TypeCancelButtonPressed,
-	TypePlayerStateChange,
-    TypeCannonStateChange,
+	TypePlayerStateChangeRequest,
+	TypePlayerStateChanged,
+    TypeCannonStateChangeRequest,
+	TypeCannonLoaded,
 	TypeCannonFired,
 	TypeRequestToCleanGarbage,
 	TypeGarbageCleaned,
+	TypeGarbageGlooped,
 	TypeGarbagePileReappeared,
 	TypeIncreasedGarbageLevel,
+	TypeMopUsed,
 	TypeSpawnCannonballForPlayer,
-	TypeUseGloop,
+	TypeCleaningSolutionUsed,
+	TypeUseGloopRequest,
+	TypeGloopUsed,
 	TypeThrowBottle,
 	TypeActivateQuicktimeCleaningEvent,
 	TypeCancelQuicktimeCleaningEvent,
+	TypeStickMovedDuringQuicktimeCleaningEvent,
 	TypeGameEnd
 };
 
@@ -60,6 +70,12 @@ OYL_EVENT_STRUCT(PlayerInteractionRequestEvent, (oyl::EventType) TypePlayerInter
 		PlayerItemClassification itemClassificatonToUse;
 	});
 
+OYL_EVENT_STRUCT(PlayerPickedUpItemEvent, (oyl::EventType) TypePlayerPickedUpItem, (oyl::EventCategory) CategoryPlayer,
+	{
+		entt::entity playerEntity;
+		CarryableItemType itemType;
+	});
+
 OYL_EVENT_STRUCT(PlayerDropItemRequestEvent, (oyl::EventType) TypePlayerDropItemRequest, (oyl::EventCategory) CategoryPlayer,
 	{
 		entt::entity playerEntity;
@@ -67,21 +83,39 @@ OYL_EVENT_STRUCT(PlayerDropItemRequestEvent, (oyl::EventType) TypePlayerDropItem
 		bool forceDrop; //if true, forces the player's item(s) to drop no matter what state they're in
 	});
 
+OYL_EVENT_STRUCT(PlayerDroppedItemEvent, (oyl::EventType) TypePlayerDroppedItem, (oyl::EventCategory) CategoryPlayer,
+	{
+		entt::entity playerEntity;
+		PlayerItemClassification itemClassificationToDrop;
+	});
+
 OYL_EVENT_STRUCT(CancelButtonPressedEvent, (oyl::EventType) TypeCancelButtonPressed, (oyl::EventCategory) CategoryPlayer,
 	{
 		entt::entity playerEntity;
 	});
 
-OYL_EVENT_STRUCT(PlayerStateChangeEvent, (oyl::EventType) TypePlayerStateChange, (oyl::EventCategory) CategoryPlayer,
+OYL_EVENT_STRUCT(PlayerStateChangeRequestEvent, (oyl::EventType) TypePlayerStateChangeRequest, (oyl::EventCategory) CategoryPlayer,
 	{
 		entt::entity playerEntity;
         PlayerState  newState;
 	});
 
-OYL_EVENT_STRUCT(CannonStateChangeEvent, (oyl::EventType) TypeCannonStateChange, (oyl::EventCategory) CategoryCannon,
+OYL_EVENT_STRUCT(PlayerStateChangedEvent, (oyl::EventType) TypePlayerStateChanged, (oyl::EventCategory) CategoryPlayer,
+	{
+		entt::entity playerEntity;
+		PlayerState  newState;
+	});
+
+OYL_EVENT_STRUCT(CannonStateChangeRequestEvent, (oyl::EventType) TypeCannonStateChangeRequest, (oyl::EventCategory) CategoryCannon,
 	{
 		entt::entity cannonEntity;
 		CannonState  newState;
+	});
+
+OYL_EVENT_STRUCT(CannonLoadedEvent, (oyl::EventType) TypeCannonLoaded, (oyl::EventCategory) CategoryCannon,
+	{
+		entt::entity cannonEntity;
+		entt::entity playerEntity;
 	});
 
 OYL_EVENT_STRUCT(CannonFiredEvent, (oyl::EventType) TypeCannonFired, (oyl::EventCategory) CategoryCannon,
@@ -99,6 +133,11 @@ OYL_EVENT_STRUCT(GarbageCleanedEvent, (oyl::EventType) TypeGarbageCleaned, (oyl:
 		entt::entity garbagePileEntity;
 	}); 
 
+OYL_EVENT_STRUCT(GarbageGloopedEvent, (oyl::EventType) TypeGarbageGlooped, (oyl::EventCategory) CategoryGarbagePile,
+	{
+		entt::entity garbagePileEntity;
+	});
+
 OYL_EVENT_STRUCT(GarbagePileReappearedEvent, (oyl::EventType) TypeGarbagePileReappeared, (oyl::EventCategory) CategoryGarbagePile,
 	{
 		entt::entity garbagePileEntity;
@@ -115,9 +154,21 @@ OYL_EVENT_STRUCT(SpawnCannonballForPlayerEvent, (oyl::EventType) TypeSpawnCannon
 		Team team;
 	});
 
-OYL_EVENT_STRUCT(UseGloopEvent, (oyl::EventType) TypeUseGloop, (oyl::EventCategory) CategoryGloop,
+OYL_EVENT_STRUCT(CleaningSolutionUsedEvent, (oyl::EventType) TypeCleaningSolutionUsed, (oyl::EventCategory) CategoryCleaningSolution,
 	{
+		entt::entity playerEntity;
+	});
+
+OYL_EVENT_STRUCT(UseGloopRequestEvent, (oyl::EventType) TypeUseGloopRequest, (oyl::EventCategory) CategoryGloop,
+	{
+		entt::entity playerEntity;
 		entt::entity gloopEntity;
+	});
+
+OYL_EVENT_STRUCT(GloopedUsedEvent, (oyl::EventType) TypeGloopUsed, (oyl::EventCategory) CategoryGloop,
+	{
+		entt::entity playerEntity;
+		bool isLastUse;
 	});
 
 OYL_EVENT_STRUCT(ThrowBottleEvent, (oyl::EventType) TypeThrowBottle, (oyl::EventCategory) CategoryThrowableBottle,
@@ -135,6 +186,12 @@ OYL_EVENT_STRUCT(ActivateQuicktimeCleaningEventEvent, (oyl::EventType) TypeActiv
 OYL_EVENT_STRUCT(CancelQuicktimeCleaningEventEvent, (oyl::EventType) TypeCancelQuicktimeCleaningEvent, (oyl::EventCategory) CategoryQuicktimeCleaningEvent,
 	{
 		PlayerNumber playerNum;
+	});
+
+OYL_EVENT_STRUCT(StickMovedDuringQuicktimeCleaningEventEvent, (oyl::EventType) TypeStickMovedDuringQuicktimeCleaningEvent, (oyl::EventCategory) CategoryQuicktimeCleaningEvent,
+	{
+		entt::entity playerEntity;
+		float stickPosY;
 	});
 
 OYL_EVENT_STRUCT(GameEndEvent, (oyl::EventType) TypeGameEnd, (oyl::EventCategory) CategoryGameState,

@@ -234,6 +234,15 @@ namespace oyl
 
         if (callOnEnter && !m_currentScene.empty())
         {
+            auto& s = m_registeredScenes[m_currentScene];
+            m_dispatcher->unregisterListener(s);
+            for (auto& layer : s->m_layerStack)
+            {
+                m_dispatcher->unregisterListener(layer);
+                for (auto& system : layer->m_systems)
+                    m_dispatcher->unregisterListener(system);
+            }
+            m_registeredScenes[m_currentScene]->setDispatcher(nullptr);
             m_registeredScenes[m_currentScene]->Scene::onExit();
             m_registeredScenes[m_currentScene]->onExit();
         }
@@ -241,6 +250,7 @@ namespace oyl
         m_currentScene = scene;
 
         Scene::s_current = m_registeredScenes.at(scene);
+
 
         SceneChangedEvent sceneChangedEvent;
         sceneChangedEvent.name = m_currentScene.c_str();
@@ -297,11 +307,12 @@ namespace oyl
         m_guiRenderSystem->setRegistry(pScene->m_registry);
     #endif
 
-        m_dispatcher->registerListener(pScene);
-        pScene->setDispatcher(m_dispatcher);
 
         if (callOnEnter)
         {
+            m_dispatcher->registerListener(pScene);
+            pScene->setDispatcher(m_dispatcher);
+            
             pScene->Scene::onEnter();
             pScene->onEnter();
         
@@ -314,7 +325,11 @@ namespace oyl
         OYL_ASSERT(!m_nextScene.empty());
 
         //m_registeredScenes[m_nextScene]->m_registry->reset();
+    #if !defined OYL_DISTRIBUTION
         pushScene(m_nextScene, false);
+    #else
+        pushScene(m_nextScene);
+    #endif
         m_nextScene.clear();
         
         while (m_running)

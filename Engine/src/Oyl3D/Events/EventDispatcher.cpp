@@ -87,7 +87,7 @@ namespace oyl
         for (const auto& listener : m_listenerDeleteSet)
         {
             auto listenerRef = listener.lock();
-            if (listenerRef) continue;
+            if (!listenerRef) continue;
 
             auto it = m_listeners.begin();
             for (; it != m_listeners.end(); ++it)

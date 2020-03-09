@@ -62,9 +62,9 @@ bool CannonSystem::onEvent(const Event& event)
 {
 	switch (event.type)
 	{
-		case (EventType)TypeCannonStateChange:
+		case (EventType)TypeCannonStateChangeRequest:
 	    {
-			auto evt = event_cast<CannonStateChangeEvent>(event);
+			auto evt = event_cast<CannonStateChangeRequestEvent>(event);
 			auto& cannon = registry->get<Cannon>(evt.cannonEntity);
 
 	        switch (evt.newState)

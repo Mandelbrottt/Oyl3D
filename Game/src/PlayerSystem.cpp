@@ -34,7 +34,7 @@ void PlayerSystem::onUpdate()
 				performBasicMovement(playerEntity, player.speedForce);
 
 				if (player.moveDirection != glm::vec3(0.0f))
-					changeToWalking(&player);
+					changeToWalking(playerEntity);
 		        
 				break;
 		    }
@@ -44,7 +44,7 @@ void PlayerSystem::onUpdate()
 				performBasicMovement(playerEntity, player.speedForce);
 
 				if (player.moveDirection == glm::vec3(0.0f))
-					changeToIdle(&player);
+					changeToIdle(playerEntity);
 
 				break;
 			}
@@ -54,9 +54,9 @@ void PlayerSystem::onUpdate()
 				performBasicMovement(playerEntity, player.speedForce);
 
 				if (playerRB.getVelocity().y < 0.0f)
-					changeToFalling(&player);
+					changeToFalling(playerEntity);
 				else if (!player.isJumping)
-					changeToIdle(&player);
+					changeToIdle(playerEntity);
 
 				break;
 			}
@@ -66,7 +66,7 @@ void PlayerSystem::onUpdate()
 				performBasicMovement(playerEntity, player.speedForce);
 
 				if (playerRB.getVelocity().y >= 0.0f)
-					changeToIdle(&player);
+					changeToIdle(playerEntity);
 
 				break;
 			}
@@ -100,7 +100,7 @@ void PlayerSystem::onUpdate()
 
 					if (player.pushingStateData.interpolationParam >= 1.0f)
 					{
-						changeToIdle(&player);
+						changeToIdle(playerEntity);
 						player.yRotationClamp = 0.0f; //reset the camera rotation limit
 					}
 				}
@@ -121,7 +121,7 @@ void PlayerSystem::onUpdate()
 
 				player.cleaningTimeCountdown -= Time::deltaTime();
 				if (player.cleaningTimeCountdown < 0.0f)
-					changeToIdle(&player);
+					changeToIdle(playerEntity);
 
 				break;
 			}
@@ -133,7 +133,7 @@ void PlayerSystem::onUpdate()
 				player.delayBeforeThrowingCountdown -= Time::deltaTime();
 				//if (player.delayBeforeThrowingCountdown < 0.0f)
 				{
-					changeToIdle(&player);
+					changeToIdle(playerEntity);
 
 					ThrowBottleEvent throwBottle;
 					throwBottle.bottleEntity         = player.primaryCarriedItem;
@@ -154,7 +154,7 @@ void PlayerSystem::onUpdate()
 
 				player.stunnedTimeCountdown -= Time::deltaTime();
 				if (player.stunnedTimeCountdown < 0.0f)
-					changeToIdle(&player);
+					changeToIdle(playerEntity);
 
 				break;
 			}
@@ -185,15 +185,15 @@ bool PlayerSystem::onEvent(const Event& event)
 				player.jumpCooldownTimer = player.JUMP_COOLDOWN_DURATION;
 
 				if (player.state != PlayerState::throwingBottle)
-					changeToJumping(&player);
+					changeToJumping(evt.playerEntity);
 			}
 
 			break;
 		}
 
-		case (EventType) TypePlayerStateChange:
+		case (EventType) TypePlayerStateChangeRequest:
 		{
-			auto evt = event_cast<PlayerStateChangeEvent>(event);
+			auto evt = event_cast<PlayerStateChangeRequestEvent>(event);
 			auto& player = registry->get<Player>(evt.playerEntity);
 
 			if (player.state == PlayerState::pushing || player.state == PlayerState::stunned || player.state == PlayerState::throwingBottle)
@@ -206,32 +206,32 @@ bool PlayerSystem::onEvent(const Event& event)
 
 				case PlayerState::idle:
 			    {
-					changeToIdle(&player);
+					changeToIdle(evt.playerEntity);
 				    break;
 			    }
 			    case PlayerState::pushing:
 			    {
-					changeToPushing(&player);
+					changeToPushing(evt.playerEntity);
 				    break;
 			    }
 				case PlayerState::inCleaningQuicktimeEvent:
 				{
-					changeToInCleaningQuicktimeEvent(&player);
+					changeToInCleaningQuicktimeEvent(evt.playerEntity);
 					break;
 				}
 				case PlayerState::cleaning:
 				{
-					changeToCleaning(&player);
+					changeToCleaning(evt.playerEntity);
 					break;
 				}
 				case PlayerState::throwingBottle:
 				{
-					changeToThrowingBottle(&player);
+					changeToThrowingBottle(evt.playerEntity);
 					break;
 				}
 				case PlayerState::stunned:
 				{
-					changeToStunned(&player);
+					changeToStunned(evt.playerEntity);
 					break;
 				}
 			}
@@ -279,83 +279,148 @@ bool PlayerSystem::onEvent(const Event& event)
 				player.isJumping = false;
 
 				if (player.state == PlayerState::falling)
-					changeToIdle(&player);
+					changeToIdle(playerEntity);
 			}
 		}
 	}
 	return false;
 }
 
-void PlayerSystem::changeToIdle(Player* a_player)
+void PlayerSystem::changeToIdle(entt::entity a_playerEntity)
 {
-	a_player->state = PlayerState::idle;
+	auto& player = registry->get<Player>(a_playerEntity);
+
+	player.state = PlayerState::idle;
+
+	PlayerStateChangedEvent stateChanged;
+	stateChanged.playerEntity = a_playerEntity;
+	stateChanged.newState     = PlayerState::idle;
+	postEvent(stateChanged);
 }
 
-void PlayerSystem::changeToWalking(Player* a_player)
+void PlayerSystem::changeToWalking(entt::entity a_playerEntity)
 {
-    if (a_player->state == PlayerState::idle)
-	    a_player->state = PlayerState::walking;
+	auto& player = registry->get<Player>(a_playerEntity);
+	
+	if (player.state == PlayerState::idle)
+	{
+		player.state = PlayerState::walking;
+
+		PlayerStateChangedEvent stateChanged;
+		stateChanged.playerEntity = a_playerEntity;
+		stateChanged.newState     = PlayerState::walking;
+		postEvent(stateChanged);
+	}
 }
 
-void PlayerSystem::changeToJumping(Player* a_player)
+void PlayerSystem::changeToJumping(entt::entity a_playerEntity)
 {
-	a_player->state = PlayerState::jumping;
+	auto& player = registry->get<Player>(a_playerEntity);
+
+	player.state = PlayerState::jumping;
+
+	PlayerStateChangedEvent stateChanged;
+	stateChanged.playerEntity = a_playerEntity;
+	stateChanged.newState     = PlayerState::jumping;
+	postEvent(stateChanged);
 }
 
-void PlayerSystem::changeToFalling(Player* a_player)
+void PlayerSystem::changeToFalling(entt::entity a_playerEntity)
 {
-	a_player->state = PlayerState::falling;
+	auto& player = registry->get<Player>(a_playerEntity);
+
+	player.state = PlayerState::falling;
+
+	PlayerStateChangedEvent stateChanged;
+	stateChanged.playerEntity = a_playerEntity;
+	stateChanged.newState     = PlayerState::falling;
+	postEvent(stateChanged);
 }
 
 //destination and start positions for adjusting and pushing should be set before calling this function
-void PlayerSystem::changeToPushing(Player* a_player)
+void PlayerSystem::changeToPushing(entt::entity a_playerEntity)
 {    
-	a_player->adjustingPositionStateData.interpolationParam = 0.0f;
-	a_player->adjustingPositionStateData.speed              = a_player->adjustingPositionSpeed;
+	auto& player = registry->get<Player>(a_playerEntity);
+
+	player.adjustingPositionStateData.interpolationParam = 0.0f;
+	player.adjustingPositionStateData.speed              = player.adjustingPositionSpeed;
     
-	a_player->pushingStateData.interpolationParam = 0.0f;
-	a_player->pushingStateData.speed              = a_player->pushingSpeed;
+	player.pushingStateData.interpolationParam = 0.0f;
+	player.pushingStateData.speed              = player.pushingSpeed;
     
-	a_player->state = PlayerState::pushing;
+	player.state = PlayerState::pushing;
+
+	PlayerStateChangedEvent stateChanged;
+	stateChanged.playerEntity = a_playerEntity;
+	stateChanged.newState     = PlayerState::pushing;
+	postEvent(stateChanged);
 }
 
-void PlayerSystem::changeToInCleaningQuicktimeEvent(Player* a_player)
+void PlayerSystem::changeToInCleaningQuicktimeEvent(entt::entity a_playerEntity)
 {
-	a_player->state          = PlayerState::inCleaningQuicktimeEvent;
-	a_player->isCameraLocked = true;
+	auto& player = registry->get<Player>(a_playerEntity);
+
+	player.state          = PlayerState::inCleaningQuicktimeEvent;
+	player.isCameraLocked = true;
 
 	ActivateQuicktimeCleaningEventEvent activateQTE;
-	activateQTE.playerNum = a_player->playerNum;
+	activateQTE.playerNum = player.playerNum;
 	postEvent(activateQTE);
+
+	PlayerStateChangedEvent stateChanged;
+	stateChanged.playerEntity = a_playerEntity;
+	stateChanged.newState     = PlayerState::inCleaningQuicktimeEvent;
+	postEvent(stateChanged);
 }
 
-void PlayerSystem::changeToCleaning(Player* a_player)
+void PlayerSystem::changeToCleaning(entt::entity a_playerEntity)
 {
-	a_player->cleaningTimeCountdown = a_player->CLEANING_TIME_DURATION;
+	auto& player = registry->get<Player>(a_playerEntity);
 
-	a_player->state = PlayerState::cleaning;
+	player.cleaningTimeCountdown = player.CLEANING_TIME_DURATION;
+
+	player.state = PlayerState::cleaning;
+
+	PlayerStateChangedEvent stateChanged;
+	stateChanged.playerEntity = a_playerEntity;
+	stateChanged.newState     = PlayerState::cleaning;
+	postEvent(stateChanged);
 }
 
-void PlayerSystem::changeToThrowingBottle(Player* a_player)
+void PlayerSystem::changeToThrowingBottle(entt::entity a_playerEntity)
 {
-	a_player->delayBeforeThrowingCountdown = a_player->THROWING_DELAY_DURATION;
+	auto& player = registry->get<Player>(a_playerEntity);
 
-	a_player->state = PlayerState::throwingBottle;
+	player.delayBeforeThrowingCountdown = player.THROWING_DELAY_DURATION;
+
+	player.state = PlayerState::throwingBottle;
+
+	PlayerStateChangedEvent stateChanged;
+	stateChanged.playerEntity = a_playerEntity;
+	stateChanged.newState     = PlayerState::throwingBottle;
+	postEvent(stateChanged);
 }
 
-void PlayerSystem::changeToStunned(Player* a_player)
+void PlayerSystem::changeToStunned(entt::entity a_playerEntity)
 {
-	if (a_player->state == PlayerState::inCleaningQuicktimeEvent)
+	auto& player = registry->get<Player>(a_playerEntity);
+
+	if (player.state == PlayerState::inCleaningQuicktimeEvent)
 	{
 		//deactivate CleaningQuicktimeEvent UI for player
 		CancelQuicktimeCleaningEventEvent cancelQuicktimeCleaningEvent;
-		cancelQuicktimeCleaningEvent.playerNum = a_player->playerNum;
+		cancelQuicktimeCleaningEvent.playerNum = player.playerNum;
 		postEvent(cancelQuicktimeCleaningEvent);
 	}
 
-	a_player->stunnedTimeCountdown = a_player->STUNNED_TIME_DURATION;
+	player.stunnedTimeCountdown = player.STUNNED_TIME_DURATION;
 
-	a_player->state = PlayerState::stunned;
+	player.state = PlayerState::stunned;
+
+	PlayerStateChangedEvent stateChanged;
+	stateChanged.playerEntity = a_playerEntity;
+	stateChanged.newState     = PlayerState::stunned;
+	postEvent(stateChanged);
 }
 
 

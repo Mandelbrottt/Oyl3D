@@ -154,7 +154,7 @@ bool ThrowableBottleSystem::onEvent(const Event& event)
 					playerDropItemRequest.forceDrop                = true;
 					postEvent(playerDropItemRequest);
 
-					PlayerStateChangeEvent playerStateChange;
+					PlayerStateChangeRequestEvent playerStateChange;
 					playerStateChange.playerEntity = playerEntity;
 					playerStateChange.newState     = PlayerState::stunned;
 					postEvent(playerStateChange);
