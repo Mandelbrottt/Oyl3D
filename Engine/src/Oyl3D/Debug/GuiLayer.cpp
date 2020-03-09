@@ -1527,6 +1527,15 @@ namespace oyl::internal
                 ImGui::SameLine();
                 ImGui::InputFloat("##PointLightRangeInput", &pl.range, 0, 0, "%.2f");
             }
+            {
+                const float posDragSpeed = 0.01f;
+                ImGui::TextUnformatted("Intensity");
+                ImGui::SameLine(ImGui::GetWindowContentRegionWidth() - (15 + newWidth + 27));
+                ImGui::SetNextItemWidth(15);
+                ImGui::DragFloat("##PointLightIntensity", &pl.intensity, posDragSpeed, 0.0f, 999.0f, "R");
+                ImGui::SameLine();
+                ImGui::InputFloat("##PointLightIntensityInput", &pl.intensity, 0, 0, "%.2f");
+            }
             ImGui::PopItemWidth();
 
             ImGui::ColorEdit3("Ambient##PointLightAmbient", value_ptr(pl.ambient));
@@ -1634,6 +1643,20 @@ namespace oyl::internal
                 ImGui::Unindent(10);
             }
 
+            float newWidth = ImGui::GetWindowContentRegionWidth() / 6;
+            
+            ImGui::PushItemWidth(newWidth);
+            {
+                const float posDragSpeed = 0.01f;
+                ImGui::TextUnformatted("Intensity");
+                ImGui::SameLine(ImGui::GetWindowContentRegionWidth() - (15 + newWidth + 27));
+                ImGui::SetNextItemWidth(15);
+                ImGui::DragFloat("##DirectionalLightIntensity", &dl.intensity, posDragSpeed, 0.0f, 999.0f, "R");
+                ImGui::SameLine();
+                ImGui::InputFloat("##DirectionalLightIntensityInput", &dl.intensity, 0, 0, "%.2f");
+            }
+            ImGui::PopItemWidth();
+
             ImGui::ColorEdit3("Ambient##DirectionalLightAmbient", value_ptr(dl.ambient));
             ImGui::ColorEdit3("Diffuse##DirectionalLightDiffuse", value_ptr(dl.diffuse));
             ImGui::ColorEdit3("Specular##DirectionalLightSpecular", value_ptr(dl.specular));
@@ -1679,6 +1702,15 @@ namespace oyl::internal
                 ImGui::DragFloat("##RangeSpotLight", &sl.range, posDragSpeed, 0.0f, 999.0f, "R");
                 ImGui::SameLine();
                 ImGui::InputFloat("##RangeInputSpotLight", &sl.range, 0, 0, "%.2f");
+            }
+            {
+                const float posDragSpeed = 0.01f;
+                ImGui::TextUnformatted("Intensity");
+                ImGui::SameLine(ImGui::GetWindowContentRegionWidth() - (15 + newWidth + 27));
+                ImGui::SetNextItemWidth(15);
+                ImGui::DragFloat("##SpotLightIntensity", &sl.intensity, posDragSpeed, 0.0f, 999.0f, "R");
+                ImGui::SameLine();
+                ImGui::InputFloat("##SpotLightIntensityInput", &sl.intensity, 0, 0, "%.2f");
             }
             {
                 const float posDragSpeed = 0.01f;
@@ -1765,11 +1797,15 @@ namespace oyl::internal
                 }
                 ImGui::EndCombo();
             }
+
+            float newWidth = ImGui::GetWindowContentRegionWidth() / 5;
+
+            ImGui::PushItemWidth(newWidth);
             {
                 bool changed = false;
                 float fov = camera.fov();
                 ImGui::TextUnformatted("Field of View");
-                ImGui::SameLine();
+                ImGui::SameLine(ImGui::GetWindowContentRegionWidth() - (15 + newWidth + 27));
                 ImGui::SetNextItemWidth(15);
                 changed |= ImGui::DragFloat("##DragFov", &fov, 0.2f, 0.0f, 1000.0f, "F");
                 ImGui::SameLine();
@@ -1781,7 +1817,7 @@ namespace oyl::internal
                 bool changed = false;
                 float nearClipping = camera.nearClipping();
                 ImGui::TextUnformatted("Near Clipping Plane");
-                ImGui::SameLine();
+                ImGui::SameLine(ImGui::GetWindowContentRegionWidth() - (15 + newWidth + 27));
                 ImGui::SetNextItemWidth(15);
                 changed |= ImGui::DragFloat("##DragNearClipping", &nearClipping, 0.2f, 0.0f, 1000.0f, "Z");
                 ImGui::SameLine();
@@ -1793,7 +1829,7 @@ namespace oyl::internal
                 bool changed = false;
                 float farClipping = camera.farClipping();
                 ImGui::TextUnformatted("Field of View");
-                ImGui::SameLine();
+                ImGui::SameLine(ImGui::GetWindowContentRegionWidth() - (15 + newWidth + 27));
                 ImGui::SetNextItemWidth(15);
                 changed |= ImGui::DragFloat("##FarClippingFov", &farClipping, 0.2f, 0.0f, 1000.0f, "Z");
                 ImGui::SameLine();
@@ -1801,6 +1837,40 @@ namespace oyl::internal
                 if (changed)
                     camera.farClipping(farClipping);
             }
+            {
+                ImGui::TextUnformatted("Exposure");
+                ImGui::SameLine(ImGui::GetWindowContentRegionWidth() - (15 + newWidth + 27));
+                ImGui::SetNextItemWidth(15);
+                ImGui::DragFloat("##DragExposure", &camera.exposure, 0.02f, 0.0f, 1000.0f, "E");
+                ImGui::SameLine();
+                ImGui::InputFloat("##ExposureInput", &camera.exposure, 0, 0, "%.2f");
+            }
+            {
+                ImGui::TextUnformatted("Brightness");
+                ImGui::SameLine(ImGui::GetWindowContentRegionWidth() - (15 + newWidth + 27));
+                ImGui::SetNextItemWidth(15);
+                ImGui::DragFloat("##DragBrightness", &camera.brightness, 0.02f, 0.0f, 1000.0f, "B");
+                ImGui::SameLine();
+                ImGui::InputFloat("##BrightnessInput", &camera.brightness, 0, 0, "%.2f");
+            }
+            {
+                ImGui::TextUnformatted("Contrast");
+                ImGui::SameLine(ImGui::GetWindowContentRegionWidth() - (15 + newWidth + 27));
+                ImGui::SetNextItemWidth(15);
+                ImGui::DragFloat("##DragContrast", &camera.contrast, 0.02f, 0.0f, 1000.0f, "C");
+                ImGui::SameLine();
+                ImGui::InputFloat("##ContrastInput", &camera.contrast, 0, 0, "%.2f");
+            }
+            {
+                ImGui::TextUnformatted("Saturation");
+                ImGui::SameLine(ImGui::GetWindowContentRegionWidth() - (15 + newWidth + 27));
+                ImGui::SetNextItemWidth(15);
+                ImGui::DragFloat("##DragSaturation", &camera.saturation, 0.02f, 0.0f, 1000.0f, "S");
+                ImGui::SameLine();
+                ImGui::InputFloat("##SaturationInput", &camera.saturation, 0, 0, "%.2f");
+            }
+
+            ImGui::PopItemWidth();
 
             // TODO: Upper and Lower Coords
 

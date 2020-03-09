@@ -95,11 +95,11 @@ namespace oyl
                 { Shader::Pixel, ENGINE_RES + FORWARD_STATIC_SHADER_FRAGMENT_PATH },
             }, FORWARD_STATIC_SHADER_ALIAS);
 
-        Shader::cache(
-            {
-                { Shader::Vertex, ENGINE_RES + FORWARD_VERTEX_SHADER_VERTEX_PATH },
-                { Shader::Pixel, ENGINE_RES +  FORWARD_VERTEX_SHADER_FRAGMENT_PATH },
-            }, FORWARD_VERTEX_SHADER_ALIAS);
+        //Shader::cache(
+        //    {
+        //        { Shader::Vertex, ENGINE_RES + FORWARD_VERTEX_SHADER_VERTEX_PATH },
+        //        { Shader::Pixel, ENGINE_RES +  FORWARD_VERTEX_SHADER_FRAGMENT_PATH },
+        //    }, FORWARD_VERTEX_SHADER_ALIAS);
         
         Shader::cache(
             {
@@ -113,11 +113,11 @@ namespace oyl
                 { Shader::Pixel, ENGINE_RES + DEFERRED_STATIC_PRE_SHADER_FRAGMENT_PATH },
             }, DEFERRED_STATIC_PRE_SHADER_ALIAS);
 
-        Shader::cache(
-            {
-                { Shader::Vertex, ENGINE_RES + DEFERRED_VERTEX_PRE_SHADER_VERTEX_PATH },
-                { Shader::Pixel, ENGINE_RES + DEFERRED_VERTEX_PRE_SHADER_FRAGMENT_PATH },
-            }, DEFERRED_VERTEX_PRE_SHADER_ALIAS);
+        //Shader::cache(
+        //    {
+        //        { Shader::Vertex, ENGINE_RES + DEFERRED_VERTEX_PRE_SHADER_VERTEX_PATH },
+        //        { Shader::Pixel, ENGINE_RES + DEFERRED_VERTEX_PRE_SHADER_FRAGMENT_PATH },
+        //    }, DEFERRED_VERTEX_PRE_SHADER_ALIAS);
 
         Shader::cache(
             {
@@ -133,7 +133,11 @@ namespace oyl
         Texture2D::cache(ENGINE_RES + UV_TEXTURE_PATH, UV_TEXTURE_ALIAS);
         Texture2D::cache(ENGINE_RES + DEFAULT_NORMAL_TEXTURE_PATH, DEFAULT_NORMAL_TEXTURE_ALIAS);
 
-        TextureCubeMap::cache(ENGINE_RES + DEFAULT_SKYBOX_PATH, DEFAULT_SKYBOX_ALIAS);
+        auto defSkybox = TextureCubeMap::create(ENGINE_RES + DEFAULT_SKYBOX_PATH, 
+                                                TextureFilter::Nearest, 
+                                                TextureWrap::ClampToBorder, 
+                                                TextureProfile::SRGB);
+        TextureCubeMap::cache(std::move(defSkybox), DEFAULT_SKYBOX_ALIAS);
         
         initEventListeners();
 

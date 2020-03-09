@@ -14,6 +14,7 @@ struct PointLight
 	vec3 diffuse;
 	vec3 specular;
 
+	float intensity;
 	float range;
 };
 
@@ -24,6 +25,8 @@ struct DirLight
 	vec3 ambient;
 	vec3 diffuse;
 	vec3 specular;
+	
+	float intensity;
 };
 
 struct SpotLight 
@@ -35,6 +38,7 @@ struct SpotLight
 	vec3 diffuse;
 	vec3 specular;
 	
+	float intensity;
 	float range;
 
 	float innerCutoff;
@@ -111,11 +115,8 @@ void main()
 	for (int i = 0; i < u_numSpotLights; i++)
 		out_color.rgb += calculateSpotLight(u_spotLight[i], shadowIndex);
 	
+	// Add emission
 	out_color.rgb += texture(u_emission3_glossiness1, in_texCoords).rgb;
-
-	// Gamma Correction
-	vec3 gamma = vec3(1.0 / 2.2);
-	out_color.rgb = pow(out_color.rgb, gamma);
 }
 
 vec3 calculatePointLight(PointLight light, inout int shadowIndex)
@@ -138,8 +139,8 @@ vec3 calculatePointLight(PointLight light, inout int shadowIndex)
 	float attenuation = clamp(1.0 - (dist * dist) / (light.range * light.range), 0.0, 1.0); 
 	attenuation *= attenuation;
 
-	diffuse  *= attenuation;
-	specular *= attenuation;
+	diffuse  *= attenuation * light.intensity;
+	specular *= attenuation * light.intensity;
 	
 	float shadow = 0.0;
 	if (shadowIndex < u_numShadowMaps && u_shadow[shadowIndex].type == POINT_SHADOW)
@@ -164,6 +165,9 @@ vec3 calculateDirLight(DirLight light, inout int shadowIndex)
 	vec3 diffuse  = light.diffuse  * diff * g_albedo3_specular1.rgb;
 	vec3 specular = light.specular * spec * g_albedo3_specular1.a;
 
+	diffuse  *= light.intensity;
+	specular *= light.intensity;
+
 	float shadow = 0.0;
 	if (shadowIndex < u_numShadowMaps && u_shadow[shadowIndex].type == POINT_SHADOW)
 		shadow = shadowCalculation(g_lightSpacePosition, u_shadow[shadowIndex], lightDir);
@@ -176,7 +180,8 @@ vec3 calculateSpotLight(SpotLight light, inout int shadowIndex)
 		
 	float theta = dot(lightDir, normalize(-light.direction));
 	float epsilon = light.innerCutoff - light.outerCutoff;
-	float intensity = clamp((theta - light.outerCutoff) / epsilon, 0.0, 1.0);
+	float intensity = smoothstep((theta - light.outerCutoff) / epsilon, 0.0, 1.0);
+	intensity *= light.intensity;
 
 	if (theta > light.outerCutoff) 
 	{

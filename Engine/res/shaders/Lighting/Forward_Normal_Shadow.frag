@@ -25,6 +25,7 @@ struct PointLight
 	vec3 diffuse;
 	vec3 specular;
 
+	float intensity;
 	float range;
 };
 
@@ -35,6 +36,8 @@ struct DirLight
 	vec3 ambient;
 	vec3 diffuse;
 	vec3 specular;
+
+	float intensity;
 };
 
 struct SpotLight 
@@ -46,6 +49,7 @@ struct SpotLight
 	vec3 diffuse;
 	vec3 specular;
 	
+	float intensity;
 	float range;
 
 	float innerCutoff;
@@ -132,9 +136,6 @@ void main()
 	
 	out_color += texture(u_material.emission, mainTexCoord);
 
-	// Gamma Correction
-	vec3 gamma = vec3(1.0 / 2.2);
-	out_color.rgb = pow(out_color.rgb, gamma);
 	out_color.a = 1.0;
 }
 
@@ -158,8 +159,8 @@ vec3 calculatePointLight(PointLight light, vec3 fragPos, vec3 normal, vec2 texCo
 	float attenuation = clamp(1.0 - (dist * dist) / (light.range * light.range), 0.0, 1.0); 
 	attenuation *= attenuation;
 
-	diffuse  *= attenuation;
-	specular *= attenuation;
+	diffuse  *= attenuation * light.intensity;
+	specular *= attenuation * light.intensity;
 	
 	float shadow = 0.0;
 	if (shadowIndex < u_numShadowMaps && u_shadow[shadowIndex].type == POINT_SHADOW)
@@ -184,6 +185,9 @@ vec3 calculateDirLight(DirLight light, vec3 fragPos, vec3 normal, vec2 texCoord,
 	vec3 diffuse  = light.diffuse  * diff * vec3(texture(u_material.albedo,   texCoord));
 	vec3 specular = light.specular * spec * vec3(texture(u_material.specular, texCoord));
 
+	diffuse  *= light.intensity;
+	specular *= light.intensity;
+
 	float shadow = 0.0;
 	if (shadowIndex < u_numShadowMaps && u_shadow[shadowIndex].type == DIR_SHADOW)
 		shadow = shadowCalculation(fs_in.lightSpacePosition, u_shadow[shadowIndex], normal, lightDir);
@@ -197,6 +201,7 @@ vec3 calculateSpotLight(SpotLight light, vec3 fragPos, vec3 normal, vec2 texCoor
 	float theta = dot(lightDir, normalize(-light.direction));
 	float epsilon = light.innerCutoff - light.outerCutoff;
 	float intensity = clamp((theta - light.outerCutoff) / epsilon, 0.0, 1.0);
+	intensity *= light.intensity;
 
 	if (theta > light.outerCutoff) 
 	{

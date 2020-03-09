@@ -38,11 +38,10 @@ namespace oyl
     const std::string DEFERRED_POST_SHADER_VERTEX_PATH   = "shaders/ScreenSpace/FBO_Passthrough.vert";
     const std::string DEFERRED_POST_SHADER_FRAGMENT_PATH = "shaders/Lighting/Deferred_Post_Normal_Shadow.frag";
     
-    const CacheAlias  TEXTURE_SHADER_ALIAS         = "Oyl Texture";
-    const std::string TEXTURE_SHADER_VERTEX_PATH   = "shaders/meshShader.vert";
-    const std::string TEXTURE_SHADER_FRAGMENT_PATH = "shaders/meshShader.frag";
+    const std::string SKYBOX_SHADER_PATH         = "shaders/Skybox.oylshader";
 
-    const std::string SKYBOX_SHADER_PATH   = "shaders/Skybox.oylshader";
+    const std::string HDR_SHADER_VERTEX_PATH     = "shaders/ScreenSpace/FBO_Passthrough.vert";
+    const std::string HDR_SHADER_FRAGMENT_PATH   = "shaders/ScreenSpace/HDR_Post.frag";
 
     // ^^^ Shaders ^^^ //
     // vvv Meshes vvv //
