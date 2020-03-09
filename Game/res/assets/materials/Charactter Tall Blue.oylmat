@@ -1,6 +1,6 @@
 {
     "Material": {
-        "Alias": "Character",
+        "Alias": "Charactter Tall Blue",
         "MainProperties": {
             "Offset": [
                 0.0,
@@ -24,8 +24,8 @@
         },
         "Textures": {
             "Albedo": {
-                "Alias": "characterTex",
-                "FilePath": "res\\assets\\textures\\characterTex.png",
+                "Alias": "PirateTallBlue",
+                "FilePath": "res\\assets\\textures\\PirateTallBlue.png",
                 "Profile": 1,
                 "guid": null
             },

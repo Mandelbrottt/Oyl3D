@@ -1,6 +1,6 @@
 {
     "Material": {
-        "Alias": "Character Short Red",
+        "Alias": "garbageGlooped",
         "MainProperties": {
             "Offset": [
                 0.0,
@@ -24,8 +24,8 @@
         },
         "Textures": {
             "Albedo": {
-                "Alias": "PirateShortRed",
-                "FilePath": "res\\assets\\textures\\PirateShortRed.png",
+                "Alias": "garbageTempGlooped",
+                "FilePath": "res\\assets\\textures\\garbageTempGlooped.png",
                 "Profile": 1,
                 "guid": null
             },

@@ -1178,6 +1178,9 @@ namespace oyl::internal
 
         Ref<Material> material = Material::create();
 
+        if (material->m_filepath.empty())
+            material->m_filepath = filepath;
+
         if (auto it = jMaterial.find("Shader"); it != jMaterial.end() && !it->is_null())
         {
             bool loadNewShader = false;
