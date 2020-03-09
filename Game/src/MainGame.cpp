@@ -30,11 +30,15 @@ class MainLayer : public Layer
 public:
 	OYL_CTOR(MainLayer, oyl::Layer)
 
-	bool isCameraActive = false;
+	bool isCameraActive;
+	bool isGameOver;
 
 	void onEnter() override
 	{
 		srand(time(NULL));
+
+		isCameraActive = false;
+		isGameOver = false;
 
 		listenForEventCategory(EventCategory::Keyboard);
 		listenForEventCategory(EventCategory::Mouse);
@@ -622,8 +626,6 @@ public:
 			if (player.state == PlayerState::stunned)
 				continue;
 
-			//Application::get().changeScene("MainScene");
-
 			//player movement
 			glm::vec3 desiredMoveDirection = glm::vec3(0.0f);
 
@@ -902,9 +904,14 @@ public:
 				}
 				case Gamepad::B:
 				{
-					CancelButtonPressedEvent cancelButtonPressed;
-					cancelButtonPressed.playerEntity = playerEntity;
-					postEvent(cancelButtonPressed);
+					if (isGameOver)
+						Application::get().changeScene("MainMenuScene");
+					else
+					{
+						CancelButtonPressedEvent cancelButtonPressed;
+						cancelButtonPressed.playerEntity = playerEntity;
+						postEvent(cancelButtonPressed);
+					}
 
 					break;
 				}
@@ -995,6 +1002,8 @@ public:
 
 			auto e = registry->create();
 
+			isGameOver = true;
+
 			auto& t = registry->assign<component::Transform>(e);
 			t.setPosition(glm::vec3(0.0f, 0.0f, -100.0f));
 			t.setScale(glm::vec3(10.0f, 10.0f, 10.0f));
@@ -1034,10 +1043,10 @@ class Game : public oyl::Application
 public:
     Game()
     {
-		//registerScene<MainMenuScene>();
-		//registerScene<ControlsScreenScene>();
+		registerScene<MainMenuScene>();
+		registerScene<ControlsScreenScene>();
         registerScene<MainScene>();
-		//registerScene<GameEndScene>();
+		registerScene<GameEndScene>();
     }
 
     virtual void onExit() { }

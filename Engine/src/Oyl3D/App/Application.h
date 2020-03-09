@@ -102,10 +102,12 @@ namespace oyl
 
         newScene->setDispatcher(m_dispatcher);
         
+    #if !defined OYL_DISTRIBUTION
         newScene->Scene::onEnter();
         newScene->onEnter();
 
         internal::registryFromSceneFile(*newScene->m_registry, name);
+    #endif
 
         bool swapToScene = m_registeredScenes.empty();
 

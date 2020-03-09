@@ -257,6 +257,8 @@ bool MainMenuLayer::onEvent(const Event& event)
 				break;
 			}
 			}
+
+			break;
 		}
 		}
 

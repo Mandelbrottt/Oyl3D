@@ -2986,7 +2986,15 @@ namespace oyl::internal
                     {
                         m_registryRestores[name] = scene->m_registry->clone();
                         if (name != m_originalScene)
+                        {
                             scene->m_registry->reset();
+                            for (auto& layer : scene->m_layerStack)
+                            {
+                                Application::get().m_dispatcher->unregisterListener(layer);
+                                for (auto& system : layer->m_systems)
+                                    Application::get().m_dispatcher->unregisterListener(system);
+                            }
+                        }
                     }
 
                     m_currentSelection     = entt::entity(entt::null);
