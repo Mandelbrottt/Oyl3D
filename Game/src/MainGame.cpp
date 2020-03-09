@@ -69,6 +69,8 @@ public:
 		Texture2D::cache("res/assets/textures/gui/cleaningQTEUp.png");
 		Texture2D::cache("res/assets/textures/gui/cleaningQTEDown.png");
 
+		Texture2D::cache("res/assets/textures/gui/garbagePileHPBarOutlineGlooped.png");
+
 		for (int i = 0; i < 4; i++)
 		{
 			{
@@ -658,7 +660,7 @@ public:
 				//camera movement
 				glm::vec2 rightStick = Input::getGamepadRightStick(player.controllerNum);
 
-				playerTransform.rotate(glm::vec3(0.0f, -rightStick.x * 200.0f * Time::deltaTime(), 0.0f));
+				playerTransform.rotate(glm::vec3(0.0f, -rightStick.x * 200.0f * 0.016f, 0.0f));
 
 				if (player.yRotationClamp > 1)
 				{
@@ -680,7 +682,7 @@ public:
 					if (cameraTransform.getParentEntity() != playerEntity)
 						continue;
 
-					cameraTransform.rotate(glm::vec3(-rightStick.y * 200.0f * Time::deltaTime(), 0.0f, 0.0f));
+					cameraTransform.rotate(glm::vec3(-rightStick.y * 200.0f * 0.016f, 0.0f, 0.0f));
 
 					//clamp camera up/down rotation
 					float cameraRotationClampValueX = 70.0f;

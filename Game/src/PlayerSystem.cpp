@@ -22,7 +22,7 @@ void PlayerSystem::onUpdate()
 
 		player.jumpCooldownTimer -= Time::deltaTime();
 
-		playerRB.addImpulse(glm::vec3(0.0f, -35.0f, 0.0f) * Time::deltaTime());
+		playerRB.addImpulse(glm::vec3(0.0f, -35.0f, 0.0f));
 
 		if (player.transitionIntoQTE && player.state != PlayerState::cleaning)
 			player.transitionIntoQTE = false;
