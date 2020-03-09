@@ -4,6 +4,9 @@ void AnimationManager::onEnter()
 {
 	listenForEventCategory((EventCategory)CategoryPlayer);
 	listenForEventCategory((EventCategory)CategoryGarbagePile);
+	listenForEventCategory((EventCategory)CategoryThrowableBottle);
+	listenForEventCategory((EventCategory)CategoryCleaningSolution);
+	listenforEventCategory((EventCategory)CategoryGloop);
 }
 
 void AnimationManager::onExit()
