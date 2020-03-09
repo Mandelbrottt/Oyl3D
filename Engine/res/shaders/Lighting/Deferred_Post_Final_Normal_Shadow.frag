@@ -161,9 +161,9 @@ vec3 calculateDirLight(DirLight light, inout int shadowIndex)
 	float spec 		= pow(max(dot(g_normal, halfwayDir), 0.0), 128);
 
 	// Combine Results
-    vec3 ambient  = light.ambient  *        g_albedo3_specular1.rgb;
-	vec3 diffuse  = light.diffuse  * diff * g_albedo3_specular1.rgb;
-	vec3 specular = light.specular * spec * g_albedo3_specular1.a;
+    vec3 ambient  = light.ambient  * g_albedo3_specular1.rgb;
+	vec3 diffuse  = light.diffuse  * g_albedo3_specular1.rgb;
+	vec3 specular = light.specular * g_albedo3_specular1.a;
 
 	diffuse  *= light.intensity;
 	specular *= light.intensity;

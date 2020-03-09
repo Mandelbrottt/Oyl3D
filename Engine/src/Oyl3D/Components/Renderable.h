@@ -18,6 +18,8 @@ namespace oyl::component
         bool enabled        = true;
         bool castShadows    = true;
         //bool receiveShadows = true;
+
+        bool isWireframe = false;
     };
     
     struct GuiRenderable

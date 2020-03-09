@@ -12,6 +12,7 @@ namespace oyl
         virtual void setDepthDraw(bool value) override;
         virtual void setBackfaceCulling(bool value) override;
         virtual void setAlphaBlend(bool value) override;
+        virtual void setBlending(bool value) override;
 
         virtual void setDrawRect(int x, int y, int width, int height) override;
 

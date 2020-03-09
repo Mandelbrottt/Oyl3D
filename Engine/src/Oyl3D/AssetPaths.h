@@ -35,8 +35,11 @@ namespace oyl
     const std::string DEFERRED_SKELETAL_PRE_SHADER_VERTEX_PATH   = "shaders/Lighting/Skeletal_Normal_Shadow.vert";
     const std::string DEFERRED_SKELETAL_PRE_SHADER_FRAGMENT_PATH = "shaders/Lighting/Deferred_Pre_Normal_Shadow.frag";
 
-    const std::string DEFERRED_POST_SHADER_VERTEX_PATH   = "shaders/ScreenSpace/FBO_Passthrough.vert";
-    const std::string DEFERRED_POST_SHADER_FRAGMENT_PATH = "shaders/Lighting/Deferred_Post_Normal_Shadow.frag";
+    const std::string DEFERRED_POST_FINAL_SHADER_VERTEX_PATH   = "shaders/ScreenSpace/FBO_Passthrough.vert";
+    const std::string DEFERRED_POST_FINAL_SHADER_FRAGMENT_PATH = "shaders/Lighting/Deferred_Post_Final_Normal_Shadow.frag";
+    
+    const std::string DEFERRED_POST_POINT_LIGHT_SHADER_VERTEX_PATH   = "shaders/Lighting/Deferred_Post_Volume.vert";
+    const std::string DEFERRED_POST_POINT_LIGHT_SHADER_FRAGMENT_PATH = "shaders/Lighting/Deferred_Post_Light_Normal_Shadow.frag";
     
     const std::string SKYBOX_SHADER_PATH         = "shaders/Skybox.oylshader";
 
@@ -53,6 +56,9 @@ namespace oyl
 
     const CacheAlias  MONKEY_MODEL_ALIAS = "Oyl Monkey";
     const std::string MONKEY_MODEL_PATH  = "models/monkey.obj";
+
+    const CacheAlias  SPHERE_MODEL_ALIAS = "Oyl Sphere";
+    const std::string SPHERE_MODEL_PATH  = "models/sphere.obj";
 
     // ^^^ Shaders ^^^ //
     // vvv Textures vvv //

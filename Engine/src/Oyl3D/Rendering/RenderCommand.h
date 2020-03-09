@@ -31,6 +31,11 @@ namespace oyl
         {
             s_rendererAPI->setAlphaBlend(value);
         }
+        
+        inline static void setBlending(bool value)
+        {
+            s_rendererAPI->setBlending(value);
+        }
 
         inline static void setBackfaceCulling(bool value)
         {

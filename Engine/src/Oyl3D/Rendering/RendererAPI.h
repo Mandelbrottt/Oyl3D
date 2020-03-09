@@ -24,11 +24,13 @@ namespace oyl
         virtual void setDepthDraw(bool value) = 0;
         virtual void setBackfaceCulling(bool value) = 0;
         virtual void setAlphaBlend(bool value) = 0;
+        virtual void setBlending(bool value) = 0;
 
         virtual void setDrawRect(int x, int y, int width, int height) = 0;
 
         virtual void drawArrays(const Ref<VertexArray>& vao, u32 count) = 0;
         virtual void drawIndexed(const Ref<VertexArray>& vao) = 0;
+        virtual void setWireframe(bool value);
 
         static API getAPI() { return s_API; }
 

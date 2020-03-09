@@ -192,7 +192,7 @@ namespace oyl::internal
         using component::SpotLight;
         using component::BoneTarget;
 
-        RenderCommand::setAlphaBlend(false);
+        RenderCommand::setBlending(false);
         RenderCommand::setDepthDraw(true);
         
         Ref<Material> boundMaterial;
@@ -222,6 +222,8 @@ namespace oyl::internal
                 if (!(mr.cullingMask & pc.cullingMask))
                     continue;
 
+                RenderCommand::setWireframe(mr.isWireframe);
+
                 if (mr.material != boundMaterial)
                 {
                     boundMaterial = mr.material;
@@ -230,7 +232,7 @@ namespace oyl::internal
                     boundMaterial->setUniformMat4("u_viewProjection", pc.viewProjectionMatrix());
                     glm::mat3 viewNormal = glm::mat3(inverse(transpose(pc.viewMatrix())));
                     boundMaterial->setUniformMat3("u_viewNormal", viewNormal);
-
+                    
                     int shadowIndex = 0;
 
                     auto pointLightView = registry->view<PointLight>();
@@ -350,10 +352,16 @@ namespace oyl::internal
 
     void DeferredRenderSystem::onEnter()
     {
-        m_deferredPostShader = Shader::create(
+        m_deferredPostFinalShader = Shader::create(
             {
-                { Shader::Vertex, ENGINE_RES + DEFERRED_POST_SHADER_VERTEX_PATH },
-                { Shader::Pixel, ENGINE_RES + DEFERRED_POST_SHADER_FRAGMENT_PATH }
+                { Shader::Vertex, ENGINE_RES + DEFERRED_POST_FINAL_SHADER_VERTEX_PATH },
+                { Shader::Pixel, ENGINE_RES + DEFERRED_POST_FINAL_SHADER_FRAGMENT_PATH }
+            });
+
+        m_deferredPostPointLightShader = Shader::create(
+            {
+                { Shader::Vertex, ENGINE_RES + DEFERRED_POST_POINT_LIGHT_SHADER_VERTEX_PATH },
+                { Shader::Pixel, ENGINE_RES + DEFERRED_POST_POINT_LIGHT_SHADER_FRAGMENT_PATH }
             });
 
         float vertices[] = {
@@ -395,7 +403,7 @@ namespace oyl::internal
             Camera& pc = camView.get<Camera>(camera);
 
             RenderCommand::setDrawRect(0, 0, pc.m_deferredFrameBuffer->getColorWidth(), pc.m_deferredFrameBuffer->getColorHeight());
-            RenderCommand::setAlphaBlend(false);
+            RenderCommand::setBlending(false);
             
             pc.m_deferredFrameBuffer->bind();
 
@@ -478,36 +486,84 @@ namespace oyl::internal
             using component::PointLight;
             using component::DirectionalLight;
 
-            m_deferredPostShader->bind();
-            
+            static Ref<Model> sphere = Model::get(SPHERE_MODEL_ALIAS);
+
+            m_deferredPostPointLightShader->bind();
+            m_deferredPostPointLightShader->setUniformMat4("u_viewProjection", pc.viewProjectionMatrix());
+
             auto pointLightView = registry->view<PointLight>();
-            int  count          = 0;
+            
+            RenderCommand::setDepthDraw(false);
+            RenderCommand::setBlending(true);
+            RenderCommand::setAlphaBlend(false);
+
+            pc.m_mainFrameBuffer->bind();
+            
+            for (uint i = 0; i < 5; i++)
+                pc.m_deferredFrameBuffer->bindColorAttachment(i, i);
+            
             for (auto light : pointLightView)
             {
                 PointLight& pointLightProps = pointLightView.get(light);
                 auto        lightTransform  = registry->get<Transform>(light);
 
-                std::string pointLightName = "u_pointLight[" + std::to_string(count) + "]";
+                std::string pointLightName = "u_pointLight";
 
-                m_deferredPostShader->setUniform3f(pointLightName + ".position",
-                                                   pc.viewMatrix() * glm::vec4(lightTransform.getPositionGlobal(), 1.0f));
-                m_deferredPostShader->setUniform3f(pointLightName + ".ambient",
-                                                   pointLightProps.ambient);
-                m_deferredPostShader->setUniform3f(pointLightName + ".diffuse",
-                                                   pointLightProps.diffuse);
-                m_deferredPostShader->setUniform3f(pointLightName + ".specular",
-                                                   pointLightProps.specular);
-                m_deferredPostShader->setUniform1f(pointLightName + ".range",
-                                                   pointLightProps.range);
-                m_deferredPostShader->setUniform1f(pointLightName + ".intensity",
-                                                   pointLightProps.intensity);
+                m_deferredPostPointLightShader->setUniform3f(pointLightName + ".position",
+                                                             pc.viewMatrix() * glm::vec4(lightTransform.getPositionGlobal(), 1.0f));
+                m_deferredPostPointLightShader->setUniform3f(pointLightName + ".ambient",
+                                                             pointLightProps.ambient);
+                m_deferredPostPointLightShader->setUniform3f(pointLightName + ".diffuse",
+                                                             pointLightProps.diffuse);
+                m_deferredPostPointLightShader->setUniform3f(pointLightName + ".specular",
+                                                             pointLightProps.specular);
+                m_deferredPostPointLightShader->setUniform1f(pointLightName + ".range",
+                                                             pointLightProps.range);
+                m_deferredPostPointLightShader->setUniform1f(pointLightName + ".intensity",
+                                                             pointLightProps.intensity);
+                
+                glm::mat4 transform = translate(glm::mat4(1.0f), lightTransform.getPositionGlobal());
+                transform = scale(transform, glm::vec3(2.0f * pointLightProps.range));
 
-                count++;
-                if (count >= 16)
-                    break;
+                m_deferredPostPointLightShader->setUniformMat4("u_model",
+                                                               transform);
+
+                const auto& mesh  = sphere->getMeshes()[0];
+                RenderCommand::drawArrays(mesh.getVertexArray(), mesh.getNumVertices());         
             }
+            
+            m_deferredPostFinalShader->bind();
 
-            m_deferredPostShader->setUniform1i("u_numPointLights", count);
+            pc.m_deferredFrameBuffer->bind(FrameBufferContext::Read);
+            pc.m_mainFrameBuffer->bind(FrameBufferContext::Write);
+
+            int  count          = 0;
+            //for (auto light : pointLightView)
+            //{
+            //    PointLight& pointLightProps = pointLightView.get(light);
+            //    auto        lightTransform  = registry->get<Transform>(light);
+
+            //    std::string pointLightName = "u_pointLight[" + std::to_string(count) + "]";
+
+            //    m_deferredPostFinalShader->setUniform3f(pointLightName + ".position",
+            //                                            pc.viewMatrix() * glm::vec4(lightTransform.getPositionGlobal(), 1.0f));
+            //    m_deferredPostFinalShader->setUniform3f(pointLightName + ".ambient",
+            //                                            pointLightProps.ambient);
+            //    m_deferredPostFinalShader->setUniform3f(pointLightName + ".diffuse",
+            //                                            pointLightProps.diffuse);
+            //    m_deferredPostFinalShader->setUniform3f(pointLightName + ".specular",
+            //                                            pointLightProps.specular);
+            //    m_deferredPostFinalShader->setUniform1f(pointLightName + ".range",
+            //                                            pointLightProps.range);
+            //    m_deferredPostFinalShader->setUniform1f(pointLightName + ".intensity",
+            //                                            pointLightProps.intensity);
+
+            //    count++;
+            //    if (count >= 16)
+            //        break;
+            //}
+
+            m_deferredPostFinalShader->setUniform1i("u_numPointLights", 0);
             
             auto dirLightView = registry->view<DirectionalLight>();
             count             = 0;
@@ -518,26 +574,26 @@ namespace oyl::internal
 
                 std::string dirLightName = "u_dirLight[" + std::to_string(count) + "]";
 
-                m_deferredPostShader->setUniform3f(dirLightName + ".direction",
-                                                   viewNormal * lightTransform.getForwardGlobal());
-                m_deferredPostShader->setUniform3f(dirLightName + ".ambient",
-                                                   dirLightProps.ambient);
-                m_deferredPostShader->setUniform3f(dirLightName + ".diffuse",
-                                                   dirLightProps.diffuse);
-                m_deferredPostShader->setUniform3f(dirLightName + ".specular",
-                                                   dirLightProps.specular);
-                m_deferredPostShader->setUniform1f(dirLightName + ".intensity",
-                                                   dirLightProps.intensity);
+                m_deferredPostFinalShader->setUniform3f(dirLightName + ".direction",
+                                                        viewNormal * lightTransform.getForwardGlobal());
+                m_deferredPostFinalShader->setUniform3f(dirLightName + ".ambient",
+                                                        dirLightProps.ambient);
+                m_deferredPostFinalShader->setUniform3f(dirLightName + ".diffuse",
+                                                        dirLightProps.diffuse);
+                m_deferredPostFinalShader->setUniform3f(dirLightName + ".specular",
+                                                        dirLightProps.specular);
+                m_deferredPostFinalShader->setUniform1f(dirLightName + ".intensity",
+                                                        dirLightProps.intensity);
 
                 if (dirLightProps.castShadows && shadowIndex < 3)
                 {
                     //m_deferredPostShader->setUniformMat4("u_lightSpaceMatrix", dirLightProps.m_lightSpaceMatrix);
 
                     std::string shadowName = "u_shadow[" + std::to_string(shadowIndex) + "]";
-                    m_deferredPostShader->setUniform1i(shadowName + ".type", 2);
-                    m_deferredPostShader->setUniform1i(shadowName + ".map", 5 + shadowIndex);
+                    m_deferredPostFinalShader->setUniform1i(shadowName + ".type", 2);
+                    m_deferredPostFinalShader->setUniform1i(shadowName + ".map", 5 + shadowIndex);
                     glm::vec2 biasMinMax = { dirLightProps.biasMin, dirLightProps.biasMax };
-                    m_deferredPostShader->setUniform2f(shadowName + ".biasMinMax", biasMinMax);
+                    m_deferredPostFinalShader->setUniform2f(shadowName + ".biasMinMax", biasMinMax);
                     dirLightProps.m_frameBuffer->bindDepthAttachment(5 + shadowIndex);
 
                     shadowIndex++;
@@ -548,9 +604,9 @@ namespace oyl::internal
                     break;
             }
 
-            m_deferredPostShader->setUniform1i("u_numDirLights", count);
+            m_deferredPostFinalShader->setUniform1i("u_numDirLights", count);
 
-            m_deferredPostShader->setUniform1i("u_numShadowMaps", shadowIndex);
+            m_deferredPostFinalShader->setUniform1i("u_numShadowMaps", shadowIndex);
             
             pc.m_deferredFrameBuffer->bind(FrameBufferContext::Read);
             pc.m_mainFrameBuffer->bind(FrameBufferContext::Write);
@@ -559,8 +615,8 @@ namespace oyl::internal
                 pc.m_deferredFrameBuffer->bindColorAttachment(i, i);
             
             RenderCommand::setDepthDraw(false);
-            RenderCommand::setAlphaBlend(false);
-            Renderer::submit(m_deferredPostShader, m_fullscreenQuad, glm::mat4(1.0f));
+            RenderCommand::setBlending(false);
+            Renderer::submit(m_deferredPostFinalShader, m_fullscreenQuad, glm::mat4(1.0f));
 
             pc.m_deferredFrameBuffer->blit(pc.m_mainFrameBuffer);
         }
@@ -637,7 +693,7 @@ namespace oyl::internal
         m_shader->setUniform1i("u_texture", 0);
 
         RenderCommand::setDepthDraw(false);
-        RenderCommand::setAlphaBlend(true);
+        RenderCommand::setBlending(true);
 
         auto camView = registry->view<Camera>();
 
@@ -778,7 +834,7 @@ namespace oyl::internal
             camera.m_mainFrameBuffer->bind();
             RenderCommand::setDrawRect(0, 0, camera.m_mainFrameBuffer->getColorWidth(), camera.m_mainFrameBuffer->getColorHeight());
             RenderCommand::setBackfaceCulling(false);
-            RenderCommand::setAlphaBlend(false);
+            RenderCommand::setBlending(false);
 
             RenderCommand::setDepthDraw(true);
             this->skyboxPass(camera);
@@ -1021,7 +1077,7 @@ namespace oyl::internal
 
         m_forwardFrameBuffer->clear();
 
-        RenderCommand::setAlphaBlend(false);
+        RenderCommand::setBlending(false);
         RenderCommand::setDepthDraw(false);
 
         registry->view<Camera>().each([&](Camera& pc)

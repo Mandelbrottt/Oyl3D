@@ -57,7 +57,8 @@ namespace oyl
             void onUpdate() override;
 
         private:
-            Ref<Shader> m_deferredPostShader;
+            Ref<Shader> m_deferredPostFinalShader;
+            Ref<Shader> m_deferredPostPointLightShader;
 
             Ref<VertexArray> m_fullscreenQuad;
         };

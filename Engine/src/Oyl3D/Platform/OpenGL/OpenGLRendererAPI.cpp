@@ -38,10 +38,23 @@ namespace oyl
 
     void OpenGLRendererAPI::setAlphaBlend(bool value)
     {
+        GLenum dfactor = value ? GL_ONE_MINUS_SRC_ALPHA : GL_ONE;
+
+        glBlendFunc(GL_ONE, dfactor);
+    }
+
+    void OpenGLRendererAPI::setBlending(bool value)
+    {
         if (value)
             glEnable(GL_BLEND);
         else
             glDisable(GL_BLEND);
+    }
+
+    void OpenGLRendererAPI::setWireframe(bool value)
+    {
+        GLenum mode = value ? GL_LINE : GL_FILL;
+        glPolygonMode(GL_FRONT_AND_BACK, mode);
     }
 
     void OpenGLRendererAPI::setDrawRect(int x, int y, int width, int height)
