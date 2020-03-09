@@ -1514,6 +1514,10 @@ namespace oyl::internal
             ImGui::TextUnformatted("Cast Shadows");
             ImGui::SameLine();
             ImGui::Checkbox("##CastShadowsPointLight", &pl.castShadows);
+
+            ImGui::TextUnformatted("Enabled");
+            ImGui::SameLine();
+            ImGui::Checkbox("##EnabledPointLight", &pl.enabled);
             
             float newWidth = ImGui::GetWindowContentRegionWidth() / 6;
             

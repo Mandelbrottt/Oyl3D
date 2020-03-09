@@ -52,6 +52,8 @@ namespace oyl
 
         SceneChanged,
 
+        CG_Assignment,
+        
         CustomStart,
     };
 
@@ -369,6 +371,11 @@ namespace oyl
     OYL_EVENT_STRUCT(SceneChangedEvent, EventType::SceneChanged, EventCategory::Scene,
                      {
                          const char* name;
+                     });
+    
+    OYL_EVENT_STRUCT(CGAssignmentEvent, EventType::CG_Assignment, EventCategory::Scene,
+                     {
+                         int key;
                      });
     
     //-Scene Events-/////////////////////////////////////////////////////

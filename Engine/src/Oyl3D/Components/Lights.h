@@ -21,6 +21,8 @@ namespace oyl
             glm::vec3 specular = glm::vec3(1.0f);
 
             f32 intensity = 1.0f;
+
+            bool enabled = true;
         };
 
         struct AttenuationLight

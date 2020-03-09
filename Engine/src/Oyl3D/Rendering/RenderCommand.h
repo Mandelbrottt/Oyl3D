@@ -42,6 +42,11 @@ namespace oyl
             s_rendererAPI->setBackfaceCulling(value);
         }
 
+        inline static void setWireframe(bool value)
+        {
+            s_rendererAPI->setWireframe(value);
+        }
+
         inline static void setDrawRect(int x, int y, int width, int height)
         {
             s_rendererAPI->setDrawRect(x, y, width, height);

@@ -63,9 +63,9 @@ struct Shadow
 	vec2      biasMinMax;
 };
 
-const int MAX_POINT_LIGHTS = 16;
-const int MAX_DIR_LIGHTS   = 16;
-const int MAX_SPOT_LIGHTS  = 16;
+const int MAX_POINT_LIGHTS = 32;
+const int MAX_DIR_LIGHTS   = 32;
+const int MAX_SPOT_LIGHTS  = 32;
 const int MAX_SHADOW_MAPS  = 3;
 
 in VS_OUT {

@@ -13,6 +13,7 @@ namespace oyl
         virtual void setBackfaceCulling(bool value) override;
         virtual void setAlphaBlend(bool value) override;
         virtual void setBlending(bool value) override;
+        virtual void setWireframe(bool value) override;
 
         virtual void setDrawRect(int x, int y, int width, int height) override;
 

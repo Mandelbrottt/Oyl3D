@@ -1,6 +1,6 @@
 {
     "Material": {
-        "Alias": "monkeyMat",
+        "Alias": "HEHEHAHA",
         "MainProperties": {
             "Offset": [
                 0.0,
@@ -12,21 +12,21 @@
             ]
         },
         "Shader": {
-            "Alias": "Oyl Deferred Static",
+            "Alias": "Oyl Deferred Skeletal",
             "Pixel": {
                 "FilePath": "../Engine/res/shaders/Lighting/Deferred_Pre_Normal_Shadow.frag",
                 "guid": null
             },
             "Vertex": {
-                "FilePath": "../Engine/res/shaders/Lighting/Static_Normal_Shadow.vert",
+                "FilePath": "../Engine/res/shaders/Lighting/Skeletal_Normal_Shadow.vert",
                 "guid": null
             }
         },
         "Textures": {
             "Albedo": {
-                "Alias": "Oyl White",
-                "FilePath": "../Engine/res/textures/white.png",
-                "Profile": 0,
+                "Alias": "archer",
+                "FilePath": "res\\assets\\textures\\archer.png",
+                "Profile": 1,
                 "guid": null
             },
             "Emission": null,

@@ -52,9 +52,9 @@ struct Shadow
 	vec2      biasMinMax;
 };
 
-const int MAX_POINT_LIGHTS = 16;
-const int MAX_DIR_LIGHTS   = 16;
-const int MAX_SPOT_LIGHTS  = 16;
+const int MAX_POINT_LIGHTS = 32;
+const int MAX_DIR_LIGHTS   = 32;
+const int MAX_SPOT_LIGHTS  = 32;
 const int MAX_SHADOW_MAPS  = 3;
 
 layout(location = 0) in vec2 in_texCoords;
@@ -71,6 +71,10 @@ uniform int u_numPointLights = 0;
 uniform int u_numDirLights   = 0;
 uniform int u_numSpotLights  = 0;
 uniform int u_numShadowMaps  = 0;
+
+uniform int u_3 = 0;
+uniform int u_4 = 0;
+uniform int u_5 = 0;
 
 uniform PointLight u_pointLight[MAX_POINT_LIGHTS];
 uniform DirLight   u_dirLight[MAX_DIR_LIGHTS];
@@ -117,6 +121,10 @@ void main()
 	
 	// Add emission
 	out_color.rgb += texture(u_emission3_glossiness1, in_texCoords).rgb;
+
+	if (u_3 == 1) out_color.rgb = g_position;
+	if (u_4 == 1) out_color.rgb = g_normal;
+	if (u_5 == 1) out_color.rgb = g_albedo3_specular1.rgb;
 }
 
 vec3 calculatePointLight(PointLight light, inout int shadowIndex)

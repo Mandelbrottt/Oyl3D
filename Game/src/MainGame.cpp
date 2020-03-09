@@ -1,124 +1,246 @@
 #include <Oyl3D.h>
 
+#include "CGLayer.h"
+
 using namespace oyl;
+using namespace component;
 
 class MainLayer : public Layer
 {
 public:
     OYL_CTOR(MainLayer, Layer)
 
+    glm::vec3 m_cameraMove      = glm::vec3(0.0f);
+    glm::vec3 m_cameraRotate    = glm::vec3(0.0f);
+    float     m_cameraMoveSpeed = 15;
+    bool      m_doMoveCamera    = false;
+
+    PostProcessingPass m_warm;
+    PostProcessingPass m_cold;
+    PostProcessingPass m_cust;
+
+    PostProcessingPass* m_currPass;
+
+    Ref<Shader> m_lighting;
+
+    Ref<Texture1D> m_ramp;
+
+    bool m_doLighting     = true;
+    bool m_doAmbient      = true;
+    bool m_doSpecular     = true;
+    bool m_doRim          = true;
+    bool m_doDiffuseRamp  = false;
+    bool m_doSpecularRamp = false;
+    
     void onEnter() override
     {
+        listenForEventType(EventType::KeyPressed);
         listenForEventType(EventType::KeyReleased);
-        listenForEventType(EventType::PhysicsCollisionEnter);
-        listenForEventType(EventType::PhysicsCollisionExit);
-        listenForEventType(EventType::PhysicsCollisionStay);
+        listenForEventType(EventType::MouseMoved);
 
-        {
-            auto e = registry->create();
-
-            auto& l = registry->assign<component::PointLight>(e);
-            l.ambient = { 0.3f, 0.3f, 0.3f };
-            l.diffuse = { 1.0f, 1.0f, 1.0f };
-            l.specular = { 1.0f, 1.0f, 1.0f };
-            
-            auto& so = registry->assign<component::EntityInfo>(e);
-            so.name = "Light 1";
-        }
-        {
-            auto e = registry->create();
-
-            auto& camera = registry->assign<component::Camera>(e);
-            camera.player = PlayerNumber::One;
-            camera.skybox = TextureCubeMap::get(DEFAULT_SKYBOX_ALIAS);
-            
-            auto& so = registry->assign<component::EntityInfo>(e);
-            so.name = "Player Camera";
-        }
-        {
-            entt::entity e = registry->create();
-
-            auto& so = registry->assign<component::EntityInfo>(e);
-            so.name = "Container";
-
-            auto& rb = registry->assign<component::RigidBody>(e);
-            rb.setMass(0.0f);
-            rb.setFriction(5.0f);
-            rb.setProperties(component::RigidBody::FREEZE_ROTATION_X |
-                             component::RigidBody::FREEZE_ROTATION_Y |
-                             component::RigidBody::FREEZE_ROTATION_Z, true);
-
-            rb.setProperties(component::RigidBody::IS_KINEMATIC, true);
-
-            //rb.setProperties(component::RigidBody::DETECT_COLLISIONS, false);
-
-            auto& cl = registry->assign<component::Collidable>(e);
-
-            auto& shi = cl.pushShape(ColliderType::Box); 
-            shi.box.setSize({ 1.0f, 1.0f, 1.0f });
-        }
-        //{
-        //    auto e = registry->create();
-        //    auto& gr = registry->assign<component::GuiRenderable>(e);
-        //    gr.texture = Texture2D::get("archer");
-        //}
+        #if defined(OYL_DISTRIBUTION)
+            m_doMoveCamera = true;
+            CursorStateRequestEvent request;
+            request.state = CursorState::Disabled;
+            postEvent(request);
+        #endif
     }
 
     void onUpdate() override
     {
-        using component::EntityInfo;
-        using component::Transform;
-        using component::RigidBody;
-        auto view = registry->view<EntityInfo>();
-        for (auto entity : view)
+        auto view = registry->view<Transform, Camera>();
+
+        view.each([&](Transform& transform, Camera& camera)
         {
-            if (view.get(entity).name == "Capsule")
+            if (!m_doMoveCamera)
             {
-                auto& transform = registry->get<Transform>(entity);
-                auto& rigidbody = registry->get<RigidBody>(entity);
-
-                if (Input::isKeyPressed(Key::W))
-                    rigidbody.addImpulse(transform.getForwardGlobal());
-                if (Input::isKeyPressed(Key::S))
-                    rigidbody.addImpulse(-transform.getForwardGlobal());
-                if (Input::isKeyPressed(Key::A))
-                    rigidbody.addImpulse(-transform.getRightGlobal());
-                if (Input::isKeyPressed(Key::D))
-                    rigidbody.addImpulse(transform.getRightGlobal());
-                if (Input::isKeyPressed(Key::Space))
-                    rigidbody.addImpulse(transform.getUpGlobal());
-
-                auto ray = RayTest::Closest(transform.getPosition(), transform.getForward(), 50.0f, 0b10);
-                if (ray->hasHit) OYL_LOG_INFO("HIT");
+                m_cameraMove   = glm::vec3(0.0f);
+                m_cameraRotate = glm::vec3(0.0f);
+                return;
             }
-        }
+
+            if (transform.hasParent())
+            {
+                transform.getParent()->translate(transform.getForwardGlobal() * m_cameraMove.z * Time::deltaTime(), false);
+                transform.getParent()->translate(transform.getUpGlobal()      * m_cameraMove.y * Time::deltaTime(), false);
+                transform.getParent()->translate(transform.getRightGlobal()   * m_cameraMove.x * Time::deltaTime(), false);
+                transform.getParent()->rotate(glm::vec3(0, m_cameraRotate.y, 0));
+            }
+
+            transform.rotate(glm::vec3(m_cameraRotate.x, 0, 0));
+
+            if (transform.getRotationEulerX() > 89.0f)
+                transform.setRotationEulerX(89.0f);
+            if (transform.getRotationEulerX() < -89.0f)
+                transform.setRotationEulerX(-89.0f);
+
+            m_cameraRotate = glm::vec3(0.0f);
+        });
+
+        //m_lighting->bind();
+        //m_lighting->setUniform1b("u_doLighting",     m_doLighting);
+        //m_lighting->setUniform1b("u_doAmbient",      m_doAmbient);
+        //m_lighting->setUniform1b("u_doSpecular",     m_doSpecular);
+        //m_lighting->setUniform1b("u_doRim",          m_doRim);
+        //m_lighting->setUniform1b("u_doDiffuseRamp",  m_doDiffuseRamp);
+        //m_lighting->setUniform1b("u_doSpecularRamp", m_doSpecularRamp);
     }
 
     bool onEvent(const Event& event) override
     {
         switch (event.type)
         {
+            case EventType::KeyPressed:
+            {
+                auto e = event_cast<KeyPressedEvent>(event);
+                if (!e.repeatCount)
+                {
+                    if (m_doMoveCamera)
+                    {
+                        if (e.keycode == Key::W)
+                            m_cameraMove.z += m_cameraMoveSpeed;
+                        if (e.keycode == Key::S)
+                            m_cameraMove.z -= m_cameraMoveSpeed;
+                        if (e.keycode == Key::D)
+                            m_cameraMove.x += m_cameraMoveSpeed;
+                        if (e.keycode == Key::A)
+                            m_cameraMove.x -= m_cameraMoveSpeed;
+                        if (e.keycode == Key::Space)
+                            m_cameraMove.y += m_cameraMoveSpeed;
+                        if (e.keycode == Key::LeftControl)
+                            m_cameraMove.y -= m_cameraMoveSpeed;
+                    }
+
+                    if (e.keycode == Key::Escape) hideCursor();
+
+                    if (e.keycode == Key::Alpha1)
+                        m_doLighting = false;
+                    if (e.keycode == Key::Alpha2)
+                    {
+                        m_doLighting = true;
+                        m_doAmbient  = true;
+                        m_doSpecular = false;
+                        m_doRim      = false;
+                    }
+                    if (e.keycode == Key::Alpha3)
+                    {
+                        m_doLighting = true;
+                        m_doAmbient  = false;
+                        m_doSpecular = true;
+                        m_doRim      = false;
+                    }
+                    if (e.keycode == Key::Alpha4)
+                    {
+                        m_doLighting = true;
+                        m_doAmbient  = false;
+                        m_doSpecular = true;
+                        m_doRim      = true;
+                    }
+                    if (e.keycode == Key::Alpha5)
+                    {
+                        m_doLighting = true;
+                        m_doAmbient  = true;
+                        m_doSpecular = true;
+                        m_doRim      = true;
+                    }
+                    if (e.keycode == Key::Alpha6)
+                    {
+                        m_doDiffuseRamp ^= true;
+                    }
+                    if (e.keycode == Key::Alpha7)
+                    {
+                        m_doSpecularRamp ^= true;
+                    }
+                    if (e.keycode == Key::Alpha8)
+                        setPostPass(&m_warm);
+                    if (e.keycode == Key::Alpha9)
+                        setPostPass(&m_cold);
+                    if (e.keycode == Key::Alpha0)
+                        setPostPass(&m_cust);
+                }
+                break;
+            }
             case EventType::KeyReleased:
             {
-                Window& window = Application::get().getWindow();
+                if (m_doMoveCamera)
+                {
+                    auto e = event_cast<KeyReleasedEvent>(event);
+                    if (e.keycode == Key::W)
+                        m_cameraMove.z -= m_cameraMoveSpeed;
+                    if (e.keycode == Key::S)
+                        m_cameraMove.z += m_cameraMoveSpeed;
+                    if (e.keycode == Key::D)
+                        m_cameraMove.x -= m_cameraMoveSpeed;
+                    if (e.keycode == Key::A)
+                        m_cameraMove.x += m_cameraMoveSpeed;
+                    if (e.keycode == Key::Space)
+                        m_cameraMove.y -= m_cameraMoveSpeed;
+                    if (e.keycode == Key::LeftControl)
+                        m_cameraMove.y += m_cameraMoveSpeed;
+                }
+                break;
+            }
+            case EventType::MouseMoved:
+            {
+                auto e = event_cast<MouseMovedEvent>(event);
 
-                auto e = event_cast<KeyReleasedEvent>(event);
-                if (e.keycode == Key::F11)
-                {
-                    // TODO: Make Event Request
-                    if (window.getWindowState() == WindowState::Windowed)
-                        window.setWindowState(WindowState::Fullscreen);
-                    else
-                        window.setWindowState(WindowState::Windowed);
-                }
-                else if (e.keycode == Key::F7)
-                {
-                    window.setVsync(!window.isVsync());
-                }
+                m_cameraRotate.y = -e.dx;
+                m_cameraRotate.x = -e.dy;
+
                 break;
             }
         }
         return false;
+    }
+
+    void hideCursor()
+    {
+        CursorStateRequestEvent cursorRequest;
+        if (!m_doMoveCamera)
+        {
+            listenForEventType(EventType::MouseMoved);
+            listenForEventType(EventType::KeyReleased);
+            cursorRequest.state = CursorState::Disabled;
+        } else
+        {
+            ignoreEventType(EventType::MouseMoved);
+            ignoreEventType(EventType::KeyReleased);
+            cursorRequest.state = CursorState::Normal;
+        }
+
+        postEvent(cursorRequest);
+        m_doMoveCamera ^= true;
+    }
+
+    void setPostPass(PostProcessingPass* pass = nullptr)
+    {
+        if (pass != m_currPass)
+            m_currPass = pass;
+        else
+            m_currPass = pass = nullptr;
+        
+        registry->view<Camera>().each([&](Camera& camera)
+        {
+            if (!pass)
+            {
+                camera.postProcessingPasses.clear();
+            }
+            else if (pass == &m_warm)
+            {
+                camera.postProcessingPasses.resize(1);
+                camera.postProcessingPasses[0] = m_warm;
+            }
+            else if (pass == &m_cold)
+            {
+                camera.postProcessingPasses.resize(1);
+                camera.postProcessingPasses[0] = m_cold;
+            }
+            else if (pass == &m_cust)
+            {
+                camera.postProcessingPasses.resize(1);
+                camera.postProcessingPasses[0] = m_cust;
+            }
+        });
     }
 };
 
@@ -127,9 +249,10 @@ class MainScene : public Scene
 public:
     OYL_CTOR(MainScene, Scene)
 
-    void onEnter() override
+    virtual void onEnter() override
     {
         pushLayer(MainLayer::create());
+        pushLayer(CGLayer::create());
     }
 };
 
@@ -138,8 +261,6 @@ class Game : public oyl::Application
 public:
     Game()
     {
-        // pushScene(MainScene::create());
-
         registerScene<MainScene>();
     }
 

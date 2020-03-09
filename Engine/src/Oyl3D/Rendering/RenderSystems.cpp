@@ -19,6 +19,8 @@
 
 #include "Rendering/Renderer.h"
 
+#include "Input/Input.h"
+
 namespace oyl::internal
 {
     static bool isRenderableValid(const component::Renderable& r)
@@ -184,6 +186,17 @@ namespace oyl::internal
 
     void ForwardRenderSystem::onUpdate()
     {
+        static bool lmoa = false;
+        static bool hehe = false;
+
+        if (Input::isKeyPressed(Key::Alpha6))
+        {
+            if (!hehe) lmoa ^= 1, hehe = true;
+        }
+        else hehe = false;
+
+        if (lmoa) return;
+        
         using component::Transform;
         using component::Renderable;
         using component::Camera;
@@ -240,7 +253,10 @@ namespace oyl::internal
                     for (auto light : pointLightView)
                     {
                         PointLight& pointLightProps     = pointLightView.get(light);
-                        auto lightTransform = registry->get<Transform>(light);
+                        if (!pointLightProps.enabled)
+                            continue;
+                        
+                        auto& lightTransform = registry->get<Transform>(light);
 
                         std::string pointLightName = "u_pointLight[" + std::to_string(count) + "]";
 
@@ -422,6 +438,8 @@ namespace oyl::internal
                 if (!(mr.cullingMask & pc.cullingMask))
                     continue;
 
+                RenderCommand::setWireframe(mr.isWireframe);
+
                 if (mr.material != boundMaterial)
                 {
                     boundMaterial = mr.material;
@@ -446,6 +464,8 @@ namespace oyl::internal
                         }
                     }
 
+                    //boundMaterial->setUniform1i("u_1", b_compo)
+                    
                     boundMaterial->applyUniforms();
                 }
 
@@ -496,6 +516,7 @@ namespace oyl::internal
             RenderCommand::setDepthDraw(false);
             RenderCommand::setBlending(true);
             RenderCommand::setAlphaBlend(false);
+            RenderCommand::setWireframe(false);
 
             pc.m_mainFrameBuffer->bind();
             
@@ -505,7 +526,10 @@ namespace oyl::internal
             for (auto light : pointLightView)
             {
                 PointLight& pointLightProps = pointLightView.get(light);
-                auto        lightTransform  = registry->get<Transform>(light);
+                if (!pointLightProps.enabled)
+                    continue;
+                
+                auto& lightTransform  = registry->get<Transform>(light);
 
                 std::string pointLightName = "u_pointLight";
 
@@ -534,8 +558,9 @@ namespace oyl::internal
             
             m_deferredPostFinalShader->bind();
 
-            pc.m_deferredFrameBuffer->bind(FrameBufferContext::Read);
-            pc.m_mainFrameBuffer->bind(FrameBufferContext::Write);
+            m_deferredPostFinalShader->setUniform1i("u_3", b_posBuffer);
+            m_deferredPostFinalShader->setUniform1i("u_4", b_normalBuffer);
+            m_deferredPostFinalShader->setUniform1i("u_5", b_albedoBuffer);
 
             int  count          = 0;
             //for (auto light : pointLightView)
@@ -608,17 +633,75 @@ namespace oyl::internal
 
             m_deferredPostFinalShader->setUniform1i("u_numShadowMaps", shadowIndex);
             
-            pc.m_deferredFrameBuffer->bind(FrameBufferContext::Read);
-            pc.m_mainFrameBuffer->bind(FrameBufferContext::Write);
+            pc.m_mainFrameBuffer->bind();
 
             for (uint i = 0; i < 5; i++)
                 pc.m_deferredFrameBuffer->bindColorAttachment(i, i);
             
             RenderCommand::setDepthDraw(false);
-            RenderCommand::setBlending(false);
+            RenderCommand::setBlending(true);
             Renderer::submit(m_deferredPostFinalShader, m_fullscreenQuad, glm::mat4(1.0f));
 
             pc.m_deferredFrameBuffer->blit(pc.m_mainFrameBuffer);
+        }
+
+        handleInputStuffs();
+    }
+
+    void DeferredRenderSystem::handleInputStuffs()
+    {
+        if (oyl::Input::isKeyPressed(oyl::Key::Alpha1))
+        {
+            b_composite = true;
+            b_albedoBuffer = false;
+            b_normalBuffer = false;
+            b_posBuffer = false;
+            b_lightAccum = false;
+        }
+        if (oyl::Input::isKeyPressed(oyl::Key::Alpha3))
+        {
+            b_composite = false;
+            b_albedoBuffer = false;
+            b_normalBuffer = false;
+            b_posBuffer = true;
+            b_lightAccum = false;
+        }
+        if (oyl::Input::isKeyPressed(oyl::Key::Alpha4))
+        {
+            b_composite = false;
+            b_albedoBuffer = false;
+            b_normalBuffer = true;
+            b_posBuffer = false;
+            b_lightAccum = false;
+        }
+        if (oyl::Input::isKeyPressed(oyl::Key::Alpha5))
+        {
+            b_composite = false;
+            b_albedoBuffer = true;
+            b_normalBuffer = false;
+            b_posBuffer = false;
+            b_lightAccum = false;
+        }
+        if (oyl::Input::isKeyPressed(oyl::Key::Alpha6))
+        {
+            b_composite = false;
+            b_albedoBuffer = false;
+            b_normalBuffer = false;
+            b_posBuffer = false;
+            b_lightAccum = true;
+        }
+        if (oyl::Input::isKeyPressed(oyl::Key::Alpha2))
+        {
+            static bool lmao = false;
+            
+            auto view = registry->view<component::PointLight>();
+            for (auto entity : view)
+            {
+                auto& re = registry->get<component::Renderable>(entity);
+                re.enabled = lmao;
+            }
+
+            lmao ^= true;
         }
     }
 

@@ -61,6 +61,15 @@ namespace oyl
             Ref<Shader> m_deferredPostPointLightShader;
 
             Ref<VertexArray> m_fullscreenQuad;
+
+            void handleInputStuffs();
+
+            bool b_composite    = true;
+            bool b_showVolumes  = false;
+            bool b_posBuffer    = false;
+            bool b_normalBuffer = false;
+            bool b_albedoBuffer = false;
+            bool b_lightAccum   = false;
         };
 
         class GuiRenderSystem : public System
