@@ -15842,8 +15842,8 @@
                 "Alias": "Character Short Blue"
             },
             "Mesh": {
-                "Alias": "character",
-                "FilePath": "res\\assets\\models\\character.obj"
+                "Alias": "pirate_short",
+                "FilePath": "res\\assets\\models\\Animation\\Character\\pirate_short.fbx"
             }
         },
         "RigidBody": {
@@ -15852,6 +15852,14 @@
             "Mask": 1,
             "Mass": 5.0,
             "Properties": 126
+        },
+        "SkeletonAnimatable": {
+            "Animation": "Reference Pose",
+            "Loop": true,
+            "Play": true,
+            "Reverse": false,
+            "Time": 0.0,
+            "TimeScale": 1.0
         },
         "Transform": {
             "Mirror": {
@@ -16141,8 +16149,8 @@
                 "Alias": "Character Short Red"
             },
             "Mesh": {
-                "Alias": "character",
-                "FilePath": "res\\assets\\models\\character.obj"
+                "Alias": "pirate_short",
+                "FilePath": "res\\assets\\models\\Animation\\Character\\pirate_short.fbx"
             }
         },
         "RigidBody": {
@@ -16151,6 +16159,14 @@
             "Mask": 1,
             "Mass": 5.0,
             "Properties": 126
+        },
+        "SkeletonAnimatable": {
+            "Animation": "Reference Pose",
+            "Loop": true,
+            "Play": true,
+            "Reverse": false,
+            "Time": 0.0,
+            "TimeScale": 1.0
         },
         "Transform": {
             "Mirror": {
