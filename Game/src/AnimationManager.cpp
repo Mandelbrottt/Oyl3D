@@ -49,10 +49,18 @@ bool AnimationManager::onEvent(const Event& event)
 
 		//Getting the individual arms
 		for (auto child : registry->get<component::Transform>(playerCamera).getChildrenEntities())
-			if (registry->get<component::EntityInfo>(child).name.find("Left"))
+		{
+			if (registry->get<component::EntityInfo>(child).name.find("Left") != std::string::npos)
+			{
 				playerArmL = child;
-			else if (registry->get<component::EntityInfo>(child).name.find("Right"))
+				OYL_LOG("found left arm");
+			}
+			if (registry->get<component::EntityInfo>(child).name.find("Right") != std::string::npos)
+			{
 				playerArmR = child;
+				OYL_LOG("found right arm");
+			}
+		}
 
 		//Getting each hand target
 		for (auto child : registry->get<component::Transform>(playerArmL).getChildrenEntities())
@@ -78,10 +86,10 @@ bool AnimationManager::onEvent(const Event& event)
 			registry->get<component::Transform>(playerArmLObject).setRotationEuler(glm::vec3(116.07f, -3.19f, -106.4f));
 			registry->get<component::Transform>(playerArmLObject).setScale(glm::vec3(2.0f));
 			registry->get<component::Renderable>(playerArmLObject).model = Model::get("Pirax");
-			//if(blah blah component item team = teamEnum::blue)
-			registry->get<component::Renderable>(playerArmLObject).material = Material::get("PiraxBlue");
-			//else if(blah blah component item team = teamEnum::red)
-			//registry->get<component::Renderable>(playerArmLObject).material = Material::get("PiraxRed");
+			if(evt.itemTeam == Team::blue)
+				registry->get<component::Renderable>(playerArmLObject).material = Material::get("PiraxBlue");
+			else if(evt.itemTeam == Team::red)
+			registry->get<component::Renderable>(playerArmLObject).material = Material::get("PiraxRed");
 
 			//Set the animation here for picking up cleaning solution
 			break;
@@ -93,6 +101,7 @@ bool AnimationManager::onEvent(const Event& event)
 			break;
 		case CarryableItemType::mop:
 			//Set the animation here for picking up mop
+			registry->get<component::SkeletonAnimatable>(playerArmR).animation = "Reference";
 			break;
 		case CarryableItemType::throwableBottle:
 			//Set the animation here for picking up throwable bottle
@@ -104,7 +113,6 @@ bool AnimationManager::onEvent(const Event& event)
 	//cases for item drops
 	case (EventType)TypePlayerDroppedItem:
 	{
-		OYL_LOG("dropped the thing");
 		auto evt = event_cast<PlayerDroppedItemEvent>(event);
 		auto& playerTransform = registry->get<component::Transform>(evt.playerEntity);
 
@@ -124,10 +132,18 @@ bool AnimationManager::onEvent(const Event& event)
 
 		//Getting the individual arms
 		for (auto child : registry->get<component::Transform>(playerCamera).getChildrenEntities())
-			if (registry->get<component::EntityInfo>(child).name.find("Left"))
+		{
+			if (registry->get<component::EntityInfo>(child).name.find("Left") != std::string::npos)
+			{
 				playerArmL = child;
-			else if (registry->get<component::EntityInfo>(child).name.find("Right"))
+				OYL_LOG("found left arm");
+			}
+			if (registry->get<component::EntityInfo>(child).name.find("Right") != std::string::npos)
+			{
 				playerArmR = child;
+				OYL_LOG("found right arm");
+			}
+		}
 
 		//Getting each hand target
 		for (auto child : registry->get<component::Transform>(playerArmL).getChildrenEntities())
@@ -152,92 +168,118 @@ bool AnimationManager::onEvent(const Event& event)
 			registry->get<component::SkeletonAnimatable>(playerArmR).animation = "Idle_R";
 			registry->get<component::Transform>(playerArmRObject).setPosition(glm::vec3(0.0f));
 			registry->get<component::Transform>(playerArmRObject).setRotationEuler(glm::vec3(0.0f));
-			registry->get<component::Transform>(playerArmRObject).setScale(glm::vec3(1.0f));
-			registry->get<component::Renderable>(playerArmRObject).model = Model::get("None");
-			registry->get<component::Renderable>(playerArmRObject).material = Material::get("None");
+			registry->get<component::Transform>(playerArmRObject).setScale(glm::vec3(0.0f));
 			break;
 		case PlayerItemClassification::secondary:
 			//reset left arm components
 			registry->get<component::SkeletonAnimatable>(playerArmL).animation = "Idle_L";
 			registry->get<component::Transform>(playerArmLObject).setPosition(glm::vec3(0.0f));
 			registry->get<component::Transform>(playerArmLObject).setRotationEuler(glm::vec3(0.0f));
-			registry->get<component::Transform>(playerArmLObject).setScale(glm::vec3(1.0f));
-			registry->get<component::Renderable>(playerArmLObject).model = Model::get("None");
-			registry->get<component::Renderable>(playerArmLObject).material = Material::get("None");
-			OYL_LOG("dropped the thing");
+			registry->get<component::Transform>(playerArmLObject).setScale(glm::vec3(0.0f));
 			break;
 		case PlayerItemClassification::any:
 			//reset both arms components
 			registry->get<component::SkeletonAnimatable>(playerArmR).animation = "Idle_R";
 			registry->get<component::Transform>(playerArmRObject).setPosition(glm::vec3(0.0f));
 			registry->get<component::Transform>(playerArmRObject).setRotationEuler(glm::vec3(0.0f));
-			registry->get<component::Transform>(playerArmRObject).setScale(glm::vec3(1.0f));
-			registry->get<component::Renderable>(playerArmRObject).model = Model::get("None");
-			registry->get<component::Renderable>(playerArmRObject).material = Material::get("None");
+			registry->get<component::Transform>(playerArmRObject).setScale(glm::vec3(0.0f));
 
 			registry->get<component::SkeletonAnimatable>(playerArmL).animation = "Idle_L";
 			registry->get<component::Transform>(playerArmLObject).setPosition(glm::vec3(0.0f));
 			registry->get<component::Transform>(playerArmLObject).setRotationEuler(glm::vec3(0.0f));
-			registry->get<component::Transform>(playerArmLObject).setScale(glm::vec3(1.0f));
-			registry->get<component::Renderable>(playerArmLObject).model = Model::get("None");
-			registry->get<component::Renderable>(playerArmLObject).material = Material::get("None");
+			registry->get<component::Transform>(playerArmLObject).setScale(glm::vec3(0.0f));
 			break;
 		}
 		break;
 	}
 
 	//cases for item uses
-	//case (EventType)TypePlayerInteractResult:
-	//{
+	case (EventType)TypeCleaningSolutionUsed:
+	{
+		OYL_LOG("INSIDE THE CLEANING SOLUTION USE");
+		auto evt = event_cast<CleaningSolutionUsedEvent>(event);
+		auto& playerTransform = registry->get<component::Transform>(evt.playerEntity);
 
-	//	auto evt = event_cast<PlayerInteractResultEvent>(event);
-	//	switch (evt.interactionType)
-	//	{
-	//	case:
-	//		//Set the animation here for using cleaning solution
-	//		break;
-	//	case PlayerInteractResultEvent::gloop:
-	//		//Set the animation here for using gloop
-	//		break;
-	//	case PlayerInteractResultEvent::cannonball:
-	//		//Set the animation here for using cannonball
-	//		break;
-	//	case PlayerInteractResultEvent::mop:
-	//		//Set the animation here for using mop
-	//		break;
-	//	case PlayerInteractResultEvent::throwableBottle:
-	//		//Set the animation here for using throwable bottle
-	//		break;
-	//	}
-	//	break;
-	//}
+		//Objects that need to be modified
+		entt::entity playerCamera{};
+		entt::entity playerArmL{};
+		entt::entity playerArmLTarget{};
+		entt::entity playerArmLObject{};
+
+		//Getting the Camera
+		for (auto child : playerTransform.getChildrenEntities())
+			if (registry->has<component::Camera>(child))
+				playerCamera = child;
+
+		//Getting the individual arms
+		for (auto child : registry->get<component::Transform>(playerCamera).getChildrenEntities())
+		{
+			if (registry->get<component::EntityInfo>(child).name.find("Left") != std::string::npos)
+			{
+				playerArmL = child;
+				OYL_LOG("found left arm");
+			}
+		}
+
+		//Getting each hand target
+		for (auto child : registry->get<component::Transform>(playerArmL).getChildrenEntities())
+			if (registry->has<component::BoneTarget>(child))
+				playerArmLTarget = child;
+
+		//Getting each hand object
+		for (auto child : registry->get<component::Transform>(playerArmLTarget).getChildrenEntities())
+			if (registry->has<component::Renderable>(child))
+				playerArmLObject = child;
+
+		//reset left arm components TODO: MAKE THIS THE ACTUAL USE ANIMATION AND THEN LINK IT BACK TO THE IDLE OR WHATEVER THIS IS TEMP FOR THE EXPO
+		registry->get<component::SkeletonAnimatable>(playerArmL).animation = "Idle_L";
+		registry->get<component::Transform>(playerArmLObject).setPosition(glm::vec3(0.0f));
+		registry->get<component::Transform>(playerArmLObject).setRotationEuler(glm::vec3(0.0f));
+		registry->get<component::Transform>(playerArmLObject).setScale(glm::vec3(0.0f));
+
+		break;
+	}
 
 	//////////////////////////// P L A Y E R    B A S E D     E V E N T S ///////////////////////////////////
 		//cases for item uses
-	//case (EventType)TypePlayerStateChanged:
-	//{
+	case (EventType)TypePlayerStateChanged:
+	{
 
-	//	auto evt = event_cast<PlayerStateChangedEvent>(event);
-	//	switch (evt.)
-	//	{
-	//	case PlayerState::cleaning:
-	//		//Set the animation here for using cleaning solution
-	//		break;
-	//	case PlayerState::idle:
-	//		//Set the animation here for using gloop
-	//		break;
-	//	case PlayerState::cleaning:
-	//		//Set the animation here for using cannonball
-	//		break;
-	//	case CarryableItemType::mop:
-	//		//Set the animation here for using mop
-	//		break;
-	//	case CarryableItemType::throwableBottle:
-	//		//Set the animation here for using throwable bottle
-	//		break;
-	//	}
-	//	break;
-	//}
+		auto evt = event_cast<PlayerStateChangedEvent>(event);
+		auto& playerTransform = registry->get<component::Transform>(evt.playerEntity);
+		auto& playerAnimatable = registry->get<component::SkeletonAnimatable>(evt.playerEntity);
+
+
+
+		switch (evt.newState)
+		{
+		case PlayerState::cleaning:
+			//Set the animation here for using cleaning solution
+			break;
+		case PlayerState::idle:
+			//Set the animation to idle
+			playerAnimatable.animation = "Reference Pose"; //TODO: fix this up with the proper idle
+			break;
+		case PlayerState::jumping:
+			//Set the animation here for using cannonball
+			break;
+		case PlayerState::walking:
+			//Set the animation to moving
+			playerAnimatable.animation = "run";
+			break;
+		case PlayerState::pushing:
+			//Set the animation here for using throwable bottle
+			break;
+		case PlayerState::stunned:
+			//Set the animation here for using throwable bottle
+			break;
+		case PlayerState::inCleaningQuicktimeEvent:
+			//Set the animation here for using throwable bottle
+			playerAnimatable.animation = "InCleaningQuicktimeEvent";
+			break;
+		}
+		break;
+	}
 
 	}
 	return false;
