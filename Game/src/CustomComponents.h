@@ -10,6 +10,13 @@ enum class Team
 	neutral
 };
 
+enum class GameEndResult
+{
+	blueWin,
+	redWin,
+	tie
+};
+
 enum class PlayerState
 {
 	idle,

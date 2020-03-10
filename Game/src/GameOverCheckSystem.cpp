@@ -1,8 +1,10 @@
 #include "GameOverCheckSystem.h"
+#include "PersistentVariables.h"
 
 void GameOverCheckSystem::onEnter()
 {
-	isGameOver = false;
+	isGameOver        = false;
+	startGameEndTimer = false;
 }
 
 void GameOverCheckSystem::onExit()
@@ -18,7 +20,7 @@ void GameOverCheckSystem::onUpdate()
 		if (waitBeforeEndingCountdown < 0.0f && !isGameOver)
 		{
 			GameEndEvent gameEnd;
-			gameEnd.result = gameResult;
+			gameEnd.result = PersistentVariables::gameResult;
 			postEvent(gameEnd);
 
 			isGameOver = true;
@@ -45,15 +47,15 @@ void GameOverCheckSystem::onUpdate()
 	if (numMaxedPilesBlueTeam == 3)
 	{
 		if (numMaxedPilesRedTeam == 3)
-			gameResult = GameEndResult::tie;
+			PersistentVariables::gameResult = GameEndResult::tie;
 		else //red team isn't maxed out
-			gameResult = GameEndResult::redWin;
+			PersistentVariables::gameResult = GameEndResult::redWin;
 
 		startGameEndTimer = true;
 	}
 	else if (numMaxedPilesRedTeam == 3)
 	{
-		gameResult = GameEndResult::blueWin;
+		PersistentVariables::gameResult = GameEndResult::blueWin;
 
 		startGameEndTimer = true;
 	}

@@ -46,13 +46,6 @@ enum CustomEventTypes : int
 	TypeGameEnd
 };
 
-enum class GameEndResult
-{
-	blueWin,
-	redWin,
-	tie
-};
-
 OYL_EVENT_STRUCT(PlayerJumpEvent, (oyl::EventType) TypePlayerJump, (oyl::EventCategory) CategoryPlayer,
 	{
 		entt::entity playerEntity;

@@ -1,4 +1,5 @@
 #include "GameEndMenu.h"
+#include "PersistentVariables.h"
 
 using namespace oyl;
 
@@ -17,20 +18,29 @@ void GameEndLayer::onEnter()
 
 		auto& camera = registry->assign<component::Camera>(cameraEntity);
 		camera.cullingMask = 0b1111;
+
+		auto& so = registry->assign<component::EntityInfo>(cameraEntity);
+		so.name = "Camera";
 	}
 
 	{
 		auto e = registry->create();
 
 		auto& t = registry->assign<component::Transform>(e);
-		t.setPosition(glm::vec3(0.0f, 0.0f, 0.0f));
-		t.setScale(glm::vec3(10.0f, 10.0f, 1.0f));
+		t.setPosition(glm::vec3(0.0f, 0.0f, -100.0f));
+		t.setScale(glm::vec3(10.0f, 10.0f, 10.0f));
 
 		auto& so = registry->assign<component::EntityInfo>(e);
 		so.name = "Game End Background";
 
 		auto& gui = registry->assign<component::GuiRenderable>(e);
-		gui.texture = Texture2D::cache("res/assets/textures/menus/MainMenuBackground.png");
+
+		if (PersistentVariables::gameResult == GameEndResult::blueWin)
+			gui.texture = Texture2D::cache("res/assets/textures/gui/blueWins.png");
+		else if (PersistentVariables::gameResult == GameEndResult::redWin)
+			gui.texture = Texture2D::cache("res/assets/textures/gui/redWins.png");
+		else //tie game
+			gui.texture = Texture2D::cache("res/assets/textures/gui/draw.png");
 	}
 
 	{
@@ -91,33 +101,11 @@ bool GameEndLayer::onEvent(const Event& event)
 	{
 		auto evt = event_cast<KeyPressedEvent>(event);
 
+		//since there are only 2 options it doesnt matter which direction is pressed
 		switch (evt.keycode)
 		{
 		case oyl::Key::Down:
 		case oyl::Key::S:
-		{
-			if (changeMenuOptionCountdown > 0.0f)
-				break;
-
-			changeMenuOptionCountdown = CHANGE_MENU_OPTION_DELAY;
-
-			switch (selectedMenuItemType)
-			{
-			case MenuOption::goToMainMenu:
-			{
-				selectedMenuItemType = MenuOption::playAgain;
-				break;
-			}
-			case MenuOption::playAgain:
-			{
-				selectedMenuItemType = MenuOption::goToMainMenu;
-				break;
-			}
-			}
-
-			break;
-		}
-
 		case oyl::Key::Up:
 		case oyl::Key::W:
 		{
@@ -158,6 +146,8 @@ bool GameEndLayer::onEvent(const Event& event)
 				break;
 			}
 			}
+
+			break;
 		}
 		}
 
@@ -168,15 +158,24 @@ bool GameEndLayer::onEvent(const Event& event)
 	{
 		auto evt = event_cast<GamepadStickMovedEvent>(event);
 
-		//moved stick down
-		if (evt.dy > 0.0f)
+		if (changeMenuOptionCountdown > 0.0f)
+			break;
+
+		changeMenuOptionCountdown = CHANGE_MENU_OPTION_DELAY;
+
+		//since there are only 2 options it doesnt matter which way the stick was hit
+		switch (selectedMenuItemType)
 		{
-			
+		case MenuOption::goToMainMenu:
+		{
+			selectedMenuItemType = MenuOption::playAgain;
+			break;
 		}
-		//moved stick up
-		else if (evt.dy < 0.0f)
+		case MenuOption::playAgain:
 		{
-			
+			selectedMenuItemType = MenuOption::goToMainMenu;
+			break;
+		}
 		}
 
 		break;
@@ -204,12 +203,6 @@ bool GameEndLayer::onEvent(const Event& event)
 				break;
 			}
 			}
-
-			break;
-		}
-		case Gamepad::B:
-		{
-
 
 			break;
 		}

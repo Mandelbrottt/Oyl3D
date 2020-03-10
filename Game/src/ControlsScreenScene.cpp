@@ -15,6 +15,9 @@ void ControlsScreenLayer::onEnter()
 
 		auto& camera = registry->assign<component::Camera>(cameraEntity);
 		camera.cullingMask = 0b1111;
+
+		auto& so = registry->assign<component::EntityInfo>(cameraEntity);
+		so.name = "Camera";
 	}
 
 	{
