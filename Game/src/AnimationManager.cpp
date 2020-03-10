@@ -95,6 +95,15 @@ bool AnimationManager::onEvent(const Event& event)
 			break;
 		case CarryableItemType::gloop:
 			//Set the animation here for picking up gloop
+			registry->get<component::SkeletonAnimatable>(playerArmL).animation = "Gloop_L";
+			registry->get<component::Transform>(playerArmLObject).setPosition(glm::vec3(0.31f, 1.02f, 0.40f));
+			registry->get<component::Transform>(playerArmLObject).setRotationEuler(glm::vec3(62.47f, -2.50f, 70.08f));
+			registry->get<component::Transform>(playerArmLObject).setScale(glm::vec3(0.5f));
+			registry->get<component::Renderable>(playerArmLObject).model = Model::get("Gloop");
+			if (evt.itemTeam == Team::blue)
+				registry->get<component::Renderable>(playerArmLObject).material = Material::get("GoopBlue");
+			else if (evt.itemTeam == Team::red)
+				registry->get<component::Renderable>(playerArmLObject).material = Material::get("GloopRed");
 			break;
 		case CarryableItemType::cannonball:
 			//Set the animation here for picking up cannonball
