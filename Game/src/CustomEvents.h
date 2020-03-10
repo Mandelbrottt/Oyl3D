@@ -67,6 +67,7 @@ OYL_EVENT_STRUCT(PlayerPickedUpItemEvent, (oyl::EventType) TypePlayerPickedUpIte
 	{
 		entt::entity playerEntity;
 		CarryableItemType itemType;
+		Team itemTeam;
 	});
 
 OYL_EVENT_STRUCT(PlayerDropItemRequestEvent, (oyl::EventType) TypePlayerDropItemRequest, (oyl::EventCategory) CategoryPlayer,

@@ -27,7 +27,7 @@ void GameEndLayer::onEnter()
 		auto e = registry->create();
 
 		auto& t = registry->assign<component::Transform>(e);
-		t.setPosition(glm::vec3(0.0f, 0.0f, -100.0f));
+		t.setPosition(glm::vec3(0.0f, 0.0f, -10.0f));
 		t.setScale(glm::vec3(10.0f, 10.0f, 10.0f));
 
 		auto& so = registry->assign<component::EntityInfo>(e);
@@ -36,11 +36,11 @@ void GameEndLayer::onEnter()
 		auto& gui = registry->assign<component::GuiRenderable>(e);
 
 		if (PersistentVariables::gameResult == GameEndResult::blueWin)
-			gui.texture = Texture2D::cache("res/assets/textures/gui/blueWins.png");
+			gui.texture = Texture2D::cache("res/assets/textures/menus/BlueWins.png");
 		else if (PersistentVariables::gameResult == GameEndResult::redWin)
-			gui.texture = Texture2D::cache("res/assets/textures/gui/redWins.png");
+			gui.texture = Texture2D::cache("res/assets/textures/menus/RedWins.png");
 		else //tie game
-			gui.texture = Texture2D::cache("res/assets/textures/gui/draw.png");
+			gui.texture = Texture2D::cache("res/assets/textures/menus/Draw.png");
 	}
 
 	{
@@ -50,14 +50,14 @@ void GameEndLayer::onEnter()
 		menuItem.type = MenuOption::goToMainMenu;
 
 		auto& t = registry->assign<component::Transform>(e);
-		t.setPosition(glm::vec3(0.0f, 1.0f, -1.0f));
+		t.setPosition(glm::vec3(0.0f, -2.2f, -15.0f));
 		t.setScale(glm::vec3(1.0f, 1.0f, 1.0f));
 
 		auto& so = registry->assign<component::EntityInfo>(e);
 		so.name = "Go To Main Menu Prompt";
 
 		auto& gui = registry->assign<component::GuiRenderable>(e);
-		gui.texture = Texture2D::cache("res/assets/textures/menus/goToMainMenu.png");
+		gui.texture = Texture2D::cache("res/assets/textures/menus/MainMenuPrompt.png");
 	}
 
 	{
@@ -67,14 +67,14 @@ void GameEndLayer::onEnter()
 		menuItem.type = MenuOption::playAgain;
 
 		auto& t = registry->assign<component::Transform>(e);
-		t.setPosition(glm::vec3(0.0f, -4.0f, -1.0f));
+		t.setPosition(glm::vec3(0.0f, -3.8f, -15.0f));
 		t.setScale(glm::vec3(1.0f, 1.0f, 1.0f));
 
 		auto& so = registry->assign<component::EntityInfo>(e);
 		so.name = "Play Again Prompt";
 
 		auto& gui = registry->assign<component::GuiRenderable>(e);
-		gui.texture = Texture2D::cache("res/assets/textures/menus/playAgain.png");
+		gui.texture = Texture2D::cache("res/assets/textures/menus/PlayAgainPrompt.png");
 	}
 }
 
@@ -83,7 +83,7 @@ void GameEndLayer::onUpdate()
 	auto menuItemsView = registry->view<MenuItem>();
 	for (auto& menuItemEntity : menuItemsView)
 	{
-		auto& menuItem = registry->get<MenuItem>(menuItemEntity);
+		auto& menuItem          = registry->get<MenuItem>(menuItemEntity);
 		auto& menuItemTransform = registry->get<component::Transform>(menuItemEntity);
 
 		if (menuItem.type == selectedMenuItemType)

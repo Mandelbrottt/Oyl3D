@@ -764,6 +764,7 @@ void PlayerInteractionValidationSystem::performCarryableItemInteraction(entt::en
 	PlayerPickedUpItemEvent pickedUpItemEvent;
 	pickedUpItemEvent.playerEntity = a_playerEntity;
 	pickedUpItemEvent.itemType     = carryableItem.type;
+	pickedUpItemEvent.itemTeam     = carryableItem.team;
 	postEvent(pickedUpItemEvent);
 
 	carryableItemTransform.setRotationEuler(itemNewRotation);
@@ -1086,9 +1087,8 @@ void PlayerInteractionValidationSystem::dropPlayerCarriedItems(entt::entity a_pl
 
 				break;
 			}
-
-			postEvent(droppedItemEvent);
 		}
+		postEvent(droppedItemEvent);
 
 		carriedItemTransform.setPosition(newPosition);
 		carriedItemTransform.setRotationEuler(newRotation);
