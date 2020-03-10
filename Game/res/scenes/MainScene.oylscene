@@ -15929,7 +15929,7 @@
             "CullingMask": 1,
             "Enabled": true,
             "Material": {
-                "Alias": "Character Tall Blue Anim"
+                "Alias": "Charactter Tall Blue"
             },
             "Mesh": {
                 "Alias": "LeftArm",
@@ -15975,7 +15975,7 @@
             "CullingMask": 1,
             "Enabled": true,
             "Material": {
-                "Alias": "Character Tall Blue Anim"
+                "Alias": "Charactter Tall Blue"
             },
             "Mesh": {
                 "Alias": "RightArm",
@@ -16084,7 +16084,7 @@
             "CullingMask": 2,
             "Enabled": true,
             "Material": {
-                "Alias": "Character Tall Red Anim"
+                "Alias": "Character Tall Red"
             },
             "Mesh": {
                 "Alias": "LeftArm",
@@ -16199,7 +16199,7 @@
             "CullingMask": 2,
             "Enabled": true,
             "Material": {
-                "Alias": "Character Tall Red Anim"
+                "Alias": "Character Tall Red"
             },
             "Mesh": {
                 "Alias": "RightArm",
@@ -16290,8 +16290,8 @@
                 "Alias": "Charactter Tall Blue"
             },
             "Mesh": {
-                "Alias": "characterTall",
-                "FilePath": "res\\assets\\models\\characterTall.obj"
+                "Alias": "pirate_tall",
+                "FilePath": "res\\assets\\models\\Animation\\Character\\pirate_tall.fbx"
             }
         },
         "RigidBody": {
@@ -16300,6 +16300,14 @@
             "Mask": 1,
             "Mass": 5.0,
             "Properties": 126
+        },
+        "SkeletonAnimatable": {
+            "Animation": "Reference Pose",
+            "Loop": true,
+            "Play": true,
+            "Reverse": false,
+            "Time": 0.0,
+            "TimeScale": 1.0
         },
         "Transform": {
             "Mirror": {
@@ -16369,7 +16377,7 @@
             "CullingMask": 4,
             "Enabled": true,
             "Material": {
-                "Alias": "Character Tall Blue Anim"
+                "Alias": "Charactter Tall Blue"
             },
             "Mesh": {
                 "Alias": "LeftArm",
@@ -16415,7 +16423,7 @@
             "CullingMask": 4,
             "Enabled": true,
             "Material": {
-                "Alias": "Character Tall Blue Anim"
+                "Alias": "Charactter Tall Blue"
             },
             "Mesh": {
                 "Alias": "RightArm",
@@ -16524,7 +16532,7 @@
             "CullingMask": 8,
             "Enabled": true,
             "Material": {
-                "Alias": "Character Tall Red Anim"
+                "Alias": "Character Tall Red"
             },
             "Mesh": {
                 "Alias": "LeftArm",
@@ -16589,8 +16597,8 @@
                 "Alias": "Character Tall Red"
             },
             "Mesh": {
-                "Alias": "characterTall",
-                "FilePath": "res\\assets\\models\\characterTall.obj"
+                "Alias": "pirate_tall",
+                "FilePath": "res\\assets\\models\\Animation\\Character\\pirate_tall.fbx"
             }
         },
         "RigidBody": {
@@ -16599,6 +16607,14 @@
             "Mask": 1,
             "Mass": 5.0,
             "Properties": 126
+        },
+        "SkeletonAnimatable": {
+            "Animation": "Reference Pose",
+            "Loop": true,
+            "Play": true,
+            "Reverse": false,
+            "Time": 0.0,
+            "TimeScale": 1.0
         },
         "Transform": {
             "Mirror": {
@@ -16631,7 +16647,7 @@
             "CullingMask": 8,
             "Enabled": true,
             "Material": {
-                "Alias": "Character Tall Red Anim"
+                "Alias": "Character Tall Red"
             },
             "Mesh": {
                 "Alias": "RightArm",
