@@ -15,8 +15,6 @@ class GameOverCheckSystem : public System
 
 	float waitBeforeEndingCountdown = 1.5f;
 
-	GameEndResult gameResult;
-
 	void onEnter() override;
 	void onExit() override;
 	void onUpdate() override;
