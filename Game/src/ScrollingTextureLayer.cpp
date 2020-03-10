@@ -1,7 +1,9 @@
 #include "ScrollingTextureLayer.h"
+#include "AnimationManager.h"
 
 void ScrollingTextureLayer::onEnter()
 {
+	scheduleSystemUpdate<AnimationManager>();
 
 }
 
