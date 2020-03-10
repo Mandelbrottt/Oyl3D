@@ -723,6 +723,8 @@ void PlayerInteractionValidationSystem::performCarryableItemInteraction(entt::en
 			itemNewPosition = glm::vec3(-0.35f, 0.37f, -0.67f);
 			itemNewRotation = glm::vec3(0.0f, 0.0f, 0.0f);
 
+			registry->get<component::Renderable>(a_carryableItemEntity).cullingMask = !(0b1 << (uint)player.playerNum);
+
 			break;
 		}
 		case CarryableItemType::gloop:
@@ -1058,6 +1060,8 @@ void PlayerInteractionValidationSystem::dropPlayerCarriedItems(entt::entity a_pl
 				newPosition += playerTransform.getUp() * 0.4f;
 
 				droppedItemEvent.itemClassificationToDrop = PlayerItemClassification::secondary;
+
+				registry->get<component::Renderable>(carriedItemEntity).cullingMask = 0b1111;
 
 				break;
 			}
