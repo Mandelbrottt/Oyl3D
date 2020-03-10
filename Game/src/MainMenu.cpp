@@ -39,6 +39,20 @@ void MainMenuLayer::onEnter()
 	{
 		auto e = registry->create();
 
+		auto& t = registry->assign<component::Transform>(e);
+		t.setPosition(glm::vec3(0.0f, 3.65f, -1.0f));
+		t.setScale(glm::vec3(4.0f, 4.0f, 1.0f));
+
+		auto& so = registry->assign<component::EntityInfo>(e);
+		so.name = "Washbucklers Logo";
+
+		auto& gui = registry->assign<component::GuiRenderable>(e);
+		gui.texture = Texture2D::cache("res/assets/textures/menus/Logo.png");
+	}
+
+	{
+		auto e = registry->create();
+
 		auto& menuItem = registry->assign<MenuItem>(e);
 		menuItem.type = MenuOption::playGame;
 

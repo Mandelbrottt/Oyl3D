@@ -80,6 +80,8 @@ void GameEndLayer::onEnter()
 
 void GameEndLayer::onUpdate()
 {
+	changeMenuOptionCountdown -= Time::deltaTime();
+
 	auto menuItemsView = registry->view<MenuItem>();
 	for (auto& menuItemEntity : menuItemsView)
 	{
@@ -137,12 +139,12 @@ bool GameEndLayer::onEvent(const Event& event)
 			{
 			case MenuOption::goToMainMenu:
 			{
-				Application::get().changeScene("MainScene");
+				Application::get().changeScene("MainMenuScene");
 				break;
 			}
 			case MenuOption::playAgain:
 			{
-				Application::get().changeScene("MainMenuScene");
+				Application::get().changeScene("MainScene");
 				break;
 			}
 			}
