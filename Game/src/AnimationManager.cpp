@@ -20,26 +20,69 @@ void AnimationManager::onUpdate()
 
 bool AnimationManager::onEvent(const Event& event)
 {
+	
 
 	switch (event.type)
 	{
+
 		//////////////////////////// I T E M      B A S E D     E V E N T S ///////////////////////////////////
 		//cases for item pickups
 	case (EventType)TypePlayerPickedUpItem:
 	{
-
 		auto evt = event_cast<PlayerPickedUpItemEvent>(event);
 
-		auto& playerTransform = registry->get<component::Transform> (evt.playerEntity);
-		std::vector<entt::entity> playerChildren = playerTransform.getChildrenEntities();
-		for (auto child : playerChildren)
-			OYL_LOG("there is a child");
+		auto& playerTransform = registry->get<component::Transform>(evt.playerEntity);
 
+		//Objects that need to be modified
+		entt::entity playerCamera{};
+		entt::entity playerArmR{};
+		entt::entity playerArmL{};
+		entt::entity playerArmRTarget{};
+		entt::entity playerArmRObject{};
+		entt::entity playerArmLTarget{};
+		entt::entity playerArmLObject{};
+
+		//Getting the Camera
+		for (auto child : playerTransform.getChildrenEntities())
+			if (registry->has<component::Camera>(child))
+				playerCamera = child;
+
+		//Getting the individual arms
+		for (auto child : registry->get<component::Transform>(playerCamera).getChildrenEntities())
+			if (registry->get<component::EntityInfo>(child).name.find("Left"))
+				playerArmL = child;
+			else if (registry->get<component::EntityInfo>(child).name.find("Right"))
+				playerArmR = child;
+
+		//Getting each hand target
+		for (auto child : registry->get<component::Transform>(playerArmL).getChildrenEntities())
+			if (registry->has<component::BoneTarget>(child))
+				playerArmLTarget = child;
+		for (auto child : registry->get<component::Transform>(playerArmR).getChildrenEntities())
+			if (registry->has<component::BoneTarget>(child))
+				playerArmRTarget = child;
+
+		//Getting each hand object
+		for (auto child : registry->get<component::Transform>(playerArmLTarget).getChildrenEntities())
+			if (registry->has<component::Renderable>(child))
+				playerArmLObject = child;
+		for (auto child : registry->get<component::Transform>(playerArmRTarget).getChildrenEntities())
+			if (registry->has<component::Renderable>(child))
+				playerArmRObject = child;
 
 		switch (evt.itemType)
 		{
 		case CarryableItemType::cleaningSolution:
-			playerTransform.setScaleX(2);
+			registry->get<component::SkeletonAnimatable>(playerArmL).animation = "Pirax_L";
+			registry->get<component::Transform>(playerArmLObject).setPosition(glm::vec3(0.83f, 0.94f, -0.98f));
+			registry->get<component::Transform>(playerArmLObject).setRotationEuler(glm::vec3(116.07f, -3.19f, -106.4f));
+			registry->get<component::Transform>(playerArmLObject).setScale(glm::vec3(2.0f));
+			registry->get<component::Renderable>(playerArmLObject).model = Model::get("Pirax");
+			//if(blah blah component item team = teamEnum::blue)
+			registry->get<component::Renderable>(playerArmLObject).material = Material::get("PiraxBlue");
+			//else if(blah blah component item team = teamEnum::red)
+			//registry->get<component::Renderable>(playerArmLObject).material = Material::get("PiraxRed");
+
 			//Set the animation here for picking up cleaning solution
 			break;
 		case CarryableItemType::gloop:
@@ -61,18 +104,83 @@ bool AnimationManager::onEvent(const Event& event)
 	//cases for item drops
 	case (EventType)TypePlayerDroppedItem:
 	{
+		OYL_LOG("dropped the thing");
+		auto evt = event_cast<PlayerDroppedItemEvent>(event);
+		auto& playerTransform = registry->get<component::Transform>(evt.playerEntity);
 
-		auto evt = event_cast<PlayerDropItemRequestEvent>(event);
+		//Objects that need to be modified
+		entt::entity playerCamera{};
+		entt::entity playerArmR{};
+		entt::entity playerArmL{};
+		entt::entity playerArmRTarget{};
+		entt::entity playerArmRObject{};
+		entt::entity playerArmLTarget{};
+		entt::entity playerArmLObject{};
+
+		//Getting the Camera
+		for (auto child : playerTransform.getChildrenEntities())
+			if (registry->has<component::Camera>(child))
+				playerCamera = child;
+
+		//Getting the individual arms
+		for (auto child : registry->get<component::Transform>(playerCamera).getChildrenEntities())
+			if (registry->get<component::EntityInfo>(child).name.find("Left"))
+				playerArmL = child;
+			else if (registry->get<component::EntityInfo>(child).name.find("Right"))
+				playerArmR = child;
+
+		//Getting each hand target
+		for (auto child : registry->get<component::Transform>(playerArmL).getChildrenEntities())
+			if (registry->has<component::BoneTarget>(child))
+				playerArmLTarget = child;
+		for (auto child : registry->get<component::Transform>(playerArmR).getChildrenEntities())
+			if (registry->has<component::BoneTarget>(child))
+				playerArmRTarget = child;
+
+		//Getting each hand object
+		for (auto child : registry->get<component::Transform>(playerArmLTarget).getChildrenEntities())
+			if (registry->has<component::Renderable>(child))
+				playerArmLObject = child;
+		for (auto child : registry->get<component::Transform>(playerArmRTarget).getChildrenEntities())
+			if (registry->has<component::Renderable>(child))
+				playerArmRObject = child;
+
 		switch (evt.itemClassificationToDrop)
 		{
 		case PlayerItemClassification::primary:
-			//Set the animation here for dropping cleaning solution
+			//reset right arm components
+			registry->get<component::SkeletonAnimatable>(playerArmR).animation = "Idle_R";
+			registry->get<component::Transform>(playerArmRObject).setPosition(glm::vec3(0.0f));
+			registry->get<component::Transform>(playerArmRObject).setRotationEuler(glm::vec3(0.0f));
+			registry->get<component::Transform>(playerArmRObject).setScale(glm::vec3(1.0f));
+			registry->get<component::Renderable>(playerArmRObject).model = Model::get("None");
+			registry->get<component::Renderable>(playerArmRObject).material = Material::get("None");
 			break;
 		case PlayerItemClassification::secondary:
-			//Set the animation here for dropping gloop
+			//reset left arm components
+			registry->get<component::SkeletonAnimatable>(playerArmL).animation = "Idle_L";
+			registry->get<component::Transform>(playerArmLObject).setPosition(glm::vec3(0.0f));
+			registry->get<component::Transform>(playerArmLObject).setRotationEuler(glm::vec3(0.0f));
+			registry->get<component::Transform>(playerArmLObject).setScale(glm::vec3(1.0f));
+			registry->get<component::Renderable>(playerArmLObject).model = Model::get("None");
+			registry->get<component::Renderable>(playerArmLObject).material = Material::get("None");
+			OYL_LOG("dropped the thing");
 			break;
 		case PlayerItemClassification::any:
-			//Set the animation here for dropping cannonball
+			//reset both arms components
+			registry->get<component::SkeletonAnimatable>(playerArmR).animation = "Idle_R";
+			registry->get<component::Transform>(playerArmRObject).setPosition(glm::vec3(0.0f));
+			registry->get<component::Transform>(playerArmRObject).setRotationEuler(glm::vec3(0.0f));
+			registry->get<component::Transform>(playerArmRObject).setScale(glm::vec3(1.0f));
+			registry->get<component::Renderable>(playerArmRObject).model = Model::get("None");
+			registry->get<component::Renderable>(playerArmRObject).material = Material::get("None");
+
+			registry->get<component::SkeletonAnimatable>(playerArmL).animation = "Idle_L";
+			registry->get<component::Transform>(playerArmLObject).setPosition(glm::vec3(0.0f));
+			registry->get<component::Transform>(playerArmLObject).setRotationEuler(glm::vec3(0.0f));
+			registry->get<component::Transform>(playerArmLObject).setScale(glm::vec3(1.0f));
+			registry->get<component::Renderable>(playerArmLObject).model = Model::get("None");
+			registry->get<component::Renderable>(playerArmLObject).material = Material::get("None");
 			break;
 		}
 		break;
