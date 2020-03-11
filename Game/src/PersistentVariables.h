@@ -6,5 +6,5 @@ class PersistentVariables
 {
 public:
 	static GameEndResult gameResult;
-	//static int playerSensitivities[4];
+	static int controllerSensitivities[4];
 };

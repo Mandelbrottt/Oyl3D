@@ -96,7 +96,8 @@ enum class MenuOption
 	pause,
 	resume,
 	playAgain,
-	goToMainMenu
+	goToMainMenu,
+	sensitivityKnob
 };
 
 
@@ -161,7 +162,7 @@ struct Cannon
 	CannonState state = CannonState::doingNothing;
 	bool isLoaded     = false;
 
-	float FUSE_DURATION = 2.0f;
+	float FUSE_DURATION = 20.0f;
 	float fuseCountdown = FUSE_DURATION;
 
 	glm::vec3 firingDirection = glm::vec3(1.0f, 1.0f, 1.0f);
@@ -351,4 +352,9 @@ struct GarbageMeterDisplay
 struct MenuItem
 {
 	MenuOption type;
+};
+
+struct SensitivityKnob
+{
+	int controllerNum;
 };

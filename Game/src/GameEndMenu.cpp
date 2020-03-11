@@ -36,11 +36,11 @@ void GameEndLayer::onEnter()
 		auto& gui = registry->assign<component::GuiRenderable>(e);
 
 		if (PersistentVariables::gameResult == GameEndResult::blueWin)
-			gui.texture = Texture2D::cache("res/assets/textures/menus/BlueWins.png");
+			gui.texture = Texture2D::get("res/assets/textures/menus/BlueWins.png");
 		else if (PersistentVariables::gameResult == GameEndResult::redWin)
-			gui.texture = Texture2D::cache("res/assets/textures/menus/RedWins.png");
+			gui.texture = Texture2D::get("res/assets/textures/menus/RedWins.png");
 		else //tie game
-			gui.texture = Texture2D::cache("res/assets/textures/menus/Draw.png");
+			gui.texture = Texture2D::get("res/assets/textures/menus/Draw.png");
 	}
 
 	{
@@ -160,24 +160,30 @@ bool GameEndLayer::onEvent(const Event& event)
 	{
 		auto evt = event_cast<GamepadStickMovedEvent>(event);
 
+		if (evt.stick != Gamepad::LeftStick)
+			break;
 		if (changeMenuOptionCountdown > 0.0f)
 			break;
 
 		changeMenuOptionCountdown = CHANGE_MENU_OPTION_DELAY;
 
-		//since there are only 2 options it doesnt matter which way the stick was hit
-		switch (selectedMenuItemType)
+		//since there are only 2 options it doesnt matter which way the stick was moved
+		if (   (evt.dy > 0.0f && Input::getGamepadLeftStick(evt.gid).y > 0.1f)
+			|| (evt.dy < 0.0f && Input::getGamepadLeftStick(evt.gid).y < -0.1f))
 		{
-		case MenuOption::goToMainMenu:
-		{
-			selectedMenuItemType = MenuOption::playAgain;
-			break;
-		}
-		case MenuOption::playAgain:
-		{
-			selectedMenuItemType = MenuOption::goToMainMenu;
-			break;
-		}
+			switch (selectedMenuItemType)
+			{
+			case MenuOption::goToMainMenu:
+			{
+				selectedMenuItemType = MenuOption::playAgain;
+				break;
+			}
+			case MenuOption::playAgain:
+			{
+				selectedMenuItemType = MenuOption::goToMainMenu;
+				break;
+			}
+			}
 		}
 
 		break;
@@ -196,12 +202,12 @@ bool GameEndLayer::onEvent(const Event& event)
 			{
 			case MenuOption::goToMainMenu:
 			{
-				Application::get().changeScene("MainScene");
+				Application::get().changeScene("MainMenuScene");
 				break;
 			}
 			case MenuOption::playAgain:
 			{
-				Application::get().changeScene("MainMenuScene");
+				Application::get().changeScene("MainScene");
 				break;
 			}
 			}

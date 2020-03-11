@@ -38,7 +38,6 @@ void ControlsScreenLayer::onEnter()
 		auto e = registry->create();
 
 		auto& menuItem = registry->assign<MenuItem>(e);
-		menuItem.type = MenuOption::goToMainMenu;
 
 		auto& t = registry->assign<component::Transform>(e);
 		t.setPosition(glm::vec3(-6.45f, -3.8f, -1.0f));

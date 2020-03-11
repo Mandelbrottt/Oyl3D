@@ -259,7 +259,7 @@ bool MainMenuLayer::onEvent(const Event& event)
 			}
 			case MenuOption::settings:
 			{
-				//Application::get().changeScene("SettingsScene");
+				Application::get().changeScene("SettingsMenuScene");
 				break;
 			}
 			case MenuOption::credits:
@@ -382,6 +382,16 @@ bool MainMenuLayer::onEvent(const Event& event)
 				Application::get().changeScene("ControlsScreenScene");
 				break;
 			}
+			case MenuOption::settings:
+			{
+				Application::get().changeScene("SettingsMenuScene");
+				break;
+			}
+			case MenuOption::credits:
+			{
+				//Application::get().changeScene("CreditsScene");
+				break;
+			}
 			case MenuOption::exit:
 			{
 				//TODO: close the game
@@ -389,12 +399,6 @@ bool MainMenuLayer::onEvent(const Event& event)
 				break;
 			}
 			}
-
-			break;
-		}
-		case Gamepad::B:
-		{
-
 
 			break;
 		}
