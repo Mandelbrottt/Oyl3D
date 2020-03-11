@@ -185,6 +185,12 @@ bool AnimationManager::onEvent(const Event& event)
 			break;
 		case CarryableItemType::throwableBottle:
 			//Set the animation here for picking up throwable bottle
+			registry->get<component::SkeletonAnimatable>(playerArmR).animation = "Throwable_R";
+			registry->get<component::Transform>(playerArmRObject).setPosition(glm::vec3(-0.08f, 0.86f, 0.48f));
+			registry->get<component::Transform>(playerArmRObject).setRotationEuler(glm::vec3(-67.71f, 15.28f, 115.29f));
+			registry->get<component::Transform>(playerArmRObject).setScale(glm::vec3(1.5f, 1.75f, 1.5f));
+			registry->get<component::Renderable>(playerArmRObject).model = Model::get("ThrowBottle");
+			registry->get<component::Renderable>(playerArmRObject).material = Material::get("ThrowableBottle");
 			break;
 		}
 		break;
@@ -369,6 +375,51 @@ bool AnimationManager::onEvent(const Event& event)
 		registry->get<component::Transform>(playerArmLObject).setPosition(glm::vec3(0.0f));
 		registry->get<component::Transform>(playerArmLObject).setRotationEuler(glm::vec3(0.0f));
 		registry->get<component::Transform>(playerArmLObject).setScale(glm::vec3(0.0f));
+
+		break;
+	}
+	case (EventType)TypeThrowBottle:
+	{
+		OYL_LOG("INSIDE THROWING THE BOTTLE");
+		auto evt = event_cast<ThrowBottleEvent>(event);
+		auto& playerTransform = registry->get<component::Transform>(evt.playerThrowingEntity);
+
+		//Objects that need to be modified
+		entt::entity playerCamera{};
+		entt::entity playerArmR{};
+		entt::entity playerArmRTarget{};
+		entt::entity playerArmRObject{};
+
+		//Getting the Camera
+		for (auto child : playerTransform.getChildrenEntities())
+			if (registry->has<component::Camera>(child))
+				playerCamera = child;
+
+		//Getting the individual arms
+		for (auto child : registry->get<component::Transform>(playerCamera).getChildrenEntities())
+		{
+			if (registry->get<component::EntityInfo>(child).name.find("Right") != std::string::npos)
+			{
+				playerArmR = child;
+				OYL_LOG("found right arm");
+			}
+		}
+
+		//Getting each hand target
+		for (auto child : registry->get<component::Transform>(playerArmR).getChildrenEntities())
+			if (registry->has<component::BoneTarget>(child))
+				playerArmRTarget = child;
+
+		//Getting each hand object
+		for (auto child : registry->get<component::Transform>(playerArmRTarget).getChildrenEntities())
+			if (registry->has<component::Renderable>(child))
+				playerArmRObject = child;
+
+		//reset left arm components TODO: MAKE THIS THE ACTUAL USE ANIMATION AND THEN LINK IT BACK TO THE IDLE OR WHATEVER THIS IS TEMP FOR THE EXPO
+		registry->get<component::SkeletonAnimatable>(playerArmR).animation = "Idle_L";
+		registry->get<component::Transform>(playerArmRObject).setPosition(glm::vec3(0.0f));
+		registry->get<component::Transform>(playerArmRObject).setRotationEuler(glm::vec3(0.0f));
+		registry->get<component::Transform>(playerArmRObject).setScale(glm::vec3(0.0f));
 
 		break;
 	}
