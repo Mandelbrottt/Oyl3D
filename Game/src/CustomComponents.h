@@ -88,6 +88,7 @@ enum class ReticleType
 enum class MenuOption
 {
 	playGame,
+	tutorial,
 	controls,
 	settings,
 	credits,

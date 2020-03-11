@@ -177,6 +177,11 @@ bool MainMenuLayer::onEvent(const Event& event)
 			{
 			case MenuOption::playGame:
 			{
+				PersistentVariables::mainMenuSelectedOption = MenuOption::tutorial;
+				break;
+			}
+			case MenuOption::tutorial:
+			{
 				PersistentVariables::mainMenuSelectedOption = MenuOption::controls;
 				break;
 			}
@@ -220,9 +225,14 @@ bool MainMenuLayer::onEvent(const Event& event)
 				PersistentVariables::mainMenuSelectedOption = MenuOption::exit;
 				break;
 			}
-			case MenuOption::controls:
+			case MenuOption::tutorial:
 			{
 				PersistentVariables::mainMenuSelectedOption = MenuOption::playGame;
+				break;
+			}
+			case MenuOption::controls:
+			{
+				PersistentVariables::mainMenuSelectedOption = MenuOption::tutorial;
 				break;
 			}
 			case MenuOption::settings:
@@ -255,6 +265,11 @@ bool MainMenuLayer::onEvent(const Event& event)
 			case MenuOption::playGame:
 			{
 				Application::get().changeScene("MainScene");
+				break;
+			}
+			case MenuOption::tutorial:
+			{
+				//Application::get().changeScene("Tutorial");
 				break;
 			}
 			case MenuOption::controls:
@@ -305,6 +320,11 @@ bool MainMenuLayer::onEvent(const Event& event)
 			{
 			case MenuOption::playGame:
 			{
+				PersistentVariables::mainMenuSelectedOption = MenuOption::tutorial;
+				break;
+			}
+			case MenuOption::tutorial:
+			{
 				PersistentVariables::mainMenuSelectedOption = MenuOption::controls;
 				break;
 			}
@@ -340,9 +360,14 @@ bool MainMenuLayer::onEvent(const Event& event)
 				PersistentVariables::mainMenuSelectedOption = MenuOption::exit;
 				break;
 			}
-			case MenuOption::controls:
+			case MenuOption::tutorial:
 			{
 				PersistentVariables::mainMenuSelectedOption = MenuOption::playGame;
+				break;
+			}
+			case MenuOption::controls:
+			{
+				PersistentVariables::mainMenuSelectedOption = MenuOption::tutorial;
 				break;
 			}
 			case MenuOption::settings:
@@ -383,6 +408,11 @@ bool MainMenuLayer::onEvent(const Event& event)
 			case MenuOption::playGame:
 			{
 				Application::get().changeScene("MainScene");
+				break;
+			}
+			case MenuOption::tutorial:
+			{
+				//Application::get().changeScene("Tutorial");
 				break;
 			}
 			case MenuOption::controls:

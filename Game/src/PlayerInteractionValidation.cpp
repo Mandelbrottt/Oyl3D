@@ -685,8 +685,9 @@ void PlayerInteractionValidationSystem::performCarryableItemInteraction(entt::en
 
 	auto& carryableItem          = registry->get<CarryableItem>(a_carryableItemEntity);
 	auto& carryableItemTransform = registry->get<component::Transform>(a_carryableItemEntity);
-
-	carryableItemTransform.setPosition(glm::vec3(-9999.0f));
+	
+	glm::vec3 itemNewPosition = glm::vec3(0.0f);
+	glm::vec3 itemNewRotation = glm::vec3(0.0f);
 
 	switch (carryableItem.type)
 	{
@@ -697,6 +698,9 @@ void PlayerInteractionValidationSystem::performCarryableItemInteraction(entt::en
 
 			OYL_LOG("PICKED UP CANNONBALL!");
 
+			itemNewPosition = glm::vec3(0.0f, 0.4f, -0.7f);
+			itemNewRotation = glm::vec3(0.0f, 0.0f, 0.0f);
+
 			break;
 		}
 		case CarryableItemType::mop:
@@ -704,6 +708,9 @@ void PlayerInteractionValidationSystem::performCarryableItemInteraction(entt::en
 			player.primaryCarriedItem = a_carryableItemEntity;
 
 			OYL_LOG("PICKED UP MOP!");
+
+			itemNewPosition = glm::vec3(0.45f, 0.55f, -0.35f);
+			itemNewRotation = glm::vec3(-100.0f, -54.7f, 99.0f);
 
 			break;
 		}
@@ -713,6 +720,9 @@ void PlayerInteractionValidationSystem::performCarryableItemInteraction(entt::en
 
 			OYL_LOG("PICKED UP CLEANING SOLUTION!");
 
+			itemNewPosition = glm::vec3(-0.35f, 0.37f, -0.67f);
+			itemNewRotation = glm::vec3(0.0f, 0.0f, 0.0f);
+
 			break;
 		}
 		case CarryableItemType::gloop:
@@ -721,6 +731,9 @@ void PlayerInteractionValidationSystem::performCarryableItemInteraction(entt::en
 
 			OYL_LOG("PICKED UP GLOOP!");
 
+			itemNewPosition = glm::vec3(-0.4f, 0.5f, -0.75f);
+			itemNewRotation = glm::vec3(0.0f, 0.0f, 0.0f);
+
 			break;
 		}
 		case CarryableItemType::throwableBottle:
@@ -728,6 +741,9 @@ void PlayerInteractionValidationSystem::performCarryableItemInteraction(entt::en
 			player.primaryCarriedItem = a_carryableItemEntity;
 
 			OYL_LOG("PICKED UP THROWABLE BOTTLE!");
+
+			itemNewPosition = glm::vec3(0.42f, 0.5f, -0.75f);
+			itemNewRotation = glm::vec3(0.0f, 0.0f, 0.0f);
 
 			break;
 		}
@@ -741,6 +757,8 @@ void PlayerInteractionValidationSystem::performCarryableItemInteraction(entt::en
 	if (registry->has<component::RigidBody>(a_carryableItemEntity))
 		registry->remove<component::RigidBody>(a_carryableItemEntity);
 
+	registry->get<component::Renderable>(a_carryableItemEntity).cullingMask = ~(0b0001 << (uint)player.playerNum);
+
 	carryableItem.isBeingCarried = true;
 	carryableItem.hasBeenCarried = true;
 	carryableItemTransform.setParent(a_playerEntity);
@@ -750,6 +768,9 @@ void PlayerInteractionValidationSystem::performCarryableItemInteraction(entt::en
 	pickedUpItemEvent.itemType     = carryableItem.type;
 	pickedUpItemEvent.itemTeam     = carryableItem.team;
 	postEvent(pickedUpItemEvent);
+
+	carryableItemTransform.setRotationEuler(itemNewRotation);
+	carryableItemTransform.setPosition(itemNewPosition);
 }
 
 void PlayerInteractionValidationSystem::performGarbagePileInteraction(entt::entity a_playerEntity, entt::entity a_garbagePileEntity, PlayerItemClassification itemClassification)
@@ -1073,6 +1094,8 @@ void PlayerInteractionValidationSystem::dropPlayerCarriedItems(entt::entity a_pl
 
 		carriedItemTransform.setPosition(newPosition);
 		carriedItemTransform.setRotationEuler(newRotation);
+
+		registry->get<component::Renderable>(carriedItemEntity).cullingMask = 0b1111;
 	}
 }
 #pragma endregion
