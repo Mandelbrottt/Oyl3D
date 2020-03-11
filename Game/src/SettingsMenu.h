@@ -9,7 +9,7 @@ class SettingsMenuLayer : public oyl::Layer
 public:
 	OYL_CTOR(SettingsMenuLayer, Layer)
 
-	const float SLIDER_CHANGE_DELAY = 0.2f;
+	const float SLIDER_CHANGE_DELAY = 0.15f;
 	float sliderChangeDelayCountdown = 0.0f;
 
 	virtual void onEnter() override;
