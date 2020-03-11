@@ -73,10 +73,6 @@ public:
 
 		Texture2D::cache("res/assets/textures/gui/garbagePileHPBarOutlineGlooped.png");
 
-		Texture2D::cache("res/assets/textures/menus/BlueWins.png");
-		Texture2D::cache("res/assets/textures/menus/RedWins.png");
-		Texture2D::cache("res/assets/textures/menus/Draw.png");
-
 		for (int i = 0; i < 4; i++)
 		{
 			{
@@ -668,7 +664,7 @@ public:
 
 				playerTransform.rotate(glm::vec3(
 					0.0f, 
-					-rightStick.x * (100.0f + (PersistentVariables::controllerSensitivities[player.controllerNum] * 40.0f)) * 0.016f, 
+					-rightStick.x * (100.0f + (PersistentVariables::controllerSensitivities[player.controllerNum] * 45.0f)) * 0.016f, 
 					0.0f));
 
 				if (player.yRotationClamp > 1)
@@ -692,7 +688,7 @@ public:
 						continue;
 
 					cameraTransform.rotate(glm::vec3(
-						-rightStick.y * (100.0f + (PersistentVariables::controllerSensitivities[player.controllerNum] * 40.0f)) * 0.016f,
+						-rightStick.y * (100.0f + (PersistentVariables::controllerSensitivities[player.controllerNum] * 45.0f)) * 0.016f,
 						0.0f, 
 						0.0f));
 

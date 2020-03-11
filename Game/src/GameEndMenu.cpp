@@ -10,6 +10,10 @@ void GameEndLayer::onEnter()
 
 	selectedMenuItemType = MenuOption::goToMainMenu;
 
+	Texture2D::cache("res/assets/textures/menus/BlueWins.png");
+	Texture2D::cache("res/assets/textures/menus/RedWins.png");
+	Texture2D::cache("res/assets/textures/menus/Draw.png");
+
 	{
 		auto cameraEntity = registry->create();
 
@@ -41,6 +45,8 @@ void GameEndLayer::onEnter()
 			gui.texture = Texture2D::get("res/assets/textures/menus/RedWins.png");
 		else //tie game
 			gui.texture = Texture2D::get("res/assets/textures/menus/Draw.png");
+
+		this->gameResultImageEntity = e;
 	}
 
 	{
@@ -81,6 +87,15 @@ void GameEndLayer::onEnter()
 void GameEndLayer::onUpdate()
 {
 	changeMenuOptionCountdown -= Time::deltaTime();
+
+	auto& gameResultGui = registry->get<component::GuiRenderable>(this->gameResultImageEntity);
+
+	if (PersistentVariables::gameResult == GameEndResult::blueWin)
+		gameResultGui.texture = Texture2D::get("BlueWins");
+	else if (PersistentVariables::gameResult == GameEndResult::redWin)
+		gameResultGui.texture = Texture2D::get("RedWins");
+	else //tie game
+		gameResultGui.texture = Texture2D::get("Draw");
 
 	auto menuItemsView = registry->view<MenuItem>();
 	for (auto& menuItemEntity : menuItemsView)

@@ -11,6 +11,8 @@ public:
 
 	MenuOption selectedMenuItemType;
 
+	entt::entity gameResultImageEntity;
+
 	const float CHANGE_MENU_OPTION_DELAY = 0.15f;
 	float changeMenuOptionCountdown      = 0.0f;
 
