@@ -9,10 +9,10 @@ class MainMenuLayer : public oyl::Layer
 public:
     OYL_CTOR(MainMenuLayer, Layer)
 
-	MenuOption selectedMenuItemType;
-
 	const float CHANGE_MENU_OPTION_DELAY = 0.15f;
 	float changeMenuOptionCountdown      = 0.0f;
+
+	float delayBeforeAcceptingInputCountdown;
 
     virtual void onEnter() override;
 
