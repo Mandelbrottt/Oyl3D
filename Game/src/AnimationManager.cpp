@@ -7,6 +7,8 @@ void AnimationManager::onEnter()
 	listenForEventCategory((EventCategory)CategoryThrowableBottle);
 	listenForEventCategory((EventCategory)CategoryCleaningSolution);
 	listenForEventCategory((EventCategory)CategoryGloop);
+	listenForEventCategory((EventCategory)CategoryCannonball);
+	listenForEventCategory((EventCategory)CategoryCannon);
 }
 
 void AnimationManager::onExit()
@@ -26,7 +28,62 @@ bool AnimationManager::onEvent(const Event& event)
 	{
 
 		//////////////////////////// I T E M      B A S E D     E V E N T S ///////////////////////////////////
-		//cases for item pickups
+		//unique case for spawning cannonballs
+
+	case (EventType)TypeSpawnCannonballForPlayer:
+	{
+		auto evt = event_cast<PlayerPickedUpItemEvent>(event);
+
+		auto& playerTransform = registry->get<component::Transform>(evt.playerEntity);
+
+		//Objects that need to be modified
+		entt::entity playerCamera{};
+		entt::entity playerArmR{};
+		entt::entity playerArmL{};
+		entt::entity playerArmLTarget{};
+		entt::entity playerArmLObject{};
+
+		//Getting the Camera
+		for (auto child : playerTransform.getChildrenEntities())
+			if (registry->has<component::Camera>(child))
+				playerCamera = child;
+
+		//Getting the individual arms
+		for (auto child : registry->get<component::Transform>(playerCamera).getChildrenEntities())
+		{
+			if (registry->get<component::EntityInfo>(child).name.find("Left") != std::string::npos)
+			{
+				playerArmL = child;
+				OYL_LOG("found left arm");
+			}
+			if (registry->get<component::EntityInfo>(child).name.find("Right") != std::string::npos)
+			{
+				playerArmR = child;
+				OYL_LOG("found right arm");
+			}
+		}
+
+		//Getting each hand target
+		for (auto child : registry->get<component::Transform>(playerArmL).getChildrenEntities())
+			if (registry->has<component::BoneTarget>(child))
+				playerArmLTarget = child;
+
+		//Getting each hand object
+		for (auto child : registry->get<component::Transform>(playerArmLTarget).getChildrenEntities())
+			if (registry->has<component::Renderable>(child))
+				playerArmLObject = child;
+
+		//Set the animation here for spawning in cannonball
+		registry->get<component::SkeletonAnimatable>(playerArmL).animation = "Cannonball_A";
+		registry->get<component::SkeletonAnimatable>(playerArmR).animation = "Cannonball_A";
+		registry->get<component::Transform>(playerArmLObject).setPosition(glm::vec3(2.80f, -1.01f, 0.63f));
+		registry->get<component::Transform>(playerArmLObject).setRotationEuler(glm::vec3(92.21f, 46.24f, -27.55f));
+		registry->get<component::Transform>(playerArmLObject).setScale(glm::vec3(2.0f));
+		registry->get<component::Renderable>(playerArmLObject).model = Model::get("garbageBall");
+		registry->get<component::Renderable>(playerArmLObject).material = Material::get("DecorationAtlas");
+		break;
+	}
+	//Player Picked up item
 	case (EventType)TypePlayerPickedUpItem:
 	{
 		auto evt = event_cast<PlayerPickedUpItemEvent>(event);
@@ -81,6 +138,7 @@ bool AnimationManager::onEvent(const Event& event)
 		switch (evt.itemType)
 		{
 		case CarryableItemType::cleaningSolution:
+			//Set the animation here for picking up cleaning solution
 			registry->get<component::SkeletonAnimatable>(playerArmL).animation = "Pirax_L";
 			registry->get<component::Transform>(playerArmLObject).setPosition(glm::vec3(0.83f, 0.94f, -0.98f));
 			registry->get<component::Transform>(playerArmLObject).setRotationEuler(glm::vec3(116.07f, -3.19f, -106.4f));
@@ -90,8 +148,6 @@ bool AnimationManager::onEvent(const Event& event)
 				registry->get<component::Renderable>(playerArmLObject).material = Material::get("PiraxBlue");
 			else if(evt.itemTeam == Team::red)
 			registry->get<component::Renderable>(playerArmLObject).material = Material::get("PiraxRed");
-
-			//Set the animation here for picking up cleaning solution
 			break;
 		case CarryableItemType::gloop:
 			//Set the animation here for picking up gloop
@@ -107,10 +163,25 @@ bool AnimationManager::onEvent(const Event& event)
 			break;
 		case CarryableItemType::cannonball:
 			//Set the animation here for picking up cannonball
+			registry->get<component::SkeletonAnimatable>(playerArmL).animation = "Cannonball_A";
+			registry->get<component::SkeletonAnimatable>(playerArmR).animation = "Cannonball_A";
+			registry->get<component::Transform>(playerArmLObject).setPosition(glm::vec3(2.80f, -1.01f, 0.63f));
+			registry->get<component::Transform>(playerArmLObject).setRotationEuler(glm::vec3(92.21f, 46.24f, -27.55f));
+			registry->get<component::Transform>(playerArmLObject).setScale(glm::vec3(2.0f));
+			registry->get<component::Renderable>(playerArmLObject).model = Model::get("garbageBall");
+			registry->get<component::Renderable>(playerArmLObject).material = Material::get("DecorationAtlas");
 			break;
 		case CarryableItemType::mop:
 			//Set the animation here for picking up mop
-			registry->get<component::SkeletonAnimatable>(playerArmR).animation = "Reference";
+			registry->get<component::SkeletonAnimatable>(playerArmR).animation = "Mop_R";
+			registry->get<component::Transform>(playerArmRObject).setPosition(glm::vec3(0.53f, 0.20f, 0.82f));
+			registry->get<component::Transform>(playerArmRObject).setRotationEuler(glm::vec3(9.87f, 9.99f, -114.0f));
+			registry->get<component::Transform>(playerArmRObject).setScale(glm::vec3(1.0f));
+			registry->get<component::Renderable>(playerArmRObject).model = Model::get("mop");
+			if (evt.itemTeam == Team::blue)
+				registry->get<component::Renderable>(playerArmRObject).material = Material::get("MopBlue");
+			else if (evt.itemTeam == Team::red)
+				registry->get<component::Renderable>(playerArmRObject).material = Material::get("MopRed");
 			break;
 		case CarryableItemType::throwableBottle:
 			//Set the animation here for picking up throwable bottle
@@ -242,6 +313,59 @@ bool AnimationManager::onEvent(const Event& event)
 
 		//reset left arm components TODO: MAKE THIS THE ACTUAL USE ANIMATION AND THEN LINK IT BACK TO THE IDLE OR WHATEVER THIS IS TEMP FOR THE EXPO
 		registry->get<component::SkeletonAnimatable>(playerArmL).animation = "Idle_L";
+		registry->get<component::Transform>(playerArmLObject).setPosition(glm::vec3(0.0f));
+		registry->get<component::Transform>(playerArmLObject).setRotationEuler(glm::vec3(0.0f));
+		registry->get<component::Transform>(playerArmLObject).setScale(glm::vec3(0.0f));
+
+		break;
+	}
+
+	case (EventType)TypeCannonLoaded:
+	{
+		OYL_LOG("INSIDE LOADING THE CANNON");
+		auto evt = event_cast<CannonLoadedEvent>(event);
+		auto& playerTransform = registry->get<component::Transform>(evt.playerEntity);
+
+		//Objects that need to be modified
+		entt::entity playerCamera{};
+		entt::entity playerArmL{};
+		entt::entity playerArmR{};
+		entt::entity playerArmLTarget{};
+		entt::entity playerArmLObject{};
+
+		//Getting the Camera
+		for (auto child : playerTransform.getChildrenEntities())
+			if (registry->has<component::Camera>(child))
+				playerCamera = child;
+
+		//Getting the individual arms
+		for (auto child : registry->get<component::Transform>(playerCamera).getChildrenEntities())
+		{
+			if (registry->get<component::EntityInfo>(child).name.find("Left") != std::string::npos)
+			{
+				playerArmL = child;
+				OYL_LOG("found left arm");
+			}
+			if (registry->get<component::EntityInfo>(child).name.find("Right") != std::string::npos)
+			{
+				playerArmR = child;
+				OYL_LOG("found right arm");
+			}
+		}
+
+		//Getting each hand target
+		for (auto child : registry->get<component::Transform>(playerArmL).getChildrenEntities())
+			if (registry->has<component::BoneTarget>(child))
+				playerArmLTarget = child;
+
+		//Getting each hand object
+		for (auto child : registry->get<component::Transform>(playerArmLTarget).getChildrenEntities())
+			if (registry->has<component::Renderable>(child))
+				playerArmLObject = child;
+
+		//reset left arm components TODO: MAKE THIS THE ACTUAL USE ANIMATION AND THEN LINK IT BACK TO THE IDLE OR WHATEVER THIS IS TEMP FOR THE EXPO
+		registry->get<component::SkeletonAnimatable>(playerArmL).animation = "Idle_L";
+		registry->get<component::SkeletonAnimatable>(playerArmR).animation = "Idle_L";
 		registry->get<component::Transform>(playerArmLObject).setPosition(glm::vec3(0.0f));
 		registry->get<component::Transform>(playerArmLObject).setRotationEuler(glm::vec3(0.0f));
 		registry->get<component::Transform>(playerArmLObject).setScale(glm::vec3(0.0f));
