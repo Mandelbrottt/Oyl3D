@@ -1,13 +1,14 @@
 #include "MainMenu.h"
+#include "PersistentVariables.h"
 
 using namespace oyl;
 
 void MainMenuLayer::onEnter()
 {
+	delayBeforeAcceptingInputCountdown = 0.2f;
+
 	listenForEventCategory(EventCategory::Keyboard);
 	listenForEventCategory(EventCategory::Gamepad);
-
-	selectedMenuItemType = MenuOption::playGame;
 
 	{
 		auto cameraEntity = registry->create();
@@ -17,6 +18,9 @@ void MainMenuLayer::onEnter()
 
 		auto& camera = registry->assign<component::Camera>(cameraEntity);
 		camera.cullingMask = 0b1111;
+
+		auto& so = registry->assign<component::EntityInfo>(cameraEntity);
+		so.name = "Camera";
 	}
 
 	{
@@ -31,6 +35,20 @@ void MainMenuLayer::onEnter()
 
 		auto& gui = registry->assign<component::GuiRenderable>(e);
 		gui.texture = Texture2D::cache("res/assets/textures/menus/MainMenuBackground.png");
+	}
+
+	{
+		auto e = registry->create();
+
+		auto& t = registry->assign<component::Transform>(e);
+		t.setPosition(glm::vec3(0.0f, 3.65f, -1.0f));
+		t.setScale(glm::vec3(4.0f, 4.0f, 1.0f));
+
+		auto& so = registry->assign<component::EntityInfo>(e);
+		so.name = "Washbucklers Logo";
+
+		auto& gui = registry->assign<component::GuiRenderable>(e);
+		gui.texture = Texture2D::cache("res/assets/textures/menus/Logo.png");
 	}
 
 	{
@@ -121,7 +139,8 @@ void MainMenuLayer::onEnter()
 
 void MainMenuLayer::onUpdate()
 {
-	changeMenuOptionCountdown -= Time::deltaTime();
+	delayBeforeAcceptingInputCountdown -= Time::deltaTime();
+	changeMenuOptionCountdown          -= Time::deltaTime();
 
 	auto menuItemsView = registry->view<MenuItem>();
 	for (auto& menuItemEntity : menuItemsView)
@@ -129,7 +148,7 @@ void MainMenuLayer::onUpdate()
 		auto& menuItem          = registry->get<MenuItem>(menuItemEntity);
 		auto& menuItemTransform = registry->get<component::Transform>(menuItemEntity);
 
-		if (menuItem.type == selectedMenuItemType)
+		if (menuItem.type == PersistentVariables::mainMenuSelectedOption)
 			menuItemTransform.setScale(glm::vec3(1.5f, 1.5f, 1.0f));
 		else
 			menuItemTransform.setScale(glm::vec3(1.0f));
@@ -154,31 +173,36 @@ bool MainMenuLayer::onEvent(const Event& event)
 
 			changeMenuOptionCountdown = CHANGE_MENU_OPTION_DELAY;
 
-			switch (selectedMenuItemType)
+			switch (PersistentVariables::mainMenuSelectedOption)
 			{
 			case MenuOption::playGame:
 			{
-				selectedMenuItemType = MenuOption::controls;
+				PersistentVariables::mainMenuSelectedOption = MenuOption::tutorial;
+				break;
+			}
+			case MenuOption::tutorial:
+			{
+				PersistentVariables::mainMenuSelectedOption = MenuOption::controls;
 				break;
 			}
 			case MenuOption::controls:
 			{
-				selectedMenuItemType = MenuOption::settings;
+				PersistentVariables::mainMenuSelectedOption = MenuOption::settings;
 				break;
 			}
 			case MenuOption::settings:
 			{
-				selectedMenuItemType = MenuOption::credits;
+				PersistentVariables::mainMenuSelectedOption = MenuOption::credits;
 				break;
 			}
 			case MenuOption::credits:
 			{
-				selectedMenuItemType = MenuOption::exit;
+				PersistentVariables::mainMenuSelectedOption = MenuOption::exit;
 				break;
 			}
 			case MenuOption::exit:
 			{
-				selectedMenuItemType = MenuOption::playGame;
+				PersistentVariables::mainMenuSelectedOption = MenuOption::playGame;
 				break;
 			}
 			}
@@ -194,31 +218,36 @@ bool MainMenuLayer::onEvent(const Event& event)
 
 			changeMenuOptionCountdown = CHANGE_MENU_OPTION_DELAY;
 
-			switch (selectedMenuItemType)
+			switch (PersistentVariables::mainMenuSelectedOption)
 			{
 			case MenuOption::playGame:
 			{
-				selectedMenuItemType = MenuOption::exit;
+				PersistentVariables::mainMenuSelectedOption = MenuOption::exit;
+				break;
+			}
+			case MenuOption::tutorial:
+			{
+				PersistentVariables::mainMenuSelectedOption = MenuOption::playGame;
 				break;
 			}
 			case MenuOption::controls:
 			{
-				selectedMenuItemType = MenuOption::playGame;
+				PersistentVariables::mainMenuSelectedOption = MenuOption::tutorial;
 				break;
 			}
 			case MenuOption::settings:
 			{
-				selectedMenuItemType = MenuOption::controls;
+				PersistentVariables::mainMenuSelectedOption = MenuOption::controls;
 				break;
 			}
 			case MenuOption::credits:
 			{
-				selectedMenuItemType = MenuOption::settings;
+				PersistentVariables::mainMenuSelectedOption = MenuOption::settings;
 				break;
 			}
 			case MenuOption::exit:
 			{
-				selectedMenuItemType = MenuOption::credits;
+				PersistentVariables::mainMenuSelectedOption = MenuOption::credits;
 				break;
 			}
 			}
@@ -228,11 +257,19 @@ bool MainMenuLayer::onEvent(const Event& event)
 
 		case oyl::Key::Enter:
 		{
-			switch (selectedMenuItemType)
+			if (delayBeforeAcceptingInputCountdown > 0.0f)
+				break;
+
+			switch (PersistentVariables::mainMenuSelectedOption)
 			{
 			case MenuOption::playGame:
 			{
 				Application::get().changeScene("MainScene");
+				break;
+			}
+			case MenuOption::tutorial:
+			{
+				//Application::get().changeScene("Tutorial");
 				break;
 			}
 			case MenuOption::controls:
@@ -242,7 +279,7 @@ bool MainMenuLayer::onEvent(const Event& event)
 			}
 			case MenuOption::settings:
 			{
-				//Application::get().changeScene("SettingsScene");
+				Application::get().changeScene("SettingsMenuScene");
 				break;
 			}
 			case MenuOption::credits:
@@ -279,31 +316,36 @@ bool MainMenuLayer::onEvent(const Event& event)
 		//moved stick down
 		if (evt.dy > 0.0f && Input::getGamepadLeftStick(evt.gid).y > 0.1f)
 		{
-			switch (selectedMenuItemType)
+			switch (PersistentVariables::mainMenuSelectedOption)
 			{
 			case MenuOption::playGame:
 			{
-				selectedMenuItemType = MenuOption::controls;
+				PersistentVariables::mainMenuSelectedOption = MenuOption::tutorial;
+				break;
+			}
+			case MenuOption::tutorial:
+			{
+				PersistentVariables::mainMenuSelectedOption = MenuOption::controls;
 				break;
 			}
 			case MenuOption::controls:
 			{
-				selectedMenuItemType = MenuOption::settings;
+				PersistentVariables::mainMenuSelectedOption = MenuOption::settings;
 				break;
 			}
 			case MenuOption::settings:
 			{
-				selectedMenuItemType = MenuOption::credits;
+				PersistentVariables::mainMenuSelectedOption = MenuOption::credits;
 				break;
 			}
 			case MenuOption::credits:
 			{
-				selectedMenuItemType = MenuOption::exit;
+				PersistentVariables::mainMenuSelectedOption = MenuOption::exit;
 				break;
 			}
 			case MenuOption::exit:
 			{
-				selectedMenuItemType = MenuOption::playGame;
+				PersistentVariables::mainMenuSelectedOption = MenuOption::playGame;
 				break;
 			}
 			}
@@ -311,31 +353,36 @@ bool MainMenuLayer::onEvent(const Event& event)
 		//moved stick up
 		else if (evt.dy < 0.0f && Input::getGamepadLeftStick(evt.gid).y < -0.1f)
 		{
-			switch (selectedMenuItemType)
+			switch (PersistentVariables::mainMenuSelectedOption)
 			{
 			case MenuOption::playGame:
 			{
-				selectedMenuItemType = MenuOption::exit;
+				PersistentVariables::mainMenuSelectedOption = MenuOption::exit;
+				break;
+			}
+			case MenuOption::tutorial:
+			{
+				PersistentVariables::mainMenuSelectedOption = MenuOption::playGame;
 				break;
 			}
 			case MenuOption::controls:
 			{
-				selectedMenuItemType = MenuOption::playGame;
+				PersistentVariables::mainMenuSelectedOption = MenuOption::tutorial;
 				break;
 			}
 			case MenuOption::settings:
 			{
-				selectedMenuItemType = MenuOption::controls;
+				PersistentVariables::mainMenuSelectedOption = MenuOption::controls;
 				break;
 			}
 			case MenuOption::credits:
 			{
-				selectedMenuItemType = MenuOption::settings;
+				PersistentVariables::mainMenuSelectedOption = MenuOption::settings;
 				break;
 			}
 			case MenuOption::exit:
 			{
-				selectedMenuItemType = MenuOption::credits;
+				PersistentVariables::mainMenuSelectedOption = MenuOption::credits;
 				break;
 			}
 			}
@@ -346,6 +393,9 @@ bool MainMenuLayer::onEvent(const Event& event)
 
 	case EventType::GamepadButtonPressed:
 	{
+		if (delayBeforeAcceptingInputCountdown > 0.0f)
+			break;
+
 		auto evt = event_cast<GamepadButtonPressedEvent>(event);
 
 		switch (evt.button)
@@ -353,16 +403,31 @@ bool MainMenuLayer::onEvent(const Event& event)
 		case Gamepad::Start:
 		case Gamepad::A:
 		{
-			switch (selectedMenuItemType)
+			switch (PersistentVariables::mainMenuSelectedOption)
 			{
 			case MenuOption::playGame:
 			{
 				Application::get().changeScene("MainScene");
 				break;
 			}
+			case MenuOption::tutorial:
+			{
+				//Application::get().changeScene("Tutorial");
+				break;
+			}
 			case MenuOption::controls:
 			{
 				Application::get().changeScene("ControlsScreenScene");
+				break;
+			}
+			case MenuOption::settings:
+			{
+				Application::get().changeScene("SettingsMenuScene");
+				break;
+			}
+			case MenuOption::credits:
+			{
+				//Application::get().changeScene("CreditsScene");
 				break;
 			}
 			case MenuOption::exit:
@@ -372,12 +437,6 @@ bool MainMenuLayer::onEvent(const Event& event)
 				break;
 			}
 			}
-
-			break;
-		}
-		case Gamepad::B:
-		{
-
 
 			break;
 		}

@@ -5,9 +5,13 @@
 
 namespace oyl
 {
+    class Material;
+
     namespace internal
     {
         class GuiLayer;
+
+        Ref<Material> materialFromFile(const std::string& filepath);
     }
     
     class Material
@@ -114,5 +118,6 @@ namespace oyl
 
         friend Application;
         friend internal::GuiLayer;
+        friend Ref<Material> internal::materialFromFile(const std::string&);
     };
 }

@@ -82,6 +82,8 @@ bool ThrowableBottleSystem::onEvent(const Event& event)
 			bottleTransform.setPosition(newPosition);
 			bottleTransform.setRotation(playerTransform.getRotation());
 
+			registry->get<component::Renderable>(evt.bottleEntity).cullingMask = 0b1111; //TODO: REMOVE ONCE 3PP ANIMATIONS ARE IN
+
 			auto cameraView = registry->view<component::Camera>();
 			for (auto cameraEntity : cameraView)
 			{

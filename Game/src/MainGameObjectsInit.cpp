@@ -14,6 +14,8 @@ void MainGameObjectsInitLayer::onEnter()
     mesh = Model::cache("res/assets/models/Garbage/garbageMassive.obj");
     mesh = Model::cache("res/assets/models/Garbage/garbageSurrender.obj");
 
+	Material::cache("res/assets/materials/garbageGlooped.oylmat");
+
     {
         component::Renderable mr;
         mr.model     = mesh;

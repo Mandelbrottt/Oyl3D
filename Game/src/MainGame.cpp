@@ -1,9 +1,13 @@
 #include <Oyl3D.h>
 
+#include "PersistentVariables.h"
+
 #include "MainGameObjectsInit.h"
 #include "MainMenu.h"
 #include "ControlsScreenScene.h"
+#include "SettingsMenu.h"
 #include "GameEndMenu.h"
+
 #include "PlayerSystem.h"
 #include "CannonSystem.h"
 #include "CustomComponents.h"
@@ -31,14 +35,12 @@ public:
 	OYL_CTOR(MainLayer, oyl::Layer)
 
 	bool isCameraActive;
-	bool isGameOver;
 
 	void onEnter() override
 	{
 		srand(time(NULL));
 
 		isCameraActive = false;
-		isGameOver = false;
 
 		listenForEventCategory(EventCategory::Keyboard);
 		listenForEventCategory(EventCategory::Mouse);
@@ -68,6 +70,8 @@ public:
 
 		Texture2D::cache("res/assets/textures/gui/cleaningQTEUp.png");
 		Texture2D::cache("res/assets/textures/gui/cleaningQTEDown.png");
+
+		Texture2D::cache("res/assets/textures/gui/garbagePileHPBarOutlineGlooped.png");
 
 		for (int i = 0; i < 4; i++)
 		{
@@ -658,7 +662,10 @@ public:
 				//camera movement
 				glm::vec2 rightStick = Input::getGamepadRightStick(player.controllerNum);
 
-				playerTransform.rotate(glm::vec3(0.0f, -rightStick.x * 200.0f * Time::deltaTime(), 0.0f));
+				playerTransform.rotate(glm::vec3(
+					0.0f, 
+					-rightStick.x * (100.0f + (PersistentVariables::controllerSensitivities[player.controllerNum] * 45.0f)) * 0.016f, 
+					0.0f));
 
 				if (player.yRotationClamp > 1)
 				{
@@ -680,7 +687,10 @@ public:
 					if (cameraTransform.getParentEntity() != playerEntity)
 						continue;
 
-					cameraTransform.rotate(glm::vec3(-rightStick.y * 200.0f * Time::deltaTime(), 0.0f, 0.0f));
+					cameraTransform.rotate(glm::vec3(
+						-rightStick.y * (100.0f + (PersistentVariables::controllerSensitivities[player.controllerNum] * 45.0f)) * 0.016f,
+						0.0f, 
+						0.0f));
 
 					//clamp camera up/down rotation
 					float cameraRotationClampValueX = 70.0f;
@@ -904,9 +914,9 @@ public:
 				}
 				case Gamepad::B:
 				{
-					if (isGameOver)
-						Application::get().changeScene("MainMenuScene");
-					else
+					//if (isGameOver)
+						//Application::get().changeScene("MainMenuScene");
+					//else
 					{
 						CancelButtonPressedEvent cancelButtonPressed;
 						cancelButtonPressed.playerEntity = playerEntity;
@@ -998,27 +1008,8 @@ public:
 
 		case (EventType)TypeGameEnd:
 		{
-			auto evt = event_cast<GameEndEvent>(event);
-
-			auto e = registry->create();
-
-			isGameOver = true;
-
-			auto& t = registry->assign<component::Transform>(e);
-			t.setPosition(glm::vec3(0.0f, 0.0f, -100.0f));
-			t.setScale(glm::vec3(10.0f, 10.0f, 10.0f));
-
-			auto& so = registry->assign<component::EntityInfo>(e);
-			so.name = "Game Over Message";
-
-			auto& gui = registry->assign<component::GuiRenderable>(e);
-
-			if (evt.result == GameEndResult::blueWin)
-				gui.texture = Texture2D::cache("res/assets/textures/gui/blueWins.png");
-			else if (evt.result == GameEndResult::redWin)
-				gui.texture = Texture2D::cache("res/assets/textures/gui/redWins.png");
-			else //tie game
-				gui.texture = Texture2D::cache("res/assets/textures/gui/draw.png");
+			Application::get().changeScene("GameEndScene");
+			break;
 		}
 		}
 		return false;
@@ -1045,6 +1036,7 @@ public:
     {
 		registerScene<MainMenuScene>();
 		registerScene<ControlsScreenScene>();
+		registerScene<SettingsMenuScene>();
         registerScene<MainScene>();
 		registerScene<GameEndScene>();
     }

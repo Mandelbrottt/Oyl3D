@@ -1,6 +1,6 @@
 {
     "Material": {
-        "Alias": "Character",
+        "Alias": "Charactter Tall Blue",
         "MainProperties": {
             "Offset": [
                 0.0,
@@ -12,20 +12,14 @@
             ]
         },
         "Shader": {
-            "Alias": "Oyl Lighting",
-            "Pixel": {
-                "FilePath": "../Engine/res/shaders/lighting.frag",
-                "guid": null
-            },
-            "Vertex": {
-                "FilePath": "../Engine/res/shaders/lighting.vert",
-                "guid": null
-            }
+            "Alias": "Oyl Skeletal",
+            "FilePath": "../Engine/res/shaders/skeletal.oylshader",
+            "guid": null
         },
         "Textures": {
             "Albedo": {
-                "Alias": "characterTex",
-                "FilePath": "res\\assets\\textures\\characterTex.png",
+                "Alias": "PirateTallBlue",
+                "FilePath": "res\\assets\\textures\\PirateTallBlue.png",
                 "Profile": 1,
                 "guid": null
             },

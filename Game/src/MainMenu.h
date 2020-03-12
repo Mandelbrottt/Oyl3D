@@ -3,16 +3,17 @@
 #include <Oyl3D.h>
 #include "CustomComponents.h"
 #include "CustomEvents.h"
+#include "ScrollingTextureLayer.h"
 
 class MainMenuLayer : public oyl::Layer
 {
 public:
     OYL_CTOR(MainMenuLayer, Layer)
 
-	MenuOption selectedMenuItemType;
-
 	const float CHANGE_MENU_OPTION_DELAY = 0.15f;
 	float changeMenuOptionCountdown      = 0.0f;
+
+	float delayBeforeAcceptingInputCountdown;
 
     virtual void onEnter() override;
 
@@ -31,5 +32,6 @@ public:
 	virtual void onEnter() override
 	{
 		pushLayer(MainMenuLayer::create());
+		pushLayer(ScrollingTextureLayer::create());
 	}
 };

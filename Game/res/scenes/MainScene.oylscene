@@ -14286,6 +14286,286 @@
             }
         }
     },
+    "ObjectL1": {
+        "Renderable": {
+            "CastShadows": true,
+            "CullingMask": 1,
+            "Enabled": true,
+            "Material": {
+                "Alias": null
+            },
+            "Mesh": null
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Parent": "TargetL1",
+            "Position": {
+                "X": 1.907349087559851e-06,
+                "Y": 3.5762798233918147e-07,
+                "Z": -4.768366750340647e-07
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 5.31436015194231e-08,
+                "qY": -1.1827795987073841e-07,
+                "qZ": 1.4901143430279262e-08
+            },
+            "Scale": {
+                "X": 1.0000001192092896,
+                "Y": 0.9999999403953552,
+                "Z": 1.0
+            }
+        }
+    },
+    "ObjectL2": {
+        "Renderable": {
+            "CastShadows": true,
+            "CullingMask": 2,
+            "Enabled": true,
+            "Material": {
+                "Alias": null
+            },
+            "Mesh": null
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Parent": "TargetL2",
+            "Position": {
+                "X": 1.907349087559851e-06,
+                "Y": 3.5762798233918147e-07,
+                "Z": -4.768366750340647e-07
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 5.31436015194231e-08,
+                "qY": -1.1827795987073841e-07,
+                "qZ": 1.4901143430279262e-08
+            },
+            "Scale": {
+                "X": 1.0000001192092896,
+                "Y": 0.9999999403953552,
+                "Z": 1.0
+            }
+        }
+    },
+    "ObjectL3": {
+        "Renderable": {
+            "CastShadows": true,
+            "CullingMask": 4,
+            "Enabled": true,
+            "Material": {
+                "Alias": null
+            },
+            "Mesh": null
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Parent": "TargetL3",
+            "Position": {
+                "X": 1.907349087559851e-06,
+                "Y": 3.5762798233918147e-07,
+                "Z": -4.768366750340647e-07
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 5.31436015194231e-08,
+                "qY": -1.1827795987073841e-07,
+                "qZ": 1.4901143430279262e-08
+            },
+            "Scale": {
+                "X": 1.0000001192092896,
+                "Y": 0.9999999403953552,
+                "Z": 1.0
+            }
+        }
+    },
+    "ObjectL4": {
+        "Renderable": {
+            "CastShadows": true,
+            "CullingMask": 8,
+            "Enabled": true,
+            "Material": {
+                "Alias": null
+            },
+            "Mesh": null
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Parent": "TargetL4",
+            "Position": {
+                "X": 1.907349087559851e-06,
+                "Y": 3.5762798233918147e-07,
+                "Z": -4.768366750340647e-07
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 5.31436015194231e-08,
+                "qY": -1.1827795987073841e-07,
+                "qZ": 1.4901143430279262e-08
+            },
+            "Scale": {
+                "X": 1.0000001192092896,
+                "Y": 0.9999999403953552,
+                "Z": 1.0
+            }
+        }
+    },
+    "ObjectR1": {
+        "Renderable": {
+            "CastShadows": true,
+            "CullingMask": 1,
+            "Enabled": true,
+            "Material": {
+                "Alias": null
+            },
+            "Mesh": null
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Parent": "TargetR1",
+            "Position": {
+                "X": 1.907349087559851e-06,
+                "Y": 3.5762798233918147e-07,
+                "Z": -4.768366750340647e-07
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 5.31436015194231e-08,
+                "qY": -1.1827795987073841e-07,
+                "qZ": 1.4901143430279262e-08
+            },
+            "Scale": {
+                "X": 1.0000001192092896,
+                "Y": 0.9999999403953552,
+                "Z": 1.0
+            }
+        }
+    },
+    "ObjectR2": {
+        "Renderable": {
+            "CastShadows": true,
+            "CullingMask": 2,
+            "Enabled": true,
+            "Material": {
+                "Alias": null
+            },
+            "Mesh": null
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Parent": "TargetR2",
+            "Position": {
+                "X": 1.907349087559851e-06,
+                "Y": 3.5762798233918147e-07,
+                "Z": -4.768366750340647e-07
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 5.31436015194231e-08,
+                "qY": -1.1827795987073841e-07,
+                "qZ": 1.4901143430279262e-08
+            },
+            "Scale": {
+                "X": 1.0000001192092896,
+                "Y": 0.9999999403953552,
+                "Z": 1.0
+            }
+        }
+    },
+    "ObjectR3": {
+        "Renderable": {
+            "CastShadows": true,
+            "CullingMask": 4,
+            "Enabled": true,
+            "Material": {
+                "Alias": null
+            },
+            "Mesh": null
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Parent": "TargetR3",
+            "Position": {
+                "X": 1.907349087559851e-06,
+                "Y": 3.5762798233918147e-07,
+                "Z": -4.768366750340647e-07
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 5.31436015194231e-08,
+                "qY": -1.1827795987073841e-07,
+                "qZ": 1.4901143430279262e-08
+            },
+            "Scale": {
+                "X": 1.0000001192092896,
+                "Y": 0.9999999403953552,
+                "Z": 1.0
+            }
+        }
+    },
+    "ObjectR4": {
+        "Renderable": {
+            "CastShadows": true,
+            "CullingMask": 8,
+            "Enabled": true,
+            "Material": {
+                "Alias": null
+            },
+            "Mesh": null
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Parent": "TargetR4",
+            "Position": {
+                "X": 1.907349087559851e-06,
+                "Y": 3.5762798233918147e-07,
+                "Z": -4.768366750340647e-07
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 5.31436015194231e-08,
+                "qY": -1.1827795987073841e-07,
+                "qZ": 1.4901143430279262e-08
+            },
+            "Scale": {
+                "X": 1.0000001192092896,
+                "Y": 0.9999999403953552,
+                "Z": 1.0
+            }
+        }
+    },
     "Pickup Bottle Message1": {
         "GuiRenderable": {
             "Clipping": {
@@ -15537,44 +15817,6 @@
             }
         }
     },
-    "Player1 Arms": {
-        "Renderable": {
-            "CastShadows": false,
-            "CullingMask": 1,
-            "Enabled": true,
-            "Material": {
-                "Alias": "Character Tall Blue"
-            },
-            "Mesh": {
-                "Alias": "Firstperson_Mesh",
-                "FilePath": "res\\assets\\models\\Firstperson_Mesh.obj"
-            }
-        },
-        "Transform": {
-            "Mirror": {
-                "X": false,
-                "Y": false,
-                "Z": false
-            },
-            "Parent": "Player1 Camera",
-            "Position": {
-                "X": 0.0,
-                "Y": 0.0,
-                "Z": -0.019999999552965164
-            },
-            "Rotation": {
-                "qW": 1.0,
-                "qX": 0.0,
-                "qY": 0.0,
-                "qZ": 0.0
-            },
-            "Scale": {
-                "X": 0.009999999776482582,
-                "Y": 0.009999999776482582,
-                "Z": 0.009999999776482582
-            }
-        }
-    },
     "Player1 Blue": {
         "Collidable": {
             "Shapes": [
@@ -15600,8 +15842,8 @@
                 "Alias": "Character Short Blue"
             },
             "Mesh": {
-                "Alias": "character",
-                "FilePath": "res\\assets\\models\\character.obj"
+                "Alias": "pirate_short",
+                "FilePath": "res\\assets\\models\\Animation\\Character\\pirate_short.fbx"
             }
         },
         "RigidBody": {
@@ -15610,6 +15852,14 @@
             "Mask": 1,
             "Mass": 5.0,
             "Properties": 126
+        },
+        "SkeletonAnimatable": {
+            "Animation": "Reference Pose",
+            "Loop": true,
+            "Play": true,
+            "Reverse": false,
+            "Time": 0.0,
+            "TimeScale": 1.0
         },
         "Transform": {
             "Mirror": {
@@ -15673,6 +15923,98 @@
             }
         }
     },
+    "Player1 LeftArm": {
+        "Renderable": {
+            "CastShadows": false,
+            "CullingMask": 1,
+            "Enabled": true,
+            "Material": {
+                "Alias": "Charactter Tall Blue"
+            },
+            "Mesh": {
+                "Alias": "LeftArm",
+                "FilePath": "res\\assets\\models\\Animation\\Character\\LeftArm.fbx"
+            }
+        },
+        "SkeletonAnimatable": {
+            "Animation": "Idle_L",
+            "Loop": true,
+            "Play": true,
+            "Reverse": false,
+            "Time": 0.0,
+            "TimeScale": 1.0
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Parent": "Player1 Camera",
+            "Position": {
+                "X": 0.0,
+                "Y": 0.0,
+                "Z": -0.019999999552965164
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 0.009999999776482582,
+                "Y": 0.009999999776482582,
+                "Z": 0.009999999776482582
+            }
+        }
+    },
+    "Player1 RightArm": {
+        "Renderable": {
+            "CastShadows": false,
+            "CullingMask": 1,
+            "Enabled": true,
+            "Material": {
+                "Alias": "Charactter Tall Blue"
+            },
+            "Mesh": {
+                "Alias": "RightArm",
+                "FilePath": "res\\assets\\models\\Animation\\Character\\RightArm.fbx"
+            }
+        },
+        "SkeletonAnimatable": {
+            "Animation": "Idle_R",
+            "Loop": true,
+            "Play": true,
+            "Reverse": false,
+            "Time": 0.0,
+            "TimeScale": 1.0
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Parent": "Player1 Camera",
+            "Position": {
+                "X": 0.0,
+                "Y": 0.0,
+                "Z": -0.019999999552965164
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 0.009999999776482582,
+                "Y": 0.009999999776482582,
+                "Z": 0.009999999776482582
+            }
+        }
+    },
     "Player1UI": {
         "Transform": {
             "Mirror": {
@@ -15696,44 +16038,6 @@
                 "X": 1.0000001192092896,
                 "Y": 1.0000001192092896,
                 "Z": 1.0
-            }
-        }
-    },
-    "Player2 Arms": {
-        "Renderable": {
-            "CastShadows": false,
-            "CullingMask": 2,
-            "Enabled": true,
-            "Material": {
-                "Alias": "Character Tall Red"
-            },
-            "Mesh": {
-                "Alias": "Firstperson_Mesh",
-                "FilePath": "res\\assets\\models\\Firstperson_Mesh.obj"
-            }
-        },
-        "Transform": {
-            "Mirror": {
-                "X": false,
-                "Y": false,
-                "Z": false
-            },
-            "Parent": "Player2 Camera",
-            "Position": {
-                "X": 0.0,
-                "Y": 0.0,
-                "Z": -0.019999999552965164
-            },
-            "Rotation": {
-                "qW": 1.0,
-                "qX": 0.0,
-                "qY": -0.0,
-                "qZ": -1.2432549738150556e-05
-            },
-            "Scale": {
-                "X": 0.009999999776482582,
-                "Y": 0.009999999776482582,
-                "Z": 0.009999999776482582
             }
         }
     },
@@ -15774,6 +16078,52 @@
             }
         }
     },
+    "Player2 LeftArm": {
+        "Renderable": {
+            "CastShadows": false,
+            "CullingMask": 2,
+            "Enabled": true,
+            "Material": {
+                "Alias": "Character Tall Red"
+            },
+            "Mesh": {
+                "Alias": "LeftArm",
+                "FilePath": "res\\assets\\models\\Animation\\Character\\LeftArm.fbx"
+            }
+        },
+        "SkeletonAnimatable": {
+            "Animation": "Idle_L",
+            "Loop": true,
+            "Play": true,
+            "Reverse": false,
+            "Time": 2.109999895095825,
+            "TimeScale": 1.0
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Parent": "Player2 Camera",
+            "Position": {
+                "X": 0.0,
+                "Y": 0.0,
+                "Z": -0.019999999552965164
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": -0.0,
+                "qZ": -1.2432549738150556e-05
+            },
+            "Scale": {
+                "X": 0.009999999776482582,
+                "Y": 0.009999999776482582,
+                "Z": 0.009999999776482582
+            }
+        }
+    },
     "Player2 Red": {
         "Collidable": {
             "Shapes": [
@@ -15799,8 +16149,8 @@
                 "Alias": "Character Short Red"
             },
             "Mesh": {
-                "Alias": "character",
-                "FilePath": "res\\assets\\models\\character.obj"
+                "Alias": "pirate_short",
+                "FilePath": "res\\assets\\models\\Animation\\Character\\pirate_short.fbx"
             }
         },
         "RigidBody": {
@@ -15809,6 +16159,14 @@
             "Mask": 1,
             "Mass": 5.0,
             "Properties": 126
+        },
+        "SkeletonAnimatable": {
+            "Animation": "Reference Pose",
+            "Loop": true,
+            "Play": true,
+            "Reverse": false,
+            "Time": 0.0,
+            "TimeScale": 1.0
         },
         "Transform": {
             "Mirror": {
@@ -15832,6 +16190,52 @@
                 "X": 1.0,
                 "Y": 1.0,
                 "Z": 1.0
+            }
+        }
+    },
+    "Player2 RightArm": {
+        "Renderable": {
+            "CastShadows": false,
+            "CullingMask": 2,
+            "Enabled": true,
+            "Material": {
+                "Alias": "Character Tall Red"
+            },
+            "Mesh": {
+                "Alias": "RightArm",
+                "FilePath": "res\\assets\\models\\Animation\\Character\\RightArm.fbx"
+            }
+        },
+        "SkeletonAnimatable": {
+            "Animation": "Idle_R",
+            "Loop": true,
+            "Play": true,
+            "Reverse": false,
+            "Time": 2.109999895095825,
+            "TimeScale": 1.0
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Parent": "Player2 Camera",
+            "Position": {
+                "X": 0.0,
+                "Y": -1.1920928955078125e-07,
+                "Z": -0.020000457763671875
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": -0.0,
+                "qZ": -1.2432549738150556e-05
+            },
+            "Scale": {
+                "X": 0.009999999776482582,
+                "Y": 0.009999999776482582,
+                "Z": 0.009999999776482582
             }
         }
     },
@@ -15861,44 +16265,6 @@
             }
         }
     },
-    "Player3 Arms": {
-        "Renderable": {
-            "CastShadows": false,
-            "CullingMask": 4,
-            "Enabled": true,
-            "Material": {
-                "Alias": "Character Tall Blue"
-            },
-            "Mesh": {
-                "Alias": "Firstperson_Mesh",
-                "FilePath": "res\\assets\\models\\Firstperson_Mesh.obj"
-            }
-        },
-        "Transform": {
-            "Mirror": {
-                "X": false,
-                "Y": false,
-                "Z": false
-            },
-            "Parent": "Player3 Camera",
-            "Position": {
-                "X": 0.0,
-                "Y": 0.0,
-                "Z": -0.019999999552965164
-            },
-            "Rotation": {
-                "qW": 1.0,
-                "qX": 0.0,
-                "qY": 0.0,
-                "qZ": 0.0
-            },
-            "Scale": {
-                "X": 0.010000001639127731,
-                "Y": 0.009999999776482582,
-                "Z": 0.010000001639127731
-            }
-        }
-    },
     "Player3 Blue": {
         "Collidable": {
             "Shapes": [
@@ -15921,11 +16287,11 @@
             "CullingMask": 4294967291,
             "Enabled": true,
             "Material": {
-                "Alias": "Character Tall Blue"
+                "Alias": "Charactter Tall Blue"
             },
             "Mesh": {
-                "Alias": "characterTall",
-                "FilePath": "res\\assets\\models\\characterTall.obj"
+                "Alias": "pirate_tall",
+                "FilePath": "res\\assets\\models\\Animation\\Character\\pirate_tall.fbx"
             }
         },
         "RigidBody": {
@@ -15934,6 +16300,14 @@
             "Mask": 1,
             "Mass": 5.0,
             "Properties": 126
+        },
+        "SkeletonAnimatable": {
+            "Animation": "Reference Pose",
+            "Loop": true,
+            "Play": true,
+            "Reverse": false,
+            "Time": 0.0,
+            "TimeScale": 1.0
         },
         "Transform": {
             "Mirror": {
@@ -15997,6 +16371,98 @@
             }
         }
     },
+    "Player3 LeftArm": {
+        "Renderable": {
+            "CastShadows": false,
+            "CullingMask": 4,
+            "Enabled": true,
+            "Material": {
+                "Alias": "Charactter Tall Blue"
+            },
+            "Mesh": {
+                "Alias": "LeftArm",
+                "FilePath": "res\\assets\\models\\Animation\\Character\\LeftArm.fbx"
+            }
+        },
+        "SkeletonAnimatable": {
+            "Animation": "Idle_L",
+            "Loop": true,
+            "Play": true,
+            "Reverse": false,
+            "Time": 0.3400000035762787,
+            "TimeScale": 1.0
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Parent": "Player3 Camera",
+            "Position": {
+                "X": 0.0,
+                "Y": 0.0,
+                "Z": -0.019999999552965164
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 0.010000001639127731,
+                "Y": 0.009999999776482582,
+                "Z": 0.010000001639127731
+            }
+        }
+    },
+    "Player3 RightArm": {
+        "Renderable": {
+            "CastShadows": false,
+            "CullingMask": 4,
+            "Enabled": true,
+            "Material": {
+                "Alias": "Charactter Tall Blue"
+            },
+            "Mesh": {
+                "Alias": "RightArm",
+                "FilePath": "res\\assets\\models\\Animation\\Character\\RightArm.fbx"
+            }
+        },
+        "SkeletonAnimatable": {
+            "Animation": "Idle_R",
+            "Loop": true,
+            "Play": true,
+            "Reverse": false,
+            "Time": 0.3400000035762787,
+            "TimeScale": 1.0
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Parent": "Player3 Camera",
+            "Position": {
+                "X": 0.0,
+                "Y": 0.0,
+                "Z": -0.019999999552965164
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 0.010000001639127731,
+                "Y": 0.009999999776482582,
+                "Z": 0.010000001639127731
+            }
+        }
+    },
     "Player3UI": {
         "Transform": {
             "Mirror": {
@@ -16020,44 +16486,6 @@
                 "X": 1.0000001192092896,
                 "Y": 1.0000001192092896,
                 "Z": 1.0
-            }
-        }
-    },
-    "Player4 Arms": {
-        "Renderable": {
-            "CastShadows": false,
-            "CullingMask": 8,
-            "Enabled": true,
-            "Material": {
-                "Alias": "Character Tall Red"
-            },
-            "Mesh": {
-                "Alias": "Firstperson_Mesh",
-                "FilePath": "res\\assets\\models\\Firstperson_Mesh.obj"
-            }
-        },
-        "Transform": {
-            "Mirror": {
-                "X": false,
-                "Y": false,
-                "Z": false
-            },
-            "Parent": "Player4 Camera",
-            "Position": {
-                "X": 0.0,
-                "Y": 0.0,
-                "Z": -0.019999999552965164
-            },
-            "Rotation": {
-                "qW": 1.0,
-                "qX": 0.0,
-                "qY": 0.0,
-                "qZ": 0.0
-            },
-            "Scale": {
-                "X": 0.009999999776482582,
-                "Y": 0.009999999776482582,
-                "Z": 0.009999999776482582
             }
         }
     },
@@ -16098,6 +16526,52 @@
             }
         }
     },
+    "Player4 LeftArm": {
+        "Renderable": {
+            "CastShadows": false,
+            "CullingMask": 8,
+            "Enabled": true,
+            "Material": {
+                "Alias": "Character Tall Red"
+            },
+            "Mesh": {
+                "Alias": "LeftArm",
+                "FilePath": "res\\assets\\models\\Animation\\Character\\LeftArm.fbx"
+            }
+        },
+        "SkeletonAnimatable": {
+            "Animation": "Idle_L",
+            "Loop": true,
+            "Play": true,
+            "Reverse": false,
+            "Time": 0.9399999976158142,
+            "TimeScale": 1.0
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Parent": "Player4 Camera",
+            "Position": {
+                "X": 0.0,
+                "Y": 0.0,
+                "Z": -0.019999999552965164
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 0.009999999776482582,
+                "Y": 0.009999999776482582,
+                "Z": 0.009999999776482582
+            }
+        }
+    },
     "Player4 Red": {
         "Collidable": {
             "Shapes": [
@@ -16123,8 +16597,8 @@
                 "Alias": "Character Tall Red"
             },
             "Mesh": {
-                "Alias": "characterTall",
-                "FilePath": "res\\assets\\models\\characterTall.obj"
+                "Alias": "pirate_tall",
+                "FilePath": "res\\assets\\models\\Animation\\Character\\pirate_tall.fbx"
             }
         },
         "RigidBody": {
@@ -16133,6 +16607,14 @@
             "Mask": 1,
             "Mass": 5.0,
             "Properties": 126
+        },
+        "SkeletonAnimatable": {
+            "Animation": "Reference Pose",
+            "Loop": true,
+            "Play": true,
+            "Reverse": false,
+            "Time": 0.0,
+            "TimeScale": 1.0
         },
         "Transform": {
             "Mirror": {
@@ -16156,6 +16638,52 @@
                 "X": 1.0,
                 "Y": 1.0,
                 "Z": 1.0
+            }
+        }
+    },
+    "Player4 RightArm": {
+        "Renderable": {
+            "CastShadows": false,
+            "CullingMask": 8,
+            "Enabled": true,
+            "Material": {
+                "Alias": "Character Tall Red"
+            },
+            "Mesh": {
+                "Alias": "RightArm",
+                "FilePath": "res\\assets\\models\\Animation\\Character\\RightArm.fbx"
+            }
+        },
+        "SkeletonAnimatable": {
+            "Animation": "Idle_R",
+            "Loop": true,
+            "Play": true,
+            "Reverse": false,
+            "Time": 0.9399999976158142,
+            "TimeScale": 1.0
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Parent": "Player4 Camera",
+            "Position": {
+                "X": 0.0,
+                "Y": 0.0,
+                "Z": -0.019999999552965164
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 0.009999999776482582,
+                "Y": 0.009999999776482582,
+                "Z": 0.009999999776482582
             }
         }
     },
@@ -20119,6 +20647,246 @@
                 "X": 1.0,
                 "Y": 1.0,
                 "Z": 1.0
+            }
+        }
+    },
+    "TargetL1": {
+        "BoneTarget": {
+            "Bone": "L_Hand",
+            "Target": "Player1 LeftArm"
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Parent": "Player1 LeftArm",
+            "Position": {
+                "X": -18.42880630493164,
+                "Y": -15.666675567626953,
+                "Z": -26.04924201965332
+            },
+            "Rotation": {
+                "qW": 0.6158649325370789,
+                "qX": -0.4770497679710388,
+                "qY": 0.48233428597450256,
+                "qZ": -0.4006090760231018
+            },
+            "Scale": {
+                "X": 10.000001907348633,
+                "Y": 10.000000953674316,
+                "Z": 10.000001907348633
+            }
+        }
+    },
+    "TargetL2": {
+        "BoneTarget": {
+            "Bone": "L_Hand",
+            "Target": "Player2 LeftArm"
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Parent": "Player2 LeftArm",
+            "Position": {
+                "X": -19.059648513793945,
+                "Y": -17.092002868652344,
+                "Z": -25.739309310913086
+            },
+            "Rotation": {
+                "qW": 0.5999224185943604,
+                "qX": -0.500030517578125,
+                "qY": 0.47805851697921753,
+                "qZ": -0.4018987715244293
+            },
+            "Scale": {
+                "X": 10.0,
+                "Y": 10.000001907348633,
+                "Z": 10.000004768371582
+            }
+        }
+    },
+    "TargetL3": {
+        "BoneTarget": {
+            "Bone": "L_Hand",
+            "Target": "Player3 LeftArm"
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Parent": "Player3 LeftArm",
+            "Position": {
+                "X": -18.374082565307617,
+                "Y": -15.678068161010742,
+                "Z": -26.01872444152832
+            },
+            "Rotation": {
+                "qW": 0.6163047552108765,
+                "qX": -0.4765644073486328,
+                "qY": 0.4818347990512848,
+                "qZ": -0.40111100673675537
+            },
+            "Scale": {
+                "X": 10.0,
+                "Y": 9.999999046325684,
+                "Z": 10.000001907348633
+            }
+        }
+    },
+    "TargetL4": {
+        "BoneTarget": {
+            "Bone": "L_Hand",
+            "Target": "Player4 LeftArm"
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Parent": "Player4 LeftArm",
+            "Position": {
+                "X": -18.14105224609375,
+                "Y": -16.59421157836914,
+                "Z": -25.408214569091797
+            },
+            "Rotation": {
+                "qW": 0.6136925220489502,
+                "qX": -0.48508718609809875,
+                "qY": 0.47379907965660095,
+                "qZ": -0.40445804595947266
+            },
+            "Scale": {
+                "X": 10.0,
+                "Y": 10.000001907348633,
+                "Z": 10.000003814697266
+            }
+        }
+    },
+    "TargetR1": {
+        "BoneTarget": {
+            "Bone": "R_Hand",
+            "Target": "Player1 RightArm"
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Parent": "Player1 RightArm",
+            "Position": {
+                "X": 20.10292625427246,
+                "Y": -16.82154083251953,
+                "Z": -29.26232147216797
+            },
+            "Rotation": {
+                "qW": 0.5598136782646179,
+                "qX": -0.46881377696990967,
+                "qY": -0.49998801946640015,
+                "qZ": 0.4656548500061035
+            },
+            "Scale": {
+                "X": 10.0,
+                "Y": 10.0,
+                "Z": 10.0
+            }
+        }
+    },
+    "TargetR2": {
+        "BoneTarget": {
+            "Bone": "R_Hand",
+            "Target": "Player2 RightArm"
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Parent": "Player2 RightArm",
+            "Position": {
+                "X": 20.709945678710938,
+                "Y": -16.717498779296875,
+                "Z": -29.600021362304688
+            },
+            "Rotation": {
+                "qW": 0.5775780081748962,
+                "qX": -0.4488072693347931,
+                "qY": -0.5486305952072144,
+                "qZ": 0.40494489669799805
+            },
+            "Scale": {
+                "X": 9.999999046325684,
+                "Y": 10.0,
+                "Z": 10.000001907348633
+            }
+        }
+    },
+    "TargetR3": {
+        "BoneTarget": {
+            "Bone": "R_Hand",
+            "Target": "Player3 RightArm"
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Parent": "Player3 RightArm",
+            "Position": {
+                "X": 20.48725700378418,
+                "Y": -16.87006378173828,
+                "Z": -29.160919189453125
+            },
+            "Rotation": {
+                "qW": 0.5582185983657837,
+                "qX": -0.47394368052482605,
+                "qY": -0.5022584199905396,
+                "qZ": 0.45989787578582764
+            },
+            "Scale": {
+                "X": 10.0,
+                "Y": 9.999998092651367,
+                "Z": 9.999998092651367
+            }
+        }
+    },
+    "TargetR4": {
+        "BoneTarget": {
+            "Bone": "R_Hand",
+            "Target": "Player4 RightArm"
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Parent": "Player4 RightArm",
+            "Position": {
+                "X": 21.07851219177246,
+                "Y": -16.918533325195313,
+                "Z": -29.376419067382813
+            },
+            "Rotation": {
+                "qW": 0.5544847249984741,
+                "qX": -0.48546740412712097,
+                "qY": -0.5111175179481506,
+                "qZ": 0.4422975778579712
+            },
+            "Scale": {
+                "X": 9.999999046325684,
+                "Y": 10.0,
+                "Z": 10.000000953674316
             }
         }
     },
