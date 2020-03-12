@@ -3,6 +3,7 @@
 #include <Oyl3D.h>
 #include "CustomComponents.h"
 #include "CustomEvents.h"
+#include "ScrollingTextureLayer.h"
 
 class MainMenuLayer : public oyl::Layer
 {
@@ -31,5 +32,6 @@ public:
 	virtual void onEnter() override
 	{
 		pushLayer(MainMenuLayer::create());
+		pushLayer(ScrollingTextureLayer::create());
 	}
 };

@@ -15,5 +15,4 @@ private:
 	void onExit() override;
 	void onUpdate() override;
 	bool onEvent(const Event& event) override;
-	
 };
