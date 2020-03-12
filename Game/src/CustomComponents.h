@@ -88,6 +88,7 @@ enum class ReticleType
 enum class MenuOption
 {
 	playGame,
+	tutorial,
 	controls,
 	settings,
 	credits,
@@ -96,7 +97,8 @@ enum class MenuOption
 	pause,
 	resume,
 	playAgain,
-	goToMainMenu
+	goToMainMenu,
+	sensitivityKnob
 };
 
 
@@ -351,4 +353,9 @@ struct GarbageMeterDisplay
 struct MenuItem
 {
 	MenuOption type;
+};
+
+struct SensitivityKnob
+{
+	int controllerNum;
 };

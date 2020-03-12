@@ -62,7 +62,15 @@ void CannonballSystem::onUpdate()
 			if (cannonball.interpolationParam >= 1.0f)
 			{
 				if (cannonball.currentSplineIndex >= cannonball.splineFollowedWhenFired.size() - 3)
-					registry->destroy(cannonballEntity);
+				{
+					cannonball.interpolationParam = 0.0f;
+
+					cannonball.isBeingFired            = false;
+					cannonballCarryable.isActive       = false;
+					cannonballCarryable.hasBeenCarried = false;
+
+					cannonballTransform.setPosition(glm::vec3(0.0f, -999.0f, 0.0f));
+				}
 				else
 				{
 					cannonball.currentSplineIndex++;

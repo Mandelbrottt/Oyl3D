@@ -1,9 +1,13 @@
 #include <Oyl3D.h>
 
+#include "PersistentVariables.h"
+
 #include "MainGameObjectsInit.h"
 #include "MainMenu.h"
 #include "ControlsScreenScene.h"
+#include "SettingsMenu.h"
 #include "GameEndMenu.h"
+
 #include "PlayerSystem.h"
 #include "CannonSystem.h"
 #include "CustomComponents.h"
@@ -658,7 +662,10 @@ public:
 				//camera movement
 				glm::vec2 rightStick = Input::getGamepadRightStick(player.controllerNum);
 
-				playerTransform.rotate(glm::vec3(0.0f, -rightStick.x * 200.0f * 0.016f, 0.0f));
+				playerTransform.rotate(glm::vec3(
+					0.0f, 
+					-rightStick.x * (100.0f + (PersistentVariables::controllerSensitivities[player.controllerNum] * 45.0f)) * 0.016f, 
+					0.0f));
 
 				if (player.yRotationClamp > 1)
 				{
@@ -680,7 +687,10 @@ public:
 					if (cameraTransform.getParentEntity() != playerEntity)
 						continue;
 
-					cameraTransform.rotate(glm::vec3(-rightStick.y * 200.0f * 0.016f, 0.0f, 0.0f));
+					cameraTransform.rotate(glm::vec3(
+						-rightStick.y * (100.0f + (PersistentVariables::controllerSensitivities[player.controllerNum] * 45.0f)) * 0.016f,
+						0.0f, 
+						0.0f));
 
 					//clamp camera up/down rotation
 					float cameraRotationClampValueX = 70.0f;
@@ -1026,6 +1036,7 @@ public:
     {
 		registerScene<MainMenuScene>();
 		registerScene<ControlsScreenScene>();
+		registerScene<SettingsMenuScene>();
         registerScene<MainScene>();
 		registerScene<GameEndScene>();
     }

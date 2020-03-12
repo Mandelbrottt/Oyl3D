@@ -1140,7 +1140,7 @@ void MainGameObjectsInitLayer::onEnter()
 			entt::entity bottleSpawnerEntity = registry->create();
 
 			auto& spawner = registry->assign<RespawnManager>(bottleSpawnerEntity);
-			spawner.respawnTimerDuration = 3.0f;
+			spawner.respawnTimerDuration = 30.0f;
 			spawner.type = CarryableItemType::throwableBottle;
 			spawner.team = Team::neutral;
 			spawner.entityPrefab = registry->create();

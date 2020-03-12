@@ -723,8 +723,6 @@ void PlayerInteractionValidationSystem::performCarryableItemInteraction(entt::en
 			itemNewPosition = glm::vec3(-0.35f, 0.37f, -0.67f);
 			itemNewRotation = glm::vec3(0.0f, 0.0f, 0.0f);
 
-			registry->get<component::Renderable>(a_carryableItemEntity).cullingMask = !(0b1 << (uint)player.playerNum);
-
 			break;
 		}
 		case CarryableItemType::gloop:
@@ -758,6 +756,8 @@ void PlayerInteractionValidationSystem::performCarryableItemInteraction(entt::en
 	//remove rigidbody when item is carried
 	if (registry->has<component::RigidBody>(a_carryableItemEntity))
 		registry->remove<component::RigidBody>(a_carryableItemEntity);
+
+	registry->get<component::Renderable>(a_carryableItemEntity).cullingMask = ~(0b0001 << (uint)player.playerNum);
 
 	carryableItem.isBeingCarried = true;
 	carryableItem.hasBeenCarried = true;
@@ -1061,8 +1061,6 @@ void PlayerInteractionValidationSystem::dropPlayerCarriedItems(entt::entity a_pl
 
 				droppedItemEvent.itemClassificationToDrop = PlayerItemClassification::secondary;
 
-				registry->get<component::Renderable>(carriedItemEntity).cullingMask = 0b1111;
-
 				break;
 			}
 			case CarryableItemType::gloop:
@@ -1096,6 +1094,8 @@ void PlayerInteractionValidationSystem::dropPlayerCarriedItems(entt::entity a_pl
 
 		carriedItemTransform.setPosition(newPosition);
 		carriedItemTransform.setRotationEuler(newRotation);
+
+		registry->get<component::Renderable>(carriedItemEntity).cullingMask = 0b1111;
 	}
 }
 #pragma endregion

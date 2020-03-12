@@ -25,6 +25,8 @@ void GameOverCheckSystem::onUpdate()
 
 			isGameOver = true;
 		}
+
+		return;
 	}
 
 	int numMaxedPilesBlueTeam = 0;
