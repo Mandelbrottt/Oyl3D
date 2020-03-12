@@ -45,8 +45,6 @@ void GameEndLayer::onEnter()
 			gui.texture = Texture2D::get("res/assets/textures/menus/RedWins.png");
 		else //tie game
 			gui.texture = Texture2D::get("res/assets/textures/menus/Draw.png");
-
-		this->gameResultImageEntity = e;
 	}
 
 	{
@@ -88,14 +86,21 @@ void GameEndLayer::onUpdate()
 {
 	changeMenuOptionCountdown -= Time::deltaTime();
 
-	auto& gameResultGui = registry->get<component::GuiRenderable>(this->gameResultImageEntity);
+	auto guiView = registry->view<component::EntityInfo, component::GuiRenderable>();
+	for (auto& guiEntity : guiView)
+	{
+		if (registry->get<component::EntityInfo>(guiEntity).name == "Game End Background")
+		{
+			auto& gameResultGui = registry->get<component::GuiRenderable>(guiEntity);
 
-	if (PersistentVariables::gameResult == GameEndResult::blueWin)
-		gameResultGui.texture = Texture2D::get("BlueWins");
-	else if (PersistentVariables::gameResult == GameEndResult::redWin)
-		gameResultGui.texture = Texture2D::get("RedWins");
-	else //tie game
-		gameResultGui.texture = Texture2D::get("Draw");
+			if (PersistentVariables::gameResult == GameEndResult::blueWin)
+				gameResultGui.texture = Texture2D::get("BlueWins");
+			else if (PersistentVariables::gameResult == GameEndResult::redWin)
+				gameResultGui.texture = Texture2D::get("RedWins");
+			else //tie game
+				gameResultGui.texture = Texture2D::get("Draw");
+		}
+	}
 
 	auto menuItemsView = registry->view<MenuItem>();
 	for (auto& menuItemEntity : menuItemsView)
