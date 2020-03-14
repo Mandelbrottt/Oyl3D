@@ -318,7 +318,9 @@ bool AnimationManager::onEvent(const Event& event)
 				playerArmLObject = child;
 
 		//reset left arm components TODO: MAKE THIS THE ACTUAL USE ANIMATION AND THEN LINK IT BACK TO THE IDLE OR WHATEVER THIS IS TEMP FOR THE EXPO
-		registry->get<component::SkeletonAnimatable>(playerArmL).animation = "Idle_L";
+		registry->get<component::SkeletonAnimatable>(playerArmL).time = 0.01f;
+		registry->get<component::SkeletonAnimatable>(playerArmL).loop = false;
+		registry->get<component::SkeletonAnimatable>(playerArmL).animation = "PiraxUse_L";
 		registry->get<component::Transform>(playerArmLObject).setPosition(glm::vec3(0.0f));
 		registry->get<component::Transform>(playerArmLObject).setRotationEuler(glm::vec3(0.0f));
 		registry->get<component::Transform>(playerArmLObject).setScale(glm::vec3(0.0f));
@@ -416,7 +418,8 @@ bool AnimationManager::onEvent(const Event& event)
 				playerArmRObject = child;
 
 		//reset left arm components TODO: MAKE THIS THE ACTUAL USE ANIMATION AND THEN LINK IT BACK TO THE IDLE OR WHATEVER THIS IS TEMP FOR THE EXPO
-		registry->get<component::SkeletonAnimatable>(playerArmR).animation = "Idle_R";
+		registry->get<component::SkeletonAnimatable>(playerArmR).time = 0.01f;
+		registry->get<component::SkeletonAnimatable>(playerArmR).animation = "ThrowableUse_R";
 		registry->get<component::Transform>(playerArmRObject).setPosition(glm::vec3(0.0f));
 		registry->get<component::Transform>(playerArmRObject).setRotationEuler(glm::vec3(0.0f));
 		registry->get<component::Transform>(playerArmRObject).setScale(glm::vec3(0.0f));
