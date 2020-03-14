@@ -208,6 +208,8 @@ void CannonballSystem::setCannonballToCarriedForPlayer(entt::entity a_playerEnti
 
 	cannonballTransform.setRotationEuler(glm::vec3(0.0f));
 	cannonballTransform.setPosition(glm::vec3(0.0f, 0.3f, -0.8f));
+
+	registry->get<component::Renderable>(a_cannonballEntity).cullingMask = ~(0b0001 << (uint)player.playerNum); //TODO: REMOVE ONCE 3PP ANIMATIONS ARE IN
 }
 
 void CannonballSystem::initFiringSplines()

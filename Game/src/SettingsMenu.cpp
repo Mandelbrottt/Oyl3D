@@ -35,6 +35,20 @@ void SettingsMenuLayer::onEnter()
 		gui.texture = Texture2D::cache("res/assets/textures/menus/SettingsBackground.png");
 	}
 
+	{
+		auto e = registry->create();
+
+		auto& t = registry->assign<component::Transform>(e);
+		t.setPosition(glm::vec3(0.0f, 4.22f, -10.0f));
+		t.setScale(glm::vec3(2.0f, 2.0f, 1.0f));
+
+		auto& so = registry->assign<component::EntityInfo>(e);
+		so.name = "Controller Sensitivities Title";
+
+		auto& gui = registry->assign<component::GuiRenderable>(e);
+		gui.texture = Texture2D::cache("res/assets/textures/menus/ControllerSensitivitiesTitle.png");
+	}
+
 	for (int i = 0; i < 4; i++)
 	{
 		{
@@ -44,8 +58,8 @@ void SettingsMenuLayer::onEnter()
 			knob.controllerNum = i;
 
 			auto& t = registry->assign<component::Transform>(e);
-			t.setPosition(glm::vec3(1.0f, 4.0f - (i * 2.0f), -20.0f));
-			t.setScale(glm::vec3(1.3f, 1.3f, 1.0f));
+			t.setPosition(glm::vec3(1.0f, 2.2f - (i * 1.6f), -20.0f));
+			t.setScale(glm::vec3(1.1f, 1.1f, 1.0f));
 
 			auto& so = registry->assign<component::EntityInfo>(e);
 			so.name = "Sensitivity Knob " + std::to_string(i + 1);
@@ -57,8 +71,8 @@ void SettingsMenuLayer::onEnter()
 			auto e = registry->create();
 
 			auto& t = registry->assign<component::Transform>(e);
-			t.setPosition(glm::vec3(1.0f, 4.0f - (i * 2.0f), -15.0f));
-			t.setScale(glm::vec3(2.0f, 1.0f, 1.0f));
+			t.setPosition(glm::vec3(1.0f, 2.2f - (i * 1.6f), -15.0f));
+			t.setScale(glm::vec3(2.0f, 0.7f, 1.0f));
 
 			auto& so = registry->assign<component::EntityInfo>(e);
 			so.name = "Sensitivity Slider " + std::to_string(i + 1);
@@ -70,7 +84,7 @@ void SettingsMenuLayer::onEnter()
 			auto e = registry->create();
 
 			auto& t = registry->assign<component::Transform>(e);
-			t.setPosition(glm::vec3(-7.3f, 4.0f - (i * 2.0f), -10.0f));
+			t.setPosition(glm::vec3(-7.3f, 2.2f - (i * 1.6f), -10.0f));
 			t.setScale(glm::vec3(1.0f, 1.0f, 1.0f));
 
 			auto& so = registry->assign<component::EntityInfo>(e);
@@ -87,7 +101,7 @@ void SettingsMenuLayer::onEnter()
 		auto& menuItem = registry->assign<MenuItem>(e);
 
 		auto& t = registry->assign<component::Transform>(e);
-		t.setPosition(glm::vec3(-6.45f, -3.8f, -1.0f));
+		t.setPosition(glm::vec3(-6.75f, -4.1f, -1.0f));
 		t.setScale(glm::vec3(1.2f, 1.2f, 1.0f));
 
 		auto& so = registry->assign<component::EntityInfo>(e);

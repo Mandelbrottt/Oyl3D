@@ -757,7 +757,7 @@ void PlayerInteractionValidationSystem::performCarryableItemInteraction(entt::en
 	if (registry->has<component::RigidBody>(a_carryableItemEntity))
 		registry->remove<component::RigidBody>(a_carryableItemEntity);
 
-	registry->get<component::Renderable>(a_carryableItemEntity).cullingMask = ~(0b0001 << (uint)player.playerNum);
+	registry->get<component::Renderable>(a_carryableItemEntity).cullingMask = ~(0b0001 << (uint)player.playerNum); //TODO: REMOVE ONCE 3PP ANIMATIONS ARE IN
 
 	carryableItem.isBeingCarried = true;
 	carryableItem.hasBeenCarried = true;
@@ -899,6 +899,7 @@ void PlayerInteractionValidationSystem::performCannonInteraction(entt::entity a_
 			cannonLoaded.playerEntity = a_playerEntity;
 			postEvent(cannonLoaded);
 
+			registry->get<component::Renderable>(player.primaryCarriedItem).cullingMask = 0b1111; //TODO: REMOVE ONCE 3PP ANIMATIONS ARE IN
 			carriedItemTransform.setParent(entt::null);
 			player.primaryCarriedItem   = entt::null;
 			player.secondaryCarriedItem = entt::null;
@@ -1095,7 +1096,7 @@ void PlayerInteractionValidationSystem::dropPlayerCarriedItems(entt::entity a_pl
 		carriedItemTransform.setPosition(newPosition);
 		carriedItemTransform.setRotationEuler(newRotation);
 
-		registry->get<component::Renderable>(carriedItemEntity).cullingMask = 0b1111;
+		registry->get<component::Renderable>(carriedItemEntity).cullingMask = 0b1111; //TODO: REMOVE ONCE 3PP ANIMATIONS ARE IN
 	}
 }
 #pragma endregion
