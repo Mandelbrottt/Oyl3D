@@ -3,6 +3,7 @@
 #include "PersistentVariables.h"
 
 #include "MainGameObjectsInit.h"
+#include "SplashScreen.h"
 #include "MainMenu.h"
 #include "ControlsScreenScene.h"
 #include "SettingsMenu.h"
@@ -1045,6 +1046,7 @@ class Game : public oyl::Application
 public:
     Game()
     {
+		//registerScene<SplashScreenScene>();
 		registerScene<MainMenuScene>();
 		registerScene<ControlsScreenScene>();
 		registerScene<SettingsMenuScene>();
