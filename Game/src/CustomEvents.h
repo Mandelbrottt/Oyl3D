@@ -40,6 +40,7 @@ enum CustomEventTypes : int
 	TypeUseGloopRequest,
 	TypeGloopUsed,
 	TypeThrowBottle,
+	TypeThrowableBottleHit,
 	TypeActivateQuicktimeCleaningEvent,
 	TypeCancelQuicktimeCleaningEvent,
 	TypeStickMovedDuringQuicktimeCleaningEvent,
@@ -169,6 +170,12 @@ OYL_EVENT_STRUCT(ThrowBottleEvent, (oyl::EventType) TypeThrowBottle, (oyl::Event
 	{
 		entt::entity bottleEntity;
 		entt::entity playerThrowingEntity;
+	}); 
+
+OYL_EVENT_STRUCT(ThrowableBottleHitEvent, (oyl::EventType) TypeThrowableBottleHit, (oyl::EventCategory) CategoryThrowableBottle,
+	{
+		entt::entity bottleEntity;
+		bool hitPlayer;
 	});
 
 OYL_EVENT_STRUCT(ActivateQuicktimeCleaningEventEvent, (oyl::EventType) TypeActivateQuicktimeCleaningEvent, (oyl::EventCategory) CategoryQuicktimeCleaningEvent,
