@@ -1,4 +1,5 @@
 #include "PlayerInteractionValidation.h"
+#include "PersistentVariables.h"
 
 void PlayerInteractionValidationSystem::onEnter()
 {
@@ -649,7 +650,7 @@ void PlayerInteractionValidationSystem::performInteractionForPlayer(entt::entity
 	auto& player = registry->get<Player>(a_playerEntity);
 
 	//TODO: get rid of this for final version, it's only for testing. Mashing e will clean, only here so that you can still clean piles on KBM for testing
-	if (player.state == PlayerState::inCleaningQuicktimeEvent && player.playerNum == PlayerNumber::One)
+	if (player.state == PlayerState::inCleaningQuicktimeEvent && player.playerNum == PersistentVariables::activePlayerNum)
 	{
 		RequestToCleanGarbageEvent requestToCleanGarbage;
 		requestToCleanGarbage.garbagePileEntity = player.interactableEntity;
