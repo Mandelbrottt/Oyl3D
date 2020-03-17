@@ -66,6 +66,7 @@ bool ControlsScreenLayer::onEvent(const Event& event)
 
 		switch (evt.keycode)
 		{
+		case oyl::Key::Escape:
 		case oyl::Key::Backspace:
 		{
 			Application::get().changeScene("MainMenuScene");

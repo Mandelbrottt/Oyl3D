@@ -633,7 +633,7 @@ public:
 			//player movement
 			glm::vec3 desiredMoveDirection = glm::vec3(0.0f);
 
-			if (player.playerNum == PlayerNumber::One)
+			if (player.playerNum == PersistentVariables::activePlayerNum)
 			{
 				if (Input::isKeyPressed(Key::W))
 					desiredMoveDirection += playerTransform.getForward();
@@ -750,7 +750,7 @@ public:
 				auto playerView = registry->view<Player>();
 				for (entt::entity playerEntity : playerView)
 				{
-					if (registry->get<Player>(playerEntity).playerNum == PlayerNumber::One)
+					if (registry->get<Player>(playerEntity).playerNum == PersistentVariables::activePlayerNum)
 					{
 						PlayerInteractionRequestEvent playerInteractionRequest;
 						playerInteractionRequest.playerEntity           = playerEntity;
@@ -767,13 +767,24 @@ public:
 				auto playerView = registry->view<Player>();
 				for (entt::entity playerEntity : playerView)
 				{
-					if (registry->get<Player>(playerEntity).playerNum == PlayerNumber::One)
+					if (registry->get<Player>(playerEntity).playerNum == PersistentVariables::activePlayerNum)
 					{
 						CancelButtonPressedEvent cancelButtonPressed;
 						cancelButtonPressed.playerEntity = playerEntity;
 						postEvent(cancelButtonPressed);
 					}
 				}
+
+				break;
+			}
+
+			case oyl::Key::P:
+			{
+				//P key changes active player for KBM control TODO: remove for final version
+				if (PersistentVariables::activePlayerNum == PlayerNumber::Four)
+					PersistentVariables::activePlayerNum = PlayerNumber::One;
+				else
+					PersistentVariables::activePlayerNum = (PlayerNumber)((int)PersistentVariables::activePlayerNum + 1);
 
 				break;
 			}
@@ -806,7 +817,7 @@ public:
 				auto playerView = registry->view<Player>();
 				for (entt::entity playerEntity : playerView)
 				{
-					if (registry->get<Player>(playerEntity).playerNum == PlayerNumber::One)
+					if (registry->get<Player>(playerEntity).playerNum == PersistentVariables::activePlayerNum)
 					{
 						PlayerInteractionRequestEvent playerInteractionRequest;
 						playerInteractionRequest.playerEntity           = playerEntity;
@@ -827,7 +838,7 @@ public:
 				{
 					auto& player = registry->get<Player>(playerEntity);
 
-					if (player.playerNum == PlayerNumber::One)
+					if (player.playerNum == PersistentVariables::activePlayerNum)
 					{
 						PlayerJumpEvent playerJump;
 						playerJump.playerEntity = playerEntity;
@@ -966,7 +977,7 @@ public:
 				auto& player          = registry->get<Player>(playerEntity);
 				auto& playerTransform = registry->get<component::Transform>(playerEntity);
 
-				if (player.playerNum != PlayerNumber::One || player.isCameraLocked)
+				if (player.playerNum != PersistentVariables::activePlayerNum || player.isCameraLocked)
 					continue;
 
 				playerTransform.rotate(glm::vec3(0.0f, -evt.dx * 0.5f, 0.0f));
@@ -989,7 +1000,7 @@ public:
 				auto& camera          = registry->get<component::Camera>(cameraEntity);
 				auto& cameraTransform = registry->get<component::Transform>(cameraEntity);
 
-				if (camera.player != PlayerNumber::One)
+				if (camera.player != PersistentVariables::activePlayerNum)
 					continue;
 
 				cameraTransform.rotate(glm::vec3(-evt.dy * 0.5f, 0.0f, 0.0f));

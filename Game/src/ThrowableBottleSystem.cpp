@@ -131,6 +131,12 @@ bool ThrowableBottleSystem::onEvent(const Event& event)
 				else //no player involved in the collision
 				{
 					registry->destroy(bottleEntity); //the bottle breaks
+
+					ThrowableBottleHitEvent bottleHit;
+					bottleHit.bottleEntity = bottleEntity;
+					bottleHit.hitPlayer    = false;
+					postEvent(bottleHit);
+
 					break;
 				}
 
@@ -148,6 +154,11 @@ bool ThrowableBottleSystem::onEvent(const Event& event)
 					playerRB.addImpulse(forceDirection * 140.0f);
 
 					registry->destroy(bottleEntity); //the bottle breaks
+
+					ThrowableBottleHitEvent bottleHit;
+					bottleHit.bottleEntity = bottleEntity;
+					bottleHit.hitPlayer    = true;
+					postEvent(bottleHit);
 
 					//bottle stuns the player hit and makes them drop their carried items
 					PlayerDropItemRequestEvent playerDropItemRequest;
