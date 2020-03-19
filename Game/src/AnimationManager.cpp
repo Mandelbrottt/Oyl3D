@@ -379,9 +379,9 @@ bool AnimationManager::onEvent(const Event& event)
 		registry->get<component::SkeletonAnimatable>(playerArmL).time = 0.01f;
 		registry->get<component::SkeletonAnimatable>(playerArmL).loop = false;
 		registry->get<component::SkeletonAnimatable>(playerArmL).animation = "GloopUse_L";
-		//registry->get<component::Transform>(playerArmLObject).setPosition(glm::vec3(0.0f));
-		//registry->get<component::Transform>(playerArmLObject).setRotationEuler(glm::vec3(0.0f));
-		//registry->get<component::Transform>(playerArmLObject).setScale(glm::vec3(0.0f));
+		registry->get<component::Transform>(playerArmLObject).setRotationEuler(glm::vec3(0.0f));
+		registry->get<component::Transform>(playerArmLObject).setScale(glm::vec3(0.0f));
+		registry->get<component::Transform>(playerArmLObject).setPosition(glm::vec3(0.0f));
 
 		break;
 	}
