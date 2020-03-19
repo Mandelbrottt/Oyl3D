@@ -338,6 +338,54 @@ bool AnimationManager::onEvent(const Event& event)
 		break;
 	}
 
+	case (EventType)TypeGloopUsed:
+	{
+		OYL_LOG("INSIDE THE CLEANING SOLUTION USE");
+		auto evt = event_cast<GloopedUsedEvent>(event);
+		auto& playerTransform = registry->get<component::Transform>(evt.playerEntity);
+
+		//Objects that need to be modified
+		entt::entity playerCamera{};
+		entt::entity playerArmL{};
+		entt::entity playerArmLTarget{};
+		entt::entity playerArmLObject{};
+
+		//Getting the Camera
+		for (auto child : playerTransform.getChildrenEntities())
+			if (registry->has<component::Camera>(child))
+				playerCamera = child;
+
+		//Getting the individual arms
+		for (auto child : registry->get<component::Transform>(playerCamera).getChildrenEntities())
+		{
+			if (registry->get<component::EntityInfo>(child).name.find("Left") != std::string::npos)
+			{
+				playerArmL = child;
+				OYL_LOG("found left arm");
+			}
+		}
+
+		//Getting each hand target
+		for (auto child : registry->get<component::Transform>(playerArmL).getChildrenEntities())
+			if (registry->has<component::BoneTarget>(child))
+				playerArmLTarget = child;
+
+		//Getting each hand object
+		for (auto child : registry->get<component::Transform>(playerArmLTarget).getChildrenEntities())
+			if (registry->has<component::Renderable>(child))
+				playerArmLObject = child;
+
+		//reset left arm components TODO: MAKE THIS THE ACTUAL USE ANIMATION AND THEN LINK IT BACK TO THE IDLE OR WHATEVER THIS IS TEMP
+		registry->get<component::SkeletonAnimatable>(playerArmL).time = 0.01f;
+		registry->get<component::SkeletonAnimatable>(playerArmL).loop = false;
+		registry->get<component::SkeletonAnimatable>(playerArmL).animation = "GloopUse_L";
+		//registry->get<component::Transform>(playerArmLObject).setPosition(glm::vec3(0.0f));
+		//registry->get<component::Transform>(playerArmLObject).setRotationEuler(glm::vec3(0.0f));
+		//registry->get<component::Transform>(playerArmLObject).setScale(glm::vec3(0.0f));
+
+		break;
+	}
+
 	case (EventType)TypeCannonLoaded:
 	{
 		OYL_LOG("INSIDE LOADING THE CANNON");
