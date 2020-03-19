@@ -4,6 +4,9 @@
 #include "CustomComponents.h"
 #include "CustomEvents.h"
 
+#include "MainGameObjectsInit.h"
+#include "MainGameGuiInit.h"
+
 class TutorialLayer : public oyl::Layer
 {
 public:
@@ -26,5 +29,7 @@ public:
 	virtual void onEnter() override
 	{
 		pushLayer(TutorialLayer::create());
+		pushLayer(MainGameObjectsInitLayer::create());
+		pushLayer(MainGameGuiInitLayer::create());
 	}
 };

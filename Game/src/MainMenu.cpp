@@ -27,20 +27,6 @@ void MainMenuLayer::onEnter()
 		auto e = registry->create();
 
 		auto& t = registry->assign<component::Transform>(e);
-		t.setPosition(glm::vec3(0.0f, 0.0f, 0.0f));
-		t.setScale(glm::vec3(10.0f, 10.0f, 1.0f));
-
-		auto& so = registry->assign<component::EntityInfo>(e);
-		so.name = "Main Menu Background";
-
-		auto& gui = registry->assign<component::GuiRenderable>(e);
-		gui.texture = Texture2D::cache("res/assets/textures/menus/MainMenuBackground.png");
-	}
-
-	{
-		auto e = registry->create();
-
-		auto& t = registry->assign<component::Transform>(e);
 		t.setPosition(glm::vec3(0.0f, 3.65f, -1.0f));
 		t.setScale(glm::vec3(4.0f, 4.0f, 1.0f));
 
@@ -66,6 +52,23 @@ void MainMenuLayer::onEnter()
 
 		auto& gui = registry->assign<component::GuiRenderable>(e);
 		gui.texture = Texture2D::cache("res/assets/textures/menus/PlayGamePrompt.png");
+	}
+
+	{
+		auto e = registry->create();
+
+		auto& menuItem = registry->assign<MenuItem>(e);
+		menuItem.type = MenuOption::tutorial;
+
+		auto& t = registry->assign<component::Transform>(e);
+		t.setPosition(glm::vec3(0.0f, 0.2f, -1.0f));
+		t.setScale(glm::vec3(1.0f, 1.0f, 1.0f));
+
+		auto& so = registry->assign<component::EntityInfo>(e);
+		so.name = "Tutorial Prompt";
+
+		auto& gui = registry->assign<component::GuiRenderable>(e);
+		gui.texture = Texture2D::cache("res/assets/textures/menus/TutorialPrompt.png");
 	}
 
 	{
@@ -149,9 +152,9 @@ void MainMenuLayer::onUpdate()
 		auto& menuItemTransform = registry->get<component::Transform>(menuItemEntity);
 
 		if (menuItem.type == PersistentVariables::mainMenuSelectedOption)
-			menuItemTransform.setScale(glm::vec3(1.5f, 1.5f, 1.0f));
+			menuItemTransform.setScale(glm::vec3(1.3f, 1.3f, 1.3f));
 		else
-			menuItemTransform.setScale(glm::vec3(1.0f));
+			menuItemTransform.setScale(glm::vec3(0.9f));
 	}
 }
 
