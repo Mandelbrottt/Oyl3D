@@ -162,7 +162,6 @@ void MainGameObjectsInitLayer::onEnter()
 		}
         
 		{
-            
 			//CANNON
 			entt::entity cannonEntity = registry->create();
 

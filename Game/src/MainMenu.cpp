@@ -269,7 +269,7 @@ bool MainMenuLayer::onEvent(const Event& event)
 			}
 			case MenuOption::tutorial:
 			{
-				//Application::get().changeScene("Tutorial");
+				Application::get().changeScene("TutorialScene");
 				break;
 			}
 			case MenuOption::controls:
@@ -412,7 +412,7 @@ bool MainMenuLayer::onEvent(const Event& event)
 			}
 			case MenuOption::tutorial:
 			{
-				//Application::get().changeScene("Tutorial");
+				Application::get().changeScene("TutorialScene");
 				break;
 			}
 			case MenuOption::controls:

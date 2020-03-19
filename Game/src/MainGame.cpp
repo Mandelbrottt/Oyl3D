@@ -5,6 +5,7 @@
 #include "MainGameObjectsInit.h"
 #include "SplashScreen.h"
 #include "MainMenu.h"
+#include "Tutorial.h"
 #include "ControlsScreenScene.h"
 #include "SettingsMenu.h"
 #include "GameEndMenu.h"
@@ -1048,6 +1049,7 @@ public:
     {
 		//registerScene<SplashScreenScene>();
 		registerScene<MainMenuScene>();
+		registerScene<TutorialScene>();
 		registerScene<ControlsScreenScene>();
 		registerScene<SettingsMenuScene>();
         registerScene<MainScene>();
