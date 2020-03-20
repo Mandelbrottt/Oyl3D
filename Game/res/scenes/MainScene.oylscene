@@ -10428,8 +10428,8 @@
             "CullingMask": 2,
             "Enabled": true,
             "Texture": {
-                "Alias": "gloopIndicator",
-                "FilePath": "res/assets/textures/gui/gloopIndicator.png"
+                "Alias": "gloopIndicatorRed",
+                "FilePath": "res\\assets\\textures\\gui\\gloopIndicatorRed.png"
             }
         },
         "Transform": {
@@ -10516,8 +10516,8 @@
             "CullingMask": 8,
             "Enabled": true,
             "Texture": {
-                "Alias": "gloopIndicator",
-                "FilePath": "res/assets/textures/gui/gloopIndicator.png"
+                "Alias": "gloopIndicatorRed",
+                "FilePath": "res\\assets\\textures\\gui\\gloopIndicatorRed.png"
             }
         },
         "Transform": {
@@ -10604,8 +10604,8 @@
             "CullingMask": 2,
             "Enabled": true,
             "Texture": {
-                "Alias": "gloopIndicator",
-                "FilePath": "res/assets/textures/gui/gloopIndicator.png"
+                "Alias": "gloopIndicatorRed",
+                "FilePath": "res\\assets\\textures\\gui\\gloopIndicatorRed.png"
             }
         },
         "Transform": {
@@ -10692,8 +10692,8 @@
             "CullingMask": 8,
             "Enabled": true,
             "Texture": {
-                "Alias": "gloopIndicator",
-                "FilePath": "res/assets/textures/gui/gloopIndicator.png"
+                "Alias": "gloopIndicatorRed",
+                "FilePath": "res\\assets\\textures\\gui\\gloopIndicatorRed.png"
             }
         },
         "Transform": {
@@ -10780,8 +10780,8 @@
             "CullingMask": 2,
             "Enabled": true,
             "Texture": {
-                "Alias": "gloopIndicator",
-                "FilePath": "res/assets/textures/gui/gloopIndicator.png"
+                "Alias": "gloopIndicatorRed",
+                "FilePath": "res\\assets\\textures\\gui\\gloopIndicatorRed.png"
             }
         },
         "Transform": {
@@ -10868,8 +10868,8 @@
             "CullingMask": 8,
             "Enabled": true,
             "Texture": {
-                "Alias": "gloopIndicator",
-                "FilePath": "res/assets/textures/gui/gloopIndicator.png"
+                "Alias": "gloopIndicatorRed",
+                "FilePath": "res\\assets\\textures\\gui\\gloopIndicatorRed.png"
             }
         },
         "Transform": {
