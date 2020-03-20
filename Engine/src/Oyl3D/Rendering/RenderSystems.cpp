@@ -641,24 +641,15 @@ namespace oyl::internal
 
         auto camView = registry->view<Camera>();
 
-        int x = m_windowSize.x / 2;
-        int y = camView.size() > 2 ? m_windowSize.y / 2 : 0;
-
-        int width = m_windowSize.x;
-        if (camView.size() > 1) width /= 2;
-
-        int height = m_windowSize.y;
-        if (camView.size() > 2) height /= 2;
-
         glm::vec2 lastLowerClipping = glm::vec2(0.0f);
         glm::vec2 lastUpperClipping = glm::vec2(0.0f);
-
-        RenderCommand::setDrawRect(0, 0, width, height);
 
         for (auto camera : camView)
         {
             auto& pc = camView.get(camera);
 
+			RenderCommand::setDrawRect(0, 0, pc.m_mainFrameBuffer->getColorWidth(), pc.m_mainFrameBuffer->getColorHeight());
+        	
             pc.m_mainFrameBuffer->bind();
 
             auto view = registry->view<Transform, GuiRenderable>();
