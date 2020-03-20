@@ -441,7 +441,7 @@ void MainGameGuiInitLayer::onEnter()
 
 				component::Transform outlineTransform;
 				outlineTransform.setPosition(glm::vec3(-30.0f, 0.0f, 0.0f));
-				outlineTransform.setScale(glm::vec3(4.0f, 4.0f, 4.0f));
+				outlineTransform.setScale(glm::vec3(4.0f, 4.0f, 0.0f));
 				registry->assign<component::Transform>(outlineEntity, outlineTransform);
 
 				auto& outlineEi = registry->assign<component::EntityInfo>(outlineEntity);
@@ -467,7 +467,7 @@ void MainGameGuiInitLayer::onEnter()
 
 				component::Transform fillTransform;
 				fillTransform.setPosition(glm::vec3(-30.0f, 0.0f, 0.0f));
-				fillTransform.setScale(glm::vec3(4.0f, 4.0f, 4.0f));
+				fillTransform.setScale(glm::vec3(4.0f, 4.0f, 0.0f));
 				registry->assign<component::Transform>(fillEntity, fillTransform);
 
 				auto& fillEi = registry->assign<component::EntityInfo>(fillEntity);
