@@ -52,6 +52,8 @@ namespace oyl
 
         SceneChanged,
 
+    	AnimationFinished,
+
         CustomStart,
     };
 
@@ -65,11 +67,12 @@ namespace oyl
         Gamepad,
         GamepadVibration,
         Cursor,
-        Audio,
+        Sound,
         Physics,
         Editor,
         Render,
         Scene,
+    	Animation,
         CustomStart,
     };
     
@@ -372,4 +375,14 @@ namespace oyl
                      });
     
     //-Scene Events-/////////////////////////////////////////////////////
+
+	// Animation Events /////////////////////////////////////////////////////
+
+	OYL_EVENT_STRUCT(AnimationFinishedEvent, EventType::AnimationFinished, EventCategory::Animation,
+					 {
+						 entt::entity entity;
+					 	 bool stopped;
+					 });
+
+	//-Animation Events-/////////////////////////////////////////////////////
 }
