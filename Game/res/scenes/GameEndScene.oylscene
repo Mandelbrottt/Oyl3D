@@ -1,0 +1,134 @@
+{
+    "Game End Background": {
+        "GuiRenderable": {
+            "Clipping": {
+                "Lower": [
+                    0.0,
+                    0.0
+                ],
+                "Upper": [
+                    1.0,
+                    1.0
+                ]
+            },
+            "CullingMask": 15,
+            "Enabled": true,
+            "Texture": {
+                "Alias": "MainMenuBackground",
+                "FilePath": "res/assets/textures/menus/MainMenuBackground.png"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Parent": null,
+            "Position": {
+                "X": 0.0,
+                "Y": 0.0,
+                "Z": 0.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 10.0,
+                "Y": 10.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Go To Main Menu Prompt": {
+        "GuiRenderable": {
+            "Clipping": {
+                "Lower": [
+                    0.0,
+                    0.0
+                ],
+                "Upper": [
+                    1.0,
+                    1.0
+                ]
+            },
+            "CullingMask": 15,
+            "Enabled": true,
+            "Texture": {
+                "Alias": null,
+                "FilePath": "../Engine/res/textures/invalid.png"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Parent": null,
+            "Position": {
+                "X": 0.0,
+                "Y": 1.0,
+                "Z": -1.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Play Again Prompt": {
+        "GuiRenderable": {
+            "Clipping": {
+                "Lower": [
+                    0.0,
+                    0.0
+                ],
+                "Upper": [
+                    1.0,
+                    1.0
+                ]
+            },
+            "CullingMask": 15,
+            "Enabled": true,
+            "Texture": {
+                "Alias": null,
+                "FilePath": "../Engine/res/textures/invalid.png"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Parent": null,
+            "Position": {
+                "X": 0.0,
+                "Y": -4.0,
+                "Z": -1.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    }
+}

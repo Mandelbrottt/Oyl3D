@@ -620,6 +620,7 @@ public:
 	void onUpdate() override
 	{
 		auto playerView = registry->view<Player, component::Transform>();
+		registry->view<GuiRenderable>().each([](GuiRenderable& gui) { gui.enabled = false; });
 		for (auto& playerEntity : playerView)
 		{
 			auto& player          = registry->get<Player>(playerEntity);

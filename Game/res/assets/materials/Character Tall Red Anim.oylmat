@@ -20,7 +20,7 @@
             "Albedo": {
                 "Alias": "PirateTallRed",
                 "FilePath": "res\\assets\\textures\\PirateTallRed.png",
-                "Profile": 0,
+                "Profile": 1,
                 "guid": null
             },
             "Emission": null,
