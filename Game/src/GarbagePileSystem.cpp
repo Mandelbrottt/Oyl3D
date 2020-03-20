@@ -152,7 +152,7 @@ void GarbagePileSystem::increaseGarbageLevel(entt::entity a_garbagePileEntity)
 				std::remove(blueActivePileNums.begin(), blueActivePileNums.end(), garbagePile.relativePositionOnShip),
 				blueActivePileNums.end());
 
-			bluePassiveBuildupWait += 4.5f; //add some more time every time a pile maxes out to prevent quick snowballing
+			bluePassiveBuildupWait += 5.5f; //add some more time every time a pile maxes out to prevent quick snowballing
 		}
 		else //team == red
 		{
@@ -160,7 +160,7 @@ void GarbagePileSystem::increaseGarbageLevel(entt::entity a_garbagePileEntity)
 				std::remove(redActivePileNums.begin(), redActivePileNums.end(), garbagePile.relativePositionOnShip),
 				redActivePileNums.end());
 
-			redPassiveBuildupWait += 4.5f; //add some more time every time a pile maxes out to prevent quick snowballing
+			redPassiveBuildupWait += 5.5f; //add some more time every time a pile maxes out to prevent quick snowballing
 		}
 	}
 

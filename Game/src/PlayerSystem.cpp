@@ -22,7 +22,7 @@ void PlayerSystem::onUpdate()
 
 		player.jumpCooldownTimer -= Time::deltaTime();
 
-		playerRB.addImpulse(glm::vec3(0.0f, -35.0f, 0.0f));
+		playerRB.addImpulse(glm::vec3(0.0f, -35.0f * 0.016, 0.0f));
 
 		if (player.transitionIntoQTE && player.state != PlayerState::cleaning)
 			player.transitionIntoQTE = false;
@@ -177,7 +177,8 @@ bool PlayerSystem::onEvent(const Event& event)
 				//&& playerRB.getVelocity().y >= -2.0f //add a small buffer 
 				&& player.state != PlayerState::stunned 
 				&& player.state != PlayerState::pushing 
-				&& player.state != PlayerState::cleaning)
+				&& player.state != PlayerState::cleaning
+				&& player.state != PlayerState::inCleaningQuicktimeEvent)
 			{
 				playerRB.addImpulse(glm::vec3(0.0f, 1.0f, 0.0f) * player.jumpForce);
 
