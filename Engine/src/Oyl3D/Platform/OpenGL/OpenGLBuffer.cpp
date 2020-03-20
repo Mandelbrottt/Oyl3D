@@ -219,12 +219,19 @@ namespace oyl
 
 // Frame Buffer //////////////////////////////////////////////////////////////
 
-    static uint TextUniqueReformatToGLFormat(TextureFormat format)
+    static uint TextureFormatToGLFormat(TextureFormat format)
     {
         switch (format)
         {
-            case TextureFormat::RGB8:  return GL_RGB8;
-            case TextureFormat::RGBA8: return GL_RGBA8;
+            case TextureFormat::R8:      return GL_R8;
+            case TextureFormat::RG8:     return GL_RG8;
+            case TextureFormat::RGB8:    return GL_RGB8;
+            case TextureFormat::RGBA8:   return GL_RGBA8;
+            case TextureFormat::RGB10:   return GL_RGB10;
+            case TextureFormat::RGBF16:  return GL_RGB16F;
+            case TextureFormat::RGBF32:  return GL_RGB32F;
+            case TextureFormat::RGBAF16: return GL_RGBA16F;
+            case TextureFormat::RGBAF32: return GL_RGBA32F;
         }
         return 0;
     }
@@ -269,7 +276,7 @@ namespace oyl
         glGenFramebuffers(1, &m_rendererID);
 
         // m_bufs is required as a paramater for glDrawBuffers()
-        for (int i = 0; i < numColorAttachments; i++)
+        for (uint i = 0; i < sizeof(m_bufs) / sizeof(decltype(*m_bufs)); i++)
         {
             m_bufs[i] = GL_COLOR_ATTACHMENT0 + i;
         }
@@ -318,12 +325,13 @@ namespace oyl
         GLenum context = GL_NONE;
         switch (a_context)
         {
-            case FrameBufferContext::ReadWrite: context = GL_FRAMEBUFFER; break;
-            case FrameBufferContext::Read: context = GL_READ_FRAMEBUFFER; break;
-            case FrameBufferContext::Write: context = GL_DRAW_FRAMEBUFFER; break;
+            case FrameBufferContext::ReadWrite: context = GL_FRAMEBUFFER;      break;
+            case FrameBufferContext::Read:      context = GL_READ_FRAMEBUFFER; break;
+            case FrameBufferContext::Write:     context = GL_DRAW_FRAMEBUFFER; break;
         }
         glBindFramebuffer(context, m_rendererID);
-        glDrawBuffers(m_numColorAttachments, m_bufs);
+        if (context == GL_FRAMEBUFFER || context == GL_DRAW_FRAMEBUFFER)
+            glDrawBuffers(m_numColorAttachments, m_bufs);
     }
 
     void OpenGLFrameBuffer::unbind(FrameBufferContext a_context)
@@ -331,9 +339,9 @@ namespace oyl
         GLenum context = GL_NONE;
         switch (a_context)
         {
-            case FrameBufferContext::ReadWrite: context = GL_FRAMEBUFFER; break;
-            case FrameBufferContext::Read: context = GL_READ_FRAMEBUFFER; break;
-            case FrameBufferContext::Write: context = GL_DRAW_FRAMEBUFFER; break;
+            case FrameBufferContext::ReadWrite: context = GL_FRAMEBUFFER;      break;
+            case FrameBufferContext::Read:      context = GL_READ_FRAMEBUFFER; break;
+            case FrameBufferContext::Write:     context = GL_DRAW_FRAMEBUFFER; break;
         }
         glBindFramebuffer(context, GL_NONE);
     }
@@ -417,7 +425,7 @@ namespace oyl
         // Create depth texture
         glGenTextures(1, &m_colorAttachmentIDs[index]);
         glBindTexture(GL_TEXTURE_2D, m_colorAttachmentIDs[index]);
-        glTexStorage2D(GL_TEXTURE_2D, 1, TextUniqueReformatToGLFormat(format), width, height);
+        glTexStorage2D(GL_TEXTURE_2D, 1, TextureFormatToGLFormat(format), width, height);
 
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, TexturefilterToGLFilter(filter));
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, TexturefilterToGLFilter(filter));
@@ -438,7 +446,7 @@ namespace oyl
         load(tempNumColorAttachments);
 
         initDepthTexture(width, height);
-        for (int i = 0; i < tempNumColorAttachments; i++)
+        for (uint i = 0; i < tempNumColorAttachments; i++)
         {
             initColorTexture(i, width, height, m_formats[i], m_filters[i], m_wraps[i]);
         }
@@ -458,22 +466,36 @@ namespace oyl
 
     void OpenGLFrameBuffer::blit(const Ref<FrameBuffer>& other)
     {
-        OpenGLFrameBuffer* otherPtr = reinterpret_cast<OpenGLFrameBuffer*>(other.get());
-        
+        GLenum flags = GL_NONE;
+
         glBindFramebuffer(GL_READ_FRAMEBUFFER, m_rendererID);
         if (other)
         {
+            OpenGLFrameBuffer* otherPtr = reinterpret_cast<OpenGLFrameBuffer*>(other.get());
+
+            if (m_numColorAttachments == otherPtr->m_numColorAttachments)
+                flags |= GL_COLOR_BUFFER_BIT;
+
+            if (m_depthAttachmentID != 0 && otherPtr->m_depthAttachmentID != 0)
+                flags |= GL_DEPTH_BUFFER_BIT;
+            
             glBindFramebuffer(GL_DRAW_FRAMEBUFFER, otherPtr->m_rendererID);
             glBlitFramebuffer(0, 0, m_colorWidths[0], m_colorHeights[0], 
                               0, 0, otherPtr->m_colorWidths[0], otherPtr->m_colorHeights[0],
-                              GL_COLOR_BUFFER_BIT, GL_NEAREST);
+                              flags, GL_NEAREST);
         }
         else
         {
+            if (m_numColorAttachments != 0)
+                flags |= GL_COLOR_BUFFER_BIT;
+
+            if (m_depthAttachmentID != 0)
+                flags |= GL_DEPTH_BUFFER_BIT;
+            
             glBindFramebuffer(GL_DRAW_FRAMEBUFFER, GL_NONE);
             glBlitFramebuffer(0, 0, m_colorWidths[0], m_colorHeights[0], 
                               0, 0, m_colorWidths[0], m_colorHeights[0],
-                              GL_COLOR_BUFFER_BIT, GL_NEAREST);
+                              flags, GL_NEAREST);
         }
 
         glBindFramebuffer(GL_FRAMEBUFFER, GL_NONE);

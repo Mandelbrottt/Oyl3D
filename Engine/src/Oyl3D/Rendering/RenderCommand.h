@@ -27,6 +27,11 @@ namespace oyl
             s_rendererAPI->setDepthDraw(value);
         }
 
+        inline static void setAlphaBlend(bool value)
+        {
+            s_rendererAPI->setAlphaBlend(value);
+        }
+
         inline static void setBackfaceCulling(bool value)
         {
             s_rendererAPI->setBackfaceCulling(value);

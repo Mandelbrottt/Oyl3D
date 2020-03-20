@@ -13,7 +13,8 @@ namespace oyl
     namespace internal
     {
         class AnimationSystem;
-        class RenderSystem;
+        class DeferredRenderSystem;
+        class ForwardRenderSystem;
         class SkeletalAnimationSystem;
     }
     
@@ -46,7 +47,8 @@ namespace oyl
             const Ref<VertexArray>& getVertexArray() const;
         private:
             friend internal::AnimationSystem;
-            friend internal::RenderSystem;
+            friend internal::ForwardRenderSystem;
+            friend internal::DeferredRenderSystem;
             std::unordered_map<std::string, Ref<Animation>> m_animations;
 
             std::unordered_map<std::string, bool> m_bools;

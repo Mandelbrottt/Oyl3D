@@ -50,12 +50,10 @@ namespace oyl
         glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, nullptr, true);
     #endif
 
-        glEnable(GL_DEPTH_TEST);
-        glEnable(GL_CULL_FACE);
-
-        glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
+        glDepthFunc(GL_LEQUAL);
+        
         OYL_LOG_INFO("OpenGL Info:");
         OYL_LOG_INFO("  Vendor: {0}", glGetString(GL_VENDOR));
         OYL_LOG_INFO("  Renderer: {0}", glGetString(GL_RENDERER));
