@@ -3455,15 +3455,19 @@
     },
     "Camera": {
         "Camera": {
+            "Brightness": 0.15000000596046448,
             "ClearProps": {
                 "Skybox": null
             },
+            "Contrast": 1.2000000476837158,
             "CullingMask": 15,
             "Enabled": true,
+            "Exposure": 1.0,
             "FarClipping": 1000.0,
             "Fov": 60.0,
             "NearClipping": 0.029999999329447746,
-            "Player": 0
+            "Player": 0,
+            "Saturation": 1.5
         },
         "Transform": {
             "Mirror": {
@@ -6390,6 +6394,7 @@
                     0.5,
                     0.5
                 ],
+                "Intensity": 1.0,
                 "Range": 30.0,
                 "Specular": [
                     1.0,
@@ -6448,6 +6453,7 @@
                     0.5,
                     0.5
                 ],
+                "Intensity": 1.0,
                 "Shadow": {
                     "Bias": [
                         9.999999747378752e-05,
@@ -10561,7 +10567,7 @@
             }
         },
         "SkeletonAnimatable": {
-            "Animation": "Reference Pose",
+            "Animation": "",
             "Loop": true,
             "Play": true,
             "Reverse": false,
@@ -10987,7 +10993,7 @@
             }
         },
         "SkeletonAnimatable": {
-            "Animation": "Reference Pose",
+            "Animation": "",
             "Loop": true,
             "Play": true,
             "Reverse": false,

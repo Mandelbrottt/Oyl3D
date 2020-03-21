@@ -11378,6 +11378,7 @@
                     0.5,
                     0.5
                 ],
+                "Intensity": 1.0,
                 "Range": 30.0,
                 "Specular": [
                     1.0,
@@ -11436,6 +11437,7 @@
                     0.5,
                     0.5
                 ],
+                "Intensity": 1.0,
                 "Shadow": {
                     "Bias": [
                         9.999999747378752e-05,
@@ -15888,15 +15890,19 @@
     },
     "Player1 Camera": {
         "Camera": {
+            "Brightness": 0.15000000596046448,
             "ClearProps": {
                 "Skybox": null
             },
+            "Contrast": 1.2000000476837158,
             "CullingMask": 1,
             "Enabled": true,
+            "Exposure": 1.0,
             "FarClipping": 1000.0,
             "Fov": 60.0,
             "NearClipping": 0.029999999329447746,
-            "Player": 0
+            "Player": 0,
+            "Saturation": 1.5
         },
         "Transform": {
             "Mirror": {
@@ -16043,15 +16049,19 @@
     },
     "Player2 Camera": {
         "Camera": {
+            "Brightness": 0.15000000596046448,
             "ClearProps": {
                 "Skybox": null
             },
+            "Contrast": 1.2000000476837158,
             "CullingMask": 2,
             "Enabled": true,
+            "Exposure": 1.0,
             "FarClipping": 1000.0,
             "Fov": 60.0,
             "NearClipping": 0.029999999329447746,
-            "Player": 1
+            "Player": 1,
+            "Saturation": 1.5
         },
         "Transform": {
             "Mirror": {
@@ -16336,15 +16346,19 @@
     },
     "Player3 Camera": {
         "Camera": {
+            "Brightness": 0.15000000596046448,
             "ClearProps": {
                 "Skybox": null
             },
+            "Contrast": 1.2000000476837158,
             "CullingMask": 4,
             "Enabled": true,
+            "Exposure": 1.0,
             "FarClipping": 1000.0,
             "Fov": 60.0,
             "NearClipping": 0.029999999329447746,
-            "Player": 2
+            "Player": 2,
+            "Saturation": 1.5
         },
         "Transform": {
             "Mirror": {
@@ -16491,15 +16505,19 @@
     },
     "Player4 Camera": {
         "Camera": {
+            "Brightness": 0.15000000596046448,
             "ClearProps": {
                 "Skybox": null
             },
+            "Contrast": 1.2000000476837158,
             "CullingMask": 8,
             "Enabled": true,
+            "Exposure": 1.0,
             "FarClipping": 1000.0,
             "Fov": 60.0,
             "NearClipping": 0.029999999329447746,
-            "Player": 3
+            "Player": 3,
+            "Saturation": 1.5
         },
         "Transform": {
             "Mirror": {

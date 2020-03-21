@@ -9,6 +9,7 @@ void AnimationManager::onEnter()
 	listenForEventCategory((EventCategory)CategoryGloop);
 	listenForEventCategory((EventCategory)CategoryCannonball);
 	listenForEventCategory((EventCategory)CategoryCannon);
+	listenForEventCategory(EventCategory::Animation);
 }
 
 void AnimationManager::onExit()
@@ -17,7 +18,7 @@ void AnimationManager::onExit()
 
 void AnimationManager::onUpdate()
 {
-	//dunno what I need to update here. probably something. TODO: figure out that thing
+	//Need to update every frame and check which animation is playing in order to have things like bottles dissapear mid animation
 }
 
 bool AnimationManager::onEvent(const Event& event)
@@ -27,6 +28,71 @@ bool AnimationManager::onEvent(const Event& event)
 	switch (event.type)
 	{
 
+	case EventType::AnimationFinished:
+	{
+		auto evt = event_cast<AnimationFinishedEvent>(event);
+
+		auto& playerTransform = registry->get<component::Transform>(evt.entity);
+
+		//Objects that need to be modified
+		entt::entity playerCamera{};
+		entt::entity playerArmR{};
+		entt::entity playerArmL{};
+		entt::entity playerArmRTarget{};
+		entt::entity playerArmRObject{};
+		entt::entity playerArmLTarget{};
+		entt::entity playerArmLObject{};
+
+		//Getting the Camera
+		for (auto child : playerTransform.getChildrenEntities())
+			if (registry->has<component::Camera>(child))
+				playerCamera = child;
+
+		//Getting the individual arms
+			for (auto child : registry->get<component::Transform>(playerCamera).getChildrenEntities())
+			{
+				if (registry->get<component::EntityInfo>(child).name.find("Left") != std::string::npos)
+				{
+					playerArmL = child;
+					OYL_LOG("found left arm");
+				}
+				if (registry->get<component::EntityInfo>(child).name.find("Right") != std::string::npos)
+				{
+					playerArmR = child;
+					OYL_LOG("found right arm");
+				}
+			}
+
+		//Getting each hand target
+		for (auto child : registry->get<component::Transform>(playerArmL).getChildrenEntities())
+			if (registry->has<component::BoneTarget>(child))
+				playerArmLTarget = child;
+		for (auto child : registry->get<component::Transform>(playerArmR).getChildrenEntities())
+			if (registry->has<component::BoneTarget>(child))
+				playerArmRTarget = child;
+
+		//Getting each hand object
+		for (auto child : registry->get<component::Transform>(playerArmLTarget).getChildrenEntities())
+			if (registry->has<component::Renderable>(child))
+				playerArmLObject = child;
+		for (auto child : registry->get<component::Transform>(playerArmRTarget).getChildrenEntities())
+			if (registry->has<component::Renderable>(child))
+				playerArmRObject = child;
+
+		if (playerArmL != 0)
+		{
+			if (registry->get<component::SkeletonAnimatable>(playerArmL).animation == "PiraxUse_L" && evt.stopped)
+				registry->get<component::SkeletonAnimatable>(playerArmL).animation = "Idle_L";
+		}
+		if (playerArmR != 0)
+		{
+
+		}
+
+
+
+		break;
+	}
 		//////////////////////////// I T E M      B A S E D     E V E N T S ///////////////////////////////////
 		//unique case for spawning cannonballs
 
