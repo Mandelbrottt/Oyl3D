@@ -12,13 +12,13 @@
             ]
         },
         "Shader": {
-            "Alias": "Oyl Lighting",
+            "Alias": "Oyl Deferred Static",
             "Pixel": {
-                "FilePath": "../Engine/res/shaders/lighting.frag",
+                "FilePath": null,
                 "guid": null
             },
             "Vertex": {
-                "FilePath": "../Engine/res/shaders/lighting.vert",
+                "FilePath": null,
                 "guid": null
             }
         },

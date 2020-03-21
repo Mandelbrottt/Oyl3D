@@ -11,7 +11,9 @@ namespace oyl
     
     enum class TextureFormat : u32
     {
-        R8 = 0, RG8, RGB8, RGBA8, SR8, SRG8, SRGB8, SRGBA8
+        R8 = 0, RG8, RGB8, RGBA8, SR8, SRG8, SRGB8, SRGBA8,
+        RGBF16, RGBF32, RGBAF16, RGBAF32,
+        RGB10
     };
 
     enum class TextureFilter : u32

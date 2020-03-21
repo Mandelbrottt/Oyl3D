@@ -385,7 +385,8 @@ namespace oyl
 
     inline glm::mat4 Model::_getBoneTransform(const SkeletonAnimation& a_animation, uint a_bone, float a_time) const
     {
-        if (a_bone > m_bones.size()) return glm::mat4(1.0f);
+        if (a_bone > m_bones.size()) 
+            return glm::mat4(1.0f);
         
         glm::mat4 nodeTransform = m_bones[a_bone].transform;
 
@@ -481,7 +482,7 @@ namespace oyl
                                               Interpolation::EaseFn a_fn) const
     {
         if (channel.rotationKeys.empty())
-            return glm::quat(1.0f, 0.0f, 0.0f, 0.0f);
+            return glm::identity<glm::quat>();
         if (channel.rotationKeys.size() == 1)
             return channel.rotationKeys[0].second;
 
@@ -520,9 +521,16 @@ namespace oyl
             
             //return normalize(squad(start, end, intermediate(v0, start, end), intermediate(start, end, v3), factor));
             return normalize(ret);
-        } else return slerp(v0, v1, factor);
+        }
+
+        auto q = slerp(v0, v1, factor);
+        volatile float y = glm::degrees(yaw(q));
+        volatile float p = glm::degrees(pitch(q));
+        volatile float r = glm::degrees(roll(q));
+
+        return q;
         
-        //return slerp(start, end, factor);
+        //return slerp(v0, v1, factor);
     }
 
     glm::vec3 Model::calcInterpolatedScale(float time, const BoneChannel& channel,

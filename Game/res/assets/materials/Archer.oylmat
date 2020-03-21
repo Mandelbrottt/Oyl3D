@@ -12,9 +12,9 @@
             ]
         },
         "Shader": {
-            "Alias": "Oyl Skeletal",
-            "FilePath": "../Engine/res/shaders/skeletal.oylshader",
-            "guid": null
+            "Alias": "Oyl Forward Static",
+            "Pixel": null,
+            "Vertex": null
         },
         "Textures": {
             "Albedo": {
