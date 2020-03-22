@@ -32,65 +32,36 @@ bool AnimationManager::onEvent(const Event& event)
 	{
 		auto evt = event_cast<AnimationFinishedEvent>(event);
 
-		auto& playerTransform = registry->get<component::Transform>(evt.entity);
+		//for player animations do player things, otherwise do first person things
+		if(registry->get<component::EntityInfo>(evt.entity).name.find("Player") != std::string::npos)
+		{
+			auto& playerTransform = registry->get<component::Transform>(evt.entity);
+			OYL_LOG("player action");
+		}
+		if(registry->get<component::EntityInfo>(evt.entity).name.find("Arm") != std::string::npos)//TODO: else if this with other scenarios, like flies else if(viemodel){} else { do nothing }
+		{
+			OYL_LOG("viewmodel action");
 
-		//Objects that need to be modified
-		entt::entity playerCamera{};
-		entt::entity playerArmR{};
-		entt::entity playerArmL{};
-		entt::entity playerArmRTarget{};
-		entt::entity playerArmRObject{};
-		entt::entity playerArmLTarget{};
-		entt::entity playerArmLObject{};
+			//Animation Tag to check what action should be taken
+			std::string animationTag = registry->get<component::SkeletonAnimatable>(evt.entity).animation;
 
-		//Getting the Camera
-		for (auto child : playerTransform.getChildrenEntities())
-			if (registry->has<component::Camera>(child))
-				playerCamera = child;
-
-		//Getting the individual arms
-			for (auto child : registry->get<component::Transform>(playerCamera).getChildrenEntities())
+			if (registry->get<component::EntityInfo>(evt.entity).name.find("L") != std::string::npos) //if left arm
 			{
-				if (registry->get<component::EntityInfo>(child).name.find("Left") != std::string::npos)
+				if (animationTag.find("Use") != std::string::npos && animationTag.find("Gloop") == std::string::npos && evt.stopped)
 				{
-					playerArmL = child;
-					OYL_LOG("found left arm");
+					registry->get<component::SkeletonAnimatable>(evt.entity).animation = "Idle_L";
+					registry->get<component::SkeletonAnimatable>(evt.entity).play = true;
+					registry->get<component::SkeletonAnimatable>(evt.entity).loop = true;
 				}
-				if (registry->get<component::EntityInfo>(child).name.find("Right") != std::string::npos)
-				{
-					playerArmR = child;
-					OYL_LOG("found right arm");
-				}
+
 			}
+			else if (registry->get<component::EntityInfo>(evt.entity).name.find("R") != std::string::npos) //if right arm
+			{
 
-		//Getting each hand target
-		for (auto child : registry->get<component::Transform>(playerArmL).getChildrenEntities())
-			if (registry->has<component::BoneTarget>(child))
-				playerArmLTarget = child;
-		for (auto child : registry->get<component::Transform>(playerArmR).getChildrenEntities())
-			if (registry->has<component::BoneTarget>(child))
-				playerArmRTarget = child;
-
-		//Getting each hand object
-		for (auto child : registry->get<component::Transform>(playerArmLTarget).getChildrenEntities())
-			if (registry->has<component::Renderable>(child))
-				playerArmLObject = child;
-		for (auto child : registry->get<component::Transform>(playerArmRTarget).getChildrenEntities())
-			if (registry->has<component::Renderable>(child))
-				playerArmRObject = child;
-
-		if (playerArmL != 0)
-		{
-			if (registry->get<component::SkeletonAnimatable>(playerArmL).animation == "PiraxUse_L" && evt.stopped)
-				registry->get<component::SkeletonAnimatable>(playerArmL).animation = "Idle_L";
+			}
+			else
+				OYL_LOG("Could not find any arm");
 		}
-		if (playerArmR != 0)
-		{
-
-		}
-
-
-
 		break;
 	}
 		//////////////////////////// I T E M      B A S E D     E V E N T S ///////////////////////////////////
@@ -570,7 +541,7 @@ bool AnimationManager::onEvent(const Event& event)
 			break;
 		case PlayerState::idle:
 			//Set the animation to idle
-			playerAnimatable.animation = "Reference Pose"; //TODO: fix this up with the proper idle
+			playerAnimatable.animation = "InCleaningQuicktimeEvent"; //TODO: fix this up with the proper idle
 			break;
 		case PlayerState::jumping:
 			//Set the animation here for using cannonball
