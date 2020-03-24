@@ -31,11 +31,25 @@ void GameEndLayer::onEnter()
 		auto e = registry->create();
 
 		auto& t = registry->assign<component::Transform>(e);
+		t.setPosition(glm::vec3(0.0f, 0.0f, 0.0f));
+		t.setScale(glm::vec3(10.0f, 10.0f, 1.0f));
+
+		auto& so = registry->assign<component::EntityInfo>(e);
+		so.name = "Background";
+
+		auto& gui = registry->assign<component::GuiRenderable>(e);
+		gui.texture = Texture2D::cache("res/assets/textures/menus/SettingsBackground.png");
+	}
+
+	{
+		auto e = registry->create();
+
+		auto& t = registry->assign<component::Transform>(e);
 		t.setPosition(glm::vec3(0.0f, 0.0f, -10.0f));
 		t.setScale(glm::vec3(10.0f, 10.0f, 10.0f));
 
 		auto& so = registry->assign<component::EntityInfo>(e);
-		so.name = "Game End Background";
+		so.name = "Game End Message";
 
 		auto& gui = registry->assign<component::GuiRenderable>(e);
 
@@ -89,7 +103,7 @@ void GameEndLayer::onUpdate()
 	auto guiView = registry->view<component::EntityInfo, component::GuiRenderable>();
 	for (auto& guiEntity : guiView)
 	{
-		if (registry->get<component::EntityInfo>(guiEntity).name == "Game End Background")
+		if (registry->get<component::EntityInfo>(guiEntity).name == "Game End Message")
 		{
 			auto& gameResultGui = registry->get<component::GuiRenderable>(guiEntity);
 

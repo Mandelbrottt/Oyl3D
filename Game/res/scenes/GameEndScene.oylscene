@@ -1,4 +1,48 @@
 {
+    "Background": {
+        "GuiRenderable": {
+            "Clipping": {
+                "Lower": [
+                    0.0,
+                    0.0
+                ],
+                "Upper": [
+                    1.0,
+                    1.0
+                ]
+            },
+            "CullingMask": 15,
+            "Enabled": true,
+            "Texture": {
+                "Alias": "SettingsBackground",
+                "FilePath": "res/assets/textures/menus/SettingsBackground.png"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Parent": null,
+            "Position": {
+                "X": 0.0,
+                "Y": 0.0,
+                "Z": 0.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 10.0,
+                "Y": 10.0,
+                "Z": 1.0
+            }
+        }
+    },
     "Camera": {
         "Camera": {
             "ClearProps": {
@@ -36,7 +80,7 @@
             }
         }
     },
-    "Game End Background": {
+    "Game End Message": {
         "GuiRenderable": {
             "Clipping": {
                 "Lower": [
@@ -51,8 +95,8 @@
             "CullingMask": 15,
             "Enabled": true,
             "Texture": {
-                "Alias": "Draw",
-                "FilePath": "res/assets/textures/menus/Draw.png"
+                "Alias": "BlueWins",
+                "FilePath": "res/assets/textures/menus/BlueWins.png"
             }
         },
         "Transform": {
@@ -64,7 +108,7 @@
             "Parent": null,
             "Position": {
                 "X": 0.0,
-                "Y": 0.0,
+                "Y": 1.600000023841858,
                 "Z": -10.0
             },
             "Rotation": {
@@ -74,8 +118,8 @@
                 "qZ": 0.0
             },
             "Scale": {
-                "X": 10.0,
-                "Y": 10.0,
+                "X": 3.5,
+                "Y": 3.5,
                 "Z": 10.0
             }
         }
