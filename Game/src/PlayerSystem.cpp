@@ -13,8 +13,8 @@ void PlayerSystem::onExit()
 
 void PlayerSystem::onUpdate()
 {
-	auto view = registry->view<Player, component::Transform, component::RigidBody>();
-	for (auto& playerEntity : view)
+	auto playerView = registry->view<Player, component::Transform, component::RigidBody>();
+	for (auto& playerEntity : playerView)
 	{
 		auto& player          = registry->get<Player>(playerEntity);
 		auto& playerTransform = registry->get<component::Transform>(playerEntity);

@@ -12,6 +12,8 @@ class TutorialLayer : public oyl::Layer
 public:
 	OYL_CTOR(TutorialLayer, Layer)
 
+	bool firstFrame = true;
+
 	virtual void onEnter() override;
 
 	virtual void onUpdate() override;

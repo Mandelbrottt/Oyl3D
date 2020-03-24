@@ -161,7 +161,7 @@ void PlayerInteractionValidationSystem::performRaycastAndValidateForPlayer(entt:
 	}
 	if (!registry->valid(playersCameraEntity))
 	{
-		OYL_LOG("WARNING: PLAYER {} DOES NOT HAVE AN ASSOCIATED CAMERA", (uint)player.playerNum + 1);
+		//OYL_LOG("WARNING: PLAYER {} DOES NOT HAVE AN ASSOCIATED CAMERA", (uint)player.playerNum + 1);
 		return;
 	}
 
