@@ -2961,7 +2961,7 @@ namespace oyl::internal
 
             lastSize = { static_cast<int>(x), static_cast<int>(y) };
 
-            y -= cy;
+            //y -= cy;
             newPos.y += cy;
 
             ImGui::SetCursorPos(newPos);
