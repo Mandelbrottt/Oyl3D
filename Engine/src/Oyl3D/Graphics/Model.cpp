@@ -323,6 +323,9 @@ namespace oyl
                     pair.first  = static_cast<float>(channel->mRotationKeys[j].mTime) * oneOverTickRate;
                     auto pos    = channel->mRotationKeys[j].mValue;
                     pair.second = normalize(glm::quat(pos.w, pos.x, pos.y, pos.z));
+					// If any pair of rotations would result in a long interpolation, negate the incoming rotation
+					if (!bc.rotationKeys.empty() && dot(bc.rotationKeys.back().second, pair.second) < 0.0f)
+						pair.second = -pair.second;
                     bc.rotationKeys.push_back(pair);
                 }
 
@@ -521,14 +524,8 @@ namespace oyl
             
             //return normalize(squad(start, end, intermediate(v0, start, end), intermediate(start, end, v3), factor));
             return normalize(ret);
-        }
-
-        auto q = slerp(v0, v1, factor);
-        volatile float y = glm::degrees(yaw(q));
-        volatile float p = glm::degrees(pitch(q));
-        volatile float r = glm::degrees(roll(q));
-
-        return q;
+        //} else return slerp(v0, v1, factor);
+        } else return mix(v0, v1, factor);
         
         //return slerp(v0, v1, factor);
     }
