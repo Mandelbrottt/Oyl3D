@@ -20,7 +20,8 @@ using namespace oyl;
 
 void TutorialLayer::onEnter()
 {
-	firstFrame = true;
+	firstFrame  = true;
+	initSegment = true;
 
 	listenForEventCategory(EventCategory::Keyboard);
 	listenForEventCategory(EventCategory::Gamepad);
@@ -45,6 +46,8 @@ void TutorialLayer::onUpdate()
 {
 	if (firstFrame)
 	{
+		firstFrame = false;
+
 		auto playerView = registry->view<Player>();
 		for (auto& playerEntity : playerView)
 		{
@@ -63,6 +66,30 @@ void TutorialLayer::onUpdate()
 				registry->destroy(cameraEntity);
 		}
 	}
+
+	entt::entity tutPlayerEntity;
+
+	if (initSegment)
+	{
+		initSegment   = false;
+		segmentTimer1 = 8.0f;
+		segmentInterpolationParam1 = 0.0f;
+
+		auto& playerView = registry->view<Player>();
+		for (auto& playerEntity : playerView)
+		{
+			if (registry->get<Player>(playerEntity).playerNum == PlayerNumber::One)
+				tutPlayerEntity = playerEntity;
+		}
+	}
+
+	auto& playerTransform = registry->get <component::Transform>(tutPlayerEntity);
+
+	segmentTimer1 -= Time::deltaTime();
+	if (segmentTimer1 > 0.0f)
+		return;
+
+
 }
 
 bool TutorialLayer::onEvent(const Event& event)

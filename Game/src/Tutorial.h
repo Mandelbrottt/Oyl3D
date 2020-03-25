@@ -14,6 +14,16 @@ public:
 
 	bool firstFrame = true;
 
+	bool initSegment = true;
+
+	float segmentTimer1;
+	float segmentTimer2;
+	float segmentTimer3;
+
+	float segmentInterpolationParam1;
+	float segmentInterpolationParam2;
+	float segmentInterpolationParam3;
+
 	virtual void onEnter() override;
 
 	virtual void onUpdate() override;
