@@ -179,6 +179,12 @@ void AnimationManager::onUpdate()
 				registry->get<component::Transform>(l_playerArmLObject).setRotationEuler(glm::vec3(0.0f));
 				registry->get<component::Transform>(l_playerArmLObject).setScale(glm::vec3(0.0f));
 			}
+			if (registry->get<component::SkeletonAnimatable>(l_playerArmL).animation == "GloopUse2_L" && registry->get<component::SkeletonAnimatable>(l_playerArmL).time >= 2.10)
+			{
+				registry->get<component::Transform>(l_playerArmLObject).setPosition(glm::vec3(0.0f));
+				registry->get<component::Transform>(l_playerArmLObject).setRotationEuler(glm::vec3(0.0f));
+				registry->get<component::Transform>(l_playerArmLObject).setScale(glm::vec3(0.0f));
+			}
 
 		}
 
@@ -351,10 +357,19 @@ bool AnimationManager::onEvent(const Event& event)
 	case (EventType)TypeGloopUsed:
 	{
 		setAnimationEntities(event);
-
-		//reset left arm components TODO: MAKE THIS THE ACTUAL USE ANIMATION AND THEN LINK IT BACK TO THE IDLE OR WHATEVER THIS IS TEMP
-		registry->get<component::SkeletonAnimatable>(playerArmL).time = 0.01f;
-		setAnimationProperties("GloopUse_L", AnimationProperties::None, false);
+		auto evt = event_cast<GloopedUsedEvent>(event);
+		//set this so that it can be accessed by the rest of the class
+		gloopLast = evt.isLastUse;
+		if (evt.isLastUse)
+		{
+			registry->get<component::SkeletonAnimatable>(playerArmL).time = 0.01f;
+			setAnimationProperties("GloopUse2_L", AnimationProperties::None, false);
+		}
+		else 
+		{
+			registry->get<component::SkeletonAnimatable>(playerArmL).time = 0.01f;
+			setAnimationProperties("GloopUse_L", AnimationProperties::None, false);
+		}
 
 		break;
 	}
