@@ -90,7 +90,7 @@ namespace oyl::internal
                 camera.m_mainFrameBuffer->initDepthTexture(1, 1);
                 camera.m_mainFrameBuffer->initColorTexture(0, 1, 1,
                                                            TextureFormat::RGBF16,
-                                                           TextureFilter::Nearest,
+                                                           TextureFilter::Linear,
                                                            TextureWrap::ClampToEdge);
             }
 
@@ -104,27 +104,27 @@ namespace oyl::internal
                 // Position buffer
                 camera.m_deferredFrameBuffer->initColorTexture(0, 1, 1,
                                                                TextureFormat::RGBF16,
-                                                               TextureFilter::Nearest,
+                                                               TextureFilter::Linear,
                                                                TextureWrap::ClampToEdge);
                 // Albedo/Specular buffer
                 camera.m_deferredFrameBuffer->initColorTexture(1, 1, 1,
                                                                TextureFormat::RGBAF16,
-                                                               TextureFilter::Nearest,
+                                                               TextureFilter::Linear,
                                                                TextureWrap::ClampToEdge);
                 // Normal buffer
                 camera.m_deferredFrameBuffer->initColorTexture(2, 1, 1,
                                                                TextureFormat::RGBF16,
-                                                               TextureFilter::Nearest,
+                                                               TextureFilter::Linear,
                                                                TextureWrap::ClampToEdge);
                 // Emission/Glossiness buffer
                 camera.m_deferredFrameBuffer->initColorTexture(3, 1, 1,
                                                                TextureFormat::RGBAF16,
-                                                               TextureFilter::Nearest,
+                                                               TextureFilter::Linear,
                                                                TextureWrap::ClampToEdge);
                 // Light Space Position buffer
                 camera.m_deferredFrameBuffer->initColorTexture(4, 1, 1,
                                                                TextureFormat::RGBAF16,
-                                                               TextureFilter::Nearest,
+                                                               TextureFilter::Linear,
                                                                TextureWrap::ClampToEdge);
             }
             
@@ -641,24 +641,15 @@ namespace oyl::internal
 
         auto camView = registry->view<Camera>();
 
-        int x = m_windowSize.x / 2;
-        int y = camView.size() > 2 ? m_windowSize.y / 2 : 0;
-
-        int width = m_windowSize.x;
-        if (camView.size() > 1) width /= 2;
-
-        int height = m_windowSize.y;
-        if (camView.size() > 2) height /= 2;
-
         glm::vec2 lastLowerClipping = glm::vec2(0.0f);
         glm::vec2 lastUpperClipping = glm::vec2(0.0f);
-
-        RenderCommand::setDrawRect(0, 0, width, height);
 
         for (auto camera : camView)
         {
             auto& pc = camView.get(camera);
 
+			RenderCommand::setDrawRect(0, 0, pc.m_mainFrameBuffer->getColorWidth(), pc.m_mainFrameBuffer->getColorHeight());
+        	
             pc.m_mainFrameBuffer->bind();
 
             auto view = registry->view<Transform, GuiRenderable>();
