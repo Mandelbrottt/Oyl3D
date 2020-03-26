@@ -410,7 +410,7 @@ void PlayerSystem::changeToStunned(entt::entity a_playerEntity)
 	{
 		//deactivate CleaningQuicktimeEvent UI for player
 		CancelQuicktimeCleaningEventEvent cancelQuicktimeCleaningEvent;
-		cancelQuicktimeCleaningEvent.playerNum = player.playerNum;
+		cancelQuicktimeCleaningEvent.playerEntity = a_playerEntity;
 		postEvent(cancelQuicktimeCleaningEvent);
 	}
 

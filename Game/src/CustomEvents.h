@@ -186,7 +186,7 @@ OYL_EVENT_STRUCT(ActivateQuicktimeCleaningEventEvent, (oyl::EventType) TypeActiv
 
 OYL_EVENT_STRUCT(CancelQuicktimeCleaningEventEvent, (oyl::EventType) TypeCancelQuicktimeCleaningEvent, (oyl::EventCategory) CategoryQuicktimeCleaningEvent,
 	{
-		PlayerNumber playerNum;
+		entt::entity playerEntity;
 	});
 
 OYL_EVENT_STRUCT(StickMovedDuringQuicktimeCleaningEventEvent, (oyl::EventType) TypeStickMovedDuringQuicktimeCleaningEvent, (oyl::EventCategory) CategoryQuicktimeCleaningEvent,

@@ -24,6 +24,8 @@ public:
 	float segmentInterpolationParam2;
 	float segmentInterpolationParam3;
 
+	entt::entity tutPlayerEntity;
+
 	virtual void onEnter() override;
 
 	virtual void onUpdate() override;

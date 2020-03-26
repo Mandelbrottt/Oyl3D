@@ -33,7 +33,7 @@ void PlayerInteractionValidationSystem::onUpdate()
 
 				//deactivate CleaningQuicktimeEvent UI for player
 				CancelQuicktimeCleaningEventEvent cancelQuicktimeCleaningEvent;
-				cancelQuicktimeCleaningEvent.playerNum = player.playerNum;
+				cancelQuicktimeCleaningEvent.playerEntity = playerEntity;
 				postEvent(cancelQuicktimeCleaningEvent);
 			}
 		}
@@ -73,7 +73,7 @@ bool PlayerInteractionValidationSystem::onEvent(const Event& event)
 			if (player.state == PlayerState::inCleaningQuicktimeEvent)
 			{
 				CancelQuicktimeCleaningEventEvent cancelQTE;
-				cancelQTE.playerNum = player.playerNum;
+				cancelQTE.playerEntity = evt.playerEntity;
 				postEvent(cancelQTE);
 
 				PlayerStateChangeRequestEvent playerStateChange;
