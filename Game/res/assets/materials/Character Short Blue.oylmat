@@ -13,8 +13,14 @@
         },
         "Shader": {
             "Alias": "Oyl Forward Skeletal",
-            "FilePath": null,
-            "guid": null
+            "Pixel": {
+                "FilePath": "../Engine/res/shaders/Lighting/Forward_Normal_Shadow.frag",
+                "guid": null
+            },
+            "Vertex": {
+                "FilePath": "../Engine/res/shaders/Lighting/Skeletal_Normal_Shadow.vert",
+                "guid": null
+            }
         },
         "Textures": {
             "Albedo": {

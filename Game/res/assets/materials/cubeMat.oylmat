@@ -12,9 +12,9 @@
             ]
         },
         "Shader": {
-            "Alias": "Oyl Deferred Static",
+            "Alias": "Oyl Forward Static",
             "Pixel": {
-                "FilePath": "../Engine/res/shaders/Lighting/Deferred_Pre_Normal_Shadow.frag",
+                "FilePath": "../Engine/res/shaders/Lighting/Forward_Normal_Shadow.frag",
                 "guid": null
             },
             "Vertex": {

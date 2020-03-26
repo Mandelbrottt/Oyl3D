@@ -15,7 +15,8 @@ enum AnimationProperties : int
 	ThrowableBottle,
 	EmptyL,
 	EmptyR,
-	None
+	None,
+	MopUse,
 };
 
 class AnimationManager : public System

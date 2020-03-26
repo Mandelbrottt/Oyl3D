@@ -84,6 +84,12 @@ void AnimationManager::setAnimationProperties(std::string p_tag, AnimationProper
 		registry->get<component::Transform>(playerArmRObject).setScale(glm::vec3(1.0f));
 		registry->get<component::Renderable>(playerArmRObject).model = Model::get("mop");
 		break;
+	case(AnimationProperties::MopUse):
+		registry->get<component::Transform>(playerArmRObject).setPosition(glm::vec3(-1.35f, -0.63f, 1.89f));
+		registry->get<component::Transform>(playerArmRObject).setRotationEuler(glm::vec3(-130.3f, 64.95f, 79.01f));
+		registry->get<component::Transform>(playerArmRObject).setScale(glm::vec3(5.0f, 3.0f, 3.0f));
+		registry->get<component::Renderable>(playerArmRObject).model = Model::get("mop");
+		break;
 	case(AnimationProperties::ThrowableBottle):
 		registry->get<component::Transform>(playerArmRObject).setPosition(glm::vec3(-0.08f, 0.86f, 0.48f));
 		registry->get<component::Transform>(playerArmRObject).setRotationEuler(glm::vec3(-67.71f, 15.28f, 115.29f));
@@ -117,6 +123,7 @@ void AnimationManager::onEnter()
 	listenForEventCategory((EventCategory)CategoryGloop);
 	listenForEventCategory((EventCategory)CategoryCannonball);
 	listenForEventCategory((EventCategory)CategoryCannon);
+	listenForEventCategory((EventCategory)CategoryQuicktimeCleaningEvent);
 	listenForEventCategory(EventCategory::Animation);
 }
 
@@ -238,6 +245,16 @@ bool AnimationManager::onEvent(const Event& event)
 						registry->get<component::SkeletonAnimatable>(evt.entity).loop = true;
 					}
 				}
+				if (animationTag.find("Pushing_A") != std::string::npos && evt.stopped)
+				{
+						registry->get<component::SkeletonAnimatable>(evt.entity).animation = "Idle_L";
+						registry->get<component::SkeletonAnimatable>(evt.entity).play = true;
+						registry->get<component::SkeletonAnimatable>(evt.entity).loop = true;
+				}
+				if (animationTag.find("MopUse_A") != std::string::npos && evt.stopped)
+				{
+
+				}
 
 			}
 			else if (registry->get<component::EntityInfo>(evt.entity).name.find("R") != std::string::npos) //if right arm
@@ -248,6 +265,16 @@ bool AnimationManager::onEvent(const Event& event)
 					registry->get<component::SkeletonAnimatable>(evt.entity).animation = "Idle_R";
 					registry->get<component::SkeletonAnimatable>(evt.entity).play = true;
 					registry->get<component::SkeletonAnimatable>(evt.entity).loop = true;
+				}
+				if (animationTag.find("Pushing_A") != std::string::npos && evt.stopped)
+				{
+					registry->get<component::SkeletonAnimatable>(evt.entity).animation = "Idle_R";
+					registry->get<component::SkeletonAnimatable>(evt.entity).play = true;
+					registry->get<component::SkeletonAnimatable>(evt.entity).loop = true;
+				}
+				if (animationTag.find("MopUse_A") != std::string::npos && evt.stopped)
+				{
+
 				}
 			}
 			else
@@ -399,7 +426,7 @@ bool AnimationManager::onEvent(const Event& event)
 		//cases for item uses
 	case (EventType)TypePlayerStateChanged:
 	{
-
+		setAnimationEntities(event);
 		auto evt = event_cast<PlayerStateChangedEvent>(event);
 		auto& playerTransform = registry->get<component::Transform>(evt.playerEntity);
 		auto& playerAnimatable = registry->get<component::SkeletonAnimatable>(evt.playerEntity);
@@ -422,16 +449,35 @@ bool AnimationManager::onEvent(const Event& event)
 			break;
 		case PlayerState::pushing:
 			//Set the animation here for using throwable bottle
+			registry->get<component::SkeletonAnimatable>(playerArmR).time = 0.01f;
+			registry->get<component::SkeletonAnimatable>(playerArmL).time = 0.01f;
+			setAnimationProperties("Pushing_A", AnimationProperties::None, false);
 			break;
 		case PlayerState::stunned:
 			//Set the animation here for using throwable bottle
 			break;
 		case PlayerState::inCleaningQuicktimeEvent:
-			//Set the animation here for using throwable bottle
+			//Set the animation here for using mop
+			registry->get<component::SkeletonAnimatable>(playerArmL).time = 0.01;
+			registry->get<component::SkeletonAnimatable>(playerArmR).time = 0.01;
+
+			registry->get<component::SkeletonAnimatable>(playerArmL).play = false;
+			registry->get<component::SkeletonAnimatable>(playerArmR).play = false;
+
+			setAnimationProperties("MopUse_A", AnimationProperties::MopUse, false);
+
 			playerAnimatable.animation = "InCleaningQuicktimeEvent";
 			break;
 		}
 		break;
+	}
+	case(EventType)TypeStickMovedDuringQuicktimeCleaningEvent:
+	{
+		auto evt = event_cast<StickMovedDuringQuicktimeCleaningEventEvent>(event);
+
+		setAnimationEntities(event);
+		registry->get<component::SkeletonAnimatable>(playerArmL).time = (1.01 - evt.stickPosY);
+		registry->get<component::SkeletonAnimatable>(playerArmR).time = (1.01 - evt.stickPosY);
 	}
 
 	}

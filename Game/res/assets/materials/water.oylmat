@@ -12,13 +12,13 @@
             ]
         },
         "Shader": {
-            "Alias": "Oyl Deferred Static",
+            "Alias": "Oyl Forward Static",
             "Pixel": {
-                "FilePath": null,
+                "FilePath": "../Engine/res/shaders/Lighting/Forward_Normal_Shadow.frag",
                 "guid": null
             },
             "Vertex": {
-                "FilePath": null,
+                "FilePath": "../Engine/res/shaders/Lighting/Static_Normal_Shadow.vert",
                 "guid": null
             }
         },
