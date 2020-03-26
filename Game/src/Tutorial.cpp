@@ -53,9 +53,7 @@ void TutorialLayer::onUpdate()
 		{
 			auto& player = registry->get<Player>(playerEntity);
 
-			if (player.playerNum == PlayerNumber::One)
-				tutPlayerEntity = playerEntity;
-			else if (player.playerNum == PlayerNumber::Three || player.playerNum == PlayerNumber::Four)
+			if (player.playerNum == PlayerNumber::Three || player.playerNum == PlayerNumber::Four)
 				registry->destroy(playerEntity);
 		}
 
@@ -76,7 +74,14 @@ void TutorialLayer::onUpdate()
 		//segmentInterpolationParam1 = 0.0f;
 	}
 
-	//auto& playerTransform = registry->get<component::Transform>(tutPlayerEntity);
+	auto& playerView = registry->view<Player>();
+	for (auto& playerEntity : playerView)
+	{
+		if (registry->get<Player>(playerEntity).playerNum == PlayerNumber::One)
+			tutPlayerEntity = playerEntity;
+	}
+
+	auto& playerTransform = registry->get<component::Transform>(tutPlayerEntity);
 
 	segmentTimer1 -= Time::deltaTime();
 	if (segmentTimer1 > 0.0f)
