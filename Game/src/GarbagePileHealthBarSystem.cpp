@@ -131,8 +131,8 @@ void GarbagePileHealthBarSystem::onUpdate()
 
 						//set screen space position for the HP bar (we set the world position based on the garbage pile position above)
 						glm::vec3 newPosition = playerCamera.worldToScreenSpace(garbageHPBarTransform.getPosition());
-						garbageHPBarTransform.       setPosition(newPosition);
-						garbageHPBarOutlineTransform.setPosition(newPosition + glm::vec3(0.0f, 0.0f, -1.0f)); //make sure the outline is drawn above the fill so we can see it
+						garbageHPBarTransform.       setPosition(newPosition + glm::vec3(0.0f, 0.0f, 3.0f));
+						garbageHPBarOutlineTransform.setPosition(newPosition + glm::vec3(0.0f, 0.0f, 2.0f)); //make sure the outline is drawn above the fill so we can see it
 
 						if (playerToGarbagePileLength == 0.0f)
 							playerToGarbagePileLength = 0.001f; //ensure we dont divide by zero

@@ -9701,7 +9701,7 @@
             "Parent": "GarbageMeterOutline0",
             "Position": {
                 "X": -1.4500000476837158,
-                "Y": 3.640000104904175,
+                "Y": 3.6410000324249268,
                 "Z": 1.0
             },
             "Rotation": {
@@ -9745,7 +9745,7 @@
             "Parent": "GarbageMeterOutline1",
             "Position": {
                 "X": -1.4500000476837158,
-                "Y": 3.640000104904175,
+                "Y": 3.6410000324249268,
                 "Z": 10.000000953674316
             },
             "Rotation": {
@@ -9789,7 +9789,7 @@
             "Parent": "GarbageMeterOutline2",
             "Position": {
                 "X": -1.4500000476837158,
-                "Y": 3.640000104904175,
+                "Y": 3.6410000324249268,
                 "Z": 1.0
             },
             "Rotation": {
@@ -9833,7 +9833,7 @@
             "Parent": "GarbageMeterOutline3",
             "Position": {
                 "X": -1.4500000476837158,
-                "Y": 3.640000104904175,
+                "Y": 3.6410000324249268,
                 "Z": 1.0
             },
             "Rotation": {
@@ -9877,7 +9877,7 @@
             "Parent": "GarbageMeterOutline0",
             "Position": {
                 "X": -0.41999998688697815,
-                "Y": 3.640000104904175,
+                "Y": 3.6410000324249268,
                 "Z": 1.0
             },
             "Rotation": {
@@ -9921,7 +9921,7 @@
             "Parent": "GarbageMeterOutline1",
             "Position": {
                 "X": -0.41999998688697815,
-                "Y": 3.640000104904175,
+                "Y": 3.6410000324249268,
                 "Z": 1.0
             },
             "Rotation": {
@@ -9965,7 +9965,7 @@
             "Parent": "GarbageMeterOutline2",
             "Position": {
                 "X": -0.41999998688697815,
-                "Y": 3.640000104904175,
+                "Y": 3.6410000324249268,
                 "Z": 1.0
             },
             "Rotation": {
@@ -10009,7 +10009,7 @@
             "Parent": "GarbageMeterOutline3",
             "Position": {
                 "X": -0.41999998688697815,
-                "Y": 3.640000104904175,
+                "Y": 3.6410000324249268,
                 "Z": 1.0
             },
             "Rotation": {
@@ -10052,8 +10052,8 @@
             },
             "Parent": "GarbageMeterOutline0",
             "Position": {
-                "X": 0.5149999856948853,
-                "Y": 3.640000104904175,
+                "X": 0.5400000214576721,
+                "Y": 3.6410000324249268,
                 "Z": 1.0
             },
             "Rotation": {
@@ -10096,8 +10096,8 @@
             },
             "Parent": "GarbageMeterOutline1",
             "Position": {
-                "X": 0.5149999856948853,
-                "Y": 3.640000104904175,
+                "X": 0.5400000214576721,
+                "Y": 3.6410000324249268,
                 "Z": 1.0
             },
             "Rotation": {
@@ -10140,8 +10140,8 @@
             },
             "Parent": "GarbageMeterOutline2",
             "Position": {
-                "X": 0.5149999856948853,
-                "Y": 3.640000104904175,
+                "X": 0.5400000214576721,
+                "Y": 3.6410000324249268,
                 "Z": 1.0
             },
             "Rotation": {
@@ -10184,8 +10184,8 @@
             },
             "Parent": "GarbageMeterOutline3",
             "Position": {
-                "X": 0.5149999856948853,
-                "Y": 3.640000104904175,
+                "X": 0.5400000214576721,
+                "Y": 3.6410000324249268,
                 "Z": 1.0
             },
             "Rotation": {
@@ -10436,8 +10436,8 @@
             "CullingMask": 2,
             "Enabled": true,
             "Texture": {
-                "Alias": "gloopIndicator",
-                "FilePath": "res/assets/textures/gui/gloopIndicator.png"
+                "Alias": "gloopIndicatorRed",
+                "FilePath": "res\\assets\\textures\\gui\\gloopIndicatorRed.png"
             }
         },
         "Transform": {
@@ -10524,8 +10524,8 @@
             "CullingMask": 8,
             "Enabled": true,
             "Texture": {
-                "Alias": "gloopIndicator",
-                "FilePath": "res/assets/textures/gui/gloopIndicator.png"
+                "Alias": "gloopIndicatorRed",
+                "FilePath": "res\\assets\\textures\\gui\\gloopIndicatorRed.png"
             }
         },
         "Transform": {
@@ -10612,8 +10612,8 @@
             "CullingMask": 2,
             "Enabled": true,
             "Texture": {
-                "Alias": "gloopIndicator",
-                "FilePath": "res/assets/textures/gui/gloopIndicator.png"
+                "Alias": "gloopIndicatorRed",
+                "FilePath": "res\\assets\\textures\\gui\\gloopIndicatorRed.png"
             }
         },
         "Transform": {
@@ -10700,8 +10700,8 @@
             "CullingMask": 8,
             "Enabled": true,
             "Texture": {
-                "Alias": "gloopIndicator",
-                "FilePath": "res/assets/textures/gui/gloopIndicator.png"
+                "Alias": "gloopIndicatorRed",
+                "FilePath": "res\\assets\\textures\\gui\\gloopIndicatorRed.png"
             }
         },
         "Transform": {
@@ -10788,8 +10788,8 @@
             "CullingMask": 2,
             "Enabled": true,
             "Texture": {
-                "Alias": "gloopIndicator",
-                "FilePath": "res/assets/textures/gui/gloopIndicator.png"
+                "Alias": "gloopIndicatorRed",
+                "FilePath": "res\\assets\\textures\\gui\\gloopIndicatorRed.png"
             }
         },
         "Transform": {
@@ -10876,8 +10876,8 @@
             "CullingMask": 8,
             "Enabled": true,
             "Texture": {
-                "Alias": "gloopIndicator",
-                "FilePath": "res/assets/textures/gui/gloopIndicator.png"
+                "Alias": "gloopIndicatorRed",
+                "FilePath": "res\\assets\\textures\\gui\\gloopIndicatorRed.png"
             }
         },
         "Transform": {
@@ -13550,8 +13550,8 @@
                 "qZ": 0.0
             },
             "Scale": {
-                "X": 0.20000000298023224,
-                "Y": 0.20000000298023224,
+                "X": 0.15000000596046448,
+                "Y": 0.15000000596046448,
                 "Z": 1.0
             }
         }
@@ -13594,8 +13594,8 @@
                 "qZ": 0.0
             },
             "Scale": {
-                "X": 0.20000000298023224,
-                "Y": 0.20000000298023224,
+                "X": 0.15000000596046448,
+                "Y": 0.15000000596046448,
                 "Z": 1.0
             }
         }
@@ -13638,8 +13638,8 @@
                 "qZ": 0.0
             },
             "Scale": {
-                "X": 0.20000000298023224,
-                "Y": 0.20000000298023224,
+                "X": 0.15000000596046448,
+                "Y": 0.15000000596046448,
                 "Z": 1.0
             }
         }
@@ -13682,8 +13682,8 @@
                 "qZ": 0.0
             },
             "Scale": {
-                "X": 0.20000000298023224,
-                "Y": 0.20000000298023224,
+                "X": 0.15000000596046448,
+                "Y": 0.15000000596046448,
                 "Z": 1.0
             }
         }

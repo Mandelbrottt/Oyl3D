@@ -129,7 +129,9 @@ bool CleaningQuicktimeEventSystem::onEvent(const Event& event)
 
 				auto& cancelQTEPromptGui = registry->get<component::GuiRenderable>(cleaningQTE.cancelPromptEntity);
 
-				if (cleaningQTE.playerNum == evt.playerNum && cleaningQTE.isActive)
+				auto& player = registry->get<Player>(evt.playerEntity);
+
+				if (cleaningQTE.playerNum == player.playerNum && cleaningQTE.isActive)
 				{
 					cleaningQTE.garbagePileBeingCleaned = entt::null;
 

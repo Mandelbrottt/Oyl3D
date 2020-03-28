@@ -1120,7 +1120,7 @@ void MainGameObjectsInitLayer::onEnter()
 			respawnable.spawnRotation = glm::vec3(0.0f, 89.7f, 0.0f);
 
 			auto& throwableBottle = registry->assign<ThrowableBottle>(bottleEntity);
-
+			
 			auto& rb = registry->assign<component::RigidBody>(bottleEntity);
 
 			registry->assign<component::Renderable>(bottleEntity, mr);

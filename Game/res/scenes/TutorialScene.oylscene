@@ -4864,7 +4864,7 @@
                 "Y": false,
                 "Z": false
             },
-            "Parent": "Player2UI",
+            "Parent": null,
             "Position": {
                 "X": 0.0,
                 "Y": -2.0,
@@ -4908,7 +4908,7 @@
                 "Y": false,
                 "Z": false
             },
-            "Parent": "Player3UI",
+            "Parent": null,
             "Position": {
                 "X": 0.0,
                 "Y": -2.0,
@@ -4952,7 +4952,7 @@
                 "Y": false,
                 "Z": false
             },
-            "Parent": "Player4UI",
+            "Parent": null,
             "Position": {
                 "X": 0.0,
                 "Y": -2.0,
@@ -5040,7 +5040,7 @@
                 "Y": false,
                 "Z": false
             },
-            "Parent": "Player2UI",
+            "Parent": null,
             "Position": {
                 "X": -30.0,
                 "Y": -2.5,
@@ -5084,7 +5084,7 @@
                 "Y": false,
                 "Z": false
             },
-            "Parent": "Player3UI",
+            "Parent": null,
             "Position": {
                 "X": -30.0,
                 "Y": -2.5,
@@ -5128,7 +5128,7 @@
                 "Y": false,
                 "Z": false
             },
-            "Parent": "Player4UI",
+            "Parent": null,
             "Position": {
                 "X": -30.0,
                 "Y": -2.5,
@@ -5672,7 +5672,7 @@
                 "Y": false,
                 "Z": false
             },
-            "Parent": "Player2UI",
+            "Parent": null,
             "Position": {
                 "X": -30.0,
                 "Y": -2.5,
@@ -5716,7 +5716,7 @@
                 "Y": false,
                 "Z": false
             },
-            "Parent": "Player3UI",
+            "Parent": null,
             "Position": {
                 "X": -30.0,
                 "Y": -2.5,
@@ -5760,7 +5760,7 @@
                 "Y": false,
                 "Z": false
             },
-            "Parent": "Player4UI",
+            "Parent": null,
             "Position": {
                 "X": -30.0,
                 "Y": -2.5,
@@ -6184,7 +6184,7 @@
                 "Y": false,
                 "Z": false
             },
-            "Parent": "Player2UI",
+            "Parent": null,
             "Position": {
                 "X": -30.0,
                 "Y": -2.5,
@@ -6228,7 +6228,7 @@
                 "Y": false,
                 "Z": false
             },
-            "Parent": "Player3UI",
+            "Parent": null,
             "Position": {
                 "X": -30.0,
                 "Y": -2.5,
@@ -6272,7 +6272,7 @@
                 "Y": false,
                 "Z": false
             },
-            "Parent": "Player4UI",
+            "Parent": null,
             "Position": {
                 "X": -30.0,
                 "Y": -2.5,
@@ -6360,7 +6360,7 @@
                 "Y": false,
                 "Z": false
             },
-            "Parent": "Player2UI",
+            "Parent": null,
             "Position": {
                 "X": 0.0,
                 "Y": 0.0,
@@ -6404,7 +6404,7 @@
                 "Y": false,
                 "Z": false
             },
-            "Parent": "Player3UI",
+            "Parent": null,
             "Position": {
                 "X": 0.0,
                 "Y": 0.0,
@@ -6448,7 +6448,7 @@
                 "Y": false,
                 "Z": false
             },
-            "Parent": "Player4UI",
+            "Parent": null,
             "Position": {
                 "X": 0.0,
                 "Y": 0.0,
@@ -6536,7 +6536,7 @@
                 "Y": false,
                 "Z": false
             },
-            "Parent": "Player2UI",
+            "Parent": null,
             "Position": {
                 "X": -30.0,
                 "Y": -2.5,
@@ -6580,7 +6580,7 @@
                 "Y": false,
                 "Z": false
             },
-            "Parent": "Player3UI",
+            "Parent": null,
             "Position": {
                 "X": -30.0,
                 "Y": -2.5,
@@ -6624,7 +6624,7 @@
                 "Y": false,
                 "Z": false
             },
-            "Parent": "Player4UI",
+            "Parent": null,
             "Position": {
                 "X": -30.0,
                 "Y": -2.5,
@@ -7746,7 +7746,7 @@
                 "Y": false,
                 "Z": false
             },
-            "Parent": "Player2UI",
+            "Parent": null,
             "Position": {
                 "X": -30.0,
                 "Y": -2.5,
@@ -7790,7 +7790,7 @@
                 "Y": false,
                 "Z": false
             },
-            "Parent": "Player3UI",
+            "Parent": null,
             "Position": {
                 "X": -30.0,
                 "Y": -2.5,
@@ -7834,7 +7834,7 @@
                 "Y": false,
                 "Z": false
             },
-            "Parent": "Player4UI",
+            "Parent": null,
             "Position": {
                 "X": -30.0,
                 "Y": -2.5,
@@ -8678,9 +8678,9 @@
                 "Y": false,
                 "Z": false
             },
-            "Parent": "Player2UI",
+            "Parent": null,
             "Position": {
-                "X": -29.999996185302734,
+                "X": -30.0,
                 "Y": 0.0,
                 "Z": 0.0
             },
@@ -8691,8 +8691,8 @@
                 "qZ": 0.0
             },
             "Scale": {
-                "X": 3.0,
-                "Y": 3.0,
+                "X": 4.0,
+                "Y": 4.0,
                 "Z": 0.0
             }
         }
@@ -8722,9 +8722,9 @@
                 "Y": false,
                 "Z": false
             },
-            "Parent": "Player3UI",
+            "Parent": null,
             "Position": {
-                "X": -29.999996185302734,
+                "X": -30.0,
                 "Y": 0.0,
                 "Z": 0.0
             },
@@ -8735,8 +8735,8 @@
                 "qZ": 0.0
             },
             "Scale": {
-                "X": 3.0,
-                "Y": 3.0,
+                "X": 4.0,
+                "Y": 4.0,
                 "Z": 0.0
             }
         }
@@ -8766,9 +8766,9 @@
                 "Y": false,
                 "Z": false
             },
-            "Parent": "Player4UI",
+            "Parent": null,
             "Position": {
-                "X": -29.9999942779541,
+                "X": -30.0,
                 "Y": 0.0,
                 "Z": 0.0
             },
@@ -8779,8 +8779,8 @@
                 "qZ": 0.0
             },
             "Scale": {
-                "X": 3.0,
-                "Y": 3.0,
+                "X": 4.0,
+                "Y": 4.0,
                 "Z": 0.0
             }
         }
@@ -8854,9 +8854,9 @@
                 "Y": false,
                 "Z": false
             },
-            "Parent": "Player2UI",
+            "Parent": null,
             "Position": {
-                "X": -29.999996185302734,
+                "X": -30.0,
                 "Y": 0.0,
                 "Z": 0.0
             },
@@ -8867,8 +8867,8 @@
                 "qZ": 0.0
             },
             "Scale": {
-                "X": 3.0,
-                "Y": 3.0,
+                "X": 4.0,
+                "Y": 4.0,
                 "Z": 0.0
             }
         }
@@ -8898,9 +8898,9 @@
                 "Y": false,
                 "Z": false
             },
-            "Parent": "Player3UI",
+            "Parent": null,
             "Position": {
-                "X": -29.999996185302734,
+                "X": -30.0,
                 "Y": 0.0,
                 "Z": 0.0
             },
@@ -8911,8 +8911,8 @@
                 "qZ": 0.0
             },
             "Scale": {
-                "X": 3.0,
-                "Y": 3.0,
+                "X": 4.0,
+                "Y": 4.0,
                 "Z": 0.0
             }
         }
@@ -8942,9 +8942,9 @@
                 "Y": false,
                 "Z": false
             },
-            "Parent": "Player4UI",
+            "Parent": null,
             "Position": {
-                "X": -29.999988555908203,
+                "X": -30.0,
                 "Y": 0.0,
                 "Z": 0.0
             },
@@ -8955,8 +8955,8 @@
                 "qZ": 0.0
             },
             "Scale": {
-                "X": 3.0,
-                "Y": 3.0,
+                "X": 4.0,
+                "Y": 4.0,
                 "Z": 0.0
             }
         }
@@ -9030,9 +9030,9 @@
                 "Y": false,
                 "Z": false
             },
-            "Parent": "Player2UI",
+            "Parent": null,
             "Position": {
-                "X": -29.999990463256836,
+                "X": -30.0,
                 "Y": 0.0,
                 "Z": 0.0
             },
@@ -9043,8 +9043,8 @@
                 "qZ": 0.0
             },
             "Scale": {
-                "X": 3.0,
-                "Y": 3.0,
+                "X": 4.0,
+                "Y": 4.0,
                 "Z": 0.0
             }
         }
@@ -9074,9 +9074,9 @@
                 "Y": false,
                 "Z": false
             },
-            "Parent": "Player3UI",
+            "Parent": null,
             "Position": {
-                "X": -29.999996185302734,
+                "X": -30.0,
                 "Y": 0.0,
                 "Z": 0.0
             },
@@ -9087,8 +9087,8 @@
                 "qZ": 0.0
             },
             "Scale": {
-                "X": 3.0,
-                "Y": 3.0,
+                "X": 4.0,
+                "Y": 4.0,
                 "Z": 0.0
             }
         }
@@ -9118,9 +9118,9 @@
                 "Y": false,
                 "Z": false
             },
-            "Parent": "Player4UI",
+            "Parent": null,
             "Position": {
-                "X": -29.999996185302734,
+                "X": -30.0,
                 "Y": 0.0,
                 "Z": 0.0
             },
@@ -9131,8 +9131,8 @@
                 "qZ": 0.0
             },
             "Scale": {
-                "X": 3.0,
-                "Y": 3.0,
+                "X": 4.0,
+                "Y": 4.0,
                 "Z": 0.0
             }
         }
@@ -9206,7 +9206,7 @@
                 "Y": false,
                 "Z": false
             },
-            "Parent": "Player2UI",
+            "Parent": null,
             "Position": {
                 "X": -30.0,
                 "Y": 0.0,
@@ -9219,8 +9219,8 @@
                 "qZ": 0.0
             },
             "Scale": {
-                "X": 3.0,
-                "Y": 3.0,
+                "X": 4.0,
+                "Y": 4.0,
                 "Z": 0.0
             }
         }
@@ -9250,7 +9250,7 @@
                 "Y": false,
                 "Z": false
             },
-            "Parent": "Player3UI",
+            "Parent": null,
             "Position": {
                 "X": -30.0,
                 "Y": 0.0,
@@ -9263,8 +9263,8 @@
                 "qZ": 0.0
             },
             "Scale": {
-                "X": 3.0,
-                "Y": 3.0,
+                "X": 4.0,
+                "Y": 4.0,
                 "Z": 0.0
             }
         }
@@ -9294,7 +9294,7 @@
                 "Y": false,
                 "Z": false
             },
-            "Parent": "Player4UI",
+            "Parent": null,
             "Position": {
                 "X": -30.0,
                 "Y": 0.0,
@@ -9307,8 +9307,8 @@
                 "qZ": 0.0
             },
             "Scale": {
-                "X": 3.0,
-                "Y": 3.0,
+                "X": 4.0,
+                "Y": 4.0,
                 "Z": 0.0
             }
         }
@@ -9382,7 +9382,7 @@
                 "Y": false,
                 "Z": false
             },
-            "Parent": "Player2UI",
+            "Parent": null,
             "Position": {
                 "X": -30.0,
                 "Y": 0.0,
@@ -9395,8 +9395,8 @@
                 "qZ": 0.0
             },
             "Scale": {
-                "X": 3.0,
-                "Y": 3.0,
+                "X": 4.0,
+                "Y": 4.0,
                 "Z": 0.0
             }
         }
@@ -9426,7 +9426,7 @@
                 "Y": false,
                 "Z": false
             },
-            "Parent": "Player3UI",
+            "Parent": null,
             "Position": {
                 "X": -30.0,
                 "Y": 0.0,
@@ -9439,8 +9439,8 @@
                 "qZ": 0.0
             },
             "Scale": {
-                "X": 3.0,
-                "Y": 3.0,
+                "X": 4.0,
+                "Y": 4.0,
                 "Z": 0.0
             }
         }
@@ -9470,7 +9470,7 @@
                 "Y": false,
                 "Z": false
             },
-            "Parent": "Player4UI",
+            "Parent": null,
             "Position": {
                 "X": -30.0,
                 "Y": 0.0,
@@ -9483,8 +9483,8 @@
                 "qZ": 0.0
             },
             "Scale": {
-                "X": 3.0,
-                "Y": 3.0,
+                "X": 4.0,
+                "Y": 4.0,
                 "Z": 0.0
             }
         }
@@ -9558,7 +9558,7 @@
                 "Y": false,
                 "Z": false
             },
-            "Parent": "Player2UI",
+            "Parent": null,
             "Position": {
                 "X": -30.0,
                 "Y": 0.0,
@@ -9571,8 +9571,8 @@
                 "qZ": 0.0
             },
             "Scale": {
-                "X": 3.0,
-                "Y": 3.0,
+                "X": 4.0,
+                "Y": 4.0,
                 "Z": 0.0
             }
         }
@@ -9602,7 +9602,7 @@
                 "Y": false,
                 "Z": false
             },
-            "Parent": "Player3UI",
+            "Parent": null,
             "Position": {
                 "X": -30.0,
                 "Y": 0.0,
@@ -9615,8 +9615,8 @@
                 "qZ": 0.0
             },
             "Scale": {
-                "X": 3.0,
-                "Y": 3.0,
+                "X": 4.0,
+                "Y": 4.0,
                 "Z": 0.0
             }
         }
@@ -9646,7 +9646,7 @@
                 "Y": false,
                 "Z": false
             },
-            "Parent": "Player4UI",
+            "Parent": null,
             "Position": {
                 "X": -30.0,
                 "Y": 0.0,
@@ -9659,8 +9659,8 @@
                 "qZ": 0.0
             },
             "Scale": {
-                "X": 3.0,
-                "Y": 3.0,
+                "X": 4.0,
+                "Y": 4.0,
                 "Z": 0.0
             }
         }
@@ -9693,7 +9693,7 @@
             "Parent": "GarbageMeterOutline0",
             "Position": {
                 "X": -1.4500000476837158,
-                "Y": 3.640000104904175,
+                "Y": 3.635999917984009,
                 "Z": 1.0
             },
             "Rotation": {
@@ -9736,9 +9736,9 @@
             },
             "Parent": "GarbageMeterOutline1",
             "Position": {
-                "X": -1.4500000476837158,
-                "Y": 3.640000104904175,
-                "Z": 10.000000953674316
+                "X": -0.6499999761581421,
+                "Y": 3.799999952316284,
+                "Z": 1.0
             },
             "Rotation": {
                 "qW": 1.0,
@@ -9747,8 +9747,8 @@
                 "qZ": 0.0
             },
             "Scale": {
-                "X": 1.7599999904632568,
-                "Y": 1.309999942779541,
+                "X": 2.0,
+                "Y": 2.0,
                 "Z": 1.0
             }
         }
@@ -9780,8 +9780,8 @@
             },
             "Parent": "GarbageMeterOutline2",
             "Position": {
-                "X": -1.4500000476837158,
-                "Y": 3.640000104904175,
+                "X": -0.6499999761581421,
+                "Y": 3.799999952316284,
                 "Z": 1.0
             },
             "Rotation": {
@@ -9791,8 +9791,8 @@
                 "qZ": 0.0
             },
             "Scale": {
-                "X": 1.7599999904632568,
-                "Y": 1.309999942779541,
+                "X": 2.0,
+                "Y": 2.0,
                 "Z": 1.0
             }
         }
@@ -9824,8 +9824,8 @@
             },
             "Parent": "GarbageMeterOutline3",
             "Position": {
-                "X": -1.4500000476837158,
-                "Y": 3.640000104904175,
+                "X": -0.6499999761581421,
+                "Y": 3.799999952316284,
                 "Z": 1.0
             },
             "Rotation": {
@@ -9835,8 +9835,8 @@
                 "qZ": 0.0
             },
             "Scale": {
-                "X": 1.7599999904632568,
-                "Y": 1.309999942779541,
+                "X": 2.0,
+                "Y": 2.0,
                 "Z": 1.0
             }
         }
@@ -9869,7 +9869,7 @@
             "Parent": "GarbageMeterOutline0",
             "Position": {
                 "X": -0.41999998688697815,
-                "Y": 3.640000104904175,
+                "Y": 3.635999917984009,
                 "Z": 1.0
             },
             "Rotation": {
@@ -9912,8 +9912,8 @@
             },
             "Parent": "GarbageMeterOutline1",
             "Position": {
-                "X": -0.41999998688697815,
-                "Y": 3.640000104904175,
+                "X": 0.0,
+                "Y": 3.799999952316284,
                 "Z": 1.0
             },
             "Rotation": {
@@ -9923,8 +9923,8 @@
                 "qZ": 0.0
             },
             "Scale": {
-                "X": 1.7599999904632568,
-                "Y": 1.309999942779541,
+                "X": 2.0,
+                "Y": 2.0,
                 "Z": 1.0
             }
         }
@@ -9956,8 +9956,8 @@
             },
             "Parent": "GarbageMeterOutline2",
             "Position": {
-                "X": -0.41999998688697815,
-                "Y": 3.640000104904175,
+                "X": 0.0,
+                "Y": 3.799999952316284,
                 "Z": 1.0
             },
             "Rotation": {
@@ -9967,8 +9967,8 @@
                 "qZ": 0.0
             },
             "Scale": {
-                "X": 1.7599999904632568,
-                "Y": 1.309999942779541,
+                "X": 2.0,
+                "Y": 2.0,
                 "Z": 1.0
             }
         }
@@ -10000,8 +10000,8 @@
             },
             "Parent": "GarbageMeterOutline3",
             "Position": {
-                "X": -0.41999998688697815,
-                "Y": 3.640000104904175,
+                "X": 0.0,
+                "Y": 3.799999952316284,
                 "Z": 1.0
             },
             "Rotation": {
@@ -10011,8 +10011,8 @@
                 "qZ": 0.0
             },
             "Scale": {
-                "X": 1.7599999904632568,
-                "Y": 1.309999942779541,
+                "X": 2.0,
+                "Y": 2.0,
                 "Z": 1.0
             }
         }
@@ -10044,8 +10044,8 @@
             },
             "Parent": "GarbageMeterOutline0",
             "Position": {
-                "X": 0.5149999856948853,
-                "Y": 3.640000104904175,
+                "X": 0.5400000214576721,
+                "Y": 3.635999917984009,
                 "Z": 1.0
             },
             "Rotation": {
@@ -10088,8 +10088,8 @@
             },
             "Parent": "GarbageMeterOutline1",
             "Position": {
-                "X": 0.5149999856948853,
-                "Y": 3.640000104904175,
+                "X": 0.6499999761581421,
+                "Y": 3.799999952316284,
                 "Z": 1.0
             },
             "Rotation": {
@@ -10099,8 +10099,8 @@
                 "qZ": 0.0
             },
             "Scale": {
-                "X": 1.7599999904632568,
-                "Y": 1.309999942779541,
+                "X": 2.0,
+                "Y": 2.0,
                 "Z": 1.0
             }
         }
@@ -10132,8 +10132,8 @@
             },
             "Parent": "GarbageMeterOutline2",
             "Position": {
-                "X": 0.5149999856948853,
-                "Y": 3.640000104904175,
+                "X": 0.6499999761581421,
+                "Y": 3.799999952316284,
                 "Z": 1.0
             },
             "Rotation": {
@@ -10143,8 +10143,8 @@
                 "qZ": 0.0
             },
             "Scale": {
-                "X": 1.7599999904632568,
-                "Y": 1.309999942779541,
+                "X": 2.0,
+                "Y": 2.0,
                 "Z": 1.0
             }
         }
@@ -10176,8 +10176,8 @@
             },
             "Parent": "GarbageMeterOutline3",
             "Position": {
-                "X": 0.5149999856948853,
-                "Y": 3.640000104904175,
+                "X": 0.6499999761581421,
+                "Y": 3.799999952316284,
                 "Z": 1.0
             },
             "Rotation": {
@@ -10187,8 +10187,8 @@
                 "qZ": 0.0
             },
             "Scale": {
-                "X": 1.7599999904632568,
-                "Y": 1.309999942779541,
+                "X": 2.0,
+                "Y": 2.0,
                 "Z": 1.0
             }
         }
@@ -10262,7 +10262,7 @@
                 "Y": false,
                 "Z": false
             },
-            "Parent": "Player2UI",
+            "Parent": null,
             "Position": {
                 "X": 0.0,
                 "Y": 3.799999952316284,
@@ -10275,7 +10275,7 @@
                 "qZ": 0.0
             },
             "Scale": {
-                "X": 2.5199999809265137,
+                "X": 2.0,
                 "Y": 2.0,
                 "Z": 1.0
             }
@@ -10306,7 +10306,7 @@
                 "Y": false,
                 "Z": false
             },
-            "Parent": "Player3UI",
+            "Parent": null,
             "Position": {
                 "X": 0.0,
                 "Y": 3.799999952316284,
@@ -10319,7 +10319,7 @@
                 "qZ": 0.0
             },
             "Scale": {
-                "X": 2.5199999809265137,
+                "X": 2.0,
                 "Y": 2.0,
                 "Z": 1.0
             }
@@ -10350,10 +10350,10 @@
                 "Y": false,
                 "Z": false
             },
-            "Parent": "Player4UI",
+            "Parent": null,
             "Position": {
-                "X": -3.814697265625e-06,
-                "Y": 3.7999987602233887,
+                "X": 0.0,
+                "Y": 3.799999952316284,
                 "Z": -20.0
             },
             "Rotation": {
@@ -10363,8 +10363,8 @@
                 "qZ": 0.0
             },
             "Scale": {
-                "X": 2.5199999809265137,
-                "Y": 1.9999995231628418,
+                "X": 2.0,
+                "Y": 2.0,
                 "Z": 1.0
             }
         }
@@ -10438,7 +10438,7 @@
                 "Y": false,
                 "Z": false
             },
-            "Parent": "Player2UI",
+            "Parent": null,
             "Position": {
                 "X": -30.0,
                 "Y": 0.0,
@@ -10482,7 +10482,7 @@
                 "Y": false,
                 "Z": false
             },
-            "Parent": "Player3UI",
+            "Parent": null,
             "Position": {
                 "X": -30.0,
                 "Y": 0.0,
@@ -10526,7 +10526,7 @@
                 "Y": false,
                 "Z": false
             },
-            "Parent": "Player4UI",
+            "Parent": null,
             "Position": {
                 "X": -30.0,
                 "Y": 0.0,
@@ -10614,7 +10614,7 @@
                 "Y": false,
                 "Z": false
             },
-            "Parent": "Player2UI",
+            "Parent": null,
             "Position": {
                 "X": -30.0,
                 "Y": 0.0,
@@ -10658,7 +10658,7 @@
                 "Y": false,
                 "Z": false
             },
-            "Parent": "Player3UI",
+            "Parent": null,
             "Position": {
                 "X": -30.0,
                 "Y": 0.0,
@@ -10702,7 +10702,7 @@
                 "Y": false,
                 "Z": false
             },
-            "Parent": "Player4UI",
+            "Parent": null,
             "Position": {
                 "X": -30.0,
                 "Y": 0.0,
@@ -10790,7 +10790,7 @@
                 "Y": false,
                 "Z": false
             },
-            "Parent": "Player2UI",
+            "Parent": null,
             "Position": {
                 "X": -30.0,
                 "Y": 0.0,
@@ -10834,7 +10834,7 @@
                 "Y": false,
                 "Z": false
             },
-            "Parent": "Player3UI",
+            "Parent": null,
             "Position": {
                 "X": -30.0,
                 "Y": 0.0,
@@ -10878,7 +10878,7 @@
                 "Y": false,
                 "Z": false
             },
-            "Parent": "Player4UI",
+            "Parent": null,
             "Position": {
                 "X": -30.0,
                 "Y": 0.0,
@@ -11194,7 +11194,7 @@
                 "Y": false,
                 "Z": false
             },
-            "Parent": "Player2UI",
+            "Parent": null,
             "Position": {
                 "X": -30.0,
                 "Y": -1.0,
@@ -11238,7 +11238,7 @@
                 "Y": false,
                 "Z": false
             },
-            "Parent": "Player3UI",
+            "Parent": null,
             "Position": {
                 "X": -30.0,
                 "Y": -1.0,
@@ -11282,9 +11282,9 @@
                 "Y": false,
                 "Z": false
             },
-            "Parent": "Player4UI",
+            "Parent": null,
             "Position": {
-                "X": -30.000001907348633,
+                "X": -30.0,
                 "Y": -1.0,
                 "Z": -2.0
             },
@@ -11570,7 +11570,7 @@
                 "Y": false,
                 "Z": false
             },
-            "Parent": "Player2UI",
+            "Parent": null,
             "Position": {
                 "X": -30.0,
                 "Y": -2.5,
@@ -11614,7 +11614,7 @@
                 "Y": false,
                 "Z": false
             },
-            "Parent": "Player3UI",
+            "Parent": null,
             "Position": {
                 "X": -30.0,
                 "Y": -2.5,
@@ -11658,7 +11658,7 @@
                 "Y": false,
                 "Z": false
             },
-            "Parent": "Player4UI",
+            "Parent": null,
             "Position": {
                 "X": -30.0,
                 "Y": -2.5,
@@ -13334,7 +13334,7 @@
                 "Y": false,
                 "Z": false
             },
-            "Parent": "Player2UI",
+            "Parent": null,
             "Position": {
                 "X": -30.0,
                 "Y": -2.5,
@@ -13378,7 +13378,7 @@
                 "Y": false,
                 "Z": false
             },
-            "Parent": "Player3UI",
+            "Parent": null,
             "Position": {
                 "X": -30.0,
                 "Y": -2.5,
@@ -13422,7 +13422,7 @@
                 "Y": false,
                 "Z": false
             },
-            "Parent": "Player4UI",
+            "Parent": null,
             "Position": {
                 "X": -30.0,
                 "Y": -2.5,
@@ -13573,7 +13573,7 @@
                 "Y": false,
                 "Z": false
             },
-            "Parent": "Player2UI",
+            "Parent": null,
             "Position": {
                 "X": -30.0,
                 "Y": -1.0,
@@ -13617,7 +13617,7 @@
                 "Y": false,
                 "Z": false
             },
-            "Parent": "Player3UI",
+            "Parent": null,
             "Position": {
                 "X": -30.0,
                 "Y": -1.0,
@@ -13661,7 +13661,7 @@
                 "Y": false,
                 "Z": false
             },
-            "Parent": "Player4UI",
+            "Parent": null,
             "Position": {
                 "X": -30.0,
                 "Y": -1.0,
@@ -14323,111 +14323,6 @@
             }
         }
     },
-    "ObjectL2": {
-        "Renderable": {
-            "CastShadows": true,
-            "CullingMask": 2,
-            "Enabled": true,
-            "Material": {
-                "Alias": null
-            },
-            "Mesh": null
-        },
-        "Transform": {
-            "Mirror": {
-                "X": false,
-                "Y": false,
-                "Z": false
-            },
-            "Parent": "TargetL2",
-            "Position": {
-                "X": 1.907349087559851e-06,
-                "Y": 3.5762798233918147e-07,
-                "Z": -4.768366750340647e-07
-            },
-            "Rotation": {
-                "qW": 1.0,
-                "qX": 5.31436015194231e-08,
-                "qY": -1.1827795987073841e-07,
-                "qZ": 1.4901143430279262e-08
-            },
-            "Scale": {
-                "X": 1.0000001192092896,
-                "Y": 0.9999999403953552,
-                "Z": 1.0
-            }
-        }
-    },
-    "ObjectL3": {
-        "Renderable": {
-            "CastShadows": true,
-            "CullingMask": 4,
-            "Enabled": true,
-            "Material": {
-                "Alias": null
-            },
-            "Mesh": null
-        },
-        "Transform": {
-            "Mirror": {
-                "X": false,
-                "Y": false,
-                "Z": false
-            },
-            "Parent": "TargetL3",
-            "Position": {
-                "X": 1.907349087559851e-06,
-                "Y": 3.5762798233918147e-07,
-                "Z": -4.768366750340647e-07
-            },
-            "Rotation": {
-                "qW": 1.0,
-                "qX": 5.31436015194231e-08,
-                "qY": -1.1827795987073841e-07,
-                "qZ": 1.4901143430279262e-08
-            },
-            "Scale": {
-                "X": 1.0000001192092896,
-                "Y": 0.9999999403953552,
-                "Z": 1.0
-            }
-        }
-    },
-    "ObjectL4": {
-        "Renderable": {
-            "CastShadows": true,
-            "CullingMask": 8,
-            "Enabled": true,
-            "Material": {
-                "Alias": null
-            },
-            "Mesh": null
-        },
-        "Transform": {
-            "Mirror": {
-                "X": false,
-                "Y": false,
-                "Z": false
-            },
-            "Parent": "TargetL4",
-            "Position": {
-                "X": 1.907349087559851e-06,
-                "Y": 3.5762798233918147e-07,
-                "Z": -4.768366750340647e-07
-            },
-            "Rotation": {
-                "qW": 1.0,
-                "qX": 5.31436015194231e-08,
-                "qY": -1.1827795987073841e-07,
-                "qZ": 1.4901143430279262e-08
-            },
-            "Scale": {
-                "X": 1.0000001192092896,
-                "Y": 0.9999999403953552,
-                "Z": 1.0
-            }
-        }
-    },
     "ObjectR1": {
         "Renderable": {
             "CastShadows": true,
@@ -14445,111 +14340,6 @@
                 "Z": false
             },
             "Parent": "TargetR1",
-            "Position": {
-                "X": 1.907349087559851e-06,
-                "Y": 3.5762798233918147e-07,
-                "Z": -4.768366750340647e-07
-            },
-            "Rotation": {
-                "qW": 1.0,
-                "qX": 5.31436015194231e-08,
-                "qY": -1.1827795987073841e-07,
-                "qZ": 1.4901143430279262e-08
-            },
-            "Scale": {
-                "X": 1.0000001192092896,
-                "Y": 0.9999999403953552,
-                "Z": 1.0
-            }
-        }
-    },
-    "ObjectR2": {
-        "Renderable": {
-            "CastShadows": true,
-            "CullingMask": 2,
-            "Enabled": true,
-            "Material": {
-                "Alias": null
-            },
-            "Mesh": null
-        },
-        "Transform": {
-            "Mirror": {
-                "X": false,
-                "Y": false,
-                "Z": false
-            },
-            "Parent": "TargetR2",
-            "Position": {
-                "X": 1.907349087559851e-06,
-                "Y": 3.5762798233918147e-07,
-                "Z": -4.768366750340647e-07
-            },
-            "Rotation": {
-                "qW": 1.0,
-                "qX": 5.31436015194231e-08,
-                "qY": -1.1827795987073841e-07,
-                "qZ": 1.4901143430279262e-08
-            },
-            "Scale": {
-                "X": 1.0000001192092896,
-                "Y": 0.9999999403953552,
-                "Z": 1.0
-            }
-        }
-    },
-    "ObjectR3": {
-        "Renderable": {
-            "CastShadows": true,
-            "CullingMask": 4,
-            "Enabled": true,
-            "Material": {
-                "Alias": null
-            },
-            "Mesh": null
-        },
-        "Transform": {
-            "Mirror": {
-                "X": false,
-                "Y": false,
-                "Z": false
-            },
-            "Parent": "TargetR3",
-            "Position": {
-                "X": 1.907349087559851e-06,
-                "Y": 3.5762798233918147e-07,
-                "Z": -4.768366750340647e-07
-            },
-            "Rotation": {
-                "qW": 1.0,
-                "qX": 5.31436015194231e-08,
-                "qY": -1.1827795987073841e-07,
-                "qZ": 1.4901143430279262e-08
-            },
-            "Scale": {
-                "X": 1.0000001192092896,
-                "Y": 0.9999999403953552,
-                "Z": 1.0
-            }
-        }
-    },
-    "ObjectR4": {
-        "Renderable": {
-            "CastShadows": true,
-            "CullingMask": 8,
-            "Enabled": true,
-            "Material": {
-                "Alias": null
-            },
-            "Mesh": null
-        },
-        "Transform": {
-            "Mirror": {
-                "X": false,
-                "Y": false,
-                "Z": false
-            },
-            "Parent": "TargetR4",
             "Position": {
                 "X": 1.907349087559851e-06,
                 "Y": 3.5762798233918147e-07,
@@ -14637,7 +14427,7 @@
                 "Y": false,
                 "Z": false
             },
-            "Parent": "Player2UI",
+            "Parent": null,
             "Position": {
                 "X": -30.0,
                 "Y": 2.0,
@@ -14681,7 +14471,7 @@
                 "Y": false,
                 "Z": false
             },
-            "Parent": "Player3UI",
+            "Parent": null,
             "Position": {
                 "X": -30.0,
                 "Y": 2.0,
@@ -14725,7 +14515,7 @@
                 "Y": false,
                 "Z": false
             },
-            "Parent": "Player4UI",
+            "Parent": null,
             "Position": {
                 "X": -30.0,
                 "Y": 2.0,
@@ -14813,7 +14603,7 @@
                 "Y": false,
                 "Z": false
             },
-            "Parent": "Player2UI",
+            "Parent": null,
             "Position": {
                 "X": -30.0,
                 "Y": -2.5,
@@ -14857,7 +14647,7 @@
                 "Y": false,
                 "Z": false
             },
-            "Parent": "Player3UI",
+            "Parent": null,
             "Position": {
                 "X": -30.0,
                 "Y": -2.5,
@@ -14901,7 +14691,7 @@
                 "Y": false,
                 "Z": false
             },
-            "Parent": "Player4UI",
+            "Parent": null,
             "Position": {
                 "X": -30.0,
                 "Y": -2.5,
@@ -14989,7 +14779,7 @@
                 "Y": false,
                 "Z": false
             },
-            "Parent": "Player2UI",
+            "Parent": null,
             "Position": {
                 "X": -30.0,
                 "Y": -2.5,
@@ -15033,7 +14823,7 @@
                 "Y": false,
                 "Z": false
             },
-            "Parent": "Player3UI",
+            "Parent": null,
             "Position": {
                 "X": -30.0,
                 "Y": -2.5,
@@ -15077,7 +14867,7 @@
                 "Y": false,
                 "Z": false
             },
-            "Parent": "Player4UI",
+            "Parent": null,
             "Position": {
                 "X": -30.0,
                 "Y": -2.5,
@@ -15165,7 +14955,7 @@
                 "Y": false,
                 "Z": false
             },
-            "Parent": "Player2UI",
+            "Parent": null,
             "Position": {
                 "X": -30.0,
                 "Y": -2.5,
@@ -15209,7 +14999,7 @@
                 "Y": false,
                 "Z": false
             },
-            "Parent": "Player3UI",
+            "Parent": null,
             "Position": {
                 "X": -30.0,
                 "Y": -2.5,
@@ -15253,7 +15043,7 @@
                 "Y": false,
                 "Z": false
             },
-            "Parent": "Player4UI",
+            "Parent": null,
             "Position": {
                 "X": -30.0,
                 "Y": -2.5,
@@ -15341,7 +15131,7 @@
                 "Y": false,
                 "Z": false
             },
-            "Parent": "Player2UI",
+            "Parent": null,
             "Position": {
                 "X": -30.0,
                 "Y": -2.5,
@@ -15385,7 +15175,7 @@
                 "Y": false,
                 "Z": false
             },
-            "Parent": "Player3UI",
+            "Parent": null,
             "Position": {
                 "X": -30.0,
                 "Y": -2.5,
@@ -15429,7 +15219,7 @@
                 "Y": false,
                 "Z": false
             },
-            "Parent": "Player4UI",
+            "Parent": null,
             "Position": {
                 "X": -30.0,
                 "Y": -2.5,
@@ -15873,7 +15663,7 @@
             "Position": {
                 "X": 15.447599411010742,
                 "Y": 1.124833106994629,
-                "Z": -1.781553030014038
+                "Z": -2.990687608718872
             },
             "Rotation": {
                 "qW": 0.7053109407424927,
@@ -16072,8 +15862,8 @@
             "Parent": "Player2 Red",
             "Position": {
                 "X": 0.0,
-                "Y": 0.699999988079071,
-                "Z": -0.3499999940395355
+                "Y": 0.800000011920929,
+                "Z": -0.5
             },
             "Rotation": {
                 "qW": 1.0,
@@ -16085,52 +15875,6 @@
                 "X": 1.0,
                 "Y": 1.0,
                 "Z": 1.0
-            }
-        }
-    },
-    "Player2 LeftArm": {
-        "Renderable": {
-            "CastShadows": false,
-            "CullingMask": 2,
-            "Enabled": true,
-            "Material": {
-                "Alias": "Character Tall Red"
-            },
-            "Mesh": {
-                "Alias": "LeftArm",
-                "FilePath": "res\\assets\\models\\Animation\\Character\\LeftArm.fbx"
-            }
-        },
-        "SkeletonAnimatable": {
-            "Animation": "Idle_L",
-            "Loop": true,
-            "Play": true,
-            "Reverse": false,
-            "Time": 2.109999895095825,
-            "TimeScale": 1.0
-        },
-        "Transform": {
-            "Mirror": {
-                "X": false,
-                "Y": false,
-                "Z": false
-            },
-            "Parent": "Player2 Camera",
-            "Position": {
-                "X": 0.0,
-                "Y": 0.0,
-                "Z": -0.019999999552965164
-            },
-            "Rotation": {
-                "qW": 1.0,
-                "qX": 0.0,
-                "qY": -0.0,
-                "qZ": -1.2432549738150556e-05
-            },
-            "Scale": {
-                "X": 0.009999999776482582,
-                "Y": 0.009999999776482582,
-                "Z": 0.009999999776482582
             }
         }
     },
@@ -16186,9 +15930,9 @@
             },
             "Parent": null,
             "Position": {
-                "X": 15.330766677856445,
+                "X": 3.75429105758667,
                 "Y": 1.0499999523162842,
-                "Z": 24.380056381225586
+                "Z": 23.745859146118164
             },
             "Rotation": {
                 "qW": 0.7003018260002136,
@@ -16203,78 +15947,6 @@
             }
         }
     },
-    "Player2 RightArm": {
-        "Renderable": {
-            "CastShadows": false,
-            "CullingMask": 2,
-            "Enabled": true,
-            "Material": {
-                "Alias": "Character Tall Red"
-            },
-            "Mesh": {
-                "Alias": "RightArm",
-                "FilePath": "res\\assets\\models\\Animation\\Character\\RightArm.fbx"
-            }
-        },
-        "SkeletonAnimatable": {
-            "Animation": "Idle_R",
-            "Loop": true,
-            "Play": true,
-            "Reverse": false,
-            "Time": 2.109999895095825,
-            "TimeScale": 1.0
-        },
-        "Transform": {
-            "Mirror": {
-                "X": false,
-                "Y": false,
-                "Z": false
-            },
-            "Parent": "Player2 Camera",
-            "Position": {
-                "X": 0.0,
-                "Y": -1.1920928955078125e-07,
-                "Z": -0.020000457763671875
-            },
-            "Rotation": {
-                "qW": 1.0,
-                "qX": 0.0,
-                "qY": -0.0,
-                "qZ": -1.2432549738150556e-05
-            },
-            "Scale": {
-                "X": 0.009999999776482582,
-                "Y": 0.009999999776482582,
-                "Z": 0.009999999776482582
-            }
-        }
-    },
-    "Player2UI": {
-        "Transform": {
-            "Mirror": {
-                "X": false,
-                "Y": false,
-                "Z": false
-            },
-            "Parent": "UI",
-            "Position": {
-                "X": 5.722046807932202e-06,
-                "Y": 1.788139627478813e-07,
-                "Z": 0.0
-            },
-            "Rotation": {
-                "qW": 1.0,
-                "qX": 0.0,
-                "qY": 0.0,
-                "qZ": 0.0
-            },
-            "Scale": {
-                "X": 1.0000001192092896,
-                "Y": 1.0000001192092896,
-                "Z": 1.0
-            }
-        }
-    },
     "Player3 Blue": {
         "Collidable": {
             "Shapes": [
@@ -16284,11 +15956,13 @@
                         0.0,
                         0.0
                     ],
-                    "Direction": 1,
-                    "Height": 1.0,
-                    "Radius": 0.5,
+                    "Size": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
                     "Trigger": false,
-                    "Type": 2
+                    "Type": 0
                 }
             ]
         },
@@ -16297,27 +15971,19 @@
             "CullingMask": 4294967291,
             "Enabled": true,
             "Material": {
-                "Alias": "Charactter Tall Blue"
+                "Alias": null
             },
             "Mesh": {
-                "Alias": "pirate_tall",
-                "FilePath": "res\\assets\\models\\Animation\\Character\\pirate_tall.fbx"
+                "Alias": "garbageSurrender",
+                "FilePath": "res/assets/models/Garbage/garbageSurrender.obj"
             }
         },
         "RigidBody": {
-            "Friction": 0.0,
+            "Friction": 0.8999999761581421,
             "Group": 1,
             "Mask": 1,
             "Mass": 5.0,
             "Properties": 126
-        },
-        "SkeletonAnimatable": {
-            "Animation": "Reference Pose",
-            "Loop": true,
-            "Play": true,
-            "Reverse": false,
-            "Time": 0.0,
-            "TimeScale": 1.0
         },
         "Transform": {
             "Mirror": {
@@ -16327,15 +15993,15 @@
             },
             "Parent": null,
             "Position": {
-                "X": 15.361164093017578,
-                "Y": 1.0499999523162842,
-                "Z": -3.7874622344970703
+                "X": 0.0,
+                "Y": 0.0,
+                "Z": 0.0
             },
             "Rotation": {
-                "qW": 0.6945565938949585,
-                "qX": -3.3408105082344264e-07,
-                "qY": 0.7194380164146423,
-                "qZ": -3.3408105082344264e-07
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
             },
             "Scale": {
                 "X": 1.0,
@@ -16369,8 +16035,8 @@
             "Parent": "Player3 Blue",
             "Position": {
                 "X": 0.0,
-                "Y": 0.699999988079071,
-                "Z": -0.3499999940395355
+                "Y": 0.800000011920929,
+                "Z": -0.5
             },
             "Rotation": {
                 "qW": 1.0,
@@ -16381,124 +16047,6 @@
             "Scale": {
                 "X": 1.0,
                 "Y": 1.0,
-                "Z": 1.0
-            }
-        }
-    },
-    "Player3 LeftArm": {
-        "Renderable": {
-            "CastShadows": false,
-            "CullingMask": 4,
-            "Enabled": true,
-            "Material": {
-                "Alias": "Charactter Tall Blue"
-            },
-            "Mesh": {
-                "Alias": "LeftArm",
-                "FilePath": "res\\assets\\models\\Animation\\Character\\LeftArm.fbx"
-            }
-        },
-        "SkeletonAnimatable": {
-            "Animation": "Idle_L",
-            "Loop": true,
-            "Play": true,
-            "Reverse": false,
-            "Time": 0.3400000035762787,
-            "TimeScale": 1.0
-        },
-        "Transform": {
-            "Mirror": {
-                "X": false,
-                "Y": false,
-                "Z": false
-            },
-            "Parent": "Player3 Camera",
-            "Position": {
-                "X": 0.0,
-                "Y": 0.0,
-                "Z": -0.019999999552965164
-            },
-            "Rotation": {
-                "qW": 1.0,
-                "qX": 0.0,
-                "qY": 0.0,
-                "qZ": 0.0
-            },
-            "Scale": {
-                "X": 0.010000001639127731,
-                "Y": 0.009999999776482582,
-                "Z": 0.010000001639127731
-            }
-        }
-    },
-    "Player3 RightArm": {
-        "Renderable": {
-            "CastShadows": false,
-            "CullingMask": 4,
-            "Enabled": true,
-            "Material": {
-                "Alias": "Charactter Tall Blue"
-            },
-            "Mesh": {
-                "Alias": "RightArm",
-                "FilePath": "res\\assets\\models\\Animation\\Character\\RightArm.fbx"
-            }
-        },
-        "SkeletonAnimatable": {
-            "Animation": "Idle_R",
-            "Loop": true,
-            "Play": true,
-            "Reverse": false,
-            "Time": 0.3400000035762787,
-            "TimeScale": 1.0
-        },
-        "Transform": {
-            "Mirror": {
-                "X": false,
-                "Y": false,
-                "Z": false
-            },
-            "Parent": "Player3 Camera",
-            "Position": {
-                "X": 0.0,
-                "Y": 0.0,
-                "Z": -0.019999999552965164
-            },
-            "Rotation": {
-                "qW": 1.0,
-                "qX": 0.0,
-                "qY": 0.0,
-                "qZ": 0.0
-            },
-            "Scale": {
-                "X": 0.010000001639127731,
-                "Y": 0.009999999776482582,
-                "Z": 0.010000001639127731
-            }
-        }
-    },
-    "Player3UI": {
-        "Transform": {
-            "Mirror": {
-                "X": false,
-                "Y": false,
-                "Z": false
-            },
-            "Parent": "UI",
-            "Position": {
-                "X": 5.722046807932202e-06,
-                "Y": 1.788139627478813e-07,
-                "Z": 0.0
-            },
-            "Rotation": {
-                "qW": 1.0,
-                "qX": 0.0,
-                "qY": 0.0,
-                "qZ": 0.0
-            },
-            "Scale": {
-                "X": 1.0000001192092896,
-                "Y": 1.0000001192092896,
                 "Z": 1.0
             }
         }
@@ -16528,8 +16076,8 @@
             "Parent": "Player4 Red",
             "Position": {
                 "X": 0.0,
-                "Y": 0.699999988079071,
-                "Z": -0.3499999940395355
+                "Y": 0.800000011920929,
+                "Z": -0.5
             },
             "Rotation": {
                 "qW": 1.0,
@@ -16541,52 +16089,6 @@
                 "X": 1.0,
                 "Y": 1.0,
                 "Z": 1.0
-            }
-        }
-    },
-    "Player4 LeftArm": {
-        "Renderable": {
-            "CastShadows": false,
-            "CullingMask": 8,
-            "Enabled": true,
-            "Material": {
-                "Alias": "Character Tall Red"
-            },
-            "Mesh": {
-                "Alias": "LeftArm",
-                "FilePath": "res\\assets\\models\\Animation\\Character\\LeftArm.fbx"
-            }
-        },
-        "SkeletonAnimatable": {
-            "Animation": "Idle_L",
-            "Loop": true,
-            "Play": true,
-            "Reverse": false,
-            "Time": 0.9399999976158142,
-            "TimeScale": 1.0
-        },
-        "Transform": {
-            "Mirror": {
-                "X": false,
-                "Y": false,
-                "Z": false
-            },
-            "Parent": "Player4 Camera",
-            "Position": {
-                "X": 0.0,
-                "Y": 0.0,
-                "Z": -0.019999999552965164
-            },
-            "Rotation": {
-                "qW": 1.0,
-                "qX": 0.0,
-                "qY": 0.0,
-                "qZ": 0.0
-            },
-            "Scale": {
-                "X": 0.009999999776482582,
-                "Y": 0.009999999776482582,
-                "Z": 0.009999999776482582
             }
         }
     },
@@ -16599,11 +16101,13 @@
                         0.0,
                         0.0
                     ],
-                    "Direction": 1,
-                    "Height": 1.0,
-                    "Radius": 0.5,
+                    "Size": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
                     "Trigger": false,
-                    "Type": 2
+                    "Type": 0
                 }
             ]
         },
@@ -16612,27 +16116,19 @@
             "CullingMask": 4294967287,
             "Enabled": true,
             "Material": {
-                "Alias": "Character Tall Red"
+                "Alias": null
             },
             "Mesh": {
-                "Alias": "pirate_tall",
-                "FilePath": "res\\assets\\models\\Animation\\Character\\pirate_tall.fbx"
+                "Alias": "cube",
+                "FilePath": "res/assets/models/cube.obj"
             }
         },
         "RigidBody": {
-            "Friction": 0.0,
+            "Friction": 0.8999999761581421,
             "Group": 1,
             "Mask": 1,
             "Mass": 5.0,
             "Properties": 126
-        },
-        "SkeletonAnimatable": {
-            "Animation": "Reference Pose",
-            "Loop": true,
-            "Play": true,
-            "Reverse": false,
-            "Time": 0.0,
-            "TimeScale": 1.0
         },
         "Transform": {
             "Mirror": {
@@ -16642,80 +16138,8 @@
             },
             "Parent": null,
             "Position": {
-                "X": 15.279980659484863,
-                "Y": 1.0499999523162842,
-                "Z": 22.724031448364258
-            },
-            "Rotation": {
-                "qW": 0.6508892178535461,
-                "qX": -9.633968147682026e-07,
-                "qY": 0.7591727375984192,
-                "qZ": -9.633968147682026e-07
-            },
-            "Scale": {
-                "X": 1.0,
-                "Y": 1.0,
-                "Z": 1.0
-            }
-        }
-    },
-    "Player4 RightArm": {
-        "Renderable": {
-            "CastShadows": false,
-            "CullingMask": 8,
-            "Enabled": true,
-            "Material": {
-                "Alias": "Character Tall Red"
-            },
-            "Mesh": {
-                "Alias": "RightArm",
-                "FilePath": "res\\assets\\models\\Animation\\Character\\RightArm.fbx"
-            }
-        },
-        "SkeletonAnimatable": {
-            "Animation": "Idle_R",
-            "Loop": true,
-            "Play": true,
-            "Reverse": false,
-            "Time": 0.9399999976158142,
-            "TimeScale": 1.0
-        },
-        "Transform": {
-            "Mirror": {
-                "X": false,
-                "Y": false,
-                "Z": false
-            },
-            "Parent": "Player4 Camera",
-            "Position": {
                 "X": 0.0,
                 "Y": 0.0,
-                "Z": -0.019999999552965164
-            },
-            "Rotation": {
-                "qW": 1.0,
-                "qX": 0.0,
-                "qY": 0.0,
-                "qZ": 0.0
-            },
-            "Scale": {
-                "X": 0.009999999776482582,
-                "Y": 0.009999999776482582,
-                "Z": 0.009999999776482582
-            }
-        }
-    },
-    "Player4UI": {
-        "Transform": {
-            "Mirror": {
-                "X": false,
-                "Y": false,
-                "Z": false
-            },
-            "Parent": "UI",
-            "Position": {
-                "X": 5.722046807932202e-06,
-                "Y": 1.788139627478813e-07,
                 "Z": 0.0
             },
             "Rotation": {
@@ -16725,8 +16149,8 @@
                 "qZ": 0.0
             },
             "Scale": {
-                "X": 1.0000001192092896,
-                "Y": 1.0000001192092896,
+                "X": 1.0,
+                "Y": 1.0,
                 "Z": 1.0
             }
         }
@@ -16800,22 +16224,22 @@
                 "Y": false,
                 "Z": false
             },
-            "Parent": "Player2UI",
+            "Parent": null,
             "Position": {
                 "X": -30.0,
                 "Y": -2.5,
                 "Z": 0.0
             },
             "Rotation": {
-                "qW": 0.9390614032745361,
-                "qX": -0.34374937415122986,
-                "qY": 1.5292731274027527e-12,
-                "qZ": -5.595784252632185e-13
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
             },
             "Scale": {
                 "X": 1.0,
-                "Y": 0.9999998807907104,
-                "Z": 0.9999998807907104
+                "Y": 1.0,
+                "Z": 1.0
             }
         }
     },
@@ -16844,7 +16268,7 @@
                 "Y": false,
                 "Z": false
             },
-            "Parent": "Player3UI",
+            "Parent": null,
             "Position": {
                 "X": -30.0,
                 "Y": -2.5,
@@ -16888,7 +16312,7 @@
                 "Y": false,
                 "Z": false
             },
-            "Parent": "Player4UI",
+            "Parent": null,
             "Position": {
                 "X": -30.0,
                 "Y": -2.5,
@@ -20698,96 +20122,6 @@
             }
         }
     },
-    "TargetL2": {
-        "BoneTarget": {
-            "Bone": "L_Hand",
-            "Target": "Player2 LeftArm"
-        },
-        "Transform": {
-            "Mirror": {
-                "X": false,
-                "Y": false,
-                "Z": false
-            },
-            "Parent": "Player2 LeftArm",
-            "Position": {
-                "X": -19.059648513793945,
-                "Y": -17.092002868652344,
-                "Z": -25.739309310913086
-            },
-            "Rotation": {
-                "qW": 0.5999224185943604,
-                "qX": -0.500030517578125,
-                "qY": 0.47805851697921753,
-                "qZ": -0.4018987715244293
-            },
-            "Scale": {
-                "X": 10.0,
-                "Y": 10.000001907348633,
-                "Z": 10.000004768371582
-            }
-        }
-    },
-    "TargetL3": {
-        "BoneTarget": {
-            "Bone": "L_Hand",
-            "Target": "Player3 LeftArm"
-        },
-        "Transform": {
-            "Mirror": {
-                "X": false,
-                "Y": false,
-                "Z": false
-            },
-            "Parent": "Player3 LeftArm",
-            "Position": {
-                "X": -18.374082565307617,
-                "Y": -15.678068161010742,
-                "Z": -26.01872444152832
-            },
-            "Rotation": {
-                "qW": 0.6163047552108765,
-                "qX": -0.4765644073486328,
-                "qY": 0.4818347990512848,
-                "qZ": -0.40111100673675537
-            },
-            "Scale": {
-                "X": 10.0,
-                "Y": 9.999999046325684,
-                "Z": 10.000001907348633
-            }
-        }
-    },
-    "TargetL4": {
-        "BoneTarget": {
-            "Bone": "L_Hand",
-            "Target": "Player4 LeftArm"
-        },
-        "Transform": {
-            "Mirror": {
-                "X": false,
-                "Y": false,
-                "Z": false
-            },
-            "Parent": "Player4 LeftArm",
-            "Position": {
-                "X": -18.14105224609375,
-                "Y": -16.59421157836914,
-                "Z": -25.408214569091797
-            },
-            "Rotation": {
-                "qW": 0.6136925220489502,
-                "qX": -0.48508718609809875,
-                "qY": 0.47379907965660095,
-                "qZ": -0.40445804595947266
-            },
-            "Scale": {
-                "X": 10.0,
-                "Y": 10.000001907348633,
-                "Z": 10.000003814697266
-            }
-        }
-    },
     "TargetR1": {
         "BoneTarget": {
             "Bone": "R_Hand",
@@ -20815,96 +20149,6 @@
                 "X": 10.0,
                 "Y": 10.0,
                 "Z": 10.0
-            }
-        }
-    },
-    "TargetR2": {
-        "BoneTarget": {
-            "Bone": "R_Hand",
-            "Target": "Player2 RightArm"
-        },
-        "Transform": {
-            "Mirror": {
-                "X": false,
-                "Y": false,
-                "Z": false
-            },
-            "Parent": "Player2 RightArm",
-            "Position": {
-                "X": 20.709945678710938,
-                "Y": -16.717498779296875,
-                "Z": -29.600021362304688
-            },
-            "Rotation": {
-                "qW": 0.5775780081748962,
-                "qX": -0.4488072693347931,
-                "qY": -0.5486305952072144,
-                "qZ": 0.40494489669799805
-            },
-            "Scale": {
-                "X": 9.999999046325684,
-                "Y": 10.0,
-                "Z": 10.000001907348633
-            }
-        }
-    },
-    "TargetR3": {
-        "BoneTarget": {
-            "Bone": "R_Hand",
-            "Target": "Player3 RightArm"
-        },
-        "Transform": {
-            "Mirror": {
-                "X": false,
-                "Y": false,
-                "Z": false
-            },
-            "Parent": "Player3 RightArm",
-            "Position": {
-                "X": 20.48725700378418,
-                "Y": -16.87006378173828,
-                "Z": -29.160919189453125
-            },
-            "Rotation": {
-                "qW": 0.5582185983657837,
-                "qX": -0.47394368052482605,
-                "qY": -0.5022584199905396,
-                "qZ": 0.45989787578582764
-            },
-            "Scale": {
-                "X": 10.0,
-                "Y": 9.999998092651367,
-                "Z": 9.999998092651367
-            }
-        }
-    },
-    "TargetR4": {
-        "BoneTarget": {
-            "Bone": "R_Hand",
-            "Target": "Player4 RightArm"
-        },
-        "Transform": {
-            "Mirror": {
-                "X": false,
-                "Y": false,
-                "Z": false
-            },
-            "Parent": "Player4 RightArm",
-            "Position": {
-                "X": 21.07851219177246,
-                "Y": -16.918533325195313,
-                "Z": -29.376419067382813
-            },
-            "Rotation": {
-                "qW": 0.5544847249984741,
-                "qX": -0.48546740412712097,
-                "qY": -0.5111175179481506,
-                "qZ": 0.4422975778579712
-            },
-            "Scale": {
-                "X": 9.999999046325684,
-                "Y": 10.0,
-                "Z": 10.000000953674316
             }
         }
     },
@@ -20977,7 +20221,7 @@
                 "Y": false,
                 "Z": false
             },
-            "Parent": "Player2UI",
+            "Parent": null,
             "Position": {
                 "X": -30.0,
                 "Y": -2.0,
@@ -21021,7 +20265,7 @@
                 "Y": false,
                 "Z": false
             },
-            "Parent": "Player3UI",
+            "Parent": null,
             "Position": {
                 "X": -30.0,
                 "Y": -2.0,
@@ -21065,7 +20309,7 @@
                 "Y": false,
                 "Z": false
             },
-            "Parent": "Player4UI",
+            "Parent": null,
             "Position": {
                 "X": -30.0,
                 "Y": -2.0,
@@ -23779,7 +23023,7 @@
                 "Y": false,
                 "Z": false
             },
-            "Parent": "Player2UI",
+            "Parent": null,
             "Position": {
                 "X": -30.0,
                 "Y": -2.5,
@@ -23823,7 +23067,7 @@
                 "Y": false,
                 "Z": false
             },
-            "Parent": "Player3UI",
+            "Parent": null,
             "Position": {
                 "X": -30.0,
                 "Y": -2.5,
@@ -23867,7 +23111,7 @@
                 "Y": false,
                 "Z": false
             },
-            "Parent": "Player4UI",
+            "Parent": null,
             "Position": {
                 "X": -30.0,
                 "Y": -2.5,

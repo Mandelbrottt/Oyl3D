@@ -12,6 +12,20 @@ class TutorialLayer : public oyl::Layer
 public:
 	OYL_CTOR(TutorialLayer, Layer)
 
+	bool firstFrame = true;
+
+	bool initSegment = true;
+
+	float segmentTimer1;
+	float segmentTimer2;
+	float segmentTimer3;
+
+	float segmentInterpolationParam1;
+	float segmentInterpolationParam2;
+	float segmentInterpolationParam3;
+
+	entt::entity tutPlayerEntity;
+
 	virtual void onEnter() override;
 
 	virtual void onUpdate() override;

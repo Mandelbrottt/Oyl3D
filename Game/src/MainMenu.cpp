@@ -152,9 +152,9 @@ void MainMenuLayer::onUpdate()
 		auto& menuItemTransform = registry->get<component::Transform>(menuItemEntity);
 
 		if (menuItem.type == PersistentVariables::mainMenuSelectedOption)
-			menuItemTransform.setScale(glm::vec3(1.3f, 1.3f, 1.3f));
+			menuItemTransform.setScale(glm::vec3(1.05f, 1.05f, 1.05f));
 		else
-			menuItemTransform.setScale(glm::vec3(0.9f));
+			menuItemTransform.setScale(glm::vec3(0.8f));
 	}
 }
 

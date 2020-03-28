@@ -33,7 +33,7 @@ void PlayerInteractionValidationSystem::onUpdate()
 
 				//deactivate CleaningQuicktimeEvent UI for player
 				CancelQuicktimeCleaningEventEvent cancelQuicktimeCleaningEvent;
-				cancelQuicktimeCleaningEvent.playerNum = player.playerNum;
+				cancelQuicktimeCleaningEvent.playerEntity = playerEntity;
 				postEvent(cancelQuicktimeCleaningEvent);
 			}
 		}
@@ -73,7 +73,7 @@ bool PlayerInteractionValidationSystem::onEvent(const Event& event)
 			if (player.state == PlayerState::inCleaningQuicktimeEvent)
 			{
 				CancelQuicktimeCleaningEventEvent cancelQTE;
-				cancelQTE.playerNum = player.playerNum;
+				cancelQTE.playerEntity = evt.playerEntity;
 				postEvent(cancelQTE);
 
 				PlayerStateChangeRequestEvent playerStateChange;
@@ -161,7 +161,7 @@ void PlayerInteractionValidationSystem::performRaycastAndValidateForPlayer(entt:
 	}
 	if (!registry->valid(playersCameraEntity))
 	{
-		OYL_LOG("WARNING: PLAYER {} DOES NOT HAVE AN ASSOCIATED CAMERA", (uint)player.playerNum + 1);
+		//OYL_LOG("WARNING: PLAYER {} DOES NOT HAVE AN ASSOCIATED CAMERA", (uint)player.playerNum + 1);
 		return;
 	}
 
@@ -602,7 +602,7 @@ void PlayerInteractionValidationSystem::validateCannonInteraction(entt::entity a
 				|| playerTransform.getPositionX() > cannonTransform.getPositionX() + 1.1f)
 			{
 				//check if player is on the right side of the cannon (will be pushing towards the left)
-				if (playerForwardDotCannonRight < -0.1f && !isCannonOnLeftSideOfTrack)
+				if (playerForwardDotCannonRight < -0.2f && !isCannonOnLeftSideOfTrack)
 				{
 					player.interactableEntity = a_cannonEntity;
 
@@ -614,7 +614,7 @@ void PlayerInteractionValidationSystem::validateCannonInteraction(entt::entity a
 					return;
 				}
 				//check if player is on the left side of the cannon (will be pushing towards the right)
-				else if (playerForwardDotCannonRight > 0.1f && !isCannonOnRightSideOfTrack)
+				else if (playerForwardDotCannonRight > 0.2f && !isCannonOnRightSideOfTrack)
 				{
 					player.interactableEntity = a_cannonEntity;
 
@@ -925,7 +925,7 @@ void PlayerInteractionValidationSystem::performCannonInteraction(entt::entity a_
 		OYL_LOG("PLAYER FORWARD DOT PRODUCT W/ CANNON RIGHT: {}", playerForwardDotCannonRight);
 
 		//check if player is on the right side of the cannon (will be pushing towards the left)
-		if (playerForwardDotCannonRight < -0.1f)
+		if (playerForwardDotCannonRight < -0.2f)
 		{
 			//set direction-specific variables in the if statement and non-direction specific variables outside
 			player.adjustingPositionStateData.destinationPos = cannonTransform.getRight() * glm::vec3(2.4f, 0.0f, 0.0f) + cannonTransform.getPosition();
@@ -952,10 +952,10 @@ void PlayerInteractionValidationSystem::performCannonInteraction(entt::entity a_
 		OYL_LOG("PUSHING!");
 
 		player.adjustingPositionStateData.startPos         = playerTransform.getPosition();
-		player.adjustingPositionStateData.destinationPos.y = playerTransform.getPositionY(); //don't change the player's y position
+		player.adjustingPositionStateData.destinationPos.y = -3.18; //kinda ugly that it's hardcoded but it works and it's easy. Forces player to be on the ground while pushing
 		
 		player.pushingStateData.startPos         = player.adjustingPositionStateData.destinationPos;
-		player.pushingStateData.destinationPos.y = playerTransform.getPositionY(); //don't change the player's y position
+		player.pushingStateData.destinationPos.y = -3.18; //kinda ugly that it's hardcoded but it works and it's easy. Forces player to be on the ground while pushing
 
 		cannon.pushStateData.startPos = cannonTransform.getPosition();
 
