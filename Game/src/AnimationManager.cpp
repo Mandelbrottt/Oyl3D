@@ -149,6 +149,7 @@ void AnimationManager::onUpdate()
 		for (auto& playerEntity : playerView)
 		{
 			auto& playerTransform = registry->get<component::Transform>(playerEntity);
+			auto& playerAnimatible = registry->get<component::SkeletonAnimatable>(playerEntity);
 
 			//Getting the Camera
 			for (auto child : playerTransform.getChildrenEntities())
@@ -247,9 +248,9 @@ bool AnimationManager::onEvent(const Event& event)
 				}
 				if (animationTag.find("Pushing_A") != std::string::npos && evt.stopped)
 				{
-						registry->get<component::SkeletonAnimatable>(evt.entity).animation = "Idle_L";
-						registry->get<component::SkeletonAnimatable>(evt.entity).play = true;
-						registry->get<component::SkeletonAnimatable>(evt.entity).loop = true;
+					registry->get<component::SkeletonAnimatable>(evt.entity).animation = "Idle_L";
+					registry->get<component::SkeletonAnimatable>(evt.entity).play = true;
+					registry->get<component::SkeletonAnimatable>(evt.entity).loop = true;
 				}
 				if (animationTag.find("MopUse_A") != std::string::npos && evt.stopped)
 				{
@@ -392,7 +393,7 @@ bool AnimationManager::onEvent(const Event& event)
 			registry->get<component::SkeletonAnimatable>(playerArmL).time = 0.01f;
 			setAnimationProperties("GloopUse2_L", AnimationProperties::None, false);
 		}
-		else 
+		else
 		{
 			registry->get<component::SkeletonAnimatable>(playerArmL).time = 0.01f;
 			setAnimationProperties("GloopUse_L", AnimationProperties::None, false);
@@ -435,17 +436,18 @@ bool AnimationManager::onEvent(const Event& event)
 		{
 		case PlayerState::cleaning:
 			//Set the animation here for using cleaning solution
+			playerAnimatable.animation = "cleaning";
 			break;
 		case PlayerState::idle:
 			//Set the animation to idle
-			playerAnimatable.animation = "InCleaningQuicktimeEvent"; //TODO: fix this up with the proper idle
+			playerAnimatable.animation = "idle1"; //TODO: fix this up with the proper idle
 			break;
 		case PlayerState::jumping:
 			//Set the animation here for using cannonball
+			playerAnimatable.animation = "jump";
 			break;
 		case PlayerState::walking:
 			//Set the animation to moving
-			playerAnimatable.timeScale = 1.0f;
 			playerAnimatable.animation = "running";
 			break;
 		case PlayerState::pushing:
@@ -453,9 +455,13 @@ bool AnimationManager::onEvent(const Event& event)
 			registry->get<component::SkeletonAnimatable>(playerArmR).time = 0.01f;
 			registry->get<component::SkeletonAnimatable>(playerArmL).time = 0.01f;
 			setAnimationProperties("Pushing_A", AnimationProperties::None, false);
+
+			playerAnimatable.animation = "pushing canon";
+
 			break;
 		case PlayerState::stunned:
 			//Set the animation here for using throwable bottle
+			playerAnimatable.animation = "stunned";
 			break;
 		case PlayerState::inCleaningQuicktimeEvent:
 			//Set the animation here for using mop
@@ -467,8 +473,12 @@ bool AnimationManager::onEvent(const Event& event)
 
 			setAnimationProperties("MopUse_A", AnimationProperties::MopUse, false);
 
-			playerAnimatable.animation = "InCleaningQuicktimeEvent";
+			playerAnimatable.animation = "cleaning";
 			break;
+		case PlayerState::throwingBottle:
+			playerAnimatable.animation = "throw";
+			break;
+
 		}
 		break;
 	}
