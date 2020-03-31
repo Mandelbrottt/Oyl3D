@@ -312,6 +312,10 @@ namespace oyl
         {
             m_dispatcher->registerListener(pScene);
             pScene->setDispatcher(m_dispatcher);
+
+            auto& stack = pScene->m_layerStack;
+            while (stack.begin() != stack.end())
+                stack.popLayer(*stack.begin());
             
             pScene->Scene::onEnter();
             pScene->onEnter();

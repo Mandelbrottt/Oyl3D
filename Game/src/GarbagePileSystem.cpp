@@ -204,9 +204,13 @@ void GarbagePileSystem::updateGarbagePileVisualSize(entt::entity a_garbagePileEn
 	//auto& flyRenderable = registry->get<component::Renderable>(garbagePile.flyEntity);
 
 	//reset collider sizes (the ones that need to be set will be set just below, based on garbage pile size)
-	garbagePileCollidable.getShape(0).box.setSize(glm::vec3(0.0f, 0.0f, 0.0f));
-	garbagePileCollidable.getShape(1).box.setSize(glm::vec3(0.0f, 0.0f, 0.0f));
-	garbagePileCollidable.getShape(2).box.setSize(glm::vec3(0.0f, 0.0f, 0.0f));
+	glm::vec3 garbagePileCollider0Pos = glm::vec3(0.0f, 0.0f, 0.0f);
+	glm::vec3 garbagePileCollider1Pos = glm::vec3(0.0f, 0.0f, 0.0f);
+	glm::vec3 garbagePileCollider2Pos = glm::vec3(0.0f, 0.0f, 0.0f);
+
+	glm::vec3 garbagePileCollider0Size = glm::vec3(0.0f, 0.0f, 0.0f);
+	glm::vec3 garbagePileCollider1Size = glm::vec3(0.0f, 0.0f, 0.0f);
+	glm::vec3 garbagePileCollider2Size = glm::vec3(0.0f, 0.0f, 0.0f);
 
 	std::string garbageModelNameToSet;
 
@@ -216,50 +220,70 @@ void GarbagePileSystem::updateGarbagePileVisualSize(entt::entity a_garbagePileEn
 		if (garbagePile.garbageTicks == garbagePile.GARBAGE_TICKS_PER_LEVEL)
 		{
 			garbageModelNameToSet = "garbageSurrender";
-			//flyAnimator.setNextAnimation("GarbageSurrenderAnim");
 
-			garbagePileCollidable.getShape(0).box.setSize(glm::vec3(3.36f, 7.5f, 7.56f));
-			garbagePileCollidable.getShape(1).box.setSize(glm::vec3(13.63f, 3.51f, 2.46f));
+			garbagePileCollider0Pos = glm::vec3(2.25f, 0.2f, 1.0f);
+			garbagePileCollider1Pos = glm::vec3(-3.26f, 1.09f, 1.07f);
+			garbagePileCollider2Pos = glm::vec3(0.12f, 1.87f, -1.25f);
+
+			garbagePileCollider0Size = glm::vec3(8.47f, 1.42f, 3.57f);
+			garbagePileCollider1Size = glm::vec3(10.95f, 2.5f, 4.71f);
+			garbagePileCollider2Size = glm::vec3(3.47f, 3.94f, 4.03f);
 		}
 		else
 		{
 			garbageModelNameToSet = "garbageMassive";
-			//flyAnimator.setNextAnimation("GarbageMassiveAnim");
 
-			garbagePileCollidable.getShape(0).box.setSize(glm::vec3(4.04f, 7.65f, 5.58f));
-			garbagePileCollidable.getShape(1).box.setSize(glm::vec3(7.84f, 4.25f, 7.68f));
+			garbagePileCollider0Pos = glm::vec3(0.1f, 0.85f, -0.09f);
+			garbagePileCollider1Pos = glm::vec3(0.31f, 2.75f, -0.56f);
+
+			garbagePileCollider0Size = glm::vec3(7.57f, 2.02f, 7.29f);
+			garbagePileCollider1Size = glm::vec3(3.05f, 2.3f, 4.03f);
 		}
 	}
 	else if (garbagePile.garbageLevel == garbagePile.MAX_GARBAGE_LEVEL - 1)
 	{
 		garbageModelNameToSet = "garbageLarge";
-		//flyAnimator.setNextAnimation("GarbageLargeAnim");
 
-		garbagePileCollidable.getShape(0).box.setSize(glm::vec3(2.73f, 5.01f, 3.15f));
-		garbagePileCollidable.getShape(1).box.setSize(glm::vec3(5.27f, 2.93f, 5.1f));
+		garbagePileCollider0Pos = glm::vec3(0.09f, 0.52f, 0.07f);
+		garbagePileCollider1Pos = glm::vec3(0.59f, 1.82f, -0.45f);
+
+		garbagePileCollider0Size = glm::vec3(5.43f, 1.24f, 5.35f);
+		garbagePileCollider1Size = glm::vec3(2.15f, 1.42f, 2.63f);
 	}
 	else if (garbagePile.garbageLevel == garbagePile.MAX_GARBAGE_LEVEL - 2)
 	{
 		garbageModelNameToSet = "garbageMedium";
-		//flyAnimator.setNextAnimation("GarbageMediumAnim");
 
-		garbagePileCollidable.getShape(0).box.setSize(glm::vec3(4.0f, 2.01f, 3.99f));
-		garbagePileCollidable.getShape(1).box.setSize(glm::vec3(2.03f, 2.6f, 2.42f));
+		garbagePileCollider0Pos = glm::vec3(0.0f, 0.18f, 0.0f);
+		garbagePileCollider1Pos = glm::vec3(0.11f, 0.76f, -0.13f);
+
+		garbagePileCollider0Size = glm::vec3(4.43f, 1.0f, 4.41f);
+		garbagePileCollider1Size = glm::vec3(2.91f, 1.0f, 2.97f);
 	}
 	else if (garbagePile.garbageLevel == garbagePile.MAX_GARBAGE_LEVEL - 3)
 	{
 		garbageModelNameToSet = "garbageSmall";
-		//flyAnimator.setNextAnimation("GarbageSmallAnim");
 
-		garbagePileCollidable.getShape(0).box.setSize(glm::vec3(2.7f, 1.11f, 2.66f));
+		garbagePileCollider0Pos = glm::vec3(0.0f, 0.13f, 0.0f);
+
+		garbagePileCollider0Size = glm::vec3(3.13f, 0.92f, 3.27f);
 	}
 	else
 	{
 		garbageModelNameToSet = "garbageTiny";
-		//flyAnimator.setNextAnimation("GarbageTinyAnim");
 
-		garbagePileCollidable.getShape(0).box.setSize(glm::vec3(2.22f, 0.59f, 2.19f));
+		garbagePileCollider0Pos = glm::vec3(0.0f, 0.06f, 0.0f);
+
+		garbagePileCollider0Size = glm::vec3(2.35f, 0.52f, 2.37f);
 	}
+
+	garbagePileCollidable.getShape(0).box.setCenter(garbagePileCollider0Pos);
+	garbagePileCollidable.getShape(1).box.setCenter(garbagePileCollider1Pos);
+	garbagePileCollidable.getShape(2).box.setCenter(garbagePileCollider2Pos);
+
+	garbagePileCollidable.getShape(0).box.setSize(garbagePileCollider0Size);
+	garbagePileCollidable.getShape(1).box.setSize(garbagePileCollider1Size);
+	garbagePileCollidable.getShape(2).box.setSize(garbagePileCollider2Size);
 
 	garbagePileRenderable.model = Model::get(garbageModelNameToSet);
 

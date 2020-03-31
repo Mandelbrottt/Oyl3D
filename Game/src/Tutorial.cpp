@@ -20,8 +20,7 @@ using namespace oyl;
 
 void TutorialLayer::onEnter()
 {
-	firstFrame  = true;
-	initSegment = true;
+	firstFrame = true;
 
 	listenForEventCategory(EventCategory::Keyboard);
 	listenForEventCategory(EventCategory::Gamepad);
@@ -46,7 +45,9 @@ void TutorialLayer::onUpdate()
 {
 	if (firstFrame)
 	{
-		firstFrame = false;
+		firstFrame  = false;
+		initSegment = true;
+		currentSegment = &TutorialLayer::intro;
 
 		auto playerView = registry->view<Player>();
 		for (auto& playerEntity : playerView)
@@ -67,13 +68,6 @@ void TutorialLayer::onUpdate()
 		}
 	}
 
-	if (initSegment)
-	{
-		initSegment   = false;
-		segmentTimer1 = 8.0f;
-		//segmentInterpolationParam1 = 0.0f;
-	}
-
 	auto& playerView = registry->view<Player>();
 	for (auto& playerEntity : playerView)
 	{
@@ -81,13 +75,12 @@ void TutorialLayer::onUpdate()
 			tutPlayerEntity = playerEntity;
 	}
 
-	auto& playerTransform = registry->get<component::Transform>(tutPlayerEntity);
+	isSegmentFinished = false; //if a segment is finished, it will be set to true in the segment's function
 
-	segmentTimer1 -= Time::deltaTime();
-	if (segmentTimer1 > 0.0f)
-		return;
+	(this->*currentSegment)();
 
-
+	if (isSegmentFinished)
+		Application::get().changeScene("MainMenuScene");
 }
 
 bool TutorialLayer::onEvent(const Event& event)
@@ -132,6 +125,43 @@ bool TutorialLayer::onEvent(const Event& event)
 }
 
 void TutorialLayer::onGuiRender()
+{
+
+}
+
+void TutorialLayer::intro()
+{
+	if (initSegment)
+	{
+		initSegment = false;
+		segmentTimer1 = 8.0f;
+	}
+
+	auto& playerTransform = registry->get<component::Transform>(tutPlayerEntity);
+
+	segmentTimer1 -= Time::deltaTime();
+	if (segmentTimer1 > 0.0f)
+		return;
+
+	isSegmentFinished = true;
+}
+
+void TutorialLayer::segment1()
+{
+
+}
+
+void TutorialLayer::segment2()
+{
+
+}
+
+void TutorialLayer::segment3()
+{
+
+}
+
+void TutorialLayer::segment4()
 {
 
 }
