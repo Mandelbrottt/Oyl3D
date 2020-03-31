@@ -324,9 +324,9 @@ struct CameraBreathing
 {
 	float startPosY;
 
-	float cameraHeightVariance = 0.04f;
+	float cameraHeightVariance = 0.2f;
 	float interpolationParam   = 0.5f; //start halfway up (at the default camera height)
-	float speed = 0.45f;
+	float speed = 0.35f;
 
 	bool isMovingUp = true;
 };
@@ -337,7 +337,7 @@ struct GarbageMeterBar
 	float interpolationParam = 0.0f;
 
 	float startValue  = 0.0f; 
-	float targetValue = 1.0f / 5.0f; //garbage piles start at level 1.. needs to be updated if starting or max garbage level changes
+	float targetValue = 1.0f / 5.0f; //garbage piles start at level 1 (out of max 5)
 
 	int garbagePileNum = 0;
 };
