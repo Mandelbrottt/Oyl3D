@@ -12,9 +12,9 @@ class TutorialLayer : public oyl::Layer
 public:
 	OYL_CTOR(TutorialLayer, Layer)
 
-	bool firstFrame = true;
-
-	bool initSegment = true;
+	bool firstFrame        = true;
+	bool initSegment       = true;
+	bool isSegmentFinished = false;
 
 	float segmentTimer1;
 	float segmentTimer2;
@@ -33,6 +33,14 @@ public:
 	virtual bool onEvent(const oyl::Event& event) override;
 
 	virtual void onGuiRender() override;
+
+	void intro();
+	void segment1();
+	void segment2();
+	void segment3();
+	void segment4();
+
+	void (TutorialLayer::*currentSegment)();
 };
 
 class TutorialScene : public oyl::Scene

@@ -20,8 +20,7 @@ using namespace oyl;
 
 void TutorialLayer::onEnter()
 {
-	firstFrame  = true;
-	initSegment = true;
+	firstFrame = true;
 
 	listenForEventCategory(EventCategory::Keyboard);
 	listenForEventCategory(EventCategory::Gamepad);
@@ -46,16 +45,16 @@ void TutorialLayer::onUpdate()
 {
 	if (firstFrame)
 	{
-		firstFrame = false;
+		firstFrame  = false;
+		initSegment = true;
+		currentSegment = &TutorialLayer::intro;
 
 		auto playerView = registry->view<Player>();
 		for (auto& playerEntity : playerView)
 		{
 			auto& player = registry->get<Player>(playerEntity);
 
-			if (player.playerNum == PlayerNumber::One)
-				tutPlayerEntity = playerEntity;
-			else if (player.playerNum == PlayerNumber::Three || player.playerNum == PlayerNumber::Four)
+			if (player.playerNum == PlayerNumber::Three || player.playerNum == PlayerNumber::Four)
 				registry->destroy(playerEntity);
 		}
 
@@ -69,20 +68,19 @@ void TutorialLayer::onUpdate()
 		}
 	}
 
-	if (initSegment)
+	auto& playerView = registry->view<Player>();
+	for (auto& playerEntity : playerView)
 	{
-		initSegment   = false;
-		segmentTimer1 = 8.0f;
-		//segmentInterpolationParam1 = 0.0f;
+		if (registry->get<Player>(playerEntity).playerNum == PlayerNumber::One)
+			tutPlayerEntity = playerEntity;
 	}
 
-	//auto& playerTransform = registry->get<component::Transform>(tutPlayerEntity);
+	isSegmentFinished = false; //if a segment is finished, it will be set to true in the segment's function
 
-	segmentTimer1 -= Time::deltaTime();
-	if (segmentTimer1 > 0.0f)
-		return;
+	(this->*currentSegment)();
 
-
+	if (isSegmentFinished)
+		Application::get().changeScene("MainMenuScene");
 }
 
 bool TutorialLayer::onEvent(const Event& event)
@@ -127,6 +125,43 @@ bool TutorialLayer::onEvent(const Event& event)
 }
 
 void TutorialLayer::onGuiRender()
+{
+
+}
+
+void TutorialLayer::intro()
+{
+	if (initSegment)
+	{
+		initSegment = false;
+		segmentTimer1 = 8.0f;
+	}
+
+	auto& playerTransform = registry->get<component::Transform>(tutPlayerEntity);
+
+	segmentTimer1 -= Time::deltaTime();
+	if (segmentTimer1 > 0.0f)
+		return;
+
+	isSegmentFinished = true;
+}
+
+void TutorialLayer::segment1()
+{
+
+}
+
+void TutorialLayer::segment2()
+{
+
+}
+
+void TutorialLayer::segment3()
+{
+
+}
+
+void TutorialLayer::segment4()
 {
 
 }

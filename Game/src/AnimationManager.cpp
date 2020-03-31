@@ -432,6 +432,14 @@ bool AnimationManager::onEvent(const Event& event)
 		auto& playerTransform = registry->get<component::Transform>(evt.playerEntity);
 		auto& playerAnimatable = registry->get<component::SkeletonAnimatable>(evt.playerEntity);
 
+		bool changeImmediate = true;
+
+		if (evt.oldState == PlayerState::walking || evt.oldState == PlayerState::idle)
+			changeImmediate = true;
+		else
+			changeImmediate = false;
+
+
 		switch (evt.newState)
 		{
 		case PlayerState::cleaning:
@@ -447,7 +455,7 @@ bool AnimationManager::onEvent(const Event& event)
 			playerAnimatable.animation = "jump";
 			break;
 		case PlayerState::walking:
-			//Set the animation to moving
+			if (changeImmediate)
 			playerAnimatable.animation = "running";
 			break;
 		case PlayerState::pushing:
@@ -474,9 +482,6 @@ bool AnimationManager::onEvent(const Event& event)
 			setAnimationProperties("MopUse_A", AnimationProperties::MopUse, false);
 
 			playerAnimatable.animation = "cleaning";
-			break;
-		case PlayerState::throwingBottle:
-			playerAnimatable.animation = "throw";
 			break;
 
 		}
