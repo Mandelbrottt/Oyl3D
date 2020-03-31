@@ -445,7 +445,8 @@ bool AnimationManager::onEvent(const Event& event)
 			break;
 		case PlayerState::walking:
 			//Set the animation to moving
-			playerAnimatable.animation = "run";
+			playerAnimatable.timeScale = 1.0f;
+			playerAnimatable.animation = "running";
 			break;
 		case PlayerState::pushing:
 			//Set the animation here for using throwable bottle
