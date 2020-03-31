@@ -12,6 +12,20 @@ class TutorialLayer : public oyl::Layer
 public:
 	OYL_CTOR(TutorialLayer, Layer)
 
+	enum class TutorialSegment
+	{
+		intro,
+		segment1,
+		segment2,
+		segment3,
+		segment4,
+		segment5,
+		segment6,
+		outro
+	};
+
+	TutorialSegment currentSegment;
+
 	bool firstFrame        = true;
 	bool initSegment       = true;
 	bool isSegmentFinished = false;
@@ -39,8 +53,13 @@ public:
 	void segment2();
 	void segment3();
 	void segment4();
+	void segment5();
+	void segment6();
+	void outro();
 
-	void (TutorialLayer::*currentSegment)();
+	void (TutorialLayer::*currentSegmentFunc)();
+
+	struct TutorialEndSegmentPrompt {};
 };
 
 class TutorialScene : public oyl::Scene
