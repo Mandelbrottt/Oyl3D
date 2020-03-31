@@ -291,12 +291,13 @@ void PlayerSystem::changeToIdle(entt::entity a_playerEntity)
 {
 	auto& player = registry->get<Player>(a_playerEntity);
 
-	player.state = PlayerState::idle;
-
 	PlayerStateChangedEvent stateChanged;
 	stateChanged.playerEntity = a_playerEntity;
-	stateChanged.newState     = PlayerState::idle;
+	stateChanged.oldState = player.state;
+	stateChanged.newState = PlayerState::idle;
 	postEvent(stateChanged);
+
+	player.state = PlayerState::idle;
 }
 
 void PlayerSystem::changeToWalking(entt::entity a_playerEntity)
@@ -305,12 +306,13 @@ void PlayerSystem::changeToWalking(entt::entity a_playerEntity)
 	
 	if (player.state == PlayerState::idle)
 	{
-		player.state = PlayerState::walking;
-
 		PlayerStateChangedEvent stateChanged;
 		stateChanged.playerEntity = a_playerEntity;
+		stateChanged.oldState     = player.state;
 		stateChanged.newState     = PlayerState::walking;
 		postEvent(stateChanged);
+
+		player.state = PlayerState::walking;
 	}
 }
 
@@ -318,24 +320,26 @@ void PlayerSystem::changeToJumping(entt::entity a_playerEntity)
 {
 	auto& player = registry->get<Player>(a_playerEntity);
 
-	player.state = PlayerState::jumping;
-
 	PlayerStateChangedEvent stateChanged;
 	stateChanged.playerEntity = a_playerEntity;
+	stateChanged.oldState     = player.state;
 	stateChanged.newState     = PlayerState::jumping;
 	postEvent(stateChanged);
+
+	player.state = PlayerState::jumping;
 }
 
 void PlayerSystem::changeToFalling(entt::entity a_playerEntity)
 {
 	auto& player = registry->get<Player>(a_playerEntity);
 
-	player.state = PlayerState::falling;
-
 	PlayerStateChangedEvent stateChanged;
 	stateChanged.playerEntity = a_playerEntity;
+	stateChanged.oldState     = player.state;
 	stateChanged.newState     = PlayerState::falling;
 	postEvent(stateChanged);
+
+	player.state = PlayerState::falling;
 }
 
 //destination and start positions for adjusting and pushing should be set before calling this function
@@ -349,20 +353,19 @@ void PlayerSystem::changeToPushing(entt::entity a_playerEntity)
 	player.pushingStateData.interpolationParam = 0.0f;
 	player.pushingStateData.speed              = player.pushingSpeed;
     
-	player.state = PlayerState::pushing;
 
 	PlayerStateChangedEvent stateChanged;
 	stateChanged.playerEntity = a_playerEntity;
+	stateChanged.oldState     = player.state;
 	stateChanged.newState     = PlayerState::pushing;
 	postEvent(stateChanged);
+
+	player.state = PlayerState::pushing;
 }
 
 void PlayerSystem::changeToInCleaningQuicktimeEvent(entt::entity a_playerEntity)
 {
 	auto& player = registry->get<Player>(a_playerEntity);
-
-	player.state          = PlayerState::inCleaningQuicktimeEvent;
-	player.isCameraLocked = true;
 
 	ActivateQuicktimeCleaningEventEvent activateQTE;
 	activateQTE.playerNum = player.playerNum;
@@ -370,8 +373,12 @@ void PlayerSystem::changeToInCleaningQuicktimeEvent(entt::entity a_playerEntity)
 
 	PlayerStateChangedEvent stateChanged;
 	stateChanged.playerEntity = a_playerEntity;
+	stateChanged.oldState     = player.state;
 	stateChanged.newState     = PlayerState::inCleaningQuicktimeEvent;
 	postEvent(stateChanged);
+
+	player.isCameraLocked = true;
+	player.state          = PlayerState::inCleaningQuicktimeEvent;
 }
 
 void PlayerSystem::changeToCleaning(entt::entity a_playerEntity)
@@ -380,12 +387,13 @@ void PlayerSystem::changeToCleaning(entt::entity a_playerEntity)
 
 	player.cleaningTimeCountdown = player.CLEANING_TIME_DURATION;
 
-	player.state = PlayerState::cleaning;
-
 	PlayerStateChangedEvent stateChanged;
 	stateChanged.playerEntity = a_playerEntity;
+	stateChanged.oldState     = player.state;
 	stateChanged.newState     = PlayerState::cleaning;
 	postEvent(stateChanged);
+
+	player.state = PlayerState::cleaning;
 }
 
 void PlayerSystem::changeToThrowingBottle(entt::entity a_playerEntity)
@@ -394,12 +402,13 @@ void PlayerSystem::changeToThrowingBottle(entt::entity a_playerEntity)
 
 	player.delayBeforeThrowingCountdown = player.THROWING_DELAY_DURATION;
 
-	player.state = PlayerState::throwingBottle;
-
 	PlayerStateChangedEvent stateChanged;
 	stateChanged.playerEntity = a_playerEntity;
+	stateChanged.oldState     = player.state;
 	stateChanged.newState     = PlayerState::throwingBottle;
 	postEvent(stateChanged);
+
+	player.state = PlayerState::throwingBottle;
 }
 
 void PlayerSystem::changeToStunned(entt::entity a_playerEntity)
@@ -416,12 +425,13 @@ void PlayerSystem::changeToStunned(entt::entity a_playerEntity)
 
 	player.stunnedTimeCountdown = player.STUNNED_TIME_DURATION;
 
-	player.state = PlayerState::stunned;
-
 	PlayerStateChangedEvent stateChanged;
 	stateChanged.playerEntity = a_playerEntity;
+	stateChanged.oldState     = player.state;
 	stateChanged.newState     = PlayerState::stunned;
 	postEvent(stateChanged);
+
+	player.state = PlayerState::stunned;
 }
 
 

@@ -98,6 +98,7 @@ OYL_EVENT_STRUCT(PlayerStateChangeRequestEvent, (oyl::EventType) TypePlayerState
 OYL_EVENT_STRUCT(PlayerStateChangedEvent, (oyl::EventType) TypePlayerStateChanged, (oyl::EventCategory) CategoryPlayer,
 	{
 		entt::entity playerEntity;
+		PlayerState  oldState;
 		PlayerState  newState;
 	});
 
