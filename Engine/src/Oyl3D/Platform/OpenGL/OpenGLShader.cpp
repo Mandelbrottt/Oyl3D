@@ -232,6 +232,7 @@ namespace oyl
         if (!m_rendererID)
         {
             m_rendererID = prevRendererID;
+            OYL_LOG_ERROR("Shader \"{}\" failed to compile!", filename);
             return false;
         }
 
