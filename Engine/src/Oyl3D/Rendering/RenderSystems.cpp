@@ -1068,13 +1068,19 @@ namespace oyl::internal
                 {
                     m_intermediateFrameBuffer->bind(FrameBufferContext::Write);
                     pc.m_mainFrameBuffer->bind(FrameBufferContext::Read);
-                    pc.m_mainFrameBuffer->bindColorAttachment(0);
+                    pc.m_mainFrameBuffer->bindColorAttachment(0, 0);
+                    for (int i = 0; i < 5; i++)
+                        pc.m_deferredFrameBuffer->bindColorAttachment(i, i + 1);
+                    pc.m_mainFrameBuffer->bindDepthAttachment(6);
                 }
                 else
                 {
                     pc.m_mainFrameBuffer->bind(FrameBufferContext::Write);
                     m_intermediateFrameBuffer->bind(FrameBufferContext::Read);
                     m_intermediateFrameBuffer->bindColorAttachment(0);
+                    for (int i = 0; i < 5; i++)
+                        pc.m_deferredFrameBuffer->bindColorAttachment(i, i + 1);
+                    pc.m_mainFrameBuffer->bindDepthAttachment(6);
                 }
 
                 needsBlit ^= 1;
@@ -1083,7 +1089,7 @@ namespace oyl::internal
                 {
                     boundShader = pass.shader.get();
                     boundShader->bind();
-                    boundShader->setUniform1i(0, 0);
+                    boundShader->setUniform2f(1, 1.0f / glm::vec2(m_windowSize));
                 }
                 pass.applyUniforms();
 
