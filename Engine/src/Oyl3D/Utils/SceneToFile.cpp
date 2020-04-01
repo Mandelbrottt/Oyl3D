@@ -1206,7 +1206,13 @@ namespace oyl::internal
         if (material->m_filepath.empty())
             material->m_filepath = filepath;
 
-        if (auto it = jMaterial.find("Shader"); it != jMaterial.end() && !it->is_null())
+        if (auto it = jMaterial.find("OverrideShader"); it != jMaterial.end())
+            it->get_to(material->overrideShader);
+        
+        if (auto it = jMaterial.find("Deferred"); it != jMaterial.end())
+            it->get_to(material->deferred);
+        
+        if (auto it = jMaterial.find("Shader"); material->overrideShader && it != jMaterial.end() && !it->is_null())
         {
             bool loadNewShader = false;
             std::string alias;
@@ -1347,9 +1353,12 @@ namespace oyl::internal
         json& jMatAlias = jMaterial["Alias"];
         if (auto alias = Material::getAlias(material); alias != INVALID_ALIAS)
             jMatAlias = alias;
-        
+
+        json& jOverride = jMaterial["OverrideShader"];
+        jOverride = material->overrideShader;
+
         json& jShader = jMaterial["Shader"];
-        if (material->shader)
+        if (material->shader && material->overrideShader)
         {
             json& jAlias = jShader["Alias"];
             if (auto alias = Shader::getAlias(material->shader); alias != INVALID_ALIAS)
@@ -1403,6 +1412,11 @@ namespace oyl::internal
                     }
                 }
             }
+        }
+        else if (!material->overrideShader)
+        {
+            json& jDeferred = jMaterial["Deferred"];
+            jDeferred = material->deferred;
         }
 
         json& jTextures = jMaterial["Textures"];

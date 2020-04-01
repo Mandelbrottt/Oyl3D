@@ -95,6 +95,9 @@ namespace oyl
 
         TextureProps mainTextureProps;
 
+        bool        deferred       = true;
+        bool        overrideShader = false;
+
     private:
 
         std::string m_filepath;
