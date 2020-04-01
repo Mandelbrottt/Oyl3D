@@ -63,6 +63,7 @@ namespace oyl
         virtual void unbind();
 
         virtual void applyUniforms();
+        virtual void clearUniforms();
         
         void setUniform1i(const std::string& name, i32 value) { m_uniformInts[name] = value; }
         void setUniform1f(const std::string& name, f32 value) { m_uniformFloats[name] = value; }
@@ -93,6 +94,9 @@ namespace oyl
         Ref<Texture2D> emissionMap;
 
         TextureProps mainTextureProps;
+
+        bool        deferred       = true;
+        bool        overrideShader = false;
 
     private:
 

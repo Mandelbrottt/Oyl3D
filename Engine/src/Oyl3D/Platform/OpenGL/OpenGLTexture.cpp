@@ -412,12 +412,15 @@ namespace oyl
         glGenTextures(1, &m_rendererID);
         glBindTexture(GL_TEXTURE_CUBE_MAP, m_rendererID);
 
-        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        GLenum filter = FilterToGL(a_filter);
+        GLenum wrap = WrapToGL(a_wrap);
 
-        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, filter);
+        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, filter);
+
+        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, wrap);
+        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, wrap);
+        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, wrap);
 
         const char* suffixes[6] = {
             "_rt", "_lf",
@@ -441,8 +444,12 @@ namespace oyl
                 m_width = width;
                 m_height = height;
 
-                auto texStorageFormat = nrChannels == 3 ? GL_RGB8 : GL_RGBA8;
-                auto texSubFormat     = nrChannels == 3 ? GL_RGB  : GL_RGBA;
+                GLenum texSubFormat = nrChannels == 3 ? GL_RGB : GL_RGBA;
+                GLenum texStorageFormat;
+                if (a_profile == TextureProfile::RGB)
+                    texStorageFormat = nrChannels == 3 ? GL_RGB8 : GL_RGBA8;
+                else
+                    texStorageFormat = nrChannels == 3 ? GL_SRGB8 : GL_SRGB8_ALPHA8;
 
                 if (i == 0)
                     glTexStorage2D(GL_TEXTURE_CUBE_MAP, 1, texStorageFormat, width, height);

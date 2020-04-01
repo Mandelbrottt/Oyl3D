@@ -8,15 +8,19 @@ namespace oyl
     
     namespace internal
     {
-        class RenderSystem;
+        class PreRenderSystem;
+        class ForwardRenderSystem;
+        class DeferredRenderSystem;
         class ShadowRenderSystem;
         class EditorRenderSystem;
 
         struct ColorLight
         {
-            glm::vec3 ambient  = glm::vec3(0.2f);
+            glm::vec3 ambient  = glm::vec3(0.0f);
             glm::vec3 diffuse  = glm::vec3(0.5f);
             glm::vec3 specular = glm::vec3(1.0f);
+
+            f32 intensity = 1.0f;
         };
 
         struct AttenuationLight
@@ -46,7 +50,9 @@ namespace oyl
 
             Ref<FrameBuffer> m_frameBuffer;
 
-            friend RenderSystem;
+            friend PreRenderSystem;
+            friend ForwardRenderSystem;
+            friend DeferredRenderSystem;
             friend ShadowRenderSystem;
             friend EditorRenderSystem;
         };

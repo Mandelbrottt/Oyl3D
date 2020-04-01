@@ -26,14 +26,57 @@ namespace oyl::internal
         return r.enabled && r.model && r.material && r.material->shader && r.material->albedoMap;
     }
 
+    static bool _isDeferred(const Ref<Shader>& shader)
+    {
+        static Ref<Shader> deferredStatic = Shader::get(DEFERRED_STATIC_PRE_SHADER_ALIAS);
+        static Ref<Shader> deferredVertex = Shader::get(DEFERRED_VERTEX_PRE_SHADER_ALIAS);
+        static Ref<Shader> deferredSkeletal = Shader::get(DEFERRED_SKELETAL_PRE_SHADER_ALIAS);
+
+        return !(shader != deferredStatic && shader != deferredVertex && shader != deferredSkeletal);
+    };
+
     // vvv Pre Render System vvv //
+
+    void PreRenderSystem::onEnter()
+    {
+    #if defined OYL_DISTRIBUTION
+        listenForEventType(EventType::WindowResized);
+    #else
+        listenForEventType(EventType::EditorGameViewportResized);
+    #endif
+        
+        listenForEventType(EventType::SceneChanged);
+    }
 
     void PreRenderSystem::onUpdate()
     {
         using component::Renderable;
 
+        registry->view<Renderable>().each([&](auto entity, Renderable& renderable)
+        {
+            if (!renderable.material || renderable.material->overrideShader)
+                return;
+            
+            Ref<Shader> shader = nullptr;
+            if (registry->has<component::SkeletonAnimatable>(entity))
+            {
+                if (renderable.material->deferred)
+                    shader = Shader::get(DEFERRED_SKELETAL_PRE_SHADER_ALIAS);
+                else
+                    shader = Shader::get(FORWARD_SKELETAL_SHADER_ALIAS);
+            }
+            else
+            {
+                if (renderable.material->deferred)
+                    shader = Shader::get(DEFERRED_STATIC_PRE_SHADER_ALIAS);
+                else
+                    shader = Shader::get(FORWARD_STATIC_SHADER_ALIAS);
+            }
+            if (renderable.material->shader != shader)
+                renderable.material->shader = shader;
+        });
+        
         // We sort our mesh renderers based on material properties
-        // This will group all of our meshes based on shader first, then material second
         registry->sort<Renderable>(
             [](const Renderable& lhs, const Renderable& rhs)
             {
@@ -41,27 +84,132 @@ namespace oyl::internal
                     return false;
                 if (!isRenderableValid(rhs))
                     return true;
+                if (!_isDeferred(lhs.material->shader) && _isDeferred(rhs.material->shader))
+                    return false;
+                if (_isDeferred(lhs.material->shader) && !_isDeferred(rhs.material->shader))
+                    return true;
                 if (lhs.material->shader != rhs.material->shader)
                     return lhs.material->shader < rhs.material->shader;
                 if (lhs.material->albedoMap != rhs.material->albedoMap)
                     return lhs.material->albedoMap < rhs.material->albedoMap;
                 return lhs.material < rhs.material;
             });
+        
+        static uint lastNumCameras = 0;
+
+        using component::Camera;
+        auto camView = registry->view<Camera>();
+
+        int width = m_windowSize.x;
+        if (camView.size() > 1) width /= 2;
+
+        int height = m_windowSize.y;
+        if (camView.size() > 2) height /= 2;
+
+        width = glm::max(width, 1);
+        height = glm::max(height, 1);
+
+        camView.each([&](Camera& camera)
+        {
+            if (!camera.m_mainFrameBuffer)
+            {
+                camera.m_mainFrameBuffer = FrameBuffer::create(1);
+                camera.m_mainFrameBuffer->initDepthTexture(1, 1);
+                camera.m_mainFrameBuffer->initColorTexture(0, 1, 1,
+                                                           TextureFormat::RGBF16,
+                                                           TextureFilter::Linear,
+                                                           TextureWrap::ClampToEdge);
+            }
+
+            if (!camera.m_deferredFrameBuffer)
+            {
+                // Create deferred buffer with a buffer for
+                // position, albedo/specular, normals, emission/glossiness, light space position
+                camera.m_deferredFrameBuffer = FrameBuffer::create(5);
+                camera.m_deferredFrameBuffer->initDepthTexture(1, 1);
+
+                // Position buffer
+                camera.m_deferredFrameBuffer->initColorTexture(0, 1, 1,
+                                                               TextureFormat::RGBF16,
+                                                               TextureFilter::Linear,
+                                                               TextureWrap::ClampToEdge);
+                // Albedo/Specular buffer
+                camera.m_deferredFrameBuffer->initColorTexture(1, 1, 1,
+                                                               TextureFormat::RGBAF16,
+                                                               TextureFilter::Linear,
+                                                               TextureWrap::ClampToEdge);
+                // Normal buffer
+                camera.m_deferredFrameBuffer->initColorTexture(2, 1, 1,
+                                                               TextureFormat::RGBF16,
+                                                               TextureFilter::Linear,
+                                                               TextureWrap::ClampToEdge);
+                // Emission/Glossiness buffer
+                camera.m_deferredFrameBuffer->initColorTexture(3, 1, 1,
+                                                               TextureFormat::RGBAF16,
+                                                               TextureFilter::Linear,
+                                                               TextureWrap::ClampToEdge);
+                // Light Space Position buffer
+                camera.m_deferredFrameBuffer->initColorTexture(4, 1, 1,
+                                                               TextureFormat::RGBAF16,
+                                                               TextureFilter::Linear,
+                                                               TextureWrap::ClampToEdge);
+            }
+            
+            if (m_camerasNeedUpdate || lastNumCameras != camView.size())
+            {
+                camera.m_mainFrameBuffer->updateViewport(width, height);
+                camera.m_deferredFrameBuffer->updateViewport(width, height);
+            
+                camera.aspect((float) width / (float) height);
+            }
+
+            RenderCommand::setDepthDraw(true);
+            
+            camera.m_deferredFrameBuffer->clear();
+            
+            camera.m_mainFrameBuffer->clear();
+        });
+
+        using component::BoneTarget;
+        registry->view<BoneTarget>().each([&](BoneTarget& boneTarget)
+        {
+            boneTarget.forceUpdateTransform();
+        });
+    }
+
+    bool PreRenderSystem::onEvent(const Event& event)
+    {
+        switch (event.type)
+        {
+            case EventType::WindowResized:
+            case EventType::EditorGameViewportResized:
+            {
+                auto e       = event_cast<WindowResizedEvent>(event);
+                m_windowSize = { e.width, e.height };
+
+                m_camerasNeedUpdate = true;
+                break;
+            }
+            case EventType::SceneChanged:
+            {
+                m_camerasNeedUpdate = true;
+                break;
+            }
+        }
+        return false;
     }
 
     // ^^^ Pre Render System ^^^ //
 
-    // vvv Render System vvv //
+    // vvv Forward Render System vvv //
 
-    void RenderSystem::onEnter()
+    void ForwardRenderSystem::onEnter()
     {
         listenForEventType(EventType::WindowResized);
         listenForEventType(EventType::SceneChanged);
     }
 
-    void RenderSystem::onExit() { }
-
-    void RenderSystem::onUpdate()
+    void ForwardRenderSystem::onUpdate()
     {
         using component::Transform;
         using component::Renderable;
@@ -71,71 +219,20 @@ namespace oyl::internal
         using component::SpotLight;
         using component::BoneTarget;
 
-        registry->view<BoneTarget>().each([&](BoneTarget& boneTarget)
-        {
-            boneTarget.forceUpdateTransform();
-        });
-
-        static const auto& skybox = TextureCubeMap::get(DEFAULT_SKYBOX_ALIAS);
-        static const auto& shader = Shader::get(SKYBOX_SHADER_ALIAS);
-        static const auto& mesh   = Model::get(CUBE_MODEL_ALIAS)->getMeshes()[0];
-
+        RenderCommand::setAlphaBlend(false);
+        RenderCommand::setDepthDraw(true);
+        
         Ref<Material> boundMaterial;
 
-        static size_t lastNumCameras = 0;
-
         auto camView = registry->view<Transform, Camera>();
-
-        int x = m_windowSize.x / 2;
-        int y = camView.size() > 2 ? m_windowSize.y / 2 : 0;
-
-        int width = m_windowSize.x;
-        if (camView.size() > 1) width /= 2;
-
-        int height = m_windowSize.y;
-        if (camView.size() > 2) height /= 2;
 
         for (auto camera : camView)
         {
             Camera& pc = camView.get<Camera>(camera);
 
-            if (!pc.m_forwardFrameBuffer)
-            {
-                pc.m_forwardFrameBuffer = FrameBuffer::create(1);
-                pc.m_forwardFrameBuffer->initDepthTexture(1, 1);
-                pc.m_forwardFrameBuffer->initColorTexture(0, 1, 1,
-                                                          TextureFormat::RGBA8,
-                                                          TextureFilter::Nearest,
-                                                          TextureWrap::ClampToEdge);
-            }
+            RenderCommand::setDrawRect(0, 0, pc.m_mainFrameBuffer->getColorWidth(), pc.m_mainFrameBuffer->getColorHeight());
 
-            if (m_camerasNeedUpdate || lastNumCameras != camView.size())
-            {
-                pc.m_forwardFrameBuffer->updateViewport(width, height);
-
-                pc.aspect((float) width / (float) height);
-            }
-
-            pc.m_forwardFrameBuffer->clear();
-            pc.m_forwardFrameBuffer->bind();
-
-            RenderCommand::setDrawRect(0, 0, width, height);
-
-            glm::mat4 viewProj = pc.projectionMatrix();
-            viewProj *= glm::mat4(glm::mat3(pc.viewMatrix()));
-
-            shader->bind();
-            shader->setUniformMat4("u_viewProjection", viewProj);
-
-            //pc.skybox->bind(0);
-            skybox->bind(0);
-            shader->setUniform1i("u_skybox", 0);
-
-            RenderCommand::setDepthDraw(false);
-            RenderCommand::setBackfaceCulling(false);
-            RenderCommand::drawArrays(mesh.getVertexArray(), mesh.getNumVertices());
-            RenderCommand::setBackfaceCulling(true);
-            RenderCommand::setDepthDraw(true);
+            pc.m_mainFrameBuffer->bind();
 
             bool doCulling = true;
 
@@ -145,6 +242,8 @@ namespace oyl::internal
                 Renderable& mr = view.get(entity);
 
                 if (!isRenderableValid(mr))
+                    break;
+                if (_isDeferred(mr.material->shader))
                     continue;
 
                 if (!(mr.cullingMask & pc.cullingMask))
@@ -180,21 +279,15 @@ namespace oyl::internal
                                                     pointLightProps.specular);
                         boundMaterial->setUniform1f(pointLightName + ".range",
                                                     pointLightProps.range);
+                        boundMaterial->setUniform1f(pointLightName + ".intensity",
+                                                    pointLightProps.intensity);
 
                         count++;
-                        if (count >= 8)
+                        if (count >= 16)
                             break;
                     }
 
-                    for (; count < 8; count++)
-                    {
-                        std::string pointLightName = "u_pointLight[" + std::to_string(count) + "]";
-
-                        boundMaterial->setUniform3f(pointLightName + ".position", {});
-                        boundMaterial->setUniform3f(pointLightName + ".ambient",  {});
-                        boundMaterial->setUniform3f(pointLightName + ".diffuse",  {});
-                        boundMaterial->setUniform3f(pointLightName + ".specular", {});
-                    }
+                    boundMaterial->setUniform1i("u_numPointLights", count);
 
                     auto dirLightView = registry->view<DirectionalLight>();
                     count = 0;
@@ -213,6 +306,8 @@ namespace oyl::internal
                                                     dirLightProps.diffuse);
                         boundMaterial->setUniform3f(dirLightName + ".specular",
                                                     dirLightProps.specular);
+                        boundMaterial->setUniform1f(dirLightName + ".intensity",
+                                                    dirLightProps.intensity);
 
                         if (dirLightProps.castShadows && shadowIndex < 3)
                         {
@@ -229,19 +324,13 @@ namespace oyl::internal
                         }
 
                         count++;
-                        if (count >= 8)
+                        if (count >= 16)
                             break;
                     }
-                    
-                    for (; count < 8; count++)
-                    {
-                        std::string dirLightName = "u_dirLight[" + std::to_string(count) + "]";
 
-                        boundMaterial->setUniform3f(dirLightName + ".direction", {});
-                        boundMaterial->setUniform3f(dirLightName + ".ambient",   {});
-                        boundMaterial->setUniform3f(dirLightName + ".diffuse",   {});
-                        boundMaterial->setUniform3f(dirLightName + ".specular",  {});
-                    }
+                    boundMaterial->setUniform1i("u_numDirLights", count);
+
+                    boundMaterial->setUniform1i("u_numShadowMaps", shadowIndex);
                     
                     // TEMPORARY:
                     boundMaterial->bind();
@@ -280,72 +369,232 @@ namespace oyl::internal
                 Renderer::submit(mr.model, boundMaterial, transform);
             }
         }
-
-        lastNumCameras      = camView.size();
-        m_camerasNeedUpdate = false;
     }
 
-    void RenderSystem::onGuiRender() { }
+    // ^^^ Forward Render System ^^^ //
 
-    bool RenderSystem::onEvent(const Event& event)
+    // vvv Deferred Render System vvv //
+
+    void DeferredRenderSystem::onEnter()
     {
-        switch (event.type)
-        {
-            case EventType::WindowResized:
+        m_deferredPostShader = Shader::create(
             {
-                auto e = event_cast<WindowResizedEvent>(event);
-                m_windowSize = { e.width, e.height };
+                { Shader::Vertex, ENGINE_RES + DEFERRED_POST_SHADER_VERTEX_PATH },
+                { Shader::Pixel, ENGINE_RES + DEFERRED_POST_SHADER_FRAGMENT_PATH }
+            });
 
-                //m_forwardFrameBuffer->updateViewport(e.width, e.height);
-                ////m_intermediateFrameBuffer->updateViewport(e.width, e.height);
+        float vertices[] = {
+            -1.0f, -1.0f, 0.0f, 0.0f, 0.0f,
+            1.0f, -1.0f, 0.0f, 1.0f, 0.0f,
+            1.0f, 1.0f, 0.0f, 1.0f, 1.0f,
+            -1.0f, 1.0f, 0.0f, 0.0f, 1.0f
+        };
 
-                //ViewportHandleChangedEvent hcEvent;
-                //hcEvent.handle = m_forwardFrameBuffer->getColorHandle(0);
-                //m_dispatcher->postEvent(hcEvent);
+        u32 indices[] = {
+            0, 1, 2,
+            2, 3, 0
+        };
 
-                m_camerasNeedUpdate = true;
-
-                break;
-            }
-            case EventType::SceneChanged:
-            {
-                m_camerasNeedUpdate = true;
-                break;
-            }
-        }
-        return false;
+        m_fullscreenQuad = VertexArray::create();
+        
+        Ref<VertexBuffer> vbo = VertexBuffer::create(vertices, sizeof(vertices));
+        vbo->setLayout({
+            { DataType::Float3, "in_position" },
+            { DataType::Float2, "in_texCoord" }
+        });
+        Ref<IndexBuffer> ebo = IndexBuffer::create(indices, 6);
+        m_fullscreenQuad->addVertexBuffer(vbo);
+        m_fullscreenQuad->addIndexBuffer(ebo);
     }
-
-    void RenderSystem::skeletonAnimate(entt::entity entity, component::Renderable& renderable, component::SkeletonAnimatable& sa)
+    
+    void DeferredRenderSystem::onUpdate()
     {
-        if (renderable.model && renderable.material && renderable.material->shader == Shader::get("Oyl Skeletal"))
-        {
-            if (auto it = renderable.model->getAnimations().find(sa.animation);
-                it != renderable.model->getAnimations().end())
-            {
-                std::vector<glm::mat4> boneTransforms;
-                renderable.model->getBoneTransforms(sa.animation, sa.time, boneTransforms);
+        using component::Transform;
+        using component::Renderable;
+        using component::Camera;
+        
+        Ref<Material> boundMaterial;
 
-                renderable.material->shader->bind();
-                for (uint i = 0; i < 64; i++)
+        auto camView = registry->view<Transform, Camera>();
+
+        for (auto camera : camView)
+        {
+            Camera& pc = camView.get<Camera>(camera);
+
+            RenderCommand::setDrawRect(0, 0, pc.m_deferredFrameBuffer->getColorWidth(), pc.m_deferredFrameBuffer->getColorHeight());
+            RenderCommand::setAlphaBlend(false);
+            RenderCommand::setDepthDraw(true);
+            
+            pc.m_deferredFrameBuffer->bind();
+
+            bool doCulling = true;
+
+            glm::mat3 viewNormal = glm::mat3(inverse(transpose(pc.viewMatrix())));
+
+            auto view = registry->view<Renderable>();
+            for (auto entity : view)
+            {
+                Renderable& mr = view.get(entity);
+
+                if (!isRenderableValid(mr) || !_isDeferred(mr.material->shader))
+                    break;
+
+                if (!(mr.cullingMask & pc.cullingMask))
+                    continue;
+
+                if (mr.material != boundMaterial)
                 {
-                    glm::mat4 uniform = glm::mat4(1.0f);
-                    if (i < boneTransforms.size())
-                        uniform = boneTransforms[i];
+                    boundMaterial = mr.material;
 
-                    renderable.material->shader->setUniformMat4("u_boneTransforms[" + std::to_string(i) + "]", uniform);
+                    boundMaterial->clearUniforms();
+
+                    boundMaterial->bind();
+
+                    boundMaterial->setUniformMat4("u_view", pc.viewMatrix());
+                    boundMaterial->setUniformMat4("u_viewProjection", pc.viewProjectionMatrix());
+                    boundMaterial->setUniformMat3("u_viewNormal", viewNormal);
+
+                    auto dirLightView = registry->view<component::DirectionalLight>();
+                    for (auto e : dirLightView)
+                    {
+                        auto& light = dirLightView.get(e);
+
+                        if (light.castShadows)
+                        {
+                            boundMaterial->setUniformMat4("u_lightSpaceMatrix", light.m_lightSpaceMatrix);
+                            break;
+                        }
+                    }
+
+                    boundMaterial->applyUniforms();
                 }
+
+                auto&     transformComponent = registry->get<Transform>(entity);
+                glm::mat4 transform          = transformComponent.getMatrixGlobal();
+
+                glm::bvec3 mirror = transformComponent.getMirrorGlobal();
+                if (!(mirror.x ^ mirror.y ^ mirror.z) != doCulling)
+                {
+                    doCulling ^= 1;
+                    RenderCommand::setBackfaceCulling(doCulling);
+                }
+
+                //if (registry->has<component::VertexAnimatable>(entity))
+                //{
+                //    auto& anim = registry->get<component::VertexAnimatable>(entity);
+                //    if (anim.getVertexArray())
+                //    {
+                //        anim.m_vao->bind();
+
+                //        boundMaterial->shader->bind();
+                //        boundMaterial->shader->setUniform1f("lerpT_curr", glm::mod(anim.m_currentElapsed, 1.0f));
+                //        boundMaterial->shader->setUniform1f("lerpT_trans", glm::mod(anim.m_transitionElapsed, 1.0f));
+
+                //        //Renderer::submit(boundMaterial, anim.m_vao, mr.mesh->getNumVertices(), transform);
+                //    }
+                //}
+                /*else */if (auto pSa = registry->try_get<component::SkeletonAnimatable>(entity); pSa) 
+                {
+                    skeletonAnimate(entity, mr, *pSa);
+                }
+
+                Renderer::submit(mr.model, boundMaterial, transform);
             }
-            else
+
+            int shadowIndex = 0;
+
+            using component::PointLight;
+            using component::DirectionalLight;
+
+            m_deferredPostShader->bind();
+            
+            auto pointLightView = registry->view<PointLight>();
+            int  count          = 0;
+            for (auto light : pointLightView)
             {
-                renderable.material->shader->bind();
-                for (uint i = 0; i < 64; i++)
-                    renderable.material->shader->setUniformMat4("u_boneTransforms[" + std::to_string(i) + "]", glm::mat4(1.0f));
+                PointLight& pointLightProps = pointLightView.get(light);
+                auto        lightTransform  = registry->get<Transform>(light);
+
+                std::string pointLightName = "u_pointLight[" + std::to_string(count) + "]";
+
+                m_deferredPostShader->setUniform3f(pointLightName + ".position",
+                                                   pc.viewMatrix() * glm::vec4(lightTransform.getPositionGlobal(), 1.0f));
+                m_deferredPostShader->setUniform3f(pointLightName + ".ambient",
+                                                   pointLightProps.ambient);
+                m_deferredPostShader->setUniform3f(pointLightName + ".diffuse",
+                                                   pointLightProps.diffuse);
+                m_deferredPostShader->setUniform3f(pointLightName + ".specular",
+                                                   pointLightProps.specular);
+                m_deferredPostShader->setUniform1f(pointLightName + ".range",
+                                                   pointLightProps.range);
+                m_deferredPostShader->setUniform1f(pointLightName + ".intensity",
+                                                   pointLightProps.intensity);
+
+                count++;
+                if (count >= 16)
+                    break;
             }
+
+            m_deferredPostShader->setUniform1i("u_numPointLights", count);
+            
+            auto dirLightView = registry->view<DirectionalLight>();
+            count             = 0;
+            for (auto light : dirLightView)
+            {
+                auto& dirLightProps  = dirLightView.get(light);
+                auto& lightTransform = registry->get<Transform>(light);
+
+                std::string dirLightName = "u_dirLight[" + std::to_string(count) + "]";
+
+                m_deferredPostShader->setUniform3f(dirLightName + ".direction",
+                                                   viewNormal * lightTransform.getForwardGlobal());
+                m_deferredPostShader->setUniform3f(dirLightName + ".ambient",
+                                                   dirLightProps.ambient);
+                m_deferredPostShader->setUniform3f(dirLightName + ".diffuse",
+                                                   dirLightProps.diffuse);
+                m_deferredPostShader->setUniform3f(dirLightName + ".specular",
+                                                   dirLightProps.specular);
+                m_deferredPostShader->setUniform1f(dirLightName + ".intensity",
+                                                   dirLightProps.intensity);
+
+                if (dirLightProps.castShadows && shadowIndex < 3)
+                {
+                    //m_deferredPostShader->setUniformMat4("u_lightSpaceMatrix", dirLightProps.m_lightSpaceMatrix);
+
+                    std::string shadowName = "u_shadow[" + std::to_string(shadowIndex) + "]";
+                    m_deferredPostShader->setUniform1i(shadowName + ".type", 2);
+                    m_deferredPostShader->setUniform1i(shadowName + ".map", 5 + shadowIndex);
+                    glm::vec2 biasMinMax = { dirLightProps.biasMin, dirLightProps.biasMax };
+                    m_deferredPostShader->setUniform2f(shadowName + ".biasMinMax", biasMinMax);
+                    dirLightProps.m_frameBuffer->bindDepthAttachment(5 + shadowIndex);
+
+                    shadowIndex++;
+                }
+
+                count++;
+                if (count >= 16)
+                    break;
+            }
+
+            m_deferredPostShader->setUniform1i("u_numDirLights", count);
+
+            m_deferredPostShader->setUniform1i("u_numShadowMaps", shadowIndex);
+            
+            pc.m_deferredFrameBuffer->bind(FrameBufferContext::Read);
+            pc.m_mainFrameBuffer->bind(FrameBufferContext::Write);
+
+            for (uint i = 0; i < 5; i++)
+                pc.m_deferredFrameBuffer->bindColorAttachment(i, i);
+            
+            RenderCommand::setDepthDraw(false);
+            RenderCommand::setAlphaBlend(false);
+            Renderer::submit(m_deferredPostShader, m_fullscreenQuad, glm::mat4(1.0f));
+
+            pc.m_deferredFrameBuffer->blit(pc.m_mainFrameBuffer);
         }
     }
 
-    // ^^^ Render System ^^^ //
+    // ^^^ Deferred Render System ^^^ //
 
     // vvv Gui Render System vvv //
 
@@ -355,8 +604,7 @@ namespace oyl::internal
 
         m_shader = Shader::create(
             {
-                { Shader::Vertex, ENGINE_RES + "shaders/gui.vert" },
-                { Shader::Pixel, ENGINE_RES + "shaders/gui.frag" }
+                { Shader::Compound, ENGINE_RES + "shaders/ScreenSpace/GUI_Quad.oylshader" },
             });
 
         float vertices[] = {
@@ -417,33 +665,20 @@ namespace oyl::internal
         m_shader->setUniform1i("u_texture", 0);
 
         RenderCommand::setDepthDraw(false);
+        RenderCommand::setAlphaBlend(true);
 
         auto camView = registry->view<Camera>();
 
-        int x = m_windowSize.x / 2;
-        int y = camView.size() > 2 ? m_windowSize.y / 2 : 0;
-
-        int width = m_windowSize.x;
-        if (camView.size() > 1) width /= 2;
-
-        int height = m_windowSize.y;
-        if (camView.size() > 2) height /= 2;
-
         glm::vec2 lastLowerClipping = glm::vec2(0.0f);
         glm::vec2 lastUpperClipping = glm::vec2(0.0f);
-
-        RenderCommand::setDrawRect(0, 0, width, height);
 
         for (auto camera : camView)
         {
             auto& pc = camView.get(camera);
 
-            pc.m_forwardFrameBuffer->bind();
-
-            //u32 playerNum = static_cast<u32>(pc.player);
-            //RenderCommand::setDrawRect(!!(playerNum & 1) * x, !(playerNum & 2) * y, width, height);
-
-            m_shader->setUniformMat4("u_projection", pc.orthoMatrix());
+			RenderCommand::setDrawRect(0, 0, pc.m_mainFrameBuffer->getColorWidth(), pc.m_mainFrameBuffer->getColorHeight());
+        	
+            pc.m_mainFrameBuffer->bind();
 
             auto view = registry->view<Transform, GuiRenderable>();
             for (auto entity : view)
@@ -485,7 +720,7 @@ namespace oyl::internal
                 model           = glm::scale(model, transform.getScale());
                 model           = glm::scale(model, texSize);
 
-                Renderer::submit(m_shader, m_vao, model);
+                Renderer::submit(m_shader, m_vao, pc.orthoMatrix() * model);
             }
         }
 
@@ -507,9 +742,165 @@ namespace oyl::internal
         return false;
     }
 
+    void PostRenderSystem::onEnter()
+    {
+        m_skyboxShader = Shader::create(
+            {
+                { Shader::Compound, ENGINE_RES + SKYBOX_SHADER_PATH }
+            }
+        );
+
+        m_hdrShader = Shader::create(
+            {
+                { Shader::Vertex,   ENGINE_RES + HDR_SHADER_VERTEX_PATH },
+                { Shader::Fragment, ENGINE_RES + HDR_SHADER_FRAGMENT_PATH }
+            }
+        );
+
+        m_intermediateFrameBuffer = FrameBuffer::create(1);
+        m_intermediateFrameBuffer->initColorTexture(0, 1, 1, 
+                                                    TextureFormat::RGBF16, 
+                                                    TextureFilter::Nearest, 
+                                                    TextureWrap::ClampToBorder);
+
+        float vertices[] = {
+            -1.0f, -1.0f, 0.0f, 0.0f, 0.0f,
+            1.0f, -1.0f, 0.0f, 1.0f, 0.0f,
+            1.0f, 1.0f, 0.0f, 1.0f, 1.0f,
+            -1.0f, 1.0f, 0.0f, 0.0f, 1.0f
+        };
+
+        u32 indices[] = {
+            0, 1, 2,
+            2, 3, 0
+        };
+
+        m_fullscreenQuad = VertexArray::create();
+
+        Ref<VertexBuffer> vbo = VertexBuffer::create(vertices, sizeof(vertices));
+        vbo->setLayout({
+            { DataType::Float3, "in_position" },
+            { DataType::Float2, "in_texCoord" }
+        });
+        Ref<IndexBuffer> ebo = IndexBuffer::create(indices, 6);
+        m_fullscreenQuad->addVertexBuffer(vbo);
+        m_fullscreenQuad->addIndexBuffer(ebo);
+    }
+
+    void PostRenderSystem::onUpdate()
+    {
+        using component::Camera;
+        auto camView = registry->view<Camera>();
+
+        camView.each([&](Camera& camera)
+        {
+            camera.m_mainFrameBuffer->bind();
+            RenderCommand::setDrawRect(0, 0, camera.m_mainFrameBuffer->getColorWidth(), camera.m_mainFrameBuffer->getColorHeight());
+            RenderCommand::setBackfaceCulling(false);
+            RenderCommand::setAlphaBlend(false);
+
+            RenderCommand::setDepthDraw(true);
+            this->skyboxPass(camera);
+            RenderCommand::setDepthDraw(false);
+
+            if (camera.doHDR)
+                this->hdrPass(camera);
+        });
+    }
+
+    void PostRenderSystem::skyboxPass(const component::Camera& camera)
+    {
+        static const auto& skybox = TextureCubeMap::get(DEFAULT_SKYBOX_ALIAS);
+        static const auto& mesh = Model::get(CUBE_MODEL_ALIAS)->getMeshes()[0];
+
+        glm::mat4 viewProj = camera.projectionMatrix();
+        viewProj *= glm::mat4(glm::mat3(camera.viewMatrix()));
+
+        m_skyboxShader->bind();
+        m_skyboxShader->setUniformMat4("u_viewProjection", viewProj);
+
+        if (camera.skybox)
+            camera.skybox->bind(0);
+        else
+            skybox->bind(0);
+
+        camera.m_mainFrameBuffer->bind();
+
+        RenderCommand::drawArrays(mesh.getVertexArray(), mesh.getNumVertices());
+    }
+
+    static glm::mat4 brightnessMatrix(float a_brightness)
+    {
+        return {
+            1.0f, 0.0f, 0.0f, 0.0f,
+            0.0f, 1.0f, 0.0f, 0.0f,
+            0.0f, 0.0f, 1.0f, 0.0f,
+            a_brightness, a_brightness, a_brightness, 1.0f
+        };
+    }
+    
+    static glm::mat4 contrastMatrix(float a_contrast)
+    {
+        float t = (1.0f - a_contrast) / 2.0f;
+
+        return {
+            a_contrast, 0.0f,       0.0f,       0.0f,
+            0.0f,       a_contrast, 0.0f,       0.0f,
+            0.0f,       0.0f,       a_contrast, 0.0f,
+            t,          t,          t,          1.0f
+        };
+    }
+    
+    static glm::mat4 saturationMatrix(float a_saturation)
+    {
+        glm::vec3 luminance = { 0.3086f, 0.6094f, 0.0820f };
+
+        float oneMinusSat = 1.0 - a_saturation;
+
+        glm::vec3 red = glm::vec3(luminance.x * oneMinusSat);
+        red += glm::vec3(a_saturation, 0, 0);
+
+        glm::vec3 green = glm::vec3(luminance.y * oneMinusSat);
+        green += glm::vec3(0, a_saturation, 0);
+
+        glm::vec3 blue = glm::vec3(luminance.z * oneMinusSat);
+        blue += glm::vec3(0, 0, a_saturation);
+
+        glm::mat4 ret(1.0f);
+        ret[0].rgb = red;
+        ret[1].rgb = green;
+        ret[2].rgb = blue;
+
+        return ret;
+    }
+
+    void PostRenderSystem::hdrPass(const component::Camera& camera)
+    {
+        if (m_intermediateFrameBuffer->getColorWidth() != camera.m_mainFrameBuffer->getColorWidth() ||
+            m_intermediateFrameBuffer->getColorHeight() != camera.m_mainFrameBuffer->getColorHeight())
+        {
+            m_intermediateFrameBuffer->updateViewport(camera.m_mainFrameBuffer->getColorWidth(), 
+                                                      camera.m_mainFrameBuffer->getColorHeight());
+        }
+
+        m_hdrShader->bind();
+        m_hdrShader->setUniform1f(0, camera.exposure);
+        m_hdrShader->setUniformMat4(1, brightnessMatrix(camera.brightness));
+        m_hdrShader->setUniformMat4(2, contrastMatrix(camera.contrast));
+        m_hdrShader->setUniformMat4(3, saturationMatrix(camera.saturation));
+
+        camera.m_mainFrameBuffer->bind(FrameBufferContext::Read);
+        camera.m_mainFrameBuffer->bindColorAttachment(0);
+        m_intermediateFrameBuffer->bind(FrameBufferContext::Write);
+
+        RenderCommand::drawIndexed(m_fullscreenQuad);
+
+        m_intermediateFrameBuffer->blit(camera.m_mainFrameBuffer);
+    }
+
     void ShadowRenderSystem::onEnter()
     {
-        m_shader = Shader::create(ENGINE_RES + "shaders/shadowMapping.oylshader");
+        m_shader = Shader::create(ENGINE_RES + "shaders/ShadowMap.oylshader");
     }
 
     void ShadowRenderSystem::onExit() {}
@@ -561,7 +952,7 @@ namespace oyl::internal
                 
                 glm::mat4 lightView = glm::lookAt(-t.getForwardGlobal() * dl.clipLength * 0.5f + t.getPositionGlobal(),
                                                   t.getPositionGlobal(),
-                                                  glm::vec3(0.0f, 1.0f, 0.0f));
+                                                  t.getUpGlobal());
 
                 dl.m_lightSpaceMatrix = lightProjection * lightView;
 
@@ -595,14 +986,14 @@ namespace oyl::internal
         m_forwardFrameBuffer = FrameBuffer::create(1);
 
         m_forwardFrameBuffer->initColorTexture(0, 1, 1,
-                                               TextureFormat::RGBA8,
+                                               TextureFormat::RGBF16,
                                                TextureFilter::Nearest,
                                                TextureWrap::ClampToEdge);
 
         m_intermediateFrameBuffer = FrameBuffer::create(1);
 
         m_intermediateFrameBuffer->initColorTexture(0, 1, 1,
-                                                    TextureFormat::RGBA8,
+                                                    TextureFormat::RGBF16,
                                                     TextureFilter::Nearest,
                                                     TextureWrap::ClampToEdge);
 
@@ -612,8 +1003,8 @@ namespace oyl::internal
 
         m_shader = Shader::create(
             {
-                { Shader::Vertex, ENGINE_RES + "shaders/fbopassthrough.vert" },
-                { Shader::Pixel, ENGINE_RES + "shaders/fbopassthrough.frag" }
+                { Shader::Vertex, ENGINE_RES + "shaders/ScreenSpace/FBO_Passthrough.vert" },
+                { Shader::Pixel, ENGINE_RES + "shaders/ScreenSpace/FBO_Passthrough.frag" }
             });
 
         float vertices[] = {
@@ -649,9 +1040,12 @@ namespace oyl::internal
 
         m_forwardFrameBuffer->clear();
 
+        RenderCommand::setAlphaBlend(false);
+        RenderCommand::setDepthDraw(false);
+
         registry->view<Camera>().each([&](Camera& pc)
         {
-            uint width = pc.m_forwardFrameBuffer->getColorWidth(), height = pc.m_forwardFrameBuffer->getColorHeight();
+            uint width = pc.m_mainFrameBuffer->getColorWidth(), height = pc.m_mainFrameBuffer->getColorHeight();
             if (m_intermediateFrameBuffer->getColorWidth() != width ||
                 m_intermediateFrameBuffer->getColorHeight() != height)
                 m_intermediateFrameBuffer->updateViewport(width, height);
@@ -662,7 +1056,6 @@ namespace oyl::internal
 
             m_vao->bind();
 
-            RenderCommand::setDepthDraw(false);
             Shader* boundShader = nullptr;
 
             bool needsBlit = false;
@@ -674,12 +1067,12 @@ namespace oyl::internal
                 if (!needsBlit)
                 {
                     m_intermediateFrameBuffer->bind(FrameBufferContext::Write);
-                    pc.m_forwardFrameBuffer->bind(FrameBufferContext::Read);
-                    pc.m_forwardFrameBuffer->bindColorAttachment(0);
+                    pc.m_mainFrameBuffer->bind(FrameBufferContext::Read);
+                    pc.m_mainFrameBuffer->bindColorAttachment(0);
                 }
                 else
                 {
-                    pc.m_forwardFrameBuffer->bind(FrameBufferContext::Write);
+                    pc.m_mainFrameBuffer->bind(FrameBufferContext::Write);
                     m_intermediateFrameBuffer->bind(FrameBufferContext::Read);
                     m_intermediateFrameBuffer->bindColorAttachment(0);
                 }
@@ -696,20 +1089,19 @@ namespace oyl::internal
 
                 RenderCommand::drawIndexed(m_vao);
             }
-            RenderCommand::setDepthDraw(true);
 
             if (needsBlit)
-                m_intermediateFrameBuffer->blit(pc.m_forwardFrameBuffer);
+                m_intermediateFrameBuffer->blit(pc.m_mainFrameBuffer);
 
-            RenderCommand::setDepthDraw(false);
             RenderCommand::setDrawRect(0, 0, m_windowSize.x, m_windowSize.y);
 
-            m_forwardFrameBuffer->bind(FrameBufferContext::Write);
             m_shader->bind();
 
             //auto& pc = view.get<Camera>(camera);
 
-            pc.m_forwardFrameBuffer->bindColorAttachment(0);
+            pc.m_mainFrameBuffer->bind(FrameBufferContext::Read);
+            pc.m_mainFrameBuffer->bindColorAttachment(0);
+            m_forwardFrameBuffer->bind(FrameBufferContext::Write);
 
             m_shader->setUniform1i("u_texture", 0);
 
@@ -734,13 +1126,9 @@ namespace oyl::internal
             Renderer::submit(m_shader, m_vao, model);
         });
 
-        m_forwardFrameBuffer->unbind(); 
-
     #if defined(OYL_DISTRIBUTION)
         m_forwardFrameBuffer->blit();
     #endif
-
-        RenderCommand::setDepthDraw(true);
     }
 
     void UserPostRenderSystem::onGuiRender() {}
@@ -764,6 +1152,38 @@ namespace oyl::internal
         }
         return false;
     }
-
+    
     // ^^^ Gui Render System ^^^ //
+
+    void skeletonAnimate(entt::entity entity, component::Renderable& renderable, component::SkeletonAnimatable& sa)
+    {
+        static auto fSkeletal = Shader::get("Oyl Forward Skeletal");
+        static auto dSkeletal = Shader::get("Oyl Deferred Skeletal");
+        bool valid = renderable.model && renderable.material;
+        valid &= renderable.material->shader == fSkeletal || renderable.material->shader == dSkeletal;
+        if (valid)
+        {
+            if (auto it = renderable.model->getAnimations().find(sa.animation);
+                it != renderable.model->getAnimations().end())
+            {
+                std::vector<glm::mat4> boneTransforms;
+                renderable.model->getBoneTransforms(sa.animation, sa.time, boneTransforms);
+
+                renderable.material->shader->bind();
+                for (uint i = 0; i < 64; i++)
+                {
+                    glm::mat4 uniform = glm::mat4(1.0f);
+                    if (i < boneTransforms.size())
+                        uniform = boneTransforms[i];
+
+                    renderable.material->shader->setUniformMat4("u_boneTransforms[" + std::to_string(i) + "]", uniform);
+                }
+            } else
+            {
+                renderable.material->shader->bind();
+                for (uint i = 0; i < 64; i++)
+                    renderable.material->shader->setUniformMat4("u_boneTransforms[" + std::to_string(i) + "]", glm::mat4(1.0f));
+            }
+        }
+    }
 }
