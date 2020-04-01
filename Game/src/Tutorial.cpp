@@ -95,6 +95,7 @@ void TutorialLayer::onUpdate()
 		initSegment = true;
 		currentSegmentFunc = &TutorialLayer::intro;
 
+		//remove any unwanted players
 		auto playerView = registry->view<Player>();
 		for (auto& playerEntity : playerView)
 		{
@@ -104,6 +105,7 @@ void TutorialLayer::onUpdate()
 				registry->destroy(playerEntity);
 		}
 
+		//remove any unwanted cameras
 		auto cameraView = registry->view<component::Camera>();
 		for (auto& cameraEntity : cameraView)
 		{
@@ -299,7 +301,7 @@ void TutorialLayer::segment1()
 
 	auto& playerTransform = registry->get<component::Transform>(tutPlayerEntity);
 
-
+	
 
 	isSegmentFinished = true;
 }

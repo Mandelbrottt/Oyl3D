@@ -129,6 +129,7 @@ void PlayerInteractionValidationSystem::performRaycastAndValidateForPlayer(entt:
 {
 	auto& player          = registry->get<Player>(a_playerEntity);
 	auto& playerTransform = registry->get<component::Transform>(a_playerEntity);
+	auto& playerRB        = registry->get<component::RigidBody>(a_playerEntity);
 
 	if (player.state == PlayerState::pushing || player.state == PlayerState::cleaning || player.state == PlayerState::stunned)
 	{
@@ -167,7 +168,7 @@ void PlayerInteractionValidationSystem::performRaycastAndValidateForPlayer(entt:
 
 	auto& playerCameraTransform = registry->get<component::Transform>(playersCameraEntity);
 
-	auto ray = RayTest::Closest(playerCameraTransform.getPositionGlobal(), playerCameraTransform.getForwardGlobal(), 2.0f);
+	auto ray = RayTest::Closest(playerCameraTransform.getPositionGlobal(), playerCameraTransform.getForwardGlobal(), 2.2f, 0b1000);
 	if (ray->hasHit && registry->valid(ray->hitObject.entity))
 	{
 		entt::entity raycastHitEntity = ray->hitObject.entity;

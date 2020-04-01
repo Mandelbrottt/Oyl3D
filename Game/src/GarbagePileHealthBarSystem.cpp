@@ -112,7 +112,7 @@ void GarbagePileHealthBarSystem::onUpdate()
 						hideHPBar = true;
 
 					//hide the HP bar if the player cannot see the garbage pile
-					auto ray = RayTest::Closest(playerCameraTransform.getPositionGlobal(), normalize(playerToGarbagePile + glm::vec3(0.0f, -0.9f, 0.0f)), 20.0f);
+					auto ray = RayTest::Closest(playerCameraTransform.getPositionGlobal(), normalize(playerToGarbagePile + glm::vec3(0.0f, -0.9f, 0.0f)), 20.0f, 0b1000);
 					if (!ray->hasHit || !registry->valid(ray->hitObject.entity) || !registry->has<GarbagePile>(ray->hitObject.entity))
 						hideHPBar = true;
 
