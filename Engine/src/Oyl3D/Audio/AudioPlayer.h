@@ -75,6 +75,16 @@ namespace oyl
         
         static bool isEventPlaying(const std::string& a_eventName);
 
+        // Sounds
+        static void loadSound(const std::string& a_soundName);
+        static int  playSound(const std::string& a_soundName, float a_volume = 1.0f);
+        static void stopSound(const std::string& a_soundName, bool a_fadeOut = false);
+
+        static float getChannelVolume(int a_channel);
+        static void  setChannelVolume(int a_channel, float a_volume);
+                                                         
+        static bool isChannelPlaying(int a_channel);
+
         // Parameters
         static float getEventParameter(const std::string& a_eventName, const std::string& a_eventParameter);
         static void  setEventParameter(const std::string& a_eventName, const std::string& a_eventParameter, float a_value);

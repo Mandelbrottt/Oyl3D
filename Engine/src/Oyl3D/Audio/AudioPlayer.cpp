@@ -74,13 +74,14 @@ namespace oyl
             for (auto it = s_channels.begin(); it != s_channels.end();)
             {
                 bool isPlaying = false;
-                FMOD_CALL(it->second->isPlaying(&isPlaying));
+                it->second->isPlaying(&isPlaying);
                 if (!isPlaying)
                     it = s_channels.erase(it);
                 else
                     ++it;
             }
 
+            FMOD_CALL(s_system->update());
             FMOD_CALL(s_studioSystem->update());
         }
 
@@ -206,6 +207,84 @@ namespace oyl
         FMOD_STUDIO_PLAYBACK_STATE state;
         FMOD_CALL(it->second->getPlaybackState(&state));
         return state == FMOD_STUDIO_PLAYBACK_PLAYING;
+    }
+
+    void Audio::loadSound(const std::string& a_soundName)
+    {
+        auto& sounds = AudioPlayer::s_sounds;
+        auto it = sounds.find(a_soundName);
+        if (it != sounds.end())
+            return;
+
+        FMOD::Sound* pSound = nullptr;
+
+        FMOD_CALL(AudioPlayer::s_system->createSound(a_soundName.c_str(), FMOD_DEFAULT, nullptr, &pSound));
+        if (pSound)
+            sounds[a_soundName] = pSound;
+    }
+    
+    int Audio::playSound(const std::string& a_soundName, float a_volume)
+    {
+        auto& sounds = AudioPlayer::s_sounds;
+        int nChannelId = AudioPlayer::s_nextChannelID++;
+        AudioPlayer::s_nextChannelID %= 32;
+        
+        auto it = sounds.find(a_soundName);
+        if (it == sounds.end())
+        {
+            loadSound(a_soundName);
+            it = sounds.find(a_soundName);
+            if (it == sounds.end())
+                return nChannelId;
+        }
+
+        FMOD::Channel* pChannel = nullptr;
+        FMOD_CALL(AudioPlayer::s_system->playSound(it->second, nullptr, true, &pChannel));
+        if (pChannel)
+        {
+            FMOD_CALL(pChannel->setVolume(a_volume));
+            FMOD_CALL(pChannel->setPaused(false));
+            AudioPlayer::s_channels[nChannelId] = pChannel;
+        }
+
+        return nChannelId;
+    }
+
+    // DOES NOT DO ANYTHING
+    void Audio::stopSound(const std::string& a_soundName, bool a_fadeOut)
+    {
+        
+    }
+    
+    float Audio::getChannelVolume(int a_channel)
+    {
+        auto it = AudioPlayer::s_channels.find(a_channel);
+        if (it == AudioPlayer::s_channels.end())
+            return 0.0f;
+
+        float ret;
+        FMOD_CALL(it->second->getVolume(&ret));
+        return ret;
+    }
+    
+    void Audio::setChannelVolume(int a_channel, float a_volume)
+    {
+        auto it = AudioPlayer::s_channels.find(a_channel);
+        if (it == AudioPlayer::s_channels.end())
+            return;
+
+        FMOD_CALL(it->second->setVolume(a_volume));
+    }
+    
+    bool Audio::isChannelPlaying(int a_channel)
+    {
+        auto it = AudioPlayer::s_channels.find(a_channel);
+        if (it == AudioPlayer::s_channels.end())
+            return false;
+
+        bool ret;
+        FMOD_CALL(it->second->isPlaying(&ret));
+        return ret;
     }
 
     float Audio::getEventParameter(const std::string& a_eventName, const std::string& a_eventParameter)
