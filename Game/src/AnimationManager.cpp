@@ -216,8 +216,71 @@ bool AnimationManager::onEvent(const Event& event)
 		if (registry->get<component::EntityInfo>(evt.entity).name.find("Player") != std::string::npos)
 		{
 			auto& playerTransform = registry->get<component::Transform>(evt.entity);
+			auto& playerAnimatible = registry->get<component::SkeletonAnimatable>(evt.entity);
+			auto& player = registry->get<Player>(evt.entity);
+
+			if (&player != nullptr)
+			{
+				if (playerAnimatible.animation == "stunned" && evt.stopped)
+				{
+					if (player.state == PlayerState::idle)
+					{
+						playerAnimatible.play = true;
+						playerAnimatible.loop = true;
+						playerAnimatible.time = 0.01f;
+						playerAnimatible.animation == "idle";
+					}
+					else if (player.state == PlayerState::walking)
+					{
+						playerAnimatible.play = true;
+						playerAnimatible.loop = true;
+						playerAnimatible.time = 0.01f;
+						playerAnimatible.animation == "running";
+					}
+				}
+				if (playerAnimatible.animation == "cleaning")
+				{
+					if (player.state == PlayerState::idle)
+					{
+						playerAnimatible.play = true;
+						playerAnimatible.loop = true;
+						playerAnimatible.time = 0.01f;
+						playerAnimatible.animation == "idle";
+					}
+					else if (player.state == PlayerState::walking)
+					{
+						playerAnimatible.play = true;
+						playerAnimatible.loop = true;
+						playerAnimatible.time = 0.01f;
+						playerAnimatible.animation == "running";
+					}
+				}
+				if (playerAnimatible.animation == "throw")
+				{
+					if (player.state == PlayerState::idle)
+					{
+						playerAnimatible.play = true;
+						playerAnimatible.loop = true;
+						playerAnimatible.time = 0.01f;
+						playerAnimatible.animation == "idle";
+					}
+					else if (player.state == PlayerState::walking)
+					{
+						playerAnimatible.play = true;
+						playerAnimatible.loop = true;
+						playerAnimatible.time = 0.01f;
+						playerAnimatible.animation == "running";
+					}
+				}
+			}
+			else
+			{
+				OYL_LOG("no player component found");
+			}
+
+
 		}
-		if (registry->get<component::EntityInfo>(evt.entity).name.find("Arm") != std::string::npos)//TODO: else if this with other scenarios, like flies else if(viemodel){} else { do nothing }
+		else if (registry->get<component::EntityInfo>(evt.entity).name.find("Arm") != std::string::npos)//TODO: else if this with other scenarios, like flies else if(viemodel){} else { do nothing }
 		{
 
 			//Animation Tag to check what action should be taken
@@ -445,21 +508,34 @@ bool AnimationManager::onEvent(const Event& event)
 		case PlayerState::cleaning:
 			//Set the animation here for using cleaning solution
 			playerAnimatable.animation = "cleaning";
+			playerAnimatable.loop = false;
+			playerAnimatable.time = 0.01;
 			break;
 		case PlayerState::idle:
 			//Set the animation to idle
-			playerAnimatable.animation = "idle1"; //TODO: fix this up with the proper idle
+			if (changeImmediate)
+			{
+				playerAnimatable.animation = "idle1"; //TODO: start to link in the second idle animation randomly
+				playerAnimatable.loop = true;
+			}
 			break;
 		case PlayerState::jumping:
-			//Set the animation here for using cannonball
+			//Set the animation here for jumping
+			playerAnimatable.time = 0.01;
+			playerAnimatable.loop = false;
 			playerAnimatable.animation = "jump";
 			break;
 		case PlayerState::walking:
+			//set the animation here to running while the player is running
 			if (changeImmediate)
-			playerAnimatable.animation = "running";
+			{
+				playerAnimatable.time = 0.01;
+				playerAnimatable.animation = "running";
+				playerAnimatable.loop = true;
+			}
 			break;
 		case PlayerState::pushing:
-			//Set the animation here for using throwable bottle
+			//Set the animation here for pushing the cannon
 			registry->get<component::SkeletonAnimatable>(playerArmR).time = 0.01f;
 			registry->get<component::SkeletonAnimatable>(playerArmL).time = 0.01f;
 			setAnimationProperties("Pushing_A", AnimationProperties::None, false);
@@ -468,8 +544,10 @@ bool AnimationManager::onEvent(const Event& event)
 
 			break;
 		case PlayerState::stunned:
-			//Set the animation here for using throwable bottle
+			//Set the animation here for getting hit by the bottle
 			playerAnimatable.animation = "stunned";
+			playerAnimatable.loop = false;
+			playerAnimatable.time = 0.01;
 			break;
 		case PlayerState::inCleaningQuicktimeEvent:
 			//Set the animation here for using mop

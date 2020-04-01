@@ -8398,6 +8398,98 @@
             }
         }
     },
+    "PirateShort": {
+        "Renderable": {
+            "CastShadows": true,
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "Character Short Blue"
+            },
+            "Mesh": {
+                "Alias": "pirate_short",
+                "FilePath": "res\\assets\\models\\Animation\\Character\\pirate_short.fbx"
+            }
+        },
+        "SkeletonAnimatable": {
+            "Animation": "idle1",
+            "Loop": true,
+            "Play": true,
+            "Reverse": false,
+            "Time": 0.0,
+            "TimeScale": 1.0
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Parent": null,
+            "Position": {
+                "X": -13.682146072387695,
+                "Y": 1.0150461196899414,
+                "Z": 1.6618459224700928
+            },
+            "Rotation": {
+                "qW": -0.014139384031295776,
+                "qX": -8.04519368102774e-06,
+                "qY": 0.9999000430107117,
+                "qZ": -1.580097341502551e-05
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "PirateTall": {
+        "Renderable": {
+            "CastShadows": true,
+            "CullingMask": 15,
+            "Enabled": true,
+            "Material": {
+                "Alias": "Charactter Tall Blue"
+            },
+            "Mesh": {
+                "Alias": "pirate_tall",
+                "FilePath": "res\\assets\\models\\Animation\\Character\\pirate_tall.fbx"
+            }
+        },
+        "SkeletonAnimatable": {
+            "Animation": "InCleaningQuicktimeEvent",
+            "Loop": true,
+            "Play": true,
+            "Reverse": false,
+            "Time": 0.0,
+            "TimeScale": 1.0
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Parent": null,
+            "Position": {
+                "X": -11.758231163024902,
+                "Y": 1.0150461196899414,
+                "Z": 1.6618459224700928
+            },
+            "Rotation": {
+                "qW": -0.014139384031295776,
+                "qX": -8.04519368102774e-06,
+                "qY": 0.9999000430107117,
+                "qZ": -1.580097341502551e-05
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
     "Plank": {
         "Collidable": {
             "Shapes": [
@@ -8557,98 +8649,6 @@
             "Scale": {
                 "X": 0.8999999761581421,
                 "Y": 0.8999999761581421,
-                "Z": 1.0
-            }
-        }
-    },
-    "PlayerShort": {
-        "Renderable": {
-            "CastShadows": true,
-            "CullingMask": 15,
-            "Enabled": true,
-            "Material": {
-                "Alias": "Character Short Blue"
-            },
-            "Mesh": {
-                "Alias": "pirate_short",
-                "FilePath": "res\\assets\\models\\Animation\\Character\\pirate_short.fbx"
-            }
-        },
-        "SkeletonAnimatable": {
-            "Animation": "idle1",
-            "Loop": true,
-            "Play": true,
-            "Reverse": false,
-            "Time": 0.0,
-            "TimeScale": 1.0
-        },
-        "Transform": {
-            "Mirror": {
-                "X": false,
-                "Y": false,
-                "Z": false
-            },
-            "Parent": null,
-            "Position": {
-                "X": -13.682146072387695,
-                "Y": 1.0150461196899414,
-                "Z": 1.6618459224700928
-            },
-            "Rotation": {
-                "qW": -0.014139384031295776,
-                "qX": -8.04519368102774e-06,
-                "qY": 0.9999000430107117,
-                "qZ": -1.580097341502551e-05
-            },
-            "Scale": {
-                "X": 1.0,
-                "Y": 1.0,
-                "Z": 1.0
-            }
-        }
-    },
-    "PlayerTall": {
-        "Renderable": {
-            "CastShadows": true,
-            "CullingMask": 15,
-            "Enabled": true,
-            "Material": {
-                "Alias": "Charactter Tall Blue"
-            },
-            "Mesh": {
-                "Alias": "pirate_tall",
-                "FilePath": "res\\assets\\models\\Animation\\Character\\pirate_tall.fbx"
-            }
-        },
-        "SkeletonAnimatable": {
-            "Animation": "InCleaningQuicktimeEvent",
-            "Loop": true,
-            "Play": true,
-            "Reverse": false,
-            "Time": 0.0,
-            "TimeScale": 1.0
-        },
-        "Transform": {
-            "Mirror": {
-                "X": false,
-                "Y": false,
-                "Z": false
-            },
-            "Parent": null,
-            "Position": {
-                "X": -11.758231163024902,
-                "Y": 1.0150461196899414,
-                "Z": 1.6618459224700928
-            },
-            "Rotation": {
-                "qW": -0.014139384031295776,
-                "qX": -8.04519368102774e-06,
-                "qY": 0.9999000430107117,
-                "qZ": -1.580097341502551e-05
-            },
-            "Scale": {
-                "X": 1.0,
-                "Y": 1.0,
                 "Z": 1.0
             }
         }
