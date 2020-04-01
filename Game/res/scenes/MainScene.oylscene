@@ -2829,7 +2829,7 @@
                 "Y": false,
                 "Z": false
             },
-            "Parent": null,
+            "Parent": "Dummy Bone Target",
             "Position": {
                 "X": 0.0024428663309663534,
                 "Y": 1.541610836982727,
@@ -16180,7 +16180,7 @@
                 "Y": false,
                 "Z": false
             },
-            "Parent": null,
+            "Parent": "Dummy Camera",
             "Position": {
                 "X": 15.330766677856445,
                 "Y": 1.0499999523162842,

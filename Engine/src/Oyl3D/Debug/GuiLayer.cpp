@@ -2269,16 +2269,28 @@ namespace oyl::internal
         auto& material = m_currentSelection.material();
 
         bool selected = false;
-        
-        std::string tempAlias = Shader::getAlias(material->shader);
-        if (tempAlias == INVALID_ALIAS) tempAlias = "None";
-        if (ImGui::BeginCombo("Shader", tempAlias.c_str()))
-        {
-            for (const auto& [alias, shader] : Shader::getCache())
-                if (ImGui::Selectable(alias.c_str(), shader == material->shader))
-                    material->shader = shader, selected = true;
 
-            ImGui::EndCombo();
+        if (ImGui::Checkbox("Override Shader", &material->overrideShader))
+            selected = true;
+
+        std::string tempAlias;
+        if (material->overrideShader)
+        {
+            tempAlias = Shader::getAlias(material->shader);
+
+            if (tempAlias == INVALID_ALIAS) tempAlias = "None";
+            if (ImGui::BeginCombo("Shader", tempAlias.c_str()))
+            {
+                for (const auto& [alias, shader] : Shader::getCache())
+                    if (ImGui::Selectable(alias.c_str(), shader == material->shader))
+                        material->shader = shader, selected = true;
+
+                ImGui::EndCombo();
+            }
+        }
+        else
+        {
+            ImGui::Checkbox("Deferred", &material->deferred);
         }
         ImGui::NewLine();
 
