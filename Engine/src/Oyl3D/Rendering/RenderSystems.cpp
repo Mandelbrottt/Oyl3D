@@ -51,6 +51,30 @@ namespace oyl::internal
     void PreRenderSystem::onUpdate()
     {
         using component::Renderable;
+
+        registry->view<Renderable>().each([&](auto entity, Renderable& renderable)
+        {
+            if (!renderable.material || renderable.material->overrideShader)
+                return;
+            
+            Ref<Shader> shader = nullptr;
+            if (registry->has<component::SkeletonAnimatable>(entity))
+            {
+                if (renderable.material->deferred)
+                    shader = Shader::get(DEFERRED_SKELETAL_PRE_SHADER_ALIAS);
+                else
+                    shader = Shader::get(FORWARD_SKELETAL_SHADER_ALIAS);
+            }
+            else
+            {
+                if (renderable.material->deferred)
+                    shader = Shader::get(DEFERRED_STATIC_PRE_SHADER_ALIAS);
+                else
+                    shader = Shader::get(FORWARD_STATIC_SHADER_ALIAS);
+            }
+            if (renderable.material->shader != shader)
+                renderable.material->shader = shader;
+        });
         
         // We sort our mesh renderers based on material properties
         registry->sort<Renderable>(
@@ -81,6 +105,9 @@ namespace oyl::internal
 
         int height = m_windowSize.y;
         if (camView.size() > 2) height /= 2;
+
+        width = glm::max(width, 1);
+        height = glm::max(height, 1);
 
         camView.each([&](Camera& camera)
         {
@@ -396,6 +423,7 @@ namespace oyl::internal
 
             RenderCommand::setDrawRect(0, 0, pc.m_deferredFrameBuffer->getColorWidth(), pc.m_deferredFrameBuffer->getColorHeight());
             RenderCommand::setAlphaBlend(false);
+            RenderCommand::setDepthDraw(true);
             
             pc.m_deferredFrameBuffer->bind();
 
