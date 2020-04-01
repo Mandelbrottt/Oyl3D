@@ -213,7 +213,7 @@ bool AnimationManager::onEvent(const Event& event)
 		auto evt = event_cast<AnimationFinishedEvent>(event);
 
 		//for player animations do player things, otherwise do first person things
-		if (registry->get<component::EntityInfo>(evt.entity).name.find("Player") != std::string::npos)
+		if (registry->get<component::EntityInfo>(evt.entity).name.find("Player") != std::string::npos && registry->get<component::EntityInfo>(evt.entity).name.find("Arm") == std::string::npos)
 		{
 			auto& playerTransform = registry->get<component::Transform>(evt.entity);
 			auto& playerAnimatible = registry->get<component::SkeletonAnimatable>(evt.entity);
@@ -230,15 +230,8 @@ bool AnimationManager::onEvent(const Event& event)
 						playerAnimatible.time = 0.01f;
 						playerAnimatible.animation == "idle";
 					}
-					else if (player.state == PlayerState::walking)
-					{
-						playerAnimatible.play = true;
-						playerAnimatible.loop = true;
-						playerAnimatible.time = 0.01f;
-						playerAnimatible.animation == "running";
-					}
 				}
-				if (playerAnimatible.animation == "cleaning")
+				if (playerAnimatible.animation == "glooping")
 				{
 					if (player.state == PlayerState::idle)
 					{
@@ -246,13 +239,6 @@ bool AnimationManager::onEvent(const Event& event)
 						playerAnimatible.loop = true;
 						playerAnimatible.time = 0.01f;
 						playerAnimatible.animation == "idle";
-					}
-					else if (player.state == PlayerState::walking)
-					{
-						playerAnimatible.play = true;
-						playerAnimatible.loop = true;
-						playerAnimatible.time = 0.01f;
-						playerAnimatible.animation == "running";
 					}
 				}
 				if (playerAnimatible.animation == "throw")
@@ -263,13 +249,6 @@ bool AnimationManager::onEvent(const Event& event)
 						playerAnimatible.loop = true;
 						playerAnimatible.time = 0.01f;
 						playerAnimatible.animation == "idle";
-					}
-					else if (player.state == PlayerState::walking)
-					{
-						playerAnimatible.play = true;
-						playerAnimatible.loop = true;
-						playerAnimatible.time = 0.01f;
-						playerAnimatible.animation == "running";
 					}
 				}
 			}
@@ -497,17 +476,22 @@ bool AnimationManager::onEvent(const Event& event)
 
 		bool changeImmediate = true;
 
-		if (evt.oldState == PlayerState::walking || evt.oldState == PlayerState::idle)
+		if (evt.oldState == PlayerState::walking || evt.oldState == PlayerState::idle || evt.oldState == PlayerState::jumping || evt.oldState == PlayerState::falling)
 			changeImmediate = true;
 		else
 			changeImmediate = false;
 
-
+		if (evt.oldState == PlayerState::inCleaningQuicktimeEvent)
+		{
+			setAnimationProperties("Idle_L", AnimationProperties::EmptyL, true);
+			setAnimationProperties("Mop_R", AnimationProperties::Mop, true);
+		}
 		switch (evt.newState)
 		{
 		case PlayerState::cleaning:
 			//Set the animation here for using cleaning solution
-			playerAnimatable.animation = "cleaning";
+			playerAnimatable.animation = "glooping";
+			playerAnimatable.play = true;
 			playerAnimatable.loop = false;
 			playerAnimatable.time = 0.01;
 			break;
@@ -515,6 +499,7 @@ bool AnimationManager::onEvent(const Event& event)
 			//Set the animation to idle
 			if (changeImmediate)
 			{
+				playerAnimatable.play = true;
 				playerAnimatable.animation = "idle1"; //TODO: start to link in the second idle animation randomly
 				playerAnimatable.loop = true;
 			}
@@ -523,15 +508,17 @@ bool AnimationManager::onEvent(const Event& event)
 			//Set the animation here for jumping
 			playerAnimatable.time = 0.01;
 			playerAnimatable.loop = false;
+			playerAnimatable.play = true;
 			playerAnimatable.animation = "jump";
 			break;
 		case PlayerState::walking:
 			//set the animation here to running while the player is running
 			if (changeImmediate)
 			{
+				playerAnimatable.play = true;
+				playerAnimatable.loop = true;
 				playerAnimatable.time = 0.01;
 				playerAnimatable.animation = "running";
-				playerAnimatable.loop = true;
 			}
 			break;
 		case PlayerState::pushing:
@@ -540,11 +527,14 @@ bool AnimationManager::onEvent(const Event& event)
 			registry->get<component::SkeletonAnimatable>(playerArmL).time = 0.01f;
 			setAnimationProperties("Pushing_A", AnimationProperties::None, false);
 
+			playerAnimatable.loop = true;
+			playerAnimatable.play = true;
 			playerAnimatable.animation = "pushing canon";
 
 			break;
 		case PlayerState::stunned:
 			//Set the animation here for getting hit by the bottle
+			playerAnimatable.play = true;
 			playerAnimatable.animation = "stunned";
 			playerAnimatable.loop = false;
 			playerAnimatable.time = 0.01;
@@ -572,6 +562,18 @@ bool AnimationManager::onEvent(const Event& event)
 		setAnimationEntities(event);
 		registry->get<component::SkeletonAnimatable>(playerArmL).time = (1.01 - evt.stickPosY);
 		registry->get<component::SkeletonAnimatable>(playerArmR).time = (1.01 - evt.stickPosY);
+	}
+	case(EventType)TypeCancelQuicktimeCleaningEvent:
+	{
+		auto evt = event_cast<CancelQuicktimeCleaningEventEvent>(event);
+
+		setAnimationEntities(event);
+		registry->get<component::SkeletonAnimatable>(playerArmL).time = 0.01;
+		registry->get<component::SkeletonAnimatable>(playerArmR).time = 0.01;
+		registry->get<component::SkeletonAnimatable>(playerArmR).play = true;
+		registry->get<component::SkeletonAnimatable>(playerArmL).play = true;
+		registry->get<component::SkeletonAnimatable>(playerArmL).animation = "Idle_L";
+		registry->get<component::SkeletonAnimatable>(playerArmR).animation = "Mop_R";
 	}
 
 	}
