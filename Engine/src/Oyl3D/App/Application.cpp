@@ -7,6 +7,7 @@
 #include "Debug/GuiLayer.h"
 
 #include "Animation/AnimationSystems.h"
+#include "Audio/AudioPlayer.h"
 #include "Rendering/RenderSystems.h"
 #include "Debug/EditorSystems.h"
 
@@ -66,6 +67,8 @@ namespace oyl
         Time::init();
         
         Log::init();
+
+        internal::AudioPlayer::init();
 
         m_window = Window::create();
 
@@ -183,6 +186,8 @@ namespace oyl
     #endif
 
         m_systemsLayer->onExit();
+
+        internal::AudioPlayer::shutdown();
     }
 
     bool Application::onEvent(const Event& event)
@@ -311,7 +316,7 @@ namespace oyl
         {
             pScene->Scene::onEnter();
             pScene->onEnter();
-        
+
             internal::registryFromSceneFile(*pScene->m_registry, m_currentScene);
         }
     }
@@ -329,6 +334,8 @@ namespace oyl
             Time::update();
             
             m_dispatcher->dispatchEvents();
+
+            internal::AudioPlayer::update();
 
             if (m_doUpdate)
             {
