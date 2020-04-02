@@ -544,11 +544,11 @@ void TutorialLayer::segment3()
 	}
 
 	//rotate toward the middle garbage pile
-	if (segmentBool8)
+	if (segmentBool1)
 	{
-		segmentBool8 = false;
+		segmentBool1 = false;
 		playerTransform.rotate(glm::vec3(0.0f, -170.0f, 0.0f)); //TODO: rotate over time
-		cameraTransform.rotate(glm::vec3(-65.0f, 0.0f, 0.0f)); //TODO: rotate over time
+		cameraTransform.rotate(glm::vec3(-69.0f, 0.0f, 0.0f)); //TODO: rotate over time
 		return;
 	}
 

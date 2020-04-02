@@ -40,14 +40,23 @@ public:
 	float segmentTimer7;
 	float segmentTimer8;
 
-	float segmentBool1;
-	float segmentBool2;
-	float segmentBool3;
-	float segmentBool4;
-	float segmentBool5;
-	float segmentBool6;
-	float segmentBool7;
-	float segmentBool8;
+	bool segmentBool1;
+	bool segmentBool2;
+	bool segmentBool3;
+	bool segmentBool4;
+	bool segmentBool5;
+	bool segmentBool6;
+	bool segmentBool7;
+	bool segmentBool8;
+
+	float segmentFloat1;
+	float segmentFloat2;
+	float segmentFloat3;
+	float segmentFloat4;
+	float segmentFloat5;
+	float segmentFloat6;
+	float segmentFloat7;
+	float segmentFloat8;
 
 	float segmentInterpolationParam1;
 	float segmentInterpolationParam2;
