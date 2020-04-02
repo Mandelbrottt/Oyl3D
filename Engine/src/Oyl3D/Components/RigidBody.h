@@ -70,12 +70,12 @@ namespace oyl::component
 
         f32 m_mass = 1.0f;
         f32 m_friction = 0.5f;
-
+        
         u32 m_propertyFlags = DETECT_COLLISIONS | 
                               DO_INTERPOLATION | 
                               USE_GRAVITY;
 
-        u16 m_collisionGroup = 1u;
+        u16 m_collisionGroup = 0b1111;
         u16 m_collisionMask  = 1u;
 
         bool m_isDirty = true;
