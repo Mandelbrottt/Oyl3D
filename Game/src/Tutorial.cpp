@@ -111,7 +111,9 @@ void TutorialLayer::onUpdate()
 		{
 			auto& camera = registry->get<component::Camera>(cameraEntity);
 
-			if (camera.player != PlayerNumber::One)
+			if (camera.player == PlayerNumber::One)
+				tutCameraEntity = cameraEntity;
+			else
 				registry->destroy(cameraEntity);
 		}
 	}
@@ -271,16 +273,16 @@ void TutorialLayer::onGuiRender()
 
 void TutorialLayer::intro()
 {
+	auto& playerTransform = registry->get<component::Transform>(tutPlayerEntity);
+
 	if (initSegment)
 	{
 		currentSegment    = TutorialSegment::intro;
 		initSegment       = false;
 		isSegmentFinished = false;
 
-		segmentTimer1 = 8.0f;
+		segmentTimer1 = 1.0f; //6
 	}
-
-	auto& playerTransform = registry->get<component::Transform>(tutPlayerEntity);
 
 	segmentTimer1 -= Time::deltaTime();
 	if (segmentTimer1 > 0.0f)
@@ -292,46 +294,117 @@ void TutorialLayer::intro()
 
 void TutorialLayer::segment1()
 {
+	auto& playerTransform = registry->get<component::Transform>(tutPlayerEntity);
+
 	if (initSegment)
 	{
 		currentSegment    = TutorialSegment::segment1;
 		initSegment       = false;
 		isSegmentFinished = false;
+
+		playerTransform.setPosition(glm::vec3(15.45f, 1.00f, -3.0f));
+		playerTransform.rotate(glm::vec3(0.0f, 88.0f, 0.0f) - playerTransform.getRotationEuler());
+
+		segmentBool1  = true;
+		segmentTimer1 = 2.5f;
+		segmentTimer2 = 1.2f;
+		segmentInterpolationParam1 = 0.0f;
 	}
 
-	auto& playerTransform = registry->get<component::Transform>(tutPlayerEntity);
+	glm::vec3 targetPos1 = glm::vec3(12.4f, playerTransform.getPositionY(), -4.15f);
 
+	float dist = glm::distance(playerTransform.getPosition(), targetPos1);
+	float interpolationParam1 = 0.064f / dist;
+
+	if (interpolationParam1 < 1.0f)
+	{
+		playerTransform.setPosition(
+			glm::mix(
+				playerTransform.getPosition(),
+				targetPos1, 
+				interpolationParam1));
+
+		return;
+	}
 	
+	if (playerTransform.getRotationEulerY() > 68.0f)
+	{
+		playerTransform.rotate(glm::vec3(0.0f, -0.3f, 0.0f));
+		return;
+	}
+
+	segmentTimer1 -= Time::deltaTime();
+	if (segmentTimer1 > 0.0f)
+		return;
+
+	if (segmentBool1)
+	{
+		segmentBool1 = false;
+
+		PlayerJumpEvent playerJump;
+		playerJump.playerEntity = tutPlayerEntity;
+		postEvent(playerJump);
+	}
+
+	segmentTimer2 -= Time::deltaTime();
+	if (segmentTimer2 > 0.0f)
+		return;
 
 	isSegmentFinished = true;
 }
 
 void TutorialLayer::segment2()
 {
+	auto& playerTransform = registry->get<component::Transform>(tutPlayerEntity);
+	auto& cameraTransform = registry->get<component::Transform>(tutCameraEntity);
+
 	if (initSegment)
 	{
 		currentSegment    = TutorialSegment::segment2;
 		initSegment       = false;
 		isSegmentFinished = false;
+
+		playerTransform.setPosition(glm::vec3(12.46f, 1.00f, -4.13f));
+		playerTransform.rotate(glm::vec3(0.0f, 67.9f, 0.0f) - playerTransform.getRotationEuler());
+
+		cameraTransform.rotate(glm::vec3(-15.0f, 0.0f, 0.0f) - cameraTransform.getRotationEuler());
+
+		segmentTimer1 = 1.5f; //5
 	}
 
-	auto& playerTransform = registry->get<component::Transform>(tutPlayerEntity);
+	segmentTimer1 -= Time::deltaTime();
+	if (segmentTimer1 > 0.0f)
+		return;
 
+	glm::vec3 targetPos1 = glm::vec3(11.73f, playerTransform.getPositionY(), -4.65f);
 
+	float dist = glm::distance(playerTransform.getPosition(), targetPos1);
+	float interpolationParam1 = 0.064f / dist;
+
+	if (interpolationParam1 < 1.0f)
+	{
+		playerTransform.setPosition(
+			glm::mix(
+				playerTransform.getPosition(),
+				targetPos1,
+				interpolationParam1));
+
+		return;
+	}
 
 	isSegmentFinished = true;
 }
 
 void TutorialLayer::segment3()
 {
+	auto& playerTransform = registry->get<component::Transform>(tutPlayerEntity);
+
 	if (initSegment)
 	{
 		currentSegment    = TutorialSegment::segment3;
 		initSegment       = false;
 		isSegmentFinished = false;
 	}
-
-	auto& playerTransform = registry->get<component::Transform>(tutPlayerEntity);
 
 
 
@@ -340,14 +413,14 @@ void TutorialLayer::segment3()
 
 void TutorialLayer::segment4()
 {
+	auto& playerTransform = registry->get<component::Transform>(tutPlayerEntity);
+
 	if (initSegment)
 	{
 		currentSegment    = TutorialSegment::segment4;
 		initSegment       = false;
 		isSegmentFinished = false;
 	}
-
-	auto& playerTransform = registry->get<component::Transform>(tutPlayerEntity);
 
 
 
@@ -356,14 +429,14 @@ void TutorialLayer::segment4()
 
 void TutorialLayer::segment5()
 {
+	auto& playerTransform = registry->get<component::Transform>(tutPlayerEntity);
+
 	if (initSegment)
 	{
 		currentSegment    = TutorialSegment::segment5;
 		initSegment       = false;
 		isSegmentFinished = false;
 	}
-
-	auto& playerTransform = registry->get<component::Transform>(tutPlayerEntity);
 
 
 
@@ -372,14 +445,14 @@ void TutorialLayer::segment5()
 
 void TutorialLayer::segment6()
 {
+	auto& playerTransform = registry->get<component::Transform>(tutPlayerEntity);
+
 	if (initSegment)
 	{
 		currentSegment    = TutorialSegment::segment6;
 		initSegment       = false;
 		isSegmentFinished = false;
 	}
-
-	auto& playerTransform = registry->get<component::Transform>(tutPlayerEntity);
 
 
 
@@ -388,6 +461,8 @@ void TutorialLayer::segment6()
 
 void TutorialLayer::outro()
 {
+	auto& playerTransform = registry->get<component::Transform>(tutPlayerEntity);
+
 	if (initSegment)
 	{
 		currentSegment    = TutorialSegment::outro;
@@ -396,8 +471,6 @@ void TutorialLayer::outro()
 
 		segmentTimer1 = 8.0f;
 	}
-
-	auto& playerTransform = registry->get<component::Transform>(tutPlayerEntity);
 
 	segmentTimer1 -= Time::deltaTime();
 	if (segmentTimer1 > 0.0f)

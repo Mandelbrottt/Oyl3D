@@ -34,11 +34,18 @@ public:
 	float segmentTimer2;
 	float segmentTimer3;
 
+	float segmentBool1;
+	float segmentBool2;
+	float segmentBool3;
+	float segmentBool4;
+	float segmentBool5;
+
 	float segmentInterpolationParam1;
 	float segmentInterpolationParam2;
 	float segmentInterpolationParam3;
 
 	entt::entity tutPlayerEntity;
+	entt::entity tutCameraEntity;
 
 	virtual void onEnter() override;
 
