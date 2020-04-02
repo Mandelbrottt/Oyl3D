@@ -56,6 +56,11 @@ void CleaningQuicktimeEventSystem::onUpdate()
 					RequestToCleanGarbageEvent requestToCleanGarbage;
 					requestToCleanGarbage.garbagePileEntity = cleaningQTE.garbagePileBeingCleaned;
 					postEvent(requestToCleanGarbage);
+
+					CleanedWithMopEvent cleanedWithMop;
+					cleanedWithMop.playerEntity   = playerEntityForQTE;
+					cleanedWithMop.moppingForward = true;
+					postEvent(cleanedWithMop);
 				}
 			}
 			else //!isPointingUp
@@ -69,6 +74,11 @@ void CleaningQuicktimeEventSystem::onUpdate()
 					RequestToCleanGarbageEvent requestToCleanGarbage;
 					requestToCleanGarbage.garbagePileEntity = cleaningQTE.garbagePileBeingCleaned;
 					postEvent(requestToCleanGarbage);
+					
+					CleanedWithMopEvent cleanedWithMop;
+					cleanedWithMop.playerEntity   = playerEntityForQTE;
+					cleanedWithMop.moppingForward = false;
+					postEvent(cleanedWithMop);
 				}
 			}
 		}
