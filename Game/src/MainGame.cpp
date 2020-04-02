@@ -375,14 +375,9 @@ public:
 				}
 				case Gamepad::B:
 				{
-					//if (isGameOver)
-						//Application::get().changeScene("MainMenuScene");
-					//else
-					{
-						CancelButtonPressedEvent cancelButtonPressed;
-						cancelButtonPressed.playerEntity = playerEntity;
-						postEvent(cancelButtonPressed);
-					}
+					CancelButtonPressedEvent cancelButtonPressed;
+					cancelButtonPressed.playerEntity = playerEntity;
+					postEvent(cancelButtonPressed);
 
 					break;
 				}

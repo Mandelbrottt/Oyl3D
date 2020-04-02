@@ -131,6 +131,8 @@ bool CleaningQuicktimeEventSystem::onEvent(const Event& event)
 		{
 			auto evt = event_cast<CancelQuicktimeCleaningEventEvent>(event);
 
+			auto& player = registry->get<Player>(evt.playerEntity);
+
 			auto cleaningQTEView = registry->view<component::Transform, CleaningQuicktimeEvent>();
 			for (auto& cleaningQTEEntity : cleaningQTEView)
 			{
@@ -138,8 +140,6 @@ bool CleaningQuicktimeEventSystem::onEvent(const Event& event)
 				auto& cleaningQTEGui = registry->get<component::GuiRenderable>(cleaningQTEEntity);
 
 				auto& cancelQTEPromptGui = registry->get<component::GuiRenderable>(cleaningQTE.cancelPromptEntity);
-
-				auto& player = registry->get<Player>(evt.playerEntity);
 
 				if (cleaningQTE.playerNum == player.playerNum && cleaningQTE.isActive)
 				{
@@ -160,6 +160,41 @@ bool CleaningQuicktimeEventSystem::onEvent(const Event& event)
 							break;
 						}
 					}
+				}
+			}
+
+			break;
+		}
+
+		case (EventType)TypePerformCleaning:
+		{
+			auto evt = event_cast<PerformCleaningEvent>(event);
+
+			auto& player = registry->get<Player>(evt.playerEntity);
+
+			auto cleaningQTEView = registry->view<component::Transform, CleaningQuicktimeEvent>();
+			for (auto& cleaningQTEEntity : cleaningQTEView)
+			{
+				auto& cleaningQTE = registry->get<CleaningQuicktimeEvent>(cleaningQTEEntity);
+				auto& cleaningQTEGui = registry->get<component::GuiRenderable>(cleaningQTEEntity);
+
+				if (cleaningQTE.playerNum == player.playerNum && cleaningQTE.isActive)
+				{
+					cleaningQTE.isPointingUp = !cleaningQTE.isPointingUp;
+
+					if (cleaningQTE.isPointingUp)
+						cleaningQTEGui.texture = Texture2D::get("cleaningQTEUp");
+					else
+						cleaningQTEGui.texture = Texture2D::get("cleaningQTEDown");
+
+					RequestToCleanGarbageEvent requestToCleanGarbage;
+					requestToCleanGarbage.garbagePileEntity = cleaningQTE.garbagePileBeingCleaned;
+					postEvent(requestToCleanGarbage);
+
+					CleanedWithMopEvent cleanedWithMop;
+					cleanedWithMop.playerEntity   = evt.playerEntity;
+					cleanedWithMop.moppingForward = cleaningQTE.isPointingUp;
+					postEvent(cleanedWithMop);
 				}
 			}
 

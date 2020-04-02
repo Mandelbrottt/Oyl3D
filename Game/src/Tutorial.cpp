@@ -515,18 +515,19 @@ void TutorialLayer::segment2()
 
 void TutorialLayer::segment3()
 {
+	auto& player          = registry->get<Player>(tutPlayerEntity);
 	auto& playerTransform = registry->get<component::Transform>(tutPlayerEntity);
 	auto& cameraTransform = registry->get<component::Transform>(tutCameraEntity);
 
 	if (initSegment)
 	{
-		currentSegment    = TutorialSegment::segment3;
-		initSegment       = false;
+		currentSegment = TutorialSegment::segment3;
+		initSegment = false;
 		isSegmentFinished = false;
 
 		segmentTimer1 = 0.5f; //5
-		segmentTimer2 = 0.0f;
-		segmentTimer3 = 0.0f;
+		segmentTimer2 = 2.0f; //3
+		segmentTimer3 = 0.08f;
 		segmentTimer4 = 0.0f;
 		segmentTimer5 = 0.0f;
 		segmentTimer6 = 0.0f;
@@ -556,6 +557,42 @@ void TutorialLayer::segment3()
 	if (segmentTimer1 > 0.0f)
 		return;
 
+	//use cleaning solution
+	if (segmentBool2)
+	{
+		segmentBool2 = false;
+		
+		PlayerInteractionRequestEvent playerInteractionRequest;
+		playerInteractionRequest.playerEntity           = tutPlayerEntity;
+		playerInteractionRequest.itemClassificatonToUse = PlayerItemClassification::any;
+		postEvent(playerInteractionRequest);
+	}
+
+	segmentTimer2 -= Time::deltaTime();
+	if (segmentTimer2 > 0.0f)
+		return;
+
+	if (segmentBool3)
+	{
+		if (player.state != PlayerState::inCleaningQuicktimeEvent)
+		{
+			segmentBool3 = false;
+			return;
+		}
+
+		segmentTimer3 -= Time::deltaTime();
+		if (segmentTimer3 < 0.0f)
+		{
+			segmentTimer3 = 0.08f;
+
+			PerformCleaningEvent performCleaning;
+			performCleaning.playerEntity = tutPlayerEntity;
+			postEvent(performCleaning);
+		}
+
+		return;
+	}
+
 	isSegmentFinished = true;
 }
 
@@ -570,9 +607,9 @@ void TutorialLayer::segment4()
 		initSegment       = false;
 		isSegmentFinished = false;
 
-		segmentTimer1 = 0.0f;
-		segmentTimer2 = 0.0f;
-		segmentTimer3 = 0.0f;
+		segmentTimer1 = 0.5f; //2
+		segmentTimer2 = 0.5f; //3
+		segmentTimer3 = 0.8f;
 		segmentTimer4 = 0.0f;
 		segmentTimer5 = 0.0f;
 		segmentTimer6 = 0.0f;
@@ -589,7 +626,96 @@ void TutorialLayer::segment4()
 		segmentBool8 = true;
 	}
 
+	segmentTimer1 -= Time::deltaTime();
+	if (segmentTimer1 > 0.0f)
+		return;
 
+	//move to the side of the middle garbage pile
+	if (segmentBool1)
+	{
+		glm::vec3 targetPos = glm::vec3(2.0f, playerTransform.getPositionY(), -5.28f);
+		bool isFinished;
+
+		movePlayerToPos(targetPos, &isFinished);
+		if (!isFinished)
+			return;
+		else
+		{
+			segmentBool1 = false;
+			cameraTransform.rotate(glm::vec3(30.0f, 0.0f, 0.0f)); //TODO: rotate over time
+
+			//drop mop
+			CancelButtonPressedEvent cancelButtonPressed;
+			cancelButtonPressed.playerEntity = tutPlayerEntity;
+			postEvent(cancelButtonPressed);
+		}
+	}
+
+	//move to the top of the stairs to the lower deck
+	if (segmentBool2)
+	{
+		glm::vec3 targetPos = glm::vec3(-13.76f, playerTransform.getPositionY(), -4.84f);
+		bool isFinished;
+
+		movePlayerToPos(targetPos, &isFinished);
+		if (!isFinished)
+			return;
+		else
+		{
+			segmentBool2 = false;
+			playerTransform.rotate(glm::vec3(0.0f, 88.0f, 0.0f)); //TODO: rotate over time
+		}
+	}
+
+	//move down the stairs to the lower deck
+	if (segmentBool3)
+	{
+		glm::vec3 targetPos = glm::vec3(-13.76f, -3.17f, 0.05f);
+		bool isFinished;
+
+		movePlayerToPos(targetPos, &isFinished);
+		if (!isFinished)
+			return;
+		else
+		{
+			segmentBool3 = false;
+			playerTransform.rotate(glm::vec3(0.0f, 110.0f, 0.0f)); //TODO: rotate over time
+		}
+	}
+
+	segmentTimer2 -= Time::deltaTime();
+	if (segmentTimer2 > 0.0f)
+		return;
+
+	//move to the garbage bin
+	if (segmentBool4)
+	{
+		glm::vec3 targetPos = glm::vec3(-6.91f, playerTransform.getPositionY(), -4.6f);
+		bool isFinished;
+
+		movePlayerToPos(targetPos, &isFinished);
+		if (!isFinished)
+			return;
+		else
+			segmentBool4 = false;
+	}
+
+	if (segmentBool5)
+	{
+		segmentTimer3 -= Time::deltaTime();
+		if (segmentTimer3 > 0.0f)
+			return;
+		else
+		{
+			segmentBool5 = false;
+
+			//grab a cannonball
+			PlayerInteractionRequestEvent playerInteractionRequest;
+			playerInteractionRequest.playerEntity = tutPlayerEntity;
+			playerInteractionRequest.itemClassificatonToUse = PlayerItemClassification::any;
+			postEvent(playerInteractionRequest);
+		}
+	}
 
 	isSegmentFinished = true;
 }

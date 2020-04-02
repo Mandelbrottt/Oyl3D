@@ -46,6 +46,7 @@ enum CustomEventTypes : int
 	TypeCancelQuicktimeCleaningEvent,
 	TypeStickMovedDuringQuicktimeCleaningEvent,
 	TypeCleanedWithMop,
+	TypePerformCleaning,
 	TypeGameEnd
 };
 
@@ -207,6 +208,11 @@ OYL_EVENT_STRUCT(CleanedWithMopEvent, (oyl::EventType) TypeCleanedWithMop, (oyl:
 	{
 		entt::entity playerEntity;
 		bool moppingForward;
+	});
+
+OYL_EVENT_STRUCT(PerformCleaningEvent, (oyl::EventType) TypePerformCleaning, (oyl::EventCategory) CategoryQuicktimeCleaningEvent,
+	{
+		entt::entity playerEntity;
 	});
 
 OYL_EVENT_STRUCT(GameEndEvent, (oyl::EventType) TypeGameEnd, (oyl::EventCategory) CategoryGameState,
