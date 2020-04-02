@@ -13,7 +13,6 @@
 #include "GarbagePileHealthBarSystem.h"
 #include "GarbagePileGloopIndicatorSystem.h"
 #include "GarbageMeterSystem.h"
-#include "ScrollingTextureLayer.h"
 #include "ThrowableBottleSystem.h"
 
 using namespace oyl;
@@ -117,6 +116,9 @@ void TutorialLayer::onUpdate()
 				registry->destroy(cameraEntity);
 		}
 	}
+
+	SetMaxGarbageLevelEvent setMaxGarbageLevel;
+	postEvent(setMaxGarbageLevel);
 
 	auto& playerView = registry->view<Player>();
 	for (auto& playerEntity : playerView)
@@ -306,26 +308,22 @@ void TutorialLayer::segment1()
 		playerTransform.rotate(glm::vec3(0.0f, 88.0f, 0.0f) - playerTransform.getRotationEuler());
 
 		segmentBool1  = true;
-		segmentTimer1 = 2.5f;
-		segmentTimer2 = 1.2f;
+		segmentTimer1 = 1.0f; //4
+		segmentTimer2 = 1.5f; //2.5
+		segmentTimer3 = 1.2f;
 		segmentInterpolationParam1 = 0.0f;
 	}
 
-	glm::vec3 targetPos1 = glm::vec3(12.4f, playerTransform.getPositionY(), -4.15f);
-
-	float dist = glm::distance(playerTransform.getPosition(), targetPos1);
-	float interpolationParam1 = 0.064f / dist;
-
-	if (interpolationParam1 < 1.0f)
-	{
-		playerTransform.setPosition(
-			glm::mix(
-				playerTransform.getPosition(),
-				targetPos1, 
-				interpolationParam1));
-
+	segmentTimer1 -= Time::deltaTime();
+	if (segmentTimer1 > 0.0f)
 		return;
-	}
+
+	glm::vec3 targetPos1 = glm::vec3(12.4f, playerTransform.getPositionY(), -4.15f);
+	bool isFinished1;
+
+	movePlayerToPos(targetPos1, &isFinished1);
+	if (!isFinished1)
+		return;
 	
 	if (playerTransform.getRotationEulerY() > 68.0f)
 	{
@@ -333,8 +331,8 @@ void TutorialLayer::segment1()
 		return;
 	}
 
-	segmentTimer1 -= Time::deltaTime();
-	if (segmentTimer1 > 0.0f)
+	segmentTimer2 -= Time::deltaTime();
+	if (segmentTimer2 > 0.0f)
 		return;
 
 	if (segmentBool1)
@@ -346,8 +344,8 @@ void TutorialLayer::segment1()
 		postEvent(playerJump);
 	}
 
-	segmentTimer2 -= Time::deltaTime();
-	if (segmentTimer2 > 0.0f)
+	segmentTimer3 -= Time::deltaTime();
+	if (segmentTimer3 > 0.0f)
 		return;
 
 	isSegmentFinished = true;
@@ -369,28 +367,148 @@ void TutorialLayer::segment2()
 
 		cameraTransform.rotate(glm::vec3(-15.0f, 0.0f, 0.0f) - cameraTransform.getRotationEuler());
 
-		segmentTimer1 = 1.5f; //5
+		segmentTimer1 = 1.0f; //5
+		segmentTimer2 = 0.4f;
+		segmentTimer3 = 0.4f;
+		segmentTimer4 = 1.0f; //2
+		segmentTimer5 = 0.5f;
+		segmentTimer6 = 0.5f;
+		segmentTimer7 = 0.5f;
+
+		segmentBool1 = true;
+		segmentBool2 = true;
+		segmentBool3 = true;
+		segmentBool4 = true;
+		segmentBool5 = true;
+		segmentBool6 = true;
+		segmentBool7 = true;
+		segmentBool8 = true;
 	}
 
 	segmentTimer1 -= Time::deltaTime();
 	if (segmentTimer1 > 0.0f)
 		return;
 
-	glm::vec3 targetPos1 = glm::vec3(11.73f, playerTransform.getPositionY(), -4.65f);
-
-	float dist = glm::distance(playerTransform.getPosition(), targetPos1);
-	float interpolationParam1 = 0.064f / dist;
-
-	if (interpolationParam1 < 1.0f)
+	//move toward cleaning solution
+	if (segmentBool1)
 	{
-		playerTransform.setPosition(
-			glm::mix(
-				playerTransform.getPosition(),
-				targetPos1,
-				interpolationParam1));
+		glm::vec3 targetPos = glm::vec3(11.73f, playerTransform.getPositionY(), -4.65f);
+		bool isFinished;
 
+		movePlayerToPos(targetPos, &isFinished);
+		if (!isFinished)
+			return;
+		else
+		{
+			segmentBool1 = false;
+
+			//grab cleaning solution
+			PlayerInteractionRequestEvent playerInteractionRequest;
+			playerInteractionRequest.playerEntity           = tutPlayerEntity;
+			playerInteractionRequest.itemClassificatonToUse = PlayerItemClassification::any;
+			postEvent(playerInteractionRequest);
+		}
+	}
+
+	segmentTimer2 -= Time::deltaTime();
+	if (segmentTimer2 > 0.0f)
+		return;
+
+	//rotate toward mop
+	if (segmentBool2)
+	{
+		segmentBool2 = false;
+		playerTransform.rotate(glm::vec3(0.0f, 73.9f, 0.0f)); //TODO: rotate over time
 		return;
 	}
+
+	//move toward mop
+	if (segmentBool3)
+	{
+		glm::vec3 targetPos = glm::vec3(10.45f, playerTransform.getPositionY(), -2.13f);
+		bool isFinished;
+
+		movePlayerToPos(targetPos, &isFinished);
+		if (!isFinished)
+			return;
+		else
+		{
+			segmentBool3 = false;
+
+			//grab mop
+			PlayerInteractionRequestEvent playerInteractionRequest;
+			playerInteractionRequest.playerEntity           = tutPlayerEntity;
+			playerInteractionRequest.itemClassificatonToUse = PlayerItemClassification::any;
+			postEvent(playerInteractionRequest);
+		}
+	}
+
+	segmentTimer3 -= Time::deltaTime();
+	if (segmentTimer3 > 0.0f)
+		return;
+
+	//rotate toward the exit of captain's quarters
+	if (segmentBool4)
+	{
+		segmentBool4 = false;
+		playerTransform.rotate(glm::vec3(0.0f, -59.2f, 0.0f)); //TODO: rotate over time
+		return;
+	}
+
+	//move toward middle garbage pile
+	if (segmentBool5)
+	{
+		glm::vec3 targetPos = glm::vec3(2.0f, playerTransform.getPositionY(), -3.85f);
+		bool isFinished;
+
+		movePlayerToPos(targetPos, &isFinished);
+		if (!isFinished)
+			return;
+		else
+			segmentBool5 = false;
+	}
+
+	segmentTimer4 -= Time::deltaTime();
+	if (segmentTimer4 > 0.0f)
+		return; 
+	
+	//rotate toward the front garbage pile
+	if (segmentBool6)
+	{
+		segmentBool6 = false;
+		playerTransform.rotate(glm::vec3(0.0f, 11.0f, 0.0f)); //TODO: rotate over time
+		cameraTransform.rotate(glm::vec3(10.4f, 0.0f, 0.0f)); //TODO: rotate over time
+		return;
+	}
+
+	segmentTimer5 -= Time::deltaTime();
+	if (segmentTimer5 > 0.0f)
+		return;
+
+	//rotate toward the middle garbage pile
+	if (segmentBool7)
+	{
+		segmentBool7 = false;
+		cameraTransform.rotate(glm::vec3(-60.0f, 0.0f, 0.0f)); //TODO: rotate over time
+		return;
+	}
+
+	segmentTimer6 -= Time::deltaTime();
+	if (segmentTimer6 > 0.0f)
+		return;
+
+	//rotate toward the back garbage pile
+	if (segmentBool8)
+	{
+		segmentBool8 = false;
+		playerTransform.rotate(glm::vec3(0.0f, 170.0f, 0.0f)); //TODO: rotate over time
+		cameraTransform.rotate(glm::vec3(79.0f, 0.0f, 0.0f)); //TODO: rotate over time
+		return;
+	}
+
+	segmentTimer7 -= Time::deltaTime();
+	if (segmentTimer7 > 0.0f)
+		return;
 
 	isSegmentFinished = true;
 }
@@ -398,15 +516,45 @@ void TutorialLayer::segment2()
 void TutorialLayer::segment3()
 {
 	auto& playerTransform = registry->get<component::Transform>(tutPlayerEntity);
+	auto& cameraTransform = registry->get<component::Transform>(tutCameraEntity);
 
 	if (initSegment)
 	{
 		currentSegment    = TutorialSegment::segment3;
 		initSegment       = false;
 		isSegmentFinished = false;
+
+		segmentTimer1 = 0.5f; //5
+		segmentTimer2 = 0.0f;
+		segmentTimer3 = 0.0f;
+		segmentTimer4 = 0.0f;
+		segmentTimer5 = 0.0f;
+		segmentTimer6 = 0.0f;
+		segmentTimer7 = 0.0f;
+		segmentTimer8 = 0.0f;
+
+		segmentBool1 = true;
+		segmentBool2 = true;
+		segmentBool3 = true;
+		segmentBool4 = true;
+		segmentBool5 = true;
+		segmentBool6 = true;
+		segmentBool7 = true;
+		segmentBool8 = true;
 	}
 
+	//rotate toward the middle garbage pile
+	if (segmentBool8)
+	{
+		segmentBool8 = false;
+		playerTransform.rotate(glm::vec3(0.0f, -170.0f, 0.0f)); //TODO: rotate over time
+		cameraTransform.rotate(glm::vec3(-65.0f, 0.0f, 0.0f)); //TODO: rotate over time
+		return;
+	}
 
+	segmentTimer1 -= Time::deltaTime();
+	if (segmentTimer1 > 0.0f)
+		return;
 
 	isSegmentFinished = true;
 }
@@ -414,12 +562,31 @@ void TutorialLayer::segment3()
 void TutorialLayer::segment4()
 {
 	auto& playerTransform = registry->get<component::Transform>(tutPlayerEntity);
+	auto& cameraTransform = registry->get<component::Transform>(tutCameraEntity);
 
 	if (initSegment)
 	{
 		currentSegment    = TutorialSegment::segment4;
 		initSegment       = false;
 		isSegmentFinished = false;
+
+		segmentTimer1 = 0.0f;
+		segmentTimer2 = 0.0f;
+		segmentTimer3 = 0.0f;
+		segmentTimer4 = 0.0f;
+		segmentTimer5 = 0.0f;
+		segmentTimer6 = 0.0f;
+		segmentTimer7 = 0.0f;
+		segmentTimer8 = 0.0f;
+
+		segmentBool1 = true;
+		segmentBool2 = true;
+		segmentBool3 = true;
+		segmentBool4 = true;
+		segmentBool5 = true;
+		segmentBool6 = true;
+		segmentBool7 = true;
+		segmentBool8 = true;
 	}
 
 
@@ -430,12 +597,31 @@ void TutorialLayer::segment4()
 void TutorialLayer::segment5()
 {
 	auto& playerTransform = registry->get<component::Transform>(tutPlayerEntity);
+	auto& cameraTransform = registry->get<component::Transform>(tutCameraEntity);
 
 	if (initSegment)
 	{
 		currentSegment    = TutorialSegment::segment5;
 		initSegment       = false;
 		isSegmentFinished = false;
+
+		segmentTimer1 = 0.0f;
+		segmentTimer2 = 0.0f;
+		segmentTimer3 = 0.0f;
+		segmentTimer4 = 0.0f;
+		segmentTimer5 = 0.0f;
+		segmentTimer6 = 0.0f;
+		segmentTimer7 = 0.0f;
+		segmentTimer8 = 0.0f;
+
+		segmentBool1 = true;
+		segmentBool2 = true;
+		segmentBool3 = true;
+		segmentBool4 = true;
+		segmentBool5 = true;
+		segmentBool6 = true;
+		segmentBool7 = true;
+		segmentBool8 = true;
 	}
 
 
@@ -446,12 +632,31 @@ void TutorialLayer::segment5()
 void TutorialLayer::segment6()
 {
 	auto& playerTransform = registry->get<component::Transform>(tutPlayerEntity);
+	auto& cameraTransform = registry->get<component::Transform>(tutCameraEntity);
 
 	if (initSegment)
 	{
 		currentSegment    = TutorialSegment::segment6;
 		initSegment       = false;
 		isSegmentFinished = false;
+
+		segmentTimer1 = 0.0f;
+		segmentTimer2 = 0.0f;
+		segmentTimer3 = 0.0f;
+		segmentTimer4 = 0.0f;
+		segmentTimer5 = 0.0f;
+		segmentTimer6 = 0.0f;
+		segmentTimer7 = 0.0f;
+		segmentTimer8 = 0.0f;
+
+		segmentBool1 = true;
+		segmentBool2 = true;
+		segmentBool3 = true;
+		segmentBool4 = true;
+		segmentBool5 = true;
+		segmentBool6 = true;
+		segmentBool7 = true;
+		segmentBool8 = true;
 	}
 
 
@@ -469,7 +674,7 @@ void TutorialLayer::outro()
 		initSegment       = false;
 		isSegmentFinished = false;
 
-		segmentTimer1 = 8.0f;
+		segmentTimer1 = 5.0f;
 	}
 
 	segmentTimer1 -= Time::deltaTime();
@@ -477,4 +682,24 @@ void TutorialLayer::outro()
 		return;
 
 	Application::get().changeScene("MainMenuScene");
+}
+
+void TutorialLayer::movePlayerToPos(glm::vec3 a_targetPos, bool* a_isFinished)
+{
+	auto& playerTransform = registry->get<component::Transform>(tutPlayerEntity);
+
+	float dist = glm::distance(playerTransform.getPosition(), a_targetPos);
+	float interpolationParam = 0.08f / dist;
+
+	if (interpolationParam < 1.0f)
+	{
+		*a_isFinished = false;
+		playerTransform.setPosition(
+			glm::mix(
+				playerTransform.getPosition(),
+				a_targetPos,
+				interpolationParam));
+	}
+	else
+		*a_isFinished = true;
 }

@@ -4,6 +4,7 @@
 
 #include "MainGameObjectsInit.h"
 #include "MainGameGuiInit.h"
+#include "ScrollingTextureLayer.h"
 
 #include "SplashScreen.h"
 #include "MainMenu.h"
@@ -28,7 +29,6 @@
 #include "GarbagePileGloopIndicatorSystem.h"
 #include "GarbageMeterSystem.h"
 #include "GameOverCheckSystem.h"
-#include "ScrollingTextureLayer.h"
 #include "ThrowableBottleSystem.h"
 
 using namespace oyl;

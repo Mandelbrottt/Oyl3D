@@ -62,6 +62,15 @@ bool GarbageMeterSystem::onEvent(const Event& event)
 
 			break;
 		}
+
+		case (EventType)TypeSetMaxGarbageLevel:
+		{
+			auto view = registry->view<GarbagePile, component::Transform>();
+			for (auto& garbagePileEntity : view)
+				updateMeterBarsForGarbagePile(garbagePileEntity);
+
+			break;
+		}
 	}
 
 	return false;

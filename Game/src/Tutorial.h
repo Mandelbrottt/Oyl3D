@@ -6,6 +6,7 @@
 
 #include "MainGameObjectsInit.h"
 #include "MainGameGuiInit.h"
+#include "ScrollingTextureLayer.h"
 
 class TutorialLayer : public oyl::Layer
 {
@@ -33,12 +34,20 @@ public:
 	float segmentTimer1;
 	float segmentTimer2;
 	float segmentTimer3;
+	float segmentTimer4;
+	float segmentTimer5;
+	float segmentTimer6;
+	float segmentTimer7;
+	float segmentTimer8;
 
 	float segmentBool1;
 	float segmentBool2;
 	float segmentBool3;
 	float segmentBool4;
 	float segmentBool5;
+	float segmentBool6;
+	float segmentBool7;
+	float segmentBool8;
 
 	float segmentInterpolationParam1;
 	float segmentInterpolationParam2;
@@ -64,6 +73,8 @@ public:
 	void segment6();
 	void outro();
 
+	void movePlayerToPos(glm::vec3 a_targetPos, bool* a_isFinished);
+
 	void (TutorialLayer::*currentSegmentFunc)();
 
 	struct TutorialEndSegmentPrompt {};
@@ -79,5 +90,6 @@ public:
 		pushLayer(TutorialLayer::create());
 		pushLayer(MainGameObjectsInitLayer::create());
 		pushLayer(MainGameGuiInitLayer::create());
+		pushLayer(ScrollingTextureLayer::create());
 	}
 };
