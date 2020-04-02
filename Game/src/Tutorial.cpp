@@ -711,7 +711,7 @@ void TutorialLayer::segment4()
 
 			//grab a cannonball
 			PlayerInteractionRequestEvent playerInteractionRequest;
-			playerInteractionRequest.playerEntity = tutPlayerEntity;
+			playerInteractionRequest.playerEntity           = tutPlayerEntity;
 			playerInteractionRequest.itemClassificatonToUse = PlayerItemClassification::any;
 			postEvent(playerInteractionRequest);
 		}
