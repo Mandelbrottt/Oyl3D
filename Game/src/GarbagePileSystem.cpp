@@ -4,6 +4,12 @@ void GarbagePileSystem::onEnter()
 {
 	listenForEventCategory((EventCategory)CategoryGarbagePile);
 	listenForEventCategory((EventCategory)CategoryCannon);
+
+	bluePassiveBuildupWait = 16.0f;
+	redPassiveBuildupWait  = 16.0f;
+
+	bluePassiveBuildupCountdown = bluePassiveBuildupWait;
+	redPassiveBuildupCountdown  = redPassiveBuildupWait;
 }
 
 void GarbagePileSystem::onExit()
@@ -13,14 +19,35 @@ void GarbagePileSystem::onExit()
 
 void GarbagePileSystem::onUpdate()
 {
-	//TODO: change to add to a random garbage pile rather than all of them for the final version
-	bool addGarbageLevel = false;
-	passiveGarbageBuildupCountdown -= Time::deltaTime();
-	if (passiveGarbageBuildupCountdown < 0.0f)
+	bool addBlueGarbageLevel = false;
+	bool addRedGarbageLevel  = false;
+
+	bluePassiveBuildupCountdown -= Time::deltaTime();
+	redPassiveBuildupCountdown  -= Time::deltaTime();
+
+	int blueRandomGarbagePileNum = -5; //initialize to invalid
+	int redRandomGarbagePileNum  = -5; //initialize to invalid
+
+	if (bluePassiveBuildupCountdown < 0.0f)
 	{
-		addGarbageLevel = true;
-		passiveGarbageBuildupCountdown = PASSIVE_GARBAGE_BUILDUP_TIME - numBuildUpsAccumulated * 0.5f; //TODO: come up with a better equation for time scaling
-		numBuildUpsAccumulated++;
+		addBlueGarbageLevel = true;
+		bluePassiveBuildupWait -= 0.25f;
+		bluePassiveBuildupCountdown = bluePassiveBuildupWait;
+
+		//ensure we don't divide by zero
+		if (blueActivePileNums.size() > 0)
+			blueRandomGarbagePileNum = blueActivePileNums[rand() % blueActivePileNums.size()];
+	}
+
+	if (redPassiveBuildupCountdown < 0.0f)
+	{
+		addRedGarbageLevel = true;
+		redPassiveBuildupWait -= 0.25f;
+		redPassiveBuildupCountdown = redPassiveBuildupWait;
+
+		//ensure we don't divide by zero
+		if (redActivePileNums.size() > 0)
+			redRandomGarbagePileNum = redActivePileNums[rand() % redActivePileNums.size()];
 	}
 
 	auto garbagePileView = registry->view<GarbagePile, component::Renderable, component::Transform>();
@@ -30,7 +57,9 @@ void GarbagePileSystem::onUpdate()
 		auto& garbagePileRenderable = registry->get<component::Renderable>(garbagePileEntity);
 		auto& garbagePileTransform  = registry->get<component::Transform>(garbagePileEntity);
 
-		if (addGarbageLevel)
+		if (addBlueGarbageLevel && garbagePile.team == Team::blue && garbagePile.relativePositionOnShip == blueRandomGarbagePileNum)
+			increaseGarbageLevel(garbagePileEntity);
+		else if (addRedGarbageLevel && garbagePile.team == Team::red && garbagePile.relativePositionOnShip == redRandomGarbagePileNum)
 			increaseGarbageLevel(garbagePileEntity);
 
 		if (garbagePile.delayBeforeAddingGarbageCountdown > 0.0f)
@@ -62,6 +91,18 @@ bool GarbagePileSystem::onEvent(const Event& event)
 		break;
 	}
 
+	case (EventType)TypeGarbageGlooped:
+	{
+		auto evt = event_cast<GarbageGloopedEvent>(event);
+
+		auto& garbagePile     = registry->get<GarbagePile>(evt.garbagePileEntity);
+		garbagePile.isGlooped = true;
+
+		updateGarbagePileVisualSize(evt.garbagePileEntity);
+
+		break;
+	}
+
 	case (EventType)TypeCannonFired:
 	{
 		auto evt = event_cast<CannonFiredEvent>(event);
@@ -82,6 +123,26 @@ bool GarbagePileSystem::onEvent(const Event& event)
 		}
 		break;
 	}
+
+	case (EventType)TypeSetMaxGarbageLevel:
+	{
+		auto view = registry->view<GarbagePile, component::Transform>();
+		for (auto& garbagePileEntity : view)
+		{
+			auto& garbagePile = registry->get<GarbagePile>(garbagePileEntity);
+
+			if (garbagePile.garbageLevel > 3)
+			{
+				garbagePile.garbageLevel = 3;
+				updateGarbagePileVisualSize(garbagePileEntity);
+			}
+		}
+
+		bluePassiveBuildupWait = 16.0f;
+		redPassiveBuildupWait = 16.0f;
+
+		break;
+	}
 	}
 
 	return false;
@@ -90,6 +151,9 @@ bool GarbagePileSystem::onEvent(const Event& event)
 void GarbagePileSystem::increaseGarbageLevel(entt::entity a_garbagePileEntity)
 {
 	auto& garbagePile = registry->get<GarbagePile>(a_garbagePileEntity);
+
+	//if garbage pile is already maxed, it wasn't maxed out this iteration
+	bool isMaxedOutThisIteration = (garbagePile.garbageLevel != garbagePile.MAX_GARBAGE_LEVEL || garbagePile.garbageTicks != garbagePile.GARBAGE_TICKS_PER_LEVEL);
 
 	if (garbagePile.garbageLevel == 0)
 	{
@@ -104,6 +168,27 @@ void GarbagePileSystem::increaseGarbageLevel(entt::entity a_garbagePileEntity)
 		garbagePile.garbageLevel++;
 	else //garbage level == MAX
 		garbagePile.garbageTicks = garbagePile.GARBAGE_TICKS_PER_LEVEL;
+
+	//check if garbage pile was maxed out after the garbage was just added
+	if (garbagePile.garbageLevel == garbagePile.MAX_GARBAGE_LEVEL && garbagePile.garbageTicks == garbagePile.GARBAGE_TICKS_PER_LEVEL && isMaxedOutThisIteration)
+	{
+		if (garbagePile.team == Team::blue)
+		{
+			blueActivePileNums.erase(
+				std::remove(blueActivePileNums.begin(), blueActivePileNums.end(), garbagePile.relativePositionOnShip),
+				blueActivePileNums.end());
+
+			bluePassiveBuildupWait += 5.5f; //add some more time every time a pile maxes out to prevent quick snowballing
+		}
+		else //team == red
+		{
+			redActivePileNums.erase(
+				std::remove(redActivePileNums.begin(), redActivePileNums.end(), garbagePile.relativePositionOnShip),
+				redActivePileNums.end());
+
+			redPassiveBuildupWait += 5.5f; //add some more time every time a pile maxes out to prevent quick snowballing
+		}
+	}
 
 	updateGarbagePileVisualSize(a_garbagePileEntity); //update size whenever garbage is added
 
@@ -141,75 +226,108 @@ void GarbagePileSystem::updateGarbagePileVisualSize(entt::entity a_garbagePileEn
 	auto& garbagePileCollidable  = registry->get<component::Collidable>(a_garbagePileEntity);
 	auto& garbagePileRenderable	 = registry->get<component::Renderable>(a_garbagePileEntity);
 
-	auto& flyAnimator   = registry->get<component::Animatable>(garbagePile.flyEntity);
-	auto& flyRenderable = registry->get<component::Renderable>(garbagePile.flyEntity);
+	//auto& flyAnimator   = registry->get<component::Animatable>(garbagePile.flyEntity);
+	//auto& flyRenderable = registry->get<component::Renderable>(garbagePile.flyEntity);
 
 	//reset collider sizes (the ones that need to be set will be set just below, based on garbage pile size)
-	garbagePileCollidable.getShape(0).box.setSize(glm::vec3(0.0f, 0.0f, 0.0f));
-	garbagePileCollidable.getShape(1).box.setSize(glm::vec3(0.0f, 0.0f, 0.0f));
-	garbagePileCollidable.getShape(2).box.setSize(glm::vec3(0.0f, 0.0f, 0.0f));
+	glm::vec3 garbagePileCollider0Pos = glm::vec3(0.0f, 0.0f, 0.0f);
+	glm::vec3 garbagePileCollider1Pos = glm::vec3(0.0f, 0.0f, 0.0f);
+	glm::vec3 garbagePileCollider2Pos = glm::vec3(0.0f, 0.0f, 0.0f);
+
+	glm::vec3 garbagePileCollider0Size = glm::vec3(0.0f, 0.0f, 0.0f);
+	glm::vec3 garbagePileCollider1Size = glm::vec3(0.0f, 0.0f, 0.0f);
+	glm::vec3 garbagePileCollider2Size = glm::vec3(0.0f, 0.0f, 0.0f);
+
+	std::string garbageModelNameToSet;
 
 	//determine which mesh to set based on garbage level
 	if (garbagePile.garbageLevel == garbagePile.MAX_GARBAGE_LEVEL)
 	{
 		if (garbagePile.garbageTicks == garbagePile.GARBAGE_TICKS_PER_LEVEL)
 		{
-			garbagePileRenderable.mesh = Mesh::get("garbageSurrender");
-			flyAnimator.setNextAnimation("GarbageSurrenderAnim");
+			garbageModelNameToSet = "garbageSurrender";
 
-			garbagePileCollidable.getShape(0).box.setSize(glm::vec3(3.36f, 7.5f, 7.56f));
-			garbagePileCollidable.getShape(1).box.setSize(glm::vec3(13.63f, 3.51f, 2.46f));
+			garbagePileCollider0Pos = glm::vec3(2.25f, 0.2f, 1.0f);
+			garbagePileCollider1Pos = glm::vec3(-3.26f, 1.09f, 1.07f);
+			garbagePileCollider2Pos = glm::vec3(0.12f, 1.87f, -1.25f);
+
+			garbagePileCollider0Size = glm::vec3(8.47f, 1.42f, 3.57f);
+			garbagePileCollider1Size = glm::vec3(10.95f, 2.5f, 4.71f);
+			garbagePileCollider2Size = glm::vec3(3.47f, 3.94f, 4.03f);
 		}
 		else
 		{
-			garbagePileRenderable.mesh = Mesh::get("garbageMassive");
-			flyAnimator.setNextAnimation("GarbageMassiveAnim");
+			garbageModelNameToSet = "garbageMassive";
 
-			garbagePileCollidable.getShape(0).box.setSize(glm::vec3(4.04f, 7.65f, 5.58f));
-			garbagePileCollidable.getShape(1).box.setSize(glm::vec3(7.84f, 4.25f, 7.68f));
+			garbagePileCollider0Pos = glm::vec3(0.1f, 0.85f, -0.09f);
+			garbagePileCollider1Pos = glm::vec3(0.31f, 2.75f, -0.56f);
+
+			garbagePileCollider0Size = glm::vec3(7.57f, 2.02f, 7.29f);
+			garbagePileCollider1Size = glm::vec3(3.05f, 2.3f, 4.03f);
 		}
 	}
 	else if (garbagePile.garbageLevel == garbagePile.MAX_GARBAGE_LEVEL - 1)
 	{
-		garbagePileRenderable.mesh = Mesh::get("garbageLarge");
-		flyAnimator.setNextAnimation("GarbageLargeAnim");
+		garbageModelNameToSet = "garbageLarge";
 
-		garbagePileCollidable.getShape(0).box.setSize(glm::vec3(2.73f, 5.01f, 3.15f));
-		garbagePileCollidable.getShape(1).box.setSize(glm::vec3(5.27f, 2.93f, 5.1f));
+		garbagePileCollider0Pos = glm::vec3(0.09f, 0.52f, 0.07f);
+		garbagePileCollider1Pos = glm::vec3(0.59f, 1.82f, -0.45f);
+
+		garbagePileCollider0Size = glm::vec3(5.43f, 1.24f, 5.35f);
+		garbagePileCollider1Size = glm::vec3(2.15f, 1.42f, 2.63f);
 	}
 	else if (garbagePile.garbageLevel == garbagePile.MAX_GARBAGE_LEVEL - 2)
 	{
-		garbagePileRenderable.mesh = Mesh::get("garbageMedium");
-		flyAnimator.setNextAnimation("GarbageMediumAnim");
+		garbageModelNameToSet = "garbageMedium";
 
-		garbagePileCollidable.getShape(0).box.setSize(glm::vec3(4.0f, 2.01f, 3.99f));
-		garbagePileCollidable.getShape(1).box.setSize(glm::vec3(2.03f, 2.6f, 2.42f));
+		garbagePileCollider0Pos = glm::vec3(0.0f, 0.18f, 0.0f);
+		garbagePileCollider1Pos = glm::vec3(0.11f, 0.76f, -0.13f);
+
+		garbagePileCollider0Size = glm::vec3(4.43f, 1.0f, 4.41f);
+		garbagePileCollider1Size = glm::vec3(2.91f, 1.0f, 2.97f);
 	}
 	else if (garbagePile.garbageLevel == garbagePile.MAX_GARBAGE_LEVEL - 3)
 	{
-		garbagePileRenderable.mesh = Mesh::get("garbageSmall");
-		flyAnimator.setNextAnimation("GarbageSmallAnim");
+		garbageModelNameToSet = "garbageSmall";
 
-		garbagePileCollidable.getShape(0).box.setSize(glm::vec3(2.7f, 1.11f, 2.66f));
+		garbagePileCollider0Pos = glm::vec3(0.0f, 0.13f, 0.0f);
+
+		garbagePileCollider0Size = glm::vec3(3.13f, 0.92f, 3.27f);
 	}
 	else
 	{
-		garbagePileRenderable.mesh = Mesh::get("garbageTiny");
-		flyAnimator.setNextAnimation("GarbageTinyAnim");
+		garbageModelNameToSet = "garbageTiny";
 
-		garbagePileCollidable.getShape(0).box.setSize(glm::vec3(2.22f, 0.59f, 2.19f));
+		garbagePileCollider0Pos = glm::vec3(0.0f, 0.06f, 0.0f);
+
+		garbagePileCollider0Size = glm::vec3(2.35f, 0.52f, 2.37f);
 	}
+
+	garbagePileCollidable.getShape(0).box.setCenter(garbagePileCollider0Pos);
+	garbagePileCollidable.getShape(1).box.setCenter(garbagePileCollider1Pos);
+	garbagePileCollidable.getShape(2).box.setCenter(garbagePileCollider2Pos);
+
+	garbagePileCollidable.getShape(0).box.setSize(garbagePileCollider0Size);
+	garbagePileCollidable.getShape(1).box.setSize(garbagePileCollider1Size);
+	garbagePileCollidable.getShape(2).box.setSize(garbagePileCollider2Size);
+
+	garbagePileRenderable.model = Model::get(garbageModelNameToSet);
+
+	if (garbagePile.isGlooped)
+		garbagePileRenderable.material = Material::get("garbageGlooped");
+	else
+		garbagePileRenderable.material = Material::get("garbage");
 
 	if (garbagePile.garbageLevel == 0)
 	{
 		garbagePileRenderable.enabled = false;
-		flyRenderable.enabled         = false;
+		//flyRenderable.enabled         = false;
 
 		garbagePileCollidable.getShape(0).box.setSize(glm::vec3(0.0f, 0.0f, 0.0f));
 	}
 	else
 	{
 		garbagePileRenderable.enabled = true;
-		flyRenderable.enabled         = true;
+		//flyRenderable.enabled         = true;
 	}
 }

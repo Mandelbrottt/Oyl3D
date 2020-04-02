@@ -10,6 +10,13 @@ enum class Team
 	neutral
 };
 
+enum class GameEndResult
+{
+	blueWin,
+	redWin,
+	tie
+};
+
 enum class PlayerState
 {
 	idle,
@@ -23,7 +30,7 @@ enum class PlayerState
 	stunned
 };
 
-enum class PlayerItemClassifiation
+enum class PlayerItemClassification
 {
 	primary,
 	secondary,
@@ -78,6 +85,23 @@ enum class ReticleType
 	invalid
 };
 
+enum class MenuOption
+{
+	playGame,
+	tutorial,
+	controls,
+	settings,
+	credits,
+	exit,
+	start,
+	pause,
+	resume,
+	playAgain,
+	goToMainMenu,
+	sensitivityKnob
+};
+
+
 struct MoveableUsingLerp
 {
 	glm::vec3 startPos;
@@ -100,10 +124,12 @@ struct Player
     
 	PlayerState state = PlayerState::idle;
 
+	bool transitionIntoQTE = false;
+
 	glm::vec3 moveDirection = glm::vec3(0.0f);
 
-	float speedForce = 4.7f;
-	float jumpForce  = 20.0f;
+	float speedForce = 5.6f;
+	float jumpForce  = 27.0f;
 	bool  isJumping  = false;
 
 	float JUMP_COOLDOWN_DURATION = 0.1f;
@@ -115,7 +141,7 @@ struct Player
 	MoveableUsingLerp adjustingPositionStateData;
 	MoveableUsingLerp pushingStateData;
 
-	float CLEANING_TIME_DURATION = 1.2f; //IF YOU CHANGE THIS, MAKE SURE TO ALSO CHANGE THE DEPENDANT VALUES IN GARBAGE PILE AND GARBAGE HP BAR COMPONENETS (check the comments in those components to figure out which ones)
+	float CLEANING_TIME_DURATION = 1.2f; //IF YOU CHANGE THIS, MAKE SURE TO ALSO CHANGE THE DEPENDANT VALUES IN GARBAGE HP BAR COMPONENT (check the comments in the component to figure out which ones)
 	float cleaningTimeCountdown  = CLEANING_TIME_DURATION;
 
 	float THROWING_DELAY_DURATION      = 0.5f;
@@ -254,11 +280,6 @@ struct Reticle
 	ReticleType type;
 };
 
-struct EndScreen
-{
-	bool isLoseScreen;
-};
-
 struct GarbagePileHealthBar
 {
 	entt::entity outlineEntity; //the outline of the HP bar
@@ -303,7 +324,7 @@ struct CameraBreathing
 {
 	float startPosY;
 
-	float cameraHeightVariance = 0.04f;
+	float cameraHeightVariance = 0.15f;
 	float interpolationParam   = 0.5f; //start halfway up (at the default camera height)
 	float speed = 0.45f;
 
@@ -316,7 +337,7 @@ struct GarbageMeterBar
 	float interpolationParam = 0.0f;
 
 	float startValue  = 0.0f; 
-	float targetValue = 1.0f / 5.0f; //garbage piles start at level 1.. needs to be updated if starting or max garbage level changes
+	float targetValue = 1.0f / 5.0f; //garbage piles start at level 1 (out of max 5)
 
 	int garbagePileNum = 0;
 };
@@ -327,4 +348,14 @@ struct GarbageMeterDisplay
 
 	Team team;
 	PlayerNumber playerNum = PlayerNumber::One; //player to render to
+};
+
+struct MenuItem
+{
+	MenuOption type;
+};
+
+struct SensitivityKnob
+{
+	int controllerNum;
 };

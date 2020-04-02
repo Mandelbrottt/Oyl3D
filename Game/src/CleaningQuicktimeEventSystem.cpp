@@ -23,6 +23,8 @@ void CleaningQuicktimeEventSystem::onUpdate()
 		{
 			int controllerNum;
 
+			entt::entity playerEntityForQTE = entt::null;
+
 			auto& playerView = registry->view<Player>();
 			for (auto& playerEntity : playerView)
 			{
@@ -31,36 +33,52 @@ void CleaningQuicktimeEventSystem::onUpdate()
 				if (player.playerNum == cleaningQTE.playerNum)
 				{
 					controllerNum = player.controllerNum;
+					playerEntityForQTE = playerEntity;
 					break;
 				}
 			}
 
 			glm::vec2 rightStick = Input::getGamepadRightStick(controllerNum);
 
+			StickMovedDuringQuicktimeCleaningEventEvent stickMoved;
+			stickMoved.playerEntity = playerEntityForQTE;
+			stickMoved.stickPosY    = rightStick.y;
+			postEvent(stickMoved);
+
 			if (cleaningQTE.isPointingUp)
 			{
 				cleaningQTERenderable.texture = Texture2D::get("cleaningQTEUp");
 
-				if (rightStick.y < -0.9f)
+				if (rightStick.y < -0.4f)
 				{
 					cleaningQTE.isPointingUp = false;
 
 					RequestToCleanGarbageEvent requestToCleanGarbage;
 					requestToCleanGarbage.garbagePileEntity = cleaningQTE.garbagePileBeingCleaned;
 					postEvent(requestToCleanGarbage);
+
+					CleanedWithMopEvent cleanedWithMop;
+					cleanedWithMop.playerEntity   = playerEntityForQTE;
+					cleanedWithMop.moppingForward = true;
+					postEvent(cleanedWithMop);
 				}
 			}
 			else //!isPointingUp
 			{
 				cleaningQTERenderable.texture = Texture2D::get("cleaningQTEDown");
 
-				if (rightStick.y > 0.9f)
+				if (rightStick.y > 0.4f)
 				{
 					cleaningQTE.isPointingUp = true;
 
 					RequestToCleanGarbageEvent requestToCleanGarbage;
 					requestToCleanGarbage.garbagePileEntity = cleaningQTE.garbagePileBeingCleaned;
 					postEvent(requestToCleanGarbage);
+					
+					CleanedWithMopEvent cleanedWithMop;
+					cleanedWithMop.playerEntity   = playerEntityForQTE;
+					cleanedWithMop.moppingForward = false;
+					postEvent(cleanedWithMop);
 				}
 			}
 		}
@@ -113,6 +131,8 @@ bool CleaningQuicktimeEventSystem::onEvent(const Event& event)
 		{
 			auto evt = event_cast<CancelQuicktimeCleaningEventEvent>(event);
 
+			auto& player = registry->get<Player>(evt.playerEntity);
+
 			auto cleaningQTEView = registry->view<component::Transform, CleaningQuicktimeEvent>();
 			for (auto& cleaningQTEEntity : cleaningQTEView)
 			{
@@ -121,7 +141,7 @@ bool CleaningQuicktimeEventSystem::onEvent(const Event& event)
 
 				auto& cancelQTEPromptGui = registry->get<component::GuiRenderable>(cleaningQTE.cancelPromptEntity);
 
-				if (cleaningQTE.playerNum == evt.playerNum && cleaningQTE.isActive)
+				if (cleaningQTE.playerNum == player.playerNum && cleaningQTE.isActive)
 				{
 					cleaningQTE.garbagePileBeingCleaned = entt::null;
 
@@ -140,6 +160,41 @@ bool CleaningQuicktimeEventSystem::onEvent(const Event& event)
 							break;
 						}
 					}
+				}
+			}
+
+			break;
+		}
+
+		case (EventType)TypePerformCleaning:
+		{
+			auto evt = event_cast<PerformCleaningEvent>(event);
+
+			auto& player = registry->get<Player>(evt.playerEntity);
+
+			auto cleaningQTEView = registry->view<component::Transform, CleaningQuicktimeEvent>();
+			for (auto& cleaningQTEEntity : cleaningQTEView)
+			{
+				auto& cleaningQTE = registry->get<CleaningQuicktimeEvent>(cleaningQTEEntity);
+				auto& cleaningQTEGui = registry->get<component::GuiRenderable>(cleaningQTEEntity);
+
+				if (cleaningQTE.playerNum == player.playerNum && cleaningQTE.isActive)
+				{
+					cleaningQTE.isPointingUp = !cleaningQTE.isPointingUp;
+
+					if (cleaningQTE.isPointingUp)
+						cleaningQTEGui.texture = Texture2D::get("cleaningQTEUp");
+					else
+						cleaningQTEGui.texture = Texture2D::get("cleaningQTEDown");
+
+					RequestToCleanGarbageEvent requestToCleanGarbage;
+					requestToCleanGarbage.garbagePileEntity = cleaningQTE.garbagePileBeingCleaned;
+					postEvent(requestToCleanGarbage);
+
+					CleanedWithMopEvent cleanedWithMop;
+					cleanedWithMop.playerEntity   = evt.playerEntity;
+					cleanedWithMop.moppingForward = cleaningQTE.isPointingUp;
+					postEvent(cleanedWithMop);
 				}
 			}
 

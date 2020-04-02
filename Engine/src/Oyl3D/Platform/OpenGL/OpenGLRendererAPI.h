@@ -16,6 +16,6 @@ namespace oyl
 
         virtual void drawArrays(const Ref<VertexArray>& vao, u32 count) override;
         virtual void drawIndexed(const Ref<VertexArray>& vao) override;
-        virtual void drawMesh(const Ref<Mesh>& mesh) override;
+        //virtual void drawMesh(const Ref<Mesh>& mesh) override;
     };
 }

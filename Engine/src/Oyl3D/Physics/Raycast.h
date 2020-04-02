@@ -6,7 +6,7 @@ namespace oyl
     
     namespace RayTest
     {
-        extern Ref<ClosestRaycastResult> Closest(glm::vec3 from, glm::vec3 direction, f32 distance);
+        extern Ref<ClosestRaycastResult> Closest(glm::vec3 from, glm::vec3 direction, f32 distance, u16 mask = (u16) -1u);
     }
     
     struct RaycastResult

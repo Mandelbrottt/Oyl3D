@@ -11,7 +11,17 @@
                 1.0
             ]
         },
-        "Shader": null,
+        "Shader": {
+            "Alias": "Oyl Lighting",
+            "Pixel": {
+                "FilePath": "../Engine/res/shaders/lighting.frag",
+                "guid": null
+            },
+            "Vertex": {
+                "FilePath": "../Engine/res/shaders/lighting.vert",
+                "guid": null
+            }
+        },
         "Textures": {
             "Albedo": {
                 "Alias": null,

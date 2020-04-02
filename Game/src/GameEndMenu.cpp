@@ -1,0 +1,263 @@
+#include "GameEndMenu.h"
+#include "PersistentVariables.h"
+
+using namespace oyl;
+
+void GameEndLayer::onEnter()
+{
+	listenForEventCategory(EventCategory::Keyboard);
+	listenForEventCategory(EventCategory::Gamepad);
+
+	selectedMenuItemType = MenuOption::goToMainMenu;
+
+	Texture2D::cache("res/assets/textures/menus/BlueWins.png");
+	Texture2D::cache("res/assets/textures/menus/RedWins.png");
+	Texture2D::cache("res/assets/textures/menus/Draw.png");
+
+	{
+		auto cameraEntity = registry->create();
+
+		auto& cameraTransform = registry->assign<component::Transform>(cameraEntity);
+		cameraTransform.setPosition(glm::vec3(0.0f, 0.0f, 0.0f));
+
+		auto& camera = registry->assign<component::Camera>(cameraEntity);
+		camera.cullingMask = 0b1111;
+
+		auto& so = registry->assign<component::EntityInfo>(cameraEntity);
+		so.name = "Camera";
+	}
+
+	{
+		auto e = registry->create();
+
+		auto& t = registry->assign<component::Transform>(e);
+		t.setPosition(glm::vec3(0.0f, 0.0f, 0.0f));
+		t.setScale(glm::vec3(10.0f, 10.0f, 1.0f));
+
+		auto& so = registry->assign<component::EntityInfo>(e);
+		so.name = "Background";
+
+		auto& gui = registry->assign<component::GuiRenderable>(e);
+		gui.texture = Texture2D::cache("res/assets/textures/menus/SettingsBackground.png");
+	}
+
+	{
+		auto e = registry->create();
+
+		auto& t = registry->assign<component::Transform>(e);
+		t.setPosition(glm::vec3(0.0f, 0.0f, -10.0f));
+		t.setScale(glm::vec3(10.0f, 10.0f, 10.0f));
+
+		auto& so = registry->assign<component::EntityInfo>(e);
+		so.name = "Game End Message";
+
+		auto& gui = registry->assign<component::GuiRenderable>(e);
+
+		if (PersistentVariables::gameResult == GameEndResult::blueWin)
+			gui.texture = Texture2D::get("res/assets/textures/menus/BlueWins.png");
+		else if (PersistentVariables::gameResult == GameEndResult::redWin)
+			gui.texture = Texture2D::get("res/assets/textures/menus/RedWins.png");
+		else //tie game
+			gui.texture = Texture2D::get("res/assets/textures/menus/Draw.png");
+	}
+
+	{
+		auto e = registry->create();
+
+		auto& menuItem = registry->assign<MenuItem>(e);
+		menuItem.type = MenuOption::goToMainMenu;
+
+		auto& t = registry->assign<component::Transform>(e);
+		t.setPosition(glm::vec3(0.0f, -2.2f, -15.0f));
+		t.setScale(glm::vec3(1.0f, 1.0f, 1.0f));
+
+		auto& so = registry->assign<component::EntityInfo>(e);
+		so.name = "Go To Main Menu Prompt";
+
+		auto& gui = registry->assign<component::GuiRenderable>(e);
+		gui.texture = Texture2D::cache("res/assets/textures/menus/MainMenuPrompt.png");
+	}
+
+	{
+		auto e = registry->create();
+
+		auto& menuItem = registry->assign<MenuItem>(e);
+		menuItem.type = MenuOption::playAgain;
+
+		auto& t = registry->assign<component::Transform>(e);
+		t.setPosition(glm::vec3(0.0f, -3.8f, -15.0f));
+		t.setScale(glm::vec3(1.0f, 1.0f, 1.0f));
+
+		auto& so = registry->assign<component::EntityInfo>(e);
+		so.name = "Play Again Prompt";
+
+		auto& gui = registry->assign<component::GuiRenderable>(e);
+		gui.texture = Texture2D::cache("res/assets/textures/menus/PlayAgainPrompt.png");
+	}
+}
+
+void GameEndLayer::onUpdate()
+{
+	changeMenuOptionCountdown -= Time::deltaTime();
+
+	auto guiView = registry->view<component::EntityInfo, component::GuiRenderable>();
+	for (auto& guiEntity : guiView)
+	{
+		if (registry->get<component::EntityInfo>(guiEntity).name == "Game End Message")
+		{
+			auto& gameResultGui = registry->get<component::GuiRenderable>(guiEntity);
+
+			if (PersistentVariables::gameResult == GameEndResult::blueWin)
+				gameResultGui.texture = Texture2D::get("BlueWins");
+			else if (PersistentVariables::gameResult == GameEndResult::redWin)
+				gameResultGui.texture = Texture2D::get("RedWins");
+			else //tie game
+				gameResultGui.texture = Texture2D::get("Draw");
+		}
+	}
+
+	auto menuItemsView = registry->view<MenuItem>();
+	for (auto& menuItemEntity : menuItemsView)
+	{
+		auto& menuItem          = registry->get<MenuItem>(menuItemEntity);
+		auto& menuItemTransform = registry->get<component::Transform>(menuItemEntity);
+
+		if (menuItem.type == selectedMenuItemType)
+			menuItemTransform.setScale(glm::vec3(1.5f, 1.5f, 1.0f));
+		else
+			menuItemTransform.setScale(glm::vec3(1.0f));
+	}
+}
+
+bool GameEndLayer::onEvent(const Event& event)
+{
+	switch (event.type)
+	{
+	case EventType::KeyPressed:
+	{
+		auto evt = event_cast<KeyPressedEvent>(event);
+
+		//since there are only 2 options it doesnt matter which direction is pressed
+		switch (evt.keycode)
+		{
+		case oyl::Key::Down:
+		case oyl::Key::S:
+		case oyl::Key::Up:
+		case oyl::Key::W:
+		{
+			if (changeMenuOptionCountdown > 0.0f)
+				break;
+
+			changeMenuOptionCountdown = CHANGE_MENU_OPTION_DELAY;
+
+			switch (selectedMenuItemType)
+			{
+			case MenuOption::goToMainMenu:
+			{
+				selectedMenuItemType = MenuOption::playAgain;
+				break;
+			}
+			case MenuOption::playAgain:
+			{
+				selectedMenuItemType = MenuOption::goToMainMenu;
+				break;
+			}
+			}
+
+			break;
+		}
+
+		case oyl::Key::Enter:
+		{
+			switch (selectedMenuItemType)
+			{
+			case MenuOption::goToMainMenu:
+			{
+				Application::get().changeScene("MainMenuScene");
+				break;
+			}
+			case MenuOption::playAgain:
+			{
+				Application::get().changeScene("MainScene");
+				break;
+			}
+			}
+
+			break;
+		}
+		}
+
+		break;
+	}
+
+	case EventType::GamepadStickMoved:
+	{
+		auto evt = event_cast<GamepadStickMovedEvent>(event);
+
+		if (evt.stick != Gamepad::LeftStick)
+			break;
+		if (changeMenuOptionCountdown > 0.0f)
+			break;
+
+		changeMenuOptionCountdown = CHANGE_MENU_OPTION_DELAY;
+
+		//since there are only 2 options it doesnt matter which way the stick was moved
+		if (   (evt.dy > 0.0f && Input::getGamepadLeftStick(evt.gid).y > 0.1f)
+			|| (evt.dy < 0.0f && Input::getGamepadLeftStick(evt.gid).y < -0.1f))
+		{
+			switch (selectedMenuItemType)
+			{
+			case MenuOption::goToMainMenu:
+			{
+				selectedMenuItemType = MenuOption::playAgain;
+				break;
+			}
+			case MenuOption::playAgain:
+			{
+				selectedMenuItemType = MenuOption::goToMainMenu;
+				break;
+			}
+			}
+		}
+
+		break;
+	}
+
+	case EventType::GamepadButtonPressed:
+	{
+		auto evt = event_cast<GamepadButtonPressedEvent>(event);
+
+		switch (evt.button)
+		{
+		case Gamepad::Start:
+		case Gamepad::A:
+		{
+			switch (selectedMenuItemType)
+			{
+			case MenuOption::goToMainMenu:
+			{
+				Application::get().changeScene("MainMenuScene");
+				break;
+			}
+			case MenuOption::playAgain:
+			{
+				Application::get().changeScene("MainScene");
+				break;
+			}
+			}
+
+			break;
+		}
+		}
+
+		break;
+	}
+	}
+
+	return false;
+}
+
+void GameEndLayer::onGuiRender()
+{
+
+}

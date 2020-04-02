@@ -19,7 +19,7 @@
 
 #include "Graphics/EditorCamera.h"
 #include "Graphics/Material.h"
-#include "Graphics/Mesh.h"
+#include "Graphics/Model.h"
 #include "Graphics/Shader.h"
 #include "Graphics/Texture.h"
 
@@ -36,7 +36,7 @@
 #include "EditorSystems.h"
 
 static bool isTexture(const char* ext);
-static bool isMesh(const char* ext);
+static bool isModel(const char* ext);
 static bool isShader(const char* ext);
 static bool isMaterial(const char* ext);
 static bool isScene(const char* ext);
@@ -81,16 +81,16 @@ namespace oyl::internal
     
     void GuiLayer::onEnter()
     {
-        scheduleSystemUpdate<EditorCameraSystem>();
-        scheduleSystemUpdate<EditorRenderSystem>();
+        scheduleSystemUpdate<EditorCameraSystem>(-1u);
+        //scheduleSystemUpdate<EditorRenderSystem>();
 
         listenForAllEvents();
 
-        for (auto& system : m_systems)
-        {
-            system->setRegistry(registry);
-            system->setDispatcher(m_dispatcher);
-        }
+        //for (auto& system : m_systems)
+        //{
+        //    system->setRegistry(registry);
+        //    system->setDispatcher(m_dispatcher);
+        //}
 
         m_fileSaveTimeIt = m_fileSaveTimes.end();
         updateAssetList();
@@ -179,7 +179,6 @@ namespace oyl::internal
     void GuiLayer::onUpdate()
     {
         using component::Transform;
-        using component::Parent;
         using component::EntityInfo;
 
         auto deleteView = registry->view<entt::tag<"_delete"_hs>>();
@@ -333,7 +332,7 @@ namespace oyl::internal
                     updateAssetList();
             }
         }
-        return m_editorOverrideUpdate;
+        return m_editorOverrideUpdate || !m_gameUpdate;
     }
 
     void GuiLayer::drawMenuBar()
@@ -347,12 +346,18 @@ namespace oyl::internal
                 {
                     //saveSceneToFile(*Scene::current());
                     // TEMPORARY: Let name be accessed through a getter
-                    registryToSceneFile(*registry, Scene::current()->m_name);
 
-                    for (const auto& [alias, material] : Material::getCache())
+                    //registryToSceneFile(*registry, Scene::current()->m_name);
+
+                    for (auto& [name, scene] : Application::get().m_registeredScenes)
                     {
-                        materialToFile(material, "res/assets/materials/" + alias + ".oylmat");
+                        registryToSceneFile(*scene->m_registry, name);
                     }
+
+                    //for (const auto& [alias, material] : Material::getCache())
+                    //{
+                    //    materialToFile(material, "res/assets/materials/" + alias + ".oylmat");
+                    //}
                 }
                 showReloadDialogue = 
                     ImGui::MenuItem("Reload##MainMenuReload", "Ctrl+Shift+S", false, m_editorOverrideUpdate);
@@ -415,7 +420,6 @@ namespace oyl::internal
     {
         using component::Transform;
         using component::EntityInfo;
-        using component::Parent;
         
         if (ImGui::Begin(g_hierarchyWindowName, nullptr, ImGuiWindowFlags_NoCollapse))
         {
@@ -448,25 +452,21 @@ namespace oyl::internal
 
             ImGui::SetCursorPos(ImGui::GetWindowContentRegionMin());
             
-            registry->view<EntityInfo>().each(
-                [&](auto entity, auto& info)
+            registry->view<EntityInfo, Transform>().each(
+                [&](auto entity, auto& info, auto& transform)
                 {
-                    Parent* p = registry->try_get<Parent>(entity);
-                    if (!(p && registry->valid(p->parent)))
+                    if (!transform.hasParent())
                     {
-                        this->drawEntityNode(entity);
+                        this->drawEntityNode(entity, info, transform);
                     }
                 });
         }
         ImGui::End();
     }
 
-    void GuiLayer::drawEntityNode(entt::entity entity)
+    void GuiLayer::drawEntityNode(entt::entity entity, component::EntityInfo& info, component::Transform& transform)
     {
-        using component::EntityInfo;
-        using component::Parent;
-        
-        auto& so = registry->get<EntityInfo>(entity);
+        using component::Transform;
         
         auto nodeFlags = ImGuiTreeNodeFlags_OpenOnDoubleClick |
                          ImGuiTreeNodeFlags_OpenOnArrow |
@@ -475,18 +475,25 @@ namespace oyl::internal
         if (entity == m_currentSelection.entity())
             nodeFlags |= ImGuiTreeNodeFlags_Selected;
 
-        nodeFlags |= ImGuiTreeNodeFlags_Leaf;
-        auto parentView = registry->view<Parent>();
-        for (auto child : parentView)
-            if (parentView.get(child).parent == entity)
-            {
-                nodeFlags &= ~ImGuiTreeNodeFlags_Leaf;
-                break;
-            }
+        //nodeFlags |= ImGuiTreeNodeFlags_Leaf;
+        //auto parentView = registry->view<Parent>();
+        //for (auto child : parentView)
+        //    if (parentView.get(child).parent == entity)
+        //    {
+        //        nodeFlags &= ~ImGuiTreeNodeFlags_Leaf;
+        //        break;
+        //    }
+        
+        const std::vector<Transform*>& children = transform.getChildren();
+        if (children.empty())
+        {
+            nodeFlags |= ImGuiTreeNodeFlags_Leaf;
+        }
 
-        bool treeNode = ImGui::TreeNodeEx((const void*) entity, nodeFlags, g_entityNodeFmt, so.name.c_str());
+        bool treeNode = ImGui::TreeNodeEx((const void*) entity, nodeFlags, g_entityNodeFmt, info.name.c_str());
         bool clicked = ImGui::IsItemClicked(0);
         float testValue = ImGui::GetMousePos().x - ImGui::GetItemRectMin().x;
+
         if (treeNode)
         {
             if (ImGui::BeginPopupContextItem())
@@ -508,9 +515,14 @@ namespace oyl::internal
                 {                    
                     auto copy = registry->create();
                     registry->stomp(copy, entity, *registry);
+                    auto& ct = registry->get<Transform>(copy);
+                    ct.clearChildren();
+                    ct.setParent(entt::null);
+                    ct.setParent(transform.getParentEntity());
+                    
                     recursiveCopy(copy, entity);
 
-                    m_currentSelection = Selectable(entity);
+                    m_currentSelection = Selectable(copy);
                 }
 
                 if (ImGui::Selectable("Delete Entity##HierarchyContextDeleteEntity", false))
@@ -525,7 +537,7 @@ namespace oyl::internal
             {
                 if (ImGui::BeginDragDropSource())
                 {
-                    ImGui::Text("%s", so.name.c_str());
+                    ImGui::Text("%s", info.name.c_str());
                     ImGui::SetDragDropPayload("HierarchyEntity", &entity, sizeof(entt::entity));
                     ImGui::EndDragDropSource();
                 }
@@ -540,13 +552,18 @@ namespace oyl::internal
                     ImGui::EndDragDropTarget();
                 }
 
-                parentView.each([&](auto child, Parent& p)
+                //parentView.each([&](auto child, Parent& p)
+                //{
+                //    if (registry->valid(p.parent) && p.parent == entity)
+                //    {
+                //        this->drawEntityNode(child);
+                //    }
+                //});
+                for (auto child : children)
                 {
-                    if (registry->valid(p.parent) && p.parent == entity)
-                    {
-                        this->drawEntityNode(child);
-                    }
-                });
+                    using component::EntityInfo;
+                    this->drawEntityNode(child->entity(), registry->get<EntityInfo>(child->entity()), *child);
+                }
             }
 
             ImGui::TreePop();
@@ -563,7 +580,6 @@ namespace oyl::internal
     void GuiLayer::recursiveCopy(entt::entity copy, entt::entity original)
     {
         using component::EntityInfo;
-        using component::Parent;
 
         auto& copyEI = registry->get<EntityInfo>(copy);
 
@@ -599,31 +615,44 @@ namespace oyl::internal
             }
         } while (!isValid);
         
-        auto view = registry->view<Parent>();
-        for (auto child : view)
+        //auto view = registry->view<Parent>();
+        using component::Transform;
+        const auto& children = registry->get<Transform>(original).getChildren();
+        for (auto child : children)
         {
-            if (view.get(child).parent == original)
-            {
-                auto e = registry->create();
-                registry->stomp(e, child, *registry);
-                registry->get<Parent>(e).parent = copy;
-                recursiveCopy(e, child);
-            }
+            //if (view.get(child).parent == original)
+            //{
+            auto e = registry->create();
+            registry->stomp(e, child->entity(), *registry);
+            //registry->get<Parent>(e).parent = copy;
+            auto& transform = registry->get<Transform>(e);
+            transform.clearChildren();
+            transform.setParent(copy);
+            recursiveCopy(e, child->entity());
+            //}
         }
     }
 
     void GuiLayer::recursiveDelete(entt::entity entity)
     {
-        using component::Parent;
+        using component::Transform;
         
-        auto view = registry->view<Parent>();
-        view.each([this, entity](auto child, Parent& p)
+        //auto view = registry->view<Parent>();
+        const auto& children = registry->get<Transform>(entity).getChildren();
+        for (auto child : children)
         {
-            if (p.parent == entity && !registry->has<entt::tag<"_delete"_hs>>(child))
+            if (!registry->has<entt::tag<"_delete"_hs>>(child->entity()))
             {
-                this->recursiveDelete(child);
+                this->recursiveDelete(child->entity());
             }
-        });
+        }
+        //view.each([this, entity](auto child, Parent& p)
+        //{
+        //    if (p.parent == entity && !registry->has<entt::tag<"_delete"_hs>>(child))
+        //    {
+        //        this->recursiveDelete(child);
+        //    }
+        //});
 
         registry->assign_or_replace<entt::tag<"_delete"_hs>>(entity);
 
@@ -634,17 +663,15 @@ namespace oyl::internal
 
     void GuiLayer::setEntityParent(entt::entity entity, entt::entity parent)
     {
-        using component::Parent;
         using component::Transform;
         
-        auto& p = registry->get_or_assign<Parent>(entity);
+        //auto& p = registry->get_or_assign<Parent>(entity);
+        auto& ct = registry->get<Transform>(entity);
 
-        if (parent == p.parent) return;
+        if (parent == ct.getParentEntity()) return;
         
-        if (parent == entt::null && p.parent != entt::null)
+        if (parent == entt::null && ct.getParentEntity() != entt::null)
         {
-            auto& ct = registry->get<Transform>(entity);
-
             glm::mat4 tempChild = ct.getMatrixGlobal();
 
             glm::vec3 tComponents[3];
@@ -669,7 +696,6 @@ namespace oyl::internal
         }
         else
         {
-            auto& ct = registry->get<Transform>(entity);
             auto& pt = registry->get<Transform>(parent);
 
             glm::mat4 tempChild = ct.getMatrixGlobal();
@@ -697,7 +723,8 @@ namespace oyl::internal
 
             ct.m_isLocalDirty = true;
         }
-        p.parent = parent;
+        //p.parent = parent;
+        ct.setParent(parent);
     }
 
     void GuiLayer::drawInspector()
@@ -713,7 +740,12 @@ namespace oyl::internal
                 drawInspectorGuiRenderable();
                 drawInspectorCollidable();
                 drawInspectorRigidBody();
-                drawInspectorLightSource();
+                //drawInspectorLightSource();
+                drawInspectorPointLight();
+                drawInspectorDirectionalLight();
+                drawInspectorSpotLight();
+                drawInspectorSkeletonAnimatable();
+                drawInspectorBoneTarget();
                 drawInspectorCamera();
                 drawInspectorAddComponent();
             }
@@ -921,12 +953,13 @@ namespace oyl::internal
 
             auto& renderable = registry->get<Renderable>(m_currentSelection.entity());
             
-            ImGui::Checkbox("Enabled", &renderable.enabled);
+            ImGui::Checkbox("Enabled##RenderableEnabled", &renderable.enabled);
+            ImGui::Checkbox("Cast Shadows##RenderableCastShadows", &renderable.castShadows);
 
             ImGui::TextUnformatted("Culling Mask"); ImGui::SameLine();
             char preview[33]{ 0 };
-            for (size_t i = 0; i < sizeof(preview); i++)
-                preview[i] = char('0' + !!(renderable.cullingMask & 1u << (32u - i)));
+            for (size_t i = 0; i < sizeof(preview) - 1; i++)
+                preview[i] = char('0' + !!(renderable.cullingMask & 1u << (31u - i)));
             if (ImGui::BeginCombo("##RenderableCullingMaskCombo", preview))
             {
                 for (int i = 0; i < 32; i++)
@@ -937,25 +970,25 @@ namespace oyl::internal
                 ImGui::EndCombo();
             }
             
-            CacheAlias currentName = Mesh::getAlias(renderable.mesh);
-            if (!renderable.mesh || currentName == INVALID_ALIAS)
+            CacheAlias currentName = Model::getAlias(renderable.model);
+            if (!renderable.model || currentName == INVALID_ALIAS)
                 currentName.assign("None");
 
-            ImGui::TextUnformatted("Current Mesh");
+            ImGui::TextUnformatted("Current Model");
             ImGui::SameLine();
             ImGui::SetNextItemWidth(ImGui::GetWindowWidth() - ImGui::GetCursorPosX());
             if (ImGui::BeginCombo("##RenderablePropertiesCurrentMesh", currentName.c_str()))
             {
-                if (ImGui::Selectable("None", renderable.mesh == nullptr))
-                    renderable.mesh.reset();    
+                if (ImGui::Selectable("None", renderable.model == nullptr))
+                    renderable.model.reset();
                 
-                const auto& meshCache = Mesh::getCache();
+                const auto& meshCache = Model::getCache();
                 for (const auto& kvp : meshCache)
                 {
                     if (kvp.first != INVALID_ALIAS &&
-                        ImGui::Selectable(kvp.first.c_str(), renderable.mesh == kvp.second))
+                        ImGui::Selectable(kvp.first.c_str(), renderable.model == kvp.second))
                     {
-                        renderable.mesh = kvp.second;
+                        renderable.model = kvp.second;
                     }
                 }
 
@@ -1016,8 +1049,8 @@ namespace oyl::internal
 
             ImGui::TextUnformatted("Culling Mask"); ImGui::SameLine();
             char preview[33]{ 0 };
-            for (size_t i = 0; i < sizeof(preview); i++)
-                preview[i] = char('0' + !!(gui.cullingMask & 1u << (32u - i)));
+            for (size_t i = 0; i < sizeof(preview) - 1; i++)
+                preview[i] = char('0' + !!(gui.cullingMask & 1u << (31u - i)));
             if (ImGui::BeginCombo("##GuiRenderableCullingMaskCombo", preview))
             {
                 for (int i = 0; i < 32; i++)
@@ -1365,6 +1398,46 @@ namespace oyl::internal
             bool isKinematic = doCheckbox("Is Kinematic", RigidBody::IS_KINEMATIC);
             bool doCollisions = doCheckbox("Detect Collisions", RigidBody::DETECT_COLLISIONS);
 
+            if (doCollisions)
+            {
+                {
+                    u16 group = rb.getCollisionGroup();
+                    ImGui::TextUnformatted("Collision Group"); ImGui::SameLine();
+                    char preview[17]{ 0 };
+                    for (size_t i = 0; i < sizeof(preview) - 1; i++)
+                        preview[i] = char('0' + !!(group & 1u << (15u - i)));
+                    if (ImGui::BeginCombo("##RigidBodyCollisionGroupCombo", preview))
+                    {
+                        for (int i = 0; i < 16; i++)
+                        {
+                            if (ImGui::Selectable(g_numbersList[i], group & 1u << i, ImGuiSelectableFlags_DontClosePopups))
+                                group ^= 1u << i;
+                        }
+                        ImGui::EndCombo();
+                    }
+                    if (group != rb.getCollisionGroup())
+                        rb.setCollisionGroup(group);
+                }
+                {
+                    u16 mask = rb.getCollisionMask();
+                    ImGui::TextUnformatted("Collision Mask"); ImGui::SameLine();
+                    char preview[17]{ 0 };
+                    for (size_t i = 0; i < sizeof(preview) - 1; i++)
+                        preview[i] = char('0' + !!(mask & 1u << (15u - i)));
+                    if (ImGui::BeginCombo("##RigidBodyCollisionMaskCombo", preview))
+                    {
+                        for (int i = 0; i < 16; i++)
+                        {
+                            if (ImGui::Selectable(g_numbersList[i], mask & 1u << i, ImGuiSelectableFlags_DontClosePopups))
+                                mask ^= 1u << i;
+                        }
+                        ImGui::EndCombo();
+                    }
+                    if (mask != rb.getCollisionMask())
+                        rb.setCollisionMask(mask);
+                }
+            }
+
             glm::bvec3 isFrozen = {
                 rb.getProperty(RigidBody::FREEZE_ROTATION_X),
                 rb.getProperty(RigidBody::FREEZE_ROTATION_Y),
@@ -1419,17 +1492,16 @@ namespace oyl::internal
         }
     }
 
-    void GuiLayer::drawInspectorLightSource()
+    void GuiLayer::drawInspectorPointLight()
     {
-        // TEMPORARY: Change when adding LightSource component
         using component::PointLight;
-
+        
         if (!registry->has<PointLight>(m_currentSelection.entity()))
             return;
 
         ImGui::SetNextItemOpen(true, ImGuiCond_Once);
 
-        bool open = ImGui::CollapsingHeader("Light Source##InspectorLightSource");
+        bool open = ImGui::CollapsingHeader("Point Light##InspectorPointLight");
 
         open &= !userRemoveComponent<PointLight>();
 
@@ -1439,36 +1511,133 @@ namespace oyl::internal
 
             auto& pl = registry->get<PointLight>(m_currentSelection.entity());
 
-            ImGui::ColorEdit3("Ambient##LightSourceAmbient",  value_ptr(pl.ambient));
-            ImGui::ColorEdit3("Diffuse##LightSourceAmbient",  value_ptr(pl.diffuse));
-            ImGui::ColorEdit3("Specular##LightSourceAmbient", value_ptr(pl.specular));
-
+            ImGui::TextUnformatted("Cast Shadows");
+            ImGui::SameLine();
+            ImGui::Checkbox("##CastShadowsPointLight", &pl.castShadows);
+            
             float newWidth = ImGui::GetWindowContentRegionWidth() / 6;
-
+            
             ImGui::PushItemWidth(newWidth);
-
             {
                 const float posDragSpeed = 0.01f;
-                ImGui::Text("Attenuation");
-                ImGui::SameLine(ImGui::GetWindowContentRegionWidth() - (15 * 3 + newWidth * 3 + 27));
+                ImGui::TextUnformatted("Range");
+                ImGui::SameLine(ImGui::GetWindowContentRegionWidth() - (15 + newWidth + 27));
                 ImGui::SetNextItemWidth(15);
-                ImGui::DragFloat("##AttenK", &pl.attenConst, posDragSpeed, 0.0f, 999.0f, "K");
+                ImGui::DragFloat("##PointLightRange", &pl.range, posDragSpeed, 0.0f, 999.0f, "R");
                 ImGui::SameLine();
-                ImGui::InputFloat("##AttenKInput", &pl.attenConst, 0, 0, "%.2f");
-                ImGui::SameLine();
-                ImGui::SetNextItemWidth(15);
-                ImGui::DragFloat("##AttenL", &pl.attenLin, posDragSpeed, 0, 999.0f, "L");
-                ImGui::SameLine();
-                ImGui::InputFloat("##AttenLInput", &pl.attenLin, 0, 0, "%.2f");
-                ImGui::SameLine();
-                ImGui::SetNextItemWidth(15);
-                ImGui::DragFloat("##AttenQ", &pl.attenQuad, posDragSpeed, 0, 999.0f, "Q");
-                ImGui::SameLine();
-                ImGui::InputFloat("##AttenQInput", &pl.attenQuad, 0, 0, "%.2f");
-                pl.attenuation = max(glm::vec3(0.0f, 0.0f, 0.0f), pl.attenuation);
+                ImGui::InputFloat("##PointLightRangeInput", &pl.range, 0, 0, "%.2f");
             }
             ImGui::PopItemWidth();
-            
+
+            ImGui::ColorEdit3("Ambient##PointLightAmbient", value_ptr(pl.ambient));
+            ImGui::ColorEdit3("Diffuse##PointLightDiffuse", value_ptr(pl.diffuse));
+            ImGui::ColorEdit3("Specular##PointLightSpecular", value_ptr(pl.specular));
+
+            ImGui::Unindent(10);
+
+            ImGui::Separator();
+            ImGui::NewLine();
+        }
+    }
+    
+    void GuiLayer::drawInspectorDirectionalLight()
+    {
+        using component::DirectionalLight;
+        
+        if (!registry->has<DirectionalLight>(m_currentSelection.entity()))
+            return;
+
+        ImGui::SetNextItemOpen(true, ImGuiCond_Once);
+
+        bool open = ImGui::CollapsingHeader("Directional Light##InspectorDirectionalLight");
+
+        open &= !userRemoveComponent<DirectionalLight>();
+
+        if (open)
+        {
+            ImGui::Indent(10);
+
+            auto& dl = registry->get<DirectionalLight>(m_currentSelection.entity());
+
+            ImGui::TextUnformatted("Cast Shadows");
+            ImGui::SameLine();
+            ImGui::Checkbox("##CastShadowsDirectionalLight", &dl.castShadows);
+
+            if (dl.castShadows)
+            {
+                ImGui::Indent(10);
+
+                auto flags = ImGuiInputTextFlags_EnterReturnsTrue;
+
+                float newWidth = ImGui::GetWindowContentRegionWidth() / 6;
+
+                ImGui::PushItemWidth(newWidth);
+
+                const float posDragSpeed = 0.2f;
+                ImGui::TextUnformatted("Resolution");
+                ImGui::SameLine(ImGui::GetWindowContentRegionWidth() - (15 * 2 + newWidth * 2 + 27));
+                ImGui::SetNextItemWidth(15);
+                ImGui::DragFloat("##XShadowResolution", &dl.resolution.x, posDragSpeed, 0, 0, "X");
+                ImGui::SameLine();
+                ImGui::InputFloat("##XShadowResolutionInput", &dl.resolution.x, 0, 0, "%.2f", flags);
+                ImGui::SameLine();
+                ImGui::SetNextItemWidth(15);
+                ImGui::DragFloat("##YShadowResolution", &dl.resolution.y, posDragSpeed, 0, 0, "Y");
+                ImGui::SameLine();
+                ImGui::InputFloat("##YShadowResolutionInput", &dl.resolution.y, 0, 0, "%.2f", flags);
+
+                ImGui::TextUnformatted("Lower Size Bounds");
+                ImGui::SameLine(ImGui::GetWindowContentRegionWidth() - (15 * 2 + newWidth * 2 + 27));
+                ImGui::SetNextItemWidth(15);
+                ImGui::DragFloat("##XShadowLowerBounds", &dl.lowerBounds.x, posDragSpeed, 0, 0, "X");
+                ImGui::SameLine();
+                ImGui::InputFloat("##XShadowLowerBoundsInput", &dl.lowerBounds.x, 0, 0, "%.2f", flags);
+                ImGui::SameLine();
+                ImGui::SetNextItemWidth(15);
+                ImGui::DragFloat("##YShadowLowerBounds", &dl.lowerBounds.y, posDragSpeed, 0, 0, "Y");
+                ImGui::SameLine();
+                ImGui::InputFloat("##YShadowLowerBoundsInput", &dl.lowerBounds.y, 0, 0, "%.2f", flags);
+
+                ImGui::TextUnformatted("Upper Size Bounds");
+                ImGui::SameLine(ImGui::GetWindowContentRegionWidth() - (15 * 2 + newWidth * 2 + 27));
+                ImGui::SetNextItemWidth(15);
+                ImGui::DragFloat("##XShadowUpperBounds", &dl.upperBounds.x, posDragSpeed, 0, 0, "X");
+                ImGui::SameLine();
+                ImGui::InputFloat("##XShadowUpperBoundsInput", &dl.upperBounds.x, 0, 0, "%.2f", flags);
+                ImGui::SameLine();
+                ImGui::SetNextItemWidth(15);
+                ImGui::DragFloat("##YShadowUpperBounds", &dl.upperBounds.y, posDragSpeed, 0, 0, "Y");
+                ImGui::SameLine();
+                ImGui::InputFloat("##YShadowUpperBoundsInput", &dl.upperBounds.y, 0, 0, "%.2f", flags);
+
+                ImGui::TextUnformatted("Shadow Bias");
+                ImGui::SameLine(ImGui::GetWindowContentRegionWidth() - (30 * 2 + newWidth * 2 + 27));
+                ImGui::SetNextItemWidth(30);
+                ImGui::DragFloat("##XShadowBiasMin", &dl.biasMin, 0.001f, 0, 1.0f, "Min");
+                ImGui::SameLine();
+                ImGui::InputFloat("##XShadowBiasMinInput", &dl.biasMin, 0, 0, "%.3f", flags);
+                ImGui::SameLine();
+                ImGui::SetNextItemWidth(30);
+                ImGui::DragFloat("##YShadowBiasMaxBounds", &dl.biasMax, 0.001f, 0, 1.0f, "Max");
+                ImGui::SameLine();
+                ImGui::InputFloat("##YShadowBiasMaxInput", &dl.biasMax, 0, 0, "%.3f", flags);
+
+                ImGui::PopItemWidth();
+
+                ImGui::TextUnformatted("Clip Length");
+                ImGui::SameLine(ImGui::GetWindowContentRegionWidth() - (15 * 2 + newWidth * 2 + 27));
+                ImGui::SetNextItemWidth(15);
+                ImGui::DragFloat("##ShadowClipLength", &dl.clipLength, 0.02f, 0, 0, "L");
+                ImGui::SameLine();
+                ImGui::InputFloat("##ShadowClipLengthInput", &dl.clipLength, 0, 0, "%.2f", flags);
+
+                ImGui::Unindent(10);
+            }
+
+            ImGui::ColorEdit3("Ambient##DirectionalLightAmbient", value_ptr(dl.ambient));
+            ImGui::ColorEdit3("Diffuse##DirectionalLightDiffuse", value_ptr(dl.diffuse));
+            ImGui::ColorEdit3("Specular##DirectionalLightSpecular", value_ptr(dl.specular));
+
             ImGui::Unindent(10);
 
             ImGui::Separator();
@@ -1476,6 +1645,70 @@ namespace oyl::internal
         }
     }
 
+    void GuiLayer::drawInspectorSpotLight()
+    {
+        using component::SpotLight;
+        
+        if (!registry->has<SpotLight>(m_currentSelection.entity()))
+            return;
+
+        ImGui::SetNextItemOpen(true, ImGuiCond_Once);
+
+        bool open = ImGui::CollapsingHeader("Spot Light##InspectorSpotLight");
+
+        open &= !userRemoveComponent<SpotLight>();
+
+        if (open)
+        {
+            ImGui::Indent(10);
+
+            auto& sl = registry->get<SpotLight>(m_currentSelection.entity());
+
+            ImGui::TextUnformatted("Cast Shadows");
+            ImGui::SameLine();
+            ImGui::Checkbox("##CastShadowsSpotLight", &sl.castShadows);
+
+            float newWidth = ImGui::GetWindowContentRegionWidth() / 6;
+
+            ImGui::PushItemWidth(newWidth);
+            {
+                const float posDragSpeed = 0.01f;
+                ImGui::TextUnformatted("Range");
+                ImGui::SameLine(ImGui::GetWindowContentRegionWidth() - (15 + newWidth + 27));
+                ImGui::SetNextItemWidth(15);
+                ImGui::DragFloat("##RangeSpotLight", &sl.range, posDragSpeed, 0.0f, 999.0f, "R");
+                ImGui::SameLine();
+                ImGui::InputFloat("##RangeInputSpotLight", &sl.range, 0, 0, "%.2f");
+            }
+            {
+                const float posDragSpeed = 0.01f;
+                ImGui::TextUnformatted("Outer Cutoff");
+                ImGui::SameLine(ImGui::GetWindowContentRegionWidth() - (15 * 2 + newWidth * 2 + 27));
+                ImGui::SetNextItemWidth(15);
+                ImGui::DragFloat("##OuterCutoff", &sl.outerCutoff, posDragSpeed, 0.0f, 999.0f, "K");
+                ImGui::SameLine();
+                ImGui::InputFloat("##OutCutoffInput", &sl.outerCutoff, 0, 0, "%.2f");
+
+                ImGui::TextUnformatted("Inner Cutoff");
+                ImGui::SameLine(ImGui::GetWindowContentRegionWidth() - (15 * 2 + newWidth * 2 + 27));
+                ImGui::SetNextItemWidth(15);
+                ImGui::DragFloat("##InnerCutoff", &sl.outerCutoff, posDragSpeed, 0.0f, 999.0f, "I");
+                ImGui::SameLine();
+                ImGui::InputFloat("##InnerCutoffInput", &sl.outerCutoff, 0, 0, "%.2f");
+            }
+            ImGui::PopItemWidth();
+
+            ImGui::ColorEdit3("Ambient##SpotLightAmbient", value_ptr(sl.ambient));
+            ImGui::ColorEdit3("Diffuse##SpotLightDiffuse", value_ptr(sl.diffuse));
+            ImGui::ColorEdit3("Specular##SpotLightSpecular", value_ptr(sl.specular));
+
+            ImGui::Unindent(10);
+
+            ImGui::Separator();
+            ImGui::NewLine();
+        }
+    }
+    
     void GuiLayer::drawInspectorCamera()
     {
         // TEMPORARY: Change when adding LightSource component
@@ -1578,13 +1811,255 @@ namespace oyl::internal
         }
     }
 
+    void GuiLayer::drawInspectorSkeletonAnimatable()
+    {
+        using component::Renderable;
+        using component::SkeletonAnimatable;
+
+        if (!registry->has<SkeletonAnimatable>(m_currentSelection.entity())) return;
+
+        ImGui::SetNextTreeNodeOpen(true, ImGuiCond_Once);
+
+        bool open = ImGui::CollapsingHeader("Skeleton Animatable##InspectorSkeletonAnimatableProperties");
+
+        open &= !userRemoveComponent<SkeletonAnimatable>();
+
+        if (open)
+        {
+            ImGui::Indent(10);
+
+            auto& sa = registry->get<SkeletonAnimatable>(m_currentSelection.entity());
+
+            ImGui::TextUnformatted("Play   "); ImGui::SameLine();
+            ImGui::Checkbox("##SkeletonAnimatablePlay", &sa.play);
+
+            ImGui::TextUnformatted("Reverse"); ImGui::SameLine();
+            ImGui::Checkbox("##SkeletonAnimatableReverse", &sa.reverse);
+
+            ImGui::TextUnformatted("Loop   "); ImGui::SameLine();
+            ImGui::Checkbox("##SkeletonAnimatableLoop", &sa.loop);
+
+            {
+                float newWidth = ImGui::GetWindowContentRegionWidth() / 6;
+                const float posDragSpeed = 0.01f;
+                ImGui::TextUnformatted("Time Scale");
+                ImGui::SameLine(ImGui::GetWindowContentRegionWidth() - (20 + newWidth + 27));
+                ImGui::SetNextItemWidth(20);
+                ImGui::DragFloat("##TimeScaleAnimation", &sa.timeScale, posDragSpeed, 0.0f, 999.0f, "TS");
+                ImGui::SameLine();
+                ImGui::SetNextItemWidth(newWidth);
+                ImGui::InputFloat("##TimeScaleInputAnimation", &sa.timeScale, 0, 0, "%.2f");
+            }
+
+            ImGui::TextUnformatted("Current Animation");
+            ImGui::SameLine();
+            ImGui::SetNextItemWidth(ImGui::GetWindowWidth() - ImGui::GetCursorPosX());
+
+            std::string currentName = "None";
+            auto* renderablePtr = registry->try_get<Renderable>(m_currentSelection.entity());
+
+            Ref<Model> model;
+            if (renderablePtr)
+                model = renderablePtr->model;
+            
+            if (model)
+            {
+                for (const auto& [name, _] : model->getAnimations())
+                {
+                    if (sa.animation == name)
+                        currentName = name;
+                }
+            }
+            
+            if (ImGui::BeginCombo("##SkeletonAnimationPropertiesCurrentAnimation", currentName.c_str()))
+            {
+                if (ImGui::Selectable("None", currentName == "None"))
+                    sa.animation.clear();
+
+                if (model)
+                {
+                    for (const auto& [name, _] : model->getAnimations())
+                    {
+                        if (ImGui::Selectable(name.c_str(), sa.animation == name))
+                        {
+                            sa.animation = name;
+                        }
+                    }
+                }
+                ImGui::EndCombo();
+            }
+
+            if (model && currentName != "None")
+            {
+                ImGui::Indent(10);
+
+                const auto& anim = model->getAnimations().at(currentName);
+                float max = anim.duration;
+                ImGui::SliderFloat("Time##SkeletonAnimatorTime", &sa.time, 0.0f, max, "%.2f");
+
+                ImGui::Unindent(10);
+            }
+
+            ImGui::Unindent(10);
+
+            ImGui::Separator();
+            ImGui::NewLine();
+        }
+    }
+
+    void GuiLayer::drawInspectorBoneTarget()
+    {
+        using component::Renderable;
+        using component::SkeletonAnimatable;
+        using component::BoneTarget;
+        using component::EntityInfo;
+
+        if (!registry->has<BoneTarget>(m_currentSelection.entity())) return;
+
+        ImGui::SetNextTreeNodeOpen(true, ImGuiCond_Once);
+
+        bool open = ImGui::CollapsingHeader("Bone Target##InspectorBoneTargetProperties");
+
+        open &= !userRemoveComponent<BoneTarget>();
+
+        if (open)
+        {
+            ImGui::Indent(10);
+
+            auto& target = registry->get<BoneTarget>(m_currentSelection.entity());
+
+            bool valid = false;
+            Model* model = nullptr;
+            
+            if (registry->valid(target.target))
+                if (auto pRenderable = registry->try_get<Renderable>(target.target);
+                    pRenderable &&
+                    pRenderable->model &&
+                    !pRenderable->model->getAnimations().empty())
+                {
+                    valid = true;
+                    model = pRenderable->model.get();
+                }
+            
+            std::string currentTarget = "None";
+            
+            if (valid)
+                currentTarget = registry->get<EntityInfo>(target.target).name;
+
+            ImGui::TextUnformatted("Target Entity");
+            ImGui::SameLine();
+            ImGui::SetNextItemWidth(ImGui::GetWindowWidth() - ImGui::GetCursorPosX());
+
+            if (ImGui::BeginCombo("##BoneTargetPropertiesTargetEntity", currentTarget.c_str()))
+            {
+                if (ImGui::Selectable("None", currentTarget == "None"))
+                    target.target = entt::null;
+
+                auto view = registry->view<Renderable, EntityInfo>();
+                view.each([&](auto entity, Renderable& renderable, EntityInfo& info)
+                {
+                    if (renderable.model && !renderable.model->getAnimations().empty())
+                    {
+                        if (ImGui::Selectable(info.name.c_str(), currentTarget == info.name))
+                            target.target = entity;
+                    }
+                });
+                
+                ImGui::EndCombo();
+            }
+
+            if (model)
+            {
+                ImGui::Indent(10);
+                
+                std::string currentBone = "None";
+                const auto& bones = model->getBones();
+                if (bones.find(target.bone) != bones.end())
+                    currentBone = target.bone;
+                
+                ImGui::TextUnformatted("Target Bone");
+                ImGui::SameLine();
+                ImGui::SetNextItemWidth(ImGui::GetWindowWidth() - ImGui::GetCursorPosX());
+
+                if (ImGui::BeginCombo("##BoneTargetPropertiesTargetBone", currentBone.c_str()))
+                {
+                    if (ImGui::Selectable("None", currentBone == "None"))
+                        target.bone.clear();
+
+                    const auto& boneInfos = model->getBoneInfos();
+
+                    if (auto it = bones.find("RootNode"); it != bones.end())
+                    {
+                        recurseBoneNode(target.bone, it->second, bones, boneInfos);
+                    }
+
+                    ImGui::EndCombo();
+                }
+
+                ImGui::Unindent(10);
+            }
+
+            ImGui::Unindent(10);
+
+            ImGui::Separator();
+            ImGui::NewLine();
+        }
+    }
+
+    void GuiLayer::recurseBoneNode(std::string& target, uint bone,
+                                   const std::unordered_map<std::string, uint>& bones,
+                                   const std::vector<Bone>&                     boneInfos)
+    {
+        const auto& b = boneInfos[bone];
+
+        auto nodeFlags = ImGuiTreeNodeFlags_OpenOnDoubleClick |
+                         ImGuiTreeNodeFlags_OpenOnArrow |
+                         ImGuiTreeNodeFlags_DefaultOpen;
+
+        if (b.children.empty())
+            nodeFlags |= ImGuiTreeNodeFlags_Leaf;
+        
+        std::string nodeName;
+        for (const auto& [name, index] : bones)
+            if (index == bone)
+            {
+                nodeName = name;
+                break;
+            }
+        
+        if (target == nodeName)
+            nodeFlags |= ImGuiTreeNodeFlags_Selected;
+
+        bool treeNode = ImGui::TreeNodeEx(nodeName.c_str(), nodeFlags);
+
+        bool clicked = ImGui::IsItemClicked(0);
+        float testValue = ImGui::GetMousePos().x - ImGui::GetItemRectMin().x;
+
+        if (treeNode)
+        {
+            for (auto child : b.children)
+                recurseBoneNode(target, child, bones, boneInfos);
+
+            ImGui::TreePop();
+        }
+
+        if (clicked && testValue > ImGui::GetTreeNodeToLabelSpacing())
+        {
+            target = nodeName;
+        }
+    }
+
     void GuiLayer::drawInspectorAddComponent()
     {
         using component::Collidable;
         using component::GuiRenderable;
-        using component::PointLight;
         using component::Renderable;
         using component::RigidBody;
+        using component::PointLight;
+        using component::DirectionalLight;
+        using component::SpotLight;
+        using component::SkeletonAnimatable;
+        using component::BoneTarget;
         using component::Camera;
         
         if (ImGui::BeginCombo("##InspectorAddComponent", "Add Component", ImGuiComboFlags_NoArrowButton))
@@ -1611,6 +2086,22 @@ namespace oyl::internal
                 ImGui::Selectable("Point Light"))
                 registry->assign<PointLight>(entity);
 
+            if (!registry->has<DirectionalLight>(entity) &&
+                ImGui::Selectable("Directional Light"))
+                registry->assign<DirectionalLight>(entity);
+
+            if (!registry->has<SpotLight>(entity) &&
+                ImGui::Selectable("Spot Light"))
+                registry->assign<SpotLight>(entity);
+
+            if (!registry->has<SkeletonAnimatable>(entity) &&
+                ImGui::Selectable("Skeleton Animatable"))
+                registry->assign<SkeletonAnimatable>(entity);
+
+            if (!registry->has<BoneTarget>(entity) &&
+                ImGui::Selectable("Bone Target"))
+                registry->assign<BoneTarget>(entity);
+            
             int camFlags = 0;
             if (registry->size<Camera>() >= 4)
                 camFlags |= ImGuiSelectableFlags_Disabled;
@@ -1637,9 +2128,11 @@ namespace oyl::internal
         }
     }
 
-    static void _setTextureProfile(const Ref<Texture2D>& a_texture)
+    static bool _setTextureProfile(const Ref<Texture2D>& a_texture)
     {
-        if (!a_texture) return;
+        if (!a_texture) return false;
+
+        bool selected = false;
 
         ImGui::Indent(10);
         
@@ -1651,9 +2144,9 @@ namespace oyl::internal
         if (ImGui::BeginCombo(profileID, profilePreview))
         {
             if (ImGui::Selectable("RGB", isRGB) && !isRGB)
-                a_texture->setProfile(TextureProfile::RGB);
+                a_texture->setProfile(TextureProfile::RGB), selected = true;
             if (ImGui::Selectable("sRGB", !isRGB) && isRGB)
-                a_texture->setProfile(TextureProfile::SRGB);
+                a_texture->setProfile(TextureProfile::SRGB), selected = true;
 
             ImGui::EndCombo();
         }
@@ -1667,9 +2160,9 @@ namespace oyl::internal
         if (ImGui::BeginCombo(profileID, profilePreview))
         {
             if (ImGui::Selectable("Nearest", a_texture->getFilter() == TextureFilter::Nearest))
-                a_texture->setFilter(TextureFilter::Nearest);
+                a_texture->setFilter(TextureFilter::Nearest), selected = true;
             if (ImGui::Selectable("Linear", a_texture->getFilter() == TextureFilter::Linear))
-                a_texture->setFilter(TextureFilter::Linear);
+                a_texture->setFilter(TextureFilter::Linear), selected = true;
 
             ImGui::EndCombo();
         }
@@ -1685,31 +2178,35 @@ namespace oyl::internal
         if (ImGui::BeginCombo(profileID, profilePreview))
         {
             if (ImGui::Selectable("Repeat", a_texture->getWrap() == TextureWrap::Repeat))
-                a_texture->setWrap(TextureWrap::Repeat);
+                a_texture->setWrap(TextureWrap::Repeat), selected = true;
             if (ImGui::Selectable("Mirror", a_texture->getWrap() == TextureWrap::Mirror))
-                a_texture->setWrap(TextureWrap::Mirror);
+                a_texture->setWrap(TextureWrap::Mirror), selected = true;
             if (ImGui::Selectable("Clamp to Edge", a_texture->getWrap() == TextureWrap::ClampToEdge))
-                a_texture->setWrap(TextureWrap::ClampToEdge);
+                a_texture->setWrap(TextureWrap::ClampToEdge), selected = true;
             if (ImGui::Selectable("Clamp to Border", a_texture->getWrap() == TextureWrap::ClampToBorder))
-                a_texture->setWrap(TextureWrap::ClampToBorder);
+                a_texture->setWrap(TextureWrap::ClampToBorder), selected = true;
             
             ImGui::EndCombo();
         }
 
         ImGui::Unindent(10);
+
+        return selected;
     }
 
     void GuiLayer::drawInspectorMaterial()
-    {
+    {        
         auto& material = m_currentSelection.material();
 
+        bool selected = false;
+        
         std::string tempAlias = Shader::getAlias(material->shader);
         if (tempAlias == INVALID_ALIAS) tempAlias = "None";
         if (ImGui::BeginCombo("Shader", tempAlias.c_str()))
         {
             for (const auto& [alias, shader] : Shader::getCache())
                 if (ImGui::Selectable(alias.c_str(), shader == material->shader))
-                    material->shader = shader;
+                    material->shader = shader, selected = true;
 
             ImGui::EndCombo();
         }
@@ -1717,34 +2214,36 @@ namespace oyl::internal
 
         auto _selectTexture = [&tempAlias](Ref<Texture2D>& a_texture, const char* type)
         {
+            bool selected = false;
             tempAlias = Texture2D::getAlias(a_texture);
             if (tempAlias == INVALID_ALIAS) tempAlias = "None";
             if (ImGui::BeginCombo(type, tempAlias.c_str()))
             {
                 if (ImGui::Selectable("None", a_texture == nullptr))
-                    a_texture = nullptr;
+                    a_texture = nullptr, selected = true;
                 for (const auto& [alias, texture] : Texture2D::getCache())
                     if (ImGui::Selectable(alias.c_str(), texture == a_texture))
-                        a_texture = texture;
+                        a_texture = texture, selected = true;
 
                 ImGui::EndCombo();
             }
+            return selected;
         };
         
-        _selectTexture(material->albedoMap, "Albedo Map");
-        _setTextureProfile(material->albedoMap);
+        selected |= _selectTexture(material->albedoMap, "Albedo Map");
+        selected |= _setTextureProfile(material->albedoMap);
         ImGui::NewLine();
 
-        _selectTexture(material->specularMap, "Specular Map");
-        _setTextureProfile(material->specularMap);
+        selected |= _selectTexture(material->specularMap, "Specular Map");
+        selected |= _setTextureProfile(material->specularMap);
         ImGui::NewLine();
 
-        _selectTexture(material->normalMap, "Normal Map");
-        _setTextureProfile(material->normalMap);
+        selected |= _selectTexture(material->normalMap, "Normal Map");
+        selected |= _setTextureProfile(material->normalMap);
         ImGui::NewLine();
 
-        _selectTexture(material->emissionMap, "Emission Map");
-        _setTextureProfile(material->emissionMap);
+        selected |= _selectTexture(material->emissionMap, "Emission Map");
+        selected |= _setTextureProfile(material->emissionMap);
         ImGui::NewLine();
 
         auto flags = ImGuiInputTextFlags_EnterReturnsTrue;
@@ -1759,28 +2258,31 @@ namespace oyl::internal
         ImGui::TextUnformatted("Tiling");
         ImGui::SameLine(ImGui::GetWindowContentRegionWidth() - (15 * 3 + newWidth * 3 + 27));
         ImGui::SetNextItemWidth(15);
-        ImGui::DragFloat("##TilingX", &tiling.x, posDragSpeed, 0, 0, "X");
+        selected |= ImGui::DragFloat("##TilingX", &tiling.x, posDragSpeed, 0, 0, "X");
         ImGui::SameLine();
-        ImGui::InputFloat("##TilingInputX", &tiling.x, 0, 0, "%.2f", flags);
+        selected |= ImGui::InputFloat("##TilingInputX", &tiling.x, 0, 0, "%.2f", flags);
         ImGui::SameLine();
         ImGui::SetNextItemWidth(15);
-        ImGui::DragFloat("##TilingY", &tiling.y, posDragSpeed, 0, 0, "Y");
+        selected |= ImGui::DragFloat("##TilingY", &tiling.y, posDragSpeed, 0, 0, "Y");
         ImGui::SameLine();
-        ImGui::InputFloat("##TilingInputY", &tiling.y, 0, 0, "%.2f", flags);
+        selected |= ImGui::InputFloat("##TilingInputY", &tiling.y, 0, 0, "%.2f", flags);
 
         ImGui::TextUnformatted("Offset");
         ImGui::SameLine(ImGui::GetWindowContentRegionWidth() - (15 * 3 + newWidth * 3 + 27));
         ImGui::SetNextItemWidth(15);
-        ImGui::DragFloat("##OffsetX", &offset.x, posDragSpeed, 0, 0, "X");
+        selected |= ImGui::DragFloat("##OffsetX", &offset.x, posDragSpeed, 0, 0, "X");
         ImGui::SameLine();
-        ImGui::InputFloat("##OffsetInputX", &offset.x, 0, 0, "%.2f", flags);
+        selected |= ImGui::InputFloat("##OffsetInputX", &offset.x, 0, 0, "%.2f", flags);
         ImGui::SameLine();
         ImGui::SetNextItemWidth(15);
-        ImGui::DragFloat("##OffsetY", &offset.y, posDragSpeed, 0, 0, "Y");
+        selected |= ImGui::DragFloat("##OffsetY", &offset.y, posDragSpeed, 0, 0, "Y");
         ImGui::SameLine();
-        ImGui::InputFloat("##OffsetInputY", &offset.y, 0, 0, "%.2f", flags);
+        selected |= ImGui::InputFloat("##OffsetInputY", &offset.y, 0, 0, "%.2f", flags);
 
         ImGui::PopItemWidth();
+
+        if (selected)
+            materialToFile(material, material->getFilePath());
     }
 
     void GuiLayer::drawAssetList()
@@ -1833,7 +2335,7 @@ namespace oyl::internal
                 flags |= ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_NoTreePushOnOpen;
 
                 if      (isTexture(ext))  typeName = "Texture";
-                else if (isMesh(ext))     typeName = "Mesh";
+                else if (isModel(ext))     typeName = "Mesh";
                 else if (isShader(ext))   typeName = "Shader";
                 else if (isMaterial(ext)) typeName = "Material";
                 else if (isScene(ext))    typeName = "Scene";
@@ -1892,33 +2394,37 @@ namespace oyl::internal
             {
                 stillExists = true;
                 auto path   = std::fs::path(m_fileSaveTimeIt->first);
-                if (exists(path))
+
+                if (!path.empty())
                 {
-                    lastWriteTimeNew = last_write_time(path);
-                }
-                else
-                {
-                    auto pathStr = path.string();
+                    if (exists(path))
+                    {
+                        lastWriteTimeNew = last_write_time(path);
+                    }
+                    else
+                    {
+                        auto pathStr = path.string();
                     
-                    m_fileSaveTimeIt = m_fileSaveTimes.erase(m_fileSaveTimeIt);
-                    stillExists      = false;
+                        m_fileSaveTimeIt = m_fileSaveTimes.erase(m_fileSaveTimeIt);
+                        stillExists      = false;
 
-                    std::string ext = path.extension().string();
+                        std::string ext = path.extension().string();
 
-                    if (isTexture(ext.c_str()))
-                        for (const auto& [alias, texture] : Texture2D::getCache())
-                            if (pathStr == texture->getFilePath())
-                                Texture2D::discard(alias);
+                        if (isTexture(ext.c_str()))
+                            for (const auto& [alias, texture] : Texture2D::getCache())
+                                if (pathStr == texture->getFilePath())
+                                    Texture2D::discard(alias);
 
-                    if (isMesh(ext.c_str()))
-                        for (const auto& [alias, mesh] : Mesh::getCache())
-                            if (pathStr == mesh->getFilePath())
-                                Mesh::discard(alias);
+                        if (isModel(ext.c_str()))
+                            for (const auto& [alias, mesh] : Model::getCache())
+                                if (pathStr == mesh->getFilePath())
+                                    Model::discard(alias);
 
-                    if (isMaterial(ext.c_str()))
-                        for (const auto& [alias, material] : Material::getCache())
-                            if (pathStr == material->getFilePath())
-                                Material::discard(alias);
+                        if (isMaterial(ext.c_str()))
+                            for (const auto& [alias, material] : Material::getCache())
+                                if (pathStr == material->getFilePath())
+                                    Material::discard(alias);
+                    }
                 }
             } while (!stillExists);
             
@@ -1961,14 +2467,14 @@ namespace oyl::internal
                             break;
                         }
 
-                if (isMesh(ext))
-                    for (auto& [alias, mesh] : Mesh::getCache())
+                if (isModel(ext))
+                    for (auto& [alias, mesh] : Model::getCache())
                         if (updateAsset(mesh->getFilePath(),
                                         [](void* data)
                                         {
-                                            auto& meshRef = *reinterpret_cast<Ref<Mesh>*>(data);
-                                            auto  mesh    = Mesh::create(meshRef->getFilePath());
-                                            if (mesh != Mesh::get(INVALID_ALIAS)) *meshRef = *mesh;
+                                            auto& modelRef = *reinterpret_cast<Ref<Model>*>(data);
+                                            auto  mesh     = Model::create(modelRef->getFilePath());
+                                            if (mesh != Model::get(INVALID_ALIAS)) *modelRef = *mesh;
                                         }, (void*) &mesh))
                         {
                             break;
@@ -1996,7 +2502,9 @@ namespace oyl::internal
         {
             std::fs::recursive_directory_iterator res("res");
             for (const auto& dirEntry : res)
-            {   
+            {
+                if (!dirEntry.exists()) continue;
+                
                 auto        relPath    = relative(dirEntry.path());
                 std::string relPathStr = relPath.string();
                 if (m_fileSaveTimes.find(relPathStr) == m_fileSaveTimes.end())
@@ -2005,7 +2513,7 @@ namespace oyl::internal
                     const char* ext             = relPathStr.c_str() + relPathStr.find_last_of('.');
 
                     if (isTexture(ext))  Texture2D::cache(relPathStr);
-                    if (isMesh(ext))     Mesh::cache(relPathStr);
+                    if (isModel(ext))     Model::cache(relPathStr);
                     if (isMaterial(ext)) Material::cache(relPathStr);
                 }
             }
@@ -2015,7 +2523,7 @@ namespace oyl::internal
             // Helper function, return true if was not present in the list, return false otherwise
             auto addToFileSaveTimes = [this](const std::string& filename)
             {
-                if (filename.empty()) return;
+                if (filename.empty() || !std::fs::exists(filename)) return;
                 auto relPath    = std::fs::relative(filename);
                 auto relPathStr = relPath.string();
                 if (m_fileSaveTimes.find(relPathStr) == m_fileSaveTimes.end())
@@ -2031,8 +2539,8 @@ namespace oyl::internal
             for (const auto& [alias, material] : Material::getCache())
                 addToFileSaveTimes(material->getFilePath());
 
-            for (const auto& [alias, mesh] : Mesh::getCache())
-                addToFileSaveTimes(mesh->getFilePath());
+            for (const auto& [alias, model] : Model::getCache())
+                addToFileSaveTimes(model->getFilePath());
 
             // TEMPORARY: Uncomment when 1D and 3D textures are supported
             //for (const auto& [alias, texture1D] : Texture1D::getCache())
@@ -2066,47 +2574,171 @@ namespace oyl::internal
     {
         if (ImGui::Begin("AssetCache##DrawAssetCache"))
         {
-            const int buf_size = 128;
-            static char name[buf_size]{ 0 };
-            static bool showDialogue = false;
+            if (ImGui::BeginTabBar("##AssetCacheTabBar"))
+            {
+                if (ImGui::BeginTabItem("Scene"))
+                {
+                    drawSceneCache();
+                    ImGui::EndTabItem();
+                }
+                if (ImGui::BeginTabItem("Material"))
+                {
+                    drawMaterialCache();
+                    ImGui::EndTabItem();
+                }
+                if (ImGui::BeginTabItem("Model"))
+                {
+                    drawModelCache();
+                    ImGui::EndTabItem();
+                }
+                if (ImGui::BeginTabItem("Texture"))
+                {
+                    drawTextureCache();
+                    ImGui::EndTabItem();
+                }
+                //if (ImGui::BeginTabItem("Animation"))
+                //{
+                //    drawAnimationCache();
+                //    ImGui::EndTabItem();
+                //}
+                ImGui::EndTabBar();
+            }
+        }
+        ImGui::End();
+    }
+
+    void GuiLayer::drawAnimationCache()
+    {
+        
+    }
+
+    void GuiLayer::drawMaterialCache()
+    {
+        const int   buf_size = 128;
+        static char name[buf_size]{ 0 };
+        static bool showDialogue = false;
+
+        static bool needsFocus = false;
+        
+        if (ImGui::BeginPopupContextWindow())
+        {
             if (!showDialogue)
             {
-                if (ImGui::Button("Add Material"))
-                    showDialogue = true;
+                showDialogue = ImGui::Selectable("Add Material", false, ImGuiSelectableFlags_DontClosePopups);
+                needsFocus = true;
+                //if (ImGui::Button("Add Material"))
+                //    showDialogue = true;
             }
             else
             {
-                if (ImGui::InputText("Name##AssetCacheAddMatName", name, buf_size, ImGuiInputTextFlags_EnterReturnsTrue)
-                    && name[0] != 0)
+                if (needsFocus)
+                    ImGui::SetKeyboardFocusHere(), needsFocus = false;
+
+                bool isOpen = ImGui::InputText("Name##AssetCacheAddMatName", name, buf_size, ImGuiInputTextFlags_EnterReturnsTrue);
+
+                if (ImGui::IsAnyMouseDown() && !ImGui::IsItemHovered() || Input::isKeyPressed(Key::Escape))
+                    memset(name, 0, sizeof(name)), showDialogue = false;
+
+                if (isOpen && name[0] != 0)
                 {
                     bool valid = true;
                     for (const auto& [alias, material] : Material::getCache())
-                        if (strcmp(name, alias.c_str()) == 0)
+                        if (strlen(name) == alias.length())
                         {
-                            valid = false;
-                            break;
+                            bool iequal = true;
+                            for (uint i = 0; i < alias.length(); i++)
+                            {
+                                if (std::tolower(name[i]) != std::tolower(alias[i]))
+                                {
+                                    iequal = false;
+                                    break;
+                                }
+                            }
+
+                            if (iequal)
+                            {
+                                valid = false;
+                                break;
+                            }
                         }
 
                     if (valid)
                     {
-                        Material::cache(Material::create(), name);
+                        auto mat        = Material::create();
+                        mat->m_filepath = "res/assets/materials/.oylmat";
+                        mat->m_filepath.insert(mat->m_filepath.find_last_of('.'), name);
+                        materialToFile(mat, mat->m_filepath);
+                        Material::cache(mat, name);
+
+                        m_currentSelection = mat;
 
                         memset(name, 0, sizeof(name));
                         showDialogue = false;
                     }
                 }
+
+                if (!showDialogue)
+                    ImGui::CloseCurrentPopup();
             }
-            
-            for (const auto& [alias, material] : Material::getCache())
+            ImGui::EndPopup();
+        }
+
+        for (const auto& [alias, material] : Material::getCache())
+        {
+            bool selected = ImGui::Selectable(alias.c_str(), m_currentSelection.material() == material,
+                                              ImGuiSelectableFlags_PressedOnClick);
+
+            if (ImGui::BeginPopupContextItem())
             {
-                if (ImGui::Selectable(alias.c_str(), m_currentSelection.material() == material, 
-                                      ImGuiSelectableFlags_PressedOnClick))
+                int flags = 0;
+                if (m_gameUpdate)
+                    flags |= ImGuiSelectableFlags_Disabled;
+                
+                if (ImGui::Selectable("Delete Material", false, flags))
                 {
-                    m_currentSelection = material;
+                    if (std::fs::exists(material->getFilePath()))
+                        std::fs::remove(material->getFilePath());
+
+                    if (m_currentSelection.material() == material)
+                        m_currentSelection = {};
+
+                    // Remove every reference to the material
+                    using component::Renderable;
+                    registry->view<Renderable>().each([&](auto entity, Renderable& renderable)
+                    {
+                        if (renderable.material == material)
+                            renderable.material = nullptr;
+                    });
                 }
+                ImGui::EndPopup();
+            }
+            else if (selected) m_currentSelection = material;
+        }
+    }
+
+    void GuiLayer::drawModelCache() {}
+
+    void GuiLayer::drawTextureCache() {}
+
+    void GuiLayer::drawSceneCache()
+    {
+        auto& app = Application::get();
+
+        OYL_ASSERT(!app.m_registeredScenes.empty());
+
+        int flags = ImGuiSelectableFlags_PressedOnClick;
+        if (m_gameUpdate)
+            flags |= ImGuiSelectableFlags_Disabled;
+
+        for (const auto& [name, scene] : app.m_registeredScenes)
+        {
+            if (ImGui::Selectable(name.c_str(), name == app.m_currentScene, flags) &&
+                name != app.m_currentScene)
+            {
+                app.m_nextScene = name;
+                app.pushScene(name, false);
             }
         }
-        ImGui::End();
     }
 
     void GuiLayer::drawSceneViewport()
@@ -2115,7 +2747,7 @@ namespace oyl::internal
         if constexpr (false)
             ImGui::ShowDemoWindow();
 
-        // HACK: Make scene window the default on open
+        // HACK: Make scene window the default on open somehow
         {
             static bool _first = true;
             if (static bool _second = true; !_first && _second)
@@ -2203,7 +2835,13 @@ namespace oyl::internal
             if (ImGui::IsMouseClicked(1) || ImGui::IsMouseReleased(1))
             {
                 EditorCameraMoveRequestEvent event;
-                event.doMove = ImGui::IsItemClicked(1);
+                event.doMove = !ImGuizmo::IsUsing() && ImGui::IsItemClicked(1);
+                postEvent(event);
+            }
+            else if (ImGuizmo::IsUsing())
+            {
+                EditorCameraMoveRequestEvent event;
+                event.doMove = false;
                 postEvent(event);
             }
     
@@ -2320,13 +2958,14 @@ namespace oyl::internal
             if (ImGuizmo::IsUsing())
             {
                 glm::mat4 tempLocal;
-                
-                if (auto* p = registry->try_get<component::Parent>(m_currentSelection.entity());
-                    p && registry->valid(p->parent))
-                {   
-                    auto& parentTransform = registry->get<Transform>(p->parent);
 
-                    tempLocal = glm::inverse(parentTransform.getMatrixGlobal()) * gizmoMatrix;
+                auto* parent = registry->get<Transform>(m_currentSelection.entity()).getParent();
+                
+                if (parent)
+                {   
+                    //auto& parentTransform = registry->get<Transform>(p->parent);
+
+                    tempLocal = glm::inverse(parent->getMatrixGlobal()) * gizmoMatrix;
                 }
                 else
                 {
@@ -2384,7 +3023,24 @@ namespace oyl::internal
                     
                     m_editorOverrideUpdate = false;
                     m_gameUpdate           = true;
-                    m_registryRestore      = Scene::current()->getRegistry()->clone();
+                    
+                    m_originalScene = Application::get().m_currentScene;
+
+                    for (auto& [name, scene] : Application::get().m_registeredScenes)
+                    {
+                        m_registryRestores[name] = scene->m_registry->clone();
+                        if (name != m_originalScene)
+                        {
+                            scene->m_registry->reset();
+                            for (auto& layer : scene->m_layerStack)
+                            {
+                                Application::get().m_dispatcher->unregisterListener(layer);
+                                for (auto& system : layer->m_systems)
+                                    Application::get().m_dispatcher->unregisterListener(system);
+                            }
+                        }
+                    }
+
                     m_currentSelection     = entt::entity(entt::null);
                 }
             } else
@@ -2398,8 +3054,11 @@ namespace oyl::internal
 
                     // HACK: Send as event
                     // TODO: Store backup registry in scene?
-                    *Scene::current()->m_registry = m_registryRestore.clone();
+                    //Application::get().changeScene(m_originalScene);
+                    //for (const auto& [name, registry] : m_registryRestores)
+                    //    *Application::get().m_registeredScenes[name]->m_registry = registry.clone();
 
+                    postEvent(EditorBackButtonEvent{});
                     postEvent(PhysicsResetWorldEvent{});
 
                     m_currentSelection = entt::entity(entt::null);
@@ -2504,9 +3163,12 @@ static bool isTexture(const char* ext)
            strcmp(ext, ".bmp") == 0;
 }
 
-static bool isMesh(const char* ext)
+static bool isModel(const char* ext)
 {
-    return strcmp(ext, ".obj") == 0;
+    return strcmp(ext, ".obj") == 0 ||
+           strcmp(ext, ".gltf") == 0 ||
+           strcmp(ext, ".glb") == 0 ||
+           strcmp(ext, ".fbx") == 0;
 }
 
 static bool isShader(const char* ext)
@@ -2515,7 +3177,8 @@ static bool isShader(const char* ext)
            strcmp(ext, ".tesc") == 0 ||
            strcmp(ext, ".tese") == 0 ||
            strcmp(ext, ".geom") == 0 ||
-           strcmp(ext, ".frag") == 0;
+           strcmp(ext, ".frag") == 0 ||
+           strcmp(ext, ".oylshader") == 0;
 }
 
 static bool isMaterial(const char* ext)

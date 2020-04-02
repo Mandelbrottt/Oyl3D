@@ -2,10 +2,13 @@
 #include "AnimationSystems.h"
 
 #include "Components/Animatable.h"
+#include "Components/Renderable.h"
 
 #include "Events/Event.h"
 
+#include "Graphics/Buffer.h"
 #include "Graphics/EditorCamera.h"
+#include "Graphics/Mesh.h"
 
 #include "Rendering/Renderer.h"
 
@@ -17,7 +20,7 @@ namespace oyl::internal
 
     void AnimationSystem::onUpdate()
     {
-        auto view = registry->view<component::Animatable>();
+        auto view = registry->view<component::VertexAnimatable>();
         for (auto entity : view)
         {
             auto& anim = view.get(entity);
@@ -29,8 +32,8 @@ namespace oyl::internal
             {
                 anim.m_vao = VertexArray::create();
 
-                anim.m_vao->addVertexBuffer(anim.m_currentAnimation->poses[0].mesh->m_vbo);
-                anim.m_vao->addVertexBuffer(anim.m_currentAnimation->poses[1].mesh->m_vbo);
+                anim.m_vao->addVertexBuffer(anim.m_currentAnimation->poses[0].mesh->getVertexBuffer());
+                anim.m_vao->addVertexBuffer(anim.m_currentAnimation->poses[1].mesh->getVertexBuffer());
             }
 
             if (anim.m_nextAnimation)
@@ -62,8 +65,8 @@ namespace oyl::internal
                 ++lastVal %= anim.m_currentAnimation->poses.size();
                 ++currVal %= anim.m_currentAnimation->poses.size();
 
-                auto lastMeshVbo = anim.m_currentAnimation->poses[lastVal].mesh->m_vbo;
-                auto currMeshVbo = anim.m_currentAnimation->poses[currVal].mesh->m_vbo;
+                auto lastMeshVbo = anim.m_currentAnimation->poses[lastVal].mesh->getVertexBuffer();
+                auto currMeshVbo = anim.m_currentAnimation->poses[currVal].mesh->getVertexBuffer();
 
                 anim.m_vao->unload();
                 anim.m_vao->load();
@@ -72,7 +75,7 @@ namespace oyl::internal
                 anim.m_vao->addVertexBuffer(currMeshVbo);
                 if (anim.m_nextAnimation)
                 {
-                    auto transMeshVbo = anim.m_nextAnimation->poses[0].mesh->m_vbo;
+                    auto transMeshVbo = anim.m_nextAnimation->poses[0].mesh->getVertexBuffer();
                     anim.m_vao->addVertexBuffer(transMeshVbo);
                 }
             }
@@ -82,4 +85,58 @@ namespace oyl::internal
     void AnimationSystem::onGuiRender() {}
 
     bool AnimationSystem::onEvent(const Event& event) { return false; }
+    
+    void SkeletalAnimationSystem::onEnter() {}
+
+    void SkeletalAnimationSystem::onExit() {}
+
+    void SkeletalAnimationSystem::onUpdate()
+    {
+        using component::SkeletonAnimatable;
+        using component::Renderable;
+        auto view = registry->view<SkeletonAnimatable, Renderable>();
+        view.each([](auto entity, SkeletonAnimatable& sa, Renderable& renderable)
+        {
+            if (renderable.model && renderable.material && renderable.material->shader == Shader::get("Oyl Skeletal"))
+            {
+                if (auto it = renderable.model->getAnimations().find(sa.animation); 
+                    it != renderable.model->getAnimations().end())
+                {
+                    auto& animation = it->second;
+                    
+                    if (sa.play)
+                    {
+                        float dt = Time::deltaTime();
+                        if (sa.reverse) dt *= -1.0f;
+
+                        sa.time += dt * sa.timeScale;
+
+                        float t_mod_d = abs(fmod(sa.time, animation.duration));
+                        
+                        if (sa.time < 0.0f)
+                        {
+                            sa.time = animation.duration - t_mod_d;
+
+                            if (!sa.loop) 
+                                sa.play = false;
+                        }
+                        else
+                        {
+                            if (sa.time > animation.duration && !sa.loop) 
+                                sa.play = false;
+                            
+                            sa.time = t_mod_d;
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    void SkeletalAnimationSystem::onGuiRender() {}
+
+    bool SkeletalAnimationSystem::onEvent(const Event& event)
+    {
+        return false;
+    }
 }

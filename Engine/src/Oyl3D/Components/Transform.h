@@ -16,7 +16,6 @@ namespace oyl
 
 namespace oyl::component
 {
-
     class Transform
     {
     public:
@@ -66,9 +65,6 @@ namespace oyl::component
     
         const glm::mat4& getMatrix()       const;
         glm::mat4        getMatrixGlobal() const;
-
-        const glm::mat4& getInverseMatrix()       const;
-        glm::mat4        getInverseMatrixGlobal() const;
     
         glm::vec3 getForward() const;
         glm::vec3 getRight()   const;
@@ -82,6 +78,16 @@ namespace oyl::component
 
         Transform* getParent();
         const Transform* getParent() const;
+
+        void setParent(entt::entity entity);
+
+        entt::entity entity() const;
+        entt::entity getParentEntity() const;
+
+        const std::vector<Transform*>& getChildren() const;
+        const std::vector<entt::entity>& getChildrenEntities() const;
+
+        void clearChildren();
 
         // TODO: add setXGlobal functions
         void setPosition(glm::vec3 position);
@@ -147,8 +153,12 @@ namespace oyl::component
         bool m_isRotationOverridden = true;
         bool m_isScaleOverridden    = true;
 
-        entt::entity       m_owner;
-        entt::registry*    m_registry;
+        entt::entity    m_owner    = entt::null;
+        entt::entity    m_parent   = entt::null;
+        entt::registry* m_registry = nullptr;
+
+        mutable std::vector<entt::entity> m_childrenEntities;
+        mutable std::vector<Transform*> m_children;
     };
 }
 

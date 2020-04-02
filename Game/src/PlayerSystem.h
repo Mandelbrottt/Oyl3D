@@ -14,15 +14,15 @@ class PlayerSystem : public System
 	bool onEvent(const Event& event) override;
 
 	//state changing functions
-	void changeToIdle(Player* a_player);
-	void changeToWalking(Player* a_player);
-	void changeToJumping(Player* a_player);
-	void changeToFalling(Player* a_player);
-	void changeToPushing(Player* a_player);
-	void changeToInCleaningQuicktimeEvent(Player* a_player);
-	void changeToCleaning(Player* a_player);
-	void changeToThrowingBottle(Player* a_player);
-	void changeToStunned(Player* a_player);
+	void changeToIdle(entt::entity a_playerEntity);
+	void changeToWalking(entt::entity a_playerEntity);
+	void changeToJumping(entt::entity a_playerEntity);
+	void changeToFalling(entt::entity a_playerEntity);
+	void changeToPushing(entt::entity a_playerEntity);
+	void changeToInCleaningQuicktimeEvent(entt::entity a_playerEntity);
+	void changeToCleaning(entt::entity a_playerEntity);
+	void changeToThrowingBottle(entt::entity a_playerEntity);
+	void changeToStunned(entt::entity a_playerEntity);
 
 	void performBasicMovement(entt::entity a_playerEntity, const float a_speedForce);
 };

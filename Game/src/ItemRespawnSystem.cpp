@@ -76,7 +76,8 @@ void ItemRespawnSystem::spawnItem(entt::entity a_respawnManagerEntity)
 	newCarryableItem.hasBeenCarried = false;
 
 	newTransform.setPosition(newRespawnable.spawnPosition);
-	newTransform.setRotation(newRespawnable.spawnRotation);
+	newTransform.setRotation(glm::vec3(0.0f, 0.0f, 0.0f));
+	newTransform.rotate(newRespawnable.spawnRotation);
 
 	//reset acceleration/velocity for the newly spawned item so it doesnt go flying down
 	newRigidbody.setAcceleration(glm::vec3(0.0f)); 

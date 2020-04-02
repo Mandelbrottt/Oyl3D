@@ -12,6 +12,12 @@ namespace oyl
     struct Event;
     class EventDispatcher;
     class System;
+    class Scene;
+
+    namespace internal
+    {
+        class GuiLayer;
+    }
 
     class Layer : public virtual EventListener, public virtual Node
     {
@@ -44,6 +50,9 @@ namespace oyl
         void scheduleSystemUpdate(Priority priority = 0);
 
         std::vector<Ref<System>> m_systems;
+
+        friend internal::GuiLayer;
+        friend Application;
     };
 
     template<class SYSTEM>
@@ -52,6 +61,12 @@ namespace oyl
         //static bool isInitialized = false;
         //OYL_ASSERT(!isInitialized, "Systems should only be initialized once!");
 
+        for (const auto& system : m_systems)
+        {
+            if (dynamic_cast<SYSTEM*>(system.get()))
+                return;
+        }
+        
         Ref<System> newSystem = SYSTEM::create();
         
         newSystem->setRegistry(registry);
