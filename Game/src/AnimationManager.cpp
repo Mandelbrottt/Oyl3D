@@ -562,6 +562,7 @@ bool AnimationManager::onEvent(const Event& event)
 		setAnimationEntities(event);
 		registry->get<component::SkeletonAnimatable>(playerArmL).time = (1.01 - evt.stickPosY);
 		registry->get<component::SkeletonAnimatable>(playerArmR).time = (1.01 - evt.stickPosY);
+		break;
 	}
 	case(EventType)TypeCancelQuicktimeCleaningEvent:
 	{
@@ -572,8 +573,13 @@ bool AnimationManager::onEvent(const Event& event)
 		registry->get<component::SkeletonAnimatable>(playerArmR).time = 0.01;
 		registry->get<component::SkeletonAnimatable>(playerArmR).play = true;
 		registry->get<component::SkeletonAnimatable>(playerArmL).play = true;
+		registry->get<component::SkeletonAnimatable>(playerArmL).play = true;
+		registry->get<component::SkeletonAnimatable>(playerArmL).loop = true;
+		registry->get<component::SkeletonAnimatable>(playerArmL).loop = true;
+
 		registry->get<component::SkeletonAnimatable>(playerArmL).animation = "Idle_L";
 		registry->get<component::SkeletonAnimatable>(playerArmR).animation = "Mop_R";
+		break;
 	}
 
 	}
