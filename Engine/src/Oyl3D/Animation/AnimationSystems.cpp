@@ -95,17 +95,25 @@ namespace oyl::internal
         using component::SkeletonAnimatable;
         using component::Renderable;
         auto view = registry->view<SkeletonAnimatable, Renderable>();
-        view.each([](auto entity, SkeletonAnimatable& sa, Renderable& renderable)
+
+        static auto fSkeletal = Shader::get("Oyl Forward Skeletal");
+        static auto dSkeletal = Shader::get("Oyl Deferred Skeletal");
+
+        view.each([&](auto entity, SkeletonAnimatable& sa, Renderable& renderable)
         {
-            if (renderable.model && renderable.material && renderable.material->shader == Shader::get("Oyl Skeletal"))
-            {
-                if (auto it = renderable.model->getAnimations().find(sa.animation); 
-                    it != renderable.model->getAnimations().end())
-                {
+            bool valid = renderable.model && renderable.material;
+            valid &= renderable.material->shader == fSkeletal || renderable.material->shader == dSkeletal;
+            if (valid)
+			{
+				if (auto it = renderable.model->getAnimations().find(sa.animation);
+					it != renderable.model->getAnimations().end())
+				{
                     auto& animation = it->second;
                     
                     if (sa.play)
                     {
+						bool finished = false;
+                    	
                         float dt = Time::deltaTime();
                         if (sa.reverse) dt *= -1.0f;
 
@@ -119,14 +127,29 @@ namespace oyl::internal
 
                             if (!sa.loop) 
                                 sa.play = false;
+
+							finished = true;
                         }
                         else
                         {
-                            if (sa.time > animation.duration && !sa.loop) 
-                                sa.play = false;
+                            if (sa.time > animation.duration)
+							{
+                            	if (!sa.loop) 
+									sa.play = false;
+
+								finished = true;
+							}
                             
                             sa.time = t_mod_d;
                         }
+
+                    	if (finished)
+                    	{
+                    		AnimationFinishedEvent afe;
+                    		afe.entity = entity;
+                    		afe.stopped = !sa.loop;
+							postEvent(afe);
+                    	}
                     }
                 }
             }

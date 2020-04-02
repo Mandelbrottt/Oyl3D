@@ -5,6 +5,7 @@ namespace oyl
 {
     class FrameBuffer;
     class EditorCamera;
+    class Shader;
 
     namespace internal
     {
@@ -51,7 +52,8 @@ namespace oyl
 
             Ref<EditorCamera> m_targetCamera;
 
-            glm::ivec2 m_windowSize;
+            glm::ivec2 m_windowSize = { 1, 1 };
+            Ref<Shader> m_skyboxShader;
         };
     }
 }

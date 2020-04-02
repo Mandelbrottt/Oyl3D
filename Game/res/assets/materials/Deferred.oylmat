@@ -1,0 +1,47 @@
+{
+    "Material": {
+        "Alias": "Deferred",
+        "MainProperties": {
+            "Offset": [
+                0.0,
+                0.0
+            ],
+            "Tiling": [
+                1.0,
+                1.0
+            ]
+        },
+        "Shader": {
+            "Alias": "Oyl Deferred Static",
+            "Pixel": {
+                "FilePath": "../Engine/res/shaders/Lighting/Deferred_Pre_Normal_Shadow.frag",
+                "guid": null
+            },
+            "Vertex": {
+                "FilePath": "../Engine/res/shaders/Lighting/Static_Normal_Shadow.vert",
+                "guid": null
+            }
+        },
+        "Textures": {
+            "Albedo": {
+                "Alias": "brickwall",
+                "FilePath": "res\\assets\\textures\\brickwall.jpg",
+                "Profile": 0,
+                "guid": null
+            },
+            "Emission": null,
+            "Normal": {
+                "Alias": "brickwall_normal",
+                "FilePath": "res\\assets\\textures\\brickwall_normal.jpg",
+                "Profile": 0,
+                "guid": null
+            },
+            "Specular": {
+                "Alias": "brickwall",
+                "FilePath": "res\\assets\\textures\\brickwall.jpg",
+                "Profile": 0,
+                "guid": null
+            }
+        }
+    }
+}
