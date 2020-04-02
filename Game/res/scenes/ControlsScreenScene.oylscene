@@ -80,7 +80,7 @@
             }
         }
     },
-    "Controls Screen Background": {
+    "Controls Screen": {
         "GuiRenderable": {
             "Clipping": {
                 "Lower": [
@@ -97,6 +97,50 @@
             "Texture": {
                 "Alias": "ControlsScreen",
                 "FilePath": "res/assets/textures/menus/ControlsScreen.png"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Parent": null,
+            "Position": {
+                "X": 0.0,
+                "Y": 0.7400000095367432,
+                "Z": -10.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 8.0,
+                "Y": 8.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Controls Screen Background": {
+        "GuiRenderable": {
+            "Clipping": {
+                "Lower": [
+                    0.0,
+                    0.0
+                ],
+                "Upper": [
+                    1.0,
+                    1.0
+                ]
+            },
+            "CullingMask": 15,
+            "Enabled": true,
+            "Texture": {
+                "Alias": "ControlsBackground",
+                "FilePath": "res/assets/textures/menus/ControlsBackground.png"
             }
         },
         "Transform": {
