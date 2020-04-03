@@ -27,7 +27,6 @@ public:
 
 	TutorialSegment currentSegment;
 
-	bool firstFrame        = true;
 	bool initSegment       = true;
 	bool isSegmentFinished = false;
 

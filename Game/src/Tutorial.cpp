@@ -19,8 +19,6 @@ using namespace oyl;
 
 void TutorialLayer::onEnter()
 {
-	firstFrame = true;
-
 	firstSegmentInit   = false;
 	secondSegmentInit  = false;
 	thirdSegmentInit   = false;
@@ -45,6 +43,31 @@ void TutorialLayer::onEnter()
 	scheduleSystemUpdate<GarbagePileGloopIndicatorSystem>();
 	scheduleSystemUpdate<GarbageMeterSystem>();
 	scheduleSystemUpdate<ThrowableBottleSystem>();
+
+	initSegment = true;
+	currentSegmentFunc = &TutorialLayer::intro;
+
+	//remove any unwanted players
+	auto playerView = registry->view<Player>();
+	for (auto& playerEntity : playerView)
+	{
+		auto& player = registry->get<Player>(playerEntity);
+
+		if (player.playerNum == PlayerNumber::Three || player.playerNum == PlayerNumber::Four)
+			registry->destroy(playerEntity);
+	}
+
+	//remove any unwanted cameras
+	auto cameraView = registry->view<component::Camera>();
+	for (auto& cameraEntity : cameraView)
+	{
+		auto& camera = registry->get<component::Camera>(cameraEntity);
+
+		if (camera.player == PlayerNumber::One)
+			tutCameraEntity = cameraEntity;
+		else
+			registry->destroy(cameraEntity);
+	}
 
 	{
 		auto e = registry->create();
@@ -95,35 +118,6 @@ void TutorialLayer::onEnter()
 
 void TutorialLayer::onUpdate()
 {
-	if (firstFrame)
-	{
-		firstFrame  = false;
-		initSegment = true;
-		currentSegmentFunc = &TutorialLayer::intro;
-
-		//remove any unwanted players
-		auto playerView = registry->view<Player>();
-		for (auto& playerEntity : playerView)
-		{
-			auto& player = registry->get<Player>(playerEntity);
-
-			if (player.playerNum == PlayerNumber::Three || player.playerNum == PlayerNumber::Four)
-				registry->destroy(playerEntity);
-		}
-
-		//remove any unwanted cameras
-		auto cameraView = registry->view<component::Camera>();
-		for (auto& cameraEntity : cameraView)
-		{
-			auto& camera = registry->get<component::Camera>(cameraEntity);
-
-			if (camera.player == PlayerNumber::One)
-				tutCameraEntity = cameraEntity;
-			else
-				registry->destroy(cameraEntity);
-		}
-	}
-
 	SetMaxGarbageLevelEvent setMaxGarbageLevel;
 	postEvent(setMaxGarbageLevel);
 
@@ -818,6 +812,16 @@ void TutorialLayer::segment5()
 		initSegment       = false;
 		isSegmentFinished = false;
 
+		//reset to segment 1 values
+		playerTransform.setPosition(playerSegment1Pos);
+		playerTransform.setRotation(playerSegment1Rot);
+		cameraTransform.setRotation(cameraSegment1Rot);
+
+		//drop any items
+		CancelButtonPressedEvent cancelButtonPressed;
+		cancelButtonPressed.playerEntity = tutPlayerEntity;
+		postEvent(cancelButtonPressed);
+
 		if (!fifthSegmentInit)
 		{
 			fifthSegmentInit = true;
@@ -851,6 +855,8 @@ void TutorialLayer::segment5()
 		segmentBool7 = true;
 		segmentBool8 = true;
 	}
+
+
 
 	segmentTimer1 -= Time::deltaTime();
 	if (segmentTimer1 > 0.0f)
@@ -890,7 +896,7 @@ void TutorialLayer::segment6()
 		playerTransform.setRotation(playerSegment6Rot);
 		cameraTransform.setRotation(cameraSegment6Rot);
 
-		segmentTimer1 = 30.0f; //delay for audio
+		segmentTimer1 = 5.0f;
 		segmentTimer2 = 0.0f;
 		segmentTimer3 = 0.0f;
 		segmentTimer4 = 0.0f;
@@ -912,6 +918,19 @@ void TutorialLayer::segment6()
 	segmentTimer1 -= Time::deltaTime();
 	if (segmentTimer1 > 0.0f)
 		return;
+
+	//move to the gloop
+	if (segmentBool1)
+	{
+		glm::vec3 targetPos = glm::vec3(11.36f, playerTransform.getPositionY(), -5.71f);
+		bool isFinished;
+
+		movePlayerToPos(targetPos, &isFinished);
+		if (!isFinished)
+			return;
+		else
+			segmentBool1 = false;
+	}
 
 	isSegmentFinished = true;
 }
