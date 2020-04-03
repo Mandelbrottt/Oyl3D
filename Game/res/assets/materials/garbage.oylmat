@@ -11,10 +11,11 @@
                 1.0
             ]
         },
+        "OverrideShader": true,
         "Shader": {
-            "Alias": "Oyl Forward Static",
+            "Alias": "Oyl Deferred Static",
             "Pixel": {
-                "FilePath": "../Engine/res/shaders/Lighting/Forward_Normal_Shadow.frag",
+                "FilePath": "../Engine/res/shaders/Lighting/Deferred_Pre_Normal_Shadow.frag",
                 "guid": null
             },
             "Vertex": {

@@ -1,0 +1,141 @@
+//Implemented from Shawn Matthew's GOOP
+//which was modified from http://tuxedolabs.blogspot.com/2018/05/bokeh-depth-of-field-in-single-pass.html
+
+#version 440
+
+#extension GL_ARB_explicit_uniform_location : require
+
+#if defined(OYL_VERT) || defined(TYPE_VERTEX)
+    layout(location = 0) in vec3 in_position;
+    layout(location = 1) in vec2 in_texCoords;
+
+    layout(location = 0) out vec2 out_texCoords;
+
+
+    void main()
+    {
+        gl_Position = vec4(in_position, 1.0);
+
+        out_texCoords = in_texCoords;
+    }
+#elif defined(OYL_FRAG) || defined(TYPE_FRAGMENT)
+    layout(location = 0) in vec2 in_texCoords; 
+                                               
+    layout(location = 0) out vec4 out_color;
+    
+    layout(binding = 0) uniform sampler2D u_mainColorBuffer;
+    layout(binding = 1) uniform sampler2D u_position;
+    layout(binding = 2) uniform sampler2D u_albedo3_specular1;
+    layout(binding = 3) uniform sampler2D u_normal;
+    layout(binding = 4) uniform sampler2D u_emission3_glossiness1;
+    layout(binding = 5) uniform sampler2D u_lightSpacePosition;
+    layout(binding = 6) uniform sampler2D u_depth;
+    
+    layout(location = 1) uniform vec2 u_pixel;
+
+
+   // The current focal depth (linear)
+  float a_FocalDepth = 0.05;
+// The distance in world units between the camera's lense and it's sensor
+  float a_LenseDistance = 0.03;
+// The aperture of the camera (default is 20) This can be thought of as the inverse of your camera's F-Stop
+  float a_Aperture = 5.0;
+// The inverse of the camera's projection matrix
+uniform mat4 a_ProjectionInv;
+
+
+const float GOLDEN_ANGLE = 2.39996323;
+const float MAX_BLUR_RADIUS = 20;
+const float RAD_SCALE = 0.5;
+
+// Converts a screen space coord and a raw depth value into a world-space distance
+// @param screen The screen-space coordinate to convert
+// @param rawValue The raw, non-linear depth value to convert
+// @returns A distance to the camera in world units
+float DepthToDist(vec2 screen, float rawValue) {
+	vec4 screenPos = vec4(screen.x, screen.y, rawValue, 1.0) * 2.0 - 1.0;
+	vec4 viewPosition = a_ProjectionInv * screenPos;
+	return -(viewPosition.z / viewPosition.w);
+}
+
+/*
+* Calculates the Circle of Confusion for a given depth value
+* @param depth The depth of the fragment to caluculate for (in world units)
+* @param focalPlane The distance from the lense to the focal plane (in world units)
+* @param focalLength The focal length parameter (calculated as 1/F = 1/focalPlane + 1/distToSensor)
+* @see http://fileadmin.cs.lth.se/cs/Education/EDAN35/lectures/12DOF.pdf
+*/
+float getBlurSize(float depth, float focalPlane, float focalLength) {
+	float coc = clamp(
+		(focalLength * (focalPlane - depth)) /
+		(depth * (focalPlane - focalLength)),
+		-1.0, 1.0);
+	return abs(coc) * a_Aperture;
+}
+
+/*
+* Calculates our color for the depth of field effect
+* @param in_texCoords The UV coordinate to solve for
+* @param focusPoint The distance from the lense to the focal plane (in world units)
+* @param focalLength The focal length parameter (calculated as 1/F = 1/focalPlane + 1/distToSensor)
+*/
+vec3 depthOfField(vec2 in_texCoords, float focusPoint, float focusLength) {
+    // Determines the size of single texel
+    vec2 texelSize = u_pixel;
+    //1.0 / textureSize(u_depth, 0);
+
+    // Get our depth into view space, and use that to calculate our circle of confusion
+	float centerDepth = DepthToDist(in_texCoords, texture(u_depth, in_texCoords).r);
+    float centerCOC = getBlurSize(centerDepth, focusPoint, focusLength);
+
+    // Initialize out color and total number of samples
+    vec3 color = texture(u_mainColorBuffer, in_texCoords).rgb;
+    float tot = 1.0;
+
+    // We'll blur our fragment outward in a circle
+    float radius = RAD_SCALE;
+	// We'll rotate around out point by a constant parameter (the golden angle)
+	// The golden angle is a constant that will help our samples not fall on pixel boundries, and reduce
+	// artifacts from our blurring methodology
+    for (float ang = 0.0; radius < min(a_Aperture, MAX_BLUR_RADIUS); ang += GOLDEN_ANGLE)
+    {
+		// Determine the UV coord of the fragment we want to blur
+		vec2 tc = in_texCoords + vec2(cos(ang), sin(ang)) * texelSize * radius;
+		// Collect the color, depth, circle of confusion for that sample
+		vec3 sampleColor = texture(u_mainColorBuffer, tc).rgb;
+		// Calculate the depth in world units from the camera
+		float sampleDepth = DepthToDist(tc, texture(u_depth, tc).r);
+		// Determine the Circle of Confusion for the fragment
+		float sampleCOC = getBlurSize(sampleDepth, focusPoint, focusLength); //this should be stored to a buffer that is sampled from
+
+		// If this sample is further away than the point we're evaluating, we clamp it's blur to be only the
+		// bluriness of the pixel we're evaluating, this keeps the background from blurring over foreground
+		// objects
+		if (sampleDepth > centerDepth)
+		 sampleCOC = clamp(sampleCOC, 0.0, centerCOC);
+
+		// Determine how much this sample should contribute to the total, based on how far away we are
+		// and the samples's circle of confusion. Essentially, pixels with a larger COC will contribute
+		// to more pixels around them, but give each pixel a smaller contribution (maintains intensity)
+		float m = smoothstep(radius - RAD_SCALE, radius + RAD_SCALE, sampleCOC);
+		// Use our value as the lerp parameter between the average and this sample's color
+		color += mix(color / tot, sampleColor, m);
+
+		// Track that we have another sample
+		tot += 1.0;
+		// Grow outward a bit slower every time (so that we get a sort of tight spiral of samples)
+		radius += RAD_SCALE / radius;
+    }
+    // We'll return the average of all our colors
+    return color /= tot;
+}
+
+void main() {
+    // Calculate our focal length
+	float focalLength = 1.0f / (1.0 / a_FocalDepth + 1.0 / a_LenseDistance);
+    // Perform our DOF blurring
+    vec3 dof = depthOfField(in_texCoords, a_FocalDepth, focalLength);
+    // Return the result
+    out_color = vec4(dof, 1.0);
+}
+#endif

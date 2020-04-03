@@ -1,6 +1,7 @@
 {
     "Material": {
         "Alias": "water",
+        "Deferred": true,
         "MainProperties": {
             "Offset": [
                 708.5950317382813,
@@ -11,17 +12,8 @@
                 10.0
             ]
         },
-        "Shader": {
-            "Alias": "Oyl Forward Static",
-            "Pixel": {
-                "FilePath": "../Engine/res/shaders/Lighting/Forward_Normal_Shadow.frag",
-                "guid": null
-            },
-            "Vertex": {
-                "FilePath": "../Engine/res/shaders/Lighting/Static_Normal_Shadow.vert",
-                "guid": null
-            }
-        },
+        "OverrideShader": false,
+        "Shader": null,
         "Textures": {
             "Albedo": {
                 "Alias": "water",

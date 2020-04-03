@@ -111,6 +111,14 @@ void MainGameObjectsInitLayer::onEnter()
 
 			auto& cameraEI = registry->assign<component::EntityInfo>(playerCameraEntity);
 			cameraEI.name = "Player1 Camera";
+
+			PostProcessingPass dof;
+			dof.shader = Shader::cache(Shader::create("res/shaders/DOF_Pass.oylshader"), "DOF");
+
+			dof.setUniformMat4("a_ProjectionInv" , glm::inverse(registry->get<component::Camera>(playerCameraEntity).projectionMatrix()));
+
+			camera.postProcessingPasses.push_back(dof);
+
 		}
 
 		{
@@ -159,6 +167,13 @@ void MainGameObjectsInitLayer::onEnter()
 
 			auto& cameraEI = registry->assign<component::EntityInfo>(playerCameraEntity);
 			cameraEI.name = "Player3 Camera";
+
+			PostProcessingPass dof;
+			dof.shader = Shader::cache(Shader::create("res/shaders/DOF_Pass.oylshader"), "DOF");
+
+			dof.setUniformMat4("a_ProjectionInv", glm::inverse(registry->get<component::Camera>(playerCameraEntity).projectionMatrix()));
+
+			camera.postProcessingPasses.push_back(dof);
 		}
         
 		{
@@ -629,6 +644,13 @@ void MainGameObjectsInitLayer::onEnter()
 
 			auto& cameraEI = registry->assign<component::EntityInfo>(playerCameraEntity);
 			cameraEI.name = "Player2 Camera";
+
+			PostProcessingPass dof;
+			dof.shader = Shader::cache(Shader::create("res/shaders/DOF_Pass.oylshader"), "DOF");
+
+			dof.setUniformMat4("a_ProjectionInv", glm::inverse(registry->get<component::Camera>(playerCameraEntity).projectionMatrix()));
+
+			camera.postProcessingPasses.push_back(dof);
 		}
 
 		{
@@ -677,6 +699,13 @@ void MainGameObjectsInitLayer::onEnter()
 
 			auto& cameraEI = registry->assign<component::EntityInfo>(playerCameraEntity);
 			cameraEI.name = "Player4 Camera";
+
+			PostProcessingPass dof;
+			dof.shader = Shader::cache(Shader::create("res/shaders/DOF_Pass.oylshader"), "DOF");
+
+			dof.setUniformMat4("a_ProjectionInv", glm::inverse(registry->get<component::Camera>(playerCameraEntity).projectionMatrix()));
+
+			camera.postProcessingPasses.push_back(dof);
 		}
 
 		{
