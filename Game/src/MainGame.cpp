@@ -12,6 +12,7 @@
 #include "ControlsScreenScene.h"
 #include "SettingsMenu.h"
 #include "GameEndMenu.h"
+#include "CreditsScene.h"
 
 #include "PlayerSystem.h"
 #include "CannonSystem.h"
@@ -496,6 +497,7 @@ public:
 		registerScene<TutorialScene>();
 		registerScene<ControlsScreenScene>();
 		registerScene<SettingsMenuScene>();
+		registerScene<CreditsScene>();
         registerScene<MainScene>();
 		registerScene<GameEndScene>();
     }
