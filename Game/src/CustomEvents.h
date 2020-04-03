@@ -186,6 +186,7 @@ OYL_EVENT_STRUCT(ThrowBottleEvent, (oyl::EventType) TypeThrowBottle, (oyl::Event
 OYL_EVENT_STRUCT(ThrowableBottleHitEvent, (oyl::EventType) TypeThrowableBottleHit, (oyl::EventCategory) CategoryThrowableBottle,
 	{
 		entt::entity bottleEntity;
+		entt::entity playerHitEntity;
 		bool hitPlayer;
 	});
 

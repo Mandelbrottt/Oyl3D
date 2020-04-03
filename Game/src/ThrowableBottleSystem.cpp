@@ -133,8 +133,9 @@ bool ThrowableBottleSystem::onEvent(const Event& event)
 					registry->destroy(bottleEntity); //the bottle breaks
 
 					ThrowableBottleHitEvent bottleHit;
-					bottleHit.bottleEntity = bottleEntity;
-					bottleHit.hitPlayer    = false;
+					bottleHit.bottleEntity    = bottleEntity;
+					bottleHit.playerHitEntity = entt::null;
+					bottleHit.hitPlayer       = false;
 					postEvent(bottleHit);
 
 					break;
@@ -156,8 +157,9 @@ bool ThrowableBottleSystem::onEvent(const Event& event)
 					registry->destroy(bottleEntity); //the bottle breaks
 
 					ThrowableBottleHitEvent bottleHit;
-					bottleHit.bottleEntity = bottleEntity;
-					bottleHit.hitPlayer    = true;
+					bottleHit.bottleEntity    = bottleEntity;
+					bottleHit.playerHitEntity = playerEntity;
+					bottleHit.hitPlayer       = true;
 					postEvent(bottleHit);
 
 					//bottle stuns the player hit and makes them drop their carried items
