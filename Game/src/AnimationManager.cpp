@@ -2,7 +2,11 @@
 
 void AnimationManager::setAnimationEntities(oyl::Event event)
 {
+
 	auto evt = event_cast<PlayerDroppedItemEvent>(event);
+
+	if (!registry->valid(evt.playerEntity)) { return; }
+
 	auto& playerTransform = registry->get<component::Transform>(evt.playerEntity);
 
 	//Getting the Camera
@@ -337,6 +341,13 @@ bool AnimationManager::onEvent(const Event& event)
 		setAnimationProperties("Cannonball_A", AnimationProperties::Cannonball, true);
 		break;
 	}
+	case (EventType)TypeCannonLoaded:
+	{
+		setAnimationEntities(event);
+
+		setAnimationProperties("Idle_R", AnimationProperties::EmptyR, true);
+		setAnimationProperties("Idle_L", AnimationProperties::EmptyL, true);
+	}
 	//Player Picked up item
 	case (EventType)TypePlayerPickedUpItem:
 	{
@@ -444,17 +455,6 @@ bool AnimationManager::onEvent(const Event& event)
 
 		break;
 	}
-
-	case (EventType)TypeCannonLoaded:
-	{
-		setAnimationEntities(event);
-
-		//reset left arm components TODO: MAKE THIS THE ACTUAL USE ANIMATION AND THEN LINK IT BACK TO THE IDLE OR WHATEVER THIS IS TEMP FOR THE EXPO
-		setAnimationProperties("Idle_L", AnimationProperties::EmptyL, true);
-		setAnimationProperties("Idle_R", AnimationProperties::EmptyR, true);
-
-		break;
-	}
 	case (EventType)TypeThrowBottle:
 	{
 		setAnimationEntities(event);
@@ -475,6 +475,7 @@ bool AnimationManager::onEvent(const Event& event)
 			setAnimationProperties("Idle_L", AnimationProperties::EmptyL, true);
 			setAnimationProperties("Idle_R", AnimationProperties::EmptyR, true);
 		}
+		break;
 	}
 
 	//////////////////////////// P L A Y E R    B A S E D     E V E N T S ///////////////////////////////////

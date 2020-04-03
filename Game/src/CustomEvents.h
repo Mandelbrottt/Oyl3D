@@ -115,8 +115,8 @@ OYL_EVENT_STRUCT(CannonStateChangeRequestEvent, (oyl::EventType) TypeCannonState
 
 OYL_EVENT_STRUCT(CannonLoadedEvent, (oyl::EventType) TypeCannonLoaded, (oyl::EventCategory) CategoryCannon,
 	{
-		entt::entity cannonEntity;
 		entt::entity playerEntity;
+		entt::entity cannonEntity;
 	});
 
 OYL_EVENT_STRUCT(CannonFiredEvent, (oyl::EventType) TypeCannonFired, (oyl::EventCategory) CategoryCannon,
