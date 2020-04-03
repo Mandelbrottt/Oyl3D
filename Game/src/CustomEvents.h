@@ -12,7 +12,8 @@ enum CustomEventsCategories : int
 	CategoryGloop,
 	CategoryThrowableBottle,
 	CategoryQuicktimeCleaningEvent,
-	CategoryGameState
+	CategoryGameState,
+	CategoryTutorial
 };
 enum CustomEventTypes : int
 {
@@ -47,7 +48,8 @@ enum CustomEventTypes : int
 	TypeStickMovedDuringQuicktimeCleaningEvent,
 	TypeCleanedWithMop,
 	TypePerformCleaning,
-	TypeGameEnd
+	TypeGameEnd,
+	TypeTutorialSegmentStarted
 };
 
 OYL_EVENT_STRUCT(PlayerJumpEvent, (oyl::EventType) TypePlayerJump, (oyl::EventCategory) CategoryPlayer,
@@ -218,4 +220,9 @@ OYL_EVENT_STRUCT(PerformCleaningEvent, (oyl::EventType) TypePerformCleaning, (oy
 OYL_EVENT_STRUCT(GameEndEvent, (oyl::EventType) TypeGameEnd, (oyl::EventCategory) CategoryGameState,
 	{
 		GameEndResult result;
+	});
+
+OYL_EVENT_STRUCT(TutorialSegmentStartedEvent, (oyl::EventType) TypeTutorialSegmentStarted, (oyl::EventCategory) CategoryTutorial,
+	{
+		int segmentNum;
 	});

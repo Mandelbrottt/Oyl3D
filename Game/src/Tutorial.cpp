@@ -236,6 +236,10 @@ void TutorialLayer::intro()
 
 	if (initSegment)
 	{
+		TutorialSegmentStartedEvent segmentStarted;
+		segmentStarted.segmentNum = 0;
+		postEvent(segmentStarted);
+
 		currentSegment    = TutorialSegment::intro;
 		initSegment       = false;
 		isSegmentFinished = false;
@@ -257,6 +261,10 @@ void TutorialLayer::segment1()
 
 	if (initSegment)
 	{
+		TutorialSegmentStartedEvent segmentStarted;
+		segmentStarted.segmentNum = 1;
+		postEvent(segmentStarted);
+
 		currentSegment    = TutorialSegment::segment1;
 		initSegment       = false;
 		isSegmentFinished = false;
@@ -324,6 +332,10 @@ void TutorialLayer::segment2()
 
 	if (initSegment)
 	{
+		TutorialSegmentStartedEvent segmentStarted;
+		segmentStarted.segmentNum = 2;
+		postEvent(segmentStarted);
+
 		currentSegment    = TutorialSegment::segment2;
 		initSegment       = false;
 		isSegmentFinished = false;
@@ -497,6 +509,10 @@ void TutorialLayer::segment3()
 
 	if (initSegment)
 	{
+		TutorialSegmentStartedEvent segmentStarted;
+		segmentStarted.segmentNum = 3;
+		postEvent(segmentStarted);
+
 		currentSegment = TutorialSegment::segment3;
 		initSegment = false;
 		isSegmentFinished = false;
@@ -595,6 +611,10 @@ void TutorialLayer::segment4()
 
 	if (initSegment)
 	{
+		TutorialSegmentStartedEvent segmentStarted;
+		segmentStarted.segmentNum = 4;
+		postEvent(segmentStarted);
+
 		currentSegment    = TutorialSegment::segment4;
 		initSegment       = false;
 		isSegmentFinished = false;
@@ -790,6 +810,10 @@ void TutorialLayer::segment5()
 
 	if (initSegment)
 	{
+		TutorialSegmentStartedEvent segmentStarted;
+		segmentStarted.segmentNum = 5;
+		postEvent(segmentStarted);
+
 		currentSegment    = TutorialSegment::segment5;
 		initSegment       = false;
 		isSegmentFinished = false;
@@ -843,6 +867,10 @@ void TutorialLayer::segment6()
 
 	if (initSegment)
 	{
+		TutorialSegmentStartedEvent segmentStarted;
+		segmentStarted.segmentNum = 6;
+		postEvent(segmentStarted);
+
 		currentSegment    = TutorialSegment::segment6;
 		initSegment       = false;
 		isSegmentFinished = false;
@@ -894,6 +922,10 @@ void TutorialLayer::outro()
 
 	if (initSegment)
 	{
+		TutorialSegmentStartedEvent segmentStarted;
+		segmentStarted.segmentNum = 7;
+		postEvent(segmentStarted);
+
 		currentSegment    = TutorialSegment::outro;
 		initSegment       = false;
 		isSegmentFinished = false;
