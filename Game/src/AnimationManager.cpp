@@ -146,55 +146,61 @@ void AnimationManager::onUpdate()
 		entt::entity l_playerArmLTarget{};
 		entt::entity l_playerArmLObject{};
 
-		for (auto& playerEntity : playerView)
+		if (l_playerCamera != nullptr)
 		{
-			auto& playerTransform = registry->get<component::Transform>(playerEntity);
-			auto& playerAnimatible = registry->get<component::SkeletonAnimatable>(playerEntity);
 
-			//Getting the Camera
-			for (auto child : playerTransform.getChildrenEntities())
-				if (registry->has<component::Camera>(child))
-					l_playerCamera = child;
-
-			//Getting the individual arms
-			for (auto child : registry->get<component::Transform>(l_playerCamera).getChildrenEntities())
+			for (auto& playerEntity : playerView)
 			{
-				if (registry->get<component::EntityInfo>(child).name.find("Left") != std::string::npos)
-					l_playerArmL = child;
-				if (registry->get<component::EntityInfo>(child).name.find("Right") != std::string::npos)
-					l_playerArmR = child;
+				auto& playerTransform = registry->get<component::Transform>(playerEntity);
+				auto& playerAnimatible = registry->get<component::SkeletonAnimatable>(playerEntity);
+
+				//Getting the Camera
+				for (auto child : playerTransform.getChildrenEntities())
+					if (registry->has<component::Camera>(child))
+						l_playerCamera = child;
+
+				//Getting the individual arms
+				for (auto child : registry->get<component::Transform>(l_playerCamera).getChildrenEntities())
+				{
+					if (registry->get<component::EntityInfo>(child).name.find("Left") != std::string::npos)
+						l_playerArmL = child;
+					if (registry->get<component::EntityInfo>(child).name.find("Right") != std::string::npos)
+						l_playerArmR = child;
+				}
+
+				//Getting each hand target
+				for (auto child : registry->get<component::Transform>(l_playerArmL).getChildrenEntities())
+					if (registry->has<component::BoneTarget>(child))
+						l_playerArmLTarget = child;
+				for (auto child : registry->get<component::Transform>(l_playerArmR).getChildrenEntities())
+					if (registry->has<component::BoneTarget>(child))
+						l_playerArmRTarget = child;
+
+				//Getting each hand object
+				for (auto child : registry->get<component::Transform>(l_playerArmLTarget).getChildrenEntities())
+					if (registry->has<component::Renderable>(child))
+						l_playerArmLObject = child;
+				for (auto child : registry->get<component::Transform>(l_playerArmRTarget).getChildrenEntities())
+					if (registry->has<component::Renderable>(child))
+						l_playerArmRObject = child;
+
+				if (registry->get<component::SkeletonAnimatable>(l_playerArmL).animation == "PiraxUse_L" && registry->get<component::SkeletonAnimatable>(l_playerArmL).time >= 2.10)
+				{
+					registry->get<component::Transform>(l_playerArmLObject).setPosition(glm::vec3(0.0f));
+					registry->get<component::Transform>(l_playerArmLObject).setRotationEuler(glm::vec3(0.0f));
+					registry->get<component::Transform>(l_playerArmLObject).setScale(glm::vec3(0.0f));
+				}
+				if (registry->get<component::SkeletonAnimatable>(l_playerArmL).animation == "GloopUse2_L" && registry->get<component::SkeletonAnimatable>(l_playerArmL).time >= 2.10)
+				{
+					registry->get<component::Transform>(l_playerArmLObject).setPosition(glm::vec3(0.0f));
+					registry->get<component::Transform>(l_playerArmLObject).setRotationEuler(glm::vec3(0.0f));
+					registry->get<component::Transform>(l_playerArmLObject).setScale(glm::vec3(0.0f));
+				}
+
 			}
-
-			//Getting each hand target
-			for (auto child : registry->get<component::Transform>(l_playerArmL).getChildrenEntities())
-				if (registry->has<component::BoneTarget>(child))
-					l_playerArmLTarget = child;
-			for (auto child : registry->get<component::Transform>(l_playerArmR).getChildrenEntities())
-				if (registry->has<component::BoneTarget>(child))
-					l_playerArmRTarget = child;
-
-			//Getting each hand object
-			for (auto child : registry->get<component::Transform>(l_playerArmLTarget).getChildrenEntities())
-				if (registry->has<component::Renderable>(child))
-					l_playerArmLObject = child;
-			for (auto child : registry->get<component::Transform>(l_playerArmRTarget).getChildrenEntities())
-				if (registry->has<component::Renderable>(child))
-					l_playerArmRObject = child;
-
-			if (registry->get<component::SkeletonAnimatable>(l_playerArmL).animation == "PiraxUse_L" && registry->get<component::SkeletonAnimatable>(l_playerArmL).time >= 2.10)
-			{
-				registry->get<component::Transform>(l_playerArmLObject).setPosition(glm::vec3(0.0f));
-				registry->get<component::Transform>(l_playerArmLObject).setRotationEuler(glm::vec3(0.0f));
-				registry->get<component::Transform>(l_playerArmLObject).setScale(glm::vec3(0.0f));
-			}
-			if (registry->get<component::SkeletonAnimatable>(l_playerArmL).animation == "GloopUse2_L" && registry->get<component::SkeletonAnimatable>(l_playerArmL).time >= 2.10)
-			{
-				registry->get<component::Transform>(l_playerArmLObject).setPosition(glm::vec3(0.0f));
-				registry->get<component::Transform>(l_playerArmLObject).setRotationEuler(glm::vec3(0.0f));
-				registry->get<component::Transform>(l_playerArmLObject).setScale(glm::vec3(0.0f));
-			}
-
 		}
+		else
+			OYL_LOG("no cameras on players");
 
 	}
 	else
