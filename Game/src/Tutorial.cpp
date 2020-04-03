@@ -736,7 +736,7 @@ void TutorialLayer::segment5()
 		initSegment       = false;
 		isSegmentFinished = false;
 
-		segmentTimer1 = 0.0f;
+		segmentTimer1 = 30.0f; //delay for audio
 		segmentTimer2 = 0.0f;
 		segmentTimer3 = 0.0f;
 		segmentTimer4 = 0.0f;
@@ -755,7 +755,9 @@ void TutorialLayer::segment5()
 		segmentBool8 = true;
 	}
 
-
+	segmentTimer1 -= Time::deltaTime();
+	if (segmentTimer1 > 0.0f)
+		return;
 
 	isSegmentFinished = true;
 }
@@ -771,7 +773,7 @@ void TutorialLayer::segment6()
 		initSegment       = false;
 		isSegmentFinished = false;
 
-		segmentTimer1 = 0.0f;
+		segmentTimer1 = 30.0f; //delay for audio
 		segmentTimer2 = 0.0f;
 		segmentTimer3 = 0.0f;
 		segmentTimer4 = 0.0f;
@@ -790,7 +792,9 @@ void TutorialLayer::segment6()
 		segmentBool8 = true;
 	}
 
-
+	segmentTimer1 -= Time::deltaTime();
+	if (segmentTimer1 > 0.0f)
+		return;
 
 	isSegmentFinished = true;
 }
@@ -805,7 +809,7 @@ void TutorialLayer::outro()
 		initSegment       = false;
 		isSegmentFinished = false;
 
-		segmentTimer1 = 5.0f;
+		segmentTimer1 = 6.0f; //"Ill see yall later have fun"
 	}
 
 	segmentTimer1 -= Time::deltaTime();
