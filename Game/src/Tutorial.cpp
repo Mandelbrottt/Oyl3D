@@ -151,9 +151,27 @@ bool TutorialLayer::onEvent(const Event& event)
 
 		switch (evt.keycode)
 		{
-		case oyl::Key::Backspace:
+		case oyl::Key::Escape:
 		{
 			Application::get().changeScene("MainMenuScene");
+			break;
+		}
+
+		case oyl::Key::Backspace:
+		{
+			if (!isSegmentFinished)
+				break;
+
+			repeatSegment();
+			break;
+		}
+
+		case oyl::Key::Enter:
+		{
+			if (!isSegmentFinished)
+				break;
+
+			moveToNextSegment();
 			break;
 		}
 		}
@@ -178,41 +196,7 @@ bool TutorialLayer::onEvent(const Event& event)
 			if (!isSegmentFinished)
 				break;
 
-			initSegment = true;
-			switch (currentSegment)
-			{
-			case TutorialSegment::segment1:
-			{
-				currentSegmentFunc = &TutorialLayer::segment2;
-				break;
-			}
-			case TutorialSegment::segment2:
-			{
-				currentSegmentFunc = &TutorialLayer::segment3;
-				break;
-			}
-			case TutorialSegment::segment3:
-			{
-				currentSegmentFunc = &TutorialLayer::segment4;
-				break;
-			}
-			case TutorialSegment::segment4:
-			{
-				currentSegmentFunc = &TutorialLayer::segment5;
-				break;
-			}
-			case TutorialSegment::segment5:
-			{
-				currentSegmentFunc = &TutorialLayer::segment6;
-				break;
-			}
-			case TutorialSegment::segment6:
-			{
-				currentSegmentFunc = &TutorialLayer::outro;
-				break;
-			}
-			}
-
+			moveToNextSegment();
 			break;
 		}
 
@@ -222,41 +206,7 @@ bool TutorialLayer::onEvent(const Event& event)
 			if (!isSegmentFinished)
 				break;
 
-			initSegment = true;
-			switch (currentSegment)
-			{
-				case TutorialSegment::segment1:
-				{
-					currentSegmentFunc = &TutorialLayer::segment1;
-					break;
-				}
-				case TutorialSegment::segment2:
-				{
-					currentSegmentFunc = &TutorialLayer::segment2;
-					break;
-				}
-				case TutorialSegment::segment3:
-				{
-					currentSegmentFunc = &TutorialLayer::segment3;
-					break;
-				}
-				case TutorialSegment::segment4:
-				{
-					currentSegmentFunc = &TutorialLayer::segment4;
-					break;
-				}
-				case TutorialSegment::segment5:
-				{
-					currentSegmentFunc = &TutorialLayer::segment5;
-					break;
-				}
-				case TutorialSegment::segment6:
-				{
-					currentSegmentFunc = &TutorialLayer::segment6;
-					break;
-				}
-			}
-
+			repeatSegment();
 			break;
 		}
 		}
@@ -283,7 +233,7 @@ void TutorialLayer::intro()
 		initSegment       = false;
 		isSegmentFinished = false;
 
-		segmentTimer1 = 1.0f; //6
+		segmentTimer1 = 5.0f; //intro shit
 	}
 
 	segmentTimer1 -= Time::deltaTime();
@@ -308,9 +258,9 @@ void TutorialLayer::segment1()
 		playerTransform.rotate(glm::vec3(0.0f, 88.0f, 0.0f) - playerTransform.getRotationEuler());
 
 		segmentBool1  = true;
-		segmentTimer1 = 1.0f; //4
-		segmentTimer2 = 1.5f; //2.5
-		segmentTimer3 = 1.2f;
+		segmentTimer1 = 4.0f; //"left stick to look, right stick to move"
+		segmentTimer2 = 2.5f; //"A to jump"
+		segmentTimer3 = 1.2f; //delay before ending segment
 		segmentInterpolationParam1 = 0.0f;
 	}
 
@@ -367,13 +317,13 @@ void TutorialLayer::segment2()
 
 		cameraTransform.rotate(glm::vec3(-15.0f, 0.0f, 0.0f) - cameraTransform.getRotationEuler());
 
-		segmentTimer1 = 1.0f; //5
-		segmentTimer2 = 0.4f;
-		segmentTimer3 = 0.4f;
-		segmentTimer4 = 1.0f; //2
-		segmentTimer5 = 0.5f;
-		segmentTimer6 = 0.5f;
-		segmentTimer7 = 0.5f;
+		segmentTimer1 = 5.0f; //"lets grab cleaning solution and a mop"
+		segmentTimer2 = 0.4f; //delay before grabbing cleaning solution
+		segmentTimer3 = 0.4f; //delay before grabbing mop
+		segmentTimer4 = 2.5f; //"there are 3 garbage piles on the ship"
+		segmentTimer5 = 1.2f; //"one at the front"
+		segmentTimer6 = 1.2f; //"one in the middle"
+		segmentTimer7 = 1.2f; //"one in the back"
 
 		segmentBool1 = true;
 		segmentBool2 = true;
@@ -525,9 +475,9 @@ void TutorialLayer::segment3()
 		initSegment = false;
 		isSegmentFinished = false;
 
-		segmentTimer1 = 0.5f; //5
-		segmentTimer2 = 2.0f; //3
-		segmentTimer3 = 0.08f;
+		segmentTimer1 = 6.0f; //"garbage pile health bar blah blah blah clean with X"
+		segmentTimer2 = 4.0f; //"to continue cleaning flick the stick"
+		segmentTimer3 = 0.13f; //delay between cleaning cycles
 		segmentTimer4 = 0.0f;
 		segmentTimer5 = 0.0f;
 		segmentTimer6 = 0.0f;
@@ -583,7 +533,7 @@ void TutorialLayer::segment3()
 		segmentTimer3 -= Time::deltaTime();
 		if (segmentTimer3 < 0.0f)
 		{
-			segmentTimer3 = 0.08f;
+			segmentTimer3 = 0.13f;
 
 			PerformCleaningEvent performCleaning;
 			performCleaning.playerEntity = tutPlayerEntity;
@@ -607,13 +557,13 @@ void TutorialLayer::segment4()
 		initSegment       = false;
 		isSegmentFinished = false;
 
-		segmentTimer1 = 0.5f; //2
-		segmentTimer2 = 0.5f; //3
-		segmentTimer3 = 0.8f;
-		segmentTimer4 = 0.0f;
-		segmentTimer5 = 0.0f;
-		segmentTimer6 = 0.0f;
-		segmentTimer7 = 0.0f;
+		segmentTimer1 = 1.0f;
+		segmentTimer2 = 3.0f; //"down here you'll find the garbage bin and cannon"
+		segmentTimer3 = 0.8f; //delay before grabbing garbage ball
+		segmentTimer4 = 0.7f; //delay before moving towards the cannon
+		segmentTimer5 = 0.9f; //"load the cannon by pressing X"
+		segmentTimer6 = 6.0f; //"cannon fires on a timer. push it to aim at different garbage piles by pressing X"
+		segmentTimer7 = 8.0f; //delay before ending segment
 		segmentTimer8 = 0.0f;
 
 		segmentBool1 = true;
@@ -624,6 +574,7 @@ void TutorialLayer::segment4()
 		segmentBool6 = true;
 		segmentBool7 = true;
 		segmentBool8 = true;
+		segmentBool9 = true;
 	}
 
 	segmentTimer1 -= Time::deltaTime();
@@ -711,11 +662,65 @@ void TutorialLayer::segment4()
 
 			//grab a cannonball
 			PlayerInteractionRequestEvent playerInteractionRequest;
-			playerInteractionRequest.playerEntity = tutPlayerEntity;
+			playerInteractionRequest.playerEntity           = tutPlayerEntity;
 			playerInteractionRequest.itemClassificatonToUse = PlayerItemClassification::any;
 			postEvent(playerInteractionRequest);
 		}
 	}
+
+	segmentTimer4 -= Time::deltaTime();
+	if (segmentTimer4 > 0.0f)
+		return;
+
+	//rotate towards cannon
+	if (segmentBool6)
+	{
+		segmentBool6 = false;
+		playerTransform.rotate(glm::vec3(0.0f, -50.0f, 0.0f)); //TODO: rotate over time
+		return;
+	}
+
+	//move towards the cannon
+	if (segmentBool7)
+	{
+		glm::vec3 targetPos = glm::vec3(-4.64f, playerTransform.getPositionY(), 0.51f);
+		bool isFinished;
+
+		movePlayerToPos(targetPos, &isFinished);
+		if (!isFinished)
+			return;
+		else
+			segmentBool7 = false;
+	}
+
+	segmentTimer5 -= Time::deltaTime();
+	if (segmentTimer5 > 0.0f)
+		return;
+
+	if (segmentBool8)
+	{
+		segmentBool8 = false;
+
+		//load the cannon
+		PlayerInteractionRequestEvent playerInteractionRequest;
+		playerInteractionRequest.playerEntity           = tutPlayerEntity;
+		playerInteractionRequest.itemClassificatonToUse = PlayerItemClassification::any;
+		postEvent(playerInteractionRequest);
+	}
+
+	segmentTimer6 -= Time::deltaTime();
+	if (segmentTimer6 > 0.0f)
+		return;
+
+	//push the cannon
+	PlayerInteractionRequestEvent playerInteractionRequest;
+	playerInteractionRequest.playerEntity           = tutPlayerEntity;
+	playerInteractionRequest.itemClassificatonToUse = PlayerItemClassification::any;
+	postEvent(playerInteractionRequest);
+
+	segmentTimer7 -= Time::deltaTime();
+	if (segmentTimer7 > 0.0f)
+		return;
 
 	isSegmentFinished = true;
 }
@@ -828,4 +833,80 @@ void TutorialLayer::movePlayerToPos(glm::vec3 a_targetPos, bool* a_isFinished)
 	}
 	else
 		*a_isFinished = true;
+}
+
+void TutorialLayer::moveToNextSegment()
+{
+	initSegment = true;
+	switch (currentSegment)
+	{
+	case TutorialSegment::segment1:
+	{
+		currentSegmentFunc = &TutorialLayer::segment2;
+		break;
+	}
+	case TutorialSegment::segment2:
+	{
+		currentSegmentFunc = &TutorialLayer::segment3;
+		break;
+	}
+	case TutorialSegment::segment3:
+	{
+		currentSegmentFunc = &TutorialLayer::segment4;
+		break;
+	}
+	case TutorialSegment::segment4:
+	{
+		currentSegmentFunc = &TutorialLayer::segment5;
+		break;
+	}
+	case TutorialSegment::segment5:
+	{
+		currentSegmentFunc = &TutorialLayer::segment6;
+		break;
+	}
+	case TutorialSegment::segment6:
+	{
+		currentSegmentFunc = &TutorialLayer::outro;
+		break;
+	}
+	}
+}
+
+void TutorialLayer::repeatSegment()
+{
+	initSegment = true;
+	switch (currentSegment)
+	{
+	case TutorialSegment::segment1:
+	{
+		currentSegmentFunc = &TutorialLayer::segment1;
+		break;
+	}
+	case TutorialSegment::segment2:
+	{
+		currentSegmentFunc = &TutorialLayer::segment2;
+		break;
+	}
+	case TutorialSegment::segment3:
+	{
+		currentSegmentFunc = &TutorialLayer::segment3;
+		break;
+	}
+	case TutorialSegment::segment4:
+	{
+		currentSegmentFunc = &TutorialLayer::segment4;
+		break;
+	}
+	case TutorialSegment::segment5:
+	{
+		currentSegmentFunc = &TutorialLayer::segment5;
+		break;
+	}
+	case TutorialSegment::segment6:
+	{
+		currentSegmentFunc = &TutorialLayer::segment6;
+		break;
+	}
+	}
 }

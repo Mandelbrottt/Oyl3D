@@ -39,6 +39,7 @@ public:
 	float segmentTimer6;
 	float segmentTimer7;
 	float segmentTimer8;
+	float segmentTimer9;
 
 	bool segmentBool1;
 	bool segmentBool2;
@@ -48,15 +49,7 @@ public:
 	bool segmentBool6;
 	bool segmentBool7;
 	bool segmentBool8;
-
-	float segmentFloat1;
-	float segmentFloat2;
-	float segmentFloat3;
-	float segmentFloat4;
-	float segmentFloat5;
-	float segmentFloat6;
-	float segmentFloat7;
-	float segmentFloat8;
+	bool segmentBool9;
 
 	float segmentInterpolationParam1;
 	float segmentInterpolationParam2;
@@ -83,6 +76,9 @@ public:
 	void outro();
 
 	void movePlayerToPos(glm::vec3 a_targetPos, bool* a_isFinished);
+
+	void moveToNextSegment();
+	void repeatSegment();
 
 	void (TutorialLayer::*currentSegmentFunc)();
 

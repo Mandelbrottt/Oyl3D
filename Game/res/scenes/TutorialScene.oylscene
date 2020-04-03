@@ -7857,7 +7857,7 @@
         "Renderable": {
             "CastShadows": true,
             "CullingMask": 15,
-            "Enabled": true,
+            "Enabled": false,
             "Material": {
                 "Alias": "BinBlue"
             },
