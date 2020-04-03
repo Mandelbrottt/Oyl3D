@@ -97,7 +97,7 @@ void main()
 	g_albedo3_specular1     = texture(u_albedo3_specular1, in_texCoords);
 	g_normal                = texture(u_normal, in_texCoords).rgb;
 	g_emission3_glossiness1 = texture(u_emission3_glossiness1, in_texCoords);
-	g_lightSpacePosition = texture(u_lightSpacePosition, in_texCoords);
+	g_lightSpacePosition    = texture(u_lightSpacePosition, in_texCoords);
 
 	out_color.rgb = vec3(0.0, 0.0, 0.0);
 
@@ -117,6 +117,7 @@ void main()
 	
 	// Add emission
 	out_color.rgb += texture(u_emission3_glossiness1, in_texCoords).rgb;
+	// out_color.rgb += vec3(1.0);
 }
 
 vec3 calculatePointLight(PointLight light, inout int shadowIndex)
@@ -169,7 +170,7 @@ vec3 calculateDirLight(DirLight light, inout int shadowIndex)
 	specular *= light.intensity;
 
 	float shadow = 0.0;
-	if (shadowIndex < u_numShadowMaps && u_shadow[shadowIndex].type == POINT_SHADOW)
+	if (shadowIndex < u_numShadowMaps && u_shadow[0].type == DIR_SHADOW)
 		shadow = shadowCalculation(g_lightSpacePosition, u_shadow[shadowIndex], lightDir);
 	return ambient + (1.0 - shadow) * (diffuse + specular);
 }
@@ -208,7 +209,7 @@ vec3 calculateSpotLight(SpotLight light, inout int shadowIndex)
 		specular *= attenuation * intensity;
 		
 		float shadow = 0.0;
-		if (shadowIndex < u_numShadowMaps && u_shadow[shadowIndex].type == POINT_SHADOW)
+		if (shadowIndex < u_numShadowMaps && u_shadow[0].type == POINT_SHADOW)
 			shadow = shadowCalculation(g_lightSpacePosition, u_shadow[shadowIndex], lightDir);
 		return ambient + (1.0 - shadow) * (diffuse + specular);
 	}
