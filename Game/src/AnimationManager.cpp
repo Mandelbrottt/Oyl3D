@@ -136,7 +136,7 @@ void AnimationManager::onUpdate()
 	//Need to update every frame and check which animation is playing in order to have things like bottles dissapear mid animation
 	auto playerView = registry->view<Player, component::Transform>();
 
-	if (playerView != 0)
+	if (!playerView.empty())
 	{
 		entt::entity l_playerCamera{};
 		entt::entity l_playerArmR{};
@@ -146,18 +146,19 @@ void AnimationManager::onUpdate()
 		entt::entity l_playerArmLTarget{};
 		entt::entity l_playerArmLObject{};
 
-		if (l_playerCamera != nullptr)
+		for (auto& playerEntity : playerView)
 		{
+			auto& playerTransform = registry->get<component::Transform>(playerEntity);
+			auto& playerAnimatible = registry->get<component::SkeletonAnimatable>(playerEntity);
 
-			for (auto& playerEntity : playerView)
+			//Getting the Camera
+			for (auto child : playerTransform.getChildrenEntities())
+				if (registry->has<component::Camera>(child))
+					l_playerCamera = child;
+
+			//check to see if the player has a camera
+			if (registry->valid(l_playerCamera))
 			{
-				auto& playerTransform = registry->get<component::Transform>(playerEntity);
-				auto& playerAnimatible = registry->get<component::SkeletonAnimatable>(playerEntity);
-
-				//Getting the Camera
-				for (auto child : playerTransform.getChildrenEntities())
-					if (registry->has<component::Camera>(child))
-						l_playerCamera = child;
 
 				//Getting the individual arms
 				for (auto child : registry->get<component::Transform>(l_playerCamera).getChildrenEntities())
@@ -196,12 +197,11 @@ void AnimationManager::onUpdate()
 					registry->get<component::Transform>(l_playerArmLObject).setRotationEuler(glm::vec3(0.0f));
 					registry->get<component::Transform>(l_playerArmLObject).setScale(glm::vec3(0.0f));
 				}
-
 			}
+			else { return; }
+
 		}
 	}
-	else
-		OYL_LOG("no players");
 }
 
 bool AnimationManager::onEvent(const Event& event)
