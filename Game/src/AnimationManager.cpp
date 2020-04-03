@@ -465,6 +465,17 @@ bool AnimationManager::onEvent(const Event& event)
 
 		break;
 	}
+	case (EventType)TypeThrowableBottleHit:
+	{
+		auto evt = event_cast<ThrowableBottleHitEvent>(event);
+		if (evt.hitPlayer)
+		{
+			setAnimationEntities(event);
+
+			setAnimationProperties("Idle_L", AnimationProperties::EmptyL, true);
+			setAnimationProperties("Idle_R", AnimationProperties::EmptyR, true);
+		}
+	}
 
 	//////////////////////////// P L A Y E R    B A S E D     E V E N T S ///////////////////////////////////
 		//cases for item uses
