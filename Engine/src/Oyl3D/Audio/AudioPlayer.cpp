@@ -20,7 +20,7 @@ static bool _fmod_call(FMOD_RESULT a_result)
 #if !defined OYL_DISTRIBUTION
     #define FMOD_CALL(call) OYL_ASSERT(_fmod_call(call))
 #else
-    #define FMOD_CALL(call)
+    #define FMOD_CALL(call) call
 #endif
 
 static float dbToVolume(float db)
