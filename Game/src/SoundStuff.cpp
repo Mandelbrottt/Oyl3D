@@ -80,53 +80,53 @@ bool SoundLayer::onEvent(const oyl::Event& event)
 		}
 
 		// Tutorial Stuff
-		case (EventType)intro:
-		{
-			Audio::playSound("res/assets/sounds/GlassBottleBreak.mp3", 0.7f);
-			break;
-		}
-
-		case (EventType)segment1:
-		{
-			Audio::playSound("res/assets/sounds/GlassBottleBreak.mp3", 0.7f);
-			break;
-		}
-
-		case (EventType)segment2:
-		{
-			Audio::playSound("res/assets/sounds/GlassBottleBreak.mp3", 0.7f);
-			break;
-		}
-
-		case (EventType)segment3:
-		{
-			Audio::playSound("res/assets/sounds/GlassBottleBreak.mp3", 0.7f);
-			break;
-		}
-
-		case (EventType)segment4:
-		{
-			Audio::playSound("res/assets/sounds/GlassBottleBreak.mp3", 0.7f);
-			break;
-		}
-
-		case (EventType)segment5:
-		{
-			Audio::playSound("res/assets/sounds/GlassBottleBreak.mp3", 0.7f);
-			break;
-		}
-
-		case (EventType)segment6:
-		{
-			Audio::playSound("res/assets/sounds/GlassBottleBreak.mp3", 0.7f);
-			break;
-		}
-
-		case (EventType)outro:
-		{
-			Audio::playSound("res/assets/sounds/GlassBottleBreak.mp3", 0.7f);
-			break;
-		}
+		//case (EventType)intro:
+		//{
+		//	Audio::playSound("res/assets/sounds/GlassBottleBreak.mp3", 0.7f);
+		//	break;
+		//}
+		//
+		//case (EventType)segment1:
+		//{
+		//	Audio::playSound("res/assets/sounds/GlassBottleBreak.mp3", 0.7f);
+		//	break;
+		//}
+		//
+		//case (EventType)segment2:
+		//{
+		//	Audio::playSound("res/assets/sounds/GlassBottleBreak.mp3", 0.7f);
+		//	break;
+		//}
+		//
+		//case (EventType)segment3:
+		//{
+		//	Audio::playSound("res/assets/sounds/GlassBottleBreak.mp3", 0.7f);
+		//	break;
+		//}
+		//
+		//case (EventType)segment4:
+		//{
+		//	Audio::playSound("res/assets/sounds/GlassBottleBreak.mp3", 0.7f);
+		//	break;
+		//}
+		//
+		//case (EventType)segment5:
+		//{
+		//	Audio::playSound("res/assets/sounds/GlassBottleBreak.mp3", 0.7f);
+		//	break;
+		//}
+		//
+		//case (EventType)segment6:
+		//{
+		//	Audio::playSound("res/assets/sounds/GlassBottleBreak.mp3", 0.7f);
+		//	break;
+		//}
+		//
+		//case (EventType)outro:
+		//{
+		//	Audio::playSound("res/assets/sounds/GlassBottleBreak.mp3", 0.7f);
+		//	break;
+		//}
 
 		//case EventType::KeyPressed:
 		//{
