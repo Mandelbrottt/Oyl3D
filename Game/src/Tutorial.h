@@ -58,6 +58,43 @@ public:
 	entt::entity tutPlayerEntity;
 	entt::entity tutCameraEntity;
 
+	bool firstSegmentInit;
+	bool secondSegmentInit;
+	bool thirdSegmentInit;
+	bool fourthSegmentInit;
+	bool fifthSegmentInit;
+	bool sixthSegmentInit;
+
+	Player* playerSegment1;
+	glm::quat playerSegment1Rot;
+	glm::vec3 playerSegment1Pos;
+	glm::quat cameraSegment1Rot;
+
+	Player* playerSegment2;
+	glm::quat playerSegment2Rot;
+	glm::vec3 playerSegment2Pos;
+	glm::quat cameraSegment2Rot;
+
+	Player* playerSegment3;
+	glm::quat playerSegment3Rot;
+	glm::vec3 playerSegment3Pos;
+	glm::quat cameraSegment3Rot;
+
+	Player* playerSegment4;
+	glm::quat playerSegment4Rot;
+	glm::vec3 playerSegment4Pos;
+	glm::quat cameraSegment4Rot;
+
+	Player* playerSegment5;
+	glm::quat playerSegment5Rot;
+	glm::vec3 playerSegment5Pos;
+	glm::quat cameraSegment5Rot;
+
+	Player* playerSegment6;
+	glm::quat playerSegment6Rot;
+	glm::vec3 playerSegment6Pos;
+	glm::quat cameraSegment6Rot;
+
 	virtual void onEnter() override;
 
 	virtual void onUpdate() override;

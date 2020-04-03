@@ -21,6 +21,13 @@ void TutorialLayer::onEnter()
 {
 	firstFrame = true;
 
+	firstSegmentInit   = false;
+	secondSegmentInit  = false;
+	thirdSegmentInit   = false;
+	fourthSegmentInit  = false;
+	fifthSegmentInit   = false;
+	sixthSegmentInit   = false;
+
 	listenForEventCategory(EventCategory::Keyboard);
 	listenForEventCategory(EventCategory::Gamepad);
 
@@ -254,8 +261,16 @@ void TutorialLayer::segment1()
 		initSegment       = false;
 		isSegmentFinished = false;
 
-		playerTransform.setPosition(glm::vec3(15.45f, 1.00f, -3.0f));
-		playerTransform.rotate(glm::vec3(0.0f, 88.0f, 0.0f) - playerTransform.getRotationEuler());
+		if (!firstSegmentInit)
+		{
+			firstSegmentInit = true;
+
+			playerSegment1Pos = playerTransform.getPosition();
+			playerSegment1Rot = playerTransform.getRotation();
+		}
+
+		playerTransform.setPosition(playerSegment1Pos);
+		playerTransform.setRotation(playerSegment1Rot);
 
 		segmentBool1  = true;
 		segmentTimer1 = 4.0f; //"left stick to look, right stick to move"
@@ -303,6 +318,7 @@ void TutorialLayer::segment1()
 
 void TutorialLayer::segment2()
 {
+	auto& player          = registry->get<Player>(tutPlayerEntity);
 	auto& playerTransform = registry->get<component::Transform>(tutPlayerEntity);
 	auto& cameraTransform = registry->get<component::Transform>(tutCameraEntity);
 
@@ -312,10 +328,20 @@ void TutorialLayer::segment2()
 		initSegment       = false;
 		isSegmentFinished = false;
 
-		playerTransform.setPosition(glm::vec3(12.46f, 1.00f, -4.13f));
-		playerTransform.rotate(glm::vec3(0.0f, 67.9f, 0.0f) - playerTransform.getRotationEuler());
+		if (!secondSegmentInit)
+		{
+			secondSegmentInit = true;
 
-		cameraTransform.rotate(glm::vec3(-15.0f, 0.0f, 0.0f) - cameraTransform.getRotationEuler());
+			playerSegment2    = &player;
+			playerSegment2Pos = playerTransform.getPosition();
+			playerSegment2Rot = playerTransform.getRotation();
+			cameraSegment2Rot = cameraTransform.getRotation();
+		}
+
+		player = *playerSegment2;
+		playerTransform.setPosition(playerSegment2Pos);
+		playerTransform.setRotation(playerSegment2Rot);
+		cameraTransform.setRotation(cameraSegment2Rot);
 
 		segmentTimer1 = 5.0f; //"lets grab cleaning solution and a mop"
 		segmentTimer2 = 0.4f; //delay before grabbing cleaning solution
@@ -475,6 +501,21 @@ void TutorialLayer::segment3()
 		initSegment = false;
 		isSegmentFinished = false;
 
+		if (!thirdSegmentInit)
+		{
+			thirdSegmentInit = true;
+
+			playerSegment3    = &player;
+			playerSegment3Pos = playerTransform.getPosition();
+			playerSegment3Rot = playerTransform.getRotation();
+			cameraSegment3Rot = cameraTransform.getRotation();
+		}
+
+		player = *playerSegment3;
+		playerTransform.setPosition(playerSegment3Pos);
+		playerTransform.setRotation(playerSegment3Rot);
+		cameraTransform.setRotation(cameraSegment3Rot);
+
 		segmentTimer1 = 6.0f; //"garbage pile health bar blah blah blah clean with X"
 		segmentTimer2 = 4.0f; //"to continue cleaning flick the stick"
 		segmentTimer3 = 0.13f; //delay between cleaning cycles
@@ -548,6 +589,7 @@ void TutorialLayer::segment3()
 
 void TutorialLayer::segment4()
 {
+	auto& player          = registry->get<Player>(tutPlayerEntity);
 	auto& playerTransform = registry->get<component::Transform>(tutPlayerEntity);
 	auto& cameraTransform = registry->get<component::Transform>(tutCameraEntity);
 
@@ -556,6 +598,21 @@ void TutorialLayer::segment4()
 		currentSegment    = TutorialSegment::segment4;
 		initSegment       = false;
 		isSegmentFinished = false;
+
+		if (!fourthSegmentInit)
+		{
+			fourthSegmentInit = true;
+
+			playerSegment4    = &player;
+			playerSegment4Pos = playerTransform.getPosition();
+			playerSegment4Rot = playerTransform.getRotation();
+			cameraSegment4Rot = cameraTransform.getRotation();
+		}
+
+		player = *playerSegment4;
+		playerTransform.setPosition(playerSegment4Pos);
+		playerTransform.setRotation(playerSegment4Rot);
+		cameraTransform.setRotation(cameraSegment4Rot);
 
 		segmentTimer1 = 1.0f;
 		segmentTimer2 = 3.0f; //"down here you'll find the garbage bin and cannon"
@@ -727,6 +784,7 @@ void TutorialLayer::segment4()
 
 void TutorialLayer::segment5()
 {
+	auto& player          = registry->get<Player>(tutPlayerEntity);
 	auto& playerTransform = registry->get<component::Transform>(tutPlayerEntity);
 	auto& cameraTransform = registry->get<component::Transform>(tutCameraEntity);
 
@@ -735,6 +793,21 @@ void TutorialLayer::segment5()
 		currentSegment    = TutorialSegment::segment5;
 		initSegment       = false;
 		isSegmentFinished = false;
+
+		if (!fifthSegmentInit)
+		{
+			fifthSegmentInit = true;
+
+			playerSegment5    = &player;
+			playerSegment5Pos = playerTransform.getPosition();
+			playerSegment5Rot = playerTransform.getRotation();
+			cameraSegment5Rot = cameraTransform.getRotation();
+		}
+
+		player = *playerSegment5;
+		playerTransform.setPosition(playerSegment5Pos);
+		playerTransform.setRotation(playerSegment5Rot);
+		cameraTransform.setRotation(cameraSegment5Rot);
 
 		segmentTimer1 = 30.0f; //delay for audio
 		segmentTimer2 = 0.0f;
@@ -764,6 +837,7 @@ void TutorialLayer::segment5()
 
 void TutorialLayer::segment6()
 {
+	auto& player          = registry->get<Player>(tutPlayerEntity);
 	auto& playerTransform = registry->get<component::Transform>(tutPlayerEntity);
 	auto& cameraTransform = registry->get<component::Transform>(tutCameraEntity);
 
@@ -772,6 +846,21 @@ void TutorialLayer::segment6()
 		currentSegment    = TutorialSegment::segment6;
 		initSegment       = false;
 		isSegmentFinished = false;
+
+		if (!sixthSegmentInit)
+		{
+			sixthSegmentInit = true;
+
+			playerSegment6    = &player;
+			playerSegment6Pos = playerTransform.getPosition();
+			playerSegment6Rot = playerTransform.getRotation();
+			cameraSegment6Rot = cameraTransform.getRotation();
+		}
+
+		player = *playerSegment6;
+		playerTransform.setPosition(playerSegment6Pos);
+		playerTransform.setRotation(playerSegment6Rot);
+		cameraTransform.setRotation(cameraSegment6Rot);
 
 		segmentTimer1 = 30.0f; //delay for audio
 		segmentTimer2 = 0.0f;
