@@ -1,6 +1,7 @@
 {
     "Material": {
         "Alias": "WaterCrest",
+        "Deferred": true,
         "MainProperties": {
             "Offset": [
                 0.0,
@@ -11,17 +12,8 @@
                 1.0
             ]
         },
-        "Shader": {
-            "Alias": "Oyl Deferred Static",
-            "Pixel": {
-                "FilePath": null,
-                "guid": null
-            },
-            "Vertex": {
-                "FilePath": null,
-                "guid": null
-            }
-        },
+        "OverrideShader": false,
+        "Shader": null,
         "Textures": {
             "Albedo": {
                 "Alias": "WaterCrest",
