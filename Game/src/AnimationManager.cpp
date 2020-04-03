@@ -111,7 +111,6 @@ void AnimationManager::setAnimationProperties(std::string p_tag, AnimationProper
 		break;
 	}
 
-
 }
 
 void AnimationManager::onEnter()
@@ -138,13 +137,13 @@ void AnimationManager::onUpdate()
 
 	if (!playerView.empty())
 	{
-		entt::entity l_playerCamera{};
-		entt::entity l_playerArmR{};
-		entt::entity l_playerArmL{};
-		entt::entity l_playerArmRTarget{};
-		entt::entity l_playerArmRObject{};
-		entt::entity l_playerArmLTarget{};
-		entt::entity l_playerArmLObject{};
+		entt::entity l_playerCamera = entt::null;
+		entt::entity l_playerArmR = entt::null;
+		entt::entity l_playerArmL = entt::null;
+		entt::entity l_playerArmRTarget = entt::null;
+		entt::entity l_playerArmRObject = entt::null;
+		entt::entity l_playerArmLTarget = entt::null;
+		entt::entity l_playerArmLObject = entt::null;
 
 		for (auto& playerEntity : playerView)
 		{
@@ -159,7 +158,6 @@ void AnimationManager::onUpdate()
 			//check to see if the player has a camera
 			if (registry->valid(l_playerCamera))
 			{
-
 				//Getting the individual arms
 				for (auto child : registry->get<component::Transform>(l_playerCamera).getChildrenEntities())
 				{
