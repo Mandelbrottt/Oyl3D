@@ -44,30 +44,7 @@ void TutorialLayer::onEnter()
 	scheduleSystemUpdate<GarbageMeterSystem>();
 	scheduleSystemUpdate<ThrowableBottleSystem>();
 
-	initSegment = true;
-	currentSegmentFunc = &TutorialLayer::intro;
-
-	//remove any unwanted players
-	auto playerView = registry->view<Player>();
-	for (auto& playerEntity : playerView)
-	{
-		auto& player = registry->get<Player>(playerEntity);
-
-		if (player.playerNum == PlayerNumber::Three || player.playerNum == PlayerNumber::Four)
-			registry->destroy(playerEntity);
-	}
-
-	//remove any unwanted cameras
-	auto cameraView = registry->view<component::Camera>();
-	for (auto& cameraEntity : cameraView)
-	{
-		auto& camera = registry->get<component::Camera>(cameraEntity);
-
-		if (camera.player == PlayerNumber::One)
-			tutCameraEntity = cameraEntity;
-		else
-			registry->destroy(cameraEntity);
-	}
+	firstFrame = true;
 
 	{
 		auto e = registry->create();
@@ -118,6 +95,35 @@ void TutorialLayer::onEnter()
 
 void TutorialLayer::onUpdate()
 {
+	if (firstFrame)
+	{
+		firstFrame  = false;
+		initSegment = true;
+		currentSegmentFunc = &TutorialLayer::intro;
+
+		//remove any unwanted players
+		auto playerView = registry->view<Player>();
+		for (auto& playerEntity : playerView)
+		{
+			auto& player = registry->get<Player>(playerEntity);
+
+			if (player.playerNum == PlayerNumber::Three || player.playerNum == PlayerNumber::Four)
+				registry->destroy(playerEntity);
+		}
+
+		//remove any unwanted cameras
+		auto cameraView = registry->view<component::Camera>();
+		for (auto& cameraEntity : cameraView)
+		{
+			auto& camera = registry->get<component::Camera>(cameraEntity);
+
+			if (camera.player == PlayerNumber::One)
+				tutCameraEntity = cameraEntity;
+			else
+				registry->destroy(cameraEntity);
+		}
+	}
+
 	SetMaxGarbageLevelEvent setMaxGarbageLevel;
 	postEvent(setMaxGarbageLevel);
 
@@ -837,65 +843,6 @@ void TutorialLayer::segment5()
 		playerTransform.setRotation(playerSegment5Rot);
 		cameraTransform.setRotation(cameraSegment5Rot);
 
-		segmentTimer1 = 30.0f; //delay for audio
-		segmentTimer2 = 0.0f;
-		segmentTimer3 = 0.0f;
-		segmentTimer4 = 0.0f;
-		segmentTimer5 = 0.0f;
-		segmentTimer6 = 0.0f;
-		segmentTimer7 = 0.0f;
-		segmentTimer8 = 0.0f;
-
-		segmentBool1 = true;
-		segmentBool2 = true;
-		segmentBool3 = true;
-		segmentBool4 = true;
-		segmentBool5 = true;
-		segmentBool6 = true;
-		segmentBool7 = true;
-		segmentBool8 = true;
-	}
-
-
-
-	segmentTimer1 -= Time::deltaTime();
-	if (segmentTimer1 > 0.0f)
-		return;
-
-	isSegmentFinished = true;
-}
-
-void TutorialLayer::segment6()
-{
-	auto& player          = registry->get<Player>(tutPlayerEntity);
-	auto& playerTransform = registry->get<component::Transform>(tutPlayerEntity);
-	auto& cameraTransform = registry->get<component::Transform>(tutCameraEntity);
-
-	if (initSegment)
-	{
-		TutorialSegmentStartedEvent segmentStarted;
-		segmentStarted.segmentNum = 6;
-		postEvent(segmentStarted);
-
-		currentSegment    = TutorialSegment::segment6;
-		initSegment       = false;
-		isSegmentFinished = false;
-
-		if (!sixthSegmentInit)
-		{
-			sixthSegmentInit = true;
-
-			playerSegment6    = &player;
-			playerSegment6Pos = playerTransform.getPosition();
-			playerSegment6Rot = playerTransform.getRotation();
-			cameraSegment6Rot = cameraTransform.getRotation();
-		}
-
-		player = *playerSegment6;
-		playerTransform.setPosition(playerSegment6Pos);
-		playerTransform.setRotation(playerSegment6Rot);
-		cameraTransform.setRotation(cameraSegment6Rot);
-
 		segmentTimer1 = 5.0f;
 		segmentTimer2 = 0.0f;
 		segmentTimer3 = 0.0f;
@@ -931,6 +878,73 @@ void TutorialLayer::segment6()
 		else
 			segmentBool1 = false;
 	}
+
+	if (segmentBool2)
+	{
+		segmentBool2 = false;
+		cameraTransform.rotate(glm::vec3(-35.0f, 0.0f, 0.0f)); //TODO: rotate over time
+		playerTransform.rotate(glm::vec3(0.0f, -10.0f, 0.0f)); //TODO: rotate over time
+	}
+
+	//playerTransform.rotate(glm::vec3(0.0f, -170.0f, 0.0f)); //TODO: rotate over time
+	//cameraTransform.rotate(glm::vec3(-69.0f, 0.0f, 0.0f)); //TODO: rotate over time
+
+	isSegmentFinished = true;
+}
+
+void TutorialLayer::segment6()
+{
+	auto& player          = registry->get<Player>(tutPlayerEntity);
+	auto& playerTransform = registry->get<component::Transform>(tutPlayerEntity);
+	auto& cameraTransform = registry->get<component::Transform>(tutCameraEntity);
+
+	if (initSegment)
+	{
+		TutorialSegmentStartedEvent segmentStarted;
+		segmentStarted.segmentNum = 6;
+		postEvent(segmentStarted);
+
+		currentSegment    = TutorialSegment::segment6;
+		initSegment       = false;
+		isSegmentFinished = false;
+
+		if (!sixthSegmentInit)
+		{
+			sixthSegmentInit = true;
+
+			playerSegment6    = &player;
+			playerSegment6Pos = playerTransform.getPosition();
+			playerSegment6Rot = playerTransform.getRotation();
+			cameraSegment6Rot = cameraTransform.getRotation();
+		}
+
+		player = *playerSegment6;
+		playerTransform.setPosition(playerSegment6Pos);
+		playerTransform.setRotation(playerSegment6Rot);
+		cameraTransform.setRotation(cameraSegment6Rot);
+
+		segmentTimer1 = 30.0f; //delay for audio
+		segmentTimer2 = 0.0f;
+		segmentTimer3 = 0.0f;
+		segmentTimer4 = 0.0f;
+		segmentTimer5 = 0.0f;
+		segmentTimer6 = 0.0f;
+		segmentTimer7 = 0.0f;
+		segmentTimer8 = 0.0f;
+
+		segmentBool1 = true;
+		segmentBool2 = true;
+		segmentBool3 = true;
+		segmentBool4 = true;
+		segmentBool5 = true;
+		segmentBool6 = true;
+		segmentBool7 = true;
+		segmentBool8 = true;
+	}
+
+	segmentTimer1 -= Time::deltaTime();
+	if (segmentTimer1 > 0.0f)
+		return;
 
 	isSegmentFinished = true;
 }

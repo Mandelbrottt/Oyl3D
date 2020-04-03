@@ -141,7 +141,7 @@ struct Player
 	MoveableUsingLerp adjustingPositionStateData;
 	MoveableUsingLerp pushingStateData;
 
-	float CLEANING_TIME_DURATION = 1.2f; //IF YOU CHANGE THIS, MAKE SURE TO ALSO CHANGE THE DEPENDANT VALUES IN GARBAGE HP BAR COMPONENT (check the comments in the component to figure out which ones)
+	float CLEANING_TIME_DURATION = 2.5f; //IF YOU CHANGE THIS, MAKE SURE TO ALSO CHANGE THE DEPENDANT VALUES IN GARBAGE HP BAR COMPONENT (check the comments in the component to figure out which ones)
 	float cleaningTimeCountdown  = CLEANING_TIME_DURATION;
 
 	float THROWING_DELAY_DURATION      = 0.5f;
