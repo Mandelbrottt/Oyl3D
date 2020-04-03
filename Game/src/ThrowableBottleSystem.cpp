@@ -134,6 +134,7 @@ bool ThrowableBottleSystem::onEvent(const Event& event)
 
 					ThrowableBottleHitEvent bottleHit;
 					bottleHit.bottleEntity = bottleEntity;
+					bottleHit.playerEntity = entt::null;
 					bottleHit.hitPlayer    = false;
 					postEvent(bottleHit);
 
@@ -157,6 +158,7 @@ bool ThrowableBottleSystem::onEvent(const Event& event)
 
 					ThrowableBottleHitEvent bottleHit;
 					bottleHit.bottleEntity = bottleEntity;
+					bottleHit.playerEntity = playerEntity;
 					bottleHit.hitPlayer    = true;
 					postEvent(bottleHit);
 

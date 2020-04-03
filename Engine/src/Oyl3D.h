@@ -8,6 +8,8 @@
 
 #include <Oyl3D/App/Application.h>
 
+#include <Oyl3D/Audio/AudioPlayer.h>
+
 #include <Oyl3D/Components/Animatable.h>
 #include <Oyl3D/Components/Camera.h>
 #include <Oyl3D/Components/Collidable.h>

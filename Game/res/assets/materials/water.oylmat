@@ -1,6 +1,7 @@
 {
     "Material": {
         "Alias": "water",
+        "Deferred": true,
         "MainProperties": {
             "Offset": [
                 708.5950317382813,
@@ -11,17 +12,8 @@
                 10.0
             ]
         },
-        "Shader": {
-            "Alias": "Oyl Lighting",
-            "Pixel": {
-                "FilePath": "../Engine/res/shaders/lighting.frag",
-                "guid": null
-            },
-            "Vertex": {
-                "FilePath": "../Engine/res/shaders/lighting.vert",
-                "guid": null
-            }
-        },
+        "OverrideShader": false,
+        "Shader": null,
         "Textures": {
             "Albedo": {
                 "Alias": "water",

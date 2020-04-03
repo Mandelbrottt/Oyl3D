@@ -28,7 +28,7 @@ namespace oyl
         float tickRate = 30.0f;
         float duration = 0.0f;
 
-        Interpolation::Type lerpType = Interpolation::Type::Linear;
+        Interpolation::Type lerpType = Interpolation::Type::Cubic;
         Interpolation::EaseFn lerpFn = Interpolation::linear;
     };
 }

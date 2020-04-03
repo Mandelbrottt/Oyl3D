@@ -28,8 +28,8 @@ void ScrollingTextureLayer::onUpdate()
 		{
 			if (info.name == "Water")
 			{
-				renderable.material->mainTextureProps.offset.y += 0.07f * Time::deltaTime();
-				renderable.material->mainTextureProps.offset.x += 0.071f * Time::deltaTime();
+				renderable.material->mainTextureProps.offset.y -= 0.07f * Time::deltaTime();
+				renderable.material->mainTextureProps.offset.x -= 0.071f * Time::deltaTime();
 			}
 		});
 }

@@ -31,6 +31,7 @@
 #include "GarbageMeterSystem.h"
 #include "GameOverCheckSystem.h"
 #include "ThrowableBottleSystem.h"
+#include "SoundStuff.h"
 
 using namespace oyl;
 
@@ -484,6 +485,7 @@ public:
 		pushLayer(MainGameObjectsInitLayer::create());
 		pushLayer(MainGameGuiInitLayer::create());
 		pushLayer(ScrollingTextureLayer::create());
+		pushLayer(SoundLayer::create());
 	}
 };
 

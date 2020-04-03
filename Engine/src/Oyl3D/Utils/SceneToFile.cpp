@@ -355,6 +355,7 @@ namespace oyl::internal
         jLight["Ambient"] = pl.ambient;
         jLight["Diffuse"] = pl.diffuse;
         jLight["Specular"] = pl.specular;
+        jLight["Intensity"] = pl.intensity;
         jLight["CastShadows"] = pl.castShadows;
 
         j.push_back(std::move(jLight));
@@ -373,6 +374,7 @@ namespace oyl::internal
         jLight["Ambient"] = dl.ambient;
         jLight["Diffuse"] = dl.diffuse;
         jLight["Specular"] = dl.specular;
+        jLight["Intensity"] = dl.intensity;
 
         auto& jShadow = jLight["Shadow"];
         if (dl.castShadows)
@@ -401,6 +403,7 @@ namespace oyl::internal
         jLight["Ambient"] = sl.ambient;
         jLight["Diffuse"] = sl.diffuse;
         jLight["Specular"] = sl.specular;
+        jLight["Intensity"] = sl.intensity;
         jLight["CastShadows"] = sl.castShadows;
         jLight["InnerCutoff"] = sl.innerCutoff;
         jLight["OuterCutoff"] = sl.outerCutoff;
@@ -450,6 +453,10 @@ namespace oyl::internal
         j["Fov"]          = camera.fov();
         j["NearClipping"] = camera.nearClipping();
         j["FarClipping"]  = camera.farClipping();
+        j["Exposure"]     = camera.exposure;
+        j["Brightness"]   = camera.brightness;
+        j["Contrast"]     = camera.contrast;
+        j["Saturation"]   = camera.saturation;
 
         auto& jClear = j["ClearProps"];
         {
@@ -821,6 +828,8 @@ namespace oyl::internal
                 it->get_to(ls.castShadows);
             if (const auto it = jLight.find("Range"); it != jLight.end())
                 it->get_to(ls.range);
+            if (const auto it = jLight.find("Intensity"); it != jLight.end())
+                it->get_to(ls.intensity);
         }
     }
 
@@ -841,6 +850,8 @@ namespace oyl::internal
                 it->get_to(ls.diffuse);
             if (const auto it = jLight.find("Specular"); it != jLight.end())
                 it->get_to(ls.specular);
+            if (const auto it = jLight.find("Intensity"); it != jLight.end())
+                it->get_to(ls.intensity);
             if (const auto sIt = jLight.find("Shadow"); sIt != jLight.end() && sIt->is_object())
             {
                 ls.castShadows = true;
@@ -886,6 +897,8 @@ namespace oyl::internal
                 it->get_to(ls.castShadows);
             if (const auto it = jLight.find("Range"); it != jLight.end())
                 it->get_to(ls.range);
+            if (const auto it = jLight.find("Intensity"); it != jLight.end())
+                it->get_to(ls.intensity);
             if (const auto it = jLight.find("InnerCutoff"); it != jLight.end())
                 it->get_to(ls.innerCutoff);
             if (const auto it = jLight.find("OuterCutoff"); it != jLight.end())
@@ -961,6 +974,18 @@ namespace oyl::internal
 
         if (auto it = j.find("FarClipping"); it != j.end() && it->is_number_float())
             re.farClipping(it->get<float>());
+
+        if (auto it = j.find("Exposure"); it != j.end() && it->is_number_float())
+            it->get_to(re.exposure);
+        
+        if (auto it = j.find("Brightness"); it != j.end() && it->is_number_float())
+            it->get_to(re.brightness);
+
+        if (auto it = j.find("Contrast"); it != j.end() && it->is_number_float())
+            it->get_to(re.contrast);
+
+        if (auto it = j.find("Saturation"); it != j.end() && it->is_number_float())
+            it->get_to(re.saturation);
 
         if (auto it = j.find("ClearProps"); it != j.end() && it->is_object())
         {
@@ -1181,7 +1206,13 @@ namespace oyl::internal
         if (material->m_filepath.empty())
             material->m_filepath = filepath;
 
-        if (auto it = jMaterial.find("Shader"); it != jMaterial.end() && !it->is_null())
+        if (auto it = jMaterial.find("OverrideShader"); it != jMaterial.end())
+            it->get_to(material->overrideShader);
+        
+        if (auto it = jMaterial.find("Deferred"); it != jMaterial.end())
+            it->get_to(material->deferred);
+        
+        if (auto it = jMaterial.find("Shader"); material->overrideShader && it != jMaterial.end() && !it->is_null())
         {
             bool loadNewShader = false;
             std::string alias;
@@ -1322,9 +1353,12 @@ namespace oyl::internal
         json& jMatAlias = jMaterial["Alias"];
         if (auto alias = Material::getAlias(material); alias != INVALID_ALIAS)
             jMatAlias = alias;
-        
+
+        json& jOverride = jMaterial["OverrideShader"];
+        jOverride = material->overrideShader;
+
         json& jShader = jMaterial["Shader"];
-        if (material->shader)
+        if (material->shader && material->overrideShader)
         {
             json& jAlias = jShader["Alias"];
             if (auto alias = Shader::getAlias(material->shader); alias != INVALID_ALIAS)
@@ -1378,6 +1412,11 @@ namespace oyl::internal
                     }
                 }
             }
+        }
+        else if (!material->overrideShader)
+        {
+            json& jDeferred = jMaterial["Deferred"];
+            jDeferred = material->deferred;
         }
 
         json& jTextures = jMaterial["Textures"];

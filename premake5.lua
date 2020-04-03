@@ -129,6 +129,10 @@ project "OylEngine"
 			"fmodstudioL_vc.lib",
 			"AssimpL"
 		}
+		postbuildcommands { 
+			"{COPY} \"%{prj.location}vendor/fmod/lib/fmodL.dll\"       \"%{wks.location}bin/" .. outputdir .. "/Game/\"", 
+			"{COPY} \"%{prj.location}vendor/fmod/lib/fmodstudioL.dll\" \"%{wks.location}bin/" .. outputdir .. "/Game/\"", 
+		}
 
 	filter "configurations:Development"
 		defines { "OYL_DEVELOPMENT" }
@@ -145,6 +149,10 @@ project "OylEngine"
 			"fmod_vc.lib",
 			"fmodstudio_vc.lib",
 			"Assimp"
+		}
+		postbuildcommands { 
+			"{COPY} \"%{prj.location}vendor/fmod/lib/fmod.dll\"       \"%{wks.location}bin/" .. outputdir .. "/Game/\"", 
+			"{COPY} \"%{prj.location}vendor/fmod/lib/fmodstudio.dll\" \"%{wks.location}bin/" .. outputdir .. "/Game/\"", 
 		}
 
 	filter "configurations:not Development"

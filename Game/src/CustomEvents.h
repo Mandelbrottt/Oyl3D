@@ -115,8 +115,8 @@ OYL_EVENT_STRUCT(CannonStateChangeRequestEvent, (oyl::EventType) TypeCannonState
 
 OYL_EVENT_STRUCT(CannonLoadedEvent, (oyl::EventType) TypeCannonLoaded, (oyl::EventCategory) CategoryCannon,
 	{
-		entt::entity cannonEntity;
 		entt::entity playerEntity;
+		entt::entity cannonEntity;
 	});
 
 OYL_EVENT_STRUCT(CannonFiredEvent, (oyl::EventType) TypeCannonFired, (oyl::EventCategory) CategoryCannon,
@@ -185,6 +185,7 @@ OYL_EVENT_STRUCT(ThrowBottleEvent, (oyl::EventType) TypeThrowBottle, (oyl::Event
 
 OYL_EVENT_STRUCT(ThrowableBottleHitEvent, (oyl::EventType) TypeThrowableBottleHit, (oyl::EventCategory) CategoryThrowableBottle,
 	{
+		entt::entity playerEntity;
 		entt::entity bottleEntity;
 		bool hitPlayer;
 	});

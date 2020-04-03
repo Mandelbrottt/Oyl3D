@@ -6,10 +6,6 @@ layout(location = 2) in vec3 in_normal;
 layout(location = 3) in vec3 in_tangent;
 layout(location = 4) in vec3 in_bitangent;
 
-// layout(location = 0) out vec3 out_position;
-// layout(location = 1) out vec2 out_texCoord;
-// layout(location = 2) out vec3 out_normal;
-
 out VS_OUT {
 	vec3 position;
 	vec2 texCoord;

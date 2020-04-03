@@ -1,6 +1,7 @@
 {
     "Material": {
         "Alias": "metal",
+        "Deferred": true,
         "MainProperties": {
             "Offset": [
                 0.0,
@@ -11,17 +12,8 @@
                 1.0
             ]
         },
-        "Shader": {
-            "Alias": "Oyl Lighting",
-            "Pixel": {
-                "FilePath": "../Engine/res/shaders/lighting.frag",
-                "guid": null
-            },
-            "Vertex": {
-                "FilePath": "../Engine/res/shaders/lighting.vert",
-                "guid": null
-            }
-        },
+        "OverrideShader": false,
+        "Shader": null,
         "Textures": {
             "Albedo": {
                 "Alias": "metal",
@@ -32,8 +24,8 @@
             "Emission": null,
             "Normal": null,
             "Specular": {
-                "Alias": "metal",
-                "FilePath": "res\\assets\\textures\\metal.png",
+                "Alias": "Oyl Black",
+                "FilePath": "../Engine/res/textures/black.png",
                 "Profile": 0,
                 "guid": null
             }
