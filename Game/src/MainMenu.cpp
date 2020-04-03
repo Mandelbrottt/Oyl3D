@@ -287,7 +287,7 @@ bool MainMenuLayer::onEvent(const Event& event)
 			}
 			case MenuOption::credits:
 			{
-				//Application::get().changeScene("CreditsScene");
+				Application::get().changeScene("CreditsScene");
 				break;
 			}
 			case MenuOption::exit:
@@ -430,7 +430,7 @@ bool MainMenuLayer::onEvent(const Event& event)
 			}
 			case MenuOption::credits:
 			{
-				//Application::get().changeScene("CreditsScene");
+				Application::get().changeScene("CreditsScene");
 				break;
 			}
 			case MenuOption::exit:

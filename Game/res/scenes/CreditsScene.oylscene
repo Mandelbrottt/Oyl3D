@@ -1,0 +1,127 @@
+{
+    "Back Prompt": {
+        "GuiRenderable": {
+            "Clipping": {
+                "Lower": [
+                    0.0,
+                    0.0
+                ],
+                "Upper": [
+                    1.0,
+                    1.0
+                ]
+            },
+            "CullingMask": 15,
+            "Enabled": true,
+            "Texture": {
+                "Alias": "BackPrompt",
+                "FilePath": "res/assets/textures/menus/BackPrompt.png"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Parent": null,
+            "Position": {
+                "X": -6.75,
+                "Y": -4.099999904632568,
+                "Z": -1.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.2000000476837158,
+                "Y": 1.2000000476837158,
+                "Z": 1.0
+            }
+        }
+    },
+    "Camera": {
+        "Camera": {
+            "ClearProps": {
+                "Skybox": null
+            },
+            "CullingMask": 15,
+            "Enabled": true,
+            "FarClipping": 1000.0,
+            "Fov": 60.0,
+            "NearClipping": 0.029999999329447746,
+            "Player": 0
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Parent": null,
+            "Position": {
+                "X": 0.0,
+                "Y": 0.0,
+                "Z": 0.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 1.0,
+                "Y": 1.0,
+                "Z": 1.0
+            }
+        }
+    },
+    "Credits Screen": {
+        "GuiRenderable": {
+            "Clipping": {
+                "Lower": [
+                    0.0,
+                    0.0
+                ],
+                "Upper": [
+                    1.0,
+                    1.0
+                ]
+            },
+            "CullingMask": 15,
+            "Enabled": true,
+            "Texture": {
+                "Alias": "CreditsScreen",
+                "FilePath": "res/assets/textures/menus/CreditsScreen.png"
+            }
+        },
+        "Transform": {
+            "Mirror": {
+                "X": false,
+                "Y": false,
+                "Z": false
+            },
+            "Parent": null,
+            "Position": {
+                "X": 0.0,
+                "Y": 1.0199999809265137,
+                "Z": 0.0
+            },
+            "Rotation": {
+                "qW": 1.0,
+                "qX": 0.0,
+                "qY": 0.0,
+                "qZ": 0.0
+            },
+            "Scale": {
+                "X": 8.5,
+                "Y": 8.5,
+                "Z": 1.0
+            }
+        }
+    }
+}

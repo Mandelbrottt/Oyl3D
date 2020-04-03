@@ -19,8 +19,6 @@ using namespace oyl;
 
 void TutorialLayer::onEnter()
 {
-	firstFrame = true;
-
 	firstSegmentInit   = false;
 	secondSegmentInit  = false;
 	thirdSegmentInit   = false;
@@ -45,6 +43,8 @@ void TutorialLayer::onEnter()
 	scheduleSystemUpdate<GarbagePileGloopIndicatorSystem>();
 	scheduleSystemUpdate<GarbageMeterSystem>();
 	scheduleSystemUpdate<ThrowableBottleSystem>();
+
+	firstFrame = true;
 
 	{
 		auto e = registry->create();
@@ -818,6 +818,16 @@ void TutorialLayer::segment5()
 		initSegment       = false;
 		isSegmentFinished = false;
 
+		//reset to segment 1 values
+		playerTransform.setPosition(playerSegment1Pos);
+		playerTransform.setRotation(playerSegment1Rot);
+		cameraTransform.setRotation(cameraSegment1Rot);
+
+		//drop any items
+		CancelButtonPressedEvent cancelButtonPressed;
+		cancelButtonPressed.playerEntity = tutPlayerEntity;
+		postEvent(cancelButtonPressed);
+
 		if (!fifthSegmentInit)
 		{
 			fifthSegmentInit = true;
@@ -833,7 +843,7 @@ void TutorialLayer::segment5()
 		playerTransform.setRotation(playerSegment5Rot);
 		cameraTransform.setRotation(cameraSegment5Rot);
 
-		segmentTimer1 = 30.0f; //delay for audio
+		segmentTimer1 = 5.0f;
 		segmentTimer2 = 0.0f;
 		segmentTimer3 = 0.0f;
 		segmentTimer4 = 0.0f;
@@ -855,6 +865,29 @@ void TutorialLayer::segment5()
 	segmentTimer1 -= Time::deltaTime();
 	if (segmentTimer1 > 0.0f)
 		return;
+
+	//move to the gloop
+	if (segmentBool1)
+	{
+		glm::vec3 targetPos = glm::vec3(11.36f, playerTransform.getPositionY(), -5.71f);
+		bool isFinished;
+
+		movePlayerToPos(targetPos, &isFinished);
+		if (!isFinished)
+			return;
+		else
+			segmentBool1 = false;
+	}
+
+	if (segmentBool2)
+	{
+		segmentBool2 = false;
+		cameraTransform.rotate(glm::vec3(-35.0f, 0.0f, 0.0f)); //TODO: rotate over time
+		playerTransform.rotate(glm::vec3(0.0f, -10.0f, 0.0f)); //TODO: rotate over time
+	}
+
+	//playerTransform.rotate(glm::vec3(0.0f, -170.0f, 0.0f)); //TODO: rotate over time
+	//cameraTransform.rotate(glm::vec3(-69.0f, 0.0f, 0.0f)); //TODO: rotate over time
 
 	isSegmentFinished = true;
 }
