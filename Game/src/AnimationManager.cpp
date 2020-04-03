@@ -497,7 +497,10 @@ bool AnimationManager::onEvent(const Event& event)
 		if (evt.oldState == PlayerState::inCleaningQuicktimeEvent)
 		{
 			setAnimationProperties("Idle_L", AnimationProperties::EmptyL, true);
-			setAnimationProperties("Mop_R", AnimationProperties::Mop, true);
+			if (evt.newState == PlayerState::stunned)
+				setAnimationProperties("Idle_R", AnimationProperties::EmptyR, true);
+			else
+				setAnimationProperties("Mop_R", AnimationProperties::Mop, true);
 		}
 		switch (evt.newState)
 		{
