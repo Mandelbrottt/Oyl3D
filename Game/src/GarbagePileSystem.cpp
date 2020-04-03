@@ -4,6 +4,12 @@ void GarbagePileSystem::onEnter()
 {
 	listenForEventCategory((EventCategory)CategoryGarbagePile);
 	listenForEventCategory((EventCategory)CategoryCannon);
+
+	bluePassiveBuildupWait = 16.0f;
+	redPassiveBuildupWait  = 16.0f;
+
+	bluePassiveBuildupCountdown = bluePassiveBuildupWait;
+	redPassiveBuildupCountdown  = redPassiveBuildupWait;
 }
 
 void GarbagePileSystem::onExit()
@@ -115,6 +121,26 @@ bool GarbagePileSystem::onEvent(const Event& event)
 				break;
 			}
 		}
+		break;
+	}
+
+	case (EventType)TypeSetMaxGarbageLevel:
+	{
+		auto view = registry->view<GarbagePile, component::Transform>();
+		for (auto& garbagePileEntity : view)
+		{
+			auto& garbagePile = registry->get<GarbagePile>(garbagePileEntity);
+
+			if (garbagePile.garbageLevel > 3)
+			{
+				garbagePile.garbageLevel = 3;
+				updateGarbagePileVisualSize(garbagePileEntity);
+			}
+		}
+
+		bluePassiveBuildupWait = 16.0f;
+		redPassiveBuildupWait = 16.0f;
+
 		break;
 	}
 	}

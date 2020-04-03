@@ -28,10 +28,24 @@ void ControlsScreenLayer::onEnter()
 		t.setScale(glm::vec3(10.0f, 10.0f, 1.0f));
 
 		auto& so = registry->assign<component::EntityInfo>(e);
-		so.name = "Controls Screen Background";
+		so.name = "Controls Screen";
 
 		auto& gui = registry->assign<component::GuiRenderable>(e);
 		gui.texture = Texture2D::cache("res/assets/textures/menus/ControlsScreen.png");
+	}
+
+	{
+		auto e = registry->create();
+
+		auto& t = registry->assign<component::Transform>(e);
+		t.setPosition(glm::vec3(0.0f, 0.0f, 0.0f));
+		t.setScale(glm::vec3(10.0f, 10.0f, 1.0f));
+
+		auto& so = registry->assign<component::EntityInfo>(e);
+		so.name = "Controls Screen Background";
+
+		auto& gui = registry->assign<component::GuiRenderable>(e);
+		gui.texture = Texture2D::cache("res/assets/textures/menus/ControlsBackground.png");
 	}
 
 	{

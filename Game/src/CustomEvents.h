@@ -12,7 +12,8 @@ enum CustomEventsCategories : int
 	CategoryGloop,
 	CategoryThrowableBottle,
 	CategoryQuicktimeCleaningEvent,
-	CategoryGameState
+	CategoryGameState,
+	CategoryTutorial
 };
 enum CustomEventTypes : int
 {
@@ -34,6 +35,7 @@ enum CustomEventTypes : int
 	TypeGarbageGlooped,
 	TypeGarbagePileReappeared,
 	TypeIncreasedGarbageLevel,
+	TypeSetMaxGarbageLevel,
 	TypeMopUsed,
 	TypeSpawnCannonballForPlayer,
 	TypeCleaningSolutionUsed,
@@ -45,7 +47,9 @@ enum CustomEventTypes : int
 	TypeCancelQuicktimeCleaningEvent,
 	TypeStickMovedDuringQuicktimeCleaningEvent,
 	TypeCleanedWithMop,
-	TypeGameEnd
+	TypePerformCleaning,
+	TypeGameEnd,
+	TypeTutorialSegmentStarted
 };
 
 OYL_EVENT_STRUCT(PlayerJumpEvent, (oyl::EventType) TypePlayerJump, (oyl::EventCategory) CategoryPlayer,
@@ -145,6 +149,11 @@ OYL_EVENT_STRUCT(IncreasedGarbageLevelEvent, (oyl::EventType) TypeIncreasedGarba
 		entt::entity garbagePileEntity;
 	});
 
+OYL_EVENT_STRUCT(SetMaxGarbageLevelEvent, (oyl::EventType) TypeSetMaxGarbageLevel, (oyl::EventCategory) CategoryGarbagePile,
+	{
+
+	});
+
 OYL_EVENT_STRUCT(SpawnCannonballForPlayerEvent, (oyl::EventType) TypeSpawnCannonballForPlayer, (oyl::EventCategory) CategoryCannonball,
 	{
 		entt::entity playerEntity;
@@ -203,7 +212,17 @@ OYL_EVENT_STRUCT(CleanedWithMopEvent, (oyl::EventType) TypeCleanedWithMop, (oyl:
 		bool moppingForward;
 	});
 
+OYL_EVENT_STRUCT(PerformCleaningEvent, (oyl::EventType) TypePerformCleaning, (oyl::EventCategory) CategoryQuicktimeCleaningEvent,
+	{
+		entt::entity playerEntity;
+	});
+
 OYL_EVENT_STRUCT(GameEndEvent, (oyl::EventType) TypeGameEnd, (oyl::EventCategory) CategoryGameState,
 	{
 		GameEndResult result;
+	});
+
+OYL_EVENT_STRUCT(TutorialSegmentStartedEvent, (oyl::EventType) TypeTutorialSegmentStarted, (oyl::EventCategory) CategoryTutorial,
+	{
+		int segmentNum;
 	});

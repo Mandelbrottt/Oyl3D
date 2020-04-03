@@ -326,7 +326,7 @@ struct CameraBreathing
 
 	float cameraHeightVariance = 0.15f;
 	float interpolationParam   = 0.5f; //start halfway up (at the default camera height)
-	float speed = 0.35f;
+	float speed = 0.45f;
 
 	bool isMovingUp = true;
 };

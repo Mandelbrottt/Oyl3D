@@ -99,8 +99,8 @@
             "CullingMask": 15,
             "Enabled": true,
             "Texture": {
-                "Alias": "BlueWins",
-                "FilePath": "res/assets/textures/menus/BlueWins.png"
+                "Alias": "Draw",
+                "FilePath": "res/assets/textures/menus/Draw.png"
             }
         },
         "Transform": {
