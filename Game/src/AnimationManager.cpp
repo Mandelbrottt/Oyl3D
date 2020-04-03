@@ -199,9 +199,6 @@ void AnimationManager::onUpdate()
 
 			}
 		}
-		else
-			OYL_LOG("no cameras on players");
-
 	}
 	else
 		OYL_LOG("no players");
