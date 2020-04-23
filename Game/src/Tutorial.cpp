@@ -549,6 +549,23 @@ void TutorialLayer::segment3()
 		segmentBool6 = true;
 		segmentBool7 = true;
 		segmentBool8 = true;
+
+		//force player to be holding a cleaning solution
+		auto carryableItemView = registry->view<CarryableItem>();
+		for (auto itemEntity : carryableItemView)
+		{
+			auto& carryable = registry->get<CarryableItem>(itemEntity);
+
+			if (carryable.type == CarryableItemType::cleaningSolution && carryable.team == player.team)
+			{
+				PlayerForceItemPickUpEvent forceItemPickUp;
+				forceItemPickUp.playerEntity = tutPlayerEntity;
+				forceItemPickUp.itemEntity   = itemEntity;
+				postEvent(forceItemPickUp);
+
+				break;
+			}
+		}
 	}
 
 	//rotate toward the middle garbage pile

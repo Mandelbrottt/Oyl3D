@@ -64,6 +64,7 @@ bool PlayerInteractionValidationSystem::onEvent(const Event& event)
 	        
 			break;
 	    }
+
 		case (EventType)TypeCancelButtonPressed:
 		{
 			auto evt = event_cast<CancelButtonPressedEvent>(event);
@@ -86,6 +87,7 @@ bool PlayerInteractionValidationSystem::onEvent(const Event& event)
 			
 			break;
 		}
+
 		case (EventType)TypePlayerDropItemRequest:
 		{
 			auto evt = event_cast<PlayerDropItemRequestEvent>(event);
@@ -115,6 +117,16 @@ bool PlayerInteractionValidationSystem::onEvent(const Event& event)
 					break;
 				}
 			}
+
+			break;
+		}
+
+		//forces an item to be pick up by the player no matter the situation (used in tutorial)
+		case (EventType)TypePlayerForceItemPickUp:
+		{
+			auto evt = event_cast<PlayerForceItemPickUpEvent>(event);
+
+			performCarryableItemInteraction(evt.playerEntity, evt.itemEntity, PlayerItemClassification::any);
 
 			break;
 		}
