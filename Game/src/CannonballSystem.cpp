@@ -149,14 +149,14 @@ bool CannonballSystem::onEvent(const Event& event)
 
 					cannonball.currentSplineIndex = 0;
 
-					if (cannon.cannonTrackPosition == -1)
+					if (cannon.trackPosition == -1)
 					{
 						if (cannon.team == Team::blue)
 							cannonball.splineFollowedWhenFired = blueFrontSpline;
 						else
 							cannonball.splineFollowedWhenFired = redFrontSpline;
 					}
-					else if (cannon.cannonTrackPosition == 0)
+					else if (cannon.trackPosition == 0)
 					{
 						if (cannon.team == Team::blue)
 							cannonball.splineFollowedWhenFired = blueMiddleSpline;

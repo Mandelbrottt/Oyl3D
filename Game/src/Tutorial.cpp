@@ -122,6 +122,20 @@ void TutorialLayer::onUpdate()
 			else
 				registry->destroy(cameraEntity);
 		}
+
+		//set initial cannon variables
+		auto cannonView = registry->view<Cannon>();
+		for (auto& cannonEntity : cannonView)
+		{
+			auto& cannon          = registry->get<Cannon>(cannonEntity);
+			auto& cannonTransform = registry->get<component::Transform>(cannonEntity);
+
+			if (cannon.team == Team::blue)
+			{
+				initialCannonTrackPos = cannon.trackPosition;
+				initialCannonPos      = cannonTransform.getPosition();
+			}
+		}
 	}
 
 	SetMaxGarbageLevelEvent setMaxGarbageLevel;
@@ -669,6 +683,20 @@ void TutorialLayer::segment4()
 		segmentBool7 = true;
 		segmentBool8 = true;
 		segmentBool9 = true;
+
+		//reset cannon variables to initial values
+		auto cannonView = registry->view<Cannon>();
+		for (auto& cannonEntity : cannonView)
+		{
+			auto& cannon          = registry->get<Cannon>(cannonEntity);
+			auto& cannonTransform = registry->get<component::Transform>(cannonEntity);
+
+			if (cannon.team == Team::blue)
+			{
+				cannon.trackPosition = initialCannonTrackPos;
+				cannonTransform.setPosition(initialCannonPos);
+			}
+		}
 	}
 
 	segmentTimer1 -= Time::deltaTime();

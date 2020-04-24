@@ -108,7 +108,7 @@ bool GarbagePileSystem::onEvent(const Event& event)
 		auto evt = event_cast<CannonFiredEvent>(event);
 		auto& cannon = registry->get<Cannon>(evt.cannonEntity);
 
-		int garbagePileFiredAt = cannon.cannonTrackPosition * -1; //flip the sign since we're on the other ship (cannon at -1 points at opposite ship's garbage pile at 1)
+		int garbagePileFiredAt = cannon.trackPosition * -1; //flip the sign since we're on the other ship (cannon at -1 points at opposite ship's garbage pile at 1)
 
 		auto view = registry->view<GarbagePile, component::Transform>();
 		for (auto& garbagePileEntity : view)

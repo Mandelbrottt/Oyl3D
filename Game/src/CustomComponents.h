@@ -168,9 +168,9 @@ struct Cannon
 
 	glm::vec3 firingDirection = glm::vec3(1.0f, 1.0f, 1.0f);
 
-	int cannonTrackPosition = 0;
-	float pushDistance      = 11.4f;
-	float beingPushedSpeed  = 0.3f;
+	int trackPosition      = 0;
+	float pushDistance     = 11.4f;
+	float beingPushedSpeed = 0.3f;
 	MoveableUsingLerp pushStateData;
 
 	float WAIT_BEFORE_BEING_PUSHED_DURATION = 0.3f;

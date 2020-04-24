@@ -95,6 +95,9 @@ public:
 	glm::vec3 playerSegment6Pos;
 	glm::quat cameraSegment6Rot;
 
+	int initialCannonTrackPos;
+	glm::vec3 initialCannonPos;
+
 	virtual void onEnter() override;
 
 	virtual void onUpdate() override;
