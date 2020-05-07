@@ -50,6 +50,7 @@ public:
 	bool segmentBool7;
 	bool segmentBool8;
 	bool segmentBool9;
+	bool segmentBool10;
 
 	float segmentInterpolationParam1;
 	float segmentInterpolationParam2;
@@ -115,7 +116,7 @@ public:
 	void segment6();
 	void outro();
 
-	void movePlayerToPos(glm::vec3 a_targetPos, bool* a_isFinished);
+	void movePlayerTowardPos(glm::vec3 a_targetPos, bool* a_isFinished);
 
 	void moveToNextSegment();
 	void repeatSegment();

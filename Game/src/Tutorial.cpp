@@ -311,7 +311,7 @@ void TutorialLayer::segment1()
 	glm::vec3 targetPos1 = glm::vec3(12.4f, playerTransform.getPositionY(), -4.15f);
 	bool isFinished1;
 
-	movePlayerToPos(targetPos1, &isFinished1);
+	movePlayerTowardPos(targetPos1, &isFinished1);
 	if (!isFinished1)
 		return;
 	
@@ -400,7 +400,7 @@ void TutorialLayer::segment2()
 		glm::vec3 targetPos = glm::vec3(11.73f, playerTransform.getPositionY(), -4.65f);
 		bool isFinished;
 
-		movePlayerToPos(targetPos, &isFinished);
+		movePlayerTowardPos(targetPos, &isFinished);
 		if (!isFinished)
 			return;
 		else
@@ -433,7 +433,7 @@ void TutorialLayer::segment2()
 		glm::vec3 targetPos = glm::vec3(10.45f, playerTransform.getPositionY(), -2.13f);
 		bool isFinished;
 
-		movePlayerToPos(targetPos, &isFinished);
+		movePlayerTowardPos(targetPos, &isFinished);
 		if (!isFinished)
 			return;
 		else
@@ -466,7 +466,7 @@ void TutorialLayer::segment2()
 		glm::vec3 targetPos = glm::vec3(2.0f, playerTransform.getPositionY(), -3.85f);
 		bool isFinished;
 
-		movePlayerToPos(targetPos, &isFinished);
+		movePlayerTowardPos(targetPos, &isFinished);
 		if (!isFinished)
 			return;
 		else
@@ -712,7 +712,7 @@ void TutorialLayer::segment4()
 		glm::vec3 targetPos = glm::vec3(2.0f, playerTransform.getPositionY(), -5.28f);
 		bool isFinished;
 
-		movePlayerToPos(targetPos, &isFinished);
+		movePlayerTowardPos(targetPos, &isFinished);
 		if (!isFinished)
 			return;
 		else
@@ -733,7 +733,7 @@ void TutorialLayer::segment4()
 		glm::vec3 targetPos = glm::vec3(-13.76f, playerTransform.getPositionY(), -4.84f);
 		bool isFinished;
 
-		movePlayerToPos(targetPos, &isFinished);
+		movePlayerTowardPos(targetPos, &isFinished);
 		if (!isFinished)
 			return;
 		else
@@ -749,7 +749,7 @@ void TutorialLayer::segment4()
 		glm::vec3 targetPos = glm::vec3(-13.76f, -3.17f, 0.05f);
 		bool isFinished;
 
-		movePlayerToPos(targetPos, &isFinished);
+		movePlayerTowardPos(targetPos, &isFinished);
 		if (!isFinished)
 			return;
 		else
@@ -769,7 +769,7 @@ void TutorialLayer::segment4()
 		glm::vec3 targetPos = glm::vec3(-6.91f, playerTransform.getPositionY(), -4.6f);
 		bool isFinished;
 
-		movePlayerToPos(targetPos, &isFinished);
+		movePlayerTowardPos(targetPos, &isFinished);
 		if (!isFinished)
 			return;
 		else
@@ -811,7 +811,7 @@ void TutorialLayer::segment4()
 		glm::vec3 targetPos = glm::vec3(-4.64f, playerTransform.getPositionY(), 0.51f);
 		bool isFinished;
 
-		movePlayerToPos(targetPos, &isFinished);
+		movePlayerTowardPos(targetPos, &isFinished);
 		if (!isFinished)
 			return;
 		else
@@ -891,20 +891,22 @@ void TutorialLayer::segment5()
 		segmentTimer1 = 2.0f; //"alright lets go grab some gloop"
 		segmentTimer2 = 0.7f; //delay before grabbing gloop
 		segmentTimer3 = 0.6f; //delay before walking towards captains quarters exit
-		segmentTimer4 = 9.0f; //"when holding gloop, you can see which piles on the enemy ship can be glooped"
-		segmentTimer5 = 0.0f;
-		segmentTimer6 = 0.0f;
+		segmentTimer4 = 7.0f; //"when holding gloop, you can see which piles on the enemy ship can be glooped"
+		segmentTimer5 = 1.3f; //delay before using gloop
+		segmentTimer6 = 9.0f; //"each bottle has 2 uses, and piles stay glooped for one full cleaning cycle"
 		segmentTimer7 = 0.0f;
 		segmentTimer8 = 0.0f;
 
-		segmentBool1 = true;
-		segmentBool2 = true;
-		segmentBool3 = true;
-		segmentBool4 = true;
-		segmentBool5 = true;
-		segmentBool6 = true;
-		segmentBool7 = true;
-		segmentBool8 = true;
+		segmentBool1  = true;
+		segmentBool2  = true;
+		segmentBool3  = true;
+		segmentBool4  = true;
+		segmentBool5  = true;
+		segmentBool6  = true;
+		segmentBool7  = true;
+		segmentBool8  = true;
+		segmentBool9  = true;
+		segmentBool10 = true;
 	}
 
 	segmentTimer1 -= Time::deltaTime();
@@ -917,7 +919,7 @@ void TutorialLayer::segment5()
 		glm::vec3 targetPos = glm::vec3(11.36f, playerTransform.getPositionY(), -5.71f);
 		bool isFinished;
 
-		movePlayerToPos(targetPos, &isFinished);
+		movePlayerTowardPos(targetPos, &isFinished);
 		if (!isFinished)
 			return;
 		else
@@ -957,7 +959,7 @@ void TutorialLayer::segment5()
 		glm::vec3 targetPos = glm::vec3(10.56f, playerTransform.getPositionY(), -2.58f);
 		bool isFinished;
 
-		movePlayerToPos(targetPos, &isFinished);
+		movePlayerTowardPos(targetPos, &isFinished);
 		if (!isFinished)
 			return;
 		else
@@ -970,7 +972,7 @@ void TutorialLayer::segment5()
 		glm::vec3 targetPos = glm::vec3(2.35f, playerTransform.getPositionY(), -2.58f);
 		bool isFinished;
 
-		movePlayerToPos(targetPos, &isFinished);
+		movePlayerTowardPos(targetPos, &isFinished);
 		if (!isFinished)
 			return;
 		else
@@ -986,6 +988,66 @@ void TutorialLayer::segment5()
 
 	segmentTimer4 -= Time::deltaTime();
 	if (segmentTimer4 > 0.0f)
+		return;
+
+	//move towards the plank connecting the two ships
+	if (segmentBool7)
+	{
+		glm::vec3 targetPos = glm::vec3(-5.7f, playerTransform.getPositionY(), 1.2f);
+		bool isFinished;
+
+		movePlayerTowardPos(targetPos, &isFinished);
+		if (!isFinished)
+			return;
+		else
+			segmentBool7 = false;
+	}
+
+	//move across the plank to the enemy's ship
+	if (segmentBool8)
+	{
+		glm::vec3 targetPos = glm::vec3(-5.7f, playerTransform.getPositionY(), 19.21f);
+		bool isFinished;
+
+		movePlayerTowardPos(targetPos, &isFinished);
+		if (!isFinished)
+			return;
+		else
+			segmentBool8 = false;
+	}
+
+	//move beside the enemy's middle garbage pile
+	if (segmentBool9)
+	{
+		glm::vec3 targetPos = glm::vec3(1.1f, playerTransform.getPositionY(), 22.55f);
+		bool isFinished;
+
+		movePlayerTowardPos(targetPos, &isFinished);
+		if (!isFinished)
+			return;
+		else
+			segmentBool9 = false;
+	}
+
+	//rotate towards enemy's middle garbage pile
+	if (segmentBool10)
+	{
+		segmentBool10 = false;
+		cameraTransform.rotate(glm::vec3(-64.0f, 0.0f, 0.0f)); //TODO: rotate over time
+	}
+
+	segmentTimer5 -= Time::deltaTime();
+	if (segmentTimer5 > 0.0f)
+		return;
+
+	//use gloop on enemy's middle garbage pile
+	PlayerInteractionRequestEvent playerInteractionRequest;
+	playerInteractionRequest.playerEntity           = tutPlayerEntity;
+	playerInteractionRequest.itemClassificatonToUse = PlayerItemClassification::any;
+	postEvent(playerInteractionRequest);
+
+	segmentTimer6 -= Time::deltaTime();
+	if (segmentTimer6 > 0.0f)
 		return;
 
 	isSegmentFinished = true;
@@ -1072,12 +1134,12 @@ void TutorialLayer::outro()
 	Application::get().changeScene("MainMenuScene");
 }
 
-void TutorialLayer::movePlayerToPos(glm::vec3 a_targetPos, bool* a_isFinished)
+void TutorialLayer::movePlayerTowardPos(glm::vec3 a_targetPos, bool* a_isFinished)
 {
 	auto& playerTransform = registry->get<component::Transform>(tutPlayerEntity);
 
 	float dist = glm::distance(playerTransform.getPosition(), a_targetPos);
-	float interpolationParam = 0.08f / dist;
+	float interpolationParam = 0.1f / dist;
 
 	if (interpolationParam < 1.0f)
 	{
@@ -1090,7 +1152,11 @@ void TutorialLayer::movePlayerToPos(glm::vec3 a_targetPos, bool* a_isFinished)
 				interpolationParam));
 	}
 	else
+	{
 		*a_isFinished = true;
+
+		playerTransform.setPosition(a_targetPos);
+	}
 }
 
 void TutorialLayer::moveToNextSegment()
