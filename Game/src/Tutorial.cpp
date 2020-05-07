@@ -99,7 +99,7 @@ void TutorialLayer::onUpdate()
 	{
 		firstFrame  = false;
 		initSegment = true;
-		currentSegmentFunc = &TutorialLayer::intro;
+		currentSegmentFunc = &TutorialLayer::segment1; //TODO: SET BACK TO INTRO
 
 		//remove any unwanted players
 		auto playerView = registry->view<Player>();
@@ -272,6 +272,7 @@ void TutorialLayer::intro()
 void TutorialLayer::segment1()
 {
 	auto& playerTransform = registry->get<component::Transform>(tutPlayerEntity);
+	auto& cameraTransform = registry->get<component::Transform>(tutCameraEntity);
 
 	if (initSegment)
 	{
@@ -289,10 +290,12 @@ void TutorialLayer::segment1()
 
 			playerSegment1Pos = playerTransform.getPosition();
 			playerSegment1Rot = playerTransform.getRotation();
+			cameraSegment1Rot = cameraTransform.getRotation();
 		}
 
 		playerTransform.setPosition(playerSegment1Pos);
 		playerTransform.setRotation(playerSegment1Rot);
+		cameraTransform.setRotation(cameraSegment1Rot);
 
 		segmentBool1  = true;
 		segmentTimer1 = 4.0f; //"left stick to look, right stick to move"
@@ -863,11 +866,6 @@ void TutorialLayer::segment5()
 		initSegment       = false;
 		isSegmentFinished = false;
 
-		//reset to segment 1 values
-		playerTransform.setPosition(playerSegment1Pos);
-		playerTransform.setRotation(playerSegment1Rot);
-		cameraTransform.setRotation(cameraSegment1Rot);
-
 		//drop any items
 		CancelButtonPressedEvent cancelButtonPressed;
 		cancelButtonPressed.playerEntity = tutPlayerEntity;
@@ -878,9 +876,11 @@ void TutorialLayer::segment5()
 			fifthSegmentInit = true;
 
 			playerSegment5    = &player;
-			playerSegment5Pos = playerTransform.getPosition();
-			playerSegment5Rot = playerTransform.getRotation();
-			cameraSegment5Rot = cameraTransform.getRotation();
+
+			//same position and rotation as the first segment (in captain's quarters)
+			playerSegment5Pos = playerSegment1Pos;
+			playerSegment5Rot = playerSegment1Rot;
+			cameraSegment5Rot = cameraSegment1Rot;
 		}
 
 		player = *playerSegment5;
@@ -888,10 +888,10 @@ void TutorialLayer::segment5()
 		playerTransform.setRotation(playerSegment5Rot);
 		cameraTransform.setRotation(cameraSegment5Rot);
 
-		segmentTimer1 = 5.0f;
-		segmentTimer2 = 0.0f;
-		segmentTimer3 = 0.0f;
-		segmentTimer4 = 0.0f;
+		segmentTimer1 = 2.0f; //"alright lets go grab some gloop"
+		segmentTimer2 = 0.7f; //delay before grabbing gloop
+		segmentTimer3 = 0.6f; //delay before walking towards captains quarters exit
+		segmentTimer4 = 9.0f; //"when holding gloop, you can see which piles on the enemy ship can be glooped"
 		segmentTimer5 = 0.0f;
 		segmentTimer6 = 0.0f;
 		segmentTimer7 = 0.0f;
@@ -911,7 +911,7 @@ void TutorialLayer::segment5()
 	if (segmentTimer1 > 0.0f)
 		return;
 
-	//move to the gloop
+	//move to the gloop spawn
 	if (segmentBool1)
 	{
 		glm::vec3 targetPos = glm::vec3(11.36f, playerTransform.getPositionY(), -5.71f);
@@ -924,15 +924,69 @@ void TutorialLayer::segment5()
 			segmentBool1 = false;
 	}
 
+	//rotate towards gloop spawn
 	if (segmentBool2)
 	{
 		segmentBool2 = false;
-		cameraTransform.rotate(glm::vec3(-35.0f, 0.0f, 0.0f)); //TODO: rotate over time
-		playerTransform.rotate(glm::vec3(0.0f, -10.0f, 0.0f)); //TODO: rotate over time
+		cameraTransform.rotate(glm::vec3(24.0f, 0.0f, 0.0f)); //TODO: rotate over time
+		playerTransform.rotate(glm::vec3(0.0f, -7.0f, 0.0f)); //TODO: rotate over time
 	}
 
-	//playerTransform.rotate(glm::vec3(0.0f, -170.0f, 0.0f)); //TODO: rotate over time
-	//cameraTransform.rotate(glm::vec3(-69.0f, 0.0f, 0.0f)); //TODO: rotate over time
+	segmentTimer2 -= Time::deltaTime();
+	if (segmentTimer2 > 0.0f)
+		return;
+
+	if (segmentBool3)
+	{
+		segmentBool3 = false;
+
+		//grab gloop
+		PlayerInteractionRequestEvent playerInteractionRequest;
+		playerInteractionRequest.playerEntity           = tutPlayerEntity;
+		playerInteractionRequest.itemClassificatonToUse = PlayerItemClassification::any;
+		postEvent(playerInteractionRequest);
+	}
+
+	segmentTimer3 -= Time::deltaTime();
+	if (segmentTimer3 > 0.0f)
+		return;
+
+	//move towards captains quarters exit
+	if (segmentBool4)
+	{
+		glm::vec3 targetPos = glm::vec3(10.56f, playerTransform.getPositionY(), -2.58f);
+		bool isFinished;
+
+		movePlayerToPos(targetPos, &isFinished);
+		if (!isFinished)
+			return;
+		else
+			segmentBool4 = false;
+	}
+
+	//move towards the middle of the ship
+	if (segmentBool5)
+	{
+		glm::vec3 targetPos = glm::vec3(2.35f, playerTransform.getPositionY(), -2.58f);
+		bool isFinished;
+
+		movePlayerToPos(targetPos, &isFinished);
+		if (!isFinished)
+			return;
+		else
+			segmentBool5 = false;
+	}
+
+	//rotate towards enemy ship
+	if (segmentBool6)
+	{
+		segmentBool6 = false;
+		playerTransform.rotate(glm::vec3(0.0f, 97.0f, 0.0f)); //TODO: rotate over time
+	}
+
+	segmentTimer4 -= Time::deltaTime();
+	if (segmentTimer4 > 0.0f)
+		return;
 
 	isSegmentFinished = true;
 }
@@ -1028,6 +1082,7 @@ void TutorialLayer::movePlayerToPos(glm::vec3 a_targetPos, bool* a_isFinished)
 	if (interpolationParam < 1.0f)
 	{
 		*a_isFinished = false;
+
 		playerTransform.setPosition(
 			glm::mix(
 				playerTransform.getPosition(),
@@ -1045,7 +1100,7 @@ void TutorialLayer::moveToNextSegment()
 	{
 	case TutorialSegment::segment1:
 	{
-		currentSegmentFunc = &TutorialLayer::segment2;
+		currentSegmentFunc = &TutorialLayer::segment5; //TODO: SET BACK TO SEGMENT 2
 		break;
 	}
 	case TutorialSegment::segment2:
