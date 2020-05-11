@@ -567,20 +567,26 @@ void TutorialLayer::segment3()
 		segmentBool7 = true;
 		segmentBool8 = true;
 
-		//force player to be holding a cleaning solution
-		auto carryableItemView = registry->view<CarryableItem>();
-		for (auto itemEntity : carryableItemView)
+		if (player.secondaryCarriedItem == entt::null)
 		{
-			auto& carryable = registry->get<CarryableItem>(itemEntity);
-
-			if (carryable.type == CarryableItemType::cleaningSolution && carryable.team == player.team)
+			//force player to be holding a cleaning solution
+			auto carryableItemView = registry->view<CarryableItem>();
+			for (auto itemEntity : carryableItemView)
 			{
-				PlayerForceItemPickUpEvent forceItemPickUp;
-				forceItemPickUp.playerEntity = tutPlayerEntity;
-				forceItemPickUp.itemEntity   = itemEntity;
-				postEvent(forceItemPickUp);
+				auto& carryable          = registry->get<CarryableItem>(itemEntity);
+				auto& carryableTransform = registry->get<component::Transform>(itemEntity);
 
-				break;
+				if (   carryable.type == CarryableItemType::cleaningSolution 
+					&& carryable.team == player.team
+					&& carryableTransform.getPositionY() > -999.0f) //ensure it's not a prefab entity
+				{
+					PlayerForceItemPickUpEvent forceItemPickUp;
+					forceItemPickUp.playerEntity = tutPlayerEntity;
+					forceItemPickUp.itemEntity   = itemEntity;
+					postEvent(forceItemPickUp);
+
+					break;
+				}
 			}
 		}
 	}
@@ -1084,8 +1090,8 @@ void TutorialLayer::segment6()
 		playerTransform.setRotation(playerSegment6Rot);
 		cameraTransform.setRotation(cameraSegment6Rot);
 
-		segmentTimer1 = 30.0f; //delay for audio
-		segmentTimer2 = 0.0f;
+		segmentTimer1 = 9.0f; //"there's a throwable bottle that spawns between the ships, use it to disrupt the enemy"
+		segmentTimer2 = 0.8f; //delay after picking up the bottle (before turning towards the enemy)
 		segmentTimer3 = 0.0f;
 		segmentTimer4 = 0.0f;
 		segmentTimer5 = 0.0f;
@@ -1101,11 +1107,142 @@ void TutorialLayer::segment6()
 		segmentBool6 = true;
 		segmentBool7 = true;
 		segmentBool8 = true;
+		segmentBool9 = true;
+
+		//get player 2 (enemy that's standing still waiting to be hit by a bottle)
+		entt::entity playerTwoEntity;
+		
+		auto playerView = registry->view<Player>();
+		for (auto& playerEntity : playerView)
+		{
+			auto& player = registry->get<Player>(playerEntity);
+
+			if (player.playerNum == PlayerNumber::Two)
+				playerTwoEntity = playerEntity;
+		}
+
+		auto& playerTwo          = registry->get<Player>(playerTwoEntity);
+		auto& playerTwoTransform = registry->get<component::Transform>(playerTwoEntity);
+
+		auto carryableItemView = registry->view<CarryableItem>();
+		for (auto itemEntity : carryableItemView)
+		{
+			auto& carryable          = registry->get<CarryableItem>(itemEntity);
+			auto& carryableTransform = registry->get<component::Transform>(itemEntity);
+
+			//force player 2 to hold a mop and cleaning solution
+			if ((  playerTwo.secondaryCarriedItem == entt::null 
+				&& carryable.type == CarryableItemType::cleaningSolution 
+				&& carryable.team == playerTwo.team
+				&& carryableTransform.getPositionY() > -999.0f) //ensure it's not a prefab entity
+				||
+				(  playerTwo.primaryCarriedItem == entt::null
+				&& carryable.type == CarryableItemType::mop
+				&& carryable.team == playerTwo.team
+				&& carryableTransform.getPositionY() > -999.0f)) //ensure it's not a prefab entity
+			{
+				PlayerForceItemPickUpEvent forceItemPickUp;
+				forceItemPickUp.playerEntity = playerTwoEntity;
+				forceItemPickUp.itemEntity   = itemEntity;
+				postEvent(forceItemPickUp);
+			}
+		}
+
+		//reset player two position
+		playerTwoTransform.setPosition(
+			glm::vec3(
+				3.75f, 
+				playerTwoTransform.getPositionY(), 
+				22.1f));
+	}
+
+	//rotate towards friendly ship
+	if (segmentBool1)
+	{
+		segmentBool1 = false;
+		cameraTransform.rotate(glm::vec3(45.0f, 0.0f, 0.0f)); //TODO: rotate over time
+		playerTransform.rotate(glm::vec3(0.0f, 194.0f, 0.0f)); //TODO: rotate over time
+	}
+
+	//move towards the plank between the two ships
+	if (segmentBool2)
+	{
+		glm::vec3 targetPos = glm::vec3(-5.7f, playerTransform.getPositionY(), 19.21f);
+		bool isFinished;
+
+		movePlayerTowardPos(targetPos, &isFinished);
+		if (!isFinished)
+			return;
+		else
+			segmentBool2 = false;
+	}
+
+	//move towards the bottle spawn, at the middle of the plank
+	if (segmentBool3)
+	{
+		glm::vec3 targetPos = glm::vec3(-6.6f, playerTransform.getPositionY(), 11.5f);
+		bool isFinished;
+
+		movePlayerTowardPos(targetPos, &isFinished);
+		if (!isFinished)
+			return;
+		else
+		{
+			segmentBool3 = false;
+
+			//look at the bottle
+			cameraTransform.rotate(glm::vec3(-41.0f, 0.0f, 0.0f)); //TODO: rotate over time
+		}
 	}
 
 	segmentTimer1 -= Time::deltaTime();
 	if (segmentTimer1 > 0.0f)
 		return;
+
+	//pick up the bottle
+	PlayerInteractionRequestEvent playerInteractionRequest;
+	playerInteractionRequest.playerEntity           = tutPlayerEntity;
+	playerInteractionRequest.itemClassificatonToUse = PlayerItemClassification::any;
+	postEvent(playerInteractionRequest);
+
+	segmentTimer2 -= Time::deltaTime();
+	if (segmentTimer2 > 0.0f)
+		return;
+
+	//TODO: make sure to give the enemy a mop and cleaning solution
+	//rotate towards the enemy
+	if (segmentBool4)
+	{
+		segmentBool4 = false;
+		cameraTransform.rotate(glm::vec3(34.0f, 0.0f, 0.0f)); //TODO: rotate over time
+		playerTransform.rotate(glm::vec3(0.0f, -113.0f, 0.0f)); //TODO: rotate over time
+	}
+
+	//move across the plank and back on the enemy's ship
+	if (segmentBool5)
+	{
+		glm::vec3 targetPos = glm::vec3(-5.7f, playerTransform.getPositionY(), 19.21f);
+		bool isFinished;
+
+		movePlayerTowardPos(targetPos, &isFinished);
+		if (!isFinished)
+			return;
+		else
+			segmentBool5 = false;
+	}
+
+	//move toward the enemy
+	if (segmentBool6)
+	{
+		glm::vec3 targetPos = glm::vec3(0.63f, playerTransform.getPositionY(), 21.4f);
+		bool isFinished;
+
+		movePlayerTowardPos(targetPos, &isFinished);
+		if (!isFinished)
+			return;
+		else
+			segmentBool6 = false;
+	}
 
 	isSegmentFinished = true;
 }
@@ -1124,7 +1261,7 @@ void TutorialLayer::outro()
 		initSegment       = false;
 		isSegmentFinished = false;
 
-		segmentTimer1 = 6.0f; //"Ill see yall later have fun"
+		segmentTimer1 = 6.0f; //"Ill see yall later. SUU WHOOP"
 	}
 
 	segmentTimer1 -= Time::deltaTime();

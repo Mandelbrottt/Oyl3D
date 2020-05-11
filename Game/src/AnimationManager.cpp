@@ -2,17 +2,27 @@
 
 void AnimationManager::setAnimationEntities(oyl::Event event)
 {
-
 	auto evt = event_cast<PlayerDroppedItemEvent>(event);
 
 	if (!registry->valid(evt.playerEntity)) { return; }
 
 	auto& playerTransform = registry->get<component::Transform>(evt.playerEntity);
 
+	playerCamera = entt::null; //initially set camera to null
+
 	//Getting the Camera
 	for (auto child : playerTransform.getChildrenEntities())
 		if (registry->has<component::Camera>(child))
 			playerCamera = child;
+
+	//if there's no valid camera, set invalid entities and early return
+	if (!registry->valid(playerCamera))
+	{
+		playerArmL = entt::null;
+		playerArmR = entt::null;
+
+		return;
+	}
 
 	//Getting the individual arms
 	for (auto child : registry->get<component::Transform>(playerCamera).getChildrenEntities())
@@ -38,7 +48,6 @@ void AnimationManager::setAnimationEntities(oyl::Event event)
 	for (auto child : registry->get<component::Transform>(playerArmRTarget).getChildrenEntities())
 		if (registry->has<component::Renderable>(child))
 			playerArmRObject = child;
-
 }
 
 void AnimationManager::setAnimationProperties(std::string p_tag, AnimationProperties p_type, bool p_loop)
@@ -355,6 +364,10 @@ bool AnimationManager::onEvent(const Event& event)
 
 		//set the entities
 		setAnimationEntities(event);
+
+		//stop if there aren't valid animation entities
+		if (!registry->valid(playerArmL) || !registry->valid(playerArmR))
+			break;
 
 		switch (evt.itemType)
 		{
