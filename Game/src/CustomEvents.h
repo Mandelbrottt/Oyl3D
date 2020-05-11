@@ -186,8 +186,8 @@ OYL_EVENT_STRUCT(GloopedUsedEvent, (oyl::EventType) TypeGloopUsed, (oyl::EventCa
 
 OYL_EVENT_STRUCT(ThrowBottleEvent, (oyl::EventType) TypeThrowBottle, (oyl::EventCategory) CategoryThrowableBottle,
 	{
+		entt::entity playerEntity;
 		entt::entity bottleEntity;
-		entt::entity playerThrowingEntity;
 	}); 
 
 OYL_EVENT_STRUCT(ThrowableBottleHitEvent, (oyl::EventType) TypeThrowableBottleHit, (oyl::EventCategory) CategoryThrowableBottle,

@@ -230,7 +230,7 @@ struct ThrowableBottle
 	float throwSpeed   = 16.0f;
 	bool isBeingThrown = false;
 
-	entt::entity playerThrowingEntity = entt::null;
+	entt::entity playerEntity = entt::null;
 };
 
 struct ThrowBottlePrompt

@@ -68,11 +68,11 @@ bool ThrowableBottleSystem::onEvent(const Event& event)
 			bottleTransform.setParent(entt::null);
 			bottleCarryable.isBeingCarried = false;
 
-			bottle.isBeingThrown        = true;
-			bottle.playerThrowingEntity = evt.playerThrowingEntity;
+			bottle.isBeingThrown = true;
+			bottle.playerEntity  = evt.playerEntity;
 
-			auto& player          = registry->get<Player>(evt.playerThrowingEntity);
-			auto& playerTransform = registry->get<component::Transform>(evt.playerThrowingEntity);
+			auto& player          = registry->get<Player>(evt.playerEntity);
+			auto& playerTransform = registry->get<component::Transform>(evt.playerEntity);
 
 			glm::vec3 newPosition = playerTransform.getPosition();
 			newPosition += playerTransform.getForward() * 0.7f;
@@ -141,7 +141,7 @@ bool ThrowableBottleSystem::onEvent(const Event& event)
 					break;
 				}
 
-				if (bottle.playerThrowingEntity != playerEntity)
+				if (bottle.playerEntity != playerEntity)
 				{
 					auto& player          = registry->get<Player>(playerEntity);
 					auto& playerTransform = registry->get<component::Transform>(playerEntity);

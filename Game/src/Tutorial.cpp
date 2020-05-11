@@ -1090,14 +1090,15 @@ void TutorialLayer::segment6()
 		playerTransform.setRotation(playerSegment6Rot);
 		cameraTransform.setRotation(cameraSegment6Rot);
 
-		segmentTimer1 = 9.0f; //"there's a throwable bottle that spawns between the ships, use it to disrupt the enemy"
-		segmentTimer2 = 0.8f; //delay after picking up the bottle (before turning towards the enemy)
-		segmentTimer3 = 0.0f;
-		segmentTimer4 = 0.0f;
-		segmentTimer5 = 0.0f;
-		segmentTimer6 = 0.0f;
+		segmentTimer1 = 0.9f; //delay before moving toward bottle spawn
+		segmentTimer2 = 9.0f; //"there's a throwable bottle that spawns between the ships, use it to disrupt the enemy"
+		segmentTimer3 = 0.8f; //delay after picking up the bottle (before turning towards the enemy)
+		segmentTimer4 = 3.0f; //"press right trigger to throw the bottle"
+		segmentTimer5 = 7.0f; //"bring the mop back to your ship"
+		segmentTimer6 = 4.0f; //"press B or right bumper to drop"
 		segmentTimer7 = 0.0f;
 		segmentTimer8 = 0.0f;
+		segmentTimer9 = 0.0f;
 
 		segmentBool1 = true;
 		segmentBool2 = true;
@@ -1164,6 +1165,10 @@ void TutorialLayer::segment6()
 		playerTransform.rotate(glm::vec3(0.0f, 194.0f, 0.0f)); //TODO: rotate over time
 	}
 
+	segmentTimer1 -= Time::deltaTime();
+	if (segmentTimer1 > 0.0f)
+		return;
+
 	//move towards the plank between the two ships
 	if (segmentBool2)
 	{
@@ -1195,21 +1200,22 @@ void TutorialLayer::segment6()
 		}
 	}
 
-	segmentTimer1 -= Time::deltaTime();
-	if (segmentTimer1 > 0.0f)
-		return;
-
-	//pick up the bottle
-	PlayerInteractionRequestEvent playerInteractionRequest;
-	playerInteractionRequest.playerEntity           = tutPlayerEntity;
-	playerInteractionRequest.itemClassificatonToUse = PlayerItemClassification::any;
-	postEvent(playerInteractionRequest);
-
 	segmentTimer2 -= Time::deltaTime();
 	if (segmentTimer2 > 0.0f)
 		return;
 
-	//TODO: make sure to give the enemy a mop and cleaning solution
+	//pick up the bottle
+	{
+		PlayerInteractionRequestEvent playerInteractionRequest;
+		playerInteractionRequest.playerEntity = tutPlayerEntity;
+		playerInteractionRequest.itemClassificatonToUse = PlayerItemClassification::any;
+		postEvent(playerInteractionRequest);
+	}
+
+	segmentTimer3 -= Time::deltaTime();
+	if (segmentTimer3 > 0.0f)
+		return;
+
 	//rotate towards the enemy
 	if (segmentBool4)
 	{
@@ -1242,6 +1248,18 @@ void TutorialLayer::segment6()
 			return;
 		else
 			segmentBool6 = false;
+	}
+
+	segmentTimer4 -= Time::deltaTime();
+	if (segmentTimer4 > 0.0f)
+		return;
+
+	//throw bottle
+	{
+		PlayerInteractionRequestEvent playerInteractionRequest;
+		playerInteractionRequest.playerEntity           = tutPlayerEntity;
+		playerInteractionRequest.itemClassificatonToUse = PlayerItemClassification::primary;
+		postEvent(playerInteractionRequest);
 	}
 
 	isSegmentFinished = true;

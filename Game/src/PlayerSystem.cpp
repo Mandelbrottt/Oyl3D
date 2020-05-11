@@ -136,8 +136,8 @@ void PlayerSystem::onUpdate()
 					changeToIdle(playerEntity);
 
 					ThrowBottleEvent throwBottle;
-					throwBottle.bottleEntity         = player.primaryCarriedItem;
-					throwBottle.playerThrowingEntity = playerEntity;
+					throwBottle.playerEntity = playerEntity;
+					throwBottle.bottleEntity = player.primaryCarriedItem;
 					postEvent(throwBottle);
 
 					player.primaryCarriedItem = entt::null;
