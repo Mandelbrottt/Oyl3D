@@ -52,6 +52,10 @@ void AnimationManager::setAnimationEntities(oyl::Event event)
 
 void AnimationManager::setAnimationProperties(std::string p_tag, AnimationProperties p_type, bool p_loop)
 {
+	//early return if invalid animation entities
+	if (!registry->valid(playerArmL) || !registry->valid(playerArmR))
+		return;
+
 	if (p_tag.find("_R") != std::string::npos)
 	{
 		registry->get<component::SkeletonAnimatable>(playerArmR).animation = p_tag;

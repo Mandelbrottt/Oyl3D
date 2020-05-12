@@ -136,6 +136,16 @@ void TutorialLayer::onUpdate()
 				initialCannonPos      = cannonTransform.getPosition();
 			}
 		}
+
+		//set throwable bottle respawn timer below normal value otherwise the segment can be replayed before a new bottle spawns
+		auto spawnerView = registry->view<RespawnManager>();
+		for (auto& spawnerEntity : spawnerView)
+		{
+			auto& spawner = registry->get<RespawnManager>(spawnerEntity);
+			
+			if (spawner.type == CarryableItemType::throwableBottle)
+				spawner.respawnTimerDuration = 5.0f;
+		}
 	}
 
 	SetMaxGarbageLevelEvent setMaxGarbageLevel;
@@ -1094,9 +1104,9 @@ void TutorialLayer::segment6()
 		segmentTimer2 = 9.0f; //"there's a throwable bottle that spawns between the ships, use it to disrupt the enemy"
 		segmentTimer3 = 0.8f; //delay after picking up the bottle (before turning towards the enemy)
 		segmentTimer4 = 3.0f; //"press right trigger to throw the bottle"
-		segmentTimer5 = 7.0f; //"bring the mop back to your ship"
-		segmentTimer6 = 4.0f; //"press B or right bumper to drop"
-		segmentTimer7 = 0.0f;
+		segmentTimer5 = 2.0f; //"bring the mop back to your ship" (will be continued as the player walks back to their ship so this doesn't need to be the full duration)
+		segmentTimer6 = 0;
+		segmentTimer7 = 4.0f; //"press B or right bumper to drop"
 		segmentTimer8 = 0.0f;
 		segmentTimer9 = 0.0f;
 
@@ -1125,27 +1135,40 @@ void TutorialLayer::segment6()
 		auto& playerTwo          = registry->get<Player>(playerTwoEntity);
 		auto& playerTwoTransform = registry->get<component::Transform>(playerTwoEntity);
 
+		bool playerTwoHasPrimary   = playerTwo.primaryCarriedItem   != entt::null;
+		bool playerTwoHasSecondary = playerTwo.secondaryCarriedItem != entt::null;
+
 		auto carryableItemView = registry->view<CarryableItem>();
 		for (auto itemEntity : carryableItemView)
 		{
 			auto& carryable          = registry->get<CarryableItem>(itemEntity);
 			auto& carryableTransform = registry->get<component::Transform>(itemEntity);
 
-			//force player 2 to hold a mop and cleaning solution
-			if ((  playerTwo.secondaryCarriedItem == entt::null 
-				&& carryable.type == CarryableItemType::cleaningSolution 
-				&& carryable.team == playerTwo.team
-				&& carryableTransform.getPositionY() > -999.0f) //ensure it's not a prefab entity
-				||
-				(  playerTwo.primaryCarriedItem == entt::null
+			//force player 2 to hold a mop
+			if (   !playerTwoHasPrimary
 				&& carryable.type == CarryableItemType::mop
 				&& carryable.team == playerTwo.team
-				&& carryableTransform.getPositionY() > -999.0f)) //ensure it's not a prefab entity
+				&& carryableTransform.getPositionY() > -999.0f) //ensure it's not a prefab entity
 			{
 				PlayerForceItemPickUpEvent forceItemPickUp;
 				forceItemPickUp.playerEntity = playerTwoEntity;
 				forceItemPickUp.itemEntity   = itemEntity;
 				postEvent(forceItemPickUp);
+
+				playerTwoHasPrimary = true;
+			}
+			//force player 2 to hold a cleaning solution
+			else if (   !playerTwoHasSecondary 
+				     && carryable.type == CarryableItemType::cleaningSolution 
+				     && carryable.team == playerTwo.team
+				     && carryableTransform.getPositionY() > -999.0f) //ensure it's not a prefab entity
+			{
+				PlayerForceItemPickUpEvent forceItemPickUp;
+				forceItemPickUp.playerEntity = playerTwoEntity;
+				forceItemPickUp.itemEntity   = itemEntity;
+				postEvent(forceItemPickUp);
+
+				playerTwoHasSecondary = true;
 			}
 		}
 
@@ -1240,7 +1263,7 @@ void TutorialLayer::segment6()
 	//move toward the enemy
 	if (segmentBool6)
 	{
-		glm::vec3 targetPos = glm::vec3(0.63f, playerTransform.getPositionY(), 21.4f);
+		glm::vec3 targetPos = glm::vec3(1.4f, playerTransform.getPositionY(), 21.6f);
 		bool isFinished;
 
 		movePlayerTowardPos(targetPos, &isFinished);
@@ -1260,6 +1283,31 @@ void TutorialLayer::segment6()
 		playerInteractionRequest.playerEntity           = tutPlayerEntity;
 		playerInteractionRequest.itemClassificatonToUse = PlayerItemClassification::primary;
 		postEvent(playerInteractionRequest);
+	}
+
+	segmentTimer5 -= Time::deltaTime();
+	if (segmentTimer5 > 0.0f)
+		return;
+
+	//rotate towards the mop on the ground
+	if (segmentBool7)
+	{
+		segmentBool7 = false;
+		cameraTransform.rotate(glm::vec3(-44.0f, 0.0f, 0.0f)); //TODO: rotate over time
+		//playerTransform.rotate(glm::vec3(0.0f, 13.0f, 0.0f)); //TODO: rotate over time
+	}
+
+	//move to pick up mop
+	if (segmentBool8)
+	{
+		glm::vec3 targetPos = glm::vec3(1.6f, playerTransform.getPositionY(), 19.3f);
+		bool isFinished;
+
+		movePlayerTowardPos(targetPos, &isFinished);
+		if (!isFinished)
+			return;
+		else
+			segmentBool8 = false;
 	}
 
 	isSegmentFinished = true;
