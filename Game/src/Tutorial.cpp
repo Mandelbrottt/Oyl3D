@@ -19,12 +19,12 @@ using namespace oyl;
 
 void TutorialLayer::onEnter()
 {
-	firstSegmentInit   = false;
-	secondSegmentInit  = false;
-	thirdSegmentInit   = false;
-	fourthSegmentInit  = false;
-	fifthSegmentInit   = false;
-	sixthSegmentInit   = false;
+	firstSegmentInit  = false;
+	secondSegmentInit = false;
+	thirdSegmentInit  = false;
+	fourthSegmentInit = false;
+	fifthSegmentInit  = false;
+	sixthSegmentInit  = false;
 
 	listenForEventCategory(EventCategory::Keyboard);
 	listenForEventCategory(EventCategory::Gamepad);
@@ -99,7 +99,7 @@ void TutorialLayer::onUpdate()
 	{
 		firstFrame  = false;
 		initSegment = true;
-		currentSegmentFunc = &TutorialLayer::segment1; //TODO: SET BACK TO INTRO
+		currentSegmentFunc = &TutorialLayer::intro;
 
 		//remove any unwanted players
 		auto playerView = registry->view<Player>();
@@ -144,7 +144,7 @@ void TutorialLayer::onUpdate()
 			auto& spawner = registry->get<RespawnManager>(spawnerEntity);
 			
 			if (spawner.type == CarryableItemType::throwableBottle)
-				spawner.respawnTimerDuration = 5.0f;
+				spawner.respawnTimerDuration = 20.0f;
 		}
 	}
 
@@ -923,6 +923,25 @@ void TutorialLayer::segment5()
 		segmentBool8  = true;
 		segmentBool9  = true;
 		segmentBool10 = true;
+
+		//ensure gloop starts at spawn
+		auto carryableItemView = registry->view<CarryableItem>();
+		for (auto itemEntity : carryableItemView)
+		{
+			auto& carryable = registry->get<CarryableItem>(itemEntity);
+			auto& carryableTransform = registry->get<component::Transform>(itemEntity);
+
+			if (   carryable.type == CarryableItemType::gloop 
+				&& carryable.hasBeenCarried == false
+				&& carryable.team == player.team
+				&& carryableTransform.getPositionY() > -999.0f) //ensure it's not a prefab entity
+			{
+				carryableTransform.setPosition(glm::vec3(9.46f, 2.08f, -5.95f));
+
+				carryableTransform.setRotation(glm::vec3(0.0f, 0.0f, 0.0f));
+				carryableTransform.rotate(glm::vec3(0.0f, 83.82f, 0.0f));
+			}
+		}
 	}
 
 	segmentTimer1 -= Time::deltaTime();
@@ -1105,20 +1124,33 @@ void TutorialLayer::segment6()
 		segmentTimer3 = 0.8f; //delay after picking up the bottle (before turning towards the enemy)
 		segmentTimer4 = 3.0f; //"press right trigger to throw the bottle"
 		segmentTimer5 = 2.0f; //"bring the mop back to your ship" (will be continued as the player walks back to their ship so this doesn't need to be the full duration)
-		segmentTimer6 = 0;
-		segmentTimer7 = 4.0f; //"press B or right bumper to drop"
+		segmentTimer6 = 4.0f; //"press B or right bumper to drop"
+		segmentTimer7 = 0.0f;
 		segmentTimer8 = 0.0f;
 		segmentTimer9 = 0.0f;
 
-		segmentBool1 = true;
-		segmentBool2 = true;
-		segmentBool3 = true;
-		segmentBool4 = true;
-		segmentBool5 = true;
-		segmentBool6 = true;
-		segmentBool7 = true;
-		segmentBool8 = true;
-		segmentBool9 = true;
+		segmentBool1  = true;
+		segmentBool2  = true;
+		segmentBool3  = true;
+		segmentBool4  = true;
+		segmentBool5  = true;
+		segmentBool6  = true;
+		segmentBool7  = true;
+		segmentBool8  = true;
+		segmentBool9  = true;
+		segmentBool10 = true;
+		segmentBool11 = true;
+
+		//ensure throwable bottle starts at spawn
+		auto carryableItemView = registry->view<CarryableItem>();
+		for (auto itemEntity : carryableItemView)
+		{
+			auto& carryable          = registry->get<CarryableItem>(itemEntity);
+			auto& carryableTransform = registry->get<component::Transform>(itemEntity);
+
+			if (carryable.type == CarryableItemType::throwableBottle && carryableTransform.getPositionY() > -999.0f) //ensure it's not a prefab entity
+				carryableTransform.setPosition(glm::vec3(-7.04f, 0.61f, 10.14f));
+		}
 
 		//get player 2 (enemy that's standing still waiting to be hit by a bottle)
 		entt::entity playerTwoEntity;
@@ -1138,7 +1170,7 @@ void TutorialLayer::segment6()
 		bool playerTwoHasPrimary   = playerTwo.primaryCarriedItem   != entt::null;
 		bool playerTwoHasSecondary = playerTwo.secondaryCarriedItem != entt::null;
 
-		auto carryableItemView = registry->view<CarryableItem>();
+		carryableItemView = registry->view<CarryableItem>();
 		for (auto itemEntity : carryableItemView)
 		{
 			auto& carryable          = registry->get<CarryableItem>(itemEntity);
@@ -1294,21 +1326,76 @@ void TutorialLayer::segment6()
 	{
 		segmentBool7 = false;
 		cameraTransform.rotate(glm::vec3(-44.0f, 0.0f, 0.0f)); //TODO: rotate over time
-		//playerTransform.rotate(glm::vec3(0.0f, 13.0f, 0.0f)); //TODO: rotate over time
 	}
 
 	//move to pick up mop
 	if (segmentBool8)
 	{
-		glm::vec3 targetPos = glm::vec3(1.6f, playerTransform.getPositionY(), 19.3f);
+		glm::vec3 targetPos = glm::vec3(1.9f, playerTransform.getPositionY(), 19.3f);
 		bool isFinished;
 
 		movePlayerTowardPos(targetPos, &isFinished);
 		if (!isFinished)
 			return;
 		else
+		{
 			segmentBool8 = false;
+
+			//rotate towards friendly ship
+			cameraTransform.rotate(glm::vec3(24.0f, 0.0f, 0.0f)); //TODO: rotate over time
+			playerTransform.rotate(glm::vec3(0.0f, 120.0f, 0.0f)); //TODO: rotate over time
+		}
 	}
+
+	//move towards the plank between the two ships
+	if (segmentBool9)
+	{
+		glm::vec3 targetPos = glm::vec3(-5.7f, playerTransform.getPositionY(), 19.21f);
+		bool isFinished;
+
+		movePlayerTowardPos(targetPos, &isFinished);
+		if (!isFinished)
+			return;
+		else
+			segmentBool9 = false;
+	}
+
+	//move across the plank to the friendly ship
+	if (segmentBool10)
+	{
+		glm::vec3 targetPos = glm::vec3(-5.7f, playerTransform.getPositionY(), 0.92f);
+		bool isFinished;
+
+		movePlayerTowardPos(targetPos, &isFinished);
+		if (!isFinished)
+			return;
+		else
+			segmentBool10 = false;
+	}
+
+	//move to the front of the friendly ship
+	if (segmentBool11)
+	{
+		glm::vec3 targetPos = glm::vec3(13.6f, playerTransform.getPositionY(), -4.4f);
+		bool isFinished;
+
+		movePlayerTowardPos(targetPos, &isFinished);
+		if (!isFinished)
+			return;
+		else
+			segmentBool11 = false;
+	}
+
+	segmentTimer6 -= Time::deltaTime();
+	if (segmentTimer6 > 0.0f)
+		return;
+
+	//drop the mop
+	PlayerDropItemRequestEvent playerDropItemRequest;
+	playerDropItemRequest.playerEntity             = tutPlayerEntity;
+	playerDropItemRequest.itemClassificationToDrop = PlayerItemClassification::primary;
+	playerDropItemRequest.forceDrop                = false;
+	postEvent(playerDropItemRequest);
 
 	isSegmentFinished = true;
 }
@@ -1327,7 +1414,7 @@ void TutorialLayer::outro()
 		initSegment       = false;
 		isSegmentFinished = false;
 
-		segmentTimer1 = 6.0f; //"Ill see yall later. SUU WHOOP"
+		segmentTimer1 = 7.0f; //"Ill see yall later. SUU WHOOP"
 	}
 
 	segmentTimer1 -= Time::deltaTime();
@@ -1369,7 +1456,7 @@ void TutorialLayer::moveToNextSegment()
 	{
 	case TutorialSegment::segment1:
 	{
-		currentSegmentFunc = &TutorialLayer::segment5; //TODO: SET BACK TO SEGMENT 2
+		currentSegmentFunc = &TutorialLayer::segment2;
 		break;
 	}
 	case TutorialSegment::segment2:

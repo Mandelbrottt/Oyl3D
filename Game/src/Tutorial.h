@@ -51,6 +51,7 @@ public:
 	bool segmentBool8;
 	bool segmentBool9;
 	bool segmentBool10;
+	bool segmentBool11;
 
 	float segmentInterpolationParam1;
 	float segmentInterpolationParam2;
