@@ -195,6 +195,12 @@ bool CleaningQuicktimeEventSystem::onEvent(const Event& event)
 					cleanedWithMop.playerEntity   = evt.playerEntity;
 					cleanedWithMop.moppingForward = cleaningQTE.isPointingUp;
 					postEvent(cleanedWithMop);
+
+					//send out the stick moved event so the cleaning animation plays
+					StickMovedDuringQuicktimeCleaningEventEvent stickMoved;
+					stickMoved.playerEntity = evt.playerEntity;
+					stickMoved.stickPosY    = cleaningQTE.isPointingUp ? 0.7f : -0.7f;
+					postEvent(stickMoved);
 				}
 			}
 

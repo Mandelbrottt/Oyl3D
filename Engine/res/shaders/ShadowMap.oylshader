@@ -2,7 +2,7 @@
 
 #extension GL_ARB_explicit_uniform_location : require
 
-#if defined(OYL_VERT)
+#if defined(OYL_VERT) || defined(TYPE_VERTEX)
     layout (location = 0) in vec3 in_position;
 
     layout (location = 0) uniform mat4 u_lightSpaceMatrix;
@@ -12,7 +12,7 @@
     {
         gl_Position = u_lightSpaceMatrix * u_model * vec4(in_position, 1.0);
     }
-#elif defined(OYL_FRAG)
+#elif defined(OYL_FRAG) || defined(TYPE_FRAGMENT)
     void main()
     {
 

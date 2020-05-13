@@ -64,6 +64,7 @@ bool PlayerInteractionValidationSystem::onEvent(const Event& event)
 	        
 			break;
 	    }
+
 		case (EventType)TypeCancelButtonPressed:
 		{
 			auto evt = event_cast<CancelButtonPressedEvent>(event);
@@ -86,6 +87,7 @@ bool PlayerInteractionValidationSystem::onEvent(const Event& event)
 			
 			break;
 		}
+
 		case (EventType)TypePlayerDropItemRequest:
 		{
 			auto evt = event_cast<PlayerDropItemRequestEvent>(event);
@@ -115,6 +117,16 @@ bool PlayerInteractionValidationSystem::onEvent(const Event& event)
 					break;
 				}
 			}
+
+			break;
+		}
+
+		//forces an item to be pick up by the player no matter the situation (used in tutorial)
+		case (EventType)TypePlayerForceItemPickUp:
+		{
+			auto evt = event_cast<PlayerForceItemPickUpEvent>(event);
+
+			performCarryableItemInteraction(evt.playerEntity, evt.itemEntity, PlayerItemClassification::any);
 
 			break;
 		}
@@ -593,9 +605,9 @@ void PlayerInteractionValidationSystem::validateCannonInteraction(entt::entity a
 
 			float playerForwardDotCannonRight = glm::dot(playerTransform.getForward(), cannonTransform.getRight());
 
-			bool isCannonOnLeftSideOfTrack  = (cannon.cannonTrackPosition == -1)
+			bool isCannonOnLeftSideOfTrack  = (cannon.trackPosition == -1)
 				? true : false;
-			bool isCannonOnRightSideOfTrack = (cannon.cannonTrackPosition == 1)
+			bool isCannonOnRightSideOfTrack = (cannon.trackPosition == 1)
 				? true : false;
 
 			//make sure the player is beside the cannon (don't let them push if they're directionly in front or behind it)
@@ -918,9 +930,9 @@ void PlayerInteractionValidationSystem::performCannonInteraction(entt::entity a_
 	{
 		float playerForwardDotCannonRight = glm::dot(playerTransform.getForward(), cannonTransform.getRight());
 
-		bool isCannonOnLeftSideOfTrack  = (cannon.cannonTrackPosition == -1)
+		bool isCannonOnLeftSideOfTrack  = (cannon.trackPosition == -1)
 			? true : false;
-		bool isCannonOnRightSideOfTrack = (cannon.cannonTrackPosition == 1)
+		bool isCannonOnRightSideOfTrack = (cannon.trackPosition == 1)
 			? true : false;
 
 		OYL_LOG("PLAYER FORWARD DOT PRODUCT W/ CANNON RIGHT: {}", playerForwardDotCannonRight);
@@ -935,7 +947,7 @@ void PlayerInteractionValidationSystem::performCannonInteraction(entt::entity a_
 
 			cannon.pushStateData.destinationPos = -cannonTransform.getRight() * glm::vec3(cannon.pushDistance, 0.0f, 0.0f) + cannonTransform.getPosition();
 
-			cannon.cannonTrackPosition--;
+			cannon.trackPosition--;
 		}
 		//player is on the left side of the cannon (will be pushing towards the right)
 		else
@@ -947,7 +959,7 @@ void PlayerInteractionValidationSystem::performCannonInteraction(entt::entity a_
 
 			cannon.pushStateData.destinationPos = cannonTransform.getRight() * glm::vec3(cannon.pushDistance, 0.0f, 0.0f) + cannonTransform.getPosition();
 
-			cannon.cannonTrackPosition++;
+			cannon.trackPosition++;
 		}
 
 		OYL_LOG("PUSHING!");

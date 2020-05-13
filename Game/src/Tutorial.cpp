@@ -19,7 +19,12 @@ using namespace oyl;
 
 void TutorialLayer::onEnter()
 {
-	firstFrame = true;
+	firstSegmentInit  = false;
+	secondSegmentInit = false;
+	thirdSegmentInit  = false;
+	fourthSegmentInit = false;
+	fifthSegmentInit  = false;
+	sixthSegmentInit  = false;
 
 	listenForEventCategory(EventCategory::Keyboard);
 	listenForEventCategory(EventCategory::Gamepad);
@@ -38,6 +43,8 @@ void TutorialLayer::onEnter()
 	scheduleSystemUpdate<GarbagePileGloopIndicatorSystem>();
 	scheduleSystemUpdate<GarbageMeterSystem>();
 	scheduleSystemUpdate<ThrowableBottleSystem>();
+
+	firstFrame = true;
 
 	{
 		auto e = registry->create();
@@ -115,6 +122,30 @@ void TutorialLayer::onUpdate()
 			else
 				registry->destroy(cameraEntity);
 		}
+
+		//set initial cannon variables
+		auto cannonView = registry->view<Cannon>();
+		for (auto& cannonEntity : cannonView)
+		{
+			auto& cannon          = registry->get<Cannon>(cannonEntity);
+			auto& cannonTransform = registry->get<component::Transform>(cannonEntity);
+
+			if (cannon.team == Team::blue)
+			{
+				initialCannonTrackPos = cannon.trackPosition;
+				initialCannonPos      = cannonTransform.getPosition();
+			}
+		}
+
+		//set throwable bottle respawn timer below normal value otherwise the segment can be replayed before a new bottle spawns
+		auto spawnerView = registry->view<RespawnManager>();
+		for (auto& spawnerEntity : spawnerView)
+		{
+			auto& spawner = registry->get<RespawnManager>(spawnerEntity);
+			
+			if (spawner.type == CarryableItemType::throwableBottle)
+				spawner.respawnTimerDuration = 20.0f;
+		}
 	}
 
 	SetMaxGarbageLevelEvent setMaxGarbageLevel;
@@ -151,9 +182,27 @@ bool TutorialLayer::onEvent(const Event& event)
 
 		switch (evt.keycode)
 		{
-		case oyl::Key::Backspace:
+		case oyl::Key::Escape:
 		{
 			Application::get().changeScene("MainMenuScene");
+			break;
+		}
+
+		case oyl::Key::Backspace:
+		{
+			if (!isSegmentFinished)
+				break;
+
+			repeatSegment();
+			break;
+		}
+
+		case oyl::Key::Enter:
+		{
+			if (!isSegmentFinished)
+				break;
+
+			moveToNextSegment();
 			break;
 		}
 		}
@@ -178,41 +227,7 @@ bool TutorialLayer::onEvent(const Event& event)
 			if (!isSegmentFinished)
 				break;
 
-			initSegment = true;
-			switch (currentSegment)
-			{
-			case TutorialSegment::segment1:
-			{
-				currentSegmentFunc = &TutorialLayer::segment2;
-				break;
-			}
-			case TutorialSegment::segment2:
-			{
-				currentSegmentFunc = &TutorialLayer::segment3;
-				break;
-			}
-			case TutorialSegment::segment3:
-			{
-				currentSegmentFunc = &TutorialLayer::segment4;
-				break;
-			}
-			case TutorialSegment::segment4:
-			{
-				currentSegmentFunc = &TutorialLayer::segment5;
-				break;
-			}
-			case TutorialSegment::segment5:
-			{
-				currentSegmentFunc = &TutorialLayer::segment6;
-				break;
-			}
-			case TutorialSegment::segment6:
-			{
-				currentSegmentFunc = &TutorialLayer::outro;
-				break;
-			}
-			}
-
+			moveToNextSegment();
 			break;
 		}
 
@@ -222,41 +237,7 @@ bool TutorialLayer::onEvent(const Event& event)
 			if (!isSegmentFinished)
 				break;
 
-			initSegment = true;
-			switch (currentSegment)
-			{
-				case TutorialSegment::segment1:
-				{
-					currentSegmentFunc = &TutorialLayer::segment1;
-					break;
-				}
-				case TutorialSegment::segment2:
-				{
-					currentSegmentFunc = &TutorialLayer::segment2;
-					break;
-				}
-				case TutorialSegment::segment3:
-				{
-					currentSegmentFunc = &TutorialLayer::segment3;
-					break;
-				}
-				case TutorialSegment::segment4:
-				{
-					currentSegmentFunc = &TutorialLayer::segment4;
-					break;
-				}
-				case TutorialSegment::segment5:
-				{
-					currentSegmentFunc = &TutorialLayer::segment5;
-					break;
-				}
-				case TutorialSegment::segment6:
-				{
-					currentSegmentFunc = &TutorialLayer::segment6;
-					break;
-				}
-			}
-
+			repeatSegment();
 			break;
 		}
 		}
@@ -279,11 +260,15 @@ void TutorialLayer::intro()
 
 	if (initSegment)
 	{
+		TutorialSegmentStartedEvent segmentStarted;
+		segmentStarted.segmentNum = 0;
+		postEvent(segmentStarted);
+
 		currentSegment    = TutorialSegment::intro;
 		initSegment       = false;
 		isSegmentFinished = false;
 
-		segmentTimer1 = 1.0f; //6
+		segmentTimer1 = 5.0f; //intro shit
 	}
 
 	segmentTimer1 -= Time::deltaTime();
@@ -297,20 +282,35 @@ void TutorialLayer::intro()
 void TutorialLayer::segment1()
 {
 	auto& playerTransform = registry->get<component::Transform>(tutPlayerEntity);
+	auto& cameraTransform = registry->get<component::Transform>(tutCameraEntity);
 
 	if (initSegment)
 	{
+		TutorialSegmentStartedEvent segmentStarted;
+		segmentStarted.segmentNum = 1;
+		postEvent(segmentStarted);
+
 		currentSegment    = TutorialSegment::segment1;
 		initSegment       = false;
 		isSegmentFinished = false;
 
-		playerTransform.setPosition(glm::vec3(15.45f, 1.00f, -3.0f));
-		playerTransform.rotate(glm::vec3(0.0f, 88.0f, 0.0f) - playerTransform.getRotationEuler());
+		if (!firstSegmentInit)
+		{
+			firstSegmentInit = true;
+
+			playerSegment1Pos = playerTransform.getPosition();
+			playerSegment1Rot = playerTransform.getRotation();
+			cameraSegment1Rot = cameraTransform.getRotation();
+		}
+
+		playerTransform.setPosition(playerSegment1Pos);
+		playerTransform.setRotation(playerSegment1Rot);
+		cameraTransform.setRotation(cameraSegment1Rot);
 
 		segmentBool1  = true;
-		segmentTimer1 = 1.0f; //4
-		segmentTimer2 = 1.5f; //2.5
-		segmentTimer3 = 1.2f;
+		segmentTimer1 = 4.0f; //"left stick to look, right stick to move"
+		segmentTimer2 = 2.5f; //"A to jump"
+		segmentTimer3 = 1.2f; //delay before ending segment
 		segmentInterpolationParam1 = 0.0f;
 	}
 
@@ -321,7 +321,7 @@ void TutorialLayer::segment1()
 	glm::vec3 targetPos1 = glm::vec3(12.4f, playerTransform.getPositionY(), -4.15f);
 	bool isFinished1;
 
-	movePlayerToPos(targetPos1, &isFinished1);
+	movePlayerTowardPos(targetPos1, &isFinished1);
 	if (!isFinished1)
 		return;
 	
@@ -353,27 +353,42 @@ void TutorialLayer::segment1()
 
 void TutorialLayer::segment2()
 {
+	auto& player          = registry->get<Player>(tutPlayerEntity);
 	auto& playerTransform = registry->get<component::Transform>(tutPlayerEntity);
 	auto& cameraTransform = registry->get<component::Transform>(tutCameraEntity);
 
 	if (initSegment)
 	{
+		TutorialSegmentStartedEvent segmentStarted;
+		segmentStarted.segmentNum = 2;
+		postEvent(segmentStarted);
+
 		currentSegment    = TutorialSegment::segment2;
 		initSegment       = false;
 		isSegmentFinished = false;
 
-		playerTransform.setPosition(glm::vec3(12.46f, 1.00f, -4.13f));
-		playerTransform.rotate(glm::vec3(0.0f, 67.9f, 0.0f) - playerTransform.getRotationEuler());
+		if (!secondSegmentInit)
+		{
+			secondSegmentInit = true;
 
-		cameraTransform.rotate(glm::vec3(-15.0f, 0.0f, 0.0f) - cameraTransform.getRotationEuler());
+			playerSegment2    = &player;
+			playerSegment2Pos = playerTransform.getPosition();
+			playerSegment2Rot = playerTransform.getRotation();
+			cameraSegment2Rot = cameraTransform.getRotation();
+		}
 
-		segmentTimer1 = 1.0f; //5
-		segmentTimer2 = 0.4f;
-		segmentTimer3 = 0.4f;
-		segmentTimer4 = 1.0f; //2
-		segmentTimer5 = 0.5f;
-		segmentTimer6 = 0.5f;
-		segmentTimer7 = 0.5f;
+		player = *playerSegment2;
+		playerTransform.setPosition(playerSegment2Pos);
+		playerTransform.setRotation(playerSegment2Rot);
+		cameraTransform.setRotation(cameraSegment2Rot);
+
+		segmentTimer1 = 5.0f; //"lets grab cleaning solution and a mop"
+		segmentTimer2 = 0.4f; //delay before grabbing cleaning solution
+		segmentTimer3 = 0.4f; //delay before grabbing mop
+		segmentTimer4 = 2.5f; //"there are 3 garbage piles on the ship"
+		segmentTimer5 = 1.2f; //"one at the front"
+		segmentTimer6 = 1.2f; //"one in the middle"
+		segmentTimer7 = 1.2f; //"one in the back"
 
 		segmentBool1 = true;
 		segmentBool2 = true;
@@ -395,7 +410,7 @@ void TutorialLayer::segment2()
 		glm::vec3 targetPos = glm::vec3(11.73f, playerTransform.getPositionY(), -4.65f);
 		bool isFinished;
 
-		movePlayerToPos(targetPos, &isFinished);
+		movePlayerTowardPos(targetPos, &isFinished);
 		if (!isFinished)
 			return;
 		else
@@ -428,7 +443,7 @@ void TutorialLayer::segment2()
 		glm::vec3 targetPos = glm::vec3(10.45f, playerTransform.getPositionY(), -2.13f);
 		bool isFinished;
 
-		movePlayerToPos(targetPos, &isFinished);
+		movePlayerTowardPos(targetPos, &isFinished);
 		if (!isFinished)
 			return;
 		else
@@ -461,7 +476,7 @@ void TutorialLayer::segment2()
 		glm::vec3 targetPos = glm::vec3(2.0f, playerTransform.getPositionY(), -3.85f);
 		bool isFinished;
 
-		movePlayerToPos(targetPos, &isFinished);
+		movePlayerTowardPos(targetPos, &isFinished);
 		if (!isFinished)
 			return;
 		else
@@ -521,13 +536,32 @@ void TutorialLayer::segment3()
 
 	if (initSegment)
 	{
+		TutorialSegmentStartedEvent segmentStarted;
+		segmentStarted.segmentNum = 3;
+		postEvent(segmentStarted);
+
 		currentSegment = TutorialSegment::segment3;
 		initSegment = false;
 		isSegmentFinished = false;
 
-		segmentTimer1 = 0.5f; //5
-		segmentTimer2 = 2.0f; //3
-		segmentTimer3 = 0.08f;
+		if (!thirdSegmentInit)
+		{
+			thirdSegmentInit = true;
+
+			playerSegment3    = &player;
+			playerSegment3Pos = playerTransform.getPosition();
+			playerSegment3Rot = playerTransform.getRotation();
+			cameraSegment3Rot = cameraTransform.getRotation();
+		}
+
+		player = *playerSegment3;
+		playerTransform.setPosition(playerSegment3Pos);
+		playerTransform.setRotation(playerSegment3Rot);
+		cameraTransform.setRotation(cameraSegment3Rot);
+
+		segmentTimer1 = 6.0f; //"garbage pile health bar blah blah blah clean with X"
+		segmentTimer2 = 4.0f; //"to continue cleaning flick the stick"
+		segmentTimer3 = 0.13f; //delay between cleaning cycles
 		segmentTimer4 = 0.0f;
 		segmentTimer5 = 0.0f;
 		segmentTimer6 = 0.0f;
@@ -542,6 +576,29 @@ void TutorialLayer::segment3()
 		segmentBool6 = true;
 		segmentBool7 = true;
 		segmentBool8 = true;
+
+		if (player.secondaryCarriedItem == entt::null)
+		{
+			//force player to be holding a cleaning solution
+			auto carryableItemView = registry->view<CarryableItem>();
+			for (auto itemEntity : carryableItemView)
+			{
+				auto& carryable          = registry->get<CarryableItem>(itemEntity);
+				auto& carryableTransform = registry->get<component::Transform>(itemEntity);
+
+				if (   carryable.type == CarryableItemType::cleaningSolution 
+					&& carryable.team == player.team
+					&& carryableTransform.getPositionY() > -999.0f) //ensure it's not a prefab entity
+				{
+					PlayerForceItemPickUpEvent forceItemPickUp;
+					forceItemPickUp.playerEntity = tutPlayerEntity;
+					forceItemPickUp.itemEntity   = itemEntity;
+					postEvent(forceItemPickUp);
+
+					break;
+				}
+			}
+		}
 	}
 
 	//rotate toward the middle garbage pile
@@ -583,7 +640,7 @@ void TutorialLayer::segment3()
 		segmentTimer3 -= Time::deltaTime();
 		if (segmentTimer3 < 0.0f)
 		{
-			segmentTimer3 = 0.08f;
+			segmentTimer3 = 0.13f;
 
 			PerformCleaningEvent performCleaning;
 			performCleaning.playerEntity = tutPlayerEntity;
@@ -598,22 +655,42 @@ void TutorialLayer::segment3()
 
 void TutorialLayer::segment4()
 {
+	auto& player          = registry->get<Player>(tutPlayerEntity);
 	auto& playerTransform = registry->get<component::Transform>(tutPlayerEntity);
 	auto& cameraTransform = registry->get<component::Transform>(tutCameraEntity);
 
 	if (initSegment)
 	{
+		TutorialSegmentStartedEvent segmentStarted;
+		segmentStarted.segmentNum = 4;
+		postEvent(segmentStarted);
+
 		currentSegment    = TutorialSegment::segment4;
 		initSegment       = false;
 		isSegmentFinished = false;
 
-		segmentTimer1 = 0.5f; //2
-		segmentTimer2 = 0.5f; //3
-		segmentTimer3 = 0.8f;
-		segmentTimer4 = 0.0f;
-		segmentTimer5 = 0.0f;
-		segmentTimer6 = 0.0f;
-		segmentTimer7 = 0.0f;
+		if (!fourthSegmentInit)
+		{
+			fourthSegmentInit = true;
+
+			playerSegment4    = &player;
+			playerSegment4Pos = playerTransform.getPosition();
+			playerSegment4Rot = playerTransform.getRotation();
+			cameraSegment4Rot = cameraTransform.getRotation();
+		}
+
+		player = *playerSegment4;
+		playerTransform.setPosition(playerSegment4Pos);
+		playerTransform.setRotation(playerSegment4Rot);
+		cameraTransform.setRotation(cameraSegment4Rot);
+
+		segmentTimer1 = 1.0f;
+		segmentTimer2 = 3.0f; //"down here you'll find the garbage bin and cannon"
+		segmentTimer3 = 0.8f; //delay before grabbing garbage ball
+		segmentTimer4 = 0.7f; //delay before moving towards the cannon
+		segmentTimer5 = 0.9f; //"load the cannon by pressing X"
+		segmentTimer6 = 6.0f; //"cannon fires on a timer. push it to aim at different garbage piles by pressing X"
+		segmentTimer7 = 8.0f; //delay before ending segment
 		segmentTimer8 = 0.0f;
 
 		segmentBool1 = true;
@@ -624,6 +701,21 @@ void TutorialLayer::segment4()
 		segmentBool6 = true;
 		segmentBool7 = true;
 		segmentBool8 = true;
+		segmentBool9 = true;
+
+		//reset cannon variables to initial values
+		auto cannonView = registry->view<Cannon>();
+		for (auto& cannonEntity : cannonView)
+		{
+			auto& cannon          = registry->get<Cannon>(cannonEntity);
+			auto& cannonTransform = registry->get<component::Transform>(cannonEntity);
+
+			if (cannon.team == Team::blue)
+			{
+				cannon.trackPosition = initialCannonTrackPos;
+				cannonTransform.setPosition(initialCannonPos);
+			}
+		}
 	}
 
 	segmentTimer1 -= Time::deltaTime();
@@ -636,7 +728,7 @@ void TutorialLayer::segment4()
 		glm::vec3 targetPos = glm::vec3(2.0f, playerTransform.getPositionY(), -5.28f);
 		bool isFinished;
 
-		movePlayerToPos(targetPos, &isFinished);
+		movePlayerTowardPos(targetPos, &isFinished);
 		if (!isFinished)
 			return;
 		else
@@ -657,7 +749,7 @@ void TutorialLayer::segment4()
 		glm::vec3 targetPos = glm::vec3(-13.76f, playerTransform.getPositionY(), -4.84f);
 		bool isFinished;
 
-		movePlayerToPos(targetPos, &isFinished);
+		movePlayerTowardPos(targetPos, &isFinished);
 		if (!isFinished)
 			return;
 		else
@@ -673,7 +765,7 @@ void TutorialLayer::segment4()
 		glm::vec3 targetPos = glm::vec3(-13.76f, -3.17f, 0.05f);
 		bool isFinished;
 
-		movePlayerToPos(targetPos, &isFinished);
+		movePlayerTowardPos(targetPos, &isFinished);
 		if (!isFinished)
 			return;
 		else
@@ -693,7 +785,7 @@ void TutorialLayer::segment4()
 		glm::vec3 targetPos = glm::vec3(-6.91f, playerTransform.getPositionY(), -4.6f);
 		bool isFinished;
 
-		movePlayerToPos(targetPos, &isFinished);
+		movePlayerTowardPos(targetPos, &isFinished);
 		if (!isFinished)
 			return;
 		else
@@ -711,81 +803,599 @@ void TutorialLayer::segment4()
 
 			//grab a cannonball
 			PlayerInteractionRequestEvent playerInteractionRequest;
-			playerInteractionRequest.playerEntity = tutPlayerEntity;
+			playerInteractionRequest.playerEntity           = tutPlayerEntity;
 			playerInteractionRequest.itemClassificatonToUse = PlayerItemClassification::any;
 			postEvent(playerInteractionRequest);
 		}
 	}
+
+	segmentTimer4 -= Time::deltaTime();
+	if (segmentTimer4 > 0.0f)
+		return;
+
+	//rotate towards cannon
+	if (segmentBool6)
+	{
+		segmentBool6 = false;
+		playerTransform.rotate(glm::vec3(0.0f, -50.0f, 0.0f)); //TODO: rotate over time
+		return;
+	}
+
+	//move towards the cannon
+	if (segmentBool7)
+	{
+		glm::vec3 targetPos = glm::vec3(-4.64f, playerTransform.getPositionY(), 0.51f);
+		bool isFinished;
+
+		movePlayerTowardPos(targetPos, &isFinished);
+		if (!isFinished)
+			return;
+		else
+			segmentBool7 = false;
+	}
+
+	segmentTimer5 -= Time::deltaTime();
+	if (segmentTimer5 > 0.0f)
+		return;
+
+	if (segmentBool8)
+	{
+		segmentBool8 = false;
+
+		//load the cannon
+		PlayerInteractionRequestEvent playerInteractionRequest;
+		playerInteractionRequest.playerEntity           = tutPlayerEntity;
+		playerInteractionRequest.itemClassificatonToUse = PlayerItemClassification::any;
+		postEvent(playerInteractionRequest);
+	}
+
+	segmentTimer6 -= Time::deltaTime();
+	if (segmentTimer6 > 0.0f)
+		return;
+
+	//push the cannon
+	PlayerInteractionRequestEvent playerInteractionRequest;
+	playerInteractionRequest.playerEntity           = tutPlayerEntity;
+	playerInteractionRequest.itemClassificatonToUse = PlayerItemClassification::any;
+	postEvent(playerInteractionRequest);
+
+	segmentTimer7 -= Time::deltaTime();
+	if (segmentTimer7 > 0.0f)
+		return;
 
 	isSegmentFinished = true;
 }
 
 void TutorialLayer::segment5()
 {
+	auto& player          = registry->get<Player>(tutPlayerEntity);
 	auto& playerTransform = registry->get<component::Transform>(tutPlayerEntity);
 	auto& cameraTransform = registry->get<component::Transform>(tutCameraEntity);
 
 	if (initSegment)
 	{
+		TutorialSegmentStartedEvent segmentStarted;
+		segmentStarted.segmentNum = 5;
+		postEvent(segmentStarted);
+
 		currentSegment    = TutorialSegment::segment5;
 		initSegment       = false;
 		isSegmentFinished = false;
 
-		segmentTimer1 = 0.0f;
-		segmentTimer2 = 0.0f;
-		segmentTimer3 = 0.0f;
-		segmentTimer4 = 0.0f;
-		segmentTimer5 = 0.0f;
-		segmentTimer6 = 0.0f;
+		//drop any items
+		CancelButtonPressedEvent cancelButtonPressed;
+		cancelButtonPressed.playerEntity = tutPlayerEntity;
+		postEvent(cancelButtonPressed);
+
+		if (!fifthSegmentInit)
+		{
+			fifthSegmentInit = true;
+
+			playerSegment5    = &player;
+
+			//same position and rotation as the first segment (in captain's quarters)
+			playerSegment5Pos = playerSegment1Pos;
+			playerSegment5Rot = playerSegment1Rot;
+			cameraSegment5Rot = cameraSegment1Rot;
+		}
+
+		player = *playerSegment5;
+		playerTransform.setPosition(playerSegment5Pos);
+		playerTransform.setRotation(playerSegment5Rot);
+		cameraTransform.setRotation(cameraSegment5Rot);
+
+		segmentTimer1 = 2.0f; //"alright lets go grab some gloop"
+		segmentTimer2 = 0.7f; //delay before grabbing gloop
+		segmentTimer3 = 0.6f; //delay before walking towards captains quarters exit
+		segmentTimer4 = 7.0f; //"when holding gloop, you can see which piles on the enemy ship can be glooped"
+		segmentTimer5 = 1.3f; //delay before using gloop
+		segmentTimer6 = 9.0f; //"each bottle has 2 uses, and piles stay glooped for one full cleaning cycle"
 		segmentTimer7 = 0.0f;
 		segmentTimer8 = 0.0f;
 
-		segmentBool1 = true;
-		segmentBool2 = true;
-		segmentBool3 = true;
-		segmentBool4 = true;
-		segmentBool5 = true;
-		segmentBool6 = true;
-		segmentBool7 = true;
-		segmentBool8 = true;
+		segmentBool1  = true;
+		segmentBool2  = true;
+		segmentBool3  = true;
+		segmentBool4  = true;
+		segmentBool5  = true;
+		segmentBool6  = true;
+		segmentBool7  = true;
+		segmentBool8  = true;
+		segmentBool9  = true;
+		segmentBool10 = true;
+
+		//ensure gloop starts at spawn
+		auto carryableItemView = registry->view<CarryableItem>();
+		for (auto itemEntity : carryableItemView)
+		{
+			auto& carryable = registry->get<CarryableItem>(itemEntity);
+			auto& carryableTransform = registry->get<component::Transform>(itemEntity);
+
+			if (   carryable.type == CarryableItemType::gloop 
+				&& carryable.hasBeenCarried == false
+				&& carryable.team == player.team
+				&& carryableTransform.getPositionY() > -999.0f) //ensure it's not a prefab entity
+			{
+				carryableTransform.setPosition(glm::vec3(9.46f, 2.08f, -5.95f));
+
+				carryableTransform.setRotation(glm::vec3(0.0f, 0.0f, 0.0f));
+				carryableTransform.rotate(glm::vec3(0.0f, 83.82f, 0.0f));
+			}
+		}
 	}
 
+	segmentTimer1 -= Time::deltaTime();
+	if (segmentTimer1 > 0.0f)
+		return;
 
+	//move to the gloop spawn
+	if (segmentBool1)
+	{
+		glm::vec3 targetPos = glm::vec3(11.36f, playerTransform.getPositionY(), -5.71f);
+		bool isFinished;
+
+		movePlayerTowardPos(targetPos, &isFinished);
+		if (!isFinished)
+			return;
+		else
+			segmentBool1 = false;
+	}
+
+	//rotate towards gloop spawn
+	if (segmentBool2)
+	{
+		segmentBool2 = false;
+		cameraTransform.rotate(glm::vec3(24.0f, 0.0f, 0.0f)); //TODO: rotate over time
+		playerTransform.rotate(glm::vec3(0.0f, -7.0f, 0.0f)); //TODO: rotate over time
+	}
+
+	segmentTimer2 -= Time::deltaTime();
+	if (segmentTimer2 > 0.0f)
+		return;
+
+	if (segmentBool3)
+	{
+		segmentBool3 = false;
+
+		//grab gloop
+		PlayerInteractionRequestEvent playerInteractionRequest;
+		playerInteractionRequest.playerEntity           = tutPlayerEntity;
+		playerInteractionRequest.itemClassificatonToUse = PlayerItemClassification::any;
+		postEvent(playerInteractionRequest);
+	}
+
+	segmentTimer3 -= Time::deltaTime();
+	if (segmentTimer3 > 0.0f)
+		return;
+
+	//move towards captains quarters exit
+	if (segmentBool4)
+	{
+		glm::vec3 targetPos = glm::vec3(10.56f, playerTransform.getPositionY(), -2.58f);
+		bool isFinished;
+
+		movePlayerTowardPos(targetPos, &isFinished);
+		if (!isFinished)
+			return;
+		else
+			segmentBool4 = false;
+	}
+
+	//move towards the middle of the ship
+	if (segmentBool5)
+	{
+		glm::vec3 targetPos = glm::vec3(2.35f, playerTransform.getPositionY(), -2.58f);
+		bool isFinished;
+
+		movePlayerTowardPos(targetPos, &isFinished);
+		if (!isFinished)
+			return;
+		else
+			segmentBool5 = false;
+	}
+
+	//rotate towards enemy ship
+	if (segmentBool6)
+	{
+		segmentBool6 = false;
+		playerTransform.rotate(glm::vec3(0.0f, 97.0f, 0.0f)); //TODO: rotate over time
+	}
+
+	segmentTimer4 -= Time::deltaTime();
+	if (segmentTimer4 > 0.0f)
+		return;
+
+	//move towards the plank connecting the two ships
+	if (segmentBool7)
+	{
+		glm::vec3 targetPos = glm::vec3(-5.7f, playerTransform.getPositionY(), 1.2f);
+		bool isFinished;
+
+		movePlayerTowardPos(targetPos, &isFinished);
+		if (!isFinished)
+			return;
+		else
+			segmentBool7 = false;
+	}
+
+	//move across the plank to the enemy's ship
+	if (segmentBool8)
+	{
+		glm::vec3 targetPos = glm::vec3(-5.7f, playerTransform.getPositionY(), 19.21f);
+		bool isFinished;
+
+		movePlayerTowardPos(targetPos, &isFinished);
+		if (!isFinished)
+			return;
+		else
+			segmentBool8 = false;
+	}
+
+	//move beside the enemy's middle garbage pile
+	if (segmentBool9)
+	{
+		glm::vec3 targetPos = glm::vec3(1.1f, playerTransform.getPositionY(), 22.55f);
+		bool isFinished;
+
+		movePlayerTowardPos(targetPos, &isFinished);
+		if (!isFinished)
+			return;
+		else
+			segmentBool9 = false;
+	}
+
+	//rotate towards enemy's middle garbage pile
+	if (segmentBool10)
+	{
+		segmentBool10 = false;
+		cameraTransform.rotate(glm::vec3(-64.0f, 0.0f, 0.0f)); //TODO: rotate over time
+	}
+
+	segmentTimer5 -= Time::deltaTime();
+	if (segmentTimer5 > 0.0f)
+		return;
+
+	//use gloop on enemy's middle garbage pile
+	PlayerInteractionRequestEvent playerInteractionRequest;
+	playerInteractionRequest.playerEntity           = tutPlayerEntity;
+	playerInteractionRequest.itemClassificatonToUse = PlayerItemClassification::any;
+	postEvent(playerInteractionRequest);
+
+	segmentTimer6 -= Time::deltaTime();
+	if (segmentTimer6 > 0.0f)
+		return;
 
 	isSegmentFinished = true;
 }
 
 void TutorialLayer::segment6()
 {
+	auto& player          = registry->get<Player>(tutPlayerEntity);
 	auto& playerTransform = registry->get<component::Transform>(tutPlayerEntity);
 	auto& cameraTransform = registry->get<component::Transform>(tutCameraEntity);
 
 	if (initSegment)
 	{
+		TutorialSegmentStartedEvent segmentStarted;
+		segmentStarted.segmentNum = 6;
+		postEvent(segmentStarted);
+
 		currentSegment    = TutorialSegment::segment6;
 		initSegment       = false;
 		isSegmentFinished = false;
 
-		segmentTimer1 = 0.0f;
-		segmentTimer2 = 0.0f;
-		segmentTimer3 = 0.0f;
-		segmentTimer4 = 0.0f;
-		segmentTimer5 = 0.0f;
-		segmentTimer6 = 0.0f;
+		if (!sixthSegmentInit)
+		{
+			sixthSegmentInit = true;
+
+			playerSegment6    = &player;
+			playerSegment6Pos = playerTransform.getPosition();
+			playerSegment6Rot = playerTransform.getRotation();
+			cameraSegment6Rot = cameraTransform.getRotation();
+		}
+
+		player = *playerSegment6;
+		playerTransform.setPosition(playerSegment6Pos);
+		playerTransform.setRotation(playerSegment6Rot);
+		cameraTransform.setRotation(cameraSegment6Rot);
+
+		segmentTimer1 = 0.9f; //delay before moving toward bottle spawn
+		segmentTimer2 = 9.0f; //"there's a throwable bottle that spawns between the ships, use it to disrupt the enemy"
+		segmentTimer3 = 0.8f; //delay after picking up the bottle (before turning towards the enemy)
+		segmentTimer4 = 3.0f; //"press right trigger to throw the bottle"
+		segmentTimer5 = 2.0f; //"bring the mop back to your ship" (will be continued as the player walks back to their ship so this doesn't need to be the full duration)
+		segmentTimer6 = 4.0f; //"press B or right bumper to drop"
 		segmentTimer7 = 0.0f;
 		segmentTimer8 = 0.0f;
+		segmentTimer9 = 0.0f;
 
-		segmentBool1 = true;
-		segmentBool2 = true;
-		segmentBool3 = true;
-		segmentBool4 = true;
-		segmentBool5 = true;
-		segmentBool6 = true;
-		segmentBool7 = true;
-		segmentBool8 = true;
+		segmentBool1  = true;
+		segmentBool2  = true;
+		segmentBool3  = true;
+		segmentBool4  = true;
+		segmentBool5  = true;
+		segmentBool6  = true;
+		segmentBool7  = true;
+		segmentBool8  = true;
+		segmentBool9  = true;
+		segmentBool10 = true;
+		segmentBool11 = true;
+
+		//ensure throwable bottle starts at spawn
+		auto carryableItemView = registry->view<CarryableItem>();
+		for (auto itemEntity : carryableItemView)
+		{
+			auto& carryable          = registry->get<CarryableItem>(itemEntity);
+			auto& carryableTransform = registry->get<component::Transform>(itemEntity);
+
+			if (carryable.type == CarryableItemType::throwableBottle && carryableTransform.getPositionY() > -999.0f) //ensure it's not a prefab entity
+				carryableTransform.setPosition(glm::vec3(-7.04f, 0.61f, 10.14f));
+		}
+
+		//get player 2 (enemy that's standing still waiting to be hit by a bottle)
+		entt::entity playerTwoEntity;
+		
+		auto playerView = registry->view<Player>();
+		for (auto& playerEntity : playerView)
+		{
+			auto& player = registry->get<Player>(playerEntity);
+
+			if (player.playerNum == PlayerNumber::Two)
+				playerTwoEntity = playerEntity;
+		}
+
+		auto& playerTwo          = registry->get<Player>(playerTwoEntity);
+		auto& playerTwoTransform = registry->get<component::Transform>(playerTwoEntity);
+
+		bool playerTwoHasPrimary   = playerTwo.primaryCarriedItem   != entt::null;
+		bool playerTwoHasSecondary = playerTwo.secondaryCarriedItem != entt::null;
+
+		carryableItemView = registry->view<CarryableItem>();
+		for (auto itemEntity : carryableItemView)
+		{
+			auto& carryable          = registry->get<CarryableItem>(itemEntity);
+			auto& carryableTransform = registry->get<component::Transform>(itemEntity);
+
+			//force player 2 to hold a mop
+			if (   !playerTwoHasPrimary
+				&& carryable.type == CarryableItemType::mop
+				&& carryable.team == playerTwo.team
+				&& carryableTransform.getPositionY() > -999.0f) //ensure it's not a prefab entity
+			{
+				PlayerForceItemPickUpEvent forceItemPickUp;
+				forceItemPickUp.playerEntity = playerTwoEntity;
+				forceItemPickUp.itemEntity   = itemEntity;
+				postEvent(forceItemPickUp);
+
+				playerTwoHasPrimary = true;
+			}
+			//force player 2 to hold a cleaning solution
+			else if (   !playerTwoHasSecondary 
+				     && carryable.type == CarryableItemType::cleaningSolution 
+				     && carryable.team == playerTwo.team
+				     && carryableTransform.getPositionY() > -999.0f) //ensure it's not a prefab entity
+			{
+				PlayerForceItemPickUpEvent forceItemPickUp;
+				forceItemPickUp.playerEntity = playerTwoEntity;
+				forceItemPickUp.itemEntity   = itemEntity;
+				postEvent(forceItemPickUp);
+
+				playerTwoHasSecondary = true;
+			}
+		}
+
+		//reset player two position
+		playerTwoTransform.setPosition(
+			glm::vec3(
+				3.75f, 
+				playerTwoTransform.getPositionY(), 
+				22.1f));
 	}
 
+	//rotate towards friendly ship
+	if (segmentBool1)
+	{
+		segmentBool1 = false;
+		cameraTransform.rotate(glm::vec3(45.0f, 0.0f, 0.0f)); //TODO: rotate over time
+		playerTransform.rotate(glm::vec3(0.0f, 194.0f, 0.0f)); //TODO: rotate over time
+	}
 
+	segmentTimer1 -= Time::deltaTime();
+	if (segmentTimer1 > 0.0f)
+		return;
+
+	//move towards the plank between the two ships
+	if (segmentBool2)
+	{
+		glm::vec3 targetPos = glm::vec3(-5.7f, playerTransform.getPositionY(), 19.21f);
+		bool isFinished;
+
+		movePlayerTowardPos(targetPos, &isFinished);
+		if (!isFinished)
+			return;
+		else
+			segmentBool2 = false;
+	}
+
+	//move towards the bottle spawn, at the middle of the plank
+	if (segmentBool3)
+	{
+		glm::vec3 targetPos = glm::vec3(-6.6f, playerTransform.getPositionY(), 11.5f);
+		bool isFinished;
+
+		movePlayerTowardPos(targetPos, &isFinished);
+		if (!isFinished)
+			return;
+		else
+		{
+			segmentBool3 = false;
+
+			//look at the bottle
+			cameraTransform.rotate(glm::vec3(-41.0f, 0.0f, 0.0f)); //TODO: rotate over time
+		}
+	}
+
+	segmentTimer2 -= Time::deltaTime();
+	if (segmentTimer2 > 0.0f)
+		return;
+
+	//pick up the bottle
+	{
+		PlayerInteractionRequestEvent playerInteractionRequest;
+		playerInteractionRequest.playerEntity = tutPlayerEntity;
+		playerInteractionRequest.itemClassificatonToUse = PlayerItemClassification::any;
+		postEvent(playerInteractionRequest);
+	}
+
+	segmentTimer3 -= Time::deltaTime();
+	if (segmentTimer3 > 0.0f)
+		return;
+
+	//rotate towards the enemy
+	if (segmentBool4)
+	{
+		segmentBool4 = false;
+		cameraTransform.rotate(glm::vec3(34.0f, 0.0f, 0.0f)); //TODO: rotate over time
+		playerTransform.rotate(glm::vec3(0.0f, -113.0f, 0.0f)); //TODO: rotate over time
+	}
+
+	//move across the plank and back on the enemy's ship
+	if (segmentBool5)
+	{
+		glm::vec3 targetPos = glm::vec3(-5.7f, playerTransform.getPositionY(), 19.21f);
+		bool isFinished;
+
+		movePlayerTowardPos(targetPos, &isFinished);
+		if (!isFinished)
+			return;
+		else
+			segmentBool5 = false;
+	}
+
+	//move toward the enemy
+	if (segmentBool6)
+	{
+		glm::vec3 targetPos = glm::vec3(1.4f, playerTransform.getPositionY(), 21.6f);
+		bool isFinished;
+
+		movePlayerTowardPos(targetPos, &isFinished);
+		if (!isFinished)
+			return;
+		else
+			segmentBool6 = false;
+	}
+
+	segmentTimer4 -= Time::deltaTime();
+	if (segmentTimer4 > 0.0f)
+		return;
+
+	//throw bottle
+	{
+		PlayerInteractionRequestEvent playerInteractionRequest;
+		playerInteractionRequest.playerEntity           = tutPlayerEntity;
+		playerInteractionRequest.itemClassificatonToUse = PlayerItemClassification::primary;
+		postEvent(playerInteractionRequest);
+	}
+
+	segmentTimer5 -= Time::deltaTime();
+	if (segmentTimer5 > 0.0f)
+		return;
+
+	//rotate towards the mop on the ground
+	if (segmentBool7)
+	{
+		segmentBool7 = false;
+		cameraTransform.rotate(glm::vec3(-44.0f, 0.0f, 0.0f)); //TODO: rotate over time
+	}
+
+	//move to pick up mop
+	if (segmentBool8)
+	{
+		glm::vec3 targetPos = glm::vec3(1.9f, playerTransform.getPositionY(), 19.3f);
+		bool isFinished;
+
+		movePlayerTowardPos(targetPos, &isFinished);
+		if (!isFinished)
+			return;
+		else
+		{
+			segmentBool8 = false;
+
+			//rotate towards friendly ship
+			cameraTransform.rotate(glm::vec3(24.0f, 0.0f, 0.0f)); //TODO: rotate over time
+			playerTransform.rotate(glm::vec3(0.0f, 120.0f, 0.0f)); //TODO: rotate over time
+		}
+	}
+
+	//move towards the plank between the two ships
+	if (segmentBool9)
+	{
+		glm::vec3 targetPos = glm::vec3(-5.7f, playerTransform.getPositionY(), 19.21f);
+		bool isFinished;
+
+		movePlayerTowardPos(targetPos, &isFinished);
+		if (!isFinished)
+			return;
+		else
+			segmentBool9 = false;
+	}
+
+	//move across the plank to the friendly ship
+	if (segmentBool10)
+	{
+		glm::vec3 targetPos = glm::vec3(-5.7f, playerTransform.getPositionY(), 0.92f);
+		bool isFinished;
+
+		movePlayerTowardPos(targetPos, &isFinished);
+		if (!isFinished)
+			return;
+		else
+			segmentBool10 = false;
+	}
+
+	//move to the front of the friendly ship
+	if (segmentBool11)
+	{
+		glm::vec3 targetPos = glm::vec3(13.6f, playerTransform.getPositionY(), -4.4f);
+		bool isFinished;
+
+		movePlayerTowardPos(targetPos, &isFinished);
+		if (!isFinished)
+			return;
+		else
+			segmentBool11 = false;
+	}
+
+	segmentTimer6 -= Time::deltaTime();
+	if (segmentTimer6 > 0.0f)
+		return;
+
+	//drop the mop
+	PlayerDropItemRequestEvent playerDropItemRequest;
+	playerDropItemRequest.playerEntity             = tutPlayerEntity;
+	playerDropItemRequest.itemClassificationToDrop = PlayerItemClassification::primary;
+	playerDropItemRequest.forceDrop                = false;
+	postEvent(playerDropItemRequest);
 
 	isSegmentFinished = true;
 }
@@ -796,11 +1406,15 @@ void TutorialLayer::outro()
 
 	if (initSegment)
 	{
+		TutorialSegmentStartedEvent segmentStarted;
+		segmentStarted.segmentNum = 7;
+		postEvent(segmentStarted);
+
 		currentSegment    = TutorialSegment::outro;
 		initSegment       = false;
 		isSegmentFinished = false;
 
-		segmentTimer1 = 5.0f;
+		segmentTimer1 = 7.0f; //"Ill see yall later. SUU WHOOP"
 	}
 
 	segmentTimer1 -= Time::deltaTime();
@@ -810,16 +1424,17 @@ void TutorialLayer::outro()
 	Application::get().changeScene("MainMenuScene");
 }
 
-void TutorialLayer::movePlayerToPos(glm::vec3 a_targetPos, bool* a_isFinished)
+void TutorialLayer::movePlayerTowardPos(glm::vec3 a_targetPos, bool* a_isFinished)
 {
 	auto& playerTransform = registry->get<component::Transform>(tutPlayerEntity);
 
 	float dist = glm::distance(playerTransform.getPosition(), a_targetPos);
-	float interpolationParam = 0.08f / dist;
+	float interpolationParam = 0.1f / dist;
 
 	if (interpolationParam < 1.0f)
 	{
 		*a_isFinished = false;
+
 		playerTransform.setPosition(
 			glm::mix(
 				playerTransform.getPosition(),
@@ -827,5 +1442,85 @@ void TutorialLayer::movePlayerToPos(glm::vec3 a_targetPos, bool* a_isFinished)
 				interpolationParam));
 	}
 	else
+	{
 		*a_isFinished = true;
+
+		playerTransform.setPosition(a_targetPos);
+	}
+}
+
+void TutorialLayer::moveToNextSegment()
+{
+	initSegment = true;
+	switch (currentSegment)
+	{
+	case TutorialSegment::segment1:
+	{
+		currentSegmentFunc = &TutorialLayer::segment2;
+		break;
+	}
+	case TutorialSegment::segment2:
+	{
+		currentSegmentFunc = &TutorialLayer::segment3;
+		break;
+	}
+	case TutorialSegment::segment3:
+	{
+		currentSegmentFunc = &TutorialLayer::segment4;
+		break;
+	}
+	case TutorialSegment::segment4:
+	{
+		currentSegmentFunc = &TutorialLayer::segment5;
+		break;
+	}
+	case TutorialSegment::segment5:
+	{
+		currentSegmentFunc = &TutorialLayer::segment6;
+		break;
+	}
+	case TutorialSegment::segment6:
+	{
+		currentSegmentFunc = &TutorialLayer::outro;
+		break;
+	}
+	}
+}
+
+void TutorialLayer::repeatSegment()
+{
+	initSegment = true;
+	switch (currentSegment)
+	{
+	case TutorialSegment::segment1:
+	{
+		currentSegmentFunc = &TutorialLayer::segment1;
+		break;
+	}
+	case TutorialSegment::segment2:
+	{
+		currentSegmentFunc = &TutorialLayer::segment2;
+		break;
+	}
+	case TutorialSegment::segment3:
+	{
+		currentSegmentFunc = &TutorialLayer::segment3;
+		break;
+	}
+	case TutorialSegment::segment4:
+	{
+		currentSegmentFunc = &TutorialLayer::segment4;
+		break;
+	}
+	case TutorialSegment::segment5:
+	{
+		currentSegmentFunc = &TutorialLayer::segment5;
+		break;
+	}
+	case TutorialSegment::segment6:
+	{
+		currentSegmentFunc = &TutorialLayer::segment6;
+		break;
+	}
+	}
 }

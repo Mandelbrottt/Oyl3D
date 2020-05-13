@@ -7857,7 +7857,7 @@
         "Renderable": {
             "CastShadows": true,
             "CullingMask": 15,
-            "Enabled": true,
+            "Enabled": false,
             "Material": {
                 "Alias": "BinBlue"
             },
@@ -11416,6 +11416,7 @@
                     0.5,
                     0.5
                 ],
+                "Intensity": 1.0,
                 "Range": 30.0,
                 "Specular": [
                     1.0,
@@ -11474,6 +11475,7 @@
                     0.5,
                     0.5
                 ],
+                "Intensity": 1.0,
                 "Shadow": {
                     "Bias": [
                         9.999999747378752e-05,
@@ -13600,7 +13602,7 @@
             "Parent": "UI",
             "Position": {
                 "X": 4.7400054931640625,
-                "Y": -0.12000013887882233,
+                "Y": 1.3999998569488525,
                 "Z": -20.0
             },
             "Rotation": {
@@ -15792,15 +15794,19 @@
     },
     "Player1 Camera": {
         "Camera": {
+            "Brightness": 0.15000000596046448,
             "ClearProps": {
                 "Skybox": null
             },
+            "Contrast": 1.2000000476837158,
             "CullingMask": 1,
             "Enabled": true,
+            "Exposure": 1.0,
             "FarClipping": 1000.0,
             "Fov": 60.0,
             "NearClipping": 0.029999999329447746,
-            "Player": 0
+            "Player": 0,
+            "Saturation": 1.5
         },
         "Transform": {
             "Mirror": {
@@ -15947,15 +15953,19 @@
     },
     "Player2 Camera": {
         "Camera": {
+            "Brightness": 0.15000000596046448,
             "ClearProps": {
                 "Skybox": null
             },
+            "Contrast": 1.2000000476837158,
             "CullingMask": 2,
             "Enabled": true,
+            "Exposure": 1.0,
             "FarClipping": 1000.0,
             "Fov": 60.0,
             "NearClipping": 0.029999999329447746,
-            "Player": 1
+            "Player": 1,
+            "Saturation": 1.5
         },
         "Transform": {
             "Mirror": {
@@ -16036,7 +16046,7 @@
             "Position": {
                 "X": 3.75429105758667,
                 "Y": 1.0499999523162842,
-                "Z": 23.745859146118164
+                "Z": 22.100000381469727
             },
             "Rotation": {
                 "qW": 0.7003018260002136,
@@ -16116,15 +16126,19 @@
     },
     "Player3 Camera": {
         "Camera": {
+            "Brightness": 0.15000000596046448,
             "ClearProps": {
                 "Skybox": null
             },
+            "Contrast": 1.2000000476837158,
             "CullingMask": 4,
             "Enabled": true,
+            "Exposure": 1.0,
             "FarClipping": 1000.0,
             "Fov": 60.0,
             "NearClipping": 0.029999999329447746,
-            "Player": 2
+            "Player": 2,
+            "Saturation": 1.5
         },
         "Transform": {
             "Mirror": {
@@ -16153,15 +16167,19 @@
     },
     "Player4 Camera": {
         "Camera": {
+            "Brightness": 0.15000000596046448,
             "ClearProps": {
                 "Skybox": null
             },
+            "Contrast": 1.2000000476837158,
             "CullingMask": 8,
             "Enabled": true,
+            "Exposure": 1.0,
             "FarClipping": 1000.0,
             "Fov": 60.0,
             "NearClipping": 0.029999999329447746,
-            "Player": 3
+            "Player": 3,
+            "Saturation": 1.5
         },
         "Transform": {
             "Mirror": {
@@ -17870,7 +17888,7 @@
             "Parent": "UI",
             "Position": {
                 "X": 5.16000509262085,
-                "Y": -2.0399999618530273,
+                "Y": -0.3199999928474426,
                 "Z": -20.0
             },
             "Rotation": {
@@ -20245,15 +20263,15 @@
             },
             "Parent": "Player1 LeftArm",
             "Position": {
-                "X": -18.42880630493164,
-                "Y": -15.666675567626953,
-                "Z": -26.04924201965332
+                "X": -18.42879295349121,
+                "Y": -15.666671752929688,
+                "Z": -26.049243927001953
             },
             "Rotation": {
-                "qW": 0.6158649325370789,
-                "qX": -0.4770497679710388,
-                "qY": 0.48233428597450256,
-                "qZ": -0.4006090760231018
+                "qW": 0.6266255974769592,
+                "qX": -0.4853281080722809,
+                "qY": 0.481235533952713,
+                "qZ": -0.374445378780365
             },
             "Scale": {
                 "X": 10.000001907348633,
@@ -20280,9 +20298,9 @@
                 "Z": -29.26232147216797
             },
             "Rotation": {
-                "qW": 0.5598136782646179,
-                "qX": -0.46881377696990967,
-                "qY": -0.49998801946640015,
+                "qW": 0.5598136186599731,
+                "qX": -0.4688137173652649,
+                "qY": -0.49998795986175537,
                 "qZ": 0.4656548500061035
             },
             "Scale": {

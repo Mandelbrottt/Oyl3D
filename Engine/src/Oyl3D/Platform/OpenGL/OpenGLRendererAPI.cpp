@@ -36,6 +36,14 @@ namespace oyl
             glDisable(GL_CULL_FACE);
     }
 
+    void OpenGLRendererAPI::setAlphaBlend(bool value)
+    {
+        if (value)
+            glEnable(GL_BLEND);
+        else
+            glDisable(GL_BLEND);
+    }
+
     void OpenGLRendererAPI::setDrawRect(int x, int y, int width, int height)
     {
         // TODO: Add clamping based on window size

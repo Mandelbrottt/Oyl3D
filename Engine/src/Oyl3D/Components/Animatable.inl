@@ -74,7 +74,9 @@ namespace oyl
                 pTransform->setPosition(translation);
 
                 orientation = normalize(orientation);
-
+				///if (orientation.w < 0.0f)
+				///	orientation.w *= -1;
+            	
                 pTransform->setRotation(orientation);
 
                 return boneTransform;

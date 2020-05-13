@@ -12,6 +12,7 @@
 #include "ControlsScreenScene.h"
 #include "SettingsMenu.h"
 #include "GameEndMenu.h"
+#include "CreditsScene.h"
 
 #include "PlayerSystem.h"
 #include "CannonSystem.h"
@@ -30,6 +31,7 @@
 #include "GarbageMeterSystem.h"
 #include "GameOverCheckSystem.h"
 #include "ThrowableBottleSystem.h"
+#include "SoundStuff.h"
 
 using namespace oyl;
 
@@ -483,6 +485,7 @@ public:
 		pushLayer(MainGameObjectsInitLayer::create());
 		pushLayer(MainGameGuiInitLayer::create());
 		pushLayer(ScrollingTextureLayer::create());
+		pushLayer(SoundLayer::create());
 	}
 };
 
@@ -496,6 +499,7 @@ public:
 		registerScene<TutorialScene>();
 		registerScene<ControlsScreenScene>();
 		registerScene<SettingsMenuScene>();
+		registerScene<CreditsScene>();
         registerScene<MainScene>();
 		registerScene<GameEndScene>();
     }

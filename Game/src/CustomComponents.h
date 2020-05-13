@@ -141,7 +141,7 @@ struct Player
 	MoveableUsingLerp adjustingPositionStateData;
 	MoveableUsingLerp pushingStateData;
 
-	float CLEANING_TIME_DURATION = 1.2f; //IF YOU CHANGE THIS, MAKE SURE TO ALSO CHANGE THE DEPENDANT VALUES IN GARBAGE HP BAR COMPONENT (check the comments in the component to figure out which ones)
+	float CLEANING_TIME_DURATION = 2.5f; //IF YOU CHANGE THIS, MAKE SURE TO ALSO CHANGE THE DEPENDANT VALUES IN GARBAGE HP BAR COMPONENT (check the comments in the component to figure out which ones)
 	float cleaningTimeCountdown  = CLEANING_TIME_DURATION;
 
 	float THROWING_DELAY_DURATION      = 0.5f;
@@ -168,9 +168,9 @@ struct Cannon
 
 	glm::vec3 firingDirection = glm::vec3(1.0f, 1.0f, 1.0f);
 
-	int cannonTrackPosition = 0;
-	float pushDistance      = 11.4f;
-	float beingPushedSpeed  = 0.3f;
+	int trackPosition      = 0;
+	float pushDistance     = 11.4f;
+	float beingPushedSpeed = 0.3f;
 	MoveableUsingLerp pushStateData;
 
 	float WAIT_BEFORE_BEING_PUSHED_DURATION = 0.3f;
@@ -230,7 +230,7 @@ struct ThrowableBottle
 	float throwSpeed   = 16.0f;
 	bool isBeingThrown = false;
 
-	entt::entity playerThrowingEntity = entt::null;
+	entt::entity playerEntity = entt::null;
 };
 
 struct ThrowBottlePrompt

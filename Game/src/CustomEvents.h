@@ -12,7 +12,8 @@ enum CustomEventsCategories : int
 	CategoryGloop,
 	CategoryThrowableBottle,
 	CategoryQuicktimeCleaningEvent,
-	CategoryGameState
+	CategoryGameState,
+	CategoryTutorial
 };
 enum CustomEventTypes : int
 {
@@ -21,6 +22,7 @@ enum CustomEventTypes : int
 	TypePlayerInteractResult,
     TypePlayerInteractionRequest,
 	TypePlayerPickedUpItem,
+	TypePlayerForceItemPickUp,
 	TypePlayerDropItemRequest,
 	TypePlayerDroppedItem,
 	TypeCancelButtonPressed,
@@ -47,7 +49,8 @@ enum CustomEventTypes : int
 	TypeStickMovedDuringQuicktimeCleaningEvent,
 	TypeCleanedWithMop,
 	TypePerformCleaning,
-	TypeGameEnd
+	TypeGameEnd,
+	TypeTutorialSegmentStarted
 };
 
 OYL_EVENT_STRUCT(PlayerJumpEvent, (oyl::EventType) TypePlayerJump, (oyl::EventCategory) CategoryPlayer,
@@ -72,6 +75,12 @@ OYL_EVENT_STRUCT(PlayerPickedUpItemEvent, (oyl::EventType) TypePlayerPickedUpIte
 		entt::entity playerEntity;
 		CarryableItemType itemType;
 		Team itemTeam;
+	});
+
+OYL_EVENT_STRUCT(PlayerForceItemPickUpEvent, (oyl::EventType) TypePlayerForceItemPickUp, (oyl::EventCategory) CategoryPlayer,
+	{
+		entt::entity playerEntity;
+		entt::entity itemEntity;
 	});
 
 OYL_EVENT_STRUCT(PlayerDropItemRequestEvent, (oyl::EventType) TypePlayerDropItemRequest, (oyl::EventCategory) CategoryPlayer,
@@ -113,8 +122,8 @@ OYL_EVENT_STRUCT(CannonStateChangeRequestEvent, (oyl::EventType) TypeCannonState
 
 OYL_EVENT_STRUCT(CannonLoadedEvent, (oyl::EventType) TypeCannonLoaded, (oyl::EventCategory) CategoryCannon,
 	{
-		entt::entity cannonEntity;
 		entt::entity playerEntity;
+		entt::entity cannonEntity;
 	});
 
 OYL_EVENT_STRUCT(CannonFiredEvent, (oyl::EventType) TypeCannonFired, (oyl::EventCategory) CategoryCannon,
@@ -177,12 +186,13 @@ OYL_EVENT_STRUCT(GloopedUsedEvent, (oyl::EventType) TypeGloopUsed, (oyl::EventCa
 
 OYL_EVENT_STRUCT(ThrowBottleEvent, (oyl::EventType) TypeThrowBottle, (oyl::EventCategory) CategoryThrowableBottle,
 	{
+		entt::entity playerEntity;
 		entt::entity bottleEntity;
-		entt::entity playerThrowingEntity;
 	}); 
 
 OYL_EVENT_STRUCT(ThrowableBottleHitEvent, (oyl::EventType) TypeThrowableBottleHit, (oyl::EventCategory) CategoryThrowableBottle,
 	{
+		entt::entity playerEntity;
 		entt::entity bottleEntity;
 		bool hitPlayer;
 	});
@@ -218,4 +228,9 @@ OYL_EVENT_STRUCT(PerformCleaningEvent, (oyl::EventType) TypePerformCleaning, (oy
 OYL_EVENT_STRUCT(GameEndEvent, (oyl::EventType) TypeGameEnd, (oyl::EventCategory) CategoryGameState,
 	{
 		GameEndResult result;
+	});
+
+OYL_EVENT_STRUCT(TutorialSegmentStartedEvent, (oyl::EventType) TypeTutorialSegmentStarted, (oyl::EventCategory) CategoryTutorial,
+	{
+		int segmentNum;
 	});

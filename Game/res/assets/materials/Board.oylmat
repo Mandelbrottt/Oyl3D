@@ -12,13 +12,13 @@
             ]
         },
         "Shader": {
-            "Alias": "Oyl Lighting",
+            "Alias": "Oyl Forward Static",
             "Pixel": {
-                "FilePath": "../Engine/res/shaders/lighting.frag",
+                "FilePath": "../Engine/res/shaders/Lighting/Forward_Normal_Shadow.frag",
                 "guid": null
             },
             "Vertex": {
-                "FilePath": "../Engine/res/shaders/lighting.vert",
+                "FilePath": "../Engine/res/shaders/Lighting/Static_Normal_Shadow.vert",
                 "guid": null
             }
         },

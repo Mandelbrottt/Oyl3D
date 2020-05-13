@@ -39,6 +39,7 @@ public:
 	float segmentTimer6;
 	float segmentTimer7;
 	float segmentTimer8;
+	float segmentTimer9;
 
 	bool segmentBool1;
 	bool segmentBool2;
@@ -48,15 +49,9 @@ public:
 	bool segmentBool6;
 	bool segmentBool7;
 	bool segmentBool8;
-
-	float segmentFloat1;
-	float segmentFloat2;
-	float segmentFloat3;
-	float segmentFloat4;
-	float segmentFloat5;
-	float segmentFloat6;
-	float segmentFloat7;
-	float segmentFloat8;
+	bool segmentBool9;
+	bool segmentBool10;
+	bool segmentBool11;
 
 	float segmentInterpolationParam1;
 	float segmentInterpolationParam2;
@@ -64,6 +59,46 @@ public:
 
 	entt::entity tutPlayerEntity;
 	entt::entity tutCameraEntity;
+
+	bool firstSegmentInit;
+	bool secondSegmentInit;
+	bool thirdSegmentInit;
+	bool fourthSegmentInit;
+	bool fifthSegmentInit;
+	bool sixthSegmentInit;
+
+	Player* playerSegment1;
+	glm::quat playerSegment1Rot;
+	glm::vec3 playerSegment1Pos;
+	glm::quat cameraSegment1Rot;
+
+	Player* playerSegment2;
+	glm::quat playerSegment2Rot;
+	glm::vec3 playerSegment2Pos;
+	glm::quat cameraSegment2Rot;
+
+	Player* playerSegment3;
+	glm::quat playerSegment3Rot;
+	glm::vec3 playerSegment3Pos;
+	glm::quat cameraSegment3Rot;
+
+	Player* playerSegment4;
+	glm::quat playerSegment4Rot;
+	glm::vec3 playerSegment4Pos;
+	glm::quat cameraSegment4Rot;
+
+	Player* playerSegment5;
+	glm::quat playerSegment5Rot;
+	glm::vec3 playerSegment5Pos;
+	glm::quat cameraSegment5Rot;
+
+	Player* playerSegment6;
+	glm::quat playerSegment6Rot;
+	glm::vec3 playerSegment6Pos;
+	glm::quat cameraSegment6Rot;
+
+	int initialCannonTrackPos;
+	glm::vec3 initialCannonPos;
 
 	virtual void onEnter() override;
 
@@ -82,7 +117,10 @@ public:
 	void segment6();
 	void outro();
 
-	void movePlayerToPos(glm::vec3 a_targetPos, bool* a_isFinished);
+	void movePlayerTowardPos(glm::vec3 a_targetPos, bool* a_isFinished);
+
+	void moveToNextSegment();
+	void repeatSegment();
 
 	void (TutorialLayer::*currentSegmentFunc)();
 

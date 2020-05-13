@@ -12,8 +12,8 @@
             ]
         },
         "Shader": {
-            "Alias": "Oyl Skeletal",
-            "FilePath": "../Engine/res/shaders/skeletal.oylshader",
+            "Alias": "Oyl Forward Skeletal",
+            "FilePath": null,
             "guid": null
         },
         "Textures": {
