@@ -10,7 +10,7 @@ public:
 	OYL_CTOR(SettingsMenuLayer, Layer)
 
 	const float SLIDER_CHANGE_DELAY = 0.15f;
-	float sliderChangeDelayCountdown = 0.0f;
+	std::vector<float> sliderChangeDelayCountdown; //create a vector so each player has their own countdown
 
 	virtual void onEnter() override;
 

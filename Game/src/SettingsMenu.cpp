@@ -8,6 +8,10 @@ void SettingsMenuLayer::onEnter()
 	listenForEventCategory(EventCategory::Keyboard);
 	listenForEventCategory(EventCategory::Gamepad);
 
+	//create a slider change delay countdown for each player (4 players)
+	for (unsigned int i = 0; i < 4; i++)
+		sliderChangeDelayCountdown.push_back(0.0f);
+
 	{
 		auto cameraEntity = registry->create();
 
@@ -114,7 +118,8 @@ void SettingsMenuLayer::onEnter()
 
 void SettingsMenuLayer::onUpdate()
 {
-	sliderChangeDelayCountdown -= Time::deltaTime();
+	for (unsigned int i = 0; i < sliderChangeDelayCountdown.size(); i++)
+		sliderChangeDelayCountdown[i] -= Time::deltaTime();
 
 	auto knobView = registry->view<SensitivityKnob>();
 	for (auto& knobEntity : knobView)
@@ -175,10 +180,10 @@ bool SettingsMenuLayer::onEvent(const Event& event)
 
 		if (evt.stick != Gamepad::LeftStick)
 			break;
-		if (sliderChangeDelayCountdown > 0.0f)
+		if (sliderChangeDelayCountdown[evt.gid] > 0.0f)
 			break;
 
-		sliderChangeDelayCountdown = SLIDER_CHANGE_DELAY;
+		sliderChangeDelayCountdown[evt.gid] = SLIDER_CHANGE_DELAY;
 
 		//moved stick left
 		if (evt.dx > 0.0f && Input::getGamepadLeftStick(evt.gid).x < -0.1f)
