@@ -1,0 +1,10 @@
+.vscode/
+.vs/
+
+[Ii]ntermediate/
+
+# Visual Studio Files
+*.sln
+*.vcxproj
+*.vcxproj.filters
+*.user
