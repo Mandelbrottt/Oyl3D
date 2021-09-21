@@ -1,18 +1,11 @@
-project "Refly-Editor"
-    location (EngineProjectDir)
+project "ReflyEditor"
+    location (Dirs.Project)
     kind "SharedLib"
-    language "C++"
-    cppdialect "C++17"
-    staticruntime "off"
-    floatingpoint "fast"
 
-    flags {
-        "FatalWarnings",
-        "MultiProcessorCompile",
-    }
-    
-    targetdir(TargetDir .. OutputDir .. "/%{prj.name}/")
-    objdir   (ObjectDir .. OutputDir .. "/%{prj.name}/")
+    ApplyCommonCppSettings()
+
+    targetdir(Dirs.Target .. Dirs.Output)
+    objdir   (Dirs.Object .. Dirs.Output)
 
     files {
         "./**.cpp",
@@ -22,14 +15,17 @@ project "Refly-Editor"
     }
 
     links {
-        "Refly",
+        "ReflyEngine",
     }
 
     includedirs {
         "%{wks.location}/Source/",
-        "%{wks.location}/Source/ThirdParty",
+        "%{wks.location}/Source/Editor/",
+        "%{wks.location}/Source/ThirdParty/",
     }
 
     defines {
-        "REFLY_EDITOR",
+        "_INSIDE_REFLY_EDITOR=1",
     }
+
+    removeconfigurations { "*" .. Configs.Postfix }

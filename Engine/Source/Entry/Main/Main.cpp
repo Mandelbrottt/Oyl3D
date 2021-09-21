@@ -1,7 +1,9 @@
 #include <Windows.h>
 #include <iostream>
 
-#include "Editor/main.h"
+#if REFLY_EDITOR
+	#include "Editor/main.h"
+#endif
 
 #include "Engine/main.h"
 
@@ -10,10 +12,10 @@ static void SetupConsole();
 static void ShutdownConsole();
 
 int WINAPI wWinMain(
-	HINSTANCE hInstance,
-	HINSTANCE hPrevInstance,
-	LPWSTR    pCmdLine,
-	int       nCmdShow
+	_In_ HINSTANCE hInstance,
+	_In_ HINSTANCE hPrevInstance,
+	_In_ LPWSTR    pCmdLine,
+	_In_ int       nCmdShow
 )
 {
 	(void) hInstance;
@@ -25,11 +27,13 @@ int WINAPI wWinMain(
 	
 	std::cout << "Hello World!\n";
 
+#if REFLY_EDITOR
 	Something();
-
+#endif
+	
 	SomethingElse();
 
-	getchar();
+	std::cin.get();
 
 	ShutdownConsole();
 
@@ -47,7 +51,7 @@ void SetupConsole()
 	FILE* errFileStream;
 	
 	// Direct input and output to the console
-	freopen_s(&inFileStream,  "CONIN$", "r", stdin);
+	freopen_s(&inFileStream,  "CONIN$",  "r", stdin);
 	freopen_s(&outFileStream, "CONOUT$", "w", stdout);
 	freopen_s(&errFileStream, "CONOUT$", "w", stderr);
 }

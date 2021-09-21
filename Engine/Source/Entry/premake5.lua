@@ -1,18 +1,11 @@
-project "Refly-Entry"
-    location (EngineProjectDir)
+project "ReflyEntry"
+    location (Dirs.Project)
     kind "WindowedApp"
-    language "C++"
-    cppdialect "C++17"
-    staticruntime "off"
-    floatingpoint "fast"
 
-    flags {
-        "FatalWarnings",
-        "MultiProcessorCompile",
-    }
-    
-    targetdir(TargetDir .. OutputDir .. "/%{prj.name}/")
-    objdir   (ObjectDir .. OutputDir .. "/%{prj.name}/")
+    ApplyCommonCppSettings()
+
+    targetdir(Dirs.Target .. Dirs.Output)
+    objdir   (Dirs.Object .. Dirs.Output)
 
     files {
         "./**.cpp",
@@ -22,15 +15,19 @@ project "Refly-Entry"
     }
 
     links {
-        "Refly",
-        "Refly-Editor",
+        "ReflyEngine",
     }
-
+    
+	filterEditorOnly()
+        links { "ReflyEditor", }
+    filter {}
+    
     includedirs {
         "%{wks.location}/Source/",
-        "%{wks.location}/Source/ThirdParty",
+        "%{wks.location}/Source/Entry/",
+        "%{wks.location}/Source/ThirdParty/",
     }
 
     defines {
-        "REFLY_ENTRY",
+        "_INSIDE_REFLY_ENTRY=1",
     }

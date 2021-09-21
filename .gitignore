@@ -1,7 +1,8 @@
 .vscode/
 .vs/
 
-[Ii]ntermediate/
+*/[Bb]uild/[Bb]inaries/
+*/[Bb]uild/[Ii]ntermediate/
 
 # Visual Studio Files
 *.sln
