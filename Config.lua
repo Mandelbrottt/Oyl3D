@@ -1,13 +1,13 @@
 Config = {    
     TargetDir = "%{wks.location}/Build/Binaries/",
     ObjectDir = "%{wks.location}/Build/Intermediate/",
-    
+
     -- Output = "Build/%{cfg.system}-%{cfg.architecture}-%{cfg.buildcfg}/"
     OutputDir = "%{cfg.system}_%{cfg.architecture}_%{cfg.buildcfg}/",
-    
+
     -- Project = "%{wks.location}/Intermediate/Refly/"
     ProjectLocation = "./",
-    
+
     -- ThirdPartyProject = "%{wks.location}/Intermediate/Refly/"
     ThirdPartyProjectLocation = "./",
 
