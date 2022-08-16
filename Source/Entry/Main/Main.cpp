@@ -5,6 +5,8 @@
 	#include "Editor/main.h"
 #endif
 
+#include <vector>
+
 #include <Core/Interface.h>
 
 #include "Core/main.h"
@@ -41,26 +43,45 @@ int WINAPI wWinMain(
 
 		if (dllTest)
 		{
-			size_t (*interfaceSizeFn)() = (size_t(*)()) GetProcAddress(dllTest, "InterfaceSize");
-			Interface* (*getInterfaceFn)(void*, size_t) = (Interface* (*)(void*, size_t)) GetProcAddress(dllTest, "AllocInterface");
+			using GetInterfacesFn  = std::vector<std::string> const&(*)();
+			using InterfaceSizeFn  = size_t(*)();
+			using AllocInterfaceFn = Interface*(*)(void*, size_t);
+			
+			GetInterfacesFn  getInterfacesFn   = (GetInterfacesFn)  GetProcAddress(dllTest, "DllTest_Interfaces");
 
-			if (interfaceSizeFn == nullptr || getInterfaceFn == nullptr)
+			if (getInterfacesFn == nullptr)
 			{
 				goto fail_to_grab_procs;
 			}
+
+			std::vector<std::string> const& interfaces = getInterfacesFn();
+
+			for (auto const& interfaceName : interfaces)
+			{
+				std::string interfaceSizeFnName = interfaceName + "Size";
+				InterfaceSizeFn  interfaceSizeFn = (InterfaceSizeFn)  GetProcAddress(dllTest, interfaceSizeFnName.c_str());
+
+				std::string allocInterfaceFnName = "Alloc" + interfaceName;
+				AllocInterfaceFn allocInterfaceFn  = (AllocInterfaceFn) GetProcAddress(dllTest, allocInterfaceFnName.c_str());
+
+				if (interfaceSizeFn == nullptr || allocInterfaceFn == nullptr)
+				{
+					goto fail_to_grab_procs;
+				}
+
+				size_t interfaceSize = interfaceSizeFn();
+				void* interfaceLocation = malloc(interfaceSize);
+
+				Interface* interfaceObj = allocInterfaceFn(interfaceLocation, interfaceSize);
+
+				interfaceObj->Foo();
+
+				interfaceObj->~Interface();
+
+				free(interfaceLocation);
+				interfaceLocation = interfaceObj = nullptr;
+			}
 			
-			size_t interfaceSize = interfaceSizeFn();
-			void* interfaceLocation = malloc(interfaceSize);
-
-			Interface* interfaceObj = getInterfaceFn(interfaceLocation, interfaceSize);
-
-			interfaceObj->Foo();
-
-			interfaceObj->~Interface();
-
-			free(interfaceLocation);
-			interfaceLocation = interfaceObj = nullptr;
-
 			FreeLibrary(dllTest);
 		}
 
