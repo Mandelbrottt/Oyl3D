@@ -1,1 +1,1 @@
-include "Actions/Clean.lua"
+require("Actions.Clean")
