@@ -1,11 +1,11 @@
-project "ReflyEditor"
-    location (Dirs.Project)
+project(Refly.Editor.ProjectName)
+    location (Config.ProjectLocation)
     kind "SharedLib"
 
-    ApplyCommonCppSettings()
+    applyCommonCppSettings()
 
-    targetdir(Dirs.Target .. Dirs.Output)
-    objdir   (Dirs.Object .. Dirs.Output)
+    targetdir(Config.TargetDir .. Config.OutputDir)
+    objdir   (Config.ObjectDir .. Config.OutputDir)
 
     files {
         "./**.cpp",
@@ -15,17 +15,17 @@ project "ReflyEditor"
     }
 
     links {
-        "ReflyEngine",
+        Refly.Core.ProjectName,
     }
 
     includedirs {
-        "%{wks.location}/Source/",
-        "%{wks.location}/Source/Editor/",
-        "%{wks.location}/Source/ThirdParty/",
+        Refly.Location,
+        Refly.Editor.Location,
+        Refly.ThirdParty.Location,
     }
 
     defines {
-        "_INSIDE_REFLY_EDITOR=1",
+        string.upper("_INSIDE_" .. Refly.Name .. "_" .. Refly.Editor.Name .. "=1"),
     }
 
-    removeconfigurations { "*" .. Configs.Postfix }
+    removeconfigurations { "*" .. Config.Postfix }

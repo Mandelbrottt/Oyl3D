@@ -5,7 +5,7 @@
 	#include "Editor/main.h"
 #endif
 
-#include "Engine/main.h"
+#include "Core/main.h"
 
 static void SetupConsole();
 

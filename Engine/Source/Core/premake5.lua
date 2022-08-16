@@ -1,6 +1,6 @@
-project(Refly.Entry.ProjectName)
+project(Refly.Core.ProjectName)
     location (Config.ProjectLocation)
-    kind "WindowedApp"
+    kind "SharedLib"
 
     applyCommonCppSettings()
 
@@ -15,19 +15,15 @@ project(Refly.Entry.ProjectName)
     }
 
     links {
-        Refly.Core.ProjectName,
+        
     }
 
-	filterEditorOnly(function()
-        links { Refly.Editor.ProjectName, }
-    end)
-    
     includedirs {
         Refly.Location,
-        Refly.Entry.Location,
+        Refly.Core.Location,
         Refly.ThirdParty.Location,
     }
 
     defines {
-        string.upper("_INSIDE_" .. Refly.Name .. "_" .. Refly.Entry.Name .. "=1"),
+        string.upper("_INSIDE_" .. Refly.Name .. "_" .. Refly.Core.Name .. "=1"),
     }
