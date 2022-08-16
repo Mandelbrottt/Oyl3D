@@ -62,3 +62,9 @@ function applyCommonCppSettings()
         "MultiProcessorCompile",
     }    
 end
+
+function defineInsideMacro(projectName)
+    return string.upper(
+        string.format("_INSIDE_%s_%s=1", Refly.Name, projectName)
+    )
+end

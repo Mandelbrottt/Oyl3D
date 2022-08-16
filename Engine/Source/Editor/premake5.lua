@@ -25,7 +25,7 @@ project(Refly.Editor.ProjectName)
     }
 
     defines {
-        string.upper("_INSIDE_" .. Refly.Name .. "_" .. Refly.Editor.Name .. "=1"),
+        defineInsideMacro(Refly.Editor.Name),
     }
 
     removeconfigurations { "*" .. Config.Postfix }

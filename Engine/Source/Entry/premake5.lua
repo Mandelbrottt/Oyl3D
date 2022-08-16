@@ -29,5 +29,5 @@ project(Refly.Entry.ProjectName)
     }
 
     defines {
-        string.upper("_INSIDE_" .. Refly.Name .. "_" .. Refly.Entry.Name .. "=1"),
+        defineInsideMacro(Refly.Entry.Name),
     }
