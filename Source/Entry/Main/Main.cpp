@@ -5,6 +5,8 @@
 	#include "Editor/main.h"
 #endif
 
+#include <Core/Interface.h>
+
 #include "Core/main.h"
 
 static void SetupConsole();
@@ -33,7 +35,38 @@ int WINAPI wWinMain(
 	
 	SomethingElse();
 
-	std::cin.get();
+	do 
+	{
+		HMODULE dllTest = LoadLibrary(TEXT("DllTest.dll"));
+
+		if (dllTest)
+		{
+			size_t (*interfaceSizeFn)() = (size_t(*)()) GetProcAddress(dllTest, "InterfaceSize");
+			Interface* (*getInterfaceFn)(void*, size_t) = (Interface* (*)(void*, size_t)) GetProcAddress(dllTest, "AllocInterface");
+
+			if (interfaceSizeFn == nullptr || getInterfaceFn == nullptr)
+			{
+				goto fail_to_grab_procs;
+			}
+			
+			size_t interfaceSize = interfaceSizeFn();
+			void* interfaceLocation = malloc(interfaceSize);
+
+			Interface* interfaceObj = getInterfaceFn(interfaceLocation, interfaceSize);
+
+			interfaceObj->Foo();
+
+			interfaceObj->~Interface();
+
+			free(interfaceLocation);
+			interfaceLocation = interfaceObj = nullptr;
+
+			FreeLibrary(dllTest);
+		}
+
+	fail_to_grab_procs:
+		printf("press q to stop\n");
+	} while (getchar() != 'q');
 
 	ShutdownConsole();
 

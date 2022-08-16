@@ -33,6 +33,7 @@ workspace(Refly.Name)
         include("Source/" .. Refly.Core.Name)
         include("Source/" .. Refly.Entry.Name)
         include("Source/" .. Refly.Editor.Name)
+        include("Source/" .. "DllTest")
 
     group ""
 
