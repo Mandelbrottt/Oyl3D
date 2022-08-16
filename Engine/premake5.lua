@@ -33,8 +33,29 @@ workspace(Refly.Name)
         include("Source/" .. Refly.Core.Name)
         include("Source/" .. Refly.Entry.Name)
         include("Source/" .. Refly.Editor.Name)
+
     group ""
 
     group(Refly.ThirdParty.Name)
 
     group ""
+
+    project(Refly.ZeroCheck.Name)
+        kind "Makefile"
+        targetdir(Config.TargetDir .. Config.OutputDir)
+        objdir   (Config.ObjectDir .. Config.OutputDir)
+
+        if string.startswith(_ACTION, "vs") then
+            local runPremakeCommand = 
+                -- "%{wks.location}/Binaries/ThirdParty/premake5.exe " .. _ACTION .. " --zero-check"
+                "%{wks.location}/Binaries/ThirdParty/premake5.exe " .. _ACTION
+
+            buildcommands {
+                runPremakeCommand,
+            }
+            rebuildcommands {
+                runPremakeCommand,
+            }
+        end
+
+include "Scripts/Premake/Overrides.lua"

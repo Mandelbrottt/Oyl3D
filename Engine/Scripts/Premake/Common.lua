@@ -19,6 +19,9 @@ Refly = {
     ThirdParty = {
         Name = "ThirdParty",
         Location = SourceDir .. "ThirdParty",
+    },
+    ZeroCheck = {
+        Name = "ZERO_CHECK"
     }
 }
 
@@ -38,6 +41,16 @@ function applyCommonCppSettings()
     staticruntime "off"
     floatingpoint "fast"
 
+    targetdir(Config.TargetDir .. Config.OutputDir)
+    objdir   (Config.ObjectDir .. Config.OutputDir)
+
+    files {
+        "./**.cpp",
+        "./**.h",
+        "./**.hpp",
+        "./**.inl",
+    }
+
     filter("configurations:" .. Config.Debug.Prefix .. "*")
         optimize "off"
         runtime "debug"
@@ -56,6 +69,10 @@ function applyCommonCppSettings()
     filterEditorOnly(function()
         defines { string.upper(Refly.Name) .. "_EDITOR=1" }
     end)
+
+    links {
+        Refly.ZeroCheck.Name
+    }
 
     flags {
         "FatalWarnings",

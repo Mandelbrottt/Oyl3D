@@ -4,16 +4,6 @@ project(Refly.Editor.ProjectName)
 
     applyCommonCppSettings()
 
-    targetdir(Config.TargetDir .. Config.OutputDir)
-    objdir   (Config.ObjectDir .. Config.OutputDir)
-
-    files {
-        "./**.cpp",
-        "./**.h",
-        "./**.hpp",
-        "./**.inl",
-    }
-
     links {
         Refly.Core.ProjectName,
     }
