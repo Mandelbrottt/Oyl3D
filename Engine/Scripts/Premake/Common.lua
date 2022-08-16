@@ -32,7 +32,7 @@ Refly.Editor.ProjectName = Refly.Name .. Refly.Editor.Name
 function filterEditorOnly(filterCallback)
     filter("configurations:not *" .. Config.Postfix .. " or *" .. Config.Editor.Postfix)
         filterCallback()
-    filter()
+    filter {}
 end
 
 function applyCommonCppSettings()
