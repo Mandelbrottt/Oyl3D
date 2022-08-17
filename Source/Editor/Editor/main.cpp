@@ -1,8 +1,3 @@
-#include "main.h"
+#include "pch.h"
 
-#include <iostream>
-
-void Something()
-{
-	std::cout << "Editor\n";
-}
+#include "Common.h"

@@ -2,12 +2,9 @@
 #include <iostream>
 #include <vector>
 
-#if REFLY_EDITOR
-	#include <Editor/main.h>
-#endif
-
 #include <Core/Interface.h>
-#include <Core/main.h>
+
+#include <Core/Application/Main.h>
 
 static void SetupConsole();
 
@@ -27,14 +24,8 @@ int WINAPI wWinMain(
 
 	SetupConsole();
 	
-	std::cout << "Hello World!\n";
-
-#if REFLY_EDITOR
-	Something();
-#endif
+	Refly::Init();
 	
-	SomethingElse();
-
 	do 
 	{
 		HMODULE dllTest = LoadLibrary(TEXT("DllTest.dll"));
@@ -86,6 +77,8 @@ int WINAPI wWinMain(
 	fail_to_grab_procs:
 		printf("press q to stop\n");
 	} while (getchar() != 'q');
+	
+	Refly::Shutdown();
 
 	ShutdownConsole();
 

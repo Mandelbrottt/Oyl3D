@@ -3,6 +3,9 @@ project(Refly.Editor.ProjectName)
 
     applyCommonCppSettings(Refly.Editor)
 
+    pchheader "pch.h"
+    pchsource "pch.cpp"
+
     links {
         Refly.Core.ProjectName,
     }

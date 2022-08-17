@@ -62,7 +62,8 @@ function applyCommonCppSettings(projectConfig)
 
     if projectConfig then
         includedirs {
-            path.join(projectConfig.Name, projectConfig.Name)
+            projectConfig.Location,
+            projectConfig.Location .. projectConfig.Name,
         }
     
         defines {

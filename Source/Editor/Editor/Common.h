@@ -5,5 +5,3 @@
 #else
 	#define REFLY_EDITOR_EXPORT __declspec(dllimport)
 #endif
-
-REFLY_EDITOR_EXPORT extern void Something();
