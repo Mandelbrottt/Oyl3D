@@ -35,6 +35,12 @@ function filterEditorOnly(filterCallback)
     filter {}
 end
 
+function defineInsideMacro(projectName)
+    return string.upper(
+        string.format("_INSIDE_%s_%s=1", Refly.Name, projectName)
+    )
+end
+
 function applyCommonCppSettings(projectConfig)
     language "C++"
     cppdialect "C++17"
@@ -76,7 +82,6 @@ function applyCommonCppSettings(projectConfig)
         "MultiProcessorCompile",
     }
 
-
     filter("configurations:" .. Config.Debug.Prefix .. "*")
         optimize "off"
         runtime "debug"
@@ -95,10 +100,4 @@ function applyCommonCppSettings(projectConfig)
     filterEditorOnly(function()
         defines { string.upper(Refly.Name) .. "_EDITOR=1" }
     end)
-end
-
-function defineInsideMacro(projectName)
-    return string.upper(
-        string.format("_INSIDE_%s_%s=1", Refly.Name, projectName)
-    )
 end
