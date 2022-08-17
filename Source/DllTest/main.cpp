@@ -6,24 +6,27 @@
 
 static std::vector<std::string> g_interfaces;
 
-extern "C" __declspec(dllexport) std::vector<std::string> const& DllTest_Interfaces()
+// ReSharper disable once CppInconsistentNaming
+extern "C" __declspec(dllexport) const std::vector<std::string>& __DllTest_Interfaces()
 {
 	return g_interfaces;
 }
 
 #define RegisterInterface(_class_) \
-	static int IIFE##_class_ = [] \
+	static int __IIFE##_class_ = [] \
 	{ \
 		g_interfaces.push_back(#_class_); \
 		return 0; \
 	}(); \
-	extern "C" __declspec(dllexport) size_t _class_##Size() \
+	/* Trick the compiler into thinking we're using the above variable so it doesn't get optimized out */\
+	__declspec(dllexport) int __UseIIFE##_class_() { return __IIFE##_class_; } \
+	extern "C" __declspec(dllexport) size_t __Size##_class_() \
 	{ \
 		return sizeof(_class_); \
 	} \
-	extern "C" __declspec(dllexport) Interface* Alloc##_class_(void* a_location, size_t a_sizeInBytes) \
+	extern "C" __declspec(dllexport) Interface* __Alloc##_class_(void* a_location, size_t a_sizeInBytes) \
 	{ \
-		assert(a_sizeInBytes == _class_##Size()); \
+		assert(a_sizeInBytes == __Size##_class_()); \
 		_class_* interfaceLocation = reinterpret_cast<_class_*>(a_location); \
 		new(interfaceLocation) _class_; \
 		return interfaceLocation; \
@@ -34,6 +37,7 @@ class DerivedInterface : public Interface
 {
 public:
 	DerivedInterface() = default;
+
 	virtual ~DerivedInterface() { printf("~DerivedInterface()\n"); }
 
 	void Foo() override
@@ -48,6 +52,7 @@ class OtherDerivedInterface : public Interface
 {
 public:
 	OtherDerivedInterface() = default;
+
 	virtual ~OtherDerivedInterface() { printf("~OtherInterface()\n"); }
 
 	void Foo() override

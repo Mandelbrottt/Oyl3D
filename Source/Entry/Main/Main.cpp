@@ -43,25 +43,25 @@ int WINAPI wWinMain(
 
 		if (dllTest)
 		{
-			using GetInterfacesFn  = std::vector<std::string> const&(*)();
+			using GetInterfacesFn  = const std::vector<std::string>&(*)();
 			using InterfaceSizeFn  = size_t(*)();
 			using AllocInterfaceFn = Interface*(*)(void*, size_t);
 			
-			GetInterfacesFn  getInterfacesFn   = (GetInterfacesFn)  GetProcAddress(dllTest, "DllTest_Interfaces");
+			GetInterfacesFn  getInterfacesFn   = (GetInterfacesFn)  GetProcAddress(dllTest, "__DllTest_Interfaces");
 
 			if (getInterfacesFn == nullptr)
 			{
 				goto fail_to_grab_procs;
 			}
 
-			std::vector<std::string> const& interfaces = getInterfacesFn();
+			const std::vector<std::string>& interfaces = getInterfacesFn();
 
 			for (auto const& interfaceName : interfaces)
 			{
-				std::string interfaceSizeFnName = interfaceName + "Size";
+				const std::string interfaceSizeFnName = "__Size" + interfaceName;
 				InterfaceSizeFn  interfaceSizeFn = (InterfaceSizeFn)  GetProcAddress(dllTest, interfaceSizeFnName.c_str());
 
-				std::string allocInterfaceFnName = "Alloc" + interfaceName;
+				const std::string allocInterfaceFnName = "__Alloc" + interfaceName;
 				AllocInterfaceFn allocInterfaceFn  = (AllocInterfaceFn) GetProcAddress(dllTest, allocInterfaceFnName.c_str());
 
 				if (interfaceSizeFn == nullptr || allocInterfaceFn == nullptr)
