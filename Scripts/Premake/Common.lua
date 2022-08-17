@@ -35,12 +35,13 @@ function filterEditorOnly(filterCallback)
     filter {}
 end
 
-function applyCommonCppSettings()
+function applyCommonCppSettings(projectConfig)
     language "C++"
     cppdialect "C++17"
     staticruntime "off"
     floatingpoint "fast"
-
+    
+    location (Config.ProjectLocation)
     targetdir(Config.TargetDir .. Config.OutputDir)
     objdir   (Config.ObjectDir .. Config.OutputDir)
 
@@ -50,6 +51,30 @@ function applyCommonCppSettings()
         "./**.hpp",
         "./**.inl",
     }
+
+    links {
+        Refly.ZeroCheck.Name
+    }
+
+    includedirs {
+        Refly.ThirdParty.Location,
+    }
+
+    if projectConfig then
+        includedirs {
+            path.join(projectConfig.Name, projectConfig.Name)
+        }
+    
+        defines {
+            defineInsideMacro(projectConfig.Name),
+        }
+    end
+
+    flags {
+        "FatalWarnings",
+        "MultiProcessorCompile",
+    }
+
 
     filter("configurations:" .. Config.Debug.Prefix .. "*")
         optimize "off"
@@ -65,19 +90,10 @@ function applyCommonCppSettings()
         optimize "on"
         runtime "release"
         defines { string.upper(Refly.Name) .. "_RELEASE=1" }
-
+        
     filterEditorOnly(function()
         defines { string.upper(Refly.Name) .. "_EDITOR=1" }
     end)
-
-    links {
-        Refly.ZeroCheck.Name
-    }
-
-    flags {
-        "FatalWarnings",
-        "MultiProcessorCompile",
-    }    
 end
 
 function defineInsideMacro(projectName)

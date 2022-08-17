@@ -1,21 +1,14 @@
 project(Refly.Editor.ProjectName)
-    location (Config.ProjectLocation)
     kind "SharedLib"
 
-    applyCommonCppSettings()
+    applyCommonCppSettings(Refly.Editor)
 
     links {
         Refly.Core.ProjectName,
     }
 
     includedirs {
-        Refly.Location,
-        Refly.Editor.Location,
-        Refly.ThirdParty.Location,
-    }
-
-    defines {
-        defineInsideMacro(Refly.Editor.Name),
+        Refly.Core.Location,
     }
 
     removeconfigurations { "*" .. Config.Postfix }

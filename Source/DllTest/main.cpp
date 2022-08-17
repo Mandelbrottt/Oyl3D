@@ -2,7 +2,7 @@
 #include <cassert>
 #include <vector>
 
-#include "Core/Interface.h"
+#include <Core/Interface.h>
 
 static std::vector<std::string> g_interfaces;
 

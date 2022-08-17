@@ -1,15 +1,13 @@
 #include <Windows.h>
 #include <iostream>
-
-#if REFLY_EDITOR
-	#include "Editor/main.h"
-#endif
-
 #include <vector>
 
-#include <Core/Interface.h>
+#if REFLY_EDITOR
+	#include <Editor/main.h>
+#endif
 
-#include "Core/main.h"
+#include <Core/Interface.h>
+#include <Core/main.h>
 
 static void SetupConsole();
 
