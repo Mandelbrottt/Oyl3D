@@ -35,16 +35,56 @@ Refly.Core.ProjectName = Refly.Name .. Refly.Core.Name
 Refly.Entry.ProjectName = Refly.Name .. Refly.Entry.Name
 Refly.Editor.ProjectName = Refly.Name .. Refly.Editor.Name
 
+function validateDependencyCache(dependency)
+    dependencyExists = os.isdir(dependency.ProjectDir)
+    if not dependencyExists then
+        -- Clone the repository and cd into it
+        os.execute("git clone -n " .. dependency.Git.Url .. " " .. dependency.ProjectDir)
+        local cwd = os.getcwd()
+        os.chdir(dependency.ProjectDir)
+
+        -- If a specific revision is specified, point to it
+        if dependency.Git.Revision then
+            os.execute("git checkout -q " .. dependency.Git.Revision)
+        end
+
+        -- Remove the .git folder as we're only using git to download the repository 
+        os.execute(
+            os.translateCommands("{RMDIR} .git")
+        )
+        os.chdir(cwd)
+    end
+end
+
+local reinitOptionTrigger = "reinit"
+
+newoption {
+    trigger = reinitOptionTrigger,
+    description = "Reinitialize all dependencies"
+}
+
 function generateDependencies()
+    if _OPTIONS[reinitOptionTrigger] then
+        depsToRemove = os.matchdirs(Refly.ThirdParty.ProjectDir .. "*")
+        if #depsToRemove ~= 0 then
+            print("Removing Dependency Cache...")
+            for _, dir in pairs(depsToRemove) do
+                os.rmdir(dir)
+            end
+        end
+    end
+
     for _, dependency in pairs(Dependencies) do
         -- Default to StaticLib if none provided
         dependency.Linking = dependency.Linking or "StaticLib"
         
-        local git = dependency.Git
-        local name = path.getbasename(git)
+        local gitUrl = dependency.Git.Url
+        local name = path.getbasename(gitUrl)
         
         dependency['Name'] = name
         dependency['ProjectDir'] = Refly.ThirdParty.ProjectDir .. name .. "/"
+
+        validateDependencyCache(dependency)
         
         local cwd = os.getcwd()
         os.chdir(dependency.ProjectDir)
