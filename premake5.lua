@@ -34,11 +34,20 @@ workspace(Refly.Name)
         generateDependencies()
     group ""
 
+    local function includeMainProject(projectConfig)
+        include(
+            path.appendExtension(
+                path.join(projectConfig.ProjectDir, projectConfig.Name),
+                ".lua"
+            )
+        )
+    end
+
     group(Refly.Name)
-        include(Refly.Core.ProjectDir)
-        include(Refly.Entry.ProjectDir)
-        include(Refly.Editor.ProjectDir)
-        include("Source/" .. "DllTest")
+        includeMainProject(Refly.Core)
+        includeMainProject(Refly.Entry)
+        includeMainProject(Refly.Editor)
+        include("Source/" .. "DllTest/DllTest.lua")
     group ""
 
     project(Refly.ZeroCheck.Name)
