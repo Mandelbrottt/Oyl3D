@@ -25,7 +25,7 @@ int WINAPI wWinMain(
 	SetupConsole();
 	
 	Refly::Init();
-	
+
 	do 
 	{
 		HMODULE dllTest = LoadLibrary(TEXT("DllTest.dll"));

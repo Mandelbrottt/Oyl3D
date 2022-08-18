@@ -1,17 +1,17 @@
 project(Refly.Entry.ProjectName)
-    kind "WindowedApp"
-
     applyCommonCppSettings(Refly.Entry)
+    
+    kind "WindowedApp"
 
     links {
         Refly.Core.ProjectName,
     }
     
     includedirs {
-        Refly.Core.Location,
+        Refly.Core.IncludeDir,
     }
 
     filterEditorOnly(function()
         links { Refly.Editor.ProjectName, }
-        includedirs { Refly.Editor.Location }
+        includedirs { Refly.Editor.IncludeDir }
     end)

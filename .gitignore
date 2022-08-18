@@ -4,6 +4,8 @@
 [Bb]uild/
 [Bb]uild/
 
+[Ss]ource/[Tt]hird[Pp]arty/
+
 # Visual Studio Files
 *.sln
 *.vcxproj

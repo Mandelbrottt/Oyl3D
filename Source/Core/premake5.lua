@@ -1,7 +1,7 @@
 project(Refly.Core.ProjectName)
-    kind "SharedLib"
-
     applyCommonCppSettings(Refly.Core)
+
+    kind "SharedLib"
 
     pchheader "pch.h"
     pchsource "pch.cpp"

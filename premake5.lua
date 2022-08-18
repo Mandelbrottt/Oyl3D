@@ -1,4 +1,5 @@
 include "Config.lua"
+include "Dependencies.lua"
 
 include "Scripts/Premake/Common.lua"
 include "Scripts/Premake/Actions.lua"
@@ -28,17 +29,16 @@ workspace(Refly.Name)
     filter {}
 
     startproject(Refly.Name .. Refly.Entry.Name)
-
-    group(Refly.Name)
-        include("Source/" .. Refly.Core.Name)
-        include("Source/" .. Refly.Entry.Name)
-        include("Source/" .. Refly.Editor.Name)
-        include("Source/" .. "DllTest")
-
+    
+    group(Refly.ThirdParty.Name)
+        generateDependencies()
     group ""
 
-    group(Refly.ThirdParty.Name)
-
+    group(Refly.Name)
+        include(Refly.Core.ProjectDir)
+        include(Refly.Entry.ProjectDir)
+        include(Refly.Editor.ProjectDir)
+        include("Source/" .. "DllTest")
     group ""
 
     project(Refly.ZeroCheck.Name)

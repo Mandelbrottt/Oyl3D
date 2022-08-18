@@ -1,7 +1,7 @@
 project(Refly.Editor.ProjectName)
-    kind "SharedLib"
-
     applyCommonCppSettings(Refly.Editor)
+
+    kind "SharedLib"
 
     pchheader "pch.h"
     pchsource "pch.cpp"
@@ -11,7 +11,7 @@ project(Refly.Editor.ProjectName)
     }
 
     includedirs {
-        Refly.Core.Location,
+        Refly.Core.IncludeDir,
     }
 
     removeconfigurations { "*" .. Config.Postfix }
