@@ -49,9 +49,7 @@ function validateDependencyCache(dependency)
         end
 
         -- Remove the .git folder as we're only using git to download the repository 
-        os.execute(
-            os.translateCommands("{RMDIR} .git")
-        )
+        os.execute(os.translateCommands("{RMDIR} .git"))
         os.chdir(cwd)
     end
 end
@@ -69,17 +67,22 @@ function generateDependencies()
         if #depsToRemove ~= 0 then
             print("Removing Dependency Cache...")
             for _, dir in pairs(depsToRemove) do
-                os.rmdir(dir)
+                os.execute(os.translateCommands("{RMDIR} " .. dir))
             end
         end
     end
 
-    for _, dependency in pairs(Dependencies) do
+    -- applyCommonCppSettings relies on the global Dependencies
+    -- Make it an empty table while we generate the dependency projects so that they don't depend on each other
+    local dependencies = Dependencies
+    Dependencies = {}
+
+    for _, dependency in pairs(dependencies) do
         -- Default to StaticLib if none provided
-        dependency.Linking = dependency.Linking or "StaticLib"
+        dependency.Kind = dependency.Kind or "StaticLib"
         
         local gitUrl = dependency.Git.Url
-        local name = path.getbasename(gitUrl)
+        local name = dependency.Name or path.getbasename(gitUrl)
         
         dependency['Name'] = name
         dependency['ProjectDir'] = Refly.ThirdParty.ProjectDir .. name .. "/"
@@ -94,12 +97,14 @@ function generateDependencies()
         
         project(dependency.Name)
             applyCommonCppSettings()
-            removelinks { dependency.Name }
-            kind(dependency.Linking)
+            kind(dependency.Kind)
+            includedirs { dependency.IncludeDir }
             dependency.CustomProperties()
 
         os.chdir(cwd)
     end
+
+    Dependencies = dependencies
 end
 
 function filterEditorOnly(filterCallback)
