@@ -24,7 +24,7 @@ int WINAPI wWinMain(
 
 	SetupConsole();
 	
-	Refly::Init();
+	Rearm::Init();
 
 	do 
 	{
@@ -78,7 +78,7 @@ int WINAPI wWinMain(
 		printf("press q to stop\n");
 	} while (getchar() != 'q');
 	
-	Refly::Shutdown();
+	Rearm::Shutdown();
 
 	ShutdownConsole();
 

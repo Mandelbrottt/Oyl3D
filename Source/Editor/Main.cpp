@@ -2,7 +2,7 @@
 
 #include "Main.h"
 
-namespace Refly::Editor
+namespace Rearm::Editor
 {
 	void
 	Init()

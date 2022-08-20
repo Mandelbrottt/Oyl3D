@@ -1,7 +1,7 @@
 #pragma once
 
-#if _INSIDE_REFLY_CORE
-	#define REFLY_CORE_EXPORT __declspec(dllexport)
+#if _INSIDE_REARM_CORE
+	#define REARM_CORE_EXPORT __declspec(dllexport)
 #else
-	#define REFLY_CORE_EXPORT __declspec(dllimport)
+	#define REARM_CORE_EXPORT __declspec(dllimport)
 #endif

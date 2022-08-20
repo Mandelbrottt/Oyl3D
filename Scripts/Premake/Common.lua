@@ -1,8 +1,8 @@
 local SourceDir  = "Source/"
 local BaseIncludeDir = "%{wks.location}/" .. SourceDir
 
-Refly = {
-    Name = "Refly",
+Rearm = {
+    Name = "Rearm",
     IncludeDir = BaseIncludeDir,
     SourceDir = SourceDir,
 
@@ -31,9 +31,9 @@ Refly = {
     }
 }
 
-Refly.Core.ProjectName = Refly.Name .. Refly.Core.Name
-Refly.Entry.ProjectName = Refly.Name .. Refly.Entry.Name
-Refly.Editor.ProjectName = Refly.Name .. Refly.Editor.Name
+Rearm.Core.ProjectName = Rearm.Name .. Rearm.Core.Name
+Rearm.Entry.ProjectName = Rearm.Name .. Rearm.Entry.Name
+Rearm.Editor.ProjectName = Rearm.Name .. Rearm.Editor.Name
 
 function validateDependencyCache(dependency)
     dependencyExists = os.isdir(dependency.ProjectDir)
@@ -63,7 +63,7 @@ newoption {
 
 function generateDependencies()
     if _OPTIONS[reinitOptionTrigger] then
-        depsToRemove = os.matchdirs(Refly.ThirdParty.ProjectDir .. "*")
+        depsToRemove = os.matchdirs(Rearm.ThirdParty.ProjectDir .. "*")
         if #depsToRemove ~= 0 then
             print("Removing Dependency Cache...")
             for _, dir in pairs(depsToRemove) do
@@ -85,7 +85,7 @@ function generateDependencies()
         local name = dependency.Name or path.getbasename(gitUrl)
         
         dependency['Name'] = name
-        dependency['ProjectDir'] = Refly.ThirdParty.ProjectDir .. name .. "/"
+        dependency['ProjectDir'] = Rearm.ThirdParty.ProjectDir .. name .. "/"
 
         validateDependencyCache(dependency)
         
@@ -115,7 +115,7 @@ end
 
 function defineInsideMacro(projectName)
     return string.upper(
-        string.format("_INSIDE_%s_%s=1", Refly.Name, projectName)
+        string.format("_INSIDE_%s_%s=1", Rearm.Name, projectName)
     )
 end
 
@@ -137,7 +137,7 @@ function applyCommonCppSettings(projectConfig)
     }
 
     links {
-        Refly.ZeroCheck.Name
+        Rearm.ZeroCheck.Name
     }
 
     for _, dependency in pairs(Dependencies) do
@@ -164,20 +164,20 @@ function applyCommonCppSettings(projectConfig)
     filter("configurations:" .. Config.Debug.Prefix .. "*")
         optimize "off"
         runtime "debug"
-        defines { string.upper(Refly.Name) .. "_DEBUG=1" }
+        defines { string.upper(Rearm.Name) .. "_DEBUG=1" }
 
     filter("configurations:" .. Config.Development.Prefix .. "*")
         optimize "debug"
         runtime "release"
-        defines { string.upper(Refly.Name) .. "_DEVELOPMENT=1" }
+        defines { string.upper(Rearm.Name) .. "_DEVELOPMENT=1" }
 
     filter("configurations:" .. Config.Release.Prefix .. "*")
         optimize "on"
         runtime "release"
-        defines { string.upper(Refly.Name) .. "_RELEASE=1" }
+        defines { string.upper(Rearm.Name) .. "_RELEASE=1" }
         
     filterEditorOnly(function()
-        defines { string.upper(Refly.Name) .. "_EDITOR=1" }
+        defines { string.upper(Rearm.Name) .. "_EDITOR=1" }
     end)
 end
 

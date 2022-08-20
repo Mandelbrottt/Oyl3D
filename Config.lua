@@ -5,10 +5,10 @@ Config = {
     -- Output = "Build/%{cfg.system}-%{cfg.architecture}-%{cfg.buildcfg}/"
     OutputDir = "%{cfg.system}_%{cfg.architecture}_%{cfg.buildcfg}/",
 
-    -- Project = "%{wks.location}/Intermediate/Refly/"
+    -- Project = "%{wks.location}/Intermediate/Rearm/"
     ProjectLocation = "./",
 
-    -- ThirdPartyProject = "%{wks.location}/Intermediate/Refly/"
+    -- ThirdPartyProject = "%{wks.location}/Intermediate/Rearm/"
     ThirdPartyProjectLocation = "./",
 
     Postfix = "Standalone",

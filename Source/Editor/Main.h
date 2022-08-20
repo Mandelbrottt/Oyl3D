@@ -2,14 +2,14 @@
 
 #include "Editor/Common.h"
 
-namespace Refly::Editor
+namespace Rearm::Editor
 {
-	REFLY_EDITOR_EXPORT
+	REARM_EDITOR_EXPORT
 	extern
 	void
 	Init();
 	
-	REFLY_EDITOR_EXPORT
+	REARM_EDITOR_EXPORT
 	extern
 	void
 	Shutdown();

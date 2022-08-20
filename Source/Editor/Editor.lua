@@ -1,5 +1,5 @@
-project(Refly.Editor.ProjectName)
-    applyCommonCppSettings(Refly.Editor)
+project(Rearm.Editor.ProjectName)
+    applyCommonCppSettings(Rearm.Editor)
 
     kind "SharedLib"
 
@@ -7,11 +7,11 @@ project(Refly.Editor.ProjectName)
     pchsource "pch.cpp"
 
     links {
-        Refly.Core.ProjectName,
+        Rearm.Core.ProjectName,
     }
 
     includedirs {
-        Refly.Core.IncludeDir,
+        Rearm.Core.IncludeDir,
     }
 
     removeconfigurations { "*" .. Config.Postfix }

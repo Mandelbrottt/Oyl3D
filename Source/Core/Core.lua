@@ -1,5 +1,5 @@
-project(Refly.Core.ProjectName)
-    applyCommonCppSettings(Refly.Core)
+project(Rearm.Core.ProjectName)
+    applyCommonCppSettings(Rearm.Core)
 
     kind "SharedLib"
 

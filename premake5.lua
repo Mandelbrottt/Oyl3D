@@ -4,7 +4,7 @@ include "Dependencies.lua"
 include "Scripts/Premake/Common.lua"
 include "Scripts/Premake/Actions.lua"
 
-workspace(Refly.Name)
+workspace(Rearm.Name)
     location "./"
 
     configurations {
@@ -28,9 +28,9 @@ workspace(Refly.Name)
         architecture "x64"
     filter {}
 
-    startproject(Refly.Name .. Refly.Entry.Name)
+    startproject(Rearm.Name .. Rearm.Entry.Name)
     
-    group(Refly.ThirdParty.Name)
+    group(Rearm.ThirdParty.Name)
         generateDependencies()
     group ""
 
@@ -43,14 +43,14 @@ workspace(Refly.Name)
         )
     end
 
-    group(Refly.Name)
-        includeMainProject(Refly.Core)
-        includeMainProject(Refly.Entry)
-        includeMainProject(Refly.Editor)
+    group(Rearm.Name)
+        includeMainProject(Rearm.Core)
+        includeMainProject(Rearm.Entry)
+        includeMainProject(Rearm.Editor)
         include("Source/" .. "DllTest/DllTest.lua")
     group ""
 
-    project(Refly.ZeroCheck.Name)
+    project(Rearm.ZeroCheck.Name)
         kind "Makefile"
         targetdir(Config.TargetDir .. Config.OutputDir)
         objdir   (Config.ObjectDir .. Config.OutputDir)

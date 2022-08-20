@@ -2,14 +2,14 @@
 
 #include "Core/Common.h"
 
-namespace Refly
+namespace Rearm
 {
-	REFLY_CORE_EXPORT
+	REARM_CORE_EXPORT
 	extern
 	void
 	Init();
 	
-	REFLY_CORE_EXPORT
+	REARM_CORE_EXPORT
 	extern
 	void
 	Shutdown();

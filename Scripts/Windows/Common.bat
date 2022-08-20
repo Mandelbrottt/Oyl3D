@@ -1,7 +1,7 @@
 @echo off
 
-@REM Refly/Engine/
-set REFLY_ENGINE_DIR=..\..\
+@REM   Rearm/Engine/
+set REARM_ENGINE_DIR=..\..\
 
 @REM Relative to Engine directory
 set BINARIES_DIR=Binaries\

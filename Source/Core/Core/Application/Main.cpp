@@ -2,10 +2,24 @@
 
 #include "Main.h"
 
-namespace Refly
+#include <iostream>
+
+#include <nlohmann/json.hpp>
+
+namespace Rearm
 {
 	void
-	Init() { }
+	Init()
+	{
+		YAML::Emitter out;
+		out << "Hello, World!";
+		printf("Output YAML:\n\t%s\n", out.c_str());
+
+		std::cout << nlohmann::json {
+			{ "OneThing", 5 },
+			{ "AnotherThing", true },
+		}.dump(4) << "\n";
+	}
 
 	void
 	Shutdown() { }

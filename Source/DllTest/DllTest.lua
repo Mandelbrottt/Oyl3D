@@ -8,7 +8,7 @@ project("DllTest")
     }
 
     includedirs {
-        Refly.IncludeDir .. "DllTest",
-        Refly.Core.IncludeDir,
-        Refly.ThirdParty.IncludeDir,
+        Rearm.IncludeDir .. "DllTest",
+        Rearm.Core.IncludeDir,
+        Rearm.ThirdParty.IncludeDir,
     }

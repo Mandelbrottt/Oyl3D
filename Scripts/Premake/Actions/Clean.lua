@@ -29,7 +29,7 @@ newaction {
             return
         end
 
-        local dependenciesToRemove = os.matchdirs(Refly.ThirdParty.ProjectDir .. "*")
+        local dependenciesToRemove = os.matchdirs(Rearm.ThirdParty.ProjectDir .. "*")
         for _, dependency in pairs(dependenciesToRemove) do
             print("Removing Dependency '" .. path.getbasename(dependency) .. "'...")
             os.rmdir(dependency)
