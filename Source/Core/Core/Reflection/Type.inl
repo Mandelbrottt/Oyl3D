@@ -40,16 +40,15 @@ namespace Rearm::Reflection
 	}
 
 	template<typename TArg>
-	Type&
-	Type::operator()(TArg&& a_arg) noexcept
+	void
+	Type::_ReflectMember(TArg&& a_arg) noexcept
 	{
 		ReflectInternal(std::move(a_arg));
-		return *this;
 	}
 
 	template<typename TBase, typename TDerived>
-	Type&
-	Type::operator()() noexcept
+	void
+	Type::_ReflectType() noexcept
 	{
 		static_assert(
 			std::is_base_of_v<TBase, TDerived>,

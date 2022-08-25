@@ -219,14 +219,14 @@ namespace Rearm::Reflection
 
 		// Used by REFLECT_MEMBERS
 		template<typename TArg>
-		Type&
-		operator()(TArg&& a_arg) noexcept;
+		void
+		_ReflectMember(TArg&& a_arg) noexcept;
 
 		// Used by REFLECT_DECLARE if reflecting the base class
 		template<typename TBase, typename TDerived>
 		inline
-		Type&
-		operator()() noexcept;
+		void
+		_ReflectType() noexcept;
 
 	public:
 	private:
