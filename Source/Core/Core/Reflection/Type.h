@@ -28,23 +28,23 @@ namespace Rearm::Reflection
 		static
 		types_container_t
 		s_typesContainer;
-		
+
 		explicit
-		Type(std::type_info const& a_info) noexcept
+		Type(const std::type_info& a_info) noexcept
 			: m_typeInfo(&a_info)
 		{
 			ProcessName(a_info);
 		}
 
-		Type(Type const& a_other) = default;
+		Type(const Type& a_other) = default;
 
 		Type&
-		operator =(Type const&) = delete;
-		
+		operator =(const Type&) = delete;
+
 	public:
 		using instance_fields_container_t = std::vector<Field>;
 		using member_function_container_t = std::vector<Function>;
-		
+
 		// Warning because move constructor is public?
 		#pragma warning(disable : DEPRECATED_WARNING_NUMBER)
 		Type(Type&& a_other) = default;
@@ -53,17 +53,17 @@ namespace Rearm::Reflection
 		#pragma warning(disable : DEPRECATED_WARNING_NUMBER)
 
 		bool
-		operator ==(Type const& a_other) const
+		operator ==(const Type& a_other) const
 		{
 			return m_typeId == a_other.m_typeId;
 		}
-		
+
 		bool
-		operator !=(Type const& a_other) const
+		operator !=(const Type& a_other) const
 		{
 			return !(*this == a_other);
 		}
-		
+
 		/**
 		 * \brief Retrieve the statically assigned type id for the type represented by the current \link Type \endlink.
 		 * \return The non-zero static type id if the current type is valid, zero otherwise.
@@ -73,7 +73,7 @@ namespace Rearm::Reflection
 		{
 			return m_typeId;
 		}
-		
+
 		/**
 		 * \brief Retrieve the statically assigned type id for the base type of the type represented
 		 *        by the current \link Type \endlink.
@@ -88,50 +88,53 @@ namespace Rearm::Reflection
 		/**
 		 * \return The simplified name of the type represented by the current \link Type \endlink
 		 */
-		std::string const&
+		const std::string&
 		Name() const
 		{
 			return m_name;
 		}
-		
+
 		/**
 		 * \return The fully-qualified name of the type represented by the current \link Type \endlink
 		 */
-		std::string const&
+		const std::string&
 		FullName() const
 		{
 			return m_fullName;
 		}
 
-		instance_fields_container_t const&
-		GetInstanceFields() const
+		const instance_fields_container_t&
+		GetFields() const
 		{
 			return m_instanceFields;
 		}
-		
-		member_function_container_t const&
-		GetMemberFunctions() const
+
+		const Field*
+		GetField(std::string_view a_fieldName);
+
+		const member_function_container_t&
+		GetFunctions() const
 		{
 			return m_memberFunctions;
 		}
 
 		bool
 		IsConvertibleTo(TypeId a_typeId) const;
-		
+
 		bool
-		IsConvertibleTo(Type const* a_type) const;
-		
+		IsConvertibleTo(const Type* a_type) const;
+
 		bool
-		IsConvertibleTo(Type const& a_type) const;
-		
+		IsConvertibleTo(const Type& a_type) const;
+
 		bool
 		IsConvertibleFrom(TypeId a_typeId) const;
-		
+
 		bool
-		IsConvertibleFrom(Type const* a_type) const;
-		
+		IsConvertibleFrom(const Type* a_type) const;
+
 		bool
-		IsConvertibleFrom(Type const& a_type) const;
+		IsConvertibleFrom(const Type& a_type) const;
 
 		/**
 		 * \brief Retrieve the value returned by sizeof for the type class represented by
@@ -144,7 +147,7 @@ namespace Rearm::Reflection
 			return m_size;
 		}
 
-		std::type_info const&
+		const std::type_info&
 		GetTypeInfo() const
 		{
 			return *m_typeInfo;

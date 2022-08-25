@@ -5,7 +5,26 @@
 namespace Rearm::Reflection
 {
 	Type::types_container_t Type::s_typesContainer;
-	
+
+	const Field*
+	Type::GetField(std::string_view a_fieldName)
+	{
+		auto predicate = [&a_fieldName](const Field& a_field)
+		{
+			return a_field.name == a_fieldName;
+		};
+
+		auto iter = std::find_if(m_instanceFields.begin(), m_instanceFields.end(), predicate);
+
+		if (iter == m_instanceFields.end())
+		{
+			return nullptr;
+		}
+
+		const auto& field = *iter;
+		return &field;
+	}
+
 	bool
 	Type::IsConvertibleTo(TypeId a_typeId) const
 	{
