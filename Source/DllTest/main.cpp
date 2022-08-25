@@ -7,9 +7,9 @@
 static std::vector<std::string> g_interfaces;
 
 // ReSharper disable once CppInconsistentNaming
-extern "C" __declspec(dllexport) const std::vector<std::string>& __DllTest_Interfaces()
+extern "C" __declspec(dllexport) const std::vector<std::string>* __DllTest_Interfaces()
 {
-	return g_interfaces;
+	return &g_interfaces;
 }
 
 #define RegisterInterface(_class_) \
@@ -33,6 +33,8 @@ extern "C" __declspec(dllexport) const std::vector<std::string>& __DllTest_Inter
 	} \
 	static_assert(true, "")
 
+void Foo();
+
 class DerivedInterface : public Interface
 {
 public:
@@ -43,12 +45,19 @@ public:
 	void Foo() override
 	{
 		printf("Foo()\n");
+		::Foo();
 	}
 };
 
 RegisterInterface(DerivedInterface);
 
-class OtherDerivedInterface : public Interface
+class IBase
+{
+	void Bar() {}
+};
+
+
+class OtherDerivedInterface : public DerivedInterface, public IBase
 {
 public:
 	OtherDerivedInterface() = default;
@@ -57,8 +66,55 @@ public:
 
 	void Foo() override
 	{
-		printf("Something()\n");
+		printf("ODI %llu\n", something);
 	}
+	
+	constexpr static size_t something  = sizeof(void (OtherDerivedInterface::*)());
 };
 
 RegisterInterface(OtherDerivedInterface);
+
+class Nothing
+{
+public:
+	void Foo() {}
+};
+
+void Foo()
+{
+	printf("%zu %zu\n", sizeof(&Nothing::Foo), sizeof(&Interface::Foo));
+	
+	auto ptrToMember = &OtherDerivedInterface::Foo;
+	printf("\t%llu\n", sizeof(ptrToMember));
+
+	struct PtrToMember
+	{
+		void* basePtr;
+		void* adjustor;
+	};
+
+	PtrToMember ptrToMemberStruct {};
+
+	memcpy(&ptrToMemberStruct, &ptrToMember, sizeof(ptrToMember));
+
+	void (OtherDerivedInterface::*thereAndBack)();
+
+	memcpy(&thereAndBack, &ptrToMemberStruct, sizeof(thereAndBack));
+	(OtherDerivedInterface().*thereAndBack)();
+	
+	printf("\t%p %p\n", ptrToMemberStruct.basePtr, ptrToMemberStruct.adjustor);
+
+	auto ptrToMemberCast = [](void (OtherDerivedInterface::* a_src)())->PtrToMember
+	{
+		PtrToMember result {};
+		assert(sizeof(result) == sizeof(a_src));
+		memcpy(&result, &a_src, sizeof(a_src));
+		return result;
+	};
+
+	auto ptms = ptrToMemberCast(&OtherDerivedInterface::Foo);
+	printf("\t%p %p\n", ptms.basePtr, ptms.adjustor);
+	
+	memcpy(&thereAndBack, &ptms, sizeof(thereAndBack));
+	(OtherDerivedInterface().*thereAndBack)();
+}
