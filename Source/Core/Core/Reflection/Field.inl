@@ -6,15 +6,17 @@ namespace Rearm::Reflection
 	const void*
 	Field::GetValue(const TContaining& a_obj) const
 	{
-		Type& containingType     = Type::Get<TContaining>();
-		Type* thisContainingType = Type::TryGet(this->containingTypeId);
-
-		bool notNull       = thisContainingType;
-		bool isConvertible = thisContainingType->IsConvertibleTo(&containingType);
-		bool isVoid        = containingType.GetTypeId() == GetTypeId<void>();
-
-		assert(notNull && (isConvertible || isVoid));
-
+		#ifndef REARM_RELEASE
+			Type& containingType     = Type::Get<TContaining>();
+			Type* thisContainingType = Type::TryGet(this->containingTypeId);
+	
+			bool notNull       = thisContainingType;
+			bool isConvertible = thisContainingType->IsConvertibleTo(&containingType);
+			bool isVoid        = containingType.GetTypeId() == GetTypeId<void>();
+	
+			assert(notNull && (isConvertible || isVoid));
+		#endif
+		
 		uintptr_t ptrToMember;
 
 		if constexpr (std::is_pointer_v<TContaining>)
@@ -31,10 +33,12 @@ namespace Rearm::Reflection
 	const TField&
 	Field::GetValue(const TContaining& a_obj) const
 	{
+	#ifndef REARM_RELEASE
 		Type& incomingType = Type::Get<TField>();
 		Type* thisType     = Type::TryGet(this->fieldTypeId);
 
 		assert(thisType && thisType->IsConvertibleTo(&incomingType));
+	#endif
 
 		const void* result = Field::GetValue(a_obj);
 
@@ -45,6 +49,7 @@ namespace Rearm::Reflection
 	void
 	Field::SetValue(const TContaining& a_obj, const void* a_incomingValue, size_t a_incomingSize) const
 	{
+	#ifndef REARM_RELEASE
 		Type& containingType     = Type::Get<TContaining>();
 		Type* thisContainingType = Type::TryGet(this->containingTypeId);
 
@@ -54,6 +59,7 @@ namespace Rearm::Reflection
 		bool sizeEqual     = a_incomingSize == size;
 
 		assert(notNull && (isConvertible || isVoid) && sizeEqual);
+	#endif
 
 		uintptr_t ptrToMember;
 
@@ -71,6 +77,7 @@ namespace Rearm::Reflection
 	void
 	Field::SetValue(const TContaining& a_obj, const TField& a_value) const
 	{
+	#ifndef REARM_RELEASE
 		Type& containingType     = Type::Get<TContaining>();
 		Type* thisContainingType = Type::TryGet(this->containingTypeId);
 
@@ -82,7 +89,8 @@ namespace Rearm::Reflection
 		bool sizeEqual = sizeof(TField) == size;
 
 		assert(notNull && (isConvertible || isVoid) && sizeEqual);
-
+	#endif
+		
 		uintptr_t ptrToMember;
 
 		if constexpr (std::is_pointer_v<TContaining>)
