@@ -1,7 +1,6 @@
 #pragma once
 
 #include <cassert>
-#include <functional>
 
 #include "TypeId.h"
 #include "TypeTraits.h"
@@ -20,11 +19,11 @@ namespace Rearm::Reflection
 	}
 	
 	#define ReflectFunction(_function_, ...) \
-		_REFLECT_MEMBERS_ARGUMENT_NAME._ReflectMember(_REFLECT_NAMESPACE Function {\
-			/*.debugName           =*/ #_function_,\
-			/*.functionName        =*/ _REFLECT_NAMESPACE Pick<_REFLECT_NAMESPACE Name>(0, __VA_ARGS__, _REFLECT_NAMESPACE Name(#_function_)).c_str,\
-			/*.functionDescription =*/ _REFLECT_NAMESPACE Pick<_REFLECT_NAMESPACE Description>(0, __VA_ARGS__, _REFLECT_NAMESPACE Description("")).c_str,\
-			/*.function            =*/ &This::_function_,\
+		_REFLECT_MEMBERS_ARGUMENT_NAME._ReflectMember(_REFLECT_NAMESPACE Function { \
+			/*.debugName           =*/ #_function_, \
+			/*.functionName        =*/ _REFLECT_NAMESPACE Pick<_REFLECT_NAMESPACE Name>(0, __VA_ARGS__, _REFLECT_NAMESPACE Name(#_function_)).c_str, \
+			/*.functionDescription =*/ _REFLECT_NAMESPACE Pick<_REFLECT_NAMESPACE Description>(0, __VA_ARGS__, _REFLECT_NAMESPACE Description("")).c_str, \
+			/*.function            =*/ &_REFLECT_TYPE_ALIAS::_function_, \
 		})
 	
 	/**

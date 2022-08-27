@@ -4,11 +4,6 @@
 
 #include "TypeId.h"
 
-// Make reading the ReflectField macro easier without introducing a circular dependency
-#ifdef __INTELLISENSE__
-#include "Reflection.h"
-#endif
-
 namespace Rearm::Reflection
 {
 	class Type;
