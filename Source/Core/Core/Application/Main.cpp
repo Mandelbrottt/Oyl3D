@@ -56,7 +56,7 @@ public:
 
 	static
 	int
-	StaticSum(int a_lhs, int a_rhs)
+	StaticSum(const int& a_lhs, const int& a_rhs)
 	{
 		return a_lhs + a_rhs;
 	}

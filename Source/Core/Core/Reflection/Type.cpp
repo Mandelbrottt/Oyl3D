@@ -109,7 +109,7 @@ namespace Rearm::Reflection
 	{
 		return IsConvertibleFrom(a_type.GetTypeId());
 	}
-
+	
 	const Type*
 	Type::TryGet(TypeId a_id) noexcept
 	{

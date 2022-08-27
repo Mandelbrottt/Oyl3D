@@ -11,7 +11,7 @@ namespace Rearm::Reflection
 		Type* thisContainingType = Type::TryGet(this->m_containingTypeId);
 	
 		bool notNull       = thisContainingType;
-		bool isConvertible = thisContainingType->IsConvertibleTo(&containingType);
+		bool isConvertible = thisContainingType->IsConvertibleFrom(&containingType);
 		bool isVoid        = containingType.GetTypeId() == GetTypeId<void>();
 	
 		assert(notNull && (isConvertible || isVoid));
@@ -34,8 +34,8 @@ namespace Rearm::Reflection
 	Field::GetValue(const TContaining& a_obj) const
 	{
 	#ifndef REARM_RELEASE
-		Type& incomingType = Type::Get<TField>();
-		Type* thisType     = Type::TryGet(this->m_fieldTypeId);
+		const Type& incomingType = Type::Get<TField>();
+		const Type* thisType     = Type::TryGet(this->m_fieldTypeId);
 
 		assert(thisType && thisType->IsConvertibleTo(&incomingType));
 	#endif
@@ -50,11 +50,11 @@ namespace Rearm::Reflection
 	Field::SetValue(const TContaining& a_obj, const void* a_incomingValue, size_t a_incomingSize) const
 	{
 	#ifndef REARM_RELEASE
-		Type& containingType     = Type::Get<TContaining>();
-		Type* thisContainingType = Type::TryGet(this->m_containingTypeId);
+		const Type& containingType     = Type::Get<TContaining>();
+		const Type* thisContainingType = Type::TryGet(this->m_containingTypeId);
 
 		bool notNull       = thisContainingType;
-		bool isConvertible = thisContainingType->IsConvertibleTo(&containingType);
+		bool isConvertible = thisContainingType->IsConvertibleFrom(&containingType);
 		bool isVoid        = containingType.GetTypeId() == GetTypeId<void>();
 		bool sizeEqual     = a_incomingSize == m_size;
 
@@ -78,11 +78,11 @@ namespace Rearm::Reflection
 	Field::SetValue(const TContaining& a_obj, const TField& a_value) const
 	{
 	#ifndef REARM_RELEASE
-		Type& containingType     = Type::Get<TContaining>();
-		Type* thisContainingType = Type::TryGet(this->m_containingTypeId);
+		const Type& containingType     = Type::Get<TContaining>();
+		const Type* thisContainingType = Type::TryGet(this->m_containingTypeId);
 
 		bool notNull       = thisContainingType;
-		bool isConvertible = thisContainingType->IsConvertibleTo(&containingType);
+		bool isConvertible = thisContainingType->IsConvertibleFrom(&containingType);
 		bool isVoid        = containingType.GetTypeId() == GetTypeId<void>();
 
 		// TODO: Do more elaborate type checks

@@ -2,6 +2,29 @@
 
 namespace Rearm::Reflection
 {
+	namespace Detail
+	{
+		// Normally, you can't take sizeof void, so this meta function replaces sizeof
+		// in cases where you may need to take the size of void (usually in template functions)
+		template<typename T>
+		struct sizeof_void_tolerant;
+		
+		template<>
+		struct sizeof_void_tolerant<void>
+		{
+			constexpr static size_t value = 0;
+		};
+		
+		template<typename T>
+		struct sizeof_void_tolerant
+		{
+			constexpr static size_t value = sizeof(T);
+		};
+
+		template<typename T>
+		constexpr size_t sizeof_void_tolerant_v = sizeof_void_tolerant<T>::value;
+	}
+	
 	template<class T>
 	const Type&
 	Type::Register() noexcept
@@ -19,7 +42,7 @@ namespace Rearm::Reflection
 		Type type             = Type::Reflect<T>();
 		iter                  = types.emplace(id, std::move(type)).first;
 		iter->second.m_typeId = id;
-		iter->second.m_size   = sizeof(T);
+		iter->second.m_size   = Detail::sizeof_void_tolerant_v<T>;
 
 		return iter->second;
 	}

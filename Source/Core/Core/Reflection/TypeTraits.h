@@ -6,6 +6,8 @@ namespace Rearm
 {
 	namespace Detail
 	{
+		struct none_t {};
+		
 		template<int N, typename TFirst, typename... TRest>
 		struct num_packed_types_impl;
 
@@ -22,6 +24,15 @@ namespace Rearm
 		};
 	}
 
+	template<typename... TRest>
+	struct num_packed_types;
+	
+	template<>
+	struct num_packed_types<>
+	{
+		constexpr static int value = 0;
+	};
+	
 	template<typename... TRest>
 	struct num_packed_types
 	{

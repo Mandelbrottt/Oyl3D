@@ -44,7 +44,7 @@ namespace Rearm::Reflection
 			  m_description(a_description),
 			  m_containingTypeId(ContainingTypeId(a_function)),
 			  m_returnTypeId(ReturnTypeId(a_function)),
-			  m_argumentTypeIds(ArgumentTypeIds(a_function))
+			  m_parameterTypeIds(ParameterTypeIds(a_function))
 		{
 			assert(sizeof(TFunctionPointer) <= sizeof(Detail::UnknownFunctionPointer));
 			std::memcpy(&m_function, &a_function, sizeof(a_function));
@@ -93,37 +93,11 @@ namespace Rearm::Reflection
 
 		TypeId m_returnTypeId;
 
-		std::vector<TypeId> m_argumentTypeIds;
+		std::vector<TypeId> m_parameterTypeIds;
 
 		Detail::UnknownFunctionPointer m_function;
 
 	private:
-		template<typename TFirst, typename... TRest>
-		struct emplace_typeid_in_vector;
-
-		template<typename TFirst>
-		struct emplace_typeid_in_vector<TFirst>
-		{
-			static
-			void
-			call(std::vector<TypeId>& a_vector)
-			{
-				a_vector.emplace_back(GetTypeId<TFirst>());
-			}
-		};
-
-		template<typename TFirst, typename... TRest>
-		struct emplace_typeid_in_vector
-		{
-			static
-			void
-			call(std::vector<TypeId>& a_vector)
-			{
-				a_vector.emplace_back(GetTypeId<TFirst>());
-				emplace_typeid_in_vector<TRest...>::call(a_vector);
-			}
-		};
-
 		// TODO: Make below functions macros
 
 		template<typename TReturn, typename TContaining, typename... TArgs>
@@ -177,59 +151,41 @@ namespace Rearm::Reflection
 		template<typename TReturn, typename TContaining, typename... TArgs>
 		static
 		std::vector<TypeId>
-		ArgumentTypeIds(TReturn (TContaining::*)(TArgs ...))
-		{
-			std::vector<TypeId> argumentTypeIds;
-			argumentTypeIds.reserve(num_packed_types_v<TArgs...>);
-			emplace_typeid_in_vector<TArgs...>::call(argumentTypeIds);
-			return argumentTypeIds;
-		}
-		
+		ParameterTypeIds(TReturn (TContaining::*)(TArgs ...));
+
 		template<typename TReturn, typename TContaining, typename... TArgs>
 		static
 		std::vector<TypeId>
-		ArgumentTypeIds(TReturn (TContaining::*)(TArgs ...) const)
-		{
-			std::vector<TypeId> argumentTypeIds;
-			argumentTypeIds.reserve(num_packed_types_v<TArgs...>);
-			emplace_typeid_in_vector<TArgs...>::call(argumentTypeIds);
-			return argumentTypeIds;
-		}
-		
+		ParameterTypeIds(TReturn (TContaining::*)(TArgs ...) const);
+
 		template<typename TReturn, typename... TArgs>
 		static
 		std::vector<TypeId>
-		ArgumentTypeIds(TReturn (*)(TArgs ...))
-		{
-			std::vector<TypeId> argumentTypeIds;
-			argumentTypeIds.reserve(num_packed_types_v<TArgs...>);
-			emplace_typeid_in_vector<TArgs...>::call(argumentTypeIds);
-			return argumentTypeIds;
-		}
-		
-		template<typename TReturn, typename TContaining>
-		static
-		std::vector<TypeId>
-		ArgumentTypeIds(TReturn (TContaining::*)())
-		{
-			return {};
-		}
-		
-		template<typename TReturn, typename TContaining>
-		static
-		std::vector<TypeId>
-		ArgumentTypeIds(TReturn (TContaining::*)() const)
-		{
-			return {};
-		}
-		
-		template<typename TReturn>
-		static
-		std::vector<TypeId>
-		ArgumentTypeIds(TReturn (*)())
-		{
-			return {};
-		}
+		ParameterTypeIds(TReturn (*)(TArgs ...));
+
+		//template<typename TReturn, typename TContaining>
+		//static
+		//std::vector<TypeId>
+		//ParameterTypeIds(TReturn (TContaining::*)())
+		//{
+		//	return {};
+		//}
+		//
+		//template<typename TReturn, typename TContaining>
+		//static
+		//std::vector<TypeId>
+		//ParameterTypeIds(TReturn (TContaining::*)() const)
+		//{
+		//	return {};
+		//}
+		//
+		//template<typename TReturn>
+		//static
+		//std::vector<TypeId>
+		//ParameterTypeIds(TReturn (*)())
+		//{
+		//	return {};
+		//}
 	};
 }
 

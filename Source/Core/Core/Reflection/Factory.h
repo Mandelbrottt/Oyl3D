@@ -97,6 +97,26 @@ namespace Rearm::Reflection
 			return Reflection::GetTypeId<T>();
 		}
 	};
+
+	template<>
+	struct TypedFactory<void, false> final : GenericFactory
+	{
+		using value_type = void;
+
+		constexpr static int value_size = 0;
+
+		TypedFactory()
+		{
+			valid = false;
+			size  = value_size;
+		}
+
+		TypeId
+		GetTypeId() const override
+		{
+			return Reflection::GetTypeId<void>();
+		}
+	};
 	
 	/**
 	 * \brief A factory for creating objects that either have default constructors, or

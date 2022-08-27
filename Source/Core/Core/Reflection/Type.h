@@ -187,7 +187,7 @@ namespace Rearm::Reflection
 		static
 		const Type&
 		Register() noexcept;
-
+		
 		/**
 		 * \brief Get a lazy-initialized \link Type \endlink representing T.
 		 * \tparam T The type to retrieve the \link Type \endlink for.
