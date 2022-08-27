@@ -7,6 +7,8 @@
 #include <type_traits>
 #include <typeinfo>
 
+#include <chrono>
+
 #include "Reflection/Reflection.h"
 
 class SomeClass
@@ -48,7 +50,31 @@ namespace Rearm
 		other.a = 50;
 		other.b = 100;
 
-		printf("%d\n", sumWithOtherFn->Call<int(const SomeClass&)>(&sc, other));
+		volatile int numIterations = 1000000;
+
+		namespace ch = std::chrono;
+
+		auto start = ch::high_resolution_clock::now();
+
+		for (int i = 0; i < numIterations; i++)
+		{
+			volatile int _ = sc.SumWithOther(other);
+		}
+
+		auto stop = ch::high_resolution_clock::now();
+
+		printf("Static: %llu microseconds\n", ch::duration_cast<ch::microseconds>(stop - start).count());
+
+		start = ch::high_resolution_clock::now();
+		
+		for (int i = 0; i < numIterations; i++)
+		{
+			volatile int _ = sumWithOtherFn->Call<int(const SomeClass&)>(&sc, other);
+		}
+		
+		stop = ch::high_resolution_clock::now();
+
+		printf("Reflection: %llu microseconds\n", ch::duration_cast<ch::microseconds>(stop - start).count());
 	}
 
 	void
