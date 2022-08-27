@@ -84,6 +84,7 @@ namespace Rearm
 		printf("%d\n", sumFn->Call<int>(&sc, 5, 10));
 
 		staticFn->Call(nullptr);
+		// TODO: Make syntax like `staticSumFn->Call<int(int, int)>(nullptr, 5, 10)
 		printf("%d\n", staticSumFn->Call<int>(nullptr, 5, 10));
 	}
 

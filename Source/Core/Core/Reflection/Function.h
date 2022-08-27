@@ -93,6 +93,7 @@ namespace Rearm::Reflection
 
 		TypeId m_returnTypeId;
 
+		// Should these be Field types?
 		std::vector<TypeId> m_parameterTypeIds;
 
 		Detail::UnknownFunctionPointer m_function;
