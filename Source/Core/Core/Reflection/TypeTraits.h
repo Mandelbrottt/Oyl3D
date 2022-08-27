@@ -2,6 +2,36 @@
 
 #include <type_traits>
 
+namespace Rearm
+{
+	namespace Detail
+	{
+		template<int N, typename TFirst, typename... TRest>
+		struct num_packed_types_impl;
+
+		template<int N, typename TFirst>
+		struct num_packed_types_impl<N, TFirst>
+		{
+			constexpr static int value = N;
+		};
+
+		template<int N, typename TFirst, typename... TRest>
+		struct num_packed_types_impl
+		{
+			constexpr static int value = num_packed_types_impl<N + 1, TRest...>::value;
+		};
+	}
+
+	template<typename... TRest>
+	struct num_packed_types
+	{
+		constexpr static int value = Detail::num_packed_types_impl<1, TRest...>::value;
+	};
+
+	template<typename... TRest>
+	constexpr int num_packed_types_v = num_packed_types<TRest...>::value;
+}
+
 namespace Rearm::Reflection
 {
 	template<typename T, int N, typename Tuple>

@@ -4,6 +4,11 @@
 
 #include "TypeId.h"
 
+// Make reading the ReflectField macro easier without introducing a circular dependency
+#ifdef __INTELLISENSE__
+#include "Reflection.h"
+#endif
+
 namespace Rearm::Reflection
 {
 	class Type;
@@ -18,6 +23,18 @@ namespace Rearm::Reflection
 		Protected = 0x08,
 		//FfPrivate   = 0x10,
 	};
+
+	#define ReflectField(_field_, ...) \
+		_REFLECT_MEMBERS_ARGUMENT_NAME._ReflectMember(_REFLECT_NAMESPACE Field {\
+			/*.debugName        =*/ #_field_,\
+			/*.fieldName        =*/ _REFLECT_NAMESPACE Pick<_REFLECT_NAMESPACE Name>(0, __VA_ARGS__, _REFLECT_NAMESPACE Name(#_field_)).c_str,\
+			/*.fieldDescription =*/ _REFLECT_NAMESPACE Pick<_REFLECT_NAMESPACE Description>(0, __VA_ARGS__, _REFLECT_NAMESPACE Description("")).c_str,\
+			/*.offset           =*/ (uint32_t) _REFLECT_OFFSET_OF(_REFLECT_TYPE_ALIAS, _field_), \
+			/*.size             =*/ (uint32_t) sizeof(_field_), \
+			/*.fieldType        =*/ _REFLECT_NAMESPACE GetTypeId<decltype(_field_)>(), \
+			/*.containingType   =*/ _REFLECT_NAMESPACE GetTypeId<_REFLECT_TYPE_ALIAS>(),\
+			/*.flags            =*/ _REFLECT_NAMESPACE Pick<_REFLECT_NAMESPACE FieldFlags>(0, __VA_ARGS__, _REFLECT_NAMESPACE FieldFlags::None)\
+		})
 
 	// TODO: Look into pointer-to-member
 	/**

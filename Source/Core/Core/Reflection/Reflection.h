@@ -78,41 +78,4 @@
 		_REFLECT_DECLARE_COMMON(_class_)
 
 	#define ReflectDeclare(...) _MACRO_OVERLOAD(_REFLECT_DECLARE, __VA_ARGS__)
-
-	#pragma region Reflect Member Macros
-		#define ReflectField(_field_, ...) \
-			_REFLECT_MEMBERS_ARGUMENT_NAME._ReflectMember(_REFLECT_NAMESPACE Field {\
-				/*.debugName        =*/ #_field_,\
-				/*.fieldName        =*/ _REFLECT_NAMESPACE Pick<_REFLECT_NAMESPACE Name>(0, __VA_ARGS__, _REFLECT_NAMESPACE Name(#_field_)).c_str,\
-				/*.fieldDescription =*/ _REFLECT_NAMESPACE Pick<_REFLECT_NAMESPACE Description>(0, __VA_ARGS__, _REFLECT_NAMESPACE Description("")).c_str,\
-				/*.offset           =*/ (uint32_t) _REFLECT_OFFSET_OF(_REFLECT_TYPE_ALIAS, _field_), \
-				/*.size             =*/ (uint32_t) sizeof(_field_), \
-				/*.fieldType        =*/ _REFLECT_NAMESPACE GetTypeId<decltype(_field_)>(), \
-				/*.containingType   =*/ _REFLECT_NAMESPACE GetTypeId<_REFLECT_TYPE_ALIAS>(),\
-				/*.flags            =*/ _REFLECT_NAMESPACE Pick<_REFLECT_NAMESPACE FieldFlags>(0, __VA_ARGS__, _REFLECT_NAMESPACE FieldFlags::None)\
-			})
-
-		#define ReflectFunction(_function_, ...) \
-			_REFLECT_MEMBERS_ARGUMENT_NAME._ReflectMember(_REFLECT_NAMESPACE Function {\
-				/*.debugName           =*/ #_function_,\
-				/*.functionName        =*/ _REFLECT_NAMESPACE Pick<_REFLECT_NAMESPACE Name>(0, __VA_ARGS__, _REFLECT_NAMESPACE Name(#_function_)).c_str,\
-				/*.functionDescription =*/ _REFLECT_NAMESPACE Pick<_REFLECT_NAMESPACE Description>(0, __VA_ARGS__, _REFLECT_NAMESPACE Description("")).c_str,\
-				/*.function            =*/ &This::_function_,\
-			})
-	#pragma endregion
-
-	// TODO: have sfinae struct to detect that only valid arguments are passed to reflect macros?
-
-	// Possible ReflectMember general macro?
-	/*
-		if constexpr (std::is_member_object_pointer_v<decltype(&a)(This::*)>)
-		{
-			//Rearm::Reflection::Field* ptr;
-			//_r._ReflectMember(*ptr);
-		} else if constexpr (std::is_member_function_pointer_v<decltype(&a)>)
-		{
-			//Rearm::Reflection::Function* ptr;
-			//_r._ReflectMember(*ptr);
-		}
-	 */
 #pragma endregion

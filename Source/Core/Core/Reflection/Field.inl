@@ -6,16 +6,16 @@ namespace Rearm::Reflection
 	const void*
 	Field::GetValue(const TContaining& a_obj) const
 	{
-		#ifndef REARM_RELEASE
-			Type& containingType     = Type::Get<TContaining>();
-			Type* thisContainingType = Type::TryGet(this->containingTypeId);
+	#ifndef REARM_RELEASE
+		Type& containingType     = Type::Get<TContaining>();
+		Type* thisContainingType = Type::TryGet(this->m_containingTypeId);
 	
-			bool notNull       = thisContainingType;
-			bool isConvertible = thisContainingType->IsConvertibleTo(&containingType);
-			bool isVoid        = containingType.GetTypeId() == GetTypeId<void>();
+		bool notNull       = thisContainingType;
+		bool isConvertible = thisContainingType->IsConvertibleTo(&containingType);
+		bool isVoid        = containingType.GetTypeId() == GetTypeId<void>();
 	
-			assert(notNull && (isConvertible || isVoid));
-		#endif
+		assert(notNull && (isConvertible || isVoid));
+	#endif
 		
 		uintptr_t ptrToMember;
 
@@ -35,12 +35,12 @@ namespace Rearm::Reflection
 	{
 	#ifndef REARM_RELEASE
 		Type& incomingType = Type::Get<TField>();
-		Type* thisType     = Type::TryGet(this->fieldTypeId);
+		Type* thisType     = Type::TryGet(this->m_fieldTypeId);
 
 		assert(thisType && thisType->IsConvertibleTo(&incomingType));
 	#endif
 
-		const void* result = Field::GetValue(a_obj);
+		const void* result = GetValue(a_obj);
 
 		return *static_cast<const TField*>(result);
 	}
@@ -51,12 +51,12 @@ namespace Rearm::Reflection
 	{
 	#ifndef REARM_RELEASE
 		Type& containingType     = Type::Get<TContaining>();
-		Type* thisContainingType = Type::TryGet(this->containingTypeId);
+		Type* thisContainingType = Type::TryGet(this->m_containingTypeId);
 
 		bool notNull       = thisContainingType;
 		bool isConvertible = thisContainingType->IsConvertibleTo(&containingType);
 		bool isVoid        = containingType.GetTypeId() == GetTypeId<void>();
-		bool sizeEqual     = a_incomingSize == size;
+		bool sizeEqual     = a_incomingSize == m_size;
 
 		assert(notNull && (isConvertible || isVoid) && sizeEqual);
 	#endif
@@ -79,14 +79,14 @@ namespace Rearm::Reflection
 	{
 	#ifndef REARM_RELEASE
 		Type& containingType     = Type::Get<TContaining>();
-		Type* thisContainingType = Type::TryGet(this->containingTypeId);
+		Type* thisContainingType = Type::TryGet(this->m_containingTypeId);
 
 		bool notNull       = thisContainingType;
 		bool isConvertible = thisContainingType->IsConvertibleTo(&containingType);
 		bool isVoid        = containingType.GetTypeId() == GetTypeId<void>();
 
 		// TODO: Do more elaborate type checks
-		bool sizeEqual = sizeof(TField) == size;
+		bool sizeEqual = sizeof(TField) == m_size;
 
 		assert(notNull && (isConvertible || isVoid) && sizeEqual);
 	#endif

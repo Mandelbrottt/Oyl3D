@@ -113,6 +113,11 @@ namespace Rearm::Reflection
 	const Type*
 	Type::TryGet(TypeId a_id) noexcept
 	{
+		if (a_id == TypeId::Null)
+		{
+			return nullptr;
+		}
+		
 		Type* result = nullptr;
 		auto& types  = s_typesContainer;
 		if (auto iter = types.find(a_id); iter != types.end())
