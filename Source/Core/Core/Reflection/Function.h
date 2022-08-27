@@ -42,9 +42,9 @@ namespace Rearm::Reflection
 			: m_name(a_name),
 			  m_displayName(a_displayName),
 			  m_description(a_description),
-			  m_containingType(ContainingType(a_function)),
-			  m_returnType(ReturnType(a_function)),
-			  m_argumentTypes(ArgumentTypes(a_function))
+			  m_containingTypeId(ContainingTypeId(a_function)),
+			  m_returnTypeId(ReturnTypeId(a_function)),
+			  m_argumentTypeIds(ArgumentTypeIds(a_function))
 		{
 			assert(sizeof(TFunctionPointer) <= sizeof(Detail::UnknownFunctionPointer));
 			std::memcpy(&m_function, &a_function, sizeof(a_function));
@@ -68,13 +68,13 @@ namespace Rearm::Reflection
 			return m_description;
 		}
 
-		template<typename TReturn, typename T, typename... TArgs>
+		template<typename TReturn, typename TContaining, typename... TArgs>
 		TReturn
-		Call(T a_obj, TArgs ...a_args) const;
+		Call(TContaining a_obj, TArgs ...a_args) const;
 		
-		template<typename T, typename... TArgs>
+		template<typename TContaining, typename... TArgs>
 		void
-		Call(T a_obj, TArgs ...a_args) const
+		Call(TContaining a_obj, TArgs ...a_args) const
 		{
 			Call<void>(a_obj, std::forward<TArgs>(a_args)...);
 		}
@@ -89,11 +89,11 @@ namespace Rearm::Reflection
 		// The description of the field. Optionally user-defined, else an empty string.
 		std::string m_description;
 
-		TypeId m_containingType;
+		TypeId m_containingTypeId;
 
-		TypeId m_returnType;
+		TypeId m_returnTypeId;
 
-		std::vector<TypeId> m_argumentTypes;
+		std::vector<TypeId> m_argumentTypeIds;
 
 		Detail::UnknownFunctionPointer m_function;
 
@@ -129,7 +129,7 @@ namespace Rearm::Reflection
 		template<typename TReturn, typename TContaining, typename... TArgs>
 		static
 		TypeId
-		ContainingType(TReturn (TContaining::*)(TArgs ...))
+		ContainingTypeId(TReturn (TContaining::*)(TArgs ...))
 		{
 			return GetTypeId<TContaining>();
 		}
@@ -137,7 +137,7 @@ namespace Rearm::Reflection
 		template<typename TReturn, typename TContaining, typename... TArgs>
 		static
 		TypeId
-		ContainingType(TReturn (TContaining::*)(TArgs ...) const)
+		ContainingTypeId(TReturn (TContaining::*)(TArgs ...) const)
 		{
 			return GetTypeId<TContaining>();
 		}
@@ -145,7 +145,7 @@ namespace Rearm::Reflection
 		template<typename TReturn, typename... TArgs>
 		static
 		TypeId
-		ContainingType(TReturn (*)(TArgs ...))
+		ContainingTypeId(TReturn (*)(TArgs ...))
 		{
 			return TypeId::Null;
 		}
@@ -153,7 +153,7 @@ namespace Rearm::Reflection
 		template<typename TReturn, typename TContaining, typename... TArgs>
 		static
 		TypeId
-		ReturnType(TReturn (TContaining::*)(TArgs ...))
+		ReturnTypeId(TReturn (TContaining::*)(TArgs ...))
 		{
 			return GetTypeId<TReturn>();
 		}
@@ -161,7 +161,7 @@ namespace Rearm::Reflection
 		template<typename TReturn, typename TContaining, typename... TArgs>
 		static
 		TypeId
-		ReturnType(TReturn (TContaining::*)(TArgs ...) const)
+		ReturnTypeId(TReturn (TContaining::*)(TArgs ...) const)
 		{
 			return GetTypeId<TReturn>();
 		}
@@ -169,7 +169,7 @@ namespace Rearm::Reflection
 		template<typename TReturn, typename... TArgs>
 		static
 		TypeId
-		ReturnType(TReturn (*)(TArgs ...))
+		ReturnTypeId(TReturn (*)(TArgs ...))
 		{
 			return GetTypeId<TReturn>();
 		}
@@ -177,7 +177,7 @@ namespace Rearm::Reflection
 		template<typename TReturn, typename TContaining, typename... TArgs>
 		static
 		std::vector<TypeId>
-		ArgumentTypes(TReturn (TContaining::*)(TArgs ...))
+		ArgumentTypeIds(TReturn (TContaining::*)(TArgs ...))
 		{
 			std::vector<TypeId> argumentTypeIds;
 			argumentTypeIds.reserve(num_packed_types_v<TArgs...>);
@@ -188,7 +188,7 @@ namespace Rearm::Reflection
 		template<typename TReturn, typename TContaining, typename... TArgs>
 		static
 		std::vector<TypeId>
-		ArgumentTypes(TReturn (TContaining::*)(TArgs ...) const)
+		ArgumentTypeIds(TReturn (TContaining::*)(TArgs ...) const)
 		{
 			std::vector<TypeId> argumentTypeIds;
 			argumentTypeIds.reserve(num_packed_types_v<TArgs...>);
@@ -199,7 +199,7 @@ namespace Rearm::Reflection
 		template<typename TReturn, typename... TArgs>
 		static
 		std::vector<TypeId>
-		ArgumentTypes(TReturn (*)(TArgs ...))
+		ArgumentTypeIds(TReturn (*)(TArgs ...))
 		{
 			std::vector<TypeId> argumentTypeIds;
 			argumentTypeIds.reserve(num_packed_types_v<TArgs...>);
@@ -210,7 +210,7 @@ namespace Rearm::Reflection
 		template<typename TReturn, typename TContaining>
 		static
 		std::vector<TypeId>
-		ArgumentTypes(TReturn (TContaining::*)())
+		ArgumentTypeIds(TReturn (TContaining::*)())
 		{
 			return {};
 		}
@@ -218,7 +218,7 @@ namespace Rearm::Reflection
 		template<typename TReturn, typename TContaining>
 		static
 		std::vector<TypeId>
-		ArgumentTypes(TReturn (TContaining::*)() const)
+		ArgumentTypeIds(TReturn (TContaining::*)() const)
 		{
 			return {};
 		}
@@ -226,7 +226,7 @@ namespace Rearm::Reflection
 		template<typename TReturn>
 		static
 		std::vector<TypeId>
-		ArgumentTypes(TReturn (*)())
+		ArgumentTypeIds(TReturn (*)())
 		{
 			return {};
 		}

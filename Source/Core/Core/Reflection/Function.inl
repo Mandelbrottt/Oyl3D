@@ -4,14 +4,14 @@ namespace Rearm::Reflection
 {
 	namespace Detail
 	{
-		template<typename TReturn, typename T, typename... TArgs>
+		template<typename TReturn, typename TContaining, typename... TArgs>
 		struct function_call_helper
 		{
 			static
 			TReturn
-			call(UnknownFunctionPointer a_function, T a_obj, TArgs ...a_args)
+			call(UnknownFunctionPointer a_function, TContaining a_obj, TArgs ...a_args)
 			{
-				using RawT = std::remove_pointer_t<T>;
+				using RawT = std::remove_pointer_t<TContaining>;
 				
 				TReturn (RawT::* memberFunctionPointer)(TArgs ...);
 			
@@ -39,15 +39,15 @@ namespace Rearm::Reflection
 		};
 	}
 
-	template<typename TReturn, typename T, typename... TArgs>
+	template<typename TReturn, typename TContaining, typename... TArgs>
 	TReturn
-	Function::Call(T a_obj, TArgs ...a_args) const
+	Function::Call(TContaining a_obj, TArgs ...a_args) const
 	{
-		static_assert(std::is_pointer_v<T> || std::is_same_v<T, std::nullptr_t>);
+		static_assert(std::is_pointer_v<TContaining> || std::is_same_v<TContaining, std::nullptr_t>);
 
 		// TODO: Add runtime type checks in debug
 
-		return Detail::function_call_helper<TReturn, T, TArgs...>::call(
+		return Detail::function_call_helper<TReturn, TContaining, TArgs...>::call(
 			m_function,
 			a_obj,
 			std::forward<TArgs>(a_args)...
