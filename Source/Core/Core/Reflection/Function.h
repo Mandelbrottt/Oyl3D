@@ -7,6 +7,8 @@
 
 namespace Rearm::Reflection
 {
+	class Type;
+	
 	namespace Detail
 	{
 		struct UnknownFunctionPointer
@@ -38,17 +40,7 @@ namespace Rearm::Reflection
 			const std::string& a_displayName,
 			const std::string& a_description,
 			TFunctionPointer   a_function
-		)
-			: m_name(a_name),
-			  m_displayName(a_displayName),
-			  m_description(a_description),
-			  m_containingTypeId(ContainingTypeId(a_function)),
-			  m_returnTypeId(ReturnTypeId(a_function)),
-			  m_parameterTypeIds(ParameterTypeIds(a_function))
-		{
-			assert(sizeof(TFunctionPointer) <= sizeof(Detail::UnknownFunctionPointer));
-			std::memcpy(&m_function, &a_function, sizeof(a_function));
-		}
+		);
 
 		const std::string&
 		Name() const
@@ -68,24 +60,37 @@ namespace Rearm::Reflection
 			return m_description;
 		}
 
-		template<typename TCallable, typename TContaining>
-		struct callable_helper;
+		TypeId
+		ContainingTypeId() const
+		{
+			return m_containingTypeId;
+		}
 
-		template<typename TReturn, typename TContaining, typename... TArgs>
-		struct callable_helper<TReturn(TArgs ...), TContaining>
+		const Type&
+		ContainingType() const;
+
+		TypeId
+		ReturnTypeId() const
 		{
-			static
-			TReturn
-			call(Detail::UnknownFunctionPointer a_function, TContaining a_obj, TArgs&& ...a_args);
-		};
-		
-		template<typename TCallable, typename TContaining, typename... TArgs>
-		decltype(auto)
-		Call(TContaining a_obj, TArgs&& ...a_args) const
-		{
-			return callable_helper<TCallable, TContaining>::call(m_function, a_obj, std::forward<TArgs>(a_args)...);
+			return m_returnTypeId;
 		}
 		
+		const Type&
+		ReturnType() const;
+
+		const std::vector<TypeId>&
+		ParameterTypeIds() const
+		{
+			return m_parameterTypeIds;
+		}
+
+		std::vector<const Type*>
+		ParameterTypes() const;
+
+		template<typename TCallable, typename TContaining, typename... TArgs>
+		decltype(auto)
+		Call(TContaining a_obj, TArgs&& ...a_args) const;
+
 	private:
 		// The actual name of the field in the source code
 		std::string m_name;
@@ -100,100 +105,10 @@ namespace Rearm::Reflection
 
 		TypeId m_returnTypeId;
 
-		// Should these be Field types?
+		// TODO: Make custom parameter type to replace TypeId
 		std::vector<TypeId> m_parameterTypeIds;
 
-		Detail::UnknownFunctionPointer m_function;
-
-	private:
-		// TODO: Make below functions macros
-
-		template<typename TReturn, typename TContaining, typename... TArgs>
-		static
-		TypeId
-		ContainingTypeId(TReturn (TContaining::*)(TArgs ...))
-		{
-			return GetTypeId<TContaining>();
-		}
-		
-		template<typename TReturn, typename TContaining, typename... TArgs>
-		static
-		TypeId
-		ContainingTypeId(TReturn (TContaining::*)(TArgs ...) const)
-		{
-			return GetTypeId<TContaining>();
-		}
-		
-		template<typename TReturn, typename... TArgs>
-		static
-		TypeId
-		ContainingTypeId(TReturn (*)(TArgs ...))
-		{
-			return TypeId::Null;
-		}
-		
-		template<typename TReturn, typename TContaining, typename... TArgs>
-		static
-		TypeId
-		ReturnTypeId(TReturn (TContaining::*)(TArgs ...))
-		{
-			return GetTypeId<TReturn>();
-		}
-		
-		template<typename TReturn, typename TContaining, typename... TArgs>
-		static
-		TypeId
-		ReturnTypeId(TReturn (TContaining::*)(TArgs ...) const)
-		{
-			return GetTypeId<TReturn>();
-		}
-		
-		template<typename TReturn, typename... TArgs>
-		static
-		TypeId
-		ReturnTypeId(TReturn (*)(TArgs ...))
-		{
-			return GetTypeId<TReturn>();
-		}
-		
-		template<typename TReturn, typename TContaining, typename... TArgs>
-		static
-		std::vector<TypeId>
-		ParameterTypeIds(TReturn (TContaining::*)(TArgs ...));
-
-		template<typename TReturn, typename TContaining, typename... TArgs>
-		static
-		std::vector<TypeId>
-		ParameterTypeIds(TReturn (TContaining::*)(TArgs ...) const);
-
-		template<typename TReturn, typename... TArgs>
-		static
-		std::vector<TypeId>
-		ParameterTypeIds(TReturn (*)(TArgs ...));
-
-		//template<typename TReturn, typename TContaining>
-		//static
-		//std::vector<TypeId>
-		//ParameterTypeIds(TReturn (TContaining::*)())
-		//{
-		//	return {};
-		//}
-		//
-		//template<typename TReturn, typename TContaining>
-		//static
-		//std::vector<TypeId>
-		//ParameterTypeIds(TReturn (TContaining::*)() const)
-		//{
-		//	return {};
-		//}
-		//
-		//template<typename TReturn>
-		//static
-		//std::vector<TypeId>
-		//ParameterTypeIds(TReturn (*)())
-		//{
-		//	return {};
-		//}
+		Detail::UnknownFunctionPointer m_functionPointer;
 	};
 }
 

@@ -63,7 +63,8 @@ namespace Rearm
 
 		auto stop = ch::high_resolution_clock::now();
 
-		printf("Static: %llu microseconds\n", ch::duration_cast<ch::microseconds>(stop - start).count());
+		auto firstDuration = ch::duration_cast<ch::microseconds>(stop - start).count();
+		printf("Static: %llu microseconds\n", firstDuration);
 
 		start = ch::high_resolution_clock::now();
 		
@@ -74,7 +75,10 @@ namespace Rearm
 		
 		stop = ch::high_resolution_clock::now();
 
-		printf("Reflection: %llu microseconds\n", ch::duration_cast<ch::microseconds>(stop - start).count());
+		auto secondDuration = ch::duration_cast<ch::microseconds>(stop - start).count();
+		printf("Reflection: %llu microseconds\n", secondDuration);
+
+		printf("Ratio of Reflection to Static: %f\n", (double) secondDuration / firstDuration);
 	}
 
 	void
