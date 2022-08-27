@@ -97,7 +97,7 @@
 				/*.debugName           =*/ #_function_,\
 				/*.functionName        =*/ _REFLECT_NAMESPACE Pick<_REFLECT_NAMESPACE Name>(0, __VA_ARGS__, _REFLECT_NAMESPACE Name(#_function_)).c_str,\
 				/*.functionDescription =*/ _REFLECT_NAMESPACE Pick<_REFLECT_NAMESPACE Description>(0, __VA_ARGS__, _REFLECT_NAMESPACE Description("")).c_str,\
-				/*.function            =*/ [](void* a_instance) { reinterpret_cast<This*>(a_instance)->_function_(); }\
+				/*.function            =*/ &This::_function_,\
 			})
 	#pragma endregion
 

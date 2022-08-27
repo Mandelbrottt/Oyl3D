@@ -118,6 +118,9 @@ namespace Rearm::Reflection
 		{
 			return m_memberFunctions;
 		}
+		
+		const Function*
+		GetFunction(std::string_view a_functionName) const;
 
 		bool
 		IsConvertibleTo(TypeId a_typeId) const;

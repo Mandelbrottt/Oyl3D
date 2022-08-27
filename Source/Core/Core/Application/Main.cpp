@@ -15,6 +15,11 @@ class SomeClass
 	{
 		ReflectField(a);
 		ReflectField(b);
+		ReflectFunction(Foo);
+		ReflectFunction(Bar);
+		ReflectFunction(Sum);
+		ReflectFunction(StaticFunction, r_name = "StupidFace Carter");
+		ReflectFunction(StaticSum);
 	}
 
 public:
@@ -25,7 +30,36 @@ public:
 	int b = 0;
 
 	void
-	Foo() {}
+	Foo() const
+	{
+		printf("Foo!\n");
+	}
+	
+	int
+	Bar() const
+	{
+		return 5;
+	}
+	
+	int
+	Sum(int a_lhs, int a_rhs) const
+	{
+		return a_lhs + a_rhs;
+	}
+
+	static
+	void
+	StaticFunction()
+	{
+		printf("Static Function!\n");
+	}
+	
+	static
+	int
+	StaticSum(int a_lhs, int a_rhs)
+	{
+		return a_lhs + a_rhs;
+	}
 };
 
 namespace Rearm
@@ -36,18 +70,21 @@ namespace Rearm
 		SomeClass sc;
 
 		auto& someClassType = Rearm::Reflection::Type::Register<SomeClass>();
-		auto* aField = someClassType.GetField("a");
-		auto* bField = someClassType.GetField("b");
+
+		auto* fooFn    = someClassType.GetFunction("Foo");
+		auto* barFn    = someClassType.GetFunction("Bar");
+		auto* sumFn    = someClassType.GetFunction("Sum");
+		auto* staticFn = someClassType.GetFunction("StaticFunction");
+		auto* staticSumFn = someClassType.GetFunction("StaticSum");
+
+		printf("Debug Name: \"%s\", Display Name: \"%s\"\n", staticFn->Name().c_str(), staticFn->DisplayName().c_str());
+
+		fooFn->Call(&sc);
+		printf("%d\n", barFn->Call<int>(&sc));
+		printf("%d\n", sumFn->Call<int>(&sc, 5, 10));
 		
-		printf("%d %d\n", sc.a, sc.b);
-		printf("%d %d\n", aField->GetValue<int>(sc), bField->GetValue<int>(sc));
-
-		aField->SetValue(sc, 5);
-		bField->SetValue(sc, 10);
-
-		printf("\n");
-		printf("%d %d\n", sc.a, sc.b);
-		printf("%d %d\n", aField->GetValue<int>(sc), bField->GetValue<int>(sc));
+		staticFn->Call(nullptr);
+		printf("%d\n", staticSumFn->Call<int>(nullptr, 5, 10));
 	}
 
 	void

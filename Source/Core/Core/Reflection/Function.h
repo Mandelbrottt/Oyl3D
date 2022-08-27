@@ -7,57 +7,80 @@
 
 namespace Rearm::Reflection
 {
-	// TODO: Look into pointer-to-member
+	namespace Detail
+	{
+		struct UnknownFunctionPointer
+		{
+		private:
+			class Undefined;
+
+			void (Undefined::*m_mfp)() = nullptr;
+		};
+	}
+	
+
 	/**
 	 * \brief Runtime representation of a field member.
 	 */
 	class Function
 	{
 	public:
+		template<typename TFunctionPointer>
 		Function(
 			const std::string&         a_name,
 			const std::string&         a_displayName,
 			const std::string&         a_description,
-			std::function<void(void*)> a_function
+			TFunctionPointer           a_function
 		)
-			: name(a_name),
-			  displayName(a_displayName),
-			  description(a_description),
-			  function(a_function) {}
-
-		const std::string&
-		GetName() const
+			: m_name(a_name),
+			  m_displayName(a_displayName),
+			  m_description(a_description)
 		{
-			return name;
+			assert(sizeof(TFunctionPointer) <= sizeof(Detail::UnknownFunctionPointer));
+			std::memcpy(&m_function, &a_function, sizeof(a_function));
 		}
 
 		const std::string&
-		GetDisplayName() const
+		Name() const
 		{
-			return displayName;
+			return m_name;
 		}
 
 		const std::string&
-		GetDescription() const
+		DisplayName() const
 		{
-			return description;
+			return m_displayName;
 		}
 
-		const std::function<void(void*)>&
-		GetFunction() const
+		const std::string&
+		Description() const
 		{
-			return function;
+			return m_description;
 		}
 
+		template<typename TReturn, typename T, typename... TArgs>
+		TReturn
+		Call(T a_obj, TArgs ...a_args) const;
+		
+		template<typename T, typename... TArgs>
+		void
+		Call(T a_obj, TArgs ...a_args) const
+		{
+			Call<void>(a_obj, std::forward<TArgs>(a_args)...);
+		}
+		
+	private:
 		// The actual name of the field in the source code
-		std::string name;
+		std::string m_name;
 
 		// The name to display to the user in visual applications. Can be user-defined.
-		std::string displayName;
+		std::string m_displayName;
 
 		// The description of the field. Optionally user-defined, else an empty string.
-		std::string description;
+		std::string m_description;
 
-		std::function<void(void*)> function;
+		Detail::UnknownFunctionPointer m_function;
 	};
 }
+
+#include "Function.inl"

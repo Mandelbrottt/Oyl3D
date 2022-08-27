@@ -25,6 +25,25 @@ namespace Rearm::Reflection
 		return &field;
 	}
 
+	const Function*
+	Type::GetFunction(std::string_view a_functionName) const
+	{
+		auto predicate = [&a_functionName](const Function& a_function)
+		{
+			return a_function.Name() == a_functionName;
+		};
+
+		auto iter = std::find_if(m_memberFunctions.begin(), m_memberFunctions.end(), predicate);
+
+		if (iter == m_memberFunctions.end())
+		{
+			return nullptr;
+		}
+
+		const auto& function = *iter;
+		return &function;
+	}
+
 	bool
 	Type::IsConvertibleTo(TypeId a_typeId) const
 	{
@@ -38,9 +57,7 @@ namespace Rearm::Reflection
 			return true;
 		}
 
-		Type* parent = TryGet(m_baseTypeId);
-
-		if (parent)
+		if (const Type* parent = TryGet(m_baseTypeId))
 		{
 			return parent->IsConvertibleTo(a_typeId);
 		}
@@ -73,10 +90,7 @@ namespace Rearm::Reflection
 			return true;
 		}
 
-		// Check if the other type is convertible to this type
-		Type* otherType = TryGet(a_typeId);
-
-		if (otherType)
+		if (const Type* otherType = TryGet(a_typeId))
 		{
 			return otherType->IsConvertibleTo(m_typeId);
 		}
