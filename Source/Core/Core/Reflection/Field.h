@@ -6,6 +6,8 @@
 
 namespace Rearm::Reflection
 {
+	class Type;
+	
 	enum class FieldFlags : uint32_t
 	{
 		None = 0,
@@ -34,61 +36,67 @@ namespace Rearm::Reflection
 			TypeId             a_containingTypeId,
 			FieldFlags         a_flags
 		)
-			: name(a_name),
-			  displayName(a_displayName),
-			  description(a_description),
-			  offset(a_offset),
-			  size(a_size),
-			  fieldTypeId(a_fieldTypeId),
-			  containingTypeId(a_containingTypeId),
-			  flags(a_flags) {}
+			: m_name(a_name),
+			  m_displayName(a_displayName),
+			  m_description(a_description),
+			  m_offset(a_offset),
+			  m_size(a_size),
+			  m_fieldTypeId(a_fieldTypeId),
+			  m_containingTypeId(a_containingTypeId),
+			  m_flags(a_flags) {}
 
 		const std::string&
-		GetName() const
+		Name() const
 		{
-			return name;
+			return m_name;
 		}
 
 		const std::string&
-		GetDisplayName() const
+		DisplayName() const
 		{
-			return displayName;
+			return m_displayName;
 		}
 
 		const std::string&
-		GetDescription() const
+		Description() const
 		{
-			return description;
+			return m_description;
 		}
 
 		uint32_t
-		GetOffset() const
+		Offset() const
 		{
-			return offset;
+			return m_offset;
 		}
 
 		uint32_t
-		GetSize() const
+		Size() const
 		{
-			return size;
+			return m_size;
 		}
 
+		const Type&
+		FieldType() const;
+		
 		TypeId
-		GetFieldTypeId() const
+		FieldTypeId() const
 		{
-			return fieldTypeId;
+			return m_fieldTypeId;
 		}
 
+		const Type&
+		ContainingType() const;
+
 		TypeId
-		GetContainingTypeId() const
+		ContainingTypeId() const
 		{
-			return containingTypeId;
+			return m_containingTypeId;
 		}
 
 		FieldFlags
 		GetFlags() const
 		{
-			return flags;
+			return m_flags;
 		}
 
 		/**
@@ -138,29 +146,30 @@ namespace Rearm::Reflection
 		void
 		SetValue(const TContaining& a_obj, const TField& a_value) const;
 
+	private:
 		// The actual name of the field in the source code
-		std::string name;
+		std::string m_name;
 
 		// The name to display to the user in visual applications. Can be user-defined.
-		std::string displayName;
+		std::string m_displayName;
 
 		// The description of the field. Optionally user-defined, else an empty string.
-		std::string description;
+		std::string m_description;
 
 		// The offset in bytes into the containing object that the field resides at.
-		uint32_t offset;
+		uint32_t m_offset;
 
 		// The size returned by sizeof of the field.
-		uint32_t size;
+		uint32_t m_size;
 
 		// The StaticTypeId of the field.
-		TypeId fieldTypeId;
+		TypeId m_fieldTypeId;
 
 		// The StaticTypeId of the object that the field is contained in.
-		TypeId containingTypeId;
+		TypeId m_containingTypeId;
 
 		// Flags that provide additional information about the field.
-		FieldFlags flags = FieldFlags::None;
+		FieldFlags m_flags = FieldFlags::None;
 	};
 
 	/**

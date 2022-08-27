@@ -41,13 +41,13 @@
 	public: \
 		struct _REFLECT_VALID_REFLECTION_TYPE_ALIAS {}; \
 		static \
-		_REFLECT_NAMESPACE Type& \
+		const _REFLECT_NAMESPACE Type& \
 		GetStaticType() \
 		{ \
 			return _REFLECT_NAMESPACE Type::Get<_REFLECT_TYPE_ALIAS>(); \
 		} \
 		virtual \
-		_REFLECT_NAMESPACE Type& \
+		const _REFLECT_NAMESPACE Type& \
 		GetType() \
 		{ \
 			return _REFLECT_NAMESPACE Type::Get<_REFLECT_TYPE_ALIAS>(); \
@@ -70,7 +70,7 @@
 		typedef _base_ _REFLECT_BASE_ALIAS; \
 	public: \
 		static \
-		_REFLECT_NAMESPACE Type& \
+		const _REFLECT_NAMESPACE Type& \
 		GetBaseType() \
 		{ \
 			return _REFLECT_NAMESPACE Type::Get<_REFLECT_BASE_ALIAS>();\

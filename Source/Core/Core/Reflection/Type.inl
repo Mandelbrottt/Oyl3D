@@ -3,7 +3,7 @@
 namespace Rearm::Reflection
 {
 	template<class T>
-	Type&
+	const Type&
 	Type::Register() noexcept
 	{
 		TypeId id = Reflection::GetTypeId<T>();
@@ -25,7 +25,7 @@ namespace Rearm::Reflection
 	}
 
 	template<class T>
-	Type&
+	const Type&
 	Type::Get() noexcept
 	{
 		TypeId id = Reflection::GetTypeId<T>();
@@ -66,8 +66,6 @@ namespace Rearm::Reflection
 
 			m_instanceFields.insert(m_instanceFields.begin(), baseFields.begin(), baseFields.end());
 		}
-
-		return *this;
 	}
 
 	template<typename TReflected>
@@ -112,8 +110,8 @@ namespace Rearm::Reflection
 
 		auto caseInsensitivePredicate = [](const Field& a_lhs, const Field& a_rhs)
 		{
-			const auto& lhsName = a_lhs.displayName;
-			const auto& rhsName = a_rhs.displayName;
+			const auto& lhsName = a_lhs.DisplayName();
+			const auto& rhsName = a_rhs.DisplayName();
 
 			return _strcmpi(lhsName.c_str(), rhsName.c_str()) < 0;
 		};

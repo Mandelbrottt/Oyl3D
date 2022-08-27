@@ -24,7 +24,7 @@ namespace Rearm::Reflection
 		else
 			ptrToMember = reinterpret_cast<uintptr_t>(&a_obj);
 
-		ptrToMember += offset;
+		ptrToMember += m_offset;
 
 		return reinterpret_cast<void*>(ptrToMember);
 	}
@@ -68,7 +68,7 @@ namespace Rearm::Reflection
 		else
 			ptrToMember = reinterpret_cast<uintptr_t>(&a_obj);
 
-		ptrToMember += offset;
+		ptrToMember += m_offset;
 
 		std::memcpy(reinterpret_cast<void*>(ptrToMember), a_incomingValue, a_incomingSize);
 	}
@@ -98,7 +98,7 @@ namespace Rearm::Reflection
 		else
 			ptrToMember = reinterpret_cast<uintptr_t>(&a_obj);
 
-		ptrToMember += offset;
+		ptrToMember += m_offset;
 
 		TField& refToMember = *std::launder(reinterpret_cast<TField*>(ptrToMember));
 

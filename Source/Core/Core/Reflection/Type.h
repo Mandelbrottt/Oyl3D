@@ -48,6 +48,7 @@ namespace Rearm::Reflection
 		// Warning because move constructor is public?
 		#pragma warning(disable : DEPRECATED_WARNING_NUMBER)
 		Type(Type&& a_other) = default;
+
 		Type&
 		operator =(Type&&) = default;
 		#pragma warning(disable : DEPRECATED_WARNING_NUMBER)
@@ -110,7 +111,7 @@ namespace Rearm::Reflection
 		}
 
 		const Field*
-		GetField(std::string_view a_fieldName);
+		GetField(std::string_view a_fieldName) const;
 
 		const member_function_container_t&
 		GetFunctions() const
@@ -181,7 +182,7 @@ namespace Rearm::Reflection
 		 */
 		template<class T>
 		static
-		Type&
+		const Type&
 		Register() noexcept;
 
 		/**
@@ -194,7 +195,7 @@ namespace Rearm::Reflection
 		 */
 		template<class T>
 		static
-		Type&
+		const Type&
 		Get() noexcept;
 
 		/**
@@ -206,15 +207,15 @@ namespace Rearm::Reflection
 		 *          so performance should not be a concern for retrieving the Reflector.
 		 */
 		static
-		Type*
+		const Type*
 		TryGet(TypeId a_id) noexcept;
 
 		static
-		Type*
+		const Type*
 		TryGet(std::string_view const& a_fullyQualifiedTypeName);
 
 		static
-		types_container_t&
+		const types_container_t&
 		Enumerate()
 		{
 			return s_typesContainer;

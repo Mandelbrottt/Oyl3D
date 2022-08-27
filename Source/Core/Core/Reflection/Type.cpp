@@ -7,11 +7,11 @@ namespace Rearm::Reflection
 	Type::types_container_t Type::s_typesContainer;
 
 	const Field*
-	Type::GetField(std::string_view a_fieldName)
+	Type::GetField(std::string_view a_fieldName) const
 	{
 		auto predicate = [&a_fieldName](const Field& a_field)
 		{
-			return a_field.name == a_fieldName;
+			return a_field.Name() == a_fieldName;
 		};
 
 		auto iter = std::find_if(m_instanceFields.begin(), m_instanceFields.end(), predicate);
@@ -96,7 +96,7 @@ namespace Rearm::Reflection
 		return IsConvertibleFrom(a_type.GetTypeId());
 	}
 
-	Type*
+	const Type*
 	Type::TryGet(TypeId a_id) noexcept
 	{
 		Type* result = nullptr;
@@ -109,7 +109,7 @@ namespace Rearm::Reflection
 		return result;
 	}
 
-	Type*
+	const Type*
 	Type::TryGet(const std::string_view& a_fullyQualifiedTypeName)
 	{
 		Type* result = nullptr;
