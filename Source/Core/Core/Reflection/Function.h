@@ -68,15 +68,22 @@ namespace Rearm::Reflection
 			return m_description;
 		}
 
+		template<typename TCallable, typename TContaining>
+		struct callable_helper;
+
 		template<typename TReturn, typename TContaining, typename... TArgs>
-		TReturn
-		Call(TContaining a_obj, TArgs ...a_args) const;
-		
-		template<typename TContaining, typename... TArgs>
-		void
-		Call(TContaining a_obj, TArgs ...a_args) const
+		struct callable_helper<TReturn(TArgs ...), TContaining>
 		{
-			Call<void>(a_obj, std::forward<TArgs>(a_args)...);
+			static
+			TReturn
+			call(Detail::UnknownFunctionPointer a_function, TContaining a_obj, TArgs&& ...a_args);
+		};
+		
+		template<typename TCallable, typename TContaining, typename... TArgs>
+		decltype(auto)
+		Call(TContaining a_obj, TArgs&& ...a_args) const
+		{
+			return callable_helper<TCallable, TContaining>::call(m_function, a_obj, std::forward<TArgs>(a_args)...);
 		}
 		
 	private:

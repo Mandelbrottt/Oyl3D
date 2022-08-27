@@ -15,11 +15,7 @@ class SomeClass
 	{
 		ReflectField(a);
 		ReflectField(b);
-		ReflectFunction(Foo);
-		ReflectFunction(Bar);
-		ReflectFunction(Sum);
-		ReflectFunction(StaticFunction, r_name = "StupidFace Carter");
-		ReflectFunction(StaticSum);
+		ReflectFunction(SumWithOther);
 	}
 
 public:
@@ -29,36 +25,9 @@ public:
 
 	int b = 0;
 
-	void
-	Foo() const
+	int SumWithOther(const SomeClass& a_other) const
 	{
-		printf("Foo!\n");
-	}
-
-	int
-	Bar() const
-	{
-		return 5;
-	}
-
-	int
-	Sum(int a_lhs, int a_rhs) const
-	{
-		return a_lhs + a_rhs;
-	}
-
-	static
-	void
-	StaticFunction()
-	{
-		printf("Static Function!\n");
-	}
-
-	static
-	int
-	StaticSum(const int& a_lhs, const int& a_rhs)
-	{
-		return a_lhs + a_rhs;
+		return a + b + a_other.a + a_other.b;
 	}
 };
 
@@ -68,24 +37,18 @@ namespace Rearm
 	Init()
 	{
 		SomeClass sc;
+		sc.a = 5;
+		sc.b = 10;
 
 		auto& someClassType = Rearm::Reflection::Type::Register<SomeClass>();
 
-		auto* fooFn       = someClassType.GetFunction("Foo");
-		auto* barFn       = someClassType.GetFunction("Bar");
-		auto* sumFn       = someClassType.GetFunction("Sum");
-		auto* staticFn    = someClassType.GetFunction("StaticFunction");
-		auto* staticSumFn = someClassType.GetFunction("StaticSum");
+		auto* sumWithOtherFn = someClassType.GetFunction("SumWithOther");
 
-		printf("Debug Name: \"%s\", Display Name: \"%s\"\n", staticFn->Name().c_str(), staticFn->DisplayName().c_str());
+		SomeClass other;
+		other.a = 50;
+		other.b = 100;
 
-		fooFn->Call(&sc);
-		printf("%d\n", barFn->Call<int>(&sc));
-		printf("%d\n", sumFn->Call<int>(&sc, 5, 10));
-
-		staticFn->Call(nullptr);
-		// TODO: Make syntax like `staticSumFn->Call<int(int, int)>(nullptr, 5, 10)
-		printf("%d\n", staticSumFn->Call<int>(nullptr, 5, 10));
+		printf("%d\n", sumWithOtherFn->Call<int(const SomeClass&)>(&sc, other));
 	}
 
 	void
