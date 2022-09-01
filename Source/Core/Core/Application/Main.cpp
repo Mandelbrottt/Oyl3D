@@ -4,6 +4,9 @@
 
 #include <iostream>
 
+#include <Windows.h>
+#include <Psapi.h>
+
 #include <type_traits>
 #include <typeinfo>
 
@@ -38,6 +41,22 @@ namespace Rearm
 	void
 	Init()
 	{
+		HMODULE hModule = GetModuleHandle(TEXT("RearmCore.dll"));
+		
+		struct MemberFunctionPointer
+		{
+			void* fp;
+			size_t offset;
+		};
+
+		MemberFunctionPointer mfp;
+		auto sumWithOther = &SomeClass::SumWithOther;
+		std::memcpy(&mfp, &sumWithOther, sizeof(MemberFunctionPointer));
+
+		uintptr_t mfpAdjusted = reinterpret_cast<uintptr_t>(mfp.fp) - reinterpret_cast<uintptr_t>(hModule);
+
+		printf("Base (%p), Mfp (%p), Diff (%p)\n", hModule, mfp.fp, reinterpret_cast<void*>(mfpAdjusted));
+		
 		SomeClass sc;
 		sc.a = 5;
 		sc.b = 10;
