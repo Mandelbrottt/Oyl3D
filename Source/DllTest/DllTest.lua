@@ -10,5 +10,5 @@ project("DllTest")
     includedirs {
         Rearm.IncludeDir .. "DllTest",
         Rearm.Core.IncludeDir,
-        Rearm.ThirdParty.IncludeDir,
+        Rearm.Dependencies.IncludeDir,
     }

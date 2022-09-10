@@ -21,10 +21,10 @@ Rearm = {
         IncludeDir = BaseIncludeDir .. "Editor/",
         ProjectDir = SourceDir .. "Editor/"
     },
-    ThirdParty = {
-        Name = "ThirdParty",
-        IncludeDir = BaseIncludeDir .. "ThirdParty/",
-        ProjectDir = SourceDir .. "ThirdParty/"
+    Dependencies = {
+        Name = "Dependencies",
+        IncludeDir = BaseIncludeDir .. "Dependencies/",
+        ProjectDir = SourceDir .. "Dependencies/"
     },
     ZeroCheck = {
         Name = "ZERO_CHECK"
@@ -63,7 +63,7 @@ newoption {
 
 function generateDependencies()
     if _OPTIONS[reinitOptionTrigger] then
-        depsToRemove = os.matchdirs(Rearm.ThirdParty.ProjectDir .. "*")
+        depsToRemove = os.matchdirs(Rearm.Dependencies.ProjectDir .. "*")
         if #depsToRemove ~= 0 then
             print("Removing Dependency Cache...")
             for _, dir in pairs(depsToRemove) do
@@ -85,7 +85,7 @@ function generateDependencies()
         local name = dependency.Name or path.getbasename(gitUrl)
         
         dependency['Name'] = name
-        dependency['ProjectDir'] = Rearm.ThirdParty.ProjectDir .. name .. "/"
+        dependency['ProjectDir'] = Rearm.Dependencies.ProjectDir .. name .. "/"
 
         validateDependencyCache(dependency)
         

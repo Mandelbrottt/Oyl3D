@@ -30,7 +30,7 @@ workspace(Rearm.Name)
 
     startproject(Rearm.Name .. Rearm.Entry.Name)
     
-    group(Rearm.ThirdParty.Name)
+    group(Rearm.Dependencies.Name)
         generateDependencies()
     group ""
 

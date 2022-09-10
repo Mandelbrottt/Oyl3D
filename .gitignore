@@ -4,7 +4,7 @@
 [Bb]uild/
 [Bb]uild/
 
-[Ss]ource/[Tt]hird[Pp]arty/
+[Ss]ource/[Dd]ependencies/
 
 # Visual Studio Files
 *.sln
