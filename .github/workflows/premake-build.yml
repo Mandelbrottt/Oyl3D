@@ -63,6 +63,6 @@ jobs:
         msbuild
         /maxCpuCount
         /property:Configuration=${{matrix.BUILD_CONFIGURATION}}
-        /property:Platform={matrix.BUILD_PLATFORM}
+        /property:Platform=${{matrix.BUILD_PLATFORM}}
         /verbosity:detailed
         ${{env.SOLUTION_FILE_PATH}}
