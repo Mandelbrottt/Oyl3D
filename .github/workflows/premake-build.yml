@@ -1,0 +1,68 @@
+name: Premake Build
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+env:
+  SOLUTION_FILE_PATH: ./Rearm.sln
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        BUILD_CONFIGURATION: [ 
+          Debug-Standalone, 
+          Debug-Editor, 
+          Development-Standalone, 
+          Development-Editor, 
+          Release-Standalone, 
+          Release-Editor, 
+        ]
+        BUILD_PLATFORM: [
+          x64
+        ]
+
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    # https://github.com/actions/cache/blob/main/workarounds.md#improving-cache-restore-performance-on-windowsusing-cross-os-caching
+    - if: ${{ runner.os == 'Windows' }}
+      name: Use GNU tar
+      shell: cmd
+      run: |
+        echo "Adding GNU tar to PATH"
+        echo C:\Program Files\Git\usr\bin>>"%GITHUB_PATH%"
+
+    - name: Cache Dependencies
+      uses: actions/cache@v3
+      with:
+        path: Source/Dependencies/**
+        key: engine-source-dependencies-${{runner.os}}-${{hashFiles('Dependencies.lua')}}
+
+    - name: Add MSBuild to PATH
+      uses: microsoft/setup-msbuild@v1.0.2
+
+    - name: Generate Solutions
+      working-directory: ${{env.GITHUB_WORKSPACE}}
+      run: Binaries/ThirdParty/premake5 vs2019
+
+    - name: Build
+      working-directory: ${{env.GITHUB_WORKSPACE}}
+      # Add additional options to the MSBuild command line here (like platform or verbosity level).
+      # See https://docs.microsoft.com/visualstudio/msbuild/msbuild-command-line-reference
+      run: |
+        msbuild ^
+        /maxCpuCount ^
+        /property:Configuration=${{matrix.BUILD_CONFIGURATION}} ^
+        /property:Platform={matrix.BUILD_PLATFORM} ^
+        /verbosity:detailed ^
+        ${{env.SOLUTION_FILE_PATH}}
