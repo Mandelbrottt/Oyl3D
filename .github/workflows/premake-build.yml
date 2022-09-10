@@ -64,5 +64,5 @@ jobs:
         /maxCpuCount
         /property:Configuration=${{matrix.BUILD_CONFIGURATION}}
         /property:Platform=${{matrix.BUILD_PLATFORM}}
-        /verbosity:detailed
+        /verbosity:normal
         ${{env.SOLUTION_FILE_PATH}}
