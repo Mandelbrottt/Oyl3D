@@ -39,7 +39,7 @@ function validateDependencyCache(dependency)
     dependencyExists = os.isdir(dependency.ProjectDir)
     if not dependencyExists then
         -- Clone the repository and cd into it
-        os.execute("git clone -n " .. dependency.Git.Url .. " " .. dependency.ProjectDir)
+        os.execute("git clone " .. dependency.Git.Url .. " " .. dependency.ProjectDir)
         local cwd = os.getcwd()
         os.chdir(dependency.ProjectDir)
 
