@@ -4,6 +4,10 @@ include "Dependencies.lua"
 include "Scripts/Premake/Common.lua"
 include "Scripts/Premake/Actions.lua"
 
+if _ACTION == "clean" then
+    return
+end
+
 workspace(Rearm.Name)
     location "./"
 
