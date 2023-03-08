@@ -56,13 +56,14 @@ workspace(Rearm.Name)
 
     project(Rearm.ZeroCheck.Name)
         kind "Makefile"
+        location "Source/"
         targetdir(Config.TargetDir .. Config.OutputDir)
         objdir   (Config.ObjectDir .. Config.OutputDir)
 
         if string.startswith(_ACTION, "vs") then
             local runPremakeCommand = 
                 -- "%{wks.location}/Binaries/ThirdParty/premake5.exe " .. _ACTION .. " --zero-check"
-                "%{wks.location}/Binaries/ThirdParty/premake5.exe " .. _ACTION
+                "%{wks.location}/Binaries/ThirdParty/premake5.exe " .. _ACTION .. " --file=%{wks.location}/premake5.lua"
 
             buildcommands {
                 runPremakeCommand,
