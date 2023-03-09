@@ -135,6 +135,7 @@ function defineInsideMacro(projectName)
 end
 
 function applyCommonCppSettings(projectConfig)
+    filename("%{prj.name}_" .. _ACTION)
     language "C++"
     cppdialect "C++20"
     staticruntime "off"

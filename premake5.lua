@@ -4,7 +4,7 @@ include "Dependencies.lua"
 include "Scripts/Premake/Common.lua"
 include "Scripts/Premake/Actions.lua"
 
-if _ACTION == "clean" then
+if _ACTION == "clean" or _ACTION == nil then
     return
 end
 
@@ -56,6 +56,7 @@ workspace(Rearm.Name)
 
     project(Rearm.ZeroCheck.Name)
         kind "Makefile"
+        filename("%{prj.name}_" .. _ACTION)
         targetdir(Config.TargetDir .. Config.OutputDir)
         objdir   (Config.ObjectDir .. Config.OutputDir)
 
