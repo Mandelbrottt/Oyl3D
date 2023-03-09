@@ -5,7 +5,6 @@ Dependencies = {
             Revision = "c73ee34704c512ebe915b283645aefa9f424a22f",
         },
         Kind = "StaticLib",
-        -- IncludeDirs = { "include" },
         Files = { 
             "/include/",
             "/src/"
@@ -23,8 +22,7 @@ Dependencies = {
             Url = "https://github.com/nlohmann/json.git",
             Revision = "bc889afb4c5bf1c0d8ee29ef35eaaf4c8bef8a5d"
         },
-        -- IncludeDirs = { "include" },
-        Files = { "/include/" },
         Kind = "None",
+        Files = { "/include/" },
     },
 }
