@@ -1,7 +1,7 @@
 #include "pch.h"
 
 #include <Windows.h>
-#include <Core/Interface.h>
+#include <Core/Testing/Interface.h>
 
 void LoadFromDll()
 {
