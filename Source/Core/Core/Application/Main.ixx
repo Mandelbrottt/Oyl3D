@@ -4,7 +4,6 @@ module;
 export module Core;
 
 export import Core.Main;
-export import Core.Main2;
 
 import <iostream>;
 
