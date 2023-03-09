@@ -20,9 +20,43 @@ Dependencies = {
         Name = "NlohmannJson",
         Git = {
             Url = "https://github.com/nlohmann/json.git",
-            Revision = "bc889afb4c5bf1c0d8ee29ef35eaaf4c8bef8a5d"
+            Revision = "v3.11.2"
         },
         Kind = "None",
         Files = { "/include/" },
+    },
+    {
+        Name = "GLFW",
+        Git = {
+            Url = "https://github.com/glfw/glfw.git",
+            Revision = "3.3.8"
+        },
+        Kind = "StaticLib",
+        Files = { "/include/", "/src/", },
+        CustomProperties = function()
+            language "C"
+            staticruntime "on"
+            defines { "_CRT_SCURE_NO_WARNINGS" }
+            removefiles { "**" }
+            files {
+                "include/GLFW/*",
+                "src/glfw_config.h",
+                "src/context.c",
+                "src/init.c",
+                "src/input.c",
+                "src/monitor.c",
+                "src/vulkan.c",
+                "src/window.c"
+            }
+            filter "system:windows"
+                systemversion "latest"
+                files {
+                    "src/win32*.c",
+                    "src/wgl_context.c",
+                    "src/egl_context.c",
+                    "src/osmesa_context.c"
+                }
+                defines { "_GLFW_WIN32" }
+        end
     },
 }
