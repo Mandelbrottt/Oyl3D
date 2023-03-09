@@ -1,12 +1,14 @@
 #include <Windows.h>
 #include <iostream>
-#include <vector>
 
-#include <Core/Application/Main.h>
+import Core;
 
 static void SetupConsole();
 
 static void ShutdownConsole();
+
+// For now you need to manually specify additional
+// https://www.reddit.com/r/VisualStudio/comments/qom7bg/has_anyone_gotten_c20_modules_working_across_vs/
 
 // ReSharper disable CppInconsistentNaming
 int WINAPI wWinMain(
@@ -14,8 +16,7 @@ int WINAPI wWinMain(
 	_In_opt_ HINSTANCE hPrevInstance,
 	_In_ LPWSTR        lpCmdLine,
 	_In_ int           nShowCmd
-)
-// ReSharper restore CppInconsistentNaming
+) // ReSharper restore CppInconsistentNaming
 {
 	(void) hInstance;
 	(void) hPrevInstance;
@@ -23,8 +24,12 @@ int WINAPI wWinMain(
 	(void) nShowCmd;
 
 	SetupConsole();
-	
+
 	Rearm::Init();
+
+	Rearm::Something();
+
+	Rearm::SomethingElse();
 
 	//do 
 	//{

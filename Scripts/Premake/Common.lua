@@ -152,6 +152,7 @@ function applyCommonCppSettings(projectConfig)
         "./**.h",
         "./**.hpp",
         "./**.inl",
+        "./**.ixx",
     }
 
     links {
