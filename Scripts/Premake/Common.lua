@@ -56,6 +56,7 @@ function validateDependencyCache(dependency)
         local revision = ""
         if dependency.Git.Revision then
             revision = dependency.Git.Revision
+            os.execute("git fetch -q --all --tags --depth 1")
             os.execute("git checkout -q " .. revision)
         end
 
