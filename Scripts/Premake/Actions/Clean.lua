@@ -4,8 +4,8 @@ local m = premake.modules.Clean
 local p = premake
 
 newoption {
-    trigger = "build",
-    description = "Compatible with 'clean' action. Cleans only the build directory."
+    trigger = "dependencies",
+    description = "Compatible with 'clean' action. Cleans the dependency cache."
 }
 
 local cleanBuildOnly = false
@@ -15,7 +15,7 @@ newaction {
     description = "Deletes the build directory and all project files",
 
     onStart = function() 
-        cleanBuildOnly = _OPTIONS['build'] ~= nil
+        cleanDependencies = _OPTIONS['dependencies'] ~= nil
     end,
     onWorkspace = function(wks) -- Keep onWorkspace to display completion time at the end
     end,
@@ -24,17 +24,7 @@ newaction {
             print("Removing Build Directory...")
             os.rmdir("Build")
         end
-
-        if cleanBuildOnly then
-            return
-        end
-
-        local dependenciesToRemove = os.matchdirs(Rearm.Dependencies.ProjectDir .. "*")
-        for _, dependency in pairs(dependenciesToRemove) do
-            print("Removing Dependency '" .. path.getbasename(dependency) .. "'...")
-            os.rmdir(dependency)
-        end
-
+        
         local filesToRemove = table.join(
             os.matchfiles("**.sln"),
             os.matchfiles("**.vcxproj*")
@@ -43,6 +33,14 @@ newaction {
         for _, file in pairs(filesToRemove) do
             print("Removing " .. file .. "...")
             os.remove(file)
+        end
+
+        if cleanDependencies then
+            local dependenciesToRemove = os.matchdirs(Rearm.Dependencies.ProjectDir .. "*")
+            for _, dependency in pairs(dependenciesToRemove) do
+                print("Removing Dependency '" .. path.getbasename(dependency) .. "'...")
+                os.rmdir(dependency)
+            end
         end
     end,
 }
