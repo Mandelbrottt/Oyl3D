@@ -10,6 +10,7 @@ end
 
 workspace(Rearm.Name)
     location "./"
+    filename(Rearm.Name .. "_" .. _ACTION)
 
     configurations {
         Config.Debug.Editor.ConfigName,
@@ -33,7 +34,7 @@ workspace(Rearm.Name)
     filter {}
 
     startproject(Rearm.Name .. Rearm.Entry.Name)
-    
+
     group(Rearm.Dependencies.Name)
         generateDependencies()
     group ""
@@ -51,19 +52,16 @@ workspace(Rearm.Name)
         includeMainProject(Rearm.Core)
         includeMainProject(Rearm.Entry)
         includeMainProject(Rearm.Editor)
-        include("Source/" .. "DllTest/DllTest.lua")
     group ""
 
     project(Rearm.ZeroCheck.Name)
         kind "Makefile"
-        location "Source/"
         targetdir(Config.TargetDir .. Config.OutputDir)
         objdir   (Config.ObjectDir .. Config.OutputDir)
 
         if string.startswith(_ACTION, "vs") then
             local runPremakeCommand = 
-                -- "%{wks.location}/Binaries/ThirdParty/premake5.exe " .. _ACTION .. " --zero-check"
-                "%{wks.location}/Binaries/ThirdParty/premake5.exe " .. _ACTION .. " --file=%{wks.location}/premake5.lua"
+                "%{wks.location}/Binaries/ThirdParty/premake5.exe " .. _ACTION
 
             buildcommands {
                 runPremakeCommand,
