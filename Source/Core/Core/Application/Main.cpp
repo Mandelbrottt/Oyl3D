@@ -4,8 +4,6 @@
 
 #include <iostream>
 
-#include <nlohmann/json.hpp>
-
 namespace Rearm
 {
 	void

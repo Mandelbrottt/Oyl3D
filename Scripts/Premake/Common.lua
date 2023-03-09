@@ -112,6 +112,7 @@ function generateDependencies()
             applyCommonCppSettings()
             kind(dependency.Kind)
             includedirs(dependency.IncludeDirs)
+            warnings "Off"
             if dependency['CustomProperties'] then
                 dependency.CustomProperties()
             end
@@ -158,7 +159,7 @@ function applyCommonCppSettings(projectConfig)
 
     for _, dependency in pairs(Dependencies) do
         links { dependency.Name }
-        includedirs { dependency.IncludeDir }
+        includedirs(dependency.IncludeDirs)
     end
 
     if projectConfig then

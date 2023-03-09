@@ -7,7 +7,7 @@ project(Rearm.Core.ProjectName)
     pchsource "pch.cpp"
 
     links {
-        "DllTest"
+        
     }
 
     includedirs {
