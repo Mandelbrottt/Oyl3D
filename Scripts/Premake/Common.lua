@@ -38,14 +38,25 @@ Rearm.Editor.ProjectName = Rearm.Name .. Rearm.Editor.Name
 function validateDependencyCache(dependency)
     dependencyExists = os.isdir(dependency.ProjectDir)
     if not dependencyExists then
-        -- Clone the repository and cd into it
-        os.execute("git clone " .. dependency.Git.Url .. " " .. dependency.ProjectDir)
+        -- Clone the repository and cd into it https://stackoverflow.com/a/63786181
+        os.execute("git clone --filter=blob:none -n --depth 1 --sparse " .. dependency.Git.Url .. " " .. dependency.ProjectDir)
         local cwd = os.getcwd()
         os.chdir(dependency.ProjectDir)
 
+        if dependency['Files'] then
+            local files = "!/* /LICENSE*"
+            for k, file in pairs(dependency.Files) do
+                files = files .. " " .. file
+            end
+
+            os.execute("git sparse-checkout set --no-cone " .. files)
+        end
+
         -- If a specific revision is specified, point to it
+        local revision = ""
         if dependency.Git.Revision then
-            os.execute("git checkout -q " .. dependency.Git.Revision)
+            revision = dependency.Git.Revision
+            os.execute("git checkout -q " .. revision)
         end
 
         -- Remove the .git folder as we're only using git to download the repository 
@@ -92,14 +103,18 @@ function generateDependencies()
         local cwd = os.getcwd()
         os.chdir(dependency.ProjectDir)
 
-        local includeDirs = os.matchdirs("**include/")
-        dependency['IncludeDir'] = "%{wks.location}/" .. dependency.ProjectDir .. includeDirs[1]
+        if dependency['IncludeDirs'] == nil then
+            local includeDirs = os.matchdirs("**include/")
+            dependency['IncludeDirs'] = { "%{wks.location}/" .. dependency.ProjectDir .. includeDirs[1] }
+        end
         
         project(dependency.Name)
             applyCommonCppSettings()
             kind(dependency.Kind)
-            includedirs { dependency.IncludeDir }
-            dependency.CustomProperties()
+            includedirs(dependency.IncludeDirs)
+            if dependency['CustomProperties'] then
+                dependency.CustomProperties()
+            end
 
         os.chdir(cwd)
     end
@@ -121,7 +136,7 @@ end
 
 function applyCommonCppSettings(projectConfig)
     language "C++"
-    cppdialect "C++17"
+    cppdialect "C++20"
     staticruntime "off"
     floatingpoint "fast"
     
