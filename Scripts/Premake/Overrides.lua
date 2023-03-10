@@ -65,6 +65,12 @@ end
 premake.override(premake.vstudio.vc2010.elements, "clCompile", function(base, cfg)
     local clCompile = base(cfg)
     local function additionalModules(cfg)
+        -- Don't add module dependencies to third party dependencies
+        local dependenciesIndex = string.find(cfg.location, Rearm.Dependencies.ProjectDir)
+        if dependenciesIndex ~= nil then
+            return
+        end
+
         local additionalModuleDependenciesString = ""
         for project, moduleTable in pairs(projectModuleIfcs) do
             -- Adding a project's own modules as dependencies would create a cyclical dependency
@@ -76,6 +82,10 @@ premake.override(premake.vstudio.vc2010.elements, "clCompile", function(base, cf
                     additionalModuleDependenciesString .. "$(IntDir)..\\" .. project .. "\\" .. moduleName .. ";"
             end
             ::continue::
+        end
+        
+        if additionalModuleDependenciesString == "" then
+            return
         end
         m.element("AdditionalModuleDependencies", nil, additionalModuleDependenciesString)
     end
