@@ -91,7 +91,7 @@ function generateDependencies()
 
     for _, dependency in pairs(dependencies) do
         -- Default to StaticLib if none provided
-        dependency.Kind = dependency.Kind or "StaticLib"
+        dependency.Kind = dependency.Kind or "None"
         
         local gitUrl = dependency.Git.Url
         local name = dependency.Name or path.getbasename(gitUrl)

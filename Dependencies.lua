@@ -22,7 +22,6 @@ Dependencies = {
             Url = "https://github.com/nlohmann/json.git",
             Revision = "v3.11.2"
         },
-        Kind = "None",
         Files = { "/include/" },
     },
     {
