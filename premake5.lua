@@ -52,6 +52,7 @@ workspace(Rearm.Name)
         includeMainProject(Rearm.Core)
         includeMainProject(Rearm.Entry)
         includeMainProject(Rearm.Editor)
+        includeMainProject(Rearm.Exports)
     group ""
 
     project(Rearm.ZeroCheck.Name)

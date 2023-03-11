@@ -5,6 +5,7 @@ project(Rearm.Entry.ProjectName)
 
     links {
         Rearm.Core.ProjectName,
+        Rearm.Exports.ProjectName
     }
     
     includedirs {

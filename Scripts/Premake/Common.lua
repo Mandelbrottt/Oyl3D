@@ -26,6 +26,11 @@ Rearm = {
         IncludeDir = BaseIncludeDir .. "Dependencies/",
         ProjectDir = SourceDir .. "Dependencies/"
     },
+    Exports = {
+        Name = "Exports",
+        IncludeDir = BaseIncludeDir .. "Exports/",
+        ProjectDir = SourceDir .. "Exports/"
+    },
     ZeroCheck = {
         Name = "ZERO_CHECK"
     }
@@ -34,6 +39,7 @@ Rearm = {
 Rearm.Core.ProjectName = Rearm.Name .. Rearm.Core.Name
 Rearm.Entry.ProjectName = Rearm.Name .. Rearm.Entry.Name
 Rearm.Editor.ProjectName = Rearm.Name .. Rearm.Editor.Name
+Rearm.Exports.ProjectName = Rearm.Name .. Rearm.Exports.Name
 
 function validateDependencyCache(dependency)
     dependencyExists = os.isdir(dependency.ProjectDir)
@@ -106,7 +112,16 @@ function generateDependencies()
 
         if dependency['IncludeDirs'] == nil then
             local includeDirs = os.matchdirs("**include/")
-            dependency['IncludeDirs'] = { "%{wks.location}/" .. dependency.ProjectDir .. includeDirs[1] }
+            if #includeDirs ~= 0 then
+                dependency.IncludeDirs = { "%{wks.location}/" .. dependency.ProjectDir .. includeDirs[1] }
+            else
+                dependency.IncludeDirs = {}
+            end
+        else
+            for i, includeDir in ipairs(dependency.IncludeDirs) do
+                includeDir = "%{wks.location}/" .. dependency.ProjectDir .. includeDir
+                dependency.IncludeDirs[i] = includeDir
+            end
         end
         
         project(dependency.Name)

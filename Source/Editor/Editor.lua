@@ -8,6 +8,7 @@ project(Rearm.Editor.ProjectName)
 
     links {
         Rearm.Core.ProjectName,
+        Rearm.Exports.ProjectName
     }
 
     includedirs {

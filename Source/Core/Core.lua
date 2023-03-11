@@ -3,11 +3,8 @@ project(Rearm.Core.ProjectName)
 
     kind "SharedLib"
 
-    -- pchheader "pch.h"
-    -- pchsource "pch.cpp"
-
     links {
-
+        Rearm.Exports.ProjectName
     }
 
     includedirs {
