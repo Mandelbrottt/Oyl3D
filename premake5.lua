@@ -45,18 +45,21 @@ workspace(Rearm.Name)
         project(projectConfig.ProjectName)
             applyCommonCppSettings(projectConfig)
             properties()
+            filter {}
         os.chdir(cwd)
     end
+
+    VULKAN_SDK = os.getenv("VULKAN_SDK")
 
     group(Rearm.Name)
         mainProject(Rearm.Core, function()
             kind "SharedLib"
-            includedirs {
-            }
             libdirs {
+                "%{VULKAN_SDK}/Lib"
             }
             links {
                 Rearm.Exports.ProjectName,
+                "vulkan-1"
             }
         end)
 
@@ -91,6 +94,9 @@ workspace(Rearm.Name)
 
         mainProject(Rearm.Exports, function()
             kind "StaticLib"
+            includedirs { "%{VULKAN_SDK}/Include" }
+            filter "toolset:msc*"
+                buildoptions { "/bigobj" }
         end)
     group ""
 

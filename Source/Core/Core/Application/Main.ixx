@@ -22,6 +22,7 @@ export namespace Rearm
 
 		auto result = glfwInit();
 		printf("%d\n", result);
+		glfwTerminate();
 
 		YAML::Emitter emitter;
 		emitter << "YAML";
