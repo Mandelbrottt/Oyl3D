@@ -61,4 +61,19 @@ Dependencies = {
                 defines { "_GLFW_BUILD_DLL" }
         end
     },
+    {
+        Name = "ImGui",
+        Git = {
+            Url = "https://github.com/ocornut/imgui.git",
+            Revision = "e2cede6542d2d6c83598d4d34dc51de84aeb282f"
+        },
+        Kind = "StaticLib",
+        Files = { "/examples/", "imconfig.h", "/imgui*.h", "/imgui*.cpp", "/imstb*.h" },
+        IncludeDirs = { "." },
+        CustomProperties = function()
+            -- For now we want to include examples on disk, but don't compile them.
+            -- We will be manually including and compiling them later
+            removefiles { "examples/**" }
+        end
+    }
 }
