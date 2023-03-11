@@ -30,15 +30,7 @@ int WINAPI wWinMain(
 	Rearm::Something();
 
 	Rearm::SomethingElse();
-
-	//do 
-	//{
-	//	extern void LoadFromDll();
-	//	LoadFromDll();
-
-	//	printf("press q to stop\n");
-	//} while (getchar() != 'q');
-
+	
 	std::cin.get();
 	
 	Rearm::Shutdown();

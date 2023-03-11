@@ -4,7 +4,7 @@ Dependencies = {
             Url = "https://github.com/jbeder/yaml-cpp.git",
             Revision = "c73ee34704c512ebe915b283645aefa9f424a22f",
         },
-        Kind = "StaticLib",
+        Kind = "SharedLib",
         Files = { 
             "/include/",
             "/src/"
@@ -30,11 +30,10 @@ Dependencies = {
             Url = "https://github.com/glfw/glfw.git",
             Revision = "3.3.8"
         },
-        Kind = "StaticLib",
+        Kind = "SharedLib",
         Files = { "/include/", "/src/", },
         CustomProperties = function()
             language "C"
-            staticruntime "on"
             defines { "_CRT_SCURE_NO_WARNINGS" }
             removefiles { "**" }
             files {
@@ -56,6 +55,10 @@ Dependencies = {
                     "src/osmesa_context.c"
                 }
                 defines { "_GLFW_WIN32" }
+            filter "kind:StaticLib"
+                defines { }
+            filter "kind:SharedLib"
+                defines { "_GLFW_BUILD_DLL" }
         end
     },
 }

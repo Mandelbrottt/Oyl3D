@@ -198,4 +198,11 @@ function applyCommonCppSettings(projectConfig)
     filterEditorOnly(function()
         defines { string.upper(Rearm.Name) .. "_EDITOR=1" }
     end)
+
+    filter "toolset:msc*"
+        disablewarnings {
+            "4251", -- member needs dll-interface to be used by clients of class
+            "4275", -- non dll-interface used as base for dll-interface
+        }
+
 end
