@@ -59,6 +59,23 @@ for k, moduleInterfacePath in pairs(allModuleInterfaces) do
     table.insert(projectModuleIfcs[project], filename .. ".ifc")
 end
 
+-- Iterate a table in ascending order of its keys https://www.lua.org/pil/19.3.html
+local function pairsByKeys(t, f)
+    local a = {}
+    for n in pairs(t) do table.insert(a, n) end
+    table.sort(a, f)
+    local i = 0              -- iterator variable
+    local iter = function()  -- iterator function
+        i = i + 1
+        if a[i] == nil then
+            return nil
+        else
+            return a[i], t[a[i]]
+        end
+    end
+    return iter
+end
+
 -- Visual Studio 2019 doesn't automatically reference module interfaces across DLL and project boundaries when linking
 -- We need to manually find and add each module to the "AdditionalModuleDependencies" project setting for the compiler
 -- to recognize and find the modules
@@ -72,12 +89,12 @@ premake.override(premake.vstudio.vc2010.elements, "clCompile", function(base, cf
         end
 
         local additionalModuleDependenciesString = ""
-        for project, moduleTable in pairs(projectModuleIfcs) do
+        for project, moduleTable in pairsByKeys(projectModuleIfcs) do
             -- Adding a project's own modules as dependencies would create a cyclical dependency
             if cfg.buildtarget.basename == project then
                 goto continue
             end
-            for _, moduleName in pairs(moduleTable) do
+            for _, moduleName in ipairs(moduleTable) do
                 additionalModuleDependenciesString = 
                     additionalModuleDependenciesString .. "$(IntDir)..\\" .. project .. "\\" .. moduleName .. ";"
             end
