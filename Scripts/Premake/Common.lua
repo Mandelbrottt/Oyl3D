@@ -180,6 +180,12 @@ function applyCommonCppSettings(projectConfig)
         "MultiProcessorCompile",
     }
 
+    filter "toolset:msc*"
+        disablewarnings {
+            "4251", -- member needs dll-interface to be used by clients of class
+            "4275", -- non dll-interface used as base for dll-interface
+        }
+
     filter("configurations:" .. Config.Debug.Prefix .. "*")
         optimize "off"
         runtime "debug"
@@ -199,10 +205,5 @@ function applyCommonCppSettings(projectConfig)
         defines { string.upper(Rearm.Name) .. "_EDITOR=1" }
     end)
 
-    filter "toolset:msc*"
-        disablewarnings {
-            "4251", -- member needs dll-interface to be used by clients of class
-            "4275", -- non dll-interface used as base for dll-interface
-        }
-
+    filter {}
 end
