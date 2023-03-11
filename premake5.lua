@@ -39,20 +39,59 @@ workspace(Rearm.Name)
         generateDependencies()
     group ""
 
-    local function includeMainProject(projectConfig)
-        include(
-            path.appendExtension(
-                path.join(projectConfig.ProjectDir, projectConfig.Name),
-                ".lua"
-            )
-        )
+    local function mainProject(projectConfig, properties)
+        local cwd = os.getcwd()
+        os.chdir(projectConfig.ProjectDir)
+        project(projectConfig.ProjectName)
+            applyCommonCppSettings(projectConfig)
+            properties()
+        os.chdir(cwd)
     end
 
     group(Rearm.Name)
-        includeMainProject(Rearm.Core)
-        includeMainProject(Rearm.Entry)
-        includeMainProject(Rearm.Editor)
-        includeMainProject(Rearm.Exports)
+        mainProject(Rearm.Core, function()
+            kind "SharedLib"
+            includedirs {
+            }
+            libdirs {
+            }
+            links {
+                Rearm.Exports.ProjectName,
+            }
+        end)
+
+        mainProject(Rearm.Editor, function()
+            kind "SharedLib"
+            links {
+                Rearm.Core.ProjectName,
+                Rearm.Exports.ProjectName
+            }
+            includedirs {
+                -- Rearm.Core.IncludeDir,
+            }
+            removeconfigurations { "*" .. Config.Postfix }
+        end)
+
+        mainProject(Rearm.Entry, function()
+            kind "WindowedApp"
+            links {
+                Rearm.Core.ProjectName,
+                Rearm.Editor.ProjectName,
+                Rearm.Exports.ProjectName,
+            }
+            includedirs {
+                -- Rearm.Core.IncludeDir,
+                -- Rearm.Editor.IncludeDir,
+            }
+            filterEditorOnly(function()
+                links { Rearm.Editor.ProjectName, }
+                includedirs { Rearm.Editor.IncludeDir }
+            end)
+        end)
+
+        mainProject(Rearm.Exports, function()
+            kind "StaticLib"
+        end)
     group ""
 
     project(Rearm.ZeroCheck.Name)
