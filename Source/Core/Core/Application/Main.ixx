@@ -2,15 +2,12 @@ module;
 
 #include "Common.h"
 
+#include <spdlog/spdlog.h>
+#include <spdlog/sinks/stdout_color_sinks.h>
+
 export module Core;
 
 export import Core.Main;
-
-import Glfw;
-import Yaml;
-import ImGui;
-
-import <iostream>;
 
 export namespace Rearm
 {
@@ -20,13 +17,9 @@ export namespace Rearm
 	{
 		printf("Something\n");
 
-		auto result = glfwInit();
-		printf("%d\n", result);
-		glfwTerminate();
-
-		YAML::Emitter emitter;
-		emitter << "YAML";
-		printf("%s\n", emitter.c_str());
+		spdlog::set_pattern("%^[%T] %n: %v%$");
+		auto logger = spdlog::stdout_color_mt("Test");
+		logger->error("Something {} Happened", 1);
 	}
 	
 	REARM_CORE_EXPORT

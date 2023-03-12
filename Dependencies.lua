@@ -75,5 +75,28 @@ Dependencies = {
             -- We will be manually including and compiling them later
             removefiles { "examples/**" }
         end
+    },
+    {
+        Name = "SpdLog",
+        Git = {
+            Url = "https://github.com/gabime/spdlog.git",
+            Revision = "v1.11.0"
+        },
+        Kind = "SharedLib",
+        Files = { "/include/", "/src/" },
+        CustomProperties = function()
+            defines {
+                "SPDLOG_COMPILED_LIB",
+            }
+            filter "kind:StaticLib"
+                defines { }
+            filter "kind:SharedLib"
+                defines { 
+                    "spdlog_EXPORTS",
+                    "SPDLOG_SHARED_LIB",
+                    "FMT_EXPORT",
+                    "FMT_SHARED"
+                }
+        end
     }
 }
