@@ -1,9 +1,6 @@
 module;
-
+#include "pch.h"
 #include "Common.h"
-
-#include <spdlog/spdlog.h>
-#include <spdlog/sinks/stdout_color_sinks.h>
 
 export module Core;
 
@@ -16,6 +13,9 @@ export namespace Rearm
 	Init()
 	{
 		printf("Something\n");
+
+		glfwInit();
+		glfwTerminate();
 
 		spdlog::set_pattern("%^[%T] %n: %v%$");
 		auto logger = spdlog::stdout_color_mt("Test");

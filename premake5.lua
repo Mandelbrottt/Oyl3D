@@ -54,20 +54,23 @@ workspace(Rearm.Name)
     group(Rearm.Name)
         mainProject(Rearm.Core, function()
             kind "SharedLib"
-            libdirs {
-                "%{VULKAN_SDK}/Lib"
-            }
+            pchheader "pch.h"
+            pchsource "pch.cpp"
+            includedirs { "%{VULKAN_SDK}/Include" }
+            libdirs { "%{VULKAN_SDK}/Lib" }
             links {
-                Rearm.Exports.ProjectName,
+                -- Rearm.Exports.ProjectName,
                 "vulkan-1"
             }
         end)
 
         mainProject(Rearm.Editor, function()
             kind "SharedLib"
+            pchheader "pch.h"
+            pchsource "pch.cpp"
             links {
                 Rearm.Core.ProjectName,
-                Rearm.Exports.ProjectName
+                -- Rearm.Exports.ProjectName
             }
             includedirs {
                 -- Rearm.Core.IncludeDir,
@@ -80,7 +83,7 @@ workspace(Rearm.Name)
             links {
                 Rearm.Core.ProjectName,
                 Rearm.Editor.ProjectName,
-                Rearm.Exports.ProjectName,
+                -- Rearm.Exports.ProjectName,
             }
             includedirs {
                 -- Rearm.Core.IncludeDir,
@@ -92,12 +95,11 @@ workspace(Rearm.Name)
             end)
         end)
 
-        mainProject(Rearm.Exports, function()
-            kind "StaticLib"
-            includedirs { "%{VULKAN_SDK}/Include" }
-            filter "toolset:msc*"
-                buildoptions { "/bigobj" }
-        end)
+        -- mainProject(Rearm.Exports, function()
+        --     kind "StaticLib"
+        --     filter "toolset:msc*"
+        --         buildoptions { "/bigobj" }
+        -- end)
     group ""
 
     project(Rearm.ZeroCheck.Name)
