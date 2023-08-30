@@ -1,7 +1,7 @@
 #pragma once
 
 #ifdef _INSIDE_REARM_CORE
-	#define REARM_CORE_EXPORT export __declspec(dllexport)
+	#define REARM_CORE_EXPORT __declspec(dllexport)
 #else
-	#define REARM_CORE_EXPORT export __declspec(dllimport)
+	#define REARM_CORE_EXPORT __declspec(dllimport)
 #endif

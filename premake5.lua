@@ -69,7 +69,7 @@ workspace(Rearm.Name)
             pchheader "pch.h"
             pchsource "pch.cpp"
             links { Rearm.Core.ProjectName }
-            includedirs {}
+            includedirs { Rearm.Core.IncludeDir }
             removeconfigurations { "*" .. Config.Postfix }
         end)
 
@@ -77,9 +77,8 @@ workspace(Rearm.Name)
             kind "WindowedApp"
             links {
                 Rearm.Core.ProjectName,
-                Rearm.Editor.ProjectName,
             }
-            includedirs {}
+            includedirs { Rearm.Core.IncludeDir }
             filterEditorOnly(function()
                 links { Rearm.Editor.ProjectName, }
                 includedirs { Rearm.Editor.IncludeDir }

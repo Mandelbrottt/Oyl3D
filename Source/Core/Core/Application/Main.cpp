@@ -1,14 +1,8 @@
-module;
 #include "pch.h"
-#include "Common.h"
+#include "Main.h"
 
-export module Core;
-
-export import Core.Main;
-
-export namespace Rearm
+namespace Rearm
 {
-	REARM_CORE_EXPORT
 	void
 	Init()
 	{
@@ -21,8 +15,7 @@ export namespace Rearm
 		auto logger = spdlog::stdout_color_mt("Test");
 		logger->error("Something {} Happened", 1);
 	}
-	
-	REARM_CORE_EXPORT
+
 	void
 	Shutdown()
 	{

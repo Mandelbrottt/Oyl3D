@@ -176,8 +176,14 @@ function applyCommonCppSettings(projectConfig)
     if projectConfig then
         includedirs {
             projectConfig.IncludeDir,
-            projectConfig.IncludeDir .. projectConfig.Name,
         }
+        
+        -- header files can be included across module boundaries, and so have to use project-agnostic includes
+        filter "files:*.cpp"
+            includedirs {
+                projectConfig.IncludeDir .. projectConfig.Name,
+            }
+        filter {}
 
         defines {
             defineInsideMacro(projectConfig.Name),

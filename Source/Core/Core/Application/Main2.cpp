@@ -1,12 +1,8 @@
-module;
 #include "pch.h"
-#include "Common.h"
-
-export module Core.Main;
+#include "Main2.h"
 
 namespace Rearm
 {
-	REARM_CORE_EXPORT
 	void
 	SomethingElse();
 
@@ -17,8 +13,6 @@ namespace Rearm
 		printf("Something Else\n");
 	}
 }
-
-module :private;
 
 void
 Rearm::SomethingElse()
