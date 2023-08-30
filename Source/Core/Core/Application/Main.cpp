@@ -1,24 +1,28 @@
 #include "pch.h"
 #include "Main.h"
+#include "Logging.h"
+
+#include <GLFW/glfw3.h>
 
 namespace Rearm
-{
+{	
 	void
 	Init()
 	{
-		printf("Something\n");
+		Logging::Init();
+		
+		Logging::GetCoreLogger().info("Core Logger Initialized");
 
 		glfwInit();
-		glfwTerminate();
+		Logging::GetCoreLogger().info("GLFW Initialized");
 
-		spdlog::set_pattern("%^[%T] %n: %v%$");
-		auto logger = spdlog::stdout_color_mt("Test");
-		logger->error("Something {} Happened", 1);
+		glfwTerminate();
+		Logging::GetCoreLogger().info("GLFW Terminated");
 	}
 
 	void
 	Shutdown()
 	{
-		printf("Something Else\n");
+		Logging::GetCoreLogger().info("Shutting Down");
 	}
 }

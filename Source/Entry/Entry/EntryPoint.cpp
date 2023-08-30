@@ -2,7 +2,6 @@
 #include <iostream>
 
 #include <Core/Application/Main.h>
-#include <Core/Application/Main2.h>
 
 static void SetupConsole();
 
@@ -24,10 +23,6 @@ int WINAPI wWinMain(
 	SetupConsole();
 
 	Rearm::Init();
-
-	Rearm::Something();
-
-	//Rearm::SomethingElse();
 	
 	std::cin.get();
 	
