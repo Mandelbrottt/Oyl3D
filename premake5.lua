@@ -68,13 +68,8 @@ workspace(Rearm.Name)
             kind "SharedLib"
             pchheader "pch.h"
             pchsource "pch.cpp"
-            links {
-                Rearm.Core.ProjectName,
-                -- Rearm.Exports.ProjectName
-            }
-            includedirs {
-                -- Rearm.Core.IncludeDir,
-            }
+            links { Rearm.Core.ProjectName }
+            includedirs {}
             removeconfigurations { "*" .. Config.Postfix }
         end)
 
@@ -83,23 +78,13 @@ workspace(Rearm.Name)
             links {
                 Rearm.Core.ProjectName,
                 Rearm.Editor.ProjectName,
-                -- Rearm.Exports.ProjectName,
             }
-            includedirs {
-                -- Rearm.Core.IncludeDir,
-                -- Rearm.Editor.IncludeDir,
-            }
+            includedirs {}
             filterEditorOnly(function()
                 links { Rearm.Editor.ProjectName, }
                 includedirs { Rearm.Editor.IncludeDir }
             end)
         end)
-
-        -- mainProject(Rearm.Exports, function()
-        --     kind "StaticLib"
-        --     filter "toolset:msc*"
-        --         buildoptions { "/bigobj" }
-        -- end)
     group ""
 
     project(Rearm.ZeroCheck.Name)

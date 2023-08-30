@@ -26,11 +26,6 @@ Rearm = {
         IncludeDir = BaseIncludeDir .. "Dependencies/",
         ProjectDir = SourceDir .. "Dependencies/"
     },
-    Exports = {
-        Name = "Exports",
-        IncludeDir = BaseIncludeDir .. "Exports/",
-        ProjectDir = SourceDir .. "Exports/"
-    },
     ZeroCheck = {
         Name = "ZERO_CHECK"
     }
@@ -39,7 +34,6 @@ Rearm = {
 Rearm.Core.ProjectName = Rearm.Name .. Rearm.Core.Name
 Rearm.Entry.ProjectName = Rearm.Name .. Rearm.Entry.Name
 Rearm.Editor.ProjectName = Rearm.Name .. Rearm.Editor.Name
-Rearm.Exports.ProjectName = Rearm.Name .. Rearm.Exports.Name
 
 function validateDependencyCache(dependency)
     dependencyExists = os.isdir(dependency.ProjectDir)
