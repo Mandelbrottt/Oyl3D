@@ -177,9 +177,9 @@ function applyCommonCppSettings(projectConfig)
         includedirs {
             projectConfig.IncludeDir,
         }
-        
+
         -- header files can be included across module boundaries, and so have to use project-agnostic includes
-        filter "files:*.cpp"
+        filter "files:**.cpp"
             includedirs {
                 projectConfig.IncludeDir .. projectConfig.Name,
             }
