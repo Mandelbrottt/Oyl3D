@@ -26,8 +26,8 @@ Rearm = {
         IncludeDir = BaseIncludeDir .. "Dependencies/",
         ProjectDir = SourceDir .. "Dependencies/"
     },
-    ZeroCheck = {
-        Name = "ZERO_CHECK"
+    Premake = {
+        Name = "Premake"
     }
 }
 

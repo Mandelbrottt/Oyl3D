@@ -30,7 +30,7 @@ function applyCommonCppSettings(projectConfig)
     }
 
     links {
-        Rearm.ZeroCheck.Name
+        Rearm.Premake.Name
     }
 
     for _, dependency in pairs(Dependencies) do

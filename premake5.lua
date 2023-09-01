@@ -86,22 +86,15 @@ workspace(Rearm.Name)
         end)
     group ""
 
-    project(Rearm.ZeroCheck.Name)
-        kind "Makefile"
+    project(Rearm.Premake.Name)
+        kind "Utility"
         filename("%{prj.name}_" .. _ACTION)
         targetdir(Config.TargetDir .. Config.OutputDir)
         objdir   (Config.ObjectDir .. Config.OutputDir)
 
-        if string.startswith(_ACTION, "vs") then
-            local runPremakeCommand = 
-                "%{wks.location}/Binaries/ThirdParty/premake5.exe " .. _ACTION
-
-            buildcommands {
-                runPremakeCommand,
-            }
-            rebuildcommands {
-                runPremakeCommand,
-            }
-        end
+        postbuildmessage "Regenerating Projects with Premake..."
+        postbuildcommands {
+            "%{wks.location}/Binaries/ThirdParty/premake5.exe " .. _ACTION
+        }
 
 include "Scripts/Premake/Overrides.lua"
