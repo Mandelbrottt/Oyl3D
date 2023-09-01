@@ -87,14 +87,18 @@ workspace(Rearm.Name)
     group ""
 
     project(Rearm.Premake.Name)
-        kind "Utility"
+        kind "MakeFile"
         filename("%{prj.name}_" .. _ACTION)
         targetdir(Config.TargetDir .. Config.OutputDir)
-        objdir   (Config.ObjectDir .. Config.OutputDir)
+        objdir(Config.ObjectDir .. Config.OutputDir)
 
-        postbuildmessage "Regenerating Projects with Premake..."
-        postbuildcommands {
-            "%{wks.location}/Binaries/ThirdParty/premake5.exe " .. _ACTION
+        local runPremakeCommand = "%{wks.location}/Binaries/ThirdParty/premake5.exe " .. _ACTION
+
+        buildcommands {
+            runPremakeCommand,
         }
-
+        rebuildcommands {
+            runPremakeCommand,
+        }
+        
 include "Scripts/Premake/Overrides.lua"
