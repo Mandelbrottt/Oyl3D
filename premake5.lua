@@ -8,7 +8,7 @@ if _ACTION == "clean" or _ACTION == nil then
     return
 end
 
-populateDependencyCache(Dependencies)
+processDependencies(Dependencies)
 
 -- Generate Module Table
 

@@ -74,7 +74,7 @@ local function cleanDependencyCache()
     end
 end
 
-function populateDependencyCache(dependencies)
+function processDependencies(dependencies)
     preProcessDependencyTable(dependencies)
     
     if _OPTIONS[reinitOptionTrigger] then
