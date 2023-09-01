@@ -4,8 +4,9 @@ local m = premake.modules.Clean
 local p = premake
 
 newoption {
-    trigger = "dependencies",
-    description = "Compatible with 'clean' action. Cleans the dependency cache."
+    trigger     = "dependencies",
+    description = "Compatible with 'clean' action. Cleans the dependency cache.",
+    category    = "clean"
 }
 
 local cleanBuildOnly = false
