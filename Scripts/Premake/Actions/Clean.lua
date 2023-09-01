@@ -37,7 +37,7 @@ newaction {
         end
 
         if cleanDependencies then
-            local dependenciesToRemove = os.matchdirs(Rearm.Dependencies.ProjectDir .. "*")
+            local dependenciesToRemove = os.matchdirs(Config.DependenciesDir .. "*")
             for _, dependency in pairs(dependenciesToRemove) do
                 print("Removing Dependency '" .. path.getbasename(dependency) .. "'...")
                 os.rmdir(dependency)

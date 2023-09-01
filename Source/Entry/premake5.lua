@@ -1,12 +1,12 @@
-Rearm.Entry = {
-    Language = "C++",
-    Kind = "WindowedApp",
+RearmModule({
+    Group = "Executables",
+    Language = premake.CPP,
+    Kind = premake.WINDOWEDAPP,
     Dependencies = {
         "Core",
-        "Rendering",
         "Editor",
     },
-    Premake = function()
+    Properties = function()
 
     end
-}
+})

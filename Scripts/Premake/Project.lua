@@ -6,11 +6,11 @@ end
 
 function defineInsideMacro(projectName)
     return string.upper(
-        string.format("_INSIDE_%s_%s=1", Rearm.Name, projectName)
+        string.format("_INSIDE_%s_%s=1", Config.Name, projectName)
     )
 end
 
-function applyCommonCppSettings(projectConfig)
+function applyCommonCppSettings(moduleDefinition)
     filename("%{prj.name}_" .. _ACTION)
     language "C++"
     cppdialect "C++17"
@@ -30,28 +30,28 @@ function applyCommonCppSettings(projectConfig)
     }
 
     links {
-        Rearm.Premake.Name
+        "Premake"
     }
 
-    for _, dependency in pairsByKeys(Dependencies) do
-        links { dependency.Name }
-        includedirs(dependency.IncludeDirs)
-    end
+    -- for _, dependency in pairsByKeys(Dependencies) do
+    --     links { dependency.Name }
+    --     includedirs(dependency.IncludeDirs)
+    -- end
 
-    if projectConfig then
+    if moduleDefinition then
         includedirs {
-            projectConfig.IncludeDir,
+            moduleDefinition.Dir,
         }
 
         -- header files can be included across module boundaries, and so have to use project-agnostic includes
         filter "files:**.cpp"
             includedirs {
-                projectConfig.IncludeDir .. projectConfig.Name,
+                moduleDefinition.Dir .. moduleDefinition.Name,
             }
         filter {}
 
         defines {
-            defineInsideMacro(projectConfig.Name),
+            defineInsideMacro(moduleDefinition.Name),
         }
     end
 
@@ -69,20 +69,20 @@ function applyCommonCppSettings(projectConfig)
     filter("configurations:" .. Config.Debug.Prefix .. "*")
         optimize "off"
         runtime "debug"
-        defines { string.upper(Rearm.Name) .. "_DEBUG=1" }
+        defines { string.upper(Config.Name) .. "_DEBUG=1" }
 
     filter("configurations:" .. Config.Development.Prefix .. "*")
         optimize "debug"
         runtime "release"
-        defines { string.upper(Rearm.Name) .. "_DEVELOPMENT=1" }
+        defines { string.upper(Config.Name) .. "_DEVELOPMENT=1" }
 
     filter("configurations:" .. Config.Release.Prefix .. "*")
         optimize "on"
         runtime "release"
-        defines { string.upper(Rearm.Name) .. "_RELEASE=1" }
+        defines { string.upper(Config.Name) .. "_RELEASE=1" }
         
     filterEditorOnly(function()
-        defines { string.upper(Rearm.Name) .. "_EDITOR=1" }
+        defines { string.upper(Config.Name) .. "_EDITOR=1" }
     end)
 
     filter {}

@@ -1,5 +1,4 @@
 SUPPRESS_COMMAND_OUTPUT = (os.host() == "windows" and "> nul 2>&1" or "> /dev/null 2>&1")
-DEPENDENCIES_DIR = "Source/Dependencies/"
 
 local reinitOptionTrigger = "reinit"
 
@@ -53,7 +52,7 @@ local function preProcessDependencyTable(dependencies)
         name = name or path.getbasename(gitUrl)
 
         dependency['Name'] = name
-        dependency['ProjectDir'] = DEPENDENCIES_DIR .. name .. "/"
+        dependency['ProjectDir'] = Config.DependenciesDir .. name .. "/"
 
         if dependency['IncludeDirs'] ~= nil then
             for i, includeDir in ipairs(dependency.IncludeDirs) do
@@ -65,7 +64,7 @@ local function preProcessDependencyTable(dependencies)
 end
 
 local function cleanDependencyCache()
-    local depsToRemove = os.matchdirs(DEPENDENCIES_DIR .. "*")
+    local depsToRemove = os.matchdirs(Config.DependenciesDir .. "*")
     if #depsToRemove ~= 0 then
         print("Cleaning Dependency Cache...")
         for _, dir in pairs(depsToRemove) do
