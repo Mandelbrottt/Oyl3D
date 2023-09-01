@@ -54,9 +54,8 @@ function RearmModule(moduleDefinition)
     moduleDefinition.Dir = projectDir
     moduleDefinition.Name = projectName
     moduleDefinition.ProjectName = string.format("%s.%s", Config.Name, projectName)
-
-    local cwd = os.getcwd()
-    os.chdir(projectDir)
+    moduleDefinition.Group = moduleDefinition.Group or ""
+    moduleDefinition.Kind = moduleDefinition.Kind or premake.UTILITY
 
     if moduleDefinition.Group then
         group(moduleDefinition.Group)
@@ -74,7 +73,6 @@ function RearmModule(moduleDefinition)
         if moduleDefinition.Properties then
             moduleDefinition.Properties()
         end
-    os.chdir(cwd)
     filter {}
     group ""
 end

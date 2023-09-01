@@ -40,13 +40,13 @@ function applyCommonCppSettings(moduleDefinition)
 
     if moduleDefinition then
         includedirs {
-            moduleDefinition.Dir,
+            "%{prj.location}",
         }
 
         -- header files can be included across module boundaries, and so have to use project-agnostic includes
         filter "files:**.cpp"
             includedirs {
-                moduleDefinition.Dir .. moduleDefinition.Name,
+                path.join("%{prj.location}", moduleDefinition.Name),
             }
         filter {}
 

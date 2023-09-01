@@ -10,12 +10,6 @@ end
 
 processDependencies(Dependencies)
 
--- Generate Workspace and Projects
-
--- if true then
---     return
--- end
-
 workspace(Config.Name)
     location "./"
     filename(Config.Name .. "_" .. _ACTION)
@@ -48,7 +42,11 @@ workspace(Config.Name)
     group ""
 
     group(Config.Name)
-        include "Source/Entry"
+        local moduleScripts = os.matchfiles(path.join(Config.SourceDir, "**premake5.lua"))
+        for _, moduleScript in pairs(moduleScripts) do
+            include(moduleScript)
+        end
+
         -- mainProject("RearmCore", function()
         --     kind "SharedLib"
         --     pchheader "pch.h"
@@ -99,7 +97,7 @@ workspace(Config.Name)
         --         includedirs { Rearm.Editor.IncludeDir }
         --     end)
         -- end)
-        group ""
+    group ""
 
     project("Premake")
         kind "MakeFile"

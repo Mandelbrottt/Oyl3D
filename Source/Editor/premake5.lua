@@ -1,9 +1,11 @@
 RearmModule({
-    Group = "Executables",
+    Group = "Editor",
     Language = premake.CPP,
-    Kind = premake.WINDOWEDAPP,
+    Kind = premake.SHAREDLIB,
     Dependencies = {
         "Core",
         "Editor",
+        "ImGui",
+        "YamlCpp",
     },
 })
