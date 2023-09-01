@@ -66,8 +66,9 @@ end
 local function cleanDependencyCache()
     local depsToRemove = os.matchdirs(Rearm.Dependencies.ProjectDir .. "*")
     if #depsToRemove ~= 0 then
-        print("Removing Dependency Cache...")
+        print("Cleaning Dependency Cache...")
         for _, dir in pairs(depsToRemove) do
+            print(string.format("\tCleaning %s...", dir))
             os.execute(os.translateCommands("{RMDIR} " .. dir))
         end
     end
