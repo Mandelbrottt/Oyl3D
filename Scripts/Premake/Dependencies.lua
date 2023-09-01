@@ -37,7 +37,7 @@ local function cloneGitDependency(dependency)
 end
 
 function validateDependencyCache(dependency)
-    dependencyExists = os.isdir(dependency.ProjectDir)
+    local dependencyExists = os.isdir(dependency.ProjectDir)
     if not dependencyExists then
         if dependency.Git then
             cloneGitDependency(dependency)
@@ -54,7 +54,7 @@ newoption {
 
 function generateDependencies()
     if _OPTIONS[reinitOptionTrigger] then
-        depsToRemove = os.matchdirs(Rearm.Dependencies.ProjectDir .. "*")
+        local depsToRemove = os.matchdirs(Rearm.Dependencies.ProjectDir .. "*")
         if #depsToRemove ~= 0 then
             print("Removing Dependency Cache...")
             for _, dir in pairs(depsToRemove) do
@@ -68,12 +68,12 @@ function generateDependencies()
     local dependencies = Dependencies
     Dependencies = {}
 
-    for _, dependency in pairs(dependencies) do
-        -- Default to StaticLib if none provided
+    for name, dependency in pairs(dependencies) do
+        -- Default to None if no kind provided
         dependency.Kind = dependency.Kind or "None"
 
         local gitUrl = dependency.Git.Url
-        local name = dependency.Name or path.getbasename(gitUrl)
+        name = name or path.getbasename(gitUrl)
 
         dependency['Name'] = name
         dependency['ProjectDir'] = Rearm.Dependencies.ProjectDir .. name .. "/"

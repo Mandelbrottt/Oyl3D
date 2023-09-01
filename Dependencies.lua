@@ -1,5 +1,5 @@
 Dependencies = {
-    {
+    YamlCpp = {
         Git = {
             Url = "https://github.com/jbeder/yaml-cpp.git",
             Revision = "c73ee34704c512ebe915b283645aefa9f424a22f",
@@ -16,8 +16,7 @@ Dependencies = {
                 defines { "yaml_cpp_EXPORTS" }
         end
     },
-    {
-        Name = "NlohmannJson",
+    NlohmannJson = {
         Git = {
             Url = "https://github.com/nlohmann/json.git",
             Revision = "v3.11.2"
@@ -25,8 +24,7 @@ Dependencies = {
         Kind = "Utility",
         Files = { "/include/" },
     },
-    {
-        Name = "GLFW",
+    GLFW = {
         Git = {
             Url = "https://github.com/glfw/glfw.git",
             Revision = "3.3.8"
@@ -62,8 +60,7 @@ Dependencies = {
                 defines { "_GLFW_BUILD_DLL" }
         end
     },
-    {
-        Name = "ImGui",
+    ImGui = {
         Git = {
             Url = "https://github.com/ocornut/imgui.git",
             Revision = "e2cede6542d2d6c83598d4d34dc51de84aeb282f"
@@ -77,8 +74,7 @@ Dependencies = {
             removefiles { "examples/**" }
         end
     },
-    {
-        Name = "SpdLog",
+    SpdLog = {
         Git = {
             Url = "https://github.com/gabime/spdlog.git",
             Revision = "v1.11.0"
@@ -99,5 +95,15 @@ Dependencies = {
                     "FMT_SHARED"
                 }
         end
+    }
+}
+
+local VULKAN_SDK = os.getenv("VULKAN_SDK")
+
+Libraries = {
+    Vulkan = {
+        IncludeDirs = { VULKAN_SDK .. "/Include" },
+        LibraryDirs = { VULKAN_SDK .. "/Lib" },
+        Libraries = { "vulkan-1" }
     }
 }
