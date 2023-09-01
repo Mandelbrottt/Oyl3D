@@ -46,7 +46,7 @@ jobs:
       uses: actions/cache@v3
       with:
         path: Source/Dependencies/**
-        key: engine-source-dependencies-${{runner.os}}-${{hashFiles('Dependencies.lua')}}
+        key: engine-source-dependencies-${{runner.os}}-${{hashFiles('Packages.lua')}}
 
     - name: Add MSBuild to PATH
       uses: microsoft/setup-msbuild@v1.0.2
