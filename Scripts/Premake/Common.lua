@@ -41,5 +41,6 @@ Rearm.Rendering.ProjectName = Rearm.Name .. Rearm.Rendering.Name
 Rearm.Editor.ProjectName = Rearm.Name .. Rearm.Editor.Name
 Rearm.Entry.ProjectName = Rearm.Name .. Rearm.Entry.Name
 
+include "Utils.lua"
 include "Project.lua"
 include "Dependencies.lua"

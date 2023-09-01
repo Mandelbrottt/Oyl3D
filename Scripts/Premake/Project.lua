@@ -33,7 +33,7 @@ function applyCommonCppSettings(projectConfig)
         Rearm.Premake.Name
     }
 
-    for _, dependency in pairs(Dependencies) do
+    for _, dependency in pairsByKeys(Dependencies) do
         links { dependency.Name }
         includedirs(dependency.IncludeDirs)
     end

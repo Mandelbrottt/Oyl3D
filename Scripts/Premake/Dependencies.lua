@@ -68,7 +68,7 @@ function generateDependencies()
     local dependencies = Dependencies
     Dependencies = {}
 
-    for name, dependency in pairs(dependencies) do
+    for name, dependency in pairsByKeys(dependencies) do
         -- Default to None if no kind provided
         dependency.Kind = dependency.Kind or "None"
 
