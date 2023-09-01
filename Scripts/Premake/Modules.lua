@@ -44,6 +44,7 @@ Modules = {}
 --      Group: string,
 --      Language: string,
 --      Kind: string,
+--      Pch: string
 --      Dependencies: table[string]
 --      Properties: function
 -- }
@@ -75,24 +76,6 @@ function RearmModule(moduleDefinition)
         end
     filter {}
     group ""
+
+    Modules[moduleDefinition.Name] = moduleDefinition
 end
-
--- local function mainProject(projectConfig, properties)
---         local cwd = os.getcwd()
---         os.chdir(projectConfig.ProjectDir)
---         project(projectConfig.ProjectName)
---             applyCommonCppSettings(projectConfig)
---             properties()
---             filter {}
---         os.chdir(cwd)
---     end
-
---     group(Config.Name)
---         mainProject("RearmCore", function()
---             kind "SharedLib"
---             pchheader "pch.h"
---             pchsource "pch.cpp"
---             includedirs { }
---             libdirs { }
---             links { }
---         end)
