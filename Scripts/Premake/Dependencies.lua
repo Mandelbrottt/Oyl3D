@@ -111,3 +111,27 @@ function generateDependencies()
 
     Dependencies = dependencies
 end
+
+function preProcessPackagesTable(dependencies)
+    for name, dependency in pairs(dependencies) do
+        -- Default to Utility if no kind provided
+        dependency.Kind = dependency.Kind or "Utility"
+
+        local gitUrl = dependency.Git.Url
+        name = name or path.getbasename(gitUrl)
+
+        dependency['Name'] = name
+        dependency['ProjectDir'] = Rearm.Dependencies.ProjectDir .. name .. "/"
+
+        if dependency['IncludeDirs'] ~= nil then
+            for i, includeDir in ipairs(dependency.IncludeDirs) do
+                includeDir = "%{wks.location}/" .. dependency.ProjectDir .. includeDir
+                dependency.IncludeDirs[i] = includeDir
+            end
+        end
+    end
+end
+
+function populatePackagesCache(dependencies)
+
+end
