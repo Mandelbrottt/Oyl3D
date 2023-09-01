@@ -1,10 +1,17 @@
-local suppressCommandOutput = (os.host() == "windows" and "> nul 2>&1" or "> /dev/null 2>&1")
+SUPPRESS_COMMAND_OUTPUT = (os.host() == "windows" and "> nul 2>&1" or "> /dev/null 2>&1")
+
+local reinitOptionTrigger = "reinit"
+
+newoption {
+    trigger = reinitOptionTrigger,
+    description = "Reinitialize all dependencies"
+}
 
 local function cloneGitDependency(dependency)
     print(string.format("Cloning Git dependency \"%s\" from \"%s\"...", dependency.Name, dependency.Git.Url))
 
     -- Clone the repository and cd into it https://stackoverflow.com/a/63786181
-    os.executef("git clone -q --filter=blob:none -n --depth 1 %s %s %s", dependency.Git.Url, dependency.ProjectDir, suppressCommandOutput)
+    os.executef("git clone -q --filter=blob:none -n --depth 1 %s %s %s", dependency.Git.Url, dependency.ProjectDir, SUPPRESS_COMMAND_OUTPUT)
     local cwd = os.getcwd()
     os.chdir(dependency.ProjectDir)
 
@@ -15,7 +22,7 @@ local function cloneGitDependency(dependency)
             files = files .. " " .. file
         end
 
-        os.executef("git sparse-checkout set --no-cone %s %s", files, suppressCommandOutput)
+        os.executef("git sparse-checkout set --no-cone %s %s", files, SUPPRESS_COMMAND_OUTPUT)
     end
 
     -- If a specific revision is specified, point to it
@@ -23,8 +30,8 @@ local function cloneGitDependency(dependency)
     if dependency.Git.Revision then
         revision = dependency.Git.Revision
         print(string.format("\tFetching revision \"%s\"...", revision))
-        os.executef("git fetch -q --all --tags --depth 1 %s", suppressCommandOutput)
-        os.executef("git checkout -q --no-progress %s %s", revision, suppressCommandOutput)
+        os.executef("git fetch -q --all --tags --depth 1 %s", SUPPRESS_COMMAND_OUTPUT)
+        os.executef("git checkout -q --no-progress %s %s", revision, SUPPRESS_COMMAND_OUTPUT)
     end
 
     -- Remove the .git folder as we're only using git to download the repository
@@ -36,83 +43,7 @@ local function cloneGitDependency(dependency)
     term.popColor()
 end
 
-function validateDependencyCache(dependency)
-    local dependencyExists = os.isdir(dependency.ProjectDir)
-    if not dependencyExists then
-        if dependency.Git then
-            cloneGitDependency(dependency)
-        end
-    end
-end
-
-local reinitOptionTrigger = "reinit"
-
-newoption {
-    trigger = reinitOptionTrigger,
-    description = "Reinitialize all dependencies"
-}
-
-function generateDependencies()
-    if _OPTIONS[reinitOptionTrigger] then
-        local depsToRemove = os.matchdirs(Rearm.Dependencies.ProjectDir .. "*")
-        if #depsToRemove ~= 0 then
-            print("Removing Dependency Cache...")
-            for _, dir in pairs(depsToRemove) do
-                os.execute(os.translateCommands("{RMDIR} " .. dir))
-            end
-        end
-    end
-
-    -- applyCommonCppSettings relies on the global Dependencies
-    -- Make it an empty table while we generate the dependency projects so that they don't depend on each other
-    local dependencies = Dependencies
-    Dependencies = {}
-
-    for name, dependency in pairsByKeys(dependencies) do
-        -- Default to None if no kind provided
-        dependency.Kind = dependency.Kind or "None"
-
-        local gitUrl = dependency.Git.Url
-        name = name or path.getbasename(gitUrl)
-
-        dependency['Name'] = name
-        dependency['ProjectDir'] = Rearm.Dependencies.ProjectDir .. name .. "/"
-
-        validateDependencyCache(dependency)
-
-        local cwd = os.getcwd()
-        os.chdir(dependency.ProjectDir)
-
-        if dependency['IncludeDirs'] == nil then
-            local includeDirs = os.matchdirs("**include/")
-            if #includeDirs ~= 0 then
-                dependency.IncludeDirs = { "%{wks.location}/" .. dependency.ProjectDir .. includeDirs[1] }
-            else
-                dependency.IncludeDirs = {}
-            end
-        else
-            for i, includeDir in ipairs(dependency.IncludeDirs) do
-                includeDir = "%{wks.location}/" .. dependency.ProjectDir .. includeDir
-                dependency.IncludeDirs[i] = includeDir
-            end
-        end
-
-        project(dependency.Name)
-        applyCommonCppSettings()
-        kind(dependency.Kind)
-        includedirs(dependency.IncludeDirs)
-        warnings "Off"
-        if dependency['CustomProperties'] then
-            dependency.CustomProperties()
-        end
-
-        os.chdir(cwd)
-    end
-
-    Dependencies = dependencies
-end
-
-function preProcessPackagesTable(dependencies)
+local function preProcessDependencyTable(dependencies)
     for name, dependency in pairs(dependencies) do
         -- Default to Utility if no kind provided
         dependency.Kind = dependency.Kind or "Utility"
@@ -132,6 +63,92 @@ function preProcessPackagesTable(dependencies)
     end
 end
 
-function populatePackagesCache(dependencies)
-
+local function cleanDependencyCache()
+    local depsToRemove = os.matchdirs(Rearm.Dependencies.ProjectDir .. "*")
+    if #depsToRemove ~= 0 then
+        print("Removing Dependency Cache...")
+        for _, dir in pairs(depsToRemove) do
+            os.execute(os.translateCommands("{RMDIR} " .. dir))
+        end
+    end
 end
+
+function populateDependencyCache(dependencies)
+    preProcessDependencyTable(dependencies)
+    
+    if _OPTIONS[reinitOptionTrigger] then
+        cleanDependencyCache()
+    end
+
+    for _, dependency in pairsByKeys(dependencies) do
+        local dependencyExists = os.isdir(dependency.ProjectDir)
+        if not dependencyExists then
+            if dependency.Git then
+                cloneGitDependency(dependency)
+            end
+        end
+
+        -- If IncludeDirs isn't manually defined, set it to the include folder of the dependency
+        if dependency['IncludeDirs'] == nil then
+            local includeDirs = os.matchdirs(dependency.ProjectDir .. "/**include/")
+            if #includeDirs ~= 0 then
+                dependency.IncludeDirs = { "%{wks.location}/" .. dependency.ProjectDir .. includeDirs[1] }
+            else
+                dependency.IncludeDirs = {}
+            end
+        end
+    end
+end
+
+
+-- function generateDependencies()
+    
+
+--     -- applyCommonCppSettings relies on the global Dependencies
+--     -- Make it an empty table while we generate the dependency projects so that they don't depend on each other
+--     local dependencies = Dependencies
+--     Dependencies = {}
+
+--     for name, dependency in pairsByKeys(dependencies) do
+--         -- Default to None if no kind provided
+--         dependency.Kind = dependency.Kind or "None"
+
+--         local gitUrl = dependency.Git.Url
+--         name = name or path.getbasename(gitUrl)
+
+--         dependency['Name'] = name
+--         dependency['ProjectDir'] = Rearm.Dependencies.ProjectDir .. name .. "/"
+
+--         validateDependencyCache(dependency)
+
+--         local cwd = os.getcwd()
+--         os.chdir(dependency.ProjectDir)
+
+--         if dependency['IncludeDirs'] == nil then
+--             local includeDirs = os.matchdirs("**include/")
+--             if #includeDirs ~= 0 then
+--                 dependency.IncludeDirs = { "%{wks.location}/" .. dependency.ProjectDir .. includeDirs[1] }
+--             else
+--                 dependency.IncludeDirs = {}
+--             end
+--         else
+--             for i, includeDir in ipairs(dependency.IncludeDirs) do
+--                 includeDir = "%{wks.location}/" .. dependency.ProjectDir .. includeDir
+--                 dependency.IncludeDirs[i] = includeDir
+--             end
+--         end
+
+--         project(dependency.Name)
+--         applyCommonCppSettings()
+--         kind(dependency.Kind)
+--         includedirs(dependency.IncludeDirs)
+--         warnings "Off"
+--         if dependency['CustomProperties'] then
+--             dependency.CustomProperties()
+--         end
+
+--         os.chdir(cwd)
+--     end
+
+--     Dependencies = dependencies
+-- end

@@ -8,6 +8,16 @@ if _ACTION == "clean" or _ACTION == nil then
     return
 end
 
+populateDependencyCache(Dependencies)
+
+-- Generate Module Table
+
+-- Generate Workspace and Projects
+
+if true then
+    return
+end
+
 workspace(Rearm.Name)
     location "./"
     filename(Rearm.Name .. "_" .. _ACTION)
