@@ -11,15 +11,20 @@ Rearm = {
         IncludeDir = BaseIncludeDir .. "Core/",
         ProjectDir = SourceDir .. "Core/"
     },
-    Entry = {
-        Name = "Entry",
-        IncludeDir = BaseIncludeDir .. "Entry/",
-        ProjectDir = SourceDir .. "Entry/"
+    Rendering = {
+        Name = "Rendering",
+        IncludeDir = BaseIncludeDir .. "Rendering/",
+        ProjectDir = SourceDir .. "Rendering/"
     },
     Editor = {
         Name = "Editor",
         IncludeDir = BaseIncludeDir .. "Editor/",
         ProjectDir = SourceDir .. "Editor/"
+    },
+    Entry = {
+        Name = "Entry",
+        IncludeDir = BaseIncludeDir .. "Entry/",
+        ProjectDir = SourceDir .. "Entry/"
     },
     Dependencies = {
         Name = "Dependencies",
@@ -32,8 +37,9 @@ Rearm = {
 }
 
 Rearm.Core.ProjectName = Rearm.Name .. Rearm.Core.Name
-Rearm.Entry.ProjectName = Rearm.Name .. Rearm.Entry.Name
+Rearm.Rendering.ProjectName = Rearm.Name .. Rearm.Rendering.Name
 Rearm.Editor.ProjectName = Rearm.Name .. Rearm.Editor.Name
+Rearm.Entry.ProjectName = Rearm.Name .. Rearm.Entry.Name
 
 include "Project.lua"
 include "Dependencies.lua"

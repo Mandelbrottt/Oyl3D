@@ -49,27 +49,39 @@ workspace(Rearm.Name)
         os.chdir(cwd)
     end
 
-    VULKAN_SDK = os.getenv("VULKAN_SDK")
-
     group(Rearm.Name)
         mainProject(Rearm.Core, function()
             kind "SharedLib"
             pchheader "pch.h"
             pchsource "pch.cpp"
+            includedirs { }
+            libdirs { }
+            links { }
+        end)
+        
+        mainProject(Rearm.Rendering, function()
+            kind "SharedLib"
+            pchheader "pch.h"
+            pchsource "pch.cpp"
+
+            VULKAN_SDK = os.getenv("VULKAN_SDK")
             includedirs { "%{VULKAN_SDK}/Include" }
             libdirs { "%{VULKAN_SDK}/Lib" }
-            links {
-                -- Rearm.Exports.ProjectName,
-                "vulkan-1"
-            }
+            links { "vulkan-1" }
         end)
 
         mainProject(Rearm.Editor, function()
             kind "SharedLib"
             pchheader "pch.h"
             pchsource "pch.cpp"
-            links { Rearm.Core.ProjectName }
-            includedirs { Rearm.Core.IncludeDir }
+            links {
+                Rearm.Core.ProjectName,
+                Rearm.Rendering.ProjectName,
+            }
+            includedirs {
+                Rearm.Core.IncludeDir,
+                Rearm.Rendering.IncludeDir,
+            }
             removeconfigurations { "*" .. Config.Postfix }
         end)
 
@@ -77,14 +89,18 @@ workspace(Rearm.Name)
             kind "WindowedApp"
             links {
                 Rearm.Core.ProjectName,
+                Rearm.Rendering.ProjectName,
             }
-            includedirs { Rearm.Core.IncludeDir }
+            includedirs {
+                Rearm.Core.IncludeDir,
+                Rearm.Rendering.IncludeDir
+            }
             filterEditorOnly(function()
                 links { Rearm.Editor.ProjectName, }
                 includedirs { Rearm.Editor.IncludeDir }
             end)
         end)
-    group ""
+        group ""
 
     project(Rearm.Premake.Name)
         kind "MakeFile"
@@ -100,5 +116,5 @@ workspace(Rearm.Name)
         rebuildcommands {
             runPremakeCommand,
         }
-        
+
 include "Scripts/Premake/Overrides.lua"
