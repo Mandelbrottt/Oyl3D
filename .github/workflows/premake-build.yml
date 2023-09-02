@@ -31,6 +31,9 @@ jobs:
 
     runs-on: windows-latest
 
+    env:
+      VULKAN_SDK: C:\VulkanSdk\
+
     steps:
     - uses: actions/checkout@v3
 
@@ -48,21 +51,23 @@ jobs:
         path: Source/Dependencies/**
         key: engine-source-dependencies-${{runner.os}}-${{hashFiles('Packages.lua')}}
 
-    # - name: Cache Dependencies
-    #   uses: actions/cache@v3
-    #   with:
-    #     path: VULKAN_SDK
-    #     key: ${{runner.os}}-VULKAN_SDK
+    - name: Cache VulkanSDK
+      uses: actions/cache@v3
+      with:
+        path: ${{env.VULKAN_SDK}}
+        key: vulkan-sdk
 
     - name: Add MSBuild to PATH
       uses: microsoft/setup-msbuild@v1.0.2
 
-    - name: Setup Vulkan SDK
-      uses: humbletim/setup-vulkan-sdk@v1.2.0
-      with:
-        vulkan-query-version: 1.3.204.0
-        vulkan-components: Vulkan-Headers, Vulkan-Loader
-        vulkan-use-cache: false
+    - name: Setup Vulkan
+      run: |
+          $ver = (Invoke-WebRequest -Uri "https://vulkan.lunarg.com/sdk/latest.json" | ConvertFrom-Json).windows
+          echo Version $ver
+          $ProgressPreference = 'SilentlyContinue'
+          Invoke-WebRequest -Uri "https://sdk.lunarg.com/sdk/download/$ver/windows/VulkanSDK-$ver-Installer.exe" -OutFile VulkanSDK.exe
+          echo Downloaded
+          .\VulkanSDK.exe --root C:\VulkanSDK  --accept-licenses --default-answer --confirm-command install
 
     - name: Generate Solutions
       working-directory: ${{env.GITHUB_WORKSPACE}}
