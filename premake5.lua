@@ -34,36 +34,34 @@ workspace(Config.Name)
     filter "platforms:*64"
         architecture "x64"
     filter {}
-
-    startproject(Config.Name .. "Entry")
+    
+    startproject("Rearm.Entry")
 
     group("Dependencies")
         GenerateDependencyProjects(Dependencies)
     group ""
 
-    group(Config.Name)
-        local moduleScripts = os.matchfiles(path.join(Config.SourceDir, "**premake5.lua"))
-        for _, moduleScript in pairs(moduleScripts) do
-            include(moduleScript)
-        end
+    local moduleScripts = os.matchfiles(path.join(Config.SourceDir, "**premake5.lua"))
+    for _, moduleScript in pairs(moduleScripts) do
+        include(moduleScript)
+    end
 
-        for name, module in pairsByKeys(Modules) do
-            project(module.ProjectName)
+    for name, module in pairsByKeys(Modules) do
+        project(module.ProjectName)
 
-            for _, dependencyName in ipairs(module.Dependencies) do
-                if dependencyName == name then
-                    premake.error(string.format("Module \"%s\" cannot depend on itself!", module.Name))
-                    goto continue
-                end
-
-                AddDependencyToProject(dependencyName)
-
-                ::continue::
+        for _, dependencyName in ipairs(module.Dependencies) do
+            if dependencyName == name then
+                premake.error(string.format("Module \"%s\" cannot depend on itself!", module.Name))
+                goto continue
             end
 
-            project "*"
+            AddDependencyToProject(dependencyName)
+
+            ::continue::
         end
-    group ""
+
+        project "*"
+    end
 
     project("Premake")
         kind "MakeFile"

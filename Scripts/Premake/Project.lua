@@ -83,22 +83,30 @@ function applyCommonCppSettings(moduleDefinition)
     filter {}
 end
 
-function AddDependencyToProject(dependency)
-    local module = Modules[dependency]
+local function case_insensitive_find(table, index)
+    for key, value in pairs(table) do
+        if key:lower() == index:lower() then
+            return value
+        end
+    end
+end
+
+function AddDependencyToProject(dependencyName)
+    local module = case_insensitive_find(Modules, dependencyName)
     if module then
         links { module.ProjectName }
         includedirs { path.join(Config.SourceDir, module.Dir) }
         return
     end
 
-    local dependency = Dependencies[dependency]
+    local dependency = case_insensitive_find(Dependencies, dependencyName)
     if dependency then
         links { dependency.Name }
         includedirs(dependency.IncludeDirs)
         return
     end
 
-    local library = Libraries[dependency]
+    local library = case_insensitive_find(Libraries, dependencyName)
     if library then
         includedirs(library.IncludeDirs)
         libdirs(library.LibraryDirs)

@@ -5,5 +5,6 @@ RearmModule({
     Dependencies = {
         "SpdLog",
         "GLFW",
+        "Vulkan"
     },
 })

@@ -4,6 +4,8 @@
 
 #include <GLFW/glfw3.h>
 
+#include <vulkan/vulkan.hpp>
+
 namespace Rearm
 {	
 	void
@@ -18,6 +20,11 @@ namespace Rearm
 
 		glfwTerminate();
 		Logging::GetCoreLogger().info("GLFW Terminated");
+
+		uint32_t extensionCount = 0;
+		vkEnumerateInstanceExtensionProperties(nullptr, &extensionCount, nullptr);
+
+		Logging::GetCoreLogger().info("{} extensions supported", extensionCount);
 	}
 
 	void
