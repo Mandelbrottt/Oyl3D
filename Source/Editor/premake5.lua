@@ -1,4 +1,4 @@
-RearmModule({
+RearmModule {
     Group = "Editor",
     Language = premake.CPP,
     Kind = premake.SHAREDLIB,
@@ -7,4 +7,4 @@ RearmModule({
         "ImGui",
         "YamlCpp",
     },
-})
+}

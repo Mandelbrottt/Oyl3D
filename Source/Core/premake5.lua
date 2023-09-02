@@ -1,4 +1,4 @@
-RearmModule({
+RearmModule {
     Group = "Engine",
     Language = premake.CPP,
     Kind = premake.SHAREDLIB,
@@ -7,4 +7,4 @@ RearmModule({
         "GLFW",
         "Vulkan"
     },
-})
+}

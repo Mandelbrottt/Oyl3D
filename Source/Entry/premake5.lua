@@ -1,4 +1,4 @@
-RearmModule({
+RearmModule {
     Group = "Executables",
     Language = premake.CPP,
     Kind = premake.WINDOWEDAPP,
@@ -6,4 +6,4 @@ RearmModule({
         "Core",
         "Editor",
     },
-})
+}
