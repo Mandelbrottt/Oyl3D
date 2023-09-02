@@ -5,6 +5,8 @@ function filterEditorOnly(filterCallback)
 end
 
 function defineInsideMacro(projectName)
+    projectName = projectName:gsub("%.", "_")
+    projectName = projectName:gsub("%-", "_")
     return string.upper(
         string.format("_INSIDE_%s_%s=1", Config.Name, projectName)
     )
@@ -39,6 +41,7 @@ function applyCommonCppSettings(moduleDefinition)
         }
 
         -- header files can be included across module boundaries, and so have to use project-agnostic includes
+        -- FIXME: premake doesn't support per-file includedirs
         filter "files:**.cpp"
             includedirs {
                 path.join("%{prj.location}", moduleDefinition.Name),

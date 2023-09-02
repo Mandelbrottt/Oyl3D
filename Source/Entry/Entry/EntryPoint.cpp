@@ -3,6 +3,8 @@
 
 #include <Core/Application/Main.h>
 
+#include <Core.Renderer/Renderer/Renderer.h>
+
 static void SetupConsole();
 
 static void ShutdownConsole();
@@ -23,9 +25,11 @@ int WINAPI wWinMain(
 	SetupConsole();
 
 	Rearm::Init();
+	Rearm::Renderer::Init();
 	
 	std::cin.get();
-	
+
+	Rearm::Renderer::Shutdown();
 	Rearm::Shutdown();
 
 	ShutdownConsole();

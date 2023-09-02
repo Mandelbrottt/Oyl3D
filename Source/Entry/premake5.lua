@@ -4,6 +4,7 @@ RearmModule {
     Kind = premake.WINDOWEDAPP,
     Dependencies = {
         "Core",
+        "Core.Renderer",
         "Editor",
     },
 }

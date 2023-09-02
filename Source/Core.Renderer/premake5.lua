@@ -3,7 +3,8 @@ RearmModule {
     Language = premake.CPP,
     Kind = premake.SHAREDLIB,
     Dependencies = {
-        "Glfw",
-        "SpdLog",
+        "Core",
+        "GLFW",
+        "Vulkan"
     },
 }
