@@ -47,56 +47,22 @@ workspace(Config.Name)
             include(moduleScript)
         end
 
-        -- mainProject("RearmCore", function()
-        --     kind "SharedLib"
-        --     pchheader "pch.h"
-        --     pchsource "pch.cpp"
-        --     includedirs { }
-        --     libdirs { }
-        --     links { }
-        -- end)
+        for name, module in pairsByKeys(Modules) do
+            project(module.ProjectName)
 
-        -- mainProject(Rearm.Rendering, function()
-        --     kind "SharedLib"
-        --     pchheader "pch.h"
-        --     pchsource "pch.cpp"
+            for _, dependencyName in ipairs(module.Dependencies) do
+                if dependencyName == name then
+                    premake.error(string.format("Module \"%s\" cannot depend on itself!", module.Name))
+                    goto continue
+                end
 
-        --     VULKAN_SDK = os.getenv("VULKAN_SDK")
-        --     includedirs { "%{VULKAN_SDK}/Include" }
-        --     libdirs { "%{VULKAN_SDK}/Lib" }
-        --     links { "vulkan-1" }
-        -- end)
+                AddDependencyToProject(dependencyName)
 
-        -- mainProject(Rearm.Editor, function()
-        --     kind "SharedLib"
-        --     pchheader "pch.h"
-        --     pchsource "pch.cpp"
-        --     links {
-        --         Rearm.Core.ProjectName,
-        --         Rearm.Rendering.ProjectName,
-        --     }
-        --     includedirs {
-        --         Rearm.Core.IncludeDir,
-        --         Rearm.Rendering.IncludeDir,
-        --     }
-        --     removeconfigurations { "*" .. Config.Postfix }
-        -- end)
+                ::continue::
+            end
 
-        -- mainProject(Rearm.Entry, function()
-        --     kind "WindowedApp"
-        --     links {
-        --         Rearm.Core.ProjectName,
-        --         Rearm.Rendering.ProjectName,
-        --     }
-        --     includedirs {
-        --         Rearm.Core.IncludeDir,
-        --         Rearm.Rendering.IncludeDir
-        --     }
-        --     filterEditorOnly(function()
-        --         links { Rearm.Editor.ProjectName, }
-        --         includedirs { Rearm.Editor.IncludeDir }
-        --     end)
-        -- end)
+            project "*"
+        end
     group ""
 
     project("Premake")

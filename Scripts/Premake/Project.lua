@@ -33,11 +33,6 @@ function applyCommonCppSettings(moduleDefinition)
         "Premake"
     }
 
-    -- for _, dependency in pairsByKeys(Dependencies) do
-    --     links { dependency.Name }
-    --     includedirs(dependency.IncludeDirs)
-    -- end
-
     if moduleDefinition then
         includedirs {
             "%{prj.location}",
@@ -86,4 +81,28 @@ function applyCommonCppSettings(moduleDefinition)
     end)
 
     filter {}
+end
+
+function AddDependencyToProject(dependency)
+    local module = Modules[dependency]
+    if module then
+        links { module.ProjectName }
+        includedirs { path.join(Config.SourceDir, module.Dir) }
+        return
+    end
+
+    local dependency = Dependencies[dependency]
+    if dependency then
+        links { dependency.Name }
+        includedirs(dependency.IncludeDirs)
+        return
+    end
+
+    local library = Libraries[dependency]
+    if library then
+        includedirs(library.IncludeDirs)
+        libdirs(library.LibraryDirs)
+        links(library.Libraries)
+        return
+    end
 end

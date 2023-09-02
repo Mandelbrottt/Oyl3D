@@ -4,7 +4,6 @@ RearmModule({
     Kind = premake.SHAREDLIB,
     Dependencies = {
         "Core",
-        "Editor",
         "ImGui",
         "YamlCpp",
     },
