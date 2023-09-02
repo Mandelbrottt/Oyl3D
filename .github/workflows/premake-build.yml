@@ -6,9 +6,6 @@ on:
   pull_request:
     branches: [ "main" ]
 
-env:
-  SOLUTION_FILE_PATH: Rearm_vs2022.sln
-
 permissions:
   contents: read
 
@@ -33,6 +30,7 @@ jobs:
 
     env:
       VULKAN_SDK: C:\VulkanSdk\
+      SOLUTION_FILE_PATH: Rearm_vs2022.sln
 
     steps:
     - uses: actions/checkout@v3
@@ -62,6 +60,10 @@ jobs:
 
     - name: Setup Vulkan
       run: |
+          if (Test-Path -Path ${{env.VULKAN_SDK}}) {
+            echo Vulkan SDK already on disk
+            Exit 0
+          }
           $ver = (Invoke-WebRequest -Uri "https://vulkan.lunarg.com/sdk/latest.json" | ConvertFrom-Json).windows
           echo Version $ver
           $ProgressPreference = 'SilentlyContinue'
