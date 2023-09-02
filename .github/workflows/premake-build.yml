@@ -58,7 +58,7 @@ jobs:
         key: vulkan-sdk
 
     - name: Add MSBuild to PATH
-      uses: microsoft/setup-msbuild@v1.0.2
+      uses: microsoft/setup-msbuild@v1.1
 
     - name: Setup Vulkan
       run: |
