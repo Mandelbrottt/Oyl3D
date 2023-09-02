@@ -7,7 +7,7 @@ on:
     branches: [ "main" ]
 
 env:
-  SOLUTION_FILE_PATH: Rearm_vs2019.sln
+  SOLUTION_FILE_PATH: Rearm_vs2022.sln
 
 permissions:
   contents: read
@@ -51,9 +51,16 @@ jobs:
     - name: Add MSBuild to PATH
       uses: microsoft/setup-msbuild@v1.0.2
 
+    - name: Setup Vulkan SDK
+      uses: humbletim/setup-vulkan-sdk@v1.2.0
+      with:
+        vulkan-query-version: 1.3.239.0
+        vulkan-components: Vulkan-Headers, Vulkan-Loader
+        vulkan-use-cache: true
+
     - name: Generate Solutions
       working-directory: ${{env.GITHUB_WORKSPACE}}
-      run: Binaries/ThirdParty/premake5 vs2019
+      run: Binaries/ThirdParty/premake5 vs2022
 
     - name: Build
       working-directory: ${{env.GITHUB_WORKSPACE}}
