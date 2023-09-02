@@ -8,7 +8,7 @@ if _ACTION == "clean" or _ACTION == nil then
     return
 end
 
-processDependencies(Dependencies)
+ProcessDependencies(Dependencies)
 
 workspace(Config.Name)
     location "./"
@@ -38,7 +38,7 @@ workspace(Config.Name)
     startproject(Config.Name .. "Entry")
 
     group("Dependencies")
-        -- generateDependencies()
+        GenerateDependencyProjects(Dependencies)
     group ""
 
     group(Config.Name)

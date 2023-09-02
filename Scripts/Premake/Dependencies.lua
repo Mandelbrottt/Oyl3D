@@ -74,7 +74,7 @@ local function cleanDependencyCache()
     end
 end
 
-function processDependencies(dependencies)
+function ProcessDependencies(dependencies)
     preProcessDependencyTable(dependencies)
     
     if _OPTIONS[reinitOptionTrigger] then
@@ -93,12 +93,31 @@ function processDependencies(dependencies)
         if dependency['IncludeDirs'] == nil then
             local includeDirs = os.matchdirs(dependency.ProjectDir .. "/**include/")
             if #includeDirs ~= 0 then
-                dependency.IncludeDirs = { "%{wks.location}/" .. dependency.ProjectDir .. includeDirs[1] }
+                dependency.IncludeDirs = { "%{wks.location}/" .. includeDirs[1] }
             else
                 dependency.IncludeDirs = {}
             end
         end
     end
+end
+
+function GenerateDependencyProjects(dependencies)
+    for _, dependency in pairsByKeys(dependencies) do
+        local cwd = os.getcwd()
+        os.chdir(dependency.ProjectDir)
+
+        project(dependency.Name)
+            applyCommonCppSettings()
+            kind(dependency.Kind)
+            includedirs(dependency.IncludeDirs)
+            warnings "Off"
+            if dependency['CustomProperties'] then
+                dependency.CustomProperties()
+            end
+
+        os.chdir(cwd)
+    end
+    project "*"
 end
 
 
