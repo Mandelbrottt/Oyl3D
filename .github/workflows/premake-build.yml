@@ -15,12 +15,12 @@ jobs:
       fail-fast: false
       matrix:
         BUILD_CONFIGURATION: [
-          Debug-Standalone,
           Debug-Editor,
-          Development-Standalone,
           Development-Editor,
-          Release-Standalone,
           Release-Editor,
+          # Debug-Standalone,
+          # Development-Standalone,
+          # Release-Standalone,
         ]
         BUILD_PLATFORM: [
           x64
