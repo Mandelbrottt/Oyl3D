@@ -1,6 +1,7 @@
 Config = {}
 
 Config.Name = "Rearm"
+Config.ShortName = "R"
 
 Config.TargetDir = "%{wks.location}/Build/Binaries/"
 Config.ObjectDir = "%{wks.location}/Build/Intermediate/"

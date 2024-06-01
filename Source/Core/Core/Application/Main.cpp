@@ -12,7 +12,7 @@ namespace Rearm
 	)
 	{
 		g_onShouldGameUpdateCallback = a_params.onShouldGameUpdateCallback;
-
+		
 		Logging::Init();
 		Logging::GetCoreLogger().info("Initializing...");
 	}
@@ -26,7 +26,7 @@ namespace Rearm
 			shouldGameUpdate = g_onShouldGameUpdateCallback();
 		}
 
-		UNUSED(shouldGameUpdate);
+		R_UNUSED(shouldGameUpdate);
 	}
 
 	void

@@ -4,12 +4,12 @@
 
 namespace Rearm::Editor
 {
-	REARM_EDITOR_EXPORT
+	R_EDITOR_EXPORT
 	extern
 	void
 	Init();
 	
-	REARM_EDITOR_EXPORT
+	R_EDITOR_EXPORT
 	extern
 	void
 	Shutdown();

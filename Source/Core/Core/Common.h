@@ -1,9 +1,9 @@
 #pragma once
 
 #ifdef _INSIDE_REARM_CORE
-	#define REARM_CORE_EXPORT __declspec(dllexport)
+	#define R_CORE_EXPORT __declspec(dllexport)
 #else
-	#define REARM_CORE_EXPORT __declspec(dllimport)
+	#define R_CORE_EXPORT __declspec(dllimport)
 #endif
 
-#define UNUSED(_var_) (void) _var_
+#define R_UNUSED(_var_) (void) _var_

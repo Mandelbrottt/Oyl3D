@@ -21,7 +21,7 @@ int WINAPI wWinMain(
 	(void) nShowCmd;
 
 	SetupConsole();
-
+	
 	Rearm::CoreInitParameters initParams;
 
 	Rearm::Init(initParams);
