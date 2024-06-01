@@ -3,9 +3,22 @@
 
 namespace Rearm
 {
+	using OnShouldGameUpdateFn = bool(*)();
+
+	struct CoreInitParameters
+	{
+		OnShouldGameUpdateFn onShouldGameUpdateCallback;
+	};
+	
 	REARM_CORE_EXPORT
 	void
-	Init();
+	Init(
+		const CoreInitParameters& a_params
+	);
+
+	REARM_CORE_EXPORT
+	void
+	Update();
 
 	REARM_CORE_EXPORT
 	void

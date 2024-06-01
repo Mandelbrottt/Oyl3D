@@ -22,7 +22,9 @@ int WINAPI wWinMain(
 
 	SetupConsole();
 
-	Rearm::Init();
+	Rearm::CoreInitParameters initParams;
+
+	Rearm::Init(initParams);
 	
 	std::cin.get();
 	

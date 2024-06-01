@@ -2,29 +2,31 @@
 #include "Main.h"
 #include "Logging.h"
 
-#include <GLFW/glfw3.h>
-
-#include <vulkan/vulkan.hpp>
-
 namespace Rearm
-{	
+{
+	static OnShouldGameUpdateFn g_onShouldGameUpdateCallback;
+
 	void
-	Init()
+	Init(
+		const CoreInitParameters& a_params
+	)
 	{
+		g_onShouldGameUpdateCallback = a_params.onShouldGameUpdateCallback;
+
 		Logging::Init();
-		
-		Logging::GetCoreLogger().info("Core Logger Initialized");
+		Logging::GetCoreLogger().info("Initializing...");
+	}
 
-		glfwInit();
-		Logging::GetCoreLogger().info("GLFW Initialized");
+	void
+	Update()
+	{
+		bool shouldGameUpdate = true;
+		if (g_onShouldGameUpdateCallback)
+		{
+			shouldGameUpdate = g_onShouldGameUpdateCallback();
+		}
 
-		glfwTerminate();
-		Logging::GetCoreLogger().info("GLFW Terminated");
-
-		uint32_t extensionCount = 0;
-		vkEnumerateInstanceExtensionProperties(nullptr, &extensionCount, nullptr);
-
-		Logging::GetCoreLogger().info("{} extensions supported", extensionCount);
+		UNUSED(shouldGameUpdate);
 	}
 
 	void
