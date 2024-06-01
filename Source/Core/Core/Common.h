@@ -5,3 +5,5 @@
 #else
 	#define REARM_CORE_EXPORT __declspec(dllimport)
 #endif
+
+#define UNUSED(_var_) (void) _var_
