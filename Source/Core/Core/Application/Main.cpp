@@ -2,17 +2,21 @@
 #include "Main.h"
 #include "Logging.h"
 
+#include <iostream>
+
 namespace Rearm
 {
-	static OnShouldGameUpdateFn g_onShouldGameUpdateCallback;
+	static CoreInitParameters g_params;
+
+	bool g_shouldGameUpdate = true;
 
 	void
 	Init(
 		const CoreInitParameters& a_params
 	)
 	{
-		g_onShouldGameUpdateCallback = a_params.onShouldGameUpdateCallback;
-		
+		g_params = a_params;
+
 		Logging::Init();
 		Logging::GetCoreLogger().info("Initializing...");
 	}
@@ -20,18 +24,41 @@ namespace Rearm
 	void
 	Update()
 	{
-		bool shouldGameUpdate = true;
-		if (g_onShouldGameUpdateCallback)
+		if (g_shouldGameUpdate)
 		{
-			shouldGameUpdate = g_onShouldGameUpdateCallback();
+			Logging::GetCoreLogger().info("game update");
 		}
 
-		R_UNUSED(shouldGameUpdate);
+		Logging::GetCoreLogger().info("regular update");
+
+		char in = std::cin.get();
+		if (in == 'q')
+		{
+			g_params.onApplicationShouldQuitCallback();
+		}
+		if (in == 'g')
+		{
+			g_shouldGameUpdate = !g_shouldGameUpdate;
+		}
 	}
 
 	void
 	Shutdown()
 	{
 		Logging::GetCoreLogger().info("Shutting Down");
+	}
+
+	bool
+	GetShouldGameUpdate() noexcept
+	{
+		return g_shouldGameUpdate;
+	}
+
+	void
+	SetShouldGameUpdate(
+		bool a_value
+	) noexcept
+	{
+		g_shouldGameUpdate = a_value;
 	}
 }

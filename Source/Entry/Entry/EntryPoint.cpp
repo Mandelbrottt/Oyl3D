@@ -1,11 +1,14 @@
 #include <Windows.h>
 #include <iostream>
+#include <stdbool.h>
 
 #include <Core/Application/Main.h>
 
 static void SetupConsole();
 
 static void ShutdownConsole();
+
+static bool g_running = true;
 
 // ReSharper disable CppInconsistentNaming
 int WINAPI wWinMain(
@@ -23,10 +26,22 @@ int WINAPI wWinMain(
 	SetupConsole();
 	
 	Rearm::CoreInitParameters initParams;
+	initParams.onApplicationShouldQuitCallback = [] { g_running = false; };
+
+	Rearm::SetShouldGameUpdate(
+	#ifdef R_EDITOR
+		false
+	#else
+		true
+	#endif
+	);
 
 	Rearm::Init(initParams);
-	
-	std::cin.get();
+
+	while (g_running)
+	{
+		Rearm::Update();
+	}
 	
 	Rearm::Shutdown();
 
