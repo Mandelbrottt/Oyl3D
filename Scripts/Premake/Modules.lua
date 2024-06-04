@@ -8,13 +8,13 @@ Modules = {}
 --      Dependencies: table[string]
 --      Properties: function
 -- }
-function RearmModule(moduleDefinition)
+function EngineModule(moduleDefinition)
     local projectDir = script_dir(3)
     local projectName = path.getname(projectDir)
 
     moduleDefinition.Dir = projectDir
     moduleDefinition.Name = projectName
-    moduleDefinition.ProjectName = string.format("%s.%s", Config.Name, projectName)
+    moduleDefinition.ProjectName = string.format("%s.%s", Config.ShortName, projectName)
     moduleDefinition.Group = moduleDefinition.Group or ""
     moduleDefinition.Kind = moduleDefinition.Kind or premake.UTILITY
 

@@ -1,7 +1,7 @@
 #pragma once
 
-#if _INSIDE_REARM_EDITOR
-	#define R_EDITOR_EXPORT __declspec(dllexport)
+#if _INSIDE_OYL_EDITOR
+	#define OYL_EDITOR_EXPORT __declspec(dllexport)
 #else
-	#define R_EDITOR_EXPORT __declspec(dllimport)
+	#define OYL_EDITOR_EXPORT __declspec(dllimport)
 #endif

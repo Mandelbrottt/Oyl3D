@@ -30,7 +30,7 @@ jobs:
 
     env:
       VULKAN_SDK: C:\VulkanSdk\
-      SOLUTION_FILE_PATH: Rearm_vs2022.sln
+      SOLUTION_FILE_PATH: Oyl3D_vs2022.sln
 
     steps:
     - uses: actions/checkout@v3

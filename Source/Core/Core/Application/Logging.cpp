@@ -17,7 +17,7 @@
 #include <spdlog/spdlog.h>
 #include <spdlog/sinks/stdout_color_sinks.h>
 
-namespace Rearm::Logging
+namespace Oyl::Logging
 {
 	static std::shared_ptr<spdlog::logger> g_coreLogger;
 

@@ -1,7 +1,7 @@
 Config = {}
 
-Config.Name = "Rearm"
-Config.ShortName = "R"
+Config.Name = "Oyl3D"
+Config.ShortName = "Oyl"
 
 Config.TargetDir = "%{wks.location}/Build/Binaries/"
 Config.ObjectDir = "%{wks.location}/Build/Intermediate/"
