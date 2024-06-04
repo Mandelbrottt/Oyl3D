@@ -4,17 +4,17 @@
 
 #include <spdlog/logger.h>
 
-namespace Rearm::Logging
+namespace Oyl::Logging
 {
-	R_CORE_EXPORT
+	OYL_CORE_EXPORT
 	void
 	Init();
 
-	R_CORE_EXPORT
+	OYL_CORE_EXPORT
 	void
 	Shutdown();
 
-	R_CORE_EXPORT
+	OYL_CORE_EXPORT
 	spdlog::logger& 
 	GetCoreLogger();
 }

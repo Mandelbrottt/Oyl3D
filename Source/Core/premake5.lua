@@ -1,4 +1,4 @@
-RearmModule {
+EngineModule {
     Group = "Engine",
     Language = premake.CPP,
     Kind = premake.SHAREDLIB,

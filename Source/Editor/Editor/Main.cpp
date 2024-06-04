@@ -2,7 +2,7 @@
 
 #include "Main.h"
 
-namespace Rearm::Editor
+namespace Oyl::Editor
 {
 	void
 	Init()

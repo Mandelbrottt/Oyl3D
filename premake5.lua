@@ -35,7 +35,7 @@ workspace(Config.Name)
         architecture "x64"
     filter {}
     
-    startproject("Rearm.Entry")
+    startproject(Config.ShortName .. ".Entry")
 
     group("Dependencies")
         GenerateDependencyProjects(Dependencies)

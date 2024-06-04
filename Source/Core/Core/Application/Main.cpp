@@ -4,7 +4,7 @@
 
 #include <iostream>
 
-namespace Rearm
+namespace Oyl
 {
 	static CoreInitParameters g_params;
 

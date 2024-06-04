@@ -25,25 +25,25 @@ int WINAPI wWinMain(
 
 	SetupConsole();
 	
-	Rearm::CoreInitParameters initParams;
+	Oyl::CoreInitParameters initParams;
 	initParams.onApplicationShouldQuitCallback = [] { g_running = false; };
 
-	Rearm::SetShouldGameUpdate(
-	#ifdef R_EDITOR
+	Oyl::SetShouldGameUpdate(
+	#ifdef OYL_EDITOR
 		false
 	#else
 		true
 	#endif
 	);
 
-	Rearm::Init(initParams);
+	Oyl::Init(initParams);
 
 	while (g_running)
 	{
-		Rearm::Update();
+		Oyl::Update();
 	}
 	
-	Rearm::Shutdown();
+	Oyl::Shutdown();
 
 	ShutdownConsole();
 

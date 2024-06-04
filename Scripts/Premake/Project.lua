@@ -8,7 +8,7 @@ function defineInsideMacro(projectName)
     projectName = projectName:gsub("%.", "_")
     projectName = projectName:gsub("%-", "_")
     return string.upper(
-        string.format("_INSIDE_%s_%s=1", Config.Name, projectName)
+        string.format("_INSIDE_%s_%s=1", Config.ShortName, projectName)
     )
 end
 
@@ -49,7 +49,7 @@ function applyCommonCppSettings(moduleDefinition)
         filter {}
 
         defines {
-            Config.ShortName .. "_CURRENT_MODULE=\"" .. moduleDefinition.Name .. "\"",
+            string.upper(Config.ShortName) .. "_CURRENT_MODULE=\"" .. moduleDefinition.Name .. "\"",
             defineInsideMacro(moduleDefinition.Name),
         }
     end
