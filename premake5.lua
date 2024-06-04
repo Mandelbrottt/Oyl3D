@@ -8,7 +8,7 @@ if _ACTION == "clean" or _ACTION == nil then
     return
 end
 
-ProcessDependencies(Dependencies)
+processDependencies(Dependencies)
 
 workspace(Config.Name)
     location "./"
@@ -38,7 +38,7 @@ workspace(Config.Name)
     startproject(Config.ShortName .. ".Entry")
 
     group("Dependencies")
-        GenerateDependencyProjects(Dependencies)
+        generateDependencyProjects(Dependencies)
     group ""
 
     local moduleScripts = os.matchfiles(path.join(Config.SourceDir, "**premake5.lua"))
@@ -55,7 +55,7 @@ workspace(Config.Name)
                 goto continue
             end
 
-            AddDependencyToProject(dependencyName)
+            addDependencyToProject(dependencyName)
 
             ::continue::
         end

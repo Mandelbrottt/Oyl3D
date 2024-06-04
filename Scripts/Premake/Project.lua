@@ -98,7 +98,7 @@ local function case_insensitive_find(table, index)
     end
 end
 
-function AddDependencyToProject(dependencyName)
+function addDependencyToProject(dependencyName)
     local module = case_insensitive_find(Modules, dependencyName)
     if module then
         links { module.ProjectName }

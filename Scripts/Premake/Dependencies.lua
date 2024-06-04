@@ -74,7 +74,7 @@ local function cleanDependencyCache()
     end
 end
 
-function ProcessDependencies(dependencies)
+function processDependencies(dependencies)
     preProcessDependencyTable(dependencies)
     
     if _OPTIONS[reinitOptionTrigger] then
@@ -101,7 +101,7 @@ function ProcessDependencies(dependencies)
     end
 end
 
-function GenerateDependencyProjects(dependencies)
+function generateDependencyProjects(dependencies)
     for _, dependency in pairsByKeys(dependencies) do
         local cwd = os.getcwd()
         os.chdir(dependency.ProjectDir)
