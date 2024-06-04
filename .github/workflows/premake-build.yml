@@ -1,0 +1,88 @@
+name: Premake Build
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        BUILD_CONFIGURATION: [
+          Debug-Editor,
+          Development-Editor,
+          Release-Editor,
+          # Debug-Standalone,
+          # Development-Standalone,
+          # Release-Standalone,
+        ]
+        BUILD_PLATFORM: [
+          x64
+        ]
+
+    runs-on: windows-latest
+
+    env:
+      VULKAN_SDK: C:\VulkanSdk\
+      SOLUTION_FILE_PATH: Rearm_vs2022.sln
+
+    steps:
+    - uses: actions/checkout@v3
+
+    # https://github.com/actions/cache/blob/main/workarounds.md#improving-cache-restore-performance-on-windowsusing-cross-os-caching
+    - if: ${{ runner.os == 'Windows' }}
+      name: Use GNU tar
+      shell: cmd
+      run: |
+        echo "Adding GNU tar to PATH"
+        echo C:\Program Files\Git\usr\bin>>"%GITHUB_PATH%"
+
+    - name: Cache Dependencies
+      uses: actions/cache@v3
+      with:
+        path: Source/Dependencies/**
+        key: engine-source-dependencies-${{runner.os}}-${{hashFiles('Packages.lua')}}
+
+    - name: Cache VulkanSDK
+      uses: actions/cache@v3
+      with:
+        path: ${{env.VULKAN_SDK}}
+        key: vulkan-sdk
+
+    - name: Add MSBuild to PATH
+      uses: microsoft/setup-msbuild@v1.1
+
+    - name: Setup Vulkan
+      run: |
+          if (Test-Path -Path ${{env.VULKAN_SDK}}) {
+            echo "Vulkan SDK already on disk"
+            Exit 0
+          }
+          $ver = (Invoke-WebRequest -Uri "https://vulkan.lunarg.com/sdk/latest.json" | ConvertFrom-Json).windows
+          echo Version $ver
+          $ProgressPreference = 'SilentlyContinue'
+          Invoke-WebRequest -Uri "https://sdk.lunarg.com/sdk/download/$ver/windows/VulkanSDK-$ver-Installer.exe" -OutFile VulkanSDK.exe
+          echo Downloaded
+          .\VulkanSDK.exe --root C:\VulkanSDK  --accept-licenses --default-answer --confirm-command install
+
+    - name: Generate Solutions
+      working-directory: ${{env.GITHUB_WORKSPACE}}
+      run: Binaries/ThirdParty/premake5 vs2022
+
+    - name: Build
+      working-directory: ${{env.GITHUB_WORKSPACE}}
+      # Add additional options to the MSBuild command line here (like platform or verbosity level).
+      # See https://docs.microsoft.com/visualstudio/msbuild/msbuild-command-line-reference
+      run: >
+        msbuild
+        /maxCpuCount
+        /property:Configuration=${{matrix.BUILD_CONFIGURATION}}
+        /property:Platform=${{matrix.BUILD_PLATFORM}}
+        /verbosity:normal
+        ${{env.SOLUTION_FILE_PATH}}
