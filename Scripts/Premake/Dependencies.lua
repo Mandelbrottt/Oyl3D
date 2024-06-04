@@ -114,6 +114,10 @@ function GenerateDependencyProjects(dependencies)
             if dependency['CustomProperties'] then
                 dependency.CustomProperties()
             end
+            defines {
+                -- Warning Silence Defines
+                "_SILENCE_STDEXT_ARR_ITERS_DEPRECATION_WARNING", -- Silence warning in spdlog
+            }
 
         os.chdir(cwd)
     end
