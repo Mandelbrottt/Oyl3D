@@ -51,6 +51,9 @@ function applyCommonCppSettings(moduleDefinition)
         defines {
             string.upper(Config.ShortName) .. "_CURRENT_MODULE=\"" .. moduleDefinition.Name .. "\"",
             defineInsideMacro(moduleDefinition.Name),
+
+            -- Warning Silence Defines
+            "_SILENCE_STDEXT_ARR_ITERS_DEPRECATION_WARNING", -- Silence warning in spdlog
         }
     end
 

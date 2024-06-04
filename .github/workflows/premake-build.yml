@@ -57,8 +57,6 @@ jobs:
 
     - name: Add MSBuild to PATH
       uses: microsoft/setup-msbuild@v2
-      with:
-        vs-prerelease: false
 
     - name: Setup Vulkan
       run: |
