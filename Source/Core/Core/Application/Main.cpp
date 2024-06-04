@@ -2,34 +2,63 @@
 #include "Main.h"
 #include "Logging.h"
 
-#include <GLFW/glfw3.h>
-
-#include <vulkan/vulkan.hpp>
+#include <iostream>
 
 namespace Rearm
-{	
+{
+	static CoreInitParameters g_params;
+
+	bool g_shouldGameUpdate = true;
+
 	void
-	Init()
+	Init(
+		const CoreInitParameters& a_params
+	)
 	{
+		g_params = a_params;
+
 		Logging::Init();
-		
-		Logging::GetCoreLogger().info("Core Logger Initialized");
+		Logging::GetCoreLogger().info("Initializing...");
+	}
 
-		glfwInit();
-		Logging::GetCoreLogger().info("GLFW Initialized");
+	void
+	Update()
+	{
+		if (g_shouldGameUpdate)
+		{
+			Logging::GetCoreLogger().info("game update");
+		}
 
-		glfwTerminate();
-		Logging::GetCoreLogger().info("GLFW Terminated");
+		Logging::GetCoreLogger().info("regular update");
 
-		uint32_t extensionCount = 0;
-		vkEnumerateInstanceExtensionProperties(nullptr, &extensionCount, nullptr);
-
-		Logging::GetCoreLogger().info("{} extensions supported", extensionCount);
+		char in = std::cin.get();
+		if (in == 'q')
+		{
+			g_params.onApplicationShouldQuitCallback();
+		}
+		if (in == 'g')
+		{
+			g_shouldGameUpdate = !g_shouldGameUpdate;
+		}
 	}
 
 	void
 	Shutdown()
 	{
 		Logging::GetCoreLogger().info("Shutting Down");
+	}
+
+	bool
+	GetShouldGameUpdate() noexcept
+	{
+		return g_shouldGameUpdate;
+	}
+
+	void
+	SetShouldGameUpdate(
+		bool a_value
+	) noexcept
+	{
+		g_shouldGameUpdate = a_value;
 	}
 }

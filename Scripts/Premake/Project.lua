@@ -49,6 +49,7 @@ function applyCommonCppSettings(moduleDefinition)
         filter {}
 
         defines {
+            Config.ShortName .. "_CURRENT_MODULE=\"" .. moduleDefinition.Name .. "\"",
             defineInsideMacro(moduleDefinition.Name),
         }
     end
@@ -67,20 +68,20 @@ function applyCommonCppSettings(moduleDefinition)
     filter("configurations:" .. Config.Debug.Prefix .. "*")
         optimize "off"
         runtime "debug"
-        defines { string.upper(Config.Name) .. "_DEBUG=1" }
+        defines { string.upper(Config.ShortName) .. "_DEBUG=1" }
 
     filter("configurations:" .. Config.Development.Prefix .. "*")
         optimize "debug"
         runtime "release"
-        defines { string.upper(Config.Name) .. "_DEVELOPMENT=1" }
+        defines { string.upper(Config.ShortName) .. "_DEVELOPMENT=1" }
 
     filter("configurations:" .. Config.Release.Prefix .. "*")
         optimize "on"
         runtime "release"
-        defines { string.upper(Config.Name) .. "_RELEASE=1" }
+        defines { string.upper(Config.ShortName) .. "_RELEASE=1" }
         
     filterEditorOnly(function()
-        defines { string.upper(Config.Name) .. "_EDITOR=1" }
+        defines { string.upper(Config.ShortName) .. "_EDITOR=1" }
     end)
 
     filter {}
