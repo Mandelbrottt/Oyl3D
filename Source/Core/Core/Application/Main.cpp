@@ -18,7 +18,7 @@ namespace Oyl
 		g_params = a_params;
 
 		Logging::Init();
-		Log("Initializing...");
+		OYL_LOG("Initializing...");
 	}
 
 	void
@@ -26,10 +26,10 @@ namespace Oyl
 	{
 		if (g_shouldGameUpdate)
 		{
-			Log("game update");
+			OYL_LOG("game update");
 		}
 
-		Log("regular update");
+		OYL_LOG("regular update");
 
 		char in = std::cin.get();
 		if (in == 'q')
@@ -45,7 +45,7 @@ namespace Oyl
 	void
 	Shutdown()
 	{
-		Log("Shutting Down");
+		OYL_LOG("Shutting Down");
 		Logging::Shutdown();
 	}
 
