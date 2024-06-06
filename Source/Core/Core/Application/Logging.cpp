@@ -35,8 +35,11 @@ namespace Oyl::Logging
 	}
 
 	void
-	Shutdown() { }
+	Shutdown()
+	{
+		g_coreLogger.reset();
+	}
 
 	spdlog::logger&
-	GetCoreLogger() { return *g_coreLogger; }
+	GetLogger() { return *g_coreLogger; }
 }

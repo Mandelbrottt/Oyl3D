@@ -16,8 +16,22 @@ namespace Oyl::Logging
 	void
 	Shutdown();
 
-	spdlog::logger& 
-	GetCoreLogger();
 	OYL_CORE_API
+	spdlog::logger&
+	GetLogger();
 }
+
+namespace Oyl
+{
+	template<typename T, typename... TArgs>
+	void Log(const T& a_fmt, TArgs&&... a_args)
+	{
+		Logging::GetLogger().trace(a_fmt, std::forward<TArgs>(a_args)...);
+	}
+	
+	template<typename T>
+	void Log(const T& a_fmt)
+	{
+		Logging::GetLogger().trace(a_fmt);
+	}
 }
