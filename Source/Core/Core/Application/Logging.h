@@ -6,15 +6,16 @@
 
 namespace Oyl::Logging
 {
-	OYL_CORE_EXPORT
+	OYL_CORE_API
 	void
 	Init();
 
-	OYL_CORE_EXPORT
+	OYL_CORE_API
 	void
 	Shutdown();
 
-	OYL_CORE_EXPORT
 	spdlog::logger& 
 	GetCoreLogger();
+	OYL_CORE_API
+}
 }

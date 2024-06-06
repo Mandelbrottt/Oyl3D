@@ -4,12 +4,12 @@
 
 namespace Oyl::Editor
 {
-	OYL_EDITOR_EXPORT
+	OYL_EDITOR_API
 	extern
 	void
 	Init();
 	
-	OYL_EDITOR_EXPORT
+	OYL_EDITOR_API
 	extern
 	void
 	Shutdown();
