@@ -2,6 +2,8 @@
 
 #include "Core/Common.h"
 
+#define SPDLOG_COMPILED_LIB
+#define SPDLOG_SHARED_LIB
 #include <spdlog/logger.h>
 
 namespace Oyl::Logging

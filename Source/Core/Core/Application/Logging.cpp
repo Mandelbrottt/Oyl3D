@@ -14,7 +14,7 @@
 
 #include "Logging.h"
 
-#include <spdlog/spdlog.h>
+#include <spdlog/pattern_formatter.h>
 #include <spdlog/sinks/stdout_color_sinks.h>
 
 namespace Oyl::Logging
@@ -22,7 +22,7 @@ namespace Oyl::Logging
 	static std::shared_ptr<spdlog::logger> g_coreLogger;
 
 	// TODO: Add multiple loggers at once https://github.com/gabime/spdlog/wiki/1.-QuickStart#create-a-logger-with-multiple-sinks-each-sink-with-its-own-formatting-and-log-level
-	
+
 	void
 	Init()
 	{
