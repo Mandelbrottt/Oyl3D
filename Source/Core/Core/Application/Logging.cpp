@@ -30,6 +30,7 @@ namespace Oyl::Logging
 		formatter->set_pattern("%^[%T][%l][%n] %v%$");
 
 		g_coreLogger = spdlog::stdout_color_mt("CORE");
+		g_coreLogger->set_level(spdlog::level::debug);
 		g_coreLogger->set_formatter(std::move(formatter));
 	}
 
