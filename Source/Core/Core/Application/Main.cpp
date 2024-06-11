@@ -19,6 +19,11 @@ namespace Oyl
 
 		Logging::Init();
 		OYL_LOG("Initializing...");
+
+		OYL_LOG_DEBUG("Testing");
+		OYL_LOG_WARNING("Testing");
+		OYL_LOG_ERROR("Testing");
+		OYL_LOG_FATAL("Testing");
 	}
 
 	void
