@@ -11,6 +11,8 @@
 
 #define _OYL_EXPAND(_x_) _x_
 
+#define _OYL_REQUIRE_SEMICOLON static_assert(true)
+
 #pragma endregion
 
 #pragma region Shared Library

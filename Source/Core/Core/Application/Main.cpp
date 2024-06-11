@@ -4,6 +4,8 @@
 
 #include <iostream>
 
+#include "Core/Math/Matrix4.h"
+
 namespace Oyl
 {
 	static CoreInitParameters g_params;
@@ -24,6 +26,18 @@ namespace Oyl
 		OYL_LOG_WARNING("Testing");
 		OYL_LOG_ERROR("Testing");
 		OYL_LOG_FATAL("Testing");
+
+		auto start = std::chrono::system_clock::now();
+		volatile float a = 0;
+		for (int i = 0; i < 10000000; i++)
+		{
+			Matrix4 matA = Matrix4::Identity((float) i), matB = Matrix4::Identity((float) i + 1);
+			matA = matA * matB;
+			a = matA.data[0];
+		}
+		auto end = std::chrono::system_clock::now();
+
+		OYL_LOG("Elapsed Time: {}ms", std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count());
 	}
 
 	void
