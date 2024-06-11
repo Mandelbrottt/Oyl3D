@@ -1,7 +1,9 @@
-function filterEditorOnly(filterCallback)
+function filterEditorOnly()
     filter("configurations:not *" .. Config.Postfix .. " or *" .. Config.Editor.Postfix)
-        filterCallback()
-    filter {}
+end
+
+function filterStandalone()
+    filter("configurations:*" .. Config.Postfix .. " or not *" .. Config.Editor.Postfix)
 end
 
 function defineInsideMacro(projectName)
@@ -62,6 +64,9 @@ function applyCommonCppSettings(moduleDefinition)
         "MultiProcessorCompile",
     }
 
+    filter "kind:StaticLib"
+        targetdir(Config.LibraryDir .. Config.OutputDir)
+
     filter "toolset:msc*"
         disablewarnings {
             "4251", -- member needs dll-interface to be used by clients of class
@@ -83,9 +88,8 @@ function applyCommonCppSettings(moduleDefinition)
         runtime "release"
         defines { string.upper(Config.ShortName) .. "_RELEASE=1" }
         
-    filterEditorOnly(function()
+    filterEditorOnly()
         defines { string.upper(Config.ShortName) .. "_EDITOR=1" }
-    end)
 
     filter {}
 end

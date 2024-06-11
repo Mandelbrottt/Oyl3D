@@ -111,13 +111,19 @@ function generateDependencyProjects(dependencies)
             kind(dependency.Kind)
             includedirs(dependency.IncludeDirs)
             warnings "Off"
-            if dependency['CustomProperties'] then
-                dependency.CustomProperties()
-            end
             defines {
                 -- Warning Silence Defines
                 "_SILENCE_STDEXT_ARR_ITERS_DEPRECATION_WARNING", -- Silence warning in spdlog
             }
+            
+            filterStandalone()
+                kind "StaticLib"
+            
+            filter {}
+            if dependency['CustomProperties'] then
+                dependency.CustomProperties()
+            end
+            filter {}
 
         os.chdir(cwd)
     end

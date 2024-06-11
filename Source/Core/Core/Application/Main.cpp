@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "Main.h"
-#include "Logging.h"
+#include "Core/Logging/Logging.h"
 
 #include <iostream>
 

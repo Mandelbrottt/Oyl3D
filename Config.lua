@@ -4,6 +4,7 @@ Config.Name = "Oyl3D"
 Config.ShortName = "Oyl"
 
 Config.TargetDir = "%{wks.location}/Build/Binaries/"
+Config.LibraryDir = "%{wks.location}/Build/Library/"
 Config.ObjectDir = "%{wks.location}/Build/Intermediate/"
 Config.OutputDir = "%{cfg.system}_%{cfg.architecture}_%{cfg.buildcfg}/"
 

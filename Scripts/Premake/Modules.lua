@@ -30,11 +30,16 @@ function EngineModule(moduleDefinition)
         end
 
         kind(moduleDefinition.Kind)
+        if moduleDefinition.Kind == premake.SHAREDLIB then
+            filterStandalone()
+                kind(premake.STATICLIB)
+        end
 
+        filter {}
         if moduleDefinition.Properties then
             moduleDefinition.Properties()
         end
-    filter {}
+        filter {}
     group ""
 
     Modules[moduleDefinition.Name] = moduleDefinition
