@@ -5,5 +5,6 @@ EngineModule {
     Dependencies = {
         "Core",
         "Editor",
+        "SpdLog",
     },
 }

@@ -5,6 +5,7 @@ EngineModule {
     Dependencies = {
         "Core",
         "ImGui",
+        "SpdLog",
         "YamlCpp",
     },
 }
