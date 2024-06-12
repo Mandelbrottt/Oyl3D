@@ -9,6 +9,36 @@
 	#define _OYL_REQUIRE_SEMICOLON static_assert(true)
 #pragma endregion
 
+#pragma region Debug Macros
+	#if !defined(OYL_DISTRIBUTION)
+        #define OYL_ENABLE_ASSERTS
+        #if defined(_MSC_VER)
+            #define OYL_BREAKPOINT ::__debugbreak()
+        #else
+			#warning "Asserts only implemented for MSVC"
+            #define OYL_BREAKPOINT
+        #endif
+    #else
+        #define OYL_BREAKPOINT
+    #endif
+
+	#if defined(OYL_ENABLE_ASSERTS)
+        #define OYL_ASSERT(...) _OYL_MACRO_OVERLOAD(_OYL_ASSERT, __VA_ARGS__)
+    
+        #define _OYL_ASSERT_1(_expr_)             { if(!(_expr_)) { OYL_BREAKPOINT; } }
+        #define _OYL_ASSERT_2(_expr_, _str_)      { if(!(_expr_)) { OYL_LOG_ERROR("Assertion failed: " _str_); OYL_BREAKPOINT; } }
+        #define _OYL_ASSERT_3(_expr_, _str_, ...) { if(!(_expr_)) { OYL_LOG_ERROR("Assertion failed: " _str_, #__VA_ARGS__); OYL_BREAKPOINT; } }
+        #define _OYL_ASSERT_4(_expr_, _str_, ...) _OYL_EXPAND(_OYL_ASSERT_3(_expr_, _str_, __VA_ARGS__))
+        #define _OYL_ASSERT_5(_expr_, _str_, ...) _OYL_EXPAND(_OYL_ASSERT_3(_expr_, _str_, __VA_ARGS__))
+        #define _OYL_ASSERT_6(_expr_, _str_, ...) _OYL_EXPAND(_OYL_ASSERT_3(_expr_, _str_, __VA_ARGS__))
+        #define _OYL_ASSERT_7(_expr_, _str_, ...) _OYL_EXPAND(_OYL_ASSERT_3(_expr_, _str_, __VA_ARGS__))
+        #define _OYL_ASSERT_8(_expr_, _str_, ...) _OYL_EXPAND(_OYL_ASSERT_3(_expr_, _str_, __VA_ARGS__))
+        #define _OYL_ASSERT_9(_expr_, _str_, ...) _OYL_EXPAND(_OYL_ASSERT_3(_expr_, _str_, __VA_ARGS__))
+    #else
+        #define OYL_ASSERT(_expr_)
+    #endif
+#pragma endregion
+
 #pragma region Macro Argument Overloading
 	/**
      * Overload a macro, and allow for one macro definition to map to multiple different macros, depending on
