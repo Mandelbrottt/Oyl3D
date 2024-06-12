@@ -6,7 +6,12 @@
 #pragma endregion
 
 #pragma region Internal Macros
-	#define _OYL_REQUIRE_SEMICOLON static_assert(true)
+#	define _OYL_EXPAND(_x_) _x_
+#	define _OYL_STRINGIFY(_x_) #_x_
+#	define _OYL_STRINGIFY_MACRO(_x_) _OYL_STRINGIFY(_x_)
+
+#	define _OYL_REQUIRE_SEMICOLON static_assert(true)
+
 #pragma endregion
 
 #pragma region Debug Macros
@@ -22,21 +27,21 @@
         #define OYL_BREAKPOINT
     #endif
 
-	#if defined(OYL_ENABLE_ASSERTS)
-        #define OYL_ASSERT(...) _OYL_MACRO_OVERLOAD(_OYL_ASSERT, __VA_ARGS__)
-    
-        #define _OYL_ASSERT_1(_expr_)             { if(!(_expr_)) { OYL_BREAKPOINT; } }
-        #define _OYL_ASSERT_2(_expr_, _str_)      { if(!(_expr_)) { OYL_LOG_ERROR("Assertion failed: " _str_); OYL_BREAKPOINT; } }
-        #define _OYL_ASSERT_3(_expr_, _str_, ...) { if(!(_expr_)) { OYL_LOG_ERROR("Assertion failed: " _str_, #__VA_ARGS__); OYL_BREAKPOINT; } }
-        #define _OYL_ASSERT_4(_expr_, _str_, ...) _OYL_EXPAND(_OYL_ASSERT_3(_expr_, _str_, __VA_ARGS__))
-        #define _OYL_ASSERT_5(_expr_, _str_, ...) _OYL_EXPAND(_OYL_ASSERT_3(_expr_, _str_, __VA_ARGS__))
-        #define _OYL_ASSERT_6(_expr_, _str_, ...) _OYL_EXPAND(_OYL_ASSERT_3(_expr_, _str_, __VA_ARGS__))
-        #define _OYL_ASSERT_7(_expr_, _str_, ...) _OYL_EXPAND(_OYL_ASSERT_3(_expr_, _str_, __VA_ARGS__))
-        #define _OYL_ASSERT_8(_expr_, _str_, ...) _OYL_EXPAND(_OYL_ASSERT_3(_expr_, _str_, __VA_ARGS__))
-        #define _OYL_ASSERT_9(_expr_, _str_, ...) _OYL_EXPAND(_OYL_ASSERT_3(_expr_, _str_, __VA_ARGS__))
-    #else
-        #define OYL_ASSERT(_expr_)
-    #endif
+#	if defined(OYL_ENABLE_ASSERTS)
+#		define OYL_ASSERT(...) _OYL_MACRO_OVERLOAD(_OYL_ASSERT, __VA_ARGS__)
+
+#		define _OYL_ASSERT_1(_expr_)             { if(!(_expr_)) { OYL_BREAKPOINT; } }
+#		define _OYL_ASSERT_2(_expr_, _str_)      { if(!(_expr_)) { OYL_LOG_ERROR("Assert Failed [" __FILE__ ":" _OYL_STRINGIFY_MACRO(__LINE__) "] (" #_expr_ "): " _str_); OYL_BREAKPOINT; } }
+#		define _OYL_ASSERT_3(_expr_, _str_, ...) { if(!(_expr_)) { OYL_LOG_ERROR("Assert Failed [" __FILE__ ":" _OYL_STRINGIFY_MACRO(__LINE__) "] (" #_expr_ "): " _str_, ##__VA_ARGS__); OYL_BREAKPOINT; } }
+#		define _OYL_ASSERT_4(_expr_, _str_, ...) _OYL_EXPAND(_OYL_ASSERT_3(_expr_, _str_, __VA_ARGS__))
+#		define _OYL_ASSERT_5(_expr_, _str_, ...) _OYL_EXPAND(_OYL_ASSERT_3(_expr_, _str_, __VA_ARGS__))
+#		define _OYL_ASSERT_6(_expr_, _str_, ...) _OYL_EXPAND(_OYL_ASSERT_3(_expr_, _str_, __VA_ARGS__))
+#		define _OYL_ASSERT_7(_expr_, _str_, ...) _OYL_EXPAND(_OYL_ASSERT_3(_expr_, _str_, __VA_ARGS__))
+#		define _OYL_ASSERT_8(_expr_, _str_, ...) _OYL_EXPAND(_OYL_ASSERT_3(_expr_, _str_, __VA_ARGS__))
+#		define _OYL_ASSERT_9(_expr_, _str_, ...) _OYL_EXPAND(_OYL_ASSERT_3(_expr_, _str_, __VA_ARGS__))
+#	else
+#		define OYL_ASSERT(_expr_)
+#	endif
 #pragma endregion
 
 #pragma region Macro Argument Overloading
@@ -61,7 +66,6 @@
      */
     #define _OYL_MACRO_OVERLOAD(_name_, ...) _OYL_EXPAND(_OYL_MACRO_APPEND_ARG_COUNT(_name_, __VA_ARGS__))
 
-    #define _OYL_EXPAND(_x_) _x_
     #define _OYL_CAT(_a_, _b_) _a_##_b_
 	#define _OYL_CAT_WITH_UNDERSCORE(_name_, _num_) _OYL_CAT(_name_##_, _num_)
 
