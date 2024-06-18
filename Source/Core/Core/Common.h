@@ -8,6 +8,8 @@
 #		else
 #			define OYL_WIN32
 #		endif
+#		define WIN32_LEAN_AND_MEAN
+#		define NOMINMAX
 #	else
 #		warning "Oyl3D only supports windows!"
 #	endif 

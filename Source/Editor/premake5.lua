@@ -8,4 +8,8 @@ EngineModule {
         "SpdLog",
         "YamlCpp",
     },
+    Properties = function()
+        pchheader "pch.h"
+        pchsource "pch.cpp"
+    end
 }

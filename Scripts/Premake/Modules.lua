@@ -36,6 +36,13 @@ function EngineModule(moduleDefinition)
         end
 
         filter {}
+
+        removefiles { "**/Platform/**" }
+
+        filter "system:windows"
+            files { "**/Platform/Windows/**" }
+
+        filter {}
         if moduleDefinition.Properties then
             moduleDefinition.Properties()
         end

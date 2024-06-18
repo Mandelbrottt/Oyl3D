@@ -1,10 +1,10 @@
 #include "pch.h"
 #include "Main.h"
-#include "Core/Logging/Logging.h"
 
 #include <iostream>
 
-#include "Core/Math/Matrix4.h"
+#include "Core/Logging/Logging.h"
+#include "Core/Time/Time.h"
 
 namespace Oyl
 {
@@ -19,6 +19,8 @@ namespace Oyl
 	{
 		g_params = a_params;
 
+		Time::Detail::Init();
+
 		Logging::Init();
 		OYL_LOG("Initializing...");
 	}
@@ -26,12 +28,14 @@ namespace Oyl
 	void
 	Update()
 	{
+		Time::Detail::Update();
+		
 		if (g_shouldGameUpdate)
 		{
-			OYL_LOG("game update");
+			OYL_LOG("game update {}", Time::DeltaTime());
 		}
 
-		OYL_LOG("regular update");
+		OYL_LOG("regular update {}", Time::ElapsedTime());
 
 		char in = std::cin.get();
 		if (in == 'q')
