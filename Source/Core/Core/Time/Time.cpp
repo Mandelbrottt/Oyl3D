@@ -29,4 +29,10 @@ namespace Oyl::Time::Detail
 	{
 		return Platform::Update();
 	}
+
+	double
+	ImmediateElapsedTime()
+	{
+		return Platform::ImmediateElapsedTime();
+	}
 }

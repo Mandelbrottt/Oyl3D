@@ -37,6 +37,11 @@ namespace Oyl
 
 		OYL_LOG("regular update {}", Time::ElapsedTime());
 
+		auto elapsed1 = Time::Detail::ImmediateElapsedTime();
+		auto elapsed2 = Time::Detail::ImmediateElapsedTime();
+
+		OYL_LOG("1: {}\t2: {}", elapsed1, elapsed2);
+
 		char in = std::cin.get();
 		if (in == 'q')
 		{

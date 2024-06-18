@@ -69,4 +69,29 @@ namespace Oyl::Time::Platform
 
 		g_lastFrameTime = currentFrameTime;
 	}
+
+	static
+	double
+	ImmediateElapsedTime()
+	{
+		static LARGE_INTEGER lastImmediateElapsedTime {};
+		static double elapsedTicker = 0;
+
+		LARGE_INTEGER currentFrameTime;
+		QueryPerformanceCounter(&currentFrameTime);
+		
+		double elapsedTime = static_cast<double>(currentFrameTime.QuadPart - g_startTime.QuadPart) / g_pcFrequency;
+		
+		// QueryPerformanceCounter resolution is microseconds, so two calls back to back may have the same value
+		// Increment the returned elapsed time by 1 nanosecond to ensure no consecutive calls return the same value
+		if (currentFrameTime.QuadPart != lastImmediateElapsedTime.QuadPart)
+		{
+			elapsedTicker = 0;
+			lastImmediateElapsedTime = currentFrameTime;
+		}
+		elapsedTime += elapsedTicker;
+		elapsedTicker += 1E-09;
+		
+		return elapsedTime;
+	}
 }

@@ -22,6 +22,10 @@ namespace Oyl::Time
 		void
 		OYL_CORE_API
 		Update();
+
+		double
+		OYL_CORE_API
+		ImmediateElapsedTime();
 	}
 
 	inline
