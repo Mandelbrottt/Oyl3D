@@ -7,4 +7,8 @@ EngineModule {
         "GLFW",
         "Vulkan"
     },
+    Properties = function()
+        pchheader "pch.h"
+        pchsource "pch.cpp"
+    end
 }
