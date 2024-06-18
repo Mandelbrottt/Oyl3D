@@ -20,7 +20,7 @@
         #if defined(_MSC_VER)
             #define OYL_BREAKPOINT ::__debugbreak()
         #else
-			#warning "Asserts only implemented for MSVC"
+			#warning "Breakpoints only implemented for MSVC"
             #define OYL_BREAKPOINT
         #endif
     #else
@@ -28,7 +28,7 @@
     #endif
 
 #	if defined(OYL_ENABLE_ASSERTS)
-#		define OYL_ASSERT(...) _OYL_MACRO_OVERLOAD(_OYL_ASSERT, __VA_ARGS__)
+#		define OYL_ASSERT(...) OYL_MACRO_OVERLOAD(_OYL_ASSERT, __VA_ARGS__)
 
 #		define _OYL_ASSERT_1(_expr_)             { if(!(_expr_)) { OYL_BREAKPOINT; } }
 #		define _OYL_ASSERT_2(_expr_, _str_)      { if(!(_expr_)) { OYL_LOG_ERROR("Assert Failed [" __FILE__ ":" _OYL_STRINGIFY_MACRO(__LINE__) "] (" #_expr_ "): " _str_); OYL_BREAKPOINT; } }
@@ -64,7 +64,7 @@
      * // You can omit any number of macro overload definitions if you only want to support specific amounts
      * </code>
      */
-    #define _OYL_MACRO_OVERLOAD(_name_, ...) _OYL_EXPAND(_OYL_MACRO_APPEND_ARG_COUNT(_name_, __VA_ARGS__))
+    #define OYL_MACRO_OVERLOAD(_name_, ...) _OYL_EXPAND(_OYL_MACRO_APPEND_ARG_COUNT(_name_, __VA_ARGS__))
 
     #define _OYL_CAT(_a_, _b_) _a_##_b_
 	#define _OYL_CAT_WITH_UNDERSCORE(_name_, _num_) _OYL_CAT(_name_##_, _num_)
