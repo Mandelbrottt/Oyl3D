@@ -37,12 +37,10 @@ function EngineModule(moduleDefinition)
 
         filter {}
 
-        removefiles { "**/*windows*" }
-        removefiles { "**/*unix*" }
-        removefiles { "**/*linux*" }
+        removefiles { "**/Platform/**" }
 
         filter "system:windows"
-            files { "**/*windows*" }
+            files { "**/Platform/Windows/**" }
 
         filter {}
         if moduleDefinition.Properties then
