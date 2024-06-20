@@ -37,6 +37,8 @@ function EngineModule(moduleDefinition)
 
         filter {}
 
+        files { "**.lua" }
+
         removefiles { "**/Platform/**" }
 
         filter "system:windows"

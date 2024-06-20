@@ -5,7 +5,9 @@ EngineModule {
     Dependencies = {
         "SpdLog",
         "GLFW",
-        "Vulkan"
+        "Vulkan",
+		"NlohmannJson",
+		"YamlCpp",
     },
     Properties = function()
         pchheader "pch.h"
