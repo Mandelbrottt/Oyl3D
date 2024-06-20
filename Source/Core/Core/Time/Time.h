@@ -23,6 +23,10 @@ namespace Oyl::Time
 		OYL_CORE_API
 		Update();
 
+		u64
+		OYL_CORE_API
+		CurrentProcessorTick();
+
 		double
 		OYL_CORE_API
 		ImmediateElapsedTime();

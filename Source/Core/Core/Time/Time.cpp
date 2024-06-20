@@ -35,4 +35,10 @@ namespace Oyl::Time::Detail
 	{
 		return Platform::ImmediateElapsedTime();
 	}
+	
+	u64
+	CurrentProcessorTick()
+	{
+		return Platform::CurrentProcessorTick();
+	}
 }

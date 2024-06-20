@@ -4,9 +4,9 @@
 
 namespace Oyl::Time::Platform
 {
-	static LARGE_INTEGER g_startTime;
-	static LARGE_INTEGER g_lastFrameTime;
-	static double        g_pcFrequency;
+	static u64    g_startTime;
+	static u64    g_lastFrameTime;
+	static double g_pcFrequency;
 
 	constexpr int NUM_FRAMES_TO_HOLD = 10;
 	static float  g_prevFrameTimes[NUM_FRAMES_TO_HOLD] { 0.0f };
@@ -16,7 +16,9 @@ namespace Oyl::Time::Platform
 	void
 	Init()
 	{
-		QueryPerformanceCounter(&g_startTime);
+		LARGE_INTEGER counter;
+		QueryPerformanceCounter(&counter);
+		g_startTime = counter.QuadPart;
 
 		LARGE_INTEGER pcFrequency;
 		QueryPerformanceFrequency(&pcFrequency);
@@ -33,14 +35,13 @@ namespace Oyl::Time::Platform
 
 		g_timeScale = g_timeScaleHint;
 
-		LARGE_INTEGER currentFrameTime;
-		QueryPerformanceCounter(&currentFrameTime);
-
+		u64 currentFrameTime = CurrentProcessorTick();
+		
 		double doubleUnscaledElapsedTime =
-			static_cast<double>(currentFrameTime.QuadPart - g_startTime.QuadPart) / g_pcFrequency;
+			static_cast<double>(currentFrameTime - g_startTime) / g_pcFrequency;
 		g_unscaledElapsedTime = static_cast<float>(doubleUnscaledElapsedTime);
 
-		double currentTime = static_cast<double>(currentFrameTime.QuadPart - g_lastFrameTime.QuadPart) / g_pcFrequency;
+		double currentTime = static_cast<double>(currentFrameTime - g_lastFrameTime) / g_pcFrequency;
 
 		g_unscaledDeltaTime = std::clamp(static_cast<float>(currentTime), 0.0f, 0.1f);
 
@@ -71,23 +72,32 @@ namespace Oyl::Time::Platform
 	}
 
 	static
+	u64
+	CurrentProcessorTick()
+	{
+		LARGE_INTEGER counter;
+		QueryPerformanceCounter(&counter);
+
+		return counter.QuadPart;
+	}
+	
+	static
 	double
 	ImmediateElapsedTime()
 	{
-		static LARGE_INTEGER lastImmediateElapsedTime {};
+		static u64 lastImmediateElapsedTime {};
 		static double elapsedTicker = 0;
 
-		LARGE_INTEGER currentFrameTime;
-		QueryPerformanceCounter(&currentFrameTime);
+		u64 currentProcessorTick = CurrentProcessorTick();
 		
-		double elapsedTime = static_cast<double>(currentFrameTime.QuadPart - g_startTime.QuadPart) / g_pcFrequency;
+		double elapsedTime = static_cast<double>(currentProcessorTick - g_startTime) / g_pcFrequency;
 		
 		// QueryPerformanceCounter resolution is microseconds, so two calls back to back may have the same value
 		// Increment the returned elapsed time by 1 nanosecond to ensure no consecutive calls return the same value
-		if (currentFrameTime.QuadPart != lastImmediateElapsedTime.QuadPart)
+		if (currentProcessorTick != lastImmediateElapsedTime)
 		{
 			elapsedTicker = 0;
-			lastImmediateElapsedTime = currentFrameTime;
+			lastImmediateElapsedTime = currentProcessorTick;
 		}
 		elapsedTime += elapsedTicker;
 		elapsedTicker += 1E-09;
