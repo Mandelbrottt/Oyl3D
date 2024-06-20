@@ -4,6 +4,7 @@
 #include <iostream>
 
 #include "Core/Logging/Logging.h"
+#include "Core/Profiling/Profiler.h"
 #include "Core/Time/Time.h"
 
 namespace Oyl
@@ -17,17 +18,22 @@ namespace Oyl
 		const CoreInitParameters& a_params
 	)
 	{
+		Profiler::Get().RegisterThreadName("Main");
+
 		g_params = a_params;
 
 		Time::Detail::Init();
 
 		Logging::Init();
 		OYL_LOG("Initializing...");
+
 	}
 
 	void
 	Update()
 	{
+		ProfilingTimer timer34("Update");
+		
 		Time::Detail::Update();
 		
 		if (g_shouldGameUpdate)
@@ -40,6 +46,7 @@ namespace Oyl
 		auto elapsed1 = Time::Detail::ImmediateElapsedTime();
 		auto elapsed2 = Time::Detail::ImmediateElapsedTime();
 
+		ProfilingTimer timer49("Log");
 		OYL_LOG("1: {}\t2: {}", elapsed1, elapsed2);
 
 		char in = std::cin.get();
@@ -58,6 +65,8 @@ namespace Oyl
 	{
 		OYL_LOG("Shutting Down");
 		Logging::Shutdown();
+		
+		Profiler::Get().EndSession();
 	}
 
 	bool
