@@ -19,7 +19,7 @@ Dependencies = {
     NlohmannJson = {
         Git = {
             Url = "https://github.com/nlohmann/json.git",
-            Revision = "v3.11.2"
+            Revision = "v3.6.1"
         },
         Kind = "Utility",
         Files = { "/include/" },
