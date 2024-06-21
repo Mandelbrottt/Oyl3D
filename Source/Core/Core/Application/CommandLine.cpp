@@ -26,6 +26,21 @@ namespace Oyl
 	}
 
 	bool
+	CommandLine::AddArgumentImpl(const std::string& a_name, bool a_overwrite)
+	{
+		auto [iter, insert] = m_arguments.emplace(a_name, CommandLineArgument {});
+		if (!insert && !a_overwrite)
+		{
+			return false;
+		}
+
+		auto& arg = iter->second;
+		arg.type  = CommandLineArgument::ArgumentType::None;
+		arg.value = {};
+		return true;
+	}
+
+	bool
 	CommandLine::AddStringImpl(const std::string& a_name, std::string a_value, bool a_overwrite)
 	{
 		auto [iter, insert] = m_arguments.emplace(a_name, CommandLineArgument {});

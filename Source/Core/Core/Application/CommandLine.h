@@ -51,6 +51,13 @@ namespace Oyl
 
 		static
 		bool
+		AddArgument(const std::string& a_name, bool a_overwrite = true)
+		{
+			return Instance().AddArgumentImpl(a_name, a_overwrite);
+		}
+		
+		static
+		bool
 		AddInt(const std::string& a_name, i32 a_value, bool a_overwrite = true)
 		{
 			return Instance().AddIntImpl(a_name, a_value, a_overwrite);
@@ -95,6 +102,9 @@ namespace Oyl
 		bool
 		IsPresentImpl(const std::string& a_name) const noexcept;
 
+		bool
+		AddArgumentImpl(const std::string& a_name, bool a_overwrite = true);
+		
 		bool
 		AddIntImpl(const std::string& a_name, i32 a_value, bool a_overwrite = true);
 
