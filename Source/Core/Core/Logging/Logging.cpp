@@ -14,6 +14,8 @@ namespace Oyl::Logging
 	void
 	Init()
 	{
+		OYL_PROFILE_FUNCTION();
+		
 		auto formatter = std::make_unique<spdlog::pattern_formatter>();
 		formatter->set_pattern("%^[%T][%l][%n] %v%$");
 
@@ -25,6 +27,8 @@ namespace Oyl::Logging
 	void
 	Shutdown()
 	{
+		OYL_PROFILE_FUNCTION();
+		
 		g_coreLogger.reset();
 	}
 

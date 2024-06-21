@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "Time.h"
 
+#include "Core/Profiling/Profiler.h"
+
 #ifdef OYL_WINDOWS
 #	include "Time_Windows.h"
 #endif
@@ -21,12 +23,15 @@ namespace Oyl::Time::Detail
 	void
 	Init()
 	{
+		// Currently can't profile init function, since profiler relies on Time class
+		// TODO: Decouple Profiler from Time
 		return Platform::Init();
 	}
 
 	void
 	Update()
 	{
+		OYL_PROFILE_FUNCTION();
 		return Platform::Update();
 	}
 
