@@ -38,18 +38,18 @@ int WINAPI wWinMain(
 
 	Oyl::Profiling::RegisterThreadName("Main");
 	
-	OYL_PROFILE_BEGIN_SESSION("Startup", "Debug/OylProfile_Startup.json");
+	OYL_PROFILE_BEGIN_SESSION("Startup", "Debug/Profiling/OylProfile_Startup.json");
 	Oyl::Init(initParams);
 	OYL_PROFILE_END_SESSION();
 
-	OYL_PROFILE_BEGIN_SESSION("Running", "Debug/OylProfile_Runtime.json");
+	OYL_PROFILE_BEGIN_SESSION("Running", "Debug/Profiling/OylProfile_Runtime.json");
 	while (g_running)
 	{
 		Oyl::Update();
 	}
 	OYL_PROFILE_END_SESSION();
 	
-	OYL_PROFILE_BEGIN_SESSION("Shutdown", "Debug/OylProfile_Shutdown.json");
+	OYL_PROFILE_BEGIN_SESSION("Shutdown", "Debug/Profiling/OylProfile_Shutdown.json");
 	Oyl::Shutdown();
 	OYL_PROFILE_END_SESSION();
 

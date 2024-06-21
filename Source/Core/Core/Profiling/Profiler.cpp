@@ -89,7 +89,7 @@ namespace Oyl::Profiling
 			g_currentSession->name,
 			a_name
 		);
-		
+
 		// Create directory if it doesn't exist
 		auto directory = std::filesystem::path(a_filepath).parent_path();
 		create_directories(directory);
@@ -106,18 +106,18 @@ namespace Oyl::Profiling
 	EndSession()
 	{
 		OYL_ASSERT(g_outputStream.is_open(), "Trying to close a profile session that doesn't exist!");
-		
+
 		std::unique_lock lock(g_queueMutex);
 		g_queueEmptyCondition.wait(lock, [] { return g_profileResultsQueue.empty(); });
 		g_tryCloseSession = true;
 		g_queuePopulatedCondition.notify_all();
 		lock.unlock();
-		
+
 		WriteFooter();
 		g_currentSession.reset();
 		g_outputStream.close();
 		g_profileCount = 0;
-		
+
 		g_streamWriteThread.join();
 	}
 
