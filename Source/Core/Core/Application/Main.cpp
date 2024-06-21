@@ -67,8 +67,6 @@ namespace Oyl
 		
 		OYL_LOG("Shutting Down");
 		Logging::Shutdown();
-		
-		OYL_PROFILE_END_SESSION();
 	}
 
 	bool
