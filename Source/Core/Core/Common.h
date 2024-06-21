@@ -67,7 +67,7 @@
      * \param _name_ The name of the defined overloaded macros minus the underscore and number at the end
      *
      * <code>
-     * #define OVERLOADED_MACRO(...) _OYL_MACRO_OVERLOAD(_OVERLOADED_MACRO, __VA_ARGS__)
+     * #define OVERLOADED_MACRO(...) OYL_MACRO_OVERLOAD(_OVERLOADED_MACRO, __VA_ARGS__)
      *
      * #define _OVERLOADED_MACRO_0() // 0 arguments
      * #define _OVERLOADED_MACRO_1() // 1 arguments
@@ -82,6 +82,7 @@
 #	define OYL_MACRO_OVERLOAD(_name_, ...) _OYL_EXPAND(_OYL_MACRO_APPEND_ARG_COUNT(_name_, __VA_ARGS__))
 
 #	define _OYL_CAT(_a_, _b_) _a_##_b_
+#	define _OYL_CAT_EXPAND(_a_, _b_) _OYL_CAT(_a_, _b_)
 #	define _OYL_CAT_WITH_UNDERSCORE(_name_, _num_) _OYL_CAT(_name_##_, _num_)
 
 #	define _OYL_GET_ARG_COUNT(_0_, _1_, _2_, _3_, _4_, _5_, _6_, _7_, _8_, _9_, _10_, _11_, _12_, _13_, _14_, _15_, _16_, _17_, _18_, _19_, _20_, _count_, ...) _count_

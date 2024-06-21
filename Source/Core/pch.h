@@ -16,3 +16,5 @@
 
 #include "Core/Common.h"
 #include "Core/Typedefs.h"
+
+#include "Core/Profiling/Profiler.h"

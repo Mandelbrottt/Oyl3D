@@ -14,25 +14,24 @@ namespace Oyl
 	bool g_shouldGameUpdate = true;
 
 	void
-	Init(
-		const CoreInitParameters& a_params
-	)
+	Init(const CoreInitParameters& a_params)
 	{
-		Profiler::Get().RegisterThreadName("Main");
-
 		g_params = a_params;
 
+		// Init Time before profiling, as profiling relies on Time
 		Time::Detail::Init();
-
-		Logging::Init();
-		OYL_LOG("Initializing...");
-
+		OYL_PROFILE_FUNCTION();
+		
+		{
+			OYL_PROFILE_SCOPE("Logging::Init + Log");
+			Logging::Init();
+		}
 	}
 
 	void
 	Update()
 	{
-		ProfilingTimer timer34("Update");
+		OYL_PROFILE_FUNCTION();
 		
 		Time::Detail::Update();
 		
@@ -46,7 +45,8 @@ namespace Oyl
 		auto elapsed1 = Time::Detail::ImmediateElapsedTime();
 		auto elapsed2 = Time::Detail::ImmediateElapsedTime();
 
-		ProfilingTimer timer49("Log");
+		OYL_PROFILE_SCOPE("Log");
+		
 		OYL_LOG("1: {}\t2: {}", elapsed1, elapsed2);
 
 		char in = std::cin.get();
@@ -63,10 +63,12 @@ namespace Oyl
 	void
 	Shutdown()
 	{
+		OYL_PROFILE_FUNCTION();
+		
 		OYL_LOG("Shutting Down");
 		Logging::Shutdown();
 		
-		Profiler::Get().EndSession();
+		OYL_PROFILE_END_SESSION();
 	}
 
 	bool

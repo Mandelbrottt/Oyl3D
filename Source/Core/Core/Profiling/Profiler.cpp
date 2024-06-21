@@ -1,12 +1,44 @@
 #include "pch.h"
 #include "Profiler.h"
 
-#include "Core/Time/Time.h"
 
 #include <nlohmann/json.hpp>
 
-namespace Oyl
+#include "Core/Time/Time.h"
+
+namespace Oyl::Profiling
 {
+	struct ProfileResult
+	{
+		std::string name;
+		f64         start;
+		f64         end;
+		u32         threadId;
+	};
+
+	struct ProfilingSession
+	{
+		std::string name;
+	};
+
+	static
+	void
+	WriteProfile(const ProfileResult& a_result);
+
+	static
+	void
+	WriteHeader();
+
+	static
+	void
+	WriteFooter();
+
+	static std::unique_ptr<ProfilingSession> g_currentSession;
+	static std::ofstream                     g_outputStream;
+	static i32                               g_profileCount;
+
+	static std::unordered_map<u32, std::string> g_threadNameMapping;
+
 	static
 	f64
 	GetProfilerTimePoint()
@@ -14,36 +46,32 @@ namespace Oyl
 		return Time::Detail::ImmediateElapsedTime() * 1'000'000.0;
 	}
 
-	Profiler::Profiler()
-		: m_currentSession(nullptr),
-		  m_profileCount(0) { }
-
 	void
-	Profiler::BeginSession(std::string_view a_name, std::string_view a_filepath)
+	BeginSession(std::string_view a_name, std::string_view a_filepath)
 	{
 		// Create directory if it doesn't exist
 		auto directory = std::filesystem::path(a_filepath).parent_path();
 		create_directories(directory);
-		
-		m_outputStream.open(a_filepath.data());
+
+		g_outputStream.open(a_filepath.data());
 		WriteHeader();
-		m_currentSession = std::make_unique<ProfilingSession>(ProfilingSession { std::string(a_name) });
+		g_currentSession = std::make_unique<ProfilingSession>(ProfilingSession { std::string(a_name) });
 	}
 
 	void
-	Profiler::EndSession()
+	EndSession()
 	{
 		WriteFooter();
-		m_currentSession.reset();
-		m_outputStream.close();
-		m_profileCount = 0;
+		g_currentSession.reset();
+		g_outputStream.close();
+		g_profileCount = 0;
 	}
 
 	void
-	Profiler::WriteProfile(const ProfileResult& a_result)
+	WriteProfile(const ProfileResult& a_result)
 	{
-		if (m_profileCount++ > 0)
-			m_outputStream << ",";
+		if (g_profileCount++ > 0)
+			g_outputStream << ",";
 
 		std::string name = a_result.name;
 		std::replace(name.begin(), name.end(), '"', '\'');
@@ -56,8 +84,8 @@ namespace Oyl
 		profile["pid"]  = "Oyl3D";
 		profile["ts"]   = a_result.start;
 
-		if (auto threadNameIter = m_threadNameMapping.find(a_result.threadId); 
-			threadNameIter != m_threadNameMapping.end())
+		if (auto threadNameIter = g_threadNameMapping.find(a_result.threadId);
+			threadNameIter != g_threadNameMapping.end())
 		{
 			profile["tid"] = threadNameIter->second;
 		} else
@@ -65,45 +93,39 @@ namespace Oyl
 			profile["tid"] = a_result.threadId;
 		}
 
-		m_outputStream << profile;
 
-		m_outputStream.flush();
+		g_outputStream << profile;
+		g_outputStream.flush();
 	}
 
 	void
-	Profiler::WriteHeader()
+	WriteHeader()
 	{
-		m_outputStream << "{\"otherData\": {},\"traceEvents\":[";
-		m_outputStream.flush();
+
+		g_outputStream << "{\"otherData\": {},\"traceEvents\":[";
+		g_outputStream.flush();
 	}
 
 	void
-	Profiler::WriteFooter()
+	WriteFooter()
 	{
-		m_outputStream << "]}";
-		m_outputStream.flush();
+
+		g_outputStream << "]}";
+		g_outputStream.flush();
 	}
 
 	void
-	Profiler::RegisterThreadName(std::thread::id a_id, std::string_view a_name)
+	RegisterThreadName(std::thread::id a_id, std::string_view a_name)
 	{
 		auto hash                 = static_cast<u32>(std::hash<std::thread::id>()(a_id));
-		m_threadNameMapping[hash] = std::string { a_name };
+		g_threadNameMapping[hash] = std::string { a_name };
 	}
-	
+
 	void
-	Profiler::RegisterThreadName(std::string_view a_name)
+	RegisterThreadName(std::string_view a_name)
 	{
 		RegisterThreadName(std::this_thread::get_id(), a_name);
 	}
-
-	Profiler&
-	Profiler::Get()
-	{
-		static Profiler instance;
-		return instance;
-	}
-
 	ProfilingTimer::ProfilingTimer(const char* a_name)
 		: m_name(a_name),
 		  m_stopped(false)
@@ -122,9 +144,8 @@ namespace Oyl
 	{
 		auto endTimePoint = GetProfilerTimePoint();
 
-		u32 threadID = static_cast<u32>(std::hash<std::thread::id>()(std::this_thread::get_id()));
-		Profiler::Get().WriteProfile({ m_name, m_startTimePoint, endTimePoint, threadID });
-
+		u32 threadId = static_cast<u32>(std::hash<std::thread::id>()(std::this_thread::get_id()));
+		WriteProfile({ m_name, m_startTimePoint, endTimePoint, threadId });
 		m_stopped = true;
 	}
 }

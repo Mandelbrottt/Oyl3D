@@ -14,9 +14,7 @@ namespace Oyl
 	
 	OYL_CORE_API
 	void
-	Init(
-		const CoreInitParameters& a_params
-	);
+	Init(const CoreInitParameters& a_params);
 
 	OYL_CORE_API
 	void

@@ -1,6 +1,4 @@
 #include <Windows.h>
-#include <iostream>
-#include <stdbool.h>
 #include <filesystem>
 
 #include <Core/Application/Main.h>
@@ -38,20 +36,22 @@ int WINAPI wWinMain(
 	#endif
 	);
 
-	Oyl::Profiler::Get().BeginSession("Startup", "Debug/OylProfile_Startup.json");
+	Oyl::Profiling::RegisterThreadName("Main");
+	
+	OYL_PROFILE_BEGIN_SESSION("Startup", "Debug/OylProfile_Startup.json");
 	Oyl::Init(initParams);
-	Oyl::Profiler::Get().EndSession();
+	OYL_PROFILE_END_SESSION();
 
-	Oyl::Profiler::Get().BeginSession("Running", "Debug/OylProfile_Runtime.json");
+	OYL_PROFILE_BEGIN_SESSION("Running", "Debug/OylProfile_Runtime.json");
 	while (g_running)
 	{
 		Oyl::Update();
 	}
-	Oyl::Profiler::Get().EndSession();
+	OYL_PROFILE_END_SESSION();
 	
-	Oyl::Profiler::Get().BeginSession("Shutdown", "Debug/OylProfile_Shutdown.json");
+	OYL_PROFILE_BEGIN_SESSION("Shutdown", "Debug/OylProfile_Shutdown.json");
 	Oyl::Shutdown();
-	Oyl::Profiler::Get().EndSession();
+	OYL_PROFILE_END_SESSION();
 
 	ShutdownConsole();
 
