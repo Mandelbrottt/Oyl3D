@@ -117,7 +117,9 @@ function generateDependencyProjects(dependencies)
             }
             
             filterStandalone()
-                kind "StaticLib"
+            if dependency.Kind == premake.SHAREDLIB then
+                kind(premake.STATICLIB)
+            end
             
             filter {}
             if dependency['CustomProperties'] then
