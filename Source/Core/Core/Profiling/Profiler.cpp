@@ -1,9 +1,11 @@
 #include "pch.h"
 #include "Profiler.h"
 
+#include <mutex>
 
 #include <nlohmann/json.hpp>
 
+#include "Core/Logging/Logging.h"
 #include "Core/Time/Time.h"
 
 namespace Oyl::Profiling
@@ -39,6 +41,13 @@ namespace Oyl::Profiling
 
 	static std::unordered_map<u32, std::string> g_threadNameMapping;
 
+	static std::thread               g_streamWriteThread;
+	static std::mutex                g_queueMutex;
+	static std::queue<ProfileResult> g_profileResultsQueue;
+	static std::atomic_bool          g_tryCloseSession;
+	static std::condition_variable   g_queuePopulatedCondition;
+	static std::condition_variable   g_queueEmptyCondition;
+
 	static
 	f64
 	GetProfilerTimePoint()
@@ -46,9 +55,41 @@ namespace Oyl::Profiling
 		return Time::Detail::ImmediateElapsedTime() * 1'000'000.0;
 	}
 
+	static
+	void
+	WaitForProfileResultsAndWriteToOutputStream()
+	{
+		while (!g_tryCloseSession)
+		{
+			std::unique_lock lock(g_queueMutex);
+			g_queuePopulatedCondition.wait(
+				lock,
+				[]
+				{
+					return !g_profileResultsQueue.empty() || g_tryCloseSession;
+				}
+			);
+
+			if (!g_profileResultsQueue.empty())
+			{
+				WriteProfile(g_profileResultsQueue.front());
+				g_profileResultsQueue.pop();
+			}
+
+			g_queueEmptyCondition.notify_all();
+		}
+	}
+
 	void
 	BeginSession(std::string_view a_name, std::string_view a_filepath)
 	{
+		OYL_ASSERT(
+			!g_outputStream.is_open(),
+			"Trying to open profile session \"{}\" while session \"{}\" is active!",
+			g_currentSession->name,
+			a_name
+		);
+		
 		// Create directory if it doesn't exist
 		auto directory = std::filesystem::path(a_filepath).parent_path();
 		create_directories(directory);
@@ -56,15 +97,28 @@ namespace Oyl::Profiling
 		g_outputStream.open(a_filepath.data());
 		WriteHeader();
 		g_currentSession = std::make_unique<ProfilingSession>(ProfilingSession { std::string(a_name) });
+
+		g_tryCloseSession   = false;
+		g_streamWriteThread = std::thread(WaitForProfileResultsAndWriteToOutputStream);
 	}
 
 	void
 	EndSession()
 	{
+		OYL_ASSERT(g_outputStream.is_open(), "Trying to close a profile session that doesn't exist!");
+		
+		std::unique_lock lock(g_queueMutex);
+		g_queueEmptyCondition.wait(lock, [] { return g_profileResultsQueue.empty(); });
+		g_tryCloseSession = true;
+		g_queuePopulatedCondition.notify_all();
+		lock.unlock();
+		
 		WriteFooter();
 		g_currentSession.reset();
 		g_outputStream.close();
 		g_profileCount = 0;
+		
+		g_streamWriteThread.join();
 	}
 
 	void
@@ -93,7 +147,6 @@ namespace Oyl::Profiling
 			profile["tid"] = a_result.threadId;
 		}
 
-
 		g_outputStream << profile;
 		g_outputStream.flush();
 	}
@@ -101,7 +154,6 @@ namespace Oyl::Profiling
 	void
 	WriteHeader()
 	{
-
 		g_outputStream << "{\"otherData\": {},\"traceEvents\":[";
 		g_outputStream.flush();
 	}
@@ -109,7 +161,6 @@ namespace Oyl::Profiling
 	void
 	WriteFooter()
 	{
-
 		g_outputStream << "]}";
 		g_outputStream.flush();
 	}
@@ -126,6 +177,7 @@ namespace Oyl::Profiling
 	{
 		RegisterThreadName(std::this_thread::get_id(), a_name);
 	}
+
 	ProfilingTimer::ProfilingTimer(const char* a_name)
 		: m_name(a_name),
 		  m_stopped(false)
@@ -145,7 +197,11 @@ namespace Oyl::Profiling
 		auto endTimePoint = GetProfilerTimePoint();
 
 		u32 threadId = static_cast<u32>(std::hash<std::thread::id>()(std::this_thread::get_id()));
-		WriteProfile({ m_name, m_startTimePoint, endTimePoint, threadId });
+
+		std::unique_lock lock(g_queueMutex);
+		g_profileResultsQueue.push(ProfileResult { m_name, m_startTimePoint, endTimePoint, threadId });
+		g_queuePopulatedCondition.notify_all();
+
 		m_stopped = true;
 	}
 }
