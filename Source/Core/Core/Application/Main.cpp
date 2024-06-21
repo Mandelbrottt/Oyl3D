@@ -18,8 +18,6 @@ namespace Oyl
 	{
 		g_params = a_params;
 
-		Profiling::Detail::Init();
-
 		// Init Time before profiling, as profiling relies on Time
 		Time::Detail::Init();
 		OYL_PROFILE_FUNCTION();

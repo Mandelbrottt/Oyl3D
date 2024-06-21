@@ -22,19 +22,7 @@ namespace Oyl::Profiling
 	{
 		std::string name;
 	};
-
-	static
-	void
-	WriteProfile(const ProfileResult& a_result);
-
-	static
-	void
-	WriteHeader();
-
-	static
-	void
-	WriteFooter();
-
+	
 	static std::unique_ptr<ProfilingSession> g_currentSession;
 	static std::ofstream                     g_outputStream;
 	static i32                               g_profileCount;
@@ -47,6 +35,20 @@ namespace Oyl::Profiling
 	static std::atomic_bool          g_tryCloseSession;
 	static std::condition_variable   g_queuePopulatedCondition;
 	static std::condition_variable   g_queueEmptyCondition;
+
+	static bool g_atexitRegistered = false;
+	
+	static
+	void
+	WriteProfile(const ProfileResult& a_result);
+
+	static
+	void
+	WriteHeader();
+
+	static
+	void
+	WriteFooter();
 
 	static
 	f64
@@ -80,21 +82,16 @@ namespace Oyl::Profiling
 		}
 	}
 
-	void Detail::Init()
+	static
+	void
+	CleanupStreamWriteThread()
 	{
-		// When the engine is force closed, streamWriteThread is never cleaned up
-		// Do that here
-		atexit(
-			[]
-			{
-				std::unique_lock lock(g_queueMutex);
-				g_tryCloseSession = true;
-				g_queuePopulatedCondition.notify_all();
-				g_streamWriteThread.join();
-			}
-		);
+		std::unique_lock lock(g_queueMutex);
+		g_tryCloseSession = true;
+		g_queuePopulatedCondition.notify_all();
+		g_streamWriteThread.join();
 	}
-
+	
 	void
 	BeginSession(std::string_view a_name, std::string_view a_filepath)
 	{
@@ -104,6 +101,14 @@ namespace Oyl::Profiling
 			g_currentSession->name,
 			a_name
 		);
+		
+		if (!g_atexitRegistered)
+		{
+			// When the engine is force closed, g_streamWriteThread is never cleaned up
+			// Do that here
+			atexit(CleanupStreamWriteThread);
+			g_atexitRegistered = true;
+		}
 
 		// Create directory if it doesn't exist
 		auto directory = std::filesystem::path(a_filepath).parent_path();

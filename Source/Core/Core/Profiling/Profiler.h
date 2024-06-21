@@ -9,13 +9,6 @@ namespace Oyl
 {
 	namespace Profiling
 	{
-		namespace Detail
-		{
-			void
-			OYL_CORE_API
-			Init();
-		}
-
 		void
 		OYL_CORE_API
 		BeginSession(std::string_view a_name, std::string_view a_filepath);
