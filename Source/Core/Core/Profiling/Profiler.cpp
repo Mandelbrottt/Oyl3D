@@ -80,6 +80,21 @@ namespace Oyl::Profiling
 		}
 	}
 
+	void Detail::Init()
+	{
+		// When the engine is force closed, streamWriteThread is never cleaned up
+		// Do that here
+		atexit(
+			[]
+			{
+				std::unique_lock lock(g_queueMutex);
+				g_tryCloseSession = true;
+				g_queuePopulatedCondition.notify_all();
+				g_streamWriteThread.join();
+			}
+		);
+	}
+
 	void
 	BeginSession(std::string_view a_name, std::string_view a_filepath)
 	{

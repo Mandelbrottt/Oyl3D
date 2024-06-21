@@ -18,13 +18,15 @@ namespace Oyl
 	{
 		g_params = a_params;
 
+		Profiling::Detail::Init();
+
 		// Init Time before profiling, as profiling relies on Time
 		Time::Detail::Init();
 		OYL_PROFILE_FUNCTION();
 		
 		{
 			OYL_PROFILE_SCOPE("Logging::Init + Log");
-			Logging::Init();
+			Logging::Detail::Init();
 		}
 	}
 
@@ -66,7 +68,7 @@ namespace Oyl
 		OYL_PROFILE_FUNCTION();
 		
 		OYL_LOG("Shutting Down");
-		Logging::Shutdown();
+		Logging::Detail::Shutdown();
 	}
 
 	bool

@@ -6,55 +6,58 @@
 
 namespace Oyl::Logging
 {
-	struct SourceInfo
+	namespace Detail
 	{
-		const char* file = nullptr;
-		const char* function = nullptr;
-		int line = 0;
-	};
+		struct SourceInfo
+		{
+			const char* file = nullptr;
+			const char* function = nullptr;
+			int line = 0;
+		};
 
-	OYL_CORE_API
-	void
-	Init();
+		OYL_CORE_API
+		void
+		Init();
 
-	OYL_CORE_API
-	void
-	Shutdown();
-
-	template<typename T, typename... TArgs>
-	void Debug(SourceInfo a_sourceInfo, const T& a_fmt, TArgs&&... a_args);
-	
-	template<typename T>
-	void Debug(SourceInfo a_sourceInfo, const T& a_fmt);
+		OYL_CORE_API
+		void
+		Shutdown();
+	}
 
 	template<typename T, typename... TArgs>
-	void Info(SourceInfo a_sourceInfo, const T& a_fmt, TArgs&&... a_args);
+	void Debug(Detail::SourceInfo a_sourceInfo, const T& a_fmt, TArgs&&... a_args);
 	
 	template<typename T>
-	void Info(SourceInfo a_sourceInfo, const T& a_fmt);
+	void Debug(Detail::SourceInfo a_sourceInfo, const T& a_fmt);
 
 	template<typename T, typename... TArgs>
-	void Warning(SourceInfo a_sourceInfo, const T& a_fmt, TArgs&&... a_args);
+	void Info(Detail::SourceInfo a_sourceInfo, const T& a_fmt, TArgs&&... a_args);
 	
 	template<typename T>
-	void Warning(SourceInfo a_sourceInfo, const T& a_fmt);
+	void Info(Detail::SourceInfo a_sourceInfo, const T& a_fmt);
 
 	template<typename T, typename... TArgs>
-	void Error(SourceInfo a_sourceInfo, const T& a_fmt, TArgs&&... a_args);
+	void Warning(Detail::SourceInfo a_sourceInfo, const T& a_fmt, TArgs&&... a_args);
 	
 	template<typename T>
-	void Error(SourceInfo a_sourceInfo, const T& a_fmt);
+	void Warning(Detail::SourceInfo a_sourceInfo, const T& a_fmt);
 
 	template<typename T, typename... TArgs>
-	void Fatal(SourceInfo a_sourceInfo, const T& a_fmt, TArgs&&... a_args);
+	void Error(Detail::SourceInfo a_sourceInfo, const T& a_fmt, TArgs&&... a_args);
 	
 	template<typename T>
-	void Fatal(SourceInfo a_sourceInfo, const T& a_fmt);
+	void Error(Detail::SourceInfo a_sourceInfo, const T& a_fmt);
+
+	template<typename T, typename... TArgs>
+	void Fatal(Detail::SourceInfo a_sourceInfo, const T& a_fmt, TArgs&&... a_args);
+	
+	template<typename T>
+	void Fatal(Detail::SourceInfo a_sourceInfo, const T& a_fmt);
 }
 
 #define OYL_LOG_LEVEL(_level_, _msg_, ...) \
 	::Oyl::Logging::##_level_( \
-		::Oyl::Logging::SourceInfo { __FILE__, __func__, __LINE__ }, \
+		::Oyl::Logging::Detail::SourceInfo { __FILE__, __func__, __LINE__ }, \
 		_msg_, \
 		##__VA_ARGS__\
 	)
