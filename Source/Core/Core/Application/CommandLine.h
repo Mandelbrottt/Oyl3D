@@ -42,6 +42,17 @@ namespace Oyl
 	class OYL_CORE_API CommandLine final : public Singleton<CommandLine>
 	{
 	public:
+		struct Detail
+		{
+			static
+			void
+			ParseCommandLine(size_t a_argc, const char* a_argv[])
+			{
+				OYL_PROFILE_FUNCTION();
+				Instance().ParseCommandLineImpl(a_argc, a_argv);
+			}
+		};
+		
 		static
 		bool
 		IsPresent(const std::string& a_name)
@@ -99,6 +110,9 @@ namespace Oyl
 		}
 
 	private:
+		void
+		ParseCommandLineImpl(size_t a_argc, const char* a_argv[]);
+		
 		bool
 		IsPresentImpl(const std::string& a_name) const noexcept;
 

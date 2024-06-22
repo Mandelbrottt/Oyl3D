@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "CommandLine.h"
 
+#include "Core/Logging/Logging.h"
+
 namespace Oyl
 {
 	CommandLineArgument::CommandLineArgument()
@@ -17,6 +19,51 @@ namespace Oyl
 	CommandLineArgument::CommandLineArgument(ArbitraryData a_value)
 		: type { ArgumentType::Arbitrary },
 		  value { a_value } { }
+
+	void
+	CommandLine::ParseCommandLineImpl(size_t a_argc, const char* a_argv[])
+	{
+		std::string name;
+		std::string value;
+		for (int i = 0; i < a_argc; i++)
+		{
+			std::string arg = a_argv[i];
+			if (arg.rfind('-', 0) != std::string::npos)
+			{
+				if (!name.empty())
+				{
+					AddArgumentImpl(name);
+					name = {};
+				}
+				
+				auto namePos   = arg.find_first_not_of('-');
+				auto equalsPos = arg.find('=');
+				if (equalsPos == std::string::npos)
+				{
+					equalsPos = arg.length();
+				} else if (equalsPos != arg.rfind('='))
+				{
+					OYL_LOG_ERROR("Invalid command line argument argument \"{}\"", arg);
+					continue;
+				} else
+				{
+					value = arg.substr(equalsPos + 1);
+				}
+
+				name = arg.substr(namePos, equalsPos - namePos);
+			} else if (!name.empty())
+			{
+				value = arg;
+			} 
+
+			if (!value.empty())
+			{
+				AddStringImpl(name, value);
+				name = {};
+				value = {};
+			}
+		}
+	}
 
 	bool
 	CommandLine::IsPresentImpl(const std::string& a_name) const noexcept
