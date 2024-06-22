@@ -28,34 +28,39 @@ namespace Oyl
 		for (int i = 0; i < a_argc; i++)
 		{
 			std::string arg = a_argv[i];
-			if (arg.rfind('-', 0) != std::string::npos)
+			bool isArgument = arg.rfind('-', 0) != std::string::npos;
+
+			// If we're parsing an argument name, and the last argument was also a name,
+			// it must have been an empty argument
+			if (isArgument && !name.empty()) 
 			{
-				if (!name.empty())
-				{
-					AddArgumentImpl(name);
-					name = {};
-				}
-				
+				AddArgumentImpl(name);
+				name = {};
+			}
+
+			if (isArgument)
+			{
 				auto namePos   = arg.find_first_not_of('-');
-				auto equalsPos = arg.find('=');
-				if (equalsPos == std::string::npos)
+				auto equalsPos = arg.find_first_of('=');
+				if (equalsPos == std::string::npos) // Is there an equals, making this a combo name and value?
 				{
 					equalsPos = arg.length();
-				} else if (equalsPos != arg.rfind('='))
+				} else if (equalsPos != arg.find_last_of('=')) // Ensure there's only 1 equals sign
 				{
 					OYL_LOG_ERROR("Invalid command line argument argument \"{}\"", arg);
 					continue;
-				} else
+				} else // The rest of the string is the value
 				{
 					value = arg.substr(equalsPos + 1);
 				}
 
 				name = arg.substr(namePos, equalsPos - namePos);
-			} else if (!name.empty())
+			} else if (!name.empty()) // The argument is just the value of the last argument name
 			{
 				value = arg;
 			} 
 
+			// If the value is not empty, we already have the name and can add a name/value pair
 			if (!value.empty())
 			{
 				AddStringImpl(name, value);
