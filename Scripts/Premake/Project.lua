@@ -1,4 +1,4 @@
-function filterEditorOnly()
+function filterEditor()
     filter("configurations:not *" .. Config.Postfix .. " or *" .. Config.Editor.Postfix)
 end
 
@@ -89,8 +89,11 @@ function applyCommonCppSettings(moduleDefinition)
         runtime "release"
         defines { string.upper(Config.ShortName) .. "_RELEASE=1" }
         
-    filterEditorOnly()
+    filterEditor()
         defines { string.upper(Config.ShortName) .. "_EDITOR=1" }
+        
+    filterStandalone()
+        staticruntime "on"
 
     filter {}
 end
