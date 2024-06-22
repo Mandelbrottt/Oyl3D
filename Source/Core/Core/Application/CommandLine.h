@@ -52,7 +52,7 @@ namespace Oyl
 				Instance().ParseCommandLineImpl(a_argc, a_argv);
 			}
 		};
-		
+
 		static
 		bool
 		IsPresent(const std::string& a_name)
@@ -66,7 +66,7 @@ namespace Oyl
 		{
 			return Instance().AddArgumentImpl(a_name, a_overwrite);
 		}
-		
+
 		static
 		bool
 		AddInt(const std::string& a_name, i32 a_value, bool a_overwrite = true)
@@ -115,17 +115,17 @@ namespace Oyl
 		{
 			return Instance().RemoveArgumentImpl(a_name);
 		}
-		
+
 	private:
 		void
 		ParseCommandLineImpl(size_t a_argc, const char* a_argv[]);
-		
+
 		bool
 		IsPresentImpl(const std::string& a_name) const noexcept;
 
 		bool
 		AddArgumentImpl(const std::string& a_name, bool a_overwrite = true);
-		
+
 		bool
 		AddIntImpl(const std::string& a_name, i32 a_value, bool a_overwrite = true);
 
@@ -143,10 +143,10 @@ namespace Oyl
 
 		std::optional<ArbitraryData>
 		GetArbitraryDataImpl(const std::string& a_name) const;
-		
+
 		bool
-			RemoveArgumentImpl(const std::string& a_name);
-		
+		RemoveArgumentImpl(const std::string& a_name);
+
 		std::unordered_map<std::string, CommandLineArgument> m_arguments;
 	};
 }

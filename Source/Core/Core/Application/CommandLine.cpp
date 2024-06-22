@@ -179,7 +179,7 @@ namespace Oyl
 	bool
 	CommandLine::RemoveArgumentImpl(const std::string& a_name)
 	{
-		int nElementsErased = m_arguments.erase(a_name);
+		size_t nElementsErased = m_arguments.erase(a_name);
 		return nElementsErased != 0;
 	}
 }
