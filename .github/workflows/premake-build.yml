@@ -50,7 +50,7 @@ jobs:
         key: engine-source-dependencies-${{runner.os}}-${{hashFiles('Packages.lua')}}
 
     - name: Cache VulkanSDK
-      uses: actions/cache@v3
+      uses: actions/cache@v4
       with:
         path: ${{env.VULKAN_SDK}}
         key: vulkan-sdk
