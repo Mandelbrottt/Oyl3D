@@ -27,12 +27,12 @@ namespace Oyl
 		std::string value;
 		for (int i = 0; i < a_argc; i++)
 		{
-			std::string arg = a_argv[i];
-			bool isArgument = arg.rfind('-', 0) != std::string::npos;
+			std::string arg        = a_argv[i];
+			bool        isArgument = arg.rfind('-', 0) != std::string::npos;
 
 			// If we're parsing an argument name, and the last argument was also a name,
 			// it must have been an empty argument
-			if (isArgument && !name.empty()) 
+			if (isArgument && !name.empty())
 			{
 				AddArgumentImpl(name);
 				name = {};
@@ -47,7 +47,7 @@ namespace Oyl
 					equalsPos = arg.length();
 				} else if (equalsPos != arg.find_last_of('=')) // Ensure there's only 1 equals sign
 				{
-					OYL_LOG_ERROR("Invalid command line argument argument \"{}\"", arg);
+					OYL_LOG_WARNING("Invalid command line argument argument \"{}\"", arg);
 					continue;
 				} else // The rest of the string is the value
 				{
@@ -58,13 +58,19 @@ namespace Oyl
 			} else if (!name.empty()) // The argument is just the value of the last argument name
 			{
 				value = arg;
-			} 
+			}
+
+			if (name.empty() && !value.empty())
+			{
+				OYL_LOG_WARNING("Invalid command line value \"{}\" with no corresponding flag");
+				continue;
+			}
 
 			// If the value is not empty, we already have the name and can add a name/value pair
 			if (!value.empty())
 			{
 				AddStringImpl(name, value);
-				name = {};
+				name  = {};
 				value = {};
 			}
 		}
@@ -168,5 +174,12 @@ namespace Oyl
 			return {};
 		}
 		return std::any_cast<ArbitraryData>(iter->second);
+	}
+
+	bool
+	CommandLine::RemoveArgumentImpl(const std::string& a_name)
+	{
+		int nElementsErased = m_arguments.erase(a_name);
+		return nElementsErased != 0;
 	}
 }
