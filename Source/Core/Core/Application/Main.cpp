@@ -3,6 +3,8 @@
 
 #include <iostream>
 
+#include "CommandLine.h"
+
 #include "Core/Logging/Logging.h"
 #include "Core/Profiling/Profiler.h"
 #include "Core/Time/Time.h"
@@ -22,10 +24,9 @@ namespace Oyl
 		Time::Detail::Init();
 		OYL_PROFILE_FUNCTION();
 		
-		{
-			OYL_PROFILE_SCOPE("Logging::Init + Log");
-			Logging::Detail::Init();
-		}
+		Logging::Detail::Init();
+
+		CommandLine::Detail::ParseCommandLine(g_params.args.size(), g_params.args.data());
 	}
 
 	void

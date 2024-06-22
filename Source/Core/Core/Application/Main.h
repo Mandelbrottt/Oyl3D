@@ -8,6 +8,8 @@ namespace Oyl
 
 	struct CoreInitParameters
 	{
+		std::vector<const char*> args;
+
 		OnShouldGameUpdateFn onShouldGameUpdateCallback;
 		OnApplicationQuitFn onApplicationShouldQuitCallback;
 	};
