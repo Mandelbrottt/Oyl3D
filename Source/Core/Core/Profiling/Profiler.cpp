@@ -22,7 +22,7 @@ namespace Oyl::Profiling
 	{
 		std::string name;
 	};
-	
+
 	static std::unique_ptr<ProfilingSession> g_currentSession;
 	static std::ofstream                     g_outputStream;
 	static i32                               g_profileCount;
@@ -37,7 +37,7 @@ namespace Oyl::Profiling
 	static std::condition_variable   g_queueEmptyCondition;
 
 	static bool g_atexitRegistered = false;
-	
+
 	static
 	void
 	WriteProfile(const ProfileResult& a_result);
@@ -89,9 +89,12 @@ namespace Oyl::Profiling
 		std::unique_lock lock(g_queueMutex);
 		g_tryCloseSession = true;
 		g_queuePopulatedCondition.notify_all();
-		g_streamWriteThread.join();
+		if (g_streamWriteThread.joinable())
+		{
+			g_streamWriteThread.join();
+		}
 	}
-	
+
 	void
 	BeginSession(std::string_view a_name, std::string_view a_filepath)
 	{
@@ -101,7 +104,7 @@ namespace Oyl::Profiling
 			g_currentSession->name,
 			a_name
 		);
-		
+
 		if (!g_atexitRegistered)
 		{
 			// When the engine is force closed, g_streamWriteThread is never cleaned up
@@ -138,7 +141,10 @@ namespace Oyl::Profiling
 		g_outputStream.close();
 		g_profileCount = 0;
 
-		g_streamWriteThread.join();
+		if (g_streamWriteThread.joinable())
+		{
+			g_streamWriteThread.join();
+		}
 	}
 
 	void
