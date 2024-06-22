@@ -109,6 +109,13 @@ namespace Oyl
 			return Instance().GetArbitraryDataImpl(a_name);
 		}
 
+		static
+		bool
+		RemoveArgument(const std::string& a_name)
+		{
+			return Instance().RemoveArgumentImpl(a_name);
+		}
+		
 	private:
 		void
 		ParseCommandLineImpl(size_t a_argc, const char* a_argv[]);
@@ -136,7 +143,10 @@ namespace Oyl
 
 		std::optional<ArbitraryData>
 		GetArbitraryDataImpl(const std::string& a_name) const;
-
+		
+		bool
+			RemoveArgumentImpl(const std::string& a_name);
+		
 		std::unordered_map<std::string, CommandLineArgument> m_arguments;
 	};
 }
