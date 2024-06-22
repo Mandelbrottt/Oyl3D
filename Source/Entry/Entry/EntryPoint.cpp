@@ -11,21 +11,29 @@ static void ShutdownConsole();
 static bool g_running = true;
 
 // ReSharper disable CppInconsistentNaming
-int WINAPI wWinMain(
+int WINAPI WinMain(
 	_In_ HINSTANCE     hInstance,
 	_In_opt_ HINSTANCE hPrevInstance,
-	_In_ LPWSTR        lpCmdLine,
+	_In_ LPSTR         lpCmdLine,
 	_In_ int           nShowCmd
 ) // ReSharper restore CppInconsistentNaming
 {
-	(void) hInstance;
-	(void) hPrevInstance;
-	(void) lpCmdLine;
-	(void) nShowCmd;
-
+	OYL_UNUSED(hInstance);
+	OYL_UNUSED(hPrevInstance);
+	OYL_UNUSED(lpCmdLine);
+	OYL_UNUSED(nShowCmd);
+	
 	SetupConsole();
 	
 	Oyl::CoreInitParameters initParams;
+	initParams.args = std::vector<const char*>();
+	// Skip exe name for commandline params
+	initParams.args.reserve(__argc - 1);
+	for (int i = 1; i < __argc; i++)
+	{
+		initParams.args.push_back(__argv[i]);
+	}
+	
 	initParams.onApplicationShouldQuitCallback = [] { g_running = false; };
 
 	Oyl::SetShouldGameUpdate(
