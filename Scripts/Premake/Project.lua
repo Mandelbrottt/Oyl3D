@@ -23,6 +23,7 @@ function applyCommonCppSettings(moduleDefinition)
     
     location (Config.ProjectLocation)
     targetdir(Config.TargetDir .. Config.OutputDir)
+    debugdir (Config.TargetDir .. Config.OutputDir)
     objdir   (Config.ObjectDir .. Config.OutputDir)
 
     files {
