@@ -18,9 +18,9 @@ jobs:
           Debug-Editor,
           Development-Editor,
           Release-Editor,
-          # Debug-Standalone,
-          # Development-Standalone,
-          # Release-Standalone,
+          Debug-Standalone,
+          Development-Standalone,
+          Release-Standalone,
         ]
         BUILD_PLATFORM: [
           x64
