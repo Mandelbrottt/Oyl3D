@@ -1,9 +1,11 @@
 #pragma once
 
-#include <optional>
 #include <any>
+#include <functional>
+#include <optional>
 
 #include "Core/Common.h"
+#include "Core/Typedefs.h"
 #include "Core/Template/Singleton.h"
 
 namespace Oyl
@@ -48,7 +50,6 @@ namespace Oyl
 			void
 			ParseCommandLine(size_t a_argc, const char* a_argv[])
 			{
-				OYL_PROFILE_FUNCTION();
 				Instance().ParseCommandLineImpl(a_argc, a_argv);
 			}
 		};

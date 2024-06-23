@@ -1,6 +1,8 @@
 #include <Windows.h>
 #include <filesystem>
 
+#include <Core/Logging/Logging.h>
+#include <Core/Application/CommandLine.h>
 #include <Core/Application/Main.h>
 #include <Core/Profiling/Profiler.h>
 
@@ -8,7 +10,8 @@ static void SetupConsole();
 
 static void ShutdownConsole();
 
-static bool g_running = true;
+static bool                               g_running = true;
+static std::vector<std::function<void()>> g_preInitLogCalls;
 
 // ReSharper disable CppInconsistentNaming
 int WINAPI WinMain(
@@ -22,18 +25,20 @@ int WINAPI WinMain(
 	OYL_UNUSED(hPrevInstance);
 	OYL_UNUSED(lpCmdLine);
 	OYL_UNUSED(nShowCmd);
-	
-	SetupConsole();
-	
-	Oyl::CoreInitParameters initParams;
-	initParams.args = std::vector<const char*>();
-	// Skip exe name for commandline params
-	initParams.args.reserve(__argc - 1);
+
+	std::vector<const char*> args;
+	args.reserve(__argc - 1); // Skip exe name for commandline params
 	for (int i = 1; i < __argc; i++)
 	{
-		initParams.args.push_back(__argv[i]);
+		args.push_back(__argv[i]);
 	}
-	
+
+	Oyl::CommandLine::Detail::ParseCommandLine(args.size(), args.data());
+
+	SetupConsole();
+
+	Oyl::CoreInitParameters initParams;
+
 	initParams.onApplicationShouldQuitCallback = [] { g_running = false; };
 
 	Oyl::SetShouldGameUpdate(
@@ -45,7 +50,7 @@ int WINAPI WinMain(
 	);
 
 	Oyl::Profiling::RegisterThreadName("Main");
-	
+
 	OYL_PROFILE_BEGIN_SESSION("Startup", "Debug/Profiling/OylProfile_Startup.json");
 	Oyl::Init(initParams);
 	OYL_PROFILE_END_SESSION();
@@ -56,7 +61,7 @@ int WINAPI WinMain(
 		Oyl::Update();
 	}
 	OYL_PROFILE_END_SESSION();
-	
+
 	OYL_PROFILE_BEGIN_SESSION("Shutdown", "Debug/Profiling/OylProfile_Shutdown.json");
 	Oyl::Shutdown();
 	OYL_PROFILE_END_SESSION();
@@ -75,14 +80,14 @@ void SetupConsole()
 	FILE* inFileStream;
 	FILE* outFileStream;
 	FILE* errFileStream;
-	
+
 	// Direct input and output to the console
-	freopen_s(&inFileStream,  "CONIN$",  "r", stdin);
+	freopen_s(&inFileStream, "CONIN$", "r", stdin);
 	freopen_s(&outFileStream, "CONOUT$", "w", stdout);
 	freopen_s(&errFileStream, "CONOUT$", "w", stderr);
 }
 
 void ShutdownConsole()
-{	
+{
 	FreeConsole();
 }

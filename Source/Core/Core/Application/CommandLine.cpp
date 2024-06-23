@@ -62,7 +62,7 @@ namespace Oyl
 
 			if (name.empty() && !value.empty())
 			{
-				OYL_LOG_WARNING("Invalid command line value \"{}\" with no corresponding flag");
+				OYL_LOG_WARNING("Invalid command line argument argument \"{}\"", arg);
 				continue;
 			}
 
