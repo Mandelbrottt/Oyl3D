@@ -1,7 +1,8 @@
 #pragma once
 
-#include <optional>
 #include <any>
+#include <functional>
+#include <optional>
 
 #include "Core/Common.h"
 #include "Core/Template/Singleton.h"
@@ -46,10 +47,14 @@ namespace Oyl
 		{
 			static
 			void
-			ParseCommandLine(size_t a_argc, const char* a_argv[])
+			ParseCommandLine(
+				size_t                a_argc,
+				const char*           a_argv[],
+				std::function<void(std::function<void()>)> a_logCallback
+			)
 			{
 				OYL_PROFILE_FUNCTION();
-				Instance().ParseCommandLineImpl(a_argc, a_argv);
+				Instance().ParseCommandLineImpl(a_argc, a_argv, a_logCallback);
 			}
 		};
 
@@ -118,7 +123,11 @@ namespace Oyl
 
 	private:
 		void
-		ParseCommandLineImpl(size_t a_argc, const char* a_argv[]);
+		ParseCommandLineImpl(
+			size_t                a_argc,
+			const char*           a_argv[],
+			std::function<void(std::function<void()>)> a_logCallback
+		);
 
 		bool
 		IsPresentImpl(const std::string& a_name) const noexcept;

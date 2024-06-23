@@ -5,13 +5,13 @@ namespace Oyl
 {
 	using OnShouldGameUpdateFn = bool(*)();
 	using OnApplicationQuitFn = void(*)();
+	using OnLogPreInitMessages = void(*)();
 
 	struct CoreInitParameters
 	{
-		std::vector<const char*> args;
-
 		OnShouldGameUpdateFn onShouldGameUpdateCallback;
 		OnApplicationQuitFn onApplicationShouldQuitCallback;
+		OnLogPreInitMessages onLogPreInitMessages;
 	};
 	
 	OYL_CORE_API

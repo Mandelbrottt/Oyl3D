@@ -25,8 +25,6 @@ namespace Oyl
 		OYL_PROFILE_FUNCTION();
 		
 		Logging::Detail::Init();
-
-		CommandLine::Detail::ParseCommandLine(g_params.args.size(), g_params.args.data());
 	}
 
 	void
