@@ -5,8 +5,8 @@
 #include <optional>
 
 #include "Core/Common.h"
-#include "Core/Typedefs.h"
-#include "Core/Template/Singleton.h"
+#include "Core/Types/Singleton.h"
+#include "Core/Types/Typedefs.h"
 
 namespace Oyl
 {

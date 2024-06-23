@@ -19,5 +19,5 @@
 #include <vector>
 
 #include "Core/Common.h"
-#include "Core/Typedefs.h"
 #include "Core/Profiling/Profiler.h"
+#include "Core/Types/Typedefs.h"

@@ -3,7 +3,7 @@
 #include <string_view>
 #include <thread>
 
-#include "Core/Typedefs.h"
+#include "Core/Types/Typedefs.h"
 
 namespace Oyl
 {
