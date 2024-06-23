@@ -35,13 +35,6 @@ int WINAPI WinMain(
 
 	Oyl::CommandLine::Detail::ParseCommandLine(args.size(), args.data());
 
-	OYL_LOG("SOMETHING");
-
-	int a = 2;
-	OYL_LOG("SOMETHING {}", a);
-	
-	OYL_LOG_WARNING("SOMETHING {}", a);
-
 	SetupConsole();
 
 	Oyl::CoreInitParameters initParams;
