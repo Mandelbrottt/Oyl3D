@@ -21,11 +21,7 @@ namespace Oyl
 		  value { a_value } { }
 
 	void
-	CommandLine::ParseCommandLineImpl(
-		size_t                a_argc,
-		const char*           a_argv[],
-		std::function<void(std::function<void()>)> a_logCallback
-	)
+	CommandLine::ParseCommandLineImpl(size_t a_argc, const char* a_argv[])
 	{
 		std::string name;
 		std::string value;
@@ -51,9 +47,7 @@ namespace Oyl
 					equalsPos = arg.length();
 				} else if (equalsPos != arg.find_last_of('=')) // Ensure there's only 1 equals sign
 				{
-					a_logCallback(
-						[=] { OYL_LOG_WARNING("Invalid command line argument argument \"{}\"", arg); }
-					);
+					OYL_LOG_WARNING("Invalid command line argument argument \"{}\"", arg);
 					continue;
 				} else // The rest of the string is the value
 				{
@@ -68,9 +62,7 @@ namespace Oyl
 
 			if (name.empty() && !value.empty())
 			{
-				a_logCallback(
-					[=] { OYL_LOG_WARNING("Invalid command line argument argument \"{}\"", arg); }
-				);
+				OYL_LOG_WARNING("Invalid command line argument argument \"{}\"", arg);
 				continue;
 			}
 

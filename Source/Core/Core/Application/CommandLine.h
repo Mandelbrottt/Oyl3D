@@ -5,6 +5,7 @@
 #include <optional>
 
 #include "Core/Common.h"
+#include "Core/Typedefs.h"
 #include "Core/Template/Singleton.h"
 
 namespace Oyl
@@ -47,14 +48,9 @@ namespace Oyl
 		{
 			static
 			void
-			ParseCommandLine(
-				size_t                a_argc,
-				const char*           a_argv[],
-				std::function<void(std::function<void()>)> a_logCallback
-			)
+			ParseCommandLine(size_t a_argc, const char* a_argv[])
 			{
-				OYL_PROFILE_FUNCTION();
-				Instance().ParseCommandLineImpl(a_argc, a_argv, a_logCallback);
+				Instance().ParseCommandLineImpl(a_argc, a_argv);
 			}
 		};
 
@@ -123,11 +119,7 @@ namespace Oyl
 
 	private:
 		void
-		ParseCommandLineImpl(
-			size_t                a_argc,
-			const char*           a_argv[],
-			std::function<void(std::function<void()>)> a_logCallback
-		);
+		ParseCommandLineImpl(size_t a_argc, const char* a_argv[]);
 
 		bool
 		IsPresentImpl(const std::string& a_name) const noexcept;

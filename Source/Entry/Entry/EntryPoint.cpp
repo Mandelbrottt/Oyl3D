@@ -1,6 +1,7 @@
 #include <Windows.h>
 #include <filesystem>
 
+#include <Core/Logging/Logging.h>
 #include <Core/Application/CommandLine.h>
 #include <Core/Application/Main.h>
 #include <Core/Profiling/Profiler.h>
@@ -32,24 +33,20 @@ int WINAPI WinMain(
 		args.push_back(__argv[i]);
 	}
 
-	Oyl::CommandLine::Detail::ParseCommandLine(
-		args.size(),
-		args.data(),
-		[&](auto a_fn) { g_preInitLogCalls.push_back(a_fn); }
-	);
+	Oyl::CommandLine::Detail::ParseCommandLine(args.size(), args.data());
+
+	OYL_LOG("SOMETHING");
+
+	int a = 2;
+	OYL_LOG("SOMETHING {}", a);
+	
+	OYL_LOG_WARNING("SOMETHING {}", a);
 
 	SetupConsole();
 
 	Oyl::CoreInitParameters initParams;
 
 	initParams.onApplicationShouldQuitCallback = [] { g_running = false; };
-	initParams.onLogPreInitMessages            = []
-	{
-		for (auto& fn : g_preInitLogCalls)
-		{
-			fn();
-		}
-	};
 
 	Oyl::SetShouldGameUpdate(
 	#ifdef OYL_EDITOR
