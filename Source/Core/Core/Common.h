@@ -18,6 +18,7 @@
 #pragma region Common Macros
 #	define OYL_DEPRECATED(_message_) [[deprecated(_message_)]]
 #	define OYL_UNUSED(_var_) static_cast<void>(_var_)
+#	define OYL_FORCE_SEMICOLON static_assert(true)
 #pragma endregion
 
 #pragma region Internal Macros
