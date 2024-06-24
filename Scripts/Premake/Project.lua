@@ -20,6 +20,7 @@ function applyCommonCppSettings(assemblyDefinition)
     cppdialect "C++17"
     staticruntime "off"
     floatingpoint "fast"
+    rtti "on"
     
     location (Config.ProjectLocation)
     targetdir(Config.TargetDir .. Config.OutputDir)
