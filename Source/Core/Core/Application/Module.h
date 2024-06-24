@@ -39,7 +39,7 @@ namespace Oyl
 		SetEnabled(bool a_value) { m_enabled = a_value; }
 		
 	private:
-		bool m_enabled;
+		bool m_enabled = true;
 		
 		std::string m_debugName;
 	};

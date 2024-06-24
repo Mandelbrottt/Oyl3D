@@ -4,7 +4,7 @@
 
 namespace Oyl
 {
-	template<typename TModule, typename = ModuleRegistry::is_module_t<TModule>>
+	template<typename TModule, ModuleRegistry::enable_if_module_t<TModule>>
 	Module*
 	ModuleRegistry::RegisterModule()
 	{
@@ -14,7 +14,7 @@ namespace Oyl
 		return module;
 	}
 
-	template<typename TModule, typename = ModuleRegistry::is_module_t<TModule>>
+	template<typename TModule, ModuleRegistry::enable_if_module_t<TModule>>
 	Module*
 	ModuleRegistry::GetModule()
 	{
@@ -34,7 +34,7 @@ namespace Oyl
 		return module;
 	}
 
-	template<typename TModule, typename = ModuleRegistry::is_module_t<TModule>>
+	template<typename TModule, ModuleRegistry::enable_if_module_t<TModule>>
 	void
 	ModuleRegistry::RemoveModule()
 	{
