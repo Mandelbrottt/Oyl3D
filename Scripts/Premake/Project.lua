@@ -14,7 +14,7 @@ function defineInsideMacro(projectName)
     )
 end
 
-function applyCommonCppSettings(moduleDefinition)
+function applyCommonCppSettings(assemblyDefinition)
     filename("%{prj.name}_" .. _ACTION)
     language "C++"
     cppdialect "C++17"
@@ -38,22 +38,22 @@ function applyCommonCppSettings(moduleDefinition)
         "Premake"
     }
 
-    if moduleDefinition then
+    if assemblyDefinition then
         includedirs {
             "%{prj.location}",
         }
 
-        -- header files can be included across module boundaries, and so have to use project-agnostic includes
+        -- header files can be included across assembly boundaries, and so have to use project-agnostic includes
         -- FIXME: premake doesn't support per-file includedirs
         filter "files:**.cpp"
             includedirs {
-                path.join("%{prj.location}", moduleDefinition.Name),
+                path.join("%{prj.location}", assemblyDefinition.Name),
             }
         filter {}
 
         defines {
-            string.upper(Config.ShortName) .. "_CURRENT_MODULE=\"" .. moduleDefinition.Name .. "\"",
-            defineInsideMacro(moduleDefinition.Name),
+            string.upper(Config.ShortName) .. "_CURRENT_ASSEMBLY=\"" .. assemblyDefinition.Name .. "\"",
+            defineInsideMacro(assemblyDefinition.Name),
 
             -- Warning Silence Defines
             "_SILENCE_STDEXT_ARR_ITERS_DEPRECATION_WARNING", -- Silence warning in spdlog
@@ -107,7 +107,7 @@ local function case_insensitive_find(table, index)
 end
 
 function addDependencyToProject(dependencyName)
-    local module = case_insensitive_find(Modules, dependencyName)
+    local module = case_insensitive_find(Assemblies, dependencyName)
     if module then
         links { module.ProjectName }
         includedirs { path.join(Config.SourceDir, module.Dir) }

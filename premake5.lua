@@ -41,17 +41,17 @@ workspace(Config.Name)
         generateDependencyProjects(Dependencies)
     group ""
 
-    local moduleScripts = os.matchfiles(path.join(Config.SourceDir, "**premake5.lua"))
-    for _, moduleScript in pairs(moduleScripts) do
-        include(moduleScript)
+    local assemblyScripts = os.matchfiles(path.join(Config.SourceDir, "**premake5.lua"))
+    for _, assemblyScript in pairs(assemblyScripts) do
+        include(assemblyScript)
     end
 
-    for name, module in pairsByKeys(Modules) do
-        project(module.ProjectName)
+    for name, assembly in pairsByKeys(Assemblies) do
+        project(assembly.ProjectName)
 
-        for _, dependencyName in ipairs(module.Dependencies) do
+        for _, dependencyName in ipairs(assembly.Dependencies) do
             if dependencyName == name then
-                premake.error(string.format("Module \"%s\" cannot depend on itself!", module.Name))
+                premake.error(string.format("Assembly \"%s\" cannot depend on itself!", assembly.Name))
                 goto continue
             end
 

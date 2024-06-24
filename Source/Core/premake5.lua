@@ -1,4 +1,4 @@
-EngineModule {
+EngineAssembly {
     Group = "Engine",
     Language = premake.CPP,
     Kind = premake.SHAREDLIB,
