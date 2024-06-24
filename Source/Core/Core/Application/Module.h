@@ -9,7 +9,7 @@ namespace Oyl
 	{
 	public:
 		explicit
-		Module(std::string a_name = "Module");
+		Module(std::string a_name);
 		
 		virtual
 		~Module() = default;
@@ -44,3 +44,19 @@ namespace Oyl
 		std::string m_debugName;
 	};
 }
+
+#define OYL_DECLARE_MODULE(_class_, _name_) \
+public: \
+	using This = _class_;\
+	using Super = ::Oyl::Module;\
+private: \
+	friend class ::Oyl::ModuleRegistry;\
+	_class_() \
+		: ::Oyl::Module(_name_) {} \
+	\
+	::Oyl::TypeId \
+	GetTypeId() override \
+	{ \
+		return ::Oyl::GetTypeId<_class_>(); \
+	} \
+	OYL_FORCE_SEMICOLON
