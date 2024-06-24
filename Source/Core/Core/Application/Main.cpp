@@ -9,11 +9,11 @@
 #include "Core/Profiling/Profiler.h"
 #include "Core/Time/Time.h"
 
-namespace Oyl
+namespace Oyl::Detail
 {
 	static CoreInitParameters g_params;
 
-	bool g_shouldGameUpdate = true;
+	static bool g_shouldGameUpdate = true;
 
 	void
 	Init(const CoreInitParameters& a_params)

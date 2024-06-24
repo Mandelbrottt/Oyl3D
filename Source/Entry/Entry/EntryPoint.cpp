@@ -3,15 +3,14 @@
 
 #include <Core/Logging/Logging.h>
 #include <Core/Application/CommandLine.h>
-#include <Core/Application/Main.h>
+#include <Core/Application/Application.h>
 #include <Core/Profiling/Profiler.h>
 
 static void SetupConsole();
 
 static void ShutdownConsole();
 
-static bool                               g_running = true;
-static std::vector<std::function<void()>> g_preInitLogCalls;
+static bool g_running = true;
 
 // ReSharper disable CppInconsistentNaming
 int WINAPI WinMain(
@@ -37,11 +36,11 @@ int WINAPI WinMain(
 
 	SetupConsole();
 
-	Oyl::CoreInitParameters initParams;
+	Oyl::Application::CoreInitParameters initParams;
 
 	initParams.onApplicationShouldQuitCallback = [] { g_running = false; };
 
-	Oyl::SetShouldGameUpdate(
+	Oyl::Application::SetShouldGameUpdate(
 	#ifdef OYL_EDITOR
 		false
 	#else
@@ -52,18 +51,18 @@ int WINAPI WinMain(
 	Oyl::Profiling::RegisterThreadName("Main");
 
 	OYL_PROFILE_BEGIN_SESSION("Startup", "Debug/Profiling/OylProfile_Startup.json");
-	Oyl::Init(initParams);
+	Oyl::Application::Init(initParams);
 	OYL_PROFILE_END_SESSION();
 
 	OYL_PROFILE_BEGIN_SESSION("Running", "Debug/Profiling/OylProfile_Runtime.json");
 	while (g_running)
 	{
-		Oyl::Update();
+		Oyl::Application::Update();
 	}
 	OYL_PROFILE_END_SESSION();
 
 	OYL_PROFILE_BEGIN_SESSION("Shutdown", "Debug/Profiling/OylProfile_Shutdown.json");
-	Oyl::Shutdown();
+	Oyl::Application::Shutdown();
 	OYL_PROFILE_END_SESSION();
 
 	ShutdownConsole();

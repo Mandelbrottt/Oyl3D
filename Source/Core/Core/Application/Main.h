@@ -1,7 +1,7 @@
 #pragma once
 #include "Core/Common.h"
 
-namespace Oyl
+namespace Oyl::Detail
 {
 	using OnShouldGameUpdateFn = bool(*)();
 	using OnApplicationQuitFn = void(*)();
