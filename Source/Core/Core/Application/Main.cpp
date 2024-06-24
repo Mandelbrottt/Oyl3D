@@ -4,6 +4,7 @@
 #include <iostream>
 
 #include "CommandLine.h"
+#include "ModuleRegistry.h"
 
 #include "Core/Logging/Logging.h"
 #include "Core/Profiling/Profiler.h"
@@ -11,14 +12,22 @@
 
 namespace Oyl::Detail
 {
-	static CoreInitParameters g_params;
+	struct CoreApplicationData
+	{
+		CoreInitParameters params;
 
-	static bool g_shouldGameUpdate = true;
+		bool shouldGameUpdate;
 
+		ModuleRegistry moduleRegistry;
+	};
+
+	static CoreApplicationData g_data;
+	
 	void
 	Init(const CoreInitParameters& a_params)
 	{
-		g_params = a_params;
+		g_data.params = a_params;
+		g_data.shouldGameUpdate = true;
 
 		// Init Time before profiling, as profiling relies on Time
 		Time::Detail::Init();
@@ -33,29 +42,26 @@ namespace Oyl::Detail
 		OYL_PROFILE_FUNCTION();
 		
 		Time::Detail::Update();
-		
-		if (g_shouldGameUpdate)
+
+		// TODO: Implement core and game modules
+		//if (g_data.shouldGameUpdate)
+		//{
+		//	OYL_LOG("game update {}", Time::DeltaTime());
+		//}
+
+		for (Module* module : g_data.moduleRegistry)
 		{
-			OYL_LOG("game update {}", Time::DeltaTime());
+			module->OnUpdate();
 		}
-
-		OYL_LOG("regular update {}", Time::ElapsedTime());
-
-		auto elapsed1 = Time::Detail::ImmediateElapsedTime();
-		auto elapsed2 = Time::Detail::ImmediateElapsedTime();
-
-		OYL_PROFILE_SCOPE("Log");
 		
-		OYL_LOG("1: {}\t2: {}", elapsed1, elapsed2);
-
 		char in = std::cin.get();
 		if (in == 'q')
 		{
-			g_params.onApplicationShouldQuitCallback();
+			g_data.params.onApplicationShouldQuitCallback();
 		}
 		if (in == 'g')
 		{
-			g_shouldGameUpdate = !g_shouldGameUpdate;
+			g_data.shouldGameUpdate = !g_data.shouldGameUpdate;
 		}
 	}
 
@@ -71,7 +77,7 @@ namespace Oyl::Detail
 	bool
 	GetShouldGameUpdate() noexcept
 	{
-		return g_shouldGameUpdate;
+		return g_data.shouldGameUpdate;
 	}
 
 	void
@@ -79,6 +85,6 @@ namespace Oyl::Detail
 		bool a_value
 	) noexcept
 	{
-		g_shouldGameUpdate = a_value;
+		g_data.shouldGameUpdate = a_value;
 	}
 }
