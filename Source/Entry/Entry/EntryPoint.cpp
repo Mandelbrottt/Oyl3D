@@ -3,7 +3,7 @@
 
 #include <Core/Logging/Logging.h>
 #include <Core/Application/CommandLine.h>
-#include <Core/Application/Application.h>
+#include <Core/Application/Main.h>
 #include <Core/Profiling/Profiler.h>
 
 static void SetupConsole();
@@ -36,11 +36,11 @@ int WINAPI WinMain(
 
 	SetupConsole();
 
-	Oyl::Application::CoreInitParameters initParams;
+	Oyl::Detail::CoreInitParameters initParams;
 
 	initParams.onApplicationShouldQuitCallback = [] { g_running = false; };
 
-	Oyl::Application::SetShouldGameUpdate(
+	Oyl::Detail::SetShouldGameUpdate(
 	#ifdef OYL_EDITOR
 		false
 	#else
@@ -51,18 +51,18 @@ int WINAPI WinMain(
 	Oyl::Profiling::RegisterThreadName("Main");
 
 	OYL_PROFILE_BEGIN_SESSION("Startup", "Debug/Profiling/OylProfile_Startup.json");
-	Oyl::Application::Init(initParams);
+	Oyl::Detail::Init(initParams);
 	OYL_PROFILE_END_SESSION();
 
 	OYL_PROFILE_BEGIN_SESSION("Running", "Debug/Profiling/OylProfile_Runtime.json");
 	while (g_running)
 	{
-		Oyl::Application::Update();
+		Oyl::Detail::Update();
 	}
 	OYL_PROFILE_END_SESSION();
 
 	OYL_PROFILE_BEGIN_SESSION("Shutdown", "Debug/Profiling/OylProfile_Shutdown.json");
-	Oyl::Application::Shutdown();
+	Oyl::Detail::Shutdown();
 	OYL_PROFILE_END_SESSION();
 
 	ShutdownConsole();
