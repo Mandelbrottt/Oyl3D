@@ -5,41 +5,38 @@
 
 #include "Core/Types/Typedefs.h"
 
-namespace Oyl
+namespace Oyl::Profiling
 {
-	namespace Profiling
+	void
+	OYL_CORE_API
+	BeginSession(std::string_view a_name, std::string_view a_filepath);
+
+	void
+	OYL_CORE_API
+	EndSession();
+
+	void
+	OYL_CORE_API
+	RegisterThreadName(std::string_view a_name);
+
+	void
+	OYL_CORE_API
+	RegisterThreadName(std::thread::id a_id, std::string_view a_name);
+
+	class OYL_CORE_API ProfilingTimer
 	{
-		void
-		OYL_CORE_API
-		BeginSession(std::string_view a_name, std::string_view a_filepath);
+	public:
+		explicit
+		ProfilingTimer(const char* a_name);
 
-		void
-		OYL_CORE_API
-		EndSession();
+		~ProfilingTimer();
 
-		void
-		OYL_CORE_API
-		RegisterThreadName(std::string_view a_name);
+		void Stop();
 
-		void
-		OYL_CORE_API
-		RegisterThreadName(std::thread::id a_id, std::string_view a_name);
-
-		class OYL_CORE_API ProfilingTimer
-		{
-		public:
-			explicit
-			ProfilingTimer(const char* a_name);
-
-			~ProfilingTimer();
-
-			void Stop();
-
-		private:
-			const char* m_name;
-			f64         m_startTimePoint;
-			bool        m_stopped;
-		};
+	private:
+		const char* m_name;
+		f64         m_startTimePoint;
+		bool        m_stopped;
 	};
 }
 
