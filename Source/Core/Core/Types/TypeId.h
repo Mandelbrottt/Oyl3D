@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Core/Logging/Logging.h"
+
 namespace Oyl
 {
 	using type_id_underlying_t = u32;
