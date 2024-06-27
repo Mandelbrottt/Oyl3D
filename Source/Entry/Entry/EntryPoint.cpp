@@ -4,6 +4,8 @@
 #include <Core/Logging/Logging.h>
 #include <Core/Application/CommandLine.h>
 #include <Core/Application/Main.h>
+#include <Core/Application/Module.h>
+#include <Core/Events/TestEvents.h>
 #include <Core/Profiling/Profiler.h>
 
 static void SetupConsole();
@@ -11,6 +13,66 @@ static void SetupConsole();
 static void ShutdownConsole();
 
 static bool g_running = true;
+
+class TestModule1 : public Oyl::Module
+{
+	OYL_DECLARE_MODULE(TestModule1);
+
+public:
+	void
+	OnInit() override
+	{
+		OYL_LOG("{} Init!", GetName());
+
+		RegisterEvent(&TestModule1::OnTestEvent1);
+	}
+
+	void
+	OnUpdate() override
+	{
+		OYL_LOG("{} Update!", GetName());
+
+		Oyl::TestEvent2 e2;
+		e2.b = 6;
+		PostEvent(e2);
+	}
+
+	void
+	OnTestEvent1(Oyl::TestEvent1& a_event)
+	{
+		OYL_LOG("a = {}", a_event.a);
+	}
+};
+
+class TestModule2 : public Oyl::Module
+{
+	OYL_DECLARE_MODULE(TestModule2);
+
+public:
+	void
+	OnInit() override
+	{
+		OYL_LOG("{} Init!", GetName());
+
+		RegisterEvent(&TestModule2::OnTestEvent2);
+	}
+
+	void
+	OnUpdate() override
+	{
+		OYL_LOG("{} Update!", GetName());
+		
+		Oyl::TestEvent1 e1;
+		e1.a = 6;
+		PostEvent(e1);
+	}
+
+	void
+	OnTestEvent2(Oyl::TestEvent2& a_event)
+	{
+		OYL_LOG("b = {}", a_event.b);
+	}
+};
 
 // ReSharper disable CppInconsistentNaming
 int WINAPI WinMain(
@@ -52,6 +114,9 @@ int WINAPI WinMain(
 
 	OYL_PROFILE_BEGIN_SESSION("Startup", "Debug/Profiling/OylProfile_Startup.json");
 	Oyl::Detail::Init(initParams);
+
+	TestModule1::Register();
+	TestModule2::Register();
 	OYL_PROFILE_END_SESSION();
 
 	OYL_PROFILE_BEGIN_SESSION("Running", "Debug/Profiling/OylProfile_Runtime.json");
