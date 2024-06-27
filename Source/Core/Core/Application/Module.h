@@ -1,8 +1,10 @@
 #pragma once
 
-#include "Core/Common.h"
-#include "Core/Types/TypeId.h"
 #include "ModuleRegistry.h"
+
+#include "Core/Common.h"
+#include "Core/Profiling/Profiler.h"
+#include "Core/Types/TypeId.h"
 
 namespace Oyl
 {
@@ -101,6 +103,7 @@ namespace Oyl
 		void
 		PostEvent(TEvent a_event)
 		{
+			OYL_PROFILE_FUNCTION();
 			m_onPostEventCallback(a_event);
 		}
 

@@ -52,10 +52,12 @@ namespace Oyl::Detail
 		//{
 		//	OYL_LOG("game update {}", Time::DeltaTime());
 		//}
-
-		for (Module* module : g_data.moduleRegistry)
 		{
-			module->OnUpdate();
+			OYL_PROFILE_SCOPE("Module Updates");
+			for (Module* module : g_data.moduleRegistry)
+			{
+				module->OnUpdate();
+			}
 		}
 
 		char in = std::cin.get();
@@ -71,6 +73,7 @@ namespace Oyl::Detail
 
 	void OnEvent(Event& a_event)
 	{
+		OYL_PROFILE_FUNCTION();
 		for (auto* module : g_data.moduleRegistry)
 		{
 			module->OnEvent(a_event);
