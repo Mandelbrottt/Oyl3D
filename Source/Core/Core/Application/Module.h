@@ -126,7 +126,6 @@ private: \
 	using Super = _parent_; \
 	friend ::Oyl::ModuleRegistry; \
 public: \
-\
 	static \
 	::Oyl::TypeId \
 	GetStaticTypeId() \
@@ -136,6 +135,11 @@ public: \
 	::Oyl::TypeId \
 	GetTypeId() override \
 	{ \
+		\
+		static_assert( \
+			std::is_same_v<_class_, std::decay_t<decltype(*this)>>, \
+			"Named class \"" #_class_ "\" does not match class in which it is declared!" \
+		); \
 		return GetStaticTypeId(); \
 	} \
 	\

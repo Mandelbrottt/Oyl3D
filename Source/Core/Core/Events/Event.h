@@ -49,6 +49,10 @@ namespace Oyl
 	::Oyl::TypeId \
 	GetTypeId() const override \
 	{ \
+		static_assert( \
+			std::is_same_v<_event_, std::decay_t<decltype(*this)>>, \
+			"Named class \"" #_event_ "\" does not match class in which it is declared!" \
+		); \
 		return GetStaticTypeId();\
 	} \
 	OYL_FORCE_SEMICOLON
