@@ -35,6 +35,9 @@ namespace Oyl::Detail
 		OYL_PROFILE_FUNCTION();
 
 		Logging::Detail::Init();
+
+		auto& registry = g_data.moduleRegistry;
+		registry.SetOnEventCallback(OnEvent);
 	}
 
 	void
@@ -63,6 +66,14 @@ namespace Oyl::Detail
 		if (in == 'g')
 		{
 			g_data.shouldGameUpdate = !g_data.shouldGameUpdate;
+		}
+	}
+
+	void OnEvent(Event& a_event)
+	{
+		for (auto* module : g_data.moduleRegistry)
+		{
+			module->OnEvent(a_event);
 		}
 	}
 

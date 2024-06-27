@@ -5,6 +5,7 @@
 namespace Oyl
 {
 	class ModuleRegistry;
+	struct Event;
 }
 
 namespace Oyl::Detail
@@ -25,6 +26,10 @@ namespace Oyl::Detail
 	OYL_CORE_API
 	void
 	Update();
+	
+	OYL_CORE_API
+	void
+	OnEvent(Event& a_event);
 
 	OYL_CORE_API
 	void
