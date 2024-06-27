@@ -60,15 +60,15 @@ namespace Oyl::Detail
 			}
 		}
 
-		char in = std::cin.get();
-		if (in == 'q')
-		{
-			g_data.params.onApplicationShouldQuitCallback();
-		}
-		if (in == 'g')
-		{
-			g_data.shouldGameUpdate = !g_data.shouldGameUpdate;
-		}
+		//char in = std::cin.get();
+		//if (in == 'q')
+		//{
+		//	g_data.params.onApplicationShouldQuitCallback();
+		//}
+		//if (in == 'g')
+		//{
+		//	g_data.shouldGameUpdate = !g_data.shouldGameUpdate;
+		//}
 	}
 
 	void OnEvent(Event& a_event)
