@@ -1,5 +1,11 @@
 #pragma once
+
 #include "Core/Common.h"
+
+namespace Oyl
+{
+	class ModuleRegistry;
+}
 
 namespace Oyl::Detail
 {
@@ -27,10 +33,13 @@ namespace Oyl::Detail
 	OYL_CORE_API
 	bool
 	GetShouldGameUpdate() noexcept;
-
 	OYL_CORE_API
 	void
 	SetShouldGameUpdate(
 		bool a_value
 	) noexcept;
+
+	OYL_CORE_API
+	ModuleRegistry*
+	GetModuleRegistry();
 }

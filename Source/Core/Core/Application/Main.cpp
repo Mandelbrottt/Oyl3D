@@ -23,17 +23,17 @@ namespace Oyl::Detail
 	};
 
 	static CoreApplicationData g_data;
-	
+
 	void
 	Init(const CoreInitParameters& a_params)
 	{
-		g_data.params = a_params;
+		g_data.params           = a_params;
 		g_data.shouldGameUpdate = true;
 
 		// Init Time before profiling, as profiling relies on Time
 		Time::Detail::Init();
 		OYL_PROFILE_FUNCTION();
-		
+
 		Logging::Detail::Init();
 	}
 
@@ -41,7 +41,7 @@ namespace Oyl::Detail
 	Update()
 	{
 		OYL_PROFILE_FUNCTION();
-		
+
 		Time::Detail::Update();
 
 		// TODO: Implement core and game modules
@@ -54,7 +54,7 @@ namespace Oyl::Detail
 		{
 			module->OnUpdate();
 		}
-		
+
 		char in = std::cin.get();
 		if (in == 'q')
 		{
@@ -70,7 +70,7 @@ namespace Oyl::Detail
 	Shutdown()
 	{
 		OYL_PROFILE_FUNCTION();
-		
+
 		OYL_LOG("Shutting Down");
 		Logging::Detail::Shutdown();
 	}
@@ -87,5 +87,11 @@ namespace Oyl::Detail
 	) noexcept
 	{
 		g_data.shouldGameUpdate = a_value;
+	}
+
+	ModuleRegistry*
+	GetModuleRegistry()
+	{
+		return &g_data.moduleRegistry;
 	}
 }
