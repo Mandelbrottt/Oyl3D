@@ -22,7 +22,7 @@ public:
 	void
 	OnInit() override
 	{
-		OYL_LOG("{} Init!", GetName());
+		OYL_LOG("TM1 {} Init!", GetName());
 
 		RegisterEvent(&TestModule1::OnTestEvent1);
 	}
@@ -30,7 +30,7 @@ public:
 	void
 	OnUpdate() override
 	{
-		OYL_LOG("{} Update!", GetName());
+		OYL_LOG("TM1 {} Update!", GetName());
 
 		Oyl::TestEvent2 e2;
 		e2.b = 6;
@@ -40,7 +40,7 @@ public:
 	void
 	OnTestEvent1(Oyl::TestEvent1& a_event)
 	{
-		OYL_LOG("a = {}", a_event.a);
+		OYL_LOG("TM1 a = {}", a_event.a);
 	}
 };
 
@@ -52,7 +52,7 @@ public:
 	void
 	OnInit() override
 	{
-		OYL_LOG("{} Init!", GetName());
+		OYL_LOG("TM2 {} Init!", GetName());
 
 		RegisterEvent(&TestModule2::OnTestEvent2);
 	}
@@ -60,7 +60,7 @@ public:
 	void
 	OnUpdate() override
 	{
-		OYL_LOG("{} Update!", GetName());
+		OYL_LOG("TM2 {} Update!", GetName());
 		
 		Oyl::TestEvent1 e1;
 		e1.a = 6;
@@ -70,7 +70,7 @@ public:
 	void
 	OnTestEvent2(Oyl::TestEvent2& a_event)
 	{
-		OYL_LOG("b = {}", a_event.b);
+		OYL_LOG("TM2 b = {}", a_event.b);
 	}
 };
 

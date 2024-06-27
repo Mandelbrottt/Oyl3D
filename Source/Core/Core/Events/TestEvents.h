@@ -13,7 +13,7 @@ namespace Oyl
 	
 	struct TestEvent2 : Event
 	{
-		OYL_DECLARE_EVENT(TestEvent1);
+		OYL_DECLARE_EVENT(TestEvent2);
 
 		int b;
 	};
