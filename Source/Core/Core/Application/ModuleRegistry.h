@@ -28,21 +28,32 @@ namespace Oyl
 
 		template<typename TModule, typename... TArgs, enable_if_base_of_module_t<TModule> = true>
 		bool
-		RegisterModule(TArgs&&... a_args);
+		RegisterModule(TArgs&&... a_args)
+		{
+			TModule* module = new TModule(std::forward<TArgs>(a_args)...);
+			return RegisterModule(module);
+		}
 
 		Module*
 		GetModule(TypeId a_typeId);
 
 		template<typename TModule, enable_if_base_of_module_t<TModule> = true>
 		TModule*
-		GetModule();
+		GetModule()
+		{
+			Module* module = GetModule(TModule::GetStaticTypeId());
+			return reinterpret_cast<TModule*>(module);
+		}
 
 		bool
 		RemoveModule(TypeId a_typeId);
 
 		template<typename TModule, enable_if_base_of_module_t<TModule> = true>
 		bool
-		RemoveModule();
+		RemoveModule()
+		{
+			return RemoveModule(TModule::GetStaticTypeId());
+		}
 
 		void
 		SetOnEventCallback(OnEventFn a_fn) { m_onEventCallback = a_fn; }

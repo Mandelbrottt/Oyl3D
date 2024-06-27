@@ -79,12 +79,30 @@ namespace Oyl
 
 		template<typename TModule, typename TEvent>
 		void
-		RegisterEvent(void (TModule::*a_fn)(TEvent&));
+		RegisterEvent(void (TModule::*a_fn)(TEvent&))
+		{
+			m_eventFns[TEvent::GetStaticTypeId()] =
+				std::bind(
+					reinterpret_cast<void(Module::*)(Event&)>(a_fn),
+					this,
+					std::placeholders::_1
+				);
+		}
+
+		template<typename TModule, typename TEvent>
+		void
+		RegisterEvent(void (TModule::*a_fn)(TEvent&) const)
+		{
+			RegisterEvent(const_cast<std::decay_t<decltype(a_fn)>>(a_fn));
+		}
 
 		// TODO: Add event to global event queue, arena?
 		template<typename TEvent>
 		void
-		PostEvent(TEvent a_event);
+		PostEvent(TEvent a_event)
+		{
+			m_onPostEventCallback(a_event);
+		}
 
 		void
 		OnEvent(Event& a_event);
@@ -139,4 +157,5 @@ public: \
 private: \
 	OYL_FORCE_SEMICOLON
 
+#define _OYL_DECLARE_MODULE_1(_class_) _OYL_DECLARE_MODULE_3(_class_, ::Oyl::Module, #_class_)
 #define _OYL_DECLARE_MODULE_2(_class_, _name_) _OYL_DECLARE_MODULE_3(_class_, ::Oyl::Module, _name_)

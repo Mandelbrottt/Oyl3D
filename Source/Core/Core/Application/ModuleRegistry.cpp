@@ -59,9 +59,4 @@ namespace Oyl
 		m_modules.erase(moduleIter);
 		return true;
 	}
-
-	void ModuleRegistry::SetOnEventCallback(OnEventFn a_fn)
-	{
-		m_onEventCallback = a_fn;
-	}
 }
