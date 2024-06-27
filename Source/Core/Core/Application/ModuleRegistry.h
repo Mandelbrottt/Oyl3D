@@ -1,6 +1,8 @@
 #pragma once
 
+#include "Core/Application/Main.h"
 #include "Core/Common.h"
+#include "Core/Types/TypeId.h"
 
 namespace Oyl
 {
@@ -8,21 +10,39 @@ namespace Oyl
 
 	class OYL_CORE_API ModuleRegistry
 	{
+		friend class Module;
+		
 		using ModuleList = std::vector<Module*>;
 
+		template<typename TModule>
+		using enable_if_base_of_module_t = std::enable_if_t<std::is_base_of_v<Module, TModule>, bool>;
+		
 	public:
-		template<typename TModule, typename... TArgs, std::enable_if_t<std::is_base_of_v<Module, TModule>> = true>
-		Module*
+		static
+		ModuleRegistry*
+		Instance();
+
+		bool
+		RegisterModule(Module* a_module);
+
+		template<typename TModule, typename... TArgs, enable_if_base_of_module_t<TModule> = true>
+		bool
 		RegisterModule(TArgs&&... a_args);
 
-		template<typename TModule, std::enable_if_t<std::is_base_of_v<Module, TModule>> = true>
 		Module*
+		GetModule(TypeId a_typeId);
+
+		template<typename TModule, enable_if_base_of_module_t<TModule> = true>
+		TModule*
 		GetModule();
 
-		template<typename TModule, std::enable_if_t<std::is_base_of_v<Module, TModule>> = true>
+		bool
+		RemoveModule(TypeId a_typeId);
+		
+		template<typename TModule, enable_if_base_of_module_t<TModule> = true>
 		bool
 		RemoveModule();
-		
+
 		ModuleList::iterator begin() { return m_modules.begin(); }
 
 		ModuleList::iterator end() { return m_modules.end(); }
@@ -36,4 +56,4 @@ namespace Oyl
 	};
 }
 
-#include "ModuleRegistry.inl"
+//#include "ModuleRegistry.inl"
