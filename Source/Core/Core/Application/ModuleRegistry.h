@@ -2,6 +2,7 @@
 
 #include "Core/Application/Main.h"
 #include "Core/Common.h"
+#include "Core/Events/Event.h"
 #include "Core/Types/TypeId.h"
 
 namespace Oyl
@@ -11,12 +12,12 @@ namespace Oyl
 	class OYL_CORE_API ModuleRegistry
 	{
 		friend class Module;
-		
+
 		using ModuleList = std::vector<Module*>;
 
 		template<typename TModule>
 		using enable_if_base_of_module_t = std::enable_if_t<std::is_base_of_v<Module, TModule>, bool>;
-		
+
 	public:
 		static
 		ModuleRegistry*
@@ -38,10 +39,13 @@ namespace Oyl
 
 		bool
 		RemoveModule(TypeId a_typeId);
-		
+
 		template<typename TModule, enable_if_base_of_module_t<TModule> = true>
 		bool
 		RemoveModule();
+
+		void
+		SetOnEventCallback(OnEventFn a_fn) { m_onEventCallback = a_fn; }
 
 		ModuleList::iterator begin() { return m_modules.begin(); }
 
@@ -53,6 +57,8 @@ namespace Oyl
 
 	private:
 		std::vector<Module*> m_modules;
+
+		OnEventFn m_onEventCallback;
 	};
 }
 

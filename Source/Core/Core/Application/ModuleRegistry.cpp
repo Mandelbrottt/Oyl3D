@@ -16,6 +16,7 @@ namespace Oyl
 	ModuleRegistry::RegisterModule(Module* a_module)
 	{
 		m_modules.emplace_back(a_module);
+		a_module->SetOnPostEventCallback(m_onEventCallback);
 		a_module->OnInit();
 		return true;
 	}
@@ -57,5 +58,10 @@ namespace Oyl
 		delete module;
 		m_modules.erase(moduleIter);
 		return true;
+	}
+
+	void ModuleRegistry::SetOnEventCallback(OnEventFn a_fn)
+	{
+		m_onEventCallback = a_fn;
 	}
 }
