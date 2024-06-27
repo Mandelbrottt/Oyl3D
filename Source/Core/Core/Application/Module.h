@@ -73,9 +73,29 @@ namespace Oyl
 		void
 		OnShutdown() {}
 #	pragma endregion
+#	pragma region Events
+		void
+		SetOnPostEventCallback(OnEventFn a_fn) { m_onPostEventCallback = a_fn; }
+
+		template<typename TModule, typename TEvent>
+		void
+		RegisterEvent(void (TModule::*a_fn)(TEvent&));
+
+		// TODO: Add event to global event queue, arena?
+		template<typename TEvent>
+		void
+		PostEvent(TEvent a_event);
+
+		void
+		OnEvent(Event& a_event);
+#	pragma endregion
 
 	private:
 		bool m_enabled = true;
+
+		OnEventFn m_onPostEventCallback;
+
+		std::unordered_map<TypeId, OnEventFn> m_eventFns;
 	};
 }
 
