@@ -62,18 +62,27 @@ namespace Oyl
 	};
 }
 
-#define OYL_DECLARE_MODULE(_class_, _name_) \
-public: \
-	using This = _class_;\
-	using Super = ::Oyl::Module;\
+#define OYL_DECLARE_MODULE(...) OYL_MACRO_OVERLOAD(_OYL_DECLARE_MODULE, __VA_ARGS__)
+
+#define _OYL_DECLARE_MODULE_3(_class_, _parent_, _name_) \
+	OYL_FORCE_FORMAT_INDENT\
 private: \
-	friend class ::Oyl::ModuleRegistry;\
-	_class_() \
-		: ::Oyl::Module(_name_) {} \
-	\
+	using This = _class_; \
+	using Super = _parent_; \
+	friend class ::Oyl::ModuleRegistry; \
+public: \
 	::Oyl::TypeId \
 	GetTypeId() override \
 	{ \
 		return ::Oyl::GetTypeId<_class_>(); \
 	} \
+	\
+	std::string_view \
+	GetName() const { return _name_ } \
+	\
+	static \
+	_class_* \
+	Get() { return ::Oyl::Module::Get<_class_>(); } \
 	OYL_FORCE_SEMICOLON
+
+#define _OYL_DECLARE_MODULE_2(_class_, _name_) _OYL_DECLARE_MODULE_3(_class_, ::Oyl::Module, _name_)
