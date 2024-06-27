@@ -1,28 +1,26 @@
 #pragma once
 
-#include "Module.h"
 #include "Core/Common.h"
 
 namespace Oyl
 {
+	class Module;
+
 	class OYL_CORE_API ModuleRegistry
 	{
 		using ModuleList = std::vector<Module*>;
 
-		template<typename TModule>
-		using enable_if_module_t = std::enable_if_t<std::is_base_of_v<Module, TModule>>;
-
 	public:
-		template<typename TModule, enable_if_module_t<TModule> = true>
+		template<typename TModule, typename... TArgs, std::enable_if_t<std::is_base_of_v<Module, TModule>> = true>
 		Module*
-		RegisterModule();
+		RegisterModule(TArgs&&... a_args);
 
-		template<typename TModule, enable_if_module_t<TModule> = true>
+		template<typename TModule, std::enable_if_t<std::is_base_of_v<Module, TModule>> = true>
 		Module*
 		GetModule();
 
-		template<typename TModule, enable_if_module_t<TModule> = true>
-		void
+		template<typename TModule, std::enable_if_t<std::is_base_of_v<Module, TModule>> = true>
+		bool
 		RemoveModule();
 		
 		ModuleList::iterator begin() { return m_modules.begin(); }
