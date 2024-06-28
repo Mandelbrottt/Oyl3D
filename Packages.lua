@@ -115,7 +115,7 @@ Dependencies = {
         },
         Kind = premake.SHAREDLIB,
         Files = { "public/" },
-        IncludeDirs = { "public/tracy/ "},
+        IncludeDirs = { "public/ "},
         CustomProperties = function()
             removefiles { "**" }
             files {
@@ -124,7 +124,10 @@ Dependencies = {
             }
             filter "kind:SharedLib"
                 defines {
-                    "TRACY_EXPORTS"
+                    "TRACY_EXPORTS",
+                    -- "TRACY_ONLY_LOCALHOST",
+                    "TRACY_NO_SAMPLING",
+                    "TRACY_NO_SYSTEM_TRACING",
                 }
         end
     }
