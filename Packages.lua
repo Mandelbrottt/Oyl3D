@@ -4,7 +4,7 @@ Dependencies = {
             Url = "https://github.com/jbeder/yaml-cpp.git",
             Revision = "c73ee34704c512ebe915b283645aefa9f424a22f",
         },
-        Kind = "SharedLib",
+        Kind = premake.SHAREDLIB,
         Files = { 
             "/include/",
             "/src/"
@@ -29,7 +29,7 @@ Dependencies = {
             Url = "https://github.com/glfw/glfw.git",
             Revision = "3.3.8"
         },
-        Kind = "SharedLib",
+        Kind = premake.SHAREDLIB,
         Files = { "/include/", "/src/", },
         CustomProperties = function()
             language "C"
@@ -65,7 +65,7 @@ Dependencies = {
             Url = "https://github.com/ocornut/imgui.git",
             Revision = "e2cede6542d2d6c83598d4d34dc51de84aeb282f"
         },
-        Kind = "StaticLib",
+        Kind = premake.STATICLIB,
         Files = { "/examples/", "imconfig.h", "/imgui*.h", "/imgui*.cpp", "/imstb*.h" },
         IncludeDirs = { "." },
         CustomProperties = function()
@@ -79,7 +79,7 @@ Dependencies = {
             Url = "https://github.com/gabime/spdlog.git",
             Revision = "v1.11.0"
         },
-        Kind = "SharedLib",
+        Kind = premake.SHAREDLIB,
         Files = { "/include/", "/src/" },
         CustomProperties = function()
             defines {
@@ -105,6 +105,26 @@ Dependencies = {
                     "SPDLOG_SHARED_LIB",
                     "FMT_EXPORT",
                     "FMT_SHARED"
+                }
+        end
+    },
+    TracyClient = {
+        Git = {
+            Url = "https://github.com/wolfpld/tracy.git",
+            Revision = "v0.10"
+        },
+        Kind = premake.SHAREDLIB,
+        Files = { "public/" },
+        IncludeDirs = { "public/tracy/ "},
+        CustomProperties = function()
+            removefiles { "**" }
+            files {
+                "public/TracyClient.cpp",
+                "public/tracy/tracy.hpp"
+            }
+            filter "kind:SharedLib"
+                defines {
+                    "TRACY_EXPORTS"
                 }
         end
     }

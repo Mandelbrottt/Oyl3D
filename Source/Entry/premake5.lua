@@ -6,5 +6,6 @@ EngineAssembly {
         "Core",
         "Editor",
         "SpdLog",
+        "TracyClient",
     },
 }

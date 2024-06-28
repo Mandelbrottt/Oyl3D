@@ -7,6 +7,7 @@ EngineAssembly {
         "ImGui",
         "SpdLog",
         "YamlCpp",
+        "TracyClient",
     },
     Properties = function()
         pchheader "pch.h"
