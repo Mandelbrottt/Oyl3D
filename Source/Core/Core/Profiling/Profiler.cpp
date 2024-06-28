@@ -243,11 +243,21 @@ namespace Oyl::Profiling
 		: m_name(a_name),
 		  m_stopped(false)
 	{
+		if (!g_currentSession)
+		{
+			return;
+		}
+		
 		m_startTimePoint = GetProfilerTimePoint();
 	}
 
 	ProfilingTimer::~ProfilingTimer()
 	{
+		if (!g_currentSession)
+		{
+			return;
+		}
+		
 		if (!m_stopped)
 			Stop();
 	}
@@ -255,6 +265,11 @@ namespace Oyl::Profiling
 	void
 	ProfilingTimer::Stop()
 	{
+		if (!g_currentSession)
+		{
+			return;
+		}
+		
 		auto endTimePoint = GetProfilerTimePoint();
 
 		u32 threadId = static_cast<u32>(std::hash<std::thread::id>()(std::this_thread::get_id()));

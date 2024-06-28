@@ -119,12 +119,14 @@ int WINAPI WinMain(
 	TestModule2::Register();
 	OYL_PROFILE_END_SESSION();
 
-	OYL_PROFILE_BEGIN_SESSION("Running", "Debug/Profiling/OylProfile_Runtime.json");
+	// TODO: Allow user to start benchmark when they need to rather than always on
+	// Also find way to keep file size down on profiling file
+	//OYL_PROFILE_BEGIN_SESSION("Running", "Debug/Profiling/OylProfile_Runtime.json");
 	while (g_running)
 	{
 		Oyl::Detail::Update();
 	}
-	OYL_PROFILE_END_SESSION();
+	//OYL_PROFILE_END_SESSION();
 
 	OYL_PROFILE_BEGIN_SESSION("Shutdown", "Debug/Profiling/OylProfile_Shutdown.json");
 	Oyl::Detail::Shutdown();
