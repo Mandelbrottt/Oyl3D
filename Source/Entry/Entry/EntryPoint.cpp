@@ -1,6 +1,8 @@
 #include <Windows.h>
 #include <filesystem>
 
+#include <cstdlib>
+
 #include <Core/Logging/Logging.h>
 #include <Core/Application/CommandLine.h>
 #include <Core/Application/Main.h>
@@ -95,6 +97,13 @@ int WINAPI WinMain(
 	}
 
 	Oyl::CommandLine::Detail::ParseCommandLine(args.size(), args.data());
+
+	// Allow users to dynamically set whether they want to profile over the network or not
+	// By default, only work over localhost
+	if (!Oyl::CommandLine::IsPresent("profile_network"))
+	{
+		_putenv_s("TRACY_ONLY_LOCALHOST", "1");
+	}
 
 	SetupConsole();
 
