@@ -23,6 +23,8 @@ namespace Oyl::Profiling
 		std::string name;
 	};
 
+	static f64 g_timeToFlush = 1.0;
+
 	static std::unique_ptr<ProfilingSession> g_currentSession;
 	static std::ofstream                     g_outputStream;
 	static i32                               g_profileCount;
@@ -64,6 +66,8 @@ namespace Oyl::Profiling
 	{
 		while (!g_tryCloseSession)
 		{
+			ProfileResult result;
+
 			std::unique_lock lock(g_queueMutex);
 			g_queuePopulatedCondition.wait(
 				lock,
@@ -72,8 +76,6 @@ namespace Oyl::Profiling
 					return !g_profileResultsQueue.empty() || g_tryCloseSession;
 				}
 			);
-
-			ProfileResult result;
 			
 			if (!g_profileResultsQueue.empty())
 			{
@@ -196,7 +198,16 @@ namespace Oyl::Profiling
 			g_outputStream << ",";
 		}
 		g_outputStream << profile;
-		g_outputStream.flush();
+
+		// Flush output on an interval as a tradeoff for speed and not losing data
+		static auto lastTime = Time::Detail::ImmediateElapsedTime();
+		auto currentTime = Time::Detail::ImmediateElapsedTime();
+		auto timeSinceLastFlush = currentTime - lastTime;
+		if (timeSinceLastFlush > g_timeToFlush)
+		{
+			g_outputStream.flush();
+			lastTime = currentTime;
+		}
 	}
 
 	void
@@ -244,12 +255,11 @@ namespace Oyl::Profiling
 	void
 	ProfilingTimer::Stop()
 	{
-		std::unique_lock lock(g_queueMutex);
-
 		auto endTimePoint = GetProfilerTimePoint();
 
 		u32 threadId = static_cast<u32>(std::hash<std::thread::id>()(std::this_thread::get_id()));
 
+		std::unique_lock lock(g_queueMutex);
 		g_profileResultsQueue.push(ProfileResult { m_name, m_startTimePoint, endTimePoint, threadId });
 		g_queuePopulatedCondition.notify_all();
 
