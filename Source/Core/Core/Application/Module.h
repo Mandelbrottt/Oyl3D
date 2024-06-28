@@ -1,8 +1,10 @@
 #pragma once
 
-#include "Core/Common.h"
-#include "Core/Types/TypeId.h"
 #include "ModuleRegistry.h"
+
+#include "Core/Common.h"
+#include "Core/Profiling/Profiler.h"
+#include "Core/Types/TypeId.h"
 
 namespace Oyl
 {
@@ -73,9 +75,48 @@ namespace Oyl
 		void
 		OnShutdown() {}
 #	pragma endregion
+#	pragma region Events
+		void
+		SetOnPostEventCallback(OnEventFn a_fn) { m_onPostEventCallback = a_fn; }
+
+		template<typename TModule, typename TEvent>
+		void
+		RegisterEvent(void (TModule::*a_fn)(TEvent&))
+		{
+			m_eventFns[TEvent::GetStaticTypeId()] =
+				std::bind(
+					reinterpret_cast<void(Module::*)(Event&)>(a_fn),
+					this,
+					std::placeholders::_1
+				);
+		}
+
+		template<typename TModule, typename TEvent>
+		void
+		RegisterEvent(void (TModule::*a_fn)(TEvent&) const)
+		{
+			RegisterEvent(const_cast<std::decay_t<decltype(a_fn)>>(a_fn));
+		}
+
+		// TODO: Add event to global event queue, arena?
+		template<typename TEvent>
+		void
+		PostEvent(TEvent a_event)
+		{
+			OYL_PROFILE_FUNCTION();
+			m_onPostEventCallback(a_event);
+		}
+
+		void
+		OnEvent(Event& a_event);
+#	pragma endregion
 
 	private:
 		bool m_enabled = true;
+
+		OnEventFn m_onPostEventCallback;
+
+		std::unordered_map<TypeId, OnEventFn> m_eventFns;
 	};
 }
 
@@ -88,7 +129,6 @@ private: \
 	using Super = _parent_; \
 	friend ::Oyl::ModuleRegistry; \
 public: \
-\
 	static \
 	::Oyl::TypeId \
 	GetStaticTypeId() \
@@ -98,6 +138,11 @@ public: \
 	::Oyl::TypeId \
 	GetTypeId() override \
 	{ \
+		\
+		static_assert( \
+			std::is_same_v<_class_, std::decay_t<decltype(*this)>>, \
+			"Named class \"" #_class_ "\" does not match class in which it is declared!" \
+		); \
 		return GetStaticTypeId(); \
 	} \
 	\
@@ -119,4 +164,5 @@ public: \
 private: \
 	OYL_FORCE_SEMICOLON
 
+#define _OYL_DECLARE_MODULE_1(_class_) _OYL_DECLARE_MODULE_3(_class_, ::Oyl::Module, #_class_)
 #define _OYL_DECLARE_MODULE_2(_class_, _name_) _OYL_DECLARE_MODULE_3(_class_, ::Oyl::Module, _name_)

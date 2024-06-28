@@ -35,6 +35,9 @@ namespace Oyl::Detail
 		OYL_PROFILE_FUNCTION();
 
 		Logging::Detail::Init();
+
+		auto& registry = g_data.moduleRegistry;
+		registry.SetOnEventCallback(OnEvent);
 	}
 
 	void
@@ -49,20 +52,31 @@ namespace Oyl::Detail
 		//{
 		//	OYL_LOG("game update {}", Time::DeltaTime());
 		//}
-
-		for (Module* module : g_data.moduleRegistry)
 		{
-			module->OnUpdate();
+			OYL_PROFILE_SCOPE("Module Updates");
+			for (Module* module : g_data.moduleRegistry)
+			{
+				module->OnUpdate();
+			}
 		}
 
-		char in = std::cin.get();
-		if (in == 'q')
+		//char in = std::cin.get();
+		//if (in == 'q')
+		//{
+		//	g_data.params.onApplicationShouldQuitCallback();
+		//}
+		//if (in == 'g')
+		//{
+		//	g_data.shouldGameUpdate = !g_data.shouldGameUpdate;
+		//}
+	}
+
+	void OnEvent(Event& a_event)
+	{
+		OYL_PROFILE_FUNCTION();
+		for (auto* module : g_data.moduleRegistry)
 		{
-			g_data.params.onApplicationShouldQuitCallback();
-		}
-		if (in == 'g')
-		{
-			g_data.shouldGameUpdate = !g_data.shouldGameUpdate;
+			module->OnEvent(a_event);
 		}
 	}
 
