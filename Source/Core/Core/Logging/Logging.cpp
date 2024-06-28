@@ -32,8 +32,8 @@ namespace Oyl::Logging
 
 			// MUCH better performance when logging async, may run into issues with # of threads
 			// TODO: Move to manual queuing system like profiling?
-			g_coreLogger = spdlog::stdout_color_mt("CORE");
-			//g_coreLogger = spdlog::stdout_color_mt<spdlog::async_factory>("CORE");
+			//g_coreLogger = spdlog::stdout_color_mt("CORE");
+			g_coreLogger = spdlog::stdout_color_mt<spdlog::async_factory>("CORE");
 
 			g_coreLogger->set_level(spdlog::level::debug);
 			g_coreLogger->set_formatter(std::move(formatter));

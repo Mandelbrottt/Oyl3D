@@ -31,6 +31,7 @@ namespace Oyl::Profiling
 
 	static std::thread               g_streamWriteThread;
 	static std::mutex                g_queueMutex;
+	static std::mutex                g_fileMutex;
 	static std::queue<ProfileResult> g_profileResultsQueue;
 	static std::atomic_bool          g_tryCloseSession;
 	static std::condition_variable   g_queuePopulatedCondition;
@@ -72,13 +73,21 @@ namespace Oyl::Profiling
 				}
 			);
 
+			ProfileResult result;
+			
 			if (!g_profileResultsQueue.empty())
 			{
-				WriteProfile(g_profileResultsQueue.front());
+				result = g_profileResultsQueue.front();
 				g_profileResultsQueue.pop();
+				g_queueEmptyCondition.notify_all();
 			}
 
-			g_queueEmptyCondition.notify_all();
+			lock.unlock();
+
+			if (result.threadId != 0)
+			{
+				WriteProfile(result);
+			}
 		}
 	}
 
@@ -98,13 +107,6 @@ namespace Oyl::Profiling
 	void
 	BeginSession(std::string_view a_name, std::string_view a_filepath)
 	{
-		OYL_ASSERT(
-			!g_outputStream.is_open(),
-			"Trying to open profile session \"{}\" while session \"{}\" is active!",
-			g_currentSession->name,
-			a_name
-		);
-
 		if (!g_atexitRegistered)
 		{
 			// When the engine is force closed, g_streamWriteThread is never cleaned up
@@ -113,11 +115,21 @@ namespace Oyl::Profiling
 			g_atexitRegistered = true;
 		}
 
+		std::unique_lock lock(g_fileMutex);
+		
+		OYL_ASSERT(
+			!g_outputStream.is_open(),
+			"Trying to open profile session \"{}\" while session \"{}\" is active!",
+			g_currentSession->name,
+			a_name
+		);
+
 		// Create directory if it doesn't exist
 		auto directory = std::filesystem::path(a_filepath).parent_path();
 		create_directories(directory);
 
 		g_outputStream.open(a_filepath.data());
+		lock.unlock();
 		WriteHeader();
 		g_currentSession = std::make_unique<ProfilingSession>(ProfilingSession { std::string(a_name) });
 
@@ -130,15 +142,23 @@ namespace Oyl::Profiling
 	{
 		OYL_ASSERT(g_outputStream.is_open(), "Trying to close a profile session that doesn't exist!");
 
-		std::unique_lock lock(g_queueMutex);
-		g_queueEmptyCondition.wait(lock, [] { return g_profileResultsQueue.empty(); });
-		g_tryCloseSession = true;
-		g_queuePopulatedCondition.notify_all();
-		lock.unlock();
+		while (true)
+		{
+			std::unique_lock lock(g_queueMutex);
+			if (g_profileResultsQueue.empty())
+			{
+				g_tryCloseSession = true;
+				g_queuePopulatedCondition.notify_all();
+				break;
+			}
+		}
 
 		WriteFooter();
 		g_currentSession.reset();
-		g_outputStream.close();
+		{
+			std::unique_lock lock(g_fileMutex);
+			g_outputStream.close();
+		}
 		g_profileCount = 0;
 
 		if (g_streamWriteThread.joinable())
@@ -150,9 +170,6 @@ namespace Oyl::Profiling
 	void
 	WriteProfile(const ProfileResult& a_result)
 	{
-		if (g_profileCount++ > 0)
-			g_outputStream << ",";
-
 		std::string name = a_result.name;
 		std::replace(name.begin(), name.end(), '"', '\'');
 
@@ -172,7 +189,12 @@ namespace Oyl::Profiling
 		{
 			profile["tid"] = a_result.threadId;
 		}
-
+		
+		std::unique_lock lock(g_fileMutex);
+		if (g_profileCount++ > 0)
+		{
+			g_outputStream << ",";
+		}
 		g_outputStream << profile;
 		g_outputStream.flush();
 	}
@@ -180,6 +202,7 @@ namespace Oyl::Profiling
 	void
 	WriteHeader()
 	{
+		std::unique_lock lock(g_fileMutex);
 		g_outputStream << "{\"otherData\": {},\"traceEvents\":[";
 		g_outputStream.flush();
 	}
@@ -187,6 +210,7 @@ namespace Oyl::Profiling
 	void
 	WriteFooter()
 	{
+		std::unique_lock lock(g_fileMutex);
 		g_outputStream << "]}";
 		g_outputStream.flush();
 	}
@@ -220,11 +244,12 @@ namespace Oyl::Profiling
 	void
 	ProfilingTimer::Stop()
 	{
+		std::unique_lock lock(g_queueMutex);
+
 		auto endTimePoint = GetProfilerTimePoint();
 
 		u32 threadId = static_cast<u32>(std::hash<std::thread::id>()(std::this_thread::get_id()));
 
-		std::unique_lock lock(g_queueMutex);
 		g_profileResultsQueue.push(ProfileResult { m_name, m_startTimePoint, endTimePoint, threadId });
 		g_queuePopulatedCondition.notify_all();
 
