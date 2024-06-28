@@ -108,10 +108,10 @@ local function case_insensitive_find(table, index)
 end
 
 function addDependencyToProject(dependencyName)
-    local module = case_insensitive_find(Assemblies, dependencyName)
-    if module then
-        links { module.ProjectName }
-        includedirs { path.join(Config.SourceDir, module.Dir) }
+    local assembly = case_insensitive_find(Assemblies, dependencyName)
+    if assembly then
+        links { assembly.ProjectName }
+        includedirs { path.join(Config.SourceDir, assembly.Dir) }
         return
     end
 
