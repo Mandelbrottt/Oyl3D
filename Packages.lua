@@ -124,6 +124,7 @@ Dependencies = {
             }
             filter "kind:SharedLib"
                 defines {
+                    "TRACY_ENABLE",
                     "TRACY_EXPORTS",
                     -- "TRACY_ONLY_LOCALHOST",
                     "TRACY_NO_SAMPLING",
