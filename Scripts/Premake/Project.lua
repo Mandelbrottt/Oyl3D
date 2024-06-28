@@ -21,6 +21,7 @@ function applyCommonCppSettings(assemblyDefinition)
     staticruntime "off"
     floatingpoint "fast"
     rtti "on"
+    stringpooling "on"
     
     location (Config.ProjectLocation)
     targetdir(Config.TargetDir .. Config.OutputDir)
@@ -58,6 +59,7 @@ function applyCommonCppSettings(assemblyDefinition)
 
             -- Warning Silence Defines
             "_SILENCE_STDEXT_ARR_ITERS_DEPRECATION_WARNING", -- Silence warning in spdlog
+            "TRACY_ENABLE", -- TODO: Move to config filter once new config setup is implemented
         }
     end
 
