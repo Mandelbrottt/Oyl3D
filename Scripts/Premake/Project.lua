@@ -60,6 +60,8 @@ function applyCommonCppSettings(assemblyDefinition)
             -- Warning Silence Defines
             "_SILENCE_STDEXT_ARR_ITERS_DEPRECATION_WARNING", -- Silence warning in spdlog
             "TRACY_ENABLE", -- TODO: Move to config filter once new config setup is implemented
+            "TRACY_DELAYED_INIT",
+            "TRACY_MANUAL_LIFETIME",
         }
     end
 

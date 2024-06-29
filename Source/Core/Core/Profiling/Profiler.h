@@ -5,6 +5,9 @@
 #define OYL_PROFILER_ENABLED 1
 
 #if OYL_PROFILER_ENABLED
+#	define OYL_PROFILER_INIT()     ::tracy::StartupProfiler()
+#	define OYL_PROFILER_SHUTDOWN() ::tracy::ShutdownProfiler()
+
 #	define OYL_PROFILE_SCOPE(...)       OYL_MACRO_OVERLOAD(_OYL_PROFILE_SCOPE, __VA_ARGS__)
 #	define _OYL_PROFILE_SCOPE_1(_name_) ZoneScopedN(_name_)
 

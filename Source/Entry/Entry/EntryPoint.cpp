@@ -107,6 +107,8 @@ int WINAPI WinMain(
 		_putenv_s("TRACY_ONLY_LOCALHOST", "1");
 	}
 
+	OYL_PROFILER_INIT();
+
 	SetupConsole();
 
 	Oyl::Detail::CoreInitParameters initParams;
@@ -141,6 +143,8 @@ int WINAPI WinMain(
 	OYL_FRAME_MARK_END(shutdownString);
 
 	ShutdownConsole();
+
+	OYL_PROFILER_SHUTDOWN();
 
 	return 0;
 }

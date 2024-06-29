@@ -126,6 +126,8 @@ Dependencies = {
                 defines {
                     "TRACY_ENABLE",
                     "TRACY_EXPORTS",
+                    "TRACY_DELAYED_INIT",
+                    "TRACY_MANUAL_LIFETIME",
                     "TRACY_NO_SAMPLING",
                     "TRACY_NO_SYSTEM_TRACING",
                 }
