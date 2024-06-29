@@ -1,59 +1,28 @@
 #pragma once
 
-#include <string_view>
-#include <thread>
+#if OYL_PROFILE
+#	include "Profiler_Tracy.h"
 
-#include "Core/Types/Typedefs.h"
+#	define OYL_PROFILER_INIT()     ::tracy::StartupProfiler()
+#	define OYL_PROFILER_SHUTDOWN() ::tracy::ShutdownProfiler()
 
-namespace Oyl::Profiling
-{
-	void
-	OYL_CORE_API
-	BeginSession(std::string_view a_name, std::string_view a_filepath);
+#	define OYL_PROFILE_SCOPE(...)       OYL_MACRO_OVERLOAD(_OYL_PROFILE_SCOPE, __VA_ARGS__)
+#	define _OYL_PROFILE_SCOPE_1(_name_) ZoneScopedN(_name_)
 
-	void
-	OYL_CORE_API
-	EndSession();
+#	define OYL_PROFILE_FUNCTION() ZoneScoped
 
-	void
-	OYL_CORE_API
-	RegisterThreadName(std::string_view a_name);
+#	define OYL_FRAME_MARK()             FrameMark
+#	define OYL_FRAME_MARK_NAMED(_name_) FrameMarkNamed(_name_)
 
-	void
-	OYL_CORE_API
-	RegisterThreadName(std::thread::id a_id, std::string_view a_name);
-
-	class OYL_CORE_API ProfilingTimer
-	{
-	public:
-		explicit
-		ProfilingTimer(const char* a_name);
-
-		~ProfilingTimer();
-
-		void Stop();
-
-	private:
-		const char* m_name;
-		f64         m_startTimePoint;
-		bool        m_stopped;
-	};
-}
-
-#define OYL_PROFILER_ENABLED 1
-
-#if OYL_PROFILER_ENABLED
-#	define OYL_PROFILE_BEGIN_SESSION(_name_, _filepath_) ::Oyl::Profiling::BeginSession(_name_, _filepath_)
-#	define OYL_PROFILE_END_SESSION() ::Oyl::Profiling::EndSession()
-
-#	define OYL_PROFILE_SCOPE(_name_, ...) OYL_MACRO_OVERLOAD(_OYL_PROFILE_SCOPE, _name_, __VA_ARGS__)
-#	define _OYL_PROFILE_SCOPE_1(_name_) ::Oyl::Profiling::ProfilingTimer _OYL_CAT_EXPAND(timer, __LINE__)(_name_)
-
-#	define OYL_PROFILE_FUNCTION(...) _OYL_EXPAND(OYL_PROFILE_SCOPE(__FUNCSIG__, __VA_ARGS__))
+#	define OYL_FRAME_MARK_START(_name_) FrameMarkStart(_name_)
+#	define OYL_FRAME_MARK_END(_name_)   FrameMarkEnd(_name_)
 #else
-#	define OYL_PROFILE_BEGIN_SESSION(_name_, _filepath_)
-#	define OYL_PROFILE_END_SESSION()
-
-#	define OYL_PROFILE_SCOPE(_name_, ...)
-#	define OYL_PROFILE_FUNCTION(...)
+#	define OYL_PROFILER_INIT()
+#	define OYL_PROFILER_SHUTDOWN()
+#	define OYL_PROFILE_SCOPE(...) OYL_UNUSED(__VA_ARGS__)
+#	define OYL_PROFILE_FUNCTION()
+#	define OYL_FRAME_MARK()
+#	define OYL_FRAME_MARK_NAMED(_name_) OYL_UNUSED(_name_)
+#	define OYL_FRAME_MARK_START(_name_) OYL_UNUSED(_name_)
+#	define OYL_FRAME_MARK_END(_name_)   OYL_UNUSED(_name_)
 #endif

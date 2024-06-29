@@ -6,36 +6,19 @@ Config.ShortName = "Oyl"
 Config.TargetDir = "%{wks.location}/Build/Binaries/"
 Config.LibraryDir = "%{wks.location}/Build/Library/"
 Config.ObjectDir = "%{wks.location}/Build/Intermediate/"
-Config.OutputDir = "%{cfg.system}_%{cfg.architecture}_%{cfg.buildcfg}/"
+Config.OutputDir = "%{cfg.buildcfg}_%{cfg.platform}_%{cfg.system}/"
 
 Config.ProjectLocation = "./"
 
 Config.SourceDir = "Source/"
 Config.DependenciesDir = Config.SourceDir .. "Dependencies/"
 
-Config.Postfix = "Standalone"
-Config.Editor = {
-    Postfix = "Editor"
-}
-Config.Debug = {
-    Prefix = "Debug"
-}
-Config.Development = {
-    Prefix = "Development"
-}
-Config.Release = {
-    Prefix = "Release"
-}
+Config.Configurations = {}
+Config.Configurations.Debug = "Debug"
+Config.Configurations.Development = "Development"
+Config.Configurations.Profile = "Profile"
+Config.Configurations.Distribution = "Distribution"
 
-
-Config.Debug.ConfigName = Config.Debug.Prefix .. "-" .. Config.Postfix
-Config.Debug.Editor = {}
-Config.Debug.Editor.ConfigName = Config.Debug.Prefix .. "-" .. Config.Editor.Postfix
-
-Config.Development.ConfigName = Config.Development.Prefix .. "-" .. Config.Postfix
-Config.Development.Editor = {}
-Config.Development.Editor.ConfigName = Config.Development.Prefix .. "-" .. Config.Editor.Postfix
-
-Config.Release.ConfigName = Config.Release.Prefix .. "-" .. Config.Postfix
-Config.Release.Editor = {}
-Config.Release.Editor.ConfigName = Config.Release.Prefix .. "-" .. Config.Editor.Postfix
+Config.Platforms = {}
+Config.Platforms.Editor = "Editor"
+Config.Platforms.Standalone = "Standalone"

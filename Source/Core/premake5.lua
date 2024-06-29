@@ -8,6 +8,7 @@ EngineAssembly {
         "Vulkan",
 		"NlohmannJson",
 		"YamlCpp",
+        "TracyClient",
     },
     Properties = function()
         pchheader "pch.h"

@@ -14,23 +14,25 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        BUILD_CONFIGURATION: [
-          Debug-Editor,
-          Development-Editor,
-          Release-Editor,
-          Debug-Standalone,
-          Development-Standalone,
-          Release-Standalone,
+        build_configuration: [
+          Debug,
+          Development,
+          Distribution,
+          Profile,
         ]
-        BUILD_PLATFORM: [
-          x64
+        build_platform: [
+          Editor,
+          Standalone,
         ]
+        exclude:
+          - build_configuration: Distribution
+            build_platform: Editor
 
     runs-on: windows-latest
 
     env:
-      VULKAN_SDK: C:\VulkanSdk\
-      SOLUTION_FILE_PATH: Oyl3D_vs2022.sln
+      vulkan_sdk: C:\VulkanSdk\
+      solution_file_path: Oyl3D_vs2022.sln
 
     steps:
     - uses: actions/checkout@v4
@@ -52,7 +54,7 @@ jobs:
     - name: Cache VulkanSDK
       uses: actions/cache@v4
       with:
-        path: ${{env.VULKAN_SDK}}
+        path: ${{env.vulkan_sdk}}
         key: vulkan-sdk
 
     - name: Add MSBuild to PATH
@@ -60,7 +62,7 @@ jobs:
 
     - name: Setup Vulkan
       run: |
-          if (Test-Path -Path ${{env.VULKAN_SDK}}) {
+          if (Test-Path -Path ${{env.vulkan_sdk}}) {
             echo "Vulkan SDK already on disk"
             Exit 0
           }
@@ -69,7 +71,7 @@ jobs:
           $ProgressPreference = 'SilentlyContinue'
           Invoke-WebRequest -Uri "https://sdk.lunarg.com/sdk/download/$ver/windows/VulkanSDK-$ver-Installer.exe" -OutFile VulkanSDK.exe
           echo Downloaded
-          .\VulkanSDK.exe --root C:\VulkanSDK  --accept-licenses --default-answer --confirm-command install
+          .\VulkanSDK.exe --root ${{env.vulkan_sdk}} --accept-licenses --default-answer --confirm-command install
 
     - name: Generate Solutions
       working-directory: ${{env.GITHUB_WORKSPACE}}
@@ -82,7 +84,7 @@ jobs:
       run: >
         msbuild
         /maxCpuCount
-        /property:Configuration=${{matrix.BUILD_CONFIGURATION}}
-        /property:Platform=${{matrix.BUILD_PLATFORM}}
+        /property:Configuration=${{matrix.build_configuration}}
+        /property:Platform=${{matrix.build_platform}}
         /verbosity:normal
-        ${{env.SOLUTION_FILE_PATH}}
+        ${{env.solution_file_path}}

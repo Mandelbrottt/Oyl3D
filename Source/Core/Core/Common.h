@@ -1,6 +1,10 @@
 #pragma once
 
 #pragma region Environment Macros
+#	if defined(OYL_DISTRIBUTION) && defined(OYL_EDITOR)
+#		error Oyl Editor doesn't support Distribution configuration!
+#	endif
+
 #	ifdef _WIN32
 #		define OYL_WINDOWS
 #		ifdef _WIN64
@@ -71,7 +75,6 @@
      * <code>
      * #define OVERLOADED_MACRO(...) OYL_MACRO_OVERLOAD(_OVERLOADED_MACRO, __VA_ARGS__)
      *
-     * #define _OVERLOADED_MACRO_0() // 0 arguments
      * #define _OVERLOADED_MACRO_1() // 1 arguments
      * #define _OVERLOADED_MACRO_2() // 2 arguments
      * #define _OVERLOADED_MACRO_3() // 3 arguments
@@ -87,9 +90,9 @@
 #	define _OYL_CAT_EXPAND(_a_, _b_) _OYL_CAT(_a_, _b_)
 #	define _OYL_CAT_WITH_UNDERSCORE(_name_, _num_) _OYL_CAT(_name_##_, _num_)
 
-#	define _OYL_GET_ARG_COUNT(_0_, _1_, _2_, _3_, _4_, _5_, _6_, _7_, _8_, _9_, _10_, _11_, _12_, _13_, _14_, _15_, _16_, _17_, _18_, _19_, _20_, _count_, ...) _count_
+#	define _OYL_GET_ARG_COUNT(_1_, _2_, _3_, _4_, _5_, _6_, _7_, _8_, _9_, _10_, _11_, _12_, _13_, _14_, _15_, _16_, _17_, _18_, _19_, _20_, _count_, ...) _count_
 
-#	define _OYL_EXPAND_ARGS_COUNT(...)              _OYL_EXPAND(_OYL_GET_ARG_COUNT(__VA_ARGS__, 20, 19, 18, 17, 16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0))
+#	define _OYL_EXPAND_ARGS_COUNT(...)              _OYL_EXPAND(_OYL_GET_ARG_COUNT(__VA_ARGS__, 19, 18, 17, 16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1))
 #	define _OYL_MACRO_APPEND_ARG_COUNT(_name_, ...) _OYL_EXPAND(_OYL_CAT_WITH_UNDERSCORE(_name_, _OYL_EXPAND_ARGS_COUNT(unused, __VA_ARGS__))(__VA_ARGS__))
 #pragma endregion
 

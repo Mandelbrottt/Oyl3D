@@ -27,12 +27,12 @@ namespace Oyl::Detail
 	void
 	Init(const CoreInitParameters& a_params)
 	{
+		OYL_PROFILE_FUNCTION();
+
 		g_data.params           = a_params;
 		g_data.shouldGameUpdate = true;
 
-		// Init Time before profiling, as profiling relies on Time
 		Time::Detail::Init();
-		OYL_PROFILE_FUNCTION();
 
 		Logging::Detail::Init();
 
@@ -69,6 +69,21 @@ namespace Oyl::Detail
 		//{
 		//	g_data.shouldGameUpdate = !g_data.shouldGameUpdate;
 		//}
+
+		static auto lastTime = Time::Detail::ImmediateElapsedTime();
+		auto thisTime = Time::Detail::ImmediateElapsedTime();
+		auto elapsedSeconds = thisTime - lastTime;
+		auto elapsedMicroSeconds = u64(elapsedSeconds * 1'000'000);
+
+		if (elapsedSeconds < 1.0 / 60.0)
+		{
+			using std::chrono::duration_cast;
+			using std::chrono::microseconds;
+			using std::chrono::seconds;
+			std::this_thread::sleep_for(std::chrono::duration(microseconds(16'666 - elapsedMicroSeconds)));
+		}
+		
+		lastTime = thisTime;
 	}
 
 	void OnEvent(Event& a_event)
