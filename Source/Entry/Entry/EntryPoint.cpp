@@ -88,15 +88,17 @@ int WINAPI WinMain(
 	OYL_UNUSED(hPrevInstance);
 	OYL_UNUSED(lpCmdLine);
 	OYL_UNUSED(nShowCmd);
-
-	std::vector<const char*> args;
-	args.reserve(__argc - 1); // Skip exe name for commandline params
-	for (int i = 1; i < __argc; i++)
+	
 	{
-		args.push_back(__argv[i]);
-	}
+		std::vector<const char*> args;
+		args.reserve(__argc - 1); // Skip exe name for commandline params
+		for (int i = 1; i < __argc; i++)
+		{
+			args.push_back(__argv[i]);
+		}
 
-	Oyl::CommandLine::Detail::ParseCommandLine(args.size(), args.data());
+		Oyl::CommandLine::Detail::ParseCommandLine(args.size(), args.data());
+	}
 
 	// Allow users to dynamically set whether they want to profile over the network or not
 	// By default, only work over localhost

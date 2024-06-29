@@ -23,55 +23,52 @@ namespace Oyl
 	void
 	CommandLine::ParseCommandLineImpl(size_t a_argc, const char* a_argv[])
 	{
-		std::string name;
-		std::string value;
 		for (int i = 0; i < a_argc; i++)
 		{
-			std::string arg        = a_argv[i];
-			bool        isArgument = arg.rfind('-', 0) != std::string::npos;
+			std::string arg = a_argv[i];
 
-			// If we're parsing an argument name, and the last argument was also a name,
-			// it must have been an empty argument
-			if (isArgument && !name.empty())
+			auto isArgument = [](const std::string& a_arg)
 			{
-				AddArgumentImpl(name);
-				name = {};
-			}
-
-			if (isArgument)
-			{
-				auto namePos   = arg.find_first_not_of('-');
-				auto equalsPos = arg.find_first_of('=');
-				if (equalsPos == std::string::npos) // Is there an equals, making this a combo name and value?
-				{
-					equalsPos = arg.length();
-				} else if (equalsPos != arg.find_last_of('=')) // Ensure there's only 1 equals sign
-				{
-					OYL_LOG_WARNING("Invalid command line argument argument \"{}\"", arg);
-					continue;
-				} else // The rest of the string is the value
-				{
-					value = arg.substr(equalsPos + 1);
-				}
-
-				name = arg.substr(namePos, equalsPos - namePos);
-			} else if (!name.empty()) // The argument is just the value of the last argument name
-			{
-				value = arg;
-			}
-
-			if (name.empty() && !value.empty())
+				return a_arg.rfind('-', 0) != std::string::npos;
+			};
+			
+			if (!isArgument(arg))
 			{
 				OYL_LOG_WARNING("Invalid command line argument argument \"{}\"", arg);
 				continue;
 			}
 
-			// If the value is not empty, we already have the name and can add a name/value pair
-			if (!value.empty())
+			std::string value;
+
+			auto namePos   = arg.find_first_not_of('-');
+			auto equalsPos = arg.find_first_of('=');
+			if (equalsPos == std::string::npos) // Is there an equals, making this a combo name and value?
+			{
+				equalsPos = arg.length();
+			} else if (equalsPos != arg.find_last_of('=')) // Ensure there's only 1 equals sign
+			{
+				OYL_LOG_WARNING("Invalid command line argument argument \"{}\"", arg);
+				continue;
+			} else // The rest of the string is the value
+			{
+				value = arg.substr(equalsPos + 1);
+			}
+
+			std::string name = arg.substr(namePos, equalsPos - namePos);
+
+			// Peek the next argument, if it is a value, use it for this argument
+			int nextIndex = i + 1;
+			if (value.empty() && nextIndex < a_argc && !isArgument(a_argv[nextIndex]))
+			{
+				value = a_argv[++i];
+			}
+
+			if (value.empty())
+			{
+				AddArgumentImpl(name);
+			} else
 			{
 				AddStringImpl(name, value);
-				name  = {};
-				value = {};
 			}
 		}
 	}
