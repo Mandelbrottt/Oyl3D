@@ -6,7 +6,7 @@ Config.ShortName = "Oyl"
 Config.TargetDir = "%{wks.location}/Build/Binaries/"
 Config.LibraryDir = "%{wks.location}/Build/Library/"
 Config.ObjectDir = "%{wks.location}/Build/Intermediate/"
-Config.OutputDir = "%{cfg.system}_%{cfg.buildcfg}_%{cfg.platform}/"
+Config.OutputDir = "%{cfg.buildcfg}_%{cfg.platform}_%{cfg.system}/"
 
 Config.ProjectLocation = "./"
 
@@ -15,7 +15,7 @@ Config.DependenciesDir = Config.SourceDir .. "Dependencies/"
 
 Config.Configurations = {}
 Config.Configurations.Debug = "Debug"
-Config.Configurations.Release = "Release"
+Config.Configurations.Development = "Development"
 Config.Configurations.Profile = "Profile"
 Config.Configurations.Distribution = "Distribution"
 

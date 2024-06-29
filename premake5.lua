@@ -16,7 +16,7 @@ workspace(Config.Name)
 
     configurations {
         Config.Configurations.Debug,
-        Config.Configurations.Release,
+        Config.Configurations.Development,
         Config.Configurations.Profile,
         Config.Configurations.Distribution,
     }

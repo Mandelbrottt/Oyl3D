@@ -88,11 +88,11 @@ function applyCommonCppSettings(assemblyDefinition)
         symbols "on"
         defines { string.upper(Config.ShortName) .. "_DEBUG=1" }
 
-    filter("configurations:" .. Config.Configurations.Release)
+    filter("configurations:" .. Config.Configurations.Development)
         optimize "on"
         runtime "release"
         symbols "on"
-        defines { string.upper(Config.ShortName) .. "_RELEASE=1" }
+        defines { string.upper(Config.ShortName) .. "_DEVELOPMENT=1" }
 
     filter("configurations:" .. Config.Configurations.Profile)
         optimize "on"

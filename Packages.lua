@@ -124,7 +124,7 @@ Dependencies = {
             }
             removeconfigurations {
                 Config.Configurations.Debug,
-                Config.Configurations.Release,
+                Config.Configurations.Development,
                 Config.Configurations.Distribution
             }
 

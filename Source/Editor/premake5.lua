@@ -12,5 +12,11 @@ EngineAssembly {
     Properties = function()
         pchheader "pch.h"
         pchsource "pch.cpp"
+        removeconfigurations {
+            Config.Configurations.Distribution
+        }
+        removeplatforms {
+            Config.Platforms.Standalone
+        }
     end
 }

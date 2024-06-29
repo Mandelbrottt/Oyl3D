@@ -1,6 +1,10 @@
 #pragma once
 
 #pragma region Environment Macros
+#	if defined(OYL_DISTRIBUTION) && defined(OYL_EDITOR)
+#		error Oyl Editor doesn't support Distribution configuration!
+#	endif
+
 #	ifdef _WIN32
 #		define OYL_WINDOWS
 #		ifdef _WIN64
