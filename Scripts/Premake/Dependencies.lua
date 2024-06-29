@@ -71,14 +71,35 @@ local function cleanDependencyCache()
             print(string.format("\tCleaning %s...", dir))
             os.execute(os.translateCommands("{RMDIR} " .. dir))
         end
+    else
+        print("No Dependencies in Cache to remove.")
+    end
+end
+
+local function cleanDependencyInCache(dependencyToClean)
+    if (string.find(dependencyToClean, [[(\.\.)|\/|\\]], 1, true)) then
+        print(string.format("Failed to clean dependency with invalid name \"\"", dependencyToClean));
+        return
+    end
+    local depsToRemove = os.matchdirs(Config.DependenciesDir .. dependencyToClean)
+    if #depsToRemove ~= 0 then
+        print(string.format("Cleaning Dependency \"%s\" in Dependency Cache...", dependencyToClean))
+        for _, dir in pairs(depsToRemove) do
+            os.execute(os.translateCommands("{RMDIR} " .. dir))
+        end
     end
 end
 
 function processDependencies(dependencies)
     preProcessDependencyTable(dependencies)
     
-    if _OPTIONS[reinitOptionTrigger] then
-        cleanDependencyCache()
+    local reinitOption = _OPTIONS[reinitOptionTrigger]
+    if reinitOption then
+        if (reinitOption ~= "") then
+            cleanDependencyInCache(reinitOption)
+        else
+            cleanDependencyCache()
+        end
     end
 
     for _, dependency in pairsByKeys(dependencies) do
