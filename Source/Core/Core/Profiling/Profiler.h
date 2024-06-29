@@ -1,10 +1,8 @@
 #pragma once
 
-#include "Profiler_Tracy.h"
+#if OYL_PROFILE
+#	include "Profiler_Tracy.h"
 
-#define OYL_PROFILER_ENABLED 1
-
-#if OYL_PROFILER_ENABLED
 #	define OYL_PROFILER_INIT()     ::tracy::StartupProfiler()
 #	define OYL_PROFILER_SHUTDOWN() ::tracy::ShutdownProfiler()
 
@@ -19,6 +17,8 @@
 #	define OYL_FRAME_MARK_START(_name_) FrameMarkStart(_name_)
 #	define OYL_FRAME_MARK_END(_name_)   FrameMarkEnd(_name_)
 #else
+#	define OYL_PROFILER_INIT()
+#	define OYL_PROFILER_SHUTDOWN()
 #	define OYL_PROFILE_SCOPE(...) OYL_UNUSED(__VA_ARGS__)
 #	define OYL_PROFILE_FUNCTION()
 #	define OYL_FRAME_MARK()
