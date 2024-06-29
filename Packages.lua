@@ -126,12 +126,27 @@ Dependencies = {
                 defines {
                     "TRACY_ENABLE",
                     "TRACY_EXPORTS",
-                    -- "TRACY_ONLY_LOCALHOST",
                     "TRACY_NO_SAMPLING",
                     "TRACY_NO_SYSTEM_TRACING",
                 }
         end
-    }
+    },
+    -- TracyServer = {
+    --     Git = {
+    --         Url = "https://github.com/wolfpld/tracy.git",
+    --         Revision = "v0.10"
+    --     },
+    --     Kind = premake.WINDOWEDAPP,
+    --     Files = { "profiler/", "server/", "public/", "imgui/", "nfd/", "zstd/" },
+    --     IncludeDirs = { "profiler/", "public/" },
+    --     CustomProperties = function()
+    --         -- removefiles { "**" }
+    --         -- files {
+    --         --     "public/TracyClient.cpp",
+    --         --     "public/tracy/tracy.hpp"
+    --         -- }
+    --     end
+    -- }
 }
 
 local VULKAN_SDK = os.getenv("VULKAN_SDK")
