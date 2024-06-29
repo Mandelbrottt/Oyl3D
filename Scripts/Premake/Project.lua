@@ -1,9 +1,9 @@
 function filterEditor()
-    filter("configurations:not *" .. Config.Postfix .. " or *" .. Config.Editor.Postfix)
+    filter(string.format("platforms:*%s*", Config.Platforms.Editor))
 end
 
 function filterStandalone()
-    filter("configurations:*" .. Config.Postfix .. " or not *" .. Config.Editor.Postfix)
+    filter(string.format("platforms:not *%s*", Config.Platforms.Editor))
 end
 
 function defineInsideMacro(projectName)
@@ -79,22 +79,37 @@ function applyCommonCppSettings(assemblyDefinition)
             "4275", -- non dll-interface used as base for dll-interface
         }
 
-    filter("configurations:" .. Config.Debug.Prefix .. "*")
+    filter "system:windows"
+        architecture "x64"
+
+    filter("configurations:" .. Config.Configurations.Debug)
         optimize "off"
         runtime "debug"
+        symbols "on"
         defines { string.upper(Config.ShortName) .. "_DEBUG=1" }
 
-    filter("configurations:" .. Config.Development.Prefix .. "*")
-        optimize "debug"
-        runtime "release"
-        defines { string.upper(Config.ShortName) .. "_DEVELOPMENT=1" }
-
-    filter("configurations:" .. Config.Release.Prefix .. "*")
+    filter("configurations:" .. Config.Configurations.Release)
         optimize "on"
         runtime "release"
+        symbols "on"
         defines { string.upper(Config.ShortName) .. "_RELEASE=1" }
+
+    filter("configurations:" .. Config.Configurations.Profile)
+        optimize "on"
+        runtime "release"
+        symbols "on"
+        defines { string.upper(Config.ShortName) .. "_PROFILE=1" }
+        
+    filter("configurations:" .. Config.Configurations.Distribution)
+        optimize "full"
+        runtime "release"
+        symbols "off"
+        defines { string.upper(Config.ShortName) .. "_DISTRIBUTION=1" }
         
     filterEditor()
+        removeconfigurations {
+            Config.Configurations.Distribution
+        }
         defines { string.upper(Config.ShortName) .. "_EDITOR=1" }
         
     filterStandalone()

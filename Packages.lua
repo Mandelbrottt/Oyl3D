@@ -122,6 +122,12 @@ Dependencies = {
                 "public/TracyClient.cpp",
                 "public/tracy/tracy.hpp"
             }
+            removeconfigurations {
+                Config.Configurations.Debug,
+                Config.Configurations.Release,
+                Config.Configurations.Distribution
+            }
+
             filter "kind:SharedLib"
                 defines {
                     "TRACY_ENABLE",

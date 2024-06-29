@@ -15,26 +15,17 @@ workspace(Config.Name)
     filename(Config.Name .. "_" .. _ACTION)
 
     configurations {
-        Config.Debug.Editor.ConfigName,
-        Config.Development.Editor.ConfigName,
-        Config.Release.Editor.ConfigName,
-
-        Config.Debug.ConfigName,
-        Config.Development.ConfigName,
-        Config.Release.ConfigName,
+        Config.Configurations.Debug,
+        Config.Configurations.Release,
+        Config.Configurations.Profile,
+        Config.Configurations.Distribution,
     }
 
     platforms {
-        -- "x86",
-        "x64",
+        Config.Platforms.Editor,
+        Config.Platforms.Standalone,
     }
 
-    filter "platforms:*32 or *86"
-        architecture "x86"
-    filter "platforms:*64"
-        architecture "x64"
-    filter {}
-    
     startproject(Config.ShortName .. ".Entry")
 
     group("Dependencies")
@@ -77,5 +68,9 @@ workspace(Config.Name)
         rebuildcommands {
             runPremakeCommand,
         }
+
+        filter "system:windows"
+            architecture "x64"
+        filter {}
 
 include "Scripts/Premake/Overrides.lua"
