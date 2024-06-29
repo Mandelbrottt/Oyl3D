@@ -12,7 +12,7 @@
 #	define OYL_PROFILE_FUNCTION() ZoneScoped
 
 #	define OYL_FRAME_MARK()             FrameMark
-#	define OYL_FRAME_MARK_NAMED(_name_) FrameMarkNamed
+#	define OYL_FRAME_MARK_NAMED(_name_) FrameMarkNamed(_name_)
 
 #	define OYL_FRAME_MARK_START(_name_) FrameMarkStart(_name_)
 #	define OYL_FRAME_MARK_END(_name_)   FrameMarkEnd(_name_)
