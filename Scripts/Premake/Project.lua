@@ -59,9 +59,6 @@ function applyCommonCppSettings(assemblyDefinition)
 
             -- Warning Silence Defines
             "_SILENCE_STDEXT_ARR_ITERS_DEPRECATION_WARNING", -- Silence warning in spdlog
-            "TRACY_ENABLE", -- TODO: Move to config filter once new config setup is implemented
-            "TRACY_DELAYED_INIT",
-            "TRACY_MANUAL_LIFETIME",
         }
     end
 
@@ -98,7 +95,13 @@ function applyCommonCppSettings(assemblyDefinition)
         optimize "on"
         runtime "release"
         symbols "on"
-        defines { string.upper(Config.ShortName) .. "_PROFILE=1" }
+        defines { 
+            string.upper(Config.ShortName) .. "_PROFILE=1",
+            "TRACY_ENABLE",
+            "TRACY_DELAYED_INIT",
+            "TRACY_MANUAL_LIFETIME",
+            "TRACY_NO_SYSTEM_TRACING",
+        }
         
     filter("configurations:" .. Config.Configurations.Distribution)
         optimize "full"

@@ -99,18 +99,20 @@ int WINAPI WinMain(
 
 		Oyl::CommandLine::Detail::ParseCommandLine(args.size(), args.data());
 	}
+	
+	SetupConsole();
 
+#ifdef OYL_PROFILE
 	// Allow users to dynamically set whether they want to profile over the network or not
 	// By default, only work over localhost
 	if (!Oyl::CommandLine::IsPresent("profile_network"))
 	{
-		_putenv_s("TRACY_ONLY_LOCALHOST", "1");
+		SetEnvironmentVariableA("TRACY_ONLY_LOCALHOST", "1");
 	}
+#endif
 
 	OYL_PROFILER_INIT();
-
-	SetupConsole();
-
+	
 	Oyl::Detail::CoreInitParameters initParams;
 
 	initParams.onApplicationShouldQuitCallback = [] { g_running = false; };

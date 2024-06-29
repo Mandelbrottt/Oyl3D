@@ -136,6 +136,7 @@ Dependencies = {
                     "TRACY_MANUAL_LIFETIME",
                     "TRACY_NO_SAMPLING",
                     "TRACY_NO_SYSTEM_TRACING",
+                    "TRACY_ONLY_LOCALHOST", -- TODO: Fix only localhost at runtime
                 }
         end
     },
