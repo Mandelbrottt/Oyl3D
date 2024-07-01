@@ -13,6 +13,7 @@ namespace Oyl
 	using uint64 = uint64_t;
 
 	using uint = uint32;
+	using byte = uint8;
 
 	using float32 = float_t;
 	static_assert(sizeof(float32) == 4);
@@ -32,6 +33,7 @@ using Oyl::uint32;
 using Oyl::uint64;
 
 using Oyl::uint;
+using Oyl::byte;
 
 using Oyl::float32;
 using Oyl::float64;
