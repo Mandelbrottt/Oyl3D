@@ -12,34 +12,12 @@
 #include "Core/Time/Time.h"
 
 //#include "Core/Reflection/TypedFactory.h"
-#include "Core/Reflection/Type.h"
+#include "Core/Reflection/Reflection.h"
+
+#include "ReflectionTest.h"
 
 namespace Oyl::Detail
 {
-	class Something
-	{
-		friend struct ::Oyl::Reflection::Detail::typed_factory_constructible_helper;
-		template<typename T, bool>
-		friend class ::Oyl::Reflection::Detail::TypedFactory;
-
-	public:
-		Something()
-		{
-			OYL_LOG("Something()");
-		}
-		
-		~Something()
-		{
-			OYL_LOG("~Something()");
-		}
-
-		void
-		DoSomething()
-		{
-			OYL_LOG("DoSomething()");
-		}
-	};
-
 	struct CoreApplicationData
 	{
 		CoreInitParameters params;
@@ -67,11 +45,20 @@ namespace Oyl::Detail
 		registry.SetOnEventCallback(OnEvent);
 
 		Reflection::Type::Register<Something>();
-		auto* somethingType = Reflection::Type::TryGet("Oyl::Detail::Something");
+		auto* somethingType = Reflection::Type::TryGet("Something");
 		auto* factory = somethingType->Factory();
-		void* something = factory->New();
-		static_cast<Something*>(something)->DoSomething();
-		factory->Delete(something);
+		void* voidSomething = factory->New();
+		auto* something = static_cast<Something*>(voidSomething);
+
+		auto& field = somethingType->InstanceFields()[0];
+		OYL_LOG("{}", field.GetValue<int>(something));
+
+		field.SetValue(something, 111);
+		OYL_LOG("{}", *reinterpret_cast<const int*>(field.GetValue(something)));
+		
+		something->DoSomething();
+
+		factory->Delete(voidSomething);
 	}
 
 	void
