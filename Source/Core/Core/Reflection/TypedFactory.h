@@ -69,12 +69,17 @@ namespace Oyl::Reflection::Detail
 		void*
 		New(void* a_location) const
 		{
+			OYL_UNUSED(a_location);
 			return nullptr;
 		};
 
 		virtual
 		void
-		Delete(void* a_location, bool a_deallocate = true) const { }
+		Delete(void* a_location, bool a_deallocate = true) const
+		{
+			OYL_UNUSED(a_location);
+			OYL_UNUSED(a_deallocate);
+		}
 	};
 
 	template<typename T, bool = typed_factory_constructible_v<T>>
