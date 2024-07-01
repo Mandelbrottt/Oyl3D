@@ -6,6 +6,7 @@
 #include <type_traits>
 #include <unordered_map>
 
+#include "Field.h"
 #include "TypedFactory.h"
 #include "Core/Types/TypeId.h"
 #include "Core/Types/Typedefs.h"
@@ -40,6 +41,7 @@ namespace Oyl::Reflection
 		operator =(Type&&) = default;
 
 	public:
+		using InstanceFieldsContainer = std::vector<Field>;
 
 		Type(Type const& a_other) = default;
 
@@ -116,6 +118,12 @@ namespace Oyl::Reflection
 			return m_fullName;
 		}
 
+		InstanceFieldsContainer const&
+		InstanceFields() const
+		{
+			return m_instanceFields;
+		}
+
 		bool
 		IsConvertibleTo(Oyl::TypeId a_typeId) const;
 
@@ -160,7 +168,17 @@ namespace Oyl::Reflection
 		template<class T>
 		static
 		Type&
-		Get() noexcept;
+		Get() noexcept
+		{
+			Oyl::TypeId id = GetTypeId<T>();
+
+			auto iter = Types().find(id);
+			if (iter == Types().end())
+			{
+				iter = Register<T>();
+			}
+			return iter->second;
+		}
 
 		/**
 		 * \brief Get a pointer to a \link Type \endlink representing T if it has already been registered.
@@ -213,6 +231,40 @@ namespace Oyl::Reflection
 			return iter;
 		};
 
+		// Used by REFLECT_MEMBERS
+		inline
+		Type&
+		_Reflect_(Field&& a_field) noexcept
+		{
+			ReflectInternal(std::move(a_field));
+
+			return *this;
+		}
+
+		// Used by REFLECT_DECLARE if reflecting the base class
+		template<typename TBase, typename TDerived>
+		inline
+		Type&
+		_Reflect_() noexcept
+		{
+			static_assert(std::is_base_of_v<TBase, TDerived>,
+				"Second argument of REFLECT_DECLARE MUST be derived from the first!");
+
+			// Don't need to use TryGet here because this function can only be called if there is a base class
+			auto& baseType = Get<TBase>();
+
+			m_baseTypeId = baseType.GetTypeId();
+
+			if (!baseType.m_instanceFields.empty())
+			{
+				auto& baseFields = baseType.m_instanceFields;
+
+				m_instanceFields.insert(m_instanceFields.begin(), baseFields.begin(), baseFields.end());
+			}
+
+			return *this;
+		}
+
 	private:
 		// You can't partially specialize function templates, so ReflectType has to be a struct-wrapped function
 		template<typename TReflected, typename = void>
@@ -227,13 +279,13 @@ namespace Oyl::Reflection
 		};
 
 		template<typename TReflected>
-		struct ReflectType<TReflected, std::void_t<decltype(sizeof(&TReflected::_ReflectType))>>
+		struct ReflectType<TReflected, std::void_t<decltype(&TReflected::_Reflect_)>>
 		{
 			static
 			void
 			Call(Type* a_type)
 			{
-				TReflected::_ReflectType(a_type);
+				TReflected::_Reflect_(a_type);
 			}
 		};
 
@@ -271,17 +323,33 @@ namespace Oyl::Reflection
 
 			ReflectType<TReflected>::Call(&reflector);
 
+			auto caseInsensitivePredicate = [](Field const& a_lhs, Field const& a_rhs)
+			{
+				auto const& lhsName = a_lhs.displayName;
+				auto const& rhsName = a_rhs.displayName;
+
+				return _strcmpi(lhsName.c_str(), rhsName.c_str()) < 0;
+			};
+
+			auto& fields = reflector.m_instanceFields;
+			std::sort(fields.begin(), fields.end(), caseInsensitivePredicate);
 
 			PopulateFactory<TReflected>(&reflector);
 
 			return reflector;
 		}
 
+		void
+		ReflectInternal(Field&& a_fieldInfo) noexcept
+		{
+			m_instanceFields.emplace_back(std::move(a_fieldInfo));
+		}
 
 		/**
 		 * \brief Convert the compiler-generated name from type_info.name() into the raw type name
 		 */
-		void ProcessName(std::type_info const& a_typeInfo);
+		void
+		ProcessName(std::type_info const& a_typeInfo);
 
 	private:
 		Oyl::TypeId m_typeId = TypeId::Null;
@@ -294,6 +362,7 @@ namespace Oyl::Reflection
 
 		std::string m_fullName;
 
+		InstanceFieldsContainer m_instanceFields;
 
 	#if defined HEAP_ALLOCATED_FACTORY
 		Detail::GenericFactory* m_factory;

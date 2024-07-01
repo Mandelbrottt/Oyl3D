@@ -42,14 +42,14 @@ namespace Oyl::Reflection
 	{
 	public:
 		Field(
-			std::string const& a_name,
-			std::string const& a_displayName,
-			std::string const& a_description,
-			uint32_t           a_offset,
-			uint32_t           a_size,
-			TypeId             a_fieldTypeId,
-			TypeId             a_containingTypeId,
-			FieldFlags         a_flags
+			std::string_view a_name,
+			std::string_view a_displayName,
+			std::string_view a_description,
+			uint32           a_offset,
+			uint32           a_size,
+			TypeId           a_fieldTypeId,
+			TypeId           a_containingTypeId,
+			FieldFlags       a_flags
 		)
 			: name(a_name),
 			  displayName(a_displayName),
@@ -78,13 +78,13 @@ namespace Oyl::Reflection
 			return description;
 		}
 		
-		uint32_t
+		uint32
 		GetOffset() const
 		{
 			return offset;
 		}
 		
-		uint32_t
+		uint32
 		GetSize() const
 		{
 			return size;
@@ -114,8 +114,7 @@ namespace Oyl::Reflection
 		 * \param a_obj The object to get the value for.
 		 * \return A pointer to the instance of the field on object obj.
 		 */
-		template<typename TContaining
-			/*, std::enable_if_t<!std::is_pointer_v<std::remove_pointer_t<TContaining>>, bool> = true*/>
+		template<typename TContaining>
 		const void* GetValue(TContaining const& a_obj) const
 		{
 			Type& containingType     = Type::Get<TContaining>();
@@ -123,7 +122,7 @@ namespace Oyl::Reflection
 
 			bool notNull = thisContainingType;
 			bool isConvertible = thisContainingType->IsConvertibleTo(&containingType);
-			bool isVoid = containingType.GetTypeId() == GetTypeId<void>();
+			bool isVoid = containingType.TypeId() == GetTypeId<void>();
 			
 			assert(notNull && (isConvertible || isVoid));
 
@@ -137,6 +136,12 @@ namespace Oyl::Reflection
 			ptrToMember += offset;
 
 			return reinterpret_cast<void*>(ptrToMember);
+		}
+
+		template<typename TContaining>
+		const void* GetValue(TContaining const& a_obj)
+		{
+			return const_cast<const Field*>(this)->GetValue(a_obj);
 		}
 		
 		/**
@@ -159,6 +164,12 @@ namespace Oyl::Reflection
 			return *static_cast<const TField*>(result);
 		}
 		
+		template<typename TField, typename TContaining>
+		const void* GetValue(TContaining const& a_obj)
+		{
+			return const_cast<const Field*>(this)->GetValue<TField>(a_obj);
+		}
+		
 		/**
 		 * \brief Set the value for the field for the given object
 		 * \tparam TContaining The type that contains the field (can be void*)
@@ -168,8 +179,7 @@ namespace Oyl::Reflection
 		 * \remark Uses memcpy under the hood, so avoid using with non-trivially copyable types.
 		 *         This is the caller's responsibility.
 		 */
-		template<typename TContaining
-			/*, std::enable_if_t<!std::is_pointer_v<std::remove_pointer_t<TContaining>>, bool> = true*/>
+		template<typename TContaining>
 		void SetValue(TContaining const& a_obj, const void* a_incomingValue, size_t a_incomingSize) const
 		{
 			Type& containingType     = Type::Get<TContaining>();
@@ -177,7 +187,7 @@ namespace Oyl::Reflection
 
 			bool notNull = thisContainingType;
 			bool isConvertible = thisContainingType->IsConvertibleTo(&containingType);
-			bool isVoid = containingType.GetTypeId() == GetTypeId<void>();
+			bool isVoid = containingType.TypeId() == GetTypeId<void>();
 			bool sizeEqual = a_incomingSize == size;
 			
 			assert(notNull && (isConvertible || isVoid) && sizeEqual);
@@ -192,6 +202,12 @@ namespace Oyl::Reflection
 			ptrToMember += offset;
 
 			std::memcpy(reinterpret_cast<void*>(ptrToMember), a_incomingValue, a_incomingSize);
+		}
+		
+		template<typename TContaining>
+		void SetValue(TContaining const& a_obj, const void* a_incomingValue, size_t a_incomingSize)
+		{
+			const_cast<const Field*>(this)->SetValue(a_obj, a_incomingValue, a_incomingSize);
 		}
 
 		/**
@@ -209,7 +225,7 @@ namespace Oyl::Reflection
 
 			bool notNull = thisContainingType;
 			bool isConvertible = thisContainingType->IsConvertibleTo(&containingType);
-			bool isVoid = containingType.GetTypeId() == GetTypeId<void>();
+			bool isVoid = containingType.TypeId() == GetTypeId<void>();
 
 			// TODO: Do more elaborate type checks
 			bool sizeEqual = sizeof(TField) == size;
@@ -231,6 +247,12 @@ namespace Oyl::Reflection
 			refToMember = a_value;
 		}
 		
+		template<typename TContaining, typename TField>
+		void SetValue(TContaining const& a_obj, TField const& a_value)
+		{
+			const_cast<const Field*>(this)->SetValue(a_obj, a_value);
+		}
+
 		// The actual name of the field in the source code
 		std::string name;
 
@@ -241,10 +263,10 @@ namespace Oyl::Reflection
 		std::string description;
 
 		// The offset in bytes into the containing object that the field resides at.
-		uint32_t offset;
+		uint32 offset;
 
 		// The size returned by sizeof of the field.
-		uint32_t size;
+		uint32 size;
 
 		// The StaticTypeId of the field.
 		TypeId fieldTypeId;
