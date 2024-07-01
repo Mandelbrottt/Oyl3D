@@ -11,7 +11,8 @@
 #include "Core/Profiling/Profiler.h"
 #include "Core/Time/Time.h"
 
-#include "Core/Reflection/TypedFactory.h"
+//#include "Core/Reflection/TypedFactory.h"
+#include "Core/Reflection/Type.h"
 
 namespace Oyl::Detail
 {
@@ -65,21 +66,12 @@ namespace Oyl::Detail
 		auto& registry = g_data.moduleRegistry;
 		registry.SetOnEventCallback(OnEvent);
 
-		using Reflection::Detail::GenericFactory;
-		using Reflection::Detail::TypedFactory;
-
-		GenericFactory factory;
-		auto* pFactory = &factory;
-		static_assert(sizeof(*pFactory) == sizeof(TypedFactory<Something>));
-		new(pFactory) TypedFactory<Something>;
-		void* object = pFactory->New();
-		static_cast<Something*>(object)->DoSomething();
-		pFactory->Delete(object);
-
-		void* data = alloca(pFactory->Size());
-		object = pFactory->New(data);
-		static_cast<Something*>(object)->DoSomething();
-		pFactory->Delete(object, false);
+		Reflection::Type::Register<Something>();
+		auto* somethingType = Reflection::Type::TryGet("Oyl::Detail::Something");
+		auto* factory = somethingType->Factory();
+		void* something = factory->New();
+		static_cast<Something*>(something)->DoSomething();
+		factory->Delete(something);
 	}
 
 	void
