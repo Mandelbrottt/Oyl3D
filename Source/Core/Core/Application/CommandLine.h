@@ -10,7 +10,7 @@
 
 namespace Oyl
 {
-	using ArbitraryData = std::pair<void*, u32>;
+	using ArbitraryData = std::pair<void*, uint32>;
 
 	struct CommandLineArgument final
 	{
@@ -18,7 +18,7 @@ namespace Oyl
 		CommandLineArgument();
 
 		explicit
-		CommandLineArgument(i32 a_value);
+		CommandLineArgument(int32 a_value);
 
 		explicit
 		CommandLineArgument(std::string_view a_value);
@@ -27,7 +27,7 @@ namespace Oyl
 		CommandLineArgument(ArbitraryData a_value);
 
 		explicit
-		CommandLineArgument(void* a_value, u32 a_size)
+		CommandLineArgument(void* a_value, uint32 a_size)
 			: CommandLineArgument(ArbitraryData(a_value, a_size)) {}
 
 		enum class ArgumentType
@@ -70,7 +70,7 @@ namespace Oyl
 
 		static
 		bool
-		AddInt(const std::string& a_name, i32 a_value, bool a_overwrite = true)
+		AddInt(const std::string& a_name, int32 a_value, bool a_overwrite = true)
 		{
 			return Instance().AddIntImpl(a_name, a_value, a_overwrite);
 		}
@@ -90,7 +90,7 @@ namespace Oyl
 		}
 
 		static
-		std::optional<i32>
+		std::optional<int32>
 		GetInt(const std::string& a_name)
 		{
 			return Instance().GetIntImpl(a_name);
@@ -128,7 +128,7 @@ namespace Oyl
 		AddArgumentImpl(const std::string& a_name, bool a_overwrite = true);
 
 		bool
-		AddIntImpl(const std::string& a_name, i32 a_value, bool a_overwrite = true);
+		AddIntImpl(const std::string& a_name, int32 a_value, bool a_overwrite = true);
 
 		bool
 		AddStringImpl(const std::string& a_name, std::string a_value, bool a_overwrite = true);
@@ -136,7 +136,7 @@ namespace Oyl
 		bool
 		AddArbitraryDataImpl(const std::string& a_name, ArbitraryData a_value, bool a_overwrite = true);
 
-		std::optional<i32>
+		std::optional<int32>
 		GetIntImpl(const std::string& a_name) const;
 
 		std::optional<std::string_view>

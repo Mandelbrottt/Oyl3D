@@ -4,7 +4,7 @@
 
 namespace Oyl
 {
-	using type_id_underlying_t = u32;
+	using type_id_underlying_t = uint32;
 
 	enum class TypeId : type_id_underlying_t { Null = 0, FirstValid = 1 };
 

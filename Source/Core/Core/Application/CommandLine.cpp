@@ -8,7 +8,7 @@ namespace Oyl
 	CommandLineArgument::CommandLineArgument()
 		: type { ArgumentType::None } { }
 
-	CommandLineArgument::CommandLineArgument(i32 a_value)
+	CommandLineArgument::CommandLineArgument(int32 a_value)
 		: type { ArgumentType::Integer },
 		  value { a_value } { }
 
@@ -111,7 +111,7 @@ namespace Oyl
 	}
 
 	bool
-	CommandLine::AddIntImpl(const std::string& a_name, i32 a_value, bool a_overwrite)
+	CommandLine::AddIntImpl(const std::string& a_name, int32 a_value, bool a_overwrite)
 	{
 		auto [iter, insert] = m_arguments.emplace(a_name, CommandLineArgument {});
 		if (!insert && !a_overwrite)
@@ -151,7 +151,7 @@ namespace Oyl
 		return { std::any_cast<std::string>(iter->second) };
 	}
 
-	std::optional<i32>
+	std::optional<int32>
 	CommandLine::GetIntImpl(const std::string& a_name) const
 	{
 		auto iter = m_arguments.find(a_name);
@@ -159,7 +159,7 @@ namespace Oyl
 		{
 			return {};
 		}
-		return std::any_cast<i32>(iter->second);
+		return std::any_cast<int32>(iter->second);
 	}
 
 	std::optional<ArbitraryData>

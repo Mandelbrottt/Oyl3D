@@ -4,8 +4,8 @@
 
 namespace Oyl::Time::Platform
 {
-	static u64    g_startTime;
-	static u64    g_lastFrameTime;
+	static uint64    g_startTime;
+	static uint64    g_lastFrameTime;
 	static double g_pcFrequency;
 
 	constexpr int NUM_FRAMES_TO_HOLD = 10;
@@ -35,7 +35,7 @@ namespace Oyl::Time::Platform
 
 		g_timeScale = g_timeScaleHint;
 
-		u64 currentFrameTime = CurrentProcessorTick();
+		uint64 currentFrameTime = CurrentProcessorTick();
 		
 		double doubleUnscaledElapsedTime =
 			static_cast<double>(currentFrameTime - g_startTime) / g_pcFrequency;
@@ -72,7 +72,7 @@ namespace Oyl::Time::Platform
 	}
 
 	static
-	u64
+	uint64
 	CurrentProcessorTick()
 	{
 		LARGE_INTEGER counter;
@@ -85,10 +85,10 @@ namespace Oyl::Time::Platform
 	double
 	ImmediateElapsedTime()
 	{
-		static u64 lastImmediateElapsedTime {};
+		static uint64 lastImmediateElapsedTime {};
 		static double elapsedTicker = 0;
 
-		u64 currentProcessorTick = CurrentProcessorTick();
+		uint64 currentProcessorTick = CurrentProcessorTick();
 		
 		double elapsedTime = static_cast<double>(currentProcessorTick - g_startTime) / g_pcFrequency;
 		

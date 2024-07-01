@@ -23,7 +23,7 @@ namespace Oyl::Time
 		OYL_CORE_API
 		Update();
 
-		u64
+		uint64
 		OYL_CORE_API
 		CurrentProcessorTick();
 

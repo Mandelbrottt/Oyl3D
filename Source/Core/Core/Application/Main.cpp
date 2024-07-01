@@ -73,7 +73,7 @@ namespace Oyl::Detail
 		static auto lastTime = Time::Detail::ImmediateElapsedTime();
 		auto thisTime = Time::Detail::ImmediateElapsedTime();
 		auto elapsedSeconds = thisTime - lastTime;
-		auto elapsedMicroSeconds = u64(elapsedSeconds * 1'000'000);
+		auto elapsedMicroSeconds = uint64(elapsedSeconds * 1'000'000);
 
 		if (elapsedSeconds < 1.0 / 60.0)
 		{

@@ -2,37 +2,37 @@
 
 namespace Oyl
 {
-	using i8  = int8_t;
-	using i16 = int16_t;
-	using i32 = int32_t;
-	using i64 = int64_t;
+	using int8  = int8_t;
+	using int16 = int16_t;
+	using int32 = int32_t;
+	using int64 = int64_t;
 	
-	using u8  = uint8_t;
-	using u16 = uint16_t;
-	using u32 = uint32_t;
-	using u64 = uint64_t;
+	using uint8  = uint8_t;
+	using uint16 = uint16_t;
+	using uint32 = uint32_t;
+	using uint64 = uint64_t;
 
-	using uint = u32;
+	using uint = uint32;
 
-	using f32 = float_t;
-	static_assert(sizeof(f32) == 4);
-	using f64 = double_t;
-	static_assert(sizeof(f64) == 8);
+	using float32 = float_t;
+	static_assert(sizeof(float32) == 4);
+	using float64 = double_t;
+	static_assert(sizeof(float64) == 8);
 }
 
 #if OYL_SIMPLE_NUMERIC_TYPEDEFS
-using Oyl::i8;
-using Oyl::i16;
-using Oyl::i32;
-using Oyl::i64;
+using Oyl::int8;
+using Oyl::int16;
+using Oyl::int32;
+using Oyl::int64;
 
-using Oyl::u8 ;
-using Oyl::u16;
-using Oyl::u32;
-using Oyl::u64;
+using Oyl::uint8;
+using Oyl::uint16;
+using Oyl::uint32;
+using Oyl::uint64;
 
 using Oyl::uint;
 
-using Oyl::f32;
-using Oyl::f64;
+using Oyl::float32;
+using Oyl::float64;
 #endif
