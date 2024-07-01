@@ -286,6 +286,7 @@ namespace Oyl::Reflection
 			Call(Type* a_type)
 			{
 				TReflected::_Reflect_(a_type);
+				TReflected::_ReflectMembers_(a_type);
 			}
 		};
 
