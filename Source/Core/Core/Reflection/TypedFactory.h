@@ -35,6 +35,9 @@ namespace Oyl::Reflection::Detail
 		using size_type = uint64;
 
 		virtual
+		~GenericFactory() = default;
+
+		virtual
 		TypeId
 		GetTypeId() const
 		{
