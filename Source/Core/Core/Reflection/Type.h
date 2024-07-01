@@ -214,22 +214,24 @@ namespace Oyl::Reflection
 		};
 
 	private:
-		// We need this helper because you can't partially specialize functions to make sfinae work in
-		// the way we want it to here, so do the reflection work in the static reflect function
+		// You can't partially specialize function templates, so ReflectType has to be a struct-wrapped function
 		template<typename TReflected, typename = void>
-		struct reflect_type_helper
+		struct ReflectType
 		{
 			static
 			void
-			Reflect(Type* a_type) { (void) a_type; }
+			Call(Type* a_type)
+			{
+				OYL_UNUSED(a_type);
+			}
 		};
 
 		template<typename TReflected>
-		struct reflect_type_helper<TReflected, std::void_t<decltype(sizeof(&TReflected::_ReflectType))>>
+		struct ReflectType<TReflected, std::void_t<decltype(sizeof(&TReflected::_ReflectType))>>
 		{
 			static
 			void
-			Reflect(Type* a_type)
+			Call(Type* a_type)
 			{
 				TReflected::_ReflectType(a_type);
 			}
@@ -267,7 +269,8 @@ namespace Oyl::Reflection
 		{
 			Type reflector(typeid(TReflected));
 
-			reflect_type_helper<TReflected>::Reflect(&reflector);
+			ReflectType<TReflected>::Call(&reflector);
+
 
 			PopulateFactory<TReflected>(&reflector);
 
