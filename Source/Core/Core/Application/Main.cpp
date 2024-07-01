@@ -11,8 +11,34 @@
 #include "Core/Profiling/Profiler.h"
 #include "Core/Time/Time.h"
 
+#include "Core/Reflection/TypedFactory.h"
+
 namespace Oyl::Detail
 {
+	class Something
+	{
+		friend struct ::Oyl::Reflection::Detail::typed_factory_constructible_helper;
+		template<typename T, bool>
+		friend class ::Oyl::Reflection::Detail::TypedFactory;
+
+	public:
+		Something()
+		{
+			OYL_LOG("Something()");
+		}
+		
+		~Something()
+		{
+			OYL_LOG("~Something()");
+		}
+
+		void
+		DoSomething()
+		{
+			OYL_LOG("DoSomething()");
+		}
+	};
+
 	struct CoreApplicationData
 	{
 		CoreInitParameters params;
@@ -38,6 +64,22 @@ namespace Oyl::Detail
 
 		auto& registry = g_data.moduleRegistry;
 		registry.SetOnEventCallback(OnEvent);
+
+		using Reflection::Detail::GenericFactory;
+		using Reflection::Detail::TypedFactory;
+
+		GenericFactory factory;
+		auto* pFactory = &factory;
+		static_assert(sizeof(*pFactory) == sizeof(TypedFactory<Something>));
+		new(pFactory) TypedFactory<Something>;
+		void* object = pFactory->New();
+		static_cast<Something*>(object)->DoSomething();
+		pFactory->Delete(object);
+
+		void* data = alloca(pFactory->Size());
+		object = pFactory->New(data);
+		static_cast<Something*>(object)->DoSomething();
+		pFactory->Delete(object, false);
 	}
 
 	void
@@ -70,10 +112,10 @@ namespace Oyl::Detail
 		//	g_data.shouldGameUpdate = !g_data.shouldGameUpdate;
 		//}
 
-		static auto lastTime = Time::Detail::ImmediateElapsedTime();
-		auto thisTime = Time::Detail::ImmediateElapsedTime();
-		auto elapsedSeconds = thisTime - lastTime;
-		auto elapsedMicroSeconds = uint64(elapsedSeconds * 1'000'000);
+		static auto lastTime            = Time::Detail::ImmediateElapsedTime();
+		auto        thisTime            = Time::Detail::ImmediateElapsedTime();
+		auto        elapsedSeconds      = thisTime - lastTime;
+		auto        elapsedMicroSeconds = uint64(elapsedSeconds * 1'000'000);
 
 		if (elapsedSeconds < 1.0 / 60.0)
 		{
@@ -82,7 +124,7 @@ namespace Oyl::Detail
 			using std::chrono::seconds;
 			std::this_thread::sleep_for(std::chrono::duration(microseconds(16'666 - elapsedMicroSeconds)));
 		}
-		
+
 		lastTime = thisTime;
 	}
 
