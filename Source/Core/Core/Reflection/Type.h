@@ -1,7 +1,5 @@
 #pragma once
 
-#pragma once
-
 #include <typeinfo>
 #include <type_traits>
 #include <unordered_map>
@@ -15,12 +13,16 @@
 
 namespace Oyl::Reflection
 {
+	class Assembly;
+
 	/**
 	 * \brief A runtime structure that represents a reflected data type.
 	 *        Contains information about member fields, functions, and other type information. 
 	 */
 	class OYL_CORE_API Type
 	{
+		friend class Assembly;
+
 		using TypesContainer = std::unordered_map<TypeId, std::shared_ptr<Type>>;
 
 		static TypesContainer& Types()
@@ -31,8 +33,8 @@ namespace Oyl::Reflection
 
 		Type(TypeId a_typeId, std::type_info const& a_info, uint32 a_size) noexcept
 			: m_typeId(a_typeId),
-			  m_typeInfo(&a_info),
-			  m_size(a_size)
+			  m_size(a_size),
+			  m_typeInfo(a_info)
 		{
 			ProcessName(a_info);
 		}
@@ -44,7 +46,7 @@ namespace Oyl::Reflection
 
 	public:
 		using InstanceFieldsContainer = std::vector<std::shared_ptr<Field>>;
-		
+
 		~Type();
 
 		Type&
@@ -97,7 +99,13 @@ namespace Oyl::Reflection
 		std::type_info const&
 		TypeInfo() const
 		{
-			return *m_typeInfo;
+			return m_typeInfo;
+		}
+
+		std::shared_ptr<Assembly> const&
+		Assembly() const
+		{
+			return m_assembly;
 		}
 
 		/**
@@ -321,7 +329,7 @@ namespace Oyl::Reflection
 		Reflect() noexcept
 		{
 			Type type(GetTypeId<TReflected>(), typeid(TReflected), sizeof(TReflected));
-			
+
 			ReflectType<TReflected>::Call(&type);
 
 			auto caseInsensitivePredicate =
@@ -359,7 +367,11 @@ namespace Oyl::Reflection
 
 		Oyl::TypeId m_baseTypeId = TypeId::Null;
 
-		std::type_info const* m_typeInfo;
+		uint32 m_size = 0;
+
+		std::type_info const& m_typeInfo;
+
+		std::shared_ptr<Reflection::Assembly> m_assembly;
 
 		std::string m_name;
 
@@ -373,13 +385,9 @@ namespace Oyl::Reflection
 		alignas(Detail::GenericFactory)
 		byte m_factoryData[sizeof(Detail::GenericFactory)] { byte() };
 	#endif
-
-		uint32 m_size = 0;
 	};
 }
 
 #ifdef HEAP_ALLOCATED_FACTORY
 	#undef HEAP_ALLOCATED_FACTORY
 #endif
-
-#undef DEPRECATED_WARNING_NUMBER
