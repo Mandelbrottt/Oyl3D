@@ -165,7 +165,7 @@ namespace Oyl::Reflection
 		}
 		
 		template<typename TField, typename TContaining>
-		const void* GetValue(TContaining const& a_obj)
+		TField GetValue(TContaining const& a_obj)
 		{
 			return const_cast<const Field*>(this)->GetValue<TField>(a_obj);
 		}
