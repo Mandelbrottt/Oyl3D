@@ -45,12 +45,12 @@ namespace Oyl::Detail
 		registry.SetOnEventCallback(OnEvent);
 
 		Reflection::Type::Register<Something>();
-		auto* somethingType = Reflection::Type::TryGet("Something");
+		auto somethingType = Reflection::Type::TryGet("Something");
 		auto* factory = somethingType->Factory();
 		void* voidSomething = factory->New();
 		auto* something = static_cast<Something*>(voidSomething);
 
-		auto& field = somethingType->InstanceFields()[0];
+		auto& field = *somethingType->InstanceFields()[0];
 		OYL_LOG("{}", field.GetValue<int>(something));
 
 		field.SetValue(something, 111);

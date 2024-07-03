@@ -21,7 +21,7 @@ namespace Oyl::Reflection
 	 */
 	class OYL_CORE_API Type
 	{
-		using TypesContainer = std::unordered_map<TypeId, Type>;
+		using TypesContainer = std::unordered_map<TypeId, std::shared_ptr<Type>>;
 
 		static TypesContainer& Types()
 		{
@@ -29,22 +29,22 @@ namespace Oyl::Reflection
 			return container;
 		}
 
-		explicit
-		Type(std::type_info const& a_info) noexcept
-			: m_typeInfo(&a_info)
+		Type(TypeId a_typeId, std::type_info const& a_info, uint32 a_size) noexcept
+			: m_typeId(a_typeId),
+			  m_typeInfo(&a_info),
+			  m_size(a_size)
 		{
 			ProcessName(a_info);
 		}
 
 		Type(Type&& a_other) = default;
+		Type(Type const& a_other) = default;
 		Type&
 		operator =(Type&&) = default;
 
 	public:
-		using InstanceFieldsContainer = std::vector<Field>;
-
-		Type(Type const& a_other) = default;
-
+		using InstanceFieldsContainer = std::vector<std::shared_ptr<Field>>;
+		
 		~Type();
 
 		Type&
@@ -88,7 +88,7 @@ namespace Oyl::Reflection
 		 *        the current \link Type \endlink.
 		 * \return The size of the type.
 		 */
-		int
+		uint32
 		Size() const
 		{
 			return m_size;
@@ -177,7 +177,7 @@ namespace Oyl::Reflection
 			{
 				iter = Register<T>();
 			}
-			return iter->second;
+			return *iter->second;
 		}
 
 		/**
@@ -189,11 +189,11 @@ namespace Oyl::Reflection
 		 *          so performance should not be a concern for retrieving the Reflector.
 		 */
 		static
-		Type*
+		std::shared_ptr<Type>
 		TryGet(Oyl::TypeId a_id) noexcept;
 
 		static
-		Type*
+		std::shared_ptr<Type>
 		TryGet(std::string_view a_fullyQualifiedTypeName);
 
 		static
@@ -223,10 +223,10 @@ namespace Oyl::Reflection
 				return iter;
 			}
 
-			Type type             = Type::Reflect<T>();
-			auto iter             = types.emplace(id, std::move(type)).first;
-			iter->second.m_typeId = id;
-			iter->second.m_size   = sizeof(T);
+			// ReSharper disable once CppSmartPointerVsMakeFunction
+			// Manually call new and create shared_ptr to not have to expose move or copy constructor publicly
+			auto type = std::shared_ptr<Type>(new Type(std::move(Type::Reflect<T>())));
+			auto iter = types.emplace(id, std::move(type)).first;
 
 			return iter;
 		};
@@ -320,30 +320,32 @@ namespace Oyl::Reflection
 		Type
 		Reflect() noexcept
 		{
-			Type reflector(typeid(TReflected));
+			Type type(GetTypeId<TReflected>(), typeid(TReflected), sizeof(TReflected));
+			
+			ReflectType<TReflected>::Call(&type);
 
-			ReflectType<TReflected>::Call(&reflector);
-
-			auto caseInsensitivePredicate = [](Field const& a_lhs, Field const& a_rhs)
+			auto caseInsensitivePredicate =
+				[](std::shared_ptr<Field> const& a_lhs, std::shared_ptr<Field> const& a_rhs)
 			{
-				auto const& lhsName = a_lhs.displayName;
-				auto const& rhsName = a_rhs.displayName;
+				auto const& lhsName = a_lhs->displayName;
+				auto const& rhsName = a_rhs->displayName;
 
 				return _strcmpi(lhsName.c_str(), rhsName.c_str()) < 0;
 			};
 
-			auto& fields = reflector.m_instanceFields;
+			auto& fields = type.m_instanceFields;
 			std::sort(fields.begin(), fields.end(), caseInsensitivePredicate);
 
-			PopulateFactory<TReflected>(&reflector);
+			PopulateFactory<TReflected>(&type);
 
-			return reflector;
+			return type;
 		}
 
 		void
 		ReflectInternal(Field&& a_fieldInfo) noexcept
 		{
-			m_instanceFields.emplace_back(std::move(a_fieldInfo));
+			auto fieldInfoPtr = std::make_shared<Field>(a_fieldInfo);
+			m_instanceFields.emplace_back(std::move(fieldInfoPtr));
 		}
 
 		/**
@@ -372,7 +374,7 @@ namespace Oyl::Reflection
 		byte m_factoryData[sizeof(Detail::GenericFactory)] { byte() };
 	#endif
 
-		int m_size = 0;
+		uint32 m_size = 0;
 	};
 }
 

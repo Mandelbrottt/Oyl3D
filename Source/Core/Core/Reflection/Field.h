@@ -118,7 +118,7 @@ namespace Oyl::Reflection
 		const void* GetValue(TContaining const& a_obj) const
 		{
 			Type& containingType     = Type::Get<TContaining>();
-			Type* thisContainingType = Type::TryGet(this->containingTypeId);
+			Type* thisContainingType = Type::TryGet(this->containingTypeId).get();
 
 			bool notNull = thisContainingType;
 			bool isConvertible = thisContainingType->IsConvertibleTo(&containingType);
@@ -155,7 +155,7 @@ namespace Oyl::Reflection
 		TField const& GetValue(TContaining const& a_obj) const
 		{
 			Type& incomingType = Type::Get<TField>();
-			Type* thisType     = Type::TryGet(this->fieldTypeId);
+			Type* thisType     = Type::TryGet(this->fieldTypeId).get();
 
 			assert(thisType && thisType->IsConvertibleTo(&incomingType));
 
@@ -183,7 +183,7 @@ namespace Oyl::Reflection
 		void SetValue(TContaining const& a_obj, const void* a_incomingValue, size_t a_incomingSize) const
 		{
 			Type& containingType     = Type::Get<TContaining>();
-			Type* thisContainingType = Type::TryGet(this->containingTypeId);
+			Type* thisContainingType = Type::TryGet(this->containingTypeId).get();
 
 			bool notNull = thisContainingType;
 			bool isConvertible = thisContainingType->IsConvertibleTo(&containingType);
@@ -221,7 +221,7 @@ namespace Oyl::Reflection
 		void SetValue(TContaining const& a_obj, TField const& a_value) const
 		{
 			Type& containingType     = Type::Get<TContaining>();
-			Type* thisContainingType = Type::TryGet(this->containingTypeId);
+			Type* thisContainingType = Type::TryGet(this->containingTypeId).get();
 
 			bool notNull = thisContainingType;
 			bool isConvertible = thisContainingType->IsConvertibleTo(&containingType);
