@@ -23,7 +23,7 @@ namespace Oyl::Reflection
 	{
 		friend class Assembly;
 
-		using TypesContainer = std::unordered_map<TypeId, std::shared_ptr<Type>>;
+		using TypesContainer = std::unordered_map<TypeId, Type*>;
 
 		static TypesContainer& Types()
 		{
@@ -34,7 +34,7 @@ namespace Oyl::Reflection
 		Type(TypeId a_typeId, std::type_info const& a_info, uint32 a_size) noexcept
 			: m_typeId(a_typeId),
 			  m_size(a_size),
-			  m_typeInfo(a_info)
+			  m_typeInfo(&a_info)
 		{
 			ProcessName(a_info);
 		}
@@ -45,7 +45,7 @@ namespace Oyl::Reflection
 		operator =(Type&&) = default;
 
 	public:
-		using InstanceFieldsContainer = std::vector<std::shared_ptr<Field>>;
+		using InstanceFieldsContainer = std::vector<Field*>;
 
 		~Type();
 
@@ -99,10 +99,10 @@ namespace Oyl::Reflection
 		std::type_info const&
 		TypeInfo() const
 		{
-			return m_typeInfo;
+			return *m_typeInfo;
 		}
 
-		std::shared_ptr<Assembly> const&
+		Assembly*
 		Assembly() const
 		{
 			return m_assembly;
@@ -139,16 +139,10 @@ namespace Oyl::Reflection
 		IsConvertibleTo(Type const* a_type) const;
 
 		bool
-		IsConvertibleTo(Type const& a_type) const;
-
-		bool
 		IsConvertibleFrom(Oyl::TypeId a_typeId) const;
 
 		bool
 		IsConvertibleFrom(Type const* a_type) const;
-
-		bool
-		IsConvertibleFrom(Type const& a_type) const;
 
 		/**
 		 * \brief Get the instance of the \link Detail::GenericFactory \endlink associated with this type.
@@ -175,7 +169,7 @@ namespace Oyl::Reflection
 		 */
 		template<class T>
 		static
-		Type&
+		Type*
 		Get() noexcept
 		{
 			Oyl::TypeId id = GetTypeId<T>();
@@ -185,7 +179,7 @@ namespace Oyl::Reflection
 			{
 				iter = Register<T>();
 			}
-			return *iter->second;
+			return iter->second;
 		}
 
 		/**
@@ -197,11 +191,11 @@ namespace Oyl::Reflection
 		 *          so performance should not be a concern for retrieving the Reflector.
 		 */
 		static
-		std::shared_ptr<Type>
+		Type*
 		TryGet(Oyl::TypeId a_id) noexcept;
 
 		static
-		std::shared_ptr<Type>
+		Type*
 		TryGet(std::string_view a_fullyQualifiedTypeName);
 
 		static
@@ -233,7 +227,7 @@ namespace Oyl::Reflection
 
 			// ReSharper disable once CppSmartPointerVsMakeFunction
 			// Manually call new and create shared_ptr to not have to expose move or copy constructor publicly
-			auto type = std::shared_ptr<Type>(new Type(std::move(Type::Reflect<T>())));
+			auto type = new Type(std::move(Type::Reflect<T>()));
 			auto iter = types.emplace(id, std::move(type)).first;
 
 			return iter;
@@ -333,7 +327,7 @@ namespace Oyl::Reflection
 			ReflectType<TReflected>::Call(&type);
 
 			auto caseInsensitivePredicate =
-				[](std::shared_ptr<Field> const& a_lhs, std::shared_ptr<Field> const& a_rhs)
+				[](Field* const& a_lhs, Field* const& a_rhs)
 			{
 				auto const& lhsName = a_lhs->displayName;
 				auto const& rhsName = a_rhs->displayName;
@@ -352,8 +346,8 @@ namespace Oyl::Reflection
 		void
 		ReflectInternal(Field&& a_fieldInfo) noexcept
 		{
-			auto fieldInfoPtr = std::make_shared<Field>(a_fieldInfo);
-			m_instanceFields.emplace_back(std::move(fieldInfoPtr));
+			auto fieldInfoPtr = new Field(a_fieldInfo);
+			m_instanceFields.emplace_back(fieldInfoPtr);
 		}
 
 		/**
@@ -369,9 +363,9 @@ namespace Oyl::Reflection
 
 		uint32 m_size = 0;
 
-		std::type_info const& m_typeInfo;
+		std::type_info const* m_typeInfo;
 
-		std::shared_ptr<Reflection::Assembly> m_assembly;
+		Reflection::Assembly* m_assembly;
 
 		std::string m_name;
 

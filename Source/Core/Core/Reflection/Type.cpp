@@ -22,7 +22,7 @@ namespace Oyl::Reflection
 			return true;
 		}
 
-		if (std::shared_ptr<Type> parent = TryGet(m_baseTypeId))
+		if (Type* parent = TryGet(m_baseTypeId))
 		{
 			return parent->IsConvertibleTo(a_typeId);
 		}
@@ -34,12 +34,6 @@ namespace Oyl::Reflection
 	Type::IsConvertibleTo(Type const* a_type) const
 	{
 		return IsConvertibleTo(a_type->TypeId());
-	}
-
-	bool
-	Type::IsConvertibleTo(Type const& a_type) const
-	{
-		return IsConvertibleTo(a_type.TypeId());
 	}
 
 	bool
@@ -57,7 +51,7 @@ namespace Oyl::Reflection
 
 		// Check if the other type is convertible to this type
 
-		if (std::shared_ptr<Type> otherType = TryGet(a_typeId))
+		if (Type* otherType = TryGet(a_typeId))
 		{
 			return otherType->IsConvertibleTo(m_typeId);
 		}
@@ -71,15 +65,9 @@ namespace Oyl::Reflection
 		return IsConvertibleFrom(a_type->TypeId());
 	}
 
-	bool
-	Type::IsConvertibleFrom(Type const& a_type) const
+	Type* Type::TryGet(Oyl::TypeId a_id) noexcept
 	{
-		return IsConvertibleFrom(a_type.TypeId());
-	}
-
-	std::shared_ptr<Type> Type::TryGet(Oyl::TypeId a_id) noexcept
-	{
-		std::shared_ptr<Type> result = nullptr;
+		Type* result = nullptr;
 		auto& types  = Types();
 		if (auto iter = types.find(a_id); iter != types.end())
 		{
@@ -89,8 +77,8 @@ namespace Oyl::Reflection
 		return result;
 	}
 
-	std::shared_ptr<Type> Type::TryGet(std::string_view a_fullyQualifiedTypeName) {
-		std::shared_ptr<Type> result = nullptr;
+	Type* Type::TryGet(std::string_view a_fullyQualifiedTypeName) {
+		Type* result = nullptr;
 		auto& types  = Types();
 		for (auto& [typeId, type] : types)
 		{

@@ -4,16 +4,10 @@
 namespace Oyl::Reflection
 {
 	bool
-	Assembly::RegisterType(std::shared_ptr<Type>& a_type)
+	Assembly::RegisterType(Type* a_type)
 	{
-		std::shared_ptr<Assembly> assembly;
 		for (auto& assemblyPtr : Assemblies())
 		{
-			if (assemblyPtr.get() == this)
-			{
-				assembly = assemblyPtr;
-			}
-			
 			auto& ownedTypes = assemblyPtr->m_ownedTypes;
 			auto iter = std::find_if(
 				ownedTypes.begin(),
@@ -37,13 +31,13 @@ namespace Oyl::Reflection
 		}
 
 		m_ownedTypes.push_back(a_type);
-		a_type->m_assembly = assembly;
+		a_type->m_assembly = this;
 
 		return true;
 	}
 
 	bool
-	Assembly::UnRegisterType(std::shared_ptr<Type>& a_type)
+	Assembly::UnRegisterType(Type* a_type)
 	{
 		auto iter = std::find_if(
 			m_ownedTypes.begin(),
@@ -60,7 +54,7 @@ namespace Oyl::Reflection
 		}
 
 		m_ownedTypes.erase(iter);
-		a_type->m_assembly.reset();
+		a_type->m_assembly = nullptr;
 		return true;
 	}
 }

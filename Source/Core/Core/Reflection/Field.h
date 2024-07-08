@@ -117,12 +117,12 @@ namespace Oyl::Reflection
 		template<typename TContaining>
 		const void* GetValue(TContaining const& a_obj) const
 		{
-			Type& containingType     = Type::Get<TContaining>();
-			Type* thisContainingType = Type::TryGet(this->containingTypeId).get();
+			Type* containingType     = Type::Get<TContaining>();
+			Type* thisContainingType = Type::TryGet(this->containingTypeId);
 
 			bool notNull = thisContainingType;
-			bool isConvertible = thisContainingType->IsConvertibleTo(&containingType);
-			bool isVoid = containingType.TypeId() == GetTypeId<void>();
+			bool isConvertible = thisContainingType->IsConvertibleTo(containingType);
+			bool isVoid = containingType->TypeId() == GetTypeId<void>();
 			
 			assert(notNull && (isConvertible || isVoid));
 
@@ -154,10 +154,10 @@ namespace Oyl::Reflection
 		template<typename TField, typename TContaining>
 		TField const& GetValue(TContaining const& a_obj) const
 		{
-			Type& incomingType = Type::Get<TField>();
-			Type* thisType     = Type::TryGet(this->fieldTypeId).get();
+			Type* incomingType = Type::Get<TField>();
+			Type* thisType     = Type::TryGet(this->fieldTypeId);
 
-			assert(thisType && thisType->IsConvertibleTo(&incomingType));
+			assert(thisType && thisType->IsConvertibleTo(incomingType));
 
 			const void* result = Field::GetValue(a_obj);
 
@@ -182,12 +182,12 @@ namespace Oyl::Reflection
 		template<typename TContaining>
 		void SetValue(TContaining const& a_obj, const void* a_incomingValue, size_t a_incomingSize) const
 		{
-			Type& containingType     = Type::Get<TContaining>();
-			Type* thisContainingType = Type::TryGet(this->containingTypeId).get();
+			Type* containingType     = Type::Get<TContaining>();
+			Type* thisContainingType = Type::TryGet(this->containingTypeId);
 
 			bool notNull = thisContainingType;
-			bool isConvertible = thisContainingType->IsConvertibleTo(&containingType);
-			bool isVoid = containingType.TypeId() == GetTypeId<void>();
+			bool isConvertible = thisContainingType->IsConvertibleTo(containingType);
+			bool isVoid = containingType->TypeId() == GetTypeId<void>();
 			bool sizeEqual = a_incomingSize == size;
 			
 			assert(notNull && (isConvertible || isVoid) && sizeEqual);
@@ -220,12 +220,12 @@ namespace Oyl::Reflection
 		template<typename TContaining, typename TField>
 		void SetValue(TContaining const& a_obj, TField const& a_value) const
 		{
-			Type& containingType     = Type::Get<TContaining>();
-			Type* thisContainingType = Type::TryGet(this->containingTypeId).get();
+			Type* containingType     = Type::Get<TContaining>();
+			Type* thisContainingType = Type::TryGet(this->containingTypeId);
 
 			bool notNull = thisContainingType;
-			bool isConvertible = thisContainingType->IsConvertibleTo(&containingType);
-			bool isVoid = containingType.TypeId() == GetTypeId<void>();
+			bool isConvertible = thisContainingType->IsConvertibleTo(containingType);
+			bool isVoid = containingType->TypeId() == GetTypeId<void>();
 
 			// TODO: Do more elaborate type checks
 			bool sizeEqual = sizeof(TField) == size;
