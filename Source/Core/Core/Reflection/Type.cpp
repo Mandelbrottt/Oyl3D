@@ -5,8 +5,12 @@ namespace Oyl::Reflection
 {
 	Type::~Type()
 	{
+#	ifdef _OYL_TYPE_HEAP_ALLOCATED_FACTORY
+		delete m_factory;
+#	else
 		Factory()->~GenericFactory();
 		std::memset(&m_factoryData, 0, sizeof(m_factoryData));
+#	endif
 	}
 
 	bool

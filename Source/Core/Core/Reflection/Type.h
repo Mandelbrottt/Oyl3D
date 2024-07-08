@@ -9,7 +9,7 @@
 #include "Core/Types/TypeId.h"
 #include "Core/Types/Typedefs.h"
 
-//#define HEAP_ALLOCATED_FACTORY
+//#define _OYL_TYPE_HEAP_ALLOCATED_FACTORY
 
 namespace Oyl::Reflection
 {
@@ -150,7 +150,7 @@ namespace Oyl::Reflection
 		 */
 		const Detail::GenericFactory* Factory() const
 		{
-		#if defined HEAP_ALLOCATED_FACTORY
+		#if defined _OYL_TYPE_HEAP_ALLOCATED_FACTORY
 			return m_factory;
 		#else !defined IN_PLACE_FACTORY
 			// See https://en.cppreference.com/w/cpp/types/aligned_storage
@@ -298,10 +298,10 @@ namespace Oyl::Reflection
 		PopulateFactory(Type* a_type)
 		{
 			// Heap Allocated Factory supersedes in place factory
-#		if defined HEAP_ALLOCATED_FACTORY
+#		if defined _OYL_TYPE_HEAP_ALLOCATED_FACTORY
 			// Use pointer and new to allow free passing around of the factory without fear of
 			// Reallocation
-			a_type.m_factory = new Detail::TypedFactory<TReflected>;
+			a_type->m_factory = new Detail::TypedFactory<TReflected>;
 #		else
 			// Generate the constructor/destructor and use placement new under the hood
 			// We use vtable shenanigans to make this work, so the data represented
@@ -373,7 +373,7 @@ namespace Oyl::Reflection
 
 		InstanceFieldsContainer m_instanceFields;
 
-	#if defined HEAP_ALLOCATED_FACTORY
+	#if defined _OYL_TYPE_HEAP_ALLOCATED_FACTORY
 		Detail::GenericFactory* m_factory;
 	#else
 		alignas(Detail::GenericFactory)
@@ -381,7 +381,3 @@ namespace Oyl::Reflection
 	#endif
 	};
 }
-
-#ifdef HEAP_ALLOCATED_FACTORY
-	#undef HEAP_ALLOCATED_FACTORY
-#endif
