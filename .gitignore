@@ -9,3 +9,6 @@
 *.vcxproj
 *.vcxproj.filters
 *.user
+
+# Generated Source Files
+*.generated.*
