@@ -1,80 +1,19 @@
 #include <Windows.h>
+#include <cstdlib>
 #include <filesystem>
 
-#include <cstdlib>
-
-#include <Core/Logging/Logging.h>
 #include <Core/Application/CommandLine.h>
 #include <Core/Application/Main.h>
-#include <Core/Application/Module.h>
-#include <Core/Events/TestEvents.h>
+#include <Core/Logging/Logging.h>
 #include <Core/Profiling/Profiler.h>
+
+#include "Include.generated.h"
 
 static void SetupConsole();
 
 static void ShutdownConsole();
 
 static bool g_running = true;
-
-class TestModule1 : public Oyl::Module
-{
-	OYL_DECLARE_MODULE(TestModule1);
-
-public:
-	void
-	OnInit() override
-	{
-		OYL_LOG("TM1 {} Init!", GetName());
-
-		RegisterEvent(&TestModule1::OnTestEvent1);
-	}
-
-	void
-	OnUpdate() override
-	{
-		OYL_LOG("TM1 {} Update!", GetName());
-
-		Oyl::TestEvent2 e2;
-		e2.b = 6;
-		PostEvent(e2);
-	}
-
-	void
-	OnTestEvent1(Oyl::TestEvent1& a_event)
-	{
-		OYL_LOG("TM1 a = {}", a_event.a);
-	}
-};
-
-class TestModule2 : public Oyl::Module
-{
-	OYL_DECLARE_MODULE(TestModule2);
-
-public:
-	void
-	OnInit() override
-	{
-		OYL_LOG("TM2 {} Init!", GetName());
-
-		RegisterEvent(&TestModule2::OnTestEvent2);
-	}
-
-	void
-	OnUpdate() override
-	{
-		OYL_LOG("TM2 {} Update!", GetName());
-		
-		Oyl::TestEvent1 e1;
-		e1.a = 6;
-		PostEvent(e1);
-	}
-
-	void
-	OnTestEvent2(Oyl::TestEvent2& a_event)
-	{
-		OYL_LOG("TM2 b = {}", a_event.b);
-	}
-};
 
 // ReSharper disable CppInconsistentNaming
 int WINAPI WinMain(
@@ -129,10 +68,7 @@ int WINAPI WinMain(
 	OYL_FRAME_MARK_START(startupString);
 	Oyl::Detail::Init(initParams);
 	OYL_FRAME_MARK_END(startupString);
-
-	TestModule1::Register();
-	TestModule2::Register();
-
+	
 	while (g_running)
 	{
 		Oyl::Detail::Update();

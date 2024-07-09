@@ -37,12 +37,17 @@ function EngineAssembly(assemblyDefinition)
 
         filter {}
 
+        -- Generated Files
+        includedirs { "%{prj.location}/Generated/" }
+        removefiles { "**.generated.h" }
+
         files { "**.lua" }
 
-        removefiles { "**/Platform/**" }
+        -- Platform specific files
+        removefiles { "**/*_Windows*" }
 
         filter "system:windows"
-            files { "**/Platform/Windows/**" }
+            files { "**/*_Windows*" }
 
         filter {}
         if assemblyDefinition.Properties then

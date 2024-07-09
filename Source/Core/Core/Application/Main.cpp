@@ -16,6 +16,8 @@
 
 #include "ReflectionTest.h"
 
+#include <Windows.h>
+
 namespace Oyl::Detail
 {
 	struct CoreApplicationData
@@ -59,6 +61,24 @@ namespace Oyl::Detail
 		something->DoSomething();
 
 		factory->Delete(voidSomething);
+
+#	ifdef OYL_EDITOR
+		HMODULE hmodule = LoadLibraryA("Oyl.Core.dll");
+#	else
+		HMODULE hmodule = nullptr;
+		GetModuleHandleExA(
+			GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS | GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT, 
+			(LPCSTR) Init,
+			&hmodule
+		);
+#	endif
+		if (hmodule)
+		{
+			using IntFn = int(*)();
+			IntFn someFunction = (IntFn) GetProcAddress(hmodule, "_Exports_Oyl_Core_");
+			int a = someFunction();
+			OYL_LOG("someFunction() = {}", a);
+		}
 	}
 
 	void
