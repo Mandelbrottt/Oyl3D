@@ -1,4 +1,14 @@
 ﻿<wpf:ResourceDictionary xml:space="preserve" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:s="clr-namespace:System;assembly=mscorlib" xmlns:ss="urn:shemas-jetbrains-com:settings-storage-xaml" xmlns:wpf="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+	<s:String x:Key="/Default/CodeInspection/Highlighting/InspectionSeverities/=CppEnforceCVQualifiersOrder/@EntryIndexedValue">SUGGESTION</s:String>
+	<s:String x:Key="/Default/CodeInspection/Highlighting/InspectionSeverities/=CppEnforceCVQualifiersPlacement/@EntryIndexedValue">SUGGESTION</s:String>
+	<s:String x:Key="/Default/CodeInspection/Highlighting/InspectionSeverities/=CppTooWideScopeInitStatement/@EntryIndexedValue">DO_NOT_SHOW</s:String>
+	<s:String x:Key="/Default/CodeStyle/CodeFormatting/CppFormatting/FUNCTION_DECLARATION_RETURN_TYPE_STYLE/@EntryValue">LINE_BREAK</s:String>
+	<s:Boolean x:Key="/Default/CodeStyle/CodeFormatting/CppFormatting/INT_ALIGN_DECLARATION_NAMES/@EntryValue">False</s:Boolean>
+	<s:Boolean x:Key="/Default/CodeStyle/CodeFormatting/CppFormatting/INT_ALIGN_ENUM_INITIALIZERS/@EntryValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/CodeStyle/CodeFormatting/CppFormatting/INT_ALIGN_EQ/@EntryValue">False</s:Boolean>
+	<s:String x:Key="/Default/CodeStyle/CodeFormatting/CppFormatting/MEMBER_INITIALIZER_LIST_STYLE/@EntryValue">LINE_BREAK</s:String>
+	<s:String x:Key="/Default/CodeStyle/CodeFormatting/CppFormatting/TOPLEVEL_FUNCTION_DECLARATION_RETURN_TYPE_STYLE/@EntryValue">LINE_BREAK</s:String>
+	<s:Boolean x:Key="/Default/Environment/SettingsMigration/IsMigratorApplied/=JetBrains_002EReSharper_002EFeature_002EServices_002ECpp_002ECodeStyle_002ESettingsUpgrade_002EFunctionReturnStyleSettingsUpgrader/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/UserDictionary/Words/=atexit/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/UserDictionary/Words/=Lerp/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/UserDictionary/Words/=rbegin/@EntryIndexedValue">True</s:Boolean>
