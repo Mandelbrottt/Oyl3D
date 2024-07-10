@@ -31,7 +31,7 @@ namespace Oyl::Reflection
 			return container;
 		}
 
-		Type(TypeId a_typeId, std::type_info const& a_info, uint32 a_size) noexcept
+		Type(TypeId a_typeId, const std::type_info& a_info, uint32 a_size) noexcept
 			: m_typeId(a_typeId),
 			  m_size(a_size),
 			  m_typeInfo(&a_info)
@@ -40,7 +40,7 @@ namespace Oyl::Reflection
 		}
 
 		Type(Type&& a_other) = default;
-		Type(Type const& a_other) = default;
+		Type(const Type& a_other) = default;
 		Type&
 		operator =(Type&&) = default;
 
@@ -50,16 +50,16 @@ namespace Oyl::Reflection
 		~Type();
 
 		Type&
-		operator =(Type const&) = delete;
+		operator =(const Type&) = delete;
 
 		bool
-		operator ==(Type const& a_other) const
+		operator ==(const Type& a_other) const
 		{
 			return m_typeId == a_other.m_typeId;
 		}
 
 		bool
-		operator !=(Type const& a_other) const
+		operator !=(const Type& a_other) const
 		{
 			return !(*this == a_other);
 		}
@@ -96,7 +96,7 @@ namespace Oyl::Reflection
 			return m_size;
 		}
 
-		std::type_info const&
+		const std::type_info&
 		TypeInfo() const
 		{
 			return *m_typeInfo;
@@ -111,7 +111,7 @@ namespace Oyl::Reflection
 		/**
 		 * \return The simplified name of the type represented by the current \link Type \endlink
 		 */
-		std::string const&
+		const std::string&
 		Name() const
 		{
 			return m_name;
@@ -120,13 +120,13 @@ namespace Oyl::Reflection
 		/**
 		 * \return The fully-qualified name of the type represented by the current \link Type \endlink
 		 */
-		std::string const&
+		const std::string&
 		FullName() const
 		{
 			return m_fullName;
 		}
 
-		InstanceFieldsContainer const&
+		const InstanceFieldsContainer&
 		InstanceFields() const
 		{
 			return m_instanceFields;
@@ -136,13 +136,13 @@ namespace Oyl::Reflection
 		IsConvertibleTo(Oyl::TypeId a_typeId) const;
 
 		bool
-		IsConvertibleTo(Type const* a_type) const;
+		IsConvertibleTo(const Type* a_type) const;
 
 		bool
 		IsConvertibleFrom(Oyl::TypeId a_typeId) const;
 
 		bool
-		IsConvertibleFrom(Type const* a_type) const;
+		IsConvertibleFrom(const Type* a_type) const;
 
 		/**
 		 * \brief Get the instance of the \link Detail::GenericFactory \endlink associated with this type.
@@ -329,8 +329,8 @@ namespace Oyl::Reflection
 			auto caseInsensitivePredicate =
 				[](Field* const& a_lhs, Field* const& a_rhs)
 			{
-				auto const& lhsName = a_lhs->displayName;
-				auto const& rhsName = a_rhs->displayName;
+				const auto& lhsName = a_lhs->displayName;
+				const auto& rhsName = a_rhs->displayName;
 
 				return _strcmpi(lhsName.c_str(), rhsName.c_str()) < 0;
 			};
@@ -354,7 +354,7 @@ namespace Oyl::Reflection
 		 * \brief Convert the compiler-generated name from type_info.name() into the raw type name
 		 */
 		void
-		ProcessName(std::type_info const& a_typeInfo);
+		ProcessName(const std::type_info& a_typeInfo);
 
 	private:
 		Oyl::TypeId m_typeId = TypeId::Null;
@@ -363,7 +363,7 @@ namespace Oyl::Reflection
 
 		uint32 m_size = 0;
 
-		std::type_info const* m_typeInfo;
+		const std::type_info* m_typeInfo;
 
 		Reflection::Assembly* m_assembly;
 

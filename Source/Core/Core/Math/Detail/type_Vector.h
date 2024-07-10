@@ -44,7 +44,7 @@ namespace Oyl
 		template<int Size, typename TUnderlying>
 		constexpr
 		TUnderlying
-		Dot(Vector_t<Size, TUnderlying> const& a_lhs, Vector_t<Size, TUnderlying> const& a_rhs)
+		Dot(const Vector_t<Size, TUnderlying>& a_lhs, const Vector_t<Size, TUnderlying>& a_rhs)
 		{
 			TUnderlying result = 0;
 			for (int i = 0; i < Size; i++)
@@ -57,7 +57,7 @@ namespace Oyl
 		template<int Size, typename TUnderlying>
 		constexpr
 		float
-		MagnitudeSquared(Vector_t<Size, TUnderlying> const& a_value)
+		MagnitudeSquared(const Vector_t<Size, TUnderlying>& a_value)
 		{
 			TUnderlying result = 0;
 			for (int i = 0; i < Size; i++)
@@ -70,7 +70,7 @@ namespace Oyl
 		template<int Size, typename TUnderlying>
 		constexpr
 		float
-		Magnitude(Vector_t<Size, TUnderlying> const& a_value)
+		Magnitude(const Vector_t<Size, TUnderlying>& a_value)
 		{
 			float result = MagnitudeSquared(a_value);
 			return std::sqrt(result);
@@ -79,7 +79,7 @@ namespace Oyl
 		template<int Size, typename TUnderlying>
 		constexpr
 		Vector_t<Size, TUnderlying>
-		Normalize(Vector_t<Size, TUnderlying> const& a_value)
+		Normalize(const Vector_t<Size, TUnderlying>& a_value)
 		{
 			float magnitude = Magnitude(a_value);
 			if (magnitude == 0)
@@ -92,7 +92,7 @@ namespace Oyl
 		template<int Size, typename TUnderlying>
 		constexpr
 		float
-		Angle(Vector_t<Size, TUnderlying> const& a_lhs, Vector_t<Size, TUnderlying> const& a_rhs)
+		Angle(const Vector_t<Size, TUnderlying>& a_lhs, const Vector_t<Size, TUnderlying>& a_rhs)
 		{
 			float cos_theta = Vector::Dot(Normalize(a_lhs), Normalize(a_rhs));
 			
@@ -181,7 +181,7 @@ namespace Oyl
 	template<int Size, typename TUnderlying>
 	constexpr
 	Vector_t<Size, TUnderlying>
-	operator -(Vector_t<Size, TUnderlying> const& a_value) noexcept
+	operator -(const Vector_t<Size, TUnderlying>& a_value) noexcept
 	{
 		Vector_t<Size, TUnderlying> result;
 		for (int i = 0; i < Size; i++)
@@ -194,7 +194,7 @@ namespace Oyl
 	template<int Size, typename TUnderlying>
 	constexpr
 	bool
-	operator ==(Vector_t<Size, TUnderlying> const& a_lhs, Vector_t<Size, TUnderlying> const& a_rhs) noexcept
+	operator ==(const Vector_t<Size, TUnderlying>& a_lhs, const Vector_t<Size, TUnderlying>& a_rhs) noexcept
 	{
 		bool result = true;
 		for (int i = 0; i < Size; i++)
@@ -207,7 +207,7 @@ namespace Oyl
 	template<int Size, typename TUnderlying>
 	constexpr
 	bool
-	operator !=(Vector_t<Size, TUnderlying> const& a_lhs, Vector_t<Size, TUnderlying> const& a_rhs) noexcept
+	operator !=(const Vector_t<Size, TUnderlying>& a_lhs, const Vector_t<Size, TUnderlying>& a_rhs) noexcept
 	{
 		return !(a_lhs == a_rhs);
 	}

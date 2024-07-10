@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "Assembly.h"
 
+#include "Core/Logging/Logging.h"
+
 namespace Oyl::Reflection
 {
 	bool
@@ -12,7 +14,7 @@ namespace Oyl::Reflection
 			auto iter = std::find_if(
 				ownedTypes.begin(),
 				ownedTypes.end(),
-				[a_type](auto const& a_value)
+				[a_type](const auto& a_value)
 				{
 					return *a_value == *a_type;
 				}
@@ -42,7 +44,7 @@ namespace Oyl::Reflection
 		auto iter = std::find_if(
 			m_ownedTypes.begin(),
 			m_ownedTypes.end(),
-			[a_type](auto const& a_value)
+			[a_type](const auto& a_value)
 			{
 				return *a_value == *a_type;
 			}

@@ -35,7 +35,7 @@ namespace Oyl::Reflection
 	}
 
 	bool
-	Type::IsConvertibleTo(Type const* a_type) const
+	Type::IsConvertibleTo(const Type* a_type) const
 	{
 		return IsConvertibleTo(a_type->TypeId());
 	}
@@ -64,7 +64,7 @@ namespace Oyl::Reflection
 	}
 
 	bool
-	Type::IsConvertibleFrom(Type const* a_type) const
+	Type::IsConvertibleFrom(const Type* a_type) const
 	{
 		return IsConvertibleFrom(a_type->TypeId());
 	}
@@ -95,7 +95,7 @@ namespace Oyl::Reflection
 		return result;
 	}
 
-	void Type::ProcessName(std::type_info const& a_typeInfo) {
+	void Type::ProcessName(const std::type_info& a_typeInfo) {
 		const char* typeName = a_typeInfo.name();
 
 		// type_info.name() is implementation specific
@@ -128,7 +128,7 @@ namespace Oyl::Reflection
 
 		// This probably shouldn't be an assert but im lazy
 		// There should always be whitespace in a user-defined-class name
-		assert(firstWhitespace);
+		OYL_ASSERT(firstWhitespace);
 
 		const char* fullNameStart = firstWhitespace + 1;
 

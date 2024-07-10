@@ -59,20 +59,20 @@ namespace Oyl::Reflection
 			  fieldTypeId(a_fieldTypeId),
 			  containingTypeId(a_containingTypeId),
 			  flags(a_flags) {}
-		
-		std::string const&
+
+		const std::string&
 		GetName() const
 		{
 			return name;
 		}
-		
-		std::string const&
+
+		const std::string&
 		GetDisplayName() const
 		{
 			return displayName;
 		}
-		
-		std::string const&
+
+		const std::string&
 		GetDescription() const
 		{
 			return description;
@@ -115,7 +115,7 @@ namespace Oyl::Reflection
 		 * \return A pointer to the instance of the field on object obj.
 		 */
 		template<typename TContaining>
-		const void* GetValue(TContaining const& a_obj) const
+		const void* GetValue(const TContaining& a_obj) const
 		{
 			Type* containingType     = Type::Get<TContaining>();
 			Type* thisContainingType = Type::TryGet(this->containingTypeId);
@@ -139,7 +139,7 @@ namespace Oyl::Reflection
 		}
 
 		template<typename TContaining>
-		const void* GetValue(TContaining const& a_obj)
+		const void* GetValue(const TContaining& a_obj)
 		{
 			return const_cast<const Field*>(this)->GetValue(a_obj);
 		}
@@ -152,7 +152,7 @@ namespace Oyl::Reflection
 		 * \return A pointer to the instance of the field on object obj.
 		 */
 		template<typename TField, typename TContaining>
-		TField const& GetValue(TContaining const& a_obj) const
+		const TField& GetValue(const TContaining& a_obj) const
 		{
 			Type* incomingType = Type::Get<TField>();
 			Type* thisType     = Type::TryGet(this->fieldTypeId);
@@ -165,7 +165,7 @@ namespace Oyl::Reflection
 		}
 		
 		template<typename TField, typename TContaining>
-		TField GetValue(TContaining const& a_obj)
+		TField GetValue(const TContaining& a_obj)
 		{
 			return const_cast<const Field*>(this)->GetValue<TField>(a_obj);
 		}
@@ -180,7 +180,7 @@ namespace Oyl::Reflection
 		 *         This is the caller's responsibility.
 		 */
 		template<typename TContaining>
-		void SetValue(TContaining const& a_obj, const void* a_incomingValue, size_t a_incomingSize) const
+		void SetValue(const TContaining& a_obj, const void* a_incomingValue, size_t a_incomingSize) const
 		{
 			Type* containingType     = Type::Get<TContaining>();
 			Type* thisContainingType = Type::TryGet(this->containingTypeId);
@@ -205,7 +205,7 @@ namespace Oyl::Reflection
 		}
 		
 		template<typename TContaining>
-		void SetValue(TContaining const& a_obj, const void* a_incomingValue, size_t a_incomingSize)
+		void SetValue(const TContaining& a_obj, const void* a_incomingValue, size_t a_incomingSize)
 		{
 			const_cast<const Field*>(this)->SetValue(a_obj, a_incomingValue, a_incomingSize);
 		}
@@ -218,7 +218,7 @@ namespace Oyl::Reflection
 		 * \param a_value A reference to the value to be copied.
 		 */
 		template<typename TContaining, typename TField>
-		void SetValue(TContaining const& a_obj, TField const& a_value) const
+		void SetValue(const TContaining& a_obj, const TField& a_value) const
 		{
 			Type* containingType     = Type::Get<TContaining>();
 			Type* thisContainingType = Type::TryGet(this->containingTypeId);
@@ -248,7 +248,7 @@ namespace Oyl::Reflection
 		}
 		
 		template<typename TContaining, typename TField>
-		void SetValue(TContaining const& a_obj, TField const& a_value)
+		void SetValue(const TContaining& a_obj, const TField& a_value)
 		{
 			const_cast<const Field*>(this)->SetValue(a_obj, a_value);
 		}
