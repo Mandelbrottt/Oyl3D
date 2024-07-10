@@ -19,7 +19,7 @@ Dependencies = {
     NlohmannJson = {
         Git = {
             Url = "https://github.com/nlohmann/json.git",
-            Revision = "v3.6.1"
+            Tag = "v3.6.1"
         },
         Kind = "Utility",
         Files = { "/include/" },
@@ -27,7 +27,7 @@ Dependencies = {
     GLFW = {
         Git = {
             Url = "https://github.com/glfw/glfw.git",
-            Revision = "3.3.8"
+            Tag = "3.3.8"
         },
         Kind = premake.SHAREDLIB,
         Files = { "/include/", "/src/", },
@@ -77,7 +77,7 @@ Dependencies = {
     SpdLog = {
         Git = {
             Url = "https://github.com/gabime/spdlog.git",
-            Revision = "v1.11.0"
+            Tag = "v1.11.0"
         },
         Kind = premake.SHAREDLIB,
         Files = { "/include/", "/src/" },
@@ -111,7 +111,7 @@ Dependencies = {
     TracyClient = {
         Git = {
             Url = "https://github.com/wolfpld/tracy.git",
-            Revision = "v0.10"
+            Tag = "v0.10"
         },
         Kind = premake.SHAREDLIB,
         Files = { "public/" },
@@ -140,6 +140,18 @@ Dependencies = {
                 }
         end
     },
+    -- Clang = {
+    --     Git = {
+    --         Url = "https://github.com/llvm/llvm-project.git",
+    --         Tag = "llvmorg-18.1.8"
+    --     },
+    --     Kind = premake.STATICLIB,
+    --     Files = { "clang/", "clang-tools-extra/" },
+    --     -- IncludeDirs = { "public/ "},
+    --     CustomProperties = function()
+            
+    --     end
+    -- },
     -- TracyServer = {
     --     Git = {
     --         Url = "https://github.com/wolfpld/tracy.git",

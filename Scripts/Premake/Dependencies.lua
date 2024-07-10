@@ -28,13 +28,17 @@ local function cloneGitDependency(dependency)
         os.executef("git sparse-checkout set --no-cone %s %s", files, SUPPRESS_COMMAND_OUTPUT)
     end
 
-    -- If a specific revision is specified, point to it
-    local revision = ""
+    -- If a specific revision or tag is specified, point to it
     if dependency.Git.Revision then
-        revision = dependency.Git.Revision
+        local revision = dependency.Git.Revision
         print(string.format("\tFetching revision \"%s\"...", revision))
         os.executef("git fetch -q --depth 1 origin %s %s", revision, SUPPRESS_COMMAND_OUTPUT)
         os.executef("git checkout -q --no-progress %s %s", revision, SUPPRESS_COMMAND_OUTPUT)
+    elseif dependency.Git.Tag then
+        local tag = dependency.Git.Tag
+        print(string.format("\tFetching tag \"%s\"...", tag))
+        os.executef("git fetch -q --depth 1 origin refs/tags/%s:refs/tags/%s %s", tag, tag, SUPPRESS_COMMAND_OUTPUT)
+        os.executef("git checkout -q --no-progress %s %s", tag, SUPPRESS_COMMAND_OUTPUT)
     end
 
     -- Remove the .git folder as we're only using git to download the repository
