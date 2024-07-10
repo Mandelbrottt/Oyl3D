@@ -19,6 +19,9 @@ local function cloneGitDependency(dependency)
         -- Clone specified files and license only
         local files = "!/* /LICENSE*"
         for k, file in pairs(dependency.Files) do
+            if file[1] ~= "/" then
+                file = "/" .. file
+            end
             files = files .. " " .. file
         end
 
@@ -30,7 +33,7 @@ local function cloneGitDependency(dependency)
     if dependency.Git.Revision then
         revision = dependency.Git.Revision
         print(string.format("\tFetching revision \"%s\"...", revision))
-        os.executef("git fetch -q --all --tags --depth 1 %s", SUPPRESS_COMMAND_OUTPUT)
+        os.executef("git fetch -q --depth 1 origin %s %s", revision, SUPPRESS_COMMAND_OUTPUT)
         os.executef("git checkout -q --no-progress %s %s", revision, SUPPRESS_COMMAND_OUTPUT)
     end
 
