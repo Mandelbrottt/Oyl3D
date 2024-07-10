@@ -1,4 +1,4 @@
-Dependencies = {
+Packages = {
     YamlCpp = {
         Git = {
             Url = "https://github.com/jbeder/yaml-cpp.git",

@@ -8,7 +8,7 @@ if _ACTION == "clean" or _ACTION == nil then
     return
 end
 
-processDependencies(Dependencies)
+processDependencies(Packages)
 
 workspace(Config.Name)
     location "./"
@@ -29,7 +29,7 @@ workspace(Config.Name)
     startproject(Config.ShortName .. ".Entry")
 
     group("Dependencies")
-        generateDependencyProjects(Dependencies)
+        generateDependencyProjects(Packages)
     group ""
 
     local assemblyScripts = os.matchfiles(path.join(Config.SourceDir, "**premake5.lua"))

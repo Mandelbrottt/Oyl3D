@@ -137,7 +137,7 @@ function addDependencyToProject(dependencyName)
         return
     end
 
-    local dependency = case_insensitive_find(Dependencies, dependencyName)
+    local dependency = case_insensitive_find(Packages, dependencyName)
     if dependency then
         links { dependency.Name }
         includedirs(dependency.IncludeDirs)
