@@ -1,3 +1,3 @@
 #include "pch.h"
 
-#include "ReflectionTest.generated.h"
+#include "ReflectionTest.h"

@@ -46,22 +46,6 @@ namespace Oyl::Detail
 		auto& registry = g_data.moduleRegistry;
 		registry.SetOnEventCallback(OnEvent);
 
-		Reflection::Type::Register<Something>();
-		auto somethingType = Reflection::Type::TryGet("Something");
-		auto* factory = somethingType->Factory();
-		void* voidSomething = factory->New();
-		auto* something = static_cast<Something*>(voidSomething);
-
-		auto& field = *somethingType->InstanceFields()[0];
-		OYL_LOG("{}", field.GetValue<int>(something));
-
-		field.SetValue(something, 111);
-		OYL_LOG("{}", *reinterpret_cast<const int*>(field.GetValue(something)));
-
-		something->DoSomething();
-
-		factory->Delete(voidSomething);
-
 #	ifdef OYL_EDITOR
 		HMODULE hmodule = LoadLibraryA("Oyl.Core.dll");
 #	else

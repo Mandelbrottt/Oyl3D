@@ -1,28 +1,41 @@
 #pragma once
 
-#include "Core/Reflection/Reflection.h"
+#include "ReflectionTest.generated.h"
 
-class Something
+#include "Core/Logging/Logging.h"
+
+namespace Test
 {
-	ReflectDeclare(Something);
-
-public:
-	Something()
+	class Something
 	{
-		OYL_LOG("Something()");
-	}
+	public:
+		Something()
+		{
+			OYL_LOG("Something()");
+		}
 
-	virtual
-	~Something()
-	{
-		OYL_LOG("~Something()");
-	}
+		virtual
+		~Something()
+		{
+			OYL_LOG("~Something()");
+		}
 
-	void
-	DoSomething()
-	{
-		OYL_LOG("DoSomething()");
-	}
+		void
+		DoSomething()
+		{
+			OYL_LOG("DoSomething()");
+		}
 
-	int something = 5;
+		int something = 5;
+
+	private:
+		int m_somethingElse = 0;
+	};
+}
+
+enum class SomeEnum
+{
+	One,
+	Two,
+	Three
 };
