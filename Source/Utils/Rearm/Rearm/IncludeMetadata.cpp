@@ -1,6 +1,11 @@
 #include "IncludeMetadata.h"
 
-void GenerateIncludeReflectionMetaData(std::string_view a_projectDir)
+namespace std
+{
+	namespace fs = filesystem;
+}
+
+void GenerateIncludeReflectionMetaData(const std::fs::path& a_projectDir)
 {
 	
 }

@@ -1,6 +1,6 @@
 #pragma once
-#include <string_view>
+#include <filesystem>
 
 extern
 void
-GenerateExportReflectionMetaData(std::string_view a_projectDir);
+GenerateExportReflectionMetaData(const std::filesystem::path& a_projectDir);

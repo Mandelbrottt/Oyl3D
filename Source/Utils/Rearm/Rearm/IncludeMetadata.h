@@ -1,7 +1,7 @@
 #pragma once
 
-#include <string>
+#include <filesystem>
 
 extern
 void
-GenerateIncludeReflectionMetaData(std::string_view a_projectDir);
+GenerateIncludeReflectionMetaData(const std::filesystem::path& a_projectDir);
