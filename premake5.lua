@@ -40,15 +40,17 @@ workspace(Config.Name)
     for name, assembly in pairsByKeys(Assemblies) do
         project(assembly.ProjectName)
 
-        for _, dependencyName in ipairs(assembly.Dependencies) do
-            if dependencyName == name then
-                premake.error(string.format("Assembly \"%s\" cannot depend on itself!", assembly.Name))
-                goto continue
+        if (assembly.Dependencies) then
+            for _, dependencyName in ipairs(assembly.Dependencies) do
+                if dependencyName == name then
+                    premake.error(string.format("Assembly \"%s\" cannot depend on itself!", assembly.Name))
+                    goto continue
+                end
+                
+                addDependencyToProject(dependencyName)
+                
+                ::continue::
             end
-
-            addDependencyToProject(dependencyName)
-
-            ::continue::
         end
 
         project "*"
