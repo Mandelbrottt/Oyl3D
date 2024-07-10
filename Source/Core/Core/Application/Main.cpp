@@ -36,7 +36,7 @@ namespace Oyl::Detail
 	{
 		OYL_PROFILE_FUNCTION();
 
-		g_data.params           = a_params;
+		g_data.params = a_params;
 		g_data.shouldGameUpdate = true;
 
 		Time::Detail::Init();
@@ -57,7 +57,7 @@ namespace Oyl::Detail
 
 		field.SetValue(something, 111);
 		OYL_LOG("{}", *reinterpret_cast<const int*>(field.GetValue(something)));
-		
+
 		something->DoSomething();
 
 		factory->Delete(voidSomething);
@@ -111,10 +111,10 @@ namespace Oyl::Detail
 		//	g_data.shouldGameUpdate = !g_data.shouldGameUpdate;
 		//}
 
-		static auto lastTime            = Time::Detail::ImmediateElapsedTime();
-		auto        thisTime            = Time::Detail::ImmediateElapsedTime();
-		auto        elapsedSeconds      = thisTime - lastTime;
-		auto        elapsedMicroSeconds = uint64(elapsedSeconds * 1'000'000);
+		static auto lastTime = Time::Detail::ImmediateElapsedTime();
+		auto thisTime = Time::Detail::ImmediateElapsedTime();
+		auto elapsedSeconds = thisTime - lastTime;
+		auto elapsedMicroSeconds = uint64(elapsedSeconds * 1'000'000);
 
 		if (elapsedSeconds < 1.0 / 60.0)
 		{
