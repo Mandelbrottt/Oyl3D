@@ -1,4 +1,5 @@
 #pragma once
+// Inspired by the "X macro" https://digitalmars.com/articles/b51.html
 //
 //#include "Core/Common.h"
 //
