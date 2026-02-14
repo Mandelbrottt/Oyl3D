@@ -11,9 +11,9 @@ namespace Oyl::Logging
 	{
 		struct SourceInfo
 		{
-			const char* file = nullptr;
 			const char* function = nullptr;
-			int line = 0;
+			const char* file = nullptr;
+			uint32_t line = 0;
 		};
 
 		OYL_CORE_API
@@ -61,8 +61,10 @@ namespace Oyl::Logging
 }
 
 #define OYL_LOG_LEVEL(_level_, _msg_, ...) \
+	constexpr auto _OYL_CAT(__oyl_log_sourceinfo, __LINE__) = \
+		::Oyl::Logging::Detail::SourceInfo { __FUNCTION__, __FILE__, __LINE__ }; \
 	::Oyl::Logging::##_level_( \
-		::Oyl::Logging::Detail::SourceInfo { __FILE__, __func__, __LINE__ }, \
+		_OYL_CAT(__oyl_log_sourceinfo, __LINE__), \
 		_msg_, \
 		##__VA_ARGS__\
 	)
