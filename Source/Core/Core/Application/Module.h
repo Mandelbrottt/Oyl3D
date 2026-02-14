@@ -26,9 +26,8 @@ namespace Oyl
 		TModule*
 		Register(TArgs&&... a_args)
 		{
-			TModule*        module   = new TModule();
 			ModuleRegistry* registry = ModuleRegistry::Instance();
-			registry->RegisterModule(module);
+			auto module = registry->RegisterModule<TModule>(std::forward<TArgs>(a_args)...);
 			return module;
 		}
 
