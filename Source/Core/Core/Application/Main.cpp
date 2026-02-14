@@ -63,6 +63,8 @@ namespace Oyl::Detail
 			}
 		}
 
+		Logging::Detail::Flush();
+
 		//char in = std::cin.get();
 		//if (in == 'q')
 		//{

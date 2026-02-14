@@ -22,6 +22,10 @@ namespace Oyl::Logging
 
 		OYL_CORE_API
 		void
+		Flush();
+
+		OYL_CORE_API
+		void
 		Shutdown();
 	}
 
