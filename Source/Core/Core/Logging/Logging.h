@@ -2,6 +2,7 @@
 
 #include "Core/Common.h"
 
+// Required because of template functions
 #include "Logging_Spdlog.h"
 
 namespace Oyl::Logging
