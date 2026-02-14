@@ -19,6 +19,8 @@ namespace Oyl::Detail
 
 		bool shouldGameUpdate;
 
+		uint64 maxFrameRate;
+
 		ModuleRegistry moduleRegistry;
 	};
 
@@ -31,6 +33,7 @@ namespace Oyl::Detail
 
 		g_data.params           = a_params;
 		g_data.shouldGameUpdate = true;
+		g_data.maxFrameRate     = 60;
 
 		Time::Detail::Init();
 
@@ -70,20 +73,14 @@ namespace Oyl::Detail
 		//	g_data.shouldGameUpdate = !g_data.shouldGameUpdate;
 		//}
 
-		static auto lastTime = Time::Detail::ImmediateElapsedTime();
-		auto thisTime = Time::Detail::ImmediateElapsedTime();
-		auto elapsedSeconds = thisTime - lastTime;
-		auto elapsedMicroSeconds = uint64(elapsedSeconds * 1'000'000);
+		static auto lastTick = Time::Detail::ImmediateElapsedTicks();
+		uint64 ticksPerFrame = (uint64) (Time::Detail::TickResolution() * (1.0 / g_data.maxFrameRate));
+		auto minNextFrameTicks = lastTick + ticksPerFrame;
 
-		if (elapsedSeconds < 1.0 / 60.0)
-		{
-			using std::chrono::duration_cast;
-			using std::chrono::microseconds;
-			using std::chrono::seconds;
-			std::this_thread::sleep_for(std::chrono::duration(microseconds(16'666 - elapsedMicroSeconds)));
-		}
+		uint64 thisTick;
+		while ((thisTick = Time::Detail::ImmediateElapsedTicks()) < minNextFrameTicks) {}
 		
-		lastTime = thisTime;
+		lastTick = thisTick;
 	}
 
 	void OnEvent(Event& a_event)
