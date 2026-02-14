@@ -43,6 +43,9 @@ namespace Oyl
 
 	class OYL_CORE_API CommandLine final : public Singleton<CommandLine>
 	{
+		friend Singleton;
+		CommandLine() = default;
+
 	public:
 		struct Detail
 		{
