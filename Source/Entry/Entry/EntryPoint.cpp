@@ -7,7 +7,7 @@
 #include <Core/Application/CommandLine.h>
 #include <Core/Application/Main.h>
 #include <Core/Application/Module.h>
-#include <Core/Events/TestEvents.h>
+#include <Core/Events/Event.h>
 #include <Core/Profiling/Profiler.h>
 
 static void SetupConsole();
@@ -15,6 +15,20 @@ static void SetupConsole();
 static void ShutdownConsole();
 
 static bool g_running = true;
+
+struct TestEvent1 : Oyl::Event
+{
+	OYL_DECLARE_EVENT(TestEvent1);
+
+	int a;
+};
+
+struct TestEvent2 : Oyl::Event
+{
+	OYL_DECLARE_EVENT(TestEvent2);
+
+	int b;
+};
 
 class TestModule1 : public Oyl::Module
 {
@@ -34,13 +48,13 @@ public:
 	{
 		OYL_LOG("TM1 {} Update!", GetName());
 
-		Oyl::TestEvent2 e2;
+		TestEvent2 e2;
 		e2.b = 6;
 		PostEvent(e2);
 	}
 
 	void
-	OnTestEvent1(Oyl::TestEvent1& a_event)
+	OnTestEvent1(TestEvent1& a_event)
 	{
 		OYL_LOG("TM1 a = {}", a_event.a);
 	}
@@ -64,13 +78,13 @@ public:
 	{
 		OYL_LOG("TM2 {} Update!", GetName());
 		
-		Oyl::TestEvent1 e1;
+		TestEvent1 e1;
 		e1.a = 6;
 		PostEvent(e1);
 	}
 
 	void
-	OnTestEvent2(Oyl::TestEvent2& a_event)
+	OnTestEvent2(TestEvent2& a_event)
 	{
 		OYL_LOG("TM2 b = {}", a_event.b);
 	}
