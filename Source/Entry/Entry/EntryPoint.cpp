@@ -26,7 +26,7 @@ public:
 	{
 		OYL_LOG("TM1 {} Init!", GetName());
 
-		RegisterEvent(&TestModule1::OnTestEvent1);
+		RegisterEventListener(&TestModule1::OnTestEvent1);
 	}
 
 	void
@@ -56,7 +56,7 @@ public:
 	{
 		OYL_LOG("TM2 {} Init!", GetName());
 
-		RegisterEvent(&TestModule2::OnTestEvent2);
+		RegisterEventListener(&TestModule2::OnTestEvent2);
 	}
 
 	void

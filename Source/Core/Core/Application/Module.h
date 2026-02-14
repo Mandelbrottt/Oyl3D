@@ -81,7 +81,7 @@ namespace Oyl
 
 		template<typename TModule, typename TEvent>
 		void
-		RegisterEvent(void (TModule::*a_fn)(TEvent&))
+		RegisterEventListener(void (TModule::*a_fn)(TEvent&))
 		{
 			m_eventFns[TEvent::GetStaticTypeId()] =
 				std::bind(
@@ -93,9 +93,9 @@ namespace Oyl
 
 		template<typename TModule, typename TEvent>
 		void
-		RegisterEvent(void (TModule::*a_fn)(TEvent&) const)
+		RegisterEventListener(void (TModule::*a_fn)(TEvent&) const)
 		{
-			RegisterEvent(const_cast<std::decay_t<decltype(a_fn)>>(a_fn));
+			RegisterEventListener(const_cast<std::decay_t<decltype(a_fn)>>(a_fn));
 		}
 
 		// TODO: Add event to global event queue, arena?
