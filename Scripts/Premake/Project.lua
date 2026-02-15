@@ -110,9 +110,6 @@ function applyCommonCppSettings(assemblyDefinition)
         defines { string.upper(Config.ShortName) .. "_DISTRIBUTION=1" }
         
     filterEditor()
-        removeconfigurations {
-            Config.Configurations.Distribution
-        }
         defines { string.upper(Config.ShortName) .. "_EDITOR=1" }
         
     filterStandalone()
