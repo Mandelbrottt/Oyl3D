@@ -1,4 +1,4 @@
-name: Build Oyl3D Win64
+name: Build Oyl3D
 
 on:
   push:
