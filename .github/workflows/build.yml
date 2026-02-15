@@ -30,4 +30,4 @@ jobs:
     with:
       configuration: ${{ matrix.configuration }}
       platform: ${{ matrix.platform }}
-      toolset: msc-v143
+      toolset: clang
