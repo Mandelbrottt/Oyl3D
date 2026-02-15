@@ -6,6 +6,12 @@ on:
       toolset:
         required: true
         type: string
+      configuration:
+        required: true
+        type: string
+      platform:
+        required: true
+        type: string
 
 env:
   vulkan_sdk_version: 1.4.341.1
@@ -14,14 +20,6 @@ env:
 jobs:
   build:
     runs-on: windows-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        configuration: [Debug, Development, Distribution, Profile]
-        platform: [Editor, Standalone]
-        exclude:
-          - configuration: Distribution
-            platform: Editor
     steps:
       - uses: actions/checkout@v4
 
