@@ -82,17 +82,14 @@ namespace Oyl
 		void
 		RegisterEventListener(void (TModule::*a_fn)(TEvent&))
 		{
-			using OnEventFn = void(Module::*)(Event&);
-			
 			// Ensure ABI is the same between the incoming member function and the
 			// output member function, then type coerce
+			using OnEventFn = void(Module::*)(Event&);
 			static_assert(sizeof(a_fn) == sizeof(OnEventFn));
-			void* intermediate = reinterpret_cast<void*>(&a_fn);
-			OnEventFn* result = reinterpret_cast<OnEventFn*>(intermediate);
 			
 			m_eventFns[TEvent::GetStaticTypeId()] =
 				std::bind(
-					*result,
+					*reinterpret_cast<OnEventFn*>(&a_fn),
 					this,
 					std::placeholders::_1
 				);
