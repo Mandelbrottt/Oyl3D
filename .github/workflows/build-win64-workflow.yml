@@ -64,7 +64,7 @@ jobs:
         run: >
           msbuild
           /maxCpuCount
-          /property:Configuration=${{ matrix.configuration }}
-          /property:Platform=${{ matrix.platform }}
+          /property:Configuration=${{ inputs.configuration }}
+          /property:Platform=${{ inputs.platform }}
           /verbosity:normal
           ${{ env.solution_file_path }}
