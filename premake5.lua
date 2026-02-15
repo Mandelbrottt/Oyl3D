@@ -1,5 +1,6 @@
 include "Config.lua"
 include "Packages.lua"
+include "Libraries.lua"
 
 include "Scripts/Premake/Common.lua"
 include "Scripts/Premake/Actions.lua"

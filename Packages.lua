@@ -142,34 +142,5 @@ Dependencies = {
                     "TRACY_EXPORTS"
                 }
         end
-    },
-    -- TracyServer = {
-    --     Git = {
-    --         Url = "https://github.com/wolfpld/tracy.git",
-    --         Revision = "v0.10"
-    --     },
-    --     Kind = premake.WINDOWEDAPP,
-    --     Files = { "profiler/", "server/", "public/", "imgui/", "nfd/", "zstd/" },
-    --     IncludeDirs = { "profiler/", "public/" },
-    --     CustomProperties = function()
-    --         -- removefiles { "**" }
-    --         -- files {
-    --         --     "public/TracyClient.cpp",
-    --         --     "public/tracy/tracy.hpp"
-    --         -- }
-    --     end
-    -- }
-}
-
-local VULKAN_SDK = os.getenv("VULKAN_SDK")
-if not VULKAN_SDK then
-    premake.error("Missing Vulkan SDK! Please install the Vulkan SDK!")
-end
-
-Libraries = {
-    Vulkan = {
-        IncludeDirs = { VULKAN_SDK .. "/Include" },
-        LibraryDirs = { VULKAN_SDK .. "/Lib" },
-        Libraries = { "vulkan-1" }
     }
 }
