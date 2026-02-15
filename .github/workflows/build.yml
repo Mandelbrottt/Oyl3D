@@ -1,4 +1,4 @@
-name: Build Oyl3D
+name: Build Oyl3D 
 
 on:
   push:
@@ -10,6 +10,7 @@ permissions:
   
 jobs:
   build-win64-msvc-v143:
+    name: Test2
     strategy: &build-strategy
       fail-fast: false
       matrix:
