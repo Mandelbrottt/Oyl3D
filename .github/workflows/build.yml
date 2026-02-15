@@ -10,7 +10,7 @@ permissions:
   
 jobs:
   build-win64-msvc-v143:
-    name: Test2
+    name: Build Win64 MSVC
     strategy: &build-strategy
       fail-fast: false
       matrix:
@@ -26,6 +26,7 @@ jobs:
       toolset: msc-v143
 
   build-win64-clang:
+    name: Build Win64 Clang
     strategy: *build-strategy
     uses: ./.github/workflows/build-win64-workflow.yml
     with:

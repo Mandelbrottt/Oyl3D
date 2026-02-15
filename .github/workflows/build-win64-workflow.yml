@@ -18,8 +18,8 @@ env:
   solution_file_path: Oyl3D_vs2022.sln
 
 jobs:
-  build:
-    name: Test1
+  build-win64:
+    name: ${{ inputs.toolset }}
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
