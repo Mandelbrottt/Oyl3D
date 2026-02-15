@@ -4,6 +4,8 @@
 [Bb]uild/
 [Ss]ource/[Dd]ependencies/
 
+*.generated.*
+
 # Visual Studio Files
 *.sln
 *.vcxproj
