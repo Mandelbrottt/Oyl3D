@@ -28,4 +28,6 @@ jobs:
     strategy: *build-strategy
     uses: ./.github/workflows/build-win64-workflow.yml
     with:
+      configuration: ${{ matrix.configuration }}
+      platform: ${{ matrix.platform }}
       toolset: msc-v143
