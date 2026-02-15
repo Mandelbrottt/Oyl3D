@@ -2,9 +2,6 @@
 
 #include "type_Vector.h"
 
-#pragma warning( push )
-#pragma warning( disable : 26495 ) // Possibly uninitialized member
-
 #define VECTOR_SIZE 2
 
 namespace Oyl
@@ -36,9 +33,7 @@ namespace Oyl
 		_VECTOR_GENERATE_CONSTRUCTORS();
 		
 	#pragma warning( push )
-	#pragma warning( disable : 4615 ) // Unknown user type
-		/* TODO: Nameless structs are non - standard, make portable with
-		         silent warnings / defines to make it non - anonymous */
+	#pragma warning( disable : 4201 ) // nameless struct/union
 		union
 		{
 			struct
@@ -60,7 +55,5 @@ namespace Oyl
 		_VECTOR_GENERATE_MEMBER_FUNCTIONS();
 	};
 }
-
-#pragma warning( pop )
 
 #undef VECTOR_SIZE

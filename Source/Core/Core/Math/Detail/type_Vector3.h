@@ -2,9 +2,6 @@
 
 #include "type_Vector.h"
 
-#pragma warning( push )
-#pragma warning( disable : 26495 ) // Possibly uninitialized member
-
 #define VECTOR_SIZE 3
 
 namespace Oyl
@@ -52,7 +49,7 @@ namespace Oyl
 		_VECTOR_GENERATE_CONSTRUCTORS();
 
 	#pragma warning( push )
-	#pragma warning( disable : 4615 ) // Unknown user type
+	#pragma warning( disable : 4201 ) // nameless struct/union
 		union
 		{
 			struct
@@ -114,7 +111,5 @@ namespace Oyl
 		}
 	}
 }
-
-#pragma warning( pop )
 
 #undef VECTOR_SIZE

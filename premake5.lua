@@ -55,7 +55,7 @@ workspace(Config.Name)
     end
 
     project("Premake")
-        kind "MakeFile"
+        kind "Makefile"
         filename("%{prj.name}_" .. _ACTION)
         targetdir(Config.TargetDir .. Config.OutputDir)
         objdir(Config.ObjectDir .. Config.OutputDir)
@@ -70,7 +70,7 @@ workspace(Config.Name)
         }
 
         filter "system:windows"
-            architecture "x64"
+            architecture "x86_64"
         filter {}
 
 include "Scripts/Premake/Overrides.lua"
