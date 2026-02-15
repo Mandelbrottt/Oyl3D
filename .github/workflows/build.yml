@@ -18,7 +18,7 @@ jobs:
         exclude:
           - configuration: Distribution
             platform: Editor
-    uses: ./.github/workflows/build-win64-action.yml
+    uses: ./.github/workflows/build-win64-workflow.yml
     with:
       configuration: ${{ matrix.configuration }}
       platform: ${{ matrix.platform }}
@@ -26,6 +26,6 @@ jobs:
 
   build-win64-clang:
     strategy: *build-strategy
-    uses: ./.github/workflows/build-win64-action.yml
+    uses: ./.github/workflows/build-win64-workflow.yml
     with:
       toolset: msc-v143
