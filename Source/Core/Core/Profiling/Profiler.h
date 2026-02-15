@@ -34,6 +34,7 @@
 #	define OYL_PROFILER_SHUTDOWN()
 #	define OYL_PROFILE_SCOPE(...) OYL_UNUSED(__VA_ARGS__)
 #	define OYL_PROFILE_FUNCTION()
+#	define OYL_PROFILE_CUSTOM(...)
 #	define OYL_FRAME_MARK()
 #	define OYL_FRAME_MARK_NAMED(_name_) OYL_UNUSED(_name_)
 #	define OYL_FRAME_MARK_START(_name_) OYL_UNUSED(_name_)
