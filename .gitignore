@@ -1,7 +1,7 @@
 .vscode/
 .vs/
 
-[Bb]uild/
+/[Bb]uild/
 [Ss]ource/[Dd]ependencies/
 
 *.generated.*

@@ -1,0 +1,26 @@
+name: Build Win64 MSVC v143
+
+on:
+  push:
+  pull_request:
+    branches: ["main"]
+
+permissions:
+  contents: read
+
+jobs:
+  build-win64-msvc-v143:
+    runs-on: windows-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        build_configuration: [Debug, Development, Distribution, Profile]
+        build_platform: [Editor, Standalone]
+        exclude:
+          - build_configuration: Distribution
+            build_platform: Editor
+    uses: .github/workflows/build/build-win64-action
+    with:
+      configuration: ${{ matrix.build_configuration }}
+      platform: ${{ matrix.build_platform }}
+      toolset: msc-v143
