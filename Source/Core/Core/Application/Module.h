@@ -76,15 +76,23 @@ namespace Oyl
 #	pragma endregion
 #	pragma region Events
 		void
-		SetOnPostEventCallback(OnEventFn a_fn) { m_onPostEventCallback = a_fn; }
+		SetOnPostEventCallback(Detail::OnEventDelegate a_fn) { m_onPostEventCallback = a_fn; }
 
 		template<typename TModule, typename TEvent>
 		void
 		RegisterEventListener(void (TModule::*a_fn)(TEvent&))
 		{
+			using OnEventFn = void(Module::*)(Event&);
+			
+			// Ensure ABI is the same between the incoming member function and the
+			// output member function, then type coerce
+			static_assert(sizeof(a_fn) == sizeof(OnEventFn));
+			void* intermediate = reinterpret_cast<void*>(&a_fn);
+			OnEventFn* result = reinterpret_cast<OnEventFn*>(intermediate);
+			
 			m_eventFns[TEvent::GetStaticTypeId()] =
 				std::bind(
-					reinterpret_cast<void(Module::*)(Event&)>(a_fn),
+					*result,
 					this,
 					std::placeholders::_1
 				);
@@ -113,9 +121,9 @@ namespace Oyl
 	private:
 		bool m_enabled = true;
 
-		OnEventFn m_onPostEventCallback;
+		Detail::OnEventDelegate m_onPostEventCallback;
 
-		std::unordered_map<TypeId, OnEventFn> m_eventFns;
+		std::unordered_map<TypeId, Detail::OnEventDelegate> m_eventFns;
 	};
 }
 
@@ -146,7 +154,7 @@ public: \
 	} \
 	\
 	std::string_view \
-	GetName() const { return _name_; } \
+	GetName() const override { return _name_; } \
 	\
 	template<typename... TArgs>\
 	static \

@@ -14,26 +14,29 @@ namespace Oyl
 		GetTypeId() const = 0;
 	};
 
-	using OnEventFn = std::function<void(Event&)>;
-
-	class EventDispatcher
+	namespace Detail
 	{
-	public:
-		explicit
-		EventDispatcher(Event& a_event)
-			: event { a_event } {}
+		using OnEventDelegate = std::function<void(Event&)>;
 
-		Event& event;
-
-		void
-		Dispatch(TypeId a_type, OnEventFn a_fn) const
+		class EventDispatcher
 		{
-			if (a_type == event.GetTypeId())
+		public:
+			explicit
+			EventDispatcher(Event& a_event)
+				: event { a_event } {}
+
+			Event& event;
+
+			void
+			Dispatch(TypeId a_type, OnEventDelegate a_fn) const
 			{
-				a_fn(event);
+				if (a_type == event.GetTypeId())
+				{
+					a_fn(event);
+				}
 			}
-		}
-	};
+		};
+	}
 }
 
 #define OYL_DECLARE_EVENT(...) OYL_MACRO_OVERLOAD(_OYL_DECLARE_EVENT, __VA_ARGS__)

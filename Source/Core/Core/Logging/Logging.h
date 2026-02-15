@@ -65,10 +65,10 @@ namespace Oyl::Logging
 #define OYL_LOG_LEVEL(_level_, _msg_, ...) \
 	constexpr auto _OYL_CAT_EXPAND(__oyl_log_sourceinfo, __LINE__) = \
 		::Oyl::Logging::Detail::SourceInfo { __FUNCTION__, __FILE__, _OYL_CAT_EXPAND(__LINE__, u) }; \
-	::Oyl::Logging::##_level_( \
+	::Oyl::Logging::_level_( \
 		_OYL_CAT_EXPAND(__oyl_log_sourceinfo, __LINE__), \
 		_msg_, \
-		##__VA_ARGS__ \
+		##__VA_ARGS__\
 	)
 
 #define OYL_LOG_DEBUG(  _msg_, ...) OYL_LOG_LEVEL(Debug,   _msg_, ##__VA_ARGS__)

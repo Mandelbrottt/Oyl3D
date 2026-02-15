@@ -56,7 +56,7 @@ namespace Oyl
 		}
 
 		void
-		SetOnEventCallback(OnEventFn a_fn) { m_onEventCallback = a_fn; }
+		SetOnEventCallback(Detail::OnEventDelegate a_fn) { m_onEventCallback = a_fn; }
 
 		ModuleList::iterator begin() { return m_modules.begin(); }
 
@@ -69,7 +69,7 @@ namespace Oyl
 	private:
 		std::vector<Module*> m_modules;
 
-		OnEventFn m_onEventCallback;
+		Detail::OnEventDelegate m_onEventCallback;
 	};
 }
 
