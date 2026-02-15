@@ -32,6 +32,8 @@ function applyCommonCppSettings(assemblyDefinition)
     targetdir(Config.TargetDir .. Config.OutputDir)
     debugdir (Config.TargetDir .. Config.OutputDir)
     objdir   (Config.ObjectDir .. Config.OutputDir)
+    implibdir(Config.LibraryDir .. Config.OutputDir)
+    
 
     files {
         "./**.cpp",
