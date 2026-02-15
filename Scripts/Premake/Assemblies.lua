@@ -38,7 +38,6 @@ function EngineAssembly(assemblyDefinition)
         filter {}
 
         files { "**.lua" }
-
         removefiles { "**/Platform/**" }
 
         filter "system:windows"

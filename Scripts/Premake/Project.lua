@@ -18,7 +18,6 @@ function applyCommonCppSettings(assemblyDefinition)
     filename("%{prj.name}_" .. _ACTION)
     language "C++"
     cppdialect "C++17"
-    toolset "Clang"
     staticruntime "Off"
     floatingpoint "Fast"
     rtti "On"
@@ -27,13 +26,11 @@ function applyCommonCppSettings(assemblyDefinition)
     fatalwarnings { "All" }
     multiprocessorcompile "On"
 
-    
     location (Config.ProjectLocation)
     targetdir(Config.TargetDir .. Config.OutputDir)
     debugdir (Config.TargetDir .. Config.OutputDir)
     objdir   (Config.ObjectDir .. Config.OutputDir)
     implibdir(Config.LibraryDir .. Config.OutputDir)
-    
 
     files {
         "./**.cpp",
