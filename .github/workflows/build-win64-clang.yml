@@ -10,17 +10,6 @@ permissions:
 
 jobs:
   build-win64-clang:
-    runs-on: windows-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        build_configuration: [Debug, Development, Distribution, Profile]
-        build_platform: [Editor, Standalone]
-        exclude:
-          - build_configuration: Distribution
-            build_platform: Editor
-    uses: .github/workflows/build/build-win64-action
+    uses: ./.github/workflows/build-win64-action.yml
     with:
-      configuration: ${{ matrix.build_configuration }}
-      platform: ${{ matrix.build_platform }}
       toolset: clang

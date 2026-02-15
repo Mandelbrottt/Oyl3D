@@ -9,18 +9,7 @@ permissions:
   contents: read
 
 jobs:
-  build-win64-msvc-v143:
-    runs-on: windows-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        build_configuration: [Debug, Development, Distribution, Profile]
-        build_platform: [Editor, Standalone]
-        exclude:
-          - build_configuration: Distribution
-            build_platform: Editor
-    uses: .github/workflows/build/build-win64-action
+  build-win64-clang:
+    uses: ./.github/workflows/build-win64-action.yml
     with:
-      configuration: ${{ matrix.build_configuration }}
-      platform: ${{ matrix.build_platform }}
       toolset: msc-v143
