@@ -24,6 +24,10 @@ jobs:
           Editor,
           Standalone,
         ]
+        compiler: [
+          msc-v143,
+          clang,
+        ]
         exclude:
           - build_configuration: Distribution
             build_platform: Editor
@@ -92,7 +96,7 @@ jobs:
 
     - name: Generate Solutions
       working-directory: ${{ github.workspace }}
-      run: Binaries/ThirdParty/premake5 vs2022
+      run: Binaries/ThirdParty/premake5 vs2022 --cc=${{ matrix.compiler }}
 
     - name: Build
       working-directory: ${{ github.workspace }}
