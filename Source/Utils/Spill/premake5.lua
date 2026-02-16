@@ -14,10 +14,10 @@ project "Oyl.Spill"
     multiprocessorcompile "On"
 
     location (Config.ProjectLocation)
-    targetdir(Config.TargetDir .. Config.OutputDir)
-    debugdir (Config.TargetDir .. Config.OutputDir)
-    objdir   (Config.ObjectDir .. Config.OutputDir)
-    implibdir(Config.LibraryDir .. Config.OutputDir)
+    targetdir(Config.Utils.TargetDir .. Config.Utils.OutputDir)
+    debugdir (Config.Utils.TargetDir .. Config.Utils.OutputDir)
+    objdir   (Config.ObjectDir .. Config.Utils.OutputDir)
+    implibdir(Config.LibraryDir .. Config.Utils.OutputDir)
 
     links {
         "Premake"
