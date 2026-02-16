@@ -1,6 +1,6 @@
 #pragma once
 
-#include "ReflectionTest.generated.h"
+//#include "ReflectionTest.generated.h"
 
 #include "Core/Logging/Logging.h"
 

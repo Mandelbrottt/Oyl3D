@@ -5,10 +5,11 @@
 #include <Core/Application/CommandLine.h>
 #include <Core/Application/Main.h>
 #include <Core/Application/Module.h>
+#include <Core/Logging/Logging.h>
 #include <Core/Events/Event.h>
 #include <Core/Profiling/Profiler.h>
 
-#include "Include.generated.h"
+//#include "Include.generated.h"
 
 static void SetupConsole();
 
