@@ -14,7 +14,7 @@ newoption {
     description = "Disable the automatic run of premake on every compile",
 }
 
-processDependencies(Packages)
+processDependencies(Dependencies)
 
 workspace(Config.Name)
     location "./"
