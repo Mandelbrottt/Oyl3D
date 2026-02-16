@@ -63,8 +63,11 @@ namespace Oyl::Detail
 		{
 			using IntFn = int(*)();
 			IntFn someFunction = (IntFn) (void*) GetProcAddress(hmodule, "_Exports_Oyl_Core_");
-			int a = someFunction();
-			OYL_LOG("someFunction() = {}", a);
+			if (someFunction)
+			{
+				int a = someFunction();
+				OYL_LOG("someFunction() = {}", a);
+			}
 		}
 	}
 

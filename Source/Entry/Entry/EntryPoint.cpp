@@ -143,6 +143,9 @@ int WINAPI WinMain(
 	const char* startupString = "Startup";
 	OYL_FRAME_MARK_START(startupString);
 	Oyl::Detail::Init(initParams);
+
+	TestModule1::Register();
+	TestModule2::Register();
 	OYL_FRAME_MARK_END(startupString);
 	
 	while (g_running)
