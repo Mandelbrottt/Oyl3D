@@ -11,16 +11,7 @@ namespace Oyl
 	{
 		return Oyl::Detail::GetModuleRegistry();
 	}
-
-	bool
-	ModuleRegistry::RegisterModule(Module* a_module)
-	{
-		m_modules.emplace_back(a_module);
-		a_module->SetOnPostEventCallback(m_onEventCallback);
-		a_module->OnInit();
-		return true;
-	}
-
+	
 	Module*
 	ModuleRegistry::GetModule(TypeId a_typeId)
 	{

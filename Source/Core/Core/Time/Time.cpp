@@ -9,16 +9,16 @@
 
 namespace Oyl::Time::Detail
 {
-	float g_deltaTime         = 0.0f;
-	float g_unscaledDeltaTime = 0.0f;
-	float g_fixedDeltaTime    = 0.0f;
+	float32 g_deltaTime         = 0.0f;
+	float32 g_unscaledDeltaTime = 0.0f;
+	float32 g_fixedDeltaTime    = 0.0f;
 
-	float g_elapsedTime         = 0.0f;
-	float g_unscaledElapsedTime = 0.0f;
-	float g_timeDifference      = 0.0f;
+	float64 g_elapsedTime         = 0.0;
+	float64 g_unscaledElapsedTime = 0.0;
+	float32 g_timeDifference      = 0.0f;
 
-	float              g_timeScale     = 1.0f;
-	std::atomic<float> g_timeScaleHint = 1.0f;
+	float                g_timeScale     = 1.0f;
+	std::atomic<float32> g_timeScaleHint = 1.0f;
 
 	void
 	Init()
@@ -34,16 +34,28 @@ namespace Oyl::Time::Detail
 		OYL_PROFILE_FUNCTION();
 		return Platform::Update();
 	}
-
-	double
-	ImmediateElapsedTime()
+	
+	uint64
+	TickResolution()
 	{
-		return Platform::ImmediateElapsedTime();
+		return Platform::TickResolution();
 	}
 	
 	uint64
 	CurrentProcessorTick()
 	{
 		return Platform::CurrentProcessorTick();
+	}
+
+	uint64
+	ImmediateElapsedTicks()
+	{
+		return Platform::ImmediateElapsedTicks();
+	}
+
+	float64
+	ImmediateElapsedTime()
+	{
+		return Platform::ImmediateElapsedTime();
 	}
 }

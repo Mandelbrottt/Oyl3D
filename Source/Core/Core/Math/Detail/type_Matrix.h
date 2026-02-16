@@ -99,6 +99,7 @@ namespace Oyl
 		Matrix_t<SizeX, SizeY, TUnderlying>
 		Inverse(const Matrix_t<SizeX, SizeY, TUnderlying>& a_value) noexcept
 		{
+			OYL_UNUSED(a_value);
 			// TODO: Implement Inverse and Determinant
 		}
 	}
@@ -152,12 +153,7 @@ namespace Oyl
 	operator *(Matrix_t<SizeShared, SizeLhsY, TUnderlying> a_lhs, Matrix_t<SizeRhsX, SizeShared, TUnderlying> a_rhs) noexcept
 	{
 		Matrix_t<SizeShared, SizeLhsY, TUnderlying> result { 0 };
-
-		const auto sizeX      = SizeRhsX;
-		const auto sizeY      = SizeLhsY;
-		const auto sizeShared = SizeShared;
-
-		// ReSharper disable CppBadChildStatementIndent
+		
 		for (int y = 0; y < SizeLhsY; y++)
 			for (int x = 0; x < SizeRhsX; x++)
 				for (int z = 0; z < SizeShared; z++)
@@ -171,7 +167,6 @@ namespace Oyl
 					TUnderlying product = left * right;
 					result.data[y * SizeShared + x] += product;
 				}
-		// ReSharper restore CppBadChildStatementIndent
 
 		return result;
 	}
@@ -183,7 +178,6 @@ namespace Oyl
 	operator *(Vector_t<SizeShared, TUnderlying> a_lhs, Matrix_t<SizeRhsX, SizeShared, TUnderlying> a_rhs) noexcept
 	{
 		constexpr int size_shared = SizeShared;
-		constexpr int size_rhs_x  = SizeRhsX;
 
 		// Don't use SizeShared directly, causes stack corruptions on some systems
 		std::size_t sizeof_data = sizeof(TUnderlying) * size_shared;

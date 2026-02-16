@@ -4,16 +4,16 @@ namespace Oyl::Time
 {
 	namespace Detail
 	{
-		extern float g_deltaTime;
-		extern float g_unscaledDeltaTime;
-		extern float g_fixedDeltaTime;
+		extern float32 g_deltaTime;
+		extern float32 g_unscaledDeltaTime;
+		extern float32 g_fixedDeltaTime;
 		
-		extern float g_elapsedTime;
-		extern float g_unscaledElapsedTime;
-		extern float g_timeDifference;
+		extern float64 g_elapsedTime;
+		extern float64 g_unscaledElapsedTime;
+		extern float32 g_timeDifference;
 
-		extern float g_timeScale;
-		extern std::atomic<float> g_timeScaleHint;
+		extern float32 g_timeScale;
+		extern std::atomic<float32> g_timeScaleHint;
 
 		void
 		OYL_CORE_API
@@ -25,50 +25,58 @@ namespace Oyl::Time
 
 		uint64
 		OYL_CORE_API
+		TickResolution();
+
+		uint64
+		OYL_CORE_API
 		CurrentProcessorTick();
 
-		double
+		uint64
+		OYL_CORE_API
+		ImmediateElapsedTicks();
+
+		float64
 		OYL_CORE_API
 		ImmediateElapsedTime();
 	}
 
 	inline
-	float
+	float64
 	ElapsedTime()
 	{
 		return Detail::g_elapsedTime;
 	}
 	
 	inline
-	float
+	float64
 	UnscaledElapsedTime()
 	{
 		return Detail::g_unscaledElapsedTime;
 	}
 	
 	inline
-	float
+	float32
 	DeltaTime()
 	{
 		return Detail::g_deltaTime;
 	}
 	
 	inline
-	float
+	float32
 	UnscaledDeltaTime()
 	{
 		return Detail::g_unscaledDeltaTime;
 	}
 	
 	inline
-	float
+	float32
 	FixedDeltaTime()
 	{
 		return Detail::g_fixedDeltaTime;
 	}
 	
 	inline
-	float
+	float32
 	SmoothDeltaTime()
 	{
 		return Detail::g_deltaTime;
@@ -76,7 +84,7 @@ namespace Oyl::Time
 	
 	inline
 	void
-	SetTimeScale(float a_scale)
+	SetTimeScale(float32 a_scale)
 	{
 		Detail::g_timeScaleHint = a_scale;
 	}

@@ -23,7 +23,7 @@ namespace Oyl
 	void
 	CommandLine::ParseCommandLineImpl(size_t a_argc, const char* a_argv[])
 	{
-		for (int i = 0; i < a_argc; i++)
+		for (size_t i = 0; i < a_argc; i++)
 		{
 			std::string arg = a_argv[i];
 
@@ -55,9 +55,9 @@ namespace Oyl
 			}
 
 			std::string name = arg.substr(namePos, equalsPos - namePos);
-
+			
 			// Peek the next argument, if it is a value, use it for this argument
-			int nextIndex = i + 1;
+			size_t nextIndex = i + 1;
 			if (value.empty() && nextIndex < a_argc && !isArgument(a_argv[nextIndex]))
 			{
 				value = a_argv[++i];

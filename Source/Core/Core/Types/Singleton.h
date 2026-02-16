@@ -7,12 +7,14 @@ namespace Oyl
 	template<typename TClass>
 	class OYL_CORE_API Singleton
 	{
-	public:
+	protected:
 		Singleton() = default;
+
+	public:
 		Singleton(Singleton&) = delete;
 		Singleton&
 		operator =(Singleton&) = delete;
-
+		
 		static
 		TClass& 
 		Instance()

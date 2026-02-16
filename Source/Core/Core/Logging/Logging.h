@@ -2,6 +2,7 @@
 
 #include "Core/Common.h"
 
+// Required because of template functions
 #include "Logging_Spdlog.h"
 
 namespace Oyl::Logging
@@ -10,14 +11,18 @@ namespace Oyl::Logging
 	{
 		struct SourceInfo
 		{
-			const char* file = nullptr;
 			const char* function = nullptr;
-			int line = 0;
+			const char* file = nullptr;
+			uint32_t line = 0;
 		};
 
 		OYL_CORE_API
 		void
 		Init();
+
+		OYL_CORE_API
+		void
+		Flush();
 
 		OYL_CORE_API
 		void
@@ -55,9 +60,13 @@ namespace Oyl::Logging
 	void Fatal(Detail::SourceInfo a_sourceInfo, const T& a_fmt);
 }
 
+// Abuse _OYL_CAT_EXPAND because without it, __LINE__ doesn't resolve properly in any of the
+// three usage locations
 #define OYL_LOG_LEVEL(_level_, _msg_, ...) \
-	::Oyl::Logging::##_level_( \
-		::Oyl::Logging::Detail::SourceInfo { __FILE__, __func__, __LINE__ }, \
+	constexpr auto _OYL_CAT_EXPAND(__oyl_log_sourceinfo, __LINE__) = \
+		::Oyl::Logging::Detail::SourceInfo { __FUNCTION__, __FILE__, _OYL_CAT_EXPAND(__LINE__, u) }; \
+	::Oyl::Logging::_level_( \
+		_OYL_CAT_EXPAND(__oyl_log_sourceinfo, __LINE__), \
 		_msg_, \
 		##__VA_ARGS__\
 	)

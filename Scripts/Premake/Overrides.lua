@@ -35,3 +35,12 @@ premake.override(premake.vstudio.vc2010.elements, "projectReferences", function(
         }
     end
 end)
+
+-- Hijack the userproject function to add ShowAllFiles by default in visual studio
+-- All custom userproject properties can be injected here
+premake.override(premake.vstudio.vc2010, "userProject", function(base)
+    base()
+    p.push('<PropertyGroup>')
+    p.w('<ShowAllFiles>true</ShowAllFiles>')
+    p.pop('</PropertyGroup>')
+end)

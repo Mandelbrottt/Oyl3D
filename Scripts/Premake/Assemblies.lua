@@ -42,9 +42,7 @@ function EngineAssembly(assemblyDefinition)
         removefiles { "**.generated.h" }
 
         files { "**.lua" }
-
-        -- Platform specific files
-        removefiles { "**/*_Windows*" }
+        removefiles { "**/Platform/**" }
 
         filter "system:windows"
             files { "**/*_Windows*" }

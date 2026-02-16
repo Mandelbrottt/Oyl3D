@@ -1,0 +1,35 @@
+name: Build Oyl3D 
+
+on:
+  push:
+  pull_request:
+    branches: ["main"]
+
+permissions:
+  contents: read
+  
+jobs:
+  build-win64-msvc-v143:
+    name: Build Win64 MSVC
+    strategy: &build-strategy
+      fail-fast: false
+      matrix:
+        configuration: [Debug, Development, Distribution, Profile]
+        platform: [Editor, Standalone]
+        exclude:
+          - configuration: Distribution
+            platform: Editor
+    uses: ./.github/workflows/build-win64-workflow.yml
+    with:
+      configuration: ${{ matrix.configuration }}
+      platform: ${{ matrix.platform }}
+      toolset: msc-v143
+
+  build-win64-clang:
+    name: Build Win64 Clang
+    strategy: *build-strategy
+    uses: ./.github/workflows/build-win64-workflow.yml
+    with:
+      configuration: ${{ matrix.configuration }}
+      platform: ${{ matrix.platform }}
+      toolset: clang

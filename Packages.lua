@@ -128,15 +128,18 @@ Packages = {
                 Config.Configurations.Distribution
             }
 
+            defines {
+                "TRACY_ENABLE",
+                "TRACY_DELAYED_INIT",
+                "TRACY_MANUAL_LIFETIME",
+                "TRACY_NO_SAMPLING",
+                "TRACY_NO_SYSTEM_TRACING",
+                "TRACY_ONLY_LOCALHOST", -- TODO: Fix only localhost at runtime
+            }
+            
             filter "kind:SharedLib"
                 defines {
-                    "TRACY_ENABLE",
-                    "TRACY_EXPORTS",
-                    "TRACY_DELAYED_INIT",
-                    "TRACY_MANUAL_LIFETIME",
-                    "TRACY_NO_SAMPLING",
-                    "TRACY_NO_SYSTEM_TRACING",
-                    "TRACY_ONLY_LOCALHOST", -- TODO: Fix only localhost at runtime
+                    "TRACY_EXPORTS"
                 }
         end
     },
@@ -168,17 +171,4 @@ Packages = {
     --         -- }
     --     end
     -- }
-}
-
-local VULKAN_SDK = os.getenv("VULKAN_SDK")
-if not VULKAN_SDK then
-    premake.error("Missing Vulkan SDK! Please install the Vulkan SDK!")
-end
-
-Libraries = {
-    Vulkan = {
-        IncludeDirs = { VULKAN_SDK .. "/Include" },
-        LibraryDirs = { VULKAN_SDK .. "/Lib" },
-        Libraries = { "vulkan-1" }
-    }
 }

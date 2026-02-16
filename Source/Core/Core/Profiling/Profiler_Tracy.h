@@ -4,4 +4,6 @@
 	#define TRACY_IMPORTS
 #endif
 
+//#define TRACY_CALLSTACK true
+
 #include "tracy/Tracy.hpp"

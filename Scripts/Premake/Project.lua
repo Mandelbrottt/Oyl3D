@@ -18,15 +18,19 @@ function applyCommonCppSettings(assemblyDefinition)
     filename("%{prj.name}_" .. _ACTION)
     language "C++"
     cppdialect "C++17"
-    staticruntime "off"
-    floatingpoint "fast"
-    rtti "on"
-    stringpooling "on"
-    
+    staticruntime "Off"
+    floatingpoint "Fast"
+    rtti "On"
+    stringpooling "On"
+    warnings "Extra"
+    fatalwarnings { "All" }
+    multiprocessorcompile "On"
+
     location (Config.ProjectLocation)
     targetdir(Config.TargetDir .. Config.OutputDir)
     debugdir (Config.TargetDir .. Config.OutputDir)
     objdir   (Config.ObjectDir .. Config.OutputDir)
+    implibdir(Config.LibraryDir .. Config.OutputDir)
 
     files {
         "./**.cpp",
@@ -62,11 +66,6 @@ function applyCommonCppSettings(assemblyDefinition)
         }
     end
 
-    flags {
-        "FatalWarnings",
-        "MultiProcessorCompile",
-    }
-
     filter "kind:StaticLib"
         targetdir(Config.LibraryDir .. Config.OutputDir)
 
@@ -76,26 +75,29 @@ function applyCommonCppSettings(assemblyDefinition)
             "4275", -- non dll-interface used as base for dll-interface
         }
 
+    filter "toolset:clang"
+        floatingpoint "Default"
+
     filter "system:windows"
-        architecture "x64"
+        architecture "x86_64"
 
     filter("configurations:" .. Config.Configurations.Debug)
-        optimize "off"
-        runtime "debug"
-        symbols "on"
+        optimize "Off"
+        runtime "Debug"
+        symbols "On"
         defines { string.upper(Config.ShortName) .. "_DEBUG=1" }
 
     filter("configurations:" .. Config.Configurations.Development)
-        optimize "on"
-        runtime "release"
-        symbols "on"
+        optimize "On"
+        runtime "Release"
+        symbols "On"
         defines { string.upper(Config.ShortName) .. "_DEVELOPMENT=1" }
 
     filter("configurations:" .. Config.Configurations.Profile)
-        optimize "on"
-        runtime "release"
-        symbols "on"
-        defines { 
+        optimize "On"
+        runtime "Release"
+        symbols "On"
+        defines {
             string.upper(Config.ShortName) .. "_PROFILE=1",
             "TRACY_ENABLE",
             "TRACY_DELAYED_INIT",
@@ -104,19 +106,16 @@ function applyCommonCppSettings(assemblyDefinition)
         }
         
     filter("configurations:" .. Config.Configurations.Distribution)
-        optimize "full"
-        runtime "release"
-        symbols "off"
+        optimize "Full"
+        runtime "Release"
+        symbols "Off"
         defines { string.upper(Config.ShortName) .. "_DISTRIBUTION=1" }
         
     filterEditor()
-        removeconfigurations {
-            Config.Configurations.Distribution
-        }
         defines { string.upper(Config.ShortName) .. "_EDITOR=1" }
         
     filterStandalone()
-        staticruntime "on"
+        staticruntime "On"
 
     filter {}
 end

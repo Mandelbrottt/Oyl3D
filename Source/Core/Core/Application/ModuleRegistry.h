@@ -22,16 +22,16 @@ namespace Oyl
 		static
 		ModuleRegistry*
 		Instance();
-
-		bool
-		RegisterModule(Module* a_module);
-
+		
 		template<typename TModule, typename... TArgs, enable_if_base_of_module_t<TModule> = true>
-		bool
+		TModule*
 		RegisterModule(TArgs&&... a_args)
 		{
 			TModule* module = new TModule(std::forward<TArgs>(a_args)...);
-			return RegisterModule(module);
+			m_modules.emplace_back(module);
+			module->SetOnPostEventCallback(m_onEventCallback);
+			module->OnInit();
+			return module;
 		}
 
 		Module*
@@ -56,7 +56,7 @@ namespace Oyl
 		}
 
 		void
-		SetOnEventCallback(OnEventFn a_fn) { m_onEventCallback = a_fn; }
+		SetOnEventCallback(Detail::OnEventDelegate a_fn) { m_onEventCallback = a_fn; }
 
 		ModuleList::iterator begin() { return m_modules.begin(); }
 
@@ -69,7 +69,7 @@ namespace Oyl
 	private:
 		std::vector<Module*> m_modules;
 
-		OnEventFn m_onEventCallback;
+		Detail::OnEventDelegate m_onEventCallback;
 	};
 }
 

@@ -6,7 +6,7 @@ Config.ShortName = "Oyl"
 Config.TargetDir = "%{wks.location}/Build/Binaries/"
 Config.LibraryDir = "%{wks.location}/Build/Library/"
 Config.ObjectDir = "%{wks.location}/Build/Intermediate/"
-Config.OutputDir = "%{cfg.buildcfg}_%{cfg.platform}_%{cfg.system}/"
+Config.OutputDir = "%{cfg.buildcfg}_%{cfg.platform}_%{cfg.system}-%{cfg.architecture}_%{cfg.toolset}/"
 
 Config.ProjectLocation = "./"
 

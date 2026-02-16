@@ -4,7 +4,8 @@
 
 #include <Core/Application/CommandLine.h>
 #include <Core/Application/Main.h>
-#include <Core/Logging/Logging.h>
+#include <Core/Application/Module.h>
+#include <Core/Events/Event.h>
 #include <Core/Profiling/Profiler.h>
 
 #include "Include.generated.h"
@@ -14,6 +15,80 @@ static void SetupConsole();
 static void ShutdownConsole();
 
 static bool g_running = true;
+
+struct TestEvent1 : Oyl::Event
+{
+	OYL_DECLARE_EVENT(TestEvent1);
+
+	int a;
+};
+
+struct TestEvent2 : Oyl::Event
+{
+	OYL_DECLARE_EVENT(TestEvent2);
+
+	int b;
+};
+
+class TestModule1 : public Oyl::Module
+{
+	OYL_DECLARE_MODULE(TestModule1);
+
+public:
+	void
+	OnInit() override
+	{
+		OYL_LOG("TM1 {} Init!", GetName());
+
+		RegisterEventListener(&TestModule1::OnTestEvent1);
+	}
+
+	void
+	OnUpdate() override
+	{
+		OYL_LOG("TM1 {} Update!", GetName());
+
+		TestEvent2 e2;
+		e2.b = 6;
+		PostEvent(e2);
+	}
+
+	void
+	OnTestEvent1(TestEvent1& a_event)
+	{
+		OYL_LOG("TM1 a = {}", a_event.a);
+	}
+};
+
+class TestModule2 : public Oyl::Module
+{
+	OYL_DECLARE_MODULE(TestModule2);
+
+public:
+	void
+	OnInit() override
+	{
+		OYL_LOG("TM2 {} Init!", GetName());
+
+		RegisterEventListener(&TestModule2::OnTestEvent2);
+	}
+
+	void
+	OnUpdate() override
+	{
+		OYL_LOG("TM2 {} Update!", GetName());
+		
+		TestEvent1 e1;
+		e1.a = 6;
+		PostEvent(e1);
+	}
+
+	void
+	OnTestEvent2(TestEvent2& a_event)
+	{
+		OYL_LOG("TM2 b = {}", a_event.b);
+	}
+};
 
 // ReSharper disable CppInconsistentNaming
 int WINAPI WinMain(

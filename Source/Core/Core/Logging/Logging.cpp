@@ -13,7 +13,10 @@ namespace Oyl::Logging
 	// For use by anything that, for whatever reason, must be run before logging is initialized
 	// Once logging is initialized, we dump all messages from the pre-init logger to the actual logger
 	static std::shared_ptr<spdlog::logger> g_coreLogger = 
-		spdlog::create<spdlog::sinks::ringbuffer_sink_mt>("PRE-INIT", 32);
+		spdlog::create_async<spdlog::sinks::ringbuffer_sink_mt>("PRE-INIT", 32);
+
+	static size_t g_queueSize = 8192;
+	static size_t g_threadCount = 1;
 
 	// TODO: Add multiple loggers at once https://github.com/gabime/spdlog/wiki/1.-QuickStart#create-a-logger-with-multiple-sinks-each-sink-with-its-own-formatting-and-log-level
 	namespace Detail
@@ -32,7 +35,7 @@ namespace Oyl::Logging
 
 			// MUCH better performance when logging async, may run into issues with # of threads
 			// TODO: Move to manual queuing system like profiling?
-			//g_coreLogger = spdlog::stdout_color_mt("CORE");
+			spdlog::init_thread_pool(g_queueSize, g_threadCount);
 			g_coreLogger = spdlog::stdout_color_mt<spdlog::async_factory>("CORE");
 
 			g_coreLogger->set_level(spdlog::level::debug);
@@ -49,11 +52,20 @@ namespace Oyl::Logging
 		}
 
 		void
+		Flush()
+		{
+			OYL_PROFILE_FUNCTION();
+			
+			g_coreLogger->flush();
+		}
+
+		void
 		Shutdown()
 		{
 			OYL_PROFILE_FUNCTION();
 			
 			g_coreLogger.reset();
+			spdlog::shutdown();
 		}
 	}
 

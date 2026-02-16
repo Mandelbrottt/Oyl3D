@@ -26,9 +26,8 @@ namespace Oyl
 		TModule*
 		Register(TArgs&&... a_args)
 		{
-			TModule*        module   = new TModule();
 			ModuleRegistry* registry = ModuleRegistry::Instance();
-			registry->RegisterModule(module);
+			auto module = registry->RegisterModule<TModule>(std::forward<TArgs>(a_args)...);
 			return module;
 		}
 
@@ -77,15 +76,20 @@ namespace Oyl
 #	pragma endregion
 #	pragma region Events
 		void
-		SetOnPostEventCallback(OnEventFn a_fn) { m_onPostEventCallback = a_fn; }
+		SetOnPostEventCallback(Detail::OnEventDelegate a_fn) { m_onPostEventCallback = a_fn; }
 
 		template<typename TModule, typename TEvent>
 		void
-		RegisterEvent(void (TModule::*a_fn)(TEvent&))
+		RegisterEventListener(void (TModule::*a_fn)(TEvent&))
 		{
+			// Ensure ABI is the same between the incoming member function and the
+			// output member function, then type coerce
+			using OnEventFn = void(Module::*)(Event&);
+			static_assert(sizeof(a_fn) == sizeof(OnEventFn));
+			
 			m_eventFns[TEvent::GetStaticTypeId()] =
 				std::bind(
-					reinterpret_cast<void(Module::*)(Event&)>(a_fn),
+					*reinterpret_cast<OnEventFn*>(&a_fn),
 					this,
 					std::placeholders::_1
 				);
@@ -93,9 +97,9 @@ namespace Oyl
 
 		template<typename TModule, typename TEvent>
 		void
-		RegisterEvent(void (TModule::*a_fn)(TEvent&) const)
+		RegisterEventListener(void (TModule::*a_fn)(TEvent&) const)
 		{
-			RegisterEvent(const_cast<std::decay_t<decltype(a_fn)>>(a_fn));
+			RegisterEventListener(const_cast<std::decay_t<decltype(a_fn)>>(a_fn));
 		}
 
 		// TODO: Add event to global event queue, arena?
@@ -114,9 +118,9 @@ namespace Oyl
 	private:
 		bool m_enabled = true;
 
-		OnEventFn m_onPostEventCallback;
+		Detail::OnEventDelegate m_onPostEventCallback;
 
-		std::unordered_map<TypeId, OnEventFn> m_eventFns;
+		std::unordered_map<TypeId, Detail::OnEventDelegate> m_eventFns;
 	};
 }
 
@@ -147,7 +151,7 @@ public: \
 	} \
 	\
 	std::string_view \
-	GetName() const { return _name_; } \
+	GetName() const override { return _name_; } \
 	\
 	template<typename... TArgs>\
 	static \
