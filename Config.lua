@@ -11,7 +11,7 @@ Config.OutputDir = "%{cfg.buildcfg}_%{cfg.platform}_%{cfg.system}-%{cfg.architec
 Config.ProjectLocation = "./"
 
 Config.SourceDir = "Source/"
-Config.DependenciesDir = Config.SourceDir .. "Dependencies/"
+Config.PackagesDir = Config.SourceDir .. "Packages/"
 
 Config.Configurations = {}
 Config.Configurations.Debug = "Debug"

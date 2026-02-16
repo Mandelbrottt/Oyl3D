@@ -17,6 +17,7 @@ function EngineAssembly(assemblyDefinition)
     assemblyDefinition.ProjectName = string.format("%s.%s", Config.ShortName, projectName)
     assemblyDefinition.Group = assemblyDefinition.Group or ""
     assemblyDefinition.Kind = assemblyDefinition.Kind or premake.UTILITY
+    assemblyDefinition.Dependencies = assemblyDefinition.Dependencies or {}
 
     if assemblyDefinition.Group then
         group(assemblyDefinition.Group)

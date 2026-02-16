@@ -40,9 +40,11 @@ function applyCommonCppSettings(assemblyDefinition)
         "./**.ixx",
     }
 
-    links {
-        "Premake"
-    }
+    if (not _OPTIONS["no-premake-check"]) then
+        links {
+            "Premake"
+        }
+    end
 
     if assemblyDefinition then
         includedirs {

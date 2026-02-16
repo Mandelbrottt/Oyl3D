@@ -9,7 +9,12 @@ if _ACTION == "clean" or _ACTION == nil then
     return
 end
 
-processDependencies(Packages)
+newoption {
+    trigger     = "no-premake-check",
+    description = "Disable the automatic run of premake on every compile",
+}
+
+processPackages(Packages)
 
 workspace(Config.Name)
     location "./"
@@ -29,8 +34,8 @@ workspace(Config.Name)
 
     startproject(Config.ShortName .. ".Entry")
 
-    group("Dependencies")
-        generateDependencyProjects(Packages)
+    group("Packages")
+        generatePackageProjects(Packages)
     group ""
 
     local assemblyScripts = os.matchfiles(path.join(Config.SourceDir, "**premake5.lua"))
@@ -57,23 +62,25 @@ workspace(Config.Name)
         project "*"
     end
 
-    project("Premake")
-        kind "Makefile"
-        filename("%{prj.name}_" .. _ACTION)
-        targetdir(Config.TargetDir .. Config.OutputDir)
-        objdir(Config.ObjectDir .. Config.OutputDir)
+    if not _OPTIONS["no-premake-check"] then
+        project("Premake")
+            kind "Makefile"
+            filename("%{prj.name}_" .. _ACTION)
+            targetdir(Config.TargetDir .. Config.OutputDir)
+            objdir(Config.ObjectDir .. Config.OutputDir)
 
-        local runPremakeCommand = "%{wks.location}/Binaries/ThirdParty/premake5.exe " .. _ACTION
+            local runPremakeCommand = "%{wks.location}/Binaries/ThirdParty/premake5.exe " .. table.concat(_ARGV, " ")
 
-        buildcommands {
-            runPremakeCommand,
-        }
-        rebuildcommands {
-            runPremakeCommand,
-        }
+            buildcommands {
+                runPremakeCommand,
+            }
+            rebuildcommands {
+                runPremakeCommand,
+            }
 
-        filter "system:windows"
-            architecture "x86_64"
-        filter {}
+            filter "system:windows"
+                architecture "x86_64"
+            filter {}
+    end
 
 include "Scripts/Premake/Overrides.lua"
