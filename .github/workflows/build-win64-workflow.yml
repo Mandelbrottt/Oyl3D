@@ -56,7 +56,7 @@ jobs:
 
       - name: Generate Solutions
         working-directory: ${{ github.workspace }}
-        run: Binaries/ThirdParty/premake5 vs2022 --cc=${{ inputs.toolset }}
+        run: Binaries/ThirdParty/premake5 vs2022 --cc=${{ inputs.toolset }} --no-premake-check
 
       - name: Build
         working-directory: ${{ github.workspace }}
