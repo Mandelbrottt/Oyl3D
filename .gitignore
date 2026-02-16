@@ -10,6 +10,7 @@
 *.sln
 *.vcxproj
 *.vcxproj.filters
+*.csproj
 *.user
 
 # Generated Source Files
