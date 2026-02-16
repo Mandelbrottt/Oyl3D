@@ -11,6 +11,7 @@ namespace Test
 	public:
 		Something()
 		{
+			OYL_UNUSED(m_somethingElse);
 			OYL_LOG("Something()");
 		}
 

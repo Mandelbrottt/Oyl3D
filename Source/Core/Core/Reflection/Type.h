@@ -152,7 +152,7 @@ namespace Oyl::Reflection
 		{
 		#if defined _OYL_TYPE_HEAP_ALLOCATED_FACTORY
 			return m_factory;
-		#else !defined IN_PLACE_FACTORY
+		#elif !defined IN_PLACE_FACTORY
 			// See https://en.cppreference.com/w/cpp/types/aligned_storage
 			auto pFactory = std::launder(reinterpret_cast<const Detail::GenericFactory*>(m_factoryData));
 			return pFactory;
