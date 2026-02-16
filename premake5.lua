@@ -69,7 +69,14 @@ workspace(Config.Name)
             targetdir(Config.TargetDir .. Config.OutputDir)
             objdir(Config.ObjectDir .. Config.OutputDir)
 
-            local runPremakeCommand = "%{wks.location}/Binaries/ThirdParty/premake5.exe " .. table.concat(_ARGV, " ")
+            local runPremakeCommand = ("%s %s"):format(
+                "%{wks.location}/Binaries/ThirdParty/premake5.exe ",
+                table.concat(_ARGV, " ")
+            )
+
+            if (_ARGV[#_ARGV] ~= "--error-on-generate") then
+                runPremakeCommand = ("%s %s"):format(runPremakeCommand, "--error-on-generate")
+            end
 
             buildcommands {
                 runPremakeCommand,
