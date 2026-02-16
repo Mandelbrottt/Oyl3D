@@ -38,9 +38,9 @@ workspace(Config.Name)
         generatePackageProjects(Packages)
     group ""
 
-    local assemblyScripts = os.matchfiles(path.join(Config.SourceDir, "**premake5.lua"))
-    for _, assemblyScript in pairs(assemblyScripts) do
-        include(assemblyScript)
+    local premakeScripts = os.matchfiles(path.join(Config.SourceDir, "**premake5.lua"))
+    for _, premakeScript in pairs(premakeScripts) do
+        include(premakeScript)
     end
 
     for name, assembly in pairsByKeys(Assemblies) do
