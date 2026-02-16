@@ -19,7 +19,7 @@ local function cloneGitPackage(package)
         -- Clone specified files and license only
         local files = "!/* /LICENSE*"
         for k, file in pairs(package.Files) do
-            if file[1] ~= "/" then
+            if file:sub(1, 1) ~= "/" then
                 file = "/" .. file
             end
             files = files .. " " .. file
