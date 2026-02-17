@@ -25,20 +25,12 @@ function Oyl.CheckProject.Generate()
         targetdir(Config.TargetDir .. Config.OutputDir)
         objdir(Config.ObjectDir .. Config.OutputDir)
 
-        local runPremakeCommand = ("%s %s"):format(
+        local runPremakeCommand = ("%s %s %s %s"):format(
             "%{wks.location}/Binaries/ThirdParty/premake5.exe ",
-            table.concat(_ARGV, " ")
+            _ACTION,
+            "--cc=%{cfg.toolset}",
+            "--premake-check"
         )
-
-        local hasPremakeCheck = false
-        for k, v in ipairs(_ARGV) do
-            if (v == "--premake-check") then
-                hasPremakeCheck = true
-            end
-        end
-        if (not hasPremakeCheck) then
-            runPremakeCommand = ("%s %s"):format(runPremakeCommand, "--premake-check")
-        end
 
         buildcommands {
             runPremakeCommand,

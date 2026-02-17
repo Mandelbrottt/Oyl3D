@@ -114,8 +114,8 @@ end
 
 function Oyl.Package.FetchPackages()
     for _, package in pairs(Oyl.Packages) do
-        local packageExists = os.isdir(package.ProjectDir)
-        if not packageExists then
+        local numFiles = os.matchfiles(package.ProjectDir .. "/*")
+        if #numFiles == 0 then
             if package.Git then
                 Package.GitClone(package)
             end
@@ -151,29 +151,34 @@ end
 
 ---@param package Package
 function Package.GitClone(package)
+    local executeOrPrint = function(command)
+        if (not _OPTIONS["dryrun"]) then
+            term.pushColor(term.infoColor)
+            io.write(("\t%s "):format(command))
+            term.popColor()
+            printf("in %s", os.getcwd())
+            os.execute(command)
+        else
+            term.pushColor(term.infoColor)
+            io.write(("\t%s "):format(command))
+            term.popColor()
+            printf("in %s", os.getcwd())
+        end
+    end
     local SUPPRESS_COMMAND_OUTPUT = (os.host() == "windows" and "> nul 2>&1" or "> /dev/null 2>&1")
     
-    if (_OPTIONS["dryrun"]) then
-        printf("[DRYRUN] Would Clone Git package \"%s\" from \"%s\"...", package.Name, package.Git.Url)
-        if package.Git.Revision then
-            local revision = package.Git.Revision
-            printf("[DRYRUN]\tWould fetch revision \"%s\"...", revision)
-        elseif package.Git.Tag then
-            local tag = package.Git.Tag
-            printf("[DRYRUN]\tWould fetch tag \"%s\"...", tag)
-        end
-        return
-    end 
-
     printf("Cloning Git package \"%s\" from \"%s\"...", package.Name, package.Git.Url)
 
     -- Clone the repository and cd into it https://stackoverflow.com/a/63786181
-    os.executef(
-        "git clone -q --filter=blob:none -n --depth 1 %s %s %s", 
-        package.Git.Url,
-        package.ProjectDir,
-        SUPPRESS_COMMAND_OUTPUT
+    executeOrPrint(
+        string.format(
+            "git clone -q --filter=blob:none -n --depth 1 %s %s %s", 
+            package.Git.Url,
+            package.ProjectDir,
+            SUPPRESS_COMMAND_OUTPUT
+        )
     )
+
     local cwd = os.getcwd()
     os.chdir(package.ProjectDir)
 
@@ -187,24 +192,24 @@ function Package.GitClone(package)
             files = files .. " " .. file
         end
 
-        os.executef("git sparse-checkout set --no-cone %s %s", files, SUPPRESS_COMMAND_OUTPUT)
+        executeOrPrint(string.format("git sparse-checkout set --no-cone %s %s", files, SUPPRESS_COMMAND_OUTPUT))
     end
 
     -- If a specific revision or tag is specified, point to it
     if package.Git.Revision then
         local revision = package.Git.Revision
         printf("\tFetching revision \"%s\"...", revision)
-        os.executef("git fetch -q --depth 1 origin %s %s", revision, SUPPRESS_COMMAND_OUTPUT)
-        os.executef("git checkout -q --no-progress %s %s", revision, SUPPRESS_COMMAND_OUTPUT)
+        executeOrPrint(string.format("git fetch -q --depth 1 origin %s %s", revision, SUPPRESS_COMMAND_OUTPUT))
+        executeOrPrint(string.format("git checkout -q --no-progress %s %s", revision, SUPPRESS_COMMAND_OUTPUT))
     elseif package.Git.Tag then
         local tag = package.Git.Tag
         printf("\tFetching tag \"%s\"...", tag)
-        os.executef("git fetch -q --depth 1 origin refs/tags/%s:refs/tags/%s %s", tag, tag, SUPPRESS_COMMAND_OUTPUT)
-        os.executef("git checkout -q --no-progress %s %s", tag, SUPPRESS_COMMAND_OUTPUT)
+        executeOrPrint(string.format("git fetch -q --depth 1 origin refs/tags/%s:refs/tags/%s %s", tag, tag, SUPPRESS_COMMAND_OUTPUT))
+        executeOrPrint(string.format("git checkout -q --no-progress %s %s", tag, SUPPRESS_COMMAND_OUTPUT))
     end
 
     -- Remove the .git folder as we're only using git to download the repository
-    os.execute(os.translateCommands("{RMDIR} .git"))
+    executeOrPrint(os.translateCommands("{RMDIR} .git"))
     os.chdir(cwd)
 
     term.pushColor(term.green)
