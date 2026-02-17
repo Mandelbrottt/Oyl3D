@@ -1,9 +1,5 @@
-require "Config"
-
-require "Premake.Library"
-require "Premake.Package"
-
-local Config = Oyl.Config
+local Config = require "Config"
+local Engine = require "Engine"
 
 ---@type { [string]: Package }
 Oyl.Packages = {
@@ -69,7 +65,7 @@ Oyl.Packages = {
         end,
         DependantProperties = function(package)
             if (package.Kind == premake.SHAREDLIB) then
-                filterEditor()
+                Engine.FilterEditor()
                 do
                     defines { "GLFW_DLL" }
                 end
@@ -126,7 +122,7 @@ Oyl.Packages = {
                 "SPDLOG_COMPILED_LIB"
             }
             if (package.Kind == premake.SHAREDLIB) then
-                filterEditor()
+                Engine.FilterEditor()
                 do
                     defines {
                         "SPDLOG_SHARED_LIB"
@@ -171,14 +167,21 @@ Oyl.Packages = {
         end,
         DependantProperties = function(package)
             if (package.Kind == premake.SHAREDLIB) then
-                filterEditor()
+                Engine.FilterEditor()
                 do
                     defines {
-                        "TRACY_IMPORTS"
+                        "TRACY_IMPORTS",
                     }
                 end
             end
 
+            filter("configurations:" .. Config.Configurations.Profile)
+                defines {
+                    "TRACY_ENABLE",
+                    "TRACY_DELAYED_INIT",
+                    "TRACY_MANUAL_LIFETIME",
+                    "TRACY_NO_SYSTEM_TRACING",
+                }
             filter("configurations:not " .. Config.Configurations.Profile)
                 removelinks { package.Name }
         end

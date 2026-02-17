@@ -1,4 +1,4 @@
-require "Premake.Oyl"
+require "Oyl"
 
 Oyl.Config = {}
 
@@ -32,3 +32,5 @@ Config.Configurations.Distribution = "Distribution"
 Config.Platforms = {}
 Config.Platforms.Editor = "Editor"
 Config.Platforms.Standalone = "Standalone"
+
+return Config

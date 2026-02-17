@@ -1,11 +1,8 @@
-require "Premake.Oyl"
-require "Premake.Utils"
-
-local Config = Oyl.Config
+local Config = require "Config"
+local Utils = require "Utils"
 
 Oyl.Engine = {}
 local Engine = Oyl.Engine
-local Utils = Oyl.Utils
 
 ---@class Engine.Project
 ---@field Language string,
@@ -21,7 +18,7 @@ local Utils = Oyl.Utils
 ---@type Engine.Project[]
 Engine.Projects = {}
 
-function Oyl.Engine.GenerateProjects()
+function Engine.GenerateProjects()
     -- Recurse through the source directory and include all premake scripts
     local scripts = os.matchfiles(path.join(Config.SourceDir, "**premake5.lua"))
     for _, script in pairs(scripts) do
@@ -45,7 +42,7 @@ function Oyl.Engine.GenerateProjects()
 end
 
 ---@param dep string
-function Oyl.Engine.AddDependencyToProject(dep)
+function Engine.AddDependencyToProject(dep)
     filter {}
 
     local assembly = Utils.CaseInsensitiveFind(Engine.Projects, dep)
@@ -77,7 +74,7 @@ function Oyl.Engine.AddDependencyToProject(dep)
 end
 
 ---@param proj Engine.Project
-function Oyl.Engine.EngineProjectDefinition(proj)
+function Engine.EngineProjectDefinition(proj)
     local projectDir = Utils.ScriptDir(3)
     local projectName = path.getname(projectDir)
 
@@ -94,21 +91,19 @@ function Oyl.Engine.EngineProjectDefinition(proj)
 
     project(proj.ProjectName)
         if proj.Language == premake.CPP then
-            applyCommonCppSettings(proj)
+            Engine.ApplyCommonCppSettings()
         else
             premake.error(string.format("Invalid language \"%s\" in project \"%s\"", proj.Language, projectName))
         end
 
         kind(proj.Kind)
         if proj.Kind == premake.SHAREDLIB then
-            filterStandalone()
+            Engine.FilterStandalone()
                 kind(premake.STATICLIB)
         end
 
-        filter {}
-
         -- Generated Files
-        includedirs { "%{prj.location}/Generated/" }
+        includedirs { "%{prj.location}", "%{prj.location}/Generated/" }
         removefiles { "**.generated.h" }
 
         files { "**.lua" }
@@ -116,6 +111,37 @@ function Oyl.Engine.EngineProjectDefinition(proj)
 
         filter "system:windows"
             files { "**/*_Windows*" }
+
+        -- header files can be included across assembly boundaries, and so have to use project-agnostic includes
+        -- FIXME: premake doesn't support per-file includedirs
+        filter "files:**.cpp"
+            includedirs {
+                path.join("%{prj.location}", proj.Name),
+            }
+        filter {}
+
+        defines {
+            string.upper(Config.ShortName) .. "_CURRENT_ASSEMBLY=\"" .. proj.Name .. "\"",
+            Engine.DefineInsideMacro(proj.Name),
+
+            -- Warning Silence Defines
+            "_SILENCE_STDEXT_ARR_ITERS_DEPRECATION_WARNING", -- Silence warning in spdlog
+        }
+
+        filter("configurations:" .. Config.Configurations.Debug)
+            defines { string.upper(Config.ShortName) .. "_DEBUG=1" }
+
+        filter("configurations:" .. Config.Configurations.Development)
+            defines { string.upper(Config.ShortName) .. "_DEVELOPMENT=1" }
+
+        filter("configurations:" .. Config.Configurations.Profile)
+            defines { string.upper(Config.ShortName) .. "_PROFILE=1", }
+
+        filter("configurations:" .. Config.Configurations.Distribution)
+            defines { string.upper(Config.ShortName) .. "_DISTRIBUTION=1" }
+
+        Engine.FilterEditor()
+            defines { string.upper(Config.ShortName) .. "_EDITOR=1" }
 
         filter {}
         if proj.Properties then
@@ -126,3 +152,93 @@ function Oyl.Engine.EngineProjectDefinition(proj)
 
     Engine.Projects[proj.Name] = proj
 end
+
+function Engine.FilterEditor()
+    filter(string.format("platforms:*%s*", Config.Platforms.Editor))
+end
+
+function Engine.FilterStandalone()
+    filter(string.format("platforms:not *%s*", Config.Platforms.Editor))
+end
+
+---@param projectName string
+---@return string
+function Engine.DefineInsideMacro(projectName)
+    projectName = projectName:gsub("%.", "_")
+    projectName = projectName:gsub("%-", "_")
+    return string.upper(
+        string.format("_INSIDE_%s_%s=1", Config.ShortName, projectName)
+    )
+end
+
+function Engine.ApplyCommonCppSettings()
+    filename("%{prj.name}_" .. _ACTION)
+    language "C++"
+    cppdialect "C++17"
+    staticruntime "Off"
+    floatingpoint "Fast"
+    rtti "On"
+    stringpooling "On"
+    warnings "Extra"
+    fatalwarnings { "All" }
+    multiprocessorcompile "On"
+
+    location (Config.ProjectLocation)
+    targetdir(Config.TargetDir .. Config.OutputDir)
+    debugdir (Config.TargetDir .. Config.OutputDir)
+    objdir   (Config.ObjectDir .. Config.OutputDir)
+    implibdir(Config.LibraryDir .. Config.OutputDir)
+
+    files {
+        "%{prj.location}/**.cpp",
+        "%{prj.location}/**.h",
+        "%{prj.location}/**.hpp",
+        "%{prj.location}/**.inl",
+        "%{prj.location}/**.ixx",
+    }
+
+    if (not _OPTIONS["no-premake-check"]) then
+        links {
+            "Premake"
+        }
+    end
+
+    filter "kind:StaticLib"
+        targetdir(Config.LibraryDir .. Config.OutputDir)
+
+    filter "toolset:msc*"
+        disablewarnings {
+            "4251", -- member needs dll-interface to be used by clients of class
+            "4275", -- non dll-interface used as base for dll-interface
+        }
+
+    filter "toolset:clang"
+        floatingpoint "Default"
+
+    filter "system:windows"
+        architecture "x86_64"
+
+    filter("configurations:" .. Config.Configurations.Debug)
+        optimize "Off"
+        runtime "Debug"
+        symbols "On"
+
+    filter("configurations:" .. Config.Configurations.Development)
+        optimize "On"
+        runtime "Release"
+        symbols "On"
+
+    filter("configurations:" .. Config.Configurations.Profile)
+        optimize "On"
+        runtime "Release"
+        symbols "On"
+        
+    filter("configurations:" .. Config.Configurations.Distribution)
+        optimize "Full"
+        runtime "Release"
+        symbols "Off"
+
+    filter {}
+end
+
+return Engine

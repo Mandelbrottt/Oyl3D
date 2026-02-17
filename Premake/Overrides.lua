@@ -1,0 +1,68 @@
+require('vstudio')
+
+local p = premake
+
+-- Override the project references section of the visual studio project
+-- By default, visual studio will try to copy the build output of projects to their dependencies
+-- This causes a failure if a project doesn't output any artifacts, such as a header only library
+-- This change lets us reference assemblies in-place
+premake.override(premake.vstudio.vc2010.elements, "projectReferences", function(base, prj, ref)
+    local m = premake.vstudio.vc2010
+
+    -- Use default behaviour for SharedLib CLR projects
+    if prj.clr ~= p.OFF or (m.isClrMixed(prj) and ref and ref.kind ~= p.STATICLIB) then
+        return {
+            m.referenceProject,
+            m.referencePrivate,
+            m.referenceOutputAssembly,
+            m.referenceCopyLocalSatelliteAssemblies,
+            m.referenceLinkLibraryDependencies,
+            m.referenceUseLibraryDependences,
+        }
+    else
+        -- See https://learn.microsoft.com/en-us/visualstudio/msbuild/common-msbuild-project-items?view=vs-2022
+        -- for more documentation
+        return {
+            m.referenceProject,
+            function(prj, ref)
+                -- Don't copy the assembly to the dependant project
+                m.element("Private", nil, "false")
+            end,
+            function(prj, ref)
+                -- Don't include the assembly as a reference to dependant projects, since
+                -- all assemblies are output to the same directory in the end
+                m.element("ReferenceOutputAssembly", nil, "false")
+            end,
+        }
+    end
+end)
+
+-- Hijack the userproject function to add ShowAllFiles by default in visual studio
+-- All custom userproject properties can be injected here
+premake.override(premake.vstudio.vc2010, "userProject", function(base)
+    base()
+    p.push('<PropertyGroup>')
+    p.w('<ShowAllFiles>true</ShowAllFiles>')
+    p.pop('</PropertyGroup>')
+end)
+
+newoption {
+    trigger = "error-on-generate",
+    description = "Return a non-zero exit code if any files on disk are modified by the current action",
+}
+
+if (_OPTIONS["error-on-generate"]) then
+    local isModified = false
+    premake.override(premake, "generate", function(base, obj, ext, callback)
+        local result = base(obj, ext, callback)
+        isModified = isModified or result
+    end)
+    
+    premake.override(premake.main, "postAction", function(base)
+        base()
+        if (isModified and _ACTION:sub(1, 2) == "vs") then
+            printf("One or more project files were regenerated. Exiting with code 1")
+            os.exit(1)
+        end
+    end)
+end

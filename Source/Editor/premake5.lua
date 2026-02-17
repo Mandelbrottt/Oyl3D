@@ -1,7 +1,7 @@
-require "Premake.Engine"
-local Config = Oyl.Config;
+local Config = require "Config"
+local Engine = require "Engine"
 
-Oyl.Engine.EngineProjectDefinition {
+Engine.EngineProjectDefinition {
     Group = "Editor",
     Language = premake.CPP,
     Kind = premake.SHAREDLIB,

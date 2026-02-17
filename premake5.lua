@@ -1,17 +1,13 @@
-require "Config"
+premake.path = ("%s;%s/Premake"):format(premake.path, _MAIN_SCRIPT_DIR)
 
-require "Premake.CheckProject"
-require "Premake.Engine"
-require "Premake.Package"
+local Config = require "Config"
 
-require "Premake.Actions"
-require "Premake.Common"
-require "Premake.Overrides"
+local Check = require "CheckProject"
+local Engine = require "Engine"
+local Package = require "Package"
 
-local Config = Oyl.Config
-local Package = Oyl.Package
-local Engine = Oyl.Engine
-local Check = Oyl.CheckProject
+require "Actions/Clean"
+require "Overrides"
 
 workspace(Config.Name) do
     location "./"
@@ -33,33 +29,12 @@ workspace(Config.Name) do
 
     group "Dependencies"
         Package.GenerateProjects()
-        -- Library.GenerateProjects()
-        -- group("Packages")
-            -- generatePackageProjects(Packages)
-        -- group ""
 
     group "Engine"
         Engine.GenerateProjects()
 
-    Check.Generate()
-
-
-    -- for name, assembly in pairsByKeys(Assemblies) do
-    --     project(assembly.ProjectName)
-
-    --     if (assembly.Dependencies) then
-    --         for _, dependencyName in ipairs(assembly.Dependencies) do
-    --             if dependencyName == name then
-    --                 premake.error(string.format("Assembly \"%s\" cannot depend on itself!", assembly.Name))
-    --                 goto continue
-    --             end
-
-    --             addDependencyToProject(dependencyName)
-                
-    --             ::continue::
-    --         end
-    --     end
-
-    --     project "*"
-    -- end
+    group ""
+        Check.Generate()
 end
+
+-- Package.UpdatePackageCache()

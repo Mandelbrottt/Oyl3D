@@ -1,4 +1,4 @@
-require "Premake.Oyl"
+require "Oyl"
 
 Oyl.Utils = {}
 local Utils = Oyl.Utils;
@@ -47,12 +47,17 @@ function Oyl.Utils.ScriptDir(depth)
     return last_dir
 end
 
----@param table table<string, any>
+---@generic T
+---@param table { [string]: `T` }
 ---@param index string
+---@return `T`
 function Oyl.Utils.CaseInsensitiveFind(table, index)
     for key, value in pairs(table) do
         if key:lower() == index:lower() then
             return value
         end
     end
+    return nil
 end
+
+return Utils

@@ -1,3 +1,5 @@
+local Config = require "Config"
+
 group "Utils"
 
 project "Oyl.Spill"
