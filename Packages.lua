@@ -58,6 +58,14 @@ Packages = {
                 defines { }
             filter "kind:SharedLib"
                 defines { "_GLFW_BUILD_DLL" }
+        end,
+        DependantProperties = function(package)
+            if (package.Kind == premake.SHAREDLIB) then
+                filterEditor()
+                do
+                    defines { "GLFW_DLL" }
+                end
+            end
         end
     },
     ImGui = {
@@ -65,7 +73,7 @@ Packages = {
             Url = "https://github.com/ocornut/imgui.git",
             Revision = "e2cede6542d2d6c83598d4d34dc51de84aeb282f"
         },
-        Kind = premake.STATICLIB,
+        Kind = premake.STATICLIB, -- ImGui SharedLib support is quite involved, so don't bother for now
         Files = { "/examples/", "imconfig.h", "/imgui*.h", "/imgui*.cpp", "/imstb*.h" },
         IncludeDirs = { "." },
         CustomProperties = function()
@@ -97,8 +105,6 @@ Packages = {
                     [["T", "D", "I", "W", "E", "F", "O"]] ..
                 "}"
             }
-            filter "kind:StaticLib"
-                defines { }
             filter "kind:SharedLib"
                 defines { 
                     "spdlog_EXPORTS",
@@ -106,6 +112,19 @@ Packages = {
                     "FMT_EXPORT",
                     "FMT_SHARED"
                 }
+        end,
+        DependantProperties = function(package)
+            defines {
+                "SPDLOG_COMPILED_LIB"
+            }
+            if (package.Kind == premake.SHAREDLIB) then
+                filterEditor()
+                do
+                    defines {
+                        "SPDLOG_SHARED_LIB"
+                    }
+                end
+            end
         end
     },
     TracyClient = {
@@ -136,11 +155,24 @@ Packages = {
                 "TRACY_NO_SYSTEM_TRACING",
                 "TRACY_ONLY_LOCALHOST", -- TODO: Fix only localhost at runtime
             }
-            
+
             filter "kind:SharedLib"
                 defines {
                     "TRACY_EXPORTS"
                 }
+        end,
+        DependantProperties = function(package)
+            if (package.Kind == premake.SHAREDLIB) then
+                filterEditor()
+                do
+                    defines {
+                        "TRACY_IMPORTS"
+                    }
+                end
+            end
+
+            filter("configurations:not " .. Config.Configurations.Profile)
+                removelinks { package.Name }
         end
     },
     -- Clang = {
