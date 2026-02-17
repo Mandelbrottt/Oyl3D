@@ -4,6 +4,11 @@ Oyl.CheckProject = {}
 local CheckProject = Oyl.CheckProject
 
 newoption {
+    trigger = "premake-check",
+    description = "Return a non-zero exit code if any files on disk are modified by the current action",
+}
+
+newoption {
     trigger     = "no-premake-check",
     description = "Disable the automatic run of premake on every compile",
 }
@@ -25,8 +30,14 @@ function Oyl.CheckProject.Generate()
             table.concat(_ARGV, " ")
         )
 
-        if (_ARGV[#_ARGV] ~= "--error-on-generate") then
-            runPremakeCommand = ("%s %s"):format(runPremakeCommand, "--error-on-generate")
+        local hasPremakeCheck = false
+        for k, v in ipairs(_ARGV) do
+            if (v == "--premake-check") then
+                hasPremakeCheck = true
+            end
+        end
+        if (not hasPremakeCheck) then
+            runPremakeCommand = ("%s %s"):format(runPremakeCommand, "--premake-check")
         end
 
         buildcommands {

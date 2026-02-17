@@ -25,10 +25,13 @@ function Oyl.Package.GenerateProjects()
     for name, package in pairs(Oyl.Packages) do
         Package.SetupVarsInPackage(name, package)
         
+        os.mkdir(package.ProjectDir)
+        local cwd = os.getcwd()
+        os.chdir(package.ProjectDir)
+
         project(package.Name)
             Engine.ApplyCommonCppSettings()
             kind(package.Kind)
-            location(package.ProjectDir)
             includedirs(package.IncludeDirs)
             warnings "Off"
             defines {
@@ -46,6 +49,8 @@ function Oyl.Package.GenerateProjects()
                 package.CustomProperties()
             end
             filter {}
+
+        os.chdir(cwd)
     end
     project "*"
 end
@@ -64,7 +69,7 @@ function Package.SetupVarsInPackage(name, package)
 
     if package['IncludeDirs'] ~= nil then
         for i, includeDir in ipairs(package.IncludeDirs) do
-            local includeDir = "%{wks.location}/" .. package.ProjectDir .. includeDir
+            includeDir = "%{wks.location}/" .. package.ProjectDir .. includeDir
             package.IncludeDirs[i] = includeDir
         end
     else -- If IncludeDirs isn't manually defined, set it to the include folder of the package
@@ -89,8 +94,14 @@ newoption {
     description = "Clear and re-fetch all packages",
 }
 
+newoption {
+    trigger = "dryrun",
+    category = "packages",
+    description = "Dry run cleaning and fetching packages",
+}
+
 function Package.UpdatePackageCache()
-    local reinit = _OPTIONS["reinit-packages"]
+    local reinit = _OPTIONS["reinit-packages"] and not _OPTIONS["premake-check"]
     if (reinit) then
         Package.CleanPackageCache()
     end
@@ -126,8 +137,12 @@ function Package.CleanPackageCache(package)
     local packagesToRemove = os.matchdirs(Config.PackagesDir .. matchString)
     if #packagesToRemove ~= 0 then
         for _, dir in pairs(packagesToRemove) do
-            print(string.format("\tCleaning %s...", dir))
-            os.execute(os.translateCommands("{RMDIR} " .. dir))
+            if (_OPTIONS["dryrun"]) then
+                printf("[DRYRUN]\tWould Clean %s...", dir)
+            else
+                printf("\tCleaning %s...", dir)
+                os.execute(os.translateCommands("{RMDIR} " .. dir))
+            end
         end
     else
         print("No Packages in Cache to remove.")
@@ -138,7 +153,19 @@ end
 function Package.GitClone(package)
     local SUPPRESS_COMMAND_OUTPUT = (os.host() == "windows" and "> nul 2>&1" or "> /dev/null 2>&1")
     
-    print(string.format("Cloning Git package \"%s\" from \"%s\"...", package.Name, package.Git.Url))
+    if (_OPTIONS["dryrun"]) then
+        printf("[DRYRUN] Would Clone Git package \"%s\" from \"%s\"...", package.Name, package.Git.Url)
+        if package.Git.Revision then
+            local revision = package.Git.Revision
+            printf("[DRYRUN]\tWould fetch revision \"%s\"...", revision)
+        elseif package.Git.Tag then
+            local tag = package.Git.Tag
+            printf("[DRYRUN]\tWould fetch tag \"%s\"...", tag)
+        end
+        return
+    end 
+
+    printf("Cloning Git package \"%s\" from \"%s\"...", package.Name, package.Git.Url)
 
     -- Clone the repository and cd into it https://stackoverflow.com/a/63786181
     os.executef(
@@ -166,12 +193,12 @@ function Package.GitClone(package)
     -- If a specific revision or tag is specified, point to it
     if package.Git.Revision then
         local revision = package.Git.Revision
-        print(string.format("\tFetching revision \"%s\"...", revision))
+        printf("\tFetching revision \"%s\"...", revision)
         os.executef("git fetch -q --depth 1 origin %s %s", revision, SUPPRESS_COMMAND_OUTPUT)
         os.executef("git checkout -q --no-progress %s %s", revision, SUPPRESS_COMMAND_OUTPUT)
     elseif package.Git.Tag then
         local tag = package.Git.Tag
-        print(string.format("\tFetching tag \"%s\"...", tag))
+        printf("\tFetching tag \"%s\"...", tag)
         os.executef("git fetch -q --depth 1 origin refs/tags/%s:refs/tags/%s %s", tag, tag, SUPPRESS_COMMAND_OUTPUT)
         os.executef("git checkout -q --no-progress %s %s", tag, SUPPRESS_COMMAND_OUTPUT)
     end

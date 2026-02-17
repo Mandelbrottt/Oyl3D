@@ -41,36 +41,12 @@ function Engine.GenerateProjects()
     end
 end
 
----@param dep string
-function Engine.AddDependencyToProject(dep)
-    filter {}
+function Engine.FilterEditor()
+    filter(string.format("platforms:*%s*", Config.Platforms.Editor))
+end
 
-    local assembly = Utils.CaseInsensitiveFind(Engine.Projects, dep)
-    if assembly then
-        links { assembly.ProjectName }
-        includedirs { path.join(Config.SourceDir, assembly.Dir) }
-        return
-    end
-
-    local package = Utils.CaseInsensitiveFind(Oyl.Packages, dep)
-    if package then
-        links { package.Name }
-        includedirs(package.IncludeDirs)
-
-        if (package.DependantProperties) then
-            package:DependantProperties()
-            filter {}
-        end
-        return
-    end
-
-    local library = Utils.CaseInsensitiveFind(Oyl.Libraries, dep)
-    if library then
-        includedirs(library.IncludeDirs)
-        libdirs(library.LibraryDirs)
-        links(library.Libraries)
-        return
-    end
+function Engine.FilterStandalone()
+    filter(string.format("platforms:not *%s*", Config.Platforms.Editor))
 end
 
 ---@param proj Engine.Project
@@ -102,8 +78,10 @@ function Engine.EngineProjectDefinition(proj)
                 kind(premake.STATICLIB)
         end
 
-        -- Generated Files
-        includedirs { "%{prj.location}", "%{prj.location}/Generated/" }
+        includedirs { 
+            "%{prj.location}",
+            "%{prj.location}/Generated/" 
+        }
         removefiles { "**.generated.h" }
 
         files { "**.lua" }
@@ -116,7 +94,7 @@ function Engine.EngineProjectDefinition(proj)
         -- FIXME: premake doesn't support per-file includedirs
         filter "files:**.cpp"
             includedirs {
-                path.join("%{prj.location}", proj.Name),
+                path.join("%{prj.location}", proj.Dir),
             }
         filter {}
 
@@ -153,12 +131,36 @@ function Engine.EngineProjectDefinition(proj)
     Engine.Projects[proj.Name] = proj
 end
 
-function Engine.FilterEditor()
-    filter(string.format("platforms:*%s*", Config.Platforms.Editor))
-end
+---@param dep string
+function Engine.AddDependencyToProject(dep)
+    filter {}
 
-function Engine.FilterStandalone()
-    filter(string.format("platforms:not *%s*", Config.Platforms.Editor))
+    local assembly = Utils.CaseInsensitiveFind(Engine.Projects, dep)
+    if assembly then
+        links { assembly.ProjectName }
+        includedirs { path.join(Config.SourceDir, assembly.Dir) }
+        return
+    end
+
+    local package = Utils.CaseInsensitiveFind(Oyl.Packages, dep)
+    if package then
+        links { package.Name }
+        includedirs(package.IncludeDirs)
+
+        if (package.DependantProperties) then
+            package:DependantProperties()
+            filter {}
+        end
+        return
+    end
+
+    local library = Utils.CaseInsensitiveFind(Oyl.Libraries, dep)
+    if library then
+        includedirs(library.IncludeDirs)
+        libdirs(library.LibraryDirs)
+        links(library.Libraries)
+        return
+    end
 end
 
 ---@param projectName string

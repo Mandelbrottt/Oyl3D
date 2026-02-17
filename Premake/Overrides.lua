@@ -46,12 +46,7 @@ premake.override(premake.vstudio.vc2010, "userProject", function(base)
     p.pop('</PropertyGroup>')
 end)
 
-newoption {
-    trigger = "error-on-generate",
-    description = "Return a non-zero exit code if any files on disk are modified by the current action",
-}
-
-if (_OPTIONS["error-on-generate"]) then
+if (_OPTIONS["premake-check"]) then
     local isModified = false
     premake.override(premake, "generate", function(base, obj, ext, callback)
         local result = base(obj, ext, callback)

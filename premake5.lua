@@ -37,4 +37,4 @@ workspace(Config.Name) do
         Check.Generate()
 end
 
--- Package.UpdatePackageCache()
+Package.UpdatePackageCache()
