@@ -1,13 +1,14 @@
 require('vstudio')
 
 local p = premake
-local m = premake.vstudio.vc2010
 
 -- Override the project references section of the visual studio project
 -- By default, visual studio will try to copy the build output of projects to their dependencies
 -- This causes a failure if a project doesn't output any artifacts, such as a header only library
 -- This change lets us reference assemblies in-place
 premake.override(premake.vstudio.vc2010.elements, "projectReferences", function(base, prj, ref)
+    local m = premake.vstudio.vc2010
+
     -- Use default behaviour for SharedLib CLR projects
     if prj.clr ~= p.OFF or (m.isClrMixed(prj) and ref and ref.kind ~= p.STATICLIB) then
         return {
@@ -44,3 +45,24 @@ premake.override(premake.vstudio.vc2010, "userProject", function(base)
     p.w('<ShowAllFiles>true</ShowAllFiles>')
     p.pop('</PropertyGroup>')
 end)
+
+newoption {
+    trigger = "error-on-generate",
+    description = "Return a non-zero exit code if any files on disk are modified by the current action",
+}
+
+if (_OPTIONS["error-on-generate"]) then
+    local isModified = false
+    premake.override(premake, "generate", function(base, obj, ext, callback)
+        local result = base(obj, ext, callback)
+        isModified = isModified or result
+    end)
+    
+    premake.override(premake.main, "postAction", function(base)
+        base()
+        if (isModified and _ACTION:sub(1, 2) == "vs") then
+            printf("One or more project files were regenerated. Exiting with code 1")
+            os.exit(1)
+        end
+    end)
+end

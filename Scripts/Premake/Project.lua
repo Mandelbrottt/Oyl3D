@@ -131,6 +131,8 @@ local function case_insensitive_find(table, index)
 end
 
 function addDependencyToProject(dependencyName)
+    filter {}
+    
     local assembly = case_insensitive_find(Assemblies, dependencyName)
     if assembly then
         links { assembly.ProjectName }
@@ -138,10 +140,15 @@ function addDependencyToProject(dependencyName)
         return
     end
 
-    local dependency = case_insensitive_find(Dependencies, dependencyName)
-    if dependency then
-        links { dependency.Name }
-        includedirs(dependency.IncludeDirs)
+    local package = case_insensitive_find(Packages, dependencyName)
+    if package then
+        links { package.Name }
+        includedirs(package.IncludeDirs)
+
+        if (package.DependantProperties) then
+            package:DependantProperties()
+            filter {}
+        end
         return
     end
 

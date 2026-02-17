@@ -1,4 +1,20 @@
-Dependencies = {
+---@class (exact) GitDesc
+---@field Url string
+---@field Revision? string
+---@field Tag? string
+
+---@class (exact) Package
+---@field Name? string
+---@field Git GitDesc
+---@field Kind string
+---@field Files? [string]
+---@field ProjectDir? string
+---@field IncludeDirs? [string]
+---@field CustomProperties? fun()
+---@field DependantProperties? fun(package: Package)
+
+---@type { [string]: Package }
+Packages = {
     YamlCpp = {
         Git = {
             Url = "https://github.com/jbeder/yaml-cpp.git",
@@ -19,7 +35,7 @@ Dependencies = {
     NlohmannJson = {
         Git = {
             Url = "https://github.com/nlohmann/json.git",
-            Revision = "v3.6.1"
+            Tag = "v3.6.1"
         },
         Kind = "Utility",
         Files = { "/include/" },
@@ -27,7 +43,7 @@ Dependencies = {
     GLFW = {
         Git = {
             Url = "https://github.com/glfw/glfw.git",
-            Revision = "3.3.8"
+            Tag = "3.3.8"
         },
         Kind = premake.SHAREDLIB,
         Files = { "/include/", "/src/", },
@@ -58,6 +74,14 @@ Dependencies = {
                 defines { }
             filter "kind:SharedLib"
                 defines { "_GLFW_BUILD_DLL" }
+        end,
+        DependantProperties = function(package)
+            if (package.Kind == premake.SHAREDLIB) then
+                filterEditor()
+                do
+                    defines { "GLFW_DLL" }
+                end
+            end
         end
     },
     ImGui = {
@@ -65,7 +89,7 @@ Dependencies = {
             Url = "https://github.com/ocornut/imgui.git",
             Revision = "e2cede6542d2d6c83598d4d34dc51de84aeb282f"
         },
-        Kind = premake.STATICLIB,
+        Kind = premake.STATICLIB, -- ImGui SharedLib support is quite involved, so don't bother for now
         Files = { "/examples/", "imconfig.h", "/imgui*.h", "/imgui*.cpp", "/imstb*.h" },
         IncludeDirs = { "." },
         CustomProperties = function()
@@ -77,7 +101,7 @@ Dependencies = {
     SpdLog = {
         Git = {
             Url = "https://github.com/gabime/spdlog.git",
-            Revision = "v1.11.0"
+            Tag = "v1.11.0"
         },
         Kind = premake.SHAREDLIB,
         Files = { "/include/", "/src/" },
@@ -97,8 +121,6 @@ Dependencies = {
                     [["T", "D", "I", "W", "E", "F", "O"]] ..
                 "}"
             }
-            filter "kind:StaticLib"
-                defines { }
             filter "kind:SharedLib"
                 defines { 
                     "spdlog_EXPORTS",
@@ -106,12 +128,25 @@ Dependencies = {
                     "FMT_EXPORT",
                     "FMT_SHARED"
                 }
+        end,
+        DependantProperties = function(package)
+            defines {
+                "SPDLOG_COMPILED_LIB"
+            }
+            if (package.Kind == premake.SHAREDLIB) then
+                filterEditor()
+                do
+                    defines {
+                        "SPDLOG_SHARED_LIB"
+                    }
+                end
+            end
         end
     },
     TracyClient = {
         Git = {
             Url = "https://github.com/wolfpld/tracy.git",
-            Revision = "v0.10"
+            Tag = "v0.10"
         },
         Kind = premake.SHAREDLIB,
         Files = { "public/" },
@@ -136,11 +171,52 @@ Dependencies = {
                 "TRACY_NO_SYSTEM_TRACING",
                 "TRACY_ONLY_LOCALHOST", -- TODO: Fix only localhost at runtime
             }
-            
+
             filter "kind:SharedLib"
                 defines {
                     "TRACY_EXPORTS"
                 }
+        end,
+        DependantProperties = function(package)
+            if (package.Kind == premake.SHAREDLIB) then
+                filterEditor()
+                do
+                    defines {
+                        "TRACY_IMPORTS"
+                    }
+                end
+            end
+
+            filter("configurations:not " .. Config.Configurations.Profile)
+                removelinks { package.Name }
         end
-    }
+    },
+    -- Clang = {
+    --     Git = {
+    --         Url = "https://github.com/llvm/llvm-project.git",
+    --         Tag = "llvmorg-18.1.8"
+    --     },
+    --     Kind = premake.STATICLIB,
+    --     Files = { "clang/", "clang-tools-extra/" },
+    --     -- IncludeDirs = { "public/ "},
+    --     CustomProperties = function()
+            
+    --     end
+    -- },
+    -- TracyServer = {
+    --     Git = {
+    --         Url = "https://github.com/wolfpld/tracy.git",
+    --         Revision = "v0.10"
+    --     },
+    --     Kind = premake.WINDOWEDAPP,
+    --     Files = { "profiler/", "server/", "public/", "imgui/", "nfd/", "zstd/" },
+    --     IncludeDirs = { "profiler/", "public/" },
+    --     CustomProperties = function()
+    --         -- removefiles { "**" }
+    --         -- files {
+    --         --     "public/TracyClient.cpp",
+    --         --     "public/tracy/tracy.hpp"
+    --         -- }
+    --     end
+    -- }
 }

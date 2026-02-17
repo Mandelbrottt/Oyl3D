@@ -2,7 +2,7 @@
 .vs/
 
 /[Bb]uild/
-[Ss]ource/[Dd]ependencies/
+[Ss]ource/[Pp]ackages/
 
 *.generated.*
 
@@ -10,4 +10,8 @@
 *.sln
 *.vcxproj
 *.vcxproj.filters
+*.csproj
 *.user
+
+# Generated Source Files
+*.generated.*

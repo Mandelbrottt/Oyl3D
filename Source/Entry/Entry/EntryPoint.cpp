@@ -1,14 +1,15 @@
 #include <Windows.h>
+#include <cstdlib>
 #include <filesystem>
 
-#include <cstdlib>
-
-#include <Core/Logging/Logging.h>
 #include <Core/Application/CommandLine.h>
 #include <Core/Application/Main.h>
 #include <Core/Application/Module.h>
+#include <Core/Logging/Logging.h>
 #include <Core/Events/Event.h>
 #include <Core/Profiling/Profiler.h>
+
+//#include "Include.generated.h"
 
 static void SetupConsole();
 
@@ -142,11 +143,11 @@ int WINAPI WinMain(
 	const char* startupString = "Startup";
 	OYL_FRAME_MARK_START(startupString);
 	Oyl::Detail::Init(initParams);
-	OYL_FRAME_MARK_END(startupString);
 
 	TestModule1::Register();
 	TestModule2::Register();
-
+	OYL_FRAME_MARK_END(startupString);
+	
 	while (g_running)
 	{
 		Oyl::Detail::Update();

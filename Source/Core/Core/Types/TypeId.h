@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Core/Logging/Logging.h"
+#include "Core/Common.h"
 
 namespace Oyl
 {
@@ -46,8 +46,6 @@ namespace Oyl
 				std::size_t hash = hashFn(name);
 
 				OYL_ASSERT(hash != 0);
-				
-				OYL_LOG_DEBUG("Computing hash for type \"{}\": {}", name, hash);
 				
 				return static_cast<TypeId>(hash);
 			}();

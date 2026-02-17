@@ -14,7 +14,7 @@ newoption {
     description = "Disable the automatic run of premake on every compile",
 }
 
-processDependencies(Dependencies)
+processPackages(Packages)
 
 workspace(Config.Name)
     location "./"
@@ -34,27 +34,29 @@ workspace(Config.Name)
 
     startproject(Config.ShortName .. ".Entry")
 
-    group("Dependencies")
-        generateDependencyProjects(Dependencies)
+    group("Packages")
+        generatePackageProjects(Packages)
     group ""
 
-    local assemblyScripts = os.matchfiles(path.join(Config.SourceDir, "**premake5.lua"))
-    for _, assemblyScript in pairs(assemblyScripts) do
-        include(assemblyScript)
+    local premakeScripts = os.matchfiles(path.join(Config.SourceDir, "**premake5.lua"))
+    for _, premakeScript in pairs(premakeScripts) do
+        include(premakeScript)
     end
 
     for name, assembly in pairsByKeys(Assemblies) do
         project(assembly.ProjectName)
 
-        for _, dependencyName in ipairs(assembly.Dependencies) do
-            if dependencyName == name then
-                premake.error(string.format("Assembly \"%s\" cannot depend on itself!", assembly.Name))
-                goto continue
+        if (assembly.Dependencies) then
+            for _, dependencyName in ipairs(assembly.Dependencies) do
+                if dependencyName == name then
+                    premake.error(string.format("Assembly \"%s\" cannot depend on itself!", assembly.Name))
+                    goto continue
+                end
+                
+                addDependencyToProject(dependencyName)
+                
+                ::continue::
             end
-
-            addDependencyToProject(dependencyName)
-
-            ::continue::
         end
 
         project "*"
@@ -67,7 +69,14 @@ workspace(Config.Name)
             targetdir(Config.TargetDir .. Config.OutputDir)
             objdir(Config.ObjectDir .. Config.OutputDir)
 
-            local runPremakeCommand = "%{wks.location}/Binaries/ThirdParty/premake5.exe " .. table.concat(_ARGV, " ")
+            local runPremakeCommand = ("%s %s"):format(
+                "%{wks.location}/Binaries/ThirdParty/premake5.exe ",
+                table.concat(_ARGV, " ")
+            )
+
+            if (_ARGV[#_ARGV] ~= "--error-on-generate") then
+                runPremakeCommand = ("%s %s"):format(runPremakeCommand, "--error-on-generate")
+            end
 
             buildcommands {
                 runPremakeCommand,

@@ -1,0 +1,62 @@
+#include "pch.h"
+#include "Assembly.h"
+
+#include "Core/Logging/Logging.h"
+
+namespace Oyl::Reflection
+{
+	bool
+	Assembly::RegisterType(Type* a_type)
+	{
+		for (auto& assemblyPtr : Assemblies())
+		{
+			auto& ownedTypes = assemblyPtr->m_ownedTypes;
+			auto iter = std::find_if(
+				ownedTypes.begin(),
+				ownedTypes.end(),
+				[a_type](const auto& a_value)
+				{
+					return *a_value == *a_type;
+				}
+			);
+
+			if (iter != ownedTypes.end())
+			{
+				OYL_LOG_ERROR(
+					"Type \"{}\" trying to be registered under assembly \"{}\" is already registered to assembly \"{}\"",
+					a_type->FullName(),
+					m_name,
+					assemblyPtr->m_name
+				);
+				return false;
+			}
+		}
+
+		m_ownedTypes.push_back(a_type);
+		a_type->m_assembly = this;
+
+		return true;
+	}
+
+	bool
+	Assembly::UnRegisterType(Type* a_type)
+	{
+		auto iter = std::find_if(
+			m_ownedTypes.begin(),
+			m_ownedTypes.end(),
+			[a_type](const auto& a_value)
+			{
+				return *a_value == *a_type;
+			}
+		);
+
+		if (iter == m_ownedTypes.end())
+		{
+			return false;
+		}
+
+		m_ownedTypes.erase(iter);
+		a_type->m_assembly = nullptr;
+		return true;
+	}
+}

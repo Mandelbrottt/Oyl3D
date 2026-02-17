@@ -76,7 +76,7 @@ namespace Oyl
 		template<int SizeX, int SizeY, typename TUnderlying>
 		constexpr
 		Matrix_t<SizeY, SizeX, TUnderlying>
-		Transpose(Matrix_t<SizeX, SizeY, TUnderlying> const& a_value) noexcept
+		Transpose(const Matrix_t<SizeX, SizeY, TUnderlying>& a_value) noexcept
 		{
 			//constexpr int min_size = SizeX < SizeY ? SizeX : SizeY;
 
@@ -97,7 +97,7 @@ namespace Oyl
 		template<int SizeX, int SizeY, typename TUnderlying>
 		constexpr
 		Matrix_t<SizeX, SizeY, TUnderlying>
-		Inverse(Matrix_t<SizeX, SizeY, TUnderlying> const& a_value) noexcept
+		Inverse(const Matrix_t<SizeX, SizeY, TUnderlying>& a_value) noexcept
 		{
 			OYL_UNUSED(a_value);
 			// TODO: Implement Inverse and Determinant
@@ -108,7 +108,7 @@ namespace Oyl
 	template<int SizeX, int SizeY, typename TUnderlying>
 	constexpr
 	Matrix_t<SizeX, SizeY, TUnderlying>
-	operator +(Matrix_t<SizeX, SizeY, TUnderlying> const& a_lhs, Matrix_t<SizeX, SizeY, TUnderlying> const& a_rhs) noexcept
+	operator +(const Matrix_t<SizeX, SizeY, TUnderlying>& a_lhs, const Matrix_t<SizeX, SizeY, TUnderlying>& a_rhs) noexcept
 	{
 		Matrix_t<SizeX, SizeY, TUnderlying> result;
 		for (int i = 0; i < SizeX * SizeY; i++)
@@ -122,7 +122,7 @@ namespace Oyl
 	template<int SizeX, int SizeY, typename TUnderlying>
 	constexpr
 	Matrix_t<SizeX, SizeY, TUnderlying>
-	operator -(Matrix_t<SizeX, SizeY, TUnderlying> const& a_lhs, Matrix_t<SizeX, SizeY, TUnderlying> const& a_rhs) noexcept
+	operator -(const Matrix_t<SizeX, SizeY, TUnderlying>& a_lhs, const Matrix_t<SizeX, SizeY, TUnderlying>& a_rhs) noexcept
 	{
 		Matrix_t<SizeX, SizeY, TUnderlying> result;
 		for (int i = 0; i < SizeX * SizeY; i++)

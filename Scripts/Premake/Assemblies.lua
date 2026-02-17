@@ -17,6 +17,7 @@ function EngineAssembly(assemblyDefinition)
     assemblyDefinition.ProjectName = string.format("%s.%s", Config.ShortName, projectName)
     assemblyDefinition.Group = assemblyDefinition.Group or ""
     assemblyDefinition.Kind = assemblyDefinition.Kind or premake.UTILITY
+    assemblyDefinition.Dependencies = assemblyDefinition.Dependencies or {}
 
     if assemblyDefinition.Group then
         group(assemblyDefinition.Group)
@@ -37,11 +38,15 @@ function EngineAssembly(assemblyDefinition)
 
         filter {}
 
+        -- Generated Files
+        includedirs { "%{prj.location}/Generated/" }
+        removefiles { "**.generated.h" }
+
         files { "**.lua" }
         removefiles { "**/Platform/**" }
 
         filter "system:windows"
-            files { "**/Platform/Windows/**" }
+            files { "**/*_Windows*" }
 
         filter {}
         if assemblyDefinition.Properties then

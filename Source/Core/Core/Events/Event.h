@@ -1,5 +1,7 @@
 #pragma once
 
+#include <functional>
+
 #include "Core/Types/TypeId.h"
 
 namespace Oyl

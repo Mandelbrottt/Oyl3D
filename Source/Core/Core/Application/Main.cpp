@@ -11,6 +11,13 @@
 #include "Core/Profiling/Profiler.h"
 #include "Core/Time/Time.h"
 
+//#include "Core/Reflection/TypedFactory.h"
+#include "Core/Reflection/Reflection.h"
+
+#include "ReflectionTest.h"
+
+#include <Windows.h>
+
 namespace Oyl::Detail
 {
 	struct CoreApplicationData
@@ -31,7 +38,7 @@ namespace Oyl::Detail
 	{
 		OYL_PROFILE_FUNCTION();
 
-		g_data.params           = a_params;
+		g_data.params = a_params;
 		g_data.shouldGameUpdate = true;
 		g_data.maxFrameRate     = 60;
 
@@ -41,6 +48,27 @@ namespace Oyl::Detail
 
 		auto& registry = g_data.moduleRegistry;
 		registry.SetOnEventCallback(OnEvent);
+
+#	ifdef OYL_EDITOR
+		HMODULE hmodule = LoadLibraryA("Oyl.Core.dll");
+#	else
+		HMODULE hmodule = nullptr;
+		GetModuleHandleExA(
+			GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS | GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT, 
+			(LPCSTR) Init,
+			&hmodule
+		);
+#	endif
+		if (hmodule)
+		{
+			using IntFn = int(*)();
+			IntFn someFunction = (IntFn) (void*) GetProcAddress(hmodule, "_Exports_Oyl_Core_");
+			if (someFunction)
+			{
+				int a = someFunction();
+				OYL_LOG("someFunction() = {}", a);
+			}
+		}
 	}
 
 	void

@@ -35,11 +35,11 @@ jobs:
       - name: Add MSBuild to PATH
         uses: microsoft/setup-msbuild@v2
 
-      - name: Cache Dependencies
+      - name: Cache Packages
         uses: actions/cache@v4
         with:
-          path: Source/Dependencies/**
-          key: engine-source-dependencies-${{ runner.os }}-${{ hashFiles('Packages.lua') }}
+          path: Source/Packages/**
+          key: engine-source-packages-${{ runner.os }}-${{ hashFiles('Packages.lua') }}
 
       - name: Fetch Vulkan SDK version spec
         run: |
