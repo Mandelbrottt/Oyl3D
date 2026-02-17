@@ -1,11 +1,12 @@
 require "Config"
-require "Premake.Package"
+
 require "Premake.Library"
+require "Premake.Package"
 
 local Config = Oyl.Config
 
 ---@type { [string]: Package }
-Packages = {
+Oyl.Packages = {
     YamlCpp = {
         Git = {
             Url = "https://github.com/jbeder/yaml-cpp.git",
@@ -218,7 +219,7 @@ if not VULKAN_SDK then
 end
 
 ---@type { [string]: Library }
-Libraries = {
+Oyl.Libraries = {
     Vulkan = {
         IncludeDirs = { VULKAN_SDK .. "/Include" },
         LibraryDirs = { VULKAN_SDK .. "/Lib" },

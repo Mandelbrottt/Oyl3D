@@ -1,4 +1,7 @@
-EngineAssembly {
+require "Premake.Engine"
+local Config = Oyl.Config;
+
+Oyl.Engine.EngineProjectDefinition {
     Group = "Editor",
     Language = premake.CPP,
     Kind = premake.SHAREDLIB,

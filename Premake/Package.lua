@@ -1,0 +1,14 @@
+---@class (exact) GitDesc
+---@field Url string
+---@field Revision? string
+---@field Tag? string
+
+---@class (exact) Package
+---@field Name? string
+---@field Git GitDesc
+---@field Kind string
+---@field Files? [string]
+---@field ProjectDir? string
+---@field IncludeDirs? [string]
+---@field CustomProperties? fun()
+---@field DependantProperties? fun(package: Package)

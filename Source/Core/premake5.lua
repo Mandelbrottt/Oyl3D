@@ -1,4 +1,6 @@
-EngineAssembly {
+require "Premake.Engine"
+
+Oyl.Engine.EngineProjectDefinition {
     Group = "Engine",
     Language = premake.CPP,
     Kind = premake.SHAREDLIB,
