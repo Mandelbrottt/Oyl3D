@@ -9,6 +9,8 @@ local Package = require "Package"
 require "Actions/Clean"
 require "Overrides"
 
+Package.UpdatePackageCache()
+
 workspace(Config.Name) do
     location "./"
     filename(Config.Name .. "_" .. _ACTION)
@@ -36,5 +38,3 @@ workspace(Config.Name) do
     group ""
         Check.Generate()
 end
-
-Package.UpdatePackageCache()

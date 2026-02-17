@@ -22,9 +22,7 @@ local Package = Oyl.Package
 ---@field DependantProperties? fun(package: Package)
 
 function Oyl.Package.GenerateProjects()
-    for name, package in pairs(Oyl.Packages) do
-        Package.SetupVarsInPackage(name, package)
-        
+    for _, package in pairs(Oyl.Packages) do
         os.mkdir(package.ProjectDir)
         local cwd = os.getcwd()
         os.chdir(package.ProjectDir)
@@ -73,9 +71,9 @@ function Package.SetupVarsInPackage(name, package)
             package.IncludeDirs[i] = includeDir
         end
     else -- If IncludeDirs isn't manually defined, set it to the include folder of the package
-        local includeDirs = os.matchdirs(package.ProjectDir .. "/**include/")
+        local includeDirs = package.ProjectDir .. "/**include/"
         if #includeDirs ~= 0 then
-            package.IncludeDirs = { "%{wks.location}/" .. includeDirs[1] }
+            package.IncludeDirs = { "%{wks.location}/" .. includeDirs }
         else
             package.IncludeDirs = {}
         end
@@ -101,6 +99,10 @@ newoption {
 }
 
 function Package.UpdatePackageCache()
+    for name, package in pairs(Oyl.Packages) do
+        Package.SetupVarsInPackage(name, package)
+    end
+    
     local reinit = _OPTIONS["reinit-packages"] and not _OPTIONS["premake-check"]
     if (reinit) then
         Package.CleanPackageCache()
@@ -113,7 +115,7 @@ function Package.UpdatePackageCache()
 end
 
 function Oyl.Package.FetchPackages()
-    for _, package in pairs(Oyl.Packages) do
+    for name, package in pairs(Oyl.Packages) do
         local numFiles = os.matchfiles(package.ProjectDir .. "/*")
         if #numFiles == 0 then
             if package.Git then
