@@ -73,12 +73,8 @@ function Engine.EngineProjectDefinition(proj)
         end
 
         kind(proj.Kind)
-        if proj.Kind == premake.SHAREDLIB then
-            Engine.FilterStandalone()
-                kind(premake.STATICLIB)
-        end
 
-        includedirs { 
+        includedirs {
             "%{prj.location}",
             "%{prj.location}/Generated/" 
         }
@@ -120,6 +116,12 @@ function Engine.EngineProjectDefinition(proj)
 
         Engine.FilterEditor()
             defines { string.upper(Config.ShortName) .. "_EDITOR=1" }
+
+        if proj.Kind == premake.SHAREDLIB then
+            Engine.FilterStandalone()
+                kind(premake.STATICLIB)
+            filter ""
+        end
 
         filter {}
         if proj.Properties then
@@ -192,11 +194,11 @@ function Engine.ApplyCommonCppSettings()
     implibdir(Config.LibraryDir .. Config.OutputDir)
 
     files {
-        "%{prj.location}/**.cpp",
-        "%{prj.location}/**.h",
-        "%{prj.location}/**.hpp",
-        "%{prj.location}/**.inl",
-        "%{prj.location}/**.ixx",
+        "./**.cpp",
+        "./**.h",
+        "./**.hpp",
+        "./**.inl",
+        "./**.ixx",
     }
 
     if (not _OPTIONS["no-premake-check"]) then
