@@ -1,4 +1,7 @@
-EngineAssembly {
+local Config = require "Config"
+local Engine = require "Engine"
+
+Engine.EngineProjectDefinition {
     Group = "Editor",
     Language = premake.CPP,
     Kind = premake.SHAREDLIB,

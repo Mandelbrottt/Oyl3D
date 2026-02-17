@@ -1,4 +1,9 @@
-function pairsByKeys(t, f)
+require "Oyl"
+
+Oyl.Utils = {}
+local Utils = Oyl.Utils;
+
+function Oyl.Utils.PairsByKeys(t, f)
     local a = {}
     for n in pairs(t) do table.insert(a, n) end
     table.sort(a, f)
@@ -14,7 +19,7 @@ function pairsByKeys(t, f)
     return iter
 end
 
-local function mysplit (inputstr, sep)
+function Oyl.Utils.MySplit (inputstr, sep)
     if sep == nil then
        sep = "%s"
     end
@@ -26,16 +31,33 @@ local function mysplit (inputstr, sep)
 end
 
 -- https://stackoverflow.com/a/23535333
-function script_dir(depth)
+---@param depth integer
+---@return string
+function Oyl.Utils.ScriptDir(depth)
     -- By default, depth is the calling script
     depth = depth or 2
     
     local str = debug.getinfo(depth, "S").source:sub(2)
     local path = str:match("(.*[/\\])") or "."
-    local split = mysplit(path, "/\\")
+    local split = Utils.MySplit(path, "/\\")
     local last_dir
     for _, v in ipairs(split) do
         last_dir = v
     end
     return last_dir
 end
+
+---@generic T
+---@param table { [string]: `T` }
+---@param index string
+---@return `T`
+function Oyl.Utils.CaseInsensitiveFind(table, index)
+    for key, value in pairs(table) do
+        if key:lower() == index:lower() then
+            return value
+        end
+    end
+    return nil
+end
+
+return Utils

@@ -1,8 +1,6 @@
 premake.modules.Build = {}
 local m = premake.modules.Build
 
-local p = premake
-
 newaction {
     trigger = "build",
     description = "Builds the project based on selected toolset",

@@ -1,4 +1,6 @@
-EngineAssembly {
+local Engine = require "Engine"
+
+Engine.EngineProjectDefinition {
     Group = "Engine",
     Language = premake.CPP,
     Kind = premake.SHAREDLIB,

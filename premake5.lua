@@ -1,22 +1,17 @@
-include "Config.lua"
-include "Packages.lua"
-include "Libraries.lua"
+premake.path = ("%s;%s/Premake"):format(premake.path, _MAIN_SCRIPT_DIR)
 
-include "Scripts/Premake/Common.lua"
-include "Scripts/Premake/Actions.lua"
+local Config = require "Config"
 
-if _ACTION == "clean" or _ACTION == nil then
-    return
-end
+local Check = require "CheckProject"
+local Engine = require "Engine"
+local Package = require "Package"
 
-newoption {
-    trigger     = "no-premake-check",
-    description = "Disable the automatic run of premake on every compile",
-}
+require "Actions/Clean"
+require "Overrides"
 
-processPackages(Packages)
+Package.UpdatePackageCache()
 
-workspace(Config.Name)
+workspace(Config.Name) do
     location "./"
     filename(Config.Name .. "_" .. _ACTION)
 
@@ -34,60 +29,12 @@ workspace(Config.Name)
 
     startproject(Config.ShortName .. ".Entry")
 
-    group("Packages")
-        generatePackageProjects(Packages)
+    group "Dependencies"
+        Package.GenerateProjects()
+
+    group "Engine"
+        Engine.GenerateProjects()
+
     group ""
-
-    local premakeScripts = os.matchfiles(path.join(Config.SourceDir, "**premake5.lua"))
-    for _, premakeScript in pairs(premakeScripts) do
-        include(premakeScript)
-    end
-
-    for name, assembly in pairsByKeys(Assemblies) do
-        project(assembly.ProjectName)
-
-        if (assembly.Dependencies) then
-            for _, dependencyName in ipairs(assembly.Dependencies) do
-                if dependencyName == name then
-                    premake.error(string.format("Assembly \"%s\" cannot depend on itself!", assembly.Name))
-                    goto continue
-                end
-                
-                addDependencyToProject(dependencyName)
-                
-                ::continue::
-            end
-        end
-
-        project "*"
-    end
-
-    if not _OPTIONS["no-premake-check"] then
-        project("Premake")
-            kind "Makefile"
-            filename("%{prj.name}_" .. _ACTION)
-            targetdir(Config.TargetDir .. Config.OutputDir)
-            objdir(Config.ObjectDir .. Config.OutputDir)
-
-            local runPremakeCommand = ("%s %s"):format(
-                "%{wks.location}/Binaries/ThirdParty/premake5.exe ",
-                table.concat(_ARGV, " ")
-            )
-
-            if (_ARGV[#_ARGV] ~= "--error-on-generate") then
-                runPremakeCommand = ("%s %s"):format(runPremakeCommand, "--error-on-generate")
-            end
-
-            buildcommands {
-                runPremakeCommand,
-            }
-            rebuildcommands {
-                runPremakeCommand,
-            }
-
-            filter "system:windows"
-                architecture "x86_64"
-            filter {}
-    end
-
-include "Scripts/Premake/Overrides.lua"
+        Check.Generate()
+end

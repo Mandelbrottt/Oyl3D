@@ -1,0 +1,4 @@
+---@class Library
+---@field IncludeDirs string[]
+---@field LibraryDirs string[]
+---@field Libraries string[]

@@ -1,20 +1,8 @@
----@class (exact) GitDesc
----@field Url string
----@field Revision? string
----@field Tag? string
-
----@class (exact) Package
----@field Name? string
----@field Git GitDesc
----@field Kind string
----@field Files? [string]
----@field ProjectDir? string
----@field IncludeDirs? [string]
----@field CustomProperties? fun()
----@field DependantProperties? fun(package: Package)
+local Config = require "Config"
+local Engine = require "Engine"
 
 ---@type { [string]: Package }
-Packages = {
+Oyl.Packages = {
     YamlCpp = {
         Git = {
             Url = "https://github.com/jbeder/yaml-cpp.git",
@@ -77,7 +65,7 @@ Packages = {
         end,
         DependantProperties = function(package)
             if (package.Kind == premake.SHAREDLIB) then
-                filterEditor()
+                Engine.FilterEditor()
                 do
                     defines { "GLFW_DLL" }
                 end
@@ -134,7 +122,7 @@ Packages = {
                 "SPDLOG_COMPILED_LIB"
             }
             if (package.Kind == premake.SHAREDLIB) then
-                filterEditor()
+                Engine.FilterEditor()
                 do
                     defines {
                         "SPDLOG_SHARED_LIB"
@@ -179,14 +167,21 @@ Packages = {
         end,
         DependantProperties = function(package)
             if (package.Kind == premake.SHAREDLIB) then
-                filterEditor()
+                Engine.FilterEditor()
                 do
                     defines {
-                        "TRACY_IMPORTS"
+                        "TRACY_IMPORTS",
                     }
                 end
             end
 
+            filter("configurations:" .. Config.Configurations.Profile)
+                defines {
+                    "TRACY_ENABLE",
+                    "TRACY_DELAYED_INIT",
+                    "TRACY_MANUAL_LIFETIME",
+                    "TRACY_NO_SYSTEM_TRACING",
+                }
             filter("configurations:not " .. Config.Configurations.Profile)
                 removelinks { package.Name }
         end
@@ -219,4 +214,18 @@ Packages = {
     --         -- }
     --     end
     -- }
+}
+
+local VULKAN_SDK = os.getenv("VULKAN_SDK")
+if not VULKAN_SDK then
+    premake.error("Missing Vulkan SDK! Please install the Vulkan SDK!")
+end
+
+---@type { [string]: Library }
+Oyl.Libraries = {
+    Vulkan = {
+        IncludeDirs = { VULKAN_SDK .. "/Include" },
+        LibraryDirs = { VULKAN_SDK .. "/Lib" },
+        Libraries = { "vulkan-1" }
+    }
 }

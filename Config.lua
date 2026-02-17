@@ -1,7 +1,13 @@
-Config = {}
+require "Oyl"
+
+Oyl.Config = {}
+
+local Config = Oyl.Config
 
 Config.Name = "Oyl3D"
 Config.ShortName = "Oyl"
+
+Config.StartProject = Config.ShortName .. ".Entry"
 
 Config.TargetDir = "%{wks.location}/Build/Binaries/"
 Config.LibraryDir = "%{wks.location}/Build/Library/"
@@ -26,3 +32,5 @@ Config.Configurations.Distribution = "Distribution"
 Config.Platforms = {}
 Config.Platforms.Editor = "Editor"
 Config.Platforms.Standalone = "Standalone"
+
+return Config
