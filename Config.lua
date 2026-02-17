@@ -1,7 +1,13 @@
-Config = {}
+require "Premake.Oyl"
+
+Oyl.Config = {}
+
+local Config = Oyl.Config
 
 Config.Name = "Oyl3D"
 Config.ShortName = "Oyl"
+
+Config.StartProject = Config.ShortName .. ".Entry"
 
 Config.TargetDir = "%{wks.location}/Build/Binaries/"
 Config.LibraryDir = "%{wks.location}/Build/Library/"

@@ -1,22 +1,19 @@
-include "Config.lua"
-include "Packages.lua"
-include "Libraries.lua"
+require "Config"
 
-include "Scripts/Premake/Common.lua"
-include "Scripts/Premake/Actions.lua"
+require "Premake.CheckProject"
+require "Premake.Engine"
+require "Premake.Package"
 
-if _ACTION == "clean" or _ACTION == nil then
-    return
-end
+require "Premake.Actions"
+require "Premake.Common"
+require "Premake.Overrides"
 
-newoption {
-    trigger     = "no-premake-check",
-    description = "Disable the automatic run of premake on every compile",
-}
+local Config = Oyl.Config
+local Package = Oyl.Package
+local Engine = Oyl.Engine
+local Check = Oyl.CheckProject
 
-processPackages(Packages)
-
-workspace(Config.Name)
+workspace(Config.Name) do
     location "./"
     filename(Config.Name .. "_" .. _ACTION)
 
@@ -34,60 +31,35 @@ workspace(Config.Name)
 
     startproject(Config.ShortName .. ".Entry")
 
-    group("Packages")
-        generatePackageProjects(Packages)
-    group ""
+    group "Dependencies"
+        Package.GenerateProjects()
+        -- Library.GenerateProjects()
+        -- group("Packages")
+            -- generatePackageProjects(Packages)
+        -- group ""
 
-    local premakeScripts = os.matchfiles(path.join(Config.SourceDir, "**premake5.lua"))
-    for _, premakeScript in pairs(premakeScripts) do
-        include(premakeScript)
-    end
+    group "Engine"
+        Engine.GenerateProjects()
 
-    for name, assembly in pairsByKeys(Assemblies) do
-        project(assembly.ProjectName)
+    Check.Generate()
 
-        if (assembly.Dependencies) then
-            for _, dependencyName in ipairs(assembly.Dependencies) do
-                if dependencyName == name then
-                    premake.error(string.format("Assembly \"%s\" cannot depend on itself!", assembly.Name))
-                    goto continue
-                end
+
+    -- for name, assembly in pairsByKeys(Assemblies) do
+    --     project(assembly.ProjectName)
+
+    --     if (assembly.Dependencies) then
+    --         for _, dependencyName in ipairs(assembly.Dependencies) do
+    --             if dependencyName == name then
+    --                 premake.error(string.format("Assembly \"%s\" cannot depend on itself!", assembly.Name))
+    --                 goto continue
+    --             end
+
+    --             addDependencyToProject(dependencyName)
                 
-                addDependencyToProject(dependencyName)
-                
-                ::continue::
-            end
-        end
+    --             ::continue::
+    --         end
+    --     end
 
-        project "*"
-    end
-
-    if not _OPTIONS["no-premake-check"] then
-        project("Premake")
-            kind "Makefile"
-            filename("%{prj.name}_" .. _ACTION)
-            targetdir(Config.TargetDir .. Config.OutputDir)
-            objdir(Config.ObjectDir .. Config.OutputDir)
-
-            local runPremakeCommand = ("%s %s"):format(
-                "%{wks.location}/Binaries/ThirdParty/premake5.exe ",
-                table.concat(_ARGV, " ")
-            )
-
-            if (_ARGV[#_ARGV] ~= "--error-on-generate") then
-                runPremakeCommand = ("%s %s"):format(runPremakeCommand, "--error-on-generate")
-            end
-
-            buildcommands {
-                runPremakeCommand,
-            }
-            rebuildcommands {
-                runPremakeCommand,
-            }
-
-            filter "system:windows"
-                architecture "x86_64"
-            filter {}
-    end
-
-include "Scripts/Premake/Overrides.lua"
+    --     project "*"
+    -- end
+end

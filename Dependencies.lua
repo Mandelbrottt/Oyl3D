@@ -1,17 +1,8 @@
----@class (exact) GitDesc
----@field Url string
----@field Revision? string
----@field Tag? string
+require "Config"
+require "Premake.Package"
+require "Premake.Library"
 
----@class (exact) Package
----@field Name? string
----@field Git GitDesc
----@field Kind string
----@field Files? [string]
----@field ProjectDir? string
----@field IncludeDirs? [string]
----@field CustomProperties? fun()
----@field DependantProperties? fun(package: Package)
+local Config = Oyl.Config
 
 ---@type { [string]: Package }
 Packages = {
@@ -219,4 +210,18 @@ Packages = {
     --         -- }
     --     end
     -- }
+}
+
+local VULKAN_SDK = os.getenv("VULKAN_SDK")
+if not VULKAN_SDK then
+    premake.error("Missing Vulkan SDK! Please install the Vulkan SDK!")
+end
+
+---@type { [string]: Library }
+Libraries = {
+    Vulkan = {
+        IncludeDirs = { VULKAN_SDK .. "/Include" },
+        LibraryDirs = { VULKAN_SDK .. "/Lib" },
+        Libraries = { "vulkan-1" }
+    }
 }
