@@ -168,21 +168,16 @@ function Package.GitClone(package)
         end
     end
     local SUPPRESS_COMMAND_OUTPUT = (os.host() == "windows" and "> nul 2>&1" or "> /dev/null 2>&1")
-    
-    printf("Cloning Git package \"%s\" from \"%s\"...", package.Name, package.Git.Url)
+    local Git = package.Git
 
-    -- Clone the repository and cd into it https://stackoverflow.com/a/63786181
-    executeOrPrint(
-        string.format(
-            "git clone -q --filter=blob:none -n --depth 1 %s %s %s", 
-            package.Git.Url,
-            package.ProjectDir,
-            SUPPRESS_COMMAND_OUTPUT
-        )
-    )
+    printf("Cloning Git package \"%s\" from \"%s\"...", package.Name, Git.Url)
+
+    executeOrPrint(string.format("git init %s %s", package.ProjectDir, SUPPRESS_COMMAND_OUTPUT))
 
     local cwd = os.getcwd()
     os.chdir(package.ProjectDir)
+
+    executeOrPrint(string.format("git remote add origin %s %s", Git.Url, SUPPRESS_COMMAND_OUTPUT))
 
     if package.Files then
         -- Clone specified files and license only
@@ -198,13 +193,13 @@ function Package.GitClone(package)
     end
 
     -- If a specific revision or tag is specified, point to it
-    if package.Git.Revision then
-        local revision = package.Git.Revision
+    if Git.Revision then
+        local revision = Git.Revision
         printf("\tFetching revision \"%s\"...", revision)
         executeOrPrint(string.format("git fetch -q --depth 1 origin %s %s", revision, SUPPRESS_COMMAND_OUTPUT))
         executeOrPrint(string.format("git checkout -q --no-progress %s %s", revision, SUPPRESS_COMMAND_OUTPUT))
-    elseif package.Git.Tag then
-        local tag = package.Git.Tag
+    elseif Git.Tag then
+        local tag = Git.Tag
         printf("\tFetching tag \"%s\"...", tag)
         executeOrPrint(string.format("git fetch -q --depth 1 origin refs/tags/%s:refs/tags/%s %s", tag, tag, SUPPRESS_COMMAND_OUTPUT))
         executeOrPrint(string.format("git checkout -q --no-progress %s %s", tag, SUPPRESS_COMMAND_OUTPUT))
