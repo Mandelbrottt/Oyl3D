@@ -140,14 +140,14 @@ function Engine.AddDependencyToProject(dep)
     local assembly = Utils.CaseInsensitiveFind(Engine.Projects, dep)
     if assembly then
         links { assembly.ProjectName }
-        includedirs { path.join(Config.SourceDir, assembly.Dir) }
+        externalincludedirs { path.join(Config.SourceDir, assembly.Dir) }
         return
     end
 
     local package = Utils.CaseInsensitiveFind(Oyl.Packages, dep)
     if package then
         links { package.Name }
-        includedirs(package.IncludeDirs)
+        externalincludedirs(package.IncludeDirs)
 
         if (package.DependantProperties) then
             package:DependantProperties()
@@ -158,7 +158,7 @@ function Engine.AddDependencyToProject(dep)
 
     local library = Utils.CaseInsensitiveFind(Oyl.Libraries, dep)
     if library then
-        includedirs(library.IncludeDirs)
+        externalincludedirs(library.IncludeDirs)
         libdirs(library.LibraryDirs)
         links(library.Libraries)
         return
@@ -186,6 +186,8 @@ function Engine.ApplyCommonCppSettings()
     warnings "Extra"
     fatalwarnings { "All" }
     multiprocessorcompile "On"
+    externalwarnings "Off"
+    externalanglebrackets "On"
 
     location (Config.ProjectLocation)
     targetdir(Config.TargetDir .. Config.OutputDir)

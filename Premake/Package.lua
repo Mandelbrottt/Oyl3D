@@ -32,10 +32,6 @@ function Oyl.Package.GenerateProjects()
             kind(package.Kind)
             includedirs(package.IncludeDirs)
             warnings "Off"
-            defines {
-                -- Warning Silence Defines
-                "_SILENCE_STDEXT_ARR_ITERS_DEPRECATION_WARNING", -- Silence warning in spdlog
-            }
 
             Engine.FilterStandalone()
             if package.Kind == premake.SHAREDLIB then

@@ -107,7 +107,8 @@ Oyl.Packages = {
                 "}",
                 "SPDLOG_SHORT_LEVEL_NAMES={" ..
                     [["T", "D", "I", "W", "E", "F", "O"]] ..
-                "}"
+                "}",
+                "_SILENCE_STDEXT_ARR_ITERS_DEPRECATION_WARNING",
             }
             filter "kind:SharedLib"
                 defines { 
