@@ -1,6 +1,7 @@
 name: Build Clang
 
 on:
+  push: # temporary
   workflow_dispatch:
     inputs:
       llvm-ref:
