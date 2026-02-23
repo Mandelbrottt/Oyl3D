@@ -70,4 +70,5 @@ jobs:
           -D LLVM_TARGETS_TO_BUILD="X86"
 
       - name: Cmake Build Clang
+        working-directory: ${{ env.llvm-checkout-dir }}
         run: cmake --build ${{ env.llvm-build-dir }} -j 8
