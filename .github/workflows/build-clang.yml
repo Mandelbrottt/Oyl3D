@@ -42,6 +42,7 @@ jobs:
             /third-party/
             /clang/
             /lld/
+            /libunwind/ # in 19.1.7, there is a dependency in lld/MachO on one file in libunwind
           sparse-checkout-cone-mode: off
           
       - name: Cache Packages
