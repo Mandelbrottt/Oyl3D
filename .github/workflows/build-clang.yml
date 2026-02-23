@@ -28,6 +28,8 @@ jobs:
     env:
       llvm-checkout-dir: .llvm
       llvm-build-dir: build
+      clang-build-dir: tools/clang
+      lld-build-dir: tools/lld
     steps:
       # - uses: actions/checkout@v6
 
@@ -36,14 +38,6 @@ jobs:
           repository: llvm/llvm-project
           path: ${{ env.llvm-checkout-dir }}
           ref: llvmorg-19.1.7
-          # sparse-checkout: |
-          #   /llvm/
-          #   /cmake/
-          #   /third-party/
-          #   /clang/
-          #   /lld/
-          #   /libunwind/ # in 19.1.7, there is a dependency in lld/MachO on one file in libunwind
-          # sparse-checkout-cone-mode: off
           
       - name: Cache Packages
         uses: actions/cache@v4
@@ -55,7 +49,7 @@ jobs:
         if: ${{ !env.ACT }}
         uses: egor-tensin/setup-mingw@v3
           
-      - name: Cmake Generate Makefiles
+      - name: CMake Generate Makefiles
         working-directory: ${{ env.llvm-checkout-dir }}
         run: >
           cmake
@@ -70,6 +64,10 @@ jobs:
           -D LLVM_DEFAULT_TARGET_TRIPLE="x86_64-pc-windows-msvc"
           -D LLVM_TARGETS_TO_BUILD="X86"
 
-      - name: Cmake Build Clang
+      - name: CMake Build Clang
         working-directory: ${{ env.llvm-checkout-dir }}
-        run: cmake --build ${{ env.llvm-build-dir }} -j 8
+        run: cmake --build ${{ env.llvm-build-dir }}/${{ env.lld-build-dir }} -j 8
+
+      - name: CMake Build LLD
+        working-directory: ${{ env.llvm-checkout-dir }}
+        run: cmake --build ${{ env.llvm-build-dir }}/${{ env.lld-build-dir }} -j 8
