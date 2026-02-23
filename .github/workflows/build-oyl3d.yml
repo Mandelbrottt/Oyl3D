@@ -1,4 +1,4 @@
-name: Build Oyl3D Win64
+name: Build Oyl3D
 
 on:
   push:
@@ -19,7 +19,7 @@ env:
   vulkan_sdk_version: 1.4.341.1
 
 jobs:
-  msvc:
+  win64-msvc:
     name: MSVC Oyl3D ${{ matrix.platform }} in ${{ matrix.configuration }}
     runs-on: windows-latest
     strategy: &build-strategy
@@ -90,7 +90,7 @@ jobs:
           ${{ env.solution_file_path }}
 
 
-  clang:
+  win64-clang:
     name: Clang Oyl3D ${{ matrix.platform }} in ${{ matrix.configuration }}
     runs-on: windows-latest
     strategy: *build-strategy
