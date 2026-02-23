@@ -48,7 +48,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: C:\ProgramData\mingw64
-          key: mingw-${{ github.workflow }}
+          key: mingw-${{ runner.os }}
 
       - name: Set up MinGW
         uses: egor-tensin/setup-mingw@v3
