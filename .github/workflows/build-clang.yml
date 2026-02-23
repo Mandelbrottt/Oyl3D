@@ -15,7 +15,7 @@ concurrency:
   cancel-in-progress: true
 
 permissions:
-  contents: write
+  contents: read
 
 defaults:
   run:
@@ -36,7 +36,7 @@ jobs:
           repository: llvm/llvm-project
           path: ${{ env.llvm-checkout-dir }}
           ref: llvmorg-19.1.7
-          sparse-checkout:
+          sparse-checkout: |
             /llvm/
             /cmake/
             /third-party/
@@ -51,6 +51,7 @@ jobs:
           key: mingw-${{ runner.os }}
 
       - name: Set up MinGW
+        if: ${{ !env.ACT }}
         uses: egor-tensin/setup-mingw@v3
           
       - name: Cmake Generate Makefiles
