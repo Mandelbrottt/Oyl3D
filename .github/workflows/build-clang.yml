@@ -1,0 +1,65 @@
+name: Build Clang
+
+on:
+  workflow_dispatch:
+    inputs:
+      llvm-ref:
+        description: 'LLVM Commit Hash or Tag'
+        required: false
+        default: llvmorg-19.1.7
+        type: string
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  build:
+    name: Build Clang@${{ inputs.llvm-ref }}
+    runs-on: windows-latest
+    env:
+      llvm-checkout-dir: .llvm
+      llvm-build-dir: build
+    steps:
+      # - uses: actions/checkout@v6
+
+      - uses: actions/checkout@v6
+        with:
+          repository: llvm/llvm-project
+          path: ${{ env.llvm-checkout-dir }}
+          ref: ${{ inputs.llvm-ref }}
+          sparse-checkout:
+            /llvm
+            /cmake
+            /third-party
+            /clang
+            /lld
+          sparse-checkout-cone-mode: off
+          
+      - name: Set up MinGW
+        uses: egor-tensin/setup-mingw@v3
+          
+      - name: Cmake Generate Makefiles
+        working-directory: ${{ env.llvm-checkout-dir }}
+        run: >
+          cmake
+            -S llvm
+            -B ${{ env.llvm-build-dir }}
+            -G "MinGW Makefiles"
+            -D CMAKE_BUILD_TYPE=Release
+            -D LLVM_ENABLE_PROJECTS="clang;lld"
+            -D LLVM_ENABLE_PLUGINS=ON
+            -D LLVM_BUILD_LLVM_DYLIB=ON
+            -D LLVM_LINK_LLVM_DYLIB=ON
+            -D LLVM_DEFAULT_TARGET_TRIPLE="x86_64-pc-windows-msvc"
+            -D LLVM_TARGETS_TO_BUILD="X86"
+
+      - name: Cmake Build Clang
+        run: cmake --build ${{ env.llvm-build-dir }} -j 8
