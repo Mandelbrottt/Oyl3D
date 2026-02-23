@@ -154,7 +154,7 @@ namespace Oyl::Reflection
 			return m_factory;
 		#elif !defined IN_PLACE_FACTORY
 			// See https://en.cppreference.com/w/cpp/types/aligned_storage
-			auto pFactory = std::launder(reinterpret_cast<const Detail::GenericFactory*>(m_factoryData));
+			auto pFactory = std::launder(reinterpret_cast<const Detail::GenericFactory*>(&m_factoryData));
 			return pFactory;
 		#endif
 		}
@@ -308,11 +308,8 @@ namespace Oyl::Reflection
 			// by reflector.m_factoryData is stored "on the stack" inside this type while
 			// being able to reference it like a pointer and use the vtable to call overridden
 			// versions of New and Delete
-			auto pFactory = reinterpret_cast<Detail::GenericFactory*>(a_type->m_factoryData);
-			static_assert(sizeof(*pFactory) == sizeof(Detail::TypedFactory<TReflected>));
-
-			// ReSharper disable once CppDeprecatedEntity
-			new(pFactory) Detail::TypedFactory<TReflected>;
+			static_assert(sizeof(a_type->m_factoryData) == sizeof(Detail::TypedFactory<TReflected>));
+			new(&a_type->m_factoryData) Detail::TypedFactory<TReflected>;
 #		endif
 		}
 
@@ -377,7 +374,7 @@ namespace Oyl::Reflection
 		Detail::GenericFactory* m_factory;
 	#else
 		alignas(Detail::GenericFactory)
-		byte m_factoryData[sizeof(Detail::GenericFactory)] { byte() };
+		byte m_factoryData[sizeof(Detail::GenericFactory)];
 	#endif
 	};
 }

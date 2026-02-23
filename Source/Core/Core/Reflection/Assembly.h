@@ -4,20 +4,23 @@
 
 namespace Oyl::Reflection
 {
+	namespace Detail
+	{
+		using AssembliesContainer = std::vector<Assembly*>;
+		using OwnedTypesContainer = std::vector<Type*>;
+	}
+
+	static
+	Detail::AssembliesContainer&
+	Assemblies()
+	{
+		static Detail::AssembliesContainer container {};
+		return container;
+	}
+	
 	class OYL_CORE_API Assembly
 	{
 	public:
-		using AssembliesContainer = std::vector<Assembly*>;
-		using OwnedTypesContainer = std::vector<Type*>;
-		
-		static
-		AssembliesContainer&
-		Assemblies()
-		{
-			static AssembliesContainer container {};
-			return container;
-		}
-
 		bool
 		RegisterType(Type* a_type);
 		
@@ -27,6 +30,6 @@ namespace Oyl::Reflection
 	private:
 		std::string m_name;
 
-		OwnedTypesContainer m_ownedTypes;
+		Detail::OwnedTypesContainer m_ownedTypes;
 	};
 }

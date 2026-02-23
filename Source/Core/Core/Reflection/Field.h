@@ -10,11 +10,11 @@ namespace Oyl::Reflection
 	{
 		None = 0,
 
-		Static = 0x01,
-		//FfNonStatic = 0x02,
-		Private = 0x04,
-		Protected = 0x08,
-		//FfPrivate   = 0x10,
+		Static = 1 << 0,
+		NonStatic = 1 << 1,
+		Public =  1 << 3,
+		Protected =  1 << 3,
+		Private = 1 << 2,
 	};
 
 	inline

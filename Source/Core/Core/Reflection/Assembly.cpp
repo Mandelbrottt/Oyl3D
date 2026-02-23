@@ -14,7 +14,7 @@ namespace Oyl::Reflection
 			auto iter = std::find_if(
 				ownedTypes.begin(),
 				ownedTypes.end(),
-				[a_type](const auto& a_value)
+				[a_type](const Type* a_value)
 				{
 					return *a_value == *a_type;
 				}
