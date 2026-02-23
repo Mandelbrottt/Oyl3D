@@ -37,11 +37,11 @@ jobs:
           path: ${{ env.llvm-checkout-dir }}
           ref: llvmorg-19.1.7
           sparse-checkout:
-            /llvm
-            /cmake
-            /third-party
-            /clang
-            /lld
+            /llvm/
+            /cmake/
+            /third-party/
+            /clang/
+            /lld/
           sparse-checkout-cone-mode: off
           
       - name: Cache Packages
