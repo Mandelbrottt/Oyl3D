@@ -1,28 +1,48 @@
-name: Build Win64 Action
+name: Build Oyl3D Win64
 
 on:
-  workflow_call:
-    inputs:
-      configuration:
-        required: true
-        type: string
-      platform:
-        required: true
-        type: string
-      toolset:
-        required: true
-        type: string
+  push:
+  pull_request:
+    branches: ["main"]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
 
 env:
-  vulkan_sdk_version: 1.4.341.1
+  visual_studio_version: vs2022
   solution_file_path: Oyl3D_vs2022.sln
+  premake_version: "5.0.0-beta8"
+  vulkan_sdk_version: 1.4.341.1
 
 jobs:
-  build-win64:
-    name: ${{ inputs.toolset }}
+  msvc:
+    name: MSVC Oyl3D ${{ matrix.platform }} in ${{ matrix.configuration }}
     runs-on: windows-latest
-    steps:
-      - uses: actions/checkout@v4
+    strategy: &build-strategy
+      fail-fast: false
+      matrix:
+        configuration: [Debug, Development, Distribution, Profile]
+        platform: [Editor, Standalone]
+        exclude:
+          - configuration: Distribution
+            platform: Editor
+    env:
+      toolset: msc-v143
+    steps: &win64-build-steps
+      - uses: actions/checkout@v6
+
+      - name: Setup Premake
+        if: ${{ !env.ACT }}
+        uses: abel0b/setup-premake@v2.4
+        with:
+          version: ${{ env.premake_version }}
+
+      - name: Add MSBuild to PATH
+        uses: microsoft/setup-msbuild@v2
 
       # https://github.com/actions/cache/blob/main/workarounds.md#improving-cache-restore-performance-on-windowsusing-cross-os-caching
       - if: ${{ runner.os == 'Windows' }}
@@ -31,9 +51,6 @@ jobs:
         run: |
           echo "Adding GNU tar to PATH"
           echo C:\Program Files\Git\usr\bin>>"%GITHUB_PATH%"
-
-      - name: Add MSBuild to PATH
-        uses: microsoft/setup-msbuild@v2
 
       - name: Cache Packages
         uses: actions/cache@v4
@@ -44,12 +61,14 @@ jobs:
           key: engine-source-packages-${{ runner.os }}-${{ hashFiles('Dependencies.lua') }}
 
       - name: Fetch Vulkan SDK version spec
+        if: ${{ !env.ACT }}
         run: |
           Invoke-WebRequest -Uri "https://vulkan.lunarg.com/sdk/config/${{ env.vulkan_sdk_version }}/windows/config.json" -OutFile vulkan-sdk-config.json
           $vulkan_sdk_config = "${{ github.workspace }}/vulkan-sdk-config.json" -replace '\\', '/'
           Add-Content -Path "$env:GITHUB_ENV" -Value "vulkan_sdk_config=$vulkan_sdk_config"
 
       - name: Prepare Vulkan SDK
+        if: ${{ !env.ACT }}
         uses: humbletim/setup-vulkan-sdk@v1.2.1
         with:
           vulkan-config-file: $vulkan_sdk_config
@@ -58,16 +77,23 @@ jobs:
 
       - name: Generate Solutions
         working-directory: ${{ github.workspace }}
-        run: Binaries/ThirdParty/premake5 vs2022 --cc=${{ inputs.toolset }} --no-premake-check
+        run: premake5 ${{ env.visual_studio_version }} --cc=${{ env.toolset }} --no-premake-check
 
       - name: Build
         working-directory: ${{ github.workspace }}
-        # Add additional options to the MSBuild command line here (like platform or verbosity level).
-        # See https://docs.microsoft.com/visualstudio/msbuild/msbuild-command-line-reference
         run: >
           msbuild
           /maxCpuCount
-          /property:Configuration=${{ inputs.configuration }}
-          /property:Platform=${{ inputs.platform }}
-          /verbosity:normal
+          /property:Configuration=${{ matrix.configuration }}
+          /property:Platform=${{ matrix.platform }}
+          /verbosity:minimal
           ${{ env.solution_file_path }}
+
+
+  clang:
+    name: Clang Oyl3D ${{ matrix.platform }} in ${{ matrix.configuration }}
+    runs-on: windows-latest
+    strategy: *build-strategy
+    env:
+      toolset: clang
+    steps: *win64-build-steps
