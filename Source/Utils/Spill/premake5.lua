@@ -21,9 +21,11 @@ project "Oyl.Spill"
     objdir   (Config.ObjectDir .. Config.Utils.OutputDir)
     implibdir(Config.LibraryDir .. Config.Utils.OutputDir)
 
-    links {
-        "Premake"
-    }
+    if (not _OPTIONS["no-premake-check"]) then
+        links {
+            "Premake"
+        }
+    end
 
     configmap {
         [Config.Configurations.Profile] = Config.Configurations.Distribution,

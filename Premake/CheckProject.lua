@@ -26,7 +26,7 @@ function Oyl.CheckProject.Generate()
         objdir(Config.ObjectDir .. Config.OutputDir)
 
         local runPremakeCommand = ("%s %s %s %s"):format(
-            "%{wks.location}/Binaries/ThirdParty/premake5.exe ",
+            "premake5",
             _ACTION,
             "--cc=%{cfg.toolset}",
             "--premake-check"
