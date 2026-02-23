@@ -1,33 +1,30 @@
 #pragma once
 
-//#include "ReflectionTest.generated.h"
+#include "Module.h"
 
-#include "Core/Logging/Logging.h"
+//#include "../.Generated/Headers/ReflectionTest.gen.h"
 
 namespace Test
 {
-	class Something
+	class Something : public Oyl::Module
 	{
+		//GeneratedBody();
+
 	public:
-		Something()
-		{
-			OYL_UNUSED(m_somethingElse);
-			OYL_LOG("Something()");
-		}
+		Something();
 
 		virtual
-		~Something()
-		{
-			OYL_LOG("~Something()");
-		}
+		~Something();
 
 		void
-		DoSomething()
-		{
-			OYL_LOG("DoSomething()");
-		}
+		OnUpdate() override;
+
+		void
+		DoSomething();
 
 		int something = 5;
+
+		int member = 0;
 
 	private:
 		int m_somethingElse = 0;
