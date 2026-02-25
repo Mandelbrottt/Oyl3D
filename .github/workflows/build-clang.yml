@@ -23,18 +23,19 @@ defaults:
 
 jobs:
   build:
-    name: Build Clang@llvmorg-19.1.7
+    name: Build Clang@${{ inputs.llvm-ref }}
     runs-on: windows-latest
     env:
       llvm-checkout-dir: ".llvm"
       llvm-build-dir: build
       llvm-install-dir: install
+      llvm-archive: llvm.txz
     steps:
       - uses: actions/checkout@v6
         with:
           repository: llvm/llvm-project
           path: ${{ env.llvm-checkout-dir }}
-          ref: llvmorg-19.1.7
+          ref: ${{ inputs.llvm-ref }}
           
       - name: Set up MinGW
         if: ${{ !env.ACT }}
@@ -91,9 +92,12 @@ jobs:
 
       - name: Zip install directory
         working-directory: ${{ github.workspace }}
-        run: |
-          tar -cf llvm.tar.xz -I 'xz -9 -T$NUMBER_OF_PROCESSORS' \
-          ${{ env.llvm-checkout-dir }}/${{ env.llvm-install-dir }}
+        run: >
+          tar
+          -cC ${{ env.llvm-checkout-dir }}/${{ env.llvm-install-dir }}
+          -I 'xz -T$NUMBER_OF_PROCESSORS'
+          -f ${{ env.llvm-archive }}
+          .
 
       - name: Setup Rclone
         if: ${{ !env.ACT }}
@@ -104,11 +108,11 @@ jobs:
       - name: Upload LLVM Artifact
         if: ${{ !env.ACT }}
         run: |
-          rclone copyto llvm.tar.xz oyl3d:llvm/llvm.tar.xz
+          rclone copyto ${{ env.llvm-archive }} oyl3d:llvm/${{ env.llvm-archive }}
 
-      - name: Update Rclone config
-        if: ${{ !env.ACT }}
-        uses: AnimMouse/setup-rclone/update-config@v1
-        with:
-          rclone_config_secret_name: RCLONE_CONFIG
-          token: ${{ secrets.GH_PAT_RCLONE }}
+      # - name: Update Rclone config
+      #   if: ${{ !env.ACT }}
+      #   uses: AnimMouse/setup-rclone/update-config@v1
+      #   with:
+      #     rclone_config_secret_name: RCLONE_CONFIG
+      #     token: ${{ secrets.GH_PAT_RCLONE }}
