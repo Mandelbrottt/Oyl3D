@@ -94,3 +94,18 @@ jobs:
         run: |
           tar -cf llvm.tar.xz -I 'xz -9 -T$NUMBER_OF_PROCESSORS' \
           ${{ env.llvm-checkout-dir }}/${{ env.llvm-install-dir }}
+
+      - name: Setup Rclone
+        uses: AnimMouse/setup-rclone@v1.12.0
+        with:
+          rclone_config: ${{ secrets.RCLONE_CONFIG }}
+
+      - name: Upload LLVM Artifact
+        run: |
+          rclone copyto llvm.tar.xz oyl3d:llvm/llvm.tar.xz
+
+      - name: Update Rclone config
+        uses: AnimMouse/setup-rclone/update-config@v1
+        with:
+          rclone_config_secret_name: RCLONE_CONFIG
+          token: ${{ secrets.GH_PAT_RCLONE }}
