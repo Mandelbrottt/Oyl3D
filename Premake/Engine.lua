@@ -57,7 +57,7 @@ function Engine.EngineProjectDefinition(proj)
     proj.Dir = projectDir
     proj.Name = projectName
     proj.ProjectName = string.format("%s.%s", Config.ShortName, projectName)
-    proj.Group = proj.Group or ""
+    proj.Group = proj.Group or Config.EngineDefaultGroup
     proj.Kind = proj.Kind or premake.UTILITY
     proj.Dependencies = proj.Dependencies or {}
 
@@ -179,6 +179,7 @@ function Engine.ApplyCommonCppSettings()
     filename("%{prj.name}_" .. _ACTION)
     language "C++"
     cppdialect "C++17"
+    toolset "Clang"
     staticruntime "Off"
     floatingpoint "Fast"
     rtti "On"
@@ -208,6 +209,10 @@ function Engine.ApplyCommonCppSettings()
             "Premake"
         }
     end
+
+    -- filter "toolset:clang"
+    --     llvmdir "G:/dev/llvm-project/llvm-install"
+    --     llvmversion "19.1.7"
 
     filter "kind:StaticLib"
         targetdir(Config.LibraryDir .. Config.OutputDir)

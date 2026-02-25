@@ -18,6 +18,8 @@ function Oyl.CheckProject.Generate()
         return
     end
 
+    group ""
+
     project("Premake")
     do
         kind "Makefile"

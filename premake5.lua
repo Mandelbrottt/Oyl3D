@@ -28,13 +28,11 @@ workspace(Config.Name) do
     }
 
     startproject(Config.ShortName .. ".Entry")
+    
+    Engine.GenerateProjects()
 
     group "Dependencies"
         Package.GenerateProjects()
 
-    group "Engine"
-        Engine.GenerateProjects()
-
-    group ""
-        Check.Generate()
+    Check.Generate()
 end

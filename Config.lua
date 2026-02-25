@@ -9,6 +9,8 @@ Config.ShortName = "Oyl"
 
 Config.StartProject = Config.ShortName .. ".Entry"
 
+Config.EngineDefaultGroup = "Engine"
+
 Config.TargetDir = "%{wks.location}/Build/Binaries/"
 Config.LibraryDir = "%{wks.location}/Build/Library/"
 Config.ObjectDir = "%{wks.location}/Build/Intermediate/"

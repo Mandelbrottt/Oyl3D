@@ -16,7 +16,7 @@ local Package = Oyl.Package
 ---@field Git GitDesc
 ---@field Kind string
 ---@field Files? [string]
----@field ProjectDir? string
+---@field ProjectDir? string Path to the project relative to workspace
 ---@field IncludeDirs? [string]
 ---@field CustomProperties? fun()
 ---@field DependantProperties? fun(package: Package)
@@ -55,19 +55,18 @@ function Package.SetupVarsInPackage(name, package)
     -- Default to Utility if no kind provided
     package.Kind = package.Kind or "Utility"
 
-    local gitUrl = package.Git.Url
-    name = name or path.getbasename(gitUrl)
+    package.Name = name
+    if (not package.ProjectDir) then
+        package.ProjectDir = Config.PackagesDir .. name .. "/"
+    end
 
-    package['Name'] = name
-    package['ProjectDir'] = Config.PackagesDir .. name .. "/"
-
-    if package['IncludeDirs'] ~= nil then
+    if package.IncludeDirs ~= nil then
         for i, includeDir in ipairs(package.IncludeDirs) do
             includeDir = "%{wks.location}/" .. package.ProjectDir .. includeDir
             package.IncludeDirs[i] = includeDir
         end
     else -- If IncludeDirs isn't manually defined, set it to the include folder of the package
-        local includeDirs = package.ProjectDir .. "/**include/"
+        local includeDirs = os.matchdirs(package.ProjectDir .. "/**include/")
         if #includeDirs ~= 0 then
             package.IncludeDirs = { "%{wks.location}/" .. includeDirs }
         else
@@ -106,18 +105,7 @@ function Package.UpdatePackageCache()
     
     local init = _OPTIONS["init-packages"] or (_ACTION ~= nil and string.sub(_ACTION, 1, 2) == "vs")
     if (init or reinit) then
-        Package.FetchPackages()
-    end
-end
-
-function Oyl.Package.FetchPackages()
-    for name, package in pairs(Oyl.Packages) do
-        local numFiles = os.matchfiles(package.ProjectDir .. "/*")
-        if #numFiles == 0 then
-            if package.Git then
-                Package.GitClone(package)
-            end
-        end
+        Package.FetchPackages(Oyl.Packages)
     end
 end
 
@@ -144,6 +132,18 @@ function Package.CleanPackageCache(package)
         end
     else
         print("No Packages in Cache to remove.")
+    end
+end
+
+---@param packages Package[]
+function Oyl.Package.FetchPackages(packages)
+    for name, package in pairs(packages) do
+        local numFiles = os.matchfiles(package.ProjectDir .. "/*")
+        if #numFiles == 0 then
+            if package.Git then
+                Package.GitClone(package)
+            end
+        end
     end
 end
 
