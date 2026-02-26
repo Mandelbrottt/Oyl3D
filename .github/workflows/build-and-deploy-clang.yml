@@ -1,7 +1,6 @@
-name: Build Clang
+name: Build and Deploy Clang
 
 on:
-  push: # temporary
   workflow_dispatch:
     inputs:
       llvm-ref:
@@ -22,8 +21,8 @@ defaults:
     shell: bash
 
 jobs:
-  build:
-    name: Build Clang@llvmorg-19.1.7
+  build-and-deploy:
+    name: Build Clang@${{ inputs.llvm-ref }}
     runs-on: windows-latest
     env:
       llvm-checkout-dir: ".llvm"
@@ -35,7 +34,7 @@ jobs:
         with:
           repository: llvm/llvm-project
           path: ${{ env.llvm-checkout-dir }}
-          ref: llvmorg-19.1.7
+          ref: ${{ inputs.llvm-ref }}
           
       - name: Set up MinGW
         if: ${{ !env.ACT }}
