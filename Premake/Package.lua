@@ -66,12 +66,8 @@ function Package.SetupVarsInPackage(name, package)
             package.IncludeDirs[i] = includeDir
         end
     else -- If IncludeDirs isn't manually defined, set it to the include folder of the package
-        local includeDirs = os.matchdirs(package.ProjectDir .. "/**include/")
-        if #includeDirs ~= 0 then
-            package.IncludeDirs = { "%{wks.location}/" .. includeDirs }
-        else
-            package.IncludeDirs = {}
-        end
+        local includeDirsString = package.ProjectDir .. "/**include/"
+        package.IncludeDirs = { "%{wks.location}/" .. includeDirsString }
     end
 end
 
