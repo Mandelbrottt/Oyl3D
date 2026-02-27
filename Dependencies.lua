@@ -3,89 +3,6 @@ local Engine = require "Engine"
 
 ---@type { [string]: Package }
 Oyl.Packages = {
-    YamlCpp = {
-        Git = {
-            Url = "https://github.com/jbeder/yaml-cpp.git",
-            Revision = "c73ee34704c512ebe915b283645aefa9f424a22f",
-        },
-        Kind = premake.SHAREDLIB,
-        Files = { 
-            "/include/",
-            "/src/"
-        },
-        CustomProperties = function()
-            filter "kind:StaticLib"
-                defines { "YAML_CPP_STATIC_DEFINE" }
-            filter "kind:SharedLib"
-                defines { "yaml_cpp_EXPORTS" }
-        end
-    },
-    NlohmannJson = {
-        Git = {
-            Url = "https://github.com/nlohmann/json.git",
-            Tag = "v3.6.1"
-        },
-        Kind = "Utility",
-        Files = { "/include/" },
-    },
-    GLFW = {
-        Git = {
-            Url = "https://github.com/glfw/glfw.git",
-            Tag = "3.3.8"
-        },
-        Kind = premake.SHAREDLIB,
-        Files = { "/include/", "/src/", },
-        CustomProperties = function()
-            language "C"
-            defines { "_CRT_SCURE_NO_WARNINGS" }
-            removefiles { "**" }
-            files {
-                "include/GLFW/*",
-                "src/glfw_config.h",
-                "src/context.c",
-                "src/init.c",
-                "src/input.c",
-                "src/monitor.c",
-                "src/vulkan.c",
-                "src/window.c"
-            }
-            filter "system:windows"
-                systemversion "latest"
-                files {
-                    "src/win32*.c",
-                    "src/wgl_context.c",
-                    "src/egl_context.c",
-                    "src/osmesa_context.c"
-                }
-                defines { "_GLFW_WIN32" }
-            filter "kind:StaticLib"
-                defines { }
-            filter "kind:SharedLib"
-                defines { "_GLFW_BUILD_DLL" }
-        end,
-        DependantProperties = function(package)
-            if (package.Kind == premake.SHAREDLIB) then
-                Engine.FilterEditor()
-                do
-                    defines { "GLFW_DLL" }
-                end
-            end
-        end
-    },
-    ImGui = {
-        Git = {
-            Url = "https://github.com/ocornut/imgui.git",
-            Revision = "e2cede6542d2d6c83598d4d34dc51de84aeb282f"
-        },
-        Kind = premake.STATICLIB, -- ImGui SharedLib support is quite involved, so don't bother for now
-        Files = { "/examples/", "imconfig.h", "/imgui*.h", "/imgui*.cpp", "/imstb*.h" },
-        IncludeDirs = { "." },
-        CustomProperties = function()
-            -- For now we want to include examples on disk, but don't compile them.
-            -- We will be manually including and compiling them later
-            removefiles { "examples/**" }
-        end
-    },
     SpdLog = {
         Git = {
             Url = "https://github.com/gabime/spdlog.git",
@@ -187,18 +104,102 @@ Oyl.Packages = {
                 removelinks { package.Name }
         end
     },
-    -- Clang = {
-    --     Git = {
-    --         Url = "https://github.com/llvm/llvm-project.git",
-    --         Tag = "llvmorg-18.1.8"
-    --     },
-    --     Kind = premake.STATICLIB,
-    --     Files = { "clang/", "clang-tools-extra/" },
-    --     -- IncludeDirs = { "public/ "},
-    --     CustomProperties = function()
-            
-    --     end
-    -- },
+    NlohmannJson = {
+        Git = {
+            Url = "https://github.com/nlohmann/json.git",
+            Tag = "v3.6.1"
+        },
+        Kind = "Utility",
+        Files = { "/include/" },
+    },
+    YamlCpp = {
+        Git = {
+            Url = "https://github.com/jbeder/yaml-cpp.git",
+            Revision = "c73ee34704c512ebe915b283645aefa9f424a22f",
+        },
+        Kind = premake.SHAREDLIB,
+        Files = { 
+            "/include/",
+            "/src/"
+        },
+        CustomProperties = function()
+            filter "kind:StaticLib"
+                defines { "YAML_CPP_STATIC_DEFINE" }
+            filter "kind:SharedLib"
+                defines { "yaml_cpp_EXPORTS" }
+        end
+    },
+    GLFW = {
+        Git = {
+            Url = "https://github.com/glfw/glfw.git",
+            Tag = "3.3.8"
+        },
+        Kind = premake.SHAREDLIB,
+        Files = { "/include/", "/src/", },
+        CustomProperties = function()
+            language "C"
+            defines { "_CRT_SCURE_NO_WARNINGS" }
+            removefiles { "**" }
+            files {
+                "include/GLFW/*",
+                "src/glfw_config.h",
+                "src/context.c",
+                "src/init.c",
+                "src/input.c",
+                "src/monitor.c",
+                "src/vulkan.c",
+                "src/window.c"
+            }
+            filter "system:windows"
+                systemversion "latest"
+                files {
+                    "src/win32*.c",
+                    "src/wgl_context.c",
+                    "src/egl_context.c",
+                    "src/osmesa_context.c"
+                }
+                defines { "_GLFW_WIN32" }
+            filter "kind:StaticLib"
+                defines { }
+            filter "kind:SharedLib"
+                defines { "_GLFW_BUILD_DLL" }
+        end,
+        DependantProperties = function(package)
+            if (package.Kind == premake.SHAREDLIB) then
+                Engine.FilterEditor()
+                do
+                    defines { "GLFW_DLL" }
+                end
+            end
+        end
+    },
+    ImGui = {
+        Git = {
+            Url = "https://github.com/ocornut/imgui.git",
+            Revision = "e2cede6542d2d6c83598d4d34dc51de84aeb282f"
+        },
+        Kind = premake.STATICLIB, -- ImGui SharedLib support is quite involved, so don't bother for now
+        Files = { "/examples/", "imconfig.h", "/imgui*.h", "/imgui*.cpp", "/imstb*.h" },
+        IncludeDirs = { "." },
+        CustomProperties = function()
+            -- For now we want to include examples on disk, but don't compile them.
+            -- We will be manually including and compiling them later
+            removefiles { "examples/**" }
+        end
+    },
+    Llvm = {
+        GenerateProject = false,
+        Archive = {
+            Url = (function()
+                if (os.get() == premake.WINDOWS) then
+                    return "https://dl.dropbox.com/scl/fi/uzjp96yoz4i764awjrdlr/llvm.txz?rlkey=axeanv0gvz8tmsmx3kf23ywbw"
+                end
+                premake.error("Current OS not supported")
+                return ""
+            end)()
+        },
+        ProjectDir = path.join(Config.Tools, "Llvm")
+    },
     -- TracyServer = {
     --     Git = {
     --         Url = "https://github.com/wolfpld/tracy.git",

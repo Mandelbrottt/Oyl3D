@@ -25,6 +25,8 @@ Config.ProjectLocation = "./"
 Config.SourceDir = "Source/"
 Config.PackagesDir = Config.SourceDir .. "Packages/"
 
+Config.ToolsDir = "Tools/"
+
 Config.Configurations = {}
 Config.Configurations.Debug = "Debug"
 Config.Configurations.Development = "Development"

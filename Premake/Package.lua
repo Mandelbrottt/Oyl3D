@@ -6,15 +6,20 @@ require "Dependencies"
 Oyl.Package = {}
 local Package = Oyl.Package
 
+---@class (exact) ArchiveDesc
+---@field Url string
+
 ---@class (exact) GitDesc
 ---@field Url string
 ---@field Revision? string
 ---@field Tag? string
 
----@class (exact) Package
+---@class Package
+---@field GenerateProject? boolean
 ---@field Name? string
----@field Git GitDesc
----@field Kind string
+---@field Archive? ArchiveDesc
+---@field Git? GitDesc
+---@field Kind? string
 ---@field Files? [string]
 ---@field ProjectDir? string Path to the project relative to workspace
 ---@field IncludeDirs? [string]
@@ -27,24 +32,26 @@ function Oyl.Package.GenerateProjects()
         local cwd = os.getcwd()
         os.chdir(package.ProjectDir)
 
-        project(package.Name)
-            Engine.ApplyCommonCppSettings()
-            kind(package.Kind)
-            includedirs(package.IncludeDirs)
-            warnings "Off"
+        if (package.GenerateProject ~= false) then
+            project(package.Name)
+                Engine.ApplyCommonCppSettings()
+                kind(package.Kind)
+                includedirs(package.IncludeDirs)
+                warnings "Off"
 
-            Engine.FilterStandalone()
-            if package.Kind == premake.SHAREDLIB then
-                kind(premake.STATICLIB)
-            end
-    
-            filter {}
-            if package['CustomProperties'] then
-                package.CustomProperties()
-            end
-            filter {}
+                Engine.FilterStandalone()
+                if package.Kind == premake.SHAREDLIB then
+                    kind(premake.STATICLIB)
+                end
 
-        os.chdir(cwd)
+                filter {}
+                if package['CustomProperties'] then
+                    package.CustomProperties()
+                end
+                filter {}
+
+            os.chdir(cwd)
+        end
     end
     project "*"
 end
