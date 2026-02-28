@@ -212,9 +212,14 @@ function Engine.ApplyCommonCppSettings()
         }
     end
 
-    -- filter "toolset:clang"
-    --     llvmdir "G:/dev/llvm-project/llvm-install"
-    --     llvmversion "19.1.7"
+    filter "toolset:clang"
+    do
+        local llvmPackage = Oyl.Packages.Llvm
+        if (llvmPackage) then
+            llvmdir("%{wks.location}/" .. llvmPackage.ProjectDir)
+            llvmversion "19.1.7"
+        end
+    end
 
     filter "kind:StaticLib"
         targetdir(Config.LibraryDir .. Config.OutputDir)
