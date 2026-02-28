@@ -156,12 +156,17 @@ function Oyl.Package.FetchPackages(packages)
 end
 
 local executeOrPrint = function(command)
+    local SUPPRESS_COMMAND_OUTPUT = (os.host() == "windows" and "> nul 2>&1" or "> /dev/null 2>&1")
+    if (_OPTIONS["verbose"]) then
+        SUPPRESS_COMMAND_OUTPUT = ""
+    end
+    
     if (not _OPTIONS["dryrun"]) then
         term.pushColor(term.infoColor)
         io.write(("\t%s "):format(command))
         term.popColor()
         printf("in %s", os.getcwd())
-        os.execute(command)
+        os.execute(command .. SUPPRESS_COMMAND_OUTPUT)
     else
         term.pushColor(term.infoColor)
         io.write(("\t%s "):format(command))
@@ -173,18 +178,17 @@ end
 ---@param package Package
 function Package.GitClone(package)
     
-    local SUPPRESS_COMMAND_OUTPUT = (os.host() == "windows" and "> nul 2>&1" or "> /dev/null 2>&1")
     local Git = package.Git
     assert(Git ~= nil)
 
     printf("Cloning Git package \"%s\" from \"%s\"...", package.Name, Git.Url)
 
-    executeOrPrint(string.format("git init %s %s", package.ProjectDir, SUPPRESS_COMMAND_OUTPUT))
+    executeOrPrint(string.format("git init %s", package.ProjectDir))
 
     local cwd = os.getcwd()
     os.chdir(package.ProjectDir)
 
-    executeOrPrint(string.format("git remote add origin %s %s", Git.Url, SUPPRESS_COMMAND_OUTPUT))
+    executeOrPrint(string.format("git remote add origin %s", Git.Url))
 
     if package.Files then
         -- Clone specified files and license only
@@ -196,20 +200,20 @@ function Package.GitClone(package)
             files = files .. " " .. file
         end
 
-        executeOrPrint(string.format("git sparse-checkout set --no-cone %s %s", files, SUPPRESS_COMMAND_OUTPUT))
+        executeOrPrint(string.format("git sparse-checkout set --no-cone %s", files))
     end
 
     -- If a specific revision or tag is specified, point to it
     if Git.Revision then
         local revision = Git.Revision
         printf("\tFetching revision \"%s\"...", revision)
-        executeOrPrint(string.format("git fetch -q --depth 1 origin %s %s", revision, SUPPRESS_COMMAND_OUTPUT))
-        executeOrPrint(string.format("git checkout -q --no-progress %s %s", revision, SUPPRESS_COMMAND_OUTPUT))
+        executeOrPrint(string.format("git fetch -q --depth 1 origin %s", revision))
+        executeOrPrint(string.format("git checkout -q --no-progress %s", revision))
     elseif Git.Tag then
         local tag = Git.Tag
         printf("\tFetching tag \"%s\"...", tag)
-        executeOrPrint(string.format("git fetch -q --depth 1 origin refs/tags/%s:refs/tags/%s %s", tag, tag, SUPPRESS_COMMAND_OUTPUT))
-        executeOrPrint(string.format("git checkout -q --no-progress %s %s", tag, SUPPRESS_COMMAND_OUTPUT))
+        executeOrPrint(string.format("git fetch -q --depth 1 origin refs/tags/%s:refs/tags/%s", tag, tag))
+        executeOrPrint(string.format("git checkout -q --no-progress %s", tag))
     end
 
     -- Remove the .git folder as we're only using git to download the repository
