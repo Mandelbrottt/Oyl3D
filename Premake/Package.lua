@@ -58,10 +58,10 @@ function Oyl.Package.GenerateProjects()
                     package.CustomProperties()
                 end
                 filter {}
-            project "*"
+            end
+            os.chdir(cwd)
         end
-        os.chdir(cwd)
-    end
+    project "*"
 end
 
 ---@param name string
