@@ -1,6 +1,6 @@
 local Engine = require "Engine"
 
-Engine.EngineProjectDefinition {
+Oyl.Projects.Core = Engine.EngineProjectDefinition {
     Group = "Engine",
     Language = premake.CPP,
     Kind = premake.SHAREDLIB,

@@ -1,12 +1,12 @@
 local Config = require "Config"
 local Engine = require "Engine"
 
-Engine.EngineProjectDefinition {
+Oyl.Projects.Editor = Engine.EngineProjectDefinition {
     Group = "Editor",
     Language = premake.CPP,
     Kind = premake.SHAREDLIB,
     Dependencies = {
-        "Core",
+        Oyl.Projects.Core,
         Oyl.Packages.ImGui,
         Oyl.Packages.SpdLog,
         Oyl.Packages.TracyClient,
