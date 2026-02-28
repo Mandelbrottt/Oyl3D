@@ -1,9 +1,6 @@
 local Config = require "Config"
 local Utils = require "Utils"
 
-Oyl.Engine = {}
-local Engine = Oyl.Engine
-
 ---@alias Engine.Project.Dependency (string | { Name: string })
 
 ---@class Engine.Project
@@ -17,11 +14,14 @@ local Engine = Oyl.Engine
 ---@field Dependencies? Engine.Project.Dependency[]
 ---@field Properties? function
 
+Oyl.Engine = {}
+local Engine = Oyl.Engine
+
 ---@type { [string]: Engine.Project }
-Engine.Projects = {}
+Oyl.Projects = {}
 
 ---@type table<string, boolean>
-Engine.DependenciesSet = {}
+Oyl.Engine.DependenciesSet = {}
 
 function Engine.GenerateProjects()
     -- Recurse through the source directory and include all premake scripts
@@ -31,7 +31,7 @@ function Engine.GenerateProjects()
     end
 
     -- Iterate all projects, and generate their dependencies
-    for name, proj in pairs(Engine.Projects) do
+    for name, proj in pairs(Oyl.Projects) do
         project(proj.ProjectName)
         if (proj.Dependencies) then
             for _, dependency in ipairs(proj.Dependencies) do
@@ -138,7 +138,7 @@ function Engine.EngineProjectDefinition(proj)
         filter {}
     group ""
 
-    Engine.Projects[proj.Name] = proj
+    return proj
 end
 
 ---@param dependency Engine.Project.Dependency
@@ -148,10 +148,10 @@ function Engine.AddDependencyToProject(dependency)
     dependency = dependency.Name or dependency
 
     ---@type Engine.Project
-    local assembly = Utils.CaseInsensitiveFind(Engine.Projects, dependency)
-    if assembly then
-        links { assembly.ProjectName }
-        externalincludedirs { path.join(Config.SourceDir, assembly.Dir) }
+    local proj = Utils.CaseInsensitiveFind(Oyl.Projects, dependency)
+    if proj then
+        links { proj.ProjectName }
+        externalincludedirs { path.join(Config.SourceDir, proj.Dir) }
         return
     end
     
@@ -192,7 +192,6 @@ function Engine.ApplyCommonCppSettings()
     filename("%{prj.name}_" .. _ACTION)
     language "C++"
     cppdialect "C++17"
-    toolset "Clang"
     staticruntime "Off"
     floatingpoint "Fast"
     rtti "On"
