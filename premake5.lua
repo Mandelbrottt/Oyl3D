@@ -12,6 +12,10 @@ local Library = require "Library"
 require "Actions/Clean"
 require "Overrides"
 
+if not _OPTIONS["cc"] then
+    premake.action.current().toolset = premake.CLANG
+end
+
 Package.SetupPackages()
 Package.UpdatePackageCache()
 
