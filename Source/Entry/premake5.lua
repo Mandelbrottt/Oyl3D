@@ -7,7 +7,7 @@ Engine.EngineProjectDefinition {
     Dependencies = {
         "Core",
         "Editor",
-        "SpdLog",
-        "TracyClient",
+        Oyl.Packages.SpdLog,
+        Oyl.Packages.TracyClient,
     },
 }

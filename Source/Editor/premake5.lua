@@ -7,10 +7,9 @@ Engine.EngineProjectDefinition {
     Kind = premake.SHAREDLIB,
     Dependencies = {
         "Core",
-        "ImGui",
-        "SpdLog",
-        "YamlCpp",
-        "TracyClient",
+        Oyl.Packages.ImGui,
+        Oyl.Packages.SpdLog,
+        Oyl.Packages.TracyClient,
     },
     Properties = function()
         pchheader "pch.h"

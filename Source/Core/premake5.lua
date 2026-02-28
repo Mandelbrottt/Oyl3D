@@ -5,12 +5,9 @@ Engine.EngineProjectDefinition {
     Language = premake.CPP,
     Kind = premake.SHAREDLIB,
     Dependencies = {
-        "SpdLog",
-        "GLFW",
-        "Vulkan",
-		"NlohmannJson",
-		"YamlCpp",
-        "TracyClient",
+        Oyl.Packages.SpdLog,
+        Oyl.Packages.TracyClient,
+        Oyl.Libraries.Vulkan,
     },
     Properties = function()
         pchheader "pch.h"
