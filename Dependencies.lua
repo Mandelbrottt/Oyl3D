@@ -191,14 +191,13 @@ Oyl.Packages = {
         GenerateProject = false,
         Archive = {
             Url = (function()
-                if (os.get() == premake.WINDOWS) then
+                if (os.host() == premake.WINDOWS) then
                     return "https://dl.dropbox.com/scl/fi/uzjp96yoz4i764awjrdlr/llvm.txz?rlkey=axeanv0gvz8tmsmx3kf23ywbw"
                 end
-                premake.error("Current OS not supported")
                 return ""
             end)()
         },
-        ProjectDir = path.join(Config.Tools, "Llvm")
+        ProjectDir = Config.ToolsDir .. "Llvm/"
     },
     -- TracyServer = {
     --     Git = {

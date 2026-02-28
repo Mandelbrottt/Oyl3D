@@ -32,7 +32,7 @@ function Oyl.Package.GenerateProjects()
         local cwd = os.getcwd()
         os.chdir(package.ProjectDir)
 
-        if (package.GenerateProject ~= false) then
+        if package.GenerateProject ~= false then
             project(package.Name)
                 Engine.ApplyCommonCppSettings()
                 kind(package.Kind)
@@ -141,33 +141,40 @@ end
 ---@param packages Package[]
 function Oyl.Package.FetchPackages(packages)
     for name, package in pairs(packages) do
-        local numFiles = os.matchfiles(package.ProjectDir .. "/*")
+        local numFiles = os.match(package.ProjectDir .. "/*")
         if #numFiles == 0 then
+            -- For now, trust the user won't add multiple types of packages
             if package.Git then
                 Package.GitClone(package)
+            end
+            if package.Archive then
+                Package.FetchArchive(package)
             end
         end
     end
 end
 
+local executeOrPrint = function(command)
+    if (not _OPTIONS["dryrun"]) then
+        term.pushColor(term.infoColor)
+        io.write(("\t%s "):format(command))
+        term.popColor()
+        printf("in %s", os.getcwd())
+        os.execute(command)
+    else
+        term.pushColor(term.infoColor)
+        io.write(("\t%s "):format(command))
+        term.popColor()
+        printf("in %s", os.getcwd())
+    end
+end
+
 ---@param package Package
 function Package.GitClone(package)
-    local executeOrPrint = function(command)
-        if (not _OPTIONS["dryrun"]) then
-            term.pushColor(term.infoColor)
-            io.write(("\t%s "):format(command))
-            term.popColor()
-            printf("in %s", os.getcwd())
-            os.execute(command)
-        else
-            term.pushColor(term.infoColor)
-            io.write(("\t%s "):format(command))
-            term.popColor()
-            printf("in %s", os.getcwd())
-        end
-    end
+    
     local SUPPRESS_COMMAND_OUTPUT = (os.host() == "windows" and "> nul 2>&1" or "> /dev/null 2>&1")
     local Git = package.Git
+    assert(Git ~= nil)
 
     printf("Cloning Git package \"%s\" from \"%s\"...", package.Name, Git.Url)
 
@@ -210,6 +217,37 @@ function Package.GitClone(package)
 
     term.pushColor(term.green)
     print(string.format("\tPackage \"%s\" cloned succesfully!", package.Name))
+    term.popColor()
+end
+
+---@param package Package
+function Package.FetchArchive(package)
+    local Archive = package.Archive
+    assert(Archive ~= nil)
+
+    local baseUrl = string.explode(Archive.Url, "?")[1]
+    local archiveFile = path.getname(baseUrl)
+
+    if Archive.Url and Archive.Url ~= "" then
+        printf("Fetching Archive \"%s\" from %s", package.Name, Archive.Url)
+        local result_str, response_code = http.download(Archive.Url, archiveFile)
+        if result_str ~= "OK" then error(string.format("[%s] %s", response_code, result_str)) end
+    else
+        error(("Empty Archive URL Provided for package \"%s\"!"):format(package.Name))
+    end
+
+    printf("Extracting archive file \"%s\" into %s", archiveFile, package.ProjectDir)
+    local tarCommand = ("tar -xC '%s' -f '%s'"):format(package.ProjectDir, archiveFile)
+    os.mkdir(package.ProjectDir)
+    if os.host() == premake.WINDOWS then
+        executeOrPrint("pwsh -Command " .. tarCommand)
+    else
+        executeOrPrint(tarCommand)
+    end
+    os.remove(archiveFile)
+
+    term.pushColor(term.green)
+    print(string.format("\tPackage \"%s\" fetched succesfully!", package.Name))
     term.popColor()
 end
 
