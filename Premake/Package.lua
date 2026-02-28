@@ -120,29 +120,22 @@ function Package.UpdatePackageCache()
     end
 end
 
----@param package? string
-function Package.CleanPackageCache(package)
-    local matchString = "*"
-    if (package) then
-        if (string.find(package, [[(\.\.)|\/|\\]], 1, true)) then
-            print(string.format("Failed to clean package with invalid name \"\"", package));
-            return
-        end
-        matchString = package
-    end
-
-    local packagesToRemove = os.matchdirs(Config.PackagesDir .. matchString)
-    if #packagesToRemove ~= 0 then
-        for _, dir in pairs(packagesToRemove) do
+---@param packageToClean? string
+function Package.CleanPackageCache(packageToClean)
+    local numPackagesCleaned = 0
+    for name, package in pairs(Oyl.Packages) do
+        if os.isdir(package.ProjectDir) and packageToClean and packageToClean:lower() == name:lower() then
             if (_OPTIONS["dryrun"]) then
-                printf("[DRYRUN]\tWould Clean %s...", dir)
+                printf("[DRYRUN]\tWould Clean %s...", package.ProjectDir)
             else
-                printf("\tCleaning %s...", dir)
-                os.execute(os.translateCommands("{RMDIR} " .. dir))
+                printf("\tCleaning %s...", package.ProjectDir)
+                os.execute(os.translateCommands("{RMDIR} " .. package.ProjectDir))
             end
+            numPackagesCleaned = numPackagesCleaned + 1
         end
-    else
-        print("No Packages in Cache to remove.")
+    end
+    if numPackagesCleaned == 0 then
+        print("No Packages in Cache to remove")
     end
 end
 
@@ -248,7 +241,7 @@ function Package.FetchArchive(package)
         error(("Empty Archive URL Provided for package \"%s\"!"):format(package.Name))
     end
 
-    printf("Extracting archive file \"%s\" into %s", archiveFile, package.ProjectDir)
+    printf("\tExtracting archive file \"%s\" into %s", archiveFile, package.ProjectDir)
     local tarCommand = ("tar -x -f '%s'"):format(archiveFile)
     if os.host() == premake.WINDOWS then
         executeOrPrint("pwsh -Command " .. tarCommand)

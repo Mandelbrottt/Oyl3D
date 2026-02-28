@@ -29,17 +29,22 @@ newaction {
             printf("Removing %s...", path.getrelative(os.getcwd(), v))
             os.remove(v)
         end
+
+        if _OPTIONS['packages'] and string.contains(prj.location:lower(), Config.PackagesDir:lower()) then
+            print(("Removing Package '%s'..."):format(prj.name))
+            os.rmdir(prj.location)
+        end
     end,
     execute = function()
         if os.isdir("Build") then
             print("Removing Build Directory...")
             os.rmdir("Build")
         end
-        
+
         if _OPTIONS['packages'] then
             local packagesToRemove = os.matchdirs(Config.PackagesDir .. "*")
             for _, package in pairs(packagesToRemove) do
-                print("Removing Package '" .. path.getbasename(package) .. "'...")
+                print(("Removing Package '%s'..."):format(path.getbasename(package)))
                 os.rmdir(package)
             end
         end

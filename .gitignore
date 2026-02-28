@@ -2,7 +2,7 @@
 .vs/
 
 /[Bb]uild/
-[Ss]ource/[Pp]ackages/
+[Pp]ackages/
 
 *.generated.*
 

@@ -23,7 +23,7 @@ Config.Utils.OutputDir = "%{cfg.buildcfg}_%{cfg.system}-%{cfg.architecture}/"
 Config.ProjectLocation = "./"
 
 Config.SourceDir = "Source/"
-Config.PackagesDir = Config.SourceDir .. "Packages/"
+Config.PackagesDir = "Packages/"
 
 Config.ToolsDir = "Tools/"
 

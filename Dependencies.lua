@@ -197,7 +197,6 @@ Oyl.Packages = {
                 return ""
             end)()
         },
-        ProjectDir = Config.ToolsDir .. "Llvm/"
     },
     -- TracyServer = {
     --     Git = {
