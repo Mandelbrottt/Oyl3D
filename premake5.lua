@@ -2,6 +2,8 @@ premake.path = ("%s;%s/Premake"):format(premake.path, _MAIN_SCRIPT_DIR)
 
 local Config = require "Config"
 
+require "Dependencies"
+
 local Check = require "CheckProject"
 local Engine = require "Engine"
 local Package = require "Package"

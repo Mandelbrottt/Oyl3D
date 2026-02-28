@@ -57,6 +57,8 @@ function Package.SetupVarsInPackage(name, package)
 end
 
 function Oyl.Package.GenerateProjects()
+    -- Not guaranteed to iterate lua tables in order, sort a proxy array and index into the array
+    -- with that
     local orderedKeys = {}
     for k, v in pairs(Oyl.Packages) do
         table.insert(orderedKeys, k)
@@ -128,7 +130,8 @@ end
 function Package.CleanPackageCache(packageToClean)
     local numPackagesCleaned = 0
     for name, package in pairs(Oyl.Packages) do
-        if os.isdir(package.ProjectDir) and packageToClean and packageToClean:lower() == name:lower() then
+        -- If directory exists. If packageToClean is specified, also check if the package name matches
+        if os.isdir(package.ProjectDir) and (packageToClean == nil or packageToClean:lower() == name:lower()) then
             if (_OPTIONS["dryrun"]) then
                 printf("[DRYRUN]\tWould Clean %s...", package.ProjectDir)
             else

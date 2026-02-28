@@ -34,10 +34,11 @@ function Engine.GenerateProjects()
     for name, proj in pairs(Engine.Projects) do
         project(proj.ProjectName)
         if (proj.Dependencies) then
-            for _, dep in ipairs(proj.Dependencies) do
-                if dep ~= name then
-                    Engine.AddDependencyToProject(dep)
-                    Engine.DependenciesSet[dep] = true
+            for _, dependency in ipairs(proj.Dependencies) do
+                dependency = dependency.Name or dependency
+                if dependency ~= name then
+                    Engine.AddDependencyToProject(dependency)
+                    Engine.DependenciesSet[dependency] = true
                 else
                     premake.error(string.format("Assembly \"%s\" cannot depend on itself!", proj.Name))
                 end

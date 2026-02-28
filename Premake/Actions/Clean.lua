@@ -21,18 +21,18 @@ newaction {
         end
     end,
     onProject = function(prj)
-        local filesToRemove = table.join(
-            os.matchfiles(("%s/%s*.vcxproj*"):format(prj.location, prj.name)),
-            os.matchfiles(("%s/%s*.csproj*"):format(prj.location, prj.name))
-        )
-        for i, v in ipairs(filesToRemove) do
-            printf("Removing %s...", path.getrelative(os.getcwd(), v))
-            os.remove(v)
-        end
-
         if _OPTIONS['packages'] and string.contains(prj.location:lower(), Config.PackagesDir:lower()) then
             print(("Removing Package '%s'..."):format(prj.name))
             os.rmdir(prj.location)
+        else
+            local filesToRemove = table.join(
+                os.matchfiles(("%s/%s*.vcxproj*"):format(prj.location, prj.name)),
+                os.matchfiles(("%s/%s*.csproj*"):format(prj.location, prj.name))
+            )
+            for i, v in ipairs(filesToRemove) do
+                printf("Removing %s...", path.getrelative(os.getcwd(), v))
+                os.remove(v)
+            end
         end
     end,
     execute = function()
@@ -44,11 +44,12 @@ newaction {
         if _OPTIONS['packages'] then
             local packagesToRemove = os.matchdirs(Config.PackagesDir .. "*")
             for _, package in pairs(packagesToRemove) do
-                print(("Removing Package '%s'..."):format(path.getbasename(package)))
+                print(("Removing Orphan Package '%s'..."):format(path.getbasename(package)))
                 os.rmdir(package)
             end
         end
     end,
+
 }
 
 return m
