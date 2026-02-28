@@ -18,6 +18,9 @@ local Engine = Oyl.Engine
 ---@type Engine.Project[]
 Engine.Projects = {}
 
+---@type table<string, boolean>
+Engine.DependenciesSet = {}
+
 function Engine.GenerateProjects()
     -- Recurse through the source directory and include all premake scripts
     local scripts = os.matchfiles(path.join(Config.SourceDir, "**premake5.lua"))
@@ -32,6 +35,7 @@ function Engine.GenerateProjects()
             for _, dep in ipairs(proj.Dependencies) do
                 if dep ~= name then
                     Engine.AddDependencyToProject(dep)
+                    Engine.DependenciesSet[dep] = true
                 else
                     premake.error(string.format("Assembly \"%s\" cannot depend on itself!", proj.Name))
                 end

@@ -40,7 +40,8 @@ function Oyl.Package.GenerateProjects()
         local cwd = os.getcwd()
         os.chdir(package.ProjectDir)
 
-        if package.GenerateProject then
+        -- Only generate package projects if an engine project depends on it
+        if package.GenerateProject and Engine.DependenciesSet[package.Name] then
             project(package.Name)
                 Engine.ApplyCommonCppSettings()
                 kind(package.Kind)
