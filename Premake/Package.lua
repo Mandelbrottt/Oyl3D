@@ -40,7 +40,7 @@ function Oyl.Package.GenerateProjects()
         local cwd = os.getcwd()
         os.chdir(package.ProjectDir)
 
-        if package.GenerateProject ~= false then
+        if package.GenerateProject then
             project(package.Name)
                 Engine.ApplyCommonCppSettings()
                 kind(package.Kind)
@@ -67,7 +67,8 @@ end
 ---@param package Package
 function Package.SetupVarsInPackage(name, package)
     -- Default to Utility if no kind provided
-    package.Kind = package.Kind or "Utility"
+    package.Kind = package.Kind or premake.UTILITY
+    package.GenerateProject = package.GenerateProject or true
 
     package.Name = name
     if (not package.ProjectDir) then

@@ -145,8 +145,9 @@ function Engine.AddDependencyToProject(dep)
         return
     end
 
+    ---@type Package
     local package = Utils.CaseInsensitiveFind(Oyl.Packages, dep)
-    if package then
+    if package and package.GenerateProject then
         links { package.Name }
         externalincludedirs(package.IncludeDirs)
 
