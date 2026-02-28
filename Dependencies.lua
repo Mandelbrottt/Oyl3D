@@ -1,8 +1,8 @@
 local Config = require "Config"
 local Engine = require "Engine"
 
----@type { [string]: Package }
-Oyl.Packages = {}
+require "Package"
+require "Library"
 
 Oyl.Packages.SpdLog = {
     Git = {
@@ -50,6 +50,7 @@ Oyl.Packages.SpdLog = {
         end
     end
 }
+
 Oyl.Packages.TracyClient = {
         Git = {
             Url = "https://github.com/wolfpld/tracy.git",
@@ -105,6 +106,7 @@ Oyl.Packages.TracyClient = {
                 removelinks { package.Name }
         end
 }
+
 Oyl.Packages.NlohmannJson = {
         Git = {
             Url = "https://github.com/nlohmann/json.git",
@@ -113,6 +115,7 @@ Oyl.Packages.NlohmannJson = {
         Kind = "Utility",
         Files = { "/include/" },
 }
+
 Oyl.Packages.YamlCpp = {
     Git = {
         Url = "https://github.com/jbeder/yaml-cpp.git",
@@ -130,6 +133,7 @@ Oyl.Packages.YamlCpp = {
             defines { "yaml_cpp_EXPORTS" }
     end
 }
+
 Oyl.Packages.GLFW = {
         Git = {
             Url = "https://github.com/glfw/glfw.git",
@@ -174,6 +178,7 @@ Oyl.Packages.GLFW = {
             end
         end
 }
+
 Oyl.Packages.ImGui = {
     Git = {
         Url = "https://github.com/ocornut/imgui.git",
@@ -188,6 +193,7 @@ Oyl.Packages.ImGui = {
         removefiles { "examples/**" }
     end
 }
+
 Oyl.Packages.Llvm = {
     GenerateProject = false,
     Archive = {
@@ -200,16 +206,16 @@ Oyl.Packages.Llvm = {
     },
 }
 
-
 local VULKAN_SDK = os.getenv("VULKAN_SDK")
-if not VULKAN_SDK then
-    premake.error("Missing Vulkan SDK! Please install the Vulkan SDK!")
-end
 
----@type { [string]: Library }
-Oyl.Libraries = {}
 Oyl.Libraries.Vulkan = {
     IncludeDirs = { VULKAN_SDK .. "/Include" },
     LibraryDirs = { VULKAN_SDK .. "/Lib" },
-    Libraries = { "vulkan-1" }
+    Libraries = { "vulkan-1" },
+    DependentProperties = function(library)
+        -- Only error when trying to consume this library
+        if not VULKAN_SDK then
+            error("Missing Vulkan SDK! Please install the Vulkan SDK!")
+        end
+    end
 }

@@ -1,15 +1,10 @@
 local Config = require "Config"
 local Engine = require "Engine"
 
-require "Dependencies"
-
-Oyl.Package = {}
-local Package = Oyl.Package
-
----@class (exact) ArchiveDesc
+---@class (exact) Package.Archive
 ---@field Url string
 
----@class (exact) GitDesc
+---@class (exact) Package.Git
 ---@field Url string
 ---@field Revision? string
 ---@field Tag? string
@@ -17,14 +12,49 @@ local Package = Oyl.Package
 ---@class Package
 ---@field GenerateProject? boolean
 ---@field Name? string
----@field Archive? ArchiveDesc
----@field Git? GitDesc
+---@field Archive? Package.Archive
+---@field Git? Package.Git
 ---@field Kind? string
----@field Files? [string]
+---@field Files? string[]
 ---@field ProjectDir? string Path to the project relative to workspace
----@field IncludeDirs? [string]
+---@field IncludeDirs? string[]
 ---@field CustomProperties? fun()
 ---@field DependantProperties? fun(package: Package)
+
+---@type { [string]: Package }
+Oyl.Packages = {}
+
+Oyl.Package = {}
+local Package = Oyl.Package
+
+function Oyl.Package.SetupPackages()
+    for name, package in pairs(Oyl.Packages) do
+        Package.SetupVarsInPackage(name, package)
+    end
+end
+
+---@param name string
+---@param package Package
+function Package.SetupVarsInPackage(name, package)
+    -- Default to Utility if no kind provided
+    package.Kind = package.Kind or premake.UTILITY
+    package.GenerateProject = package.GenerateProject or true
+
+    package.Name = name
+    if (not package.ProjectDir) then
+        package.ProjectDir = Config.PackagesDir .. name .. "/"
+    end
+
+    if package.IncludeDirs ~= nil then
+        for i, includeDir in ipairs(package.IncludeDirs) do
+            includeDir = "%{wks.location}/" .. package.ProjectDir .. includeDir
+            package.IncludeDirs[i] = includeDir
+        end
+    else -- If IncludeDirs isn't manually defined, set it to the include folder of the package
+        local includeDirsString = package.ProjectDir .. "/**include/"
+        package.IncludeDirs = { "%{wks.location}/" .. includeDirsString }
+    end
+end
 
 function Oyl.Package.GenerateProjects()
     local orderedKeys = {}
@@ -64,29 +94,6 @@ function Oyl.Package.GenerateProjects()
     project "*"
 end
 
----@param name string
----@param package Package
-function Package.SetupVarsInPackage(name, package)
-    -- Default to Utility if no kind provided
-    package.Kind = package.Kind or premake.UTILITY
-    package.GenerateProject = package.GenerateProject or true
-
-    package.Name = name
-    if (not package.ProjectDir) then
-        package.ProjectDir = Config.PackagesDir .. name .. "/"
-    end
-
-    if package.IncludeDirs ~= nil then
-        for i, includeDir in ipairs(package.IncludeDirs) do
-            includeDir = "%{wks.location}/" .. package.ProjectDir .. includeDir
-            package.IncludeDirs[i] = includeDir
-        end
-    else -- If IncludeDirs isn't manually defined, set it to the include folder of the package
-        local includeDirsString = package.ProjectDir .. "/**include/"
-        package.IncludeDirs = { "%{wks.location}/" .. includeDirsString }
-    end
-end
-
 newoption {
     trigger = "init-packages",
     category = "packages",
@@ -106,10 +113,6 @@ newoption {
 }
 
 function Package.UpdatePackageCache()
-    for name, package in pairs(Oyl.Packages) do
-        Package.SetupVarsInPackage(name, package)
-    end
-    
     local reinit = _OPTIONS["reinit-packages"] and not _OPTIONS["premake-check"]
     if (reinit) then
         Package.CleanPackageCache()

@@ -4,6 +4,8 @@ local Utils = require "Utils"
 Oyl.Engine = {}
 local Engine = Oyl.Engine
 
+---@alias Engine.Project.Dependency (string | { Name: string })
+
 ---@class Engine.Project
 ---@field Language string,
 ---@field Kind string,
@@ -12,10 +14,10 @@ local Engine = Oyl.Engine
 ---@field ProjectName? string
 ---@field Group? string
 ---@field Pch? string
----@field Dependencies? table[string]
+---@field Dependencies? Engine.Project.Dependency[]
 ---@field Properties? function
 
----@type Engine.Project[]
+---@type { [string]: Engine.Project }
 Engine.Projects = {}
 
 ---@type table<string, boolean>
@@ -138,31 +140,35 @@ function Engine.EngineProjectDefinition(proj)
     Engine.Projects[proj.Name] = proj
 end
 
----@param dep string
-function Engine.AddDependencyToProject(dep)
+---@param dependency Engine.Project.Dependency
+function Engine.AddDependencyToProject(dependency)
     filter {}
 
-    local assembly = Utils.CaseInsensitiveFind(Engine.Projects, dep)
+    dependency = dependency.Name or dependency
+
+    ---@type Engine.Project
+    local assembly = Utils.CaseInsensitiveFind(Engine.Projects, dependency)
     if assembly then
         links { assembly.ProjectName }
         externalincludedirs { path.join(Config.SourceDir, assembly.Dir) }
         return
     end
-
+    
     ---@type Package
-    local package = Utils.CaseInsensitiveFind(Oyl.Packages, dep)
+    local package = Utils.CaseInsensitiveFind(Oyl.Packages, dependency)
     if package and package.GenerateProject then
         links { package.Name }
         externalincludedirs(package.IncludeDirs)
-
+        
         if (package.DependantProperties) then
             package:DependantProperties()
             filter {}
         end
         return
     end
-
-    local library = Utils.CaseInsensitiveFind(Oyl.Libraries, dep)
+    
+    ---@type Library
+    local library = Utils.CaseInsensitiveFind(Oyl.Libraries, dependency)
     if library then
         externalincludedirs(library.IncludeDirs)
         libdirs(library.LibraryDirs)

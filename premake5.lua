@@ -5,11 +5,15 @@ local Config = require "Config"
 local Check = require "CheckProject"
 local Engine = require "Engine"
 local Package = require "Package"
+local Library = require "Library"
 
 require "Actions/Clean"
 require "Overrides"
 
+Package.SetupPackages()
 Package.UpdatePackageCache()
+
+Library.SetupLibraries()
 
 workspace(Config.Name) do
     location "./"
