@@ -27,7 +27,15 @@ local Package = Oyl.Package
 ---@field DependantProperties? fun(package: Package)
 
 function Oyl.Package.GenerateProjects()
-    for _, package in pairs(Oyl.Packages) do
+    local orderedKeys = {}
+    for k, v in pairs(Oyl.Packages) do
+        table.insert(orderedKeys, k)
+    end
+    table.sort(orderedKeys)
+    
+    for i = 1, #orderedKeys do
+        local package = Oyl.Packages[orderedKeys[i]]
+       
         os.mkdir(package.ProjectDir)
         local cwd = os.getcwd()
         os.chdir(package.ProjectDir)
