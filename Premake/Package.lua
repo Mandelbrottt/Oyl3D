@@ -49,11 +49,10 @@ function Oyl.Package.GenerateProjects()
                     package.CustomProperties()
                 end
                 filter {}
-
-            os.chdir(cwd)
+            project "*"
         end
+        os.chdir(cwd)
     end
-    project "*"
 end
 
 ---@param name string
@@ -228,6 +227,10 @@ function Package.FetchArchive(package)
     local baseUrl = string.explode(Archive.Url, "?")[1]
     local archiveFile = path.getname(baseUrl)
 
+    os.mkdir(package.ProjectDir)
+    local cwd = os.getcwd()
+    os.chdir(package.ProjectDir)
+    
     if Archive.Url and Archive.Url ~= "" then
         printf("Fetching Archive \"%s\" from %s", package.Name, Archive.Url)
         local result_str, response_code = http.download(Archive.Url, archiveFile)
@@ -237,14 +240,15 @@ function Package.FetchArchive(package)
     end
 
     printf("Extracting archive file \"%s\" into %s", archiveFile, package.ProjectDir)
-    local tarCommand = ("tar -xC '%s' -f '%s'"):format(package.ProjectDir, archiveFile)
-    os.mkdir(package.ProjectDir)
+    local tarCommand = ("tar -x -f '%s'"):format(archiveFile)
     if os.host() == premake.WINDOWS then
         executeOrPrint("pwsh -Command " .. tarCommand)
     else
         executeOrPrint(tarCommand)
     end
     os.remove(archiveFile)
+
+    os.chdir(cwd)
 
     term.pushColor(term.green)
     print(string.format("\tPackage \"%s\" fetched succesfully!", package.Name))

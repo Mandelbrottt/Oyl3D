@@ -37,6 +37,7 @@ function Engine.GenerateProjects()
                 end
             end
         end
+        filter {}
         project "*"
     end
 end
