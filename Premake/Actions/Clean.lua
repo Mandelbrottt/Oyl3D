@@ -16,7 +16,7 @@ newaction {
     onWorkspace = function(wks) -- Keep onWorkspace to display completion time at the end
         local filesToRemove = os.matchfiles(("%s/%s*.sln"):format(wks.location, wks.name))
         for i, v in ipairs(filesToRemove) do
-            printf("Removing %s...", v)
+            printf("Removing %s...", path.getrelative(os.getcwd(), v))
             os.remove(v)
         end
     end,
@@ -26,7 +26,7 @@ newaction {
             os.matchfiles(("%s/%s*.csproj*"):format(prj.location, prj.name))
         )
         for i, v in ipairs(filesToRemove) do
-            printf("Removing %s...", v)
+            printf("Removing %s...", path.getrelative(os.getcwd(), v))
             os.remove(v)
         end
     end,
