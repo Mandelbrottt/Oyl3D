@@ -77,7 +77,9 @@ jobs:
 
       - name: Generate Solutions
         working-directory: ${{ github.workspace }}
-        run: premake5 ${{ env.visual_studio_version }} --cc=${{ env.toolset }} --no-premake-check
+        run: |
+          echo "CLICOLOR_FORCE=1" >> $env:GITHUB_ENV
+          premake5 ${{ env.visual_studio_version }} --cc=${{ env.toolset }} --no-premake-check
 
       - name: Build
         working-directory: ${{ github.workspace }}
