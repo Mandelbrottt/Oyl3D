@@ -4,18 +4,21 @@ local Utils = require "Utils"
 ---@alias Engine.Project.Dependency (string | { Name: string })
 
 ---@class Engine.Project
----@field Language string,
----@field Kind string,
+---@field Language string
+---@field Kind string
 ---@field Dir? string
 ---@field Name? string
 ---@field ProjectName? string
 ---@field Group? string
 ---@field Pch? string
 ---@field Dependencies? Engine.Project.Dependency[]
----@field Properties? function
+---@field Properties? fun()
 
 Oyl.Engine = {}
 local Engine = Oyl.Engine
+
+Engine.Name = "Oyl3D"
+Engine.ShortName = "Oyl"
 
 ---@type { [string]: Engine.Project }
 Oyl.Projects = {}
@@ -64,7 +67,7 @@ function Engine.EngineProjectDefinition(proj)
 
     proj.Dir = projectDir
     proj.Name = projectName
-    proj.ProjectName = string.format("%s.%s", Config.ShortName, projectName)
+    proj.ProjectName = proj.ProjectName or ("%s.%s"):format(Engine.ShortName, projectName)
     proj.Group = proj.Group or Config.EngineDefaultGroup
     proj.Kind = proj.Kind or premake.UTILITY
     proj.Dependencies = proj.Dependencies or {}
@@ -103,7 +106,7 @@ function Engine.EngineProjectDefinition(proj)
         filter {}
 
         defines {
-            string.upper(Config.ShortName) .. "_CURRENT_ASSEMBLY=\"" .. proj.Name .. "\"",
+            string.upper(Engine.ShortName) .. "_CURRENT_ASSEMBLY=\"" .. proj.Name .. "\"",
             Engine.DefineInsideMacro(proj.Name),
 
             -- Warning Silence Defines
@@ -111,19 +114,19 @@ function Engine.EngineProjectDefinition(proj)
         }
 
         filter("configurations:" .. Config.Configurations.Debug)
-            defines { string.upper(Config.ShortName) .. "_DEBUG=1" }
+            defines { string.upper(Engine.ShortName) .. "_DEBUG=1" }
 
         filter("configurations:" .. Config.Configurations.Development)
-            defines { string.upper(Config.ShortName) .. "_DEVELOPMENT=1" }
+            defines { string.upper(Engine.ShortName) .. "_DEVELOPMENT=1" }
 
         filter("configurations:" .. Config.Configurations.Profile)
-            defines { string.upper(Config.ShortName) .. "_PROFILE=1", }
+            defines { string.upper(Engine.ShortName) .. "_PROFILE=1", }
 
         filter("configurations:" .. Config.Configurations.Distribution)
-            defines { string.upper(Config.ShortName) .. "_DISTRIBUTION=1" }
+            defines { string.upper(Engine.ShortName) .. "_DISTRIBUTION=1" }
 
         Engine.FilterEditor()
-            defines { string.upper(Config.ShortName) .. "_EDITOR=1" }
+            defines { string.upper(Engine.ShortName) .. "_EDITOR=1" }
 
         if proj.Kind == premake.SHAREDLIB then
             Engine.FilterStandalone()
@@ -184,7 +187,7 @@ function Engine.DefineInsideMacro(projectName)
     projectName = projectName:gsub("%.", "_")
     projectName = projectName:gsub("%-", "_")
     return string.upper(
-        string.format("_INSIDE_%s_%s=1", Config.ShortName, projectName)
+        string.format("_INSIDE_%s_%s=1", Engine.ShortName, projectName)
     )
 end
 

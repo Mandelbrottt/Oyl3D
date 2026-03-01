@@ -1,13 +1,7 @@
 require "Oyl"
 
 Oyl.Config = {}
-
 local Config = Oyl.Config
-
-Config.Name = "Oyl3D"
-Config.ShortName = "Oyl"
-
-Config.StartProject = Config.ShortName .. ".Entry"
 
 Config.EngineDefaultGroup = "Engine"
 
