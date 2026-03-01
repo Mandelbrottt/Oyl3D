@@ -32,6 +32,7 @@ jobs:
             platform: Editor
     env:
       toolset: msc-v143
+      CLICOLOR_FORCE: 1
     steps: &win64-build-steps
       - uses: actions/checkout@v6
 
@@ -78,7 +79,6 @@ jobs:
       - name: Generate Solutions
         working-directory: ${{ github.workspace }}
         run: |
-          echo "CLICOLOR_FORCE=1" >> $env:GITHUB_ENV
           premake5 ${{ env.visual_studio_version }} --cc=${{ env.toolset }} --no-premake-check
 
       - name: Build
