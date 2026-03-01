@@ -14,7 +14,7 @@ permissions:
 
 env:
   visual_studio_version: vs2022
-  solution_file_path: Oyl3D_vs2022.sln
+  solution_file_path: Source/Oyl3D/Oyl3D_vs2022.sln
   premake_version: "5.0.0-beta8"
   vulkan_sdk_version: 1.4.341.1
 
