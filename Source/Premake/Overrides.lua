@@ -45,19 +45,3 @@ premake.override(premake.vstudio.vc2010, "userProject", function(base)
     p.w('<ShowAllFiles>true</ShowAllFiles>')
     p.pop('</PropertyGroup>')
 end)
-
-if (_OPTIONS["premake-check"]) then
-    local isModified = false
-    premake.override(premake, "generate", function(base, obj, ext, callback)
-        local result = base(obj, ext, callback)
-        isModified = isModified or result
-    end)
-    
-    premake.override(premake.main, "postAction", function(base)
-        base()
-        if (isModified and _ACTION:sub(1, 2) == "vs") then
-            printf("One or more project files were regenerated. Exiting with code 1")
-            os.exit(1)
-        end
-    end)
-end
