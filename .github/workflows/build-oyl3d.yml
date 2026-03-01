@@ -57,7 +57,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: |
-            Source/Packages/**
+            Packages/**
             !**.vcxproj*
           key: engine-source-packages-${{ hashFiles('Dependencies.lua') }}
 
