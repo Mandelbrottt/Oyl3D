@@ -25,7 +25,7 @@ Oyl.Engine.DependenciesSet = {}
 
 function Engine.GenerateProjects()
     -- Recurse through the source directory and include all premake scripts
-    local scripts = os.matchfiles(path.join(Config.SourceDir, "**premake5.lua"))
+    local scripts = os.matchfiles("**premake5.lua")
     for _, script in pairs(scripts) do
         include(script)
     end
@@ -151,7 +151,7 @@ function Engine.AddDependencyToProject(dependency)
     local proj = Utils.CaseInsensitiveFind(Oyl.Projects, dependency)
     if proj then
         links { proj.ProjectName }
-        externalincludedirs { path.join(Config.SourceDir, proj.Dir) }
+        externalincludedirs { proj.Dir }
         return
     end
     
@@ -224,9 +224,8 @@ function Engine.ApplyCommonCppSettings()
 
     filter "toolset:clang"
     do
-        local llvmPackage = Oyl.Packages.Llvm
-        if (llvmPackage) then
-            llvmdir("%{wks.location}/" .. llvmPackage.ProjectDir)
+        if (Oyl.Packages.Llvm) then
+            llvmdir(Oyl.Packages.Llvm.ProjectDir)
             llvmversion "19.1.7"
         end
     end

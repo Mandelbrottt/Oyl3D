@@ -47,12 +47,12 @@ function Package.SetupVarsInPackage(name, package)
 
     if package.IncludeDirs ~= nil then
         for i, includeDir in ipairs(package.IncludeDirs) do
-            includeDir = "%{wks.location}/" .. package.ProjectDir .. includeDir
+            includeDir = package.ProjectDir .. includeDir
             package.IncludeDirs[i] = includeDir
         end
     else -- If IncludeDirs isn't manually defined, set it to the include folder of the package
         local includeDirsString = package.ProjectDir .. "/**include/"
-        package.IncludeDirs = { "%{wks.location}/" .. includeDirsString }
+        package.IncludeDirs = { includeDirsString }
     end
 end
 
