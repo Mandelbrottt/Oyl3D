@@ -29,9 +29,9 @@ function Oyl.CheckProject.GenerateProject(args)
 
 		local premakeCommandArgs = {
 			_ACTION,
-			"--cc=%{cfg.toolset}",
+			"--file=" .. _MAIN_SCRIPT,
 			"--premake-check",
-			"--file=" .. _MAIN_SCRIPT
+			"--cc=%{cfg.toolset}",
 		}
 		
 		local premakeCommand = "premake5"

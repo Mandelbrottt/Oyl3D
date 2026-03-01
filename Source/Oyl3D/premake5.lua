@@ -25,7 +25,9 @@ workspace "Oyl3D"; do
 		Package.GenerateProjects()
 	end
 	
-	Check.GenerateProject()
+	Check.GenerateProject {
+		"--workspace=oyl3d"
+	}
 	
 	project "*"
 	startproject(Oyl.Projects.Entry.Name)

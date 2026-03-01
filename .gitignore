@@ -6,12 +6,19 @@
 
 *.generated.*
 
-# Visual Studio Files
+# Visual Studio
 *.sln
 *.vcxproj
 *.vcxproj.filters
 *.csproj
 *.user
+
+# Ninja
+*.ninja
+
+# Makefiles
+Makefile
+*.make
 
 # Generated Source Files
 *.generated.*
