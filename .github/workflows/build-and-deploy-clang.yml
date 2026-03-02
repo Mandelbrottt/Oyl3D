@@ -49,8 +49,9 @@ jobs:
           cmake
           -S llvm
           -B ${{ env.llvm-build-dir }}
-          -G "MinGW Makefiles"
+          -G Ninja
           -DCMAKE_BUILD_TYPE=Release
+          -DCMAKE_INSTALL_PREFIX="${{ env.llvm-install-dir }}"
           -DLLVM_ENABLE_PROJECTS="clang;lld"
           -DLLVM_TARGETS_TO_BUILD="X86"
           -DLLVM_BUILD_LLVM_DYLIB=ON
@@ -60,11 +61,7 @@ jobs:
 
       - name: CMake Build Clang
         working-directory: ${{ env.llvm-checkout-dir }}
-        run: cmake --build ${{ env.llvm-build-dir }} -j $NUMBER_OF_PROCESSORS
-
-      - name: CMake Install Clang
-        working-directory: ${{ env.llvm-checkout-dir }}
-        run: cmake --install ${{ env.llvm-build-dir }} --prefix ${{ env.llvm-install-dir }}
+        run: cmake --build ${{ env.llvm-build-dir }} --target install -j $NUMBER_OF_PROCESSORS
 
       - name: Post-Process Install Directory
         working-directory: ${{ env.llvm-checkout-dir }}/${{ env.llvm-install-dir }}
@@ -74,7 +71,7 @@ jobs:
           xargs -0 -n 1 ldd |
           grep -i mingw |
           sed -r 's/.+\.dll\s*=>\s*//i' | # Remove leading dll name
-          sed -r 's/\s*\(.*\)//i' | # Remove trailing load address
+          sed -r 's/\s*\(.*\)//i' | # Remove trailing memory address
           sort | uniq | # Filter list to only unique paths
           tr '\n' '\0' |
           xargs -0 -Ix cp x ./bin/ # Copy the files
