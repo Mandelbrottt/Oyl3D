@@ -199,11 +199,14 @@ Oyl.Packages.Llvm = {
     Archive = {
         Url = (function()
             if (os.host() == premake.WINDOWS) then
-                return "https://dl.dropbox.com/scl/fi/uzjp96yoz4i764awjrdlr/llvm.txz?rlkey=axeanv0gvz8tmsmx3kf23ywbw"
+                return "https://dl.dropbox.com/scl/fi/sco8dhrmvveix0lcrps7f/llvm.txz?rlkey=1vafftrqpqd5l8qcc5iud51hk"
             end
             return ""
         end)()
     },
+    -- IncludeDirs = {
+
+    -- }
 }
 
 local VULKAN_SDK = os.getenv("VULKAN_SDK")
