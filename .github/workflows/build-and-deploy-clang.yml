@@ -69,11 +69,6 @@ jobs:
       - name: Post-Process Install Directory
         working-directory: ${{ env.llvm-checkout-dir }}/${{ env.llvm-install-dir }}
         run: |
-          # Remove unnecessary binaries
-          rm bin/bugpoint.exe
-          rm bin/c-index-test.exe
-          rm bin/llvm-exegesis.exe
-
           # Check all bins for mingw deps, and copy them over
           find bin -name '*.exe' -type f -print0 -o -name '*.dll' -type f -print0 |
           xargs -0 -n 1 ldd |
