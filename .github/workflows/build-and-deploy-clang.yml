@@ -1,6 +1,7 @@
 name: Build and Deploy Clang
 
 on:
+  push:
   workflow_dispatch:
     inputs:
       llvm-ref:
@@ -9,9 +10,9 @@ on:
         default: llvmorg-19.1.7
         type: string
 
-concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+# concurrency:
+#   group: ${{ github.workflow }}-${{ github.ref }}
+#   cancel-in-progress: true
 
 permissions:
   contents: read
@@ -22,7 +23,8 @@ defaults:
 
 jobs:
   build-and-deploy:
-    name: Build Clang@${{ inputs.llvm-ref }}
+    # name: Build Clang@${{ inputs.llvm-ref }}
+    name: Build Clang@llvmorg-19.1.7
     runs-on: windows-latest
     env:
       llvm-checkout-dir: ".llvm"
@@ -34,7 +36,8 @@ jobs:
         with:
           repository: llvm/llvm-project
           path: ${{ env.llvm-checkout-dir }}
-          ref: ${{ inputs.llvm-ref }}
+          # ref: ${{ inputs.llvm-ref }}
+          ref: llvmorg-19.1.7
           
       - name: Set up MinGW
         if: ${{ !env.ACT }}
@@ -46,25 +49,19 @@ jobs:
           cmake
           -S llvm
           -B ${{ env.llvm-build-dir }}
-          -G "MinGW Makefiles"
+          -G Ninja
           -DCMAKE_BUILD_TYPE=Release
+          -DCMAKE_INSTALL_PREFIX="${{ env.llvm-install-dir }}"
           -DLLVM_ENABLE_PROJECTS="clang;lld"
           -DLLVM_TARGETS_TO_BUILD="X86"
-          -DLLVM_INSTALL_UTILS=ON
           -DLLVM_BUILD_LLVM_DYLIB=ON
           -DLLVM_LINK_LLVM_DYLIB=ON
           -DLLVM_ENABLE_PLUGINS=ON
-          -DLLVM_ENABLE_ZLIB=OFF
-          -DLLVM_ENABLE_ZSTD=OFF
           -DLLVM_DEFAULT_TARGET_TRIPLE="x86_64-pc-windows-msvc"
 
       - name: CMake Build Clang
         working-directory: ${{ env.llvm-checkout-dir }}
-        run: cmake --build ${{ env.llvm-build-dir }} -j $NUMBER_OF_PROCESSORS
-
-      - name: CMake Install Clang
-        working-directory: ${{ env.llvm-checkout-dir }}
-        run: cmake --install ${{ env.llvm-build-dir }} --prefix ${{ env.llvm-install-dir }}
+        run: cmake --build ${{ env.llvm-build-dir }} --target install -j $NUMBER_OF_PROCESSORS
 
       - name: Post-Process Install Directory
         working-directory: ${{ env.llvm-checkout-dir }}/${{ env.llvm-install-dir }}
@@ -74,18 +71,12 @@ jobs:
           rm bin/c-index-test.exe
           rm bin/llvm-exegesis.exe
 
-          # find all files in lib/ that don't have .dll.a in them, and remove them
-          find lib -name "*.a" -type f |
-          grep -v .dll.a |
-          tr "\n" "\0" |
-          xargs -0 -n 1 rm
-          
           # Check all bins for mingw deps, and copy them over
           find bin -name '*.exe' -type f -print0 -o -name '*.dll' -type f -print0 |
           xargs -0 -n 1 ldd |
           grep -i mingw |
           sed -r 's/.+\.dll\s*=>\s*//i' | # Remove leading dll name
-          sed -r 's/\s*\(.*\)//i' | # Remove trailing load address
+          sed -r 's/\s*\(.*\)//i' | # Remove trailing load mem address
           sort | uniq | # Filter list to only unique paths
           tr '\n' '\0' |
           xargs -0 -Ix cp x ./bin/ # Copy the files
@@ -109,10 +100,3 @@ jobs:
         if: ${{ !env.ACT }}
         run: |
           rclone copyto ${{ env.llvm-archive }} oyl3d:llvm/${{ github.sha }}/${{ env.llvm-archive }}
-
-      # - name: Update Rclone config
-      #   if: ${{ !env.ACT }}
-      #   uses: AnimMouse/setup-rclone/update-config@v1
-      #   with:
-      #     rclone_config_secret_name: RCLONE_CONFIG
-      #     token: ${{ secrets.GH_PAT_RCLONE }}
