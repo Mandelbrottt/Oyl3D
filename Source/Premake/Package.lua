@@ -125,17 +125,17 @@ newoption {
 }
 
 function Package.UpdatePackageCache()
-	local reinit = _OPTIONS["clean-packages"] and not _OPTIONS["premake-check"]
-	if (reinit) then
+	local clean = _OPTIONS["clean-packages"] and not _OPTIONS["premake-check"]
+	if (clean) then
 		local packageToClean = _OPTIONS["clean-packages"]
-		if packageToClean == "all" then
+		if packageToClean == "all" or packageToClean == "" then
 			packageToClean = nil
 		end
 		Package.CleanPackageCache(packageToClean)
 	end
 	
 	local init = _OPTIONS["init-packages"] or (_ACTION ~= nil and string.sub(_ACTION, 1, 2) == "vs")
-	if (init or reinit) then
+	if (init or clean) then
 		Package.FetchPackages(Oyl.Packages)
 	end
 end
