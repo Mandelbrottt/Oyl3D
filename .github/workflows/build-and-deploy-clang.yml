@@ -21,6 +21,9 @@ defaults:
   run:
     shell: bash
 
+env:
+  ACT: ""
+
 jobs:
   build-and-deploy:
     # name: Build Clang@${{ inputs.llvm-ref }}
@@ -29,10 +32,15 @@ jobs:
     env:
       llvm-checkout-dir: ".llvm"
       llvm-build-dir: build
+      llvm-generator: Ninja
+      llvm-build-type: RelWithDebInfo
+      llvm-build-targets: X86
+      llvm-target-triple: x86_64-pc-windows-msvc
       llvm-install-dir: install
       llvm-archive: llvm.txz
-      llvm-target: RelWithDebInfo
     steps:
+      - uses: actions/checkout@v6
+
       - uses: actions/checkout@v6
         with:
           repository: llvm/llvm-project
@@ -50,16 +58,16 @@ jobs:
           cmake
           -S llvm
           -B ${{ env.llvm-build-dir }}
-          -G "MinGW Makefiles"
-          -DCMAKE_BUILD_TYPE=${{ env.llvm-target }}
+          -G "${{ env.llvm-generator }}"
+          -DCMAKE_BUILD_TYPE="${{ env.llvm-build-type }}"
           -DCMAKE_INSTALL_PREFIX="${{ env.llvm-install-dir }}"
           -DLLVM_ENABLE_PROJECTS="clang;lld"
-          -DLLVM_TARGETS_TO_BUILD="X86"
+          -DLLVM_TARGETS_TO_BUILD="${{ env.llvm-build-targets }}"
           -DLLVM_BUILD_LLVM_DYLIB=ON
           -DLLVM_LINK_LLVM_DYLIB=ON
-          -DLLVM_ENABLE_PLUGINS=ON
-          -DLLVM_DEFAULT_TARGET_TRIPLE="x86_64-pc-windows-msvc"
           -DCLANG_LINK_CLANG_DYLIB=ON
+          -DLLVM_ENABLE_PLUGINS=ON
+          -DLLVM_DEFAULT_TARGET_TRIPLE="${{ env.llvm-target-triple }}"
 
       - name: CMake Build Clang
         working-directory: ${{ env.llvm-checkout-dir }}
