@@ -31,6 +31,7 @@ jobs:
       llvm-build-dir: build
       llvm-install-dir: install
       llvm-archive: llvm.txz
+      llvm-target: RelWithDebInfo
     steps:
       - uses: actions/checkout@v6
         with:
@@ -49,8 +50,8 @@ jobs:
           cmake
           -S llvm
           -B ${{ env.llvm-build-dir }}
-          -G Ninja
-          -DCMAKE_BUILD_TYPE=RelWithDebInfo
+          -G "MinGW Makefiles"
+          -DCMAKE_BUILD_TYPE=${{ env.llvm-target }}
           -DCMAKE_INSTALL_PREFIX="${{ env.llvm-install-dir }}"
           -DLLVM_ENABLE_PROJECTS="clang;lld"
           -DLLVM_TARGETS_TO_BUILD="X86"
