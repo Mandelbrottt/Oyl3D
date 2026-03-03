@@ -5,7 +5,7 @@ local Check = require "CheckProject"
 
 workspace "Oyl3D"; do
 	location "./"
-	filename("Oyl3D_" .. _ACTION)
+	filename("%{wks.name}_" .. _ACTION)
 
 	configurations {
 		Config.Configurations.Debug,

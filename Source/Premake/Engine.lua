@@ -225,8 +225,7 @@ function Engine.ApplyCommonCppSettings()
         }
     end
 
-    filter "toolset:clang"
-    do
+    filter "toolset:clang"; do
         if (Oyl.Packages.Llvm) then
             llvmdir(Oyl.Packages.Llvm.ProjectDir)
             llvmversion "19.1.7"
