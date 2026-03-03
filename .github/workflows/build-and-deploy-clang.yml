@@ -63,10 +63,9 @@ jobs:
           -DCMAKE_INSTALL_PREFIX="${{ env.llvm-install-dir }}"
           -DLLVM_ENABLE_PROJECTS="clang;lld"
           -DLLVM_TARGETS_TO_BUILD="${{ env.llvm-build-targets }}"
-          -DLLVM_BUILD_LLVM_DYLIB=ON
-          -DLLVM_LINK_LLVM_DYLIB=ON
-          -DCLANG_LINK_CLANG_DYLIB=ON
+          -DLLVM_EXPORT_SYMBOLS_FOR_PLUGINS=ON
           -DLLVM_ENABLE_PLUGINS=ON
+          -DCLANG_LINK_CLANG_DYLIB=ON
           -DLLVM_DEFAULT_TARGET_TRIPLE="${{ env.llvm-target-triple }}"
 
       - name: CMake Build Clang
