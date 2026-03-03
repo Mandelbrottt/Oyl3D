@@ -3,6 +3,9 @@
 cmake_minimum_required(VERSION 3.20.0)
 project(Spyll)
 
+set(LLVM_LINK_LLVM_DYLIB ON CACHE BOOL "")
+set(CLANG_LINK_CLANG_DYLIB ON CACHE BOOL "")
+
 set(LLVM_DIR "../../Packages/Llvm" CACHE FILEPATH "")
 
 set(LLVM_SEARCH_PATHS
@@ -56,8 +59,6 @@ if(WIN32 OR CYGWIN)
     Support
   )
   clang_target_link_libraries(PrintFunctionNames PRIVATE
-    clangAST
-    clangBasic
-    clangFrontend
+    clang-cpp
   )
 endif()
