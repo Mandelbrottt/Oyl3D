@@ -17,7 +17,7 @@ local Engine = require "Engine"
 ---@field Kind? string
 ---@field Files? string[]
 ---@field ProjectDir? string Path to the project relative to workspace
----@field IncludeDirs? string[]
+---@field IncludeDirs? string[] Paths to include, relative to project
 ---@field CustomProperties? fun()
 ---@field DependantProperties? fun(package: Package)
 
@@ -104,9 +104,18 @@ newoption {
 }
 
 newoption {
-	trigger = "reinit-packages",
+	trigger = "clean-packages",
 	category = "packages",
-	description = "Clear and re-fetch all packages",
+	description = "Clear and re-fetch selected packages",
+	allowed = (function()
+		local result = { { "all", "Clean all packages" }, { "", "" } }
+
+		for _, v in ipairs(os.matchdirs(path.join(Config.PackagesDir, "*"))) do
+			table.insert(result, { path.getbasename(v):lower(), "" })
+		end
+
+		return result
+	end)()
 }
 
 newoption {
@@ -116,9 +125,13 @@ newoption {
 }
 
 function Package.UpdatePackageCache()
-	local reinit = _OPTIONS["reinit-packages"] and not _OPTIONS["premake-check"]
+	local reinit = _OPTIONS["clean-packages"] and not _OPTIONS["premake-check"]
 	if (reinit) then
-		Package.CleanPackageCache()
+		local packageToClean = _OPTIONS["clean-packages"]
+		if packageToClean == "all" then
+			packageToClean = nil
+		end
+		Package.CleanPackageCache(packageToClean)
 	end
 	
 	local init = _OPTIONS["init-packages"] or (_ACTION ~= nil and string.sub(_ACTION, 1, 2) == "vs")

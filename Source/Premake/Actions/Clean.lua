@@ -9,7 +9,6 @@ newoption {
 	category    = "clean"
 }
 
-
 newaction {
 	trigger = "clean",
 	description = "Deletes the build directory and all project files",
@@ -49,14 +48,6 @@ newaction {
 		if os.isdir("Build") then
 			print("Removing Build Directory...")
 			os.rmdir("Build")
-		end
-
-		if _OPTIONS['packages'] then
-			local packagesToRemove = os.matchdirs(Config.PackagesDir .. "*")
-			for _, package in pairs(packagesToRemove) do
-				print(("Removing Package '%s'..."):format(path.getbasename(package)))
-				os.rmdir(package)
-			end
 		end
 	end,
 
