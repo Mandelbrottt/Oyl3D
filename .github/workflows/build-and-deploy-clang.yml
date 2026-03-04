@@ -32,8 +32,8 @@ jobs:
     env:
       llvm-checkout-dir: ".llvm"
       llvm-build-dir: build
-      llvm-generator: Ninja
-      llvm-build-type: RelWithDebInfo
+      llvm-generator: MinGW Makefiles
+      llvm-build-type: Release
       llvm-build-targets: X86
       llvm-target-triple: x86_64-pc-windows-msvc
       llvm-install-dir: install
@@ -55,7 +55,7 @@ jobs:
         run: >
           cmake
           -S llvm
-          -B ${{ env.llvm-build-dir }}
+          -B "${{ env.llvm-build-dir }}"
           -G "${{ env.llvm-generator }}"
           -DCMAKE_BUILD_TYPE="${{ env.llvm-build-type }}"
           -DCMAKE_INSTALL_PREFIX="${{ env.llvm-install-dir }}"
