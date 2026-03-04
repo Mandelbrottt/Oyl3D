@@ -199,7 +199,7 @@ Oyl.Packages.Llvm = {
     Archive = {
         Url = (function()
             if (os.host() == premake.WINDOWS) then
-                return "https://dl.dropbox.com/scl/fi/om5qp3ef9rliwcdsdpen2/llvm.txz?rlkey=pothutm8wqi91boi6xjf52p6l"
+                return "https://dl.dropbox.com/scl/fi/h9njf5rr61g6a6v2ut5es/llvm.txz?rlkey=c0uowuipbnduwnwtn7kxyl816"
             end
             return ""
         end)()
