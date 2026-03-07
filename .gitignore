@@ -1,10 +1,13 @@
+# Meta
 .vscode/
 .vs/
 
+# Output Directories
 /[Bb]uild/
-[Pp]ackages/
+[Oo]ut/
 
-*.generated.*
+# Packages
+[Pp]ackages/
 
 # Visual Studio
 *.sln

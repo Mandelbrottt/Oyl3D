@@ -1,0 +1,104 @@
+﻿{
+  "version": 3,
+  "cmakeMinimumRequired": {
+    "major": 3,
+    "minor": 20,
+    "patch": 0
+  },
+  "configurePresets": [
+    {
+      "name": "release",
+      "hidden": true,
+      "binaryDir": "${sourceDir}/out/build/${presetName}",
+      "installDir": "${sourceDir}/out/install/${presetName}",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release"
+      }
+    },
+    {
+      "name": "relwithdebinfo",
+      "hidden": true,
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "RelWithDebInfo"
+      }
+    },
+    {
+      "name": "debug",
+      "hidden": true,
+      "inherits": "release",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug"
+      }
+    },
+    {
+      "name": "x64",
+      "hidden": true,
+      "architecture": {
+        "value": "x64",
+        "strategy": "external"
+      }
+    },
+    {
+      "name": "x86",
+      "hidden": true,
+      "architecture": {
+        "value": "x86",
+        "strategy": "external"
+      }
+    },
+    {
+      "name": "windows-only",
+      "hidden": true,
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Windows"
+      }
+    },
+    {
+      "name": "mingw",
+      "hidden": true,
+      "generator": "Ninja",
+      "inherits": [
+        "windows-only",
+        "x64"
+      ],
+      "cacheVariables": {
+        "CMAKE_C_COMPILER": "$env{MINGW_PREFIX}/bin/gcc.exe",
+        "CMAKE_CXX_COMPILER": "$env{MINGW_PREFIX}/bin/g++.exe"
+      },
+      "environment": {
+        "MINGW_PREFIX": "C:/msys64/mingw64",
+        "MINGW_FLAVOR": "x86_64-w64-mingw32",
+        "GCC_TOOLSET_VERSION": "15.2.0",
+        "PATH": "$penv{PATH};$env{MINGW_PREFIX}/bin;$env{MINGW_PREFIX}/../usr/local/bin;$env{MINGW_PREFIX}/../usr/bin;$env{MINGW_PREFIX}/../bin",
+        "INCLUDE": "$penv{INCLUDE};$env{MINGW_PREFIX}/include/;$env{MINGW_PREFIX}/include/c++/$env{GCC_TOOLSET_VERSION};$env{MINGW_PREFIX}/include/c++/$env{GCC_TOOLSET_VERSION}/$env{MINGW_FLAVOR};$env{MINGW_PREFIX}/include/c++/$env{GCC_TOOLSET_VERSION}/backward;$env{MINGW_PREFIX}/lib/gcc/$env{MINGW_FLAVOR}/include;$env{MINGW_PREFIX}/lib/gcc/$env{MINGW_FLAVOR}/include-fixed;",
+        "environment": "mingw_64"
+      }
+    },
+    {
+      "name": "mingw-x64-release",
+      "displayName": "x64 MinGW Release",
+      "inherits": [
+        "release",
+        "mingw"
+      ]
+    },
+    {
+      "name": "mingw-x64-relwithdebinfo",
+      "displayName": "x64 MinGW RelWithDebInfo",
+      "inherits": [
+        "relwithdebinfo",
+        "mingw"
+      ]
+    },
+    {
+      "name": "mingw-x64-debug",
+      "displayName": "X64 MinGW Debug",
+      "inherits": [
+        "debug",
+        "mingw"
+      ]
+    }
+  ]
+}

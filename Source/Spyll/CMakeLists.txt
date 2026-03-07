@@ -8,7 +8,6 @@ project(${LIBRARY_NAME})
 set(LLVM_LINK_LLVM_DYLIB ON)
 set(CLANG_LINK_CLANG_DYLIB ON)
 
-
 # https://stackoverflow.com/questions/53652077/how-to-build-and-debug-a-msys2-mingw64-cmake-project-in-visual-studio-2017
 include(GNUInstallDirs)
 
@@ -32,11 +31,6 @@ find_package(LLVM
 
 message(STATUS "Found LLVM ${LLVM_PACKAGE_VERSION}")
 message(STATUS "Using LLVMConfig.cmake in: ${LLVM_DIR}")
-
-# Set your project compile flags.
-# E.g. if using the C++ header files
-# you will need to enable C++11 support
-# for your compiler.
 
 include_directories(${LLVM_INCLUDE_DIRS})
 separate_arguments(LLVM_DEFINITIONS_LIST NATIVE_COMMAND ${LLVM_DEFINITIONS})
