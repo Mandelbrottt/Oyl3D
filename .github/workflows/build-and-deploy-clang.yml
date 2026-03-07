@@ -1,0 +1,107 @@
+name: Build and Deploy Clang
+
+on:
+  workflow_dispatch:
+    inputs:
+      llvm-ref:
+        description: 'LLVM Commit Hash or Tag'
+        required: false
+        default: llvmorg-19.1.7
+        type: string
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+defaults:
+  run:
+    shell: bash
+
+env:
+  ACT: ""
+
+jobs:
+  build-and-deploy:
+    name: Build Clang@${{ inputs.llvm-ref }}
+    runs-on: windows-latest
+    env:
+      llvm-checkout-dir: ".llvm"
+      llvm-build-dir: build
+      llvm-generator: MinGW Makefiles
+      llvm-build-type: Release
+      llvm-build-targets: X86
+      llvm-target-triple: x86_64-pc-windows-msvc
+      llvm-install-dir: install
+      llvm-archive: llvm.txz
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          repository: llvm/llvm-project
+          path: ${{ env.llvm-checkout-dir }}
+          ref: ${{ inputs.llvm-ref }}
+          
+      - name: Set up MinGW
+        if: ${{ !env.ACT }}
+        uses: egor-tensin/setup-mingw@v3
+          
+      - name: CMake Generate Makefiles
+        working-directory: ${{ env.llvm-checkout-dir }}
+        run: >
+          cmake
+          -S llvm
+          -B "${{ env.llvm-build-dir }}"
+          -G "${{ env.llvm-generator }}"
+          -DCMAKE_BUILD_TYPE="${{ env.llvm-build-type }}"
+          -DCMAKE_INSTALL_PREFIX="${{ env.llvm-install-dir }}"
+          -DLLVM_ENABLE_PROJECTS="clang;lld"
+          -DLLVM_TARGETS_TO_BUILD="${{ env.llvm-build-targets }}"
+          -DLLVM_BUILD_LLVM_DYLIB=ON
+          -DLLVM_LINK_LLVM_DYLIB=ON
+          -DCLANG_LINK_CLANG_DYLIB=ON
+          -DLLVM_ENABLE_PLUGINS=ON
+          -DLLVM_DEFAULT_TARGET_TRIPLE="${{ env.llvm-target-triple }}"
+
+      - name: CMake Build Clang
+        working-directory: ${{ env.llvm-checkout-dir }}
+        run: >
+          cmake
+          --build ${{ env.llvm-build-dir }}
+          --config ${{ env.llvm-build-type }}
+          --target install
+          -j $NUMBER_OF_PROCESSORS
+
+      - name: Post-Process Install Directory
+        working-directory: ${{ env.llvm-checkout-dir }}/${{ env.llvm-install-dir }}
+        run: |
+          # Check all bins for mingw deps, and copy them over
+          find bin -name '*.exe' -type f -print0 -o -name '*.dll' -type f -print0 |
+          xargs -0 -n 1 ldd |
+          grep -i mingw |
+          sed -r 's/.+\.dll\s*=>\s*//i' | # Remove leading dll name
+          sed -r 's/\s*\(.*\)//i' | # Remove trailing memory address
+          sort | uniq | # Filter list to only unique paths
+          tr '\n' '\0' |
+          xargs -0 -Ix cp x ./bin/ # Copy the files
+
+      - name: Zip install directory
+        working-directory: ${{ github.workspace }}
+        run: >
+          tar
+          -cC ${{ env.llvm-checkout-dir }}/${{ env.llvm-install-dir }}
+          -I 'xz -T$NUMBER_OF_PROCESSORS'
+          -f ${{ env.llvm-archive }}
+          .
+
+      - name: Setup Rclone
+        if: ${{ !env.ACT }}
+        uses: AnimMouse/setup-rclone@v1.12.0
+        with:
+          rclone_config: ${{ secrets.RCLONE_CONFIG }}
+
+      - name: Upload LLVM Artifact
+        if: ${{ !env.ACT }}
+        run: |
+          rclone copyto ${{ env.llvm-archive }} oyl3d:llvm/${{ github.sha }}/${{ env.llvm-archive }}

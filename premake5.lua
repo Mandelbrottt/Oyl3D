@@ -1,40 +1,46 @@
-premake.path = ("%s;%s/Premake"):format(premake.path, _MAIN_SCRIPT_DIR)
+premake.path = ("%s;%s/Source/Premake"):format(premake.path, _MAIN_SCRIPT_DIR)
 
-local Config = require "Config"
+require "Dependencies"
 
-local Check = require "CheckProject"
-local Engine = require "Engine"
 local Package = require "Package"
+local Library = require "Library"
 
 require "Actions/Clean"
 require "Overrides"
 
+if not _OPTIONS["cc"] and premake.action.current() then
+	premake.action.current().toolset = premake.CLANG
+end
+
+Package.SetupPackages()
 Package.UpdatePackageCache()
 
-workspace(Config.Name) do
-    location "./"
-    filename(Config.Name .. "_" .. _ACTION)
+Library.SetupLibraries()
 
-    configurations {
-        Config.Configurations.Debug,
-        Config.Configurations.Development,
-        Config.Configurations.Profile,
-        Config.Configurations.Distribution,
-    }
+newoption {
+	trigger = "workspace",
+	description = "Generate only the selected workspace",
+	value = "workspace",
+	allowed = {
+		{ "oyl3d", "Oyl3D Engine" },
+		{ "spyll", "Oyl.Spyll Static Analysis Clang Plugin"}
+	}
+}
 
-    platforms {
-        Config.Platforms.Editor,
-        Config.Platforms.Standalone,
-    }
-
-    startproject(Config.ShortName .. ".Entry")
-
-    group "Dependencies"
-        Package.GenerateProjects()
-
-    group "Engine"
-        Engine.GenerateProjects()
-
-    group ""
-        Check.Generate()
+local generateWorkspaceOpt = _OPTIONS["workspace"]
+if generateWorkspaceOpt then
+	generateWorkspaceOpt = generateWorkspaceOpt:lower()
 end
+
+local function shouldGenerateWorkspace(wks)
+	local workspaceOpt = _OPTIONS["workspace"]
+	return not workspaceOpt or workspaceOpt:lower() == wks:lower()
+end
+
+if shouldGenerateWorkspace("Oyl3D") then
+	require "Source.Oyl3D.premake5"
+end
+
+-- if shouldGenerateWorkspace("Spyll") then
+-- 	require "Source.Spyll.premake5"
+-- end
