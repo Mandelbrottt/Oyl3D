@@ -2,8 +2,17 @@ name: Build Oyl3D
 
 on:
   push:
+    paths: &paths-to-watch
+      - 'Source/Oyl3D/**'
+      - 'Source/Premake/**'
+      - 'Dependencies.lua'
+      - '**premake5.lua'
+      - '.github/workflows/build-oyl3d.yml'
+      # TODO: Add oyl spyll dylib to path watch, we might add it to packages. Not sure yet
+      # - <path to oyl-spyll dylib>
   pull_request:
     branches: ["main"]
+    paths: *paths-to-watch
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -20,8 +29,8 @@ env:
   vulkan_sdk_version: 1.4.341.1
 
 jobs:
-  win64-msvc:
-    name: MSVC Oyl3D ${{ matrix.platform }} in ${{ matrix.configuration }}
+  win64-clang:
+    name: Clang Oyl3D ${{ matrix.platform }} in ${{ matrix.configuration }}
     runs-on: windows-latest
     strategy: &build-strategy
       fail-fast: false
@@ -32,7 +41,7 @@ jobs:
           - configuration: Distribution
             platform: Editor
     env:
-      toolset: msc-v143
+      toolset: clang
     steps: &win64-build-steps
       - uses: actions/checkout@v6
 
@@ -93,11 +102,12 @@ jobs:
           /verbosity:minimal
           ${{ env.solution_file_path }}
 
-
-  win64-clang:
-    name: Clang Oyl3D ${{ matrix.platform }} in ${{ matrix.configuration }}
-    runs-on: windows-latest
-    strategy: *build-strategy
-    env:
-      toolset: clang
-    steps: *win64-build-steps
+  # Temporarily disable, we don't plan to support non-clang compilers for the time being
+  # Eventually we will once Oyl Spyll is more fleshed out
+  # win64-msvc:
+  #   name: MSVC Oyl3D ${{ matrix.platform }} in ${{ matrix.configuration }}
+  #   runs-on: windows-latest
+  #   strategy: *build-strategy
+  #   env:
+  #     toolset: msc-v143
+  #   steps: *win64-build-steps
