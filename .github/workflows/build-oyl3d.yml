@@ -102,14 +102,12 @@ jobs:
           /verbosity:minimal
           ${{ env.solution_file_path }}
 
-
-  win64-msvc:
-    name: MSVC Oyl3D ${{ matrix.platform }} in ${{ matrix.configuration }}
-    # Temporarily disable, we don't plan to support non-clang compilers for the time being
-    # Eventually we will once Oyl Spyll is more fleshed out
-    if: false 
-    runs-on: windows-latest
-    strategy: *build-strategy
-    env:
-      toolset: msc-v143
-    steps: *win64-build-steps
+  # Temporarily disable, we don't plan to support non-clang compilers for the time being
+  # Eventually we will once Oyl Spyll is more fleshed out
+  # win64-msvc:
+  #   name: MSVC Oyl3D ${{ matrix.platform }} in ${{ matrix.configuration }}
+  #   runs-on: windows-latest
+  #   strategy: *build-strategy
+  #   env:
+  #     toolset: msc-v143
+  #   steps: *win64-build-steps
