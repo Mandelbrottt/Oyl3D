@@ -1,7 +1,6 @@
 name: Build and Deploy Clang
 
 on:
-  push:
   workflow_dispatch:
     inputs:
       llvm-ref:
@@ -10,9 +9,9 @@ on:
         default: llvmorg-19.1.7
         type: string
 
-# concurrency:
-#   group: ${{ github.workflow }}-${{ github.ref }}
-#   cancel-in-progress: true
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 permissions:
   contents: read
@@ -26,8 +25,7 @@ env:
 
 jobs:
   build-and-deploy:
-    # name: Build Clang@${{ inputs.llvm-ref }}
-    name: Build Clang@llvmorg-19.1.7
+    name: Build Clang@${{ inputs.llvm-ref }}
     runs-on: windows-latest
     env:
       llvm-checkout-dir: ".llvm"
@@ -43,8 +41,7 @@ jobs:
         with:
           repository: llvm/llvm-project
           path: ${{ env.llvm-checkout-dir }}
-          # ref: ${{ inputs.llvm-ref }}
-          ref: llvmorg-19.1.7
+          ref: ${{ inputs.llvm-ref }}
           
       - name: Set up MinGW
         if: ${{ !env.ACT }}
