@@ -67,7 +67,6 @@ jobs:
         run: >
           cmake
           --build ${{ env.llvm-build-dir }}
-          --config ${{ env.llvm-build-type }}
           --target install
           -j $NUMBER_OF_PROCESSORS
 
