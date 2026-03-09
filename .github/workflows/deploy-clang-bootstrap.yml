@@ -1,0 +1,92 @@
+name: Build and Deploy Clang
+
+on:
+  push:
+  workflow_dispatch:
+    inputs:
+      llvm-ref:
+        description: 'LLVM Commit Hash or Tag'
+        required: false
+        default: llvmorg-19.1.7
+        type: string
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+defaults:
+  run:
+    shell: bash
+
+env:
+  ACT: ""
+
+jobs:
+  build-and-deploy:
+    # name: Build Clang@${{ inputs.llvm-ref }}
+    name: Build Clang@19.1.7 Bootstrap
+    runs-on: windows-latest
+    env:
+      llvm-checkout-dir: ".llvm"
+      llvm-build-dir: build
+      llvm-generator: Visual Studio 17 2022
+      llvm-build-type: Release
+      llvm-build-targets: X86
+      llvm-install-dir: install
+      llvm-archive: llvm-bootstrap.txz
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          repository: llvm/llvm-project
+          path: ${{ env.llvm-checkout-dir }}
+          # ref: ${{ inputs.llvm-ref }}
+          ref: 19.1.7
+
+      - name: CMake Generate Makefiles
+        working-directory: ${{ env.llvm-checkout-dir }}
+        run: >
+          cmake
+          -S llvm
+          -B "${{ env.llvm-build-dir }}"
+          -G "${{ env.llvm-generator }}"
+          -T ClangCL
+          -DCMAKE_BUILD_TYPE="${{ env.llvm-build-type }}"
+          -DCMAKE_INSTALL_PREFIX="${{ env.llvm-install-dir }}"
+          -DLLVM_TARGETS_TO_BUILD="${{ env.llvm-build-targets }}"
+          -DLLVM_ENABLE_PROJECTS="clang;lld"
+          -DLLVM_INCLUDE_BENCHMARKS=OFF
+          -DLLVM_INCLUDE_EXAMPLES=OFF
+          -DLLVM_INCLUDE_RUNTIMES=OFF
+          -DLLVM_INCLUDE_TESTS=OFF
+
+      - name: CMake Build Clang
+        working-directory: ${{ env.llvm-checkout-dir }}
+        run: >
+          cmake
+          --build ${{ env.llvm-build-dir }}
+          --config ${{ env.llvm-build-type }}
+          --target install-distribution
+          -j $NUMBER_OF_PROCESSORS
+
+      - name: Zip install directory
+        working-directory: ${{ github.workspace }}
+        run: >
+          tar
+          -cC ${{ env.llvm-checkout-dir }}/${{ env.llvm-install-dir }}
+          -I 'xz -T$NUMBER_OF_PROCESSORS'
+          -f ${{ env.llvm-archive }}
+          .
+
+      - name: Setup Rclone
+        if: ${{ !env.ACT }}
+        uses: AnimMouse/setup-rclone@v1.12.0
+        with:
+          rclone_config: ${{ secrets.RCLONE_CONFIG }}
+
+      - name: Upload LLVM Artifact
+        if: ${{ !env.ACT }}
+        run: |
+          rclone copyto ${{ env.llvm-archive }} oyl3d:llvm/${{ github.sha }}/${{ env.llvm-archive }}
