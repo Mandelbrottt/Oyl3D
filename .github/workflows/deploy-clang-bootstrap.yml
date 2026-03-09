@@ -1,4 +1,4 @@
-name: Build and Deploy Clang
+name: Deploy Clang Bootstrap
 
 on:
   push:
