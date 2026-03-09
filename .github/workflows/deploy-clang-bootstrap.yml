@@ -33,7 +33,7 @@ jobs:
       llvm-checkout-dir: ".llvm"
       llvm-build-dir: build
       llvm-generator: Visual Studio 17 2022
-      llvm-build-type: Release
+      llvm-build-type: MinSizeRel
       llvm-build-targets: X86
       llvm-install-dir: install
       llvm-archive: llvm-bootstrap.txz
@@ -68,7 +68,7 @@ jobs:
           cmake
           --build ${{ env.llvm-build-dir }}
           --config ${{ env.llvm-build-type }}
-          --target install-distribution
+          --target install
           -j $NUMBER_OF_PROCESSORS
 
       - name: Zip install directory
