@@ -27,7 +27,7 @@ env:
 jobs:
   build-and-deploy:
     # name: Build Clang@${{ inputs.llvm-ref }}
-    name: Build Clang@19.1.7 Bootstrap
+    name: Build Clang@llvmorg-19.1.7 Bootstrap
     runs-on: windows-latest
     env:
       llvm-checkout-dir: ".llvm"
@@ -43,7 +43,7 @@ jobs:
           repository: llvm/llvm-project
           path: ${{ env.llvm-checkout-dir }}
           # ref: ${{ inputs.llvm-ref }}
-          ref: 19.1.7
+          ref: llvmorg-19.1.7
 
       - name: CMake Generate Makefiles
         working-directory: ${{ env.llvm-checkout-dir }}
