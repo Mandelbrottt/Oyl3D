@@ -1,0 +1,122 @@
+name: Deploy Clang Libraries
+
+on:
+  push:
+  workflow_dispatch:
+    inputs:
+      llvm-ref:
+        description: 'LLVM Commit Hash or Tag'
+        required: false
+        default: llvmorg-19.1.7
+        type: string
+      llvm-bootstrap-ref:
+        description: 'LLVM Bootstrap Commit Hash or Tag'
+        required: false
+        default: 75802a65ecf3b92d15dcfb7df5fb2e2601d04b74
+        type: string
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+defaults:
+  run:
+    shell: bash
+
+env:
+  ACT: ""
+
+jobs:
+  build-and-deploy:
+    # name: Build Clang@${{ inputs.llvm-ref }}
+    name: Build ClangTooling@llvmorg-19.1.7
+    runs-on: windows-latest
+    env:
+      llvm-checkout-dir: .llvm
+      llvm-build-dir: build
+      llvm-generator: Ninja
+      llvm-build-type: RelWithDebInfo
+      llvm-build-targets: X86
+      llvm-install-dir: install
+      llvm-archive: llvm.txz
+      llvm-bootstrap-install-dir: bootstrap
+      llvm-bootstrap-archive: llvm-bootstrap.txz
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          repository: llvm/llvm-project
+          path: ${{ env.llvm-checkout-dir }}
+          # ref: ${{ inputs.llvm-ref }}
+          ref: llvmorg-19.1.7
+          
+      - name: Setup Rclone
+        if: ${{ !env.ACT }}
+        uses: AnimMouse/setup-rclone@v1.12.0
+        with:
+          rclone_config: ${{ secrets.RCLONE_CONFIG }}
+
+      - name: Fetch LLVM Bootstrap Archive
+        working-directory: ${{ github.workspace }}
+        run: |
+          # rclone copyto oyl3d:llvm/${{ inputs.llvm-bootstrap-ref }}/${{ env.llvm-bootstrap-archive }} ${{ env.llvm-bootstrap-archive }}
+          rclone copyto oyl3d:llvm/75802a65ecf3b92d15dcfb7df5fb2e2601d04b74/${{ env.llvm-bootstrap-archive }} ${{ env.llvm-bootstrap-archive }}
+          
+      - name: Extract LLVM Bootstrap
+        working-directory: ${{ github.workspace }}
+        run: >
+          mkdir ${{ env.llvm-checkout-dir }}/${{ env.llvm-bootstrap-install-dir}}
+
+          tar
+          -xC ${{ env.llvm-checkout-dir }}/${{ env.llvm-bootstrap-install-dir}}
+          -f ${{ env.llvm-bootstrap-archive }}
+          .
+
+      - uses: ilammy/msvc-dev-cmd@v1
+
+      - name: CMake Generate Makefiles
+        working-directory: ${{ env.llvm-checkout-dir }}
+        run: >
+          cmake
+          -S llvm
+          -B "${{ env.llvm-build-dir }}"
+          -G "${{ env.llvm-generator }}"
+          -DCMAKE_BUILD_TYPE="${{ env.llvm-build-type }}"
+          -DCMAKE_INSTALL_PREFIX="${{ env.llvm-install-dir }}"
+          -DCMAKE_C_COMPILER=${{ env.llvm-bootstrap-install-dir }}/bin/clang-cl.exe
+          -DCMAKE_CXX_COMPILER=${{ env.llvm-bootstrap-install-dir }}/bin/clang-cl.exe
+          -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+          -DCMAKE_MT=mt.exe
+          -DLLVM_TARGETS_TO_BUILD=${{ env.llvm-build-targets }}
+          -DLLVM_INCLUDE_BENCHMARKS=OFF
+          -DLLVM_INCLUDE_EXAMPLES=OFF
+          -DLLVM_INCLUDE_RUNTIMES=OFF
+          -DLLVM_INCLUDE_TESTS=OFF
+          -DLLVM_ENABLE_ASSERTIONS=ON
+          -DLLVM_ENABLE_LLD=ON
+          -DLLVM_ENABLE_PROJECTS=clang
+          -DLLVM_DISTRIBUTION_COMPONENTS=clang-headers;llvm-headers;cmake-exports;clang-cmake-exports;clangAnalysis;clangAPINotes;clangAST;clangASTMatchers;clangBasic;clangDriver;clangEdit;clangFormat;clangFrontend;clangLex;clangParse;clangRewrite;clangSema;clangSerialization;clangSupport;clangTooling;clangToolingCore;clangToolingInclusions;LLVMAggressiveInstCombine;LLVMAnalysis;LLVMAsmParser;LLVMBinaryFormat;LLVMBitReader;LLVMBitstreamReader;LLVMCore;LLVMDebugInfoBTF;LLVMDebugInfoCodeView;LLVMDebugInfoDWARF;LLVMDebugInfoMSF;LLVMDebugInfoPDB;LLVMDemangle;LLVMFrontendHLSL;LLVMFrontendOffloading;LLVMFrontendOpenMP;LLVMInstCombine;LLVMIRReader;LLVMMC;LLVMMCParser;LLVMObject;LLVMOption;LLVMProfileData;LLVMRemarks;LLVMScalarOpts;LLVMSupport;LLVMSymbolize;LLVMTargetParser;LLVMTextAPI;LLVMTransformUtils;LLVMWindowsDriver
+
+      - name: CMake Build Clang Libraries
+        working-directory: ${{ env.llvm-checkout-dir }}
+        run: >
+          cmake
+          --build ${{ env.llvm-build-dir }}
+          --target install-distribution
+          -j $NUMBER_OF_PROCESSORS
+
+      - name: Zip install directory
+        working-directory: ${{ github.workspace }}
+        run: >
+          tar
+          -cC ${{ env.llvm-checkout-dir }}/${{ env.llvm-install-dir }}
+          -I 'xz -T$NUMBER_OF_PROCESSORS'
+          -f ${{ env.llvm-archive }}
+          .
+
+      - name: Upload LLVM Artifact
+        if: ${{ !env.ACT }}
+        run: |
+          rclone copyto ${{ env.llvm-archive }} oyl3d:llvm/${{ github.sha }}/${{ env.llvm-archive }}
