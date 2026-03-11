@@ -86,7 +86,6 @@ jobs:
           -DCMAKE_C_COMPILER='${{ github.workspace }}/${{ env.llvm-bootstrap-install-dir}}/bin/clang-cl.exe'
           -DCMAKE_CXX_COMPILER='${{ github.workspace }}/${{ env.llvm-bootstrap-install-dir}}/bin/clang-cl.exe'
           -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
-          -DCMAKE_MT=mt.exe
           -DLLVM_TARGETS_TO_BUILD=${{ env.llvm-build-targets }}
           -DLLVM_INCLUDE_BENCHMARKS=OFF
           -DLLVM_INCLUDE_EXAMPLES=OFF
