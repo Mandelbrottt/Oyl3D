@@ -83,8 +83,8 @@ jobs:
           -G "${{ env.llvm-generator }}"
           -DCMAKE_BUILD_TYPE="${{ env.llvm-build-type }}"
           -DCMAKE_INSTALL_PREFIX="${{ env.llvm-install-dir }}"
-          -DCMAKE_C_COMPILER=${{ github.workspace }}/${{ env.llvm-bootstrap-install-dir}}/bin/clang-cl.exe
-          -DCMAKE_CXX_COMPILER=${{ github.workspace }}/${{ env.llvm-bootstrap-install-dir}}/bin/clang-cl.exe
+          -DCMAKE_C_COMPILER='${{ github.workspace }}/${{ env.llvm-bootstrap-install-dir}}/bin/clang-cl.exe'
+          -DCMAKE_CXX_COMPILER='${{ github.workspace }}/${{ env.llvm-bootstrap-install-dir}}/bin/clang-cl.exe'
           -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
           -DCMAKE_MT=mt.exe
           -DLLVM_TARGETS_TO_BUILD=${{ env.llvm-build-targets }}
