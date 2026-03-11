@@ -42,7 +42,7 @@ jobs:
       llvm-build-targets: X86
       llvm-install-dir: install
       llvm-archive: llvm.txz
-      llvm-bootstrap-install-dir: bootstrap
+      llvm-bootstrap-install-dir: .llvm-bootstrap
       llvm-bootstrap-archive: llvm-bootstrap.txz
     steps:
       - uses: actions/checkout@v6
@@ -67,14 +67,12 @@ jobs:
       - name: Extract LLVM Bootstrap
         working-directory: ${{ github.workspace }}
         run: >
-          mkdir ${{ env.llvm-checkout-dir }}/${{ env.llvm-bootstrap-install-dir}}
+          mkdir ${{ env.llvm-bootstrap-install-dir}}
 
           tar
-          -xC ${{ env.llvm-checkout-dir }}/${{ env.llvm-bootstrap-install-dir}}
+          -xC ${{ env.llvm-bootstrap-install-dir}}
           -f ${{ env.llvm-bootstrap-archive }}
           .
-
-      - uses: ilammy/msvc-dev-cmd@v1
 
       - name: CMake Generate Makefiles
         working-directory: ${{ env.llvm-checkout-dir }}
@@ -85,8 +83,8 @@ jobs:
           -G "${{ env.llvm-generator }}"
           -DCMAKE_BUILD_TYPE="${{ env.llvm-build-type }}"
           -DCMAKE_INSTALL_PREFIX="${{ env.llvm-install-dir }}"
-          -DCMAKE_C_COMPILER=${{ env.llvm-bootstrap-install-dir }}/bin/clang-cl.exe
-          -DCMAKE_CXX_COMPILER=${{ env.llvm-bootstrap-install-dir }}/bin/clang-cl.exe
+          -DCMAKE_C_COMPILER=${{ github.workspace }}/${{ env.llvm-bootstrap-install-dir}}/bin/clang-cl.exe
+          -DCMAKE_CXX_COMPILER=${{ github.workspace }}/${{ env.llvm-bootstrap-install-dir}}/bin/clang-cl.exe
           -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
           -DCMAKE_MT=mt.exe
           -DLLVM_TARGETS_TO_BUILD=${{ env.llvm-build-targets }}
