@@ -1,7 +1,6 @@
 name: Deploy Clang Bootstrap
 
 on:
-  push:
   workflow_dispatch:
     inputs:
       llvm-ref:
