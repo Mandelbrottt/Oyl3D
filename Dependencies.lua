@@ -200,14 +200,14 @@ Oyl.Packages.ClangTooling = {
     Archive = {
         Url = (function()
             if (os.host() == premake.WINDOWS) then
-                return "https://dl.dropbox.com/scl/fi/h0oijr7uq92at4a0ep4wn/llvm.txz?rlkey=4oobdxdiod6eotm4pl1h2v4fw"
+                return "https://dl.dropbox.com/scl/fi/14cncqutbmo9t0v6u7e6c/llvm.txz?rlkey=8fsgqaswlnn9fzdusdqpdnz9v"
             end
             return ""
         end)()
     },
     IncludeDirs = { "include" },
     LibDirs = { "lib" },
-    Libs = {},
+    Libs = { },
     OnFetch = function(package)
         -- Return basename of all .lib files in lib folder (lib/someLib.lib -> someLib)
         local libPaths = os.matchfiles("lib/*.lib")
