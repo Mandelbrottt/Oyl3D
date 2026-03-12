@@ -1,7 +1,6 @@
-name: Deploy Clang Libraries
+name: Deploy ClangTooling Libraries
 
 on:
-  push:
   workflow_dispatch:
     inputs:
       llvm-ref:
@@ -31,8 +30,7 @@ env:
 
 jobs:
   build-and-deploy:
-    # name: Build Clang@${{ inputs.llvm-ref }}
-    name: Build ClangTooling@llvmorg-19.1.7
+    name: Build Clang@${{ inputs.llvm-ref }}
     runs-on: windows-latest
     env:
       llvm-checkout-dir: .llvm
@@ -49,8 +47,7 @@ jobs:
         with:
           repository: llvm/llvm-project
           path: ${{ env.llvm-checkout-dir }}
-          # ref: ${{ inputs.llvm-ref }}
-          ref: llvmorg-19.1.7
+          ref: ${{ inputs.llvm-ref }}
           
       - name: Setup Rclone
         if: ${{ !env.ACT }}
@@ -61,8 +58,7 @@ jobs:
       - name: Fetch LLVM Bootstrap Archive
         working-directory: ${{ github.workspace }}
         run: |
-          # rclone copyto oyl3d:llvm/${{ inputs.llvm-bootstrap-ref }}/${{ env.llvm-bootstrap-archive }} ${{ env.llvm-bootstrap-archive }}
-          rclone copyto oyl3d:llvm/75802a65ecf3b92d15dcfb7df5fb2e2601d04b74/${{ env.llvm-bootstrap-archive }} ${{ env.llvm-bootstrap-archive }}
+          rclone copyto oyl3d:llvm/${{ inputs.llvm-bootstrap-ref }}/${{ env.llvm-bootstrap-archive }} ${{ env.llvm-bootstrap-archive }}
           
       - name: Extract LLVM Bootstrap
         working-directory: ${{ github.workspace }}
@@ -101,7 +97,7 @@ jobs:
           -DLLVM_ENABLE_PROJECTS=clang
           -DLLVM_DISTRIBUTION_COMPONENTS="clang-headers;llvm-headers;cmake-exports;clang-cmake-exports;clangAnalysis;clangAPINotes;clangAST;clangASTMatchers;clangBasic;clangDriver;clangEdit;clangFormat;clangFrontend;clangLex;clangParse;clangRewrite;clangSema;clangSerialization;clangSupport;clangTooling;clangToolingCore;clangToolingInclusions;LLVMAggressiveInstCombine;LLVMAnalysis;LLVMAsmParser;LLVMBinaryFormat;LLVMBitReader;LLVMBitstreamReader;LLVMCore;LLVMDebugInfoBTF;LLVMDebugInfoCodeView;LLVMDebugInfoDWARF;LLVMDebugInfoMSF;LLVMDebugInfoPDB;LLVMDemangle;LLVMFrontendHLSL;LLVMFrontendOffloading;LLVMFrontendOpenMP;LLVMInstCombine;LLVMIRReader;LLVMMC;LLVMMCParser;LLVMObject;LLVMOption;LLVMProfileData;LLVMRemarks;LLVMScalarOpts;LLVMSupport;LLVMSymbolize;LLVMTargetParser;LLVMTextAPI;LLVMTransformUtils;LLVMWindowsDriver"
 
-      - name: CMake Build Clang Libraries
+      - name: CMake Build ClangTooling Libraries
         working-directory: ${{ env.llvm-checkout-dir }}
         run: >
           cmake
@@ -118,7 +114,7 @@ jobs:
           -f ${{ env.llvm-archive }}
           .
 
-      - name: Upload LLVM Artifact
+      - name: Upload Artifact
         if: ${{ !env.ACT }}
         run: |
           rclone copyto ${{ env.llvm-archive }} oyl3d:llvm/${{ github.sha }}/${{ env.llvm-archive }}

@@ -49,6 +49,9 @@ workspace "Oyl.Spyll"; do
 			"./Spyll/**.hpp",
 			"./Spyll/**.inl",
 			"./Spyll/**.ixx",
+		}
+
+		files {
 			"./Tests/**.cpp",
 			"./Tests/**.h",
 			"./Tests/**.hpp",

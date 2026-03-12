@@ -25,8 +25,7 @@ env:
 
 jobs:
   build-and-deploy:
-    # name: Build Clang@${{ inputs.llvm-ref }}
-    name: Build Clang@llvmorg-19.1.7 Bootstrap
+    name: Build Clang@${{ inputs.llvm-ref }}
     runs-on: windows-latest
     env:
       llvm-checkout-dir: ".llvm"
@@ -41,8 +40,7 @@ jobs:
         with:
           repository: llvm/llvm-project
           path: ${{ env.llvm-checkout-dir }}
-          # ref: ${{ inputs.llvm-ref }}
-          ref: llvmorg-19.1.7
+          ref: ${{ inputs.llvm-ref }}
 
       - name: CMake Generate Makefiles
         working-directory: ${{ env.llvm-checkout-dir }}
@@ -86,7 +84,7 @@ jobs:
         with:
           rclone_config: ${{ secrets.RCLONE_CONFIG }}
 
-      - name: Upload LLVM Artifact
+      - name: Upload Artifact
         if: ${{ !env.ACT }}
         run: |
           rclone copyto ${{ env.llvm-archive }} oyl3d:llvm/${{ github.sha }}/${{ env.llvm-archive }}
