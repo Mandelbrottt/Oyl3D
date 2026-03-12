@@ -3,7 +3,6 @@ premake.path = ("%s;%s/Source/Premake"):format(premake.path, _MAIN_SCRIPT_DIR)
 require "Dependencies"
 
 local Package = require "Package"
-local Library = require "Library"
 
 require "Actions/Clean"
 require "Overrides"
@@ -15,8 +14,6 @@ end
 Package.SetupPackages()
 Package.UpdatePackageCache()
 
-Library.SetupLibraries()
-
 newoption {
 	trigger = "workspace",
 	description = "Generate only the selected workspace",
@@ -26,11 +23,6 @@ newoption {
 		{ "spyll", "Oyl.Spyll Static Analysis Clang Plugin"}
 	}
 }
-
-local generateWorkspaceOpt = _OPTIONS["workspace"]
-if generateWorkspaceOpt then
-	generateWorkspaceOpt = generateWorkspaceOpt:lower()
-end
 
 local function shouldGenerateWorkspace(wks)
 	local workspaceOpt = _OPTIONS["workspace"]

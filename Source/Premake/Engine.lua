@@ -160,23 +160,23 @@ function Engine.AddDependencyToProject(dependency)
 	
 	---@type Package
 	local package = Utils.CaseInsensitiveFind(Oyl.Packages, dependency)
-	if package and package.GenerateProject then
-		links { package.Name }
-		externalincludedirs(package.IncludeDirs)
-		
+	if package then
+		if (package.GenerateProject and package.Kind ~= premake.NONE) then
+			links { package.Name }
+		end
+		if (package.LibDirs) then
+			libdirs(package.LibDirs)
+		end
+		if (package.Libs) then
+			links(package.Libs)
+		end
+		if (package.IncludeDirs) then
+			externalincludedirs(package.IncludeDirs)
+		end
 		if (package.DependantProperties) then
 			package:DependantProperties()
 			filter {}
 		end
-		return
-	end
-	
-	---@type Library
-	local library = Utils.CaseInsensitiveFind(Oyl.Libraries, dependency)
-	if library then
-		externalincludedirs(library.IncludeDirs)
-		libdirs(library.LibraryDirs)
-		links(library.Libraries)
 		return
 	end
 end
@@ -223,13 +223,6 @@ function Engine.ApplyCommonCppSettings()
 		links {
 			"Premake"
 		}
-	end
-
-	filter "toolset:clang"; do
-		if (Oyl.Packages.Llvm) then
-			llvmdir(Oyl.Packages.Llvm.ProjectDir)
-			llvmversion "19.1.7"
-		end
 	end
 
 	filter "kind:StaticLib"

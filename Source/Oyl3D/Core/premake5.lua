@@ -7,7 +7,7 @@ Oyl.Projects.Core = Engine.EngineProjectDefinition {
     Dependencies = {
         Oyl.Packages.SpdLog,
         Oyl.Packages.TracyClient,
-        Oyl.Libraries.Vulkan,
+        Oyl.Packages.Vulkan,
     },
     Properties = function()
         pchheader "pch.h"

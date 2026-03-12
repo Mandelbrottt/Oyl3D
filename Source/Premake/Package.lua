@@ -17,9 +17,11 @@ local Engine = require "Engine"
 ---@field Kind? string
 ---@field Files? string[]
 ---@field ProjectDir? string Path to the project relative to workspace
----@field IncludeDirs? string[] Paths to include, relative to project
----@field CustomProperties? fun()
----@field DependantProperties? fun(package: Package)
+---@field IncludeDirs? string[] List of include Paths, relative to project
+---@field LibDirs? string[] List of library Search Paths, relative to project
+---@field Libs? string[] List of library names to be linked against, in LibDirs
+---@field CustomProperties? fun(package?: Package) Callback run when project is generated. package is nil if GenerateProject is false
+---@field DependantProperties? fun(package: Package) Callback run inside projects that reference this package
 
 ---@type { [string]: Package }
 Oyl.Packages = {}
@@ -36,23 +38,34 @@ end
 ---@param name string
 ---@param package Package
 function Package.SetupVarsInPackage(name, package)
-	-- Default to Utility if no kind provided
-	package.Kind = package.Kind or premake.UTILITY
-	package.GenerateProject = package.GenerateProject or true
+	-- Default to None if no kind provided
+	package.Kind = package.Kind or premake.NONE
+	if package.GenerateProject == nil then
+		package.GenerateProject = true
+	end
 
 	package.Name = name
 	if (not package.ProjectDir) then
 		package.ProjectDir = Config.PackagesDir .. name .. "/"
 	end
 
+	-- Add project directory to include directories
 	if package.IncludeDirs ~= nil then
 		for i, includeDir in ipairs(package.IncludeDirs) do
-			includeDir = package.ProjectDir .. includeDir
+			includeDir = path.join(package.ProjectDir, includeDir)
 			package.IncludeDirs[i] = includeDir
 		end
 	else -- If IncludeDirs isn't manually defined, set it to the include folder of the package
-		local includeDirsString = package.ProjectDir .. "/**include/"
+		local includeDirsString = path.join(package.ProjectDir, "**include")
 		package.IncludeDirs = { includeDirsString }
+	end
+
+	-- Add project directory to lib directories
+	if package.LibDirs ~= nil then
+		for i, libDir in ipairs(package.LibDirs) do
+			libDir = path.join(package.ProjectDir, libDir)
+			package.LibDirs[i] = libDir
+		end
 	end
 end
 
@@ -69,10 +82,16 @@ function Oyl.Package.GenerateProjects()
 		local package = Oyl.Packages[orderedKeys[i]]
 	   
 		-- Only generate package projects if an engine project depends on it
-		if package.GenerateProject and Engine.DependenciesSet[package.Name] then
-			local cwd = os.getcwd()
-			os.chdir(package.ProjectDir)
+		if not Engine.DependenciesSet[package.Name] then
+			goto GenerateProjects_Continue
+		end
 
+		local cwd = os.getcwd()
+		os.chdir(package.ProjectDir)
+		
+		-- Generate package project if specified, otherwise just run CustomProperties callback
+		-- This allows clients to do custom processing on the worktree once the package has been fetched
+		if package.GenerateProject then
 			project(package.Name); do
 				Engine.ApplyCommonCppSettings()
 				kind(package.Kind)
@@ -85,14 +104,16 @@ function Oyl.Package.GenerateProjects()
 				end
 
 				filter {}
-				if package['CustomProperties'] then
-					package.CustomProperties()
-				end
-				filter {}
-
-				os.chdir(cwd)
 			end
 		end
+
+		if package.CustomProperties then
+			package:CustomProperties()
+		end
+		
+		os.chdir(cwd)
+
+		::GenerateProjects_Continue::
 	end
 	project "*"
 end
@@ -145,7 +166,10 @@ function Package.CleanPackageCache(packageToClean)
 	local numPackagesCleaned = 0
 	for name, package in pairs(Oyl.Packages) do
 		-- If directory exists. If packageToClean is specified, also check if the package name matches
-		if os.isdir(package.ProjectDir) and (packageToClean == nil or packageToClean:lower() == name:lower()) then
+		if os.isdir(package.ProjectDir)
+			and Package.IsFetchable(package)
+			and (packageToClean == nil or packageToClean:lower() == name:lower())
+		then
 			if (_OPTIONS["dryrun"]) then
 				printf("[DRYRUN]\tWould Clean %s...", package.ProjectDir)
 			else
@@ -158,6 +182,12 @@ function Package.CleanPackageCache(packageToClean)
 	if numPackagesCleaned == 0 then
 		print("No Packages in Cache to remove")
 	end
+end
+
+---@param package Package
+---@return boolean is the package fetchable? If false, package is expected to already be on disk (SDKs)
+function Oyl.Package.IsFetchable(package)
+	return package.Git ~= nil or package.Archive ~= nil
 end
 
 ---@param packages Package[]

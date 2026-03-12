@@ -2,7 +2,6 @@ local Config = require "Config"
 local Engine = require "Engine"
 
 require "Package"
-require "Library"
 
 Oyl.Packages.SpdLog = {
     Git = {
@@ -11,7 +10,7 @@ Oyl.Packages.SpdLog = {
     },
     Kind = premake.SHAREDLIB,
     Files = { "/include/", "/src/" },
-    CustomProperties = function()
+    CustomProperties = function(package)
         defines {
             "SPDLOG_COMPILED_LIB",
             "SPDLOG_LEVEL_NAMES={" ..
@@ -59,7 +58,7 @@ Oyl.Packages.TracyClient = {
         Kind = premake.SHAREDLIB,
         Files = { "public/" },
         IncludeDirs = { "public/ "},
-        CustomProperties = function()
+        CustomProperties = function(package)
             removefiles { "**" }
             files {
                 "public/TracyClient.cpp",
@@ -126,7 +125,7 @@ Oyl.Packages.YamlCpp = {
         "/include/",
         "/src/"
     },
-    CustomProperties = function()
+    CustomProperties = function(package)
         filter "kind:StaticLib"
             defines { "YAML_CPP_STATIC_DEFINE" }
         filter "kind:SharedLib"
@@ -141,7 +140,7 @@ Oyl.Packages.GLFW = {
         },
         Kind = premake.SHAREDLIB,
         Files = { "/include/", "/src/", },
-        CustomProperties = function()
+        CustomProperties = function(package)
             language "C"
             defines { "_CRT_SCURE_NO_WARNINGS" }
             removefiles { "**" }
@@ -155,7 +154,7 @@ Oyl.Packages.GLFW = {
                 "src/vulkan.c",
                 "src/window.c"
             }
-            filter "system:windows"
+            filter "system:windows"; do
                 systemversion "latest"
                 files {
                     "src/win32*.c",
@@ -164,15 +163,17 @@ Oyl.Packages.GLFW = {
                     "src/osmesa_context.c"
                 }
                 defines { "_GLFW_WIN32" }
-            filter "kind:StaticLib"
+            end
+            filter "kind:StaticLib"; do
                 defines { }
-            filter "kind:SharedLib"
+            end
+            filter "kind:SharedLib"; do
                 defines { "_GLFW_BUILD_DLL" }
+            end
         end,
         DependantProperties = function(package)
             if (package.Kind == premake.SHAREDLIB) then
-                Engine.FilterEditor()
-                do
+                Engine.FilterEditor(); do
                     defines { "GLFW_DLL" }
                 end
             end
@@ -187,38 +188,38 @@ Oyl.Packages.ImGui = {
     Kind = premake.STATICLIB, -- ImGui SharedLib support is quite involved, so don't bother for now
     Files = { "/examples/", "imconfig.h", "/imgui*.h", "/imgui*.cpp", "/imstb*.h" },
     IncludeDirs = { "." },
-    CustomProperties = function()
+    CustomProperties = function(package)
         -- For now we want to include examples on disk, but don't compile them.
         -- We will be manually including and compiling them later
         removefiles { "examples/**" }
     end
 }
 
-Oyl.Packages.Llvm = {
-    GenerateProject = false,
+Oyl.Packages.ClangTooling = {
+    Kind = premake.NONE,
     Archive = {
         Url = (function()
             if (os.host() == premake.WINDOWS) then
-                return "https://dl.dropbox.com/scl/fi/h9njf5rr61g6a6v2ut5es/llvm.txz?rlkey=c0uowuipbnduwnwtn7kxyl816"
+                return "https://dl.dropbox.com/scl/fi/h0oijr7uq92at4a0ep4wn/llvm.txz?rlkey=4oobdxdiod6eotm4pl1h2v4fw"
             end
             return ""
         end)()
     },
-    -- IncludeDirs = {
-
-    -- }
-}
-
-local VULKAN_SDK = os.getenv("VULKAN_SDK")
-
-Oyl.Libraries.Vulkan = {
-    IncludeDirs = { VULKAN_SDK .. "/Include" },
-    LibraryDirs = { VULKAN_SDK .. "/Lib" },
-    Libraries = { "vulkan-1" },
-    DependentProperties = function(library)
-        -- Only error when trying to consume this library
-        if not VULKAN_SDK then
-            error("Missing Vulkan SDK! Please install the Vulkan SDK!")
+    IncludeDirs = { "include" },
+    LibDirs = { "lib" },
+    CustomProperties = function()
+        -- Return basename of all .lib files in lib folder (lib/someLib.lib -> someLib)
+        local libPaths = os.matchfiles("lib/*.lib")
+        for _, libPath in ipairs(libPaths) do
+            table.insert(Libs, path.basename(libPath))
         end
     end
+}
+
+Oyl.Packages.Vulkan = {
+    GenerateProject = false,
+    ProjectDir = assert(os.getenv("VULKAN_SDK"), "Missing Vulkan SDK! Please install the Vulkan SDK!"),
+    IncludeDirs = { "Include" },
+    LibDirs = { "Lib" },
+    Libs = { "vulkan-1" },
 }
