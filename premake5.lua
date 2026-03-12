@@ -33,6 +33,6 @@ if shouldGenerateWorkspace("Oyl3D") then
 	require "Source.Oyl3D.premake5"
 end
 
--- if shouldGenerateWorkspace("Spyll") then
--- 	require "Source.Spyll.premake5"
--- end
+if shouldGenerateWorkspace("Spyll") then
+	require "Source.Spyll.premake5"
+end

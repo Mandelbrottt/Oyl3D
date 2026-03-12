@@ -207,11 +207,12 @@ Oyl.Packages.ClangTooling = {
     },
     IncludeDirs = { "include" },
     LibDirs = { "lib" },
-    CustomProperties = function()
+    Libs = {},
+    OnFetch = function(package)
         -- Return basename of all .lib files in lib folder (lib/someLib.lib -> someLib)
         local libPaths = os.matchfiles("lib/*.lib")
         for _, libPath in ipairs(libPaths) do
-            table.insert(Libs, path.basename(libPath))
+            table.insert(package.Libs, path.getbasename(libPath))
         end
     end
 }

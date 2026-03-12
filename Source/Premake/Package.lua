@@ -20,6 +20,7 @@ local Engine = require "Engine"
 ---@field IncludeDirs? string[] List of include Paths, relative to project
 ---@field LibDirs? string[] List of library Search Paths, relative to project
 ---@field Libs? string[] List of library names to be linked against, in LibDirs
+---@field OnFetch? fun(package: Package) Callback run once the package has been fetched and is on disk, before project generation
 ---@field CustomProperties? fun(package?: Package) Callback run when project is generated. package is nil if GenerateProject is false
 ---@field DependantProperties? fun(package: Package) Callback run inside projects that reference this package
 
@@ -77,21 +78,16 @@ function Oyl.Package.GenerateProjects()
 		table.insert(orderedKeys, k)
 	end
 	table.sort(orderedKeys)
-	
+
 	for i = 1, #orderedKeys do
 		local package = Oyl.Packages[orderedKeys[i]]
-	   
-		-- Only generate package projects if an engine project depends on it
-		if not Engine.DependenciesSet[package.Name] then
-			goto GenerateProjects_Continue
-		end
 
 		local cwd = os.getcwd()
 		os.chdir(package.ProjectDir)
-		
+
 		-- Generate package project if specified, otherwise just run CustomProperties callback
 		-- This allows clients to do custom processing on the worktree once the package has been fetched
-		if package.GenerateProject then
+		if package.GenerateProject and Engine.DependenciesSet[package.Name] then
 			project(package.Name); do
 				Engine.ApplyCommonCppSettings()
 				kind(package.Kind)
@@ -104,16 +100,14 @@ function Oyl.Package.GenerateProjects()
 				end
 
 				filter {}
+				if package.CustomProperties then
+					package:CustomProperties()
+				end
+				filter {}
 			end
 		end
 
-		if package.CustomProperties then
-			package:CustomProperties()
-		end
-		
 		os.chdir(cwd)
-
-		::GenerateProjects_Continue::
 	end
 	project "*"
 end
@@ -154,11 +148,9 @@ function Package.UpdatePackageCache()
 		end
 		Package.CleanPackageCache(packageToClean)
 	end
-	
+
 	local init = _OPTIONS["init-packages"] or (_ACTION ~= nil and string.sub(_ACTION, 1, 2) == "vs")
-	if (init or clean) then
-		Package.FetchPackages(Oyl.Packages)
-	end
+	Package.FetchPackages(Oyl.Packages, init or clean)
 end
 
 ---@param packageToClean? string
@@ -191,17 +183,27 @@ function Oyl.Package.IsFetchable(package)
 end
 
 ---@param packages Package[]
-function Oyl.Package.FetchPackages(packages)
+---@param doFetch boolean
+function Oyl.Package.FetchPackages(packages, doFetch)
 	for name, package in pairs(packages) do
 		local numFiles = os.match(package.ProjectDir .. "/*")
-		if #numFiles == 0 then
-			-- For now, trust the user won't add multiple types of packages
-			if package.Git then
-				Package.GitClone(package)
+		if doFetch and #numFiles == 0 then
+			if doFetch then
+				-- For now, trust the user won't add multiple types of packages
+				if package.Git then
+					Package.GitClone(package)
+				end
+				if package.Archive then
+					Package.FetchArchive(package)
+				end
 			end
-			if package.Archive then
-				Package.FetchArchive(package)
-			end
+		end
+
+		if package.OnFetch then
+			local cwd = os.getcwd()
+			os.chdir(package.ProjectDir)
+			package:OnFetch()
+			os.chdir(cwd)
 		end
 	end
 end
@@ -211,7 +213,7 @@ local executeOrPrint = function(command)
 	if (_OPTIONS["verbose"]) then
 		SUPPRESS_COMMAND_OUTPUT = ""
 	end
-	
+
 	if (not _OPTIONS["dryrun"]) then
 		term.pushColor(term.infoColor)
 		io.write(("\t%s "):format(command))
@@ -228,7 +230,6 @@ end
 
 ---@param package Package
 function Package.GitClone(package)
-	
 	local Git = package.Git
 	assert(Git ~= nil)
 
@@ -287,7 +288,7 @@ function Package.FetchArchive(package)
 	os.mkdir(package.ProjectDir)
 	local cwd = os.getcwd()
 	os.chdir(package.ProjectDir)
-	
+
 	if Archive.Url and Archive.Url ~= "" then
 		printf("Fetching Archive \"%s\" from %s", package.Name, Archive.Url)
 		local result_str, response_code = http.download(Archive.Url, archiveFile)
