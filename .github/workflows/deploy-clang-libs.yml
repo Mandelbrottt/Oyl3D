@@ -1,6 +1,7 @@
 name: Deploy Clang Libraries
 
 on:
+  push:
   workflow_dispatch:
     inputs:
       llvm-ref:
@@ -94,6 +95,7 @@ jobs:
           -DLLVM_INCLUDE_EXAMPLES=OFF
           -DLLVM_INCLUDE_RUNTIMES=OFF
           -DLLVM_INCLUDE_TESTS=OFF
+          -DLLVM_ENABLE_DIA_SDK=OFF
           -DLLVM_ENABLE_ASSERTIONS=ON
           -DLLVM_ENABLE_LLD=ON
           -DLLVM_ENABLE_PROJECTS=clang
