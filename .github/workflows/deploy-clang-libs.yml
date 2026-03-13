@@ -48,7 +48,8 @@ jobs:
         with:
           repository: llvm/llvm-project
           path: ${{ env.llvm-checkout-dir }}
-          ref: ${{ inputs.llvm-ref }}
+          # ref: ${{ inputs.llvm-ref }}
+          ref: llvmorg-19.1.7
           
       - name: Setup Rclone
         if: ${{ !env.ACT }}
