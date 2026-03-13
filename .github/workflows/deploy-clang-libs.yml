@@ -60,7 +60,8 @@ jobs:
       - name: Fetch LLVM Bootstrap Archive
         working-directory: ${{ github.workspace }}
         run: |
-          rclone copyto oyl3d:llvm/${{ inputs.llvm-bootstrap-ref }}/${{ env.llvm-bootstrap-archive }} ${{ env.llvm-bootstrap-archive }}
+          # rclone copyto oyl3d:llvm/${{ inputs.llvm-bootstrap-ref }}/${{ env.llvm-bootstrap-archive }} ${{ env.llvm-bootstrap-archive }}
+          rclone copyto oyl3d:llvm/75802a65ecf3b92d15dcfb7df5fb2e2601d04b74/${{ env.llvm-bootstrap-archive }} ${{ env.llvm-bootstrap-archive }}
           
       - name: Extract LLVM Bootstrap
         working-directory: ${{ github.workspace }}
