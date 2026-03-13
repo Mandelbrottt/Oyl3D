@@ -1,3 +1,4 @@
+---@type { [string]: Packages.Definition }
 return {
 	SpdLog = {
 		Git = {
@@ -55,3 +56,24 @@ return {
 		}
 	}
 }
+
+---@class (exact) Packages.Definitions.Git
+---@field Git Packages.Definitions.GitTable
+
+---@class (exact) Packages.Definitions.GitTable
+---@field Url string
+---@field Ref? string
+
+---@class (exact) Packages.Definitions.Remote
+---@field Remote Packages.Definitions.RemoteTable
+
+---@class (exact) Packages.Definitions.RemoteTable
+---@field Url string
+
+---@class (exact) Packages.Definitions.Local
+---@field Local Packages.Definitions.LocalTable
+
+---@class (exact) Packages.Definitions.LocalTable
+---@field Path string
+
+---@alias Packages.Definition Packages.Definitions.Git | Packages.Definitions.Remote | Packages.Definitions.Local
