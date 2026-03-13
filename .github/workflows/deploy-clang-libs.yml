@@ -1,6 +1,7 @@
 name: Deploy ClangTooling Libraries
 
 on:
+  push:
   workflow_dispatch:
     inputs:
       llvm-ref:
@@ -36,7 +37,7 @@ jobs:
       llvm-checkout-dir: .llvm
       llvm-build-dir: build
       llvm-generator: Ninja
-      llvm-build-type: RelWithDebInfo
+      llvm-build-type: MinSizeRel
       llvm-build-targets: X86
       llvm-install-dir: install
       llvm-archive: llvm.txz
@@ -84,6 +85,8 @@ jobs:
           -DCMAKE_INSTALL_PREFIX="${{ env.llvm-install-dir }}"
           -DCMAKE_C_COMPILER='${{ github.workspace }}/${{ env.llvm-bootstrap-install-dir}}/bin/clang-cl.exe'
           -DCMAKE_CXX_COMPILER='${{ github.workspace }}/${{ env.llvm-bootstrap-install-dir}}/bin/clang-cl.exe'
+          -DCMAKE_C_FLAGS="-g"
+          -DCMAKE_CXX_FLAGS="-g"
           -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
           -DCMAKE_MT=mt.exe
           -DLLVM_TARGETS_TO_BUILD=${{ env.llvm-build-targets }}
