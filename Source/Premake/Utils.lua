@@ -1,5 +1,3 @@
-require "Oyl"
-
 Oyl.Utils = {}
 local Utils = Oyl.Utils;
 
@@ -48,9 +46,9 @@ function Oyl.Utils.ScriptDir(depth)
 end
 
 ---@generic T
----@param table { [string]: `T` }
+---@param table { [string]: T }
 ---@param index string
----@return `T`
+---@return T?
 function Oyl.Utils.CaseInsensitiveFind(table, index)
     for key, value in pairs(table) do
         if key:lower() == index:lower() then
