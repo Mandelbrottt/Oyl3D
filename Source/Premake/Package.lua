@@ -28,12 +28,73 @@ local Config = require "Config"
 Oyl.Package = {}
 local Package = Oyl.Package
 
+---@param callback fun(package, packageName: string, packageDir: string)
+local function forEachLocalPackage(callback)
+	local localPackages = os.matchdirs(path.join(Config.PackagesDir, "*"))
+	for i, packageDir in ipairs(localPackages) do
+		if package then
+			local packageName = path.getbasename(packageDir)
+			local package = Packages[packageName]
+			callback(package, packageName, packageDir)
+		end
+	end
+end
+
+---@param optionName string
+---@return string
+local function packageListTrigger(optionName)
+	if _OPTIONS[optionName] then
+		if _OPTIONS[optionName] == "" then
+			_OPTIONS[optionName] = "all"
+		end
+		_OPTIONS[optionName] = _OPTIONS[optionName]:lower()
+	end
+	return optionName
+end
+
 newaction {
 	trigger = "packages",
 	description = "Fetch all packages defined in Packages.lua files",
 	execute = function()
-		Package.FetchPackages(Packages)
+		local clean = _OPTIONS["clean"]
+		if not clean then
+			Package.FetchPackages(Packages)
+		else
+			forEachLocalPackage(function(package, packageName, packageDir)
+				local doClean = clean and (clean == "all" or string.find(clean, ";?" .. packageName:lower() .. ";?"))
+				if doClean and os.isdir(packageDir) then
+					printf("Cleaning package \"%s\" at %s", packageName, packageDir)
+					os.execute(os.translateCommands("{RMDIR} " .. packageDir))
+				end
+			end)
+		end
 	end
+}
+
+newoption {
+	trigger = packageListTrigger("reset"),
+	category = "packages",
+	value = "<PACKAGE>[;<PACKAGE>...]",
+	description = (function()
+		local description = "Force fetch the given package(s):\n\tall\n"
+		forEachLocalPackage(function(package, packageName, packageDir)
+			description = string.format("%s\t%s\n", description, packageName:lower())
+		end)
+		return description
+	end)(),
+}
+
+newoption {
+	trigger = packageListTrigger("clean"),
+	category = "packages",
+	value = "<PACKAGE>[;<PACKAGE>...]",
+	description = (function()
+		local description = "Clean the given package(s):\n\tall\n"
+		forEachLocalPackage(function(package, packageName, packageDir)
+			description = string.format("%s\t%s\n", description, packageName:lower())
+		end)
+		return description
+	end)(),
 }
 
 newoption {
@@ -50,35 +111,6 @@ end
 ---@return boolean is the package fetchable? If false, package is expected to already be on disk (SDKs)
 function Package.IsFetchable(package)
 	return package.Git ~= nil or package.Archive ~= nil
-end
-
-newoption {
-	trigger = "reset",
-	category = "packages",
-	value = "<PACKAGE>[;<PACKAGE>...]",
-	description = (function()
-		local description = "Force fetch the given package(s)"
-		local localPackages = os.matchdirs(path.join(Config.PackagesDir, "*"))
-		if #localPackages == 0 then
-			return description
-		end
-		description = description .. ":\n\tall\n"
-		for i, v in ipairs(localPackages) do
-			local packageName = path.getbasename(v)
-			local package = Packages[packageName]
-			if package then
-				description = string.format("%s\t%s\n", description, packageName:lower())
-			end
-		end
-		return description
-	end)(),
-}
-
-if _OPTIONS["reset"] then
-	if _OPTIONS["reset"] == "" then
-		_OPTIONS["reset"] = "all"
-	end
-	_OPTIONS["reset"] = _OPTIONS["reset"]:lower()
 end
 
 ---@param packages Packages
@@ -232,7 +264,7 @@ function Package.FetchGit(package)
 	if (_OPTIONS["verbose"]) then
 		SUPPRESS_COMMAND_OUTPUT = ""
 	end
-	
+
 	local Git = package.Git
 	assert(Git ~= nil)
 
@@ -266,7 +298,6 @@ function Package.FetchGit(package)
 		executef("git remote add origin %s %s", Git.Url, SUPPRESS_COMMAND_OUTPUT)
 		executef("git config --local gc.auto 0 %s", SUPPRESS_COMMAND_OUTPUT)
 		executef("git config --local advice.detachedHead false %s", SUPPRESS_COMMAND_OUTPUT)
-		
 	end
 
 	-- If no ref is specified, get the head revision
