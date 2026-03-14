@@ -1,4 +1,4 @@
----@type { [string]: Packages.Definition }
+---@type Packages
 return {
 	SpdLog = {
 		Git = {
@@ -21,20 +21,20 @@ return {
 	YamlCpp = {
 		Git = {
 			Url = "https://github.com/jbeder/yaml-cpp.git",
-			Ref = "c73ee34704c512ebe915b283645aefa9f424a22f",
+			Ref = "0.8.0",
 		},
 	},
 
 	GLFW = {
 		Git = {
 			Url = "https://github.com/glfw/glfw.git",
-			Tag = "3.3.8"
+			Ref = "3.3.8"
 		},
 	},
 	ImGui = {
 		Git = {
 			Url = "https://github.com/ocornut/imgui.git",
-			Revision = "e2cede6542d2d6c83598d4d34dc51de84aeb282f"
+			Ref = "v1.92.0",
 		},
 	},
 	ClangTooling = {
@@ -57,8 +57,11 @@ return {
 	}
 }
 
+---@alias Packages { [string]: Packages.Definition }
+
 ---@class (exact) Packages.Definitions.Git
 ---@field Git Packages.Definitions.GitTable
+---@field Name? string
 
 ---@class (exact) Packages.Definitions.GitTable
 ---@field Url string
@@ -66,14 +69,19 @@ return {
 
 ---@class (exact) Packages.Definitions.Remote
 ---@field Remote Packages.Definitions.RemoteTable
+---@field Name? string
 
 ---@class (exact) Packages.Definitions.RemoteTable
 ---@field Url string
 
 ---@class (exact) Packages.Definitions.Local
 ---@field Local Packages.Definitions.LocalTable
+---@field Name? string
 
 ---@class (exact) Packages.Definitions.LocalTable
 ---@field Path string
 
----@alias Packages.Definition Packages.Definitions.Git | Packages.Definitions.Remote | Packages.Definitions.Local
+---@alias Packages.Definition
+---| Packages.Definitions.Git
+---| Packages.Definitions.Remote
+---| Packages.Definitions.Local
