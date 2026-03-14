@@ -14,7 +14,7 @@ function CheckProject.GenerateProject(additionalArgs)
 		return
 	end
 
-	group ""
+	group "Premake"
 
 	project(CheckProject.Name); do
 		kind "Makefile"
@@ -51,6 +51,7 @@ function CheckProject.GenerateProject(additionalArgs)
 			architecture "x86_64"
 		filter {}
 	end
+	project "*"
 end
 
 newoption {

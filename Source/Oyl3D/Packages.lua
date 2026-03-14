@@ -1,6 +1,6 @@
 local Config = require "Config"
 
----@type { [string]: Package.Project }
+---@type Package.Projects
 return {
 	Glfw = {
 		Language = premake.C,

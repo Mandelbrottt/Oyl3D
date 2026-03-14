@@ -98,6 +98,34 @@ function Engine.SetupProjectFromScript(script)
 	return prj
 end
 
+local function RemoveUnreferencedProjects(wks, engineProjects)
+	-- wks.projects is an array, make it a set for O(n) checking
+	local projectSet = {}
+	for _, prj in ipairs(wks.projects) do
+		projectSet[prj.name] = prj
+	end
+
+	-- Gather the set of projects referenced by engine projects
+	local dependSet = {}
+	for _, prj in pairs(engineProjects) do
+		dependSet[prj.name] = prj
+		for _, link in ipairs(prj.links) do
+			dependSet[link] = projectSet[link]
+		end
+	end
+
+	-- Remove all projects not directly referenced by an engine project
+	local index = 1
+	while index <= #wks.projects do
+		local prj = wks.projects[index]
+		if dependSet[prj.name] then
+			index = index + 1
+		else
+			table.remove(wks.projects, index)
+		end
+	end
+end
+
 ---@class Engine.GenerateProjectParams
 ---@field Packages? { [string]: Package.Project }
 
@@ -128,19 +156,15 @@ function Engine.GenerateProjects(params)
 
 	-- Recurse through the source directory and include all premake scripts
 	local scripts = os.matchfiles("*/premake5.lua")
-	for _, script in pairs(scripts) do
+	for _, script in ipairs(scripts) do
 		local prj = Engine.SetupProjectFromScript(script)
 		engineProjects[prj.name] = prj
 	end
 
-	---@type any
-	---@diagnostic disable-next-line: missing-parameter
-	local wks = workspace()
-
 	-- Iterate all workspace projects
 	--     Hook up their dependencies
 	--     Remove projects that aren't referenced
-	for _, prj in ipairs(wks.projects) do
+	for _, prj in pairs(engineProjects) do
 		project(prj.name)
 		for _, link in ipairs(prj.links) do
 			local proj = engineProjects[link]
@@ -154,6 +178,11 @@ function Engine.GenerateProjects(params)
 			end
 		end
 	end
+
+	---@type any
+	---@diagnostic disable-next-line: missing-parameter
+	local wks = workspace()
+	RemoveUnreferencedProjects(wks, engineProjects)
 end
 
 ---@param projectName string

@@ -3,6 +3,8 @@ local Packages = require "Packages"
 
 local Package = {}
 
+---@alias Package.Projects { [string]: Package.Project }
+
 ---@class Package.Project
 ---@field Name? string
 ---@field Language? string Language the package is written in. Defaults to "C++"
@@ -22,108 +24,121 @@ local Package = {}
 
 ---@param params Package.Project.GenerateParams
 function Package.GeneratePackages(params)
-	local packages = params.Packages
-	local onProject = params.OnProject
-
-	for name, package in spairs(packages) do
-		-- Setup any variables not set by the user
-		package.Name = package.Name or name
-		package.Language = package.Language or premake.CPP
-		package.Kind = package.Kind or premake.NONE
-		package.PackageDir = package.PackageDir or path.join(Config.PackagesDir, package.Name)
-		package.ProjectDir = package.ProjectDir or path.join("%{wks.location}", "Packages", package.Name)
-
-		if Packages[name] and Packages[name].Local then
-			package.PackageDir = Packages[name].Local.Path
-			if not path.isabsolute(package.PackageDir) then
-				package.PackageDir = path.join(Config.RootDir, package.PackageDir)
-			end
-		end
-		
-		-- Package includes should be included in the source to show up properly in IDEs
-		package.Source = package.Source or {}
-
-		---@param dirs string[]
-		local function forEachAddPackageDir(dirs)
-			if not dirs then
-				return
-			end
-
-			for index, dir in ipairs(dirs) do
-				if not path.isabsolute(dir) then
-					dirs[index] = path.join(package.PackageDir, dir)
-				end
-			end
-		end
-
-		forEachAddPackageDir(package.Source)
-		forEachAddPackageDir(package.Include)
-		forEachAddPackageDir(package.LibDirs)
-
-		local cwd = os.getcwd()
-		os.chdir(package.PackageDir)
-
+	for name, package in spairs(params.Packages) do
 		group "Packages"
-		project(package.Name); do
-			location(package.ProjectDir)
-			
-			if onProject then
-				onProject(package)
+		Package.GeneratePackageProject(name, package, params.OnProject)
+	end
+	project "*"
+end
+
+---@param name string
+---@param package Package.Project
+function Package.InitPackageProjectVars(name, package)
+	-- Setup any variables not set by the user
+	package.Name = package.Name or name
+	package.Language = package.Language or premake.CPP
+	package.Kind = package.Kind or premake.NONE
+	package.PackageDir = package.PackageDir or path.join(Config.PackagesDir, package.Name)
+	package.ProjectDir = package.ProjectDir or path.join("%{wks.location}", "Packages", package.Name)
+
+	if Packages[name] and Packages[name].Local then
+		package.PackageDir = Packages[name].Local.Path
+		if not path.isabsolute(package.PackageDir) then
+			package.PackageDir = path.join(Config.RootDir, package.PackageDir)
+		end
+	end
+
+	-- Package includes should be included in the source to show up properly in IDEs
+	package.Source = package.Source or {}
+
+	---@param dirs string[]
+	local function forEachAddPackageDir(dirs)
+		if not dirs then
+			return
+		end
+
+		for index, dir in ipairs(dirs) do
+			if not path.isabsolute(dir) then
+				dirs[index] = path.join(package.PackageDir, dir)
 			end
+		end
+	end
 
-			-- Remove any files added by onProject
-			removefiles { "**" }
+	forEachAddPackageDir(package.Source)
+	forEachAddPackageDir(package.Include)
+	forEachAddPackageDir(package.LibDirs)
+end
 
-			local sourcePatterns = {
-				"**.c",
-				"**.cpp",
-				"**.ixx",
-			}
-			local headerPatterns = {
-				"**.h",
-				"**.hpp",
-				"**.inc",
-				"**.inl",
-			}
+---@param name string
+---@param package Package.Project
+---@param onProject? fun(package: Package.Project)
+function Package.GeneratePackageProject(name, package, onProject)
+	Package.InitPackageProjectVars(name, package)
 
-			-- Add files under source directories to project
-			for _, dir in ipairs(package.Source) do
-				files(table.translate(
-					table.join(sourcePatterns, headerPatterns),
-					function(value) return path.join(dir, value) end)
-				)
-			end
+	local cwd = os.getcwd()
+	os.chdir(package.PackageDir)
 
-			-- Add files under include directories to project
-			for _, dir in ipairs(package.Include) do
-				files(table.translate(
-					headerPatterns,
-					function(value) return path.join(dir, value) end)
-				)
-			end
+	project(package.Name); do
+		location(package.ProjectDir)
 
-			kind(package.Kind)
-			language(package.Language)
-			warnings "Off"
-
-			includedirs(package.Include)
-			libdirs(package.LibDirs)
-
-			filter "platforms:not *Editor*"; do
-				if package.Kind == premake.SHAREDLIB then
-					kind(premake.STATICLIB)
-				end
-			end
-
+		if onProject then
 			filter {}
-			if package.OnProject then
-				package:OnProject()
-			end
+			onProject(package)
 			filter {}
 		end
-		project "*"
-		os.chdir(cwd)
+
+		-- Remove any files added by onProject
+		removefiles { "**" }
+
+		local sourcePatterns = {
+			"**.c",
+			"**.cpp",
+			"**.ixx",
+		}
+		local headerPatterns = {
+			"**.h",
+			"**.hpp",
+			"**.inc",
+			"**.inl",
+		}
+
+		-- Add files under source directories to project
+		for _, dir in ipairs(package.Source) do
+			files(table.translate(
+				table.join(sourcePatterns, headerPatterns),
+				function(value) return path.join(dir, value) end)
+			)
+		end
+
+		-- Add files under include directories to project
+		for _, dir in ipairs(package.Include) do
+			files(table.translate(
+				headerPatterns,
+				function(value) return path.join(dir, value) end)
+			)
+		end
+
+		kind(package.Kind)
+		language(package.Language)
+		warnings "Off"
+
+		includedirs(package.Include)
+		libdirs(package.LibDirs)
+
+		filter "platforms:not *Editor*"; do
+			if package.Kind == premake.SHAREDLIB then
+				kind(premake.STATICLIB)
+			end
+		end
+
+		filter {}
+		if package.OnProject then
+			package:OnProject()
+		end
+		filter {}
 	end
+	project "*"
+	os.chdir(cwd)
 end
 
 ---@param package Package.Project

@@ -39,7 +39,7 @@ newaction {
 			os.matchfiles(("%s/%s*.ninja"):format(prj.location, prj.name))
 		)
 		for _, file in ipairs(filesToRemove) do
-			printf("Removing %s...", path.getrelative(os.getcwd(), file))
+			printf("Cleaning %s...", path.getrelative(os.getcwd(), file))
 			os.remove(file)
 		end
 	end,
