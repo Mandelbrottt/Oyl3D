@@ -1,5 +1,6 @@
+local Packages = require "Packages"
+
 local Config = require "Config"
-local Engine = require "Engine"
 
 ---@class (exact) Package.Archive
 ---@field Url string
@@ -24,11 +25,85 @@ local Engine = require "Engine"
 ---@field CustomProperties? fun(package?: Package) Callback run when project is generated. package is nil if GenerateProject is false
 ---@field DependantProperties? fun(package: Package) Callback run inside projects that reference this package
 
----@type { [string]: Package }
-Oyl.Packages = {}
-
 Oyl.Package = {}
 local Package = Oyl.Package
+
+newaction {
+	trigger = "packages",
+	description = "Fetch all packages defined in Packages.lua files",
+	execute = function()
+		Package.FetchPackages(Packages)
+	end
+}
+
+newoption {
+	trigger = "dryrun",
+	category = "packages",
+	description = "Dry run cleaning and fetching packages",
+}
+
+function Package.GeneratePackageCache()
+	Package.FetchPackages(Packages)
+end
+
+---@param package Package
+---@return boolean is the package fetchable? If false, package is expected to already be on disk (SDKs)
+function Package.IsFetchable(package)
+	return package.Git ~= nil or package.Archive ~= nil
+end
+
+newoption {
+	trigger = "reset",
+	category = "packages",
+	value = "<PACKAGE>[;<PACKAGE>...]",
+	description = (function()
+		local description = "Force fetch the given package(s)"
+		local localPackages = os.matchdirs(path.join(Config.PackagesDir, "*"))
+		if #localPackages == 0 then
+			return description
+		end
+		description = description .. ":\n\tall\n"
+		for i, v in ipairs(localPackages) do
+			local packageName = path.getbasename(v)
+			local package = Packages[packageName]
+			if package then
+				description = string.format("%s\t%s\n", description, packageName:lower())
+			end
+		end
+		return description
+	end)(),
+}
+
+if _OPTIONS["reset"] then
+	if _OPTIONS["reset"] == "" then
+		_OPTIONS["reset"] = "all"
+	end
+	_OPTIONS["reset"] = _OPTIONS["reset"]:lower()
+end
+
+---@param packages Packages
+function Package.FetchPackages(packages)
+	for name, package in spairs(packages) do
+		package.Name = name
+
+		local reset = _OPTIONS["reset"]
+		local doReset = reset and (reset == "all" or string.find(reset, ";?" .. name:lower() .. ";?"))
+		local packageDir = path.join(Config.PackagesDir, name)
+		if doReset and os.isdir(packageDir) then
+			term.pushColor(term.yellow)
+			io.write(("Forcing Fetch of Package \"%s\"\n"):format(name))
+			term.popColor()
+			os.execute(os.translateCommands("{RMDIR} " .. packageDir))
+		end
+
+		if package.Git then
+			Package.FetchGit(package)
+		end
+		if package.Remote then
+			Package.FetchRemote(package)
+		end
+	end
+end
 
 function Oyl.Package.SetupPackages()
 	for name, package in pairs(Oyl.Packages) do
@@ -70,156 +145,79 @@ function Package.SetupVarsInPackage(name, package)
 	end
 end
 
-function Oyl.Package.GenerateProjects()
-	-- Not guaranteed to iterate lua tables in order, sort a proxy array and index into the array
-	-- with that
-	local orderedKeys = {}
-	for k, v in pairs(Oyl.Packages) do
-		table.insert(orderedKeys, k)
-	end
-	table.sort(orderedKeys)
+-- function Oyl.Package.GenerateProjects()
+-- 	-- Not guaranteed to iterate lua tables in order, sort a proxy array and index into the array
+-- 	-- with that
+-- 	local orderedKeys = {}
+-- 	for k, v in pairs(Oyl.Packages) do
+-- 		table.insert(orderedKeys, k)
+-- 	end
+-- 	table.sort(orderedKeys)
 
-	for i = 1, #orderedKeys do
-		local package = Oyl.Packages[orderedKeys[i]]
+-- 	for i = 1, #orderedKeys do
+-- 		local package = Oyl.Packages[orderedKeys[i]]
 
-		local cwd = os.getcwd()
-		os.chdir(package.ProjectDir)
+-- 		local cwd = os.getcwd()
+-- 		os.chdir(package.ProjectDir)
 
-		-- Generate package project if specified, otherwise just run CustomProperties callback
-		-- This allows clients to do custom processing on the worktree once the package has been fetched
-		if package.GenerateProject and Engine.DependenciesSet[package.Name] then
-			project(package.Name); do
-				Engine.ApplyCommonCppSettings()
-				kind(package.Kind)
-				includedirs(package.IncludeDirs)
-				warnings "Off"
+-- 		-- Generate package project if specified, otherwise just run CustomProperties callback
+-- 		-- This allows clients to do custom processing on the worktree once the package has been fetched
+-- 		if package.GenerateProject and Engine.DependenciesSet[package.Name] then
+-- 			project(package.Name); do
+-- 				Engine.ApplyCommonCppSettings()
+-- 				kind(package.Kind)
+-- 				includedirs(package.IncludeDirs)
+-- 				warnings "Off"
 
-				Engine.FilterStandalone()
-				if package.Kind == premake.SHAREDLIB then
-					kind(premake.STATICLIB)
-				end
+-- 				Engine.FilterStandalone()
+-- 				if package.Kind == premake.SHAREDLIB then
+-- 					kind(premake.STATICLIB)
+-- 				end
 
-				filter {}
-				if package.CustomProperties then
-					package:CustomProperties()
-				end
-				filter {}
-			end
-		end
+-- 				filter {}
+-- 				if package.CustomProperties then
+-- 					package:CustomProperties()
+-- 				end
+-- 				filter {}
+-- 			end
+-- 		end
 
-		os.chdir(cwd)
-	end
-	project "*"
-end
+-- 		os.chdir(cwd)
+-- 	end
+-- 	project "*"
+-- end
 
-newoption {
-	trigger = "init-packages",
-	category = "packages",
-	description = "fetch all packages",
-}
+-- ---@param package Package
+-- function Oyl.Package.Include(package)
+-- 	if (package.GenerateProject and package.Kind ~= premake.NONE) then
+-- 		links { package.Name }
+-- 	end
+-- 	if (package.LibDirs) then
+-- 		libdirs(package.LibDirs)
+-- 	end
+-- 	if (package.Libs) then
+-- 		links(package.Libs)
+-- 	end
+-- 	if (package.IncludeDirs) then
+-- 		externalincludedirs(package.IncludeDirs)
+-- 	end
+-- 	if (package.DependantProperties) then
+-- 		package:DependantProperties()
+-- 		filter {}
+-- 	end
+-- end
 
-newoption {
-	trigger = "clean-packages",
-	category = "packages",
-	description = "Clear and re-fetch selected packages",
-	allowed = (function()
-		local result = { { "all", "Clean all packages" }, { "", "" } }
-
-		for _, v in ipairs(os.matchdirs(path.join(Config.PackagesDir, "*"))) do
-			table.insert(result, { path.getbasename(v):lower(), "" })
-		end
-
-		return result
-	end)()
-}
-
-newoption {
-	trigger = "dryrun",
-	category = "packages",
-	description = "Dry run cleaning and fetching packages",
-}
-
-function Package.UpdatePackageCache()
-	local clean = _OPTIONS["clean-packages"] and not _OPTIONS["premake-check"]
-	if (clean) then
-		local packageToClean = _OPTIONS["clean-packages"]
-		if packageToClean == "all" or packageToClean == "" then
-			packageToClean = nil
-		end
-		Package.CleanPackageCache(packageToClean)
-	end
-
-	local init = _OPTIONS["init-packages"] or (_ACTION ~= nil and string.sub(_ACTION, 1, 2) == "vs")
-	Package.FetchPackages(Oyl.Packages, init or clean)
-end
-
----@param packageToClean? string
-function Package.CleanPackageCache(packageToClean)
-	local numPackagesCleaned = 0
-	for name, package in pairs(Oyl.Packages) do
-		-- If directory exists. If packageToClean is specified, also check if the package name matches
-		if os.isdir(package.ProjectDir)
-			and Package.IsFetchable(package)
-			and (packageToClean == nil or packageToClean:lower() == name:lower())
-		then
-			if (_OPTIONS["dryrun"]) then
-				printf("[DRYRUN]\tWould Clean %s...", package.ProjectDir)
-			else
-				printf("\tCleaning %s...", package.ProjectDir)
-				os.execute(os.translateCommands("{RMDIR} " .. package.ProjectDir))
-			end
-			numPackagesCleaned = numPackagesCleaned + 1
-		end
-	end
-	if numPackagesCleaned == 0 then
-		print("No Packages in Cache to remove")
-	end
-end
-
----@param package Package
----@return boolean is the package fetchable? If false, package is expected to already be on disk (SDKs)
-function Oyl.Package.IsFetchable(package)
-	return package.Git ~= nil or package.Archive ~= nil
-end
-
----@param packages Package[]
----@param doFetch boolean
-function Oyl.Package.FetchPackages(packages, doFetch)
-	for name, package in pairs(packages) do
-		local numFiles = os.match(package.ProjectDir .. "/*")
-		if doFetch and #numFiles == 0 then
-			if doFetch then
-				-- For now, trust the user won't add multiple types of packages
-				if package.Git then
-					Package.GitClone(package)
-				end
-				if package.Archive then
-					Package.FetchArchive(package)
-				end
-			end
-		end
-
-		if package.OnFetch then
-			local cwd = os.getcwd()
-			os.chdir(package.ProjectDir)
-			package:OnFetch()
-			os.chdir(cwd)
-		end
-	end
-end
-
-local executeOrPrint = function(command)
-	local SUPPRESS_COMMAND_OUTPUT = (os.host() == "windows" and "> nul 2>&1" or "> /dev/null 2>&1")
-	if (_OPTIONS["verbose"]) then
-		SUPPRESS_COMMAND_OUTPUT = ""
-	end
+local executef = function(command, ...)
+	command = string.format(command, ...)
 
 	if (not _OPTIONS["dryrun"]) then
-		term.pushColor(term.infoColor)
-		io.write(("\t%s "):format(command))
-		term.popColor()
-		printf("in %s", os.getcwd())
-		os.execute(command .. SUPPRESS_COMMAND_OUTPUT)
+		if _OPTIONS["verbose"] then
+			term.pushColor(term.infoColor)
+			io.write(("\t%s "):format(command))
+			term.popColor()
+			printf("in %s", os.getcwd())
+		end
+		os.execute(command)
 	else
 		term.pushColor(term.infoColor)
 		io.write(("\t%s "):format(command))
@@ -228,48 +226,81 @@ local executeOrPrint = function(command)
 	end
 end
 
----@param package Package
-function Package.GitClone(package)
+---@param package Packages.Definition
+function Package.FetchGit(package)
+	local SUPPRESS_COMMAND_OUTPUT = (os.host() == "windows" and "> nul 2>&1" or "> /dev/null 2>&1")
+	if (_OPTIONS["verbose"]) then
+		SUPPRESS_COMMAND_OUTPUT = ""
+	end
+	
 	local Git = package.Git
 	assert(Git ~= nil)
 
-	printf("Cloning Git package \"%s\" from \"%s\"...", package.Name, Git.Url)
+	local packageDir = path.join(Config.PackagesDir, package.Name)
 
-	executeOrPrint(string.format("git init %s", package.ProjectDir))
+	if not os.isdir(packageDir) then
+		executef("git init %s %s", packageDir, SUPPRESS_COMMAND_OUTPUT)
+	end
 
 	local cwd = os.getcwd()
-	os.chdir(package.ProjectDir)
+	os.chdir(packageDir)
 
-	executeOrPrint(string.format("git remote add origin %s", Git.Url))
+	local currentSha, _ = os.outputof("git rev-parse HEAD")
+	local currentBranch, _ = os.outputof("git rev-parse --abbrev-ref HEAD")
+	local currentTag, _ = os.outputof("git describe --tags --exact-match HEAD")
+	local currentRef = ""
+	currentRef = currentSha == Git.Ref and currentSha or currentRef
+	currentRef = currentBranch == Git.Ref and currentBranch or currentRef
+	currentRef = currentTag == Git.Ref and currentTag or currentRef
 
-	if package.Files then
-		-- Clone specified files and license only
-		local files = "!/* /LICENSE*"
-		for k, file in pairs(package.Files) do
-			if file:sub(1, 1) ~= "/" then
-				file = "/" .. file
-			end
-			files = files .. " " .. file
-		end
-
-		executeOrPrint(string.format("git sparse-checkout set --no-cone %s", files))
+	-- If already on ref, do nothing
+	if Git.Ref == currentRef then
+		term.pushColor(term.green)
+		printf("Git Package \"%s\" up-to-date on Ref %s", package.Name, Git.Ref)
+		term.popColor()
+		return
 	end
 
-	-- If a specific revision or tag is specified, point to it
-	if Git.Revision then
-		local revision = Git.Revision
-		printf("\tFetching revision \"%s\"...", revision)
-		executeOrPrint(string.format("git fetch -q --depth 1 origin %s", revision))
-		executeOrPrint(string.format("git checkout -q --no-progress %s", revision))
-	elseif Git.Tag then
-		local tag = Git.Tag
-		printf("\tFetching tag \"%s\"...", tag)
-		executeOrPrint(string.format("git fetch -q --depth 1 origin refs/tags/%s:refs/tags/%s", tag, tag))
-		executeOrPrint(string.format("git checkout -q --no-progress %s", tag))
+	local remote, _ = os.outputof("git remote -v")
+	if not remote or remote == "" then
+		executef("git remote add origin %s %s", Git.Url, SUPPRESS_COMMAND_OUTPUT)
+		executef("git config --local gc.auto 0 %s", SUPPRESS_COMMAND_OUTPUT)
+		executef("git config --local advice.detachedHead false %s", SUPPRESS_COMMAND_OUTPUT)
+		
 	end
 
-	-- Remove the .git folder as we're only using git to download the repository
-	executeOrPrint(os.translateCommands("{RMDIR} .git"))
+	-- If no ref is specified, get the head revision
+	Git.Ref = Git.Ref or "HEAD"
+
+	-- If a ref is specified, clone it
+	printf("Cloning Git package \"%s\" from \"%s\"...", package.Name, Git.Url)
+	printf("\tFetching Ref \"%s\"...", Git.Ref)
+
+	local fetchCommand = table.implode({
+		"git fetch",
+		"--no-tags --prune --no-recurse-submodules --depth 1",
+		"origin",
+		"+{REF}",
+		"+refs/heads/{REF}*:refs/remotes/origin/{REF}*",
+		"+refs/tags/{REF}*:refs/tags/{REF}*"
+	}, "", "", " ")
+	fetchCommand = fetchCommand:gsub("%{REF%}", Git.Ref)
+	executef("%s %s", fetchCommand, SUPPRESS_COMMAND_OUTPUT)
+
+	local branch, _ = os.outputof(string.format("git branch --list --remote origin/%s", Git.Ref))
+	local tag, _ = os.outputof(string.format("git tag --list %s", Git.Ref))
+
+	local ref = ""
+	if branch ~= nil and branch ~= "" then
+		ref = "refs/remotes/origin/" .. branch
+	elseif tag ~= nil and tag ~= "" then
+		ref = "refs/tags/" .. tag
+	else
+		ref = Git.Ref
+	end
+
+	executef("git checkout --progress --force --quiet %s", ref)
+
 	os.chdir(cwd)
 
 	term.pushColor(term.green)
@@ -277,40 +308,61 @@ function Package.GitClone(package)
 	term.popColor()
 end
 
----@param package Package
-function Package.FetchArchive(package)
-	local Archive = package.Archive
-	assert(Archive ~= nil)
+---@param package Packages.Definition
+function Package.FetchRemote(package)
+	local Remote = package.Remote
+	assert(Remote ~= nil)
 
-	local baseUrl = string.explode(Archive.Url, "?")[1]
-	local archiveFile = path.getname(baseUrl)
+	local baseUrl = string.explode(Remote.Url, "?")[1]
+	local remoteFile = path.getname(baseUrl)
 
-	os.mkdir(package.ProjectDir)
+	local packageDir = path.join(Config.PackagesDir, package.Name)
+
+	os.mkdir(packageDir)
 	local cwd = os.getcwd()
-	os.chdir(package.ProjectDir)
+	os.chdir(packageDir)
 
-	if Archive.Url and Archive.Url ~= "" then
-		printf("Fetching Archive \"%s\" from %s", package.Name, Archive.Url)
-		local result_str, response_code = http.download(Archive.Url, archiveFile)
-		if result_str ~= "OK" then error(string.format("[%s] %s", response_code, result_str)) end
-	else
-		error(("Empty Archive URL Provided for package \"%s\"!"):format(package.Name))
+	local refFile = ".ref"
+	local ref = ""
+	if os.isfile(refFile) then
+		ref = io.readfile(refFile)
 	end
 
-	printf("\tExtracting archive file \"%s\" into %s", archiveFile, package.ProjectDir)
-	local tarCommand = ("tar -x -f '%s'"):format(archiveFile)
-	if os.host() == premake.WINDOWS then
-		executeOrPrint("pwsh -Command " .. tarCommand)
+	-- If ref is currently downloaded, don't fetch
+	if ref == Remote.Url then
+		term.pushColor(term.green)
+		printf("Remote Package \"%s\" up-to-date with URL \"%s\"", package.Name, Remote.Url)
+		term.popColor()
+		io.write("\tIf you know the remote file has changed, consider running ")
+		term.pushColor(term.infoColor)
+		io.write(("premake packages --reset=%s\n"):format(package.Name))
+		term.popColor()
 	else
-		executeOrPrint(tarCommand)
+		if Remote.Url and Remote.Url ~= "" then
+			printf("Fetching Archive \"%s\" from %s", package.Name, Remote.Url)
+			local result_str, response_code = http.download(Remote.Url, remoteFile)
+			if result_str ~= "OK" then error(string.format("[%s] %s", response_code, result_str)) end
+		else
+			error(("Empty Archive URL Provided for package \"%s\"!"):format(package.Name))
+		end
+
+		printf("\tExtracting archive file \"%s\" into %s", remoteFile, packageDir)
+		local tarCommand = ("tar -x -f '%s'"):format(remoteFile)
+		if os.host() == premake.WINDOWS then
+			executef("pwsh -Command " .. tarCommand)
+		else
+			executef(tarCommand)
+		end
+
+		os.remove(remoteFile)
+		io.writefile(refFile, Remote.Url)
+
+		term.pushColor(term.green)
+		print(string.format("\tPackage \"%s\" fetched succesfully!", package.Name))
+		term.popColor()
 	end
-	os.remove(archiveFile)
 
 	os.chdir(cwd)
-
-	term.pushColor(term.green)
-	print(string.format("\tPackage \"%s\" fetched succesfully!", package.Name))
-	term.popColor()
 end
 
 return Package
