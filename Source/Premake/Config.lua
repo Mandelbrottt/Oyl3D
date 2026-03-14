@@ -1,5 +1,4 @@
-Oyl.Config = {}
-local Config = Oyl.Config
+local Config = {}
 
 Config.EngineDefaultGroup = "Engine"
 

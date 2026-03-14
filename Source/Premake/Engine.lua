@@ -1,183 +1,158 @@
 local Config = require "Config"
-local Utils = require "Utils"
+local Package = require "Package"
 
----@alias Engine.Project.Dependency (string | { Name: string })
-
----@class Engine.Project
----@field Language string
----@field Kind string
----@field Dir? string
----@field Name? string
----@field ProjectName? string
----@field Group? string
----@field Pch? string
----@field Dependencies? Engine.Project.Dependency[]
----@field Properties? fun()
-
-Oyl.Engine = {}
-local Engine = Oyl.Engine
+local Engine = {}
 
 Engine.Name = "Oyl3D"
 Engine.ShortName = "Oyl"
 
----@type { [string]: Engine.Project }
-Oyl.Projects = {}
+---@param script string
+function Engine.SetupProjectFromScript(script)
+	-- Reset back to workspace scope to ensure a clean slate for the callee
+	---@type any
+	---@diagnostic disable-next-line: missing-parameter
+	local wks = workspace()
 
----@type table<string, boolean>
-Oyl.Engine.DependenciesSet = {}
+	do
+		script = path.join(path.getdirectory(script), path.getbasename(script))
 
-function Engine.GenerateProjects()
-	-- Recurse through the source directory and include all premake scripts
-	local scripts = os.matchfiles("**premake5.lua")
-	for _, script in pairs(scripts) do
-		include(script)
+		local nProjects = #wks.projects
+		require(script) -- Invoke the project script
+		assert(
+			#wks.projects == nProjects + 1,
+			string.format("Project script %s must define one premake project!", script)
+		)
 	end
 
-	-- Iterate all projects, and generate their dependencies
-	for name, proj in pairs(Oyl.Projects) do
-		project(proj.ProjectName)
-		if (proj.Dependencies) then
-			for _, dependency in ipairs(proj.Dependencies) do
-				dependency = dependency.Name or dependency
-				if dependency ~= name then
-					Engine.AddDependencyToProject(dependency)
-					Engine.DependenciesSet[dependency] = true
+	-- Get the project that was just created
+	---@type any
+	---@diagnostic disable-next-line: missing-parameter
+	local prj = assert(project(), "No engine project in scope!")
+
+	prj.language = prj.language or premake.CPP
+	prj.kind = prj.kind or premake.NONE
+
+	if prj.language == premake.CPP then
+		Engine.CommonCppSettings()
+	else
+		error(string.format("Invalid language \"%s\" in project \"%s\"", prj.language, prj.name))
+	end
+
+	files {
+		"%{prj.location}/**.c",
+		"%{prj.location}/**.h",
+		"%{prj.location}/**.cpp",
+		"%{prj.location}/**.hpp",
+		"%{prj.location}/**.inl",
+		"%{prj.location}/**.inc",
+		"%{prj.location}/**.ixx",
+	}
+	removefiles {
+		"**.gen.h"
+	}
+
+	includedirs {
+		"%{prj.location}",
+		"%{prj.location}/.Generated/"
+	}
+
+	defines {
+		string.upper(Engine.ShortName) .. "_CURRENT_ASSEMBLY=\"" .. prj.name .. "\"",
+		Engine.DefineInsideMacro(prj.name),
+	}
+
+	filter "system:windows"; do
+		files { "%{prj.location}/**_Windows*" }
+	end
+
+	-- header files can be included across assembly boundaries, and so have to use project-agnostic includes
+	-- FIXME: premake doesn't support per-file includedirs
+	filter "files:**.cpp"; do
+		includedirs {
+			prj.basedir,
+		}
+	end
+
+	filter("configurations:" .. Config.Configurations.Debug); do
+		defines { string.upper(Engine.ShortName) .. "_DEBUG=1" }
+	end
+	filter("configurations:" .. Config.Configurations.Development); do
+		defines { string.upper(Engine.ShortName) .. "_DEVELOPMENT=1" }
+	end
+	filter("configurations:" .. Config.Configurations.Profile); do
+		defines { string.upper(Engine.ShortName) .. "_PROFILE=1", }
+	end
+	filter("configurations:" .. Config.Configurations.Distribution); do
+		defines { string.upper(Engine.ShortName) .. "_DISTRIBUTION=1" }
+	end
+	filter "platforms:Editor"; do
+		defines { string.upper(Engine.ShortName) .. "_EDITOR=1" }
+	end
+	if prj.kind == premake.SHAREDLIB then
+		filter "platforms:not *Editor*"; do
+			kind(premake.STATICLIB)
+		end
+		filter ""
+	end
+
+	return prj
+end
+
+---@class Engine.GenerateProjectParams
+---@field Packages? { [string]: Package.Project }
+
+---@param params? Engine.GenerateProjectParams
+function Engine.GenerateProjects(params)
+	params = params or {}
+
+	-- Generate package projects before engine projects to guarantee they will be ready when dependencies
+	-- are realized
+	if params.Packages then
+		Package.GeneratePackages {
+			Packages = params.Packages,
+			OnProject = function(package)
+				if package.Language == premake.CPP or package.Language == premake.C then
+					Engine.CommonCppSettings()
 				else
-					premake.error(string.format("Assembly \"%s\" cannot depend on itself!", proj.Name))
+					error(string.format(
+						"Language \"%s\" in package \"%s\" not currently supported!",
+						package.Language,
+						package.Name
+					))
 				end
 			end
-		end
-		filter {}
-		project "*"
-	end
-end
-
-function Engine.FilterEditor()
-	filter(string.format("platforms:*%s*", Config.Platforms.Editor))
-end
-
-function Engine.FilterStandalone()
-	filter(string.format("platforms:not *%s*", Config.Platforms.Editor))
-end
-
----@param proj Engine.Project
-function Engine.EngineProjectDefinition(proj)
-	local projectDir = Utils.ScriptDir(3)
-	local projectName = path.getname(projectDir)
-
-	proj.Dir = projectDir
-	proj.Name = projectName
-	proj.ProjectName = proj.ProjectName or ("%s.%s"):format(Engine.ShortName, projectName)
-	proj.Group = proj.Group or Config.EngineDefaultGroup
-	proj.Kind = proj.Kind or premake.UTILITY
-	proj.Dependencies = proj.Dependencies or {}
-
-	if proj.Group then
-		group(proj.Group)
+		}
 	end
 
-	project(proj.ProjectName); do
-		if proj.Language == premake.CPP then
-			Engine.ApplyCommonCppSettings()
-		else
-			premake.error(string.format("Invalid language \"%s\" in project \"%s\"", proj.Language, projectName))
-		end
+	local engineProjects = {}
 
-		kind(proj.Kind)
+	-- Recurse through the source directory and include all premake scripts
+	local scripts = os.matchfiles("*/premake5.lua")
+	for _, script in pairs(scripts) do
+		local prj = Engine.SetupProjectFromScript(script)
+		engineProjects[prj.name] = prj
+	end
 
-		includedirs {
-			"%{prj.location}",
-			"%{prj.location}/Generated/"
-		}
-		removefiles { "**.generated.h" }
+	---@type any
+	---@diagnostic disable-next-line: missing-parameter
+	local wks = workspace()
 
-		defines {
-			string.upper(Engine.ShortName) .. "_CURRENT_ASSEMBLY=\"" .. proj.Name .. "\"",
-			Engine.DefineInsideMacro(proj.Name),
-
-			-- Warning Silence Defines
-			"_SILENCE_STDEXT_ARR_ITERS_DEPRECATION_WARNING", -- Silence warning in spdlog
-		}
-
-		filter "system:windows"; do
-			files { "**/*_Windows*" }
-		end
-
-		-- header files can be included across assembly boundaries, and so have to use project-agnostic includes
-		-- FIXME: premake doesn't support per-file includedirs
-		filter "files:**.cpp"; do
-			includedirs {
-				path.join("%{prj.location}", proj.Dir),
-			}
-		end
-
-		filter("configurations:" .. Config.Configurations.Debug); do
-			defines { string.upper(Engine.ShortName) .. "_DEBUG=1" }
-		end
-		filter("configurations:" .. Config.Configurations.Development); do
-			defines { string.upper(Engine.ShortName) .. "_DEVELOPMENT=1" }
-		end
-		filter("configurations:" .. Config.Configurations.Profile); do
-			defines { string.upper(Engine.ShortName) .. "_PROFILE=1", }
-		end
-		filter("configurations:" .. Config.Configurations.Distribution); do
-			defines { string.upper(Engine.ShortName) .. "_DISTRIBUTION=1" }
-		end
-		Engine.FilterEditor(); do
-			defines { string.upper(Engine.ShortName) .. "_EDITOR=1" }
-		end
-		if proj.Kind == premake.SHAREDLIB then
-			Engine.FilterStandalone(); do
-				kind(premake.STATICLIB)
+	-- Iterate all workspace projects
+	--     Hook up their dependencies
+	--     Remove projects that aren't referenced
+	for _, prj in ipairs(wks.projects) do
+		project(prj.name)
+		for _, link in ipairs(prj.links) do
+			local proj = engineProjects[link]
+			if proj then
+				externalincludedirs(proj.basedir)
 			end
-			filter ""
-		end
 
-		filter {}
-		if proj.Properties then
-			proj.Properties()
+			local package = params.Packages[link]
+			if package then
+				Package.Include(package)
+			end
 		end
-		filter {}
-	end
-	group ""
-
-	return proj
-end
-
----@param dependency Engine.Project.Dependency
-function Engine.AddDependencyToProject(dependency)
-	filter {}
-
-	dependency = dependency.Name or dependency
-
-	---@type Engine.Project
-	local proj = Utils.CaseInsensitiveFind(Oyl.Projects, dependency)
-	if proj then
-		links { proj.ProjectName }
-		externalincludedirs { proj.Dir }
-		return
-	end
-	
-	---@type Package
-	local package = Utils.CaseInsensitiveFind(Oyl.Packages, dependency)
-	if package then
-		if (package.GenerateProject and package.Kind ~= premake.NONE) then
-			links { package.Name }
-		end
-		if (package.LibDirs) then
-			libdirs(package.LibDirs)
-		end
-		if (package.Libs) then
-			links(package.Libs)
-		end
-		if (package.IncludeDirs) then
-			externalincludedirs(package.IncludeDirs)
-		end
-		if (package.DependantProperties) then
-			package:DependantProperties()
-			filter {}
-		end
-		return
 	end
 end
 
@@ -191,10 +166,7 @@ function Engine.DefineInsideMacro(projectName)
 	)
 end
 
-function Engine.ApplyCommonCppSettings()
-	filename("%{prj.name}_" .. _ACTION)
-	language "C++"
-	cppdialect "C++17"
+function Engine.CommonCppSettings()
 	staticruntime "Off"
 	floatingpoint "Fast"
 	rtti "On"
@@ -205,19 +177,10 @@ function Engine.ApplyCommonCppSettings()
 	externalwarnings "Off"
 	externalanglebrackets "On"
 
-	location (Config.ProjectLocation)
 	targetdir(Config.TargetDir .. Config.OutputDir)
-	debugdir (Config.TargetDir .. Config.OutputDir)
-	objdir   (Config.ObjectDir .. Config.OutputDir)
+	debugdir(Config.TargetDir .. Config.OutputDir)
+	objdir(Config.ObjectDir .. Config.OutputDir)
 	implibdir(Config.LibraryDir .. Config.OutputDir)
-
-	files {
-		"./**.cpp",
-		"./**.h",
-		"./**.hpp",
-		"./**.inl",
-		"./**.ixx",
-	}
 
 	if (not _OPTIONS["no-premake-check"]) then
 		links {
@@ -225,40 +188,56 @@ function Engine.ApplyCommonCppSettings()
 		}
 	end
 
-	filter "kind:StaticLib"
-		targetdir(Config.LibraryDir .. Config.OutputDir)
+	filter "language:C++"; do
+		cppdialect "C++17"
+	end
 
-	filter "toolset:msc*"
+	filter "language:C"; do
+		cdialect "C11"
+	end
+
+	filter "kind:StaticLib"; do
+		targetdir(Config.LibraryDir .. Config.OutputDir)
+	end
+
+	filter "action:vs*"; do
 		disablewarnings {
 			"4251", -- member needs dll-interface to be used by clients of class
 			"4275", -- non dll-interface used as base for dll-interface
 		}
+	end
 
-	filter "toolset:clang"
+	filter "toolset:clang"; do
 		floatingpoint "Default"
+	end
 
-	filter "system:windows"
+	filter "system:windows"; do
 		architecture "x86_64"
+	end
 
-	filter("configurations:" .. Config.Configurations.Debug)
+	filter("configurations:" .. Config.Configurations.Debug); do
 		optimize "Off"
 		runtime "Debug"
 		symbols "On"
+	end
 
-	filter("configurations:" .. Config.Configurations.Development)
+	filter("configurations:" .. Config.Configurations.Development); do
 		optimize "On"
 		runtime "Release"
 		symbols "On"
+	end
 
-	filter("configurations:" .. Config.Configurations.Profile)
+	filter("configurations:" .. Config.Configurations.Profile); do
 		optimize "On"
 		runtime "Release"
 		symbols "On"
-		
-	filter("configurations:" .. Config.Configurations.Distribution)
+	end
+
+	filter("configurations:" .. Config.Configurations.Distribution); do
 		optimize "Full"
 		runtime "Release"
 		symbols "Off"
+	end
 
 	filter {}
 end

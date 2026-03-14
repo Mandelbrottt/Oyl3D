@@ -1,94 +1,93 @@
-local Config = require "Config"
-local Check = require "CheckProject"
+-- local Config = require "Config"
+-- local Check = require "CheckProject"
+-- local Package = require "Package"
 
-workspace "Oyl.Spyll"; do
-	architecture(premake.X86_64)
+-- workspace "Spyll"; do
+-- 	location "./"
+-- 	filename("%{wks.name}_" .. _ACTION)
 
-	configurations {
-		"Debug",
-		"RelWithDebInfo",
-		"Release"
-	}
+-- 	configurations {
+-- 		"Debug",
+-- 		"RelWithDebInfo",
+-- 		"Release"
+-- 	}
 
-	platforms {
-		premake.X86_64
-	}
+-- 	platforms {
+-- 		premake.X86_64
+-- 	}
 
-	project "Oyl.Spyll"; do
-		kind(premake.CONSOLEAPP)
+-- 	project "Oyl.Spyll"; do
+-- 		location "Spyll"
+-- 		kind(premake.CONSOLEAPP)
 		
-		includedirs {
-			"%{prj.location}",
-		}
+-- 		includedirs {
+-- 			"%{prj.location}",
+-- 		}
 		
-		filename("%{prj.name}_" .. _ACTION)
-		language "C++"
-		cppdialect "C++17"
-		staticruntime "Off"
-		warnings "Extra"
-		fatalwarnings { "All" }
-		multiprocessorcompile "On"
-		externalwarnings "Off"
-		externalanglebrackets "On"
-		runtime "Release" -- ClangTooling compiled with release runtime, needs to match
+-- 		filename("%{prj.name}_" .. _ACTION)
+-- 		language "C++"
+-- 		cppdialect "C++17"
+-- 		staticruntime "Off"
+-- 		warnings "Extra"
+-- 		fatalwarnings { "All" }
+-- 		multiprocessorcompile "On"
+-- 		externalwarnings "Off"
+-- 		externalanglebrackets "On"
+-- 		runtime "Release" -- ClangTooling compiled with release runtime, needs to match
 
-		location "Spyll"
+-- 		targetdir(Config.TargetDir .. Config.OutputDir)
+-- 		debugdir(Config.TargetDir .. Config.OutputDir)
+-- 		objdir(Config.ObjectDir .. Config.OutputDir)
+-- 		implibdir(Config.LibraryDir .. Config.OutputDir)
 
-		targetdir(Config.TargetDir .. Config.OutputDir)
-		debugdir(Config.TargetDir .. Config.OutputDir)
-		objdir(Config.ObjectDir .. Config.OutputDir)
-		implibdir(Config.LibraryDir .. Config.OutputDir)
+-- 		Package.Include(Packages.ClangTooling)
 
-		externalincludedirs(Oyl.Packages.ClangTooling.IncludeDirs)
-		libdirs(Oyl.Packages.ClangTooling.LibDirs)
-		links(Oyl.Packages.ClangTooling.Libs)
+-- 		files {
+-- 			"./Spyll/**.cpp",
+-- 			"./Spyll/**.h",
+-- 			"./Spyll/**.hpp",
+-- 			"./Spyll/**.inl",
+-- 			"./Spyll/**.ixx",
+-- 		}
+
+-- 		files {
+-- 			"./Tests/**.cpp",
+-- 			"./Tests/**.h",
+-- 			"./Tests/**.hpp",
+-- 		}
+
+-- 		filter "files:*Tests/**.cpp"; do
+-- 			excludefrombuild "On"
+-- 		end
 		
-		files {
-			"./Spyll/**.cpp",
-			"./Spyll/**.h",
-			"./Spyll/**.hpp",
-			"./Spyll/**.inl",
-			"./Spyll/**.ixx",
-		}
+-- 		defines {
+-- 			"ITERATOR_DEBUG_LEVEL=0"
+-- 		}
 
-		files {
-			"./Tests/**.cpp",
-			"./Tests/**.h",
-			"./Tests/**.hpp",
-		}
-
-		filter "files:*Tests/**.cpp"; do
-			excludefrombuild "On"
-		end
+-- 		filter "system:windows"; do
+-- 			links {
+-- 				"ntdll",
+-- 				"version",
+-- 				-- "psapi",
+-- 				-- "ws2_32",
+-- 				-- "-delayload:shell32.dll",
+-- 				-- "-delayload:ole32.dll",
+-- 			}
+-- 		end
 		
-		defines {
-			"ITERATOR_DEBUG_LEVEL=0"
-		}
+-- 		filter "configurations:Debug"; do
+-- 			optimize "Off"
+-- 			symbols "On"
+-- 		end
 
-		filter "system:windows"; do
-			links {
-				"ntdll",
-				"version",
-				-- "psapi",
-				-- "ws2_32",
-				-- "-delayload:shell32.dll",
-				-- "-delayload:ole32.dll",
-			}
-		end
-		
-		filter "configurations:Debug"; do
-			optimize "Off"
-			symbols "On"
-		end
+-- 		filter "configurations:RelWithDebInfo"; do
+-- 			optimize "Debug"
+-- 			symbols "On"
+-- 		end
 
-		filter "configurations:RelWithDebInfo"; do
-			optimize "Debug"
-			symbols "On"
-		end
-
-		filter "configurations:Release"; do
-			optimize "Full"
-			symbols "Off"
-		end
-	end
-end
+-- 		filter "configurations:Release"; do
+-- 			optimize "Full"
+-- 			symbols "Off"
+-- 		end
+-- 	end
+-- end

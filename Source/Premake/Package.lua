@@ -1,32 +1,150 @@
+local Config = require "Config"
 local Packages = require "Packages"
 
-local Config = require "Config"
+local Package = {}
 
----@class (exact) Package.Archive
----@field Url string
-
----@class (exact) Package.Git
----@field Url string
----@field Revision? string
----@field Tag? string
-
----@class Package
----@field GenerateProject? boolean
+---@class Package.Project
 ---@field Name? string
----@field Archive? Package.Archive
----@field Git? Package.Git
----@field Kind? string
----@field Files? string[]
----@field ProjectDir? string Path to the project relative to workspace
----@field IncludeDirs? string[] List of include Paths, relative to project
----@field LibDirs? string[] List of library Search Paths, relative to project
----@field Libs? string[] List of library names to be linked against, in LibDirs
----@field OnFetch? fun(package: Package) Callback run once the package has been fetched and is on disk, before project generation
----@field CustomProperties? fun(package?: Package) Callback run when project is generated. package is nil if GenerateProject is false
----@field DependantProperties? fun(package: Package) Callback run inside projects that reference this package
+---@field Language? string Language the package is written in. Defaults to "C++"
+---@field Kind? string Kind of the package. Defaults to "None" (header only)
+---@field PackageDir? string Path to the package source
+---@field ProjectDir? string Path to the project file
+---@field Source? string[] List of source paths, relative to PackageDir
+---@field Include string[] List of include paths, relative to PackageDir
+---@field LibDirs? string[] List of library search paths, relative to PackageDir
+---@field Libs? string[] List of library names to be linked against
+---@field OnProject? fun(package?: Package.Project) Callback run when project is generated. package is nil if GenerateProject is false
+---@field OnDepend? fun(package: Package.Project) Callback run inside projects that reference this package
 
-Oyl.Package = {}
-local Package = Oyl.Package
+---@class Package.Project.GenerateParams
+---@field Packages { [string]: Package.Project}
+---@field OnProject? fun(package: Package.Project)
+
+---@param params Package.Project.GenerateParams
+function Package.GeneratePackages(params)
+	local packages = params.Packages
+	local onProject = params.OnProject
+
+	for name, package in spairs(packages) do
+		-- Setup any variables not set by the user
+		package.Name = package.Name or name
+		package.Language = package.Language or premake.CPP
+		package.Kind = package.Kind or premake.NONE
+		package.PackageDir = package.PackageDir or path.join(Config.PackagesDir, package.Name)
+		package.ProjectDir = package.ProjectDir or path.join("%{wks.location}", "Packages", package.Name)
+
+		if Packages[name] and Packages[name].Local then
+			package.PackageDir = Packages[name].Local.Path
+			if not path.isabsolute(package.PackageDir) then
+				package.PackageDir = path.join(Config.RootDir, package.PackageDir)
+			end
+		end
+		
+		-- Package includes should be included in the source to show up properly in IDEs
+		package.Source = package.Source or {}
+
+		---@param dirs string[]
+		local function forEachAddPackageDir(dirs)
+			if not dirs then
+				return
+			end
+
+			for index, dir in ipairs(dirs) do
+				if not path.isabsolute(dir) then
+					dirs[index] = path.join(package.PackageDir, dir)
+				end
+			end
+		end
+
+		forEachAddPackageDir(package.Source)
+		forEachAddPackageDir(package.Include)
+		forEachAddPackageDir(package.LibDirs)
+
+		local cwd = os.getcwd()
+		os.chdir(package.PackageDir)
+
+		group "Packages"
+		project(package.Name); do
+			location(package.ProjectDir)
+			
+			if onProject then
+				onProject(package)
+			end
+
+			-- Remove any files added by onProject
+			removefiles { "**" }
+
+			local sourcePatterns = {
+				"**.c",
+				"**.cpp",
+				"**.ixx",
+			}
+			local headerPatterns = {
+				"**.h",
+				"**.hpp",
+				"**.inc",
+				"**.inl",
+			}
+
+			-- Add files under source directories to project
+			for _, dir in ipairs(package.Source) do
+				files(table.translate(
+					table.join(sourcePatterns, headerPatterns),
+					function(value) return path.join(dir, value) end)
+				)
+			end
+
+			-- Add files under include directories to project
+			for _, dir in ipairs(package.Include) do
+				files(table.translate(
+					headerPatterns,
+					function(value) return path.join(dir, value) end)
+				)
+			end
+
+			kind(package.Kind)
+			language(package.Language)
+			warnings "Off"
+
+			includedirs(package.Include)
+			libdirs(package.LibDirs)
+
+			filter "platforms:not *Editor*"; do
+				if package.Kind == premake.SHAREDLIB then
+					kind(premake.STATICLIB)
+				end
+			end
+
+			filter {}
+			if package.OnProject then
+				package:OnProject()
+			end
+			filter {}
+		end
+		project "*"
+		os.chdir(cwd)
+	end
+end
+
+---@param package Package.Project
+function Package.Include(package)
+	externalincludedirs(package.Include)
+
+	if (package.Libs and package.Kind ~= premake.NONE) then
+		links { package.Name }
+	end
+	if (package.LibDirs) then
+		libdirs(package.LibDirs)
+	end
+	if (package.Libs) then
+		links(package.Libs)
+	end
+	if (package.OnDepend) then
+		filter {}
+		package:OnDepend()
+		filter {}
+	end
+end
 
 ---@param callback fun(package, packageName: string, packageDir: string)
 local function forEachLocalPackage(callback)
@@ -107,12 +225,6 @@ function Package.GeneratePackageCache()
 	Package.FetchPackages(Packages)
 end
 
----@param package Package
----@return boolean is the package fetchable? If false, package is expected to already be on disk (SDKs)
-function Package.IsFetchable(package)
-	return package.Git ~= nil or package.Archive ~= nil
-end
-
 ---@param packages Packages
 function Package.FetchPackages(packages)
 	for name, package in spairs(packages) do
@@ -136,108 +248,6 @@ function Package.FetchPackages(packages)
 		end
 	end
 end
-
-function Oyl.Package.SetupPackages()
-	for name, package in pairs(Oyl.Packages) do
-		Package.SetupVarsInPackage(name, package)
-	end
-end
-
----@param name string
----@param package Package
-function Package.SetupVarsInPackage(name, package)
-	-- Default to None if no kind provided
-	package.Kind = package.Kind or premake.NONE
-	if package.GenerateProject == nil then
-		package.GenerateProject = true
-	end
-
-	package.Name = name
-	if (not package.ProjectDir) then
-		package.ProjectDir = Config.PackagesDir .. name .. "/"
-	end
-
-	-- Add project directory to include directories
-	if package.IncludeDirs ~= nil then
-		for i, includeDir in ipairs(package.IncludeDirs) do
-			includeDir = path.join(package.ProjectDir, includeDir)
-			package.IncludeDirs[i] = includeDir
-		end
-	else -- If IncludeDirs isn't manually defined, set it to the include folder of the package
-		local includeDirsString = path.join(package.ProjectDir, "**include")
-		package.IncludeDirs = { includeDirsString }
-	end
-
-	-- Add project directory to lib directories
-	if package.LibDirs ~= nil then
-		for i, libDir in ipairs(package.LibDirs) do
-			libDir = path.join(package.ProjectDir, libDir)
-			package.LibDirs[i] = libDir
-		end
-	end
-end
-
--- function Oyl.Package.GenerateProjects()
--- 	-- Not guaranteed to iterate lua tables in order, sort a proxy array and index into the array
--- 	-- with that
--- 	local orderedKeys = {}
--- 	for k, v in pairs(Oyl.Packages) do
--- 		table.insert(orderedKeys, k)
--- 	end
--- 	table.sort(orderedKeys)
-
--- 	for i = 1, #orderedKeys do
--- 		local package = Oyl.Packages[orderedKeys[i]]
-
--- 		local cwd = os.getcwd()
--- 		os.chdir(package.ProjectDir)
-
--- 		-- Generate package project if specified, otherwise just run CustomProperties callback
--- 		-- This allows clients to do custom processing on the worktree once the package has been fetched
--- 		if package.GenerateProject and Engine.DependenciesSet[package.Name] then
--- 			project(package.Name); do
--- 				Engine.ApplyCommonCppSettings()
--- 				kind(package.Kind)
--- 				includedirs(package.IncludeDirs)
--- 				warnings "Off"
-
--- 				Engine.FilterStandalone()
--- 				if package.Kind == premake.SHAREDLIB then
--- 					kind(premake.STATICLIB)
--- 				end
-
--- 				filter {}
--- 				if package.CustomProperties then
--- 					package:CustomProperties()
--- 				end
--- 				filter {}
--- 			end
--- 		end
-
--- 		os.chdir(cwd)
--- 	end
--- 	project "*"
--- end
-
--- ---@param package Package
--- function Oyl.Package.Include(package)
--- 	if (package.GenerateProject and package.Kind ~= premake.NONE) then
--- 		links { package.Name }
--- 	end
--- 	if (package.LibDirs) then
--- 		libdirs(package.LibDirs)
--- 	end
--- 	if (package.Libs) then
--- 		links(package.Libs)
--- 	end
--- 	if (package.IncludeDirs) then
--- 		externalincludedirs(package.IncludeDirs)
--- 	end
--- 	if (package.DependantProperties) then
--- 		package:DependantProperties()
--- 		filter {}
--- 	end
--- end
 
 local executef = function(command, ...)
 	command = string.format(command, ...)
