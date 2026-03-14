@@ -2,7 +2,8 @@ local Check = require "CheckProject"
 local Config = require "Config"
 local Engine = require "Engine"
 
-local Packages = require "./Packages"
+---@type Package.Projects
+local Packages = dofile "Packages.lua"
 
 workspace "Oyl3D"; do
 	filename("%{wks.name}")

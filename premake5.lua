@@ -21,9 +21,9 @@ local function shouldGenerateWorkspace(wks)
 end
 
 if shouldGenerateWorkspace("Oyl3D") then
-	require "Source/Oyl3D/premake5"
+	include "Source/Oyl3D"
 end
 
--- if shouldGenerateWorkspace("Spyll") then
--- 	require "Source.Spyll.premake5"
--- end
+if shouldGenerateWorkspace("Spyll") then
+	include "Source/Spyll"
+end

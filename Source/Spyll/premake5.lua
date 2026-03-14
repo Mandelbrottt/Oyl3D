@@ -1,93 +1,105 @@
--- local Config = require "Config"
--- local Check = require "CheckProject"
--- local Package = require "Package"
+local Config = require "Config"
+local Check = require "CheckProject"
+local Package = require "Package"
 
--- workspace "Spyll"; do
--- 	location "./"
--- 	filename("%{wks.name}_" .. _ACTION)
+---@type Package.Projects
+local Packages = dofile "Packages.lua"
 
--- 	configurations {
--- 		"Debug",
--- 		"RelWithDebInfo",
--- 		"Release"
--- 	}
+workspace "Spyll"; do
+	location "./"
+	filename("%{wks.name}")
 
--- 	platforms {
--- 		premake.X86_64
--- 	}
+	configurations {
+		"Debug",
+		"RelWithDebInfo",
+		"Release"
+	}
 
--- 	project "Oyl.Spyll"; do
--- 		location "Spyll"
--- 		kind(premake.CONSOLEAPP)
-		
--- 		includedirs {
--- 			"%{prj.location}",
--- 		}
-		
--- 		filename("%{prj.name}_" .. _ACTION)
--- 		language "C++"
--- 		cppdialect "C++17"
--- 		staticruntime "Off"
--- 		warnings "Extra"
--- 		fatalwarnings { "All" }
--- 		multiprocessorcompile "On"
--- 		externalwarnings "Off"
--- 		externalanglebrackets "On"
--- 		runtime "Release" -- ClangTooling compiled with release runtime, needs to match
+	platforms {
+		premake.X86_64
+	}
 
--- 		targetdir(Config.TargetDir .. Config.OutputDir)
--- 		debugdir(Config.TargetDir .. Config.OutputDir)
--- 		objdir(Config.ObjectDir .. Config.OutputDir)
--- 		implibdir(Config.LibraryDir .. Config.OutputDir)
+	Check.GenerateProject {
+		"--workspace=spyll"
+	}
 
--- 		Package.Include(Packages.ClangTooling)
+	---@param package? fun(package: Package.Project)
+	local function commonCppSettings(package)
+		cppdialect "C++17"
+		staticruntime "Off"
+		warnings "Extra"
+		fatalwarnings { "All" }
+		multiprocessorcompile "On"
+		externalwarnings "Off"
+		externalanglebrackets "On"
 
--- 		files {
--- 			"./Spyll/**.cpp",
--- 			"./Spyll/**.h",
--- 			"./Spyll/**.hpp",
--- 			"./Spyll/**.inl",
--- 			"./Spyll/**.ixx",
--- 		}
+		targetdir(Config.TargetDir .. Config.OutputDir)
+		debugdir(Config.TargetDir .. Config.OutputDir)
+		objdir(Config.ObjectDir .. Config.OutputDir)
+		implibdir(Config.LibraryDir .. Config.OutputDir)
 
--- 		files {
--- 			"./Tests/**.cpp",
--- 			"./Tests/**.h",
--- 			"./Tests/**.hpp",
--- 		}
+		filter "configurations:Debug"; do
+			optimize "Off"
+			symbols "On"
+		end
 
--- 		filter "files:*Tests/**.cpp"; do
--- 			excludefrombuild "On"
--- 		end
-		
--- 		defines {
--- 			"ITERATOR_DEBUG_LEVEL=0"
--- 		}
+		filter "configurations:RelWithDebInfo"; do
+			optimize "Debug"
+			symbols "On"
+		end
 
--- 		filter "system:windows"; do
--- 			links {
--- 				"ntdll",
--- 				"version",
--- 				-- "psapi",
--- 				-- "ws2_32",
--- 				-- "-delayload:shell32.dll",
--- 				-- "-delayload:ole32.dll",
--- 			}
--- 		end
-		
--- 		filter "configurations:Debug"; do
--- 			optimize "Off"
--- 			symbols "On"
--- 		end
+		filter "configurations:Release"; do
+			optimize "Full"
+			symbols "Off"
+		end
+	end
 
--- 		filter "configurations:RelWithDebInfo"; do
--- 			optimize "Debug"
--- 			symbols "On"
--- 		end
+	Package.GeneratePackages {
+		Packages = Packages,
+		OnProject = commonCppSettings,
+	}
 
--- 		filter "configurations:Release"; do
--- 			optimize "Full"
--- 			symbols "Off"
--- 		end
--- 	end
--- end
+	startproject("Spyll")
+
+	group "Spyll"
+	project "Spyll"; do
+		location "Spyll"
+		kind(premake.CONSOLEAPP)
+
+		includedirs {
+			"%{prj.location}",
+		}
+
+		filename("%{prj.name}_" .. _ACTION)
+		language "C++"
+
+		commonCppSettings()
+
+		Package.Include(Packages.ClangTooling)
+
+		files {
+			"./Spyll/**.cpp",
+			"./Spyll/**.h",
+			"./Spyll/**.hpp",
+			"./Spyll/**.inl",
+			"./Spyll/**.ixx",
+		}
+
+		files {
+			"./Tests/**.cpp",
+			"./Tests/**.h",
+			"./Tests/**.hpp",
+		}
+
+		filter "files:*Tests/**.cpp"; do
+			excludefrombuild "On"
+		end
+
+		filter "system:windows"; do
+			links {
+				"ntdll",
+				"version",
+			}
+		end
+	end
+end
