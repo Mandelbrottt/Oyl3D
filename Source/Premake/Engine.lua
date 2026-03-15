@@ -205,6 +205,7 @@ function Engine.CommonCppSettings()
 	multiprocessorcompile "On"
 	externalwarnings "Off"
 	externalanglebrackets "On"
+	usefullpaths "Off"
 
 	targetdir(Config.TargetDir .. Config.OutputDir)
 	debugdir(Config.TargetDir .. Config.OutputDir)

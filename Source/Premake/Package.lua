@@ -28,7 +28,7 @@ function Package.GeneratePackages(params)
 		group "Packages"
 		Package.GeneratePackageProject(name, package, params.OnProject)
 	end
-	project "*"
+	workspace()
 end
 
 ---@param name string
@@ -145,7 +145,7 @@ end
 function Package.Include(package)
 	externalincludedirs(package.Include)
 
-	if (package.Libs and package.Kind ~= premake.NONE) then
+	if (package.Kind ~= premake.NONE) then
 		links { package.Name }
 	end
 	if (package.LibDirs) then
@@ -391,18 +391,28 @@ function Package.FetchRemote(package)
 		term.popColor()
 		io.write("\tIf you know the remote file has changed, consider running ")
 		term.pushColor(term.infoColor)
-		io.write(("premake packages --reset=%s\n"):format(package.Name))
+		io.write(("premake packages --reset=%s\n"):format(package.Name:lower()))
 		term.popColor()
 	else
 		if Remote.Url and Remote.Url ~= "" then
+			if ref ~= "" then
+				printf("Cleaning \"%s\" from %s, Newer Remote Url Specified", package.Name, Remote.Url)
+				for _, dir in ipairs(os.matchdirs(path.join(packageDir, "*"))) do
+					os.execute(os.translateCommands("{RMDIR} " .. dir))
+				end
+				for _, file in ipairs(os.matchfiles(path.join(packageDir, "*"))) do
+					os.execute(os.translateCommands("{DELETE} " .. file))
+				end
+			end
+
 			printf("Fetching Archive \"%s\" from %s", package.Name, Remote.Url)
 			local result_str, response_code = http.download(Remote.Url, remoteFile)
 			if result_str ~= "OK" then error(string.format("[%s] %s", response_code, result_str)) end
 		else
-			error(("Empty Archive URL Provided for package \"%s\"!"):format(package.Name))
+			error(("Empty Archive URL Provided for Package \"%s\"!"):format(package.Name))
 		end
 
-		printf("\tExtracting archive file \"%s\" into %s", remoteFile, packageDir)
+		printf("\tExtracting Archive File \"%s\" into %s", remoteFile, packageDir)
 		local tarCommand = ("tar -x -f '%s'"):format(remoteFile)
 		if os.host() == premake.WINDOWS then
 			executef("pwsh -Command " .. tarCommand)

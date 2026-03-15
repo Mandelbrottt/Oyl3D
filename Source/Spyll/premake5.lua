@@ -19,6 +19,8 @@ workspace "Spyll"; do
 		premake.X86_64
 	}
 
+	startproject "Spyll"
+
 	Check.GenerateProject {
 		"--workspace=spyll"
 	}
@@ -32,6 +34,7 @@ workspace "Spyll"; do
 		multiprocessorcompile "On"
 		externalwarnings "Off"
 		externalanglebrackets "On"
+		usefullpaths "Off"
 
 		targetdir(Config.TargetDir .. Config.OutputDir)
 		debugdir(Config.TargetDir .. Config.OutputDir)
@@ -44,7 +47,7 @@ workspace "Spyll"; do
 		end
 
 		filter "configurations:RelWithDebInfo"; do
-			optimize "Debug"
+			optimize "On"
 			symbols "On"
 		end
 
@@ -52,14 +55,14 @@ workspace "Spyll"; do
 			optimize "Full"
 			symbols "Off"
 		end
+
+		filter {}
 	end
 
 	Package.GeneratePackages {
 		Packages = Packages,
 		OnProject = commonCppSettings,
 	}
-
-	startproject("Spyll")
 
 	group "Spyll"
 	project "Spyll"; do
@@ -91,7 +94,7 @@ workspace "Spyll"; do
 			"./Tests/**.hpp",
 		}
 
-		filter "files:*Tests/**.cpp"; do
+		filter "files:Tests/**.cpp"; do
 			excludefrombuild "On"
 		end
 
@@ -101,5 +104,9 @@ workspace "Spyll"; do
 				"version",
 			}
 		end
+
+		links {
+			"Premake"
+		}
 	end
 end

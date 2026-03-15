@@ -5,10 +5,8 @@ return {
 		Include = { "include" },
 		LibDirs = { "lib" },
 		OnProject = function (package)
-			package.Libs = table.translate(
-				os.matchfiles(path.join(package.PackageDir, "*.lib")),
-				function(value) return path.getbasename(value) end
-			)
+			-- need direct paths to libs instead of finding through libdirs, for some reason
+			package.Libs = os.matchfiles(path.join(package.PackageDir, "lib", "*.lib"))
 		end,
 		OnDepend = function (package)
 			runtime "Release"

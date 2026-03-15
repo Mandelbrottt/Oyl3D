@@ -51,7 +51,7 @@ function CheckProject.GenerateProject(additionalArgs)
 			architecture "x86_64"
 		filter {}
 	end
-	project "*"
+	workspace()
 end
 
 newoption {
