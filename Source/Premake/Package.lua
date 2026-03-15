@@ -421,7 +421,7 @@ function Package.FetchRemote(package)
 		io.writefile(refFile, Remote.Url)
 
 		term.pushColor(term.green)
-		print(string.format("\tPackage \"%s\" fetched succesfully!", package.Name))
+		print(string.format("\tPackage \"%s\" fetched successfully!", package.Name))
 		term.popColor()
 	end
 

@@ -62,14 +62,6 @@ jobs:
           echo "Adding GNU tar to PATH"
           echo C:\Program Files\Git\usr\bin>>"%GITHUB_PATH%"
 
-      - name: Cache Packages
-        uses: actions/cache@v4
-        with:
-          path: |
-            Packages/**
-            !**.vcxproj*
-          key: engine-source-packages-${{ hashFiles('Packages.lua') }}
-
       - name: Fetch Vulkan SDK version spec
         if: ${{ !env.ACT }}
         run: |
@@ -85,12 +77,32 @@ jobs:
           vulkan-components: Vulkan-Headers, Vulkan-Loader
           vulkan-use-cache: true
 
-      - name: Generate Solutions
+      - name: Cache Packages
+        id: restore-cache-packages
+        uses: actions/cache/restore@v4
+        with:
+          path: &package-cache-path |
+            Packages/**
+            !**.vcxproj*
+          key: packages-${{ runner.os }}-${{ hashFiles('Packages.lua') }}
+          restore-keys: |
+            packages-${{ runner.os }}-
+
+      - name: Fetch Packages
+        if: steps.restore-cache-packages.outputs.cache-hit != 'true'
         working-directory: ${{ github.workspace }}
-        env:
-          CLICOLOR_FORCE: 1
         run: |
           premake5 packages
+
+      - name: Save Package Cache
+        uses: actions/cache/restore@v4
+        with:
+          path: *package-cache-path
+          key: ${{ steps.restore-cache-packages.outputs.cache-primary-key }}
+
+      - name: Generate Solutions
+        working-directory: ${{ github.workspace }}
+        run: |
           premake5 ${{ env.visual_studio_version }} --cc=${{ env.toolset }} --workspace=oyl3d --no-premake-check
 
       - name: Build
