@@ -145,9 +145,6 @@ end
 function Package.Include(package)
 	externalincludedirs(package.Include)
 
-	if (package.Kind ~= premake.NONE) then
-		links { package.Name }
-	end
 	if (package.LibDirs) then
 		libdirs(package.LibDirs)
 	end

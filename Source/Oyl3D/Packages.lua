@@ -141,6 +141,9 @@ return {
 					"TRACY_EXPORTS"
 				}
 			end
+			filter("configurations:not " .. Config.Configurations.Profile); do
+				excludefrombuild "On"
+			end
 		end,
 		OnDepend = function(package)
 			if (package.Kind == premake.SHAREDLIB) then
@@ -157,9 +160,6 @@ return {
 					"TRACY_MANUAL_LIFETIME",
 					"TRACY_NO_SYSTEM_TRACING",
 				}
-			end
-			filter("configurations:not " .. Config.Configurations.Profile); do
-				removelinks { package.Name }
 			end
 		end
 	},
