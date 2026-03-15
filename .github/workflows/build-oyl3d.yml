@@ -83,7 +83,6 @@ jobs:
         with:
           path: &package-cache-path |
             Packages/**
-            !**.vcxproj*
           key: packages-${{ runner.os }}-${{ hashFiles('Packages.lua') }}
           restore-keys: |
             packages-${{ runner.os }}-
@@ -95,7 +94,7 @@ jobs:
           premake5 packages
 
       - name: Save Package Cache
-        uses: actions/cache/restore@v4
+        uses: actions/cache/save@v4
         with:
           path: *package-cache-path
           key: ${{ steps.restore-cache-packages.outputs.cache-primary-key }}
