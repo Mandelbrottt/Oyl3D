@@ -230,7 +230,7 @@ function Engine.CommonCppSettings()
 		targetdir(Config.LibraryDir .. Config.OutputDir)
 	end
 
-	filter "action:vs*"; do
+	filter "toolset:msc*"; do
 		disablewarnings {
 			"4251", -- member needs dll-interface to be used by clients of class
 			"4275", -- non dll-interface used as base for dll-interface
