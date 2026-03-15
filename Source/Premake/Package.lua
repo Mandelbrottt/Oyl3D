@@ -237,6 +237,36 @@ function Package.GeneratePackageCache()
 	Package.FetchPackages(Packages)
 end
 
+---@alias Packages { [string]: Packages.Definition }
+
+---@class (exact) Packages.Definitions.Git
+---@field Git Packages.Definitions.GitTable
+---@field Name? string
+
+---@class (exact) Packages.Definitions.GitTable
+---@field Url string
+---@field Ref? string
+---@field Sparse? string[]
+
+---@class (exact) Packages.Definitions.Remote
+---@field Remote Packages.Definitions.RemoteTable
+---@field Name? string
+
+---@class (exact) Packages.Definitions.RemoteTable
+---@field Url string
+
+---@class (exact) Packages.Definitions.Local
+---@field Local Packages.Definitions.LocalTable
+---@field Name? string
+
+---@class (exact) Packages.Definitions.LocalTable
+---@field Path string
+
+---@alias Packages.Definition
+---| Packages.Definitions.Git
+---| Packages.Definitions.Remote
+---| Packages.Definitions.Local
+
 ---@param packages Packages
 function Package.FetchPackages(packages)
 	for name, package in spairs(packages) do
@@ -320,6 +350,16 @@ function Package.FetchGit(package)
 		executef("git remote add origin %s %s", Git.Url, SUPPRESS_COMMAND_OUTPUT)
 		executef("git config --local gc.auto 0 %s", SUPPRESS_COMMAND_OUTPUT)
 		executef("git config --local advice.detachedHead false %s", SUPPRESS_COMMAND_OUTPUT)
+	end
+
+	if Git.Sparse then
+		local patterns = "!/* /LICENSE*"
+		for k, pattern in pairs(Git.Sparse) do
+			patterns = patterns .. " " .. pattern
+		end
+		executef("git sparse-checkout set --no-cone %s", patterns)
+	else
+		executef("git sparse-checkout disable")
 	end
 
 	-- If no ref is specified, get the head revision
