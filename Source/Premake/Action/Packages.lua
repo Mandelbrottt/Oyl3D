@@ -6,12 +6,10 @@ premake.modules.Packages = {}
 local m = premake.modules.Packages
 
 function m.action()
-	newaction {
-		trigger = m.trigger,
-		description = m.description,
-		onStart = m.onStart,
-		execute = m.execute,
-	}
+	newaction(m)
+	if _ACTION == m.trigger then
+		m.options()
+	end
 end
 
 m.trigger = "packages"
@@ -103,8 +101,5 @@ function m.packageListOptionSetDefault(option, default)
 end
 
 m.action()
-if _ACTION == m.trigger then
-	m.options()
-end
 
 return m

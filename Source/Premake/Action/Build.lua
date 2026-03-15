@@ -1,20 +1,25 @@
 premake.modules.Build = {}
 local m = premake.modules.Build
 
-newaction {
-    trigger = "build",
-    description = "Builds the project based on selected toolset",
+function m.action()
+	newaction(m)
+end
 
-    -- Keep onWorkspace to display completion time at the end
-    onWorkspace = function(wks)
-    end,
-    execute = function()
-        term.pushColor(term.red)
-        print("Not yet implemented")
-        term.popColor()
+m.trigger = "build"
+m.description = "Builds the project based on selected toolset"
 
-        -- https://stackoverflow.com/questions/328017/path-to-msbuild
-    end,
-}
+function m.onWorkspace(wks)
+
+end
+
+function m.execute()
+	term.pushColor(term.red)
+	print("Not yet implemented")
+	term.popColor()
+
+	-- https://stackoverflow.com/questions/328017/path-to-msbuild
+end
+
+m.action()
 
 return m
