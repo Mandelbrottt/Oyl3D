@@ -1,3 +1,4 @@
+local Actions = require "Actions"
 local Config = require "Config"
 
 premake.modules.Clean = {}
@@ -5,9 +6,18 @@ local m = premake.modules.Clean
 
 function m.action()
 	newaction(m)
-	if _ACTION == m.trigger then
-		m.options()
-	end
+
+	Actions.SetActionOptions {
+		Trigger = m.trigger,
+		Keep = {
+			"help",
+			"debugger",
+			"verbose",
+			"file",
+			"scripts",
+		},
+		Options = m.options
+	}
 end
 
 m.trigger = "clean"
