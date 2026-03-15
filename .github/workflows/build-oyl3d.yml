@@ -80,8 +80,8 @@ jobs:
         uses: actions/cache/restore@v4
         with:
           path: &package-cache-path |
-            Packages
-            !Packages/ClangTooling
+            /Packages/*
+            !/Packages/ClangTooling
           key: packages-${{ runner.os }}-${{ hashFiles('Packages.lua') }}
           restore-keys: |
             packages-${{ runner.os }}-
