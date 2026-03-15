@@ -17,7 +17,7 @@ function Engine.SetupProjectFromScript(script)
 		script = path.join(path.getdirectory(script), path.getbasename(script))
 
 		local nProjects = #wks.projects
-		require(script) -- Invoke the project script
+		include(script) -- Invoke the project script
 		assert(
 			#wks.projects == nProjects + 1,
 			string.format("Project script %s must define one premake project!", script)
@@ -128,7 +128,7 @@ local function RemoveUnreferencedProjects(wks, engineProjects)
 end
 
 ---@class Engine.GenerateProjectParams
----@field Packages? { [string]: Package.Project }
+---@field Packages? WorkspacePackage.List
 
 ---@param params? Engine.GenerateProjectParams
 function Engine.GenerateProjects(params)
@@ -137,7 +137,7 @@ function Engine.GenerateProjects(params)
 	-- Generate package projects before engine projects to guarantee they will be ready when dependencies
 	-- are realized
 	if params.Packages then
-		Package.GeneratePackages {
+		Package.GenerateWorkspacePackageProjects {
 			Packages = params.Packages,
 			OnProject = function(package)
 				if package.Language == premake.CPP or package.Language == premake.C then
@@ -264,7 +264,7 @@ function Engine.CommonCppSettings()
 		symbols "Off"
 	end
 
-	filter "platforms:not *Editor* and kind:SharedLib"; do
+	filter { "platforms:not *Editor*", "kind:SharedLib" }; do
 		kind(premake.STATICLIB)
 	end
 

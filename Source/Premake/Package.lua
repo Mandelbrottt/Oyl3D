@@ -3,9 +3,9 @@ local Packages = require "Packages"
 
 local Package = {}
 
----@alias Package.Projects { [string]: Package.Project }
+---@alias WorkspacePackage.List { [string]: WorkspacePackage }
 
----@class Package.Project
+---@class WorkspacePackage
 ---@field Name? string
 ---@field Language? string Language the package is written in. Defaults to "C++"
 ---@field Kind? string Kind of the package. Defaults to "None" (header only)
@@ -15,31 +15,37 @@ local Package = {}
 ---@field Include string[] List of include paths, relative to PackageDir
 ---@field LibDirs? string[] List of library search paths, relative to PackageDir
 ---@field Libs? string[] List of library names to be linked against
----@field OnProject? fun(package?: Package.Project) Callback run when project is generated. package is nil if GenerateProject is false
----@field OnDepend? fun(package: Package.Project) Callback run inside projects that reference this package
+---@field OnInit? fun(package?: WorkspacePackage) Callback run package is first used
+---@field GenerateProject? boolean Whether to generate a project file or not
+---@field OnProject? fun(package?: WorkspacePackage) Callback run when project is generated
+---@field OnDepend? fun(package: WorkspacePackage) Callback run inside projects that reference this package
+---@field _Init? boolean Have the package vars been initialized?
 
----@class Package.Project.GenerateParams
----@field Packages { [string]: Package.Project}
----@field OnProject? fun(package: Package.Project)
+---@class WorkspacePackage.GenerateProjectsParams
+---@field Packages { [string]: WorkspacePackage}
+---@field OnProject? fun(package: WorkspacePackage)
 
----@param params Package.Project.GenerateParams
-function Package.GeneratePackages(params)
-	for name, package in spairs(params.Packages) do
-		group "Packages"
-		Package.GeneratePackageProject(name, package, params.OnProject)
+---@param packages WorkspacePackage.List
+function Package.InitWorkspacePackages(packages)
+	for name, package in spairs(packages) do
+		Package.InitWorkspacePackageVars(name, package)
 	end
-	workspace()
 end
 
 ---@param name string
----@param package Package.Project
-function Package.InitPackageProjectVars(name, package)
+---@param package WorkspacePackage
+function Package.InitWorkspacePackageVars(name, package)
+	if package._Init then
+		return
+	end
+	
 	-- Setup any variables not set by the user
 	package.Name = package.Name or name
 	package.Language = package.Language or premake.CPP
 	package.Kind = package.Kind or premake.NONE
-	package.PackageDir = package.PackageDir or path.join(Config.PackagesDir, package.Name)
+	package.PackageDir = package.PackageDir or path.join(Config.PackageCacheDir, package.Name)
 	package.ProjectDir = package.ProjectDir or path.join("%{wks.location}", "Packages", package.Name)
+	package.GenerateProject = package.GenerateProject or true
 
 	if Packages[name] and Packages[name].Local then
 		package.PackageDir = Packages[name].Local.Path
@@ -67,13 +73,27 @@ function Package.InitPackageProjectVars(name, package)
 	forEachAddPackageDir(package.Source)
 	forEachAddPackageDir(package.Include)
 	forEachAddPackageDir(package.LibDirs)
+
+	package._Init = true
+end
+
+---@param params WorkspacePackage.GenerateProjectsParams
+function Package.GenerateWorkspacePackageProjects(params)
+	for name, package in spairs(params.Packages) do
+		Package.InitWorkspacePackageVars(name, package)
+		if package.GenerateProject then
+			group "Packages"
+			Package.GenerateWorkspacePackageProject(name, package, params.OnProject)
+		end
+	end
+	workspace()
 end
 
 ---@param name string
----@param package Package.Project
----@param onProject? fun(package: Package.Project)
-function Package.GeneratePackageProject(name, package, onProject)
-	Package.InitPackageProjectVars(name, package)
+---@param package WorkspacePackage
+---@param onProject? fun(package: WorkspacePackage)
+function Package.GenerateWorkspacePackageProject(name, package, onProject)
+	Package.InitWorkspacePackageVars(name, package)
 
 	local cwd = os.getcwd()
 	os.chdir(package.PackageDir)
@@ -136,8 +156,10 @@ function Package.GeneratePackageProject(name, package, onProject)
 	os.chdir(cwd)
 end
 
----@param package Package.Project
+---@param package WorkspacePackage
 function Package.Include(package)
+	assert(package._Init, "Included package has not yet been initialized!")
+
 	externalincludedirs(package.Include)
 
 	if (package.LibDirs) then
@@ -152,81 +174,6 @@ function Package.Include(package)
 		filter {}
 	end
 end
-
----@param callback fun(package, packageName: string, packageDir: string)
-local function forEachLocalPackage(callback)
-	local localPackages = os.matchdirs(path.join(Config.PackagesDir, "*"))
-	for i, packageDir in ipairs(localPackages) do
-		if package then
-			local packageName = path.getbasename(packageDir)
-			local package = Packages[packageName]
-			callback(package, packageName, packageDir)
-		end
-	end
-end
-
----@param optionName string
----@return string
-local function packageListTrigger(optionName)
-	if _OPTIONS[optionName] then
-		if _OPTIONS[optionName] == "" then
-			_OPTIONS[optionName] = "all"
-		end
-		_OPTIONS[optionName] = _OPTIONS[optionName]:lower()
-	end
-	return optionName
-end
-
-newaction {
-	trigger = "packages",
-	description = "Fetch all packages defined in Packages.lua files",
-	execute = function()
-		local clean = _OPTIONS["clean"]
-		if not clean then
-			Package.FetchPackages(Packages)
-		else
-			forEachLocalPackage(function(package, packageName, packageDir)
-				local doClean = clean and (clean == "all" or string.find(clean, ";?" .. packageName:lower() .. ";?"))
-				if doClean and os.isdir(packageDir) then
-					printf("Cleaning package \"%s\" at %s", packageName, packageDir)
-					os.execute(os.translateCommands("{RMDIR} " .. packageDir))
-				end
-			end)
-		end
-	end
-}
-
-newoption {
-	trigger = packageListTrigger("reset"),
-	category = "packages",
-	value = "<PACKAGE>[;<PACKAGE>...]",
-	description = (function()
-		local description = "Force fetch the given package(s):\n\tall\n"
-		forEachLocalPackage(function(package, packageName, packageDir)
-			description = string.format("%s\t%s\n", description, packageName:lower())
-		end)
-		return description
-	end)(),
-}
-
-newoption {
-	trigger = packageListTrigger("clean"),
-	category = "packages",
-	value = "<PACKAGE>[;<PACKAGE>...]",
-	description = (function()
-		local description = "Clean the given package(s):\n\tall\n"
-		forEachLocalPackage(function(package, packageName, packageDir)
-			description = string.format("%s\t%s\n", description, packageName:lower())
-		end)
-		return description
-	end)(),
-}
-
-newoption {
-	trigger = "dryrun",
-	category = "packages",
-	description = "Dry run cleaning and fetching packages",
-}
 
 function Package.GeneratePackageCache()
 	Package.FetchPackages(Packages)
@@ -269,7 +216,7 @@ function Package.FetchPackages(packages)
 
 		local reset = _OPTIONS["reset"]
 		local doReset = reset and (reset == "all" or string.find(reset, ";?" .. name:lower() .. ";?"))
-		local packageDir = path.join(Config.PackagesDir, name)
+		local packageDir = path.join(Config.PackageCacheDir, name)
 		if doReset and os.isdir(packageDir) then
 			term.pushColor(term.yellow)
 			io.write(("Forcing Fetch of Package \"%s\"\n"):format(name))
@@ -315,7 +262,7 @@ function Package.FetchGit(package)
 	local Git = package.Git
 	assert(Git ~= nil)
 
-	local packageDir = path.join(Config.PackagesDir, package.Name)
+	local packageDir = path.join(Config.PackageCacheDir, package.Name)
 
 	if not os.isdir(packageDir) then
 		executef("git init %s %s", packageDir, SUPPRESS_COMMAND_OUTPUT)
@@ -404,7 +351,7 @@ function Package.FetchRemote(package)
 	local baseUrl = string.explode(Remote.Url, "?")[1]
 	local remoteFile = path.getname(baseUrl)
 
-	local packageDir = path.join(Config.PackagesDir, package.Name)
+	local packageDir = path.join(Config.PackageCacheDir, package.Name)
 
 	os.mkdir(packageDir)
 	local cwd = os.getcwd()
