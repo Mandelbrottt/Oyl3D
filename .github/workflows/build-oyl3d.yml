@@ -90,6 +90,7 @@ jobs:
         env:
           CLICOLOR_FORCE: 1
         run: |
+          premake5 packages
           premake5 ${{ env.visual_studio_version }} --cc=${{ env.toolset }} --workspace=oyl3d --no-premake-check
 
       - name: Build
