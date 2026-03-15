@@ -5,11 +5,9 @@ on:
     paths: &paths-to-watch
       - 'Source/Oyl3D/**'
       - 'Source/Premake/**'
-      - 'Dependencies.lua'
-      - '**premake5.lua'
+      - 'premake5.lua'
+      - 'Packages.lua'
       - '.github/workflows/build-oyl3d.yml'
-      # TODO: Add oyl spyll dylib to path watch, we might add it to packages. Not sure yet
-      # - <path to oyl-spyll dylib>
   pull_request:
     branches: ["main"]
     paths: *paths-to-watch
