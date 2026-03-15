@@ -1,15 +1,28 @@
+local Actions = require "Actions"
 local Config = require "Config"
 local Package = require "Package"
 local Packages = require "Packages"
+
 
 premake.modules.Packages = {}
 local m = premake.modules.Packages
 
 function m.action()
 	newaction(m)
-	if _ACTION == m.trigger then
-		m.options()
-	end
+
+	Actions.SetActionOptions {
+		Trigger = m.trigger,
+		Keep = {
+			"help",
+			"debugger",
+			"verbose",
+			"os",
+			"file",
+			"scripts",
+			"shell",
+		},
+		Options = m.options
+	}
 end
 
 m.trigger = "packages"
