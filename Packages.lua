@@ -3,13 +3,13 @@ return {
 	SpdLog = {
 		Git = {
 			Url = "https://github.com/gabime/spdlog.git",
-			Ref = "v1.11.0"
+			Ref = "v1.11.0",
 		},
 	},
 	TracyClient = {
 		Git = {
 			Url = "https://github.com/wolfpld/tracy.git",
-			Ref = "v0.10"
+			Ref = "v0.10",
 		},
 	},
 	NlohmannJson = {
@@ -34,7 +34,7 @@ return {
 	GLFW = {
 		Git = {
 			Url = "https://github.com/glfw/glfw.git",
-			Ref = "3.3.8"
+			Ref = "3.3.8",
 		},
 	},
 	ImGui = {
@@ -43,16 +43,22 @@ return {
 			Ref = "v1.92.0",
 		},
 	},
-	-- ClangTooling = {
-	-- 	Remote = {
-	-- 		Url = (function()
-	-- 			if (os.host() == premake.WINDOWS) then
-	-- 				return "https://dl.dropbox.com/scl/fi/uixomsswnbbrlg3kmpqsq/llvm.txz?rlkey=4r754os6t6igz8h9a6upuhpp0"
-	-- 			end
-	-- 			return ""
-	-- 		end)()
-	-- 	},
-	-- },
+	ClangTooling = {
+		Remote = {
+			Url = (function()
+				if (os.host() == premake.WINDOWS) then
+					return "https://dl.dropbox.com/scl/fi/uixomsswnbbrlg3kmpqsq/llvm.txz?rlkey=4r754os6t6igz8h9a6upuhpp0"
+				end
+				return ""
+			end)()
+		},
+	},
+	GoogleTest = {
+		Git = {
+			Url = "https://github.com/google/googletest.git",
+			Ref = "v1.17.0",
+		}
+	},
 	Vulkan = {
 		Local = {
 			Path = assert(

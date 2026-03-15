@@ -20,12 +20,12 @@ workspace "Oyl3D"; do
 		Config.Platforms.Standalone,
 	}
 
-	Check.GenerateProject {
-		"--workspace=oyl3d"
-	}
-
 	---@cast Packages Package.Project
 	Engine.GenerateProjects {
 		Packages = Packages
+	}
+	
+	Check.GenerateProject {
+		"--workspace=oyl3d"
 	}
 end
