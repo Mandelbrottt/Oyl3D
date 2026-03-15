@@ -1,21 +1,9 @@
 premake.path = ("%s;%s/Source/Premake"):format(premake.path, _MAIN_SCRIPT_DIR)
 
-require "Dependencies"
-
-local Package = require "Package"
-local Library = require "Library"
+require "Package"
 
 require "Actions/Clean"
 require "Overrides"
-
-if not _OPTIONS["cc"] and premake.action.current() then
-	premake.action.current().toolset = premake.CLANG
-end
-
-Package.SetupPackages()
-Package.UpdatePackageCache()
-
-Library.SetupLibraries()
 
 newoption {
 	trigger = "workspace",
@@ -23,14 +11,9 @@ newoption {
 	value = "workspace",
 	allowed = {
 		{ "oyl3d", "Oyl3D Engine" },
-		{ "spyll", "Oyl.Spyll Static Analysis Clang Plugin"}
+		{ "spyll", "Oyl.Spyll Static Analysis Clang Plugin" }
 	}
 }
-
-local generateWorkspaceOpt = _OPTIONS["workspace"]
-if generateWorkspaceOpt then
-	generateWorkspaceOpt = generateWorkspaceOpt:lower()
-end
 
 local function shouldGenerateWorkspace(wks)
 	local workspaceOpt = _OPTIONS["workspace"]
@@ -38,9 +21,9 @@ local function shouldGenerateWorkspace(wks)
 end
 
 if shouldGenerateWorkspace("Oyl3D") then
-	require "Source.Oyl3D.premake5"
+	include "Source/Oyl3D"
 end
 
--- if shouldGenerateWorkspace("Spyll") then
--- 	require "Source.Spyll.premake5"
--- end
+if shouldGenerateWorkspace("Spyll") then
+	include "Source/Spyll"
+end

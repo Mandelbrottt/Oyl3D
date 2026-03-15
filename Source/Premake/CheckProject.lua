@@ -1,26 +1,24 @@
 local Config = require "Config"
 
-Oyl.CheckProject = {}
-local CheckProject = Oyl.CheckProject
+local CheckProject = {}
+CheckProject.Name = "Premake"
 
 newoption {
 	trigger     = "no-premake-check",
 	description = "Disable the automatic run of premake on every compile",
 }
 
-Oyl.CheckProject.Name = "Premake"
-
 ---@param additionalArgs? string[]
-function Oyl.CheckProject.GenerateProject(additionalArgs)
+function CheckProject.GenerateProject(additionalArgs)
 	if _OPTIONS["no-premake-check"] then
 		return
 	end
 
-	group ""
+	group "Premake"
 
 	project(CheckProject.Name); do
 		kind "Makefile"
-		filename("%{prj.name}_" .. _ACTION)
+		filename("%{prj.name}")
 		targetdir(Config.TargetDir .. Config.OutputDir)
 		objdir(Config.ObjectDir .. Config.OutputDir)
 
@@ -53,6 +51,7 @@ function Oyl.CheckProject.GenerateProject(additionalArgs)
 			architecture "x86_64"
 		filter {}
 	end
+	workspace()
 end
 
 newoption {

@@ -1,7 +1,4 @@
-require "Oyl"
-
-Oyl.Config = {}
-local Config = Oyl.Config
+local Config = {}
 
 Config.EngineDefaultGroup = "Engine"
 
@@ -23,7 +20,7 @@ Config.ProjectLocation = "./"
 Config.SourceDir = "Source/"
 Config.ToolsDir = "Tools/"
 
-Config.PackagesDir = ("%s/Packages/"):format(Config.RootDir)
+Config.PackagesDir = path.join(Config.RootDir, "Packages")
 
 Config.Configurations = {}
 Config.Configurations.Debug = "Debug"
