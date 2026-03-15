@@ -37,16 +37,16 @@ return {
 			Ref = "v1.92.0",
 		},
 	},
-	ClangTooling = {
-		Remote = {
-			Url = (function()
-				if (os.host() == premake.WINDOWS) then
-					return "https://dl.dropbox.com/scl/fi/uixomsswnbbrlg3kmpqsq/llvm.txz?rlkey=4r754os6t6igz8h9a6upuhpp0"
-				end
-				return ""
-			end)()
-		},
-	},
+	-- ClangTooling = {
+	-- 	Remote = {
+	-- 		Url = (function()
+	-- 			if (os.host() == premake.WINDOWS) then
+	-- 				return "https://dl.dropbox.com/scl/fi/uixomsswnbbrlg3kmpqsq/llvm.txz?rlkey=4r754os6t6igz8h9a6upuhpp0"
+	-- 			end
+	-- 			return ""
+	-- 		end)()
+	-- 	},
+	-- },
 	Vulkan = {
 		Local = {
 			Path = assert(
