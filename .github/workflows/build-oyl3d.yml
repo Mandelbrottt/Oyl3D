@@ -68,7 +68,7 @@ jobs:
           path: |
             Packages/**
             !**.vcxproj*
-          key: engine-source-packages-${{ hashFiles('Dependencies.lua') }}
+          key: engine-source-packages-${{ hashFiles('Packages.lua') }}
 
       - name: Fetch Vulkan SDK version spec
         if: ${{ !env.ACT }}
