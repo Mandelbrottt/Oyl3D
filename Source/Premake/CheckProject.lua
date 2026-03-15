@@ -14,6 +14,14 @@ function CheckProject.GenerateProject(additionalArgs)
 		return
 	end
 
+	---@type any
+	local wks = workspace()
+	for _, prj in ipairs(wks.projects) do
+		project(prj.name); do
+			links { CheckProject.Name }
+		end
+	end
+
 	group "Premake"
 
 	project(CheckProject.Name); do

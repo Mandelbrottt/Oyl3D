@@ -92,6 +92,7 @@ function Package.GeneratePackageProject(name, package, onProject)
 
 		local sourcePatterns = {
 			"**.c",
+			"**.cc",
 			"**.cpp",
 			"**.ixx",
 		}
@@ -124,12 +125,6 @@ function Package.GeneratePackageProject(name, package, onProject)
 
 		includedirs(package.Include)
 		libdirs(package.LibDirs)
-
-		filter "platforms:not *Editor*"; do
-			if package.Kind == premake.SHAREDLIB then
-				kind(premake.STATICLIB)
-			end
-		end
 
 		filter {}
 		if package.OnProject then

@@ -42,6 +42,7 @@ function Engine.SetupProjectFromScript(script)
 		"%{prj.location}/**.c",
 		"%{prj.location}/**.h",
 		"%{prj.location}/**.cpp",
+		"%{prj.location}/**.cc",
 		"%{prj.location}/**.hpp",
 		"%{prj.location}/**.inl",
 		"%{prj.location}/**.inc",
@@ -212,12 +213,6 @@ function Engine.CommonCppSettings()
 	objdir(Config.ObjectDir .. Config.OutputDir)
 	implibdir(Config.LibraryDir .. Config.OutputDir)
 
-	if (not _OPTIONS["no-premake-check"]) then
-		links {
-			"Premake"
-		}
-	end
-
 	filter "language:C++"; do
 		cppdialect "C++17"
 	end
@@ -267,6 +262,10 @@ function Engine.CommonCppSettings()
 		optimize "Full"
 		runtime "Release"
 		symbols "Off"
+	end
+
+	filter "platforms:not *Editor* and kind:SharedLib"; do
+		kind(premake.STATICLIB)
 	end
 
 	filter {}
