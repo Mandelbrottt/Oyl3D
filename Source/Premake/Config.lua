@@ -20,7 +20,7 @@ Config.ProjectLocation = "./"
 Config.SourceDir = "Source/"
 Config.ToolsDir = "Tools/"
 
-Config.PackagesDir = path.join(Config.RootDir, "Packages")
+Config.PackageCacheDir = path.join(Config.RootDir, "Packages")
 
 Config.Configurations = {}
 Config.Configurations.Debug = "Debug"

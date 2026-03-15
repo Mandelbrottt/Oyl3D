@@ -2,8 +2,7 @@ local Check = require "CheckProject"
 local Config = require "Config"
 local Engine = require "Engine"
 
----@type Package.Projects
-local Packages = dofile "Packages.lua"
+local Packages = require "Oyl3D.Packages"
 
 workspace "Oyl3D"; do
 	filename("%{wks.name}")
@@ -20,7 +19,6 @@ workspace "Oyl3D"; do
 		Config.Platforms.Standalone,
 	}
 
-	---@cast Packages Package.Project
 	Engine.GenerateProjects {
 		Packages = Packages
 	}

@@ -25,7 +25,7 @@ newaction {
 		end
 	end,
 	onProject = function(prj)
-		if _OPTIONS['packages'] and string.contains(prj.location:lower(), Config.PackagesDir:lower()) then
+		if _OPTIONS['packages'] and string.contains(prj.location:lower(), Config.PackageCacheDir:lower()) then
 			print(("Cleaning Package '%s'..."):format(prj.name))
 			os.rmdir(prj.location)
 		end

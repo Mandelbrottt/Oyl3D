@@ -1,8 +1,14 @@
-premake.path = ("%s;%s/Source/Premake"):format(premake.path, _MAIN_SCRIPT_DIR)
+-- Set search paths for include()
+premake.path = ("%s;%s/Source/Premake;%s/Source"):format(premake.path, _MAIN_SCRIPT_DIR, _MAIN_SCRIPT_DIR)
 
-require "Package"
+-- Register the root "Packages.lua" for future callers of `require "Packages"`
+require "Packages"
 
-require "Actions/Clean"
+-- Set search paths for require()
+package.path = ("{}/Source/?.lua;{}/Source/Premake/?.lua"):gsub("{}", _MAIN_SCRIPT_DIR)
+
+require "Action.Clean"
+require "Action.Packages"
 require "Overrides"
 
 newoption {
