@@ -117,6 +117,7 @@ jobs:
       - name: Run Tests
         working-directory: "${{ github.workspace }}/Source/Spyll/Tests/Targets"
         run: |
+          $ErrorView = 'NormalView'
           $targetdir = "${{ matrix.platform }}_${{ matrix.configuration }}_${{ env.toolset }}"
           "${{ github.workspace }}/Build/Binaries/Spyll/$targetdir/${{ env.test-exe }}"
 
