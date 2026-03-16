@@ -23,6 +23,10 @@ function Spyll.CommonCppSettings(package)
 	objdir(Config.ObjectDir .. Config.OutputDir)
 	implibdir(Config.LibraryDir .. Config.OutputDir)
 
+	filter "kind:StaticLib"; do
+		targetdir(Config.LibraryDir .. Config.OutputDir)
+	end
+
 	filter "configurations:Debug"; do
 		optimize "Off"
 		symbols "On"
