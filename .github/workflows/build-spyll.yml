@@ -90,6 +90,7 @@ jobs:
           premake5 packages
 
       - name: Save Package Cache
+        if: steps.restore-cache-packages.outputs.cache-hit != 'true'
         uses: actions/cache/save@v4
         with:
           path: *package-cache-path
