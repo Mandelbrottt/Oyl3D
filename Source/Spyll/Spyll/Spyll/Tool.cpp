@@ -1,10 +1,10 @@
+#include "pch.h"
+
 #include "Tool.h"
 
 #include <filesystem>
 
-#include <clang/Frontend/FrontendActions.h>
 #include <clang/Tooling/CommonOptionsParser.h>
-#include <clang/Tooling/Tooling.h>
 #include <llvm/Support/CommandLine.h>
 
 using namespace clang::tooling;

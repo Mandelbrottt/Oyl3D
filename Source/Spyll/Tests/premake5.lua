@@ -10,6 +10,10 @@ project "Spyll.Tests"; do
 	language "C++"
 	kind(premake.CONSOLEAPP)
 
+	pchsource "pch.cpp"
+	pchheader "pch.h"
+
+	-- Ensure all test cases get loaded
 	removeunreferencedcodedata "Off"
 
 	Spyll.CommonCppSettings()
@@ -44,5 +48,6 @@ project "Spyll.Tests"; do
 
 	filter "files:Targets/**"; do
 		excludefrombuild "On"
+		enablepch "Off"
 	end
 end

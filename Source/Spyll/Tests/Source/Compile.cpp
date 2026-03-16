@@ -1,8 +1,6 @@
+#include "pch.h"
+
 #include <Spyll/Tool.h>
-
-#include <gtest/gtest.h>
-
-#include <array>
 
 TEST(Compile, CompilesHelloWorld)
 {
