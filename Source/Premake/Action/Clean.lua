@@ -67,8 +67,10 @@ function m.options()
 	newoption {
 		trigger     = "packages",
 		description = "Clean the package cache",
-		category    = "clean"
+		category    = m.trigger
 	}
 end
+
+m.action()
 
 return m

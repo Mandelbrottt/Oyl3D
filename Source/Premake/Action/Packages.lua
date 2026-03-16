@@ -28,13 +28,6 @@ end
 m.trigger = "packages"
 m.description = "Fetch all packages defined in Packages.lua files"
 
-function m.onStart()
-	local index = 1
-	while premake.option.list[index] do
-
-	end
-end
-
 function m.execute()
 	local clean = _OPTIONS["clean"]
 	if not clean then
@@ -53,7 +46,7 @@ end
 function m.options()
 	newoption {
 		trigger = "reset",
-		category = "packages",
+		category = m.trigger,
 		value = "[PACKAGE[;<PACKAGE>...]]",
 		description = "Force fetch the given package(s)",
 		allowed = (function()
@@ -68,7 +61,7 @@ function m.options()
 
 	newoption {
 		trigger = "clean",
-		category = "packages",
+		category = m.trigger,
 		value = "[PACKAGE[;<PACKAGE>...]]",
 		description = "Clean the given package(s)",
 		allowed = (function()
@@ -83,7 +76,7 @@ function m.options()
 
 	newoption {
 		trigger = "dryrun",
-		category = "packages",
+		category = m.trigger,
 		description = "Dry run cleaning and fetching packages",
 	}
 end
