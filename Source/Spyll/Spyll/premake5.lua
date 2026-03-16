@@ -28,5 +28,16 @@ project "Spyll.Core"; do
 		Project.InsideProjectMacro()
 	}
 
+	links {
+		"ntdll",
+		"version",
+	}
+	
 	Package.Include(Packages.ClangTooling)
+
+	filter "toolset:msc*"; do
+		linkoptions {
+			"/IGNORE:4006"
+		}
+	end
 end

@@ -2,5 +2,9 @@
 
 int main(int argc, const char** argv)
 {
-	return Spyll::RunTool(argc, argv);
+	(void) argc;
+	(void) argv;
+	
+	Spyll::Tool tool("main.cpp", "-x c++");
+	return tool.Run();
 }

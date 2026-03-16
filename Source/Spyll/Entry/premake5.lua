@@ -35,9 +35,7 @@ project "Spyll.Entry"; do
 	}
 
 	links {
+		"Spyll.Tests",
 		"Spyll.Core",
-		"Spyll.Tests"
 	}
-
-	Package.Include(Packages.ClangTooling)
 end

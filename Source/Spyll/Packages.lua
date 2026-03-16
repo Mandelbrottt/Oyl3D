@@ -13,12 +13,6 @@ return {
 			defines {
 				"_ITERATOR_DEBUG_LEVEL=0"
 			}
-			filter { "system:windows", "kind:ConsoleApp" }; do
-				links {
-					"ntdll",
-					"version",
-				}
-			end
 		end
 	},
 	GoogleTest = {
