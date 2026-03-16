@@ -34,7 +34,7 @@ jobs:
       fail-fast: false
       matrix:
         configuration: [Debug, RelWithDebInfo, Release]
-        platform: [ X64 ]
+        platform: [ x64 ]
     env:
       toolset: clang
       test-exe: Spyll.Tests.exe
