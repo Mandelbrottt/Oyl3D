@@ -117,7 +117,7 @@ jobs:
         working-directory: "${{ github.workspace }}/Source/Spyll/Tests/Targets"
         run: |
           $targetdir = "${{ matrix.platform }}_${{ matrix.configuration }}_${{ env.toolset }}"
-          "&${{ github.workspace }}/Build/Binaries/Spyll/$targetdir/${{ env.test-exe }}"
+          "${{ github.workspace }}/Build/Binaries/Spyll/$targetdir/${{ env.test-exe }}"
 
   win64-msvc:
     name: MSVC Spyll ${{ matrix.platform }} in ${{ matrix.configuration }}
