@@ -19,11 +19,9 @@ return {
 		Language = premake.CPP,
 		Kind = premake.SHAREDLIB,
 		Include = { "googletest/include" },
-		Source = { "googletest/src" },
 		OnProject = function(package)
-			runtime "Release"
 			includedirs { "googletest" }
-			removefiles {
+			files {
 				"googletest/src/gtest_main.cc",
 				"googletest/src/gtest-all.cc",
 			}
