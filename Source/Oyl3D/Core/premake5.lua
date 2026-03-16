@@ -1,6 +1,6 @@
 group "Engine"
 
-project "Core"; do
+project "Oyl.Core"; do
 	language(premake.CPP)
 	kind(premake.SHAREDLIB)
 

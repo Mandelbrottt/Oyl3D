@@ -2,16 +2,16 @@ local Engine = require "Engine"
 
 group "Executables"
 
-startproject "Entry"
+startproject "Oyl.Entry"
 
-project "Entry"; do
+project "Oyl.Entry"; do
 	language(premake.CPP)
 	kind(premake.WINDOWEDAPP)
 
-	targetname(Engine.Name .. "-%{cfg.platform}")
+	targetname(Engine.Name .. "%{cfg.platform}")
 
 	links {
-		"Core",
+		"Oyl.Core",
 		"Editor",
 		"SpdLog",
 		"TracyClient",

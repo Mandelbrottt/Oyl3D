@@ -2,7 +2,7 @@ local Config = require "Config"
 
 group "Editor"
 
-project "Editor"; do
+project "Oyl.Editor"; do
 	language(premake.CPP)
 	kind(premake.SHAREDLIB)
 	
@@ -18,7 +18,7 @@ project "Editor"; do
 	}
 	
 	links {
-		"Core",
+		"Oyl.Core",
 		"ImGui",
 		"SpdLog",
 		"TracyClient",
