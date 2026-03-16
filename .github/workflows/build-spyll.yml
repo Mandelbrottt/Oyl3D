@@ -114,7 +114,7 @@ jobs:
           ${{ env.solution_file_path }}
 
       - name: Run Tests
-        working-directory: "${{ github.workspace }}/Source/Spyll/Tests"
+        working-directory: "${{ github.workspace }}/Source/Spyll/Tests/Targets"
         run: |
           $targetdir = "${{ matrix.platform }}_${{ matrix.configuration }}_${{ env.toolset }}"
           "&${{ github.workspace }}/Build/Binaries/Spyll/$targetdir/${{ env.test-exe }}"
