@@ -21,6 +21,7 @@ permissions:
 
 env:
   ACT: ''
+  ErrorView: NormalView
   visual_studio_version: vs2022
   solution_file_path: Source/Oyl3D/Oyl3D.sln
   premake_version: "5.0.0-beta8"
