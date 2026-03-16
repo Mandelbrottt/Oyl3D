@@ -1,13 +1,13 @@
-name: Build Oyl3D
+name: Build Oyl.Spyll
 
 on:
   push:
     paths: &paths-to-watch
-      - 'Source/Oyl3D/**'
+      - 'Source/Spyll/**'
       - 'Source/Premake/**'
       - 'premake5.lua'
       - 'Packages.lua'
-      - '.github/workflows/build-oyl3d.yml'
+      - '.github/workflows/build-spyll.yml'
   pull_request:
     branches: ["main"]
     paths: *paths-to-watch
@@ -22,24 +22,22 @@ permissions:
 env:
   ACT: ''
   visual_studio_version: vs2022
-  solution_file_path: Source/Oyl3D/Oyl3D.sln
+  solution_file_path: Source/Spyll/Spyll.sln
   premake_version: "5.0.0-beta8"
   vulkan_sdk_version: 1.4.341.1
 
 jobs:
   win64-clang:
-    name: Clang Oyl3D ${{ matrix.platform }} in ${{ matrix.configuration }}
+    name: Clang Spyll ${{ matrix.platform }} in ${{ matrix.configuration }}
     runs-on: windows-latest
     strategy: &build-strategy
       fail-fast: false
       matrix:
-        configuration: [Debug, Development, Distribution, Profile]
-        platform: [Editor, Standalone]
-        exclude:
-          - configuration: Distribution
-            platform: Editor
+        configuration: [Debug, RelWithDebInfo, Release]
+        platform: [ X64 ]
     env:
       toolset: clang
+      test-exe: Spyll.Tests.exe
     steps: &win64-build-steps
       - uses: actions/checkout@v6
 
@@ -100,7 +98,7 @@ jobs:
       - name: Generate Solutions
         working-directory: ${{ github.workspace }}
         run: |
-          premake5 ${{ env.visual_studio_version }} --workspace=oyl3d --cc=${{ env.toolset }} --no-premake-check
+          premake5 ${{ env.visual_studio_version }} --workspace=spyll --cc=${{ env.toolset }} --no-premake-check
 
       - name: Build
         working-directory: ${{ github.workspace }}
@@ -112,8 +110,14 @@ jobs:
           /verbosity:minimal
           ${{ env.solution_file_path }}
 
+      - name: Run Tests
+        working-directory: "${{ github.workspace }}/Source/Spyll/Tests"
+        run: |
+          $targetdir = "${{ matrix.platform }}_${{ matrix.configuration }}_${{ env.toolset }}"
+          "&${{ github.workspace }}/Build/Binaries/Spyll/$targetdir/${{ env.test-exe }}"
+
   win64-msvc:
-    name: MSVC Oyl3D ${{ matrix.platform }} in ${{ matrix.configuration }}
+    name: MSVC Spyll ${{ matrix.platform }} in ${{ matrix.configuration }}
     runs-on: windows-latest
     strategy: *build-strategy
     env:
