@@ -1,5 +1,7 @@
 #include "Tool.h"
 
+#include <filesystem>
+
 #include <clang/Frontend/FrontendActions.h>
 #include <clang/Tooling/CommonOptionsParser.h>
 #include <clang/Tooling/Tooling.h>
@@ -22,24 +24,26 @@ static cl::extrahelp MoreHelp("\nMore help text...\n");
 
 namespace Spyll
 {
-	int RunTool(int argc, const char** argv)
+	Tool::Tool(const std::string& a_fileName, const std::string& a_compileArgs)
+		: m_file(a_fileName), m_compileArgs(a_compileArgs)
 	{
-		auto ExpectedParser = CommonOptionsParser::create(argc, argv, MyToolCategory);
-		if (!ExpectedParser)
-		{
-			llvm::errs() << ExpectedParser.takeError();
-			return 1;
-		}
-		CommonOptionsParser& OptionsParser = ExpectedParser.get();
+		std::replace(m_compileArgs.begin(), m_compileArgs.end(), ' ', '\n');
+	}
 
-		ClangTool Tool(
-			OptionsParser.getCompilations(),
-			OptionsParser.getSourcePathList()
+	int
+	Tool::Run()
+	{
+		auto database = FixedCompilationDatabase::loadFromBuffer(
+			std::filesystem::current_path().string(),
+			m_compileArgs,
+			m_databaseError
 		);
-		return Tool.run(newFrontendActionFactory<clang::SyntaxOnlyAction>().get());
+		
+		auto tool = ClangTool(
+			*database,
+			std::vector { m_file }
+		);
+		m_errorCode = tool.run(newFrontendActionFactory<clang::SyntaxOnlyAction>().get());
+		return m_errorCode;
 	}
 }
-
-
-
-	

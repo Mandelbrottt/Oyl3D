@@ -27,15 +27,17 @@ return {
 		Include = { "googletest/include" },
 		Source = { "googletest/src" },
 		OnProject = function(package)
+			runtime "Release"
 			includedirs { "googletest" }
 			removefiles {
 				"googletest/src/gtest_main.cc",
 				"googletest/src/gtest-all.cc",
 			}
-			filter("kind:" .. premake.SHAREDLIB)
-			defines {
-				"GTEST_CREATE_SHARED_LIBRARY=1"
-			}
+			filter("kind:" .. premake.SHAREDLIB); do
+				defines {
+					"GTEST_CREATE_SHARED_LIBRARY=1"
+				}
+			end
 		end,
 		OnDepend = function(package)
 			if (package.Kind == premake.SHAREDLIB) then
