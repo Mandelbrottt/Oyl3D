@@ -1,18 +1,48 @@
----@type Package.Projects
+---@type WorkspacePackage.List
 return {
 	ClangTooling = {
 		Language = premake.CPP,
 		Include = { "include" },
 		LibDirs = { "lib" },
-		OnProject = function (package)
+		OnInit = function(package)
 			-- need direct paths to libs instead of finding through libdirs, for some reason
 			package.Libs = os.matchfiles(path.join(package.PackageDir, "lib", "*.lib"))
 		end,
-		OnDepend = function (package)
+		OnDepend = function(package)
 			runtime "Release"
 			defines {
 				"_ITERATOR_DEBUG_LEVEL=0"
 			}
+			filter { "system:windows", "kind:ConsoleApp" }; do
+				links {
+					"ntdll",
+					"version",
+				}
+			end
+		end
+	},
+	GoogleTest = {
+		Language = premake.CPP,
+		Kind = premake.SHAREDLIB,
+		Include = { "googletest/include" },
+		Source = { "googletest/src" },
+		OnProject = function(package)
+			includedirs { "googletest" }
+			removefiles {
+				"googletest/src/gtest_main.cc",
+				"googletest/src/gtest-all.cc",
+			}
+			filter("kind:" .. premake.SHAREDLIB)
+			defines {
+				"GTEST_CREATE_SHARED_LIBRARY=1"
+			}
+		end,
+		OnDepend = function(package)
+			if (package.Kind == premake.SHAREDLIB) then
+				defines {
+					"GTEST_LINKED_AS_SHARED_LIBRARY=1"
+				}
+			end
 		end
 	}
 }

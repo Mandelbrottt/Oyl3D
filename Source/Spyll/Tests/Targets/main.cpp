@@ -1,9 +1,10 @@
 #include <stdio.h>
 
-int main() {
+int main()
+{
 	printf("Hello world!\n");
-	#if __TEST__
+#if __TEST__
 	printf("Inside Options Parser!\n");
-	#endif
+#endif
 	return 0;
 }
