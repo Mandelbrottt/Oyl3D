@@ -53,7 +53,7 @@ workspace "Spyll"; do
 	}
 
 	platforms {
-		premake.X86_64
+		"x64"
 	}
 
 	include "Spyll/Entry"; project "*"
