@@ -1,5 +1,6 @@
 local Config = require "Config"
 local Package = require "Package"
+local Project = require "Project"
 
 local Engine = {}
 
@@ -58,8 +59,8 @@ function Engine.SetupProjectFromScript(script)
 	}
 
 	defines {
-		string.upper(Engine.ShortName) .. "_CURRENT_ASSEMBLY=\"" .. prj.name .. "\"",
-		Engine.DefineInsideMacro(prj.name),
+		Project.CurrentAssemblyMacro(),
+		Project.InsideProjectMacro(),
 	}
 
 	filter "system:windows"; do
@@ -93,7 +94,7 @@ function Engine.SetupProjectFromScript(script)
 		filter "platforms:not *Editor*"; do
 			kind(premake.STATICLIB)
 		end
-		filter ""
+		filter {}
 	end
 
 	return prj
@@ -186,16 +187,6 @@ function Engine.GenerateProjects(params)
 	RemoveUnreferencedProjects(wks, engineProjects)
 end
 
----@param projectName string
----@return string
-function Engine.DefineInsideMacro(projectName)
-	projectName = projectName:gsub("%.", "_")
-	projectName = projectName:gsub("%-", "_")
-	return string.upper(
-		string.format("_INSIDE_%s_%s=1", Engine.ShortName, projectName)
-	)
-end
-
 function Engine.CommonCppSettings()
 	staticruntime "Off"
 	floatingpoint "Fast"
@@ -206,7 +197,6 @@ function Engine.CommonCppSettings()
 	multiprocessorcompile "On"
 	externalwarnings "Off"
 	externalanglebrackets "On"
-	usefullpaths "Off"
 
 	targetdir(Config.TargetDir .. Config.OutputDir)
 	debugdir(Config.TargetDir .. Config.OutputDir)
