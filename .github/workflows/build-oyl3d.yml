@@ -51,6 +51,8 @@ jobs:
 
       - name: Add MSBuild to PATH
         uses: microsoft/setup-msbuild@v2
+        with:
+          msbuild-architecture: x64
 
       # https://github.com/actions/cache/blob/main/workarounds.md#improving-cache-restore-performance-on-windowsusing-cross-os-caching
       - if: ${{ runner.os == 'Windows' }}
