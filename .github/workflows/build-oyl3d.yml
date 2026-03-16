@@ -81,7 +81,6 @@ jobs:
         with:
           path: &package-cache-path |
             Packages/*
-            !Packages/ClangTooling
           key: packages-${{ runner.os }}-${{ hashFiles('Packages.lua') }}
           restore-keys: |
             packages-${{ runner.os }}-
