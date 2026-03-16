@@ -10,6 +10,8 @@ project "Spyll.Tests"; do
 	language "C++"
 	kind(premake.CONSOLEAPP)
 
+	removeunreferencedcodedata "Off"
+
 	Spyll.CommonCppSettings()
 
 	files {
@@ -35,6 +37,8 @@ project "Spyll.Tests"; do
 	links {
 		"Spyll.Core"
 	}
+
+	debugdir "%{prj.location}/Targets/"
 
 	Package.Include(Packages.GoogleTest)
 	Package.Include(Packages.ClangTooling)
