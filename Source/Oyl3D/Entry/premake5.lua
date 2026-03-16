@@ -12,7 +12,7 @@ project "Oyl.Entry"; do
 
 	links {
 		"Oyl.Core",
-		"Editor",
+		"Oyl.Editor",
 		"SpdLog",
 		"TracyClient",
 	}
