@@ -1,6 +1,7 @@
-#include <Spyll/Tool.h>
+#include <gtest/gtest.h>
 
-int main(int argc, const char** argv)
+int main(int argc, char** argv)
 {
-	return Spyll::RunTool(argc, argv);
+	testing::InitGoogleTest(&argc, argv);
+	return RUN_ALL_TESTS();
 }
