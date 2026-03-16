@@ -9,7 +9,7 @@ Config.BuildDir = ("%s/Build"):format(Config.RootDir)
 Config.TargetDir = ("%s/Binaries/"):format(Config.BuildDir)
 Config.LibraryDir = ("%s/Library/"):format(Config.BuildDir)
 Config.ObjectDir = ("%s/Intermediate/"):format(Config.BuildDir)
-Config.OutputDir = "%{wks.name}/%{cfg.buildcfg}_%{cfg.platform}_%{cfg.system}-%{cfg.architecture}_%{cfg.toolset}/"
+Config.OutputDir = "%{wks.name}/%{cfg.platform}_%{cfg.buildcfg}_%{cfg.toolset}/"
 
 Config.Utils = {}
 Config.Utils.TargetDir = ("%s/Utils/"):format(Config.TargetDir)

@@ -169,14 +169,16 @@ function Package.Include(package)
 	
 	externalincludedirs(package.Include)
 
-	if (package.LibDirs) then
+	if package.Kind == premake.STATICLIB or package.Kind == premake.SHAREDLIB then
+		links { package.Name }
+	end
+	if package.LibDirs then
 		libdirs(package.LibDirs)
 	end
-	if (package.Libs) then
+	if package.Libs then
 		links(package.Libs)
 	end
-	if (package.OnDepend) then
-		filter {}
+	if package.OnDepend  then
 		package:OnDepend()
 	end
 
