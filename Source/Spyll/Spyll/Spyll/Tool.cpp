@@ -24,26 +24,50 @@ static cl::extrahelp MoreHelp("\nMore help text...\n");
 
 namespace Spyll
 {
-	Tool::Tool(const std::string& a_fileName, const std::string& a_compileArgs)
-		: m_file(a_fileName), m_compileArgs(a_compileArgs)
+	Tool::Tool(std::vector<std::string> a_fileNames, std::string a_compileArgs)
+		: m_sources(std::move(a_fileNames))
 	{
-		std::replace(m_compileArgs.begin(), m_compileArgs.end(), ' ', '\n');
+		std::replace(a_compileArgs.begin(), a_compileArgs.end(), ' ', '\n');
+		std::string error;
+		m_compilations = FixedCompilationDatabase::loadFromBuffer(
+			std::filesystem::current_path().string(),
+			a_compileArgs,
+			error
+		);
+
+		m_clangTool = std::make_unique<ClangTool>(
+			*m_compilations,
+			a_fileNames
+		);
 	}
+
+	Tool::Tool(std::string a_fileName, std::string a_compileArgs)
+		: Tool(std::vector { std::move(a_fileName) }, std::move(a_compileArgs)) {}
+
+	Tool::Tool(size_t argc, const char** argv)
+	{
+		int int_argc = (int) argc;
+		auto ExpectedOptions = CommonOptionsParser::create(int_argc, argv, MyToolCategory);
+		if (!ExpectedOptions)
+		{
+			llvm::errs() << ExpectedOptions.takeError();
+			return;
+		}
+		m_clangTool = std::make_unique<ClangTool>(
+			ExpectedOptions->getCompilations(),
+			ExpectedOptions->getSourcePathList()
+		);
+	}
+
+	Tool::~Tool() {}
 
 	int
 	Tool::Run()
 	{
-		auto database = FixedCompilationDatabase::loadFromBuffer(
-			std::filesystem::current_path().string(),
-			m_compileArgs,
-			m_databaseError
-		);
-		
-		auto tool = ClangTool(
-			*database,
-			std::vector { m_file }
-		);
-		m_errorCode = tool.run(newFrontendActionFactory<clang::SyntaxOnlyAction>().get());
+		if (m_clangTool)
+		{
+			m_errorCode = m_clangTool->run(newFrontendActionFactory<clang::SyntaxOnlyAction>().get());
+		}
 		return m_errorCode;
 	}
 }
