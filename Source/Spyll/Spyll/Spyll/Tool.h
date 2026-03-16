@@ -1,14 +1,33 @@
 #pragma once
 
+#include <memory>
 #include <string>
+#include <vector>
+
+namespace clang::tooling {
+	class CompilationDatabase;
+}
+
+namespace clang::tooling
+{
+	class ClangTool;
+}
 
 namespace Spyll
 {
-	class Tool
+	class Tool final
 	{
 	public:
 		explicit
-		Tool(const std::string& a_fileName, const std::string& a_compileArgs);
+		Tool(std::vector<std::string> a_fileNames, std::string a_compileArgs);
+
+		explicit
+		Tool(std::string a_fileName, std::string a_compileArgs);
+
+		explicit
+		Tool(size_t argc, const char** argv);
+
+		~Tool();
 
 		int
 		Run();
@@ -16,14 +35,12 @@ namespace Spyll
 		int
 		GetErrorCode() const { return m_errorCode; }
 
-		const std::string&
-		GetDatabaseError() const { return m_databaseError; }
-
 	private:
-		std::string m_file;
-		std::string m_compileArgs;
+		std::vector<std::string> m_sources;
+		std::unique_ptr<clang::tooling::CompilationDatabase> m_compilations;
 
-		int m_errorCode = 0;
-		std::string m_databaseError;
+		std::unique_ptr<clang::tooling::ClangTool> m_clangTool;
+
+		int m_errorCode = -1;
 	};
 }

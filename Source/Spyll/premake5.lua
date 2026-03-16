@@ -38,6 +38,8 @@ function Spyll.CommonCppSettings(package)
 		symbols "Off"
 	end
 
+	filter{}
+	Packages.ClangTooling:OnDepend()
 	filter {}
 end
 
