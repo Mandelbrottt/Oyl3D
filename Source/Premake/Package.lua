@@ -15,7 +15,7 @@ local Package = {}
 ---@field Include string[] List of include paths, relative to PackageDir
 ---@field LibDirs? string[] List of library search paths, relative to PackageDir
 ---@field Libs? string[] List of library names to be linked against
----@field OnInit? fun(package?: WorkspacePackage) Callback run package is first used
+---@field OnInit? fun(package?: WorkspacePackage) Callback run when package is first used
 ---@field GenerateProject? boolean Whether to generate a project file or not
 ---@field OnProject? fun(package?: WorkspacePackage) Callback run when project is generated
 ---@field OnDepend? fun(package: WorkspacePackage) Callback run inside projects that reference this package
@@ -38,7 +38,7 @@ function Package.InitWorkspacePackageVars(name, package)
 	if package._Init then
 		return
 	end
-	
+
 	-- Setup any variables not set by the user
 	package.Name = package.Name or name
 	package.Language = package.Language or premake.CPP
@@ -74,11 +74,16 @@ function Package.InitWorkspacePackageVars(name, package)
 	forEachAddPackageDir(package.Include)
 	forEachAddPackageDir(package.LibDirs)
 
+	if package.OnInit then
+		package.OnInit(package)
+	end
+	
 	package._Init = true
 end
 
 ---@param params WorkspacePackage.GenerateProjectsParams
 function Package.GenerateWorkspacePackageProjects(params)
+	workspace()
 	for name, package in spairs(params.Packages) do
 		Package.InitWorkspacePackageVars(name, package)
 		if package.GenerateProject then
@@ -159,7 +164,9 @@ end
 ---@param package WorkspacePackage
 function Package.Include(package)
 	assert(package._Init, "Included package has not yet been initialized!")
-
+	
+	filter {}
+	
 	externalincludedirs(package.Include)
 
 	if (package.LibDirs) then
@@ -171,8 +178,9 @@ function Package.Include(package)
 	if (package.OnDepend) then
 		filter {}
 		package:OnDepend()
-		filter {}
 	end
+
+	filter {}
 end
 
 function Package.GeneratePackageCache()
