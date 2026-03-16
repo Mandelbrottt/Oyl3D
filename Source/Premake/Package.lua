@@ -1,5 +1,6 @@
 local Config = require "Config"
 local Packages = require "Packages"
+local Project = require "Project"
 
 local Package = {}
 
@@ -164,25 +165,23 @@ end
 ---@param package WorkspacePackage
 function Package.Include(package)
 	assert(package._Init, "Included package has not yet been initialized!")
-	
-	filter {}
-	
-	externalincludedirs(package.Include)
 
-	if package.Kind == premake.STATICLIB or package.Kind == premake.SHAREDLIB then
-		links { package.Name }
-	end
-	if package.LibDirs then
-		libdirs(package.LibDirs)
-	end
-	if package.Libs then
-		links(package.Libs)
-	end
-	if package.OnDepend  then
-		package:OnDepend()
-	end
-
-	filter {}
+	Project.NestedFilter(function()
+		externalincludedirs(package.Include)
+		
+		if package.Kind == premake.STATICLIB or package.Kind == premake.SHAREDLIB then
+			links { package.Name }
+		end
+		if package.LibDirs then
+			libdirs(package.LibDirs)
+		end
+		if package.Libs then
+			links(package.Libs)
+		end
+		if package.OnDepend then
+			package:OnDepend()
+		end
+	end)
 end
 
 function Package.GeneratePackageCache()
