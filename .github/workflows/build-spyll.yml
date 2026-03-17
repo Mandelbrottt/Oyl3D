@@ -115,10 +115,10 @@ jobs:
 
       - name: Run Tests
         working-directory: "${{ github.workspace }}/Source/Spyll/Tests/Targets"
-        shell: cmd
+        shell: bash
         run: |
-          SET targetdir=${{ matrix.platform }}_${{ matrix.configuration }}_${{ env.toolset }}
-          "${{ github.workspace }}/Build/Binaries/Spyll/%targetdir%/${{ env.test-exe }}" --gtest_color=yes
+          targetdir=${{ matrix.platform }}_${{ matrix.configuration }}_${{ env.toolset }}
+          "${{ github.workspace }}/Build/Binaries/Spyll/$targetdir/${{ env.test-exe }}"
 
   win64-msvc:
     name: MSVC Spyll ${{ matrix.platform }} in ${{ matrix.configuration }}
