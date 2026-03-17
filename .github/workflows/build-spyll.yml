@@ -25,6 +25,7 @@ env:
   solution_file_path: Source/Spyll/Spyll.sln
   premake_version: "5.0.0-beta8"
   vulkan_sdk_version: 1.4.341.1
+  test-exe: Spyll.Tests.exe
 
 jobs:
   win64-clang:
@@ -37,7 +38,6 @@ jobs:
         platform: [ x64 ]
     env:
       toolset: clang
-      test-exe: Spyll.Tests.exe
     steps: &win64-build-steps
       - uses: actions/checkout@v6
 
