@@ -4,8 +4,16 @@
 
 TEST(Compile, CompilesHelloWorld)
 {
-	Spyll::Tool tool("main.cpp", "-x c++");
-	int returnCode = tool.Run();
+	{
+		Spyll::DirectTool tool("Main.cpp", "-x c++");
+		int returnCode = tool.Run();
 
-	EXPECT_EQ(returnCode, 0);
+		EXPECT_EQ(returnCode, 0);
+	}
+	{
+		Spyll::DirectTool tool("Fake.File", "-x c++");
+		int returnCode = tool.Run();
+
+		EXPECT_EQ(returnCode, 1);
+	}
 }

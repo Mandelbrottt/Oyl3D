@@ -17,12 +17,11 @@ return {
 	},
 	GoogleTest = {
 		Language = premake.CPP,
-		Kind = premake.SHAREDLIB,
+		Kind = premake.STATICLIB,
 		Include = { "googletest/include" },
 		OnProject = function(package)
 			includedirs { "googletest" }
 			files {
-				"googletest/src/gtest_main.cc",
 				"googletest/src/gtest-all.cc",
 			}
 			filter("kind:" .. premake.SHAREDLIB); do

@@ -2,9 +2,6 @@
 
 int main(int argc, const char** argv)
 {
-	(void) argc;
-	(void) argv;
-	
-	Spyll::Tool tool(argc, argv);
+	Spyll::CmdTool tool(argc, argv);
 	return tool.Run();
 }

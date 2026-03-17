@@ -4,29 +4,24 @@
 #include <string>
 #include <vector>
 
-namespace clang::tooling {
-	class CompilationDatabase;
-}
-
-namespace clang::tooling
+namespace clang
 {
-	class ClangTool;
+	class DiagnosticConsumer;
+
+	namespace tooling
+	{
+		class ClangTool;
+		class CommonOptionsParser;
+		class CompilationDatabase;
+	}
 }
 
 namespace Spyll
 {
-	class Tool final
+	class Tool
 	{
 	public:
-		explicit
-		Tool(std::vector<std::string> a_fileNames, std::string a_compileArgs);
-
-		explicit
-		Tool(std::string a_fileName, std::string a_compileArgs);
-
-		explicit
-		Tool(size_t argc, const char** argv);
-
+		virtual
 		~Tool();
 
 		int
@@ -35,12 +30,43 @@ namespace Spyll
 		int
 		GetErrorCode() const { return m_errorCode; }
 
+		void
+		SetPrintErrorMessage(bool a_shouldPrintMessage);
+
+	protected:
+		Tool() = default;
+
+		std::unique_ptr<clang::tooling::ClangTool> m_clangTool;
+		std::unique_ptr<clang::DiagnosticConsumer> m_diagnosticConsumer;
+
+		int m_errorCode = -1;
+	};
+
+	class CmdTool : public Tool
+	{
+	public:
+		explicit
+		CmdTool(int argc, const char** argv, bool a_printErrors = true);
+
+		~CmdTool();
+
+	private:
+		std::unique_ptr<clang::tooling::CommonOptionsParser> m_optionsParser;
+	};
+
+	class DirectTool : public Tool
+	{
+	public:
+		explicit
+		DirectTool(std::vector<std::string> a_fileNames, std::string a_compileArgs);
+
+		explicit
+		DirectTool(std::string a_fileName, std::string a_compileArgs);
+
+		~DirectTool();
+
 	private:
 		std::vector<std::string> m_sources;
 		std::unique_ptr<clang::tooling::CompilationDatabase> m_compilations;
-
-		std::unique_ptr<clang::tooling::ClangTool> m_clangTool;
-
-		int m_errorCode = -1;
 	};
 }
