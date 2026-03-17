@@ -21,7 +21,6 @@ permissions:
 
 env:
   ACT: ''
-  ErrorView: NormalView
   visual_studio_version: vs2022
   solution_file_path: Source/Spyll/Spyll.sln
   premake_version: "5.0.0-beta8"
@@ -117,7 +116,6 @@ jobs:
       - name: Run Tests
         working-directory: "${{ github.workspace }}/Source/Spyll/Tests/Targets"
         run: |
-          $ErrorView = 'NormalView'
           $targetdir = "${{ matrix.platform }}_${{ matrix.configuration }}_${{ env.toolset }}"
           "${{ github.workspace }}/Build/Binaries/Spyll/$targetdir/${{ env.test-exe }}"
 
