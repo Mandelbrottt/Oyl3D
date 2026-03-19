@@ -1,4 +1,4 @@
-#include "Spyll/Tool.h"
+#include "Spyll/Clang/Tool.h"
 
 #include <clang/Tooling/CommonOptionsParser.h>
 #include <clang/Tooling/CompilationDatabase.h>

@@ -1,6 +1,6 @@
 #include "pch.h"
 
-#include <Spyll/Tool.h>
+#include <Spyll/Clang/Tool.h>
 
 TEST(Compile, CompilesHelloWorld)
 {

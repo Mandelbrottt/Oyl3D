@@ -18,20 +18,14 @@ project "Spyll.Tests"; do
 
 	Spyll.CommonCppSettings()
 
-	files {
-		"%{prj.location}/**.cpp",
-		"%{prj.location}/**.h",
-		"%{prj.location}/**.hpp",
-		"%{prj.location}/**.inl",
-		"%{prj.location}/**.ixx",
-	}
+	Project.Files()
 
-	externalincludedirs {
+	includedirs {
 		"%{prj.location}",
 	}
 
 	externalincludedirs {
-		"%{wks.location}/Spyll/",
+		"%{wks.location}",
 	}
 
 	defines {
@@ -39,7 +33,7 @@ project "Spyll.Tests"; do
 	}
 
 	links {
-		"Spyll.Core"
+		"Spyll.Core",
 	}
 
 	debugdir "%{prj.location}/Targets/"

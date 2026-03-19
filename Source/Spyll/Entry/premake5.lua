@@ -14,24 +14,18 @@ project "Spyll.Entry"; do
 
 	Spyll.CommonCppSettings()
 
-	files {
-		"%{prj.location}/**.cpp",
-		"%{prj.location}/**.h",
-		"%{prj.location}/**.hpp",
-		"%{prj.location}/**.inl",
-		"%{prj.location}/**.ixx",
-	}
-
+	Project.Files()
+	
 	includedirs {
 		"%{prj.location}",
 	}
 
-	defines {
-		Project.InsideProjectMacro()
+	externalincludedirs {
+		"%{wks.location}/",
 	}
 
-	externalincludedirs {
-		"%{wks.location}/Spyll/",
+	defines {
+		Project.InsideProjectMacro()
 	}
 
 	links {
