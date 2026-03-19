@@ -10,7 +10,7 @@ project "Spyll.Entry"; do
 	language "C++"
 	kind(premake.CONSOLEAPP)
 
-	targetname "spyll"
+	targetname "oyl-spyll"
 
 	Spyll.CommonCppSettings()
 
@@ -38,4 +38,6 @@ project "Spyll.Entry"; do
 		"Spyll.Tests",
 		"Spyll.Core",
 	}
+
+	externalincludedirs(Packages.ClangTooling.Include)
 end

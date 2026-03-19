@@ -44,6 +44,8 @@ project "Spyll.Tests"; do
 
 	debugdir "%{prj.location}/Targets/"
 
+	externalincludedirs(Packages.ClangTooling.Include)
+
 	Package.Include(Packages.GoogleTest)
 
 	filter "files:Targets/**"; do

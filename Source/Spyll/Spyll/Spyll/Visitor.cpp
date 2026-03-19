@@ -16,9 +16,9 @@ namespace Spyll
 			return true;
 		}
 
-		Generator->GenerateType(Context, D);
+		Generator->ScrapeDecl(Context, D);
 
-		if (Generator->IsTypeReflected(D))
+		if (Generator->ShouldReflectDecl(D))
 		{
 			auto RD = clang::dyn_cast<clang::RecordDecl>(D);
 			PrintDecl(RD);
