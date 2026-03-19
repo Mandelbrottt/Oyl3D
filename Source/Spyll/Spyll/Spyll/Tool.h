@@ -42,19 +42,20 @@ namespace Spyll
 		int m_errorCode = -1;
 	};
 
-	class CmdTool : public Tool
+	class CmdTool final : public Tool
 	{
 	public:
 		explicit
 		CmdTool(int argc, const char** argv, bool a_printErrors = true);
 
+		virtual
 		~CmdTool();
 
 	private:
 		std::unique_ptr<clang::tooling::CommonOptionsParser> m_optionsParser;
 	};
 
-	class DirectTool : public Tool
+	class DirectTool final : public Tool
 	{
 	public:
 		explicit
@@ -63,6 +64,7 @@ namespace Spyll
 		explicit
 		DirectTool(std::string a_fileName, std::string a_compileArgs);
 
+		virtual
 		~DirectTool();
 
 	private:
