@@ -6,11 +6,19 @@ namespace Spyll
 	{
 	public:
 		void
-		GenerateType(clang::ASTContext* Context, clang::Decl* Decl);
+		ScrapeDecl(clang::ASTContext* Context, clang::Decl* Decl);
 
 		bool
-		IsTypeReflected(clang::Decl* Decl) const;
+		ShouldReflectDecl(clang::Decl* Decl) const;
 
 	private:
+		void
+		ScrapeCxxRecordDecl(clang::CXXRecordDecl* Decl);
+
+		void
+		ScrapeEnumDecl(clang::EnumDecl* Decl);
+
+		void
+		ScrapeFunctionDecl(clang::FunctionDecl* Decl);
 	};
 }
