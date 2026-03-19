@@ -1,4 +1,3 @@
-#include "pch.h"
 #include "Main.h"
 
 namespace Spyll

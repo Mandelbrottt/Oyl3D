@@ -1,4 +1,3 @@
-#include "pch.h"
 #include "Action.h"
 
 #include "ReflectionGenerator.h"
