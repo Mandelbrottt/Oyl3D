@@ -11,6 +11,7 @@ project "Spyll.Core.Clang"; do
 	kind(premake.STATICLIB)
 
 	pchheader "pch.h"
+	forceincludes { "pch.h" }
 	pchsource "%{wks.location}/pch.cpp"
 	files { "%{wks.location}/pch.cpp" }
 

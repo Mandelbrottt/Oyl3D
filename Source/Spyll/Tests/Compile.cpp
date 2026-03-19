@@ -1,5 +1,3 @@
-#include "pch.h"
-
 #include <Spyll/Clang/Tool.h>
 
 TEST(Compile, CompilesHelloWorld)

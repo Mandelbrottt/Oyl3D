@@ -11,6 +11,7 @@ project "Spyll.Tests"; do
 	kind(premake.CONSOLEAPP)
 
 	pchheader "pch.h"
+	forceincludes { "pch.h" }
 	pchsource "%{wks.location}/pch.cpp"
 	files { "%{wks.location}/pch.cpp" }
 
