@@ -10,8 +10,9 @@ project "Spyll.Tests"; do
 	language "C++"
 	kind(premake.CONSOLEAPP)
 
-	pchsource "pch.cpp"
 	pchheader "pch.h"
+	pchsource "%{wks.location}/pch.cpp"
+	files { "%{wks.location}/pch.cpp" }
 
 	-- Ensure all test cases get loaded
 	removeunreferencedcodedata "Off"

@@ -10,8 +10,9 @@ project "Spyll.Core.Clang"; do
 	language "C++"
 	kind(premake.STATICLIB)
 
-	pchsource "pch.cpp"
 	pchheader "pch.h"
+	pchsource "%{wks.location}/pch.cpp"
+	files { "%{wks.location}/pch.cpp" }
 
 	Spyll.CommonCppSettings()
 
