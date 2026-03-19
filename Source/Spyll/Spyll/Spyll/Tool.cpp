@@ -1,11 +1,12 @@
 #include "pch.h"
-
 #include "Tool.h"
 
 #include <filesystem>
 
 #include <clang/Tooling/CommonOptionsParser.h>
 #include <llvm/Support/CommandLine.h>
+
+#include "Action.h"
 
 namespace tooling = clang::tooling;
 namespace cl = llvm::cl;
@@ -31,7 +32,8 @@ namespace Spyll
 	{
 		if (m_clangTool)
 		{
-			m_errorCode = m_clangTool->run(tooling::newFrontendActionFactory<clang::SyntaxOnlyAction>().get());
+			auto action = tooling::newFrontendActionFactory<DeclFindingAction>();
+			m_errorCode = m_clangTool->run(action.get());
 		}
 		return m_errorCode;
 	}
