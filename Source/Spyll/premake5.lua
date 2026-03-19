@@ -63,9 +63,11 @@ workspace "Spyll"; do
 		"x64"
 	}
 
-	include "Spyll/Entry"; project "*"
-	include "Spyll/Spyll"; project "*"
-	include "Spyll/Tests"; project "*"
+	for _, script in ipairs(os.matchfiles("**/premake5.lua")) do
+		script = path.getabsolute(script)
+		include(script)
+		project "*"
+	end
 
 	Package.GenerateWorkspacePackageProjects {
 		Packages = Packages,

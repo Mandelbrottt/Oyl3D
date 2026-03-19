@@ -4,7 +4,7 @@ local Packages = require "Spyll.Packages"
 
 group "Spyll"
 
-project "Spyll.Core"; do
+project "Spyll.Core.Clang"; do
 	filename("%{prj.name}")
 
 	language "C++"
@@ -26,10 +26,11 @@ project "Spyll.Core"; do
 	}
 
 	links {
-		"Spyll.Core.Clang"
+		"ntdll",
+		"version",
 	}
 
-	externalincludedirs(Packages.ClangTooling.Include)
+	Package.Include(Packages.ClangTooling)
 
 	filter "toolset:msc*"; do
 		linkoptions {
