@@ -17,10 +17,6 @@ project "Spyll.Tests"; do
 
 	Project.Files()
 
-	externalincludedirs {
-		"%{wks.location}",
-	}
-
 	links {
 		"Spyll.ClangTool",
 	}
