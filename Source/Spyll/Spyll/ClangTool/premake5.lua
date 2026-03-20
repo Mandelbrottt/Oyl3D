@@ -4,30 +4,18 @@ local Packages = require "Spyll.Packages"
 
 group "Spyll"
 
-project "Spyll.Core.Clang"; do
+project "Spyll.ClangTool"; do
 	filename("%{prj.name}")
 
 	language "C++"
 	kind(premake.STATICLIB)
 
-	pchheader "pch.h"
-	forceincludes { "pch.h" }
-	pchsource "%{wks.location}/pch.cpp"
-	files { "%{wks.location}/pch.cpp" }
-
 	Spyll.CommonCppSettings()
 
 	Project.Files()
 
-	includedirs {
-		"%{prj.location}",
-	}
-
-	defines {
-		Project.InsideProjectMacro()
-	}
-
 	links {
+		"Spyll.Core",
 		"ntdll",
 		"version",
 	}

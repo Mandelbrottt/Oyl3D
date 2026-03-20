@@ -29,8 +29,11 @@ project "Spyll.Entry"; do
 	}
 
 	links {
-		"Spyll.Tests",
-		"Spyll.Core",
+		"Spyll.ClangTool",
+	}
+
+	dependson {
+		"Spyll.Tests"
 	}
 
 	externalincludedirs(Packages.ClangTooling.Include)
