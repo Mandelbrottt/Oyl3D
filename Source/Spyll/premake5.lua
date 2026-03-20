@@ -35,6 +35,10 @@ function Spyll.CommonCppSettings(package)
 		"%{prj.location}",
 	}
 
+	externalincludedirs {
+		"%{wks.location}",
+	}
+
 	defines {
 		Project.InsideProjectMacro()
 	}
