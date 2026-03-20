@@ -10,32 +10,19 @@ project "Spyll.Tests"; do
 	language "C++"
 	kind(premake.CONSOLEAPP)
 
-	pchheader "pch.h"
-	forceincludes { "pch.h" }
-	pchsource "%{wks.location}/pch.cpp"
-	files { "%{wks.location}/pch.cpp" }
-
+	Spyll.CommonCppSettings()
+	
 	-- Ensure all test cases get loaded
 	removeunreferencedcodedata "Off"
 
-	Spyll.CommonCppSettings()
-
 	Project.Files()
-
-	includedirs {
-		"%{prj.location}",
-	}
 
 	externalincludedirs {
 		"%{wks.location}",
 	}
 
-	defines {
-		Project.InsideProjectMacro()
-	}
-
 	links {
-		"Spyll.Core",
+		"Spyll.ClangTool",
 	}
 
 	debugdir "%{prj.location}/Targets/"

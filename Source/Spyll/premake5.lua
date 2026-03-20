@@ -1,6 +1,7 @@
 local Check = require "CheckProject"
 local Config = require "Config"
 local Package = require "Package"
+local Project = require "Project"
 
 ---@type WorkspacePackage.List
 local Packages = require "Spyll.Packages"
@@ -22,6 +23,21 @@ function Spyll.CommonCppSettings(package)
 	debugdir(Config.TargetDir .. Config.OutputDir)
 	objdir(Config.ObjectDir .. Config.OutputDir)
 	implibdir(Config.LibraryDir .. Config.OutputDir)
+
+	if os.isfile("pch.h") then
+		pchheader "pch.h"
+		forceincludes { "pch.h" }
+		pchsource "%{wks.location}/pch.cpp"
+		files { "%{wks.location}/pch.cpp" }
+	end
+
+	includedirs {
+		"%{prj.location}",
+	}
+
+	defines {
+		Project.InsideProjectMacro()
+	}
 
 	filter "kind:StaticLib"; do
 		targetdir(Config.LibraryDir .. Config.OutputDir)
