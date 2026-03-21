@@ -2,10 +2,7 @@
 
 #include <clang/AST/DeclCXX.h>
 
-#include "Descriptors/EnumDescriptor.h"
-#include "Descriptors/FieldDescriptor.h"
-#include "Descriptors/FunctionDescriptor.h"
-#include "Descriptors/TypeDescriptor.h"
+#include "Spyll/Spyll/Descriptors/DescriptorEnums.h"
 
 namespace Spyll
 {
@@ -14,6 +11,11 @@ namespace Spyll
 		template<typename T>
 		struct DescriptorFromDecl {};
 	}
+
+	struct TypeDescriptor;
+	struct FieldDescriptor;
+	struct FunctionDescriptor;
+	struct EnumDescriptor;
 
 	class ReflectionGenerator
 	{

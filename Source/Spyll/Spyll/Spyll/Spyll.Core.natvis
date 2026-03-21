@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?> 
+<AutoVisualizer xmlns="http://schemas.microsoft.com/vstudio/debugger/natvis/2010"> 
+  <Type Name="Spyll::TypeDescriptor" ExcludeView="Inner">
+    <Intrinsic Name="fieldslength" Expression="fields._Mypair._Myval2._Mylast - fields._Mypair._Myval2._Myfirst"/>
+    <Intrinsic Name="functionslength" Expression="functions._Mypair._Myval2._Mylast - functions._Mypair._Myval2._Myfirst"/>
+    <DisplayString>{name} {{ id={id}, fields={fieldslength()}, functions={functionslength()} }}</DisplayString>                          
+    <StringView>name</StringView>                                              
+    <Expand>                                                                   
+      <Synthetic Name="Info">                                                  
+        <DisplayString>ID = {id}</DisplayString>                               
+        <Expand>                                                               
+          <Item Name="DescriptorID">id</Item>                                  
+          <Synthetic Name="Size">                                              
+            <DisplayString>{size} bytes</DisplayString>                        
+          </Synthetic>                                                         
+          <Item Name="IsComposite">isComposite</Item>                          
+          <Item Name="IsStruct">isStruct</Item>                                
+        </Expand>                                                              
+      </Synthetic>                                                             
+      <Synthetic Name="Fields">                                                
+        <DisplayString></DisplayString>                                        
+      </Synthetic>                                                             
+    </Expand>                                                                  
+  </Type>                                                                      
+</AutoVisualizer>
