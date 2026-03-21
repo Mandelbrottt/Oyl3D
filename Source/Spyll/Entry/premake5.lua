@@ -16,14 +16,6 @@ project "Spyll.Entry"; do
 
 	Project.Files()
 	
-	includedirs {
-		"%{prj.location}",
-	}
-
-	externalincludedirs {
-		"%{wks.location}/",
-	}
-
 	defines {
 		Project.InsideProjectMacro()
 	}
