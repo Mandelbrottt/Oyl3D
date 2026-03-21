@@ -97,6 +97,7 @@ jobs:
           -DLLVM_ENABLE_ASSERTIONS=ON
           -DLLVM_ENABLE_LLD=ON
           -DLLVM_ENABLE_PROJECTS=clang
+          -DLLVM_ADD_NATIVE_VISUALIZERS_TO_SOLUTION=ON
           -DLLVM_DISTRIBUTION_COMPONENTS="clang-headers;llvm-headers;cmake-exports;clang-cmake-exports;clangAnalysis;clangAPINotes;clangAST;clangASTMatchers;clangBasic;clangDriver;clangEdit;clangFormat;clangFrontend;clangLex;clangParse;clangRewrite;clangSema;clangSerialization;clangSupport;clangTooling;clangToolingCore;clangToolingInclusions;LLVMAggressiveInstCombine;LLVMAnalysis;LLVMAsmParser;LLVMBinaryFormat;LLVMBitReader;LLVMBitstreamReader;LLVMCore;LLVMDebugInfoBTF;LLVMDebugInfoCodeView;LLVMDebugInfoDWARF;LLVMDebugInfoMSF;LLVMDebugInfoPDB;LLVMDemangle;LLVMFrontendHLSL;LLVMFrontendOffloading;LLVMFrontendOpenMP;LLVMInstCombine;LLVMIRReader;LLVMMC;LLVMMCParser;LLVMObject;LLVMOption;LLVMProfileData;LLVMRemarks;LLVMScalarOpts;LLVMSupport;LLVMSymbolize;LLVMTargetParser;LLVMTextAPI;LLVMTransformUtils;LLVMWindowsDriver"
 
       - name: CMake Build ClangTooling Libraries
@@ -106,6 +107,12 @@ jobs:
           --build ${{ env.llvm-build-dir }}
           --target install-distribution
           -j $NUMBER_OF_PROCESSORS
+
+      - name: Copy Natvis files
+        working-directory: ${{ env.llvm-checkout-dir }}
+        run: |
+          cp -u -v llvm/utils/LLVMVisualizers/*.natvis ${{ env.llvm-install-dir }}/lib/
+          cp -u -v clang/utils/ClangVisualizers/*.natvis ${{ env.llvm-install-dir }}/lib/
 
       - name: Zip install directory
         working-directory: ${{ github.workspace }}
