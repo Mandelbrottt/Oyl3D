@@ -1,5 +1,7 @@
 #pragma once
 
+#include "clang/AST/RecursiveASTVisitor.h"
+
 namespace Spyll
 {
 	class ReflectionGenerator;
@@ -8,7 +10,7 @@ namespace Spyll
 	{
 	public:
 		explicit
-		DeclVisitor(clang::SourceManager& SM);
+		DeclVisitor(clang::SourceManager& SM, ReflectionGenerator* Generator);
 
 		~DeclVisitor();
 
@@ -38,9 +40,9 @@ namespace Spyll
 		void
 		VisitDeclCommon(DeclT* Decl);
 
-		std::unique_ptr<ReflectionGenerator> Generator;
-
 		clang::SourceManager& SourceManager;
 		clang::ASTContext* Context = nullptr;
+
+		ReflectionGenerator* Generator;
 	};
 }

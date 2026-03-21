@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?> 
+<AutoVisualizer xmlns="http://schemas.microsoft.com/vstudio/debugger/natvis/2010"> 
+  <Type Name="Spyll::ReflectionGenerator">
+    <Intrinsic Name="typesize" Expression="m_impl->types._List._Mypair._Myval2._Mysize"/>
+    <Intrinsic Name="typeshead" Expression="m_impl->types._List._Mypair._Myval2._Myhead->_Next"/>
+    <DisplayString>{{ Types={typesize()} }}</DisplayString>
+    <Expand>
+      <Synthetic Name="Types">
+        <DisplayString>{{ Types={typesize()} }}</DisplayString>
+        <Expand>
+          <LinkedListItems>
+            <Size>typesize()</Size>
+            <HeadPointer>typeshead()</HeadPointer>
+            <NextPointer>_Next</NextPointer>
+            <ValueNode Name="{_Myval.second.name}">_Myval.second</ValueNode>
+          </LinkedListItems>
+        </Expand>
+      </Synthetic>
+    </Expand>
+  </Type>
+  <Type Name="Spyll::TypeDescriptor" ExcludeView="Inner">
+    <DisplayString>{name} {{ id={id}, fields={fields._Mypair._Myval2._Mylast - fields._Mypair._Myval2._Myfirst}, functions={functions._Mypair._Myval2._Mylast - functions._Mypair._Myval2._Myfirst} }}</DisplayString>
+    <StringView>name</StringView>
+    <Expand>
+      <Synthetic Name="Info">
+        <DisplayString>ID = {id}</DisplayString>
+        <Expand>
+          <Item Name="DescriptorID">id</Item>
+          <Synthetic Name="Size">
+            <DisplayString>{size} bytes</DisplayString>
+          </Synthetic>
+          <Item Name="IsComposite">isComposite</Item>
+          <Item Name="IsStruct">isStruct</Item>
+        </Expand>
+      </Synthetic>
+      <Synthetic Name="Fields">
+        <DisplayString></DisplayString>
+      </Synthetic>
+    </Expand>
+  </Type>
+</AutoVisualizer>
