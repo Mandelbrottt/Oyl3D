@@ -1,5 +1,7 @@
 #pragma once
 
+#include <clang/AST/DeclCXX.h>
+
 #include "Descriptors/EnumDescriptor.h"
 #include "Descriptors/FieldDescriptor.h"
 #include "Descriptors/FunctionDescriptor.h"
@@ -58,9 +60,6 @@ namespace Spyll
 
 		TypeDescriptor&
 		CreateTypeDescriptor(const clang::CXXRecordDecl* Decl);
-
-		TypeDescriptor&
-		CreateTypeDescriptor(const clang::Type* Type);
 
 		void
 		AddPrimitiveTypes();

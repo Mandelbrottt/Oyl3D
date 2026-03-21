@@ -2,7 +2,7 @@ local Project = require "Project"
 local Package = require "Package"
 local Packages = require "Spyll.Packages"
 
-group "Tests"
+group "Spyll/Tests"
 
 project "Spyll.Tests"; do
 	filename("%{prj.name}")

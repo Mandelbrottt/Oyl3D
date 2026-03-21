@@ -5,14 +5,11 @@
 
 namespace Spyll
 {
-	DeclVisitor::DeclVisitor(clang::SourceManager& SM)
-		: SourceManager(SM)
-	{
-		Generator = std::make_unique<ReflectionGenerator>();
-	}
+	DeclVisitor::DeclVisitor(clang::SourceManager& SM, ReflectionGenerator* Generator)
+		: SourceManager(SM), Generator(Generator) {}
 
 	DeclVisitor::~DeclVisitor() {}
-
+	
 	template<typename DeclT>
 	void
 	DeclVisitor::VisitDeclCommon(DeclT* Decl)

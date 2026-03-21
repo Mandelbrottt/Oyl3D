@@ -1,5 +1,7 @@
 #pragma once
 
+#include <type_traits>
+
 namespace Spyll
 {
 	enum class DescriptorId : uint32_t

@@ -1,9 +1,10 @@
 #pragma once
 
 #include <clang/AST/ASTConsumer.h>
+#include <clang/Frontend/FrontendAction.h>
 
-#include "ReflectionGenerator.h"
-#include "Visitor.h"
+#include "Spyll/ClangTool/ReflectionGenerator.h"
+#include "Spyll/ClangTool/Visitor.h"
 
 namespace Spyll
 {
@@ -11,7 +12,7 @@ namespace Spyll
 	{
 	public:
 		explicit
-		DeclFinder(clang::SourceManager& SM);
+		DeclFinder(clang::SourceManager& SM, ReflectionGenerator* Generator);
 
 		void
 		HandleTranslationUnit(clang::ASTContext& Ctx) override;
@@ -23,10 +24,16 @@ namespace Spyll
 	class DeclFindingAction final : public clang::ASTFrontendAction
 	{
 	public:
+		explicit
+		DeclFindingAction(ReflectionGenerator* Generator);
+
 		std::unique_ptr<clang::ASTConsumer>
 		CreateASTConsumer(
 			clang::CompilerInstance& CI,
 			llvm::StringRef InFile
 		) override;
+
+	private:
+		ReflectionGenerator* Generator = nullptr;
 	};
 }

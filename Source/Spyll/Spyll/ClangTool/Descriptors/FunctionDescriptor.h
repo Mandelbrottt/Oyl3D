@@ -1,14 +1,18 @@
 #pragma once
 
-#include <Spyll/Spyll/TypeId.h>
+#include <string>
+
+#include "Descriptors/DescriptorId.h"
 
 namespace Spyll
 {
 	struct FunctionDescriptor
 	{
-		DescriptorId id;
-		
+		DescriptorId id = DescriptorId::Invalid;
 		std::string name;
-		Reflection::TypeId owningType;
+
+		DescriptorId owningType = DescriptorId::Invalid;
+		
+		DescriptorId returnType = DescriptorId::Invalid;
 	};
 }

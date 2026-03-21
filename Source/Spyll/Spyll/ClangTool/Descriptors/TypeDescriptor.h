@@ -1,5 +1,7 @@
 #pragma once
 
+#include <string>
+
 #include "Descriptors/DescriptorId.h"
 
 namespace Spyll

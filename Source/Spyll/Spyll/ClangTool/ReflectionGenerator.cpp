@@ -135,16 +135,24 @@ namespace Spyll
 		auto& parentTypeDesc = m_impl->types.at(parentTypeDecl->getCanonicalDecl());
 
 		auto& parentRecordLayout = m_impl->context->getASTRecordLayout(parentTypeDecl);
-		auto offset = parentRecordLayout.getFieldOffset(Decl->getFieldIndex()) / 8; // Offset is in bits
+		auto offset = parentRecordLayout.getFieldOffset(Decl->getFieldIndex()); // Offset is in bits
 
 		FieldDescriptor descriptor;
 		descriptor.id = GetNewDescriptorId();
 		descriptor.name = Decl->getNameAsString();
 		descriptor.type = typeDesc.id;
-		descriptor.offset = uint32_t(offset);
+		descriptor.offsetInBits = uint32_t(offset);
 		descriptor.owningType = parentTypeDesc.id;
 
-		assert(!Decl->isBitField());
+		// FieldDecl is by definition non-static, VarDecl can be static
+		descriptor.isStatic = false;
+
+		auto cvrQualifiers = qualifiedType.getCVRQualifiers();
+		descriptor.isConst = cvrQualifiers & clang::Qualifiers::Const;
+		descriptor.isVolatile = cvrQualifiers & clang::Qualifiers::Volatile;
+
+		descriptor.isPointer = qualifiedType->hasPointerRepresentation();
+		descriptor.isReference = qualifiedType->isLValueReferenceType();
 
 		auto resultIter = m_impl->fields.emplace(Decl, std::move(descriptor)).first;
 		auto& result = resultIter->second;
@@ -217,8 +225,13 @@ namespace Spyll
 	TypeDescriptor&
 	ReflectionGenerator::AddType(const clang::Type* Type)
 	{
+		if (Type->isArrayType())
+			Type = Type->getBaseElementTypeUnsafe();
+
+		if (Type->isAnyPointerType() || Type->isLValueReferenceType())
+			Type = Type->getPointeeType().getTypePtr();
+
 		Type = Type->getCanonicalTypeInternal().getTypePtr();
-		Type = Type->getPointeeOrArrayElementType();
 
 		if (Type->isBuiltinType())
 		{

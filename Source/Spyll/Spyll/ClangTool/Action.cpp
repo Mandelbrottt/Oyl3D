@@ -4,8 +4,8 @@
 
 namespace Spyll
 {
-	DeclFinder::DeclFinder(clang::SourceManager& SM)
-		:  Visitor(SM) {}
+	DeclFinder::DeclFinder(clang::SourceManager& SM, ReflectionGenerator* Generator)
+		: Visitor(SM, Generator) {}
 
 	void
 	DeclFinder::HandleTranslationUnit(clang::ASTContext& Ctx)
@@ -14,6 +14,9 @@ namespace Spyll
 		Visitor.TraverseDecl(Ctx.getTranslationUnitDecl());
 	}
 
+	DeclFindingAction::DeclFindingAction(ReflectionGenerator* Generator)
+		: Generator(Generator) {}
+
 	std::unique_ptr<clang::ASTConsumer>
 	DeclFindingAction::CreateASTConsumer(
 		clang::CompilerInstance& CI,
@@ -21,6 +24,6 @@ namespace Spyll
 	)
 	{
 		(void) InFile;
-		return std::make_unique<DeclFinder>(CI.getSourceManager());
+		return std::make_unique<DeclFinder>(CI.getSourceManager(), Generator);
 	}
 }

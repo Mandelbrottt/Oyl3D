@@ -2,7 +2,9 @@ local Project = require "Project"
 local Package = require "Package"
 local Packages = require "Spyll.Packages"
 
-group "Executables"
+group "Spyll/Executables"
+
+startproject "Spyll.Entry"
 
 project "Spyll.Entry"; do
 	filename "%{prj.name}"
@@ -15,7 +17,18 @@ project "Spyll.Entry"; do
 	Spyll.CommonCppSettings()
 
 	Project.Files()
-	
+
+	debugdir(path.join("%{wks.location}", "Tests", "Targets"))
+
+	local compileFlagsFile = "compile_flags.txt"
+	if (os.isfile(compileFlagsFile)) then
+		files { compileFlagsFile }
+		debugargs {
+			"-p",
+			path.join("%{!prj.location}", compileFlagsFile)
+		}
+	end
+
 	defines {
 		Project.InsideProjectMacro()
 	}
