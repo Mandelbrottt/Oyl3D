@@ -11,7 +11,7 @@ namespace Spyll
 	{
 	public:
 		explicit
-		DeclFinder(ReflectionGenerator* Generator, clang::SourceManager& SM);
+		DeclFinder(clang::SourceManager& SM);
 
 		void
 		HandleTranslationUnit(clang::ASTContext& Ctx) override;
@@ -28,8 +28,5 @@ namespace Spyll
 			clang::CompilerInstance& CI,
 			llvm::StringRef InFile
 		) override;
-
-	private:
-		ReflectionGenerator Generator;
 	};
 }
