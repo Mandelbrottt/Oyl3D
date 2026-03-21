@@ -3,8 +3,20 @@
 namespace Spyll
 {
 	TestTool::TestTool(std::vector<std::string> a_fileNames, std::string a_compileArgs)
-		: m_sources(std::move(a_fileNames))
 	{
+		Setup(std::move(a_fileNames), std::move(a_compileArgs));
+	}
+
+	TestTool::TestTool(std::string a_fileName, std::string a_compileArgs)
+	{
+		Setup(std::move(a_fileName), std::move(a_compileArgs));
+	}
+
+	void
+	TestTool::Setup(std::vector<std::string> a_fileNames, std::string a_compileArgs)
+	{
+		m_sources = std::move(a_fileNames);
+		
 		std::replace(a_compileArgs.begin(), a_compileArgs.end(), ' ', '\n');
 		std::string error;
 		m_compilations = clang::tooling::FixedCompilationDatabase::loadFromBuffer(
@@ -23,8 +35,11 @@ namespace Spyll
 		SetPrintErrorMessage(false);
 	}
 
-	TestTool::TestTool(std::string a_fileName, std::string a_compileArgs)
-		: TestTool(std::vector { std::move(a_fileName) }, std::move(a_compileArgs)) {}
+	void
+	TestTool::Setup(std::string a_fileName, std::string a_compileArgs)
+	{
+		Setup(std::vector { std::move(a_fileName) }, std::move(a_compileArgs));
+	}
 
 	TestTool::~TestTool() {}
 }
