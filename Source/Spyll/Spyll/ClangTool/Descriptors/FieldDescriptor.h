@@ -5,8 +5,11 @@ namespace Spyll
 	struct FieldDescriptor
 	{
 		DescriptorId id;
-
 		std::string name;
-		uint32_t owningType;
+
+		DescriptorId type;
+		uint32_t offset;
+		
+		DescriptorId owningType;
 	};
 }
