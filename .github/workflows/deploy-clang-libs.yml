@@ -111,8 +111,8 @@ jobs:
       - name: Copy Natvis files
         working-directory: ${{ env.llvm-checkout-dir }}
         run: |
-          cp -u -v llvm/utils/LLVMVisualizers/*.natvis ${{ env.llvm-install-dir }}/lib/
-          cp -u -v clang/utils/ClangVisualizers/*.natvis ${{ env.llvm-install-dir }}/lib/
+          cp -u -v llvm/utils/LLVMVisualizers/*.natvis ${{ env.llvm-install-dir }}/include/llvm/
+          cp -u -v clang/utils/ClangVisualizers/*.natvis ${{ env.llvm-install-dir }}/include/clang/
 
       - name: Zip install directory
         working-directory: ${{ github.workspace }}
