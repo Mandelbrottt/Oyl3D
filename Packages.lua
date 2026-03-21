@@ -47,7 +47,7 @@ return {
 		Remote = {
 			Url = (function()
 				if (os.host() == premake.WINDOWS) then
-					return "https://dl.dropbox.com/scl/fi/uixomsswnbbrlg3kmpqsq/llvm.txz?rlkey=4r754os6t6igz8h9a6upuhpp0"
+					return "https://dl.dropbox.com/scl/fi/gaeyy54dlccesq7yuzvif/llvm.txz?rlkey=hxbbr6nv963xgclo36bokcr3o"
 				end
 				return ""
 			end)()
