@@ -152,6 +152,10 @@ function Package.GenerateWorkspacePackageProject(name, package, onProject)
 		includedirs(package.Include)
 		libdirs(package.LibDirs)
 
+		filter "action:vs*"; do
+			files { path.join(package.PackageDir, "**.natvis") }
+		end
+
 		filter {}
 		if package.OnProject then
 			package:OnProject()

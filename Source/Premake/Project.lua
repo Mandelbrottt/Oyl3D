@@ -4,6 +4,7 @@ local CppFilePatterns = {
 	"*.cpp",
 	"*.h",
 	"*.inl",
+	"*.natvis",
 }
 
 ---@return any
