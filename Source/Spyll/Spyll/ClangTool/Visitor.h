@@ -3,24 +3,23 @@
 namespace Spyll
 {
 	class ReflectionGenerator;
-	
+
 	class DeclVisitor final : public clang::RecursiveASTVisitor<DeclVisitor>
 	{
 	public:
 		explicit
-		DeclVisitor(ReflectionGenerator* Generator, clang::SourceManager& SM);
+		DeclVisitor(clang::SourceManager& SM);
+
+		~DeclVisitor();
 
 		bool
-		TraverseDecl(clang::Decl* D);
+		VisitCXXRecordDecl(clang::CXXRecordDecl* Decl);
 
 		bool
-		TraverseStmt(clang::Stmt* S);
+		VisitEnumDecl(clang::EnumDecl* Decl);
 
 		bool
-		TraverseType(clang::QualType T);
-
-		bool
-		VisitNamedDecl(clang::NamedDecl* NamedDecl);
+		VisitFunctionDecl(clang::FunctionDecl* Decl);
 
 		clang::SourceManager*
 		GetSourceManager() const;
@@ -35,7 +34,11 @@ namespace Spyll
 		void
 		PrintDecl(const clang::NamedDecl* NamedDecl) const;
 
-		ReflectionGenerator* Generator;
+		template<typename DeclT>
+		void
+		VisitDeclCommon(DeclT* Decl);
+
+		std::unique_ptr<ReflectionGenerator> Generator;
 
 		clang::SourceManager& SourceManager;
 		clang::ASTContext* Context = nullptr;

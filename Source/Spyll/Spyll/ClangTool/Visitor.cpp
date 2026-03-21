@@ -5,44 +5,63 @@
 
 namespace Spyll
 {
-	DeclVisitor::DeclVisitor(ReflectionGenerator* Generator, clang::SourceManager& SM)
-		: Generator(Generator), SourceManager(SM) {}
+	DeclVisitor::DeclVisitor(clang::SourceManager& SM)
+		: SourceManager(SM)
+	{
+		Generator = std::make_unique<ReflectionGenerator>();
+	}
+
+	DeclVisitor::~DeclVisitor() {}
+
+	template<typename DeclT>
+	void
+	DeclVisitor::VisitDeclCommon(DeclT* Decl)
+	{
+		Generator->ScrapeDecl(Decl);
+
+		if (Generator->ShouldReflectDecl(Decl))
+		{
+			PrintDecl(Decl);
+		}
+	}
 
 	bool
-	DeclVisitor::TraverseDecl(clang::Decl* D)
+	DeclVisitor::VisitCXXRecordDecl(clang::CXXRecordDecl* Decl)
 	{
-		if (!D)
-		{
+		if (!Decl->hasDefinition() || !Decl->getIdentifier())
 			return true;
-		}
 
-		Generator->ScrapeDecl(Context, D);
-
-		if (Generator->ShouldReflectDecl(D))
-		{
-			auto RD = clang::dyn_cast<clang::RecordDecl>(D);
-			PrintDecl(RD);
-		}
-
-		return RecursiveASTVisitor::TraverseDecl(D);
+		if (!Generator->ShouldReflectDecl(Decl))
+			return true;
+		
+		VisitDeclCommon(Decl);
+		return true;
 	}
 
 	bool
-	DeclVisitor::TraverseStmt(clang::Stmt* S)
+	DeclVisitor::VisitEnumDecl(clang::EnumDecl* Decl)
 	{
-		return RecursiveASTVisitor::TraverseStmt(S);
+		if (!Decl->isComplete() || !Decl->getIdentifier())
+			return true;
+		
+		if (!Generator->ShouldReflectDecl(Decl))
+			return true;
+		
+		VisitDeclCommon(Decl);
+		return true;
 	}
 
 	bool
-	DeclVisitor::TraverseType(clang::QualType T)
+	DeclVisitor::VisitFunctionDecl(clang::FunctionDecl* Decl)
 	{
-		return RecursiveASTVisitor::TraverseType(T);
-	}
-
-	bool
-	DeclVisitor::VisitNamedDecl(clang::NamedDecl* NamedDecl)
-	{
-		return RecursiveASTVisitor::VisitNamedDecl(NamedDecl);
+		if (!Decl->getDefinition() || !Decl->getIdentifier())
+			return true;
+		
+		if (!Generator->ShouldReflectDecl(Decl))
+			return true;
+		
+		VisitDeclCommon(Decl);
+		return true;
 	}
 
 	clang::SourceManager*
@@ -55,6 +74,7 @@ namespace Spyll
 	DeclVisitor::SetContext(clang::ASTContext* Ctx)
 	{
 		Context = Ctx;
+		Generator->SetContext(Ctx);
 	}
 
 	std::string
@@ -66,6 +86,6 @@ namespace Spyll
 	void
 	DeclVisitor::PrintDecl(const clang::NamedDecl* NamedDecl) const
 	{
-		(void) NamedDecl;	
+		(void) NamedDecl;
 	}
 }
