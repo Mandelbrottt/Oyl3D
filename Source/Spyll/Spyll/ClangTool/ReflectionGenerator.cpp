@@ -128,23 +128,24 @@ namespace Spyll
 		clang::QualType qualifiedType = Decl->getType();
 		const auto* typePtr = qualifiedType.getTypePtr();
 		auto& typeDesc = AddType(typePtr);
-		
+
 		auto parentTypeDecl = llvm::dyn_cast<clang::CXXRecordDecl>(Decl->getParent());
-		auto& parentTypeDesc = m_impl->types.at(parentTypeDecl->getCanonicalDecl()); // Guaranteed to be true, we're inside the parent
+
+		// Guaranteed to be true, we're inside the parent
+		auto& parentTypeDesc = m_impl->types.at(parentTypeDecl->getCanonicalDecl());
 
 		auto& parentRecordLayout = m_impl->context->getASTRecordLayout(parentTypeDecl);
 		auto offset = parentRecordLayout.getFieldOffset(Decl->getFieldIndex()) / 8; // Offset is in bits
-		
-		FieldDescriptor descriptor {
-			.id = GetNewDescriptorId(),
-			.name = Decl->getNameAsString(),
-			.type = typeDesc.id,
-			.offset = uint32_t(offset),
-			.owningType = parentTypeDesc.id,
-		};
+
+		FieldDescriptor descriptor;
+		descriptor.id = GetNewDescriptorId();
+		descriptor.name = Decl->getNameAsString();
+		descriptor.type = typeDesc.id;
+		descriptor.offset = uint32_t(offset);
+		descriptor.owningType = parentTypeDesc.id;
 
 		assert(!Decl->isBitField());
-		
+
 		auto resultIter = m_impl->fields.emplace(Decl, std::move(descriptor)).first;
 		auto& result = resultIter->second;
 		return result;
@@ -154,7 +155,7 @@ namespace Spyll
 	ReflectionGenerator::ScrapeDecl(const clang::FunctionDecl* Decl)
 	{
 		Decl = Decl->getCanonicalDecl();
-		
+
 		if (IsScraped(Decl))
 		{
 			return m_impl->functions.at(Decl);
@@ -162,7 +163,7 @@ namespace Spyll
 
 		FunctionDescriptor descriptor;
 		descriptor.id = GetNewDescriptorId();
-		
+
 		auto resultIter = m_impl->functions.emplace(Decl, std::move(descriptor)).first;
 		auto& result = resultIter->second;
 		return result;
@@ -172,7 +173,7 @@ namespace Spyll
 	ReflectionGenerator::ScrapeDecl(const clang::EnumDecl* Decl)
 	{
 		Decl = Decl->getCanonicalDecl();
-		
+
 		if (IsScraped(Decl))
 		{
 			return m_impl->enums.at(Decl);
@@ -196,7 +197,7 @@ namespace Spyll
 	ReflectionGenerator::AddType(const clang::CXXRecordDecl* Decl)
 	{
 		Decl = Decl->getCanonicalDecl();
-		
+
 		if (IsScraped(Decl))
 		{
 			return m_impl->types.at(Decl);
@@ -208,7 +209,7 @@ namespace Spyll
 		descriptor.isStruct = Decl->isStruct();
 
 		auto& recordLayout = Decl->getASTContext().getASTRecordLayout(Decl);
-		descriptor.size = recordLayout.getSize().getQuantity();
+		descriptor.size = uint32_t(recordLayout.getSize().getQuantity());
 
 		return descriptor;
 	}
@@ -234,7 +235,7 @@ namespace Spyll
 	{
 		TypeDescriptor descriptor;
 		descriptor.id = GetNewDescriptorId();
-		
+
 		auto resultIter = m_impl->types.emplace(Decl, std::move(descriptor)).first;
 		auto& result = resultIter->second;
 		return result;
@@ -251,19 +252,19 @@ namespace Spyll
 			descriptor.isComposite = false;
 			descriptor.isStruct = false;
 			descriptor.size = Size;
-			
+
 			m_impl->builtIns.emplace(Name, std::move(descriptor));
 		};
-		
-		addTypeFn("void",          0);
-		addTypeFn("bool",          sizeof(bool));
-		addTypeFn("char",          sizeof(char));
+
+		addTypeFn("void", 0);
+		addTypeFn("bool", sizeof(bool));
+		addTypeFn("char", sizeof(char));
 		addTypeFn("unsigned char", sizeof(unsigned char));
-		addTypeFn("int",           sizeof(int));
-		addTypeFn("unsigned int",  sizeof(unsigned int));
-		addTypeFn("float",         sizeof(float));
-		addTypeFn("double",        sizeof(double));
-		addTypeFn("wchar_t",       sizeof(wchar_t));
+		addTypeFn("int", sizeof(int));
+		addTypeFn("unsigned int", sizeof(unsigned int));
+		addTypeFn("float", sizeof(float));
+		addTypeFn("double", sizeof(double));
+		addTypeFn("wchar_t", sizeof(wchar_t));
 
 		// Clang uses _Bool as the display name for bool, alias it
 		m_impl->builtIns["_Bool"] = m_impl->builtIns["bool"];
@@ -277,7 +278,7 @@ namespace Spyll
 		auto asUnderlying = static_cast<std::underlying_type_t<DescriptorId>>(result);
 		++asUnderlying;
 		m_impl->nextId = static_cast<DescriptorId>(asUnderlying);
-		
+
 		return result;
 	}
 }
