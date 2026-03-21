@@ -17,7 +17,8 @@ namespace Spyll
 	struct ReflectionGenerator::Impl
 	{
 		clang::ASTContext* context;
-		
+
+		std::unordered_map<std::string, TypeDescriptor> builtIns;
 		std::unordered_map<const clang::Decl*, TypeDescriptor> types;
 		std::unordered_map<const clang::Decl*, FieldDescriptor> fields;
 		std::unordered_map<const clang::Decl*, FunctionDescriptor> functions;
@@ -61,66 +62,57 @@ namespace Spyll
 	bool
 	ReflectionGenerator::IsScraped(const clang::CXXRecordDecl* Decl) const
 	{
-		const auto canonicalDecl = Decl->getCanonicalDecl();
-		return m_impl->types.find(canonicalDecl) != m_impl->types.end();
+		Decl = Decl->getCanonicalDecl();
+		return m_impl->types.find(Decl) != m_impl->types.end();
 	}
 
 	bool
 	ReflectionGenerator::IsScraped(const clang::FieldDecl* Decl) const
 	{
-		const auto canonicalDecl = Decl->getCanonicalDecl();
+		const auto* canonicalDecl = Decl->getCanonicalDecl();
 		return m_impl->fields.find(canonicalDecl) != m_impl->fields.end();
 	}
 
 	bool
 	ReflectionGenerator::IsScraped(const clang::FunctionDecl* Decl) const
 	{
-		const auto canonicalDecl = Decl->getCanonicalDecl();
+		const auto* canonicalDecl = Decl->getCanonicalDecl();
 		return m_impl->functions.find(canonicalDecl) != m_impl->functions.end();
 	}
 
 	bool
 	ReflectionGenerator::IsScraped(const clang::EnumDecl* Decl) const
 	{
-		const auto canonicalDecl = Decl->getCanonicalDecl();
+		const auto* canonicalDecl = Decl->getCanonicalDecl();
 		return m_impl->enums.find(canonicalDecl) != m_impl->enums.end();
 	}
 
 	TypeDescriptor&
 	ReflectionGenerator::ScrapeDecl(const clang::CXXRecordDecl* Decl)
 	{
-		Decl = Decl->getStandardLayoutBaseWithFields();
+		Decl = Decl->getCanonicalDecl();
 
 		if (IsScraped(Decl))
 		{
 			return m_impl->types[Decl];
 		}
 
-		auto& recordLayout = Decl->getASTContext().getASTRecordLayout(Decl);
+		auto& descriptor = AddType(Decl);
 
-		TypeDescriptor descriptor;
-		descriptor.id = GetNewDescriptorId();
-		descriptor.name = Decl->getNameAsString();
-		descriptor.isStruct = Decl->isStruct();
-		descriptor.size = recordLayout.getSize().getQuantity();
-
-		descriptor.fields.reserve(recordLayout.getFieldCount());
-		for (auto iter : Decl->fields())
+		for (clang::FieldDecl* iter : Decl->fields())
 		{
 			auto& field = ScrapeDecl(iter);
 			descriptor.fields.emplace_back(field.id);
 		}
 
 		// find a way to reserve number of methods
-		for (auto iter : Decl->methods())
+		for (clang::FunctionDecl* iter : Decl->methods())
 		{
 			auto& function = ScrapeDecl(iter);
 			descriptor.functions.emplace_back(function.id);
 		}
 
-		auto resultIter = m_impl->types.emplace(Decl, std::move(descriptor)).first;
-		auto& result = resultIter->second;
-		return result;
+		return descriptor;
 	}
 
 	FieldDescriptor&
@@ -133,7 +125,25 @@ namespace Spyll
 			return m_impl->fields.at(Decl);
 		}
 
-		FieldDescriptor descriptor;
+		clang::QualType qualifiedType = Decl->getType();
+		const auto* typePtr = qualifiedType.getTypePtr();
+		auto& typeDesc = AddType(typePtr);
+		
+		auto parentTypeDecl = llvm::dyn_cast<clang::CXXRecordDecl>(Decl->getParent());
+		auto& parentTypeDesc = m_impl->types.at(parentTypeDecl->getCanonicalDecl()); // Guaranteed to be true, we're inside the parent
+
+		auto& parentRecordLayout = m_impl->context->getASTRecordLayout(parentTypeDecl);
+		auto offset = parentRecordLayout.getFieldOffset(Decl->getFieldIndex()) / 8; // Offset is in bits
+		
+		FieldDescriptor descriptor {
+			.id = GetNewDescriptorId(),
+			.name = Decl->getNameAsString(),
+			.type = typeDesc.id,
+			.offset = uint32_t(offset),
+			.owningType = parentTypeDesc.id,
+		};
+
+		assert(!Decl->isBitField());
 		
 		auto resultIter = m_impl->fields.emplace(Decl, std::move(descriptor)).first;
 		auto& result = resultIter->second;
@@ -151,6 +161,7 @@ namespace Spyll
 		}
 
 		FunctionDescriptor descriptor;
+		descriptor.id = GetNewDescriptorId();
 		
 		auto resultIter = m_impl->functions.emplace(Decl, std::move(descriptor)).first;
 		auto& result = resultIter->second;
@@ -178,42 +189,84 @@ namespace Spyll
 	ReflectionGenerator::SetContext(clang::ASTContext* Context)
 	{
 		m_impl->context = Context;
+		AddPrimitiveTypes();
 	}
 
-	TypeDescriptor*
-	ReflectionGenerator::TryGetType(const clang::CXXRecordDecl* Decl) const
+	TypeDescriptor&
+	ReflectionGenerator::AddType(const clang::CXXRecordDecl* Decl)
 	{
-		auto iter = m_impl->types.find(Decl);
-		if (iter == m_impl->types.end())
-			return nullptr;
-		return &iter->second;
+		Decl = Decl->getCanonicalDecl();
+		
+		if (IsScraped(Decl))
+		{
+			return m_impl->types.at(Decl);
+		}
+
+		auto& descriptor = CreateTypeDescriptor(Decl);
+		descriptor.name = Decl->getNameAsString();
+		descriptor.isComposite = true;
+		descriptor.isStruct = Decl->isStruct();
+
+		auto& recordLayout = Decl->getASTContext().getASTRecordLayout(Decl);
+		descriptor.size = recordLayout.getSize().getQuantity();
+
+		return descriptor;
 	}
 
-	FieldDescriptor*
-	ReflectionGenerator::TryGetField(const clang::FieldDecl* Decl) const
+	TypeDescriptor&
+	ReflectionGenerator::AddType(const clang::Type* Type)
 	{
-		auto iter = m_impl->fields.find(Decl);
-		if (iter == m_impl->fields.end())
-			return nullptr;
-		return &iter->second;
+		Type = Type->getCanonicalTypeInternal().getTypePtr();
+		Type = Type->getPointeeOrArrayElementType();
+
+		if (Type->isBuiltinType())
+		{
+			auto name = Type->getCanonicalTypeInternal().getAsString();
+			return m_impl->builtIns.at(name);
+		}
+
+		const auto* cxxDecl = Type->getAsCXXRecordDecl()->getCanonicalDecl();
+		return ScrapeDecl(cxxDecl);
 	}
 
-	FunctionDescriptor*
-	ReflectionGenerator::TryGetFunction(const clang::FunctionDecl* Decl) const
+	TypeDescriptor&
+	ReflectionGenerator::CreateTypeDescriptor(const clang::CXXRecordDecl* Decl)
 	{
-		auto iter = m_impl->functions.find(Decl);
-		if (iter == m_impl->functions.end())
-			return nullptr;
-		return &iter->second;
+		TypeDescriptor descriptor;
+		descriptor.id = GetNewDescriptorId();
+		
+		auto resultIter = m_impl->types.emplace(Decl, std::move(descriptor)).first;
+		auto& result = resultIter->second;
+		return result;
 	}
 
-	EnumDescriptor*
-	ReflectionGenerator::TryGetEnum(const clang::EnumDecl* Decl) const
+	void
+	ReflectionGenerator::AddPrimitiveTypes()
 	{
-		auto iter = m_impl->enums.find(Decl);
-		if (iter == m_impl->enums.end())
-			return nullptr;
-		return &iter->second;
+		auto addTypeFn = [&](std::string_view Name, uint32_t Size)
+		{
+			TypeDescriptor descriptor;
+			descriptor.id = GetNewDescriptorId();
+			descriptor.name = Name;
+			descriptor.isComposite = false;
+			descriptor.isStruct = false;
+			descriptor.size = Size;
+			
+			m_impl->builtIns.emplace(Name, std::move(descriptor));
+		};
+		
+		addTypeFn("void",          0);
+		addTypeFn("bool",          sizeof(bool));
+		addTypeFn("char",          sizeof(char));
+		addTypeFn("unsigned char", sizeof(unsigned char));
+		addTypeFn("int",           sizeof(int));
+		addTypeFn("unsigned int",  sizeof(unsigned int));
+		addTypeFn("float",         sizeof(float));
+		addTypeFn("double",        sizeof(double));
+		addTypeFn("wchar_t",       sizeof(wchar_t));
+
+		// Clang uses _Bool as the display name for bool, alias it
+		m_impl->builtIns["_Bool"] = m_impl->builtIns["bool"];
 	}
 
 	DescriptorId
