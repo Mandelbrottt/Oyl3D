@@ -18,24 +18,4 @@
       </Synthetic>
     </Expand>
   </Type>
-  <Type Name="Spyll::TypeDescriptor" ExcludeView="Inner">
-    <DisplayString>{name} {{ id={id}, fields={fields._Mypair._Myval2._Mylast - fields._Mypair._Myval2._Myfirst}, functions={functions._Mypair._Myval2._Mylast - functions._Mypair._Myval2._Myfirst} }}</DisplayString>
-    <StringView>name</StringView>
-    <Expand>
-      <Synthetic Name="Info">
-        <DisplayString>ID = {id}</DisplayString>
-        <Expand>
-          <Item Name="DescriptorID">id</Item>
-          <Synthetic Name="Size">
-            <DisplayString>{size} bytes</DisplayString>
-          </Synthetic>
-          <Item Name="IsComposite">isComposite</Item>
-          <Item Name="IsStruct">isStruct</Item>
-        </Expand>
-      </Synthetic>
-      <Synthetic Name="Fields">
-        <DisplayString></DisplayString>
-      </Synthetic>
-    </Expand>
-  </Type>
 </AutoVisualizer>

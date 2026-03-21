@@ -2,7 +2,7 @@
 
 #include <string>
 
-#include "Descriptors/DescriptorId.h"
+#include "DescriptorEnums.h"
 
 namespace Spyll
 {

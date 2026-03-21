@@ -2,19 +2,21 @@
 
 #include <string>
 
-#include "Descriptors/DescriptorId.h"
+#include "DescriptorEnums.h"
 
 namespace Spyll
 {
-	struct ParameterDescriptor
+	struct FieldDescriptor
 	{
 		DescriptorId id = DescriptorId::Invalid;
 		std::string name;
 
 		DescriptorId type = DescriptorId::Invalid;
-		uint32_t offset = uint32_t(-1);
-		
+		uint32_t offsetInBits = uint32_t(-1);
+
+		bool isStatic    : 1;
 		bool isConst     : 1;
+		bool isVolatile  : 1;
 		bool isReference : 1;
 		bool isPointer   : 1;
 		
