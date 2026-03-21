@@ -9,7 +9,7 @@ namespace Spyll::Reflection
 		using TypeIdUnderlying = uint32_t;
 	}
 
-	enum class TypeId : Detail::TypeIdUnderlying { Null = -1 };
+	enum class TypeId : Detail::TypeIdUnderlying { Null = static_cast<Detail::TypeIdUnderlying>(-1) };
 
 	constexpr
 	bool
