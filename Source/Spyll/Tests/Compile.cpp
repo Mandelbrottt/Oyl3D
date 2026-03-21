@@ -1,17 +1,27 @@
-#include <Spyll/ClangTool/Tool.h>
+#include "BasicFixture.h"
 
-TEST(Compile, CompilesHelloWorld)
+struct CompileTest : BasicFixture {};
+
+TEST_F(CompileTest, CompilesHelloWorld)
 {
-	{
-		Spyll::TestTool tool("Main.cpp", "-x c++");
-		int returnCode = tool.Run();
+	tool.Setup("HelloWorld.cpp", "-x c++");
+	int returnCode = tool.Run();
 
-		EXPECT_EQ(returnCode, 0);
-	}
-	{
-		Spyll::TestTool tool("Fake.File", "-x c++");
-		int returnCode = tool.Run();
+	EXPECT_EQ(returnCode, 0);
+}
 
-		EXPECT_EQ(returnCode, 1);
-	}
+TEST_F(CompileTest, FailsOnSyntaxError)
+{
+	tool.Setup("SyntaxError.cpp", "-x c++");
+	int returnCode = tool.Run();
+
+	EXPECT_EQ(returnCode, 1);
+}
+
+TEST_F(CompileTest, FailOnFakeFile)
+{
+	tool.Setup("Fake.file", "-x c++");
+	int returnCode = tool.Run();
+
+	EXPECT_EQ(returnCode, 1);
 }
