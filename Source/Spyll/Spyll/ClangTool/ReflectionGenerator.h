@@ -7,6 +7,12 @@
 
 namespace Spyll
 {
+	namespace Detail
+	{
+		template<typename T>
+		struct DescriptorFromDecl {};
+	}
+
 	class ReflectionGenerator
 	{
 	public:
@@ -44,17 +50,20 @@ namespace Spyll
 		SetContext(clang::ASTContext* Context);
 
 	private:
-		TypeDescriptor*
-		TryGetType(const clang::CXXRecordDecl* Decl) const;
+		TypeDescriptor&
+		AddType(const clang::CXXRecordDecl* Decl);
 
-		FieldDescriptor*
-		TryGetField(const clang::FieldDecl* Decl) const;
+		TypeDescriptor&
+		AddType(const clang::Type* Type);
 
-		FunctionDescriptor*
-		TryGetFunction(const clang::FunctionDecl* Decl) const;
+		TypeDescriptor&
+		CreateTypeDescriptor(const clang::CXXRecordDecl* Decl);
 
-		EnumDescriptor*
-		TryGetEnum(const clang::EnumDecl* Decl) const;
+		TypeDescriptor&
+		CreateTypeDescriptor(const clang::Type* Type);
+
+		void
+		AddPrimitiveTypes();
 
 		DescriptorId
 		GetNewDescriptorId();
@@ -63,4 +72,31 @@ namespace Spyll
 		struct Impl;
 		Impl* m_impl;
 	};
+
+	namespace Detail
+	{
+		template<>
+		struct DescriptorFromDecl<clang::CXXRecordDecl>
+		{
+			using type = TypeDescriptor;
+		};
+
+		template<>
+		struct DescriptorFromDecl<clang::FieldDecl>
+		{
+			using type = FieldDescriptor;
+		};
+
+		template<>
+		struct DescriptorFromDecl<clang::FunctionDecl>
+		{
+			using type = FunctionDescriptor;
+		};
+
+		template<>
+		struct DescriptorFromDecl<clang::EnumDecl>
+		{
+			using type = EnumDescriptor;
+		};
+	}
 }
