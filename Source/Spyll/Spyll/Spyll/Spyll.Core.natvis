@@ -32,5 +32,34 @@
         <DisplayString></DisplayString>                                        
       </Synthetic>                                                             
     </Expand>                                                                  
+  </Type>
+  <Type Name="Spyll::FieldDescriptor" ExcludeView="Inner">
+    <DisplayString>{name} {{ id={id}, type={type} }}</DisplayString>                          
+
+    <StringView>name</StringView>                                              
+    <Expand>                                                                   
+      <Synthetic Name="Info">                                                  
+        <DisplayString>Type = {id}</DisplayString>                               
+        <Expand>                                                               
+          <Item Name="Name">name</Item>                                  
+          <Item Name="DescriptorID">id</Item>                                  
+          <Item Name="Type">type</Item>
+          
+          <Synthetic Name="Size">
+            <DisplayString Condition="offsetInBits == 1">1 bit</DisplayString>                        
+            <DisplayString Condition="offsetInBits == 8">1 byte</DisplayString>
+            <DisplayString Condition="offsetInBits % 8 != 0">{offsetInBits} bits</DisplayString>                        
+            <DisplayString Condition="offsetInBits % 8 == 0">{offsetInBits / 8} bytes</DisplayString>
+          </Synthetic>     
+  
+          <Item Name="AccessSpec">accessSpecifier</Item>                          
+
+          <Item Name="IsConst">isConst</Item>                          
+          <Item Name="IsVolatile">isVolatile</Item>                          
+          <Item Name="IsReference">isReference</Item>                          
+          <Item Name="IsPointer">isPointer</Item>                                    
+        </Expand>                                                              
+      </Synthetic>                                                                       
+    </Expand>                                                                  
   </Type>                                                                      
 </AutoVisualizer>

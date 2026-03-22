@@ -3,6 +3,9 @@
   <Type Name="Spyll::ReflectionGenerator">
     <Intrinsic Name="typemap_length" Expression="m_impl->types._List._Mypair._Myval2._Mysize"/>
     <Intrinsic Name="typemap_head" Expression="m_impl->types._List._Mypair._Myval2._Myhead->_Next"/>
+    
+    <Intrinsic Name="fieldmap_length" Expression="m_impl->fields._List._Mypair._Myval2._Mysize"/>
+    <Intrinsic Name="fieldmap_head" Expression="m_impl->fields._List._Mypair._Myval2._Myhead->_Next"/>
     <DisplayString>{{ Types={typemap_length()} }}</DisplayString>
     <Expand>
       <Synthetic Name="Types">
@@ -11,6 +14,17 @@
           <LinkedListItems>
             <Size>typemap_length()</Size>
             <HeadPointer>typemap_head()</HeadPointer>
+            <NextPointer>_Next</NextPointer>
+            <ValueNode Name="{_Myval.second.name}">_Myval.second</ValueNode>
+          </LinkedListItems>
+        </Expand>
+      </Synthetic>
+      <Synthetic Name="Fields">
+        <DisplayString>{{ Types={fieldmap_length()} }}</DisplayString>
+        <Expand>
+          <LinkedListItems>
+            <Size>fieldmap_length()</Size>
+            <HeadPointer>fieldmap_head()</HeadPointer>
             <NextPointer>_Next</NextPointer>
             <ValueNode Name="{_Myval.second.name}">_Myval.second</ValueNode>
           </LinkedListItems>
