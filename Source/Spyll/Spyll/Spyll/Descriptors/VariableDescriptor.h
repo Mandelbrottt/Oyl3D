@@ -12,7 +12,6 @@ namespace Spyll
 
 		DescriptorId id = DescriptorId::Invalid;
 		DescriptorId type = DescriptorId::Invalid;
-		DescriptorId owningType = DescriptorId::Invalid;
 
 		AccessSpecifier accessSpecifier : 2 = AccessSpecifier::None;
 
