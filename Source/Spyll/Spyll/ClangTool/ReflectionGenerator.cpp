@@ -148,7 +148,7 @@ namespace Spyll
 		auto offset = parentRecordLayout.getFieldOffset(Decl->getFieldIndex()); // Offset is in bits
 
 		FieldDescriptor descriptor;
-		descriptor.id = GetNewDescriptorId();
+		descriptor.id = GenerateNewDescriptorId<FieldDescriptorId>();
 		descriptor.name = Decl->getName();
 		descriptor.type = typeDesc.id;
 		descriptor.offsetInBits = uint32_t(offset);
@@ -183,7 +183,7 @@ namespace Spyll
 
 		// Guaranteed to be true, we're inside the parent
 		VariableDescriptor descriptor;
-		descriptor.id = GetNewDescriptorId();
+		descriptor.id = GenerateNewDescriptorId<VariableDescriptorId>();
 		descriptor.type = typeDesc.id;
 
 		// Special check for static members
@@ -194,7 +194,7 @@ namespace Spyll
 			// Add this field to parent descriptor, static fields aren't already iterated
 			// parent is likely already scraped, just easy to get descriptor this way
 			auto& parentDesc = ScrapeDecl(parentDecl);
-			parentDesc.fields.emplace_back(descriptor.id);
+			parentDesc.variables.emplace_back(descriptor.id);
 
 			// When decl is a member, the qualified name is implicit
 			descriptor.name = Decl->getName();
@@ -226,7 +226,7 @@ namespace Spyll
 		}
 
 		FunctionDescriptor descriptor;
-		descriptor.id = GetNewDescriptorId();
+		descriptor.id = GenerateNewDescriptorId<FunctionDescriptorId>();
 
 		const auto* returnType = Decl->getReturnType().getTypePtr();
 		const auto& returnDesc = AddType(returnType);
@@ -354,6 +354,7 @@ namespace Spyll
 		descriptor.isComposite = Type->isCompoundType();
 		descriptor.isStruct = Type->isStructureType();
 		descriptor.sizeInBits = m_impl->context->getTypeSize(Type);
+		descriptor.alignment = m_impl->context->getPreferredTypeAlign(Type);
 		return descriptor;
 	}
 
@@ -366,7 +367,7 @@ namespace Spyll
 		}
 
 		TypeDescriptor descriptor;
-		descriptor.id = GetNewDescriptorId();
+		descriptor.id = GenerateNewDescriptorId<TypeDescriptorId>();
 
 		auto resultIter = m_impl->types.emplace(Decl, std::move(descriptor)).first;
 		auto& result = resultIter->second;
@@ -376,7 +377,7 @@ namespace Spyll
 	void
 	ReflectionGenerator::AddPrimitiveTypes()
 	{
-		AddType(m_impl->context->VoidTy.getTypePtr()); 
+		AddType(m_impl->context->VoidTy.getTypePtr());
 		AddType(m_impl->context->BoolTy.getTypePtr());
 		AddType(m_impl->context->CharTy.getTypePtr());
 		AddType(m_impl->context->ShortTy.getTypePtr());
@@ -389,17 +390,5 @@ namespace Spyll
 		AddType(m_impl->context->FloatTy.getTypePtr());
 		AddType(m_impl->context->DoubleTy.getTypePtr());
 		AddType(m_impl->context->WCharTy.getTypePtr());
-	}
-
-	DescriptorId
-	ReflectionGenerator::GetNewDescriptorId()
-	{
-		static DescriptorId result = static_cast<DescriptorId>(0);
-
-		auto asUnderlying = static_cast<std::underlying_type_t<DescriptorId>>(result);
-		++asUnderlying;
-		result = static_cast<DescriptorId>(asUnderlying);
-
-		return result;
 	}
 }

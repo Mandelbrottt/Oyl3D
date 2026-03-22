@@ -4,10 +4,34 @@
 
 namespace Spyll
 {
-	enum class DescriptorId : uint32_t
+#define DESCRIPTOR_ID(_name_) \
+	enum class _name_ : uint32_t \
+	{ \
+		Invalid = static_cast<std::underlying_type_t<_name_>>(-1)\
+	}
+
+	DESCRIPTOR_ID(TypeDescriptorId);
+
+	DESCRIPTOR_ID(FieldDescriptorId);
+
+	DESCRIPTOR_ID(FunctionDescriptorId);
+
+	DESCRIPTOR_ID(VariableDescriptorId);
+
+	DESCRIPTOR_ID(EnumDescriptorId);
+
+	template<typename DescriptorIdT>
+	DescriptorIdT
+	GenerateNewDescriptorId()
 	{
-		Invalid = static_cast<std::underlying_type_t<DescriptorId>>(-1)
-	};
+		static DescriptorIdT result = static_cast<DescriptorIdT>(0);
+
+		auto asUnderlying = static_cast<std::underlying_type_t<DescriptorIdT>>(result);
+		++asUnderlying;
+		result = static_cast<DescriptorIdT>(asUnderlying);
+
+		return result;
+	}
 
 	enum class AccessSpecifier : uint8_t
 	{

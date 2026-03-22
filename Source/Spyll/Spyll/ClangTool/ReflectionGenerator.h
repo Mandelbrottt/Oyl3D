@@ -76,9 +76,6 @@ namespace Spyll
 		void
 		AddPrimitiveTypes();
 
-		DescriptorId
-		GetNewDescriptorId();
-
 	private:
 		struct Impl;
 		Impl* m_impl;
