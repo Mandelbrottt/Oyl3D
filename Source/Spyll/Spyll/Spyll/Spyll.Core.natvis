@@ -1,22 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?> 
 <AutoVisualizer xmlns="http://schemas.microsoft.com/vstudio/debugger/natvis/2010"> 
   <Type Name="Spyll::TypeDescriptor" ExcludeView="Inner">
-    <Intrinsic Name="fieldslength" Expression="fields._Mypair._Myval2._Mylast - fields._Mypair._Myval2._Myfirst"/>
-    <Intrinsic Name="functionslength" Expression="functions._Mypair._Myval2._Mylast - functions._Mypair._Myval2._Myfirst"/>
-    <DisplayString>{name} {{ id={id}, fields={fieldslength()}, functions={functionslength()} }}</DisplayString>                          
+    <Intrinsic Name="fields_list_length" Expression="fields._Mypair._Myval2._Mylast - fields._Mypair._Myval2._Myfirst"/>
+    <Intrinsic Name="functions_list_length" Expression="functions._Mypair._Myval2._Mylast - functions._Mypair._Myval2._Myfirst"/>
+
+    <DisplayString Condition="sizeInBits == 1">{name} {{ id={id}, size=1 bit, fields={fields_list_length()}, functions={functions_list_length()} }}</DisplayString>                          
+    <DisplayString Condition="sizeInBits == 8">{name} {{ id={id}, size=1 byte, fields={fields_list_length()}, functions={functions_list_length()} }}</DisplayString>                          
+    <DisplayString Condition="sizeInBits % 8 != 0">{name} {{ id={id}, size={sizeInBits} bits, fields={fields_list_length()}, functions={functions_list_length()} }}</DisplayString>                          
+    <DisplayString Condition="sizeInBits % 8 == 0">{name} {{ id={id}, size={sizeInBits / 8} bytes, fields={fields_list_length()}, functions={functions_list_length()} }}</DisplayString>                          
+
     <StringView>name</StringView>                                              
     <Expand>                                                                   
       <Synthetic Name="Info">                                                  
         <DisplayString>ID = {id}</DisplayString>                               
         <Expand>                                                               
           <Item Name="DescriptorID">id</Item>                                  
-          <Synthetic Name="Size">                                              
-            <DisplayString>{size} bytes</DisplayString>                        
-          </Synthetic>                                                         
+          <Synthetic Name="Size">
+            <DisplayString Condition="sizeInBits == 1">1 bit</DisplayString>                        
+            <DisplayString Condition="sizeInBits == 8">1 byte</DisplayString>
+            <DisplayString Condition="sizeInBits % 8 != 0">{sizeInBits} bits</DisplayString>                        
+            <DisplayString Condition="sizeInBits % 8 == 0">{sizeInBits / 8} bytes</DisplayString>
+          </Synthetic>     
+          
           <Item Name="IsComposite">isComposite</Item>                          
           <Item Name="IsStruct">isStruct</Item>                                
         </Expand>                                                              
-      </Synthetic>                                                             
+      </Synthetic>             
+      
       <Synthetic Name="Fields">                                                
         <DisplayString></DisplayString>                                        
       </Synthetic>                                                             
