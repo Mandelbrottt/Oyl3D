@@ -5,7 +5,9 @@
 #include "Spyll/Spyll/Descriptors/EnumDescriptor.h"
 #include "Spyll/Spyll/Descriptors/FieldDescriptor.h"
 #include "Spyll/Spyll/Descriptors/FunctionDescriptor.h"
+#include "Spyll/Spyll/Descriptors/ParameterDescriptor.h"
 #include "Spyll/Spyll/Descriptors/TypeDescriptor.h"
+#include "Spyll/Spyll/Descriptors/VariableDescriptor.h"
 
 namespace
 {
@@ -20,6 +22,8 @@ namespace Spyll
 
 		std::unordered_map<const void*, TypeDescriptor> types;
 		std::unordered_map<const void*, FieldDescriptor> fields;
+		std::unordered_map<const void*, VariableDescriptor> variables;
+		std::unordered_map<const void*, ParameterDescriptor> parameters;
 		std::unordered_map<const void*, FunctionDescriptor> functions;
 		std::unordered_map<const void*, EnumDescriptor> enums;
 
@@ -38,10 +42,8 @@ namespace Spyll
 	}
 
 	bool
-	ReflectionGenerator::ShouldReflectDecl(const clang::Decl* Decl) const
+	ReflectionGenerator::ShouldReflectDecl(const clang::NamedDecl* Decl) const
 	{
-		bool shouldBeReflected = false;
-
 		// Reflect if Decl has annotate("reflect") attribute
 		for (const auto* iter : Decl->specific_attrs<clang::AnnotateAttr>())
 		{
@@ -50,12 +52,16 @@ namespace Spyll
 			llvm::StringRef annotation = attr->getAnnotation();
 			if (annotation.compare(REFLECT_ANNOTATION) == 0)
 			{
-				shouldBeReflected = true;
-				break;
+				return true;
 			}
 		}
 
-		return shouldBeReflected;
+		if (auto context = llvm::dyn_cast<clang::RecordDecl>(Decl->getDeclContext()))
+		{
+			return ShouldReflectDecl(context);
+		}
+
+		return false;
 	}
 
 	bool
@@ -67,6 +73,13 @@ namespace Spyll
 
 	bool
 	ReflectionGenerator::IsScraped(const clang::FieldDecl* Decl) const
+	{
+		const auto* canonicalDecl = Decl->getCanonicalDecl();
+		return m_impl->fields.find(canonicalDecl) != m_impl->fields.end();
+	}
+
+	bool
+	ReflectionGenerator::IsScraped(const clang::VarDecl* Decl) const
 	{
 		const auto* canonicalDecl = Decl->getCanonicalDecl();
 		return m_impl->fields.find(canonicalDecl) != m_impl->fields.end();
@@ -103,8 +116,6 @@ namespace Spyll
 			auto& field = ScrapeDecl(iter);
 			descriptor.fields.emplace_back(field.id);
 		}
-
-		//Decl->getASTContext()
 
 		// find a way to reserve number of methods
 		for (clang::FunctionDecl* iter : Decl->methods())
@@ -145,9 +156,6 @@ namespace Spyll
 		descriptor.offsetInBits = uint32_t(offset);
 		descriptor.owningType = parentTypeDesc.id;
 
-		// FieldDecl is by definition non-static, VarDecl can be static
-		descriptor.isStatic = false;
-
 		auto cvrQualifiers = qualifiedType.getCVRQualifiers();
 		descriptor.isConst = cvrQualifiers & clang::Qualifiers::Const;
 		descriptor.isVolatile = cvrQualifiers & clang::Qualifiers::Volatile;
@@ -156,6 +164,44 @@ namespace Spyll
 		descriptor.isReference = qualifiedType->isLValueReferenceType();
 
 		auto resultIter = m_impl->fields.emplace(Decl, std::move(descriptor)).first;
+		auto& result = resultIter->second;
+		return result;
+	}
+
+	VariableDescriptor&
+	ReflectionGenerator::ScrapeDecl(const clang::VarDecl* Decl)
+	{
+		Decl = Decl->getCanonicalDecl();
+
+		if (IsScraped(Decl))
+		{
+			return m_impl->variables.at(Decl);
+		}
+
+		clang::QualType qualifiedType = Decl->getType();
+		const auto* typePtr = qualifiedType.getTypePtr();
+		auto& typeDesc = AddType(typePtr);
+
+		// Guaranteed to be true, we're inside the parent
+		VariableDescriptor descriptor;
+		descriptor.id = GetNewDescriptorId();
+		descriptor.name = Decl->getNameAsString();
+		descriptor.type = typeDesc.id;
+
+		if (const auto* parentTypeDecl = llvm::dyn_cast<clang::CXXRecordDecl>(Decl->getDeclContext()))
+		{
+			auto& parentTypeDesc = ScrapeDecl(parentTypeDecl);
+			descriptor.owningType = parentTypeDesc.id;
+		}
+
+		auto cvrQualifiers = qualifiedType.getCVRQualifiers();
+		descriptor.isConst = cvrQualifiers & clang::Qualifiers::Const;
+		descriptor.isVolatile = cvrQualifiers & clang::Qualifiers::Volatile;
+
+		descriptor.isPointer = qualifiedType->isPointerType();
+		descriptor.isReference = qualifiedType->isLValueReferenceType();
+
+		auto resultIter = m_impl->variables.emplace(Decl, std::move(descriptor)).first;
 		auto& result = resultIter->second;
 		return result;
 	}
@@ -219,6 +265,7 @@ namespace Spyll
 
 		auto& recordLayout = Decl->getASTContext().getASTRecordLayout(Decl);
 		descriptor.sizeInBits = uint32_t(recordLayout.getSize().getQuantity()) * 8;
+		descriptor.alignment = uint8_t(recordLayout.getAlignment().getQuantity());
 
 		return descriptor;
 	}
@@ -241,7 +288,6 @@ namespace Spyll
 
 		if (const auto* cxxDecl = Type->getAsCXXRecordDecl())
 		{
-			cxxDecl = cxxDecl->getCanonicalDecl();
 			return ScrapeDecl(cxxDecl);
 		}
 
@@ -273,8 +319,8 @@ namespace Spyll
 	void
 	ReflectionGenerator::AddPrimitiveTypes()
 	{
-		AddType(m_impl->context->VoidTy.getTypePtr());
-		AddType(m_impl->context->BoolTy.getTypePtr());
+		AddType(m_impl->context->VoidTy.getTypePtr()); 
+		AddType(m_impl->context->BoolTy.getTypePtr()).name = "bool"; // Clang calls bool "_Bool" by default
 		AddType(m_impl->context->CharTy.getTypePtr());
 		AddType(m_impl->context->ShortTy.getTypePtr());
 		AddType(m_impl->context->IntTy.getTypePtr());

@@ -8,11 +8,10 @@ namespace Spyll
 {
 	struct FunctionDescriptor
 	{
-		DescriptorId id = DescriptorId::Invalid;
 		std::string name;
 
+		DescriptorId id = DescriptorId::Invalid;
 		DescriptorId owningType = DescriptorId::Invalid;
-		
 		DescriptorId returnType = DescriptorId::Invalid;
 	};
 }
