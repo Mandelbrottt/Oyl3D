@@ -11,10 +11,7 @@ namespace Spyll
 		std::string name;
 
 		DescriptorId id = DescriptorId::Invalid;
-		DescriptorId owningType = DescriptorId::Invalid;
 		DescriptorId returnType = DescriptorId::Invalid;
-
-		uint32_t vtableOffset = uint32_t(-1);
 
 		AccessSpecifier accessSpecifier : 2 = AccessSpecifier::None;
 		ConstructorType constructorType : 2 = ConstructorType::None;
@@ -23,6 +20,7 @@ namespace Spyll
 		bool isPureVirtual : 1;
 		bool isOverride    : 1;
 
+		bool isStatic   : 1;
 		bool isConst    : 1;
 		bool isVolatile : 1;
 
@@ -30,5 +28,7 @@ namespace Spyll
 		bool isReturnVolatile  : 1;
 		bool isReturnReference : 1;
 		bool isReturnPointer   : 1;
+
+		std::vector<DescriptorId> parameters;
 	};
 }
