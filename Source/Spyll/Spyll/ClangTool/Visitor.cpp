@@ -51,9 +51,13 @@ namespace Spyll
 	bool
 	DeclVisitor::VisitFunctionDecl(clang::FunctionDecl* Decl)
 	{
-		if (!Decl->getDefinition() || !Decl->getIdentifier())
+		if (!Decl->hasExternalFormalLinkage() || !Decl->getIdentifier())
 			return true;
-		
+
+		// We want methods to be instantiated from their types
+		if (llvm::dyn_cast<clang::CXXMethodDecl>(Decl))
+			return true;
+
 		if (!Generator->ShouldReflectDecl(Decl))
 			return true;
 		
