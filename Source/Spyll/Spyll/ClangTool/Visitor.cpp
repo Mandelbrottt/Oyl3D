@@ -61,6 +61,19 @@ namespace Spyll
 		return true;
 	}
 
+	bool
+	DeclVisitor::VisitVarDecl(clang::VarDecl* Decl)
+	{
+		if (!Decl->getDefinition() || !Decl->getIdentifier())
+			return true;
+
+		if (!Generator->ShouldReflectDecl(Decl))
+			return true;
+
+		VisitDeclCommon(Decl);
+		return true;
+	}
+
 	clang::SourceManager*
 	DeclVisitor::GetSourceManager() const
 	{

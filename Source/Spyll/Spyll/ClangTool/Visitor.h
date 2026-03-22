@@ -23,6 +23,9 @@ namespace Spyll
 		bool
 		VisitFunctionDecl(clang::FunctionDecl* Decl);
 
+		bool
+		VisitVarDecl(clang::VarDecl* Decl);
+
 		clang::SourceManager*
 		GetSourceManager() const;
 

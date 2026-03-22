@@ -14,6 +14,7 @@ namespace Spyll
 
 	struct TypeDescriptor;
 	struct FieldDescriptor;
+	struct VariableDescriptor;
 	struct FunctionDescriptor;
 	struct EnumDescriptor;
 
@@ -24,14 +25,20 @@ namespace Spyll
 		~ReflectionGenerator();
 
 		bool
-		ShouldReflectDecl(const clang::Decl* Decl) const;
+		ShouldReflectDecl(const clang::NamedDecl* Decl) const;
 
 		bool
 		IsScraped(const clang::CXXRecordDecl* Decl) const;
 
+		// Non-static-member variables
 		bool
 		IsScraped(const clang::FieldDecl* Decl) const;
 
+		// global and static-member variables
+		bool
+		IsScraped(const clang::VarDecl* Decl) const;
+
+		// Static and Non-static
 		bool
 		IsScraped(const clang::FunctionDecl* Decl) const;
 
@@ -43,6 +50,9 @@ namespace Spyll
 
 		FieldDescriptor&
 		ScrapeDecl(const clang::FieldDecl* Decl);
+
+		VariableDescriptor&
+		ScrapeDecl(const clang::VarDecl* Decl);
 
 		FunctionDescriptor&
 		ScrapeDecl(const clang::FunctionDecl* Decl);

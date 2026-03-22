@@ -14,6 +14,7 @@
       <Synthetic Name="Info">                                                  
         <DisplayString>ID = {id}</DisplayString>                               
         <Expand>                                                               
+          <Item Name="Name">name</Item>                                  
           <Item Name="DescriptorID">id</Item>                                  
           <Synthetic Name="Size">
             <DisplayString Condition="sizeInBits == 1">1 bit</DisplayString>                        

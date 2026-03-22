@@ -6,19 +6,17 @@
 
 namespace Spyll
 {
-	struct FieldDescriptor
+	struct VariableDescriptor
 	{
 		std::string name;
 
 		DescriptorId id = DescriptorId::Invalid;
 		DescriptorId type = DescriptorId::Invalid;
-		uint32_t offsetInBits = uint32_t(-1);
+		DescriptorId owningType = DescriptorId::Invalid;
 
 		bool isConst     : 1;
 		bool isVolatile  : 1;
 		bool isReference : 1;
 		bool isPointer   : 1;
-		
-		DescriptorId owningType = DescriptorId::Invalid;
 	};
 }

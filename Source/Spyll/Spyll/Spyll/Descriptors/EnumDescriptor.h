@@ -8,8 +8,8 @@ namespace Spyll
 {
 	struct EnumDescriptor
 	{
-		DescriptorId id;
-		
 		std::string name;
+		
+		DescriptorId id;
 	};
 }
