@@ -1,22 +1,19 @@
-#include "BasicFixture.h"
+#include "Records.h"
 
-class RecordsTest : public testing::Test
+TEST_F(RecordsTest, RootNamespace_Reflect_Types_With_Annotation)
 {
-protected:
-	static Spyll::TestTool* tool;
+	const Spyll::TypeDescriptor* root_namespace_reflected_class =
+		TryGetTypeWithName("RootNamespace_Reflected_Class");
 
-	RecordsTest()
-	{
-		if (tool) return;
+	EXPECT_NE(root_namespace_reflected_class, nullptr);
 
-		tool = new Spyll::TestTool("SimpleInlineRecords.cpp", "-x c++");
-		tool->Run();
-	}
-};
+	const Spyll::TypeDescriptor* root_namespace_reflected_struct =
+		TryGetTypeWithName("RootNamespace_Reflected_Struct");
 
-Spyll::TestTool* RecordsTest::tool = nullptr;
+	EXPECT_NE(root_namespace_reflected_struct, nullptr);
 
-TEST_F(RecordsTest, TestRun)
-{
-	EXPECT_EQ(0, 0);
+	const Spyll::TypeDescriptor* root_namespace_non_reflected_class =
+		TryGetTypeWithName("RootNamespace_NonReflected_Class");
+
+	EXPECT_EQ(root_namespace_non_reflected_class, nullptr);
 }

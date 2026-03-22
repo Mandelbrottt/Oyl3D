@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Spyll/ClangTool/Tool.h>
+#include "Spyll/ClangTool/SpyllTool.h"
 
 class BasicFixture : public testing::Test
 {

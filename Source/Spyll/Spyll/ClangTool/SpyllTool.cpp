@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "Tool.h"
+#include "SpyllTool.h"
 
 #include "Action.h"
 
@@ -8,36 +8,35 @@ namespace cl = llvm::cl;
 
 namespace Spyll
 {
-	Tool::Tool()
+	SpyllTool::SpyllTool()
 	{
 		class ToolFrontendActionFactory : public tooling::FrontendActionFactory
 		{
 		public:
 			explicit
-			ToolFrontendActionFactory(ReflectionGenerator* Generator)
-				: Generator(Generator) {}
+			ToolFrontendActionFactory(SpyllTool* Tool)
+				: m_tool(Tool) {}
 
 			std::unique_ptr<clang::FrontendAction>
 			create() override
 			{
-				return std::make_unique<DeclFindingAction>(Generator);
+				return std::make_unique<DeclFindingAction>(m_tool);
 			}
 
 		private:
-			ReflectionGenerator* Generator;
+			SpyllTool* m_tool;
 		};
 
-		m_reflectionGenerator = std::make_unique<ReflectionGenerator>();
-		m_action = std::make_unique<ToolFrontendActionFactory>(m_reflectionGenerator.get());
+		m_action = std::make_unique<ToolFrontendActionFactory>(this);
 
 		// Disable Error Output from the clang tool
 		m_diagnosticConsumer = std::make_unique<clang::IgnoringDiagConsumer>();
 	}
 
-	Tool::~Tool() {}
+	SpyllTool::~SpyllTool() {}
 
 	int
-	Tool::Run()
+	SpyllTool::Run()
 	{
 		if (m_clangTool)
 		{
@@ -47,7 +46,7 @@ namespace Spyll
 	}
 
 	void
-	Tool::SetPrintErrorMessage(bool a_shouldPrintMessage)
+	SpyllTool::SetPrintErrorMessage(bool a_shouldPrintMessage)
 	{
 		if (m_clangTool)
 		{
@@ -57,5 +56,18 @@ namespace Spyll
 			else
 				m_clangTool->setDiagnosticConsumer(m_diagnosticConsumer.get());
 		}
+	}
+
+	ReflectionGenerator*
+	SpyllTool::CreateNewReflectionGenerator(std::string_view a_path)
+	{
+		auto [kvp, _] = m_generators.emplace(a_path, std::make_unique<ReflectionGenerator>());
+		return kvp->second.get();
+	}
+
+	const SpyllTool::ReflectionGeneratorMap&
+	SpyllTool::GetReflectionGeneratorMap() const
+	{
+		return m_generators;
 	}
 }
