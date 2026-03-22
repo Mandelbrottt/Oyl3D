@@ -13,6 +13,10 @@ namespace Spyll
 		VariableDescriptorId id = VariableDescriptorId::Invalid;
 		TypeDescriptorId type = TypeDescriptorId::Invalid;
 
+		// TODO: Find better solution, maybe we DO need to separate vars and params
+		TypeDescriptorId ownerType = TypeDescriptorId::Invalid;
+		FunctionDescriptorId ownerFunction = FunctionDescriptorId::Invalid;
+
 		AccessSpecifier accessSpecifier : 2;
 
 		bool isConst     : 1;

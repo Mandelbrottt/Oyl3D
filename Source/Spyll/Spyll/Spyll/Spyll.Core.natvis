@@ -42,10 +42,11 @@
         <DisplayString>Type = {id}</DisplayString>                               
         <Expand>                                                               
           <Item Name="Name">name</Item>                                  
-          <Item Name="DescriptorID">id</Item>                                  
+          <Item Name="FieldID">id</Item>                                  
           <Item Name="Type">type</Item>
+          <Item Name="OwnerType">ownerType</Item>
           
-          <Synthetic Name="Size">
+          <Synthetic Name="Offset">
             <DisplayString Condition="offsetInBits == 1">1 bit</DisplayString>                        
             <DisplayString Condition="offsetInBits == 8">1 byte</DisplayString>
             <DisplayString Condition="offsetInBits % 8 != 0">{offsetInBits} bits</DisplayString>                        

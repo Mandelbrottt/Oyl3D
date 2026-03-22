@@ -118,13 +118,13 @@ namespace Spyll
 		for (clang::FieldDecl* iter : Decl->fields())
 		{
 			auto& field = ScrapeDecl(iter);
-			descriptor.fields.emplace_back(field.id);
+			field.ownerType = descriptor.id;
 		}
 
 		for (clang::FunctionDecl* iter : Decl->methods())
 		{
 			auto& function = ScrapeDecl(iter);
-			descriptor.functions.emplace_back(function.id);
+			function.ownerType = descriptor.id;
 		}
 
 		return descriptor;
@@ -196,7 +196,7 @@ namespace Spyll
 			// Add this field to parent descriptor, static fields aren't already iterated
 			// parent is likely already scraped, just easy to get descriptor this way
 			auto& parentDesc = ScrapeDecl(parentDecl);
-			parentDesc.variables.emplace_back(descriptor.id);
+			descriptor.ownerType = parentDesc.id;
 
 			// When decl is a member, the qualified name is implicit
 			descriptor.name = Decl->getName();
@@ -270,11 +270,10 @@ namespace Spyll
 			descriptor.isOverride = false;
 		}
 
-		descriptor.parameters.reserve(Decl->param_size());
 		for (const auto* paramDecl : Decl->parameters())
 		{
 			auto& paramDescriptor = ScrapeDecl(paramDecl);
-			descriptor.parameters.emplace_back(paramDescriptor.id);
+			paramDescriptor.ownerFunction = descriptor.id;
 		}
 
 		auto resultIter = m_impl->functions.emplace(Decl, std::move(descriptor)).first;

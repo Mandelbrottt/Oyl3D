@@ -13,6 +13,8 @@ namespace Spyll
 		FunctionDescriptorId id = FunctionDescriptorId::Invalid;
 		TypeDescriptorId returnType = TypeDescriptorId::Invalid;
 
+		TypeDescriptorId ownerType = TypeDescriptorId::Invalid;
+
 		AccessSpecifier accessSpecifier : 2;
 		ConstructorType constructorType : 2;
 
@@ -28,7 +30,5 @@ namespace Spyll
 		bool isReturnVolatile  : 1;
 		bool isReturnReference : 1;
 		bool isReturnPointer   : 1;
-
-		std::vector<VariableDescriptorId> parameters;
 	};
 }

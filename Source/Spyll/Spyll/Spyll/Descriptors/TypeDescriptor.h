@@ -19,9 +19,5 @@ namespace Spyll
 		bool isStruct    : 1;
 
 		bool isOpaque : 1;
-
-		std::vector<FieldDescriptorId> fields;
-		std::vector<VariableDescriptorId> variables; // Static members
-		std::vector<FunctionDescriptorId> functions;
 	};
 }
