@@ -31,6 +31,9 @@ private:
 	int&       private_lvalue_reference_int;
 	int*       private_lvalue_pointer_int;
 	static int private_static_lvalue_reference_int;
+
+public:
+	TestRecord public_lvalue_testRecord;
 };
 
 int TestClass::public_static_lvalue_reference_int;
@@ -40,6 +43,8 @@ int TestClass::private_static_lvalue_reference_int;
 __REFLECT__ int  global_lvalue_int;
 __REFLECT__ int& global_lvalue_reference_int = global_lvalue_int;
 __REFLECT__ int* global_lvalue_pointer_int;
+
+__REFLECT__ TestRecord global_lvalue_testClass;
 
 int  global_no_reflect_lvalue_int;
 int& global_no_reflect_lvalue_reference_int = global_no_reflect_lvalue_int;

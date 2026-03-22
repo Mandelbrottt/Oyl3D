@@ -12,10 +12,8 @@ namespace Spyll
 
 		DescriptorId id = DescriptorId::Invalid;
 		DescriptorId type = DescriptorId::Invalid;
-		DescriptorId owningType = DescriptorId::Invalid;
+		DescriptorId owningFunction = DescriptorId::Invalid;
 
-		uint32_t offset = uint32_t(-1);
-		
 		bool isConst     : 1;
 		bool isReference : 1;
 		bool isPointer   : 1;

@@ -139,12 +139,12 @@ namespace Spyll
 
 		clang::QualType qualifiedType = Decl->getType();
 		const auto* typePtr = qualifiedType.getTypePtr();
-		auto& typeDesc = AddType(typePtr);
+		const auto& typeDesc = AddType(typePtr);
 
-		auto parentTypeDecl = llvm::dyn_cast<clang::CXXRecordDecl>(Decl->getParent());
+		const auto* parentTypeDecl = llvm::dyn_cast<clang::CXXRecordDecl>(Decl->getParent());
 
 		// Guaranteed to be true, we're inside the parent
-		auto& parentTypeDesc = m_impl->types.at(parentTypeDecl->getCanonicalDecl());
+		const auto& parentTypeDesc = m_impl->types.at(parentTypeDecl->getCanonicalDecl());
 
 		auto& parentRecordLayout = m_impl->context->getASTRecordLayout(parentTypeDecl);
 		auto offset = parentRecordLayout.getFieldOffset(Decl->getFieldIndex()); // Offset is in bits
@@ -163,6 +163,8 @@ namespace Spyll
 		descriptor.isPointer = qualifiedType->isPointerType();
 		descriptor.isReference = qualifiedType->isLValueReferenceType();
 
+		descriptor.accessSpecifier = ToAccessSpecifier(Decl->getAccess());
+
 		auto resultIter = m_impl->fields.emplace(Decl, std::move(descriptor)).first;
 		auto& result = resultIter->second;
 		return result;
@@ -180,7 +182,7 @@ namespace Spyll
 
 		clang::QualType qualifiedType = Decl->getType();
 		const auto* typePtr = qualifiedType.getTypePtr();
-		auto& typeDesc = AddType(typePtr);
+		const auto& typeDesc = AddType(typePtr);
 
 		// Guaranteed to be true, we're inside the parent
 		VariableDescriptor descriptor;
@@ -190,8 +192,9 @@ namespace Spyll
 
 		if (const auto* parentTypeDecl = llvm::dyn_cast<clang::CXXRecordDecl>(Decl->getDeclContext()))
 		{
-			auto& parentTypeDesc = ScrapeDecl(parentTypeDecl);
+			const auto& parentTypeDesc = ScrapeDecl(parentTypeDecl);
 			descriptor.owningType = parentTypeDesc.id;
+			descriptor.accessSpecifier = ToAccessSpecifier(parentTypeDecl->getAccess());
 		}
 
 		auto cvrQualifiers = qualifiedType.getCVRQualifiers();
@@ -218,6 +221,35 @@ namespace Spyll
 
 		FunctionDescriptor descriptor;
 		descriptor.id = GetNewDescriptorId();
+		descriptor.name = Decl->getNameAsString();
+
+		const auto* returnType = Decl->getReturnType().getTypePtr();
+		const auto& returnDesc = AddType(returnType);
+
+		descriptor.returnType = returnDesc.id;
+
+		const auto cvQualifiers = Decl->getReturnType().getCVRQualifiers();
+		descriptor.isReturnConst = cvQualifiers & clang::Qualifiers::Const;
+		descriptor.isReturnVolatile = cvQualifiers & clang::Qualifiers::Volatile;
+
+		descriptor.isReturnPointer = returnType->isPointerType();
+		descriptor.isReturnReference = returnType->isLValueReferenceType();
+
+		// Member function specific logic
+		if (const auto* methodDecl = llvm::dyn_cast<clang::CXXMethodDecl>(Decl))
+		{
+			const auto* parentDecl = methodDecl->getParent();
+			const auto& parentDesc = ScrapeDecl(parentDecl);
+
+			descriptor.owningType = parentDesc.id;
+			descriptor.accessSpecifier = ToAccessSpecifier(methodDecl->getAccess());
+			descriptor.isConst = methodDecl->isConst();
+			descriptor.isVolatile = methodDecl->isVolatile();
+
+			descriptor.isVirtual = methodDecl->isVirtual();
+			descriptor.isPureVirtual = methodDecl->isPureVirtual();
+			descriptor.isOverride = methodDecl->size_overridden_methods() != 0;
+		}
 
 		auto resultIter = m_impl->functions.emplace(Decl, std::move(descriptor)).first;
 		auto& result = resultIter->second;
