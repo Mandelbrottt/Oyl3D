@@ -12,6 +12,8 @@ namespace Spyll
 
 		FieldDescriptorId id = FieldDescriptorId::Invalid;
 		TypeDescriptorId type = TypeDescriptorId::Invalid;
+
+		TypeDescriptorId ownerType = TypeDescriptorId::Invalid;
 		uint32_t offsetInBits = uint32_t(-1);
 
 		AccessSpecifier accessSpecifier : 2;
