@@ -8,6 +8,8 @@
 
 namespace Spyll
 {
+	class SpyllTool;
+
 	class DeclFinder final : public clang::ASTConsumer
 	{
 	public:
@@ -25,7 +27,7 @@ namespace Spyll
 	{
 	public:
 		explicit
-		DeclFindingAction(ReflectionGenerator* Generator);
+		DeclFindingAction(SpyllTool* Tool);
 
 		std::unique_ptr<clang::ASTConsumer>
 		CreateASTConsumer(
@@ -34,6 +36,6 @@ namespace Spyll
 		) override;
 
 	private:
-		ReflectionGenerator* Generator = nullptr;
+		SpyllTool* Tool = nullptr;
 	};
 }

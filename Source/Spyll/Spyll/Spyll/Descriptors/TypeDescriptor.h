@@ -18,6 +18,8 @@ namespace Spyll
 		bool isComposite : 1 = false;
 		bool isStruct    : 1 = false;
 
+		bool isOpaque : 1 = true;
+
 		std::vector<FieldDescriptorId> fields;
 		std::vector<VariableDescriptorId> variables; // Static members
 		std::vector<FunctionDescriptorId> functions;

@@ -2,6 +2,8 @@
 
 #include <clang/AST/DeclCXX.h>
 
+#include <Spyll/Spyll/Descriptors/TranslationUnitDescriptor.h>
+
 #include "Spyll/Spyll/Descriptors/DescriptorEnums.h"
 
 namespace Spyll
@@ -62,6 +64,9 @@ namespace Spyll
 
 		void
 		SetContext(clang::ASTContext* Context);
+
+		TranslationUnitDescriptor
+		GetTranslationUnitDescriptor() const;
 
 	private:
 		TypeDescriptor&

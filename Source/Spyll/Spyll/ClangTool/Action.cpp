@@ -1,6 +1,7 @@
 #include "Action.h"
 
 #include "ReflectionGenerator.h"
+#include "SpyllTool.h"
 
 namespace Spyll
 {
@@ -14,8 +15,8 @@ namespace Spyll
 		Visitor.TraverseDecl(Ctx.getTranslationUnitDecl());
 	}
 
-	DeclFindingAction::DeclFindingAction(ReflectionGenerator* Generator)
-		: Generator(Generator) {}
+	DeclFindingAction::DeclFindingAction(SpyllTool* Tool)
+		: Tool(Tool) {}
 
 	std::unique_ptr<clang::ASTConsumer>
 	DeclFindingAction::CreateASTConsumer(
@@ -24,6 +25,7 @@ namespace Spyll
 	)
 	{
 		(void) InFile;
-		return std::make_unique<DeclFinder>(CI.getSourceManager(), Generator);
+		auto* generator = Tool->CreateNewReflectionGenerator(InFile);
+		return std::make_unique<DeclFinder>(CI.getSourceManager(), generator);
 	}
 }

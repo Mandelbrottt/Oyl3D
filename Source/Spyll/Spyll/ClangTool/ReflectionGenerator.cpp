@@ -113,6 +113,8 @@ namespace Spyll
 			return descriptor;
 		}
 
+		descriptor.isOpaque = false;
+
 		for (clang::FieldDecl* iter : Decl->fields())
 		{
 			auto& field = ScrapeDecl(iter);
@@ -299,6 +301,29 @@ namespace Spyll
 		m_impl->context->setPrintingPolicy(policy);
 		
 		AddPrimitiveTypes();
+	}
+
+	TranslationUnitDescriptor
+	ReflectionGenerator::GetTranslationUnitDescriptor() const
+	{
+		TranslationUnitDescriptor descriptor;
+
+		auto addToDescriptorFn = [](auto& descriptorMap, auto& implMap)
+		{
+			descriptorMap.reserve(implMap.size());
+			for (const auto& [_, desc] : implMap)
+			{
+				descriptorMap.emplace(desc.id, &desc);
+			}
+		};
+
+		addToDescriptorFn(descriptor.types,     m_impl->types);
+		addToDescriptorFn(descriptor.fields,    m_impl->fields);
+		addToDescriptorFn(descriptor.functions, m_impl->functions);
+		addToDescriptorFn(descriptor.variables, m_impl->variables);
+		addToDescriptorFn(descriptor.enums,     m_impl->enums);
+
+		return descriptor;
 	}
 
 	TypeDescriptor&
