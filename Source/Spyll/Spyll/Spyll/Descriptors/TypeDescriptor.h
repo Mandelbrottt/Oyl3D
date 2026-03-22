@@ -10,7 +10,7 @@ namespace Spyll
 	{
 		std::string name;
 
-		DescriptorId id = DescriptorId::Invalid;
+		TypeDescriptorId id = TypeDescriptorId::Invalid;
 
 		uint32_t sizeInBits = 0;
 		uint8_t alignment = 0;
@@ -18,7 +18,8 @@ namespace Spyll
 		bool isComposite : 1 = false;
 		bool isStruct    : 1 = false;
 
-		std::vector<DescriptorId> fields;
-		std::vector<DescriptorId> functions;
+		std::vector<FieldDescriptorId> fields;
+		std::vector<VariableDescriptorId> variables; // Static members
+		std::vector<FunctionDescriptorId> functions;
 	};
 }

@@ -10,6 +10,6 @@ namespace Spyll
 	{
 		std::string name;
 		
-		DescriptorId id;
+		EnumDescriptorId id = EnumDescriptorId::Invalid;
 	};
 }

@@ -10,8 +10,8 @@ namespace Spyll
 	{
 		std::string name;
 
-		DescriptorId id = DescriptorId::Invalid;
-		DescriptorId returnType = DescriptorId::Invalid;
+		FunctionDescriptorId id = FunctionDescriptorId::Invalid;
+		TypeDescriptorId returnType = TypeDescriptorId::Invalid;
 
 		AccessSpecifier accessSpecifier : 2 = AccessSpecifier::None;
 		ConstructorType constructorType : 2 = ConstructorType::None;
@@ -29,6 +29,6 @@ namespace Spyll
 		bool isReturnReference : 1;
 		bool isReturnPointer   : 1;
 
-		std::vector<DescriptorId> parameters;
+		std::vector<VariableDescriptorId> parameters;
 	};
 }

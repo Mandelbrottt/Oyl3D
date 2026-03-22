@@ -10,8 +10,8 @@ namespace Spyll
 	{
 		std::string name;
 
-		DescriptorId id = DescriptorId::Invalid;
-		DescriptorId type = DescriptorId::Invalid;
+		VariableDescriptorId id = VariableDescriptorId::Invalid;
+		TypeDescriptorId type = TypeDescriptorId::Invalid;
 
 		AccessSpecifier accessSpecifier : 2 = AccessSpecifier::None;
 
