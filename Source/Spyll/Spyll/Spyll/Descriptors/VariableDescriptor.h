@@ -13,7 +13,7 @@ namespace Spyll
 		VariableDescriptorId id = VariableDescriptorId::Invalid;
 		TypeDescriptorId type = TypeDescriptorId::Invalid;
 
-		AccessSpecifier accessSpecifier : 2 = AccessSpecifier::None;
+		AccessSpecifier accessSpecifier : 2;
 
 		bool isConst     : 1;
 		bool isVolatile  : 1;
