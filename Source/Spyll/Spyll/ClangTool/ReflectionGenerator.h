@@ -34,7 +34,7 @@ namespace Spyll
 		bool
 		IsScraped(const clang::FieldDecl* Decl) const;
 
-		// global and static-member variables
+		// global and static-member variables, function parameters
 		bool
 		IsScraped(const clang::VarDecl* Decl) const;
 
