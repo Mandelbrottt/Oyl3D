@@ -1,4 +1,4 @@
-#include "Spyll/ClangTool/Tool.h"
+#include "Spyll/ClangTool/SpyllTool.h"
 
 #include <clang/Tooling/CommonOptionsParser.h>
 #include <clang/Tooling/CompilationDatabase.h>
@@ -17,7 +17,7 @@ static llvm::cl::extrahelp CommonHelp(clang::tooling::CommonOptionsParser::HelpM
 // A help message for this specific tool can be added afterwards.
 static llvm::cl::extrahelp MoreHelp("\nMore help text...\n");
 
-class CmdTool final : public Spyll::Tool
+class CmdTool final : public Spyll::SpyllTool
 {
 public:
 	explicit

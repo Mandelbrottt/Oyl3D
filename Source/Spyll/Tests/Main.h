@@ -1,10 +1,10 @@
 #pragma once
 
-#include "Spyll/ClangTool/Tool.h"
+#include "Spyll/ClangTool/SpyllTool.h"
 
 namespace Spyll
 {
-	class TestTool final : public Tool
+	class TestTool final : public SpyllTool
 	{
 	public:
 		TestTool() = default;

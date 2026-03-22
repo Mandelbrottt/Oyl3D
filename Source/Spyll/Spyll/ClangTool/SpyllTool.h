@@ -1,8 +1,8 @@
 #pragma once
 
 #include <memory>
-
-#include "Spyll/ClangTool/ReflectionGenerator.h"
+#include <string>
+#include <unordered_map>
 
 namespace clang
 {
@@ -19,14 +19,18 @@ namespace clang
 
 namespace Spyll
 {
-	class Tool
+	class ReflectionGenerator;
+
+	class SpyllTool
 	{
 	protected:
-		Tool();
+		SpyllTool();
 
 	public:
+		using ReflectionGeneratorMap = std::unordered_map<std::string, std::unique_ptr<ReflectionGenerator>>;
+
 		virtual
-		~Tool();
+		~SpyllTool();
 
 		int
 		Run();
@@ -37,14 +41,14 @@ namespace Spyll
 		void
 		SetPrintErrorMessage(bool a_shouldPrintMessage);
 
-		const ReflectionGenerator*
-		GetReflectionGenerator() const
-		{
-			return m_reflectionGenerator.get();
-		}
+		ReflectionGenerator*
+		CreateNewReflectionGenerator(std::string_view a_path);
+
+		const ReflectionGeneratorMap&
+		GetReflectionGeneratorMap() const;
 
 	protected:
-		std::unique_ptr<ReflectionGenerator> m_reflectionGenerator;
+		ReflectionGeneratorMap m_generators;
 
 		std::unique_ptr<clang::tooling::ClangTool> m_clangTool;
 		std::unique_ptr<clang::DiagnosticConsumer> m_diagnosticConsumer;
