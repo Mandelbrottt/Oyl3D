@@ -18,11 +18,10 @@ namespace Spyll
 	{
 		clang::ASTContext* context;
 
-		std::unordered_map<std::string, TypeDescriptor> builtIns;
-		std::unordered_map<const clang::Decl*, TypeDescriptor> types;
-		std::unordered_map<const clang::Decl*, FieldDescriptor> fields;
-		std::unordered_map<const clang::Decl*, FunctionDescriptor> functions;
-		std::unordered_map<const clang::Decl*, EnumDescriptor> enums;
+		std::unordered_map<const void*, TypeDescriptor> types;
+		std::unordered_map<const void*, FieldDescriptor> fields;
+		std::unordered_map<const void*, FunctionDescriptor> functions;
+		std::unordered_map<const void*, EnumDescriptor> enums;
 
 		DescriptorId nextId = static_cast<DescriptorId>(0);
 	};
@@ -105,6 +104,8 @@ namespace Spyll
 			descriptor.fields.emplace_back(field.id);
 		}
 
+		//Decl->getASTContext()
+
 		// find a way to reserve number of methods
 		for (clang::FunctionDecl* iter : Decl->methods())
 		{
@@ -151,7 +152,7 @@ namespace Spyll
 		descriptor.isConst = cvrQualifiers & clang::Qualifiers::Const;
 		descriptor.isVolatile = cvrQualifiers & clang::Qualifiers::Volatile;
 
-		descriptor.isPointer = qualifiedType->hasPointerRepresentation();
+		descriptor.isPointer = qualifiedType->isPointerType();
 		descriptor.isReference = qualifiedType->isLValueReferenceType();
 
 		auto resultIter = m_impl->fields.emplace(Decl, std::move(descriptor)).first;
@@ -211,13 +212,13 @@ namespace Spyll
 			return m_impl->types.at(Decl);
 		}
 
-		auto& descriptor = CreateTypeDescriptor(Decl);
+		auto& descriptor = GetOrAddTypeDescriptor(Decl);
 		descriptor.name = Decl->getNameAsString();
 		descriptor.isComposite = true;
 		descriptor.isStruct = Decl->isStruct();
 
 		auto& recordLayout = Decl->getASTContext().getASTRecordLayout(Decl);
-		descriptor.size = uint32_t(recordLayout.getSize().getQuantity());
+		descriptor.sizeInBits = uint32_t(recordLayout.getSize().getQuantity()) * 8;
 
 		return descriptor;
 	}
@@ -228,24 +229,39 @@ namespace Spyll
 		if (Type->isArrayType())
 			Type = Type->getBaseElementTypeUnsafe();
 
-		if (Type->isAnyPointerType() || Type->isLValueReferenceType())
+		if (Type->isPointerType() || Type->isLValueReferenceType())
 			Type = Type->getPointeeType().getTypePtr();
 
 		Type = Type->getCanonicalTypeInternal().getTypePtr();
 
-		if (Type->isBuiltinType())
+		if (auto iter = m_impl->types.find(Type); iter != m_impl->types.end())
 		{
-			auto name = Type->getCanonicalTypeInternal().getAsString();
-			return m_impl->builtIns.at(name);
+			return iter->second;
 		}
 
-		const auto* cxxDecl = Type->getAsCXXRecordDecl()->getCanonicalDecl();
-		return ScrapeDecl(cxxDecl);
+		if (const auto* cxxDecl = Type->getAsCXXRecordDecl())
+		{
+			cxxDecl = cxxDecl->getCanonicalDecl();
+			return ScrapeDecl(cxxDecl);
+		}
+
+		// Unknown type
+		auto& descriptor = GetOrAddTypeDescriptor(Type);
+		descriptor.name = Type->getCanonicalTypeInternal().getAsString();
+		descriptor.isComposite = Type->isCompoundType();
+		descriptor.isStruct = Type->isStructureType();
+		descriptor.sizeInBits = m_impl->context->getTypeSize(Type);
+		return descriptor;
 	}
 
 	TypeDescriptor&
-	ReflectionGenerator::CreateTypeDescriptor(const clang::CXXRecordDecl* Decl)
+	ReflectionGenerator::GetOrAddTypeDescriptor(const void* Decl)
 	{
+		if (auto iter = m_impl->types.find(Decl); iter != m_impl->types.end())
+		{
+			return iter->second;
+		}
+
 		TypeDescriptor descriptor;
 		descriptor.id = GetNewDescriptorId();
 
@@ -257,30 +273,19 @@ namespace Spyll
 	void
 	ReflectionGenerator::AddPrimitiveTypes()
 	{
-		auto addTypeFn = [&](std::string_view Name, uint32_t Size)
-		{
-			TypeDescriptor descriptor;
-			descriptor.id = GetNewDescriptorId();
-			descriptor.name = Name;
-			descriptor.isComposite = false;
-			descriptor.isStruct = false;
-			descriptor.size = Size;
-
-			m_impl->builtIns.emplace(Name, std::move(descriptor));
-		};
-
-		addTypeFn("void", 0);
-		addTypeFn("bool", sizeof(bool));
-		addTypeFn("char", sizeof(char));
-		addTypeFn("unsigned char", sizeof(unsigned char));
-		addTypeFn("int", sizeof(int));
-		addTypeFn("unsigned int", sizeof(unsigned int));
-		addTypeFn("float", sizeof(float));
-		addTypeFn("double", sizeof(double));
-		addTypeFn("wchar_t", sizeof(wchar_t));
-
-		// Clang uses _Bool as the display name for bool, alias it
-		m_impl->builtIns["_Bool"] = m_impl->builtIns["bool"];
+		AddType(m_impl->context->VoidTy.getTypePtr());
+		AddType(m_impl->context->BoolTy.getTypePtr());
+		AddType(m_impl->context->CharTy.getTypePtr());
+		AddType(m_impl->context->ShortTy.getTypePtr());
+		AddType(m_impl->context->IntTy.getTypePtr());
+		AddType(m_impl->context->LongTy.getTypePtr());
+		AddType(m_impl->context->UnsignedCharTy.getTypePtr());
+		AddType(m_impl->context->UnsignedShortTy.getTypePtr());
+		AddType(m_impl->context->UnsignedIntTy.getTypePtr());
+		AddType(m_impl->context->UnsignedLongTy.getTypePtr());
+		AddType(m_impl->context->FloatTy.getTypePtr());
+		AddType(m_impl->context->DoubleTy.getTypePtr());
+		AddType(m_impl->context->WCharTy.getTypePtr());
 	}
 
 	DescriptorId

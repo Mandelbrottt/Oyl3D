@@ -61,7 +61,7 @@ namespace Spyll
 		AddType(const clang::Type* Type);
 
 		TypeDescriptor&
-		CreateTypeDescriptor(const clang::CXXRecordDecl* Decl);
+		GetOrAddTypeDescriptor(const void* Decl);
 
 		void
 		AddPrimitiveTypes();

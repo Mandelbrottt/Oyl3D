@@ -11,7 +11,7 @@ namespace Spyll
 		DescriptorId id = DescriptorId::Invalid;
 
 		std::string name;
-		uint32_t size = 0;
+		uint32_t sizeInBits = 0;
 		bool isComposite = false;
 		bool isStruct = false;
 
