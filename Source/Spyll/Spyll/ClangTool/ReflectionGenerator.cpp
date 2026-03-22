@@ -245,6 +245,9 @@ namespace Spyll
 		// Member function specific logic
 		if (const auto* methodDecl = llvm::dyn_cast<clang::CXXMethodDecl>(Decl))
 		{
+			// Qualified name is implicit for members
+			descriptor.name = methodDecl->getName();
+
 			descriptor.accessSpecifier = ToAccessSpecifier(methodDecl->getAccess());
 			descriptor.isStatic = methodDecl->isStatic();
 			descriptor.isConst = methodDecl->isConst();
@@ -253,12 +256,18 @@ namespace Spyll
 			descriptor.isVirtual = methodDecl->isVirtual();
 			descriptor.isPureVirtual = methodDecl->isPureVirtual();
 			descriptor.isOverride = methodDecl->size_overridden_methods() != 0;
-
-			// Qualified name is implicit for members
-			descriptor.name = methodDecl->getName();
 		} else
 		{
 			descriptor.name = Decl->getQualifiedNameAsString();
+
+			descriptor.accessSpecifier = AccessSpecifier::None;
+			descriptor.isStatic = false;
+			descriptor.isConst = false;
+			descriptor.isVolatile = false;
+
+			descriptor.isVirtual = false;
+			descriptor.isPureVirtual = false;
+			descriptor.isOverride = false;
 		}
 
 		descriptor.parameters.reserve(Decl->param_size());
@@ -348,6 +357,8 @@ namespace Spyll
 		descriptor.sizeInBits = uint32_t(recordLayout.getSize().getQuantity()) * 8;
 		descriptor.alignment = uint8_t(recordLayout.getPreferredAlignment().getQuantity());
 
+		descriptor.isOpaque = true;
+
 		return descriptor;
 	}
 
@@ -378,8 +389,8 @@ namespace Spyll
 							  .getAsString(m_impl->context->getPrintingPolicy());
 		descriptor.isComposite = Type->isCompoundType();
 		descriptor.isStruct = Type->isStructureType();
-		descriptor.sizeInBits = m_impl->context->getTypeSize(Type);
-		descriptor.alignment = m_impl->context->getPreferredTypeAlign(Type);
+		descriptor.sizeInBits = uint32_t(m_impl->context->getTypeSize(Type));
+		descriptor.alignment = uint8_t(m_impl->context->getPreferredTypeAlign(Type));
 		return descriptor;
 	}
 

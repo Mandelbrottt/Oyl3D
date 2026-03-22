@@ -14,7 +14,7 @@ namespace Spyll
 		TypeDescriptorId type = TypeDescriptorId::Invalid;
 		uint32_t offsetInBits = uint32_t(-1);
 
-		AccessSpecifier accessSpecifier : 2 = AccessSpecifier::None;
+		AccessSpecifier accessSpecifier : 2;
 
 		bool isConst     : 1;
 		bool isVolatile  : 1;

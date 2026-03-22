@@ -13,8 +13,8 @@ namespace Spyll
 		FunctionDescriptorId id = FunctionDescriptorId::Invalid;
 		TypeDescriptorId returnType = TypeDescriptorId::Invalid;
 
-		AccessSpecifier accessSpecifier : 2 = AccessSpecifier::None;
-		ConstructorType constructorType : 2 = ConstructorType::None;
+		AccessSpecifier accessSpecifier : 2;
+		ConstructorType constructorType : 2;
 
 		bool isVirtual     : 1;
 		bool isPureVirtual : 1;
