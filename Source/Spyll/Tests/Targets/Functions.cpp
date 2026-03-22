@@ -18,6 +18,11 @@ __REFLECT__
 std::string
 Free_ReturnString_NoParams();
 
+__REFLECT__
+static
+void
+Free_Static_ShouldNotReflect();
+
 class __REFLECT__ MemberFunctions
 {
 public:
