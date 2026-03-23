@@ -88,7 +88,7 @@ namespace Spyll
 	DeclVisitor::SetContext(clang::ASTContext* Ctx)
 	{
 		Context = Ctx;
-		Generator->SetContext(Ctx);
+		Generator->Setup(Ctx);
 	}
 
 	std::string

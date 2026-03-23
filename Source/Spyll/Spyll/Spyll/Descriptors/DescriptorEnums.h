@@ -20,17 +20,38 @@ namespace Spyll
 
 	DESCRIPTOR_ID(EnumDescriptorId);
 
-	template<typename DescriptorIdT>
-	DescriptorIdT
-	GenerateNewDescriptorId()
+	namespace Detail
 	{
-		static DescriptorIdT result = static_cast<DescriptorIdT>(0);
+		template<typename DescriptorIdT, typename = std::enable_if_t<std::is_enum_v<DescriptorIdT>, void>>
+		DescriptorIdT&
+		DescriptorIdRef()
+		{
+			static DescriptorIdT id = static_cast<DescriptorIdT>(0);
+			return id;
+		}
+	}
 
-		auto asUnderlying = static_cast<std::underlying_type_t<DescriptorIdT>>(result);
+	template<typename DescriptorIdT, typename = std::enable_if_t<std::is_enum_v<DescriptorIdT>, void>>
+	DescriptorIdT
+	GetNewDescriptorId()
+	{
+		DescriptorIdT& idRef = Detail::DescriptorIdRef<DescriptorIdT>();
+		DescriptorIdT  newId = idRef;
+
+		// Increment and set the idRef before returning the original value
+		auto asUnderlying = static_cast<std::underlying_type_t<DescriptorIdT>>(idRef);
 		++asUnderlying;
-		result = static_cast<DescriptorIdT>(asUnderlying);
+		idRef = static_cast<DescriptorIdT>(asUnderlying);
 
-		return result;
+		return newId;
+	}
+
+	template<typename DescriptorIdT, typename = std::enable_if_t<std::is_enum_v<DescriptorIdT>, void>>
+	void
+	ResetDescriptorId()
+	{
+		DescriptorIdT& ref = Detail::DescriptorIdRef<DescriptorIdT>();
+		ref = static_cast<DescriptorIdT>(0);
 	}
 
 	enum class AccessSpecifier : uint8_t

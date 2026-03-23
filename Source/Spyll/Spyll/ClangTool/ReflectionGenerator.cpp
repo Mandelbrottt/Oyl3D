@@ -150,7 +150,7 @@ namespace Spyll
 		auto offset = parentRecordLayout.getFieldOffset(Decl->getFieldIndex()); // Offset is in bits
 
 		FieldDescriptor descriptor;
-		descriptor.id = GenerateNewDescriptorId<FieldDescriptorId>();
+		descriptor.id = GetNewDescriptorId<FieldDescriptorId>();
 		descriptor.name = Decl->getName();
 		descriptor.type = typeDesc.id;
 		descriptor.offsetInBits = uint32_t(offset);
@@ -185,7 +185,7 @@ namespace Spyll
 
 		// Guaranteed to be true, we're inside the parent
 		VariableDescriptor descriptor;
-		descriptor.id = GenerateNewDescriptorId<VariableDescriptorId>();
+		descriptor.id = GetNewDescriptorId<VariableDescriptorId>();
 		descriptor.type = typeDesc.id;
 
 		// Special check for static members
@@ -228,7 +228,7 @@ namespace Spyll
 		}
 
 		FunctionDescriptor descriptor;
-		descriptor.id = GenerateNewDescriptorId<FunctionDescriptorId>();
+		descriptor.id = GetNewDescriptorId<FunctionDescriptorId>();
 
 		const auto* returnType = Decl->getReturnType().getTypePtr();
 		const auto& returnDesc = AddType(returnType);
@@ -292,7 +292,7 @@ namespace Spyll
 		}
 
 		EnumDescriptor descriptor;
-		descriptor.id = GenerateNewDescriptorId<EnumDescriptorId>();
+		descriptor.id = GetNewDescriptorId<EnumDescriptorId>();
 		descriptor.name = Decl->getQualifiedNameAsString();
 
 		const auto& underlyingTypeDesc = AddType(Decl->getIntegerType().getTypePtr());
@@ -314,7 +314,7 @@ namespace Spyll
 	}
 
 	void
-	ReflectionGenerator::SetContext(clang::ASTContext* Context)
+	ReflectionGenerator::Setup(clang::ASTContext* Context)
 	{
 		m_impl->context = Context;
 
@@ -324,6 +324,13 @@ namespace Spyll
 		m_impl->context->setPrintingPolicy(policy);
 		
 		AddPrimitiveTypes();
+
+		ResetDescriptorId<TypeDescriptorId>();
+		ResetDescriptorId<FieldDescriptorId>();
+		ResetDescriptorId<FunctionDescriptorId>();
+		ResetDescriptorId<VariableDescriptorId>();
+		ResetDescriptorId<EnumDescriptorId>();
+		ResetDescriptorId<TypeDescriptorId>();
 	}
 
 	TranslationUnitDescriptor
@@ -417,7 +424,7 @@ namespace Spyll
 		}
 
 		TypeDescriptor descriptor;
-		descriptor.id = GenerateNewDescriptorId<TypeDescriptorId>();
+		descriptor.id = GetNewDescriptorId<TypeDescriptorId>();
 
 		auto resultIter = m_impl->types.emplace(Decl, std::move(descriptor)).first;
 		auto& result = resultIter->second;
