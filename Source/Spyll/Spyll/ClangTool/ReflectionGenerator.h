@@ -63,7 +63,7 @@ namespace Spyll
 		ScrapeDecl(const clang::EnumDecl* Decl);
 
 		void
-		SetContext(clang::ASTContext* Context);
+		Setup(clang::ASTContext* Context);
 
 		TranslationUnitDescriptor
 		GetTranslationUnitDescriptor() const;
