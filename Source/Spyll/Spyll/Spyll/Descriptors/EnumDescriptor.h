@@ -3,6 +3,7 @@
 #include <string>
 
 #include "DescriptorEnums.h"
+#include "TypeDescriptor.h"
 
 namespace Spyll
 {
@@ -11,7 +12,8 @@ namespace Spyll
 		std::string name;
 		
 		EnumDescriptorId id = EnumDescriptorId::Invalid;
+		TypeDescriptorId underlyingType = TypeDescriptorId::Invalid;
 
-		std::vector<std::pair<std::string, int32_t>> enumerations;
+		std::vector<std::pair<std::string, int64_t>> enumerations;
 	};
 }
