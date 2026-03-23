@@ -11,26 +11,17 @@
 
     <StringView>name</StringView>                                              
     <Expand>                                                                   
-      <Synthetic Name="Info">                                                  
-        <DisplayString>ID = {id}</DisplayString>                               
-        <Expand>                                                               
-          <Item Name="Name">name</Item>                                  
-          <Item Name="DescriptorID">id</Item>                                  
-          <Synthetic Name="Size">
-            <DisplayString Condition="sizeInBits == 1">1 bit</DisplayString>                        
-            <DisplayString Condition="sizeInBits == 8">1 byte</DisplayString>
-            <DisplayString Condition="sizeInBits % 8 != 0">{sizeInBits} bits</DisplayString>                        
-            <DisplayString Condition="sizeInBits % 8 == 0">{sizeInBits / 8} bytes</DisplayString>
-          </Synthetic>     
-          
-          <Item Name="IsComposite">isComposite</Item>                          
-          <Item Name="IsStruct">isStruct</Item>                                
-        </Expand>                                                              
-      </Synthetic>             
+      <Item Name="Name">name</Item>                                  
+      <Item Name="DescriptorID">id</Item>                                  
+      <Synthetic Name="Size">
+        <DisplayString Condition="sizeInBits == 1">1 bit</DisplayString>                        
+        <DisplayString Condition="sizeInBits == 8">1 byte</DisplayString>
+        <DisplayString Condition="sizeInBits % 8 != 0">{sizeInBits} bits</DisplayString>                        
+        <DisplayString Condition="sizeInBits % 8 == 0">{sizeInBits / 8} bytes</DisplayString>
+      </Synthetic>     
       
-      <Synthetic Name="Fields">                                                
-        <DisplayString></DisplayString>                                        
-      </Synthetic>                                                             
+      <Item Name="IsComposite">isComposite</Item>                          
+      <Item Name="IsStruct">isStruct</Item>                                
     </Expand>                                                                  
   </Type>
   <Type Name="Spyll::FieldDescriptor" ExcludeView="Inner">
@@ -38,29 +29,94 @@
 
     <StringView>name</StringView>                                              
     <Expand>                                                                   
-      <Synthetic Name="Info">                                                  
-        <DisplayString>Type = {id}</DisplayString>                               
-        <Expand>                                                               
-          <Item Name="Name">name</Item>                                  
-          <Item Name="FieldID">id</Item>                                  
-          <Item Name="Type">type</Item>
-          <Item Name="OwnerType">ownerType</Item>
-          
-          <Synthetic Name="Offset">
-            <DisplayString Condition="offsetInBits == 1">1 bit</DisplayString>                        
-            <DisplayString Condition="offsetInBits == 8">1 byte</DisplayString>
-            <DisplayString Condition="offsetInBits % 8 != 0">{offsetInBits} bits</DisplayString>                        
-            <DisplayString Condition="offsetInBits % 8 == 0">{offsetInBits / 8} bytes</DisplayString>
-          </Synthetic>     
-  
-          <Item Name="AccessSpec">accessSpecifier</Item>                          
+      <Item Name="Name">name</Item>                                  
+      <Item Name="FieldID">id</Item>                                  
+      <Item Name="Type">type</Item>
+      <Item Name="OwnerType">ownerType</Item>
+      
+      <Synthetic Name="Offset">
+        <DisplayString Condition="offsetInBits == 1">1 bit</DisplayString>                        
+        <DisplayString Condition="offsetInBits == 8">1 byte</DisplayString>
+        <DisplayString Condition="offsetInBits % 8 != 0">{offsetInBits} bits</DisplayString>                        
+        <DisplayString Condition="offsetInBits % 8 == 0">{offsetInBits / 8} bytes</DisplayString>
+      </Synthetic>     
 
-          <Item Name="IsConst">isConst</Item>                          
-          <Item Name="IsVolatile">isVolatile</Item>                          
-          <Item Name="IsReference">isReference</Item>                          
-          <Item Name="IsPointer">isPointer</Item>                                    
-        </Expand>                                                              
-      </Synthetic>                                                                       
+      <Item Name="AccessSpec">accessSpecifier</Item>                          
+
+      <Item Name="IsConst">isConst</Item>                          
+      <Item Name="IsVolatile">isVolatile</Item>                          
+      <Item Name="IsReference">isReference</Item>                          
+      <Item Name="IsPointer">isPointer</Item>                                    
     </Expand>                                                                  
-  </Type>                                                                      
+  </Type>  
+
+  <Type Name="Spyll::FunctionDescriptor" ExcludeView="Inner">
+    <Intrinsic Name="is_member" Expression="ownerType != -1"/>
+
+    <DisplayString>{name}() {{ id={id} }}</DisplayString>                          
+
+    <StringView>name</StringView>                                              
+    <Expand>                                                                   
+      <Item Name="Name">name</Item>                                  
+      <Item Name="FunctionID">id</Item>                                  
+
+      <Item Name="ReturnType">returnType</Item>
+      <Item Name="IsReturnConst">isReturnConst</Item>                          
+      <Item Name="IsReturnVolatile">isReturnVolatile</Item>                          
+      <Item Name="IsReturnReference">isReturnReference</Item>                          
+      <Item Name="IsReturnPointer">isReturnPointer</Item>                          
+
+      <Item Name="AccessSpec"    Condition="is_member()">accessSpecifier</Item>
+      <Item Name="IsVirtual"     Condition="is_member()">isVirtual</Item>
+      <Item Name="IsPureVirtual" Condition="is_member()">isPureVirtual</Item>                          
+      <Item Name="IsOverride"    Condition="is_member()">isOverride</Item>                          
+      <Item Name="IsStatic"      Condition="is_member()">isStatic</Item>                          
+      <Item Name="IsConst"       Condition="is_member()">isConst</Item>                          
+      <Item Name="IsVolatile"    Condition="is_member()">isVolatile</Item>                                    
+    </Expand>                                                                  
+  </Type> 
+  
+  <Type Name="Spyll::VariableDescriptor" ExcludeView="Inner">
+    <Intrinsic Name="is_member" Expression="ownerType != -1"/>
+    <Intrinsic Name="is_param" Expression="ownerFunction != -1"/>
+
+    <DisplayString>{name}() {{ id={id} }}</DisplayString>                          
+
+    <StringView>name</StringView>                                              
+    <Expand>                                                                   
+      <Item Name="Name">name</Item>                                  
+      <Item Name="VariableID">id</Item>                                  
+      <Item Name="Type">type</Item>
+
+      <Item Name="Function"  Condition="is_param()" >ownerFunction</Item>
+      
+      <Item Name="OwnerType" Condition="is_member()">ownerType</Item>
+      <Item Name="AccessSpec" Condition="is_member()">accessSpecifier</Item>
+    
+      <Item Name="IsConst">isConst</Item>
+      <Item Name="IsVolatile">isVolatile</Item>
+      <Item Name="IsReference">isReference</Item>
+      <Item Name="IsPointer">isPointer</Item>
+    </Expand>                                                                  
+  </Type> 
+  
+  <Type Name="Spyll::EnumDescriptor" ExcludeView="Inner">
+    <Intrinsic Name="enums_size" Expression="_enumerations._Mylast - enumerations._Myfirst"/>
+
+    <DisplayString>{name} {{ id={id}, size={enums_size()} }}</DisplayString>                          
+    <Expand>                                                                   
+      <Item Name="Name">name</Item>                                  
+      <Item Name="EnumID">id</Item>                                  
+
+      <Synthetic Name="Enumerations">
+        <DisplayString>{{ size={enums_size()} }}</DisplayString>
+        <Expand>
+          <ArrayItems>
+            <Size>enums_size()</Size>
+            <ValuePointer>enumerations._Myfirst</ValuePointer>
+          </ArrayItems>
+        </Expand>
+      </Synthetic>                                                                      
+    </Expand>                                                                  
+  </Type> 
 </AutoVisualizer>
