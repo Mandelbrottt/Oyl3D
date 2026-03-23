@@ -323,14 +323,14 @@ namespace Spyll
 		policy.FullyQualifiedName = true;
 		m_impl->context->setPrintingPolicy(policy);
 		
-		AddPrimitiveTypes();
-
 		ResetDescriptorId<TypeDescriptorId>();
 		ResetDescriptorId<FieldDescriptorId>();
 		ResetDescriptorId<FunctionDescriptorId>();
 		ResetDescriptorId<VariableDescriptorId>();
 		ResetDescriptorId<EnumDescriptorId>();
 		ResetDescriptorId<TypeDescriptorId>();
+
+		AddPrimitiveTypes();
 	}
 
 	TranslationUnitDescriptor
