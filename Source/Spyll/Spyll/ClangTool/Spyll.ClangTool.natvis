@@ -6,6 +6,15 @@
     
     <Intrinsic Name="fieldmap_length" Expression="m_impl->fields._List._Mypair._Myval2._Mysize"/>
     <Intrinsic Name="fieldmap_head" Expression="m_impl->fields._List._Mypair._Myval2._Myhead->_Next"/>
+    
+    <Intrinsic Name="functionmap_length" Expression="m_impl->functions._List._Mypair._Myval2._Mysize"/>
+    <Intrinsic Name="functionmap_head" Expression="m_impl->functions._List._Mypair._Myval2._Myhead->_Next"/>
+    
+    <Intrinsic Name="variablemap_length" Expression="m_impl->variables._List._Mypair._Myval2._Mysize"/>
+    <Intrinsic Name="variablemap_head" Expression="m_impl->variables._List._Mypair._Myval2._Myhead->_Next"/>
+    
+    <Intrinsic Name="enummap_length" Expression="m_impl->enums._List._Mypair._Myval2._Mysize"/>
+    <Intrinsic Name="enummap_head" Expression="m_impl->enums._List._Mypair._Myval2._Myhead->_Next"/>
     <DisplayString>{{ Types={typemap_length()} }}</DisplayString>
     <Expand>
       <Synthetic Name="Types">
@@ -20,7 +29,7 @@
         </Expand>
       </Synthetic>
       <Synthetic Name="Fields">
-        <DisplayString>{{ Types={fieldmap_length()} }}</DisplayString>
+        <DisplayString>{{ Fields={fieldmap_length()} }}</DisplayString>
         <Expand>
           <LinkedListItems>
             <Size>fieldmap_length()</Size>
@@ -30,6 +39,40 @@
           </LinkedListItems>
         </Expand>
       </Synthetic>
+      <Synthetic Name="Functions">
+        <DisplayString>{{ Functions={functionmap_length()} }}</DisplayString>
+        <Expand>
+          <LinkedListItems>
+            <Size>functionmap_length()</Size>
+            <HeadPointer>functionmap_head()</HeadPointer>
+            <NextPointer>_Next</NextPointer>
+            <ValueNode Name="{_Myval.second.name}">_Myval.second</ValueNode>
+          </LinkedListItems>
+        </Expand>
+      </Synthetic>
+      <Synthetic Name="Variables">
+        <DisplayString>{{ Variables={variablemap_length()} }}</DisplayString>
+        <Expand>
+          <LinkedListItems>
+            <Size>variablemap_length()</Size>
+            <HeadPointer>variablemap_head()</HeadPointer>
+            <NextPointer>_Next</NextPointer>
+            <ValueNode Name="{_Myval.second.name}">_Myval.second</ValueNode>
+          </LinkedListItems>
+        </Expand>
+      </Synthetic>
+      <Synthetic Name="Enums">
+        <DisplayString>{{ Enums={enummap_length()} }}</DisplayString>
+        <Expand>
+          <LinkedListItems>
+            <Size>enummap_length()</Size>
+            <HeadPointer>enummap_head()</HeadPointer>
+            <NextPointer>_Next</NextPointer>
+            <ValueNode Name="{_Myval.second.name}">_Myval.second</ValueNode>
+          </LinkedListItems>
+        </Expand>
+      </Synthetic>
     </Expand>
+    
   </Type>
 </AutoVisualizer>
