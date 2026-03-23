@@ -1,13 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?> 
 <AutoVisualizer xmlns="http://schemas.microsoft.com/vstudio/debugger/natvis/2010"> 
   <Type Name="Spyll::TypeDescriptor" ExcludeView="Inner">
-    <Intrinsic Name="fields_list_length" Expression="fields._Mypair._Myval2._Mylast - fields._Mypair._Myval2._Myfirst"/>
-    <Intrinsic Name="functions_list_length" Expression="functions._Mypair._Myval2._Mylast - functions._Mypair._Myval2._Myfirst"/>
-
-    <DisplayString Condition="sizeInBits == 1">{name,sb} {{ id={id}, size=1 bit, fields={fields_list_length()}, functions={functions_list_length()} }}</DisplayString>                          
-    <DisplayString Condition="sizeInBits == 8">{name,sb} {{ id={id}, size=1 byte, fields={fields_list_length()}, functions={functions_list_length()} }}</DisplayString>                          
-    <DisplayString Condition="sizeInBits % 8 != 0">{name,sb} {{ id={id}, size={sizeInBits} bits, fields={fields_list_length()}, functions={functions_list_length()} }}</DisplayString>                          
-    <DisplayString Condition="sizeInBits % 8 == 0">{name,sb} {{ id={id}, size={sizeInBits / 8} bytes, fields={fields_list_length()}, functions={functions_list_length()} }}</DisplayString>                          
+    <DisplayString Condition="sizeInBits == 1">{name,sb} {{ id={id}, size=1 bit }}</DisplayString>                          
+    <DisplayString Condition="sizeInBits == 8">{name,sb} {{ id={id}, size=1 byte }}</DisplayString>                          
+    <DisplayString Condition="sizeInBits % 8 != 0">{name,sb} {{ id={id}, size={sizeInBits} bits }}</DisplayString>                          
+    <DisplayString Condition="sizeInBits % 8 == 0">{name,sb} {{ id={id}, size={sizeInBits / 8} bytes }}</DisplayString>                          
 
     <Expand>                                                                   
       <Item Name="Name">name,sb</Item>                                  
