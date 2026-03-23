@@ -292,6 +292,21 @@ namespace Spyll
 		}
 
 		EnumDescriptor descriptor;
+		descriptor.id = GenerateNewDescriptorId<EnumDescriptorId>();
+		descriptor.name = Decl->getQualifiedNameAsString();
+
+		const auto& underlyingTypeDesc = AddType(Decl->getIntegerType().getTypePtr());
+		descriptor.underlyingType = underlyingTypeDesc.id;
+
+		size_t numEnumerations = range_size(Decl->enumerators());
+		descriptor.enumerations.reserve(numEnumerations);
+		for (auto iter : Decl->enumerators())
+		{
+			descriptor.enumerations.emplace_back(
+				iter->getName(), 
+				iter->getValue().getLimitedValue()
+			);
+		}
 
 		auto resultIter = m_impl->enums.emplace(Decl, std::move(descriptor)).first;
 		auto& result = resultIter->second;

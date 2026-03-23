@@ -4,14 +4,13 @@
     <Intrinsic Name="fields_list_length" Expression="fields._Mypair._Myval2._Mylast - fields._Mypair._Myval2._Myfirst"/>
     <Intrinsic Name="functions_list_length" Expression="functions._Mypair._Myval2._Mylast - functions._Mypair._Myval2._Myfirst"/>
 
-    <DisplayString Condition="sizeInBits == 1">{name} {{ id={id}, size=1 bit, fields={fields_list_length()}, functions={functions_list_length()} }}</DisplayString>                          
-    <DisplayString Condition="sizeInBits == 8">{name} {{ id={id}, size=1 byte, fields={fields_list_length()}, functions={functions_list_length()} }}</DisplayString>                          
-    <DisplayString Condition="sizeInBits % 8 != 0">{name} {{ id={id}, size={sizeInBits} bits, fields={fields_list_length()}, functions={functions_list_length()} }}</DisplayString>                          
-    <DisplayString Condition="sizeInBits % 8 == 0">{name} {{ id={id}, size={sizeInBits / 8} bytes, fields={fields_list_length()}, functions={functions_list_length()} }}</DisplayString>                          
+    <DisplayString Condition="sizeInBits == 1">{name,sb} {{ id={id}, size=1 bit, fields={fields_list_length()}, functions={functions_list_length()} }}</DisplayString>                          
+    <DisplayString Condition="sizeInBits == 8">{name,sb} {{ id={id}, size=1 byte, fields={fields_list_length()}, functions={functions_list_length()} }}</DisplayString>                          
+    <DisplayString Condition="sizeInBits % 8 != 0">{name,sb} {{ id={id}, size={sizeInBits} bits, fields={fields_list_length()}, functions={functions_list_length()} }}</DisplayString>                          
+    <DisplayString Condition="sizeInBits % 8 == 0">{name,sb} {{ id={id}, size={sizeInBits / 8} bytes, fields={fields_list_length()}, functions={functions_list_length()} }}</DisplayString>                          
 
-    <StringView>name</StringView>                                              
     <Expand>                                                                   
-      <Item Name="Name">name</Item>                                  
+      <Item Name="Name">name,sb</Item>                                  
       <Item Name="DescriptorID">id</Item>                                  
       <Synthetic Name="Size">
         <DisplayString Condition="sizeInBits == 1">1 bit</DisplayString>                        
@@ -25,11 +24,9 @@
     </Expand>                                                                  
   </Type>
   <Type Name="Spyll::FieldDescriptor" ExcludeView="Inner">
-    <DisplayString>{name} {{ id={id}, type={type} }}</DisplayString>                          
-
-    <StringView>name</StringView>                                              
+    <DisplayString>{name,sb} {{ id={id}, type={type} }}</DisplayString>                          
     <Expand>                                                                   
-      <Item Name="Name">name</Item>                                  
+      <Item Name="Name">name,sb</Item>                                  
       <Item Name="FieldID">id</Item>                                  
       <Item Name="Type">type</Item>
       <Item Name="OwnerType">ownerType</Item>
@@ -53,11 +50,9 @@
   <Type Name="Spyll::FunctionDescriptor" ExcludeView="Inner">
     <Intrinsic Name="is_member" Expression="ownerType != -1"/>
 
-    <DisplayString>{name}() {{ id={id} }}</DisplayString>                          
-
-    <StringView>name</StringView>                                              
+    <DisplayString>{name,sb}() {{ id={id} }}</DisplayString>                          
     <Expand>                                                                   
-      <Item Name="Name">name</Item>                                  
+      <Item Name="Name">name,sb</Item>                                  
       <Item Name="FunctionID">id</Item>                                  
 
       <Item Name="ReturnType">returnType</Item>
@@ -80,11 +75,10 @@
     <Intrinsic Name="is_member" Expression="ownerType != -1"/>
     <Intrinsic Name="is_param" Expression="ownerFunction != -1"/>
 
-    <DisplayString>{name}() {{ id={id} }}</DisplayString>                          
+    <DisplayString>{name,sb}() {{ id={id} }}</DisplayString>                          
 
-    <StringView>name</StringView>                                              
     <Expand>                                                                   
-      <Item Name="Name">name</Item>                                  
+      <Item Name="Name">name,sb</Item>                                  
       <Item Name="VariableID">id</Item>                                  
       <Item Name="Type">type</Item>
 
@@ -101,11 +95,11 @@
   </Type> 
   
   <Type Name="Spyll::EnumDescriptor" ExcludeView="Inner">
-    <Intrinsic Name="enums_size" Expression="_enumerations._Mylast - enumerations._Myfirst"/>
+    <Intrinsic Name="enums_size" Expression="enumerations._Mylast - enumerations._Myfirst"/>
 
-    <DisplayString>{name} {{ id={id}, size={enums_size()} }}</DisplayString>                          
+    <DisplayString>{name,sb} {{ id={id}, size={enums_size()} }}</DisplayString>                          
     <Expand>                                                                   
-      <Item Name="Name">name</Item>                                  
+      <Item Name="Name">name,sb</Item>                                  
       <Item Name="EnumID">id</Item>                                  
 
       <Synthetic Name="Enumerations">
