@@ -71,6 +71,10 @@ namespace Spyll
 		if (!Decl->getDefinition() || !Decl->getIdentifier())
 			return true;
 
+		// Only iterate fields as a part of type scraping
+		if (llvm::dyn_cast<clang::FieldDecl>(Decl))
+			return true;
+
 		if (!Generator->ShouldReflectDecl(Decl))
 			return true;
 

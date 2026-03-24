@@ -72,7 +72,7 @@
     <Intrinsic Name="is_member" Expression="ownerType != -1"/>
     <Intrinsic Name="is_param" Expression="ownerFunction != -1"/>
 
-    <DisplayString>{name,sb}() {{ id={id} }}</DisplayString>                          
+    <DisplayString>{name,sb} {{ id={id} }}</DisplayString>                          
 
     <Expand>                                                                   
       <Item Name="Name">name,sb</Item>                                  
