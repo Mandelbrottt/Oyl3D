@@ -2,9 +2,8 @@
 
 #include <clang/AST/DeclCXX.h>
 
-#include <Spyll/Spyll/Descriptors/TranslationUnitDescriptor.h>
-
 #include "Spyll/Spyll/Descriptors/DescriptorEnums.h"
+#include "Spyll/Spyll/Descriptors/TranslationUnitDescriptor.h"
 
 namespace Spyll
 {
