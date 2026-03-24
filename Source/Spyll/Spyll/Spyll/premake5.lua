@@ -14,6 +14,8 @@ project "Spyll.Core"; do
 
 	Project.Files()
 
+	Package.Include(Packages.NlohmannJson)
+
 	filter "toolset:msc*"; do
 		linkoptions {
 			"/IGNORE:4006"
