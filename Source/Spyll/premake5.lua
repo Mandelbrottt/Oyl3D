@@ -33,9 +33,6 @@ function Spyll.CommonCppSettings(package)
 
 	includedirs {
 		"%{prj.location}",
-	}
-
-	externalincludedirs {
 		"%{wks.location}",
 	}
 
