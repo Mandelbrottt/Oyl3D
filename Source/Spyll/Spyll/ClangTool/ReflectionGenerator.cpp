@@ -15,6 +15,20 @@ namespace
 
 namespace Spyll
 {
+	inline
+	AccessSpecifier
+	ToAccessSpecifier(clang::AccessSpecifier Spec)
+	{
+		if (Spec == clang::AS_public) 
+			return AccessSpecifier::Public;
+		if (Spec == clang::AS_protected) 
+			return AccessSpecifier::Protected;
+		if (Spec == clang::AS_private) 
+			return AccessSpecifier::Private;
+
+		return AccessSpecifier::None;
+	}
+
 	struct ReflectionGenerator::Impl
 	{
 		clang::ASTContext* context;
@@ -78,7 +92,7 @@ namespace Spyll
 	ReflectionGenerator::IsScraped(const clang::VarDecl* Decl) const
 	{
 		const auto* canonicalDecl = Decl->getCanonicalDecl();
-		return m_impl->fields.find(canonicalDecl) != m_impl->fields.end();
+		return m_impl->variables.find(canonicalDecl) != m_impl->variables.end();
 	}
 
 	bool
@@ -151,7 +165,7 @@ namespace Spyll
 
 		FieldDescriptor descriptor;
 		descriptor.id = GetNewDescriptorId<FieldDescriptorId>();
-		descriptor.name = Decl->getName();
+		descriptor.name = Decl->getQualifiedNameAsString();
 		descriptor.type = typeDesc.id;
 		descriptor.offsetInBits = uint32_t(offset);
 
@@ -163,9 +177,9 @@ namespace Spyll
 		descriptor.isReference = qualifiedType->isLValueReferenceType();
 
 		descriptor.accessSpecifier = ToAccessSpecifier(Decl->getAccess());
-
-		auto resultIter = m_impl->fields.emplace(Decl, std::move(descriptor)).first;
-		auto& result = resultIter->second;
+		
+		auto [iter, emplaced] = m_impl->fields.emplace(Decl, std::move(descriptor));
+		auto& [ptr, result] = *iter;
 		return result;
 	}
 
@@ -187,6 +201,7 @@ namespace Spyll
 		VariableDescriptor descriptor;
 		descriptor.id = GetNewDescriptorId<VariableDescriptorId>();
 		descriptor.type = typeDesc.id;
+		descriptor.name = Decl->getQualifiedNameAsString();
 
 		// Special check for static members
 		if (const auto* parentDecl = llvm::dyn_cast<clang::CXXRecordDecl>(Decl->getDeclContext()))
@@ -197,12 +212,6 @@ namespace Spyll
 			// parent is likely already scraped, just easy to get descriptor this way
 			auto& parentDesc = ScrapeDecl(parentDecl);
 			descriptor.ownerType = parentDesc.id;
-
-			// When decl is a member, the qualified name is implicit
-			descriptor.name = Decl->getName();
-		} else
-		{
-			descriptor.name = Decl->getQualifiedNameAsString();
 		}
 
 		auto cvrQualifiers = qualifiedType.getCVRQualifiers();
@@ -212,8 +221,8 @@ namespace Spyll
 		descriptor.isPointer = qualifiedType->isPointerType();
 		descriptor.isReference = qualifiedType->isLValueReferenceType();
 
-		auto resultIter = m_impl->variables.emplace(Decl, std::move(descriptor)).first;
-		auto& result = resultIter->second;
+		auto [iter, emplaced] = m_impl->variables.emplace(Decl, std::move(descriptor));
+		auto& [ptr, result] = *iter;
 		return result;
 	}
 
@@ -229,6 +238,7 @@ namespace Spyll
 
 		FunctionDescriptor descriptor;
 		descriptor.id = GetNewDescriptorId<FunctionDescriptorId>();
+		descriptor.name = Decl->getQualifiedNameAsString();
 
 		const auto* returnType = Decl->getReturnType().getTypePtr();
 		const auto& returnDesc = AddType(returnType);
@@ -245,9 +255,6 @@ namespace Spyll
 		// Member function specific logic
 		if (const auto* methodDecl = llvm::dyn_cast<clang::CXXMethodDecl>(Decl))
 		{
-			// Qualified name is implicit for members
-			descriptor.name = methodDecl->getName();
-
 			descriptor.accessSpecifier = ToAccessSpecifier(methodDecl->getAccess());
 			descriptor.isStatic = methodDecl->isStatic();
 			descriptor.isConst = methodDecl->isConst();
@@ -258,8 +265,6 @@ namespace Spyll
 			descriptor.isOverride = methodDecl->size_overridden_methods() != 0;
 		} else
 		{
-			descriptor.name = Decl->getQualifiedNameAsString();
-
 			descriptor.accessSpecifier = AccessSpecifier::None;
 			descriptor.isStatic = false;
 			descriptor.isConst = false;
@@ -275,9 +280,9 @@ namespace Spyll
 			auto& paramDescriptor = ScrapeDecl(paramDecl);
 			paramDescriptor.ownerFunction = descriptor.id;
 		}
-
-		auto resultIter = m_impl->functions.emplace(Decl, std::move(descriptor)).first;
-		auto& result = resultIter->second;
+		
+		auto [iter, emplaced] = m_impl->functions.emplace(Decl, std::move(descriptor));
+		auto& [ptr, result] = *iter;
 		return result;
 	}
 
@@ -307,9 +312,9 @@ namespace Spyll
 				iter->getValue().getLimitedValue()
 			);
 		}
-
-		auto resultIter = m_impl->enums.emplace(Decl, std::move(descriptor)).first;
-		auto& result = resultIter->second;
+		
+		auto [iter, emplaced] = m_impl->enums.emplace(Decl, std::move(descriptor));
+		auto& [ptr, result] = *iter;
 		return result;
 	}
 
@@ -328,7 +333,6 @@ namespace Spyll
 		ResetDescriptorId<FunctionDescriptorId>();
 		ResetDescriptorId<VariableDescriptorId>();
 		ResetDescriptorId<EnumDescriptorId>();
-		ResetDescriptorId<TypeDescriptorId>();
 
 		AddPrimitiveTypes();
 	}
@@ -340,10 +344,10 @@ namespace Spyll
 
 		auto addToDescriptorFn = [](auto& descriptorMap, auto& implMap)
 		{
-			descriptorMap.reserve(implMap.size());
+			descriptorMap.resize(implMap.size());
 			for (const auto& [_, desc] : implMap)
 			{
-				descriptorMap.emplace(desc.id, &desc);
+				descriptorMap[std::underlying_type_t<decltype(desc.id)>(desc.id)] = &desc;
 			}
 		};
 
@@ -425,9 +429,9 @@ namespace Spyll
 
 		TypeDescriptor descriptor;
 		descriptor.id = GetNewDescriptorId<TypeDescriptorId>();
-
-		auto resultIter = m_impl->types.emplace(Decl, std::move(descriptor)).first;
-		auto& result = resultIter->second;
+		
+		auto [iter, emplaced] = m_impl->types.emplace(Decl, std::move(descriptor));
+		auto& [ptr, result] = *iter;
 		return result;
 	}
 

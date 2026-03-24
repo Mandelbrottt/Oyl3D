@@ -30,14 +30,14 @@ protected:
 			std::find_if(
 				begin,
 				end,
-				[&a_name](const decltype(descriptor->types)::value_type& kvp)
+				[&a_name](const decltype(descriptor->types)::value_type desc)
 				{
-					return kvp.second->name == a_name;
+					return desc->name == a_name;
 				}
 			);
 
 		return iter != end
-				   ? iter->second
+				   ? *iter
 				   : nullptr;
 	}
 

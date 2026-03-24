@@ -8,17 +8,19 @@ namespace Spyll
 	enum class _name_ : uint32_t \
 	{ \
 		Invalid = static_cast<std::underlying_type_t<_name_>>(-1)\
-	}
+	};
 
-	DESCRIPTOR_ID(TypeDescriptorId);
+	DESCRIPTOR_ID(TypeDescriptorId)
 
-	DESCRIPTOR_ID(FieldDescriptorId);
+	DESCRIPTOR_ID(FieldDescriptorId)
 
-	DESCRIPTOR_ID(FunctionDescriptorId);
+	DESCRIPTOR_ID(FunctionDescriptorId)
 
-	DESCRIPTOR_ID(VariableDescriptorId);
+	DESCRIPTOR_ID(VariableDescriptorId)
 
-	DESCRIPTOR_ID(EnumDescriptorId);
+	DESCRIPTOR_ID(EnumDescriptorId)
+		
+#undef DESCRIPTOR_ID
 
 	namespace Detail
 	{
@@ -36,7 +38,7 @@ namespace Spyll
 	GetNewDescriptorId()
 	{
 		DescriptorIdT& idRef = Detail::DescriptorIdRef<DescriptorIdT>();
-		DescriptorIdT  newId = idRef;
+		DescriptorIdT newId = idRef;
 
 		// Increment and set the idRef before returning the original value
 		auto asUnderlying = static_cast<std::underlying_type_t<DescriptorIdT>>(idRef);
@@ -62,20 +64,6 @@ namespace Spyll
 		Private
 	};
 
-	inline
-	AccessSpecifier
-	ToAccessSpecifier(clang::AccessSpecifier Spec)
-	{
-		if (Spec == clang::AS_public) 
-			return AccessSpecifier::Public;
-		if (Spec == clang::AS_protected) 
-			return AccessSpecifier::Protected;
-		if (Spec == clang::AS_private) 
-			return AccessSpecifier::Private;
-
-		return AccessSpecifier::None;
-	}
-
 	enum class ConstructorType : uint8_t
 	{
 		None,
@@ -84,3 +72,4 @@ namespace Spyll
 		Move
 	};
 }
+
