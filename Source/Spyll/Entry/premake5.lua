@@ -35,9 +35,6 @@ project "Spyll.Entry"; do
 
 	links {
 		"Spyll.ClangTool",
-	}
-
-	dependson {
 		"Spyll.Tests"
 	}
 
