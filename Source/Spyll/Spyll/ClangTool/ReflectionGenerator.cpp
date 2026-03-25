@@ -337,25 +337,33 @@ namespace Spyll
 		AddPrimitiveTypes();
 	}
 
+	template<typename DescriptorT>
+	void MoveDescriptorMapToList(
+		std::unordered_map<const void*, DescriptorT>* a_implMap,
+		std::vector<DescriptorT>* a_descriptorList
+	)
+	{
+		auto& implMap = *a_implMap;
+		auto& descriptorList = *a_descriptorList;
+
+		descriptorList.resize(implMap.size());
+		for (const auto& [_, desc] : implMap)
+		{
+			descriptorList.at(std::underlying_type_t<decltype(desc.id)>(desc.id)) = std::move(desc);
+		}
+		implMap.clear();
+	}
+
 	TranslationUnitDescriptor
 	ReflectionGenerator::GetTranslationUnitDescriptor() const
 	{
 		TranslationUnitDescriptor descriptor;
 
-		auto addToDescriptorFn = [](auto& descriptorMap, auto& implMap)
-		{
-			descriptorMap.resize(implMap.size());
-			for (const auto& [_, desc] : implMap)
-			{
-				descriptorMap[std::underlying_type_t<decltype(desc.id)>(desc.id)] = &desc;
-			}
-		};
-
-		addToDescriptorFn(descriptor.types,     m_impl->types);
-		addToDescriptorFn(descriptor.fields,    m_impl->fields);
-		addToDescriptorFn(descriptor.functions, m_impl->functions);
-		addToDescriptorFn(descriptor.variables, m_impl->variables);
-		addToDescriptorFn(descriptor.enums,     m_impl->enums);
+		MoveDescriptorMapToList(&m_impl->types, &descriptor.types);
+		MoveDescriptorMapToList(&m_impl->fields, &descriptor.fields);
+		MoveDescriptorMapToList(&m_impl->functions, &descriptor.functions);
+		MoveDescriptorMapToList(&m_impl->variables, &descriptor.variables);
+		MoveDescriptorMapToList(&m_impl->enums, &descriptor.enums);
 
 		return descriptor;
 	}

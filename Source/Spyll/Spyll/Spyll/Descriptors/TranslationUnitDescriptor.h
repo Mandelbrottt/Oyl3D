@@ -13,16 +13,16 @@ namespace Spyll
 {
 	struct TranslationUnitDescriptor
 	{
-		std::vector<const TypeDescriptor*>     types;
-		std::vector<const FieldDescriptor*>    fields;
-		std::vector<const FunctionDescriptor*> functions;
-		std::vector<const VariableDescriptor*> variables;
-		std::vector<const EnumDescriptor*>     enums;
+		std::vector<TypeDescriptor>     types;
+		std::vector<FieldDescriptor>    fields;
+		std::vector<FunctionDescriptor> functions;
+		std::vector<VariableDescriptor> variables;
+		std::vector<EnumDescriptor>     enums;
 	};
 
 	extern
 	TranslationUnitDescriptor
 	CreateMergedTranslationUnitDescriptor(
-		const std::vector<TranslationUnitDescriptor>& a_descriptors
+		const std::vector<TranslationUnitDescriptor>& a_tuDescriptors
 	);
 }
