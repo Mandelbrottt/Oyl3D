@@ -6,6 +6,14 @@
 
 namespace Spyll
 {
+	struct BaseTypeDescriptor
+	{
+		TypeDescriptorId type = TypeDescriptorId::Invalid;
+
+		AccessSpecifier accessSpecifier : 2;
+		bool isVirtual : 1;
+	};
+
 	struct TypeDescriptor
 	{
 		std::string name;
@@ -19,5 +27,7 @@ namespace Spyll
 		bool isStruct    : 1;
 
 		bool isOpaque : 1;
+
+		std::vector<BaseTypeDescriptor> baseTypes;
 	};
 }

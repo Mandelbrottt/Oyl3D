@@ -17,7 +17,21 @@
       </Synthetic>     
       
       <Item Name="IsComposite">isComposite</Item>                          
-      <Item Name="IsStruct">isStruct</Item>                                
+      <Item Name="IsStruct">isStruct</Item> 
+      
+      <Synthetic Name="Base Types" Condition="baseTypes.size() != 0">
+        <DisplayString>{{ size={baseTypes.size()} }}</DisplayString>
+        <Expand>
+          <CustomListItems>
+            <Variable Name="index" InitialValue="0"/>
+            <Size>baseTypes.size()</Size>
+            <Loop>
+              <Item Name="{baseTypes[index].type}">baseTypes[index]</Item>
+              <Exec>index++</Exec>
+            </Loop>
+          </CustomListItems>
+        </Expand>
+      </Synthetic>  
     </Expand>                                                                  
   </Type>
   <Type Name="Spyll::FieldDescriptor" ExcludeView="Inner">
