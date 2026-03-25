@@ -3,6 +3,7 @@
 #include <memory>
 #include <string>
 #include <unordered_map>
+#include <Spyll/Spyll/Descriptors/ReflectionDescriptor.h>
 
 namespace clang
 {
@@ -50,6 +51,9 @@ namespace Spyll
 
 		const ReflectionGeneratorMap&
 		GetReflectionGeneratorMap() const;
+
+		ReflectionDescriptor
+		GetMergedReflectionDescriptor() const;
 
 	protected:
 		ReflectionGeneratorMap m_generators;
