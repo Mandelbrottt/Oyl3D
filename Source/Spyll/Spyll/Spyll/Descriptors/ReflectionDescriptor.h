@@ -1,8 +1,5 @@
 #pragma once
 
-#include <unordered_map>
-
-#include "DescriptorEnums.h"
 #include "EnumDescriptor.h"
 #include "FieldDescriptor.h"
 #include "FunctionDescriptor.h"
@@ -11,7 +8,7 @@
 
 namespace Spyll
 {
-	struct TranslationUnitDescriptor
+	struct ReflectionDescriptor
 	{
 		std::vector<TypeDescriptor>     types;
 		std::vector<FieldDescriptor>    fields;
@@ -21,8 +18,8 @@ namespace Spyll
 	};
 
 	extern
-	TranslationUnitDescriptor
-	CreateMergedTranslationUnitDescriptor(
-		const std::vector<TranslationUnitDescriptor>& a_tuDescriptors
+	ReflectionDescriptor
+	CreateMergedReflectionDescriptor(
+		const std::vector<ReflectionDescriptor>& a_tuDescriptors
 	);
 }

@@ -354,10 +354,10 @@ namespace Spyll
 		implMap.clear();
 	}
 
-	TranslationUnitDescriptor
-	ReflectionGenerator::GetTranslationUnitDescriptor() const
+	ReflectionDescriptor
+	ReflectionGenerator::GetReflectionDescriptor() const
 	{
-		TranslationUnitDescriptor descriptor;
+		ReflectionDescriptor descriptor;
 
 		MoveDescriptorMapToList(&m_impl->types, &descriptor.types);
 		MoveDescriptorMapToList(&m_impl->fields, &descriptor.fields);
