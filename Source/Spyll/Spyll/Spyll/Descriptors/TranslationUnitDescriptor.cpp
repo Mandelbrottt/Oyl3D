@@ -52,6 +52,8 @@ namespace Spyll
 	{
 		MergedTranslationUnitDescriptor merged;
 
+		// Iterate over the TranslationUnitDescriptors and add unique instances of each declaration to their
+		// Respective maps. Maps are keyed by fully qualified names
 		for (const auto& tuDescriptor : a_tuDescriptors)
 		{
 			MergeDescriptorListIntoMergedMap(tuDescriptor.types, &merged.mergedTypes);
@@ -61,6 +63,9 @@ namespace Spyll
 			MergeDescriptorListIntoMergedMap(tuDescriptor.enums, &merged.mergedEnums);
 		}
 
+		// Reconnect the merged types, using the original TranslationUnitDescriptor Ids to index into the descriptor
+		// arrays
+		// We need to do this step in a separate iteration pass so that we know all the types are set up
 		for (const auto& tuDescriptor : a_tuDescriptors)
 		{
 			merged.ReconnectMergedTypes(tuDescriptor);
@@ -70,6 +75,7 @@ namespace Spyll
 			merged.ReconnectMergedEnums(tuDescriptor);
 		}
 
+		// Write the merged results to a new TranslationUnitDescriptor 
 		TranslationUnitDescriptor result;
 		MoveDescriptorsFromMergedMapToDescriptorList(&merged.mergedTypes, &result.types);
 		MoveDescriptorsFromMergedMapToDescriptorList(&merged.mergedFields, &result.fields);
@@ -90,6 +96,8 @@ namespace
 		std::unordered_map<std::string_view, DescriptorT>* a_mergedMap
 	)
 	{
+		// Iterate the descriptorList, add each descriptor to the merged map, keyed by fully qualified name,
+		// And set its ID relative to the then-current size of the merged map
 		for (const auto& descriptor : a_descriptorList)
 		{
 			auto [iter, wasEmplaced] = a_mergedMap->try_emplace(descriptor.name, descriptor);
@@ -109,6 +117,9 @@ namespace
 		std::vector<DescriptorT>* a_descriptorList
 	)
 	{
+		// Move the merged descriptors into the final descriptorList
+		// Resize the array and move descriptors into the list indexed by their IDs
+		// IDs are guaranteed to be valid indices since they are generated based on the size of the map
 		a_descriptorList->resize(a_mergedMap->size());
 		for (auto& [_, mergedDescriptor] : *a_mergedMap)
 		{
@@ -129,17 +140,21 @@ namespace
 	{
 		for (const auto& originalField : originalDescriptor.fields)
 		{
+			// Get the original type descriptor using the original ID as an index
 			auto originalTypeIndex = static_cast<std::underlying_type_t<FieldDescriptorId>>(originalField.type);
 			const auto& originalType = originalDescriptor.types.at(originalTypeIndex);
 
+			// Get the original owner type descriptor using the original ID as an index
 			auto originalOwningTypeIndex =
 				static_cast<std::underlying_type_t<TypeDescriptorId>>(originalField.ownerType);
 			const auto& originalOwnerType = originalDescriptor.types.at(originalOwningTypeIndex);
 
+			// Get the merged field and types by name
 			auto& mergedField = mergedFields.at(originalField.name);
-			auto& mergedType = mergedTypes.at(originalType.name);
-			auto& mergedOwnerType = mergedTypes.at(originalOwnerType.name);
+			const auto& mergedType = mergedTypes.at(originalType.name);
+			const auto& mergedOwnerType = mergedTypes.at(originalOwnerType.name);
 
+			// Hook up the new IDs
 			mergedField.type = mergedType.id;
 			mergedField.ownerType = mergedOwnerType.id;
 		}
@@ -150,15 +165,19 @@ namespace
 	{
 		for (const auto& originalFunction : originalDescriptor.functions)
 		{
+			// Get the original return type descriptor using the original ID as an index
 			auto originalReturnTypeIndex =
 				static_cast<std::underlying_type_t<TypeDescriptorId>>(originalFunction.returnType);
 			const auto& originalReturnType = originalDescriptor.types.at(originalReturnTypeIndex);
 
+			// Get the merged function and its return type by name
 			auto& mergedFunction = mergedFunctions.at(originalFunction.name);
 			auto& mergedReturnType = mergedTypes.at(originalReturnType.name);
 
+			// Hook up the new ID
 			mergedFunction.returnType = mergedReturnType.id;
 
+			// If the owner type is valid, hook it up too
 			if (originalFunction.ownerType != TypeDescriptorId::Invalid)
 			{
 				auto originalOwningTypeIndex =
@@ -177,14 +196,18 @@ namespace
 	{
 		for (const auto& originalVariable : originalDescriptor.variables)
 		{
+			// Get the original variable type descriptor using the original ID as an index
 			auto typeIndex = static_cast<std::underlying_type_t<TypeDescriptorId>>(originalVariable.type);
 			const auto& originalType = originalDescriptor.types.at(typeIndex);
 
+			// Get the merged variable and its type by name
 			auto& mergedVariable = mergedVariables.at(originalVariable.name);
 			auto& mergedType = mergedTypes.at(originalType.name);
 
+			// Hook up the new ID
 			mergedVariable.type = mergedType.id;
 
+			// If the owner type is valid, hook it up too
 			if (originalVariable.ownerType != TypeDescriptorId::Invalid)
 			{
 				auto originalOwningTypeIndex
@@ -203,13 +226,16 @@ namespace
 	{
 		for (const auto& originalEnum : originalDescriptor.enums)
 		{
+			// Get the original underlying type descriptor using the original ID as an index
 			auto originalUnderlyingTypeIndex = static_cast<std::underlying_type_t<TypeDescriptorId>>(originalEnum.
 				underlyingType);
 			const auto& originalUnderlyingType = originalDescriptor.types.at(originalUnderlyingTypeIndex);
 
+			// Get the merged enum and its underlying type by name
 			auto& mergedEnum = mergedEnums.at(originalEnum.name);
 			auto& mergedType = mergedTypes.at(originalUnderlyingType.name);
 
+			// Hook up the new ID
 			mergedEnum.underlyingType = mergedType.id;
 		}
 	}
