@@ -56,11 +56,14 @@ main(int argc, const char** argv)
 {
 	CmdTool tool(argc, argv);
 	int result = tool.Run();
+
 	std::vector<Spyll::TranslationUnitDescriptor> tuDescriptors;
 	for (const auto& [fileName, generator] : tool.GetReflectionGeneratorMap())
 	{
 		tuDescriptors.emplace_back(generator->GetTranslationUnitDescriptor());
 	}
-	CreateMergedTranslationUnitDescriptor(tuDescriptors);
+
+	auto mergedTranslationUnitDescriptor = CreateMergedTranslationUnitDescriptor(tuDescriptors);
+
 	return result;
 }

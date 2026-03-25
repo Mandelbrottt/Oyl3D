@@ -10,12 +10,12 @@ TEST_F(CompileTest, CompilesHelloWorld)
 	EXPECT_EQ(returnCode, 0);
 }
 
-TEST_F(CompileTest, SucceedsOnSyntaxError)
+TEST_F(CompileTest, FailOnSyntaxError)
 {
 	tool.Setup("SyntaxError.cpp", "-x c++");
 	int returnCode = tool.Run();
 
-	EXPECT_EQ(returnCode, 0);
+	EXPECT_EQ(returnCode, 1);
 }
 
 TEST_F(CompileTest, FailOnFakeFile)

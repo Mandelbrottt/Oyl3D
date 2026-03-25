@@ -31,7 +31,6 @@ namespace Spyll
 		);
 
 		// Disable Error Output from the clang tool
-		m_diagnosticConsumer = std::make_unique<clang::IgnoringDiagConsumer>();
 		SetPrintErrorMessage(false);
 	}
 

@@ -5,7 +5,7 @@
 
 class RecordsTest : public testing::Test
 {
-	static constexpr const char* FILE = "Records.cpp";
+	static const char* s_compileTarget;
 
 protected:
 	const Spyll::TestTool* tool;
@@ -46,7 +46,7 @@ private:
 	const Spyll::TestTool*
 	RunTool()
 	{
-		auto* tool = new Spyll::TestTool(FILE, "-x c++");
+		auto* tool = new Spyll::TestTool(s_compileTarget, "-x c++");
 		tool->Run();
 		return tool;
 	}
@@ -57,7 +57,7 @@ private:
 		auto& map = a_tool->GetReflectionGeneratorMap();
 		for (const auto& [path, generator] : map)
 		{
-			if (path.find(FILE) != std::string::npos)
+			if (path.find(s_compileTarget) != std::string::npos)
 			{
 				return generator->GetTranslationUnitDescriptor();
 			}
