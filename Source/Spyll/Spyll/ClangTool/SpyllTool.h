@@ -41,6 +41,10 @@ namespace Spyll
 		void
 		SetPrintErrorMessage(bool a_shouldPrintMessage);
 
+		virtual
+		void
+		SetDiagnosticOptions(clang::DiagnosticOptions* a_diagnosticOptions);
+
 		ReflectionGenerator*
 		CreateNewReflectionGenerator(std::string_view a_path);
 

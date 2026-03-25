@@ -25,6 +25,9 @@ namespace Spyll
 	)
 	{
 		(void) InFile;
+
+		Tool->SetDiagnosticOptions(&CI.getDiagnosticOpts());
+
 		auto* generator = Tool->CreateNewReflectionGenerator(InFile);
 		return std::make_unique<DeclFinder>(CI.getSourceManager(), generator);
 	}

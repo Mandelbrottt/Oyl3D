@@ -30,7 +30,7 @@ namespace Spyll
 		m_action = std::make_unique<ToolFrontendActionFactory>(this);
 
 		// Disable Error Output from the clang tool
-		m_diagnosticConsumer = std::make_unique<clang::IgnoringDiagConsumer>();
+		//m_diagnosticConsumer = std::make_unique<clang::IgnoringDiagConsumer>();
 	}
 
 	SpyllTool::~SpyllTool() {}
@@ -51,11 +51,13 @@ namespace Spyll
 		if (m_clangTool)
 		{
 			m_clangTool->setPrintErrorMessage(a_shouldPrintMessage);
-			if (a_shouldPrintMessage)
-				m_clangTool->setDiagnosticConsumer(nullptr);
-			else
-				m_clangTool->setDiagnosticConsumer(m_diagnosticConsumer.get());
 		}
+	}
+
+	void
+	SpyllTool::SetDiagnosticOptions(clang::DiagnosticOptions* a_diagnosticOptions)
+	{
+		a_diagnosticOptions->IgnoreWarnings = true;
 	}
 
 	ReflectionGenerator*
