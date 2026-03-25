@@ -1,22 +1,22 @@
 #pragma once
 
+#include "ToolPreTest.h"
+
 #include "Spyll/ClangTool/ReflectionGenerator.h"
 #include "Spyll/Spyll/Descriptors/ReflectionDescriptor.h"
 
-class RecordsTest : public testing::Test
+class Records : public ToolPreTest<Records>
 {
 	static const char* s_compileTarget;
 
 protected:
-	const Spyll::TestTool* tool;
 	const Spyll::ReflectionDescriptor* descriptor;
 
-	RecordsTest()
+	Records()
+		: ToolPreTest(s_compileTarget)
 	{
-		static const Spyll::TestTool* staticTool = RunTool();
-		static const Spyll::ReflectionDescriptor staticDescriptor = Descriptor(staticTool);
+		static const Spyll::ReflectionDescriptor staticDescriptor = Descriptor(tool);
 
-		tool = staticTool;
 		descriptor = &staticDescriptor;
 	}
 
@@ -42,15 +42,6 @@ protected:
 	}
 
 private:
-	static
-	const Spyll::TestTool*
-	RunTool()
-	{
-		auto* tool = new Spyll::TestTool(s_compileTarget, "-x c++");
-		tool->Run();
-		return tool;
-	}
-
 	Spyll::ReflectionDescriptor
 	Descriptor(const Spyll::SpyllTool* a_tool) const
 	{

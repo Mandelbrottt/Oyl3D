@@ -1,8 +1,8 @@
 #include "Records.h"
 
-const char* RecordsTest::s_compileTarget = "Records.cpp";
+const char* Records::s_compileTarget = "Records.cpp";
 
-TEST_F(RecordsTest, No_Namespace_Reflect_Types_With_Annotation)
+TEST_F(Records, No_Namespace_Reflect_Types_With_Annotation)
 {
 	const Spyll::TypeDescriptor* root_namespace_reflected_class =
 		TryGetTypeWithName("RootNamespace_Reflected_Class");
@@ -20,7 +20,7 @@ TEST_F(RecordsTest, No_Namespace_Reflect_Types_With_Annotation)
 	EXPECT_EQ(root_namespace_non_reflected_class, nullptr);
 }
 
-TEST_F(RecordsTest, Namespace_Reflect_Types_With_Annotation)
+TEST_F(Records, Namespace_Reflect_Types_With_Annotation)
 {
 	const Spyll::TypeDescriptor* root_namespace_reflected_class =
 		TryGetTypeWithName("Namespace::Reflected_Class");
