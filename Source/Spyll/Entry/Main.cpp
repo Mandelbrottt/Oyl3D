@@ -6,7 +6,7 @@
 
 #include "Spyll/ClangTool/ReflectionGenerator.h"
 #include "Spyll/ClangTool/SpyllTool.h"
-#include "Spyll/Spyll/Descriptors/TranslationUnitDescriptor.h"
+#include "Spyll/Spyll/Descriptors/ReflectionDescriptor.h"
 
 // Apply a custom category to all command-line options so that they are the
 // only ones displayed.
@@ -57,13 +57,13 @@ main(int argc, const char** argv)
 	CmdTool tool(argc, argv);
 	int result = tool.Run();
 
-	std::vector<Spyll::TranslationUnitDescriptor> tuDescriptors;
+	std::vector<Spyll::ReflectionDescriptor> reflectionDescriptors;
 	for (const auto& [fileName, generator] : tool.GetReflectionGeneratorMap())
 	{
-		tuDescriptors.emplace_back(generator->GetTranslationUnitDescriptor());
+		reflectionDescriptors.emplace_back(generator->GetReflectionDescriptor());
 	}
 
-	auto mergedTranslationUnitDescriptor = CreateMergedTranslationUnitDescriptor(tuDescriptors);
+	auto mergedReflectionDescriptor = CreateMergedReflectionDescriptor(reflectionDescriptors);
 
 	return result;
 }

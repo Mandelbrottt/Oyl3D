@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Spyll/ClangTool/ReflectionGenerator.h"
-#include "Spyll/Spyll/Descriptors/TranslationUnitDescriptor.h"
+#include "Spyll/Spyll/Descriptors/ReflectionDescriptor.h"
 
 class RecordsTest : public testing::Test
 {
@@ -9,12 +9,12 @@ class RecordsTest : public testing::Test
 
 protected:
 	const Spyll::TestTool* tool;
-	const Spyll::TranslationUnitDescriptor* descriptor;
+	const Spyll::ReflectionDescriptor* descriptor;
 
 	RecordsTest()
 	{
 		static const Spyll::TestTool* staticTool = RunTool();
-		static const Spyll::TranslationUnitDescriptor staticDescriptor = Descriptor(staticTool);
+		static const Spyll::ReflectionDescriptor staticDescriptor = Descriptor(staticTool);
 
 		tool = staticTool;
 		descriptor = &staticDescriptor;
@@ -51,7 +51,7 @@ private:
 		return tool;
 	}
 
-	Spyll::TranslationUnitDescriptor
+	Spyll::ReflectionDescriptor
 	Descriptor(const Spyll::SpyllTool* a_tool) const
 	{
 		auto& map = a_tool->GetReflectionGeneratorMap();
@@ -59,7 +59,7 @@ private:
 		{
 			if (path.find(s_compileTarget) != std::string::npos)
 			{
-				return generator->GetTranslationUnitDescriptor();
+				return generator->GetReflectionDescriptor();
 			}
 		}
 		throw "No matching generator found!";

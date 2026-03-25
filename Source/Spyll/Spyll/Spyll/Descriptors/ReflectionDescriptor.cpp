@@ -1,4 +1,6 @@
-#include "TranslationUnitDescriptor.h"
+#include "ReflectionDescriptor.h"
+
+#include <unordered_map>
 
 namespace
 {
@@ -18,7 +20,7 @@ namespace
 		std::vector<DescriptorT>* a_descriptorList
 	);
 
-	struct MergedTranslationUnitDescriptor
+	struct MergedReflectionDescriptor
 	{
 		std::unordered_map<std::string_view, TypeDescriptor> mergedTypes;
 		std::unordered_map<std::string_view, FieldDescriptor> mergedFields;
@@ -27,46 +29,56 @@ namespace
 		std::unordered_map<std::string_view, EnumDescriptor> mergedEnums;
 
 		void
-		ReconnectMergedTypes(const TranslationUnitDescriptor& originalDescriptor);
+		ReconnectMergedTypes(const ReflectionDescriptor& originalDescriptor);
 
 		void
-		ReconnectMergedFields(const TranslationUnitDescriptor& originalDescriptor);
+		ReconnectMergedFields(const ReflectionDescriptor& originalDescriptor);
 
 		void
-		ReconnectMergedFunctions(const TranslationUnitDescriptor& originalDescriptor);
+		ReconnectMergedFunctions(const ReflectionDescriptor& originalDescriptor);
 
 		void
-		ReconnectMergedVariables(const TranslationUnitDescriptor& originalDescriptor);
+		ReconnectMergedVariables(const ReflectionDescriptor& originalDescriptor);
 
 		void
-		ReconnectMergedEnums(const TranslationUnitDescriptor& originalDescriptor);;
+		ReconnectMergedEnums(const ReflectionDescriptor& originalDescriptor);;
 	};
 }
 
 namespace Spyll
 {
-	TranslationUnitDescriptor
-	CreateMergedTranslationUnitDescriptor(
-		const std::vector<TranslationUnitDescriptor>& a_tuDescriptors
+	ReflectionDescriptor
+	CreateMergedReflectionDescriptor(
+		const std::vector<ReflectionDescriptor>& a_reflectionDescriptors
 	)
 	{
-		MergedTranslationUnitDescriptor merged;
+		if (a_reflectionDescriptors.size() == 0)
+		{
+			return {};
+		}
+
+		if (a_reflectionDescriptors.size() == 1)
+		{
+			return a_reflectionDescriptors.front();
+		}
+
+		MergedReflectionDescriptor merged;
 
 		// Iterate over the TranslationUnitDescriptors and add unique instances of each declaration to their
 		// Respective maps. Maps are keyed by fully qualified names
-		for (const auto& tuDescriptor : a_tuDescriptors)
+		for (const auto& reflectionDescriptor : a_reflectionDescriptors)
 		{
-			MergeDescriptorListIntoMergedMap(tuDescriptor.types, &merged.mergedTypes);
-			MergeDescriptorListIntoMergedMap(tuDescriptor.fields, &merged.mergedFields);
-			MergeDescriptorListIntoMergedMap(tuDescriptor.functions, &merged.mergedFunctions);
-			MergeDescriptorListIntoMergedMap(tuDescriptor.variables, &merged.mergedVariables);
-			MergeDescriptorListIntoMergedMap(tuDescriptor.enums, &merged.mergedEnums);
+			MergeDescriptorListIntoMergedMap(reflectionDescriptor.types, &merged.mergedTypes);
+			MergeDescriptorListIntoMergedMap(reflectionDescriptor.fields, &merged.mergedFields);
+			MergeDescriptorListIntoMergedMap(reflectionDescriptor.functions, &merged.mergedFunctions);
+			MergeDescriptorListIntoMergedMap(reflectionDescriptor.variables, &merged.mergedVariables);
+			MergeDescriptorListIntoMergedMap(reflectionDescriptor.enums, &merged.mergedEnums);
 		}
 
 		// Reconnect the merged types, using the original TranslationUnitDescriptor Ids to index into the descriptor
 		// arrays
 		// We need to do this step in a separate iteration pass so that we know all the types are set up
-		for (const auto& tuDescriptor : a_tuDescriptors)
+		for (const auto& tuDescriptor : a_reflectionDescriptors)
 		{
 			merged.ReconnectMergedTypes(tuDescriptor);
 			merged.ReconnectMergedFields(tuDescriptor);
@@ -76,7 +88,7 @@ namespace Spyll
 		}
 
 		// Write the merged results to a new TranslationUnitDescriptor 
-		TranslationUnitDescriptor result;
+		ReflectionDescriptor result;
 		MoveDescriptorsFromMergedMapToDescriptorList(&merged.mergedTypes, &result.types);
 		MoveDescriptorsFromMergedMapToDescriptorList(&merged.mergedFields, &result.fields);
 		MoveDescriptorsFromMergedMapToDescriptorList(&merged.mergedFunctions, &result.functions);
@@ -130,13 +142,13 @@ namespace
 	}
 
 	void
-	MergedTranslationUnitDescriptor::ReconnectMergedTypes(const TranslationUnitDescriptor& originalDescriptor)
+	MergedReflectionDescriptor::ReconnectMergedTypes(const ReflectionDescriptor& originalDescriptor)
 	{
 		(void) originalDescriptor;
 	}
 
 	void
-	MergedTranslationUnitDescriptor::ReconnectMergedFields(const TranslationUnitDescriptor& originalDescriptor)
+	MergedReflectionDescriptor::ReconnectMergedFields(const ReflectionDescriptor& originalDescriptor)
 	{
 		for (const auto& originalField : originalDescriptor.fields)
 		{
@@ -161,7 +173,7 @@ namespace
 	}
 
 	void
-	MergedTranslationUnitDescriptor::ReconnectMergedFunctions(const TranslationUnitDescriptor& originalDescriptor)
+	MergedReflectionDescriptor::ReconnectMergedFunctions(const ReflectionDescriptor& originalDescriptor)
 	{
 		for (const auto& originalFunction : originalDescriptor.functions)
 		{
@@ -192,7 +204,7 @@ namespace
 	}
 
 	void
-	MergedTranslationUnitDescriptor::ReconnectMergedVariables(const TranslationUnitDescriptor& originalDescriptor)
+	MergedReflectionDescriptor::ReconnectMergedVariables(const ReflectionDescriptor& originalDescriptor)
 	{
 		for (const auto& originalVariable : originalDescriptor.variables)
 		{
@@ -222,7 +234,7 @@ namespace
 	}
 
 	void
-	MergedTranslationUnitDescriptor::ReconnectMergedEnums(const TranslationUnitDescriptor& originalDescriptor)
+	MergedReflectionDescriptor::ReconnectMergedEnums(const ReflectionDescriptor& originalDescriptor)
 	{
 		for (const auto& originalEnum : originalDescriptor.enums)
 		{
