@@ -72,4 +72,15 @@ namespace Spyll
 	{
 		return m_generators;
 	}
+
+	ReflectionDescriptor
+	SpyllTool::GetMergedReflectionDescriptor() const
+	{
+		std::vector<ReflectionDescriptor> reflectionDescriptors;
+		for (const auto& [fileName, generator] : m_generators)
+		{
+			reflectionDescriptors.emplace_back(generator->GetReflectionDescriptor());
+		}
+		return CreateMergedReflectionDescriptor(reflectionDescriptors);
+	}
 }

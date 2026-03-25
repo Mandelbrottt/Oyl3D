@@ -349,20 +349,18 @@ namespace Spyll
 
 	template<typename DescriptorT>
 	void
-	MoveDescriptorMapToList(
-		std::unordered_map<const void*, DescriptorT>* a_implMap,
+	CopyDescriptorMapToList(
+		const std::unordered_map<const void*, DescriptorT>& a_implMap,
 		std::vector<DescriptorT>* a_descriptorList
 	)
 	{
-		auto& implMap = *a_implMap;
 		auto& descriptorList = *a_descriptorList;
 
-		descriptorList.resize(implMap.size());
-		for (const auto& [_, desc] : implMap)
+		descriptorList.resize(a_implMap.size());
+		for (const auto& [_, desc] : a_implMap)
 		{
 			descriptorList.at(std::underlying_type_t<decltype(desc.id)>(desc.id)) = std::move(desc);
 		}
-		implMap.clear();
 	}
 
 	ReflectionDescriptor
@@ -370,11 +368,11 @@ namespace Spyll
 	{
 		ReflectionDescriptor descriptor;
 
-		MoveDescriptorMapToList(&m_impl->types, &descriptor.types);
-		MoveDescriptorMapToList(&m_impl->fields, &descriptor.fields);
-		MoveDescriptorMapToList(&m_impl->functions, &descriptor.functions);
-		MoveDescriptorMapToList(&m_impl->variables, &descriptor.variables);
-		MoveDescriptorMapToList(&m_impl->enums, &descriptor.enums);
+		CopyDescriptorMapToList(m_impl->types, &descriptor.types);
+		CopyDescriptorMapToList(m_impl->fields, &descriptor.fields);
+		CopyDescriptorMapToList(m_impl->functions, &descriptor.functions);
+		CopyDescriptorMapToList(m_impl->variables, &descriptor.variables);
+		CopyDescriptorMapToList(m_impl->enums, &descriptor.enums);
 
 		return descriptor;
 	}
