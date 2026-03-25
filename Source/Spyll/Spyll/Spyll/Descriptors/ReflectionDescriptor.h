@@ -20,6 +20,6 @@ namespace Spyll
 	extern
 	ReflectionDescriptor
 	CreateMergedReflectionDescriptor(
-		const std::vector<ReflectionDescriptor>& a_tuDescriptors
+		const std::vector<ReflectionDescriptor>& a_reflectionDescriptors
 	);
 }

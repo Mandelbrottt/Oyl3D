@@ -141,6 +141,16 @@ namespace Spyll
 			function.ownerType = descriptor.id;
 		}
 
+		for (const clang::CXXBaseSpecifier& base : Decl->bases())
+		{
+			const TypeDescriptor& baseType = AddType(base.getType().getTypePtr());
+
+			BaseTypeDescriptor& baseTypeDescriptor = descriptor.baseTypes.emplace_back();
+			baseTypeDescriptor.type = baseType.id;
+			baseTypeDescriptor.accessSpecifier = ToAccessSpecifier(base.getAccessSpecifier());
+			baseTypeDescriptor.isVirtual = base.isVirtual();
+		}
+
 		return descriptor;
 	}
 
@@ -338,7 +348,8 @@ namespace Spyll
 	}
 
 	template<typename DescriptorT>
-	void MoveDescriptorMapToList(
+	void
+	MoveDescriptorMapToList(
 		std::unordered_map<const void*, DescriptorT>* a_implMap,
 		std::vector<DescriptorT>* a_descriptorList
 	)

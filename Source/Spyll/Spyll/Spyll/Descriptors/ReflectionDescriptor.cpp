@@ -144,7 +144,25 @@ namespace
 	void
 	MergedReflectionDescriptor::ReconnectMergedTypes(const ReflectionDescriptor& originalDescriptor)
 	{
-		(void) originalDescriptor;
+		for (const auto& originalType : originalDescriptor.types)
+		{
+			auto& mergedType = mergedTypes.at(originalType.name);
+
+			// Iterate the list of base types and 
+			for (int i = 0; i < originalType.baseTypes.size(); i++)
+			{
+				const auto& originalBaseDescriptor = originalType.baseTypes[i];
+				auto& mergedBaseDescriptor = mergedType.baseTypes[i];
+
+				// Get the original type descriptor using the original ID as an index
+				auto originalBaseTypeIndex = 
+					static_cast<std::underlying_type_t<FieldDescriptorId>>(originalBaseDescriptor.type);
+				const auto& originalBaseType = originalDescriptor.types.at(originalBaseTypeIndex);
+
+				const auto& mergedBaseType = mergedTypes.at(originalBaseType.name);
+				mergedBaseDescriptor.type = mergedBaseType.id;
+			}
+		}
 	}
 
 	void
@@ -152,6 +170,9 @@ namespace
 	{
 		for (const auto& originalField : originalDescriptor.fields)
 		{
+			// Get the mergedField with the originalField's name
+			auto& mergedField = mergedFields.at(originalField.name);
+
 			// Get the original type descriptor using the original ID as an index
 			auto originalTypeIndex = static_cast<std::underlying_type_t<FieldDescriptorId>>(originalField.type);
 			const auto& originalType = originalDescriptor.types.at(originalTypeIndex);
@@ -162,7 +183,6 @@ namespace
 			const auto& originalOwnerType = originalDescriptor.types.at(originalOwningTypeIndex);
 
 			// Get the merged field and types by name
-			auto& mergedField = mergedFields.at(originalField.name);
 			const auto& mergedType = mergedTypes.at(originalType.name);
 			const auto& mergedOwnerType = mergedTypes.at(originalOwnerType.name);
 
