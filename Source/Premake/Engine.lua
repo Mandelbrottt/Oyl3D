@@ -198,10 +198,10 @@ function Engine.CommonCppSettings()
 	externalwarnings "Off"
 	externalanglebrackets "On"
 
-	targetdir(Config.TargetDir .. Config.OutputDir)
-	debugdir(Config.TargetDir .. Config.OutputDir)
-	objdir(Config.ObjectDir .. Config.OutputDir)
-	implibdir(Config.LibraryDir .. Config.OutputDir)
+	targetdir(Config.TargetDir)
+	debugdir(Config.TargetDir)
+	objdir(Config.ObjectDir)
+	implibdir(Config.LibraryDir)
 
 	filter "language:C++"; do
 		cppdialect "C++17"
@@ -212,7 +212,7 @@ function Engine.CommonCppSettings()
 	end
 
 	filter "kind:StaticLib"; do
-		targetdir(Config.LibraryDir .. Config.OutputDir)
+		targetdir(Config.LibraryDir)
 	end
 
 	filter "toolset:msc*"; do

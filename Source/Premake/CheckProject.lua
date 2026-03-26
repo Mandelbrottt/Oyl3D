@@ -27,8 +27,8 @@ function CheckProject.GenerateProject(additionalArgs)
 	project(CheckProject.Name); do
 		kind "Makefile"
 		filename("%{prj.name}")
-		targetdir(Config.TargetDir .. Config.OutputDir)
-		objdir(Config.ObjectDir .. Config.OutputDir)
+		targetdir(Config.TargetDir)
+		objdir(Config.ObjectDir)
 
 		local premakeCommandArgs = {
 			_ACTION,
