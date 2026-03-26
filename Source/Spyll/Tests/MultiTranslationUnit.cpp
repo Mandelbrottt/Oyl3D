@@ -1,5 +1,3 @@
-#pragma once
-
 #include <Spyll/ClangTool/ReflectionGenerator.h>
 
 #include "ToolPreTest.h"

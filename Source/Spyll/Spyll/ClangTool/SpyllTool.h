@@ -29,6 +29,7 @@ namespace Spyll
 
 	public:
 		using ReflectionGeneratorMap = std::unordered_map<std::string, std::unique_ptr<ReflectionGenerator>>;
+		using OnSetDiagnosticOptionsFn = void(*)(clang::DiagnosticOptions*);
 
 		virtual
 		~SpyllTool();
@@ -44,7 +45,10 @@ namespace Spyll
 
 		virtual
 		void
-		SetDiagnosticOptions(clang::DiagnosticOptions* a_diagnosticOptions);
+		SetDiagnosticOptionsCallback(OnSetDiagnosticOptionsFn a_callback);
+
+		void
+		OnSetDiagnosticOptions(clang::DiagnosticOptions* a_diagnosticOptions);
 
 		ReflectionGenerator*
 		CreateNewReflectionGenerator(std::string_view a_path);
@@ -57,6 +61,8 @@ namespace Spyll
 
 	protected:
 		ReflectionGeneratorMap m_generators;
+
+		OnSetDiagnosticOptionsFn m_diagnosticOptionsFn = nullptr;
 
 		std::unique_ptr<clang::tooling::ClangTool> m_clangTool;
 		std::unique_ptr<clang::DiagnosticConsumer> m_diagnosticConsumer;
