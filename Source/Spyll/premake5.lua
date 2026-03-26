@@ -70,10 +70,9 @@ end
 workspace "Spyll"; do
 	filename("%{wks.name}")
 
-	configurations {
-		"Debug",
-		"RelWithDebInfo",
-		"Release"
+	configurations(table.keys(Config.Configurations))
+	configmap {
+		[Config.Configurations.Profile] = Config.Configurations.Development,
 	}
 
 	platforms {
