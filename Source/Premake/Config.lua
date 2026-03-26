@@ -4,21 +4,17 @@ Config.EngineDefaultGroup = "Engine"
 
 Config.RootDir = assert(_MAIN_SCRIPT_DIR)
 
-Config.BuildDir = ("%s/Build"):format(Config.RootDir)
+Config.BuildRoot = path.join(Config.RootDir, "Build")
 
-Config.TargetDir = ("%s/Binaries/"):format(Config.BuildDir)
-Config.LibraryDir = ("%s/Library/"):format(Config.BuildDir)
-Config.ObjectDir = ("%s/Intermediate/"):format(Config.BuildDir)
-Config.OutputDir = "%{wks.name}/%{cfg.platform}_%{cfg.buildcfg}_%{cfg.toolset}/"
+Config.OutputDir = path.join(Config.BuildRoot, "%{cfg.platform}_%{cfg.buildcfg}_%{cfg.toolset}", "%{wks.name}")
 
-Config.Utils = {}
-Config.Utils.TargetDir = ("%s/Utils/"):format(Config.TargetDir)
-Config.Utils.OutputDir = "%{cfg.buildcfg}_%{cfg.system}-%{cfg.architecture}/"
+Config.TargetDir = path.join(Config.OutputDir, "Binaries")
+Config.LibraryDir = path.join(Config.OutputDir, "Library")
+Config.ObjectDir = path.join(Config.OutputDir, "Intermediate")
 
 Config.ProjectLocation = "./"
 
-Config.SourceDir = "Source/"
-Config.ToolsDir = "Tools/"
+Config.SourceDir = path.join(Config.RootDir, "Source")
 
 Config.PackageCacheDir = path.join(Config.RootDir, "Packages")
 
