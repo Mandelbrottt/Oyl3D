@@ -2,6 +2,23 @@
 
 namespace Spyll
 {
+	class TestDiagnosticConsumer : public clang::DiagnosticConsumer
+	{
+	public:
+		void
+		HandleDiagnostic(
+			clang::DiagnosticsEngine::Level DiagLevel, 
+			const clang::Diagnostic& Info
+		) override
+		{
+			(void) Info;
+			if (DiagLevel == clang::DiagnosticsEngine::Error)
+			{
+				NumErrors++;
+			}
+		}
+	};
+
 	TestTool::TestTool(std::vector<std::string> a_fileNames, std::string a_compileArgs)
 	{
 		Setup(std::move(a_fileNames), std::move(a_compileArgs));
@@ -29,6 +46,9 @@ namespace Spyll
 			*m_compilations,
 			m_sources
 		);
+
+		m_diagnosticConsumer = std::make_unique<TestDiagnosticConsumer>();
+		m_clangTool->setDiagnosticConsumer(m_diagnosticConsumer.get());
 
 		// Disable Error Output from the clang tool
 		SetPrintErrorMessage(false);

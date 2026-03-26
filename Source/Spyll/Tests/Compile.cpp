@@ -1,6 +1,21 @@
 #include "BasicFixture.h"
 
-struct CompileTest : BasicFixture {};
+namespace
+{
+	struct CompileTest : BasicFixture
+	{
+		void SetUp() override
+		{
+			tool.SetDiagnosticOptionsCallback(
+				[](clang::DiagnosticOptions* a_options)
+				{
+					a_options->ShowCarets = false;
+					a_options->UseANSIEscapeCodes = true;
+				}
+			);
+		}
+	};
+}
 
 TEST_F(CompileTest, CompilesHelloWorld)
 {

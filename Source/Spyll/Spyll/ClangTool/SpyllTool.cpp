@@ -55,9 +55,18 @@ namespace Spyll
 	}
 
 	void
-	SpyllTool::SetDiagnosticOptions(clang::DiagnosticOptions* a_diagnosticOptions)
+	SpyllTool::SetDiagnosticOptionsCallback(OnSetDiagnosticOptionsFn a_callback)
 	{
-		a_diagnosticOptions->IgnoreWarnings = true;
+		m_diagnosticOptionsFn = a_callback;
+	}
+
+	void
+	SpyllTool::OnSetDiagnosticOptions(clang::DiagnosticOptions* a_diagnosticOptions)
+	{
+		if (m_diagnosticOptionsFn)
+		{
+			m_diagnosticOptionsFn(a_diagnosticOptions);
+		}
 	}
 
 	ReflectionGenerator*

@@ -149,7 +149,7 @@ namespace
 			auto& mergedType = mergedTypes.at(originalType.name);
 
 			// Iterate the list of base types and 
-			for (int i = 0; i < originalType.baseTypes.size(); i++)
+			for (unsigned int i = 0; i < originalType.baseTypes.size(); i++)
 			{
 				const auto& originalBaseDescriptor = originalType.baseTypes[i];
 				auto& mergedBaseDescriptor = mergedType.baseTypes[i];

@@ -25,5 +25,7 @@ namespace Spyll
 	private:
 		std::vector<std::string> m_sources;
 		std::unique_ptr<clang::tooling::CompilationDatabase> m_compilations;
+
+		std::unique_ptr<clang::DiagnosticConsumer> m_diagnosticConsumer;
 	};
 }
