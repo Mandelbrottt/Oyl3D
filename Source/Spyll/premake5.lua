@@ -81,7 +81,7 @@ workspace "Spyll"; do
 
 	for _, script in ipairs(os.matchfiles("**/premake5.lua")) do
 		script = path.getabsolute(script)
-		include(script)
+		Project.Script(script)
 		project "*"
 	end
 

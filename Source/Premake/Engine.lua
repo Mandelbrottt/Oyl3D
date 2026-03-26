@@ -15,10 +15,8 @@ function Engine.SetupProjectFromScript(script)
 	local wks = workspace()
 
 	do
-		script = path.join(path.getdirectory(script), path.getbasename(script))
-
 		local nProjects = #wks.projects
-		include(script) -- Invoke the project script
+		Project.Script(script) -- Invoke the project script
 		assert(
 			#wks.projects == nProjects + 1,
 			string.format("Project script %s must define one premake project!", script)

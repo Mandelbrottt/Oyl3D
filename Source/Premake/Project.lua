@@ -7,6 +7,15 @@ local CppFilePatterns = {
 	"*.natvis",
 }
 
+--- Run the script at script_path
+---@param script_path string Path to the script to execute
+function Project.Script(script_path)
+	if path.getname(script_path) ~= "premake5.lua" and not path.hasextension(script_path, ".lua") then
+		script_path = path.join(script_path, "premake5.lua")
+	end
+	assert(loadfile(script_path))()
+end
+
 ---@return any
 function Project.CurrentProject()
 	local scope = premake.api.scope.current
