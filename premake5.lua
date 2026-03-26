@@ -11,6 +11,8 @@ require "Action.Clean"
 require "Action.Packages"
 require "Overrides"
 
+local Project = require "Project"
+
 newoption {
 	trigger = "workspace",
 	description = "Generate only the selected workspace",
@@ -27,9 +29,9 @@ local function shouldGenerateWorkspace(wks)
 end
 
 if shouldGenerateWorkspace("Oyl3D") then
-	include "Source/Oyl3D"
+	Project.Script("Source/Oyl3D")
 end
 
 if shouldGenerateWorkspace("Spyll") then
-	include "Source/Spyll"
+	Project.Script("Source/Spyll")
 end
