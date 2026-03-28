@@ -41,7 +41,7 @@ function Spyll.CommonCppSettings(package)
 	}
 
 	filter "kind:StaticLib"; do
-		targetdir(Config.LibraryDir .. Config.OutputDir)
+		targetdir(Config.LibraryDir)
 	end
 
 	filter "configurations:Debug"; do
