@@ -34,7 +34,7 @@ jobs:
     strategy: &build-strategy
       fail-fast: false
       matrix:
-        configuration: [Debug, RelWithDebInfo, Release]
+        configuration: [Debug, Development, Distribution]
         platform: [ x64 ]
     env:
       toolset: clang
