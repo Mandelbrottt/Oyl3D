@@ -26,6 +26,7 @@ project "Spyll.Tests"; do
 	externalincludedirs(Packages.ClangTooling.Include)
 
 	Package.Include(Packages.GoogleTest)
+	Package.Include(Packages.NlohmannJson)
 
 	filter "files:Targets/**"; do
 		excludefrombuild "On"

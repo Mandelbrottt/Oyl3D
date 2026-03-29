@@ -275,9 +275,6 @@ namespace
 	}
 }
 
-#define OBJ_MEMBER_AS_JSON(_obj_, _name_) { #_name_, _obj_._name_ }
-#define OBJ_MEMBER_FROM_JSON(_json_, _obj_, _name_) _json_.at(#_name_).get_to(_obj_._name_)
-
 namespace Spyll
 {
 	using json = nlohmann::json;
@@ -285,13 +282,13 @@ namespace Spyll
 	void
 	to_json(json& a_json, const ReflectionDescriptor& a_descriptor)
 	{
-		a_json = json {
-			OBJ_MEMBER_AS_JSON(a_descriptor, types),
-			OBJ_MEMBER_AS_JSON(a_descriptor, fields),
-			OBJ_MEMBER_AS_JSON(a_descriptor, functions),
-			OBJ_MEMBER_AS_JSON(a_descriptor, variables),
-			OBJ_MEMBER_AS_JSON(a_descriptor, enums),
-		};
+		a_json = json {};
+
+		OBJ_MEMBER_AS_JSON(a_json, a_descriptor, types);
+		OBJ_MEMBER_AS_JSON(a_json, a_descriptor, fields);
+		OBJ_MEMBER_AS_JSON(a_json, a_descriptor, functions);
+		OBJ_MEMBER_AS_JSON(a_json, a_descriptor, variables);
+		OBJ_MEMBER_AS_JSON(a_json, a_descriptor, enums);
 	}
 
 	void

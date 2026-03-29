@@ -38,5 +38,7 @@ project "Spyll.Entry"; do
 		"Spyll.Tests"
 	}
 
+	Package.Include(Packages.NlohmannJson)
+
 	externalincludedirs(Packages.ClangTooling.Include)
 end

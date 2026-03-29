@@ -17,15 +17,22 @@ namespace Spyll
 	from_json(const BasicJsonType& a_json, _name_& a_id) \
 	{ \
 		a_id = static_cast<_name_>(a_json.template get<std::underlying_type_t<_name_>>()); \
-	}
-
+	} \
 
 #define DESCRIPTOR_ID(_name_) \
 	enum class _name_ : uint32_t \
 	{ \
 		Invalid = static_cast<std::underlying_type_t<_name_>>(-1)\
 	}; \
-	JSON_ENUM_HELPER_FNS(_name_)
+	\
+	JSON_ENUM_HELPER_FNS(_name_) \
+	\
+	inline \
+	bool \
+	operator !(_name_ a_id) \
+	{ \
+		return a_id == _name_::Invalid; \
+	}
 
 	DESCRIPTOR_ID(TypeDescriptorId)
 
@@ -81,6 +88,13 @@ namespace Spyll
 		Private
 	};
 
+	inline
+	bool
+	operator !(AccessSpecifier a_spec)
+	{
+		return a_spec == AccessSpecifier::None;
+	}
+
 	JSON_ENUM_HELPER_FNS(AccessSpecifier)
 
 	enum class ConstructorType : uint8_t
@@ -90,6 +104,13 @@ namespace Spyll
 		Copy,
 		Move
 	};
+	
+	inline
+	bool
+	operator !(ConstructorType a_type)
+	{
+		return a_type == ConstructorType::None;
+	}
 
 	JSON_ENUM_HELPER_FNS(ConstructorType)
 }

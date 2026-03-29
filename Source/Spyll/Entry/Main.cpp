@@ -1,8 +1,15 @@
 #include <llvm/Support/CommandLine.h>
 
+#pragma warning(push)
+#pragma warning(disable : 4267)
+#include <nlohmann/json.hpp>
+#pragma warning(pop)
+
 #include "CmdTool.h"
 
 #include "Spyll/Spyll/Descriptors/ReflectionDescriptor.h"
+
+#include "Spyll/Spyll/Descriptors/DescriptorSerialization.h"
 
 int
 main(int argc, const char** argv)
@@ -17,6 +24,14 @@ main(int argc, const char** argv)
 	}
 
 	auto mergedReflectionDescriptor = tool.GetMergedReflectionDescriptor();
+
+	nlohmann::json reflectionDescriptorJson = mergedReflectionDescriptor;
+
+	auto bin = nlohmann::json::to_msgpack(reflectionDescriptorJson);
+
+	nlohmann::json descriptorFromJson = nlohmann::json::from_msgpack(bin);
+
+	Spyll::ReflectionDescriptor fromDescriptor = descriptorFromJson.get<Spyll::ReflectionDescriptor>();
 
 	return result;
 }
