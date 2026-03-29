@@ -86,6 +86,6 @@ namespace Spyll
 		{
 			reflectionDescriptors.emplace_back(generator->GetReflectionDescriptor());
 		}
-		return CreateMergedReflectionDescriptor(reflectionDescriptors);
+		return Detail::CreateMergedReflectionDescriptor(reflectionDescriptors);
 	}
 }

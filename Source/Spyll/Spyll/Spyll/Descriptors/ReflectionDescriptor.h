@@ -17,9 +17,12 @@ namespace Spyll
 		std::vector<EnumDescriptor>     enums;
 	};
 
-	extern
-	ReflectionDescriptor
-	CreateMergedReflectionDescriptor(
-		const std::vector<ReflectionDescriptor>& a_reflectionDescriptors
-	);
+	namespace Detail
+	{
+		extern
+		ReflectionDescriptor
+		CreateMergedReflectionDescriptor(
+			const std::vector<ReflectionDescriptor>& a_reflectionDescriptors
+		);
+	}
 }
