@@ -3,7 +3,12 @@
 #include <memory>
 #include <string>
 #include <unordered_map>
-#include <Spyll/Spyll/Descriptors/ReflectionDescriptor.h>
+
+#include <clang/Basic/DiagnosticOptions.h>
+
+#include "ReflectionGenerator.h"
+
+#include "Spyll/Spyll/Descriptors/ReflectionDescriptor.h"
 
 namespace clang
 {
@@ -20,8 +25,6 @@ namespace clang
 
 namespace Spyll
 {
-	class ReflectionGenerator;
-
 	class SpyllTool
 	{
 	protected:
