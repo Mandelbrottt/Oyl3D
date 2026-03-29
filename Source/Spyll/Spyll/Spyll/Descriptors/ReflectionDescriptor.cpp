@@ -2,6 +2,8 @@
 
 #include <unordered_map>
 
+#include "DescriptorSerialization.h"
+
 namespace
 {
 	using namespace Spyll;
@@ -155,7 +157,7 @@ namespace
 				auto& mergedBaseDescriptor = mergedType.baseTypes[i];
 
 				// Get the original type descriptor using the original ID as an index
-				auto originalBaseTypeIndex = 
+				auto originalBaseTypeIndex =
 					static_cast<std::underlying_type_t<FieldDescriptorId>>(originalBaseDescriptor.type);
 				const auto& originalBaseType = a_originalDescriptor.types.at(originalBaseTypeIndex);
 
@@ -270,5 +272,35 @@ namespace
 			// Hook up the new ID
 			mergedEnum.underlyingType = mergedType.id;
 		}
+	}
+}
+
+#define OBJ_MEMBER_AS_JSON(_obj_, _name_) { #_name_, _obj_._name_ }
+#define OBJ_MEMBER_FROM_JSON(_json_, _obj_, _name_) _json_.at(#_name_).get_to(_obj_._name_)
+
+namespace Spyll
+{
+	using json = nlohmann::json;
+
+	void
+	to_json(json& a_json, const ReflectionDescriptor& a_descriptor)
+	{
+		a_json = json {
+			OBJ_MEMBER_AS_JSON(a_descriptor, types),
+			OBJ_MEMBER_AS_JSON(a_descriptor, fields),
+			OBJ_MEMBER_AS_JSON(a_descriptor, functions),
+			OBJ_MEMBER_AS_JSON(a_descriptor, variables),
+			OBJ_MEMBER_AS_JSON(a_descriptor, enums),
+		};
+	}
+
+	void
+	from_json(const json& a_json, ReflectionDescriptor& a_descriptor)
+	{
+		OBJ_MEMBER_FROM_JSON(a_json, a_descriptor, types);
+		OBJ_MEMBER_FROM_JSON(a_json, a_descriptor, fields);
+		OBJ_MEMBER_FROM_JSON(a_json, a_descriptor, functions);
+		OBJ_MEMBER_FROM_JSON(a_json, a_descriptor, variables);
+		OBJ_MEMBER_FROM_JSON(a_json, a_descriptor, enums);
 	}
 }

@@ -21,6 +21,7 @@ project "Spyll.ClangTool"; do
 	}
 
 	Package.Include(Packages.ClangTooling)
+	Package.Include(Packages.NlohmannJson)
 
 	filter "toolset:msc*"; do
 		linkoptions {
