@@ -70,7 +70,12 @@ end
 workspace "Spyll"; do
 	filename("%{wks.name}")
 
-	configurations(table.keys(Config.Configurations))
+	configurations {
+		Config.Configurations.Debug,
+		Config.Configurations.Development,
+		Config.Configurations.Profile,
+		Config.Configurations.Distribution,
+	}
 	configmap {
 		[Config.Configurations.Profile] = Config.Configurations.Development,
 	}
