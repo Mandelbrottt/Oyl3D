@@ -9,8 +9,16 @@
 #include "TypeDescriptor.h"
 #include "VariableDescriptor.h"
 
-#define OBJ_MEMBER_AS_JSON(_obj_, _name_) { #_name_, _obj_._name_ }
+#define OBJ_MEMBER_AS_JSON(_json_, _obj_, _name_) _json_[#_name_] = _obj_._name_
 #define OBJ_MEMBER_FROM_JSON(_json_, _obj_, _name_) _json_.at(#_name_).get_to(_obj_._name_)
+
+#define OBJ_OPTIONAL_MEMBER_AS_JSON(_json_, _obj_, _name_) \
+	if (!!_obj_._name_) \
+		_json_[#_name_] = _obj_._name_
+
+#define OBJ_OPTIONAL_MEMBER_FROM_JSON(_json_, _obj_, _name_) \
+	if (auto iter = _json_.find(#_name_); iter != _json_.end())\
+		iter->get_to(_obj_._name_)
 
 namespace Spyll
 {

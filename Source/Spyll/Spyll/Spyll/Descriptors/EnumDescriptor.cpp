@@ -9,12 +9,12 @@ namespace Spyll
 	void
 	to_json(json& a_json, const EnumDescriptor& a_descriptor)
 	{
-		a_json = json {
-			OBJ_MEMBER_AS_JSON(a_descriptor, name),
-			OBJ_MEMBER_AS_JSON(a_descriptor, id),
-			OBJ_MEMBER_AS_JSON(a_descriptor, underlyingType),
-			OBJ_MEMBER_AS_JSON(a_descriptor, enumerations),
-		};
+		a_json = json {};
+
+		OBJ_MEMBER_AS_JSON(a_json, a_descriptor, name);
+		OBJ_MEMBER_AS_JSON(a_json, a_descriptor, id);
+		OBJ_MEMBER_AS_JSON(a_json, a_descriptor, underlyingType);
+		OBJ_MEMBER_AS_JSON(a_json, a_descriptor, enumerations);
 	}
 
 	void
