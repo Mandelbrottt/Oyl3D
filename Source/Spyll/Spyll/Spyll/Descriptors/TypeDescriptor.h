@@ -10,8 +10,8 @@ namespace Spyll
 	{
 		TypeDescriptorId type = TypeDescriptorId::Invalid;
 
-		AccessSpecifier accessSpecifier : 2;
-		bool isVirtual : 1;
+		AccessSpecifier accessSpecifier;
+		bool isVirtual;
 	};
 
 	struct TypeDescriptor
@@ -23,10 +23,10 @@ namespace Spyll
 		uint32_t sizeInBits = 0;
 		uint8_t alignment = 0;
 
-		bool isComposite : 1;
-		bool isStruct    : 1;
+		bool isComposite;
+		bool isStruct;
 
-		bool isOpaque : 1;
+		bool isOpaque;
 
 		std::vector<BaseTypeDescriptor> baseTypes;
 	};
