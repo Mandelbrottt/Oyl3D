@@ -1,3 +1,5 @@
+#include <llvm/Support/CommandLine.h>
+
 #include "CmdTool.h"
 
 #include "Spyll/Spyll/Descriptors/ReflectionDescriptor.h"
