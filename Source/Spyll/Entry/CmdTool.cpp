@@ -8,40 +8,112 @@
 
 #include "Spyll/ClangTool/SpyllTool.h"
 
-// Apply a custom category to all command-line options so that they are the
-// only ones displayed.
-static llvm::cl::OptionCategory MyToolCategory("oyl-spyll options");
+namespace cl = llvm::cl;
+
+cl::OptionCategory g_spyllToolCategory("oyl-spyll options");
 
 // CommonOptionsParser declares HelpMessage with a description of the common
 // command-line options related to the compilation database and input files.
 // It's nice to have this help message in all tools.
-static llvm::cl::extrahelp CommonHelp(clang::tooling::CommonOptionsParser::HelpMessage);
+static cl::extrahelp CommonHelp(clang::tooling::CommonOptionsParser::HelpMessage);
 
 // A help message for this specific tool can be added afterwards.
-static llvm::cl::extrahelp MoreHelp("\nMore help text...\n");
+static cl::extrahelp MoreHelp("\nMore help text...\n");
 
 namespace Spyll
 {
-	CmdTool::CmdTool(int argc, const char** argv, bool a_printErrors)
+	struct CmdTool::Impl
 	{
-		using clang::tooling::CommonOptionsParser;
-		using clang::tooling::ClangTool;
+		std::unique_ptr<clang::tooling::CompilationDatabase> compilationDatabase;
+		std::vector<std::string> sourcePaths;
 
-		auto ExpectedOptions = CommonOptionsParser::create(argc, argv, MyToolCategory);
-		if (!ExpectedOptions)
-		{
-			if (a_printErrors)
-				llvm::errs() << ExpectedOptions.takeError();
-			return;
-		}
+		cl::NumOccurrencesFlag occurrencesFlag;
+	};
 
-		CommonOptionsParser& OptionsParser = ExpectedOptions.get();
-		m_optionsParser = std::make_unique<CommonOptionsParser>(std::move(OptionsParser));
-		m_clangTool = std::make_unique<ClangTool>(
-			m_optionsParser->getCompilations(),
-			m_optionsParser->getSourcePathList()
+	CmdTool::CmdTool(int argc, const char** argv, bool a_printErrors)
+		: m_impl(std::make_unique<Impl>())
+	{
+		auto err = Init(argc, argv);
+		if (!err) {}
+
+		m_clangTool = std::make_unique<clang::tooling::ClangTool>(
+			*m_impl->compilationDatabase,
+			m_impl->sourcePaths
 		);
 
 		SetPrintErrorMessage(a_printErrors);
+	}
+
+	CmdTool::~CmdTool() {}
+
+	llvm::Error
+	CmdTool::Init(int argc, const char** argv)
+	{
+		static cl::opt<std::string> BuildPath(
+			"p",
+			cl::desc("Build path"),
+			cl::Optional,
+			cl::cat(g_spyllToolCategory),
+			cl::sub(cl::SubCommand::getAll())
+		);
+
+		static cl::list<std::string> SourcePaths(
+			cl::Positional,
+			cl::desc("<source0> [... <sourceN>]"),
+			cl::NumOccurrencesFlag::OneOrMore,
+			cl::cat(g_spyllToolCategory),
+			cl::sub(cl::SubCommand::getAll())
+		);
+
+		m_impl->occurrencesFlag = cl::NumOccurrencesFlag::OneOrMore;
+
+		cl::ResetAllOptionOccurrences();
+
+		cl::HideUnrelatedOptions(g_spyllToolCategory);
+
+		std::string ErrorMessage;
+		m_impl->compilationDatabase =
+			clang::tooling::FixedCompilationDatabase::loadFromCommandLine(argc, argv, ErrorMessage);
+
+		if (!ErrorMessage.empty())
+			ErrorMessage.append("\n");
+		// Stop initializing if command-line option parsing failed.
+		if (!cl::ParseCommandLineOptions(argc, argv))
+		{
+			return llvm::make_error<llvm::StringError>(
+				ErrorMessage,
+				llvm::inconvertibleErrorCode()
+			);
+		}
+
+		cl::PrintOptionValues();
+
+		m_impl->sourcePaths = SourcePaths;
+		if ((m_impl->occurrencesFlag == cl::ZeroOrMore || m_impl->occurrencesFlag == cl::Optional) &&
+			m_impl->sourcePaths.empty())
+			return llvm::Error::success();
+		if (!m_impl->compilationDatabase)
+		{
+			if (!BuildPath.empty())
+			{
+				m_impl->compilationDatabase =
+					clang::tooling::CompilationDatabase::autoDetectFromDirectory(BuildPath, ErrorMessage);
+			} else
+			{
+				m_impl->compilationDatabase = clang::tooling::CompilationDatabase::autoDetectFromSource(
+					SourcePaths[0],
+					ErrorMessage
+				);
+			}
+			if (!m_impl->compilationDatabase)
+			{
+				llvm::errs() << "Error while trying to load a compilation database:\n"
+					<< ErrorMessage << "Running without flags.\n";
+				m_impl->compilationDatabase.reset(
+					new clang::tooling::FixedCompilationDatabase(".", std::vector<std::string>())
+				);
+			}
+		}
+		return llvm::Error::success();
 	}
 }
