@@ -1,4 +1,3 @@
-#include "pch.h"
 #include "SpyllTool.h"
 
 #include "Action.h"
@@ -28,9 +27,6 @@ namespace Spyll
 		};
 
 		m_action = std::make_unique<ToolFrontendActionFactory>(this);
-
-		// Disable Error Output from the clang tool
-		//m_diagnosticConsumer = std::make_unique<clang::IgnoringDiagConsumer>();
 	}
 
 	SpyllTool::~SpyllTool() {}
