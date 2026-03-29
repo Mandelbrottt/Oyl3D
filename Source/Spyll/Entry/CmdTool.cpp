@@ -30,6 +30,7 @@ namespace Spyll
 		cl::NumOccurrencesFlag occurrencesFlag;
 
 		std::string outputFile = "spyll.bin";
+		bool binary = true;
 	};
 
 	CmdTool::CmdTool(int argc, const char** argv, bool a_printErrors)
@@ -52,6 +53,12 @@ namespace Spyll
 	CmdTool::GetOutputFile() const
 	{
 		return m_impl->outputFile;
+	}
+
+	bool
+	CmdTool::ShouldOutputBinary() const
+	{
+		return m_impl->binary;
 	}
 
 	llvm::Error
@@ -125,6 +132,7 @@ namespace Spyll
 		if (Json.getNumOccurrences() != 0)
 		{
 			m_impl->outputFile = "spyll.json";
+			m_impl->binary = false;
 		}
 
 		if (!Output.empty())
