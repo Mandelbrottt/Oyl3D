@@ -16,7 +16,7 @@ main(int argc, const char** argv)
 		reflectionDescriptors.emplace_back(generator->GetReflectionDescriptor());
 	}
 
-	auto mergedReflectionDescriptor = CreateMergedReflectionDescriptor(reflectionDescriptors);
+	auto mergedReflectionDescriptor = tool.GetMergedReflectionDescriptor();
 
 	return result;
 }

@@ -29,23 +29,23 @@ namespace
 		std::unordered_map<std::string_view, EnumDescriptor> mergedEnums;
 
 		void
-		ReconnectMergedTypes(const ReflectionDescriptor& originalDescriptor);
+		ReconnectMergedTypes(const ReflectionDescriptor& a_originalDescriptor);
 
 		void
-		ReconnectMergedFields(const ReflectionDescriptor& originalDescriptor);
+		ReconnectMergedFields(const ReflectionDescriptor& a_originalDescriptor);
 
 		void
-		ReconnectMergedFunctions(const ReflectionDescriptor& originalDescriptor);
+		ReconnectMergedFunctions(const ReflectionDescriptor& a_originalDescriptor);
 
 		void
-		ReconnectMergedVariables(const ReflectionDescriptor& originalDescriptor);
+		ReconnectMergedVariables(const ReflectionDescriptor& a_originalDescriptor);
 
 		void
-		ReconnectMergedEnums(const ReflectionDescriptor& originalDescriptor);;
+		ReconnectMergedEnums(const ReflectionDescriptor& a_originalDescriptor);;
 	};
 }
 
-namespace Spyll
+namespace Spyll::Detail
 {
 	ReflectionDescriptor
 	CreateMergedReflectionDescriptor(
@@ -142,9 +142,9 @@ namespace
 	}
 
 	void
-	MergedReflectionDescriptor::ReconnectMergedTypes(const ReflectionDescriptor& originalDescriptor)
+	MergedReflectionDescriptor::ReconnectMergedTypes(const ReflectionDescriptor& a_originalDescriptor)
 	{
-		for (const auto& originalType : originalDescriptor.types)
+		for (const auto& originalType : a_originalDescriptor.types)
 		{
 			auto& mergedType = mergedTypes.at(originalType.name);
 
@@ -157,7 +157,7 @@ namespace
 				// Get the original type descriptor using the original ID as an index
 				auto originalBaseTypeIndex = 
 					static_cast<std::underlying_type_t<FieldDescriptorId>>(originalBaseDescriptor.type);
-				const auto& originalBaseType = originalDescriptor.types.at(originalBaseTypeIndex);
+				const auto& originalBaseType = a_originalDescriptor.types.at(originalBaseTypeIndex);
 
 				const auto& mergedBaseType = mergedTypes.at(originalBaseType.name);
 				mergedBaseDescriptor.type = mergedBaseType.id;
@@ -166,21 +166,21 @@ namespace
 	}
 
 	void
-	MergedReflectionDescriptor::ReconnectMergedFields(const ReflectionDescriptor& originalDescriptor)
+	MergedReflectionDescriptor::ReconnectMergedFields(const ReflectionDescriptor& a_originalDescriptor)
 	{
-		for (const auto& originalField : originalDescriptor.fields)
+		for (const auto& originalField : a_originalDescriptor.fields)
 		{
 			// Get the mergedField with the originalField's name
 			auto& mergedField = mergedFields.at(originalField.name);
 
 			// Get the original type descriptor using the original ID as an index
 			auto originalTypeIndex = static_cast<std::underlying_type_t<FieldDescriptorId>>(originalField.type);
-			const auto& originalType = originalDescriptor.types.at(originalTypeIndex);
+			const auto& originalType = a_originalDescriptor.types.at(originalTypeIndex);
 
 			// Get the original owner type descriptor using the original ID as an index
 			auto originalOwningTypeIndex =
 				static_cast<std::underlying_type_t<TypeDescriptorId>>(originalField.ownerType);
-			const auto& originalOwnerType = originalDescriptor.types.at(originalOwningTypeIndex);
+			const auto& originalOwnerType = a_originalDescriptor.types.at(originalOwningTypeIndex);
 
 			// Get the merged field and types by name
 			const auto& mergedType = mergedTypes.at(originalType.name);
@@ -193,14 +193,14 @@ namespace
 	}
 
 	void
-	MergedReflectionDescriptor::ReconnectMergedFunctions(const ReflectionDescriptor& originalDescriptor)
+	MergedReflectionDescriptor::ReconnectMergedFunctions(const ReflectionDescriptor& a_originalDescriptor)
 	{
-		for (const auto& originalFunction : originalDescriptor.functions)
+		for (const auto& originalFunction : a_originalDescriptor.functions)
 		{
 			// Get the original return type descriptor using the original ID as an index
 			auto originalReturnTypeIndex =
 				static_cast<std::underlying_type_t<TypeDescriptorId>>(originalFunction.returnType);
-			const auto& originalReturnType = originalDescriptor.types.at(originalReturnTypeIndex);
+			const auto& originalReturnType = a_originalDescriptor.types.at(originalReturnTypeIndex);
 
 			// Get the merged function and its return type by name
 			auto& mergedFunction = mergedFunctions.at(originalFunction.name);
@@ -214,7 +214,7 @@ namespace
 			{
 				auto originalOwningTypeIndex =
 					static_cast<std::underlying_type_t<TypeDescriptorId>>(originalFunction.ownerType);
-				const auto& originalOwnerType = originalDescriptor.types.at(originalOwningTypeIndex);
+				const auto& originalOwnerType = a_originalDescriptor.types.at(originalOwningTypeIndex);
 
 				auto& mergedOwnerType = mergedTypes.at(originalOwnerType.name);
 
@@ -224,13 +224,13 @@ namespace
 	}
 
 	void
-	MergedReflectionDescriptor::ReconnectMergedVariables(const ReflectionDescriptor& originalDescriptor)
+	MergedReflectionDescriptor::ReconnectMergedVariables(const ReflectionDescriptor& a_originalDescriptor)
 	{
-		for (const auto& originalVariable : originalDescriptor.variables)
+		for (const auto& originalVariable : a_originalDescriptor.variables)
 		{
 			// Get the original variable type descriptor using the original ID as an index
 			auto typeIndex = static_cast<std::underlying_type_t<TypeDescriptorId>>(originalVariable.type);
-			const auto& originalType = originalDescriptor.types.at(typeIndex);
+			const auto& originalType = a_originalDescriptor.types.at(typeIndex);
 
 			// Get the merged variable and its type by name
 			auto& mergedVariable = mergedVariables.at(originalVariable.name);
@@ -244,7 +244,7 @@ namespace
 			{
 				auto originalOwningTypeIndex
 					= static_cast<std::underlying_type_t<TypeDescriptorId>>(originalVariable.ownerType);
-				const auto& originalOwnerType = originalDescriptor.types.at(originalOwningTypeIndex);
+				const auto& originalOwnerType = a_originalDescriptor.types.at(originalOwningTypeIndex);
 
 				auto& mergedOwnerType = mergedTypes.at(originalOwnerType.name);
 
@@ -254,14 +254,14 @@ namespace
 	}
 
 	void
-	MergedReflectionDescriptor::ReconnectMergedEnums(const ReflectionDescriptor& originalDescriptor)
+	MergedReflectionDescriptor::ReconnectMergedEnums(const ReflectionDescriptor& a_originalDescriptor)
 	{
-		for (const auto& originalEnum : originalDescriptor.enums)
+		for (const auto& originalEnum : a_originalDescriptor.enums)
 		{
 			// Get the original underlying type descriptor using the original ID as an index
 			auto originalUnderlyingTypeIndex = static_cast<std::underlying_type_t<TypeDescriptorId>>(originalEnum.
 				underlyingType);
-			const auto& originalUnderlyingType = originalDescriptor.types.at(originalUnderlyingTypeIndex);
+			const auto& originalUnderlyingType = a_originalDescriptor.types.at(originalUnderlyingTypeIndex);
 
 			// Get the merged enum and its underlying type by name
 			auto& mergedEnum = mergedEnums.at(originalEnum.name);
