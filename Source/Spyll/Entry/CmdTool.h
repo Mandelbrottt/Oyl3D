@@ -26,6 +26,9 @@ namespace Spyll
 		virtual
 		~CmdTool();
 
+		std::string_view
+		GetOutputFile() const;
+
 	private:
 		llvm::Error
 		Init(int argc, const char** argv);

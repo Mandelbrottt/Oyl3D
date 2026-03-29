@@ -28,6 +28,8 @@ namespace Spyll
 		std::vector<std::string> sourcePaths;
 
 		cl::NumOccurrencesFlag occurrencesFlag;
+
+		std::string outputFile = "spyll.bin";
 	};
 
 	CmdTool::CmdTool(int argc, const char** argv, bool a_printErrors)
@@ -46,9 +48,41 @@ namespace Spyll
 
 	CmdTool::~CmdTool() {}
 
+	std::string_view
+	CmdTool::GetOutputFile() const
+	{
+		return m_impl->outputFile;
+	}
+
 	llvm::Error
 	CmdTool::Init(int argc, const char** argv)
 	{
+		//static cl::opt<bool> Merge(
+		//	"m",
+		//	cl::desc("Merge pre-compiled descriptor files"),
+		//	cl::Optional,
+		//	cl::ValueDisallowed,
+		//	cl::cat(g_spyllToolCategory),
+		//	cl::sub(cl::SubCommand::getAll())
+		//);
+
+		static cl::opt<bool> Json(
+			"json",
+			cl::desc("output to json"),
+			cl::Optional,
+			cl::ValueDisallowed,
+			cl::cat(g_spyllToolCategory),
+			cl::sub(cl::SubCommand::getAll())
+		);
+
+		static cl::opt<std::string> Output(
+			"o",
+			cl::desc("output file"),
+			cl::Optional,
+			cl::cat(g_spyllToolCategory),
+			cl::sub(cl::SubCommand::getAll())
+		);
+
 		static cl::opt<std::string> BuildPath(
 			"p",
 			cl::desc("Build path"),
@@ -87,6 +121,16 @@ namespace Spyll
 		}
 
 		cl::PrintOptionValues();
+
+		if (Json.getNumOccurrences() != 0)
+		{
+			m_impl->outputFile = "spyll.json";
+		}
+
+		if (!Output.empty())
+		{
+			m_impl->outputFile = Output;
+		}
 
 		m_impl->sourcePaths = SourcePaths;
 		if ((m_impl->occurrencesFlag == cl::ZeroOrMore || m_impl->occurrencesFlag == cl::Optional) &&
