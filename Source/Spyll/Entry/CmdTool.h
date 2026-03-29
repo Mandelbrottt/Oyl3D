@@ -29,6 +29,9 @@ namespace Spyll
 		std::string_view
 		GetOutputFile() const;
 
+		bool
+		ShouldOutputBinary() const;
+
 	private:
 		llvm::Error
 		Init(int argc, const char** argv);
