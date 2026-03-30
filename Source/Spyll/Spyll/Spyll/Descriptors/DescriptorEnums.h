@@ -2,6 +2,8 @@
 
 #include <type_traits>
 
+#include "Spyll/Spyll/Enums.h"
+
 namespace Spyll
 {
 #define JSON_ENUM_HELPER_FNS(_name_) \
@@ -80,39 +82,23 @@ namespace Spyll
 		ref = static_cast<DescriptorIdT>(0);
 	}
 
-	enum class AccessSpecifier : uint8_t
+	inline
+	bool
+	operator !(Reflection::AccessSpecifier a_spec)
 	{
-		None = 0,
-		Public,
-		Protected,
-		Private
-	};
+		return a_spec == Reflection::AccessSpecifier::None;
+	}
+
+	JSON_ENUM_HELPER_FNS(Reflection::AccessSpecifier)
 
 	inline
 	bool
-	operator !(AccessSpecifier a_spec)
+	operator !(Reflection::ConstructorType a_type)
 	{
-		return a_spec == AccessSpecifier::None;
+		return a_type == Reflection::ConstructorType::None;
 	}
 
-	JSON_ENUM_HELPER_FNS(AccessSpecifier)
-
-	enum class ConstructorType : uint8_t
-	{
-		None,
-		Default,
-		Copy,
-		Move
-	};
-	
-	inline
-	bool
-	operator !(ConstructorType a_type)
-	{
-		return a_type == ConstructorType::None;
-	}
-
-	JSON_ENUM_HELPER_FNS(ConstructorType)
+	JSON_ENUM_HELPER_FNS(Reflection::ConstructorType)
 }
 
 #undef JSON_ENUM_HELPER_FNS

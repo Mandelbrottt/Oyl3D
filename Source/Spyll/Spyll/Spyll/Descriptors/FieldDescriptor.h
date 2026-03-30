@@ -8,6 +8,8 @@ namespace Spyll
 {
 	struct FieldDescriptor
 	{
+		using AccessSpecifier = Reflection::AccessSpecifier;
+
 		std::string name;
 
 		FieldDescriptorId id = FieldDescriptorId::Invalid;
