@@ -8,6 +8,9 @@ namespace Spyll
 {
 	struct FunctionDescriptor
 	{
+		using AccessSpecifier = Reflection::AccessSpecifier;
+		using ConstructorType = Reflection::ConstructorType;
+
 		std::string name;
 
 		FunctionDescriptorId id = FunctionDescriptorId::Invalid;
@@ -15,8 +18,8 @@ namespace Spyll
 
 		TypeDescriptorId ownerType = TypeDescriptorId::Invalid;
 
-		AccessSpecifier accessSpecifier;
-		ConstructorType constructorType;
+		AccessSpecifier accessSpecifier = AccessSpecifier::None;
+		ConstructorType constructorType = ConstructorType::None;
 
 		bool isVirtual;
 		bool isPureVirtual;

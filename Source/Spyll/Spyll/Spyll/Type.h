@@ -3,32 +3,52 @@
 #include <string>
 #include <vector>
 
-#include "Spyll/Spyll/TypeId.h"
+#include "Field.h"
+#include "Function.h"
+#include "TypeId.h"
 
 namespace Spyll::Reflection
 {
 	class Assembly;
-	class Function;
-	class Field;
-	
+
 	class Type final
 	{
 	public:
 		~Type();
 
+		Type(const Type&) = delete;
+		Type&
+		operator =(const Type&) = delete;
+
+		Type(Type&&) = delete;
+		Type&
+		operator =(Type&&) = delete;
+
+		TypeId
+		GetTypeId() const;
+
+		std::string_view
+		GetName() const;
+
+		std::string_view
+		GetQualifiedName() const;
+
+		uint32_t
+		GetSize() const;
+
+		const std::vector<Type*>&
+		GetBaseTypes() const;
+
+		const std::vector<Field*>&
+		GetFields() const;
+
+		const std::vector<Function*>&
+		GetFunctions() const;
+
 	private:
 		Type();
 
-		TypeId m_typeId;
-
-		uint32_t m_size = 0;
-		
-		std::string m_name;
-		std::string m_qualifiedName;
-
-		Assembly* m_assembly;
-
-		std::vector<Function*> m_functions;
-		std::vector<Field*> m_fields;
+		struct Impl;
+		Impl* m_impl;
 	};
 }
