@@ -5,9 +5,16 @@
 namespace Spyll::Reflection
 {
 	class Type;
+	class Assembly;
 
 	class Function final
 	{
+		friend
+		void
+		::_PopulateReflectionAssembly(Assembly* a_assembly);
+
+		Function();
+
 	public:
 		~Function();
 
@@ -68,9 +75,27 @@ namespace Spyll::Reflection
 		IsReturnPointer() const;
 
 	private:
-		Function();
+		std::string m_name;
+		std::string m_qualifiedName;
 
-		struct Impl;
-		Impl* m_impl;
+		Type* m_returnType = nullptr;
+
+		Type* m_ownerType = nullptr;
+
+		AccessSpecifier m_accessSpecifier = AccessSpecifier::None;
+		ConstructorType m_constructorType = ConstructorType::None;
+
+		bool m_isVirtual = false;
+		bool m_isPureVirtual = false;
+		bool m_isOverride = false;
+
+		bool m_isStatic = false;
+		bool m_isConst = false;
+		bool m_isVolatile = false;
+
+		bool m_isReturnConst = false;
+		bool m_isReturnVolatile = false;
+		bool m_isReturnReference = false;
+		bool m_isReturnPointer = false;
 	};
 }
