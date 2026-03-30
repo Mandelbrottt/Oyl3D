@@ -8,6 +8,8 @@ namespace Spyll::Reflection
 
 	class Field final
 	{
+		Field();
+
 	public:
 		~Field();
 
@@ -62,13 +64,24 @@ namespace Spyll::Reflection
 		SetValue(TSelf& a_self, TField&& a_value);
 
 	private:
-		Field();
-
 		bool
 		GetValue(void* a_self, void** a_outPtr);
 
-		struct Impl;
-		Impl* m_impl;
+	private:
+		std::string m_name;
+		std::string m_qualifiedName;
+
+		Type* m_type = nullptr;
+
+		Type* m_ownerType = nullptr;
+		uint32_t m_offset = 0;
+
+		AccessSpecifier m_accessSpecifier = AccessSpecifier::None;
+
+		bool m_isConst = false;
+		bool m_isVolatile = false;
+		bool m_isReference = false;
+		bool m_isPointer = false;
 	};
 
 	template<typename TSelf, typename TField>

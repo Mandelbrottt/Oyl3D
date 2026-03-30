@@ -13,6 +13,12 @@ namespace Spyll::Reflection
 
 	class Type final
 	{
+		friend
+		void
+		::_PopulateReflectionAssembly(Assembly*);
+		
+		Type();
+
 	public:
 		~Type();
 
@@ -36,6 +42,9 @@ namespace Spyll::Reflection
 		uint32_t
 		GetSize() const;
 
+		bool
+		IsPrimitive() const;
+
 		const std::vector<Type*>&
 		GetBaseTypes() const;
 
@@ -45,10 +54,37 @@ namespace Spyll::Reflection
 		const std::vector<Function*>&
 		GetFunctions() const;
 
-	private:
-		Type();
+		template<typename T>
+		static
+		const Type*
+		Get();
 
-		struct Impl;
-		Impl* m_impl;
+		static
+		const Type*
+		Get(std::string_view a_name);
+
+	private:
+		TypeId m_typeId = TypeId::Null;
+
+		uint32_t m_size = 0;
+		
+		std::string m_name;
+		std::string m_qualifiedName;
+
+		bool m_isPrimitive = false;
+
+		Assembly* m_assembly = nullptr;
+
+		std::vector<Type*> m_baseTypes;
+
+		std::vector<Function*> m_functions;
+		std::vector<Field*> m_fields;
 	};
+
+	template<typename T>
+	const Type*
+	Type::Get()
+	{
+		return Get(typeid(T).name());
+	}
 }

@@ -1,82 +1,69 @@
 #include "Type.h"
 
+#include "Assembly.h"
+
 namespace Spyll::Reflection
 {
-	struct Type::Impl
-	{
-		TypeId typeId;
+	Type::Type() {}
 
-		uint32_t size;
-		
-		std::string name;
-		std::string qualifiedName;
-
-		bool isPrimitive;
-
-		Assembly* assembly;
-
-		std::vector<Type*> baseTypes;
-
-		std::vector<Function*> functions;
-		std::vector<Field*> fields;
-	};
-
-	Type::Type()
-	{
-		m_impl = new Impl;
-	}
-
-	Type::~Type()
-	{
-		delete m_impl;
-		m_impl = nullptr;
-	}
+	Type::~Type() {}
 
 	TypeId
 	Type::GetTypeId() const
 	{
-		return m_impl->typeId;
+		return m_typeId;
 	}
 
 	std::string_view
 	Type::GetName() const
 	{
-		return m_impl->name;
+		return m_name;
 	}
 
-	std::string_view
+	std::string
 	Type::GetQualifiedName() const
 	{
-		return m_impl->qualifiedName;
+		return m_qualifiedName;
 	}
 
 	uint32_t
 	Type::GetSize() const
 	{
-		return m_impl->size;
+		return m_size;
 	}
 
 	bool
 	Type::IsPrimitive() const
 	{
-		return m_impl->isPrimitive;
+		return m_isPrimitive;
 	}
 
 	const std::vector<Type*>&
 	Type::GetBaseTypes() const
 	{
-		return m_impl->baseTypes;
+		return m_baseTypes;
 	}
 
 	const std::vector<Field*>&
 	Type::GetFields() const
 	{
-		return m_impl->fields;
+		return m_fields;
 	}
 
 	const std::vector<Function*>&
 	Type::GetFunctions() const
 	{
-		return m_impl->functions;
+		return m_functions;
+	}
+
+	const Type*
+	Type::Get(std::string_view a_name)
+	{
+		auto& assemblies = Assembly::GetAssemblies();
+
+		for (auto& [name, assembly] : assemblies)
+		{
+			if (assembly->)
+		}
 	}
 }
