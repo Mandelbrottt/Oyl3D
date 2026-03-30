@@ -46,10 +46,56 @@ namespace Spyll::Reflection
 		bool
 		IsPointer() const;
 
+		bool
+		IsReference() const;
+
+		template<typename TSelf, typename TField>
+		TField&
+		GetValue(const TSelf& a_self) const;
+
+		template<typename TSelf, typename TField>
+		void
+		SetValue(TSelf& a_self, const TField& a_value);
+
+		template<typename TSelf, typename TField>
+		void
+		SetValue(TSelf& a_self, TField&& a_value);
+
 	private:
 		Field();
+
+		bool
+		GetValue(void* a_self, void** a_outPtr);
 
 		struct Impl;
 		Impl* m_impl;
 	};
+
+	template<typename TSelf, typename TField>
+	TField&
+	Field::GetValue(const TSelf& a_self) const
+	{
+		// TODO: Type Checking
+		TField* out;
+		GetValue(&a_self, &out);
+		return *std::launder(out);
+	}
+
+	template<typename TSelf, typename TField>
+	void
+	Field::SetValue(TSelf& a_self, const TField& a_value)
+	{
+		// TODO: Type Checking
+		TField& field = GetValue(a_self);
+		field = a_value;
+	}
+
+	template<typename TSelf, typename TField>
+	void
+	Field::SetValue(TSelf& a_self, TField&& a_value)
+	{
+		// TODO: Type Checking
+		TField& field = GetValue(a_self);
+		field = a_value;
+	}
 }
