@@ -10,7 +10,7 @@ namespace Spyll
 	{
 		TypeDescriptorId type = TypeDescriptorId::Invalid;
 
-		AccessSpecifier accessSpecifier;
+		Reflection::AccessSpecifier accessSpecifier;
 		bool isVirtual;
 	};
 

@@ -11,6 +11,8 @@ namespace Spyll::Reflection
 		std::string name;
 		std::string qualifiedName;
 
+		bool isPrimitive;
+
 		Assembly* assembly;
 
 		std::vector<Type*> baseTypes;
@@ -52,6 +54,12 @@ namespace Spyll::Reflection
 	Type::GetSize() const
 	{
 		return m_impl->size;
+	}
+
+	bool
+	Type::IsPrimitive() const
+	{
+		return m_impl->isPrimitive;
 	}
 
 	const std::vector<Type*>&
