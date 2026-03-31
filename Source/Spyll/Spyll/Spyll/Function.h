@@ -1,97 +1,56 @@
 #pragma once
 
 #include "Enums.h"
+#include "NamedDeclaration.h"
+#include "QualifierInfo.h"
 
 namespace Spyll::Reflection
 {
 	class Type;
 	class Assembly;
 
-	class Function final
+	class Function : public NamedDeclaration
 	{
-		friend
-		void
-		::_PopulateReflectionAssembly(Assembly* a_assembly);
+		friend AssemblyFactory;
 
-		Function();
+	protected:
+		Function() = default;
 
 	public:
-		~Function();
-
-		Function(const Function&) = delete;
-		Function&
-		operator =(const Function&) = delete;
-
-		Function(Function&&) = delete;
-		Function&
-		operator =(Function&&) = delete;
-
-		std::string_view
-		GetName() const;
-
-		std::string_view
-		GetQualifiedName() const;
-
 		const Type*
-		GetReturnType() const;
+		GetReturnType() const
+		{
+			return m_returnType;
+		}
 
 		bool
-		IsMember() const;
-
-		const Type*
-		GetOwningType() const;
-
-		bool
-		IsConstructor() const;
-
-		ConstructorType
-		GetConstructorType() const;
+		IsStatic() const
+		{
+			return m_isStatic;
+		}
 
 		bool
-		IsVirtual() const;
+		IsReturnConst() const
+		{
+			return m_isReturnConst;
+		}
 
 		bool
-		IsPureVirtual() const;
+		IsReturnVolatile() const
+		{
+			return m_isReturnVolatile;
+		}
 
 		bool
-		IsOverride() const;
-
-		bool
-		IsStatic() const;
-
-		bool
-		IsConst() const;
-
-		bool
-		IsVolatile() const;
-
-		bool
-		IsReturnConst() const;
-
-		bool
-		IsReturnVolatile() const;
-
-		bool
-		IsReturnPointer() const;
+		IsReturnPointer() const
+		{
+			return m_isReturnPointer || m_isReturnReference;
+		}
 
 	private:
-		std::string m_name;
-		std::string m_qualifiedName;
-
 		Type* m_returnType = nullptr;
 
-		Type* m_ownerType = nullptr;
-
-		AccessSpecifier m_accessSpecifier = AccessSpecifier::None;
-		ConstructorType m_constructorType = ConstructorType::None;
-
-		bool m_isVirtual = false;
-		bool m_isPureVirtual = false;
-		bool m_isOverride = false;
-
 		bool m_isStatic = false;
-		bool m_isConst = false;
-		bool m_isVolatile = false;
 
 		bool m_isReturnConst = false;
 		bool m_isReturnVolatile = false;

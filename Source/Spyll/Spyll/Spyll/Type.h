@@ -7,17 +7,18 @@
 #include "Function.h"
 #include "TypeId.h"
 
+namespace Spyll
+{
+	class AssemblyFactory;
+}
+
 namespace Spyll::Reflection
 {
 	class Assembly;
 
 	class Type final
 	{
-		friend
-		void
-		::_PopulateReflectionAssembly(Assembly*);
-		
-		Type();
+		friend AssemblyFactory;
 
 	public:
 		~Type();
@@ -62,6 +63,9 @@ namespace Spyll::Reflection
 		static
 		const Type*
 		Get(std::string_view a_name);
+
+	private:
+		Type();
 
 	private:
 		TypeId m_typeId = TypeId::Null;

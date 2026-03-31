@@ -20,7 +20,7 @@ namespace Spyll::Reflection
 		return m_name;
 	}
 
-	std::string
+	std::string_view
 	Type::GetQualifiedName() const
 	{
 		return m_qualifiedName;
@@ -61,9 +61,14 @@ namespace Spyll::Reflection
 	{
 		auto& assemblies = Assembly::GetAssemblies();
 
-		for (auto& [name, assembly] : assemblies)
+		for (const Assembly* assembly : assemblies)
 		{
-			if (assembly->)
+			if (const Type* type = assembly->GetType(a_name))
+			{
+				return type;
+			}
 		}
+
+		return nullptr;
 	}
 }
