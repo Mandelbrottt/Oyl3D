@@ -44,17 +44,17 @@ function Spyll.CommonCppSettings(package)
 		targetdir(Config.LibraryDir)
 	end
 
-	filter "configurations:Debug"; do
+	filter(("configurations:%s"):format(Config.Configurations.Debug)); do
 		optimize "Off"
 		symbols "On"
 	end
 
-	filter "configurations:RelWithDebInfo"; do
+	filter(("configurations:%s"):format(Config.Configurations.Development)); do
 		optimize "On"
 		symbols "On"
 	end
 
-	filter "configurations:Release"; do
+	filter(("configurations:%s"):format(Config.Configurations.Distribution)); do
 		optimize "Full"
 		symbols "Off"
 	end
