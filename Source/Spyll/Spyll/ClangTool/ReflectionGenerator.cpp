@@ -15,6 +15,8 @@ namespace
 
 namespace Spyll
 {
+	using AccessSpecifier = Reflection::AccessSpecifier;
+
 	inline
 	AccessSpecifier
 	ToAccessSpecifier(clang::AccessSpecifier Spec)

@@ -8,6 +8,8 @@ namespace Spyll
 {
 	struct VariableDescriptor
 	{
+		using AccessSpecifier = Reflection::AccessSpecifier;
+
 		std::string name;
 
 		VariableDescriptorId id = VariableDescriptorId::Invalid;
