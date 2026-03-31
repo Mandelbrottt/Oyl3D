@@ -20,7 +20,8 @@ main(int argc, const char** argv)
 	int result = tool.Run();
 
 	auto mergedReflectionDescriptor = tool.GetMergedReflectionDescriptor();
-	nlohmann::json reflectionDescriptorJson = mergedReflectionDescriptor;
+	nlohmann::json reflectionDescriptorJson = nlohmann::json();
+	to_json(reflectionDescriptorJson, mergedReflectionDescriptor);
 
 	printf("Outputting descriptor file to %s", tool.GetOutputFile().data());
 
