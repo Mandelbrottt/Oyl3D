@@ -35,7 +35,6 @@ project "Spyll.Entry"; do
 
 	links {
 		"Spyll.ClangTool",
-		"Spyll.Tests"
 	}
 
 	Package.Include(Packages.NlohmannJson)
