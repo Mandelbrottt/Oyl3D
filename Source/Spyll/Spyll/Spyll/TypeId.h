@@ -42,6 +42,7 @@ namespace Spyll::Reflection
 			// We use a hash instead of an incrementing counter to determine types because calls from different
 			// compilation targets (libraries) would result in different values with the same type at some levels
 			// of optimization.
+			// Don't use type_info.hash_code as it's not guaranteed to be consistent between compilations
 			// Generally hashes are much more consistent and chance of cache hit is very small
 			static TypeId result = []()
 			{
@@ -50,7 +51,6 @@ namespace Spyll::Reflection
 
 				auto& type = typeid(T);
 				const char* name = type.name();
-				const char* raw_name = type.raw_name();
 				std::size_t hash = hashFn(name);
 
 				assert(hash != 0);
