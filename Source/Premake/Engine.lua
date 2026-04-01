@@ -28,6 +28,9 @@ function Engine.SetupProjectFromScript(script)
 	---@diagnostic disable-next-line: missing-parameter
 	local prj = assert(project(), "No engine project in scope!")
 
+	local cwd = os.getcwd()
+	os.chdir(path.getdirectory(script))
+
 	prj.language = prj.language or premake.CPP
 	prj.kind = prj.kind or premake.NONE
 
@@ -37,16 +40,7 @@ function Engine.SetupProjectFromScript(script)
 		error(string.format("Invalid language \"%s\" in project \"%s\"", prj.language, prj.name))
 	end
 
-	files {
-		"%{prj.location}/**.c",
-		"%{prj.location}/**.h",
-		"%{prj.location}/**.cpp",
-		"%{prj.location}/**.cc",
-		"%{prj.location}/**.hpp",
-		"%{prj.location}/**.inl",
-		"%{prj.location}/**.inc",
-		"%{prj.location}/**.ixx",
-	}
+	Project.Files()
 	removefiles {
 		"**.gen.h"
 	}
@@ -61,8 +55,8 @@ function Engine.SetupProjectFromScript(script)
 		Project.InsideProjectMacro(),
 	}
 
-	filter "system:windows"; do
-		files { "%{prj.location}/**_Windows*" }
+	filter "system:not windows"; do
+		removefiles { "%{prj.location}/**_Windows*" }
 	end
 
 	-- header files can be included across assembly boundaries, and so have to use project-agnostic includes
@@ -94,6 +88,8 @@ function Engine.SetupProjectFromScript(script)
 		end
 		filter {}
 	end
+
+	os.chdir(cwd)
 
 	return prj
 end
@@ -200,6 +196,13 @@ function Engine.CommonCppSettings()
 	debugdir(Config.TargetDir)
 	objdir(Config.ObjectDir)
 	implibdir(Config.LibraryDir)
+
+	if os.isfile("pch.h") then
+		pchheader "pch.h"
+		forceincludes { "pch.h" }
+		pchsource "%{wks.location}/pch.cpp"
+		files { "%{wks.location}/pch.cpp" }
+	end
 
 	filter "language:C++"; do
 		cppdialect "C++17"
