@@ -13,12 +13,12 @@ namespace Spyll
 	void
 	DeclVisitor::VisitDeclCommon(DeclT* Decl)
 	{
+		if (!Generator->ShouldReflectDecl(Decl))
+			return;
+		
 		Generator->ScrapeDecl(Decl);
 
-		if (Generator->ShouldReflectDecl(Decl))
-		{
-			PrintDecl(Decl);
-		}
+		PrintDecl(Decl);
 	}
 
 	bool
@@ -27,9 +27,6 @@ namespace Spyll
 		if (!Decl->hasDefinition() || !Decl->getIdentifier())
 			return true;
 
-		if (!Generator->ShouldReflectDecl(Decl))
-			return true;
-		
 		VisitDeclCommon(Decl);
 		return true;
 	}
@@ -38,9 +35,6 @@ namespace Spyll
 	DeclVisitor::VisitEnumDecl(clang::EnumDecl* Decl)
 	{
 		if (!Decl->isComplete() || !Decl->getIdentifier())
-			return true;
-		
-		if (!Generator->ShouldReflectDecl(Decl))
 			return true;
 		
 		VisitDeclCommon(Decl);
@@ -57,9 +51,6 @@ namespace Spyll
 		if (llvm::dyn_cast<clang::CXXMethodDecl>(Decl))
 			return true;
 
-		if (!Generator->ShouldReflectDecl(Decl))
-			return true;
-		
 		VisitDeclCommon(Decl);
 		return true;
 	}
@@ -72,9 +63,6 @@ namespace Spyll
 
 		// Only iterate fields as a part of type scraping
 		if (llvm::dyn_cast<clang::FieldDecl>(Decl))
-			return true;
-
-		if (!Generator->ShouldReflectDecl(Decl))
 			return true;
 
 		VisitDeclCommon(Decl);
