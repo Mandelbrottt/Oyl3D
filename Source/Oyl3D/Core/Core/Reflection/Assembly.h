@@ -1,35 +1,53 @@
 #pragma once
 
+#include "Field.h"
+#include "Function.h"
 #include "Type.h"
 
-namespace Oyl::Reflection
+namespace Spyll::Reflection
 {
-	namespace Detail
+	class Assembly final
 	{
-		using AssembliesContainer = std::vector<Assembly*>;
-		using OwnedTypesContainer = std::vector<Type*>;
-	}
+		friend AssemblyFactory;
 
-	static
-	Detail::AssembliesContainer&
-	Assemblies()
-	{
-		static Detail::AssembliesContainer container {};
-		return container;
-	}
-	
-	class OYL_CORE_API Assembly
-	{
+		Assembly();
+
 	public:
-		bool
-		RegisterType(Type* a_type);
-		
-		bool
-		UnRegisterType(Type* a_type);
-		
-	private:
-		std::string m_name;
+		~Assembly();
 
-		Detail::OwnedTypesContainer m_ownedTypes;
+		const std::vector<Type>&
+		GetTypes() const;
+
+		const Type*
+		GetType(std::string_view a_typeName) const;
+
+		const std::vector<Function>&
+		GetFreeFunctions() const;
+
+		const Function*
+		GetFunction(std::string_view a_functionName) const;
+
+	public:
+		static
+		const std::vector<Assembly*>&
+		GetAssemblies();
+
+		static
+		const Assembly*
+		GetAssembly(std::string_view a_assemblyName);
+
+	private:
+		void
+		SetupAssemblyMaps();
+
+	private:
+		static std::vector<Assembly*> s_assemblies;
+		static std::unordered_map<std::string_view, Assembly*> s_assemblyMap;
+
+		std::vector<Type> m_types;
+		std::unordered_map<std::string_view, Type*> m_typeMap;
+
+		std::vector<Function> m_functions;
+		std::unordered_map<std::string_view, Function*> m_functionMap;
 	};
 }

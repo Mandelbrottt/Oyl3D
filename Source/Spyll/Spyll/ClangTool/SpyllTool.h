@@ -8,7 +8,7 @@
 
 #include "ReflectionGenerator.h"
 
-#include "Spyll/Spyll/Descriptors/ReflectionDescriptor.h"
+#include "Spyll/Spyll/ReflectionDescriptor.h"
 
 namespace clang
 {

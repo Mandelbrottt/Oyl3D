@@ -3,7 +3,7 @@
 #include "ToolPreTest.h"
 
 #include "Spyll/ClangTool/ReflectionGenerator.h"
-#include "Spyll/Spyll/Descriptors/ReflectionDescriptor.h"
+#include "Spyll/Spyll/ReflectionDescriptor.h"
 
 class Records : public ToolPreTest<Records>
 {
