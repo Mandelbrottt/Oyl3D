@@ -12,9 +12,9 @@
 #include "Core/Time/Time.h"
 
 //#include "Core/Reflection/TypedFactory.h"
-#include "Core/Reflection/Reflection.h"
+//#include "Core/Reflection/Reflection.h"
 
-#include "ReflectionTest.h"
+//#include "ReflectionTest.h"
 
 #include <Windows.h>
 
