@@ -24,6 +24,8 @@ function Spyll.CommonCppSettings(package)
 	objdir(Config.ObjectDir)
 	implibdir(Config.LibraryDir)
 
+	Project.Files()
+
 	if os.isfile("pch.h") then
 		pchheader "pch.h"
 		forceincludes { "pch.h" }
@@ -87,6 +89,18 @@ workspace "Spyll"; do
 	for _, script in ipairs(os.matchfiles("**/premake5.lua")) do
 		script = path.getabsolute(script)
 		Project.Script(script)
+
+		-- Scope the project
+		local prj = project()
+
+		-- cd into script directory and run common project settings
+		local cwd = os.getcwd()
+		os.chdir(path.getdirectory(script))
+
+		Spyll.CommonCppSettings()
+
+		os.chdir(cwd)
+
 		project "*"
 	end
 

@@ -10,12 +10,8 @@ project "Spyll.Tests"; do
 	language "C++"
 	kind(premake.CONSOLEAPP)
 
-	Spyll.CommonCppSettings()
-	
 	-- Ensure all test cases get loaded
 	removeunreferencedcodedata "Off"
-
-	Project.Files()
 
 	links {
 		"Spyll.ClangTool",

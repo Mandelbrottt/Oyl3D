@@ -10,10 +10,6 @@ project "Spyll.ClangTool"; do
 	language "C++"
 	kind(premake.STATICLIB)
 
-	Spyll.CommonCppSettings()
-
-	Project.Files()
-
 	links {
 		"Spyll.Core",
 		"ntdll",

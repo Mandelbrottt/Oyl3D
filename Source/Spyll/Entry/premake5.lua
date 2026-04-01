@@ -14,10 +14,6 @@ project "Spyll.Entry"; do
 
 	targetname "oyl-spyll"
 
-	Spyll.CommonCppSettings()
-
-	Project.Files()
-
 	debugdir(path.join("%{wks.location}", "Tests", "Targets"))
 
 	local compileFlagsFile = "compile_flags.txt"
@@ -28,10 +24,6 @@ project "Spyll.Entry"; do
 			path.join("%{!prj.location}", compileFlagsFile)
 		}
 	end
-
-	defines {
-		Project.InsideProjectMacro()
-	}
 
 	links {
 		"Spyll.ClangTool",
