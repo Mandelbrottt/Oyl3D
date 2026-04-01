@@ -6,9 +6,6 @@ project "Oyl.Editor"; do
 	language(premake.CPP)
 	kind(premake.SHAREDLIB)
 	
-	pchheader "pch.h"
-	pchsource "pch.cpp"
-
 	removeconfigurations {
 		Config.Configurations.Distribution
 	}
