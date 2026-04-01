@@ -1,4 +1,3 @@
-local Project = require "Project"
 local Package = require "Package"
 local Packages = require "Spyll.Packages"
 
@@ -9,10 +8,6 @@ project "Spyll.Core"; do
 
 	language "C++"
 	kind(premake.STATICLIB)
-
-	Spyll.CommonCppSettings()
-
-	Project.Files()
 
 	Package.Include(Packages.NlohmannJson)
 
