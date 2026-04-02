@@ -10,9 +10,9 @@ project "Spyll.Entry"; do
 	filename "%{prj.name}"
 
 	language "C++"
-	kind(premake.CONSOLEAPP)
+	kind "ConsoleApp"
 
-	targetname "oyl-spyll"
+	targetname "spyll-cli"
 
 	debugdir(path.join("%{wks.location}", "Tests", "Targets"))
 
