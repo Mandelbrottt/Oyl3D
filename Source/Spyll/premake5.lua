@@ -5,7 +5,6 @@ local Project = require "Project"
 
 ---@type WorkspacePackage.List
 local Packages = require "Spyll.Packages"
-Package.InitWorkspacePackages(Packages)
 
 Spyll = {}
 

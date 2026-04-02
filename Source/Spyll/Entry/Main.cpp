@@ -10,8 +10,8 @@
 
 #include "CmdTool.h"
 
-#include "Spyll/Spyll/DescriptorSerialization.h"
-#include "Spyll/Spyll/ReflectionDescriptor.h"
+#include "Tool/Core/DescriptorSerialization.h"
+#include "Tool/Core/ReflectionDescriptor.h"
 
 int
 main(int argc, const char** argv)
