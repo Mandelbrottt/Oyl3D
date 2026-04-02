@@ -192,6 +192,10 @@ function Engine.CommonCppSettings()
 	externalwarnings "Off"
 	externalanglebrackets "On"
 
+	externalincludedirs {
+		Config.SourceDir
+	}
+
 	targetdir(Config.TargetDir)
 	debugdir(Config.TargetDir)
 	objdir(Config.ObjectDir)

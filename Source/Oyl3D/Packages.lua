@@ -1,7 +1,8 @@
 local Config = require "Config"
+local Package = require "Package"
 
 ---@type WorkspacePackage.List
-return {
+local Packages = {
 	Glfw = {
 		Language = premake.C,
 		Kind = premake.SHAREDLIB,
@@ -169,3 +170,7 @@ return {
 		Libs = { "vulkan-1" },
 	}
 }
+
+Package.InitWorkspacePackages(Packages)
+
+return Packages
