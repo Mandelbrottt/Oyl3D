@@ -149,10 +149,7 @@ function Package.GenerateWorkspacePackageProject(name, package, onProject)
 		end
 
 		if (not package.Source and not package.Include) then
-			files(table.translate(
-				table.join(sourcePatterns, headerPatterns),
-				function(value) return path.join(package.PackageDir, value) end
-			))
+			Project.Files()
 		end
 
 		kind(package.Kind)
@@ -160,6 +157,10 @@ function Package.GenerateWorkspacePackageProject(name, package, onProject)
 		warnings "Off"
 
 		includedirs(package.Include)
+		includedirs {
+			package.PackageDir
+		}
+		
 		libdirs(package.LibDirs)
 
 		filter "action:vs*"; do
