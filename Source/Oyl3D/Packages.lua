@@ -168,6 +168,11 @@ local Packages = {
 		Include = { "Include" },
 		LibDirs = { "Lib" },
 		Libs = { "vulkan-1" },
+	},
+	SpyllCore = {
+		Kind = premake.STATICLIB,
+		Name = "Spyll.Core",
+		PackageDir = path.join(Config.SourceDir, "Spyll/Tool/Core"),
 	}
 }
 
