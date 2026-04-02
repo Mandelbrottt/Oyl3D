@@ -51,6 +51,27 @@ function Project.NestedFilter(callback)
 	scope.current = currentBlock
 end
 
+---@param callback fun()
+function Project.PrependBlocks(callback)
+	Project.NestedFilter(function()
+		-- Cache the current scope, block, and block index
+		local prj = assert(project())
+		local blocks = prj.blocks
+		local lastBlockIndex = #blocks
+		
+		-- Run the callback
+		callback()
+		
+		local prepend = {}
+		while #blocks ~= lastBlockIndex do
+			table.insert(prepend, blocks[lastBlockIndex])
+			table.remove(blocks, lastBlockIndex)
+		end
+		
+		prj.blocks = table.join(prepend, blocks)
+	end)
+end
+
 ---@return string
 function Project.InsideProjectMacro()
 	local prj = Project.CurrentProject()

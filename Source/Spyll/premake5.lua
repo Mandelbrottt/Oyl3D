@@ -18,12 +18,10 @@ function Spyll.CommonCppSettings(package)
 	externalwarnings "Off"
 	externalanglebrackets "On"
 
-	local prj = Project.CurrentProject()
-
-	if not prj.targetdir then targetdir(Config.TargetDir) end
-	if not prj.objdir then objdir(Config.ObjectDir) end
-	if not prj.implibdir then implibdir(Config.LibraryDir) end
-	if not prj.debugdir then debugdir(Config.TargetDir) end
+	targetdir(Config.TargetDir)
+	objdir(Config.ObjectDir)
+	implibdir(Config.LibraryDir)
+	debugdir(Config.TargetDir)
 
 	Project.Files()
 
@@ -92,15 +90,17 @@ workspace "Spyll"; do
 		Project.Script(script)
 
 		-- Scope the project
-		local prj = project()
+		project()
 
-		-- cd into script directory and run common project settings
-		local cwd = os.getcwd()
-		os.chdir(path.getdirectory(script))
+		Project.PrependBlocks(function()
+			-- cd into script directory and run common project settings
+			local cwd = os.getcwd()
+			os.chdir(path.getdirectory(script))
 
-		Spyll.CommonCppSettings()
+			Spyll.CommonCppSettings()
 
-		os.chdir(cwd)
+			os.chdir(cwd)
+		end)
 
 		project "*"
 	end
