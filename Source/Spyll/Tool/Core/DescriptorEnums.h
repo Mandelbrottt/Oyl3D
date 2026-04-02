@@ -2,7 +2,7 @@
 
 #include <type_traits>
 
-#include "Tool/Core/Include/Enums.h"
+#include "Enums.h"
 
 namespace Spyll
 {
