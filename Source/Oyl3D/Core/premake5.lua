@@ -8,5 +8,6 @@ project "Oyl.Core"; do
 		"SpdLog",
 		"TracyClient",
 		"Vulkan",
+		"SpyllCore",
 	}
 end
