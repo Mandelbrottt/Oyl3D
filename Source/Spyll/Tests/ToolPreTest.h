@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Spyll/ClangTool/SpyllTool.h"
+#include "Tool/Clang/SpyllTool.h"
 
 template<typename T>
 class ToolPreTest : public testing::Test

@@ -18,10 +18,12 @@ function Spyll.CommonCppSettings(package)
 	externalwarnings "Off"
 	externalanglebrackets "On"
 
-	targetdir(Config.TargetDir)
-	debugdir(Config.TargetDir)
-	objdir(Config.ObjectDir)
-	implibdir(Config.LibraryDir)
+	local prj = Project.CurrentProject()
+
+	if not prj.targetdir then targetdir(Config.TargetDir) end
+	if not prj.objdir then objdir(Config.ObjectDir) end
+	if not prj.implibdir then implibdir(Config.LibraryDir) end
+	if not prj.debugdir then debugdir(Config.TargetDir) end
 
 	Project.Files()
 
@@ -60,7 +62,7 @@ function Spyll.CommonCppSettings(package)
 		symbols "Off"
 	end
 
-	filter{}
+	filter {}
 	-- Currently only include the release clang tooling in the package
 	-- That compiles against release runtime STL, so all other projects have to as well to
 	-- maintain ABI
