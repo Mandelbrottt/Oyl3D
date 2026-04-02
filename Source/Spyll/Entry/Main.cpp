@@ -1,43 +1,36 @@
 #pragma warning(disable : 4267)
 
-#include <fstream>
-#include <iomanip>
-#include <iostream>
-
-#include <llvm/Support/CommandLine.h>
-
-#include <nlohmann/json.hpp>
+#include <chrono>
 
 #include "CmdTool.h"
 
-#include "Tool/Core/DescriptorSerialization.h"
+#include "Tool/Core/FileOperations.h"
 #include "Tool/Core/ReflectionDescriptor.h"
 
 int
 main(int argc, const char** argv)
 {
+	auto clock = std::chrono::high_resolution_clock::now();
+
 	Spyll::CmdTool tool(argc, argv);
 	int result = tool.Run();
 
+	auto run = std::chrono::high_resolution_clock::now();
+
 	auto mergedReflectionDescriptor = tool.GetMergedReflectionDescriptor();
-	nlohmann::json reflectionDescriptorJson = nlohmann::json();
-	to_json(reflectionDescriptorJson, mergedReflectionDescriptor);
 
-	printf("Outputting descriptor file to %s", tool.GetOutputFile().data());
+	auto merge = std::chrono::high_resolution_clock::now();
 
-	std::ofstream output;
-	if (tool.ShouldOutputBinary())
-	{
-		output.open(tool.GetOutputFile().data(), std::ios::out | std::ios::binary);
-		auto bin = nlohmann::json::to_msgpack(reflectionDescriptorJson);
-		output.write(reinterpret_cast<const char*>(bin.data()), bin.size());
-	} else
-	{
-		output.open(tool.GetOutputFile().data(), std::ios::out);
-		output << std::setw(4) << reflectionDescriptorJson;
-	}
+	auto outputFile = tool.GetOutputFile();
+	auto binary = tool.ShouldOutputBinary();
 
-	output.close();
+	WriteReflectionDescriptorToFile(mergedReflectionDescriptor, outputFile, binary);
+
+	auto write = std::chrono::high_resolution_clock::now();
+
+	printf("Run: %lli milliseconds\n", std::chrono::duration_cast<std::chrono::milliseconds>(run - clock).count());
+	printf("Merge: %lli microseconds\n", std::chrono::duration_cast<std::chrono::microseconds>(merge - run).count());
+	printf("Write: %lli microseconds\n", std::chrono::duration_cast<std::chrono::microseconds>(write - merge).count());
 
 	return result;
 }
