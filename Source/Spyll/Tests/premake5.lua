@@ -10,14 +10,14 @@ project "Spyll.Tests"; do
 	language "C++"
 	kind(premake.CONSOLEAPP)
 
+	debugdir "%{prj.location}/Targets"
+
 	-- Ensure all test cases get loaded
 	removeunreferencedcodedata "Off"
 
 	links {
 		"Spyll.ClangTool",
 	}
-
-	debugdir "%{prj.location}/Targets/"
 
 	externalincludedirs(Packages.ClangTooling.Include)
 
