@@ -198,10 +198,10 @@ function Engine.CommonCppSettings()
 
 	local prj = Project.CurrentProject()
 
-	if not prj.targetdir then targetdir(Config.TargetDir) end
-	if not prj.objdir then objdir(Config.ObjectDir) end
-	if not prj.implibdir then implibdir(Config.LibraryDir) end
-	if not prj.debugdir then debugdir(Config.TargetDir) end
+	targetdir(Config.TargetDir)
+	objdir(Config.ObjectDir)
+	implibdir(Config.LibraryDir)
+	debugdir(Config.TargetDir)
 
 	if os.isfile("pch.h") then
 		pchheader "pch.h"
