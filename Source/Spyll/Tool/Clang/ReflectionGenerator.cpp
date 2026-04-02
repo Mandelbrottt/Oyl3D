@@ -2,11 +2,11 @@
 
 #include <clang/AST/RecordLayout.h>
 
-#include "Spyll/Spyll/EnumDescriptor.h"
-#include "Spyll/Spyll/FieldDescriptor.h"
-#include "Spyll/Spyll/FunctionDescriptor.h"
-#include "Spyll/Spyll/TypeDescriptor.h"
-#include "Spyll/Spyll/VariableDescriptor.h"
+#include "Tool/Core/EnumDescriptor.h"
+#include "Tool/Core/FieldDescriptor.h"
+#include "Tool/Core/FunctionDescriptor.h"
+#include "Tool/Core/TypeDescriptor.h"
+#include "Tool/Core/VariableDescriptor.h"
 
 namespace
 {

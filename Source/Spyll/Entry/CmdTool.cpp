@@ -6,7 +6,7 @@
 
 #include <llvm/Support/CommandLine.h>
 
-#include "Spyll/ClangTool/SpyllTool.h"
+#include "Tool/Clang/SpyllTool.h"
 
 namespace cl = llvm::cl;
 
