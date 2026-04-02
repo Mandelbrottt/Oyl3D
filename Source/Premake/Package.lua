@@ -13,7 +13,7 @@ local Package = {}
 ---@field PackageDir? string Path to the package source
 ---@field ProjectDir? string Path to the project file
 ---@field Source? string[] List of source paths, relative to PackageDir
----@field Include string[] List of include paths, relative to PackageDir
+---@field Include? string[] List of include paths, relative to PackageDir
 ---@field LibDirs? string[] List of library search paths, relative to PackageDir
 ---@field Libs? string[] List of library names to be linked against
 ---@field OnInit? fun(package?: WorkspacePackage) Callback run when package is first used
@@ -56,7 +56,7 @@ function Package.InitWorkspacePackageVars(name, package)
 	end
 
 	-- Package includes should be included in the source to show up properly in IDEs
-	package.Source = package.Source or {}
+	package.LibDirs = package.LibDirs or {}
 
 	---@param dirs string[]
 	local function forEachAddPackageDir(dirs)
@@ -86,7 +86,6 @@ end
 function Package.GenerateWorkspacePackageProjects(params)
 	workspace()
 	for name, package in spairs(params.Packages) do
-		Package.InitWorkspacePackageVars(name, package)
 		if package.GenerateProject then
 			group "Packages"
 			Package.GenerateWorkspacePackageProject(name, package, params.OnProject)
@@ -130,19 +129,30 @@ function Package.GenerateWorkspacePackageProject(name, package, onProject)
 		}
 
 		-- Add files under source directories to project
-		for _, dir in ipairs(package.Source) do
-			files(table.translate(
-				table.join(sourcePatterns, headerPatterns),
-				function(value) return path.join(dir, value) end)
-			)
+		if package.Source then
+			for _, dir in ipairs(package.Source) do
+				files(table.translate(
+					table.join(sourcePatterns, headerPatterns),
+					function(value) return path.join(dir, value) end)
+				)
+			end
 		end
 
 		-- Add files under include directories to project
-		for _, dir in ipairs(package.Include) do
+		if package.Include then
+			for _, dir in ipairs(package.Include) do
+				files(table.translate(
+					headerPatterns,
+					function(value) return path.join(dir, value) end)
+				)
+			end
+		end
+
+		if (not package.Source and not package.Include) then
 			files(table.translate(
-				headerPatterns,
-				function(value) return path.join(dir, value) end)
-			)
+				table.join(sourcePatterns, headerPatterns),
+				function(value) return path.join(package.PackageDir, value) end
+			))
 		end
 
 		kind(package.Kind)
@@ -161,6 +171,18 @@ function Package.GenerateWorkspacePackageProject(name, package, onProject)
 			package:OnProject()
 		end
 		filter {}
+
+		local premake_scripts = os.matchfiles("*premake5.lua")
+		if #premake_scripts > 0 then
+			local premake_script = premake_scripts[1]
+
+			local projectFn = _G.project
+			_G.project = function(_) projectFn() end
+			
+			Project.Script(premake_script)
+
+			_G.project = projectFn
+		end
 	end
 	project "*"
 	os.chdir(cwd)
