@@ -169,9 +169,13 @@ local Packages = {
 		LibDirs = { "Lib" },
 		Libs = { "vulkan-1" },
 	},
-	Spyll = {
+	["Spyll.Core"] = {
 		Kind = premake.STATICLIB,
 		PackageDir = path.join(Config.SourceDir, "Spyll/Tool/Core"),
+	},
+	["Spyll.Tool"] = {
+		Kind = premake.STATICLIB,
+		PackageDir = path.join(Config.SourceDir, "Spyll/Tool/Clang"),
 	}
 }
 
