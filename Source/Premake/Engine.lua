@@ -117,6 +117,7 @@ local function RemoveUnreferencedProjects(wks, engineProjects)
 		if dependSet[prj.name] then
 			index = index + 1
 		else
+			printf("Unreferenced package '%s' will not be Generated...", prj.name)
 			table.remove(wks.projects, index)
 		end
 	end
@@ -151,7 +152,7 @@ function Engine.GenerateProjects(params)
 	local engineProjects = {}
 
 	-- Recurse through the source directory and include all premake scripts
-	local scripts = os.matchfiles("*/premake5.lua")
+	local scripts = os.matchfiles("**/premake5.lua")
 	for _, script in ipairs(scripts) do
 		local prj = Engine.SetupProjectFromScript(script)
 		engineProjects[prj.name] = prj
