@@ -1,26 +1,26 @@
 #pragma once
 
-#include "Tool/Clang/SpyllTool.h"
+#include "Tool/Clang/DirectTool.h"
 
 namespace Spyll
 {
-	class TestTool final : public SpyllTool
+	class TestTool final : public DirectTool
 	{
 	public:
-		TestTool() = default;
+		TestTool();
+
+		virtual
+		~TestTool();
 
 		TestTool(std::vector<std::string> a_fileNames, std::string a_compileArgs);
 
 		TestTool(std::string a_fileName, std::string a_compileArgs);
 
 		void
-		Setup(std::vector<std::string> a_fileNames, std::string a_compileArgs);
+		Setup(std::vector<std::string> a_fileNames, std::string a_compileArgs) override;
 
 		void
-		Setup(std::string a_fileName, std::string a_compileArgs);
-
-		virtual
-		~TestTool();
+		Setup(std::string a_fileName, std::string a_compileArgs) override;
 
 	private:
 		std::vector<std::string> m_sources;
