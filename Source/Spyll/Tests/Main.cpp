@@ -19,33 +19,20 @@ namespace Spyll
 		}
 	};
 
+	TestTool::TestTool() {}
+
+	TestTool::~TestTool() {}
+
 	TestTool::TestTool(std::vector<std::string> a_fileNames, std::string a_compileArgs)
-	{
-		Setup(std::move(a_fileNames), std::move(a_compileArgs));
-	}
+		: DirectTool(std::move(a_fileNames), std::move(a_compileArgs)) {}
 
 	TestTool::TestTool(std::string a_fileName, std::string a_compileArgs)
-	{
-		Setup(std::move(a_fileName), std::move(a_compileArgs));
-	}
+		: DirectTool(std::move(a_fileName), std::move(a_compileArgs)) {}
 
 	void
 	TestTool::Setup(std::vector<std::string> a_fileNames, std::string a_compileArgs)
 	{
-		m_sources = std::move(a_fileNames);
-		
-		std::replace(a_compileArgs.begin(), a_compileArgs.end(), ' ', '\n');
-		std::string error;
-		m_compilations = clang::tooling::FixedCompilationDatabase::loadFromBuffer(
-			std::filesystem::current_path().string(),
-			a_compileArgs,
-			error
-		);
-
-		m_clangTool = std::make_unique<clang::tooling::ClangTool>(
-			*m_compilations,
-			m_sources
-		);
+		DirectTool::Setup(std::move(a_fileNames), std::move(a_compileArgs));
 
 		m_diagnosticConsumer = std::make_unique<TestDiagnosticConsumer>();
 		m_clangTool->setDiagnosticConsumer(m_diagnosticConsumer.get());
@@ -57,10 +44,9 @@ namespace Spyll
 	void
 	TestTool::Setup(std::string a_fileName, std::string a_compileArgs)
 	{
-		Setup(std::vector { std::move(a_fileName) }, std::move(a_compileArgs));
+		DirectTool::Setup(std::move(a_fileName), std::move(a_compileArgs));
 	}
 
-	TestTool::~TestTool() {}
 }
 
 int
