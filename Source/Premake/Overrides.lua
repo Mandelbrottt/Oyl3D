@@ -7,34 +7,51 @@ local p = premake
 -- This causes a failure if a project doesn't output any artifacts, such as a header only library
 -- This change lets us reference assemblies in-place
 premake.override(premake.vstudio.vc2010.elements, "projectReferences", function(base, prj, ref)
-    local m = premake.vstudio.vc2010
+	local m = premake.vstudio.vc2010
 
-    -- Use default behaviour for SharedLib CLR projects
-    if prj.clr ~= p.OFF or (m.isClrMixed(prj) and ref and ref.kind ~= p.STATICLIB) then
-        return {
-            m.referenceProject,
-            m.referencePrivate,
-            m.referenceOutputAssembly,
-            m.referenceCopyLocalSatelliteAssemblies,
-            m.referenceLinkLibraryDependencies,
-            m.referenceUseLibraryDependences,
-        }
-    else
-        -- See https://learn.microsoft.com/en-us/visualstudio/msbuild/common-msbuild-project-items?view=vs-2022
-        -- for more documentation
-        return {
-            m.referenceProject,
-            function(prj, ref)
-                -- Don't copy the assembly to the dependant project
-                m.element("Private", nil, "false")
-            end,
-            function(prj, ref)
-                -- Don't include the assembly as a reference to dependant projects, since
-                -- all assemblies are output to the same directory in the end
-                m.element("ReferenceOutputAssembly", nil, "false")
-            end,
-        }
-    end
+	local result = base(prj, ref)
+
+	if not table.contains(result, m.referencePrivate) then
+		table.insert(result,
+			function(prj, ref)
+				-- Don't copy the assembly to the dependant project
+				m.element("Private", nil, "false")
+			end)
+	end
+
+	if not table.contains(result, m.referenceProject) then
+		table.insert(result,
+			function(prj, ref)
+				-- Don't include the assembly as a reference to dependant projects, since
+				-- all assemblies are output to the same directory in the end
+				m.element("ReferenceOutputAssembly", nil, "false")
+			end)
+	end
+
+	return result
+end)
+
+premake.api.register {
+	name = "buildtargetcustomizations",
+	scope = "project",
+	kind = "list:string",
+	tokens = true,
+	pathVars = true
+}
+
+-- Override premake buildcustomizations targets
+premake.override(premake.vstudio.vc2010.elements, "importExtensionTargets", function(base, prj)
+	local m = premake.vstudio.vc2010
+
+	local result = base(prj)
+	table.insert(result,
+		function(prj)
+			for i, build in ipairs(prj.buildtargetcustomizations) do
+				p.w('<Import Project="%s" />', path.translate(build))
+			end
+		end)
+
+	return result
 end)
 
 -- Hijack the userproject function to add ShowAllFiles by default in visual studio
