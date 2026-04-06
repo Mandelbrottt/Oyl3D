@@ -3,8 +3,8 @@
 #include <clang/AST/ASTConsumer.h>
 #include <clang/Frontend/FrontendAction.h>
 
-#include "Tool/Clang/ReflectionGenerator.h"
-#include "Tool/Clang/Visitor.h"
+#include "Spyll/Tool/Clang/ReflectionGenerator.h"
+#include "Spyll/Tool/Clang/Visitor.h"
 
 namespace Spyll
 {
