@@ -46,7 +46,17 @@ namespace Spyll
 	{
 		if (m_clangTool)
 		{
+			if (!m_diagnosticConsumer)
+			{
+				m_diagnosticConsumer = std::make_unique<clang::IgnoringDiagConsumer>();
+			}
+
 			m_clangTool->setPrintErrorMessage(a_shouldPrintMessage);
+
+			if (!a_shouldPrintMessage)
+			{
+				m_clangTool->setDiagnosticConsumer(m_diagnosticConsumer.get());
+			}
 		}
 	}
 

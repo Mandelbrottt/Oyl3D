@@ -7,9 +7,11 @@ project "Spyll.Core"; do
 	filename("%{prj.name}")
 
 	language "C++"
-	kind(premake.STATICLIB)
+	kind "StaticLib"
 
 	Package.Include(Packages.NlohmannJson)
+
+	Packages.ClangTooling:OnDepend();
 
 	filter "toolset:msc*"; do
 		linkoptions {

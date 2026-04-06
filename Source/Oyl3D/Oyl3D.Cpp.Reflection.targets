@@ -1,9 +1,9 @@
 <Project>
-	<Target Name="OylGenerateReflectionSource" BeforeTargets="ClCompile">
-		<Exec WorkingDirectory="$(ProjectDir)"
+	<Target Name="OylGenerateReflectionSource" AfterTargets="" BeforeTargets="ClCompile">
+		<Exec WorkingDirectory="$(MSBuildProjectDirectory)"
 			  ConsoleToMsBuild="true"
 			  EchoOff="false"
-			  Command="$(OutDir)Oyl.Spyll.exe --include=&quot;%(ClCompile.AdditionalIncludeDirectories)&quot; --externalinclude=&quot;$(ExternalIncludePath)&quot; &quot;@(ClCompile)&quot;">
+			  Command="$(OutDir)Oyl.Spyll.exe --pch=&quot;%(ClCompile.PrecompiledHeaderOutoutFile)&quot; --include=&quot;%(ClCompile.AdditionalIncludeDirectories)&quot; --externalinclude=&quot;$(ExternalIncludePath)&quot; &quot;@(ClCompile)&quot;">
 		</Exec>
 		<ItemGroup>
 			<ClCompile Include=".generated/*.cpp" />

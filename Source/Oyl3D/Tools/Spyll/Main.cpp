@@ -1,16 +1,19 @@
+#include <locale>
 #include <string>
 #include <unordered_map>
 #include <vector>
+
+#include "SpyllTool.h"
 
 #include "Spyll/Tool/Clang/OpaqueTool.h"
 
 static std::string g_callingProgram;
 static std::vector<std::string_view> g_positionalArgs;
-static std::unordered_map<std::string, std::string> g_optArgs;
+static std::vector<std::pair<std::string_view, std::string_view>> g_optArgs;
 
 enum ReturnCodes
 {
-	SUCCESS = 0,
+	SUCCESS                = 0,
 	INVALID_NAMED_ARGUMENT = 1 << 4
 };
 
@@ -40,7 +43,7 @@ ProcessNamedArg(std::string_view a_arg)
 		argValue = a_arg.substr(eqIndex + 1);
 	}
 
-	g_optArgs.emplace(argName, argValue);
+	g_optArgs.emplace_back(argName, argValue);
 
 	return SUCCESS;
 }
@@ -65,12 +68,89 @@ ProcessArgs(int argc, char** argv)
 	return returnCode;
 }
 
+template<typename TPred>
+void
+ForEachStringInDelimitedList(std::string_view a_listString, char a_separator, TPred&& a_predicate)
+{
+	size_t index = 0;
+	while (index < a_listString.size())
+	{
+		size_t nextIndex = a_listString.find_first_of(a_separator, index + 1);
+		size_t count = std::string::npos;
+		if (nextIndex != std::string::npos)
+		{
+			count = nextIndex - index;
+		}
+
+		std::string_view currentString = a_listString.substr(index, count);
+		if (!currentString.empty())
+		{
+			a_predicate(currentString);
+		}
+
+		if (nextIndex == std::string::npos)
+		{
+			break;
+		}
+
+		index = nextIndex + 1;
+
+		while (index < a_listString.size() && a_listString[index] == a_separator)
+		{
+			index++;
+		}
+	}
+}
+
 int
 main(int argc, char** argv)
 {
 	g_callingProgram = argv[0];
 	auto returnCode = ProcessArgs(argc - 1, argv + 1);
 	if (returnCode != 0)
+	{
+		return returnCode;
+	}
+
+	Oyl::SpyllTool tool;
+
+	for (const auto& [arg, value] : g_optArgs)
+	{
+		if (arg == "include")
+		{
+			ForEachStringInDelimitedList(
+				value,
+				';',
+				[&](std::string_view a_string) { tool.AddInclude(a_string); }
+			);
+		}
+
+		if (arg == "externalinclude")
+		{
+			ForEachStringInDelimitedList(
+				value,
+				';',
+				[&](std::string_view a_string) { tool.AddExternalInclude(a_string); }
+			);
+		}
+
+		if (arg == "pch" && !value.empty())
+		{
+			tool.UsePrecompiledHeader(value);
+		}
+	}
+
+	for (const auto& source : g_positionalArgs)
+	{
+		ForEachStringInDelimitedList(
+			source,
+			';',
+			[&](std::string_view a_string) { tool.AddSource(a_string); }
+		);
+	}
+
+	returnCode = tool.Run();
+	if (returnCode != SUCCESS)
 	{
 		return returnCode;
 	}

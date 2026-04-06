@@ -13,6 +13,7 @@ namespace Spyll
 	public:
 		OpaqueTool();
 
+		virtual
 		~OpaqueTool();
 
 		OpaqueTool(std::vector<std::string> a_fileNames, std::string a_compileOptions);
