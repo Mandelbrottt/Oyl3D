@@ -6,6 +6,6 @@ project "Oyl.Spyll"; do
 
 	links {
 		"Spyll.Core",
-		"Spyll.Clang",
+		"Spyll.Tool",
 	}
 end
