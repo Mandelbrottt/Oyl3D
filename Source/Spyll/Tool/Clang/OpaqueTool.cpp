@@ -1,5 +1,7 @@
 #include "OpaqueTool.h"
 
+#include <clang/Tooling/CompilationDatabase.h>
+
 #include "DirectTool.h"
 
 namespace Spyll
@@ -46,7 +48,7 @@ namespace Spyll
 	void
 	OpaqueTool::Setup(std::string a_fileName, std::string a_compileOptions)
 	{
-		Setup({ std::move(a_fileName) }, std::move(a_compileOptions));
+		Setup(std::vector { std::move(a_fileName) }, std::move(a_compileOptions));
 	}
 
 	int

@@ -2,8 +2,8 @@
 
 #include <clang/AST/DeclCXX.h>
 
-#include "Tool/Core/DescriptorEnums.h"
-#include "Tool/Core/ReflectionDescriptor.h"
+#include "Spyll/Tool/Core/DescriptorEnums.h"
+#include "Spyll/Tool/Core/ReflectionDescriptor.h"
 
 namespace Spyll
 {
