@@ -25,7 +25,6 @@ namespace Spyll
 	{
 		m_sources = std::move(a_fileNames);
 		
-		std::replace(a_compileArgs.begin(), a_compileArgs.end(), ' ', '\n');
 		std::string error;
 		m_compilations = clang::tooling::FixedCompilationDatabase::loadFromBuffer(
 			std::filesystem::current_path().string(),

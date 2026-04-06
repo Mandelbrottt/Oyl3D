@@ -19,6 +19,7 @@ namespace Spyll
 	OpaqueTool::OpaqueTool()
 	{
 		m_impl = new Impl;
+		m_impl->tool = std::make_unique<DirectTool>();
 	}
 
 	OpaqueTool::~OpaqueTool()
@@ -54,6 +55,15 @@ namespace Spyll
 	int
 	OpaqueTool::Run()
 	{
+		m_impl->tool->SetDiagnosticOptionsCallback(
+			[](auto options)
+			{
+				options->VerifyDiagnostics = false;
+				options->IgnoreWarnings = true;
+				options->ShowCarets = false;
+			}
+		);
+		m_impl->tool->SetPrintErrorMessage(false);
 		return m_impl->tool->Run();
 	}
 
