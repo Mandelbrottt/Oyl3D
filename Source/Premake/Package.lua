@@ -105,6 +105,7 @@ function Package.GenerateWorkspacePackageProject(name, package, onProject)
 
 	project(package.Name); do
 		location(package.ProjectDir)
+		kind(package.Kind)
 
 		if onProject then
 			filter {}
@@ -152,7 +153,6 @@ function Package.GenerateWorkspacePackageProject(name, package, onProject)
 			Project.Files()
 		end
 
-		kind(package.Kind)
 		language(package.Language)
 		warnings "Off"
 
