@@ -83,13 +83,15 @@ function Engine.SetupProjectFromScript(script)
 		filter "platforms:Editor"; do
 			defines { string.upper(Engine.ShortName) .. "_EDITOR=1" }
 		end
-		if prj.kind == premake.SHAREDLIB then
-			filter "platforms:not *Editor*"; do
-				kind(premake.STATICLIB)
-			end
-			filter {}
-		end
 	end)
+
+	if prj.kind == premake.SHAREDLIB then
+		filter "platforms:not *Editor*"; do
+			kind "StaticLib"
+		end
+		filter {}
+	end
+	
 	os.chdir(cwd)
 
 	return prj
@@ -199,8 +201,6 @@ function Engine.CommonCppSettings()
 		Config.SourceDir
 	}
 
-	local prj = Project.CurrentProject()
-
 	targetdir(Config.TargetDir)
 	objdir(Config.ObjectDir)
 	implibdir(Config.LibraryDir)
@@ -264,8 +264,11 @@ function Engine.CommonCppSettings()
 		symbols "Off"
 	end
 
-	filter { "platforms:not *Editor*", "kind:SharedLib" }; do
-		kind(premake.STATICLIB)
+	local prj = Project.CurrentProject()
+	if prj.kind == premake.SHAREDLIB then
+		filter "platforms:not *Editor*"; do
+			kind "StaticLib"
+		end
 	end
 
 	filter {}
