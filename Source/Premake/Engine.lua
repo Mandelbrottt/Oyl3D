@@ -23,72 +23,73 @@ function Engine.SetupProjectFromScript(script)
 		)
 	end
 
+	local cwd = os.getcwd()
+	os.chdir(path.getdirectory(script))
+
 	-- Get the project that was just created
 	---@type any
 	---@diagnostic disable-next-line: missing-parameter
 	local prj = assert(project(), "No engine project in scope!")
+	
+	Project.PrependBlocks(function()
+		if not prj.language then language "C++" end
+		if not prj.kind then kind "None" end
 
-	local cwd = os.getcwd()
-	os.chdir(path.getdirectory(script))
-
-	prj.language = prj.language or premake.CPP
-	prj.kind = prj.kind or premake.NONE
-
-	if prj.language == premake.CPP then
-		Engine.CommonCppSettings()
-	else
-		error(string.format("Invalid language \"%s\" in project \"%s\"", prj.language, prj.name))
-	end
-
-	Project.Files()
-	removefiles {
-		"**.gen.h"
-	}
-
-	includedirs {
-		"%{prj.location}",
-		"%{prj.location}/.Generated/"
-	}
-
-	defines {
-		Project.CurrentAssemblyMacro(),
-		Project.InsideProjectMacro(),
-	}
-
-	filter "system:not windows"; do
-		removefiles { "%{prj.location}/**_Windows*" }
-	end
-
-	-- header files can be included across assembly boundaries, and so have to use project-agnostic includes
-	-- FIXME: premake doesn't support per-file includedirs
-	filter "files:**.cpp"; do
-		includedirs {
-			prj.basedir,
-		}
-	end
-
-	filter("configurations:" .. Config.Configurations.Debug); do
-		defines { string.upper(Engine.ShortName) .. "_DEBUG=1" }
-	end
-	filter("configurations:" .. Config.Configurations.Development); do
-		defines { string.upper(Engine.ShortName) .. "_DEVELOPMENT=1" }
-	end
-	filter("configurations:" .. Config.Configurations.Profile); do
-		defines { string.upper(Engine.ShortName) .. "_PROFILE=1", }
-	end
-	filter("configurations:" .. Config.Configurations.Distribution); do
-		defines { string.upper(Engine.ShortName) .. "_DISTRIBUTION=1" }
-	end
-	filter "platforms:Editor"; do
-		defines { string.upper(Engine.ShortName) .. "_EDITOR=1" }
-	end
-	if prj.kind == premake.SHAREDLIB then
-		filter "platforms:not *Editor*"; do
-			kind(premake.STATICLIB)
+		if prj.language == premake.CPP then
+			Engine.CommonCppSettings()
+		else
+			error(string.format("Invalid language \"%s\" in project \"%s\"", prj.language, prj.name))
 		end
-		filter {}
-	end
 
+		Project.Files()
+		removefiles {
+			"**.gen.h"
+		}
+
+		includedirs {
+			"%{prj.location}",
+			"%{prj.location}/.Generated/"
+		}
+
+		defines {
+			Project.CurrentAssemblyMacro(),
+			Project.InsideProjectMacro(),
+		}
+
+		filter "system:not windows"; do
+			removefiles { "%{prj.location}/**_Windows*" }
+		end
+
+		-- header files can be included across assembly boundaries, and so have to use project-agnostic includes
+		-- FIXME: premake doesn't support per-file includedirs
+		filter "files:**.cpp"; do
+			includedirs {
+				prj.basedir,
+			}
+		end
+
+		filter("configurations:" .. Config.Configurations.Debug); do
+			defines { string.upper(Engine.ShortName) .. "_DEBUG=1" }
+		end
+		filter("configurations:" .. Config.Configurations.Development); do
+			defines { string.upper(Engine.ShortName) .. "_DEVELOPMENT=1" }
+		end
+		filter("configurations:" .. Config.Configurations.Profile); do
+			defines { string.upper(Engine.ShortName) .. "_PROFILE=1", }
+		end
+		filter("configurations:" .. Config.Configurations.Distribution); do
+			defines { string.upper(Engine.ShortName) .. "_DISTRIBUTION=1" }
+		end
+		filter "platforms:Editor"; do
+			defines { string.upper(Engine.ShortName) .. "_EDITOR=1" }
+		end
+		if prj.kind == premake.SHAREDLIB then
+			filter "platforms:not *Editor*"; do
+				kind(premake.STATICLIB)
+			end
+			filter {}
+		end
+	end)
 	os.chdir(cwd)
 
 	return prj
@@ -166,6 +167,7 @@ function Engine.GenerateProjects(params)
 		for _, link in ipairs(prj.links) do
 			local proj = engineProjects[link]
 			if proj then
+				includedirs(proj.basedir)
 				externalincludedirs(proj.basedir)
 			end
 

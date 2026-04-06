@@ -89,18 +89,18 @@ workspace "Spyll"; do
 		script = path.getabsolute(script)
 		Project.Script(script)
 
+		-- cd into script directory and run common project settings
+		local cwd = os.getcwd()
+		os.chdir(path.getdirectory(script))
+
 		-- Scope the project
-		project()
+		local prj = project()
 
 		Project.PrependBlocks(function()
-			-- cd into script directory and run common project settings
-			local cwd = os.getcwd()
-			os.chdir(path.getdirectory(script))
-
 			Spyll.CommonCppSettings()
-
-			os.chdir(cwd)
 		end)
+		
+		os.chdir(cwd)
 
 		project "*"
 	end
