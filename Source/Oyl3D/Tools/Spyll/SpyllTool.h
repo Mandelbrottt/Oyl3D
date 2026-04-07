@@ -6,9 +6,8 @@
 
 namespace Oyl
 {
-	class SpyllTool : protected Spyll::OpaqueTool
+	struct SpyllTool : public Spyll::OpaqueTool
 	{
-	public:
 		SpyllTool();
 
 		virtual
@@ -21,19 +20,20 @@ namespace Oyl
 		AddExternalInclude(std::string_view a_includeDir);
 
 		void
-		AddSource(std::string_view a_sourcePath);
+		AddHeaderDeclaration(std::string_view a_sourcePath);
 
 		void
-		UsePrecompiledHeader(std::string_view a_value);
+		AddDefine(std::string_view a_define);
 
 		int
-		Run();
+		Run() override;
 
-	private:
-		std::vector<std::string_view> m_includeDirectories;
-		std::vector<std::string_view> m_externalIncludeDirectories;
-		std::vector<std::string_view> m_sourceFiles;
+		std::vector<std::string_view> includeDirectories;
+		std::vector<std::string_view> externalIncludeDirectories;
+		std::vector<std::string_view> headerDeclarations;
+		std::vector<std::string_view> defines;
 
-		std::string_view m_pch;
+		std::string_view pch;
+		std::string_view std;
 	};
 }
