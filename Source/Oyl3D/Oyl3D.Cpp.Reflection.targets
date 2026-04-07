@@ -5,7 +5,7 @@
 		<Exec WorkingDirectory="$(MSBuildProjectDirectory)"
 			  ConsoleToMsBuild="true"
 			  EchoOff="true"
-			  Command="$(OutDir)Oyl.Spyll.exe &quot;@(ClInclude)&quot; --std=c++17 --pch=&quot;%(ClCompile.PrecompiledHeaderFile)&quot; --include=&quot;%(ClCompile.AdditionalIncludeDirectories)&quot; --externalinclude=&quot;$(ExternalIncludePath)&quot; --define=%(ClCompile.PreprocessorDefinitions)">
+			  Command="$(OutDir)../Binaries/Oyl.Spyll.exe &quot;@(ClInclude)&quot; --std=c++17 --pch=&quot;%(ClCompile.PrecompiledHeaderFile)&quot; --include=&quot;%(ClCompile.AdditionalIncludeDirectories)&quot; --externalinclude=&quot;$(ExternalIncludePath)&quot; --define=%(ClCompile.PreprocessorDefinitions)">
 		</Exec>
 		<ItemGroup>
 			<ClCompile Include=".generated/*.cpp" />
