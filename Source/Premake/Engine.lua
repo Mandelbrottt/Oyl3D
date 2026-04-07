@@ -30,7 +30,7 @@ function Engine.SetupProjectFromScript(script)
 	---@type any
 	---@diagnostic disable-next-line: missing-parameter
 	local prj = assert(project(), "No engine project in scope!")
-	
+
 	Project.PrependBlocks(function()
 		if not prj.language then language "C++" end
 		if not prj.kind then kind "None" end
@@ -43,7 +43,8 @@ function Engine.SetupProjectFromScript(script)
 
 		Project.Files()
 		removefiles {
-			"**.gen.h"
+			"**.gen.h",
+			".Generated/**"
 		}
 
 		includedirs {
@@ -91,7 +92,7 @@ function Engine.SetupProjectFromScript(script)
 		end
 		filter {}
 	end
-	
+
 	os.chdir(cwd)
 
 	return prj

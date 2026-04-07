@@ -136,7 +136,12 @@ main(int argc, char** argv)
 
 		if (arg == "pch" && !value.empty())
 		{
-			tool.UsePrecompiledHeader(value);
+			tool.pch = value;
+		}
+
+		if (arg == "std" && !value.empty())
+		{
+			tool.std = value;
 		}
 	}
 
@@ -145,7 +150,7 @@ main(int argc, char** argv)
 		ForEachStringInDelimitedList(
 			source,
 			';',
-			[&](std::string_view a_string) { tool.AddSource(a_string); }
+			[&](std::string_view a_string) { tool.AddHeaderDeclaration(a_string); }
 		);
 	}
 
@@ -154,6 +159,8 @@ main(int argc, char** argv)
 	{
 		return returnCode;
 	}
+
+	auto descriptor = tool.GetMergedReflectionDescriptor();
 
 	return 0;
 }

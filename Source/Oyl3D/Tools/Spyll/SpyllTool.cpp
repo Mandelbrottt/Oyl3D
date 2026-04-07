@@ -1,6 +1,7 @@
 #include "SpyllTool.h"
 
 #include <filesystem>
+#include <fstream>
 #include <sstream>
 
 namespace Oyl
@@ -12,64 +13,91 @@ namespace Oyl
 	void
 	SpyllTool::AddInclude(std::string_view a_includeDir)
 	{
-		m_includeDirectories.emplace_back(std::move(a_includeDir));
+		includeDirectories.emplace_back(std::move(a_includeDir));
 	}
 
 	void
 	SpyllTool::AddExternalInclude(std::string_view a_includeDir)
 	{
-		m_externalIncludeDirectories.emplace_back(std::move(a_includeDir));
+		externalIncludeDirectories.emplace_back(std::move(a_includeDir));
 	}
 
 	void
-	SpyllTool::AddSource(std::string_view a_sourcePath)
+	SpyllTool::AddHeaderDeclaration(std::string_view a_sourcePath)
 	{
-		m_sourceFiles.emplace_back(std::move(a_sourcePath));
+		headerDeclarations.emplace_back(std::move(a_sourcePath));
 	}
 
 	void
-	SpyllTool::UsePrecompiledHeader(std::string_view a_value)
+	SpyllTool::AddDefine(std::string_view a_define)
 	{
-		m_pch = a_value;
+		defines.emplace_back(std::move(a_define));
 	}
 
 	int
 	SpyllTool::Run()
 	{
+		// Ensure file gets deleted in the event of an error
+		struct CreateAndDeleteTempFile
+		{
+			CreateAndDeleteTempFile(std::string_view a_fileName, const std::vector<std::string_view>& a_headers)
+			{
+				tempFile = a_fileName;
+
+				fileStream.open(a_fileName.data());
+				for (auto headerDeclaration : a_headers)
+				{
+					fileStream << "#include \"" << headerDeclaration << "\"\n";
+				}
+				fileStream.close();
+			}
+
+			~CreateAndDeleteTempFile()
+			{
+				std::filesystem::remove(tempFile);
+			}
+
+			std::ofstream fileStream;
+			std::string_view tempFile;
+		};
+
+		const CreateAndDeleteTempFile createAndDeleteFile("_temp.gen.cpp", headerDeclarations);
+
 		std::ostringstream argumentsStream;
 
 		argumentsStream << "-xc++\n";
+
+		if (!std.empty())
+		{
+			argumentsStream << "-std=" << std << "\n";
+		}
+
 		argumentsStream << "-Wno-everything\n";
-		argumentsStream << "-D__REFLECT__=1\n";
+		argumentsStream << "-D__REFLECT_GENERATE__=1\n";
 		
-		if (!m_pch.empty())
+		if (!pch.empty())
 		{
-			argumentsStream << "-include";
-			argumentsStream << m_pch;
-			argumentsStream << "\n";
-
-			auto pchSource = std::filesystem::path(m_pch).replace_extension("cpp").string();
-
-			auto _ = std::remove_if(
-				m_sourceFiles.begin(),
-				m_sourceFiles.end(),
-				[&](std::string_view a_value) { return a_value.find(pchSource) != std::string::npos; }
-			);
+			argumentsStream << "-include" << pch << "\n";
+			if (auto iter = std::find(headerDeclarations.begin(), headerDeclarations.end(), pch); 
+				iter != headerDeclarations.end())
+			{
+				headerDeclarations.erase(iter);
+			}
 		}
 
-		for (auto includeDirectory : m_includeDirectories)
+		for (auto includeDir : includeDirectories)
 		{
-			argumentsStream << "-I";
-			argumentsStream << includeDirectory;
-
-			argumentsStream << "\n";
+			argumentsStream << "-I" << includeDir << "\n";
 		}
-		for (auto externalIncludeDirectory : m_externalIncludeDirectories)
-		{
-			argumentsStream << "-isystem";
-			argumentsStream << externalIncludeDirectory;
 
-			argumentsStream << "\n";
+		for (auto externalIncludeDir : externalIncludeDirectories)
+		{
+			argumentsStream << "-isystem" << externalIncludeDir << "\n";
+		}
+
+		for (auto define : defines)
+		{
+			argumentsStream << "-D" << define << "\n";
 		}
 
 		auto arguments = argumentsStream.str();
@@ -82,8 +110,8 @@ namespace Oyl
 
 		//printf("\nArguments: %s", arguments.data());
 
-		std::vector<std::string> sources = { m_sourceFiles.begin(), m_sourceFiles.end() };
-		Setup(sources, arguments);
+		std::string source = std::string { createAndDeleteFile.tempFile };
+		Setup(source, arguments);
 
 		return OpaqueTool::Run();
 	}
