@@ -20,21 +20,27 @@ namespace Spyll
 
 		OpaqueTool(std::string a_fileName, std::string a_compileOptions);
 
+		virtual
 		void
 		Setup(std::vector<std::string> a_fileNames, std::string a_compileOptions);
 
+		virtual
 		void
 		Setup(std::string a_fileName, std::string a_compileOptions);
-		
+
+		virtual
 		int
 		Run();
 
+		virtual
 		int
 		GetErrorCode() const;
 
+		virtual
 		void
 		SetPrintErrorMessage(bool a_shouldPrintMessage);
 
+		virtual
 		ReflectionDescriptor
 		GetMergedReflectionDescriptor() const;
 

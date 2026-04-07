@@ -129,6 +129,12 @@ namespace Spyll
 			return descriptor;
 		}
 
+		if (Decl->isTemplated() && Decl->getTemplateSpecializationKind() == clang::TSK_Undeclared)
+		{
+			// Do not reflect incomplete template types 
+			return descriptor;
+		}
+
 		descriptor.isOpaque = false;
 
 		for (clang::FieldDecl* iter : Decl->fields())
@@ -467,6 +473,8 @@ namespace Spyll
 		AddType(m_impl->context->UnsignedShortTy.getTypePtr());
 		AddType(m_impl->context->UnsignedIntTy.getTypePtr());
 		AddType(m_impl->context->UnsignedLongTy.getTypePtr());
+		AddType(m_impl->context->LongLongTy.getTypePtr());
+		AddType(m_impl->context->UnsignedLongLongTy.getTypePtr());
 		AddType(m_impl->context->FloatTy.getTypePtr());
 		AddType(m_impl->context->DoubleTy.getTypePtr());
 		AddType(m_impl->context->WCharTy.getTypePtr());
