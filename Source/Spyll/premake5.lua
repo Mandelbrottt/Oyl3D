@@ -18,10 +18,10 @@ function Spyll.CommonCppSettings(package)
 	externalwarnings "Off"
 	externalanglebrackets "On"
 
-	targetdir(Config.TargetDir)
+	targetdir(Config.BinariesDir)
 	objdir(Config.ObjectDir)
 	implibdir(Config.LibraryDir)
-	debugdir(Config.TargetDir)
+	debugdir(Config.BinariesDir)
 
 	Project.Files()
 

@@ -8,7 +8,7 @@ Config.BuildRoot = path.join(Config.RootDir, "Build")
 
 Config.OutputDir = path.join(Config.BuildRoot, "%{cfg.platform}_%{cfg.buildcfg}_%{cfg.toolset}", "%{wks.name}")
 
-Config.TargetDir = path.join(Config.OutputDir, "Binaries")
+Config.BinariesDir = path.join(Config.OutputDir, "Binaries")
 Config.LibraryDir = path.join(Config.OutputDir, "Library")
 Config.ObjectDir = path.join(Config.OutputDir, "Intermediate")
 
