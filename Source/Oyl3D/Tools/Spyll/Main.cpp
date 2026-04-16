@@ -1,4 +1,5 @@
-#include <locale>
+#include <filesystem>
+#include <fstream>
 #include <string>
 #include <unordered_map>
 #include <vector>
@@ -161,6 +162,13 @@ main(int argc, char** argv)
 	}
 
 	auto descriptor = tool.GetMergedReflectionDescriptor();
+
+	std::filesystem::create_directory("Generated");
+
+	std::ofstream generatedIncludeHeader;
+	generatedIncludeHeader.open("Generated/Spyll.generated.h");
+	generatedIncludeHeader << "#pragma once\n";
+	generatedIncludeHeader << R"(#pragma message("Hello from Spyll.generated.h!"))" << "\n";
 
 	return 0;
 }

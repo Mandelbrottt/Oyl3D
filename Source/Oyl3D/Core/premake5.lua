@@ -1,16 +1,12 @@
+local Engine = require "Engine"
+
 group "Engine"
 
 project "Oyl.Core"; do
 	language(premake.CPP)
 	kind(premake.SHAREDLIB)
 
-	buildtargetcustomizations {
-		path.join("%{wks.location}", "Oyl3D.Cpp.Reflection.targets")
-	}
-
-	removefiles {
-		"**.Generated/**"
-	}
+	Engine.GenerateOylSpyllInformation()
 
 	links {
 		"SpdLog",
