@@ -266,4 +266,42 @@ function Engine.CommonCppSettings()
 	filter {}
 end
 
+function Engine.GenerateOylSpyllInformation()
+	-- Handle this logic in tokenized strings to ensure proper project filters are applied
+	local spyllCommand = path.join(Config.BinariesDir, "Oyl.Spyll.exe")
+	spyllCommand = spyllCommand .. " --std=%{prj.cppdialect:lower()}"
+
+	spyllCommand = spyllCommand .. ' --include="%{table.concat(prj.includedirs, ";")}"'
+	spyllCommand = spyllCommand .. ' --externalinclude="%{table.concat(prj.externalincludedirs, ";")}"'
+	spyllCommand = spyllCommand .. ' --define="%{table.concat(prj.defines, ";")}"'
+
+	spyllCommand = spyllCommand .. ' %{prj.pchheader and "--pch=" .. prj.pchheader or ""}'
+
+	spyllCommand = spyllCommand .. [[ %{table.concat(
+		table.translate(
+				table.filter(
+					prj.files,
+					function(file) return path.hasextension(file, ".h") end
+				),
+				function(file) return '"' .. file .. '"' end
+			),
+			" "
+		)}]]
+
+	files {
+		path.join("%{wks.location}", "GeneratedInclude.cpp")
+	}
+
+	removefiles {
+		"Generated/**"
+	}
+
+	prebuildmessage("Executing " .. spyllCommand)
+
+	prebuildcommands {
+		"cd %{prj.location}",
+		spyllCommand
+	}
+end
+
 return Engine
