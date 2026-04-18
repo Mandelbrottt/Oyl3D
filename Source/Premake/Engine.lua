@@ -269,15 +269,24 @@ end
 function Engine.GenerateOylSpyllInformation()
 	-- Handle this logic in tokenized strings to ensure proper project filters are applied
 	local spyllCommand = path.join(Config.BinariesDir, "Oyl.Spyll.exe")
-	spyllCommand = spyllCommand .. " --std=%{prj.cppdialect:lower()}"
 
-	spyllCommand = spyllCommand .. ' --include="%{table.concat(prj.includedirs, ";")}"'
-	spyllCommand = spyllCommand .. ' --externalinclude="%{table.concat(prj.externalincludedirs, ";")}"'
-	spyllCommand = spyllCommand .. ' --define="%{table.concat(prj.defines, ";")}"'
+	local function appendToCommand(str)
+		-- Append trimmed string after space
+		spyllCommand = spyllCommand .. " " .. str:match("^%s*(.-)%s*$")
+	end
 
-	spyllCommand = spyllCommand .. ' %{prj.pchheader and "--pch=" .. prj.pchheader or ""}'
+	appendToCommand '--std=%{prj.cppdialect:lower()}'
 
-	spyllCommand = spyllCommand .. [[ %{table.concat(
+	appendToCommand '--include="%{table.concat(prj.includedirs, ";")}"'
+	appendToCommand '--externalinclude="%{table.concat(prj.externalincludedirs, ";")}"'
+	appendToCommand '--define="%{table.concat(prj.defines, ";")}"'
+	
+	-- Only include --pch arg if project has a pch
+	appendToCommand '%{prj.pchheader and "--pch=" .. prj.pchheader or ""}'
+
+	appendToCommand ''
+
+	appendToCommand [[%{table.concat(
 		table.translate(
 				table.filter(
 					prj.files,
