@@ -3,8 +3,8 @@ local Engine = require "Engine"
 group "Engine"
 
 project "Oyl.Core"; do
-	language(premake.CPP)
-	kind(premake.SHAREDLIB)
+	language "C++"
+	kind "SharedLib"
 
 	Engine.GenerateOylSpyllInformation()
 

@@ -67,6 +67,13 @@ function Engine.SetupProjectFromScript(script)
 		CommonProjectSettings()
 	end)
 
+	-- Run this outside of the prepend function, otherwise it gets overwritten by the project call to kind
+	if prj.language == premake.CPP and prj.kind == premake.SHAREDLIB then
+		filter "platforms:not *Editor*"; do
+			kind "StaticLib"
+		end
+	end
+
 	os.chdir(cwd)
 
 	return prj
@@ -254,13 +261,6 @@ function Engine.CommonCppSettings()
 		optimize "Full"
 		runtime "Release"
 		symbols "Off"
-	end
-
-	local prj = Project.CurrentProject()
-	if prj.kind == premake.SHAREDLIB then
-		filter "platforms:not *Editor*"; do
-			kind "StaticLib"
-		end
 	end
 
 	filter {}
