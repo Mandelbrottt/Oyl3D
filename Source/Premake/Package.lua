@@ -84,6 +84,11 @@ end
 
 ---@param params WorkspacePackage.GenerateProjectsParams
 function Package.GenerateWorkspacePackageProjects(params)
+	-- Package directories are not guaranteed to exist, only try to generate them if we actually need them
+	if not premake.action.current() or not premake.action.current().onProject then
+		return
+	end
+	
 	workspace()
 	for name, package in spairs(params.Packages) do
 		if package.GenerateProject then
@@ -101,7 +106,22 @@ function Package.GenerateWorkspacePackageProject(name, package, onProject)
 	Package.InitWorkspacePackageVars(name, package)
 
 	local cwd = os.getcwd()
-	os.chdir(package.PackageDir)
+	local ok, err = os.chdir(package.PackageDir)
+	if not ok then
+		term.pushColor(term.errorColor); do
+			io.write(('Directory "%s" for Package "%s" not found! Did you run '):format(package.PackageDir, package.Name))
+			
+			term.pushColor(term.infoColor); do
+				io.write("premake packages")
+			end
+			term.popColor()
+
+			io.write("?\n")
+		end
+		term.popColor()
+
+		error(err)
+	end
 
 	project(package.Name); do
 		location(package.ProjectDir)
