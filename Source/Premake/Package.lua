@@ -101,7 +101,10 @@ function Package.GenerateWorkspacePackageProject(name, package, onProject)
 	Package.InitWorkspacePackageVars(name, package)
 
 	local cwd = os.getcwd()
-	os.chdir(package.PackageDir)
+	if not os.isdir(package.PackageDir) then
+		os.mkdir(package.PackageDir)
+	end
+	assert(os.chdir(package.PackageDir))
 
 	project(package.Name); do
 		location(package.ProjectDir)
