@@ -23,6 +23,11 @@ newoption {
 	}
 }
 
+local action = premake.action.current()
+if action and (not action.onWorkspace or not action.onProject) then
+	return
+end
+
 local function shouldGenerateWorkspace(wks)
 	local workspaceOpt = _OPTIONS["workspace"]
 	return not workspaceOpt or workspaceOpt:lower() == wks:lower()
