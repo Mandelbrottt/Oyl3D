@@ -67,6 +67,18 @@ namespace Oyl::Reflection
 	}
 
 	void
+	Assembly::AddType(Type* a_type)
+	{
+		m_types.emplace_back(a_type);
+	}
+
+	void
+	Assembly::AddFunction(Function* a_function)
+	{
+		m_functions.emplace_back(a_function);
+	}
+
+	void
 	Assembly::SetupAssemblyMaps()
 	{
 		m_typeMap.reserve(m_types.size());
