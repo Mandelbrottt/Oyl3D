@@ -1,7 +1,5 @@
-#include <filesystem>
-#include <fstream>
-
 #include "Cmd.h"
+#include "Emit.h"
 #include "SpyllTool.h"
 
 static Oyl::SpyllTool g_tool;
@@ -74,14 +72,7 @@ main(int argc, char** argv)
 		return returnCode;
 	}
 
-	auto descriptor = g_tool.GetMergedReflectionDescriptor();
-
-	std::filesystem::create_directory("Generated");
-
-	std::ofstream generatedIncludeHeader;
-	generatedIncludeHeader.open("Generated/Spyll.generated.h");
-	generatedIncludeHeader << "#pragma once\n";
-	generatedIncludeHeader << R"(#pragma message("Hello from Spyll.generated.h!"))" << "\n";
+	EmitCodeFromTool(g_tool);
 
 	return 0;
 }
