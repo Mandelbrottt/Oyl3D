@@ -7,15 +7,17 @@ namespace Oyl::Reflection
 {
 	namespace Internal
 	{
-		class AssemblyFactory;
+		class ReflectionFactory;
+		struct MemberFunctionParams;
 	}
 
-	class Method : public Function, public MemberInfo
+	class MemberFunction : public Function, public MemberInfo
 	{
-		friend Internal::AssemblyFactory;
+		friend Internal::ReflectionFactory;
 
 	protected:
-		Method() = default;
+		explicit
+		MemberFunction(const Internal::MemberFunctionParams& a_params);
 
 	public:
 		bool

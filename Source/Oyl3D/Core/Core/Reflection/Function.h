@@ -4,6 +4,10 @@
 #include "NamedDeclaration.h"
 #include "QualifierInfo.h"
 
+namespace Oyl::Reflection::Internal {
+	struct FunctionParams;
+}
+
 namespace Oyl::Reflection
 {
 	class Type;
@@ -11,15 +15,16 @@ namespace Oyl::Reflection
 
 	namespace Internal
 	{
-		class AssemblyFactory;
+		class ReflectionFactory;
 	}
 
 	class Function : public NamedDeclaration
 	{
-		friend Internal::AssemblyFactory;
+		friend Internal::ReflectionFactory;
 
 	protected:
-		Function() = default;
+		explicit
+		Function(const Internal::FunctionParams& a_params);
 
 	public:
 		const Type*

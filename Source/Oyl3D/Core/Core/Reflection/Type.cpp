@@ -1,74 +1,127 @@
 #include "Type.h"
 
 #include "Assembly.h"
+#include "ReflectionFactory.h"
 
 namespace Oyl::Reflection
 {
-	Type::Type() {}
-
-	Type::~Type() {}
-
-	TypeId
-	Type::GetTypeId() const
+	struct Type::Impl
 	{
-		return m_typeId;
+		TypeId typeId = TypeId::Null;
+
+		uint32_t size = 0;
+
+		std::string_view name;
+		std::string_view qualifiedName;
+
+		bool isPrimitive = false;
+
+		Assembly* assembly = nullptr;
+
+		std::vector<Type*> baseTypes;
+
+		std::vector<MemberFunction*> functions;
+		std::vector<Field*> fields;
+	};
+
+	Type::Type(const Internal::TypeParams& a_params)
+	{
+		m_impl = new Impl;
+
+		m_impl->typeId = a_params.typeId;
+		m_impl->size = a_params.size;
+
+		m_impl->qualifiedName = a_params.qualifiedName;
+		m_impl->name = a_params.name;
+
+		m_impl->isPrimitive = false;
 	}
 
-	std::string_view
-	Type::GetName() const
+	Type::~Type()
 	{
-		return m_name;
+		delete m_impl;
+		m_impl = nullptr;
 	}
 
-	std::string_view
-	Type::GetQualifiedName() const
-	{
-		return m_qualifiedName;
-	}
-
-	uint32_t
-	Type::GetSize() const
-	{
-		return m_size;
-	}
-
-	bool
-	Type::IsPrimitive() const
-	{
-		return m_isPrimitive;
-	}
-
-	const std::vector<Type*>&
-	Type::GetBaseTypes() const
-	{
-		return m_baseTypes;
-	}
-
-	const std::vector<Field*>&
-	Type::GetFields() const
-	{
-		return m_fields;
-	}
-
-	const std::vector<Function*>&
-	Type::GetFunctions() const
-	{
-		return m_functions;
-	}
-
-	const Type*
+	Type*
 	Type::Get(std::string_view a_name)
 	{
 		auto& assemblies = Assembly::GetAssemblies();
 
-		for (const Assembly* assembly : assemblies)
+		for (Assembly* assembly : assemblies)
 		{
-			if (const Type* type = assembly->GetType(a_name))
+			if (Type* type = assembly->GetType(a_name))
 			{
 				return type;
 			}
 		}
 
 		return nullptr;
+	}
+
+	TypeId
+	Type::GetTypeId() const
+	{
+		return m_impl->typeId;
+	}
+
+	std::string_view
+	Type::GetName() const
+	{
+		return m_impl->name;
+	}
+
+	std::string_view
+	Type::GetQualifiedName() const
+	{
+		return m_impl->qualifiedName;
+	}
+
+	uint32_t
+	Type::GetSize() const
+	{
+		return m_impl->size;
+	}
+
+	bool
+	Type::IsPrimitive() const
+	{
+		return m_impl->isPrimitive;
+	}
+
+	const std::vector<Type*>&
+	Type::GetBaseTypes() const
+	{
+		return m_impl->baseTypes;
+	}
+
+	const std::vector<Field*>&
+	Type::GetFields() const
+	{
+		return m_impl->fields;
+	}
+
+	const std::vector<MemberFunction*>&
+	Type::GetFunctions() const
+	{
+		return m_impl->functions;
+	}
+
+	void
+	Type::AddBaseType(Type* a_type)
+	{
+		m_impl->baseTypes.emplace_back(a_type);
+	}
+
+	void
+	Type::AddField(Field* a_field)
+	{
+		m_impl->fields.emplace_back(a_field);
+	}
+
+	void
+	Type::AddFunction(MemberFunction* a_method)
+	{
+		m_impl->functions.emplace_back(a_method);
 	}
 }

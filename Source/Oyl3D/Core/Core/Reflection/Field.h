@@ -9,21 +9,28 @@ namespace Oyl::Reflection
 
 	namespace Internal
 	{
-		class AssemblyFactory;
+		class ReflectionFactory;
+		struct FieldParams;
 	}
 
 	class Field final : public Variable, public MemberInfo
 	{
-		friend Internal::AssemblyFactory;
+		friend Internal::ReflectionFactory;
 
-	protected:
-		Field() = default;
+		explicit
+		Field(const Internal::FieldParams& a_params);
 
 	public:
 		uint32_t
 		GetOffset() const
 		{
-			return m_offset;
+			return m_offsetInBits / 8;
+		}
+
+		uint32_t
+		GetOffsetInBits() const
+		{
+			return m_offsetInBits;
 		}
 
 		template<typename TSelf, typename TField>
@@ -43,7 +50,7 @@ namespace Oyl::Reflection
 		GetValue(void* a_self, void** a_outPtr) const;
 
 	private:
-		uint32_t m_offset = 0;
+		uint32_t m_offsetInBits = 0;
 	};
 
 	template<typename TSelf, typename TField>
@@ -51,7 +58,7 @@ namespace Oyl::Reflection
 	Field::GetValue(const TSelf& a_self) const
 	{
 		// TODO: Type Checking
-		TField* out;
+		TField* out = nullptr;
 		GetValue(&a_self, &out);
 		return *std::launder(out);
 	}
