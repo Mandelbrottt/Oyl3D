@@ -5,11 +5,16 @@ namespace Spyll
 	class AssemblyFactory;
 }
 
-namespace Spyll::Reflection
+namespace Oyl::Reflection
 {
+	namespace Internal
+	{
+		class AssemblyFactory;
+	}
+
 	class QualifierInfo
 	{
-		friend AssemblyFactory;
+		friend Internal::AssemblyFactory;
 
 	protected:
 		QualifierInfo() = default;

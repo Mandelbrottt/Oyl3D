@@ -7,13 +7,18 @@ namespace Spyll
 	class AssemblyFactory;
 }
 
-namespace Spyll::Reflection
+namespace Oyl::Reflection
 {
 	class Type;
 
+	namespace Internal
+	{
+		class AssemblyFactory;
+	}
+
 	class MemberInfo
 	{
-		friend AssemblyFactory;
+		friend Internal::AssemblyFactory;
 
 	protected:
 		MemberInfo() = default;

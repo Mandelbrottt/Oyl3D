@@ -2,7 +2,7 @@
 
 #include "Assembly.h"
 
-namespace Spyll::Reflection
+namespace Oyl::Reflection
 {
 	Type::Type() {}
 

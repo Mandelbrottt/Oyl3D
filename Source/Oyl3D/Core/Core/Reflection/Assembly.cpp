@@ -3,16 +3,16 @@
 //extern "C"
 //{
 	//void
-	//_PopulateReflectionAssembly(Spyll::Reflection::Assembly* a_assembly)
+	//_PopulateReflectionAssembly(Oyl::Reflection::Assembly* a_assembly)
 	//{
-	//	using namespace Spyll::Reflection;
+	//	using namespace Oyl::Reflection;
 
 	//	Type type;
 	//	type.m_assembly = a_assembly;
 	//}
 //}
 
-namespace Spyll::Reflection
+namespace Oyl::Reflection
 {
 	std::vector<Assembly*> Assembly::s_assemblies;
 	std::unordered_map<std::string_view, Assembly*> Assembly::s_assemblyMap;

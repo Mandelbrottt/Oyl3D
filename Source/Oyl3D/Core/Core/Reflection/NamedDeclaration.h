@@ -2,16 +2,16 @@
 
 #include <string>
 
-namespace Spyll
+namespace Oyl::Reflection
 {
-	class AssemblyFactory;
-}
+	namespace Internal
+	{
+		class AssemblyFactory;
+	}
 
-namespace Spyll::Reflection
-{
 	class NamedDeclaration
 	{
-		friend AssemblyFactory;
+		friend Internal::AssemblyFactory;
 
 	protected:
 		NamedDeclaration() = default;

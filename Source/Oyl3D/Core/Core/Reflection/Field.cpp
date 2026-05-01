@@ -2,7 +2,7 @@
 
 #include "Type.h"
 
-namespace Spyll::Reflection
+namespace Oyl::Reflection
 {
 	bool
 	Field::GetValue(void* a_self, void** a_outPtr) const

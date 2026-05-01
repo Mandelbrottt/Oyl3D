@@ -7,18 +7,18 @@
 #include "Function.h"
 #include "TypeId.h"
 
-namespace Spyll
-{
-	class AssemblyFactory;
-}
-
-namespace Spyll::Reflection
+namespace Oyl::Reflection
 {
 	class Assembly;
+	
+	namespace Internal
+	{
+		class AssemblyFactory;
+	}
 
 	class Type final
 	{
-		friend AssemblyFactory;
+		friend Internal::AssemblyFactory;
 
 	public:
 		~Type();

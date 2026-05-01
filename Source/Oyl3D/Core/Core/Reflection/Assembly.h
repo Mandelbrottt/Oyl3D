@@ -4,11 +4,16 @@
 #include "Function.h"
 #include "Type.h"
 
-namespace Spyll::Reflection
+namespace Oyl::Reflection
 {
+	namespace Internal
+	{
+		class AssemblyFactory;
+	}
+
 	class Assembly final
 	{
-		friend AssemblyFactory;
+		friend Internal::AssemblyFactory;
 
 		Assembly();
 
