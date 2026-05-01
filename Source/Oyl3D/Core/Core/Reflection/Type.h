@@ -5,6 +5,7 @@
 
 #include "Field.h"
 #include "Function.h"
+#include "MemberFunction.h"
 #include "TypeId.h"
 
 namespace Oyl::Reflection
@@ -13,12 +14,16 @@ namespace Oyl::Reflection
 	
 	namespace Internal
 	{
-		class AssemblyFactory;
+		class ReflectionFactory;
+		struct TypeParams;
 	}
 
 	class Type final
 	{
-		friend Internal::AssemblyFactory;
+		friend Internal::ReflectionFactory;
+		
+		explicit
+		Type(const Internal::TypeParams& a_params);
 
 	public:
 		~Type();
@@ -30,6 +35,15 @@ namespace Oyl::Reflection
 		Type(Type&&) = delete;
 		Type&
 		operator =(Type&&) = delete;
+		
+		template<typename T>
+		static
+		Type*
+		Get();
+
+		static
+		Type*
+		Get(std::string_view a_name);
 
 		TypeId
 		GetTypeId() const;
@@ -52,41 +66,26 @@ namespace Oyl::Reflection
 		const std::vector<Field*>&
 		GetFields() const;
 
-		const std::vector<Function*>&
+		const std::vector<MemberFunction*>&
 		GetFunctions() const;
 
-		template<typename T>
-		static
-		const Type*
-		Get();
+	private:
+		void
+		AddBaseType(Type* a_type);
 
-		static
-		const Type*
-		Get(std::string_view a_name);
+		void
+		AddField(Field* a_field);
+
+		void
+		AddFunction(MemberFunction* a_method);
 
 	private:
-		Type();
-
-	private:
-		TypeId m_typeId = TypeId::Null;
-
-		uint32_t m_size = 0;
-		
-		std::string m_name;
-		std::string m_qualifiedName;
-
-		bool m_isPrimitive = false;
-
-		Assembly* m_assembly = nullptr;
-
-		std::vector<Type*> m_baseTypes;
-
-		std::vector<Function*> m_functions;
-		std::vector<Field*> m_fields;
+		struct Impl;
+		Impl* m_impl;
 	};
 
 	template<typename T>
-	const Type*
+	Type*
 	Type::Get()
 	{
 		return Get(typeid(T).name());

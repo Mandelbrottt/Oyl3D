@@ -6,15 +6,17 @@ namespace Oyl::Reflection
 {
 	namespace Internal
 	{
-		class AssemblyFactory;
+		struct NamedDeclarationParams;
+		class ReflectionFactory;
 	}
 
 	class NamedDeclaration
 	{
-		friend Internal::AssemblyFactory;
+		friend Internal::ReflectionFactory;
 
 	protected:
-		NamedDeclaration() = default;
+		explicit
+		NamedDeclaration(const Internal::NamedDeclarationParams& a_params);
 
 	public:
 		virtual
@@ -41,7 +43,7 @@ namespace Oyl::Reflection
 		}
 
 	private:
-		std::string m_name;
 		std::string m_qualifiedName;
+		std::string m_name;
 	};
 }

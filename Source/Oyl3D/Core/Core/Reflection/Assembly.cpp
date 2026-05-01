@@ -21,19 +21,19 @@ namespace Oyl::Reflection
 
 	Assembly::~Assembly() {}
 
-	const std::vector<Type>&
+	const std::vector<Type*>&
 	Assembly::GetTypes() const
 	{
 		return m_types;
 	}
 	
-	const std::vector<Function>&
+	const std::vector<Function*>&
 	Assembly::GetFreeFunctions() const
 	{
 		return m_functions;
 	}
 
-	const Type*
+	Type*
 	Assembly::GetType(std::string_view a_typeName) const
 	{
 		auto iter = m_typeMap.find(a_typeName);
@@ -42,7 +42,7 @@ namespace Oyl::Reflection
 		return iter->second;
 	}
 
-	const Function*
+	Function*
 	Assembly::GetFunction(std::string_view a_functionName) const
 	{
 		auto iter = m_functionMap.find(a_functionName);
@@ -57,7 +57,7 @@ namespace Oyl::Reflection
 		return s_assemblies;
 	}
 
-	const Assembly*
+	Assembly*
 	Assembly::GetAssembly(std::string_view a_assemblyName)
 	{
 		auto iter = s_assemblyMap.find(a_assemblyName);
@@ -73,14 +73,14 @@ namespace Oyl::Reflection
 		for (size_t i = 0; i < m_types.size(); i++)
 		{
 			auto& type = m_types[i];
-			m_typeMap.emplace(type.GetQualifiedName(), &type);
+			m_typeMap.emplace(type->GetQualifiedName(), type);
 		}
 
 		m_functionMap.reserve(m_functions.size());
 		for (size_t i = 0; i < m_functions.size(); i++)
 		{
 			auto& function = m_functions[i];
-			m_functionMap.emplace(function.GetQualifiedName(), &function);
+			m_functionMap.emplace(function->GetQualifiedName(), function);
 		}
 	}
 }

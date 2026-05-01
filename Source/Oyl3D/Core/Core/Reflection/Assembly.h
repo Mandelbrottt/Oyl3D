@@ -8,28 +8,28 @@ namespace Oyl::Reflection
 {
 	namespace Internal
 	{
-		class AssemblyFactory;
+		class ReflectionFactory;
 	}
 
 	class Assembly final
 	{
-		friend Internal::AssemblyFactory;
+		friend Internal::ReflectionFactory;
 
 		Assembly();
 
 	public:
 		~Assembly();
 
-		const std::vector<Type>&
+		const std::vector<Type*>&
 		GetTypes() const;
 
-		const Type*
+		Type*
 		GetType(std::string_view a_typeName) const;
 
-		const std::vector<Function>&
+		const std::vector<Function*>&
 		GetFreeFunctions() const;
 
-		const Function*
+		Function*
 		GetFunction(std::string_view a_functionName) const;
 
 	public:
@@ -38,7 +38,7 @@ namespace Oyl::Reflection
 		GetAssemblies();
 
 		static
-		const Assembly*
+		Assembly*
 		GetAssembly(std::string_view a_assemblyName);
 
 	private:
@@ -49,10 +49,10 @@ namespace Oyl::Reflection
 		static std::vector<Assembly*> s_assemblies;
 		static std::unordered_map<std::string_view, Assembly*> s_assemblyMap;
 
-		std::vector<Type> m_types;
+		std::vector<Type*> m_types;
 		std::unordered_map<std::string_view, Type*> m_typeMap;
 
-		std::vector<Function> m_functions;
+		std::vector<Function*> m_functions;
 		std::unordered_map<std::string_view, Function*> m_functionMap;
 	};
 }

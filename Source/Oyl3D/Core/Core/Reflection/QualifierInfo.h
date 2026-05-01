@@ -1,23 +1,20 @@
 #pragma once
 
-namespace Spyll
-{
-	class AssemblyFactory;
-}
-
 namespace Oyl::Reflection
 {
 	namespace Internal
 	{
-		class AssemblyFactory;
+		struct QualifierInfoParams;
+		class ReflectionFactory;
 	}
 
 	class QualifierInfo
 	{
-		friend Internal::AssemblyFactory;
+		friend Internal::ReflectionFactory;
 
 	protected:
-		QualifierInfo() = default;
+		explicit
+		QualifierInfo(const Internal::QualifierInfoParams& a_params);
 
 	public:
 		bool

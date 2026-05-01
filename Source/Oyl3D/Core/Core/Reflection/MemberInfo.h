@@ -2,9 +2,8 @@
 
 #include "Enums.h"
 
-namespace Spyll
-{
-	class AssemblyFactory;
+namespace Oyl::Reflection::Internal {
+	struct MemberInfoParams;
 }
 
 namespace Oyl::Reflection
@@ -13,18 +12,19 @@ namespace Oyl::Reflection
 
 	namespace Internal
 	{
-		class AssemblyFactory;
+		class ReflectionFactory;
 	}
 
 	class MemberInfo
 	{
-		friend Internal::AssemblyFactory;
+		friend Internal::ReflectionFactory;
 
 	protected:
-		MemberInfo() = default;
+		explicit
+		MemberInfo(const Internal::MemberInfoParams& a_params);
 
 	public:
-		const Type*
+		Type*
 		GetOwningType() const
 		{
 			return m_owningType;

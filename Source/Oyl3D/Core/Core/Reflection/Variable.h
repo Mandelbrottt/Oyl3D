@@ -4,21 +4,26 @@
 #include "NamedDeclaration.h"
 #include "QualifierInfo.h"
 
+namespace Oyl::Reflection::Internal {
+	struct VariableParams;
+}
+
 namespace Oyl::Reflection
 {
 	class Type;
 	
 	namespace Internal
 	{
-		class AssemblyFactory;
+		class ReflectionFactory;
 	}
 
 	class Variable : public NamedDeclaration, public QualifierInfo
 	{
-		friend Internal::AssemblyFactory;
+		friend Internal::ReflectionFactory;
 
 	protected:
-		Variable() = default;
+		explicit
+		Variable(const Internal::VariableParams& a_params);
 
 	public:
 		const Type*
