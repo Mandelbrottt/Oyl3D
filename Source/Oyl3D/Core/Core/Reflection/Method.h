@@ -3,11 +3,16 @@
 #include "Function.h"
 #include "MemberInfo.h"
 
-namespace Spyll::Reflection
+namespace Oyl::Reflection
 {
+	namespace Internal
+	{
+		class AssemblyFactory;
+	}
+
 	class Method : public Function, public MemberInfo
 	{
-		friend AssemblyFactory;
+		friend Internal::AssemblyFactory;
 
 	protected:
 		Method() = default;

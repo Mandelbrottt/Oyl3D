@@ -3,13 +3,18 @@
 #include "MemberInfo.h"
 #include "Variable.h"
 
-namespace Spyll::Reflection
+namespace Oyl::Reflection
 {
 	class Type;
 
+	namespace Internal
+	{
+		class AssemblyFactory;
+	}
+
 	class Field final : public Variable, public MemberInfo
 	{
-		friend AssemblyFactory;
+		friend Internal::AssemblyFactory;
 
 	protected:
 		Field() = default;

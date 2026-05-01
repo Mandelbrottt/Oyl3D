@@ -1,6 +1,6 @@
 #pragma once
 
-namespace Spyll::Reflection
+namespace Oyl::Reflection
 {
 	enum class AccessSpecifier : uint8_t
 	{

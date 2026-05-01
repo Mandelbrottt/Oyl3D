@@ -4,12 +4,19 @@
 #include "NamedDeclaration.h"
 #include "QualifierInfo.h"
 
-namespace Spyll::Reflection
+namespace Oyl::Reflection
 {
 	class Type;
+	
+	namespace Internal
+	{
+		class AssemblyFactory;
+	}
 
 	class Variable : public NamedDeclaration, public QualifierInfo
 	{
+		friend Internal::AssemblyFactory;
+
 	protected:
 		Variable() = default;
 

@@ -1,6 +1,6 @@
 #include "Method.h"
 
-namespace Spyll::Reflection
+namespace Oyl::Reflection
 {
 	
 }

@@ -2,7 +2,7 @@
 
 #include <stdint.h>
 
-namespace Spyll::Reflection
+namespace Oyl::Reflection
 {
 	namespace Detail
 	{
