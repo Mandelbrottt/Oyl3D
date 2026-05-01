@@ -4,9 +4,13 @@
 
 namespace Oyl::Reflection::Internal
 {
+	struct AssemblyParams;
 	struct TypeParams;
 	struct FieldParams;
 	struct FunctionParams;
+	struct MemberFunctionParams;
+
+	using ReflectionAllocatorFn = void*(*)(std::size_t, std::align_val_t);
 
 	class ReflectionFactory
 	{
@@ -14,16 +18,25 @@ namespace Oyl::Reflection::Internal
 
 	public:
 		static
+		::Oyl::Reflection::Assembly*
+		CreateAssembly(const AssemblyParams& a_params, ReflectionAllocatorFn a_allocate);
+		
+		static
 		::Oyl::Reflection::Type*
-		CreateType(const TypeParams& a_params);
+		AddTypeToAssembly(Assembly* a_assembly, const TypeParams& a_params, ReflectionAllocatorFn a_allocate);
 
 		static
 		::Oyl::Reflection::Field*
-		AddFieldToType(::Oyl::Reflection::Type* a_type, const FieldParams& a_params);
+		AddFieldToType(::Oyl::Reflection::Type* a_type, const FieldParams& a_params, ReflectionAllocatorFn a_allocate);
 
 		static
 		::Oyl::Reflection::MemberFunction*
-		AddFunctionToType(::Oyl::Reflection::Type* a_type, const MemberFunctionParams& a_params);
+		AddFunctionToType(::Oyl::Reflection::Type* a_type, const MemberFunctionParams& a_params, ReflectionAllocatorFn a_allocate);
+	};
+
+	struct AssemblyParams
+	{
+		std::string_view name;
 	};
 
 	struct TypeParams

@@ -43,6 +43,12 @@ namespace Oyl::Reflection
 
 	private:
 		void
+		AddType(Type* a_type);
+		
+		void
+		AddFunction(Function* a_function);
+
+		void
 		SetupAssemblyMaps();
 
 	private:
