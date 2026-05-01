@@ -12,6 +12,9 @@ project "Oyl.Core"; do
 		"SpdLog",
 		"TracyClient",
 		"Vulkan",
+	}
+
+	dependson {
 		"Oyl.Spyll",
 	}
 end
