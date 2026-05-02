@@ -152,7 +152,7 @@ ReflectionAssembly_Register(::Oyl::Reflection::Internal::ReflectionAllocatorFn a
 
 		registerStream << "\t{\n";
 		registerStream << "\t\tOyl::Reflection::Internal::FieldParams FieldParams;\n";
-		registerStream << "\t\tFieldParams.qualifiedName = \"" << ownerType.name << "::" << field.name << "\";\n";
+		registerStream << "\t\tFieldParams.qualifiedName = \"" << field.name << "\";\n";
 		registerStream << "\t\tFieldParams.name = FieldParams.qualifiedName.substr(" << ownerType.name.size() + 2 << ");\n";
 		registerStream << "\t\tFieldParams.type = Oyl::Reflection::Type::Get<" << type.name << ">();\n";
 		registerStream << "\t\tFieldParams.ownerType = " << ownerTypeVar << ";\n";
@@ -180,7 +180,7 @@ ReflectionAssembly_Register(::Oyl::Reflection::Internal::ReflectionAllocatorFn a
 
 		registerStream << "\t{\n";
 		registerStream << "\t\tOyl::Reflection::Internal::MemberFunctionParams FunctionParams;\n";
-		registerStream << "\t\tFunctionParams.qualifiedName = \"" << ownerType.name << "::" << function.name << "\";\n";
+		registerStream << "\t\tFunctionParams.qualifiedName = \"" << function.name << "\";\n";
 		registerStream << "\t\tFunctionParams.name = FunctionParams.qualifiedName.substr(" << ownerType.name.size() + 2 << ");\n";
 		registerStream << "\t\tFunctionParams.returnType = Oyl::Reflection::Type::Get<" << returnType.name << ">();\n";
 		registerStream << "\t\tFunctionParams.ownerType = " << ownerTypeVar << ";\n";
