@@ -34,6 +34,13 @@ namespace Spyll
 		OBJ_MEMBER_AS_JSON(a_json, a_descriptor, name);
 		OBJ_MEMBER_AS_JSON(a_json, a_descriptor, id);
 		OBJ_MEMBER_AS_JSON(a_json, a_descriptor, alignment);
+		
+		if (!a_descriptor.sourceFile.empty())
+		{	
+			OBJ_MEMBER_AS_JSON(a_json, a_descriptor, sourceFile);
+			OBJ_MEMBER_AS_JSON(a_json, a_descriptor, sourceLine);
+			OBJ_MEMBER_AS_JSON(a_json, a_descriptor, sourceColumn);
+		}
 
 		OBJ_OPTIONAL_MEMBER_AS_JSON(a_json, a_descriptor, isComposite);
 		OBJ_OPTIONAL_MEMBER_AS_JSON(a_json, a_descriptor, isStruct);
@@ -50,6 +57,10 @@ namespace Spyll
 		OBJ_MEMBER_FROM_JSON(a_json, a_descriptor, name);
 		OBJ_MEMBER_FROM_JSON(a_json, a_descriptor, id);
 		OBJ_MEMBER_FROM_JSON(a_json, a_descriptor, alignment);
+
+		OBJ_OPTIONAL_MEMBER_FROM_JSON(a_json, a_descriptor, sourceFile);
+		OBJ_OPTIONAL_MEMBER_FROM_JSON(a_json, a_descriptor, sourceLine);
+		OBJ_OPTIONAL_MEMBER_FROM_JSON(a_json, a_descriptor, sourceColumn);
 
 		OBJ_OPTIONAL_MEMBER_FROM_JSON(a_json, a_descriptor, isComposite);
 		OBJ_OPTIONAL_MEMBER_FROM_JSON(a_json, a_descriptor, isStruct);

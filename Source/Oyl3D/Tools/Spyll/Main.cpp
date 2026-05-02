@@ -9,6 +9,22 @@ void
 ForEachStringInDelimitedList(std::string_view a_listString, char a_separator, TPred&& a_predicate);
 
 void
+AssemblyHandler(std::string_view a_value)
+{
+	g_tool.assemblyName = a_value;
+}
+
+void
+DependencyHandler(std::string_view a_value)
+{
+	ForEachStringInDelimitedList(
+		a_value,
+		';',
+		[&](std::string_view a_string) { g_tool.AddDependency(a_string); }
+	);
+}
+
+void
 IncludeHandler(std::string_view a_value)
 {
 	ForEachStringInDelimitedList(
@@ -55,8 +71,12 @@ main(int argc, char** argv)
 {
 	RegisterPositionalArgumentHandler(PositionalArgumentHandler);
 
+	RegisterNamedArgumentHandler("assembly", AssemblyHandler);
+	RegisterNamedArgumentHandler("dependency", DependencyHandler);
+
 	RegisterNamedArgumentHandler("include", IncludeHandler);
 	RegisterNamedArgumentHandler("externalinclude", ExternalIncludeHandler);
+
 	RegisterNamedArgumentHandler("pch", PchHandler);
 	RegisterNamedArgumentHandler("std", StdHandler);
 

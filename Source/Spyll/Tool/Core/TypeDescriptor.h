@@ -1,5 +1,6 @@
 #pragma once
 
+#include <filesystem>
 #include <string>
 
 #include "DescriptorEnums.h"
@@ -17,6 +18,10 @@ namespace Spyll
 	struct TypeDescriptor
 	{
 		std::string name;
+
+		std::string sourceFile;
+		uint32_t sourceLine = (uint32_t) -1;
+		uint32_t sourceColumn = (uint32_t) -1;
 
 		TypeDescriptorId id = TypeDescriptorId::Invalid;
 

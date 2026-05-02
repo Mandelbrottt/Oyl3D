@@ -34,6 +34,12 @@ namespace Oyl
 		defines.emplace_back(std::move(a_define));
 	}
 
+	void
+	SpyllTool::AddDependency(std::string_view a_dependency)
+	{
+		dependencies.emplace_back(std::move(a_dependency));
+	}
+
 	int
 	SpyllTool::Run()
 	{

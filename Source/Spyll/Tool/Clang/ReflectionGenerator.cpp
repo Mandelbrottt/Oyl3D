@@ -34,6 +34,7 @@ namespace Spyll
 	struct ReflectionGenerator::Impl
 	{
 		clang::ASTContext* context;
+		clang::SourceManager* sourceManager;
 
 		std::unordered_map<const void*, TypeDescriptor> types;
 		std::unordered_map<const void*, FieldDescriptor> fields;
@@ -79,7 +80,7 @@ namespace Spyll
 	bool
 	ReflectionGenerator::IsScraped(const clang::CXXRecordDecl* Decl) const
 	{
-		Decl = Decl->getCanonicalDecl();
+		Decl = Decl->getDefinition();
 		return m_impl->types.find(Decl) != m_impl->types.end();
 	}
 
@@ -107,14 +108,14 @@ namespace Spyll
 	bool
 	ReflectionGenerator::IsScraped(const clang::EnumDecl* Decl) const
 	{
-		const auto* canonicalDecl = Decl->getCanonicalDecl();
-		return m_impl->enums.find(canonicalDecl) != m_impl->enums.end();
+		Decl = Decl->getDefinition();
+		return m_impl->enums.find(Decl) != m_impl->enums.end();
 	}
 
 	TypeDescriptor&
 	ReflectionGenerator::ScrapeDecl(const clang::CXXRecordDecl* Decl)
 	{
-		Decl = Decl->getCanonicalDecl();
+		Decl = Decl->getDefinition();
 
 		if (IsScraped(Decl))
 		{
@@ -307,7 +308,7 @@ namespace Spyll
 	EnumDescriptor&
 	ReflectionGenerator::ScrapeDecl(const clang::EnumDecl* Decl)
 	{
-		Decl = Decl->getCanonicalDecl();
+		Decl = Decl->getDefinition();
 
 		if (IsScraped(Decl))
 		{
@@ -355,6 +356,12 @@ namespace Spyll
 		AddPrimitiveTypes();
 	}
 
+	void
+	ReflectionGenerator::SetSourceManager(clang::SourceManager* SM)
+	{
+		m_impl->sourceManager = SM;
+	}
+
 	template<typename DescriptorT>
 	void
 	CopyDescriptorMapToList(
@@ -388,7 +395,7 @@ namespace Spyll
 	TypeDescriptor&
 	ReflectionGenerator::AddType(const clang::CXXRecordDecl* Decl)
 	{
-		Decl = Decl->getCanonicalDecl();
+		Decl = Decl->getDefinition();
 
 		if (IsScraped(Decl))
 		{
@@ -399,6 +406,11 @@ namespace Spyll
 		descriptor.name = Decl->getTypeForDecl()
 							  ->getCanonicalTypeInternal()
 							  .getAsString(m_impl->context->getPrintingPolicy());
+
+		auto location = Decl->getLocation();
+		descriptor.sourceFile = std::filesystem::absolute(m_impl->sourceManager->getFilename(location).str()).string();
+		descriptor.sourceLine = m_impl->sourceManager->getSpellingLineNumber(location);
+		descriptor.sourceColumn = m_impl->sourceManager->getSpellingColumnNumber(location);
 
 		descriptor.isComposite = true;
 		descriptor.isStruct = Decl->isStruct();
@@ -418,7 +430,7 @@ namespace Spyll
 		if (Type->isArrayType())
 			Type = Type->getBaseElementTypeUnsafe();
 
-		if (Type->isPointerType() || Type->isLValueReferenceType())
+		if (Type->isPointerType() || Type->isReferenceType())
 			Type = Type->getPointeeType().getTypePtr();
 
 		Type = Type->getCanonicalTypeInternal().getTypePtr();

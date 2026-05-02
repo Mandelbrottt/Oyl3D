@@ -4,6 +4,10 @@
 #include "Function.h"
 #include "Type.h"
 
+namespace Oyl::Reflection::Internal {
+	struct AssemblyParams;
+}
+
 namespace Oyl::Reflection
 {
 	namespace Internal
@@ -15,7 +19,8 @@ namespace Oyl::Reflection
 	{
 		friend Internal::ReflectionFactory;
 
-		Assembly();
+		explicit
+		Assembly(const Internal::AssemblyParams& a_params);
 
 	public:
 		~Assembly();
@@ -52,8 +57,7 @@ namespace Oyl::Reflection
 		SetupAssemblyMaps();
 
 	private:
-		static std::vector<Assembly*> s_assemblies;
-		static std::unordered_map<std::string_view, Assembly*> s_assemblyMap;
+		std::string_view m_name;
 
 		std::vector<Type*> m_types;
 		std::unordered_map<std::string_view, Type*> m_typeMap;

@@ -11,7 +11,11 @@ namespace Oyl::Reflection::Internal
 	Oyl::Reflection::Assembly*
 	ReflectionFactory::CreateAssembly(const AssemblyParams& a_params, ReflectionAllocatorFn a_allocate)
 	{
-		return TODO_IMPLEMENT_ME;
+		void* buf = a_allocate(sizeof(Assembly), (std::align_val_t) alignof(Assembly));
+		Assembly* assembly = std::launder(reinterpret_cast<Assembly*>(buf));
+		new(assembly) Assembly(a_params);
+
+		return assembly;
 	}
 
 	Type*

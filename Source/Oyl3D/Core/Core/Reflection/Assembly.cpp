@@ -1,23 +1,14 @@
 #include "Assembly.h"
 
-//extern "C"
-//{
-	//void
-	//_PopulateReflectionAssembly(Oyl::Reflection::Assembly* a_assembly)
-	//{
-	//	using namespace Oyl::Reflection;
-
-	//	Type type;
-	//	type.m_assembly = a_assembly;
-	//}
-//}
+#include "ReflectionFactory.h"
 
 namespace Oyl::Reflection
 {
-	std::vector<Assembly*> Assembly::s_assemblies;
-	std::unordered_map<std::string_view, Assembly*> Assembly::s_assemblyMap;
+	static std::vector<Assembly*> g_assemblies;
+	static std::unordered_map<std::string_view, Assembly*> g_assemblyMap;
 
-	Assembly::Assembly() {}
+	Assembly::Assembly(const Internal::AssemblyParams& a_params)
+		: m_name(a_params.name) {}
 
 	Assembly::~Assembly() {}
 
@@ -26,7 +17,7 @@ namespace Oyl::Reflection
 	{
 		return m_types;
 	}
-	
+
 	const std::vector<Function*>&
 	Assembly::GetFreeFunctions() const
 	{
@@ -54,14 +45,14 @@ namespace Oyl::Reflection
 	const std::vector<Assembly*>&
 	Assembly::GetAssemblies()
 	{
-		return s_assemblies;
+		return g_assemblies;
 	}
 
 	Assembly*
 	Assembly::GetAssembly(std::string_view a_assemblyName)
 	{
-		auto iter = s_assemblyMap.find(a_assemblyName);
-		if (iter == s_assemblyMap.end())
+		auto iter = g_assemblyMap.find(a_assemblyName);
+		if (iter == g_assemblyMap.end())
 			return nullptr;
 		return iter->second;
 	}

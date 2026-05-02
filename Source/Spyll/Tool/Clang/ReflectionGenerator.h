@@ -64,6 +64,9 @@ namespace Spyll
 		void
 		Setup(clang::ASTContext* Context);
 
+		void
+		SetSourceManager(clang::SourceManager* SM);
+
 		ReflectionDescriptor
 		GetReflectionDescriptor() const;
 
