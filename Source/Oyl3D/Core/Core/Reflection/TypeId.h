@@ -1,6 +1,7 @@
 #pragma once
 
-#include <stdint.h>
+#include <cassert>
+#include <cstdint>
 
 namespace Oyl::Reflection
 {

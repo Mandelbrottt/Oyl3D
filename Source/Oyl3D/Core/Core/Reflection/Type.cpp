@@ -28,6 +28,8 @@ namespace Oyl::Reflection
 	{
 		m_impl = new Impl;
 
+		m_impl->assembly = a_params.assembly;
+
 		m_impl->typeId = a_params.typeId;
 		m_impl->size = a_params.size;
 

@@ -23,7 +23,7 @@ namespace Oyl::Reflection::Internal
 		
 		static
 		::Oyl::Reflection::Type*
-		AddTypeToAssembly(Assembly* a_assembly, const TypeParams& a_params, ReflectionAllocatorFn a_allocate);
+		AddTypeToAssembly(::Oyl::Reflection::Assembly* a_assembly, const TypeParams& a_params, ReflectionAllocatorFn a_allocate);
 
 		static
 		::Oyl::Reflection::Field*
@@ -41,6 +41,8 @@ namespace Oyl::Reflection::Internal
 
 	struct TypeParams
 	{
+		Assembly* assembly;
+
 		TypeId typeId;
 
 		std::string_view qualifiedName;

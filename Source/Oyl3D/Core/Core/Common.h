@@ -26,19 +26,19 @@
 #		define OYL_BUILD_STATIC_LIB
 #	endif
 
-#	ifndef _OYL_CORE_EXPORT
+#	ifndef _OYL_EXPORT
 #		if defined(_MSC_VER) || defined(__MINGW32__) || defined(__MINGW64__)
-#			define _OYL_CORE_EXPORT __declspec(dllexport)
-#			define _OYL_CORE_IMPORT __declspec(dllimport)
+#			define _OYL_EXPORT __declspec(dllexport)
+#			define _OYL_IMPORT __declspec(dllimport)
 #		else
-#			define _OYL_CORE_EXPORT __attribute__((visibility("default")))
-#			define _OYL_CORE_IMPORT __attribute__((visibility("default")))
+#			define _OYL_EXPORT __attribute__((visibility("default")))
+#			define _OYL_IMPORT __attribute__((visibility("default")))
 #		endif
 #	endif
 
 #	if defined(__REFLECT_GENERATE__)
 #		define __REFLECT__ __attribute__((annotate("reflect")))
-#		define OYL_CORE_API __REFLECT__
+#		define OYL_CORE_API _OYL_EXPAND(__REFLECT__)
 #	endif
 
 #	ifndef OYL_CORE_API
@@ -46,9 +46,9 @@
 #			define OYL_CORE_API
 #		elif defined(OYL_BUILD_SHARED_LIB)
 #			ifdef _INSIDE_OYL_CORE
-#				define OYL_CORE_API _OYL_CORE_EXPORT
+#				define OYL_CORE_API _OYL_EXPORT
 #			else
-#				define OYL_CORE_API _OYL_CORE_IMPORT
+#				define OYL_CORE_API _OYL_IMPORT
 #			endif
 #		endif
 #	endif

@@ -5,7 +5,10 @@
 namespace Spyll
 {
 	DeclVisitor::DeclVisitor(clang::SourceManager& SM, ReflectionGenerator* Generator)
-		: SourceManager(SM), Generator(Generator) {}
+		: SourceManager(SM), Generator(Generator)
+	{
+		Generator->SetSourceManager(&SM);
+	}
 
 	DeclVisitor::~DeclVisitor() {}
 	
