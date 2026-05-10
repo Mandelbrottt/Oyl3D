@@ -350,13 +350,13 @@ RegisterParametersForFunction(
 			continue;
 		}
 
-		const auto& returnType = a_descriptor.types[(size_t) a_function.returnType];
+		const auto& type = a_descriptor.types[(size_t) variable.type];
 
 		a_stream << a_indent << "{\n";
 		a_stream << a_indent << "\tOyl::Reflection::Internal::VariableParams VariableParams;\n";
 		a_stream << a_indent << "\tVariableParams.qualifiedName = \"" << variable.name << "\";\n";
 		a_stream << a_indent << "\tVariableParams.name = VariableParams.qualifiedName.substr(" << (!variable.name.empty() ? a_function.name.size() + 2 : 0) << ");\n";
-		a_stream << a_indent << "\tVariableParams.type = Oyl::Reflection::Type::Get<" << returnType.name << ">();\n";
+		a_stream << a_indent << "\tVariableParams.type = Oyl::Reflection::Type::Get<" << type.name << ">();\n";
 		a_stream << a_indent << "\tVariableParams.isConst = " << variable.isConst << ";\n";
 		a_stream << a_indent << "\tVariableParams.isVolatile = " << variable.isVolatile << ";\n";
 		a_stream << a_indent << "\tVariableParams.isPointer = " << variable.isPointer << ";\n";
