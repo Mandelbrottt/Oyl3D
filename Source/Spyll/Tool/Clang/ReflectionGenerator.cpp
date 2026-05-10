@@ -3,7 +3,6 @@
 #include <clang/AST/RecordLayout.h>
 
 #include "Spyll/Tool/Core/EnumDescriptor.h"
-#include "Spyll/Tool/Core/FieldDescriptor.h"
 #include "Spyll/Tool/Core/FunctionDescriptor.h"
 #include "Spyll/Tool/Core/TypeDescriptor.h"
 #include "Spyll/Tool/Core/VariableDescriptor.h"
@@ -16,6 +15,7 @@ namespace
 namespace Spyll
 {
 	using AccessSpecifier = Reflection::AccessSpecifier;
+	using ConstructorType = Reflection::ConstructorType;
 
 	inline
 	AccessSpecifier
@@ -37,7 +37,6 @@ namespace Spyll
 		clang::SourceManager* sourceManager;
 
 		std::unordered_map<const void*, TypeDescriptor> types;
-		std::unordered_map<const void*, FieldDescriptor> fields;
 		std::unordered_map<const void*, VariableDescriptor> variables;
 		std::unordered_map<const void*, FunctionDescriptor> functions;
 		std::unordered_map<const void*, EnumDescriptor> enums;
@@ -88,7 +87,7 @@ namespace Spyll
 	ReflectionGenerator::IsScraped(const clang::FieldDecl* Decl) const
 	{
 		const auto* canonicalDecl = Decl->getCanonicalDecl();
-		return m_impl->fields.find(canonicalDecl) != m_impl->fields.end();
+		return m_impl->variables.find(canonicalDecl) != m_impl->variables.end();
 	}
 
 	bool
@@ -146,6 +145,11 @@ namespace Spyll
 
 		for (clang::FunctionDecl* iter : Decl->methods())
 		{
+			if (iter->isDeleted())
+			{
+				continue;
+			}
+
 			auto& function = ScrapeDecl(iter);
 			function.ownerType = descriptor.id;
 		}
@@ -163,29 +167,29 @@ namespace Spyll
 		return descriptor;
 	}
 
-	FieldDescriptor&
+	VariableDescriptor&
 	ReflectionGenerator::ScrapeDecl(const clang::FieldDecl* Decl)
 	{
 		Decl = Decl->getCanonicalDecl();
 
 		if (IsScraped(Decl))
 		{
-			return m_impl->fields.at(Decl);
+			return m_impl->variables.at(Decl);
 		}
 
 		clang::QualType qualifiedType = Decl->getType();
 		const auto* typePtr = qualifiedType.getTypePtr();
 		const auto& typeDesc = AddType(typePtr);
 
-		const auto* parentTypeDecl = llvm::dyn_cast<clang::CXXRecordDecl>(Decl->getParent());
-
-		auto& parentRecordLayout = m_impl->context->getASTRecordLayout(parentTypeDecl);
-		auto offset = parentRecordLayout.getFieldOffset(Decl->getFieldIndex()); // Offset is in bits
-
-		FieldDescriptor descriptor;
-		descriptor.id = GetNewDescriptorId<FieldDescriptorId>();
+		VariableDescriptor descriptor;
+		descriptor.id = GetNewDescriptorId<VariableDescriptorId>();
 		descriptor.name = Decl->getQualifiedNameAsString();
 		descriptor.type = typeDesc.id;
+
+		// Get offset
+		const auto* parentTypeDecl = llvm::dyn_cast<clang::CXXRecordDecl>(Decl->getParent());
+		auto& parentRecordLayout = m_impl->context->getASTRecordLayout(parentTypeDecl);
+		auto offset = parentRecordLayout.getFieldOffset(Decl->getFieldIndex()); // Offset is in bits
 		descriptor.offsetInBits = uint32_t(offset);
 
 		auto cvrQualifiers = qualifiedType.getCVRQualifiers();
@@ -197,7 +201,7 @@ namespace Spyll
 
 		descriptor.accessSpecifier = ToAccessSpecifier(Decl->getAccess());
 		
-		auto [iter, emplaced] = m_impl->fields.emplace(Decl, std::move(descriptor));
+		auto [iter, emplaced] = m_impl->variables.emplace(Decl, std::move(descriptor));
 		auto& [ptr, result] = *iter;
 		return result;
 	}
@@ -216,22 +220,26 @@ namespace Spyll
 		const auto* typePtr = qualifiedType.getTypePtr();
 		const auto& typeDesc = AddType(typePtr);
 
-		// Guaranteed to be true, we're inside the parent
 		VariableDescriptor descriptor;
 		descriptor.id = GetNewDescriptorId<VariableDescriptorId>();
 		descriptor.type = typeDesc.id;
 		descriptor.name = Decl->getQualifiedNameAsString();
 
-		// Special check for static members
+		// static data member
 		if (const auto* parentDecl = llvm::dyn_cast<clang::CXXRecordDecl>(Decl->getDeclContext()))
 		{
-			descriptor.accessSpecifier = ToAccessSpecifier(parentDecl->getAccess());
+			descriptor.accessSpecifier = ToAccessSpecifier(Decl->getAccess());
 
-			// Add this field to parent descriptor, static fields aren't already iterated
-			// parent is likely already scraped, just easy to get descriptor this way
+			// Associate this field with parent descriptor
 			auto& parentDesc = ScrapeDecl(parentDecl);
 			descriptor.ownerType = parentDesc.id;
+		} else
+		{
+			descriptor.accessSpecifier = AccessSpecifier::None;
+			descriptor.ownerType = TypeDescriptorId::Invalid;
 		}
+
+		descriptor.offsetInBits = (uint32_t) -1;
 
 		auto cvrQualifiers = qualifiedType.getCVRQualifiers();
 		descriptor.isConst = cvrQualifiers & clang::Qualifiers::Const;
@@ -271,9 +279,15 @@ namespace Spyll
 		descriptor.isReturnPointer = returnType->isPointerType();
 		descriptor.isReturnReference = returnType->isLValueReferenceType();
 
+		descriptor.constructorType = ConstructorType::None;
+
 		// Member function specific logic
 		if (const auto* methodDecl = llvm::dyn_cast<clang::CXXMethodDecl>(Decl))
 		{
+			// Associate this function with parent descriptor
+			auto& parentDesc = ScrapeDecl(methodDecl->getParent());
+			descriptor.ownerType = parentDesc.id;
+
 			descriptor.accessSpecifier = ToAccessSpecifier(methodDecl->getAccess());
 			descriptor.isStatic = methodDecl->isStatic();
 			descriptor.isConst = methodDecl->isConst();
@@ -282,8 +296,28 @@ namespace Spyll
 			descriptor.isVirtual = methodDecl->isVirtual();
 			descriptor.isPureVirtual = methodDecl->isPureVirtual();
 			descriptor.isOverride = methodDecl->size_overridden_methods() != 0;
+
+			if (const auto* constructorDecl = llvm::dyn_cast<clang::CXXConstructorDecl>(methodDecl))
+			{
+				if (constructorDecl->isDefaultConstructor())
+				{
+					descriptor.constructorType = ConstructorType::Default;
+				} else if (constructorDecl->isCopyConstructor())
+				{
+					descriptor.constructorType = ConstructorType::Copy;
+				} else if (constructorDecl->isMoveConstructor())
+				{
+					descriptor.constructorType = ConstructorType::Move;
+				}
+			} else if (const auto* destructorDecl = llvm::dyn_cast<clang::CXXDestructorDecl>(methodDecl))
+			{
+				(void) destructorDecl;
+				descriptor.constructorType = ConstructorType::Destructor;
+			} 
 		} else
 		{
+			descriptor.ownerType = TypeDescriptorId::Invalid;
+
 			descriptor.accessSpecifier = AccessSpecifier::None;
 			descriptor.isStatic = false;
 			descriptor.isConst = false;
@@ -298,8 +332,11 @@ namespace Spyll
 		{
 			auto& paramDescriptor = ScrapeDecl(paramDecl);
 
-			// ParmDecl doesn't add function name to qualified name
-			paramDescriptor.name = descriptor.name + "::" + paramDescriptor.name;
+			if (!paramDescriptor.name.empty())
+			{
+				// ParmDecl doesn't add function name to qualified name
+				paramDescriptor.name = descriptor.name + "::" + paramDescriptor.name;
+			}
 			paramDescriptor.ownerFunction = descriptor.id;
 		}
 		
@@ -387,7 +424,6 @@ namespace Spyll
 		ReflectionDescriptor descriptor;
 
 		CopyDescriptorMapToList(m_impl->types, &descriptor.types);
-		CopyDescriptorMapToList(m_impl->fields, &descriptor.fields);
 		CopyDescriptorMapToList(m_impl->functions, &descriptor.functions);
 		CopyDescriptorMapToList(m_impl->variables, &descriptor.variables);
 		CopyDescriptorMapToList(m_impl->enums, &descriptor.enums);
@@ -452,6 +488,7 @@ namespace Spyll
 		auto& descriptor = GetOrAddTypeDescriptor(Type);
 		descriptor.name = Type->getCanonicalTypeInternal()
 							  .getAsString(m_impl->context->getPrintingPolicy());
+		descriptor.isOpaque = true;
 		descriptor.isComposite = Type->isCompoundType();
 		descriptor.isStruct = Type->isStructureType();
 		descriptor.sizeInBits = uint32_t(m_impl->context->getTypeSize(Type));

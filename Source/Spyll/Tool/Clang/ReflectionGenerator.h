@@ -49,7 +49,7 @@ namespace Spyll
 		TypeDescriptor&
 		ScrapeDecl(const clang::CXXRecordDecl* Decl);
 
-		FieldDescriptor&
+		VariableDescriptor&
 		ScrapeDecl(const clang::FieldDecl* Decl);
 
 		VariableDescriptor&

@@ -257,34 +257,6 @@ RegisterFieldsForType(
 	const Spyll::TypeDescriptor& a_ownerType
 )
 {
-	for (const auto& field : a_descriptor.fields)
-	{
-		if (field.ownerType != a_ownerType.id)
-		{
-			continue;
-		}
-
-		const auto& type = a_descriptor.types[(size_t) field.type];
-
-		auto ownerTypeVar = GetTypeNameAsVar(a_ownerType.name);
-
-		a_stream << a_indent << "{\n";
-		a_stream << a_indent << "\tOyl::Reflection::Internal::FieldParams FieldParams;\n";
-		a_stream << a_indent << "\tFieldParams.qualifiedName = \"" << field.name << "\";\n";
-		a_stream << a_indent << "\tFieldParams.name = FieldParams.qualifiedName.substr(" << a_ownerType.name.size() + 2 << ");\n";
-		a_stream << a_indent << "\tFieldParams.type = Oyl::Reflection::Type::Get<" << type.name << ">();\n";
-		a_stream << a_indent << "\tFieldParams.ownerType = " << ownerTypeVar << ";\n";
-		a_stream << a_indent << "\tFieldParams.offsetInBits = " << field.offsetInBits << ";\n";
-		a_stream << a_indent << "\tFieldParams.accessSpecifier = (Oyl::Reflection::AccessSpecifier) (" << (uint32_t) field.accessSpecifier << ");\n";
-		a_stream << a_indent << "\tFieldParams.isStatic = false;\n";
-		a_stream << a_indent << "\tFieldParams.isConst = " << field.isConst << ";\n";
-		a_stream << a_indent << "\tFieldParams.isVolatile = " << field.isVolatile << ";\n";
-		a_stream << a_indent << "\tFieldParams.isReference = " << field.isReference << ";\n";
-		a_stream << a_indent << "\tFieldParams.isPointer = " << field.isPointer << ";\n";
-		a_stream << a_indent << "\tOyl::Reflection::Internal::ReflectionFactory::AddFieldToType(" << ownerTypeVar << ", FieldParams, a_allocate);\n";
-		a_stream << a_indent << "}\n";
-	}
-
 	for (const auto& variable : a_descriptor.variables)
 	{
 		if (variable.ownerType != a_ownerType.id)
@@ -302,9 +274,9 @@ RegisterFieldsForType(
 		a_stream << a_indent << "\tFieldParams.name = FieldParams.qualifiedName.substr(" << a_ownerType.name.size() + 2 << ");\n";
 		a_stream << a_indent << "\tFieldParams.type = Oyl::Reflection::Type::Get<" << type.name << ">();\n";
 		a_stream << a_indent << "\tFieldParams.ownerType = " << ownerTypeVar << ";\n";
-		a_stream << a_indent << "\tFieldParams.offsetInBits = (uint32_t) " << -1 << ";\n";
+		a_stream << a_indent << "\tFieldParams.offsetInBits = " << variable.offsetInBits << ";\n";
 		a_stream << a_indent << "\tFieldParams.accessSpecifier = (Oyl::Reflection::AccessSpecifier) (" << (uint32_t) variable.accessSpecifier << ");\n";
-		a_stream << a_indent << "\tFieldParams.isStatic = true;\n";
+		a_stream << a_indent << "\tFieldParams.isStatic = " << (variable.offsetInBits == (uint32_t) -1) << ";\n";
 		a_stream << a_indent << "\tFieldParams.isConst = " << variable.isConst << ";\n";
 		a_stream << a_indent << "\tFieldParams.isVolatile = " << variable.isVolatile << ";\n";
 		a_stream << a_indent << "\tFieldParams.isReference = " << variable.isReference << ";\n";
@@ -382,8 +354,8 @@ RegisterParametersForFunction(
 
 		a_stream << a_indent << "{\n";
 		a_stream << a_indent << "\tOyl::Reflection::Internal::VariableParams VariableParams;\n";
-		a_stream << a_indent << "\tVariableParams.qualifiedName = \"" << a_function.name << "::" << variable.name << "\";\n";
-		a_stream << a_indent << "\tVariableParams.name = VariableParams.qualifiedName.substr(" << a_function.name.size() + 2 << ");\n";
+		a_stream << a_indent << "\tVariableParams.qualifiedName = \"" << variable.name << "\";\n";
+		a_stream << a_indent << "\tVariableParams.name = VariableParams.qualifiedName.substr(" << (!variable.name.empty() ? a_function.name.size() + 2 : 0) << ");\n";
 		a_stream << a_indent << "\tVariableParams.type = Oyl::Reflection::Type::Get<" << returnType.name << ">();\n";
 		a_stream << a_indent << "\tVariableParams.isConst = " << variable.isConst << ";\n";
 		a_stream << a_indent << "\tVariableParams.isVolatile = " << variable.isVolatile << ";\n";

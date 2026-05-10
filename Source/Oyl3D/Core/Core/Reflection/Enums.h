@@ -15,6 +15,7 @@ namespace Oyl::Reflection
 		None,
 		Default,
 		Copy,
-		Move
+		Move,
+		Destructor
 	};
 }
