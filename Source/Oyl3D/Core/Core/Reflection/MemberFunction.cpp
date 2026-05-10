@@ -10,7 +10,5 @@ namespace Oyl::Reflection
 		  m_constructorType(a_params.constructorType),
 		  m_isVirtual(a_params.isVirtual),
 		  m_isPureVirtual(a_params.isPureVirtual),
-		  m_isOverride(a_params.isOverride),
-		  m_isConst(a_params.isConst),
-		  m_isVolatile(a_params.isVolatile) {}
+		  m_isOverride(a_params.isOverride) {}
 }

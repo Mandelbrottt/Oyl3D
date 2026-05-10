@@ -36,9 +36,17 @@ namespace Oyl::Reflection
 			return m_accessSpecifier;
 		}
 
+		bool
+		IsStatic() const
+		{
+			return m_isStatic;
+		}
+
 	private:
 		Type* m_owningType = nullptr;
 
 		AccessSpecifier m_accessSpecifier = AccessSpecifier::None;
+
+		bool m_isStatic;
 	};
 }

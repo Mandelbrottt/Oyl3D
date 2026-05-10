@@ -86,6 +86,8 @@ namespace Oyl::Reflection::Internal
 		Type* ownerType;
 		
 		AccessSpecifier accessSpecifier;
+		
+		bool isStatic;
 	};
 
 	struct FieldParams : VariableParams, MemberInfoParams
@@ -97,17 +99,13 @@ namespace Oyl::Reflection::Internal
 	{
 		Type* returnType;
 
-		bool isStatic;
-		bool isConst;
-		bool isVolatile;
-
 		bool isReturnConst;
 		bool isReturnVolatile;
 		bool isReturnReference;
 		bool isReturnPointer;
 	};
 
-	struct MemberFunctionParams : FunctionParams, MemberInfoParams
+	struct MemberFunctionParams : FunctionParams, QualifierInfoParams, MemberInfoParams
 	{
 		ConstructorType constructorType;
 
