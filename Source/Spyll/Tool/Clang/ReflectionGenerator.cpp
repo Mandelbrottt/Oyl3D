@@ -297,6 +297,9 @@ namespace Spyll
 		for (const auto* paramDecl : Decl->parameters())
 		{
 			auto& paramDescriptor = ScrapeDecl(paramDecl);
+
+			// ParmDecl doesn't add function name to qualified name
+			paramDescriptor.name = descriptor.name + "::" + paramDescriptor.name;
 			paramDescriptor.ownerFunction = descriptor.id;
 		}
 		
