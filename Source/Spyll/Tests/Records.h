@@ -45,14 +45,8 @@ private:
 	Spyll::ReflectionDescriptor
 	Descriptor(const Spyll::SpyllTool* a_tool) const
 	{
-		auto& map = a_tool->GetReflectionGeneratorMap();
-		for (const auto& [path, generator] : map)
-		{
-			if (path.find(s_compileTarget) != std::string::npos)
-			{
-				return generator->GetReflectionDescriptor();
-			}
-		}
+		auto* parser = a_tool->GetReflectionParser();
+
 		throw "No matching generator found!";
 	}
 };
