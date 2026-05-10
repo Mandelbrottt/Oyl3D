@@ -1,5 +1,11 @@
 #pragma once
 
+#include <string>
+
+namespace Spyll {
+	struct ReflectionDescriptor;
+}
+
 namespace Oyl {
 	struct SpyllTool;
 }
