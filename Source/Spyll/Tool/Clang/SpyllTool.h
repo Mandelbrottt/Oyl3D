@@ -7,6 +7,7 @@
 #include <clang/Basic/DiagnosticOptions.h>
 
 #include "ReflectionGenerator.h"
+#include "ReflectionParser.h"
 
 #include "Spyll/Tool/Core/ReflectionDescriptor.h"
 
@@ -31,7 +32,6 @@ namespace Spyll
 		SpyllTool();
 
 	public:
-		using ReflectionGeneratorMap = std::unordered_map<std::string, std::unique_ptr<ReflectionGenerator>>;
 		using OnSetDiagnosticOptionsFn = void(*)(clang::DiagnosticOptions*);
 
 		virtual
@@ -53,17 +53,14 @@ namespace Spyll
 		void
 		OnSetDiagnosticOptions(clang::DiagnosticOptions* a_diagnosticOptions);
 
-		ReflectionGenerator*
-		CreateNewReflectionGenerator(std::string_view a_path);
-
-		const ReflectionGeneratorMap&
-		GetReflectionGeneratorMap() const;
-
-		ReflectionDescriptor
-		GetMergedReflectionDescriptor() const;
+		const ReflectionParser*
+		GetReflectionParser() const
+		{
+			return &m_reflectionParser;
+		}
 
 	protected:
-		ReflectionGeneratorMap m_generators;
+		ReflectionParser m_reflectionParser;
 
 		OnSetDiagnosticOptionsFn m_diagnosticOptionsFn = nullptr;
 

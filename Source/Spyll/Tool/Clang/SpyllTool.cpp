@@ -1,6 +1,6 @@
 #include "SpyllTool.h"
 
-#include "Action.h"
+#include "ReflectionParser.h"
 
 namespace tooling = clang::tooling;
 namespace cl = llvm::cl;
@@ -13,20 +13,20 @@ namespace Spyll
 		{
 		public:
 			explicit
-			ToolFrontendActionFactory(SpyllTool* Tool)
-				: m_tool(Tool) {}
+			ToolFrontendActionFactory(ReflectionParser* Parser)
+				: m_parser(Parser) {}
 
 			std::unique_ptr<clang::FrontendAction>
 			create() override
 			{
-				return std::make_unique<DeclFindingAction>(m_tool);
+				return std::make_unique<ReflectionParserAction>(m_parser);
 			}
 
 		private:
-			SpyllTool* m_tool;
+			ReflectionParser* m_parser;
 		};
 
-		m_action = std::make_unique<ToolFrontendActionFactory>(this);
+		m_action = std::make_unique<ToolFrontendActionFactory>(&m_reflectionParser);
 	}
 
 	SpyllTool::~SpyllTool() {}
@@ -63,29 +63,5 @@ namespace Spyll
 		{
 			m_diagnosticOptionsFn(a_diagnosticOptions);
 		}
-	}
-
-	ReflectionGenerator*
-	SpyllTool::CreateNewReflectionGenerator(std::string_view a_path)
-	{
-		auto [kvp, _] = m_generators.emplace(a_path, std::make_unique<ReflectionGenerator>());
-		return kvp->second.get();
-	}
-
-	const SpyllTool::ReflectionGeneratorMap&
-	SpyllTool::GetReflectionGeneratorMap() const
-	{
-		return m_generators;
-	}
-
-	ReflectionDescriptor
-	SpyllTool::GetMergedReflectionDescriptor() const
-	{
-		std::vector<ReflectionDescriptor> reflectionDescriptors;
-		for (const auto& [fileName, generator] : m_generators)
-		{
-			reflectionDescriptors.emplace_back(generator->GetReflectionDescriptor());
-		}
-		return Detail::CreateMergedReflectionDescriptor(reflectionDescriptors);
 	}
 }

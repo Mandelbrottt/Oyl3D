@@ -79,9 +79,9 @@ namespace Spyll
 		m_impl->tool->SetPrintErrorMessage(a_shouldPrintMessage);
 	}
 
-	ReflectionDescriptor
-	OpaqueTool::GetMergedReflectionDescriptor() const
-	{
-		return m_impl->tool->GetMergedReflectionDescriptor();
-	}
+	//ReflectionDescriptor
+	//OpaqueTool::GetMergedReflectionDescriptor() const
+	//{
+	//	return m_impl->tool->GetMergedReflectionDescriptor();
+	//}
 }

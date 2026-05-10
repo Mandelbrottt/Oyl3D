@@ -17,14 +17,14 @@ main(int argc, const char** argv)
 
 	auto run = std::chrono::high_resolution_clock::now();
 
-	auto mergedReflectionDescriptor = tool.GetMergedReflectionDescriptor();
+	//auto mergedReflectionDescriptor = tool.GetMergedReflectionDescriptor();
 
 	auto merge = std::chrono::high_resolution_clock::now();
 
 	auto outputFile = tool.GetOutputFile();
 	auto binary = tool.ShouldOutputBinary();
 
-	WriteReflectionDescriptorToFile(mergedReflectionDescriptor, outputFile, binary);
+	//WriteReflectionDescriptorToFile(mergedReflectionDescriptor, outputFile, binary);
 
 	auto write = std::chrono::high_resolution_clock::now();
 

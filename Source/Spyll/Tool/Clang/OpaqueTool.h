@@ -40,9 +40,9 @@ namespace Spyll
 		void
 		SetPrintErrorMessage(bool a_shouldPrintMessage);
 
-		virtual
-		ReflectionDescriptor
-		GetMergedReflectionDescriptor() const;
+		//virtual
+		//ReflectionDescriptor
+		//GetMergedReflectionDescriptor() const;
 
 	private:
 		struct Impl;
