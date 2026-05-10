@@ -275,7 +275,9 @@ function Engine.GenerateOylSpyllInformation()
 		spyllCommand = spyllCommand .. " " .. str:match("^%s*(.-)%s*$")
 	end
 
-	appendToCommand '--std=%{prj.cppdialect:lower()}'
+	appendToCommand '--assembly="%{cfg.buildtarget.basename}"'
+
+	appendToCommand '--std="%{prj.cppdialect:lower()}"'
 
 	appendToCommand '--include="%{table.concat(prj.includedirs, ";")}"'
 	appendToCommand '--externalinclude="%{table.concat(prj.externalincludedirs, ";")}"'
@@ -283,8 +285,6 @@ function Engine.GenerateOylSpyllInformation()
 	
 	-- Only include --pch arg if project has a pch
 	appendToCommand '%{prj.pchheader and "--pch=" .. prj.pchheader or ""}'
-
-	appendToCommand ''
 
 	appendToCommand [[%{table.concat(
 		table.translate(
