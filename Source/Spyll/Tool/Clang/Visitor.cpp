@@ -61,7 +61,7 @@ namespace Spyll
 	bool
 	DeclVisitor::VisitVarDecl(clang::VarDecl* Decl)
 	{
-		if (!Decl->getDefinition() || !Decl->getIdentifier())
+		if ((!Decl->isStaticDataMember() && Decl->getKind() != clang::Decl::ParmVar))
 			return true;
 
 		// Only iterate fields as a part of type scraping
