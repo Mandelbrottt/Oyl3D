@@ -15,6 +15,7 @@ namespace Spyll::Reflection
 		None,
 		Default,
 		Copy,
-		Move
+		Move,
+		Destructor
 	};
 }

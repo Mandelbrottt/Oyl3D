@@ -3,7 +3,6 @@
 #include <nlohmann/json_fwd.hpp>
 
 #include "EnumDescriptor.h"
-#include "FieldDescriptor.h"
 #include "FunctionDescriptor.h"
 #include "ReflectionDescriptor.h"
 #include "TypeDescriptor.h"
@@ -52,14 +51,6 @@ namespace Spyll
 	void
 	from_json(const nlohmann::json& a_json, TypeDescriptor& a_descriptor);
 	// TypeDescriptor
-
-	// FieldDescriptor
-	void
-	to_json(nlohmann::json& a_json, const FieldDescriptor& a_descriptor);
-
-	void
-	from_json(const nlohmann::json& a_json, FieldDescriptor& a_descriptor);
-	// FieldDescriptor
 
 	// FunctionDescriptor
 	void

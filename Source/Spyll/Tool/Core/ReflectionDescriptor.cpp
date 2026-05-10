@@ -25,16 +25,12 @@ namespace
 	struct MergedReflectionDescriptor
 	{
 		std::unordered_map<std::string_view, TypeDescriptor> mergedTypes;
-		std::unordered_map<std::string_view, FieldDescriptor> mergedFields;
 		std::unordered_map<std::string_view, FunctionDescriptor> mergedFunctions;
 		std::unordered_map<std::string_view, VariableDescriptor> mergedVariables;
 		std::unordered_map<std::string_view, EnumDescriptor> mergedEnums;
 
 		void
 		ReconnectMergedTypes(const ReflectionDescriptor& a_originalDescriptor);
-
-		void
-		ReconnectMergedFields(const ReflectionDescriptor& a_originalDescriptor);
 
 		void
 		ReconnectMergedFunctions(const ReflectionDescriptor& a_originalDescriptor);
@@ -71,7 +67,6 @@ namespace Spyll::Detail
 		for (const auto& reflectionDescriptor : a_reflectionDescriptors)
 		{
 			MergeDescriptorListIntoMergedMap(reflectionDescriptor.types, &merged.mergedTypes);
-			MergeDescriptorListIntoMergedMap(reflectionDescriptor.fields, &merged.mergedFields);
 			MergeDescriptorListIntoMergedMap(reflectionDescriptor.functions, &merged.mergedFunctions);
 			MergeDescriptorListIntoMergedMap(reflectionDescriptor.variables, &merged.mergedVariables);
 			MergeDescriptorListIntoMergedMap(reflectionDescriptor.enums, &merged.mergedEnums);
@@ -83,7 +78,6 @@ namespace Spyll::Detail
 		for (const auto& tuDescriptor : a_reflectionDescriptors)
 		{
 			merged.ReconnectMergedTypes(tuDescriptor);
-			merged.ReconnectMergedFields(tuDescriptor);
 			merged.ReconnectMergedFunctions(tuDescriptor);
 			merged.ReconnectMergedVariables(tuDescriptor);
 			merged.ReconnectMergedEnums(tuDescriptor);
@@ -92,7 +86,6 @@ namespace Spyll::Detail
 		// Write the merged results to a new TranslationUnitDescriptor 
 		ReflectionDescriptor result;
 		MoveDescriptorsFromMergedMapToDescriptorList(&merged.mergedTypes, &result.types);
-		MoveDescriptorsFromMergedMapToDescriptorList(&merged.mergedFields, &result.fields);
 		MoveDescriptorsFromMergedMapToDescriptorList(&merged.mergedFunctions, &result.functions);
 		MoveDescriptorsFromMergedMapToDescriptorList(&merged.mergedVariables, &result.variables);
 		MoveDescriptorsFromMergedMapToDescriptorList(&merged.mergedEnums, &result.enums);
@@ -168,33 +161,6 @@ namespace
 	}
 
 	void
-	MergedReflectionDescriptor::ReconnectMergedFields(const ReflectionDescriptor& a_originalDescriptor)
-	{
-		for (const auto& originalField : a_originalDescriptor.fields)
-		{
-			// Get the mergedField with the originalField's name
-			auto& mergedField = mergedFields.at(originalField.name);
-
-			// Get the original type descriptor using the original ID as an index
-			auto originalTypeIndex = static_cast<std::underlying_type_t<FieldDescriptorId>>(originalField.type);
-			const auto& originalType = a_originalDescriptor.types.at(originalTypeIndex);
-
-			// Get the original owner type descriptor using the original ID as an index
-			auto originalOwningTypeIndex =
-				static_cast<std::underlying_type_t<TypeDescriptorId>>(originalField.ownerType);
-			const auto& originalOwnerType = a_originalDescriptor.types.at(originalOwningTypeIndex);
-
-			// Get the merged field and types by name
-			const auto& mergedType = mergedTypes.at(originalType.name);
-			const auto& mergedOwnerType = mergedTypes.at(originalOwnerType.name);
-
-			// Hook up the new IDs
-			mergedField.type = mergedType.id;
-			mergedField.ownerType = mergedOwnerType.id;
-		}
-	}
-
-	void
 	MergedReflectionDescriptor::ReconnectMergedFunctions(const ReflectionDescriptor& a_originalDescriptor)
 	{
 		for (const auto& originalFunction : a_originalDescriptor.functions)
@@ -241,7 +207,7 @@ namespace
 			// Hook up the new ID
 			mergedVariable.type = mergedType.id;
 
-			// If the owner type is valid, hook it up too
+			// If the owner type is valid, hook it up
 			if (originalVariable.ownerType != TypeDescriptorId::Invalid)
 			{
 				auto originalOwningTypeIndex
@@ -251,6 +217,18 @@ namespace
 				auto& mergedOwnerType = mergedTypes.at(originalOwnerType.name);
 
 				mergedVariable.ownerType = mergedOwnerType.id;
+			}
+
+			// If the owner function is valid, hook it up
+			if (originalVariable.ownerFunction != FunctionDescriptorId::Invalid)
+			{
+				auto originalOwningFunctionIndex
+					= static_cast<std::underlying_type_t<TypeDescriptorId>>(originalVariable.ownerFunction);
+				const auto& originalOwnerFunction = a_originalDescriptor.functions.at(originalOwningFunctionIndex);
+
+				auto& mergedOwnerFunction = mergedFunctions.at(originalOwnerFunction.name);
+
+				mergedVariable.ownerFunction = mergedOwnerFunction.id;
 			}
 		}
 	}
@@ -285,7 +263,6 @@ namespace Spyll
 		a_json = json {};
 
 		OBJ_MEMBER_AS_JSON(a_json, a_descriptor, types);
-		OBJ_MEMBER_AS_JSON(a_json, a_descriptor, fields);
 		OBJ_MEMBER_AS_JSON(a_json, a_descriptor, functions);
 		OBJ_MEMBER_AS_JSON(a_json, a_descriptor, variables);
 		OBJ_MEMBER_AS_JSON(a_json, a_descriptor, enums);
@@ -295,7 +272,6 @@ namespace Spyll
 	from_json(const json& a_json, ReflectionDescriptor& a_descriptor)
 	{
 		OBJ_MEMBER_FROM_JSON(a_json, a_descriptor, types);
-		OBJ_MEMBER_FROM_JSON(a_json, a_descriptor, fields);
 		OBJ_MEMBER_FROM_JSON(a_json, a_descriptor, functions);
 		OBJ_MEMBER_FROM_JSON(a_json, a_descriptor, variables);
 		OBJ_MEMBER_FROM_JSON(a_json, a_descriptor, enums);

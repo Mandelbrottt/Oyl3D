@@ -7,7 +7,7 @@
 namespace Spyll
 {
 #define DESCRIPTOR_ID(_name_) \
-	enum class _name_ : uint32_t \
+	enum class _name_ : uint64_t \
 	{ \
 		Invalid = static_cast<std::underlying_type_t<_name_>>(-1)\
 	}; \
