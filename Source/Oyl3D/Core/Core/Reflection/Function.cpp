@@ -12,4 +12,10 @@ namespace Oyl::Reflection
 		  m_isReturnVolatile(a_params.isReturnVolatile),
 		  m_isReturnReference(a_params.isReturnReference),
 		  m_isReturnPointer(a_params.isReturnPointer) {}
+
+	void
+	Function::AddParameter(Variable* a_variable)
+	{
+		m_parameters.emplace_back(a_variable);
+	}
 }

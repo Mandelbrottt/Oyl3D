@@ -32,6 +32,10 @@ namespace Oyl::Reflection::Internal
 		static
 		::Oyl::Reflection::MemberFunction*
 		AddFunctionToType(::Oyl::Reflection::Type* a_type, const MemberFunctionParams& a_params, ReflectionAllocatorFn a_allocate);
+
+		static
+		::Oyl::Reflection::Variable*
+		AddParameterToFunction(::Oyl::Reflection::Function* a_function, const VariableParams& a_params, ReflectionAllocatorFn a_allocate);
 	};
 
 	struct AssemblyParams
