@@ -50,4 +50,15 @@ namespace Oyl::Reflection::Internal
 		a_type->AddFunction(function);
 		return function;
 	}
+
+	Variable*
+	ReflectionFactory::AddParameterToFunction(Function* a_function, const VariableParams& a_params, ReflectionAllocatorFn a_allocate)
+	{
+		void* buf = a_allocate(sizeof(Variable), (std::align_val_t) alignof(Variable));
+		Variable* variable = std::launder(reinterpret_cast<Variable*>(buf));
+		new(variable) Variable(a_params);
+
+		a_function->AddParameter(variable);
+		return variable;
+	}
 }

@@ -3,6 +3,7 @@
 #include "Enums.h"
 #include "NamedDeclaration.h"
 #include "QualifierInfo.h"
+#include "Variable.h"
 
 namespace Oyl::Reflection::Internal {
 	struct FunctionParams;
@@ -58,6 +59,10 @@ namespace Oyl::Reflection
 		}
 
 	private:
+		void
+		AddParameter(Variable* a_variable);
+
+	private:
 		Type* m_returnType = nullptr;
 
 		bool m_isStatic = false;
@@ -66,5 +71,7 @@ namespace Oyl::Reflection
 		bool m_isReturnVolatile = false;
 		bool m_isReturnReference = false;
 		bool m_isReturnPointer = false;
+
+		std::vector<Variable*> m_parameters;
 	};
 }
