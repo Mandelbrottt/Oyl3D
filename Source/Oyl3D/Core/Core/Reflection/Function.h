@@ -35,12 +35,6 @@ namespace Oyl::Reflection
 		}
 
 		bool
-		IsStatic() const
-		{
-			return m_isStatic;
-		}
-
-		bool
 		IsReturnConst() const
 		{
 			return m_isReturnConst;
@@ -64,8 +58,6 @@ namespace Oyl::Reflection
 
 	private:
 		Type* m_returnType = nullptr;
-
-		bool m_isStatic = false;
 
 		bool m_isReturnConst = false;
 		bool m_isReturnVolatile = false;

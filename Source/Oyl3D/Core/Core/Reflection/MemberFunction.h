@@ -50,26 +50,11 @@ namespace Oyl::Reflection
 			return m_isOverride;
 		}
 
-		bool
-		IsConst() const
-		{
-			return m_isConst;
-		}
-
-		bool
-		IsVolatile() const
-		{
-			return m_isVolatile;
-		}
-
 	private:
 		ConstructorType m_constructorType = ConstructorType::None;
 
 		bool m_isVirtual = false;
 		bool m_isPureVirtual = false;
 		bool m_isOverride = false;
-
-		bool m_isConst = false;
-		bool m_isVolatile = false;
 	};
 }
