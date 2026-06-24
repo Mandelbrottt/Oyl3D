@@ -1,21 +1,23 @@
 #pragma once
 
+#include <clang/Frontend/FrontendAction.h>
+
 #include "ReflectionParser.h"
 
 namespace Spyll
 {
 	using OnSourceParsedFn = void(*)(const ReflectionParser*);
 
-	struct ReflectionEmitOptions
+	struct ReflectionParseOptions
 	{
-		OnSourceParsedFn onSourceParsedCallback;
+		OnSourceParsedFn onSourceParsedCallback = nullptr;
 	};
 
 	class ReflectionParseAction final : public clang::ASTFrontendAction
 	{
 	public:
 		explicit
-		ReflectionParseAction(ReflectionEmitOptions&& a_options);
+		ReflectionParseAction(ReflectionParseOptions* a_options);
 
 		std::unique_ptr<clang::ASTConsumer>
 		CreateASTConsumer(
@@ -26,7 +28,7 @@ namespace Spyll
 		void EndSourceFileAction() override;
 
 	private:
-		ReflectionEmitOptions m_options;
+		ReflectionParseOptions* m_options;
 
 		ReflectionParser Parser;
 	};
