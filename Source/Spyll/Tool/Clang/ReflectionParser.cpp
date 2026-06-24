@@ -23,6 +23,11 @@ namespace Spyll
 			}
 		}
 
+		if (auto ctx = llvm::dyn_cast<clang::CXXRecordDecl>(Decl->getDeclContext()))
+		{
+			return ShouldReflectDecl(ctx);
+		}
+
 		return false;
 	}
 
@@ -32,9 +37,30 @@ namespace Spyll
 		if (!Decl->isCompleteDefinition())
 			return true;
 
-		Parse(Decl);
+		if (!ShouldReflectDecl(Decl))
+			return true;
+
+		ParseCXXRecordDecl(Decl);
 
 		return true;
+	}
+
+	Class*
+	ReflectionParser::ParseCXXRecordDecl(clang::CXXRecordDecl* Decl)
+	{
+		if (!Decl->isCompleteDefinition())
+		{
+			Decl = Decl->getDefinition();
+		}
+
+		//if (IsParsed(Decl))
+		//{
+		//	return m_impl->types[Decl];
+		//}
+
+		Class* klass = new Class(Decl, !ShouldReflectDecl(Decl));
+
+		return klass;
 	}
 
 	bool
@@ -49,9 +75,20 @@ namespace Spyll
 		if (!Decl->getStorageClass() == clang::SC_Extern)
 			return true;
 
-		Parse(Decl);
+		if (!ShouldReflectDecl(Decl))
+			return true;
+
+		ParseFunctionDecl(Decl);
 
 		return true;
+	}
+	
+	Function*
+	ReflectionParser::ParseFunctionDecl(clang::FunctionDecl* Decl)
+	{
+		Function* function = new Function(Decl);
+
+		return function;
 	}
 
 	bool
@@ -63,20 +100,42 @@ namespace Spyll
 		if (!Decl->getStorageClass() == clang::SC_Extern)
 			return true;
 
-		Parse(Decl);
+		if (!ShouldReflectDecl(Decl))
+			return true;
+
+		ParseVarDecl(Decl);
 
 		return true;
 	}
 	
+	Variable*
+	ReflectionParser::ParseVarDecl(clang::VarDecl* Decl)
+	{
+		Variable* variable = new Variable(Decl, nullptr);
+
+		return variable;
+	}
+
 	bool
 	ReflectionParser::VisitEnumDecl(clang::EnumDecl* Decl)
 	{
 		if (!Decl->isCompleteDefinition())
 			return true;
 
-		Parse(Decl);
+		if (!ShouldReflectDecl(Decl))
+			return true;
+
+		ParseEnumDecl(Decl);
 
 		return true;
+	}
+	
+	Enum*
+	ReflectionParser::ParseEnumDecl(clang::EnumDecl* Decl)
+	{
+		Enum* enum_ = new Enum(Decl);
+
+		return enum_;
 	}
 
 	clang::SourceManager*
