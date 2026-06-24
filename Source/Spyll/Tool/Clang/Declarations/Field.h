@@ -23,7 +23,7 @@ namespace Spyll
 		~Field();
 
 	private:
-		clang::QualType m_type;
+		std::string m_type;
 
 		Class* m_parent;
 

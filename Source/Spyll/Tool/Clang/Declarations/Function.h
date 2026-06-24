@@ -1,7 +1,5 @@
 #pragma once
 
-#include <clang/AST/Type.h>
-
 #include "Declaration.h"
 
 namespace clang
@@ -15,7 +13,7 @@ namespace Spyll
 
 	struct Argument
 	{
-		clang::QualType type;
+		std::string type;
 		std::string name;
 	};
 
@@ -31,7 +29,7 @@ namespace Spyll
 	private:
 		Class* m_parent;
 
-		clang::QualType m_returnType;
+		std::string m_returnType;
 
 		std::vector<Argument> m_arguments;
 	};

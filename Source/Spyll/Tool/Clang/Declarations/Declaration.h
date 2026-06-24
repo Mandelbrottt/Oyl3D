@@ -11,13 +11,14 @@ namespace Spyll
 {
 	class Declaration
 	{
-	public:
+	protected:
 		explicit
 		Declaration(const clang::NamedDecl* a_decl);
 
 		virtual
 		~Declaration();
 
+	public:
 		virtual
 		bool
 		ShouldReflect() const;
