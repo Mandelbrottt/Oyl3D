@@ -1,8 +1,8 @@
 #include "DirectTool.h"
 
-#include <clang/Tooling/CompilationDatabase.h>
-
 #include <filesystem>
+
+#include <clang/Tooling/CompilationDatabase.h>
 
 namespace Spyll
 {

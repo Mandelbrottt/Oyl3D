@@ -2,7 +2,7 @@
 
 #include <string>
 
-#include "Spyll/Tool/Core/ReflectionDescriptor.h"
+#include "ReflectionParseAction.h"
 
 namespace Spyll
 {
@@ -32,6 +32,9 @@ namespace Spyll
 		int
 		Run();
 
+		void
+		SetReflectionParseOptions(const ReflectionParseOptions& a_options);
+
 		virtual
 		int
 		GetErrorCode() const;
@@ -39,10 +42,6 @@ namespace Spyll
 		virtual
 		void
 		SetPrintErrorMessage(bool a_shouldPrintMessage);
-
-		//virtual
-		//ReflectionDescriptor
-		//GetMergedReflectionDescriptor() const;
 
 	private:
 		struct Impl;

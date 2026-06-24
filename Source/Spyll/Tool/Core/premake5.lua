@@ -1,3 +1,4 @@
+local Project = require "Project"
 local Package = require "Package"
 local Packages = require "Spyll.Packages"
 
@@ -7,11 +8,15 @@ project "Spyll.Core"; do
 	filename("%{prj.name}")
 
 	language "C++"
-	kind "StaticLib"
+	kind(premake.STATICLIB)
 
+	links {
+		"ntdll",
+		"version",
+	}
+
+	Package.Include(Packages.ClangTooling)
 	Package.Include(Packages.NlohmannJson)
-
-	Packages.ClangTooling:OnDepend();
 
 	filter "toolset:msc*"; do
 		linkoptions {
