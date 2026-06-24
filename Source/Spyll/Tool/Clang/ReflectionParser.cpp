@@ -4,19 +4,6 @@ namespace Spyll
 {
 	constexpr const char* REFLECT_ANNOTATION = "__REFLECT__";
 
-	ReflectionParserConsumer::ReflectionParserConsumer(clang::SourceManager& SM, ReflectionParser* Parser)
-		: Parser(Parser)
-	{
-		Parser->SetSourceManager(&SM);
-	}
-
-	void
-	ReflectionParserConsumer::HandleTranslationUnit(clang::ASTContext& Ctx)
-	{
-		Parser->SetContext(&Ctx);
-		Parser->TraverseDecl(Ctx.getTranslationUnitDecl());
-	}
-
 	ReflectionParser::ReflectionParser() {}
 
 	ReflectionParser::~ReflectionParser() {}
