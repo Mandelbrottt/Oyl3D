@@ -45,7 +45,7 @@ private:
 	Spyll::ReflectionDescriptor
 	Descriptor(const Spyll::SpyllTool* a_tool) const
 	{
-		auto* parser = a_tool->GetReflectionParser();
+		//auto* parser = a_tool->GetReflectionParser();
 
 		throw "No matching generator found!";
 	}

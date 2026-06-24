@@ -21,7 +21,7 @@ namespace Spyll
 		~Variable();
 
 	private:
-		std::string m_type;
+		clang::QualType m_type;
 
 		Class* m_parent;
 	};

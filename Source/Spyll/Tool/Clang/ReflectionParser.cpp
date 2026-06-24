@@ -4,6 +4,19 @@ namespace Spyll
 {
 	constexpr const char* REFLECT_ANNOTATION = "__REFLECT__";
 
+	ReflectionParserConsumer::ReflectionParserConsumer(clang::SourceManager& SM, ReflectionParser* Parser)
+		: Parser(Parser)
+	{
+		Parser->SetSourceManager(&SM);
+	}
+
+	void
+	ReflectionParserConsumer::HandleTranslationUnit(clang::ASTContext& Ctx)
+	{
+		Parser->SetContext(&Ctx);
+		Parser->TraverseDecl(Ctx.getTranslationUnitDecl());
+	}
+
 	ReflectionParser::ReflectionParser() {}
 
 	ReflectionParser::~ReflectionParser() {}
@@ -40,27 +53,9 @@ namespace Spyll
 		if (!ShouldReflectDecl(Decl))
 			return true;
 
-		ParseCXXRecordDecl(Decl);
+		m_classes.emplace_back(new Class(Decl));
 
 		return true;
-	}
-
-	Class*
-	ReflectionParser::ParseCXXRecordDecl(clang::CXXRecordDecl* Decl)
-	{
-		if (!Decl->isCompleteDefinition())
-		{
-			Decl = Decl->getDefinition();
-		}
-
-		//if (IsParsed(Decl))
-		//{
-		//	return m_impl->types[Decl];
-		//}
-
-		Class* klass = new Class(Decl, !ShouldReflectDecl(Decl));
-
-		return klass;
 	}
 
 	bool
@@ -78,22 +73,17 @@ namespace Spyll
 		if (!ShouldReflectDecl(Decl))
 			return true;
 
-		ParseFunctionDecl(Decl);
+		m_functions.emplace_back(new Function(Decl));
 
 		return true;
-	}
-	
-	Function*
-	ReflectionParser::ParseFunctionDecl(clang::FunctionDecl* Decl)
-	{
-		Function* function = new Function(Decl);
-
-		return function;
 	}
 
 	bool
 	ReflectionParser::VisitVarDecl(clang::VarDecl* Decl)
 	{
+		if (Decl->getDeclContext()->isRecord())
+			return true;
+
 		if (!Decl->isCanonicalDecl())
 			return true;
 
@@ -103,19 +93,11 @@ namespace Spyll
 		if (!ShouldReflectDecl(Decl))
 			return true;
 
-		ParseVarDecl(Decl);
+		m_globals.emplace_back(new Variable(Decl));
 
 		return true;
 	}
 	
-	Variable*
-	ReflectionParser::ParseVarDecl(clang::VarDecl* Decl)
-	{
-		Variable* variable = new Variable(Decl, nullptr);
-
-		return variable;
-	}
-
 	bool
 	ReflectionParser::VisitEnumDecl(clang::EnumDecl* Decl)
 	{
@@ -125,19 +107,11 @@ namespace Spyll
 		if (!ShouldReflectDecl(Decl))
 			return true;
 
-		ParseEnumDecl(Decl);
+		m_enums.emplace_back(new Enum(Decl));
 
 		return true;
 	}
 	
-	Enum*
-	ReflectionParser::ParseEnumDecl(clang::EnumDecl* Decl)
-	{
-		Enum* enum_ = new Enum(Decl);
-
-		return enum_;
-	}
-
 	clang::SourceManager*
 	ReflectionParser::GetSourceManager() const
 	{
@@ -184,36 +158,5 @@ namespace Spyll
 	ReflectionParser::PrintDecl(const clang::NamedDecl* NamedDecl) const
 	{
 		(void) NamedDecl;
-	}
-
-	ReflectionParserConsumer::ReflectionParserConsumer(clang::SourceManager& SM, ReflectionParser* Parser)
-		: Parser(Parser)
-	{
-		Parser->SetSourceManager(&SM);
-	}
-
-	void
-	ReflectionParserConsumer::HandleTranslationUnit(clang::ASTContext& Ctx)
-	{
-		Parser->SetContext(&Ctx);
-		Parser->TraverseDecl(Ctx.getTranslationUnitDecl());
-	}
-
-	ReflectionParserAction::ReflectionParserAction(ReflectionParser* Parser)
-		: Parser(Parser) {}
-
-	std::unique_ptr<clang::ASTConsumer>
-	ReflectionParserAction::CreateASTConsumer(
-		clang::CompilerInstance& CI,
-		llvm::StringRef InFile
-	)
-	{
-		(void) InFile;
-
-		CI.getDiagnosticOpts().IgnoreWarnings = true;
-		
-		Parser->SetDiagnosticOptions(&CI.getDiagnosticOpts());
-
-		return std::make_unique<ReflectionParserConsumer>(CI.getSourceManager(), Parser);
 	}
 }

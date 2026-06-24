@@ -28,7 +28,7 @@ namespace Spyll
 		~Enum();
 
 	private:
-		std::string m_underlyingType;
+		clang::QualType m_underlyingType;
 
 		std::vector<Entry> m_entries;
 	};

@@ -1,5 +1,7 @@
 #pragma once
 
+#include <clang/AST/Type.h>
+
 #include "Declaration.h"
 
 namespace clang
@@ -21,7 +23,7 @@ namespace Spyll
 		~Field();
 
 	private:
-		std::string m_type;
+		clang::QualType m_type;
 
 		Class* m_parent;
 
