@@ -23,6 +23,8 @@ main(int argc, const char** argv)
 
 	auto outputFile = tool.GetOutputFile();
 	auto binary = tool.ShouldOutputBinary();
+	(void) outputFile;
+	(void) binary;
 
 	//WriteReflectionDescriptorToFile(mergedReflectionDescriptor, outputFile, binary);
 

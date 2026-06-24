@@ -1,4 +1,4 @@
-#define __REFLECT__ [[clang::annotate("reflect")]]
+#define __REFLECT__ [[clang::annotate("__REFLECT__")]]
 
 #include <cstdint>
 

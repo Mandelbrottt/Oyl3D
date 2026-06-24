@@ -1,6 +1,13 @@
 #pragma once
 
-#include "clang/AST/RecursiveASTVisitor.h"
+#include <clang/AST/ASTConsumer.h>
+#include <clang/AST/RecursiveASTVisitor.h>
+#include <clang/Frontend/FrontendAction.h>
+
+#include "Declarations/Class.h"
+#include "Declarations/Enum.h"
+#include "Declarations/Function.h"
+#include "Declarations/Variable.h"
 
 namespace Spyll
 {
@@ -18,14 +25,26 @@ namespace Spyll
 		bool
 		VisitCXXRecordDecl(clang::CXXRecordDecl* Decl);
 
+		Class*
+		ParseCXXRecordDecl(clang::CXXRecordDecl* Decl);
+
 		bool
 		VisitFunctionDecl(clang::FunctionDecl* Decl);
 
+		Function*
+		ParseFunctionDecl(clang::FunctionDecl* Decl);
+
 		bool
 		VisitVarDecl(clang::VarDecl* Decl);
+		
+		Variable*
+		ParseVarDecl(clang::VarDecl* Decl);
 
 		bool
 		VisitEnumDecl(clang::EnumDecl* Decl);
+		
+		Enum*
+		ParseEnumDecl(clang::EnumDecl* Decl);
 
 		clang::SourceManager*
 		GetSourceManager() const;
