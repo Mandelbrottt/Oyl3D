@@ -1,11 +1,11 @@
 #pragma once
 
-#include <string>
 #include <vector>
 
 #include "Field.h"
 #include "Function.h"
-#include "MemberFunction.h"
+#include "Method.h"
+#include "ReflectionParams.h"
 #include "TypeId.h"
 
 namespace Oyl::Reflection
@@ -15,7 +15,6 @@ namespace Oyl::Reflection
 	namespace Internal
 	{
 		class ReflectionFactory;
-		struct TypeParams;
 	}
 
 	class Type final
@@ -63,21 +62,33 @@ namespace Oyl::Reflection
 		const std::vector<Type*>&
 		GetBaseTypes() const;
 
+		const std::vector<Variable*>&
+		GetVariables() const;
+
 		const std::vector<Field*>&
 		GetFields() const;
 
-		const std::vector<MemberFunction*>&
+		const std::vector<Function*>&
 		GetFunctions() const;
+
+		const std::vector<Method*>&
+		GetMethods() const;
 
 	private:
 		void
 		AddBaseType(Type* a_type);
 
 		void
+		AddVariable(Variable* a_variable);
+
+		void
 		AddField(Field* a_field);
 
 		void
-		AddFunction(MemberFunction* a_method);
+		AddFunction(Function* a_function);
+
+		void
+		AddMethod(Method* a_method);
 
 	private:
 		struct Impl;

@@ -29,6 +29,17 @@ namespace Oyl::Reflection::Internal
 		return type;
 	}
 
+	Variable*
+	ReflectionFactory::AddVariableToType(Type* a_type, const VariableParams& a_params, ReflectionAllocatorFn a_allocate)
+	{
+		void* buf = a_allocate(sizeof(Variable), (std::align_val_t) alignof(Variable));
+		Variable* field = std::launder(reinterpret_cast<Variable*>(buf));
+		new(field) Variable(a_params);
+
+		a_type->AddVariable(field);
+		return field;
+	}
+
 	Field*
 	ReflectionFactory::AddFieldToType(Type* a_type, const FieldParams& a_params, ReflectionAllocatorFn a_allocate)
 	{
@@ -40,25 +51,38 @@ namespace Oyl::Reflection::Internal
 		return field;
 	}
 
-	MemberFunction*
-	ReflectionFactory::AddFunctionToType(Type* a_type, const MemberFunctionParams& a_params, ReflectionAllocatorFn a_allocate)
+	Function*
+	ReflectionFactory::AddFunctionToType(Type* a_type, const FunctionParams& a_params, ReflectionAllocatorFn a_allocate)
 	{
-		void* buf = a_allocate(sizeof(MemberFunction), (std::align_val_t) alignof(MemberFunction));
-		MemberFunction* function = std::launder(reinterpret_cast<MemberFunction*>(buf));
-		new(function) MemberFunction(a_params);
+		void* buf = a_allocate(sizeof(Function), (std::align_val_t) alignof(Function));
+		Function* function = std::launder(reinterpret_cast<Function*>(buf));
+		new(function) Function(a_params);
 
 		a_type->AddFunction(function);
 		return function;
 	}
 
-	Variable*
-	ReflectionFactory::AddParameterToFunction(Function* a_function, const VariableParams& a_params, ReflectionAllocatorFn a_allocate)
+	Method*
+	ReflectionFactory::AddMethodToType(Type* a_type, const MethodParams& a_params, ReflectionAllocatorFn a_allocate)
 	{
-		void* buf = a_allocate(sizeof(Variable), (std::align_val_t) alignof(Variable));
-		Variable* variable = std::launder(reinterpret_cast<Variable*>(buf));
-		new(variable) Variable(a_params);
+		void* buf = a_allocate(sizeof(Method), (std::align_val_t) alignof(Method));
+		Method* method = std::launder(reinterpret_cast<Method*>(buf));
+		new(method) Method(a_params);
 
-		a_function->AddParameter(variable);
-		return variable;
+		a_type->AddMethod(method);
+		return method;
+	}
+
+	Argument*
+	ReflectionFactory::AddArgumentToInvokable(
+		Invokable* a_function,
+		const ArgumentParams& a_params,
+		ReflectionAllocatorFn a_allocate
+	)
+	{
+		(void) a_allocate;
+
+		auto* argument = a_function->AddArgument(a_params);
+		return argument;
 	}
 }

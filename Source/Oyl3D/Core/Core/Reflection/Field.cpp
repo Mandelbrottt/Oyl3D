@@ -7,8 +7,9 @@ namespace Oyl::Reflection
 {
 	Field::Field(const Internal::FieldParams& a_params)
 		: Variable(a_params),
-		  MemberInfo(a_params),
-		  m_offsetInBits(a_params.offsetInBits) {}
+		  m_offset(static_cast<uint16>(a_params.offsetInBits / 8)),
+		  m_offsetInBits(static_cast<uint16>(a_params.offsetInBits)),
+		  m_isConst(a_params.isConst) {}
 
 	bool
 	Field::GetValue(void* a_self, void** a_outPtr) const
