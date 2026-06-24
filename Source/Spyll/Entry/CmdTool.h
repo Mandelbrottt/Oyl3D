@@ -4,7 +4,7 @@
 
 #include <llvm/Support/CommandLine.h>
 
-#include "Tool/Clang/SpyllTool.h"
+#include "Tool/Core/SpyllTool.h"
 
 // Apply a custom category to all command-line options so that they are the
 // only ones displayed.

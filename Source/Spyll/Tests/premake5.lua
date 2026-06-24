@@ -16,7 +16,7 @@ project "Spyll.Tests"; do
 	removeunreferencedcodedata "Off"
 
 	links {
-		"Spyll.ClangTool",
+		"Spyll.Core",
 	}
 
 	externalincludedirs(Packages.ClangTooling.Include)

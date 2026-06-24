@@ -67,6 +67,12 @@ namespace Spyll
 		return m_impl->tool->Run();
 	}
 
+	void
+	OpaqueTool::SetReflectionParseOptions(const ReflectionParseOptions& a_options)
+	{
+		m_impl->tool->SetReflectionParseOptions(a_options);
+	}
+
 	int
 	OpaqueTool::GetErrorCode() const
 	{

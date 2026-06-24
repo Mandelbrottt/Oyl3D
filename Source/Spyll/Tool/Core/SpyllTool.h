@@ -7,8 +7,6 @@
 #include "ReflectionParseAction.h"
 #include "ReflectionParser.h"
 
-#include "Spyll/Tool/Core/ReflectionDescriptor.h"
-
 namespace clang
 {
 	class DiagnosticConsumer;

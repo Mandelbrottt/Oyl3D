@@ -1,150 +1,78 @@
 <?xml version="1.0" encoding="utf-8"?> 
 <AutoVisualizer xmlns="http://schemas.microsoft.com/vstudio/debugger/natvis/2010"> 
-  <Type Name="Spyll::TypeDescriptor" ExcludeView="Inner">
-    <DisplayString Condition="sizeInBits == 1">{name,sb} {{ id={id}, size=1 bit }}</DisplayString>                          
-    <DisplayString Condition="sizeInBits == 8">{name,sb} {{ id={id}, size=1 byte }}</DisplayString>                          
-    <DisplayString Condition="sizeInBits % 8 != 0">{name,sb} {{ id={id}, size={sizeInBits} bits }}</DisplayString>                          
-    <DisplayString Condition="sizeInBits % 8 == 0">{name,sb} {{ id={id}, size={sizeInBits / 8} bytes }}</DisplayString>                          
-
-    <Expand>                                                                   
-      <Item Name="Name">name,sb</Item>                                  
-      <Item Name="DescriptorID">id</Item>                                  
-      <Synthetic Name="Size">
-        <DisplayString Condition="sizeInBits == 1">1 bit</DisplayString>                        
-        <DisplayString Condition="sizeInBits == 8">1 byte</DisplayString>
-        <DisplayString Condition="sizeInBits % 8 != 0">{sizeInBits} bits</DisplayString>                        
-        <DisplayString Condition="sizeInBits % 8 == 0">{sizeInBits / 8} bytes</DisplayString>
-      </Synthetic>     
-      
-      <Item Name="IsComposite">isComposite</Item>                          
-      <Item Name="IsStruct">isStruct</Item> 
-      
-      <Synthetic Name="Base Types" Condition="baseTypes.size() != 0">
-        <DisplayString>{{ size={baseTypes.size()} }}</DisplayString>
+  <Type Name="Spyll::ReflectionGenerator">
+    <Intrinsic Name="typemap_length" Expression="m_impl->types._List._Mypair._Myval2._Mysize"/>
+    <Intrinsic Name="typemap_head" Expression="m_impl->types._List._Mypair._Myval2._Myhead->_Next"/>
+    
+    <Intrinsic Name="fieldmap_length" Expression="m_impl->fields._List._Mypair._Myval2._Mysize"/>
+    <Intrinsic Name="fieldmap_head" Expression="m_impl->fields._List._Mypair._Myval2._Myhead->_Next"/>
+    
+    <Intrinsic Name="functionmap_length" Expression="m_impl->functions._List._Mypair._Myval2._Mysize"/>
+    <Intrinsic Name="functionmap_head" Expression="m_impl->functions._List._Mypair._Myval2._Myhead->_Next"/>
+    
+    <Intrinsic Name="variablemap_length" Expression="m_impl->variables._List._Mypair._Myval2._Mysize"/>
+    <Intrinsic Name="variablemap_head" Expression="m_impl->variables._List._Mypair._Myval2._Myhead->_Next"/>
+    
+    <Intrinsic Name="enummap_length" Expression="m_impl->enums._List._Mypair._Myval2._Mysize"/>
+    <Intrinsic Name="enummap_head" Expression="m_impl->enums._List._Mypair._Myval2._Myhead->_Next"/>
+    <DisplayString>{{ Types={typemap_length()} }}</DisplayString>
+    <Expand>
+      <Synthetic Name="Types">
+        <DisplayString>{{ Types={typemap_length()} }}</DisplayString>
         <Expand>
-          <CustomListItems>
-            <Variable Name="index" InitialValue="0"/>
-            <Size>baseTypes.size()</Size>
-            <Loop>
-              <Item Name="{baseTypes[index].type}">baseTypes[index]</Item>
-              <Exec>index++</Exec>
-            </Loop>
-          </CustomListItems>
+          <LinkedListItems>
+            <Size>typemap_length()</Size>
+            <HeadPointer>typemap_head()</HeadPointer>
+            <NextPointer>_Next</NextPointer>
+            <ValueNode Name="{_Myval.second.name}">_Myval.second</ValueNode>
+          </LinkedListItems>
         </Expand>
-      </Synthetic>  
-    </Expand>                                                                  
+      </Synthetic>
+      <Synthetic Name="Fields">
+        <DisplayString>{{ Fields={fieldmap_length()} }}</DisplayString>
+        <Expand>
+          <LinkedListItems>
+            <Size>fieldmap_length()</Size>
+            <HeadPointer>fieldmap_head()</HeadPointer>
+            <NextPointer>_Next</NextPointer>
+            <ValueNode Name="{_Myval.second.name}">_Myval.second</ValueNode>
+          </LinkedListItems>
+        </Expand>
+      </Synthetic>
+      <Synthetic Name="Functions">
+        <DisplayString>{{ Functions={functionmap_length()} }}</DisplayString>
+        <Expand>
+          <LinkedListItems>
+            <Size>functionmap_length()</Size>
+            <HeadPointer>functionmap_head()</HeadPointer>
+            <NextPointer>_Next</NextPointer>
+            <ValueNode Name="{_Myval.second.name}">_Myval.second</ValueNode>
+          </LinkedListItems>
+        </Expand>
+      </Synthetic>
+      <Synthetic Name="Variables">
+        <DisplayString>{{ Variables={variablemap_length()} }}</DisplayString>
+        <Expand>
+          <LinkedListItems>
+            <Size>variablemap_length()</Size>
+            <HeadPointer>variablemap_head()</HeadPointer>
+            <NextPointer>_Next</NextPointer>
+            <ValueNode Name="{_Myval.second.name}">_Myval.second</ValueNode>
+          </LinkedListItems>
+        </Expand>
+      </Synthetic>
+      <Synthetic Name="Enums">
+        <DisplayString>{{ Enums={enummap_length()} }}</DisplayString>
+        <Expand>
+          <LinkedListItems>
+            <Size>enummap_length()</Size>
+            <HeadPointer>enummap_head()</HeadPointer>
+            <NextPointer>_Next</NextPointer>
+            <ValueNode Name="{_Myval.second.name}">_Myval.second</ValueNode>
+          </LinkedListItems>
+        </Expand>
+      </Synthetic>
+    </Expand>
+    
   </Type>
-  <Type Name="Spyll::FieldDescriptor" ExcludeView="Inner">
-    <DisplayString>{name,sb} {{ id={id}, type={type} }}</DisplayString>                          
-    <Expand>                                                                   
-      <Item Name="Name">name,sb</Item>                                  
-      <Item Name="FieldID">id</Item>                                  
-      <Item Name="Type">type</Item>
-      <Item Name="OwnerType">ownerType</Item>
-      
-      <Synthetic Name="Offset">
-        <DisplayString Condition="offsetInBits == 1">1 bit</DisplayString>                        
-        <DisplayString Condition="offsetInBits == 8">1 byte</DisplayString>
-        <DisplayString Condition="offsetInBits % 8 != 0">{offsetInBits} bits</DisplayString>                        
-        <DisplayString Condition="offsetInBits % 8 == 0">{offsetInBits / 8} bytes</DisplayString>
-      </Synthetic>     
-
-      <Item Name="AccessSpec">accessSpecifier</Item>                          
-
-      <Item Name="IsConst">isConst</Item>                          
-      <Item Name="IsVolatile">isVolatile</Item>                          
-      <Item Name="IsReference">isReference</Item>                          
-      <Item Name="IsPointer">isPointer</Item>                                    
-    </Expand>                                                                  
-  </Type>  
-
-  <Type Name="Spyll::FunctionDescriptor" ExcludeView="Inner">
-    <Intrinsic Name="is_member" Expression="ownerType != -1"/>
-    <Intrinsic Name="is_return_void" Expression="returnType == 0 &amp;&amp; !isReturnPointer"/>
-
-    <DisplayString>{name,sb}() {{ id={id} }}</DisplayString>                          
-    <Expand>                                                                   
-      <Item Name="Name">name,sb</Item>                                  
-      <Item Name="FunctionID">id</Item>                                  
-
-      <Synthetic Name="ReturnInfo" Condition="!is_return_void()">
-        <DisplayString>{{OwnerType = {ownerType}}}</DisplayString>
-        <Expand>
-          <Item Name="ReturnType">returnType</Item>
-          <Item Name="IsReturnConst" Condition="!is_return_void()">isReturnConst</Item>                          
-          <Item Name="IsReturnVolatile" Condition="!is_return_void()">isReturnVolatile</Item>                          
-          <Item Name="IsReturnReference" Condition="!is_return_void()">isReturnReference</Item>                          
-          <Item Name="IsReturnPointer" Condition="!is_return_void()">isReturnPointer</Item>                          
-        </Expand>
-      </Synthetic>
-      
-      <Synthetic Name="ReturnType" Condition="is_return_void()">
-        <DisplayString>void</DisplayString>
-      </Synthetic>
-
-      <Synthetic Name="MethodInfo">
-        <DisplayString>{{OwnerType = {ownerType}}}</DisplayString>
-        <Expand>
-          <Item Name="OwnerType"     Condition="is_member()">ownerType</Item>
-          <Item Name="AccessSpec"    Condition="is_member()">accessSpecifier</Item>
-          <Item Name="IsVirtual"     Condition="is_member()">isVirtual</Item>
-          <Item Name="IsPureVirtual" Condition="is_member()">isPureVirtual</Item>                          
-          <Item Name="IsOverride"    Condition="is_member()">isOverride</Item>                          
-          <Item Name="IsStatic"      Condition="is_member()">isStatic</Item>                          
-          <Item Name="IsConst"       Condition="is_member()">isConst</Item>                          
-          <Item Name="IsVolatile"    Condition="is_member()">isVolatile</Item> 
-        </Expand>
-      </Synthetic>
-    </Expand>                                                                  
-  </Type> 
-  
-  <Type Name="Spyll::VariableDescriptor" ExcludeView="Inner">
-    <Intrinsic Name="is_member" Expression="ownerType != -1"/>
-    <Intrinsic Name="is_param" Expression="ownerFunction != -1"/>
-
-    <DisplayString>{name,sb} {{ id={id} }}</DisplayString>                          
-
-    <Expand>                                                                   
-      <Item Name="Name">name,sb</Item>                                  
-      <Item Name="VariableID">id</Item>                                  
-      <Item Name="Type">type</Item>
-
-      <Item Name="Function"  Condition="is_param()">ownerFunction</Item>
-      
-      <Item Name="IsConst">isConst</Item>
-      <Item Name="IsVolatile">isVolatile</Item>
-      <Item Name="IsReference">isReference</Item>
-      <Item Name="IsPointer">isPointer</Item>
-      
-      <Synthetic Name="MemberInfo" Condition="is_member()">
-        <DisplayString>{{OwnerType = {ownerType}}}</DisplayString>
-        <Expand>
-          <Item Name="OwnerType">ownerType</Item>
-          <Item Name="AccessSpec">accessSpecifier</Item>
-        </Expand>
-      </Synthetic>
-    </Expand>                                                                  
-  </Type> 
-  
-  <Type Name="Spyll::EnumDescriptor" ExcludeView="Inner">
-    <DisplayString>{name,sb} {{ id={id}, size={enumerations.size()} }}</DisplayString>                          
-    <Expand>                                                                   
-      <Item Name="Name">name,sb</Item>                                  
-      <Item Name="EnumID">id</Item>                                  
-
-      <Synthetic Name="Enumerations">
-        <DisplayString>{{ size={enumerations.size()} }}</DisplayString>
-        <Expand>
-          <CustomListItems>
-            <Variable Name="index" InitialValue="0"/>
-            <Size>enumerations.size()</Size>
-            <Loop>
-              <Item Name="{enumerations[index].first,sb}">enumerations[index].second</Item>
-              <Exec>index++</Exec>
-            </Loop>
-          </CustomListItems>
-        </Expand>
-      </Synthetic>                                                                      
-    </Expand>                                                                  
-  </Type> 
 </AutoVisualizer>

@@ -4,9 +4,6 @@
 
 #include "CmdTool.h"
 
-#include "Tool/Core/FileOperations.h"
-#include "Tool/Core/ReflectionDescriptor.h"
-
 int
 main(int argc, const char** argv)
 {
