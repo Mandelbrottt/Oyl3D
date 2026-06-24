@@ -4,7 +4,6 @@
 #include "Field.h"
 #include "Function.h"
 #include "Method.h"
-#include "Type.h"
 #include "Variable.h"
 
 namespace clang
@@ -21,7 +20,7 @@ namespace Spyll
 		std::string name;
 	};
 
-	class Class final : public Type
+	class Class final : public Declaration
 	{
 		friend class Field;
 		friend class Method;
@@ -31,7 +30,7 @@ namespace Spyll
 
 	public:
 		explicit
-		Class(clang::CXXRecordDecl* a_decl, bool a_isOpaque);
+		Class(clang::CXXRecordDecl* a_decl);
 
 		virtual
 		~Class();
@@ -40,7 +39,8 @@ namespace Spyll
 		ShouldReflect() const override;
 
 	private:
-		bool m_isOpaque;
+		size_t m_size;
+		size_t m_alignment;
 
 		std::vector<BaseClass> m_baseClasses;
 

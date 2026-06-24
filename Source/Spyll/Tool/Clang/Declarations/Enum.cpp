@@ -5,7 +5,7 @@ namespace Spyll
 	Enum::Enum(const clang::EnumDecl* a_decl)
 		: Declaration(a_decl)
 	{
-		m_underlyingType = a_decl->getIntegerType().getAsString();
+		m_underlyingType = a_decl->getIntegerType();
 
 		for (auto* entryDecl : a_decl->enumerators())
 		{

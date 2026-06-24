@@ -1,5 +1,6 @@
 #include "SpyllTool.h"
 
+#include "ReflectionEmitAction.h"
 #include "ReflectionParser.h"
 
 namespace tooling = clang::tooling;
@@ -13,20 +14,16 @@ namespace Spyll
 		{
 		public:
 			explicit
-			ToolFrontendActionFactory(ReflectionParser* Parser)
-				: m_parser(Parser) {}
+			ToolFrontendActionFactory() {}
 
 			std::unique_ptr<clang::FrontendAction>
 			create() override
 			{
-				return std::make_unique<ReflectionParserAction>(m_parser);
+				return std::make_unique<ReflectionEmitAction>();
 			}
-
-		private:
-			ReflectionParser* m_parser;
 		};
 
-		m_action = std::make_unique<ToolFrontendActionFactory>(&m_reflectionParser);
+		m_action = std::make_unique<ToolFrontendActionFactory>();
 	}
 
 	SpyllTool::~SpyllTool() {}

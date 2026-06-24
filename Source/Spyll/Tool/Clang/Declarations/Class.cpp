@@ -4,14 +4,14 @@
 
 namespace Spyll
 {
-	Class::Class(clang::CXXRecordDecl* a_decl, bool a_isOpaque)
-		: Type(a_decl->getTypeForDecl())
+	Class::Class(clang::CXXRecordDecl* a_decl)
+		: Declaration(a_decl)
 	{
-		if (a_isOpaque)
-		{
-			m_isOpaque = true;
-			return;
-		}
+		auto* type = a_decl->getTypeForDecl();
+
+		const auto& ctx = a_decl->getASTContext();
+		m_size = ctx.getTypeSizeInChars(type).getQuantity();
+		m_alignment = ctx.getPreferredTypeAlignInChars(type->getCanonicalTypeUnqualified()).getQuantity();
 
 		for (const auto& decl : a_decl->bases())
 		{

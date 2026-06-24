@@ -53,15 +53,7 @@ namespace Spyll
 		void
 		OnSetDiagnosticOptions(clang::DiagnosticOptions* a_diagnosticOptions);
 
-		const ReflectionParser*
-		GetReflectionParser() const
-		{
-			return &m_reflectionParser;
-		}
-
 	protected:
-		ReflectionParser m_reflectionParser;
-
 		OnSetDiagnosticOptionsFn m_diagnosticOptionsFn = nullptr;
 
 		std::unique_ptr<clang::tooling::ClangTool> m_clangTool;
