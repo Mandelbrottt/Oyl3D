@@ -2,7 +2,7 @@
 
 namespace Spyll
 {
-	ReflectionParseAction::ReflectionParseAction(ReflectionEmitOptions&& a_options)
+	ReflectionParseAction::ReflectionParseAction(ReflectionParseOptions* a_options)
 		: m_options(a_options) {}
 
 	std::unique_ptr<clang::ASTConsumer>
@@ -14,7 +14,7 @@ namespace Spyll
 		(void) InFile;
 
 		CI.getDiagnosticOpts().IgnoreWarnings = true;
-		
+
 		Parser.SetDiagnosticOptions(&CI.getDiagnosticOpts());
 
 		return std::make_unique<ReflectionParserConsumer>(CI.getSourceManager(), &Parser);
@@ -23,8 +23,11 @@ namespace Spyll
 	void
 	ReflectionParseAction::EndSourceFileAction()
 	{
-		auto onSourceParsedCallback = m_options.onSourceParsedCallback;
-		onSourceParsedCallback(&Parser);
+		if (m_options->onSourceParsedCallback)
+		{
+			auto onSourceParsedCallback = m_options->onSourceParsedCallback;
+			onSourceParsedCallback(&Parser);
+		}
 	}
 
 	ReflectionParserConsumer::ReflectionParserConsumer(clang::SourceManager& SM, ReflectionParser* Parser)
@@ -39,5 +42,4 @@ namespace Spyll
 		Parser->SetContext(&Ctx);
 		Parser->TraverseDecl(Ctx.getTranslationUnitDecl());
 	}
-
 }

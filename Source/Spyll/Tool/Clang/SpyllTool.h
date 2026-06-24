@@ -1,12 +1,10 @@
 #pragma once
 
 #include <memory>
-#include <string>
-#include <unordered_map>
 
 #include <clang/Basic/DiagnosticOptions.h>
 
-#include "ReflectionGenerator.h"
+#include "ReflectionParseAction.h"
 #include "ReflectionParser.h"
 
 #include "Spyll/Tool/Core/ReflectionDescriptor.h"
@@ -40,6 +38,9 @@ namespace Spyll
 		int
 		Run();
 
+		void
+		SetReflectionParseOptions(const ReflectionParseOptions& a_options);
+
 		int
 		GetErrorCode() const { return m_errorCode; }
 
@@ -54,6 +55,8 @@ namespace Spyll
 		OnSetDiagnosticOptions(clang::DiagnosticOptions* a_diagnosticOptions);
 
 	protected:
+		ReflectionParseOptions m_parseOptions;
+
 		OnSetDiagnosticOptionsFn m_diagnosticOptionsFn = nullptr;
 
 		std::unique_ptr<clang::tooling::ClangTool> m_clangTool;
