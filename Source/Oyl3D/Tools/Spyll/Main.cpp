@@ -86,13 +86,15 @@ main(int argc, char** argv)
 		return returnCode;
 	}
 
+	Spyll::ReflectionParserOptions parseOptions;
+	parseOptions.onSourceParsedCallback = EmitCodeFromTool;
+	g_tool.SetReflectionParserOptions(parseOptions);
+
 	returnCode = g_tool.Run();
 	if (returnCode != SUCCESS)
 	{
 		return returnCode;
 	}
-
-	EmitCodeFromTool(g_tool);
 
 	return 0;
 }

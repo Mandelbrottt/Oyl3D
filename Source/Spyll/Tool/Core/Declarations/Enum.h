@@ -15,7 +15,7 @@ namespace Spyll
 	{
 	public:
 		explicit
-		Enum(const clang::EnumDecl* a_decl);
+		Enum(const clang::EnumDecl* a_decl, clang::SourceManager* a_sourceManager);
 
 		virtual
 		~Enum();

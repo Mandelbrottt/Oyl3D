@@ -15,10 +15,16 @@ namespace Spyll
 	{
 	public:
 		explicit
-		Method(const clang::CXXMethodDecl* a_decl, Class* a_parent);
+		Method(const clang::CXXMethodDecl* a_decl, Class* a_parent, clang::SourceManager* a_sourceManager);
 
 		virtual
 		~Method();
+
+		bool
+		IsConst() const;
+
+		bool
+		IsVirtual() const;
 
 	private:
 		bool m_isConst;

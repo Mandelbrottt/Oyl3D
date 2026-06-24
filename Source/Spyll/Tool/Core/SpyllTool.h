@@ -37,7 +37,7 @@ namespace Spyll
 		Run();
 
 		void
-		SetReflectionParseOptions(const ReflectionParseOptions& a_options);
+		SetReflectionParseOptions(const ReflectionParserOptions& a_options);
 
 		int
 		GetErrorCode() const { return m_errorCode; }
@@ -53,7 +53,7 @@ namespace Spyll
 		OnSetDiagnosticOptions(clang::DiagnosticOptions* a_diagnosticOptions);
 
 	protected:
-		ReflectionParseOptions m_parseOptions;
+		ReflectionParserOptions m_parseOptions;
 
 		OnSetDiagnosticOptionsFn m_diagnosticOptionsFn = nullptr;
 

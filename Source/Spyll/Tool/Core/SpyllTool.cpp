@@ -14,7 +14,7 @@ namespace Spyll
 		{
 		public:
 			explicit
-			ToolFrontendActionFactory(ReflectionParseOptions* a_options)
+			ToolFrontendActionFactory(ReflectionParserOptions* a_options)
 				: m_options(a_options) {}
 
 			std::unique_ptr<clang::FrontendAction>
@@ -24,7 +24,7 @@ namespace Spyll
 			}
 
 		private:
-			ReflectionParseOptions* m_options;
+			ReflectionParserOptions* m_options;
 		};
 
 		m_action = std::make_unique<ToolFrontendActionFactory>(&m_parseOptions);
@@ -43,7 +43,7 @@ namespace Spyll
 	}
 
 	void
-	SpyllTool::SetReflectionParseOptions(const ReflectionParseOptions& a_options)
+	SpyllTool::SetReflectionParseOptions(const ReflectionParserOptions& a_options)
 	{
 		m_parseOptions = a_options;
 	}

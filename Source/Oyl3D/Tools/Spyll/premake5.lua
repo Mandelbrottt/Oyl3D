@@ -12,6 +12,5 @@ project "Oyl.Spyll"; do
 
 	links {
 		"Spyll.Core",
-		"Spyll.Tool",
 	}
 end

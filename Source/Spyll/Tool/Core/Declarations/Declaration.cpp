@@ -2,15 +2,22 @@
 
 #include <clang/AST/Decl.h>
 
+#include <sstream>
+
 namespace Spyll
 {
-	Declaration::Declaration(const clang::NamedDecl* a_decl)
+	Declaration::Declaration(const clang::NamedDecl* a_decl, const clang::SourceManager* a_sourceManager)
 	{
-		m_name = a_decl->getNameAsString();
+		llvm::raw_string_ostream out { m_name };
+		a_decl->getDeclName().print(out, a_decl->getASTContext().getPrintingPolicy());
+
 		m_qualifiedName = a_decl->getQualifiedNameAsString();
 
 		m_enabled = true;
-		m_sourceLocationEncoding = a_decl->getLocation().getPtrEncoding();
+
+		auto sourceLocation = a_decl->getLocation();
+		m_sourceFile = a_sourceManager->getFilename(sourceLocation);
+		m_sourceLine = a_sourceManager->getSpellingLineNumber(sourceLocation);
 	}
 
 	Declaration::~Declaration() {}
@@ -21,9 +28,27 @@ namespace Spyll
 		return m_enabled;
 	}
 
-	void*
-	Declaration::GetSourceLocationEncoding() const
+	std::string_view
+	Declaration::GetName() const
 	{
-		return m_sourceLocationEncoding;
+		return m_name;
+	}
+
+	std::string_view
+	Declaration::GetQualifiedName() const
+	{
+		return m_qualifiedName;
+	}
+
+	std::string_view
+	Declaration::GetSourceFile() const
+	{
+		return m_sourceFile;
+	}
+
+	std::uint32_t
+	Declaration::GetSourceLine() const
+	{
+		return m_sourceLine;
 	}
 }

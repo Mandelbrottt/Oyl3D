@@ -1,7 +1,5 @@
 #pragma once
 
-#include <clang/AST/Type.h>
-
 #include "Declaration.h"
 
 namespace clang
@@ -17,10 +15,25 @@ namespace Spyll
 	{
 	public:
 		explicit
-		Field(const clang::FieldDecl* a_decl, Class* a_parent);
+		Field(const clang::FieldDecl* a_decl, Class* a_parent, clang::SourceManager* a_sourceManager);
 
 		virtual
 		~Field();
+
+		std::string_view
+		GetTypeAsString() const;
+
+		Class*
+		GetParent() const;
+
+		size_t
+		GetOffsetInBits() const;
+
+		int
+		GetAccessSpecifier() const;
+
+		bool
+		IsConst() const;
 
 	private:
 		std::string m_type;
