@@ -10,21 +10,6 @@
 
 namespace Spyll
 {
-	class ReflectionParser;
-
-	class ReflectionParserConsumer final : public clang::ASTConsumer
-	{
-	public:
-		explicit
-		ReflectionParserConsumer(clang::SourceManager& SM, ReflectionParser* Parser);
-
-		void
-		HandleTranslationUnit(clang::ASTContext& Ctx) override;
-
-	private:
-		ReflectionParser* Parser;
-	};
-
 	class ReflectionParser final : public clang::RecursiveASTVisitor<ReflectionParser>
 	{
 	public:
