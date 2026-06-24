@@ -281,6 +281,11 @@ function Engine.GenerateOylSpyllInformation()
 
 	appendToCommand '--include="%{table.concat(prj.includedirs, ";")}"'
 	appendToCommand '--externalinclude="%{table.concat(prj.externalincludedirs, ";")}"'
+
+	if premake.action.current().vstudio then
+		appendToCommand '--externalinclude="$(IncludePath)"'
+	end
+
 	appendToCommand '--define="%{table.concat(prj.defines, ";")}"'
 	
 	-- Only include --pch arg if project has a pch

@@ -32,41 +32,24 @@ namespace Spyll
 	}
 
 	bool
-	ReflectionParser::VisitCXXRecordDecl(clang::CXXRecordDecl* Decl)
+	ReflectionParser::ParseCXXRecordDecl(clang::CXXRecordDecl* Decl, clang::SourceManager* a_sourceManager)
 	{
 		if (!Decl->isCompleteDefinition())
 			return true;
 
-		if (!ShouldReflectDecl(Decl))
-			return true;
-
-		m_classes.emplace_back(new Class(Decl));
-
-		return true;
-	}
-
-	bool
-	ReflectionParser::VisitFunctionDecl(clang::FunctionDecl* Decl)
-	{
-		if (!Decl->isGlobal())
-			return true;
-
-		if (!Decl->isCanonicalDecl())
-			return true;
-
-		if (!Decl->getStorageClass() == clang::SC_Extern)
+		if (Decl->isDependentType())
 			return true;
 
 		if (!ShouldReflectDecl(Decl))
 			return true;
 
-		m_functions.emplace_back(new Function(Decl));
+		m_classes.emplace_back(new Class(Decl, a_sourceManager));
 
 		return true;
 	}
 
 	bool
-	ReflectionParser::VisitVarDecl(clang::VarDecl* Decl)
+	ReflectionParser::ParseFunctionDecl(clang::FunctionDecl* Decl, clang::SourceManager* a_sourceManager)
 	{
 		if (Decl->getDeclContext()->isRecord())
 			return true;
@@ -80,13 +63,33 @@ namespace Spyll
 		if (!ShouldReflectDecl(Decl))
 			return true;
 
-		m_globals.emplace_back(new Variable(Decl));
+		m_functions.emplace_back(new Function(Decl, nullptr, a_sourceManager));
+
+		return true;
+	}
+
+	bool
+	ReflectionParser::ParseVarDecl(clang::VarDecl* Decl, clang::SourceManager* a_sourceManager)
+	{
+		if (Decl->getDeclContext()->isRecord())
+			return true;
+
+		if (!Decl->isCanonicalDecl())
+			return true;
+
+		if (!Decl->getStorageClass() == clang::SC_Extern)
+			return true;
+
+		if (!ShouldReflectDecl(Decl))
+			return true;
+
+		m_globals.emplace_back(new Variable(Decl, nullptr, a_sourceManager));
 
 		return true;
 	}
 	
 	bool
-	ReflectionParser::VisitEnumDecl(clang::EnumDecl* Decl)
+	ReflectionParser::ParseEnumDecl(clang::EnumDecl* Decl, clang::SourceManager* a_sourceManager)
 	{
 		if (!Decl->isCompleteDefinition())
 			return true;
@@ -94,56 +97,8 @@ namespace Spyll
 		if (!ShouldReflectDecl(Decl))
 			return true;
 
-		m_enums.emplace_back(new Enum(Decl));
+		m_enums.emplace_back(new Enum(Decl, a_sourceManager));
 
 		return true;
-	}
-	
-	clang::SourceManager*
-	ReflectionParser::GetSourceManager() const
-	{
-		return SourceManager;
-	}
-
-	void
-	ReflectionParser::SetSourceManager(clang::SourceManager* SM)
-	{
-		SourceManager = SM;
-	}
-
-	clang::ASTContext*
-	ReflectionParser::GetContext() const
-	{
-		return Context;
-	}
-
-	void
-	ReflectionParser::SetContext(clang::ASTContext* Ctx)
-	{
-		Context = Ctx;
-	}
-
-	clang::DiagnosticOptions*
-	ReflectionParser::GetDiagnosticOptions() const
-	{
-		return DiagnosticOptions;
-	}
-
-	void
-	ReflectionParser::SetDiagnosticOptions(clang::DiagnosticOptions* DO)
-	{
-		DiagnosticOptions = DO;
-	}
-
-	std::string
-	ReflectionParser::GetDeclLocation(clang::SourceLocation Loc) const
-	{
-		return Loc.printToString(*SourceManager);
-	}
-
-	void
-	ReflectionParser::PrintDecl(const clang::NamedDecl* NamedDecl) const
-	{
-		(void) NamedDecl;
 	}
 }

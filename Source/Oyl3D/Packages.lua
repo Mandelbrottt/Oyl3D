@@ -173,10 +173,6 @@ local Packages = {
 		Kind = premake.STATICLIB,
 		PackageDir = path.join(Config.SourceDir, "Spyll/Tool/Core"),
 	},
-	["Spyll.Tool"] = {
-		Kind = premake.STATICLIB,
-		PackageDir = path.join(Config.SourceDir, "Spyll/Tool/Clang"),
-	}
 }
 
 Package.InitWorkspacePackages(Packages)

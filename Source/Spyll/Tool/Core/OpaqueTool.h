@@ -2,7 +2,7 @@
 
 #include <string>
 
-#include "ReflectionParseAction.h"
+#include "ReflectionParserOptions.h"
 
 namespace Spyll
 {
@@ -33,7 +33,7 @@ namespace Spyll
 		Run();
 
 		void
-		SetReflectionParseOptions(const ReflectionParseOptions& a_options);
+		SetReflectionParserOptions(const ReflectionParserOptions& a_options);
 
 		virtual
 		int

@@ -1,14 +1,8 @@
 #pragma once
 
-#include <string>
-
 namespace Spyll {
-	struct ReflectionDescriptor;
-}
-
-namespace Oyl {
-	struct SpyllTool;
+	struct ReflectionParser;
 }
 
 void
-EmitCodeFromTool(const Oyl::SpyllTool& a_tool);
+EmitCodeFromTool(const Spyll::ReflectionParser* a_parser);

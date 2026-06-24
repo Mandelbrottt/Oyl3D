@@ -1,16 +1,18 @@
 #pragma once
 
-#include <clang/AST/ASTConsumer.h>
-#include <clang/AST/RecursiveASTVisitor.h>
-
 #include "Declarations/Class.h"
 #include "Declarations/Enum.h"
 #include "Declarations/Function.h"
 #include "Declarations/Variable.h"
 
+namespace clang
+{
+	class SourceManager;
+}
+
 namespace Spyll
 {
-	class ReflectionParser final : public clang::RecursiveASTVisitor<ReflectionParser>
+	class ReflectionParser final
 	{
 	public:
 		explicit
@@ -22,50 +24,45 @@ namespace Spyll
 		ShouldReflectDecl(const clang::NamedDecl* Decl) const;
 
 		bool
-		VisitCXXRecordDecl(clang::CXXRecordDecl* Decl);
+		ParseCXXRecordDecl(clang::CXXRecordDecl* Decl, clang::SourceManager* a_sourceManager);
 
 		bool
-		VisitFunctionDecl(clang::FunctionDecl* Decl);
+		ParseFunctionDecl(clang::FunctionDecl* Decl, clang::SourceManager* a_sourceManager);
 
 		bool
-		VisitVarDecl(clang::VarDecl* Decl);
+		ParseVarDecl(clang::VarDecl* Decl, clang::SourceManager* a_sourceManager);
 
 		bool
-		VisitEnumDecl(clang::EnumDecl* Decl);
+		ParseEnumDecl(clang::EnumDecl* Decl, clang::SourceManager* a_sourceManager);
 
-		clang::SourceManager*
-		GetSourceManager() const;
+		const std::vector<Class*>&
+		GetClasses() const
+		{
+			return m_classes;
+		}
 
-		void
-		SetSourceManager(clang::SourceManager* SM);
+		const std::vector<Function*>&
+		GetFunctions() const
+		{
+			return m_functions;
+		}
 
-		clang::ASTContext*
-		GetContext() const;
+		const std::vector<Variable*>&
+		GetGlobals() const
+		{
+			return m_globals;
+		}
 
-		void
-		SetContext(clang::ASTContext* Ctx);
-
-		clang::DiagnosticOptions*
-		GetDiagnosticOptions() const;
-
-		void
-		SetDiagnosticOptions(clang::DiagnosticOptions* DO);
-
-	private:
-		std::string
-		GetDeclLocation(clang::SourceLocation Loc) const;
-
-		void
-		PrintDecl(const clang::NamedDecl* NamedDecl) const;
+		const std::vector<Enum*>&
+		GetEnums() const
+		{
+			return m_enums;
+		}
 
 	private:
 		std::vector<Class*> m_classes;
 		std::vector<Function*> m_functions;
 		std::vector<Variable*> m_globals;
 		std::vector<Enum*> m_enums;
-
-		clang::SourceManager* SourceManager = nullptr;
-		clang::ASTContext* Context = nullptr;
-		clang::DiagnosticOptions* DiagnosticOptions = nullptr;
 	};
 }

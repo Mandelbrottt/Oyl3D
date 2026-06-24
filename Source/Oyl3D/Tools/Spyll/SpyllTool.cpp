@@ -48,9 +48,9 @@ namespace Oyl
 		{
 			CreateAndDeleteTempFile(std::string_view a_fileName, const std::vector<std::string_view>& a_headers)
 			{
-				tempFile = a_fileName;
+				tempFile = std::filesystem::temp_directory_path() / std::filesystem::path(a_fileName);
 
-				fileStream.open(a_fileName.data());
+				fileStream.open(tempFile);
 				for (auto headerDeclaration : a_headers)
 				{
 					fileStream << "#include \"" << headerDeclaration << "\"\n";
@@ -64,7 +64,7 @@ namespace Oyl
 			}
 
 			std::ofstream fileStream;
-			std::string_view tempFile;
+			std::filesystem::path tempFile;
 		};
 
 		const CreateAndDeleteTempFile createAndDeleteFile("_temp.gen.cpp", headerDeclarations);
@@ -116,7 +116,7 @@ namespace Oyl
 
 		//printf("\nArguments: %s", arguments.data());
 
-		std::string source = std::string { createAndDeleteFile.tempFile };
+		std::string source = createAndDeleteFile.tempFile.string();
 		Setup(source, arguments);
 
 		return OpaqueTool::Run();

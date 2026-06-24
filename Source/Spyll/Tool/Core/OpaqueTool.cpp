@@ -68,7 +68,7 @@ namespace Spyll
 	}
 
 	void
-	OpaqueTool::SetReflectionParseOptions(const ReflectionParseOptions& a_options)
+	OpaqueTool::SetReflectionParserOptions(const ReflectionParserOptions& a_options)
 	{
 		m_impl->tool->SetReflectionParseOptions(a_options);
 	}
@@ -84,10 +84,4 @@ namespace Spyll
 	{
 		m_impl->tool->SetPrintErrorMessage(a_shouldPrintMessage);
 	}
-
-	//ReflectionDescriptor
-	//OpaqueTool::GetMergedReflectionDescriptor() const
-	//{
-	//	return m_impl->tool->GetMergedReflectionDescriptor();
-	//}
 }
