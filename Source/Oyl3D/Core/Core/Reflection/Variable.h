@@ -1,23 +1,18 @@
 #pragma once
 
-#include "Enums.h"
 #include "NamedDeclaration.h"
-#include "QualifierInfo.h"
-
-namespace Oyl::Reflection::Internal {
-	struct VariableParams;
-}
+#include "ReflectionParams.h"
 
 namespace Oyl::Reflection
 {
 	class Type;
-	
+
 	namespace Internal
 	{
 		class ReflectionFactory;
 	}
 
-	class Variable : public NamedDeclaration, public QualifierInfo
+	class Variable : public NamedDeclaration
 	{
 		friend Internal::ReflectionFactory;
 
@@ -31,23 +26,22 @@ namespace Oyl::Reflection
 		{
 			return m_type;
 		}
-		
-		bool
-		IsPointer() const
+
+		const Type*
+		GetParentType() const
 		{
-			return m_isPointer;
+			return m_type;
 		}
 
-		bool
-		IsReference() const
+		AccessSpecifier
+		GetAccessSpecifier() const
 		{
-			return m_isReference;
+			return m_accessSpecifier;
 		}
 
 	private:
 		Type* m_type = nullptr;
-
-		bool m_isReference = false;
-		bool m_isPointer = false;
+		Type* m_parentType = nullptr;
+		AccessSpecifier m_accessSpecifier = AccessSpecifier::Global;
 	};
 }

@@ -2,11 +2,12 @@
 
 #include <string>
 
+#include "ReflectionParams.h"
+
 namespace Oyl::Reflection
 {
 	namespace Internal
 	{
-		struct NamedDeclarationParams;
 		class ReflectionFactory;
 	}
 

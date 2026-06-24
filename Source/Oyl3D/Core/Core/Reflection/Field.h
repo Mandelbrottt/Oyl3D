@@ -1,6 +1,5 @@
 #pragma once
 
-#include "MemberInfo.h"
 #include "Variable.h"
 
 namespace Oyl::Reflection
@@ -13,7 +12,7 @@ namespace Oyl::Reflection
 		struct FieldParams;
 	}
 
-	class Field final : public Variable, public MemberInfo
+	class Field final : public Variable
 	{
 		friend Internal::ReflectionFactory;
 
@@ -21,16 +20,22 @@ namespace Oyl::Reflection
 		Field(const Internal::FieldParams& a_params);
 
 	public:
-		uint32_t
+		uint32
 		GetOffset() const
 		{
-			return m_offsetInBits / 8;
+			return m_offset;
 		}
 
-		uint32_t
+		uint32
 		GetOffsetInBits() const
 		{
 			return m_offsetInBits;
+		}
+
+		bool
+		IsConst() const
+		{
+			return m_isConst;
 		}
 
 		template<typename TSelf, typename TField>
@@ -50,7 +55,10 @@ namespace Oyl::Reflection
 		GetValue(void* a_self, void** a_outPtr) const;
 
 	private:
-		uint32_t m_offsetInBits = 0;
+		uint16_t m_offset;
+		uint16_t m_offsetInBits;
+
+		bool m_isConst;
 	};
 
 	template<typename TSelf, typename TField>

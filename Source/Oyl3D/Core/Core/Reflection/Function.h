@@ -1,13 +1,8 @@
 #pragma once
 
-#include "Enums.h"
+#include "Invokable.h"
 #include "NamedDeclaration.h"
-#include "QualifierInfo.h"
-#include "Variable.h"
-
-namespace Oyl::Reflection::Internal {
-	struct FunctionParams;
-}
+#include "ReflectionParams.h"
 
 namespace Oyl::Reflection
 {
@@ -19,7 +14,7 @@ namespace Oyl::Reflection
 		class ReflectionFactory;
 	}
 
-	class Function : public NamedDeclaration
+	class Function : public NamedDeclaration, public Invokable
 	{
 		friend Internal::ReflectionFactory;
 
@@ -28,42 +23,7 @@ namespace Oyl::Reflection
 		Function(const Internal::FunctionParams& a_params);
 
 	public:
-		const Type*
-		GetReturnType() const
-		{
-			return m_returnType;
-		}
-
-		bool
-		IsReturnConst() const
-		{
-			return m_isReturnConst;
-		}
-
-		bool
-		IsReturnVolatile() const
-		{
-			return m_isReturnVolatile;
-		}
-
-		bool
-		IsReturnPointer() const
-		{
-			return m_isReturnPointer || m_isReturnReference;
-		}
-
-	private:
-		void
-		AddParameter(Variable* a_variable);
-
-	private:
-		Type* m_returnType = nullptr;
-
-		bool m_isReturnConst = false;
-		bool m_isReturnVolatile = false;
-		bool m_isReturnReference = false;
-		bool m_isReturnPointer = false;
-
-		std::vector<Variable*> m_parameters;
+		virtual
+		~Function();
 	};
 }

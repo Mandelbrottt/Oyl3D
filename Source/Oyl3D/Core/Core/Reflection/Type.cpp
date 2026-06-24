@@ -20,8 +20,11 @@ namespace Oyl::Reflection
 
 		std::vector<Type*> baseTypes;
 
-		std::vector<MemberFunction*> functions;
+		std::vector<Variable*> variables;
 		std::vector<Field*> fields;
+
+		std::vector<Function*> functions;
+		std::vector<Method*> methods;
 	};
 
 	Type::Type(const Internal::TypeParams& a_params)
@@ -97,16 +100,28 @@ namespace Oyl::Reflection
 		return m_impl->baseTypes;
 	}
 
+	const std::vector<Variable*>&
+	Type::GetVariables() const
+	{
+		return m_impl->variables;
+	}
+
 	const std::vector<Field*>&
 	Type::GetFields() const
 	{
 		return m_impl->fields;
 	}
 
-	const std::vector<MemberFunction*>&
+	const std::vector<Function*>&
 	Type::GetFunctions() const
 	{
 		return m_impl->functions;
+	}
+
+	const std::vector<Method*>&
+	Type::GetMethods() const
+	{
+		return m_impl->methods;
 	}
 
 	void
@@ -116,14 +131,26 @@ namespace Oyl::Reflection
 	}
 
 	void
+	Type::AddVariable(Variable* a_variable)
+	{
+		m_impl->variables.emplace_back(a_variable);
+	}
+
+	void
 	Type::AddField(Field* a_field)
 	{
 		m_impl->fields.emplace_back(a_field);
 	}
 
 	void
-	Type::AddFunction(MemberFunction* a_method)
+	Type::AddFunction(Function* a_function)
 	{
-		m_impl->functions.emplace_back(a_method);
+		m_impl->functions.emplace_back(a_function);
+	}
+
+	void
+	Type::AddMethod(Method* a_method)
+	{
+		m_impl->methods.emplace_back(a_method);
 	}
 }

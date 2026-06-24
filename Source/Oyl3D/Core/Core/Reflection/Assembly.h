@@ -1,12 +1,8 @@
 #pragma once
 
-#include "Field.h"
 #include "Function.h"
+#include "ReflectionParams.h"
 #include "Type.h"
-
-namespace Oyl::Reflection::Internal {
-	struct AssemblyParams;
-}
 
 namespace Oyl::Reflection
 {
@@ -49,7 +45,7 @@ namespace Oyl::Reflection
 	private:
 		void
 		AddType(Type* a_type);
-		
+
 		void
 		AddFunction(Function* a_function);
 
