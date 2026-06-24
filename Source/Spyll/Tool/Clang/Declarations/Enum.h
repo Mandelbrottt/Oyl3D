@@ -14,6 +14,13 @@ namespace Spyll
 	class Enum : public Declaration
 	{
 	public:
+		explicit
+		Enum(const clang::EnumDecl* a_decl);
+
+		virtual
+		~Enum();
+
+	public:
 		struct Entry
 		{
 			// TODO: Add Attribute support
@@ -21,14 +28,8 @@ namespace Spyll
 			int64_t value;
 		};
 
-		explicit
-		Enum(const clang::EnumDecl* a_decl);
-
-		virtual
-		~Enum();
-
 	private:
-		clang::QualType m_underlyingType;
+		std::string m_underlyingType;
 
 		std::vector<Entry> m_entries;
 	};

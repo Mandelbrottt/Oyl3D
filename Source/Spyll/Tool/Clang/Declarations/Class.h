@@ -22,12 +22,6 @@ namespace Spyll
 
 	class Class final : public Declaration
 	{
-		friend class Field;
-		friend class Method;
-
-		friend class Variable;
-		friend class Function;
-
 	public:
 		explicit
 		Class(clang::CXXRecordDecl* a_decl);
@@ -35,6 +29,7 @@ namespace Spyll
 		virtual
 		~Class();
 
+	public:
 		bool
 		ShouldReflect() const override;
 
