@@ -242,13 +242,13 @@ RegisterTypes(std::stringstream& a_stream, std::string& a_indent, const Spyll::R
 		a_stream << a_indent << "\t" << typeVar << " = Oyl::Reflection::Internal::ReflectionFactory::AddTypeToAssembly(AssemblyPtr, TypeParams, a_allocate);\n";
 
 		PushIndent(a_indent);
+		{	
+			RegisterVariablesForType(a_stream, a_indent, type);
+			RegisterFieldsForType(a_stream, a_indent, type);
 
-		RegisterVariablesForType(a_stream, a_indent, type);
-		RegisterFieldsForType(a_stream, a_indent, type);
-
-		RegisterFunctionsForType(a_stream, a_indent, type);
-		RegisterMethodsForType(a_stream, a_indent, type);
-
+			RegisterFunctionsForType(a_stream, a_indent, type);
+			RegisterMethodsForType(a_stream, a_indent, type);
+		}
 		PopIndent(a_indent);
 
 		a_stream << a_indent << "}\n";
@@ -324,9 +324,7 @@ RegisterFunctionsForType(
 		a_stream << a_indent << "\tauto InvokablePtr = Oyl::Reflection::Internal::ReflectionFactory::AddFunctionToType(" << ownerTypeVar << ", FunctionParams, a_allocate);\n";
 
 		PushIndent(a_indent);
-
 		RegisterArgumentForFunction(a_stream, a_indent, &function);
-
 		PopIndent(a_indent);
 
 		a_stream << a_indent << "}\n";
@@ -356,9 +354,7 @@ RegisterMethodsForType(
 		a_stream << a_indent << "\tauto InvokablePtr = Oyl::Reflection::Internal::ReflectionFactory::AddFunctionToType(" << ownerTypeVar << ", FunctionParams, a_allocate);\n";
 
 		PushIndent(a_indent);
-
 		RegisterArgumentForFunction(a_stream, a_indent, &method);
-
 		PopIndent(a_indent);
 
 		a_stream << a_indent << "}\n";
