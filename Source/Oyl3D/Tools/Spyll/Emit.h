@@ -2,7 +2,7 @@
 
 namespace Spyll
 {
-	struct ReflectionParser;
+	class ReflectionParser;
 }
 
 extern
