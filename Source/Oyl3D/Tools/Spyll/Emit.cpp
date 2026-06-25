@@ -46,6 +46,8 @@ std::string_view g_emitTemplate =
 
 {REFLECT_INCLUDES}
 
+{REFLECT_STOW}
+
 extern "C"
 _OYL_EXPORT
 void
@@ -89,6 +91,9 @@ PopIndent(std::string& a_indent);
 
 void
 EmitReflectionRegister(std::string& a_emitString, const Spyll::ReflectionParser* a_parser);
+
+void
+EmitStowDeclarations(std::string& a_emitString, const Spyll::ReflectionParser* a_parser);
 
 void
 RegisterTypes(std::stringstream& a_stream, std::string& a_indent, const Spyll::ReflectionParser* a_parser);
@@ -162,6 +167,7 @@ EmitCodeFromTool(const Spyll::ReflectionParser* a_parser)
 	EmitHeaderComment(emitString);
 	EmitIncludes(emitString, a_parser);
 	EmitDependencies(emitString, g_tool.dependencies);
+	EmitStowDeclarations(emitString, a_parser);
 	EmitReflectionRegister(emitString, a_parser);
 
 	FindAndReplace(emitString, "{ASSEMBLY_NAME}", g_tool.assemblyName);
@@ -265,6 +271,98 @@ EmitReflectionRegister(std::string& a_emitString, const Spyll::ReflectionParser*
 }
 
 void
+EmitStowDeclarations(std::string& a_emitString, const Spyll::ReflectionParser* a_parser)
+{
+	std::stringstream stream;
+	stream.setf(std::ios::boolalpha);
+
+	auto isPublic = [](int a_accessSpec)
+	{
+		return a_accessSpec == 0;
+	};
+
+	for (const auto* type : a_parser->GetTypes())
+	{
+		for (const auto& variable : type->GetVariables())
+		{
+			if (isPublic(variable.GetAccessSpecifier()))
+				continue;
+
+			auto typeNameAsVar = GetTypeNameAsVar(variable.GetQualifiedName());
+
+			stream << "struct Stow_" << typeNameAsVar << " { using type = ";
+			stream << variable.GetTypeAsString() << "; };\n";
+			stream << "template class Oyl::Reflection::Internal::StowPrivate<Stow_" << typeNameAsVar << ", &" << variable.GetQualifiedName() << ">;\n";
+		}
+		
+		for (const auto& field : type->GetFields())
+		{
+			if (isPublic(field.GetAccessSpecifier()))
+				continue;
+
+			auto typeNameAsVar = GetTypeNameAsVar(field.GetQualifiedName());
+
+			stream << "struct Stow_" << typeNameAsVar << " { using type = ";
+			stream << field.GetTypeAsString() << "(" << type->GetQualifiedName() << "::*); };\n";
+			stream << "template class Oyl::Reflection::Internal::StowPrivate<Stow_" << typeNameAsVar << ", &" << field.GetQualifiedName() << ">;\n";
+		}
+
+		for (const auto& function : type->GetFunctions())
+		{
+			if (isPublic(function.GetAccessSpecifier()))
+				continue;
+
+			auto typeNameAsVar = GetTypeNameAsVar(function.GetQualifiedName());
+
+			stream << "struct Stow_" << typeNameAsVar << " { using type = ";
+			stream << function.GetReturnTypeAsString() << "(*)(";
+			const auto& args = function.GetArguments();
+			for (int i = 0; i < args.size(); i++)
+			{
+				const auto& arg = args[i];
+				stream << arg.type;
+				if (i != args.size() - 1)
+				{
+					stream << ", ";
+				}
+			}
+			stream << "); };\n";
+			stream << "template class Oyl::Reflection::Internal::StowPrivate<Stow_" << typeNameAsVar << ", &" << function.GetQualifiedName() << ">;\n";
+		}
+
+		for (const auto& method : type->GetMethods())
+		{
+			if (isPublic(method.GetAccessSpecifier()))
+				continue;
+
+			auto typeNameAsVar = GetTypeNameAsVar(method.GetQualifiedName());
+
+			stream << "struct Stow_" << typeNameAsVar << " { using type = ";
+			stream << method.GetReturnTypeAsString() << "(" << type->GetQualifiedName() << "::*)(";
+			const auto& args = method.GetArguments();
+			for (int i = 0; i < args.size(); i++)
+			{
+				const auto& arg = args[i];
+				stream << arg.type;
+				if (i != args.size() - 1)
+				{
+					stream << ", ";
+				}
+			}
+			stream << ")";
+			if (method.IsConst())
+			{
+				stream << " const";
+			}
+			stream << "; };\n";
+			stream << "template class Oyl::Reflection::Internal::StowPrivate<Stow_" << typeNameAsVar << ", &" << method.GetQualifiedName() << ">;\n";
+		}
+	}
+
+	FindAndReplace(a_emitString, "{REFLECT_STOW}", stream.str());
+}
+
+void
 RegisterTypes(std::stringstream& a_stream, std::string& a_indent, const Spyll::ReflectionParser* a_parser)
 {
 	for (const auto& type : a_parser->GetTypes())
@@ -285,15 +383,13 @@ RegisterTypes(std::stringstream& a_stream, std::string& a_indent, const Spyll::R
 			a_stream << a_indent << "TypeParams.alignment = " << static_cast<uint32_t>(type->GetAlignment()) << ";\n";
 			a_stream << a_indent << "" << typeVar <<
 				" = Oyl::Reflection::Internal::ReflectionFactory::AddTypeToAssembly(AssemblyPtr, TypeParams, a_allocate);\n";
-			{
-				PushIndent(a_indent);
-				RegisterVariablesForType(a_stream, a_indent, type);
-				RegisterFieldsForType(a_stream, a_indent, type);
 
-				RegisterFunctionsForType(a_stream, a_indent, type);
-				RegisterMethodsForType(a_stream, a_indent, type);
-				PopIndent(a_indent);
-			}
+			RegisterVariablesForType(a_stream, a_indent, type);
+			RegisterFieldsForType(a_stream, a_indent, type);
+
+			RegisterFunctionsForType(a_stream, a_indent, type);
+			RegisterMethodsForType(a_stream, a_indent, type);
+
 			PopIndent(a_indent);
 		}
 		a_stream << a_indent << "}\n";
@@ -375,6 +471,18 @@ RegisterFunctionsForType(
 
 		a_stream << a_indent << "{\n";
 		{
+			std::stringstream stowCall;
+			std::string stowAddress;
+			if (function.GetAccessSpecifier() == 0) // Public
+			{
+				stowCall << function.GetQualifiedName();
+				stowAddress = "&" + stowCall.str();
+			} else
+			{
+				stowCall << "(Oyl::Reflection::Internal::Stowed<Stow_" << GetTypeNameAsVar(function.GetQualifiedName()) << ">::value)";
+				stowAddress = stowCall.str();
+			}
+
 			PushIndent(a_indent);
 			a_stream << a_indent << "Oyl::Reflection::Internal::FunctionParams FunctionParams;\n";
 			a_stream << a_indent << "FunctionParams.qualifiedName = \"" << function.GetQualifiedName() << "\";\n";
@@ -384,63 +492,71 @@ RegisterFunctionsForType(
 			a_stream << a_indent << "FunctionParams.parentType = " << parentTypeVar << ";\n";
 			a_stream << a_indent << "FunctionParams.accessSpecifier = static_cast<Oyl::Reflection::AccessSpecifier>(" <<
 				static_cast<uint32_t>(function.GetAccessSpecifier()) << ");\n";
-			a_stream << a_indent << "FunctionParams.rawFnPtr = reinterpret_cast<void*>(&" << function.GetQualifiedName() << ");\n";
-			a_stream << a_indent << "auto thunk = [](";
+			a_stream << a_indent << "FunctionParams.rawFnPtr = reinterpret_cast<void*>(" << stowAddress << ");\n";
+
+			std::string thunkString =
+				"auto thunk = []({SIGNATURE_NAMES}) -> std::any\n"
+				"{\n"
+				"{VARS}\n"
+				"{CALL}\n"
+				"};\n"
+				"std::any(*tempThunk)({SIGNATURE}) = thunk;\n"
+				"FunctionParams.typeSafeThunkFnPtr = reinterpret_cast<void*>(tempThunk);\n";
+
+			std::stringstream signatureNames;
+			std::stringstream signature;
 			const auto& args = function.GetArguments();
 			for (int i = 0; i < args.size(); i++)
 			{
 				const auto& arg = args[i];
-				a_stream << "std::any " << arg.name;
+				std::string_view any = "std::any&";
+				signature << any << " ";
+				signatureNames << any << " " << arg.name;
 
 				if (i != args.size() - 1)
-					a_stream << ", ";
-			}
-			a_stream << ") -> std::any\n";
-			a_stream << a_indent << "{\n";
-			{
-				PushIndent(a_indent);
-				for (const auto& arg : args)
 				{
-					a_stream << a_indent << arg.type << " _" << arg.name << " = std::any_cast<" << arg.type << ">(" << arg.name << ");\n";
+					signature << ", ";
+					signatureNames << ", ";
 				}
-				if (function.GetReturnTypeAsString() == "void")
-				{
-					a_stream << a_indent << function.GetQualifiedName() << "(";
-					for (int i = 0; i < args.size(); i++)
-					{
-						const auto& arg = args[i];
-						a_stream << "_" << arg.name;
-
-						if (i != args.size() - 1)
-							a_stream << ", ";
-					}
-					a_stream << ");\n";
-					a_stream << a_indent << "return std::any();\n";
-				} else
-				{
-					a_stream << a_indent << "return std::any(" << function.GetQualifiedName() << "(";
-					for (int i = 0; i < args.size(); i++)
-					{
-						const auto& arg = args[i];
-						a_stream << "_" << arg.name;
-
-						if (i != args.size() - 1)
-							a_stream << ", ";
-					}
-					a_stream << "));\n";
-				}
-				PopIndent(a_indent);
 			}
-			a_stream << a_indent << "};\n";
-			a_stream << a_indent << "std::any(*temp)(";
+
+			std::stringstream vars;
 			for (int i = 0; i < args.size(); i++)
 			{
-				a_stream << "std::any";
-				if (i != args.size() - 1)
-					a_stream << ", ";
+				const auto& arg = args[i];
+				vars << "\t" << arg.type << " _" << arg.name << " = std::any_cast<" << arg.type << ">(" << arg.name << ");\n";
 			}
-			a_stream << ") = thunk;\n";
-			a_stream << a_indent << "FunctionParams.typeSafeThunkFnPtr = reinterpret_cast<void*>(temp);\n";
+
+			std::stringstream callRaw;
+			callRaw << stowCall.str() << "(";
+
+			for (int i = 0; i < args.size(); i++)
+			{
+				const auto& arg = args[i];
+				callRaw << "_" << arg.name;
+
+				if (i != args.size() - 1)
+					callRaw << ", ";
+			}
+			callRaw << ")";
+
+			std::stringstream call;
+			if (function.GetReturnTypeAsString() == "void")
+			{
+				call << "\t" << callRaw.str() << ";\n";
+				call << "\treturn std::any();";
+			} else
+			{
+				call << "\treturn std::any {" << callRaw.str() << " };";
+			}
+
+			FindAndReplace(thunkString, "{SIGNATURE_NAMES}", signatureNames.str());
+			FindAndReplace(thunkString, "{SIGNATURE}", signature.str());
+			FindAndReplace(thunkString, "{VARS}", vars.str());
+			FindAndReplace(thunkString, "{CALL}", call.str());
+			FindAndReplace(thunkString, "\n", "\n" + a_indent);
+
+			a_stream << a_indent << thunkString << "\n";
 			a_stream << a_indent << "auto InvokablePtr = Oyl::Reflection::Internal::ReflectionFactory::AddFunctionToType("
 				<< parentTypeVar << ", FunctionParams, a_allocate);\n";
 
@@ -465,6 +581,18 @@ RegisterMethodsForType(
 
 		a_stream << a_indent << "{\n";
 		{
+			std::stringstream stowCall;
+			std::string stowAddress;
+			if (method.GetAccessSpecifier() == 0) // Public
+			{
+				stowCall << method.GetName();
+				stowAddress = "&" + std::string(method.GetQualifiedName());
+			} else
+			{
+				stowCall << "(Oyl::Reflection::Internal::Stowed<Stow_" << GetTypeNameAsVar(method.GetQualifiedName()) << ">::value)";
+				stowAddress = stowCall.str();
+			}
+
 			PushIndent(a_indent);
 			a_stream << a_indent << "Oyl::Reflection::Internal::MethodParams FunctionParams;\n";
 			a_stream << a_indent << "FunctionParams.qualifiedName = \"" << method.GetQualifiedName() << "\";\n";
@@ -476,8 +604,86 @@ RegisterMethodsForType(
 				static_cast<uint32_t>(method.GetAccessSpecifier()) << ");\n";
 			a_stream << a_indent << "FunctionParams.isConst = " << method.IsConst() << ";\n";
 			a_stream << a_indent << "FunctionParams.isVirtual = " << method.IsVirtual() << ";\n";
-			a_stream << a_indent << "decltype(&" << method.GetQualifiedName() << ") temp = &" << method.GetQualifiedName() << ";\n";
-			a_stream << a_indent << "FunctionParams.rawFnPtr = *reinterpret_cast<void**>(&temp);\n";
+			a_stream << a_indent << method.GetReturnTypeAsString() << "(" << a_ownerType->GetQualifiedName() << "::*tempRaw)(";
+			const auto& args = method.GetArguments();
+			for (int i = 0; i < args.size(); i++)
+			{
+				const auto& arg = args[i];
+				a_stream << arg.type;
+				if (i != args.size() - 1)
+				{
+					a_stream << ", ";
+				}
+			}
+			a_stream << ")";
+			if (method.IsConst())
+			{
+				a_stream << " const";
+			}
+			a_stream << " = " << stowAddress << ";\n";
+			a_stream << a_indent << "FunctionParams.rawFnPtr = *reinterpret_cast<void**>(&tempRaw);\n";
+			std::string thunkString =
+				"auto thunk = [](std::any& a_self{SIGNATURE_NAMES}) -> std::any\n"
+				"{\n"
+				"{VARS}\n"
+				"{CALL}\n"
+				"};\n"
+				"std::any(*tempThunk)(std::any& a_self{SIGNATURE}) = thunk;\n"
+				"FunctionParams.typeSafeThunkFnPtr = reinterpret_cast<void*>(tempThunk);\n";
+
+			std::stringstream signatureNames;
+			std::stringstream signature;
+			for (int i = 0; i < args.size(); i++)
+			{
+				signature << ", ";
+				signatureNames << ", ";
+
+				const auto& arg = args[i];
+				std::string_view any = "std::any&";
+				signature << any << " ";
+				signatureNames << any << " " << arg.name;
+			}
+
+			std::string isConst = method.IsConst() ? "const " : std::string();
+
+			std::stringstream vars;
+			vars << "\t" << a_ownerType->GetQualifiedName() << "* _a_self = std::any_cast<" << a_ownerType->GetQualifiedName() << "*>(a_self);\n";
+			for (int i = 0; i < args.size(); i++)
+			{
+				const auto& arg = args[i];
+				vars << "\t" << arg.type << " _" << arg.name << " = std::any_cast<" << arg.type << ">(" << arg.name << ");\n";
+			}
+
+			std::stringstream callRaw;
+			callRaw << "(_a_self->" << (method.GetAccessSpecifier() != 0 ? "*" : "") << stowCall.str() << ")(";
+
+			for (int i = 0; i < args.size(); i++)
+			{
+				const auto& arg = args[i];
+				callRaw << "_" << arg.name;
+
+				if (i != args.size() - 1)
+					callRaw << ", ";
+			}
+			callRaw << ")";
+
+			std::stringstream call;
+			if (method.GetReturnTypeAsString() == "void")
+			{
+				call << "\t" << callRaw.str() << ";\n";
+				call << "\treturn std::any();";
+			} else
+			{
+				call << "\treturn std::any { " << callRaw.str() << " };";
+			}
+
+			FindAndReplace(thunkString, "{SIGNATURE_NAMES}", signatureNames.str());
+			FindAndReplace(thunkString, "{SIGNATURE}", signature.str());
+			FindAndReplace(thunkString, "{VARS}", vars.str());
+			FindAndReplace(thunkString, "{CALL}", call.str());
+			FindAndReplace(thunkString, "\n", "\n" + a_indent);
+
+			a_stream << a_indent << thunkString << "\n";
 			a_stream << a_indent << "auto InvokablePtr = Oyl::Reflection::Internal::ReflectionFactory::AddFunctionToType("
 				<< parentTypeVar << ", FunctionParams, a_allocate);\n";
 			RegisterArgumentForFunction(a_stream, a_indent, &method);

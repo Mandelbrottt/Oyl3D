@@ -57,4 +57,37 @@ namespace Oyl::Reflection::Internal
 		EnumValue*
 		AddValueToEnum(Enum* a_enum, const EnumValueParams& a_params, ReflectionAllocatorFn a_allocate);
 	};
+
+	// This is a rewrite of the technique showed here:
+	// http://bloglitb.blogspot.com/2010/07/access-to-private-members-thats-easy.html
+	// https://gist.github.com/dabrahams/1528856
+
+	// Generate a static data member of type Stub::type in which to store
+	// the address of a private member.  It is crucial that Stub does not
+	// depend on the /value/ of the the stored address in any way so that
+	// we can access it from ordinary code without directly touching
+	// private data.
+	template<typename Stub>
+	struct Stowed
+	{
+		static typename Stub::type value;
+	};
+
+	template<typename Stub>
+	typename Stub::type Stowed<Stub>::value;
+
+	// Generate a static data member whose constructor initializes
+	// Stowed<Stub>::value.  This type will only be named in an explicit
+	// instantiation, where it is legal to pass the address of a private
+	// member.
+	template<class Stub, typename Stub::type X>
+	struct StowPrivate
+	{
+		StowPrivate() { Stowed<Stub>::value = X; }
+
+		static StowPrivate instance;
+	};
+
+	template<class Stub, typename Stub::type X>
+	StowPrivate<Stub, X> StowPrivate<Stub, X>::instance;
 }
