@@ -273,27 +273,29 @@ RegisterTypes(std::stringstream& a_stream, std::string& a_indent, const Spyll::R
 
 		a_stream << a_indent << "Oyl::Reflection::Type* " << typeVar << ";\n";
 		a_stream << a_indent << "{\n";
-		a_stream << a_indent << "\tOyl::Reflection::Internal::TypeParams TypeParams;\n";
-		a_stream << a_indent << "\tTypeParams.assembly = AssemblyPtr;\n";
-		a_stream << a_indent << "\tTypeParams.typeId = Oyl::Reflection::GetTypeId<" << type->GetQualifiedName() <<
-			">();\n";
-		a_stream << a_indent << "\tTypeParams.qualifiedName = \"" << type->GetQualifiedName() << "\";\n";
-		a_stream << a_indent << "\tTypeParams.name = \"" << type->GetName() << "\";\n";
-		a_stream << a_indent << "\tTypeParams.size = " << type->GetSize() << ";\n";
-		a_stream << a_indent << "\tTypeParams.alignment = " << static_cast<uint32_t>(type->GetAlignment()) << ";\n";
-		a_stream << a_indent << "\t" << typeVar <<
-			" = Oyl::Reflection::Internal::ReflectionFactory::AddTypeToAssembly(AssemblyPtr, TypeParams, a_allocate);\n";
-
-		PushIndent(a_indent);
 		{
-			RegisterVariablesForType(a_stream, a_indent, type);
-			RegisterFieldsForType(a_stream, a_indent, type);
+			PushIndent(a_indent);
+			a_stream << a_indent << "Oyl::Reflection::Internal::TypeParams TypeParams;\n";
+			a_stream << a_indent << "TypeParams.assembly = AssemblyPtr;\n";
+			a_stream << a_indent << "TypeParams.typeId = Oyl::Reflection::GetTypeId<" << type->GetQualifiedName() <<
+				">();\n";
+			a_stream << a_indent << "TypeParams.qualifiedName = \"" << type->GetQualifiedName() << "\";\n";
+			a_stream << a_indent << "TypeParams.name = \"" << type->GetName() << "\";\n";
+			a_stream << a_indent << "TypeParams.size = " << type->GetSize() << ";\n";
+			a_stream << a_indent << "TypeParams.alignment = " << static_cast<uint32_t>(type->GetAlignment()) << ";\n";
+			a_stream << a_indent << "" << typeVar <<
+				" = Oyl::Reflection::Internal::ReflectionFactory::AddTypeToAssembly(AssemblyPtr, TypeParams, a_allocate);\n";
+			{
+				PushIndent(a_indent);
+				RegisterVariablesForType(a_stream, a_indent, type);
+				RegisterFieldsForType(a_stream, a_indent, type);
 
-			RegisterFunctionsForType(a_stream, a_indent, type);
-			RegisterMethodsForType(a_stream, a_indent, type);
+				RegisterFunctionsForType(a_stream, a_indent, type);
+				RegisterMethodsForType(a_stream, a_indent, type);
+				PopIndent(a_indent);
+			}
+			PopIndent(a_indent);
 		}
-		PopIndent(a_indent);
-
 		a_stream << a_indent << "}\n";
 	}
 }
@@ -310,16 +312,20 @@ RegisterVariablesForType(
 		auto parentTypeVar = GetTypeNameAsVar(a_ownerType->GetQualifiedName());
 
 		a_stream << a_indent << "{\n";
-		a_stream << a_indent << "\tOyl::Reflection::Internal::VariableParams VariableParams;\n";
-		a_stream << a_indent << "\tVariableParams.qualifiedName = \"" << variable.GetQualifiedName() << "\";\n";
-		a_stream << a_indent << "\tVariableParams.name = \"" << variable.GetName() << "\";\n";
-		a_stream << a_indent << "\tVariableParams.type = Oyl::Reflection::Type::Get<" << variable.GetTypeAsString() <<
-			">();\n";
-		a_stream << a_indent << "\tVariableParams.parentType = " << parentTypeVar << ";\n";
-		a_stream << a_indent << "\tVariableParams.accessSpecifier = static_cast<Oyl::Reflection::AccessSpecifier>(" <<
-			static_cast<uint32_t>(variable.GetAccessSpecifier()) << ");\n";
-		a_stream << a_indent << "\tOyl::Reflection::Internal::ReflectionFactory::AddVariableToType(" << parentTypeVar <<
-			", VariableParams, a_allocate);\n";
+		{
+			PushIndent(a_indent);
+			a_stream << a_indent << "Oyl::Reflection::Internal::VariableParams VariableParams;\n";
+			a_stream << a_indent << "VariableParams.qualifiedName = \"" << variable.GetQualifiedName() << "\";\n";
+			a_stream << a_indent << "VariableParams.name = \"" << variable.GetName() << "\";\n";
+			a_stream << a_indent << "VariableParams.type = Oyl::Reflection::Type::Get<" << variable.GetTypeAsString() <<
+				">();\n";
+			a_stream << a_indent << "VariableParams.parentType = " << parentTypeVar << ";\n";
+			a_stream << a_indent << "VariableParams.accessSpecifier = static_cast<Oyl::Reflection::AccessSpecifier>(" <<
+				static_cast<uint32_t>(variable.GetAccessSpecifier()) << ");\n";
+			a_stream << a_indent << "Oyl::Reflection::Internal::ReflectionFactory::AddVariableToType(" << parentTypeVar <<
+				", VariableParams, a_allocate);\n";
+			PopIndent(a_indent);
+		}
 		a_stream << a_indent << "}\n";
 	}
 }
@@ -336,18 +342,22 @@ RegisterFieldsForType(
 		auto parentTypeVar = GetTypeNameAsVar(a_ownerType->GetQualifiedName());
 
 		a_stream << a_indent << "{\n";
-		a_stream << a_indent << "\tOyl::Reflection::Internal::FieldParams FieldParams;\n";
-		a_stream << a_indent << "\tFieldParams.qualifiedName = \"" << field.GetQualifiedName() << "\";\n";
-		a_stream << a_indent << "\tFieldParams.name = \"" << field.GetName() << "\";\n";
-		a_stream << a_indent << "\tFieldParams.type = Oyl::Reflection::Type::Get<" << field.GetTypeAsString() <<
-			">();\n";
-		a_stream << a_indent << "\tFieldParams.parentType = " << parentTypeVar << ";\n";
-		a_stream << a_indent << "\tFieldParams.offsetInBits = " << field.GetOffsetInBits() << ";\n";
-		a_stream << a_indent << "\tFieldParams.accessSpecifier = static_cast<Oyl::Reflection::AccessSpecifier>(" <<
-			static_cast<uint32_t>(field.GetAccessSpecifier()) << ");\n";
-		a_stream << a_indent << "\tFieldParams.isConst = " << field.IsConst() << ";\n";
-		a_stream << a_indent << "\tOyl::Reflection::Internal::ReflectionFactory::AddFieldToType(" << parentTypeVar <<
-			", FieldParams, a_allocate);\n";
+		{
+			PushIndent(a_indent);
+			a_stream << a_indent << "Oyl::Reflection::Internal::FieldParams FieldParams;\n";
+			a_stream << a_indent << "FieldParams.qualifiedName = \"" << field.GetQualifiedName() << "\";\n";
+			a_stream << a_indent << "FieldParams.name = \"" << field.GetName() << "\";\n";
+			a_stream << a_indent << "FieldParams.type = Oyl::Reflection::Type::Get<" << field.GetTypeAsString() <<
+				">();\n";
+			a_stream << a_indent << "FieldParams.parentType = " << parentTypeVar << ";\n";
+			a_stream << a_indent << "FieldParams.offsetInBits = " << field.GetOffsetInBits() << ";\n";
+			a_stream << a_indent << "FieldParams.accessSpecifier = static_cast<Oyl::Reflection::AccessSpecifier>(" <<
+				static_cast<uint32_t>(field.GetAccessSpecifier()) << ");\n";
+			a_stream << a_indent << "FieldParams.isConst = " << field.IsConst() << ";\n";
+			a_stream << a_indent << "Oyl::Reflection::Internal::ReflectionFactory::AddFieldToType(" << parentTypeVar <<
+				", FieldParams, a_allocate);\n";
+			PopIndent(a_indent);
+		}
 		a_stream << a_indent << "}\n";
 	}
 }
@@ -364,20 +374,76 @@ RegisterFunctionsForType(
 		auto parentTypeVar = GetTypeNameAsVar(a_ownerType->GetQualifiedName());
 
 		a_stream << a_indent << "{\n";
-		a_stream << a_indent << "\tOyl::Reflection::Internal::FunctionParams FunctionParams;\n";
-		a_stream << a_indent << "\tFunctionParams.qualifiedName = \"" << function.GetQualifiedName() << "\";\n";
-		a_stream << a_indent << "\tFunctionParams.name = \"" << function.GetName() << "\";\n";
-		a_stream << a_indent << "\tFunctionParams.returnType = Oyl::Reflection::Type::Get<" << function.
-			GetReturnTypeAsString() << ">();\n";
-		a_stream << a_indent << "\tFunctionParams.parentType = " << parentTypeVar << ";\n";
-		a_stream << a_indent << "\tFunctionParams.accessSpecifier = static_cast<Oyl::Reflection::AccessSpecifier>(" <<
-			static_cast<uint32_t>(function.GetAccessSpecifier()) << ");\n";
-		a_stream << a_indent << "\tFunctionParams.functionPtr = reinterpret_cast<void*>(" << function.GetQualifiedName() << ");\n";
-		a_stream << a_indent << "\tauto InvokablePtr = Oyl::Reflection::Internal::ReflectionFactory::AddFunctionToType("
-			<< parentTypeVar << ", FunctionParams, a_allocate);\n";
-
-		PushIndent(a_indent);
 		{
+			PushIndent(a_indent);
+			a_stream << a_indent << "Oyl::Reflection::Internal::FunctionParams FunctionParams;\n";
+			a_stream << a_indent << "FunctionParams.qualifiedName = \"" << function.GetQualifiedName() << "\";\n";
+			a_stream << a_indent << "FunctionParams.name = \"" << function.GetName() << "\";\n";
+			a_stream << a_indent << "FunctionParams.returnType = Oyl::Reflection::Type::Get<" << function.
+				GetReturnTypeAsString() << ">();\n";
+			a_stream << a_indent << "FunctionParams.parentType = " << parentTypeVar << ";\n";
+			a_stream << a_indent << "FunctionParams.accessSpecifier = static_cast<Oyl::Reflection::AccessSpecifier>(" <<
+				static_cast<uint32_t>(function.GetAccessSpecifier()) << ");\n";
+			a_stream << a_indent << "FunctionParams.rawFnPtr = reinterpret_cast<void*>(&" << function.GetQualifiedName() << ");\n";
+			a_stream << a_indent << "auto thunk = [](";
+			const auto& args = function.GetArguments();
+			for (int i = 0; i < args.size(); i++)
+			{
+				const auto& arg = args[i];
+				a_stream << "std::any " << arg.name;
+
+				if (i != args.size() - 1)
+					a_stream << ", ";
+			}
+			a_stream << ") -> std::any\n";
+			a_stream << a_indent << "{\n";
+			{
+				PushIndent(a_indent);
+				for (const auto& arg : args)
+				{
+					a_stream << a_indent << arg.type << " _" << arg.name << " = std::any_cast<" << arg.type << ">(" << arg.name << ");\n";
+				}
+				if (function.GetReturnTypeAsString() == "void")
+				{
+					a_stream << a_indent << function.GetQualifiedName() << "(";
+					for (int i = 0; i < args.size(); i++)
+					{
+						const auto& arg = args[i];
+						a_stream << "_" << arg.name;
+
+						if (i != args.size() - 1)
+							a_stream << ", ";
+					}
+					a_stream << ");\n";
+					a_stream << a_indent << "return std::any();\n";
+				} else
+				{
+					a_stream << a_indent << "return std::any(" << function.GetQualifiedName() << "(";
+					for (int i = 0; i < args.size(); i++)
+					{
+						const auto& arg = args[i];
+						a_stream << "_" << arg.name;
+
+						if (i != args.size() - 1)
+							a_stream << ", ";
+					}
+					a_stream << "));\n";
+				}
+				PopIndent(a_indent);
+			}
+			a_stream << a_indent << "};\n";
+			a_stream << a_indent << "std::any(*temp)(";
+			for (int i = 0; i < args.size(); i++)
+			{
+				a_stream << "std::any";
+				if (i != args.size() - 1)
+					a_stream << ", ";
+			}
+			a_stream << ") = thunk;\n";
+			a_stream << a_indent << "FunctionParams.typeSafeThunkFnPtr = reinterpret_cast<void*>(temp);\n";
+			a_stream << a_indent << "auto InvokablePtr = Oyl::Reflection::Internal::ReflectionFactory::AddFunctionToType("
+				<< parentTypeVar << ", FunctionParams, a_allocate);\n";
+
 			RegisterArgumentForFunction(a_stream, a_indent, &function);
 		}
 		PopIndent(a_indent);
@@ -398,27 +464,25 @@ RegisterMethodsForType(
 		auto parentTypeVar = GetTypeNameAsVar(a_ownerType->GetQualifiedName());
 
 		a_stream << a_indent << "{\n";
-		a_stream << a_indent << "\tOyl::Reflection::Internal::MethodParams FunctionParams;\n";
-		a_stream << a_indent << "\tFunctionParams.qualifiedName = \"" << method.GetQualifiedName() << "\";\n";
-		a_stream << a_indent << "\tFunctionParams.name = \"" << method.GetName() << "\";\n";
-		a_stream << a_indent << "\tFunctionParams.returnType = Oyl::Reflection::Type::Get<" << method.
-			GetReturnTypeAsString() << ">();\n";
-		a_stream << a_indent << "\tFunctionParams.parentType = " << parentTypeVar << ";\n";
-		a_stream << a_indent << "\tFunctionParams.accessSpecifier = static_cast<Oyl::Reflection::AccessSpecifier>(" <<
-			static_cast<uint32_t>(method.GetAccessSpecifier()) << ");\n";
-		a_stream << a_indent << "\tFunctionParams.isConst = " << method.IsConst() << ";\n";
-		a_stream << a_indent << "\tFunctionParams.isVirtual = " << method.IsVirtual() << ";\n";
-		a_stream << a_indent << "\tdecltype(&" << method.GetQualifiedName() << ") temp = &" << method.GetQualifiedName() << ";\n";
-		a_stream << a_indent << "\tFunctionParams.functionPtr = *reinterpret_cast<void**>(&temp);\n";
-		a_stream << a_indent << "\tauto InvokablePtr = Oyl::Reflection::Internal::ReflectionFactory::AddFunctionToType("
-			<< parentTypeVar << ", FunctionParams, a_allocate);\n";
-
-		PushIndent(a_indent);
 		{
+			PushIndent(a_indent);
+			a_stream << a_indent << "Oyl::Reflection::Internal::MethodParams FunctionParams;\n";
+			a_stream << a_indent << "FunctionParams.qualifiedName = \"" << method.GetQualifiedName() << "\";\n";
+			a_stream << a_indent << "FunctionParams.name = \"" << method.GetName() << "\";\n";
+			a_stream << a_indent << "FunctionParams.returnType = Oyl::Reflection::Type::Get<" << method.
+				GetReturnTypeAsString() << ">();\n";
+			a_stream << a_indent << "FunctionParams.parentType = " << parentTypeVar << ";\n";
+			a_stream << a_indent << "FunctionParams.accessSpecifier = static_cast<Oyl::Reflection::AccessSpecifier>(" <<
+				static_cast<uint32_t>(method.GetAccessSpecifier()) << ");\n";
+			a_stream << a_indent << "FunctionParams.isConst = " << method.IsConst() << ";\n";
+			a_stream << a_indent << "FunctionParams.isVirtual = " << method.IsVirtual() << ";\n";
+			a_stream << a_indent << "decltype(&" << method.GetQualifiedName() << ") temp = &" << method.GetQualifiedName() << ";\n";
+			a_stream << a_indent << "FunctionParams.rawFnPtr = *reinterpret_cast<void**>(&temp);\n";
+			a_stream << a_indent << "auto InvokablePtr = Oyl::Reflection::Internal::ReflectionFactory::AddFunctionToType("
+				<< parentTypeVar << ", FunctionParams, a_allocate);\n";
 			RegisterArgumentForFunction(a_stream, a_indent, &method);
+			PopIndent(a_indent);
 		}
-		PopIndent(a_indent);
-
 		a_stream << a_indent << "}\n";
 	}
 }
@@ -433,11 +497,15 @@ RegisterArgumentForFunction(
 	for (const auto& argument : a_function->GetArguments())
 	{
 		a_stream << a_indent << "{\n";
-		a_stream << a_indent << "\tOyl::Reflection::Internal::ArgumentParams ArgumentParams;\n";
-		a_stream << a_indent << "\tArgumentParams.type = Oyl::Reflection::Type::Get<" << argument.type << ">();\n";
-		a_stream << a_indent << "\tArgumentParams.name = \"" << argument.name << "\";\n";
-		a_stream << a_indent <<
-			"\tOyl::Reflection::Internal::ReflectionFactory::AddArgumentToInvokable(InvokablePtr, ArgumentParams, a_allocate);\n";
+		{
+			PushIndent(a_indent);
+			a_stream << a_indent << "Oyl::Reflection::Internal::ArgumentParams ArgumentParams;\n";
+			a_stream << a_indent << "ArgumentParams.type = Oyl::Reflection::Type::Get<" << argument.type << ">();\n";
+			a_stream << a_indent << "ArgumentParams.name = \"" << argument.name << "\";\n";
+			a_stream << a_indent <<
+				"Oyl::Reflection::Internal::ReflectionFactory::AddArgumentToInvokable(InvokablePtr, ArgumentParams, a_allocate);\n";
+			PopIndent(a_indent);
+		}
 		a_stream << a_indent << "}\n";
 	}
 }
@@ -448,16 +516,20 @@ RegisterGlobalVariables(std::stringstream& a_stream, std::string& a_indent, cons
 	for (const auto& variable : a_parser->GetGlobalVariables())
 	{
 		a_stream << a_indent << "{\n";
-		a_stream << a_indent << "\tOyl::Reflection::Internal::VariableParams VariableParams;\n";
-		a_stream << a_indent << "\tVariableParams.qualifiedName = \"" << variable->GetQualifiedName() << "\";\n";
-		a_stream << a_indent << "\tVariableParams.name = \"" << variable->GetName() << "\";\n";
-		a_stream << a_indent << "\tVariableParams.type = Oyl::Reflection::Type::Get<" << variable->GetTypeAsString() <<
-			">();\n";
-		a_stream << a_indent << "\tVariableParams.parentType = nullptr;\n";
-		a_stream << a_indent << "\tVariableParams.accessSpecifier = static_cast<Oyl::Reflection::AccessSpecifier>(" <<
-			static_cast<uint32_t>(variable->GetAccessSpecifier()) << ");\n";
-		a_stream << a_indent <<
-			"\tOyl::Reflection::Internal::ReflectionFactory::AddGlobalVariableToAssembly(AssemblyPtr, VariableParams, a_allocate);\n";
+		{
+			PushIndent(a_indent);
+			a_stream << a_indent << "Oyl::Reflection::Internal::VariableParams VariableParams;\n";
+			a_stream << a_indent << "VariableParams.qualifiedName = \"" << variable->GetQualifiedName() << "\";\n";
+			a_stream << a_indent << "VariableParams.name = \"" << variable->GetName() << "\";\n";
+			a_stream << a_indent << "VariableParams.type = Oyl::Reflection::Type::Get<" << variable->GetTypeAsString() <<
+				">();\n";
+			a_stream << a_indent << "VariableParams.parentType = nullptr;\n";
+			a_stream << a_indent << "VariableParams.accessSpecifier = static_cast<Oyl::Reflection::AccessSpecifier>(" <<
+				static_cast<uint32_t>(variable->GetAccessSpecifier()) << ");\n";
+			a_stream << a_indent <<
+				"Oyl::Reflection::Internal::ReflectionFactory::AddGlobalVariableToAssembly(AssemblyPtr, VariableParams, a_allocate);\n";
+			PopIndent(a_indent);
+		}
 		a_stream << a_indent << "}\n";
 	}
 }
@@ -468,21 +540,19 @@ RegisterGlobalFunctions(std::stringstream& a_stream, std::string& a_indent, cons
 	for (const auto& function : a_parser->GetGlobalFunctions())
 	{
 		a_stream << a_indent << "{\n";
-		a_stream << a_indent << "\tOyl::Reflection::Internal::FunctionParams FunctionParams;\n";
-		a_stream << a_indent << "\tFunctionParams.qualifiedName = \"" << function->GetQualifiedName() << "\";\n";
-		a_stream << a_indent << "\tFunctionParams.name = \"" << function->GetName() << "\";\n";
-		a_stream << a_indent << "\tFunctionParams.returnType = Oyl::Reflection::Type::Get<" << function->GetReturnTypeAsString() << ">();\n";
-		a_stream << a_indent << "\tFunctionParams.parentType = nullptr;\n";
-		a_stream << a_indent << "\tFunctionParams.accessSpecifier = static_cast<Oyl::Reflection::AccessSpecifier>(" << static_cast<uint32_t>(function->GetAccessSpecifier()) << ");\n";
-		a_stream << a_indent << "\tFunctionParams.functionPtr = reinterpret_cast<void*>(" << function->GetQualifiedName() << ");\n";
-		a_stream << a_indent << "\tauto InvokablePtr = Oyl::Reflection::Internal::ReflectionFactory::AddGlobalFunctionToAssembly(AssemblyPtr, FunctionParams, a_allocate);\n";
-
-		PushIndent(a_indent);
 		{
+			PushIndent(a_indent);
+			a_stream << a_indent << "Oyl::Reflection::Internal::FunctionParams FunctionParams;\n";
+			a_stream << a_indent << "FunctionParams.qualifiedName = \"" << function->GetQualifiedName() << "\";\n";
+			a_stream << a_indent << "FunctionParams.name = \"" << function->GetName() << "\";\n";
+			a_stream << a_indent << "FunctionParams.returnType = Oyl::Reflection::Type::Get<" << function->GetReturnTypeAsString() << ">();\n";
+			a_stream << a_indent << "FunctionParams.parentType = nullptr;\n";
+			a_stream << a_indent << "FunctionParams.accessSpecifier = static_cast<Oyl::Reflection::AccessSpecifier>(" << static_cast<uint32_t>(function->GetAccessSpecifier()) << ");\n";
+			a_stream << a_indent << "FunctionParams.rawFnPtr = reinterpret_cast<void*>(" << function->GetQualifiedName() << ");\n";
+			a_stream << a_indent << "auto InvokablePtr = Oyl::Reflection::Internal::ReflectionFactory::AddGlobalFunctionToAssembly(AssemblyPtr, FunctionParams, a_allocate);\n";
 			RegisterArgumentForFunction(a_stream, a_indent, function);
+			PopIndent(a_indent);
 		}
-		PopIndent(a_indent);
-
 		a_stream << a_indent << "}\n";
 	}
 }
@@ -493,31 +563,34 @@ RegisterEnums(std::stringstream& a_stream, std::string& a_indent, const Spyll::R
 	for (const auto& enum_ : a_parser->GetEnums())
 	{
 		a_stream << a_indent << "{\n";
-		a_stream << a_indent << "\tOyl::Reflection::Internal::EnumParams EnumParams;\n";
-		a_stream << a_indent << "\tEnumParams.qualifiedName = \"" << enum_->GetQualifiedName() << "\";\n";
-		a_stream << a_indent << "\tEnumParams.name = \"" << enum_->GetName() << "\";\n";
-		a_stream << a_indent << "\tEnumParams.underlyingType = Oyl::Reflection::Type::Get<" << enum_->
-			GetUnderlyingTypeAsString() << ">();\n";
-		a_stream << a_indent << "\tEnumParams.nValues = static_cast<size_t>(" << enum_->GetEntries().size() << ");\n";
-		a_stream << a_indent <<
-			"\tauto EnumPtr = Oyl::Reflection::Internal::ReflectionFactory::AddEnumToAssembly(AssemblyPtr, EnumParams, a_allocate);\n";
-
-		for (auto& entry : enum_->GetEntries())
 		{
 			PushIndent(a_indent);
+			a_stream << a_indent << "Oyl::Reflection::Internal::EnumParams EnumParams;\n";
+			a_stream << a_indent << "EnumParams.qualifiedName = \"" << enum_->GetQualifiedName() << "\";\n";
+			a_stream << a_indent << "EnumParams.name = \"" << enum_->GetName() << "\";\n";
+			a_stream << a_indent << "EnumParams.underlyingType = Oyl::Reflection::Type::Get<" << enum_->
+				GetUnderlyingTypeAsString() << ">();\n";
+			a_stream << a_indent << "EnumParams.nValues = static_cast<size_t>(" << enum_->GetEntries().size() << ");\n";
+			a_stream << a_indent <<
+				"auto EnumPtr = Oyl::Reflection::Internal::ReflectionFactory::AddEnumToAssembly(AssemblyPtr, EnumParams, a_allocate);\n";
+
+			for (auto& entry : enum_->GetEntries())
 			{
 				a_stream << a_indent << "{\n";
-				a_stream << a_indent << "\tOyl::Reflection::Internal::EnumValueParams EnumValueParams;\n";
-				a_stream << a_indent << "\tEnumValueParams.identifier = \"" << entry.identifier << "\";\n";
-				a_stream << a_indent << "\tEnumValueParams.value = static_cast<" << enum_->GetUnderlyingTypeAsString()
-					<< ">(" << entry.value << ");\n";
-				a_stream << a_indent <<
-					"\tOyl::Reflection::Internal::ReflectionFactory::AddValueToEnum(EnumPtr, EnumValueParams, a_allocate);\n";
+				{
+					PushIndent(a_indent);
+					a_stream << a_indent << "Oyl::Reflection::Internal::EnumValueParams EnumValueParams;\n";
+					a_stream << a_indent << "EnumValueParams.identifier = \"" << entry.identifier << "\";\n";
+					a_stream << a_indent << "EnumValueParams.value = static_cast<" << enum_->GetUnderlyingTypeAsString()
+						<< ">(" << entry.value << ");\n";
+					a_stream << a_indent <<
+						"Oyl::Reflection::Internal::ReflectionFactory::AddValueToEnum(EnumPtr, EnumValueParams, a_allocate);\n";
+					PopIndent(a_indent);
+				}
 				a_stream << a_indent << "}\n";
 			}
 			PopIndent(a_indent);
 		}
-
 		a_stream << a_indent << "}\n";
 	}
 }

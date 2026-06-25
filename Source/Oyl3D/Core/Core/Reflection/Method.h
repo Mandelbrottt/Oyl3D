@@ -37,7 +37,7 @@ namespace Oyl::Reflection
 		{
 			using ThunkFn = TReturn (TObject::*)(TArgs...);
 
-			ThunkFn thunkFn = *reinterpret_cast<ThunkFn*>(&m_functionPtr);
+			ThunkFn thunkFn = *reinterpret_cast<ThunkFn*>(&m_rawFnPtr);
 			if constexpr (std::is_void_v<TReturn>)
 			{
 				(a_this->*thunkFn)(std::forward<TArgs>(a_args)...);
