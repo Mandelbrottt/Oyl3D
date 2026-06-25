@@ -9,10 +9,10 @@ namespace Oyl::Reflection
 
 	enum class AccessSpecifier : uint8
 	{
-		Global = 0,
-		Public,
+		Public = 0,
 		Protected,
-		Private
+		Private,
+		Global,
 	};
 }
 
