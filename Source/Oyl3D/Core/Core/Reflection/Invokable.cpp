@@ -7,6 +7,7 @@ namespace Oyl::Reflection
 	Invokable::Invokable(const Internal::InvokableParams& a_params)
 	{
 		m_signature.returnType = a_params.returnType;
+		m_functionPtr = a_params.functionPtr;
 	}
 
 	Invokable::~Invokable() {}

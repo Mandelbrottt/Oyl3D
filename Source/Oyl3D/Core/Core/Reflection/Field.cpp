@@ -12,7 +12,7 @@ namespace Oyl::Reflection
 		  m_isConst(a_params.isConst) {}
 
 	bool
-	Field::GetValue(void* a_self, void** a_outPtr) const
+	Field::GetValueUnsafe(void* a_self, void** a_outPtr) const
 	{
 		uintptr_t valuePtr = reinterpret_cast<uintptr_t>(a_self);
 		valuePtr += uintptr_t(m_offsetInBits / 8);

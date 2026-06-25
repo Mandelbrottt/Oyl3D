@@ -372,6 +372,7 @@ RegisterFunctionsForType(
 		a_stream << a_indent << "\tFunctionParams.parentType = " << parentTypeVar << ";\n";
 		a_stream << a_indent << "\tFunctionParams.accessSpecifier = static_cast<Oyl::Reflection::AccessSpecifier>(" <<
 			static_cast<uint32_t>(function.GetAccessSpecifier()) << ");\n";
+		a_stream << a_indent << "\tFunctionParams.functionPtr = reinterpret_cast<void*>(" << function.GetQualifiedName() << ");\n";
 		a_stream << a_indent << "\tauto InvokablePtr = Oyl::Reflection::Internal::ReflectionFactory::AddFunctionToType("
 			<< parentTypeVar << ", FunctionParams, a_allocate);\n";
 
@@ -407,6 +408,8 @@ RegisterMethodsForType(
 			static_cast<uint32_t>(method.GetAccessSpecifier()) << ");\n";
 		a_stream << a_indent << "\tFunctionParams.isConst = " << method.IsConst() << ";\n";
 		a_stream << a_indent << "\tFunctionParams.isVirtual = " << method.IsVirtual() << ";\n";
+		a_stream << a_indent << "\tdecltype(&" << method.GetQualifiedName() << ") temp = &" << method.GetQualifiedName() << ";\n";
+		a_stream << a_indent << "\tFunctionParams.functionPtr = *reinterpret_cast<void**>(&temp);\n";
 		a_stream << a_indent << "\tauto InvokablePtr = Oyl::Reflection::Internal::ReflectionFactory::AddFunctionToType("
 			<< parentTypeVar << ", FunctionParams, a_allocate);\n";
 
@@ -468,13 +471,11 @@ RegisterGlobalFunctions(std::stringstream& a_stream, std::string& a_indent, cons
 		a_stream << a_indent << "\tOyl::Reflection::Internal::FunctionParams FunctionParams;\n";
 		a_stream << a_indent << "\tFunctionParams.qualifiedName = \"" << function->GetQualifiedName() << "\";\n";
 		a_stream << a_indent << "\tFunctionParams.name = \"" << function->GetName() << "\";\n";
-		a_stream << a_indent << "\tFunctionParams.returnType = Oyl::Reflection::Type::Get<" << function->
-			GetReturnTypeAsString() << ">();\n";
+		a_stream << a_indent << "\tFunctionParams.returnType = Oyl::Reflection::Type::Get<" << function->GetReturnTypeAsString() << ">();\n";
 		a_stream << a_indent << "\tFunctionParams.parentType = nullptr;\n";
-		a_stream << a_indent << "\tFunctionParams.accessSpecifier = static_cast<Oyl::Reflection::AccessSpecifier>(" <<
-			static_cast<uint32_t>(function->GetAccessSpecifier()) << ");\n";
-		a_stream << a_indent <<
-			"\tauto InvokablePtr = Oyl::Reflection::Internal::ReflectionFactory::AddGlobalFunctionToAssembly(AssemblyPtr, FunctionParams, a_allocate);\n";
+		a_stream << a_indent << "\tFunctionParams.accessSpecifier = static_cast<Oyl::Reflection::AccessSpecifier>(" << static_cast<uint32_t>(function->GetAccessSpecifier()) << ");\n";
+		a_stream << a_indent << "\tFunctionParams.functionPtr = reinterpret_cast<void*>(" << function->GetQualifiedName() << ");\n";
+		a_stream << a_indent << "\tauto InvokablePtr = Oyl::Reflection::Internal::ReflectionFactory::AddGlobalFunctionToAssembly(AssemblyPtr, FunctionParams, a_allocate);\n";
 
 		PushIndent(a_indent);
 		{
