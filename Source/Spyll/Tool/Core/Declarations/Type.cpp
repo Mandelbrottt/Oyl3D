@@ -1,10 +1,10 @@
-#include "Class.h"
+#include "Type.h"
 
 #include <clang/AST/DeclCXX.h>
 
 namespace Spyll
 {
-	Class::Class(clang::CXXRecordDecl* a_decl, clang::SourceManager* a_sourceManager)
+	Type::Type(clang::CXXRecordDecl* a_decl, clang::SourceManager* a_sourceManager)
 		: Declaration(a_decl, a_sourceManager)
 	{
 		auto* type = a_decl->getTypeForDecl();
@@ -22,7 +22,7 @@ namespace Spyll
 
 		for (const auto& decl : a_decl->bases())
 		{
-			m_baseClasses.emplace_back(BaseClass { decl.getType().getAsString() });
+			m_baseClasses.emplace_back(BaseType { decl.getType().getAsString() });
 		}
 
 		for (auto* decl : a_decl->decls())
@@ -62,52 +62,52 @@ namespace Spyll
 		}
 	}
 
-	Class::~Class() {}
+	Type::~Type() {}
 
 	bool
-	Class::ShouldReflect() const
+	Type::ShouldReflect() const
 	{
 		return Declaration::ShouldReflect();
 	}
 
 	size_t
-	Class::GetSize() const
+	Type::GetSize() const
 	{
 		return m_size;
 	}
 
 	size_t
-	Class::GetAlignment() const
+	Type::GetAlignment() const
 	{
 		return m_alignment;
 	}
 
-	const std::vector<BaseClass>&
-	Class::GetBaseClasses() const
+	const std::vector<BaseType>&
+	Type::GetBaseClasses() const
 	{
 		return m_baseClasses;
 	}
 
 	const std::vector<Field>&
-	Class::GetFields() const
+	Type::GetFields() const
 	{
 		return m_fields;
 	}
 
 	const std::vector<Method>&
-	Class::GetMethods() const
+	Type::GetMethods() const
 	{
 		return m_methods;
 	}
 
 	const std::vector<Variable>&
-	Class::GetVariables() const
+	Type::GetVariables() const
 	{
 		return m_variables;
 	}
 
 	const std::vector<Function>&
-	Class::GetFunctions() const
+	Type::GetFunctions() const
 	{
 		return m_functions;
 	}

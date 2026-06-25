@@ -9,18 +9,18 @@ namespace clang
 
 namespace Spyll
 {
-	class Class;
+	class Type;
 
 	class Variable : public Declaration
 	{
 	public:
 		explicit
-		Variable(const clang::VarDecl* a_decl, Class* a_parent, clang::SourceManager* a_sourceManager);
+		Variable(const clang::VarDecl* a_decl, Type* a_parent, clang::SourceManager* a_sourceManager);
 
 		virtual
 		~Variable();
 
-		Class*
+		Type*
 		GetParent() const;
 
 		int
@@ -32,7 +32,7 @@ namespace Spyll
 	private:
 		std::string m_type;
 
-		Class* m_parent;
+		Type* m_parent;
 
 		int m_accessSpecifier;
 	};

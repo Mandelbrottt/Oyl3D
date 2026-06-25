@@ -7,6 +7,13 @@
 
 namespace Oyl
 {
+	struct SpyllTool;
+}
+
+extern Oyl::SpyllTool g_tool;
+
+namespace Oyl
+{
 	struct SpyllTool : public Spyll::OpaqueTool
 	{
 		SpyllTool();

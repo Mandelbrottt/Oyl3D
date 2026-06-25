@@ -13,21 +13,21 @@ namespace clang
 
 namespace Spyll
 {
-	class Class;
+	class Type;
 
-	struct BaseClass
+	struct BaseType
 	{
 		std::string name;
 	};
 
-	class Class final : public Declaration
+	class Type final : public Declaration
 	{
 	public:
 		explicit
-		Class(clang::CXXRecordDecl* a_decl, clang::SourceManager* a_sourceManager);
+		Type(clang::CXXRecordDecl* a_decl, clang::SourceManager* a_sourceManager);
 
 		virtual
-		~Class();
+		~Type();
 
 	public:
 		bool
@@ -39,7 +39,7 @@ namespace Spyll
 		size_t
 		GetAlignment() const;
 
-		const std::vector<BaseClass>&
+		const std::vector<BaseType>&
 		GetBaseClasses() const;
 
 		const std::vector<Field>&
@@ -58,7 +58,7 @@ namespace Spyll
 		size_t m_size;
 		size_t m_alignment;
 
-		std::vector<BaseClass> m_baseClasses;
+		std::vector<BaseType> m_baseClasses;
 
 		//constructors;
 

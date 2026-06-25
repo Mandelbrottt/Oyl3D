@@ -4,6 +4,8 @@
 #include <fstream>
 #include <sstream>
 
+Oyl::SpyllTool g_tool;
+
 namespace Oyl
 {
 	SpyllTool::SpyllTool() {}
@@ -84,6 +86,7 @@ namespace Oyl
 		if (!pch.empty())
 		{
 			argumentsStream << "-include" << pch << "\n";
+			// If pch was included in headerDeclarations, erase
 			if (auto iter = std::find(headerDeclarations.begin(), headerDeclarations.end(), pch); 
 				iter != headerDeclarations.end())
 			{

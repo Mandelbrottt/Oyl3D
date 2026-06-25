@@ -1,6 +1,9 @@
 #include "ReflectionFactory.h"
 
+#include <Spyll/Tool/Core/Declarations/Enum.h>
+
 #include "Assembly.h"
+#include "Enum.h"
 
 using Type = Oyl::Reflection::Type;
 using Field = Oyl::Reflection::Field;
@@ -84,5 +87,63 @@ namespace Oyl::Reflection::Internal
 
 		auto* argument = a_function->AddArgument(a_params);
 		return argument;
+	}
+
+	Variable*
+	ReflectionFactory::AddGlobalVariableToAssembly(
+		Assembly* a_assembly,
+		const VariableParams& a_params,
+		ReflectionAllocatorFn a_allocate
+	)
+	{
+		void* buf = a_allocate(sizeof(Variable), (std::align_val_t) alignof(Variable));
+		Variable* variable = std::launder(reinterpret_cast<Variable*>(buf));
+		new(variable) Variable(a_params);
+
+		a_assembly->AddGlobalVariable(variable);
+		return variable;
+	}
+
+	Function*
+	ReflectionFactory::AddGlobalFunctionToAssembly(
+		Assembly* a_assembly,
+		const FunctionParams& a_params,
+		ReflectionAllocatorFn a_allocate
+	)
+	{
+		void* buf = a_allocate(sizeof(Function), (std::align_val_t) alignof(Function));
+		Function* function = std::launder(reinterpret_cast<Function*>(buf));
+		new(function) Function(a_params);
+
+		a_assembly->AddGlobalFunction(function);
+		return function;
+	}
+
+	Enum*
+	ReflectionFactory::AddEnumToAssembly(
+		Assembly* a_assembly,
+		const EnumParams& a_params,
+		ReflectionAllocatorFn a_allocate
+	)
+	{
+		void* buf = a_allocate(sizeof(Enum), (std::align_val_t) alignof(Enum));
+		Enum* enum_ = std::launder(reinterpret_cast<Enum*>(buf));
+		new(enum_) Enum(a_params);
+
+		a_assembly->AddEnum(enum_);
+		return enum_;
+	}
+
+	EnumValue*
+	ReflectionFactory::AddValueToEnum(
+		Enum* a_enum,
+		const EnumValueParams& a_params,
+		ReflectionAllocatorFn a_allocate
+	)
+	{
+		(void) a_allocate;
+
+		auto value = a_enum->AddValue(a_params);
+		return value;
 	}
 }

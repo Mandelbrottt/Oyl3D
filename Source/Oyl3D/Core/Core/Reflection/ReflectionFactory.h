@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Enum.h"
 #include "ReflectionParams.h"
 #include "Type.h"
 
@@ -39,5 +40,21 @@ namespace Oyl::Reflection::Internal
 		static
 		Argument*
 		AddArgumentToInvokable(Invokable* a_function, const ArgumentParams& a_params, ReflectionAllocatorFn a_allocate);
+
+		static
+		Variable*
+		AddGlobalVariableToAssembly(Assembly* a_assembly, const VariableParams& a_params, ReflectionAllocatorFn a_allocate);
+
+		static
+		Function*
+		AddGlobalFunctionToAssembly(Assembly* a_assembly, const FunctionParams& a_params, ReflectionAllocatorFn a_allocate);
+
+		static
+		Enum*
+		AddEnumToAssembly(Assembly* a_assembly, const EnumParams& a_params, ReflectionAllocatorFn a_allocate);
+
+		static
+		EnumValue*
+		AddValueToEnum(Enum* a_enum, const EnumValueParams& a_params, ReflectionAllocatorFn a_allocate);
 	};
 }

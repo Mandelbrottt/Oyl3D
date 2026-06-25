@@ -9,13 +9,13 @@ namespace clang
 
 namespace Spyll
 {
-	class Class;
+	class Type;
 
 	class Method : public Function
 	{
 	public:
 		explicit
-		Method(const clang::CXXMethodDecl* a_decl, Class* a_parent, clang::SourceManager* a_sourceManager);
+		Method(const clang::CXXMethodDecl* a_decl, Type* a_parent, clang::SourceManager* a_sourceManager);
 
 		virtual
 		~Method();

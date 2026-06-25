@@ -37,8 +37,10 @@
 #	endif
 
 #	if defined(__REFLECT_GENERATE__)
-#		define __REFLECT__ __attribute__((annotate("__REFLECT__")))
-#		define OYL_CORE_API _OYL_EXPAND(__REFLECT__)
+#		define OYL_REFLECT __attribute__((annotate("__REFLECT__")))
+#		define OYL_CORE_API _OYL_EXPAND(OYL_REFLECT)
+#	else
+#		define OYL_REFLECT
 #	endif
 
 #	ifndef OYL_CORE_API
