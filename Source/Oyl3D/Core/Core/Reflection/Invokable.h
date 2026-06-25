@@ -36,7 +36,8 @@ namespace Oyl::Reflection
 		~Invokable();
 
 	protected:
-		void* m_functionPtr;
+		void* m_rawFnPtr;
+		void* m_typeSafeThunkFnPtr;
 
 		Signature m_signature;
 

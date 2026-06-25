@@ -64,7 +64,8 @@ namespace Oyl::Reflection::Internal
 	{
 		Type* returnType;
 
-		void* functionPtr;
+		void* rawFnPtr;
+		void* typeSafeThunkFnPtr;
 	};
 
 	struct FunctionParams : NamedDeclarationParams, InvokableParams
