@@ -9,13 +9,13 @@ namespace clang
 
 namespace Spyll
 {
-	class Class;
+	class Type;
 
 	class Field : public Declaration
 	{
 	public:
 		explicit
-		Field(const clang::FieldDecl* a_decl, Class* a_parent, clang::SourceManager* a_sourceManager);
+		Field(const clang::FieldDecl* a_decl, Type* a_parent, clang::SourceManager* a_sourceManager);
 
 		virtual
 		~Field();
@@ -23,7 +23,7 @@ namespace Spyll
 		std::string_view
 		GetTypeAsString() const;
 
-		Class*
+		Type*
 		GetParent() const;
 
 		size_t
@@ -38,7 +38,7 @@ namespace Spyll
 	private:
 		std::string m_type;
 
-		Class* m_parent;
+		Type* m_parent;
 
 		size_t m_offsetInBits;
 

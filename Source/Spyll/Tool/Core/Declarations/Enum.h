@@ -9,7 +9,7 @@ namespace clang
 
 namespace Spyll
 {
-	class Class;
+	class Type;
 
 	class Enum : public Declaration
 	{
@@ -24,9 +24,21 @@ namespace Spyll
 		struct Entry
 		{
 			// TODO: Add Attribute support
-			std::string name;
+			std::string identifier;
 			int64_t value;
 		};
+
+		std::string_view
+		GetUnderlyingTypeAsString() const
+		{
+			return m_underlyingType;
+		}
+
+		const std::vector<Entry>&
+		GetEntries() const
+		{
+			return m_entries;
+		}
 
 	private:
 		std::string m_underlyingType;

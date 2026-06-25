@@ -2,8 +2,6 @@
 #include "Emit.h"
 #include "SpyllTool.h"
 
-static Oyl::SpyllTool g_tool;
-
 template<typename TPred>
 void
 ForEachStringInDelimitedList(std::string_view a_listString, char a_separator, TPred&& a_predicate);

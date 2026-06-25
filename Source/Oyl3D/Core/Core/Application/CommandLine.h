@@ -12,7 +12,7 @@ namespace Oyl
 {
 	using ArbitraryData = std::pair<void*, uint32>;
 
-	struct CommandLineArgument final
+	struct OYL_CORE_API CommandLineArgument final
 	{
 		explicit
 		CommandLineArgument();

@@ -1,13 +1,13 @@
 #include "Field.h"
 
-#include "Class.h"
+#include "Type.h"
 
 #include <clang/AST/Decl.h>
 #include <clang/AST/QualTypeNames.h>
 
 namespace Spyll
 {
-	Field::Field(const clang::FieldDecl* a_decl, Class* a_parent, clang::SourceManager* a_sourceManager)
+	Field::Field(const clang::FieldDecl* a_decl, Type* a_parent, clang::SourceManager* a_sourceManager)
 		: Declaration(a_decl, a_sourceManager), m_parent(a_parent)
 	{
 		auto& ctx = a_decl->getASTContext();
@@ -30,7 +30,7 @@ namespace Spyll
 		return m_type;
 	}
 
-	Class*
+	Type*
 	Field::GetParent() const
 	{
 		return m_parent;

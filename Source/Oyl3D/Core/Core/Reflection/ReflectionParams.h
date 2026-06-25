@@ -83,4 +83,17 @@ namespace Oyl::Reflection::Internal
 		Type* type;
 		std::string name;
 	};
+
+	struct EnumParams : NamedDeclarationParams
+	{
+		Type* underlyingType;
+
+		size_t nValues;
+	};
+
+	struct EnumValueParams
+	{
+		std::string_view identifier;
+		int32 value;
+	};
 }
