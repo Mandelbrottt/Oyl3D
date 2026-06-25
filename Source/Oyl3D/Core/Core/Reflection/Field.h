@@ -40,19 +40,19 @@ namespace Oyl::Reflection
 
 		template<typename TSelf, typename TField>
 		TField&
-		GetValue(const TSelf& a_self) const;
+		GetValueUnsafe(const TSelf& a_self) const;
 
 		template<typename TSelf, typename TField>
 		void
-		SetValue(TSelf& a_self, const TField& a_value) const;
+		SetValueUnsafe(TSelf& a_self, const TField& a_value) const;
 
 		template<typename TSelf, typename TField>
 		void
-		SetValue(TSelf& a_self, TField&& a_value) const;
+		SetValueUnsafe(TSelf& a_self, TField&& a_value) const;
 
 	private:
 		bool
-		GetValue(void* a_self, void** a_outPtr) const;
+		GetValueUnsafe(void* a_self, void** a_outPtr) const;
 
 	private:
 		uint16_t m_offset;
@@ -63,7 +63,7 @@ namespace Oyl::Reflection
 
 	template<typename TSelf, typename TField>
 	TField&
-	Field::GetValue(const TSelf& a_self) const
+	Field::GetValueUnsafe(const TSelf& a_self) const
 	{
 		// TODO: Type Checking
 		TField* out = nullptr;
@@ -73,19 +73,19 @@ namespace Oyl::Reflection
 
 	template<typename TSelf, typename TField>
 	void
-	Field::SetValue(TSelf& a_self, const TField& a_value) const
+	Field::SetValueUnsafe(TSelf& a_self, const TField& a_value) const
 	{
 		// TODO: Type Checking
-		TField& field = GetValue(a_self);
+		TField& field = GetValueUnsafe(a_self);
 		field = a_value;
 	}
 
 	template<typename TSelf, typename TField>
 	void
-	Field::SetValue(TSelf& a_self, TField&& a_value) const
+	Field::SetValueUnsafe(TSelf& a_self, TField&& a_value) const
 	{
 		// TODO: Type Checking
-		TField& field = GetValue(a_self);
+		TField& field = GetValueUnsafe(a_self);
 		field = a_value;
 	}
 }
