@@ -30,7 +30,7 @@ env:
 jobs:
   win64-clang:
     name: Clang Oyl3D ${{ matrix.platform }} in ${{ matrix.configuration }}
-    runs-on: windows-latest
+    runs-on: windows-2022
     strategy: &build-strategy
       fail-fast: false
       matrix:
