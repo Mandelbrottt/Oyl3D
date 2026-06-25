@@ -1,8 +1,10 @@
 #pragma once
 
-namespace Spyll {
+namespace Spyll
+{
 	struct ReflectionParser;
 }
 
+extern
 void
 EmitCodeFromTool(const Spyll::ReflectionParser* a_parser);
