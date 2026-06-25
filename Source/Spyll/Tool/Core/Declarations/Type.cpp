@@ -46,6 +46,13 @@ namespace Spyll
 				case clang::Decl::CXXMethod:
 				{
 					auto* cxxMethodDecl = static_cast<clang::CXXMethodDecl*>(decl);
+
+					// Member Operators are technically not functions, they are functors
+					// Similar to lambdas or member function pointers. We can't take the address of these functions
+					// TODO: Add thunk lambda call as functionPtr
+					if (cxxMethodDecl->isOverloadedOperator())
+						break;
+
 					if (cxxMethodDecl->isInstance())
 						m_methods.emplace_back(cxxMethodDecl, this, a_sourceManager);
 					else

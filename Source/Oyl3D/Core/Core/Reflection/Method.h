@@ -31,6 +31,24 @@ namespace Oyl::Reflection
 			return m_isPureVirtual;
 		}
 
+		template<typename TReturn, typename TObject, typename... TArgs>
+		TReturn
+		InvokeUnsafe(TObject* a_this, TArgs&&... a_args)
+		{
+			using ThunkFn = TReturn (TObject::*)(TArgs...);
+
+			ThunkFn thunkFn = *reinterpret_cast<ThunkFn*>(&m_functionPtr);
+			if constexpr (std::is_void_v<TReturn>)
+			{
+				(a_this->*thunkFn)(std::forward<TArgs>(a_args)...);
+			} else
+			{
+				return (a_this->*thunkFn)(std::forward<TArgs>(a_args)...);
+			}
+
+			throw "Unreachable";
+		}
+
 	private:
 		bool m_isVirtual = false;
 		bool m_isPureVirtual = false;

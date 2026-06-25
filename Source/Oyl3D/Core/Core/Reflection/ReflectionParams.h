@@ -63,6 +63,8 @@ namespace Oyl::Reflection::Internal
 	struct InvokableParams
 	{
 		Type* returnType;
+
+		void* functionPtr;
 	};
 
 	struct FunctionParams : NamedDeclarationParams, InvokableParams
