@@ -14,6 +14,9 @@ namespace Spyll
 		ShouldReflectDecl(const clang::NamedDecl* Decl) const;
 
 		bool
+		VisitStaticAssertDecl(clang::StaticAssertDecl* Decl);
+
+		bool
 		VisitCXXRecordDecl(clang::CXXRecordDecl* Decl);
 
 		bool
@@ -57,7 +60,7 @@ namespace Spyll
 		clang::ASTContext* Context = nullptr;
 		clang::DiagnosticOptions* DiagnosticOptions = nullptr;
 	};
-	
+
 	class ReflectionParserConsumer final : public clang::ASTConsumer
 	{
 	public:
@@ -113,7 +116,7 @@ namespace Spyll
 		printingPolicy.SuppressScope = false;
 		printingPolicy.SuppressUnwrittenScope = false;
 		Ctx.setPrintingPolicy(printingPolicy);
-		
+
 		Visitor.SetContext(&Ctx);
 		Visitor.TraverseDecl(Ctx.getTranslationUnitDecl());
 	}
@@ -131,6 +134,12 @@ namespace Spyll
 			return false;
 
 		return Parser->ShouldReflectDecl(Decl);
+	}
+
+	bool
+	ReflectionParserVisitor::VisitStaticAssertDecl(clang::StaticAssertDecl* Decl)
+	{
+		return Parser->ParseStaticAssertDecl(Decl);
 	}
 
 	bool
