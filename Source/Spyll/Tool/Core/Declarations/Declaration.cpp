@@ -1,8 +1,8 @@
 #include "Declaration.h"
 
-#include <clang/AST/Decl.h>
+#include <filesystem>
 
-#include <sstream>
+#include <clang/AST/Decl.h>
 
 namespace Spyll
 {
@@ -16,7 +16,10 @@ namespace Spyll
 		m_enabled = true;
 
 		auto sourceLocation = a_decl->getLocation();
+
 		m_sourceFile = a_sourceManager->getFilename(sourceLocation);
+		m_sourceFile = std::filesystem::path(m_sourceFile).lexically_normal().string();
+
 		m_sourceLine = a_sourceManager->getSpellingLineNumber(sourceLocation);
 	}
 
