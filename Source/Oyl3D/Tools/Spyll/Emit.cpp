@@ -106,7 +106,7 @@ _ReflectionAssembly_Dependencies(int* a_count, const char** a_dependencies)
 {
 	*a_count = {DEPENDENCY_COUNT};
 
-	{DEPENDENCIES}
+{DEPENDENCIES}
 	*a_dependencies = *dependencies;
 }
 
@@ -119,7 +119,7 @@ _ReflectionAssembly_Register(::Oyl::Reflection::Internal::ReflectionAllocatorFn 
 	AssemblyParams.name = "{ASSEMBLY_NAME}";
 	Oyl::Reflection::Assembly* AssemblyPtr = Oyl::Reflection::Internal::ReflectionFactory::CreateAssembly(AssemblyParams, a_allocate);
 
-	{REFLECTION_REGISTER}
+{REFLECTION_REGISTER}
 
 	return AssemblyPtr;
 }
@@ -301,7 +301,6 @@ EmitReflectionRegister(std::string& a_emitString, const Spyll::ReflectionParser*
 {
 	std::stringstream stream;
 	stream.setf(std::ios::boolalpha);
-	stream << "\n";
 
 	RegisterTypes(stream, a_parser);
 	RegisterGlobalVariables(stream, a_parser);
@@ -1037,6 +1036,7 @@ RegisterEnums(std::stringstream& a_stream, const Spyll::ReflectionParser* a_pars
 			entryStream << entryString;
 		}
 
+		AddIndentToStringStream(entryStream);
 		FindAndReplace(emitString, "{ENTRIES}", entryStream.str());
 
 		a_stream << emitString;
