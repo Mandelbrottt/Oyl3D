@@ -172,6 +172,14 @@ local Packages = {
 	["Spyll.Core"] = {
 		Kind = premake.STATICLIB,
 		PackageDir = path.join(Config.SourceDir, "Spyll/Tool/Core"),
+		OnProject = function (package)
+			filter "action:vs*"; do
+				files {
+					-- TODO: Make dependant on variable name in root Packages.lua
+					path.join(Config.PackageCacheDir, "ClangTooling", "**.natvis")
+				}
+			end
+		end
 	},
 }
 
