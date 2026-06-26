@@ -88,43 +88,6 @@ GetTrimmedStringView(std::string_view a_view)
 	return a_view.substr(start, end - start + 1);
 }
 
-constexpr
-static
-std::string_view g_emitTemplate = GetTrimmedStringView(R"""(
-{HEADER_COMMENT}
-
-#include <Core/Reflection/ReflectionFactory.h>
-
-{REFLECT_INCLUDES}
-
-{REFLECT_STOW}
-
-extern "C"
-_OYL_EXPORT
-void
-_ReflectionAssembly_Dependencies(int* a_count, const char** a_dependencies)
-{
-	*a_count = {DEPENDENCY_COUNT};
-
-{DEPENDENCIES}
-	*a_dependencies = *dependencies;
-}
-
-extern "C"
-_OYL_EXPORT
-::Oyl::Reflection::Assembly*
-_ReflectionAssembly_Register(::Oyl::Reflection::Internal::ReflectionAllocatorFn a_allocate)
-{
-	Oyl::Reflection::Internal::AssemblyParams AssemblyParams;
-	AssemblyParams.name = "{ASSEMBLY_NAME}";
-	Oyl::Reflection::Assembly* AssemblyPtr = Oyl::Reflection::Internal::ReflectionFactory::CreateAssembly(AssemblyParams, a_allocate);
-
-{REFLECTION_REGISTER}
-
-	return AssemblyPtr;
-}
-)""");
-
 void
 EmitHeaderComment(std::string& a_emitString);
 
@@ -197,6 +160,43 @@ RegisterEnums(
 	const Spyll::ReflectionParser* a_parser
 );
 
+constexpr
+static
+std::string_view g_emitTemplate = GetTrimmedStringView(R"""(
+{HEADER_COMMENT}
+
+#include <Core/Reflection/ReflectionFactory.h>
+
+{REFLECT_INCLUDES}
+
+{REFLECT_STOW}
+
+extern "C"
+_OYL_EXPORT
+void
+_ReflectionAssembly_Dependencies(int* a_count, const char** a_dependencies)
+{
+	*a_count = {DEPENDENCY_COUNT};
+
+{DEPENDENCIES}
+	*a_dependencies = *dependencies;
+}
+
+extern "C"
+_OYL_EXPORT
+::Oyl::Reflection::Assembly*
+_ReflectionAssembly_Register(::Oyl::Reflection::Internal::ReflectionAllocatorFn a_allocate)
+{
+	Oyl::Reflection::Internal::AssemblyParams AssemblyParams;
+	AssemblyParams.name = "{ASSEMBLY_NAME}";
+	Oyl::Reflection::Assembly* AssemblyPtr = Oyl::Reflection::Internal::ReflectionFactory::CreateAssembly(AssemblyParams, a_allocate);
+
+{REFLECTION_REGISTER}
+
+	return AssemblyPtr;
+}
+)""");
+
 void
 EmitCodeFromTool(const Spyll::ReflectionParser* a_parser)
 {
@@ -265,22 +265,23 @@ EmitIncludes(std::string& a_emitString, const Spyll::ReflectionParser* a_parser)
 void
 EmitDependencies(std::string& a_emitString, const std::vector<std::string_view>& a_dependencies)
 {
-	std::stringstream dependenciesListString;
+	std::stringstream dependenciesArr;
 	if (a_dependencies.empty())
 	{
-		dependenciesListString << "static const char** dependencies = nullptr";
+		dependenciesArr << "static const char** dependencies = nullptr";
 	} else
 	{
-		dependenciesListString << "static const char* dependencies[] = { ";
+		dependenciesArr << "static const char* dependencies[] = { ";
 		for (const auto& dependency : a_dependencies)
 		{
-			dependenciesListString << dependency << ",";
+			dependenciesArr << dependency << ",";
 		}
-		dependenciesListString << " }";
+		dependenciesArr << " }";
 	}
-	dependenciesListString << ";\n";
+	dependenciesArr << ";\n";
 
-	FindAndReplace(a_emitString, "{DEPENDENCIES}", dependenciesListString.str());
+	AddIndentToStringStream(dependenciesArr);
+	FindAndReplace(a_emitString, "{DEPENDENCIES}", dependenciesArr.str());
 	FindAndReplace(a_emitString, "{DEPENDENCY_COUNT}", std::to_string(a_dependencies.size()));
 }
 
@@ -335,7 +336,7 @@ EmitStowDeclarations(std::string& a_emitString, const Spyll::ReflectionParser* a
 			stream << variable.GetTypeAsString() << "; };\n";
 			stream << "template struct Oyl::Reflection::Internal::StowPrivate<" << stowTypeNameAsVar << ", &" << variable.GetQualifiedName() << ">;\n";
 		}
-		
+
 		for (const auto& field : type->GetFields())
 		{
 			if (isPublic(field.GetAccessSpecifier()))
@@ -563,7 +564,7 @@ RegisterFunctionsForType(
 		FindAndReplace(emitString, "{PARENT_TYPENAME_AS_VAR}", GetTypeNameAsVar(a_parentType->GetQualifiedName()));
 		FindAndReplace(emitString, "{ACCESS_SPECIFIER}", std::to_string(function.GetAccessSpecifier()));
 		FindAndReplace(emitString, "{INVOKABLE_PTR}", function.GetArguments().size() != 0 ? "auto InvokablePtr = " : "");
-		
+
 		std::stringstream argSignature;
 		for (size_t i = 0; i < function.GetArguments().size(); i++)
 		{
@@ -616,7 +617,7 @@ FunctionParams.typeSafeThunkFnPtr = reinterpret_cast<void*>(thunkFnPtr);
 		}
 		FindAndReplace(typesafePtrString, "{NAME_SIGNATURE}", nameSignature.str());
 		FindAndReplace(typesafePtrString, "{TYPE_SIGNATURE}", typeSignature.str());
-		
+
 		std::stringstream callStatement;
 		if (function.GetAccessSpecifier() == 0)
 		{
@@ -757,7 +758,7 @@ MethodParams.typeSafeThunkFnPtr = reinterpret_cast<void*>(thunkFnPtr);
 		}
 		FindAndReplace(typesafePtrString, "{NAME_SIGNATURE}", nameSignature.str());
 		FindAndReplace(typesafePtrString, "{TYPE_SIGNATURE}", typeSignature.str());
-		
+
 		std::stringstream callStatement;
 		{
 			std::string callFunc;
@@ -902,7 +903,7 @@ RegisterGlobalFunctions(std::stringstream& a_stream, const Spyll::ReflectionPars
 		FindAndReplace(emitString, "{INVOKABLE_PTR}", function->GetArguments().size() != 0 ? "auto InvokablePtr = " : "");
 		FindAndReplace(emitString, "{ASSEMBLY_PTR}", "AssemblyPtr");
 		FindAndReplace(emitString, "{RAW_FN_ADDRESS}", function->GetQualifiedName());
-		
+
 		std::stringstream argSignature;
 		for (size_t i = 0; i < function->GetArguments().size(); i++)
 		{
@@ -943,7 +944,7 @@ FunctionParams.typeSafeThunkFnPtr = reinterpret_cast<void*>(thunkFnPtr);
 		}
 		FindAndReplace(typesafePtrString, "{NAME_SIGNATURE}", nameSignature.str());
 		FindAndReplace(typesafePtrString, "{TYPE_SIGNATURE}", typeSignature.str());
-		
+
 		std::stringstream callStatement;
 		callStatement << function->GetQualifiedName();
 		callStatement << "(" << (args.size() != 0 ? "\n" : "");
