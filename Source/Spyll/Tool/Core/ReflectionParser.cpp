@@ -30,6 +30,60 @@ namespace Spyll
 
 		return false;
 	}
+	bool
+	ReflectionParser::ParseStaticAssertDecl(clang::StaticAssertDecl* Decl)
+	{
+		// If there's no message, then this isn't an annotation decl
+		auto messageExpr = Decl->getMessage();
+		if (!messageExpr)
+			return true;
+
+		// Get the condition and the message as string literals
+		auto exprLiteral = clang::dyn_cast<clang::StringLiteral>(Decl->getAssertExpr()->IgnoreImplicitAsWritten());
+		auto messageLiteral = clang::dyn_cast<clang::StringLiteral>(messageExpr);
+
+		if (!exprLiteral || !messageLiteral)
+		{
+			return true;
+		}
+
+		// static_assert("__ATTRIBUTE__", "Attribute")
+		if (exprLiteral->getString().compare("__ATTRIBUTE__") != 0)
+		{
+			return true;
+		}
+
+		// Iterate the "next" decl until we get to a named declaration that we actually care about
+		// ONLY skip static_assert, assume that multiple in a row are all attached to the same declaration
+		clang::Decl* nextDecl = Decl;
+		do
+		{
+			nextDecl = nextDecl->getNextDeclInContext();
+		} while (nextDecl && nextDecl->getKind() == clang::Decl::StaticAssert);
+
+		// Not attached to a NamedDecl, skip
+		if (!nextDecl)
+		{
+			return true;
+		}
+
+		// Found a decl we want to attach the annotation to. Create an annotation attribute and add to the named decl
+		// This is guaranteed to exist when we visit the NamedDecl since Visit* runs in order of declaration
+		if (auto* namedDecl = clang::dyn_cast<clang::NamedDecl>(nextDecl))
+		{
+			// Implicit annotation attribute using the same source range as the static_assert
+			auto info = clang::AttributeCommonInfo(
+				Decl->getSourceRange(),
+				clang::AttributeCommonInfo::Kind::AT_Annotate,
+				clang::AttributeCommonInfo::Form::Implicit()
+			);
+
+			auto* newAttr = clang::AnnotateAttr::Create(Decl->getASTContext(), messageLiteral->getString(), info);
+			namedDecl->addAttr(newAttr);
+		}
+
+		return true;
+	}
 
 	bool
 	ReflectionParser::ParseCXXRecordDecl(clang::CXXRecordDecl* Decl, clang::SourceManager* a_sourceManager)
@@ -87,7 +141,7 @@ namespace Spyll
 
 		return true;
 	}
-	
+
 	bool
 	ReflectionParser::ParseEnumDecl(clang::EnumDecl* Decl, clang::SourceManager* a_sourceManager)
 	{
