@@ -14,9 +14,6 @@ namespace Spyll
 		ShouldReflectDecl(const clang::NamedDecl* Decl) const;
 
 		bool
-		VisitStaticAssertDecl(clang::StaticAssertDecl* Decl);
-
-		bool
 		VisitCXXRecordDecl(clang::CXXRecordDecl* Decl);
 
 		bool
@@ -134,12 +131,6 @@ namespace Spyll
 			return false;
 
 		return Parser->ShouldReflectDecl(Decl);
-	}
-
-	bool
-	ReflectionParserVisitor::VisitStaticAssertDecl(clang::StaticAssertDecl* Decl)
-	{
-		return Parser->ParseStaticAssertDecl(Decl);
 	}
 
 	bool
