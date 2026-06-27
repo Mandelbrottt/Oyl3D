@@ -25,9 +25,6 @@ namespace Spyll
 		ShouldReflectDecl(const clang::NamedDecl* Decl) const;
 
 		bool
-		ParseStaticAssertDecl(clang::StaticAssertDecl* Decl);
-
-		bool
 		ParseCXXRecordDecl(clang::CXXRecordDecl* Decl, clang::SourceManager* a_sourceManager);
 
 		bool
