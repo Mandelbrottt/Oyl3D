@@ -65,6 +65,10 @@ namespace Spyll
 					m_variables.emplace_back(varDecl, this, a_sourceManager);
 					break;
 				}
+				default:
+				{
+					break;
+				}
 			}
 		}
 	}
