@@ -1030,8 +1030,8 @@ RegisterEnums(std::stringstream& a_stream, const Spyll::ReflectionParser* a_pars
 )"""
 			).data();
 
-			FindAndReplace(entryString, "{IDENTIFIER}", entry.identifier);
-			FindAndReplace(entryString, "{VALUE}", std::to_string(entry.value));
+			FindAndReplace(entryString, "{IDENTIFIER}", entry.GetIdentifier());
+			FindAndReplace(entryString, "{VALUE}", std::to_string(entry.GetValue()));
 			FindAndReplace(entryString, "{UNDERLYING_TYPE}", enum_->GetUnderlyingTypeAsString());
 
 			entryStream << entryString;

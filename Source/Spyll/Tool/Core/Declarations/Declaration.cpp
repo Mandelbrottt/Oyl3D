@@ -7,13 +7,12 @@
 namespace Spyll
 {
 	Declaration::Declaration(const clang::NamedDecl* a_decl, const clang::SourceManager* a_sourceManager)
+		: m_enabled(true),
+		  m_qualifiedName(a_decl->getQualifiedNameAsString()),
+		  m_attributeParser(a_decl)
 	{
 		llvm::raw_string_ostream out { m_name };
 		a_decl->getDeclName().print(out, a_decl->getASTContext().getPrintingPolicy());
-
-		m_qualifiedName = a_decl->getQualifiedNameAsString();
-
-		m_enabled = true;
 
 		auto sourceLocation = a_decl->getLocation();
 
@@ -53,5 +52,11 @@ namespace Spyll
 	Declaration::GetSourceLine() const
 	{
 		return m_sourceLine;
+	}
+
+	const std::vector<Attribute>&
+	Declaration::GetAttributes() const
+	{
+		return m_attributeParser.GetAttributes();
 	}
 }
