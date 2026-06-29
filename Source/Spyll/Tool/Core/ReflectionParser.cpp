@@ -57,7 +57,7 @@ namespace Spyll
 		if (!Decl->isCanonicalDecl())
 			return true;
 
-		if (!Decl->getStorageClass() == clang::SC_Extern)
+		if (Decl->getStorageClass() != clang::SC_Extern)
 			return true;
 
 		if (!ShouldReflectDecl(Decl))
@@ -77,7 +77,7 @@ namespace Spyll
 		if (!Decl->isCanonicalDecl())
 			return true;
 
-		if (!Decl->getStorageClass() == clang::SC_Extern)
+		if (Decl->getStorageClass() != clang::SC_Extern)
 			return true;
 
 		if (!ShouldReflectDecl(Decl))

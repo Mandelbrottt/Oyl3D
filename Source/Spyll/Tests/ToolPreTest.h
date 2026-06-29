@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Tool/Clang/SpyllTool.h"
+#include "Tool/Core/SpyllTool.h"
 
 template<typename T>
 class ToolPreTest : public testing::Test
@@ -20,7 +20,7 @@ private:
 	Spyll::TestTool*
 	TryCreateTool(std::vector<std::string>&& a_targets, std::string&& a_args)
 	{
-		if (s_tool) 
+		if (s_tool)
 			return s_tool;
 
 		s_tool = new Spyll::TestTool(a_targets, a_args);

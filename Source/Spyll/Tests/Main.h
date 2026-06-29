@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Tool/Clang/DirectTool.h"
+#include "Tool/Core/DirectTool.h"
 
 namespace Spyll
 {
