@@ -2,6 +2,8 @@
 
 #include <string>
 
+#include "Attribute.h"
+
 namespace clang
 {
 	class NamedDecl;
@@ -38,13 +40,16 @@ namespace Spyll
 		std::uint32_t
 		GetSourceLine() const;
 
-	protected:
-		// Attributes / Metadata
+		const std::vector<Attribute>&
+		GetAttributes() const;
 
+	protected:
 		bool m_enabled;
 
 		std::string m_name;
 		std::string m_qualifiedName;
+
+		AttributeParser m_attributeParser;
 
 	private:
 		std::string m_sourceFile;

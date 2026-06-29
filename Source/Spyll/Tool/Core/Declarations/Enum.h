@@ -5,36 +5,69 @@
 namespace clang
 {
 	class EnumDecl;
+	class EnumConstantDecl;
 }
 
 namespace Spyll
 {
 	class Type;
+	class Enum;
+
+	class EnumConstant : public Declaration
+	{
+	public:
+		explicit
+		EnumConstant(
+			const clang::EnumConstantDecl* a_decl,
+			const Enum* a_parent,
+			const clang::SourceManager* a_sourceManager
+		);
+
+		virtual
+		~EnumConstant();
+
+		std::string_view
+		GetIdentifier() const
+		{
+			return m_identifier;
+		}
+
+		int64_t
+		GetValue() const
+		{
+			return m_value;
+		}
+
+		const Enum*
+		GetParent() const
+		{
+			return m_parent;
+		}
+
+	private:
+		std::string m_identifier;
+		int64_t m_value;
+
+		const Enum* m_parent;
+	};
 
 	class Enum : public Declaration
 	{
 	public:
 		explicit
-		Enum(const clang::EnumDecl* a_decl, clang::SourceManager* a_sourceManager);
+		Enum(const clang::EnumDecl* a_decl, const clang::SourceManager* a_sourceManager);
 
 		virtual
 		~Enum();
 
 	public:
-		struct Entry
-		{
-			// TODO: Add Attribute support
-			std::string identifier;
-			int64_t value;
-		};
-
 		std::string_view
 		GetUnderlyingTypeAsString() const
 		{
 			return m_underlyingType;
 		}
 
-		const std::vector<Entry>&
+		const std::vector<EnumConstant>&
 		GetEntries() const
 		{
 			return m_entries;
@@ -43,6 +76,6 @@ namespace Spyll
 	private:
 		std::string m_underlyingType;
 
-		std::vector<Entry> m_entries;
+		std::vector<EnumConstant> m_entries;
 	};
 }
