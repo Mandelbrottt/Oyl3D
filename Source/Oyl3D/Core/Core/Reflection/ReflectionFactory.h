@@ -16,7 +16,11 @@ namespace Oyl::Reflection::Internal
 		static
 		Assembly*
 		CreateAssembly(const AssemblyParams& a_params, ReflectionAllocatorFn a_allocate);
-		
+
+		static
+		const Attribute*
+		AddAttributeToDeclaration(NamedDeclaration* a_declaration, const Attribute* a_attr);
+
 		static
 		Type*
 		AddTypeToAssembly(Assembly* a_assembly, const TypeParams& a_params, ReflectionAllocatorFn a_allocate);
