@@ -136,25 +136,25 @@ namespace Spyll
 	bool
 	ReflectionParserVisitor::VisitCXXRecordDecl(clang::CXXRecordDecl* Decl)
 	{
-		return Parser->ParseCXXRecordDecl(Decl, SourceManager);
+		return Parser->ParseCXXRecordDecl(Decl);
 	}
 
 	bool
 	ReflectionParserVisitor::VisitFunctionDecl(clang::FunctionDecl* Decl)
 	{
-		return Parser->ParseFunctionDecl(Decl, SourceManager);
+		return Parser->ParseFunctionDecl(Decl);
 	}
 
 	bool
 	ReflectionParserVisitor::VisitVarDecl(clang::VarDecl* Decl)
 	{
-		return Parser->ParseVarDecl(Decl, SourceManager);
+		return Parser->ParseVarDecl(Decl);
 	}
 
 	bool
 	ReflectionParserVisitor::VisitEnumDecl(clang::EnumDecl* Decl)
 	{
-		return Parser->ParseEnumDecl(Decl, SourceManager);
+		return Parser->ParseEnumDecl(Decl);
 	}
 
 	clang::SourceManager*

@@ -25,16 +25,16 @@ namespace Spyll
 		ShouldReflectDecl(const clang::NamedDecl* Decl) const;
 
 		bool
-		ParseCXXRecordDecl(clang::CXXRecordDecl* Decl, clang::SourceManager* a_sourceManager);
+		ParseCXXRecordDecl(clang::CXXRecordDecl* Decl);
 
 		bool
-		ParseVarDecl(clang::VarDecl* Decl, clang::SourceManager* a_sourceManager);
+		ParseVarDecl(clang::VarDecl* Decl);
 
 		bool
-		ParseFunctionDecl(clang::FunctionDecl* Decl, clang::SourceManager* a_sourceManager);
+		ParseFunctionDecl(clang::FunctionDecl* Decl);
 
 		bool
-		ParseEnumDecl(clang::EnumDecl* Decl, clang::SourceManager* a_sourceManager);
+		ParseEnumDecl(clang::EnumDecl* Decl);
 
 		const std::vector<Type*>&
 		GetTypes() const
