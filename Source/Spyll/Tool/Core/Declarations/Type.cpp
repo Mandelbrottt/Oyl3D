@@ -62,7 +62,10 @@ namespace Spyll
 				case clang::Decl::Var:
 				{
 					auto* varDecl = static_cast<clang::VarDecl*>(decl);
-					m_variables.emplace_back(varDecl, this);
+					if (!varDecl->isConstexpr())
+					{
+						m_variables.emplace_back(varDecl, this);
+					}
 					break;
 				}
 				default:

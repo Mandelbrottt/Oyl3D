@@ -2,6 +2,7 @@
 
 #include <string>
 
+#include "Attribute.h"
 #include "ReflectionParams.h"
 
 namespace Oyl::Reflection
@@ -21,7 +22,7 @@ namespace Oyl::Reflection
 
 	public:
 		virtual
-		~NamedDeclaration() = default;
+		~NamedDeclaration();
 
 		NamedDeclaration(const NamedDeclaration&) = delete;
 		NamedDeclaration&
@@ -43,8 +44,16 @@ namespace Oyl::Reflection
 			return m_qualifiedName;
 		}
 
+		const std::vector<const Attribute*>&
+		GetAttributes() const
+		{
+			return m_attributes;
+		}
+
 	private:
 		std::string m_qualifiedName;
 		std::string m_name;
+
+		std::vector<const Attribute*> m_attributes;
 	};
 }

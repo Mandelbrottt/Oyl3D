@@ -11,7 +11,7 @@
 namespace Oyl::Reflection
 {
 	class Assembly;
-	
+
 	namespace Internal
 	{
 		class ReflectionFactory;
@@ -20,7 +20,7 @@ namespace Oyl::Reflection
 	class Type final
 	{
 		friend Internal::ReflectionFactory;
-		
+
 		explicit
 		Type(const Internal::TypeParams& a_params);
 
@@ -34,7 +34,7 @@ namespace Oyl::Reflection
 		Type(Type&&) = delete;
 		Type&
 		operator =(Type&&) = delete;
-		
+
 		template<typename T>
 		static
 		Type*

@@ -36,8 +36,17 @@ namespace Spyll
 						if (fieldTypeDecl && fieldTypeDecl->getQualifiedNameAsString() == "Oyl::Reflection::TypeId")
 						{
 							// Assume users will call a function with signature template<typename T> TypeId(*)()
-							auto cxxFunctional = clang::dyn_cast<clang::CXXFunctionalCastExpr>(constExpr->getSubExpr());
-							auto cxxConstruct = clang::dyn_cast<clang::CXXConstructExpr>(cxxFunctional->getSubExpr());
+							clang::Expr* expr = constExpr->getSubExpr();
+							while (expr->getStmtClass() != clang::Stmt::CXXConstructExprClass)
+							{
+								if (auto ptr = clang::dyn_cast<clang::CastExpr>(expr))
+									expr = ptr->getSubExpr();
+								if (auto ptr = clang::dyn_cast<clang::FullExpr>(expr))
+									expr = ptr->getSubExpr();
+								if (auto ptr = clang::dyn_cast<clang::CXXBindTemporaryExpr>(expr))
+									expr = ptr->getSubExpr();
+							}
+							auto cxxConstruct = clang::dyn_cast<clang::CXXConstructExpr>(expr);
 							auto call = clang::dyn_cast<clang::CallExpr>(cxxConstruct->getArg(0));
 							auto callee = clang::dyn_cast<clang::FunctionDecl>(call->getCalleeDecl());
 							auto tempArg = callee->getTemplateSpecializationArgs()->get(0);

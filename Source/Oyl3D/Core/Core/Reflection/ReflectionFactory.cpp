@@ -21,6 +21,13 @@ namespace Oyl::Reflection::Internal
 		return assembly;
 	}
 
+	const Attribute*
+	ReflectionFactory::AddAttributeToDeclaration(NamedDeclaration* a_declaration, const Attribute* a_attr)
+	{
+		auto& result = a_declaration->m_attributes.emplace_back(a_attr);
+		return result;
+	}
+
 	Type*
 	ReflectionFactory::AddTypeToAssembly(Assembly* a_assembly, const TypeParams& a_params, ReflectionAllocatorFn a_allocate)
 	{

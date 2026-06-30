@@ -516,7 +516,8 @@ RegisterFieldsForType(
 	FieldParams.offsetInBits = {OFFSET_IN_BITS};
 	FieldParams.accessSpecifier = static_cast<Oyl::Reflection::AccessSpecifier>({ACCESS_SPECIFIER});
 	FieldParams.isConst = {IS_CONST};
-	Oyl::Reflection::Internal::ReflectionFactory::AddFieldToType({PARENT_TYPENAME_AS_VAR}, FieldParams, a_allocate);
+	{FIELD_PTR}Oyl::Reflection::Internal::ReflectionFactory::AddFieldToType({PARENT_TYPENAME_AS_VAR}, FieldParams, a_allocate);
+{ATTRIBUTES}
 }
 )"""
 		).data();
@@ -528,6 +529,55 @@ RegisterFieldsForType(
 		FindAndReplace(emitString, "{ACCESS_SPECIFIER}", std::to_string(field.GetAccessSpecifier()));
 		FindAndReplace(emitString, "{OFFSET_IN_BITS}", std::to_string(field.GetOffsetInBits()));
 		FindAndReplace(emitString, "{IS_CONST}", field.IsConst() ? "true" : "false");
+
+		const auto& attrs = field.GetAttributes();
+		std::stringstream attrStream;
+		if (attrs.empty())
+		{
+			FindAndReplace(emitString, "{FIELD_PTR}", "");
+		} else
+		{
+			FindAndReplace(emitString, "{FIELD_PTR}", "auto FieldPtr = ");
+			for (const auto& attr : attrs)
+			{
+				std::string attrString = GetTrimmedStringView(R"""(
+{
+	auto Attribute = new {ATTR_TYPE}({ATTR_ARGS});
+	Oyl::Reflection::Internal::ReflectionFactory::AddAttributeToDeclaration(FieldPtr, Attribute);
+}
+)"""
+				).data();
+
+				FindAndReplace(attrString, "{ATTR_TYPE}", attr.type);
+
+				std::stringstream argStream;
+				for (size_t i  = 0; i < attr.arguments.size(); i++)
+				{
+					const auto& arg = attr.arguments[i];
+
+					constexpr std::string_view typeIdMarker = "__TypeId";
+					auto typeIdMarkerIndex = arg.find(typeIdMarker);
+					if (typeIdMarkerIndex != std::string::npos)
+					{
+						auto typeId = arg.substr(typeIdMarker.length() + 1);
+						argStream << "::Oyl::Reflection::GetTypeId<" << typeId << ">()";
+					} else
+					{
+						argStream << arg;
+					}
+
+					if (i < attr.arguments.size() - 1)
+						argStream << ", ";
+				}
+
+				FindAndReplace(attrString, "{ATTR_ARGS}", argStream.str());
+				attrStream << attrString;
+			}
+
+			AddIndentToStringStream(attrStream);
+		}
+
+		FindAndReplace(emitString, "{ATTRIBUTES}", attrStream.str());
 
 		a_stream << emitString;
 	}
@@ -876,8 +926,6 @@ RegisterGlobalVariables(std::stringstream& a_stream, const Spyll::ReflectionPars
 void
 RegisterGlobalFunctions(std::stringstream& a_stream, const Spyll::ReflectionParser* a_parser)
 {
-	(void) a_stream;
-	(void) a_parser;
 	for (const auto& function : a_parser->GetGlobalFunctions())
 	{
 		std::string emitString = GetTrimmedStringView(R"""(
@@ -993,8 +1041,6 @@ FunctionParams.typeSafeThunkFnPtr = reinterpret_cast<void*>(thunkFnPtr);
 void
 RegisterEnums(std::stringstream& a_stream, const Spyll::ReflectionParser* a_parser)
 {
-	(void) a_stream;
-	(void) a_parser;
 	for (const auto& enum_ : a_parser->GetEnums())
 	{
 		std::string emitString = GetTrimmedStringView(R"""(
