@@ -11,9 +11,9 @@ namespace Oyl
 	{
 		return Oyl::Detail::GetModuleRegistry();
 	}
-	
+
 	Module*
-	ModuleRegistry::GetModule(TypeId a_typeId)
+	ModuleRegistry::GetModule(Reflection::TypeId a_typeId)
 	{
 		Module* module     = nullptr;
 		auto    moduleIter = std::find_if(
@@ -31,7 +31,7 @@ namespace Oyl
 	}
 
 	bool
-	ModuleRegistry::RemoveModule(TypeId a_typeId)
+	ModuleRegistry::RemoveModule(Reflection::TypeId a_typeId)
 	{
 		auto moduleIter = std::find_if(
 			begin(),

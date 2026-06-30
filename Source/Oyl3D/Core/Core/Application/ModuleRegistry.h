@@ -3,7 +3,7 @@
 #include "Core/Application/Main.h"
 #include "Core/Common.h"
 #include "Core/Events/Event.h"
-#include "Core/Types/TypeId.h"
+#include "Core/Reflection/TypeId.h"
 
 namespace Oyl
 {
@@ -22,7 +22,7 @@ namespace Oyl
 		static
 		ModuleRegistry*
 		Instance();
-		
+
 		template<typename TModule, typename... TArgs, enable_if_base_of_module_t<TModule> = true>
 		TModule*
 		RegisterModule(TArgs&&... a_args)
@@ -35,7 +35,7 @@ namespace Oyl
 		}
 
 		Module*
-		GetModule(TypeId a_typeId);
+		GetModule(Reflection::TypeId a_typeId);
 
 		template<typename TModule, enable_if_base_of_module_t<TModule> = true>
 		TModule*
@@ -46,7 +46,7 @@ namespace Oyl
 		}
 
 		bool
-		RemoveModule(TypeId a_typeId);
+		RemoveModule(Reflection::TypeId a_typeId);
 
 		template<typename TModule, enable_if_base_of_module_t<TModule> = true>
 		bool
