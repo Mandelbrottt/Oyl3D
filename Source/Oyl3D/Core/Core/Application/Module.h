@@ -4,7 +4,7 @@
 
 #include "Core/Common.h"
 #include "Core/Profiling/Profiler.h"
-#include "Core/Types/TypeId.h"
+#include "Core/Reflection/TypeId.h"
 
 namespace Oyl
 {
@@ -18,7 +18,7 @@ namespace Oyl
 
 #	pragma region Public Interface
 		virtual
-		TypeId
+		Reflection::TypeId
 		GetTypeId() = 0;
 
 		template<typename TModule, typename... TArgs, ModuleRegistry::enable_if_base_of_module_t<TModule> = true>
@@ -86,7 +86,7 @@ namespace Oyl
 			// output member function, then type coerce
 			using OnEventFn = void(Module::*)(Event&);
 			static_assert(sizeof(a_fn) == sizeof(OnEventFn));
-			
+
 			m_eventFns[TEvent::GetStaticTypeId()] =
 				std::bind(
 					*reinterpret_cast<OnEventFn*>(&a_fn),
@@ -120,7 +120,7 @@ namespace Oyl
 
 		Detail::OnEventDelegate m_onPostEventCallback;
 
-		std::unordered_map<TypeId, Detail::OnEventDelegate> m_eventFns;
+		std::unordered_map<Reflection::TypeId, Detail::OnEventDelegate> m_eventFns;
 	};
 }
 
@@ -134,12 +134,12 @@ private: \
 	friend ::Oyl::ModuleRegistry; \
 public: \
 	static \
-	::Oyl::TypeId \
+	::Oyl::Reflection::TypeId \
 	GetStaticTypeId() \
 	{ \
-		return ::Oyl::GetTypeId<_class_>(); \
+		return ::Oyl::Reflection::GetTypeId<_class_>(); \
 	} \
-	::Oyl::TypeId \
+	::Oyl::Reflection::TypeId \
 	GetTypeId() override \
 	{ \
 		\

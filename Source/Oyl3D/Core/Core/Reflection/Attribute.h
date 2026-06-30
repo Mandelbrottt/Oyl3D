@@ -2,10 +2,28 @@
 
 namespace Oyl::Reflection
 {
+	class Type;
+
+	namespace Internal
+	{
+		class ReflectionFactory;
+	}
+
 	struct Attribute
 	{
+		friend class Internal::ReflectionFactory;
+
 		virtual
 		~Attribute() = default;
+
+		const Type*
+		GetType() const
+		{
+			return m_type;
+		}
+
+	private:
+		Type* m_type = nullptr;
 	};
 
 	struct EnableAttribute : Attribute {};

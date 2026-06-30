@@ -2,40 +2,23 @@
 
 #include "Core/Common.h"
 
+#include "Core/Reflection/TypeId.h"
+
 namespace Oyl
 {
 	using type_id_underlying_t = uint32;
 
-	enum class TypeId : type_id_underlying_t { Null = 0, FirstValid = 1 };
-
-	constexpr
-	bool
-	operator ==(TypeId a_lhs, TypeId a_rhs)
-	{
-		auto lhs = static_cast<type_id_underlying_t>(a_lhs);
-		auto rhs = static_cast<type_id_underlying_t>(a_rhs);
-
-		return lhs == rhs;
-	}
-
-	constexpr
-	bool
-	operator !=(TypeId a_lhs, TypeId a_rhs)
-	{
-		return !(a_lhs == a_rhs);
-	}
-	
 	namespace Detail
 	{
 		template<typename T>
 		using raw_type_t = std::remove_cv_t<std::remove_reference_t<std::remove_pointer_t<T>>>;
-		
+
 		template<typename T, typename = std::enable_if_t<std::is_same_v<T, raw_type_t<T>>>>
 		static
-		TypeId
+		Reflection::TypeId
 		GetRawTypeId() noexcept
 		{
-			static TypeId result = []()
+			static Reflection::TypeId result = []()
 			{
 				// Compute hash based on the typename
 				std::hash<std::string_view> hashFn;
@@ -46,14 +29,14 @@ namespace Oyl
 				std::size_t hash = hashFn(name);
 
 				OYL_ASSERT(hash != 0);
-				
-				return static_cast<TypeId>(hash);
+
+				return static_cast<Reflection::TypeId>(hash);
 			}();
 
 			return result;
 		}
 	}
-	
+
 	/**
 	 * \brief  Retrieve the statically assigned type id for the given type
 	 * \tparam T The type who's Id to retrieve
@@ -62,7 +45,7 @@ namespace Oyl
 	 *         ie. GetTypeId<const int> and GetTypeId<int> return the same id.
 	 */
 	template<typename T>
-	TypeId
+	Reflection::TypeId
 	GetTypeId() noexcept
 	{
 		// Abstract call to GetRawTypeId so that each ID hash is only computed once in the static initializer

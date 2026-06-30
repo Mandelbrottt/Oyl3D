@@ -17,9 +17,15 @@ namespace Oyl::Reflection::Internal
 		Assembly*
 		CreateAssembly(const AssemblyParams& a_params, ReflectionAllocatorFn a_allocate);
 
+		template<typename TAttribute>
 		static
 		const Attribute*
-		AddAttributeToDeclaration(NamedDeclaration* a_declaration, const Attribute* a_attr);
+		AddAttributeToDeclaration(NamedDeclaration* a_declaration, TAttribute* a_attr)
+		{
+			a_attr->m_type = Type::Get<TAttribute>();
+			auto& result = a_declaration->m_attributes.emplace_back(a_attr);
+			return result;
+		}
 
 		static
 		Type*

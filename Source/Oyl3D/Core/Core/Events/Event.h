@@ -12,7 +12,7 @@ namespace Oyl
 		~Event() = default;
 
 		virtual
-		TypeId
+		Reflection::TypeId
 		GetTypeId() const = 0;
 	};
 
@@ -24,13 +24,14 @@ namespace Oyl
 		{
 		public:
 			explicit
+
 			EventDispatcher(Event& a_event)
 				: event { a_event } {}
 
 			Event& event;
 
 			void
-			Dispatch(TypeId a_type, OnEventDelegate a_fn) const
+			Dispatch(Reflection::TypeId a_type, OnEventDelegate a_fn) const
 			{
 				if (a_type == event.GetTypeId())
 				{
@@ -45,13 +46,13 @@ namespace Oyl
 
 #define _OYL_DECLARE_EVENT_1(_event_) \
 	static \
-	::Oyl::TypeId \
+	::Oyl::Reflection::TypeId \
 	GetStaticTypeId() \
 	{ \
 		return ::Oyl::GetTypeId<_event_>();\
 	} \
 	\
-	::Oyl::TypeId \
+	::Oyl::Reflection::TypeId \
 	GetTypeId() const override \
 	{ \
 		static_assert( \
