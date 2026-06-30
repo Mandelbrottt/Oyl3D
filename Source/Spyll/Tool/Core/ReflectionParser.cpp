@@ -28,6 +28,32 @@ namespace Spyll
 			return ShouldReflectDecl(ctx);
 		}
 
+		// Any class with a base ancestor of:
+		// - Oyl::Module
+		// - Oyl::Reflection::Attribute
+		// Should be reflected
+		if (auto record = llvm::dyn_cast<clang::CXXRecordDecl>(Decl))
+		{
+			// TODO: Don't hardcode
+			if (record->getQualifiedNameAsString() == "Oyl::Reflection::Attribute")
+			{
+				return true;
+			}
+			if (record->getQualifiedNameAsString() == "Oyl::Module")
+			{
+				return true;
+			}
+
+			for (auto base : record->bases())
+			{
+				auto baseRecordDecl = base.getType().getCanonicalType()->getAsCXXRecordDecl();
+				if (baseRecordDecl && ShouldReflectDecl(baseRecordDecl))
+				{
+					return true;
+				}
+			}
+		}
+
 		return false;
 	}
 
