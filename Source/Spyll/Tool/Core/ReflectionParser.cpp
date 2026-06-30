@@ -58,7 +58,7 @@ namespace Spyll
 	}
 
 	bool
-	ReflectionParser::ParseCXXRecordDecl(clang::CXXRecordDecl* Decl, clang::SourceManager* a_sourceManager)
+	ReflectionParser::ParseCXXRecordDecl(clang::CXXRecordDecl* Decl)
 	{
 		if (!Decl->isCompleteDefinition())
 			return true;
@@ -75,7 +75,7 @@ namespace Spyll
 	}
 
 	bool
-	ReflectionParser::ParseFunctionDecl(clang::FunctionDecl* Decl, clang::SourceManager* a_sourceManager)
+	ReflectionParser::ParseFunctionDecl(clang::FunctionDecl* Decl)
 	{
 		if (Decl->getDeclContext()->isRecord())
 			return true;
@@ -95,7 +95,7 @@ namespace Spyll
 	}
 
 	bool
-	ReflectionParser::ParseVarDecl(clang::VarDecl* Decl, clang::SourceManager* a_sourceManager)
+	ReflectionParser::ParseVarDecl(clang::VarDecl* Decl)
 	{
 		if (Decl->getDeclContext()->isRecord())
 			return true;
@@ -115,7 +115,7 @@ namespace Spyll
 	}
 
 	bool
-	ReflectionParser::ParseEnumDecl(clang::EnumDecl* Decl, clang::SourceManager* a_sourceManager)
+	ReflectionParser::ParseEnumDecl(clang::EnumDecl* Decl)
 	{
 		if (!Decl->isCompleteDefinition())
 			return true;
