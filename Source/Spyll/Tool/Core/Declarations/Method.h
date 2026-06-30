@@ -15,7 +15,7 @@ namespace Spyll
 	{
 	public:
 		explicit
-		Method(const clang::CXXMethodDecl* a_decl, Type* a_parent, clang::SourceManager* a_sourceManager);
+		Method(const clang::CXXMethodDecl* a_decl, Type* a_parent);
 
 		virtual
 		~Method();

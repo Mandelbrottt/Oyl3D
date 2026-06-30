@@ -18,7 +18,7 @@ namespace Spyll
 
 	protected:
 		explicit
-		Declaration(const clang::NamedDecl* a_decl, const clang::SourceManager* a_sourceManager);
+		Declaration(const clang::NamedDecl* a_decl);
 
 		virtual
 		~Declaration();

@@ -24,7 +24,7 @@ namespace Spyll
 	{
 	public:
 		explicit
-		Type(clang::CXXRecordDecl* a_decl, clang::SourceManager* a_sourceManager);
+		Type(clang::CXXRecordDecl* a_decl);
 
 		virtual
 		~Type();

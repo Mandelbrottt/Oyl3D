@@ -4,8 +4,8 @@
 
 namespace Spyll
 {
-	Type::Type(clang::CXXRecordDecl* a_decl, clang::SourceManager* a_sourceManager)
-		: Declaration(a_decl, a_sourceManager)
+	Type::Type(clang::CXXRecordDecl* a_decl)
+		: Declaration(a_decl)
 	{
 		auto* type = a_decl->getTypeForDecl();
 
@@ -40,7 +40,7 @@ namespace Spyll
 				case clang::Decl::Field:
 				{
 					auto* fieldDecl = static_cast<clang::FieldDecl*>(decl);
-					m_fields.emplace_back(fieldDecl, this, a_sourceManager);
+					m_fields.emplace_back(fieldDecl, this);
 					break;
 				}
 				case clang::Decl::CXXMethod:
@@ -54,15 +54,15 @@ namespace Spyll
 						break;
 
 					if (cxxMethodDecl->isInstance())
-						m_methods.emplace_back(cxxMethodDecl, this, a_sourceManager);
+						m_methods.emplace_back(cxxMethodDecl, this);
 					else
-						m_functions.emplace_back(cxxMethodDecl, this, a_sourceManager);
+						m_functions.emplace_back(cxxMethodDecl, this);
 					break;
 				}
 				case clang::Decl::Var:
 				{
 					auto* varDecl = static_cast<clang::VarDecl*>(decl);
-					m_variables.emplace_back(varDecl, this, a_sourceManager);
+					m_variables.emplace_back(varDecl, this);
 					break;
 				}
 				default:
