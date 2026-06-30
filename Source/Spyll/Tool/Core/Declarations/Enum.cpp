@@ -24,7 +24,6 @@ namespace Spyll
 		auto qualifiedType = a_decl->getIntegerType();
 		m_underlyingType = clang::TypeName::getFullyQualifiedName(qualifiedType, ctx, printingPolicy);
 
-		m_entries.reserve(a_decl->getAttrs().size());
 		for (auto* entryDecl : a_decl->enumerators())
 		{
 			m_entries.emplace_back(entryDecl, this, a_sourceManager);

@@ -13,7 +13,7 @@ namespace Spyll
 	struct Attribute
 	{
 		std::string type;
-		std::string initializer;
+		std::vector<std::string> arguments;
 	};
 
 	class AttributeParser
