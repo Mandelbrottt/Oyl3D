@@ -43,7 +43,7 @@ namespace Spyll
 		if (!ShouldReflectDecl(Decl))
 			return true;
 
-		m_types.emplace_back(new Type(Decl, a_sourceManager));
+		m_types.emplace_back(new Type(Decl));
 
 		return true;
 	}
@@ -63,7 +63,7 @@ namespace Spyll
 		if (!ShouldReflectDecl(Decl))
 			return true;
 
-		m_globalFunctions.emplace_back(new Function(Decl, nullptr, a_sourceManager));
+		m_globalFunctions.emplace_back(new Function(Decl, nullptr));
 
 		return true;
 	}
@@ -83,7 +83,7 @@ namespace Spyll
 		if (!ShouldReflectDecl(Decl))
 			return true;
 
-		m_globalVariables.emplace_back(new Variable(Decl, nullptr, a_sourceManager));
+		m_globalVariables.emplace_back(new Variable(Decl, nullptr));
 
 		return true;
 	}
@@ -97,7 +97,7 @@ namespace Spyll
 		if (!ShouldReflectDecl(Decl))
 			return true;
 
-		m_enums.emplace_back(new Enum(Decl, a_sourceManager));
+		m_enums.emplace_back(new Enum(Decl));
 
 		return true;
 	}

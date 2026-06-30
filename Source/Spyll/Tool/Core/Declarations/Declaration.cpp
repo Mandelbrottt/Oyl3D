@@ -6,7 +6,7 @@
 
 namespace Spyll
 {
-	Declaration::Declaration(const clang::NamedDecl* a_decl, const clang::SourceManager* a_sourceManager)
+	Declaration::Declaration(const clang::NamedDecl* a_decl)
 		: m_enabled(true),
 		  m_qualifiedName(a_decl->getQualifiedNameAsString()),
 		  m_attributeParser(a_decl)
@@ -16,10 +16,10 @@ namespace Spyll
 
 		auto sourceLocation = a_decl->getLocation();
 
-		m_sourceFile = a_sourceManager->getFilename(sourceLocation);
+		m_sourceFile = a_decl->getASTContext().getSourceManager().getFilename(sourceLocation);
 		m_sourceFile = std::filesystem::path(m_sourceFile).lexically_normal().string();
 
-		m_sourceLine = a_sourceManager->getSpellingLineNumber(sourceLocation);
+		m_sourceLine = a_decl->getASTContext().getSourceManager().getSpellingLineNumber(sourceLocation);
 	}
 
 	Declaration::~Declaration() {}

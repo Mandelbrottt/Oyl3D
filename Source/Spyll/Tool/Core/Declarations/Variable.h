@@ -15,7 +15,7 @@ namespace Spyll
 	{
 	public:
 		explicit
-		Variable(const clang::VarDecl* a_decl, Type* a_parent, clang::SourceManager* a_sourceManager);
+		Variable(const clang::VarDecl* a_decl, Type* a_parent);
 
 		virtual
 		~Variable();

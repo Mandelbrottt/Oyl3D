@@ -23,7 +23,7 @@ namespace Spyll
 	{
 	public:
 		explicit
-		Function(const clang::FunctionDecl* a_decl, Type* a_parent, clang::SourceManager* a_sourceManager);
+		Function(const clang::FunctionDecl* a_decl, Type* a_parent);
 
 		virtual
 		~Function();

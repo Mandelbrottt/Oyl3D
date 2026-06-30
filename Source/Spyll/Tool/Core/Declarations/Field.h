@@ -15,7 +15,7 @@ namespace Spyll
 	{
 	public:
 		explicit
-		Field(const clang::FieldDecl* a_decl, Type* a_parent, const clang::SourceManager* a_sourceManager);
+		Field(const clang::FieldDecl* a_decl, Type* a_parent);
 
 		virtual
 		~Field();

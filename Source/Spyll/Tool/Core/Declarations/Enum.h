@@ -19,8 +19,7 @@ namespace Spyll
 		explicit
 		EnumConstant(
 			const clang::EnumConstantDecl* a_decl,
-			const Enum* a_parent,
-			const clang::SourceManager* a_sourceManager
+			const Enum* a_parent
 		);
 
 		virtual
@@ -55,7 +54,7 @@ namespace Spyll
 	{
 	public:
 		explicit
-		Enum(const clang::EnumDecl* a_decl, const clang::SourceManager* a_sourceManager);
+		Enum(const clang::EnumDecl* a_decl);
 
 		virtual
 		~Enum();
