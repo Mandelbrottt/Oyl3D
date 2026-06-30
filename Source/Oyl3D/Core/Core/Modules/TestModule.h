@@ -41,11 +41,11 @@ namespace Oyl
 		int b;
 	};
 
-	struct BRO : Reflection::Attribute
+	struct Bro : Reflection::Attribute
 	{
 		constexpr
 		explicit
-		BRO(int a, Bruh b)
+		Bro(int a, Bruh b)
 			: a(a),
 			  b(b) {}
 
@@ -123,7 +123,7 @@ namespace Oyl
 
 		Attr(SliderAttribute(0, MAX))
 		Attr(AnnotateAttribute("Arbitrary String"))
-		Attr(BRO(5, Bruh { 6, 7 }))
+		Attr(Bro(5, Bruh { 6, 7 }))
 		float m_slider = 0.0f;
 	};
 

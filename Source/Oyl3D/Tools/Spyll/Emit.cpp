@@ -304,9 +304,19 @@ EmitReflectionRegister(std::string& a_emitString, const Spyll::ReflectionParser*
 	stream.setf(std::ios::boolalpha);
 
 	RegisterTypes(stream, a_parser);
+	RegisterEnums(stream, a_parser);
+
+	// Register type children after all types registered to guarantee calls to Type::Get<T>() succeed
+	for (auto type : a_parser->GetTypes())
+	{
+		RegisterVariablesForType(stream, type);
+		RegisterFieldsForType(stream, type);
+		RegisterFunctionsForType(stream, type);
+		RegisterMethodsForType(stream, type);
+	}
+
 	RegisterGlobalVariables(stream, a_parser);
 	RegisterGlobalFunctions(stream, a_parser);
-	RegisterEnums(stream, a_parser);
 
 	AddIndentToStringStream(stream);
 	FindAndReplace(a_emitString, "{REFLECTION_REGISTER}", stream.str());
@@ -407,9 +417,6 @@ EmitStowDeclarations(std::string& a_emitString, const Spyll::ReflectionParser* a
 void
 RegisterTypes(std::stringstream& a_stream, const Spyll::ReflectionParser* a_parser)
 {
-	std::vector<Spyll::Type*> sortedTypes;
-	sortedTypes.reserve(a_parser->GetTypes().size());
-
 	for (const auto& type : a_parser->GetTypes())
 	{
 		if (a_stream.tellp() != 0)
@@ -431,10 +438,6 @@ Oyl::Reflection::Type* {TYPENAME_AS_VAR}; (void) {TYPENAME_AS_VAR};
 	TypeParams.size = {SIZE};
 	TypeParams.alignment = {ALIGNMENT};
 	{TYPENAME_AS_VAR} = Oyl::Reflection::Internal::ReflectionFactory::AddTypeToAssembly({ASSEMBLY_PTR}, TypeParams, a_allocate);
-{TYPE_VARIABLES}
-{TYPE_FIELDS}
-{TYPE_FUNCTIONS}
-{TYPE_METHODS}
 }
 )"""
 			));
@@ -445,26 +448,6 @@ Oyl::Reflection::Type* {TYPENAME_AS_VAR}; (void) {TYPENAME_AS_VAR};
 		FindAndReplace(emitString, "{SIZE}", std::to_string(type->GetSize()));
 		FindAndReplace(emitString, "{ALIGNMENT}", std::to_string(type->GetAlignment()));
 		FindAndReplace(emitString, "{TYPENAME_AS_VAR}", GetTypeNameAsVar(type->GetQualifiedName()));
-
-		std::stringstream variablesStream;
-		RegisterVariablesForType(variablesStream, type);
-		AddIndentToStringStream(variablesStream);
-		FindAndReplace(emitString, "{TYPE_VARIABLES}", variablesStream.str());
-
-		std::stringstream fieldsStream;
-		RegisterFieldsForType(fieldsStream, type);
-		AddIndentToStringStream(fieldsStream);
-		FindAndReplace(emitString, "{TYPE_FIELDS}", fieldsStream.str());
-
-		std::stringstream functionsStream;
-		RegisterFunctionsForType(functionsStream, type);
-		AddIndentToStringStream(functionsStream);
-		FindAndReplace(emitString, "{TYPE_FUNCTIONS}", functionsStream.str());
-
-		std::stringstream methodsStream;
-		RegisterMethodsForType(methodsStream, type);
-		AddIndentToStringStream(methodsStream);
-		FindAndReplace(emitString, "{TYPE_METHODS}", methodsStream.str());
 
 		a_stream << emitString;
 	}
