@@ -1,13 +1,14 @@
 #pragma once
 
 #include <cassert>
-#include <cstdint>
+
+#include "Core/Types/Typedefs.h"
 
 namespace Oyl::Reflection
 {
 	namespace Detail
 	{
-		using TypeIdUnderlying = uint32_t;
+		using TypeIdUnderlying = uint32;
 	}
 
 	enum class TypeId : Detail::TypeIdUnderlying { Null = static_cast<Detail::TypeIdUnderlying>(0) };
@@ -55,14 +56,14 @@ namespace Oyl::Reflection
 				std::size_t hash = hashFn(name);
 
 				assert(hash != 0);
-				
+
 				return static_cast<TypeId>(hash);
 			}();
 
 			return result;
 		}
 	}
-	
+
 	/**
 	 * \brief  Retrieve the statically assigned type id for the given type
 	 * \tparam T The type who's Id to retrieve

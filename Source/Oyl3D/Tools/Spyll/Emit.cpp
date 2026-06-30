@@ -407,6 +407,9 @@ EmitStowDeclarations(std::string& a_emitString, const Spyll::ReflectionParser* a
 void
 RegisterTypes(std::stringstream& a_stream, const Spyll::ReflectionParser* a_parser)
 {
+	std::vector<Spyll::Type*> sortedTypes;
+	sortedTypes.reserve(a_parser->GetTypes().size());
+
 	for (const auto& type : a_parser->GetTypes())
 	{
 		if (a_stream.tellp() != 0)
@@ -418,7 +421,7 @@ RegisterTypes(std::stringstream& a_stream, const Spyll::ReflectionParser* a_pars
 
 		std::string emitString = std::string(
 			GetTrimmedStringView(R"""(
-Oyl::Reflection::Type* {TYPENAME_AS_VAR};
+Oyl::Reflection::Type* {TYPENAME_AS_VAR}; (void) {TYPENAME_AS_VAR};
 {
 	Oyl::Reflection::Internal::TypeParams TypeParams;
 	TypeParams.assembly = {ASSEMBLY_PTR};
