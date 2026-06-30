@@ -41,6 +41,7 @@ namespace Oyl::Reflection
 			if constexpr (std::is_void_v<TReturn>)
 			{
 				(a_this->*thunkFn)(std::forward<TArgs>(a_args)...);
+				return;
 			} else
 			{
 				return (a_this->*thunkFn)(std::forward<TArgs>(a_args)...);
