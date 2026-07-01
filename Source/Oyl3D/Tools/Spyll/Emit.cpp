@@ -16,7 +16,7 @@ FindAndReplace(std::string& a_str, std::string_view a_find, std::string_view a_r
 	while ((start_pos = a_str.find(a_find, start_pos)) != std::string::npos)
 	{
 		a_str.replace(start_pos, a_find.length(), a_replace);
-		start_pos += a_replace.length(); // Handles case where 'to' is a substring of 'from'
+		start_pos += a_replace.length(); // Handles case where 'replace' is a substring of 'find'
 	}
 	return a_str;
 };
