@@ -6,7 +6,7 @@ on:
       llvm-ref:
         description: 'LLVM Commit Hash or Tag'
         required: false
-        default: llvmorg-21.1.8
+        default: llvmorg-19.1.7
         type: string
 
 concurrency:
