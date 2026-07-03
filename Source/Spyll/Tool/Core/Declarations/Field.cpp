@@ -27,27 +27,27 @@ namespace Spyll
 	bool
 	Field::ShouldReflect() const
 	{
+		if (!Declaration::ShouldReflect())
+		{
+			return false;
+		}
+
 		auto fieldDecl = clang::dyn_cast<clang::FieldDecl>(m_decl);
 
-		bool result = [&, this]
+		auto type = fieldDecl->getType().getTypePtr();
+		while (type->isPointerType())
 		{
-			auto type = fieldDecl->getType().getTypePtr();
-			while (type->isPointerType())
-			{
-				type = type->getPointeeOrArrayElementType();
-			}
-			auto typeDecl = type->getAsRecordDecl();
-			if (typeDecl
-				&& (typeDecl->getAccess() == clang::AS_protected
-					|| typeDecl->getAccess() == clang::AS_private))
-			{
-				return false;
-			}
+			type = type->getPointeeOrArrayElementType();
+		}
+		auto typeDecl = type->getAsRecordDecl();
+		if (typeDecl
+			&& (typeDecl->getAccess() == clang::AS_protected
+				|| typeDecl->getAccess() == clang::AS_private))
+		{
+			return false;
+		}
 
-			return true;
-		}();
-
-		return result && Declaration::ShouldReflect();
+		return true;
 	}
 
 	std::string_view
