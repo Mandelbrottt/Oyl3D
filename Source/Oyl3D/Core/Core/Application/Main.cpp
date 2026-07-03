@@ -11,12 +11,7 @@
 #include "Core/Profiling/Profiler.h"
 #include "Core/Time/Time.h"
 
-//#include "Core/Reflection/TypedFactory.h"
-//#include "Core/Reflection/Reflection.h"
-
-//#include "ReflectionTest.h"
-
-#include <Windows.h>
+#include "SharedLibrary.h"
 
 namespace Oyl::Detail
 {
@@ -49,24 +44,24 @@ namespace Oyl::Detail
 		auto& registry = g_data.moduleRegistry;
 		registry.SetOnEventCallback(OnEvent);
 
-#	ifdef OYL_EDITOR
-		HMODULE hmodule = LoadLibraryA("Oyl.Core.dll");
-#	else
-		HMODULE hmodule = nullptr;
-		GetModuleHandleExA(
-			GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS | GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT, 
-			(LPCSTR) Init,
-			&hmodule
-		);
-#	endif
-		if (hmodule)
+		//HMODULE hmodule = nullptr;
+		//GetModuleHandleExA(
+		//	GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS | GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
+		//	(LPCSTR) Init,
+		//	&hmodule
+		//);
+
+		SharedLibrary library = SharedLibrary("Oyl.Core.dll");
+		if (library.IsLoaded())
 		{
-			using IntFn = int(*)();
-			IntFn someFunction = (IntFn) (void*) GetProcAddress(hmodule, "_Exports_Oyl_Core_");
-			if (someFunction)
+			using DepFunc = void(int*, char***);
+			auto getDependencies = library.GetFunction<DepFunc>("_ReflectionAssembly_Dependencies");
+			if (getDependencies)
 			{
-				int a = someFunction();
-				OYL_LOG("someFunction() = {}", a);
+				int count;
+				char** depsArray;
+				getDependencies(&count, &depsArray);
+				OYL_LOG("Count: {}", count);
 			}
 		}
 	}
@@ -109,7 +104,7 @@ namespace Oyl::Detail
 
 		uint64 thisTick;
 		while ((thisTick = Time::Detail::ImmediateElapsedTicks()) < minNextFrameTicks) {}
-		
+
 		lastTick = thisTick;
 	}
 

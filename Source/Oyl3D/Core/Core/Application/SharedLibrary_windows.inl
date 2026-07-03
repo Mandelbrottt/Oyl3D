@@ -8,7 +8,7 @@ namespace Oyl
 {
 	struct SharedLibrary::Impl
 	{
-		HINSTANCE instance;
+		HINSTANCE instance = NULL;
 	};
 
 	inline
@@ -32,7 +32,18 @@ namespace Oyl
 	inline bool
 	SharedLibrary::Load(const std::string& a_libraryFileName) noexcept
 	{
-		m_impl->instance = LoadLibraryA(a_libraryFileName.data());
+		if (IsLoaded())
+		{
+			Unload();
+		}
+
+		if (a_libraryFileName.empty())
+		{
+			m_impl->instance = GetModuleHandle(NULL);
+		} else
+		{
+			m_impl->instance = LoadLibraryA(a_libraryFileName.data());
+		}
 
 		return m_impl->instance != NULL;
 	}
@@ -43,8 +54,20 @@ namespace Oyl
 	{
 		UnloadCommon();
 
-		BOOL freeResult = FreeLibrary(m_impl->instance);
-		return freeResult;
+		if (!m_impl->instance)
+		{
+			return false;
+		}
+
+		auto thisModule = GetModuleHandle(NULL);
+		if (m_impl->instance != thisModule)
+		{
+			BOOL freeResult = FreeLibrary(m_impl->instance);
+			m_impl->instance = NULL;
+			return freeResult;
+		}
+
+		return true;
 	}
 
 	inline
