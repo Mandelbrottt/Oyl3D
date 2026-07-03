@@ -13,12 +13,12 @@
 #include <stack>
 #include <string>
 #include <thread>
-#include <type_traits>
 #include <typeinfo>
+#include <type_traits>
 #include <unordered_map>
 #include <unordered_set>
 #include <vector>
 
 #include "Core/Common.h"
 #include "Core/Profiling/Profiler.h"
-#include "Core/Types/Typedefs.h"
+#include "Core/Typedefs.h"

@@ -2,7 +2,7 @@
 
 #include <cassert>
 
-#include "Core/Types/Typedefs.h"
+#include "Core/Typedefs.h"
 
 namespace Oyl::Reflection
 {

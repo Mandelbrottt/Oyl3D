@@ -20,6 +20,9 @@ namespace Spyll
 		virtual
 		~Variable();
 
+		bool
+		ShouldReflect() const override;
+
 		Type*
 		GetParent() const;
 

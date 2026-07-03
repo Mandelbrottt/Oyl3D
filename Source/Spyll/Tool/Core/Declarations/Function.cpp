@@ -27,6 +27,52 @@ namespace Spyll
 
 	Function::~Function() {}
 
+	bool
+	Function::ShouldReflect() const
+	{
+		auto functionDecl = clang::dyn_cast<clang::FunctionDecl>(m_decl);
+
+		bool result = [&]
+		{
+			// Member Operators are technically not functions, they are functors
+			// Similar to lambdas or member function pointers. We can't take the address of these functions
+			// TODO: Add thunk lambda call as functionPtr
+			if (functionDecl->isOverloadedOperator())
+				return false;
+
+			auto type = functionDecl->getType().getTypePtr();
+			while (type->isPointerType())
+			{
+				type = type->getPointeeOrArrayElementType();
+			}
+			auto returnTypeTagDecl = type->getAsRecordDecl();
+			if (returnTypeTagDecl
+				&& (returnTypeTagDecl->getAccess() == clang::AS_protected
+					|| returnTypeTagDecl->getAccess() == clang::AS_private))
+			{
+				return false;
+			}
+
+			for (auto arg : functionDecl->parameters())
+			{
+				type = arg->getType().getTypePtr();
+				while (type->isPointerType())
+				{
+					type = type->getPointeeOrArrayElementType();
+				}
+				auto typeTagDecl = type->getAsRecordDecl();
+				if (typeTagDecl && typeTagDecl->getAccess() != clang::AS_public)
+				{
+					return false;
+				}
+			}
+
+			return true;
+		}();
+
+		return result && Declaration::ShouldReflect();
+	}
+
 	Type*
 	Function::GetParent() const
 	{

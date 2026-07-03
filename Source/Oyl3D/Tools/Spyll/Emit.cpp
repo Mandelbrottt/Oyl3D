@@ -337,7 +337,7 @@ EmitStowDeclarations(std::string& a_emitString, const Spyll::ReflectionParser* a
 	{
 		for (const auto& variable : type->GetVariables())
 		{
-			if (isPublic(variable.GetAccessSpecifier()))
+			if (!variable.ShouldReflect() || isPublic(variable.GetAccessSpecifier()))
 				continue;
 
 			auto stowTypeNameAsVar = GetStowTypeName(variable.GetQualifiedName());
@@ -349,7 +349,7 @@ EmitStowDeclarations(std::string& a_emitString, const Spyll::ReflectionParser* a
 
 		for (const auto& field : type->GetFields())
 		{
-			if (isPublic(field.GetAccessSpecifier()))
+			if (!field.ShouldReflect() || isPublic(field.GetAccessSpecifier()))
 				continue;
 
 			auto typeNameAsVar = GetStowTypeName(field.GetQualifiedName());
@@ -361,7 +361,7 @@ EmitStowDeclarations(std::string& a_emitString, const Spyll::ReflectionParser* a
 
 		for (const auto& function : type->GetFunctions())
 		{
-			if (isPublic(function.GetAccessSpecifier()))
+			if (!function.ShouldReflect() || isPublic(function.GetAccessSpecifier()))
 				continue;
 
 			auto typeNameAsVar = GetStowTypeName(function.GetQualifiedName());
@@ -384,7 +384,7 @@ EmitStowDeclarations(std::string& a_emitString, const Spyll::ReflectionParser* a
 
 		for (const auto& method : type->GetMethods())
 		{
-			if (isPublic(method.GetAccessSpecifier()))
+			if (!method.ShouldReflect() || isPublic(method.GetAccessSpecifier()))
 				continue;
 
 			auto typeNameAsVar = GetStowTypeName(method.GetQualifiedName());
@@ -419,6 +419,9 @@ RegisterTypes(std::stringstream& a_stream, const Spyll::ReflectionParser* a_pars
 {
 	for (const auto& type : a_parser->GetTypes())
 	{
+		if (!type->ShouldReflect())
+			continue;
+
 		if (a_stream.tellp() != 0)
 		{
 			a_stream << "\n";
@@ -461,6 +464,9 @@ RegisterVariablesForType(
 {
 	for (const auto& variable : a_parentType->GetVariables())
 	{
+		if (!variable.ShouldReflect())
+			continue;
+
 		std::string emitString = GetTrimmedStringView(R"""(
 {
 	Oyl::Reflection::Internal::VariableParams VariableParams;
@@ -492,6 +498,9 @@ RegisterFieldsForType(
 {
 	for (const auto& field : a_parentType->GetFields())
 	{
+		if (!field.ShouldReflect())
+			continue;
+
 		std::string emitString = GetTrimmedStringView(R"""(
 {
 	Oyl::Reflection::Internal::FieldParams FieldParams;
@@ -577,6 +586,9 @@ RegisterFunctionsForType(
 {
 	for (const auto& function : a_parentType->GetFunctions())
 	{
+		if (!function.ShouldReflect())
+			continue;
+
 		std::string emitString = GetTrimmedStringView(R"""(
 {
 	Oyl::Reflection::Internal::FunctionParams FunctionParams;
@@ -715,6 +727,9 @@ RegisterMethodsForType(
 {
 	for (const auto& method : a_parentType->GetMethods())
 	{
+		if (!method.ShouldReflect())
+			continue;
+
 		std::string emitString = GetTrimmedStringView(R"""(
 {
 	Oyl::Reflection::Internal::MethodParams MethodParams;
@@ -887,6 +902,9 @@ RegisterGlobalVariables(std::stringstream& a_stream, const Spyll::ReflectionPars
 
 	for (const auto* variable : a_parser->GetGlobalVariables())
 	{
+		if (!variable->ShouldReflect())
+			continue;
+
 		std::string emitString = GetTrimmedStringView(R"""(
 {
 	Oyl::Reflection::Internal::VariableParams VariableParams;
@@ -914,6 +932,9 @@ RegisterGlobalFunctions(std::stringstream& a_stream, const Spyll::ReflectionPars
 {
 	for (const auto& function : a_parser->GetGlobalFunctions())
 	{
+		if (!function->ShouldReflect())
+			continue;
+
 		std::string emitString = GetTrimmedStringView(R"""(
 {
 	Oyl::Reflection::Internal::FunctionParams FunctionParams;
@@ -1029,6 +1050,9 @@ RegisterEnums(std::stringstream& a_stream, const Spyll::ReflectionParser* a_pars
 {
 	for (const auto& enum_ : a_parser->GetEnums())
 	{
+		if (!enum_->ShouldReflect())
+			continue;
+
 		std::string emitString = GetTrimmedStringView(R"""(
 {
 	Oyl::Reflection::Internal::EnumParams EnumParams;

@@ -23,11 +23,6 @@ namespace Spyll
 			}
 		}
 
-		if (auto ctx = llvm::dyn_cast<clang::CXXRecordDecl>(Decl->getDeclContext()))
-		{
-			return ShouldReflectDecl(ctx);
-		}
-
 		// Any class with a base ancestor of:
 		// - Oyl::Module
 		// - Oyl::Reflection::Attribute
@@ -52,6 +47,11 @@ namespace Spyll
 					return true;
 				}
 			}
+		}
+
+		if (auto ctx = llvm::dyn_cast<clang::CXXRecordDecl>(Decl->getDeclContext()))
+		{
+			return ShouldReflectDecl(ctx);
 		}
 
 		return false;
