@@ -13,11 +13,32 @@ namespace Oyl
 		explicit
 		SharedLibrary(const std::string& a_libraryFileName) noexcept;
 
+		template<typename TFn>
+			requires Traits::FunctionObject<TFn> && Traits::NonVoidPointer<TFn>
+		explicit
+		SharedLibrary(TFn* a_functionAddress) noexcept
+			: SharedLibrary(reinterpret_cast<void*>(a_functionAddress)) {}
+
+		explicit
+		SharedLibrary(void* a_functionAddress) noexcept;
+
 		virtual
 		~SharedLibrary() noexcept;
 
 		bool
-		Load(const std::string& a_libraryFileName) noexcept;
+		LoadFromFileName(const std::string& a_libraryFileName) noexcept;
+
+		template<typename TFn>
+			requires Traits::FunctionObject<TFn> && Traits::NonVoidPointer<TFn>
+		bool
+		LoadFromFunctionAddress(TFn* a_functionAddress) noexcept
+		{
+			void* fnPtr = reinterpret_cast<void*>(a_functionAddress);
+			return LoadFromFunctionAddress(fnPtr);
+		}
+
+		bool
+		LoadFromFunctionAddress(void* a_functionPtr) noexcept;
 
 		bool
 		Unload() noexcept;

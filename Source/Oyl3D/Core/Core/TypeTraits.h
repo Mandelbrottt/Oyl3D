@@ -1,7 +1,21 @@
 #pragma once
 
+#include <type_traits>
+
 namespace Oyl::Traits
 {
+	template<typename T>
+	struct IsVoidPointer
+	{
+		static constexpr bool value = std::is_void_v<std::remove_pointer_t<T>>;
+	};
+
+	template<typename T>
+	concept VoidPointer = IsVoidPointer<T>::value;
+
+	template<typename T>
+	concept NonVoidPointer = !IsVoidPointer<T>::value;
+
 	template<typename T>
 	struct IsFunctionPointer
 	{
