@@ -56,44 +56,19 @@ namespace Oyl
 		Reflection::TypeId type;
 	};
 
-	template<typename T>
-	constexpr
-	Reflection::TypeId
-	TypeIdWrapper()
-	{
-		return Reflection::TypeId::Null;
-	}
-
-	namespace Reflection::Internal
-	{
-		constexpr
-		::Oyl::Reflection::TypeId
-		ConstExprType(std::string_view a_typename)
-		{
-			uint32_t hash = 5381;
-			for (const auto& c : a_typename)
-			{
-				hash = (33 * hash) ^ c;
-			}
-			return static_cast<::Oyl::Reflection::TypeId>(hash);
-		}
-	}
-
-	#define typeof(_type_) Oyl::Reflection::Internal::ConstExprType(type_name<_type_>())
-
 	class OYL_CORE_API TestModule : public Module
 	{
 	public:
-		Reflection::TypeId
-		GetTypeId() override
+		constexpr Reflection::TypeId
+		GetTypeId() const override
 		{
 			return Reflection::GetTypeId<decltype(*this)>();
 		}
 
-		std::string_view
+		constexpr std::string_view
 		GetName() const override
 		{
-			return "TestModule";
+			return NameOf<decltype(*this)>();
 		}
 
 		void
@@ -109,7 +84,7 @@ namespace Oyl
 		OnShutdown() override {}
 
 	private:
-		Attr(TypeAttribute(GetTypeId<TestModule>()))
+		Attr(TypeAttribute(typeidof(TestModule)))
 		int m_private = 0;
 
 		static constexpr float MAX = 10.0f;
