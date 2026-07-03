@@ -64,7 +64,9 @@ namespace Spyll
 				type = type->getPointeeOrArrayElementType();
 			}
 			auto typeTagDecl = type->getAsRecordDecl();
-			if (typeTagDecl && typeTagDecl->getAccess() != clang::AS_public)
+			if (typeTagDecl &&
+				(typeTagDecl->getAccess() == clang::AS_protected
+				 || typeTagDecl->getAccess() == clang::AS_private))
 			{
 				return false;
 			}
