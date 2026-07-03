@@ -6,6 +6,7 @@
 namespace clang
 {
 	class Decl;
+	class ConstantExpr;
 }
 
 namespace Spyll
@@ -27,6 +28,11 @@ namespace Spyll
 		{
 			return m_attributes;
 		}
+
+	private:
+		static
+		bool
+		GetTypeNameFromFunctionExpr(clang::ConstantExpr* a_expr, std::string* a_outString);
 
 	private:
 		std::vector<Attribute> m_attributes;
