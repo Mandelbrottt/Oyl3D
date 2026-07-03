@@ -5,9 +5,27 @@
 namespace Oyl::Traits
 {
 	template<typename T>
+	struct IsPointer
+	{
+		static constexpr bool value = std::is_pointer_v<T>;
+	};
+
+	template<typename T>
+	concept Pointer = IsPointer<T>::value;
+
+	template<typename T>
+	struct RemovePointer
+	{
+		using type = std::remove_pointer_t<T>;
+	};
+
+	template<typename T>
+	using RemovePointer_T = typename RemovePointer<T>::type;
+
+	template<typename T>
 	struct IsVoidPointer
 	{
-		static constexpr bool value = std::is_void_v<std::remove_pointer_t<T>>;
+		static constexpr bool value = std::is_void_v<RemovePointer<T>>;
 	};
 
 	template<typename T>
@@ -15,6 +33,18 @@ namespace Oyl::Traits
 
 	template<typename T>
 	concept NonVoidPointer = !IsVoidPointer<T>::value;
+
+	template<typename T>
+	concept PointerToObject = IsPointer<T>::value && !IsPointer<RemovePointer_T<T>>::value;
+
+	template<typename T>
+	struct IsPointerToPointer
+	{
+		static constexpr bool value = IsPointer<T>::value && IsPointer<RemovePointer_T<T>>::value;
+	};
+
+	template<typename T>
+	concept PointerToPointer = IsPointerToPointer<T>::value;
 
 	template<typename T>
 	struct IsFunctionPointer
@@ -36,4 +66,13 @@ namespace Oyl::Traits
 
 	template<typename T>
 	concept FunctionObject = FunctionPointer<T> || FunctionSignature<T>;
+
+	template<typename T>
+	struct UnderlyingType
+	{
+		using type = std::underlying_type_t<T>;
+	};
+
+	template<typename T>
+	using UnderlyingType_T = typename UnderlyingType<T>::type;
 }

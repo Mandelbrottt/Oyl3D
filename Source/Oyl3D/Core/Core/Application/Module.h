@@ -19,7 +19,11 @@ namespace Oyl
 #	pragma region Public Interface
 		virtual
 		Reflection::TypeId
-		GetTypeId() = 0;
+		GetTypeId() const = 0;
+
+		virtual
+		std::string_view
+		GetName() const = 0;
 
 		template<typename TModule, typename... TArgs, ModuleRegistry::enable_if_base_of_module_t<TModule> = true>
 		static
@@ -57,9 +61,6 @@ namespace Oyl
 		void
 		SetEnabled(bool a_value) { m_enabled = a_value; }
 
-		virtual
-		std::string_view
-		GetName() const = 0;
 #	pragma endregion
 #	pragma region Callback functions
 		virtual

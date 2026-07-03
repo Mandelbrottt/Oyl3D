@@ -2,7 +2,7 @@
 
 #include <functional>
 
-#include "Core/Types/TypeId.h"
+#include "Core/Reflection/TypeId.h"
 
 namespace Oyl
 {

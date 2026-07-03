@@ -33,31 +33,19 @@ namespace Spyll
 					for (const auto* field : desugaredType->getAsRecordDecl()->fields())
 					{
 						auto fieldTypeDecl = field->getType()->getAsTagDecl();
+
+						std::string argument;
 						if (fieldTypeDecl && fieldTypeDecl->getQualifiedNameAsString() == "Oyl::Reflection::TypeId")
 						{
-							// Assume users will call a function with signature template<typename T> TypeId(*)()
-							clang::Expr* expr = constExpr->getSubExpr();
-							while (expr->getStmtClass() != clang::Stmt::CXXConstructExprClass)
+							if (GetTypeNameFromFunctionExpr(constExpr, &argument))
 							{
-								if (auto ptr = clang::dyn_cast<clang::CastExpr>(expr))
-									expr = ptr->getSubExpr();
-								if (auto ptr = clang::dyn_cast<clang::FullExpr>(expr))
-									expr = ptr->getSubExpr();
-								if (auto ptr = clang::dyn_cast<clang::CXXBindTemporaryExpr>(expr))
-									expr = ptr->getSubExpr();
+								attribute.arguments.emplace_back("__TypeId " + argument);
 							}
-							auto cxxConstruct = clang::dyn_cast<clang::CXXConstructExpr>(expr);
-							auto call = clang::dyn_cast<clang::CallExpr>(cxxConstruct->getArg(0));
-							auto callee = clang::dyn_cast<clang::FunctionDecl>(call->getCalleeDecl());
-							auto tempArg = callee->getTemplateSpecializationArgs()->get(0);
-
-							auto recordDecl = tempArg.getAsType()->getAsRecordDecl();
-							attribute.arguments.emplace_back("__TypeId " + recordDecl->getQualifiedNameAsString());
 						} else
 						{
 							auto apValue = result.Val.getStructField(i);
-							auto str = apValue.getAsString(ctx, field->getType());
-							attribute.arguments.emplace_back(std::move(str));
+							argument = apValue.getAsString(ctx, field->getType());
+							attribute.arguments.emplace_back(std::move(argument));
 						}
 
 						i++;
@@ -67,5 +55,44 @@ namespace Spyll
 				}
 			}
 		}
+	}
+
+	bool
+	AttributeParser::GetTypeNameFromFunctionExpr(
+		clang::ConstantExpr* a_expr,
+		std::string* a_outString
+	)
+	{
+		if (!a_expr)
+		{
+			return false;
+		}
+
+		// Check for function with one of the following signatures
+		// - template<typename T> TypeId(*)(void)
+		// - static TypeId(T::*)(void)
+		clang::Expr* expr = a_expr->getSubExpr();
+		while (expr->getStmtClass() != clang::Stmt::CXXConstructExprClass)
+		{
+			if (auto ptr = clang::dyn_cast<clang::CastExpr>(expr))
+				expr = ptr->getSubExpr();
+			if (auto ptr = clang::dyn_cast<clang::FullExpr>(expr))
+				expr = ptr->getSubExpr();
+			if (auto ptr = clang::dyn_cast<clang::CXXBindTemporaryExpr>(expr))
+				expr = ptr->getSubExpr();
+		}
+		auto cxxConstruct = clang::dyn_cast<clang::CXXConstructExpr>(expr);
+		auto call = clang::dyn_cast<clang::CallExpr>(cxxConstruct->getArg(0));
+		auto callee = clang::dyn_cast<clang::FunctionDecl>(call->getCalleeDecl());
+
+		if (callee->isFunctionTemplateSpecialization())
+		{
+			auto tempArg = callee->getTemplateSpecializationArgs()->get(0);
+			auto recordDecl = tempArg.getAsType()->getAsRecordDecl();
+			*a_outString = recordDecl->getQualifiedNameAsString();
+			return true;
+		}
+
+		return false;
 	}
 }
