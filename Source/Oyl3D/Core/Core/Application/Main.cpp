@@ -44,24 +44,34 @@ namespace Oyl::Detail
 		auto& registry = g_data.moduleRegistry;
 		registry.SetOnEventCallback(OnEvent);
 
-		//HMODULE hmodule = nullptr;
-		//GetModuleHandleExA(
-		//	GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS | GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
-		//	(LPCSTR) Init,
-		//	&hmodule
-		//);
-
-		SharedLibrary library = SharedLibrary("Oyl.Core.dll");
-		if (library.IsLoaded())
 		{
-			using DepFunc = void(int*, char***);
-			auto getDependencies = library.GetFunction<DepFunc>("_ReflectionAssembly_Dependencies");
-			if (getDependencies)
+			SharedLibrary library = SharedLibrary("Oyl.Core.dll");
+			if (library.IsLoaded())
 			{
-				int count;
-				char** depsArray;
-				getDependencies(&count, &depsArray);
-				OYL_LOG("Count: {}", count);
+				using DepFunc = void(int*, char***);
+				auto getDependencies = library.GetFunction<DepFunc>("_ReflectionAssembly_Dependencies");
+				if (getDependencies)
+				{
+					int count;
+					char** depsArray;
+					getDependencies(&count, &depsArray);
+					OYL_LOG("Count: {}, Dependency {}", count, *depsArray);
+				}
+			}
+		}
+		{
+			SharedLibrary library = SharedLibrary(Init);
+			if (library.IsLoaded())
+			{
+				using DepFunc = void(int*, char***);
+				auto getDependencies = library.GetFunction<DepFunc>("_ReflectionAssembly_Dependencies");
+				if (getDependencies)
+				{
+					int count;
+					char** depsArray;
+					getDependencies(&count, &depsArray);
+					OYL_LOG("Count: {}, Dependency {}", count, *depsArray);
+				}
 			}
 		}
 	}
