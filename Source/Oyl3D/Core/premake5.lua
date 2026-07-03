@@ -11,6 +11,7 @@ project "Oyl.Core"; do
 	links {
 		"SpdLog",
 		"TracyClient",
+		"Glfw",
 		"Vulkan",
 	}
 
