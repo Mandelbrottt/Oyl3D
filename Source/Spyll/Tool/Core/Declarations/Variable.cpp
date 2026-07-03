@@ -20,14 +20,14 @@ namespace Spyll
 	bool
 	Variable::ShouldReflect() const
 	{
+		if (!Declaration::ShouldReflect())
+		{
+			return false;
+		}
+
 		auto varDecl = clang::dyn_cast<clang::VarDecl>(m_decl);
 
-		bool result = [&]
-		{
-			return !varDecl->isConstexpr();
-		}();
-
-		return result && Declaration::ShouldReflect();
+		return !varDecl->isConstexpr();
 	}
 
 	std::string_view
