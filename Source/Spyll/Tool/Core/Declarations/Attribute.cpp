@@ -12,13 +12,16 @@ namespace Spyll
 		{
 			auto category = annotation->getAnnotation();
 
+			// Oyl Attributes must be under __ATTR__ category
 			if (category.compare("__ATTR__") != 0)
 			{
 				continue;
 			}
 
+			// Iterate the arguments of the annotation
 			for (auto arg : annotation->args())
 			{
+				// Annotation arguments are constexpr
 				auto constExpr = clang::dyn_cast<clang::ConstantExpr>(arg);
 				if (!constExpr)
 				{
@@ -27,17 +30,20 @@ namespace Spyll
 
 				Attribute attribute;
 
+				// Get the constexpr expression that represents this attribute
 				clang::Expr::EvalResult result;
 				constExpr->EvaluateAsConstantExpr(result, ctx);
 
 				auto desugaredType = constExpr->getType().getDesugaredType(ctx);
 				attribute.type = desugaredType.getAsString(ctx.getPrintingPolicy());
 
+				// Iterate the fields of the AttributeType
 				int i = 0;
 				for (const auto* field : desugaredType->getAsRecordDecl()->fields())
 				{
 					auto fieldTypeDecl = field->getType()->getAsTagDecl();
 
+					// Special case for TypeId
 					std::string argument;
 					if (fieldTypeDecl && fieldTypeDecl->getQualifiedNameAsString() == "Oyl::Reflection::TypeId")
 					{
@@ -46,7 +52,7 @@ namespace Spyll
 							attribute.arguments.emplace_back("__TypeId " + argument);
 						}
 					} else
-					{
+					{ // Add result of constexpr as string to attribute args list
 						auto apValue = result.Val.getStructField(i);
 						argument = apValue.getAsString(ctx, field->getType());
 						attribute.arguments.emplace_back(std::move(argument));
