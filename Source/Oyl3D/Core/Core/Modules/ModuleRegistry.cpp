@@ -1,8 +1,9 @@
 #include "pch.h"
 #include "ModuleRegistry.h"
 
-#include "Main.h"
 #include "Module.h"
+
+#include "Core/Application/Main.h"
 
 namespace Oyl
 {

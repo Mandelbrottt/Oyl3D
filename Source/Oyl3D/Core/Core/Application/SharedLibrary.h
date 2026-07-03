@@ -1,8 +1,8 @@
 #pragma once
 
 #include "Core/Common.h"
-#include "Core/TypeTraits.h"
 #include "Core/Reflection/Attribute.h"
+#include "Core/TypeTraits.h"
 
 namespace Oyl
 {

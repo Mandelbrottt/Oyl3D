@@ -1,11 +1,9 @@
 #include "pch.h"
 #include "Main.h"
 
-#include <iostream>
-
 #include "CommandLine.h"
-#include "Module.h"
-#include "ModuleRegistry.h"
+#include "Core/Modules/Module.h"
+#include "Core/Modules/ModuleRegistry.h"
 
 #include "Core/Logging/Logging.h"
 #include "Core/Profiling/Profiler.h"
