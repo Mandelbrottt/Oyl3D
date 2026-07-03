@@ -28,6 +28,9 @@ namespace Spyll
 		virtual
 		~Function();
 
+		bool
+		ShouldReflect() const override;
+
 		Type*
 		GetParent() const;
 

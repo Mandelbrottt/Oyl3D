@@ -8,6 +8,7 @@ namespace Spyll
 {
 	Declaration::Declaration(const clang::NamedDecl* a_decl)
 		: m_enabled(true),
+		  m_decl(a_decl),
 		  m_qualifiedName(a_decl->getQualifiedNameAsString()),
 		  m_attributeParser(a_decl)
 	{

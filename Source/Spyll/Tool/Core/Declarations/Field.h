@@ -20,6 +20,9 @@ namespace Spyll
 		virtual
 		~Field();
 
+		bool
+		ShouldReflect() const override;
+
 		std::string_view
 		GetTypeAsString() const;
 

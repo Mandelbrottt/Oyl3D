@@ -17,6 +17,19 @@ namespace Spyll
 
 	Variable::~Variable() {}
 
+	bool
+	Variable::ShouldReflect() const
+	{
+		auto varDecl = clang::dyn_cast<clang::VarDecl>(m_decl);
+
+		bool result = [&]
+		{
+			return !varDecl->isConstexpr();
+		}();
+
+		return result && Declaration::ShouldReflect();
+	}
+
 	std::string_view
 	Variable::GetTypeAsString() const
 	{

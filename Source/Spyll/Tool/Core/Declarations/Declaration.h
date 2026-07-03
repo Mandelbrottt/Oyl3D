@@ -46,6 +46,8 @@ namespace Spyll
 	protected:
 		bool m_enabled;
 
+		const clang::NamedDecl* m_decl;
+
 		std::string m_name;
 		std::string m_qualifiedName;
 
