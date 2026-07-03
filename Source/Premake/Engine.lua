@@ -180,7 +180,7 @@ function Engine.CommonCppSettings()
 	multiprocessorcompile "On"
 	externalwarnings "Off"
 	externalanglebrackets "On"
-	cppdialect "C++17"
+	cppdialect "C++20"
 	cdialect "C11"
 
 	targetdir(Config.BinariesDir)
@@ -282,7 +282,7 @@ function Engine.GenerateOylSpyllInformation()
 	appendToCommand '--include="%{table.concat(prj.includedirs, ";")}"'
 	appendToCommand '--externalinclude="%{table.concat(prj.externalincludedirs, ";")}"'
 
-	if premake.action.current().vstudio then
+	if premake.action.current() and premake.action.current().vstudio then
 		appendToCommand '--externalinclude="$(IncludePath)"'
 	end
 

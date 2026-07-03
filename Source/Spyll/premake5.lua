@@ -10,7 +10,7 @@ Spyll = {}
 
 ---@param package? WorkspacePackage
 function Spyll.CommonCppSettings(package)
-	cppdialect "C++17"
+	cppdialect "C++20"
 	staticruntime "Off"
 	warnings "Extra"
 	fatalwarnings { "All" }

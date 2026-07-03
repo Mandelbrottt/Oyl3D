@@ -3,19 +3,19 @@ return {
 	SpdLog = {
 		Git = {
 			Url = "https://github.com/gabime/spdlog.git",
-			Ref = "v1.11.0",
+			Ref = "v1.17.0",
 		},
 	},
 	TracyClient = {
 		Git = {
 			Url = "https://github.com/wolfpld/tracy.git",
-			Ref = "v0.10",
+			Ref = "v0.13.1",
 		},
 	},
 	NlohmannJson = {
 		Git = {
 			Url = "https://github.com/nlohmann/json.git",
-			Ref = "v3.6.1",
+			Ref = "v3.11.3",
 			Sparse = {
 				"/*",
 				"!/test",
@@ -27,20 +27,20 @@ return {
 	YamlCpp = {
 		Git = {
 			Url = "https://github.com/jbeder/yaml-cpp.git",
-			Ref = "0.8.0",
+			Ref = "yaml-cpp-0.9.0",
 		},
 	},
 
 	GLFW = {
 		Git = {
 			Url = "https://github.com/glfw/glfw.git",
-			Ref = "3.3.8",
+			Ref = "3.4",
 		},
 	},
 	ImGui = {
 		Git = {
 			Url = "https://github.com/ocornut/imgui.git",
-			Ref = "v1.92.0",
+			Ref = "v1.92.8",
 		},
 	},
 	ClangTooling = {
