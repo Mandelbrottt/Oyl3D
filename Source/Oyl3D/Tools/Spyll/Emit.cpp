@@ -174,12 +174,12 @@ std::string_view g_emitTemplate = GetTrimmedStringView(R"""(
 extern "C"
 _OYL_EXPORT
 void
-_ReflectionAssembly_Dependencies(int* a_count, const char** a_dependencies)
+_ReflectionAssembly_Dependencies(int* a_count, const char*** a_dependencies)
 {
 	*a_count = {DEPENDENCY_COUNT};
 
 {DEPENDENCIES}
-	*a_dependencies = *dependencies;
+	*a_dependencies = dependencies;
 }
 
 extern "C"
@@ -271,12 +271,12 @@ EmitDependencies(std::string& a_emitString, const std::vector<std::string_view>&
 		dependenciesArr << "static const char** dependencies = nullptr";
 	} else
 	{
-		dependenciesArr << "static const char* dependencies[] = { ";
+		dependenciesArr << "static const char* dependencies[] = { \n";
 		for (const auto& dependency : a_dependencies)
 		{
-			dependenciesArr << dependency << ",";
+			dependenciesArr << "\t\"" << dependency << "\"" << ",\n";
 		}
-		dependenciesArr << " }";
+		dependenciesArr << "}";
 	}
 	dependenciesArr << ";\n";
 

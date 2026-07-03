@@ -33,7 +33,7 @@ namespace Oyl
 		TFun*
 		GetFunction(const std::string& a_functionName) const noexcept
 		{
-			return static_cast<TFun*>(GetFunction(a_functionName));
+			return reinterpret_cast<TFun*>(GetFunction(a_functionName));
 		}
 
 	private:
