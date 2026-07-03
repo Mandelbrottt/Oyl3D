@@ -30,38 +30,47 @@ namespace Oyl::Logging
 	}
 
 	template<typename T, typename... TArgs>
-	void Debug(Detail::SourceInfo a_sourceInfo, const T& a_fmt, TArgs&&... a_args);
-	
+	void
+	Debug(Detail::SourceInfo a_sourceInfo, const T& a_fmt, TArgs&&... a_args);
+
 	template<typename T>
-	void Debug(Detail::SourceInfo a_sourceInfo, const T& a_fmt);
+	void
+	Debug(Detail::SourceInfo a_sourceInfo, const T& a_fmt);
 
 	template<typename T, typename... TArgs>
-	void Info(Detail::SourceInfo a_sourceInfo, const T& a_fmt, TArgs&&... a_args);
-	
+	void
+	Info(Detail::SourceInfo a_sourceInfo, const T& a_fmt, TArgs&&... a_args);
+
 	template<typename T>
-	void Info(Detail::SourceInfo a_sourceInfo, const T& a_fmt);
+	void
+	Info(Detail::SourceInfo a_sourceInfo, const T& a_fmt);
 
 	template<typename T, typename... TArgs>
-	void Warning(Detail::SourceInfo a_sourceInfo, const T& a_fmt, TArgs&&... a_args);
-	
+	void
+	Warning(Detail::SourceInfo a_sourceInfo, const T& a_fmt, TArgs&&... a_args);
+
 	template<typename T>
-	void Warning(Detail::SourceInfo a_sourceInfo, const T& a_fmt);
+	void
+	Warning(Detail::SourceInfo a_sourceInfo, const T& a_fmt);
 
 	template<typename T, typename... TArgs>
-	void Error(Detail::SourceInfo a_sourceInfo, const T& a_fmt, TArgs&&... a_args);
-	
+	void
+	Error(Detail::SourceInfo a_sourceInfo, const T& a_fmt, TArgs&&... a_args);
+
 	template<typename T>
-	void Error(Detail::SourceInfo a_sourceInfo, const T& a_fmt);
+	void
+	Error(Detail::SourceInfo a_sourceInfo, const T& a_fmt);
 
 	template<typename T, typename... TArgs>
-	void Fatal(Detail::SourceInfo a_sourceInfo, const T& a_fmt, TArgs&&... a_args);
-	
+	void
+	Fatal(Detail::SourceInfo a_sourceInfo, const T& a_fmt, TArgs&&... a_args);
+
 	template<typename T>
-	void Fatal(Detail::SourceInfo a_sourceInfo, const T& a_fmt);
+	void
+	Fatal(Detail::SourceInfo a_sourceInfo, const T& a_fmt);
 }
 
-// Abuse _OYL_CAT_EXPAND because without it, __LINE__ doesn't resolve properly in any of the
-// three usage locations
+// Abuse _OYL_CAT_EXPAND because without it, __LINE__ doesn't resolve properly in any of the three usage locations
 #define OYL_LOG_LEVEL(_level_, _msg_, ...) \
 	constexpr auto _OYL_CAT_EXPAND(__oyl_log_sourceinfo, __LINE__) = \
 		::Oyl::Logging::Detail::SourceInfo { __FUNCTION__, __FILE__, _OYL_CAT_EXPAND(__LINE__, u) }; \

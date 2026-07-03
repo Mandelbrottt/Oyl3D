@@ -11,9 +11,11 @@
 
 //#include "Include.generated.h"
 
-static void SetupConsole();
+static void
+SetupConsole();
 
-static void ShutdownConsole();
+static void
+ShutdownConsole();
 
 static bool g_running = true;
 
@@ -78,7 +80,7 @@ public:
 	OnUpdate() override
 	{
 		OYL_LOG("TM2 {} Update!", GetName());
-		
+
 		TestEvent1 e1;
 		e1.a = 6;
 		PostEvent(e1);
@@ -93,17 +95,17 @@ public:
 
 // ReSharper disable CppInconsistentNaming
 int WINAPI WinMain(
-	_In_ HINSTANCE     hInstance,
+	_In_ HINSTANCE hInstance,
 	_In_opt_ HINSTANCE hPrevInstance,
-	_In_ LPSTR         lpCmdLine,
-	_In_ int           nShowCmd
+	_In_ LPSTR lpCmdLine,
+	_In_ int nShowCmd
 ) // ReSharper restore CppInconsistentNaming
 {
 	OYL_UNUSED(hInstance);
 	OYL_UNUSED(hPrevInstance);
 	OYL_UNUSED(lpCmdLine);
 	OYL_UNUSED(nShowCmd);
-	
+
 	{
 		std::vector<const char*> args;
 		args.reserve(__argc - 1); // Skip exe name for commandline params
@@ -114,7 +116,7 @@ int WINAPI WinMain(
 
 		Oyl::CommandLine::Detail::ParseCommandLine(args.size(), args.data());
 	}
-	
+
 	SetupConsole();
 
 #ifdef OYL_PROFILE
@@ -127,7 +129,7 @@ int WINAPI WinMain(
 #endif
 
 	OYL_PROFILER_INIT();
-	
+
 	Oyl::Detail::CoreInitParameters initParams;
 
 	initParams.onApplicationShouldQuitCallback = [] { g_running = false; };
@@ -147,7 +149,7 @@ int WINAPI WinMain(
 	TestModule1::Register();
 	TestModule2::Register();
 	OYL_FRAME_MARK_END(startupString);
-	
+
 	while (g_running)
 	{
 		Oyl::Detail::Update();
@@ -166,7 +168,8 @@ int WINAPI WinMain(
 	return 0;
 }
 
-void SetupConsole()
+void
+SetupConsole()
 {
 	// Attach to the console if launched from the command line, otherwise create one
 	if (!AttachConsole(ATTACH_PARENT_PROCESS))
@@ -182,7 +185,8 @@ void SetupConsole()
 	freopen_s(&errFileStream, "CONOUT$", "w", stderr);
 }
 
-void ShutdownConsole()
+void
+ShutdownConsole()
 {
 	FreeConsole();
 }
