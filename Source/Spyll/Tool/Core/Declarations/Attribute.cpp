@@ -19,40 +19,43 @@ namespace Spyll
 
 			for (auto arg : annotation->args())
 			{
-				if (auto constExpr = clang::dyn_cast<clang::ConstantExpr>(arg))
+				auto constExpr = clang::dyn_cast<clang::ConstantExpr>(arg);
+				if (!constExpr)
 				{
-					Attribute attribute;
+					continue;
+				}
 
-					clang::Expr::EvalResult result;
-					constExpr->EvaluateAsConstantExpr(result, ctx);
+				Attribute attribute;
 
-					auto desugaredType = constExpr->getType().getDesugaredType(ctx);
-					attribute.type = desugaredType.getAsString(ctx.getPrintingPolicy());
+				clang::Expr::EvalResult result;
+				constExpr->EvaluateAsConstantExpr(result, ctx);
 
-					int i = 0;
-					for (const auto* field : desugaredType->getAsRecordDecl()->fields())
+				auto desugaredType = constExpr->getType().getDesugaredType(ctx);
+				attribute.type = desugaredType.getAsString(ctx.getPrintingPolicy());
+
+				int i = 0;
+				for (const auto* field : desugaredType->getAsRecordDecl()->fields())
+				{
+					auto fieldTypeDecl = field->getType()->getAsTagDecl();
+
+					std::string argument;
+					if (fieldTypeDecl && fieldTypeDecl->getQualifiedNameAsString() == "Oyl::Reflection::TypeId")
 					{
-						auto fieldTypeDecl = field->getType()->getAsTagDecl();
-
-						std::string argument;
-						if (fieldTypeDecl && fieldTypeDecl->getQualifiedNameAsString() == "Oyl::Reflection::TypeId")
+						if (GetTypeNameFromFunctionExpr(constExpr, &argument))
 						{
-							if (GetTypeNameFromFunctionExpr(constExpr, &argument))
-							{
-								attribute.arguments.emplace_back("__TypeId " + argument);
-							}
-						} else
-						{
-							auto apValue = result.Val.getStructField(i);
-							argument = apValue.getAsString(ctx, field->getType());
-							attribute.arguments.emplace_back(std::move(argument));
+							attribute.arguments.emplace_back("__TypeId " + argument);
 						}
-
-						i++;
+					} else
+					{
+						auto apValue = result.Val.getStructField(i);
+						argument = apValue.getAsString(ctx, field->getType());
+						attribute.arguments.emplace_back(std::move(argument));
 					}
 
-					m_attributes.emplace_back(std::move(attribute));
+					i++;
 				}
+
+				m_attributes.emplace_back(std::move(attribute));
 			}
 		}
 	}
