@@ -93,13 +93,15 @@ local Packages = {
 				[["T", "D", "I", "W", "E", "F", "O"]] ..
 				"}",
 				"_SILENCE_STDEXT_ARR_ITERS_DEPRECATION_WARNING",
+				"FMT_UNICODE=0",
+				"FMT_USE_CONSTEVAL=0",
 			}
 			filter "kind:SharedLib"; do
 				defines {
 					"spdlog_EXPORTS",
 					"SPDLOG_SHARED_LIB",
-					"FMT_EXPORT",
-					"FMT_SHARED"
+					"FMT_LIB_EXPORT",
+					"FMT_SHARED",
 				}
 			end
 		end,
@@ -107,11 +109,14 @@ local Packages = {
 			defines {
 				"SPDLOG_COMPILED_LIB",
 				"_SILENCE_STDEXT_ARR_ITERS_DEPRECATION_WARNING", -- Silence warning
+				"FMT_UNICODE=0",
+				"FMT_USE_CONSTEVAL=0",
 			}
 			if (package.Kind == premake.SHAREDLIB) then
 				filter "platforms:*Editor*"; do
 					defines {
-						"SPDLOG_SHARED_LIB"
+						"SPDLOG_SHARED_LIB",
+						"FMT_SHARED"
 					}
 				end
 			end
