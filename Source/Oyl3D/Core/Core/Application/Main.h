@@ -18,7 +18,7 @@ namespace Oyl::Detail
 		OnShouldGameUpdateFn onShouldGameUpdateCallback;
 		OnApplicationQuitFn onApplicationShouldQuitCallback;
 	};
-	
+
 	OYL_CORE_API
 	void
 	Init(const CoreInitParameters& a_params);
@@ -26,7 +26,7 @@ namespace Oyl::Detail
 	OYL_CORE_API
 	void
 	Update();
-	
+
 	OYL_CORE_API
 	void
 	OnEvent(Event& a_event);
@@ -34,7 +34,7 @@ namespace Oyl::Detail
 	OYL_CORE_API
 	void
 	Shutdown();
-	
+
 	OYL_CORE_API
 	bool
 	GetShouldGameUpdate() noexcept;

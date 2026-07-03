@@ -1,7 +1,5 @@
 #include "SharedLibrary.h"
 
-#include <cassert>
-
 #include "Core/Common.h"
 
 namespace Oyl

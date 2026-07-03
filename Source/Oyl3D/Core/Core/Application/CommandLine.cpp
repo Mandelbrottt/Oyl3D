@@ -31,7 +31,7 @@ namespace Oyl
 			{
 				return a_arg.rfind('-', 0) != std::string::npos;
 			};
-			
+
 			if (!isArgument(arg))
 			{
 				OYL_LOG_WARNING("Invalid command line argument argument \"{}\"", arg);
@@ -55,7 +55,7 @@ namespace Oyl
 			}
 
 			std::string name = arg.substr(namePos, equalsPos - namePos);
-			
+
 			// Peek the next argument, if it is a value, use it for this argument
 			size_t nextIndex = i + 1;
 			if (value.empty() && nextIndex < a_argc && !isArgument(a_argv[nextIndex]))
