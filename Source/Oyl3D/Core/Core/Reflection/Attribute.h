@@ -34,22 +34,19 @@ namespace Oyl::Reflection
 		Type* m_type = nullptr;
 	};
 
-	namespace Attr
+	struct Enable : Attribute {};
+
+	struct Disable : Attribute {};
+
+	struct DisplayName : Attribute
 	{
-		struct Enable : Attribute {};
+		constexpr
+		explicit
+		DisplayName(std::string_view a_name)
+			: name(a_name) {}
 
-		struct Disable : Attribute {};
-
-		struct DisplayName : Attribute
-		{
-			constexpr
-			explicit
-			DisplayName(std::string_view a_name)
-				: name(a_name) {}
-
-			std::string_view name;
-		};
-	}
+		std::string_view name;
+	};
 }
 
 #ifdef OYL_ATTR_TYPEDEF
