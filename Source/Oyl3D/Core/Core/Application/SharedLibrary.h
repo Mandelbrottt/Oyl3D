@@ -2,10 +2,11 @@
 
 #include "Core/Common.h"
 #include "Core/TypeTraits.h"
+#include "Core/Reflection/Attribute.h"
 
 namespace Oyl
 {
-	class OYL_CORE_API SharedLibrary
+	class OYL_CORE_API Attr(Reflection::Disable()) SharedLibrary
 	{
 	public:
 		SharedLibrary() noexcept;
