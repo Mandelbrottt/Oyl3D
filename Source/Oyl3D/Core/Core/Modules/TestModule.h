@@ -2,15 +2,8 @@
 
 #include "Core/Application/Module.h"
 #include "Core/Common.h"
-
-#if defined(__REFLECT_GENERATE__) || defined (__INTELLISENSE__)
-#	define Attr(...) [[clang::annotate("__ATTR__", __VA_ARGS__)]]
-#else
-#	define Attr(...)
-#endif
-
-#include "Core/Reflection/TypeId.h"
 #include "Core/Reflection/Attribute.h"
+#include "Core/Reflection/TypeId.h"
 
 namespace Oyl
 {
@@ -116,7 +109,7 @@ namespace Oyl
 		OnShutdown() override {}
 
 	private:
-		Attr(TypeAttribute(TypeIdWrapper<TestModule>()))
+		Attr(TypeAttribute(GetTypeId<TestModule>()))
 		int m_private = 0;
 
 		static constexpr float MAX = 10.0f;
