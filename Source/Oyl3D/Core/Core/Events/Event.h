@@ -42,23 +42,10 @@ namespace Oyl
 	}
 }
 
-#define OYL_DECLARE_EVENT(...) OYL_MACRO_OVERLOAD(_OYL_DECLARE_EVENT, __VA_ARGS__)
-
-#define _OYL_DECLARE_EVENT_1(_event_) \
-	static \
-	::Oyl::Reflection::TypeId \
-	GetStaticTypeId() \
-	{ \
-		return ::Oyl::GetTypeId<_event_>();\
-	} \
-	\
-	::Oyl::Reflection::TypeId \
+#define OYL_DECLARE_EVENT() \
+	constexpr ::Oyl::Reflection::TypeId \
 	GetTypeId() const override \
 	{ \
-		static_assert( \
-			std::is_same_v<_event_, std::decay_t<decltype(*this)>>, \
-			"Named class \"" #_event_ "\" does not match class in which it is declared!" \
-		); \
-		return GetStaticTypeId();\
+		return ::Oyl::Reflection::GetTypeId<decltype(*this)>();\
 	} \
 	OYL_FORCE_SEMICOLON

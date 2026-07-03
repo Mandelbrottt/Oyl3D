@@ -25,34 +25,6 @@ namespace Oyl
 		std::string_view
 		GetName() const = 0;
 
-		template<typename TModule, typename... TArgs, ModuleRegistry::enable_if_base_of_module_t<TModule> = true>
-		static
-		TModule*
-		Register(TArgs&&... a_args)
-		{
-			ModuleRegistry* registry = ModuleRegistry::Instance();
-			auto module = registry->RegisterModule<TModule>(std::forward<TArgs>(a_args)...);
-			return module;
-		}
-
-		template<typename TModule, ModuleRegistry::enable_if_base_of_module_t<TModule> = true>
-		static
-		TModule*
-		Get()
-		{
-			ModuleRegistry* registry = ModuleRegistry::Instance();
-			return reinterpret_cast<TModule*>(registry->GetModule(TModule::GetStaticTypeId()));
-		}
-
-		template<typename TModule, ModuleRegistry::enable_if_base_of_module_t<TModule> = true>
-		static
-		bool
-		Remove()
-		{
-			ModuleRegistry* registry = ModuleRegistry::Instance();
-			return registry->RemoveModule(TModule::GetStaticTypeId());
-		}
-
 		virtual
 		bool
 		IsEnabled() { return m_enabled; }
@@ -127,47 +99,26 @@ namespace Oyl
 
 #define OYL_DECLARE_MODULE(...) OYL_MACRO_OVERLOAD(_OYL_DECLARE_MODULE, __VA_ARGS__)
 
-#define _OYL_DECLARE_MODULE_3(_class_, _parent_, _name_) \
+#define _OYL_DECLARE_MODULE_2(_class_, _parent_) \
 	OYL_FORCE_FORMAT_INDENT \
 private: \
 	using This = _class_; \
 	using Super = _parent_; \
 	friend ::Oyl::ModuleRegistry; \
 public: \
-	static \
-	::Oyl::Reflection::TypeId \
-	GetStaticTypeId() \
+	constexpr ::Oyl::Reflection::TypeId \
+	GetTypeId() const override \
 	{ \
-		return ::Oyl::Reflection::GetTypeId<_class_>(); \
-	} \
-	::Oyl::Reflection::TypeId \
-	GetTypeId() override \
-	{ \
-		\
-		static_assert( \
-			std::is_same_v<_class_, std::decay_t<decltype(*this)>>, \
-			"Named class \"" #_class_ "\" does not match class in which it is declared!" \
-		); \
-		return GetStaticTypeId(); \
+		return ::Oyl::Reflection::GetTypeId<decltype(*this)>(); \
 	} \
 	\
-	std::string_view \
-	GetName() const override { return _name_; } \
+	constexpr std::string_view \
+	GetName() const override\
+	{ \
+		return ::Oyl::NameOf<decltype(*this)>(); \
+	} \
 	\
-	template<typename... TArgs>\
-	static \
-	_class_* \
-	Register(TArgs&&... a_args) { return ::Oyl::Module::Register<_class_>(std::forward<TArgs>(a_args)...); } \
-	\
-	static \
-	_class_* \
-	Get() { return ::Oyl::Module::Get<_class_>(); } \
-	\
-	static \
-	bool \
-	Remove() { return ::Oyl::Module::Remove<_class_>(); } \
 private: \
 	OYL_FORCE_SEMICOLON
 
-#define _OYL_DECLARE_MODULE_1(_class_) _OYL_DECLARE_MODULE_3(_class_, ::Oyl::Module, #_class_)
-#define _OYL_DECLARE_MODULE_2(_class_, _name_) _OYL_DECLARE_MODULE_3(_class_, ::Oyl::Module, _name_)
+#define _OYL_DECLARE_MODULE_1(_class_) _OYL_DECLARE_MODULE_2(_class_, ::Oyl::Module)
