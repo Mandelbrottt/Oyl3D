@@ -16,7 +16,29 @@ namespace Oyl
 		using MemberFn = TReturn (T::*)(TArgs...);
 
 	public:
+		Delegate() noexcept {}
+
+		Delegate(const Delegate& a_other) noexcept
+		{
+			m_obj = a_other.m_obj;
+			m_fn = a_other.m_fn;
+		}
+
+		Delegate(Delegate&& a_other) noexcept
+		{
+			std::swap(m_obj, a_other.m_obj);
+			std::swap(m_fn, a_other.m_fn);
+		}
+
 		template<typename TObj>
+			requires Traits::PointerToObject<TObj>
+		Delegate(TObj* a_obj, MemberFn<TObj> a_fn)
+		{
+			Set(a_obj, a_fn);
+		}
+
+		template<typename TObj>
+			requires Traits::PointerToObject<TObj>
 		void
 		Set(TObj* a_obj, MemberFn<TObj> a_fn)
 		{
@@ -33,13 +55,13 @@ namespace Oyl
 		}
 
 		TReturn
-		operator ()(TArgs... a_args)
+		operator ()(TArgs... a_args) const
 		{
 			return Invoke(a_args...);
 		}
 
 		TReturn
-		Invoke(TArgs... a_args)
+		Invoke(TArgs... a_args) const
 		{
 			using ThunkFn = TReturn(void*, TArgs...);
 
