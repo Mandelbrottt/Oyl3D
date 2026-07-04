@@ -12,10 +12,7 @@ namespace Oyl
 
 		const Reflection::TypeId typeId;
 
-	private:
-		template<typename T>
-		friend struct EventBase;
-
+	protected:
 		explicit
 		constexpr
 		Event(Reflection::TypeId a_typeId)
