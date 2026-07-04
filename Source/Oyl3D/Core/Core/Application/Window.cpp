@@ -5,7 +5,23 @@
 #include <GLFW/glfw3.h>
 
 #include "Core/Events/EventDispatcher.h"
+#include "Core/Input/InputCodes.h"
 #include "Core/Logging/Logging.h"
+
+namespace
+{
+	Oyl::Input::KeyboardKey
+	GetKeyCodeFromGlfw(int a_key);
+
+	Oyl::Input::MouseButton
+	GetMouseButtonFromGlfw(int a_button);
+
+	Oyl::Input::GamePadButton
+	GetGamePadButtonFromGlfw(int a_button);
+
+	Oyl::Input::GamePadAxis
+	GetGamePadAxisFromGlfw(int a_axis);
+}
 
 namespace Oyl
 {
@@ -21,7 +37,7 @@ namespace Oyl
 
 		GLFWwindow* glfwWindow = nullptr;
 
-		EventDelegate onEventCallback;
+		EventDelegate postEventCallback;
 	};
 
 	Window::Window()
@@ -61,6 +77,8 @@ namespace Oyl
 	Window::Init(const WindowParams& a_params)
 	{
 		OYL_PROFILE_FUNCTION();
+
+		m_impl->postEventCallback = a_params.onEventCallback;
 
 		m_impl->title = a_params.title;
 
@@ -116,7 +134,7 @@ namespace Oyl
 				WindowResizeEvent event;
 				event.nativeWindow = a_window;
 				event.size = impl->size;
-				impl->onEventCallback(event);
+				impl->postEventCallback(event);
 			}
 		);
 
@@ -133,7 +151,7 @@ namespace Oyl
 				WindowMoveEvent event;
 				event.nativeWindow = a_window;
 				event.position = impl->position;
-				impl->onEventCallback(event);
+				impl->postEventCallback(event);
 			}
 		);
 
@@ -145,7 +163,7 @@ namespace Oyl
 
 				WindowCloseRequestEvent event;
 				event.nativeWindow = a_window;
-				impl->onEventCallback(event);
+				impl->postEventCallback(event);
 			}
 		);
 
@@ -158,7 +176,7 @@ namespace Oyl
 				WindowFocusEvent event;
 				event.nativeWindow = a_window;
 				event.focused = a_focused;
-				impl->onEventCallback(event);
+				impl->postEventCallback(event);
 			}
 		);
 
@@ -170,24 +188,26 @@ namespace Oyl
 
 				Impl* impl = reinterpret_cast<Impl*>(glfwGetWindowUserPointer(a_window));
 
+				Input::KeyboardKey key = GetKeyCodeFromGlfw(a_key);
+
 				switch (a_action)
 				{
 					case GLFW_PRESS:
 					{
 						WindowKeyPressEvent event;
 						event.nativeWindow = a_window;
-						event.key = a_key;
+						event.key = key;
 						event.mods = a_mods;
-						impl->onEventCallback(event);
+						impl->postEventCallback(event);
 						break;
 					}
 					case GLFW_RELEASE:
 					{
 						WindowKeyReleaseEvent event;
 						event.nativeWindow = a_window;
-						event.key = a_key;
+						event.key = key;
 						event.mods = a_mods;
-						impl->onEventCallback(event);
+						impl->postEventCallback(event);
 						break;
 					}
 					default:
@@ -202,24 +222,26 @@ namespace Oyl
 			{
 				Impl* impl = reinterpret_cast<Impl*>(glfwGetWindowUserPointer(a_window));
 
+				Input::MouseButton button = GetMouseButtonFromGlfw(a_button);
+
 				switch (a_action)
 				{
 					case GLFW_PRESS:
 					{
 						WindowMousePressEvent event;
 						event.nativeWindow = a_window;
-						event.button = a_button;
+						event.button = button;
 						event.mods = a_mods;
-						impl->onEventCallback(event);
+						impl->postEventCallback(event);
 						break;
 					}
 					case GLFW_RELEASE:
 					{
 						WindowMouseReleaseEvent event;
 						event.nativeWindow = a_window;
-						event.button = a_button;
+						event.button = button;
 						event.mods = a_mods;
-						impl->onEventCallback(event);
+						impl->postEventCallback(event);
 						break;
 					}
 					default:
@@ -237,7 +259,7 @@ namespace Oyl
 				WindowMouseScrollEvent event;
 				event.nativeWindow = a_window;
 				event.scroll = { (float32) a_scrollX, (float32) a_scrollY };
-				impl->onEventCallback(event);
+				impl->postEventCallback(event);
 			}
 		);
 
@@ -250,7 +272,7 @@ namespace Oyl
 				WindowCursorMoveEvent event;
 				event.nativeWindow = a_window;
 				event.position = { (float32) a_posX, (float32) a_posY };
-				impl->onEventCallback(event);
+				impl->postEventCallback(event);
 			}
 		);
 	}
@@ -285,7 +307,7 @@ namespace Oyl
 	void
 	Window::SetEventCallback(EventDelegate a_delegate)
 	{
-		m_impl->onEventCallback = std::move(a_delegate);
+		m_impl->postEventCallback = std::move(a_delegate);
 	}
 
 	Vector2i
@@ -439,5 +461,184 @@ namespace Oyl
 	Window::GetNativeWindowHandle() const
 	{
 		return m_impl->glfwWindow;
+	}
+}
+
+namespace
+{
+	Oyl::Input::KeyboardKey
+	GetKeyCodeFromGlfw(int a_key)
+	{
+		using Oyl::Input::KeyboardKey;
+		using enum KeyboardKey;
+
+		using KeyArray = std::array<KeyboardKey, GLFW_KEY_LAST + 1>;
+
+		static constexpr KeyArray table = []() -> KeyArray
+		{
+			KeyArray result { static_cast<KeyboardKey>(-1) };
+
+			auto setRangeInTable = [](
+				KeyArray& a_table,
+				int a_inputRangeBegin,
+				int a_inputRangeEnd,
+				KeyboardKey a_outputRangeBegin
+			)
+			{
+				auto inputRangeSize = a_inputRangeEnd - a_inputRangeBegin;
+				for (int i = 0; i < inputRangeSize; i++)
+				{
+					int tableIndex = a_inputRangeBegin + i;
+					int newKey = static_cast<int>(a_outputRangeBegin) + i;
+					a_table[tableIndex] = static_cast<KeyboardKey>(newKey);
+				}
+			};
+
+			// The following ranges are defined in the same order in GLFW and our API, shortcut
+			setRangeInTable(result, GLFW_KEY_0, GLFW_KEY_9, KB_NumbersFirst);
+			setRangeInTable(result, GLFW_KEY_A, GLFW_KEY_Z, KB_LettersFirst);
+			setRangeInTable(result, GLFW_KEY_F1, GLFW_KEY_F25, KB_FunctionKeysFirst);
+			setRangeInTable(result, GLFW_KEY_KP_0, GLFW_KEY_KP_9, KB_Numpad0);
+
+			result[GLFW_KEY_SPACE] = KB_Space;
+			result[GLFW_KEY_APOSTROPHE] = KB_Apostrophe;
+			result[GLFW_KEY_COMMA] = KB_Comma;
+			result[GLFW_KEY_MINUS] = KB_Minus;
+			result[GLFW_KEY_PERIOD] = KB_Period;
+			result[GLFW_KEY_SLASH] = KB_Slash;
+			result[GLFW_KEY_SEMICOLON] = KB_Semicolon;
+			result[GLFW_KEY_EQUAL] = KB_Equal;
+
+			result[GLFW_KEY_LEFT_BRACKET] = KB_LeftBracket;
+			result[GLFW_KEY_BACKSLASH] = KB_Backslash;
+			result[GLFW_KEY_RIGHT_BRACKET] = KB_RightBracket;
+			result[GLFW_KEY_GRAVE_ACCENT] = KB_Grave;
+
+			result[GLFW_KEY_ESCAPE] = KB_Escape;
+			result[GLFW_KEY_ENTER] = KB_Enter;
+			result[GLFW_KEY_TAB] = KB_Tab;
+			result[GLFW_KEY_BACKSPACE] = KB_Backspace;
+			result[GLFW_KEY_INSERT] = KB_Insert;
+			result[GLFW_KEY_DELETE] = KB_Delete;
+			result[GLFW_KEY_RIGHT] = KB_Right;
+			result[GLFW_KEY_LEFT] = KB_Left;
+			result[GLFW_KEY_DOWN] = KB_Down;
+			result[GLFW_KEY_UP] = KB_Up;
+			result[GLFW_KEY_PAGE_UP] = KB_PageUp;
+			result[GLFW_KEY_PAGE_DOWN] = KB_PageDown;
+			result[GLFW_KEY_HOME] = KB_Home;
+			result[GLFW_KEY_END] = KB_End;
+			result[GLFW_KEY_CAPS_LOCK] = KB_CapsLock;
+			result[GLFW_KEY_SCROLL_LOCK] = KB_ScrollLock;
+			result[GLFW_KEY_NUM_LOCK] = KB_NumLock;
+			result[GLFW_KEY_PRINT_SCREEN] = KB_PrintScreen;
+			result[GLFW_KEY_PAUSE] = KB_PauseBreak;
+
+			result[GLFW_KEY_KP_DECIMAL] = KB_NumpadDecimal;
+			result[GLFW_KEY_KP_DIVIDE] = KB_NumpadDivide;
+			result[GLFW_KEY_KP_MULTIPLY] = KB_NumpadMultiply;
+			result[GLFW_KEY_KP_SUBTRACT] = KB_NumpadSubtract;
+			result[GLFW_KEY_KP_ADD] = KB_NumpadAdd;
+			result[GLFW_KEY_KP_ENTER] = KB_NumpadEnter;
+			result[GLFW_KEY_LEFT_SHIFT] = KB_LeftShift;
+			result[GLFW_KEY_LEFT_CONTROL] = KB_LeftCtrl;
+			result[GLFW_KEY_LEFT_ALT] = KB_LeftAlt;
+			result[GLFW_KEY_LEFT_SUPER] = KB_LeftSuper;
+			result[GLFW_KEY_RIGHT_SHIFT] = KB_RightShift;
+			result[GLFW_KEY_RIGHT_CONTROL] = KB_RightCtrl;
+			result[GLFW_KEY_RIGHT_ALT] = KB_RightAlt;
+			result[GLFW_KEY_RIGHT_SUPER] = KB_RightSuper;
+			result[GLFW_KEY_MENU] = KB_Menu;
+
+			return result;
+		}();
+
+		return table[a_key];
+	}
+
+	Oyl::Input::MouseButton
+	GetMouseButtonFromGlfw(int a_button)
+	{
+		using Oyl::Input::MouseButton;
+		using enum MouseButton;
+
+		using ButtonArray = std::array<MouseButton, GLFW_MOUSE_BUTTON_LAST + 1>;
+
+		static constexpr ButtonArray table = []() -> ButtonArray
+		{
+			ButtonArray result { static_cast<MouseButton>(-1) };
+
+			for (int i = 0; i < GLFW_MOUSE_BUTTON_LAST - GLFW_MOUSE_BUTTON_1; i++)
+			{
+				int button = MB_Button1 + i;
+				result[GLFW_MOUSE_BUTTON_1 + i] = static_cast<MouseButton>(button);
+			}
+
+			return result;
+		}();
+
+		return table[a_button];
+	}
+
+	[[maybe_unused]]
+	Oyl::Input::GamePadButton
+	GetGamePadButtonFromGlfw(int a_button)
+	{
+		using Oyl::Input::GamePadButton;
+		using enum GamePadButton;
+
+		using ButtonArray = std::array<GamePadButton, GLFW_GAMEPAD_BUTTON_LAST + 1>;
+
+		static constexpr ButtonArray table = []() -> ButtonArray
+		{
+			ButtonArray result { static_cast<GamePadButton>(-1) };
+
+			result[GLFW_GAMEPAD_BUTTON_A] = GP_South;
+			result[GLFW_GAMEPAD_BUTTON_B] = GP_East;
+			result[GLFW_GAMEPAD_BUTTON_X] = GP_West;
+			result[GLFW_GAMEPAD_BUTTON_Y] = GP_North;
+			result[GLFW_GAMEPAD_BUTTON_LEFT_BUMPER] = GP_LeftShoulder;
+			result[GLFW_GAMEPAD_BUTTON_RIGHT_BUMPER] = GP_RightShoulder;
+			result[GLFW_GAMEPAD_BUTTON_BACK] = GP_Back;
+			result[GLFW_GAMEPAD_BUTTON_START] = GP_Start;
+			result[GLFW_GAMEPAD_BUTTON_GUIDE] = GP_Home;
+			result[GLFW_GAMEPAD_BUTTON_LEFT_THUMB] = GP_LeftStickButton;
+			result[GLFW_GAMEPAD_BUTTON_RIGHT_THUMB] = GP_RightStickButton;
+			result[GLFW_GAMEPAD_BUTTON_DPAD_UP] = GP_DPadUp;
+			result[GLFW_GAMEPAD_BUTTON_DPAD_RIGHT] = GP_DPadRight;
+			result[GLFW_GAMEPAD_BUTTON_DPAD_DOWN] = GP_DPadDown;
+			result[GLFW_GAMEPAD_BUTTON_DPAD_LEFT] = GP_DPadLeft;
+
+			return result;
+		}();
+
+		return table[a_button];
+	}
+
+	[[maybe_unused]]
+	Oyl::Input::GamePadAxis
+	GetGamePadAxisFromGlfw(int a_axis)
+	{
+		using Oyl::Input::GamePadAxis;
+		using enum GamePadAxis;
+
+		using ButtonArray = std::array<GamePadAxis, GLFW_GAMEPAD_AXIS_LAST + 1>;
+
+		static constexpr ButtonArray table = []() -> ButtonArray
+		{
+			ButtonArray result { static_cast<GamePadAxis>(-1) };
+
+			// We provide stick input as a vector to the user, so both stick x and y map to the same code
+			result[GLFW_GAMEPAD_AXIS_LEFT_X] = GP_LeftStick;
+			result[GLFW_GAMEPAD_AXIS_LEFT_Y] = GP_LeftStick;
+			result[GLFW_GAMEPAD_AXIS_RIGHT_X] = GP_RightStick;
+			result[GLFW_GAMEPAD_AXIS_RIGHT_Y] = GP_RightStick;
+			result[GLFW_GAMEPAD_AXIS_LEFT_TRIGGER] = GP_LeftTrigger;
+			result[GLFW_GAMEPAD_AXIS_RIGHT_TRIGGER] = GP_RightTrigger;
+
+			return result;
+		}();
+
+		return table[a_axis];
 	}
 }
