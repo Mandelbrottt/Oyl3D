@@ -123,6 +123,13 @@ function Engine.GenerateProjects(params)
 			OnProject = function(package)
 				if package.Language == premake.CPP or package.Language == premake.C then
 					Engine.CommonCppSettings()
+
+					if package.Kind == premake.SHAREDLIB then
+						filter "platforms:not *Editor*"; do
+							kind "StaticLib"
+						end
+						filter {}
+					end
 				else
 					error(string.format(
 						"Language \"%s\" in package \"%s\" not currently supported!",
@@ -151,6 +158,23 @@ function Engine.GenerateProjects(params)
 		for _, link in ipairs(prj.links) do
 			local proj = engineProjects[link]
 			if proj then
+				-- recurse links, add all children as links to parent projects for editor platform
+				local function recurseLinks(projArg)
+					links { projArg.links }
+					libdirs { projArg.libdirs }
+					for _, link in ipairs(projArg.links) do
+						local proj = engineProjects[link]
+						if proj then
+							recurseLinks(proj)
+						end
+					end
+				end
+				filter "platforms:not *Editor*"; do
+					recurseLinks(proj)
+				end
+				filter {}
+
+				-- Add link's basedir as includedirs
 				includedirs(proj.basedir)
 				externalincludedirs(proj.basedir)
 			end
