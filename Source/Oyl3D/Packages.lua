@@ -12,22 +12,9 @@ local Packages = {
 			removefiles { "**" }
 			files {
 				"include/GLFW/*",
-				"src/glfw_config.h",
-				"src/context.c",
-				"src/init.c",
-				"src/input.c",
-				"src/monitor.c",
-				"src/vulkan.c",
-				"src/window.c"
+				"src/**",
 			}
 			filter "system:windows"; do
-				systemversion "latest"
-				files {
-					"src/win32*.c",
-					"src/wgl_context.c",
-					"src/egl_context.c",
-					"src/osmesa_context.c"
-				}
 				defines { "_GLFW_WIN32" }
 			end
 			filter "kind:StaticLib"; do
