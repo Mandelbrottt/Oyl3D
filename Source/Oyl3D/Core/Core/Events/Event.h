@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Core/Delegate.h"
 #include "Core/Reflection/TypeId.h"
 
 namespace Oyl
@@ -13,6 +14,8 @@ namespace Oyl
 		Reflection::TypeId
 		GetTypeId() const = 0;
 	};
+
+	using EventDelegate = Delegate<void(const Event&)>;
 }
 
 #define OYL_DECLARE_EVENT() \

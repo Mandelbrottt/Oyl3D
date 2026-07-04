@@ -4,6 +4,7 @@
 
 #include "Core/Common.h"
 #include "Core/Events/EventDispatcher.h"
+#include "Core/Logging/Logging.h"
 #include "Core/Profiling/Profiler.h"
 #include "Core/Reflection/TypeId.h"
 
@@ -61,14 +62,15 @@ namespace Oyl
 		RegisterEventListener(void (TModule::*a_fn)(const TEvent&))
 		{
 			constexpr auto eventId = Reflection::GetTypeId<TEvent>();
+			OYL_LOG("Name {}", NameOf<std::decay_t<Traits::RemovePointer_T<TEvent>>>());
 			constexpr auto listenerId = Reflection::GetTypeId<decltype(*this)>();
 
 			TModule* obj = static_cast<TModule*>(this);
 
-			EventDispatcher::EventDelegate::MemberFn<TModule> fn;
+			EventDelegate::MemberFn<TModule> fn;
 			std::memcpy(&fn, &a_fn, sizeof(fn));
 
-			auto delegate = EventDispatcher::EventDelegate::Create<TModule>(obj, fn);
+			auto delegate = EventDelegate::Create<TModule>(obj, fn);
 
 			m_eventDispatcher->Register(eventId, listenerId, std::move(delegate));
 		}
@@ -83,6 +85,7 @@ namespace Oyl
 		}
 
 		template<typename TEvent>
+			requires (std::is_base_of_v<Event, TEvent> && !std::is_same_v<Event, TEvent>)
 		void
 		PostEvent(const TEvent& a_event)
 		{
@@ -91,6 +94,9 @@ namespace Oyl
 			constexpr auto eventId = Reflection::GetTypeId<TEvent>();
 			m_eventDispatcher->Dispatch(eventId, a_event);
 		}
+
+		void
+		PostEvent(const Event& a_event);
 
 	private:
 		void

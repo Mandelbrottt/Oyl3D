@@ -26,6 +26,18 @@ namespace Oyl
 		}
 
 		glfwSetErrorCallback(GlfwErrorCallback);
+
+		WindowParams params;
+		params.size = { 1280, 720 };
+		params.title = "Oyl3D - Now with more code!";
+		params.cursorState = CS_Normal;
+		params.windowState = WS_None;
+		m_window = Window(params);
+
+		EventDelegate delegate = EventDelegate::Create(this, &MainWindowModule::PostEvent);
+		m_window.SetEventCallback(delegate);
+
+		RegisterEventListener(&MainWindowModule::OnWindowResizedEvent);
 	}
 
 	void
@@ -50,5 +62,11 @@ namespace Oyl
 		}
 
 		glfwTerminate();
+	}
+
+	void
+	MainWindowModule::OnWindowResizedEvent(const WindowResizedEvent& a_event)
+	{
+		OYL_LOG("Window Resized: ({}, {})", a_event.size.x, a_event.size.y);
 	}
 }
