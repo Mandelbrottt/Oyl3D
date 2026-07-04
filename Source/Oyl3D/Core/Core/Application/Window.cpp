@@ -60,6 +60,8 @@ namespace Oyl
 	void
 	Window::Init(const WindowParams& a_params)
 	{
+		OYL_PROFILE_FUNCTION();
+
 		m_impl->title = a_params.title;
 
 		m_impl->position = a_params.position;
@@ -247,6 +249,8 @@ namespace Oyl
 		if (!m_impl->glfwWindow)
 			return;
 
+		OYL_PROFILE_FUNCTION();
+
 		// TODO: Destroy context alongside window
 		glfwDestroyWindow(m_impl->glfwWindow);
 		m_impl->glfwWindow = nullptr;
@@ -255,6 +259,8 @@ namespace Oyl
 	void
 	Window::Update()
 	{
+		OYL_PROFILE_FUNCTION();
+
 		glfwPollEvents();
 	}
 
@@ -346,6 +352,8 @@ namespace Oyl
 		{
 			return;
 		}
+
+		OYL_PROFILE_FUNCTION();
 
 		Vector2i desiredSize;
 
