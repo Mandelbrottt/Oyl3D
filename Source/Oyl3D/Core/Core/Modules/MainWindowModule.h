@@ -4,6 +4,8 @@
 
 #include "Core/Application/Window.h"
 
+#include "Core/Reflection/Attribute.h"
+
 namespace Oyl
 {
 	class MainWindowModule : public Module
@@ -21,7 +23,19 @@ namespace Oyl
 		OnShutdown() override;
 
 		void
-		OnWindowResizedEvent(const WindowResizedEvent& a_event);
+		OnWindowResizeEvent(const WindowResizeEvent& a_event);
+
+		void
+		OnWindowMoveEvent(const WindowMoveEvent& a_event);
+
+		void
+		OnWindowCloseRequestEvent(const WindowCloseRequestEvent& a_event);
+
+		void
+		OnWindowFocusEvent(const WindowFocusEvent& a_event);
+
+		void
+		OnWindowCursorMoveEvent(const WindowCursorMoveEvent& a_event);
 
 	private:
 		Window m_window;
