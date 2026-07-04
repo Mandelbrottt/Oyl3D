@@ -4,6 +4,8 @@
 
 #include "Core/Logging/Logging.h"
 
+#include "Core/Application/Main.h"
+
 namespace Oyl
 {
 	static void GlfwErrorCallback(int a_error, const char* a_description)
@@ -32,10 +34,8 @@ namespace Oyl
 		params.title = "Oyl3D - Now with more code!";
 		params.cursorState = CS_Normal;
 		params.windowState = WS_None;
+		params.onEventCallback = EventDelegate::Create(this, &MainWindowModule::PostEvent);
 		m_window = Window(params);
-
-		EventDelegate delegate = EventDelegate::Create(this, &MainWindowModule::PostEvent);
-		m_window.SetEventCallback(delegate);
 
 		RegisterEventListener(&MainWindowModule::OnWindowResizeEvent);
 		RegisterEventListener(&MainWindowModule::OnWindowMoveEvent);
@@ -86,9 +86,14 @@ namespace Oyl
 	}
 
 	void
-	MainWindowModule::OnWindowCloseRequestEvent(const WindowCloseRequestEvent&)
+	MainWindowModule::OnWindowCloseRequestEvent(const WindowCloseRequestEvent& a_event)
 	{
-		OYL_LOG("Window Close Request");
+		if (a_event.nativeWindow != m_window.GetNativeWindowHandle())
+		{
+			return;
+		}
+
+		Detail::RequestApplicationExit();
 	}
 
 	void
@@ -130,6 +135,6 @@ namespace Oyl
 	void
 	MainWindowModule::OnWindowCursorMoveEvent(const WindowCursorMoveEvent& a_event)
 	{
-		OYL_LOG("Window Cursort Moved: ({}, {})", a_event.position.x, a_event.position.y);
+		OYL_LOG("Window Cursor Moved: ({}, {})", a_event.position.x, a_event.position.y);
 	}
 }

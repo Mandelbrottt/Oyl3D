@@ -110,8 +110,14 @@ namespace Oyl::Detail
 		g_data.shouldGameUpdate = a_value;
 	}
 
+	void
+	RequestApplicationExit() noexcept
+	{
+		g_data.params.onApplicationShouldQuitCallback();
+	}
+
 	ModuleRegistry*
-	GetModuleRegistry()
+	GetModuleRegistry() noexcept
 	{
 		return &g_data.moduleRegistry;
 	}
