@@ -41,7 +41,7 @@ namespace Oyl
 	};
 
 	Window::Window()
-		: m_impl(new Impl) {}
+		: m_impl(nullptr) {}
 
 	Window::Window(const WindowParams& a_params)
 		: Window()
@@ -68,8 +68,8 @@ namespace Oyl
 
 		Destroy();
 
-		std::memset(m_impl, 0, sizeof(Impl));
 		delete m_impl;
+		std::memset(m_impl, 0, sizeof(Impl));
 		m_impl = nullptr;
 	}
 
@@ -77,6 +77,9 @@ namespace Oyl
 	Window::Init(const WindowParams& a_params)
 	{
 		OYL_PROFILE_FUNCTION();
+
+		if (!m_impl)
+			m_impl = new Impl;
 
 		m_impl->postEventCallback = a_params.onEventCallback;
 
