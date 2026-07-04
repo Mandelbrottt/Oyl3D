@@ -1,5 +1,5 @@
 #pragma once
-//
+
 //struct Event
 //{
 //	virtual ~Event() = default;
@@ -34,7 +34,7 @@
 //	Dispatcher(Event& a_event)
 //		: event { a_event } {}
 //
-//	using EventFn = std::function<void(Event&)>;
+//	using EventFn = void(Event&);
 //
 //	Event& event;
 //
