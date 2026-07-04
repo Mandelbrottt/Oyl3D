@@ -29,10 +29,6 @@ namespace Oyl::Detail
 
 	OYL_CORE_API
 	void
-	OnEvent(Event& a_event);
-
-	OYL_CORE_API
-	void
 	Shutdown();
 
 	OYL_CORE_API

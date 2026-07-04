@@ -68,6 +68,27 @@ namespace Oyl::Traits
 	concept FunctionObject = FunctionPointer<T> || FunctionSignature<T>;
 
 	template<typename T>
+	struct RemoveMemberFunctionConst
+	{
+		using type = T;
+	};
+
+	template<typename TObj, typename TReturn, typename... TArgs>
+	struct RemoveMemberFunctionConst<TReturn(TObj::*)(TArgs...)>
+	{
+		using type = TReturn(TObj::*)(TArgs...);
+	};
+
+	template<typename TObj, typename TReturn, typename... TArgs>
+	struct RemoveMemberFunctionConst<TReturn(TObj::*)(TArgs...) const>
+	{
+		using type = TReturn(TObj::*)(TArgs...);
+	};
+
+	template<typename T>
+	using RemoveMemberFunctionConst_T = typename RemoveMemberFunctionConst<T>::type;
+
+	template<typename T>
 	struct UnderlyingType
 	{
 		using type = std::underlying_type_t<T>;

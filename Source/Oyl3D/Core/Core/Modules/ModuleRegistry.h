@@ -3,6 +3,7 @@
 #include "Core/Application/Main.h"
 #include "Core/Common.h"
 #include "Core/Events/Event.h"
+#include "Core/Events/EventDispatcher.h"
 #include "Core/Reflection/TypeId.h"
 
 namespace Oyl
@@ -15,21 +16,19 @@ namespace Oyl
 
 		using ModuleList = std::vector<Module*>;
 
-		template<typename TModule>
-		using enable_if_base_of_module_t = std::enable_if_t<std::is_base_of_v<Module, TModule>, bool>;
-
 	public:
 		static
 		ModuleRegistry*
 		Instance();
 
-		template<typename TModule, typename... TArgs, enable_if_base_of_module_t<TModule> = true>
+		template<typename TModule, typename... TArgs>
+			requires std::is_base_of_v<Module, TModule>
 		TModule*
 		RegisterModule(TArgs&&... a_args)
 		{
 			TModule* module = new TModule(std::forward<TArgs>(a_args)...);
 			m_modules.emplace_back(module);
-			module->SetOnPostEventCallback(m_onEventCallback);
+			module->OnRegisterEventDispatcher(&m_eventDispatcher);
 			module->OnInit();
 			return module;
 		}
@@ -37,26 +36,25 @@ namespace Oyl
 		Module*
 		GetModule(Reflection::TypeId a_typeId);
 
-		template<typename TModule, enable_if_base_of_module_t<TModule> = true>
+		template<typename TModule>
+			requires std::is_base_of_v<Module, TModule>
 		TModule*
 		GetModule()
 		{
-			Module* module = GetModule(TModule::GetStaticTypeId());
+			Module* module = GetModule(Reflection::GetTypeId<TModule>());
 			return reinterpret_cast<TModule*>(module);
 		}
 
 		bool
 		RemoveModule(Reflection::TypeId a_typeId);
 
-		template<typename TModule, enable_if_base_of_module_t<TModule> = true>
+		template<typename TModule>
+			requires std::is_base_of_v<Module, TModule>
 		bool
 		RemoveModule()
 		{
-			return RemoveModule(TModule::GetStaticTypeId());
+			return RemoveModule(Reflection::GetTypeId<TModule>());
 		}
-
-		void
-		SetOnEventCallback(Detail::OnEventDelegate a_fn) { m_onEventCallback = a_fn; }
 
 		ModuleList::iterator begin() { return m_modules.begin(); }
 
@@ -69,7 +67,7 @@ namespace Oyl
 	private:
 		std::vector<Module*> m_modules;
 
-		Detail::OnEventDelegate m_onEventCallback;
+		EventDispatcher m_eventDispatcher;
 	};
 }
 

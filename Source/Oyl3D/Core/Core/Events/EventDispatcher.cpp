@@ -38,7 +38,7 @@ namespace Oyl
 	}
 
 	void
-	EventDispatcher::Dispatch(EventId a_eventId, const Event* a_event) const
+	EventDispatcher::Dispatch(EventId a_eventId, const Event& a_event) const
 	{
 		auto listenerMap = TryGetListenerMapForEventId(a_eventId);
 		if (!listenerMap)
