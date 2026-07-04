@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Core/Events/Event.h"
+#include "Core/Input/InputCodes.h"
 #include "Core/Math/Vector2.h"
 
 namespace Oyl
@@ -142,25 +143,25 @@ namespace Oyl
 
 	struct WindowKeyPressEvent : WindowEvent, EventBase<WindowKeyPressEvent>
 	{
-		int key;
+		Input::KeyboardKey key;
 		int mods;
 	};
 
 	struct WindowKeyReleaseEvent : WindowEvent, EventBase<WindowKeyReleaseEvent>
 	{
-		int key;
+		Input::KeyboardKey key;
 		int mods;
 	};
 
 	struct WindowMousePressEvent : WindowEvent, EventBase<WindowMousePressEvent>
 	{
-		int button;
+		Input::MouseButton button;
 		int mods;
 	};
 
 	struct WindowMouseReleaseEvent : WindowEvent, EventBase<WindowMouseReleaseEvent>
 	{
-		int button;
+		Input::MouseButton button;
 		int mods;
 	};
 
