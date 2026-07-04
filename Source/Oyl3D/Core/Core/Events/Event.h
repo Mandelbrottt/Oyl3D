@@ -10,18 +10,26 @@ namespace Oyl
 		virtual
 		~Event() = default;
 
-		virtual
-		Reflection::TypeId
-		GetTypeId() const = 0;
+		const Reflection::TypeId typeId;
+
+	private:
+		template<typename T>
+		friend struct EventBase;
+
+		explicit
+		constexpr
+		Event(Reflection::TypeId a_typeId)
+			: typeId(a_typeId) {}
+	};
+
+	template<typename TEvent>
+	struct EventBase : Event
+	{
+	protected:
+		constexpr
+		EventBase()
+			: Event(Reflection::GetTypeId<TEvent>()) {}
 	};
 
 	using EventDelegate = Delegate<void(const Event&)>;
 }
-
-#define OYL_DECLARE_EVENT() \
-	constexpr ::Oyl::Reflection::TypeId \
-	GetTypeId() const override \
-	{ \
-		return ::Oyl::Reflection::GetTypeId<decltype(*this)>();\
-	} \
-	OYL_FORCE_SEMICOLON

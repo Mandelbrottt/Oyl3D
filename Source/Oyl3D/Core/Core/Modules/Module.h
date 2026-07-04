@@ -62,7 +62,6 @@ namespace Oyl
 		RegisterEventListener(void (TModule::*a_fn)(const TEvent&))
 		{
 			constexpr auto eventId = Reflection::GetTypeId<TEvent>();
-			OYL_LOG("Name {}", NameOf<std::decay_t<Traits::RemovePointer_T<TEvent>>>());
 			constexpr auto listenerId = Reflection::GetTypeId<decltype(*this)>();
 
 			TModule* obj = static_cast<TModule*>(this);

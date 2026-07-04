@@ -15,7 +15,7 @@ namespace Oyl
 	{
 		OYL_PROFILE_FUNCTION();
 
-		m_eventDispatcher->Dispatch(a_event.GetTypeId(), a_event);
+		m_eventDispatcher->Dispatch(a_event.typeId, a_event);
 	}
 
 	void
