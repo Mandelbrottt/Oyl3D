@@ -35,6 +35,21 @@ namespace Oyl
 		OnWindowFocusEvent(const WindowFocusEvent& a_event);
 
 		void
+		OnWindowKeyPressEvent(const WindowKeyPressEvent& a_event);
+
+		void
+		OnWindowKeyReleaseEvent(const WindowKeyReleaseEvent& a_event);
+
+		void
+		OnWindowMousePressEvent(const WindowMousePressEvent& a_event);
+
+		void
+		OnWindowMouseReleaseEvent(const WindowMouseReleaseEvent& a_event);
+
+		void
+		OnWindowMouseScrollEvent(const WindowMouseScrollEvent& a_event);
+
+		void
 		OnWindowCursorMoveEvent(const WindowCursorMoveEvent& a_event);
 
 	private:

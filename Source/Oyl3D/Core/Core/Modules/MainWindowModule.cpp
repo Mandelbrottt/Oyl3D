@@ -41,6 +41,11 @@ namespace Oyl
 		RegisterEventListener(&MainWindowModule::OnWindowMoveEvent);
 		RegisterEventListener(&MainWindowModule::OnWindowCloseRequestEvent);
 		RegisterEventListener(&MainWindowModule::OnWindowFocusEvent);
+		RegisterEventListener(&MainWindowModule::OnWindowKeyPressEvent);
+		RegisterEventListener(&MainWindowModule::OnWindowKeyReleaseEvent);
+		RegisterEventListener(&MainWindowModule::OnWindowMousePressEvent);
+		RegisterEventListener(&MainWindowModule::OnWindowMouseReleaseEvent);
+		RegisterEventListener(&MainWindowModule::OnWindowMouseScrollEvent);
 		RegisterEventListener(&MainWindowModule::OnWindowCursorMoveEvent);
 	}
 
@@ -90,6 +95,36 @@ namespace Oyl
 	MainWindowModule::OnWindowFocusEvent(const WindowFocusEvent& a_event)
 	{
 		OYL_LOG("Window Focus: {}", a_event.focused);
+	}
+
+	void
+	MainWindowModule::OnWindowKeyPressEvent(const WindowKeyPressEvent& a_event)
+	{
+		OYL_LOG("Window Key Press: {}", a_event.key);
+	}
+
+	void
+	MainWindowModule::OnWindowKeyReleaseEvent(const WindowKeyReleaseEvent& a_event)
+	{
+		OYL_LOG("Window Key Release: {}", a_event.key);
+	}
+
+	void
+	MainWindowModule::OnWindowMousePressEvent(const WindowMousePressEvent& a_event)
+	{
+		OYL_LOG("Window Mouse Button Press: {}", a_event.button);
+	}
+
+	void
+	MainWindowModule::OnWindowMouseReleaseEvent(const WindowMouseReleaseEvent& a_event)
+	{
+		OYL_LOG("Window Mouse Button Release: {}", a_event.button);
+	}
+
+	void
+	MainWindowModule::OnWindowMouseScrollEvent(const WindowMouseScrollEvent& a_event)
+	{
+		OYL_LOG("Window Mouse Scroll: ({}, {})", a_event.scroll.x, a_event.scroll.y);
 	}
 
 	void

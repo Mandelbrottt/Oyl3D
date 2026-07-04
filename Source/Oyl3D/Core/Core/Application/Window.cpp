@@ -156,6 +156,78 @@ namespace Oyl
 			}
 		);
 
+		glfwSetKeyCallback(
+			m_impl->glfwWindow,
+			[](GLFWwindow* a_window, int a_key, int a_scanCode, int a_action, int a_mods)
+			{
+				OYL_UNUSED(a_scanCode);
+
+				Impl* impl = reinterpret_cast<Impl*>(glfwGetWindowUserPointer(a_window));
+
+				switch (a_action)
+				{
+					case GLFW_PRESS:
+					{
+						WindowKeyPressEvent event;
+						event.key = a_key;
+						event.mods = a_mods;
+						impl->onEventCallback(event);
+						break;
+					}
+					case GLFW_RELEASE:
+					{
+						WindowKeyReleaseEvent event;
+						event.key = a_key;
+						event.mods = a_mods;
+						impl->onEventCallback(event);
+						break;
+					}
+					default: break;
+				}
+			}
+		);
+
+		glfwSetMouseButtonCallback(
+			m_impl->glfwWindow,
+			[](GLFWwindow* a_window, int a_button, int a_action, int a_mods)
+			{
+				Impl* impl = reinterpret_cast<Impl*>(glfwGetWindowUserPointer(a_window));
+
+				switch (a_action)
+				{
+					case GLFW_PRESS:
+					{
+						WindowMousePressEvent event;
+						event.button = a_button;
+						event.mods = a_mods;
+						impl->onEventCallback(event);
+						break;
+					}
+					case GLFW_RELEASE:
+					{
+						WindowMouseReleaseEvent event;
+						event.button = a_button;
+						event.mods = a_mods;
+						impl->onEventCallback(event);
+						break;
+					}
+					default: break;
+				}
+			}
+		);
+
+		glfwSetScrollCallback(
+			m_impl->glfwWindow,
+			[](GLFWwindow* a_window, double a_scrollX, double a_scrollY)
+			{
+				Impl* impl = reinterpret_cast<Impl*>(glfwGetWindowUserPointer(a_window));
+
+				WindowMouseScrollEvent event;
+				event.scroll = { (float32) a_scrollX, (float32) a_scrollY };
+				impl->onEventCallback(event);
+			}
+		);
+
 		glfwSetCursorPosCallback(
 			m_impl->glfwWindow,
 			[](GLFWwindow* a_window, double a_posX, double a_posY)
@@ -163,7 +235,7 @@ namespace Oyl
 				Impl* impl = reinterpret_cast<Impl*>(glfwGetWindowUserPointer(a_window));
 
 				WindowCursorMoveEvent event;
-				event.position = { (float) a_posX, (float) a_posY };
+				event.position = { (float32) a_posX, (float32) a_posY };
 				impl->onEventCallback(event);
 			}
 		);
