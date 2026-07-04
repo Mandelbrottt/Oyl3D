@@ -131,6 +131,9 @@ namespace Oyl
 				Impl* impl = reinterpret_cast<Impl*>(glfwGetWindowUserPointer(a_window));
 				impl->size = { a_width, a_height };
 
+				if (!impl->postEventCallback)
+					return;
+
 				WindowResizeEvent event;
 				event.nativeWindow = a_window;
 				event.size = impl->size;
@@ -148,6 +151,9 @@ namespace Oyl
 				Impl* impl = reinterpret_cast<Impl*>(glfwGetWindowUserPointer(a_window));
 				impl->position = { a_posX, a_posY };
 
+				if (!impl->postEventCallback)
+					return;
+
 				WindowMoveEvent event;
 				event.nativeWindow = a_window;
 				event.position = impl->position;
@@ -161,6 +167,9 @@ namespace Oyl
 			{
 				Impl* impl = reinterpret_cast<Impl*>(glfwGetWindowUserPointer(a_window));
 
+				if (!impl->postEventCallback)
+					return;
+
 				WindowCloseRequestEvent event;
 				event.nativeWindow = a_window;
 				impl->postEventCallback(event);
@@ -172,6 +181,9 @@ namespace Oyl
 			[](GLFWwindow* a_window, int a_focused)
 			{
 				Impl* impl = reinterpret_cast<Impl*>(glfwGetWindowUserPointer(a_window));
+
+				if (!impl->postEventCallback)
+					return;
 
 				WindowFocusEvent event;
 				event.nativeWindow = a_window;
@@ -187,6 +199,9 @@ namespace Oyl
 				OYL_UNUSED(a_scanCode);
 
 				Impl* impl = reinterpret_cast<Impl*>(glfwGetWindowUserPointer(a_window));
+
+				if (!impl->postEventCallback)
+					return;
 
 				Input::KeyboardKey key = GetKeyCodeFromGlfw(a_key);
 
@@ -222,6 +237,9 @@ namespace Oyl
 			{
 				Impl* impl = reinterpret_cast<Impl*>(glfwGetWindowUserPointer(a_window));
 
+				if (!impl->postEventCallback)
+					return;
+
 				Input::MouseButton button = GetMouseButtonFromGlfw(a_button);
 
 				switch (a_action)
@@ -256,6 +274,9 @@ namespace Oyl
 			{
 				Impl* impl = reinterpret_cast<Impl*>(glfwGetWindowUserPointer(a_window));
 
+				if (!impl->postEventCallback)
+					return;
+
 				WindowMouseScrollEvent event;
 				event.nativeWindow = a_window;
 				event.scroll = { (float32) a_scrollX, (float32) a_scrollY };
@@ -268,6 +289,9 @@ namespace Oyl
 			[](GLFWwindow* a_window, double a_posX, double a_posY)
 			{
 				Impl* impl = reinterpret_cast<Impl*>(glfwGetWindowUserPointer(a_window));
+
+				if (!impl->postEventCallback)
+					return;
 
 				WindowCursorMoveEvent event;
 				event.nativeWindow = a_window;
