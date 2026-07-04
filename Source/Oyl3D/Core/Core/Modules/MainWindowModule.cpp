@@ -37,7 +37,11 @@ namespace Oyl
 		EventDelegate delegate = EventDelegate::Create(this, &MainWindowModule::PostEvent);
 		m_window.SetEventCallback(delegate);
 
-		RegisterEventListener(&MainWindowModule::OnWindowResizedEvent);
+		RegisterEventListener(&MainWindowModule::OnWindowResizeEvent);
+		RegisterEventListener(&MainWindowModule::OnWindowMoveEvent);
+		RegisterEventListener(&MainWindowModule::OnWindowCloseRequestEvent);
+		RegisterEventListener(&MainWindowModule::OnWindowFocusEvent);
+		RegisterEventListener(&MainWindowModule::OnWindowCursorMoveEvent);
 	}
 
 	void
@@ -65,8 +69,32 @@ namespace Oyl
 	}
 
 	void
-	MainWindowModule::OnWindowResizedEvent(const WindowResizedEvent& a_event)
+	MainWindowModule::OnWindowResizeEvent(const WindowResizeEvent& a_event)
 	{
 		OYL_LOG("Window Resized: ({}, {})", a_event.size.x, a_event.size.y);
+	}
+
+	void
+	MainWindowModule::OnWindowMoveEvent(const WindowMoveEvent& a_event)
+	{
+		OYL_LOG("Window Moved: ({}, {})", a_event.position.x, a_event.position.y);
+	}
+
+	void
+	MainWindowModule::OnWindowCloseRequestEvent(const WindowCloseRequestEvent&)
+	{
+		OYL_LOG("Window Close Request");
+	}
+
+	void
+	MainWindowModule::OnWindowFocusEvent(const WindowFocusEvent& a_event)
+	{
+		OYL_LOG("Window Focus: {}", a_event.focused);
+	}
+
+	void
+	MainWindowModule::OnWindowCursorMoveEvent(const WindowCursorMoveEvent& a_event)
+	{
+		OYL_LOG("Window Cursort Moved: ({}, {})", a_event.position.x, a_event.position.y);
 	}
 }

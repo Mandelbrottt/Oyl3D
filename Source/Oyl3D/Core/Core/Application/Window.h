@@ -108,10 +108,36 @@ namespace Oyl
 		Impl* m_impl;
 	};
 
-	struct WindowResizedEvent : Event
+	struct WindowResizeEvent : Event
 	{
 		OYL_DECLARE_EVENT();
 
 		Vector2i size;
+	};
+
+	struct WindowMoveEvent : Event
+	{
+		OYL_DECLARE_EVENT();
+
+		Vector2i position;
+	};
+
+	struct WindowCloseRequestEvent : Event
+	{
+		OYL_DECLARE_EVENT();
+	};
+
+	struct WindowFocusEvent : Event
+	{
+		OYL_DECLARE_EVENT();
+
+		bool focused;
+	};
+
+	struct WindowCursorMoveEvent : Event
+	{
+		OYL_DECLARE_EVENT();
+
+		Vector2f position;
 	};
 }

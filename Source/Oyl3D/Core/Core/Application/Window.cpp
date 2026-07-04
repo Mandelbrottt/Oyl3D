@@ -111,8 +111,59 @@ namespace Oyl
 				Impl* impl = reinterpret_cast<Impl*>(glfwGetWindowUserPointer(a_window));
 				impl->size = { a_width, a_height };
 
-				WindowResizedEvent event;
+				WindowResizeEvent event;
 				event.size = impl->size;
+				impl->onEventCallback(event);
+			}
+		);
+
+		glfwSetWindowPosCallback(
+			m_impl->glfwWindow,
+			[](GLFWwindow* a_window, int a_posX, int a_posY)
+			{
+				if (a_posX <= 0 || a_posY <= 0)
+					return;
+
+				Impl* impl = reinterpret_cast<Impl*>(glfwGetWindowUserPointer(a_window));
+				impl->position = { a_posX, a_posY };
+
+				WindowMoveEvent event;
+				event.position = impl->position;
+				impl->onEventCallback(event);
+			}
+		);
+
+		glfwSetWindowCloseCallback(
+			m_impl->glfwWindow,
+			[](GLFWwindow* a_window)
+			{
+				Impl* impl = reinterpret_cast<Impl*>(glfwGetWindowUserPointer(a_window));
+
+				WindowCloseRequestEvent event;
+				impl->onEventCallback(event);
+			}
+		);
+
+		glfwSetWindowFocusCallback(
+			m_impl->glfwWindow,
+			[](GLFWwindow* a_window, int a_focused)
+			{
+				Impl* impl = reinterpret_cast<Impl*>(glfwGetWindowUserPointer(a_window));
+
+				WindowFocusEvent event;
+				event.focused = a_focused;
+				impl->onEventCallback(event);
+			}
+		);
+
+		glfwSetCursorPosCallback(
+			m_impl->glfwWindow,
+			[](GLFWwindow* a_window, double a_posX, double a_posY)
+			{
+				Impl* impl = reinterpret_cast<Impl*>(glfwGetWindowUserPointer(a_window));
+
+				WindowCursorMoveEvent event;
+				event.position = { (float) a_posX, (float) a_posY };
 				impl->onEventCallback(event);
 			}
 		);
