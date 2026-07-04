@@ -129,4 +129,33 @@ namespace Oyl
 	{
 		Vector2f position;
 	};
+
+	struct WindowKeyPressEvent : EventBase<WindowKeyPressEvent>
+	{
+		int key;
+		int mods;
+	};
+
+	struct WindowKeyReleaseEvent : EventBase<WindowKeyReleaseEvent>
+	{
+		int key;
+		int mods;
+	};
+
+	struct WindowMousePressEvent : EventBase<WindowMousePressEvent>
+	{
+		int button;
+		int mods;
+	};
+
+	struct WindowMouseReleaseEvent : EventBase<WindowMouseReleaseEvent>
+	{
+		int button;
+		int mods;
+	};
+
+	struct WindowMouseScrollEvent : EventBase<WindowMouseScrollEvent>
+	{
+		Vector2f scroll;
+	};
 }
