@@ -108,36 +108,25 @@ namespace Oyl
 		Impl* m_impl;
 	};
 
-	struct WindowResizeEvent : Event
+	struct WindowResizeEvent : EventBase<WindowResizeEvent>
 	{
-		OYL_DECLARE_EVENT();
-
 		Vector2i size;
 	};
 
-	struct WindowMoveEvent : Event
+	struct WindowMoveEvent : EventBase<WindowMoveEvent>
 	{
-		OYL_DECLARE_EVENT();
-
 		Vector2i position;
 	};
 
-	struct WindowCloseRequestEvent : Event
-	{
-		OYL_DECLARE_EVENT();
-	};
+	struct WindowCloseRequestEvent : EventBase<WindowCloseRequestEvent> {};
 
-	struct WindowFocusEvent : Event
+	struct WindowFocusEvent : EventBase<WindowFocusEvent>
 	{
-		OYL_DECLARE_EVENT();
-
 		bool focused;
 	};
 
-	struct WindowCursorMoveEvent : Event
+	struct WindowCursorMoveEvent : EventBase<WindowCursorMoveEvent>
 	{
-		OYL_DECLARE_EVENT();
-
 		Vector2f position;
 	};
 }
