@@ -226,6 +226,10 @@ function Package.Include(package)
 			links(package.Libs)
 		end
 		if package.OnDepend then
+			defines {
+				"_OYL_PACKAGE_" .. string.upper(package.Name):gsub("[%.%-]", "_")
+			}
+			
 			package:OnDepend()
 		end
 	end)
