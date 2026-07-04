@@ -3,18 +3,26 @@
 #include "ModuleRegistry.h"
 
 #include "Core/Common.h"
+#include "Core/Events/EventDispatcher.h"
 #include "Core/Profiling/Profiler.h"
 #include "Core/Reflection/TypeId.h"
+
+namespace Oyl {
+	class EventDispatcher;
+	class ModuleRegistry;
+}
 
 namespace Oyl
 {
 	class OYL_CORE_API Module
 	{
+		friend ModuleRegistry;
+
 	public:
-		Module() {}
+		Module();
 
 		virtual
-		~Module() = default;
+		~Module();
 
 #	pragma region Public Interface
 		virtual
@@ -48,52 +56,51 @@ namespace Oyl
 		OnShutdown() {}
 #	pragma endregion
 #	pragma region Events
-		void
-		SetOnPostEventCallback(Detail::OnEventDelegate a_fn) { m_onPostEventCallback = a_fn; }
-
 		template<typename TModule, typename TEvent>
 		void
-		RegisterEventListener(void (TModule::*a_fn)(TEvent&))
+		RegisterEventListener(void (TModule::*a_fn)(const TEvent&))
 		{
-			// Ensure ABI is the same between the incoming member function and the
-			// output member function, then type coerce
-			using OnEventFn = void(Module::*)(Event&);
-			static_assert(sizeof(a_fn) == sizeof(OnEventFn));
+			constexpr auto eventId = Reflection::GetTypeId<TEvent>();
+			constexpr auto listenerId = Reflection::GetTypeId<decltype(*this)>();
 
-			m_eventFns[TEvent::GetStaticTypeId()] =
-				std::bind(
-					*reinterpret_cast<OnEventFn*>(&a_fn),
-					this,
-					std::placeholders::_1
-				);
+			TModule* obj = static_cast<TModule*>(this);
+
+			EventDispatcher::EventDelegate::MemberFn<TModule> fn;
+			std::memcpy(&fn, &a_fn, sizeof(fn));
+
+			auto delegate = EventDispatcher::EventDelegate::Create<TModule>(obj, fn);
+
+			m_eventDispatcher->Register(eventId, listenerId, std::move(delegate));
 		}
 
 		template<typename TModule, typename TEvent>
 		void
-		RegisterEventListener(void (TModule::*a_fn)(TEvent&) const)
+		RegisterEventListener(void (TModule::*a_fn)(const TEvent&) const)
 		{
-			RegisterEventListener(const_cast<std::decay_t<decltype(a_fn)>>(a_fn));
+			Traits::RemoveMemberFunctionConst_T<decltype(a_fn)> fn;
+			std::memcpy(&fn, &a_fn, sizeof(fn));
+			RegisterEventListener(fn);
 		}
 
-		// TODO: Add event to global event queue, arena?
 		template<typename TEvent>
 		void
-		PostEvent(TEvent a_event)
+		PostEvent(const TEvent& a_event)
 		{
 			OYL_PROFILE_FUNCTION();
-			m_onPostEventCallback(a_event);
+
+			constexpr auto eventId = Reflection::GetTypeId<TEvent>();
+			m_eventDispatcher->Dispatch(eventId, a_event);
 		}
 
+	private:
 		void
-		OnEvent(Event& a_event);
+		OnRegisterEventDispatcher(EventDispatcher* a_dispatcher);
 #	pragma endregion
 
 	private:
 		bool m_enabled = true;
 
-		Detail::OnEventDelegate m_onPostEventCallback;
-
-		std::unordered_map<Reflection::TypeId, Detail::OnEventDelegate> m_eventFns;
+		EventDispatcher* m_eventDispatcher = nullptr;
 	};
 }
 

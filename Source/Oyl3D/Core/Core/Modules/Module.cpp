@@ -3,13 +3,16 @@
 
 namespace Oyl
 {
-	void Module::OnEvent(Event& a_event)
+	Module::Module() {}
+
+	Module::~Module()
 	{
-		OYL_PROFILE_FUNCTION();
-		Detail::EventDispatcher dispatcher(a_event);
-		for (auto& [type, fn] : m_eventFns)
-		{
-			dispatcher.Dispatch(type, fn);
-		}
+		m_eventDispatcher = nullptr;
+	}
+
+	void
+	Module::OnRegisterEventDispatcher(EventDispatcher* a_dispatcher)
+	{
+		m_eventDispatcher = a_dispatcher;
 	}
 }

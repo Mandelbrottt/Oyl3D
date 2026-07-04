@@ -10,41 +10,61 @@ namespace Oyl
 	template<typename TReturn, typename... TArgs>
 	class Delegate<TReturn(TArgs...)>
 	{
+	public:
 		using Fn = TReturn(TArgs...);
 
 		template<typename T>
+			requires (!Traits::Pointer<T>)
 		using MemberFn = TReturn (T::*)(TArgs...);
 
-	public:
 		Delegate() noexcept {}
 
 		Delegate(const Delegate& a_other) noexcept
 		{
+			*this = a_other;
+		}
+
+		Delegate&
+		operator=(const Delegate& a_other) noexcept
+		{
 			m_obj = a_other.m_obj;
 			m_fn = a_other.m_fn;
+
+			return *this;
 		}
 
 		Delegate(Delegate&& a_other) noexcept
 		{
+			*this = a_other;
+		}
+
+		Delegate&
+		operator=(Delegate&& a_other) noexcept
+		{
 			std::swap(m_obj, a_other.m_obj);
 			std::swap(m_fn, a_other.m_fn);
+
+			return *this;
 		}
 
 		template<typename TObj>
-			requires Traits::PointerToObject<TObj>
-		Delegate(TObj* a_obj, MemberFn<TObj> a_fn)
+			requires (!Traits::Pointer<TObj>)
+		static
+		Delegate
+		Create(TObj* a_obj, MemberFn<TObj> a_fn)
 		{
-			Set(a_obj, a_fn);
+			Delegate result;
+			result.Set(a_obj, a_fn);
+			return result;
 		}
 
 		template<typename TObj>
-			requires Traits::PointerToObject<TObj>
+			requires (!Traits::Pointer<TObj>)
 		void
 		Set(TObj* a_obj, MemberFn<TObj> a_fn)
 		{
 			m_obj = reinterpret_cast<void*>(a_obj);
-			void* voidPtrToFn = *reinterpret_cast<void**>(&a_fn);
-			m_fn = reinterpret_cast<Fn*>(voidPtrToFn);
+			std::memcpy(&m_fn, &a_fn, sizeof(m_fn));
 		}
 
 		void
@@ -63,7 +83,7 @@ namespace Oyl
 		TReturn
 		Invoke(TArgs... a_args) const
 		{
-			using ThunkFn = TReturn(void*, TArgs...);
+			using MemberThunkFn = TReturn(void*, TArgs...);
 
 			if constexpr (std::is_void_v<TReturn>)
 			{
@@ -73,7 +93,8 @@ namespace Oyl
 					return;
 				}
 
-				auto fn = reinterpret_cast<ThunkFn*>(m_fn);
+				MemberThunkFn* fn;
+				std::memcpy(&fn, &m_fn, sizeof(fn));
 				(void) fn(m_obj, std::forward<TArgs>(a_args)...);
 				return;
 			} else
@@ -83,7 +104,8 @@ namespace Oyl
 					return m_fn(std::forward<TArgs>(a_args)...);
 				}
 
-				auto fn = reinterpret_cast<ThunkFn*>(m_fn);
+				MemberThunkFn* fn;
+				std::memcpy(&fn, &m_fn, sizeof(fn));
 				return fn(m_obj, std::forward<TArgs>(a_args)...);
 			}
 		}
