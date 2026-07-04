@@ -34,6 +34,8 @@ namespace Oyl
 		CursorState cursorState;
 
 		// Requested Default Graphics API
+
+		EventDelegate onEventCallback;
 	};
 
 	class Window
@@ -108,53 +110,61 @@ namespace Oyl
 		Impl* m_impl;
 	};
 
-	struct WindowResizeEvent : EventBase<WindowResizeEvent>
+	struct WindowEvent
+	{
+		void* nativeWindow = nullptr;
+
+	protected:
+		WindowEvent() = default;
+	};
+
+	struct WindowResizeEvent : WindowEvent, EventBase<WindowResizeEvent>
 	{
 		Vector2i size;
 	};
 
-	struct WindowMoveEvent : EventBase<WindowMoveEvent>
+	struct WindowMoveEvent : WindowEvent,EventBase<WindowMoveEvent>
 	{
 		Vector2i position;
 	};
 
-	struct WindowCloseRequestEvent : EventBase<WindowCloseRequestEvent> {};
+	struct WindowCloseRequestEvent : WindowEvent, EventBase<WindowCloseRequestEvent> {};
 
-	struct WindowFocusEvent : EventBase<WindowFocusEvent>
+	struct WindowFocusEvent : WindowEvent, EventBase<WindowFocusEvent>
 	{
 		bool focused;
 	};
 
-	struct WindowCursorMoveEvent : EventBase<WindowCursorMoveEvent>
+	struct WindowCursorMoveEvent : WindowEvent, EventBase<WindowCursorMoveEvent>
 	{
 		Vector2f position;
 	};
 
-	struct WindowKeyPressEvent : EventBase<WindowKeyPressEvent>
+	struct WindowKeyPressEvent : WindowEvent, EventBase<WindowKeyPressEvent>
 	{
 		int key;
 		int mods;
 	};
 
-	struct WindowKeyReleaseEvent : EventBase<WindowKeyReleaseEvent>
+	struct WindowKeyReleaseEvent : WindowEvent, EventBase<WindowKeyReleaseEvent>
 	{
 		int key;
 		int mods;
 	};
 
-	struct WindowMousePressEvent : EventBase<WindowMousePressEvent>
+	struct WindowMousePressEvent : WindowEvent, EventBase<WindowMousePressEvent>
 	{
 		int button;
 		int mods;
 	};
 
-	struct WindowMouseReleaseEvent : EventBase<WindowMouseReleaseEvent>
+	struct WindowMouseReleaseEvent : WindowEvent, EventBase<WindowMouseReleaseEvent>
 	{
 		int button;
 		int mods;
 	};
 
-	struct WindowMouseScrollEvent : EventBase<WindowMouseScrollEvent>
+	struct WindowMouseScrollEvent : WindowEvent, EventBase<WindowMouseScrollEvent>
 	{
 		Vector2f scroll;
 	};

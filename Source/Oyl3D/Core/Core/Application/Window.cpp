@@ -1,6 +1,6 @@
 #include "Window.h"
 
-#include <vulkan/vulkan.h>
+#include <vulkan/vulkan.hpp>
 
 #include <GLFW/glfw3.h>
 
@@ -114,6 +114,7 @@ namespace Oyl
 				impl->size = { a_width, a_height };
 
 				WindowResizeEvent event;
+				event.nativeWindow = a_window;
 				event.size = impl->size;
 				impl->onEventCallback(event);
 			}
@@ -130,6 +131,7 @@ namespace Oyl
 				impl->position = { a_posX, a_posY };
 
 				WindowMoveEvent event;
+				event.nativeWindow = a_window;
 				event.position = impl->position;
 				impl->onEventCallback(event);
 			}
@@ -142,6 +144,7 @@ namespace Oyl
 				Impl* impl = reinterpret_cast<Impl*>(glfwGetWindowUserPointer(a_window));
 
 				WindowCloseRequestEvent event;
+				event.nativeWindow = a_window;
 				impl->onEventCallback(event);
 			}
 		);
@@ -153,6 +156,7 @@ namespace Oyl
 				Impl* impl = reinterpret_cast<Impl*>(glfwGetWindowUserPointer(a_window));
 
 				WindowFocusEvent event;
+				event.nativeWindow = a_window;
 				event.focused = a_focused;
 				impl->onEventCallback(event);
 			}
@@ -171,6 +175,7 @@ namespace Oyl
 					case GLFW_PRESS:
 					{
 						WindowKeyPressEvent event;
+						event.nativeWindow = a_window;
 						event.key = a_key;
 						event.mods = a_mods;
 						impl->onEventCallback(event);
@@ -179,12 +184,14 @@ namespace Oyl
 					case GLFW_RELEASE:
 					{
 						WindowKeyReleaseEvent event;
+						event.nativeWindow = a_window;
 						event.key = a_key;
 						event.mods = a_mods;
 						impl->onEventCallback(event);
 						break;
 					}
-					default: break;
+					default:
+						break;
 				}
 			}
 		);
@@ -200,6 +207,7 @@ namespace Oyl
 					case GLFW_PRESS:
 					{
 						WindowMousePressEvent event;
+						event.nativeWindow = a_window;
 						event.button = a_button;
 						event.mods = a_mods;
 						impl->onEventCallback(event);
@@ -208,12 +216,14 @@ namespace Oyl
 					case GLFW_RELEASE:
 					{
 						WindowMouseReleaseEvent event;
+						event.nativeWindow = a_window;
 						event.button = a_button;
 						event.mods = a_mods;
 						impl->onEventCallback(event);
 						break;
 					}
-					default: break;
+					default:
+						break;
 				}
 			}
 		);
@@ -225,6 +235,7 @@ namespace Oyl
 				Impl* impl = reinterpret_cast<Impl*>(glfwGetWindowUserPointer(a_window));
 
 				WindowMouseScrollEvent event;
+				event.nativeWindow = a_window;
 				event.scroll = { (float32) a_scrollX, (float32) a_scrollY };
 				impl->onEventCallback(event);
 			}
@@ -237,6 +248,7 @@ namespace Oyl
 				Impl* impl = reinterpret_cast<Impl*>(glfwGetWindowUserPointer(a_window));
 
 				WindowCursorMoveEvent event;
+				event.nativeWindow = a_window;
 				event.position = { (float32) a_posX, (float32) a_posY };
 				impl->onEventCallback(event);
 			}

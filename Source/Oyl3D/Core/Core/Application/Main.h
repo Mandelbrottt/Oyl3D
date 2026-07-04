@@ -34,6 +34,7 @@ namespace Oyl::Detail
 	OYL_CORE_API
 	bool
 	GetShouldGameUpdate() noexcept;
+
 	OYL_CORE_API
 	void
 	SetShouldGameUpdate(
@@ -41,6 +42,10 @@ namespace Oyl::Detail
 	) noexcept;
 
 	OYL_CORE_API
+	void
+	RequestApplicationExit() noexcept;
+
+	OYL_CORE_API
 	ModuleRegistry*
-	GetModuleRegistry();
+	GetModuleRegistry() noexcept;
 }
