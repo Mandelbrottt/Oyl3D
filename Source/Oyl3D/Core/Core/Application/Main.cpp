@@ -11,6 +11,8 @@
 
 #include "SharedLibrary.h"
 
+#include "Core/Modules/MainWindowModule.h"
+
 namespace Oyl::Detail
 {
 	struct CoreApplicationData
@@ -26,70 +28,6 @@ namespace Oyl::Detail
 
 	static CoreApplicationData g_data;
 
-	struct TestEvent1 : Event
-	{
-		OYL_DECLARE_EVENT();
-	};
-
-	struct TestEvent2 : Event
-	{
-		OYL_DECLARE_EVENT();
-	};
-
-	class TestModule1 : public Module
-	{
-		OYL_DECLARE_MODULE(TestModule1);
-
-	public:
-		void OnInit() override
-		{
-			RegisterEventListener(&TestModule1::OnTestEvent2);
-
-			a = 20;
-		}
-
-		void OnUpdate() override
-		{
-			OYL_LOG("Hello from TestModule1!");
-			PostEvent(TestEvent1());
-		}
-
-		void
-		OnTestEvent2(const TestEvent2&) const
-		{
-			OYL_LOG("TestEvent2 from TestModule1! {}", a);
-		}
-
-		int a = 5;
-	};
-
-	class TestModule2 : public Module
-	{
-		OYL_DECLARE_MODULE(TestModule2);
-
-	public:
-		void OnInit() override
-		{
-			RegisterEventListener(&TestModule2::OnTestEvent1);
-
-			someValue = "DEADBEEF";
-		}
-
-		void OnUpdate() override
-		{
-			OYL_LOG("Hello from TestModule2!");
-			PostEvent(TestEvent2());
-		}
-
-		void
-		OnTestEvent1(const TestEvent1&) const
-		{
-			OYL_LOG("TestEvent1 from TestModule2! {}", someValue);
-		}
-
-		std::string someValue;
-	};
-
 	void
 	Init(const CoreInitParameters& a_params)
 	{
@@ -104,8 +42,7 @@ namespace Oyl::Detail
 		Logging::Detail::Init();
 
 		auto& registry = g_data.moduleRegistry;
-		registry.RegisterModule<TestModule1>();
-		registry.RegisterModule<TestModule2>();
+		registry.RegisterModule<MainWindowModule>();
 	}
 
 	void

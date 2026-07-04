@@ -11,6 +11,14 @@ namespace Oyl
 	}
 
 	void
+	Module::PostEvent(const Event& a_event)
+	{
+		OYL_PROFILE_FUNCTION();
+
+		m_eventDispatcher->Dispatch(a_event.GetTypeId(), a_event);
+	}
+
+	void
 	Module::OnRegisterEventDispatcher(EventDispatcher* a_dispatcher)
 	{
 		m_eventDispatcher = a_dispatcher;

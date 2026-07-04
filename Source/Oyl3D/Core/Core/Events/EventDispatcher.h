@@ -10,7 +10,6 @@ namespace Oyl
 	{
 	public:
 		using EventId = Reflection::TypeId;
-		using EventDelegate = Delegate<void(const Event&)>;
 
 		void
 		Register(EventId a_eventId, Reflection::TypeId a_listenerId, const EventDelegate& a_delegate);

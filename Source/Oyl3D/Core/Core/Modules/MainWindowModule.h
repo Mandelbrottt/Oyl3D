@@ -6,7 +6,7 @@
 
 namespace Oyl
 {
-	class MainWindowModule : Module
+	class MainWindowModule : public Module
 	{
 		OYL_DECLARE_MODULE(MainWindowModule);
 
@@ -19,6 +19,9 @@ namespace Oyl
 
 		void
 		OnShutdown() override;
+
+		void
+		OnWindowResizedEvent(const WindowResizedEvent& a_event);
 
 	private:
 		Window m_window;

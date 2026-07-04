@@ -4,6 +4,7 @@
 
 #include <GLFW/glfw3.h>
 
+#include "Core/Events/EventDispatcher.h"
 #include "Core/Logging/Logging.h"
 
 namespace Oyl
@@ -19,6 +20,8 @@ namespace Oyl
 		CursorState cursorState;
 
 		GLFWwindow* glfwWindow = nullptr;
+
+		EventDelegate onEventCallback;
 	};
 
 	Window::Window()
@@ -30,8 +33,23 @@ namespace Oyl
 		Init(a_params);
 	}
 
+	Window::Window(Window&& a_other) noexcept
+	{
+		*this = std::move(a_other);
+	}
+
+	Window&
+	Window::operator=(Window&& a_other) noexcept
+	{
+		std::swap(m_impl, a_other.m_impl);
+		return *this;
+	}
+
 	Window::~Window()
 	{
+		if (!m_impl)
+			return;
+
 		Destroy();
 
 		std::memset(m_impl, 0, sizeof(Impl));
@@ -81,15 +99,33 @@ namespace Oyl
 			);
 		}
 
-		glfwSetWindowUserPointer(m_impl->glfwWindow, this);
+		glfwSetWindowUserPointer(m_impl->glfwWindow, m_impl);
+
+		glfwSetWindowSizeCallback(
+			m_impl->glfwWindow,
+			[](GLFWwindow* a_window, int a_width, int a_height)
+			{
+				if (a_width <= 0 || a_height <= 0)
+					return;
+
+				Impl* impl = reinterpret_cast<Impl*>(glfwGetWindowUserPointer(a_window));
+				impl->size = { a_width, a_height };
+
+				WindowResizedEvent event;
+				event.size = impl->size;
+				impl->onEventCallback(event);
+			}
+		);
 	}
 
 	void
 	Window::Destroy()
 	{
+		if (!m_impl->glfwWindow)
+			return;
+
 		// TODO: Destroy context alongside window
 		glfwDestroyWindow(m_impl->glfwWindow);
-
 		m_impl->glfwWindow = nullptr;
 	}
 
@@ -103,6 +139,12 @@ namespace Oyl
 	Window::IsValid() const
 	{
 		return m_impl->glfwWindow != nullptr;
+	}
+
+	void
+	Window::SetEventCallback(EventDelegate a_delegate)
+	{
+		m_impl->onEventCallback = std::move(a_delegate);
 	}
 
 	Vector2i
@@ -184,17 +226,17 @@ namespace Oyl
 
 		Vector2i desiredSize;
 
-        // get resolution of monitor
-        const GLFWvidmode* mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
+		// get resolution of monitor
+		const GLFWvidmode* mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
 
 		if (a_flags & (WS_Fullscreen | WS_Borderless))
-        {
-            // backup window position and window size
-            glfwGetWindowPos(m_impl->glfwWindow, &m_impl->position.x, &m_impl->position.y);
-            glfwGetWindowSize(m_impl->glfwWindow, &m_impl->size.y, &m_impl->size.y);
+		{
+			// backup window position and window size
+			glfwGetWindowPos(m_impl->glfwWindow, &m_impl->position.x, &m_impl->position.y);
+			glfwGetWindowSize(m_impl->glfwWindow, &m_impl->size.y, &m_impl->size.y);
 
-            // switch to full screen
-            glfwSetWindowMonitor(
+			// switch to full screen
+			glfwSetWindowMonitor(
 				m_impl->glfwWindow,
 				glfwGetWindowMonitor(m_impl->glfwWindow),
 				0,
@@ -206,7 +248,7 @@ namespace Oyl
 
 			desiredSize = { mode->width, mode->height };
 		} else if (a_flags ^ (WS_Fullscreen | WS_Borderless))
-        {
+		{
 			glfwSetWindowMonitor(
 				m_impl->glfwWindow,
 				nullptr,
@@ -217,7 +259,7 @@ namespace Oyl
 				mode->refreshRate
 			);
 			desiredSize = m_impl->size;
-        }
+		}
 
 		// Set Context Size
 		OYL_UNUSED(desiredSize);

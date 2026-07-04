@@ -35,7 +35,7 @@ namespace Oyl
 
 		Delegate(Delegate&& a_other) noexcept
 		{
-			*this = a_other;
+			*this = std::move(a_other);
 		}
 
 		Delegate&
@@ -72,6 +72,18 @@ namespace Oyl
 		{
 			m_obj = nullptr;
 			m_fn = a_fn;
+		}
+
+		bool
+		IsValid() const
+		{
+			return m_fn;
+		}
+
+		explicit
+		operator bool() const
+		{
+			return IsValid();
 		}
 
 		TReturn
