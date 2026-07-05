@@ -44,9 +44,13 @@ namespace Oyl::Rendering
 {
 	struct VulkanRenderContext::Impl
 	{
+		GLFWwindow* glfwWindow;
+
 		vk::raii::Context context;
 		vk::raii::Instance instance = nullptr;
 		vk::raii::DebugUtilsMessengerEXT debugMessenger = nullptr;
+
+		vk::raii::SurfaceKHR surface = nullptr;
 
 		vk::raii::PhysicalDevice physicalDevice = nullptr;
 		vk::raii::Device device = nullptr;
@@ -56,6 +60,8 @@ namespace Oyl::Rendering
 		CreateInstance();
 		void
 		SetupDebugMessenger();
+		void
+		CreateSurface();
 		void
 		PickPhysicalDevice();
 		void
@@ -68,6 +74,8 @@ namespace Oyl::Rendering
 	VulkanRenderContext::VulkanRenderContext(const RenderContextParams& a_params) noexcept
 		: m_impl(new Impl)
 	{
+		m_impl->glfwWindow = static_cast<GLFWwindow*>(a_params.nativeWindow);
+
 		VulkanRenderContext::Init(a_params);
 	}
 
@@ -197,6 +205,17 @@ namespace Oyl::Rendering
 			.pfnUserCallback = DebugCallback,
 		};
 		debugMessenger = instance.createDebugUtilsMessengerEXT(debugUtilsMessengerCreateInfoEXT);
+	}
+
+	void
+	VulkanRenderContext::Impl::CreateSurface()
+	{
+		VkSurfaceKHR _surface;
+		if (glfwCreateWindowSurface(*instance, glfwWindow, nullptr, &_surface) != 0)
+		{
+			throw std::runtime_error("failed to create window surface!");
+		}
+		surface = vk::raii::SurfaceKHR(instance, _surface);
 	}
 
 	void
