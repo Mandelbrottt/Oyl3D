@@ -6,7 +6,7 @@ project "Oyl.Core"; do
 	language "C++"
 	kind "SharedLib"
 
-	Engine.GenerateOylSpyllInformation()
+	-- Engine.GenerateOylSpyllInformation()
 
 	links {
 		"SpdLog",
