@@ -70,13 +70,6 @@ namespace Oyl
 		GetNativeWindowHandle() const override;
 
 	private:
-		void
-		CreateGlfwWindow();
-
-		void
-		SetupGlfwWindowCallbacks();
-
-	private:
 		struct Impl;
 		std::unique_ptr<Impl> m_impl;
 	};

@@ -1,10 +1,15 @@
 #pragma once
 
+namespace Oyl
+{
+	class Window;
+}
+
 namespace Oyl::Rendering
 {
 	struct RenderContextParams
 	{
-		void* nativeWindow;
+		Window* window;
 	};
 
 	class OYL_CORE_API RenderContext

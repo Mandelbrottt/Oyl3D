@@ -78,27 +78,17 @@ namespace Oyl
 	};
 
 	SharedLibrary::SharedLibrary() noexcept
-		: m_impl(new Impl) {}
+		: m_impl(std::make_unique<Impl>()) {}
 
 	SharedLibrary::~SharedLibrary() noexcept
 	{
-		if (IsLoaded())
-		{
-			Unload();
-		}
-
-		std::memset(&m_impl, 0, sizeof(Impl));
-		delete m_impl;
-		m_impl = nullptr;
+		Unload();
 	}
 
 	bool
 	SharedLibrary::LoadFromFileName(const std::string& a_libraryFileName) noexcept
 	{
-		if (IsLoaded())
-		{
-			Unload();
-		}
+		Unload();
 
 		if (a_libraryFileName.empty())
 		{
@@ -117,10 +107,8 @@ namespace Oyl
 	{
 		UnloadCommon();
 
-		if (!m_impl->instance)
-		{
+		if (!IsLoaded())
 			return false;
-		}
 
 		BOOL result = TRUE;
 		if (m_impl->refCounted)
@@ -134,7 +122,7 @@ namespace Oyl
 	bool
 	SharedLibrary::IsLoaded() const noexcept
 	{
-		return m_impl->instance != NULL;
+		return m_impl && m_impl->instance != NULL;
 	}
 
 	void*
@@ -147,10 +135,7 @@ namespace Oyl
 	bool
 	SharedLibrary::LoadFromFunctionAddress(void* a_functionPtr) noexcept
 	{
-		if (IsLoaded())
-		{
-			Unload();
-		}
+		Unload();
 
 		HMODULE hModule = NULL;
 		GetModuleHandleExA(
@@ -177,18 +162,11 @@ namespace Oyl
 	};
 
 	SharedLibrary::SharedLibrary() noexcept
-		: m_impl(new Impl) {}
+		: m_impl(std::make_unique<Impl>()) {}
 
 	SharedLibrary::~SharedLibrary() noexcept
 	{
-		if (IsLoaded())
-		{
-			Unload();
-		}
-
-		std::memset(&m_impl, 0, sizeof(Impl));
-		delete m_impl;
-		m_impl = nullptr;
+		Unload();
 	}
 
 	bool
