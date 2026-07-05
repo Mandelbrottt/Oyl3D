@@ -49,19 +49,8 @@ namespace Oyl
 		: m_impl(nullptr) {}
 
 	GlfwWindow::GlfwWindow(const WindowParams& a_params) noexcept
-		: Window(a_params),
-		  m_impl(std::make_unique<Impl>())
+		: Window(a_params), m_impl(nullptr)
 	{
-		m_impl->postEventCallback = a_params.onEventCallback;
-
-		m_impl->title = a_params.title;
-
-		m_impl->position = a_params.position;
-		m_impl->size = a_params.size;
-
-		m_impl->windowState = a_params.windowState;
-		m_impl->cursorState = a_params.cursorState;
-
 		GlfwWindow::Init(a_params);
 	}
 
@@ -88,9 +77,20 @@ namespace Oyl
 	void
 	GlfwWindow::Init(const WindowParams& a_params)
 	{
-		OYL_UNUSED(a_params);
-
 		OYL_PROFILE_FUNCTION();
+
+		if (!m_impl)
+			m_impl = std::make_unique<Impl>();
+
+		m_impl->postEventCallback = a_params.onEventCallback;
+
+		m_impl->title = a_params.title;
+
+		m_impl->position = a_params.position;
+		m_impl->size = a_params.size;
+
+		m_impl->windowState = a_params.windowState;
+		m_impl->cursorState = a_params.cursorState;
 
 		m_impl->CreateGlfwWindow();
 		m_impl->SetupGlfwWindowCallbacks();
@@ -112,6 +112,8 @@ namespace Oyl
 
 		glfwDestroyWindow(m_impl->glfwWindow);
 		m_impl->glfwWindow = nullptr;
+
+		*m_impl = {};
 	}
 
 	void
@@ -292,6 +294,7 @@ namespace Oyl
 	{
 		auto monitor = glfwGetPrimaryMonitor();
 		glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
+		glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
 		glfwWindow = glfwCreateWindow(
 			size.x,
 			size.y,
