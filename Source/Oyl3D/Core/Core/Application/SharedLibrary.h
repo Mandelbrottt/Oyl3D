@@ -73,7 +73,7 @@ namespace Oyl
 
 	private:
 		struct Impl;
-		Impl* m_impl;
+		std::unique_ptr<Impl> m_impl;
 
 		mutable std::unordered_map<std::string, void*> m_cachedFunctions;
 	};

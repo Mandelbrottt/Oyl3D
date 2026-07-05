@@ -35,7 +35,14 @@ namespace Oyl
 
 		GLFWwindow* glfwWindow = nullptr;
 
-		Rendering::RenderContext* renderContext;
+		std::unique_ptr<Rendering::RenderContext> renderContext;
+
+		void
+		CreateGlfwWindow();
+		void
+		SetupGlfwWindowCallbacks();
+		void
+		CreateRenderContext(Window* a_window);
 	};
 
 	GlfwWindow::GlfwWindow() noexcept
@@ -43,7 +50,7 @@ namespace Oyl
 
 	GlfwWindow::GlfwWindow(const WindowParams& a_params) noexcept
 		: Window(a_params),
-		  m_impl(new Impl)
+		  m_impl(std::make_unique<Impl>())
 	{
 		m_impl->postEventCallback = a_params.onEventCallback;
 
@@ -62,7 +69,7 @@ namespace Oyl
 		: Window(std::move(a_other)),
 		  m_impl(nullptr)
 	{
-		std::swap(m_impl, a_other.m_impl);
+		m_impl.swap(a_other.m_impl);
 	}
 
 	GlfwWindow&
@@ -75,12 +82,7 @@ namespace Oyl
 
 	GlfwWindow::~GlfwWindow()
 	{
-		if (!m_impl)
-			return;
-
 		GlfwWindow::Destroy();
-		delete m_impl;
-		m_impl = nullptr;
 	}
 
 	void
@@ -90,18 +92,17 @@ namespace Oyl
 
 		OYL_PROFILE_FUNCTION();
 
-		CreateGlfwWindow();
-		SetupGlfwWindowCallbacks();
-
-		Rendering::RenderContextParams params {
-			.nativeWindow = m_impl->glfwWindow;
-		};
-		m_impl->renderContext = new Rendering::VulkanRenderContext(params);
+		m_impl->CreateGlfwWindow();
+		m_impl->SetupGlfwWindowCallbacks();
+		m_impl->CreateRenderContext(this);
 	}
 
 	void
 	GlfwWindow::Destroy()
 	{
+		if (!m_impl)
+			return;
+
 		if (!m_impl->glfwWindow)
 			return;
 
@@ -287,46 +288,45 @@ namespace Oyl
 	}
 
 	void
-	GlfwWindow::CreateGlfwWindow()
+	GlfwWindow::Impl::CreateGlfwWindow()
 	{
 		auto monitor = glfwGetPrimaryMonitor();
 		glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
-		auto size = m_impl->size;
-		m_impl->glfwWindow = glfwCreateWindow(
+		glfwWindow = glfwCreateWindow(
 			size.x,
 			size.y,
-			m_impl->title.c_str(),
-			m_impl->windowState & WS_Fullscreen ? monitor : nullptr,
+			title.c_str(),
+			windowState & WS_Fullscreen ? monitor : nullptr,
 			nullptr
 		);
 
 		auto* mode = glfwGetVideoMode(monitor);
-		m_impl->position.x = mode->width / 2 - m_impl->size.x / 2;
-		m_impl->position.y = mode->height / 2 - m_impl->size.y / 2;
+		position.x = mode->width / 2 - size.x / 2;
+		position.y = mode->height / 2 - size.y / 2;
 
-		glfwSetWindowAspectRatio(m_impl->glfwWindow, 16, 9);
+		glfwSetWindowAspectRatio(glfwWindow, 16, 9);
 
-		if (m_impl->windowState ^ WS_Fullscreen)
+		if (windowState ^ WS_Fullscreen)
 		{
 			glfwSetWindowMonitor(
-				m_impl->glfwWindow,
+				glfwWindow,
 				nullptr,
-				m_impl->position.x,
-				m_impl->position.y,
-				m_impl->size.x,
-				m_impl->size.y,
+				position.x,
+				position.y,
+				size.x,
+				size.y,
 				mode->refreshRate
 			);
 		}
 
-		glfwSetWindowUserPointer(m_impl->glfwWindow, m_impl);
+		glfwSetWindowUserPointer(glfwWindow, this);
 	}
 
 	void
-	GlfwWindow::SetupGlfwWindowCallbacks()
+	GlfwWindow::Impl::SetupGlfwWindowCallbacks()
 	{
 		glfwSetWindowSizeCallback(
-			m_impl->glfwWindow,
+			glfwWindow,
 			[](GLFWwindow* a_window, int a_width, int a_height)
 			{
 				if (a_width <= 0 || a_height <= 0)
@@ -346,7 +346,7 @@ namespace Oyl
 		);
 
 		glfwSetWindowPosCallback(
-			m_impl->glfwWindow,
+			glfwWindow,
 			[](GLFWwindow* a_window, int a_posX, int a_posY)
 			{
 				if (a_posX <= 0 || a_posY <= 0)
@@ -366,7 +366,7 @@ namespace Oyl
 		);
 
 		glfwSetWindowCloseCallback(
-			m_impl->glfwWindow,
+			glfwWindow,
 			[](GLFWwindow* a_window)
 			{
 				Impl* impl = reinterpret_cast<Impl*>(glfwGetWindowUserPointer(a_window));
@@ -381,7 +381,7 @@ namespace Oyl
 		);
 
 		glfwSetWindowFocusCallback(
-			m_impl->glfwWindow,
+			glfwWindow,
 			[](GLFWwindow* a_window, int a_focused)
 			{
 				Impl* impl = reinterpret_cast<Impl*>(glfwGetWindowUserPointer(a_window));
@@ -397,7 +397,7 @@ namespace Oyl
 		);
 
 		glfwSetKeyCallback(
-			m_impl->glfwWindow,
+			glfwWindow,
 			[](GLFWwindow* a_window, int a_key, int a_scanCode, int a_action, int a_mods)
 			{
 				OYL_UNUSED(a_scanCode);
@@ -436,7 +436,7 @@ namespace Oyl
 		);
 
 		glfwSetMouseButtonCallback(
-			m_impl->glfwWindow,
+			glfwWindow,
 			[](GLFWwindow* a_window, int a_button, int a_action, int a_mods)
 			{
 				Impl* impl = reinterpret_cast<Impl*>(glfwGetWindowUserPointer(a_window));
@@ -473,7 +473,7 @@ namespace Oyl
 		);
 
 		glfwSetScrollCallback(
-			m_impl->glfwWindow,
+			glfwWindow,
 			[](GLFWwindow* a_window, double a_scrollX, double a_scrollY)
 			{
 				Impl* impl = reinterpret_cast<Impl*>(glfwGetWindowUserPointer(a_window));
@@ -489,7 +489,7 @@ namespace Oyl
 		);
 
 		glfwSetCursorPosCallback(
-			m_impl->glfwWindow,
+			glfwWindow,
 			[](GLFWwindow* a_window, double a_posX, double a_posY)
 			{
 				Impl* impl = reinterpret_cast<Impl*>(glfwGetWindowUserPointer(a_window));
@@ -503,6 +503,15 @@ namespace Oyl
 				impl->postEventCallback(event);
 			}
 		);
+	}
+
+	void
+	GlfwWindow::Impl::CreateRenderContext(Window* a_window)
+	{
+		Rendering::RenderContextParams params {
+			.window = a_window
+		};
+		renderContext = std::make_unique<Rendering::VulkanRenderContext>(params);
 	}
 }
 

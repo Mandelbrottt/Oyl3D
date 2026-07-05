@@ -4,6 +4,7 @@
 
 #include <GLFW/glfw3.h>
 
+#include "Core/Application/Window.h"
 #include "Core/Logging/Logging.h"
 
 static const std::vector VALIDATION_LAYERS {
@@ -44,7 +45,7 @@ namespace Oyl::Rendering
 {
 	struct VulkanRenderContext::Impl
 	{
-		GLFWwindow* glfwWindow;
+		Window* window;
 
 		vk::raii::Context context;
 		vk::raii::Instance instance = nullptr;
@@ -74,7 +75,7 @@ namespace Oyl::Rendering
 	VulkanRenderContext::VulkanRenderContext(const RenderContextParams& a_params) noexcept
 		: m_impl(new Impl)
 	{
-		m_impl->glfwWindow = static_cast<GLFWwindow*>(a_params.nativeWindow);
+		m_impl->window = a_params.window;
 
 		VulkanRenderContext::Init(a_params);
 	}
@@ -101,6 +102,7 @@ namespace Oyl::Rendering
 
 		m_impl->CreateInstance();
 		m_impl->SetupDebugMessenger();
+		m_impl->CreateSurface();
 		m_impl->PickPhysicalDevice();
 		m_impl->CreateLogicalDevice();
 	}
@@ -210,12 +212,13 @@ namespace Oyl::Rendering
 	void
 	VulkanRenderContext::Impl::CreateSurface()
 	{
-		VkSurfaceKHR _surface;
-		if (glfwCreateWindowSurface(*instance, glfwWindow, nullptr, &_surface) != 0)
+		VkSurfaceKHR surface;
+		auto glfwWindow = static_cast<GLFWwindow*>(window->GetNativeWindowHandle());
+		if (glfwCreateWindowSurface(*instance, glfwWindow, nullptr, &surface) != VK_SUCCESS)
 		{
 			throw std::runtime_error("failed to create window surface!");
 		}
-		surface = vk::raii::SurfaceKHR(instance, _surface);
+		this->surface = vk::raii::SurfaceKHR(instance, surface);
 	}
 
 	void
