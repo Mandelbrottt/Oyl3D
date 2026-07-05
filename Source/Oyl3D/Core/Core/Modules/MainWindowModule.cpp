@@ -2,9 +2,9 @@
 
 #include <GLFW/glfw3.h>
 
-#include "Core/Logging/Logging.h"
-
+#include "Core/Application/GlfwWindow.h"
 #include "Core/Application/Main.h"
+#include "Core/Logging/Logging.h"
 
 namespace Oyl
 {
@@ -35,7 +35,7 @@ namespace Oyl
 		params.cursorState = CS_Normal;
 		params.windowState = WS_None;
 		params.onEventCallback = EventDelegate::Create(this, &MainWindowModule::PostEvent);
-		m_window = Window(params);
+		m_window = new GlfwWindow(params);
 
 		RegisterEventListener(&MainWindowModule::OnWindowResizeEvent);
 		RegisterEventListener(&MainWindowModule::OnWindowMoveEvent);
@@ -54,9 +54,9 @@ namespace Oyl
 	{
 		OYL_PROFILE_FUNCTION();
 
-		if (m_window.IsValid())
+		if (m_window->IsValid())
 		{
-			m_window.Update();
+			m_window->Update();
 		}
 	}
 
@@ -88,10 +88,11 @@ namespace Oyl
 	void
 	MainWindowModule::OnWindowCloseRequestEvent(const WindowCloseRequestEvent& a_event)
 	{
-		if (a_event.nativeWindow != m_window.GetNativeWindowHandle())
-		{
+		if (!m_window)
 			return;
-		}
+
+		if (a_event.nativeWindow != m_window->GetNativeWindowHandle())
+			return;
 
 		Detail::RequestApplicationExit();
 	}
