@@ -16,6 +16,9 @@ namespace Oyl::Rendering
 		VulkanRenderContext&
 		operator=(VulkanRenderContext&& a_other) noexcept;
 
+		virtual
+		~VulkanRenderContext();
+
 		void
 		Init(const RenderContextParams& a_params) override;
 
@@ -27,6 +30,6 @@ namespace Oyl::Rendering
 
 	private:
 		struct Impl;
-		Impl* m_impl;
+		std::unique_ptr<Impl> m_impl;
 	};
 }
