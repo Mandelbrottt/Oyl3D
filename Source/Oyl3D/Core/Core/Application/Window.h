@@ -8,7 +8,7 @@ namespace Oyl
 {
 	enum WindowStateFlags
 	{
-		WS_None = 0,
+		WS_None       = 0,
 		WS_Fullscreen = 1 << 0,
 		WS_Borderless = 1 << 1,
 		WS_VSync      = 1 << 2,
@@ -34,81 +34,137 @@ namespace Oyl
 		WindowStateFlags windowState;
 		CursorState cursorState;
 
-		// Requested Default Graphics API
-
 		EventDelegate onEventCallback;
+
+		// Requested Default Graphics API
 	};
 
-	class Window
+	class OYL_CORE_API Window
 	{
-	public:
-		Window();
+	protected:
+		Window() noexcept;
 
 		explicit
-		Window(const WindowParams& a_params);
+		Window(const WindowParams& a_params) noexcept;
 
+		Window(Window&& a_other) noexcept = default;
+		Window&
+		operator=(Window&& a_other) noexcept = default;
+
+	public:
 		Window(const Window&) = delete;
+		virtual
 		Window&
 		operator=(const Window&) = delete;
 
-		Window(Window&& a_other) noexcept;
-		Window&
-		operator=(Window&& a_other) noexcept;
+		virtual
+		~Window() noexcept;
 
 		virtual
-		~Window();
-
 		void
-		Init(const WindowParams& a_params);
+		Init(const WindowParams& a_params)
+		{
+			OYL_UNUSED(a_params);
+		}
 
+		virtual
 		void
-		Destroy();
+		Destroy() {}
 
+		virtual
 		void
-		Update();
+		Update() {}
 
+		virtual
 		bool
-		IsValid() const;
+		IsValid() const
+		{
+			return false;
+		}
 
+		virtual
 		void
-		SetEventCallback(EventDelegate a_delegate);
+		SetEventCallback(EventDelegate a_delegate)
+		{
+			OYL_UNUSED(a_delegate);
+		}
 
+		virtual
 		Vector2i
-		GetSize() const;
+		GetSize() const
+		{
+			return {};
+		}
 
+		virtual
 		void
-		SetSize(Vector2i a_size);
+		SetSize(Vector2i a_size)
+		{
+			OYL_UNUSED(a_size);
+		}
 
+		virtual
 		Vector2i
-		GetPosition() const;
+		GetPosition() const
+		{
+			return {};
+		}
 
+		virtual
 		void
-		SetPosition(Vector2i a_position);
+		SetPosition(Vector2i a_position)
+		{
+			OYL_UNUSED(a_position);
+		}
 
+		virtual
 		std::string_view
-		GetTitle() const;
+		GetTitle() const
+		{
+			return {};
+		}
 
+		virtual
 		void
-		SetTitle(std::string_view a_title);
+		SetTitle(std::string_view a_title)
+		{
+			OYL_UNUSED(a_title);
+		}
 
+		virtual
 		WindowStateFlags
-		GetWindowStateFlags() const;
+		GetWindowStateFlags() const
+		{
+			return {};
+		}
 
+		virtual
 		void
-		SetWindowStateFlags(WindowStateFlags a_flags);
+		SetWindowStateFlags(WindowStateFlags a_flags)
+		{
+			OYL_UNUSED(a_flags);
+		}
 
+		virtual
 		CursorState
-		GetCursorStateFlags() const;
+		GetCursorStateFlags() const
+		{
+			return {};
+		}
 
+		virtual
 		void
-		SetCursorStateFlags(CursorState a_state);
+		SetCursorStateFlags(CursorState a_state)
+		{
+			OYL_UNUSED(a_state);
+		}
 
+		virtual
 		void*
-		GetNativeWindowHandle() const;
-
-	private:
-		struct Impl;
-		Impl* m_impl;
+		GetNativeWindowHandle() const
+		{
+			return nullptr;
+		}
 	};
 
 	struct WindowEvent
@@ -124,7 +180,7 @@ namespace Oyl
 		Vector2i size;
 	};
 
-	struct WindowMoveEvent : WindowEvent,EventBase<WindowMoveEvent>
+	struct WindowMoveEvent : WindowEvent, EventBase<WindowMoveEvent>
 	{
 		Vector2i position;
 	};

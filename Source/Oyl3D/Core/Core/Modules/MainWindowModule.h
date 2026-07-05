@@ -53,6 +53,6 @@ namespace Oyl
 		OnWindowCursorMoveEvent(const WindowCursorMoveEvent& a_event);
 
 	private:
-		Window m_window;
+		Window* m_window;
 	};
 }
