@@ -160,6 +160,12 @@ local Packages = {
 		Include = { "Include" },
 		LibDirs = { "Lib" },
 		Libs = { "vulkan-1" },
+		OnDepend = function (package)
+			defines {
+				"VULKAN_HPP_DISPATCH_LOADER_DYNAMIC=1",
+				"VULKAN_HPP_NO_STRUCT_CONSTRUCTORS=1"
+			}
+		end
 	},
 	["Spyll.Core"] = {
 		Kind = premake.STATICLIB,
