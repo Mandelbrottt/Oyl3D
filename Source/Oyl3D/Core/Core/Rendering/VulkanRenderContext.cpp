@@ -17,6 +17,10 @@ constexpr bool ENABLE_VALIDATION_LAYERS =
 	true;
 #endif
 
+static const std::vector REQUIRED_DEVICE_EXTENSION {
+	vk::KHRSwapchainExtensionName,
+};
+
 namespace
 {
 	VKAPI_ATTR
@@ -36,8 +40,11 @@ namespace Oyl::Rendering
 	{
 		vk::raii::Context context;
 		vk::raii::Instance instance = nullptr;
-
 		vk::raii::DebugUtilsMessengerEXT debugMessenger = nullptr;
+
+		vk::raii::PhysicalDevice physicalDevice = nullptr;
+		vk::raii::Device device = nullptr;
+		vk::raii::Queue graphicsQueue = nullptr;
 	};
 
 	VulkanRenderContext::VulkanRenderContext() noexcept
@@ -71,6 +78,8 @@ namespace Oyl::Rendering
 
 		CreateInstance();
 		SetupDebugMessenger();
+		PickPhysicalDevice();
+		CreateLogicalDevice();
 	}
 
 	void
@@ -82,12 +91,13 @@ namespace Oyl::Rendering
 	void
 	VulkanRenderContext::CreateInstance()
 	{
-		vk::ApplicationInfo appInfo;
-		appInfo.pApplicationName = "Oyl3D";
-		appInfo.applicationVersion = VK_MAKE_VERSION(1, 0, 0);
-		appInfo.pEngineName = "Oyl3D";
-		appInfo.engineVersion = VK_MAKE_VERSION(1, 0, 0);
-		appInfo.apiVersion = vk::ApiVersion14;
+		vk::ApplicationInfo appInfo {
+			.pApplicationName = "Oyl3D",
+			.applicationVersion = VK_MAKE_VERSION(1, 0, 0),
+			.pEngineName = "Oyl3D",
+			.engineVersion = VK_MAKE_VERSION(1, 0, 0),
+			.apiVersion = vk::ApiVersion14,
+		};
 
 		// Get the required layers
 		std::vector<const char*> requiredLayers;
@@ -139,12 +149,13 @@ namespace Oyl::Rendering
 			throw std::runtime_error("Required extension not supported: " + std::string(*unsupportedPropertyIt));
 		}
 
-		vk::InstanceCreateInfo createInfo;
-		createInfo.pApplicationInfo = &appInfo;
-		createInfo.enabledLayerCount = (uint32) requiredLayers.size();
-		createInfo.ppEnabledLayerNames = requiredLayers.data();
-		createInfo.enabledExtensionCount = (uint32) requiredExtensions.size();
-		createInfo.ppEnabledExtensionNames = requiredExtensions.data();
+		vk::InstanceCreateInfo createInfo {
+			.pApplicationInfo = &appInfo,
+			.enabledLayerCount = (uint32) requiredLayers.size(),
+			.ppEnabledLayerNames = requiredLayers.data(),
+			.enabledExtensionCount = (uint32) requiredExtensions.size(),
+			.ppEnabledExtensionNames = requiredExtensions.data(),
+		};
 
 		m_impl->instance = vk::raii::Instance(m_impl->context, createInfo);
 	}
@@ -165,11 +176,115 @@ namespace Oyl::Rendering
 			| vk::DebugUtilsMessageTypeFlagBitsEXT::eValidation
 		);
 
-		vk::DebugUtilsMessengerCreateInfoEXT debugUtilsMessengerCreateInfoEXT;
-		debugUtilsMessengerCreateInfoEXT.messageSeverity = severityFlags;
-		debugUtilsMessengerCreateInfoEXT.messageType = messageTypeFlags;
-		debugUtilsMessengerCreateInfoEXT.pfnUserCallback = DebugCallback;
+		vk::DebugUtilsMessengerCreateInfoEXT debugUtilsMessengerCreateInfoEXT {
+			.messageSeverity = severityFlags,
+			.messageType = messageTypeFlags,
+			.pfnUserCallback = DebugCallback,
+		};
 		m_impl->debugMessenger = m_impl->instance.createDebugUtilsMessengerEXT(debugUtilsMessengerCreateInfoEXT);
+	}
+
+	bool
+	VulkanRenderContext::IsDeviceSuitable(const vk::raii::PhysicalDevice& a_device) const
+	{
+		// Check if the physicalDevice supports the Vulkan 1.3 API version
+		bool supportsVulkan1_3 = a_device.getProperties().apiVersion >= vk::ApiVersion13;
+
+		// Check if any of the queue families support graphics operations
+		auto queueFamilies = a_device.getQueueFamilyProperties();
+		bool supportsGraphics = std::ranges::any_of(
+			queueFamilies,
+			[](const auto& a_qfp)
+			{
+				return !!(a_qfp.queueFlags & vk::QueueFlagBits::eGraphics);
+			}
+		);
+
+		// Check if all required physicalDevice extensions are available
+		auto availableDeviceExtensions = a_device.enumerateDeviceExtensionProperties();
+		bool supportsAllRequiredExtensions =
+			std::ranges::all_of(
+				REQUIRED_DEVICE_EXTENSION,
+				[&availableDeviceExtensions](const auto& a_requiredDeviceExtension)
+				{
+					return std::ranges::any_of(
+						availableDeviceExtensions,
+						[a_requiredDeviceExtension](const auto& a_availableDeviceExtension)
+						{
+							return strcmp(a_availableDeviceExtension.extensionName, a_requiredDeviceExtension) == 0;
+						}
+					);
+				}
+			);
+
+		// Check if the physicalDevice supports the required features (shader draw parameters, dynamic rendering and extended dynamic state)
+		auto features = a_device.getFeatures2<vk::PhysicalDeviceFeatures2,
+		                                      vk::PhysicalDeviceVulkan11Features,
+		                                      vk::PhysicalDeviceVulkan13Features,
+		                                      vk::PhysicalDeviceExtendedDynamicStateFeaturesEXT>();
+		bool supportsRequiredFeatures = features.get<vk::PhysicalDeviceVulkan11Features>().shaderDrawParameters &&
+		                                features.get<vk::PhysicalDeviceVulkan13Features>().dynamicRendering &&
+		                                features.get<vk::PhysicalDeviceExtendedDynamicStateFeaturesEXT>().extendedDynamicState;
+
+		// Return true if the physicalDevice meets all the criteria
+		return supportsVulkan1_3 && supportsGraphics && supportsAllRequiredExtensions && supportsRequiredFeatures;
+	}
+
+	void
+	VulkanRenderContext::PickPhysicalDevice()
+	{
+		auto physicalDevices = m_impl->instance.enumeratePhysicalDevices();
+		const auto iter = std::ranges::find_if(
+			physicalDevices,
+			[&](const auto& a_physicalDevice)
+			{
+				return IsDeviceSuitable(a_physicalDevice);
+			}
+		);
+		if (iter == physicalDevices.end())
+		{
+			throw std::runtime_error("failed to find a suitable GPU with Vulkan support!");
+		}
+		m_impl->physicalDevice = *iter;
+	}
+
+	void
+	VulkanRenderContext::CreateLogicalDevice()
+	{
+		std::vector<vk::QueueFamilyProperties> queueFamilyProperties = m_impl->physicalDevice.getQueueFamilyProperties();
+		auto graphicsQueueFamilyProperty = std::ranges::find_if(
+			queueFamilyProperties,
+			[](const auto& a_qfp)
+			{
+				return (a_qfp.queueFlags & vk::QueueFlagBits::eGraphics) != static_cast<vk::QueueFlags>(0);
+			}
+		);
+		auto graphicsIndex = static_cast<uint32_t>(std::distance(queueFamilyProperties.begin(), graphicsQueueFamilyProperty));
+		float queuePriority = 0.5f;
+		vk::DeviceQueueCreateInfo deviceQueueCreateInfo {
+			.queueFamilyIndex = graphicsIndex,
+			.queueCount = 1,
+			.pQueuePriorities = &queuePriority,
+		};
+
+		// Create a chain of feature structures
+		vk::StructureChain featureChain = {
+			vk::PhysicalDeviceFeatures2(),
+			vk::PhysicalDeviceVulkan11Features { .shaderDrawParameters = true },
+			vk::PhysicalDeviceVulkan13Features { .dynamicRendering = true },
+			vk::PhysicalDeviceExtendedDynamicStateFeaturesEXT { .extendedDynamicState = true }
+		};
+
+		vk::DeviceCreateInfo deviceCreateInfo {
+			.pNext = &featureChain.get<vk::PhysicalDeviceFeatures2>(),
+			.queueCreateInfoCount = 1,
+			.pQueueCreateInfos = &deviceQueueCreateInfo,
+			.enabledExtensionCount = (uint32) REQUIRED_DEVICE_EXTENSION.size(),
+			.ppEnabledExtensionNames = REQUIRED_DEVICE_EXTENSION.data(),
+		};
+
+		m_impl->device = vk::raii::Device(m_impl->physicalDevice, deviceCreateInfo);
+		m_impl->graphicsQueue = vk::raii::Queue(m_impl->device, graphicsIndex, 0);
 	}
 
 	std::vector<const char*>
@@ -199,26 +314,28 @@ namespace
 	{
 		OYL_UNUSED(a_pUserData);
 
+		constexpr char message[] = "Validation Layer [{}]: {}";
+
 		switch (a_severity)
 		{
 			case vk::DebugUtilsMessageSeverityFlagBitsEXT::eVerbose:
 			{
-				OYL_LOG_DEBUG("Validation Layer [{}]: {}", to_string(a_type).data(), a_pCallbackData->pMessage);
+				OYL_LOG_DEBUG(message, to_string(a_type).data(), a_pCallbackData->pMessage);
 				break;
 			}
 			case vk::DebugUtilsMessageSeverityFlagBitsEXT::eInfo:
 			{
-				OYL_LOG_INFO("Validation Layer [{}]: {}", to_string(a_type).data(), a_pCallbackData->pMessage);
+				OYL_LOG_INFO(message, to_string(a_type).data(), a_pCallbackData->pMessage);
 				break;
 			}
 			case vk::DebugUtilsMessageSeverityFlagBitsEXT::eWarning:
 			{
-				OYL_LOG_WARNING("Validation Layer [{}]: {}", to_string(a_type).data(), a_pCallbackData->pMessage);
+				OYL_LOG_WARNING(message, to_string(a_type).data(), a_pCallbackData->pMessage);
 				break;
 			}
 			case vk::DebugUtilsMessageSeverityFlagBitsEXT::eError:
 			{
-				OYL_LOG_ERROR("Validation Layer [{}]: {}", to_string(a_type).data(), a_pCallbackData->pMessage);
+				OYL_LOG_ERROR(message, to_string(a_type).data(), a_pCallbackData->pMessage);
 				break;
 			}
 			default:
