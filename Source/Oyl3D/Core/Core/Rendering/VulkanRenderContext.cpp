@@ -71,6 +71,7 @@ namespace Oyl::Rendering
 
 		vk::raii::SwapchainKHR swapChain = nullptr;
 		std::vector<vk::Image> swapChainImages;
+		std::vector<vk::raii::ImageView> swapChainImageViews;
 		vk::SurfaceFormatKHR swapChainSurfaceFormat;
 		vk::Extent2D swapChainExtent;
 
@@ -86,6 +87,8 @@ namespace Oyl::Rendering
 		CreateLogicalDevice();
 		void
 		CreateSwapChain();
+		void
+		CreateSwapChainImageViews();
 	};
 
 	VulkanRenderContext::VulkanRenderContext() noexcept
@@ -134,6 +137,7 @@ namespace Oyl::Rendering
 		m_impl->PickPhysicalDevice();
 		m_impl->CreateLogicalDevice();
 		m_impl->CreateSwapChain();
+		m_impl->CreateSwapChainImageViews();
 	}
 
 	void
@@ -364,6 +368,27 @@ namespace Oyl::Rendering
 		};
 		swapChain = vk::raii::SwapchainKHR(device, swapChainCreateInfo);
 		swapChainImages = swapChain.getImages();
+	}
+
+	void
+	VulkanRenderContext::Impl::CreateSwapChainImageViews()
+	{
+		OYL_ASSERT(swapChainImageViews.empty());
+
+		vk::ImageViewCreateInfo imageViewCreateInfo {
+			.viewType = vk::ImageViewType::e2D,
+			.format = swapChainSurfaceFormat.format,
+			.subresourceRange = {
+				.aspectMask = vk::ImageAspectFlagBits::eColor,
+				.levelCount = 1,
+				.layerCount = 1
+			},
+		};
+		for (auto& image : swapChainImages)
+		{
+			imageViewCreateInfo.image = image;
+			swapChainImageViews.emplace_back(device, imageViewCreateInfo);
+		}
 	}
 }
 
