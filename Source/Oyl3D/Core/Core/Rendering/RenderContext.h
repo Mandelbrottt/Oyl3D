@@ -7,35 +7,36 @@ namespace Oyl::Rendering
 
 	};
 
-	class RenderContext
+	class OYL_CORE_API RenderContext
 	{
-	public:
+	protected:
 		RenderContext() noexcept;
 
 		explicit
 		RenderContext(const RenderContextParams& a_params) noexcept;
 
+		RenderContext(RenderContext&& a_other) noexcept = default;
+		RenderContext&
+		operator=(RenderContext&& a_other) noexcept = default;
+
+	public:
 		RenderContext(const RenderContext&) = delete;
 		RenderContext&
 		operator=(const RenderContext&) = delete;
 
-		RenderContext(RenderContext&& a_other) noexcept;
-		RenderContext&
-		operator=(RenderContext&& a_other) noexcept;
-
+		virtual
 		~RenderContext() noexcept;
 
+		virtual
 		void
-		Init(const RenderContextParams& a_params);
+		Init(const RenderContextParams& a_params) = 0;
 
+		virtual
 		void
-		Update();
+		Update() = 0;
 
+		virtual
 		void
-		Destroy();
-
-	private:
-		struct Impl;
-		Impl* m_impl;
+		Destroy() = 0;
 	};
 }
