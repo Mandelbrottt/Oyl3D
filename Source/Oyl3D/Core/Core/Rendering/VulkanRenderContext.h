@@ -2,11 +2,6 @@
 
 #include "RenderContext.h"
 
-namespace vk::raii
-{
-	class PhysicalDevice;
-}
-
 namespace Oyl::Rendering
 {
 	class OYL_CORE_API VulkanRenderContext final : public RenderContext
@@ -29,25 +24,6 @@ namespace Oyl::Rendering
 
 		void
 		Destroy() override;
-
-		void
-		CreateInstance();
-
-	private:
-		void
-		SetupDebugMessenger();
-
-		bool
-		IsDeviceSuitable(const vk::raii::PhysicalDevice& a_device) const;
-
-		void
-		PickPhysicalDevice();
-
-		void
-		CreateLogicalDevice();
-
-		std::vector<const char*>
-		GetRequiredInstanceExtensions() const;
 
 	private:
 		struct Impl;

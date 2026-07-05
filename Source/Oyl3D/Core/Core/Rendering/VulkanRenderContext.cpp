@@ -32,6 +32,12 @@ namespace
 		const vk::DebugUtilsMessengerCallbackDataEXT* a_pCallbackData,
 		void* a_pUserData
 	);
+
+	bool
+	IsDeviceSuitable(const vk::raii::PhysicalDevice& a_physicalDevice);
+
+	std::vector<const char*>
+	GetRequiredInstanceExtensions();
 }
 
 namespace Oyl::Rendering
@@ -45,6 +51,15 @@ namespace Oyl::Rendering
 		vk::raii::PhysicalDevice physicalDevice = nullptr;
 		vk::raii::Device device = nullptr;
 		vk::raii::Queue graphicsQueue = nullptr;
+
+		void
+		CreateInstance();
+		void
+		SetupDebugMessenger();
+		void
+		PickPhysicalDevice();
+		void
+		CreateLogicalDevice();
 	};
 
 	VulkanRenderContext::VulkanRenderContext() noexcept
@@ -76,10 +91,10 @@ namespace Oyl::Rendering
 	{
 		OYL_UNUSED(a_params);
 
-		CreateInstance();
-		SetupDebugMessenger();
-		PickPhysicalDevice();
-		CreateLogicalDevice();
+		m_impl->CreateInstance();
+		m_impl->SetupDebugMessenger();
+		m_impl->PickPhysicalDevice();
+		m_impl->CreateLogicalDevice();
 	}
 
 	void
@@ -89,7 +104,7 @@ namespace Oyl::Rendering
 	VulkanRenderContext::Destroy() {}
 
 	void
-	VulkanRenderContext::CreateInstance()
+	VulkanRenderContext::Impl::CreateInstance()
 	{
 		vk::ApplicationInfo appInfo {
 			.pApplicationName = "Oyl3D",
@@ -107,7 +122,7 @@ namespace Oyl::Rendering
 		}
 
 		// Check if the required layers are supported by the Vulkan implementation.
-		auto layerProperties = m_impl->context.enumerateInstanceLayerProperties();
+		auto layerProperties = context.enumerateInstanceLayerProperties();
 		auto unsupportedLayerIt = std::ranges::find_if(
 			requiredLayers,
 			[&layerProperties](const auto& a_requiredLayer)
@@ -130,7 +145,7 @@ namespace Oyl::Rendering
 		auto requiredExtensions = GetRequiredInstanceExtensions();
 
 		// Check if the required extensions are supported by the Vulkan implementation.
-		auto extensionProperties = m_impl->context.enumerateInstanceExtensionProperties();
+		auto extensionProperties = context.enumerateInstanceExtensionProperties();
 		auto unsupportedPropertyIt = std::ranges::find_if(
 			requiredExtensions,
 			[&extensionProperties](const auto& a_requiredExtension)
@@ -157,11 +172,11 @@ namespace Oyl::Rendering
 			.ppEnabledExtensionNames = requiredExtensions.data(),
 		};
 
-		m_impl->instance = vk::raii::Instance(m_impl->context, createInfo);
+		instance = vk::raii::Instance(context, createInfo);
 	}
 
 	void
-	VulkanRenderContext::SetupDebugMessenger()
+	VulkanRenderContext::Impl::SetupDebugMessenger()
 	{
 		if constexpr (!ENABLE_VALIDATION_LAYERS)
 			return;
@@ -181,59 +196,13 @@ namespace Oyl::Rendering
 			.messageType = messageTypeFlags,
 			.pfnUserCallback = DebugCallback,
 		};
-		m_impl->debugMessenger = m_impl->instance.createDebugUtilsMessengerEXT(debugUtilsMessengerCreateInfoEXT);
-	}
-
-	bool
-	VulkanRenderContext::IsDeviceSuitable(const vk::raii::PhysicalDevice& a_device) const
-	{
-		// Check if the physicalDevice supports the Vulkan 1.3 API version
-		bool supportsVulkan1_3 = a_device.getProperties().apiVersion >= vk::ApiVersion13;
-
-		// Check if any of the queue families support graphics operations
-		auto queueFamilies = a_device.getQueueFamilyProperties();
-		bool supportsGraphics = std::ranges::any_of(
-			queueFamilies,
-			[](const auto& a_qfp)
-			{
-				return !!(a_qfp.queueFlags & vk::QueueFlagBits::eGraphics);
-			}
-		);
-
-		// Check if all required physicalDevice extensions are available
-		auto availableDeviceExtensions = a_device.enumerateDeviceExtensionProperties();
-		bool supportsAllRequiredExtensions =
-			std::ranges::all_of(
-				REQUIRED_DEVICE_EXTENSION,
-				[&availableDeviceExtensions](const auto& a_requiredDeviceExtension)
-				{
-					return std::ranges::any_of(
-						availableDeviceExtensions,
-						[a_requiredDeviceExtension](const auto& a_availableDeviceExtension)
-						{
-							return strcmp(a_availableDeviceExtension.extensionName, a_requiredDeviceExtension) == 0;
-						}
-					);
-				}
-			);
-
-		// Check if the physicalDevice supports the required features (shader draw parameters, dynamic rendering and extended dynamic state)
-		auto features = a_device.getFeatures2<vk::PhysicalDeviceFeatures2,
-		                                      vk::PhysicalDeviceVulkan11Features,
-		                                      vk::PhysicalDeviceVulkan13Features,
-		                                      vk::PhysicalDeviceExtendedDynamicStateFeaturesEXT>();
-		bool supportsRequiredFeatures = features.get<vk::PhysicalDeviceVulkan11Features>().shaderDrawParameters &&
-		                                features.get<vk::PhysicalDeviceVulkan13Features>().dynamicRendering &&
-		                                features.get<vk::PhysicalDeviceExtendedDynamicStateFeaturesEXT>().extendedDynamicState;
-
-		// Return true if the physicalDevice meets all the criteria
-		return supportsVulkan1_3 && supportsGraphics && supportsAllRequiredExtensions && supportsRequiredFeatures;
+		debugMessenger = instance.createDebugUtilsMessengerEXT(debugUtilsMessengerCreateInfoEXT);
 	}
 
 	void
-	VulkanRenderContext::PickPhysicalDevice()
+	VulkanRenderContext::Impl::PickPhysicalDevice()
 	{
-		auto physicalDevices = m_impl->instance.enumeratePhysicalDevices();
+		auto physicalDevices = instance.enumeratePhysicalDevices();
 		const auto iter = std::ranges::find_if(
 			physicalDevices,
 			[&](const auto& a_physicalDevice)
@@ -245,13 +214,13 @@ namespace Oyl::Rendering
 		{
 			throw std::runtime_error("failed to find a suitable GPU with Vulkan support!");
 		}
-		m_impl->physicalDevice = *iter;
+		physicalDevice = *iter;
 	}
 
 	void
-	VulkanRenderContext::CreateLogicalDevice()
+	VulkanRenderContext::Impl::CreateLogicalDevice()
 	{
-		std::vector<vk::QueueFamilyProperties> queueFamilyProperties = m_impl->physicalDevice.getQueueFamilyProperties();
+		std::vector<vk::QueueFamilyProperties> queueFamilyProperties = physicalDevice.getQueueFamilyProperties();
 		auto graphicsQueueFamilyProperty = std::ranges::find_if(
 			queueFamilyProperties,
 			[](const auto& a_qfp)
@@ -283,22 +252,8 @@ namespace Oyl::Rendering
 			.ppEnabledExtensionNames = REQUIRED_DEVICE_EXTENSION.data(),
 		};
 
-		m_impl->device = vk::raii::Device(m_impl->physicalDevice, deviceCreateInfo);
-		m_impl->graphicsQueue = vk::raii::Queue(m_impl->device, graphicsIndex, 0);
-	}
-
-	std::vector<const char*>
-	VulkanRenderContext::GetRequiredInstanceExtensions() const
-	{
-		uint32_t glfwExtensionCount = 0;
-		auto glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);
-
-		std::vector<const char*> extensions(glfwExtensions, glfwExtensions + glfwExtensionCount);
-		if constexpr (ENABLE_VALIDATION_LAYERS)
-		{
-			extensions.push_back(vk::EXTDebugUtilsExtensionName);
-		}
-		return extensions;
+		device = vk::raii::Device(physicalDevice, deviceCreateInfo);
+		graphicsQueue = vk::raii::Queue(device, graphicsIndex, 0);
 	}
 }
 
@@ -343,5 +298,65 @@ namespace
 		}
 
 		return vk::False;
+	}
+
+	std::vector<const char*>
+	GetRequiredInstanceExtensions()
+	{
+		uint32_t glfwExtensionCount = 0;
+		auto glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);
+
+		std::vector<const char*> extensions(glfwExtensions, glfwExtensions + glfwExtensionCount);
+		if constexpr (ENABLE_VALIDATION_LAYERS)
+		{
+			extensions.push_back(vk::EXTDebugUtilsExtensionName);
+		}
+		return extensions;
+	}
+
+	bool
+	IsDeviceSuitable(const vk::raii::PhysicalDevice& a_physicalDevice)
+	{
+		// Check if the physicalDevice supports the Vulkan 1.3 API version
+		bool supportsVulkan1_3 = a_physicalDevice.getProperties().apiVersion >= vk::ApiVersion13;
+
+		// Check if any of the queue families support graphics operations
+		auto queueFamilies = a_physicalDevice.getQueueFamilyProperties();
+		bool supportsGraphics = std::ranges::any_of(
+			queueFamilies,
+			[](const auto& a_qfp)
+			{
+				return !!(a_qfp.queueFlags & vk::QueueFlagBits::eGraphics);
+			}
+		);
+
+		// Check if all required physicalDevice extensions are available
+		auto availableDeviceExtensions = a_physicalDevice.enumerateDeviceExtensionProperties();
+		bool supportsAllRequiredExtensions =
+			std::ranges::all_of(
+				REQUIRED_DEVICE_EXTENSION,
+				[&availableDeviceExtensions](const auto& a_requiredDeviceExtension)
+				{
+					return std::ranges::any_of(
+						availableDeviceExtensions,
+						[a_requiredDeviceExtension](const auto& a_availableDeviceExtension)
+						{
+							return strcmp(a_availableDeviceExtension.extensionName, a_requiredDeviceExtension) == 0;
+						}
+					);
+				}
+			);
+
+		// Check if the physicalDevice supports the required features (shader draw parameters, dynamic rendering and extended dynamic state)
+		auto features = a_physicalDevice.getFeatures2<vk::PhysicalDeviceFeatures2,
+		                                              vk::PhysicalDeviceVulkan11Features,
+		                                              vk::PhysicalDeviceVulkan13Features,
+		                                              vk::PhysicalDeviceExtendedDynamicStateFeaturesEXT>();
+		bool supportsRequiredFeatures = features.get<vk::PhysicalDeviceVulkan11Features>().shaderDrawParameters &&
+		                                features.get<vk::PhysicalDeviceVulkan13Features>().dynamicRendering &&
+		                                features.get<vk::PhysicalDeviceExtendedDynamicStateFeaturesEXT>().extendedDynamicState;
+
+		// Return true if the physicalDevice meets all the criteria
+		return supportsVulkan1_3 && supportsGraphics && supportsAllRequiredExtensions && supportsRequiredFeatures;
 	}
 }
