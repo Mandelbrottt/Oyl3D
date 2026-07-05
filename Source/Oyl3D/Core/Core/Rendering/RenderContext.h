@@ -4,7 +4,7 @@ namespace Oyl::Rendering
 {
 	struct RenderContextParams
 	{
-
+		void* nativeWindow;
 	};
 
 	class OYL_CORE_API RenderContext

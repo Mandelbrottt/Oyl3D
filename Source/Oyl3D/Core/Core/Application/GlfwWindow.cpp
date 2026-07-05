@@ -93,7 +93,9 @@ namespace Oyl
 		CreateGlfwWindow();
 		SetupGlfwWindowCallbacks();
 
-		Rendering::RenderContextParams params;
+		Rendering::RenderContextParams params {
+			.nativeWindow = m_impl->glfwWindow;
+		};
 		m_impl->renderContext = new Rendering::VulkanRenderContext(params);
 	}
 

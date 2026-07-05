@@ -2,6 +2,8 @@
 
 #include "Window.h"
 
+#include <memory>
+
 namespace Oyl
 {
 	class OYL_CORE_API GlfwWindow : public Window
@@ -76,6 +78,6 @@ namespace Oyl
 
 	private:
 		struct Impl;
-		Impl* m_impl;
+		std::unique_ptr<Impl> m_impl;
 	};
 }
