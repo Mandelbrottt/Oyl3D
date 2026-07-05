@@ -5,6 +5,7 @@ local CppFilePatterns = {
 	"*.h",
 	"*.inl",
 	"*.natvis",
+	"*.hlsl",
 }
 
 --- Run the script at script_path

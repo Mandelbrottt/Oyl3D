@@ -244,6 +244,10 @@ function Engine.CommonCppSettings()
 		}
 	end
 
+	filter "files:**.hlsl"; do
+		excludefrombuild "On"
+	end
+
 	filter "kind:StaticLib"; do
 		targetdir(Config.LibraryDir)
 	end
