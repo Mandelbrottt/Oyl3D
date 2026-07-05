@@ -2,6 +2,8 @@
 
 #include <GLFW/glfw3.h>
 
+#include "Core/Rendering/VulkanRenderContext.h"
+
 namespace
 {
 	Oyl::Input::KeyboardKey
@@ -29,16 +31,19 @@ namespace Oyl
 		WindowStateFlags windowState;
 		CursorState cursorState;
 
+		EventDelegate postEventCallback;
+
 		GLFWwindow* glfwWindow = nullptr;
 
-		EventDelegate postEventCallback;
+		Rendering::RenderContext* renderContext;
 	};
 
 	GlfwWindow::GlfwWindow() noexcept
 		: m_impl(nullptr) {}
 
 	GlfwWindow::GlfwWindow(const WindowParams& a_params) noexcept
-		: Window(a_params), m_impl(new Impl)
+		: Window(a_params),
+		  m_impl(new Impl)
 	{
 		m_impl->postEventCallback = a_params.onEventCallback;
 
@@ -54,7 +59,8 @@ namespace Oyl
 	}
 
 	GlfwWindow::GlfwWindow(GlfwWindow&& a_other) noexcept
-		: Window(std::move(a_other)), m_impl(nullptr)
+		: Window(std::move(a_other)),
+		  m_impl(nullptr)
 	{
 		std::swap(m_impl, a_other.m_impl);
 	}
@@ -80,10 +86,208 @@ namespace Oyl
 	void
 	GlfwWindow::Init(const WindowParams& a_params)
 	{
+		OYL_UNUSED(a_params);
+
 		OYL_PROFILE_FUNCTION();
 
-		auto monitor = glfwGetPrimaryMonitor();
+		CreateGlfwWindow();
+		SetupGlfwWindowCallbacks();
 
+		Rendering::RenderContextParams params;
+		m_impl->renderContext = new Rendering::VulkanRenderContext(params);
+	}
+
+	void
+	GlfwWindow::Destroy()
+	{
+		if (!m_impl->glfwWindow)
+			return;
+
+		OYL_PROFILE_FUNCTION();
+
+		m_impl->renderContext->Destroy();
+
+		glfwDestroyWindow(m_impl->glfwWindow);
+		m_impl->glfwWindow = nullptr;
+	}
+
+	void
+	GlfwWindow::Update()
+	{
+		OYL_PROFILE_FUNCTION();
+
+		glfwPollEvents();
+	}
+
+	bool
+	GlfwWindow::IsValid() const
+	{
+		return m_impl->glfwWindow != nullptr;
+	}
+
+	void
+	GlfwWindow::SetEventCallback(EventDelegate a_delegate)
+	{
+		m_impl->postEventCallback = std::move(a_delegate);
+	}
+
+	Vector2i
+	GlfwWindow::GetSize() const
+	{
+		return m_impl->size;
+	}
+
+	void
+	GlfwWindow::SetSize(Vector2i a_size)
+	{
+		auto monitor = glfwGetWindowMonitor(m_impl->glfwWindow);
+		auto mode = glfwGetVideoMode(monitor);
+
+		glfwSetWindowMonitor(
+			m_impl->glfwWindow,
+			monitor,
+			m_impl->position.x,
+			m_impl->position.y,
+			a_size.x,
+			a_size.y,
+			mode->refreshRate
+		);
+
+		m_impl->size = a_size;
+	}
+
+	Vector2i
+	GlfwWindow::GetPosition() const
+	{
+		return m_impl->position;
+	}
+
+	void
+	GlfwWindow::SetPosition(Vector2i a_position)
+	{
+		auto monitor = glfwGetWindowMonitor(m_impl->glfwWindow);
+		auto mode = glfwGetVideoMode(monitor);
+
+		glfwSetWindowMonitor(
+			m_impl->glfwWindow,
+			monitor,
+			a_position.x,
+			a_position.y,
+			m_impl->size.x,
+			m_impl->size.y,
+			mode->refreshRate
+		);
+
+		m_impl->position = a_position;
+	}
+
+	std::string_view
+	GlfwWindow::GetTitle() const
+	{
+		return m_impl->title;
+	}
+
+	void
+	GlfwWindow::SetTitle(std::string_view a_title)
+	{
+		m_impl->title = std::string(a_title);
+		glfwSetWindowTitle(m_impl->glfwWindow, m_impl->title.c_str());
+	}
+
+	WindowStateFlags
+	GlfwWindow::GetWindowStateFlags() const
+	{
+		return m_impl->windowState;
+	}
+
+	void
+	GlfwWindow::SetWindowStateFlags(WindowStateFlags a_flags)
+	{
+		if (m_impl->windowState == a_flags)
+		{
+			return;
+		}
+
+		OYL_PROFILE_FUNCTION();
+
+		Vector2i desiredSize;
+
+		// get resolution of monitor
+		const GLFWvidmode* mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
+
+		if (a_flags & (WS_Fullscreen | WS_Borderless))
+		{
+			// backup window position and window size
+			glfwGetWindowPos(m_impl->glfwWindow, &m_impl->position.x, &m_impl->position.y);
+			glfwGetWindowSize(m_impl->glfwWindow, &m_impl->size.y, &m_impl->size.y);
+
+			// switch to full screen
+			glfwSetWindowMonitor(
+				m_impl->glfwWindow,
+				glfwGetWindowMonitor(m_impl->glfwWindow),
+				0,
+				0,
+				mode->width,
+				mode->height,
+				mode->refreshRate
+			);
+
+			desiredSize = { mode->width, mode->height };
+		} else if (a_flags ^ (WS_Fullscreen | WS_Borderless))
+		{
+			glfwSetWindowMonitor(
+				m_impl->glfwWindow,
+				nullptr,
+				m_impl->position.x,
+				m_impl->position.y,
+				m_impl->size.x,
+				m_impl->size.y,
+				mode->refreshRate
+			);
+			desiredSize = m_impl->size;
+		}
+
+		// Set Context Size
+		OYL_UNUSED(desiredSize);
+		m_impl->windowState = a_flags;
+	}
+
+	CursorState
+	GlfwWindow::GetCursorStateFlags() const
+	{
+		return m_impl->cursorState;
+	}
+
+	void
+	GlfwWindow::SetCursorStateFlags(CursorState a_state)
+	{
+		if (m_impl->cursorState == a_state)
+		{
+			return;
+		}
+
+		int table[CS_Last];
+		table[CS_Normal] = GLFW_CURSOR_NORMAL;
+		table[CS_Hidden] = GLFW_CURSOR_HIDDEN;
+		table[CS_Disabled] = GLFW_CURSOR_DISABLED;
+		table[CS_Locked] = GLFW_CURSOR_CAPTURED;
+
+		uint glfwState = table[a_state];
+		glfwSetInputMode(m_impl->glfwWindow, GLFW_CURSOR, glfwState);
+
+		m_impl->cursorState = a_state;
+	}
+
+	void*
+	GlfwWindow::GetNativeWindowHandle() const
+	{
+		return m_impl->glfwWindow;
+	}
+
+	void
+	GlfwWindow::CreateGlfwWindow()
+	{
+		auto monitor = glfwGetPrimaryMonitor();
 		glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
 		auto size = m_impl->size;
 		m_impl->glfwWindow = glfwCreateWindow(
@@ -95,8 +299,8 @@ namespace Oyl
 		);
 
 		auto* mode = glfwGetVideoMode(monitor);
-		m_impl->position.x = mode->width / 2 - a_params.size.x / 2;
-		m_impl->position.y = mode->height / 2 - a_params.size.y / 2;
+		m_impl->position.x = mode->width / 2 - m_impl->size.x / 2;
+		m_impl->position.y = mode->height / 2 - m_impl->size.y / 2;
 
 		glfwSetWindowAspectRatio(m_impl->glfwWindow, 16, 9);
 
@@ -114,7 +318,11 @@ namespace Oyl
 		}
 
 		glfwSetWindowUserPointer(m_impl->glfwWindow, m_impl);
+	}
 
+	void
+	GlfwWindow::SetupGlfwWindowCallbacks()
+	{
 		glfwSetWindowSizeCallback(
 			m_impl->glfwWindow,
 			[](GLFWwindow* a_window, int a_width, int a_height)
@@ -294,194 +502,7 @@ namespace Oyl
 			}
 		);
 	}
-
-	void
-	GlfwWindow::Destroy()
-	{
-		if (!m_impl->glfwWindow)
-			return;
-
-		OYL_PROFILE_FUNCTION();
-
-		// TODO: Destroy context alongside window
-		glfwDestroyWindow(m_impl->glfwWindow);
-		m_impl->glfwWindow = nullptr;
-	}
-
-	void
-	GlfwWindow::Update()
-	{
-		OYL_PROFILE_FUNCTION();
-
-		glfwPollEvents();
-	}
-
-	bool
-	GlfwWindow::IsValid() const
-	{
-		return m_impl->glfwWindow != nullptr;
-	}
-
-	void
-	GlfwWindow::SetEventCallback(EventDelegate a_delegate)
-	{
-		m_impl->postEventCallback = std::move(a_delegate);
-	}
-
-	Vector2i
-	GlfwWindow::GetSize() const
-	{
-		return m_impl->size;
-	}
-
-	void
-	GlfwWindow::SetSize(Vector2i a_size)
-	{
-		auto monitor = glfwGetWindowMonitor(m_impl->glfwWindow);
-		auto mode = glfwGetVideoMode(monitor);
-
-		glfwSetWindowMonitor(
-			m_impl->glfwWindow,
-			monitor,
-			m_impl->position.x,
-			m_impl->position.y,
-			a_size.x,
-			a_size.y,
-			mode->refreshRate
-		);
-
-		m_impl->size = a_size;
-	}
-
-	Vector2i
-	GlfwWindow::GetPosition() const
-	{
-		return m_impl->position;
-	}
-
-	void
-	GlfwWindow::SetPosition(Vector2i a_position)
-	{
-		auto monitor = glfwGetWindowMonitor(m_impl->glfwWindow);
-		auto mode = glfwGetVideoMode(monitor);
-
-		glfwSetWindowMonitor(
-			m_impl->glfwWindow,
-			monitor,
-			a_position.x,
-			a_position.y,
-			m_impl->size.x,
-			m_impl->size.y,
-			mode->refreshRate
-		);
-
-		m_impl->position = a_position;
-	}
-
-	std::string_view
-	GlfwWindow::GetTitle() const
-	{
-		return m_impl->title;
-	}
-
-	void
-	GlfwWindow::SetTitle(std::string_view a_title)
-	{
-		m_impl->title = std::string(a_title);
-		glfwSetWindowTitle(m_impl->glfwWindow, m_impl->title.c_str());
-	}
-
-	WindowStateFlags
-	GlfwWindow::GetWindowStateFlags() const
-	{
-		return m_impl->windowState;
-	}
-
-	void
-	GlfwWindow::SetWindowStateFlags(WindowStateFlags a_flags)
-	{
-		if (m_impl->windowState == a_flags)
-		{
-			return;
-		}
-
-		OYL_PROFILE_FUNCTION();
-
-		Vector2i desiredSize;
-
-		// get resolution of monitor
-		const GLFWvidmode* mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
-
-		if (a_flags & (WS_Fullscreen | WS_Borderless))
-		{
-			// backup window position and window size
-			glfwGetWindowPos(m_impl->glfwWindow, &m_impl->position.x, &m_impl->position.y);
-			glfwGetWindowSize(m_impl->glfwWindow, &m_impl->size.y, &m_impl->size.y);
-
-			// switch to full screen
-			glfwSetWindowMonitor(
-				m_impl->glfwWindow,
-				glfwGetWindowMonitor(m_impl->glfwWindow),
-				0,
-				0,
-				mode->width,
-				mode->height,
-				mode->refreshRate
-			);
-
-			desiredSize = { mode->width, mode->height };
-		} else if (a_flags ^ (WS_Fullscreen | WS_Borderless))
-		{
-			glfwSetWindowMonitor(
-				m_impl->glfwWindow,
-				nullptr,
-				m_impl->position.x,
-				m_impl->position.y,
-				m_impl->size.x,
-				m_impl->size.y,
-				mode->refreshRate
-			);
-			desiredSize = m_impl->size;
-		}
-
-		// Set Context Size
-		OYL_UNUSED(desiredSize);
-		m_impl->windowState = a_flags;
-	}
-
-	CursorState
-	GlfwWindow::GetCursorStateFlags() const
-	{
-		return m_impl->cursorState;
-	}
-
-	void
-	GlfwWindow::SetCursorStateFlags(CursorState a_state)
-	{
-		if (m_impl->cursorState == a_state)
-		{
-			return;
-		}
-
-		int table[CS_Last];
-		table[CS_Normal] = GLFW_CURSOR_NORMAL;
-		table[CS_Hidden] = GLFW_CURSOR_HIDDEN;
-		table[CS_Disabled] = GLFW_CURSOR_DISABLED;
-		table[CS_Locked] = GLFW_CURSOR_CAPTURED;
-
-		uint glfwState = table[a_state];
-		glfwSetInputMode(m_impl->glfwWindow, GLFW_CURSOR, glfwState);
-
-		m_impl->cursorState = a_state;
-	}
-
-	void*
-	GlfwWindow::GetNativeWindowHandle() const
-	{
-		return m_impl->glfwWindow;
-	}
 }
-
 
 namespace
 {
