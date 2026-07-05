@@ -181,7 +181,7 @@
 	
 	<s:Boolean x:Key="/Default/CodeStyle/CppSortIncludes/GroupByRootDirectory/@EntryValue">True</s:Boolean>
 	<s:String x:Key="/Default/CodeStyle/CppSortIncludes/IncludeSortCategories/@EntryValue">&lt;CppIncludeCategories&gt;&#xD;
-  &lt;CppIncludeCategorySetting Pattern="^&amp;lt;vulkan\/vulkan\.h.*" Description="#include &amp;lt;vulkan&amp;gt;" Group="1" Order="2" /&gt;&#xD;
+  &lt;CppIncludeCategorySetting Pattern="^&amp;lt;vulkan\/.*\.h.*" Description="#include &amp;lt;vulkan&amp;gt;" Group="1" Order="2" /&gt;&#xD;
   &lt;CppIncludeCategorySetting Pattern="^&amp;lt;.*" Description="#include &amp;lt;header&amp;gt;" Group="2" Order="3" /&gt;&#xD;
   &lt;CppIncludeCategorySetting Pattern="^&amp;quot;.*" Description="#include &amp;quot;header&amp;quot;" Group="3" Order="4" /&gt;&#xD;
 &lt;/CppIncludeCategories&gt;</s:String>
