@@ -254,13 +254,13 @@ namespace Oyl::Rendering
 	void
 	VulkanRenderContext::Impl::CreateSurface()
 	{
-		VkSurfaceKHR surface;
+		VkSurfaceKHR cSurface;
 		auto glfwWindow = static_cast<GLFWwindow*>(window->GetNativeWindowHandle());
-		if (glfwCreateWindowSurface(*instance, glfwWindow, nullptr, &surface) != VK_SUCCESS)
+		if (glfwCreateWindowSurface(*instance, glfwWindow, nullptr, &cSurface) != VK_SUCCESS)
 		{
 			throw std::runtime_error("failed to create window surface!");
 		}
-		this->surface = vk::raii::SurfaceKHR(instance, surface);
+		surface = vk::raii::SurfaceKHR(instance, cSurface);
 	}
 
 	void
@@ -287,8 +287,8 @@ namespace Oyl::Rendering
 		std::vector<vk::QueueFamilyProperties> queueFamilyProperties = physicalDevice.getQueueFamilyProperties();
 
 		// get the first index into queueFamilyProperties which supports both graphics and present
-		uint32_t queueIndex = ~0;
-		for (uint32_t qfpIndex = 0; qfpIndex < queueFamilyProperties.size(); qfpIndex++)
+		uint32 queueIndex = ~0u;
+		for (uint32 qfpIndex = 0; qfpIndex < queueFamilyProperties.size(); qfpIndex++)
 		{
 			if ((queueFamilyProperties[qfpIndex].queueFlags & vk::QueueFlagBits::eGraphics) &&
 			    physicalDevice.getSurfaceSupportKHR(qfpIndex, *surface))
