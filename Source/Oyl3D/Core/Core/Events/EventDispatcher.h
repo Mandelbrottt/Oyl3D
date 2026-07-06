@@ -6,7 +6,7 @@
 
 namespace Oyl
 {
-	class EventDispatcher
+	class OYL_CORE_API EventDispatcher
 	{
 	public:
 		using EventId = Reflection::TypeId;

@@ -4,7 +4,7 @@
 
 namespace Oyl
 {
-	template<typename TInvalid>
+	template<typename TSignature>
 	class Delegate;
 
 	template<typename TReturn, typename... TArgs>

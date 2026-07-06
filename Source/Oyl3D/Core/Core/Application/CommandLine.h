@@ -7,6 +7,8 @@
 #include "Core/Common.h"
 #include "Core/Typedefs.h"
 
+int Main(int, char**);
+
 namespace Oyl
 {
 	using ArbitraryData = std::pair<void*, uint32>;
