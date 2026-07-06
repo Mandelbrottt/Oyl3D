@@ -28,24 +28,12 @@ namespace Spyll
 	Field::ShouldReflect() const
 	{
 		if (!Declaration::ShouldReflect())
-		{
 			return false;
-		}
 
 		auto fieldDecl = clang::dyn_cast<clang::FieldDecl>(m_decl);
 
-		auto type = fieldDecl->getType().getTypePtr();
-		while (type->isPointerType())
-		{
-			type = type->getPointeeOrArrayElementType();
-		}
-		auto typeDecl = type->getAsRecordDecl();
-		if (typeDecl
-			&& (typeDecl->getAccess() == clang::AS_protected
-				|| typeDecl->getAccess() == clang::AS_private))
-		{
+		if (!IsTypeOfDeclVisible(fieldDecl))
 			return false;
-		}
 
 		return true;
 	}

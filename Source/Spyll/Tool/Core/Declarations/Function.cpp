@@ -27,6 +27,39 @@ namespace Spyll
 
 	Function::~Function() {}
 
+	static
+	bool
+	AreTemplateParamsVisible(const clang::CXXRecordDecl* a_decl)
+	{
+		assert(a_decl);
+
+		auto templateSpecializationDecl = clang::dyn_cast<clang::ClassTemplateSpecializationDecl>(a_decl);
+		if (!templateSpecializationDecl)
+			return true;
+
+		for (const auto& arg : templateSpecializationDecl->getTemplateArgs().asArray())
+		{
+			if (arg.getKind() != clang::TemplateArgument::Type)
+				continue;
+
+			auto argDecl = arg.getAsType()->getAsRecordDecl();
+			if (!argDecl)
+				continue;
+
+			bool isVisible = argDecl->getAccess() != clang::AS_protected
+			                 && argDecl->getAccess() != clang::AS_private;
+
+			if (!isVisible)
+				return false;
+
+			auto cxxRecordDecl = clang::dyn_cast<clang::CXXRecordDecl>(argDecl);
+			if (cxxRecordDecl && !AreTemplateParamsVisible(cxxRecordDecl))
+				return false;
+		}
+
+		return true;
+	}
+
 	bool
 	Function::ShouldReflect() const
 	{
@@ -43,33 +76,13 @@ namespace Spyll
 		if (functionDecl->isOverloadedOperator())
 			return false;
 
-		auto type = functionDecl->getType().getTypePtr();
-		while (type->isPointerType())
-		{
-			type = type->getPointeeOrArrayElementType();
-		}
-		auto returnTypeTagDecl = type->getAsRecordDecl();
-		if (returnTypeTagDecl
-			&& (returnTypeTagDecl->getAccess() == clang::AS_protected
-				|| returnTypeTagDecl->getAccess() == clang::AS_private))
-		{
+		if (!IsTypeOfDeclVisible(functionDecl))
 			return false;
-		}
 
-		for (auto arg : functionDecl->parameters())
+		for (auto paramDecl : functionDecl->parameters())
 		{
-			type = arg->getType().getTypePtr();
-			while (type->isPointerType())
-			{
-				type = type->getPointeeOrArrayElementType();
-			}
-			auto typeTagDecl = type->getAsRecordDecl();
-			if (typeTagDecl &&
-				(typeTagDecl->getAccess() == clang::AS_protected
-				 || typeTagDecl->getAccess() == clang::AS_private))
-			{
+			if (!IsTypeOfDeclVisible(paramDecl))
 				return false;
-			}
 		}
 
 		return true;
