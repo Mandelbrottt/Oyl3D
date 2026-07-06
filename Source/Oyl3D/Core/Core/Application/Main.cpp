@@ -2,16 +2,13 @@
 #include "Main.h"
 
 #include "CommandLine.h"
-#include "Core/Modules/Module.h"
-#include "Core/Modules/ModuleRegistry.h"
 
 #include "Core/Logging/Logging.h"
+#include "Core/Modules/MainWindowModule.h"
+#include "Core/Modules/Module.h"
+#include "Core/Modules/ModuleRegistry.h"
 #include "Core/Profiling/Profiler.h"
 #include "Core/Time/Time.h"
-
-#include "SharedLibrary.h"
-
-#include "Core/Modules/MainWindowModule.h"
 
 namespace Oyl::Detail
 {

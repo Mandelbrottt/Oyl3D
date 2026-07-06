@@ -99,7 +99,8 @@ function Project.GetFileList()
 
 	-- Iterate premake dirs, if projectDir is a child (recursive) of premakeDir, remove it
 	local projectDirs = os.matchdirs("**")
-	for index = 1, #projectDirs do
+	local index = 1
+	while index <= #projectDirs do
 		local dir = projectDirs[index]
 		for _, premakeDir in ipairs(premakeDirs) do
 			-- Check if projectDir is a child of premakeDir. If so, remove it
@@ -112,6 +113,7 @@ function Project.GetFileList()
 				break
 			end
 		end
+		index = index + 1
 	end
 
 	-- Insert empty string to represent the root directory

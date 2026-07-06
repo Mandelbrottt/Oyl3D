@@ -14,8 +14,4 @@ project "Oyl.Core"; do
 		"Glfw",
 		"Vulkan",
 	}
-
-	dependson {
-		"Oyl.Spyll",
-	}
 end
