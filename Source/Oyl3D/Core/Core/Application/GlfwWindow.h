@@ -34,7 +34,7 @@ namespace Oyl
 		IsValid() const override;
 
 		void
-		SetEventCallback(EventDelegate a_delegate) override;
+		SetPostEventCallback(PostEventDelegate a_delegate) override;
 
 		Vector2i
 		GetSize() const override;

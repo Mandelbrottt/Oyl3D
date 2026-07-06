@@ -9,20 +9,32 @@ namespace Oyl
 	class OYL_CORE_API EventDispatcher
 	{
 	public:
+		using ListenerId = Reflection::TypeId;
 		using EventId = Reflection::TypeId;
-		using EventDelegate = Delegate<void(const Event&)>;
 
 		void
-		Register(EventId a_eventId, Reflection::TypeId a_listenerId, const EventDelegate& a_delegate);
+		Register(
+			EventId a_eventId,
+			ListenerId a_listenerId,
+			const EventDelegate& a_delegate,
+			int32 a_priority
+		);
 
 		void
-		UnRegister(EventId a_eventId, Reflection::TypeId a_listenerId);
+		UnRegister(EventId a_eventId, ListenerId a_listenerId);
 
 		void
 		Dispatch(EventId a_eventId, const Event& a_event) const;
 
 	private:
-		using ListenerMap = std::unordered_map<Reflection::TypeId, EventDelegate>;
+		struct ListenerDescriptor
+		{
+			ListenerId listenerTypeId;
+			EventDelegate delegate;
+			int32 priority;
+		};
+
+		using ListenerMap = std::list<ListenerDescriptor>;
 
 	private:
 		ListenerMap&

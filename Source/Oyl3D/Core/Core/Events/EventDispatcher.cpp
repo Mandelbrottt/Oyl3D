@@ -5,18 +5,46 @@
 namespace Oyl
 {
 	void
-	EventDispatcher::Register(EventId a_eventId, Reflection::TypeId a_listenerId, const EventDelegate& a_delegate)
+	EventDispatcher::Register(
+		EventId a_eventId,
+		ListenerId a_listenerId,
+		const EventDelegate& a_delegate,
+		int32 a_priority
+	)
 	{
-		auto& listenerMap = GetOrAddListenerMapForEventId(a_eventId);
+		auto& listenerList = GetOrAddListenerMapForEventId(a_eventId);
 
-		auto listenerIter = listenerMap.find(a_listenerId);
-		if (listenerIter != listenerMap.end())
+		// Search for ListenerList for the given EventId
+		auto listenerIter = std::ranges::find_if(
+			listenerList,
+			[a_listenerId](const auto& a_listenerDescriptor) -> bool
+			{
+				return a_listenerDescriptor.listenerTypeId == a_listenerId;
+			}
+		);
+		if (listenerIter != listenerList.end())
 		{
-			listenerIter->second = a_delegate;
-		} else
-		{
-			listenerMap.emplace(a_listenerId, a_delegate);
+			listenerIter->delegate = a_delegate;
+			return;
 		}
+
+		// Find the first listener with a priority less than incoming listener, and insert before that
+		auto priorityIter = std::ranges::find_if(
+			listenerList,
+			[&](const auto& a_listenerDescriptor) -> bool
+			{
+				return a_listenerDescriptor.priority < a_priority;
+			}
+		);
+
+		listenerList.insert(
+			priorityIter,
+			ListenerDescriptor {
+				.listenerTypeId = a_listenerId,
+				.delegate = a_delegate,
+				.priority = a_priority,
+			}
+		);
 	}
 
 	void
@@ -28,7 +56,13 @@ namespace Oyl
 			return;
 		}
 
-		auto listenerIter = listenerMap->find(a_listenerId);
+		auto listenerIter = std::ranges::find_if(
+			*listenerMap,
+			[a_listenerId](const auto& a_listenerDescriptor) -> bool
+			{
+				return a_listenerDescriptor.listenerTypeId == a_listenerId;
+			}
+		);
 		if (listenerIter == listenerMap->end())
 		{
 			return;
@@ -46,9 +80,14 @@ namespace Oyl
 			return;
 		}
 
-		for (const auto& delegate : *listenerMap | std::views::values)
+		// Iterate all EventListeners, stop iterating if any return false
+		for (const auto& descriptor : *listenerMap)
 		{
-			delegate.Invoke(a_event);
+			const auto& delegate = descriptor.delegate;
+
+			bool shouldContinuePropagating = delegate.Invoke(a_event);
+			if (!shouldContinuePropagating)
+				break;
 		}
 	}
 
