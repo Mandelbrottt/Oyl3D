@@ -6,7 +6,6 @@
 
 #include "Core/Common.h"
 #include "Core/Typedefs.h"
-#include "Core/Types/Singleton.h"
 
 namespace Oyl
 {
@@ -41,116 +40,59 @@ namespace Oyl
 		std::any value;
 	};
 
-	class OYL_CORE_API CommandLine final : public Singleton<CommandLine>
+	class OYL_CORE_API CommandLine final
 	{
-		friend Singleton;
+		friend int ::Main(int, char**);
+
 		CommandLine() = default;
 
 	public:
-		struct Detail
-		{
-			static
-			void
-			ParseCommandLine(size_t a_argc, const char* a_argv[])
-			{
-				Instance().ParseCommandLineImpl(a_argc, a_argv);
-			}
-		};
+		static
+		bool
+		IsPresent(const std::string& a_name);
 
 		static
 		bool
-		IsPresent(const std::string& a_name)
-		{
-			return Instance().IsPresentImpl(a_name);
-		}
+		AddArgument(const std::string& a_name, bool a_overwrite = true);
 
 		static
 		bool
-		AddArgument(const std::string& a_name, bool a_overwrite = true)
-		{
-			return Instance().AddArgumentImpl(a_name, a_overwrite);
-		}
+		AddInt(const std::string& a_name, int32 a_value, bool a_overwrite = true);
 
 		static
 		bool
-		AddInt(const std::string& a_name, int32 a_value, bool a_overwrite = true)
-		{
-			return Instance().AddIntImpl(a_name, a_value, a_overwrite);
-		}
+		AddString(const std::string& a_name, std::string a_value, bool a_overwrite = true);
 
 		static
 		bool
-		AddString(const std::string& a_name, std::string a_value, bool a_overwrite = true)
-		{
-			return Instance().AddStringImpl(a_name, a_value, a_overwrite);
-		}
-
-		static
-		bool
-		AddArbitraryData(const std::string& a_name, ArbitraryData a_value, bool a_overwrite = true)
-		{
-			return Instance().AddArbitraryDataImpl(a_name, a_value, a_overwrite);
-		}
+		AddArbitraryData(const std::string& a_name, ArbitraryData a_value, bool a_overwrite = true);
 
 		static
 		std::optional<int32>
-		GetInt(const std::string& a_name)
-		{
-			return Instance().GetIntImpl(a_name);
-		}
+		GetInt(const std::string& a_name);
 
 		static
 		std::optional<std::string_view>
-		GetString(const std::string& a_name)
-		{
-			return Instance().GetStringImpl(a_name);
-		}
+		GetString(const std::string& a_name);
 
 		static
 		std::optional<ArbitraryData>
-		GetArbitraryData(const std::string& a_name)
-		{
-			return Instance().GetArbitraryDataImpl(a_name);
-		}
+		GetArbitraryData(const std::string& a_name);
 
 		static
 		bool
-		RemoveArgument(const std::string& a_name)
-		{
-			return Instance().RemoveArgumentImpl(a_name);
-		}
+		RemoveArgument(const std::string& a_name);
 
 	private:
+		static
 		void
-		ParseCommandLineImpl(size_t a_argc, const char* a_argv[]);
+		Init(int a_argc, char** a_argv);
 
-		bool
-		IsPresentImpl(const std::string& a_name) const noexcept;
+		static
+		void
+		Shutdown();
 
-		bool
-		AddArgumentImpl(const std::string& a_name, bool a_overwrite = true);
-
-		bool
-		AddIntImpl(const std::string& a_name, int32 a_value, bool a_overwrite = true);
-
-		bool
-		AddStringImpl(const std::string& a_name, std::string a_value, bool a_overwrite = true);
-
-		bool
-		AddArbitraryDataImpl(const std::string& a_name, ArbitraryData a_value, bool a_overwrite = true);
-
-		std::optional<int32>
-		GetIntImpl(const std::string& a_name) const;
-
-		std::optional<std::string_view>
-		GetStringImpl(const std::string& a_name) const;
-
-		std::optional<ArbitraryData>
-		GetArbitraryDataImpl(const std::string& a_name) const;
-
-		bool
-		RemoveArgumentImpl(const std::string& a_name);
-
-		std::unordered_map<std::string, CommandLineArgument> m_arguments;
+		struct Impl;
+		static Impl* s_impl;
 	};
 }
