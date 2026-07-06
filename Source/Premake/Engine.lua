@@ -295,6 +295,10 @@ function Engine.CommonCppSettings()
 end
 
 function Engine.GenerateOylSpyllInformation()
+	dependson {
+		"Oyl.Spyll",
+	}
+	
 	-- Handle this logic in tokenized strings to ensure proper project filters are applied
 	local spyllCommand = path.join(Config.BinariesDir, "Oyl.Spyll.exe")
 
@@ -329,21 +333,32 @@ function Engine.GenerateOylSpyllInformation()
 			),
 			" "
 		)}]]
+		
+		prebuildmessage("Executing " .. spyllCommand)
+		
+		prebuildcommands {
+			"cd %{prj.location}",
+			spyllCommand
+		}
 
-	files {
-		path.join("%{wks.location}", "GeneratedInclude.cpp")
-	}
+		files {
+			path.join("%{wks.location}", "GeneratedInclude.cpp")
+		}
 
-	removefiles {
-		"Generated/**"
-	}
+		local generatedFilesPattern = "Generated/**"
+		
+		local debugGeneratedFile = true
+		if debugGeneratedFile then
+			filter { "files:" .. generatedFilesPattern }; do
+				excludefrombuild "On"
+			end
+			filter {}
+		else
+			removefiles {
+				generatedFilesPattern
+			}
+		end
 
-	prebuildmessage("Executing " .. spyllCommand)
-
-	prebuildcommands {
-		"cd %{prj.location}",
-		spyllCommand
-	}
 end
 
 return Engine

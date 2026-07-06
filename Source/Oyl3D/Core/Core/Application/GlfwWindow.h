@@ -1,8 +1,8 @@
 #pragma once
 
-#include "Window.h"
-
 #include <memory>
+
+#include "Window.h"
 
 namespace Oyl
 {
