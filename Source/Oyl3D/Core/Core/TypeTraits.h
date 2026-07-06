@@ -56,6 +56,15 @@ namespace Oyl::Traits
 	concept FunctionPointer = IsFunctionPointer<T>::value;
 
 	template<typename>
+	struct IsMemberFunctionPointer : std::false_type {};
+
+	template<typename Class, typename TReturn, typename... TArgs>
+	struct IsMemberFunctionPointer<TReturn (Class::*)(TArgs...)> : std::true_type {};
+
+	template<typename T>
+	concept MemberFunctionPointer = IsMemberFunctionPointer<T>::value;
+
+	template<typename>
 	struct IsFunctionSignature : std::false_type {};
 
 	template<typename TRet, typename... TArgs>
@@ -87,6 +96,27 @@ namespace Oyl::Traits
 
 	template<typename T>
 	using RemoveMemberFunctionConst_T = typename RemoveMemberFunctionConst<T>::type;
+
+	template<typename>
+	struct ClassOfMemberFunctionPointer;
+
+	template<typename Class, typename TReturn, typename... TArgs>
+	struct ClassOfMemberFunctionPointer<TReturn(Class::*)(TArgs...)>
+	{
+		using type = Class;
+	};
+
+	template<typename T>
+	using ClassOfMemberFunctionPointer_T = typename ClassOfMemberFunctionPointer<T>::type;
+
+	template<auto Function>
+	struct ClassOfMemberFunctionPointerValue
+	{
+		using type = typename ClassOfMemberFunctionPointer<decltype(Function)>::type;
+	};
+
+	template<auto Function>
+	using ClassOfMemberFunctionPointerValue_T = typename ClassOfMemberFunctionPointerValue<Function>::type;
 
 	template<typename T>
 	struct UnderlyingType

@@ -60,40 +60,42 @@ namespace Oyl
 #	pragma region Events
 		template<typename TModule, typename TEvent>
 		void
-		RegisterEventListener(void (TModule::*a_fn)(const TEvent&))
+		RegisterEventListener(bool (TModule::*a_fn)(const TEvent&), int32 a_priority = 0)
 		{
 			constexpr auto eventId = Reflection::GetTypeId<TEvent>();
 			constexpr auto listenerId = Reflection::GetTypeId<decltype(*this)>();
 
 			TModule* obj = static_cast<TModule*>(this);
 
-			EventDelegate::MemberFn<TModule> fn;
+			EventDelegate::MemberFnFromType<Module> fn;
 			std::memcpy(&fn, &a_fn, sizeof(fn));
 
-			auto delegate = EventDelegate::Create<TModule>(obj, fn);
+			auto delegate = EventDelegate::Create(obj, fn);
 
-			m_eventDispatcher->Register(eventId, listenerId, std::move(delegate));
+			m_eventDispatcher->Register(eventId, listenerId, std::move(delegate), a_priority);
 		}
 
 		template<typename TModule, typename TEvent>
 		void
-		RegisterEventListener(void (TModule::*a_fn)(const TEvent&) const)
+		RegisterEventListener(bool (TModule::*a_fn)(const TEvent&) const)
 		{
 			Traits::RemoveMemberFunctionConst_T<decltype(a_fn)> fn;
 			std::memcpy(&fn, &a_fn, sizeof(fn));
 			RegisterEventListener(fn);
 		}
 
-		template<typename TEvent>
-			requires (std::is_base_of_v<Event, TEvent> && !std::is_same_v<Event, TEvent>)
-		void
-		PostEvent(const TEvent& a_event)
-		{
-			OYL_PROFILE_FUNCTION();
+		using PostEventDelegate = Delegate<void(const Event&)>;
 
-			constexpr auto eventId = Reflection::GetTypeId<TEvent>();
-			m_eventDispatcher->Dispatch(eventId, a_event);
-		}
+		//template<typename TEvent>
+		//	requires (std::is_base_of_v<Event, TEvent> && !std::is_same_v<Event, TEvent>)
+		//void
+		//PostEvent(const TEvent& a_event)
+		//{
+		//	OYL_PROFILE_FUNCTION();
+
+		//	constexpr auto eventId = Reflection::GetTypeId<TEvent>();
+		//	m_eventDispatcher->Dispatch(eventId, a_event);
+		//}
 
 		void
 		PostEvent(const Event& a_event);

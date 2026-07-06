@@ -31,7 +31,7 @@ namespace Oyl
 		WindowStateFlags windowState;
 		CursorState cursorState;
 
-		EventDelegate postEventCallback;
+		Delegate<void(const Event&)> postEventCallback;
 
 		GLFWwindow* glfwWindow = nullptr;
 
@@ -82,7 +82,7 @@ namespace Oyl
 		if (!m_impl)
 			m_impl = std::make_unique<Impl>();
 
-		m_impl->postEventCallback = a_params.onEventCallback;
+		m_impl->postEventCallback = a_params.postEventCallback;
 
 		m_impl->title = a_params.title;
 
@@ -131,7 +131,7 @@ namespace Oyl
 	}
 
 	void
-	GlfwWindow::SetEventCallback(EventDelegate a_delegate)
+	GlfwWindow::SetPostEventCallback(PostEventDelegate a_delegate)
 	{
 		m_impl->postEventCallback = std::move(a_delegate);
 	}

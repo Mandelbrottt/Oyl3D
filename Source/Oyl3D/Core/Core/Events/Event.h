@@ -28,5 +28,7 @@ namespace Oyl
 			: Event(Reflection::GetTypeId<TEvent>()) {}
 	};
 
-	using EventDelegate = Delegate<void(const Event&)>;
+	using EventDelegate = Delegate<bool(const Event&)>;
+	using PostEventDelegate = Delegate<void(const Event&)>;
+
 }

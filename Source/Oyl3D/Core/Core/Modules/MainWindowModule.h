@@ -22,34 +22,34 @@ namespace Oyl
 		void
 		OnShutdown() override;
 
-		void
+		bool
 		OnWindowResizeEvent(const WindowResizeEvent& a_event);
 
-		void
+		bool
 		OnWindowMoveEvent(const WindowMoveEvent& a_event);
 
-		void
+		bool
 		OnWindowCloseRequestEvent(const WindowCloseRequestEvent& a_event);
 
-		void
+		bool
 		OnWindowFocusEvent(const WindowFocusEvent& a_event);
 
-		void
+		bool
 		OnWindowKeyPressEvent(const WindowKeyPressEvent& a_event);
 
-		void
+		bool
 		OnWindowKeyReleaseEvent(const WindowKeyReleaseEvent& a_event);
 
-		void
+		bool
 		OnWindowMousePressEvent(const WindowMousePressEvent& a_event);
 
-		void
+		bool
 		OnWindowMouseReleaseEvent(const WindowMouseReleaseEvent& a_event);
 
-		void
+		bool
 		OnWindowMouseScrollEvent(const WindowMouseScrollEvent& a_event);
 
-		void
+		bool
 		OnWindowCursorMoveEvent(const WindowCursorMoveEvent& a_event);
 
 	private:

@@ -3,6 +3,7 @@
 #include "Core/Events/Event.h"
 #include "Core/Input/InputCodes.h"
 #include "Core/Math/Vector2.h"
+#include "Core/Modules/Module.h"
 
 namespace Oyl
 {
@@ -34,7 +35,7 @@ namespace Oyl
 		WindowStateFlags windowState;
 		CursorState cursorState;
 
-		EventDelegate onEventCallback;
+		PostEventDelegate postEventCallback;
 
 		// Requested Default Graphics API
 	};
@@ -84,7 +85,7 @@ namespace Oyl
 
 		virtual
 		void
-		SetEventCallback(EventDelegate a_delegate)
+		SetPostEventCallback(PostEventDelegate a_delegate)
 		{
 			OYL_UNUSED(a_delegate);
 		}
