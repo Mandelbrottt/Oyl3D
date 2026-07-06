@@ -8,7 +8,8 @@
 #include "Core/Profiling/Profiler.h"
 #include "Core/Reflection/TypeId.h"
 
-namespace Oyl {
+namespace Oyl
+{
 	class EventDispatcher;
 	class ModuleRegistry;
 }

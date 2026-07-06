@@ -2,9 +2,9 @@ local Engine = require "Engine"
 
 group "Executables"
 
-startproject "Oyl.Entry"
+startproject "Oyl.Application"
 
-project "Oyl.Entry"; do
+project "Oyl.Application"; do
 	language(premake.CPP)
 	kind(premake.WINDOWEDAPP)
 

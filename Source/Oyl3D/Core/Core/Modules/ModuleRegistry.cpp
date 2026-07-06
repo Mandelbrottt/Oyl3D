@@ -3,16 +3,8 @@
 
 #include "Module.h"
 
-#include "Core/Application/Main.h"
-
 namespace Oyl
 {
-	ModuleRegistry*
-	ModuleRegistry::Instance()
-	{
-		return Oyl::Detail::GetModuleRegistry();
-	}
-
 	Module*
 	ModuleRegistry::GetModule(Reflection::TypeId a_typeId)
 	{

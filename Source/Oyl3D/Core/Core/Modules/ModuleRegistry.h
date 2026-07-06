@@ -1,6 +1,5 @@
 #pragma once
 
-#include "Core/Application/Main.h"
 #include "Core/Common.h"
 #include "Core/Events/Event.h"
 #include "Core/Events/EventDispatcher.h"
@@ -10,17 +9,16 @@ namespace Oyl
 {
 	class Module;
 
+	void ApplicationInit();
+
 	class OYL_CORE_API ModuleRegistry
 	{
 		friend class Module;
+		friend void Oyl::ApplicationInit();
 
 		using ModuleList = std::vector<Module*>;
 
 	public:
-		static
-		ModuleRegistry*
-		Instance();
-
 		template<typename TModule, typename... TArgs>
 			requires std::is_base_of_v<Module, TModule>
 		TModule*
