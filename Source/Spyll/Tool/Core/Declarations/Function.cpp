@@ -27,39 +27,6 @@ namespace Spyll
 
 	Function::~Function() {}
 
-	static
-	bool
-	AreTemplateParamsVisible(const clang::CXXRecordDecl* a_decl)
-	{
-		assert(a_decl);
-
-		auto templateSpecializationDecl = clang::dyn_cast<clang::ClassTemplateSpecializationDecl>(a_decl);
-		if (!templateSpecializationDecl)
-			return true;
-
-		for (const auto& arg : templateSpecializationDecl->getTemplateArgs().asArray())
-		{
-			if (arg.getKind() != clang::TemplateArgument::Type)
-				continue;
-
-			auto argDecl = arg.getAsType()->getAsRecordDecl();
-			if (!argDecl)
-				continue;
-
-			bool isVisible = argDecl->getAccess() != clang::AS_protected
-			                 && argDecl->getAccess() != clang::AS_private;
-
-			if (!isVisible)
-				return false;
-
-			auto cxxRecordDecl = clang::dyn_cast<clang::CXXRecordDecl>(argDecl);
-			if (cxxRecordDecl && !AreTemplateParamsVisible(cxxRecordDecl))
-				return false;
-		}
-
-		return true;
-	}
-
 	bool
 	Function::ShouldReflect() const
 	{
