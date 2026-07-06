@@ -132,7 +132,8 @@ namespace Oyl::Rendering
 		m_impl->window = a_params.window;
 
 		m_impl->CreateInstance();
-		m_impl->SetupDebugMessenger();
+		if constexpr (ENABLE_VALIDATION_LAYERS)
+			m_impl->SetupDebugMessenger();
 		m_impl->CreateSurface();
 		m_impl->PickPhysicalDevice();
 		m_impl->CreateLogicalDevice();
@@ -170,7 +171,7 @@ namespace Oyl::Rendering
 
 		// Get the required layers
 		std::vector<const char*> requiredLayers;
-		if (ENABLE_VALIDATION_LAYERS)
+		if constexpr (ENABLE_VALIDATION_LAYERS)
 		{
 			requiredLayers.assign(VALIDATION_LAYERS.begin(), VALIDATION_LAYERS.end());
 		}
@@ -232,9 +233,6 @@ namespace Oyl::Rendering
 	void
 	VulkanRenderContext::Impl::SetupDebugMessenger()
 	{
-		if constexpr (!ENABLE_VALIDATION_LAYERS)
-			return;
-
 		vk::DebugUtilsMessageSeverityFlagsEXT severityFlags(
 			vk::DebugUtilsMessageSeverityFlagBitsEXT::eVerbose
 			| vk::DebugUtilsMessageSeverityFlagBitsEXT::eInfo
