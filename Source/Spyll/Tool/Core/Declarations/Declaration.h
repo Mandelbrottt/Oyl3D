@@ -7,11 +7,16 @@
 namespace clang
 {
 	class NamedDecl;
+	class ValueDecl;
 	class SourceManager;
 }
 
 namespace Spyll
 {
+	extern
+	bool
+	IsTypeOfDeclVisible(const clang::ValueDecl* a_decl);
+
 	class Declaration
 	{
 		friend class ReflectionParserVisitor;
