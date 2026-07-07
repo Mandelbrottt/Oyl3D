@@ -14,13 +14,12 @@ namespace Oyl
 		void
 		Register(
 			EventId a_eventId,
-			ListenerId a_listenerId,
 			const OnEventDelegate& a_delegate,
 			int32 a_priority
 		);
 
 		void
-		UnRegister(EventId a_eventId, ListenerId a_listenerId);
+		Unregister(EventId a_eventId, const OnEventDelegate& a_delegate);
 
 		void
 		Dispatch(EventId a_eventId, const Event& a_event) const;
@@ -28,7 +27,6 @@ namespace Oyl
 	private:
 		struct ListenerDescriptor
 		{
-			ListenerId listenerTypeId;
 			OnEventDelegate delegate;
 			int32 priority;
 		};
