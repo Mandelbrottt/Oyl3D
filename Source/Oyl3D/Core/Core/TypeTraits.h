@@ -4,6 +4,29 @@
 
 namespace Oyl::Traits
 {
+#pragma region Base
+
+	template<typename T>
+	struct AddConst
+	{
+		using type = std::add_const_t<T>;
+	};
+
+	template<typename T>
+	using AddConst_T = typename AddConst<T>::type;
+
+	template<typename T>
+	struct RemoveConst
+	{
+		using type = std::remove_const_t<T>;
+	};
+
+	template<typename T>
+	using RemoveConst_T = typename RemoveConst<T>::type;
+
+#pragma endregion
+#pragma region Pointers
+
 	template<typename T>
 	struct IsPointer
 	{
@@ -46,6 +69,9 @@ namespace Oyl::Traits
 	template<typename T>
 	concept PointerToPointer = IsPointerToPointer<T>::value;
 
+#pragma endregion
+#pragma region Function Pointers
+
 	template<typename T>
 	struct IsFunctionPointer
 	{
@@ -54,15 +80,6 @@ namespace Oyl::Traits
 
 	template<typename T>
 	concept FunctionPointer = IsFunctionPointer<T>::value;
-
-	template<typename>
-	struct IsMemberFunctionPointer : std::false_type {};
-
-	template<typename Class, typename TReturn, typename... TArgs>
-	struct IsMemberFunctionPointer<TReturn (Class::*)(TArgs...)> : std::true_type {};
-
-	template<typename T>
-	concept MemberFunctionPointer = IsMemberFunctionPointer<T>::value;
 
 	template<typename>
 	struct IsFunctionSignature : std::false_type {};
@@ -76,47 +93,139 @@ namespace Oyl::Traits
 	template<typename T>
 	concept FunctionObject = FunctionPointer<T> || FunctionSignature<T>;
 
-	template<typename T>
-	struct RemoveMemberFunctionConst
-	{
-		using type = T;
-	};
-
-	template<typename TObj, typename TReturn, typename... TArgs>
-	struct RemoveMemberFunctionConst<TReturn(TObj::*)(TArgs...)>
-	{
-		using type = TReturn(TObj::*)(TArgs...);
-	};
-
-	template<typename TObj, typename TReturn, typename... TArgs>
-	struct RemoveMemberFunctionConst<TReturn(TObj::*)(TArgs...) const>
-	{
-		using type = TReturn(TObj::*)(TArgs...);
-	};
+	template<typename>
+	struct FunctionSignatureFromPointer;
 
 	template<typename T>
-	using RemoveMemberFunctionConst_T = typename RemoveMemberFunctionConst<T>::type;
+	using FunctionSignatureFromPointer_T = typename FunctionSignatureFromPointer<T>::type;
+
+	template<typename TReturn, typename... TArgs>
+	struct FunctionSignatureFromPointer<TReturn(TArgs...)>
+	{
+		using type = TReturn(TArgs...);
+	};
+
+	template<typename TReturn, typename... TArgs>
+	struct FunctionSignatureFromPointer<TReturn(*)(TArgs...)>
+	{
+		using type = TReturn(TArgs...);
+	};
+
+#pragma endregion
+#pragma region Member Function Pointers
 
 	template<typename>
-	struct ClassOfMemberFunctionPointer;
+	struct IsMemberFunctionPointer : std::false_type {};
 
 	template<typename Class, typename TReturn, typename... TArgs>
-	struct ClassOfMemberFunctionPointer<TReturn(Class::*)(TArgs...)>
+	struct IsMemberFunctionPointer<TReturn (Class::*)(TArgs...)> : std::true_type {};
+
+	template<typename T>
+	concept MemberFunctionPointer = IsMemberFunctionPointer<T>::value;
+
+	template<typename TClass, typename TReturn, typename... TArgs>
+	struct FunctionSignatureFromPointer<TReturn(TClass::*)(TArgs...)>
+	{
+		using type = TReturn(TArgs...);
+	};
+
+	template<typename TClass, typename TReturn, typename... TArgs>
+	struct FunctionSignatureFromPointer<TReturn(TClass::*)(TArgs...) const>
+	{
+		using type = TReturn(TArgs...);
+	};
+
+	template<typename TClass, typename TReturn, typename... TArgs>
+	struct AddConst<TReturn(TClass::*)(TArgs...)>
+	{
+		using type = TReturn(TClass::*)(TArgs...) const;
+	};
+
+	template<typename TClass, typename TReturn, typename... TArgs>
+	struct AddConst<TReturn(TClass::*)(TArgs...) const>
+	{
+		using type = TReturn(TClass::*)(TArgs...) const;
+	};
+
+	template<typename TClass, typename TReturn, typename... TArgs>
+	struct AddConst<TReturn(TClass::*)(TArgs...) noexcept>
+	{
+		using type = TReturn(TClass::*)(TArgs...) const noexcept;
+	};
+
+	template<typename TClass, typename TReturn, typename... TArgs>
+	struct AddConst<TReturn(TClass::*)(TArgs...) const noexcept>
+	{
+		using type = TReturn(TClass::*)(TArgs...) const noexcept;
+	};
+
+	template<typename TClass, typename TReturn, typename... TArgs>
+	struct RemoveConst<TReturn(TClass::*)(TArgs...)>
+	{
+		using type = TReturn(TClass::*)(TArgs...);
+	};
+
+	template<typename TClass, typename TReturn, typename... TArgs>
+	struct RemoveConst<TReturn(TClass::*)(TArgs...) const>
+	{
+		using type = TReturn(TClass::*)(TArgs...);
+	};
+
+	template<typename TClass, typename TReturn, typename... TArgs>
+	struct RemoveConst<TReturn(TClass::*)(TArgs...) noexcept>
+	{
+		using type = TReturn(TClass::*)(TArgs...) noexcept;
+	};
+
+	template<typename TClass, typename TReturn, typename... TArgs>
+	struct RemoveConst<TReturn(TClass::*)(TArgs...) const noexcept>
+	{
+		using type = TReturn(TClass::*)(TArgs...) noexcept;
+	};
+
+	template<typename>
+	struct MemberFunctionClass;
+
+	template<typename Class, typename TReturn, typename... TArgs>
+	struct MemberFunctionClass<TReturn(Class::*)(TArgs...)>
+	{
+		using type = Class;
+	};
+
+	template<typename Class, typename TReturn, typename... TArgs>
+	struct MemberFunctionClass<TReturn(Class::*)(TArgs...) const>
+	{
+		using type = Class;
+	};
+
+	template<typename Class, typename TReturn, typename... TArgs>
+	struct MemberFunctionClass<TReturn(Class::*)(TArgs...) noexcept>
+	{
+		using type = Class;
+	};
+
+	template<typename Class, typename TReturn, typename... TArgs>
+	struct MemberFunctionClass<TReturn(Class::*)(TArgs...) const noexcept>
 	{
 		using type = Class;
 	};
 
 	template<typename T>
-	using ClassOfMemberFunctionPointer_T = typename ClassOfMemberFunctionPointer<T>::type;
+	using MemberFunctionClass_T = typename MemberFunctionClass<T>::type;
 
-	template<auto Function>
-	struct ClassOfMemberFunctionPointerValue
+	template<typename TClass, typename>
+	struct MemberFunctionWithSignature;
+
+	template<typename TClass, typename TReturn, typename... TArgs>
+	struct MemberFunctionWithSignature<TClass, TReturn(TArgs...)>
 	{
-		using type = typename ClassOfMemberFunctionPointer<decltype(Function)>::type;
+		using type = TReturn(TClass::*)(TArgs...);
 	};
 
-	template<auto Function>
-	using ClassOfMemberFunctionPointerValue_T = typename ClassOfMemberFunctionPointerValue<Function>::type;
+	template<typename TClass, typename TReturn, typename... TArgs>
+	using MemberFunctionWithSignature_T = typename MemberFunctionWithSignature<TClass, TReturn(TArgs...)>::type;
+
+#pragma endregion Member Functions
 
 	template<typename T>
 	struct UnderlyingType

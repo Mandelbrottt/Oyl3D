@@ -10,13 +10,12 @@ namespace Oyl
 	{
 	public:
 		using ListenerId = Reflection::TypeId;
-		using EventId = Reflection::TypeId;
 
 		void
 		Register(
 			EventId a_eventId,
 			ListenerId a_listenerId,
-			const EventDelegate& a_delegate,
+			const OnEventDelegate& a_delegate,
 			int32 a_priority
 		);
 
@@ -30,23 +29,23 @@ namespace Oyl
 		struct ListenerDescriptor
 		{
 			ListenerId listenerTypeId;
-			EventDelegate delegate;
+			OnEventDelegate delegate;
 			int32 priority;
 		};
 
-		using ListenerMap = std::list<ListenerDescriptor>;
+		using ListenerList = std::list<ListenerDescriptor>;
 
 	private:
-		ListenerMap&
+		ListenerList&
 		GetOrAddListenerMapForEventId(EventId a_eventId);
 
-		ListenerMap*
+		ListenerList*
 		TryGetListenerMapForEventId(EventId a_eventId);
 
-		const ListenerMap*
+		const ListenerList*
 		TryGetListenerMapForEventId(EventId a_eventId) const;
 
 	private:
-		std::unordered_map<EventId, ListenerMap> m_eventListenerMap;
+		std::unordered_map<EventId, ListenerList> m_eventListenerMap;
 	};
 }

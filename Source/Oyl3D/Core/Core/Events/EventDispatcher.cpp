@@ -8,7 +8,7 @@ namespace Oyl
 	EventDispatcher::Register(
 		EventId a_eventId,
 		ListenerId a_listenerId,
-		const EventDelegate& a_delegate,
+		const OnEventDelegate& a_delegate,
 		int32 a_priority
 	)
 	{
@@ -48,7 +48,7 @@ namespace Oyl
 	}
 
 	void
-	EventDispatcher::UnRegister(EventId a_eventId, Reflection::TypeId a_listenerId)
+	EventDispatcher::UnRegister(EventId a_eventId, ListenerId a_listenerId)
 	{
 		auto* listenerMap = TryGetListenerMapForEventId(a_eventId);
 		if (!listenerMap)
@@ -85,13 +85,13 @@ namespace Oyl
 		{
 			const auto& delegate = descriptor.delegate;
 
-			bool shouldContinuePropagating = delegate.Invoke(a_event);
-			if (!shouldContinuePropagating)
+			delegate.Invoke(a_event);
+			if (a_event.m_cancelled)
 				break;
 		}
 	}
 
-	EventDispatcher::ListenerMap&
+	EventDispatcher::ListenerList&
 	EventDispatcher::GetOrAddListenerMapForEventId(EventId a_eventId)
 	{
 		auto iter = m_eventListenerMap.find(a_eventId);
@@ -104,7 +104,7 @@ namespace Oyl
 		return iter->second;
 	}
 
-	EventDispatcher::ListenerMap*
+	EventDispatcher::ListenerList*
 	EventDispatcher::TryGetListenerMapForEventId(EventId a_eventId)
 	{
 		auto iter = m_eventListenerMap.find(a_eventId);
@@ -115,7 +115,7 @@ namespace Oyl
 		return &iter->second;
 	}
 
-	const EventDispatcher::ListenerMap*
+	const EventDispatcher::ListenerList*
 	EventDispatcher::TryGetListenerMapForEventId(EventId a_eventId) const
 	{
 		return const_cast<EventDispatcher*>(this)->TryGetListenerMapForEventId(a_eventId);

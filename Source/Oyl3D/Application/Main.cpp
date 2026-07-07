@@ -88,11 +88,10 @@ namespace Oyl
 			RegisterEventListener(&ApplicationCloseRequestEventListener::OnApplicationCloseRequestEvent);
 		}
 
-		bool
-		OnApplicationCloseRequestEvent(const ApplicationCloseRequestEvent&) const
+		void
+		OnApplicationCloseRequestEvent(const ApplicationCloseRequestEvent& /*a_event*/) const
 		{
 			g_running = false;
-			return true;
 		}
 	};
 

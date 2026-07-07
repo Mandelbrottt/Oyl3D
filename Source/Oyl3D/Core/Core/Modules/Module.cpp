@@ -11,11 +11,11 @@ namespace Oyl
 	}
 
 	void
-	Module::PostEvent(const Event& a_event)
+	Module::PostEvent(const Event& a_event) const
 	{
 		OYL_PROFILE_FUNCTION();
 
-		m_eventDispatcher->Dispatch(a_event.typeId, a_event);
+		m_eventDispatcher->Dispatch(a_event.eventType, a_event);
 	}
 
 	void

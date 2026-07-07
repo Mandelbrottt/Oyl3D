@@ -41,7 +41,7 @@ namespace Oyl
 		//params.postEventCallback = CreateDelegate<&Module::PostEvent>(this);
 		//params.postEventCallback = { this, &Module::PostEvent };
 		//params.postEventCallback = CreateDelegate(this, &MainWindowModule::PostEvent);
-		params.postEventCallback = PostEventDelegate::Create(this, &MainWindowModule::PostEvent);
+		params.postEventCallback = PostEventDelegate::Create(this, &Module::PostEvent);
 
 		m_window = new GlfwWindow(params);
 
@@ -81,79 +81,69 @@ namespace Oyl
 		glfwTerminate();
 	}
 
-	bool
+	void
 	MainWindowModule::OnWindowResizeEvent(const WindowResizeEvent& a_event)
 	{
 		OYL_LOG("Window Resized: ({}, {})", a_event.size.x, a_event.size.y);
-		return true;
 	}
 
-	bool
+	void
 	MainWindowModule::OnWindowMoveEvent(const WindowMoveEvent& a_event)
 	{
 		OYL_LOG("Window Moved: ({}, {})", a_event.position.x, a_event.position.y);
-		return true;
 	}
 
-	bool
+	void
 	MainWindowModule::OnWindowCloseRequestEvent(const WindowCloseRequestEvent& a_event)
 	{
 		if (!m_window)
-			return true;
+			return;
 
 		if (a_event.nativeWindow != m_window->GetNativeWindowHandle())
-			return true;
+			return;
 
 		PostEvent(ApplicationCloseRequestEvent());
-		return true;
 	}
 
-	bool
+	void
 	MainWindowModule::OnWindowFocusEvent(const WindowFocusEvent& a_event)
 	{
 		OYL_LOG("Window Focus: {}", a_event.focused);
-		return true;
 	}
 
-	bool
+	void
 	MainWindowModule::OnWindowKeyPressEvent(const WindowKeyPressEvent& a_event)
 	{
 		OYL_LOG("Window Key Press: {}", a_event.key);
-		return true;
 	}
 
-	bool
+	void
 	MainWindowModule::OnWindowKeyReleaseEvent(const WindowKeyReleaseEvent& a_event)
 	{
 		OYL_LOG("Window Key Release: {}", a_event.key);
-		return true;
 	}
 
-	bool
+	void
 	MainWindowModule::OnWindowMousePressEvent(const WindowMousePressEvent& a_event)
 	{
 		OYL_LOG("Window Mouse Button Press: {}", a_event.button);
-		return true;
 	}
 
-	bool
+	void
 	MainWindowModule::OnWindowMouseReleaseEvent(const WindowMouseReleaseEvent& a_event)
 	{
 		OYL_LOG("Window Mouse Button Release: {}", a_event.button);
-		return true;
 	}
 
-	bool
+	void
 	MainWindowModule::OnWindowMouseScrollEvent(const WindowMouseScrollEvent& a_event)
 	{
 		OYL_LOG("Window Mouse Scroll: ({}, {})", a_event.scroll.x, a_event.scroll.y);
-		return true;
 	}
 
-	bool
+	void
 	MainWindowModule::OnWindowCursorMoveEvent(const WindowCursorMoveEvent& a_event)
 	{
 		OYL_LOG("Window Cursor Moved: ({}, {})", a_event.position.x, a_event.position.y);
-		return true;
 	}
 }

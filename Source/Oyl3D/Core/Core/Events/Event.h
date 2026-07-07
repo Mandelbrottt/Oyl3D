@@ -5,18 +5,35 @@
 
 namespace Oyl
 {
+	using EventId = Reflection::TypeId;
+
 	struct Event
 	{
+		friend class EventDispatcher;
+
 		virtual
 		~Event() = default;
 
-		const Reflection::TypeId typeId;
+		const EventId eventType;
+
+		/**
+		 * \brief Cancel the event currently being handled.
+		 *        This prevents lower priority listeners from consuming the event
+		 */
+		void
+		Cancel() const
+		{
+			m_cancelled = true;
+		}
 
 	protected:
 		explicit
 		constexpr
-		Event(Reflection::TypeId a_typeId)
-			: typeId(a_typeId) {}
+		Event(EventId a_eventType)
+			: eventType(a_eventType) {}
+
+	private:
+		mutable bool m_cancelled = false;
 	};
 
 	template<typename TEvent>
@@ -28,7 +45,10 @@ namespace Oyl
 			: Event(Reflection::GetTypeId<TEvent>()) {}
 	};
 
-	using EventDelegate = Delegate<bool(const Event&)>;
-	using PostEventDelegate = Delegate<void(const Event&)>;
+	using OnEventSignature = void(const Event&);
+	using OnEventDelegate = Delegate<OnEventSignature>;
+
+	using PostEventSignature = void(const Event&);
+	using PostEventDelegate = Delegate<PostEventSignature>;
 
 }
