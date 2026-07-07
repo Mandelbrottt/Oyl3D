@@ -2,31 +2,13 @@
 
 #include "TypeTraits.h"
 
+#define _MEMBER_FUNCTION_POINTER_DECL(_class_, _return_, _args_, _var_, _cv_ref_noexcept_) \
+	_return_ (_class_::*_var_)(_args_) _cv_ref_noexcept_
+
 namespace Oyl
 {
-	template<typename TSignature>
+	template<Traits::FunctionSignature>
 	class Delegate;
-
-	//template<>
-	//class Delegate
-	//{
-	//public:
-	//	Delegate() = delete;
-
-	//	template<typename TSignature>
-	//	Delegate<TSignature>
-	//	Create(typename Delegate<TSignature>::Fn a_fn)
-	//	{
-	//		return Delegate<TSignature>::Create(a_fn);
-	//	}
-
-	//	template<typename TObj, typename TSignature>
-	//	Delegate<TSignature>
-	//	Create(TObj* a_obj, typename Delegate<TSignature>::template MemberFn<TObj> a_fn)
-	//	{
-	//		return Delegate<TSignature>::template Create<TObj>(a_obj, a_fn);
-	//	}
-	//};
 
 	template<typename TReturn, typename... TArgs>
 	class Delegate<TReturn(TArgs...)>
@@ -36,13 +18,10 @@ namespace Oyl
 
 		template<auto Function>
 			requires Traits::MemberFunctionPointer<decltype(Function)>
-		using MemberFnFromValue = TReturn (Traits::MemberFunctionClass_T<decltype(Function)>::*)(TArgs...);
+		using MemberFnFromValue = TReturn (Traits::MemberFunctionBaseClass_T<decltype(Function)>::*)(TArgs...);
 
 		template<typename TClass>
 		using MemberFnFromType = TReturn (TClass::*)(TArgs...);
-
-		template<typename TClass>
-		using ConstMemberFnFromType = TReturn (TClass::*)(TArgs...) const;
 
 		Delegate() {}
 
@@ -72,6 +51,18 @@ namespace Oyl
 			std::swap(m_fn, a_other.m_fn);
 
 			return *this;
+		}
+
+		bool
+		IsValid() const
+		{
+			return m_fn != nullptr;
+		}
+
+		explicit
+		operator bool() const
+		{
+			return IsValid();
 		}
 
 	#pragma region Function Pointers
@@ -111,91 +102,77 @@ namespace Oyl
 	#pragma endregion Function Pointers
 	#pragma region Member Functions
 
-		template<typename TObj, typename TClass>
-		Delegate(TObj* a_obj, MemberFnFromType<TClass> a_fn)
-		{
-			Set(a_obj, a_fn);
+	#define _DELEGATE_MEMBER_CONSTRUCTOR(_cv_ref_noexcept_) \
+		template<typename TObj, typename TClass> \
+		Delegate(TObj* a_obj, _MEMBER_FUNCTION_POINTER_DECL(TClass, TReturn, TArgs..., a_fn, _cv_ref_noexcept_)) \
+		{ \
+			Set(a_obj, a_fn); \
 		}
 
-		template<typename TObj, typename TClass>
-		Delegate(TObj* a_obj, ConstMemberFnFromType<TClass> a_fn)
-		{
-			Set(a_obj, a_fn);
+	_CLASS_DEFINE_CV_REF_NOEXCEPT(_DELEGATE_MEMBER_CONSTRUCTOR)
+	#undef _DELEGATE_MEMBER_CONSTRUCTOR
+
+	#define _DELEGATE_MEMBER_CREATE_FUNC(_cv_ref_noexcept_) \
+		template<typename TObj, typename TClass> \
+			requires std::is_base_of_v<TClass, TObj> \
+		static \
+		Delegate \
+		Create(TObj* a_obj, _MEMBER_FUNCTION_POINTER_DECL(TClass, TReturn, TArgs..., a_fn, _cv_ref_noexcept_)) \
+		{ \
+			Delegate result; \
+			result.Set(a_obj, a_fn); \
+			return result; \
 		}
+
+	_CLASS_DEFINE_CV_REF_NOEXCEPT(_DELEGATE_MEMBER_CREATE_FUNC)
+	#undef _DELEGATE_MEMBER_CREATE_FUNC
 
 		template<auto Function>
 			requires Traits::MemberFunctionPointer<decltype(Function)>
 		static
 		Delegate
-		Create(Traits::MemberFunctionClass_T<decltype(Function)>* a_obj)
+		Create(Traits::MemberFunctionBaseClass_T<decltype(Function)>* a_obj)
 		{
 			Delegate result;
 			result.Set(a_obj, Function);
 			return result;
 		}
 
-		template<typename TObj, typename TClass>
-			requires std::is_base_of_v<TClass, TObj>
-		static
-		Delegate
-		Create(TObj* a_obj, MemberFnFromType<TClass> a_fn)
-		{
-			Delegate result;
-			result.Set(a_obj, a_fn);
-			return result;
+	#define _DELEGATE_MEMBER_SET_FUNC(_cv_ref_noexcept_) \
+		template<typename TObj, typename TClass> \
+			requires std::is_base_of_v<TClass, TObj> \
+		void \
+		Set(TObj* a_obj, _MEMBER_FUNCTION_POINTER_DECL(TClass, TReturn, TArgs..., a_fn, _cv_ref_noexcept_)) \
+		{ \
+			m_obj = reinterpret_cast<void*>(a_obj); \
+			std::memcpy(&m_fn, &a_fn, sizeof(m_fn)); \
 		}
 
-		template<typename TObj, typename TClass>
-			requires std::is_base_of_v<TClass, TObj>
-		static
-		Delegate
-		Create(TObj* a_obj, ConstMemberFnFromType<TClass> a_fn)
-		{
-			Delegate result;
-			result.Set(a_obj, a_fn);
-			return result;
-		}
+	_CLASS_DEFINE_CV_REF_NOEXCEPT(_DELEGATE_MEMBER_SET_FUNC)
+	#undef _DELEGATE_MEMBER_SET_FUNC
 
 		template<auto Function>
 			requires Traits::MemberFunctionPointer<decltype(Function)>
 		void
-		Set(Traits::MemberFunctionClass_T<decltype(Function)>* a_obj)
+		Set(Traits::MemberFunctionBaseClass_T<decltype(Function)>* a_obj)
 		{
 			m_obj = reinterpret_cast<void*>(a_obj);
 			std::memcpy(&m_fn, Function, sizeof(m_fn));
-		}
-
-		template<typename TObj, typename TClass>
-			requires std::is_base_of_v<TClass, TObj>
-		void
-		Set(TObj* a_obj, MemberFnFromType<TClass> a_fn)
-		{
-			m_obj = reinterpret_cast<void*>(a_obj);
-			std::memcpy(&m_fn, &a_fn, sizeof(m_fn));
-		}
-
-		template<typename TObj, typename TClass>
-			requires std::is_base_of_v<TClass, TObj>
-		void
-		Set(TObj* a_obj, ConstMemberFnFromType<TClass> a_fn)
-		{
-			m_obj = reinterpret_cast<void*>(a_obj);
-			std::memcpy(&m_fn, &a_fn, sizeof(m_fn));
 		}
 
 	#pragma endregion Member Functions
 	#pragma region Invoke
 
 		TReturn
-		operator ()(TArgs... a_args) const
+		operator ()(TArgs&&... a_args) const
 		{
-			return Invoke(a_args...);
+			return Invoke(std::forward<TArgs>(a_args)...);
 		}
 
 		template<typename = void>
 			requires (std::is_void_v<TReturn>)
 		void
-		Invoke(TArgs... a_args) const
+		Invoke(TArgs&&... a_args) const
 		{
 			if (m_obj == nullptr)
 			{
@@ -212,7 +189,7 @@ namespace Oyl
 		template<typename = void>
 			requires (!std::is_void_v<TReturn>)
 		void
-		Invoke(TArgs... a_args) const
+		Invoke(TArgs&&... a_args) const
 		{
 			if (m_obj == nullptr)
 			{
@@ -236,7 +213,7 @@ namespace Oyl
 
 	template<auto Function>
 	Delegate(
-		Traits::MemberFunctionClass_T<decltype(Function)>* a_obj,
+		Traits::MemberFunctionBaseClass_T<decltype(Function)>* a_obj,
 		decltype(Function)
 	) -> Delegate<Traits::FunctionSignatureFromPointer_T<decltype(Function)>>;
 
@@ -258,25 +235,23 @@ namespace Oyl
 
 	template<auto Function>
 	Delegate<Traits::FunctionSignatureFromPointer_T<decltype(Function)>>
-	CreateDelegate(Traits::MemberFunctionClass_T<decltype(Function)>* a_obj)
+	CreateDelegate(Traits::MemberFunctionBaseClass_T<decltype(Function)>* a_obj)
 	{
 		using TDelegate = Delegate<Traits::FunctionSignatureFromPointer_T<decltype(Function)>>;
 		return TDelegate::Create(a_obj, Function);
 	}
 
-	template<typename TObj, typename TClass, typename TReturn, typename... TArgs>
-		requires std::is_base_of_v<TClass, TObj>
-	Delegate<TReturn(TArgs...)>
-	CreateDelegate(TObj* a_obj, typename Delegate<TReturn(TArgs...)>::template MemberFnFromType<TClass> a_fn)
-	{
-		return Delegate<TReturn(TArgs...)>::Create(a_obj, a_fn);
-	}
+	#define _DELEGATE_MEMBER_CREATE_DELEGATE_FUNC(_cv_ref_noexcept_) \
+		template<typename TObj, typename TClass, typename TReturn, typename... TArgs> \
+			requires std::is_base_of_v<TClass, TObj> \
+		Delegate<TReturn(TArgs...)> \
+		CreateDelegate(TObj* a_obj, _MEMBER_FUNCTION_POINTER_DECL(TClass, TReturn, TArgs..., a_fn, _cv_ref_noexcept_)) \
+		{ \
+			return Delegate<TReturn(TArgs...)>::Create(a_obj, a_fn); \
+		}
 
-	template<typename TObj, typename TClass, typename TReturn, typename... TArgs>
-		requires std::is_base_of_v<TClass, TObj>
-	Delegate<TReturn(TArgs...)>
-	CreateDelegate(TObj* a_obj, typename Delegate<TReturn(TArgs...)>::template ConstMemberFnFromType<TClass> a_fn)
-	{
-		return Delegate<TReturn(TArgs...)>::Create(a_obj, a_fn);
-	}
+	_CLASS_DEFINE_CV_REF_NOEXCEPT(_DELEGATE_MEMBER_CREATE_DELEGATE_FUNC)
+	#undef _DELEGATE_MEMBER_CREATE_DELEGATE_FUNC
 }
+
+#undef _MEMBER_FUNCTION_POINTER_DECL

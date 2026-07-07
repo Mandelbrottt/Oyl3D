@@ -117,68 +117,76 @@ namespace Oyl::Traits
 	template<typename>
 	struct IsMemberFunctionPointer : std::false_type {};
 
-	template<typename Class, typename TReturn, typename... TArgs>
-	struct IsMemberFunctionPointer<TReturn (Class::*)(TArgs...)> : std::true_type {};
+	#define _IS_MEMBER_FUNCTION_POINTER(_cv_ref_noexcept_) \
+		template<typename TClass, typename TReturn, typename... TArgs> \
+		struct IsMemberFunctionPointer<TReturn (TClass::*)(TArgs...) _cv_ref_noexcept_> : std::true_type {};
+
+	_CLASS_DEFINE_CV_REF_NOEXCEPT(_IS_MEMBER_FUNCTION_POINTER)
+	#undef _IS_MEMBER_FUNCTION_POINTER
 
 	template<typename T>
 	concept MemberFunctionPointer = IsMemberFunctionPointer<T>::value;
 
-	template<typename TClass, typename TReturn, typename... TArgs>
-	struct FunctionSignatureFromPointer<TReturn(TClass::*)(TArgs...)>
-	{
-		using type = TReturn(TArgs...);
-	};
+	#define _FUNCTION_SIGNATURE_FROM_POINTER(_cv_ref_noexcept_) \
+		template<typename TClass, typename TReturn, typename... TArgs> \
+		struct FunctionSignatureFromPointer<TReturn(TClass::*)(TArgs...) _cv_ref_noexcept_> \
+		{ \
+			using type = TReturn(TArgs...); \
+		};
+
+	_CLASS_DEFINE_CV_REF_NOEXCEPT(_FUNCTION_SIGNATURE_FROM_POINTER)
+	#undef _FUNCTION_SIGNATURE_FROM_POINTER
+
+	template<MemberFunctionPointer>
+	struct AddMemberFunctionConst;
 
 	template<typename TClass, typename TReturn, typename... TArgs>
-	struct FunctionSignatureFromPointer<TReturn(TClass::*)(TArgs...) const>
-	{
-		using type = TReturn(TArgs...);
-	};
-
-	template<typename TClass, typename TReturn, typename... TArgs>
-	struct AddConst<TReturn(TClass::*)(TArgs...)>
-	{
-		using type = TReturn(TClass::*)(TArgs...) const;
-	};
-
-	template<typename TClass, typename TReturn, typename... TArgs>
-	struct AddConst<TReturn(TClass::*)(TArgs...) const>
+	struct AddMemberFunctionConst<TReturn(TClass::*)(TArgs...)>
 	{
 		using type = TReturn(TClass::*)(TArgs...) const;
 	};
 
 	template<typename TClass, typename TReturn, typename... TArgs>
-	struct AddConst<TReturn(TClass::*)(TArgs...) noexcept>
+	struct AddMemberFunctionConst<TReturn(TClass::*)(TArgs...) const>
+	{
+		using type = TReturn(TClass::*)(TArgs...) const;
+	};
+
+	template<typename TClass, typename TReturn, typename... TArgs>
+	struct AddMemberFunctionConst<TReturn(TClass::*)(TArgs...) noexcept>
 	{
 		using type = TReturn(TClass::*)(TArgs...) const noexcept;
 	};
 
 	template<typename TClass, typename TReturn, typename... TArgs>
-	struct AddConst<TReturn(TClass::*)(TArgs...) const noexcept>
+	struct AddMemberFunctionConst<TReturn(TClass::*)(TArgs...) const noexcept>
 	{
 		using type = TReturn(TClass::*)(TArgs...) const noexcept;
 	};
 
+	template<MemberFunctionPointer>
+	struct RemoveMemberFunctionConst;
+
 	template<typename TClass, typename TReturn, typename... TArgs>
-	struct RemoveConst<TReturn(TClass::*)(TArgs...)>
+	struct RemoveMemberFunctionConst<TReturn(TClass::*)(TArgs...)>
 	{
 		using type = TReturn(TClass::*)(TArgs...);
 	};
 
 	template<typename TClass, typename TReturn, typename... TArgs>
-	struct RemoveConst<TReturn(TClass::*)(TArgs...) const>
+	struct RemoveMemberFunctionConst<TReturn(TClass::*)(TArgs...) const>
 	{
 		using type = TReturn(TClass::*)(TArgs...);
 	};
 
 	template<typename TClass, typename TReturn, typename... TArgs>
-	struct RemoveConst<TReturn(TClass::*)(TArgs...) noexcept>
+	struct RemoveMemberFunctionConst<TReturn(TClass::*)(TArgs...) noexcept>
 	{
 		using type = TReturn(TClass::*)(TArgs...) noexcept;
 	};
 
 	template<typename TClass, typename TReturn, typename... TArgs>
-	struct RemoveConst<TReturn(TClass::*)(TArgs...) const noexcept>
+	struct RemoveMemberFunctionConst<TReturn(TClass::*)(TArgs...) const noexcept>
 	{
 		using type = TReturn(TClass::*)(TArgs...) noexcept;
 	};
@@ -211,7 +219,7 @@ namespace Oyl::Traits
 	};
 
 	template<typename T>
-	using MemberFunctionClass_T = typename MemberFunctionClass<T>::type;
+	using MemberFunctionBaseClass_T = typename MemberFunctionClass<T>::type;
 
 	template<typename TClass, typename>
 	struct MemberFunctionWithSignature;
