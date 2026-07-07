@@ -3,12 +3,11 @@
 #include "Core/Common.h"
 #include "Core/Events/Event.h"
 #include "Core/Events/EventDispatcher.h"
+#include "Core/Events/EventListener.h"
 #include "Core/Reflection/TypeId.h"
 
 namespace Oyl
 {
-	class Module;
-
 	void ApplicationInit();
 
 	class OYL_CORE_API ModuleRegistry
@@ -19,15 +18,16 @@ namespace Oyl
 		using ModuleList = std::vector<Module*>;
 
 	public:
+		Module*
+		RegisterModule(Module* a_module);
+
 		template<typename TModule, typename... TArgs>
 			requires std::is_base_of_v<Module, TModule>
 		TModule*
 		RegisterModule(TArgs&&... a_args)
 		{
 			TModule* module = new TModule(std::forward<TArgs>(a_args)...);
-			m_modules.emplace_back(module);
-			module->OnRegisterEventDispatcher(&m_eventDispatcher);
-			module->OnInit();
+			RegisterModule(module);
 			return module;
 		}
 

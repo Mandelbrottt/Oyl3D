@@ -3,9 +3,8 @@
 #include "ModuleRegistry.h"
 
 #include "Core/Common.h"
-#include "Core/Events/EventDispatcher.h"
+#include "Core/Events/EventListener.h"
 #include "Core/Logging/Logging.h"
-#include "Core/Profiling/Profiler.h"
 #include "Core/Reflection/TypeId.h"
 
 namespace Oyl
@@ -16,7 +15,7 @@ namespace Oyl
 
 namespace Oyl
 {
-	class OYL_CORE_API Module
+	class OYL_CORE_API Module : public EventListener
 	{
 		friend ModuleRegistry;
 
@@ -26,7 +25,8 @@ namespace Oyl
 		virtual
 		~Module();
 
-#	pragma region Public Interface
+	#pragma region Public Interface
+
 		virtual
 		Reflection::TypeId
 		GetTypeId() const = 0;
@@ -43,8 +43,10 @@ namespace Oyl
 		void
 		SetEnabled(bool a_value) { m_enabled = a_value; }
 
-#	pragma endregion
-#	pragma region Callback functions
+	#pragma endregion
+
+	#pragma region Callback functions
+
 		virtual
 		void
 		OnInit() {}
@@ -56,57 +58,11 @@ namespace Oyl
 		virtual
 		void
 		OnShutdown() {}
-#	pragma endregion
-#	pragma region Events
-		template<typename TModule, typename TEvent>
-		void
-		RegisterEventListener(void (TModule::*a_fn)(const TEvent&), int32 a_priority = 0)
-		{
-			constexpr auto eventId = Reflection::GetTypeId<TEvent>();
-			constexpr auto listenerId = Reflection::GetTypeId<decltype(*this)>();
 
-			TModule* obj = static_cast<TModule*>(this);
-
-			OnEventDelegate::MemberFnFromType<Module> fn;
-			std::memcpy(&fn, &a_fn, sizeof(fn));
-
-			auto delegate = OnEventDelegate::Create(obj, fn);
-
-			m_eventDispatcher->Register(eventId, listenerId, std::move(delegate), a_priority);
-		}
-
-		template<typename TModule, typename TEvent>
-		void
-		RegisterEventListener(void (TModule::*a_fn)(const TEvent&) const)
-		{
-			Traits::RemoveConst_T<decltype(a_fn)> fn;
-			std::memcpy(&fn, &a_fn, sizeof(fn));
-			RegisterEventListener(fn);
-		}
-
-		//template<typename TEvent>
-		//	requires (std::is_base_of_v<Event, TEvent> && !std::is_same_v<Event, TEvent>)
-		//void
-		//PostEvent(const TEvent& a_event)
-		//{
-		//	OYL_PROFILE_FUNCTION();
-
-		//	constexpr auto eventId = Reflection::GetTypeId<TEvent>();
-		//	m_eventDispatcher->Dispatch(eventId, a_event);
-		//}
-
-		void
-		PostEvent(const Event& a_event) const;
-
-	private:
-		void
-		OnRegisterEventDispatcher(EventDispatcher* a_dispatcher);
-#	pragma endregion
+	#pragma endregion
 
 	private:
 		bool m_enabled = true;
-
-		EventDispatcher* m_eventDispatcher = nullptr;
 	};
 }
 
