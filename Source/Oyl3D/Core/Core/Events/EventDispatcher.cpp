@@ -7,29 +7,32 @@ namespace Oyl
 	void
 	EventDispatcher::Register(
 		EventId a_eventId,
-		ListenerId a_listenerId,
 		const OnEventDelegate& a_delegate,
 		int32 a_priority
 	)
 	{
 		auto& listenerList = GetOrAddListenerMapForEventId(a_eventId);
 
-		// Search for ListenerList for the given EventId
-		auto listenerIter = std::ranges::find_if(
+		auto delegateIter = std::ranges::find_if(
 			listenerList,
-			[a_listenerId](const auto& a_listenerDescriptor) -> bool
+			[&](const auto& a_listenerDescriptor) -> bool
 			{
-				return a_listenerDescriptor.listenerTypeId == a_listenerId;
+				return a_listenerDescriptor.delegate == a_delegate;
 			}
 		);
-		if (listenerIter != listenerList.end())
+
+		// If the delegate is already in the list, and has a different priority than the current requested value,
+		// remove it from the list to be re-added
+		if (delegateIter != listenerList.end())
 		{
-			listenerIter->delegate = a_delegate;
-			return;
+			if (delegateIter->priority == a_priority)
+				return;
+
+			listenerList.erase(delegateIter);
 		}
 
 		// Find the first listener with a priority less than incoming listener, and insert before that
-		auto priorityIter = std::ranges::find_if(
+		auto listenerIter = std::ranges::find_if(
 			listenerList,
 			[&](const auto& a_listenerDescriptor) -> bool
 			{
@@ -38,9 +41,8 @@ namespace Oyl
 		);
 
 		listenerList.insert(
-			priorityIter,
+			listenerIter,
 			ListenerDescriptor {
-				.listenerTypeId = a_listenerId,
 				.delegate = a_delegate,
 				.priority = a_priority,
 			}
@@ -48,7 +50,7 @@ namespace Oyl
 	}
 
 	void
-	EventDispatcher::UnRegister(EventId a_eventId, ListenerId a_listenerId)
+	EventDispatcher::UnRegister(EventId a_eventId, const OnEventDelegate& a_delegate)
 	{
 		auto* listenerMap = TryGetListenerMapForEventId(a_eventId);
 		if (!listenerMap)
@@ -58,9 +60,9 @@ namespace Oyl
 
 		auto listenerIter = std::ranges::find_if(
 			*listenerMap,
-			[a_listenerId](const auto& a_listenerDescriptor) -> bool
+			[&a_delegate](const ListenerDescriptor& a_listenerDescriptor) -> bool
 			{
-				return a_listenerDescriptor.listenerTypeId == a_listenerId;
+				return a_listenerDescriptor.delegate == a_delegate;
 			}
 		);
 		if (listenerIter == listenerMap->end())

@@ -50,5 +50,4 @@ namespace Oyl
 
 	using PostEventSignature = void(const Event&);
 	using PostEventDelegate = Delegate<PostEventSignature>;
-
 }
