@@ -41,7 +41,7 @@ namespace Oyl
 		//params.postEventCallback = CreateDelegate<&Module::PostEvent>(this);
 		//params.postEventCallback = { this, &Module::PostEvent };
 		//params.postEventCallback = CreateDelegate(this, &MainWindowModule::PostEvent);
-		params.postEventCallback = PostEventDelegate::Create(this, &Module::PostEvent);
+		params.postEventCallback = PostEventDelegate::Create(this, &MainWindowModule::PostEvent);
 
 		m_window = new GlfwWindow(params);
 

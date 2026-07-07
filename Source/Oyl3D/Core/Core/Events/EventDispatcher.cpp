@@ -15,7 +15,7 @@ namespace Oyl
 
 		auto delegateIter = std::ranges::find_if(
 			listenerList,
-			[&](const auto& a_listenerDescriptor) -> bool
+			[&](const ListenerDescriptor& a_listenerDescriptor) -> bool
 			{
 				return a_listenerDescriptor.delegate == a_delegate;
 			}
@@ -50,7 +50,7 @@ namespace Oyl
 	}
 
 	void
-	EventDispatcher::UnRegister(EventId a_eventId, const OnEventDelegate& a_delegate)
+	EventDispatcher::Unregister(EventId a_eventId, const OnEventDelegate& a_delegate)
 	{
 		auto* listenerMap = TryGetListenerMapForEventId(a_eventId);
 		if (!listenerMap)

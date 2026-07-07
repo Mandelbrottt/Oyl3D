@@ -6,6 +6,15 @@
 namespace Oyl
 {
 	Module*
+	ModuleRegistry::RegisterModule(Module* a_module)
+	{
+		m_modules.emplace_back(a_module);
+		Internal::AttachEventListenerToEventDispatcher(a_module, &m_eventDispatcher);
+		a_module->OnInit();
+		return a_module;
+	}
+
+	Module*
 	ModuleRegistry::GetModule(Reflection::TypeId a_typeId)
 	{
 		Module* module     = nullptr;

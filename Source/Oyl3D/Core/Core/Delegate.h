@@ -45,12 +45,22 @@ namespace Oyl
 		}
 
 		Delegate&
-		operator=(Delegate&& a_other) noexcept
+		operator =(Delegate&& a_other) noexcept
 		{
 			std::swap(m_obj, a_other.m_obj);
 			std::swap(m_fn, a_other.m_fn);
 
 			return *this;
+		}
+
+		friend bool operator ==(const Delegate& a_lhs, const Delegate& a_rhs)
+		{
+			return a_lhs.m_fn == a_rhs.m_fn && a_lhs.m_obj == a_rhs.m_obj;
+		}
+
+		friend bool operator !=(const Delegate& a_lhs, const Delegate& a_rhs)
+		{
+			return !(a_lhs == a_rhs);
 		}
 
 		bool
@@ -104,7 +114,7 @@ namespace Oyl
 
 	#define _DELEGATE_MEMBER_CONSTRUCTOR(_cv_ref_noexcept_) \
 		template<typename TObj, typename TClass> \
-		Delegate(TObj* a_obj, _MEMBER_FUNCTION_POINTER_DECL(TClass, TReturn, TArgs..., a_fn, _cv_ref_noexcept_)) \
+		Delegate(TObj* a_obj, TReturn(TClass::*a_fn)(TArgs...) _cv_ref_noexcept_) \
 		{ \
 			Set(a_obj, a_fn); \
 		}
@@ -117,7 +127,7 @@ namespace Oyl
 			requires std::is_base_of_v<TClass, TObj> \
 		static \
 		Delegate \
-		Create(TObj* a_obj, _MEMBER_FUNCTION_POINTER_DECL(TClass, TReturn, TArgs..., a_fn, _cv_ref_noexcept_)) \
+		Create(TObj* a_obj, TReturn(TClass::*a_fn)(TArgs...) _cv_ref_noexcept_) \
 		{ \
 			Delegate result; \
 			result.Set(a_obj, a_fn); \
@@ -142,7 +152,7 @@ namespace Oyl
 		template<typename TObj, typename TClass> \
 			requires std::is_base_of_v<TClass, TObj> \
 		void \
-		Set(TObj* a_obj, _MEMBER_FUNCTION_POINTER_DECL(TClass, TReturn, TArgs..., a_fn, _cv_ref_noexcept_)) \
+		Set(TObj* a_obj, TReturn(TClass::*a_fn)(TArgs...) _cv_ref_noexcept_) \
 		{ \
 			m_obj = reinterpret_cast<void*>(a_obj); \
 			std::memcpy(&m_fn, &a_fn, sizeof(m_fn)); \
@@ -245,7 +255,7 @@ namespace Oyl
 		template<typename TObj, typename TClass, typename TReturn, typename... TArgs> \
 			requires std::is_base_of_v<TClass, TObj> \
 		Delegate<TReturn(TArgs...)> \
-		CreateDelegate(TObj* a_obj, _MEMBER_FUNCTION_POINTER_DECL(TClass, TReturn, TArgs..., a_fn, _cv_ref_noexcept_)) \
+		CreateDelegate(TObj* a_obj, TReturn(TClass::*a_fn)(TArgs...) _cv_ref_noexcept_) \
 		{ \
 			return Delegate<TReturn(TArgs...)>::Create(a_obj, a_fn); \
 		}
