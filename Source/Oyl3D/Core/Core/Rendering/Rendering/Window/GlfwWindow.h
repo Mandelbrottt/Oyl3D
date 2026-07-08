@@ -6,7 +6,7 @@
 
 namespace Oyl
 {
-	class OYL_CORE_API GlfwWindow : public Window
+	class OYL_RENDERING_API GlfwWindow : public Window
 	{
 	public:
 		GlfwWindow() noexcept;

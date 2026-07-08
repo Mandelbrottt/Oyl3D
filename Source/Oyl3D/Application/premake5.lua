@@ -12,8 +12,13 @@ project "Oyl.Application"; do
 
 	links {
 		"Oyl.Core",
+		"Oyl.Rendering",
 		"Oyl.Editor",
+	}
+
+	links {
 		"SpdLog",
 		"TracyClient",
+		"Glfw",
 	}
 end

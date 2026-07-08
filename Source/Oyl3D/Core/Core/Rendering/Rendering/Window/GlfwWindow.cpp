@@ -2,7 +2,7 @@
 
 #include <GLFW/glfw3.h>
 
-#include "Core/Rendering/VulkanRenderContext.h"
+//#include "Core/Rendering/VulkanRenderContext.h"
 
 namespace
 {
@@ -23,6 +23,8 @@ namespace Oyl
 {
 	struct GlfwWindow::Impl
 	{
+		GlfwWindow* window;
+
 		std::string title;
 
 		Vector2i position;
@@ -35,14 +37,12 @@ namespace Oyl
 
 		GLFWwindow* glfwWindow = nullptr;
 
-		std::unique_ptr<Rendering::RenderContext> renderContext;
+		//std::unique_ptr<Rendering::RenderContext> renderContext;
 
 		void
 		CreateGlfwWindow();
 		void
 		SetupGlfwWindowCallbacks();
-		void
-		CreateRenderContext(Window* a_window);
 	};
 
 	GlfwWindow::GlfwWindow() noexcept
@@ -82,6 +82,8 @@ namespace Oyl
 		if (!m_impl)
 			m_impl = std::make_unique<Impl>();
 
+		m_impl->window = this;
+
 		m_impl->postEventCallback = a_params.postEventCallback;
 
 		m_impl->title = a_params.title;
@@ -94,7 +96,12 @@ namespace Oyl
 
 		m_impl->CreateGlfwWindow();
 		m_impl->SetupGlfwWindowCallbacks();
-		m_impl->CreateRenderContext(this);
+
+		WindowCreatedEvent event {};
+		event.window = this;
+		m_impl->postEventCallback(event);
+
+		//m_impl->CreateRenderContext(this);
 	}
 
 	void
@@ -108,7 +115,7 @@ namespace Oyl
 
 		OYL_PROFILE_FUNCTION();
 
-		m_impl->renderContext->Destroy();
+		//m_impl->renderContext->Destroy();
 
 		glfwDestroyWindow(m_impl->glfwWindow);
 		m_impl->glfwWindow = nullptr;
@@ -342,7 +349,7 @@ namespace Oyl
 					return;
 
 				WindowResizeEvent event;
-				event.nativeWindow = a_window;
+				event.window = impl->window;
 				event.size = impl->size;
 				impl->postEventCallback(event);
 			}
@@ -362,7 +369,7 @@ namespace Oyl
 					return;
 
 				WindowMoveEvent event;
-				event.nativeWindow = a_window;
+				event.window = impl->window;
 				event.position = impl->position;
 				impl->postEventCallback(event);
 			}
@@ -378,7 +385,7 @@ namespace Oyl
 					return;
 
 				WindowCloseRequestEvent event;
-				event.nativeWindow = a_window;
+				event.window = impl->window;
 				impl->postEventCallback(event);
 			}
 		);
@@ -393,7 +400,7 @@ namespace Oyl
 					return;
 
 				WindowFocusEvent event;
-				event.nativeWindow = a_window;
+				event.window = impl->window;
 				event.focused = a_focused;
 				impl->postEventCallback(event);
 			}
@@ -417,7 +424,7 @@ namespace Oyl
 					case GLFW_PRESS:
 					{
 						WindowKeyPressEvent event;
-						event.nativeWindow = a_window;
+						event.window = impl->window;
 						event.key = key;
 						event.mods = a_mods;
 						impl->postEventCallback(event);
@@ -426,7 +433,7 @@ namespace Oyl
 					case GLFW_RELEASE:
 					{
 						WindowKeyReleaseEvent event;
-						event.nativeWindow = a_window;
+						event.window = impl->window;
 						event.key = key;
 						event.mods = a_mods;
 						impl->postEventCallback(event);
@@ -454,7 +461,7 @@ namespace Oyl
 					case GLFW_PRESS:
 					{
 						WindowMousePressEvent event;
-						event.nativeWindow = a_window;
+						event.window = impl->window;
 						event.button = button;
 						event.mods = a_mods;
 						impl->postEventCallback(event);
@@ -463,7 +470,7 @@ namespace Oyl
 					case GLFW_RELEASE:
 					{
 						WindowMouseReleaseEvent event;
-						event.nativeWindow = a_window;
+						event.window = impl->window;
 						event.button = button;
 						event.mods = a_mods;
 						impl->postEventCallback(event);
@@ -485,7 +492,7 @@ namespace Oyl
 					return;
 
 				WindowMouseScrollEvent event;
-				event.nativeWindow = a_window;
+				event.window = impl->window;
 				event.scroll = { (float32) a_scrollX, (float32) a_scrollY };
 				impl->postEventCallback(event);
 			}
@@ -501,20 +508,11 @@ namespace Oyl
 					return;
 
 				WindowCursorMoveEvent event;
-				event.nativeWindow = a_window;
+				event.window = impl->window;
 				event.position = { (float32) a_posX, (float32) a_posY };
 				impl->postEventCallback(event);
 			}
 		);
-	}
-
-	void
-	GlfwWindow::Impl::CreateRenderContext(Window* a_window)
-	{
-		Rendering::RenderContextParams params {
-			.window = a_window
-		};
-		renderContext = std::make_unique<Rendering::VulkanRenderContext>(params);
 	}
 }
 

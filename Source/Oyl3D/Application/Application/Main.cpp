@@ -4,10 +4,11 @@
 #include <filesystem>
 #include <Windows.h>
 
+#include <Application/Modules/MainWindowModule.h>
+
 #include <Core/Application/ApplicationEvents.h>
 #include <Core/Application/CommandLine.h>
 #include <Core/Logging/Logging.h>
-#include <Core/Modules/MainWindowModule.h>
 #include <Core/Modules/ModuleRegistry.h>
 #include <Core/Profiling/Profiler.h>
 #include <Core/Time/Time.h>

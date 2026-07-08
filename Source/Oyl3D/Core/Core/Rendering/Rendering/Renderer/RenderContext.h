@@ -12,7 +12,7 @@ namespace Oyl::Rendering
 		Window* window;
 	};
 
-	class OYL_CORE_API RenderContext
+	class OYL_RENDERING_API RenderContext
 	{
 	protected:
 		RenderContext() noexcept;

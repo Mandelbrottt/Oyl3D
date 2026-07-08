@@ -1,14 +1,14 @@
 #pragma once
 
-#include "Module.h"
+#include "Application/Common.h"
 
-#include "Core/Application/Window.h"
+#include "Core/Modules/Module.h"
 
-#include "Core/Reflection/Attribute.h"
+#include "Rendering/Window/Window.h"
 
 namespace Oyl
 {
-	class OYL_CORE_API MainWindowModule : public Module
+	class OYL_APPLICATION_API MainWindowModule : public Module
 	{
 		OYL_DECLARE_MODULE(MainWindowModule);
 

@@ -1,60 +1,8 @@
 #pragma once
 
-#pragma region Environment Macros
-#	if defined(OYL_DISTRIBUTION) && defined(OYL_EDITOR)
-#		error Oyl Editor doesn't support Distribution configuration!
-#	endif
-
-#	ifdef _WIN32
-#		define OYL_WINDOWS 1
-#		ifdef _WIN64
-#			define OYL_WIN64 1
-#		else
-#			define OYL_WIN32 1
-#		endif
-#		define WIN32_LEAN_AND_MEAN
-#		define NOMINMAX
-#	else
-#		warning "Oyl3D only supports windows!"
-#	endif
-#pragma endregion
-
-#pragma region Shared Library
-#	if defined(OYL_EDITOR)
-#		define OYL_BUILD_SHARED_LIB 1
-#	else
-#		define OYL_BUILD_STATIC_LIB 1
-#	endif
-
-#	ifndef _OYL_EXPORT
-#		if defined(_MSC_VER) || defined(__MINGW32__) || defined(__MINGW64__)
-#			define _OYL_EXPORT __declspec(dllexport)
-#			define _OYL_IMPORT __declspec(dllimport)
-#		else
-#			define _OYL_EXPORT __attribute__((visibility("default")))
-#			define _OYL_IMPORT __attribute__((visibility("default")))
-#		endif
-#	endif
-
-#	if defined(__REFLECT_GENERATE__)
-#		define OYL_REFLECT __attribute__((annotate("__REFLECT__")))
-#		define OYL_CORE_API _OYL_EXPAND(OYL_REFLECT)
-#	else
-#		define OYL_REFLECT
-#	endif
-
-#	ifndef OYL_CORE_API
-#		if defined(OYL_BUILD_STATIC_LIB)
-#			define OYL_CORE_API
-#		elif defined(OYL_BUILD_SHARED_LIB)
-#			ifdef _INSIDE_OYL_CORE
-#				define OYL_CORE_API _OYL_EXPORT
-#			else
-#				define OYL_CORE_API _OYL_IMPORT
-#			endif
-#		endif
-#	endif
-#pragma endregion
+#include "Core/Preprocessor/Environment.h"
+#include "Core/Preprocessor/Library.h"
+#include "Core/Preprocessor/Reflection.h"
 
 #pragma region Common Macros
 #	define OYL_DEPRECATED(_message_) [[deprecated(_message_)]]
