@@ -10,15 +10,15 @@ namespace Oyl
 	{
 		m_modules.emplace_back(a_module);
 		Internal::AttachEventListenerToEventDispatcher(a_module, &m_eventDispatcher);
-		a_module->OnInit();
+		a_module->Setup();
 		return a_module;
 	}
 
 	Module*
 	ModuleRegistry::GetModule(Reflection::TypeId a_typeId)
 	{
-		Module* module     = nullptr;
-		auto    moduleIter = std::find_if(
+		Module* module = nullptr;
+		auto moduleIter = std::find_if(
 			begin(),
 			end(),
 			[a_typeId](Module* a_module) { return a_module->GetTypeId() == a_typeId; }
@@ -47,7 +47,7 @@ namespace Oyl
 		}
 
 		Module* module = *moduleIter;
-		module->OnShutdown();
+		module->Shutdown();
 		delete module;
 		m_modules.erase(moduleIter);
 		return true;

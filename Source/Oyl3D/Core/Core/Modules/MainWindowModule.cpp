@@ -13,10 +13,23 @@ namespace Oyl
 		OYL_LOG_ERROR("GLFW ERROR ({}): {}", a_error, a_description);
 	}
 
-	void Test(const Event&) {}
+	void
+	MainWindowModule::Setup()
+	{
+		RegisterEventListener(&MainWindowModule::OnWindowResizeEvent);
+		RegisterEventListener(&MainWindowModule::OnWindowMoveEvent);
+		RegisterEventListener(&MainWindowModule::OnWindowCloseRequestEvent);
+		RegisterEventListener(&MainWindowModule::OnWindowFocusEvent);
+		RegisterEventListener(&MainWindowModule::OnWindowKeyPressEvent);
+		RegisterEventListener(&MainWindowModule::OnWindowKeyReleaseEvent);
+		RegisterEventListener(&MainWindowModule::OnWindowMousePressEvent);
+		RegisterEventListener(&MainWindowModule::OnWindowMouseReleaseEvent);
+		RegisterEventListener(&MainWindowModule::OnWindowMouseScrollEvent);
+		RegisterEventListener(&MainWindowModule::OnWindowCursorMoveEvent);
+	}
 
 	void
-	MainWindowModule::OnInit()
+	MainWindowModule::Init()
 	{
 		OYL_PROFILE_FUNCTION();
 
@@ -31,34 +44,18 @@ namespace Oyl
 
 		glfwSetErrorCallback(GlfwErrorCallback);
 
-		WindowParams params;
-		params.size = { 1280, 720 };
-		params.title = "Oyl3D - Now with more code!";
-		params.cursorState = CS_Normal;
-		params.windowState = WS_None;
-		//params.postEventCallback = Delegate<void(const Event&)>::Create<&MainWindowModule::PostEvent>(this);
-		//params.postEventCallback = Delegate(&Test);
-		//params.postEventCallback = CreateDelegate<&Module::PostEvent>(this);
-		//params.postEventCallback = { this, &Module::PostEvent };
-		//params.postEventCallback = CreateDelegate(this, &MainWindowModule::PostEvent);
-		params.postEventCallback = PostEventDelegate::Create(this, &MainWindowModule::PostEvent);
-
+		WindowParams params {
+			.size = { 1280, 720 },
+			.title = "Oyl3D - Now with more code!",
+			.cursorState = CS_Normal,
+			.windowState = WS_None,
+			.postEventCallback = PostEventDelegate::Create(this, &MainWindowModule::PostEvent),
+		};
 		m_window = new GlfwWindow(params);
-
-		RegisterEventListener(&MainWindowModule::OnWindowResizeEvent);
-		RegisterEventListener(&MainWindowModule::OnWindowMoveEvent);
-		RegisterEventListener(&MainWindowModule::OnWindowCloseRequestEvent);
-		RegisterEventListener(&MainWindowModule::OnWindowFocusEvent);
-		RegisterEventListener(&MainWindowModule::OnWindowKeyPressEvent);
-		RegisterEventListener(&MainWindowModule::OnWindowKeyReleaseEvent);
-		RegisterEventListener(&MainWindowModule::OnWindowMousePressEvent);
-		RegisterEventListener(&MainWindowModule::OnWindowMouseReleaseEvent);
-		RegisterEventListener(&MainWindowModule::OnWindowMouseScrollEvent);
-		RegisterEventListener(&MainWindowModule::OnWindowCursorMoveEvent);
 	}
 
 	void
-	MainWindowModule::OnUpdate()
+	MainWindowModule::Update()
 	{
 		OYL_PROFILE_FUNCTION();
 
@@ -69,7 +66,7 @@ namespace Oyl
 	}
 
 	void
-	MainWindowModule::OnShutdown()
+	MainWindowModule::Shutdown()
 	{
 		OYL_PROFILE_FUNCTION();
 
