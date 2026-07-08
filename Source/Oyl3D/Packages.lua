@@ -172,9 +172,10 @@ local Packages = {
 		PackageDir = path.join(Config.SourceDir, "Spyll/Tool/Core"),
 		OnProject = function (package)
 			filter "action:vs*"; do
+				-- TODO: Make dependant on variable name in root Packages.lua
+				local clangNatvisPattern = path.join(Config.PackageCacheDir, "ClangTooling", "**.natvis")
 				files {
-					-- TODO: Make dependant on variable name in root Packages.lua
-					path.join(Config.PackageCacheDir, "ClangTooling", "**.natvis")
+					clangNatvisPattern
 				}
 			end
 		end

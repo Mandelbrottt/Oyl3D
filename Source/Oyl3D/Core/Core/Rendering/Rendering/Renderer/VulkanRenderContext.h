@@ -4,7 +4,7 @@
 
 namespace Oyl::Rendering
 {
-	class OYL_CORE_API VulkanRenderContext final : public RenderContext
+	class OYL_RENDERING_API VulkanRenderContext final : public RenderContext
 	{
 	public:
 		VulkanRenderContext() noexcept;

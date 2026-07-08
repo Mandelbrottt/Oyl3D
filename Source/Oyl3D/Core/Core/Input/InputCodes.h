@@ -204,7 +204,7 @@ namespace Oyl::Input
 #include <spdlog/fmt/bundled/core.h>
 
 template<>
-struct fmt::formatter<Oyl::Input::KeyboardKey> : formatter<std::string>
+struct OYL_CORE_API fmt::formatter<Oyl::Input::KeyboardKey> : formatter<std::string>
 {
 	using KeyboardKeyUnderlying = Oyl::Traits::UnderlyingType_T<Oyl::Input::KeyboardKey>;
 
@@ -216,7 +216,7 @@ struct fmt::formatter<Oyl::Input::KeyboardKey> : formatter<std::string>
 };
 
 template<>
-struct fmt::formatter<Oyl::Input::MouseButton> : formatter<std::string>
+struct OYL_CORE_API fmt::formatter<Oyl::Input::MouseButton> : formatter<std::string>
 {
 	using MouseButtonUnderlying = Oyl::Traits::UnderlyingType_T<Oyl::Input::MouseButton>;
 
@@ -228,7 +228,7 @@ struct fmt::formatter<Oyl::Input::MouseButton> : formatter<std::string>
 };
 
 template<>
-struct fmt::formatter<Oyl::Input::GamePadButton> : formatter<std::string>
+struct OYL_CORE_API fmt::formatter<Oyl::Input::GamePadButton> : formatter<std::string>
 {
 	using GamePadButtonUnderlying = Oyl::Traits::UnderlyingType_T<Oyl::Input::GamePadButton>;
 
@@ -240,7 +240,7 @@ struct fmt::formatter<Oyl::Input::GamePadButton> : formatter<std::string>
 };
 
 template<>
-struct fmt::formatter<Oyl::Input::GamePadAxis> : formatter<std::string>
+struct OYL_CORE_API fmt::formatter<Oyl::Input::GamePadAxis> : formatter<std::string>
 {
 	using GamePadAxisUnderlying = Oyl::Traits::UnderlyingType_T<Oyl::Input::GamePadAxis>;
 

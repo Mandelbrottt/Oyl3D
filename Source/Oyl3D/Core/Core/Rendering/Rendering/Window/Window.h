@@ -40,7 +40,7 @@ namespace Oyl
 		// Requested Default Graphics API
 	};
 
-	class OYL_CORE_API Window
+	class OYL_RENDERING_API Window
 	{
 	protected:
 		Window() noexcept;
@@ -170,11 +170,13 @@ namespace Oyl
 
 	struct WindowEvent
 	{
-		void* nativeWindow = nullptr;
+		Window* window = nullptr;
 
 	protected:
 		WindowEvent() = default;
 	};
+
+	struct WindowCreatedEvent : WindowEvent, EventBase<WindowCreatedEvent> {};
 
 	struct WindowResizeEvent : WindowEvent, EventBase<WindowResizeEvent>
 	{

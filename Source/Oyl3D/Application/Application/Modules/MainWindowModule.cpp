@@ -3,8 +3,9 @@
 #include <GLFW/glfw3.h>
 
 #include "Core/Application/ApplicationEvents.h"
-#include "Core/Application/GlfwWindow.h"
 #include "Core/Logging/Logging.h"
+
+#include "Rendering/Window/GlfwWindow.h"
 
 namespace Oyl
 {
@@ -96,7 +97,7 @@ namespace Oyl
 		if (!m_window)
 			return;
 
-		if (a_event.nativeWindow != m_window->GetNativeWindowHandle())
+		if (a_event.window != m_window)
 			return;
 
 		PostEvent(ApplicationCloseRequestEvent());
