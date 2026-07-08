@@ -32,6 +32,9 @@ namespace Oyl
 		OnWindowMoveEvent(const WindowMoveEvent& a_event);
 
 		void
+		OnWindowClosedEvent(const WindowClosedEvent& a_event);
+
+		void
 		OnWindowCloseRequestEvent(const WindowCloseRequestEvent& a_event);
 
 		void

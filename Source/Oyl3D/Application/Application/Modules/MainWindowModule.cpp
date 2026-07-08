@@ -19,6 +19,7 @@ namespace Oyl
 	{
 		RegisterEventListener(&MainWindowModule::OnWindowResizeEvent);
 		RegisterEventListener(&MainWindowModule::OnWindowMoveEvent);
+		RegisterEventListener(&MainWindowModule::OnWindowClosedEvent);
 		RegisterEventListener(&MainWindowModule::OnWindowCloseRequestEvent);
 		RegisterEventListener(&MainWindowModule::OnWindowFocusEvent);
 		RegisterEventListener(&MainWindowModule::OnWindowKeyPressEvent);
@@ -92,7 +93,7 @@ namespace Oyl
 	}
 
 	void
-	MainWindowModule::OnWindowCloseRequestEvent(const WindowCloseRequestEvent& a_event)
+	MainWindowModule::OnWindowClosedEvent(const WindowClosedEvent& a_event)
 	{
 		if (!m_window)
 			return;
@@ -101,6 +102,15 @@ namespace Oyl
 			return;
 
 		PostEvent(ApplicationCloseRequestEvent());
+	}
+
+	void
+	MainWindowModule::OnWindowCloseRequestEvent(const WindowCloseRequestEvent& a_event)
+	{
+		if (m_window != a_event.window)
+			return;
+
+		m_window->Destroy();
 	}
 
 	void

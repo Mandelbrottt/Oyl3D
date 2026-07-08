@@ -176,7 +176,17 @@ namespace Oyl
 		WindowEvent() = default;
 	};
 
+	/**
+	 * \brief Sent after a window is created, and is fully valid
+	 */
 	struct WindowCreatedEvent : WindowEvent, EventBase<WindowCreatedEvent> {};
+
+	/**
+	 * \brief Sent while window is being destroyed, before the window is freed in the underlying windowing API
+	 */
+	struct WindowClosedEvent : WindowEvent, EventBase<WindowClosedEvent> {};
+
+	struct WindowCloseRequestEvent : WindowEvent, EventBase<WindowCloseRequestEvent> {};
 
 	struct WindowResizeEvent : WindowEvent, EventBase<WindowResizeEvent>
 	{
@@ -187,8 +197,6 @@ namespace Oyl
 	{
 		Vector2i position;
 	};
-
-	struct WindowCloseRequestEvent : WindowEvent, EventBase<WindowCloseRequestEvent> {};
 
 	struct WindowFocusEvent : WindowEvent, EventBase<WindowFocusEvent>
 	{
