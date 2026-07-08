@@ -19,7 +19,7 @@ namespace
 	GetGamePadAxisFromGlfw(int a_axis);
 }
 
-namespace Oyl
+namespace Oyl::Internal
 {
 	struct GlfwWindow::Impl
 	{
