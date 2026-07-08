@@ -4,6 +4,8 @@
 #include <filesystem>
 #include <Windows.h>
 
+#include <Rendering/Modules/RenderControlModule.h>
+
 #include "Application/Modules/MainWindowModule.h"
 
 #include "Core/Application/ApplicationEvents.h"
@@ -120,6 +122,7 @@ namespace Oyl
 		auto& registry = g_data.moduleRegistry;
 		registry.RegisterModule<ApplicationCloseRequestEventListener>();
 		registry.RegisterModule<MainWindowModule>();
+		registry.RegisterModule<Rendering::RenderControlModule>();
 
 		for (auto& module : registry)
 		{

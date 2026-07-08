@@ -97,25 +97,25 @@ namespace Oyl
 		m_impl->CreateGlfwWindow();
 		m_impl->SetupGlfwWindowCallbacks();
 
-		WindowCreatedEvent event {};
+		WindowCreatedEvent event;
 		event.window = this;
 		m_impl->postEventCallback(event);
-
-		//m_impl->CreateRenderContext(this);
 	}
 
 	void
 	GlfwWindow::Destroy()
 	{
+		OYL_PROFILE_FUNCTION();
+
 		if (!m_impl)
 			return;
 
 		if (!m_impl->glfwWindow)
 			return;
 
-		OYL_PROFILE_FUNCTION();
-
-		//m_impl->renderContext->Destroy();
+		WindowClosedEvent event;
+		event.window = this;
+		m_impl->postEventCallback(event);
 
 		glfwDestroyWindow(m_impl->glfwWindow);
 		m_impl->glfwWindow = nullptr;
@@ -335,6 +335,22 @@ namespace Oyl
 	void
 	GlfwWindow::Impl::SetupGlfwWindowCallbacks()
 	{
+		glfwSetWindowCloseCallback(
+			glfwWindow,
+			[](GLFWwindow* a_window)
+			{
+				Impl* impl = reinterpret_cast<Impl*>(glfwGetWindowUserPointer(a_window));
+
+				if (!impl->postEventCallback)
+					return;
+
+				// The glfw callback is only a request - we still control destruction of the window
+				WindowCloseRequestEvent event;
+				event.window = impl->window;
+				impl->postEventCallback(event);
+			}
+		);
+
 		glfwSetWindowSizeCallback(
 			glfwWindow,
 			[](GLFWwindow* a_window, int a_width, int a_height)
@@ -371,21 +387,6 @@ namespace Oyl
 				WindowMoveEvent event;
 				event.window = impl->window;
 				event.position = impl->position;
-				impl->postEventCallback(event);
-			}
-		);
-
-		glfwSetWindowCloseCallback(
-			glfwWindow,
-			[](GLFWwindow* a_window)
-			{
-				Impl* impl = reinterpret_cast<Impl*>(glfwGetWindowUserPointer(a_window));
-
-				if (!impl->postEventCallback)
-					return;
-
-				WindowCloseRequestEvent event;
-				event.window = impl->window;
 				impl->postEventCallback(event);
 			}
 		);

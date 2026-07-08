@@ -11,10 +11,10 @@ namespace Oyl
 	{
 		friend class EventDispatcher;
 
+		const EventId eventType;
+
 		virtual
 		~Event() = default;
-
-		const EventId eventType;
 
 		/**
 		 * \brief Cancel the event currently being handled.
