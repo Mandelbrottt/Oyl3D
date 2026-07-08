@@ -3,7 +3,11 @@
 #include "Core/Preprocessor/Library.h"
 #include "Core/Preprocessor/Reflection.h"
 
-#ifndef OYL_APPLICATION_API
+#if defined(OYL_APPLICATION_API)
+	#undef
+#endif
+
+#if !defined(OYL_APPLICATION_API)
 	#if defined(__REFLECT_GENERATE__)
 		#define OYL_APPLICATION_API _OYL_EXPAND(OYL_REFLECT)
 	#elif defined(OYL_BUILD_STATIC_LIB)
