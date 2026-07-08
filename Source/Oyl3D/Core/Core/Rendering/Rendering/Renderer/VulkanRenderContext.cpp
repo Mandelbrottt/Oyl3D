@@ -54,7 +54,7 @@ namespace
 	ChooseSwapMinImageCount(const vk::SurfaceCapabilitiesKHR& a_capabilities);
 }
 
-namespace Oyl::Rendering
+namespace Oyl::Rendering::Internal
 {
 	struct VulkanRenderContext::Impl
 	{

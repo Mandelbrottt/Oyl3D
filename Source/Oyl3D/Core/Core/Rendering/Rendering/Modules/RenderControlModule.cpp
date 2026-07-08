@@ -11,7 +11,7 @@ namespace Oyl::Rendering
 	{
 		RegisterEventListener(&RenderControlModule::OnWindowCreatedEvent);
 
-		m_renderContext = new VulkanRenderContext();
+		m_renderContext = new Internal::VulkanRenderContext();
 	}
 
 	void

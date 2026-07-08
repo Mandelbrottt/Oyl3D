@@ -4,7 +4,7 @@
 
 #include "Window.h"
 
-namespace Oyl
+namespace Oyl::Internal
 {
 	class OYL_RENDERING_API GlfwWindow : public Window
 	{

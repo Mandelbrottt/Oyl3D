@@ -2,7 +2,7 @@
 
 #include "RenderContext.h"
 
-namespace Oyl::Rendering
+namespace Oyl::Rendering::Internal
 {
 	class OYL_RENDERING_API VulkanRenderContext final : public RenderContext
 	{

@@ -53,7 +53,7 @@ namespace Oyl
 			.cursorState = CS_Normal,
 			.postEventCallback = PostEventDelegate::Create(this, &MainWindowModule::PostEvent),
 		};
-		m_window = new GlfwWindow(params);
+		m_window = new Internal::GlfwWindow(params);
 	}
 
 	void
