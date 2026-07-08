@@ -14,13 +14,16 @@ namespace Oyl
 
 	public:
 		void
-		OnInit() override;
+		Setup() override;
 
 		void
-		OnUpdate() override;
+		Init() override;
 
 		void
-		OnShutdown() override;
+		Update() override;
+
+		void
+		Shutdown() override;
 
 		void
 		OnWindowResizeEvent(const WindowResizeEvent& a_event);

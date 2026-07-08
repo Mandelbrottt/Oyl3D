@@ -84,7 +84,7 @@ namespace Oyl
 
 	public:
 		void
-		OnInit() override
+		Setup() override
 		{
 			RegisterEventListener(&ApplicationCloseRequestEventListener::OnApplicationCloseRequestEvent);
 		}
@@ -117,9 +117,13 @@ namespace Oyl
 		Logging::Detail::Init();
 
 		auto& registry = g_data.moduleRegistry;
-
 		registry.RegisterModule<ApplicationCloseRequestEventListener>();
 		registry.RegisterModule<MainWindowModule>();
+
+		for (auto& module : registry)
+		{
+			module->Init();
+		}
 	}
 
 	void
@@ -134,7 +138,7 @@ namespace Oyl
 			OYL_PROFILE_SCOPE("Module Updates");
 			for (Module* module : g_data.moduleRegistry)
 			{
-				module->OnUpdate();
+				module->Update();
 			}
 		}
 
