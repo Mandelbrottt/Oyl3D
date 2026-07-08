@@ -81,4 +81,7 @@ namespace Oyl
 		 */
 		EventDispatcher* m_eventDispatcher = nullptr;
 	};
+
+	// Ensure that EventListener has a virtual destructor, and has a vtable
+	static_assert(std::has_virtual_destructor_v<EventListener>);
 }
