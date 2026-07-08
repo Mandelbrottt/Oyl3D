@@ -74,7 +74,8 @@ namespace Oyl
 	static CoreApplicationData g_data = {
 		.shouldGameUpdate = true,
 		.maxFrameRate = 0,
-		.moduleRegistry = {}
+		.moduleRegistry = {},
+		.quitDelegate = nullptr
 	};
 
 	class ApplicationCloseRequestEventListener : public Module

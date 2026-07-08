@@ -25,6 +25,9 @@ namespace Oyl
 
 		Delegate() {}
 
+		Delegate(std::nullptr_t)
+			: Delegate() {}
+
 		Delegate(const Delegate& a_other)
 		{
 			*this = a_other;
@@ -217,23 +220,6 @@ namespace Oyl
 		void* m_obj = nullptr;
 		Fn* m_fn = nullptr;
 	};
-
-	template<auto Function>
-	Delegate(decltype(Function)) -> Delegate<Traits::FunctionSignatureFromPointer_T<decltype(Function)>>;
-
-	template<auto Function>
-	Delegate(
-		Traits::MemberFunctionBaseClass_T<decltype(Function)>* a_obj,
-		decltype(Function)
-	) -> Delegate<Traits::FunctionSignatureFromPointer_T<decltype(Function)>>;
-
-	template<typename TReturn, typename... TArgs>
-		requires (Traits::FunctionPointer<typename Delegate<TReturn(TArgs...)>::Fn>)
-	Delegate<TReturn(TArgs...)>
-	_CreateDelegate(typename Delegate<TReturn(TArgs...)>::Fn* a_fn)
-	{
-		return Delegate<TReturn(TArgs...)>::Create(a_fn);
-	}
 
 	template<auto Function>
 	Delegate<Traits::FunctionSignatureFromPointer_T<decltype(Function)>>
