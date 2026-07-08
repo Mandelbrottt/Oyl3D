@@ -9,7 +9,11 @@
 	#define OYL_REFLECT
 #endif
 
-#ifndef OYL_CORE_API
+#if defined(OYL_CORE_API)
+	#undef OYL_CORE_API
+#endif
+
+#if !defined(OYL_CORE_API)
 	#if defined(__REFLECT_GENERATE__)
 		#define OYL_CORE_API _OYL_EXPAND(OYL_REFLECT)
 	#elif defined(OYL_BUILD_STATIC_LIB)

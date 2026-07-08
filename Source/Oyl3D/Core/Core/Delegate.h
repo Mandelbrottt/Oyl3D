@@ -2,9 +2,6 @@
 
 #include "TypeTraits.h"
 
-#define _MEMBER_FUNCTION_POINTER_DECL(_class_, _return_, _args_, _var_, _cv_ref_noexcept_) \
-	_return_ (_class_::*_var_)(_args_) _cv_ref_noexcept_
-
 namespace Oyl
 {
 	template<Traits::FunctionSignature>
