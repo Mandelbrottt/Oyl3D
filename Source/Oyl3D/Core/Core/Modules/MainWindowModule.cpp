@@ -47,8 +47,8 @@ namespace Oyl
 		WindowParams params {
 			.size = { 1280, 720 },
 			.title = "Oyl3D - Now with more code!",
-			.cursorState = CS_Normal,
 			.windowState = WS_None,
+			.cursorState = CS_Normal,
 			.postEventCallback = PostEventDelegate::Create(this, &MainWindowModule::PostEvent),
 		};
 		m_window = new GlfwWindow(params);
