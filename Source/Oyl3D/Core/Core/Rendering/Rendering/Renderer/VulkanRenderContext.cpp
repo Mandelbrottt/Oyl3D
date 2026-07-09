@@ -62,6 +62,8 @@ namespace
 	CreateShaderModule(const vk::raii::Device& a_device, std::wstring_view a_profile, std::wstring_view a_entry);
 }
 
+constexpr int MAX_FRAMES_IN_FLIGHT = 2;
+
 namespace Oyl::Rendering::Internal
 {
 	struct VulkanRenderContext::Impl
@@ -93,11 +95,14 @@ namespace Oyl::Rendering::Internal
 		vk::raii::Pipeline graphicsPipeline = nullptr;
 
 		vk::raii::CommandPool commandPool = nullptr;
-		vk::raii::CommandBuffer commandBuffer = nullptr;
 
-		vk::raii::Semaphore presentCompleteSemaphore = nullptr;
-		vk::raii::Semaphore renderFinishedSemaphore = nullptr;
-		vk::raii::Fence drawFence = nullptr;
+		std::vector<vk::raii::CommandBuffer> commandBuffers;
+
+		std::vector<vk::raii::Semaphore> presentCompleteSemaphores;
+		std::vector<vk::raii::Semaphore> renderFinishedSemaphores;
+		std::vector<vk::raii::Fence> inFlightFences;
+
+		uint32 frameIndex = 0;
 
 		void
 		CreateInstance();
@@ -118,7 +123,7 @@ namespace Oyl::Rendering::Internal
 		void
 		CreateCommandPool();
 		void
-		CreateCommandBuffer();
+		CreateCommandBuffers();
 		void
 		CreateSyncObjects();
 		void
@@ -187,7 +192,7 @@ namespace Oyl::Rendering::Internal
 		m_impl->CreateSwapChainImageViews();
 		m_impl->CreateGraphicsPipeline();
 		m_impl->CreateCommandPool();
-		m_impl->CreateCommandBuffer();
+		m_impl->CreateCommandBuffers();
 		m_impl->CreateSyncObjects();
 	}
 
@@ -585,18 +590,17 @@ namespace Oyl::Rendering::Internal
 	}
 
 	void
-	VulkanRenderContext::Impl::CreateCommandBuffer()
+	VulkanRenderContext::Impl::CreateCommandBuffers()
 	{
 		OYL_PROFILE_FUNCTION();
 
 		vk::CommandBufferAllocateInfo allocInfo {
 			.commandPool = commandPool,
 			.level = vk::CommandBufferLevel::ePrimary,
-			.commandBufferCount = 1
+			.commandBufferCount = MAX_FRAMES_IN_FLIGHT
 		};
 
-		auto commandBuffers = vk::raii::CommandBuffers(device, allocInfo);
-		commandBuffer = std::move(std::move(commandBuffers.front()));
+		commandBuffers = vk::raii::CommandBuffers(device, allocInfo);
 	}
 
 	void
@@ -604,15 +608,26 @@ namespace Oyl::Rendering::Internal
 	{
 		OYL_PROFILE_FUNCTION();
 
-		presentCompleteSemaphore = vk::raii::Semaphore(device, vk::SemaphoreCreateInfo {});
-		renderFinishedSemaphore = vk::raii::Semaphore(device, vk::SemaphoreCreateInfo {});
-		drawFence = vk::raii::Fence(device, { .flags = vk::FenceCreateFlagBits::eSignaled });
+		OYL_ASSERT(renderFinishedSemaphores.empty() && presentCompleteSemaphores.empty() && inFlightFences.empty());
+
+		for (size_t i = 0; i < swapChainImages.size(); i++)
+		{
+			renderFinishedSemaphores.emplace_back(device, vk::SemaphoreCreateInfo {});
+		}
+
+		for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++)
+		{
+			presentCompleteSemaphores.emplace_back(device, vk::SemaphoreCreateInfo {});
+			inFlightFences.emplace_back(device, vk::FenceCreateInfo { .flags = vk::FenceCreateFlagBits::eSignaled });
+		}
 	}
 
 	void
 	VulkanRenderContext::Impl::RecordCommandBuffer(uint32 a_imageIndex)
 	{
 		OYL_PROFILE_FUNCTION();
+
+		auto& commandBuffer = commandBuffers[frameIndex];
 
 		commandBuffer.begin({});
 
@@ -643,9 +658,7 @@ namespace Oyl::Rendering::Internal
 		};
 
 		commandBuffer.beginRendering(renderingInfo);
-
 		commandBuffer.bindPipeline(vk::PipelineBindPoint::eGraphics, *graphicsPipeline);
-
 		auto viewport = vk::Viewport {
 			0.0f,
 			0.0f,
@@ -658,14 +671,10 @@ namespace Oyl::Rendering::Internal
 			vk::Offset2D(0, 0),
 			swapChainExtent
 		};
-
 		commandBuffer.setViewport(0, viewport);
 		commandBuffer.setScissor(0, scissor);
-
 		commandBuffer.draw(3, 1, 0, 0);
-
 		commandBuffer.endRendering();
-
 		TransitionImageLayout(
 			a_imageIndex,
 			vk::ImageLayout::eColorAttachmentOptimal,
@@ -675,7 +684,6 @@ namespace Oyl::Rendering::Internal
 			vk::PipelineStageFlagBits2::eColorAttachmentOutput,
 			vk::PipelineStageFlagBits2::eBottomOfPipe
 		);
-
 		commandBuffer.end();
 	}
 
@@ -707,13 +715,17 @@ namespace Oyl::Rendering::Internal
 			.imageMemoryBarrierCount = 1,
 			.pImageMemoryBarriers = &barrier
 		};
-		commandBuffer.pipelineBarrier2(dependency_info);
+		commandBuffers[frameIndex].pipelineBarrier2(dependency_info);
 	}
 
 	void
 	VulkanRenderContext::Impl::DrawFrame()
 	{
 		OYL_PROFILE_FUNCTION();
+
+		auto& drawFence = inFlightFences[frameIndex];
+		auto& presentCompleteSemaphore = presentCompleteSemaphores[frameIndex];
+		auto& commandBuffer = commandBuffers[frameIndex];
 
 		auto fenceResult = device.waitForFences(*drawFence, vk::True, UINT64_MAX);
 		if (fenceResult != vk::Result::eSuccess)
@@ -722,7 +734,9 @@ namespace Oyl::Rendering::Internal
 
 		auto [result, imageIndex] = swapChain.acquireNextImage(UINT64_MAX, *presentCompleteSemaphore, nullptr);
 		RecordCommandBuffer(imageIndex);
-		graphicsQueue.waitIdle();
+		//graphicsQueue.waitIdle();
+
+		auto& renderFinishedSemaphore = renderFinishedSemaphores[imageIndex];
 
 		vk::PipelineStageFlags waitDestinationStageMask = vk::PipelineStageFlagBits::eColorAttachmentOutput;
 		const vk::SubmitInfo submitInfo {
@@ -745,6 +759,8 @@ namespace Oyl::Rendering::Internal
 		};
 
 		result = graphicsQueue.presentKHR(presentInfoKHR);
+
+		frameIndex = (frameIndex + 1) % MAX_FRAMES_IN_FLIGHT;
 	}
 }
 
