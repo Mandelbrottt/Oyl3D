@@ -63,20 +63,12 @@ jobs:
           echo "Adding GNU tar to PATH"
           echo C:\Program Files\Git\usr\bin>>"%GITHUB_PATH%"
 
-      - name: Fetch Vulkan SDK version spec
-        if: ${{ !env.ACT }}
-        run: |
-          Invoke-WebRequest -Uri "https://vulkan.lunarg.com/sdk/config/${{ env.vulkan_sdk_version }}/windows/config.json" -OutFile vulkan-sdk-config.json
-          $vulkan_sdk_config = "${{ github.workspace }}/vulkan-sdk-config.json" -replace '\\', '/'
-          Add-Content -Path "$env:GITHUB_ENV" -Value "vulkan_sdk_config=$vulkan_sdk_config"
-
       - name: Prepare Vulkan SDK
         if: ${{ !env.ACT }}
-        uses: humbletim/setup-vulkan-sdk@v1.2.1
+        uses: humbletim/install-vulkan-sdk@v1.2
         with:
-          vulkan-config-file: $vulkan_sdk_config
-          vulkan-components: Vulkan-Headers, Vulkan-Loader, DXC
-          vulkan-use-cache: true
+          version: ${{ env.vulkan_sdk_version }}
+          cache: true
 
       - name: Cache Packages
         id: restore-cache-packages
