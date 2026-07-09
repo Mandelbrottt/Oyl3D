@@ -373,7 +373,7 @@ function Package.FetchGit(package)
 
 	local fetchCommand = table.implode({
 		"git fetch",
-		"--no-tags --prune --no-recurse-submodules --depth 1",
+		"--no-tags --prune --recurse-submodules --depth 1",
 		"origin",
 		"+{REF}",
 		"+refs/heads/{REF}*:refs/remotes/origin/{REF}*",
@@ -395,6 +395,7 @@ function Package.FetchGit(package)
 	end
 
 	executef("git checkout --progress --force --quiet %s", ref)
+	executef("git submodule update --init --recursive")
 
 	os.chdir(cwd)
 
