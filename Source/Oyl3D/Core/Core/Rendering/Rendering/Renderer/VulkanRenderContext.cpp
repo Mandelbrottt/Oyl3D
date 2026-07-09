@@ -738,27 +738,32 @@ namespace Oyl::Rendering::Internal
 
 		auto& renderFinishedSemaphore = renderFinishedSemaphores[imageIndex];
 
-		vk::PipelineStageFlags waitDestinationStageMask = vk::PipelineStageFlagBits::eColorAttachmentOutput;
-		const vk::SubmitInfo submitInfo {
-			.waitSemaphoreCount = 1,
-			.pWaitSemaphores = &*presentCompleteSemaphore,
-			.pWaitDstStageMask = &waitDestinationStageMask,
-			.commandBufferCount = 1,
-			.pCommandBuffers = &*commandBuffer,
-			.signalSemaphoreCount = 1,
-			.pSignalSemaphores = &*renderFinishedSemaphore
-		};
-		graphicsQueue.submit(submitInfo, *drawFence);
+		{
+			OYL_PROFILE_SCOPE("graphicsQueue.submit");
+			vk::PipelineStageFlags waitDestinationStageMask = vk::PipelineStageFlagBits::eColorAttachmentOutput;
+			const vk::SubmitInfo submitInfo {
+				.waitSemaphoreCount = 1,
+				.pWaitSemaphores = &*presentCompleteSemaphore,
+				.pWaitDstStageMask = &waitDestinationStageMask,
+				.commandBufferCount = 1,
+				.pCommandBuffers = &*commandBuffer,
+				.signalSemaphoreCount = 1,
+				.pSignalSemaphores = &*renderFinishedSemaphore
+			};
+			graphicsQueue.submit(submitInfo, *drawFence);
+		}
+		{
+			OYL_PROFILE_SCOPE("graphicsQueue.presentKHR");
+			const vk::PresentInfoKHR presentInfoKHR {
+				.waitSemaphoreCount = 1,
+				.pWaitSemaphores = &*renderFinishedSemaphore,
+				.swapchainCount = 1,
+				.pSwapchains = &*swapChain,
+				.pImageIndices = &imageIndex
+			};
 
-		const vk::PresentInfoKHR presentInfoKHR {
-			.waitSemaphoreCount = 1,
-			.pWaitSemaphores = &*renderFinishedSemaphore,
-			.swapchainCount = 1,
-			.pSwapchains = &*swapChain,
-			.pImageIndices = &imageIndex
-		};
-
-		result = graphicsQueue.presentKHR(presentInfoKHR);
+			result = graphicsQueue.presentKHR(presentInfoKHR);
+		}
 
 		frameIndex = (frameIndex + 1) % MAX_FRAMES_IN_FLIGHT;
 	}
