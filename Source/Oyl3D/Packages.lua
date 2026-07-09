@@ -159,7 +159,7 @@ local Packages = {
 	Vulkan = {
 		Include = { "Include" },
 		LibDirs = { "Lib" },
-		Libs = { "vulkan-1" },
+		Libs = { "vulkan-1", "dxcompiler" },
 		OnDepend = function (package)
 			defines {
 				"VULKAN_HPP_DISPATCH_LOADER_DYNAMIC=1",

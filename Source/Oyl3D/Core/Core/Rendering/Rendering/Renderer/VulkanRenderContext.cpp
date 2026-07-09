@@ -2,6 +2,10 @@
 
 #include <vulkan/vulkan_raii.hpp>
 
+#include <atlcomcli.h>
+
+#include <dxc/dxcapi.h>
+
 #include <GLFW/glfw3.h>
 
 #include "Core/Logging/Logging.h"
@@ -52,6 +56,10 @@ namespace
 
 	Oyl::uint32
 	ChooseSwapMinImageCount(const vk::SurfaceCapabilitiesKHR& a_capabilities);
+
+	[[nodiscard]]
+	vk::raii::ShaderModule
+	CreateShaderModule(const vk::raii::Device& a_device, std::wstring_view a_profile, std::wstring_view a_entry);
 }
 
 namespace Oyl::Rendering::Internal
@@ -67,6 +75,8 @@ namespace Oyl::Rendering::Internal
 		vk::raii::SurfaceKHR surface = nullptr;
 
 		vk::raii::PhysicalDevice physicalDevice = nullptr;
+
+		uint32 queueIndex;
 		vk::raii::Device device = nullptr;
 		vk::raii::Queue graphicsQueue = nullptr;
 
@@ -75,6 +85,19 @@ namespace Oyl::Rendering::Internal
 		std::vector<vk::raii::ImageView> swapChainImageViews;
 		vk::SurfaceFormatKHR swapChainSurfaceFormat;
 		vk::Extent2D swapChainExtent;
+
+		vk::raii::ShaderModule vsShaderModule = nullptr;
+		vk::raii::ShaderModule fsShaderModule = nullptr;
+
+		vk::raii::PipelineLayout pipelineLayout = nullptr;
+		vk::raii::Pipeline graphicsPipeline = nullptr;
+
+		vk::raii::CommandPool commandPool = nullptr;
+		vk::raii::CommandBuffer commandBuffer = nullptr;
+
+		vk::raii::Semaphore presentCompleteSemaphore = nullptr;
+		vk::raii::Semaphore renderFinishedSemaphore = nullptr;
+		vk::raii::Fence drawFence = nullptr;
 
 		void
 		CreateInstance();
@@ -90,6 +113,28 @@ namespace Oyl::Rendering::Internal
 		CreateSwapChain();
 		void
 		CreateSwapChainImageViews();
+		void
+		CreateGraphicsPipeline();
+		void
+		CreateCommandPool();
+		void
+		CreateCommandBuffer();
+		void
+		CreateSyncObjects();
+		void
+		RecordCommandBuffer(uint32 a_imageIndex);
+		void
+		TransitionImageLayout(
+			uint32 a_imageIndex,
+			vk::ImageLayout a_oldLayout,
+			vk::ImageLayout a_new_layout,
+			vk::AccessFlags2 a_srcAccessMask,
+			vk::AccessFlags2 a_dstAccessMask,
+			vk::PipelineStageFlags2 a_srcStageMask,
+			vk::PipelineStageFlags2 a_dstStageMask
+		);
+		void
+		DrawFrame();
 	};
 
 	VulkanRenderContext::VulkanRenderContext() noexcept
@@ -140,12 +185,21 @@ namespace Oyl::Rendering::Internal
 		m_impl->CreateLogicalDevice();
 		m_impl->CreateSwapChain();
 		m_impl->CreateSwapChainImageViews();
+		m_impl->CreateGraphicsPipeline();
+		m_impl->CreateCommandPool();
+		m_impl->CreateCommandBuffer();
+		m_impl->CreateSyncObjects();
 	}
 
 	void
 	VulkanRenderContext::Update()
 	{
 		OYL_PROFILE_FUNCTION();
+
+		if (!m_impl->window || !m_impl->window->IsValid())
+			return;
+
+		m_impl->DrawFrame();
 	}
 
 	void
@@ -156,12 +210,16 @@ namespace Oyl::Rendering::Internal
 		if (!m_impl)
 			return;
 
+		m_impl->device.waitIdle();
+
 		*m_impl = {};
 	}
 
 	void
 	VulkanRenderContext::Impl::CreateInstance()
 	{
+		OYL_PROFILE_FUNCTION();
+
 		vk::ApplicationInfo appInfo {
 			.pApplicationName = "Oyl3D",
 			.applicationVersion = VK_MAKE_VERSION(1, 0, 0),
@@ -234,6 +292,8 @@ namespace Oyl::Rendering::Internal
 	void
 	VulkanRenderContext::Impl::SetupDebugMessenger()
 	{
+		OYL_PROFILE_FUNCTION();
+
 		vk::DebugUtilsMessageSeverityFlagsEXT severityFlags(
 			vk::DebugUtilsMessageSeverityFlagBitsEXT::eVerbose
 			| vk::DebugUtilsMessageSeverityFlagBitsEXT::eInfo
@@ -257,6 +317,8 @@ namespace Oyl::Rendering::Internal
 	void
 	VulkanRenderContext::Impl::CreateSurface()
 	{
+		OYL_PROFILE_FUNCTION();
+
 		VkSurfaceKHR cSurface;
 		auto glfwWindow = static_cast<GLFWwindow*>(window->GetNativeWindowHandle());
 		if (glfwCreateWindowSurface(*instance, glfwWindow, nullptr, &cSurface) != VK_SUCCESS)
@@ -269,6 +331,8 @@ namespace Oyl::Rendering::Internal
 	void
 	VulkanRenderContext::Impl::PickPhysicalDevice()
 	{
+		OYL_PROFILE_FUNCTION();
+
 		auto physicalDevices = instance.enumeratePhysicalDevices();
 		const auto iter = std::ranges::find_if(
 			physicalDevices,
@@ -287,10 +351,12 @@ namespace Oyl::Rendering::Internal
 	void
 	VulkanRenderContext::Impl::CreateLogicalDevice()
 	{
+		OYL_PROFILE_FUNCTION();
+
 		std::vector<vk::QueueFamilyProperties> queueFamilyProperties = physicalDevice.getQueueFamilyProperties();
 
 		// get the first index into queueFamilyProperties which supports both graphics and present
-		uint32 queueIndex = ~0u;
+		queueIndex = ~0u;
 		for (uint32 qfpIndex = 0; qfpIndex < queueFamilyProperties.size(); qfpIndex++)
 		{
 			if ((queueFamilyProperties[qfpIndex].queueFlags & vk::QueueFlagBits::eGraphics) &&
@@ -310,7 +376,7 @@ namespace Oyl::Rendering::Internal
 		vk::StructureChain featureChain = {
 			vk::PhysicalDeviceFeatures2(),
 			vk::PhysicalDeviceVulkan11Features { .shaderDrawParameters = true },
-			vk::PhysicalDeviceVulkan13Features { .dynamicRendering = true },
+			vk::PhysicalDeviceVulkan13Features { .synchronization2 = true, .dynamicRendering = true },
 			vk::PhysicalDeviceExtendedDynamicStateFeaturesEXT { .extendedDynamicState = true }
 		};
 
@@ -336,6 +402,8 @@ namespace Oyl::Rendering::Internal
 	void
 	VulkanRenderContext::Impl::CreateSwapChain()
 	{
+		OYL_PROFILE_FUNCTION();
+
 		GLFWwindow* glfwWindow = static_cast<GLFWwindow*>(window->GetNativeWindowHandle());
 		int width, height;
 		glfwGetFramebufferSize(glfwWindow, &width, &height);
@@ -372,6 +440,8 @@ namespace Oyl::Rendering::Internal
 	void
 	VulkanRenderContext::Impl::CreateSwapChainImageViews()
 	{
+		OYL_PROFILE_FUNCTION();
+
 		OYL_ASSERT(swapChainImageViews.empty());
 
 		vk::ImageViewCreateInfo imageViewCreateInfo {
@@ -388,6 +458,293 @@ namespace Oyl::Rendering::Internal
 			imageViewCreateInfo.image = image;
 			swapChainImageViews.emplace_back(device, imageViewCreateInfo);
 		}
+	}
+
+	void
+	VulkanRenderContext::Impl::CreateGraphicsPipeline()
+	{
+		OYL_PROFILE_FUNCTION();
+
+		vsShaderModule = CreateShaderModule(device, L"vs_6_4", L"VertMain");
+
+		// DXC calls fragment shaders "Pixel Shaders", so target is "ps" not "fs"
+		fsShaderModule = CreateShaderModule(device, L"ps_6_4", L"FragMain");
+
+		vk::PipelineShaderStageCreateInfo vertShaderStageCreateInfo {
+			.stage = vk::ShaderStageFlagBits::eVertex,
+			.module = vsShaderModule,
+			.pName = "VertMain"
+		};
+
+		vk::PipelineShaderStageCreateInfo fragShaderStageCreateInfo {
+			.stage = vk::ShaderStageFlagBits::eFragment,
+			.module = fsShaderModule,
+			.pName = "FragMain"
+		};
+
+		vk::PipelineShaderStageCreateInfo shaderStages[] = {
+			vertShaderStageCreateInfo,
+			fragShaderStageCreateInfo
+		};
+
+		vk::PipelineVertexInputStateCreateInfo vertexInputInfo;
+
+		vk::PipelineInputAssemblyStateCreateInfo inputAssembly {
+			.topology = vk::PrimitiveTopology::eTriangleList
+		};
+
+		std::vector dynamicStates = { vk::DynamicState::eViewport, vk::DynamicState::eScissor };
+
+		vk::PipelineDynamicStateCreateInfo dynamicState {
+			.dynamicStateCount = static_cast<uint32_t>(dynamicStates.size()),
+			.pDynamicStates = dynamicStates.data()
+		};
+
+		vk::PipelineViewportStateCreateInfo viewportState {
+			.viewportCount = 1,
+			.scissorCount = 1
+		};
+
+		vk::PipelineRasterizationStateCreateInfo rasterizer {
+			.depthClampEnable = vk::False,
+			.rasterizerDiscardEnable = vk::False,
+			.polygonMode = vk::PolygonMode::eFill,
+			.cullMode = vk::CullModeFlagBits::eBack,
+			.frontFace = vk::FrontFace::eClockwise,
+			.depthBiasEnable = vk::False,
+			.lineWidth = 1.0f,
+		};
+
+		vk::PipelineMultisampleStateCreateInfo multisampling {
+			.rasterizationSamples = vk::SampleCountFlagBits::e1,
+			.sampleShadingEnable = vk::False,
+		};
+
+		vk::PipelineColorBlendAttachmentState colorBlendAttachment {
+			.blendEnable = vk::False,
+			.srcColorBlendFactor = vk::BlendFactor::eSrcAlpha,
+			.dstColorBlendFactor = vk::BlendFactor::eOneMinusSrcAlpha,
+			.colorBlendOp = vk::BlendOp::eAdd,
+			.srcAlphaBlendFactor = vk::BlendFactor::eOne,
+			.dstAlphaBlendFactor = vk::BlendFactor::eZero,
+			.alphaBlendOp = vk::BlendOp::eAdd,
+			.colorWriteMask = vk::ColorComponentFlagBits::eR
+			                  | vk::ColorComponentFlagBits::eG
+			                  | vk::ColorComponentFlagBits::eB
+			                  | vk::ColorComponentFlagBits::eA,
+		};
+
+		vk::PipelineColorBlendStateCreateInfo colorBlending {
+			.logicOpEnable = vk::False,
+			.logicOp = vk::LogicOp::eCopy,
+			.attachmentCount = 1,
+			.pAttachments = &colorBlendAttachment
+		};
+
+		vk::PipelineLayoutCreateInfo pipelineLayoutInfo {
+			.setLayoutCount = 0,
+			.pushConstantRangeCount = 0
+		};
+
+		pipelineLayout = vk::raii::PipelineLayout(device, pipelineLayoutInfo);
+
+		vk::StructureChain pipelineCreateInfoChain {
+			vk::GraphicsPipelineCreateInfo {
+				.stageCount = 2,
+				.pStages = shaderStages,
+				.pVertexInputState = &vertexInputInfo,
+				.pInputAssemblyState = &inputAssembly,
+				.pViewportState = &viewportState,
+				.pRasterizationState = &rasterizer,
+				.pMultisampleState = &multisampling,
+				.pColorBlendState = &colorBlending,
+				.pDynamicState = &dynamicState,
+				.layout = pipelineLayout,
+				.renderPass = nullptr
+			},
+			vk::PipelineRenderingCreateInfo {
+				.colorAttachmentCount = 1,
+				.pColorAttachmentFormats = &swapChainSurfaceFormat.format
+			}
+		};
+
+		graphicsPipeline = vk::raii::Pipeline(device, nullptr, pipelineCreateInfoChain.get<vk::GraphicsPipelineCreateInfo>());
+	}
+
+	void
+	VulkanRenderContext::Impl::CreateCommandPool()
+	{
+		OYL_PROFILE_FUNCTION();
+
+		vk::CommandPoolCreateInfo poolInfo {
+			.flags = vk::CommandPoolCreateFlagBits::eResetCommandBuffer,
+			.queueFamilyIndex = queueIndex,
+		};
+
+		commandPool = vk::raii::CommandPool(device, poolInfo);
+	}
+
+	void
+	VulkanRenderContext::Impl::CreateCommandBuffer()
+	{
+		OYL_PROFILE_FUNCTION();
+
+		vk::CommandBufferAllocateInfo allocInfo {
+			.commandPool = commandPool,
+			.level = vk::CommandBufferLevel::ePrimary,
+			.commandBufferCount = 1
+		};
+
+		auto commandBuffers = vk::raii::CommandBuffers(device, allocInfo);
+		commandBuffer = std::move(std::move(commandBuffers.front()));
+	}
+
+	void
+	VulkanRenderContext::Impl::CreateSyncObjects()
+	{
+		OYL_PROFILE_FUNCTION();
+
+		presentCompleteSemaphore = vk::raii::Semaphore(device, vk::SemaphoreCreateInfo {});
+		renderFinishedSemaphore = vk::raii::Semaphore(device, vk::SemaphoreCreateInfo {});
+		drawFence = vk::raii::Fence(device, { .flags = vk::FenceCreateFlagBits::eSignaled });
+	}
+
+	void
+	VulkanRenderContext::Impl::RecordCommandBuffer(uint32 a_imageIndex)
+	{
+		OYL_PROFILE_FUNCTION();
+
+		commandBuffer.begin({});
+
+		TransitionImageLayout(
+			a_imageIndex,
+			vk::ImageLayout::eUndefined,
+			vk::ImageLayout::eColorAttachmentOptimal,
+			{},
+			vk::AccessFlagBits2::eColorAttachmentWrite,
+			vk::PipelineStageFlagBits2::eColorAttachmentOutput,
+			vk::PipelineStageFlagBits2::eColorAttachmentOutput
+		);
+
+		vk::ClearValue clearColor = vk::ClearColorValue(0.0f, 0.0f, 0.0f, 1.0f);
+		vk::RenderingAttachmentInfo attachmentInfo = {
+			.imageView = swapChainImageViews[a_imageIndex],
+			.imageLayout = vk::ImageLayout::eColorAttachmentOptimal,
+			.loadOp = vk::AttachmentLoadOp::eClear,
+			.storeOp = vk::AttachmentStoreOp::eStore,
+			.clearValue = clearColor
+		};
+
+		vk::RenderingInfo renderingInfo = {
+			.renderArea = { .offset = { 0, 0 }, .extent = swapChainExtent },
+			.layerCount = 1,
+			.colorAttachmentCount = 1,
+			.pColorAttachments = &attachmentInfo
+		};
+
+		commandBuffer.beginRendering(renderingInfo);
+
+		commandBuffer.bindPipeline(vk::PipelineBindPoint::eGraphics, *graphicsPipeline);
+
+		auto viewport = vk::Viewport {
+			0.0f,
+			0.0f,
+			static_cast<float>(swapChainExtent.width),
+			static_cast<float>(swapChainExtent.height),
+			0.0f,
+			1.0f
+		};
+		auto scissor = vk::Rect2D {
+			vk::Offset2D(0, 0),
+			swapChainExtent
+		};
+
+		commandBuffer.setViewport(0, viewport);
+		commandBuffer.setScissor(0, scissor);
+
+		commandBuffer.draw(3, 1, 0, 0);
+
+		commandBuffer.endRendering();
+
+		TransitionImageLayout(
+			a_imageIndex,
+			vk::ImageLayout::eColorAttachmentOptimal,
+			vk::ImageLayout::ePresentSrcKHR,
+			vk::AccessFlagBits2::eColorAttachmentWrite,
+			{},
+			vk::PipelineStageFlagBits2::eColorAttachmentOutput,
+			vk::PipelineStageFlagBits2::eBottomOfPipe
+		);
+
+		commandBuffer.end();
+	}
+
+	void
+	VulkanRenderContext::Impl::TransitionImageLayout(uint32 a_imageIndex, vk::ImageLayout a_oldLayout, vk::ImageLayout a_new_layout, vk::AccessFlags2 a_srcAccessMask, vk::AccessFlags2 a_dstAccessMask, vk::PipelineStageFlags2 a_srcStageMask, vk::PipelineStageFlags2 a_dstStageMask)
+	{
+		OYL_PROFILE_FUNCTION();
+
+		vk::ImageMemoryBarrier2 barrier = {
+			.srcStageMask = a_srcStageMask,
+			.srcAccessMask = a_srcAccessMask,
+			.dstStageMask = a_dstStageMask,
+			.dstAccessMask = a_dstAccessMask,
+			.oldLayout = a_oldLayout,
+			.newLayout = a_new_layout,
+			.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED,
+			.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED,
+			.image = swapChainImages[a_imageIndex],
+			.subresourceRange = {
+				.aspectMask = vk::ImageAspectFlagBits::eColor,
+				.baseMipLevel = 0,
+				.levelCount = 1,
+				.baseArrayLayer = 0,
+				.layerCount = 1
+			}
+		};
+		vk::DependencyInfo dependency_info = {
+			.dependencyFlags = {},
+			.imageMemoryBarrierCount = 1,
+			.pImageMemoryBarriers = &barrier
+		};
+		commandBuffer.pipelineBarrier2(dependency_info);
+	}
+
+	void
+	VulkanRenderContext::Impl::DrawFrame()
+	{
+		OYL_PROFILE_FUNCTION();
+
+		auto fenceResult = device.waitForFences(*drawFence, vk::True, UINT64_MAX);
+		if (fenceResult != vk::Result::eSuccess)
+			throw std::runtime_error("Failed to wait for fence!");
+		device.resetFences(*drawFence);
+
+		auto [result, imageIndex] = swapChain.acquireNextImage(UINT64_MAX, *presentCompleteSemaphore, nullptr);
+		RecordCommandBuffer(imageIndex);
+		graphicsQueue.waitIdle();
+
+		vk::PipelineStageFlags waitDestinationStageMask = vk::PipelineStageFlagBits::eColorAttachmentOutput;
+		const vk::SubmitInfo submitInfo {
+			.waitSemaphoreCount = 1,
+			.pWaitSemaphores = &*presentCompleteSemaphore,
+			.pWaitDstStageMask = &waitDestinationStageMask,
+			.commandBufferCount = 1,
+			.pCommandBuffers = &*commandBuffer,
+			.signalSemaphoreCount = 1,
+			.pSignalSemaphores = &*renderFinishedSemaphore
+		};
+		graphicsQueue.submit(submitInfo, *drawFence);
+
+		const vk::PresentInfoKHR presentInfoKHR {
+			.waitSemaphoreCount = 1,
+			.pWaitSemaphores = &*renderFinishedSemaphore,
+			.swapchainCount = 1,
+			.pSwapchains = &*swapChain,
+			.pImageIndices = &imageIndex
+		};
+
+		result = graphicsQueue.presentKHR(presentInfoKHR);
 	}
 }
 
@@ -562,10 +919,92 @@ namespace
 	{
 		auto minImageCount = std::max(3u, a_capabilities.minImageCount);
 		if ((0 < a_capabilities.maxImageCount)
-			&& (a_capabilities.maxImageCount < minImageCount))
+		    && (a_capabilities.maxImageCount < minImageCount))
 		{
 			minImageCount = a_capabilities.maxImageCount;
 		}
 		return minImageCount;
+	}
+
+	vk::raii::ShaderModule
+	CreateShaderModule(const vk::raii::Device& a_device, std::wstring_view a_profile, std::wstring_view a_entry)
+	{
+		HRESULT hres;
+
+		CComPtr<IDxcLibrary> library;
+		hres = DxcCreateInstance(CLSID_DxcLibrary, IID_PPV_ARGS(&library));
+		if (FAILED(hres))
+			throw std::runtime_error("Could not init DXC library");
+
+		// Initialize DXC compiler
+		CComPtr<IDxcCompiler3> compiler;
+		hres = DxcCreateInstance(CLSID_DxcCompiler, IID_PPV_ARGS(&compiler));
+		if (FAILED(hres))
+			throw std::runtime_error("Could not init DXC Compiler");
+
+		// Initialize DXC utility
+		CComPtr<IDxcUtils> utils;
+		hres = DxcCreateInstance(CLSID_DxcUtils, IID_PPV_ARGS(&utils));
+		if (FAILED(hres))
+			throw std::runtime_error("Could not init DXC Utiliy");
+
+		uint32 codePage = DXC_CP_ACP;
+		CComPtr<IDxcBlobEncoding> sourceBlob;
+		hres = utils->LoadFile(L"G:\\dev\\Oyl3D\\Oyl3D\\Source\\Oyl3D\\Core\\Shaders\\shader.hlsl", &codePage, &sourceBlob);
+		if (FAILED(hres))
+			throw std::runtime_error("Could not load shader file");
+
+		// Configure the compiler arguments for compiling the HLSL shader to SPIR-V
+		std::vector<LPCWSTR> arguments = {
+			// Shader main entry point
+			L"-E",
+			a_entry.data(),
+			// Shader target profile
+			L"-T",
+			a_profile.data(),
+			// Compile to SPIRV
+			L"-spirv",
+			L"-fspv-target-env=vulkan1.3",
+		};
+
+		DxcBuffer buffer {
+			.Ptr = sourceBlob->GetBufferPointer(),
+			.Size = sourceBlob->GetBufferSize(),
+			.Encoding = DXC_CP_ACP,
+		};
+
+		CComPtr<IDxcResult> result = nullptr;
+		hres = compiler->Compile(
+			&buffer,
+			arguments.data(),
+			uint32(arguments.size()),
+			nullptr,
+			IID_PPV_ARGS(&result)
+		);
+
+		if (SUCCEEDED(hres))
+			result->GetStatus(&hres);
+
+		// Output error if compilation failed
+		if (FAILED(hres) && (result))
+		{
+			CComPtr<IDxcBlobEncoding> errorBlob;
+			hres = result->GetErrorBuffer(&errorBlob);
+			if (SUCCEEDED(hres) && errorBlob)
+			{
+				OYL_LOG_ERROR("Shader compilation failed :\n{}", (const char*) errorBlob->GetBufferPointer());
+				throw std::runtime_error("Compilation failed");
+			}
+		}
+
+		CComPtr<IDxcBlob> code;
+		result->GetResult(&code);
+
+		// Create a Vulkan shader module from the compilation result
+		vk::ShaderModuleCreateInfo shaderModuleCreateInfo {
+			.codeSize = code->GetBufferSize(),
+			.pCode = (uint32*) code->GetBufferPointer(),
+		};
+		return vk::raii::ShaderModule(a_device, shaderModuleCreateInfo);
 	}
 }

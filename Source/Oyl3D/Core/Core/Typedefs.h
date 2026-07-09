@@ -21,6 +21,7 @@ namespace Oyl
 	static_assert(sizeof(float64) == 8);
 }
 
+#define OYL_SIMPLE_NUMERIC_TYPEDEFS 1
 #if OYL_SIMPLE_NUMERIC_TYPEDEFS
 using Oyl::int8;
 using Oyl::int16;

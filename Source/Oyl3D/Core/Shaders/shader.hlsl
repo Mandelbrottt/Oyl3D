@@ -16,7 +16,6 @@ struct VertexOutput
 	float3 color : Color;
 };
 
-// /g/dev/VulkanSDK/1.4.341.1/bin/dxc -spirv -T vs_6_1 -fspv-target-env=vulkan1.3 -E VertMain ./shader.hlsl -Fo ./shader.vs.spv
 VertexOutput
 VertMain(uint a_vid : SV_VertexID)
 {
@@ -26,7 +25,6 @@ VertMain(uint a_vid : SV_VertexID)
 	return output;
 }
 
-// /g/dev/VulkanSDK/1.4.341.1/bin/dxc -spirv -T ps_6_1 -fspv-target-env=vulkan1.3 -E FragMain ./shader.hlsl -Fo ./shader.fs.spv
 float4
 FragMain(VertexOutput a_inVert) : SV_Target
 {
