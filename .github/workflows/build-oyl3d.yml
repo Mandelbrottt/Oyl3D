@@ -67,7 +67,7 @@ jobs:
         if: ${{ !env.ACT }}
         uses: humbletim/install-vulkan-sdk@v1.2
         with:
-          version: ${{ env.vulkan_sdk_version }}
+          version: ${{ env.vulkan_version }}
           cache: true
 
       - name: Cache Packages
