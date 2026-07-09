@@ -83,13 +83,13 @@ namespace Oyl
 	void
 	MainWindowModule::OnWindowResizeEvent(const WindowResizeEvent& a_event)
 	{
-		OYL_LOG("Window Resized: ({}, {})", a_event.size.x, a_event.size.y);
+		OYL_UNUSED(a_event);
 	}
 
 	void
 	MainWindowModule::OnWindowMoveEvent(const WindowMoveEvent& a_event)
 	{
-		OYL_LOG("Window Moved: ({}, {})", a_event.position.x, a_event.position.y);
+		OYL_UNUSED(a_event);
 	}
 
 	void
@@ -116,42 +116,42 @@ namespace Oyl
 	void
 	MainWindowModule::OnWindowFocusEvent(const WindowFocusEvent& a_event)
 	{
-		OYL_LOG("Window Focus: {}", a_event.focused);
+		OYL_UNUSED(a_event);
 	}
 
 	void
 	MainWindowModule::OnWindowKeyPressEvent(const WindowKeyPressEvent& a_event)
 	{
-		OYL_LOG("Window Key Press: {}", a_event.key);
+		OYL_UNUSED(a_event);
 	}
 
 	void
 	MainWindowModule::OnWindowKeyReleaseEvent(const WindowKeyReleaseEvent& a_event)
 	{
-		OYL_LOG("Window Key Release: {}", a_event.key);
+		OYL_UNUSED(a_event);
 	}
 
 	void
 	MainWindowModule::OnWindowMousePressEvent(const WindowMousePressEvent& a_event)
 	{
-		OYL_LOG("Window Mouse Button Press: {}", a_event.button);
+		OYL_UNUSED(a_event);
 	}
 
 	void
 	MainWindowModule::OnWindowMouseReleaseEvent(const WindowMouseReleaseEvent& a_event)
 	{
-		OYL_LOG("Window Mouse Button Release: {}", a_event.button);
+		OYL_UNUSED(a_event);
 	}
 
 	void
 	MainWindowModule::OnWindowMouseScrollEvent(const WindowMouseScrollEvent& a_event)
 	{
-		OYL_LOG("Window Mouse Scroll: ({}, {})", a_event.scroll.x, a_event.scroll.y);
+		OYL_UNUSED(a_event);
 	}
 
 	void
 	MainWindowModule::OnWindowCursorMoveEvent(const WindowCursorMoveEvent& a_event)
 	{
-		OYL_LOG("Window Cursor Moved: ({}, {})", a_event.position.x, a_event.position.y);
+		OYL_UNUSED(a_event);
 	}
 }
