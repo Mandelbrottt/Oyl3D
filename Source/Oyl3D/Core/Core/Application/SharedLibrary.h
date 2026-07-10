@@ -27,6 +27,15 @@ namespace Oyl
 		~SharedLibrary() noexcept;
 
 		bool
+		IsLoaded() const noexcept;
+
+		operator
+		bool()
+		{
+			return IsLoaded();
+		}
+
+		bool
 		LoadFromFileName(const std::string& a_libraryFileName) noexcept;
 
 		template<typename TFn>
@@ -43,9 +52,6 @@ namespace Oyl
 
 		bool
 		Unload() noexcept;
-
-		bool
-		IsLoaded() const noexcept;
 
 		void*
 		GetFunction(const std::string& a_functionName) const noexcept;

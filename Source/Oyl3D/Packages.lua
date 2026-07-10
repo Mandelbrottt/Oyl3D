@@ -1,6 +1,8 @@
 local Config = require "Config"
 local Package = require "Package"
 
+local PackageCache = require "Packages"
+
 ---@type WorkspacePackage.List
 local Packages = {
 	Glfw = {
@@ -157,10 +159,34 @@ local Packages = {
 		end
 	},
 	Vulkan = {
+		Kind = premake.MAKEFILE,
 		Include = { "Include" },
 		LibDirs = { "Lib" },
-		Libs = { "vulkan-1", "dxcompiler" },
-		OnDepend = function (package)
+		Libs = {
+			-- Don't link against vulkan-1 or dxcompiler - both are loaded dynamically on windows
+			-- Explicitly set .dll extension on windows so we don't link against .lib file
+			-- 'vulkan-1%{prj.system == "windows" and ".dll" or ""}',
+			-- "dxcompiler",
+		},
+		OnProject = function(package)
+			filter("configurations:*" .. Config.Configurations.Distribution .. "*"); do
+				local sharedLibsToCopy = {
+					"dxcompiler.dll"
+				}
+				for _, sharedLib in ipairs(sharedLibsToCopy) do
+					local inFile = path.join(PackageCache.Vulkan.Local.Path, path.join("Bin", sharedLib))
+					local outFile = path.join(Config.BinariesDir, sharedLib)
+					local surround = function(str) return "%[" .. str .. "]" end
+
+					local buildcommand = string.format("{COPYFILE} %s %s", surround(inFile), surround(outFile))
+					buildcommands { buildcommand }
+					rebuildcommands { buildcommand }
+					cleancommands { "{DELETE} " .. surround(outFile) }
+				end
+			end
+			filter {}
+		end,
+		OnDepend = function(package)
 			defines {
 				"VULKAN_HPP_DISPATCH_LOADER_DYNAMIC=1",
 				"VULKAN_HPP_NO_STRUCT_CONSTRUCTORS=1"
@@ -170,7 +196,7 @@ local Packages = {
 	["Spyll.Core"] = {
 		Kind = premake.STATICLIB,
 		PackageDir = path.join(Config.SourceDir, "Spyll/Tool/Core"),
-		OnProject = function (package)
+		OnProject = function(package)
 			filter "action:vs*"; do
 				-- TODO: Make dependant on variable name in root Packages.lua
 				local clangNatvisPattern = path.join(Config.PackageCacheDir, "ClangTooling", "**.natvis")

@@ -8,7 +8,7 @@
 
 namespace Oyl
 {
-	class OYL_APPLICATION_API MainWindowModule : public Module
+	class MainWindowModule : public Module
 	{
 		OYL_DECLARE_MODULE(MainWindowModule);
 
