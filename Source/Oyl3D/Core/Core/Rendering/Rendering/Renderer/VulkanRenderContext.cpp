@@ -4,6 +4,8 @@
 
 #include <atlcomcli.h>
 
+#include <Core/Application/SharedLibrary.h>
+
 #include <dxc/dxcapi.h>
 
 #include <GLFW/glfw3.h>
@@ -950,24 +952,32 @@ namespace
 	vk::raii::ShaderModule
 	CreateShaderModule(const vk::raii::Device& a_device, std::wstring_view a_profile, std::wstring_view a_entry)
 	{
+		Oyl::SharedLibrary dxCompilerLib { "dxcompiler.dll" };
+		if (!dxCompilerLib)
+			throw std::runtime_error("Could not load dxcompiler.dll");
+
+		auto dxcCreateInstance = dxCompilerLib.GetFunction<decltype(DxcCreateInstance)>("DxcCreateInstance");
+		if (!dxcCreateInstance)
+			throw std::runtime_error("Could not find DxcCreateInstance function");
+
 		HRESULT hres;
 
 		CComPtr<IDxcLibrary> library;
-		hres = DxcCreateInstance(CLSID_DxcLibrary, IID_PPV_ARGS(&library));
+		hres = dxcCreateInstance(CLSID_DxcLibrary, IID_PPV_ARGS(&library));
 		if (FAILED(hres))
 			throw std::runtime_error("Could not init DXC library");
 
 		// Initialize DXC compiler
 		CComPtr<IDxcCompiler3> compiler;
-		hres = DxcCreateInstance(CLSID_DxcCompiler, IID_PPV_ARGS(&compiler));
+		hres = dxcCreateInstance(CLSID_DxcCompiler, IID_PPV_ARGS(&compiler));
 		if (FAILED(hres))
 			throw std::runtime_error("Could not init DXC Compiler");
 
 		// Initialize DXC utility
 		CComPtr<IDxcUtils> utils;
-		hres = DxcCreateInstance(CLSID_DxcUtils, IID_PPV_ARGS(&utils));
+		hres = dxcCreateInstance(CLSID_DxcUtils, IID_PPV_ARGS(&utils));
 		if (FAILED(hres))
-			throw std::runtime_error("Could not init DXC Utiliy");
+			throw std::runtime_error("Could not init DXC Utility");
 
 		uint32 codePage = DXC_CP_ACP;
 		CComPtr<IDxcBlobEncoding> sourceBlob;

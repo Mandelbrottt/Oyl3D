@@ -1,6 +1,8 @@
 local Config = require "Config"
 local Package = require "Package"
 
+local PackageCache = require "Packages"
+
 ---@type WorkspacePackage.List
 local Packages = {
 	Glfw = {
@@ -157,14 +159,32 @@ local Packages = {
 		end
 	},
 	Vulkan = {
+		Kind = premake.NONE,
 		Include = { "Include" },
 		LibDirs = { "Lib" },
-		Libs = { "vulkan-1", "dxcompiler" },
+		Libs = { 
+			-- Don't link against vulkan-1 or dxcompiler - both are loaded dynamically on windows
+			-- Explicitly set .dll extension on windows so we don't link against .lib file
+			-- 'vulkan-1%{prj.system == "windows" and ".dll" or ""}',
+			-- "dxcompiler",
+		},
 		OnDepend = function (package)
 			defines {
 				"VULKAN_HPP_DISPATCH_LOADER_DYNAMIC=1",
 				"VULKAN_HPP_NO_STRUCT_CONSTRUCTORS=1"
 			}
+
+			local sharedLibsToCopy = {
+				"dxcompiler.dll"
+			}
+			for _, sharedLib in ipairs(sharedLibsToCopy) do
+				local inFile = path.join(PackageCache.Vulkan.Local.Path, path.join("Bin", sharedLib))
+				local outFile = path.join("%{cfg.buildtarget.directory}", sharedLib)
+				local surround = function(str) return "%[" .. str .. "]" end
+				
+				local buildcommand = string.format("{COPYFILE} %s %s", surround(inFile), surround(outFile))
+				prelinkcommands { buildcommand }
+			end
 		end
 	},
 	["Spyll.Core"] = {
