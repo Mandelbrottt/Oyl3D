@@ -4,6 +4,8 @@
 #include <filesystem>
 #include <Windows.h>
 
+#include <Core/Resources/ResourceManager.h>
+
 #include <Rendering/Modules/RenderControlModule.h>
 
 #include "Application/Modules/MainWindowModule.h"
@@ -99,6 +101,30 @@ namespace Oyl
 		}
 	};
 
+	class ShaderResource : public Resource
+	{
+	public:
+		bool
+		Load() override
+		{
+			a = 5;
+			return Resource::Load();
+		}
+
+		bool
+		Unload() override
+		{
+			a = 0;
+			return Resource::Unload();
+		}
+
+		int a;
+
+	protected:
+		void
+		Compile() override {}
+	};
+
 	void
 	ApplicationInit()
 	{
@@ -128,6 +154,27 @@ namespace Oyl
 		{
 			module->Init();
 		}
+
+		using Shader = ResourceHandle<ShaderResource>;
+
+		Internal::ResourceManager manager;
+		Shader shader1 = manager.CreateHandle<ShaderResource>();
+		shader1->Load();
+
+		Shader shader2 = shader1;
+		shader2->Unload();
+
+		{
+			Shader shader3 = manager.CreateHandle<ShaderResource>();
+			shader2 = std::move(shader3);
+			shader2->Load();
+		}
+		shader2->Unload();
+
+		Shader shader4 = manager.CreateHandle<ShaderResource>();
+		shader4.Release();
+		shader1.Release();
+		shader2.Release();
 	}
 
 	void
