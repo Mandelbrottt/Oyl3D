@@ -4,14 +4,14 @@
 
 namespace Oyl::Internal
 {
-	ResourceHandleBase::ResourceHandleBase(ResourceTypeId a_typeId, ResourceManager* a_manager)
-		: m_type(a_typeId),
-		  m_resourceManager(a_manager) {}
+	ResourceHandleBase::ResourceHandleBase(ResourceTypeId a_typeId)
+		: m_type(a_typeId) {}
 
 	ResourceHandleBase::ResourceHandleBase(ResourceTypeId a_type, ResourceId a_id, ResourceManager* a_manager)
-		: ResourceHandleBase(a_type, a_manager)
+		: ResourceHandleBase(a_type)
 	{
 		m_id = a_id;
+		m_resourceManager = a_manager;
 	}
 
 	ResourceHandleBase::~ResourceHandleBase()

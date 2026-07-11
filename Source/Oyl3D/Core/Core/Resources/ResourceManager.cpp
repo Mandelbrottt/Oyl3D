@@ -1,16 +1,30 @@
 #include "ResourceManager.h"
 
+#include <ranges>
+
 #include "Resource.h"
 
 namespace Oyl::Internal
 {
-	struct ResourceRefCount
+	struct ResourceData
 	{
 		std::unique_ptr<Resource> resource;
 		uint32 nRefs;
 	};
 
-	using ResourceMap = std::unordered_map<ResourceId, ResourceRefCount>;
+	struct ResourceMap
+	{
+		std::unordered_map<ResourceId, ResourceData> map;
+		ResourceId nextId = ResourceId(0);
+
+		ResourceId
+		GetNextId()
+		{
+			auto rawId = static_cast<Traits::UnderlyingType_T<ResourceId>>(nextId);
+			nextId = static_cast<ResourceId>(rawId + 1);
+			return static_cast<ResourceId>(rawId);
+		}
+	};
 
 	struct ResourceManager::Impl
 	{
@@ -22,9 +36,9 @@ namespace Oyl::Internal
 
 	ResourceManager::~ResourceManager()
 	{
-		for (auto& [type, resourceMap] : m_impl->resourceTypeMap)
+		for (auto& resourceMap : m_impl->resourceTypeMap | std::views::values)
 		{
-			for (auto& [id, resourceRef] : resourceMap)
+			for (auto& resourceRef : resourceMap.map | std::views::values)
 			{
 				OYL_ASSERT(
 					!resourceRef.resource->IsLoaded(),
@@ -34,21 +48,83 @@ namespace Oyl::Internal
 		}
 	}
 
-	ResourceHandleBase
-	ResourceManager::CreateHandle(ResourceTypeId a_typeId)
+	void
+	ResourceManager::DestroyHandle(const ResourceHandleBase& a_handle)
 	{
-		return TODO_IMPLEMENT_ME;
+		if (a_handle.m_id == ResourceId::Null)
+			return;
+
+		// If the handle exists, we know a ResourceMap exists for the given type
+		auto auto resourceMapIter = m_impl->resourceTypeMap.find(a_handle.m_type);
+		auto& resourcesMap = resourceMapIter->second.map;
+		auto resourceIter = resourcesMap.find(a_handle.m_id);
+		OYL_ASSERT(resourceIter != resourcesMap.end());
+
+		auto& resourceData = resourceIter->second;
+
+		// Decrement the ref count, assure it's not already 0
+		OYL_ASSERT(resourceData.nRefs > 0);
+		resourceData.nRefs--;
+
+		// If there are still references, don't destroy the backing resource
+		if (resourceData.nRefs > 0)
+			return;
+
+		resourcesMap.erase(resourceIter);
+	}
+
+	ResourceId
+	ResourceManager::CreateResource(ResourceTypeId a_type, std::unique_ptr<Resource>&& a_resource)
+	{
+		// If ResourceMap for type doesn't exist, create it
+		auto resourceMapIter = m_impl->resourceTypeMap.find(a_type);
+		if (resourceMapIter == m_impl->resourceTypeMap.end())
+		{
+			resourceMapIter = m_impl->resourceTypeMap.emplace(a_type, ResourceMap {}).first;
+		}
+
+		// Create resource and assign an id
+		auto& resources = resourceMapIter->second;
+		auto resourceId = resources.GetNextId();
+		auto resourceIter = resources.map.emplace(resourceId, ResourceData {}).first;
+
+		// Initialize ResourceData with ref count and ptr
+		auto& resourceData = resourceIter->second;
+		resourceData.nRefs = 1;
+		resourceData.resource = std::move(a_resource);
+
+		return resourceId;
 	}
 
 	void
-	ResourceManager::DestroyHandle(ResourceHandleBase& a_handle)
+	ResourceManager::IncrementResourceRef(ResourceTypeId a_type, ResourceId a_id)
 	{
-		TODO_IMPLEMENT_ME();
+		// We should only have the id if the resource is valid
+		auto resourceMapIter = m_impl->resourceTypeMap.find(a_type);
+		OYL_ASSERT(resourceMapIter != m_impl->resourceTypeMap.end());
+
+		auto& resourcesMap = resourceMapIter->second.map;
+		auto& resourceData = resourcesMap.at(a_id);
+
+		resourceData.nRefs++;
 	}
 
 	Resource*
 	ResourceManager::GetResource(ResourceTypeId a_typeId, ResourceId a_id)
 	{
-		return TODO_IMPLEMENT_ME;
+		// If we don't have a ResourceMap for the type, return
+		auto resourceMapIter = m_impl->resourceTypeMap.find(a_typeId);
+		if (resourceMapIter == m_impl->resourceTypeMap.end())
+			return nullptr;
+
+		// If no resource with the given id exists, return
+		auto& resourcesMap = resourceMapIter->second.map;
+		auto resourceIter = resourcesMap.find(a_id);
+		if (resourceIter == resourcesMap.end())
+			return nullptr;
+
+		// We found it!
+		auto& resourcePtr = resourceIter->second.resource;
+		return resourcePtr.get();
 	}
 }

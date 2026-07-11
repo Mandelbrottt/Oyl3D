@@ -4,7 +4,11 @@
 
 namespace Oyl
 {
-	enum class ResourceId : uint32 { Null = std::numeric_limits<uint32>() };
+	enum class ResourceId : uint32
+	{
+		Null = 0,
+		FirstValid = 1
+	};
 
 	namespace Internal
 	{
@@ -12,8 +16,11 @@ namespace Oyl
 
 		class ResourceHandleBase
 		{
+			friend ResourceManager;
+
 		protected:
-			ResourceHandleBase(ResourceTypeId a_typeId, ResourceManager* a_manager);
+			explicit
+			ResourceHandleBase(ResourceTypeId a_typeId);
 
 			ResourceHandleBase(ResourceTypeId a_type, ResourceId a_id, ResourceManager* a_manager);
 
@@ -32,32 +39,38 @@ namespace Oyl
 				return const_cast<ResourceHandleBase*>(this)->Get();
 			}
 
-		private:
-			ResourceId m_id = ResourceId::Null;
+			ResourceId
+			GetResourceId() const
+			{
+				return m_id;
+			}
 
+		private:
 			ResourceTypeId m_type;
-			ResourceManager* m_resourceManager; // TODO: Make Global, or use locator?
+
+			ResourceId m_id = ResourceId::Null;
+			ResourceManager* m_resourceManager = nullptr;; // TODO: Make Global, or use locator?
 		};
 	}
 
 	template<typename TResource>
-	class ResourceHandle : Internal::ResourceHandleBase
+	class ResourceHandle final : Internal::ResourceHandleBase
 	{
 	public:
 		ResourceHandle()
-			: ResourceHandleBase(Reflection::GetTypeId<TResource>()) {}
-
-		virtual
-		~ResourceHandle() {}
+			: ResourceHandleBase(Reflection::GetTypeId<TResource>())
+		{
+			static_assert(sizeof(ResourceHandle) == sizeof(ResourceHandleBase));
+		}
 
 		TResource*
-		Get() final
+		Get()
 		{
 			return static_cast<TResource*>(ResourceHandleBase::Get());
 		}
 
 		const TResource*
-		Get() const final
+		Get() const
 		{
 			return static_cast<const TResource*>(ResourceHandleBase::Get());
 		}
@@ -67,5 +80,10 @@ namespace Oyl
 		{
 			return Get();
 		}
+
+	private:
+		ResourceHandle(ResourceId a_id, Internal::ResourceManager* a_manager)
+			: ResourceHandleBase(Reflection::GetTypeId<TResource>(), a_id, a_manager) {}
 	};
+
 }
