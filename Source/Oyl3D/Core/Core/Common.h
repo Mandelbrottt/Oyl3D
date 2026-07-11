@@ -20,6 +20,8 @@
 
 #pragma endregion
 
+#include <Core/Logging/Logging.h>
+
 #pragma region Debug Macros
 #	if !defined(OYL_DISTRIBUTION)
 #		define OYL_ENABLE_ASSERTS
