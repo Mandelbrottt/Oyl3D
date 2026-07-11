@@ -169,7 +169,7 @@ local Packages = {
 			-- "dxcompiler",
 		},
 		OnProject = function(package)
-			filter("configurations:*" .. Config.Configurations.Distribution .. "*"); do
+			filter { "configurations:*" .. Config.Configurations.Distribution .. "*" }; do
 				local sharedLibsToCopy = {
 					"dxcompiler.dll"
 				}
@@ -183,6 +183,9 @@ local Packages = {
 					rebuildcommands { buildcommand }
 					cleancommands { "{DELETE} " .. surround(outFile) }
 				end
+			end
+			filter { "configurations:not *" .. Config.Configurations.Distribution .. "*" }; do
+				excludefrombuild "On"
 			end
 			filter {}
 		end,

@@ -6,17 +6,20 @@ namespace Oyl
 		: m_loaded(false),
 		  m_dirty(true) {}
 
-	Resource::~Resource() {}
+	Resource::~Resource()
+	{
+		OYL_ASSERT(!m_loaded);
+	}
 
 	bool
-	Resource::Load() noexcept
+	Resource::Load()
 	{
 		m_loaded = true;
 		return true;
 	}
 
 	bool
-	Resource::Unload() noexcept
+	Resource::Unload()
 	{
 		m_loaded = false;
 		return false;

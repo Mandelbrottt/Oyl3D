@@ -15,7 +15,7 @@ namespace Oyl::Internal
 	struct ResourceMap
 	{
 		std::unordered_map<ResourceId, ResourceData> map;
-		ResourceId nextId = ResourceId(0);
+		ResourceId nextId = ResourceId(1);
 
 		ResourceId
 		GetNextId()
@@ -32,7 +32,7 @@ namespace Oyl::Internal
 	};
 
 	ResourceManager::ResourceManager()
-		: m_impl(new Impl) {}
+		: m_impl(std::make_unique<Impl>()) {}
 
 	ResourceManager::~ResourceManager()
 	{
@@ -55,7 +55,7 @@ namespace Oyl::Internal
 			return;
 
 		// If the handle exists, we know a ResourceMap exists for the given type
-		auto auto resourceMapIter = m_impl->resourceTypeMap.find(a_handle.m_type);
+		auto resourceMapIter = m_impl->resourceTypeMap.find(a_handle.m_type);
 		auto& resourcesMap = resourceMapIter->second.map;
 		auto resourceIter = resourcesMap.find(a_handle.m_id);
 		OYL_ASSERT(resourceIter != resourcesMap.end());

@@ -7,14 +7,13 @@ namespace Oyl
 	enum class ResourceId : uint32
 	{
 		Null = 0,
-		FirstValid = 1
 	};
 
 	namespace Internal
 	{
 		class ResourceManager;
 
-		class ResourceHandleBase
+		class OYL_CORE_API ResourceHandleBase
 		{
 			friend ResourceManager;
 
@@ -25,8 +24,37 @@ namespace Oyl
 			ResourceHandleBase(ResourceTypeId a_type, ResourceId a_id, ResourceManager* a_manager);
 
 		public:
+			ResourceHandleBase(const ResourceHandleBase& a_other)
+				: ResourceHandleBase(a_other.m_type)
+			{
+				*this = a_other;
+			}
+
+			ResourceHandleBase&
+			operator =(const ResourceHandleBase& a_other);
+
+			ResourceHandleBase(ResourceHandleBase&& a_other) noexcept
+				: ResourceHandleBase(a_other.m_type)
+			{
+				*this = std::move(a_other);
+			}
+
+			ResourceHandleBase&
+			operator =(ResourceHandleBase&& a_other) noexcept;
+
 			virtual
 			~ResourceHandleBase();
+
+			friend
+			bool
+			operator ==(const ResourceHandleBase& a_lhs, const ResourceHandleBase& a_rhs);
+
+			friend
+			bool
+			operator !=(const ResourceHandleBase& a_lhs, const ResourceHandleBase& a_rhs)
+			{
+				return !(a_lhs == a_rhs);
+			}
 
 			virtual
 			Resource*
@@ -38,6 +66,9 @@ namespace Oyl
 			{
 				return const_cast<ResourceHandleBase*>(this)->Get();
 			}
+
+			void
+			Release();
 
 			ResourceId
 			GetResourceId() const
@@ -54,8 +85,10 @@ namespace Oyl
 	}
 
 	template<typename TResource>
-	class ResourceHandle final : Internal::ResourceHandleBase
+	class ResourceHandle final : public Internal::ResourceHandleBase
 	{
+		friend Internal::ResourceManager;
+
 	public:
 		ResourceHandle()
 			: ResourceHandleBase(Reflection::GetTypeId<TResource>())

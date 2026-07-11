@@ -17,11 +17,11 @@ namespace Oyl
 
 		virtual
 		bool
-		Load() noexcept;
+		Load();
 
 		virtual
 		bool
-		Unload() noexcept;
+		Unload();
 
 		bool
 		IsLoaded() const noexcept;
