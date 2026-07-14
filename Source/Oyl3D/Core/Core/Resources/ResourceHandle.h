@@ -57,11 +57,11 @@ namespace Oyl
 			}
 
 			virtual
-			Resource*
+			ResourceBase*
 			Get();
 
 			virtual
-			const Resource*
+			const ResourceBase*
 			Get() const
 			{
 				return const_cast<ResourceHandleBase*>(this)->Get();

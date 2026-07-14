@@ -2,38 +2,51 @@
 
 namespace Oyl
 {
-	Resource::Resource()
+	ResourceBase::ResourceBase()
 		: m_loaded(false),
 		  m_dirty(true) {}
 
-	Resource::~Resource()
+	ResourceBase::~ResourceBase()
 	{
 		OYL_ASSERT(!m_loaded);
 	}
 
 	bool
-	Resource::Load()
+	ResourceBase::Load()
 	{
 		m_loaded = true;
 		return true;
 	}
 
 	bool
-	Resource::Unload()
+	ResourceBase::Unload()
 	{
 		m_loaded = false;
 		return false;
 	}
 
 	bool
-	Resource::IsLoaded() const noexcept
+	ResourceBase::IsLoaded() const noexcept
 	{
 		return m_loaded;
 	}
 
 	bool
-	Resource::IsDirty() const noexcept
+	ResourceBase::IsDirty() const noexcept
 	{
 		return m_dirty;
+	}
+
+	bool
+	ResourceBase::Compile(void* /*a_customData*/)
+	{
+		m_dirty = false;
+		return true;
+	}
+
+	void
+	ResourceBase::SetDirty() noexcept
+	{
+		m_dirty = true;
 	}
 }

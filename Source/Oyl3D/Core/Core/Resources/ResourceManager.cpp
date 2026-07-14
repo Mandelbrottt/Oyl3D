@@ -8,7 +8,7 @@ namespace Oyl::Internal
 {
 	struct ResourceData
 	{
-		std::unique_ptr<Resource> resource;
+		std::unique_ptr<ResourceBase> resource;
 		uint32 nRefs;
 	};
 
@@ -43,7 +43,7 @@ namespace Oyl::Internal
 				OYL_ASSERT(
 					!resourceRef.resource->IsLoaded(),
 					"All resources should be unloaded before resource manager is destroyed!"
-				)
+				);
 			}
 		}
 	}
@@ -74,7 +74,7 @@ namespace Oyl::Internal
 	}
 
 	ResourceId
-	ResourceManager::CreateResource(ResourceTypeId a_type, std::unique_ptr<Resource>&& a_resource)
+	ResourceManager::CreateResource(ResourceTypeId a_type, std::unique_ptr<ResourceBase>&& a_resource)
 	{
 		// If ResourceMap for type doesn't exist, create it
 		auto resourceMapIter = m_impl->resourceTypeMap.find(a_type);
@@ -109,7 +109,7 @@ namespace Oyl::Internal
 		resourceData.nRefs++;
 	}
 
-	Resource*
+	ResourceBase*
 	ResourceManager::GetResource(ResourceTypeId a_typeId, ResourceId a_id)
 	{
 		// If we don't have a ResourceMap for the type, return

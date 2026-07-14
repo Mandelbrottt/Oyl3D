@@ -1,16 +1,37 @@
 #pragma once
 
+#include <vulkan/vulkan_raii.hpp>
+
 #include "Shader.h"
 
 namespace Oyl::Rendering::Internal
 {
-	class OYL_RENDERING_API VulkanShader : public Shader
+	struct ShaderCompileInput
+	{
+		vk::raii::Device* device;
+		vk::Format format;
+		std::string_view filePath;
+	};
+
+	class OYL_RENDERING_API VulkanShaderResource : public ShaderResource
 	{
 	public:
-		VulkanShader();
+		VulkanShaderResource();
 
 		virtual
-		~VulkanShader();
+		~VulkanShaderResource();
+
+		bool
+		Load() override;
+
+		bool
+		Unload() override;
+
+		const vk::raii::Pipeline&
+		GetPipeline() const;
+
+		bool
+		Compile(void* a_shaderCompileInput) override;
 
 	private:
 		struct Impl;

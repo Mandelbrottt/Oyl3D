@@ -73,7 +73,7 @@ namespace Oyl::Internal
 		Release();
 	}
 
-	Resource*
+	ResourceBase*
 	ResourceHandleBase::Get()
 	{
 		assert(m_resourceManager && m_type != ResourceTypeId::Null);

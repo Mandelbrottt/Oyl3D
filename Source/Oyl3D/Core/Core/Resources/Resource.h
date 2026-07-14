@@ -6,14 +6,14 @@ namespace Oyl
 {
 	using ResourceTypeId = Reflection::TypeId;
 
-	class OYL_CORE_API Resource
+	class OYL_CORE_API ResourceBase
 	{
 	protected:
-		Resource();
+		ResourceBase();
 
 	public:
 		virtual
-		~Resource() noexcept;
+		~ResourceBase() noexcept;
 
 		virtual
 		bool
@@ -23,6 +23,11 @@ namespace Oyl
 		bool
 		Unload();
 
+		constexpr
+		static
+		ResourceTypeId
+		GetResourceTypeId() = delete;
+
 		bool
 		IsLoaded() const noexcept;
 
@@ -31,11 +36,27 @@ namespace Oyl
 
 	protected:
 		virtual
+		bool
+		Compile(void* a_customData);
+
 		void
-		Compile() = 0;
+		SetDirty() noexcept;
 
 	private:
 		bool m_loaded;
 		bool m_dirty;
+	};
+
+	template<typename TResource>
+	class Resource : public ResourceBase
+	{
+	public:
+		static
+		constexpr ResourceTypeId
+		GetResourceTypeId()
+		{
+			static_assert(std::is_base_of_v<Resource, TResource>);
+			return Reflection::GetTypeId<TResource>();
+		}
 	};
 }
