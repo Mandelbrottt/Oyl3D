@@ -193,6 +193,16 @@ namespace Oyl
 		Vector2i size;
 	};
 
+	struct WindowMaximizeEvent : WindowEvent, EventBase<WindowMaximizeEvent>
+	{
+		bool maximized;
+	};
+
+	struct WindowMinimizeEvent : WindowEvent, EventBase<WindowMinimizeEvent>
+	{
+		bool minimized;
+	};
+
 	struct WindowMoveEvent : WindowEvent, EventBase<WindowMoveEvent>
 	{
 		Vector2i position;
