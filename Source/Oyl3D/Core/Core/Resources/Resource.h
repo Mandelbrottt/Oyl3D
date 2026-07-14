@@ -6,57 +6,68 @@ namespace Oyl
 {
 	using ResourceTypeId = Reflection::TypeId;
 
-	class OYL_CORE_API ResourceBase
+	template<typename>
+	class Resource;
+
+	namespace Internal
 	{
-	protected:
-		ResourceBase();
+		class OYL_CORE_API ResourceBase
+		{
+			template<typename T>
+			friend class Resource;
 
-	public:
-		virtual
-		~ResourceBase() noexcept;
+			ResourceBase();
 
-		virtual
-		bool
-		Load();
+		public:
+			virtual
+			~ResourceBase() noexcept;
 
-		virtual
-		bool
-		Unload();
+			virtual
+			bool
+			Load();
 
-		constexpr
-		static
-		ResourceTypeId
-		GetResourceTypeId() = delete;
+			virtual
+			bool
+			Unload();
 
-		bool
-		IsLoaded() const noexcept;
+			constexpr
+			static
+			ResourceTypeId
+			GetResourceTypeId() = delete;
 
-		bool
-		IsDirty() const noexcept;
+			bool
+			IsLoaded() const noexcept;
 
-	protected:
-		virtual
-		bool
-		Compile(void* a_customData);
-
-		void
-		SetDirty() noexcept;
-
-	private:
-		bool m_loaded;
-		bool m_dirty;
-	};
+		private:
+			bool m_loaded;
+		};
+	}
 
 	template<typename TResource>
-	class Resource : public ResourceBase
+	class Resource : public Internal::ResourceBase
 	{
 	public:
 		static
 		constexpr ResourceTypeId
 		GetResourceTypeId()
 		{
-			static_assert(std::is_base_of_v<Resource, TResource>);
+			static_assert(std::is_convertible_v<TResource*, Resource*>);
 			return Reflection::GetTypeId<TResource>();
 		}
 	};
+
+	namespace Traits
+	{
+		template<typename T>
+		struct IsResource : std::is_convertible<T*, Internal::ResourceBase*>
+		{
+			static_assert(
+				&T::GetResourceTypeId,
+				"Resource type must implement static constexpr ResourceTypeId GetResourceTypeId()!"
+			);
+		};
+
+		template<typename T>
+		constexpr bool IsResource_V = IsResource<T>::value;
+	}
 }

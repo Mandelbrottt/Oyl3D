@@ -1,10 +1,9 @@
 #include "Resource.h"
 
-namespace Oyl
+namespace Oyl::Internal
 {
 	ResourceBase::ResourceBase()
-		: m_loaded(false),
-		  m_dirty(true) {}
+		: m_loaded(false) {}
 
 	ResourceBase::~ResourceBase()
 	{
@@ -29,24 +28,5 @@ namespace Oyl
 	ResourceBase::IsLoaded() const noexcept
 	{
 		return m_loaded;
-	}
-
-	bool
-	ResourceBase::IsDirty() const noexcept
-	{
-		return m_dirty;
-	}
-
-	bool
-	ResourceBase::Compile(void* /*a_customData*/)
-	{
-		m_dirty = false;
-		return true;
-	}
-
-	void
-	ResourceBase::SetDirty() noexcept
-	{
-		m_dirty = true;
 	}
 }

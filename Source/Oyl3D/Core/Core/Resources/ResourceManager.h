@@ -14,12 +14,12 @@ namespace Oyl::Internal
 		~ResourceManager();
 
 		template<typename TResource>
-			requires (std::is_base_of_v<Resource<TResource>, TResource>)
+			requires (Traits::IsResource_V<TResource>)
 		ResourceHandle<TResource>
 		CreateHandle();
 
 		template<typename TResource>
-			requires (std::is_base_of_v<Resource<TResource>, TResource>)
+			requires (Traits::IsResource_V<TResource>)
 		ResourceHandle<TResource>
 		CreateHandle(ResourceId a_id);
 
@@ -28,7 +28,7 @@ namespace Oyl::Internal
 
 	private:
 		template<typename TResource>
-			requires (std::is_base_of_v<Resource<TResource>, TResource>)
+			requires (Traits::IsResource_V<TResource>)
 		ResourceId
 		CreateResource();
 
@@ -46,7 +46,7 @@ namespace Oyl::Internal
 	};
 
 	template<typename TResource>
-		requires (std::is_base_of_v<Resource<TResource>, TResource>)
+		requires (Traits::IsResource_V<TResource>)
 	ResourceId
 	ResourceManager::CreateResource()
 	{
@@ -56,7 +56,7 @@ namespace Oyl::Internal
 	}
 
 	template<typename TResource>
-		requires (std::is_base_of_v<Resource<TResource>, TResource>)
+		requires (Traits::IsResource_V<TResource>)
 	ResourceHandle<TResource>
 	ResourceManager::CreateHandle()
 	{
@@ -65,7 +65,7 @@ namespace Oyl::Internal
 	}
 
 	template<typename TResource>
-		requires (std::is_base_of_v<Resource<TResource>, TResource>)
+		requires (Traits::IsResource_V<TResource>)
 	ResourceHandle<TResource>
 	ResourceManager::CreateHandle(ResourceId a_id)
 	{

@@ -85,25 +85,26 @@ namespace Oyl
 	}
 
 	template<typename TResource>
+		requires (Traits::IsResource_V<TResource>)
 	class ResourceHandle final : public Internal::ResourceHandleBase
 	{
 		friend Internal::ResourceManager;
 
 	public:
 		ResourceHandle()
-			: ResourceHandleBase(Reflection::GetTypeId<TResource>())
+			: ResourceHandleBase(TResource::GetResourceTypeId())
 		{
 			static_assert(sizeof(ResourceHandle) == sizeof(ResourceHandleBase));
 		}
 
 		TResource*
-		Get()
+		Get() override
 		{
 			return static_cast<TResource*>(ResourceHandleBase::Get());
 		}
 
 		const TResource*
-		Get() const
+		Get() const override
 		{
 			return static_cast<const TResource*>(ResourceHandleBase::Get());
 		}
@@ -116,7 +117,7 @@ namespace Oyl
 
 	private:
 		ResourceHandle(ResourceId a_id, Internal::ResourceManager* a_manager)
-			: ResourceHandleBase(Reflection::GetTypeId<TResource>(), a_id, a_manager) {}
+			: ResourceHandleBase(TResource::GetResourceTypeId(), a_id, a_manager) {}
 	};
 
 }
