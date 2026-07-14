@@ -89,11 +89,6 @@ namespace Oyl::Rendering::Internal
 		vk::SurfaceFormatKHR swapChainSurfaceFormat;
 		vk::Extent2D swapChainExtent;
 
-		vk::raii::ShaderModule vsShaderModule = nullptr;
-		vk::raii::ShaderModule fsShaderModule = nullptr;
-
-		//vk::raii::PipelineLayout pipelineLayout = nullptr;
-		//vk::raii::Pipeline graphicsPipeline = nullptr;
 		VulkanShader shader;
 
 		vk::raii::CommandPool commandPool = nullptr;
