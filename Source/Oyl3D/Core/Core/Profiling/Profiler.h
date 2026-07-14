@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Core/Common.h"
+#include "Core/Preprocessor/Util.h"
 
 #if OYL_PROFILE
 	#include "Profiler_Tracy.h"
