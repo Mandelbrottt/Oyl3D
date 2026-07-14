@@ -14,6 +14,16 @@ namespace Oyl
 		explicit
 		SharedLibrary(const std::string& a_libraryFileName) noexcept;
 
+		SharedLibrary(const SharedLibrary& a_other);
+
+		SharedLibrary&
+		operator =(const SharedLibrary& a_other);
+
+		SharedLibrary(SharedLibrary&& a_other) noexcept;
+
+		SharedLibrary&
+		operator =(SharedLibrary&& a_other) noexcept;
+
 		template<typename TFn>
 			requires Traits::FunctionObject<TFn> && Traits::NonVoidPointer<TFn>
 		explicit
@@ -23,7 +33,6 @@ namespace Oyl
 		explicit
 		SharedLibrary(void* a_functionAddress) noexcept;
 
-		virtual
 		~SharedLibrary() noexcept;
 
 		bool
@@ -81,6 +90,7 @@ namespace Oyl
 		struct Impl;
 		std::unique_ptr<Impl> m_impl;
 
+		std::string m_fileName;
 		mutable std::unordered_map<std::string, void*> m_cachedFunctions;
 	};
 }

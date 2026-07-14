@@ -301,7 +301,6 @@ namespace Oyl::Internal
 	{
 		auto monitor = glfwGetPrimaryMonitor();
 		glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
-		glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
 		glfwWindow = glfwCreateWindow(
 			size.x,
 			size.y,
@@ -367,6 +366,38 @@ namespace Oyl::Internal
 				WindowResizeEvent event;
 				event.window = impl->window;
 				event.size = impl->size;
+				impl->postEventCallback(event);
+			}
+		);
+
+		glfwSetWindowMaximizeCallback(
+			glfwWindow,
+			[](GLFWwindow* a_window, int a_maximised)
+			{
+				Impl* impl = reinterpret_cast<Impl*>(glfwGetWindowUserPointer(a_window));
+
+				if (!impl->postEventCallback)
+					return;
+
+				WindowMaximizeEvent event;
+				event.window = impl->window;
+				event.maximized = a_maximised;
+				impl->postEventCallback(event);
+			}
+		);
+
+		glfwSetWindowIconifyCallback(
+			glfwWindow,
+			[](GLFWwindow* a_window, int a_minimized)
+			{
+				Impl* impl = reinterpret_cast<Impl*>(glfwGetWindowUserPointer(a_window));
+
+				if (!impl->postEventCallback)
+					return;
+
+				WindowMinimizeEvent event;
+				event.window = impl->window;
+				event.minimized = a_minimized;
 				impl->postEventCallback(event);
 			}
 		);

@@ -11,4 +11,7 @@ namespace Oyl::Rendering
 	}
 
 	RenderContext::~RenderContext() noexcept {}
+
+	void
+	RenderContext::Resize(Vector2i /*a_size*/) {}
 }

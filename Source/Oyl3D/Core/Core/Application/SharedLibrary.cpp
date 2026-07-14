@@ -10,6 +10,16 @@ namespace Oyl
 		LoadFromFileName(a_libraryFileName);
 	}
 
+	SharedLibrary::SharedLibrary(const SharedLibrary& a_other)
+	{
+		*this = a_other;
+	}
+
+	SharedLibrary::SharedLibrary(SharedLibrary&& a_other) noexcept
+	{
+		*this = std::move(a_other);
+	}
+
 	SharedLibrary::SharedLibrary(void* a_functionAddress) noexcept
 		: SharedLibrary()
 	{
@@ -80,6 +90,36 @@ namespace Oyl
 	SharedLibrary::SharedLibrary() noexcept
 		: m_impl(std::make_unique<Impl>()) {}
 
+	SharedLibrary&
+	SharedLibrary::operator=(const SharedLibrary& a_other)
+	{
+		if (this == &a_other)
+			return *this;
+
+		if (IsLoaded())
+			Unload();
+
+		LoadFromFileName(a_other.m_fileName);
+		return *this;
+	}
+
+	SharedLibrary&
+	SharedLibrary::operator=(SharedLibrary&& a_other) noexcept
+	{
+		if (this == &a_other)
+			return *this;
+
+		if (IsLoaded())
+			Unload();
+
+		m_fileName = std::move(a_other.m_fileName);
+		m_cachedFunctions = std::move(a_other.m_cachedFunctions);
+
+		std::swap(m_impl, a_other.m_impl);
+
+		return *this;
+	}
+
 	SharedLibrary::~SharedLibrary() noexcept
 	{
 		Unload();
@@ -97,7 +137,11 @@ namespace Oyl
 		} else
 		{
 			m_impl->instance = LoadLibraryA(a_libraryFileName.data());
-			m_impl->refCounted = true;
+			if (m_impl->instance)
+			{
+				m_impl->refCounted = true;
+				m_fileName = a_libraryFileName;
+			}
 		}
 		return m_impl->instance != NULL;
 	}
@@ -146,8 +190,12 @@ namespace Oyl
 
 		if (hModule)
 		{
-			m_impl->refCounted = true;
 			m_impl->instance = hModule;
+			m_impl->refCounted = true;
+
+			char name[512];
+			GetModuleFileNameA(hModule, name, sizeof(name));
+			m_fileName = name;
 		}
 		return m_impl->instance != NULL;
 	}

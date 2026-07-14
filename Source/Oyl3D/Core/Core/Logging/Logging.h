@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Core/Common.h"
+#include "Core/Preprocessor/Library.h"
 
 // Required because of template functions
 #include "Logging_Spdlog.h"

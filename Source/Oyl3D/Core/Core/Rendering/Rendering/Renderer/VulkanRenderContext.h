@@ -28,6 +28,9 @@ namespace Oyl::Rendering::Internal
 		void
 		Destroy() override;
 
+		void
+		Resize(Vector2i a_size) override;
+
 	private:
 		struct Impl;
 		std::unique_ptr<Impl> m_impl;

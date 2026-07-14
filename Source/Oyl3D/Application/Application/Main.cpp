@@ -4,7 +4,11 @@
 #include <filesystem>
 #include <Windows.h>
 
+#include <Core/Application/SharedLibrary.h>
+#include <Core/Resources/ResourceManager.h>
+
 #include <Rendering/Modules/RenderControlModule.h>
+#include <Rendering/Shaders/Shader.h>
 
 #include "Application/Modules/MainWindowModule.h"
 
@@ -142,6 +146,9 @@ namespace Oyl
 			OYL_PROFILE_SCOPE("Module Updates");
 			for (Module* module : g_data.moduleRegistry)
 			{
+				if (!module->IsEnabled())
+					continue;
+
 				module->Update();
 			}
 		}
