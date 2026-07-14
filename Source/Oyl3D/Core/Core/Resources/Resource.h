@@ -6,21 +6,16 @@ namespace Oyl
 {
 	using ResourceTypeId = Reflection::TypeId;
 
-	template<typename>
-	class Resource;
-
 	namespace Internal
 	{
 		class OYL_CORE_API ResourceBase
 		{
-			template<typename T>
-			friend class Resource;
-
+		protected:
 			ResourceBase();
 
 		public:
 			virtual
-			~ResourceBase() noexcept;
+			~ResourceBase();
 
 			virtual
 			bool
@@ -36,7 +31,7 @@ namespace Oyl
 			GetResourceTypeId() = delete;
 
 			bool
-			IsLoaded() const noexcept;
+			IsLoaded() const;
 
 		private:
 			bool m_loaded;
@@ -58,9 +53,15 @@ namespace Oyl
 
 	namespace Traits
 	{
+		// Don't check against Resource<T>, since we allow resource subclasses
 		template<typename T>
-		struct IsResource : std::is_convertible<T*, Internal::ResourceBase*>
+		struct IsResource
 		{
+			// Enforce that T is not a direct descendant of Internal::ResourceBase
+			static constexpr bool value =
+				std::is_convertible_v<T*, Internal::ResourceBase*>
+				&& std::is_base_of_v<Internal::ResourceBase, T>;
+
 			static_assert(
 				&T::GetResourceTypeId,
 				"Resource type must implement static constexpr ResourceTypeId GetResourceTypeId()!"

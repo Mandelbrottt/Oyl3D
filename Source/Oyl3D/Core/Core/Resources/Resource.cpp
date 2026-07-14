@@ -25,7 +25,7 @@ namespace Oyl::Internal
 	}
 
 	bool
-	ResourceBase::IsLoaded() const noexcept
+	ResourceBase::IsLoaded() const
 	{
 		return m_loaded;
 	}
