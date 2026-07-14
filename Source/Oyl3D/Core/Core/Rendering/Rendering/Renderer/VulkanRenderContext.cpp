@@ -121,6 +121,10 @@ namespace Oyl::Rendering::Internal
 		void
 		CreateSwapChainImageViews();
 		void
+		CleanupSwapChain();
+		void
+		RecreateSwapChain();
+		void
 		CreateGraphicsPipeline();
 		void
 		CreateCommandPool();
@@ -220,9 +224,16 @@ namespace Oyl::Rendering::Internal
 
 		m_impl->device.waitIdle();
 
+		m_impl->CleanupSwapChain();
 		m_impl->shader->Unload();
 
 		*m_impl = {};
+	}
+
+	void
+	VulkanRenderContext::Resize(Vector2i /*a_size*/)
+	{
+		m_impl->RecreateSwapChain();
 	}
 
 	void
@@ -471,6 +482,32 @@ namespace Oyl::Rendering::Internal
 	}
 
 	void
+	VulkanRenderContext::Impl::CleanupSwapChain()
+	{
+		swapChainImageViews.clear();
+		swapChain = nullptr;
+	}
+
+	void
+	VulkanRenderContext::Impl::RecreateSwapChain()
+	{
+		device.waitIdle();
+
+		CleanupSwapChain();
+
+		int width = 0, height = 0;
+		auto glfwWindow = static_cast<GLFWwindow*>(window->GetNativeWindowHandle());
+		glfwGetFramebufferSize(glfwWindow, &width, &height);
+		if (width == 0 || height == 0)
+		{
+			return;
+		}
+
+		CreateSwapChain();
+		CreateSwapChainImageViews();
+	}
+
+	void
 	VulkanRenderContext::Impl::CreateGraphicsPipeline()
 	{
 		OYL_PROFILE_FUNCTION();
@@ -639,6 +676,9 @@ namespace Oyl::Rendering::Internal
 	{
 		OYL_PROFILE_FUNCTION();
 
+		if (swapChain == nullptr)
+			return;
+
 		auto& drawFence = inFlightFences[frameIndex];
 		auto& presentCompleteSemaphore = presentCompleteSemaphores[frameIndex];
 		auto& commandBuffer = commandBuffers[frameIndex];
@@ -646,9 +686,22 @@ namespace Oyl::Rendering::Internal
 		auto fenceResult = device.waitForFences(*drawFence, vk::True, UINT64_MAX);
 		if (fenceResult != vk::Result::eSuccess)
 			throw std::runtime_error("Failed to wait for fence!");
-		device.resetFences(*drawFence);
 
 		auto [result, imageIndex] = swapChain.acquireNextImage(UINT64_MAX, *presentCompleteSemaphore, nullptr);
+		if (result == vk::Result::eErrorOutOfDateKHR)
+		{
+			RecreateSwapChain();
+			return;
+		}
+		if (result != vk::Result::eSuccess && result != vk::Result::eSuboptimalKHR)
+		{
+			OYL_ASSERT(result == vk::Result::eTimeout || result == vk::Result::eNotReady);
+			throw std::runtime_error("Failed to acquire swap chain image");
+		}
+
+		// Only reset fences if we are going to submit work to the GPU
+		device.resetFences(*drawFence);
+
 		RecordCommandBuffer(imageIndex);
 		//graphicsQueue.waitIdle();
 
@@ -679,6 +732,10 @@ namespace Oyl::Rendering::Internal
 			};
 
 			result = graphicsQueue.presentKHR(presentInfoKHR);
+			if (result == vk::Result::eSuboptimalKHR || result == vk::Result::eErrorOutOfDateKHR)
+				RecreateSwapChain();
+			else
+				OYL_ASSERT(result == vk::Result::eSuccess);
 		}
 
 		frameIndex = (frameIndex + 1) % MAX_FRAMES_IN_FLIGHT;

@@ -47,6 +47,12 @@ namespace Oyl::Rendering
 		void
 		OnWindowClosedEvent(const WindowClosedEvent& a_event);
 
+		void
+		OnWindowResizeEvent(const WindowResizeEvent& a_event);
+
+		void
+		OnWindowMinimizeEvent(const WindowMinimizeEvent& a_event);
+
 	private:
 		std::unique_ptr<RenderContext> m_renderContext;
 		std::unique_ptr<Internal::ResourceManager> m_resourceManager;

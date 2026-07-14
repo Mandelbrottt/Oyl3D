@@ -16,6 +16,9 @@ namespace Oyl::Rendering
 	RenderControlModule::Setup()
 	{
 		RegisterEventListener(&RenderControlModule::OnWindowCreatedEvent);
+		RegisterEventListener(&RenderControlModule::OnWindowClosedEvent);
+		RegisterEventListener(&RenderControlModule::OnWindowResizeEvent);
+		RegisterEventListener(&RenderControlModule::OnWindowMinimizeEvent);
 	}
 
 	void
@@ -60,5 +63,31 @@ namespace Oyl::Rendering
 
 		m_renderContext.release();
 		m_resourceManager.release();
+	}
+
+	void
+	RenderControlModule::OnWindowResizeEvent(const WindowResizeEvent& a_event)
+	{
+		if (m_mainWindow != a_event.window)
+			return;
+
+		if (!m_renderContext)
+			return;
+
+		m_renderContext->Resize(a_event.size);
+	}
+
+	void
+	RenderControlModule::OnWindowMinimizeEvent(const WindowMinimizeEvent& a_event)
+	{
+		if (m_mainWindow != a_event.window)
+			return;
+
+		if (!m_renderContext)
+			return;
+
+		// Don't need to handle un-minimized case, OnWindowResizeEvent is fired
+		if (a_event.minimized)
+			m_renderContext->Resize({ 0, 0 });
 	}
 }

@@ -192,7 +192,8 @@ local Packages = {
 		OnDepend = function(package)
 			defines {
 				"VULKAN_HPP_DISPATCH_LOADER_DYNAMIC=1",
-				"VULKAN_HPP_NO_STRUCT_CONSTRUCTORS=1"
+				"VULKAN_HPP_NO_STRUCT_CONSTRUCTORS=1",
+				"VULKAN_HPP_HANDLE_ERROR_OUT_OF_DATE_AS_SUCCESS=1"
 			}
 		end
 	},

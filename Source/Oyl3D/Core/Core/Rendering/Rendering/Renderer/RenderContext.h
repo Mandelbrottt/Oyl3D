@@ -51,5 +51,9 @@ namespace Oyl::Rendering
 		virtual
 		void
 		Destroy() = 0;
+
+		virtual
+		void
+		Resize(Vector2i a_size);
 	};
 }
