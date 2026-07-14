@@ -45,8 +45,8 @@ namespace Oyl::Rendering
 		// TODO: Check for main window, somehow?
 		m_mainWindow = a_event.window;
 
-		m_renderContext = std::make_unique<Internal::VulkanRenderContext>();
-		m_resourceManager = std::make_unique<Oyl::Internal::ResourceManager>();
+		m_renderContext = std::make_unique<Vulkan::RenderContext>();
+		m_resourceManager = std::make_unique<Internal::ResourceManager>();
 
 		auto renderContextParams = RenderContextParams {
 			.window = m_mainWindow,

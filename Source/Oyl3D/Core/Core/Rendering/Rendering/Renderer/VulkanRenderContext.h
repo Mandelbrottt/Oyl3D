@@ -2,22 +2,22 @@
 
 #include "RenderContext.h"
 
-namespace Oyl::Rendering::Internal
+namespace Oyl::Rendering::Vulkan
 {
-	class OYL_RENDERING_API VulkanRenderContext final : public RenderContext
+	class OYL_RENDERING_API RenderContext final : public Rendering::RenderContext
 	{
 	public:
-		VulkanRenderContext() noexcept;
+		RenderContext() noexcept;
 
 		explicit
-		VulkanRenderContext(const RenderContextParams& a_params) noexcept;
+		RenderContext(const RenderContextParams& a_params) noexcept;
 
-		VulkanRenderContext(VulkanRenderContext&& a_other) noexcept;
-		VulkanRenderContext&
-		operator=(VulkanRenderContext&& a_other) noexcept;
+		RenderContext(RenderContext&& a_other) noexcept;
+		RenderContext&
+		operator=(RenderContext&& a_other) noexcept;
 
 		virtual
-		~VulkanRenderContext();
+		~RenderContext();
 
 		void
 		Init(const RenderContextParams& a_params) override;

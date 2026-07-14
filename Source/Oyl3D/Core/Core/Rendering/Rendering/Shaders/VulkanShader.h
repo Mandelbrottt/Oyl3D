@@ -6,10 +6,26 @@
 
 namespace Oyl::Rendering::Vulkan
 {
-	struct ShaderCompileInput
+	struct ShaderDeviceLoadParams : DeviceLoadParams
 	{
 		const vk::raii::Device& device;
 		vk::Format format = vk::Format::eUndefined;
+	};
+
+	struct ShaderDeviceUnloadParams : DeviceUnloadParams
+	{
+		const vk::raii::Device& device;
+	};
+
+	struct Vertex : Rendering::Vertex
+	{
+		static
+		vk::VertexInputBindingDescription
+		GetBindingDescription();
+
+		static
+		std::array<vk::VertexInputAttributeDescription, 2>
+		GetAttributeDescriptions();
 	};
 
 	class OYL_RENDERING_API ShaderResource : public Rendering::ShaderResource
@@ -17,8 +33,13 @@ namespace Oyl::Rendering::Vulkan
 	public:
 		ShaderResource();
 
+		ShaderResource(std::string_view a_filePath);
+
 		virtual
 		~ShaderResource();
+
+		const vk::raii::Pipeline&
+		GetPipeline() const;
 
 		bool
 		Load() override;
@@ -26,11 +47,15 @@ namespace Oyl::Rendering::Vulkan
 		bool
 		Unload() override;
 
-		const vk::raii::Pipeline&
-		GetPipeline() const;
+		bool
+		DeviceLoad(void* a_params) override;
 
 		bool
-		Compile(const ShaderCompileInput& a_input);
+		DeviceUnload(void* a_params) override;
+
+	private:
+		void
+		Init();
 
 	private:
 		struct Impl;

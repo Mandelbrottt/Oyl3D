@@ -13,6 +13,7 @@
 
 #include "Core/Logging/Logging.h"
 
+#include "Rendering/Buffers/VulkanVertexBuffer.h"
 #include "Rendering/Shaders/VulkanShader.h"
 #include "Rendering/Window/Window.h"
 
@@ -64,9 +65,9 @@ namespace
 
 constexpr int MAX_FRAMES_IN_FLIGHT = 2;
 
-namespace Oyl::Rendering::Internal
+namespace Oyl::Rendering::Vulkan
 {
-	struct VulkanRenderContext::Impl
+	struct RenderContext::Impl
 	{
 		Window* window;
 		Oyl::Internal::ResourceManager* resourceManager;
@@ -89,7 +90,7 @@ namespace Oyl::Rendering::Internal
 		vk::SurfaceFormatKHR swapChainSurfaceFormat;
 		vk::Extent2D swapChainExtent;
 
-		Vulkan::Shader shader;
+		Shader shader;
 
 		vk::raii::CommandPool commandPool = nullptr;
 
@@ -143,38 +144,38 @@ namespace Oyl::Rendering::Internal
 		DrawFrame();
 	};
 
-	VulkanRenderContext::VulkanRenderContext() noexcept
+	RenderContext::RenderContext() noexcept
 		: m_impl(nullptr) {}
 
-	VulkanRenderContext::VulkanRenderContext(const RenderContextParams& a_params) noexcept
-		: RenderContext(a_params),
+	RenderContext::RenderContext(const RenderContextParams& a_params) noexcept
+		: Rendering::RenderContext(a_params),
 		  m_impl(nullptr)
 	{
-		VulkanRenderContext::Init(a_params);
+		RenderContext::Init(a_params);
 	}
 
-	VulkanRenderContext::VulkanRenderContext(VulkanRenderContext&& a_other) noexcept
-		: RenderContext(std::move(a_other)),
+	RenderContext::RenderContext(RenderContext&& a_other) noexcept
+		: Rendering::RenderContext(std::move(a_other)),
 		  m_impl(nullptr)
 	{
 		m_impl.swap(a_other.m_impl);
 	}
 
-	VulkanRenderContext&
-	VulkanRenderContext::operator=(VulkanRenderContext&& a_other) noexcept
+	RenderContext&
+	RenderContext::operator=(RenderContext&& a_other) noexcept
 	{
-		RenderContext::operator=(std::move(a_other));
-		new(this) VulkanRenderContext(std::move(a_other));
+		Rendering::RenderContext::operator=(std::move(a_other));
+		new(this) RenderContext(std::move(a_other));
 		return *this;
 	}
 
-	VulkanRenderContext::~VulkanRenderContext()
+	RenderContext::~RenderContext()
 	{
-		Destroy();
+		RenderContext::Destroy();
 	}
 
 	void
-	VulkanRenderContext::Init(const RenderContextParams& a_params)
+	RenderContext::Init(const RenderContextParams& a_params)
 	{
 		OYL_PROFILE_FUNCTION();
 
@@ -199,18 +200,32 @@ namespace Oyl::Rendering::Internal
 	}
 
 	void
-	VulkanRenderContext::Update()
+	RenderContext::Update()
 	{
 		OYL_PROFILE_FUNCTION();
 
 		if (!m_impl->window || !m_impl->window->IsValid())
 			return;
 
+		if (m_impl->shader->IsDirty())
+		{
+			m_impl->shader->Load();
+		}
+
+		if (m_impl->shader->IsDeviceDirty())
+		{
+			ShaderDeviceLoadParams params {
+				.device = m_impl->device,
+				.format = m_impl->swapChainSurfaceFormat.format
+			};
+			m_impl->shader->DeviceLoad(&params);
+		}
+
 		m_impl->DrawFrame();
 	}
 
 	void
-	VulkanRenderContext::Destroy()
+	RenderContext::Destroy()
 	{
 		OYL_PROFILE_FUNCTION();
 
@@ -226,13 +241,13 @@ namespace Oyl::Rendering::Internal
 	}
 
 	void
-	VulkanRenderContext::Resize(Vector2i /*a_size*/)
+	RenderContext::Resize(Vector2i /*a_size*/)
 	{
 		m_impl->RecreateSwapChain();
 	}
 
 	void
-	VulkanRenderContext::Impl::CreateInstance()
+	RenderContext::Impl::CreateInstance()
 	{
 		OYL_PROFILE_FUNCTION();
 
@@ -306,7 +321,7 @@ namespace Oyl::Rendering::Internal
 	}
 
 	void
-	VulkanRenderContext::Impl::SetupDebugMessenger()
+	RenderContext::Impl::SetupDebugMessenger()
 	{
 		OYL_PROFILE_FUNCTION();
 
@@ -331,7 +346,7 @@ namespace Oyl::Rendering::Internal
 	}
 
 	void
-	VulkanRenderContext::Impl::CreateSurface()
+	RenderContext::Impl::CreateSurface()
 	{
 		OYL_PROFILE_FUNCTION();
 
@@ -345,7 +360,7 @@ namespace Oyl::Rendering::Internal
 	}
 
 	void
-	VulkanRenderContext::Impl::PickPhysicalDevice()
+	RenderContext::Impl::PickPhysicalDevice()
 	{
 		OYL_PROFILE_FUNCTION();
 
@@ -365,7 +380,7 @@ namespace Oyl::Rendering::Internal
 	}
 
 	void
-	VulkanRenderContext::Impl::CreateLogicalDevice()
+	RenderContext::Impl::CreateLogicalDevice()
 	{
 		OYL_PROFILE_FUNCTION();
 
@@ -416,7 +431,7 @@ namespace Oyl::Rendering::Internal
 	}
 
 	void
-	VulkanRenderContext::Impl::CreateSwapChain()
+	RenderContext::Impl::CreateSwapChain()
 	{
 		OYL_PROFILE_FUNCTION();
 
@@ -454,7 +469,7 @@ namespace Oyl::Rendering::Internal
 	}
 
 	void
-	VulkanRenderContext::Impl::CreateSwapChainImageViews()
+	RenderContext::Impl::CreateSwapChainImageViews()
 	{
 		OYL_PROFILE_FUNCTION();
 
@@ -477,14 +492,14 @@ namespace Oyl::Rendering::Internal
 	}
 
 	void
-	VulkanRenderContext::Impl::CleanupSwapChain()
+	RenderContext::Impl::CleanupSwapChain()
 	{
 		swapChainImageViews.clear();
 		swapChain = nullptr;
 	}
 
 	void
-	VulkanRenderContext::Impl::RecreateSwapChain()
+	RenderContext::Impl::RecreateSwapChain()
 	{
 		device.waitIdle();
 
@@ -503,19 +518,17 @@ namespace Oyl::Rendering::Internal
 	}
 
 	void
-	VulkanRenderContext::Impl::CreateGraphicsPipeline()
+	RenderContext::Impl::CreateGraphicsPipeline()
 	{
 		OYL_PROFILE_FUNCTION();
 
 		OYL_ASSERT(resourceManager);
 
-		shader = resourceManager->CreateHandle<Vulkan::ShaderResource>();
-		shader->SetFilePath("G:/dev/Oyl3D/Oyl3D/Source/Oyl3D/Core/Shaders/shader.hlsl");
-		shader->Load();
+		shader = resourceManager->Load<ShaderResource>("G:/dev/Oyl3D/Oyl3D/Source/Oyl3D/Core/Shaders/shader.hlsl");
 	}
 
 	void
-	VulkanRenderContext::Impl::CreateCommandPool()
+	RenderContext::Impl::CreateCommandPool()
 	{
 		OYL_PROFILE_FUNCTION();
 
@@ -529,6 +542,7 @@ namespace Oyl::Rendering::Internal
 
 	void
 	VulkanRenderContext::Impl::CreateCommandBuffers()
+	RenderContext::Impl::CreateCommandBuffers()
 	{
 		OYL_PROFILE_FUNCTION();
 
@@ -542,7 +556,7 @@ namespace Oyl::Rendering::Internal
 	}
 
 	void
-	VulkanRenderContext::Impl::CreateSyncObjects()
+	RenderContext::Impl::CreateSyncObjects()
 	{
 		OYL_PROFILE_FUNCTION();
 
@@ -561,7 +575,7 @@ namespace Oyl::Rendering::Internal
 	}
 
 	void
-	VulkanRenderContext::Impl::RecordCommandBuffer(uint32 a_imageIndex)
+	RenderContext::Impl::RecordCommandBuffer(uint32 a_imageIndex)
 	{
 		OYL_PROFILE_FUNCTION();
 
@@ -636,7 +650,7 @@ namespace Oyl::Rendering::Internal
 	}
 
 	void
-	VulkanRenderContext::Impl::TransitionImageLayout(uint32 a_imageIndex, vk::ImageLayout a_oldLayout, vk::ImageLayout a_new_layout, vk::AccessFlags2 a_srcAccessMask, vk::AccessFlags2 a_dstAccessMask, vk::PipelineStageFlags2 a_srcStageMask, vk::PipelineStageFlags2 a_dstStageMask)
+	RenderContext::Impl::TransitionImageLayout(uint32 a_imageIndex, vk::ImageLayout a_oldLayout, vk::ImageLayout a_new_layout, vk::AccessFlags2 a_srcAccessMask, vk::AccessFlags2 a_dstAccessMask, vk::PipelineStageFlags2 a_srcStageMask, vk::PipelineStageFlags2 a_dstStageMask)
 	{
 		OYL_PROFILE_FUNCTION();
 
@@ -667,7 +681,7 @@ namespace Oyl::Rendering::Internal
 	}
 
 	void
-	VulkanRenderContext::Impl::DrawFrame()
+	RenderContext::Impl::DrawFrame()
 	{
 		OYL_PROFILE_FUNCTION();
 

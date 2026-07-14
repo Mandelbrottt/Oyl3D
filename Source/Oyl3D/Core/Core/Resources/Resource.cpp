@@ -2,8 +2,7 @@
 
 namespace Oyl::Internal
 {
-	ResourceBase::ResourceBase()
-		: m_loaded(false) {}
+	ResourceBase::ResourceBase() {}
 
 	ResourceBase::~ResourceBase()
 	{
@@ -14,6 +13,7 @@ namespace Oyl::Internal
 	ResourceBase::Load()
 	{
 		m_loaded = true;
+		m_dirty = false;
 		return true;
 	}
 
@@ -21,6 +21,7 @@ namespace Oyl::Internal
 	ResourceBase::Unload()
 	{
 		m_loaded = false;
+		m_dirty = true;
 		return false;
 	}
 
@@ -28,5 +29,17 @@ namespace Oyl::Internal
 	ResourceBase::IsLoaded() const
 	{
 		return m_loaded;
+	}
+
+	bool
+	ResourceBase::IsDirty() const
+	{
+		return m_dirty;
+	}
+
+	void
+	ResourceBase::SetDirty()
+	{
+		m_dirty = true;
 	}
 }

@@ -33,12 +33,22 @@ namespace Oyl
 			bool
 			IsLoaded() const;
 
+			virtual
+			bool
+			IsDirty() const;
+
+		protected:
+			virtual
+			void
+			SetDirty();
+
 		private:
-			bool m_loaded;
+			bool m_loaded = false;
+			bool m_dirty = true;
 		};
 	}
 
-	template<typename TResource>
+	template<typename>
 	class Resource : public Internal::ResourceBase
 	{
 	protected:
@@ -47,48 +57,7 @@ namespace Oyl
 	public:
 		static
 		constexpr ResourceTypeId
-		GetResourceTypeId()
-		{
-			static_assert(std::is_convertible_v<TResource*, Resource*>);
-			return Reflection::GetTypeId<TResource>();
-		}
-	};
-
-	template<typename TResource>
-	class CompilableResource : public Resource<TResource>
-	{
-	protected:
-		CompilableResource()
-			: m_dirty(true) {}
-
-		explicit
-		CompilableResource(bool a_dirty)
-			: m_dirty(a_dirty) {}
-
-	public:
-		bool
-		IsDirty() const
-		{
-			return m_dirty;
-		}
-
-	protected:
-		void
-		SetDirty()
-		{
-			m_dirty = true;
-		}
-
-		virtual
-		bool
-		Compile()
-		{
-			m_dirty = false;
-			return m_dirty;
-		}
-
-	private:
-		bool m_dirty;
+		GetResourceTypeId();
 	};
 
 	namespace Traits
@@ -111,4 +80,58 @@ namespace Oyl
 		template<typename T>
 		constexpr bool IsResource_V = IsResource<T>::value;
 	}
+
+	struct DeviceLoadParams {};
+
+	struct DeviceUnloadParams {};
+
+	template<typename TResource>
+	class DeviceResource : public Resource<TResource>
+	{
+	protected:
+		DeviceResource() {}
+
+	public:
+		bool
+		IsDeviceLoaded() const
+		{
+			return m_deviceLoaded;
+		}
+
+		bool
+		IsDeviceDirty() const
+		{
+			return m_deviceDirty;
+		}
+
+		bool
+		Load() override;
+
+		bool
+		Unload() override;
+
+	protected:
+		void
+		SetDirty() override;
+
+		void
+		SetDeviceDirty()
+		{
+			m_deviceDirty = true;
+		}
+
+		virtual
+		bool
+		DeviceLoad(void* a_params);
+
+		virtual
+		bool
+		DeviceUnload(void* a_params);
+
+	private:
+		bool m_deviceLoaded = false;
+		bool m_deviceDirty = true;
+	};
 }
+
+#include "Resource.inl"
