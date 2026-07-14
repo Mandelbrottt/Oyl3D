@@ -4,21 +4,21 @@
 
 #include "Shader.h"
 
-namespace Oyl::Rendering::Internal
+namespace Oyl::Rendering::Vulkan
 {
-	struct VulkanShaderCompileInput
+	struct ShaderCompileInput
 	{
 		const vk::raii::Device& device;
 		vk::Format format = vk::Format::eUndefined;
 	};
 
-	class OYL_RENDERING_API VulkanShaderResource : public ShaderResource
+	class OYL_RENDERING_API ShaderResource : public Rendering::ShaderResource
 	{
 	public:
-		VulkanShaderResource();
+		ShaderResource();
 
 		virtual
-		~VulkanShaderResource();
+		~ShaderResource();
 
 		bool
 		Load() override;
@@ -30,12 +30,12 @@ namespace Oyl::Rendering::Internal
 		GetPipeline() const;
 
 		bool
-		Compile(const VulkanShaderCompileInput& a_input);
+		Compile(const ShaderCompileInput& a_input);
 
 	private:
 		struct Impl;
 		std::unique_ptr<Impl> m_impl;
 	};
 
-	using VulkanShader = ResourceHandle<VulkanShaderResource>;
+	using Shader = ResourceHandle<ShaderResource>;
 }

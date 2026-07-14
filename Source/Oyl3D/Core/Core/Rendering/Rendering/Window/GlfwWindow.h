@@ -4,22 +4,22 @@
 
 #include "Window.h"
 
-namespace Oyl::Internal
+namespace Oyl::Glfw
 {
-	class OYL_RENDERING_API GlfwWindow : public Window
+	class OYL_RENDERING_API Window : public Oyl::Window
 	{
 	public:
-		GlfwWindow() noexcept;
+		Window() noexcept;
 
 		explicit
-		GlfwWindow(const WindowParams& a_params) noexcept;
+		Window(const WindowParams& a_params) noexcept;
 
-		GlfwWindow(GlfwWindow&& a_other) noexcept;
-		GlfwWindow&
-		operator=(GlfwWindow&& a_other) noexcept;
+		Window(Window&& a_other) noexcept;
+		Window&
+		operator=(Window&& a_other) noexcept;
 
 		virtual
-		~GlfwWindow();
+		~Window();
 
 		void
 		Init(const WindowParams& a_params) override;

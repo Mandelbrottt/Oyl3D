@@ -11,22 +11,22 @@
 
 #include <dxc/dxcapi.h>
 
-namespace Oyl::Rendering::Internal
+namespace Oyl::Rendering::Vulkan
 {
-	enum class VulkanShaderProfile
+	enum class ShaderProfile
 	{
 		Vertex,
 		Fragment,
 	};
 
 	std::wstring_view
-	EntryPointFromProfile(VulkanShaderProfile a_profile)
+	EntryPointFromProfile(ShaderProfile a_profile)
 	{
 		switch (a_profile)
 		{
-			case VulkanShaderProfile::Vertex:
+			case ShaderProfile::Vertex:
 				return L"VertMain";
-			case VulkanShaderProfile::Fragment:
+			case ShaderProfile::Fragment:
 				return L"FragMain";
 		}
 
@@ -34,20 +34,20 @@ namespace Oyl::Rendering::Internal
 	}
 
 	std::wstring_view
-	ProfileStringFromProfile(VulkanShaderProfile a_profile)
+	ProfileStringFromProfile(ShaderProfile a_profile)
 	{
 		switch (a_profile)
 		{
-			case VulkanShaderProfile::Vertex:
+			case ShaderProfile::Vertex:
 				return L"vs_6_4";
-			case VulkanShaderProfile::Fragment:
+			case ShaderProfile::Fragment:
 				return L"ps_6_4"; // HLSL uses Pixel Shader instead of Fragment Shader
 		}
 
 		return L"";
 	}
 
-	struct VulkanShaderResource::Impl
+	struct ShaderResource::Impl
 	{
 		vk::raii::Pipeline pipeline = nullptr;
 
@@ -58,12 +58,12 @@ namespace Oyl::Rendering::Internal
 		vk::raii::ShaderModule
 		CompileShaderModule(
 			const vk::raii::Device& a_device,
-			VulkanShaderProfile a_profile,
+			ShaderProfile a_profile,
 			std::string_view a_filePath
 		);
 	};
 
-	VulkanShaderResource::VulkanShaderResource()
+	ShaderResource::ShaderResource()
 		: m_impl(std::make_unique<Impl>())
 	{
 		m_impl->dxcCompilerLibrary = SharedLibrary("dxcompiler.dll");
@@ -74,33 +74,33 @@ namespace Oyl::Rendering::Internal
 		OYL_ASSERT(m_impl->dxcCreateInstanceFn);
 	}
 
-	VulkanShaderResource::~VulkanShaderResource() {}
+	ShaderResource::~ShaderResource() {}
 
 	bool
-	VulkanShaderResource::Load()
+	ShaderResource::Load()
 	{
-		return ShaderResource::Load();
+		return Rendering::ShaderResource::Load();
 	}
 
 	bool
-	VulkanShaderResource::Unload()
+	ShaderResource::Unload()
 	{
-		return ShaderResource::Unload();
+		return Rendering::ShaderResource::Unload();
 	}
 
 	const vk::raii::Pipeline&
-	VulkanShaderResource::GetPipeline() const
+	ShaderResource::GetPipeline() const
 	{
 		return m_impl->pipeline;
 	}
 
 	bool
-	VulkanShaderResource::Compile(const VulkanShaderCompileInput& a_input)
+	ShaderResource::Compile(const ShaderCompileInput& a_input)
 	{
 		OYL_PROFILE_FUNCTION();
 
-		auto vertexModule = m_impl->CompileShaderModule(a_input.device, VulkanShaderProfile::Vertex, GetFilePath());
-		auto fragmentModule = m_impl->CompileShaderModule(a_input.device, VulkanShaderProfile::Fragment, GetFilePath());
+		auto vertexModule = m_impl->CompileShaderModule(a_input.device, ShaderProfile::Vertex, GetFilePath());
+		auto fragmentModule = m_impl->CompileShaderModule(a_input.device, ShaderProfile::Fragment, GetFilePath());
 
 		vk::PipelineShaderStageCreateInfo vertShaderStageCreateInfo {
 			.stage = vk::ShaderStageFlagBits::eVertex,
@@ -206,13 +206,13 @@ namespace Oyl::Rendering::Internal
 			pipelineCreateInfoChain.get<vk::GraphicsPipelineCreateInfo>()
 		);
 
-		return ShaderResource::Compile();
+		return Rendering::ShaderResource::Compile();
 	}
 
 	vk::raii::ShaderModule
-	VulkanShaderResource::Impl::CompileShaderModule(
+	ShaderResource::Impl::CompileShaderModule(
 		const vk::raii::Device& a_device,
-		VulkanShaderProfile a_profile,
+		ShaderProfile a_profile,
 		std::string_view a_filePath
 	)
 	{

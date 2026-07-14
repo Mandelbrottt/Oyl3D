@@ -89,7 +89,7 @@ namespace Oyl::Rendering::Internal
 		vk::SurfaceFormatKHR swapChainSurfaceFormat;
 		vk::Extent2D swapChainExtent;
 
-		VulkanShader shader;
+		Vulkan::Shader shader;
 
 		vk::raii::CommandPool commandPool = nullptr;
 
@@ -509,7 +509,7 @@ namespace Oyl::Rendering::Internal
 
 		OYL_ASSERT(resourceManager);
 
-		shader = resourceManager->CreateHandle<VulkanShaderResource>();
+		shader = resourceManager->CreateHandle<Vulkan::ShaderResource>();
 		shader->SetFilePath("G:/dev/Oyl3D/Oyl3D/Source/Oyl3D/Core/Shaders/shader.hlsl");
 		shader->Load();
 	}
@@ -599,7 +599,7 @@ namespace Oyl::Rendering::Internal
 
 		if (shader->IsDirty())
 		{
-			VulkanShaderCompileInput input {
+			Vulkan::ShaderCompileInput input {
 				.device = device,
 				.format = swapChainSurfaceFormat.format
 			};
