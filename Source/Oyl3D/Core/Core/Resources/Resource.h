@@ -41,6 +41,9 @@ namespace Oyl
 	template<typename TResource>
 	class Resource : public Internal::ResourceBase
 	{
+	protected:
+		Resource() = default;
+
 	public:
 		static
 		constexpr ResourceTypeId
@@ -49,6 +52,43 @@ namespace Oyl
 			static_assert(std::is_convertible_v<TResource*, Resource*>);
 			return Reflection::GetTypeId<TResource>();
 		}
+	};
+
+	template<typename TResource>
+	class CompilableResource : public Resource<TResource>
+	{
+	protected:
+		CompilableResource()
+			: m_dirty(true) {}
+
+		explicit
+		CompilableResource(bool a_dirty)
+			: m_dirty(a_dirty) {}
+
+	public:
+		bool
+		IsDirty() const
+		{
+			return m_dirty;
+		}
+
+	protected:
+		void
+		SetDirty()
+		{
+			m_dirty = true;
+		}
+
+		virtual
+		bool
+		Compile()
+		{
+			m_dirty = false;
+			return m_dirty;
+		}
+
+	private:
+		bool m_dirty;
 	};
 
 	namespace Traits

@@ -2,8 +2,7 @@
 
 namespace Oyl::Rendering
 {
-	ShaderResource::ShaderResource()
-		: m_dirty(true) {}
+	ShaderResource::ShaderResource() {}
 
 	ShaderResource::~ShaderResource() {}
 
@@ -18,24 +17,5 @@ namespace Oyl::Rendering
 	{
 		m_filePath = a_filePath;
 		SetDirty();
-	}
-
-	bool
-	ShaderResource::IsDirty() const
-	{
-		return m_dirty;
-	}
-
-	void
-	ShaderResource::SetDirty()
-	{
-		m_dirty = true;
-	}
-
-	bool
-	ShaderResource::Compile()
-	{
-		m_dirty = false;
-		return m_dirty;
 	}
 }
