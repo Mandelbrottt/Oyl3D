@@ -6,12 +6,16 @@
 
 namespace Oyl::Rendering
 {
+	bool
+	RenderControlModule::IsEnabled()
+	{
+		return !!m_renderContext;
+	}
+
 	void
 	RenderControlModule::Setup()
 	{
 		RegisterEventListener(&RenderControlModule::OnWindowCreatedEvent);
-
-		m_renderContext = new Internal::VulkanRenderContext();
 	}
 
 	void
@@ -26,10 +30,10 @@ namespace Oyl::Rendering
 	void
 	RenderControlModule::Shutdown()
 	{
-		m_renderContext->Destroy();
+		if (!m_renderContext)
+			return;
 
-		delete m_renderContext;
-		m_renderContext = nullptr;
+		m_renderContext.release();
 	}
 
 	void
@@ -38,8 +42,12 @@ namespace Oyl::Rendering
 		// TODO: Check for main window, somehow?
 		m_mainWindow = a_event.window;
 
+		m_renderContext = std::make_unique<Internal::VulkanRenderContext>();
+		m_resourceManager = std::make_unique<Oyl::Internal::ResourceManager>();
+
 		auto renderContextParams = RenderContextParams {
-			.window = m_mainWindow
+			.window = m_mainWindow,
+			.resourceManager = m_resourceManager.get()
 		};
 		m_renderContext->Init(renderContextParams);
 	}
@@ -50,6 +58,7 @@ namespace Oyl::Rendering
 		if (m_mainWindow != a_event.window)
 			return;
 
-		m_renderContext->Destroy();
+		m_renderContext.release();
+		m_resourceManager.release();
 	}
 }

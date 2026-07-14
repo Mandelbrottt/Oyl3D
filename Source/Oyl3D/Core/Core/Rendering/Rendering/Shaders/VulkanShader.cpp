@@ -95,13 +95,12 @@ namespace Oyl::Rendering::Internal
 	}
 
 	bool
-	VulkanShaderResource::Compile(void* a_shaderCompileInput)
+	VulkanShaderResource::Compile(const VulkanShaderCompileInput& a_input)
 	{
-		auto input = static_cast<ShaderCompileInput*>(a_shaderCompileInput);
-		OYL_ASSERT(input);
+		OYL_PROFILE_FUNCTION();
 
-		auto vertexModule = m_impl->CompileShaderModule(*input->device, VulkanShaderProfile::Vertex, input->filePath);
-		auto fragmentModule = m_impl->CompileShaderModule(*input->device, VulkanShaderProfile::Fragment, input->filePath);
+		auto vertexModule = m_impl->CompileShaderModule(a_input.device, VulkanShaderProfile::Vertex, GetFilePath());
+		auto fragmentModule = m_impl->CompileShaderModule(a_input.device, VulkanShaderProfile::Fragment, GetFilePath());
 
 		vk::PipelineShaderStageCreateInfo vertShaderStageCreateInfo {
 			.stage = vk::ShaderStageFlagBits::eVertex,
@@ -179,7 +178,7 @@ namespace Oyl::Rendering::Internal
 			.pushConstantRangeCount = 0
 		};
 
-		auto pipelineLayout = vk::raii::PipelineLayout(*input->device, pipelineLayoutInfo);
+		auto pipelineLayout = vk::raii::PipelineLayout(a_input.device, pipelineLayoutInfo);
 
 		vk::StructureChain pipelineCreateInfoChain {
 			vk::GraphicsPipelineCreateInfo {
@@ -197,17 +196,17 @@ namespace Oyl::Rendering::Internal
 			},
 			vk::PipelineRenderingCreateInfo {
 				.colorAttachmentCount = 1,
-				.pColorAttachmentFormats = &input->format
+				.pColorAttachmentFormats = &a_input.format
 			}
 		};
 
 		m_impl->pipeline = vk::raii::Pipeline(
-			*input->device,
+			a_input.device,
 			nullptr,
 			pipelineCreateInfoChain.get<vk::GraphicsPipelineCreateInfo>()
 		);
 
-		return ShaderResource::Compile(a_shaderCompileInput);
+		return ShaderResource::Compile();
 	}
 
 	vk::raii::ShaderModule
@@ -217,6 +216,8 @@ namespace Oyl::Rendering::Internal
 		std::string_view a_filePath
 	)
 	{
+		OYL_PROFILE_FUNCTION();
+
 		OYL_ASSERT(dxcCreateInstanceFn);
 
 		HRESULT hres;

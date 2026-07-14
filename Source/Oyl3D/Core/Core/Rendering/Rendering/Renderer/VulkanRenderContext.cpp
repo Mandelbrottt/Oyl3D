@@ -5,6 +5,7 @@
 #include <atlcomcli.h>
 
 #include <Core/Application/SharedLibrary.h>
+#include <Core/Resources/ResourceManager.h>
 
 #include <dxc/dxcapi.h>
 
@@ -12,6 +13,7 @@
 
 #include "Core/Logging/Logging.h"
 
+#include "Rendering/Shaders/VulkanShader.h"
 #include "Rendering/Window/Window.h"
 
 static const std::vector VALIDATION_LAYERS {
@@ -58,10 +60,6 @@ namespace
 
 	Oyl::uint32
 	ChooseSwapMinImageCount(const vk::SurfaceCapabilitiesKHR& a_capabilities);
-
-	[[nodiscard]]
-	vk::raii::ShaderModule
-	CreateShaderModule(const vk::raii::Device& a_device, std::wstring_view a_profile, std::wstring_view a_entry);
 }
 
 constexpr int MAX_FRAMES_IN_FLIGHT = 2;
@@ -71,6 +69,7 @@ namespace Oyl::Rendering::Internal
 	struct VulkanRenderContext::Impl
 	{
 		Window* window;
+		Oyl::Internal::ResourceManager* resourceManager;
 
 		vk::raii::Context context;
 		vk::raii::Instance instance = nullptr;
@@ -93,8 +92,9 @@ namespace Oyl::Rendering::Internal
 		vk::raii::ShaderModule vsShaderModule = nullptr;
 		vk::raii::ShaderModule fsShaderModule = nullptr;
 
-		vk::raii::PipelineLayout pipelineLayout = nullptr;
-		vk::raii::Pipeline graphicsPipeline = nullptr;
+		//vk::raii::PipelineLayout pipelineLayout = nullptr;
+		//vk::raii::Pipeline graphicsPipeline = nullptr;
+		VulkanShader shader;
 
 		vk::raii::CommandPool commandPool = nullptr;
 
@@ -183,6 +183,7 @@ namespace Oyl::Rendering::Internal
 			m_impl = std::make_unique<Impl>();
 
 		m_impl->window = a_params.window;
+		m_impl->resourceManager = a_params.resourceManager;
 
 		m_impl->CreateInstance();
 		if constexpr (ENABLE_VALIDATION_LAYERS)
@@ -218,6 +219,8 @@ namespace Oyl::Rendering::Internal
 			return;
 
 		m_impl->device.waitIdle();
+
+		m_impl->shader->Unload();
 
 		*m_impl = {};
 	}
@@ -472,110 +475,11 @@ namespace Oyl::Rendering::Internal
 	{
 		OYL_PROFILE_FUNCTION();
 
-		vsShaderModule = CreateShaderModule(device, L"vs_6_4", L"VertMain");
+		OYL_ASSERT(resourceManager);
 
-		// DXC calls fragment shaders "Pixel Shaders", so target is "ps" not "fs"
-		fsShaderModule = CreateShaderModule(device, L"ps_6_4", L"FragMain");
-
-		vk::PipelineShaderStageCreateInfo vertShaderStageCreateInfo {
-			.stage = vk::ShaderStageFlagBits::eVertex,
-			.module = vsShaderModule,
-			.pName = "VertMain"
-		};
-
-		vk::PipelineShaderStageCreateInfo fragShaderStageCreateInfo {
-			.stage = vk::ShaderStageFlagBits::eFragment,
-			.module = fsShaderModule,
-			.pName = "FragMain"
-		};
-
-		vk::PipelineShaderStageCreateInfo shaderStages[] = {
-			vertShaderStageCreateInfo,
-			fragShaderStageCreateInfo
-		};
-
-		vk::PipelineVertexInputStateCreateInfo vertexInputInfo;
-
-		vk::PipelineInputAssemblyStateCreateInfo inputAssembly {
-			.topology = vk::PrimitiveTopology::eTriangleList
-		};
-
-		std::vector dynamicStates = { vk::DynamicState::eViewport, vk::DynamicState::eScissor };
-
-		vk::PipelineDynamicStateCreateInfo dynamicState {
-			.dynamicStateCount = static_cast<uint32_t>(dynamicStates.size()),
-			.pDynamicStates = dynamicStates.data()
-		};
-
-		vk::PipelineViewportStateCreateInfo viewportState {
-			.viewportCount = 1,
-			.scissorCount = 1
-		};
-
-		vk::PipelineRasterizationStateCreateInfo rasterizer {
-			.depthClampEnable = vk::False,
-			.rasterizerDiscardEnable = vk::False,
-			.polygonMode = vk::PolygonMode::eFill,
-			.cullMode = vk::CullModeFlagBits::eBack,
-			.frontFace = vk::FrontFace::eClockwise,
-			.depthBiasEnable = vk::False,
-			.lineWidth = 1.0f,
-		};
-
-		vk::PipelineMultisampleStateCreateInfo multisampling {
-			.rasterizationSamples = vk::SampleCountFlagBits::e1,
-			.sampleShadingEnable = vk::False,
-		};
-
-		vk::PipelineColorBlendAttachmentState colorBlendAttachment {
-			.blendEnable = vk::False,
-			.srcColorBlendFactor = vk::BlendFactor::eSrcAlpha,
-			.dstColorBlendFactor = vk::BlendFactor::eOneMinusSrcAlpha,
-			.colorBlendOp = vk::BlendOp::eAdd,
-			.srcAlphaBlendFactor = vk::BlendFactor::eOne,
-			.dstAlphaBlendFactor = vk::BlendFactor::eZero,
-			.alphaBlendOp = vk::BlendOp::eAdd,
-			.colorWriteMask = vk::ColorComponentFlagBits::eR
-			                  | vk::ColorComponentFlagBits::eG
-			                  | vk::ColorComponentFlagBits::eB
-			                  | vk::ColorComponentFlagBits::eA,
-		};
-
-		vk::PipelineColorBlendStateCreateInfo colorBlending {
-			.logicOpEnable = vk::False,
-			.logicOp = vk::LogicOp::eCopy,
-			.attachmentCount = 1,
-			.pAttachments = &colorBlendAttachment
-		};
-
-		vk::PipelineLayoutCreateInfo pipelineLayoutInfo {
-			.setLayoutCount = 0,
-			.pushConstantRangeCount = 0
-		};
-
-		pipelineLayout = vk::raii::PipelineLayout(device, pipelineLayoutInfo);
-
-		vk::StructureChain pipelineCreateInfoChain {
-			vk::GraphicsPipelineCreateInfo {
-				.stageCount = 2,
-				.pStages = shaderStages,
-				.pVertexInputState = &vertexInputInfo,
-				.pInputAssemblyState = &inputAssembly,
-				.pViewportState = &viewportState,
-				.pRasterizationState = &rasterizer,
-				.pMultisampleState = &multisampling,
-				.pColorBlendState = &colorBlending,
-				.pDynamicState = &dynamicState,
-				.layout = pipelineLayout,
-				.renderPass = nullptr
-			},
-			vk::PipelineRenderingCreateInfo {
-				.colorAttachmentCount = 1,
-				.pColorAttachmentFormats = &swapChainSurfaceFormat.format
-			}
-		};
-
-		graphicsPipeline = vk::raii::Pipeline(device, nullptr, pipelineCreateInfoChain.get<vk::GraphicsPipelineCreateInfo>());
+		shader = resourceManager->CreateHandle<VulkanShaderResource>();
+		shader->SetFilePath("G:/dev/Oyl3D/Oyl3D/Source/Oyl3D/Core/Shaders/shader.hlsl");
+		shader->Load();
 	}
 
 	void
@@ -660,7 +564,17 @@ namespace Oyl::Rendering::Internal
 		};
 
 		commandBuffer.beginRendering(renderingInfo);
-		commandBuffer.bindPipeline(vk::PipelineBindPoint::eGraphics, *graphicsPipeline);
+
+		if (shader->IsDirty())
+		{
+			VulkanShaderCompileInput input {
+				.device = device,
+				.format = swapChainSurfaceFormat.format
+			};
+			shader->Compile(input);
+		}
+
+		commandBuffer.bindPipeline(vk::PipelineBindPoint::eGraphics, shader->GetPipeline());
 		auto viewport = vk::Viewport {
 			0.0f,
 			0.0f,
@@ -947,95 +861,5 @@ namespace
 			minImageCount = a_capabilities.maxImageCount;
 		}
 		return minImageCount;
-	}
-
-	vk::raii::ShaderModule
-	CreateShaderModule(const vk::raii::Device& a_device, std::wstring_view a_profile, std::wstring_view a_entry)
-	{
-		Oyl::SharedLibrary dxCompilerLib { "dxcompiler.dll" };
-		if (!dxCompilerLib)
-			throw std::runtime_error("Could not load dxcompiler.dll");
-
-		auto dxcCreateInstance = dxCompilerLib.GetFunction<decltype(DxcCreateInstance)>("DxcCreateInstance");
-		if (!dxcCreateInstance)
-			throw std::runtime_error("Could not find DxcCreateInstance function");
-
-		HRESULT hres;
-
-		CComPtr<IDxcLibrary> library;
-		hres = dxcCreateInstance(CLSID_DxcLibrary, IID_PPV_ARGS(&library));
-		if (FAILED(hres))
-			throw std::runtime_error("Could not init DXC library");
-
-		// Initialize DXC compiler
-		CComPtr<IDxcCompiler3> compiler;
-		hres = dxcCreateInstance(CLSID_DxcCompiler, IID_PPV_ARGS(&compiler));
-		if (FAILED(hres))
-			throw std::runtime_error("Could not init DXC Compiler");
-
-		// Initialize DXC utility
-		CComPtr<IDxcUtils> utils;
-		hres = dxcCreateInstance(CLSID_DxcUtils, IID_PPV_ARGS(&utils));
-		if (FAILED(hres))
-			throw std::runtime_error("Could not init DXC Utility");
-
-		uint32 codePage = DXC_CP_ACP;
-		CComPtr<IDxcBlobEncoding> sourceBlob;
-		hres = utils->LoadFile(L"G:\\dev\\Oyl3D\\Oyl3D\\Source\\Oyl3D\\Core\\Shaders\\shader.hlsl", &codePage, &sourceBlob);
-		if (FAILED(hres))
-			throw std::runtime_error("Could not load shader file");
-
-		// Configure the compiler arguments for compiling the HLSL shader to SPIR-V
-		std::vector<LPCWSTR> arguments = {
-			// Shader main entry point
-			L"-E",
-			a_entry.data(),
-			// Shader target profile
-			L"-T",
-			a_profile.data(),
-			// Compile to SPIRV
-			L"-spirv",
-			L"-fspv-target-env=vulkan1.3",
-		};
-
-		DxcBuffer buffer {
-			.Ptr = sourceBlob->GetBufferPointer(),
-			.Size = sourceBlob->GetBufferSize(),
-			.Encoding = DXC_CP_ACP,
-		};
-
-		CComPtr<IDxcResult> result = nullptr;
-		hres = compiler->Compile(
-			&buffer,
-			arguments.data(),
-			uint32(arguments.size()),
-			nullptr,
-			IID_PPV_ARGS(&result)
-		);
-
-		if (SUCCEEDED(hres))
-			result->GetStatus(&hres);
-
-		// Output error if compilation failed
-		if (FAILED(hres) && (result))
-		{
-			CComPtr<IDxcBlobEncoding> errorBlob;
-			hres = result->GetErrorBuffer(&errorBlob);
-			if (SUCCEEDED(hres) && errorBlob)
-			{
-				OYL_LOG_ERROR("Shader compilation failed :\n{}", (const char*) errorBlob->GetBufferPointer());
-				throw std::runtime_error("Compilation failed");
-			}
-		}
-
-		CComPtr<IDxcBlob> code;
-		result->GetResult(&code);
-
-		// Create a Vulkan shader module from the compilation result
-		vk::ShaderModuleCreateInfo shaderModuleCreateInfo {
-			.codeSize = code->GetBufferSize(),
-			.pCode = (uint32*) code->GetBufferPointer(),
-		};
-		return vk::raii::ShaderModule(a_device, shaderModuleCreateInfo);
 	}
 }

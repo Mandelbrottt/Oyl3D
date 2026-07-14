@@ -1,8 +1,15 @@
 #pragma once
 
+#include "Rendering/Window/GlfwWindow.h"
+
 namespace Oyl
 {
 	class Window;
+
+	namespace Internal
+	{
+		class ResourceManager;
+	}
 }
 
 namespace Oyl::Rendering
@@ -10,6 +17,7 @@ namespace Oyl::Rendering
 	struct RenderContextParams
 	{
 		Window* window;
+		Internal::ResourceManager* resourceManager;
 	};
 
 	class OYL_RENDERING_API RenderContext

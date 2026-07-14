@@ -1,5 +1,9 @@
 #pragma once
 
+#include <Core/Resources/ResourceManager.h>
+
+#include <Rendering/Renderer/RenderContext.h>
+
 #include "Core/Modules/Module.h"
 
 #include "Rendering/Common.h"
@@ -21,6 +25,9 @@ namespace Oyl::Rendering
 		OYL_DECLARE_MODULE(RenderControlModule);
 
 	public:
+		bool
+		IsEnabled() override;
+
 		void
 		Setup() override;
 
@@ -41,7 +48,8 @@ namespace Oyl::Rendering
 		OnWindowClosedEvent(const WindowClosedEvent& a_event);
 
 	private:
-		RenderContext* m_renderContext = nullptr;
+		std::unique_ptr<RenderContext> m_renderContext;
+		std::unique_ptr<Internal::ResourceManager> m_resourceManager;
 
 		Window* m_mainWindow = nullptr;
 	};
