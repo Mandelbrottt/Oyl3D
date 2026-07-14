@@ -132,27 +132,6 @@ namespace Oyl
 		{
 			module->Init();
 		}
-
-		using Shader = ResourceHandle<Rendering::ShaderResource>;
-
-		Internal::ResourceManager manager;
-		Shader shader1 = manager.CreateHandle<Rendering::ShaderResource>();
-		shader1->Load();
-
-		Shader shader2 = shader1;
-		shader2->Unload();
-
-		{
-			Shader shader3 = manager.CreateHandle<Rendering::ShaderResource>();
-			shader2 = std::move(shader3);
-			shader2->Load();
-		}
-		shader2->Unload();
-
-		Shader shader4 = manager.CreateHandle<Rendering::ShaderResource>();
-		shader4.Release();
-		shader1.Release();
-		shader2.Release();
 	}
 
 	void
@@ -167,6 +146,9 @@ namespace Oyl
 			OYL_PROFILE_SCOPE("Module Updates");
 			for (Module* module : g_data.moduleRegistry)
 			{
+				if (!module->IsEnabled())
+					continue;
+
 				module->Update();
 			}
 		}
