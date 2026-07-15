@@ -235,7 +235,9 @@ namespace Oyl::Rendering::Vulkan
 		{
 			VertexBufferParams params {
 				.device = m_impl->device,
-				.physicalDevice = m_impl->physicalDevice
+				.physicalDevice = m_impl->physicalDevice,
+				.commandPool = m_impl->commandPool,
+				.queue = m_impl->graphicsQueue
 			};
 			m_impl->vertexBuffer->DeviceLoad(&params);
 		}

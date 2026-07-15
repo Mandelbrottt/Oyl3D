@@ -11,8 +11,6 @@ namespace Oyl::Rendering::Vulkan
 
 		void
 		CreateVertexBuffer(const VertexBufferParams& a_params, const byte* a_data, size_t a_dataLength);
-		void
-		AllocateBufferMemory(const VertexBufferParams& a_params, const byte* a_data, size_t a_dataLength);
 	};
 
 	VertexBufferResource::VertexBufferResource()
@@ -61,23 +59,6 @@ namespace Oyl::Rendering::Vulkan
 		return m_impl->vertexBuffer;
 	}
 
-	void
-	VertexBufferResource::Impl::CreateVertexBuffer(
-		const VertexBufferParams& a_params,
-		const byte* a_data,
-		size_t a_dataLength
-	)
-	{
-		vk::BufferCreateInfo bufferInfo {
-			.size = a_dataLength,
-			.usage = vk::BufferUsageFlagBits::eVertexBuffer,
-			.sharingMode = vk::SharingMode::eExclusive
-		};
-		vertexBuffer = vk::raii::Buffer(a_params.device, bufferInfo);
-
-		AllocateBufferMemory(a_params, a_data, a_dataLength);
-	}
-
 	static
 	uint32
 	FindMemoryType(
@@ -101,31 +82,82 @@ namespace Oyl::Rendering::Vulkan
 		throw std::runtime_error("Failed to find suitable memory type!");
 	}
 
+	std::pair<vk::raii::Buffer, vk::raii::DeviceMemory>
+	CreateBuffer(
+		const VertexBufferParams& a_params,
+		vk::DeviceSize a_size,
+		vk::BufferUsageFlags a_usage,
+		vk::MemoryPropertyFlags a_properties
+	)
+	{
+		vk::BufferCreateInfo bufferInfo { .size = a_size, .usage = a_usage, .sharingMode = vk::SharingMode::eExclusive };
+		vk::raii::Buffer buffer = vk::raii::Buffer(a_params.device, bufferInfo);
+		vk::MemoryRequirements memRequirements = buffer.getMemoryRequirements();
+		vk::MemoryAllocateInfo allocInfo { .allocationSize = memRequirements.size, .memoryTypeIndex = FindMemoryType(a_params.physicalDevice, memRequirements.memoryTypeBits, a_properties) };
+		vk::raii::DeviceMemory bufferMemory = vk::raii::DeviceMemory(a_params.device, allocInfo);
+		buffer.bindMemory(*bufferMemory, 0);
+		return { std::move(buffer), std::move(bufferMemory) };
+	}
+
 	void
-	VertexBufferResource::Impl::AllocateBufferMemory(
+	CopyBuffer(
+		const VertexBufferParams& a_params,
+		const vk::raii::Buffer& a_srcBuffer,
+		const vk::raii::Buffer& a_dstBuffer,
+		vk::DeviceSize a_size
+	)
+	{
+		vk::CommandBufferAllocateInfo allocInfo {
+			.commandPool = a_params.commandPool,
+			.level = vk::CommandBufferLevel::ePrimary,
+			.commandBufferCount = 1
+		};
+		vk::raii::CommandBuffer commandCopyBuffer =
+			std::move(a_params.device.allocateCommandBuffers(allocInfo).front());
+
+		commandCopyBuffer.begin({ .flags = vk::CommandBufferUsageFlagBits::eOneTimeSubmit });
+		commandCopyBuffer.copyBuffer(*a_srcBuffer, *a_dstBuffer, vk::BufferCopy(0, 0, a_size));
+		commandCopyBuffer.end();
+
+		a_params.queue.submit(
+			vk::SubmitInfo {
+				.commandBufferCount = 1,
+				.pCommandBuffers = &*commandCopyBuffer
+			},
+			nullptr
+		);
+		a_params.queue.waitIdle();
+	}
+
+	void
+	VertexBufferResource::Impl::CreateVertexBuffer(
 		const VertexBufferParams& a_params,
 		const byte* a_data,
 		size_t a_dataLength
 	)
 	{
-		OYL_ASSERT(vertexBuffer != nullptr);
-
-		auto memoryRequirements = vertexBuffer.getMemoryRequirements();
-
-		vk::MemoryAllocateInfo memoryAllocateInfo {
-			.allocationSize = memoryRequirements.size,
-			.memoryTypeIndex = FindMemoryType(
-				a_params.physicalDevice,
-				memoryRequirements.memoryTypeBits,
+		// Create staging buffer to send data from CPU to GPU
+		auto [stagingBuffer, stagingBufferMemory] =
+			CreateBuffer(
+				a_params,
+				a_dataLength,
+				vk::BufferUsageFlagBits::eTransferSrc,
 				vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent
-			)
-		};
-		vertexBufferMemory = vk::raii::DeviceMemory(a_params.device, memoryAllocateInfo);
-		OYL_ASSERT(vertexBufferMemory != nullptr);
-		vertexBuffer.bindMemory(*vertexBufferMemory, 0);
+			);
 
-		void* vertexBufferData = vertexBufferMemory.mapMemory(0, a_dataLength);
-		std::memcpy(vertexBufferData, a_data, a_dataLength);
-		vertexBufferMemory.unmapMemory();
+		void* dataStaging = stagingBufferMemory.mapMemory(0, a_dataLength);
+		std::memcpy(dataStaging, a_data, a_dataLength);
+		stagingBufferMemory.unmapMemory();
+
+		// Copy data in staging buffer to main buffer
+		std::tie(vertexBuffer, vertexBufferMemory) =
+			CreateBuffer(
+				a_params,
+				a_dataLength,
+				vk::BufferUsageFlagBits::eVertexBuffer | vk::BufferUsageFlagBits::eTransferDst,
+				vk::MemoryPropertyFlagBits::eDeviceLocal
+			);
+
+		CopyBuffer(a_params, stagingBuffer, vertexBuffer, a_dataLength);
 	}
 }

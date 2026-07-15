@@ -10,8 +10,10 @@ namespace Oyl::Rendering::Vulkan
 {
 	struct VertexBufferParams
 	{
-		const vk::raii::Device& device;
-		const vk::raii::PhysicalDevice& physicalDevice;
+		vk::raii::Device& device;
+		vk::raii::PhysicalDevice& physicalDevice;
+		vk::raii::CommandPool& commandPool;
+		vk::raii::Queue& queue;
 	};
 
 	class OYL_RENDERING_API VertexBufferResource : public Rendering::VertexBufferResource
