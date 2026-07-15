@@ -13,24 +13,29 @@ namespace Oyl::Internal
 
 		~ResourceManager();
 
-		template<typename TResource>
-			requires (Traits::IsResource_V<TResource>)
+		template<Traits::Resource TResource, typename... TArgs>
 		ResourceHandle<TResource>
-		CreateHandle();
+		Load(TArgs&&... a_args);
 
-		template<typename TResource>
-			requires (Traits::IsResource_V<TResource>)
+		template<Traits::ResourceHandle TResourceHandle, typename... TArgs>
+		TResourceHandle
+		Load(TArgs&&... a_args);
+
+		template<Traits::Resource TResource>
 		ResourceHandle<TResource>
-		CreateHandle(ResourceId a_id);
+		Get(ResourceId a_id);
+
+		template<Traits::ResourceHandle TResourceHandle>
+		TResourceHandle
+		Get(ResourceId a_id);
 
 		void
-		DestroyHandle(const ResourceHandleBase& a_handle);
+		Destroy(const ResourceHandleBase& a_handle);
 
 	private:
-		template<typename TResource>
-			requires (Traits::IsResource_V<TResource>)
+		template<Traits::Resource TResource, typename... TArgs>
 		ResourceId
-		CreateResource();
+		CreateResource(TArgs&&... a_args);
 
 		ResourceId
 		CreateResource(ResourceTypeId a_type, std::unique_ptr<ResourceBase>&& a_resource);
@@ -45,34 +50,45 @@ namespace Oyl::Internal
 		std::unique_ptr<Impl> m_impl;
 	};
 
-	template<typename TResource>
-		requires (Traits::IsResource_V<TResource>)
-	ResourceId
-	ResourceManager::CreateResource()
-	{
-		constexpr auto typeId = TResource::GetResourceTypeId();
-		auto resourcePtr = std::make_unique<TResource>();
-		return CreateResource(typeId, std::move(resourcePtr));
-	}
-
-	template<typename TResource>
-		requires (Traits::IsResource_V<TResource>)
+	template<Traits::Resource TResource, typename... TArgs>
 	ResourceHandle<TResource>
-	ResourceManager::CreateHandle()
+	ResourceManager::Load(TArgs&&... a_args)
 	{
-		auto resourceId = CreateResource<TResource>();
+		auto resourceId = CreateResource<TResource>(std::forward<TArgs>(a_args)...);
 		return ResourceHandle<TResource>(resourceId, this);
 	}
 
-	template<typename TResource>
-		requires (Traits::IsResource_V<TResource>)
+	template<Traits::ResourceHandle TResourceHandle, typename... TArgs>
+	TResourceHandle
+	ResourceManager::Load(TArgs&&... a_args)
+	{
+		return Load<typename TResourceHandle::ResourceType>(std::forward<TArgs>(a_args)...);
+	}
+
+	template<Traits::Resource TResource>
 	ResourceHandle<TResource>
-	ResourceManager::CreateHandle(ResourceId a_id)
+	ResourceManager::Get(ResourceId a_id)
 	{
 		OYL_ASSERT(a_id != ResourceId::Null);
 
 		constexpr auto typeId = TResource::GetResourceTypeId();
 		IncrementResourceRef(typeId, a_id);
 		return ResourceHandle<TResource>(a_id, this);
+	}
+
+	template<Traits::ResourceHandle TResourceHandle>
+	TResourceHandle
+	ResourceManager::Get(ResourceId a_id)
+	{
+		return Get<typename TResourceHandle::ResourceType>(a_id);
+	}
+
+	template<Traits::Resource TResource, typename... TArgs>
+	ResourceId
+	ResourceManager::CreateResource(TArgs&&... a_args)
+	{
+		constexpr auto typeId = TResource::GetResourceTypeId();
+		auto resourcePtr = std::make_unique<TResource>(std::forward<TArgs>(a_args)...);
+		return CreateResource(typeId, std::move(resourcePtr));
 	}
 }

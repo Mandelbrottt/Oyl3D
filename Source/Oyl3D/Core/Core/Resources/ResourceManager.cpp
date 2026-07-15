@@ -49,7 +49,7 @@ namespace Oyl::Internal
 	}
 
 	void
-	ResourceManager::DestroyHandle(const ResourceHandleBase& a_handle)
+	ResourceManager::Destroy(const ResourceHandleBase& a_handle)
 	{
 		if (a_handle.m_id == ResourceId::Null)
 			return;
@@ -70,6 +70,8 @@ namespace Oyl::Internal
 		if (resourceData.nRefs > 0)
 			return;
 
+		resourceData.resource->Unload();
+
 		resourcesMap.erase(resourceIter);
 	}
 
@@ -88,10 +90,11 @@ namespace Oyl::Internal
 		auto resourceId = resources.GetNextId();
 		auto resourceIter = resources.map.emplace(resourceId, ResourceData {}).first;
 
-		// Initialize ResourceData with ref count and ptr
+		// Initialize ResourceData with ref count and ptr, and load the resource
 		auto& resourceData = resourceIter->second;
 		resourceData.nRefs = 1;
 		resourceData.resource = std::move(a_resource);
+		resourceData.resource->Load();
 
 		return resourceId;
 	}

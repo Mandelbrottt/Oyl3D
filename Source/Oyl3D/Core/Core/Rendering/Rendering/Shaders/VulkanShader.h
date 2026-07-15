@@ -4,21 +4,42 @@
 
 #include "Shader.h"
 
-namespace Oyl::Rendering::Internal
+namespace Oyl::Rendering::Vulkan
 {
-	struct VulkanShaderCompileInput
+	struct ShaderDeviceLoadParams : DeviceLoadParams
 	{
 		const vk::raii::Device& device;
 		vk::Format format = vk::Format::eUndefined;
 	};
 
-	class OYL_RENDERING_API VulkanShaderResource : public ShaderResource
+	struct ShaderDeviceUnloadParams : DeviceUnloadParams
+	{
+		const vk::raii::Device& device;
+	};
+
+	struct Vertex : Rendering::Vertex
+	{
+		static
+		vk::VertexInputBindingDescription
+		GetBindingDescription();
+
+		static
+		std::array<vk::VertexInputAttributeDescription, 2>
+		GetAttributeDescriptions();
+	};
+
+	class OYL_RENDERING_API ShaderResource : public Rendering::ShaderResource
 	{
 	public:
-		VulkanShaderResource();
+		ShaderResource();
+
+		ShaderResource(std::string_view a_filePath);
 
 		virtual
-		~VulkanShaderResource();
+		~ShaderResource();
+
+		const vk::raii::Pipeline&
+		GetPipeline() const;
 
 		bool
 		Load() override;
@@ -26,16 +47,20 @@ namespace Oyl::Rendering::Internal
 		bool
 		Unload() override;
 
-		const vk::raii::Pipeline&
-		GetPipeline() const;
+		bool
+		DeviceLoad(void* a_params) override;
 
 		bool
-		Compile(const VulkanShaderCompileInput& a_input);
+		DeviceUnload(void* a_params) override;
+
+	private:
+		void
+		Init();
 
 	private:
 		struct Impl;
 		std::unique_ptr<Impl> m_impl;
 	};
 
-	using VulkanShader = ResourceHandle<VulkanShaderResource>;
+	using Shader = ResourceHandle<ShaderResource>;
 }

@@ -84,13 +84,14 @@ namespace Oyl
 		};
 	}
 
-	template<typename TResource>
-		requires (Traits::IsResource_V<TResource>)
+	template<Traits::Resource TResource>
 	class ResourceHandle final : public Internal::ResourceHandleBase
 	{
 		friend Internal::ResourceManager;
 
 	public:
+		using ResourceType = TResource;
+
 		ResourceHandle()
 			: ResourceHandleBase(TResource::GetResourceTypeId())
 		{
@@ -120,4 +121,13 @@ namespace Oyl
 			: ResourceHandleBase(TResource::GetResourceTypeId(), a_id, a_manager) {}
 	};
 
+	namespace Traits
+	{
+		template<typename TResourceHandle>
+		concept ResourceHandle = requires
+		{
+			// TResourceHandle should be of the form ResourceHandle<TResourceHandle::ResourceType>
+			std::is_same_v<TResourceHandle, Oyl::ResourceHandle<typename TResourceHandle::ResourceType>>;
+		};
+	}
 }

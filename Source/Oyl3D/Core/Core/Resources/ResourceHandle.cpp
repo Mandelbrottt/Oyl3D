@@ -26,7 +26,7 @@ namespace Oyl::Internal
 			a_other.m_resourceManager->IncrementResourceRef(a_other.m_type, a_other.m_id);
 
 		if (m_id != ResourceId::Null)
-			m_resourceManager->DestroyHandle(*this);
+			m_resourceManager->Destroy(*this);
 
 		m_id = a_other.m_id;
 		m_resourceManager = a_other.m_resourceManager;
@@ -43,7 +43,7 @@ namespace Oyl::Internal
 		OYL_ASSERT(m_type == a_other.m_type);
 
 		if (m_id != ResourceId::Null)
-			m_resourceManager->DestroyHandle(*this);
+			m_resourceManager->Destroy(*this);
 
 		m_id = a_other.m_id;
 		m_resourceManager = a_other.m_resourceManager;
@@ -87,7 +87,7 @@ namespace Oyl::Internal
 	void
 	ResourceHandleBase::Release()
 	{
-		m_resourceManager->DestroyHandle(*this);
+		m_resourceManager->Destroy(*this);
 		m_id = ResourceId::Null;
 	}
 }

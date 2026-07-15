@@ -19,11 +19,11 @@ namespace
 	GetGamePadAxisFromGlfw(int a_axis);
 }
 
-namespace Oyl::Internal
+namespace Oyl::Glfw
 {
-	struct GlfwWindow::Impl
+	struct Window::Impl
 	{
-		GlfwWindow* window;
+		Window* window;
 
 		std::string title;
 
@@ -45,37 +45,37 @@ namespace Oyl::Internal
 		SetupGlfwWindowCallbacks();
 	};
 
-	GlfwWindow::GlfwWindow() noexcept
+	Window::Window() noexcept
 		: m_impl(nullptr) {}
 
-	GlfwWindow::GlfwWindow(const WindowParams& a_params) noexcept
-		: Window(a_params), m_impl(nullptr)
+	Window::Window(const WindowParams& a_params) noexcept
+		: Oyl::Window(a_params), m_impl(nullptr)
 	{
-		GlfwWindow::Init(a_params);
+		Window::Init(a_params);
 	}
 
-	GlfwWindow::GlfwWindow(GlfwWindow&& a_other) noexcept
-		: Window(std::move(a_other)),
+	Window::Window(Window&& a_other) noexcept
+		: Oyl::Window(std::move(a_other)),
 		  m_impl(nullptr)
 	{
 		m_impl.swap(a_other.m_impl);
 	}
 
-	GlfwWindow&
-	GlfwWindow::operator=(GlfwWindow&& a_other) noexcept
+	Window&
+	Window::operator=(Window&& a_other) noexcept
 	{
-		Window::operator=(std::move(a_other));
-		new(this) GlfwWindow(std::move(a_other));
+		Oyl::Window::operator=(std::move(a_other));
+		new(this) Window(std::move(a_other));
 		return *this;
 	}
 
-	GlfwWindow::~GlfwWindow()
+	Window::~Window()
 	{
-		GlfwWindow::Destroy();
+		Window::Destroy();
 	}
 
 	void
-	GlfwWindow::Init(const WindowParams& a_params)
+	Window::Init(const WindowParams& a_params)
 	{
 		OYL_PROFILE_FUNCTION();
 
@@ -103,7 +103,7 @@ namespace Oyl::Internal
 	}
 
 	void
-	GlfwWindow::Destroy()
+	Window::Destroy()
 	{
 		OYL_PROFILE_FUNCTION();
 
@@ -124,7 +124,7 @@ namespace Oyl::Internal
 	}
 
 	void
-	GlfwWindow::Update()
+	Window::Update()
 	{
 		OYL_PROFILE_FUNCTION();
 
@@ -132,25 +132,25 @@ namespace Oyl::Internal
 	}
 
 	bool
-	GlfwWindow::IsValid() const
+	Window::IsValid() const
 	{
 		return m_impl->glfwWindow != nullptr;
 	}
 
 	void
-	GlfwWindow::SetPostEventCallback(PostEventDelegate a_delegate)
+	Window::SetPostEventCallback(PostEventDelegate a_delegate)
 	{
 		m_impl->postEventCallback = std::move(a_delegate);
 	}
 
 	Vector2i
-	GlfwWindow::GetSize() const
+	Window::GetSize() const
 	{
 		return m_impl->size;
 	}
 
 	void
-	GlfwWindow::SetSize(Vector2i a_size)
+	Window::SetSize(Vector2i a_size)
 	{
 		auto monitor = glfwGetWindowMonitor(m_impl->glfwWindow);
 		auto mode = glfwGetVideoMode(monitor);
@@ -169,13 +169,13 @@ namespace Oyl::Internal
 	}
 
 	Vector2i
-	GlfwWindow::GetPosition() const
+	Window::GetPosition() const
 	{
 		return m_impl->position;
 	}
 
 	void
-	GlfwWindow::SetPosition(Vector2i a_position)
+	Window::SetPosition(Vector2i a_position)
 	{
 		auto monitor = glfwGetWindowMonitor(m_impl->glfwWindow);
 		auto mode = glfwGetVideoMode(monitor);
@@ -194,26 +194,26 @@ namespace Oyl::Internal
 	}
 
 	std::string_view
-	GlfwWindow::GetTitle() const
+	Window::GetTitle() const
 	{
 		return m_impl->title;
 	}
 
 	void
-	GlfwWindow::SetTitle(std::string_view a_title)
+	Window::SetTitle(std::string_view a_title)
 	{
 		m_impl->title = std::string(a_title);
 		glfwSetWindowTitle(m_impl->glfwWindow, m_impl->title.c_str());
 	}
 
 	WindowStateFlags
-	GlfwWindow::GetWindowStateFlags() const
+	Window::GetWindowStateFlags() const
 	{
 		return m_impl->windowState;
 	}
 
 	void
-	GlfwWindow::SetWindowStateFlags(WindowStateFlags a_flags)
+	Window::SetWindowStateFlags(WindowStateFlags a_flags)
 	{
 		if (m_impl->windowState == a_flags)
 		{
@@ -265,13 +265,13 @@ namespace Oyl::Internal
 	}
 
 	CursorState
-	GlfwWindow::GetCursorStateFlags() const
+	Window::GetCursorStateFlags() const
 	{
 		return m_impl->cursorState;
 	}
 
 	void
-	GlfwWindow::SetCursorStateFlags(CursorState a_state)
+	Window::SetCursorStateFlags(CursorState a_state)
 	{
 		if (m_impl->cursorState == a_state)
 		{
@@ -291,13 +291,13 @@ namespace Oyl::Internal
 	}
 
 	void*
-	GlfwWindow::GetNativeWindowHandle() const
+	Window::GetNativeWindowHandle() const
 	{
 		return m_impl->glfwWindow;
 	}
 
 	void
-	GlfwWindow::Impl::CreateGlfwWindow()
+	Window::Impl::CreateGlfwWindow()
 	{
 		auto monitor = glfwGetPrimaryMonitor();
 		glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
@@ -312,8 +312,6 @@ namespace Oyl::Internal
 		auto* mode = glfwGetVideoMode(monitor);
 		position.x = mode->width / 2 - size.x / 2;
 		position.y = mode->height / 2 - size.y / 2;
-
-		glfwSetWindowAspectRatio(glfwWindow, 16, 9);
 
 		if (windowState ^ WS_Fullscreen)
 		{
@@ -332,7 +330,7 @@ namespace Oyl::Internal
 	}
 
 	void
-	GlfwWindow::Impl::SetupGlfwWindowCallbacks()
+	Window::Impl::SetupGlfwWindowCallbacks()
 	{
 		glfwSetWindowCloseCallback(
 			glfwWindow,
