@@ -566,17 +566,26 @@ namespace Oyl::Rendering::Vulkan
 		commandPool = vk::raii::CommandPool(device, poolInfo);
 	}
 
-	constexpr std::array g_vertices {
-		Vertex { Vector2f { 0.0f, -0.5f }, Vector3f { 1.0f, 1.0f, 1.0f } },
-		Vertex { Vector2f { 0.5f, 0.5f }, Vector3f { 0.0f, 1.0f, 0.0f } },
-		Vertex { Vector2f { -0.5f, 0.5f }, Vector3f { 0.0f, 0.0f, 1.0f } }
+	const std::vector g_vertices {
+		Vertex { Vector2f { -0.5f, -0.5f }, Vector3f { 1.0f, 0.0f, 0.0f } },
+		Vertex { Vector2f { 0.5f, -0.5f }, Vector3f { 0.0f, 1.0f, 0.0f } },
+		Vertex { Vector2f { 0.5f, 0.5f }, Vector3f { 0.0f, 0.0f, 1.0f } },
+		Vertex { Vector2f { -0.5f, 0.5f }, Vector3f { 1.0f, 1.0f, 1.0f } },
 	};
+
+	const std::vector<uint16> g_indices { 0, 1, 2, 2, 3, 0 };
 
 	void
 	RenderContext::Impl::CreateVertexBuffer()
 	{
 		auto verticesBuffer = reinterpret_cast<const byte*>(g_vertices.data());
-		vertexBuffer = resourceManager->Load<VertexBuffer>(verticesBuffer, g_vertices.size() * sizeof(Vertex));
+		auto indicesBuffer = reinterpret_cast<const byte*>(g_indices.data());
+		vertexBuffer = resourceManager->Load<VertexBuffer>(
+			verticesBuffer,
+			g_vertices.size() * sizeof(decltype(g_vertices)::value_type),
+			indicesBuffer,
+			g_indices.size() * sizeof(decltype(g_indices)::value_type)
+		);
 	}
 
 	void
@@ -648,8 +657,6 @@ namespace Oyl::Rendering::Vulkan
 		};
 
 		commandBuffer.beginRendering(renderingInfo);
-		commandBuffer.bindPipeline(vk::PipelineBindPoint::eGraphics, shader->GetPipeline());
-		commandBuffer.bindVertexBuffers(0, *vertexBuffer->GetVertexBuffer(), { 0 });
 		auto viewport = vk::Viewport {
 			0.0f,
 			0.0f,
@@ -664,7 +671,19 @@ namespace Oyl::Rendering::Vulkan
 		};
 		commandBuffer.setViewport(0, viewport);
 		commandBuffer.setScissor(0, scissor);
-		commandBuffer.draw(static_cast<uint32>(g_vertices.size()), 1, 0, 0);
+
+		commandBuffer.bindPipeline(vk::PipelineBindPoint::eGraphics, shader->GetPipeline());
+		if (vertexBuffer->HasIndexData())
+		{
+			commandBuffer.bindIndexBuffer(*vertexBuffer->GetVkBuffer(), 0, vk::IndexType::eUint16);
+			commandBuffer.bindVertexBuffers(0, *vertexBuffer->GetVkBuffer(), { vertexBuffer->GetVertexDataOffset() });
+			commandBuffer.drawIndexed(static_cast<uint32>(g_indices.size()), 1, 0, 0, 0);
+		} else
+		{
+			commandBuffer.bindVertexBuffers(0, *vertexBuffer->GetVkBuffer(), { vertexBuffer->GetVertexDataOffset() });
+			commandBuffer.draw(static_cast<uint32>(g_vertices.size()), 1, 0, 0);
+		}
+
 		commandBuffer.endRendering();
 		TransitionImageLayout(
 			a_imageIndex,

@@ -13,7 +13,14 @@ namespace Oyl::Rendering
 	protected:
 		VertexBufferResource();
 
-		VertexBufferResource(const byte* a_data, size_t a_size);
+		VertexBufferResource(const byte* a_vertexData, size_t a_vertexLength);
+
+		VertexBufferResource(
+			const byte* a_vertexData,
+			size_t a_vertexLength,
+			const byte* a_indexData,
+			size_t a_indexLength
+		);
 
 	public:
 		virtual
@@ -25,8 +32,24 @@ namespace Oyl::Rendering
 		bool
 		Unload() override;
 
+		void
+		SetVertexData(const byte* a_vertexData, size_t a_vertexLength);
+
+		void
+		SetIndexData(const byte* a_indexData, size_t a_indexLength);
+
+		bool
+		HasIndexData() const;
+
+		size_t
+		GetVertexDataOffset() const;
+
 	protected:
-		std::vector<byte> m_data;
+		std::vector<byte> m_vertexData;
+		std::vector<byte> m_indexData;
+
+		bool m_hasIndexData = false;
+		size_t m_vertexDataOffset = 0;
 	};
 
 	using VertexBuffer = ResourceHandle<VertexBufferResource>;

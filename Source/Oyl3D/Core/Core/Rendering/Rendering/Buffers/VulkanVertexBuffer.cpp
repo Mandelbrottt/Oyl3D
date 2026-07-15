@@ -10,14 +10,29 @@ namespace Oyl::Rendering::Vulkan
 		vk::raii::DeviceMemory vertexBufferMemory = nullptr;
 
 		void
-		CreateVertexBuffer(const VertexBufferParams& a_params, const byte* a_data, size_t a_dataLength);
+		CreateVertexBuffer(
+			const VertexBufferParams& a_params,
+			const byte* a_vertexData,
+			size_t a_vertexLength,
+			const byte* a_indexData,
+			size_t a_indexLength
+		);
 	};
 
 	VertexBufferResource::VertexBufferResource()
 		: m_impl(std::make_unique<Impl>()) {}
 
-	VertexBufferResource::VertexBufferResource(const byte* a_data, size_t a_size)
-		: Rendering::VertexBufferResource(a_data, a_size),
+	VertexBufferResource::VertexBufferResource(const byte* a_vertexData, size_t a_vertexLength)
+		: Rendering::VertexBufferResource(a_vertexData, a_vertexLength),
+		  m_impl(std::make_unique<Impl>()) {}
+
+	VertexBufferResource::VertexBufferResource(
+		const byte* a_vertexData,
+		size_t a_vertexLength,
+		const byte* a_indexData,
+		size_t a_indexLength
+	)
+		: Rendering::VertexBufferResource(a_vertexData, a_vertexLength, a_indexData, a_indexLength),
 		  m_impl(std::make_unique<Impl>()) {}
 
 	VertexBufferResource::~VertexBufferResource() {}
@@ -39,7 +54,13 @@ namespace Oyl::Rendering::Vulkan
 	{
 		const auto& params = *static_cast<VertexBufferParams*>(a_params);
 
-		m_impl->CreateVertexBuffer(params, m_data.data(), m_data.size());
+		m_impl->CreateVertexBuffer(
+			params,
+			m_vertexData.data(),
+			m_vertexData.size(),
+			m_indexData.data(),
+			m_indexData.size()
+		);
 
 		return Rendering::VertexBufferResource::DeviceLoad(a_params);
 	}
@@ -54,7 +75,7 @@ namespace Oyl::Rendering::Vulkan
 	}
 
 	const vk::raii::Buffer&
-	VertexBufferResource::GetVertexBuffer()
+	VertexBufferResource::GetVkBuffer()
 	{
 		return m_impl->vertexBuffer;
 	}
@@ -132,32 +153,44 @@ namespace Oyl::Rendering::Vulkan
 	void
 	VertexBufferResource::Impl::CreateVertexBuffer(
 		const VertexBufferParams& a_params,
-		const byte* a_data,
-		size_t a_dataLength
+		const byte* a_vertexData,
+		size_t a_vertexLength,
+		const byte* a_indexData,
+		size_t a_indexLength
 	)
 	{
+		// Combine vertex and index data into one contiguous buffer
+		std::vector<byte> combinedDataBuffer;
+		combinedDataBuffer.reserve(a_vertexLength + a_indexLength);
+		if (a_indexLength > 0)
+			combinedDataBuffer.insert(combinedDataBuffer.end(), &a_indexData[0], &a_indexData[a_indexLength]);
+		combinedDataBuffer.insert(combinedDataBuffer.end(), &a_vertexData[0], &a_vertexData[a_vertexLength]);
+
 		// Create staging buffer to send data from CPU to GPU
 		auto [stagingBuffer, stagingBufferMemory] =
 			CreateBuffer(
 				a_params,
-				a_dataLength,
+				combinedDataBuffer.size(),
 				vk::BufferUsageFlagBits::eTransferSrc,
-				vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent
+				vk::MemoryPropertyFlagBits::eHostVisible
+				| vk::MemoryPropertyFlagBits::eHostCoherent
 			);
 
-		void* dataStaging = stagingBufferMemory.mapMemory(0, a_dataLength);
-		std::memcpy(dataStaging, a_data, a_dataLength);
+		void* dataStaging = stagingBufferMemory.mapMemory(0, combinedDataBuffer.size());
+		std::memcpy(dataStaging, combinedDataBuffer.data(), combinedDataBuffer.size());
 		stagingBufferMemory.unmapMemory();
 
 		// Copy data in staging buffer to main buffer
 		std::tie(vertexBuffer, vertexBufferMemory) =
 			CreateBuffer(
 				a_params,
-				a_dataLength,
-				vk::BufferUsageFlagBits::eVertexBuffer | vk::BufferUsageFlagBits::eTransferDst,
+				combinedDataBuffer.size(),
+				vk::BufferUsageFlagBits::eVertexBuffer
+				| vk::BufferUsageFlagBits::eIndexBuffer
+				| vk::BufferUsageFlagBits::eTransferDst,
 				vk::MemoryPropertyFlagBits::eDeviceLocal
 			);
 
-		CopyBuffer(a_params, stagingBuffer, vertexBuffer, a_dataLength);
+		CopyBuffer(a_params, stagingBuffer, vertexBuffer, combinedDataBuffer.size());
 	}
 }

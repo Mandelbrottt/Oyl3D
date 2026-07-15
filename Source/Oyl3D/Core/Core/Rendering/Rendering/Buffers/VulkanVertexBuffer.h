@@ -21,7 +21,14 @@ namespace Oyl::Rendering::Vulkan
 	public:
 		VertexBufferResource();
 
-		VertexBufferResource(const byte* a_data, size_t a_size);
+		VertexBufferResource(const byte* a_vertexData, size_t a_vertexLength);
+
+		VertexBufferResource(
+			const byte* a_vertexData,
+			size_t a_vertexLength,
+			const byte* a_indexData,
+			size_t a_indexLength
+		);
 
 		virtual
 		~VertexBufferResource();
@@ -39,7 +46,7 @@ namespace Oyl::Rendering::Vulkan
 		DeviceUnload(void* a_params) override;
 
 		const vk::raii::Buffer&
-		GetVertexBuffer();
+		GetVkBuffer();
 
 	private:
 		struct Impl;
