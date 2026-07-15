@@ -94,6 +94,8 @@ namespace Oyl::Rendering::Vulkan
 
 		vk::raii::CommandPool commandPool = nullptr;
 
+		VertexBuffer vertexBuffer;
+
 		std::vector<vk::raii::CommandBuffer> commandBuffers;
 
 		std::vector<vk::raii::Semaphore> presentCompleteSemaphores;
@@ -124,6 +126,8 @@ namespace Oyl::Rendering::Vulkan
 		CreateGraphicsPipeline();
 		void
 		CreateCommandPool();
+		void
+		CreateVertexBuffer();
 		void
 		CreateCommandBuffers();
 		void
@@ -195,6 +199,7 @@ namespace Oyl::Rendering::Vulkan
 		m_impl->CreateSwapChainImageViews();
 		m_impl->CreateGraphicsPipeline();
 		m_impl->CreateCommandPool();
+		m_impl->CreateVertexBuffer();
 		m_impl->CreateCommandBuffers();
 		m_impl->CreateSyncObjects();
 	}
@@ -221,6 +226,20 @@ namespace Oyl::Rendering::Vulkan
 			m_impl->shader->DeviceLoad(&params);
 		}
 
+		if (m_impl->vertexBuffer->IsDirty())
+		{
+			m_impl->vertexBuffer->Load();
+		}
+
+		if (m_impl->vertexBuffer->IsDeviceDirty())
+		{
+			VertexBufferParams params {
+				.device = m_impl->device,
+				.physicalDevice = m_impl->physicalDevice
+			};
+			m_impl->vertexBuffer->DeviceLoad(&params);
+		}
+
 		m_impl->DrawFrame();
 	}
 
@@ -234,8 +253,13 @@ namespace Oyl::Rendering::Vulkan
 
 		m_impl->device.waitIdle();
 
-		m_impl->CleanupSwapChain();
+		m_impl->vertexBuffer->DeviceUnload(nullptr);
+		m_impl->vertexBuffer->Unload();
+
+		m_impl->shader->DeviceUnload(nullptr);
 		m_impl->shader->Unload();
+
+		m_impl->CleanupSwapChain();
 
 		*m_impl = {};
 	}
@@ -524,7 +548,7 @@ namespace Oyl::Rendering::Vulkan
 
 		OYL_ASSERT(resourceManager);
 
-		shader = resourceManager->Load<ShaderResource>("G:/dev/Oyl3D/Oyl3D/Source/Oyl3D/Core/Shaders/shader.hlsl");
+		shader = resourceManager->Load<Shader>("G:/dev/Oyl3D/Oyl3D/Source/Oyl3D/Core/Shaders/shader.hlsl");
 	}
 
 	void
@@ -540,8 +564,20 @@ namespace Oyl::Rendering::Vulkan
 		commandPool = vk::raii::CommandPool(device, poolInfo);
 	}
 
+	constexpr std::array g_vertices {
+		Vertex { Vector2f { 0.0f, -0.5f }, Vector3f { 1.0f, 1.0f, 1.0f } },
+		Vertex { Vector2f { 0.5f, 0.5f }, Vector3f { 0.0f, 1.0f, 0.0f } },
+		Vertex { Vector2f { -0.5f, 0.5f }, Vector3f { 0.0f, 0.0f, 1.0f } }
+	};
+
 	void
-	VulkanRenderContext::Impl::CreateCommandBuffers()
+	RenderContext::Impl::CreateVertexBuffer()
+	{
+		auto verticesBuffer = reinterpret_cast<const byte*>(g_vertices.data());
+		vertexBuffer = resourceManager->Load<VertexBuffer>(verticesBuffer, g_vertices.size() * sizeof(Vertex));
+	}
+
+	void
 	RenderContext::Impl::CreateCommandBuffers()
 	{
 		OYL_PROFILE_FUNCTION();
@@ -610,17 +646,8 @@ namespace Oyl::Rendering::Vulkan
 		};
 
 		commandBuffer.beginRendering(renderingInfo);
-
-		if (shader->IsDirty())
-		{
-			Vulkan::ShaderCompileInput input {
-				.device = device,
-				.format = swapChainSurfaceFormat.format
-			};
-			shader->Compile(input);
-		}
-
 		commandBuffer.bindPipeline(vk::PipelineBindPoint::eGraphics, shader->GetPipeline());
+		commandBuffer.bindVertexBuffers(0, *vertexBuffer->GetVertexBuffer(), { 0 });
 		auto viewport = vk::Viewport {
 			0.0f,
 			0.0f,
@@ -635,7 +662,7 @@ namespace Oyl::Rendering::Vulkan
 		};
 		commandBuffer.setViewport(0, viewport);
 		commandBuffer.setScissor(0, scissor);
-		commandBuffer.draw(3, 1, 0, 0);
+		commandBuffer.draw(static_cast<uint32>(g_vertices.size()), 1, 0, 0);
 		commandBuffer.endRendering();
 		TransitionImageLayout(
 			a_imageIndex,

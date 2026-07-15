@@ -313,8 +313,6 @@ namespace Oyl::Glfw
 		position.x = mode->width / 2 - size.x / 2;
 		position.y = mode->height / 2 - size.y / 2;
 
-		glfwSetWindowAspectRatio(glfwWindow, 16, 9);
-
 		if (windowState ^ WS_Fullscreen)
 		{
 			glfwSetWindowMonitor(
