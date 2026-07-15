@@ -68,17 +68,21 @@ namespace Oyl
 		{
 			// Enforce that T is not a direct descendant of Internal::ResourceBase
 			static constexpr bool value =
-				std::is_convertible_v<T*, Internal::ResourceBase*>
-				&& std::is_base_of_v<Internal::ResourceBase, T>;
-
-			static_assert(
-				&T::GetResourceTypeId,
-				"Resource type must implement static constexpr ResourceTypeId GetResourceTypeId()!"
-			);
+				std::is_convertible_v<T*, Oyl::Internal::ResourceBase*>
+				&& std::is_base_of_v<Oyl::Internal::ResourceBase, T>
+				&& std::is_function_v<decltype(T::GetResourceTypeId)>;
 		};
 
 		template<typename T>
 		constexpr bool IsResource_V = IsResource<T>::value;
+
+		template<typename TResource>
+		concept Resource = requires
+		{
+			std::is_convertible_v<TResource*, Internal::ResourceBase*>;
+			std::is_base_of_v<Internal::ResourceBase, TResource>;
+			{ &TResource::GetResourceTypeId } -> std::invocable;
+		};
 	}
 
 	struct DeviceLoadParams {};

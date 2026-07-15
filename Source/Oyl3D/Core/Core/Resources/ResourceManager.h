@@ -13,22 +13,27 @@ namespace Oyl::Internal
 
 		~ResourceManager();
 
-		template<typename TResource, typename... TArgs>
-			requires (Traits::IsResource_V<TResource>)
+		template<Traits::Resource TResource, typename... TArgs>
 		ResourceHandle<TResource>
 		Load(TArgs&&... a_args);
 
-		template<typename TResource>
-			requires (Traits::IsResource_V<TResource>)
+		template<Traits::ResourceHandle TResourceHandle, typename... TArgs>
+		TResourceHandle
+		Load(TArgs&&... a_args);
+
+		template<Traits::Resource TResource>
 		ResourceHandle<TResource>
+		Get(ResourceId a_id);
+
+		template<Traits::ResourceHandle TResourceHandle>
+		TResourceHandle
 		Get(ResourceId a_id);
 
 		void
 		Destroy(const ResourceHandleBase& a_handle);
 
 	private:
-		template<typename TResource, typename... TArgs>
-			requires (Traits::IsResource_V<TResource>)
+		template<Traits::Resource TResource, typename... TArgs>
 		ResourceId
 		CreateResource(TArgs&&... a_args);
 
@@ -45,8 +50,7 @@ namespace Oyl::Internal
 		std::unique_ptr<Impl> m_impl;
 	};
 
-	template<typename TResource, typename... TArgs>
-		requires (Traits::IsResource_V<TResource>)
+	template<Traits::Resource TResource, typename... TArgs>
 	ResourceHandle<TResource>
 	ResourceManager::Load(TArgs&&... a_args)
 	{
@@ -54,8 +58,14 @@ namespace Oyl::Internal
 		return ResourceHandle<TResource>(resourceId, this);
 	}
 
-	template<typename TResource>
-		requires (Traits::IsResource_V<TResource>)
+	template<Traits::ResourceHandle TResourceHandle, typename... TArgs>
+	TResourceHandle
+	ResourceManager::Load(TArgs&&... a_args)
+	{
+		return Load<typename TResourceHandle::ResourceType>(std::forward<TArgs>(a_args)...);
+	}
+
+	template<Traits::Resource TResource>
 	ResourceHandle<TResource>
 	ResourceManager::Get(ResourceId a_id)
 	{
@@ -66,8 +76,14 @@ namespace Oyl::Internal
 		return ResourceHandle<TResource>(a_id, this);
 	}
 
-	template<typename TResource, typename... TArgs>
-		requires (Traits::IsResource_V<TResource>)
+	template<Traits::ResourceHandle TResourceHandle>
+	TResourceHandle
+	ResourceManager::Get(ResourceId a_id)
+	{
+		return Get<typename TResourceHandle::ResourceType>(a_id);
+	}
+
+	template<Traits::Resource TResource, typename... TArgs>
 	ResourceId
 	ResourceManager::CreateResource(TArgs&&... a_args)
 	{
@@ -75,5 +91,4 @@ namespace Oyl::Internal
 		auto resourcePtr = std::make_unique<TResource>(std::forward<TArgs>(a_args)...);
 		return CreateResource(typeId, std::move(resourcePtr));
 	}
-
 }
