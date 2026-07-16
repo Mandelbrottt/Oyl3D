@@ -12,6 +12,15 @@ namespace Oyl::Rendering
 		Vector3f color;
 	};
 
+	enum ShaderProfile
+	{
+		SP_Vertex,
+		SP_Geometry,
+		SP_Fragment,
+
+		SP_Count
+	};
+
 	class OYL_RENDERING_API ShaderResource : public DeviceResource<ShaderResource>
 	{
 	protected:

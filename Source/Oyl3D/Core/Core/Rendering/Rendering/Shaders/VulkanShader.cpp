@@ -13,14 +13,6 @@
 
 namespace Oyl::Rendering::Vulkan
 {
-	enum ShaderProfile
-	{
-		SP_Vertex = 0,
-		SP_Fragment,
-
-		SP_Count,
-	};
-
 	std::wstring_view
 	EntryPointFromProfile(ShaderProfile a_profile)
 	{
