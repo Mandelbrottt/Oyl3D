@@ -15,6 +15,14 @@ namespace Oyl::Rendering
 		virtual
 		~ShaderCompiler();
 
+		ShaderCompiler(const ShaderCompiler& a_other) = default;
+		ShaderCompiler&
+		operator =(const ShaderCompiler& a_other) = default;
+
+		ShaderCompiler(ShaderCompiler&& a_other) = default;
+		ShaderCompiler&
+		operator =(ShaderCompiler&& a_other) = default;
+
 		bool
 		CompileHlslFromFile(std::string_view a_filePath, ShaderCompileResult* a_outShader) const;
 

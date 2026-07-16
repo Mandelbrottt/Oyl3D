@@ -4,10 +4,7 @@
 
 #include <atlcomcli.h>
 
-#include <Core/Application/SharedLibrary.h>
 #include <Core/Resources/ResourceManager.h>
-
-#include <dxc/dxcapi.h>
 
 #include <GLFW/glfw3.h>
 
@@ -15,6 +12,7 @@
 
 #include "Rendering/Buffers/VulkanVertexBuffer.h"
 #include "Rendering/Shaders/VulkanShader.h"
+#include "Rendering/Shaders/VulkanShaderCompiler.h"
 #include "Rendering/Window/Window.h"
 
 static const std::vector VALIDATION_LAYERS {
@@ -90,6 +88,7 @@ namespace Oyl::Rendering::Vulkan
 		vk::SurfaceFormatKHR swapChainSurfaceFormat;
 		vk::Extent2D swapChainExtent;
 
+		ShaderCompiler shaderCompiler;
 		Shader shader;
 
 		vk::raii::CommandPool commandPool = nullptr;
@@ -550,7 +549,10 @@ namespace Oyl::Rendering::Vulkan
 
 		OYL_ASSERT(resourceManager);
 
-		shader = resourceManager->Load<Shader>("G:/dev/Oyl3D/Oyl3D/Source/Oyl3D/Core/Shaders/shader.hlsl");
+		shader = resourceManager->Load<Shader>(
+			"G:/dev/Oyl3D/Oyl3D/Source/Oyl3D/Core/Shaders/shader.hlsl",
+			&shaderCompiler
+		);
 	}
 
 	void

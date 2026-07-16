@@ -97,6 +97,39 @@ namespace Oyl::Rendering::Vulkan
 
 	ShaderCompiler::~ShaderCompiler() {}
 
+	ShaderCompiler::ShaderCompiler(const ShaderCompiler& a_other)
+	{
+		m_impl = std::make_unique<Impl>();
+
+		*this = a_other;
+	}
+
+	ShaderCompiler&
+	ShaderCompiler::operator=(const ShaderCompiler& a_other)
+	{
+		if (this == &a_other)
+			return *this;
+
+		*m_impl = *a_other.m_impl;
+		return *this;
+	}
+
+	ShaderCompiler::ShaderCompiler(ShaderCompiler&& a_other) noexcept
+	{
+		*this = std::move(a_other);
+	}
+
+	ShaderCompiler&
+	ShaderCompiler::operator=(ShaderCompiler&& a_other) noexcept
+	{
+		if (this == &a_other)
+			return *this;
+
+		std::swap(m_impl, a_other.m_impl);
+
+		return *this;
+	}
+
 	bool
 	ShaderCompiler::CompileHlsl(std::string_view a_source, ShaderCompileResult* a_outShader) const
 	{
@@ -127,6 +160,8 @@ namespace Oyl::Rendering::Vulkan
 	std::vector<ShaderProfile>
 	ShaderCompiler::Impl::GetShaderProfilesInSource(std::string_view a_source) const
 	{
+		OYL_PROFILE_FUNCTION();
+
 		HResultHandler hres;
 
 		// Copy the source code into an encoded blob
@@ -147,13 +182,15 @@ namespace Oyl::Rendering::Vulkan
 			// We will query reflect info separately
 			L"-Qstrip_debug",
 			L"-Qstrip_reflect",
+			L"-Qstrip_priv",
+			L"-Qstrip_rootsignature",
 
 			//L"-default-linkage",
 			//L"external",
 
 			//DXC_ARG_WARNINGS_ARE_ERRORS,
 			DXC_ARG_SKIP_OPTIMIZATIONS,
-			//DXC_ARG_SKIP_VALIDATION,
+			DXC_ARG_SKIP_VALIDATION,
 		};
 		std::vector<DxcDefine> defines {
 
@@ -275,6 +312,8 @@ namespace Oyl::Rendering::Vulkan
 	ShaderStage
 	ShaderCompiler::Impl::CompileHlslShaderStage(ShaderProfile a_profile, std::string_view a_source, std::string_view a_sourceName)
 	{
+		OYL_PROFILE_FUNCTION();
+
 		HResultHandler hres;
 
 		// Copy the source code into an encoded blob

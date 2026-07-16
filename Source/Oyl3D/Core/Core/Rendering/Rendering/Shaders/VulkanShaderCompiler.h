@@ -14,6 +14,14 @@ namespace Oyl::Rendering::Vulkan
 		virtual
 		~ShaderCompiler();
 
+		ShaderCompiler(const ShaderCompiler& a_other);
+		ShaderCompiler&
+		operator =(const ShaderCompiler& a_other);
+
+		ShaderCompiler(ShaderCompiler&& a_other) noexcept;
+		ShaderCompiler&
+		operator =(ShaderCompiler&& a_other) noexcept;
+
 	private:
 		bool
 		CompileHlsl(std::string_view a_source, ShaderCompileResult* a_outShader) const override;

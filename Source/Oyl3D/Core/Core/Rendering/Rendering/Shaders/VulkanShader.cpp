@@ -53,8 +53,8 @@ namespace Oyl::Rendering::Vulkan
 		Init();
 	}
 
-	ShaderResource::ShaderResource(std::string_view a_filePath)
-		: Rendering::ShaderResource(a_filePath)
+	ShaderResource::ShaderResource(std::string_view a_filePath, ShaderCompiler* a_shaderCompiler)
+		: Rendering::ShaderResource(a_filePath, a_shaderCompiler)
 	{
 		Init();
 	}
@@ -70,16 +70,16 @@ namespace Oyl::Rendering::Vulkan
 	bool
 	ShaderResource::Load()
 	{
+		OYL_PROFILE_FUNCTION();
+
 		if (IsLoaded())
 			Unload();
 
 		if (GetFilePath().empty())
 			return false;
 
-		// TEMPORARY: Should be owned by the RenderContext?
-		ShaderCompiler shaderCompiler;
-
-		shaderCompiler.CompileHlslFromFile(m_filePath, &m_impl->compileResult);
+		OYL_ASSERT(m_shaderCompiler);
+		m_shaderCompiler->CompileHlslFromFile(m_filePath, &m_impl->compileResult);
 
 		return Rendering::ShaderResource::Load();
 	}
@@ -87,6 +87,8 @@ namespace Oyl::Rendering::Vulkan
 	bool
 	ShaderResource::Unload()
 	{
+		OYL_PROFILE_FUNCTION();
+
 		if (!IsLoaded())
 			return true;
 
@@ -219,11 +221,14 @@ namespace Oyl::Rendering::Vulkan
 			}
 		};
 
-		m_impl->pipeline = vk::raii::Pipeline(
-			params.device,
-			nullptr,
-			pipelineCreateInfoChain.get<vk::GraphicsPipelineCreateInfo>()
-		);
+		{
+			OYL_PROFILE_SCOPE("vk::raii::Pipeline");
+			m_impl->pipeline = vk::raii::Pipeline(
+				params.device,
+				nullptr,
+				pipelineCreateInfoChain.get<vk::GraphicsPipelineCreateInfo>()
+			);
+		}
 
 		return Rendering::ShaderResource::DeviceLoad(a_params);
 	}
@@ -231,6 +236,8 @@ namespace Oyl::Rendering::Vulkan
 	bool
 	ShaderResource::DeviceUnload(void* a_params)
 	{
+		OYL_PROFILE_FUNCTION();
+
 		return Rendering::ShaderResource::DeviceUnload(a_params);
 	}
 
