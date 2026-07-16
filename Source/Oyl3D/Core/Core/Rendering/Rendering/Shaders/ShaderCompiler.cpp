@@ -24,9 +24,11 @@ namespace Oyl::Rendering
 		if (!inStream)
 			return false;
 
-		ShaderCompileResult outShader({
-			.filePath = std::filesystem::absolute(a_filePath).string()
-		});
+		ShaderCompileResult outShader(
+			{
+				.filePath = std::filesystem::absolute(a_filePath).string()
+			}
+		);
 
 		// Reserve memory for string
 		std::string content;
@@ -74,31 +76,49 @@ namespace Oyl::Rendering
 		return true;
 	}
 
-	ShaderStage::ShaderStage()
+	ShaderStage::ShaderStage() {}
+
+	ShaderStage::ShaderStage(const Params& a_params)
 	{
-		//TODO_IMPLEMENT_ME();
+		m_shaderProfile = a_params.shaderProfile;
+
+		if (a_params.buffer && a_params.bufferLength > 0)
+			m_byteCode.insert(m_byteCode.end(), a_params.buffer, a_params.buffer + a_params.bufferLength);
+
+		m_entryPoint = a_params.entryPoint;
 	}
 
-	ShaderStage::~ShaderStage()
+	ShaderStage::~ShaderStage() {}
+
+	ShaderProfile
+	ShaderStage::GetShaderProfile() const
 	{
-		//TODO_IMPLEMENT_ME();
+		return m_shaderProfile;
 	}
 
-	ShaderCompileResult::ShaderCompileResult()
+	std::string_view
+	ShaderStage::GetEntryPoint() const
 	{
-		//TODO_IMPLEMENT_ME();
+		return m_entryPoint;
 	}
+
+	const std::vector<byte>&
+	ShaderStage::GetByteCode() const
+	{
+		return m_byteCode;
+	}
+
+	ShaderCompileResult::ShaderCompileResult() {}
 
 	ShaderCompileResult::ShaderCompileResult(const Params& a_params)
 	{
 		m_filePath = a_params.filePath;
 		m_sourceCode = a_params.sourceCode;
+
+		m_stages = std::move(a_params.stages);
 	}
 
-	ShaderCompileResult::~ShaderCompileResult()
-	{
-		//TODO_IMPLEMENT_ME();
-	}
+	ShaderCompileResult::~ShaderCompileResult() {}
 
 	std::string_view
 	ShaderCompileResult::GetFilePath() const
@@ -110,6 +130,12 @@ namespace Oyl::Rendering
 	ShaderCompileResult::GetSourceCode() const
 	{
 		return m_sourceCode;
+	}
+
+	const std::vector<ShaderStage>&
+	ShaderCompileResult::GetShaderStages() const
+	{
+		return m_stages;
 	}
 }
 

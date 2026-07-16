@@ -1,48 +1,11 @@
 #include "VulkanShader.h"
 
-#if defined(OYL_WINDOWS)
-#include <atlcomcli.h>
-#include <Windows.h>
-#endif
-
 #include <vulkan/vulkan_raii.hpp>
 
-#include <Core/Application/SharedLibrary.h>
-
-#include <dxc/dxcapi.h>
+#include "VulkanShaderCompiler.h"
 
 namespace Oyl::Rendering::Vulkan
 {
-	std::wstring_view
-	EntryPointFromProfile(ShaderProfile a_profile)
-	{
-		switch (a_profile)
-		{
-			case SP_Vertex:
-				return L"VertMain";
-			case SP_Fragment:
-				return L"FragMain";
-			case SP_Count: break;
-		}
-
-		return L"";
-	}
-
-	std::wstring_view
-	ProfileStringFromProfile(ShaderProfile a_profile)
-	{
-		switch (a_profile)
-		{
-			case SP_Vertex:
-				return L"vs_6_4";
-			case SP_Fragment:
-				return L"ps_6_4"; // HLSL uses Pixel Shader instead of Fragment Shader
-			case SP_Count: break;
-		}
-
-		return L"";
-	}
-
 	vk::VertexInputBindingDescription
 	Vertex::GetBindingDescription()
 	{
@@ -74,21 +37,14 @@ namespace Oyl::Rendering::Vulkan
 
 	struct ShaderResource::Impl
 	{
-		std::vector<std::vector<byte>> shaderByteCodeBuffers;
+		ShaderCompileResult compileResult;
 
 		vk::raii::Pipeline pipeline = nullptr;
-
-		// For compiling hlsl into spir-v
-		SharedLibrary dxcCompilerLibrary;
-		decltype(DxcCreateInstance)* dxcCreateInstanceFn;
-
-		std::vector<byte>
-		CompileShaderBytecode(ShaderProfile a_profile, std::string_view a_filePath);
 
 		vk::raii::ShaderModule
 		CompileShaderModule(
 			const vk::raii::Device& a_device,
-			ShaderProfile a_profile
+			const ShaderStage& a_shaderStage
 		);
 	};
 
@@ -107,13 +63,6 @@ namespace Oyl::Rendering::Vulkan
 	ShaderResource::Init()
 	{
 		m_impl = std::make_unique<Impl>();
-
-		m_impl->dxcCompilerLibrary = SharedLibrary("dxcompiler.dll");
-		OYL_ASSERT(m_impl->dxcCompilerLibrary.IsLoaded());
-
-		m_impl->dxcCreateInstanceFn =
-			m_impl->dxcCompilerLibrary.GetFunction<decltype(DxcCreateInstance)>("DxcCreateInstance");
-		OYL_ASSERT(m_impl->dxcCreateInstanceFn);
 	}
 
 	ShaderResource::~ShaderResource() {}
@@ -127,9 +76,10 @@ namespace Oyl::Rendering::Vulkan
 		if (GetFilePath().empty())
 			return false;
 
-		m_impl->shaderByteCodeBuffers.resize(SP_Count);
-		m_impl->shaderByteCodeBuffers[SP_Vertex] = m_impl->CompileShaderBytecode(SP_Vertex, GetFilePath());
-		m_impl->shaderByteCodeBuffers[SP_Fragment] = m_impl->CompileShaderBytecode(SP_Fragment, GetFilePath());
+		// TEMPORARY: Should be owned by the RenderContext?
+		ShaderCompiler shaderCompiler;
+
+		shaderCompiler.CompileHlslFromFile(m_filePath, &m_impl->compileResult);
 
 		return Rendering::ShaderResource::Load();
 	}
@@ -140,9 +90,20 @@ namespace Oyl::Rendering::Vulkan
 		if (!IsLoaded())
 			return true;
 
-		m_impl->shaderByteCodeBuffers.clear();
+		m_impl->compileResult = {};
 
 		return Rendering::ShaderResource::Unload();
+	}
+
+	static
+	vk::ShaderStageFlagBits
+	ShaderProfileToVkShaderStageFlag(ShaderProfile a_profile)
+	{
+		vk::ShaderStageFlagBits flags[SP_Count];
+		flags[SP_Vertex] = vk::ShaderStageFlagBits::eVertex;
+		flags[SP_Geometry] = vk::ShaderStageFlagBits::eGeometry;
+		flags[SP_Fragment] = vk::ShaderStageFlagBits::eFragment;
+		return flags[a_profile];
 	}
 
 	bool
@@ -152,28 +113,22 @@ namespace Oyl::Rendering::Vulkan
 
 		const ShaderDeviceLoadParams& params = *static_cast<ShaderDeviceLoadParams*>(a_params);
 
-		auto vertexModule = m_impl->CompileShaderModule(params.device, SP_Vertex);
-		auto fragmentModule = m_impl->CompileShaderModule(params.device, SP_Fragment);
+		// keep ShaderModules for RAII
+		std::vector<vk::raii::ShaderModule> vkShaderModules;
+		std::vector<vk::PipelineShaderStageCreateInfo> vkShaderStageCreateInfos;
+		for (const auto& stage : m_impl->compileResult.GetShaderStages())
+		{
+			vk::raii::ShaderModule shaderModule = m_impl->CompileShaderModule(params.device, stage);
 
-		// We don't need the byte code on the CPU anymore
-		m_impl->shaderByteCodeBuffers.clear();
+			vk::PipelineShaderStageCreateInfo createInfo {
+				.stage = ShaderProfileToVkShaderStageFlag(stage.GetShaderProfile()),
+				.module = shaderModule,
+				.pName = stage.GetEntryPoint().data()
+			};
 
-		vk::PipelineShaderStageCreateInfo vertShaderStageCreateInfo {
-			.stage = vk::ShaderStageFlagBits::eVertex,
-			.module = vertexModule,
-			.pName = "VertMain"
-		};
-
-		vk::PipelineShaderStageCreateInfo fragShaderStageCreateInfo {
-			.stage = vk::ShaderStageFlagBits::eFragment,
-			.module = fragmentModule,
-			.pName = "FragMain"
-		};
-
-		vk::PipelineShaderStageCreateInfo shaderStages[] = {
-			vertShaderStageCreateInfo,
-			fragShaderStageCreateInfo
-		};
+			vkShaderModules.emplace_back(std::move(shaderModule));
+			vkShaderStageCreateInfos.emplace_back(std::move(createInfo));
+		}
 
 		auto bindingDescription = Vertex::GetBindingDescription();
 		auto attributeDescriptions = Vertex::GetAttributeDescriptions();
@@ -246,8 +201,8 @@ namespace Oyl::Rendering::Vulkan
 
 		vk::StructureChain pipelineCreateInfoChain {
 			vk::GraphicsPipelineCreateInfo {
-				.stageCount = 2,
-				.pStages = shaderStages,
+				.stageCount = (uint32) vkShaderStageCreateInfos.size(),
+				.pStages = vkShaderStageCreateInfos.data(),
 				.pVertexInputState = &vertexInputInfo,
 				.pInputAssemblyState = &inputAssembly,
 				.pViewportState = &viewportState,
@@ -288,12 +243,12 @@ namespace Oyl::Rendering::Vulkan
 	vk::raii::ShaderModule
 	ShaderResource::Impl::CompileShaderModule(
 		const vk::raii::Device& a_device,
-		ShaderProfile a_profile
+		const ShaderStage& a_shaderStage
 	)
 	{
 		OYL_PROFILE_FUNCTION();
 
-		const auto& bytecode = shaderByteCodeBuffers[a_profile];
+		const auto& bytecode = a_shaderStage.GetByteCode();
 
 		// Create a Vulkan shader module from the compilation result
 		vk::ShaderModuleCreateInfo shaderModuleCreateInfo {
@@ -301,98 +256,5 @@ namespace Oyl::Rendering::Vulkan
 			.pCode = (uint32*) bytecode.data(),
 		};
 		return vk::raii::ShaderModule(a_device, shaderModuleCreateInfo);
-	}
-
-	std::vector<byte>
-	ShaderResource::Impl::CompileShaderBytecode(ShaderProfile a_profile, std::string_view a_filePath)
-	{
-		OYL_PROFILE_FUNCTION();
-
-		OYL_ASSERT(dxcCreateInstanceFn);
-
-		HRESULT hres;
-
-		CComPtr<IDxcLibrary> library;
-		hres = dxcCreateInstanceFn(CLSID_DxcLibrary, IID_PPV_ARGS(&library));
-		if (FAILED(hres))
-			throw std::runtime_error("Could not init DXC library");
-
-		// Initialize DXC compiler
-		CComPtr<IDxcCompiler3> compiler;
-		hres = dxcCreateInstanceFn(CLSID_DxcCompiler, IID_PPV_ARGS(&compiler));
-		if (FAILED(hres))
-			throw std::runtime_error("Could not init DXC Compiler");
-
-		// Initialize DXC utility
-		CComPtr<IDxcUtils> utils;
-		hres = dxcCreateInstanceFn(CLSID_DxcUtils, IID_PPV_ARGS(&utils));
-		if (FAILED(hres))
-			throw std::runtime_error("Could not init DXC Utility");
-
-		std::wstring filePath { a_filePath.begin(), a_filePath.end() };
-
-		uint32 codePage = DXC_CP_ACP;
-		CComPtr<IDxcBlobEncoding> sourceBlob;
-		hres = utils->LoadFile(filePath.c_str(), &codePage, &sourceBlob);
-		if (FAILED(hres))
-			throw std::runtime_error("Could not load shader file");
-
-		std::wstring_view entryPoint = EntryPointFromProfile(a_profile);
-		std::wstring_view profileString = ProfileStringFromProfile(a_profile);
-
-		// Configure the compiler arguments for compiling the HLSL shader to SPIR-V
-		std::vector<LPCWSTR> arguments = {
-			// Shader main entry point
-			L"-E",
-			entryPoint.data(),
-
-			// Shader target profile
-			L"-T",
-			profileString.data(),
-
-			// Compile to SPIRV
-			L"-spirv",
-			L"-fspv-target-env=vulkan1.3",
-		};
-
-		DxcBuffer buffer {
-			.Ptr = sourceBlob->GetBufferPointer(),
-			.Size = sourceBlob->GetBufferSize(),
-			.Encoding = DXC_CP_ACP,
-		};
-
-		CComPtr<IDxcResult> result = nullptr;
-		hres = compiler->Compile(
-			&buffer,
-			arguments.data(),
-			uint32(arguments.size()),
-			nullptr,
-			IID_PPV_ARGS(&result)
-		);
-
-		if (SUCCEEDED(hres))
-			result->GetStatus(&hres);
-
-		// Output error if compilation failed
-		if (FAILED(hres) && (result))
-		{
-			CComPtr<IDxcBlobEncoding> errorBlob;
-			hres = result->GetErrorBuffer(&errorBlob);
-			if (SUCCEEDED(hres) && errorBlob)
-			{
-				OYL_LOG_ERROR("Shader compilation failed :\n{}", (const char*) errorBlob->GetBufferPointer());
-				throw std::runtime_error("Compilation failed");
-			}
-		}
-
-		CComPtr<IDxcBlob> code;
-		result->GetResult(&code);
-		auto codeBuffer = (byte*) code->GetBufferPointer();
-
-		// Get the bytecode as a vector
-		std::vector<byte> byteCodeVector;
-		byteCodeVector.insert(byteCodeVector.end(), &codeBuffer[0], &codeBuffer[code->GetBufferSize()]);
-
-		return byteCodeVector;
 	}
 }

@@ -32,7 +32,34 @@ namespace Oyl::Rendering
 	public:
 		ShaderStage();
 
+		struct Params
+		{
+			ShaderProfile shaderProfile;
+
+			cbyte* buffer;
+			size_t bufferLength;
+
+			std::string entryPoint;
+		};
+
+		explicit
+		ShaderStage(const Params& a_params);
+
 		~ShaderStage();
+
+		ShaderProfile
+		GetShaderProfile() const;
+
+		std::string_view
+		GetEntryPoint() const;
+
+		const std::vector<byte>&
+		GetByteCode() const;
+
+	private:
+		ShaderProfile m_shaderProfile = {};
+		std::vector<byte> m_byteCode;
+		std::string m_entryPoint;
 	};
 
 	class OYL_RENDERING_API ShaderCompileResult
@@ -46,6 +73,8 @@ namespace Oyl::Rendering
 		{
 			std::string_view filePath;
 			std::string_view sourceCode;
+
+			std::vector<ShaderStage> stages;
 		};
 
 		explicit
@@ -59,9 +88,12 @@ namespace Oyl::Rendering
 		std::string_view
 		GetSourceCode() const;
 
+		const std::vector<ShaderStage>&
+		GetShaderStages() const;
+
 	private:
 		std::string m_filePath;
 		std::string m_sourceCode;
-		std::unordered_map<ShaderProfile, ShaderStage> m_stages;
+		std::vector<ShaderStage> m_stages;
 	};
 }
