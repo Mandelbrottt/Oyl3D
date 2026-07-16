@@ -10,6 +10,7 @@ struct VertexOutput
 	float3 color : Color;
 };
 
+[shader("vertex")]
 VertexOutput
 VertMain(VertexInput a_input)
 {
@@ -19,6 +20,7 @@ VertMain(VertexInput a_input)
 	return output;
 }
 
+[shader("fragment")]
 float4
 FragMain(VertexOutput a_inVert) : SV_Target
 {

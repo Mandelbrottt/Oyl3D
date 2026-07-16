@@ -4,8 +4,9 @@ namespace Oyl::Rendering
 {
 	ShaderResource::ShaderResource() {}
 
-	ShaderResource::ShaderResource(std::string_view a_filePath)
-		: m_filePath(a_filePath) {}
+	ShaderResource::ShaderResource(std::string_view a_filePath, ShaderCompiler* a_compiler)
+		: m_filePath(a_filePath),
+		  m_shaderCompiler(a_compiler) {}
 
 	ShaderResource::~ShaderResource() {}
 

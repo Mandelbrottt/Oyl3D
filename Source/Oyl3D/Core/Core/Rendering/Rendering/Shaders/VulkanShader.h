@@ -28,12 +28,14 @@ namespace Oyl::Rendering::Vulkan
 		GetAttributeDescriptions();
 	};
 
+	class ShaderCompiler;
+
 	class OYL_RENDERING_API ShaderResource : public Rendering::ShaderResource
 	{
 	public:
 		ShaderResource();
 
-		ShaderResource(std::string_view a_filePath);
+		ShaderResource(std::string_view a_filePath, ShaderCompiler* a_shaderCompiler);
 
 		virtual
 		~ShaderResource();
