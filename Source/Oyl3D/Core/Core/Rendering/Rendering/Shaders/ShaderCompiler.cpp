@@ -24,11 +24,8 @@ namespace Oyl::Rendering
 		if (!inStream)
 			return false;
 
-		ShaderCompileResult outShader(
-			{
-				.filePath = std::filesystem::absolute(a_filePath).string()
-			}
-		);
+		ShaderCompileResult outShader;
+		outShader.m_filePath = a_filePath;
 
 		// Reserve memory for string
 		std::string content;
