@@ -21,6 +21,26 @@ namespace Oyl::Rendering
 		SP_Count
 	};
 
+	enum ShaderLanguage
+	{
+		SL_Hlsl,
+	};
+
+	struct ShaderOptions
+	{
+		ShaderLanguage language;
+
+		enum
+		{
+			SO_None,
+			SO_File,
+			SO_Code,
+		} source;
+
+		std::string filepath;
+		std::string code;
+	};
+
 	class ShaderCompiler;
 
 	class OYL_RENDERING_API ShaderResource : public DeviceResource<ShaderResource>
@@ -29,21 +49,38 @@ namespace Oyl::Rendering
 		ShaderResource();
 
 		explicit
-		ShaderResource(std::string_view a_filePath, ShaderCompiler* a_compiler);
+		ShaderResource(ShaderOptions a_shaderOptions);
 
 	public:
 		virtual
 		~ShaderResource();
 
-		std::string_view
-		GetFilePath() const;
+		const ShaderOptions&
+		GetShaderOptions() const;
 
 		void
-		SetFilePath(std::string_view a_filePath);
+		SetShaderOptions(ShaderOptions a_options);
+
+		ShaderLanguage
+		GetLanguage() const
+		{
+			return m_options.language;
+		}
+
+		std::string_view
+		GetFilePath() const
+		{
+			return m_options.filepath;
+		}
+
+		std::string_view
+		GetCode() const
+		{
+			return m_options.code;
+		}
 
 	protected:
-		std::string m_filePath;
-		ShaderCompiler* m_shaderCompiler = nullptr;
+		ShaderOptions m_options;
 	};
 
 	using Shader = ResourceHandle<ShaderResource>;

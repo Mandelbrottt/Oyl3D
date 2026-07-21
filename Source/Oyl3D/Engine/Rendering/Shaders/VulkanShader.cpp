@@ -4,6 +4,8 @@
 
 #include "VulkanShaderCompiler.h"
 
+#include "Rendering/Renderer/RenderEngine.h"
+
 namespace Oyl::Rendering::Vulkan
 {
 	vk::VertexInputBindingDescription
@@ -53,8 +55,8 @@ namespace Oyl::Rendering::Vulkan
 		Init();
 	}
 
-	ShaderResource::ShaderResource(std::string_view a_filePath, ShaderCompiler* a_shaderCompiler)
-		: Rendering::ShaderResource(a_filePath, a_shaderCompiler)
+	ShaderResource::ShaderResource(ShaderOptions a_options)
+		: Rendering::ShaderResource(std::move(a_options))
 	{
 		Init();
 	}
@@ -78,8 +80,9 @@ namespace Oyl::Rendering::Vulkan
 		if (GetFilePath().empty())
 			return false;
 
-		OYL_ASSERT(m_shaderCompiler);
-		m_shaderCompiler->CompileHlslFromFile(m_filePath, &m_impl->compileResult);
+		auto* shaderCompiler = RenderEngine::GetShaderCompiler();
+		OYL_ASSERT(shaderCompiler);
+		shaderCompiler->CompileHlslFromFile(m_options.filepath, &m_impl->compileResult);
 
 		return Rendering::ShaderResource::Load();
 	}

@@ -23,6 +23,8 @@ namespace Oyl
 
 			ResourceHandleBase(ResourceTypeId a_type, ResourceId a_id, ResourceManager* a_manager);
 
+			struct Tag {};
+
 		public:
 			ResourceHandleBase(const ResourceHandleBase& a_other)
 				: ResourceHandleBase(a_other.m_type)
@@ -76,7 +78,7 @@ namespace Oyl
 				return m_id;
 			}
 
-		private:
+		protected:
 			ResourceTypeId m_type;
 
 			ResourceId m_id = ResourceId::Null;
@@ -98,6 +100,35 @@ namespace Oyl
 			static_assert(sizeof(ResourceHandle) == sizeof(ResourceHandleBase));
 		}
 
+		ResourceHandle(Tag, ResourceId a_id, Internal::ResourceManager* a_manager)
+			: ResourceHandleBase(TResource::GetResourceTypeId(), a_id, a_manager) {}
+
+		// Convert to Parent from Child
+		template<Traits::Resource TSuperResource>
+			requires (TResource::GetResourceTypeId() == TSuperResource::GetResourceTypeId())
+		operator ResourceHandle<TSuperResource>()
+		{
+			return ResourceHandle<TSuperResource>(
+				Tag {},
+				m_id,
+				m_resourceManager
+			);
+		}
+
+		// Convert to Child from Parent
+		template<Traits::Resource TSuperResource>
+			requires (TResource::GetResourceTypeId() == TSuperResource::GetResourceTypeId())
+		explicit
+		ResourceHandle(const ResourceHandle<TSuperResource>& a_other)
+			: ResourceHandleBase(a_other) {}
+
+		// Convert to Child from Parent
+		template<Traits::Resource TSuperResource>
+			requires (TResource::GetResourceTypeId() == TSuperResource::GetResourceTypeId())
+		explicit
+		ResourceHandle(ResourceHandle<TSuperResource>&& a_other) noexcept
+			: ResourceHandleBase(std::move(a_other)) {}
+
 		TResource*
 		Get() override
 		{
@@ -110,15 +141,28 @@ namespace Oyl
 			return static_cast<const TResource*>(ResourceHandleBase::Get());
 		}
 
+		template<Traits::Resource TChildResource>
+			requires (std::is_convertible_v<TChildResource*, TResource*>)
+		TChildResource*
+		Get()
+		{
+			static_assert(TResource::GetResourceTypeId() == TChildResource::GetResourceTypeId());
+			return static_cast<TChildResource*>(Get());
+		}
+
+		template<Traits::Resource TChildResource>
+			requires (std::is_convertible_v<TChildResource*, TResource*>)
+		TChildResource*
+		Get() const
+		{
+			return const_cast<ResourceHandle*>(this)->template Get<TChildResource>();
+		}
+
 		TResource*
 		operator ->()
 		{
 			return Get();
 		}
-
-	private:
-		ResourceHandle(ResourceId a_id, Internal::ResourceManager* a_manager)
-			: ResourceHandleBase(TResource::GetResourceTypeId(), a_id, a_manager) {}
 	};
 
 	namespace Traits

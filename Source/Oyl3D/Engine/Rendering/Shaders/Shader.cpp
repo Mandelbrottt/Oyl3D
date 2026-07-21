@@ -2,24 +2,28 @@
 
 namespace Oyl::Rendering
 {
-	ShaderResource::ShaderResource() {}
+	ShaderResource::ShaderResource()
+		: m_options({
+			.source = ShaderOptions::SO_None
+		}) {}
 
-	ShaderResource::ShaderResource(std::string_view a_filePath, ShaderCompiler* a_compiler)
-		: m_filePath(a_filePath),
-		  m_shaderCompiler(a_compiler) {}
+	ShaderResource::ShaderResource(ShaderOptions a_shaderOptions)
+	{
+		m_options = std::move(a_shaderOptions);
+	}
 
 	ShaderResource::~ShaderResource() {}
 
-	std::string_view
-	ShaderResource::GetFilePath() const
+	const ShaderOptions&
+	ShaderResource::GetShaderOptions() const
 	{
-		return m_filePath;
+		return m_options;
 	}
 
 	void
-	ShaderResource::SetFilePath(std::string_view a_filePath)
+	ShaderResource::SetShaderOptions(ShaderOptions a_options)
 	{
-		m_filePath = a_filePath;
+		m_options = std::move(a_options);
 		SetDirty();
 	}
 }

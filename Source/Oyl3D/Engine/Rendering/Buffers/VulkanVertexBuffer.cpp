@@ -22,17 +22,8 @@ namespace Oyl::Rendering::Vulkan
 	VertexBufferResource::VertexBufferResource()
 		: m_impl(std::make_unique<Impl>()) {}
 
-	VertexBufferResource::VertexBufferResource(const byte* a_vertexData, size_t a_vertexLength)
-		: Rendering::VertexBufferResource(a_vertexData, a_vertexLength),
-		  m_impl(std::make_unique<Impl>()) {}
-
-	VertexBufferResource::VertexBufferResource(
-		const byte* a_vertexData,
-		size_t a_vertexLength,
-		const byte* a_indexData,
-		size_t a_indexLength
-	)
-		: Rendering::VertexBufferResource(a_vertexData, a_vertexLength, a_indexData, a_indexLength),
+	VertexBufferResource::VertexBufferResource(const VertexBufferOptions& a_options)
+		: Rendering::VertexBufferResource(a_options),
 		  m_impl(std::make_unique<Impl>()) {}
 
 	VertexBufferResource::~VertexBufferResource() {}

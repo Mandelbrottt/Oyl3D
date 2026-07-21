@@ -8,6 +8,8 @@
 
 #include <GLFW/glfw3.h>
 
+#include "RenderEngine.h"
+
 #include "Core/Logging/Logging.h"
 
 #include "Rendering/Buffers/VulkanVertexBuffer.h"
@@ -68,7 +70,6 @@ namespace Oyl::Rendering::Vulkan
 	struct RenderContext::Impl
 	{
 		Window* window;
-		Oyl::Internal::ResourceManager* resourceManager;
 
 		vk::raii::Context context;
 		vk::raii::Instance instance = nullptr;
@@ -186,7 +187,6 @@ namespace Oyl::Rendering::Vulkan
 			m_impl = std::make_unique<Impl>();
 
 		m_impl->window = a_params.window;
-		m_impl->resourceManager = a_params.resourceManager;
 
 		m_impl->CreateInstance();
 		if constexpr (ENABLE_VALIDATION_LAYERS)
@@ -547,12 +547,12 @@ namespace Oyl::Rendering::Vulkan
 	{
 		OYL_PROFILE_FUNCTION();
 
-		OYL_ASSERT(resourceManager);
-
-		shader = resourceManager->Load<Shader>(
-			"G:/dev/Oyl3D/Oyl3D/Source/Oyl3D/Engine/Rendering/Shaders/shader.hlsl",
-			&shaderCompiler
-		);
+		auto options = ShaderOptions {
+			.language = SL_Hlsl,
+			.source = ShaderOptions::SO_File,
+			.filepath = "G:/dev/Oyl3D/Oyl3D/Source/Oyl3D/Engine/Rendering/Shaders/shader.hlsl"
+		};
+		shader = RenderEngine::CreateShader(options);
 	}
 
 	void
@@ -582,12 +582,13 @@ namespace Oyl::Rendering::Vulkan
 	{
 		auto verticesBuffer = reinterpret_cast<const byte*>(g_vertices.data());
 		auto indicesBuffer = reinterpret_cast<const byte*>(g_indices.data());
-		vertexBuffer = resourceManager->Load<VertexBuffer>(
-			verticesBuffer,
-			g_vertices.size() * sizeof(decltype(g_vertices)::value_type),
-			indicesBuffer,
-			g_indices.size() * sizeof(decltype(g_indices)::value_type)
-		);
+
+		vertexBuffer = RenderEngine::CreateVertexBuffer({
+			.vertexData = verticesBuffer,
+			.vertexLength = g_vertices.size() * sizeof(decltype(g_vertices)::value_type),
+			.indexData = indicesBuffer,
+			.indexLength = g_indices.size() * sizeof(decltype(g_indices)::value_type)
+		});
 	}
 
 	void
@@ -674,7 +675,8 @@ namespace Oyl::Rendering::Vulkan
 		commandBuffer.setViewport(0, viewport);
 		commandBuffer.setScissor(0, scissor);
 
-		commandBuffer.bindPipeline(vk::PipelineBindPoint::eGraphics, shader->GetPipeline());
+		auto* vkShader = static_cast<ShaderResource*>(shader.Get());
+		commandBuffer.bindPipeline(vk::PipelineBindPoint::eGraphics, vkShader->GetPipeline());
 		if (vertexBuffer->HasIndexData())
 		{
 			commandBuffer.bindIndexBuffer(*vertexBuffer->GetVkBuffer(), 0, vk::IndexType::eUint16);

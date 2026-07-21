@@ -8,19 +8,22 @@
 
 namespace Oyl::Rendering
 {
+	struct VertexBufferOptions
+	{
+		const byte* vertexData;
+		size_t vertexLength;
+
+		const byte* indexData;
+		size_t indexLength;
+	};
+
 	class OYL_RENDERING_API VertexBufferResource : public DeviceResource<VertexBufferResource>
 	{
 	protected:
 		VertexBufferResource();
 
-		VertexBufferResource(const byte* a_vertexData, size_t a_vertexLength);
-
-		VertexBufferResource(
-			const byte* a_vertexData,
-			size_t a_vertexLength,
-			const byte* a_indexData,
-			size_t a_indexLength
-		);
+		explicit
+		VertexBufferResource(const VertexBufferOptions& a_options);
 
 	public:
 		virtual

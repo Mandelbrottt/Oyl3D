@@ -4,20 +4,12 @@ namespace Oyl::Rendering
 {
 	VertexBufferResource::VertexBufferResource() {}
 
-	VertexBufferResource::VertexBufferResource(const byte* a_vertexData, size_t a_vertexLength)
+	VertexBufferResource::VertexBufferResource(const VertexBufferOptions& a_options)
 	{
-		SetVertexData(a_vertexData, a_vertexLength);
-	}
+		SetVertexData(a_options.vertexData, a_options.vertexLength);
 
-	VertexBufferResource::VertexBufferResource(
-		const byte* a_vertexData,
-		size_t a_vertexLength,
-		const byte* a_indexData,
-		size_t a_indexLength
-	)
-		: VertexBufferResource(a_vertexData, a_vertexLength)
-	{
-		SetIndexData(a_indexData, a_indexLength);
+		if (a_options.indexData && a_options.indexLength > 0)
+			SetIndexData(a_options.indexData, a_options.indexLength);
 	}
 
 	VertexBufferResource::~VertexBufferResource()

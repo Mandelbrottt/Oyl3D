@@ -12,6 +12,11 @@ namespace Oyl::Internal
 	{
 		m_id = a_id;
 		m_resourceManager = a_manager;
+
+		if (m_id == ResourceId::Null || !m_resourceManager)
+			return;
+
+		m_resourceManager->IncrementResourceRef(m_type, m_id);
 	}
 
 	ResourceHandleBase&

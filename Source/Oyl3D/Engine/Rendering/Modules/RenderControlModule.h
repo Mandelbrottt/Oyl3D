@@ -7,6 +7,7 @@
 #include "Core/Modules/Module.h"
 
 #include "Rendering/Common.h"
+#include "Rendering/Renderer/RenderEngineInstance.h"
 
 namespace Oyl
 {
@@ -18,8 +19,6 @@ namespace Oyl
 
 namespace Oyl::Rendering
 {
-	class RenderContext;
-
 	class OYL_RENDERING_API RenderControlModule : public Module
 	{
 		OYL_DECLARE_MODULE(RenderControlModule);
@@ -54,8 +53,10 @@ namespace Oyl::Rendering
 		OnWindowMinimizeEvent(const WindowMinimizeEvent& a_event);
 
 	private:
-		std::unique_ptr<RenderContext> m_renderContext;
 		std::unique_ptr<Internal::ResourceManager> m_resourceManager;
+
+		std::unique_ptr<RenderEngineInstance> m_renderEngineInstance;
+		std::unique_ptr<RenderContext> m_renderContext;
 
 		Window* m_mainWindow = nullptr;
 	};

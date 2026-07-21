@@ -17,7 +17,6 @@ namespace Oyl::Rendering
 	struct RenderContextParams
 	{
 		Window* window;
-		Internal::ResourceManager* resourceManager;
 	};
 
 	class OYL_RENDERING_API RenderContext

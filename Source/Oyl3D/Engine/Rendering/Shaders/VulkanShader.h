@@ -35,7 +35,8 @@ namespace Oyl::Rendering::Vulkan
 	public:
 		ShaderResource();
 
-		ShaderResource(std::string_view a_filePath, ShaderCompiler* a_shaderCompiler);
+		explicit
+		ShaderResource(ShaderOptions a_options);
 
 		virtual
 		~ShaderResource();

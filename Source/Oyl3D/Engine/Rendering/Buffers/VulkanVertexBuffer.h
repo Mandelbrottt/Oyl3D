@@ -21,14 +21,8 @@ namespace Oyl::Rendering::Vulkan
 	public:
 		VertexBufferResource();
 
-		VertexBufferResource(const byte* a_vertexData, size_t a_vertexLength);
-
-		VertexBufferResource(
-			const byte* a_vertexData,
-			size_t a_vertexLength,
-			const byte* a_indexData,
-			size_t a_indexLength
-		);
+		explicit
+		VertexBufferResource(const VertexBufferOptions& a_options);
 
 		virtual
 		~VertexBufferResource();

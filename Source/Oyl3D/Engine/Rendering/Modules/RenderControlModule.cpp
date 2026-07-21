@@ -1,7 +1,9 @@
 #include "RenderControlModule.h"
 
 #include "Rendering/Renderer/RenderContext.h"
+#include "Rendering/Renderer/RenderEngine.h"
 #include "Rendering/Renderer/VulkanRenderContext.h"
+#include "Rendering/Renderer/VulkanRenderEngineInstance.h"
 #include "Rendering/Window/GlfwWindow.h"
 
 namespace Oyl::Rendering
@@ -45,12 +47,15 @@ namespace Oyl::Rendering
 		// TODO: Check for main window, somehow?
 		m_mainWindow = a_event.window;
 
-		m_renderContext = std::make_unique<Vulkan::RenderContext>();
 		m_resourceManager = std::make_unique<Internal::ResourceManager>();
+
+		m_renderEngineInstance = std::make_unique<Vulkan::RenderEngineInstance>(m_resourceManager.get());
+		RenderEngine::SetInstance(m_renderEngineInstance.get());
+
+		m_renderContext = std::make_unique<Vulkan::RenderContext>();
 
 		auto renderContextParams = RenderContextParams {
 			.window = m_mainWindow,
-			.resourceManager = m_resourceManager.get()
 		};
 		m_renderContext->Init(renderContextParams);
 	}
