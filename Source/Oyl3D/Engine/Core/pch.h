@@ -19,6 +19,6 @@
 #include <unordered_set>
 #include <vector>
 
-#include "Core/Common.h"
-#include "Core/Profiling/Profiler.h"
-#include "Core/Typedefs.h"
+#include "Common.h"
+#include "Profiling/Profiler.h"
+#include "Typedefs.h"

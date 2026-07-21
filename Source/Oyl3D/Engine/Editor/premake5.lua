@@ -1,6 +1,6 @@
 local Config = require "Config"
 
-group "Editor"
+group "Oyl/Editor"
 
 project "Oyl.Editor"; do
 	language(premake.CPP)

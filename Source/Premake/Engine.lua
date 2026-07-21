@@ -175,8 +175,9 @@ function Engine.GenerateProjects(params)
 				filter {}
 
 				-- Add link's basedir as includedirs
-				includedirs(proj.basedir)
-				externalincludedirs(proj.basedir)
+				local projectParentPath = path.getdirectory(proj.basedir)
+				includedirs { projectParentPath }
+				externalincludedirs { projectParentPath }
 			end
 
 			local package = params.Packages[link]
@@ -213,7 +214,7 @@ function Engine.CommonCppSettings()
 	debugdir(Config.BinariesDir)
 
 	includedirs {
-		"%{prj.location}",
+		"%{prj.location}/..",
 	}
 
 	externalincludedirs {
@@ -226,10 +227,13 @@ function Engine.CommonCppSettings()
 	}
 
 	if os.isfile("pch.h") then
+		local pchDir = path.join(Config.SourceDir, "Pch")
 		pchheader "pch.h"
 		forceincludes { "pch.h" }
-		pchsource "%{wks.location}/pch.cpp"
-		files { "%{wks.location}/pch.cpp" }
+		pchsource(path.join(pchDir, "pch.cpp"))
+		files { path.join(pchDir, "pch.cpp") }
+		includedirs { pchDir }
+		defines { string.format([[OYL_PCH_FILE="%s/pch.h"]], os.getcwd()) }
 	end
 
 	filter "system:not windows"; do
@@ -240,7 +244,7 @@ function Engine.CommonCppSettings()
 	-- FIXME: premake doesn't support per-file includedirs
 	filter "files:**.cpp"; do
 		includedirs {
-			prj.basedir,
+			"%{prj.location}"
 		}
 	end
 
