@@ -8,14 +8,6 @@
 
 namespace Oyl::Rendering::Vulkan
 {
-	struct VertexBufferParams
-	{
-		vk::raii::Device& device;
-		vk::raii::PhysicalDevice& physicalDevice;
-		vk::raii::CommandPool& commandPool;
-		vk::raii::Queue& queue;
-	};
-
 	class OYL_RENDERING_API VertexBufferResource : public Rendering::VertexBufferResource
 	{
 	public:
@@ -32,6 +24,14 @@ namespace Oyl::Rendering::Vulkan
 
 		bool
 		Unload() override;
+
+		struct DeviceLoadParams
+		{
+			const vk::raii::Device& device;
+			const vk::raii::PhysicalDevice& physicalDevice;
+			const vk::raii::CommandPool& commandPool;
+			const vk::raii::Queue& queue;
+		};
 
 		bool
 		DeviceLoad(void* a_params) override;

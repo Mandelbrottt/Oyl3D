@@ -2,6 +2,7 @@
 
 #include <vulkan/vulkan_raii.hpp>
 
+#include "VulkanDevice.h"
 #include "VulkanShaderCompiler.h"
 
 #include "Rendering/RenderEngine.h"
@@ -44,8 +45,8 @@ namespace Oyl::Rendering::Vulkan
 		vk::raii::Pipeline pipeline = nullptr;
 
 		vk::raii::ShaderModule
-		CompileShaderModule(
-			const vk::raii::Device& a_device,
+		CompileVkShaderModule(
+			const Device& a_device,
 			const ShaderStage& a_shaderStage
 		);
 	};
@@ -116,14 +117,14 @@ namespace Oyl::Rendering::Vulkan
 	{
 		OYL_PROFILE_FUNCTION();
 
-		const ShaderDeviceLoadParams& params = *static_cast<ShaderDeviceLoadParams*>(a_params);
+		const DeviceLoadParams& params = *static_cast<DeviceLoadParams*>(a_params);
 
 		// keep ShaderModules for RAII
 		std::vector<vk::raii::ShaderModule> vkShaderModules;
 		std::vector<vk::PipelineShaderStageCreateInfo> vkShaderStageCreateInfos;
 		for (const auto& stage : m_impl->compileResult.GetShaderStages())
 		{
-			vk::raii::ShaderModule shaderModule = m_impl->CompileShaderModule(params.device, stage);
+			vk::raii::ShaderModule shaderModule = m_impl->CompileVkShaderModule(params.device, stage);
 
 			vk::PipelineShaderStageCreateInfo createInfo {
 				.stage = ShaderProfileToVkShaderStageFlag(stage.GetShaderProfile()),
@@ -202,7 +203,7 @@ namespace Oyl::Rendering::Vulkan
 			.pushConstantRangeCount = 0
 		};
 
-		auto pipelineLayout = vk::raii::PipelineLayout(params.device, pipelineLayoutInfo);
+		auto pipelineLayout = vk::raii::PipelineLayout(params.device.GetVkDevice(), pipelineLayoutInfo);
 
 		vk::StructureChain pipelineCreateInfoChain {
 			vk::GraphicsPipelineCreateInfo {
@@ -227,7 +228,7 @@ namespace Oyl::Rendering::Vulkan
 		{
 			OYL_PROFILE_SCOPE("vk::raii::Pipeline");
 			m_impl->pipeline = vk::raii::Pipeline(
-				params.device,
+				params.device.GetVkDevice(),
 				nullptr,
 				pipelineCreateInfoChain.get<vk::GraphicsPipelineCreateInfo>()
 			);
@@ -251,8 +252,8 @@ namespace Oyl::Rendering::Vulkan
 	}
 
 	vk::raii::ShaderModule
-	ShaderResource::Impl::CompileShaderModule(
-		const vk::raii::Device& a_device,
+	ShaderResource::Impl::CompileVkShaderModule(
+		const Device& a_device,
 		const ShaderStage& a_shaderStage
 	)
 	{
@@ -265,6 +266,6 @@ namespace Oyl::Rendering::Vulkan
 			.codeSize = bytecode.size(),
 			.pCode = (uint32*) bytecode.data(),
 		};
-		return vk::raii::ShaderModule(a_device, shaderModuleCreateInfo);
+		return vk::raii::ShaderModule(a_device.GetVkDevice(), shaderModuleCreateInfo);
 	}
 }

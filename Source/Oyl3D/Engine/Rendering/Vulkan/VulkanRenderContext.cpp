@@ -8,13 +8,14 @@
 
 #include <GLFW/glfw3.h>
 
-#include "Rendering/RenderEngine.h"
+#include "VulkanDevice.h"
+#include "VulkanShader.h"
+#include "VulkanShaderCompiler.h"
+#include "VulkanVertexBuffer.h"
 
 #include "Core/Logging/Logging.h"
 
-#include "VulkanVertexBuffer.h"
-#include "VulkanShader.h"
-#include "VulkanShaderCompiler.h"
+#include "Rendering/RenderEngine.h"
 #include "Rendering/Window.h"
 
 static const std::vector VALIDATION_LAYERS {
@@ -43,9 +44,6 @@ namespace
 		const vk::DebugUtilsMessengerCallbackDataEXT* a_pCallbackData,
 		void* a_pUserData
 	);
-
-	bool
-	IsDeviceSuitable(const vk::raii::PhysicalDevice& a_physicalDevice);
 
 	std::vector<const char*>
 	GetRequiredInstanceExtensions();
@@ -77,11 +75,13 @@ namespace Oyl::Rendering::Vulkan
 
 		vk::raii::SurfaceKHR surface = nullptr;
 
-		vk::raii::PhysicalDevice physicalDevice = nullptr;
+		Device device;
 
-		uint32 queueIndex;
-		vk::raii::Device device = nullptr;
-		vk::raii::Queue graphicsQueue = nullptr;
+		//vk::raii::PhysicalDevice physicalDevice = nullptr;
+
+		//uint32 queueIndex;
+		//vk::raii::Device device = nullptr;
+		//vk::raii::Queue graphicsQueue = nullptr;
 
 		vk::raii::SwapchainKHR swapChain = nullptr;
 		std::vector<vk::Image> swapChainImages;
@@ -110,10 +110,6 @@ namespace Oyl::Rendering::Vulkan
 		SetupDebugMessenger();
 		void
 		CreateSurface();
-		void
-		PickPhysicalDevice();
-		void
-		CreateLogicalDevice();
 		void
 		CreateSwapChain();
 		void
@@ -192,8 +188,14 @@ namespace Oyl::Rendering::Vulkan
 		if constexpr (ENABLE_VALIDATION_LAYERS)
 			m_impl->SetupDebugMessenger();
 		m_impl->CreateSurface();
-		m_impl->PickPhysicalDevice();
-		m_impl->CreateLogicalDevice();
+
+		m_impl->device = Device({
+			.instance = m_impl->instance,
+			.surface = m_impl->surface,
+			.ppRequiredDeviceExtensionsData = REQUIRED_DEVICE_EXTENSION.data(),
+			.requiredDeviceExtensionsLength = REQUIRED_DEVICE_EXTENSION.size()
+		});
+
 		m_impl->CreateSwapChain();
 		m_impl->CreateSwapChainImageViews();
 		m_impl->CreateGraphicsPipeline();
@@ -218,7 +220,7 @@ namespace Oyl::Rendering::Vulkan
 
 		if (m_impl->shader->IsDeviceDirty())
 		{
-			ShaderDeviceLoadParams params {
+			ShaderResource::DeviceLoadParams params {
 				.device = m_impl->device,
 				.format = m_impl->swapChainSurfaceFormat.format
 			};
@@ -232,11 +234,11 @@ namespace Oyl::Rendering::Vulkan
 
 		if (m_impl->vertexBuffer->IsDeviceDirty())
 		{
-			VertexBufferParams params {
-				.device = m_impl->device,
-				.physicalDevice = m_impl->physicalDevice,
+			VertexBufferResource::DeviceLoadParams params {
+				.device = m_impl->device.GetVkDevice(),
+				.physicalDevice = m_impl->device.GetVkPhysicalDevice(),
 				.commandPool = m_impl->commandPool,
-				.queue = m_impl->graphicsQueue
+				.queue = m_impl->device.GetVkGraphicsQueue()
 			};
 			m_impl->vertexBuffer->DeviceLoad(&params);
 		}
@@ -252,7 +254,7 @@ namespace Oyl::Rendering::Vulkan
 		if (!m_impl)
 			return;
 
-		m_impl->device.waitIdle();
+		m_impl->device.GetVkDevice().waitIdle();
 
 		m_impl->vertexBuffer->DeviceUnload(nullptr);
 		m_impl->vertexBuffer->Unload();
@@ -385,77 +387,6 @@ namespace Oyl::Rendering::Vulkan
 	}
 
 	void
-	RenderContext::Impl::PickPhysicalDevice()
-	{
-		OYL_PROFILE_FUNCTION();
-
-		auto physicalDevices = instance.enumeratePhysicalDevices();
-		const auto iter = std::ranges::find_if(
-			physicalDevices,
-			[&](const auto& a_physicalDevice)
-			{
-				return IsDeviceSuitable(a_physicalDevice);
-			}
-		);
-		if (iter == physicalDevices.end())
-		{
-			throw std::runtime_error("failed to find a suitable GPU with Vulkan support!");
-		}
-		physicalDevice = *iter;
-	}
-
-	void
-	RenderContext::Impl::CreateLogicalDevice()
-	{
-		OYL_PROFILE_FUNCTION();
-
-		std::vector<vk::QueueFamilyProperties> queueFamilyProperties = physicalDevice.getQueueFamilyProperties();
-
-		// get the first index into queueFamilyProperties which supports both graphics and present
-		queueIndex = ~0u;
-		for (uint32 qfpIndex = 0; qfpIndex < queueFamilyProperties.size(); qfpIndex++)
-		{
-			if ((queueFamilyProperties[qfpIndex].queueFlags & vk::QueueFlagBits::eGraphics) &&
-			    physicalDevice.getSurfaceSupportKHR(qfpIndex, *surface))
-			{
-				// found a queue family that supports both graphics and present
-				queueIndex = qfpIndex;
-				break;
-			}
-		}
-		if (queueIndex == ~0u)
-		{
-			throw std::runtime_error("Could not find a queue for graphics and present -> terminating");
-		}
-
-		// Create a chain of feature structures
-		vk::StructureChain featureChain = {
-			vk::PhysicalDeviceFeatures2(),
-			vk::PhysicalDeviceVulkan11Features { .shaderDrawParameters = true },
-			vk::PhysicalDeviceVulkan13Features { .synchronization2 = true, .dynamicRendering = true },
-			vk::PhysicalDeviceExtendedDynamicStateFeaturesEXT { .extendedDynamicState = true }
-		};
-
-		float queuePriority = 0.5f;
-		vk::DeviceQueueCreateInfo deviceQueueCreateInfo {
-			.queueFamilyIndex = queueIndex,
-			.queueCount = 1,
-			.pQueuePriorities = &queuePriority,
-		};
-
-		vk::DeviceCreateInfo deviceCreateInfo {
-			.pNext = &featureChain.get<vk::PhysicalDeviceFeatures2>(),
-			.queueCreateInfoCount = 1,
-			.pQueueCreateInfos = &deviceQueueCreateInfo,
-			.enabledExtensionCount = (uint32) REQUIRED_DEVICE_EXTENSION.size(),
-			.ppEnabledExtensionNames = REQUIRED_DEVICE_EXTENSION.data(),
-		};
-
-		device = vk::raii::Device(physicalDevice, deviceCreateInfo);
-		graphicsQueue = vk::raii::Queue(device, queueIndex, 0);
-	}
-
-	void
 	RenderContext::Impl::CreateSwapChain()
 	{
 		OYL_PROFILE_FUNCTION();
@@ -464,6 +395,7 @@ namespace Oyl::Rendering::Vulkan
 		int width, height;
 		glfwGetFramebufferSize(glfwWindow, &width, &height);
 
+		const auto& physicalDevice = device.GetVkPhysicalDevice();
 		vk::SurfaceCapabilitiesKHR surfaceCapabilities = physicalDevice.getSurfaceCapabilitiesKHR(*surface);
 		swapChainExtent = ChooseSwapExtent(surfaceCapabilities, { (uint) width, (uint) height });
 		uint32_t minImageCount = ChooseSwapMinImageCount(surfaceCapabilities);
@@ -489,7 +421,7 @@ namespace Oyl::Rendering::Vulkan
 			.clipped = true,
 			.oldSwapchain = nullptr
 		};
-		swapChain = vk::raii::SwapchainKHR(device, swapChainCreateInfo);
+		swapChain = vk::raii::SwapchainKHR(device.GetVkDevice(), swapChainCreateInfo);
 		swapChainImages = swapChain.getImages();
 	}
 
@@ -512,7 +444,7 @@ namespace Oyl::Rendering::Vulkan
 		for (auto& image : swapChainImages)
 		{
 			imageViewCreateInfo.image = image;
-			swapChainImageViews.emplace_back(device, imageViewCreateInfo);
+			swapChainImageViews.emplace_back(device.GetVkDevice(), imageViewCreateInfo);
 		}
 	}
 
@@ -526,7 +458,7 @@ namespace Oyl::Rendering::Vulkan
 	void
 	RenderContext::Impl::RecreateSwapChain()
 	{
-		device.waitIdle();
+		device.GetVkDevice().waitIdle();
 
 		CleanupSwapChain();
 
@@ -562,10 +494,10 @@ namespace Oyl::Rendering::Vulkan
 
 		vk::CommandPoolCreateInfo poolInfo {
 			.flags = vk::CommandPoolCreateFlagBits::eResetCommandBuffer,
-			.queueFamilyIndex = queueIndex,
+			.queueFamilyIndex = device.GetVkGraphicsQueueIndex(),
 		};
 
-		commandPool = vk::raii::CommandPool(device, poolInfo);
+		commandPool = vk::raii::CommandPool(device.GetVkDevice(), poolInfo);
 	}
 
 	const std::vector g_vertices {
@@ -602,7 +534,7 @@ namespace Oyl::Rendering::Vulkan
 			.commandBufferCount = MAX_FRAMES_IN_FLIGHT
 		};
 
-		commandBuffers = vk::raii::CommandBuffers(device, allocInfo);
+		commandBuffers = vk::raii::CommandBuffers(device.GetVkDevice(), allocInfo);
 	}
 
 	void
@@ -614,13 +546,19 @@ namespace Oyl::Rendering::Vulkan
 
 		for (size_t i = 0; i < swapChainImages.size(); i++)
 		{
-			renderFinishedSemaphores.emplace_back(device, vk::SemaphoreCreateInfo {});
+			renderFinishedSemaphores.emplace_back(device.GetVkDevice(), vk::SemaphoreCreateInfo {});
 		}
 
 		for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++)
 		{
-			presentCompleteSemaphores.emplace_back(device, vk::SemaphoreCreateInfo {});
-			inFlightFences.emplace_back(device, vk::FenceCreateInfo { .flags = vk::FenceCreateFlagBits::eSignaled });
+			presentCompleteSemaphores.emplace_back(
+				device.GetVkDevice(),
+				vk::SemaphoreCreateInfo {}
+			);
+			inFlightFences.emplace_back(
+				device.GetVkDevice(),
+				vk::FenceCreateInfo { .flags = vk::FenceCreateFlagBits::eSignaled }
+			);
 		}
 	}
 
@@ -675,7 +613,7 @@ namespace Oyl::Rendering::Vulkan
 		commandBuffer.setViewport(0, viewport);
 		commandBuffer.setScissor(0, scissor);
 
-		auto* vkShader = static_cast<ShaderResource*>(shader.Get());
+		auto* vkShader = shader.Get();
 		commandBuffer.bindPipeline(vk::PipelineBindPoint::eGraphics, vkShader->GetPipeline());
 		if (vertexBuffer->HasIndexData())
 		{
@@ -744,7 +682,7 @@ namespace Oyl::Rendering::Vulkan
 		auto& presentCompleteSemaphore = presentCompleteSemaphores[frameIndex];
 		auto& commandBuffer = commandBuffers[frameIndex];
 
-		auto fenceResult = device.waitForFences(*drawFence, vk::True, UINT64_MAX);
+		auto fenceResult = device.GetVkDevice().waitForFences(*drawFence, vk::True, UINT64_MAX);
 		if (fenceResult != vk::Result::eSuccess)
 			throw std::runtime_error("Failed to wait for fence!");
 
@@ -761,7 +699,7 @@ namespace Oyl::Rendering::Vulkan
 		}
 
 		// Only reset fences if we are going to submit work to the GPU
-		device.resetFences(*drawFence);
+		device.GetVkDevice().resetFences(*drawFence);
 
 		RecordCommandBuffer(imageIndex);
 		//graphicsQueue.waitIdle();
@@ -780,7 +718,7 @@ namespace Oyl::Rendering::Vulkan
 				.signalSemaphoreCount = 1,
 				.pSignalSemaphores = &*renderFinishedSemaphore
 			};
-			graphicsQueue.submit(submitInfo, *drawFence);
+			device.GetVkGraphicsQueue().submit(submitInfo, *drawFence);
 		}
 		{
 			OYL_PROFILE_SCOPE("graphicsQueue.presentKHR");
@@ -792,7 +730,7 @@ namespace Oyl::Rendering::Vulkan
 				.pImageIndices = &imageIndex
 			};
 
-			result = graphicsQueue.presentKHR(presentInfoKHR);
+			result = device.GetVkGraphicsQueue().presentKHR(presentInfoKHR);
 			if (result == vk::Result::eSuboptimalKHR || result == vk::Result::eErrorOutOfDateKHR)
 				RecreateSwapChain();
 			else

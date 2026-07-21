@@ -11,7 +11,7 @@ namespace Oyl::Rendering::Vulkan
 
 		void
 		CreateVertexBuffer(
-			const VertexBufferParams& a_params,
+			const DeviceLoadParams& a_params,
 			const byte* a_vertexData,
 			size_t a_vertexLength,
 			const byte* a_indexData,
@@ -43,7 +43,7 @@ namespace Oyl::Rendering::Vulkan
 	bool
 	VertexBufferResource::DeviceLoad(void* a_params)
 	{
-		const auto& params = *static_cast<VertexBufferParams*>(a_params);
+		const auto& params = *static_cast<DeviceLoadParams*>(a_params);
 
 		m_impl->CreateVertexBuffer(
 			params,
@@ -96,7 +96,7 @@ namespace Oyl::Rendering::Vulkan
 
 	std::pair<vk::raii::Buffer, vk::raii::DeviceMemory>
 	CreateBuffer(
-		const VertexBufferParams& a_params,
+		const VertexBufferResource::DeviceLoadParams& a_params,
 		vk::DeviceSize a_size,
 		vk::BufferUsageFlags a_usage,
 		vk::MemoryPropertyFlags a_properties
@@ -113,7 +113,7 @@ namespace Oyl::Rendering::Vulkan
 
 	void
 	CopyBuffer(
-		const VertexBufferParams& a_params,
+		const VertexBufferResource::DeviceLoadParams& a_params,
 		const vk::raii::Buffer& a_srcBuffer,
 		const vk::raii::Buffer& a_dstBuffer,
 		vk::DeviceSize a_size
@@ -143,7 +143,7 @@ namespace Oyl::Rendering::Vulkan
 
 	void
 	VertexBufferResource::Impl::CreateVertexBuffer(
-		const VertexBufferParams& a_params,
+		const DeviceLoadParams& a_params,
 		const byte* a_vertexData,
 		size_t a_vertexLength,
 		const byte* a_indexData,

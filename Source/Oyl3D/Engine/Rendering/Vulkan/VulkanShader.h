@@ -6,16 +6,7 @@
 
 namespace Oyl::Rendering::Vulkan
 {
-	struct ShaderDeviceLoadParams : DeviceLoadParams
-	{
-		const vk::raii::Device& device;
-		vk::Format format = vk::Format::eUndefined;
-	};
-
-	struct ShaderDeviceUnloadParams : DeviceUnloadParams
-	{
-		const vk::raii::Device& device;
-	};
+	class Device;
 
 	struct Vertex : Rendering::Vertex
 	{
@@ -50,8 +41,19 @@ namespace Oyl::Rendering::Vulkan
 		bool
 		Unload() override;
 
+		struct DeviceLoadParams : Oyl::DeviceLoadParams
+		{
+			const Device& device;
+			vk::Format format = vk::Format::eUndefined;
+		};
+
 		bool
 		DeviceLoad(void* a_params) override;
+
+		struct DeviceUnloadParams : Oyl::DeviceUnloadParams
+		{
+			const Device& device;
+		};
 
 		bool
 		DeviceUnload(void* a_params) override;
