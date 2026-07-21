@@ -26,12 +26,10 @@ function Spyll.CommonCppSettings(package)
 	Project.Files()
 
 	if os.isfile("pch.h") then
-		local pchDir = path.join(Config.SourceDir, "Pch")
 		pchheader "pch.h"
 		forceincludes { "pch.h" }
-		pchsource(path.join(pchDir, "pch.cpp"))
-		files { path.join(pchDir, "pch.cpp") }
-		includedirs { pchDir }
+		pchsource "%{wks.location}/pch.cpp"
+		files { "%{wks.location}/pch.cpp" }
 	end
 
 	includedirs {
