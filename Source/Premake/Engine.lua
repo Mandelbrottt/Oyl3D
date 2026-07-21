@@ -268,7 +268,7 @@ function Engine.CommonCppSettings()
 	}
 
 	if os.isfile("pch.h") then
-		local pchDir = path.join(Config.SourceDir, "Pch")
+		local pchDir = path.join("%{wks.location}", "Pch")
 		pchheader "pch.h"
 		forceincludes { "pch.h" }
 		pchsource(path.join(pchDir, "pch.cpp"))
