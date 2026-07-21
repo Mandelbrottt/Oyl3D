@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Rendering/Window/GlfwWindow.h"
+#include "Rendering/Glfw/GlfwWindow.h"
 
 namespace Oyl
 {

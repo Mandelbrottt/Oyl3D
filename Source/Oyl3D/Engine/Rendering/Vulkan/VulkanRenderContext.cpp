@@ -8,14 +8,14 @@
 
 #include <GLFW/glfw3.h>
 
-#include "RenderEngine.h"
+#include "Rendering/RenderEngine.h"
 
 #include "Core/Logging/Logging.h"
 
-#include "Rendering/Buffers/VulkanVertexBuffer.h"
-#include "Rendering/Shaders/VulkanShader.h"
-#include "Rendering/Shaders/VulkanShaderCompiler.h"
-#include "Rendering/Window/Window.h"
+#include "VulkanVertexBuffer.h"
+#include "VulkanShader.h"
+#include "VulkanShaderCompiler.h"
+#include "Rendering/Window.h"
 
 static const std::vector VALIDATION_LAYERS {
 	"VK_LAYER_KHRONOS_validation",

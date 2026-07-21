@@ -4,7 +4,7 @@
 
 #include "Core/Modules/Module.h"
 
-#include "Rendering/Window/Window.h"
+#include "Rendering/Window.h"
 
 namespace Oyl
 {

@@ -4,7 +4,7 @@
 
 #include <memory>
 
-#include "VertexBuffer.h"
+#include "Rendering/VertexBuffer.h"
 
 namespace Oyl::Rendering::Vulkan
 {

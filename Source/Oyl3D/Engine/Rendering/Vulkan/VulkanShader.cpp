@@ -4,7 +4,7 @@
 
 #include "VulkanShaderCompiler.h"
 
-#include "Rendering/Renderer/RenderEngine.h"
+#include "Rendering/RenderEngine.h"
 
 namespace Oyl::Rendering::Vulkan
 {

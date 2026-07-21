@@ -1,10 +1,10 @@
 #include "RenderControlModule.h"
 
-#include "Rendering/Renderer/RenderContext.h"
-#include "Rendering/Renderer/RenderEngine.h"
-#include "Rendering/Renderer/VulkanRenderContext.h"
-#include "Rendering/Renderer/VulkanRenderEngineInstance.h"
-#include "Rendering/Window/GlfwWindow.h"
+#include "Rendering/RenderContext.h"
+#include "Rendering/RenderEngine.h"
+#include "Rendering/Glfw/GlfwWindow.h"
+#include "Rendering/Vulkan/VulkanRenderContext.h"
+#include "Rendering/Vulkan/VulkanRenderEngineInstance.h"
 
 namespace Oyl::Rendering
 {

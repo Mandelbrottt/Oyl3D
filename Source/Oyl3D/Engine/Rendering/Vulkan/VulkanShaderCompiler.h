@@ -2,7 +2,7 @@
 
 #include <memory>
 
-#include "Rendering/Shaders/ShaderCompiler.h"
+#include "Rendering/ShaderCompiler.h"
 
 namespace Oyl::Rendering::Vulkan
 {

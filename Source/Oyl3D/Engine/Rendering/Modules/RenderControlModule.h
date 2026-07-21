@@ -2,12 +2,12 @@
 
 #include <Core/Resources/ResourceManager.h>
 
-#include <Rendering/Renderer/RenderContext.h>
+#include <Rendering/RenderContext.h>
 
 #include "Core/Modules/Module.h"
 
 #include "Rendering/Common.h"
-#include "Rendering/Renderer/RenderEngineInstance.h"
+#include "Rendering/RenderEngineInstance.h"
 
 namespace Oyl
 {

@@ -2,7 +2,7 @@
 
 #include <memory>
 
-#include "Window.h"
+#include "Rendering/Window.h"
 
 namespace Oyl::Glfw
 {

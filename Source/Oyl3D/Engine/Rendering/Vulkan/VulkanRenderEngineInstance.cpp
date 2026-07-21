@@ -2,9 +2,9 @@
 
 #include "Core/Resources/ResourceManager.h"
 
-#include "Rendering/Buffers/VulkanVertexBuffer.h"
-#include "Rendering/Shaders/VulkanShader.h"
-#include "Rendering/Shaders/VulkanShaderCompiler.h"
+#include "VulkanVertexBuffer.h"
+#include "VulkanShader.h"
+#include "VulkanShaderCompiler.h"
 
 namespace Oyl::Rendering::Vulkan
 {

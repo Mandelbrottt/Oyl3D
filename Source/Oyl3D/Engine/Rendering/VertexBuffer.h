@@ -1,10 +1,7 @@
 #pragma once
 
-#include <Core/Math/Vector.h>
 #include <Core/Resources/Resource.h>
 #include <Core/Resources/ResourceHandle.h>
-
-#include "Rendering/Common.h"
 
 namespace Oyl::Rendering
 {

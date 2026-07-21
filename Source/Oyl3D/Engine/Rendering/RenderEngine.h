@@ -1,8 +1,8 @@
 #pragma once
 
-#include "Rendering/Buffers/VertexBuffer.h"
-#include "Rendering/Renderer/RenderEngineInstance.h"
-#include "Rendering/Shaders/Shader.h"
+#include "Rendering/RenderEngineInstance.h"
+#include "Rendering/Shader.h"
+#include "Rendering/VertexBuffer.h"
 
 namespace Oyl::Rendering
 {

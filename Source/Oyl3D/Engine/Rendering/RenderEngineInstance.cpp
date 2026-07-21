@@ -1,6 +1,6 @@
 #include "RenderEngineInstance.h"
 
-#include "Rendering/Shaders/ShaderCompiler.h"
+#include "Rendering/ShaderCompiler.h"
 
 namespace Oyl::Rendering
 {

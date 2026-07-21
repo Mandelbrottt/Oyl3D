@@ -5,7 +5,7 @@
 #include "Core/Application/ApplicationEvents.h"
 #include "Core/Logging/Logging.h"
 
-#include "Rendering/Window/GlfwWindow.h"
+#include "Rendering/Glfw/GlfwWindow.h"
 
 namespace Oyl
 {

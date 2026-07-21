@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Rendering/Buffers/VertexBuffer.h"
-#include "Rendering/Shaders/Shader.h"
+#include "Rendering/VertexBuffer.h"
+#include "Rendering/Shader.h"
 
 namespace Oyl::Rendering
 {

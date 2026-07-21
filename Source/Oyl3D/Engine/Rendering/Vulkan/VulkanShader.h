@@ -2,7 +2,7 @@
 
 #include <vulkan/vulkan_raii.hpp>
 
-#include "Shader.h"
+#include "Rendering/Shader.h"
 
 namespace Oyl::Rendering::Vulkan
 {
