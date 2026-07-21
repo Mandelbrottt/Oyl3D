@@ -1,6 +1,6 @@
 local Engine = require "Engine"
 
-group "Executables"
+group "Oyl/Executables"
 
 startproject "Oyl.Application"
 

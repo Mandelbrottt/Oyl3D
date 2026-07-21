@@ -1,6 +1,6 @@
 local Engine = require "Engine"
 
-group "Engine"
+group "Oyl/Engine"
 
 project "Oyl.Rendering"; do
 	language "C++"

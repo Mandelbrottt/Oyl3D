@@ -25,3 +25,5 @@ Makefile
 
 # Generated Source Files
 *.generated.*
+.Include
+.Generated

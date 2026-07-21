@@ -1,4 +1,4 @@
-group "Executables"
+group "Oyl/Tools"
 
 project "Oyl.Spyll"; do
 	language "C++"

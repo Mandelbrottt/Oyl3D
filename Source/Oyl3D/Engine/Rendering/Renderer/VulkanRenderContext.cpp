@@ -550,7 +550,7 @@ namespace Oyl::Rendering::Vulkan
 		OYL_ASSERT(resourceManager);
 
 		shader = resourceManager->Load<Shader>(
-			"G:/dev/Oyl3D/Oyl3D/Source/Oyl3D/Core/Shaders/shader.hlsl",
+			"G:/dev/Oyl3D/Oyl3D/Source/Oyl3D/Engine/Rendering/Shaders/shader.hlsl",
 			&shaderCompiler
 		);
 	}
