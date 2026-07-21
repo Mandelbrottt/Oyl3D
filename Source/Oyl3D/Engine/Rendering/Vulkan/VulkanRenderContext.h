@@ -12,6 +12,10 @@ namespace Oyl::Rendering::Vulkan
 		explicit
 		RenderContext(const RenderContextParams& a_params) noexcept;
 
+		RenderContext(const RenderContext&) = delete;
+		RenderContext&
+		operator=(const RenderContext&) = delete;
+
 		RenderContext(RenderContext&& a_other) noexcept;
 		RenderContext&
 		operator=(RenderContext&& a_other) noexcept;

@@ -10,9 +10,6 @@ namespace Oyl::Rendering
 		Device();
 
 	public:
-		virtual
-		~Device();
-
 		Device(const Device& a_other) = delete;
 		virtual
 		Device&
@@ -24,10 +21,23 @@ namespace Oyl::Rendering
 		operator =(Device&& a_other) = default;
 
 		virtual
+		~Device();
+
+		virtual
 		bool
 		Destroy()
 		{
 			return true;
+		}
+
+		virtual
+		bool
+		IsValid() const = 0;
+
+		explicit
+		operator bool() const
+		{
+			return IsValid();
 		}
 	};
 }

@@ -30,21 +30,22 @@ namespace Oyl::Rendering::Vulkan
 		explicit
 		Device(const DeviceParams& a_params);
 
-		virtual
-		~Device();
-
 		Device(const Device& a_other) = delete;
-		virtual
 		Device&
 		operator =(const Device& a_other) = delete;
 
 		Device(Device&& a_other) noexcept;
-		virtual
 		Device&
 		operator =(Device&& a_other) noexcept;
 
+		virtual
+		~Device();
+
 		bool
 		Destroy() override;
+
+		bool
+		IsValid() const override;
 
 		const vk::raii::Device&
 		GetVkDevice() const;

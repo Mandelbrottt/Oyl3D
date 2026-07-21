@@ -11,6 +11,7 @@
 #include "VulkanDevice.h"
 #include "VulkanShader.h"
 #include "VulkanShaderCompiler.h"
+#include "VulkanSwapChain.h"
 #include "VulkanVertexBuffer.h"
 
 #include "Core/Logging/Logging.h"
@@ -47,18 +48,6 @@ namespace
 
 	std::vector<const char*>
 	GetRequiredInstanceExtensions();
-
-	vk::SurfaceFormatKHR
-	ChooseSwapSurfaceFormat(const std::vector<vk::SurfaceFormatKHR>& a_availableFormats);
-
-	vk::PresentModeKHR
-	ChooseSwapPresentMode(const std::vector<vk::PresentModeKHR>& a_availablePresentModes);
-
-	vk::Extent2D
-	ChooseSwapExtent(const vk::SurfaceCapabilitiesKHR& a_capabilities, Oyl::Vector2u a_frameBufferSize);
-
-	Oyl::uint32
-	ChooseSwapMinImageCount(const vk::SurfaceCapabilitiesKHR& a_capabilities);
 }
 
 constexpr int MAX_FRAMES_IN_FLIGHT = 2;
@@ -77,17 +66,13 @@ namespace Oyl::Rendering::Vulkan
 
 		Device device;
 
-		//vk::raii::PhysicalDevice physicalDevice = nullptr;
+		SwapChain swapChain;
 
-		//uint32 queueIndex;
-		//vk::raii::Device device = nullptr;
-		//vk::raii::Queue graphicsQueue = nullptr;
-
-		vk::raii::SwapchainKHR swapChain = nullptr;
-		std::vector<vk::Image> swapChainImages;
-		std::vector<vk::raii::ImageView> swapChainImageViews;
-		vk::SurfaceFormatKHR swapChainSurfaceFormat;
-		vk::Extent2D swapChainExtent;
+		//vk::raii::SwapchainKHR swapChain = nullptr;
+		//std::vector<vk::Image> swapChainImages;
+		//std::vector<vk::raii::ImageView> swapChainImageViews;
+		//vk::SurfaceFormatKHR swapChainSurfaceFormat;
+		//vk::Extent2D swapChainExtent;
 
 		ShaderCompiler shaderCompiler;
 		Shader shader;
@@ -110,14 +95,6 @@ namespace Oyl::Rendering::Vulkan
 		SetupDebugMessenger();
 		void
 		CreateSurface();
-		void
-		CreateSwapChain();
-		void
-		CreateSwapChainImageViews();
-		void
-		CleanupSwapChain();
-		void
-		RecreateSwapChain();
 		void
 		CreateGraphicsPipeline();
 		void
@@ -196,8 +173,12 @@ namespace Oyl::Rendering::Vulkan
 			.requiredDeviceExtensionsLength = REQUIRED_DEVICE_EXTENSION.size()
 		});
 
-		m_impl->CreateSwapChain();
-		m_impl->CreateSwapChainImageViews();
+		m_impl->swapChain = SwapChain({
+			.window = *m_impl->window,
+			.device = m_impl->device,
+			.surface = m_impl->surface
+		});
+
 		m_impl->CreateGraphicsPipeline();
 		m_impl->CreateCommandPool();
 		m_impl->CreateVertexBuffer();
@@ -222,7 +203,7 @@ namespace Oyl::Rendering::Vulkan
 		{
 			ShaderResource::DeviceLoadParams params {
 				.device = m_impl->device,
-				.format = m_impl->swapChainSurfaceFormat.format
+				.format = m_impl->swapChain.GetVkSurfaceFormat().format
 			};
 			m_impl->shader->DeviceLoad(&params);
 		}
@@ -262,7 +243,7 @@ namespace Oyl::Rendering::Vulkan
 		m_impl->shader->DeviceUnload(nullptr);
 		m_impl->shader->Unload();
 
-		m_impl->CleanupSwapChain();
+		m_impl->swapChain.Destroy();
 
 		*m_impl = {};
 	}
@@ -270,7 +251,8 @@ namespace Oyl::Rendering::Vulkan
 	void
 	RenderContext::Resize(Vector2i /*a_size*/)
 	{
-		m_impl->RecreateSwapChain();
+		// No need to pass in a_size - we get the size from the window directly
+		m_impl->swapChain.Recreate();
 	}
 
 	void
@@ -387,94 +369,6 @@ namespace Oyl::Rendering::Vulkan
 	}
 
 	void
-	RenderContext::Impl::CreateSwapChain()
-	{
-		OYL_PROFILE_FUNCTION();
-
-		GLFWwindow* glfwWindow = static_cast<GLFWwindow*>(window->GetNativeWindowHandle());
-		int width, height;
-		glfwGetFramebufferSize(glfwWindow, &width, &height);
-
-		const auto& physicalDevice = device.GetVkPhysicalDevice();
-		vk::SurfaceCapabilitiesKHR surfaceCapabilities = physicalDevice.getSurfaceCapabilitiesKHR(*surface);
-		swapChainExtent = ChooseSwapExtent(surfaceCapabilities, { (uint) width, (uint) height });
-		uint32_t minImageCount = ChooseSwapMinImageCount(surfaceCapabilities);
-
-		std::vector<vk::SurfaceFormatKHR> availableFormats = physicalDevice.getSurfaceFormatsKHR(*surface);
-		swapChainSurfaceFormat = ChooseSwapSurfaceFormat(availableFormats);
-
-		std::vector<vk::PresentModeKHR> availablePresentModes = physicalDevice.getSurfacePresentModesKHR(surface);
-		vk::PresentModeKHR presentMode = ChooseSwapPresentMode(availablePresentModes);
-
-		vk::SwapchainCreateInfoKHR swapChainCreateInfo {
-			.surface = surface,
-			.minImageCount = minImageCount,
-			.imageFormat = swapChainSurfaceFormat.format,
-			.imageColorSpace = swapChainSurfaceFormat.colorSpace,
-			.imageExtent = swapChainExtent,
-			.imageArrayLayers = 1,
-			.imageUsage = vk::ImageUsageFlagBits::eColorAttachment,
-			.imageSharingMode = vk::SharingMode::eExclusive,
-			.preTransform = surfaceCapabilities.currentTransform,
-			.compositeAlpha = vk::CompositeAlphaFlagBitsKHR::eOpaque,
-			.presentMode = presentMode,
-			.clipped = true,
-			.oldSwapchain = nullptr
-		};
-		swapChain = vk::raii::SwapchainKHR(device.GetVkDevice(), swapChainCreateInfo);
-		swapChainImages = swapChain.getImages();
-	}
-
-	void
-	RenderContext::Impl::CreateSwapChainImageViews()
-	{
-		OYL_PROFILE_FUNCTION();
-
-		OYL_ASSERT(swapChainImageViews.empty());
-
-		vk::ImageViewCreateInfo imageViewCreateInfo {
-			.viewType = vk::ImageViewType::e2D,
-			.format = swapChainSurfaceFormat.format,
-			.subresourceRange = {
-				.aspectMask = vk::ImageAspectFlagBits::eColor,
-				.levelCount = 1,
-				.layerCount = 1
-			},
-		};
-		for (auto& image : swapChainImages)
-		{
-			imageViewCreateInfo.image = image;
-			swapChainImageViews.emplace_back(device.GetVkDevice(), imageViewCreateInfo);
-		}
-	}
-
-	void
-	RenderContext::Impl::CleanupSwapChain()
-	{
-		swapChainImageViews.clear();
-		swapChain = nullptr;
-	}
-
-	void
-	RenderContext::Impl::RecreateSwapChain()
-	{
-		device.GetVkDevice().waitIdle();
-
-		CleanupSwapChain();
-
-		int width = 0, height = 0;
-		auto glfwWindow = static_cast<GLFWwindow*>(window->GetNativeWindowHandle());
-		glfwGetFramebufferSize(glfwWindow, &width, &height);
-		if (width == 0 || height == 0)
-		{
-			return;
-		}
-
-		CreateSwapChain();
-		CreateSwapChainImageViews();
-	}
-
-	void
 	RenderContext::Impl::CreateGraphicsPipeline()
 	{
 		OYL_PROFILE_FUNCTION();
@@ -544,19 +438,21 @@ namespace Oyl::Rendering::Vulkan
 
 		OYL_ASSERT(renderFinishedSemaphores.empty() && presentCompleteSemaphores.empty() && inFlightFences.empty());
 
-		for (size_t i = 0; i < swapChainImages.size(); i++)
+		const auto& vkDevice = device.GetVkDevice();
+
+		for (size_t i = 0; i < swapChain.GetVkImages().size(); i++)
 		{
-			renderFinishedSemaphores.emplace_back(device.GetVkDevice(), vk::SemaphoreCreateInfo {});
+			renderFinishedSemaphores.emplace_back(vkDevice, vk::SemaphoreCreateInfo {});
 		}
 
 		for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++)
 		{
 			presentCompleteSemaphores.emplace_back(
-				device.GetVkDevice(),
+				vkDevice,
 				vk::SemaphoreCreateInfo {}
 			);
 			inFlightFences.emplace_back(
-				device.GetVkDevice(),
+				vkDevice,
 				vk::FenceCreateInfo { .flags = vk::FenceCreateFlagBits::eSignaled }
 			);
 		}
@@ -581,6 +477,8 @@ namespace Oyl::Rendering::Vulkan
 			vk::PipelineStageFlagBits2::eColorAttachmentOutput
 		);
 
+		const auto& swapChainImageViews = swapChain.GetVkImageViews();
+
 		vk::ClearValue clearColor = vk::ClearColorValue(0.0f, 0.0f, 0.0f, 1.0f);
 		vk::RenderingAttachmentInfo attachmentInfo = {
 			.imageView = swapChainImageViews[a_imageIndex],
@@ -589,6 +487,8 @@ namespace Oyl::Rendering::Vulkan
 			.storeOp = vk::AttachmentStoreOp::eStore,
 			.clearValue = clearColor
 		};
+
+		const auto& swapChainExtent = swapChain.GetVkExtent();
 
 		vk::RenderingInfo renderingInfo = {
 			.renderArea = { .offset = { 0, 0 }, .extent = swapChainExtent },
@@ -644,6 +544,8 @@ namespace Oyl::Rendering::Vulkan
 	{
 		OYL_PROFILE_FUNCTION();
 
+		const auto& swapChainImages = swapChain.GetVkImages();
+
 		vk::ImageMemoryBarrier2 barrier = {
 			.srcStageMask = a_srcStageMask,
 			.srcAccessMask = a_srcAccessMask,
@@ -675,21 +577,24 @@ namespace Oyl::Rendering::Vulkan
 	{
 		OYL_PROFILE_FUNCTION();
 
-		if (swapChain == nullptr)
+		if (!swapChain)
 			return;
+
+		const auto& vkDevice = device.GetVkDevice();
+		const auto& vkSwapChain = swapChain.GetVkSwapChain();
 
 		auto& drawFence = inFlightFences[frameIndex];
 		auto& presentCompleteSemaphore = presentCompleteSemaphores[frameIndex];
 		auto& commandBuffer = commandBuffers[frameIndex];
 
-		auto fenceResult = device.GetVkDevice().waitForFences(*drawFence, vk::True, UINT64_MAX);
+		auto fenceResult = vkDevice.waitForFences(*drawFence, vk::True, UINT64_MAX);
 		if (fenceResult != vk::Result::eSuccess)
 			throw std::runtime_error("Failed to wait for fence!");
 
-		auto [result, imageIndex] = swapChain.acquireNextImage(UINT64_MAX, *presentCompleteSemaphore, nullptr);
+		auto [result, imageIndex] = vkSwapChain.acquireNextImage(UINT64_MAX, *presentCompleteSemaphore, nullptr);
 		if (result == vk::Result::eErrorOutOfDateKHR)
 		{
-			RecreateSwapChain();
+			swapChain.Recreate();
 			return;
 		}
 		if (result != vk::Result::eSuccess && result != vk::Result::eSuboptimalKHR)
@@ -699,7 +604,7 @@ namespace Oyl::Rendering::Vulkan
 		}
 
 		// Only reset fences if we are going to submit work to the GPU
-		device.GetVkDevice().resetFences(*drawFence);
+		vkDevice.resetFences(*drawFence);
 
 		RecordCommandBuffer(imageIndex);
 		//graphicsQueue.waitIdle();
@@ -726,13 +631,13 @@ namespace Oyl::Rendering::Vulkan
 				.waitSemaphoreCount = 1,
 				.pWaitSemaphores = &*renderFinishedSemaphore,
 				.swapchainCount = 1,
-				.pSwapchains = &*swapChain,
+				.pSwapchains = &*vkSwapChain,
 				.pImageIndices = &imageIndex
 			};
 
 			result = device.GetVkGraphicsQueue().presentKHR(presentInfoKHR);
 			if (result == vk::Result::eSuboptimalKHR || result == vk::Result::eErrorOutOfDateKHR)
-				RecreateSwapChain();
+				swapChain.Recreate();
 			else
 				OYL_ASSERT(result == vk::Result::eSuccess);
 		}
@@ -796,126 +701,5 @@ namespace
 			extensions.push_back(vk::EXTDebugUtilsExtensionName);
 		}
 		return extensions;
-	}
-
-	bool
-	IsDeviceSuitable(const vk::raii::PhysicalDevice& a_physicalDevice)
-	{
-		// Check if the physicalDevice supports the Vulkan 1.3 API version
-		bool supportsVulkan1_3 = a_physicalDevice.getProperties().apiVersion >= vk::ApiVersion13;
-
-		// Check if any of the queue families support graphics operations
-		auto queueFamilies = a_physicalDevice.getQueueFamilyProperties();
-		bool supportsGraphics = std::ranges::any_of(
-			queueFamilies,
-			[](const auto& a_qfp)
-			{
-				return !!(a_qfp.queueFlags & vk::QueueFlagBits::eGraphics);
-			}
-		);
-
-		// Check if all required physicalDevice extensions are available
-		auto availableDeviceExtensions = a_physicalDevice.enumerateDeviceExtensionProperties();
-		bool supportsAllRequiredExtensions =
-			std::ranges::all_of(
-				REQUIRED_DEVICE_EXTENSION,
-				[&availableDeviceExtensions](const auto& a_requiredDeviceExtension)
-				{
-					return std::ranges::any_of(
-						availableDeviceExtensions,
-						[a_requiredDeviceExtension](const auto& a_availableDeviceExtension)
-						{
-							return strcmp(a_availableDeviceExtension.extensionName, a_requiredDeviceExtension) == 0;
-						}
-					);
-				}
-			);
-
-		// Check if the physicalDevice supports the required features (shader draw parameters, dynamic rendering and extended dynamic state)
-		auto features = a_physicalDevice.getFeatures2<vk::PhysicalDeviceFeatures2,
-		                                              vk::PhysicalDeviceVulkan11Features,
-		                                              vk::PhysicalDeviceVulkan13Features,
-		                                              vk::PhysicalDeviceExtendedDynamicStateFeaturesEXT>();
-		bool supportsRequiredFeatures = features.get<vk::PhysicalDeviceVulkan11Features>().shaderDrawParameters &&
-		                                features.get<vk::PhysicalDeviceVulkan13Features>().dynamicRendering &&
-		                                features.get<vk::PhysicalDeviceExtendedDynamicStateFeaturesEXT>().extendedDynamicState;
-
-		// Return true if the physicalDevice meets all the criteria
-		return supportsVulkan1_3 && supportsGraphics && supportsAllRequiredExtensions && supportsRequiredFeatures;
-	}
-
-	vk::SurfaceFormatKHR
-	ChooseSwapSurfaceFormat(const std::vector<vk::SurfaceFormatKHR>& a_availableFormats)
-	{
-		OYL_ASSERT(!a_availableFormats.empty());
-
-		const auto formatIt = std::ranges::find_if(
-			a_availableFormats,
-			[](const auto& a_format)
-			{
-				return a_format.format == vk::Format::eB8G8R8A8Srgb
-				       && a_format.colorSpace == vk::ColorSpaceKHR::eSrgbNonlinear;
-			}
-		);
-
-		// Valid format not found, bail
-		if (formatIt == a_availableFormats.end())
-		{
-			return a_availableFormats[0];
-		}
-		// Return found format
-		return *formatIt;
-	}
-
-	vk::PresentModeKHR
-	ChooseSwapPresentMode(const std::vector<vk::PresentModeKHR>& a_availablePresentModes)
-	{
-		OYL_ASSERT(
-			std::ranges::any_of(
-				a_availablePresentModes,
-				[](auto presentMode)
-				{
-				return presentMode == vk::PresentModeKHR::eFifo;
-				}
-			)
-		);
-
-		auto anyOfMailboxMode = std::ranges::any_of(
-			a_availablePresentModes,
-			[](const vk::PresentModeKHR a_value)
-			{
-				return vk::PresentModeKHR::eMailbox == a_value;
-			}
-		);
-
-		return anyOfMailboxMode
-			       ? vk::PresentModeKHR::eMailbox
-			       : vk::PresentModeKHR::eFifo;
-	}
-
-	vk::Extent2D
-	ChooseSwapExtent(const vk::SurfaceCapabilitiesKHR& a_capabilities, Oyl::Vector2u a_frameBufferSize)
-	{
-		if (a_capabilities.currentExtent.width != std::numeric_limits<uint32_t>::max())
-		{
-			return a_capabilities.currentExtent;
-		}
-
-		return {
-			std::clamp<uint32_t>(a_frameBufferSize.x, a_capabilities.minImageExtent.width, a_capabilities.maxImageExtent.width),
-			std::clamp<uint32_t>(a_frameBufferSize.y, a_capabilities.minImageExtent.height, a_capabilities.maxImageExtent.height)
-		};
-	}
-
-	Oyl::uint32
-	ChooseSwapMinImageCount(const vk::SurfaceCapabilitiesKHR& a_capabilities)
-	{
-		auto minImageCount = std::max(3u, a_capabilities.minImageCount);
-		if ((0 < a_capabilities.maxImageCount)
-		    && (a_capabilities.maxImageCount < minImageCount))
-		{
-			minImageCount = a_capabilities.maxImageCount;
-		}
-		return minImageCount;
 	}
 }

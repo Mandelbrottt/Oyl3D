@@ -26,6 +26,8 @@ namespace Oyl::Rendering::Vulkan
 	Device::Device(const DeviceParams& a_params)
 		: m_impl(std::make_unique<Impl>())
 	{
+		OYL_PROFILE_FUNCTION();
+
 		if (a_params.ppRequiredDeviceExtensionsData && a_params.requiredDeviceExtensionsLength > 0)
 		{
 			m_impl->requiredDeviceExtensions.reserve(a_params.requiredDeviceExtensionsLength);
@@ -40,11 +42,6 @@ namespace Oyl::Rendering::Vulkan
 		m_impl->CreateLogicalDevice(a_params.surface);
 	}
 
-	Device::~Device()
-	{
-		Device::Destroy();
-	}
-
 	Device::Device(Device&& a_other) noexcept
 		: m_impl(nullptr)
 	{
@@ -54,13 +51,23 @@ namespace Oyl::Rendering::Vulkan
 	Device&
 	Device::operator=(Device&& a_other) noexcept
 	{
+		if (this == &a_other)
+			return *this;
+
 		std::swap(m_impl, a_other.m_impl);
 		return *this;
+	}
+
+	Device::~Device()
+	{
+		Device::Destroy();
 	}
 
 	bool
 	Device::Destroy()
 	{
+		OYL_PROFILE_FUNCTION();
+
 		if (!m_impl)
 			return Rendering::Device::Destroy();
 
@@ -70,7 +77,15 @@ namespace Oyl::Rendering::Vulkan
 		m_impl->physicalDevice = nullptr;
 		m_impl->requiredDeviceExtensions.clear();
 
+		m_impl.release();
+
 		return Rendering::Device::Destroy();
+	}
+
+	bool
+	Device::IsValid() const
+	{
+		return m_impl && m_impl->device != nullptr;
 	}
 
 	const vk::raii::Device&
