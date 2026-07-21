@@ -96,11 +96,7 @@ namespace Oyl::Rendering::Vulkan
 		void
 		CreateSurface();
 		void
-		CreateGraphicsPipeline();
-		void
 		CreateCommandPool();
-		void
-		CreateVertexBuffer();
 		void
 		CreateCommandBuffers();
 		void
@@ -179,9 +175,34 @@ namespace Oyl::Rendering::Vulkan
 			.surface = m_impl->surface
 		});
 
-		m_impl->CreateGraphicsPipeline();
+		m_impl->shader = RenderEngine::CreateShader({
+			.language = SL_Hlsl,
+			.source = ShaderOptions::SO_File,
+			.filepath = "G:/dev/Oyl3D/Oyl3D/Source/Oyl3D/Engine/Rendering/Shaders/shader.hlsl"
+		});
+
 		m_impl->CreateCommandPool();
-		m_impl->CreateVertexBuffer();
+
+		const std::vector vertices {
+			Vertex { Vector2f { -0.5f, -0.5f }, Vector3f { 1.0f, 0.0f, 0.0f } },
+			Vertex { Vector2f { 0.5f, -0.5f }, Vector3f { 0.0f, 1.0f, 0.0f } },
+			Vertex { Vector2f { 0.5f, 0.5f }, Vector3f { 0.0f, 0.0f, 1.0f } },
+			Vertex { Vector2f { -0.5f, 0.5f }, Vector3f { 1.0f, 1.0f, 1.0f } },
+		};
+
+		const std::vector<uint16> indices { 0, 1, 2, 2, 3, 0 };
+
+		auto verticesBuffer = reinterpret_cast<const byte*>(vertices.data());
+		auto indicesBuffer = reinterpret_cast<const byte*>(indices.data());
+
+		m_impl->vertexBuffer = RenderEngine::CreateVertexBuffer({
+			.vertexData = verticesBuffer,
+			.vertexDataLength = vertices.size() * sizeof(decltype(vertices)::value_type),
+			.vertexStride = sizeof(decltype(vertices)::value_type),
+			.indexData = indicesBuffer,
+			.indexDataLength = indices.size() * sizeof(decltype(indices)::value_type),
+		});
+
 		m_impl->CreateCommandBuffers();
 		m_impl->CreateSyncObjects();
 	}
@@ -244,6 +265,7 @@ namespace Oyl::Rendering::Vulkan
 		m_impl->shader->Unload();
 
 		m_impl->swapChain.Destroy();
+		m_impl->device.Destroy();
 
 		*m_impl = {};
 	}
@@ -369,19 +391,6 @@ namespace Oyl::Rendering::Vulkan
 	}
 
 	void
-	RenderContext::Impl::CreateGraphicsPipeline()
-	{
-		OYL_PROFILE_FUNCTION();
-
-		auto options = ShaderOptions {
-			.language = SL_Hlsl,
-			.source = ShaderOptions::SO_File,
-			.filepath = "G:/dev/Oyl3D/Oyl3D/Source/Oyl3D/Engine/Rendering/Shaders/shader.hlsl"
-		};
-		shader = RenderEngine::CreateShader(options);
-	}
-
-	void
 	RenderContext::Impl::CreateCommandPool()
 	{
 		OYL_PROFILE_FUNCTION();
@@ -392,29 +401,6 @@ namespace Oyl::Rendering::Vulkan
 		};
 
 		commandPool = vk::raii::CommandPool(device.GetVkDevice(), poolInfo);
-	}
-
-	const std::vector g_vertices {
-		Vertex { Vector2f { -0.5f, -0.5f }, Vector3f { 1.0f, 0.0f, 0.0f } },
-		Vertex { Vector2f { 0.5f, -0.5f }, Vector3f { 0.0f, 1.0f, 0.0f } },
-		Vertex { Vector2f { 0.5f, 0.5f }, Vector3f { 0.0f, 0.0f, 1.0f } },
-		Vertex { Vector2f { -0.5f, 0.5f }, Vector3f { 1.0f, 1.0f, 1.0f } },
-	};
-
-	const std::vector<uint16> g_indices { 0, 1, 2, 2, 3, 0 };
-
-	void
-	RenderContext::Impl::CreateVertexBuffer()
-	{
-		auto verticesBuffer = reinterpret_cast<const byte*>(g_vertices.data());
-		auto indicesBuffer = reinterpret_cast<const byte*>(g_indices.data());
-
-		vertexBuffer = RenderEngine::CreateVertexBuffer({
-			.vertexData = verticesBuffer,
-			.vertexLength = g_vertices.size() * sizeof(decltype(g_vertices)::value_type),
-			.indexData = indicesBuffer,
-			.indexLength = g_indices.size() * sizeof(decltype(g_indices)::value_type)
-		});
 	}
 
 	void
@@ -519,11 +505,11 @@ namespace Oyl::Rendering::Vulkan
 		{
 			commandBuffer.bindIndexBuffer(*vertexBuffer->GetVkBuffer(), 0, vk::IndexType::eUint16);
 			commandBuffer.bindVertexBuffers(0, *vertexBuffer->GetVkBuffer(), { vertexBuffer->GetVertexDataOffset() });
-			commandBuffer.drawIndexed(static_cast<uint32>(g_indices.size()), 1, 0, 0, 0);
+			commandBuffer.drawIndexed(vertexBuffer->GetIndexCount(), 1, 0, 0, 0);
 		} else
 		{
 			commandBuffer.bindVertexBuffers(0, *vertexBuffer->GetVkBuffer(), { vertexBuffer->GetVertexDataOffset() });
-			commandBuffer.draw(static_cast<uint32>(g_vertices.size()), 1, 0, 0);
+			commandBuffer.draw(vertexBuffer->GetVertexCount(), 1, 0, 0);
 		}
 
 		commandBuffer.endRendering();
