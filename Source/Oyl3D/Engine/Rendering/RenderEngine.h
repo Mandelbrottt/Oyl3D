@@ -13,9 +13,12 @@ namespace Oyl::Rendering
 	public:
 		RenderEngine() = delete;
 
-		//static inline
-		//Device
-		//GetCurrentDevice();
+		static
+		const Device*
+		GetCurrentDevice()
+		{
+			return s_instance->GetCurrentDevice();
+		}
 
 		static
 		const ShaderCompiler*

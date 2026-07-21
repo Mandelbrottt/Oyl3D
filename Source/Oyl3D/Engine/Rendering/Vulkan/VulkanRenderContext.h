@@ -1,5 +1,7 @@
 #pragma once
 
+#include "VulkanDevice.h"
+
 #include "Rendering/RenderContext.h"
 
 namespace Oyl::Rendering::Vulkan
@@ -34,6 +36,9 @@ namespace Oyl::Rendering::Vulkan
 
 		void
 		Resize(Vector2i a_size) override;
+
+		const Device*
+		GetDevice() const override;
 
 	private:
 		struct Impl;

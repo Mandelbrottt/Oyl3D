@@ -14,6 +14,8 @@ namespace Oyl
 
 namespace Oyl::Rendering
 {
+	class Device;
+
 	struct RenderContextParams
 	{
 		Window* window;
@@ -53,6 +55,10 @@ namespace Oyl::Rendering
 
 		virtual
 		void
-		Resize(Vector2i a_size);
+		Resize(Vector2i a_size) = 0;
+
+		virtual
+		const Device*
+		GetDevice() const = 0;
 	};
 }

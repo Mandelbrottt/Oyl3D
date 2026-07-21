@@ -1,15 +1,19 @@
 #include "VulkanRenderEngineInstance.h"
 
-#include "Core/Resources/ResourceManager.h"
-
-#include "VulkanVertexBuffer.h"
+#include "VulkanRenderContext.h"
 #include "VulkanShader.h"
 #include "VulkanShaderCompiler.h"
+#include "VulkanVertexBuffer.h"
+
+#include "Core/Resources/ResourceManager.h"
 
 namespace Oyl::Rendering::Vulkan
 {
-	RenderEngineInstance::RenderEngineInstance(Internal::ResourceManager* a_resourceManager)
-		: Rendering::RenderEngineInstance(a_resourceManager)
+	RenderEngineInstance::RenderEngineInstance(
+		Internal::ResourceManager* a_resourceManager,
+		const RenderContext* a_renderContext
+	)
+		: Rendering::RenderEngineInstance(a_resourceManager, a_renderContext)
 	{
 		RenderEngineInstance::SetShaderCompiler(std::make_unique<ShaderCompiler>());
 	}

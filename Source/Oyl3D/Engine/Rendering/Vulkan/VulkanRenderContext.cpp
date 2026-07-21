@@ -277,6 +277,12 @@ namespace Oyl::Rendering::Vulkan
 		m_impl->swapChain.Recreate();
 	}
 
+	const Device*
+	RenderContext::GetDevice() const
+	{
+		return &m_impl->device;
+	}
+
 	void
 	RenderContext::Impl::CreateInstance()
 	{

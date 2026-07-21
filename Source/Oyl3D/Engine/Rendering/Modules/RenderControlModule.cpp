@@ -49,10 +49,13 @@ namespace Oyl::Rendering
 
 		m_resourceManager = std::make_unique<Internal::ResourceManager>();
 
-		m_renderEngineInstance = std::make_unique<Vulkan::RenderEngineInstance>(m_resourceManager.get());
-		RenderEngine::SetInstance(m_renderEngineInstance.get());
-
 		m_renderContext = std::make_unique<Vulkan::RenderContext>();
+
+		m_renderEngineInstance = std::make_unique<Vulkan::RenderEngineInstance>(
+			m_resourceManager.get(),
+			static_cast<const Vulkan::RenderContext*>(m_renderContext.get())
+		);
+		RenderEngine::SetInstance(m_renderEngineInstance.get());
 
 		auto renderContextParams = RenderContextParams {
 			.window = m_mainWindow,
