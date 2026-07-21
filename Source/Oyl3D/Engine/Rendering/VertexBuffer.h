@@ -8,11 +8,11 @@ namespace Oyl::Rendering
 	struct VertexBufferOptions
 	{
 		const byte* vertexData;
-		size_t vertexDataLength;
+		size_t vertexLength;
 		uint32 vertexStride;
 
 		const byte* indexData;
-		size_t indexDataLength;
+		size_t indexLength;
 	};
 
 	class OYL_RENDERING_API VertexBufferResource : public DeviceResource<VertexBufferResource>

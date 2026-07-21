@@ -6,10 +6,10 @@ namespace Oyl::Rendering
 
 	VertexBufferResource::VertexBufferResource(const VertexBufferOptions& a_options)
 	{
-		SetVertexData(a_options.vertexData, a_options.vertexDataLength, a_options.vertexStride);
+		SetVertexData(a_options.vertexData, a_options.vertexLength, a_options.vertexStride);
 
-		if (a_options.indexData && a_options.indexDataLength > 0)
-			SetIndexData(a_options.indexData, a_options.indexDataLength);
+		if (a_options.indexData && a_options.indexLength > 0)
+			SetIndexData(a_options.indexData, a_options.indexLength);
 	}
 
 	VertexBufferResource::~VertexBufferResource()

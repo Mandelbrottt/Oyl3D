@@ -197,10 +197,10 @@ namespace Oyl::Rendering::Vulkan
 
 		m_impl->vertexBuffer = RenderEngine::CreateVertexBuffer({
 			.vertexData = verticesBuffer,
-			.vertexDataLength = vertices.size() * sizeof(decltype(vertices)::value_type),
+			.vertexLength = vertices.size() * sizeof(decltype(vertices)::value_type),
 			.vertexStride = sizeof(decltype(vertices)::value_type),
 			.indexData = indicesBuffer,
-			.indexDataLength = indices.size() * sizeof(decltype(indices)::value_type),
+			.indexLength = indices.size() * sizeof(decltype(indices)::value_type),
 		});
 
 		m_impl->CreateCommandBuffers();
