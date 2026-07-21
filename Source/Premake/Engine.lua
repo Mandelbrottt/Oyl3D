@@ -63,7 +63,7 @@ function Engine.SetupProjectFromScript(script)
 
 	Project.PrependBlocks(function()
 		Project.Files()
-		
+
 		CommonProjectSettings()
 	end)
 
@@ -146,8 +146,22 @@ function Engine.GenerateProjects(params)
 	-- Recurse through the source directory and include all premake scripts
 	local scripts = os.matchfiles("**/premake5.lua")
 	for _, script in ipairs(scripts) do
-		local prj = Engine.SetupProjectFromScript(script)
-		engineProjects[prj.name] = prj
+		function containsDotInclude(filepath)
+			if filepath == "." then
+				return false
+			end
+
+			if path.getname(filepath) == ".Include" then
+				return true
+			end
+
+			return containsDotInclude(path.getdirectory(filepath))
+		end
+
+		if not containsDotInclude(script) then
+			local prj = Engine.SetupProjectFromScript(script)
+			engineProjects[prj.name] = prj
+		end
 	end
 
 	-- Iterate all workspace projects
@@ -155,6 +169,13 @@ function Engine.GenerateProjects(params)
 	--     Remove projects that aren't referenced
 	for _, prj in pairs(engineProjects) do
 		project(prj.name)
+
+		-- Remove the .Include directory
+		local prjIncludeFolder = path.join(prj.basedir, ".Include")
+		if os.isdir(prjIncludeFolder) then
+			os.rmdir(prjIncludeFolder)
+		end
+
 		for _, link in ipairs(prj.links) do
 			local proj = engineProjects[link]
 			if proj then
@@ -174,16 +195,36 @@ function Engine.GenerateProjects(params)
 				end
 				filter {}
 
-				-- Add link's basedir as includedirs
-				local projectParentPath = path.getdirectory(proj.basedir)
-				includedirs { projectParentPath }
-				externalincludedirs { projectParentPath }
+				-- project has a valid engine project link, add the include directory
+				if not os.isdir(prjIncludeFolder) then
+					os.mkdir(prjIncludeFolder)
+
+					-- Mark the directory as hidden
+					if os.host() == premake.WINDOWS then
+						os.executef("attrib +h %s /s /d", prjIncludeFolder)
+					end
+				end
+
+				-- Add a symlink of the link project to the .Include dir
+				os.linkdir(
+					proj.basedir,
+					path.join(
+						prjIncludeFolder,
+						path.getname(proj.basedir)
+					)
+				)
 			end
 
 			local package = params.Packages[link]
 			if package then
 				Package.Include(package)
 			end
+		end
+
+		-- If include file exists, add it as an include directory
+		if os.isdir(prjIncludeFolder) then
+			includedirs { prjIncludeFolder }
+			externalincludedirs { prjIncludeFolder }
 		end
 	end
 
@@ -302,7 +343,7 @@ function Engine.GenerateOylSpyllInformation()
 	dependson {
 		"Oyl.Spyll",
 	}
-	
+
 	-- Handle this logic in tokenized strings to ensure proper project filters are applied
 	local spyllCommand = path.join(Config.BinariesDir, "Oyl.Spyll.exe")
 
@@ -323,7 +364,7 @@ function Engine.GenerateOylSpyllInformation()
 	end
 
 	appendToCommand '--define="%{table.concat(prj.defines, ";")}"'
-	
+
 	-- Only include --pch arg if project has a pch
 	appendToCommand '%{prj.pchheader and "--pch=" .. prj.pchheader or ""}'
 
@@ -337,32 +378,31 @@ function Engine.GenerateOylSpyllInformation()
 			),
 			" "
 		)}]]
-		
-		prebuildmessage("Executing " .. spyllCommand)
-		
-		prebuildcommands {
-			"cd %{prj.location}",
-			spyllCommand
-		}
 
-		files {
-			path.join("%{wks.location}", "GeneratedInclude.cpp")
-		}
+	prebuildmessage("Executing " .. spyllCommand)
 
-		local generatedFilesPattern = "Generated/**"
-		
-		local debugGeneratedFile = true
-		if debugGeneratedFile then
-			filter { "files:" .. generatedFilesPattern }; do
-				excludefrombuild "On"
-			end
-			filter {}
-		else
-			removefiles {
-				generatedFilesPattern
-			}
+	prebuildcommands {
+		"cd %{prj.location}",
+		spyllCommand
+	}
+
+	files {
+		path.join("%{wks.location}", "GeneratedInclude.cpp")
+	}
+
+	local generatedFilesPattern = "Generated/**"
+
+	local debugGeneratedFile = true
+	if debugGeneratedFile then
+		filter { "files:" .. generatedFilesPattern }; do
+			excludefrombuild "On"
 		end
-
+		filter {}
+	else
+		removefiles {
+			generatedFilesPattern
+		}
+	end
 end
 
 return Engine
