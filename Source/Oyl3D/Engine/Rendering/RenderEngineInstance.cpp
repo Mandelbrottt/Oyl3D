@@ -14,7 +14,6 @@ namespace Oyl::Rendering::Internal
 	RenderEngineInstance::RenderEngineInstance(Params a_params)
 		: m_resourceManager(std::move(a_params.resourceManager)),
 		  m_shaderCompiler(std::move(a_params.shaderCompiler)),
-		  m_device(std::move(a_params.device)),
 		  m_renderContext(std::move(a_params.renderContext))
 	{
 		if (!m_resourceManager)
@@ -38,7 +37,7 @@ namespace Oyl::Rendering::Internal
 	const Device*
 	RenderEngineInstance::GetCurrentDevice() const
 	{
-		return m_device.get();
+		return m_renderContext->GetDevice();
 	}
 
 	RenderContext*

@@ -29,6 +29,8 @@ namespace Oyl::Rendering
 	void
 	RenderControlModule::Update()
 	{
+		OYL_PROFILE_FUNCTION();
+
 		m_renderEngineInstance->GetRenderContext()->Update();
 	}
 
@@ -37,6 +39,8 @@ namespace Oyl::Rendering
 	{
 		if (!m_renderEngineInstance->GetRenderContext())
 			return;
+
+		OYL_PROFILE_FUNCTION();
 
 		RenderEngine::SetInstance(nullptr);
 		m_renderEngineInstance.release();
@@ -47,6 +51,8 @@ namespace Oyl::Rendering
 	{
 		if (m_mainWindow)
 			return;
+
+		OYL_PROFILE_FUNCTION();
 
 		// TODO: Check for main window, somehow?
 		m_mainWindow = a_event.window;
@@ -67,6 +73,8 @@ namespace Oyl::Rendering
 		if (m_mainWindow != a_event.window)
 			return;
 
+		OYL_PROFILE_FUNCTION();
+
 		m_renderEngineInstance.release();
 		m_resourceManager.release();
 	}
@@ -81,6 +89,8 @@ namespace Oyl::Rendering
 		if (!renderContext)
 			return;
 
+		OYL_PROFILE_FUNCTION();
+
 		renderContext->Resize(a_event.size);
 	}
 
@@ -93,6 +103,8 @@ namespace Oyl::Rendering
 		auto renderContext = m_renderEngineInstance->GetRenderContext();
 		if (!renderContext)
 			return;
+
+		OYL_PROFILE_FUNCTION();
 
 		// Don't need to handle un-minimized case, OnWindowResizeEvent is fired
 		if (a_event.minimized)

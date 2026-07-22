@@ -45,6 +45,8 @@ namespace Oyl::Rendering::Vulkan
 	bool
 	VertexBufferResource::DeviceLoad(void* a_params)
 	{
+		OYL_PROFILE_FUNCTION();
+
 		const auto& params = *static_cast<DeviceLoadParams*>(a_params);
 
 		m_impl->CreateVertexBuffer(
@@ -61,6 +63,8 @@ namespace Oyl::Rendering::Vulkan
 	bool
 	VertexBufferResource::DeviceUnload(void* a_params)
 	{
+		OYL_PROFILE_FUNCTION();
+
 		m_impl->vertexBufferMemory.release();
 		m_impl->vertexBuffer.release();
 
@@ -104,6 +108,8 @@ namespace Oyl::Rendering::Vulkan
 		vk::MemoryPropertyFlags a_properties
 	)
 	{
+		OYL_PROFILE_FUNCTION();
+
 		const auto& device = a_params.device.GetVkDevice();
 		const auto& physicalDevice = a_params.device.GetVkPhysicalDevice();
 
@@ -124,6 +130,8 @@ namespace Oyl::Rendering::Vulkan
 		vk::DeviceSize a_size
 	)
 	{
+		OYL_PROFILE_FUNCTION();
+
 		auto commandPool = vk::raii::CommandPool(
 			a_params.device.GetVkDevice(),
 			{
@@ -166,6 +174,8 @@ namespace Oyl::Rendering::Vulkan
 		size_t a_indexLength
 	)
 	{
+		OYL_PROFILE_FUNCTION();
+
 		// Combine vertex and index data into one contiguous buffer
 		std::vector<byte> combinedDataBuffer;
 		combinedDataBuffer.reserve(a_vertexLength + a_indexLength);

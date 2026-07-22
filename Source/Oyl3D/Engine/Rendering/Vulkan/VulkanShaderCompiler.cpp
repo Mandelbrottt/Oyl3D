@@ -71,6 +71,8 @@ namespace Oyl::Rendering::Vulkan
 
 	ShaderCompiler::ShaderCompiler()
 	{
+		OYL_PROFILE_FUNCTION();
+
 		m_impl = std::make_unique<Impl>();
 
 		std::string dxCompilerLibName =

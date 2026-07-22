@@ -14,7 +14,6 @@ namespace Oyl::Rendering::Vulkan
 		: Internal::RenderEngineInstance(
 			{
 				.shaderCompiler = std::make_unique<ShaderCompiler>(),
-				.device = std::make_unique<Device>(),
 				.renderContext = std::make_unique<RenderContext>(RenderContext::CreateParams {
 					.window = a_params.window
 				})

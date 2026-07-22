@@ -23,12 +23,6 @@ namespace Oyl::Rendering::Vulkan
 		virtual
 		~RenderEngineInstance() = default;
 
-		Shader
-		CreateShader(const ShaderOptions& a_options) override;
-
-		VertexBuffer
-		CreateVertexBuffer(const VertexBufferOptions& a_options) override;
-
 		const ShaderCompiler*
 		GetShaderCompiler() const override
 		{
@@ -42,5 +36,11 @@ namespace Oyl::Rendering::Vulkan
 			const auto* abstract = Internal::RenderEngineInstance::GetCurrentDevice();
 			return static_cast<const Device*>(abstract);
 		}
+
+		Shader
+		CreateShader(const ShaderOptions& a_options) override;
+
+		VertexBuffer
+		CreateVertexBuffer(const VertexBufferOptions& a_options) override;
 	};
 }
