@@ -2,6 +2,8 @@
 
 #include <vulkan/vulkan_raii.hpp>
 
+#include "VulkanDevice.h"
+
 namespace Oyl::Rendering::Vulkan
 {
 	struct VertexBufferResource::Impl
@@ -102,11 +104,14 @@ namespace Oyl::Rendering::Vulkan
 		vk::MemoryPropertyFlags a_properties
 	)
 	{
+		const auto& device = a_params.device.GetVkDevice();
+		const auto& physicalDevice = a_params.device.GetVkPhysicalDevice();
+
 		vk::BufferCreateInfo bufferInfo { .size = a_size, .usage = a_usage, .sharingMode = vk::SharingMode::eExclusive };
-		vk::raii::Buffer buffer = vk::raii::Buffer(a_params.device, bufferInfo);
+		vk::raii::Buffer buffer = vk::raii::Buffer(device, bufferInfo);
 		vk::MemoryRequirements memRequirements = buffer.getMemoryRequirements();
-		vk::MemoryAllocateInfo allocInfo { .allocationSize = memRequirements.size, .memoryTypeIndex = FindMemoryType(a_params.physicalDevice, memRequirements.memoryTypeBits, a_properties) };
-		vk::raii::DeviceMemory bufferMemory = vk::raii::DeviceMemory(a_params.device, allocInfo);
+		vk::MemoryAllocateInfo allocInfo { .allocationSize = memRequirements.size, .memoryTypeIndex = FindMemoryType(physicalDevice, memRequirements.memoryTypeBits, a_properties) };
+		vk::raii::DeviceMemory bufferMemory = vk::raii::DeviceMemory(device, allocInfo);
 		buffer.bindMemory(*bufferMemory, 0);
 		return { std::move(buffer), std::move(bufferMemory) };
 	}
@@ -119,26 +124,37 @@ namespace Oyl::Rendering::Vulkan
 		vk::DeviceSize a_size
 	)
 	{
+		auto commandPool = vk::raii::CommandPool(
+			a_params.device.GetVkDevice(),
+			{
+				.flags = vk::CommandPoolCreateFlagBits::eTransient,
+				.queueFamilyIndex = a_params.device.GetVkGraphicsQueueIndex()
+			}
+		);
+
+		const auto& vkDevice = a_params.device.GetVkDevice();
+		const auto& vkQueue = a_params.device.GetVkGraphicsQueue();
+
 		vk::CommandBufferAllocateInfo allocInfo {
-			.commandPool = a_params.commandPool,
+			.commandPool = commandPool,
 			.level = vk::CommandBufferLevel::ePrimary,
 			.commandBufferCount = 1
 		};
 		vk::raii::CommandBuffer commandCopyBuffer =
-			std::move(a_params.device.allocateCommandBuffers(allocInfo).front());
+			std::move(vkDevice.allocateCommandBuffers(allocInfo).front());
 
 		commandCopyBuffer.begin({ .flags = vk::CommandBufferUsageFlagBits::eOneTimeSubmit });
 		commandCopyBuffer.copyBuffer(*a_srcBuffer, *a_dstBuffer, vk::BufferCopy(0, 0, a_size));
 		commandCopyBuffer.end();
 
-		a_params.queue.submit(
+		vkQueue.submit(
 			vk::SubmitInfo {
 				.commandBufferCount = 1,
 				.pCommandBuffers = &*commandCopyBuffer
 			},
 			nullptr
 		);
-		a_params.queue.waitIdle();
+		vkQueue.waitIdle();
 	}
 
 	void

@@ -8,6 +8,8 @@
 
 namespace Oyl::Rendering::Vulkan
 {
+	class Device;
+
 	class OYL_RENDERING_API VertexBufferResource : public Rendering::VertexBufferResource
 	{
 	public:
@@ -27,10 +29,7 @@ namespace Oyl::Rendering::Vulkan
 
 		struct DeviceLoadParams
 		{
-			const vk::raii::Device& device;
-			const vk::raii::PhysicalDevice& physicalDevice;
-			const vk::raii::CommandPool& commandPool;
-			const vk::raii::Queue& queue;
+			const Device& device;
 		};
 
 		bool

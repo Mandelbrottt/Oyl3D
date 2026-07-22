@@ -227,10 +227,7 @@ namespace Oyl::Rendering::Vulkan
 		if (m_impl->vertexBuffer->IsDeviceDirty())
 		{
 			VertexBufferResource::DeviceLoadParams params {
-				.device = m_impl->device.GetVkDevice(),
-				.physicalDevice = m_impl->device.GetVkPhysicalDevice(),
-				.commandPool = m_impl->commandPool,
-				.queue = m_impl->device.GetVkGraphicsQueue()
+				.device = m_impl->device
 			};
 			m_impl->vertexBuffer->DeviceLoad(&params);
 		}
