@@ -58,6 +58,15 @@ namespace Oyl
 				return !(a_lhs == a_rhs);
 			}
 
+			bool
+			IsValid() const;
+
+			explicit
+			operator bool() const
+			{
+				return IsValid();
+			}
+
 			virtual
 			ResourceBase*
 			Get();
