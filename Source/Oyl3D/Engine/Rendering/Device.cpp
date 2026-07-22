@@ -2,7 +2,11 @@
 
 namespace Oyl::Rendering
 {
-	Device::Device() {}
+	Device::Device(const Window* a_window)
+		: m_window(a_window) {}
 
-	Device::~Device() {}
+	Device::~Device()
+	{
+		m_window = nullptr;
+	}
 }

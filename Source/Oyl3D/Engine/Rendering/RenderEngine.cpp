@@ -2,5 +2,5 @@
 
 namespace Oyl::Rendering
 {
-	RenderEngineInstance* RenderEngine::s_instance = nullptr;
+	Internal::RenderEngineInstance* RenderEngine::s_instance = nullptr;
 }

@@ -2,11 +2,17 @@
 
 #include <vulkan/vulkan_raii.hpp>
 
+#include <GLFW/glfw3.h>
+
+#include "Rendering/Glfw/GlfwWindow.h"
+
 namespace Oyl::Rendering::Vulkan
 {
 	struct Device::Impl
 	{
 		std::vector<std::string> requiredDeviceExtensions;
+
+		vk::raii::SurfaceKHR surface = nullptr;
 
 		vk::raii::PhysicalDevice physicalDevice = nullptr;
 		vk::raii::Device device = nullptr;
@@ -15,16 +21,20 @@ namespace Oyl::Rendering::Vulkan
 		uint32 graphicsQueueIndex = 0;
 
 		void
+		CreateSurface(const vk::raii::Instance& a_instance, const Glfw::Window* a_window);
+		void
 		PickPhysicalDevice(const vk::raii::Instance& a_instance);
 		void
-		CreateLogicalDevice(const vk::raii::SurfaceKHR& a_surface);
+		CreateLogicalDevice();
 	};
 
 	Device::Device()
-		: m_impl(nullptr) {}
+		: Rendering::Device(nullptr),
+		  m_impl(nullptr) {}
 
-	Device::Device(const DeviceParams& a_params)
-		: m_impl(std::make_unique<Impl>())
+	Device::Device(const CreateParams& a_params)
+		: Rendering::Device(a_params.window),
+		  m_impl(std::make_unique<Impl>())
 	{
 		OYL_PROFILE_FUNCTION();
 
@@ -38,12 +48,15 @@ namespace Oyl::Rendering::Vulkan
 			);
 		}
 
+		auto glfwWindow = static_cast<const Glfw::Window*>(GetWindow());
+		m_impl->CreateSurface(a_params.instance, glfwWindow);
 		m_impl->PickPhysicalDevice(a_params.instance);
-		m_impl->CreateLogicalDevice(a_params.surface);
+		m_impl->CreateLogicalDevice();
 	}
 
 	Device::Device(Device&& a_other) noexcept
-		: m_impl(nullptr)
+		: Rendering::Device(std::move(a_other)),
+		  m_impl(nullptr)
 	{
 		*this = std::move(a_other);
 	}
@@ -100,6 +113,12 @@ namespace Oyl::Rendering::Vulkan
 		return m_impl->physicalDevice;
 	}
 
+	const vk::raii::SurfaceKHR&
+	Device::GetVkSurface() const
+	{
+		return m_impl->surface;
+	}
+
 	const vk::raii::Queue&
 	Device::GetVkGraphicsQueue() const
 	{
@@ -110,6 +129,20 @@ namespace Oyl::Rendering::Vulkan
 	Device::GetVkGraphicsQueueIndex() const
 	{
 		return m_impl->graphicsQueueIndex;
+	}
+
+	void
+	Device::Impl::CreateSurface(const vk::raii::Instance& a_instance, const Glfw::Window* a_window)
+	{
+		OYL_PROFILE_FUNCTION();
+
+		VkSurfaceKHR cSurface;
+		auto glfwWindow = static_cast<GLFWwindow*>(a_window->GetNativeWindowHandle());
+		if (glfwCreateWindowSurface(*a_instance, glfwWindow, nullptr, &cSurface) != VK_SUCCESS)
+		{
+			throw std::runtime_error("failed to create window surface!");
+		}
+		surface = vk::raii::SurfaceKHR(a_instance, cSurface);
 	}
 
 	bool
@@ -186,7 +219,7 @@ namespace Oyl::Rendering::Vulkan
 	}
 
 	void
-	Device::Impl::CreateLogicalDevice(const vk::raii::SurfaceKHR& a_surface)
+	Device::Impl::CreateLogicalDevice()
 	{
 		OYL_PROFILE_FUNCTION();
 
@@ -197,7 +230,7 @@ namespace Oyl::Rendering::Vulkan
 		for (uint32 qfpIndex = 0; qfpIndex < queueFamilyProperties.size(); qfpIndex++)
 		{
 			if ((queueFamilyProperties[qfpIndex].queueFlags & vk::QueueFlagBits::eGraphics) &&
-			    physicalDevice.getSurfaceSupportKHR(qfpIndex, *a_surface))
+			    physicalDevice.getSurfaceSupportKHR(qfpIndex, *surface))
 			{
 				// found a queue family that supports both graphics and present
 				graphicsQueueIndex = qfpIndex;

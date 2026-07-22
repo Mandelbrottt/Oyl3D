@@ -11,8 +11,13 @@ namespace Oyl::Rendering::Vulkan
 	public:
 		RenderContext() noexcept;
 
+		struct CreateParams
+		{
+			const Window* window;
+		};
+
 		explicit
-		RenderContext(const RenderContextParams& a_params) noexcept;
+		RenderContext(const CreateParams& a_params) noexcept;
 
 		RenderContext(const RenderContext&) = delete;
 		RenderContext&
@@ -26,7 +31,7 @@ namespace Oyl::Rendering::Vulkan
 		~RenderContext();
 
 		void
-		Init(const RenderContextParams& a_params) override;
+		Init(const CreateParams& a_params);
 
 		void
 		Update() override;

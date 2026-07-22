@@ -1,25 +1,32 @@
 #include "RenderEngineInstance.h"
 
+#include <Core/Resources/ResourceManager.h>
+
 #include "RenderContext.h"
 
+#include "Rendering/Device.h"
 #include "Rendering/ShaderCompiler.h"
 
-namespace Oyl::Rendering
+namespace Oyl::Rendering::Internal
 {
-	RenderEngineInstance::RenderEngineInstance(
-		Internal::ResourceManager* a_resourceManager,
-		const RenderContext* a_renderContext
-	)
-		: m_resourceManager(a_resourceManager),
-		  m_renderContext(a_renderContext)
+	RenderEngineInstance::RenderEngineInstance() {}
+
+	RenderEngineInstance::RenderEngineInstance(Params a_params)
+		: m_resourceManager(std::move(a_params.resourceManager)),
+		  m_shaderCompiler(std::move(a_params.shaderCompiler)),
+		  m_device(std::move(a_params.device)),
+		  m_renderContext(std::move(a_params.renderContext))
 	{
-		m_device = m_renderContext->GetDevice();
+		if (!m_resourceManager)
+			m_resourceManager = std::make_unique<Oyl::Internal::ResourceManager>();
 	}
 
-	RenderEngineInstance::~RenderEngineInstance()
+	RenderEngineInstance::~RenderEngineInstance() {}
+
+	Oyl::Internal::ResourceManager*
+	RenderEngineInstance::GetResourceManager() const
 	{
-		m_resourceManager = nullptr;
-		m_device = nullptr;
+		return m_resourceManager.get();
 	}
 
 	const ShaderCompiler*
@@ -31,18 +38,12 @@ namespace Oyl::Rendering
 	const Device*
 	RenderEngineInstance::GetCurrentDevice() const
 	{
-		return m_device;
+		return m_device.get();
 	}
 
-	void
-	RenderEngineInstance::SetCurrentDevice(const Device* a_device)
+	RenderContext*
+	RenderEngineInstance::GetRenderContext() const
 	{
-		m_device = a_device;
-	}
-
-	void
-	RenderEngineInstance::SetShaderCompiler(std::unique_ptr<ShaderCompiler>&& a_shaderCompiler)
-	{
-		m_shaderCompiler = std::move(a_shaderCompiler);
+		return m_renderContext.get();
 	}
 }

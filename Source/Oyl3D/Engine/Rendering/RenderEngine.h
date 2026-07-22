@@ -43,7 +43,7 @@ namespace Oyl::Rendering
 
 	private:
 		static
-		RenderEngineInstance*
+		Internal::RenderEngineInstance*
 		GetInstance()
 		{
 			return s_instance;
@@ -51,12 +51,12 @@ namespace Oyl::Rendering
 
 		static
 		void
-		SetInstance(RenderEngineInstance* a_instance)
+		SetInstance(Internal::RenderEngineInstance* a_instance)
 		{
 			s_instance = a_instance;
 		}
 
 	private:
-		static RenderEngineInstance* s_instance;
+		static Internal::RenderEngineInstance* s_instance;
 	};
 }

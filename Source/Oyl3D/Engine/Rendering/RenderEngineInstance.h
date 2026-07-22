@@ -8,28 +8,49 @@ namespace Oyl::Rendering
 	class RenderContext;
 	class Device;
 	class ShaderCompiler;
+}
 
+namespace Oyl::Rendering::Internal
+{
 	class OYL_RENDERING_API RenderEngineInstance
 	{
 	protected:
+		RenderEngineInstance();
+
+		struct Params
+		{
+			std::unique_ptr<Oyl::Internal::ResourceManager> resourceManager;
+			std::unique_ptr<ShaderCompiler> shaderCompiler;
+			std::unique_ptr<Device> device;
+			std::unique_ptr<RenderContext> renderContext;
+		};
+
 		explicit
-		RenderEngineInstance(
-			Internal::ResourceManager* a_resourceManager,
-			const RenderContext* a_renderContext
-		);
+		RenderEngineInstance(Params a_params);
 
 	public:
 		virtual
 		~RenderEngineInstance();
+
+	#pragma region Instance State
+		virtual
+		Oyl::Internal::ResourceManager*
+		GetResourceManager() const;
+
+		virtual
+		const ShaderCompiler*
+		GetShaderCompiler() const;
 
 		virtual
 		const Device*
 		GetCurrentDevice() const;
 
 		virtual
-		const ShaderCompiler*
-		GetShaderCompiler() const;
+		RenderContext*
+		GetRenderContext() const;
+	#pragma endregion Instance State
 
+	#pragma region Resources
 		virtual
 		Shader
 		CreateShader(const ShaderOptions& a_options) = 0;
@@ -37,27 +58,14 @@ namespace Oyl::Rendering
 		virtual
 		VertexBuffer
 		CreateVertexBuffer(const VertexBufferOptions& a_options) = 0;
+	#pragma endregion Resources
 
 	protected:
-		Internal::ResourceManager*
-		GetResourceManager() const
-		{
-			return m_resourceManager;
-		}
-
-		virtual
-		void
-		SetCurrentDevice(const Device* a_device);
-
-		virtual
-		void
-		SetShaderCompiler(std::unique_ptr<ShaderCompiler>&& a_shaderCompiler);
-
-	private:
-		Internal::ResourceManager* m_resourceManager;
+		std::unique_ptr<Oyl::Internal::ResourceManager> m_resourceManager;
 		std::unique_ptr<ShaderCompiler> m_shaderCompiler;
+		std::unique_ptr<Device> m_device;
 
-		const RenderContext* m_renderContext = nullptr;
-		const Device* m_device = nullptr;
+		// TEMPORARY: Should the renderer own the render context?
+		std::unique_ptr<RenderContext> m_renderContext;
 	};
 }

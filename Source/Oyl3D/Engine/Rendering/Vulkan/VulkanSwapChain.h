@@ -26,20 +26,19 @@ namespace Oyl::Rendering::Vulkan
 {
 	class Device;
 
-	struct SwapChainParams
-	{
-		const Window& window;
-		const Device& device;
-		const vk::raii::SurfaceKHR& surface;
-	};
-
 	class OYL_RENDERING_API SwapChain : public Rendering::SwapChain
 	{
 	public:
 		SwapChain();
 
+		struct CreateParams
+		{
+			const Window* window;
+			const Device* device;
+		};
+
 		explicit
-		SwapChain(const SwapChainParams& a_params);
+		SwapChain(const CreateParams& a_params);
 
 		SwapChain(const SwapChain&) = delete;
 		SwapChain&

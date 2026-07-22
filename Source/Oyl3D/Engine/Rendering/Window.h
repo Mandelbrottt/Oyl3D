@@ -106,6 +106,13 @@ namespace Oyl
 
 		virtual
 		Vector2i
+		GetFrameBufferSize() const
+		{
+			return {};
+		}
+
+		virtual
+		Vector2i
 		GetPosition() const
 		{
 			return {};

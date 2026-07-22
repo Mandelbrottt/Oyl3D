@@ -11,7 +11,7 @@ namespace Oyl::Rendering
 	bool
 	RenderControlModule::IsEnabled()
 	{
-		return !!m_renderContext;
+		return !!m_renderEngineInstance;
 	}
 
 	void
@@ -29,38 +29,36 @@ namespace Oyl::Rendering
 	void
 	RenderControlModule::Update()
 	{
-		m_renderContext->Update();
+		m_renderEngineInstance->GetRenderContext()->Update();
 	}
 
 	void
 	RenderControlModule::Shutdown()
 	{
-		if (!m_renderContext)
+		if (!m_renderEngineInstance->GetRenderContext())
 			return;
 
-		m_renderContext.release();
+		RenderEngine::SetInstance(nullptr);
+		m_renderEngineInstance.release();
 	}
 
 	void
 	RenderControlModule::OnWindowCreatedEvent(const WindowCreatedEvent& a_event)
 	{
+		if (m_mainWindow)
+			return;
+
 		// TODO: Check for main window, somehow?
 		m_mainWindow = a_event.window;
 
-		m_resourceManager = std::make_unique<Internal::ResourceManager>();
-
-		m_renderContext = std::make_unique<Vulkan::RenderContext>();
+		m_resourceManager = std::make_unique<Oyl::Internal::ResourceManager>();
 
 		m_renderEngineInstance = std::make_unique<Vulkan::RenderEngineInstance>(
-			m_resourceManager.get(),
-			static_cast<const Vulkan::RenderContext*>(m_renderContext.get())
+			Vulkan::RenderEngineInstance::CreateParams {
+				.window = m_mainWindow
+			}
 		);
 		RenderEngine::SetInstance(m_renderEngineInstance.get());
-
-		auto renderContextParams = RenderContextParams {
-			.window = m_mainWindow,
-		};
-		m_renderContext->Init(renderContextParams);
 	}
 
 	void
@@ -69,7 +67,7 @@ namespace Oyl::Rendering
 		if (m_mainWindow != a_event.window)
 			return;
 
-		m_renderContext.release();
+		m_renderEngineInstance.release();
 		m_resourceManager.release();
 	}
 
@@ -79,10 +77,11 @@ namespace Oyl::Rendering
 		if (m_mainWindow != a_event.window)
 			return;
 
-		if (!m_renderContext)
+		auto renderContext = m_renderEngineInstance->GetRenderContext();
+		if (!renderContext)
 			return;
 
-		m_renderContext->Resize(a_event.size);
+		renderContext->Resize(a_event.size);
 	}
 
 	void
@@ -91,11 +90,12 @@ namespace Oyl::Rendering
 		if (m_mainWindow != a_event.window)
 			return;
 
-		if (!m_renderContext)
+		auto renderContext = m_renderEngineInstance->GetRenderContext();
+		if (!renderContext)
 			return;
 
 		// Don't need to handle un-minimized case, OnWindowResizeEvent is fired
 		if (a_event.minimized)
-			m_renderContext->Resize({ 0, 0 });
+			renderContext->Resize({ 0, 0 });
 	}
 }

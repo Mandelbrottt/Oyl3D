@@ -43,6 +43,9 @@ namespace Oyl::Glfw
 		SetSize(Vector2i a_size) override;
 
 		Vector2i
+		GetFrameBufferSize() const override;
+
+		Vector2i
 		GetPosition() const override;
 
 		void

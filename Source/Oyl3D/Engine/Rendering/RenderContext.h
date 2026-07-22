@@ -16,18 +16,10 @@ namespace Oyl::Rendering
 {
 	class Device;
 
-	struct RenderContextParams
-	{
-		Window* window;
-	};
-
 	class OYL_RENDERING_API RenderContext
 	{
 	protected:
 		RenderContext() noexcept;
-
-		explicit
-		RenderContext(const RenderContextParams& a_params) noexcept;
 
 		RenderContext(RenderContext&& a_other) noexcept = default;
 		RenderContext&
@@ -40,10 +32,6 @@ namespace Oyl::Rendering
 
 		virtual
 		~RenderContext() noexcept;
-
-		virtual
-		void
-		Init(const RenderContextParams& a_params) = 0;
 
 		virtual
 		void

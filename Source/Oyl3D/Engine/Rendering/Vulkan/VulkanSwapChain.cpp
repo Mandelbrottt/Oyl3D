@@ -2,11 +2,9 @@
 
 #include <vulkan/vulkan_raii.hpp>
 
-#include <GLFW/glfw3.h>
-
 #include "VulkanDevice.h"
 
-#include "Rendering/Window.h"
+#include "Rendering/Glfw/GlfwWindow.h"
 
 namespace
 {
@@ -29,7 +27,6 @@ namespace Oyl::Rendering::Vulkan
 	{
 		const Device* device = nullptr;
 		const Window* window = nullptr;
-		const vk::raii::SurfaceKHR* surface = nullptr;
 
 		vk::raii::SwapchainKHR swapChain = nullptr;
 		std::vector<vk::Image> swapChainImages;
@@ -50,14 +47,13 @@ namespace Oyl::Rendering::Vulkan
 	SwapChain::SwapChain()
 		: m_impl(nullptr) {}
 
-	SwapChain::SwapChain(const SwapChainParams& a_params)
+	SwapChain::SwapChain(const CreateParams& a_params)
 		: m_impl(std::make_unique<Impl>())
 	{
 		OYL_PROFILE_FUNCTION();
 
-		m_impl->device = &a_params.device;
-		m_impl->window = &a_params.window;
-		m_impl->surface = &a_params.surface;
+		m_impl->device = a_params.device;
+		m_impl->window = a_params.window;
 
 		m_impl->CreateSwapChain();
 		m_impl->CreateSwapChainImageViews();
@@ -147,13 +143,15 @@ namespace Oyl::Rendering::Vulkan
 	{
 		OYL_PROFILE_FUNCTION();
 
-		GLFWwindow* glfwWindow = static_cast<GLFWwindow*>(window->GetNativeWindowHandle());
-		int width, height;
-		glfwGetFramebufferSize(glfwWindow, &width, &height);
+		auto frameBufferSize = window->GetFrameBufferSize();
+		uint32 width = frameBufferSize.x;
+		uint32 height = frameBufferSize.y;
 
 		const auto& physicalDevice = device->GetVkPhysicalDevice();
+		const auto& surface = device->GetVkSurface();
+
 		vk::SurfaceCapabilitiesKHR surfaceCapabilities = physicalDevice.getSurfaceCapabilitiesKHR(*surface);
-		swapChainExtent = ChooseSwapExtent(surfaceCapabilities, { (uint) width, (uint) height });
+		swapChainExtent = ChooseSwapExtent(surfaceCapabilities, { width, height });
 		uint32_t minImageCount = ChooseSwapMinImageCount(surfaceCapabilities);
 
 		std::vector<vk::SurfaceFormatKHR> availableFormats = physicalDevice.getSurfaceFormatsKHR(*surface);
@@ -221,10 +219,8 @@ namespace Oyl::Rendering::Vulkan
 		CleanupSwapChain();
 
 		// If FrameBuffer has 0 size, don't try to recreate SwapChain
-		int width = 0, height = 0;
-		auto glfwWindow = static_cast<GLFWwindow*>(window->GetNativeWindowHandle());
-		glfwGetFramebufferSize(glfwWindow, &width, &height);
-		if (width == 0 || height == 0)
+		auto frameBufferSize = window->GetFrameBufferSize();
+		if (frameBufferSize.x == 0 || frameBufferSize.y == 0)
 		{
 			return;
 		}

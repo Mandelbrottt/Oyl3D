@@ -2,22 +2,16 @@
 
 #include <vulkan/vulkan_raii.hpp>
 
-#include <atlcomcli.h>
-
-#include <Core/Resources/ResourceManager.h>
-
 #include <GLFW/glfw3.h>
 
 #include "VulkanDevice.h"
 #include "VulkanShader.h"
-#include "VulkanShaderCompiler.h"
 #include "VulkanSwapChain.h"
 #include "VulkanVertexBuffer.h"
 
 #include "Core/Logging/Logging.h"
 
 #include "Rendering/RenderEngine.h"
-#include "Rendering/Window.h"
 
 static const std::vector VALIDATION_LAYERS {
 	"VK_LAYER_KHRONOS_validation",
@@ -56,29 +50,22 @@ namespace Oyl::Rendering::Vulkan
 {
 	struct RenderContext::Impl
 	{
-		Window* window;
+		const Window* window;
 
 		vk::raii::Context context;
 		vk::raii::Instance instance = nullptr;
 		vk::raii::DebugUtilsMessengerEXT debugMessenger = nullptr;
 
-		vk::raii::SurfaceKHR surface = nullptr;
-
 		Device device;
 
 		SwapChain swapChain;
 
-		//vk::raii::SwapchainKHR swapChain = nullptr;
-		//std::vector<vk::Image> swapChainImages;
-		//std::vector<vk::raii::ImageView> swapChainImageViews;
-		//vk::SurfaceFormatKHR swapChainSurfaceFormat;
-		//vk::Extent2D swapChainExtent;
-
-		ShaderCompiler shaderCompiler;
+		// TEMPORARY:
 		Shader shader;
 
 		vk::raii::CommandPool commandPool = nullptr;
 
+		// TEMPORARY:
 		VertexBuffer vertexBuffer;
 
 		std::vector<vk::raii::CommandBuffer> commandBuffers;
@@ -93,8 +80,6 @@ namespace Oyl::Rendering::Vulkan
 		CreateInstance();
 		void
 		SetupDebugMessenger();
-		void
-		CreateSurface();
 		void
 		CreateCommandPool();
 		void
@@ -120,11 +105,10 @@ namespace Oyl::Rendering::Vulkan
 	RenderContext::RenderContext() noexcept
 		: m_impl(nullptr) {}
 
-	RenderContext::RenderContext(const RenderContextParams& a_params) noexcept
-		: Rendering::RenderContext(a_params),
-		  m_impl(nullptr)
+	RenderContext::RenderContext(const CreateParams& a_params) noexcept
+		: m_impl(nullptr)
 	{
-		RenderContext::Init(a_params);
+		Init(a_params);
 	}
 
 	RenderContext::RenderContext(RenderContext&& a_other) noexcept
@@ -148,7 +132,7 @@ namespace Oyl::Rendering::Vulkan
 	}
 
 	void
-	RenderContext::Init(const RenderContextParams& a_params)
+	RenderContext::Init(const CreateParams& a_params)
 	{
 		OYL_PROFILE_FUNCTION();
 
@@ -160,48 +144,20 @@ namespace Oyl::Rendering::Vulkan
 		m_impl->CreateInstance();
 		if constexpr (ENABLE_VALIDATION_LAYERS)
 			m_impl->SetupDebugMessenger();
-		m_impl->CreateSurface();
 
 		m_impl->device = Device({
 			.instance = m_impl->instance,
-			.surface = m_impl->surface,
+			.window = m_impl->window,
 			.ppRequiredDeviceExtensionsData = REQUIRED_DEVICE_EXTENSION.data(),
 			.requiredDeviceExtensionsLength = REQUIRED_DEVICE_EXTENSION.size()
 		});
 
 		m_impl->swapChain = SwapChain({
-			.window = *m_impl->window,
-			.device = m_impl->device,
-			.surface = m_impl->surface
-		});
-
-		m_impl->shader = RenderEngine::CreateShader({
-			.language = SL_Hlsl,
-			.source = ShaderOptions::SO_File,
-			.filepath = "G:/dev/Oyl3D/Oyl3D/Source/Oyl3D/Engine/Rendering/Shaders/shader.hlsl"
+			.window = m_impl->window,
+			.device = &m_impl->device,
 		});
 
 		m_impl->CreateCommandPool();
-
-		const std::vector vertices {
-			Vertex { Vector2f { -0.5f, -0.5f }, Vector3f { 1.0f, 0.0f, 0.0f } },
-			Vertex { Vector2f { 0.5f, -0.5f }, Vector3f { 0.0f, 1.0f, 0.0f } },
-			Vertex { Vector2f { 0.5f, 0.5f }, Vector3f { 0.0f, 0.0f, 1.0f } },
-			Vertex { Vector2f { -0.5f, 0.5f }, Vector3f { 1.0f, 1.0f, 1.0f } },
-		};
-
-		const std::vector<uint16> indices { 0, 1, 2, 2, 3, 0 };
-
-		auto verticesBuffer = reinterpret_cast<const byte*>(vertices.data());
-		auto indicesBuffer = reinterpret_cast<const byte*>(indices.data());
-
-		m_impl->vertexBuffer = RenderEngine::CreateVertexBuffer({
-			.vertexData = verticesBuffer,
-			.vertexLength = vertices.size() * sizeof(decltype(vertices)::value_type),
-			.vertexStride = sizeof(decltype(vertices)::value_type),
-			.indexData = indicesBuffer,
-			.indexLength = indices.size() * sizeof(decltype(indices)::value_type),
-		});
 
 		m_impl->CreateCommandBuffers();
 		m_impl->CreateSyncObjects();
@@ -215,6 +171,15 @@ namespace Oyl::Rendering::Vulkan
 		if (!m_impl->window || !m_impl->window->IsValid())
 			return;
 
+		if (!m_impl->shader)
+		{
+			m_impl->shader = RenderEngine::CreateShader({
+				.language = SL_Hlsl,
+				.source = ShaderOptions::SO_File,
+				.filepath = "G:/dev/Oyl3D/Oyl3D/Source/Oyl3D/Engine/Rendering/Shaders/shader.hlsl"
+			});
+		}
+
 		if (m_impl->shader->IsDirty())
 		{
 			m_impl->shader->Load();
@@ -227,6 +192,31 @@ namespace Oyl::Rendering::Vulkan
 				.format = m_impl->swapChain.GetVkSurfaceFormat().format
 			};
 			m_impl->shader->DeviceLoad(&params);
+		}
+
+		if (!m_impl->vertexBuffer)
+		{
+			const std::vector vertices {
+				Vertex { Vector2f { -0.5f, -0.5f }, Vector3f { 1.0f, 0.0f, 0.0f } },
+				Vertex { Vector2f { 0.5f, -0.5f }, Vector3f { 0.0f, 1.0f, 0.0f } },
+				Vertex { Vector2f { 0.5f, 0.5f }, Vector3f { 0.0f, 0.0f, 1.0f } },
+				Vertex { Vector2f { -0.5f, 0.5f }, Vector3f { 1.0f, 1.0f, 1.0f } },
+			};
+
+			const std::vector<uint16> indices { 0, 1, 2, 2, 3, 0 };
+
+			auto verticesBuffer = reinterpret_cast<const byte*>(vertices.data());
+			auto indicesBuffer = reinterpret_cast<const byte*>(indices.data());
+
+			m_impl->vertexBuffer = RenderEngine::CreateVertexBuffer(
+				{
+					.vertexData = verticesBuffer,
+					.vertexLength = vertices.size() * sizeof(decltype(vertices)::value_type),
+					.vertexStride = sizeof(decltype(vertices)::value_type),
+					.indexData = indicesBuffer,
+					.indexLength = indices.size() * sizeof(decltype(indices)::value_type),
+				}
+			);
 		}
 
 		if (m_impl->vertexBuffer->IsDirty())
@@ -380,20 +370,6 @@ namespace Oyl::Rendering::Vulkan
 			.pfnUserCallback = DebugCallback,
 		};
 		debugMessenger = instance.createDebugUtilsMessengerEXT(debugUtilsMessengerCreateInfoEXT);
-	}
-
-	void
-	RenderContext::Impl::CreateSurface()
-	{
-		OYL_PROFILE_FUNCTION();
-
-		VkSurfaceKHR cSurface;
-		auto glfwWindow = static_cast<GLFWwindow*>(window->GetNativeWindowHandle());
-		if (glfwCreateWindowSurface(*instance, glfwWindow, nullptr, &cSurface) != VK_SUCCESS)
-		{
-			throw std::runtime_error("failed to create window surface!");
-		}
-		surface = vk::raii::SurfaceKHR(instance, cSurface);
 	}
 
 	void

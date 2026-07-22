@@ -2,8 +2,6 @@
 
 #include <GLFW/glfw3.h>
 
-//#include "Core/Rendering/VulkanRenderContext.h"
-
 namespace
 {
 	Oyl::Input::KeyboardKey
@@ -166,6 +164,15 @@ namespace Oyl::Glfw
 		);
 
 		m_impl->size = a_size;
+	}
+
+	Vector2i
+	Window::GetFrameBufferSize() const
+	{
+		Vector2i size;
+		glfwGetFramebufferSize(m_impl->glfwWindow, &size.x, &size.y);
+
+		return size;
 	}
 
 	Vector2i
