@@ -42,6 +42,8 @@ namespace Oyl::Rendering::Vulkan
 	{
 		ShaderCompileResult compileResult;
 
+		vk::Format format;
+
 		vk::raii::Pipeline pipeline = nullptr;
 
 		vk::raii::ShaderModule
@@ -56,10 +58,11 @@ namespace Oyl::Rendering::Vulkan
 		Init();
 	}
 
-	ShaderResource::ShaderResource(ShaderOptions a_options)
+	ShaderResource::ShaderResource(ShaderOptions a_options, vk::Format a_format)
 		: Rendering::ShaderResource(std::move(a_options))
 	{
 		Init();
+		SetVkFormat(a_format);
 	}
 
 	void
@@ -69,6 +72,19 @@ namespace Oyl::Rendering::Vulkan
 	}
 
 	ShaderResource::~ShaderResource() {}
+
+	vk::Format
+	ShaderResource::GetVkFormat() const
+	{
+		return m_impl->format;
+	}
+
+	void
+	ShaderResource::SetVkFormat(vk::Format a_format)
+	{
+		m_impl->format = a_format;
+		SetDeviceDirty();
+	}
 
 	bool
 	ShaderResource::Load()
@@ -113,18 +129,18 @@ namespace Oyl::Rendering::Vulkan
 	}
 
 	bool
-	ShaderResource::DeviceLoad(void* a_params)
+	ShaderResource::DeviceLoad(const Rendering::Device& a_device)
 	{
 		OYL_PROFILE_FUNCTION();
 
-		const DeviceLoadParams& params = *static_cast<DeviceLoadParams*>(a_params);
+		const auto& device = static_cast<const Device&>(a_device);
 
 		// keep ShaderModules for RAII
 		std::vector<vk::raii::ShaderModule> vkShaderModules;
 		std::vector<vk::PipelineShaderStageCreateInfo> vkShaderStageCreateInfos;
 		for (const auto& stage : m_impl->compileResult.GetShaderStages())
 		{
-			vk::raii::ShaderModule shaderModule = m_impl->CompileVkShaderModule(params.device, stage);
+			vk::raii::ShaderModule shaderModule = m_impl->CompileVkShaderModule(device, stage);
 
 			vk::PipelineShaderStageCreateInfo createInfo {
 				.stage = ShaderProfileToVkShaderStageFlag(stage.GetShaderProfile()),
@@ -203,46 +219,49 @@ namespace Oyl::Rendering::Vulkan
 			.pushConstantRangeCount = 0
 		};
 
-		auto pipelineLayout = vk::raii::PipelineLayout(params.device.GetVkDevice(), pipelineLayoutInfo);
-
-		vk::StructureChain pipelineCreateInfoChain {
-			vk::GraphicsPipelineCreateInfo {
-				.stageCount = (uint32) vkShaderStageCreateInfos.size(),
-				.pStages = vkShaderStageCreateInfos.data(),
-				.pVertexInputState = &vertexInputInfo,
-				.pInputAssemblyState = &inputAssembly,
-				.pViewportState = &viewportState,
-				.pRasterizationState = &rasterizer,
-				.pMultisampleState = &multisampling,
-				.pColorBlendState = &colorBlending,
-				.pDynamicState = &dynamicState,
-				.layout = pipelineLayout,
-				.renderPass = nullptr
-			},
-			vk::PipelineRenderingCreateInfo {
-				.colorAttachmentCount = 1,
-				.pColorAttachmentFormats = &params.format
-			}
-		};
+		auto pipelineLayout = vk::raii::PipelineLayout(device.GetVkDevice(), pipelineLayoutInfo);
 
 		{
+			// Use structure chain to auto-populate pNext
+			vk::StructureChain pipelineCreateInfoChain {
+				vk::GraphicsPipelineCreateInfo {
+					.stageCount = (uint32) vkShaderStageCreateInfos.size(),
+					.pStages = vkShaderStageCreateInfos.data(),
+					.pVertexInputState = &vertexInputInfo,
+					.pInputAssemblyState = &inputAssembly,
+					.pViewportState = &viewportState,
+					.pRasterizationState = &rasterizer,
+					.pMultisampleState = &multisampling,
+					.pColorBlendState = &colorBlending,
+					.pDynamicState = &dynamicState,
+					.layout = pipelineLayout,
+					.renderPass = nullptr
+				},
+				vk::PipelineRenderingCreateInfo {
+					.colorAttachmentCount = 1,
+					.pColorAttachmentFormats = &m_impl->format
+				}
+			};
+
 			OYL_PROFILE_SCOPE("vk::raii::Pipeline");
 			m_impl->pipeline = vk::raii::Pipeline(
-				params.device.GetVkDevice(),
+				device.GetVkDevice(),
 				nullptr,
-				pipelineCreateInfoChain.get<vk::GraphicsPipelineCreateInfo>()
+				pipelineCreateInfoChain.get()
 			);
 		}
 
-		return Rendering::ShaderResource::DeviceLoad(a_params);
+		return Rendering::ShaderResource::DeviceLoad(a_device);
 	}
 
 	bool
-	ShaderResource::DeviceUnload(void* a_params)
+	ShaderResource::DeviceUnload()
 	{
 		OYL_PROFILE_FUNCTION();
 
-		return Rendering::ShaderResource::DeviceUnload(a_params);
+		m_impl->pipeline.clear();
+
+		return Rendering::ShaderResource::DeviceUnload();
 	}
 
 	const vk::raii::Pipeline&

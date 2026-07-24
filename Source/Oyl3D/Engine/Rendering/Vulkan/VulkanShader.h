@@ -27,10 +27,16 @@ namespace Oyl::Rendering::Vulkan
 		ShaderResource();
 
 		explicit
-		ShaderResource(ShaderOptions a_options);
+		ShaderResource(ShaderOptions a_options, vk::Format a_format);
 
 		virtual
 		~ShaderResource();
+
+		vk::Format
+		GetVkFormat() const;
+
+		void
+		SetVkFormat(vk::Format a_format);
 
 		const vk::raii::Pipeline&
 		GetPipeline() const;
@@ -41,22 +47,11 @@ namespace Oyl::Rendering::Vulkan
 		bool
 		Unload() override;
 
-		struct DeviceLoadParams : Oyl::DeviceLoadParams
-		{
-			const Device& device;
-			vk::Format format = vk::Format::eUndefined;
-		};
+		bool
+		DeviceLoad(const Rendering::Device& a_device) override;
 
 		bool
-		DeviceLoad(void* a_params) override;
-
-		struct DeviceUnloadParams : Oyl::DeviceUnloadParams
-		{
-			const Device& device;
-		};
-
-		bool
-		DeviceUnload(void* a_params) override;
+		DeviceUnload() override;
 
 	private:
 		void

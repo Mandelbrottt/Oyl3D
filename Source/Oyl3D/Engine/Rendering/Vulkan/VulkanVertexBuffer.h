@@ -27,19 +27,14 @@ namespace Oyl::Rendering::Vulkan
 		bool
 		Unload() override;
 
-		struct DeviceLoadParams
-		{
-			const Device& device;
-		};
+		bool
+		DeviceLoad(const Rendering::Device& a_device) override;
 
 		bool
-		DeviceLoad(void* a_params) override;
-
-		bool
-		DeviceUnload(void* a_params) override;
+		DeviceUnload() override;
 
 		const vk::raii::Buffer&
-		GetVkBuffer();
+		GetVkBuffer() const;
 
 	private:
 		struct Impl;

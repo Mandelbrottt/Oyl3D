@@ -1,7 +1,7 @@
 #pragma once
 
-#include "VulkanDevice.h"
-
+#include "Rendering/Vulkan/VulkanDevice.h"
+#include "Rendering/Vulkan/VulkanSwapChain.h"
 #include "Rendering/RenderContext.h"
 
 namespace Oyl::Rendering::Vulkan
@@ -44,6 +44,9 @@ namespace Oyl::Rendering::Vulkan
 
 		const Device*
 		GetDevice() const override;
+
+		const SwapChain*
+		GetSwapChain() const override;
 
 	private:
 		struct Impl;

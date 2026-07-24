@@ -187,11 +187,7 @@ namespace Oyl::Rendering::Vulkan
 
 		if (m_impl->shader->IsDeviceDirty())
 		{
-			ShaderResource::DeviceLoadParams params {
-				.device = m_impl->device,
-				.format = m_impl->swapChain.GetVkSurfaceFormat().format
-			};
-			m_impl->shader->DeviceLoad(&params);
+			m_impl->shader->DeviceLoad(m_impl->device);
 		}
 
 		if (!m_impl->vertexBuffer)
@@ -226,10 +222,7 @@ namespace Oyl::Rendering::Vulkan
 
 		if (m_impl->vertexBuffer->IsDeviceDirty())
 		{
-			VertexBufferResource::DeviceLoadParams params {
-				.device = m_impl->device
-			};
-			m_impl->vertexBuffer->DeviceLoad(&params);
+			m_impl->vertexBuffer->DeviceLoad(m_impl->device);
 		}
 
 		m_impl->DrawFrame();
@@ -245,10 +238,10 @@ namespace Oyl::Rendering::Vulkan
 
 		m_impl->device.GetVkDevice().waitIdle();
 
-		m_impl->vertexBuffer->DeviceUnload(nullptr);
+		m_impl->vertexBuffer->DeviceUnload();
 		m_impl->vertexBuffer->Unload();
 
-		m_impl->shader->DeviceUnload(nullptr);
+		m_impl->shader->DeviceUnload();
 		m_impl->shader->Unload();
 
 		m_impl->swapChain.Destroy();
@@ -268,6 +261,12 @@ namespace Oyl::Rendering::Vulkan
 	RenderContext::GetDevice() const
 	{
 		return &m_impl->device;
+	}
+
+	const SwapChain*
+	RenderContext::GetSwapChain() const
+	{
+		return &m_impl->swapChain;
 	}
 
 	void

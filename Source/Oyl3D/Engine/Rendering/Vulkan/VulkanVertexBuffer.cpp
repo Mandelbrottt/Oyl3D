@@ -13,7 +13,7 @@ namespace Oyl::Rendering::Vulkan
 
 		void
 		CreateVertexBuffer(
-			const DeviceLoadParams& a_params,
+			const Device& a_params,
 			const byte* a_vertexData,
 			size_t a_vertexLength,
 			const byte* a_indexData,
@@ -43,36 +43,36 @@ namespace Oyl::Rendering::Vulkan
 	}
 
 	bool
-	VertexBufferResource::DeviceLoad(void* a_params)
+	VertexBufferResource::DeviceLoad(const Rendering::Device& a_device)
 	{
 		OYL_PROFILE_FUNCTION();
 
-		const auto& params = *static_cast<DeviceLoadParams*>(a_params);
+		const auto& device = static_cast<const Device&>(a_device);
 
 		m_impl->CreateVertexBuffer(
-			params,
+			device,
 			m_vertexData.data(),
 			m_vertexData.size(),
 			m_indexData.data(),
 			m_indexData.size()
 		);
 
-		return Rendering::VertexBufferResource::DeviceLoad(a_params);
+		return Rendering::VertexBufferResource::DeviceLoad(a_device);
 	}
 
 	bool
-	VertexBufferResource::DeviceUnload(void* a_params)
+	VertexBufferResource::DeviceUnload()
 	{
 		OYL_PROFILE_FUNCTION();
 
 		m_impl->vertexBufferMemory.release();
 		m_impl->vertexBuffer.release();
 
-		return Rendering::VertexBufferResource::DeviceUnload(a_params);
+		return Rendering::VertexBufferResource::DeviceUnload();
 	}
 
 	const vk::raii::Buffer&
-	VertexBufferResource::GetVkBuffer()
+	VertexBufferResource::GetVkBuffer() const
 	{
 		return m_impl->vertexBuffer;
 	}
@@ -102,7 +102,7 @@ namespace Oyl::Rendering::Vulkan
 
 	std::pair<vk::raii::Buffer, vk::raii::DeviceMemory>
 	CreateBuffer(
-		const VertexBufferResource::DeviceLoadParams& a_params,
+		const Device& a_device,
 		vk::DeviceSize a_size,
 		vk::BufferUsageFlags a_usage,
 		vk::MemoryPropertyFlags a_properties
@@ -110,8 +110,8 @@ namespace Oyl::Rendering::Vulkan
 	{
 		OYL_PROFILE_FUNCTION();
 
-		const auto& device = a_params.device.GetVkDevice();
-		const auto& physicalDevice = a_params.device.GetVkPhysicalDevice();
+		const auto& device = a_device.GetVkDevice();
+		const auto& physicalDevice = a_device.GetVkPhysicalDevice();
 
 		vk::BufferCreateInfo bufferInfo { .size = a_size, .usage = a_usage, .sharingMode = vk::SharingMode::eExclusive };
 		vk::raii::Buffer buffer = vk::raii::Buffer(device, bufferInfo);
@@ -124,7 +124,7 @@ namespace Oyl::Rendering::Vulkan
 
 	void
 	CopyBuffer(
-		const VertexBufferResource::DeviceLoadParams& a_params,
+		const Device& a_device,
 		const vk::raii::Buffer& a_srcBuffer,
 		const vk::raii::Buffer& a_dstBuffer,
 		vk::DeviceSize a_size
@@ -133,15 +133,15 @@ namespace Oyl::Rendering::Vulkan
 		OYL_PROFILE_FUNCTION();
 
 		auto commandPool = vk::raii::CommandPool(
-			a_params.device.GetVkDevice(),
+			a_device.GetVkDevice(),
 			{
 				.flags = vk::CommandPoolCreateFlagBits::eTransient,
-				.queueFamilyIndex = a_params.device.GetVkGraphicsQueueIndex()
+				.queueFamilyIndex = a_device.GetVkGraphicsQueueIndex()
 			}
 		);
 
-		const auto& vkDevice = a_params.device.GetVkDevice();
-		const auto& vkQueue = a_params.device.GetVkGraphicsQueue();
+		const auto& vkDevice = a_device.GetVkDevice();
+		const auto& vkQueue = a_device.GetVkGraphicsQueue();
 
 		vk::CommandBufferAllocateInfo allocInfo {
 			.commandPool = commandPool,
@@ -167,7 +167,7 @@ namespace Oyl::Rendering::Vulkan
 
 	void
 	VertexBufferResource::Impl::CreateVertexBuffer(
-		const DeviceLoadParams& a_params,
+		const Device& a_device,
 		const byte* a_vertexData,
 		size_t a_vertexLength,
 		const byte* a_indexData,
@@ -186,7 +186,7 @@ namespace Oyl::Rendering::Vulkan
 		// Create staging buffer to send data from CPU to GPU
 		auto [stagingBuffer, stagingBufferMemory] =
 			CreateBuffer(
-				a_params,
+				a_device,
 				combinedDataBuffer.size(),
 				vk::BufferUsageFlagBits::eTransferSrc,
 				vk::MemoryPropertyFlagBits::eHostVisible
@@ -200,7 +200,7 @@ namespace Oyl::Rendering::Vulkan
 		// Copy data in staging buffer to main buffer
 		std::tie(vertexBuffer, vertexBufferMemory) =
 			CreateBuffer(
-				a_params,
+				a_device,
 				combinedDataBuffer.size(),
 				vk::BufferUsageFlagBits::eVertexBuffer
 				| vk::BufferUsageFlagBits::eIndexBuffer
@@ -208,6 +208,6 @@ namespace Oyl::Rendering::Vulkan
 				vk::MemoryPropertyFlagBits::eDeviceLocal
 			);
 
-		CopyBuffer(a_params, stagingBuffer, vertexBuffer, combinedDataBuffer.size());
+		CopyBuffer(a_device, stagingBuffer, vertexBuffer, combinedDataBuffer.size());
 	}
 }

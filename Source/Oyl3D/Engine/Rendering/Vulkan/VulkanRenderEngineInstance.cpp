@@ -23,7 +23,10 @@ namespace Oyl::Rendering::Vulkan
 	Rendering::Shader
 	RenderEngineInstance::CreateShader(const ShaderOptions& a_options)
 	{
-		return GetResourceManager()->Load<Shader>(a_options);
+		const auto& renderContext = *static_cast<const RenderContext*>(m_renderContext.get());
+		auto [format, colorSpace] = renderContext.GetSwapChain()->GetVkSurfaceFormat();
+
+		return GetResourceManager()->Load<Shader>(a_options, format);
 	}
 
 	Rendering::VertexBuffer

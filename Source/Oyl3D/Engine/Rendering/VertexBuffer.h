@@ -1,7 +1,8 @@
 #pragma once
 
-#include <Core/Resources/Resource.h>
 #include <Core/Resources/ResourceHandle.h>
+
+#include "Rendering/DeviceResource.h"
 
 namespace Oyl::Rendering
 {

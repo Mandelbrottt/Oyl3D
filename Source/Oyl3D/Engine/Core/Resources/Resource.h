@@ -48,7 +48,7 @@ namespace Oyl
 		};
 	}
 
-	template<typename>
+	template<typename TResource>
 	class Resource : public Internal::ResourceBase
 	{
 	protected:
@@ -57,7 +57,11 @@ namespace Oyl
 	public:
 		static
 		constexpr ResourceTypeId
-		GetResourceTypeId();
+		GetResourceTypeId()
+		{
+			static_assert(std::is_convertible_v<TResource*, Resource*>);
+			return Reflection::GetTypeId<TResource>();
+		}
 	};
 
 	namespace Traits
@@ -68,8 +72,8 @@ namespace Oyl
 		{
 			// Enforce that T is not a direct descendant of Internal::ResourceBase
 			static constexpr bool value =
-				std::is_convertible_v<T*, Oyl::Internal::ResourceBase*>
-				&& std::is_base_of_v<Oyl::Internal::ResourceBase, T>
+				std::is_convertible_v<T*, Internal::ResourceBase*>
+				&& std::is_base_of_v<Internal::ResourceBase, T>
 				&& std::is_function_v<decltype(T::GetResourceTypeId)>;
 		};
 
@@ -84,58 +88,4 @@ namespace Oyl
 			{ &TResource::GetResourceTypeId } -> std::invocable;
 		};
 	}
-
-	struct DeviceLoadParams {};
-
-	struct DeviceUnloadParams {};
-
-	template<typename TResource>
-	class DeviceResource : public Resource<TResource>
-	{
-	protected:
-		DeviceResource() {}
-
-	public:
-		bool
-		IsDeviceLoaded() const
-		{
-			return m_deviceLoaded;
-		}
-
-		bool
-		IsDeviceDirty() const
-		{
-			return m_deviceDirty;
-		}
-
-		bool
-		Load() override;
-
-		bool
-		Unload() override;
-
-	protected:
-		void
-		SetDirty() override;
-
-		void
-		SetDeviceDirty()
-		{
-			m_deviceDirty = true;
-		}
-
-		virtual
-		bool
-		DeviceLoad(void* a_params);
-
-		virtual
-		bool
-		DeviceUnload(void* a_params);
-
-	private:
-		bool m_deviceLoaded = false;
-		bool m_deviceDirty = true;
-	};
 }
-
-#include "Resource.inl"

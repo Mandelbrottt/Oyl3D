@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Rendering/Glfw/GlfwWindow.h"
+#include "Core/Math/Vector2.h"
 
 namespace Oyl
 {
@@ -15,6 +15,7 @@ namespace Oyl
 namespace Oyl::Rendering
 {
 	class Device;
+	class SwapChain;
 
 	class OYL_RENDERING_API RenderContext
 	{
@@ -48,5 +49,9 @@ namespace Oyl::Rendering
 		virtual
 		const Device*
 		GetDevice() const = 0;
+
+		virtual
+		const SwapChain*
+		GetSwapChain() const = 0;
 	};
 }
