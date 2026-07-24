@@ -23,7 +23,7 @@ namespace Oyl
 	 *		    struct Vector
 	 *		    {
 	 *		        ...
-	 *		    } // Compile error, redefinition 
+	 *		    } // Compile error, redefinition
 	 *          \endcode
 	 *      <br>All vector specializations should implement the
 	 *          _VECTOR_GENERATE_CONSTRUCTORS() and _VECTOR_GENERATE_MEMBER_FUNCTIONS() macros.
@@ -34,7 +34,7 @@ namespace Oyl
 		using value_type = TUnderlying;
 		using type = Vector_t;
 
-		constexpr static int size = Size;
+		static constexpr int size = Size;
 
 		TUnderlying data[Size];
 	};
@@ -88,14 +88,14 @@ namespace Oyl
 			}
 			return a_value / magnitude;
 		}
-		
+
 		template<int Size, typename TUnderlying>
 		constexpr
 		float
 		Angle(const Vector_t<Size, TUnderlying>& a_lhs, const Vector_t<Size, TUnderlying>& a_rhs)
 		{
 			float cos_theta = Vector::Dot(Normalize(a_lhs), Normalize(a_rhs));
-			
+
 			return std::acos(cos_theta) * Math::RAD_TO_DEG;
 		}
 	}
@@ -211,7 +211,7 @@ namespace Oyl
 	{
 		return !(a_lhs == a_rhs);
 	}
-	
+
 	#define _VECTOR_DEFINE_BINARY_OPERATOR_MEMBER_SAME_TYPE(_operator_) \
 		constexpr\
 		Vector_t& \
@@ -245,7 +245,7 @@ namespace Oyl
 			} \
 		} \
 		_OYL_REQUIRE_SEMICOLON
-	
+
 	#define _VECTOR_GENERATE_MEMBER_FUNCTIONS() \
 		constexpr \
 		float \
