@@ -3,8 +3,8 @@
 #include "Core/Modules/Module.h"
 #include "Core/Resources/ResourceManager.h"
 
-#include "Rendering/RenderContext.h"
 #include "Rendering/RenderEngineInstance.h"
+#include "Rendering/Window.h"
 
 namespace Oyl
 {

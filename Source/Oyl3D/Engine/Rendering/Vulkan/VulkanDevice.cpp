@@ -55,7 +55,7 @@ namespace Oyl::Rendering::Vulkan
 	}
 
 	Device::Device(Device&& a_other) noexcept
-		: Rendering::Device(std::move(a_other)),
+		: Rendering::Device(a_other.GetWindow()),
 		  m_impl(nullptr)
 	{
 		*this = std::move(a_other);
@@ -64,10 +64,11 @@ namespace Oyl::Rendering::Vulkan
 	Device&
 	Device::operator=(Device&& a_other) noexcept
 	{
-		if (this == &a_other)
-			return *this;
-
-		std::swap(m_impl, a_other.m_impl);
+		if (this != &a_other)
+		{
+			Rendering::Device::operator=(std::move(a_other));
+			std::swap(m_impl, a_other.m_impl);
+		}
 		return *this;
 	}
 
@@ -76,13 +77,13 @@ namespace Oyl::Rendering::Vulkan
 		Device::Destroy();
 	}
 
-	bool
+	void
 	Device::Destroy()
 	{
 		OYL_PROFILE_FUNCTION();
 
-		if (!m_impl)
-			return Rendering::Device::Destroy();
+		if (!IsValid())
+			return;
 
 		m_impl->graphicsQueueIndex = 0;
 		m_impl->graphicsQueue = nullptr;
@@ -92,13 +93,14 @@ namespace Oyl::Rendering::Vulkan
 
 		m_impl.release();
 
-		return Rendering::Device::Destroy();
+		Rendering::Device::Destroy();
 	}
 
 	bool
 	Device::IsValid() const
 	{
-		return m_impl && m_impl->device != nullptr;
+		return m_impl
+		       && *m_impl->device;
 	}
 
 	const vk::raii::Device&

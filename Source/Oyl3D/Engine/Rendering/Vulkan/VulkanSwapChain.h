@@ -19,6 +19,8 @@ namespace vk
 	namespace raii
 	{
 		class SurfaceKHR;
+		class Semaphore;
+		class Fence;
 	}
 }
 
@@ -35,14 +37,13 @@ namespace Oyl::Rendering::Vulkan
 		{
 			const Window* window;
 			const Device* device;
+
+			const vk::raii::Semaphore* semaphore = nullptr;
+			const vk::raii::Fence* fence = nullptr;
 		};
 
 		explicit
 		SwapChain(const CreateParams& a_params);
-
-		SwapChain(const SwapChain&) = delete;
-		SwapChain&
-		operator =(const SwapChain&) = delete;
 
 		SwapChain(SwapChain&& a_other) noexcept;
 		SwapChain&
@@ -51,14 +52,20 @@ namespace Oyl::Rendering::Vulkan
 		virtual
 		~SwapChain();
 
-		bool
+		void
 		Destroy() override;
+
+		bool
+		IsValid() const override;
 
 		void
 		Recreate() override;
 
 		bool
-		IsValid() const override;
+		AcquireNextImage() override;
+
+		uint32
+		GetCurrentImageIndex() const override;
 
 		const vk::raii::SwapchainKHR&
 		GetVkSwapChain() const;
@@ -66,14 +73,32 @@ namespace Oyl::Rendering::Vulkan
 		const std::vector<vk::Image>&
 		GetVkImages() const;
 
+		vk::Image
+		GetCurrentVkImage() const;
+
 		const std::vector<vk::raii::ImageView>&
 		GetVkImageViews() const;
+
+		const vk::raii::ImageView&
+		GetCurrentVkImageView() const;
 
 		const vk::SurfaceFormatKHR&
 		GetVkSurfaceFormat() const;
 
 		const vk::Extent2D&
 		GetVkExtent() const;
+
+		const vk::raii::Semaphore*
+		GetVkSemaphore() const;
+
+		void
+		SetVkSemaphore(const vk::raii::Semaphore* a_semaphore) const;
+
+		const vk::raii::Fence*
+		GetVkFence() const;
+
+		void
+		SetVkFence(const vk::raii::Fence* a_fence) const;
 
 	private:
 		struct Impl;

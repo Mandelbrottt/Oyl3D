@@ -19,9 +19,9 @@ namespace Oyl::Rendering
 		ShaderCompiler&
 		operator =(const ShaderCompiler& a_other) = default;
 
-		ShaderCompiler(ShaderCompiler&& a_other) = default;
+		ShaderCompiler(ShaderCompiler&& a_other) noexcept = default;
 		ShaderCompiler&
-		operator =(ShaderCompiler&& a_other) = default;
+		operator =(ShaderCompiler&& a_other) noexcept = default;
 
 		bool
 		CompileHlslFromFile(std::string_view a_filePath, ShaderCompileResult* a_outShader) const;

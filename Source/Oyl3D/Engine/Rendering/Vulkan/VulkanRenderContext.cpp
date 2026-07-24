@@ -12,6 +12,9 @@
 #include "Core/Logging/Logging.h"
 
 #include "Rendering/RenderEngine.h"
+#include "Rendering/Glfw/GlfwWindow.h"
+#include "Rendering/Vulkan/VulkanCommandBuffer.h"
+#include "Rendering/Vulkan/VulkanCommandPool.h"
 
 static const std::vector VALIDATION_LAYERS {
 	"VK_LAYER_KHRONOS_validation",
@@ -63,12 +66,11 @@ namespace Oyl::Rendering::Vulkan
 		// TEMPORARY:
 		Shader shader;
 
-		vk::raii::CommandPool commandPool = nullptr;
-
 		// TEMPORARY:
 		VertexBuffer vertexBuffer;
 
-		std::vector<vk::raii::CommandBuffer> commandBuffers;
+		CommandPool commandPool;
+		std::vector<CommandBuffer> commandBuffers;
 
 		std::vector<vk::raii::Semaphore> presentCompleteSemaphores;
 		std::vector<vk::raii::Semaphore> renderFinishedSemaphores;
@@ -81,23 +83,9 @@ namespace Oyl::Rendering::Vulkan
 		void
 		SetupDebugMessenger();
 		void
-		CreateCommandPool();
-		void
-		CreateCommandBuffers();
-		void
 		CreateSyncObjects();
 		void
-		RecordCommandBuffer(uint32 a_imageIndex);
-		void
-		TransitionImageLayout(
-			uint32 a_imageIndex,
-			vk::ImageLayout a_oldLayout,
-			vk::ImageLayout a_new_layout,
-			vk::AccessFlags2 a_srcAccessMask,
-			vk::AccessFlags2 a_dstAccessMask,
-			vk::PipelineStageFlags2 a_srcStageMask,
-			vk::PipelineStageFlags2 a_dstStageMask
-		);
+		RecordCommandBuffer();
 		void
 		DrawFrame();
 	};
@@ -145,21 +133,35 @@ namespace Oyl::Rendering::Vulkan
 		if constexpr (ENABLE_VALIDATION_LAYERS)
 			m_impl->SetupDebugMessenger();
 
-		m_impl->device = Device({
-			.instance = m_impl->instance,
-			.window = m_impl->window,
-			.ppRequiredDeviceExtensionsData = REQUIRED_DEVICE_EXTENSION.data(),
-			.requiredDeviceExtensionsLength = REQUIRED_DEVICE_EXTENSION.size()
-		});
+		m_impl->device = Device(
+			{
+				.instance = m_impl->instance,
+				.window = m_impl->window,
+				.ppRequiredDeviceExtensionsData = REQUIRED_DEVICE_EXTENSION.data(),
+				.requiredDeviceExtensionsLength = REQUIRED_DEVICE_EXTENSION.size()
+			}
+		);
 
-		m_impl->swapChain = SwapChain({
-			.window = m_impl->window,
-			.device = &m_impl->device,
-		});
+		m_impl->swapChain = SwapChain(
+			{
+				.window = m_impl->window,
+				.device = &m_impl->device,
+			}
+		);
 
-		m_impl->CreateCommandPool();
+		m_impl->commandPool = CommandPool({ .device = m_impl->device });
 
-		m_impl->CreateCommandBuffers();
+		m_impl->commandBuffers.reserve(MAX_FRAMES_IN_FLIGHT);
+		for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++)
+		{
+			m_impl->commandBuffers.emplace_back(
+				CommandBuffer::CreateParams {
+					.device = m_impl->device,
+					.commandPool = m_impl->commandPool,
+				}
+			);
+		}
+
 		m_impl->CreateSyncObjects();
 	}
 
@@ -173,11 +175,13 @@ namespace Oyl::Rendering::Vulkan
 
 		if (!m_impl->shader)
 		{
-			m_impl->shader = RenderEngine::CreateShader({
-				.language = SL_Hlsl,
-				.source = ShaderOptions::SO_File,
-				.filepath = "G:/dev/Oyl3D/Oyl3D/Source/Oyl3D/Engine/Rendering/Shaders/shader.hlsl"
-			});
+			m_impl->shader = RenderEngine::CreateShader(
+				{
+					.language = SL_Hlsl,
+					.source = ShaderOptions::SO_File,
+					.filepath = "G:/dev/Oyl3D/Oyl3D/Source/Oyl3D/Engine/Rendering/Shaders/shader.hlsl"
+				}
+			);
 		}
 
 		if (m_impl->shader->IsDirty())
@@ -369,33 +373,6 @@ namespace Oyl::Rendering::Vulkan
 	}
 
 	void
-	RenderContext::Impl::CreateCommandPool()
-	{
-		OYL_PROFILE_FUNCTION();
-
-		vk::CommandPoolCreateInfo poolInfo {
-			.flags = vk::CommandPoolCreateFlagBits::eResetCommandBuffer,
-			.queueFamilyIndex = device.GetVkGraphicsQueueIndex(),
-		};
-
-		commandPool = vk::raii::CommandPool(device.GetVkDevice(), poolInfo);
-	}
-
-	void
-	RenderContext::Impl::CreateCommandBuffers()
-	{
-		OYL_PROFILE_FUNCTION();
-
-		vk::CommandBufferAllocateInfo allocInfo {
-			.commandPool = commandPool,
-			.level = vk::CommandBufferLevel::ePrimary,
-			.commandBufferCount = MAX_FRAMES_IN_FLIGHT
-		};
-
-		commandBuffers = vk::raii::CommandBuffers(device.GetVkDevice(), allocInfo);
-	}
-
-	void
 	RenderContext::Impl::CreateSyncObjects()
 	{
 		OYL_PROFILE_FUNCTION();
@@ -423,117 +400,39 @@ namespace Oyl::Rendering::Vulkan
 	}
 
 	void
-	RenderContext::Impl::RecordCommandBuffer(uint32 a_imageIndex)
+	RenderContext::Impl::RecordCommandBuffer()
 	{
 		OYL_PROFILE_FUNCTION();
 
 		auto& commandBuffer = commandBuffers[frameIndex];
 
-		commandBuffer.begin({});
+		commandBuffer.Begin();
+		commandBuffer.BeginRendering(swapChain);
 
-		TransitionImageLayout(
-			a_imageIndex,
-			vk::ImageLayout::eUndefined,
-			vk::ImageLayout::eColorAttachmentOptimal,
-			{},
-			vk::AccessFlagBits2::eColorAttachmentWrite,
-			vk::PipelineStageFlagBits2::eColorAttachmentOutput,
-			vk::PipelineStageFlagBits2::eColorAttachmentOutput
+		Vector2u extent = Vector2u(
+			swapChain.GetVkExtent().width,
+			swapChain.GetVkExtent().height
 		);
+		commandBuffer.SetViewport(Vector2i::Zero(), extent);
+		commandBuffer.SetScissor(Vector2i::Zero(), extent);
 
-		const auto& swapChainImageViews = swapChain.GetVkImageViews();
-
-		vk::ClearValue clearColor = vk::ClearColorValue(0.0f, 0.0f, 0.0f, 1.0f);
-		vk::RenderingAttachmentInfo attachmentInfo = {
-			.imageView = swapChainImageViews[a_imageIndex],
-			.imageLayout = vk::ImageLayout::eColorAttachmentOptimal,
-			.loadOp = vk::AttachmentLoadOp::eClear,
-			.storeOp = vk::AttachmentStoreOp::eStore,
-			.clearValue = clearColor
-		};
-
-		const auto& swapChainExtent = swapChain.GetVkExtent();
-
-		vk::RenderingInfo renderingInfo = {
-			.renderArea = { .offset = { 0, 0 }, .extent = swapChainExtent },
-			.layerCount = 1,
-			.colorAttachmentCount = 1,
-			.pColorAttachments = &attachmentInfo
-		};
-
-		commandBuffer.beginRendering(renderingInfo);
-		auto viewport = vk::Viewport {
-			0.0f,
-			0.0f,
-			static_cast<float>(swapChainExtent.width),
-			static_cast<float>(swapChainExtent.height),
-			0.0f,
-			1.0f
-		};
-		auto scissor = vk::Rect2D {
-			vk::Offset2D(0, 0),
-			swapChainExtent
-		};
-		commandBuffer.setViewport(0, viewport);
-		commandBuffer.setScissor(0, scissor);
+		const auto& vkCommandBuffer = commandBuffer.GetVkCommandBuffer();
 
 		auto* vkShader = shader.Get();
-		commandBuffer.bindPipeline(vk::PipelineBindPoint::eGraphics, vkShader->GetPipeline());
+		vkCommandBuffer.bindPipeline(vk::PipelineBindPoint::eGraphics, vkShader->GetPipeline());
 		if (vertexBuffer->HasIndexData())
 		{
-			commandBuffer.bindIndexBuffer(*vertexBuffer->GetVkBuffer(), 0, vk::IndexType::eUint16);
-			commandBuffer.bindVertexBuffers(0, *vertexBuffer->GetVkBuffer(), { vertexBuffer->GetVertexDataOffset() });
-			commandBuffer.drawIndexed(vertexBuffer->GetIndexCount(), 1, 0, 0, 0);
+			vkCommandBuffer.bindIndexBuffer(*vertexBuffer->GetVkBuffer(), 0, vk::IndexType::eUint16);
+			vkCommandBuffer.bindVertexBuffers(0, *vertexBuffer->GetVkBuffer(), { vertexBuffer->GetVertexDataOffset() });
+			vkCommandBuffer.drawIndexed(vertexBuffer->GetIndexCount(), 1, 0, 0, 0);
 		} else
 		{
-			commandBuffer.bindVertexBuffers(0, *vertexBuffer->GetVkBuffer(), { vertexBuffer->GetVertexDataOffset() });
-			commandBuffer.draw(vertexBuffer->GetVertexCount(), 1, 0, 0);
+			vkCommandBuffer.bindVertexBuffers(0, *vertexBuffer->GetVkBuffer(), { vertexBuffer->GetVertexDataOffset() });
+			vkCommandBuffer.draw(vertexBuffer->GetVertexCount(), 1, 0, 0);
 		}
 
-		commandBuffer.endRendering();
-		TransitionImageLayout(
-			a_imageIndex,
-			vk::ImageLayout::eColorAttachmentOptimal,
-			vk::ImageLayout::ePresentSrcKHR,
-			vk::AccessFlagBits2::eColorAttachmentWrite,
-			{},
-			vk::PipelineStageFlagBits2::eColorAttachmentOutput,
-			vk::PipelineStageFlagBits2::eBottomOfPipe
-		);
-		commandBuffer.end();
-	}
-
-	void
-	RenderContext::Impl::TransitionImageLayout(uint32 a_imageIndex, vk::ImageLayout a_oldLayout, vk::ImageLayout a_new_layout, vk::AccessFlags2 a_srcAccessMask, vk::AccessFlags2 a_dstAccessMask, vk::PipelineStageFlags2 a_srcStageMask, vk::PipelineStageFlags2 a_dstStageMask)
-	{
-		OYL_PROFILE_FUNCTION();
-
-		const auto& swapChainImages = swapChain.GetVkImages();
-
-		vk::ImageMemoryBarrier2 barrier = {
-			.srcStageMask = a_srcStageMask,
-			.srcAccessMask = a_srcAccessMask,
-			.dstStageMask = a_dstStageMask,
-			.dstAccessMask = a_dstAccessMask,
-			.oldLayout = a_oldLayout,
-			.newLayout = a_new_layout,
-			.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED,
-			.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED,
-			.image = swapChainImages[a_imageIndex],
-			.subresourceRange = {
-				.aspectMask = vk::ImageAspectFlagBits::eColor,
-				.baseMipLevel = 0,
-				.levelCount = 1,
-				.baseArrayLayer = 0,
-				.layerCount = 1
-			}
-		};
-		vk::DependencyInfo dependency_info = {
-			.dependencyFlags = {},
-			.imageMemoryBarrierCount = 1,
-			.pImageMemoryBarriers = &barrier
-		};
-		commandBuffers[frameIndex].pipelineBarrier2(dependency_info);
+		commandBuffer.EndRendering(swapChain);
+		commandBuffer.End();
 	}
 
 	void
@@ -549,34 +448,34 @@ namespace Oyl::Rendering::Vulkan
 
 		auto& drawFence = inFlightFences[frameIndex];
 		auto& presentCompleteSemaphore = presentCompleteSemaphores[frameIndex];
-		auto& commandBuffer = commandBuffers[frameIndex];
 
 		auto fenceResult = vkDevice.waitForFences(*drawFence, vk::True, UINT64_MAX);
 		if (fenceResult != vk::Result::eSuccess)
 			throw std::runtime_error("Failed to wait for fence!");
 
-		auto [result, imageIndex] = vkSwapChain.acquireNextImage(UINT64_MAX, *presentCompleteSemaphore, nullptr);
-		if (result == vk::Result::eErrorOutOfDateKHR)
+		swapChain.SetVkSemaphore(&presentCompleteSemaphore);
+		bool success = swapChain.AcquireNextImage();
+		if (!success)
 		{
 			swapChain.Recreate();
 			return;
 		}
-		if (result != vk::Result::eSuccess && result != vk::Result::eSuboptimalKHR)
-		{
-			OYL_ASSERT(result == vk::Result::eTimeout || result == vk::Result::eNotReady);
-			throw std::runtime_error("Failed to acquire swap chain image");
-		}
+
+		auto imageIndex = swapChain.GetCurrentImageIndex();
 
 		// Only reset fences if we are going to submit work to the GPU
 		vkDevice.resetFences(*drawFence);
 
-		RecordCommandBuffer(imageIndex);
+		RecordCommandBuffer();
 		//graphicsQueue.waitIdle();
 
 		auto& renderFinishedSemaphore = renderFinishedSemaphores[imageIndex];
 
 		{
 			OYL_PROFILE_SCOPE("graphicsQueue.submit");
+
+			auto& commandBuffer = commandBuffers[frameIndex].GetVkCommandBuffer();
+
 			vk::PipelineStageFlags waitDestinationStageMask = vk::PipelineStageFlagBits::eColorAttachmentOutput;
 			const vk::SubmitInfo submitInfo {
 				.waitSemaphoreCount = 1,
@@ -599,11 +498,13 @@ namespace Oyl::Rendering::Vulkan
 				.pImageIndices = &imageIndex
 			};
 
-			result = device.GetVkGraphicsQueue().presentKHR(presentInfoKHR);
+			auto result = device.GetVkGraphicsQueue().presentKHR(presentInfoKHR);
 			if (result == vk::Result::eSuboptimalKHR || result == vk::Result::eErrorOutOfDateKHR)
 				swapChain.Recreate();
 			else
+			{
 				OYL_ASSERT(result == vk::Result::eSuccess);
+			}
 		}
 
 		frameIndex = (frameIndex + 1) % MAX_FRAMES_IN_FLIGHT;

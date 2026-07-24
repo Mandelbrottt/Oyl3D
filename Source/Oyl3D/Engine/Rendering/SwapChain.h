@@ -1,31 +1,21 @@
 ﻿#pragma once
-#include <Core/Math/Vector2.h>
+
+#include "DeviceObject.h"
 
 namespace Oyl::Rendering
 {
-	class OYL_RENDERING_API SwapChain
+	class OYL_RENDERING_API SwapChain : public Internal::IDeviceObject
 	{
 	protected:
-		SwapChain();
-
-	public:
-		SwapChain(const SwapChain&) = delete;
-		SwapChain&
-		operator =(const SwapChain&) = delete;
+		SwapChain() = default;
 
 		SwapChain(SwapChain&& a_other) noexcept = default;
 		SwapChain&
 		operator =(SwapChain&& a_other) noexcept = default;
 
+	public:
 		virtual
-		~SwapChain();
-
-		virtual
-		bool
-		Destroy()
-		{
-			return true;
-		}
+		~SwapChain() = default;
 
 		virtual
 		void
@@ -33,12 +23,10 @@ namespace Oyl::Rendering
 
 		virtual
 		bool
-		IsValid() const = 0;
+		AcquireNextImage() = 0;
 
-		explicit
-		operator bool() const
-		{
-			return IsValid();
-		}
+		virtual
+		uint32
+		GetCurrentImageIndex() const = 0;
 	};
 }

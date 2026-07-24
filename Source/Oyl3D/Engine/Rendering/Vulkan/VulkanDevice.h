@@ -35,10 +35,6 @@ namespace Oyl::Rendering::Vulkan
 		explicit
 		Device(const CreateParams& a_params);
 
-		Device(const Device& a_other) = delete;
-		Device&
-		operator =(const Device& a_other) = delete;
-
 		Device(Device&& a_other) noexcept;
 		Device&
 		operator =(Device&& a_other) noexcept;
@@ -46,7 +42,7 @@ namespace Oyl::Rendering::Vulkan
 		virtual
 		~Device();
 
-		bool
+		void
 		Destroy() override;
 
 		bool

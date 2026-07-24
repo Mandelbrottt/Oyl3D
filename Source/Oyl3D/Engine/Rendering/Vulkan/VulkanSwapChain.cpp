@@ -34,6 +34,11 @@ namespace Oyl::Rendering::Vulkan
 		vk::SurfaceFormatKHR swapChainSurfaceFormat;
 		vk::Extent2D swapChainExtent;
 
+		const vk::raii::Semaphore* semaphore = nullptr;
+		const vk::raii::Fence* fence = nullptr;
+
+		uint32 imageIndex;
+
 		void
 		CreateSwapChain();
 		void
@@ -68,10 +73,11 @@ namespace Oyl::Rendering::Vulkan
 	SwapChain&
 	SwapChain::operator=(SwapChain&& a_other) noexcept
 	{
-		if (this == &a_other)
-			return *this;
-
-		std::swap(m_impl, a_other.m_impl);
+		if (this != &a_other)
+		{
+			Rendering::SwapChain::operator=(std::move(a_other));
+			std::swap(m_impl, a_other.m_impl);
+		}
 		return *this;
 	}
 
@@ -80,18 +86,23 @@ namespace Oyl::Rendering::Vulkan
 		SwapChain::Destroy();
 	}
 
-	bool
+	void
 	SwapChain::Destroy()
 	{
 		OYL_PROFILE_FUNCTION();
 
-		if (!m_impl)
-			return Rendering::SwapChain::Destroy();
+		if (!IsValid())
+			return;
 
 		m_impl->CleanupSwapChain();
 		m_impl.release();
+	}
 
-		return Rendering::SwapChain::Destroy();
+	bool
+	SwapChain::IsValid() const
+	{
+		return m_impl
+		       && *m_impl->swapChain;
 	}
 
 	void
@@ -103,9 +114,37 @@ namespace Oyl::Rendering::Vulkan
 	}
 
 	bool
-	SwapChain::IsValid() const
+	SwapChain::AcquireNextImage()
 	{
-		return m_impl && m_impl->swapChain != nullptr;
+		OYL_PROFILE_FUNCTION();
+
+		vk::Semaphore semaphore = nullptr;
+		if (m_impl->semaphore)
+			semaphore = *m_impl->semaphore;
+
+		vk::Fence fence = nullptr;
+		if (m_impl->fence)
+			fence = *m_impl->fence;
+
+		auto [result, imageIndex] = m_impl->swapChain.acquireNextImage(UINT64_MAX, semaphore, fence);
+		if (result == vk::Result::eErrorOutOfDateKHR)
+		{
+			return false;
+		}
+		if (result != vk::Result::eSuccess && result != vk::Result::eSuboptimalKHR)
+		{
+			OYL_ASSERT(result == vk::Result::eTimeout || result == vk::Result::eNotReady);
+			throw std::runtime_error("Failed to acquire swap chain image");
+		}
+
+		m_impl->imageIndex = imageIndex;
+		return true;
+	}
+
+	uint32
+	SwapChain::GetCurrentImageIndex() const
+	{
+		return m_impl->imageIndex;
 	}
 
 	const vk::raii::SwapchainKHR&
@@ -120,10 +159,22 @@ namespace Oyl::Rendering::Vulkan
 		return m_impl->swapChainImages;
 	}
 
+	vk::Image
+	SwapChain::GetCurrentVkImage() const
+	{
+		return m_impl->swapChainImages[m_impl->imageIndex];
+	}
+
 	const std::vector<vk::raii::ImageView>&
 	SwapChain::GetVkImageViews() const
 	{
 		return m_impl->swapChainImageViews;
+	}
+
+	const vk::raii::ImageView&
+	SwapChain::GetCurrentVkImageView() const
+	{
+		return m_impl->swapChainImageViews[m_impl->imageIndex];
 	}
 
 	const vk::SurfaceFormatKHR&
@@ -136,6 +187,30 @@ namespace Oyl::Rendering::Vulkan
 	SwapChain::GetVkExtent() const
 	{
 		return m_impl->swapChainExtent;
+	}
+
+	const vk::raii::Semaphore*
+	SwapChain::GetVkSemaphore() const
+	{
+		return m_impl->semaphore;
+	}
+
+	void
+	SwapChain::SetVkSemaphore(const vk::raii::Semaphore* a_semaphore) const
+	{
+		m_impl->semaphore = a_semaphore;
+	}
+
+	const vk::raii::Fence*
+	SwapChain::GetVkFence() const
+	{
+		return m_impl->fence;
+	}
+
+	void
+	SwapChain::SetVkFence(const vk::raii::Fence* a_fence) const
+	{
+		m_impl->fence = a_fence;
 	}
 
 	void
