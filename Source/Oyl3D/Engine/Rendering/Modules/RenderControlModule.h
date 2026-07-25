@@ -8,7 +8,7 @@
 
 namespace Oyl
 {
-	class Window;
+	class IWindow;
 
 	struct WindowClosedEvent;
 	struct WindowCreatedEvent;
@@ -54,6 +54,6 @@ namespace Oyl::Rendering
 
 		std::unique_ptr<Internal::RenderEngineInstance> m_renderEngineInstance;
 
-		Window* m_mainWindow = nullptr;
+		IWindow* m_mainWindow = nullptr;
 	};
 }

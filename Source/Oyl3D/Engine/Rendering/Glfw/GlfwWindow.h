@@ -6,13 +6,30 @@
 
 namespace Oyl::Glfw
 {
-	class OYL_RENDERING_API Window : public Oyl::Window
+	class OYL_RENDERING_API Window : public IWindow
 	{
 	public:
 		Window() noexcept;
 
+		Window(std::nullptr_t);
+
+		struct CreateParams
+		{
+			Vector2i position = Vector2i(-1, -1);
+			Vector2i size;
+
+			std::string title;
+
+			WindowStateFlags windowState;
+			CursorState cursorState;
+
+			PostEventDelegate postEventCallback;
+
+			// Requested Default Graphics API
+		};
+
 		explicit
-		Window(const WindowParams& a_params) noexcept;
+		Window(const CreateParams& a_params) noexcept;
 
 		Window(Window&& a_other) noexcept;
 		Window&
@@ -22,16 +39,13 @@ namespace Oyl::Glfw
 		~Window();
 
 		void
-		Init(const WindowParams& a_params) override;
-
-		void
 		Destroy() override;
-
-		void
-		Update() override;
 
 		bool
 		IsValid() const override;
+
+		void
+		Update() override;
 
 		void
 		SetPostEventCallback(PostEventDelegate a_delegate) override;

@@ -20,7 +20,7 @@ namespace Oyl::Rendering::Vulkan
 	struct SwapChain::Impl
 	{
 		const Device* device = nullptr;
-		const Window* window = nullptr;
+		const IWindow* window = nullptr;
 
 		vk::raii::SwapchainKHR swapChain = nullptr;
 		std::vector<vk::Image> swapChainImages;

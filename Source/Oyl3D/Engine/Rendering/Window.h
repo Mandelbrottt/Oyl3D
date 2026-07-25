@@ -1,17 +1,18 @@
 #pragma once
 
-#include "Core/Events/Event.h"
-#include "Core/Input/InputCodes.h"
-#include "Core/Math/Vector2.h"
+#include <Core/UniqueHandle.h>
+#include <Core/Events/Event.h>
+#include <Core/Input/InputCodes.h>
+#include <Core/Math/Vector2.h>
 
 namespace Oyl
 {
 	enum WindowStateFlags
 	{
-		WS_None       = 0,
+		WS_None = 0,
 		WS_Fullscreen = 1 << 0,
 		WS_Borderless = 1 << 1,
-		WS_VSync      = 1 << 2,
+		WS_VSync = 1 << 2,
 	};
 
 	enum CursorState
@@ -24,159 +25,85 @@ namespace Oyl
 		CS_Last,
 	};
 
-	struct WindowParams
-	{
-		Vector2i position = Vector2i(-1, -1);
-		Vector2i size;
-
-		std::string title;
-
-		WindowStateFlags windowState;
-		CursorState cursorState;
-
-		PostEventDelegate postEventCallback;
-
-		// Requested Default Graphics API
-	};
-
-	class OYL_RENDERING_API Window
+	class OYL_RENDERING_API IWindow : public IUniqueHandle
 	{
 	protected:
-		Window() noexcept;
+		IWindow() noexcept = default;
 
-		explicit
-		Window(const WindowParams& a_params) noexcept;
-
-		Window(Window&& a_other) noexcept = default;
-		Window&
-		operator=(Window&& a_other) noexcept = default;
+		IWindow(IWindow&& a_other) noexcept = default;
+		IWindow&
+		operator=(IWindow&& a_other) noexcept = default;
 
 	public:
-		Window(const Window&) = delete;
 		virtual
-		Window&
-		operator=(const Window&) = delete;
+		~IWindow() noexcept = default;
 
-		virtual
-		~Window() noexcept;
-
-		virtual
 		void
-		Init(const WindowParams& a_params)
-		{
-			OYL_UNUSED(a_params);
-		}
+		Destroy() override = 0;
 
-		virtual
-		void
-		Destroy() {}
-
-		virtual
-		void
-		Update() {}
-
-		virtual
 		bool
-		IsValid() const
-		{
-			return false;
-		}
+		IsValid() const override = 0;
 
 		virtual
 		void
-		SetPostEventCallback(PostEventDelegate a_delegate)
-		{
-			OYL_UNUSED(a_delegate);
-		}
-
-		virtual
-		Vector2i
-		GetSize() const
-		{
-			return {};
-		}
+		Update() = 0;
 
 		virtual
 		void
-		SetSize(Vector2i a_size)
-		{
-			OYL_UNUSED(a_size);
-		}
+		SetPostEventCallback(PostEventDelegate a_delegate) = 0;
 
 		virtual
 		Vector2i
-		GetFrameBufferSize() const
-		{
-			return {};
-		}
-
-		virtual
-		Vector2i
-		GetPosition() const
-		{
-			return {};
-		}
+		GetSize() const = 0;
 
 		virtual
 		void
-		SetPosition(Vector2i a_position)
-		{
-			OYL_UNUSED(a_position);
-		}
+		SetSize(Vector2i a_size) = 0;
+
+		virtual
+		Vector2i
+		GetFrameBufferSize() const = 0;
+
+		virtual
+		Vector2i
+		GetPosition() const = 0;
+
+		virtual
+		void
+		SetPosition(Vector2i a_position) = 0;
 
 		virtual
 		std::string_view
-		GetTitle() const
-		{
-			return {};
-		}
+		GetTitle() const = 0;
 
 		virtual
 		void
-		SetTitle(std::string_view a_title)
-		{
-			OYL_UNUSED(a_title);
-		}
+		SetTitle(std::string_view a_title) = 0;
 
 		virtual
 		WindowStateFlags
-		GetWindowStateFlags() const
-		{
-			return {};
-		}
+		GetWindowStateFlags() const = 0;
 
 		virtual
 		void
-		SetWindowStateFlags(WindowStateFlags a_flags)
-		{
-			OYL_UNUSED(a_flags);
-		}
+		SetWindowStateFlags(WindowStateFlags a_flags) = 0;
 
 		virtual
 		CursorState
-		GetCursorStateFlags() const
-		{
-			return {};
-		}
+		GetCursorStateFlags() const = 0;
 
 		virtual
 		void
-		SetCursorStateFlags(CursorState a_state)
-		{
-			OYL_UNUSED(a_state);
-		}
+		SetCursorStateFlags(CursorState a_state) = 0;
 
 		virtual
 		void*
-		GetNativeWindowHandle() const
-		{
-			return nullptr;
-		}
+		GetNativeWindowHandle() const = 0;
 	};
 
 	struct WindowEvent
 	{
-		Window* window = nullptr;
+		IWindow* window = nullptr;
 
 	protected:
 		WindowEvent() = default;

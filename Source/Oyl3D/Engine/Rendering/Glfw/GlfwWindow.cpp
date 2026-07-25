@@ -31,11 +31,9 @@ namespace Oyl::Glfw
 		WindowStateFlags windowState;
 		CursorState cursorState;
 
-		Delegate<void(const Event&)> postEventCallback;
+		PostEventDelegate postEventCallback;
 
 		GLFWwindow* glfwWindow = nullptr;
-
-		//std::unique_ptr<Rendering::RenderContext> renderContext;
 
 		void
 		CreateGlfwWindow();
@@ -46,39 +44,13 @@ namespace Oyl::Glfw
 	Window::Window() noexcept
 		: m_impl(nullptr) {}
 
-	Window::Window(const WindowParams& a_params) noexcept
-		: Oyl::Window(a_params), m_impl(nullptr)
-	{
-		Window::Init(a_params);
-	}
+	Window::Window(std::nullptr_t)
+		: m_impl(nullptr) {}
 
-	Window::Window(Window&& a_other) noexcept
-		: Oyl::Window(std::move(a_other)),
-		  m_impl(nullptr)
-	{
-		m_impl.swap(a_other.m_impl);
-	}
-
-	Window&
-	Window::operator=(Window&& a_other) noexcept
-	{
-		Oyl::Window::operator=(std::move(a_other));
-		new(this) Window(std::move(a_other));
-		return *this;
-	}
-
-	Window::~Window()
-	{
-		Window::Destroy();
-	}
-
-	void
-	Window::Init(const WindowParams& a_params)
+	Window::Window(const CreateParams& a_params) noexcept
+		: m_impl(std::make_unique<Impl>())
 	{
 		OYL_PROFILE_FUNCTION();
-
-		if (!m_impl)
-			m_impl = std::make_unique<Impl>();
 
 		m_impl->window = this;
 
@@ -100,17 +72,36 @@ namespace Oyl::Glfw
 		m_impl->postEventCallback(event);
 	}
 
+	Window::Window(Window&& a_other) noexcept
+		: m_impl(nullptr)
+	{
+		*this = std::move(a_other);
+	}
+
+	Window&
+	Window::operator=(Window&& a_other) noexcept
+	{
+		if (this != &a_other)
+		{
+			m_impl = std::move(a_other.m_impl);
+		}
+		return *this;
+	}
+
+	Window::~Window()
+	{
+		Window::Destroy();
+	}
+
 	void
 	Window::Destroy()
 	{
 		OYL_PROFILE_FUNCTION();
 
-		if (!m_impl)
+		if (!IsValid())
 			return;
 
-		if (!m_impl->glfwWindow)
-			return;
-
+		// Send event before we do any actual cleanup
 		WindowClosedEvent event;
 		event.window = this;
 		m_impl->postEventCallback(event);
@@ -132,7 +123,8 @@ namespace Oyl::Glfw
 	bool
 	Window::IsValid() const
 	{
-		return m_impl->glfwWindow != nullptr;
+		return m_impl
+		       && m_impl->glfwWindow;
 	}
 
 	void

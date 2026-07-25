@@ -53,7 +53,7 @@ namespace Oyl::Rendering::Vulkan
 {
 	struct RenderContext::Impl
 	{
-		const Window* window;
+		const IWindow* window;
 
 		vk::raii::Context context;
 		vk::raii::Instance instance = nullptr;

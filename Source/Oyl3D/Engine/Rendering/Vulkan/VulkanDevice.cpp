@@ -21,7 +21,7 @@ namespace Oyl::Rendering::Vulkan
 		uint32 graphicsQueueIndex = 0;
 
 		void
-		CreateSurface(const vk::raii::Instance& a_instance, const Glfw::Window* a_window);
+		CreateSurface(const vk::raii::Instance& a_instance, const Glfw::Window& a_window);
 		void
 		PickPhysicalDevice(const vk::raii::Instance& a_instance);
 		void
@@ -49,7 +49,7 @@ namespace Oyl::Rendering::Vulkan
 		}
 
 		auto glfwWindow = static_cast<const Glfw::Window*>(GetWindow());
-		m_impl->CreateSurface(a_params.instance, glfwWindow);
+		m_impl->CreateSurface(a_params.instance, *glfwWindow);
 		m_impl->PickPhysicalDevice(a_params.instance);
 		m_impl->CreateLogicalDevice();
 	}
@@ -134,12 +134,12 @@ namespace Oyl::Rendering::Vulkan
 	}
 
 	void
-	Device::Impl::CreateSurface(const vk::raii::Instance& a_instance, const Glfw::Window* a_window)
+	Device::Impl::CreateSurface(const vk::raii::Instance& a_instance, const Glfw::Window& a_window)
 	{
 		OYL_PROFILE_FUNCTION();
 
 		VkSurfaceKHR cSurface;
-		auto glfwWindow = static_cast<GLFWwindow*>(a_window->GetNativeWindowHandle());
+		auto glfwWindow = static_cast<GLFWwindow*>(a_window.GetNativeWindowHandle());
 		if (glfwCreateWindowSurface(*a_instance, glfwWindow, nullptr, &cSurface) != VK_SUCCESS)
 		{
 			throw std::runtime_error("failed to create window surface!");

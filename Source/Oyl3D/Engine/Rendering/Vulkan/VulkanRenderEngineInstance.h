@@ -14,7 +14,7 @@ namespace Oyl::Rendering::Vulkan
 	public:
 		struct CreateParams
 		{
-			const Window* window;
+			const IWindow* window;
 		};
 
 		explicit

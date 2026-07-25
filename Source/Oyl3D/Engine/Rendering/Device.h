@@ -10,7 +10,7 @@ namespace Oyl::Rendering
 	{
 	protected:
 		explicit
-		Device(const Window* a_window)
+		Device(const IWindow* a_window)
 			: m_window(a_window) {}
 
 		Device(Device&& a_other) noexcept
@@ -42,13 +42,13 @@ namespace Oyl::Rendering
 			m_window = nullptr;
 		}
 
-		const Window*
+		const IWindow*
 		GetWindow() const
 		{
 			return m_window;
 		}
 
 	private:
-		const Window* m_window;
+		const IWindow* m_window;
 	};
 }
