@@ -14,7 +14,6 @@ namespace Oyl::Rendering::Vulkan
 
 		struct CreateParams
 		{
-			const vk::raii::Instance& instance;
 			const IWindow& window;
 
 			const char* const* ppRequiredDeviceExtensionsData;
