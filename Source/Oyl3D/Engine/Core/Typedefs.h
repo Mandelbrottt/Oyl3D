@@ -42,3 +42,53 @@ _OYL_SIMPLE_NUMERIC_TYPEDEFS_USING
 	#undef _OYL_SIMPLE_NUMERIC_TYPEDEFS_END
 	#undef _OYL_SIMPLE_NUMERIC_TYPEDEFS_USING
 #endif
+
+namespace Oyl
+{
+	template<typename>
+	struct OpaqueHandle
+	{
+		OpaqueHandle() = default;
+
+		OpaqueHandle(const OpaqueHandle& a_other) = default;
+		OpaqueHandle&
+		operator =(const OpaqueHandle& a_other) = default;
+
+		OpaqueHandle(OpaqueHandle&& a_other) = default;
+		OpaqueHandle&
+		operator =(OpaqueHandle&& a_other) noexcept = default;
+
+		OpaqueHandle(std::nullptr_t) {}
+
+	protected:
+		using Handle = struct _Handle*;
+		Handle m_handle = nullptr;
+	};
+
+	template<typename TOylType, typename TLibType>
+		requires (std::is_trivially_destructible_v<TOylType> && std::is_trivially_destructible_v<TLibType>)
+	struct ImplicitConversionWrapper : TOylType
+	{
+		constexpr
+		ImplicitConversionWrapper(std::nullptr_t) {}
+
+		constexpr
+		ImplicitConversionWrapper(TLibType a_libType)
+		{
+			*this = std::bit_cast<decltype(*this)>(a_libType);
+		}
+
+		constexpr
+		operator TOylType()
+		{
+			static_assert(sizeof(*this) == sizeof(TOylType));
+			return std::bit_cast<TOylType>(*this);
+		}
+
+		constexpr
+		operator TLibType()
+		{
+			return std::bit_cast<TLibType>(*this);
+		}
+	};
+}
