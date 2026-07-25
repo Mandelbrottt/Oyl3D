@@ -55,7 +55,7 @@ namespace Oyl::Rendering
 
 		virtual
 		bool
-		DeviceLoad(const IDevice& a_device)
+		DeviceLoad(const IDevice& /*a_device*/)
 		{
 			m_deviceLoaded = true;
 			m_deviceDirty = false;

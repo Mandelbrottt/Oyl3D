@@ -12,8 +12,8 @@ namespace Oyl::Rendering
 		size_t vertexLength;
 		uint32 vertexStride;
 
-		const byte* indexData;
-		size_t indexLength;
+		const byte* indexData = nullptr;
+		size_t indexLength = 0;
 	};
 
 	class OYL_RENDERING_API VertexBufferResource : public DeviceResource<VertexBufferResource>

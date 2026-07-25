@@ -11,14 +11,10 @@ namespace Oyl::Rendering::Internal
 {
 	RenderEngineInstance::RenderEngineInstance() {}
 
-	RenderEngineInstance::RenderEngineInstance(Params a_params)
-		: m_resourceManager(std::move(a_params.resourceManager)),
+	RenderEngineInstance::RenderEngineInstance(CreateParams a_params)
+		: m_resourceManager(std::make_unique<Oyl::Internal::ResourceManager>()),
 		  m_shaderCompiler(std::move(a_params.shaderCompiler)),
-		  m_renderContext(std::move(a_params.renderContext))
-	{
-		if (!m_resourceManager)
-			m_resourceManager = std::make_unique<Oyl::Internal::ResourceManager>();
-	}
+		  m_renderContext(std::move(a_params.renderContext)) {}
 
 	RenderEngineInstance::~RenderEngineInstance() {}
 
@@ -37,7 +33,10 @@ namespace Oyl::Rendering::Internal
 	const IDevice*
 	RenderEngineInstance::GetCurrentDevice() const
 	{
-		return m_renderContext->GetDevice();
+		const IDevice* result = nullptr;
+		if (m_renderContext)
+			result = m_renderContext->GetDevice();
+		return result;
 	}
 
 	IRenderContext*

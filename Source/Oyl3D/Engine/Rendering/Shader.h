@@ -24,22 +24,23 @@ namespace Oyl::Rendering
 
 	enum ShaderLanguage
 	{
+		SL_None,
 		SL_Hlsl,
 	};
 
 	struct ShaderOptions
 	{
-		ShaderLanguage language;
+		ShaderLanguage language = SL_None;
 
 		enum
 		{
 			SO_None,
 			SO_File,
 			SO_Code,
-		} source;
+		} source = SO_None;
 
-		std::string filepath;
-		std::string code;
+		std::string filepath = {};
+		std::string code = {};
 	};
 
 	class OYL_RENDERING_API ShaderResource : public DeviceResource<ShaderResource>

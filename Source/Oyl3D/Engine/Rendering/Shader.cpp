@@ -3,9 +3,7 @@
 namespace Oyl::Rendering
 {
 	ShaderResource::ShaderResource()
-		: m_options({
-			.source = ShaderOptions::SO_None
-		}) {}
+		: m_options({}) {}
 
 	ShaderResource::ShaderResource(ShaderOptions a_shaderOptions)
 	{

@@ -17,16 +17,14 @@ namespace Oyl::Rendering::Internal
 	protected:
 		RenderEngineInstance();
 
-		struct Params
+		struct CreateParams
 		{
-			std::unique_ptr<Oyl::Internal::ResourceManager> resourceManager;
 			std::unique_ptr<ShaderCompiler> shaderCompiler;
-			std::unique_ptr<IDevice> device;
 			std::unique_ptr<IRenderContext> renderContext;
 		};
 
 		explicit
-		RenderEngineInstance(Params a_params);
+		RenderEngineInstance(CreateParams a_params);
 
 	public:
 		virtual
