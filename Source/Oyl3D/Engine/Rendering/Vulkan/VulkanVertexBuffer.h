@@ -28,7 +28,7 @@ namespace Oyl::Rendering::Vulkan
 		Unload() override;
 
 		bool
-		DeviceLoad(const Rendering::Device& a_device) override
+		DeviceLoad(const Rendering::IDevice& a_device) override
 		{
 			return DeviceLoad(static_cast<const Device&>(a_device));
 		}

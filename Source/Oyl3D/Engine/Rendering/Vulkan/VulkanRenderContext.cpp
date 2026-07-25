@@ -136,7 +136,7 @@ namespace Oyl::Rendering::Vulkan
 		m_impl->device = Device(
 			{
 				.instance = m_impl->instance,
-				.window = m_impl->window,
+				.window = *m_impl->window,
 				.ppRequiredDeviceExtensionsData = REQUIRED_DEVICE_EXTENSION.data(),
 				.requiredDeviceExtensionsLength = REQUIRED_DEVICE_EXTENSION.size()
 			}

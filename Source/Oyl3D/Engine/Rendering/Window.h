@@ -25,7 +25,7 @@ namespace Oyl
 		CS_Last,
 	};
 
-	class OYL_RENDERING_API IWindow : public IUniqueHandle
+	class IWindow : public IUniqueHandle
 	{
 	protected:
 		IWindow() noexcept = default;

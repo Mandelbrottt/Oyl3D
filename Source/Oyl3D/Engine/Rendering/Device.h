@@ -1,54 +1,30 @@
 #pragma once
 
-#include "DeviceObject.h"
-
 #include "Rendering/Window.h"
 
 namespace Oyl::Rendering
 {
-	class OYL_RENDERING_API Device : public Internal::IDeviceObject
+	class IDevice : public IUniqueHandle
 	{
 	protected:
-		explicit
-		Device(const IWindow* a_window)
-			: m_window(a_window) {}
+		IDevice() = default;
 
-		Device(Device&& a_other) noexcept
-		{
-			*this = std::move(a_other);
-		}
-
-		Device&
-		operator =(Device&& a_other) noexcept
-		{
-			if (this != &a_other)
-			{
-				IDeviceObject::operator=(std::move(a_other));
-				std::swap(m_window, a_other.m_window);
-			}
-			return *this;
-		}
+		IDevice(IDevice&& a_other) noexcept = default;
+		IDevice&
+		operator =(IDevice&& a_other) noexcept = default;
 
 	public:
 		virtual
-		~Device()
-		{
-			Device::Destroy();
-		};
+		~IDevice() = default;
 
 		void
-		Destroy() override
-		{
-			m_window = nullptr;
-		}
+		Destroy() override = 0;
 
+		bool
+		IsValid() const override = 0;
+
+		virtual
 		const IWindow*
-		GetWindow() const
-		{
-			return m_window;
-		}
-
-	private:
-		const IWindow* m_window;
+		GetWindow() const = 0;
 	};
 }

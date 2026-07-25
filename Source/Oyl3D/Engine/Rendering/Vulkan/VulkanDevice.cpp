@@ -10,6 +10,8 @@ namespace Oyl::Rendering::Vulkan
 {
 	struct Device::Impl
 	{
+		const Glfw::Window* window;
+
 		std::vector<std::string> requiredDeviceExtensions;
 
 		vk::raii::SurfaceKHR surface = nullptr;
@@ -29,14 +31,14 @@ namespace Oyl::Rendering::Vulkan
 	};
 
 	Device::Device()
-		: Rendering::Device(nullptr),
-		  m_impl(nullptr) {}
+		: m_impl(nullptr) {}
 
 	Device::Device(const CreateParams& a_params)
-		: Rendering::Device(a_params.window),
-		  m_impl(std::make_unique<Impl>())
+		: m_impl(std::make_unique<Impl>())
 	{
 		OYL_PROFILE_FUNCTION();
+
+		m_impl->window = static_cast<const Glfw::Window*>(&a_params.window);
 
 		if (a_params.ppRequiredDeviceExtensionsData && a_params.requiredDeviceExtensionsLength > 0)
 		{
@@ -48,15 +50,13 @@ namespace Oyl::Rendering::Vulkan
 			);
 		}
 
-		auto glfwWindow = static_cast<const Glfw::Window*>(GetWindow());
-		m_impl->CreateSurface(a_params.instance, *glfwWindow);
+		m_impl->CreateSurface(a_params.instance, *m_impl->window);
 		m_impl->PickPhysicalDevice(a_params.instance);
 		m_impl->CreateLogicalDevice();
 	}
 
 	Device::Device(Device&& a_other) noexcept
-		: Rendering::Device(a_other.GetWindow()),
-		  m_impl(nullptr)
+		: m_impl(nullptr)
 	{
 		*this = std::move(a_other);
 	}
@@ -66,8 +66,7 @@ namespace Oyl::Rendering::Vulkan
 	{
 		if (this != &a_other)
 		{
-			Rendering::Device::operator=(std::move(a_other));
-			std::swap(m_impl, a_other.m_impl);
+			m_impl = std::move(a_other.m_impl);
 		}
 		return *this;
 	}
@@ -92,8 +91,6 @@ namespace Oyl::Rendering::Vulkan
 		m_impl->requiredDeviceExtensions.clear();
 
 		m_impl.release();
-
-		Rendering::Device::Destroy();
 	}
 
 	bool
@@ -101,6 +98,12 @@ namespace Oyl::Rendering::Vulkan
 	{
 		return m_impl
 		       && *m_impl->device;
+	}
+
+	const IWindow*
+	Device::GetWindow() const
+	{
+		return m_impl->window;
 	}
 
 	const vk::raii::Device&

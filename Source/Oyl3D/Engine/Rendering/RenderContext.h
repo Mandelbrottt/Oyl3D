@@ -37,7 +37,7 @@ namespace Oyl::Rendering
 		Resize(Vector2i a_size) = 0;
 
 		virtual
-		const Device*
+		const IDevice*
 		GetDevice() const = 0;
 
 		virtual

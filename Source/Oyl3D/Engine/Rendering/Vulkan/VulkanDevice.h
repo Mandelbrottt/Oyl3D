@@ -7,7 +7,7 @@
 
 namespace Oyl::Rendering::Vulkan
 {
-	class OYL_RENDERING_API Device : public Rendering::Device
+	class OYL_RENDERING_API Device : public IDevice
 	{
 	public:
 		Device();
@@ -15,7 +15,7 @@ namespace Oyl::Rendering::Vulkan
 		struct CreateParams
 		{
 			const vk::raii::Instance& instance;
-			const IWindow* window;
+			const IWindow& window;
 
 			const char* const* ppRequiredDeviceExtensionsData;
 			size_t requiredDeviceExtensionsLength;
@@ -36,6 +36,9 @@ namespace Oyl::Rendering::Vulkan
 
 		bool
 		IsValid() const override;
+
+		const IWindow*
+		GetWindow() const override;
 
 		const vk::raii::Device&
 		GetVkDevice() const;
