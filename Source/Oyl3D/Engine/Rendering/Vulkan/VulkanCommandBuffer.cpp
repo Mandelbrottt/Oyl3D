@@ -144,6 +144,8 @@ namespace Oyl::Rendering::Vulkan
 	void
 	CommandBuffer::End() const noexcept
 	{
+		OYL_PROFILE_FUNCTION();
+
 		m_impl->commandBuffer.end();
 	}
 
@@ -206,14 +208,17 @@ namespace Oyl::Rendering::Vulkan
 	void
 	CommandBuffer::BindShader(const ShaderResource& a_shader) const noexcept
 	{
+		OYL_PROFILE_FUNCTION();
+
 		m_impl->commandBuffer.bindPipeline(vk::PipelineBindPoint::eGraphics, a_shader.GetVkPipeline());
 	}
 
 	void
 	CommandBuffer::BindVertexBuffer(const VertexBufferResource& a_vertexBuffer) const noexcept
 	{
-		const auto& vkCommandBuffer = m_impl->commandBuffer;
+		OYL_PROFILE_FUNCTION();
 
+		const auto& vkCommandBuffer = m_impl->commandBuffer;
 		const auto& vkVertexBuffer = a_vertexBuffer.GetVkBuffer();
 
 		if (a_vertexBuffer.HasIndexData())

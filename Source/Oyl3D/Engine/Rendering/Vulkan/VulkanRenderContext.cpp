@@ -408,20 +408,8 @@ namespace Oyl::Rendering::Vulkan
 		commandBuffer.SetViewport(Vector2i::Zero(), extent);
 		commandBuffer.SetScissor(Vector2i::Zero(), extent);
 
-		const auto& vkCommandBuffer = commandBuffer.GetVkCommandBuffer();
-
-		auto* vkShader = shader.Get();
-		vkCommandBuffer.bindPipeline(vk::PipelineBindPoint::eGraphics, vkShader->GetVkPipeline());
-		if (vertexBuffer->HasIndexData())
-		{
-			vkCommandBuffer.bindIndexBuffer(*vertexBuffer->GetVkBuffer(), 0, vk::IndexType::eUint16);
-			vkCommandBuffer.bindVertexBuffers(0, *vertexBuffer->GetVkBuffer(), { vertexBuffer->GetVertexDataOffset() });
-			vkCommandBuffer.drawIndexed(vertexBuffer->GetIndexCount(), 1, 0, 0, 0);
-		} else
-		{
-			vkCommandBuffer.bindVertexBuffers(0, *vertexBuffer->GetVkBuffer(), { vertexBuffer->GetVertexDataOffset() });
-			vkCommandBuffer.draw(vertexBuffer->GetVertexCount(), 1, 0, 0);
-		}
+		commandBuffer.BindShader(*shader);
+		commandBuffer.BindVertexBuffer(*vertexBuffer);
 
 		commandBuffer.EndRendering(swapChain);
 		commandBuffer.End();
