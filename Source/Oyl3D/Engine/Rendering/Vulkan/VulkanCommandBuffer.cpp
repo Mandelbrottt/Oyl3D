@@ -21,14 +21,14 @@ namespace Oyl::Rendering::Vulkan
 			vk::AccessFlags2 a_dstAccessMask,
 			vk::PipelineStageFlags2 a_srcStageMask,
 			vk::PipelineStageFlags2 a_dstStageMask
-		);
+		) const noexcept;
 	};
 
-	CommandBuffer::CommandBuffer()
+	CommandBuffer::CommandBuffer() noexcept
 		: Rendering::CommandBuffer(),
 		  m_impl(nullptr) {}
 
-	CommandBuffer::CommandBuffer(const CreateParams& a_params)
+	CommandBuffer::CommandBuffer(const CreateParams& a_params) noexcept
 		: Rendering::CommandBuffer(&a_params.commandPool),
 		  m_impl(std::make_unique<Impl>())
 	{
@@ -64,13 +64,13 @@ namespace Oyl::Rendering::Vulkan
 		return *this;
 	}
 
-	CommandBuffer::~CommandBuffer()
+	CommandBuffer::~CommandBuffer() noexcept
 	{
 		CommandBuffer::Destroy();
 	}
 
 	void
-	CommandBuffer::Destroy()
+	CommandBuffer::Destroy() noexcept
 	{
 		m_impl->commandBuffer.clear();
 
@@ -78,7 +78,7 @@ namespace Oyl::Rendering::Vulkan
 	}
 
 	bool
-	CommandBuffer::IsValid() const
+	CommandBuffer::IsValid() const noexcept
 	{
 		return m_impl
 		       && *m_impl->commandBuffer
@@ -86,25 +86,25 @@ namespace Oyl::Rendering::Vulkan
 	}
 
 	const CommandPool*
-	CommandBuffer::GetCommandPool() const
+	CommandBuffer::GetCommandPool() const noexcept
 	{
 		return static_cast<const CommandPool*>(Rendering::CommandBuffer::GetCommandPool());
 	}
 
 	const vk::raii::CommandBuffer&
-	CommandBuffer::GetVkCommandBuffer() const
+	CommandBuffer::GetVkCommandBuffer() const noexcept
 	{
 		return m_impl->commandBuffer;
 	}
 
 	void
-	CommandBuffer::Begin()
+	CommandBuffer::Begin() const noexcept
 	{
 		m_impl->commandBuffer.begin({});
 	}
 
 	void
-	CommandBuffer::BeginRendering(const SwapChain& a_swapChain)
+	CommandBuffer::BeginRendering(const SwapChain& a_swapChain) const noexcept
 	{
 		OYL_PROFILE_FUNCTION();
 
@@ -142,13 +142,13 @@ namespace Oyl::Rendering::Vulkan
 	}
 
 	void
-	CommandBuffer::End()
+	CommandBuffer::End() const noexcept
 	{
 		m_impl->commandBuffer.end();
 	}
 
 	void
-	CommandBuffer::EndRendering(const SwapChain& a_swapChain)
+	CommandBuffer::EndRendering(const SwapChain& a_swapChain) const noexcept
 	{
 		OYL_PROFILE_FUNCTION();
 
@@ -166,7 +166,7 @@ namespace Oyl::Rendering::Vulkan
 	}
 
 	void
-	CommandBuffer::SetViewport(Vector2i a_offset, Vector2u a_size)
+	CommandBuffer::SetViewport(Vector2i a_offset, Vector2u a_size) const noexcept
 	{
 		OYL_PROFILE_FUNCTION();
 
@@ -184,7 +184,7 @@ namespace Oyl::Rendering::Vulkan
 	}
 
 	void
-	CommandBuffer::SetScissor(Vector2i a_offset, Vector2u a_size)
+	CommandBuffer::SetScissor(Vector2i a_offset, Vector2u a_size) const noexcept
 	{
 		OYL_PROFILE_FUNCTION();
 
@@ -204,13 +204,13 @@ namespace Oyl::Rendering::Vulkan
 	}
 
 	void
-	CommandBuffer::BindShader(const ShaderResource& a_shader)
+	CommandBuffer::BindShader(const ShaderResource& a_shader) const noexcept
 	{
 		m_impl->commandBuffer.bindPipeline(vk::PipelineBindPoint::eGraphics, a_shader.GetVkPipeline());
 	}
 
 	void
-	CommandBuffer::BindVertexBuffer(const VertexBufferResource& a_vertexBuffer)
+	CommandBuffer::BindVertexBuffer(const VertexBufferResource& a_vertexBuffer) const noexcept
 	{
 		const auto& vkCommandBuffer = m_impl->commandBuffer;
 
@@ -237,7 +237,7 @@ namespace Oyl::Rendering::Vulkan
 		vk::AccessFlags2 a_dstAccessMask,
 		vk::PipelineStageFlags2 a_srcStageMask,
 		vk::PipelineStageFlags2 a_dstStageMask
-	)
+	) const noexcept
 	{
 		OYL_PROFILE_FUNCTION();
 

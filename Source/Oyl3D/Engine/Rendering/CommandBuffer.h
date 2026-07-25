@@ -14,65 +14,65 @@ namespace Oyl::Rendering
 	class OYL_RENDERING_API CommandBuffer : public Internal::IDeviceObject
 	{
 	protected:
-		CommandBuffer() = default;
+		CommandBuffer() noexcept = default;
 
 		explicit
-		CommandBuffer(const CommandPool* a_commandPool);
+		CommandBuffer(const CommandPool* a_commandPool) noexcept;
 
 		CommandBuffer(CommandBuffer&& a_other) noexcept = default;
 		CommandBuffer&
 		operator =(CommandBuffer&& a_other) noexcept = default;
 
 	public:
-		CommandBuffer(const CommandBuffer& a_other) = delete;
+		CommandBuffer(const CommandBuffer& a_other) noexcept = delete;
 		CommandBuffer&
-		operator =(const CommandBuffer& a_other) = delete;
+		operator =(const CommandBuffer& a_other) noexcept = delete;
 
 		virtual
-		~CommandBuffer();
+		~CommandBuffer() noexcept;
 
 		void
-		Destroy() override;
+		Destroy() noexcept override;
 
 		bool
-		IsValid() const override;
+		IsValid() const noexcept override;
 
 		virtual
 		void
-		Begin() = 0;
+		Begin() const noexcept = 0;
 
 		virtual
 		void
-		BeginRendering(const SwapChain& a_swapChain) = 0;
+		BeginRendering(const SwapChain& a_swapChain) const noexcept = 0;
 
 		virtual
 		void
-		End() = 0;
+		End() const noexcept = 0;
 
 		virtual
 		void
-		EndRendering(const SwapChain& a_swapChain) = 0;
+		EndRendering(const SwapChain& a_swapChain) const noexcept = 0;
 
 		virtual
 		void
-		SetViewport(Vector2i a_offset, Vector2u a_size) = 0;
+		SetViewport(Vector2i a_offset, Vector2u a_size) const noexcept = 0;
 
 		virtual
 		void
-		SetScissor(Vector2i a_offset, Vector2u a_size) = 0;
+		SetScissor(Vector2i a_offset, Vector2u a_size) const noexcept = 0;
 
 		virtual
 		void
-		BindShader(const ShaderResource& a_shader) = 0;
+		BindShader(const ShaderResource& a_shader) const noexcept = 0;
 
 		virtual
 		void
-		BindVertexBuffer(const VertexBufferResource& a_shader) = 0;
+		BindVertexBuffer(const VertexBufferResource& a_shader) const noexcept = 0;
 
 	protected:
 		virtual
 		const CommandPool*
-		GetCommandPool() const
+		GetCommandPool() const noexcept
 		{
 			return m_commandPool;
 		}
