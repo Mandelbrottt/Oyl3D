@@ -242,6 +242,13 @@ namespace Oyl::Rendering::Vulkan
 
 		m_impl->device.GetVkDevice().waitIdle();
 
+		m_impl->renderFinishedSemaphores.clear();
+		m_impl->presentCompleteSemaphores.clear();
+		m_impl->inFlightFences.clear();
+
+		m_impl->commandBuffers.clear();
+		m_impl->commandPool.Destroy();
+
 		m_impl->vertexBuffer->DeviceUnload();
 		m_impl->vertexBuffer->Unload();
 
