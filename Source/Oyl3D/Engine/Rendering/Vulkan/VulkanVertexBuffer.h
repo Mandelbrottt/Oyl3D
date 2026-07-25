@@ -4,12 +4,12 @@
 
 #include <memory>
 
+#include "VulkanDevice.h"
+
 #include "Rendering/VertexBuffer.h"
 
 namespace Oyl::Rendering::Vulkan
 {
-	class Device;
-
 	class OYL_RENDERING_API VertexBufferResource : public Rendering::VertexBufferResource
 	{
 	public:
@@ -28,7 +28,13 @@ namespace Oyl::Rendering::Vulkan
 		Unload() override;
 
 		bool
-		DeviceLoad(const Rendering::Device& a_device) override;
+		DeviceLoad(const Rendering::Device& a_device) override
+		{
+			return DeviceLoad(static_cast<const Device&>(a_device));
+		}
+
+		bool
+		DeviceLoad(const Device& a_device);
 
 		bool
 		DeviceUnload() override;

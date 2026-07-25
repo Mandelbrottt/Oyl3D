@@ -129,18 +129,16 @@ namespace Oyl::Rendering::Vulkan
 	}
 
 	bool
-	ShaderResource::DeviceLoad(const Rendering::Device& a_device)
+	ShaderResource::DeviceLoad(const Device& a_device)
 	{
 		OYL_PROFILE_FUNCTION();
-
-		const auto& device = static_cast<const Device&>(a_device);
 
 		// keep ShaderModules for RAII
 		std::vector<vk::raii::ShaderModule> vkShaderModules;
 		std::vector<vk::PipelineShaderStageCreateInfo> vkShaderStageCreateInfos;
 		for (const auto& stage : m_impl->compileResult.GetShaderStages())
 		{
-			vk::raii::ShaderModule shaderModule = m_impl->CompileVkShaderModule(device, stage);
+			vk::raii::ShaderModule shaderModule = m_impl->CompileVkShaderModule(a_device, stage);
 
 			vk::PipelineShaderStageCreateInfo createInfo {
 				.stage = ShaderProfileToVkShaderStageFlag(stage.GetShaderProfile()),
@@ -219,7 +217,7 @@ namespace Oyl::Rendering::Vulkan
 			.pushConstantRangeCount = 0
 		};
 
-		auto pipelineLayout = vk::raii::PipelineLayout(device.GetVkDevice(), pipelineLayoutInfo);
+		auto pipelineLayout = vk::raii::PipelineLayout(a_device.GetVkDevice(), pipelineLayoutInfo);
 
 		{
 			// Use structure chain to auto-populate pNext
@@ -245,7 +243,7 @@ namespace Oyl::Rendering::Vulkan
 
 			OYL_PROFILE_SCOPE("vk::raii::Pipeline");
 			m_impl->pipeline = vk::raii::Pipeline(
-				device.GetVkDevice(),
+				a_device.GetVkDevice(),
 				nullptr,
 				pipelineCreateInfoChain.get()
 			);

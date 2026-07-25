@@ -70,12 +70,15 @@ namespace Oyl
 	struct ImplicitConversionWrapper : TOylType
 	{
 		constexpr
+		ImplicitConversionWrapper() = default;
+
+		constexpr
 		ImplicitConversionWrapper(std::nullptr_t) {}
 
 		constexpr
-		ImplicitConversionWrapper(TLibType a_libType)
+		ImplicitConversionWrapper(const TOylType& a_other)
 		{
-			*this = std::bit_cast<decltype(*this)>(a_libType);
+			*this = std::bit_cast<ImplicitConversionWrapper>(a_other);
 		}
 
 		constexpr
@@ -86,8 +89,15 @@ namespace Oyl
 		}
 
 		constexpr
+		ImplicitConversionWrapper(const TLibType& a_libType)
+		{
+			*this = std::bit_cast<ImplicitConversionWrapper>(a_libType);
+		}
+
+		constexpr
 		operator TLibType()
 		{
+			static_assert(sizeof(*this) == sizeof(TLibType));
 			return std::bit_cast<TLibType>(*this);
 		}
 	};

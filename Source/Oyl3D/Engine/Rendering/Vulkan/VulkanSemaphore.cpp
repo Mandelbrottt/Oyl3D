@@ -17,7 +17,7 @@ namespace Oyl::Rendering::Vulkan
 	Semaphore::Semaphore(const Device& a_device)
 		: m_impl(std::make_unique<Impl>())
 	{
-		m_impl->semaphore = vk::raii::Semaphore(a_device.GetVkDevice(), {});
+		m_impl->semaphore = vk::raii::Semaphore(a_device.GetVkDevice(), vk::SemaphoreCreateInfo {});
 	}
 
 	Semaphore::Semaphore(Semaphore&& a_other) noexcept
@@ -56,12 +56,20 @@ namespace Oyl::Rendering::Vulkan
 		       && *m_impl->semaphore;
 	}
 
-	const SemaphoreHandle&
+	SemaphoreHandle
 	Semaphore::GetHandle() const
 	{
+		static SemaphoreHandle handle;
+
 		if (!IsValid())
-			return nullptr;
+			return handle;
 
 		return *m_impl->semaphore;
+	}
+
+	const vk::raii::Semaphore&
+	Semaphore::GetVkSemaphore() const
+	{
+		return m_impl->semaphore;
 	}
 }

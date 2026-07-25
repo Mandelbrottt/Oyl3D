@@ -2,6 +2,8 @@
 
 #include "Rendering/Device.h"
 
+#include <vulkan/vulkan_raii.hpp>
+
 namespace vk::raii
 {
 	class Device;

@@ -3,6 +3,8 @@
 #include <vulkan/vulkan_raii.hpp>
 
 #include "VulkanDevice.h"
+#include "VulkanFence.h"
+#include "VulkanSemaphore.h"
 
 #include "Rendering/Glfw/GlfwWindow.h"
 
@@ -33,9 +35,6 @@ namespace Oyl::Rendering::Vulkan
 		std::vector<vk::raii::ImageView> swapChainImageViews;
 		vk::SurfaceFormatKHR swapChainSurfaceFormat;
 		vk::Extent2D swapChainExtent;
-
-		const vk::raii::Semaphore* semaphore = nullptr;
-		const vk::raii::Fence* fence = nullptr;
 
 		uint32 imageIndex;
 
@@ -114,19 +113,11 @@ namespace Oyl::Rendering::Vulkan
 	}
 
 	bool
-	SwapChain::AcquireNextImage()
+	SwapChain::AcquireNextImage(SemaphoreHandle a_semaphore, FenceHandle a_fence)
 	{
 		OYL_PROFILE_FUNCTION();
 
-		vk::Semaphore semaphore = nullptr;
-		if (m_impl->semaphore)
-			semaphore = *m_impl->semaphore;
-
-		vk::Fence fence = nullptr;
-		if (m_impl->fence)
-			fence = *m_impl->fence;
-
-		auto [result, imageIndex] = m_impl->swapChain.acquireNextImage(UINT64_MAX, semaphore, fence);
+		auto [result, imageIndex] = m_impl->swapChain.acquireNextImage(UINT64_MAX, a_semaphore, a_fence);
 		if (result == vk::Result::eErrorOutOfDateKHR)
 		{
 			return false;
@@ -187,30 +178,6 @@ namespace Oyl::Rendering::Vulkan
 	SwapChain::GetVkExtent() const
 	{
 		return m_impl->swapChainExtent;
-	}
-
-	const vk::raii::Semaphore*
-	SwapChain::GetVkSemaphore() const
-	{
-		return m_impl->semaphore;
-	}
-
-	void
-	SwapChain::SetVkSemaphore(const vk::raii::Semaphore* a_semaphore) const
-	{
-		m_impl->semaphore = a_semaphore;
-	}
-
-	const vk::raii::Fence*
-	SwapChain::GetVkFence() const
-	{
-		return m_impl->fence;
-	}
-
-	void
-	SwapChain::SetVkFence(const vk::raii::Fence* a_fence) const
-	{
-		m_impl->fence = a_fence;
 	}
 
 	void

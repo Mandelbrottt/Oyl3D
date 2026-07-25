@@ -43,14 +43,12 @@ namespace Oyl::Rendering::Vulkan
 	}
 
 	bool
-	VertexBufferResource::DeviceLoad(const Rendering::Device& a_device)
+	VertexBufferResource::DeviceLoad(const Device& a_device)
 	{
 		OYL_PROFILE_FUNCTION();
 
-		const auto& device = static_cast<const Device&>(a_device);
-
 		m_impl->CreateVertexBuffer(
-			device,
+			a_device,
 			m_vertexData.data(),
 			m_vertexData.size(),
 			m_indexData.data(),

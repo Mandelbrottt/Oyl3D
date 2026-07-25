@@ -6,6 +6,9 @@
 
 #include "Rendering/SwapChain.h"
 
+#include "VulkanSemaphore.h"
+#include "VulkanFence.h"
+
 namespace Oyl
 {
 	class Window;
@@ -37,9 +40,6 @@ namespace Oyl::Rendering::Vulkan
 		{
 			const Window* window;
 			const Device* device;
-
-			const vk::raii::Semaphore* semaphore = nullptr;
-			const vk::raii::Fence* fence = nullptr;
 		};
 
 		explicit
@@ -62,7 +62,19 @@ namespace Oyl::Rendering::Vulkan
 		Recreate() override;
 
 		bool
-		AcquireNextImage() override;
+		AcquireNextImage(Rendering::SemaphoreHandle a_semaphore, Rendering::FenceHandle a_fence) override
+		{
+			return AcquireNextImage((SemaphoreHandle) a_semaphore, (FenceHandle) a_fence);
+		}
+
+		bool
+		AcquireNextImage(const Semaphore& a_semaphore, const Fence& a_fence)
+		{
+			return AcquireNextImage(a_semaphore.GetHandle(), a_fence.GetHandle());
+		}
+
+		bool
+		AcquireNextImage(SemaphoreHandle a_semaphore, FenceHandle a_fence);
 
 		uint32
 		GetCurrentImageIndex() const override;
@@ -87,18 +99,6 @@ namespace Oyl::Rendering::Vulkan
 
 		const vk::Extent2D&
 		GetVkExtent() const;
-
-		const vk::raii::Semaphore*
-		GetVkSemaphore() const;
-
-		void
-		SetVkSemaphore(const vk::raii::Semaphore* a_semaphore) const;
-
-		const vk::raii::Fence*
-		GetVkFence() const;
-
-		void
-		SetVkFence(const vk::raii::Fence* a_fence) const;
 
 	private:
 		struct Impl;

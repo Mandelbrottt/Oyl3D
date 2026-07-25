@@ -2,12 +2,12 @@
 
 #include <vulkan/vulkan_raii.hpp>
 
+#include "VulkanDevice.h"
+
 #include "Rendering/Shader.h"
 
 namespace Oyl::Rendering::Vulkan
 {
-	class Device;
-
 	struct Vertex : Rendering::Vertex
 	{
 		static
@@ -48,7 +48,13 @@ namespace Oyl::Rendering::Vulkan
 		Unload() override;
 
 		bool
-		DeviceLoad(const Rendering::Device& a_device) override;
+		DeviceLoad(const Rendering::Device& a_device) override
+		{
+			return DeviceLoad(static_cast<const Device&>(a_device));
+		}
+
+		bool
+		DeviceLoad(const Device& a_device);
 
 		bool
 		DeviceUnload() override;

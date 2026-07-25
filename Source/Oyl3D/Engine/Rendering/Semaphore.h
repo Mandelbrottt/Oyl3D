@@ -4,25 +4,6 @@
 
 namespace Oyl::Rendering
 {
-	//struct SemaphoreHandle
-	//{
-	//	SemaphoreHandle() = default;
-
-	//	SemaphoreHandle(const SemaphoreHandle& a_other) = default;
-	//	SemaphoreHandle&
-	//	operator =(const SemaphoreHandle& a_other) = default;
-
-	//	SemaphoreHandle(SemaphoreHandle&& a_other) = default;
-	//	SemaphoreHandle&
-	//	operator =(SemaphoreHandle&& a_other) noexcept = default;
-
-	//	SemaphoreHandle(std::nullptr_t) {}
-
-	//protected:
-	//	using Handle = struct _Handle*;
-	//	Handle m_handle = nullptr;
-	//};
-
 	struct SemaphoreHandle : OpaqueHandle<SemaphoreHandle> {};
 
 	class OYL_RENDERING_API ISemaphore : Internal::IDeviceObject
@@ -42,8 +23,15 @@ namespace Oyl::Rendering
 		virtual
 		~ISemaphore() = default;
 
+		SemaphoreHandle
+		GetHandle() const
+		{
+			return GetHandleImpl();
+		}
+
+	protected:
 		virtual
-		const SemaphoreHandle&
-		GetHandle() const = 0;
+		SemaphoreHandle
+		GetHandleImpl() const = 0;
 	};
 }

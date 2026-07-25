@@ -1,6 +1,6 @@
 ﻿#pragma once
 
-#include <vulkan/vulkan.hpp>
+#include <vulkan/vulkan_raii.hpp>
 
 #include "Rendering/Fence.h"
 
@@ -14,6 +14,9 @@ namespace Oyl::Rendering::Vulkan
 	{
 	public:
 		Fence();
+
+		Fence(std::nullptr_t)
+			: Fence() {}
 
 		explicit
 		Fence(const Device& a_device);
@@ -31,8 +34,18 @@ namespace Oyl::Rendering::Vulkan
 		bool
 		IsValid() const override;
 
-		const FenceHandle&
-		GetHandle() const override;
+		FenceHandle
+		GetHandle() const;
+
+		const vk::raii::Fence&
+		GetVkFence() const;
+
+	protected:
+		Rendering::FenceHandle
+		GetHandleImpl() const override
+		{
+			return GetHandle();
+		}
 
 	private:
 		struct Impl;

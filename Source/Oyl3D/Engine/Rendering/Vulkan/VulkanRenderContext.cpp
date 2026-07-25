@@ -72,9 +72,9 @@ namespace Oyl::Rendering::Vulkan
 		CommandPool commandPool;
 		std::vector<CommandBuffer> commandBuffers;
 
-		std::vector<vk::raii::Semaphore> presentCompleteSemaphores;
-		std::vector<vk::raii::Semaphore> renderFinishedSemaphores;
-		std::vector<vk::raii::Fence> inFlightFences;
+		std::vector<Semaphore> presentCompleteSemaphores;
+		std::vector<Semaphore> renderFinishedSemaphores;
+		std::vector<Fence> inFlightFences;
 
 		uint32 frameIndex = 0;
 
@@ -379,23 +379,15 @@ namespace Oyl::Rendering::Vulkan
 
 		OYL_ASSERT(renderFinishedSemaphores.empty() && presentCompleteSemaphores.empty() && inFlightFences.empty());
 
-		const auto& vkDevice = device.GetVkDevice();
-
 		for (size_t i = 0; i < swapChain.GetVkImages().size(); i++)
 		{
-			renderFinishedSemaphores.emplace_back(vkDevice, vk::SemaphoreCreateInfo {});
+			renderFinishedSemaphores.emplace_back(device);
 		}
 
 		for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++)
 		{
-			presentCompleteSemaphores.emplace_back(
-				vkDevice,
-				vk::SemaphoreCreateInfo {}
-			);
-			inFlightFences.emplace_back(
-				vkDevice,
-				vk::FenceCreateInfo { .flags = vk::FenceCreateFlagBits::eSignaled }
-			);
+			presentCompleteSemaphores.emplace_back(device);
+			inFlightFences.emplace_back(device);
 		}
 	}
 
@@ -449,12 +441,11 @@ namespace Oyl::Rendering::Vulkan
 		auto& drawFence = inFlightFences[frameIndex];
 		auto& presentCompleteSemaphore = presentCompleteSemaphores[frameIndex];
 
-		auto fenceResult = vkDevice.waitForFences(*drawFence, vk::True, UINT64_MAX);
+		auto fenceResult = vkDevice.waitForFences(*drawFence.GetVkFence(), vk::True, UINT64_MAX);
 		if (fenceResult != vk::Result::eSuccess)
 			throw std::runtime_error("Failed to wait for fence!");
 
-		swapChain.SetVkSemaphore(&presentCompleteSemaphore);
-		bool success = swapChain.AcquireNextImage();
+		bool success = swapChain.AcquireNextImage(presentCompleteSemaphore, nullptr);
 		if (!success)
 		{
 			swapChain.Recreate();
@@ -464,7 +455,7 @@ namespace Oyl::Rendering::Vulkan
 		auto imageIndex = swapChain.GetCurrentImageIndex();
 
 		// Only reset fences if we are going to submit work to the GPU
-		vkDevice.resetFences(*drawFence);
+		vkDevice.resetFences(*drawFence.GetVkFence());
 
 		RecordCommandBuffer();
 		//graphicsQueue.waitIdle();
@@ -479,20 +470,20 @@ namespace Oyl::Rendering::Vulkan
 			vk::PipelineStageFlags waitDestinationStageMask = vk::PipelineStageFlagBits::eColorAttachmentOutput;
 			const vk::SubmitInfo submitInfo {
 				.waitSemaphoreCount = 1,
-				.pWaitSemaphores = &*presentCompleteSemaphore,
+				.pWaitSemaphores = &*presentCompleteSemaphore.GetVkSemaphore(),
 				.pWaitDstStageMask = &waitDestinationStageMask,
 				.commandBufferCount = 1,
 				.pCommandBuffers = &*commandBuffer,
 				.signalSemaphoreCount = 1,
-				.pSignalSemaphores = &*renderFinishedSemaphore
+				.pSignalSemaphores = &*renderFinishedSemaphore.GetVkSemaphore()
 			};
-			device.GetVkGraphicsQueue().submit(submitInfo, *drawFence);
+			device.GetVkGraphicsQueue().submit(submitInfo, *drawFence.GetVkFence());
 		}
 		{
 			OYL_PROFILE_SCOPE("graphicsQueue.presentKHR");
 			const vk::PresentInfoKHR presentInfoKHR {
 				.waitSemaphoreCount = 1,
-				.pWaitSemaphores = &*renderFinishedSemaphore,
+				.pWaitSemaphores = &*renderFinishedSemaphore.GetVkSemaphore(),
 				.swapchainCount = 1,
 				.pSwapchains = &*vkSwapChain,
 				.pImageIndices = &imageIndex

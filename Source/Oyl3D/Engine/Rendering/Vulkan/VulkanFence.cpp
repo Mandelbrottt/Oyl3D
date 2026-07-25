@@ -11,22 +11,27 @@ namespace Oyl::Rendering::Vulkan
 		vk::raii::Fence fence = nullptr;
 	};
 
-	Semaphore::Semaphore()
+	Fence::Fence()
 		: m_impl(nullptr) {}
 
-	Semaphore::Semaphore(const Device& a_device)
+	Fence::Fence(const Device& a_device)
 		: m_impl(std::make_unique<Impl>())
 	{
-		m_impl->fence = vk::raii::Semaphore(a_device.GetVkDevice(), {});
+		m_impl->fence = vk::raii::Fence(
+			a_device.GetVkDevice(),
+			vk::FenceCreateInfo {
+				.flags = vk::FenceCreateFlagBits::eSignaled
+			}
+		);
 	}
 
-	Semaphore::Semaphore(Semaphore&& a_other) noexcept
+	Fence::Fence(Fence&& a_other) noexcept
 	{
 		*this = std::move(a_other);
 	}
 
-	Semaphore&
-	Semaphore::operator=(Semaphore&& a_other) noexcept
+	Fence&
+	Fence::operator=(Fence&& a_other) noexcept
 	{
 		if (this != &a_other)
 		{
@@ -35,13 +40,13 @@ namespace Oyl::Rendering::Vulkan
 		return *this;
 	}
 
-	Semaphore::~Semaphore()
+	Fence::~Fence()
 	{
-		Semaphore::Destroy();
+		Fence::Destroy();
 	}
 
 	void
-	Semaphore::Destroy()
+	Fence::Destroy()
 	{
 		if (!IsValid())
 			return;
@@ -50,18 +55,24 @@ namespace Oyl::Rendering::Vulkan
 	}
 
 	bool
-	Semaphore::IsValid() const
+	Fence::IsValid() const
 	{
 		return m_impl
 		       && *m_impl->fence;
 	}
 
-	const SemaphoreHandle&
-	Semaphore::GetHandle() const
+	FenceHandle
+	Fence::GetHandle() const
 	{
 		if (!IsValid())
 			return nullptr;
 
 		return *m_impl->fence;
+	}
+
+	const vk::raii::Fence&
+	Fence::GetVkFence() const
+	{
+		return m_impl->fence;
 	}
 }

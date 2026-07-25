@@ -2,7 +2,13 @@
 
 #include <vulkan/vulkan.hpp>
 
+#include "VulkanCommandBuffer.h"
+
 #include "Rendering/Semaphore.h"
+
+namespace vk::raii {
+	class Semaphore;
+}
 
 namespace Oyl::Rendering::Vulkan
 {
@@ -14,6 +20,9 @@ namespace Oyl::Rendering::Vulkan
 	{
 	public:
 		Semaphore();
+
+		Semaphore(std::nullptr_t)
+			: Semaphore() {}
 
 		explicit
 		Semaphore(const Device& a_device);
@@ -31,8 +40,18 @@ namespace Oyl::Rendering::Vulkan
 		bool
 		IsValid() const override;
 
-		const SemaphoreHandle&
-		GetHandle() const override;
+		SemaphoreHandle
+		GetHandle() const;
+
+		const vk::raii::Semaphore&
+		GetVkSemaphore() const;
+
+	protected:
+		Rendering::SemaphoreHandle
+		GetHandleImpl() const override
+		{
+			return GetHandle();
+		}
 
 	private:
 		struct Impl;

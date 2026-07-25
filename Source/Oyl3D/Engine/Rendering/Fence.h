@@ -23,8 +23,15 @@ namespace Oyl::Rendering
 		virtual
 		~IFence() = default;
 
+		FenceHandle
+		GetHandle() const
+		{
+			return GetHandleImpl();
+		}
+
+	protected:
 		virtual
-		const FenceHandle&
-		GetHandle() const = 0;
+		FenceHandle
+		GetHandleImpl() const = 0;
 	};
 }
