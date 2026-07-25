@@ -61,17 +61,18 @@ namespace Oyl::Rendering::Vulkan
 	}
 
 	RenderContext::RenderContext(RenderContext&& a_other) noexcept
-		: Rendering::IRenderContext(std::move(a_other)),
-		  m_impl(nullptr)
+		: m_impl(nullptr)
 	{
-		m_impl.swap(a_other.m_impl);
+		*this = std::move(a_other);
 	}
 
 	RenderContext&
 	RenderContext::operator=(RenderContext&& a_other) noexcept
 	{
-		Rendering::IRenderContext::operator=(std::move(a_other));
-		new(this) RenderContext(std::move(a_other));
+		if (this != &a_other)
+		{
+			m_impl = std::move(a_other.m_impl);
+		}
 		return *this;
 	}
 
