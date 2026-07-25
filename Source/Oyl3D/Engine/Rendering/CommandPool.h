@@ -1,20 +1,20 @@
 ﻿#pragma once
 
-#include "DeviceObject.h"
+#include <Core/UniqueHandle.h>
 
 namespace Oyl::Rendering
 {
-	class OYL_RENDERING_API CommandPool : public Internal::IDeviceObject
+	class ICommandPool : public IUniqueHandle
 	{
 	protected:
-		CommandPool() = default;
+		ICommandPool() = default;
 
-		CommandPool(CommandPool&& a_other) noexcept = default;
-		CommandPool&
-		operator =(CommandPool&& a_other) noexcept = default;
+		DEFAULT_MOVE(ICommandPool);
 
 	public:
+		NO_COPY(ICommandPool);
+
 		virtual
-		~CommandPool() = default;
+		~ICommandPool() = default;
 	};
 }

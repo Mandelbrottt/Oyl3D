@@ -1,41 +1,28 @@
 ﻿#pragma once
 
-#include "CommandPool.h"
-#include "DeviceObject.h"
-#include "SwapChain.h"
+#include <Core/UniqueHandle.h>
+#include <Core/Math/Vector.h>
 
-#include "Core/Math/Vector.h"
+#include "CommandPool.h"
+#include "SwapChain.h"
 
 #include "Rendering/Shader.h"
 #include "Rendering/VertexBuffer.h"
 
 namespace Oyl::Rendering
 {
-	class OYL_RENDERING_API CommandBuffer : public Internal::IDeviceObject
+	class ICommandBuffer : public IUniqueHandle
 	{
 	protected:
-		CommandBuffer() noexcept = default;
+		ICommandBuffer() noexcept = default;
 
-		explicit
-		CommandBuffer(const CommandPool* a_commandPool) noexcept;
-
-		CommandBuffer(CommandBuffer&& a_other) noexcept = default;
-		CommandBuffer&
-		operator =(CommandBuffer&& a_other) noexcept = default;
+		DEFAULT_MOVE(ICommandBuffer);
 
 	public:
-		CommandBuffer(const CommandBuffer& a_other) noexcept = delete;
-		CommandBuffer&
-		operator =(const CommandBuffer& a_other) noexcept = delete;
+		NO_COPY(ICommandBuffer);
 
 		virtual
-		~CommandBuffer() noexcept;
-
-		void
-		Destroy() noexcept override;
-
-		bool
-		IsValid() const noexcept override;
+		~ICommandBuffer() noexcept = default;
 
 		virtual
 		void
@@ -43,7 +30,7 @@ namespace Oyl::Rendering
 
 		virtual
 		void
-		BeginRendering(const SwapChain& a_swapChain) const noexcept = 0;
+		BeginRendering(const ISwapChain& a_swapChain) const noexcept = 0;
 
 		virtual
 		void
@@ -51,7 +38,7 @@ namespace Oyl::Rendering
 
 		virtual
 		void
-		EndRendering(const SwapChain& a_swapChain) const noexcept = 0;
+		EndRendering(const ISwapChain& a_swapChain) const noexcept = 0;
 
 		virtual
 		void
@@ -71,13 +58,7 @@ namespace Oyl::Rendering
 
 	protected:
 		virtual
-		const CommandPool*
-		GetCommandPool() const noexcept
-		{
-			return m_commandPool;
-		}
-
-	private:
-		const CommandPool* m_commandPool = nullptr;
+		const ICommandPool*
+		GetCommandPool() const noexcept = 0;
 	};
 }

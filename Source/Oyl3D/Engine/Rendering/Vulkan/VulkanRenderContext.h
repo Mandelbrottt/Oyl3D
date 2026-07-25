@@ -7,7 +7,7 @@
 
 namespace Oyl::Rendering::Vulkan
 {
-	class OYL_RENDERING_API RenderContext final : public Rendering::RenderContext
+	class OYL_RENDERING_API RenderContext final : public IRenderContext
 	{
 	public:
 		RenderContext() noexcept;
@@ -20,9 +20,7 @@ namespace Oyl::Rendering::Vulkan
 		explicit
 		RenderContext(const CreateParams& a_params) noexcept;
 
-		RenderContext(const RenderContext&) = delete;
-		RenderContext&
-		operator=(const RenderContext&) = delete;
+		NO_COPY(RenderContext);
 
 		RenderContext(RenderContext&& a_other) noexcept;
 		RenderContext&

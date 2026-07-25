@@ -40,7 +40,7 @@ namespace Oyl::Rendering::Internal
 		return m_renderContext->GetDevice();
 	}
 
-	RenderContext*
+	IRenderContext*
 	RenderEngineInstance::GetRenderContext() const
 	{
 		return m_renderContext.get();

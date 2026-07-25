@@ -100,7 +100,7 @@ namespace Oyl::Rendering::Vulkan
 	}
 
 	RenderContext::RenderContext(RenderContext&& a_other) noexcept
-		: Rendering::RenderContext(std::move(a_other)),
+		: Rendering::IRenderContext(std::move(a_other)),
 		  m_impl(nullptr)
 	{
 		m_impl.swap(a_other.m_impl);
@@ -109,7 +109,7 @@ namespace Oyl::Rendering::Vulkan
 	RenderContext&
 	RenderContext::operator=(RenderContext&& a_other) noexcept
 	{
-		Rendering::RenderContext::operator=(std::move(a_other));
+		Rendering::IRenderContext::operator=(std::move(a_other));
 		new(this) RenderContext(std::move(a_other));
 		return *this;
 	}
@@ -144,8 +144,8 @@ namespace Oyl::Rendering::Vulkan
 
 		m_impl->swapChain = SwapChain(
 			{
-				.window = m_impl->window,
-				.device = &m_impl->device,
+				.window = *m_impl->window,
+				.device = m_impl->device,
 			}
 		);
 

@@ -7,22 +7,18 @@
 
 namespace Oyl::Rendering
 {
-	class OYL_RENDERING_API RenderContext
+	class IRenderContext
 	{
 	protected:
-		RenderContext() noexcept;
+		IRenderContext() noexcept = default;
 
-		RenderContext(RenderContext&& a_other) noexcept = default;
-		RenderContext&
-		operator=(RenderContext&& a_other) noexcept = default;
+		DEFAULT_MOVE(IRenderContext);
 
 	public:
-		RenderContext(const RenderContext&) = delete;
-		RenderContext&
-		operator=(const RenderContext&) = delete;
+		NO_COPY(IRenderContext);
 
 		virtual
-		~RenderContext() noexcept;
+		~IRenderContext() noexcept = default;
 
 		virtual
 		void
@@ -41,7 +37,7 @@ namespace Oyl::Rendering
 		GetDevice() const = 0;
 
 		virtual
-		const SwapChain*
+		const ISwapChain*
 		GetSwapChain() const = 0;
 	};
 }

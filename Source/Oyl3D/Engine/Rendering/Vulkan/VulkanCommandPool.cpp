@@ -38,7 +38,7 @@ namespace Oyl::Rendering::Vulkan
 	{
 		if (this != &a_other)
 		{
-			Rendering::CommandPool::operator=(std::move(a_other));
+			Rendering::ICommandPool::operator=(std::move(a_other));
 			m_impl = std::move(a_other.m_impl);
 		}
 		return *this;

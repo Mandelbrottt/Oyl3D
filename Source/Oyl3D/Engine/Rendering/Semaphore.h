@@ -1,26 +1,21 @@
 ﻿#pragma once
 
-#include "DeviceObject.h"
-
-#include "Core/Typedefs.h"
+#include <Core/Typedefs.h>
+#include <Core/UniqueHandle.h>
 
 namespace Oyl::Rendering
 {
 	struct SemaphoreHandle : OpaqueHandle<SemaphoreHandle> {};
 
-	class OYL_RENDERING_API ISemaphore : Internal::IDeviceObject
+	class ISemaphore : public IUniqueHandle
 	{
 	protected:
 		ISemaphore() = default;
 
-		ISemaphore(ISemaphore&& a_other) noexcept = default;
-		ISemaphore&
-		operator =(ISemaphore&& a_other) noexcept = default;
+		DEFAULT_MOVE(ISemaphore);
 
 	public:
-		ISemaphore(const ISemaphore& a_other) = delete;
-		ISemaphore&
-		operator =(const ISemaphore& a_other) = delete;
+		NO_COPY(ISemaphore);
 
 		virtual
 		~ISemaphore() = default;

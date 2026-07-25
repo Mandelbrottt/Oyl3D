@@ -13,7 +13,7 @@ namespace Oyl::Rendering::Vulkan
 	class OYL_RENDERING_API Fence : public IFence
 	{
 	public:
-		Fence();
+		Fence() = default;
 
 		Fence(std::nullptr_t)
 			: Fence() {}
@@ -26,19 +26,31 @@ namespace Oyl::Rendering::Vulkan
 		operator =(Fence&& a_other) noexcept;
 
 		virtual
-		~Fence();
+		~Fence()
+		{
+			Fence::Destroy();
+		}
 
 		void
 		Destroy() override;
 
 		bool
-		IsValid() const override;
+		IsValid() const override
+		{
+			return *m_fence;
+		}
 
 		FenceHandle
-		GetHandle() const;
+		GetHandle() const
+		{
+			return *m_fence;
+		}
 
 		const vk::raii::Fence&
-		GetVkFence() const;
+		GetVkFence() const
+		{
+			return m_fence;
+		}
 
 	protected:
 		Rendering::FenceHandle
@@ -48,7 +60,6 @@ namespace Oyl::Rendering::Vulkan
 		}
 
 	private:
-		struct Impl;
-		std::unique_ptr<Impl> m_impl;
+		vk::raii::Fence m_fence = nullptr;
 	};
 }

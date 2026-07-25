@@ -7,14 +7,10 @@ namespace Oyl
 	protected:
 		IUniqueHandle() = default;
 
-		IUniqueHandle(IUniqueHandle&& a_other) noexcept = default;
-		IUniqueHandle&
-		operator =(IUniqueHandle&& a_other) noexcept = default;
+		DEFAULT_MOVE(IUniqueHandle);
 
 	public:
-		IUniqueHandle(const IUniqueHandle& a_other) = delete;
-		IUniqueHandle&
-		operator =(const IUniqueHandle& a_other) = delete;
+		NO_COPY(IUniqueHandle);
 
 		virtual
 		~IUniqueHandle() = default;

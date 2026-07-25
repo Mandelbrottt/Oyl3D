@@ -8,7 +8,7 @@ namespace Oyl::Rendering::Vulkan
 {
 	class Device;
 
-	class OYL_RENDERING_API CommandPool : public Rendering::CommandPool
+	class OYL_RENDERING_API CommandPool : public ICommandPool
 	{
 	public:
 		CommandPool();

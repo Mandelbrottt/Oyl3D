@@ -10,15 +10,15 @@
 
 namespace Oyl::Rendering::Vulkan
 {
-	class OYL_RENDERING_API SwapChain : public Rendering::SwapChain
+	class OYL_RENDERING_API SwapChain : public ISwapChain
 	{
 	public:
 		SwapChain();
 
 		struct CreateParams
 		{
-			const IWindow* window;
-			const Device* device;
+			const IWindow& window;
+			const Device& device;
 		};
 
 		explicit

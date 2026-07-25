@@ -2,18 +2,18 @@
 
 #include <vulkan/vulkan_raii.hpp>
 
+#include "VulkanDevice.h"
+
 #include "Rendering/Semaphore.h"
 
 namespace Oyl::Rendering::Vulkan
 {
 	using SemaphoreHandle = ImplicitConversionWrapper<SemaphoreHandle, vk::Semaphore>;
 
-	class Device;
-
 	class OYL_RENDERING_API Semaphore : public ISemaphore
 	{
 	public:
-		Semaphore();
+		Semaphore() = default;
 
 		Semaphore(std::nullptr_t)
 			: Semaphore() {}
@@ -26,19 +26,31 @@ namespace Oyl::Rendering::Vulkan
 		operator =(Semaphore&& a_other) noexcept;
 
 		virtual
-		~Semaphore();
+		~Semaphore()
+		{
+			Semaphore::Destroy();
+		};
 
 		void
 		Destroy() override;
 
 		bool
-		IsValid() const override;
+		IsValid() const override
+		{
+			return *m_semaphore;
+		}
 
 		SemaphoreHandle
-		GetHandle() const;
+		GetHandle() const
+		{
+			return *m_semaphore;
+		}
 
 		const vk::raii::Semaphore&
-		GetVkSemaphore() const;
+		GetVkSemaphore() const
+		{
+			return m_semaphore;
+		}
 
 	protected:
 		Rendering::SemaphoreHandle
@@ -48,7 +60,6 @@ namespace Oyl::Rendering::Vulkan
 		}
 
 	private:
-		struct Impl;
-		std::unique_ptr<Impl> m_impl;
+		vk::raii::Semaphore m_semaphore = nullptr;
 	};
 }

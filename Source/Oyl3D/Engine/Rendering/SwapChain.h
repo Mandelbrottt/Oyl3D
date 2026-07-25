@@ -1,23 +1,24 @@
 ﻿#pragma once
 
-#include "DeviceObject.h"
 #include "Fence.h"
 #include "Semaphore.h"
 
+#include "Core/UniqueHandle.h"
+
 namespace Oyl::Rendering
 {
-	class OYL_RENDERING_API SwapChain : public Internal::IDeviceObject
+	class ISwapChain : public IUniqueHandle
 	{
 	protected:
-		SwapChain() = default;
+		ISwapChain() = default;
 
-		SwapChain(SwapChain&& a_other) noexcept = default;
-		SwapChain&
-		operator =(SwapChain&& a_other) noexcept = default;
+		DEFAULT_MOVE(ISwapChain);
 
 	public:
+		NO_COPY(ISwapChain);
+
 		virtual
-		~SwapChain() = default;
+		~ISwapChain() = default;
 
 		virtual
 		void

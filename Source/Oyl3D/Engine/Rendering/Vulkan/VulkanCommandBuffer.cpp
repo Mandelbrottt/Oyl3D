@@ -1,15 +1,11 @@
 ﻿#include "VulkanCommandBuffer.h"
 
-#include <vulkan/vulkan_raii.hpp>
-
-#include "VulkanCommandPool.h"
-#include "VulkanDevice.h"
-#include "VulkanSwapChain.h"
-
 namespace Oyl::Rendering::Vulkan
 {
 	struct CommandBuffer::Impl
 	{
+		const CommandPool* commandPool;
+
 		vk::raii::CommandBuffer commandBuffer = nullptr;
 
 		void
@@ -25,14 +21,14 @@ namespace Oyl::Rendering::Vulkan
 	};
 
 	CommandBuffer::CommandBuffer() noexcept
-		: Rendering::CommandBuffer(),
-		  m_impl(nullptr) {}
+		: m_impl(nullptr) {}
 
 	CommandBuffer::CommandBuffer(const CreateParams& a_params) noexcept
-		: Rendering::CommandBuffer(&a_params.commandPool),
-		  m_impl(std::make_unique<Impl>())
+		: m_impl(std::make_unique<Impl>())
 	{
 		OYL_PROFILE_FUNCTION();
+
+		m_impl->commandPool = &a_params.commandPool;
 
 		const auto& vkCommandPool = a_params.commandPool.GetVkCommandPool();
 		const auto& vkDevice = a_params.device.GetVkDevice();
@@ -48,7 +44,6 @@ namespace Oyl::Rendering::Vulkan
 	}
 
 	CommandBuffer::CommandBuffer(CommandBuffer&& a_other) noexcept
-		: Rendering::CommandBuffer(std::move(a_other))
 	{
 		*this = std::move(a_other);
 	}
@@ -58,8 +53,7 @@ namespace Oyl::Rendering::Vulkan
 	{
 		if (this != &a_other)
 		{
-			Rendering::CommandBuffer::operator=(std::move(a_other));
-			std::swap(m_impl, a_other.m_impl);
+			m_impl = std::move(a_other.m_impl);
 		}
 		return *this;
 	}
@@ -73,22 +67,19 @@ namespace Oyl::Rendering::Vulkan
 	CommandBuffer::Destroy() noexcept
 	{
 		m_impl->commandBuffer.clear();
-
-		Rendering::CommandBuffer::Destroy();
 	}
 
 	bool
 	CommandBuffer::IsValid() const noexcept
 	{
 		return m_impl
-		       && *m_impl->commandBuffer
-		       && Rendering::CommandBuffer::IsValid();
+		       && *m_impl->commandBuffer;
 	}
 
 	const CommandPool*
 	CommandBuffer::GetCommandPool() const noexcept
 	{
-		return static_cast<const CommandPool*>(Rendering::CommandBuffer::GetCommandPool());
+		return m_impl->commandPool;
 	}
 
 	const vk::raii::CommandBuffer&

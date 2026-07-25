@@ -9,19 +9,14 @@ namespace Oyl::Rendering
 	class OYL_RENDERING_API ShaderCompiler
 	{
 	protected:
-		ShaderCompiler();
+		ShaderCompiler() = default;
 
 	public:
 		virtual
-		~ShaderCompiler();
+		~ShaderCompiler() = default;
 
-		ShaderCompiler(const ShaderCompiler& a_other) = default;
-		ShaderCompiler&
-		operator =(const ShaderCompiler& a_other) = default;
-
-		ShaderCompiler(ShaderCompiler&& a_other) noexcept = default;
-		ShaderCompiler&
-		operator =(ShaderCompiler&& a_other) noexcept = default;
+		DEFAULT_COPY(ShaderCompiler);
+		DEFAULT_MOVE(ShaderCompiler);
 
 		bool
 		CompileHlslFromFile(std::string_view a_filePath, ShaderCompileResult* a_outShader) const;

@@ -1,26 +1,21 @@
 #pragma once
 
-#include "DeviceObject.h"
-
-#include "Core/Typedefs.h"
+#include <Core/Typedefs.h>
+#include <Core/UniqueHandle.h>
 
 namespace Oyl::Rendering
 {
 	struct FenceHandle : OpaqueHandle<FenceHandle> {};
 
-	class OYL_RENDERING_API IFence : Internal::IDeviceObject
+	class IFence : public IUniqueHandle
 	{
 	protected:
 		IFence() = default;
 
-		IFence(IFence&& a_other) noexcept = default;
-		IFence&
-		operator =(IFence&& a_other) noexcept = default;
+		DEFAULT_MOVE(IFence);
 
 	public:
-		IFence(const IFence& a_other) = delete;
-		IFence&
-		operator =(const IFence& a_other) = delete;
+		NO_COPY(IFence);
 
 		virtual
 		~IFence() = default;

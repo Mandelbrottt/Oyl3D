@@ -9,11 +9,11 @@ namespace Oyl::Rendering
 	protected:
 		IDevice() = default;
 
-		IDevice(IDevice&& a_other) noexcept = default;
-		IDevice&
-		operator =(IDevice&& a_other) noexcept = default;
+		DEFAULT_MOVE(IDevice);
 
 	public:
+		NO_COPY(IDevice);
+
 		virtual
 		~IDevice() = default;
 

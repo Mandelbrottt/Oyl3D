@@ -11,7 +11,7 @@ namespace
 	vk::Extent2D
 	ChooseSwapExtent(const vk::SurfaceCapabilitiesKHR& a_capabilities, Oyl::Vector2u a_frameBufferSize);
 
-	Oyl::uint32
+	uint32
 	ChooseSwapMinImageCount(const vk::SurfaceCapabilitiesKHR& a_capabilities);
 }
 
@@ -48,8 +48,8 @@ namespace Oyl::Rendering::Vulkan
 	{
 		OYL_PROFILE_FUNCTION();
 
-		m_impl->device = a_params.device;
-		m_impl->window = a_params.window;
+		m_impl->device = &a_params.device;
+		m_impl->window = &a_params.window;
 
 		m_impl->CreateSwapChain();
 		m_impl->CreateSwapChainImageViews();
@@ -66,8 +66,7 @@ namespace Oyl::Rendering::Vulkan
 	{
 		if (this != &a_other)
 		{
-			Rendering::SwapChain::operator=(std::move(a_other));
-			std::swap(m_impl, a_other.m_impl);
+			m_impl = std::move(a_other.m_impl);
 		}
 		return *this;
 	}

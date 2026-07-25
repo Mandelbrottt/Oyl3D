@@ -11,7 +11,7 @@
 
 namespace Oyl::Rendering::Vulkan
 {
-	class OYL_RENDERING_API CommandBuffer : public Rendering::CommandBuffer
+	class OYL_RENDERING_API CommandBuffer : public ICommandBuffer
 	{
 	public:
 		CommandBuffer() noexcept;
@@ -48,7 +48,7 @@ namespace Oyl::Rendering::Vulkan
 		Begin() const noexcept override;
 
 		void
-		BeginRendering(const Rendering::SwapChain& a_swapChain) const noexcept override
+		BeginRendering(const ISwapChain& a_swapChain) const noexcept override
 		{
 			BeginRendering(static_cast<const SwapChain&>(a_swapChain));
 		}
@@ -57,7 +57,7 @@ namespace Oyl::Rendering::Vulkan
 		BeginRendering(const SwapChain& a_swapChain) const noexcept;
 
 		void
-		EndRendering(const Rendering::SwapChain& a_swapChain) const noexcept override
+		EndRendering(const ISwapChain& a_swapChain) const noexcept override
 		{
 			EndRendering(static_cast<const SwapChain&>(a_swapChain));
 		}

@@ -11,10 +11,6 @@ namespace
 
 namespace Oyl::Rendering
 {
-	ShaderCompiler::ShaderCompiler() {}
-
-	ShaderCompiler::~ShaderCompiler() {}
-
 	bool
 	ShaderCompiler::CompileHlslFromFile(std::string_view a_filePath, ShaderCompileResult* a_outShader) const
 	{
