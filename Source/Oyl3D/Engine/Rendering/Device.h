@@ -2,10 +2,7 @@
 
 #include "DeviceObject.h"
 
-namespace Oyl
-{
-	class Window;
-}
+#include "Rendering/Window.h"
 
 namespace Oyl::Rendering
 {

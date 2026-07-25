@@ -2,35 +2,14 @@
 
 #include <vulkan/vulkan_raii.hpp>
 
-#include <Core/Math/Vector2.h>
+#include "VulkanDevice.h"
+#include "VulkanFence.h"
+#include "VulkanSemaphore.h"
 
 #include "Rendering/SwapChain.h"
 
-#include "VulkanSemaphore.h"
-#include "VulkanFence.h"
-
-namespace Oyl
-{
-	class Window;
-}
-
-namespace vk
-{
-	struct Extent2D;
-	struct SurfaceFormatKHR;
-
-	namespace raii
-	{
-		class SurfaceKHR;
-		class Semaphore;
-		class Fence;
-	}
-}
-
 namespace Oyl::Rendering::Vulkan
 {
-	class Device;
-
 	class OYL_RENDERING_API SwapChain : public Rendering::SwapChain
 	{
 	public:

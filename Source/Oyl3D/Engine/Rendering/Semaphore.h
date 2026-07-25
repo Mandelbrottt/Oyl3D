@@ -2,6 +2,8 @@
 
 #include "DeviceObject.h"
 
+#include "Core/Typedefs.h"
+
 namespace Oyl::Rendering
 {
 	struct SemaphoreHandle : OpaqueHandle<SemaphoreHandle> {};

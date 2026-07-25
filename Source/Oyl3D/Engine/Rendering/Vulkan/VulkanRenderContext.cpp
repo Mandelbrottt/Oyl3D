@@ -411,7 +411,7 @@ namespace Oyl::Rendering::Vulkan
 		const auto& vkCommandBuffer = commandBuffer.GetVkCommandBuffer();
 
 		auto* vkShader = shader.Get();
-		vkCommandBuffer.bindPipeline(vk::PipelineBindPoint::eGraphics, vkShader->GetPipeline());
+		vkCommandBuffer.bindPipeline(vk::PipelineBindPoint::eGraphics, vkShader->GetVkPipeline());
 		if (vertexBuffer->HasIndexData())
 		{
 			vkCommandBuffer.bindIndexBuffer(*vertexBuffer->GetVkBuffer(), 0, vk::IndexType::eUint16);

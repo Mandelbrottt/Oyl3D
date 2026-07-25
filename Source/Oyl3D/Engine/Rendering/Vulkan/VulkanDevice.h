@@ -1,22 +1,9 @@
 ﻿#pragma once
 
-#include "Rendering/Device.h"
-
 #include <vulkan/vulkan_raii.hpp>
 
-namespace vk::raii
-{
-	class Device;
-	class Instance;
-	class PhysicalDevice;
-	class Queue;
-	class SurfaceKHR;
-}
-
-namespace Oyl
-{
-	class Window;
-}
+#include "Rendering/Device.h"
+#include "Rendering/Window.h"
 
 namespace Oyl::Rendering::Vulkan
 {

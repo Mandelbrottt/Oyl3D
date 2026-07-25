@@ -42,8 +42,6 @@ namespace Oyl::Rendering
 		std::string code;
 	};
 
-	class ShaderCompiler;
-
 	class OYL_RENDERING_API ShaderResource : public DeviceResource<ShaderResource>
 	{
 	protected:

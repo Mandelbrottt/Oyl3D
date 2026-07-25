@@ -104,13 +104,11 @@ namespace Oyl::Rendering::Vulkan
 	}
 
 	void
-	CommandBuffer::BeginRendering(const Rendering::SwapChain& a_swapChain)
+	CommandBuffer::BeginRendering(const SwapChain& a_swapChain)
 	{
 		OYL_PROFILE_FUNCTION();
 
-		const auto& swapChain = static_cast<const SwapChain&>(a_swapChain);
-
-		auto currentVkImage = swapChain.GetCurrentVkImage();
+		auto currentVkImage = a_swapChain.GetCurrentVkImage();
 		m_impl->TransitionImageLayout(
 			currentVkImage,
 			vk::ImageLayout::eUndefined,
@@ -121,7 +119,7 @@ namespace Oyl::Rendering::Vulkan
 			vk::PipelineStageFlagBits2::eColorAttachmentOutput
 		);
 
-		const auto& currentVkImageView = swapChain.GetCurrentVkImageView();
+		const auto& currentVkImageView = a_swapChain.GetCurrentVkImageView();
 		vk::ClearValue clearColor = vk::ClearColorValue(0.0f, 0.0f, 0.0f, 1.0f);
 		vk::RenderingAttachmentInfo attachmentInfo = {
 			.imageView = currentVkImageView,
@@ -131,7 +129,7 @@ namespace Oyl::Rendering::Vulkan
 			.clearValue = clearColor
 		};
 
-		const auto& swapChainExtent = swapChain.GetVkExtent();
+		const auto& swapChainExtent = a_swapChain.GetVkExtent();
 
 		vk::RenderingInfo renderingInfo = {
 			.renderArea = { .offset = { 0, 0 }, .extent = swapChainExtent },
@@ -150,16 +148,14 @@ namespace Oyl::Rendering::Vulkan
 	}
 
 	void
-	CommandBuffer::EndRendering(const Rendering::SwapChain& a_swapChain)
+	CommandBuffer::EndRendering(const SwapChain& a_swapChain)
 	{
 		OYL_PROFILE_FUNCTION();
-
-		const auto& swapChain = static_cast<const SwapChain&>(a_swapChain);
 
 		m_impl->commandBuffer.endRendering();
 
 		m_impl->TransitionImageLayout(
-			swapChain.GetCurrentVkImage(),
+			a_swapChain.GetCurrentVkImage(),
 			vk::ImageLayout::eColorAttachmentOptimal,
 			vk::ImageLayout::ePresentSrcKHR,
 			vk::AccessFlagBits2::eColorAttachmentWrite,
@@ -205,6 +201,31 @@ namespace Oyl::Rendering::Vulkan
 				}
 			}
 		);
+	}
+
+	void
+	CommandBuffer::BindShader(const ShaderResource& a_shader)
+	{
+		m_impl->commandBuffer.bindPipeline(vk::PipelineBindPoint::eGraphics, a_shader.GetVkPipeline());
+	}
+
+	void
+	CommandBuffer::BindVertexBuffer(const VertexBufferResource& a_vertexBuffer)
+	{
+		const auto& vkCommandBuffer = m_impl->commandBuffer;
+
+		const auto& vkVertexBuffer = a_vertexBuffer.GetVkBuffer();
+
+		if (a_vertexBuffer.HasIndexData())
+		{
+			vkCommandBuffer.bindIndexBuffer(*vkVertexBuffer, 0, vk::IndexType::eUint16);
+			vkCommandBuffer.bindVertexBuffers(0, *vkVertexBuffer, { a_vertexBuffer.GetVertexDataOffset() });
+			vkCommandBuffer.drawIndexed(a_vertexBuffer.GetIndexCount(), 1, 0, 0, 0);
+		} else
+		{
+			vkCommandBuffer.bindVertexBuffers(0, *vkVertexBuffer, { a_vertexBuffer.GetVertexDataOffset() });
+			vkCommandBuffer.draw(a_vertexBuffer.GetVertexCount(), 1, 0, 0);
+		}
 	}
 
 	void

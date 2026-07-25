@@ -1,18 +1,16 @@
 ﻿#pragma once
 
+#include "CommandPool.h"
 #include "DeviceObject.h"
+#include "SwapChain.h"
 
 #include "Core/Math/Vector.h"
 
-namespace Oyl::Rendering
-{
-	class CommandPool;
-}
+#include "Rendering/Shader.h"
+#include "Rendering/VertexBuffer.h"
 
 namespace Oyl::Rendering
 {
-	class SwapChain;
-
 	class OYL_RENDERING_API CommandBuffer : public Internal::IDeviceObject
 	{
 	protected:
@@ -62,6 +60,14 @@ namespace Oyl::Rendering
 		virtual
 		void
 		SetScissor(Vector2i a_offset, Vector2u a_size) = 0;
+
+		virtual
+		void
+		BindShader(const ShaderResource& a_shader) = 0;
+
+		virtual
+		void
+		BindVertexBuffer(const VertexBufferResource& a_shader) = 0;
 
 	protected:
 		virtual

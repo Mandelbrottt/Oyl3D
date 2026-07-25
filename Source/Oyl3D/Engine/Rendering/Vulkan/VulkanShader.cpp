@@ -263,7 +263,7 @@ namespace Oyl::Rendering::Vulkan
 	}
 
 	const vk::raii::Pipeline&
-	ShaderResource::GetPipeline() const
+	ShaderResource::GetVkPipeline() const
 	{
 		return m_impl->pipeline;
 	}

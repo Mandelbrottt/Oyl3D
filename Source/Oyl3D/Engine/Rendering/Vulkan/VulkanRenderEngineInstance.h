@@ -1,14 +1,14 @@
 #pragma once
 
 #include "VulkanDevice.h"
+#include "VulkanShader.h"
 #include "VulkanShaderCompiler.h"
+#include "VulkanVertexBuffer.h"
 
 #include "Rendering/RenderEngineInstance.h"
 
 namespace Oyl::Rendering::Vulkan
 {
-	class RenderContext;
-
 	class OYL_RENDERING_API RenderEngineInstance : public Internal::RenderEngineInstance
 	{
 	public:
@@ -37,10 +37,10 @@ namespace Oyl::Rendering::Vulkan
 			return static_cast<const Device*>(abstract);
 		}
 
-		Shader
+		Rendering::Shader
 		CreateShader(const ShaderOptions& a_options) override;
 
-		VertexBuffer
+		Rendering::VertexBuffer
 		CreateVertexBuffer(const VertexBufferOptions& a_options) override;
 	};
 }

@@ -39,7 +39,7 @@ namespace Oyl::Rendering::Vulkan
 		SetVkFormat(vk::Format a_format);
 
 		const vk::raii::Pipeline&
-		GetPipeline() const;
+		GetVkPipeline() const;
 
 		bool
 		Load() override;

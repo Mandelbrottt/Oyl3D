@@ -2,21 +2,11 @@
 
 #include "Core/Math/Vector2.h"
 
-namespace Oyl
-{
-	class Window;
-
-	namespace Internal
-	{
-		class ResourceManager;
-	}
-}
+#include "Rendering/Device.h"
+#include "Rendering/SwapChain.h"
 
 namespace Oyl::Rendering
 {
-	class Device;
-	class SwapChain;
-
 	class OYL_RENDERING_API RenderContext
 	{
 	protected:

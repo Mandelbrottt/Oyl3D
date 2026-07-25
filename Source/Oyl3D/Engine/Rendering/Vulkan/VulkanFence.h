@@ -2,13 +2,13 @@
 
 #include <vulkan/vulkan_raii.hpp>
 
+#include "VulkanDevice.h"
+
 #include "Rendering/Fence.h"
 
 namespace Oyl::Rendering::Vulkan
 {
 	using FenceHandle = ImplicitConversionWrapper<FenceHandle, vk::Fence>;
-
-	class Device;
 
 	class OYL_RENDERING_API Fence : public IFence
 	{

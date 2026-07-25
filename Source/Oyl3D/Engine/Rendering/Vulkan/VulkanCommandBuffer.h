@@ -1,20 +1,17 @@
 ﻿#pragma once
 
-#include "Rendering/CommandBuffer.h"
-#include "Rendering/Vulkan/VulkanCommandPool.h"
+#include <vulkan/vulkan_raii.hpp>
 
-namespace vk::raii
-{
-	class CommandBuffer;
-}
+#include "VulkanCommandPool.h"
+#include "VulkanShader.h"
+#include "VulkanSwapChain.h"
+#include "VulkanVertexBuffer.h"
+
+#include "Rendering/CommandBuffer.h"
 
 namespace Oyl::Rendering::Vulkan
 {
-	class Device;
-	class CommandPool;
-	class SwapChain;
-
-	class OYL_RENDERING_API CommandBuffer : Rendering::CommandBuffer
+	class OYL_RENDERING_API CommandBuffer : public Rendering::CommandBuffer
 	{
 	public:
 		CommandBuffer();
@@ -51,10 +48,22 @@ namespace Oyl::Rendering::Vulkan
 		Begin() override;
 
 		void
-		BeginRendering(const Rendering::SwapChain& a_swapChain) override;
+		BeginRendering(const Rendering::SwapChain& a_swapChain) override
+		{
+			BeginRendering(static_cast<const SwapChain&>(a_swapChain));
+		}
 
 		void
-		EndRendering(const Rendering::SwapChain& a_swapChain) override;
+		BeginRendering(const SwapChain& a_swapChain);
+
+		void
+		EndRendering(const Rendering::SwapChain& a_swapChain) override
+		{
+			EndRendering(static_cast<const SwapChain&>(a_swapChain));
+		}
+
+		void
+		EndRendering(const SwapChain& a_swapChain);
 
 		void
 		End() override;
@@ -64,6 +73,24 @@ namespace Oyl::Rendering::Vulkan
 
 		void
 		SetScissor(Vector2i a_offset, Vector2u a_size) override;
+
+		void
+		BindShader(const Rendering::ShaderResource& a_shader) override
+		{
+			return BindShader(static_cast<const ShaderResource&>(a_shader));
+		}
+
+		void
+		BindShader(const ShaderResource& a_shader);
+
+		void
+		BindVertexBuffer(const Rendering::VertexBufferResource& a_vertexBuffer) override
+		{
+			return BindVertexBuffer(static_cast<const VertexBufferResource&>(a_vertexBuffer));
+		}
+
+		void
+		BindVertexBuffer(const VertexBufferResource& a_vertexBuffer);
 
 	private:
 		struct Impl;

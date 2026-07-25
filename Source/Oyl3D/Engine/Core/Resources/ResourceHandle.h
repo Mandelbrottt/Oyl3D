@@ -72,10 +72,24 @@ namespace Oyl
 			Get();
 
 			virtual
+			ResourceBase&
+			operator *()
+			{
+				return *Get();
+			}
+
+			virtual
 			const ResourceBase*
 			Get() const
 			{
 				return const_cast<ResourceHandleBase*>(this)->Get();
+			}
+
+			virtual
+			const ResourceBase&
+			operator *() const
+			{
+				return *Get();
 			}
 
 			void
@@ -91,7 +105,7 @@ namespace Oyl
 			ResourceTypeId m_type;
 
 			ResourceId m_id = ResourceId::Null;
-			ResourceManager* m_resourceManager = nullptr;; // TODO: Make Global, or use locator?
+			ResourceManager* m_resourceManager = nullptr; // TODO: Make Global, or use locator?
 		};
 	}
 
@@ -144,10 +158,22 @@ namespace Oyl
 			return static_cast<TResource*>(ResourceHandleBase::Get());
 		}
 
+		TResource&
+		operator *() override
+		{
+			return *Get();
+		}
+
 		const TResource*
 		Get() const override
 		{
 			return static_cast<const TResource*>(ResourceHandleBase::Get());
+		}
+
+		const TResource&
+		operator *() const override
+		{
+			return *Get();
 		}
 
 		template<Traits::Resource TChildResource>

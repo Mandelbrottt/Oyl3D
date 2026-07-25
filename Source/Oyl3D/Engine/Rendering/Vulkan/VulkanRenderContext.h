@@ -1,7 +1,8 @@
 #pragma once
 
-#include "Rendering/Vulkan/VulkanDevice.h"
-#include "Rendering/Vulkan/VulkanSwapChain.h"
+#include "VulkanDevice.h"
+#include "VulkanSwapChain.h"
+
 #include "Rendering/RenderContext.h"
 
 namespace Oyl::Rendering::Vulkan

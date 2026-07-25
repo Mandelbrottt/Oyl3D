@@ -1,14 +1,8 @@
 ﻿#pragma once
 
-#include <vulkan/vulkan.hpp>
-
-#include "VulkanCommandBuffer.h"
+#include <vulkan/vulkan_raii.hpp>
 
 #include "Rendering/Semaphore.h"
-
-namespace vk::raii {
-	class Semaphore;
-}
 
 namespace Oyl::Rendering::Vulkan
 {

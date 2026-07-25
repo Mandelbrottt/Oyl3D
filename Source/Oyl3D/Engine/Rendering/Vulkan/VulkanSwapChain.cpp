@@ -1,13 +1,5 @@
 ﻿#include "VulkanSwapChain.h"
 
-#include <vulkan/vulkan_raii.hpp>
-
-#include "VulkanDevice.h"
-#include "VulkanFence.h"
-#include "VulkanSemaphore.h"
-
-#include "Rendering/Glfw/GlfwWindow.h"
-
 namespace
 {
 	vk::SurfaceFormatKHR
