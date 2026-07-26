@@ -82,7 +82,7 @@ namespace Oyl
 		}
 
 		constexpr
-		operator TOylType()
+		operator TOylType() const
 		{
 			static_assert(sizeof(*this) == sizeof(TOylType));
 			return std::bit_cast<TOylType>(*this);
@@ -95,7 +95,7 @@ namespace Oyl
 		}
 
 		constexpr
-		operator TLibType()
+		operator TLibType() const
 		{
 			static_assert(sizeof(*this) == sizeof(TLibType));
 			return std::bit_cast<TLibType>(*this);

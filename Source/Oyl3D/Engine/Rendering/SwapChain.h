@@ -26,7 +26,7 @@ namespace Oyl::Rendering
 
 		virtual
 		bool
-		AcquireNextImage(SemaphoreHandle a_semaphore, FenceHandle a_fenceHandle) = 0;
+		AcquireNextImage(SemaphoreHandle a_semaphore, FenceHandle a_fence) = 0;
 
 		bool
 		AcquireNextImage(const ISemaphore& a_semaphore, const IFence& a_fence)

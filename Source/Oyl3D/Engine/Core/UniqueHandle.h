@@ -23,6 +23,7 @@ namespace Oyl
 		bool
 		IsValid() const = 0;
 
+		virtual
 		explicit
 		operator bool() const
 		{
