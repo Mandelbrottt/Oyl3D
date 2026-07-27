@@ -1,9 +1,9 @@
 #pragma once
 
 #include "VulkanDevice.h"
-#include "VulkanShaderResource.h"
+#include "VulkanShader.h"
 #include "VulkanShaderCompiler.h"
-#include "VulkanVertexBufferResource.h"
+#include "VulkanVertexBuffer.h"
 
 #include "Rendering/RenderEngineInstance.h"
 

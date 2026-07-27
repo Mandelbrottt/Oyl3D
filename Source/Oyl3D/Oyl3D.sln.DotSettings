@@ -307,6 +307,162 @@
 	<s:Boolean x:Key="/Default/Environment/SettingsMigration/IsMigratorApplied/=JetBrains_002EReSharper_002EPsi_002ECSharp_002ECodeStyle_002ESettingsUpgrade_002EPredefinedNamingRulesToUserRulesUpgrade/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/GrammarAndSpelling/GrammarChecking/Exceptions/=_005B/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/GrammarAndSpelling/GrammarChecking/Exceptions/=_005D/@EntryIndexedValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=03EEAFC468874A4597BC25D07F970FDF/@KeyIndexDefined">True</s:Boolean>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=03EEAFC468874A4597BC25D07F970FDF/Applicability/=File/@EntryIndexedValue">True</s:Boolean>
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=03EEAFC468874A4597BC25D07F970FDF/CustomProperties/=Extension/@EntryIndexedValue">h</s:String>
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=03EEAFC468874A4597BC25D07F970FDF/CustomProperties/=FileName/@EntryIndexedValue">$NAME$</s:String>
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=03EEAFC468874A4597BC25D07F970FDF/CustomProperties/=ValidateFileName/@EntryIndexedValue">False</s:String>
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=03EEAFC468874A4597BC25D07F970FDF/Description/@EntryValue">Oyl Base Device Class</s:String>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=03EEAFC468874A4597BC25D07F970FDF/Field/=NAME/@KeyIndexDefined">True</s:Boolean>
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=03EEAFC468874A4597BC25D07F970FDF/Field/=NAME/Expression/@EntryValue">getAlphaNumericFileNameWithoutExtension()</s:String>
+	<s:Int64 x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=03EEAFC468874A4597BC25D07F970FDF/Field/=NAME/InitialRange/@EntryValue">2</s:Int64>
+	<s:Int64 x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=03EEAFC468874A4597BC25D07F970FDF/Field/=NAME/Order/@EntryValue">0</s:Int64>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=03EEAFC468874A4597BC25D07F970FDF/Reformat/@EntryValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=03EEAFC468874A4597BC25D07F970FDF/Scope/=CD5B1AEA8099834C8F10F84286AA88CA/@KeyIndexDefined">True</s:Boolean>
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=03EEAFC468874A4597BC25D07F970FDF/Scope/=CD5B1AEA8099834C8F10F84286AA88CA/Type/@EntryValue">InCppProjectFile</s:String>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=03EEAFC468874A4597BC25D07F970FDF/ShortenQualifiedReferences/@EntryValue">True</s:Boolean>
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=03EEAFC468874A4597BC25D07F970FDF/Text/@EntryValue">#pragma once
+
+#include "DeviceObject.h"
+
+namespace Oyl::Rendering
+{
+	struct $NAME$Handle : OpaqueHandle&lt;$NAME$Handle&gt; {};
+
+	class $NAME$ : public DeviceObject&lt;$NAME$Handle&gt;
+	{
+	protected:
+		$NAME$() = default;
+
+		DEFAULT_MOVE($NAME$);
+
+	public:
+		NO_COPY($NAME$);
+
+		virtual
+		~$NAME$() = default;
+	};
+}
+</s:String>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=5944C2B410423E4085A72C09C543EE1C/@KeyIndexDefined">True</s:Boolean>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=5944C2B410423E4085A72C09C543EE1C/Applicability/=File/@EntryIndexedValue">True</s:Boolean>
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=5944C2B410423E4085A72C09C543EE1C/CustomProperties/=Extension/@EntryIndexedValue">cpp</s:String>
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=5944C2B410423E4085A72C09C543EE1C/CustomProperties/=FileName/@EntryIndexedValue">Vulkan$NAME$</s:String>
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=5944C2B410423E4085A72C09C543EE1C/CustomProperties/=ValidateFileName/@EntryIndexedValue">False</s:String>
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=5944C2B410423E4085A72C09C543EE1C/Description/@EntryValue">Oyl Vulkan Device Class</s:String>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=5944C2B410423E4085A72C09C543EE1C/Field/=API/@KeyIndexDefined">True</s:Boolean>
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=5944C2B410423E4085A72C09C543EE1C/Field/=API/Expression/@EntryValue">constant("PROJECT")</s:String>
+	<s:Int64 x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=5944C2B410423E4085A72C09C543EE1C/Field/=API/Order/@EntryValue">1</s:Int64>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=5944C2B410423E4085A72C09C543EE1C/Field/=NAME/@KeyIndexDefined">True</s:Boolean>
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=5944C2B410423E4085A72C09C543EE1C/Field/=NAME/Expression/@EntryValue">getAlphaNumericFileNameWithoutExtension()</s:String>
+	<s:Int64 x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=5944C2B410423E4085A72C09C543EE1C/Field/=NAME/InitialRange/@EntryValue">1</s:Int64>
+	<s:Int64 x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=5944C2B410423E4085A72C09C543EE1C/Field/=NAME/Order/@EntryValue">0</s:Int64>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=5944C2B410423E4085A72C09C543EE1C/Field/=VULKAN_005FCLASS/@KeyIndexDefined">True</s:Boolean>
+	<s:Int64 x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=5944C2B410423E4085A72C09C543EE1C/Field/=VULKAN_005FCLASS/Order/@EntryValue">2</s:Int64>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=5944C2B410423E4085A72C09C543EE1C/Reformat/@EntryValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=5944C2B410423E4085A72C09C543EE1C/Scope/=CD5B1AEA8099834C8F10F84286AA88CA/@KeyIndexDefined">True</s:Boolean>
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=5944C2B410423E4085A72C09C543EE1C/Scope/=CD5B1AEA8099834C8F10F84286AA88CA/Type/@EntryValue">InCppProjectFile</s:String>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=5944C2B410423E4085A72C09C543EE1C/Section/=171A3E994C835E4EAD3CC62935F3210A/@KeyIndexDefined">True</s:Boolean>
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=5944C2B410423E4085A72C09C543EE1C/Section/=171A3E994C835E4EAD3CC62935F3210A/LocationSelectorConfig/@EntryValue">&lt;RelativeConfig File="$NAME$.my" /&gt;</s:String>
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=5944C2B410423E4085A72C09C543EE1C/Section/=171A3E994C835E4EAD3CC62935F3210A/LocationSelectorName/@EntryValue">manual</s:String>
+	<s:Int64 x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=5944C2B410423E4085A72C09C543EE1C/Section/=171A3E994C835E4EAD3CC62935F3210A/Order/@EntryValue">0</s:Int64>
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=5944C2B410423E4085A72C09C543EE1C/Section/=171A3E994C835E4EAD3CC62935F3210A/SectionPlain/Text/@EntryValue">#include "Vulkan$NAME$.h"
+
+namespace Oyl::Rendering::Vulkan
+{
+	struct $NAME$::Impl
+	{
+		
+	};
+
+	$NAME$::$NAME$()
+		: m_impl(nullptr) {}
+
+	$NAME$::$NAME$(const CreateParams&amp; a_params)
+		: m_impl(std::make_unique&lt;Impl&gt;())
+	{
+		OYL_PROFILE_FUNCTION();
+
+		
+	}
+
+	$NAME$::$NAME$($NAME$&amp;&amp; a_other) noexcept
+	{
+		*this = std::move(a_other);
+	}
+
+	$NAME$&amp;
+	$NAME$::operator=($NAME$&amp;&amp; a_other) noexcept
+	{
+		if (this != &amp;a_other)
+		{
+			std::swap(m_impl, a_other.m_impl);
+		}
+		return *this;
+	}
+
+	$NAME$::~$NAME$()
+	{
+		$NAME$::Destroy();
+	}
+
+	void
+	$NAME$::Destroy()
+	{
+		if (!IsValid())
+			return;
+
+		TODO_IMPLEMENT_ME;
+	}
+
+	bool
+	$NAME$::IsValid() const
+	{
+		return m_impl
+		       &amp;&amp; TODO_IMPLEMENT_ME;
+	}
+}
+</s:String>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=5944C2B410423E4085A72C09C543EE1C/ShortenQualifiedReferences/@EntryValue">True</s:Boolean>
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=5944C2B410423E4085A72C09C543EE1C/Text/@EntryValue">#pragma once
+
+#include &lt;vulkan/vulkan_raii.hpp&gt;
+
+#include "Rendering/$NAME$.h"
+
+namespace Oyl::Rendering::Vulkan
+{
+	using $NAME$Handle = OpaqueHandleConvertible&lt;$NAME$Handle, $VULKAN_CLASS$
+
+	class OYL_$API$_API $NAME$ : public Rendering::$NAME$
+	{
+	public:
+		$NAME$();
+
+		struct CreateParams
+		{
+			
+		};
+
+		Shader($NAME$&amp;&amp; a_other) noexcept;
+		$NAME$&amp;
+		operator =($NAME$&amp;&amp; a_other) noexcept;
+
+		virtual
+		~$NAME$();
+
+		void
+		Destroy() override;
+
+		bool
+		IsValid() const override;
+
+	private:
+		struct Impl;
+		std::unique_ptr&lt;Impl&gt; m_impl;
+	};
+}
+</s:String>
 	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=B07AB8B7E0DAFD4D85BE612EBE17FCF4/@KeyIndexDefined">True</s:Boolean>
 	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=B07AB8B7E0DAFD4D85BE612EBE17FCF4/Applicability/=File/@EntryIndexedValue">True</s:Boolean>
 	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=B07AB8B7E0DAFD4D85BE612EBE17FCF4/CustomProperties/=Extension/@EntryIndexedValue">h</s:String>

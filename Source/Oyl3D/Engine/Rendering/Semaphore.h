@@ -1,13 +1,14 @@
 ﻿#pragma once
 
 #include <Core/Typedefs.h>
-#include <Core/UniqueHandle.h>
+
+#include "DeviceObject.h"
 
 namespace Oyl::Rendering
 {
 	struct SemaphoreHandle : OpaqueHandle<SemaphoreHandle> {};
 
-	class ISemaphore : public IUniqueHandle
+	class ISemaphore : public DeviceObject<SemaphoreHandle>
 	{
 	protected:
 		ISemaphore() = default;
@@ -19,21 +20,5 @@ namespace Oyl::Rendering
 
 		virtual
 		~ISemaphore() = default;
-
-		SemaphoreHandle
-		GetHandle() const
-		{
-			return GetHandleImpl();
-		}
-
-		operator SemaphoreHandle() const
-		{
-			return GetHandle();
-		}
-
-	protected:
-		virtual
-		SemaphoreHandle
-		GetHandleImpl() const = 0;
 	};
 }

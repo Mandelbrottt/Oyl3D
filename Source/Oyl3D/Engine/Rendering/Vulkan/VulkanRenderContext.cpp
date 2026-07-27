@@ -4,7 +4,7 @@
 
 #include "VulkanDevice.h"
 #include "VulkanRenderQueue.h"
-#include "VulkanShaderResource.h"
+#include "VulkanShader.h"
 #include "VulkanSwapChain.h"
 #include "VulkanVertexBuffer.h"
 
@@ -147,12 +147,24 @@ namespace Oyl::Rendering::Vulkan
 			//		.filepath = "G:/dev/Oyl3D/Oyl3D/Source/Oyl3D/Engine/Rendering/Shaders/shader.hlsl"
 			//	}
 			//);
+
+			auto* compiler = RenderEngine::GetShaderCompiler();
+			ShaderCompileResult result;
+			compiler->CompileHlslFromFile("G:/dev/Oyl3D/Oyl3D/Source/Oyl3D/Engine/Rendering/Shaders/shader.hlsl", &result);
+
+			m_impl->shader = Shader(
+				{
+					.device = m_impl->device,
+					.format = m_impl->swapChain.GetVkSurfaceFormat().format,
+					.compileResult = result
+				}
+			);
 		}
 
-		if (m_impl->shader->IsDirty())
-		{
-			m_impl->shader->Load();
-		}
+		//if (m_impl->shader->IsDirty())
+		//{
+		//	m_impl->shader->Load();
+		//}
 
 		//if (m_impl->shader->IsDeviceDirty())
 		//{
@@ -183,15 +195,17 @@ namespace Oyl::Rendering::Vulkan
 			//	}
 			//);
 
-			m_impl->vertexBuffer = VertexBuffer({
-				.device = m_impl->device,
-				.queue = m_impl->graphicsQueue,
-				.vertexData = verticesBuffer,
-				.vertexLength = vertices.size() * sizeof(decltype(vertices)::value_type),
-				.vertexStride = sizeof(decltype(vertices)::value_type),
-				.indexData = indicesBuffer,
-				.indexLength = indices.size() * sizeof(decltype(indices)::value_type)
-			});
+			m_impl->vertexBuffer = VertexBuffer(
+				{
+					.device = m_impl->device,
+					.queue = m_impl->graphicsQueue,
+					.vertexData = verticesBuffer,
+					.vertexLength = vertices.size() * sizeof(decltype(vertices)::value_type),
+					.vertexStride = sizeof(decltype(vertices)::value_type),
+					.indexData = indicesBuffer,
+					.indexLength = indices.size() * sizeof(decltype(indices)::value_type)
+				}
+			);
 		}
 
 		//if (m_impl->vertexBuffer->IsDirty())
@@ -293,7 +307,7 @@ namespace Oyl::Rendering::Vulkan
 		commandBuffer.SetViewport(Vector2i::Zero(), extent);
 		commandBuffer.SetScissor(Vector2i::Zero(), extent);
 
-		commandBuffer.BindShader(*shader);
+		commandBuffer.BindShader(shader);
 		commandBuffer.BindVertexBuffer(vertexBuffer);
 
 		commandBuffer.EndRendering(swapChain);
@@ -331,17 +345,21 @@ namespace Oyl::Rendering::Vulkan
 
 		auto& commandBuffer = commandBuffers[frameIndex];
 
-		graphicsQueue.Submit(RenderQueue::SubmitParams {
-			.commandBuffer = commandBuffer,
-			.waitSemaphore = presentCompleteSemaphore,
-			.signalSemaphore = renderFinishedSemaphore,
-			.fence = drawFence
-		});
+		graphicsQueue.Submit(
+			RenderQueue::SubmitParams {
+				.commandBuffer = commandBuffer,
+				.waitSemaphore = presentCompleteSemaphore,
+				.signalSemaphore = renderFinishedSemaphore,
+				.fence = drawFence
+			}
+		);
 
-		bool result = graphicsQueue.Present(RenderQueue::PresentParams {
-			.waitSemaphore = renderFinishedSemaphore,
-			.swapChain = swapChain
-		});
+		bool result = graphicsQueue.Present(
+			RenderQueue::PresentParams {
+				.waitSemaphore = renderFinishedSemaphore,
+				.swapChain = swapChain
+			}
+		);
 
 		if (!result)
 			swapChain.Recreate();

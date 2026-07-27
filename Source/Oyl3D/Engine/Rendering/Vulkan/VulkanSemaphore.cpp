@@ -7,9 +7,10 @@
 namespace Oyl::Rendering::Vulkan
 {
 	Semaphore::Semaphore(const Device& a_device)
-		: m_semaphore(
-			vk::raii::Semaphore(a_device.GetVkDevice(), vk::SemaphoreCreateInfo {})
-		) {}
+		: m_device(&a_device),
+		  m_semaphore(
+			  vk::raii::Semaphore(a_device.GetVkDevice(), vk::SemaphoreCreateInfo {})
+		  ) {}
 
 	Semaphore::Semaphore(Semaphore&& a_other) noexcept
 	{
@@ -21,7 +22,8 @@ namespace Oyl::Rendering::Vulkan
 	{
 		if (this != &a_other)
 		{
-			m_semaphore = std::move(a_other.m_semaphore);
+			std::swap(m_device, a_other.m_device);
+			std::swap(m_semaphore, a_other.m_semaphore);
 		}
 		return *this;
 	}
@@ -33,5 +35,11 @@ namespace Oyl::Rendering::Vulkan
 			return;
 
 		m_semaphore.clear();
+	}
+
+	bool
+	Semaphore::IsValid() const
+	{
+		return m_device && *m_semaphore;
 	}
 }

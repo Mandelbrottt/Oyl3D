@@ -5,14 +5,15 @@
 namespace Oyl::Rendering::Vulkan
 {
 	Fence::Fence(const Device& a_device)
-		: m_fence(
-			vk::raii::Fence(
-				a_device.GetVkDevice(),
-				vk::FenceCreateInfo {
-					.flags = vk::FenceCreateFlagBits::eSignaled
-				}
-			)
-		) {}
+		: m_device(&a_device),
+		  m_fence(
+			  vk::raii::Fence(
+				  a_device.GetVkDevice(),
+				  vk::FenceCreateInfo {
+					  .flags = vk::FenceCreateFlagBits::eSignaled
+				  }
+			  )
+		  ) {}
 
 	Fence::Fence(Fence&& a_other) noexcept
 	{
@@ -24,7 +25,8 @@ namespace Oyl::Rendering::Vulkan
 	{
 		if (this != &a_other)
 		{
-			m_fence = std::move(a_other.m_fence);
+			std::swap(m_device, a_other.m_device);
+			std::swap(m_fence, a_other.m_fence);
 		}
 		return *this;
 	}
@@ -38,11 +40,17 @@ namespace Oyl::Rendering::Vulkan
 		m_fence.clear();
 	}
 
+	bool
+	Fence::IsValid() const
+	{
+		return m_device && *m_fence;
+	}
+
 	void
 	Fence::Reset()
 	{
 		const auto& vkFence = GetVkFence();
-		const auto& vkDevice = vkFence.getDevice();
+		const auto& vkDevice = m_device->GetVkDevice();
 
 		vkDevice.resetFences(*vkFence);
 	}
@@ -51,7 +59,7 @@ namespace Oyl::Rendering::Vulkan
 	Fence::Wait(uint64 a_timeout)
 	{
 		const auto& vkFence = GetVkFence();
-		const auto& vkDevice = vkFence.getDevice();
+		const auto& vkDevice = m_device->GetVkDevice();
 
 		auto result = vkDevice.waitForFences(*vkFence, vk::True, a_timeout);
 		return result != vk::Result::eSuccess;

@@ -1,11 +1,6 @@
-#include "VulkanShaderResource.h"
-
-#include <vulkan/vulkan_raii.hpp>
+﻿#include "VulkanShader.h"
 
 #include "VulkanDevice.h"
-#include "VulkanShaderCompiler.h"
-
-#include "Rendering/RenderEngine.h"
 
 namespace Oyl::Rendering::Vulkan
 {
@@ -38,113 +33,95 @@ namespace Oyl::Rendering::Vulkan
 		};
 	}
 
-	struct ShaderResource::Impl
+	struct Shader::Impl
 	{
-		ShaderCompileResult compileResult;
-
-		vk::Format format;
-
 		vk::raii::Pipeline pipeline = nullptr;
 
+		void
+		CreatePipeline(const CreateParams& a_params);
+
 		vk::raii::ShaderModule
-		CompileVkShaderModule(
-			const Device& a_device,
-			const ShaderStage& a_shaderStage
-		);
+		CompileVkShaderModule(const Device& a_device, const ShaderStage& a_stage);
 	};
 
-	ShaderResource::ShaderResource()
-	{
-		Init();
-	}
+	Shader::Shader()
+		: m_impl(nullptr) {}
 
-	ShaderResource::ShaderResource(ShaderOptions a_options, vk::Format a_format)
-		: Rendering::ShaderResource(std::move(a_options))
-	{
-		Init();
-		SetVkFormat(a_format);
-	}
-
-	void
-	ShaderResource::Init()
-	{
-		m_impl = std::make_unique<Impl>();
-	}
-
-	ShaderResource::~ShaderResource() {}
-
-	vk::Format
-	ShaderResource::GetVkFormat() const
-	{
-		return m_impl->format;
-	}
-
-	void
-	ShaderResource::SetVkFormat(vk::Format a_format)
-	{
-		m_impl->format = a_format;
-		SetDeviceDirty();
-	}
-
-	bool
-	ShaderResource::Load()
+	Shader::Shader(const CreateParams& a_params)
+		: m_impl(std::make_unique<Impl>())
 	{
 		OYL_PROFILE_FUNCTION();
 
-		if (IsLoaded())
-			Unload();
+		m_impl->CreatePipeline(a_params);
+	}
 
-		if (GetFilePath().empty())
-			return false;
+	Shader::Shader(Shader&& a_other) noexcept
+	{
+		*this = std::move(a_other);
+	}
 
-		auto* shaderCompiler = RenderEngine::GetShaderCompiler();
-		OYL_ASSERT(shaderCompiler);
-		shaderCompiler->CompileHlslFromFile(m_options.filepath, &m_impl->compileResult);
+	Shader&
+	Shader::operator=(Shader&& a_other) noexcept
+	{
+		if (this != &a_other)
+		{
+			std::swap(m_impl, a_other.m_impl);
+		}
+		return *this;
+	}
 
-		return Rendering::ShaderResource::Load();
+	Shader::~Shader()
+	{
+		Shader::Destroy();
+	}
+
+	void
+	Shader::Destroy()
+	{
+		if (!IsValid())
+			return;
+
+		m_impl->pipeline.clear();
 	}
 
 	bool
-	ShaderResource::Unload()
+	Shader::IsValid() const
 	{
-		OYL_PROFILE_FUNCTION();
+		return m_impl
+		       && *m_impl->pipeline;
+	}
 
-		if (!IsLoaded())
-			return true;
+	Rendering::ShaderHandle
+	Shader::GetHandleImpl() const
+	{
+		return (ShaderHandle) *m_impl->pipeline;
+	}
 
-		m_impl->compileResult = {};
-
-		return Rendering::ShaderResource::Unload();
+	const vk::raii::Pipeline&
+	Shader::GetVkPipeline() const
+	{
+		return m_impl->pipeline;
 	}
 
 	static
 	vk::ShaderStageFlagBits
-	ShaderProfileToVkShaderStageFlag(ShaderProfile a_profile)
-	{
-		vk::ShaderStageFlagBits flags[SP_Count];
-		flags[SP_Vertex] = vk::ShaderStageFlagBits::eVertex;
-		flags[SP_Geometry] = vk::ShaderStageFlagBits::eGeometry;
-		flags[SP_Fragment] = vk::ShaderStageFlagBits::eFragment;
-		return flags[a_profile];
-	}
+	ShaderProfileToVkShaderStageFlag(ShaderProfile a_profile);
 
-	bool
-	ShaderResource::DeviceLoad(const IDevice& a_device)
-	{
-		return DeviceLoad(static_cast<const Device&>(a_device));
-	}
-
-	bool
-	ShaderResource::DeviceLoad(const Device& a_device)
+	void
+	Shader::Impl::CreatePipeline(const CreateParams& a_params)
 	{
 		OYL_PROFILE_FUNCTION();
+
+		auto& device = a_params.device;
+		auto& format = a_params.format;
+		auto& compileResult = a_params.compileResult;
 
 		// keep ShaderModules for RAII
 		std::vector<vk::raii::ShaderModule> vkShaderModules;
 		std::vector<vk::PipelineShaderStageCreateInfo> vkShaderStageCreateInfos;
-		for (const auto& stage : m_impl->compileResult.GetShaderStages())
+		for (const auto& stage : compileResult.GetShaderStages())
 		{
-			vk::raii::ShaderModule shaderModule = m_impl->CompileVkShaderModule(a_device, stage);
+			vk::raii::ShaderModule shaderModule = CompileVkShaderModule(device, stage);
 
 			vk::PipelineShaderStageCreateInfo createInfo {
 				.stage = ShaderProfileToVkShaderStageFlag(stage.GetShaderProfile()),
@@ -223,7 +200,7 @@ namespace Oyl::Rendering::Vulkan
 			.pushConstantRangeCount = 0
 		};
 
-		auto pipelineLayout = vk::raii::PipelineLayout(a_device.GetVkDevice(), pipelineLayoutInfo);
+		auto pipelineLayout = vk::raii::PipelineLayout(device.GetVkDevice(), pipelineLayoutInfo);
 
 		{
 			// Use structure chain to auto-populate pNext
@@ -243,46 +220,25 @@ namespace Oyl::Rendering::Vulkan
 				},
 				vk::PipelineRenderingCreateInfo {
 					.colorAttachmentCount = 1,
-					.pColorAttachmentFormats = &m_impl->format
+					.pColorAttachmentFormats = &format
 				}
 			};
 
 			OYL_PROFILE_SCOPE("vk::raii::Pipeline");
-			m_impl->pipeline = vk::raii::Pipeline(
-				a_device.GetVkDevice(),
+			pipeline = vk::raii::Pipeline(
+				device.GetVkDevice(),
 				nullptr,
 				pipelineCreateInfoChain.get()
 			);
 		}
-
-		return Rendering::ShaderResource::DeviceLoad(a_device);
-	}
-
-	bool
-	ShaderResource::DeviceUnload()
-	{
-		OYL_PROFILE_FUNCTION();
-
-		m_impl->pipeline.clear();
-
-		return Rendering::ShaderResource::DeviceUnload();
-	}
-
-	const vk::raii::Pipeline&
-	ShaderResource::GetVkPipeline() const
-	{
-		return m_impl->pipeline;
 	}
 
 	vk::raii::ShaderModule
-	ShaderResource::Impl::CompileVkShaderModule(
-		const Device& a_device,
-		const ShaderStage& a_shaderStage
-	)
+	Shader::Impl::CompileVkShaderModule(const Device& a_device, const ShaderStage& a_stage)
 	{
 		OYL_PROFILE_FUNCTION();
 
-		const auto& bytecode = a_shaderStage.GetByteCode();
+		const auto& bytecode = a_stage.GetByteCode();
 
 		// Create a Vulkan shader module from the compilation result
 		vk::ShaderModuleCreateInfo shaderModuleCreateInfo {
@@ -290,5 +246,15 @@ namespace Oyl::Rendering::Vulkan
 			.pCode = (uint32*) bytecode.data(),
 		};
 		return vk::raii::ShaderModule(a_device.GetVkDevice(), shaderModuleCreateInfo);
+	}
+
+	vk::ShaderStageFlagBits
+	ShaderProfileToVkShaderStageFlag(ShaderProfile a_profile)
+	{
+		vk::ShaderStageFlagBits flags[SP_Count];
+		flags[SP_Vertex] = vk::ShaderStageFlagBits::eVertex;
+		flags[SP_Geometry] = vk::ShaderStageFlagBits::eGeometry;
+		flags[SP_Fragment] = vk::ShaderStageFlagBits::eFragment;
+		return flags[a_profile];
 	}
 }

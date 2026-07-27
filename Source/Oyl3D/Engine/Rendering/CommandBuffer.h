@@ -9,7 +9,7 @@ namespace Oyl::Rendering
 {
 	class ICommandPool;
 	class ISwapChain;
-	class ShaderResource;
+	class Shader;
 	class VertexBuffer;
 
 	class ICommandBuffer : public IUniqueHandle
@@ -51,7 +51,7 @@ namespace Oyl::Rendering
 
 		virtual
 		void
-		BindShader(const ShaderResource& a_shader) const noexcept = 0;
+		BindShader(const Shader& a_shader) const noexcept = 0;
 
 		virtual
 		void

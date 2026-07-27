@@ -49,6 +49,9 @@ namespace Oyl::Rendering::Vulkan
 	void
 	RenderQueue::Destroy()
 	{
+		if (!IsValid())
+			return;
+
 		m_impl->queue.clear();
 	}
 

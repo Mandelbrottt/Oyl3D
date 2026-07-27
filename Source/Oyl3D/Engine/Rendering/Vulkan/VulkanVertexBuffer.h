@@ -1,16 +1,15 @@
 ﻿#pragma once
 
-#include "Rendering/VertexBuffer.h"
+#include <vulkan/vulkan_raii.hpp>
 
-namespace vk::raii
-{
-	class Buffer;
-}
+#include "Rendering/VertexBuffer.h"
 
 namespace Oyl::Rendering::Vulkan
 {
 	class Device;
 	class RenderQueue;
+
+	using VertexBufferHandle = OpaqueHandleConvertible<VertexBufferHandle, vk::Buffer>;
 
 	class OYL_RENDERING_API VertexBuffer : public Rendering::VertexBuffer
 	{
@@ -47,6 +46,12 @@ namespace Oyl::Rendering::Vulkan
 		bool
 		IsValid() const override;
 
+		VertexBufferHandle
+		GetHandle() const
+		{
+			return GetHandleImpl();
+		}
+
 		uint32
 		GetVertexCount() const override;
 
@@ -64,6 +69,10 @@ namespace Oyl::Rendering::Vulkan
 
 		const vk::raii::Buffer&
 		GetVkBuffer() const;
+
+	protected:
+		Rendering::VertexBufferHandle
+		GetHandleImpl() const override;
 
 	private:
 		struct Impl;

@@ -1,13 +1,14 @@
 #pragma once
 
 #include <Core/Typedefs.h>
-#include <Core/UniqueHandle.h>
+
+#include "DeviceObject.h"
 
 namespace Oyl::Rendering
 {
 	struct FenceHandle : OpaqueHandle<FenceHandle> {};
 
-	class IFence : public IUniqueHandle
+	class IFence : public DeviceObject<FenceHandle>
 	{
 	protected:
 		IFence() = default;
@@ -20,17 +21,6 @@ namespace Oyl::Rendering
 		virtual
 		~IFence() = default;
 
-		FenceHandle
-		GetHandle() const
-		{
-			return GetHandleImpl();
-		}
-
-		operator FenceHandle() const
-		{
-			return GetHandle();
-		}
-
 		virtual
 		void
 		Reset() = 0;
@@ -38,10 +28,5 @@ namespace Oyl::Rendering
 		virtual
 		bool
 		Wait(uint64 a_timeout = std::numeric_limits<uint64>::max()) = 0;
-
-	protected:
-		virtual
-		FenceHandle
-		GetHandleImpl() const = 0;
 	};
 }

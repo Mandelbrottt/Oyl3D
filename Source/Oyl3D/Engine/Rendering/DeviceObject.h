@@ -18,7 +18,15 @@ namespace Oyl::Rendering
 		virtual
 		~DeviceObject() = default;
 
+		THandle
+		GetHandle() const
+		{
+			return GetHandleImpl();
+		}
+
 	protected:
-		THandle m_handle;
+		virtual
+		THandle
+		GetHandleImpl() const = 0;
 	};
 }

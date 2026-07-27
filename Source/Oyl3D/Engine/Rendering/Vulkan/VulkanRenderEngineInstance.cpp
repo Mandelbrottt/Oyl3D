@@ -1,7 +1,7 @@
 #include "VulkanRenderEngineInstance.h"
 
 #include "VulkanRenderContext.h"
-#include "VulkanShaderResource.h"
+#include "VulkanShader.h"
 #include "VulkanShaderCompiler.h"
 #include "VulkanVertexBuffer.h"
 

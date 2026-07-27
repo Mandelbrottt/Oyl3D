@@ -12,15 +12,15 @@ namespace vk::raii
 namespace Oyl::Rendering
 {
 	class ISwapChain;
+	class Shader;
 	class VertexBuffer;
-	class ShaderResource;
 }
 
 namespace Oyl::Rendering::Vulkan
 {
 	class CommandPool;
 	class Device;
-	class ShaderResource;
+	class Shader;
 	class SwapChain;
 	class VertexBuffer;
 
@@ -82,10 +82,10 @@ namespace Oyl::Rendering::Vulkan
 		SetScissor(Vector2i a_offset, Vector2u a_size) const noexcept override;
 
 		void
-		BindShader(const Rendering::ShaderResource& a_shader) const noexcept override;
+		BindShader(const Rendering::Shader& a_shader) const noexcept override;
 
 		void
-		BindShader(const ShaderResource& a_shader) const noexcept;
+		BindShader(const Shader& a_shader) const noexcept;
 
 		void
 		BindVertexBuffer(const Rendering::VertexBuffer& a_vertexBuffer) const noexcept override;

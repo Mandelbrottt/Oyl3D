@@ -1,13 +1,15 @@
 ﻿#pragma once
 
+#include <vulkan/vulkan_raii.hpp>
+
 #include "Rendering/Device.h"
 
-namespace vk::raii
-{
-	class Device;
-	class PhysicalDevice;
-	class SurfaceKHR;
-}
+//namespace vk::raii
+//{
+//	class Device;
+//	class PhysicalDevice;
+//	class SurfaceKHR;
+//}
 
 namespace Oyl::Rendering::Vulkan
 {

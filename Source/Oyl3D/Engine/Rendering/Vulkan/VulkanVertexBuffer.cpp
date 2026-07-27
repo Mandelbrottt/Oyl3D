@@ -34,11 +34,11 @@ namespace Oyl::Rendering::Vulkan
 		m_impl->vertexCount = a_params.vertexLength / a_params.vertexStride;
 		m_impl->vertexStride = a_params.vertexStride;
 
-		if (a_params.indexData && a_params.indexLength)
+		if (a_params.indexData && a_params.indexLength != 0 && a_params.indexStride != 0)
 		{
 			OYL_ASSERT(a_params.indexLength % a_params.indexStride == 0);
-			m_impl->indexCount = a_params.indexLength / m_impl->indexStride;
-			m_impl->indexStride = m_impl->indexStride;
+			m_impl->indexCount = a_params.indexLength / a_params.indexStride;
+			m_impl->indexStride = a_params.indexStride;
 		}
 
 		m_impl->CreateVertexBuffer(a_params);
@@ -117,6 +117,12 @@ namespace Oyl::Rendering::Vulkan
 	VertexBuffer::GetVkBuffer() const
 	{
 		return m_impl->buffer;
+	}
+
+	Rendering::VertexBufferHandle
+	VertexBuffer::GetHandleImpl() const
+	{
+		return (VertexBufferHandle) *m_impl->buffer;
 	}
 
 	static

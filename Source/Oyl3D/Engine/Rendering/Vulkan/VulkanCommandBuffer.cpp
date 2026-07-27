@@ -1,7 +1,7 @@
 ﻿#include "VulkanCommandBuffer.h"
 
 #include "VulkanDevice.h"
-#include "VulkanShaderResource.h"
+#include "VulkanShader.h"
 #include "VulkanSwapChain.h"
 #include "VulkanVertexBuffer.h"
 
@@ -214,13 +214,13 @@ namespace Oyl::Rendering::Vulkan
 	}
 
 	void
-	CommandBuffer::BindShader(const Rendering::ShaderResource& a_shader) const noexcept
+	CommandBuffer::BindShader(const Rendering::Shader& a_shader) const noexcept
 	{
-		return BindShader(static_cast<const ShaderResource&>(a_shader));
+		return BindShader(static_cast<const Shader&>(a_shader));
 	}
 
 	void
-	CommandBuffer::BindShader(const ShaderResource& a_shader) const noexcept
+	CommandBuffer::BindShader(const Shader& a_shader) const noexcept
 	{
 		OYL_PROFILE_FUNCTION();
 

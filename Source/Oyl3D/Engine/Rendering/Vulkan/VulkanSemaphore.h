@@ -35,10 +35,7 @@ namespace Oyl::Rendering::Vulkan
 		Destroy() override;
 
 		bool
-		IsValid() const override
-		{
-			return *m_semaphore;
-		}
+		IsValid() const override;
 
 		SemaphoreHandle
 		GetHandle() const
@@ -65,6 +62,7 @@ namespace Oyl::Rendering::Vulkan
 		}
 
 	private:
+		const Device* m_device = nullptr;
 		vk::raii::Semaphore m_semaphore = nullptr;
 	};
 }

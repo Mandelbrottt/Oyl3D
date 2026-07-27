@@ -35,10 +35,7 @@ namespace Oyl::Rendering::Vulkan
 		Destroy() override;
 
 		bool
-		IsValid() const override
-		{
-			return *m_fence;
-		}
+		IsValid() const override;
 
 		FenceHandle
 		GetHandle() const
@@ -71,6 +68,7 @@ namespace Oyl::Rendering::Vulkan
 		}
 
 	private:
+		const Device* m_device = nullptr;
 		vk::raii::Fence m_fence = nullptr;
 	};
 }

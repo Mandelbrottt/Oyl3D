@@ -7,12 +7,6 @@
 
 namespace Oyl::Rendering
 {
-	struct Vertex
-	{
-		Vector2f position;
-		Vector3f color;
-	};
-
 	enum ShaderProfile
 	{
 		SP_Vertex,
@@ -82,6 +76,9 @@ namespace Oyl::Rendering
 	protected:
 		ShaderOptions m_options;
 	};
+}
 
-	using Shader = ResourceHandle<ShaderResource>;
+namespace Oyl
+{
+	using Shader = ResourceHandle<Rendering::ShaderResource>;
 }
