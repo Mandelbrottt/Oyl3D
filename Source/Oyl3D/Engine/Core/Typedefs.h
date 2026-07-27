@@ -49,16 +49,10 @@ namespace Oyl
 	struct OpaqueHandle
 	{
 		OpaqueHandle() = default;
-
-		OpaqueHandle(const OpaqueHandle& a_other) = default;
-		OpaqueHandle&
-		operator =(const OpaqueHandle& a_other) = default;
-
-		OpaqueHandle(OpaqueHandle&& a_other) = default;
-		OpaqueHandle&
-		operator =(OpaqueHandle&& a_other) noexcept = default;
-
 		OpaqueHandle(std::nullptr_t) {}
+
+		DEFAULT_COPY(OpaqueHandle);
+		DEFAULT_MOVE(OpaqueHandle);
 
 	protected:
 		using Handle = struct _Handle*;
@@ -67,18 +61,18 @@ namespace Oyl
 
 	template<typename TOylType, typename TLibType>
 		requires (std::is_trivially_destructible_v<TOylType> && std::is_trivially_destructible_v<TLibType>)
-	struct ImplicitConversionWrapper : TOylType
+	struct OpaqueHandleConvertible : TOylType
 	{
 		constexpr
-		ImplicitConversionWrapper() = default;
+		OpaqueHandleConvertible() = default;
 
 		constexpr
-		ImplicitConversionWrapper(std::nullptr_t) {}
+		OpaqueHandleConvertible(std::nullptr_t) {}
 
 		constexpr
-		ImplicitConversionWrapper(const TOylType& a_other)
+		OpaqueHandleConvertible(const TOylType& a_other)
 		{
-			*this = std::bit_cast<ImplicitConversionWrapper>(a_other);
+			*this = std::bit_cast<OpaqueHandleConvertible>(a_other);
 		}
 
 		constexpr
@@ -89,9 +83,9 @@ namespace Oyl
 		}
 
 		constexpr
-		ImplicitConversionWrapper(const TLibType& a_libType)
+		OpaqueHandleConvertible(const TLibType& a_libType)
 		{
-			*this = std::bit_cast<ImplicitConversionWrapper>(a_libType);
+			*this = std::bit_cast<OpaqueHandleConvertible>(a_libType);
 		}
 
 		constexpr

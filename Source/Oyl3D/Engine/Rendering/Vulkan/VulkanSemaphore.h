@@ -8,7 +8,7 @@
 
 namespace Oyl::Rendering::Vulkan
 {
-	using SemaphoreHandle = ImplicitConversionWrapper<SemaphoreHandle, vk::Semaphore>;
+	using SemaphoreHandle = OpaqueHandleConvertible<SemaphoreHandle, vk::Semaphore>;
 
 	class OYL_RENDERING_API Semaphore : public ISemaphore
 	{

@@ -8,7 +8,7 @@
 
 namespace Oyl::Rendering::Vulkan
 {
-	using FenceHandle = ImplicitConversionWrapper<FenceHandle, vk::Fence>;
+	using FenceHandle = OpaqueHandleConvertible<FenceHandle, vk::Fence>;
 
 	class OYL_RENDERING_API Fence : public IFence
 	{
