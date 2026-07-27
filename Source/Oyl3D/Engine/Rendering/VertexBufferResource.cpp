@@ -1,4 +1,4 @@
-#include "VertexBuffer.h"
+#include "VertexBufferResource.h"
 
 namespace Oyl::Rendering
 {

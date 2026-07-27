@@ -1,9 +1,9 @@
 #pragma once
 
 #include "VulkanDevice.h"
-#include "VulkanShader.h"
+#include "VulkanShaderResource.h"
 #include "VulkanShaderCompiler.h"
-#include "VulkanVertexBuffer.h"
+#include "VulkanVertexBufferResource.h"
 
 #include "Rendering/RenderEngineInstance.h"
 
@@ -37,10 +37,10 @@ namespace Oyl::Rendering::Vulkan
 			return static_cast<const Device*>(abstract);
 		}
 
-		Rendering::Shader
-		CreateShader(const ShaderOptions& a_options) override;
+		//Rendering::Shader
+		//CreateShader(const ShaderOptions& a_options) override;
 
-		Rendering::VertexBuffer
-		CreateVertexBuffer(const VertexBufferOptions& a_options) override;
+		//Rendering::VertexBuffer
+		//CreateVertexBuffer(const VertexBufferOptions& a_options) override;
 	};
 }

@@ -1,8 +1,8 @@
 #pragma once
 
 #include "Rendering/RenderEngineInstance.h"
-#include "Rendering/Shader.h"
-#include "Rendering/VertexBuffer.h"
+#include "Rendering/ShaderResource.h"
+#include "Rendering/VertexBufferResource.h"
 
 namespace Oyl::Rendering
 {
@@ -27,19 +27,19 @@ namespace Oyl::Rendering
 			return s_instance->GetShaderCompiler();
 		}
 
-		static
-		Shader
-		CreateShader(ShaderOptions a_options)
-		{
-			return s_instance->CreateShader(std::move(a_options));
-		}
+		//static
+		//Shader
+		//CreateShader(ShaderOptions a_options)
+		//{
+		//	return s_instance->CreateShader(std::move(a_options));
+		//}
 
-		static
-		VertexBuffer
-		CreateVertexBuffer(VertexBufferOptions a_options)
-		{
-			return s_instance->CreateVertexBuffer(std::move(a_options));
-		}
+		//static
+		//VertexBuffer
+		//CreateVertexBuffer(VertexBufferOptions a_options)
+		//{
+		//	return s_instance->CreateVertexBuffer(std::move(a_options));
+		//}
 
 	private:
 		static

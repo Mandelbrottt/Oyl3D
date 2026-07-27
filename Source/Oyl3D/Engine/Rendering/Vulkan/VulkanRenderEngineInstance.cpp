@@ -1,8 +1,7 @@
 #include "VulkanRenderEngineInstance.h"
 
 #include "VulkanRenderContext.h"
-#include "VulkanRenderContext.h"
-#include "VulkanShader.h"
+#include "VulkanShaderResource.h"
 #include "VulkanShaderCompiler.h"
 #include "VulkanVertexBuffer.h"
 
@@ -20,18 +19,18 @@ namespace Oyl::Rendering::Vulkan
 			}
 		) {}
 
-	Rendering::Shader
-	RenderEngineInstance::CreateShader(const ShaderOptions& a_options)
-	{
-		const auto& renderContext = *static_cast<const RenderContext*>(m_renderContext.get());
-		auto [format, colorSpace] = renderContext.GetSwapChain()->GetVkSurfaceFormat();
+	//Rendering::Shader
+	//RenderEngineInstance::CreateShader(const ShaderOptions& a_options)
+	//{
+	//	const auto& renderContext = *static_cast<const RenderContext*>(m_renderContext.get());
+	//	auto [format, colorSpace] = renderContext.GetSwapChain()->GetVkSurfaceFormat();
 
-		return GetResourceManager()->Load<Shader>(a_options, format);
-	}
+	//	return GetResourceManager()->Load<Shader>(a_options, format);
+	//}
 
-	Rendering::VertexBuffer
-	RenderEngineInstance::CreateVertexBuffer(const VertexBufferOptions& a_options)
-	{
-		return GetResourceManager()->Load<VertexBuffer>(a_options);
-	}
+	//Rendering::VertexBuffer
+	//RenderEngineInstance::CreateVertexBuffer(const VertexBufferOptions& a_options)
+	//{
+	//	return GetResourceManager()->Load<VertexBuffer>(a_options);
+	//}
 }

@@ -1,0 +1,54 @@
+#pragma once
+
+#include <vulkan/vulkan_raii.hpp>
+
+#include <memory>
+
+#include "VulkanDevice.h"
+
+#include "Rendering/VertexBufferResource.h"
+
+namespace Oyl::Rendering::Vulkan
+{
+	class OYL_RENDERING_API VertexBufferResource : public Rendering::VertexBufferResource
+	{
+	public:
+		VertexBufferResource();
+
+		explicit
+		VertexBufferResource(const VertexBufferOptions& a_options);
+
+		virtual
+		~VertexBufferResource();
+
+		bool
+		Load() override;
+
+		bool
+		Unload() override;
+
+		bool
+		DeviceLoad(const IDevice& a_device) override
+		{
+			return DeviceLoad(static_cast<const Device&>(a_device));
+		}
+
+		bool
+		DeviceLoad(const Device& a_device);
+
+		bool
+		DeviceUnload() override;
+
+		const vk::raii::Buffer&
+		GetVkBuffer() const;
+
+	private:
+		struct Impl;
+		std::unique_ptr<Impl> m_impl;
+	};
+}
+
+namespace Oyl
+{
+	using VertexBufferHandle = ResourceHandle<Rendering::Vulkan::VertexBufferResource>;
+}

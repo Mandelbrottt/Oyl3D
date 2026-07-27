@@ -1,9 +1,9 @@
 ﻿#pragma once
 
+#include <Core/UniqueHandle.h>
+
 #include "Fence.h"
 #include "Semaphore.h"
-
-#include "Core/UniqueHandle.h"
 
 namespace Oyl::Rendering
 {

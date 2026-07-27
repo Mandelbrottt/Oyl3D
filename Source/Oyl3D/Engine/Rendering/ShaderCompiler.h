@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Shader.h"
+#include "ShaderResource.h"
 
 namespace Oyl::Rendering
 {

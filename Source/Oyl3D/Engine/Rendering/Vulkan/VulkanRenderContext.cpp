@@ -3,7 +3,8 @@
 #include <vulkan/vulkan_raii.hpp>
 
 #include "VulkanDevice.h"
-#include "VulkanShader.h"
+#include "VulkanRenderQueue.h"
+#include "VulkanShaderResource.h"
 #include "VulkanSwapChain.h"
 #include "VulkanVertexBuffer.h"
 
@@ -25,7 +26,7 @@ namespace Oyl::Rendering::Vulkan
 		const IWindow* window;
 
 		Device device;
-
+		RenderQueue graphicsQueue;
 		SwapChain swapChain;
 
 		// TEMPORARY:
@@ -99,6 +100,13 @@ namespace Oyl::Rendering::Vulkan
 			}
 		);
 
+		m_impl->graphicsQueue = RenderQueue(
+			{
+				.device = m_impl->device,
+				.queueFamilyIndex = m_impl->device.GetVkGraphicsQueueFamilyIndex()
+			}
+		);
+
 		m_impl->swapChain = SwapChain(
 			{
 				.window = *m_impl->window,
@@ -132,13 +140,13 @@ namespace Oyl::Rendering::Vulkan
 
 		if (!m_impl->shader)
 		{
-			m_impl->shader = RenderEngine::CreateShader(
-				{
-					.language = SL_Hlsl,
-					.source = ShaderOptions::SO_File,
-					.filepath = "G:/dev/Oyl3D/Oyl3D/Source/Oyl3D/Engine/Rendering/Shaders/shader.hlsl"
-				}
-			);
+			//m_impl->shader = RenderEngine::CreateShader(
+			//	{
+			//		.language = SL_Hlsl,
+			//		.source = ShaderOptions::SO_File,
+			//		.filepath = "G:/dev/Oyl3D/Oyl3D/Source/Oyl3D/Engine/Rendering/Shaders/shader.hlsl"
+			//	}
+			//);
 		}
 
 		if (m_impl->shader->IsDirty())
@@ -146,10 +154,10 @@ namespace Oyl::Rendering::Vulkan
 			m_impl->shader->Load();
 		}
 
-		if (m_impl->shader->IsDeviceDirty())
-		{
-			m_impl->shader->DeviceLoad(m_impl->device);
-		}
+		//if (m_impl->shader->IsDeviceDirty())
+		//{
+		//	m_impl->shader->DeviceLoad(m_impl->device);
+		//}
 
 		if (!m_impl->vertexBuffer)
 		{
@@ -165,26 +173,36 @@ namespace Oyl::Rendering::Vulkan
 			auto verticesBuffer = reinterpret_cast<const byte*>(vertices.data());
 			auto indicesBuffer = reinterpret_cast<const byte*>(indices.data());
 
-			m_impl->vertexBuffer = RenderEngine::CreateVertexBuffer(
-				{
-					.vertexData = verticesBuffer,
-					.vertexLength = vertices.size() * sizeof(decltype(vertices)::value_type),
-					.vertexStride = sizeof(decltype(vertices)::value_type),
-					.indexData = indicesBuffer,
-					.indexLength = indices.size() * sizeof(decltype(indices)::value_type),
-				}
-			);
+			//m_impl->vertexBuffer = RenderEngine::CreateVertexBuffer(
+			//	{
+			//		.vertexData = verticesBuffer,
+			//		.vertexLength = vertices.size() * sizeof(decltype(vertices)::value_type),
+			//		.vertexStride = sizeof(decltype(vertices)::value_type),
+			//		.indexData = indicesBuffer,
+			//		.indexLength = indices.size() * sizeof(decltype(indices)::value_type),
+			//	}
+			//);
+
+			m_impl->vertexBuffer = VertexBuffer({
+				.device = m_impl->device,
+				.queue = m_impl->graphicsQueue,
+				.vertexData = verticesBuffer,
+				.vertexLength = vertices.size() * sizeof(decltype(vertices)::value_type),
+				.vertexStride = sizeof(decltype(vertices)::value_type),
+				.indexData = indicesBuffer,
+				.indexLength = indices.size() * sizeof(decltype(indices)::value_type)
+			});
 		}
 
-		if (m_impl->vertexBuffer->IsDirty())
-		{
-			m_impl->vertexBuffer->Load();
-		}
+		//if (m_impl->vertexBuffer->IsDirty())
+		//{
+		//	m_impl->vertexBuffer->Load();
+		//}
 
-		if (m_impl->vertexBuffer->IsDeviceDirty())
-		{
-			m_impl->vertexBuffer->DeviceLoad(m_impl->device);
-		}
+		//if (m_impl->vertexBuffer->IsDeviceDirty())
+		//{
+		//	m_impl->vertexBuffer->DeviceLoad(m_impl->device);
+		//}
 
 		m_impl->DrawFrame();
 	}
@@ -206,11 +224,13 @@ namespace Oyl::Rendering::Vulkan
 		m_impl->commandBuffers.clear();
 		m_impl->commandPool.Destroy();
 
-		m_impl->vertexBuffer->DeviceUnload();
-		m_impl->vertexBuffer->Unload();
+		m_impl->vertexBuffer.Destroy();
 
-		m_impl->shader->DeviceUnload();
-		m_impl->shader->Unload();
+		//m_impl->vertexBuffer->DeviceUnload();
+		//m_impl->vertexBuffer->Unload();
+
+		//m_impl->shader->DeviceUnload();
+		//m_impl->shader->Unload();
 
 		m_impl->swapChain.Destroy();
 		m_impl->device.Destroy();
@@ -274,7 +294,7 @@ namespace Oyl::Rendering::Vulkan
 		commandBuffer.SetScissor(Vector2i::Zero(), extent);
 
 		commandBuffer.BindShader(*shader);
-		commandBuffer.BindVertexBuffer(*vertexBuffer);
+		commandBuffer.BindVertexBuffer(vertexBuffer);
 
 		commandBuffer.EndRendering(swapChain);
 		commandBuffer.End();
@@ -288,15 +308,10 @@ namespace Oyl::Rendering::Vulkan
 		if (!swapChain)
 			return;
 
-		const auto& vkDevice = device.GetVkDevice();
-		const auto& vkSwapChain = swapChain.GetVkSwapChain();
-
 		auto& drawFence = inFlightFences[frameIndex];
 		auto& presentCompleteSemaphore = presentCompleteSemaphores[frameIndex];
 
-		auto fenceResult = vkDevice.waitForFences(*drawFence.GetVkFence(), vk::True, UINT64_MAX);
-		if (fenceResult != vk::Result::eSuccess)
-			throw std::runtime_error("Failed to wait for fence!");
+		drawFence.Wait();
 
 		bool success = swapChain.AcquireNextImage(presentCompleteSemaphore, nullptr);
 		if (!success)
@@ -308,48 +323,28 @@ namespace Oyl::Rendering::Vulkan
 		auto imageIndex = swapChain.GetCurrentImageIndex();
 
 		// Only reset fences if we are going to submit work to the GPU
-		vkDevice.resetFences(*drawFence.GetVkFence());
+		drawFence.Reset();
 
 		RecordCommandBuffer();
-		//graphicsQueue.waitIdle();
 
 		auto& renderFinishedSemaphore = renderFinishedSemaphores[imageIndex];
 
-		{
-			OYL_PROFILE_SCOPE("graphicsQueue.submit");
+		auto& commandBuffer = commandBuffers[frameIndex];
 
-			auto& commandBuffer = commandBuffers[frameIndex].GetVkCommandBuffer();
+		graphicsQueue.Submit(RenderQueue::SubmitParams {
+			.commandBuffer = commandBuffer,
+			.waitSemaphore = presentCompleteSemaphore,
+			.signalSemaphore = renderFinishedSemaphore,
+			.fence = drawFence
+		});
 
-			vk::PipelineStageFlags waitDestinationStageMask = vk::PipelineStageFlagBits::eColorAttachmentOutput;
-			const vk::SubmitInfo submitInfo {
-				.waitSemaphoreCount = 1,
-				.pWaitSemaphores = &*presentCompleteSemaphore.GetVkSemaphore(),
-				.pWaitDstStageMask = &waitDestinationStageMask,
-				.commandBufferCount = 1,
-				.pCommandBuffers = &*commandBuffer,
-				.signalSemaphoreCount = 1,
-				.pSignalSemaphores = &*renderFinishedSemaphore.GetVkSemaphore()
-			};
-			device.GetVkGraphicsQueue().submit(submitInfo, *drawFence.GetVkFence());
-		}
-		{
-			OYL_PROFILE_SCOPE("graphicsQueue.presentKHR");
-			const vk::PresentInfoKHR presentInfoKHR {
-				.waitSemaphoreCount = 1,
-				.pWaitSemaphores = &*renderFinishedSemaphore.GetVkSemaphore(),
-				.swapchainCount = 1,
-				.pSwapchains = &*vkSwapChain,
-				.pImageIndices = &imageIndex
-			};
+		bool result = graphicsQueue.Present(RenderQueue::PresentParams {
+			.waitSemaphore = renderFinishedSemaphore,
+			.swapChain = swapChain
+		});
 
-			auto result = device.GetVkGraphicsQueue().presentKHR(presentInfoKHR);
-			if (result == vk::Result::eSuboptimalKHR || result == vk::Result::eErrorOutOfDateKHR)
-				swapChain.Recreate();
-			else
-			{
-				OYL_ASSERT(result == vk::Result::eSuccess);
-			}
-		}
+		if (!result)
+			swapChain.Recreate();
 
 		frameIndex = (frameIndex + 1) % MAX_FRAMES_IN_FLIGHT;
 	}

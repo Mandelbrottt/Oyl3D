@@ -1,43 +1,66 @@
-#pragma once
-
-#include <vulkan/vulkan_raii.hpp>
-
-#include <memory>
-
-#include "VulkanDevice.h"
+﻿#pragma once
 
 #include "Rendering/VertexBuffer.h"
 
+namespace vk::raii
+{
+	class Buffer;
+}
+
 namespace Oyl::Rendering::Vulkan
 {
-	class OYL_RENDERING_API VertexBufferResource : public Rendering::VertexBufferResource
+	class Device;
+	class RenderQueue;
+
+	class OYL_RENDERING_API VertexBuffer : public Rendering::VertexBuffer
 	{
 	public:
-		VertexBufferResource();
+		VertexBuffer();
+
+		struct CreateParams
+		{
+			const Device& device;
+			const RenderQueue& queue;
+
+			const byte* vertexData;
+			size_t vertexLength;
+			uint32 vertexStride;
+
+			const byte* indexData = nullptr;
+			size_t indexLength = 0;
+			size_t indexStride = sizeof(uint16);
+		};
 
 		explicit
-		VertexBufferResource(const VertexBufferOptions& a_options);
+		VertexBuffer(const CreateParams& a_params);
+
+		VertexBuffer(VertexBuffer&& a_other) noexcept;
+		VertexBuffer&
+		operator =(VertexBuffer&& a_other) noexcept;
 
 		virtual
-		~VertexBufferResource();
+		~VertexBuffer();
+
+		void
+		Destroy() override;
 
 		bool
-		Load() override;
+		IsValid() const override;
 
-		bool
-		Unload() override;
+		uint32
+		GetVertexCount() const override;
 
-		bool
-		DeviceLoad(const IDevice& a_device) override
-		{
-			return DeviceLoad(static_cast<const Device&>(a_device));
-		}
+		uint32
+		GetVertexStride() const override;
 
-		bool
-		DeviceLoad(const Device& a_device);
+		uint32
+		GetVertexDataOffset() const;
 
-		bool
-		DeviceUnload() override;
+		uint32
+		GetIndexCount() const override;
+
+		uint32
+		GetIndexStride() const override;
 
 		const vk::raii::Buffer&
 		GetVkBuffer() const;
@@ -46,6 +69,4 @@ namespace Oyl::Rendering::Vulkan
 		struct Impl;
 		std::unique_ptr<Impl> m_impl;
 	};
-
-	using VertexBuffer = ResourceHandle<VertexBufferResource>;
 }

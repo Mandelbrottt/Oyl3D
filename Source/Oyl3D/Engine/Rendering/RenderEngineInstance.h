@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Rendering/Shader.h"
-#include "Rendering/VertexBuffer.h"
+#include "Rendering/ShaderResource.h"
+#include "Rendering/VertexBufferResource.h"
 
 namespace Oyl::Rendering
 {
@@ -49,13 +49,13 @@ namespace Oyl::Rendering::Internal
 	#pragma endregion Instance State
 
 	#pragma region Resources
-		virtual
-		Shader
-		CreateShader(const ShaderOptions& a_options) = 0;
+		//virtual
+		//Shader
+		//CreateShader(const ShaderOptions& a_options) = 0;
 
-		virtual
-		VertexBuffer
-		CreateVertexBuffer(const VertexBufferOptions& a_options) = 0;
+		//virtual
+		//VertexBuffer
+		//CreateVertexBuffer(const VertexBufferOptions& a_options) = 0;
 	#pragma endregion Resources
 
 	protected:

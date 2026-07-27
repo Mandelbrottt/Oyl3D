@@ -1,80 +1,44 @@
-#pragma once
+﻿#pragma once
 
-#include <Core/Resources/ResourceHandle.h>
-
-#include "Rendering/DeviceResource.h"
+#include "DeviceObject.h"
 
 namespace Oyl::Rendering
 {
-	struct VertexBufferOptions
-	{
-		const byte* vertexData;
-		size_t vertexLength;
-		uint32 vertexStride;
+	struct VertexBufferHandle : OpaqueHandle<VertexBufferHandle> {};
 
-		const byte* indexData = nullptr;
-		size_t indexLength = 0;
-	};
-
-	class OYL_RENDERING_API VertexBufferResource : public DeviceResource<VertexBufferResource>
+	class VertexBuffer : public DeviceObject<VertexBufferHandle>
 	{
 	protected:
-		VertexBufferResource();
+		VertexBuffer() = default;
 
-		explicit
-		VertexBufferResource(const VertexBufferOptions& a_options);
+		DEFAULT_MOVE(VertexBuffer);
 
 	public:
+		NO_COPY(VertexBuffer);
+
 		virtual
-		~VertexBufferResource();
-
-		bool
-		Load() override;
-
-		bool
-		Unload() override;
-
-		uint32
-		GetVertexCount() const
-		{
-			return m_vertexCount;
-		}
-
-		uint32
-		GetVertexSpan() const
-		{
-			return m_vertexStride;
-		}
+		~VertexBuffer() = default;
 
 		void
-		SetVertexData(const byte* a_vertexData, size_t a_vertexLength, uint32 a_vertexStride);
-
-		uint32
-		GetIndexCount() const
-		{
-			return m_indexCount;
-		}
+		Destroy() override = 0;
 
 		bool
-		HasIndexData() const;
+		IsValid() const override = 0;
 
-		void
-		SetIndexData(const byte* a_indexData, size_t a_indexLength);
+		virtual
+		uint32
+		GetVertexCount() const = 0;
 
-		size_t
-		GetVertexDataOffset() const;
+		virtual
+		uint32
+		GetVertexStride() const = 0;
 
-	protected:
-		uint32 m_vertexCount = 0;
-		uint32 m_vertexStride = 0;
-		std::vector<byte> m_vertexData;
+		virtual
+		uint32
+		GetIndexCount() const = 0;
 
-		uint32 m_indexCount = 0;
-		std::vector<byte> m_indexData;
-
-		bool m_hasIndexData = false;
-		size_t m_vertexDataOffset = 0;
+		virtual
+		uint32
+		GetIndexStride() const = 0;
 	};
-
-	using VertexBuffer = ResourceHandle<VertexBufferResource>;
 }
