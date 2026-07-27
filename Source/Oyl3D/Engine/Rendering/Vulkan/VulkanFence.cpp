@@ -35,4 +35,23 @@ namespace Oyl::Rendering::Vulkan
 
 		m_fence.clear();
 	}
+
+	void
+	Fence::Reset()
+	{
+		const auto& vkFence = GetVkFence();
+		const auto& vkDevice = vkFence.getDevice();
+
+		vkDevice.resetFences(*vkFence);
+	}
+
+	bool
+	Fence::Wait(uint64 a_timeout)
+	{
+		const auto& vkFence = GetVkFence();
+		const auto& vkDevice = vkFence.getDevice();
+
+		auto result = vkDevice.waitForFences(*vkFence, vk::True, a_timeout);
+		return result != vk::Result::eSuccess;
+	}
 }

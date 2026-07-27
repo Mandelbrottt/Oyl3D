@@ -26,6 +26,11 @@ namespace Oyl::Rendering
 			return GetHandleImpl();
 		}
 
+		operator SemaphoreHandle() const
+		{
+			return GetHandle();
+		}
+
 	protected:
 		virtual
 		SemaphoreHandle

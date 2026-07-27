@@ -46,6 +46,11 @@ namespace Oyl::Rendering::Vulkan
 			return *m_semaphore;
 		}
 
+		operator SemaphoreHandle() const
+		{
+			return GetHandle();
+		}
+
 		const vk::raii::Semaphore&
 		GetVkSemaphore() const
 		{

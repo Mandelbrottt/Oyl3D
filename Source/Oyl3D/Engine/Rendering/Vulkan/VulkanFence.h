@@ -46,6 +46,17 @@ namespace Oyl::Rendering::Vulkan
 			return *m_fence;
 		}
 
+		operator FenceHandle() const
+		{
+			return GetHandle();
+		}
+
+		void
+		Reset() override;
+
+		bool
+		Wait(uint64 a_timeout = std::numeric_limits<uint64>::max()) override;
+
 		const vk::raii::Fence&
 		GetVkFence() const
 		{

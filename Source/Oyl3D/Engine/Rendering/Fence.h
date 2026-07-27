@@ -26,6 +26,19 @@ namespace Oyl::Rendering
 			return GetHandleImpl();
 		}
 
+		operator FenceHandle() const
+		{
+			return GetHandle();
+		}
+
+		virtual
+		void
+		Reset() = 0;
+
+		virtual
+		bool
+		Wait(uint64 a_timeout = std::numeric_limits<uint64>::max()) = 0;
+
 	protected:
 		virtual
 		FenceHandle
