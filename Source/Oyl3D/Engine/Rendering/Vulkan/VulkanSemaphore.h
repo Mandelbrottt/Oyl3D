@@ -2,12 +2,12 @@
 
 #include <vulkan/vulkan_raii.hpp>
 
-#include "VulkanDevice.h"
-
 #include "Rendering/Semaphore.h"
 
 namespace Oyl::Rendering::Vulkan
 {
+	class Device;
+
 	using SemaphoreHandle = OpaqueHandleConvertible<SemaphoreHandle, vk::Semaphore>;
 
 	class OYL_RENDERING_API Semaphore : public ISemaphore

@@ -23,7 +23,7 @@ namespace Oyl::Rendering::Vulkan
 
 		vk::CommandPoolCreateInfo poolInfo {
 			.flags = vk::CommandPoolCreateFlagBits::eResetCommandBuffer,
-			.queueFamilyIndex = device.GetVkGraphicsQueueIndex(),
+			.queueFamilyIndex = device.GetVkGraphicsQueueFamilyIndex(),
 		};
 		m_impl->commandPool = vk::raii::CommandPool(device.GetVkDevice(), poolInfo);
 	}

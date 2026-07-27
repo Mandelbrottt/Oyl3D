@@ -3,14 +3,15 @@
 #include <Core/UniqueHandle.h>
 #include <Core/Math/Vector.h>
 
-#include "CommandPool.h"
 #include "SwapChain.h"
-
-#include "Rendering/Shader.h"
-#include "Rendering/VertexBuffer.h"
 
 namespace Oyl::Rendering
 {
+	class ICommandPool;
+	class ISwapChain;
+	class ShaderResource;
+	class VertexBuffer;
+
 	class ICommandBuffer : public IUniqueHandle
 	{
 	protected:
@@ -54,7 +55,7 @@ namespace Oyl::Rendering
 
 		virtual
 		void
-		BindVertexBuffer(const VertexBufferResource& a_shader) const noexcept = 0;
+		BindVertexBuffer(const VertexBuffer& a_buffer) const noexcept = 0;
 
 	protected:
 		virtual

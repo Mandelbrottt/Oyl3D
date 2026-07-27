@@ -2,12 +2,12 @@
 
 #include <vulkan/vulkan_raii.hpp>
 
-#include "VulkanDevice.h"
-
 #include "Rendering/Fence.h"
 
 namespace Oyl::Rendering::Vulkan
 {
+	class Device;
+
 	using FenceHandle = OpaqueHandleConvertible<FenceHandle, vk::Fence>;
 
 	class OYL_RENDERING_API Fence : public IFence

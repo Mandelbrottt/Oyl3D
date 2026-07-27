@@ -1,5 +1,7 @@
 ﻿#include "VulkanFence.h"
 
+#include "VulkanDevice.h"
+
 namespace Oyl::Rendering::Vulkan
 {
 	Fence::Fence(const Device& a_device)

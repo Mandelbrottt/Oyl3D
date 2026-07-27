@@ -1,16 +1,29 @@
 ﻿#pragma once
 
-#include <vulkan/vulkan_raii.hpp>
-
 #include "VulkanCommandPool.h"
-#include "VulkanShader.h"
-#include "VulkanSwapChain.h"
-#include "VulkanVertexBuffer.h"
 
 #include "Rendering/CommandBuffer.h"
 
+namespace vk::raii
+{
+	class CommandBuffer;
+}
+
+namespace Oyl::Rendering
+{
+	class ISwapChain;
+	class VertexBuffer;
+	class ShaderResource;
+}
+
 namespace Oyl::Rendering::Vulkan
 {
+	class CommandPool;
+	class Device;
+	class ShaderResource;
+	class SwapChain;
+	class VertexBuffer;
+
 	class OYL_RENDERING_API CommandBuffer : public ICommandBuffer
 	{
 	public:
@@ -48,19 +61,13 @@ namespace Oyl::Rendering::Vulkan
 		Begin() const noexcept override;
 
 		void
-		BeginRendering(const ISwapChain& a_swapChain) const noexcept override
-		{
-			BeginRendering(static_cast<const SwapChain&>(a_swapChain));
-		}
+		BeginRendering(const ISwapChain& a_swapChain) const noexcept override;
 
 		void
 		BeginRendering(const SwapChain& a_swapChain) const noexcept;
 
 		void
-		EndRendering(const ISwapChain& a_swapChain) const noexcept override
-		{
-			EndRendering(static_cast<const SwapChain&>(a_swapChain));
-		}
+		EndRendering(const ISwapChain& a_swapChain) const noexcept override;
 
 		void
 		EndRendering(const SwapChain& a_swapChain) const noexcept;
@@ -75,22 +82,16 @@ namespace Oyl::Rendering::Vulkan
 		SetScissor(Vector2i a_offset, Vector2u a_size) const noexcept override;
 
 		void
-		BindShader(const Rendering::ShaderResource& a_shader) const noexcept override
-		{
-			return BindShader(static_cast<const ShaderResource&>(a_shader));
-		}
+		BindShader(const Rendering::ShaderResource& a_shader) const noexcept override;
 
 		void
 		BindShader(const ShaderResource& a_shader) const noexcept;
 
 		void
-		BindVertexBuffer(const Rendering::VertexBufferResource& a_vertexBuffer) const noexcept override
-		{
-			return BindVertexBuffer(static_cast<const VertexBufferResource&>(a_vertexBuffer));
-		}
+		BindVertexBuffer(const Rendering::VertexBuffer& a_vertexBuffer) const noexcept override;
 
 		void
-		BindVertexBuffer(const VertexBufferResource& a_vertexBuffer) const noexcept;
+		BindVertexBuffer(const VertexBuffer& a_vertexBuffer) const noexcept;
 
 	private:
 		struct Impl;

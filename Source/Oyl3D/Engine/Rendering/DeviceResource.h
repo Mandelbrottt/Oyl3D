@@ -10,9 +10,15 @@ namespace Oyl::Rendering
 	class DeviceResource : public Resource<TResource>
 	{
 	protected:
-		DeviceResource() {}
+		DeviceResource() = default;
+
+		DEFAULT_COPY(DeviceResource);
+		DEFAULT_MOVE(DeviceResource);
 
 	public:
+		virtual
+		~DeviceResource() = default;
+
 		bool
 		IsDeviceLoaded() const
 		{

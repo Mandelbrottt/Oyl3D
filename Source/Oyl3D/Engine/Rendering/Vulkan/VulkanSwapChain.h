@@ -2,14 +2,20 @@
 
 #include <vulkan/vulkan_raii.hpp>
 
-#include "VulkanDevice.h"
 #include "VulkanFence.h"
 #include "VulkanSemaphore.h"
 
 #include "Rendering/SwapChain.h"
 
+namespace Oyl
+{
+	class IWindow;
+}
+
 namespace Oyl::Rendering::Vulkan
 {
+	class Device;
+
 	class OYL_RENDERING_API SwapChain : public ISwapChain
 	{
 	public:

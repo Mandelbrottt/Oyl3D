@@ -1,5 +1,10 @@
 ﻿#include "VulkanCommandBuffer.h"
 
+#include "VulkanDevice.h"
+#include "VulkanShaderResource.h"
+#include "VulkanSwapChain.h"
+#include "VulkanVertexBuffer.h"
+
 namespace Oyl::Rendering::Vulkan
 {
 	struct CommandBuffer::Impl
@@ -95,6 +100,12 @@ namespace Oyl::Rendering::Vulkan
 	}
 
 	void
+	CommandBuffer::BeginRendering(const ISwapChain& a_swapChain) const noexcept
+	{
+		BeginRendering(static_cast<const SwapChain&>(a_swapChain));
+	}
+
+	void
 	CommandBuffer::BeginRendering(const SwapChain& a_swapChain) const noexcept
 	{
 		OYL_PROFILE_FUNCTION();
@@ -138,6 +149,12 @@ namespace Oyl::Rendering::Vulkan
 		OYL_PROFILE_FUNCTION();
 
 		m_impl->commandBuffer.end();
+	}
+
+	void
+	CommandBuffer::EndRendering(const ISwapChain& a_swapChain) const noexcept
+	{
+		EndRendering(static_cast<const SwapChain&>(a_swapChain));
 	}
 
 	void
@@ -197,6 +214,12 @@ namespace Oyl::Rendering::Vulkan
 	}
 
 	void
+	CommandBuffer::BindShader(const Rendering::ShaderResource& a_shader) const noexcept
+	{
+		return BindShader(static_cast<const ShaderResource&>(a_shader));
+	}
+
+	void
 	CommandBuffer::BindShader(const ShaderResource& a_shader) const noexcept
 	{
 		OYL_PROFILE_FUNCTION();
@@ -205,14 +228,20 @@ namespace Oyl::Rendering::Vulkan
 	}
 
 	void
-	CommandBuffer::BindVertexBuffer(const VertexBufferResource& a_vertexBuffer) const noexcept
+	CommandBuffer::BindVertexBuffer(const Rendering::VertexBuffer& a_vertexBuffer) const noexcept
+	{
+		return BindVertexBuffer(static_cast<const VertexBuffer&>(a_vertexBuffer));
+	}
+
+	void
+	CommandBuffer::BindVertexBuffer(const VertexBuffer& a_vertexBuffer) const noexcept
 	{
 		OYL_PROFILE_FUNCTION();
 
 		const auto& vkCommandBuffer = m_impl->commandBuffer;
 		const auto& vkVertexBuffer = a_vertexBuffer.GetVkBuffer();
 
-		if (a_vertexBuffer.HasIndexData())
+		if (a_vertexBuffer.GetIndexCount() != 0)
 		{
 			vkCommandBuffer.bindIndexBuffer(*vkVertexBuffer, 0, vk::IndexType::eUint16);
 			vkCommandBuffer.bindVertexBuffers(0, *vkVertexBuffer, { a_vertexBuffer.GetVertexDataOffset() });

@@ -50,8 +50,7 @@ namespace Oyl::Rendering::Vulkan
 		vk::raii::PhysicalDevice physicalDevice = nullptr;
 		vk::raii::Device device = nullptr;
 
-		vk::raii::Queue graphicsQueue = nullptr;
-		uint32 graphicsQueueIndex = 0;
+		uint32 graphicsQueueFamilyIndex = 0;
 
 		void
 		CreateInstance();
@@ -122,8 +121,7 @@ namespace Oyl::Rendering::Vulkan
 		if (!IsValid())
 			return;
 
-		m_impl->graphicsQueueIndex = 0;
-		m_impl->graphicsQueue = nullptr;
+		m_impl->graphicsQueueFamilyIndex = 0;
 		m_impl->device = nullptr;
 		m_impl->physicalDevice = nullptr;
 		m_impl->requiredDeviceExtensions.clear();
@@ -162,16 +160,10 @@ namespace Oyl::Rendering::Vulkan
 		return m_impl->surface;
 	}
 
-	const vk::raii::Queue&
-	Device::GetVkGraphicsQueue() const
-	{
-		return m_impl->graphicsQueue;
-	}
-
 	uint32
-	Device::GetVkGraphicsQueueIndex() const
+	Device::GetVkGraphicsQueueFamilyIndex() const
 	{
-		return m_impl->graphicsQueueIndex;
+		return m_impl->graphicsQueueFamilyIndex;
 	}
 
 	void
@@ -368,18 +360,18 @@ namespace Oyl::Rendering::Vulkan
 		std::vector<vk::QueueFamilyProperties> queueFamilyProperties = physicalDevice.getQueueFamilyProperties();
 
 		// get the first index into queueFamilyProperties which supports both graphics and present
-		graphicsQueueIndex = ~0u;
+		graphicsQueueFamilyIndex = ~0u;
 		for (uint32 qfpIndex = 0; qfpIndex < queueFamilyProperties.size(); qfpIndex++)
 		{
 			if ((queueFamilyProperties[qfpIndex].queueFlags & vk::QueueFlagBits::eGraphics) &&
 			    physicalDevice.getSurfaceSupportKHR(qfpIndex, *surface))
 			{
 				// found a queue family that supports both graphics and present
-				graphicsQueueIndex = qfpIndex;
+				graphicsQueueFamilyIndex = qfpIndex;
 				break;
 			}
 		}
-		if (graphicsQueueIndex == ~0u)
+		if (graphicsQueueFamilyIndex == ~0u)
 		{
 			throw std::runtime_error("Could not find a queue for graphics and present -> terminating");
 		}
@@ -394,7 +386,7 @@ namespace Oyl::Rendering::Vulkan
 
 		float queuePriority = 0.5f;
 		vk::DeviceQueueCreateInfo deviceQueueCreateInfo {
-			.queueFamilyIndex = graphicsQueueIndex,
+			.queueFamilyIndex = graphicsQueueFamilyIndex,
 			.queueCount = 1,
 			.pQueuePriorities = &queuePriority,
 		};
@@ -415,7 +407,7 @@ namespace Oyl::Rendering::Vulkan
 		};
 
 		device = vk::raii::Device(physicalDevice, deviceCreateInfo);
-		graphicsQueue = vk::raii::Queue(device, graphicsQueueIndex, 0);
+		//graphicsQueue = vk::raii::Queue(device, graphicsQueueFamilyIndex, 0);
 	}
 }
 

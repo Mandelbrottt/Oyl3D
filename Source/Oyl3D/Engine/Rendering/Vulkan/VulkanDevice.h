@@ -1,9 +1,13 @@
 ﻿#pragma once
 
-#include <vulkan/vulkan_raii.hpp>
-
 #include "Rendering/Device.h"
-#include "Rendering/Window.h"
+
+namespace vk::raii
+{
+	class Device;
+	class PhysicalDevice;
+	class SurfaceKHR;
+}
 
 namespace Oyl::Rendering::Vulkan
 {
@@ -48,11 +52,8 @@ namespace Oyl::Rendering::Vulkan
 		const vk::raii::SurfaceKHR&
 		GetVkSurface() const;
 
-		const vk::raii::Queue&
-		GetVkGraphicsQueue() const;
-
 		uint32
-		GetVkGraphicsQueueIndex() const;
+		GetVkGraphicsQueueFamilyIndex() const;
 
 	private:
 		struct Impl;

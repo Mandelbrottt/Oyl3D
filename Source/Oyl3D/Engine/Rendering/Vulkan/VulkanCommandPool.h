@@ -1,8 +1,11 @@
 ﻿#pragma once
 
-#include <vulkan/vulkan_raii.hpp>
-
 #include "Rendering/CommandPool.h"
+
+namespace vk::raii
+{
+	class CommandPool;
+}
 
 namespace Oyl::Rendering::Vulkan
 {

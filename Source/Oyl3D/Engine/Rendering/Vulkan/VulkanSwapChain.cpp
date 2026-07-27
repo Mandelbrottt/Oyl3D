@@ -1,5 +1,12 @@
 ﻿#include "VulkanSwapChain.h"
 
+#include <Core/Math/Vector.h>
+
+#include "VulkanDevice.h"
+#include "VulkanRenderQueue.h"
+
+#include "Rendering/Window.h"
+
 namespace
 {
 	vk::SurfaceFormatKHR

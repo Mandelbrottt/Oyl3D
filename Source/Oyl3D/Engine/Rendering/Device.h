@@ -1,6 +1,11 @@
 #pragma once
 
-#include "Rendering/Window.h"
+#include <Core/UniqueHandle.h>
+
+namespace Oyl
+{
+	class IWindow;
+}
 
 namespace Oyl::Rendering
 {
