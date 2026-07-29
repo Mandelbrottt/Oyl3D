@@ -17,8 +17,8 @@ namespace Oyl::Reflection
 	bool
 	operator ==(TypeId a_lhs, TypeId a_rhs)
 	{
-		auto lhs = static_cast<Traits::UnderlyingType_T<TypeId>>(a_lhs);
-		auto rhs = static_cast<Traits::UnderlyingType_T<TypeId>>(a_rhs);
+		auto lhs = static_cast<Traits::TUnderlyingType<TypeId>>(a_lhs);
+		auto rhs = static_cast<Traits::TUnderlyingType<TypeId>>(a_rhs);
 
 		return lhs == rhs;
 	}
@@ -32,28 +32,28 @@ namespace Oyl::Reflection
 
 	constexpr
 	bool
-	operator ==(TypeId a_lhs, Traits::UnderlyingType_T<TypeId> a_rhs)
+	operator ==(TypeId a_lhs, Traits::TUnderlyingType<TypeId> a_rhs)
 	{
 		return a_lhs == static_cast<TypeId>(a_rhs);
 	}
 
 	constexpr
 	bool
-	operator !=(TypeId a_lhs, Traits::UnderlyingType_T<TypeId> a_rhs)
+	operator !=(TypeId a_lhs, Traits::TUnderlyingType<TypeId> a_rhs)
 	{
 		return !(a_lhs == a_rhs);
 	}
 
 	constexpr
 	bool
-	operator ==(Traits::UnderlyingType_T<TypeId> a_lhs, TypeId a_rhs)
+	operator ==(Traits::TUnderlyingType<TypeId> a_lhs, TypeId a_rhs)
 	{
 		return a_rhs == a_lhs;
 	}
 
 	constexpr
 	bool
-	operator !=(Traits::UnderlyingType_T<TypeId> a_lhs, TypeId a_rhs)
+	operator !=(Traits::TUnderlyingType<TypeId> a_lhs, TypeId a_rhs)
 	{
 		return !(a_lhs == a_rhs);
 	}
@@ -107,7 +107,7 @@ namespace Oyl::Reflection
 	{
 		using TRaw = std::decay_t<Traits::RemovePointer_T<T>>;
 
-		using TUnderlying = Traits::UnderlyingType_T<TypeId>;
+		using TUnderlying = Traits::TUnderlyingType<TypeId>;
 
 		// We use a hash instead of an incrementing counter to determine types because calls from different
 		// compilation targets (libraries) would result in different values with the same type at some levels

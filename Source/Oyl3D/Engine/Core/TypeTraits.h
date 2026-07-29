@@ -13,7 +13,7 @@ namespace Oyl::Traits
 	};
 
 	template<typename T>
-	using AddConst_T = typename AddConst<T>::type;
+	using TAddConst = typename AddConst<T>::type;
 
 	template<typename T>
 	struct RemoveConst
@@ -22,9 +22,18 @@ namespace Oyl::Traits
 	};
 
 	template<typename T>
-	using RemoveConst_T = typename RemoveConst<T>::type;
+	using TRemoveConst = typename RemoveConst<T>::type;
 
-#pragma endregion
+#pragma endregion Base
+#pragma region Types
+
+	template<typename T>
+	struct IsEnum : std::is_enum<T> {};
+
+	template<typename T>
+	concept Enum = IsEnum<T>::value;
+
+#pragma endregion Types
 #pragma region Pointers
 
 	template<typename T>
@@ -231,7 +240,7 @@ namespace Oyl::Traits
 	};
 
 	template<typename TClass, typename TReturn, typename... TArgs>
-	using MemberFunctionWithSignature_T = typename MemberFunctionWithSignature<TClass, TReturn(TArgs...)>::type;
+	using TMemberFunctionWithSignature = typename MemberFunctionWithSignature<TClass, TReturn(TArgs...)>::type;
 
 #pragma endregion Member Functions
 
@@ -242,5 +251,5 @@ namespace Oyl::Traits
 	};
 
 	template<typename T>
-	using UnderlyingType_T = typename UnderlyingType<T>::type;
+	using TUnderlyingType = typename UnderlyingType<T>::type;
 }
