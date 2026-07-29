@@ -135,10 +135,10 @@ namespace Oyl::Rendering::Vulkan
 			m_impl->device,
 			{
 				.vertexData = verticesBuffer,
-				.vertexLength = vertices.size() * sizeof(decltype(vertices)::value_type),
+				.vertexLength = (uint32) (vertices.size() * sizeof(decltype(vertices)::value_type)),
 				.vertexStride = sizeof(decltype(vertices)::value_type),
 				.indexData = indicesBuffer,
-				.indexLength = indices.size() * sizeof(decltype(indices)::value_type)
+				.indexLength = (uint32) (indices.size() * sizeof(decltype(indices)::value_type))
 			}
 		);
 

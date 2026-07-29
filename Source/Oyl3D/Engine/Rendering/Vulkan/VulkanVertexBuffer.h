@@ -19,12 +19,12 @@ namespace Oyl::Rendering::Vulkan
 		struct CreateParams
 		{
 			const byte* vertexData;
-			size_t vertexLength;
+			uint32 vertexLength;
 			uint32 vertexStride;
 
 			const byte* indexData = nullptr;
-			size_t indexLength = 0;
-			size_t indexStride = sizeof(uint16);
+			uint32 indexLength = 0;
+			uint32 indexStride = sizeof(uint16);
 		};
 
 		explicit

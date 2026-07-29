@@ -94,6 +94,8 @@ namespace Oyl::Rendering::Vulkan
 		vk::PipelineStageFlags2 a_dstStageMask
 	)
 	{
+		OYL_PROFILE_FUNCTION();
+
 		vk::ImageMemoryBarrier2 barrier = {
 			.srcStageMask = a_srcStageMask,
 			.srcAccessMask = a_srcAccessMask,
@@ -183,6 +185,8 @@ namespace Oyl::Rendering::Vulkan
 	void
 	Image::Impl::CreateImage(const Device& a_device, const CreateParams& a_params)
 	{
+		OYL_PROFILE_FUNCTION();
+
 		auto vkUsage = a_params.vkUsage;
 		auto vkInitialLayout = vk::ImageLayout::eUndefined;
 		if (a_params.pixelData && a_params.pixelLength != 0)
@@ -222,6 +226,8 @@ namespace Oyl::Rendering::Vulkan
 	void
 	Image::Impl::CreateImageView(const Device& a_device, const CreateParams& a_params)
 	{
+		OYL_PROFILE_FUNCTION();
+
 		vk::ImageViewCreateInfo imageViewCreateInfo {
 			.image = vkImage,
 			.viewType = vk::ImageViewType::e2D,
@@ -238,6 +244,8 @@ namespace Oyl::Rendering::Vulkan
 	void
 	Image::Impl::CreateStagingBuffer(const Device& a_device, const CreateParams& a_params)
 	{
+		OYL_PROFILE_FUNCTION();
+
 		OYL_ASSERT(a_params.pixelData && a_params.pixelLength != 0);
 
 		stagingBuffer = StagingBuffer(

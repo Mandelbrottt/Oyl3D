@@ -70,6 +70,8 @@ namespace Oyl::Rendering::Vulkan
 	bool
 	StagingBuffer::CopyMemory(const void* a_src, uint32 a_size)
 	{
+		OYL_PROFILE_FUNCTION();
+
 		if (m_impl->size != a_size)
 			return false;
 
@@ -122,6 +124,8 @@ namespace Oyl::Rendering::Vulkan
 	void
 	StagingBuffer::Impl::CreateBuffer(const Device& a_device, const CreateParams& a_params)
 	{
+		OYL_PROFILE_FUNCTION();
+
 		const auto& device = a_device.GetVkDevice();
 		const auto& physicalDevice = a_device.GetVkPhysicalDevice();
 
