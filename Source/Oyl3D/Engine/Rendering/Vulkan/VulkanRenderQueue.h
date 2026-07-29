@@ -16,7 +16,7 @@ namespace Oyl::Rendering::Vulkan
 	class CommandBuffer;
 	class SwapChain;
 
-	class OYL_RENDERING_API RenderQueue : public IRenderQueue
+	class OYL_RENDERING_API RenderQueue : public ICommandQueue
 	{
 	public:
 		RenderQueue();
@@ -70,10 +70,10 @@ namespace Oyl::Rendering::Vulkan
 
 	protected:
 		void
-		Submit(const IRenderQueue::SubmitParams& a_params) override;
+		Submit(const ICommandQueue::SubmitParams& a_params) override;
 
 		void
-		Present(const IRenderQueue::PresentParams& a_params) override;
+		Present(const ICommandQueue::PresentParams& a_params) override;
 
 	private:
 		struct Impl;

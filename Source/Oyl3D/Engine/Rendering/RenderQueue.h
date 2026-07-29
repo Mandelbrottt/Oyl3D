@@ -1,5 +1,6 @@
 ﻿#pragma once
 
+#include <Core/EnumFlags.h>
 #include <Core/UniqueHandle.h>
 
 #include "Fence.h"
@@ -10,18 +11,18 @@ namespace Oyl::Rendering
 	class ICommandBuffer;
 	class ISwapChain;
 
-	class IRenderQueue : public IUniqueHandle
+	class ICommandQueue : public IUniqueHandle
 	{
 	protected:
-		IRenderQueue() = default;
+		ICommandQueue() = default;
 
-		DEFAULT_MOVE(IRenderQueue);
+		DEFAULT_MOVE(ICommandQueue);
 
 	public:
-		NO_COPY(IRenderQueue);
+		NO_COPY(ICommandQueue);
 
 		virtual
-		~IRenderQueue() = default;
+		~ICommandQueue() = default;
 
 		struct SubmitParams
 		{

@@ -65,14 +65,19 @@ namespace Oyl::Rendering::Vulkan
 		GetVkBuffer() const;
 
 		VertexBufferHandle
-		GetHandle() const
+		GetHandle() const;
+
+		operator VertexBufferHandle() const
 		{
-			return GetHandleImpl();
+			return GetHandle();
 		}
 
 	protected:
 		Rendering::VertexBufferHandle
-		GetHandleImpl() const override;
+		GetHandleImpl() const override
+		{
+			return GetHandle();
+		}
 
 	private:
 		struct Impl;

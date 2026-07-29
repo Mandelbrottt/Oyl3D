@@ -69,7 +69,7 @@ namespace Oyl::Rendering::Vulkan
 	}
 
 	void
-	RenderQueue::Submit(const IRenderQueue::SubmitParams& a_params)
+	RenderQueue::Submit(const ICommandQueue::SubmitParams& a_params)
 	{
 		Submit(
 			SubmitParams {
@@ -105,7 +105,7 @@ namespace Oyl::Rendering::Vulkan
 	}
 
 	void
-	RenderQueue::Present(const IRenderQueue::PresentParams& a_params)
+	RenderQueue::Present(const ICommandQueue::PresentParams& a_params)
 	{
 		Present(
 			PresentParams {

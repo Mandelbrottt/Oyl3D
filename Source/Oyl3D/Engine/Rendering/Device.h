@@ -2,6 +2,8 @@
 
 #include <Core/UniqueHandle.h>
 
+#include "RenderQueue.h"
+
 namespace Oyl
 {
 	class IWindow;
@@ -31,5 +33,8 @@ namespace Oyl::Rendering
 		virtual
 		const IWindow*
 		GetWindow() const = 0;
+
+		std::unique_ptr<ICommandQueue>
+		CreateRenderQueue(const ICommandQueue::CreateParams& a_params)
 	};
 }
