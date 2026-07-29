@@ -11,8 +11,22 @@ namespace Oyl::Rendering
 	class ICommandBuffer;
 	class ISwapChain;
 
+	enum class CommandQueueFlagBits : uint32
+	{
+		Graphics = 1 << 0,
+		Compute = 1 << 1,
+		Transfer = 1 << 2,
+	};
+
+	OYL_ENUM_CLASS_BITWISE_OPERATIONS(CommandQueueFlagBits)
+
+	using CommandQueueFlags = EnumFlags<CommandQueueFlagBits>;
+
 	class ICommandQueue : public IUniqueHandle
 	{
+	public:
+		struct CreateParams {};
+
 	protected:
 		ICommandQueue() = default;
 

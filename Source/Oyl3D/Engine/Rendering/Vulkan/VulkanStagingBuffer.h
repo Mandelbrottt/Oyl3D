@@ -17,15 +17,15 @@ namespace Oyl::Rendering::Vulkan
 
 		struct CreateParams
 		{
-			const Device& device;
+			const byte* pData = nullptr;
 
-			uint32 size;
+			uint32 dataLength;
 			vk::BufferUsageFlags vkUsage;
 			vk::MemoryPropertyFlags vkProperties;
 		};
 
 		explicit
-		StagingBuffer(const CreateParams& a_params);
+		StagingBuffer(const Device& a_device, const CreateParams& a_params);
 
 		StagingBuffer(StagingBuffer&& a_other) noexcept;
 		StagingBuffer&

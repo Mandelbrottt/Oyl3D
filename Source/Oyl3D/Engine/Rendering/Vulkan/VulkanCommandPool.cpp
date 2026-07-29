@@ -14,18 +14,18 @@ namespace Oyl::Rendering::Vulkan
 	CommandPool::CommandPool()
 		: m_impl(nullptr) {}
 
-	CommandPool::CommandPool(const CreateParams& a_params)
+	CommandPool::CommandPool(const Device& a_device, const CreateParams& a_params)
 		: m_impl(std::make_unique<Impl>())
 	{
 		OYL_PROFILE_FUNCTION();
 
-		const auto& device = a_params.device;
+		auto& graphicsQueue = *a_device.GetCommandQueue(a_params.commandQueueFlags);
 
 		vk::CommandPoolCreateInfo poolInfo {
 			.flags = vk::CommandPoolCreateFlagBits::eResetCommandBuffer,
-			.queueFamilyIndex = device.GetVkGraphicsQueueFamilyIndex(),
+			.queueFamilyIndex = graphicsQueue.GetVkQueueFamilyIndex(),
 		};
-		m_impl->commandPool = vk::raii::CommandPool(device.GetVkDevice(), poolInfo);
+		m_impl->commandPool = vk::raii::CommandPool(a_device.GetVkDevice(), poolInfo);
 	}
 
 	CommandPool::CommandPool(CommandPool&& a_other) noexcept

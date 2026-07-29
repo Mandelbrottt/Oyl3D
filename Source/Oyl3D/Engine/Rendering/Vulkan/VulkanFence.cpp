@@ -69,10 +69,4 @@ namespace Oyl::Rendering::Vulkan
 		auto result = vkDevice.waitForFences(*vkFence, vk::True, a_timeout);
 		return result != vk::Result::eSuccess;
 	}
-
-	FenceHandle
-	Fence::GetHandle() const
-	{
-		return *;
-	}
 }

@@ -12,19 +12,21 @@ namespace Oyl::Rendering::Vulkan
 		uint32 size;
 
 		void
-		CreateBuffer(const CreateParams& a_params);
+		CreateBuffer(const Device& a_device, const CreateParams& a_params);
 	};
 
 	StagingBuffer::StagingBuffer()
 		: m_impl(nullptr) {}
 
-	StagingBuffer::StagingBuffer(const CreateParams& a_params)
+	StagingBuffer::StagingBuffer(const Device& a_device, const CreateParams& a_params)
 		: m_impl(std::make_unique<Impl>())
 	{
 		OYL_PROFILE_FUNCTION();
 
-		m_impl->size = a_params.size;
-		m_impl->CreateBuffer(a_params);
+		m_impl->CreateBuffer(a_device, a_params);
+
+		if (a_params.pData)
+			StagingBuffer::CopyMemory(a_params.pData, m_impl->size);
 	}
 
 	StagingBuffer::StagingBuffer(StagingBuffer&& a_other) noexcept
@@ -118,17 +120,25 @@ namespace Oyl::Rendering::Vulkan
 	}
 
 	void
-	StagingBuffer::Impl::CreateBuffer(const CreateParams& a_params)
+	StagingBuffer::Impl::CreateBuffer(const Device& a_device, const CreateParams& a_params)
 	{
-		const auto& device = a_params.device.GetVkDevice();
-		const auto& physicalDevice = a_params.device.GetVkPhysicalDevice();
+		const auto& device = a_device.GetVkDevice();
+		const auto& physicalDevice = a_device.GetVkPhysicalDevice();
+
+		auto& graphicsQueue = *a_device.GetCommandQueue(CommandQueueFlagBits::Graphics);
+		auto& transferQueue = *a_device.GetCommandQueue(CommandQueueFlagBits::Transfer);
+
+		uint32 indexFamilies[2] { graphicsQueue.GetVkQueueFamilyIndex(), transferQueue.GetVkQueueFamilyIndex() };
 
 		vk::BufferCreateInfo bufferInfo {
-			.size = a_params.size,
+			.size = a_params.dataLength,
 			.usage = a_params.vkUsage,
-			.sharingMode = vk::SharingMode::eExclusive
+			.sharingMode = vk::SharingMode::eConcurrent,
+			.queueFamilyIndexCount = (uint32) std::size(indexFamilies),
+			.pQueueFamilyIndices = indexFamilies,
 		};
 		vkBuffer = vk::raii::Buffer(device, bufferInfo);
+		size = a_params.dataLength;
 
 		vk::MemoryRequirements memRequirements = vkBuffer.getMemoryRequirements();
 		vk::MemoryAllocateInfo allocInfo {

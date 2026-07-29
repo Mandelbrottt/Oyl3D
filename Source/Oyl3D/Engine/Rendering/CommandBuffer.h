@@ -7,6 +7,7 @@
 
 namespace Oyl::Rendering
 {
+	class RenderTarget;
 	class ICommandPool;
 	class ISwapChain;
 	class Shader;
@@ -31,7 +32,7 @@ namespace Oyl::Rendering
 
 		virtual
 		void
-		BeginRendering(const ISwapChain& a_swapChain) const noexcept = 0;
+		BeginRendering(const RenderTarget& a_renderTarget) const noexcept = 0;
 
 		virtual
 		void
@@ -39,7 +40,7 @@ namespace Oyl::Rendering
 
 		virtual
 		void
-		EndRendering(const ISwapChain& a_swapChain) const noexcept = 0;
+		EndRendering() const noexcept = 0;
 
 		virtual
 		void

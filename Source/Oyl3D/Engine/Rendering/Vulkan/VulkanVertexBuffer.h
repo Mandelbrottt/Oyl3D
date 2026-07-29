@@ -7,7 +7,7 @@
 namespace Oyl::Rendering::Vulkan
 {
 	class Device;
-	class RenderQueue;
+	class CommandQueue;
 
 	using VertexBufferHandle = OpaqueHandleConvertible<VertexBufferHandle, vk::Buffer>;
 
@@ -18,9 +18,6 @@ namespace Oyl::Rendering::Vulkan
 
 		struct CreateParams
 		{
-			const Device& device;
-			const RenderQueue& queue;
-
 			const byte* vertexData;
 			size_t vertexLength;
 			uint32 vertexStride;
@@ -31,7 +28,7 @@ namespace Oyl::Rendering::Vulkan
 		};
 
 		explicit
-		VertexBuffer(const CreateParams& a_params);
+		VertexBuffer(const Device& a_device, const CreateParams& a_params);
 
 		VertexBuffer(VertexBuffer&& a_other) noexcept;
 		VertexBuffer&

@@ -1,9 +1,12 @@
 ﻿#include "VulkanCommandBuffer.h"
 
 #include "VulkanDevice.h"
+#include "VulkanImage.h"
 #include "VulkanShader.h"
 #include "VulkanSwapChain.h"
 #include "VulkanVertexBuffer.h"
+
+#include "Rendering/RenderTarget.h"
 
 namespace Oyl::Rendering::Vulkan
 {
@@ -17,7 +20,7 @@ namespace Oyl::Rendering::Vulkan
 	CommandBuffer::CommandBuffer() noexcept
 		: m_impl(nullptr) {}
 
-	CommandBuffer::CommandBuffer(const CreateParams& a_params) noexcept
+	CommandBuffer::CommandBuffer(const Device& a_device, const CreateParams& a_params) noexcept
 		: m_impl(std::make_unique<Impl>())
 	{
 		OYL_PROFILE_FUNCTION();
@@ -25,7 +28,7 @@ namespace Oyl::Rendering::Vulkan
 		m_impl->commandPool = &a_params.commandPool;
 
 		const auto& vkCommandPool = a_params.commandPool.GetVkCommandPool();
-		const auto& vkDevice = a_params.device.GetVkDevice();
+		const auto& vkDevice = a_device.GetVkDevice();
 
 		vk::CommandBufferAllocateInfo allocInfo {
 			.commandPool = vkCommandPool,
@@ -89,34 +92,50 @@ namespace Oyl::Rendering::Vulkan
 	}
 
 	void
-	CommandBuffer::BeginRendering(const ISwapChain& a_swapChain) const noexcept
-	{
-		BeginRendering(static_cast<const SwapChain&>(a_swapChain));
-	}
-
-	void
-	CommandBuffer::BeginRendering(const SwapChain& a_swapChain) const noexcept
+	CommandBuffer::BeginRendering(const RenderTarget& a_renderTarget) const noexcept
 	{
 		OYL_PROFILE_FUNCTION();
 
-		const auto& currentVkImageView = a_swapChain.GetCurrentVkImageView();
-		vk::ClearValue clearColor = vk::ClearColorValue(0.0f, 0.0f, 0.0f, 1.0f);
-		vk::RenderingAttachmentInfo attachmentInfo = {
-			.imageView = currentVkImageView,
-			.imageLayout = vk::ImageLayout::eColorAttachmentOptimal,
-			.loadOp = vk::AttachmentLoadOp::eClear,
-			.storeOp = vk::AttachmentStoreOp::eStore,
-			.clearValue = clearColor
-		};
+		Vector2u size;
 
-		const auto& swapChainExtent = a_swapChain.GetVkExtent();
+		std::vector<vk::RenderingAttachmentInfo> colorAttachmentInfo;
+		for (const Rendering::Image* image : a_renderTarget.GetColorAttachments())
+		{
+			auto* vulkanImage = static_cast<const Image*>(image);
+			colorAttachmentInfo.emplace_back(
+				vk::RenderingAttachmentInfo {
+					.imageView = vulkanImage->GetVkImageView(),
+					.imageLayout = vk::ImageLayout::eColorAttachmentOptimal,
+					.loadOp = vk::AttachmentLoadOp::eClear,
+					.storeOp = vk::AttachmentStoreOp::eStore,
+					.clearValue = vk::ClearColorValue(0.0f, 0.0f, 0.0f, 1.0f)
+				}
+			);
 
-		vk::RenderingInfo renderingInfo = {
-			.renderArea = { .offset = { 0, 0 }, .extent = swapChainExtent },
-			.layerCount = 1,
-			.colorAttachmentCount = 1,
-			.pColorAttachments = &attachmentInfo
-		};
+			size = vulkanImage->GetSize();
+		}
+
+		vk::RenderingInfo renderingInfo;
+		renderingInfo.setLayerCount(1)
+		             .setColorAttachmentCount((uint32) colorAttachmentInfo.size())
+		             .setPColorAttachments(colorAttachmentInfo.data());
+
+		vk::RenderingAttachmentInfo depthAttachmentInfo;
+		if (auto* image = a_renderTarget.GetDepthAttachment())
+		{
+			auto* vulkanImage = static_cast<const Image*>(image);
+			depthAttachmentInfo.setImageView(vulkanImage->GetVkImageView())
+			                   .setImageLayout(vk::ImageLayout::eDepthStencilAttachmentOptimal)
+			                   .setLoadOp(vk::AttachmentLoadOp::eClear)
+			                   .setStoreOp(vk::AttachmentStoreOp::eStore)
+			                   .setClearValue(vk::ClearDepthStencilValue(1.0f, 0));
+
+			renderingInfo.setPDepthAttachment(&depthAttachmentInfo);
+
+			size = vulkanImage->GetSize();
+		}
+
+		renderingInfo.setRenderArea({ .offset = { 0, 0 }, .extent = { size.x, size.y } });
 
 		m_impl->commandBuffer.beginRendering(renderingInfo);
 	}
@@ -130,13 +149,7 @@ namespace Oyl::Rendering::Vulkan
 	}
 
 	void
-	CommandBuffer::EndRendering(const ISwapChain& a_swapChain) const noexcept
-	{
-		EndRendering(static_cast<const SwapChain&>(a_swapChain));
-	}
-
-	void
-	CommandBuffer::EndRendering(const SwapChain& a_swapChain) const noexcept
+	CommandBuffer::EndRendering() const noexcept
 	{
 		OYL_PROFILE_FUNCTION();
 

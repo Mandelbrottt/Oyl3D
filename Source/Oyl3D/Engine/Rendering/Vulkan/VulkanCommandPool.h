@@ -1,6 +1,7 @@
 ﻿#pragma once
 
 #include "Rendering/CommandPool.h"
+#include "Rendering/CommandQueue.h"
 
 namespace vk::raii
 {
@@ -18,11 +19,11 @@ namespace Oyl::Rendering::Vulkan
 
 		struct CreateParams
 		{
-			const Device& device;
+			CommandQueueFlagBits commandQueueFlags;
 		};
 
 		explicit
-		CommandPool(const CreateParams& a_params);
+		CommandPool(const Device& a_device, const CreateParams& a_params);
 
 		CommandPool(CommandPool&& a_other) noexcept;
 		CommandPool&

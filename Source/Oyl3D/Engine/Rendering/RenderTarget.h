@@ -5,35 +5,52 @@
 
 namespace Oyl::Rendering
 {
-	struct RenderTargetHandle : OpaqueHandle<RenderTargetHandle> {};
-
 	class RenderTarget : public IUniqueHandle
 	{
-	protected:
+	public:
 		RenderTarget() = default;
 
-		DEFAULT_MOVE(RenderTarget);
+		struct CreateParams
+		{
+			const Image** pColorImages = nullptr;
+			uint32 colorImageLength = 0;
 
-	public:
+			const Image* pDepthImage = nullptr;
+		};
+
+		explicit
+		RenderTarget(const CreateParams& a_params);
+
+		DEFAULT_MOVE(RenderTarget);
 		NO_COPY(RenderTarget);
 
 		virtual
-		~RenderTarget() = default;
+		~RenderTarget();
+
+		void
+		Destroy() override;
+
+		bool
+		IsValid() const override;
 
 		virtual
 		uint32
 		GetNumColorAttachments() const;
 
 		virtual
-		const Image&
+		const Image*
 		GetColorAttachment(uint32 a_index) const;
 
 		virtual
-		std::vector<const Image&>
+		std::vector<const Image*>
 		GetColorAttachments() const;
 
 		virtual
 		const Image*
 		GetDepthAttachment() const;
+
+	private:
+		std::vector<const Image*> m_colorAttachments;
+		const Image* m_depthAttachment = nullptr;
 	};
 }

@@ -31,12 +31,11 @@ namespace Oyl::Rendering::Vulkan
 
 		struct CreateParams
 		{
-			const Device& device;
 			const CommandPool& commandPool;
 		};
 
 		explicit
-		CommandBuffer(const CreateParams& a_params) noexcept;
+		CommandBuffer(const Device& a_device, const CreateParams& a_params) noexcept;
 
 		CommandBuffer(CommandBuffer&& a_other) noexcept;
 		CommandBuffer&
@@ -61,16 +60,10 @@ namespace Oyl::Rendering::Vulkan
 		Begin() const noexcept override;
 
 		void
-		BeginRendering(const ISwapChain& a_swapChain) const noexcept override;
+		BeginRendering(const RenderTarget& a_renderTarget) const noexcept override;
 
 		void
-		BeginRendering(const SwapChain& a_swapChain) const noexcept;
-
-		void
-		EndRendering(const ISwapChain& a_swapChain) const noexcept override;
-
-		void
-		EndRendering(const SwapChain& a_swapChain) const noexcept;
+		EndRendering() const noexcept override;
 
 		void
 		End() const noexcept override;

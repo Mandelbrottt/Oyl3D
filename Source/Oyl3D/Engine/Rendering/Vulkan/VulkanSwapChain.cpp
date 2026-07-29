@@ -3,7 +3,7 @@
 #include <Core/Math/Vector.h>
 
 #include "VulkanDevice.h"
-#include "VulkanRenderQueue.h"
+#include "VulkanCommandQueue.h"
 
 #include "Rendering/Window.h"
 
@@ -50,12 +50,12 @@ namespace Oyl::Rendering::Vulkan
 	SwapChain::SwapChain()
 		: m_impl(nullptr) {}
 
-	SwapChain::SwapChain(const CreateParams& a_params)
+	SwapChain::SwapChain(const Device& a_device, const CreateParams& a_params)
 		: m_impl(std::make_unique<Impl>())
 	{
 		OYL_PROFILE_FUNCTION();
 
-		m_impl->device = &a_params.device;
+		m_impl->device = &a_device;
 		m_impl->window = &a_params.window;
 
 		m_impl->CreateSwapChain();
@@ -213,13 +213,14 @@ namespace Oyl::Rendering::Vulkan
 			.imageColorSpace = vkSwapChainSurfaceFormat.colorSpace,
 			.imageExtent = vkSwapChainExtent,
 			.imageArrayLayers = 1,
-			.imageUsage = vk::ImageUsageFlagBits::eColorAttachment,
+			.imageUsage = vk::ImageUsageFlagBits::eColorAttachment
+			              | vk::ImageUsageFlagBits::eTransferDst,
 			.imageSharingMode = vk::SharingMode::eExclusive,
 			.preTransform = surfaceCapabilities.currentTransform,
 			.compositeAlpha = vk::CompositeAlphaFlagBitsKHR::eOpaque,
 			.presentMode = presentMode,
 			.clipped = true,
-			.oldSwapchain = nullptr
+			.oldSwapchain = nullptr,
 		};
 		vkSwapChain = vk::raii::SwapchainKHR(device->GetVkDevice(), swapChainCreateInfo);
 		vkSwapChainImageHandles = vkSwapChain.getImages();

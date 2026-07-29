@@ -1,5 +1,6 @@
 ﻿#include "VulkanImage.h"
 
+#include "VulkanCommandBuffer.h"
 #include "VulkanDevice.h"
 #include "VulkanStagingBuffer.h"
 
@@ -16,31 +17,31 @@ namespace Oyl::Rendering::Vulkan
 		Vector2u size;
 
 		void
-		CreateImage(const CreateParams& a_params);
+		CreateImage(const Device& a_device, const CreateParams& a_params);
 		void
-		CreateImageView(const CreateParams& a_params);
+		CreateImageView(const Device& a_device, const CreateParams& a_params);
 
 		void
-		CreateStagingBuffer(const CreateParams& a_params);
+		CreateStagingBuffer(const Device& a_device, const CreateParams& a_params);
 		void
-		CopyStagingBufferToImage(const CreateParams& a_params);
+		CopyStagingBufferToImage(Image& a_image, const Device& a_device, const CreateParams& a_params);
 	};
 
 	Image::Image()
 		: m_impl(nullptr) {}
 
-	Image::Image(const CreateParams& a_params)
+	Image::Image(const Device& a_device, const CreateParams& a_params)
 		: m_impl(std::make_unique<Impl>())
 	{
 		OYL_PROFILE_FUNCTION();
 
-		m_impl->CreateImage(a_params);
-		m_impl->CreateImageView(a_params);
+		m_impl->CreateImage(a_device, a_params);
+		m_impl->CreateImageView(a_device, a_params);
 
 		if (a_params.pixelData != nullptr && a_params.pixelLength != 0)
 		{
-			m_impl->CreateStagingBuffer(a_params);
-			m_impl->CopyStagingBufferToImage(a_params);
+			m_impl->CreateStagingBuffer(a_device, a_params);
+			m_impl->CopyStagingBufferToImage(*this, a_device, a_params);
 		}
 	}
 
@@ -80,6 +81,44 @@ namespace Oyl::Rendering::Vulkan
 		       && *m_impl->vkImage
 		       && *m_impl->vkImageMemory
 		       && *m_impl->vkImageView;
+	}
+
+	void
+	Image::VkTransitionImageLayout(
+		const CommandBuffer& a_commandBuffer,
+		vk::ImageLayout a_oldLayout,
+		vk::ImageLayout a_newLayout,
+		vk::AccessFlags2 a_srcAccessMask,
+		vk::AccessFlags2 a_dstAccessMask,
+		vk::PipelineStageFlags2 a_srcStageMask,
+		vk::PipelineStageFlags2 a_dstStageMask
+	)
+	{
+		vk::ImageMemoryBarrier2 barrier = {
+			.srcStageMask = a_srcStageMask,
+			.srcAccessMask = a_srcAccessMask,
+			.dstStageMask = a_dstStageMask,
+			.dstAccessMask = a_dstAccessMask,
+			.oldLayout = a_oldLayout,
+			.newLayout = a_newLayout,
+			.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED,
+			.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED,
+			.image = m_impl->vkImage,
+			.subresourceRange = {
+				.aspectMask = vk::ImageAspectFlagBits::eColor,
+				.baseMipLevel = 0,
+				.levelCount = 1,
+				.baseArrayLayer = 0,
+				.layerCount = 1
+			}
+		};
+		vk::DependencyInfo dependency_info = {
+			.dependencyFlags = {},
+			.imageMemoryBarrierCount = 1,
+			.pImageMemoryBarriers = &barrier
+		};
+		const auto& vkCommandBuffer = a_commandBuffer.GetVkCommandBuffer();
+		vkCommandBuffer.pipelineBarrier2(dependency_info);
 	}
 
 	Vector2u
@@ -142,8 +181,16 @@ namespace Oyl::Rendering::Vulkan
 	}
 
 	void
-	Image::Impl::CreateImage(const CreateParams& a_params)
+	Image::Impl::CreateImage(const Device& a_device, const CreateParams& a_params)
 	{
+		auto vkUsage = a_params.vkUsage;
+		auto vkInitialLayout = vk::ImageLayout::eUndefined;
+		if (a_params.pixelData && a_params.pixelLength != 0)
+		{
+			vkUsage |= vk::ImageUsageFlagBits::eTransferDst;
+			vkInitialLayout = a_params.vkLayout;
+		}
+
 		auto imageCreateInfo = vk::ImageCreateInfo {
 			.imageType = vk::ImageType::e2D,
 			.format = a_params.vkFormat,
@@ -152,27 +199,28 @@ namespace Oyl::Rendering::Vulkan
 			.arrayLayers = 1,
 			.samples = vk::SampleCountFlagBits::e1,
 			.tiling = vk::ImageTiling::eOptimal,
-			.usage = a_params.vkUsage,
+			.usage = vkUsage,
 			.sharingMode = vk::SharingMode::eExclusive,
-			.initialLayout = vk::ImageLayout::eUndefined
+			.initialLayout = vkInitialLayout
 		};
-		vkImage = vk::raii::Image(a_params.device.GetVkDevice(), imageCreateInfo);
+		vkImage = vk::raii::Image(a_device.GetVkDevice(), imageCreateInfo);
+		size = a_params.size;
 
 		auto memRequirements = vkImage.getMemoryRequirements();
 		auto allocInfo = vk::MemoryAllocateInfo {
 			.allocationSize = memRequirements.size,
 			.memoryTypeIndex = FindMemoryType(
-				a_params.device.GetVkPhysicalDevice(),
+				a_device.GetVkPhysicalDevice(),
 				memRequirements.memoryTypeBits,
 				a_params.vkProperties
 			)
 		};
-		vkImageMemory = vk::raii::DeviceMemory(a_params.device.GetVkDevice(), allocInfo);
+		vkImageMemory = vk::raii::DeviceMemory(a_device.GetVkDevice(), allocInfo);
 		vkImage.bindMemory(vkImageMemory, 0);
 	}
 
 	void
-	Image::Impl::CreateImageView(const CreateParams& a_params)
+	Image::Impl::CreateImageView(const Device& a_device, const CreateParams& a_params)
 	{
 		vk::ImageViewCreateInfo imageViewCreateInfo {
 			.image = vkImage,
@@ -184,18 +232,18 @@ namespace Oyl::Rendering::Vulkan
 				.layerCount = 1
 			},
 		};
-		vkImageView = vk::raii::ImageView(a_params.device.GetVkDevice(), imageViewCreateInfo);
+		vkImageView = vk::raii::ImageView(a_device.GetVkDevice(), imageViewCreateInfo);
 	}
 
 	void
-	Image::Impl::CreateStagingBuffer(const CreateParams& a_params)
+	Image::Impl::CreateStagingBuffer(const Device& a_device, const CreateParams& a_params)
 	{
 		OYL_ASSERT(a_params.pixelData && a_params.pixelLength != 0);
 
 		stagingBuffer = StagingBuffer(
+			a_device,
 			{
-				.device = a_params.device,
-				.size = a_params.pixelLength,
+				.dataLength = a_params.pixelLength,
 				.vkUsage = vk::BufferUsageFlagBits::eTransferSrc,
 				.vkProperties = vk::MemoryPropertyFlagBits::eHostVisible
 				                | vk::MemoryPropertyFlagBits::eHostCoherent
@@ -205,8 +253,63 @@ namespace Oyl::Rendering::Vulkan
 	}
 
 	void
-	Image::Impl::CopyStagingBufferToImage(const CreateParams& a_params)
+	Image::Impl::CopyStagingBufferToImage(Image& a_image, const Device& a_device, const CreateParams& a_params)
 	{
+		OYL_PROFILE_FUNCTION();
+
 		OYL_ASSERT(!!stagingBuffer);
+
+		auto commandPool = CommandPool(a_device, { .commandQueueFlags = CommandQueueFlagBits::Transfer });
+		auto commandBuffer = CommandBuffer(a_device, { .commandPool = commandPool });
+
+		vk::BufferImageCopy region {
+			.bufferOffset = 0,
+			.bufferRowLength = 0,
+			.bufferImageHeight = 0,
+			.imageSubresource = {
+				.aspectMask = vk::ImageAspectFlagBits::eColor,
+				.mipLevel = 0,
+				.baseArrayLayer = 0,
+				.layerCount = 1
+			},
+			.imageOffset = { 0, 0, 0 },
+			.imageExtent = { size.x, size.y, 0 }
+		};
+
+		auto& vkCommandBuffer = commandBuffer.GetVkCommandBuffer();
+		vkCommandBuffer.begin({ .flags = vk::CommandBufferUsageFlagBits::eOneTimeSubmit });
+
+		a_image.VkTransitionImageLayout(
+			commandBuffer,
+			vk::ImageLayout::eUndefined,
+			vk::ImageLayout::eTransferDstOptimal,
+			{},
+			vk::AccessFlagBits2::eTransferWrite,
+			vk::PipelineStageFlagBits2::eTopOfPipe,
+			vk::PipelineStageFlagBits2::eTransfer
+		);
+
+		vkCommandBuffer.copyBufferToImage(
+			stagingBuffer.GetVkBuffer(),
+			vkImage,
+			vk::ImageLayout::eTransferDstOptimal,
+			region
+		);
+
+		a_image.VkTransitionImageLayout(
+			commandBuffer,
+			vk::ImageLayout::eTransferDstOptimal,
+			a_params.vkLayout,
+			vk::AccessFlagBits2::eTransferWrite,
+			vk::AccessFlagBits2::eShaderRead | vk::AccessFlagBits2::eColorAttachmentWrite,
+			vk::PipelineStageFlagBits2::eTransfer,
+			vk::PipelineStageFlagBits2::eFragmentShader | vk::PipelineStageFlagBits2::eColorAttachmentOutput
+		);
+
+		vkCommandBuffer.end();
+
+		auto& commandQueue = *a_device.GetCommandQueue(CommandQueueFlagBits::Transfer);
+		commandQueue.Submit({ .commandBuffer = commandBuffer });
+		commandQueue.GetVkQueue().waitIdle();
 	}
 }

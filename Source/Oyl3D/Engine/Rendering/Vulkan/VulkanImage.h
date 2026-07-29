@@ -8,6 +8,7 @@ namespace Oyl::Rendering::Vulkan
 {
 	class Device;
 	class StagingBuffer;
+	class CommandBuffer;
 
 	using ImageHandle = OpaqueHandleConvertible<ImageHandle, vk::Image>;
 
@@ -18,10 +19,8 @@ namespace Oyl::Rendering::Vulkan
 
 		struct CreateParams
 		{
-			const Device& device;
-
-			const byte* pixelData;
-			uint32 pixelLength;
+			const byte* pixelData = nullptr;
+			uint32 pixelLength = 0;
 
 			Vector2u size;
 
@@ -29,10 +28,11 @@ namespace Oyl::Rendering::Vulkan
 
 			vk::ImageUsageFlags vkUsage;
 			vk::MemoryPropertyFlags vkProperties;
+			vk::ImageLayout vkLayout = vk::ImageLayout::eUndefined;
 		};
 
 		explicit
-		Image(const CreateParams& a_params);
+		Image(const Device& a_device, const CreateParams& a_params);
 
 		Image(Image&& a_other) noexcept;
 		Image&
@@ -46,6 +46,17 @@ namespace Oyl::Rendering::Vulkan
 
 		bool
 		IsValid() const override;
+
+		void
+		VkTransitionImageLayout(
+			const CommandBuffer& a_commandBuffer,
+			vk::ImageLayout a_oldLayout,
+			vk::ImageLayout a_newLayout,
+			vk::AccessFlags2 a_srcAccessMask,
+			vk::AccessFlags2 a_dstAccessMask,
+			vk::PipelineStageFlags2 a_srcStageMask,
+			vk::PipelineStageFlags2 a_dstStageMask
+		);
 
 		Vector2u
 		GetSize() const override;

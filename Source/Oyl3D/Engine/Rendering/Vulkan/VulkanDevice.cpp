@@ -50,7 +50,9 @@ namespace Oyl::Rendering::Vulkan
 		vk::raii::PhysicalDevice physicalDevice = nullptr;
 		vk::raii::Device device = nullptr;
 
-		uint32 graphicsQueueFamilyIndex = 0;
+		std::unordered_map<CommandQueueFlagBits, uint32> queueFamilyIndices;
+		//uint32 graphicsQueueFamilyIndex = 0;
+		std::unordered_map<CommandQueueFlagBits, CommandQueue> queues;
 
 		void
 		CreateInstance();
@@ -59,9 +61,11 @@ namespace Oyl::Rendering::Vulkan
 		void
 		CreateSurface();
 		void
-		PickPhysicalDevice();
+		PickPhysicalDevice(CommandQueueFlags a_queueFlags);
 		void
 		CreateLogicalDevice();
+		void
+		CreateCommandQueues(const Device& a_device);
 	};
 
 	Device::Device()
@@ -84,12 +88,22 @@ namespace Oyl::Rendering::Vulkan
 			);
 		}
 
+		for (uint32 i = 0; i < sizeof(a_params.commandQueueFlags) * 8; i++)
+		{
+			auto flag = CommandQueueFlagBits(1 << i);
+			if (a_params.commandQueueFlags & flag)
+			{
+				m_impl->queueFamilyIndices[flag] = 0;
+			}
+		}
+
 		m_impl->CreateInstance();
 		if constexpr (ENABLE_VALIDATION_LAYERS)
 			m_impl->CreateDebugMessenger();
 		m_impl->CreateSurface();
-		m_impl->PickPhysicalDevice();
+		m_impl->PickPhysicalDevice(a_params.commandQueueFlags);
 		m_impl->CreateLogicalDevice();
+		m_impl->CreateCommandQueues(*this);
 	}
 
 	Device::Device(Device&& a_other) noexcept
@@ -121,7 +135,8 @@ namespace Oyl::Rendering::Vulkan
 		if (!IsValid())
 			return;
 
-		m_impl->graphicsQueueFamilyIndex = 0;
+		m_impl->queues.clear();
+		m_impl->queueFamilyIndices.clear();
 		m_impl->device = nullptr;
 		m_impl->physicalDevice = nullptr;
 		m_impl->requiredDeviceExtensions.clear();
@@ -142,6 +157,16 @@ namespace Oyl::Rendering::Vulkan
 		return m_impl->window;
 	}
 
+	const CommandQueue*
+	Device::GetCommandQueue(CommandQueueFlagBits a_flag) const
+	{
+		auto iter = m_impl->queues.find(a_flag);
+		if (iter == m_impl->queues.end())
+			return nullptr;
+
+		return &iter->second;
+	}
+
 	const vk::raii::Device&
 	Device::GetVkDevice() const
 	{
@@ -158,12 +183,6 @@ namespace Oyl::Rendering::Vulkan
 	Device::GetVkSurface() const
 	{
 		return m_impl->surface;
-	}
-
-	uint32
-	Device::GetVkGraphicsQueueFamilyIndex() const
-	{
-		return m_impl->graphicsQueueFamilyIndex;
 	}
 
 	void
@@ -282,19 +301,21 @@ namespace Oyl::Rendering::Vulkan
 	bool
 	IsDeviceSuitable(
 		const vk::raii::PhysicalDevice& a_physicalDevice,
+		vk::QueueFlags a_queueFlags,
 		const std::vector<std::string>& a_requiredDeviceExtensions
 	)
 	{
 		// Check if the physicalDevice supports the Vulkan 1.3 API version
 		bool supportsVulkan1_3 = a_physicalDevice.getProperties().apiVersion >= vk::ApiVersion13;
 
-		// Check if any of the queue families support graphics operations
+		// Check if any of the queue families support requested operations
 		auto queueFamilies = a_physicalDevice.getQueueFamilyProperties();
 		bool supportsGraphics = std::ranges::any_of(
 			queueFamilies,
-			[](const auto& a_qfp)
+			[&](const vk::QueueFamilyProperties& a_qfp)
 			{
-				return !!(a_qfp.queueFlags & vk::QueueFlagBits::eGraphics);
+				auto mask = a_qfp.queueFlags & a_queueFlags;
+				return mask == a_queueFlags;
 			}
 		);
 
@@ -333,7 +354,7 @@ namespace Oyl::Rendering::Vulkan
 	}
 
 	void
-	Device::Impl::PickPhysicalDevice()
+	Device::Impl::PickPhysicalDevice(CommandQueueFlags a_queueFlags)
 	{
 		OYL_PROFILE_FUNCTION();
 
@@ -342,7 +363,8 @@ namespace Oyl::Rendering::Vulkan
 			physicalDevices,
 			[&](const vk::raii::PhysicalDevice& a_physicalDevice)
 			{
-				return IsDeviceSuitable(a_physicalDevice, requiredDeviceExtensions);
+				auto vkQueueFlags = ToVkQueueFlags(a_queueFlags);
+				return IsDeviceSuitable(a_physicalDevice, vkQueueFlags, requiredDeviceExtensions);
 			}
 		);
 		if (iter == physicalDevices.end())
@@ -359,21 +381,36 @@ namespace Oyl::Rendering::Vulkan
 
 		std::vector<vk::QueueFamilyProperties> queueFamilyProperties = physicalDevice.getQueueFamilyProperties();
 
-		// get the first index into queueFamilyProperties which supports both graphics and present
-		graphicsQueueFamilyIndex = ~0u;
-		for (uint32 qfpIndex = 0; qfpIndex < queueFamilyProperties.size(); qfpIndex++)
+		for (auto& [requestedFlag, index] : queueFamilyIndices)
 		{
-			if ((queueFamilyProperties[qfpIndex].queueFlags & vk::QueueFlagBits::eGraphics) &&
-			    physicalDevice.getSurfaceSupportKHR(qfpIndex, *surface))
+			// get the first index into queueFamilyProperties which supports the requested operations
+			index = ~0u;
+			for (uint32 propertiesIndex = 0; propertiesIndex < queueFamilyProperties.size(); propertiesIndex++)
 			{
-				// found a queue family that supports both graphics and present
-				graphicsQueueFamilyIndex = qfpIndex;
-				break;
+				auto queueFlags = queueFamilyProperties[propertiesIndex].queueFlags;
+				vk::QueueFlags vkRequestedFlag = ToVkQueueFlags(requestedFlag);
+
+				if (queueFlags & vk::QueueFlagBits::eGraphics)
+				{
+					// If the queue supports graphics, we also want it to support SurfaceKHR
+					if (!physicalDevice.getSurfaceSupportKHR(propertiesIndex, *surface))
+						continue;
+
+					// We want a unique queue for transfers
+					if (requestedFlag == CommandQueueFlagBits::Transfer)
+						continue;
+				}
+
+				if (queueFlags & vkRequestedFlag)
+				{
+					index = propertiesIndex;
+					break;
+				}
 			}
-		}
-		if (graphicsQueueFamilyIndex == ~0u)
-		{
-			throw std::runtime_error("Could not find a queue for graphics and present -> terminating");
+			if (index == ~0u)
+			{
+				throw std::runtime_error("Could not find a queue for requested operations -> terminating");
+			}
 		}
 
 		// Create a chain of feature structures
@@ -384,12 +421,16 @@ namespace Oyl::Rendering::Vulkan
 			vk::PhysicalDeviceExtendedDynamicStateFeaturesEXT { .extendedDynamicState = true }
 		};
 
+		std::vector<vk::DeviceQueueCreateInfo> deviceQueueCreateInfo;
 		float queuePriority = 0.5f;
-		vk::DeviceQueueCreateInfo deviceQueueCreateInfo {
-			.queueFamilyIndex = graphicsQueueFamilyIndex,
-			.queueCount = 1,
-			.pQueuePriorities = &queuePriority,
-		};
+		for (const auto& [flag, index] : queueFamilyIndices)
+			deviceQueueCreateInfo.emplace_back(
+				vk::DeviceQueueCreateInfo {
+					.queueFamilyIndex = index,
+					.queueCount = 1,
+					.pQueuePriorities = &queuePriority,
+				}
+			);
 
 		// Vulkan needs the extensions array as c-strings
 		std::vector<const char*> requiredExtensions(requiredDeviceExtensions.size(), nullptr);
@@ -400,13 +441,30 @@ namespace Oyl::Rendering::Vulkan
 
 		vk::DeviceCreateInfo deviceCreateInfo {
 			.pNext = &featureChain.get<vk::PhysicalDeviceFeatures2>(),
-			.queueCreateInfoCount = 1,
-			.pQueueCreateInfos = &deviceQueueCreateInfo,
+			.queueCreateInfoCount = (uint32) deviceQueueCreateInfo.size(),
+			.pQueueCreateInfos = deviceQueueCreateInfo.data(),
 			.enabledExtensionCount = (uint32) requiredDeviceExtensions.size(),
 			.ppEnabledExtensionNames = requiredExtensions.data(),
 		};
 
 		device = vk::raii::Device(physicalDevice, deviceCreateInfo);
+	}
+
+	void
+	Device::Impl::CreateCommandQueues(const Device& a_device)
+	{
+		for (const auto& [flag, index] : queueFamilyIndices)
+		{
+			queues.emplace(
+				flag,
+				CommandQueue(
+					a_device,
+					{
+						.queueFamilyIndex = index
+					}
+				)
+			);
+		}
 	}
 }
 

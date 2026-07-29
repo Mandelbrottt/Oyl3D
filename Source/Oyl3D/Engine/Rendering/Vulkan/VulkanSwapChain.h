@@ -24,11 +24,10 @@ namespace Oyl::Rendering::Vulkan
 		struct CreateParams
 		{
 			const IWindow& window;
-			const Device& device;
 		};
 
 		explicit
-		SwapChain(const CreateParams& a_params);
+		SwapChain(const Device& a_device, const CreateParams& a_params);
 
 		SwapChain(SwapChain&& a_other) noexcept;
 		SwapChain&

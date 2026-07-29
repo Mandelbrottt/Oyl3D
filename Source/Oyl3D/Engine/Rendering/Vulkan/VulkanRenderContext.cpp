@@ -4,7 +4,7 @@
 
 #include "VulkanDevice.h"
 #include "VulkanImage.h"
-#include "VulkanRenderQueue.h"
+#include "VulkanCommandQueue.h"
 #include "VulkanShader.h"
 #include "VulkanSwapChain.h"
 #include "VulkanVertexBuffer.h"
@@ -28,9 +28,10 @@ namespace Oyl::Rendering::Vulkan
 		const IWindow* window;
 
 		Device device;
-		RenderQueue graphicsQueue;
+		//CommandQueue graphicsQueue;
 		SwapChain swapChain;
 		Image image;
+		RenderTarget renderTarget;
 
 		// TEMPORARY:
 		Shader shader;
@@ -98,41 +99,77 @@ namespace Oyl::Rendering::Vulkan
 		m_impl->device = Device(
 			{
 				.window = *m_impl->window,
+				.commandQueueFlags = CommandQueueFlagBits::Graphics | CommandQueueFlagBits::Transfer,
 				.ppRequiredDeviceExtensionsData = REQUIRED_DEVICE_EXTENSION.data(),
 				.requiredDeviceExtensionsLength = REQUIRED_DEVICE_EXTENSION.size()
 			}
 		);
 
-		m_impl->graphicsQueue = RenderQueue(
-			{
-				.device = m_impl->device,
-				.queueFamilyIndex = m_impl->device.GetVkGraphicsQueueFamilyIndex()
-			}
-		);
+		//m_impl->graphicsQueue = CommandQueue(
+		//	{
+		//		.device = m_impl->device,
+		//		.queueFamilyIndex = m_impl->device.GetVkGraphicsQueueFamilyIndex()
+		//	}
+		//);
 
 		m_impl->swapChain = SwapChain(
+			m_impl->device,
 			{
 				.window = *m_impl->window,
-				.device = m_impl->device,
 			}
 		);
 
-		m_impl->image = Image({
-			.device = m_impl->device,
-			.size = m_impl->swapChain.GetSize(),
-			.vkFormat = m_impl->swapChain.GetVkSurfaceFormat().format,
-			.vkUsage = vk::ImageUsageFlagBits::eColorAttachment,
-			.vkProperties = vk::MemoryPropertyFlagBits::eDeviceLocal
-		});
+		const std::vector vertices {
+			Vertex { Vector2f { -0.5f, -0.5f }, Vector3f { 1.0f, 0.0f, 0.0f } },
+			Vertex { Vector2f { 0.5f, -0.5f }, Vector3f { 0.0f, 1.0f, 0.0f } },
+			Vertex { Vector2f { 0.5f, 0.5f }, Vector3f { 0.0f, 0.0f, 1.0f } },
+			Vertex { Vector2f { -0.5f, 0.5f }, Vector3f { 1.0f, 1.0f, 1.0f } },
+		};
 
-		m_impl->commandPool = CommandPool({ .device = m_impl->device });
+		const std::vector<uint16> indices { 0, 1, 2, 2, 3, 0 };
+
+		auto verticesBuffer = reinterpret_cast<const byte*>(vertices.data());
+		auto indicesBuffer = reinterpret_cast<const byte*>(indices.data());
+
+		m_impl->vertexBuffer = VertexBuffer(
+			m_impl->device,
+			{
+				.vertexData = verticesBuffer,
+				.vertexLength = vertices.size() * sizeof(decltype(vertices)::value_type),
+				.vertexStride = sizeof(decltype(vertices)::value_type),
+				.indexData = indicesBuffer,
+				.indexLength = indices.size() * sizeof(decltype(indices)::value_type)
+			}
+		);
+
+		m_impl->image = Image(
+			m_impl->device,
+			{
+				.size = m_impl->swapChain.GetSize(),
+				.vkFormat = m_impl->swapChain.GetVkSurfaceFormat().format,
+				.vkUsage = vk::ImageUsageFlagBits::eColorAttachment
+				           | vk::ImageUsageFlagBits::eTransferSrc,
+				.vkProperties = vk::MemoryPropertyFlagBits::eDeviceLocal,
+				.vkLayout = vk::ImageLayout::eColorAttachmentOptimal
+			}
+		);
+
+		const Rendering::Image* image = &m_impl->image;
+		m_impl->renderTarget = RenderTarget(
+			{
+				.pColorImages = &image,
+				.colorImageLength = 1,
+			}
+		);
+
+		m_impl->commandPool = CommandPool(m_impl->device, { .commandQueueFlags = CommandQueueFlagBits::Graphics });
 
 		m_impl->commandBuffers.reserve(MAX_FRAMES_IN_FLIGHT);
 		for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++)
 		{
 			m_impl->commandBuffers.emplace_back(
+				m_impl->device,
 				CommandBuffer::CreateParams {
-					.device = m_impl->device,
 					.commandPool = m_impl->commandPool,
 				}
 			);
@@ -151,14 +188,6 @@ namespace Oyl::Rendering::Vulkan
 
 		if (!m_impl->shader)
 		{
-			//m_impl->shader = RenderEngine::CreateShader(
-			//	{
-			//		.language = SL_Hlsl,
-			//		.source = ShaderOptions::SO_File,
-			//		.filepath = "G:/dev/Oyl3D/Oyl3D/Source/Oyl3D/Engine/Rendering/Shaders/shader.hlsl"
-			//	}
-			//);
-
 			auto* compiler = RenderEngine::GetShaderCompiler();
 			ShaderCompileResult result;
 			compiler->CompileHlslFromFile("G:/dev/Oyl3D/Oyl3D/Source/Oyl3D/Engine/Rendering/Shaders/shader.hlsl", &result);
@@ -171,63 +200,6 @@ namespace Oyl::Rendering::Vulkan
 				}
 			);
 		}
-
-		//if (m_impl->shader->IsDirty())
-		//{
-		//	m_impl->shader->Load();
-		//}
-
-		//if (m_impl->shader->IsDeviceDirty())
-		//{
-		//	m_impl->shader->DeviceLoad(m_impl->device);
-		//}
-
-		if (!m_impl->vertexBuffer)
-		{
-			const std::vector vertices {
-				Vertex { Vector2f { -0.5f, -0.5f }, Vector3f { 1.0f, 0.0f, 0.0f } },
-				Vertex { Vector2f { 0.5f, -0.5f }, Vector3f { 0.0f, 1.0f, 0.0f } },
-				Vertex { Vector2f { 0.5f, 0.5f }, Vector3f { 0.0f, 0.0f, 1.0f } },
-				Vertex { Vector2f { -0.5f, 0.5f }, Vector3f { 1.0f, 1.0f, 1.0f } },
-			};
-
-			const std::vector<uint16> indices { 0, 1, 2, 2, 3, 0 };
-
-			auto verticesBuffer = reinterpret_cast<const byte*>(vertices.data());
-			auto indicesBuffer = reinterpret_cast<const byte*>(indices.data());
-
-			//m_impl->vertexBuffer = RenderEngine::CreateVertexBuffer(
-			//	{
-			//		.vertexData = verticesBuffer,
-			//		.vertexLength = vertices.size() * sizeof(decltype(vertices)::value_type),
-			//		.vertexStride = sizeof(decltype(vertices)::value_type),
-			//		.indexData = indicesBuffer,
-			//		.indexLength = indices.size() * sizeof(decltype(indices)::value_type),
-			//	}
-			//);
-
-			m_impl->vertexBuffer = VertexBuffer(
-				{
-					.device = m_impl->device,
-					.queue = m_impl->graphicsQueue,
-					.vertexData = verticesBuffer,
-					.vertexLength = vertices.size() * sizeof(decltype(vertices)::value_type),
-					.vertexStride = sizeof(decltype(vertices)::value_type),
-					.indexData = indicesBuffer,
-					.indexLength = indices.size() * sizeof(decltype(indices)::value_type)
-				}
-			);
-		}
-
-		//if (m_impl->vertexBuffer->IsDirty())
-		//{
-		//	m_impl->vertexBuffer->Load();
-		//}
-
-		//if (m_impl->vertexBuffer->IsDeviceDirty())
-		//{
-		//	m_impl->vertexBuffer->DeviceLoad(m_impl->device);
-		//}
 
 		m_impl->DrawFrame();
 	}
@@ -249,13 +221,11 @@ namespace Oyl::Rendering::Vulkan
 		m_impl->commandBuffers.clear();
 		m_impl->commandPool.Destroy();
 
+		m_impl->renderTarget.Destroy();
+		m_impl->image.Destroy();
+
 		m_impl->vertexBuffer.Destroy();
-
-		//m_impl->vertexBuffer->DeviceUnload();
-		//m_impl->vertexBuffer->Unload();
-
-		//m_impl->shader->DeviceUnload();
-		//m_impl->shader->Unload();
+		m_impl->shader.Destroy();
 
 		m_impl->swapChain.Destroy();
 		m_impl->device.Destroy();
@@ -303,26 +273,24 @@ namespace Oyl::Rendering::Vulkan
 
 	static
 	void
-	TransitionImageLayout(
+	VkTransitionImageLayout(
 		const CommandBuffer& a_commandBuffer,
 		vk::Image a_image,
 		vk::ImageLayout a_oldLayout,
-		vk::ImageLayout a_new_layout,
+		vk::ImageLayout a_newLayout,
 		vk::AccessFlags2 a_srcAccessMask,
 		vk::AccessFlags2 a_dstAccessMask,
 		vk::PipelineStageFlags2 a_srcStageMask,
 		vk::PipelineStageFlags2 a_dstStageMask
-	) noexcept
+	)
 	{
-		OYL_PROFILE_FUNCTION();
-
 		vk::ImageMemoryBarrier2 barrier = {
 			.srcStageMask = a_srcStageMask,
 			.srcAccessMask = a_srcAccessMask,
 			.dstStageMask = a_dstStageMask,
 			.dstAccessMask = a_dstAccessMask,
 			.oldLayout = a_oldLayout,
-			.newLayout = a_new_layout,
+			.newLayout = a_newLayout,
 			.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED,
 			.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED,
 			.image = a_image,
@@ -352,10 +320,15 @@ namespace Oyl::Rendering::Vulkan
 
 		commandBuffer.Begin();
 
-		// Since we're rendering directly to the swapChain image
-		TransitionImageLayout(
+		Vector2u extent = Vector2u(
+			swapChain.GetVkExtent().width,
+			swapChain.GetVkExtent().height
+		);
+		commandBuffer.SetViewport(Vector2i::Zero(), extent);
+		commandBuffer.SetScissor(Vector2i::Zero(), extent);
+
+		image.VkTransitionImageLayout(
 			commandBuffer,
-			swapChain.GetCurrentVkImage(),
 			vk::ImageLayout::eUndefined,
 			vk::ImageLayout::eColorAttachmentOptimal,
 			{},
@@ -364,29 +337,57 @@ namespace Oyl::Rendering::Vulkan
 			vk::PipelineStageFlagBits2::eColorAttachmentOutput
 		);
 
-		commandBuffer.BeginRendering(swapChain);
-
-		Vector2u extent = Vector2u(
-			swapChain.GetVkExtent().width,
-			swapChain.GetVkExtent().height
-		);
-		commandBuffer.SetViewport(Vector2i::Zero(), extent);
-		commandBuffer.SetScissor(Vector2i::Zero(), extent);
+		commandBuffer.BeginRendering(renderTarget);
 
 		commandBuffer.BindShader(shader);
 		commandBuffer.BindVertexBuffer(vertexBuffer);
 
-		commandBuffer.EndRendering(swapChain);
+		commandBuffer.EndRendering();
 
-		TransitionImageLayout(
+		image.VkTransitionImageLayout(
 			commandBuffer,
-			swapChain.GetCurrentVkImage(),
 			vk::ImageLayout::eColorAttachmentOptimal,
-			vk::ImageLayout::ePresentSrcKHR,
+			vk::ImageLayout::eTransferSrcOptimal,
 			vk::AccessFlagBits2::eColorAttachmentWrite,
 			{},
 			vk::PipelineStageFlagBits2::eColorAttachmentOutput,
 			vk::PipelineStageFlagBits2::eBottomOfPipe
+		);
+
+		VkTransitionImageLayout(
+			commandBuffer,
+			swapChain.GetCurrentVkImage(),
+			vk::ImageLayout::eUndefined,
+			vk::ImageLayout::eTransferDstOptimal,
+			vk::AccessFlagBits2::eTransferWrite,
+			{},
+			vk::PipelineStageFlagBits2::eTransfer,
+			vk::PipelineStageFlagBits2::eBlit
+		);
+
+		commandBuffer.GetVkCommandBuffer().blitImage(
+			image.GetVkImage(),
+			vk::ImageLayout::eTransferSrcOptimal,
+			swapChain.GetCurrentVkImage(),
+			vk::ImageLayout::eTransferDstOptimal,
+			vk::ImageBlit {
+				.srcSubresource = { .aspectMask = vk::ImageAspectFlagBits::eColor, .mipLevel = 0, .baseArrayLayer = 0, .layerCount = 1 },
+				.srcOffsets = std::array { vk::Offset3D { 0, 0, 0 }, vk::Offset3D { (int) image.GetSize().x, (int) image.GetSize().y, 1 } },
+				.dstSubresource = { .aspectMask = vk::ImageAspectFlagBits::eColor, .mipLevel = 0, .baseArrayLayer = 0, .layerCount = 1 },
+				.dstOffsets = std::array { vk::Offset3D { 0, 0, 0 }, vk::Offset3D { (int) swapChain.GetSize().x, (int) swapChain.GetSize().y, 1 } }
+			},
+			vk::Filter::eNearest
+		);
+
+		VkTransitionImageLayout(
+			commandBuffer,
+			swapChain.GetCurrentVkImage(),
+			vk::ImageLayout::eTransferDstOptimal,
+			vk::ImageLayout::ePresentSrcKHR,
+			{},
+			vk::AccessFlagBits2::eTransferRead,
+			vk::PipelineStageFlagBits2::eBlit,
+			vk::PipelineStageFlagBits2::eBlit
 		);
 
 		commandBuffer.End();
@@ -423,8 +424,9 @@ namespace Oyl::Rendering::Vulkan
 
 		auto& commandBuffer = commandBuffers[frameIndex];
 
+		const auto& graphicsQueue = *device.GetCommandQueue(CommandQueueFlagBits::Graphics);
 		graphicsQueue.Submit(
-			RenderQueue::SubmitParams {
+			CommandQueue::SubmitParams {
 				.commandBuffer = commandBuffer,
 				.waitSemaphore = presentCompleteSemaphore,
 				.signalSemaphore = renderFinishedSemaphore,
@@ -433,7 +435,7 @@ namespace Oyl::Rendering::Vulkan
 		);
 
 		bool result = graphicsQueue.Present(
-			RenderQueue::PresentParams {
+			CommandQueue::PresentParams {
 				.waitSemaphore = renderFinishedSemaphore,
 				.swapChain = swapChain
 			}

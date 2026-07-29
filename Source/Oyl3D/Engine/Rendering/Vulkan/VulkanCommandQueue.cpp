@@ -1,38 +1,37 @@
-﻿#include "VulkanRenderQueue.h"
+﻿#include "VulkanCommandQueue.h"
 
 #include <vulkan/vulkan_raii.hpp>
 
 #include "VulkanCommandBuffer.h"
 #include "VulkanDevice.h"
-#include "VulkanFence.h"
-#include "VulkanSemaphore.h"
 #include "VulkanSwapChain.h"
 
 namespace Oyl::Rendering::Vulkan
 {
-	struct RenderQueue::Impl
+	struct CommandQueue::Impl
 	{
 		vk::raii::Queue queue = nullptr;
+		uint32 queueFamilyIndex;
 	};
 
-	RenderQueue::RenderQueue()
+	CommandQueue::CommandQueue()
 		: m_impl(nullptr) {}
 
-	RenderQueue::RenderQueue(const CreateParams& a_params)
+	CommandQueue::CommandQueue(const Device& a_device, const CreateParams& a_params)
 		: m_impl(std::make_unique<Impl>())
 	{
-		auto& vkDevice = a_params.device.GetVkDevice();
-		auto queueFamilyIndex = a_params.queueFamilyIndex;
-		m_impl->queue = vk::raii::Queue(vkDevice, queueFamilyIndex, 0);
+		auto& vkDevice = a_device.GetVkDevice();
+		m_impl->queueFamilyIndex = a_params.queueFamilyIndex;
+		m_impl->queue = vk::raii::Queue(vkDevice, m_impl->queueFamilyIndex, 0);
 	}
 
-	RenderQueue::RenderQueue(RenderQueue&& a_other) noexcept
+	CommandQueue::CommandQueue(CommandQueue&& a_other) noexcept
 	{
 		*this = std::move(a_other);
 	}
 
-	RenderQueue&
-	RenderQueue::operator=(RenderQueue&& a_other) noexcept
+	CommandQueue&
+	CommandQueue::operator=(CommandQueue&& a_other) noexcept
 	{
 		if (this != &a_other)
 		{
@@ -41,13 +40,13 @@ namespace Oyl::Rendering::Vulkan
 		return *this;
 	}
 
-	RenderQueue::~RenderQueue()
+	CommandQueue::~CommandQueue()
 	{
-		RenderQueue::Destroy();
+		CommandQueue::Destroy();
 	}
 
 	void
-	RenderQueue::Destroy()
+	CommandQueue::Destroy()
 	{
 		if (!IsValid())
 			return;
@@ -56,20 +55,26 @@ namespace Oyl::Rendering::Vulkan
 	}
 
 	bool
-	RenderQueue::IsValid() const
+	CommandQueue::IsValid() const
 	{
 		return m_impl
 		       && *m_impl->queue;
 	}
 
 	const vk::raii::Queue&
-	RenderQueue::GetVkQueue() const
+	CommandQueue::GetVkQueue() const
 	{
 		return m_impl->queue;
 	}
 
+	uint32
+	CommandQueue::GetVkQueueFamilyIndex() const
+	{
+		return m_impl->queueFamilyIndex;
+	}
+
 	void
-	RenderQueue::Submit(const ICommandQueue::SubmitParams& a_params)
+	CommandQueue::Submit(const ICommandQueue::SubmitParams& a_params)
 	{
 		Submit(
 			SubmitParams {
@@ -82,7 +87,7 @@ namespace Oyl::Rendering::Vulkan
 	}
 
 	void
-	RenderQueue::Submit(const SubmitParams& a_params) const
+	CommandQueue::Submit(const SubmitParams& a_params) const
 	{
 		OYL_PROFILE_FUNCTION();
 
@@ -105,7 +110,7 @@ namespace Oyl::Rendering::Vulkan
 	}
 
 	void
-	RenderQueue::Present(const ICommandQueue::PresentParams& a_params)
+	CommandQueue::Present(const ICommandQueue::PresentParams& a_params)
 	{
 		Present(
 			PresentParams {
@@ -116,7 +121,7 @@ namespace Oyl::Rendering::Vulkan
 	}
 
 	bool
-	RenderQueue::Present(const PresentParams& a_params) const
+	CommandQueue::Present(const PresentParams& a_params) const
 	{
 		OYL_PROFILE_FUNCTION();
 

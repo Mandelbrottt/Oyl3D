@@ -2,8 +2,9 @@
 
 #include <vulkan/vulkan_raii.hpp>
 
+#include "VulkanCommandQueue.h"
 #include "VulkanDevice.h"
-#include "VulkanRenderQueue.h"
+#include "VulkanStagingBuffer.h"
 
 namespace Oyl::Rendering::Vulkan
 {
@@ -19,13 +20,13 @@ namespace Oyl::Rendering::Vulkan
 		uint32 indexStride = 0;
 
 		void
-		CreateVertexBuffer(const CreateParams& a_params);
+		CreateVertexBuffer(const Device& a_device, const CreateParams& a_params);
 	};
 
 	VertexBuffer::VertexBuffer()
 		: m_impl(nullptr) {}
 
-	VertexBuffer::VertexBuffer(const CreateParams& a_params)
+	VertexBuffer::VertexBuffer(const Device& a_device, const CreateParams& a_params)
 		: m_impl(std::make_unique<Impl>())
 	{
 		OYL_PROFILE_FUNCTION();
@@ -41,7 +42,7 @@ namespace Oyl::Rendering::Vulkan
 			m_impl->indexStride = a_params.indexStride;
 		}
 
-		m_impl->CreateVertexBuffer(a_params);
+		m_impl->CreateVertexBuffer(a_device, a_params);
 	}
 
 	VertexBuffer::VertexBuffer(VertexBuffer&& a_other) noexcept
@@ -146,19 +147,15 @@ namespace Oyl::Rendering::Vulkan
 	void
 	CopyBuffer(
 		const Device& a_device,
-		const RenderQueue& a_queue,
 		const vk::raii::Buffer& a_srcBuffer,
 		const vk::raii::Buffer& a_dstBuffer,
 		vk::DeviceSize a_size
 	);
 
 	void
-	VertexBuffer::Impl::CreateVertexBuffer(const CreateParams& a_params)
+	VertexBuffer::Impl::CreateVertexBuffer(const Device& a_device, const CreateParams& a_params)
 	{
 		OYL_PROFILE_FUNCTION();
-
-		const auto& device = a_params.device;
-		const auto& queue = a_params.queue;
 
 		auto vertexData = a_params.vertexData;
 		auto vertexLength = a_params.vertexLength;
@@ -172,24 +169,21 @@ namespace Oyl::Rendering::Vulkan
 			combinedDataBuffer.insert(combinedDataBuffer.end(), &indexData[0], &indexData[indexLength]);
 		combinedDataBuffer.insert(combinedDataBuffer.end(), &vertexData[0], &vertexData[vertexLength]);
 
-		// Create staging buffer to send data from CPU to GPU
-		auto [stagingBuffer, stagingBufferMemory] =
-			CreateBuffer(
-				device,
-				combinedDataBuffer.size(),
-				vk::BufferUsageFlagBits::eTransferSrc,
-				vk::MemoryPropertyFlagBits::eHostVisible
-				| vk::MemoryPropertyFlagBits::eHostCoherent
-			);
-
-		void* dataStaging = stagingBufferMemory.mapMemory(0, combinedDataBuffer.size());
-		std::memcpy(dataStaging, combinedDataBuffer.data(), combinedDataBuffer.size());
-		stagingBufferMemory.unmapMemory();
+		auto stagingBuffer = StagingBuffer(
+			a_device,
+			{
+				.pData = combinedDataBuffer.data(),
+				.dataLength = (uint32) combinedDataBuffer.size(),
+				.vkUsage = vk::BufferUsageFlagBits::eTransferSrc,
+				.vkProperties = vk::MemoryPropertyFlagBits::eHostVisible
+				                | vk::MemoryPropertyFlagBits::eHostCoherent
+			}
+		);
 
 		// Copy data in staging buffer to main buffer
 		std::tie(buffer, bufferMemory) =
 			CreateBuffer(
-				device,
+				a_device,
 				combinedDataBuffer.size(),
 				vk::BufferUsageFlagBits::eVertexBuffer
 				| vk::BufferUsageFlagBits::eIndexBuffer
@@ -197,7 +191,7 @@ namespace Oyl::Rendering::Vulkan
 				vk::MemoryPropertyFlagBits::eDeviceLocal
 			);
 
-		CopyBuffer(device, queue, stagingBuffer, buffer, combinedDataBuffer.size());
+		CopyBuffer(a_device, stagingBuffer.GetVkBuffer(), buffer, combinedDataBuffer.size());
 	}
 
 	uint32
@@ -237,17 +231,18 @@ namespace Oyl::Rendering::Vulkan
 
 		vk::BufferCreateInfo bufferInfo { .size = a_size, .usage = a_usage, .sharingMode = vk::SharingMode::eExclusive };
 		vk::raii::Buffer buffer = vk::raii::Buffer(device, bufferInfo);
+
 		vk::MemoryRequirements memRequirements = buffer.getMemoryRequirements();
 		vk::MemoryAllocateInfo allocInfo { .allocationSize = memRequirements.size, .memoryTypeIndex = FindMemoryType(physicalDevice, memRequirements.memoryTypeBits, a_properties) };
 		vk::raii::DeviceMemory bufferMemory = vk::raii::DeviceMemory(device, allocInfo);
 		buffer.bindMemory(*bufferMemory, 0);
+
 		return { std::move(buffer), std::move(bufferMemory) };
 	}
 
 	void
 	CopyBuffer(
 		const Device& a_device,
-		const RenderQueue& a_queue,
 		const vk::raii::Buffer& a_srcBuffer,
 		const vk::raii::Buffer& a_dstBuffer,
 		vk::DeviceSize a_size
@@ -255,11 +250,12 @@ namespace Oyl::Rendering::Vulkan
 	{
 		OYL_PROFILE_FUNCTION();
 
+		auto& transferCommandQueue = *a_device.GetCommandQueue(CommandQueueFlagBits::Transfer);
 		auto commandPool = vk::raii::CommandPool(
 			a_device.GetVkDevice(),
 			{
 				.flags = vk::CommandPoolCreateFlagBits::eTransient,
-				.queueFamilyIndex = a_device.GetVkGraphicsQueueFamilyIndex()
+				.queueFamilyIndex = transferCommandQueue.GetVkQueueFamilyIndex()
 			}
 		);
 
@@ -277,7 +273,7 @@ namespace Oyl::Rendering::Vulkan
 		commandCopyBuffer.copyBuffer(*a_srcBuffer, *a_dstBuffer, vk::BufferCopy(0, 0, a_size));
 		commandCopyBuffer.end();
 
-		const auto& vkQueue = a_queue.GetVkQueue();
+		const auto& vkQueue = transferCommandQueue.GetVkQueue();
 
 		vkQueue.submit(
 			vk::SubmitInfo {

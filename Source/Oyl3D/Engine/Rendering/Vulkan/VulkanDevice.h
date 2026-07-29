@@ -2,17 +2,14 @@
 
 #include <vulkan/vulkan_raii.hpp>
 
-#include "Rendering/Device.h"
+#include "VulkanCommandQueue.h"
 
-//namespace vk::raii
-//{
-//	class Device;
-//	class PhysicalDevice;
-//	class SurfaceKHR;
-//}
+#include "Rendering/Device.h"
 
 namespace Oyl::Rendering::Vulkan
 {
+	class CommandQueue;
+
 	class OYL_RENDERING_API Device : public IDevice
 	{
 	public:
@@ -21,6 +18,8 @@ namespace Oyl::Rendering::Vulkan
 		struct CreateParams
 		{
 			const IWindow& window;
+
+			CommandQueueFlags commandQueueFlags;
 
 			const char* const* ppRequiredDeviceExtensionsData;
 			size_t requiredDeviceExtensionsLength;
@@ -45,6 +44,9 @@ namespace Oyl::Rendering::Vulkan
 		const IWindow*
 		GetWindow() const override;
 
+		const CommandQueue*
+		GetCommandQueue(CommandQueueFlagBits a_flag) const override;
+
 		const vk::raii::Device&
 		GetVkDevice() const;
 
@@ -53,9 +55,6 @@ namespace Oyl::Rendering::Vulkan
 
 		const vk::raii::SurfaceKHR&
 		GetVkSurface() const;
-
-		uint32
-		GetVkGraphicsQueueFamilyIndex() const;
 
 	private:
 		struct Impl;
