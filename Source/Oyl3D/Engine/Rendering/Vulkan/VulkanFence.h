@@ -26,27 +26,13 @@ namespace Oyl::Rendering::Vulkan
 		operator =(Fence&& a_other) noexcept;
 
 		virtual
-		~Fence()
-		{
-			Fence::Destroy();
-		}
+		~Fence();
 
 		void
 		Destroy() override;
 
 		bool
 		IsValid() const override;
-
-		FenceHandle
-		GetHandle() const
-		{
-			return *m_fence;
-		}
-
-		operator FenceHandle() const
-		{
-			return GetHandle();
-		}
 
 		void
 		Reset() override;
@@ -58,6 +44,17 @@ namespace Oyl::Rendering::Vulkan
 		GetVkFence() const
 		{
 			return m_fence;
+		}
+
+		FenceHandle
+		GetHandle() const
+		{
+			return *m_fence;
+		}
+
+		operator FenceHandle() const
+		{
+			return GetHandle();
 		}
 
 	protected:

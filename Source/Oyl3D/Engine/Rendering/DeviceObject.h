@@ -5,23 +5,28 @@
 namespace Oyl::Rendering
 {
 	template<typename THandle>
-	class DeviceObject : public IUniqueHandle
+	class IDeviceObject : public IUniqueHandle
 	{
 	protected:
-		DeviceObject() = default;
+		IDeviceObject() = default;
 
-		DEFAULT_MOVE(DeviceObject);
+		DEFAULT_MOVE(IDeviceObject);
 
 	public:
-		NO_COPY(DeviceObject);
+		NO_COPY(IDeviceObject);
 
 		virtual
-		~DeviceObject() = default;
+		~IDeviceObject() = default;
 
 		THandle
 		GetHandle() const
 		{
 			return GetHandleImpl();
+		}
+
+		operator THandle()
+		{
+			return GetHandle();
 		}
 
 	protected:

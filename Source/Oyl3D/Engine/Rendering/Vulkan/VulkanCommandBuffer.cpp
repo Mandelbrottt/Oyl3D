@@ -12,17 +12,6 @@ namespace Oyl::Rendering::Vulkan
 		const CommandPool* commandPool;
 
 		vk::raii::CommandBuffer commandBuffer = nullptr;
-
-		void
-		TransitionImageLayout(
-			vk::Image a_image,
-			vk::ImageLayout a_oldLayout,
-			vk::ImageLayout a_new_layout,
-			vk::AccessFlags2 a_srcAccessMask,
-			vk::AccessFlags2 a_dstAccessMask,
-			vk::PipelineStageFlags2 a_srcStageMask,
-			vk::PipelineStageFlags2 a_dstStageMask
-		) const noexcept;
 	};
 
 	CommandBuffer::CommandBuffer() noexcept
@@ -110,17 +99,6 @@ namespace Oyl::Rendering::Vulkan
 	{
 		OYL_PROFILE_FUNCTION();
 
-		auto currentVkImage = a_swapChain.GetCurrentVkImage();
-		m_impl->TransitionImageLayout(
-			currentVkImage,
-			vk::ImageLayout::eUndefined,
-			vk::ImageLayout::eColorAttachmentOptimal,
-			{},
-			vk::AccessFlagBits2::eColorAttachmentWrite,
-			vk::PipelineStageFlagBits2::eColorAttachmentOutput,
-			vk::PipelineStageFlagBits2::eColorAttachmentOutput
-		);
-
 		const auto& currentVkImageView = a_swapChain.GetCurrentVkImageView();
 		vk::ClearValue clearColor = vk::ClearColorValue(0.0f, 0.0f, 0.0f, 1.0f);
 		vk::RenderingAttachmentInfo attachmentInfo = {
@@ -163,16 +141,6 @@ namespace Oyl::Rendering::Vulkan
 		OYL_PROFILE_FUNCTION();
 
 		m_impl->commandBuffer.endRendering();
-
-		m_impl->TransitionImageLayout(
-			a_swapChain.GetCurrentVkImage(),
-			vk::ImageLayout::eColorAttachmentOptimal,
-			vk::ImageLayout::ePresentSrcKHR,
-			vk::AccessFlagBits2::eColorAttachmentWrite,
-			{},
-			vk::PipelineStageFlagBits2::eColorAttachmentOutput,
-			vk::PipelineStageFlagBits2::eBottomOfPipe
-		);
 	}
 
 	void
@@ -251,44 +219,5 @@ namespace Oyl::Rendering::Vulkan
 			vkCommandBuffer.bindVertexBuffers(0, *vkVertexBuffer, { a_vertexBuffer.GetVertexDataOffset() });
 			vkCommandBuffer.draw(a_vertexBuffer.GetVertexCount(), 1, 0, 0);
 		}
-	}
-
-	void
-	CommandBuffer::Impl::TransitionImageLayout(
-		vk::Image a_image,
-		vk::ImageLayout a_oldLayout,
-		vk::ImageLayout a_new_layout,
-		vk::AccessFlags2 a_srcAccessMask,
-		vk::AccessFlags2 a_dstAccessMask,
-		vk::PipelineStageFlags2 a_srcStageMask,
-		vk::PipelineStageFlags2 a_dstStageMask
-	) const noexcept
-	{
-		OYL_PROFILE_FUNCTION();
-
-		vk::ImageMemoryBarrier2 barrier = {
-			.srcStageMask = a_srcStageMask,
-			.srcAccessMask = a_srcAccessMask,
-			.dstStageMask = a_dstStageMask,
-			.dstAccessMask = a_dstAccessMask,
-			.oldLayout = a_oldLayout,
-			.newLayout = a_new_layout,
-			.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED,
-			.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED,
-			.image = a_image,
-			.subresourceRange = {
-				.aspectMask = vk::ImageAspectFlagBits::eColor,
-				.baseMipLevel = 0,
-				.levelCount = 1,
-				.baseArrayLayer = 0,
-				.layerCount = 1
-			}
-		};
-		vk::DependencyInfo dependency_info = {
-			.dependencyFlags = {},
-			.imageMemoryBarrierCount = 1,
-			.pImageMemoryBarriers = &barrier
-		};
-		commandBuffer.pipelineBarrier2(dependency_info);
 	}
 }

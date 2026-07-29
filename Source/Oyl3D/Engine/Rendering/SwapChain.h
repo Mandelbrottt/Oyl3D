@@ -1,6 +1,7 @@
 ﻿#pragma once
 
 #include <Core/UniqueHandle.h>
+#include <Core/Math/Vector2.h>
 
 #include "Fence.h"
 #include "Semaphore.h"
@@ -19,6 +20,10 @@ namespace Oyl::Rendering
 
 		virtual
 		~ISwapChain() = default;
+
+		virtual
+		Vector2u
+		GetSize() const = 0;
 
 		virtual
 		void

@@ -3,11 +3,12 @@
 	<s:String x:Key="/Default/CodeInspection/GeneratedCode/GeneratedFileMasks/=_002A_002Egenerated_002Eh/@EntryIndexedValue">*.generated.h</s:String>
 	<s:String x:Key="/Default/CodeInspection/Highlighting/InspectionSeverities/=CppEnforceCVQualifiersOrder/@EntryIndexedValue">SUGGESTION</s:String>
 	<s:String x:Key="/Default/CodeInspection/Highlighting/InspectionSeverities/=CppEnforceCVQualifiersPlacement/@EntryIndexedValue">SUGGESTION</s:String>
+	<s:String x:Key="/Default/CodeInspection/Highlighting/InspectionSeverities/=CppPolymorphicClassWithNonVirtualPublicDestructor/@EntryIndexedValue">ERROR</s:String>
 	<s:String x:Key="/Default/CodeInspection/Highlighting/InspectionSeverities/=CppTooWideScopeInitStatement/@EntryIndexedValue">DO_NOT_SHOW</s:String>
 	<s:String x:Key="/Default/CodeStyle/CodeFormatting/CommonFormatter/END_OF_LINE/@EntryValue">LF</s:String>
 	<s:Boolean x:Key="/Default/CodeStyle/CodeFormatting/CommonFormatter/ENFORCE_LINE_ENDING_STYLE/@EntryValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/CodeStyle/CodeFormatting/CommonFormatter/SHOW_AUTODETECT_CONFIGURE_FORMATTING_TIP/@EntryValue">False</s:Boolean>
-	<s:String x:Key="/Default/CodeStyle/CodeFormatting/CppCodeStyle/FunctionDeclarationStyle/@EntryValue">TrailingReturnType</s:String>
+	
 	<s:String x:Key="/Default/CodeStyle/CodeFormatting/CppCodeStyle/OverridingDestructorStyle/@EntryValue">Virtual</s:String>
 	
 	<s:Boolean x:Key="/Default/CodeStyle/CodeFormatting/CppFormatting/ALIGN_MULTILINE_BINARY_EXPRESSIONS_CHAIN/@EntryValue">True</s:Boolean>
@@ -346,7 +347,7 @@ namespace Oyl::Rendering
 </s:String>
 	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=5944C2B410423E4085A72C09C543EE1C/@KeyIndexDefined">True</s:Boolean>
 	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=5944C2B410423E4085A72C09C543EE1C/Applicability/=File/@EntryIndexedValue">True</s:Boolean>
-	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=5944C2B410423E4085A72C09C543EE1C/CustomProperties/=Extension/@EntryIndexedValue">cpp</s:String>
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=5944C2B410423E4085A72C09C543EE1C/CustomProperties/=Extension/@EntryIndexedValue">h</s:String>
 	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=5944C2B410423E4085A72C09C543EE1C/CustomProperties/=FileName/@EntryIndexedValue">Vulkan$NAME$</s:String>
 	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=5944C2B410423E4085A72C09C543EE1C/CustomProperties/=ValidateFileName/@EntryIndexedValue">False</s:String>
 	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=5944C2B410423E4085A72C09C543EE1C/Description/@EntryValue">Oyl Vulkan Device Class</s:String>
@@ -363,7 +364,7 @@ namespace Oyl::Rendering
 	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=5944C2B410423E4085A72C09C543EE1C/Scope/=CD5B1AEA8099834C8F10F84286AA88CA/@KeyIndexDefined">True</s:Boolean>
 	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=5944C2B410423E4085A72C09C543EE1C/Scope/=CD5B1AEA8099834C8F10F84286AA88CA/Type/@EntryValue">InCppProjectFile</s:String>
 	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=5944C2B410423E4085A72C09C543EE1C/Section/=171A3E994C835E4EAD3CC62935F3210A/@KeyIndexDefined">True</s:Boolean>
-	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=5944C2B410423E4085A72C09C543EE1C/Section/=171A3E994C835E4EAD3CC62935F3210A/LocationSelectorConfig/@EntryValue">&lt;RelativeConfig File="$NAME$.my" /&gt;</s:String>
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=5944C2B410423E4085A72C09C543EE1C/Section/=171A3E994C835E4EAD3CC62935F3210A/LocationSelectorConfig/@EntryValue">&lt;RelativeConfig File="$NAME$.cpp" /&gt;</s:String>
 	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=5944C2B410423E4085A72C09C543EE1C/Section/=171A3E994C835E4EAD3CC62935F3210A/LocationSelectorName/@EntryValue">manual</s:String>
 	<s:Int64 x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=5944C2B410423E4085A72C09C543EE1C/Section/=171A3E994C835E4EAD3CC62935F3210A/Order/@EntryValue">0</s:Int64>
 	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=5944C2B410423E4085A72C09C543EE1C/Section/=171A3E994C835E4EAD3CC62935F3210A/SectionPlain/Text/@EntryValue">#include "Vulkan$NAME$.h"
@@ -432,7 +433,7 @@ namespace Oyl::Rendering::Vulkan
 
 namespace Oyl::Rendering::Vulkan
 {
-	using $NAME$Handle = OpaqueHandleConvertible&lt;$NAME$Handle, $VULKAN_CLASS$
+	using $NAME$Handle = OpaqueHandleConvertible&lt;$NAME$Handle, $VULKAN_CLASS$&gt;;
 
 	class OYL_$API$_API $NAME$ : public Rendering::$NAME$
 	{
@@ -444,7 +445,10 @@ namespace Oyl::Rendering::Vulkan
 			
 		};
 
-		Shader($NAME$&amp;&amp; a_other) noexcept;
+		explicit
+		$NAME$(const CreateParams&amp; a_params);
+
+		$NAME$($NAME$&amp;&amp; a_other) noexcept;
 		$NAME$&amp;
 		operator =($NAME$&amp;&amp; a_other) noexcept;
 

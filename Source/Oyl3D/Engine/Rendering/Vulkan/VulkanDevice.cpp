@@ -407,7 +407,6 @@ namespace Oyl::Rendering::Vulkan
 		};
 
 		device = vk::raii::Device(physicalDevice, deviceCreateInfo);
-		//graphicsQueue = vk::raii::Queue(device, graphicsQueueFamilyIndex, 0);
 	}
 }
 

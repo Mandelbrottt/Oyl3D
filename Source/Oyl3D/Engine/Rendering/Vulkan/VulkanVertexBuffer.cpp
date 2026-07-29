@@ -119,10 +119,10 @@ namespace Oyl::Rendering::Vulkan
 		return m_impl->buffer;
 	}
 
-	Rendering::VertexBufferHandle
-	VertexBuffer::GetHandleImpl() const
+	VertexBufferHandle
+	VertexBuffer::GetHandle() const
 	{
-		return (VertexBufferHandle) *m_impl->buffer;
+		return *m_impl->buffer;
 	}
 
 	static

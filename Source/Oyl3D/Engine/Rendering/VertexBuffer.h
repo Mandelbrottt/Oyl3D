@@ -6,7 +6,7 @@ namespace Oyl::Rendering
 {
 	struct VertexBufferHandle : OpaqueHandle<VertexBufferHandle> {};
 
-	class VertexBuffer : public DeviceObject<VertexBufferHandle>
+	class VertexBuffer : public IDeviceObject<VertexBufferHandle>
 	{
 	protected:
 		VertexBuffer() = default;
@@ -18,12 +18,6 @@ namespace Oyl::Rendering
 
 		virtual
 		~VertexBuffer() = default;
-
-		void
-		Destroy() override = 0;
-
-		bool
-		IsValid() const override = 0;
 
 		virtual
 		uint32

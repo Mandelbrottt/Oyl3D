@@ -29,11 +29,11 @@ namespace Oyl::Rendering::Vulkan
 		const Device* device = nullptr;
 		const IWindow* window = nullptr;
 
-		vk::raii::SwapchainKHR swapChain = nullptr;
-		std::vector<vk::Image> swapChainImages;
-		std::vector<vk::raii::ImageView> swapChainImageViews;
-		vk::SurfaceFormatKHR swapChainSurfaceFormat;
-		vk::Extent2D swapChainExtent;
+		vk::raii::SwapchainKHR vkSwapChain = nullptr;
+		std::vector<vk::Image> vkSwapChainImageHandles;
+		std::vector<vk::raii::ImageView> vkSwapChainImageViews;
+		vk::SurfaceFormatKHR vkSwapChainSurfaceFormat;
+		vk::Extent2D vkSwapChainExtent;
 
 		uint32 imageIndex;
 
@@ -99,7 +99,13 @@ namespace Oyl::Rendering::Vulkan
 	SwapChain::IsValid() const
 	{
 		return m_impl
-		       && *m_impl->swapChain;
+		       && *m_impl->vkSwapChain;
+	}
+
+	Vector2u
+	SwapChain::GetSize() const
+	{
+		return Vector2u(m_impl->vkSwapChainExtent.width, m_impl->vkSwapChainExtent.height);
 	}
 
 	void
@@ -115,7 +121,7 @@ namespace Oyl::Rendering::Vulkan
 	{
 		OYL_PROFILE_FUNCTION();
 
-		auto [result, imageIndex] = m_impl->swapChain.acquireNextImage(UINT64_MAX, a_semaphore, a_fence);
+		auto [result, imageIndex] = m_impl->vkSwapChain.acquireNextImage(UINT64_MAX, a_semaphore, a_fence);
 		if (result == vk::Result::eErrorOutOfDateKHR)
 		{
 			return false;
@@ -139,43 +145,43 @@ namespace Oyl::Rendering::Vulkan
 	const vk::raii::SwapchainKHR&
 	SwapChain::GetVkSwapChain() const
 	{
-		return m_impl->swapChain;
+		return m_impl->vkSwapChain;
 	}
 
 	const std::vector<vk::Image>&
 	SwapChain::GetVkImages() const
 	{
-		return m_impl->swapChainImages;
+		return m_impl->vkSwapChainImageHandles;
 	}
 
 	vk::Image
 	SwapChain::GetCurrentVkImage() const
 	{
-		return m_impl->swapChainImages[m_impl->imageIndex];
+		return m_impl->vkSwapChainImageHandles[m_impl->imageIndex];
 	}
 
 	const std::vector<vk::raii::ImageView>&
 	SwapChain::GetVkImageViews() const
 	{
-		return m_impl->swapChainImageViews;
+		return m_impl->vkSwapChainImageViews;
 	}
 
 	const vk::raii::ImageView&
 	SwapChain::GetCurrentVkImageView() const
 	{
-		return m_impl->swapChainImageViews[m_impl->imageIndex];
+		return m_impl->vkSwapChainImageViews[m_impl->imageIndex];
 	}
 
 	const vk::SurfaceFormatKHR&
 	SwapChain::GetVkSurfaceFormat() const
 	{
-		return m_impl->swapChainSurfaceFormat;
+		return m_impl->vkSwapChainSurfaceFormat;
 	}
 
 	const vk::Extent2D&
 	SwapChain::GetVkExtent() const
 	{
-		return m_impl->swapChainExtent;
+		return m_impl->vkSwapChainExtent;
 	}
 
 	void
@@ -191,11 +197,11 @@ namespace Oyl::Rendering::Vulkan
 		const auto& surface = device->GetVkSurface();
 
 		vk::SurfaceCapabilitiesKHR surfaceCapabilities = physicalDevice.getSurfaceCapabilitiesKHR(*surface);
-		swapChainExtent = ChooseSwapExtent(surfaceCapabilities, { width, height });
+		vkSwapChainExtent = ChooseSwapExtent(surfaceCapabilities, { width, height });
 		uint32_t minImageCount = ChooseSwapMinImageCount(surfaceCapabilities);
 
 		std::vector<vk::SurfaceFormatKHR> availableFormats = physicalDevice.getSurfaceFormatsKHR(*surface);
-		swapChainSurfaceFormat = ChooseSwapSurfaceFormat(availableFormats);
+		vkSwapChainSurfaceFormat = ChooseSwapSurfaceFormat(availableFormats);
 
 		std::vector<vk::PresentModeKHR> availablePresentModes = physicalDevice.getSurfacePresentModesKHR(*surface);
 		vk::PresentModeKHR presentMode = ChooseSwapPresentMode(availablePresentModes);
@@ -203,9 +209,9 @@ namespace Oyl::Rendering::Vulkan
 		vk::SwapchainCreateInfoKHR swapChainCreateInfo {
 			.surface = *surface,
 			.minImageCount = minImageCount,
-			.imageFormat = swapChainSurfaceFormat.format,
-			.imageColorSpace = swapChainSurfaceFormat.colorSpace,
-			.imageExtent = swapChainExtent,
+			.imageFormat = vkSwapChainSurfaceFormat.format,
+			.imageColorSpace = vkSwapChainSurfaceFormat.colorSpace,
+			.imageExtent = vkSwapChainExtent,
 			.imageArrayLayers = 1,
 			.imageUsage = vk::ImageUsageFlagBits::eColorAttachment,
 			.imageSharingMode = vk::SharingMode::eExclusive,
@@ -215,8 +221,8 @@ namespace Oyl::Rendering::Vulkan
 			.clipped = true,
 			.oldSwapchain = nullptr
 		};
-		swapChain = vk::raii::SwapchainKHR(device->GetVkDevice(), swapChainCreateInfo);
-		swapChainImages = swapChain.getImages();
+		vkSwapChain = vk::raii::SwapchainKHR(device->GetVkDevice(), swapChainCreateInfo);
+		vkSwapChainImageHandles = vkSwapChain.getImages();
 	}
 
 	void
@@ -224,29 +230,29 @@ namespace Oyl::Rendering::Vulkan
 	{
 		OYL_PROFILE_FUNCTION();
 
-		OYL_ASSERT(swapChainImageViews.empty());
+		OYL_ASSERT(vkSwapChainImageViews.empty());
 
 		vk::ImageViewCreateInfo imageViewCreateInfo {
 			.viewType = vk::ImageViewType::e2D,
-			.format = swapChainSurfaceFormat.format,
+			.format = vkSwapChainSurfaceFormat.format,
 			.subresourceRange = {
 				.aspectMask = vk::ImageAspectFlagBits::eColor,
 				.levelCount = 1,
 				.layerCount = 1
 			},
 		};
-		for (auto& image : swapChainImages)
+		for (auto& image : vkSwapChainImageHandles)
 		{
 			imageViewCreateInfo.image = image;
-			swapChainImageViews.emplace_back(device->GetVkDevice(), imageViewCreateInfo);
+			vkSwapChainImageViews.emplace_back(device->GetVkDevice(), imageViewCreateInfo);
 		}
 	}
 
 	void
 	SwapChain::Impl::CleanupSwapChain()
 	{
-		swapChainImageViews.clear();
-		swapChain = nullptr;
+		vkSwapChainImageViews.clear();
+		vkSwapChain = nullptr;
 	}
 
 	void

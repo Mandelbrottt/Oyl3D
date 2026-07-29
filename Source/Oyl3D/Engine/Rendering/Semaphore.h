@@ -8,7 +8,7 @@ namespace Oyl::Rendering
 {
 	struct SemaphoreHandle : OpaqueHandle<SemaphoreHandle> {};
 
-	class ISemaphore : public DeviceObject<SemaphoreHandle>
+	class ISemaphore : public IDeviceObject<SemaphoreHandle>
 	{
 	protected:
 		ISemaphore() = default;

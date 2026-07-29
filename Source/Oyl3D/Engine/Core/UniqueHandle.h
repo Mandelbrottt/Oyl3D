@@ -29,5 +29,12 @@ namespace Oyl
 		{
 			return IsValid();
 		}
+
+		virtual
+		bool
+		operator !() const
+		{
+			return !IsValid();
+		}
 	};
 }

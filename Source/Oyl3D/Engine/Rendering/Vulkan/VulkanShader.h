@@ -51,18 +51,23 @@ namespace Oyl::Rendering::Vulkan
 		bool
 		IsValid() const override;
 
-		ShaderHandle
-		GetHandle() const
-		{
-			return GetHandleImpl();
-		}
-
 		const vk::raii::Pipeline&
 		GetVkPipeline() const;
 
+		ShaderHandle
+		GetHandle() const;
+
+		operator ShaderHandle() const
+		{
+			return GetHandle();
+		}
+
 	protected:
 		Rendering::ShaderHandle
-		GetHandleImpl() const override;
+		GetHandleImpl() const override
+		{
+			return GetHandle();
+		}
 
 	private:
 		struct Impl;

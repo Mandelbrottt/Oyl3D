@@ -3,12 +3,14 @@
 #include <vulkan/vulkan_raii.hpp>
 
 #include "VulkanDevice.h"
+#include "VulkanImage.h"
 #include "VulkanRenderQueue.h"
 #include "VulkanShader.h"
 #include "VulkanSwapChain.h"
 #include "VulkanVertexBuffer.h"
 
 #include "Rendering/RenderEngine.h"
+#include "Rendering/RenderTarget.h"
 #include "Rendering/Glfw/GlfwWindow.h"
 #include "Rendering/Vulkan/VulkanCommandBuffer.h"
 #include "Rendering/Vulkan/VulkanCommandPool.h"
@@ -28,6 +30,7 @@ namespace Oyl::Rendering::Vulkan
 		Device device;
 		RenderQueue graphicsQueue;
 		SwapChain swapChain;
+		Image image;
 
 		// TEMPORARY:
 		Shader shader;
@@ -113,6 +116,14 @@ namespace Oyl::Rendering::Vulkan
 				.device = m_impl->device,
 			}
 		);
+
+		m_impl->image = Image({
+			.device = m_impl->device,
+			.size = m_impl->swapChain.GetSize(),
+			.vkFormat = m_impl->swapChain.GetVkSurfaceFormat().format,
+			.vkUsage = vk::ImageUsageFlagBits::eColorAttachment,
+			.vkProperties = vk::MemoryPropertyFlagBits::eDeviceLocal
+		});
 
 		m_impl->commandPool = CommandPool({ .device = m_impl->device });
 
@@ -290,6 +301,48 @@ namespace Oyl::Rendering::Vulkan
 		}
 	}
 
+	static
+	void
+	TransitionImageLayout(
+		const CommandBuffer& a_commandBuffer,
+		vk::Image a_image,
+		vk::ImageLayout a_oldLayout,
+		vk::ImageLayout a_new_layout,
+		vk::AccessFlags2 a_srcAccessMask,
+		vk::AccessFlags2 a_dstAccessMask,
+		vk::PipelineStageFlags2 a_srcStageMask,
+		vk::PipelineStageFlags2 a_dstStageMask
+	) noexcept
+	{
+		OYL_PROFILE_FUNCTION();
+
+		vk::ImageMemoryBarrier2 barrier = {
+			.srcStageMask = a_srcStageMask,
+			.srcAccessMask = a_srcAccessMask,
+			.dstStageMask = a_dstStageMask,
+			.dstAccessMask = a_dstAccessMask,
+			.oldLayout = a_oldLayout,
+			.newLayout = a_new_layout,
+			.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED,
+			.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED,
+			.image = a_image,
+			.subresourceRange = {
+				.aspectMask = vk::ImageAspectFlagBits::eColor,
+				.baseMipLevel = 0,
+				.levelCount = 1,
+				.baseArrayLayer = 0,
+				.layerCount = 1
+			}
+		};
+		vk::DependencyInfo dependency_info = {
+			.dependencyFlags = {},
+			.imageMemoryBarrierCount = 1,
+			.pImageMemoryBarriers = &barrier
+		};
+		const auto& vkCommandBuffer = a_commandBuffer.GetVkCommandBuffer();
+		vkCommandBuffer.pipelineBarrier2(dependency_info);
+	}
+
 	void
 	RenderContext::Impl::RecordCommandBuffer()
 	{
@@ -298,6 +351,19 @@ namespace Oyl::Rendering::Vulkan
 		auto& commandBuffer = commandBuffers[frameIndex];
 
 		commandBuffer.Begin();
+
+		// Since we're rendering directly to the swapChain image
+		TransitionImageLayout(
+			commandBuffer,
+			swapChain.GetCurrentVkImage(),
+			vk::ImageLayout::eUndefined,
+			vk::ImageLayout::eColorAttachmentOptimal,
+			{},
+			vk::AccessFlagBits2::eColorAttachmentWrite,
+			vk::PipelineStageFlagBits2::eColorAttachmentOutput,
+			vk::PipelineStageFlagBits2::eColorAttachmentOutput
+		);
+
 		commandBuffer.BeginRendering(swapChain);
 
 		Vector2u extent = Vector2u(
@@ -311,6 +377,18 @@ namespace Oyl::Rendering::Vulkan
 		commandBuffer.BindVertexBuffer(vertexBuffer);
 
 		commandBuffer.EndRendering(swapChain);
+
+		TransitionImageLayout(
+			commandBuffer,
+			swapChain.GetCurrentVkImage(),
+			vk::ImageLayout::eColorAttachmentOptimal,
+			vk::ImageLayout::ePresentSrcKHR,
+			vk::AccessFlagBits2::eColorAttachmentWrite,
+			{},
+			vk::PipelineStageFlagBits2::eColorAttachmentOutput,
+			vk::PipelineStageFlagBits2::eBottomOfPipe
+		);
+
 		commandBuffer.End();
 	}
 

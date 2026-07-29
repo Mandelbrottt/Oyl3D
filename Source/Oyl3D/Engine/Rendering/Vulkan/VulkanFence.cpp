@@ -31,6 +31,11 @@ namespace Oyl::Rendering::Vulkan
 		return *this;
 	}
 
+	Fence::~Fence()
+	{
+		Fence::Destroy();
+	}
+
 	void
 	Fence::Destroy()
 	{
@@ -63,5 +68,11 @@ namespace Oyl::Rendering::Vulkan
 
 		auto result = vkDevice.waitForFences(*vkFence, vk::True, a_timeout);
 		return result != vk::Result::eSuccess;
+	}
+
+	FenceHandle
+	Fence::GetHandle() const
+	{
+		return *;
 	}
 }

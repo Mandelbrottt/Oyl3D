@@ -43,6 +43,9 @@ namespace Oyl::Rendering::Vulkan
 		bool
 		IsValid() const override;
 
+		Vector2u
+		GetSize() const override;
+
 		void
 		Recreate() override;
 

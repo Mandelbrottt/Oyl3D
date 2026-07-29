@@ -14,7 +14,7 @@ namespace Oyl::Rendering
 
 	struct ShaderHandle : OpaqueHandle<ShaderHandle> {};
 
-	class Shader : public DeviceObject<ShaderHandle>
+	class Shader : public IDeviceObject<ShaderHandle>
 	{
 	protected:
 		Shader() = default;

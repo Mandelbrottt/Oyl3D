@@ -46,12 +46,6 @@ namespace Oyl::Rendering::Vulkan
 		bool
 		IsValid() const override;
 
-		VertexBufferHandle
-		GetHandle() const
-		{
-			return GetHandleImpl();
-		}
-
 		uint32
 		GetVertexCount() const override;
 
@@ -69,6 +63,12 @@ namespace Oyl::Rendering::Vulkan
 
 		const vk::raii::Buffer&
 		GetVkBuffer() const;
+
+		VertexBufferHandle
+		GetHandle() const
+		{
+			return GetHandleImpl();
+		}
 
 	protected:
 		Rendering::VertexBufferHandle

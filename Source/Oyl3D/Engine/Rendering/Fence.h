@@ -8,7 +8,7 @@ namespace Oyl::Rendering
 {
 	struct FenceHandle : OpaqueHandle<FenceHandle> {};
 
-	class IFence : public DeviceObject<FenceHandle>
+	class IFence : public IDeviceObject<FenceHandle>
 	{
 	protected:
 		IFence() = default;
@@ -21,12 +21,10 @@ namespace Oyl::Rendering
 		virtual
 		~IFence() = default;
 
-		virtual
 		void
-		Reset() = 0;
+		virtual Reset() = 0;
 
-		virtual
 		bool
-		Wait(uint64 a_timeout = std::numeric_limits<uint64>::max()) = 0;
+		virtual Wait(uint64 a_timeout = std::numeric_limits<uint64>::max()) = 0;
 	};
 }

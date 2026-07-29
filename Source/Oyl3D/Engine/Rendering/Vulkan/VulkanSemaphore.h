@@ -37,6 +37,12 @@ namespace Oyl::Rendering::Vulkan
 		bool
 		IsValid() const override;
 
+		const vk::raii::Semaphore&
+		GetVkSemaphore() const
+		{
+			return m_semaphore;
+		}
+
 		SemaphoreHandle
 		GetHandle() const
 		{
@@ -46,12 +52,6 @@ namespace Oyl::Rendering::Vulkan
 		operator SemaphoreHandle() const
 		{
 			return GetHandle();
-		}
-
-		const vk::raii::Semaphore&
-		GetVkSemaphore() const
-		{
-			return m_semaphore;
 		}
 
 	protected:

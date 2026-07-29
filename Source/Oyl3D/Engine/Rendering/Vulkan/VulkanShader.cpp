@@ -91,16 +91,16 @@ namespace Oyl::Rendering::Vulkan
 		       && *m_impl->pipeline;
 	}
 
-	Rendering::ShaderHandle
-	Shader::GetHandleImpl() const
-	{
-		return (ShaderHandle) *m_impl->pipeline;
-	}
-
 	const vk::raii::Pipeline&
 	Shader::GetVkPipeline() const
 	{
 		return m_impl->pipeline;
+	}
+
+	ShaderHandle
+	Shader::GetHandle() const
+	{
+		return *m_impl->pipeline;
 	}
 
 	static
