@@ -88,6 +88,8 @@ namespace Oyl::Rendering::Vulkan
 	void
 	CommandBuffer::Begin() const noexcept
 	{
+		OYL_PROFILE_FUNCTION();
+
 		m_impl->commandBuffer.begin({});
 	}
 

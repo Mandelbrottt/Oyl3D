@@ -56,6 +56,9 @@ namespace Oyl::Rendering::Vulkan
 		const vk::raii::SurfaceKHR&
 		GetVkSurface() const;
 
+		void
+		WaitUntilIdle() const override;
+
 	private:
 		struct Impl;
 		std::unique_ptr<Impl> m_impl;

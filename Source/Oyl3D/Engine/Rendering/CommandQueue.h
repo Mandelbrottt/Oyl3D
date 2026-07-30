@@ -38,6 +38,10 @@ namespace Oyl::Rendering
 		virtual
 		~ICommandQueue() = default;
 
+		virtual
+		void
+		WaitUntilIdle() const = 0;
+
 		struct SubmitParams
 		{
 			const ICommandBuffer& commandBuffer;

@@ -74,6 +74,14 @@ namespace Oyl::Rendering::Vulkan
 	}
 
 	void
+	CommandQueue::WaitUntilIdle() const
+	{
+		OYL_PROFILE_FUNCTION();
+
+		m_impl->queue.waitIdle();
+	}
+
+	void
 	CommandQueue::Submit(const ICommandQueue::SubmitParams& a_params)
 	{
 		Submit(
@@ -96,16 +104,20 @@ namespace Oyl::Rendering::Vulkan
 		vk::Semaphore vkSignalSemaphore = a_params.signalSemaphore;
 		vk::Fence vkFence = a_params.fence;
 
-		vk::PipelineStageFlags waitDestinationStageMask = vk::PipelineStageFlagBits::eColorAttachmentOutput;
-		const vk::SubmitInfo submitInfo {
-			.waitSemaphoreCount = 1,
-			.pWaitSemaphores = &vkWaitSemaphore,
-			.pWaitDstStageMask = &waitDestinationStageMask,
-			.commandBufferCount = 1,
-			.pCommandBuffers = &*vkCommandBuffer,
-			.signalSemaphoreCount = 1,
-			.pSignalSemaphores = &vkSignalSemaphore
-		};
+		vk::PipelineStageFlags waitDestinationStageMask = a_params.waitDestinationStageMask;
+		vk::SubmitInfo submitInfo;
+		submitInfo.setCommandBufferCount(1)
+		          .setPCommandBuffers(&*vkCommandBuffer);
+
+		if (a_params.waitDestinationStageMask)
+			submitInfo.setWaitDstStageMask(waitDestinationStageMask);
+
+		if (vkWaitSemaphore)
+			submitInfo.setWaitSemaphores(vkWaitSemaphore);
+
+		if (vkSignalSemaphore)
+			submitInfo.setSignalSemaphores(vkSignalSemaphore);
+
 		m_impl->queue.submit(submitInfo, vkFence);
 	}
 

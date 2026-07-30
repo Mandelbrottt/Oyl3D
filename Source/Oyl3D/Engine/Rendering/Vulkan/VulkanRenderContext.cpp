@@ -212,7 +212,7 @@ namespace Oyl::Rendering::Vulkan
 		if (!m_impl)
 			return;
 
-		m_impl->device.GetVkDevice().waitIdle();
+		m_impl->device.WaitUntilIdle();
 
 		m_impl->renderFinishedSemaphores.clear();
 		m_impl->presentCompleteSemaphores.clear();
@@ -284,6 +284,8 @@ namespace Oyl::Rendering::Vulkan
 		vk::PipelineStageFlags2 a_dstStageMask
 	)
 	{
+		OYL_PROFILE_FUNCTION();
+
 		vk::ImageMemoryBarrier2 barrier = {
 			.srcStageMask = a_srcStageMask,
 			.srcAccessMask = a_srcAccessMask,
@@ -364,20 +366,23 @@ namespace Oyl::Rendering::Vulkan
 			vk::PipelineStageFlagBits2::eTransfer,
 			vk::PipelineStageFlagBits2::eBlit
 		);
+		{
+			OYL_PROFILE_SCOPE("BlitImage");
 
-		commandBuffer.GetVkCommandBuffer().blitImage(
-			image.GetVkImage(),
-			vk::ImageLayout::eTransferSrcOptimal,
-			swapChain.GetCurrentVkImage(),
-			vk::ImageLayout::eTransferDstOptimal,
-			vk::ImageBlit {
-				.srcSubresource = { .aspectMask = vk::ImageAspectFlagBits::eColor, .mipLevel = 0, .baseArrayLayer = 0, .layerCount = 1 },
-				.srcOffsets = std::array { vk::Offset3D { 0, 0, 0 }, vk::Offset3D { (int) image.GetSize().x, (int) image.GetSize().y, 1 } },
-				.dstSubresource = { .aspectMask = vk::ImageAspectFlagBits::eColor, .mipLevel = 0, .baseArrayLayer = 0, .layerCount = 1 },
-				.dstOffsets = std::array { vk::Offset3D { 0, 0, 0 }, vk::Offset3D { (int) swapChain.GetSize().x, (int) swapChain.GetSize().y, 1 } }
-			},
-			vk::Filter::eNearest
-		);
+			commandBuffer.GetVkCommandBuffer().blitImage(
+				image.GetVkImage(),
+				vk::ImageLayout::eTransferSrcOptimal,
+				swapChain.GetCurrentVkImage(),
+				vk::ImageLayout::eTransferDstOptimal,
+				vk::ImageBlit {
+					.srcSubresource = { .aspectMask = vk::ImageAspectFlagBits::eColor, .mipLevel = 0, .baseArrayLayer = 0, .layerCount = 1 },
+					.srcOffsets = std::array { vk::Offset3D { 0, 0, 0 }, vk::Offset3D { (int) image.GetSize().x, (int) image.GetSize().y, 1 } },
+					.dstSubresource = { .aspectMask = vk::ImageAspectFlagBits::eColor, .mipLevel = 0, .baseArrayLayer = 0, .layerCount = 1 },
+					.dstOffsets = std::array { vk::Offset3D { 0, 0, 0 }, vk::Offset3D { (int) swapChain.GetSize().x, (int) swapChain.GetSize().y, 1 } }
+				},
+				vk::Filter::eNearest
+			);
+		}
 
 		VkTransitionImageLayout(
 			commandBuffer,
@@ -430,7 +435,8 @@ namespace Oyl::Rendering::Vulkan
 				.commandBuffer = commandBuffer,
 				.waitSemaphore = presentCompleteSemaphore,
 				.signalSemaphore = renderFinishedSemaphore,
-				.fence = drawFence
+				.fence = drawFence,
+				.waitDestinationStageMask = vk::PipelineStageFlagBits::eColorAttachmentOutput
 			}
 		);
 

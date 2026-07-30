@@ -261,7 +261,7 @@ namespace Oyl::Rendering::Vulkan
 	{
 		OYL_PROFILE_FUNCTION();
 
-		device->GetVkDevice().waitIdle();
+		device->WaitUntilIdle();
 
 		CleanupSwapChain();
 

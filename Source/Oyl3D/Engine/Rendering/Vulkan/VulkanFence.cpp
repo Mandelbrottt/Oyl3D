@@ -63,6 +63,8 @@ namespace Oyl::Rendering::Vulkan
 	bool
 	Fence::Wait(uint64 a_timeout)
 	{
+		OYL_PROFILE_FUNCTION();
+
 		const auto& vkFence = GetVkFence();
 		const auto& vkDevice = m_device->GetVkDevice();
 

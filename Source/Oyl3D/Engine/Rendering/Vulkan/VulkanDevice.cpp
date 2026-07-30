@@ -186,6 +186,14 @@ namespace Oyl::Rendering::Vulkan
 	}
 
 	void
+	Device::WaitUntilIdle() const
+	{
+		OYL_PROFILE_FUNCTION();
+
+		m_impl->device.waitIdle();
+	}
+
+	void
 	Device::Impl::CreateInstance()
 	{
 		OYL_PROFILE_FUNCTION();

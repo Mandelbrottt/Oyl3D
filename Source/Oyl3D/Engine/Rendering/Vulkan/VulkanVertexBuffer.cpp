@@ -2,6 +2,8 @@
 
 #include <vulkan/vulkan_raii.hpp>
 
+#include "VulkanCommandBuffer.h"
+#include "VulkanCommandPool.h"
 #include "VulkanCommandQueue.h"
 #include "VulkanDevice.h"
 #include "VulkanStagingBuffer.h"
@@ -250,38 +252,17 @@ namespace Oyl::Rendering::Vulkan
 	{
 		OYL_PROFILE_FUNCTION();
 
-		auto& transferCommandQueue = *a_device.GetCommandQueue(CommandQueueFlagBits::Transfer);
-		auto commandPool = vk::raii::CommandPool(
-			a_device.GetVkDevice(),
-			{
-				.flags = vk::CommandPoolCreateFlagBits::eTransient,
-				.queueFamilyIndex = transferCommandQueue.GetVkQueueFamilyIndex()
-			}
-		);
+		auto commandPool = CommandPool(a_device, { .commandQueueFlags = CommandQueueFlagBits::Transfer });
+		auto commandBuffer = CommandBuffer(a_device, { .commandPool = commandPool });
 
-		const auto& vkDevice = a_device.GetVkDevice();
+		auto& vkCommandBuffer = commandBuffer.GetVkCommandBuffer();
+		vkCommandBuffer.begin({ .flags = vk::CommandBufferUsageFlagBits::eOneTimeSubmit });
+		vkCommandBuffer.copyBuffer(*a_srcBuffer, *a_dstBuffer, vk::BufferCopy(0, 0, a_size));
+		vkCommandBuffer.end();
 
-		vk::CommandBufferAllocateInfo allocInfo {
-			.commandPool = commandPool,
-			.level = vk::CommandBufferLevel::ePrimary,
-			.commandBufferCount = 1
-		};
-		vk::raii::CommandBuffer commandCopyBuffer =
-			std::move(vkDevice.allocateCommandBuffers(allocInfo).front());
+		auto& transferQueue = *a_device.GetCommandQueue(CommandQueueFlagBits::Transfer);
 
-		commandCopyBuffer.begin({ .flags = vk::CommandBufferUsageFlagBits::eOneTimeSubmit });
-		commandCopyBuffer.copyBuffer(*a_srcBuffer, *a_dstBuffer, vk::BufferCopy(0, 0, a_size));
-		commandCopyBuffer.end();
-
-		const auto& vkQueue = transferCommandQueue.GetVkQueue();
-
-		vkQueue.submit(
-			vk::SubmitInfo {
-				.commandBufferCount = 1,
-				.pCommandBuffers = &*commandCopyBuffer
-			},
-			nullptr
-		);
-		vkQueue.waitIdle();
+		transferQueue.Submit({ .commandBuffer = commandBuffer });
+		transferQueue.WaitUntilIdle();
 	}
 }

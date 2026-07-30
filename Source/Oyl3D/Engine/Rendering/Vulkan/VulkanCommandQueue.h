@@ -50,12 +50,18 @@ namespace Oyl::Rendering::Vulkan
 		uint32
 		GetVkQueueFamilyIndex() const;
 
+		void
+		WaitUntilIdle() const override;
+
 		struct SubmitParams
 		{
 			const CommandBuffer& commandBuffer;
+
 			SemaphoreHandle waitSemaphore = {};
 			SemaphoreHandle signalSemaphore = {};
 			FenceHandle fence = {};
+
+			vk::PipelineStageFlags waitDestinationStageMask = {};
 		};
 
 		void

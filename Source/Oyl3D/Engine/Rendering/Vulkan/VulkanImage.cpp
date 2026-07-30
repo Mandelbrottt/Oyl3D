@@ -318,6 +318,6 @@ namespace Oyl::Rendering::Vulkan
 
 		auto& commandQueue = *a_device.GetCommandQueue(CommandQueueFlagBits::Transfer);
 		commandQueue.Submit({ .commandBuffer = commandBuffer });
-		commandQueue.GetVkQueue().waitIdle();
+		commandQueue.WaitUntilIdle();
 	}
 }

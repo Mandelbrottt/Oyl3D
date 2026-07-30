@@ -37,5 +37,9 @@ namespace Oyl::Rendering
 		virtual
 		const ICommandQueue*
 		GetCommandQueue(CommandQueueFlagBits a_flag) const = 0;
+
+		virtual
+		void
+		WaitUntilIdle() const = 0;
 	};
 }
