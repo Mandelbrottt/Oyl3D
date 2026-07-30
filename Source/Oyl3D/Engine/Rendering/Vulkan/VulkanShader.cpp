@@ -41,7 +41,7 @@ namespace Oyl::Rendering::Vulkan
 		CreatePipeline(const CreateParams& a_params);
 
 		vk::raii::ShaderModule
-		CompileVkShaderModule(const Device& a_device, const ShaderStage& a_stage);
+		CompileVkShaderModule(const DeviceImpl& a_device, const ShaderStage& a_stage);
 	};
 
 	Shader::Shader()
@@ -234,7 +234,7 @@ namespace Oyl::Rendering::Vulkan
 	}
 
 	vk::raii::ShaderModule
-	Shader::Impl::CompileVkShaderModule(const Device& a_device, const ShaderStage& a_stage)
+	Shader::Impl::CompileVkShaderModule(const DeviceImpl& a_device, const ShaderStage& a_stage)
 	{
 		OYL_PROFILE_FUNCTION();
 

@@ -1,8 +1,10 @@
 #pragma once
 
+#include <Core/PImpl.h>
 #include <Core/UniqueHandle.h>
 
 #include "CommandQueue.h"
+#include "Device.h"
 
 namespace Oyl
 {
@@ -11,18 +13,17 @@ namespace Oyl
 
 namespace Oyl::Rendering
 {
-	class IDevice : public IUniqueHandle
+	class DeviceImpl : public IUniqueHandle
 	{
 	protected:
-		IDevice() = default;
-
-		DEFAULT_MOVE(IDevice);
+		DeviceImpl() = default;
 
 	public:
-		NO_COPY(IDevice);
+		NO_MOVE(DeviceImpl);
+		NO_COPY(DeviceImpl);
 
 		virtual
-		~IDevice() = default;
+		~DeviceImpl() = default;
 
 		void
 		Destroy() override = 0;
@@ -42,4 +43,6 @@ namespace Oyl::Rendering
 		void
 		WaitUntilIdle() const = 0;
 	};
+
+	using Device = PImpl<DeviceImpl>;
 }

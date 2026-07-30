@@ -6,7 +6,7 @@
 
 namespace Oyl::Rendering::Vulkan
 {
-	class Device;
+	class DeviceImpl;
 
 	using StagingBufferHandle = OpaqueHandleConvertible<StagingBufferHandle, vk::Buffer>;
 
@@ -25,7 +25,7 @@ namespace Oyl::Rendering::Vulkan
 		};
 
 		explicit
-		StagingBuffer(const Device& a_device, const CreateParams& a_params);
+		StagingBuffer(const DeviceImpl& a_device, const CreateParams& a_params);
 
 		StagingBuffer(StagingBuffer&& a_other) noexcept;
 		StagingBuffer&

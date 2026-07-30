@@ -27,9 +27,9 @@ namespace Oyl::Rendering::Vulkan
 	{
 		const IWindow* window;
 
-		Device device;
-		//CommandQueue graphicsQueue;
+		Device device = nullptr;
 		SwapChain swapChain;
+
 		Image image;
 		RenderTarget renderTarget;
 
@@ -98,7 +98,7 @@ namespace Oyl::Rendering::Vulkan
 
 		m_impl->window = a_params.window;
 
-		m_impl->device = Device(
+		m_impl->device = DeviceImpl::Create(
 			{
 				.window = *m_impl->window,
 				.commandQueueFlags = CommandQueueFlagBits::Graphics | CommandQueueFlagBits::Transfer,
@@ -115,7 +115,7 @@ namespace Oyl::Rendering::Vulkan
 		//);
 
 		m_impl->swapChain = SwapChain(
-			m_impl->device,
+			*m_impl->device,
 			{
 				.window = *m_impl->window,
 			}
@@ -134,7 +134,7 @@ namespace Oyl::Rendering::Vulkan
 		auto indicesBuffer = reinterpret_cast<const byte*>(indices.data());
 
 		m_impl->vertexBuffer = VertexBuffer(
-			m_impl->device,
+			*m_impl->device,
 			{
 				.vertexData = verticesBuffer,
 				.vertexLength = (uint32) (vertices.size() * sizeof(decltype(vertices)::value_type)),
@@ -145,7 +145,7 @@ namespace Oyl::Rendering::Vulkan
 		);
 
 		m_impl->image = Image(
-			m_impl->device,
+			*m_impl->device,
 			{
 				.size = m_impl->swapChain.GetSize(),
 				.vkFormat = m_impl->swapChain.GetVkSurfaceFormat().format,
@@ -164,13 +164,13 @@ namespace Oyl::Rendering::Vulkan
 			}
 		);
 
-		m_impl->commandPool = CommandPool(m_impl->device, { .commandQueueFlags = CommandQueueFlagBits::Graphics });
+		m_impl->commandPool = CommandPool(*m_impl->device, { .commandQueueFlags = CommandQueueFlagBits::Graphics });
 
 		m_impl->commandBuffers.reserve(MAX_FRAMES_IN_FLIGHT);
 		for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++)
 		{
 			m_impl->commandBuffers.emplace_back(
-				m_impl->device,
+				*m_impl->device,
 				CommandBuffer::CreateParams {
 					.commandPool = m_impl->commandPool,
 				}
@@ -196,7 +196,7 @@ namespace Oyl::Rendering::Vulkan
 
 			m_impl->shader = Shader(
 				{
-					.device = m_impl->device,
+					.device = *m_impl->device,
 					.format = m_impl->swapChain.GetVkSurfaceFormat().format,
 					.compileResult = result
 				}
@@ -214,7 +214,7 @@ namespace Oyl::Rendering::Vulkan
 		if (!m_impl)
 			return;
 
-		m_impl->device.WaitUntilIdle();
+		m_impl->device->WaitUntilIdle();
 
 		m_impl->renderFinishedSemaphores.clear();
 		m_impl->presentCompleteSemaphores.clear();
@@ -230,7 +230,7 @@ namespace Oyl::Rendering::Vulkan
 		m_impl->shader.Destroy();
 
 		m_impl->swapChain.Destroy();
-		m_impl->device.Destroy();
+		m_impl->device->Destroy();
 
 		*m_impl = {};
 	}
@@ -242,10 +242,10 @@ namespace Oyl::Rendering::Vulkan
 		m_impl->RecreateSwapChain();
 	}
 
-	const Device*
+	const DeviceImpl*
 	RenderContext::GetDevice() const
 	{
-		return &m_impl->device;
+		return m_impl->device.Get();
 	}
 
 	const SwapChain*
@@ -263,13 +263,13 @@ namespace Oyl::Rendering::Vulkan
 
 		for (size_t i = 0; i < swapChain.GetVkImages().size(); i++)
 		{
-			renderFinishedSemaphores.emplace_back(device);
+			renderFinishedSemaphores.emplace_back(*device);
 		}
 
 		for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++)
 		{
-			presentCompleteSemaphores.emplace_back(device);
-			inFlightFences.emplace_back(device);
+			presentCompleteSemaphores.emplace_back(*device);
+			inFlightFences.emplace_back(*device);
 		}
 	}
 
@@ -344,7 +344,7 @@ namespace Oyl::Rendering::Vulkan
 		commandBuffer.BeginRendering(renderTarget);
 
 		commandBuffer.BindShader(shader);
-		commandBuffer.BindVertexBuffer(vertexBuffer);
+		commandBuffer.DrawVertexBuffer(vertexBuffer);
 
 		commandBuffer.EndRendering();
 
@@ -431,7 +431,7 @@ namespace Oyl::Rendering::Vulkan
 
 		auto& commandBuffer = commandBuffers[frameIndex];
 
-		const auto& graphicsQueue = *device.GetCommandQueue(CommandQueueFlagBits::Graphics);
+		const auto& graphicsQueue = *device->GetCommandQueue(CommandQueueFlagBits::Graphics);
 		graphicsQueue.Submit(
 			CommandQueue::SubmitParams {
 				.commandBuffer = commandBuffer,
@@ -462,7 +462,7 @@ namespace Oyl::Rendering::Vulkan
 
 		swapChain.Recreate();
 		image = Image(
-			device,
+			*device,
 			{
 				.size = swapChain.GetSize(),
 				.vkFormat = swapChain.GetVkSurfaceFormat().format,

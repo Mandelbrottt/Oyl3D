@@ -12,7 +12,7 @@ namespace vk::raii
 
 namespace Oyl::Rendering::Vulkan
 {
-	class Device;
+	class DeviceImpl;
 	class CommandBuffer;
 	class SwapChain;
 
@@ -27,7 +27,7 @@ namespace Oyl::Rendering::Vulkan
 		};
 
 		explicit
-		CommandQueue(const Device& a_device, const CreateParams& a_params);
+		CommandQueue(const DeviceImpl& a_device, const CreateParams& a_params);
 
 		NO_COPY(CommandQueue);
 

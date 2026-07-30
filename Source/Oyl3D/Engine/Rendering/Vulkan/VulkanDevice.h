@@ -6,15 +6,20 @@
 
 #include "Rendering/Device.h"
 
+namespace Oyl::Glfw
+{
+	class Window;
+}
+
 namespace Oyl::Rendering::Vulkan
 {
 	class CommandQueue;
 
-	class OYL_RENDERING_API Device : public IDevice
+	class OYL_RENDERING_API DeviceImpl : public Rendering::DeviceImpl
 	{
-	public:
-		Device();
+		struct DeviceImplTag {};
 
+	public:
 		struct CreateParams
 		{
 			const IWindow& window;
@@ -25,15 +30,15 @@ namespace Oyl::Rendering::Vulkan
 			size_t requiredDeviceExtensionsLength;
 		};
 
-		explicit
-		Device(const CreateParams& a_params);
+		static
+		PImpl<DeviceImpl>
+		Create(const CreateParams& a_params);
 
-		Device(Device&& a_other) noexcept;
-		Device&
-		operator =(Device&& a_other) noexcept;
+		explicit
+		DeviceImpl(DeviceImplTag, const CreateParams& a_params);
 
 		virtual
-		~Device();
+		~DeviceImpl();
 
 		void
 		Destroy() override;
@@ -60,7 +65,41 @@ namespace Oyl::Rendering::Vulkan
 		WaitUntilIdle() const override;
 
 	private:
-		struct Impl;
-		std::unique_ptr<Impl> m_impl;
+		void
+		CreateInstance();
+
+		void
+		CreateDebugMessenger();
+
+		void
+		CreateSurface();
+
+		void
+		PickPhysicalDevice(CommandQueueFlags a_queueFlags);
+
+		void
+		CreateLogicalDevice();
+
+		void
+		CreateCommandQueues();
+
+	private:
+		const Glfw::Window* m_window = nullptr;
+
+		std::vector<std::string> m_requiredDeviceExtensions;
+
+		vk::raii::Context m_context;
+		vk::raii::Instance m_instance = nullptr;
+		vk::raii::DebugUtilsMessengerEXT m_debugMessenger = nullptr;
+
+		vk::raii::SurfaceKHR m_surface = nullptr;
+
+		vk::raii::PhysicalDevice m_physicalDevice = nullptr;
+		vk::raii::Device m_device = nullptr;
+
+		std::unordered_map<CommandQueueFlagBits, uint32> m_queueFamilyIndices;
+		std::unordered_map<CommandQueueFlagBits, CommandQueue> m_queues;
 	};
+
+	using Device = PImpl<DeviceImpl>;
 }

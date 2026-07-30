@@ -19,7 +19,7 @@ namespace Oyl::Rendering
 namespace Oyl::Rendering::Vulkan
 {
 	class CommandPool;
-	class Device;
+	class DeviceImpl;
 	class Shader;
 	class SwapChain;
 	class VertexBuffer;
@@ -35,7 +35,7 @@ namespace Oyl::Rendering::Vulkan
 		};
 
 		explicit
-		CommandBuffer(const Device& a_device, const CreateParams& a_params) noexcept;
+		CommandBuffer(const DeviceImpl& a_device, const CreateParams& a_params) noexcept;
 
 		CommandBuffer(CommandBuffer&& a_other) noexcept;
 		CommandBuffer&
@@ -85,6 +85,12 @@ namespace Oyl::Rendering::Vulkan
 
 		void
 		BindVertexBuffer(const VertexBuffer& a_vertexBuffer) const noexcept;
+
+		void
+		DrawVertexBuffer(const Rendering::VertexBuffer& a_vertexBuffer) const noexcept override;
+
+		void
+		DrawVertexBuffer(const VertexBuffer& a_vertexBuffer) const noexcept;
 
 	private:
 		struct Impl;

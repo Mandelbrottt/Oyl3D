@@ -35,54 +35,17 @@ namespace
 
 namespace Oyl::Rendering::Vulkan
 {
-	struct Device::Impl
-	{
-		const Glfw::Window* window;
-
-		std::vector<std::string> requiredDeviceExtensions;
-
-		vk::raii::Context context;
-		vk::raii::Instance instance = nullptr;
-		vk::raii::DebugUtilsMessengerEXT debugMessenger = nullptr;
-
-		vk::raii::SurfaceKHR surface = nullptr;
-
-		vk::raii::PhysicalDevice physicalDevice = nullptr;
-		vk::raii::Device device = nullptr;
-
-		std::unordered_map<CommandQueueFlagBits, uint32> queueFamilyIndices;
-		//uint32 graphicsQueueFamilyIndex = 0;
-		std::unordered_map<CommandQueueFlagBits, CommandQueue> queues;
-
-		void
-		CreateInstance();
-		void
-		CreateDebugMessenger();
-		void
-		CreateSurface();
-		void
-		PickPhysicalDevice(CommandQueueFlags a_queueFlags);
-		void
-		CreateLogicalDevice();
-		void
-		CreateCommandQueues(const Device& a_device);
-	};
-
-	Device::Device()
-		: m_impl(nullptr) {}
-
-	Device::Device(const CreateParams& a_params)
-		: m_impl(std::make_unique<Impl>())
+	DeviceImpl::DeviceImpl(DeviceImplTag, const CreateParams& a_params)
 	{
 		OYL_PROFILE_FUNCTION();
 
-		m_impl->window = static_cast<const Glfw::Window*>(&a_params.window);
+		m_window = static_cast<const Glfw::Window*>(&a_params.window);
 
 		if (a_params.ppRequiredDeviceExtensionsData && a_params.requiredDeviceExtensionsLength > 0)
 		{
-			m_impl->requiredDeviceExtensions.reserve(a_params.requiredDeviceExtensionsLength);
-			m_impl->requiredDeviceExtensions.insert(
-				m_impl->requiredDeviceExtensions.end(),
+			m_requiredDeviceExtensions.reserve(a_params.requiredDeviceExtensionsLength);
+			m_requiredDeviceExtensions.insert(
+				m_requiredDeviceExtensions.end(),
 				a_params.ppRequiredDeviceExtensionsData,
 				a_params.ppRequiredDeviceExtensionsData + a_params.requiredDeviceExtensionsLength
 			);
@@ -93,108 +56,95 @@ namespace Oyl::Rendering::Vulkan
 			auto flag = CommandQueueFlagBits(1 << i);
 			if (a_params.commandQueueFlags & flag)
 			{
-				m_impl->queueFamilyIndices[flag] = 0;
+				m_queueFamilyIndices[flag] = 0;
 			}
 		}
 
-		m_impl->CreateInstance();
+		CreateInstance();
 		if constexpr (ENABLE_VALIDATION_LAYERS)
-			m_impl->CreateDebugMessenger();
-		m_impl->CreateSurface();
-		m_impl->PickPhysicalDevice(a_params.commandQueueFlags);
-		m_impl->CreateLogicalDevice();
-		m_impl->CreateCommandQueues(*this);
+			CreateDebugMessenger();
+		CreateSurface();
+		PickPhysicalDevice(a_params.commandQueueFlags);
+		CreateLogicalDevice();
+		CreateCommandQueues();
 	}
 
-	Device::Device(Device&& a_other) noexcept
-		: m_impl(nullptr)
+	Device
+	DeviceImpl::Create(const CreateParams& a_params)
 	{
-		*this = std::move(a_other);
+		return Device(std::make_unique<DeviceImpl>(DeviceImplTag(), a_params));
 	}
 
-	Device&
-	Device::operator=(Device&& a_other) noexcept
+	DeviceImpl::~DeviceImpl()
 	{
-		if (this != &a_other)
-		{
-			m_impl = std::move(a_other.m_impl);
-		}
-		return *this;
-	}
-
-	Device::~Device()
-	{
-		Device::Destroy();
+		DeviceImpl::Destroy();
 	}
 
 	void
-	Device::Destroy()
+	DeviceImpl::Destroy()
 	{
 		OYL_PROFILE_FUNCTION();
 
 		if (!IsValid())
 			return;
 
-		m_impl->queues.clear();
-		m_impl->queueFamilyIndices.clear();
-		m_impl->device = nullptr;
-		m_impl->physicalDevice = nullptr;
-		m_impl->requiredDeviceExtensions.clear();
-
-		m_impl.release();
+		m_queues.clear();
+		m_queueFamilyIndices.clear();
+		m_device = nullptr;
+		m_physicalDevice = nullptr;
+		m_requiredDeviceExtensions.clear();
 	}
 
 	bool
-	Device::IsValid() const
+	DeviceImpl::IsValid() const
 	{
-		return m_impl
-		       && *m_impl->device;
+		return *m_device;
 	}
 
 	const IWindow*
-	Device::GetWindow() const
+	DeviceImpl::GetWindow() const
 	{
-		return m_impl->window;
+		return m_window;
 	}
 
 	const CommandQueue*
-	Device::GetCommandQueue(CommandQueueFlagBits a_flag) const
+	DeviceImpl::GetCommandQueue(CommandQueueFlagBits a_flag) const
 	{
-		auto iter = m_impl->queues.find(a_flag);
-		if (iter == m_impl->queues.end())
+		auto iter = m_queues.find(a_flag);
+		if (iter == m_queues.end())
 			return nullptr;
 
 		return &iter->second;
 	}
 
 	const vk::raii::Device&
-	Device::GetVkDevice() const
+	DeviceImpl::GetVkDevice() const
 	{
-		return m_impl->device;
+		return m_device;
 	}
 
 	const vk::raii::PhysicalDevice&
-	Device::GetVkPhysicalDevice() const
+	DeviceImpl::GetVkPhysicalDevice() const
 	{
-		return m_impl->physicalDevice;
+		return m_physicalDevice;
 	}
 
 	const vk::raii::SurfaceKHR&
-	Device::GetVkSurface() const
+	DeviceImpl::GetVkSurface() const
 	{
-		return m_impl->surface;
+		return m_surface;
 	}
 
 	void
-	Device::WaitUntilIdle() const
+	DeviceImpl::WaitUntilIdle() const
 	{
 		OYL_PROFILE_FUNCTION();
 
-		m_impl->device.waitIdle();
+		m_device.waitIdle();
 	}
 
 	void
-	Device::Impl::CreateInstance()
+	DeviceImpl::CreateInstance()
 	{
 		OYL_PROFILE_FUNCTION();
 
@@ -214,7 +164,7 @@ namespace Oyl::Rendering::Vulkan
 		}
 
 		// Check if the required layers are supported by the Vulkan implementation.
-		auto layerProperties = context.enumerateInstanceLayerProperties();
+		auto layerProperties = m_context.enumerateInstanceLayerProperties();
 		auto unsupportedLayerIt = std::ranges::find_if(
 			requiredLayers,
 			[&layerProperties](const auto& a_requiredLayer)
@@ -237,7 +187,7 @@ namespace Oyl::Rendering::Vulkan
 		auto requiredExtensions = GetRequiredInstanceExtensions();
 
 		// Check if the required extensions are supported by the Vulkan implementation.
-		auto extensionProperties = context.enumerateInstanceExtensionProperties();
+		auto extensionProperties = m_context.enumerateInstanceExtensionProperties();
 		auto unsupportedPropertyIt = std::ranges::find_if(
 			requiredExtensions,
 			[&extensionProperties](const auto& a_requiredExtension)
@@ -264,11 +214,11 @@ namespace Oyl::Rendering::Vulkan
 			.ppEnabledExtensionNames = requiredExtensions.data(),
 		};
 
-		instance = vk::raii::Instance(context, createInfo);
+		m_instance = vk::raii::Instance(m_context, createInfo);
 	}
 
 	void
-	Device::Impl::CreateDebugMessenger()
+	DeviceImpl::CreateDebugMessenger()
 	{
 		OYL_PROFILE_FUNCTION();
 
@@ -289,21 +239,21 @@ namespace Oyl::Rendering::Vulkan
 			.messageType = messageTypeFlags,
 			.pfnUserCallback = DebugCallback,
 		};
-		debugMessenger = instance.createDebugUtilsMessengerEXT(debugUtilsMessengerCreateInfoEXT);
+		m_debugMessenger = m_instance.createDebugUtilsMessengerEXT(debugUtilsMessengerCreateInfoEXT);
 	}
 
 	void
-	Device::Impl::CreateSurface()
+	DeviceImpl::CreateSurface()
 	{
 		OYL_PROFILE_FUNCTION();
 
 		VkSurfaceKHR cSurface;
-		auto glfwWindow = static_cast<GLFWwindow*>(window->GetNativeWindowHandle());
-		if (glfwCreateWindowSurface(*instance, glfwWindow, nullptr, &cSurface) != VK_SUCCESS)
+		auto glfwWindow = static_cast<GLFWwindow*>(m_window->GetNativeWindowHandle());
+		if (glfwCreateWindowSurface(*m_instance, glfwWindow, nullptr, &cSurface) != VK_SUCCESS)
 		{
 			throw std::runtime_error("failed to create window surface!");
 		}
-		surface = vk::raii::SurfaceKHR(instance, cSurface);
+		m_surface = vk::raii::SurfaceKHR(m_instance, cSurface);
 	}
 
 	bool
@@ -362,34 +312,34 @@ namespace Oyl::Rendering::Vulkan
 	}
 
 	void
-	Device::Impl::PickPhysicalDevice(CommandQueueFlags a_queueFlags)
+	DeviceImpl::PickPhysicalDevice(CommandQueueFlags a_queueFlags)
 	{
 		OYL_PROFILE_FUNCTION();
 
-		auto physicalDevices = instance.enumeratePhysicalDevices();
+		auto physicalDevices = m_instance.enumeratePhysicalDevices();
 		const auto iter = std::ranges::find_if(
 			physicalDevices,
 			[&](const vk::raii::PhysicalDevice& a_physicalDevice)
 			{
 				auto vkQueueFlags = ToVkQueueFlags(a_queueFlags);
-				return IsDeviceSuitable(a_physicalDevice, vkQueueFlags, requiredDeviceExtensions);
+				return IsDeviceSuitable(a_physicalDevice, vkQueueFlags, m_requiredDeviceExtensions);
 			}
 		);
 		if (iter == physicalDevices.end())
 		{
 			throw std::runtime_error("failed to find a suitable GPU with Vulkan support!");
 		}
-		physicalDevice = *iter;
+		m_physicalDevice = *iter;
 	}
 
 	void
-	Device::Impl::CreateLogicalDevice()
+	DeviceImpl::CreateLogicalDevice()
 	{
 		OYL_PROFILE_FUNCTION();
 
-		std::vector<vk::QueueFamilyProperties> queueFamilyProperties = physicalDevice.getQueueFamilyProperties();
+		std::vector<vk::QueueFamilyProperties> queueFamilyProperties = m_physicalDevice.getQueueFamilyProperties();
 
-		for (auto& [requestedFlag, index] : queueFamilyIndices)
+		for (auto& [requestedFlag, index] : m_queueFamilyIndices)
 		{
 			// get the first index into queueFamilyProperties which supports the requested operations
 			index = ~0u;
@@ -401,7 +351,7 @@ namespace Oyl::Rendering::Vulkan
 				if (queueFlags & vk::QueueFlagBits::eGraphics)
 				{
 					// If the queue supports graphics, we also want it to support SurfaceKHR
-					if (!physicalDevice.getSurfaceSupportKHR(propertiesIndex, *surface))
+					if (!m_physicalDevice.getSurfaceSupportKHR(propertiesIndex, *m_surface))
 						continue;
 
 					// We want a unique queue for transfers
@@ -431,7 +381,7 @@ namespace Oyl::Rendering::Vulkan
 
 		std::vector<vk::DeviceQueueCreateInfo> deviceQueueCreateInfo;
 		float queuePriority = 0.5f;
-		for (const auto& [flag, index] : queueFamilyIndices)
+		for (const auto& [flag, index] : m_queueFamilyIndices)
 			deviceQueueCreateInfo.emplace_back(
 				vk::DeviceQueueCreateInfo {
 					.queueFamilyIndex = index,
@@ -441,32 +391,32 @@ namespace Oyl::Rendering::Vulkan
 			);
 
 		// Vulkan needs the extensions array as c-strings
-		std::vector<const char*> requiredExtensions(requiredDeviceExtensions.size(), nullptr);
-		for (size_t i = 0; i < requiredDeviceExtensions.size(); i++)
+		std::vector<const char*> requiredExtensions(m_requiredDeviceExtensions.size(), nullptr);
+		for (size_t i = 0; i < m_requiredDeviceExtensions.size(); i++)
 		{
-			requiredExtensions[i] = requiredDeviceExtensions[i].c_str();
+			requiredExtensions[i] = m_requiredDeviceExtensions[i].c_str();
 		}
 
 		vk::DeviceCreateInfo deviceCreateInfo {
 			.pNext = &featureChain.get<vk::PhysicalDeviceFeatures2>(),
 			.queueCreateInfoCount = (uint32) deviceQueueCreateInfo.size(),
 			.pQueueCreateInfos = deviceQueueCreateInfo.data(),
-			.enabledExtensionCount = (uint32) requiredDeviceExtensions.size(),
+			.enabledExtensionCount = (uint32) m_requiredDeviceExtensions.size(),
 			.ppEnabledExtensionNames = requiredExtensions.data(),
 		};
 
-		device = vk::raii::Device(physicalDevice, deviceCreateInfo);
+		m_device = vk::raii::Device(m_physicalDevice, deviceCreateInfo);
 	}
 
 	void
-	Device::Impl::CreateCommandQueues(const Device& a_device)
+	DeviceImpl::CreateCommandQueues()
 	{
-		for (const auto& [flag, index] : queueFamilyIndices)
+		for (const auto& [flag, index] : m_queueFamilyIndices)
 		{
-			queues.emplace(
+			m_queues.emplace(
 				flag,
 				CommandQueue(
-					a_device,
+					*this,
 					{
 						.queueFamilyIndex = index
 					}

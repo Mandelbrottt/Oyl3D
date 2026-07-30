@@ -6,7 +6,7 @@
 namespace Oyl::Rendering
 {
 	class IRenderContext;
-	class IDevice;
+	class DeviceImpl;
 	class ShaderCompiler;
 }
 
@@ -40,7 +40,7 @@ namespace Oyl::Rendering::Internal
 		GetShaderCompiler() const;
 
 		virtual
-		const IDevice*
+		const DeviceImpl*
 		GetCurrentDevice() const;
 
 		virtual
@@ -61,7 +61,7 @@ namespace Oyl::Rendering::Internal
 	protected:
 		std::unique_ptr<Oyl::Internal::ResourceManager> m_resourceManager;
 		std::unique_ptr<ShaderCompiler> m_shaderCompiler;
-		std::unique_ptr<IDevice> m_device;
+		std::unique_ptr<DeviceImpl> m_device;
 
 		// TEMPORARY: Should the renderer own the render context?
 		std::unique_ptr<IRenderContext> m_renderContext;

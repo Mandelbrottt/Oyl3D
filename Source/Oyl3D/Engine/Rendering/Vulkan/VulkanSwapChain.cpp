@@ -26,7 +26,7 @@ namespace Oyl::Rendering::Vulkan
 {
 	struct SwapChain::Impl
 	{
-		const Device* device = nullptr;
+		const DeviceImpl* device = nullptr;
 		const IWindow* window = nullptr;
 
 		vk::raii::SwapchainKHR vkSwapChain = nullptr;
@@ -50,7 +50,7 @@ namespace Oyl::Rendering::Vulkan
 	SwapChain::SwapChain()
 		: m_impl(nullptr) {}
 
-	SwapChain::SwapChain(const Device& a_device, const CreateParams& a_params)
+	SwapChain::SwapChain(const DeviceImpl& a_device, const CreateParams& a_params)
 		: m_impl(std::make_unique<Impl>())
 	{
 		OYL_PROFILE_FUNCTION();

@@ -12,13 +12,13 @@ namespace Oyl::Rendering::Vulkan
 		uint32 size;
 
 		void
-		CreateBuffer(const Device& a_device, const CreateParams& a_params);
+		CreateBuffer(const DeviceImpl& a_device, const CreateParams& a_params);
 	};
 
 	StagingBuffer::StagingBuffer()
 		: m_impl(nullptr) {}
 
-	StagingBuffer::StagingBuffer(const Device& a_device, const CreateParams& a_params)
+	StagingBuffer::StagingBuffer(const DeviceImpl& a_device, const CreateParams& a_params)
 		: m_impl(std::make_unique<Impl>())
 	{
 		OYL_PROFILE_FUNCTION();
@@ -122,7 +122,7 @@ namespace Oyl::Rendering::Vulkan
 	}
 
 	void
-	StagingBuffer::Impl::CreateBuffer(const Device& a_device, const CreateParams& a_params)
+	StagingBuffer::Impl::CreateBuffer(const DeviceImpl& a_device, const CreateParams& a_params)
 	{
 		OYL_PROFILE_FUNCTION();
 

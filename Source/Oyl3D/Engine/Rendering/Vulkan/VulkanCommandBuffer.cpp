@@ -14,13 +14,13 @@ namespace Oyl::Rendering::Vulkan
 	{
 		const CommandPool* commandPool;
 
-		vk::raii::CommandBuffer commandBuffer = nullptr;
+		vk::raii::CommandBuffer vkCommandBuffer = nullptr;
 	};
 
 	CommandBuffer::CommandBuffer() noexcept
 		: m_impl(nullptr) {}
 
-	CommandBuffer::CommandBuffer(const Device& a_device, const CreateParams& a_params) noexcept
+	CommandBuffer::CommandBuffer(const DeviceImpl& a_device, const CreateParams& a_params) noexcept
 		: m_impl(std::make_unique<Impl>())
 	{
 		OYL_PROFILE_FUNCTION();
@@ -37,7 +37,7 @@ namespace Oyl::Rendering::Vulkan
 		};
 
 		// We can only create command buffers through CommandBuffers vector constructor
-		m_impl->commandBuffer = std::move(vk::raii::CommandBuffers(vkDevice, allocInfo).front());
+		m_impl->vkCommandBuffer = std::move(vk::raii::CommandBuffers(vkDevice, allocInfo).front());
 	}
 
 	CommandBuffer::CommandBuffer(CommandBuffer&& a_other) noexcept
@@ -63,14 +63,14 @@ namespace Oyl::Rendering::Vulkan
 	void
 	CommandBuffer::Destroy() noexcept
 	{
-		m_impl->commandBuffer.clear();
+		m_impl->vkCommandBuffer.clear();
 	}
 
 	bool
 	CommandBuffer::IsValid() const noexcept
 	{
 		return m_impl
-		       && *m_impl->commandBuffer;
+		       && *m_impl->vkCommandBuffer;
 	}
 
 	const CommandPool*
@@ -82,7 +82,7 @@ namespace Oyl::Rendering::Vulkan
 	const vk::raii::CommandBuffer&
 	CommandBuffer::GetVkCommandBuffer() const noexcept
 	{
-		return m_impl->commandBuffer;
+		return m_impl->vkCommandBuffer;
 	}
 
 	void
@@ -90,7 +90,7 @@ namespace Oyl::Rendering::Vulkan
 	{
 		OYL_PROFILE_FUNCTION();
 
-		m_impl->commandBuffer.begin({});
+		m_impl->vkCommandBuffer.begin({});
 	}
 
 	void
@@ -139,7 +139,7 @@ namespace Oyl::Rendering::Vulkan
 
 		renderingInfo.setRenderArea({ .offset = { 0, 0 }, .extent = { size.x, size.y } });
 
-		m_impl->commandBuffer.beginRendering(renderingInfo);
+		m_impl->vkCommandBuffer.beginRendering(renderingInfo);
 	}
 
 	void
@@ -147,7 +147,7 @@ namespace Oyl::Rendering::Vulkan
 	{
 		OYL_PROFILE_FUNCTION();
 
-		m_impl->commandBuffer.end();
+		m_impl->vkCommandBuffer.end();
 	}
 
 	void
@@ -155,7 +155,7 @@ namespace Oyl::Rendering::Vulkan
 	{
 		OYL_PROFILE_FUNCTION();
 
-		m_impl->commandBuffer.endRendering();
+		m_impl->vkCommandBuffer.endRendering();
 	}
 
 	void
@@ -163,7 +163,7 @@ namespace Oyl::Rendering::Vulkan
 	{
 		OYL_PROFILE_FUNCTION();
 
-		m_impl->commandBuffer.setViewport(
+		m_impl->vkCommandBuffer.setViewport(
 			0,
 			vk::Viewport {
 				.x = static_cast<float>(a_offset.x),
@@ -181,7 +181,7 @@ namespace Oyl::Rendering::Vulkan
 	{
 		OYL_PROFILE_FUNCTION();
 
-		m_impl->commandBuffer.setScissor(
+		m_impl->vkCommandBuffer.setScissor(
 			0,
 			vk::Rect2D {
 				.offset = {
@@ -207,7 +207,7 @@ namespace Oyl::Rendering::Vulkan
 	{
 		OYL_PROFILE_FUNCTION();
 
-		m_impl->commandBuffer.bindPipeline(vk::PipelineBindPoint::eGraphics, a_shader.GetVkPipeline());
+		m_impl->vkCommandBuffer.bindPipeline(vk::PipelineBindPoint::eGraphics, a_shader.GetVkPipeline());
 	}
 
 	void
@@ -221,7 +221,31 @@ namespace Oyl::Rendering::Vulkan
 	{
 		OYL_PROFILE_FUNCTION();
 
-		const auto& vkCommandBuffer = m_impl->commandBuffer;
+		const auto& vkCommandBuffer = m_impl->vkCommandBuffer;
+		const auto& vkVertexBuffer = a_vertexBuffer.GetVkBuffer();
+
+		if (a_vertexBuffer.GetIndexCount() != 0)
+		{
+			vkCommandBuffer.bindIndexBuffer(*vkVertexBuffer, 0, vk::IndexType::eUint16);
+			vkCommandBuffer.bindVertexBuffers(0, *vkVertexBuffer, { a_vertexBuffer.GetVertexDataOffset() });
+		} else
+		{
+			vkCommandBuffer.bindVertexBuffers(0, *vkVertexBuffer, { a_vertexBuffer.GetVertexDataOffset() });
+		}
+	}
+
+	void
+	CommandBuffer::DrawVertexBuffer(const Rendering::VertexBuffer& a_vertexBuffer) const noexcept
+	{
+		DrawVertexBuffer(static_cast<const VertexBuffer&>(a_vertexBuffer));
+	}
+
+	void
+	CommandBuffer::DrawVertexBuffer(const VertexBuffer& a_vertexBuffer) const noexcept
+	{
+		OYL_PROFILE_FUNCTION();
+
+		const auto& vkCommandBuffer = m_impl->vkCommandBuffer;
 		const auto& vkVertexBuffer = a_vertexBuffer.GetVkBuffer();
 
 		if (a_vertexBuffer.GetIndexCount() != 0)
@@ -231,8 +255,8 @@ namespace Oyl::Rendering::Vulkan
 			vkCommandBuffer.drawIndexed(a_vertexBuffer.GetIndexCount(), 1, 0, 0, 0);
 		} else
 		{
-			vkCommandBuffer.bindVertexBuffers(0, *vkVertexBuffer, { a_vertexBuffer.GetVertexDataOffset() });
 			vkCommandBuffer.draw(a_vertexBuffer.GetVertexCount(), 1, 0, 0);
+			vkCommandBuffer.bindVertexBuffers(0, *vkVertexBuffer, { a_vertexBuffer.GetVertexDataOffset() });
 		}
 	}
 }

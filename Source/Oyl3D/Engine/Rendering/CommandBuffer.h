@@ -58,6 +58,10 @@ namespace Oyl::Rendering
 		void
 		BindVertexBuffer(const VertexBuffer& a_buffer) const noexcept = 0;
 
+		virtual
+		void
+		DrawVertexBuffer(const VertexBuffer& a_buffer) const noexcept = 0;
+
 	protected:
 		virtual
 		const ICommandPool*

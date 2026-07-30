@@ -30,11 +30,11 @@ namespace Oyl::Rendering::Vulkan
 			return static_cast<const ShaderCompiler*>(abstract);
 		}
 
-		const Device*
+		const DeviceImpl*
 		GetCurrentDevice() const override
 		{
 			const auto* abstract = Internal::RenderEngineInstance::GetCurrentDevice();
-			return static_cast<const Device*>(abstract);
+			return static_cast<const DeviceImpl*>(abstract);
 		}
 
 		//Rendering::Shader

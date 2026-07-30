@@ -6,7 +6,7 @@
 
 namespace Oyl::Rendering::Vulkan
 {
-	class Device;
+	class DeviceImpl;
 	class StagingBuffer;
 	class CommandBuffer;
 
@@ -32,7 +32,7 @@ namespace Oyl::Rendering::Vulkan
 		};
 
 		explicit
-		Image(const Device& a_device, const CreateParams& a_params);
+		Image(const DeviceImpl& a_device, const CreateParams& a_params);
 
 		Image(Image&& a_other) noexcept;
 		Image&

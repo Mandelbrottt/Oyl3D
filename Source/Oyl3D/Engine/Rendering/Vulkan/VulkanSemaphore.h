@@ -6,7 +6,7 @@
 
 namespace Oyl::Rendering::Vulkan
 {
-	class Device;
+	class DeviceImpl;
 
 	using SemaphoreHandle = OpaqueHandleConvertible<SemaphoreHandle, vk::Semaphore>;
 
@@ -19,7 +19,7 @@ namespace Oyl::Rendering::Vulkan
 			: Semaphore() {}
 
 		explicit
-		Semaphore(const Device& a_device);
+		Semaphore(const DeviceImpl& a_device);
 
 		Semaphore(Semaphore&& a_other) noexcept;
 		Semaphore&
@@ -62,7 +62,7 @@ namespace Oyl::Rendering::Vulkan
 		}
 
 	private:
-		const Device* m_device = nullptr;
+		const DeviceImpl* m_device = nullptr;
 		vk::raii::Semaphore m_semaphore = nullptr;
 	};
 }

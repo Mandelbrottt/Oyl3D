@@ -17,7 +17,7 @@ namespace Oyl::Rendering::Vulkan
 	CommandQueue::CommandQueue()
 		: m_impl(nullptr) {}
 
-	CommandQueue::CommandQueue(const Device& a_device, const CreateParams& a_params)
+	CommandQueue::CommandQueue(const DeviceImpl& a_device, const CreateParams& a_params)
 		: m_impl(std::make_unique<Impl>())
 	{
 		auto& vkDevice = a_device.GetVkDevice();

@@ -30,10 +30,10 @@ namespace Oyl::Rendering::Internal
 		return m_shaderCompiler.get();
 	}
 
-	const IDevice*
+	const DeviceImpl*
 	RenderEngineInstance::GetCurrentDevice() const
 	{
-		const IDevice* result = nullptr;
+		const DeviceImpl* result = nullptr;
 		if (m_renderContext)
 			result = m_renderContext->GetDevice();
 		return result;

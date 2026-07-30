@@ -6,7 +6,7 @@
 
 namespace Oyl::Rendering::Vulkan
 {
-	Semaphore::Semaphore(const Device& a_device)
+	Semaphore::Semaphore(const DeviceImpl& a_device)
 		: m_device(&a_device),
 		  m_semaphore(
 			  vk::raii::Semaphore(a_device.GetVkDevice(), vk::SemaphoreCreateInfo {})

@@ -14,7 +14,7 @@ namespace Oyl
 
 namespace Oyl::Rendering::Vulkan
 {
-	class Device;
+	class DeviceImpl;
 
 	class OYL_RENDERING_API SwapChain : public ISwapChain
 	{
@@ -27,7 +27,7 @@ namespace Oyl::Rendering::Vulkan
 		};
 
 		explicit
-		SwapChain(const Device& a_device, const CreateParams& a_params);
+		SwapChain(const DeviceImpl& a_device, const CreateParams& a_params);
 
 		SwapChain(SwapChain&& a_other) noexcept;
 		SwapChain&

@@ -6,7 +6,7 @@
 
 namespace Oyl::Rendering::Vulkan
 {
-	class Device;
+	class DeviceImpl;
 
 	using FenceHandle = OpaqueHandleConvertible<FenceHandle, vk::Fence>;
 
@@ -19,7 +19,7 @@ namespace Oyl::Rendering::Vulkan
 			: Fence() {}
 
 		explicit
-		Fence(const Device& a_device);
+		Fence(const DeviceImpl& a_device);
 
 		Fence(Fence&& a_other) noexcept;
 		Fence&
@@ -65,7 +65,7 @@ namespace Oyl::Rendering::Vulkan
 		}
 
 	private:
-		const Device* m_device = nullptr;
+		const DeviceImpl* m_device = nullptr;
 		vk::raii::Fence m_fence = nullptr;
 	};
 }

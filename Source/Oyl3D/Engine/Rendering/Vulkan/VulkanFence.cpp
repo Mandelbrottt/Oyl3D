@@ -4,7 +4,7 @@
 
 namespace Oyl::Rendering::Vulkan
 {
-	Fence::Fence(const Device& a_device)
+	Fence::Fence(const DeviceImpl& a_device)
 		: m_device(&a_device),
 		  m_fence(
 			  vk::raii::Fence(

@@ -41,7 +41,7 @@ namespace Oyl::Rendering::Vulkan
 		void
 		Resize(Vector2i a_size) override;
 
-		const Device*
+		const DeviceImpl*
 		GetDevice() const override;
 
 		const SwapChain*

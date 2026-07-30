@@ -7,7 +7,7 @@
 
 namespace Oyl::Rendering::Vulkan
 {
-	class Device;
+	class DeviceImpl;
 
 	struct Vertex : Rendering::Vertex
 	{
@@ -29,7 +29,7 @@ namespace Oyl::Rendering::Vulkan
 
 		struct CreateParams
 		{
-			const Device& device;
+			const DeviceImpl& device;
 			vk::Format format;
 
 			ShaderCompileResult compileResult;

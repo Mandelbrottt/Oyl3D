@@ -22,13 +22,13 @@ namespace Oyl::Rendering::Vulkan
 		uint32 indexStride = 0;
 
 		void
-		CreateVertexBuffer(const Device& a_device, const CreateParams& a_params);
+		CreateVertexBuffer(const DeviceImpl& a_device, const CreateParams& a_params);
 	};
 
 	VertexBuffer::VertexBuffer()
 		: m_impl(nullptr) {}
 
-	VertexBuffer::VertexBuffer(const Device& a_device, const CreateParams& a_params)
+	VertexBuffer::VertexBuffer(const DeviceImpl& a_device, const CreateParams& a_params)
 		: m_impl(std::make_unique<Impl>())
 	{
 		OYL_PROFILE_FUNCTION();
@@ -139,7 +139,7 @@ namespace Oyl::Rendering::Vulkan
 	static
 	std::pair<vk::raii::Buffer, vk::raii::DeviceMemory>
 	CreateBuffer(
-		const Device& a_device,
+		const DeviceImpl& a_device,
 		vk::DeviceSize a_size,
 		vk::BufferUsageFlags a_usage,
 		vk::MemoryPropertyFlags a_properties
@@ -148,14 +148,14 @@ namespace Oyl::Rendering::Vulkan
 	static
 	void
 	CopyBuffer(
-		const Device& a_device,
+		const DeviceImpl& a_device,
 		const vk::raii::Buffer& a_srcBuffer,
 		const vk::raii::Buffer& a_dstBuffer,
 		vk::DeviceSize a_size
 	);
 
 	void
-	VertexBuffer::Impl::CreateVertexBuffer(const Device& a_device, const CreateParams& a_params)
+	VertexBuffer::Impl::CreateVertexBuffer(const DeviceImpl& a_device, const CreateParams& a_params)
 	{
 		OYL_PROFILE_FUNCTION();
 
@@ -220,7 +220,7 @@ namespace Oyl::Rendering::Vulkan
 
 	std::pair<vk::raii::Buffer, vk::raii::DeviceMemory>
 	CreateBuffer(
-		const Device& a_device,
+		const DeviceImpl& a_device,
 		vk::DeviceSize a_size,
 		vk::BufferUsageFlags a_usage,
 		vk::MemoryPropertyFlags a_properties
@@ -244,7 +244,7 @@ namespace Oyl::Rendering::Vulkan
 
 	void
 	CopyBuffer(
-		const Device& a_device,
+		const DeviceImpl& a_device,
 		const vk::raii::Buffer& a_srcBuffer,
 		const vk::raii::Buffer& a_dstBuffer,
 		vk::DeviceSize a_size

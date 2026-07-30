@@ -14,7 +14,7 @@ namespace Oyl::Rendering::Vulkan
 	CommandPool::CommandPool()
 		: m_impl(nullptr) {}
 
-	CommandPool::CommandPool(const Device& a_device, const CreateParams& a_params)
+	CommandPool::CommandPool(const DeviceImpl& a_device, const CreateParams& a_params)
 		: m_impl(std::make_unique<Impl>())
 	{
 		OYL_PROFILE_FUNCTION();

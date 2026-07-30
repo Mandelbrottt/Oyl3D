@@ -17,20 +17,20 @@ namespace Oyl::Rendering::Vulkan
 		Vector2u size;
 
 		void
-		CreateImage(const Device& a_device, const CreateParams& a_params);
+		CreateImage(const DeviceImpl& a_device, const CreateParams& a_params);
 		void
-		CreateImageView(const Device& a_device, const CreateParams& a_params);
+		CreateImageView(const DeviceImpl& a_device, const CreateParams& a_params);
 
 		void
-		CreateStagingBuffer(const Device& a_device, const CreateParams& a_params);
+		CreateStagingBuffer(const DeviceImpl& a_device, const CreateParams& a_params);
 		void
-		CopyStagingBufferToImage(Image& a_image, const Device& a_device, const CreateParams& a_params);
+		CopyStagingBufferToImage(Image& a_image, const DeviceImpl& a_device, const CreateParams& a_params);
 	};
 
 	Image::Image()
 		: m_impl(nullptr) {}
 
-	Image::Image(const Device& a_device, const CreateParams& a_params)
+	Image::Image(const DeviceImpl& a_device, const CreateParams& a_params)
 		: m_impl(std::make_unique<Impl>())
 	{
 		OYL_PROFILE_FUNCTION();
@@ -183,7 +183,7 @@ namespace Oyl::Rendering::Vulkan
 	}
 
 	void
-	Image::Impl::CreateImage(const Device& a_device, const CreateParams& a_params)
+	Image::Impl::CreateImage(const DeviceImpl& a_device, const CreateParams& a_params)
 	{
 		OYL_PROFILE_FUNCTION();
 
@@ -224,7 +224,7 @@ namespace Oyl::Rendering::Vulkan
 	}
 
 	void
-	Image::Impl::CreateImageView(const Device& a_device, const CreateParams& a_params)
+	Image::Impl::CreateImageView(const DeviceImpl& a_device, const CreateParams& a_params)
 	{
 		OYL_PROFILE_FUNCTION();
 
@@ -242,7 +242,7 @@ namespace Oyl::Rendering::Vulkan
 	}
 
 	void
-	Image::Impl::CreateStagingBuffer(const Device& a_device, const CreateParams& a_params)
+	Image::Impl::CreateStagingBuffer(const DeviceImpl& a_device, const CreateParams& a_params)
 	{
 		OYL_PROFILE_FUNCTION();
 
@@ -261,7 +261,7 @@ namespace Oyl::Rendering::Vulkan
 	}
 
 	void
-	Image::Impl::CopyStagingBufferToImage(Image& a_image, const Device& a_device, const CreateParams& a_params)
+	Image::Impl::CopyStagingBufferToImage(Image& a_image, const DeviceImpl& a_device, const CreateParams& a_params)
 	{
 		OYL_PROFILE_FUNCTION();
 

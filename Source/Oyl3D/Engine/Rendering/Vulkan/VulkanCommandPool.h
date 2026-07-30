@@ -10,7 +10,7 @@ namespace vk::raii
 
 namespace Oyl::Rendering::Vulkan
 {
-	class Device;
+	class DeviceImpl;
 
 	class OYL_RENDERING_API CommandPool : public ICommandPool
 	{
@@ -23,7 +23,7 @@ namespace Oyl::Rendering::Vulkan
 		};
 
 		explicit
-		CommandPool(const Device& a_device, const CreateParams& a_params);
+		CommandPool(const DeviceImpl& a_device, const CreateParams& a_params);
 
 		CommandPool(CommandPool&& a_other) noexcept;
 		CommandPool&
