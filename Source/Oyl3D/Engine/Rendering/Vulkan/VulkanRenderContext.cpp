@@ -54,6 +54,8 @@ namespace Oyl::Rendering::Vulkan
 		RecordCommandBuffer();
 		void
 		DrawFrame();
+		void
+		RecreateSwapChain();
 	};
 
 	RenderContext::RenderContext() noexcept
@@ -237,7 +239,7 @@ namespace Oyl::Rendering::Vulkan
 	RenderContext::Resize(Vector2i /*a_size*/)
 	{
 		// No need to pass in a_size - we get the size from the window directly
-		m_impl->swapChain.Recreate();
+		m_impl->RecreateSwapChain();
 	}
 
 	const Device*
@@ -414,7 +416,7 @@ namespace Oyl::Rendering::Vulkan
 		bool success = swapChain.AcquireNextImage(presentCompleteSemaphore, nullptr);
 		if (!success)
 		{
-			swapChain.Recreate();
+			RecreateSwapChain();
 			return;
 		}
 
@@ -448,8 +450,27 @@ namespace Oyl::Rendering::Vulkan
 		);
 
 		if (!result)
-			swapChain.Recreate();
+			RecreateSwapChain();
 
 		frameIndex = (frameIndex + 1) % MAX_FRAMES_IN_FLIGHT;
+	}
+
+	void
+	RenderContext::Impl::RecreateSwapChain()
+	{
+		OYL_PROFILE_FUNCTION();
+
+		swapChain.Recreate();
+		image = Image(
+			device,
+			{
+				.size = swapChain.GetSize(),
+				.vkFormat = swapChain.GetVkSurfaceFormat().format,
+				.vkUsage = vk::ImageUsageFlagBits::eColorAttachment
+				           | vk::ImageUsageFlagBits::eTransferSrc,
+				.vkProperties = vk::MemoryPropertyFlagBits::eDeviceLocal,
+				.vkLayout = vk::ImageLayout::eColorAttachmentOptimal
+			}
+		);
 	}
 }

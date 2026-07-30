@@ -110,7 +110,7 @@ namespace Oyl::Rendering::Vulkan
 		          .setPCommandBuffers(&*vkCommandBuffer);
 
 		if (a_params.waitDestinationStageMask)
-			submitInfo.setWaitDstStageMask(waitDestinationStageMask);
+			submitInfo.setPWaitDstStageMask(&waitDestinationStageMask);
 
 		if (vkWaitSemaphore)
 			submitInfo.setWaitSemaphores(vkWaitSemaphore);
