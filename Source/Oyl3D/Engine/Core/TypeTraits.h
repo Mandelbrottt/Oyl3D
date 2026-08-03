@@ -28,6 +28,15 @@ namespace Oyl::Traits
 #pragma region Types
 
 	template<typename T>
+	concept Integer = std::is_integral_v<T>;
+
+	template<typename T>
+	concept SignedInteger = Integer<T> && std::is_signed_v<T>;
+
+	template<typename T>
+	concept UnsignedInteger = Integer<T> && std::is_unsigned_v<T>;
+
+	template<typename T>
 	struct IsEnum : std::is_enum<T> {};
 
 	template<typename T>
