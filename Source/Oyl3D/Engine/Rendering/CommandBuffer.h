@@ -1,6 +1,7 @@
 ﻿#pragma once
 
 #include <Core/PImpl.h>
+#include <Core/Rect.h>
 #include <Core/UniqueHandle.h>
 #include <Core/Math/Vector.h>
 
@@ -75,6 +76,22 @@ namespace Oyl::Rendering
 		virtual
 		void
 		TransitionImageLayout(ImageId a_image, ImageLayout a_oldLayout, ImageLayout a_newLayout) const noexcept = 0;
+
+		virtual
+		void
+		BlitImage(const Image& a_srcImage, const Image& a_dstImage, ImageFilter a_filter) const noexcept = 0;
+
+		virtual
+		void
+		BlitImage(
+			ImageId a_srcImageId,
+			ImageLayout a_srcLayout,
+			Rect2D a_srcRect,
+			ImageId a_dstImageId,
+			ImageLayout a_dstImageLayout,
+			Rect2D a_dstRect,
+			ImageFilter a_filter
+		) const noexcept = 0;
 
 	protected:
 		virtual

@@ -313,6 +313,34 @@ namespace Oyl::Rendering
 	}
 
 	void
+	VulkanCommandBuffer::BlitImage(
+		VulkanImageId a_srcImageId,
+		ImageLayout a_srcLayout,
+		Rect2D a_srcRect,
+		VulkanImageId a_dstImageId,
+		ImageLayout a_dstImageLayout,
+		Rect2D a_dstRect,
+		ImageFilter a_filter
+	) const noexcept
+	{
+		OYL_PROFILE_FUNCTION();
+
+		m_impl->vkCommandBuffer.blitImage(
+			a_srcImageId,
+			ToVkEnum(a_srcLayout),
+			a_dstImageId,
+			ToVkEnum(a_dstImageLayout),
+			vk::ImageBlit {
+				.srcSubresource = { .aspectMask = vk::ImageAspectFlagBits::eColor, .mipLevel = 0, .baseArrayLayer = 0, .layerCount = 1 },
+				.srcOffsets = std::array { vk::Offset3D { a_srcRect.x, a_srcRect.y, 0 }, vk::Offset3D { (int) a_srcRect.width, (int) a_srcRect.height, 1 } },
+				.dstSubresource = { .aspectMask = vk::ImageAspectFlagBits::eColor, .mipLevel = 0, .baseArrayLayer = 0, .layerCount = 1 },
+				.dstOffsets = std::array { vk::Offset3D { a_dstRect.x, a_dstRect.y, 0 }, vk::Offset3D { (int) a_dstRect.width, (int) a_dstRect.height, 1 } }
+			},
+			ToVkEnum(a_filter)
+		);
+	}
+
+	void
 	SetVkStageAndAccessMasksForLayouts(
 		vk::ImageMemoryBarrier2& a_barrier,
 		vk::ImageLayout a_oldLayout,

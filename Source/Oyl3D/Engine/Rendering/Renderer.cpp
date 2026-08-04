@@ -1,7 +1,5 @@
 ﻿#include "Renderer.h"
 
-#include <vulkan/vulkan_raii.hpp>
-
 #include "CommandBuffer.h"
 #include "CommandPool.h"
 #include "Device.h"
@@ -10,10 +8,6 @@
 #include "Semaphore.h"
 #include "Shader.h"
 #include "TestRenderPass.h"
-
-#include "Vulkan/VulkanCommandBuffer.h"
-#include "Vulkan/VulkanImage.h"
-#include "Vulkan/VulkanSwapChain.h"
 
 static constexpr uint32 MAX_FRAMES_IN_FLIGHT = 2;
 
@@ -129,25 +123,15 @@ namespace Oyl::Rendering
 		);
 
 		{
-			OYL_PROFILE_SCOPE("BlitImage");
-
-			auto& vulkanCommandBuffer = dynamic_cast<VulkanCommandBuffer&>(*commandBuffer);
-			auto& vulkanSwapChain = dynamic_cast<VulkanSwapChain&>(swapChain);
-
 			auto& image = *m_impl->renderGraph.GetSortedRenderPasses().Back()->GetRenderTarget()->GetColorAttachment(0);
-			auto& vulkanImage = dynamic_cast<const VulkanImage&>(image);
-			vulkanCommandBuffer.GetVkCommandBuffer().blitImage(
-				vulkanImage.GetVkImage(),
-				vk::ImageLayout::eTransferSrcOptimal,
-				vulkanSwapChain.GetCurrentVkImage(),
-				vk::ImageLayout::eTransferDstOptimal,
-				vk::ImageBlit {
-					.srcSubresource = { .aspectMask = vk::ImageAspectFlagBits::eColor, .mipLevel = 0, .baseArrayLayer = 0, .layerCount = 1 },
-					.srcOffsets = std::array { vk::Offset3D { 0, 0, 0 }, vk::Offset3D { (int) image.GetSize().x, (int) image.GetSize().y, 1 } },
-					.dstSubresource = { .aspectMask = vk::ImageAspectFlagBits::eColor, .mipLevel = 0, .baseArrayLayer = 0, .layerCount = 1 },
-					.dstOffsets = std::array { vk::Offset3D { 0, 0, 0 }, vk::Offset3D { (int) swapChain.GetSize().x, (int) swapChain.GetSize().y, 1 } }
-				},
-				vk::Filter::eNearest
+			commandBuffer->BlitImage(
+				image.GetId(),
+				ImageLayout::TransferSource,
+				Rect2D(Vector2i::Zero(), image.GetSize()),
+				swapChain.GetCurrentImageId(),
+				ImageLayout::TransferDest,
+				Rect2D(Vector2i::Zero(), swapChain.GetSize()),
+				ImageFilter::Nearest
 			);
 		}
 

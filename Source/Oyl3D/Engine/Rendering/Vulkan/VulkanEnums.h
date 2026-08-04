@@ -46,6 +46,16 @@ namespace Oyl::Rendering
 	OYL_DEFINE_ENUM_CONVERSION_FUNCTIONS(
 		ToOylEnum,
 		ToVkEnum,
+		ImageFilter,
+		vk::Filter,
+		{ ImageFilter::Nearest, vk::Filter::eNearest },
+		{ ImageFilter::Linear, vk::Filter::eLinear },
+		{ ImageFilter::Cubic, vk::Filter::eCubicEXT },
+	)
+
+	OYL_DEFINE_ENUM_CONVERSION_FUNCTIONS(
+		ToOylEnum,
+		ToVkEnum,
 		ImageFormat,
 		vk::Format,
 		{ ImageFormat::RGB_8_SRGB, vk::Format::eR8G8B8Srgb },
