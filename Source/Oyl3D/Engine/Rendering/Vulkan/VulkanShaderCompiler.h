@@ -4,23 +4,23 @@
 
 #include "Rendering/ShaderCompiler.h"
 
-namespace Oyl::Rendering::Vulkan
+namespace Oyl::Rendering
 {
-	class OYL_RENDERING_API ShaderCompiler : public Rendering::ShaderCompiler
+	class OYL_RENDERING_API VulkanShaderCompiler : public ShaderCompiler
 	{
 	public:
-		ShaderCompiler();
+		VulkanShaderCompiler();
 
 		virtual
-		~ShaderCompiler();
+		~VulkanShaderCompiler();
 
-		ShaderCompiler(const ShaderCompiler& a_other);
-		ShaderCompiler&
-		operator =(const ShaderCompiler& a_other);
+		VulkanShaderCompiler(const VulkanShaderCompiler& a_other);
+		VulkanShaderCompiler&
+		operator =(const VulkanShaderCompiler& a_other);
 
-		ShaderCompiler(ShaderCompiler&& a_other) noexcept;
-		ShaderCompiler&
-		operator =(ShaderCompiler&& a_other) noexcept;
+		VulkanShaderCompiler(VulkanShaderCompiler&& a_other) noexcept;
+		VulkanShaderCompiler&
+		operator =(VulkanShaderCompiler&& a_other) noexcept;
 
 	private:
 		bool

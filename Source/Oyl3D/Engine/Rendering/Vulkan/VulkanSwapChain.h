@@ -13,28 +13,28 @@ namespace Oyl
 	class IWindow;
 }
 
-namespace Oyl::Rendering::Vulkan
+namespace Oyl::Rendering
 {
-	class DeviceImpl;
+	class VulkanDevice;
 
-	class OYL_RENDERING_API SwapChainImpl : public Rendering::SwapChainImpl
+	class OYL_RENDERING_API VulkanSwapChain : public SwapChain
 	{
 	public:
-		SwapChainImpl(nullptr_t);
+		VulkanSwapChain(nullptr_t);
 
 		struct CreateParams
 		{
 			const IWindow& window;
 		};
 
-		SwapChainImpl(const DeviceImpl& a_device, const CreateParams& a_params);
+		VulkanSwapChain(const VulkanDevice& a_device, const CreateParams& a_params);
 
-		SwapChainImpl(SwapChainImpl&& a_other) noexcept;
-		SwapChainImpl&
-		operator =(SwapChainImpl&& a_other) noexcept;
+		VulkanSwapChain(VulkanSwapChain&& a_other) noexcept;
+		VulkanSwapChain&
+		operator =(VulkanSwapChain&& a_other) noexcept;
 
 		virtual
-		~SwapChainImpl();
+		~VulkanSwapChain();
 
 		void
 		Destroy() override;
@@ -49,47 +49,47 @@ namespace Oyl::Rendering::Vulkan
 		Recreate() override;
 
 		bool
-		AcquireNextImage(Rendering::SemaphoreHandle a_semaphore, Rendering::FenceHandle a_fence) override
+		AcquireNextImage(SemaphoreId a_semaphore, FenceId a_fence) override
 		{
-			return AcquireNextImage((SemaphoreHandle) a_semaphore, (FenceHandle) a_fence);
+			return AcquireNextImage((VulkanSemaphoreId) a_semaphore, (VulkanFenceId) a_fence);
 		}
 
 		bool
-		AcquireNextImage(const SemaphoreImpl& a_semaphore, const FenceImpl& a_fence)
+		AcquireNextImage(const VulkanSemaphore& a_semaphore, const VulkanFence& a_fence)
 		{
-			return AcquireNextImage(a_semaphore.GetHandle(), a_fence.GetHandle());
+			return AcquireNextImage(a_semaphore.GetId(), a_fence.GetId());
 		}
 
 		bool
-		AcquireNextImage(SemaphoreHandle a_semaphore, FenceHandle a_fence);
+		AcquireNextImage(VulkanSemaphoreId a_semaphore, VulkanFenceId a_fence);
 
 		uint32
 		GetImageCount() const override;
 
 	protected:
-		Rendering::ImageHandle
-		GetImageHandle(uint32 a_index) const override
+		ImageId
+		GetImageId(uint32 a_index) const override
 		{
-			return GetVulkanImageHandle(a_index);
+			return GetVulkanImageId(a_index);
 		}
 
 	public:
-		ImageHandle
-		GetVulkanImageHandle(uint32 a_index) const;
+		VulkanImageId
+		GetVulkanImageId(uint32 a_index) const;
 
 		uint32
 		GetCurrentImageIndex() const override;
 
 	protected:
-		Rendering::ImageHandle
-		GetCurrentImageHandle() const override
+		ImageId
+		GetCurrentImageId() const override
 		{
-			return GetCurrentVulkanImageHandle();
+			return GetCurrentVulkanImageId();
 		}
 
 	public:
-		ImageHandle
-		GetCurrentVulkanImageHandle() const;
+		VulkanImageId
+		GetCurrentVulkanImageId() const;
 
 		const vk::raii::SwapchainKHR&
 		GetVkSwapChain() const;
@@ -117,5 +117,5 @@ namespace Oyl::Rendering::Vulkan
 		std::unique_ptr<Impl> m_impl;
 	};
 
-	using SwapChain = PImpl<SwapChainImpl>;
+	using VulkanSwapChainHandle = PImpl<VulkanSwapChain>;
 }

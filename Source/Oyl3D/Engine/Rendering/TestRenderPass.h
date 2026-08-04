@@ -26,23 +26,23 @@ namespace Oyl::Rendering
 
 	protected:
 		void
-		Begin(const CommandBufferImpl& a_commandBuffer) override;
+		Begin(const CommandBuffer& a_commandBuffer) override;
 
 		void
-		Render(const CommandBufferImpl& a_commandBuffer) override;
+		Render(const CommandBuffer& a_commandBuffer) override;
 
 		void
-		End(const CommandBufferImpl& a_commandBuffer) override;
+		End(const CommandBuffer& a_commandBuffer) override;
 
 	private:
 		void
 		CreateRenderTarget(Vector2u a_size);
 
 	private:
-		Image m_colorAttachment = nullptr;
+		ImageHandle m_colorAttachment = nullptr;
 		RenderTarget m_renderTarget = nullptr;
 
-		Shader m_shader = nullptr;
-		VertexBuffer m_vertexBuffer = nullptr;
+		ShaderHandle m_shader = nullptr;
+		VertexBufferHandle m_vertexBuffer = nullptr;
 	};
 }

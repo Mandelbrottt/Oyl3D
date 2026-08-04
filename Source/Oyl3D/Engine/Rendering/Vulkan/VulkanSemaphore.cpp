@@ -4,21 +4,21 @@
 
 #include "VulkanDevice.h"
 
-namespace Oyl::Rendering::Vulkan
+namespace Oyl::Rendering
 {
-	SemaphoreImpl::SemaphoreImpl(const DeviceImpl& a_device)
+	VulkanSemaphore::VulkanSemaphore(const VulkanDevice& a_device)
 		: m_device(&a_device),
 		  m_semaphore(
 			  vk::raii::Semaphore(a_device.GetVkDevice(), vk::SemaphoreCreateInfo {})
 		  ) {}
 
-	SemaphoreImpl::SemaphoreImpl(SemaphoreImpl&& a_other) noexcept
+	VulkanSemaphore::VulkanSemaphore(VulkanSemaphore&& a_other) noexcept
 	{
 		*this = std::move(a_other);
 	}
 
-	SemaphoreImpl&
-	SemaphoreImpl::operator=(SemaphoreImpl&& a_other) noexcept
+	VulkanSemaphore&
+	VulkanSemaphore::operator=(VulkanSemaphore&& a_other) noexcept
 	{
 		if (this != &a_other)
 		{
@@ -29,7 +29,7 @@ namespace Oyl::Rendering::Vulkan
 	}
 
 	void
-	SemaphoreImpl::Destroy()
+	VulkanSemaphore::Destroy()
 	{
 		if (!IsValid())
 			return;
@@ -38,7 +38,7 @@ namespace Oyl::Rendering::Vulkan
 	}
 
 	bool
-	SemaphoreImpl::IsValid() const
+	VulkanSemaphore::IsValid() const
 	{
 		return m_device && *m_semaphore;
 	}

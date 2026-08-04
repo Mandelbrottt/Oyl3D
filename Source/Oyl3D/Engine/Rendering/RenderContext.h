@@ -33,15 +33,15 @@ namespace Oyl::Rendering
 		Resize(Vector2u a_size) = 0;
 
 		virtual
-		const DeviceImpl*
+		const Device*
 		GetDevice() const = 0;
 
 		virtual
-		SwapChainImpl*
+		SwapChain*
 		GetSwapChain() = 0;
 
 		virtual
-		const SwapChainImpl*
+		const SwapChain*
 		GetSwapChain() const
 		{
 			return const_cast<RenderContext*>(this)->GetSwapChain();

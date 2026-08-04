@@ -63,8 +63,8 @@ namespace Oyl::Rendering
 
 		m_resourceManager = std::make_unique<Oyl::Internal::ResourceManager>();
 
-		m_renderEngineInstance = std::make_unique<Vulkan::RenderEngineInstance>(
-			Vulkan::RenderEngineInstance::CreateParams {
+		m_renderEngineInstance = std::make_unique<VulkanRenderEngineInstance>(
+			VulkanRenderEngineInstance::CreateParams {
 				.window = m_mainWindow
 			}
 		);

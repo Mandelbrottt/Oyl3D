@@ -7,13 +7,13 @@
 
 #include "Core/Resources/ResourceManager.h"
 
-namespace Oyl::Rendering::Vulkan
+namespace Oyl::Rendering
 {
-	RenderEngineInstance::RenderEngineInstance(CreateParams a_params)
+	VulkanRenderEngineInstance::VulkanRenderEngineInstance(CreateParams a_params)
 		: Internal::RenderEngineInstance(
 			{
-				.shaderCompiler = std::make_unique<ShaderCompiler>(),
-				.renderContext = std::make_unique<RenderContext>(RenderContext::CreateParams {
+				.shaderCompiler = std::make_unique<VulkanShaderCompiler>(),
+				.renderContext = std::make_unique<VulkanRenderContext>(VulkanRenderContext::CreateParams {
 					.window = a_params.window
 				})
 			}

@@ -7,12 +7,12 @@
 
 namespace Oyl::Rendering
 {
-	struct VertexBufferHandle : OpaqueHandle<VertexBufferHandle> {};
+	struct VertexBufferId : OpaqueHandle<VertexBufferId> {};
 
-	class VertexBufferImpl : public IDeviceObject<VertexBufferHandle>
+	class VertexBuffer : public IDeviceObject<VertexBufferId>
 	{
 	protected:
-		VertexBufferImpl() = default;
+		VertexBuffer() = default;
 
 	public:
 		struct CreateParams
@@ -24,11 +24,11 @@ namespace Oyl::Rendering
 			uint32 indexStride = sizeof(uint16);
 		};
 
-		NO_MOVE(VertexBufferImpl);
-		NO_COPY(VertexBufferImpl);
+		NO_MOVE(VertexBuffer);
+		NO_COPY(VertexBuffer);
 
 		virtual
-		~VertexBufferImpl() = default;
+		~VertexBuffer() = default;
 
 		virtual
 		uint32
@@ -47,5 +47,5 @@ namespace Oyl::Rendering
 		GetIndexStride() const = 0;
 	};
 
-	using VertexBuffer = PImpl<VertexBufferImpl>;
+	using VertexBufferHandle = PImpl<VertexBuffer>;
 }

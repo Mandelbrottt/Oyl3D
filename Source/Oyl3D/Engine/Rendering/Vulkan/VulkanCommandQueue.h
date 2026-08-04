@@ -10,27 +10,27 @@ namespace vk::raii
 	class Queue;
 }
 
-namespace Oyl::Rendering::Vulkan
+namespace Oyl::Rendering
 {
-	class DeviceImpl;
-	class CommandBufferImpl;
-	class SwapChainImpl;
+	class VulkanDevice;
+	class VulkanCommandBuffer;
+	class VulkanSwapChain;
 
-	class OYL_RENDERING_API CommandQueueImpl : public Rendering::CommandQueueImpl
+	class OYL_RENDERING_API VulkanCommandQueue : public CommandQueue
 	{
 	public:
-		CommandQueueImpl(nullptr_t);
+		VulkanCommandQueue(nullptr_t);
 
-		CommandQueueImpl(const DeviceImpl& a_device, const CreateParams& a_params);
+		VulkanCommandQueue(const VulkanDevice& a_device, const CreateParams& a_params);
 
-		NO_COPY(CommandQueueImpl);
+		NO_COPY(VulkanCommandQueue);
 
-		CommandQueueImpl(CommandQueueImpl&& a_other) noexcept;
-		CommandQueueImpl&
-		operator =(CommandQueueImpl&& a_other) noexcept;
+		VulkanCommandQueue(VulkanCommandQueue&& a_other) noexcept;
+		VulkanCommandQueue&
+		operator =(VulkanCommandQueue&& a_other) noexcept;
 
 		virtual
-		~CommandQueueImpl();
+		~VulkanCommandQueue();
 
 		void
 		Destroy() override;
@@ -58,5 +58,5 @@ namespace Oyl::Rendering::Vulkan
 		std::unique_ptr<Impl> m_impl;
 	};
 
-	using CommandQueue = PImpl<CommandQueueImpl>;
+	using VulkanCommandQueueHandle = PImpl<VulkanCommandQueue>;
 }

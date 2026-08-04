@@ -4,27 +4,27 @@
 
 #include "Rendering/Semaphore.h"
 
-namespace Oyl::Rendering::Vulkan
+namespace Oyl::Rendering
 {
-	class DeviceImpl;
+	class VulkanDevice;
 
-	using SemaphoreHandle = OpaqueHandleConvertible<SemaphoreHandle, vk::Semaphore>;
+	using VulkanSemaphoreId = OpaqueHandleConvertible<SemaphoreId, vk::Semaphore>;
 
-	class OYL_RENDERING_API SemaphoreImpl : public Rendering::SemaphoreImpl
+	class OYL_RENDERING_API VulkanSemaphore : public Semaphore
 	{
 	public:
-		SemaphoreImpl(nullptr_t) {}
+		VulkanSemaphore(nullptr_t) {}
 
-		SemaphoreImpl(const DeviceImpl& a_device);
+		VulkanSemaphore(const VulkanDevice& a_device);
 
-		SemaphoreImpl(SemaphoreImpl&& a_other) noexcept;
-		SemaphoreImpl&
-		operator =(SemaphoreImpl&& a_other) noexcept;
+		VulkanSemaphore(VulkanSemaphore&& a_other) noexcept;
+		VulkanSemaphore&
+		operator =(VulkanSemaphore&& a_other) noexcept;
 
 		virtual
-		~SemaphoreImpl()
+		~VulkanSemaphore()
 		{
-			SemaphoreImpl::Destroy();
+			VulkanSemaphore::Destroy();
 		};
 
 		void
@@ -39,28 +39,28 @@ namespace Oyl::Rendering::Vulkan
 			return m_semaphore;
 		}
 
-		SemaphoreHandle
-		GetHandle() const
+		VulkanSemaphoreId
+		GetId() const
 		{
 			return *m_semaphore;
 		}
 
-		operator SemaphoreHandle() const
+		operator VulkanSemaphoreId() const
 		{
-			return GetHandle();
+			return GetId();
 		}
 
 	protected:
-		Rendering::SemaphoreHandle
-		GetHandleImpl() const override
+		SemaphoreId
+		GetIdImpl() const override
 		{
-			return GetHandle();
+			return GetId();
 		}
 
 	private:
-		const DeviceImpl* m_device = nullptr;
+		const VulkanDevice* m_device = nullptr;
 		vk::raii::Semaphore m_semaphore = nullptr;
 	};
 
-	using Semaphore = PImpl<SemaphoreImpl>;
+	using VulkanSemaphoreHandle = PImpl<VulkanSemaphore>;
 }

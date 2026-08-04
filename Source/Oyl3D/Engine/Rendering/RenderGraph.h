@@ -6,7 +6,7 @@
 
 namespace Oyl::Rendering
 {
-	class CommandBufferImpl;
+	class CommandBuffer;
 }
 
 namespace Oyl::Rendering
@@ -43,7 +43,7 @@ namespace Oyl::Rendering
 
 		virtual
 		void
-		Execute(const CommandBufferImpl& a_commandBuffer);
+		Execute(const CommandBuffer& a_commandBuffer);
 
 	private:
 		void

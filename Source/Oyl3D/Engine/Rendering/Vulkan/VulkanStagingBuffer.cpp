@@ -2,9 +2,9 @@
 
 #include "VulkanDevice.h"
 
-namespace Oyl::Rendering::Vulkan
+namespace Oyl::Rendering
 {
-	struct StagingBuffer::Impl
+	struct VulkanStagingBuffer::Impl
 	{
 		vk::raii::Buffer vkBuffer = nullptr;
 		vk::raii::DeviceMemory vkBufferMemory = nullptr;
@@ -12,13 +12,13 @@ namespace Oyl::Rendering::Vulkan
 		uint32 size;
 
 		void
-		CreateBuffer(const DeviceImpl& a_device, const CreateParams& a_params);
+		CreateBuffer(const VulkanDevice& a_device, const CreateParams& a_params);
 	};
 
-	StagingBuffer::StagingBuffer()
+	VulkanStagingBuffer::VulkanStagingBuffer()
 		: m_impl(nullptr) {}
 
-	StagingBuffer::StagingBuffer(const DeviceImpl& a_device, const CreateParams& a_params)
+	VulkanStagingBuffer::VulkanStagingBuffer(const VulkanDevice& a_device, const CreateParams& a_params)
 		: m_impl(std::make_unique<Impl>())
 	{
 		OYL_PROFILE_FUNCTION();
@@ -26,16 +26,16 @@ namespace Oyl::Rendering::Vulkan
 		m_impl->CreateBuffer(a_device, a_params);
 
 		if (a_params.pData)
-			StagingBuffer::CopyMemory(a_params.pData, m_impl->size);
+			VulkanStagingBuffer::CopyMemory(a_params.pData, m_impl->size);
 	}
 
-	StagingBuffer::StagingBuffer(StagingBuffer&& a_other) noexcept
+	VulkanStagingBuffer::VulkanStagingBuffer(VulkanStagingBuffer&& a_other) noexcept
 	{
 		*this = std::move(a_other);
 	}
 
-	StagingBuffer&
-	StagingBuffer::operator=(StagingBuffer&& a_other) noexcept
+	VulkanStagingBuffer&
+	VulkanStagingBuffer::operator=(VulkanStagingBuffer&& a_other) noexcept
 	{
 		if (this != &a_other)
 		{
@@ -44,13 +44,13 @@ namespace Oyl::Rendering::Vulkan
 		return *this;
 	}
 
-	StagingBuffer::~StagingBuffer()
+	VulkanStagingBuffer::~VulkanStagingBuffer()
 	{
-		StagingBuffer::Destroy();
+		VulkanStagingBuffer::Destroy();
 	}
 
 	void
-	StagingBuffer::Destroy()
+	VulkanStagingBuffer::Destroy()
 	{
 		if (!IsValid())
 			return;
@@ -60,7 +60,7 @@ namespace Oyl::Rendering::Vulkan
 	}
 
 	bool
-	StagingBuffer::IsValid() const
+	VulkanStagingBuffer::IsValid() const
 	{
 		return m_impl
 		       && *m_impl->vkBuffer
@@ -68,7 +68,7 @@ namespace Oyl::Rendering::Vulkan
 	}
 
 	bool
-	StagingBuffer::CopyMemory(const void* a_src, uint32 a_size)
+	VulkanStagingBuffer::CopyMemory(const void* a_src, uint32 a_size)
 	{
 		OYL_PROFILE_FUNCTION();
 
@@ -82,19 +82,19 @@ namespace Oyl::Rendering::Vulkan
 	}
 
 	const vk::raii::Buffer&
-	StagingBuffer::GetVkBuffer() const
+	VulkanStagingBuffer::GetVkBuffer() const
 	{
 		return m_impl->vkBuffer;
 	}
 
 	const vk::raii::DeviceMemory&
-	StagingBuffer::GetVkDeviceMemory() const
+	VulkanStagingBuffer::GetVkDeviceMemory() const
 	{
 		return m_impl->vkBufferMemory;
 	}
 
-	StagingBufferHandle
-	StagingBuffer::GetHandle() const
+	VulkanStagingBufferId
+	VulkanStagingBuffer::GetId() const
 	{
 		return *m_impl->vkBuffer;
 	}
@@ -122,7 +122,7 @@ namespace Oyl::Rendering::Vulkan
 	}
 
 	void
-	StagingBuffer::Impl::CreateBuffer(const DeviceImpl& a_device, const CreateParams& a_params)
+	VulkanStagingBuffer::Impl::CreateBuffer(const VulkanDevice& a_device, const CreateParams& a_params)
 	{
 		OYL_PROFILE_FUNCTION();
 

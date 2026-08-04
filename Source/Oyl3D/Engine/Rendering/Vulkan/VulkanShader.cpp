@@ -8,10 +8,10 @@
 
 #include "Rendering/RenderTarget.h"
 
-namespace Oyl::Rendering::Vulkan
+namespace Oyl::Rendering
 {
 	vk::VertexInputBindingDescription
-	Vertex::GetBindingDescription()
+	VulkanVertex::GetBindingDescription()
 	{
 		return vk::VertexInputBindingDescription {
 			.binding = 0,
@@ -21,7 +21,7 @@ namespace Oyl::Rendering::Vulkan
 	}
 
 	std::array<vk::VertexInputAttributeDescription, 2>
-	Vertex::GetAttributeDescriptions()
+	VulkanVertex::GetAttributeDescriptions()
 	{
 		return {
 			vk::VertexInputAttributeDescription {
@@ -39,21 +39,21 @@ namespace Oyl::Rendering::Vulkan
 		};
 	}
 
-	struct ShaderImpl::Impl
+	struct VulkanShader::Impl
 	{
 		vk::raii::Pipeline pipeline = nullptr;
 
 		void
-		CreatePipeline(const DeviceImpl& a_device, const CreateParams& a_params);
+		CreatePipeline(const VulkanDevice& a_device, const CreateParams& a_params);
 
 		vk::raii::ShaderModule
-		CompileVkShaderModule(const DeviceImpl& a_device, const ShaderStage& a_stage);
+		CompileVkShaderModule(const VulkanDevice& a_device, const ShaderStage& a_stage);
 	};
 
-	ShaderImpl::ShaderImpl()
+	VulkanShader::VulkanShader()
 		: m_impl(nullptr) {}
 
-	ShaderImpl::ShaderImpl(const DeviceImpl& a_device, const CreateParams& a_params)
+	VulkanShader::VulkanShader(const VulkanDevice& a_device, const CreateParams& a_params)
 		: m_impl(std::make_unique<Impl>())
 	{
 		OYL_PROFILE_FUNCTION();
@@ -61,13 +61,13 @@ namespace Oyl::Rendering::Vulkan
 		m_impl->CreatePipeline(a_device, a_params);
 	}
 
-	ShaderImpl::ShaderImpl(ShaderImpl&& a_other) noexcept
+	VulkanShader::VulkanShader(VulkanShader&& a_other) noexcept
 	{
 		*this = std::move(a_other);
 	}
 
-	ShaderImpl&
-	ShaderImpl::operator=(ShaderImpl&& a_other) noexcept
+	VulkanShader&
+	VulkanShader::operator=(VulkanShader&& a_other) noexcept
 	{
 		if (this != &a_other)
 		{
@@ -76,13 +76,13 @@ namespace Oyl::Rendering::Vulkan
 		return *this;
 	}
 
-	ShaderImpl::~ShaderImpl()
+	VulkanShader::~VulkanShader()
 	{
-		ShaderImpl::Destroy();
+		VulkanShader::Destroy();
 	}
 
 	void
-	ShaderImpl::Destroy()
+	VulkanShader::Destroy()
 	{
 		if (!IsValid())
 			return;
@@ -91,30 +91,30 @@ namespace Oyl::Rendering::Vulkan
 	}
 
 	bool
-	ShaderImpl::IsValid() const
+	VulkanShader::IsValid() const
 	{
 		return m_impl
 		       && *m_impl->pipeline;
 	}
 
 	const vk::raii::Pipeline&
-	ShaderImpl::GetVkPipeline() const
+	VulkanShader::GetVkPipeline() const
 	{
 		return m_impl->pipeline;
 	}
 
-	ShaderHandle
-	ShaderImpl::GetHandle() const
+	VulkanShaderId
+	VulkanShader::GetId() const
 	{
 		return *m_impl->pipeline;
 	}
 
 	void
-	ShaderImpl::Impl::CreatePipeline(const DeviceImpl& a_device, const CreateParams& a_params)
+	VulkanShader::Impl::CreatePipeline(const VulkanDevice& a_device, const CreateParams& a_params)
 	{
 		OYL_PROFILE_FUNCTION();
 
-		auto& device = dynamic_cast<const DeviceImpl&>(a_device);
+		auto& device = dynamic_cast<const VulkanDevice&>(a_device);
 		auto& compileResult = a_params.compileResult;
 
 		// keep ShaderModules for RAII
@@ -134,8 +134,8 @@ namespace Oyl::Rendering::Vulkan
 			vkShaderStageCreateInfos.emplace_back(std::move(createInfo));
 		}
 
-		auto bindingDescription = Vertex::GetBindingDescription();
-		auto attributeDescriptions = Vertex::GetAttributeDescriptions();
+		auto bindingDescription = VulkanVertex::GetBindingDescription();
+		auto attributeDescriptions = VulkanVertex::GetAttributeDescriptions();
 
 		vk::PipelineVertexInputStateCreateInfo vertexInputInfo {
 			.vertexBindingDescriptionCount = 1,
@@ -210,13 +210,13 @@ namespace Oyl::Rendering::Vulkan
 			for (uint32 i = 0; i < a_params.renderTarget.GetNumColorAttachments(); i++)
 			{
 				auto* colorAttachment = a_params.renderTarget.GetColorAttachment(i);
-				auto& vulkanColorAttachment = dynamic_cast<const ImageImpl&>(*colorAttachment);
+				auto& vulkanColorAttachment = dynamic_cast<const VulkanImage&>(*colorAttachment);
 				colorAttachmentFormats.Add(vulkanColorAttachment.GetVkFormat());
 			}
 			vk::Format depthAttachmentFormat = vk::Format::eUndefined;
 			if (auto* depthAttachment = a_params.renderTarget.GetDepthAttachment())
 			{
-				auto& vulkanDepthAttachment = dynamic_cast<const ImageImpl&>(*depthAttachment);
+				auto& vulkanDepthAttachment = dynamic_cast<const VulkanImage&>(*depthAttachment);
 				depthAttachmentFormat = vulkanDepthAttachment.GetVkFormat();
 			}
 
@@ -251,7 +251,7 @@ namespace Oyl::Rendering::Vulkan
 	}
 
 	vk::raii::ShaderModule
-	ShaderImpl::Impl::CompileVkShaderModule(const DeviceImpl& a_device, const ShaderStage& a_stage)
+	VulkanShader::Impl::CompileVkShaderModule(const VulkanDevice& a_device, const ShaderStage& a_stage)
 	{
 		OYL_PROFILE_FUNCTION();
 

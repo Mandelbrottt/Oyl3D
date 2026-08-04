@@ -7,20 +7,20 @@
 
 namespace Oyl::Rendering
 {
-	struct FenceHandle : OpaqueHandle<FenceHandle> {};
+	struct FenceId : OpaqueHandle<FenceId> {};
 
-	class FenceImpl : public IDeviceObject<FenceHandle>
+	class Fence : public IDeviceObject<FenceId>
 	{
 	protected:
-		FenceImpl() = default;
+		Fence() = default;
 
-		DEFAULT_MOVE(FenceImpl);
+		DEFAULT_MOVE(Fence);
 
 	public:
-		NO_COPY(FenceImpl);
+		NO_COPY(Fence);
 
 		virtual
-		~FenceImpl() = default;
+		~Fence() = default;
 
 		void
 		virtual Reset() = 0;
@@ -29,5 +29,5 @@ namespace Oyl::Rendering
 		virtual Wait(uint64 a_timeout = std::numeric_limits<uint64>::max()) = 0;
 	};
 
-	using Fence = PImpl<FenceImpl>;
+	using FenceHandle = PImpl<Fence>;
 }

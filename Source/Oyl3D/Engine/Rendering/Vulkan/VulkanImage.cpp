@@ -5,11 +5,11 @@
 #include "VulkanEnums.h"
 #include "VulkanStagingBuffer.h"
 
-namespace Oyl::Rendering::Vulkan
+namespace Oyl::Rendering
 {
-	struct ImageImpl::Impl
+	struct VulkanImage::Impl
 	{
-		StagingBuffer stagingBuffer;
+		VulkanStagingBuffer stagingBuffer;
 
 		vk::raii::Image vkImage = nullptr;
 		vk::raii::DeviceMemory vkImageMemory = nullptr;
@@ -21,20 +21,20 @@ namespace Oyl::Rendering::Vulkan
 		Vector2u size;
 
 		void
-		CreateImage(const DeviceImpl& a_device, const CreateParams& a_params);
+		CreateImage(const VulkanDevice& a_device, const CreateParams& a_params);
 		void
-		CreateImageView(const DeviceImpl& a_device, const CreateParams& a_params);
+		CreateImageView(const VulkanDevice& a_device, const CreateParams& a_params);
 
 		void
-		CreateStagingBuffer(const DeviceImpl& a_device, const CreateParams& a_params);
+		CreateStagingBuffer(const VulkanDevice& a_device, const CreateParams& a_params);
 		void
-		CopyStagingBufferToImage(ImageImpl& a_image, const DeviceImpl& a_device, const CreateParams& a_params);
+		CopyStagingBufferToImage(VulkanImage& a_image, const VulkanDevice& a_device, const CreateParams& a_params);
 	};
 
-	ImageImpl::ImageImpl(nullptr_t)
+	VulkanImage::VulkanImage(nullptr_t)
 		: m_impl(nullptr) {}
 
-	ImageImpl::ImageImpl(const DeviceImpl& a_device, const CreateParams& a_params)
+	VulkanImage::VulkanImage(const VulkanDevice& a_device, const CreateParams& a_params)
 		: m_impl(std::make_unique<Impl>())
 	{
 		OYL_PROFILE_FUNCTION();
@@ -49,13 +49,13 @@ namespace Oyl::Rendering::Vulkan
 		}
 	}
 
-	ImageImpl::ImageImpl(ImageImpl&& a_other) noexcept
+	VulkanImage::VulkanImage(VulkanImage&& a_other) noexcept
 	{
 		*this = std::move(a_other);
 	}
 
-	ImageImpl&
-	ImageImpl::operator=(ImageImpl&& a_other) noexcept
+	VulkanImage&
+	VulkanImage::operator=(VulkanImage&& a_other) noexcept
 	{
 		if (this != &a_other)
 		{
@@ -64,13 +64,13 @@ namespace Oyl::Rendering::Vulkan
 		return *this;
 	}
 
-	ImageImpl::~ImageImpl()
+	VulkanImage::~VulkanImage()
 	{
-		ImageImpl::Destroy();
+		VulkanImage::Destroy();
 	}
 
 	void
-	ImageImpl::Destroy()
+	VulkanImage::Destroy()
 	{
 		if (!IsValid())
 			return;
@@ -79,7 +79,7 @@ namespace Oyl::Rendering::Vulkan
 	}
 
 	bool
-	ImageImpl::IsValid() const
+	VulkanImage::IsValid() const
 	{
 		return m_impl
 		       && *m_impl->vkImage
@@ -88,67 +88,67 @@ namespace Oyl::Rendering::Vulkan
 	}
 
 	Vector2u
-	ImageImpl::GetSize() const
+	VulkanImage::GetSize() const
 	{
 		return m_impl->size;
 	}
 
-	const StagingBuffer&
-	ImageImpl::GetStagingBuffer() const
+	const VulkanStagingBuffer&
+	VulkanImage::GetStagingBuffer() const
 	{
 		return m_impl->stagingBuffer;
 	}
 
 	ImageFormat
-	ImageImpl::GetFormat() const
+	VulkanImage::GetFormat() const
 	{
 		return m_impl->format;
 	}
 
 	ImageUsageFlags
-	ImageImpl::GetUsageFlags() const
+	VulkanImage::GetUsageFlags() const
 	{
 		return m_impl->usageFlags;
 	}
 
 	ImageLayout
-	ImageImpl::GetLayout() const
+	VulkanImage::GetLayout() const
 	{
 		return m_impl->layout;
 	}
 
 	void
-	ImageImpl::SetLayout(ImageLayout a_layout)
+	VulkanImage::SetLayout(ImageLayout a_layout)
 	{
 		m_impl->layout = a_layout;
 	}
 
 	const vk::raii::Image&
-	ImageImpl::GetVkImage() const
+	VulkanImage::GetVkImage() const
 	{
 		return m_impl->vkImage;
 	}
 
 	vk::Format
-	ImageImpl::GetVkFormat() const
+	VulkanImage::GetVkFormat() const
 	{
 		return ToVkEnum(m_impl->format);
 	}
 
 	const vk::raii::DeviceMemory&
-	ImageImpl::GetVkDeviceMemory() const
+	VulkanImage::GetVkDeviceMemory() const
 	{
 		return m_impl->vkImageMemory;
 	}
 
 	const vk::raii::ImageView&
-	ImageImpl::GetVkImageView() const
+	VulkanImage::GetVkImageView() const
 	{
 		return m_impl->vkImageView;
 	}
 
-	ImageHandle
-	ImageImpl::GetHandle() const
+	VulkanImageId
+	VulkanImage::GetId() const
 	{
 		return *m_impl->vkImage;
 	}
@@ -177,7 +177,7 @@ namespace Oyl::Rendering::Vulkan
 	}
 
 	void
-	ImageImpl::Impl::CreateImage(const DeviceImpl& a_device, const CreateParams& a_params)
+	VulkanImage::Impl::CreateImage(const VulkanDevice& a_device, const CreateParams& a_params)
 	{
 		OYL_PROFILE_FUNCTION();
 
@@ -219,7 +219,7 @@ namespace Oyl::Rendering::Vulkan
 	}
 
 	void
-	ImageImpl::Impl::CreateImageView(const DeviceImpl& a_device, const CreateParams& a_params)
+	VulkanImage::Impl::CreateImageView(const VulkanDevice& a_device, const CreateParams& a_params)
 	{
 		OYL_PROFILE_FUNCTION();
 
@@ -237,13 +237,13 @@ namespace Oyl::Rendering::Vulkan
 	}
 
 	void
-	ImageImpl::Impl::CreateStagingBuffer(const DeviceImpl& a_device, const CreateParams& a_params)
+	VulkanImage::Impl::CreateStagingBuffer(const VulkanDevice& a_device, const CreateParams& a_params)
 	{
 		OYL_PROFILE_FUNCTION();
 
 		OYL_ASSERT(!a_params.pixelData.Empty());
 
-		stagingBuffer = StagingBuffer(
+		stagingBuffer = VulkanStagingBuffer(
 			a_device,
 			{
 				.dataLength = a_params.pixelData.Length(),
@@ -256,9 +256,9 @@ namespace Oyl::Rendering::Vulkan
 	}
 
 	void
-	ImageImpl::Impl::CopyStagingBufferToImage(
-		ImageImpl& a_image,
-		const DeviceImpl& a_device,
+	VulkanImage::Impl::CopyStagingBufferToImage(
+		VulkanImage& a_image,
+		const VulkanDevice& a_device,
 		const CreateParams& a_params
 	)
 	{
@@ -266,8 +266,8 @@ namespace Oyl::Rendering::Vulkan
 
 		OYL_ASSERT(!!stagingBuffer);
 
-		auto commandPool = CommandPoolImpl(a_device, { .commandQueueFlags = CommandQueueFlagBits::Transfer });
-		auto commandBuffer = CommandBufferImpl(a_device, { .commandPool = commandPool });
+		auto commandPool = VulkanCommandPool(a_device, { .commandQueueFlags = CommandQueueFlagBits::Transfer });
+		auto commandBuffer = VulkanCommandBuffer(a_device, { .commandPool = commandPool });
 
 		vk::BufferImageCopy region {
 			.bufferOffset = 0,

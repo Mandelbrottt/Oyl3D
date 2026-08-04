@@ -19,19 +19,19 @@ namespace Oyl::Rendering
 		~IDeviceObject() = default;
 
 		THandle
-		GetHandle() const
+		GetId() const
 		{
-			return GetHandleImpl();
+			return GetIdImpl();
 		}
 
 		operator THandle()
 		{
-			return GetHandle();
+			return GetId();
 		}
 
 	protected:
 		virtual
 		THandle
-		GetHandleImpl() const = 0;
+		GetIdImpl() const = 0;
 	};
 }

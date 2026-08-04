@@ -10,23 +10,23 @@ namespace vk::raii
 	class CommandPool;
 }
 
-namespace Oyl::Rendering::Vulkan
+namespace Oyl::Rendering
 {
-	class DeviceImpl;
+	class VulkanDevice;
 
-	class OYL_RENDERING_API CommandPoolImpl : public Rendering::CommandPoolImpl
+	class OYL_RENDERING_API VulkanCommandPool : public CommandPool
 	{
 	public:
-		CommandPoolImpl(nullptr_t);
+		VulkanCommandPool(nullptr_t);
 
-		CommandPoolImpl(const DeviceImpl& a_device, const CreateParams& a_params);
+		VulkanCommandPool(const VulkanDevice& a_device, const CreateParams& a_params);
 
-		CommandPoolImpl(CommandPoolImpl&& a_other) noexcept;
-		CommandPoolImpl&
-		operator =(CommandPoolImpl&& a_other) noexcept;
+		VulkanCommandPool(VulkanCommandPool&& a_other) noexcept;
+		VulkanCommandPool&
+		operator =(VulkanCommandPool&& a_other) noexcept;
 
 		virtual
-		~CommandPoolImpl();
+		~VulkanCommandPool();
 
 		void
 		Destroy() override;
@@ -42,5 +42,5 @@ namespace Oyl::Rendering::Vulkan
 		std::unique_ptr<Impl> m_impl;
 	};
 
-	using CommandPool = PImpl<CommandPoolImpl>;
+	using VulkanCommandPoolHandle = PImpl<VulkanCommandPool>;
 }

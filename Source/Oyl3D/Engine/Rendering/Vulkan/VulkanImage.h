@@ -4,33 +4,29 @@
 
 #include "Rendering/Image.h"
 
-namespace Oyl::Rendering {
-	class CommandBufferImpl;
-}
-
-namespace Oyl::Rendering::Vulkan
+namespace Oyl::Rendering
 {
-	class DeviceImpl;
-	class StagingBuffer;
-	class CommandBufferImpl;
+	class VulkanDevice;
+	class VulkanStagingBuffer;
+	class VulkanCommandBuffer;
 
-	using ImageHandle = OpaqueHandleConvertible<ImageHandle, vk::Image>;
+	using VulkanImageId = OpaqueHandleConvertible<ImageId, vk::Image>;
 
-	class OYL_RENDERING_API ImageImpl : public Rendering::ImageImpl
+	class OYL_RENDERING_API VulkanImage : public Image
 	{
-		friend class CommandBufferImpl;
+		friend class VulkanCommandBuffer;
 
 	public:
-		ImageImpl(nullptr_t);
+		VulkanImage(nullptr_t);
 
-		ImageImpl(const DeviceImpl& a_device, const CreateParams& a_params);
+		VulkanImage(const VulkanDevice& a_device, const CreateParams& a_params);
 
-		ImageImpl(ImageImpl&& a_other) noexcept;
-		ImageImpl&
-		operator =(ImageImpl&& a_other) noexcept;
+		VulkanImage(VulkanImage&& a_other) noexcept;
+		VulkanImage&
+		operator =(VulkanImage&& a_other) noexcept;
 
 		virtual
-		~ImageImpl();
+		~VulkanImage();
 
 		void
 		Destroy() override;
@@ -41,7 +37,7 @@ namespace Oyl::Rendering::Vulkan
 		Vector2u
 		GetSize() const override;
 
-		const StagingBuffer&
+		const VulkanStagingBuffer&
 		GetStagingBuffer() const;
 
 		ImageFormat
@@ -70,19 +66,19 @@ namespace Oyl::Rendering::Vulkan
 		const vk::raii::ImageView&
 		GetVkImageView() const;
 
-		ImageHandle
-		GetHandle() const;
+		VulkanImageId
+		GetId() const;
 
-		operator ImageHandle() const
+		operator VulkanImageId() const
 		{
-			return GetHandle();
+			return GetId();
 		}
 
 	protected:
-		Rendering::ImageHandle
-		GetHandleImpl() const override
+		ImageId
+		GetIdImpl() const override
 		{
-			return GetHandle();
+			return GetId();
 		}
 
 	private:
@@ -90,5 +86,5 @@ namespace Oyl::Rendering::Vulkan
 		std::unique_ptr<Impl> m_impl;
 	};
 
-	using Image = PImpl<ImageImpl>;
+	using VulkanImageHandle = PImpl<VulkanImage>;
 }

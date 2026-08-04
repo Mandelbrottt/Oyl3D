@@ -17,17 +17,17 @@ namespace Oyl
 
 namespace Oyl::Rendering
 {
-	class DeviceImpl : public IUniqueHandle
+	class Device : public IUniqueHandle
 	{
 	protected:
-		DeviceImpl() = default;
+		Device() = default;
 
 	public:
-		NO_MOVE(DeviceImpl);
-		NO_COPY(DeviceImpl);
+		NO_MOVE(Device);
+		NO_COPY(Device);
 
 		virtual
-		~DeviceImpl() = default;
+		~Device() = default;
 
 		void
 		Destroy() override = 0;
@@ -40,7 +40,7 @@ namespace Oyl::Rendering
 		GetWindow() const = 0;
 
 		virtual
-		const CommandQueueImpl*
+		const CommandQueue*
 		GetCommandQueue(CommandQueueFlagBits a_flag) const = 0;
 
 		virtual
@@ -48,33 +48,33 @@ namespace Oyl::Rendering
 		WaitUntilIdle() const = 0;
 
 		virtual
-		CommandBuffer
-		CreateCommandBuffer(const CommandBufferImpl::CreateParams& a_params) const = 0;
+		CommandBufferHandle
+		CreateCommandBuffer(const CommandBuffer::CreateParams& a_params) const = 0;
 
 		virtual
-		CommandPool
-		CreateCommandPool(const CommandPoolImpl::CreateParams& a_params) const = 0;
+		CommandPoolHandle
+		CreateCommandPool(const CommandPool::CreateParams& a_params) const = 0;
 
 		virtual
-		Image
-		CreateImage(const ImageImpl::CreateParams& a_params) const = 0;
+		ImageHandle
+		CreateImage(const Image::CreateParams& a_params) const = 0;
 
 		virtual
-		Shader
-		CreateShader(const ShaderImpl::CreateParams& a_params) const = 0;
+		ShaderHandle
+		CreateShader(const Shader::CreateParams& a_params) const = 0;
 
 		virtual
-		VertexBuffer
-		CreateVertexBuffer(const VertexBufferImpl::CreateParams& a_params) const = 0;
+		VertexBufferHandle
+		CreateVertexBuffer(const VertexBuffer::CreateParams& a_params) const = 0;
 
 		virtual
-		Semaphore
+		SemaphoreHandle
 		CreateSemaphore() const = 0;
 
 		virtual
-		Fence
+		FenceHandle
 		CreateFence() const = 0;
 	};
 
-	using Device = PImpl<DeviceImpl>;
+	using DeviceHandle = PImpl<Device>;
 }

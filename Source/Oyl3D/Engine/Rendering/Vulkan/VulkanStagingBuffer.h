@@ -4,16 +4,16 @@
 
 #include "Rendering/StagingBuffer.h"
 
-namespace Oyl::Rendering::Vulkan
+namespace Oyl::Rendering
 {
-	class DeviceImpl;
+	class VulkanDevice;
 
-	using StagingBufferHandle = OpaqueHandleConvertible<StagingBufferHandle, vk::Buffer>;
+	using VulkanStagingBufferId = OpaqueHandleConvertible<StagingBufferId, vk::Buffer>;
 
-	class OYL_RENDERING_API StagingBuffer : public Rendering::StagingBuffer
+	class OYL_RENDERING_API VulkanStagingBuffer : public StagingBuffer
 	{
 	public:
-		StagingBuffer();
+		VulkanStagingBuffer();
 
 		struct CreateParams
 		{
@@ -25,14 +25,14 @@ namespace Oyl::Rendering::Vulkan
 		};
 
 		explicit
-		StagingBuffer(const DeviceImpl& a_device, const CreateParams& a_params);
+		VulkanStagingBuffer(const VulkanDevice& a_device, const CreateParams& a_params);
 
-		StagingBuffer(StagingBuffer&& a_other) noexcept;
-		StagingBuffer&
-		operator =(StagingBuffer&& a_other) noexcept;
+		VulkanStagingBuffer(VulkanStagingBuffer&& a_other) noexcept;
+		VulkanStagingBuffer&
+		operator =(VulkanStagingBuffer&& a_other) noexcept;
 
 		virtual
-		~StagingBuffer();
+		~VulkanStagingBuffer();
 
 		void
 		Destroy() override;
@@ -49,23 +49,25 @@ namespace Oyl::Rendering::Vulkan
 		const vk::raii::DeviceMemory&
 		GetVkDeviceMemory() const;
 
-		StagingBufferHandle
-		GetHandle() const;
+		VulkanStagingBufferId
+		GetId() const;
 
-		operator StagingBufferHandle() const
+		operator VulkanStagingBufferId() const
 		{
-			return GetHandle();
+			return GetId();
 		}
 
 	protected:
-		Rendering::StagingBufferHandle
-		GetHandleImpl() const override
+		StagingBufferId
+		GetIdImpl() const override
 		{
-			return GetHandle();
+			return GetId();
 		}
 
 	private:
 		struct Impl;
 		std::unique_ptr<Impl> m_impl;
 	};
+
+	using VulkanStagingBufferHandle = PImpl<VulkanStagingBuffer>;
 }

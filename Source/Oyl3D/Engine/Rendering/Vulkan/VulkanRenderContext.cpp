@@ -13,36 +13,36 @@ static const std::vector REQUIRED_DEVICE_EXTENSION {
 
 constexpr int MAX_FRAMES_IN_FLIGHT = 2;
 
-namespace Oyl::Rendering::Vulkan
+namespace Oyl::Rendering
 {
-	struct RenderContext::Impl
+	struct VulkanRenderContext::Impl
 	{
 		const IWindow* window;
 
-		Device device = nullptr;
-		SwapChainImpl swapChain = nullptr;
+		VulkanDeviceHandle device = nullptr;
+		VulkanSwapChain swapChain = nullptr;
 
 		void
 		RecreateSwapChain();
 	};
 
-	RenderContext::RenderContext() noexcept
+	VulkanRenderContext::VulkanRenderContext() noexcept
 		: m_impl(nullptr) {}
 
-	RenderContext::RenderContext(const CreateParams& a_params) noexcept
+	VulkanRenderContext::VulkanRenderContext(const CreateParams& a_params) noexcept
 		: m_impl(nullptr)
 	{
 		Init(a_params);
 	}
 
-	RenderContext::RenderContext(RenderContext&& a_other) noexcept
+	VulkanRenderContext::VulkanRenderContext(VulkanRenderContext&& a_other) noexcept
 		: m_impl(nullptr)
 	{
 		*this = std::move(a_other);
 	}
 
-	RenderContext&
-	RenderContext::operator=(RenderContext&& a_other) noexcept
+	VulkanRenderContext&
+	VulkanRenderContext::operator=(VulkanRenderContext&& a_other) noexcept
 	{
 		if (this != &a_other)
 		{
@@ -51,13 +51,13 @@ namespace Oyl::Rendering::Vulkan
 		return *this;
 	}
 
-	RenderContext::~RenderContext()
+	VulkanRenderContext::~VulkanRenderContext()
 	{
-		RenderContext::Destroy();
+		VulkanRenderContext::Destroy();
 	}
 
 	void
-	RenderContext::Init(const CreateParams& a_params)
+	VulkanRenderContext::Init(const CreateParams& a_params)
 	{
 		OYL_PROFILE_FUNCTION();
 
@@ -66,7 +66,7 @@ namespace Oyl::Rendering::Vulkan
 
 		m_impl->window = a_params.window;
 
-		m_impl->device = DeviceImpl::Create(
+		m_impl->device = VulkanDevice::Create(
 			{
 				.window = *m_impl->window,
 				.commandQueueFlags = CommandQueueFlagBits::Graphics | CommandQueueFlagBits::Transfer,
@@ -75,7 +75,7 @@ namespace Oyl::Rendering::Vulkan
 			}
 		);
 
-		m_impl->swapChain = SwapChainImpl(
+		m_impl->swapChain = VulkanSwapChain(
 			*m_impl->device,
 			{
 				.window = *m_impl->window,
@@ -84,7 +84,7 @@ namespace Oyl::Rendering::Vulkan
 	}
 
 	void
-	RenderContext::Update()
+	VulkanRenderContext::Update()
 	{
 		OYL_PROFILE_FUNCTION();
 
@@ -93,7 +93,7 @@ namespace Oyl::Rendering::Vulkan
 	}
 
 	void
-	RenderContext::Destroy()
+	VulkanRenderContext::Destroy()
 	{
 		OYL_PROFILE_FUNCTION();
 
@@ -109,26 +109,26 @@ namespace Oyl::Rendering::Vulkan
 	}
 
 	void
-	RenderContext::Resize(Vector2u /*a_size*/)
+	VulkanRenderContext::Resize(Vector2u /*a_size*/)
 	{
 		// No need to pass in a_size - we get the size from the window directly
 		m_impl->RecreateSwapChain();
 	}
 
-	const DeviceImpl*
-	RenderContext::GetDevice() const
+	const VulkanDevice*
+	VulkanRenderContext::GetDevice() const
 	{
 		return m_impl->device.Get();
 	}
 
-	SwapChainImpl*
-	RenderContext::GetSwapChain()
+	VulkanSwapChain*
+	VulkanRenderContext::GetSwapChain()
 	{
 		return &m_impl->swapChain;
 	}
 
 	void
-	RenderContext::Impl::RecreateSwapChain()
+	VulkanRenderContext::Impl::RecreateSwapChain()
 	{
 		OYL_PROFILE_FUNCTION();
 

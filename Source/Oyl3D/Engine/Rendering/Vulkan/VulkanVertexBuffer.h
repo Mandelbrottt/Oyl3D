@@ -4,26 +4,26 @@
 
 #include "Rendering/VertexBuffer.h"
 
-namespace Oyl::Rendering::Vulkan
+namespace Oyl::Rendering
 {
-	class DeviceImpl;
-	class CommandQueueImpl;
+	class VulkanDevice;
+	class VulkanCommandQueue;
 
-	using VertexBufferHandle = OpaqueHandleConvertible<VertexBufferHandle, vk::Buffer>;
+	using VulkanVertexBufferId = OpaqueHandleConvertible<VertexBufferId, vk::Buffer>;
 
-	class OYL_RENDERING_API VertexBufferImpl : public Rendering::VertexBufferImpl
+	class OYL_RENDERING_API VulkanVertexBuffer : public VertexBuffer
 	{
 	public:
-		VertexBufferImpl(nullptr_t);
+		VulkanVertexBuffer(nullptr_t);
 
-		VertexBufferImpl(const DeviceImpl& a_device, const CreateParams& a_params);
+		VulkanVertexBuffer(const VulkanDevice& a_device, const CreateParams& a_params);
 
-		VertexBufferImpl(VertexBufferImpl&& a_other) noexcept;
-		VertexBufferImpl&
-		operator =(VertexBufferImpl&& a_other) noexcept;
+		VulkanVertexBuffer(VulkanVertexBuffer&& a_other) noexcept;
+		VulkanVertexBuffer&
+		operator =(VulkanVertexBuffer&& a_other) noexcept;
 
 		virtual
-		~VertexBufferImpl();
+		~VulkanVertexBuffer();
 
 		void
 		Destroy() override;
@@ -49,19 +49,19 @@ namespace Oyl::Rendering::Vulkan
 		const vk::raii::Buffer&
 		GetVkBuffer() const;
 
-		VertexBufferHandle
-		GetHandle() const;
+		VulkanVertexBufferId
+		GetId() const;
 
-		operator VertexBufferHandle() const
+		operator VulkanVertexBufferId() const
 		{
-			return GetHandle();
+			return GetId();
 		}
 
 	protected:
-		Rendering::VertexBufferHandle
-		GetHandleImpl() const override
+		VertexBufferId
+		GetIdImpl() const override
 		{
-			return GetHandle();
+			return GetId();
 		}
 
 	private:
@@ -69,5 +69,5 @@ namespace Oyl::Rendering::Vulkan
 		std::unique_ptr<Impl> m_impl;
 	};
 
-	using VertexBuffer = PImpl<VertexBufferImpl>;
+	using VulkanVertexBufferHandle = PImpl<VulkanVertexBuffer>;
 }

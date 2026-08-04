@@ -9,24 +9,24 @@
 
 #include "Rendering/RenderTarget.h"
 
-namespace Oyl::Rendering::Vulkan
+namespace Oyl::Rendering
 {
-	struct CommandBufferImpl::Impl
+	struct VulkanCommandBuffer::Impl
 	{
-		const CommandPoolImpl* commandPool;
+		const VulkanCommandPool* commandPool;
 
 		vk::raii::CommandBuffer vkCommandBuffer = nullptr;
 	};
 
-	CommandBufferImpl::CommandBufferImpl(nullptr_t)
+	VulkanCommandBuffer::VulkanCommandBuffer(nullptr_t)
 		: m_impl(nullptr) {}
 
-	CommandBufferImpl::CommandBufferImpl(const DeviceImpl& a_device, const CreateParams& a_params) noexcept
+	VulkanCommandBuffer::VulkanCommandBuffer(const VulkanDevice& a_device, const CreateParams& a_params) noexcept
 		: m_impl(std::make_unique<Impl>())
 	{
 		OYL_PROFILE_FUNCTION();
 
-		m_impl->commandPool = dynamic_cast<const CommandPoolImpl*>(&a_params.commandPool);
+		m_impl->commandPool = dynamic_cast<const VulkanCommandPool*>(&a_params.commandPool);
 
 		const auto& vkCommandPool = m_impl->commandPool->GetVkCommandPool();
 		const auto& vkDevice = a_device.GetVkDevice();
@@ -41,13 +41,13 @@ namespace Oyl::Rendering::Vulkan
 		m_impl->vkCommandBuffer = std::move(vk::raii::CommandBuffers(vkDevice, allocInfo).front());
 	}
 
-	CommandBufferImpl::CommandBufferImpl(CommandBufferImpl&& a_other) noexcept
+	VulkanCommandBuffer::VulkanCommandBuffer(VulkanCommandBuffer&& a_other) noexcept
 	{
 		*this = std::move(a_other);
 	}
 
-	CommandBufferImpl&
-	CommandBufferImpl::operator=(CommandBufferImpl&& a_other) noexcept
+	VulkanCommandBuffer&
+	VulkanCommandBuffer::operator=(VulkanCommandBuffer&& a_other) noexcept
 	{
 		if (this != &a_other)
 		{
@@ -56,38 +56,38 @@ namespace Oyl::Rendering::Vulkan
 		return *this;
 	}
 
-	CommandBufferImpl::~CommandBufferImpl() noexcept
+	VulkanCommandBuffer::~VulkanCommandBuffer() noexcept
 	{
-		CommandBufferImpl::Destroy();
+		VulkanCommandBuffer::Destroy();
 	}
 
 	void
-	CommandBufferImpl::Destroy() noexcept
+	VulkanCommandBuffer::Destroy() noexcept
 	{
 		m_impl->vkCommandBuffer.clear();
 	}
 
 	bool
-	CommandBufferImpl::IsValid() const noexcept
+	VulkanCommandBuffer::IsValid() const noexcept
 	{
 		return m_impl
 		       && *m_impl->vkCommandBuffer;
 	}
 
-	const CommandPoolImpl*
-	CommandBufferImpl::GetCommandPool() const noexcept
+	const VulkanCommandPool*
+	VulkanCommandBuffer::GetCommandPool() const noexcept
 	{
 		return m_impl->commandPool;
 	}
 
 	const vk::raii::CommandBuffer&
-	CommandBufferImpl::GetVkCommandBuffer() const noexcept
+	VulkanCommandBuffer::GetVkCommandBuffer() const noexcept
 	{
 		return m_impl->vkCommandBuffer;
 	}
 
 	void
-	CommandBufferImpl::Begin() const noexcept
+	VulkanCommandBuffer::Begin() const noexcept
 	{
 		OYL_PROFILE_FUNCTION();
 
@@ -95,16 +95,16 @@ namespace Oyl::Rendering::Vulkan
 	}
 
 	void
-	CommandBufferImpl::BeginRendering(const RenderTarget& a_renderTarget) const noexcept
+	VulkanCommandBuffer::BeginRendering(const RenderTarget& a_renderTarget) const noexcept
 	{
 		OYL_PROFILE_FUNCTION();
 
 		Vector2u size;
 
 		std::vector<vk::RenderingAttachmentInfo> colorAttachmentInfo;
-		for (const Rendering::ImageImpl* image : a_renderTarget.GetColorAttachments())
+		for (const Rendering::Image* image : a_renderTarget.GetColorAttachments())
 		{
-			auto* vulkanImage = static_cast<const ImageImpl*>(image);
+			auto* vulkanImage = static_cast<const VulkanImage*>(image);
 			colorAttachmentInfo.emplace_back(
 				vk::RenderingAttachmentInfo {
 					.imageView = vulkanImage->GetVkImageView(),
@@ -126,7 +126,7 @@ namespace Oyl::Rendering::Vulkan
 		vk::RenderingAttachmentInfo depthAttachmentInfo;
 		if (auto* image = a_renderTarget.GetDepthAttachment())
 		{
-			auto* vulkanImage = static_cast<const ImageImpl*>(image);
+			auto* vulkanImage = static_cast<const VulkanImage*>(image);
 			depthAttachmentInfo.setImageView(vulkanImage->GetVkImageView())
 			                   .setImageLayout(vk::ImageLayout::eDepthStencilAttachmentOptimal)
 			                   .setLoadOp(vk::AttachmentLoadOp::eClear)
@@ -144,7 +144,7 @@ namespace Oyl::Rendering::Vulkan
 	}
 
 	void
-	CommandBufferImpl::End() const noexcept
+	VulkanCommandBuffer::End() const noexcept
 	{
 		OYL_PROFILE_FUNCTION();
 
@@ -152,7 +152,7 @@ namespace Oyl::Rendering::Vulkan
 	}
 
 	void
-	CommandBufferImpl::EndRendering() const noexcept
+	VulkanCommandBuffer::EndRendering() const noexcept
 	{
 		OYL_PROFILE_FUNCTION();
 
@@ -160,7 +160,7 @@ namespace Oyl::Rendering::Vulkan
 	}
 
 	void
-	CommandBufferImpl::SetViewport(Vector2i a_offset, Vector2u a_size) const noexcept
+	VulkanCommandBuffer::SetViewport(Vector2i a_offset, Vector2u a_size) const noexcept
 	{
 		OYL_PROFILE_FUNCTION();
 
@@ -178,7 +178,7 @@ namespace Oyl::Rendering::Vulkan
 	}
 
 	void
-	CommandBufferImpl::SetScissor(Vector2i a_offset, Vector2u a_size) const noexcept
+	VulkanCommandBuffer::SetScissor(Vector2i a_offset, Vector2u a_size) const noexcept
 	{
 		OYL_PROFILE_FUNCTION();
 
@@ -198,13 +198,13 @@ namespace Oyl::Rendering::Vulkan
 	}
 
 	void
-	CommandBufferImpl::BindShader(const Rendering::ShaderImpl& a_shader) const noexcept
+	VulkanCommandBuffer::BindShader(const Rendering::Shader& a_shader) const noexcept
 	{
-		return BindShader(static_cast<const ShaderImpl&>(a_shader));
+		return BindShader(static_cast<const VulkanShader&>(a_shader));
 	}
 
 	void
-	CommandBufferImpl::BindShader(const ShaderImpl& a_shader) const noexcept
+	VulkanCommandBuffer::BindShader(const VulkanShader& a_shader) const noexcept
 	{
 		OYL_PROFILE_FUNCTION();
 
@@ -212,13 +212,13 @@ namespace Oyl::Rendering::Vulkan
 	}
 
 	void
-	CommandBufferImpl::BindVertexBuffer(const Rendering::VertexBufferImpl& a_vertexBuffer) const noexcept
+	VulkanCommandBuffer::BindVertexBuffer(const Rendering::VertexBuffer& a_vertexBuffer) const noexcept
 	{
-		return BindVertexBuffer(static_cast<const VertexBufferImpl&>(a_vertexBuffer));
+		return BindVertexBuffer(static_cast<const VulkanVertexBuffer&>(a_vertexBuffer));
 	}
 
 	void
-	CommandBufferImpl::BindVertexBuffer(const VertexBufferImpl& a_vertexBuffer) const noexcept
+	VulkanCommandBuffer::BindVertexBuffer(const VulkanVertexBuffer& a_vertexBuffer) const noexcept
 	{
 		OYL_PROFILE_FUNCTION();
 
@@ -236,13 +236,13 @@ namespace Oyl::Rendering::Vulkan
 	}
 
 	void
-	CommandBufferImpl::DrawVertexBuffer(const Rendering::VertexBufferImpl& a_vertexBuffer) const noexcept
+	VulkanCommandBuffer::DrawVertexBuffer(const Rendering::VertexBuffer& a_vertexBuffer) const noexcept
 	{
-		DrawVertexBuffer(static_cast<const VertexBufferImpl&>(a_vertexBuffer));
+		DrawVertexBuffer(static_cast<const VulkanVertexBuffer&>(a_vertexBuffer));
 	}
 
 	void
-	CommandBufferImpl::DrawVertexBuffer(const VertexBufferImpl& a_vertexBuffer) const noexcept
+	VulkanCommandBuffer::DrawVertexBuffer(const VulkanVertexBuffer& a_vertexBuffer) const noexcept
 	{
 		OYL_PROFILE_FUNCTION();
 
@@ -270,16 +270,16 @@ namespace Oyl::Rendering::Vulkan
 	);
 
 	void
-	CommandBufferImpl::TransitionImageLayout(ImageImpl& a_image, ImageLayout a_newLayout) const noexcept
+	VulkanCommandBuffer::TransitionImageLayout(VulkanImage& a_image, ImageLayout a_newLayout) const noexcept
 	{
 		auto oldLayout = a_image.GetLayout();
-		TransitionImageLayout(a_image.GetHandle(), oldLayout, a_newLayout);
+		TransitionImageLayout(a_image.GetId(), oldLayout, a_newLayout);
 		a_image.SetLayout(a_newLayout);
 	}
 
 	void
-	CommandBufferImpl::TransitionImageLayout(
-		ImageHandle a_imageHandle,
+	VulkanCommandBuffer::TransitionImageLayout(
+		VulkanImageId a_imageHandle,
 		ImageLayout a_oldLayout,
 		ImageLayout a_newLayout
 	) const noexcept

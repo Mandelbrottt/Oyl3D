@@ -9,14 +9,14 @@
 
 namespace Oyl::Rendering
 {
-	class CommandBufferImpl;
+	class CommandBuffer;
 
-	struct ImageHandle : OpaqueHandle<ImageHandle> {};
+	struct ImageId : OpaqueHandle<ImageId> {};
 
-	class ImageImpl : public IDeviceObject<ImageHandle>
+	class Image : public IDeviceObject<ImageId>
 	{
 	protected:
-		ImageImpl() = default;
+		Image() = default;
 
 	public:
 		struct CreateParams
@@ -30,11 +30,11 @@ namespace Oyl::Rendering
 			ImageLayout layout;
 		};
 
-		NO_MOVE(ImageImpl);
-		NO_COPY(ImageImpl);
+		NO_MOVE(Image);
+		NO_COPY(Image);
 
 		virtual
-		~ImageImpl() = default;
+		~Image() = default;
 
 		virtual
 		Vector2u
@@ -53,5 +53,5 @@ namespace Oyl::Rendering
 		GetLayout() const = 0;
 	};
 
-	using Image = PImpl<ImageImpl>;
+	using ImageHandle = PImpl<Image>;
 }

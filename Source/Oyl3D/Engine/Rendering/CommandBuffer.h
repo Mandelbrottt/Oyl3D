@@ -10,27 +10,27 @@
 namespace Oyl::Rendering
 {
 	class RenderTarget;
-	class CommandPoolImpl;
-	class SwapChainImpl;
-	class ShaderImpl;
-	class VertexBufferImpl;
+	class CommandPool;
+	class SwapChain;
+	class Shader;
+	class VertexBuffer;
 
-	class CommandBufferImpl : public IUniqueHandle
+	class CommandBuffer : public IUniqueHandle
 	{
 	protected:
-		CommandBufferImpl() noexcept = default;
+		CommandBuffer() noexcept = default;
 
 	public:
 		struct CreateParams
 		{
-			const CommandPoolImpl& commandPool;
+			const CommandPool& commandPool;
 		};
 
-		NO_MOVE(CommandBufferImpl);
-		NO_COPY(CommandBufferImpl);
+		NO_MOVE(CommandBuffer);
+		NO_COPY(CommandBuffer);
 
 		virtual
-		~CommandBufferImpl() noexcept = default;
+		~CommandBuffer() noexcept = default;
 
 		virtual
 		void
@@ -58,29 +58,29 @@ namespace Oyl::Rendering
 
 		virtual
 		void
-		BindShader(const ShaderImpl& a_shader) const noexcept = 0;
+		BindShader(const Shader& a_shader) const noexcept = 0;
 
 		virtual
 		void
-		BindVertexBuffer(const VertexBufferImpl& a_buffer) const noexcept = 0;
+		BindVertexBuffer(const VertexBuffer& a_buffer) const noexcept = 0;
 
 		virtual
 		void
-		DrawVertexBuffer(const VertexBufferImpl& a_buffer) const noexcept = 0;
+		DrawVertexBuffer(const VertexBuffer& a_buffer) const noexcept = 0;
 
 		virtual
 		void
-		TransitionImageLayout(ImageImpl& a_image, ImageLayout a_newLayout) const noexcept = 0;
+		TransitionImageLayout(Image& a_image, ImageLayout a_newLayout) const noexcept = 0;
 
 		virtual
 		void
-		TransitionImageLayout(ImageHandle a_image, ImageLayout a_oldLayout, ImageLayout a_newLayout) const noexcept = 0;
+		TransitionImageLayout(ImageId a_image, ImageLayout a_oldLayout, ImageLayout a_newLayout) const noexcept = 0;
 
 	protected:
 		virtual
-		const CommandPoolImpl*
+		const CommandPool*
 		GetCommandPool() const noexcept = 0;
 	};
 
-	using CommandBuffer = PImpl<CommandBufferImpl>;
+	using CommandBufferHandle = PImpl<CommandBuffer>;
 }

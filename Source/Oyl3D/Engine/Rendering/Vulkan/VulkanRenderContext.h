@@ -5,12 +5,12 @@
 
 #include "Rendering/RenderContext.h"
 
-namespace Oyl::Rendering::Vulkan
+namespace Oyl::Rendering
 {
-	class OYL_RENDERING_API RenderContext final : public Rendering::RenderContext
+	class OYL_RENDERING_API VulkanRenderContext final : public RenderContext
 	{
 	public:
-		RenderContext() noexcept;
+		VulkanRenderContext() noexcept;
 
 		struct CreateParams
 		{
@@ -18,16 +18,16 @@ namespace Oyl::Rendering::Vulkan
 		};
 
 		explicit
-		RenderContext(const CreateParams& a_params) noexcept;
+		VulkanRenderContext(const CreateParams& a_params) noexcept;
 
-		NO_COPY(RenderContext);
+		NO_COPY(VulkanRenderContext);
 
-		RenderContext(RenderContext&& a_other) noexcept;
-		RenderContext&
-		operator=(RenderContext&& a_other) noexcept;
+		VulkanRenderContext(VulkanRenderContext&& a_other) noexcept;
+		VulkanRenderContext&
+		operator=(VulkanRenderContext&& a_other) noexcept;
 
 		virtual
-		~RenderContext();
+		~VulkanRenderContext();
 
 		void
 		Init(const CreateParams& a_params);
@@ -41,16 +41,16 @@ namespace Oyl::Rendering::Vulkan
 		void
 		Resize(Vector2u a_size) override;
 
-		const DeviceImpl*
+		const VulkanDevice*
 		GetDevice() const override;
 
-		SwapChainImpl*
+		VulkanSwapChain*
 		GetSwapChain() override;
 
-		const SwapChainImpl*
+		const VulkanSwapChain*
 		GetSwapChain() const override
 		{
-			return const_cast<RenderContext*>(this)->GetSwapChain();
+			return const_cast<VulkanRenderContext*>(this)->GetSwapChain();
 		}
 
 	private:

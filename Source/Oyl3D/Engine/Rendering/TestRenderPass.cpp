@@ -53,7 +53,7 @@ namespace Oyl::Rendering
 	}
 
 	void
-	TestRenderPass::Begin(const CommandBufferImpl& a_commandBuffer)
+	TestRenderPass::Begin(const CommandBuffer& a_commandBuffer)
 	{
 		auto size = m_colorAttachment->GetSize();
 
@@ -65,14 +65,14 @@ namespace Oyl::Rendering
 	}
 
 	void
-	TestRenderPass::Render(const CommandBufferImpl& a_commandBuffer)
+	TestRenderPass::Render(const CommandBuffer& a_commandBuffer)
 	{
 		a_commandBuffer.BindShader(*m_shader);
 		a_commandBuffer.DrawVertexBuffer(*m_vertexBuffer);
 	}
 
 	void
-	TestRenderPass::End(const CommandBufferImpl& a_commandBuffer)
+	TestRenderPass::End(const CommandBuffer& a_commandBuffer)
 	{
 		a_commandBuffer.EndRendering();
 

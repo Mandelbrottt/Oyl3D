@@ -8,13 +8,13 @@
 
 namespace Oyl::Rendering
 {
-	class CommandBufferImpl;
-	class SwapChainImpl;
+	class CommandBuffer;
+	class SwapChain;
 
-	class CommandQueueImpl : public IUniqueHandle
+	class CommandQueue : public IUniqueHandle
 	{
 	protected:
-		CommandQueueImpl() = default;
+		CommandQueue() = default;
 
 	public:
 		struct CreateParams
@@ -22,11 +22,11 @@ namespace Oyl::Rendering
 			uint32 queueFamilyIndex;
 		};
 
-		NO_MOVE(CommandQueueImpl);
-		NO_COPY(CommandQueueImpl);
+		NO_MOVE(CommandQueue);
+		NO_COPY(CommandQueue);
 
 		virtual
-		~CommandQueueImpl() = default;
+		~CommandQueue() = default;
 
 		virtual
 		void
@@ -34,10 +34,10 @@ namespace Oyl::Rendering
 
 		struct SubmitParams
 		{
-			const CommandBufferImpl& commandBuffer;
-			SemaphoreHandle waitSemaphore = {};
-			SemaphoreHandle signalSemaphore = {};
-			FenceHandle fence = {};
+			const CommandBuffer& commandBuffer;
+			SemaphoreId waitSemaphore = {};
+			SemaphoreId signalSemaphore = {};
+			FenceId fence = {};
 			PipelineStageFlags waitDestinationStageMask = {};
 		};
 
@@ -47,8 +47,8 @@ namespace Oyl::Rendering
 
 		struct PresentParams
 		{
-			const SwapChainImpl& swapChain;
-			SemaphoreHandle waitSemaphore = {};
+			const SwapChain& swapChain;
+			SemaphoreId waitSemaphore = {};
 		};
 
 		virtual
@@ -56,5 +56,5 @@ namespace Oyl::Rendering
 		Present(const PresentParams& a_params) const = 0;
 	};
 
-	using CommandQueue = PImpl<CommandQueueImpl>;
+	using CommandQueueHandle = PImpl<CommandQueue>;
 }

@@ -6,7 +6,7 @@
 
 #include "Rendering/Enums.h"
 
-namespace Oyl::Rendering::Vulkan
+namespace Oyl::Rendering
 {
 	OYL_DEFINE_ENUM_FLAGS_CONVERSION_FUNCTIONS(
 		ToOylEnum,

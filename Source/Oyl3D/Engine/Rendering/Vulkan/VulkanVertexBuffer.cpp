@@ -8,9 +8,9 @@
 #include "VulkanDevice.h"
 #include "VulkanStagingBuffer.h"
 
-namespace Oyl::Rendering::Vulkan
+namespace Oyl::Rendering
 {
-	struct VertexBufferImpl::Impl
+	struct VulkanVertexBuffer::Impl
 	{
 		vk::raii::Buffer buffer = nullptr;
 		vk::raii::DeviceMemory bufferMemory = nullptr;
@@ -22,13 +22,13 @@ namespace Oyl::Rendering::Vulkan
 		uint32 indexStride = 0;
 
 		void
-		CreateVertexBuffer(const DeviceImpl& a_device, const CreateParams& a_params);
+		CreateVertexBuffer(const VulkanDevice& a_device, const CreateParams& a_params);
 	};
 
-	VertexBufferImpl::VertexBufferImpl(nullptr_t)
+	VulkanVertexBuffer::VulkanVertexBuffer(nullptr_t)
 		: m_impl(nullptr) {}
 
-	VertexBufferImpl::VertexBufferImpl(const DeviceImpl& a_device, const CreateParams& a_params)
+	VulkanVertexBuffer::VulkanVertexBuffer(const VulkanDevice& a_device, const CreateParams& a_params)
 		: m_impl(std::make_unique<Impl>())
 	{
 		OYL_PROFILE_FUNCTION();
@@ -47,13 +47,13 @@ namespace Oyl::Rendering::Vulkan
 		m_impl->CreateVertexBuffer(a_device, a_params);
 	}
 
-	VertexBufferImpl::VertexBufferImpl(VertexBufferImpl&& a_other) noexcept
+	VulkanVertexBuffer::VulkanVertexBuffer(VulkanVertexBuffer&& a_other) noexcept
 	{
 		*this = std::move(a_other);
 	}
 
-	VertexBufferImpl&
-	VertexBufferImpl::operator=(VertexBufferImpl&& a_other) noexcept
+	VulkanVertexBuffer&
+	VulkanVertexBuffer::operator=(VulkanVertexBuffer&& a_other) noexcept
 	{
 		if (this != &a_other)
 		{
@@ -62,13 +62,13 @@ namespace Oyl::Rendering::Vulkan
 		return *this;
 	}
 
-	VertexBufferImpl::~VertexBufferImpl()
+	VulkanVertexBuffer::~VulkanVertexBuffer()
 	{
-		VertexBufferImpl::Destroy();
+		VulkanVertexBuffer::Destroy();
 	}
 
 	void
-	VertexBufferImpl::Destroy()
+	VulkanVertexBuffer::Destroy()
 	{
 		if (!IsValid())
 			return;
@@ -77,26 +77,26 @@ namespace Oyl::Rendering::Vulkan
 	}
 
 	bool
-	VertexBufferImpl::IsValid() const
+	VulkanVertexBuffer::IsValid() const
 	{
 		return m_impl
 		       && *m_impl->buffer;
 	}
 
 	uint32
-	VertexBufferImpl::GetVertexCount() const
+	VulkanVertexBuffer::GetVertexCount() const
 	{
 		return m_impl->vertexCount;
 	}
 
 	uint32
-	VertexBufferImpl::GetVertexStride() const
+	VulkanVertexBuffer::GetVertexStride() const
 	{
 		return m_impl->vertexStride;
 	}
 
 	uint32
-	VertexBufferImpl::GetVertexDataOffset() const
+	VulkanVertexBuffer::GetVertexDataOffset() const
 	{
 		if (m_impl->indexCount == 0)
 			return 0;
@@ -105,25 +105,25 @@ namespace Oyl::Rendering::Vulkan
 	}
 
 	uint32
-	VertexBufferImpl::GetIndexCount() const
+	VulkanVertexBuffer::GetIndexCount() const
 	{
 		return m_impl->indexCount;
 	}
 
 	uint32
-	VertexBufferImpl::GetIndexStride() const
+	VulkanVertexBuffer::GetIndexStride() const
 	{
 		return m_impl->indexStride;
 	}
 
 	const vk::raii::Buffer&
-	VertexBufferImpl::GetVkBuffer() const
+	VulkanVertexBuffer::GetVkBuffer() const
 	{
 		return m_impl->buffer;
 	}
 
-	VertexBufferHandle
-	VertexBufferImpl::GetHandle() const
+	VulkanVertexBufferId
+	VulkanVertexBuffer::GetId() const
 	{
 		return *m_impl->buffer;
 	}
@@ -139,7 +139,7 @@ namespace Oyl::Rendering::Vulkan
 	static
 	std::pair<vk::raii::Buffer, vk::raii::DeviceMemory>
 	CreateBuffer(
-		const DeviceImpl& a_device,
+		const VulkanDevice& a_device,
 		vk::DeviceSize a_size,
 		vk::BufferUsageFlags a_usage,
 		vk::MemoryPropertyFlags a_properties
@@ -148,14 +148,14 @@ namespace Oyl::Rendering::Vulkan
 	static
 	void
 	CopyBuffer(
-		const DeviceImpl& a_device,
+		const VulkanDevice& a_device,
 		const vk::raii::Buffer& a_srcBuffer,
 		const vk::raii::Buffer& a_dstBuffer,
 		vk::DeviceSize a_size
 	);
 
 	void
-	VertexBufferImpl::Impl::CreateVertexBuffer(const DeviceImpl& a_device, const CreateParams& a_params)
+	VulkanVertexBuffer::Impl::CreateVertexBuffer(const VulkanDevice& a_device, const CreateParams& a_params)
 	{
 		OYL_PROFILE_FUNCTION();
 
@@ -171,7 +171,7 @@ namespace Oyl::Rendering::Vulkan
 			combinedDataBuffer.insert(combinedDataBuffer.end(), &indexData[0], &indexData.Data()[indexLength]);
 		combinedDataBuffer.insert(combinedDataBuffer.end(), &vertexData[0], &vertexData.Data()[vertexLength]);
 
-		auto stagingBuffer = StagingBuffer(
+		auto stagingBuffer = VulkanStagingBuffer(
 			a_device,
 			{
 				.pData = combinedDataBuffer.data(),
@@ -220,7 +220,7 @@ namespace Oyl::Rendering::Vulkan
 
 	std::pair<vk::raii::Buffer, vk::raii::DeviceMemory>
 	CreateBuffer(
-		const DeviceImpl& a_device,
+		const VulkanDevice& a_device,
 		vk::DeviceSize a_size,
 		vk::BufferUsageFlags a_usage,
 		vk::MemoryPropertyFlags a_properties
@@ -244,7 +244,7 @@ namespace Oyl::Rendering::Vulkan
 
 	void
 	CopyBuffer(
-		const DeviceImpl& a_device,
+		const VulkanDevice& a_device,
 		const vk::raii::Buffer& a_srcBuffer,
 		const vk::raii::Buffer& a_dstBuffer,
 		vk::DeviceSize a_size
@@ -252,8 +252,8 @@ namespace Oyl::Rendering::Vulkan
 	{
 		OYL_PROFILE_FUNCTION();
 
-		auto commandPool = CommandPoolImpl(a_device, { .commandQueueFlags = CommandQueueFlagBits::Transfer });
-		auto commandBuffer = CommandBufferImpl(a_device, { .commandPool = commandPool });
+		auto commandPool = VulkanCommandPool(a_device, { .commandQueueFlags = CommandQueueFlagBits::Transfer });
+		auto commandBuffer = VulkanCommandBuffer(a_device, { .commandPool = commandPool });
 
 		auto& vkCommandBuffer = commandBuffer.GetVkCommandBuffer();
 		vkCommandBuffer.begin({ .flags = vk::CommandBufferUsageFlagBits::eOneTimeSubmit });

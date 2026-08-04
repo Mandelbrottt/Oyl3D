@@ -7,21 +7,21 @@
 
 namespace Oyl::Rendering
 {
-	struct SemaphoreHandle : OpaqueHandle<SemaphoreHandle> {};
+	struct SemaphoreId : OpaqueHandle<SemaphoreId> {};
 
-	class SemaphoreImpl : public IDeviceObject<SemaphoreHandle>
+	class Semaphore : public IDeviceObject<SemaphoreId>
 	{
 	protected:
-		SemaphoreImpl() = default;
+		Semaphore() = default;
 
-		DEFAULT_MOVE(SemaphoreImpl);
+		DEFAULT_MOVE(Semaphore);
 
 	public:
-		NO_COPY(SemaphoreImpl);
+		NO_COPY(Semaphore);
 
 		virtual
-		~SemaphoreImpl() = default;
+		~Semaphore() = default;
 	};
 
-	using Semaphore = PImpl<SemaphoreImpl>;
+	using SemaphoreHandle = PImpl<Semaphore>;
 }

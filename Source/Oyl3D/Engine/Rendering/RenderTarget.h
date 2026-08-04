@@ -14,8 +14,8 @@ namespace Oyl::Rendering
 
 		struct CreateParams
 		{
-			ArrayProxy<const ImageImpl*> colorImages;
-			const ImageImpl* pDepthImage = nullptr;
+			ArrayProxy<const Image*> colorImages;
+			const Image* pDepthImage = nullptr;
 		};
 
 		explicit
@@ -38,19 +38,19 @@ namespace Oyl::Rendering
 		GetNumColorAttachments() const;
 
 		virtual
-		const ImageImpl*
+		const Image*
 		GetColorAttachment(uint32 a_index) const;
 
 		virtual
-		const Array<const ImageImpl*>&
+		const Array<const Image*>&
 		GetColorAttachments() const;
 
 		virtual
-		const ImageImpl*
+		const Image*
 		GetDepthAttachment() const;
 
 	private:
-		Array<const ImageImpl*> m_colorAttachments;
-		const ImageImpl* m_depthAttachment = nullptr;
+		Array<const Image*> m_colorAttachments;
+		const Image* m_depthAttachment = nullptr;
 	};
 }

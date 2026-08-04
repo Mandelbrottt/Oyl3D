@@ -7,10 +7,10 @@
 
 namespace Oyl::Rendering
 {
-	class CommandPoolImpl : public IUniqueHandle
+	class CommandPool : public IUniqueHandle
 	{
 	protected:
-		CommandPoolImpl() = default;
+		CommandPool() = default;
 
 	public:
 		struct CreateParams
@@ -18,12 +18,12 @@ namespace Oyl::Rendering
 			CommandQueueFlagBits commandQueueFlags;
 		};
 
-		NO_MOVE(CommandPoolImpl);
-		NO_COPY(CommandPoolImpl);
+		NO_MOVE(CommandPool);
+		NO_COPY(CommandPool);
 
 		virtual
-		~CommandPoolImpl() = default;
+		~CommandPool() = default;
 	};
 
-	using CommandPool = PImpl<CommandPoolImpl>;
+	using CommandPoolHandle = PImpl<CommandPool>;
 }

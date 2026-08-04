@@ -9,7 +9,7 @@ namespace Oyl::Rendering
 
 namespace Oyl::Rendering
 {
-	class CommandBufferImpl;
+	class CommandBuffer;
 }
 
 namespace Oyl::Rendering
@@ -111,7 +111,7 @@ namespace Oyl::Rendering
 
 		virtual
 		void
-		Execute(const CommandBufferImpl* a_commandBuffer)
+		Execute(const CommandBuffer* a_commandBuffer)
 		{
 			if (!IsEnabled())
 				return;
@@ -124,15 +124,15 @@ namespace Oyl::Rendering
 	protected:
 		virtual
 		void
-		Begin(const CommandBufferImpl& a_commandBuffer) = 0;
+		Begin(const CommandBuffer& a_commandBuffer) = 0;
 
 		virtual
 		void
-		Render(const CommandBufferImpl& a_commandBuffer) = 0;
+		Render(const CommandBuffer& a_commandBuffer) = 0;
 
 		virtual
 		void
-		End(const CommandBufferImpl& a_commandBuffer) = 0;
+		End(const CommandBuffer& a_commandBuffer) = 0;
 
 	private:
 		RenderPassId m_id;

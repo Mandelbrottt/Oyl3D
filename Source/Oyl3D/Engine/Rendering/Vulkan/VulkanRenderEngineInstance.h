@@ -7,9 +7,9 @@
 
 #include "Rendering/RenderEngineInstance.h"
 
-namespace Oyl::Rendering::Vulkan
+namespace Oyl::Rendering
 {
-	class OYL_RENDERING_API RenderEngineInstance : public Internal::RenderEngineInstance
+	class OYL_RENDERING_API VulkanRenderEngineInstance : public Internal::RenderEngineInstance
 	{
 	public:
 		struct CreateParams
@@ -18,23 +18,23 @@ namespace Oyl::Rendering::Vulkan
 		};
 
 		explicit
-		RenderEngineInstance(CreateParams a_params);
+		VulkanRenderEngineInstance(CreateParams a_params);
 
 		virtual
-		~RenderEngineInstance() = default;
+		~VulkanRenderEngineInstance() = default;
 
-		const ShaderCompiler*
+		const VulkanShaderCompiler*
 		GetShaderCompiler() const override
 		{
-			const auto* abstract = Internal::RenderEngineInstance::GetShaderCompiler();
-			return static_cast<const ShaderCompiler*>(abstract);
+			const auto* abstract = RenderEngineInstance::GetShaderCompiler();
+			return static_cast<const VulkanShaderCompiler*>(abstract);
 		}
 
-		const DeviceImpl*
+		const VulkanDevice*
 		GetCurrentDevice() const override
 		{
-			const auto* abstract = Internal::RenderEngineInstance::GetCurrentDevice();
-			return static_cast<const DeviceImpl*>(abstract);
+			const auto* abstract = RenderEngineInstance::GetCurrentDevice();
+			return static_cast<const VulkanDevice*>(abstract);
 		}
 
 		//Rendering::Shader

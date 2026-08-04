@@ -1,12 +1,14 @@
 ﻿#pragma once
 
+#include <Core/PImpl.h>
+
 #include "DeviceObject.h"
 
 namespace Oyl::Rendering
 {
-	struct StagingBufferHandle : OpaqueHandle<StagingBufferHandle> {};
+	struct StagingBufferId : OpaqueHandle<StagingBufferId> {};
 
-	class StagingBuffer : public IDeviceObject<StagingBufferHandle>
+	class StagingBuffer : public IDeviceObject<StagingBufferId>
 	{
 	protected:
 		StagingBuffer() = default;
@@ -23,4 +25,6 @@ namespace Oyl::Rendering
 		bool
 		CopyMemory(const void* a_src, uint32 a_size) = 0;
 	};
+
+	using StagingBufferHandle = PImpl<StagingBuffer>;
 }

@@ -4,11 +4,11 @@
 
 #include "Rendering/Shader.h"
 
-namespace Oyl::Rendering::Vulkan
+namespace Oyl::Rendering
 {
-	class DeviceImpl;
+	class VulkanDevice;
 
-	struct Vertex : Rendering::Vertex
+	struct VulkanVertex : Vertex
 	{
 		static
 		vk::VertexInputBindingDescription
@@ -19,22 +19,22 @@ namespace Oyl::Rendering::Vulkan
 		GetAttributeDescriptions();
 	};
 
-	using ShaderHandle = OpaqueHandleConvertible<ShaderHandle, vk::Pipeline>;
+	using VulkanShaderId = OpaqueHandleConvertible<ShaderId, vk::Pipeline>;
 
-	class OYL_RENDERING_API ShaderImpl : public Rendering::ShaderImpl
+	class OYL_RENDERING_API VulkanShader : public Shader
 	{
 	public:
-		ShaderImpl();
+		VulkanShader();
 
 		explicit
-		ShaderImpl(const DeviceImpl& a_device, const CreateParams& a_params);
+		VulkanShader(const VulkanDevice& a_device, const CreateParams& a_params);
 
-		ShaderImpl(ShaderImpl&& a_other) noexcept;
-		ShaderImpl&
-		operator =(ShaderImpl&& a_other) noexcept;
+		VulkanShader(VulkanShader&& a_other) noexcept;
+		VulkanShader&
+		operator =(VulkanShader&& a_other) noexcept;
 
 		virtual
-		~ShaderImpl();
+		~VulkanShader();
 
 		void
 		Destroy() override;
@@ -45,19 +45,19 @@ namespace Oyl::Rendering::Vulkan
 		const vk::raii::Pipeline&
 		GetVkPipeline() const;
 
-		ShaderHandle
-		GetHandle() const;
+		VulkanShaderId
+		GetId() const;
 
-		operator ShaderHandle() const
+		operator VulkanShaderId() const
 		{
-			return GetHandle();
+			return GetId();
 		}
 
 	protected:
-		Rendering::ShaderHandle
-		GetHandleImpl() const override
+		ShaderId
+		GetIdImpl() const override
 		{
-			return GetHandle();
+			return GetId();
 		}
 
 	private:
@@ -65,5 +65,5 @@ namespace Oyl::Rendering::Vulkan
 		std::unique_ptr<Impl> m_impl;
 	};
 
-	using Shader = PImpl<ShaderImpl>;
+	using VulkanShaderHandle = PImpl<VulkanShader>;
 }

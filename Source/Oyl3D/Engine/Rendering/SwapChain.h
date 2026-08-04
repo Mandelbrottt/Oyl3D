@@ -8,17 +8,17 @@
 
 namespace Oyl::Rendering
 {
-	class SwapChainImpl : public IUniqueHandle
+	class SwapChain : public IUniqueHandle
 	{
 	protected:
-		SwapChainImpl() = default;
+		SwapChain() = default;
 
 	public:
-		NO_MOVE(SwapChainImpl);
-		NO_COPY(SwapChainImpl);
+		NO_MOVE(SwapChain);
+		NO_COPY(SwapChain);
 
 		virtual
-		~SwapChainImpl() = default;
+		~SwapChain() = default;
 
 		virtual
 		Vector2u
@@ -30,20 +30,20 @@ namespace Oyl::Rendering
 
 		virtual
 		bool
-		AcquireNextImage(SemaphoreHandle a_semaphore, FenceHandle a_fence) = 0;
+		AcquireNextImage(SemaphoreId a_semaphore, FenceId a_fence) = 0;
 
 		bool
-		AcquireNextImage(const Semaphore& a_semaphore, const Fence& a_fence)
+		AcquireNextImage(const SemaphoreHandle& a_semaphore, const FenceHandle& a_fence)
 		{
-			SemaphoreHandle semaphoreHandle = {};
+			SemaphoreId semaphoreId = {};
 			if (a_semaphore)
-				semaphoreHandle = a_semaphore->GetHandle();
+				semaphoreId = a_semaphore->GetId();
 
-			FenceHandle fenceHandle = {};
+			FenceId fenceId = {};
 			if (a_fence)
-				fenceHandle = a_fence->GetHandle();
+				fenceId = a_fence->GetId();
 
-			return AcquireNextImage(semaphoreHandle, fenceHandle);
+			return AcquireNextImage(semaphoreId, fenceId);
 		}
 
 		virtual
@@ -55,13 +55,13 @@ namespace Oyl::Rendering
 		GetCurrentImageIndex() const = 0;
 
 		virtual
-		ImageHandle
-		GetImageHandle(uint32 a_index) const = 0;
+		ImageId
+		GetImageId(uint32 a_index) const = 0;
 
 		virtual
-		ImageHandle
-		GetCurrentImageHandle() const = 0;
+		ImageId
+		GetCurrentImageId() const = 0;
 	};
 
-	using SwapChain = PImpl<SwapChainImpl>;
+	using SwapChainHandle = PImpl<SwapChain>;
 }

@@ -4,25 +4,25 @@
 
 #include "Rendering/Fence.h"
 
-namespace Oyl::Rendering::Vulkan
+namespace Oyl::Rendering
 {
-	class DeviceImpl;
+	class VulkanDevice;
 
-	using FenceHandle = OpaqueHandleConvertible<FenceHandle, vk::Fence>;
+	using VulkanFenceId = OpaqueHandleConvertible<FenceId, vk::Fence>;
 
-	class OYL_RENDERING_API FenceImpl : public Rendering::FenceImpl
+	class OYL_RENDERING_API VulkanFence : public Fence
 	{
 	public:
-		FenceImpl(nullptr_t) {}
+		VulkanFence(nullptr_t) {}
 
-		FenceImpl(const DeviceImpl& a_device);
+		VulkanFence(const VulkanDevice& a_device);
 
-		FenceImpl(FenceImpl&& a_other) noexcept;
-		FenceImpl&
-		operator =(FenceImpl&& a_other) noexcept;
+		VulkanFence(VulkanFence&& a_other) noexcept;
+		VulkanFence&
+		operator =(VulkanFence&& a_other) noexcept;
 
 		virtual
-		~FenceImpl();
+		~VulkanFence();
 
 		void
 		Destroy() override;
@@ -42,28 +42,28 @@ namespace Oyl::Rendering::Vulkan
 			return m_fence;
 		}
 
-		FenceHandle
-		GetHandle() const
+		VulkanFenceId
+		GetId() const
 		{
 			return *m_fence;
 		}
 
-		operator FenceHandle() const
+		operator VulkanFenceId() const
 		{
-			return GetHandle();
+			return GetId();
 		}
 
 	protected:
-		Rendering::FenceHandle
-		GetHandleImpl() const override
+		FenceId
+		GetIdImpl() const override
 		{
-			return GetHandle();
+			return GetId();
 		}
 
 	private:
-		const DeviceImpl* m_device = nullptr;
+		const VulkanDevice* m_device = nullptr;
 		vk::raii::Fence m_fence = nullptr;
 	};
 
-	using Fence = PImpl<FenceImpl>;
+	using VulkanFenceHandle = PImpl<VulkanFence>;
 }

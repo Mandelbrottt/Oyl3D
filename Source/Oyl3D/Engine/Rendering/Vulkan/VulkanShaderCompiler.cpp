@@ -50,10 +50,10 @@ namespace
 
 #endif
 
-namespace Oyl::Rendering::Vulkan
+namespace Oyl::Rendering
 {
 #if defined(OYL_WINDOWS)
-	struct ShaderCompiler::Impl
+	struct VulkanShaderCompiler::Impl
 	{
 		// For compiling hlsl into spir-v
 		SharedLibrary dxcCompilerSharedLibrary;
@@ -69,7 +69,7 @@ namespace Oyl::Rendering::Vulkan
 		CompileHlslShaderStage(ShaderProfile a_profile, std::string_view a_source, std::string_view a_sourceName);
 	};
 
-	ShaderCompiler::ShaderCompiler()
+	VulkanShaderCompiler::VulkanShaderCompiler()
 	{
 		OYL_PROFILE_FUNCTION();
 
@@ -97,17 +97,17 @@ namespace Oyl::Rendering::Vulkan
 		hres = m_impl->dxcCreateInstanceFn(CLSID_DxcUtils, IID_PPV_ARGS(&m_impl->dxcUtils));
 	}
 
-	ShaderCompiler::~ShaderCompiler() {}
+	VulkanShaderCompiler::~VulkanShaderCompiler() {}
 
-	ShaderCompiler::ShaderCompiler(const ShaderCompiler& a_other)
+	VulkanShaderCompiler::VulkanShaderCompiler(const VulkanShaderCompiler& a_other)
 	{
 		m_impl = std::make_unique<Impl>();
 
 		*this = a_other;
 	}
 
-	ShaderCompiler&
-	ShaderCompiler::operator=(const ShaderCompiler& a_other)
+	VulkanShaderCompiler&
+	VulkanShaderCompiler::operator=(const VulkanShaderCompiler& a_other)
 	{
 		if (this == &a_other)
 			return *this;
@@ -116,13 +116,13 @@ namespace Oyl::Rendering::Vulkan
 		return *this;
 	}
 
-	ShaderCompiler::ShaderCompiler(ShaderCompiler&& a_other) noexcept
+	VulkanShaderCompiler::VulkanShaderCompiler(VulkanShaderCompiler&& a_other) noexcept
 	{
 		*this = std::move(a_other);
 	}
 
-	ShaderCompiler&
-	ShaderCompiler::operator=(ShaderCompiler&& a_other) noexcept
+	VulkanShaderCompiler&
+	VulkanShaderCompiler::operator=(VulkanShaderCompiler&& a_other) noexcept
 	{
 		if (this == &a_other)
 			return *this;
@@ -133,7 +133,7 @@ namespace Oyl::Rendering::Vulkan
 	}
 
 	bool
-	ShaderCompiler::CompileHlsl(std::string_view a_source, ShaderCompileResult* a_outShader) const
+	VulkanShaderCompiler::CompileHlsl(std::string_view a_source, ShaderCompileResult* a_outShader) const
 	{
 		OYL_PROFILE_FUNCTION();
 
@@ -160,7 +160,7 @@ namespace Oyl::Rendering::Vulkan
 	}
 
 	std::vector<ShaderProfile>
-	ShaderCompiler::Impl::GetShaderProfilesInSource(std::string_view a_source) const
+	VulkanShaderCompiler::Impl::GetShaderProfilesInSource(std::string_view a_source) const
 	{
 		OYL_PROFILE_FUNCTION();
 
@@ -312,7 +312,7 @@ namespace Oyl::Rendering::Vulkan
 	}
 
 	ShaderStage
-	ShaderCompiler::Impl::CompileHlslShaderStage(ShaderProfile a_profile, std::string_view a_source, std::string_view a_sourceName)
+	VulkanShaderCompiler::Impl::CompileHlslShaderStage(ShaderProfile a_profile, std::string_view a_source, std::string_view a_sourceName)
 	{
 		OYL_PROFILE_FUNCTION();
 

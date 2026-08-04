@@ -22,11 +22,11 @@ namespace
 	ChooseSwapMinImageCount(const vk::SurfaceCapabilitiesKHR& a_capabilities);
 }
 
-namespace Oyl::Rendering::Vulkan
+namespace Oyl::Rendering
 {
-	struct SwapChainImpl::Impl
+	struct VulkanSwapChain::Impl
 	{
-		const DeviceImpl* device = nullptr;
+		const VulkanDevice* device = nullptr;
 		const IWindow* window = nullptr;
 
 		vk::raii::SwapchainKHR vkSwapChain = nullptr;
@@ -47,9 +47,9 @@ namespace Oyl::Rendering::Vulkan
 		RecreateSwapChain();
 	};
 
-	SwapChainImpl::SwapChainImpl(nullptr_t) {}
+	VulkanSwapChain::VulkanSwapChain(nullptr_t) {}
 
-	SwapChainImpl::SwapChainImpl(const DeviceImpl& a_device, const CreateParams& a_params)
+	VulkanSwapChain::VulkanSwapChain(const VulkanDevice& a_device, const CreateParams& a_params)
 		: m_impl(std::make_unique<Impl>())
 	{
 		OYL_PROFILE_FUNCTION();
@@ -61,14 +61,14 @@ namespace Oyl::Rendering::Vulkan
 		m_impl->CreateSwapChainImageViews();
 	}
 
-	SwapChainImpl::SwapChainImpl(SwapChainImpl&& a_other) noexcept
+	VulkanSwapChain::VulkanSwapChain(VulkanSwapChain&& a_other) noexcept
 		: m_impl(nullptr)
 	{
 		*this = std::move(a_other);
 	}
 
-	SwapChainImpl&
-	SwapChainImpl::operator=(SwapChainImpl&& a_other) noexcept
+	VulkanSwapChain&
+	VulkanSwapChain::operator=(VulkanSwapChain&& a_other) noexcept
 	{
 		if (this != &a_other)
 		{
@@ -77,13 +77,13 @@ namespace Oyl::Rendering::Vulkan
 		return *this;
 	}
 
-	SwapChainImpl::~SwapChainImpl()
+	VulkanSwapChain::~VulkanSwapChain()
 	{
-		SwapChainImpl::Destroy();
+		VulkanSwapChain::Destroy();
 	}
 
 	void
-	SwapChainImpl::Destroy()
+	VulkanSwapChain::Destroy()
 	{
 		OYL_PROFILE_FUNCTION();
 
@@ -95,20 +95,20 @@ namespace Oyl::Rendering::Vulkan
 	}
 
 	bool
-	SwapChainImpl::IsValid() const
+	VulkanSwapChain::IsValid() const
 	{
 		return m_impl
 		       && *m_impl->vkSwapChain;
 	}
 
 	Vector2u
-	SwapChainImpl::GetSize() const
+	VulkanSwapChain::GetSize() const
 	{
 		return Vector2u(m_impl->vkSwapChainExtent.width, m_impl->vkSwapChainExtent.height);
 	}
 
 	void
-	SwapChainImpl::Recreate()
+	VulkanSwapChain::Recreate()
 	{
 		OYL_PROFILE_FUNCTION();
 
@@ -116,7 +116,7 @@ namespace Oyl::Rendering::Vulkan
 	}
 
 	bool
-	SwapChainImpl::AcquireNextImage(SemaphoreHandle a_semaphore, FenceHandle a_fence)
+	VulkanSwapChain::AcquireNextImage(VulkanSemaphoreId a_semaphore, VulkanFenceId a_fence)
 	{
 		OYL_PROFILE_FUNCTION();
 
@@ -135,75 +135,75 @@ namespace Oyl::Rendering::Vulkan
 		return true;
 	}
 
-	ImageHandle
-	SwapChainImpl::GetVulkanImageHandle(uint32 a_index) const
+	VulkanImageId
+	VulkanSwapChain::GetVulkanImageId(uint32 a_index) const
 	{
 		return m_impl->vkSwapChainImageHandles[a_index];
 	}
 
 	uint32
-	SwapChainImpl::GetCurrentImageIndex() const
+	VulkanSwapChain::GetCurrentImageIndex() const
 	{
 		return m_impl->imageIndex;
 	}
 
 	uint32
-	SwapChainImpl::GetImageCount() const
+	VulkanSwapChain::GetImageCount() const
 	{
 		return (uint32) m_impl->vkSwapChainImageHandles.size();
 	}
 
-	ImageHandle
-	SwapChainImpl::GetCurrentVulkanImageHandle() const
+	VulkanImageId
+	VulkanSwapChain::GetCurrentVulkanImageId() const
 	{
 		auto index = GetCurrentImageIndex();
-		return GetVulkanImageHandle(index);
+		return GetVulkanImageId(index);
 	}
 
 	const vk::raii::SwapchainKHR&
-	SwapChainImpl::GetVkSwapChain() const
+	VulkanSwapChain::GetVkSwapChain() const
 	{
 		return m_impl->vkSwapChain;
 	}
 
 	const std::vector<vk::Image>&
-	SwapChainImpl::GetVkImages() const
+	VulkanSwapChain::GetVkImages() const
 	{
 		return m_impl->vkSwapChainImageHandles;
 	}
 
 	vk::Image
-	SwapChainImpl::GetCurrentVkImage() const
+	VulkanSwapChain::GetCurrentVkImage() const
 	{
 		return m_impl->vkSwapChainImageHandles[m_impl->imageIndex];
 	}
 
 	const std::vector<vk::raii::ImageView>&
-	SwapChainImpl::GetVkImageViews() const
+	VulkanSwapChain::GetVkImageViews() const
 	{
 		return m_impl->vkSwapChainImageViews;
 	}
 
 	const vk::raii::ImageView&
-	SwapChainImpl::GetCurrentVkImageView() const
+	VulkanSwapChain::GetCurrentVkImageView() const
 	{
 		return m_impl->vkSwapChainImageViews[m_impl->imageIndex];
 	}
 
 	const vk::SurfaceFormatKHR&
-	SwapChainImpl::GetVkSurfaceFormat() const
+	VulkanSwapChain::GetVkSurfaceFormat() const
 	{
 		return m_impl->vkSwapChainSurfaceFormat;
 	}
 
 	const vk::Extent2D&
-	SwapChainImpl::GetVkExtent() const
+	VulkanSwapChain::GetVkExtent() const
 	{
 		return m_impl->vkSwapChainExtent;
 	}
 
 	void
-	SwapChainImpl::Impl::CreateSwapChain()
+	VulkanSwapChain::Impl::CreateSwapChain()
 	{
 		OYL_PROFILE_FUNCTION();
 
@@ -245,7 +245,7 @@ namespace Oyl::Rendering::Vulkan
 	}
 
 	void
-	SwapChainImpl::Impl::CreateSwapChainImageViews()
+	VulkanSwapChain::Impl::CreateSwapChainImageViews()
 	{
 		OYL_PROFILE_FUNCTION();
 
@@ -268,14 +268,14 @@ namespace Oyl::Rendering::Vulkan
 	}
 
 	void
-	SwapChainImpl::Impl::CleanupSwapChain()
+	VulkanSwapChain::Impl::CleanupSwapChain()
 	{
 		vkSwapChainImageViews.clear();
 		vkSwapChain = nullptr;
 	}
 
 	void
-	SwapChainImpl::Impl::RecreateSwapChain()
+	VulkanSwapChain::Impl::RecreateSwapChain()
 	{
 		OYL_PROFILE_FUNCTION();
 

@@ -24,12 +24,12 @@ namespace Oyl::Rendering
 		RenderContext* renderContext = nullptr;
 		RenderGraph renderGraph;
 
-		CommandPool commandPool = nullptr;
-		Array<CommandBuffer> commandBuffers;
+		CommandPoolHandle commandPool = nullptr;
+		Array<CommandBufferHandle> commandBuffers;
 
-		Array<Semaphore> presentCompleteSemaphores;
-		Array<Semaphore> renderFinishedSemaphores;
-		Array<Fence> inFlightFences;
+		Array<SemaphoreHandle> presentCompleteSemaphores;
+		Array<SemaphoreHandle> renderFinishedSemaphores;
+		Array<FenceHandle> inFlightFences;
 
 		uint32 frameIndex = 0;
 
@@ -80,7 +80,7 @@ namespace Oyl::Rendering
 		auto& device = *renderContext.GetDevice();
 		const auto& graphicsQueue = *device.GetCommandQueue(CommandQueueFlagBits::Graphics);
 		graphicsQueue.Submit(
-			CommandQueueImpl::SubmitParams {
+			CommandQueue::SubmitParams {
 				.commandBuffer = *m_impl->commandBuffers[m_impl->frameIndex],
 				.waitSemaphore = *presentCompleteSemaphore,
 				.signalSemaphore = *renderFinishedSemaphore,
@@ -90,7 +90,7 @@ namespace Oyl::Rendering
 		);
 
 		bool result = graphicsQueue.Present(
-			CommandQueueImpl::PresentParams {
+			CommandQueue::PresentParams {
 				.swapChain = swapChain,
 				.waitSemaphore = *renderFinishedSemaphore
 			}
@@ -123,7 +123,7 @@ namespace Oyl::Rendering
 		auto& swapChain = *renderContext.GetSwapChain();
 
 		commandBuffer->TransitionImageLayout(
-			swapChain.GetCurrentImageHandle(),
+			swapChain.GetCurrentImageId(),
 			ImageLayout::None,
 			ImageLayout::TransferDest
 		);
@@ -131,11 +131,11 @@ namespace Oyl::Rendering
 		{
 			OYL_PROFILE_SCOPE("BlitImage");
 
-			auto& vulkanCommandBuffer = dynamic_cast<Vulkan::CommandBufferImpl&>(*commandBuffer);
-			auto& vulkanSwapChain = dynamic_cast<Vulkan::SwapChainImpl&>(swapChain);
+			auto& vulkanCommandBuffer = dynamic_cast<VulkanCommandBuffer&>(*commandBuffer);
+			auto& vulkanSwapChain = dynamic_cast<VulkanSwapChain&>(swapChain);
 
 			auto& image = *m_impl->renderGraph.GetSortedRenderPasses().Back()->GetRenderTarget()->GetColorAttachment(0);
-			auto& vulkanImage = dynamic_cast<const Vulkan::ImageImpl&>(image);
+			auto& vulkanImage = dynamic_cast<const VulkanImage&>(image);
 			vulkanCommandBuffer.GetVkCommandBuffer().blitImage(
 				vulkanImage.GetVkImage(),
 				vk::ImageLayout::eTransferSrcOptimal,
@@ -152,7 +152,7 @@ namespace Oyl::Rendering
 		}
 
 		commandBuffer->TransitionImageLayout(
-			swapChain.GetCurrentImageHandle(),
+			swapChain.GetCurrentImageId(),
 			ImageLayout::TransferDest,
 			ImageLayout::PresentSource
 		);

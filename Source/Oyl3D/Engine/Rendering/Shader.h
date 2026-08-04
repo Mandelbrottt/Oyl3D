@@ -14,12 +14,12 @@ namespace Oyl::Rendering
 		Vector3f color;
 	};
 
-	struct ShaderHandle : OpaqueHandle<ShaderHandle> {};
+	struct ShaderId : OpaqueHandle<ShaderId> {};
 
-	class ShaderImpl : public IDeviceObject<ShaderHandle>
+	class Shader : public IDeviceObject<ShaderId>
 	{
 	protected:
-		ShaderImpl() = default;
+		Shader() = default;
 
 	public:
 		struct CreateParams
@@ -29,12 +29,12 @@ namespace Oyl::Rendering
 			ShaderCompileResult compileResult;
 		};
 
-		NO_MOVE(ShaderImpl);
-		NO_COPY(ShaderImpl);
+		NO_MOVE(Shader);
+		NO_COPY(Shader);
 
 		virtual
-		~ShaderImpl() = default;
+		~Shader() = default;
 	};
 
-	using Shader = PImpl<ShaderImpl>;
+	using ShaderHandle = PImpl<Shader>;
 }

@@ -12,32 +12,25 @@ namespace vk::raii
 
 namespace Oyl::Rendering
 {
-	class SwapChainImpl;
-	class ShaderImpl;
-	class VertexBufferImpl;
-}
+	class VulkanCommandPool;
+	class VulkanDevice;
+	class VulkanShader;
+	class VulkanSwapChain;
+	class VulkanVertexBuffer;
 
-namespace Oyl::Rendering::Vulkan
-{
-	class CommandPoolImpl;
-	class DeviceImpl;
-	class ShaderImpl;
-	class SwapChainImpl;
-	class VertexBufferImpl;
-
-	class OYL_RENDERING_API CommandBufferImpl : public Rendering::CommandBufferImpl
+	class OYL_RENDERING_API VulkanCommandBuffer : public CommandBuffer
 	{
 	public:
-		CommandBufferImpl(nullptr_t);
+		VulkanCommandBuffer(nullptr_t);
 
-		CommandBufferImpl(const DeviceImpl& a_device, const CreateParams& a_params) noexcept;
+		VulkanCommandBuffer(const VulkanDevice& a_device, const CreateParams& a_params) noexcept;
 
-		CommandBufferImpl(CommandBufferImpl&& a_other) noexcept;
-		CommandBufferImpl&
-		operator =(CommandBufferImpl&& a_other) noexcept;
+		VulkanCommandBuffer(VulkanCommandBuffer&& a_other) noexcept;
+		VulkanCommandBuffer&
+		operator =(VulkanCommandBuffer&& a_other) noexcept;
 
 		virtual
-		~CommandBufferImpl() noexcept;
+		~VulkanCommandBuffer() noexcept;
 
 		void
 		Destroy() noexcept override;
@@ -45,7 +38,7 @@ namespace Oyl::Rendering::Vulkan
 		bool
 		IsValid() const noexcept override;
 
-		const CommandPoolImpl*
+		const VulkanCommandPool*
 		GetCommandPool() const noexcept override;
 
 		const vk::raii::CommandBuffer&
@@ -70,50 +63,50 @@ namespace Oyl::Rendering::Vulkan
 		SetScissor(Vector2i a_offset, Vector2u a_size) const noexcept override;
 
 		void
-		BindShader(const Rendering::ShaderImpl& a_shader) const noexcept override;
+		BindShader(const Shader& a_shader) const noexcept override;
 
 		void
-		BindShader(const ShaderImpl& a_shader) const noexcept;
+		BindShader(const VulkanShader& a_shader) const noexcept;
 
 		void
-		BindVertexBuffer(const Rendering::VertexBufferImpl& a_vertexBuffer) const noexcept override;
+		BindVertexBuffer(const VertexBuffer& a_vertexBuffer) const noexcept override;
 
 		void
-		BindVertexBuffer(const VertexBufferImpl& a_vertexBuffer) const noexcept;
+		BindVertexBuffer(const VulkanVertexBuffer& a_vertexBuffer) const noexcept;
 
 		void
-		DrawVertexBuffer(const Rendering::VertexBufferImpl& a_vertexBuffer) const noexcept override;
+		DrawVertexBuffer(const VertexBuffer& a_vertexBuffer) const noexcept override;
 
 		void
-		DrawVertexBuffer(const VertexBufferImpl& a_vertexBuffer) const noexcept;
+		DrawVertexBuffer(const VulkanVertexBuffer& a_vertexBuffer) const noexcept;
 
 	protected:
 		void
-		TransitionImageLayout(Rendering::ImageImpl& a_image, ImageLayout a_newLayout) const noexcept override
+		TransitionImageLayout(Image& a_image, ImageLayout a_newLayout) const noexcept override
 		{
-			auto& vulkanImageImpl = dynamic_cast<ImageImpl&>(a_image);
+			auto& vulkanImageImpl = dynamic_cast<VulkanImage&>(a_image);
 			TransitionImageLayout(vulkanImageImpl, a_newLayout);
 		}
 
 	public:
 		void
-		TransitionImageLayout(ImageImpl& a_image, ImageLayout a_newLayout) const noexcept;
+		TransitionImageLayout(VulkanImage& a_image, ImageLayout a_newLayout) const noexcept;
 
 	protected:
 		void
 		TransitionImageLayout(
-			Rendering::ImageHandle a_imageHandle,
+			ImageId a_imageHandle,
 			ImageLayout a_oldLayout,
 			ImageLayout a_newLayout
 		) const noexcept override
 		{
-			TransitionImageLayout(static_cast<ImageHandle>(a_imageHandle), a_oldLayout, a_newLayout);
+			TransitionImageLayout(static_cast<VulkanImageId>(a_imageHandle), a_oldLayout, a_newLayout);
 		}
 
 	public:
 		void
 		TransitionImageLayout(
-			ImageHandle a_imageHandle,
+			VulkanImageId a_imageHandle,
 			ImageLayout a_oldLayout,
 			ImageLayout a_newLayout
 		) const noexcept;
@@ -123,5 +116,5 @@ namespace Oyl::Rendering::Vulkan
 		std::unique_ptr<Impl> m_impl;
 	};
 
-	using CommandBuffer = PImpl<CommandBufferImpl>;
+	using VulkanCommandBufferHandle = PImpl<VulkanCommandBuffer>;
 }

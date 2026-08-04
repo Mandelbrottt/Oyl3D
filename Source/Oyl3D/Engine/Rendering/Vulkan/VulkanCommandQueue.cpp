@@ -7,18 +7,18 @@
 #include "VulkanEnums.h"
 #include "VulkanSwapChain.h"
 
-namespace Oyl::Rendering::Vulkan
+namespace Oyl::Rendering
 {
-	struct CommandQueueImpl::Impl
+	struct VulkanCommandQueue::Impl
 	{
 		vk::raii::Queue queue = nullptr;
 		uint32 queueFamilyIndex;
 	};
 
-	CommandQueueImpl::CommandQueueImpl(nullptr_t)
+	VulkanCommandQueue::VulkanCommandQueue(nullptr_t)
 		: m_impl(nullptr) {}
 
-	CommandQueueImpl::CommandQueueImpl(const DeviceImpl& a_device, const CreateParams& a_params)
+	VulkanCommandQueue::VulkanCommandQueue(const VulkanDevice& a_device, const CreateParams& a_params)
 		: m_impl(std::make_unique<Impl>())
 	{
 		auto& vkDevice = a_device.GetVkDevice();
@@ -26,13 +26,13 @@ namespace Oyl::Rendering::Vulkan
 		m_impl->queue = vk::raii::Queue(vkDevice, m_impl->queueFamilyIndex, 0);
 	}
 
-	CommandQueueImpl::CommandQueueImpl(CommandQueueImpl&& a_other) noexcept
+	VulkanCommandQueue::VulkanCommandQueue(VulkanCommandQueue&& a_other) noexcept
 	{
 		*this = std::move(a_other);
 	}
 
-	CommandQueueImpl&
-	CommandQueueImpl::operator=(CommandQueueImpl&& a_other) noexcept
+	VulkanCommandQueue&
+	VulkanCommandQueue::operator=(VulkanCommandQueue&& a_other) noexcept
 	{
 		if (this != &a_other)
 		{
@@ -41,13 +41,13 @@ namespace Oyl::Rendering::Vulkan
 		return *this;
 	}
 
-	CommandQueueImpl::~CommandQueueImpl()
+	VulkanCommandQueue::~VulkanCommandQueue()
 	{
-		CommandQueueImpl::Destroy();
+		VulkanCommandQueue::Destroy();
 	}
 
 	void
-	CommandQueueImpl::Destroy()
+	VulkanCommandQueue::Destroy()
 	{
 		if (!IsValid())
 			return;
@@ -56,26 +56,26 @@ namespace Oyl::Rendering::Vulkan
 	}
 
 	bool
-	CommandQueueImpl::IsValid() const
+	VulkanCommandQueue::IsValid() const
 	{
 		return m_impl
 		       && *m_impl->queue;
 	}
 
 	const vk::raii::Queue&
-	CommandQueueImpl::GetVkQueue() const
+	VulkanCommandQueue::GetVkQueue() const
 	{
 		return m_impl->queue;
 	}
 
 	uint32
-	CommandQueueImpl::GetVkQueueFamilyIndex() const
+	VulkanCommandQueue::GetVkQueueFamilyIndex() const
 	{
 		return m_impl->queueFamilyIndex;
 	}
 
 	void
-	CommandQueueImpl::WaitUntilIdle() const
+	VulkanCommandQueue::WaitUntilIdle() const
 	{
 		OYL_PROFILE_FUNCTION();
 
@@ -83,14 +83,14 @@ namespace Oyl::Rendering::Vulkan
 	}
 
 	bool
-	CommandQueueImpl::Submit(const SubmitParams& a_params) const
+	VulkanCommandQueue::Submit(const SubmitParams& a_params) const
 	{
 		OYL_PROFILE_FUNCTION();
 
-		auto& vkCommandBuffer = dynamic_cast<const CommandBufferImpl&>(a_params.commandBuffer).GetVkCommandBuffer();
-		vk::Semaphore vkWaitSemaphore = static_cast<SemaphoreHandle>(a_params.waitSemaphore);
-		vk::Semaphore vkSignalSemaphore = static_cast<SemaphoreHandle>(a_params.signalSemaphore);
-		vk::Fence vkFence = static_cast<FenceHandle>(a_params.fence);
+		auto& vkCommandBuffer = dynamic_cast<const VulkanCommandBuffer&>(a_params.commandBuffer).GetVkCommandBuffer();
+		vk::Semaphore vkWaitSemaphore = static_cast<VulkanSemaphoreId>(a_params.waitSemaphore);
+		vk::Semaphore vkSignalSemaphore = static_cast<VulkanSemaphoreId>(a_params.signalSemaphore);
+		vk::Fence vkFence = static_cast<VulkanFenceId>(a_params.fence);
 
 		vk::PipelineStageFlags waitDestinationStageMask = ToVkEnum(a_params.waitDestinationStageMask);
 		vk::SubmitInfo submitInfo;
@@ -111,12 +111,12 @@ namespace Oyl::Rendering::Vulkan
 	}
 
 	bool
-	CommandQueueImpl::Present(const PresentParams& a_params) const
+	VulkanCommandQueue::Present(const PresentParams& a_params) const
 	{
 		OYL_PROFILE_FUNCTION();
 
-		vk::Semaphore vkWaitSemaphore = static_cast<SemaphoreHandle>(a_params.waitSemaphore);
-		auto& vkSwapChain = dynamic_cast<const SwapChainImpl&>(a_params.swapChain).GetVkSwapChain();
+		vk::Semaphore vkWaitSemaphore = static_cast<VulkanSemaphoreId>(a_params.waitSemaphore);
+		auto& vkSwapChain = dynamic_cast<const VulkanSwapChain&>(a_params.swapChain).GetVkSwapChain();
 		auto swapChainImageIndex = a_params.swapChain.GetCurrentImageIndex();
 
 		const vk::PresentInfoKHR presentInfoKHR {

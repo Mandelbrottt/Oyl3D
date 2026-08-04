@@ -36,17 +36,17 @@ namespace
 	);
 }
 
-namespace Oyl::Rendering::Vulkan
+namespace Oyl::Rendering
 {
-	DeviceImpl::DeviceImpl(nullptr_t) {}
+	VulkanDevice::VulkanDevice(nullptr_t) {}
 
-	Device
-	DeviceImpl::Create(const CreateParams& a_params)
+	VulkanDeviceHandle
+	VulkanDevice::Create(const CreateParams& a_params)
 	{
-		return Device(std::make_unique<DeviceImpl>(DeviceTag(), a_params));
+		return VulkanDeviceHandle(std::make_unique<VulkanDevice>(DeviceTag(), a_params));
 	}
 
-	DeviceImpl::DeviceImpl(DeviceTag, const CreateParams& a_params)
+	VulkanDevice::VulkanDevice(DeviceTag, const CreateParams& a_params)
 	{
 		OYL_PROFILE_FUNCTION();
 
@@ -80,13 +80,13 @@ namespace Oyl::Rendering::Vulkan
 		CreateCommandQueues();
 	}
 
-	DeviceImpl::~DeviceImpl()
+	VulkanDevice::~VulkanDevice()
 	{
-		DeviceImpl::Destroy();
+		VulkanDevice::Destroy();
 	}
 
 	void
-	DeviceImpl::Destroy()
+	VulkanDevice::Destroy()
 	{
 		OYL_PROFILE_FUNCTION();
 
@@ -101,19 +101,19 @@ namespace Oyl::Rendering::Vulkan
 	}
 
 	bool
-	DeviceImpl::IsValid() const
+	VulkanDevice::IsValid() const
 	{
 		return *m_device;
 	}
 
 	const IWindow*
-	DeviceImpl::GetWindow() const
+	VulkanDevice::GetWindow() const
 	{
 		return m_window;
 	}
 
-	const CommandQueueImpl*
-	DeviceImpl::GetCommandQueue(CommandQueueFlagBits a_flag) const
+	const VulkanCommandQueue*
+	VulkanDevice::GetCommandQueue(CommandQueueFlagBits a_flag) const
 	{
 		auto iter = m_queues.find(a_flag);
 		if (iter == m_queues.end())
@@ -123,75 +123,75 @@ namespace Oyl::Rendering::Vulkan
 	}
 
 	const vk::raii::Device&
-	DeviceImpl::GetVkDevice() const
+	VulkanDevice::GetVkDevice() const
 	{
 		return m_device;
 	}
 
 	const vk::raii::PhysicalDevice&
-	DeviceImpl::GetVkPhysicalDevice() const
+	VulkanDevice::GetVkPhysicalDevice() const
 	{
 		return m_physicalDevice;
 	}
 
 	const vk::raii::SurfaceKHR&
-	DeviceImpl::GetVkSurface() const
+	VulkanDevice::GetVkSurface() const
 	{
 		return m_surface;
 	}
 
 	void
-	DeviceImpl::WaitUntilIdle() const
+	VulkanDevice::WaitUntilIdle() const
 	{
 		OYL_PROFILE_FUNCTION();
 
 		m_device.waitIdle();
 	}
 
-	Rendering::CommandBuffer
-	DeviceImpl::CreateCommandBuffer(const CommandBufferImpl::CreateParams& a_params) const
+	Rendering::CommandBufferHandle
+	VulkanDevice::CreateCommandBuffer(const VulkanCommandBuffer::CreateParams& a_params) const
 	{
-		return CommandBuffer(std::make_unique<CommandBufferImpl>(*this, a_params));
+		return VulkanCommandBufferHandle(std::make_unique<VulkanCommandBuffer>(*this, a_params));
 	}
 
-	Rendering::CommandPool
-	DeviceImpl::CreateCommandPool(const CommandPoolImpl::CreateParams& a_params) const
+	Rendering::CommandPoolHandle
+	VulkanDevice::CreateCommandPool(const VulkanCommandPool::CreateParams& a_params) const
 	{
-		return CommandPool(std::make_unique<CommandPoolImpl>(*this, a_params));
+		return VulkanCommandPoolHandle(std::make_unique<VulkanCommandPool>(*this, a_params));
 	}
 
-	Rendering::Image
-	DeviceImpl::CreateImage(const ImageImpl::CreateParams& a_params) const
+	Rendering::ImageHandle
+	VulkanDevice::CreateImage(const VulkanImage::CreateParams& a_params) const
 	{
-		return Image(std::make_unique<ImageImpl>(*this, a_params));
+		return VulkanImageHandle(std::make_unique<VulkanImage>(*this, a_params));
 	}
 
-	Rendering::Shader
-	DeviceImpl::CreateShader(const ShaderImpl::CreateParams& a_params) const
+	Rendering::ShaderHandle
+	VulkanDevice::CreateShader(const VulkanShader::CreateParams& a_params) const
 	{
-		return Shader(std::make_unique<ShaderImpl>(*this, a_params));
+		return VulkanShaderHandle(std::make_unique<VulkanShader>(*this, a_params));
 	}
 
-	Rendering::VertexBuffer
-	DeviceImpl::CreateVertexBuffer(const Rendering::VertexBufferImpl::CreateParams& a_params) const
+	Rendering::VertexBufferHandle
+	VulkanDevice::CreateVertexBuffer(const Rendering::VertexBuffer::CreateParams& a_params) const
 	{
-		return VertexBuffer(std::make_unique<VertexBufferImpl>(*this, a_params));
+		return VulkanVertexBufferHandle(std::make_unique<VulkanVertexBuffer>(*this, a_params));
 	}
 
-	Rendering::Semaphore
-	DeviceImpl::CreateSemaphore() const
+	Rendering::SemaphoreHandle
+	VulkanDevice::CreateSemaphore() const
 	{
-		return Semaphore(std::make_unique<SemaphoreImpl>(*this));
+		return VulkanSemaphoreHandle(std::make_unique<VulkanSemaphore>(*this));
 	}
 
-	Rendering::Fence
-	DeviceImpl::CreateFence() const
+	Rendering::FenceHandle
+	VulkanDevice::CreateFence() const
 	{
-		return Fence(std::make_unique<FenceImpl>(*this));
+		return VulkanFenceHandle(std::make_unique<VulkanFence>(*this));
 	}
 
 	void
-	DeviceImpl::CreateInstance()
+	VulkanDevice::CreateInstance()
 	{
 		OYL_PROFILE_FUNCTION();
 
@@ -265,7 +265,7 @@ namespace Oyl::Rendering::Vulkan
 	}
 
 	void
-	DeviceImpl::CreateDebugMessenger()
+	VulkanDevice::CreateDebugMessenger()
 	{
 		OYL_PROFILE_FUNCTION();
 
@@ -290,7 +290,7 @@ namespace Oyl::Rendering::Vulkan
 	}
 
 	void
-	DeviceImpl::CreateSurface()
+	VulkanDevice::CreateSurface()
 	{
 		OYL_PROFILE_FUNCTION();
 
@@ -359,7 +359,7 @@ namespace Oyl::Rendering::Vulkan
 	}
 
 	void
-	DeviceImpl::PickPhysicalDevice(CommandQueueFlags a_queueFlags)
+	VulkanDevice::PickPhysicalDevice(CommandQueueFlags a_queueFlags)
 	{
 		OYL_PROFILE_FUNCTION();
 
@@ -380,7 +380,7 @@ namespace Oyl::Rendering::Vulkan
 	}
 
 	void
-	DeviceImpl::CreateLogicalDevice()
+	VulkanDevice::CreateLogicalDevice()
 	{
 		OYL_PROFILE_FUNCTION();
 
@@ -456,13 +456,13 @@ namespace Oyl::Rendering::Vulkan
 	}
 
 	void
-	DeviceImpl::CreateCommandQueues()
+	VulkanDevice::CreateCommandQueues()
 	{
 		for (const auto& [flag, index] : m_queueFamilyIndices)
 		{
 			m_queues.emplace(
 				flag,
-				CommandQueueImpl(
+				VulkanCommandQueue(
 					*this,
 					{
 						.queueFamilyIndex = index

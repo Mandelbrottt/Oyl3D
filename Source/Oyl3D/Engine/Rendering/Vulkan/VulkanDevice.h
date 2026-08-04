@@ -18,16 +18,16 @@ namespace Oyl::Glfw
 	class Window;
 }
 
-namespace Oyl::Rendering::Vulkan
+namespace Oyl::Rendering
 {
-	class CommandQueueImpl;
+	class VulkanCommandQueue;
 
-	class OYL_RENDERING_API DeviceImpl : public Rendering::DeviceImpl
+	class OYL_RENDERING_API VulkanDevice : public Device
 	{
 		struct DeviceTag {};
 
 	public:
-		DeviceImpl(nullptr_t);
+		VulkanDevice(nullptr_t);
 
 		struct CreateParams
 		{
@@ -40,14 +40,14 @@ namespace Oyl::Rendering::Vulkan
 		};
 
 		static
-		PImpl<DeviceImpl>
+		PImpl<VulkanDevice>
 		Create(const CreateParams& a_params);
 
 		explicit
-		DeviceImpl(DeviceTag, const CreateParams& a_params);
+		VulkanDevice(DeviceTag, const CreateParams& a_params);
 
 		virtual
-		~DeviceImpl();
+		~VulkanDevice();
 
 		void
 		Destroy() override;
@@ -58,7 +58,7 @@ namespace Oyl::Rendering::Vulkan
 		const IWindow*
 		GetWindow() const override;
 
-		const CommandQueueImpl*
+		const VulkanCommandQueue*
 		GetCommandQueue(CommandQueueFlagBits a_flag) const override;
 
 		const vk::raii::Device&
@@ -73,25 +73,25 @@ namespace Oyl::Rendering::Vulkan
 		void
 		WaitUntilIdle() const override;
 
-		Rendering::CommandBuffer
-		CreateCommandBuffer(const CommandBufferImpl::CreateParams& a_params) const override;
+		CommandBufferHandle
+		CreateCommandBuffer(const VulkanCommandBuffer::CreateParams& a_params) const override;
 
-		Rendering::CommandPool
-		CreateCommandPool(const CommandPoolImpl::CreateParams& a_params) const override;
+		CommandPoolHandle
+		CreateCommandPool(const VulkanCommandPool::CreateParams& a_params) const override;
 
-		Rendering::Image
-		CreateImage(const ImageImpl::CreateParams& a_params) const override;
+		ImageHandle
+		CreateImage(const VulkanImage::CreateParams& a_params) const override;
 
-		Rendering::Shader
-		CreateShader(const ShaderImpl::CreateParams& a_params) const override;
+		ShaderHandle
+		CreateShader(const VulkanShader::CreateParams& a_params) const override;
 
-		Rendering::VertexBuffer
-		CreateVertexBuffer(const VertexBufferImpl::CreateParams& a_params) const override;
+		VertexBufferHandle
+		CreateVertexBuffer(const VulkanVertexBuffer::CreateParams& a_params) const override;
 
-		Rendering::Semaphore
+		SemaphoreHandle
 		CreateSemaphore() const override;
 
-		Rendering::Fence
+		FenceHandle
 		CreateFence() const override;
 
 	private:
@@ -128,8 +128,8 @@ namespace Oyl::Rendering::Vulkan
 		vk::raii::Device m_device = nullptr;
 
 		std::unordered_map<CommandQueueFlagBits, uint32> m_queueFamilyIndices;
-		std::unordered_map<CommandQueueFlagBits, CommandQueueImpl> m_queues;
+		std::unordered_map<CommandQueueFlagBits, VulkanCommandQueue> m_queues;
 	};
 
-	using Device = PImpl<DeviceImpl>;
+	using VulkanDeviceHandle = PImpl<VulkanDevice>;
 }

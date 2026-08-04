@@ -13,7 +13,7 @@ namespace Oyl::Rendering
 		RenderEngine() = delete;
 
 		static
-		const DeviceImpl*
+		const Device*
 		GetCurrentDevice()
 		{
 			return s_instance->GetCurrentDevice();
