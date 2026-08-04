@@ -2,7 +2,14 @@
 
 #include <vulkan/vulkan_raii.hpp>
 
+#include "VulkanCommandBuffer.h"
+#include "VulkanCommandPool.h"
 #include "VulkanCommandQueue.h"
+#include "VulkanFence.h"
+#include "VulkanImage.h"
+#include "VulkanSemaphore.h"
+#include "VulkanShader.h"
+#include "VulkanVertexBuffer.h"
 
 #include "Rendering/Device.h"
 
@@ -13,13 +20,15 @@ namespace Oyl::Glfw
 
 namespace Oyl::Rendering::Vulkan
 {
-	class CommandQueue;
+	class CommandQueueImpl;
 
 	class OYL_RENDERING_API DeviceImpl : public Rendering::DeviceImpl
 	{
-		struct DeviceImplTag {};
+		struct DeviceTag {};
 
 	public:
+		DeviceImpl(nullptr_t);
+
 		struct CreateParams
 		{
 			const IWindow& window;
@@ -35,7 +44,7 @@ namespace Oyl::Rendering::Vulkan
 		Create(const CreateParams& a_params);
 
 		explicit
-		DeviceImpl(DeviceImplTag, const CreateParams& a_params);
+		DeviceImpl(DeviceTag, const CreateParams& a_params);
 
 		virtual
 		~DeviceImpl();
@@ -49,7 +58,7 @@ namespace Oyl::Rendering::Vulkan
 		const IWindow*
 		GetWindow() const override;
 
-		const CommandQueue*
+		const CommandQueueImpl*
 		GetCommandQueue(CommandQueueFlagBits a_flag) const override;
 
 		const vk::raii::Device&
@@ -63,6 +72,27 @@ namespace Oyl::Rendering::Vulkan
 
 		void
 		WaitUntilIdle() const override;
+
+		Rendering::CommandBuffer
+		CreateCommandBuffer(const CommandBufferImpl::CreateParams& a_params) const override;
+
+		Rendering::CommandPool
+		CreateCommandPool(const CommandPoolImpl::CreateParams& a_params) const override;
+
+		Rendering::Image
+		CreateImage(const ImageImpl::CreateParams& a_params) const override;
+
+		Rendering::Shader
+		CreateShader(const ShaderImpl::CreateParams& a_params) const override;
+
+		Rendering::VertexBuffer
+		CreateVertexBuffer(const VertexBufferImpl::CreateParams& a_params) const override;
+
+		Rendering::Semaphore
+		CreateSemaphore() const override;
+
+		Rendering::Fence
+		CreateFence() const override;
 
 	private:
 		void
@@ -98,7 +128,7 @@ namespace Oyl::Rendering::Vulkan
 		vk::raii::Device m_device = nullptr;
 
 		std::unordered_map<CommandQueueFlagBits, uint32> m_queueFamilyIndices;
-		std::unordered_map<CommandQueueFlagBits, CommandQueue> m_queues;
+		std::unordered_map<CommandQueueFlagBits, CommandQueueImpl> m_queues;
 	};
 
 	using Device = PImpl<DeviceImpl>;

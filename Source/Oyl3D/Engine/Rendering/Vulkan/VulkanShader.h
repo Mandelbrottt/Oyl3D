@@ -3,7 +3,6 @@
 #include <vulkan/vulkan_raii.hpp>
 
 #include "Rendering/Shader.h"
-#include "Rendering/ShaderCompiler.h"
 
 namespace Oyl::Rendering::Vulkan
 {
@@ -22,28 +21,20 @@ namespace Oyl::Rendering::Vulkan
 
 	using ShaderHandle = OpaqueHandleConvertible<ShaderHandle, vk::Pipeline>;
 
-	class OYL_RENDERING_API Shader : public Rendering::Shader
+	class OYL_RENDERING_API ShaderImpl : public Rendering::ShaderImpl
 	{
 	public:
-		Shader();
-
-		struct CreateParams
-		{
-			const DeviceImpl& device;
-			vk::Format format;
-
-			ShaderCompileResult compileResult;
-		};
+		ShaderImpl();
 
 		explicit
-		Shader(const CreateParams& a_params);
+		ShaderImpl(const DeviceImpl& a_device, const CreateParams& a_params);
 
-		Shader(Shader&& a_other) noexcept;
-		Shader&
-		operator =(Shader&& a_other) noexcept;
+		ShaderImpl(ShaderImpl&& a_other) noexcept;
+		ShaderImpl&
+		operator =(ShaderImpl&& a_other) noexcept;
 
 		virtual
-		~Shader();
+		~ShaderImpl();
 
 		void
 		Destroy() override;
@@ -73,4 +64,6 @@ namespace Oyl::Rendering::Vulkan
 		struct Impl;
 		std::unique_ptr<Impl> m_impl;
 	};
+
+	using Shader = PImpl<ShaderImpl>;
 }

@@ -10,7 +10,7 @@
 
 namespace Oyl::Rendering::Vulkan
 {
-	struct VertexBuffer::Impl
+	struct VertexBufferImpl::Impl
 	{
 		vk::raii::Buffer buffer = nullptr;
 		vk::raii::DeviceMemory bufferMemory = nullptr;
@@ -25,35 +25,35 @@ namespace Oyl::Rendering::Vulkan
 		CreateVertexBuffer(const DeviceImpl& a_device, const CreateParams& a_params);
 	};
 
-	VertexBuffer::VertexBuffer()
+	VertexBufferImpl::VertexBufferImpl(nullptr_t)
 		: m_impl(nullptr) {}
 
-	VertexBuffer::VertexBuffer(const DeviceImpl& a_device, const CreateParams& a_params)
+	VertexBufferImpl::VertexBufferImpl(const DeviceImpl& a_device, const CreateParams& a_params)
 		: m_impl(std::make_unique<Impl>())
 	{
 		OYL_PROFILE_FUNCTION();
 
-		OYL_ASSERT(a_params.vertexLength % a_params.vertexStride == 0);
-		m_impl->vertexCount = a_params.vertexLength / a_params.vertexStride;
+		OYL_ASSERT(a_params.vertexData.Size() % a_params.vertexStride == 0);
+		m_impl->vertexCount = a_params.vertexData.Size() / a_params.vertexStride;
 		m_impl->vertexStride = a_params.vertexStride;
 
-		if (a_params.indexData && a_params.indexLength != 0 && a_params.indexStride != 0)
+		if (a_params.indexData.Size() != 0 && a_params.indexStride != 0)
 		{
-			OYL_ASSERT(a_params.indexLength % a_params.indexStride == 0);
-			m_impl->indexCount = a_params.indexLength / a_params.indexStride;
+			OYL_ASSERT(a_params.indexData.Size() % a_params.indexStride == 0);
+			m_impl->indexCount = a_params.indexData.Size() / a_params.indexStride;
 			m_impl->indexStride = a_params.indexStride;
 		}
 
 		m_impl->CreateVertexBuffer(a_device, a_params);
 	}
 
-	VertexBuffer::VertexBuffer(VertexBuffer&& a_other) noexcept
+	VertexBufferImpl::VertexBufferImpl(VertexBufferImpl&& a_other) noexcept
 	{
 		*this = std::move(a_other);
 	}
 
-	VertexBuffer&
-	VertexBuffer::operator=(VertexBuffer&& a_other) noexcept
+	VertexBufferImpl&
+	VertexBufferImpl::operator=(VertexBufferImpl&& a_other) noexcept
 	{
 		if (this != &a_other)
 		{
@@ -62,13 +62,13 @@ namespace Oyl::Rendering::Vulkan
 		return *this;
 	}
 
-	VertexBuffer::~VertexBuffer()
+	VertexBufferImpl::~VertexBufferImpl()
 	{
-		VertexBuffer::Destroy();
+		VertexBufferImpl::Destroy();
 	}
 
 	void
-	VertexBuffer::Destroy()
+	VertexBufferImpl::Destroy()
 	{
 		if (!IsValid())
 			return;
@@ -77,26 +77,26 @@ namespace Oyl::Rendering::Vulkan
 	}
 
 	bool
-	VertexBuffer::IsValid() const
+	VertexBufferImpl::IsValid() const
 	{
 		return m_impl
 		       && *m_impl->buffer;
 	}
 
 	uint32
-	VertexBuffer::GetVertexCount() const
+	VertexBufferImpl::GetVertexCount() const
 	{
 		return m_impl->vertexCount;
 	}
 
 	uint32
-	VertexBuffer::GetVertexStride() const
+	VertexBufferImpl::GetVertexStride() const
 	{
 		return m_impl->vertexStride;
 	}
 
 	uint32
-	VertexBuffer::GetVertexDataOffset() const
+	VertexBufferImpl::GetVertexDataOffset() const
 	{
 		if (m_impl->indexCount == 0)
 			return 0;
@@ -105,25 +105,25 @@ namespace Oyl::Rendering::Vulkan
 	}
 
 	uint32
-	VertexBuffer::GetIndexCount() const
+	VertexBufferImpl::GetIndexCount() const
 	{
 		return m_impl->indexCount;
 	}
 
 	uint32
-	VertexBuffer::GetIndexStride() const
+	VertexBufferImpl::GetIndexStride() const
 	{
 		return m_impl->indexStride;
 	}
 
 	const vk::raii::Buffer&
-	VertexBuffer::GetVkBuffer() const
+	VertexBufferImpl::GetVkBuffer() const
 	{
 		return m_impl->buffer;
 	}
 
 	VertexBufferHandle
-	VertexBuffer::GetHandle() const
+	VertexBufferImpl::GetHandle() const
 	{
 		return *m_impl->buffer;
 	}
@@ -155,21 +155,21 @@ namespace Oyl::Rendering::Vulkan
 	);
 
 	void
-	VertexBuffer::Impl::CreateVertexBuffer(const DeviceImpl& a_device, const CreateParams& a_params)
+	VertexBufferImpl::Impl::CreateVertexBuffer(const DeviceImpl& a_device, const CreateParams& a_params)
 	{
 		OYL_PROFILE_FUNCTION();
 
 		auto vertexData = a_params.vertexData;
-		auto vertexLength = a_params.vertexLength;
+		auto vertexLength = a_params.vertexData.Size();
 		auto indexData = a_params.indexData;
-		auto indexLength = a_params.indexLength;
+		auto indexLength = a_params.indexData.Size();
 
 		// Combine vertex and index data into one contiguous buffer
 		std::vector<byte> combinedDataBuffer;
 		combinedDataBuffer.reserve(vertexLength + indexLength);
 		if (indexLength > 0)
-			combinedDataBuffer.insert(combinedDataBuffer.end(), &indexData[0], &indexData[indexLength]);
-		combinedDataBuffer.insert(combinedDataBuffer.end(), &vertexData[0], &vertexData[vertexLength]);
+			combinedDataBuffer.insert(combinedDataBuffer.end(), &indexData[0], &indexData.Data()[indexLength]);
+		combinedDataBuffer.insert(combinedDataBuffer.end(), &vertexData[0], &vertexData.Data()[vertexLength]);
 
 		auto stagingBuffer = StagingBuffer(
 			a_device,
@@ -252,8 +252,8 @@ namespace Oyl::Rendering::Vulkan
 	{
 		OYL_PROFILE_FUNCTION();
 
-		auto commandPool = CommandPool(a_device, { .commandQueueFlags = CommandQueueFlagBits::Transfer });
-		auto commandBuffer = CommandBuffer(a_device, { .commandPool = commandPool });
+		auto commandPool = CommandPoolImpl(a_device, { .commandQueueFlags = CommandQueueFlagBits::Transfer });
+		auto commandBuffer = CommandBufferImpl(a_device, { .commandPool = commandPool });
 
 		auto& vkCommandBuffer = commandBuffer.GetVkCommandBuffer();
 		vkCommandBuffer.begin({ .flags = vk::CommandBufferUsageFlagBits::eOneTimeSubmit });

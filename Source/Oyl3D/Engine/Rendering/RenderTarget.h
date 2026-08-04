@@ -1,5 +1,7 @@
 ﻿#pragma once
 
+#include <Core/Array.h>
+
 #include "DeviceObject.h"
 #include "Image.h"
 
@@ -8,14 +10,12 @@ namespace Oyl::Rendering
 	class RenderTarget : public IUniqueHandle
 	{
 	public:
-		RenderTarget() = default;
+		RenderTarget(nullptr_t) {}
 
 		struct CreateParams
 		{
-			const Image** pColorImages = nullptr;
-			uint32 colorImageLength = 0;
-
-			const Image* pDepthImage = nullptr;
+			ArrayProxy<const ImageImpl*> colorImages;
+			const ImageImpl* pDepthImage = nullptr;
 		};
 
 		explicit
@@ -38,19 +38,19 @@ namespace Oyl::Rendering
 		GetNumColorAttachments() const;
 
 		virtual
-		const Image*
+		const ImageImpl*
 		GetColorAttachment(uint32 a_index) const;
 
 		virtual
-		std::vector<const Image*>
+		const Array<const ImageImpl*>&
 		GetColorAttachments() const;
 
 		virtual
-		const Image*
+		const ImageImpl*
 		GetDepthAttachment() const;
 
 	private:
-		std::vector<const Image*> m_colorAttachments;
-		const Image* m_depthAttachment = nullptr;
+		Array<const ImageImpl*> m_colorAttachments;
+		const ImageImpl* m_depthAttachment = nullptr;
 	};
 }

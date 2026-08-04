@@ -1,42 +1,32 @@
 ﻿#pragma once
 
-#include <Core/EnumFlags.h>
 #include <Core/UniqueHandle.h>
 
+#include "Enums.h"
 #include "Fence.h"
 #include "Semaphore.h"
 
 namespace Oyl::Rendering
 {
-	class ICommandBuffer;
-	class ISwapChain;
+	class CommandBufferImpl;
+	class SwapChainImpl;
 
-	enum class CommandQueueFlagBits : uint32
+	class CommandQueueImpl : public IUniqueHandle
 	{
-		Graphics = 1 << 0,
-		Compute = 1 << 1,
-		Transfer = 1 << 2,
-	};
-
-	OYL_ENUM_CLASS_BITWISE_OPERATIONS(CommandQueueFlagBits)
-
-	using CommandQueueFlags = EnumFlags<CommandQueueFlagBits>;
-
-	class ICommandQueue : public IUniqueHandle
-	{
-	public:
-		struct CreateParams {};
-
 	protected:
-		ICommandQueue() = default;
-
-		DEFAULT_MOVE(ICommandQueue);
+		CommandQueueImpl() = default;
 
 	public:
-		NO_COPY(ICommandQueue);
+		struct CreateParams
+		{
+			uint32 queueFamilyIndex;
+		};
+
+		NO_MOVE(CommandQueueImpl);
+		NO_COPY(CommandQueueImpl);
 
 		virtual
-		~ICommandQueue() = default;
+		~CommandQueueImpl() = default;
 
 		virtual
 		void
@@ -44,24 +34,27 @@ namespace Oyl::Rendering
 
 		struct SubmitParams
 		{
-			const ICommandBuffer& commandBuffer;
-			SemaphoreHandle waitSemaphore;
-			SemaphoreHandle signalSemaphore;
-			FenceHandle fence;
+			const CommandBufferImpl& commandBuffer;
+			SemaphoreHandle waitSemaphore = {};
+			SemaphoreHandle signalSemaphore = {};
+			FenceHandle fence = {};
+			PipelineStageFlags waitDestinationStageMask = {};
 		};
 
 		virtual
-		void
-		Submit(const SubmitParams& a_params) = 0;
+		bool
+		Submit(const SubmitParams& a_params) const = 0;
 
 		struct PresentParams
 		{
-			SemaphoreHandle waitSemaphore;
-			const ISwapChain& swapChain;
+			const SwapChainImpl& swapChain;
+			SemaphoreHandle waitSemaphore = {};
 		};
 
 		virtual
-		void
-		Present(const PresentParams& a_params) = 0;
+		bool
+		Present(const PresentParams& a_params) const = 0;
 	};
+
+	using CommandQueue = PImpl<CommandQueueImpl>;
 }

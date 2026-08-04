@@ -4,20 +4,21 @@
 
 #include "VulkanCommandBuffer.h"
 #include "VulkanDevice.h"
+#include "VulkanEnums.h"
 #include "VulkanSwapChain.h"
 
 namespace Oyl::Rendering::Vulkan
 {
-	struct CommandQueue::Impl
+	struct CommandQueueImpl::Impl
 	{
 		vk::raii::Queue queue = nullptr;
 		uint32 queueFamilyIndex;
 	};
 
-	CommandQueue::CommandQueue()
+	CommandQueueImpl::CommandQueueImpl(nullptr_t)
 		: m_impl(nullptr) {}
 
-	CommandQueue::CommandQueue(const DeviceImpl& a_device, const CreateParams& a_params)
+	CommandQueueImpl::CommandQueueImpl(const DeviceImpl& a_device, const CreateParams& a_params)
 		: m_impl(std::make_unique<Impl>())
 	{
 		auto& vkDevice = a_device.GetVkDevice();
@@ -25,13 +26,13 @@ namespace Oyl::Rendering::Vulkan
 		m_impl->queue = vk::raii::Queue(vkDevice, m_impl->queueFamilyIndex, 0);
 	}
 
-	CommandQueue::CommandQueue(CommandQueue&& a_other) noexcept
+	CommandQueueImpl::CommandQueueImpl(CommandQueueImpl&& a_other) noexcept
 	{
 		*this = std::move(a_other);
 	}
 
-	CommandQueue&
-	CommandQueue::operator=(CommandQueue&& a_other) noexcept
+	CommandQueueImpl&
+	CommandQueueImpl::operator=(CommandQueueImpl&& a_other) noexcept
 	{
 		if (this != &a_other)
 		{
@@ -40,13 +41,13 @@ namespace Oyl::Rendering::Vulkan
 		return *this;
 	}
 
-	CommandQueue::~CommandQueue()
+	CommandQueueImpl::~CommandQueueImpl()
 	{
-		CommandQueue::Destroy();
+		CommandQueueImpl::Destroy();
 	}
 
 	void
-	CommandQueue::Destroy()
+	CommandQueueImpl::Destroy()
 	{
 		if (!IsValid())
 			return;
@@ -55,56 +56,43 @@ namespace Oyl::Rendering::Vulkan
 	}
 
 	bool
-	CommandQueue::IsValid() const
+	CommandQueueImpl::IsValid() const
 	{
 		return m_impl
 		       && *m_impl->queue;
 	}
 
 	const vk::raii::Queue&
-	CommandQueue::GetVkQueue() const
+	CommandQueueImpl::GetVkQueue() const
 	{
 		return m_impl->queue;
 	}
 
 	uint32
-	CommandQueue::GetVkQueueFamilyIndex() const
+	CommandQueueImpl::GetVkQueueFamilyIndex() const
 	{
 		return m_impl->queueFamilyIndex;
 	}
 
 	void
-	CommandQueue::WaitUntilIdle() const
+	CommandQueueImpl::WaitUntilIdle() const
 	{
 		OYL_PROFILE_FUNCTION();
 
 		m_impl->queue.waitIdle();
 	}
 
-	void
-	CommandQueue::Submit(const ICommandQueue::SubmitParams& a_params)
-	{
-		Submit(
-			SubmitParams {
-				.commandBuffer = dynamic_cast<const CommandBuffer&>(a_params.commandBuffer),
-				.waitSemaphore = a_params.waitSemaphore,
-				.signalSemaphore = a_params.signalSemaphore,
-				.fence = a_params.fence
-			}
-		);
-	}
-
-	void
-	CommandQueue::Submit(const SubmitParams& a_params) const
+	bool
+	CommandQueueImpl::Submit(const SubmitParams& a_params) const
 	{
 		OYL_PROFILE_FUNCTION();
 
-		auto& vkCommandBuffer = a_params.commandBuffer.GetVkCommandBuffer();
-		vk::Semaphore vkWaitSemaphore = a_params.waitSemaphore;
-		vk::Semaphore vkSignalSemaphore = a_params.signalSemaphore;
-		vk::Fence vkFence = a_params.fence;
+		auto& vkCommandBuffer = dynamic_cast<const CommandBufferImpl&>(a_params.commandBuffer).GetVkCommandBuffer();
+		vk::Semaphore vkWaitSemaphore = static_cast<SemaphoreHandle>(a_params.waitSemaphore);
+		vk::Semaphore vkSignalSemaphore = static_cast<SemaphoreHandle>(a_params.signalSemaphore);
+		vk::Fence vkFence = static_cast<FenceHandle>(a_params.fence);
 
-		vk::PipelineStageFlags waitDestinationStageMask = a_params.waitDestinationStageMask;
+		vk::PipelineStageFlags waitDestinationStageMask = ToVkEnum(a_params.waitDestinationStageMask);
 		vk::SubmitInfo submitInfo;
 		submitInfo.setCommandBufferCount(1)
 		          .setPCommandBuffers(&*vkCommandBuffer);
@@ -119,26 +107,16 @@ namespace Oyl::Rendering::Vulkan
 			submitInfo.setSignalSemaphores(vkSignalSemaphore);
 
 		m_impl->queue.submit(submitInfo, vkFence);
-	}
-
-	void
-	CommandQueue::Present(const ICommandQueue::PresentParams& a_params)
-	{
-		Present(
-			PresentParams {
-				.waitSemaphore = a_params.waitSemaphore,
-				.swapChain = dynamic_cast<const SwapChain&>(a_params.swapChain),
-			}
-		);
+		return true;
 	}
 
 	bool
-	CommandQueue::Present(const PresentParams& a_params) const
+	CommandQueueImpl::Present(const PresentParams& a_params) const
 	{
 		OYL_PROFILE_FUNCTION();
 
-		vk::Semaphore vkWaitSemaphore = a_params.waitSemaphore;
-		auto& vkSwapChain = a_params.swapChain.GetVkSwapChain();
+		vk::Semaphore vkWaitSemaphore = static_cast<SemaphoreHandle>(a_params.waitSemaphore);
+		auto& vkSwapChain = dynamic_cast<const SwapChainImpl&>(a_params.swapChain).GetVkSwapChain();
 		auto swapChainImageIndex = a_params.swapChain.GetCurrentImageIndex();
 
 		const vk::PresentInfoKHR presentInfoKHR {

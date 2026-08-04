@@ -11,38 +11,32 @@ namespace vk::raii
 
 namespace Oyl::Rendering
 {
-	class ISwapChain;
-	class Shader;
-	class VertexBuffer;
+	class SwapChainImpl;
+	class ShaderImpl;
+	class VertexBufferImpl;
 }
 
 namespace Oyl::Rendering::Vulkan
 {
-	class CommandPool;
+	class CommandPoolImpl;
 	class DeviceImpl;
-	class Shader;
-	class SwapChain;
-	class VertexBuffer;
+	class ShaderImpl;
+	class SwapChainImpl;
+	class VertexBufferImpl;
 
-	class OYL_RENDERING_API CommandBuffer : public ICommandBuffer
+	class OYL_RENDERING_API CommandBufferImpl : public Rendering::CommandBufferImpl
 	{
 	public:
-		CommandBuffer() noexcept;
+		CommandBufferImpl(nullptr_t);
 
-		struct CreateParams
-		{
-			const CommandPool& commandPool;
-		};
+		CommandBufferImpl(const DeviceImpl& a_device, const CreateParams& a_params) noexcept;
 
-		explicit
-		CommandBuffer(const DeviceImpl& a_device, const CreateParams& a_params) noexcept;
-
-		CommandBuffer(CommandBuffer&& a_other) noexcept;
-		CommandBuffer&
-		operator =(CommandBuffer&& a_other) noexcept;
+		CommandBufferImpl(CommandBufferImpl&& a_other) noexcept;
+		CommandBufferImpl&
+		operator =(CommandBufferImpl&& a_other) noexcept;
 
 		virtual
-		~CommandBuffer() noexcept;
+		~CommandBufferImpl() noexcept;
 
 		void
 		Destroy() noexcept override;
@@ -50,7 +44,7 @@ namespace Oyl::Rendering::Vulkan
 		bool
 		IsValid() const noexcept override;
 
-		const CommandPool*
+		const CommandPoolImpl*
 		GetCommandPool() const noexcept override;
 
 		const vk::raii::CommandBuffer&
@@ -75,25 +69,27 @@ namespace Oyl::Rendering::Vulkan
 		SetScissor(Vector2i a_offset, Vector2u a_size) const noexcept override;
 
 		void
-		BindShader(const Rendering::Shader& a_shader) const noexcept override;
+		BindShader(const Rendering::ShaderImpl& a_shader) const noexcept override;
 
 		void
-		BindShader(const Shader& a_shader) const noexcept;
+		BindShader(const ShaderImpl& a_shader) const noexcept;
 
 		void
-		BindVertexBuffer(const Rendering::VertexBuffer& a_vertexBuffer) const noexcept override;
+		BindVertexBuffer(const Rendering::VertexBufferImpl& a_vertexBuffer) const noexcept override;
 
 		void
-		BindVertexBuffer(const VertexBuffer& a_vertexBuffer) const noexcept;
+		BindVertexBuffer(const VertexBufferImpl& a_vertexBuffer) const noexcept;
 
 		void
-		DrawVertexBuffer(const Rendering::VertexBuffer& a_vertexBuffer) const noexcept override;
+		DrawVertexBuffer(const Rendering::VertexBufferImpl& a_vertexBuffer) const noexcept override;
 
 		void
-		DrawVertexBuffer(const VertexBuffer& a_vertexBuffer) const noexcept;
+		DrawVertexBuffer(const VertexBufferImpl& a_vertexBuffer) const noexcept;
 
 	private:
 		struct Impl;
 		std::unique_ptr<Impl> m_impl;
 	};
+
+	using CommandBuffer = PImpl<CommandBufferImpl>;
 }

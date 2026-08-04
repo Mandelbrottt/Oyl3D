@@ -1,20 +1,29 @@
 ﻿#pragma once
 
+#include <Core/PImpl.h>
 #include <Core/UniqueHandle.h>
+
+#include "CommandQueue.h"
 
 namespace Oyl::Rendering
 {
-	class ICommandPool : public IUniqueHandle
+	class CommandPoolImpl : public IUniqueHandle
 	{
 	protected:
-		ICommandPool() = default;
-
-		DEFAULT_MOVE(ICommandPool);
+		CommandPoolImpl() = default;
 
 	public:
-		NO_COPY(ICommandPool);
+		struct CreateParams
+		{
+			CommandQueueFlagBits commandQueueFlags;
+		};
+
+		NO_MOVE(CommandPoolImpl);
+		NO_COPY(CommandPoolImpl);
 
 		virtual
-		~ICommandPool() = default;
+		~CommandPoolImpl() = default;
 	};
+
+	using CommandPool = PImpl<CommandPoolImpl>;
 }

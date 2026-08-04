@@ -6,15 +6,15 @@
 
 namespace Oyl::Rendering::Vulkan
 {
-	struct CommandPool::Impl
+	struct CommandPoolImpl::Impl
 	{
 		vk::raii::CommandPool commandPool = nullptr;
 	};
 
-	CommandPool::CommandPool()
+	CommandPoolImpl::CommandPoolImpl(nullptr_t)
 		: m_impl(nullptr) {}
 
-	CommandPool::CommandPool(const DeviceImpl& a_device, const CreateParams& a_params)
+	CommandPoolImpl::CommandPoolImpl(const DeviceImpl& a_device, const CreateParams& a_params)
 		: m_impl(std::make_unique<Impl>())
 	{
 		OYL_PROFILE_FUNCTION();
@@ -28,29 +28,28 @@ namespace Oyl::Rendering::Vulkan
 		m_impl->commandPool = vk::raii::CommandPool(a_device.GetVkDevice(), poolInfo);
 	}
 
-	CommandPool::CommandPool(CommandPool&& a_other) noexcept
+	CommandPoolImpl::CommandPoolImpl(CommandPoolImpl&& a_other) noexcept
 	{
 		*this = std::move(a_other);
 	}
 
-	CommandPool&
-	CommandPool::operator=(CommandPool&& a_other) noexcept
+	CommandPoolImpl&
+	CommandPoolImpl::operator=(CommandPoolImpl&& a_other) noexcept
 	{
 		if (this != &a_other)
 		{
-			Rendering::ICommandPool::operator=(std::move(a_other));
 			m_impl = std::move(a_other.m_impl);
 		}
 		return *this;
 	}
 
-	CommandPool::~CommandPool()
+	CommandPoolImpl::~CommandPoolImpl()
 	{
-		CommandPool::Destroy();
+		CommandPoolImpl::Destroy();
 	}
 
 	void
-	CommandPool::Destroy()
+	CommandPoolImpl::Destroy()
 	{
 		if (!IsValid())
 			return;
@@ -59,14 +58,14 @@ namespace Oyl::Rendering::Vulkan
 	}
 
 	bool
-	CommandPool::IsValid() const
+	CommandPoolImpl::IsValid() const
 	{
 		return m_impl
 		       && *m_impl->commandPool;
 	}
 
 	const vk::raii::CommandPool&
-	CommandPool::GetVkCommandPool() const
+	CommandPoolImpl::GetVkCommandPool() const
 	{
 		return m_impl->commandPool;
 	}

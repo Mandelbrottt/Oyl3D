@@ -4,6 +4,9 @@
 #include "Core/Resources/ResourceManager.h"
 
 #include "Rendering/RenderEngineInstance.h"
+#include "Rendering/Renderer.h"
+#include "Rendering/RenderTarget.h"
+#include "Rendering/TestRenderPass.h"
 #include "Rendering/Window.h"
 
 namespace Oyl
@@ -54,6 +57,10 @@ namespace Oyl::Rendering
 
 		std::unique_ptr<Internal::RenderEngineInstance> m_renderEngineInstance;
 
+		std::unique_ptr<Renderer> m_renderer;
+
 		IWindow* m_mainWindow = nullptr;
+
+		std::unique_ptr<TestRenderPass> m_testRenderPass;
 	};
 }

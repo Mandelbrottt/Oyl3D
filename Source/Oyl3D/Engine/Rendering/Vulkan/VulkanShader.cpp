@@ -1,6 +1,12 @@
 ﻿#include "VulkanShader.h"
 
+#include <Core/Array.h>
+
+#include "VulkanEnums.h"
 #include "VulkanDevice.h"
+#include "VulkanImage.h"
+
+#include "Rendering/RenderTarget.h"
 
 namespace Oyl::Rendering::Vulkan
 {
@@ -33,35 +39,35 @@ namespace Oyl::Rendering::Vulkan
 		};
 	}
 
-	struct Shader::Impl
+	struct ShaderImpl::Impl
 	{
 		vk::raii::Pipeline pipeline = nullptr;
 
 		void
-		CreatePipeline(const CreateParams& a_params);
+		CreatePipeline(const DeviceImpl& a_device, const CreateParams& a_params);
 
 		vk::raii::ShaderModule
 		CompileVkShaderModule(const DeviceImpl& a_device, const ShaderStage& a_stage);
 	};
 
-	Shader::Shader()
+	ShaderImpl::ShaderImpl()
 		: m_impl(nullptr) {}
 
-	Shader::Shader(const CreateParams& a_params)
+	ShaderImpl::ShaderImpl(const DeviceImpl& a_device, const CreateParams& a_params)
 		: m_impl(std::make_unique<Impl>())
 	{
 		OYL_PROFILE_FUNCTION();
 
-		m_impl->CreatePipeline(a_params);
+		m_impl->CreatePipeline(a_device, a_params);
 	}
 
-	Shader::Shader(Shader&& a_other) noexcept
+	ShaderImpl::ShaderImpl(ShaderImpl&& a_other) noexcept
 	{
 		*this = std::move(a_other);
 	}
 
-	Shader&
-	Shader::operator=(Shader&& a_other) noexcept
+	ShaderImpl&
+	ShaderImpl::operator=(ShaderImpl&& a_other) noexcept
 	{
 		if (this != &a_other)
 		{
@@ -70,13 +76,13 @@ namespace Oyl::Rendering::Vulkan
 		return *this;
 	}
 
-	Shader::~Shader()
+	ShaderImpl::~ShaderImpl()
 	{
-		Shader::Destroy();
+		ShaderImpl::Destroy();
 	}
 
 	void
-	Shader::Destroy()
+	ShaderImpl::Destroy()
 	{
 		if (!IsValid())
 			return;
@@ -85,35 +91,30 @@ namespace Oyl::Rendering::Vulkan
 	}
 
 	bool
-	Shader::IsValid() const
+	ShaderImpl::IsValid() const
 	{
 		return m_impl
 		       && *m_impl->pipeline;
 	}
 
 	const vk::raii::Pipeline&
-	Shader::GetVkPipeline() const
+	ShaderImpl::GetVkPipeline() const
 	{
 		return m_impl->pipeline;
 	}
 
 	ShaderHandle
-	Shader::GetHandle() const
+	ShaderImpl::GetHandle() const
 	{
 		return *m_impl->pipeline;
 	}
 
-	static
-	vk::ShaderStageFlagBits
-	ShaderProfileToVkShaderStageFlag(ShaderProfile a_profile);
-
 	void
-	Shader::Impl::CreatePipeline(const CreateParams& a_params)
+	ShaderImpl::Impl::CreatePipeline(const DeviceImpl& a_device, const CreateParams& a_params)
 	{
 		OYL_PROFILE_FUNCTION();
 
-		auto& device = a_params.device;
-		auto& format = a_params.format;
+		auto& device = dynamic_cast<const DeviceImpl&>(a_device);
 		auto& compileResult = a_params.compileResult;
 
 		// keep ShaderModules for RAII
@@ -124,7 +125,7 @@ namespace Oyl::Rendering::Vulkan
 			vk::raii::ShaderModule shaderModule = CompileVkShaderModule(device, stage);
 
 			vk::PipelineShaderStageCreateInfo createInfo {
-				.stage = ShaderProfileToVkShaderStageFlag(stage.GetShaderProfile()),
+				.stage = ToVkEnum(stage.GetShaderProfile()),
 				.module = shaderModule,
 				.pName = stage.GetEntryPoint().data()
 			};
@@ -203,6 +204,22 @@ namespace Oyl::Rendering::Vulkan
 		auto pipelineLayout = vk::raii::PipelineLayout(device.GetVkDevice(), pipelineLayoutInfo);
 
 		{
+			OYL_PROFILE_SCOPE("vk::raii::Pipeline");
+
+			Array<vk::Format> colorAttachmentFormats;
+			for (uint32 i = 0; i < a_params.renderTarget.GetNumColorAttachments(); i++)
+			{
+				auto* colorAttachment = a_params.renderTarget.GetColorAttachment(i);
+				auto& vulkanColorAttachment = dynamic_cast<const ImageImpl&>(*colorAttachment);
+				colorAttachmentFormats.Add(vulkanColorAttachment.GetVkFormat());
+			}
+			vk::Format depthAttachmentFormat = vk::Format::eUndefined;
+			if (auto* depthAttachment = a_params.renderTarget.GetDepthAttachment())
+			{
+				auto& vulkanDepthAttachment = dynamic_cast<const ImageImpl&>(*depthAttachment);
+				depthAttachmentFormat = vulkanDepthAttachment.GetVkFormat();
+			}
+
 			// Use structure chain to auto-populate pNext
 			vk::StructureChain pipelineCreateInfoChain {
 				vk::GraphicsPipelineCreateInfo {
@@ -219,12 +236,12 @@ namespace Oyl::Rendering::Vulkan
 					.renderPass = nullptr
 				},
 				vk::PipelineRenderingCreateInfo {
-					.colorAttachmentCount = 1,
-					.pColorAttachmentFormats = &format
+					.colorAttachmentCount = colorAttachmentFormats.Size(),
+					.pColorAttachmentFormats = colorAttachmentFormats.Data(),
+					.depthAttachmentFormat = depthAttachmentFormat
 				}
 			};
 
-			OYL_PROFILE_SCOPE("vk::raii::Pipeline");
 			pipeline = vk::raii::Pipeline(
 				device.GetVkDevice(),
 				nullptr,
@@ -234,7 +251,7 @@ namespace Oyl::Rendering::Vulkan
 	}
 
 	vk::raii::ShaderModule
-	Shader::Impl::CompileVkShaderModule(const DeviceImpl& a_device, const ShaderStage& a_stage)
+	ShaderImpl::Impl::CompileVkShaderModule(const DeviceImpl& a_device, const ShaderStage& a_stage)
 	{
 		OYL_PROFILE_FUNCTION();
 
@@ -246,15 +263,5 @@ namespace Oyl::Rendering::Vulkan
 			.pCode = (uint32*) bytecode.data(),
 		};
 		return vk::raii::ShaderModule(a_device.GetVkDevice(), shaderModuleCreateInfo);
-	}
-
-	vk::ShaderStageFlagBits
-	ShaderProfileToVkShaderStageFlag(ShaderProfile a_profile)
-	{
-		vk::ShaderStageFlagBits flags[SP_Count];
-		flags[SP_Vertex] = vk::ShaderStageFlagBits::eVertex;
-		flags[SP_Geometry] = vk::ShaderStageFlagBits::eGeometry;
-		flags[SP_Fragment] = vk::ShaderStageFlagBits::eFragment;
-		return flags[a_profile];
 	}
 }

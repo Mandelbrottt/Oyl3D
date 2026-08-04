@@ -22,18 +22,23 @@ namespace Oyl
 		}
 
 		template<typename TChild>
-			requires std::is_convertible_v<std::add_pointer_t<TImpl>, std::add_pointer_t<TChild>>
-		explicit
+			requires std::is_convertible_v<std::add_pointer_t<TChild>, std::add_pointer_t<TImpl>>
 		PImpl(PImpl<TChild>&& a_other)
 			: m_impl(std::move(a_other.m_impl)) {}
 
 		template<typename TChild>
-			requires std::is_convertible_v<std::add_pointer_t<TImpl>, std::add_pointer_t<TChild>>
+			requires std::is_convertible_v<std::add_pointer_t<TChild>, std::add_pointer_t<TImpl>>
 		PImpl&
 		operator =(PImpl<TChild>&& a_other)
 		{
 			std::swap(m_impl, a_other.m_impl);
 			return *this;
+		}
+
+		explicit
+		operator bool() const
+		{
+			return !!m_impl;
 		}
 
 		TImpl*

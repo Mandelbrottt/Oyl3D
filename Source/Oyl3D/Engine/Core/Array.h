@@ -20,11 +20,11 @@ namespace Oyl
 		Reflection::TypeId m_elementType;
 	};
 
-	template<typename ElementType>
+	template<typename TElement>
 	class Array : public ArrayBase
 	{
 	public:
-		using ElementType = ElementType;
+		using ElementType = TElement;
 		using SizeType = uint32;
 
 		constexpr
@@ -91,10 +91,28 @@ namespace Oyl
 			return (SizeType) m_vector.size();
 		}
 
+		constexpr bool
+		Empty() const
+		{
+			return Size() == 0;
+		}
+
 		constexpr SizeType
 		Capacity() const
 		{
 			return (SizeType) m_vector.capacity();
+		}
+
+		ElementType*
+		Data()
+		{
+			return m_vector.data();
+		}
+
+		const ElementType*
+		Data() const
+		{
+			return m_vector.data();
 		}
 
 		ElementType&
@@ -118,7 +136,31 @@ namespace Oyl
 		const ElementType&
 		At(SizeType a_index) const
 		{
-			return const_cast<Traits::TRemoveConst<decltype(this)>>(this)->At(a_index);
+			return const_cast<Array*>(this)->At(a_index);
+		}
+
+		ElementType&
+		Front()
+		{
+			return m_vector.front();
+		}
+
+		const ElementType&
+		Front() const
+		{
+			return const_cast<Array*>(this)->Front();
+		}
+
+		ElementType&
+		Back()
+		{
+			return m_vector.back();
+		}
+
+		const ElementType&
+		Back() const
+		{
+			return const_cast<Array*>(this)->Back();
 		}
 
 		constexpr void
@@ -152,13 +194,20 @@ namespace Oyl
 		Add(ElementType&& a_element)
 		{
 			m_vector.push_back(std::move(a_element));
-			return m_vector.back();
+			return &m_vector.back();
 		}
 
 		constexpr void
 		Clear() noexcept
 		{
 			m_vector.clear();
+		}
+
+		constexpr bool
+		Contains(const ElementType& a_element) const
+		{
+			auto iter = std::find(m_vector.begin(), m_vector.end(), a_element);
+			return iter != m_vector.end();
 		}
 
 	private:
@@ -168,11 +217,40 @@ namespace Oyl
 		using VectorType = decltype(m_vector);
 	};
 
-	template<typename ElementType>
-	class ArrayProxy : public Array<ElementType>
+	template<typename TElement>
+	TElement*
+	begin(Array<TElement>& a_array)
+	{
+		return a_array.Data();
+	}
+
+	template<typename TElement>
+	const TElement*
+	begin(const Array<TElement>& a_array)
+	{
+		return a_array.Data();
+	}
+
+	template<typename TElement>
+	TElement*
+	end(Array<TElement>& a_array)
+	{
+		return a_array.Data() + a_array.Size();
+	}
+
+	template<typename TElement>
+	const TElement*
+	end(const Array<TElement>& a_array)
+	{
+		return a_array.Data() + a_array.Size();
+	}
+
+	template<typename TElement>
+	class ArrayProxy : public Array<TElement>
 	{
 	public:
-		using ArrayType = Array<ElementType>;
+		using ArrayType = Array<TElement>;
+		using ElementType = typename ArrayType::ElementType;
 
 		constexpr
 		ArrayProxy()
@@ -192,19 +270,15 @@ namespace Oyl
 			this->Add(std::move(a_element));
 		}
 
-		explicit
 		ArrayProxy(const ArrayType& a_array)
 			: ArrayType(a_array) {}
 
-		explicit
 		ArrayProxy(ArrayType&& a_vector)
 			: ArrayType(std::move(a_vector)) {}
 
-		explicit
 		ArrayProxy(const typename ArrayType::VectorType& a_vector)
 			: ArrayType(a_vector) {}
 
-		explicit
 		ArrayProxy(typename ArrayType::VectorType&& a_vector)
 			: ArrayType(std::move(a_vector)) {}
 	};

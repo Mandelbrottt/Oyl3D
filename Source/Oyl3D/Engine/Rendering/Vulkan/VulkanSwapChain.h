@@ -16,25 +16,24 @@ namespace Oyl::Rendering::Vulkan
 {
 	class DeviceImpl;
 
-	class OYL_RENDERING_API SwapChain : public ISwapChain
+	class OYL_RENDERING_API SwapChainImpl : public Rendering::SwapChainImpl
 	{
 	public:
-		SwapChain();
+		SwapChainImpl(nullptr_t);
 
 		struct CreateParams
 		{
 			const IWindow& window;
 		};
 
-		explicit
-		SwapChain(const DeviceImpl& a_device, const CreateParams& a_params);
+		SwapChainImpl(const DeviceImpl& a_device, const CreateParams& a_params);
 
-		SwapChain(SwapChain&& a_other) noexcept;
-		SwapChain&
-		operator =(SwapChain&& a_other) noexcept;
+		SwapChainImpl(SwapChainImpl&& a_other) noexcept;
+		SwapChainImpl&
+		operator =(SwapChainImpl&& a_other) noexcept;
 
 		virtual
-		~SwapChain();
+		~SwapChainImpl();
 
 		void
 		Destroy() override;
@@ -55,7 +54,7 @@ namespace Oyl::Rendering::Vulkan
 		}
 
 		bool
-		AcquireNextImage(const Semaphore& a_semaphore, const Fence& a_fence)
+		AcquireNextImage(const SemaphoreImpl& a_semaphore, const FenceImpl& a_fence)
 		{
 			return AcquireNextImage(a_semaphore.GetHandle(), a_fence.GetHandle());
 		}
@@ -65,6 +64,9 @@ namespace Oyl::Rendering::Vulkan
 
 		uint32
 		GetCurrentImageIndex() const override;
+
+		uint32
+		GetImageCount() const override;
 
 		const vk::raii::SwapchainKHR&
 		GetVkSwapChain() const;
@@ -91,4 +93,6 @@ namespace Oyl::Rendering::Vulkan
 		struct Impl;
 		std::unique_ptr<Impl> m_impl;
 	};
+
+	using SwapChain = PImpl<SwapChainImpl>;
 }

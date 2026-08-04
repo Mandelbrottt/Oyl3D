@@ -1,5 +1,6 @@
 ﻿#pragma once
 
+#include <Core/PImpl.h>
 #include <Core/UniqueHandle.h>
 #include <Core/Math/Vector.h>
 
@@ -8,23 +9,27 @@
 namespace Oyl::Rendering
 {
 	class RenderTarget;
-	class ICommandPool;
-	class ISwapChain;
-	class Shader;
-	class VertexBuffer;
+	class CommandPoolImpl;
+	class SwapChainImpl;
+	class ShaderImpl;
+	class VertexBufferImpl;
 
-	class ICommandBuffer : public IUniqueHandle
+	class CommandBufferImpl : public IUniqueHandle
 	{
 	protected:
-		ICommandBuffer() noexcept = default;
-
-		DEFAULT_MOVE(ICommandBuffer);
+		CommandBufferImpl() noexcept = default;
 
 	public:
-		NO_COPY(ICommandBuffer);
+		struct CreateParams
+		{
+			const CommandPoolImpl& commandPool;
+		};
+
+		NO_MOVE(CommandBufferImpl);
+		NO_COPY(CommandBufferImpl);
 
 		virtual
-		~ICommandBuffer() noexcept = default;
+		~CommandBufferImpl() noexcept = default;
 
 		virtual
 		void
@@ -52,19 +57,21 @@ namespace Oyl::Rendering
 
 		virtual
 		void
-		BindShader(const Shader& a_shader) const noexcept = 0;
+		BindShader(const ShaderImpl& a_shader) const noexcept = 0;
 
 		virtual
 		void
-		BindVertexBuffer(const VertexBuffer& a_buffer) const noexcept = 0;
+		BindVertexBuffer(const VertexBufferImpl& a_buffer) const noexcept = 0;
 
 		virtual
 		void
-		DrawVertexBuffer(const VertexBuffer& a_buffer) const noexcept = 0;
+		DrawVertexBuffer(const VertexBufferImpl& a_buffer) const noexcept = 0;
 
 	protected:
 		virtual
-		const ICommandPool*
+		const CommandPoolImpl*
 		GetCommandPool() const noexcept = 0;
 	};
+
+	using CommandBuffer = PImpl<CommandBufferImpl>;
 }

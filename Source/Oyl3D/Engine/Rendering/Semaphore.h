@@ -1,5 +1,6 @@
 ﻿#pragma once
 
+#include <Core/PImpl.h>
 #include <Core/Typedefs.h>
 
 #include "DeviceObject.h"
@@ -8,17 +9,19 @@ namespace Oyl::Rendering
 {
 	struct SemaphoreHandle : OpaqueHandle<SemaphoreHandle> {};
 
-	class ISemaphore : public IDeviceObject<SemaphoreHandle>
+	class SemaphoreImpl : public IDeviceObject<SemaphoreHandle>
 	{
 	protected:
-		ISemaphore() = default;
+		SemaphoreImpl() = default;
 
-		DEFAULT_MOVE(ISemaphore);
+		DEFAULT_MOVE(SemaphoreImpl);
 
 	public:
-		NO_COPY(ISemaphore);
+		NO_COPY(SemaphoreImpl);
 
 		virtual
-		~ISemaphore() = default;
+		~SemaphoreImpl() = default;
 	};
+
+	using Semaphore = PImpl<SemaphoreImpl>;
 }

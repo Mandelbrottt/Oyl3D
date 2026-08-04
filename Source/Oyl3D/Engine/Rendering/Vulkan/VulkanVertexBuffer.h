@@ -7,35 +7,23 @@
 namespace Oyl::Rendering::Vulkan
 {
 	class DeviceImpl;
-	class CommandQueue;
+	class CommandQueueImpl;
 
 	using VertexBufferHandle = OpaqueHandleConvertible<VertexBufferHandle, vk::Buffer>;
 
-	class OYL_RENDERING_API VertexBuffer : public Rendering::VertexBuffer
+	class OYL_RENDERING_API VertexBufferImpl : public Rendering::VertexBufferImpl
 	{
 	public:
-		VertexBuffer();
+		VertexBufferImpl(nullptr_t);
 
-		struct CreateParams
-		{
-			const byte* vertexData;
-			uint32 vertexLength;
-			uint32 vertexStride;
+		VertexBufferImpl(const DeviceImpl& a_device, const CreateParams& a_params);
 
-			const byte* indexData = nullptr;
-			uint32 indexLength = 0;
-			uint32 indexStride = sizeof(uint16);
-		};
-
-		explicit
-		VertexBuffer(const DeviceImpl& a_device, const CreateParams& a_params);
-
-		VertexBuffer(VertexBuffer&& a_other) noexcept;
-		VertexBuffer&
-		operator =(VertexBuffer&& a_other) noexcept;
+		VertexBufferImpl(VertexBufferImpl&& a_other) noexcept;
+		VertexBufferImpl&
+		operator =(VertexBufferImpl&& a_other) noexcept;
 
 		virtual
-		~VertexBuffer();
+		~VertexBufferImpl();
 
 		void
 		Destroy() override;
@@ -80,4 +68,6 @@ namespace Oyl::Rendering::Vulkan
 		struct Impl;
 		std::unique_ptr<Impl> m_impl;
 	};
+
+	using VertexBuffer = PImpl<VertexBufferImpl>;
 }

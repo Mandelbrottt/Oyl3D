@@ -155,26 +155,139 @@ namespace Oyl
 }
 
 #define OYL_ENUM_CLASS_BITWISE_OPERATIONS(_enum_class_) \
-	constexpr CommandQueueFlagBits \
-	operator |(CommandQueueFlagBits a_lhs, CommandQueueFlagBits a_rhs) \
+	constexpr _enum_class_ \
+	operator |(_enum_class_ a_lhs, _enum_class_ a_rhs) \
 	{ \
-		auto mask = static_cast<Traits::TUnderlyingType<CommandQueueFlagBits>>(a_lhs) \
-		            | static_cast<Traits::TUnderlyingType<CommandQueueFlagBits>>(a_rhs); \
-		return static_cast<CommandQueueFlagBits>(mask); \
+		auto mask = static_cast<Traits::TUnderlyingType<_enum_class_>>(a_lhs) \
+		            | static_cast<Traits::TUnderlyingType<_enum_class_>>(a_rhs); \
+		return static_cast<_enum_class_>(mask); \
 	} \
 	\
-	constexpr CommandQueueFlagBits \
-	operator &(CommandQueueFlagBits a_lhs, CommandQueueFlagBits a_rhs) \
+	constexpr _enum_class_ \
+	operator &(_enum_class_ a_lhs, _enum_class_ a_rhs) \
 	{ \
-		auto mask = static_cast<Traits::TUnderlyingType<CommandQueueFlagBits>>(a_lhs) \
-		            & static_cast<Traits::TUnderlyingType<CommandQueueFlagBits>>(a_rhs);\
-		return static_cast<CommandQueueFlagBits>(mask); \
+		auto mask = static_cast<Traits::TUnderlyingType<_enum_class_>>(a_lhs) \
+		            & static_cast<Traits::TUnderlyingType<_enum_class_>>(a_rhs);\
+		return static_cast<_enum_class_>(mask); \
 	} \
 	\
-	constexpr CommandQueueFlagBits \
-	operator ^(CommandQueueFlagBits a_lhs, CommandQueueFlagBits a_rhs) \
+	constexpr _enum_class_ \
+	operator ^(_enum_class_ a_lhs, _enum_class_ a_rhs) \
 	{ \
-		auto mask = static_cast<Traits::TUnderlyingType<CommandQueueFlagBits>>(a_lhs) \
-		            ^ static_cast<Traits::TUnderlyingType<CommandQueueFlagBits>>(a_rhs); \
-		return static_cast<CommandQueueFlagBits>(mask); \
+		auto mask = static_cast<Traits::TUnderlyingType<_enum_class_>>(a_lhs) \
+		            ^ static_cast<Traits::TUnderlyingType<_enum_class_>>(a_rhs); \
+		return static_cast<_enum_class_>(mask); \
+	}
+
+#define OYL_DEFINE_ENUM_FLAGS_CONVERSION_FUNCTIONS( \
+	_src_function_name_, \
+	_dst_function_name_, \
+	_src_flags_type_, \
+	_dst_flags_type_, \
+	_src_flag_bits_type_, \
+	_dst_flag_bits_type_, \
+	... \
+) \
+	inline \
+	_src_flags_type_ \
+	_src_function_name_(_dst_flags_type_ a_flags) \
+	{ \
+		_src_flags_type_ result {}; \
+		\
+		using pair = std::pair<_src_flag_bits_type_, _dst_flag_bits_type_>; \
+		using init_list = std::initializer_list<pair>; \
+		\
+		auto checkFlagBit = [&result, &a_flags](const init_list& a_list) \
+		{ \
+			for (auto& [srcBit, dstBit] : a_list) \
+			{ \
+				if (!(a_flags & dstBit)) \
+					continue; \
+				\
+				result |= srcBit; \
+				\
+				OYL_STRIP_IN_DISTRIBUTION(a_flags &= ~((_dst_flags_type_) dstBit)); \
+			} \
+		}; \
+		checkFlagBit({ __VA_ARGS__ }); \
+		\
+		return result; \
+	} \
+	\
+	inline \
+	_dst_flags_type_ \
+	_dst_function_name_(_src_flags_type_ a_flags) \
+	{ \
+		_dst_flags_type_ result {}; \
+		\
+		using pair = std::pair<_src_flag_bits_type_, _dst_flag_bits_type_>; \
+		using init_list = std::initializer_list<pair>; \
+		\
+		auto checkFlagBit = [&result, &a_flags](const init_list& a_list) \
+		{ \
+			for (auto& [srcBit, dstBit] : a_list) \
+			{ \
+				if (!(a_flags & srcBit)) \
+					continue; \
+				\
+				result |= dstBit; \
+				\
+				OYL_STRIP_IN_DISTRIBUTION(a_flags &= ~((_src_flags_type_) srcBit)); \
+			} \
+		}; \
+		checkFlagBit({ __VA_ARGS__ }); \
+		\
+		OYL_ASSERT(!a_flags, "Missing " #_src_flag_bits_type_ " check!"); \
+		return result; \
+	}
+
+#define OYL_DEFINE_ENUM_CONVERSION_FUNCTIONS( \
+	_src_function_name_, \
+	_dst_function_name_, \
+	_src_enum_type_, \
+	_dst_enum_type_, \
+	... \
+) \
+	inline \
+	_src_enum_type_ \
+	_src_function_name_(_dst_enum_type_ a_dst) \
+	{ \
+		using pair = std::pair<_src_enum_type_, _dst_enum_type_>; \
+		using init_list = std::initializer_list<pair>; \
+		\
+		auto checkFlagBit = [&a_dst](const init_list& a_list) -> _src_enum_type_ \
+		{ \
+			for (auto& [src, dst] : a_list) \
+			{ \
+				if (dst != a_dst) \
+					continue; \
+				\
+				return src; \
+			} \
+			return {}; \
+		}; \
+		auto result = checkFlagBit({ __VA_ARGS__ }); \
+		return result; \
+	} \
+	\
+	inline \
+	_dst_enum_type_ \
+	_dst_function_name_(_src_enum_type_ a_src) \
+	{ \
+		using pair = std::pair<_src_enum_type_, _dst_enum_type_>; \
+		using init_list = std::initializer_list<pair>; \
+		\
+		auto checkFlagBit = [&a_src](const init_list& a_list) -> _dst_enum_type_ \
+		{ \
+			for (auto& [src, dst] : a_list) \
+			{ \
+				if (src != a_src) \
+					continue; \
+				\
+				return dst; \
+			} \
+			return {}; \
+		}; \
+		auto result = checkFlagBit({ __VA_ARGS__ }); \
+		return result; \
 	}

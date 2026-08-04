@@ -7,18 +7,18 @@
 
 namespace Oyl::Rendering
 {
-	class IRenderContext
+	class RenderContext
 	{
 	protected:
-		IRenderContext() noexcept = default;
+		RenderContext() noexcept = default;
 
-		DEFAULT_MOVE(IRenderContext);
+		DEFAULT_MOVE(RenderContext);
 
 	public:
-		NO_COPY(IRenderContext);
+		NO_COPY(RenderContext);
 
 		virtual
-		~IRenderContext() noexcept = default;
+		~RenderContext() noexcept = default;
 
 		virtual
 		void
@@ -30,14 +30,21 @@ namespace Oyl::Rendering
 
 		virtual
 		void
-		Resize(Vector2i a_size) = 0;
+		Resize(Vector2u a_size) = 0;
 
 		virtual
 		const DeviceImpl*
 		GetDevice() const = 0;
 
 		virtual
-		const ISwapChain*
-		GetSwapChain() const = 0;
+		SwapChainImpl*
+		GetSwapChain() = 0;
+
+		virtual
+		const SwapChainImpl*
+		GetSwapChain() const
+		{
+			return const_cast<RenderContext*>(this)->GetSwapChain();
+		};
 	};
 }

@@ -10,23 +10,19 @@ namespace Oyl::Rendering::Vulkan
 
 	using FenceHandle = OpaqueHandleConvertible<FenceHandle, vk::Fence>;
 
-	class OYL_RENDERING_API Fence : public IFence
+	class OYL_RENDERING_API FenceImpl : public Rendering::FenceImpl
 	{
 	public:
-		Fence() = default;
+		FenceImpl(nullptr_t) {}
 
-		Fence(std::nullptr_t)
-			: Fence() {}
+		FenceImpl(const DeviceImpl& a_device);
 
-		explicit
-		Fence(const DeviceImpl& a_device);
-
-		Fence(Fence&& a_other) noexcept;
-		Fence&
-		operator =(Fence&& a_other) noexcept;
+		FenceImpl(FenceImpl&& a_other) noexcept;
+		FenceImpl&
+		operator =(FenceImpl&& a_other) noexcept;
 
 		virtual
-		~Fence();
+		~FenceImpl();
 
 		void
 		Destroy() override;
@@ -68,4 +64,6 @@ namespace Oyl::Rendering::Vulkan
 		const DeviceImpl* m_device = nullptr;
 		vk::raii::Fence m_fence = nullptr;
 	};
+
+	using Fence = PImpl<FenceImpl>;
 }

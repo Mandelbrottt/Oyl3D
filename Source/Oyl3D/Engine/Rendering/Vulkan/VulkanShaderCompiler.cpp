@@ -229,8 +229,8 @@ namespace Oyl::Rendering::Vulkan
 		}
 
 		std::unordered_map<D3D12_SHADER_VERSION_TYPE, ShaderProfile> shaderTypeMap;
-		shaderTypeMap[D3D12_SHVER_VERTEX_SHADER] = SP_Vertex;
-		shaderTypeMap[D3D12_SHVER_PIXEL_SHADER] = SP_Fragment;
+		shaderTypeMap[D3D12_SHVER_VERTEX_SHADER] = ShaderProfile::Vertex;
+		shaderTypeMap[D3D12_SHVER_PIXEL_SHADER] = ShaderProfile::Fragment;
 
 		CComPtr<IDxcBlob> reflectionData;
 		hres = compileResult->GetOutput(DXC_OUT_REFLECTION, IID_PPV_ARGS(&reflectionData), nullptr);
@@ -281,13 +281,13 @@ namespace Oyl::Rendering::Vulkan
 	{
 		switch (a_profile)
 		{
-			case SP_Vertex:
+			case ShaderProfile::Vertex:
 				return "VertMain";
-			case SP_Geometry:
+			case ShaderProfile::Geometry:
 				return "GeomMain";
-			case SP_Fragment:
+			case ShaderProfile::Fragment:
 				return "FragMain";
-			case SP_Count: break;
+			case ShaderProfile::None: break;
 		}
 
 		return "";
@@ -299,13 +299,13 @@ namespace Oyl::Rendering::Vulkan
 	{
 		switch (a_profile)
 		{
-			case SP_Vertex:
+			case ShaderProfile::Vertex:
 				return "vs_6_6";
-			case SP_Geometry:
+			case ShaderProfile::Geometry:
 				return "gs_6_6";
-			case SP_Fragment:
+			case ShaderProfile::Fragment:
 				return "ps_6_6"; // HLSL uses Pixel Shader instead of Fragment Shader
-			case SP_Count: break;
+			case ShaderProfile::None: break;
 		}
 
 		return "";

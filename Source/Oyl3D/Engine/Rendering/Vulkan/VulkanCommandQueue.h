@@ -13,30 +13,24 @@ namespace vk::raii
 namespace Oyl::Rendering::Vulkan
 {
 	class DeviceImpl;
-	class CommandBuffer;
-	class SwapChain;
+	class CommandBufferImpl;
+	class SwapChainImpl;
 
-	class OYL_RENDERING_API CommandQueue : public ICommandQueue
+	class OYL_RENDERING_API CommandQueueImpl : public Rendering::CommandQueueImpl
 	{
 	public:
-		CommandQueue();
+		CommandQueueImpl(nullptr_t);
 
-		struct CreateParams
-		{
-			uint32 queueFamilyIndex;
-		};
+		CommandQueueImpl(const DeviceImpl& a_device, const CreateParams& a_params);
 
-		explicit
-		CommandQueue(const DeviceImpl& a_device, const CreateParams& a_params);
+		NO_COPY(CommandQueueImpl);
 
-		NO_COPY(CommandQueue);
-
-		CommandQueue(CommandQueue&& a_other) noexcept;
-		CommandQueue&
-		operator =(CommandQueue&& a_other) noexcept;
+		CommandQueueImpl(CommandQueueImpl&& a_other) noexcept;
+		CommandQueueImpl&
+		operator =(CommandQueueImpl&& a_other) noexcept;
 
 		virtual
-		~CommandQueue();
+		~CommandQueueImpl();
 
 		void
 		Destroy() override;
@@ -53,86 +47,16 @@ namespace Oyl::Rendering::Vulkan
 		void
 		WaitUntilIdle() const override;
 
-		struct SubmitParams
-		{
-			const CommandBuffer& commandBuffer;
-
-			SemaphoreHandle waitSemaphore = {};
-			SemaphoreHandle signalSemaphore = {};
-			FenceHandle fence = {};
-
-			vk::PipelineStageFlags waitDestinationStageMask = {};
-		};
-
-		void
-		Submit(const SubmitParams& a_params) const;
-
-		struct PresentParams
-		{
-			SemaphoreHandle waitSemaphore;
-			const SwapChain& swapChain;
-		};
+		bool
+		Submit(const SubmitParams& a_params) const override;
 
 		bool
-		Present(const PresentParams& a_params) const;
-
-	protected:
-		void
-		Submit(const ICommandQueue::SubmitParams& a_params) override;
-
-		void
-		Present(const ICommandQueue::PresentParams& a_params) override;
+		Present(const PresentParams& a_params) const override;
 
 	private:
 		struct Impl;
 		std::unique_ptr<Impl> m_impl;
 	};
 
-	inline
-	vk::QueueFlags
-	ToVkQueueFlags(CommandQueueFlags a_flags)
-	{
-		vk::QueueFlags result {};
-
-		auto checkFlagBit = [&result, &a_flags](vk::QueueFlagBits a_vkBit, CommandQueueFlagBits a_oylBit)
-		{
-			if (a_flags & a_oylBit)
-			{
-				result |= a_vkBit;
-
-				// If in non distribution, remove a bit from a_in for a later assert
-			#if !defined(OYL_DISTRIBUTION)
-				a_flags &= ~((CommandQueueFlags) a_oylBit);
-			#endif
-			}
-		};
-
-		checkFlagBit(vk::QueueFlagBits::eGraphics, CommandQueueFlagBits::Graphics);
-		checkFlagBit(vk::QueueFlagBits::eCompute, CommandQueueFlagBits::Compute);
-		checkFlagBit(vk::QueueFlagBits::eTransfer, CommandQueueFlagBits::Transfer);
-
-		OYL_ASSERT(!a_flags, "Missing CommandQueueFlagBits check!");
-		return result;
-	}
-
-	inline
-	CommandQueueFlags
-	ToCommandQueueFlags(vk::QueueFlags a_flags)
-	{
-		CommandQueueFlags result;
-
-		auto checkFlagBit = [&](auto a_oylBit, auto a_vkBit)
-		{
-			if (a_flags & a_vkBit)
-			{
-				result |= a_oylBit;
-			}
-		};
-
-		checkFlagBit(CommandQueueFlagBits::Graphics, vk::QueueFlagBits::eGraphics);
-		checkFlagBit(CommandQueueFlagBits::Compute, vk::QueueFlagBits::eCompute);
-		checkFlagBit(CommandQueueFlagBits::Transfer, vk::QueueFlagBits::eTransfer);
-
-		return result;
-	}
+	using CommandQueue = PImpl<CommandQueueImpl>;
 }

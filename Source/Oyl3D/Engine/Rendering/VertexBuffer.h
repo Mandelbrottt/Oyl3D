@@ -1,23 +1,34 @@
 ﻿#pragma once
 
+#include <Core/Array.h>
+#include <Core/PImpl.h>
+
 #include "DeviceObject.h"
 
 namespace Oyl::Rendering
 {
 	struct VertexBufferHandle : OpaqueHandle<VertexBufferHandle> {};
 
-	class VertexBuffer : public IDeviceObject<VertexBufferHandle>
+	class VertexBufferImpl : public IDeviceObject<VertexBufferHandle>
 	{
 	protected:
-		VertexBuffer() = default;
-
-		DEFAULT_MOVE(VertexBuffer);
+		VertexBufferImpl() = default;
 
 	public:
-		NO_COPY(VertexBuffer);
+		struct CreateParams
+		{
+			ArrayProxy<byte> vertexData;
+			uint32 vertexStride;
+
+			ArrayProxy<byte> indexData;
+			uint32 indexStride = sizeof(uint16);
+		};
+
+		NO_MOVE(VertexBufferImpl);
+		NO_COPY(VertexBufferImpl);
 
 		virtual
-		~VertexBuffer() = default;
+		~VertexBufferImpl() = default;
 
 		virtual
 		uint32
@@ -35,4 +46,6 @@ namespace Oyl::Rendering
 		uint32
 		GetIndexStride() const = 0;
 	};
+
+	using VertexBuffer = PImpl<VertexBufferImpl>;
 }

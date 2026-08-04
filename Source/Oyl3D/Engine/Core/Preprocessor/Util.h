@@ -56,8 +56,10 @@
 			#warning "Breakpoints only implemented for MSVC"
 			#define OYL_BREAKPOINT
 		#endif
+		#define OYL_STRIP_IN_DISTRIBUTION(...) __VA_ARGS__
 	#else
 		#define OYL_BREAKPOINT
+		#define OYL_STRIP_IN_DISTRIBUTION(...)
 	#endif
 #pragma endregion
 

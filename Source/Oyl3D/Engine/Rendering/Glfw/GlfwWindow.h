@@ -16,7 +16,7 @@ namespace Oyl::Glfw
 		struct CreateParams
 		{
 			Vector2i position = Vector2i(-1, -1);
-			Vector2i size;
+			Vector2u size;
 
 			std::string title;
 
@@ -50,13 +50,13 @@ namespace Oyl::Glfw
 		void
 		SetPostEventCallback(PostEventDelegate a_delegate) override;
 
-		Vector2i
+		Vector2u
 		GetSize() const override;
 
 		void
-		SetSize(Vector2i a_size) override;
+		SetSize(Vector2u a_size) override;
 
-		Vector2i
+		Vector2u
 		GetFrameBufferSize() const override;
 
 		Vector2i

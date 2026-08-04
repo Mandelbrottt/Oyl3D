@@ -2,11 +2,12 @@
 
 #include "VulkanCommandBuffer.h"
 #include "VulkanDevice.h"
+#include "VulkanEnums.h"
 #include "VulkanStagingBuffer.h"
 
 namespace Oyl::Rendering::Vulkan
 {
-	struct Image::Impl
+	struct ImageImpl::Impl
 	{
 		StagingBuffer stagingBuffer;
 
@@ -14,6 +15,7 @@ namespace Oyl::Rendering::Vulkan
 		vk::raii::DeviceMemory vkImageMemory = nullptr;
 		vk::raii::ImageView vkImageView = nullptr;
 
+		ImageFormat format;
 		Vector2u size;
 
 		void
@@ -24,13 +26,13 @@ namespace Oyl::Rendering::Vulkan
 		void
 		CreateStagingBuffer(const DeviceImpl& a_device, const CreateParams& a_params);
 		void
-		CopyStagingBufferToImage(Image& a_image, const DeviceImpl& a_device, const CreateParams& a_params);
+		CopyStagingBufferToImage(ImageImpl& a_image, const DeviceImpl& a_device, const CreateParams& a_params);
 	};
 
-	Image::Image()
+	ImageImpl::ImageImpl(nullptr_t)
 		: m_impl(nullptr) {}
 
-	Image::Image(const DeviceImpl& a_device, const CreateParams& a_params)
+	ImageImpl::ImageImpl(const DeviceImpl& a_device, const CreateParams& a_params)
 		: m_impl(std::make_unique<Impl>())
 	{
 		OYL_PROFILE_FUNCTION();
@@ -45,13 +47,13 @@ namespace Oyl::Rendering::Vulkan
 		}
 	}
 
-	Image::Image(Image&& a_other) noexcept
+	ImageImpl::ImageImpl(ImageImpl&& a_other) noexcept
 	{
 		*this = std::move(a_other);
 	}
 
-	Image&
-	Image::operator=(Image&& a_other) noexcept
+	ImageImpl&
+	ImageImpl::operator=(ImageImpl&& a_other) noexcept
 	{
 		if (this != &a_other)
 		{
@@ -60,13 +62,13 @@ namespace Oyl::Rendering::Vulkan
 		return *this;
 	}
 
-	Image::~Image()
+	ImageImpl::~ImageImpl()
 	{
-		Image::Destroy();
+		ImageImpl::Destroy();
 	}
 
 	void
-	Image::Destroy()
+	ImageImpl::Destroy()
 	{
 		if (!IsValid())
 			return;
@@ -75,7 +77,7 @@ namespace Oyl::Rendering::Vulkan
 	}
 
 	bool
-	Image::IsValid() const
+	ImageImpl::IsValid() const
 	{
 		return m_impl
 		       && *m_impl->vkImage
@@ -84,8 +86,8 @@ namespace Oyl::Rendering::Vulkan
 	}
 
 	void
-	Image::VkTransitionImageLayout(
-		const CommandBuffer& a_commandBuffer,
+	ImageImpl::VkTransitionImageLayout(
+		const CommandBufferImpl& a_commandBuffer,
 		vk::ImageLayout a_oldLayout,
 		vk::ImageLayout a_newLayout,
 		vk::AccessFlags2 a_srcAccessMask,
@@ -124,37 +126,49 @@ namespace Oyl::Rendering::Vulkan
 	}
 
 	Vector2u
-	Image::GetSize() const
+	ImageImpl::GetSize() const
 	{
 		return m_impl->size;
 	}
 
 	const StagingBuffer&
-	Image::GetStagingBuffer() const
+	ImageImpl::GetStagingBuffer() const
 	{
 		return m_impl->stagingBuffer;
 	}
 
+	ImageFormat
+	ImageImpl::GetFormat() const
+	{
+		return m_impl->format;
+	}
+
 	const vk::raii::Image&
-	Image::GetVkImage() const
+	ImageImpl::GetVkImage() const
 	{
 		return m_impl->vkImage;
 	}
 
+	vk::Format
+	ImageImpl::GetVkFormat() const
+	{
+		return ToVkEnum(m_impl->format);
+	}
+
 	const vk::raii::DeviceMemory&
-	Image::GetVkDeviceMemory() const
+	ImageImpl::GetVkDeviceMemory() const
 	{
 		return m_impl->vkImageMemory;
 	}
 
 	const vk::raii::ImageView&
-	Image::GetVkImageView() const
+	ImageImpl::GetVkImageView() const
 	{
 		return m_impl->vkImageView;
 	}
 
 	ImageHandle
-	Image::GetHandle() const
+	ImageImpl::GetHandle() const
 	{
 		return *m_impl->vkImage;
 	}
@@ -183,21 +197,21 @@ namespace Oyl::Rendering::Vulkan
 	}
 
 	void
-	Image::Impl::CreateImage(const DeviceImpl& a_device, const CreateParams& a_params)
+	ImageImpl::Impl::CreateImage(const DeviceImpl& a_device, const CreateParams& a_params)
 	{
 		OYL_PROFILE_FUNCTION();
 
-		auto vkUsage = a_params.vkUsage;
+		auto vkUsage = ToVkEnum(a_params.usageFlags);
 		auto vkInitialLayout = vk::ImageLayout::eUndefined;
 		if (a_params.pixelData && a_params.pixelLength != 0)
 		{
 			vkUsage |= vk::ImageUsageFlagBits::eTransferDst;
-			vkInitialLayout = a_params.vkLayout;
+			vkInitialLayout = ToVkEnum(a_params.layout);
 		}
 
 		auto imageCreateInfo = vk::ImageCreateInfo {
 			.imageType = vk::ImageType::e2D,
-			.format = a_params.vkFormat,
+			.format = ToVkEnum(a_params.format),
 			.extent = { .width = a_params.size.x, .height = a_params.size.y, .depth = 1 },
 			.mipLevels = 1,
 			.arrayLayers = 1,
@@ -208,6 +222,7 @@ namespace Oyl::Rendering::Vulkan
 			.initialLayout = vkInitialLayout
 		};
 		vkImage = vk::raii::Image(a_device.GetVkDevice(), imageCreateInfo);
+		format = a_params.format;
 		size = a_params.size;
 
 		auto memRequirements = vkImage.getMemoryRequirements();
@@ -216,7 +231,7 @@ namespace Oyl::Rendering::Vulkan
 			.memoryTypeIndex = FindMemoryType(
 				a_device.GetVkPhysicalDevice(),
 				memRequirements.memoryTypeBits,
-				a_params.vkProperties
+				vk::MemoryPropertyFlagBits::eDeviceLocal
 			)
 		};
 		vkImageMemory = vk::raii::DeviceMemory(a_device.GetVkDevice(), allocInfo);
@@ -224,14 +239,14 @@ namespace Oyl::Rendering::Vulkan
 	}
 
 	void
-	Image::Impl::CreateImageView(const DeviceImpl& a_device, const CreateParams& a_params)
+	ImageImpl::Impl::CreateImageView(const DeviceImpl& a_device, const CreateParams& a_params)
 	{
 		OYL_PROFILE_FUNCTION();
 
 		vk::ImageViewCreateInfo imageViewCreateInfo {
 			.image = vkImage,
 			.viewType = vk::ImageViewType::e2D,
-			.format = a_params.vkFormat,
+			.format = ToVkEnum(a_params.format),
 			.subresourceRange = {
 				.aspectMask = vk::ImageAspectFlagBits::eColor,
 				.levelCount = 1,
@@ -242,7 +257,7 @@ namespace Oyl::Rendering::Vulkan
 	}
 
 	void
-	Image::Impl::CreateStagingBuffer(const DeviceImpl& a_device, const CreateParams& a_params)
+	ImageImpl::Impl::CreateStagingBuffer(const DeviceImpl& a_device, const CreateParams& a_params)
 	{
 		OYL_PROFILE_FUNCTION();
 
@@ -261,14 +276,18 @@ namespace Oyl::Rendering::Vulkan
 	}
 
 	void
-	Image::Impl::CopyStagingBufferToImage(Image& a_image, const DeviceImpl& a_device, const CreateParams& a_params)
+	ImageImpl::Impl::CopyStagingBufferToImage(
+		ImageImpl& a_image,
+		const DeviceImpl& a_device,
+		const CreateParams& a_params
+	)
 	{
 		OYL_PROFILE_FUNCTION();
 
 		OYL_ASSERT(!!stagingBuffer);
 
-		auto commandPool = CommandPool(a_device, { .commandQueueFlags = CommandQueueFlagBits::Transfer });
-		auto commandBuffer = CommandBuffer(a_device, { .commandPool = commandPool });
+		auto commandPool = CommandPoolImpl(a_device, { .commandQueueFlags = CommandQueueFlagBits::Transfer });
+		auto commandBuffer = CommandBufferImpl(a_device, { .commandPool = commandPool });
 
 		vk::BufferImageCopy region {
 			.bufferOffset = 0,
@@ -307,7 +326,7 @@ namespace Oyl::Rendering::Vulkan
 		a_image.VkTransitionImageLayout(
 			commandBuffer,
 			vk::ImageLayout::eTransferDstOptimal,
-			a_params.vkLayout,
+			ToVkEnum(a_params.layout),
 			vk::AccessFlagBits2::eTransferWrite,
 			vk::AccessFlagBits2::eShaderRead | vk::AccessFlagBits2::eColorAttachmentWrite,
 			vk::PipelineStageFlagBits2::eTransfer,

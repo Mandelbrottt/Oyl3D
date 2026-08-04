@@ -39,7 +39,19 @@ namespace Oyl::Rendering::Internal
 		return result;
 	}
 
-	IRenderContext*
+	Vector2u
+	RenderEngineInstance::GetCurrentViewPortSize() const
+	{
+		return m_renderContext->GetSwapChain()->GetSize();
+	}
+
+	RenderContext*
+	RenderEngineInstance::GetRenderContext()
+	{
+		return m_renderContext.get();
+	}
+
+	const RenderContext*
 	RenderEngineInstance::GetRenderContext() const
 	{
 		return m_renderContext.get();

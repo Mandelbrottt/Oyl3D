@@ -1,5 +1,6 @@
 #pragma once
 
+#include <Core/PImpl.h>
 #include <Core/Typedefs.h>
 
 #include "DeviceObject.h"
@@ -8,18 +9,18 @@ namespace Oyl::Rendering
 {
 	struct FenceHandle : OpaqueHandle<FenceHandle> {};
 
-	class IFence : public IDeviceObject<FenceHandle>
+	class FenceImpl : public IDeviceObject<FenceHandle>
 	{
 	protected:
-		IFence() = default;
+		FenceImpl() = default;
 
-		DEFAULT_MOVE(IFence);
+		DEFAULT_MOVE(FenceImpl);
 
 	public:
-		NO_COPY(IFence);
+		NO_COPY(FenceImpl);
 
 		virtual
-		~IFence() = default;
+		~FenceImpl() = default;
 
 		void
 		virtual Reset() = 0;
@@ -27,4 +28,6 @@ namespace Oyl::Rendering
 		bool
 		virtual Wait(uint64 a_timeout = std::numeric_limits<uint64>::max()) = 0;
 	};
+
+	using Fence = PImpl<FenceImpl>;
 }

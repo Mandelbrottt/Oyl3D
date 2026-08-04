@@ -10,24 +10,24 @@
 
 namespace Oyl::Rendering::Vulkan
 {
-	struct CommandBuffer::Impl
+	struct CommandBufferImpl::Impl
 	{
-		const CommandPool* commandPool;
+		const CommandPoolImpl* commandPool;
 
 		vk::raii::CommandBuffer vkCommandBuffer = nullptr;
 	};
 
-	CommandBuffer::CommandBuffer() noexcept
+	CommandBufferImpl::CommandBufferImpl(nullptr_t)
 		: m_impl(nullptr) {}
 
-	CommandBuffer::CommandBuffer(const DeviceImpl& a_device, const CreateParams& a_params) noexcept
+	CommandBufferImpl::CommandBufferImpl(const DeviceImpl& a_device, const CreateParams& a_params) noexcept
 		: m_impl(std::make_unique<Impl>())
 	{
 		OYL_PROFILE_FUNCTION();
 
-		m_impl->commandPool = &a_params.commandPool;
+		m_impl->commandPool = dynamic_cast<const CommandPoolImpl*>(&a_params.commandPool);
 
-		const auto& vkCommandPool = a_params.commandPool.GetVkCommandPool();
+		const auto& vkCommandPool = m_impl->commandPool->GetVkCommandPool();
 		const auto& vkDevice = a_device.GetVkDevice();
 
 		vk::CommandBufferAllocateInfo allocInfo {
@@ -40,13 +40,13 @@ namespace Oyl::Rendering::Vulkan
 		m_impl->vkCommandBuffer = std::move(vk::raii::CommandBuffers(vkDevice, allocInfo).front());
 	}
 
-	CommandBuffer::CommandBuffer(CommandBuffer&& a_other) noexcept
+	CommandBufferImpl::CommandBufferImpl(CommandBufferImpl&& a_other) noexcept
 	{
 		*this = std::move(a_other);
 	}
 
-	CommandBuffer&
-	CommandBuffer::operator=(CommandBuffer&& a_other) noexcept
+	CommandBufferImpl&
+	CommandBufferImpl::operator=(CommandBufferImpl&& a_other) noexcept
 	{
 		if (this != &a_other)
 		{
@@ -55,38 +55,38 @@ namespace Oyl::Rendering::Vulkan
 		return *this;
 	}
 
-	CommandBuffer::~CommandBuffer() noexcept
+	CommandBufferImpl::~CommandBufferImpl() noexcept
 	{
-		CommandBuffer::Destroy();
+		CommandBufferImpl::Destroy();
 	}
 
 	void
-	CommandBuffer::Destroy() noexcept
+	CommandBufferImpl::Destroy() noexcept
 	{
 		m_impl->vkCommandBuffer.clear();
 	}
 
 	bool
-	CommandBuffer::IsValid() const noexcept
+	CommandBufferImpl::IsValid() const noexcept
 	{
 		return m_impl
 		       && *m_impl->vkCommandBuffer;
 	}
 
-	const CommandPool*
-	CommandBuffer::GetCommandPool() const noexcept
+	const CommandPoolImpl*
+	CommandBufferImpl::GetCommandPool() const noexcept
 	{
 		return m_impl->commandPool;
 	}
 
 	const vk::raii::CommandBuffer&
-	CommandBuffer::GetVkCommandBuffer() const noexcept
+	CommandBufferImpl::GetVkCommandBuffer() const noexcept
 	{
 		return m_impl->vkCommandBuffer;
 	}
 
 	void
-	CommandBuffer::Begin() const noexcept
+	CommandBufferImpl::Begin() const noexcept
 	{
 		OYL_PROFILE_FUNCTION();
 
@@ -94,16 +94,16 @@ namespace Oyl::Rendering::Vulkan
 	}
 
 	void
-	CommandBuffer::BeginRendering(const RenderTarget& a_renderTarget) const noexcept
+	CommandBufferImpl::BeginRendering(const RenderTarget& a_renderTarget) const noexcept
 	{
 		OYL_PROFILE_FUNCTION();
 
 		Vector2u size;
 
 		std::vector<vk::RenderingAttachmentInfo> colorAttachmentInfo;
-		for (const Rendering::Image* image : a_renderTarget.GetColorAttachments())
+		for (const Rendering::ImageImpl* image : a_renderTarget.GetColorAttachments())
 		{
-			auto* vulkanImage = static_cast<const Image*>(image);
+			auto* vulkanImage = static_cast<const ImageImpl*>(image);
 			colorAttachmentInfo.emplace_back(
 				vk::RenderingAttachmentInfo {
 					.imageView = vulkanImage->GetVkImageView(),
@@ -125,7 +125,7 @@ namespace Oyl::Rendering::Vulkan
 		vk::RenderingAttachmentInfo depthAttachmentInfo;
 		if (auto* image = a_renderTarget.GetDepthAttachment())
 		{
-			auto* vulkanImage = static_cast<const Image*>(image);
+			auto* vulkanImage = static_cast<const ImageImpl*>(image);
 			depthAttachmentInfo.setImageView(vulkanImage->GetVkImageView())
 			                   .setImageLayout(vk::ImageLayout::eDepthStencilAttachmentOptimal)
 			                   .setLoadOp(vk::AttachmentLoadOp::eClear)
@@ -143,7 +143,7 @@ namespace Oyl::Rendering::Vulkan
 	}
 
 	void
-	CommandBuffer::End() const noexcept
+	CommandBufferImpl::End() const noexcept
 	{
 		OYL_PROFILE_FUNCTION();
 
@@ -151,7 +151,7 @@ namespace Oyl::Rendering::Vulkan
 	}
 
 	void
-	CommandBuffer::EndRendering() const noexcept
+	CommandBufferImpl::EndRendering() const noexcept
 	{
 		OYL_PROFILE_FUNCTION();
 
@@ -159,7 +159,7 @@ namespace Oyl::Rendering::Vulkan
 	}
 
 	void
-	CommandBuffer::SetViewport(Vector2i a_offset, Vector2u a_size) const noexcept
+	CommandBufferImpl::SetViewport(Vector2i a_offset, Vector2u a_size) const noexcept
 	{
 		OYL_PROFILE_FUNCTION();
 
@@ -177,7 +177,7 @@ namespace Oyl::Rendering::Vulkan
 	}
 
 	void
-	CommandBuffer::SetScissor(Vector2i a_offset, Vector2u a_size) const noexcept
+	CommandBufferImpl::SetScissor(Vector2i a_offset, Vector2u a_size) const noexcept
 	{
 		OYL_PROFILE_FUNCTION();
 
@@ -197,13 +197,13 @@ namespace Oyl::Rendering::Vulkan
 	}
 
 	void
-	CommandBuffer::BindShader(const Rendering::Shader& a_shader) const noexcept
+	CommandBufferImpl::BindShader(const Rendering::ShaderImpl& a_shader) const noexcept
 	{
-		return BindShader(static_cast<const Shader&>(a_shader));
+		return BindShader(static_cast<const ShaderImpl&>(a_shader));
 	}
 
 	void
-	CommandBuffer::BindShader(const Shader& a_shader) const noexcept
+	CommandBufferImpl::BindShader(const ShaderImpl& a_shader) const noexcept
 	{
 		OYL_PROFILE_FUNCTION();
 
@@ -211,13 +211,13 @@ namespace Oyl::Rendering::Vulkan
 	}
 
 	void
-	CommandBuffer::BindVertexBuffer(const Rendering::VertexBuffer& a_vertexBuffer) const noexcept
+	CommandBufferImpl::BindVertexBuffer(const Rendering::VertexBufferImpl& a_vertexBuffer) const noexcept
 	{
-		return BindVertexBuffer(static_cast<const VertexBuffer&>(a_vertexBuffer));
+		return BindVertexBuffer(static_cast<const VertexBufferImpl&>(a_vertexBuffer));
 	}
 
 	void
-	CommandBuffer::BindVertexBuffer(const VertexBuffer& a_vertexBuffer) const noexcept
+	CommandBufferImpl::BindVertexBuffer(const VertexBufferImpl& a_vertexBuffer) const noexcept
 	{
 		OYL_PROFILE_FUNCTION();
 
@@ -235,13 +235,13 @@ namespace Oyl::Rendering::Vulkan
 	}
 
 	void
-	CommandBuffer::DrawVertexBuffer(const Rendering::VertexBuffer& a_vertexBuffer) const noexcept
+	CommandBufferImpl::DrawVertexBuffer(const Rendering::VertexBufferImpl& a_vertexBuffer) const noexcept
 	{
-		DrawVertexBuffer(static_cast<const VertexBuffer&>(a_vertexBuffer));
+		DrawVertexBuffer(static_cast<const VertexBufferImpl&>(a_vertexBuffer));
 	}
 
 	void
-	CommandBuffer::DrawVertexBuffer(const VertexBuffer& a_vertexBuffer) const noexcept
+	CommandBufferImpl::DrawVertexBuffer(const VertexBufferImpl& a_vertexBuffer) const noexcept
 	{
 		OYL_PROFILE_FUNCTION();
 

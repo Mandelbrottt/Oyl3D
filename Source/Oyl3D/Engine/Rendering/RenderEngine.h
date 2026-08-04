@@ -1,8 +1,7 @@
 #pragma once
 
+#include "Rendering/Device.h"
 #include "Rendering/RenderEngineInstance.h"
-#include "Rendering/ShaderResource.h"
-#include "Rendering/VertexBufferResource.h"
 
 namespace Oyl::Rendering
 {
@@ -18,6 +17,13 @@ namespace Oyl::Rendering
 		GetCurrentDevice()
 		{
 			return s_instance->GetCurrentDevice();
+		}
+
+		static
+		Vector2u
+		GetCurrentViewPortSize()
+		{
+			return s_instance->GetCurrentViewPortSize();
 		}
 
 		static

@@ -24,7 +24,7 @@ namespace
 
 namespace Oyl::Rendering::Vulkan
 {
-	struct SwapChain::Impl
+	struct SwapChainImpl::Impl
 	{
 		const DeviceImpl* device = nullptr;
 		const IWindow* window = nullptr;
@@ -47,10 +47,9 @@ namespace Oyl::Rendering::Vulkan
 		RecreateSwapChain();
 	};
 
-	SwapChain::SwapChain()
-		: m_impl(nullptr) {}
+	SwapChainImpl::SwapChainImpl(nullptr_t) {}
 
-	SwapChain::SwapChain(const DeviceImpl& a_device, const CreateParams& a_params)
+	SwapChainImpl::SwapChainImpl(const DeviceImpl& a_device, const CreateParams& a_params)
 		: m_impl(std::make_unique<Impl>())
 	{
 		OYL_PROFILE_FUNCTION();
@@ -62,14 +61,14 @@ namespace Oyl::Rendering::Vulkan
 		m_impl->CreateSwapChainImageViews();
 	}
 
-	SwapChain::SwapChain(SwapChain&& a_other) noexcept
+	SwapChainImpl::SwapChainImpl(SwapChainImpl&& a_other) noexcept
 		: m_impl(nullptr)
 	{
 		*this = std::move(a_other);
 	}
 
-	SwapChain&
-	SwapChain::operator=(SwapChain&& a_other) noexcept
+	SwapChainImpl&
+	SwapChainImpl::operator=(SwapChainImpl&& a_other) noexcept
 	{
 		if (this != &a_other)
 		{
@@ -78,13 +77,13 @@ namespace Oyl::Rendering::Vulkan
 		return *this;
 	}
 
-	SwapChain::~SwapChain()
+	SwapChainImpl::~SwapChainImpl()
 	{
-		SwapChain::Destroy();
+		SwapChainImpl::Destroy();
 	}
 
 	void
-	SwapChain::Destroy()
+	SwapChainImpl::Destroy()
 	{
 		OYL_PROFILE_FUNCTION();
 
@@ -96,20 +95,20 @@ namespace Oyl::Rendering::Vulkan
 	}
 
 	bool
-	SwapChain::IsValid() const
+	SwapChainImpl::IsValid() const
 	{
 		return m_impl
 		       && *m_impl->vkSwapChain;
 	}
 
 	Vector2u
-	SwapChain::GetSize() const
+	SwapChainImpl::GetSize() const
 	{
 		return Vector2u(m_impl->vkSwapChainExtent.width, m_impl->vkSwapChainExtent.height);
 	}
 
 	void
-	SwapChain::Recreate()
+	SwapChainImpl::Recreate()
 	{
 		OYL_PROFILE_FUNCTION();
 
@@ -117,7 +116,7 @@ namespace Oyl::Rendering::Vulkan
 	}
 
 	bool
-	SwapChain::AcquireNextImage(SemaphoreHandle a_semaphore, FenceHandle a_fence)
+	SwapChainImpl::AcquireNextImage(SemaphoreHandle a_semaphore, FenceHandle a_fence)
 	{
 		OYL_PROFILE_FUNCTION();
 
@@ -137,55 +136,61 @@ namespace Oyl::Rendering::Vulkan
 	}
 
 	uint32
-	SwapChain::GetCurrentImageIndex() const
+	SwapChainImpl::GetCurrentImageIndex() const
 	{
 		return m_impl->imageIndex;
 	}
 
+	uint32
+	SwapChainImpl::GetImageCount() const
+	{
+		return (uint32) m_impl->vkSwapChainImageHandles.size();
+	}
+
 	const vk::raii::SwapchainKHR&
-	SwapChain::GetVkSwapChain() const
+	SwapChainImpl::GetVkSwapChain() const
 	{
 		return m_impl->vkSwapChain;
 	}
 
 	const std::vector<vk::Image>&
-	SwapChain::GetVkImages() const
+	SwapChainImpl::GetVkImages() const
 	{
 		return m_impl->vkSwapChainImageHandles;
 	}
 
 	vk::Image
-	SwapChain::GetCurrentVkImage() const
+	SwapChainImpl::GetCurrentVkImage() const
 	{
 		return m_impl->vkSwapChainImageHandles[m_impl->imageIndex];
 	}
 
 	const std::vector<vk::raii::ImageView>&
-	SwapChain::GetVkImageViews() const
+	SwapChainImpl::GetVkImageViews() const
 	{
 		return m_impl->vkSwapChainImageViews;
 	}
 
 	const vk::raii::ImageView&
-	SwapChain::GetCurrentVkImageView() const
+	SwapChainImpl::GetCurrentVkImageView() const
 	{
 		return m_impl->vkSwapChainImageViews[m_impl->imageIndex];
 	}
 
 	const vk::SurfaceFormatKHR&
-	SwapChain::GetVkSurfaceFormat() const
+	SwapChainImpl::GetVkSurfaceFormat() const
 	{
 		return m_impl->vkSwapChainSurfaceFormat;
 	}
 
 	const vk::Extent2D&
-	SwapChain::GetVkExtent() const
+	SwapChainImpl::GetVkExtent() const
 	{
 		return m_impl->vkSwapChainExtent;
 	}
 
 	void
-	SwapChain::Impl::CreateSwapChain()
+	SwapChainImpl::Impl::CreateSwapChain()
 	{
 		OYL_PROFILE_FUNCTION();
 
@@ -227,7 +232,7 @@ namespace Oyl::Rendering::Vulkan
 	}
 
 	void
-	SwapChain::Impl::CreateSwapChainImageViews()
+	SwapChainImpl::Impl::CreateSwapChainImageViews()
 	{
 		OYL_PROFILE_FUNCTION();
 
@@ -250,14 +255,14 @@ namespace Oyl::Rendering::Vulkan
 	}
 
 	void
-	SwapChain::Impl::CleanupSwapChain()
+	SwapChainImpl::Impl::CleanupSwapChain()
 	{
 		vkSwapChainImageViews.clear();
 		vkSwapChain = nullptr;
 	}
 
 	void
-	SwapChain::Impl::RecreateSwapChain()
+	SwapChainImpl::Impl::RecreateSwapChain()
 	{
 		OYL_PROFILE_FUNCTION();
 

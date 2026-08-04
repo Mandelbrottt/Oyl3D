@@ -1,11 +1,11 @@
 #pragma once
 
-#include "Rendering/ShaderResource.h"
-#include "Rendering/VertexBufferResource.h"
+#include <Core/Resources/ResourceManager.h>
+#include <Core/Math/Vector.h>
 
 namespace Oyl::Rendering
 {
-	class IRenderContext;
+	class RenderContext;
 	class DeviceImpl;
 	class ShaderCompiler;
 }
@@ -20,7 +20,7 @@ namespace Oyl::Rendering::Internal
 		struct CreateParams
 		{
 			std::unique_ptr<ShaderCompiler> shaderCompiler;
-			std::unique_ptr<IRenderContext> renderContext;
+			std::unique_ptr<RenderContext> renderContext;
 		};
 
 		explicit
@@ -44,7 +44,15 @@ namespace Oyl::Rendering::Internal
 		GetCurrentDevice() const;
 
 		virtual
-		IRenderContext*
+		Vector2u
+		GetCurrentViewPortSize() const;
+
+		virtual
+		RenderContext*
+		GetRenderContext();
+
+		virtual
+		const RenderContext*
 		GetRenderContext() const;
 	#pragma endregion Instance State
 
@@ -64,6 +72,6 @@ namespace Oyl::Rendering::Internal
 		std::unique_ptr<DeviceImpl> m_device;
 
 		// TEMPORARY: Should the renderer own the render context?
-		std::unique_ptr<IRenderContext> m_renderContext;
+		std::unique_ptr<RenderContext> m_renderContext;
 	};
 }

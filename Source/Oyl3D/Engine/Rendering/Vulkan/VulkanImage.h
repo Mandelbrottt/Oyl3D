@@ -8,38 +8,23 @@ namespace Oyl::Rendering::Vulkan
 {
 	class DeviceImpl;
 	class StagingBuffer;
-	class CommandBuffer;
+	class CommandBufferImpl;
 
 	using ImageHandle = OpaqueHandleConvertible<ImageHandle, vk::Image>;
 
-	class OYL_RENDERING_API Image : public Rendering::Image
+	class OYL_RENDERING_API ImageImpl : public Rendering::ImageImpl
 	{
 	public:
-		Image();
+		ImageImpl(nullptr_t);
 
-		struct CreateParams
-		{
-			const byte* pixelData = nullptr;
-			uint32 pixelLength = 0;
+		ImageImpl(const DeviceImpl& a_device, const CreateParams& a_params);
 
-			Vector2u size;
-
-			vk::Format vkFormat;
-
-			vk::ImageUsageFlags vkUsage;
-			vk::MemoryPropertyFlags vkProperties;
-			vk::ImageLayout vkLayout = vk::ImageLayout::eUndefined;
-		};
-
-		explicit
-		Image(const DeviceImpl& a_device, const CreateParams& a_params);
-
-		Image(Image&& a_other) noexcept;
-		Image&
-		operator =(Image&& a_other) noexcept;
+		ImageImpl(ImageImpl&& a_other) noexcept;
+		ImageImpl&
+		operator =(ImageImpl&& a_other) noexcept;
 
 		virtual
-		~Image();
+		~ImageImpl();
 
 		void
 		Destroy() override;
@@ -49,7 +34,7 @@ namespace Oyl::Rendering::Vulkan
 
 		void
 		VkTransitionImageLayout(
-			const CommandBuffer& a_commandBuffer,
+			const CommandBufferImpl& a_commandBuffer,
 			vk::ImageLayout a_oldLayout,
 			vk::ImageLayout a_newLayout,
 			vk::AccessFlags2 a_srcAccessMask,
@@ -64,8 +49,14 @@ namespace Oyl::Rendering::Vulkan
 		const StagingBuffer&
 		GetStagingBuffer() const;
 
+		ImageFormat
+		GetFormat() const override;
+
 		const vk::raii::Image&
 		GetVkImage() const;
+
+		vk::Format
+		GetVkFormat() const;
 
 		const vk::raii::DeviceMemory&
 		GetVkDeviceMemory() const;
@@ -92,4 +83,6 @@ namespace Oyl::Rendering::Vulkan
 		struct Impl;
 		std::unique_ptr<Impl> m_impl;
 	};
+
+	using Image = PImpl<ImageImpl>;
 }

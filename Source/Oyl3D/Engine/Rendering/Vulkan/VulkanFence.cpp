@@ -4,7 +4,7 @@
 
 namespace Oyl::Rendering::Vulkan
 {
-	Fence::Fence(const DeviceImpl& a_device)
+	FenceImpl::FenceImpl(const DeviceImpl& a_device)
 		: m_device(&a_device),
 		  m_fence(
 			  vk::raii::Fence(
@@ -15,13 +15,13 @@ namespace Oyl::Rendering::Vulkan
 			  )
 		  ) {}
 
-	Fence::Fence(Fence&& a_other) noexcept
+	FenceImpl::FenceImpl(FenceImpl&& a_other) noexcept
 	{
 		*this = std::move(a_other);
 	}
 
-	Fence&
-	Fence::operator=(Fence&& a_other) noexcept
+	FenceImpl&
+	FenceImpl::operator=(FenceImpl&& a_other) noexcept
 	{
 		if (this != &a_other)
 		{
@@ -31,13 +31,13 @@ namespace Oyl::Rendering::Vulkan
 		return *this;
 	}
 
-	Fence::~Fence()
+	FenceImpl::~FenceImpl()
 	{
-		Fence::Destroy();
+		FenceImpl::Destroy();
 	}
 
 	void
-	Fence::Destroy()
+	FenceImpl::Destroy()
 	{
 		if (!IsValid())
 			return;
@@ -46,13 +46,13 @@ namespace Oyl::Rendering::Vulkan
 	}
 
 	bool
-	Fence::IsValid() const
+	FenceImpl::IsValid() const
 	{
 		return m_device && *m_fence;
 	}
 
 	void
-	Fence::Reset()
+	FenceImpl::Reset()
 	{
 		const auto& vkFence = GetVkFence();
 		const auto& vkDevice = m_device->GetVkDevice();
@@ -61,7 +61,7 @@ namespace Oyl::Rendering::Vulkan
 	}
 
 	bool
-	Fence::Wait(uint64 a_timeout)
+	FenceImpl::Wait(uint64 a_timeout)
 	{
 		OYL_PROFILE_FUNCTION();
 

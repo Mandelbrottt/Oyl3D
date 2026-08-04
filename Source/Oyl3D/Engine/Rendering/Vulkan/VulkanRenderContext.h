@@ -7,7 +7,7 @@
 
 namespace Oyl::Rendering::Vulkan
 {
-	class OYL_RENDERING_API RenderContext final : public IRenderContext
+	class OYL_RENDERING_API RenderContext final : public Rendering::RenderContext
 	{
 	public:
 		RenderContext() noexcept;
@@ -39,13 +39,19 @@ namespace Oyl::Rendering::Vulkan
 		Destroy() override;
 
 		void
-		Resize(Vector2i a_size) override;
+		Resize(Vector2u a_size) override;
 
 		const DeviceImpl*
 		GetDevice() const override;
 
-		const SwapChain*
-		GetSwapChain() const override;
+		SwapChainImpl*
+		GetSwapChain() override;
+
+		const SwapChainImpl*
+		GetSwapChain() const override
+		{
+			return const_cast<RenderContext*>(this)->GetSwapChain();
+		}
 
 	private:
 		struct Impl;

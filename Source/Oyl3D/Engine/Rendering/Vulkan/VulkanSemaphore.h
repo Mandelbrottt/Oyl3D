@@ -10,25 +10,21 @@ namespace Oyl::Rendering::Vulkan
 
 	using SemaphoreHandle = OpaqueHandleConvertible<SemaphoreHandle, vk::Semaphore>;
 
-	class OYL_RENDERING_API Semaphore : public ISemaphore
+	class OYL_RENDERING_API SemaphoreImpl : public Rendering::SemaphoreImpl
 	{
 	public:
-		Semaphore() = default;
+		SemaphoreImpl(nullptr_t) {}
 
-		Semaphore(std::nullptr_t)
-			: Semaphore() {}
+		SemaphoreImpl(const DeviceImpl& a_device);
 
-		explicit
-		Semaphore(const DeviceImpl& a_device);
-
-		Semaphore(Semaphore&& a_other) noexcept;
-		Semaphore&
-		operator =(Semaphore&& a_other) noexcept;
+		SemaphoreImpl(SemaphoreImpl&& a_other) noexcept;
+		SemaphoreImpl&
+		operator =(SemaphoreImpl&& a_other) noexcept;
 
 		virtual
-		~Semaphore()
+		~SemaphoreImpl()
 		{
-			Semaphore::Destroy();
+			SemaphoreImpl::Destroy();
 		};
 
 		void
@@ -65,4 +61,6 @@ namespace Oyl::Rendering::Vulkan
 		const DeviceImpl* m_device = nullptr;
 		vk::raii::Semaphore m_semaphore = nullptr;
 	};
+
+	using Semaphore = PImpl<SemaphoreImpl>;
 }

@@ -3,8 +3,12 @@
 #include <Core/PImpl.h>
 #include <Core/UniqueHandle.h>
 
+#include "CommandBuffer.h"
+#include "CommandPool.h"
 #include "CommandQueue.h"
-#include "Device.h"
+#include "Image.h"
+#include "Shader.h"
+#include "VertexBuffer.h"
 
 namespace Oyl
 {
@@ -36,12 +40,40 @@ namespace Oyl::Rendering
 		GetWindow() const = 0;
 
 		virtual
-		const ICommandQueue*
+		const CommandQueueImpl*
 		GetCommandQueue(CommandQueueFlagBits a_flag) const = 0;
 
 		virtual
 		void
 		WaitUntilIdle() const = 0;
+
+		virtual
+		CommandBuffer
+		CreateCommandBuffer(const CommandBufferImpl::CreateParams& a_params) const = 0;
+
+		virtual
+		CommandPool
+		CreateCommandPool(const CommandPoolImpl::CreateParams& a_params) const = 0;
+
+		virtual
+		Image
+		CreateImage(const ImageImpl::CreateParams& a_params) const = 0;
+
+		virtual
+		Shader
+		CreateShader(const ShaderImpl::CreateParams& a_params) const = 0;
+
+		virtual
+		VertexBuffer
+		CreateVertexBuffer(const VertexBufferImpl::CreateParams& a_params) const = 0;
+
+		virtual
+		Semaphore
+		CreateSemaphore() const = 0;
+
+		virtual
+		Fence
+		CreateFence() const = 0;
 	};
 
 	using Device = PImpl<DeviceImpl>;

@@ -31,7 +31,11 @@ namespace Oyl::Rendering
 	{
 		OYL_PROFILE_FUNCTION();
 
+		if (!m_renderEngineInstance)
+			return;
+
 		m_renderEngineInstance->GetRenderContext()->Update();
+		m_renderer->Render();
 	}
 
 	void
@@ -65,6 +69,11 @@ namespace Oyl::Rendering
 			}
 		);
 		RenderEngine::SetInstance(m_renderEngineInstance.get());
+
+		m_renderer = std::make_unique<Renderer>(*m_renderEngineInstance->GetRenderContext());
+
+		m_testRenderPass = std::make_unique<TestRenderPass>();
+		m_renderer->GetRenderGraph().AddRenderPass(m_testRenderPass.get());
 	}
 
 	void
@@ -75,6 +84,8 @@ namespace Oyl::Rendering
 
 		OYL_PROFILE_FUNCTION();
 
+		m_testRenderPass.release();
+		m_renderer.release();
 		m_renderEngineInstance.release();
 		m_resourceManager.release();
 	}
@@ -92,6 +103,7 @@ namespace Oyl::Rendering
 		OYL_PROFILE_FUNCTION();
 
 		renderContext->Resize(a_event.size);
+		m_testRenderPass->OnWindowResizedEvent(a_event);
 	}
 
 	void

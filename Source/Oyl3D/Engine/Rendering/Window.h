@@ -53,15 +53,15 @@ namespace Oyl
 		SetPostEventCallback(PostEventDelegate a_delegate) = 0;
 
 		virtual
-		Vector2i
+		Vector2u
 		GetSize() const = 0;
 
 		virtual
 		void
-		SetSize(Vector2i a_size) = 0;
+		SetSize(Vector2u a_size) = 0;
 
 		virtual
-		Vector2i
+		Vector2u
 		GetFrameBufferSize() const = 0;
 
 		virtual
@@ -123,7 +123,7 @@ namespace Oyl
 
 	struct WindowResizeEvent : WindowEvent, EventBase<WindowResizeEvent>
 	{
-		Vector2i size;
+		Vector2u size;
 	};
 
 	struct WindowMaximizeEvent : WindowEvent, EventBase<WindowMaximizeEvent>

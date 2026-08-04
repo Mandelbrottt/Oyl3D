@@ -26,7 +26,7 @@ namespace Oyl::Glfw
 		std::string title;
 
 		Vector2i position;
-		Vector2i size;
+		Vector2u size;
 
 		WindowStateFlags windowState;
 		CursorState cursorState;
@@ -133,14 +133,14 @@ namespace Oyl::Glfw
 		m_impl->postEventCallback = std::move(a_delegate);
 	}
 
-	Vector2i
+	Vector2u
 	Window::GetSize() const
 	{
 		return m_impl->size;
 	}
 
 	void
-	Window::SetSize(Vector2i a_size)
+	Window::SetSize(Vector2u a_size)
 	{
 		auto monitor = glfwGetWindowMonitor(m_impl->glfwWindow);
 		auto mode = glfwGetVideoMode(monitor);
@@ -158,13 +158,13 @@ namespace Oyl::Glfw
 		m_impl->size = a_size;
 	}
 
-	Vector2i
+	Vector2u
 	Window::GetFrameBufferSize() const
 	{
 		Vector2i size;
 		glfwGetFramebufferSize(m_impl->glfwWindow, &size.x, &size.y);
 
-		return size;
+		return Vector2u(size.x, size.y);
 	}
 
 	Vector2i
@@ -221,7 +221,7 @@ namespace Oyl::Glfw
 
 		OYL_PROFILE_FUNCTION();
 
-		Vector2i desiredSize;
+		Vector2u desiredSize;
 
 		// get resolution of monitor
 		const GLFWvidmode* mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
@@ -230,7 +230,9 @@ namespace Oyl::Glfw
 		{
 			// backup window position and window size
 			glfwGetWindowPos(m_impl->glfwWindow, &m_impl->position.x, &m_impl->position.y);
-			glfwGetWindowSize(m_impl->glfwWindow, &m_impl->size.y, &m_impl->size.y);
+			Vector2i tempSize;
+			glfwGetWindowSize(m_impl->glfwWindow, &tempSize.x, &tempSize.y);
+			m_impl->size = Vector2u(tempSize.x, tempSize.y);
 
 			// switch to full screen
 			glfwSetWindowMonitor(
@@ -243,7 +245,7 @@ namespace Oyl::Glfw
 				mode->refreshRate
 			);
 
-			desiredSize = { mode->width, mode->height };
+			desiredSize = { (uint32) mode->width, (uint32) mode->height };
 		} else if (a_flags ^ (WS_Fullscreen | WS_Borderless))
 		{
 			glfwSetWindowMonitor(
@@ -355,7 +357,7 @@ namespace Oyl::Glfw
 					return;
 
 				Impl* impl = reinterpret_cast<Impl*>(glfwGetWindowUserPointer(a_window));
-				impl->size = { a_width, a_height };
+				impl->size = Vector2u(a_width, a_height);
 
 				if (!impl->postEventCallback)
 					return;
