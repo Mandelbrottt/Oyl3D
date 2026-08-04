@@ -7,10 +7,8 @@
 #include "Device.h"
 #include "Fence.h"
 #include "RenderContext.h"
-#include "RenderEngine.h"
 #include "Semaphore.h"
 #include "Shader.h"
-#include "ShaderCompiler.h"
 #include "TestRenderPass.h"
 
 #include "Vulkan/VulkanCommandBuffer.h"
@@ -110,48 +108,6 @@ namespace Oyl::Rendering
 		return m_impl->renderGraph;
 	}
 
-	static
-	void
-	VkTransitionImageLayout(
-		const Vulkan::CommandBufferImpl& a_commandBuffer,
-		vk::Image a_image,
-		vk::ImageLayout a_oldLayout,
-		vk::ImageLayout a_newLayout,
-		vk::AccessFlags2 a_srcAccessMask,
-		vk::AccessFlags2 a_dstAccessMask,
-		vk::PipelineStageFlags2 a_srcStageMask,
-		vk::PipelineStageFlags2 a_dstStageMask
-	)
-	{
-		OYL_PROFILE_FUNCTION();
-
-		vk::ImageMemoryBarrier2 barrier = {
-			.srcStageMask = a_srcStageMask,
-			.srcAccessMask = a_srcAccessMask,
-			.dstStageMask = a_dstStageMask,
-			.dstAccessMask = a_dstAccessMask,
-			.oldLayout = a_oldLayout,
-			.newLayout = a_newLayout,
-			.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED,
-			.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED,
-			.image = a_image,
-			.subresourceRange = {
-				.aspectMask = vk::ImageAspectFlagBits::eColor,
-				.baseMipLevel = 0,
-				.levelCount = 1,
-				.baseArrayLayer = 0,
-				.layerCount = 1
-			}
-		};
-		vk::DependencyInfo dependency_info = {
-			.dependencyFlags = {},
-			.imageMemoryBarrierCount = 1,
-			.pImageMemoryBarriers = &barrier
-		};
-		const auto& vkCommandBuffer = a_commandBuffer.GetVkCommandBuffer();
-		vkCommandBuffer.pipelineBarrier2(dependency_info);
-	}
-
 	void
 	Renderer::RecordCommandBuffer()
 	{
@@ -166,20 +122,17 @@ namespace Oyl::Rendering
 		auto& renderContext = *m_impl->renderContext;
 		auto& swapChain = *renderContext.GetSwapChain();
 
-		auto& vulkanCommandBuffer = dynamic_cast<Vulkan::CommandBufferImpl&>(*commandBuffer);
-		auto& vulkanSwapChain = dynamic_cast<Vulkan::SwapChainImpl&>(swapChain);
-		VkTransitionImageLayout(
-			vulkanCommandBuffer,
-			vulkanSwapChain.GetCurrentVkImage(),
-			vk::ImageLayout::eUndefined,
-			vk::ImageLayout::eTransferDstOptimal,
-			vk::AccessFlagBits2::eTransferWrite,
-			{},
-			vk::PipelineStageFlagBits2::eTransfer,
-			vk::PipelineStageFlagBits2::eBlit
+		commandBuffer->TransitionImageLayout(
+			swapChain.GetCurrentImageHandle(),
+			ImageLayout::None,
+			ImageLayout::TransferDest
 		);
+
 		{
 			OYL_PROFILE_SCOPE("BlitImage");
+
+			auto& vulkanCommandBuffer = dynamic_cast<Vulkan::CommandBufferImpl&>(*commandBuffer);
+			auto& vulkanSwapChain = dynamic_cast<Vulkan::SwapChainImpl&>(swapChain);
 
 			auto& image = *m_impl->renderGraph.GetSortedRenderPasses().Back()->GetRenderTarget()->GetColorAttachment(0);
 			auto& vulkanImage = dynamic_cast<const Vulkan::ImageImpl&>(image);
@@ -198,15 +151,10 @@ namespace Oyl::Rendering
 			);
 		}
 
-		VkTransitionImageLayout(
-			vulkanCommandBuffer,
-			vulkanSwapChain.GetCurrentVkImage(),
-			vk::ImageLayout::eTransferDstOptimal,
-			vk::ImageLayout::ePresentSrcKHR,
-			{},
-			vk::AccessFlagBits2::eTransferRead,
-			vk::PipelineStageFlagBits2::eBlit,
-			vk::PipelineStageFlagBits2::eBlit
+		commandBuffer->TransitionImageLayout(
+			swapChain.GetCurrentImageHandle(),
+			ImageLayout::TransferDest,
+			ImageLayout::PresentSource
 		);
 
 		commandBuffer->End();

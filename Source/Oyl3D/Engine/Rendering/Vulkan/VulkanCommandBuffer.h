@@ -1,6 +1,7 @@
 ﻿#pragma once
 
 #include "VulkanCommandPool.h"
+#include "VulkanImage.h"
 
 #include "Rendering/CommandBuffer.h"
 
@@ -85,6 +86,37 @@ namespace Oyl::Rendering::Vulkan
 
 		void
 		DrawVertexBuffer(const VertexBufferImpl& a_vertexBuffer) const noexcept;
+
+	protected:
+		void
+		TransitionImageLayout(Rendering::ImageImpl& a_image, ImageLayout a_newLayout) const noexcept override
+		{
+			auto& vulkanImageImpl = dynamic_cast<ImageImpl&>(a_image);
+			TransitionImageLayout(vulkanImageImpl, a_newLayout);
+		}
+
+	public:
+		void
+		TransitionImageLayout(ImageImpl& a_image, ImageLayout a_newLayout) const noexcept;
+
+	protected:
+		void
+		TransitionImageLayout(
+			Rendering::ImageHandle a_imageHandle,
+			ImageLayout a_oldLayout,
+			ImageLayout a_newLayout
+		) const noexcept override
+		{
+			TransitionImageLayout(static_cast<ImageHandle>(a_imageHandle), a_oldLayout, a_newLayout);
+		}
+
+	public:
+		void
+		TransitionImageLayout(
+			ImageHandle a_imageHandle,
+			ImageLayout a_oldLayout,
+			ImageLayout a_newLayout
+		) const noexcept;
 
 	private:
 		struct Impl;

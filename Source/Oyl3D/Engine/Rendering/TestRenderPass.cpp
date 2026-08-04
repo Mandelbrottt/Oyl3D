@@ -3,9 +3,6 @@
 #include "RenderEngine.h"
 #include "Window.h"
 
-#include "Vulkan/VulkanImage.h"
-#include "Vulkan/VulkanCommandBuffer.h"
-
 namespace Oyl::Rendering
 {
 	TestRenderPass::TestRenderPass()
@@ -62,18 +59,7 @@ namespace Oyl::Rendering
 
 		a_commandBuffer.SetViewport(Vector2i::Zero(), size);
 		a_commandBuffer.SetScissor(Vector2i::Zero(), size);
-
-		auto& vulkanCommandBuffer = dynamic_cast<const Vulkan::CommandBufferImpl&>(a_commandBuffer);
-		auto& vulkanColorAttachment = *dynamic_cast<Vulkan::ImageImpl*>(m_colorAttachment.Get());
-		vulkanColorAttachment.VkTransitionImageLayout(
-			vulkanCommandBuffer,
-			vk::ImageLayout::eUndefined,
-			vk::ImageLayout::eColorAttachmentOptimal,
-			{},
-			vk::AccessFlagBits2::eColorAttachmentWrite,
-			vk::PipelineStageFlagBits2::eColorAttachmentOutput,
-			vk::PipelineStageFlagBits2::eColorAttachmentOutput
-		);
+		a_commandBuffer.TransitionImageLayout(*m_colorAttachment, ImageLayout::ColorAttachment);
 
 		a_commandBuffer.BeginRendering(*GetRenderTarget());
 	}
@@ -90,17 +76,7 @@ namespace Oyl::Rendering
 	{
 		a_commandBuffer.EndRendering();
 
-		auto& vulkanCommandBuffer = dynamic_cast<const Vulkan::CommandBufferImpl&>(a_commandBuffer);
-		auto& vulkanColorAttachment = *dynamic_cast<Vulkan::ImageImpl*>(m_colorAttachment.Get());
-		vulkanColorAttachment.VkTransitionImageLayout(
-			vulkanCommandBuffer,
-			vk::ImageLayout::eColorAttachmentOptimal,
-			vk::ImageLayout::eTransferSrcOptimal,
-			vk::AccessFlagBits2::eColorAttachmentWrite,
-			{},
-			vk::PipelineStageFlagBits2::eColorAttachmentOutput,
-			vk::PipelineStageFlagBits2::eBottomOfPipe
-		);
+		a_commandBuffer.TransitionImageLayout(*m_colorAttachment, ImageLayout::TransferSource);
 	}
 
 	void
@@ -109,7 +85,7 @@ namespace Oyl::Rendering
 		m_colorAttachment = RenderEngine::GetCurrentDevice()->CreateImage(
 			{
 				.size = a_size,
-				.format = ImageFormat::R8G8B8A8Srgb,
+				.format = ImageFormat::RGBA_8_SRGB,
 				.usageFlags = ImageUsageFlagBits::ColorAttachment | ImageUsageFlagBits::TransferSrc,
 				.layout = ImageLayout::ColorAttachment
 			}

@@ -48,10 +48,10 @@ namespace Oyl::Rendering::Vulkan
 		ToVkEnum,
 		ImageFormat,
 		vk::Format,
-		{ ImageFormat::R8G8B8Srgb, vk::Format::eR8G8B8Srgb },
-		{ ImageFormat::R8G8B8A8Srgb, vk::Format::eR8G8B8A8Srgb },
-		{ ImageFormat::B8G8R8A8Srgb, vk::Format::eB8G8R8A8Srgb },
-		{ ImageFormat::B8G8R8Srgb, vk::Format::eB8G8R8Srgb },
+		{ ImageFormat::RGB_8_SRGB, vk::Format::eR8G8B8Srgb },
+		{ ImageFormat::RGBA_8_SRGB, vk::Format::eR8G8B8A8Srgb },
+		{ ImageFormat::BGRA_8_SRGB, vk::Format::eB8G8R8A8Srgb },
+		{ ImageFormat::BGR_8_SRGB, vk::Format::eB8G8R8Srgb },
 	)
 
 	OYL_DEFINE_ENUM_CONVERSION_FUNCTIONS(
@@ -72,5 +72,8 @@ namespace Oyl::Rendering::Vulkan
 		{ ImageLayout::ColorAttachment, vk::ImageLayout::eColorAttachmentOptimal },
 		{ ImageLayout::DepthStencilAttachment, vk::ImageLayout::eDepthStencilAttachmentOptimal },
 		{ ImageLayout::ShaderRead, vk::ImageLayout::eShaderReadOnlyOptimal },
+		{ ImageLayout::TransferDest, vk::ImageLayout::eTransferDstOptimal },
+		{ ImageLayout::TransferSource, vk::ImageLayout::eTransferSrcOptimal },
+		{ ImageLayout::PresentSource, vk::ImageLayout::ePresentSrcKHR },
 	)
 }

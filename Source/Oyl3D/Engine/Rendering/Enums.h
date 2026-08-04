@@ -48,11 +48,11 @@ namespace Oyl::Rendering
 	{
 		None,
 
-		R8G8B8Srgb,
-		R8G8B8A8Srgb,
+		RGB_8_SRGB,
+		RGBA_8_SRGB,
 
-		B8G8R8Srgb,
-		B8G8R8A8Srgb
+		BGR_8_SRGB,
+		BGRA_8_SRGB
 	};
 
 	enum class ImageLayout
@@ -61,7 +61,10 @@ namespace Oyl::Rendering
 
 		ColorAttachment,
 		DepthStencilAttachment,
-		ShaderRead
+		ShaderRead,
+		TransferSource,
+		TransferDest,
+		PresentSource,
 	};
 
 	//////////////////////////////////////////////////////////////////////////////

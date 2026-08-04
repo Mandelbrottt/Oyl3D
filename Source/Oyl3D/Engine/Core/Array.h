@@ -91,6 +91,12 @@ namespace Oyl
 			return (SizeType) m_vector.size();
 		}
 
+		constexpr SizeType
+		Length() const
+		{
+			return Size();
+		}
+
 		constexpr bool
 		Empty() const
 		{

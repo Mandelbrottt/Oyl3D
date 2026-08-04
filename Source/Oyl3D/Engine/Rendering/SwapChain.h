@@ -53,6 +53,14 @@ namespace Oyl::Rendering
 		virtual
 		uint32
 		GetCurrentImageIndex() const = 0;
+
+		virtual
+		ImageHandle
+		GetImageHandle(uint32 a_index) const = 0;
+
+		virtual
+		ImageHandle
+		GetCurrentImageHandle() const = 0;
 	};
 
 	using SwapChain = PImpl<SwapChainImpl>;

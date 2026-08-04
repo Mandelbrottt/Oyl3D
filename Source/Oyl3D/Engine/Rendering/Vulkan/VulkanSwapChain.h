@@ -3,6 +3,7 @@
 #include <vulkan/vulkan_raii.hpp>
 
 #include "VulkanFence.h"
+#include "VulkanImage.h"
 #include "VulkanSemaphore.h"
 
 #include "Rendering/SwapChain.h"
@@ -63,10 +64,32 @@ namespace Oyl::Rendering::Vulkan
 		AcquireNextImage(SemaphoreHandle a_semaphore, FenceHandle a_fence);
 
 		uint32
-		GetCurrentImageIndex() const override;
+		GetImageCount() const override;
+
+	protected:
+		Rendering::ImageHandle
+		GetImageHandle(uint32 a_index) const override
+		{
+			return GetVulkanImageHandle(a_index);
+		}
+
+	public:
+		ImageHandle
+		GetVulkanImageHandle(uint32 a_index) const;
 
 		uint32
-		GetImageCount() const override;
+		GetCurrentImageIndex() const override;
+
+	protected:
+		Rendering::ImageHandle
+		GetCurrentImageHandle() const override
+		{
+			return GetCurrentVulkanImageHandle();
+		}
+
+	public:
+		ImageHandle
+		GetCurrentVulkanImageHandle() const;
 
 		const vk::raii::SwapchainKHR&
 		GetVkSwapChain() const;

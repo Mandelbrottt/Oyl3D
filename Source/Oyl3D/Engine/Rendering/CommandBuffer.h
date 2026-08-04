@@ -4,6 +4,7 @@
 #include <Core/UniqueHandle.h>
 #include <Core/Math/Vector.h>
 
+#include "Image.h"
 #include "SwapChain.h"
 
 namespace Oyl::Rendering
@@ -66,6 +67,14 @@ namespace Oyl::Rendering
 		virtual
 		void
 		DrawVertexBuffer(const VertexBufferImpl& a_buffer) const noexcept = 0;
+
+		virtual
+		void
+		TransitionImageLayout(ImageImpl& a_image, ImageLayout a_newLayout) const noexcept = 0;
+
+		virtual
+		void
+		TransitionImageLayout(ImageHandle a_image, ImageLayout a_oldLayout, ImageLayout a_newLayout) const noexcept = 0;
 
 	protected:
 		virtual

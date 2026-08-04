@@ -4,6 +4,10 @@
 
 #include "Rendering/Image.h"
 
+namespace Oyl::Rendering {
+	class CommandBufferImpl;
+}
+
 namespace Oyl::Rendering::Vulkan
 {
 	class DeviceImpl;
@@ -14,6 +18,8 @@ namespace Oyl::Rendering::Vulkan
 
 	class OYL_RENDERING_API ImageImpl : public Rendering::ImageImpl
 	{
+		friend class CommandBufferImpl;
+
 	public:
 		ImageImpl(nullptr_t);
 
@@ -32,17 +38,6 @@ namespace Oyl::Rendering::Vulkan
 		bool
 		IsValid() const override;
 
-		void
-		VkTransitionImageLayout(
-			const CommandBufferImpl& a_commandBuffer,
-			vk::ImageLayout a_oldLayout,
-			vk::ImageLayout a_newLayout,
-			vk::AccessFlags2 a_srcAccessMask,
-			vk::AccessFlags2 a_dstAccessMask,
-			vk::PipelineStageFlags2 a_srcStageMask,
-			vk::PipelineStageFlags2 a_dstStageMask
-		);
-
 		Vector2u
 		GetSize() const override;
 
@@ -52,6 +47,17 @@ namespace Oyl::Rendering::Vulkan
 		ImageFormat
 		GetFormat() const override;
 
+		ImageUsageFlags
+		GetUsageFlags() const override;
+
+		ImageLayout
+		GetLayout() const override;
+
+	private:
+		void
+		SetLayout(ImageLayout a_layout);
+
+	public:
 		const vk::raii::Image&
 		GetVkImage() const;
 

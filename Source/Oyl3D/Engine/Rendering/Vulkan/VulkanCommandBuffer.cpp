@@ -1,6 +1,7 @@
 ﻿#include "VulkanCommandBuffer.h"
 
 #include "VulkanDevice.h"
+#include "VulkanEnums.h"
 #include "VulkanImage.h"
 #include "VulkanShader.h"
 #include "VulkanSwapChain.h"
@@ -258,5 +259,126 @@ namespace Oyl::Rendering::Vulkan
 			vkCommandBuffer.draw(a_vertexBuffer.GetVertexCount(), 1, 0, 0);
 			vkCommandBuffer.bindVertexBuffers(0, *vkVertexBuffer, { a_vertexBuffer.GetVertexDataOffset() });
 		}
+	}
+
+	static
+	void
+	SetVkStageAndAccessMasksForLayouts(
+		vk::ImageMemoryBarrier2& a_barrier,
+		vk::ImageLayout a_oldLayout,
+		vk::ImageLayout a_newLayout
+	);
+
+	void
+	CommandBufferImpl::TransitionImageLayout(ImageImpl& a_image, ImageLayout a_newLayout) const noexcept
+	{
+		auto oldLayout = a_image.GetLayout();
+		TransitionImageLayout(a_image.GetHandle(), oldLayout, a_newLayout);
+		a_image.SetLayout(a_newLayout);
+	}
+
+	void
+	CommandBufferImpl::TransitionImageLayout(
+		ImageHandle a_imageHandle,
+		ImageLayout a_oldLayout,
+		ImageLayout a_newLayout
+	) const noexcept
+	{
+		OYL_PROFILE_FUNCTION();
+
+		auto vkOldLayout = ToVkEnum(a_oldLayout);
+		auto vkNewLayout = ToVkEnum(a_newLayout);
+
+		vk::ImageMemoryBarrier2 barrier = {
+			.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED,
+			.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED,
+			.image = a_imageHandle,
+			.subresourceRange = {
+				.aspectMask = vk::ImageAspectFlagBits::eColor,
+				.baseMipLevel = 0,
+				.levelCount = 1,
+				.baseArrayLayer = 0,
+				.layerCount = 1
+			}
+		};
+		SetVkStageAndAccessMasksForLayouts(barrier, vkOldLayout, vkNewLayout);
+
+		vk::DependencyInfo dependency_info = {
+			.dependencyFlags = {},
+			.imageMemoryBarrierCount = 1,
+			.pImageMemoryBarriers = &barrier
+		};
+		const auto& vkCommandBuffer = GetVkCommandBuffer();
+		vkCommandBuffer.pipelineBarrier2(dependency_info);
+	}
+
+	void
+	SetVkStageAndAccessMasksForLayouts(
+		vk::ImageMemoryBarrier2& a_barrier,
+		vk::ImageLayout a_oldLayout,
+		vk::ImageLayout a_newLayout
+	)
+	{
+		a_barrier.oldLayout = a_oldLayout;
+		a_barrier.newLayout = a_newLayout;
+
+		if (a_oldLayout == vk::ImageLayout::eUndefined)
+		{
+			if (a_newLayout == vk::ImageLayout::eColorAttachmentOptimal)
+			{
+				a_barrier.srcStageMask = vk::PipelineStageFlagBits2::eColorAttachmentOutput;
+				a_barrier.srcAccessMask = vk::AccessFlagBits2::eNone;
+				a_barrier.dstStageMask = vk::PipelineStageFlagBits2::eColorAttachmentOutput;
+				a_barrier.dstAccessMask = vk::AccessFlagBits2::eColorAttachmentWrite;
+			} else if (a_newLayout == vk::ImageLayout::eTransferDstOptimal)
+			{
+				a_barrier.srcStageMask = vk::PipelineStageFlagBits2::eTopOfPipe | vk::PipelineStageFlagBits2::eTransfer;
+				a_barrier.srcAccessMask = vk::AccessFlagBits2::eTransferWrite;
+				a_barrier.dstStageMask = vk::PipelineStageFlagBits2::eTransfer | vk::PipelineStageFlagBits2::eBlit;
+				a_barrier.dstAccessMask = vk::AccessFlagBits2::eTransferWrite;
+			}
+		}
+
+		if (a_oldLayout == vk::ImageLayout::eTransferDstOptimal)
+		{
+			if (a_newLayout == vk::ImageLayout::eColorAttachmentOptimal)
+			{
+				a_barrier.srcStageMask = vk::PipelineStageFlagBits2::eTransfer;
+				a_barrier.srcAccessMask = vk::AccessFlagBits2::eTransferWrite;
+				a_barrier.dstStageMask = vk::PipelineStageFlagBits2::eColorAttachmentOutput;
+				a_barrier.dstAccessMask = vk::AccessFlagBits2::eColorAttachmentWrite;
+			} else if (a_newLayout == vk::ImageLayout::eShaderReadOnlyOptimal)
+			{
+				a_barrier.srcStageMask = vk::PipelineStageFlagBits2::eTransfer;
+				a_barrier.srcAccessMask = vk::AccessFlagBits2::eTransferWrite;
+				a_barrier.dstStageMask = vk::PipelineStageFlagBits2::eFragmentShader;
+				a_barrier.dstAccessMask = vk::AccessFlagBits2::eShaderRead;
+			} else if (a_newLayout == vk::ImageLayout::ePresentSrcKHR)
+			{
+				a_barrier.srcStageMask = vk::PipelineStageFlagBits2::eBlit;
+				a_barrier.srcAccessMask = vk::AccessFlagBits2::eNone;
+				a_barrier.dstStageMask = vk::PipelineStageFlagBits2::eBlit;
+				a_barrier.dstAccessMask = vk::AccessFlagBits2::eTransferWrite;
+			}
+		}
+
+		if (a_oldLayout == vk::ImageLayout::eColorAttachmentOptimal)
+		{
+			if (a_newLayout == vk::ImageLayout::eTransferSrcOptimal)
+			{
+				a_barrier.srcStageMask = vk::PipelineStageFlagBits2::eColorAttachmentOutput;
+				a_barrier.srcAccessMask = vk::AccessFlagBits2::eColorAttachmentWrite;
+				a_barrier.dstStageMask = vk::PipelineStageFlagBits2::eBottomOfPipe;
+				a_barrier.dstAccessMask = vk::AccessFlagBits2::eNone;
+			}
+		}
+
+		if (a_oldLayout != vk::ImageLayout::eUndefined && (!a_barrier.srcStageMask || a_barrier.dstStageMask))
+			SetVkStageAndAccessMasksForLayouts(a_barrier, vk::ImageLayout::eUndefined, a_newLayout);
+
+		OYL_ASSERT(
+			a_barrier.srcStageMask
+			&& a_barrier.dstStageMask
+		);
 	}
 }

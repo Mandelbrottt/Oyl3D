@@ -135,6 +135,12 @@ namespace Oyl::Rendering::Vulkan
 		return true;
 	}
 
+	ImageHandle
+	SwapChainImpl::GetVulkanImageHandle(uint32 a_index) const
+	{
+		return m_impl->vkSwapChainImageHandles[a_index];
+	}
+
 	uint32
 	SwapChainImpl::GetCurrentImageIndex() const
 	{
@@ -145,6 +151,13 @@ namespace Oyl::Rendering::Vulkan
 	SwapChainImpl::GetImageCount() const
 	{
 		return (uint32) m_impl->vkSwapChainImageHandles.size();
+	}
+
+	ImageHandle
+	SwapChainImpl::GetCurrentVulkanImageHandle() const
+	{
+		auto index = GetCurrentImageIndex();
+		return GetVulkanImageHandle(index);
 	}
 
 	const vk::raii::SwapchainKHR&

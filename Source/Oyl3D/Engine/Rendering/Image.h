@@ -1,5 +1,6 @@
 ﻿#pragma once
 
+#include <Core/Array.h>
 #include <Core/PImpl.h>
 #include <Core/Math/Vector2.h>
 
@@ -8,6 +9,8 @@
 
 namespace Oyl::Rendering
 {
+	class CommandBufferImpl;
+
 	struct ImageHandle : OpaqueHandle<ImageHandle> {};
 
 	class ImageImpl : public IDeviceObject<ImageHandle>
@@ -18,8 +21,7 @@ namespace Oyl::Rendering
 	public:
 		struct CreateParams
 		{
-			const byte* pixelData = nullptr;
-			uint32 pixelLength = 0;
+			ArrayProxy<byte> pixelData;
 
 			Vector2u size;
 
@@ -41,6 +43,14 @@ namespace Oyl::Rendering
 		virtual
 		ImageFormat
 		GetFormat() const = 0;
+
+		virtual
+		ImageUsageFlags
+		GetUsageFlags() const = 0;
+
+		virtual
+		ImageLayout
+		GetLayout() const = 0;
 	};
 
 	using Image = PImpl<ImageImpl>;
