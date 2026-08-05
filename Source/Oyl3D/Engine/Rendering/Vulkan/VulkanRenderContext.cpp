@@ -11,8 +11,6 @@ static const std::vector REQUIRED_DEVICE_EXTENSION {
 	vk::KHRSwapchainExtensionName,
 };
 
-constexpr int MAX_FRAMES_IN_FLIGHT = 2;
-
 namespace Oyl::Rendering
 {
 	struct VulkanRenderContext::Impl

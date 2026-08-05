@@ -14,10 +14,13 @@ namespace Oyl
 	protected:
 		explicit
 		ArrayBase(Reflection::TypeId a_elementType)
-			: m_elementType(a_elementType) {}
+			: m_elementTypeId(a_elementType)
+		{
+			OYL_UNUSED(m_elementTypeId);
+		}
 
 	private:
-		Reflection::TypeId m_elementType;
+		Reflection::TypeId m_elementTypeId;
 	};
 
 	template<typename TElement>

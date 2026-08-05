@@ -10,7 +10,11 @@ namespace Oyl
 	protected:
 		DictionaryBase(Reflection::TypeId a_keyTypeId, Reflection::TypeId a_valueTypeId)
 			: m_keyTypeId(a_keyTypeId),
-			  m_valueTypeId(a_valueTypeId) {}
+			  m_valueTypeId(a_valueTypeId)
+		{
+			OYL_UNUSED(m_keyTypeId);
+			OYL_UNUSED(m_valueTypeId);
+		}
 
 	private:
 		Reflection::TypeId m_keyTypeId;

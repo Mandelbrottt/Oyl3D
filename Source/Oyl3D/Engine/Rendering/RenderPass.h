@@ -51,8 +51,9 @@ namespace Oyl::Rendering
 			return m_name;
 		}
 
+		[[maybe_unused]]
 		virtual
-		[[maybe_unused]] RenderPassBase&
+		RenderPassBase&
 		SetEnabled(bool a_enabled)
 		{
 			m_enabled = a_enabled;
@@ -66,8 +67,9 @@ namespace Oyl::Rendering
 			return m_enabled;
 		}
 
+		[[maybe_unused]] 
 		virtual
-		[[maybe_unused]] RenderPassBase&
+		RenderPassBase&
 		AddDependency(RenderPassId a_id)
 		{
 			if (a_id == RenderPassId::Null)
@@ -80,8 +82,9 @@ namespace Oyl::Rendering
 			return *this;
 		}
 
+		[[maybe_unused]] 
 		virtual
-		[[maybe_unused]] RenderPassBase&
+		RenderPassBase&
 		AddDependency(const RenderPassBase* a_renderPass)
 		{
 			return AddDependency(a_renderPass->GetId());
@@ -101,8 +104,9 @@ namespace Oyl::Rendering
 			return m_renderTarget;
 		}
 
+		[[maybe_unused]] 
 		virtual
-		[[maybe_unused]] RenderPassBase&
+		RenderPassBase&
 		SetRenderTarget(const RenderTarget* a_renderTarget)
 		{
 			m_renderTarget = a_renderTarget;

@@ -21,7 +21,7 @@ namespace Oyl::Rendering
 	public:
 		struct CreateParams
 		{
-			ArrayProxy<byte> pixelData;
+			ArrayProxy<byte> pixelData = {};
 
 			Vector2u size;
 

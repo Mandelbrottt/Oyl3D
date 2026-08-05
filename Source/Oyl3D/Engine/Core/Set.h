@@ -8,7 +8,10 @@ namespace Oyl
 	protected:
 		explicit
 		SetBase(Reflection::TypeId a_elementTypeId)
-			: m_elementTypeId(a_elementTypeId) {}
+			: m_elementTypeId(a_elementTypeId)
+		{
+			OYL_UNUSED(m_elementTypeId);
+		}
 
 	private:
 		Reflection::TypeId m_elementTypeId;
