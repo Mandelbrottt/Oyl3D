@@ -122,18 +122,16 @@ namespace Oyl::Rendering
 			ImageLayout::TransferDest
 		);
 
-		{
-			auto& image = *m_impl->renderGraph.GetSortedRenderPasses().Back()->GetRenderTarget()->GetColorAttachment(0);
-			commandBuffer->BlitImage(
-				image.GetId(),
-				ImageLayout::TransferSource,
-				Rect2D(Vector2i::Zero(), image.GetSize()),
-				swapChain.GetCurrentImageId(),
-				ImageLayout::TransferDest,
-				Rect2D(Vector2i::Zero(), swapChain.GetSize()),
-				ImageFilter::Nearest
-			);
-		}
+		auto& image = *m_impl->renderGraph.GetSortedRenderPasses().Back()->GetRenderTarget()->GetColorAttachment(0);
+		commandBuffer->BlitImage(
+			image.GetId(),
+			ImageLayout::TransferSource,
+			Rect2D(Vector2i::Zero(), image.GetSize()),
+			swapChain.GetCurrentImageId(),
+			ImageLayout::TransferDest,
+			Rect2D(Vector2i::Zero(), swapChain.GetSize()),
+			ImageFilter::Nearest
+		);
 
 		commandBuffer->TransitionImageLayout(
 			swapChain.GetCurrentImageId(),
