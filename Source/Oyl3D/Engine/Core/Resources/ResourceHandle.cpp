@@ -12,6 +12,11 @@ namespace Oyl::Internal
 	{
 		m_id = a_id;
 		m_resourceManager = a_manager;
+
+		if (!IsValid() || !m_resourceManager)
+			return;
+
+		m_resourceManager->IncrementResourceRef(m_type, m_id);
 	}
 
 	ResourceHandleBase&
@@ -22,10 +27,10 @@ namespace Oyl::Internal
 
 		OYL_ASSERT(m_type == a_other.m_type);
 
-		if (a_other.m_id != ResourceId::Null)
+		if (a_other.IsValid())
 			a_other.m_resourceManager->IncrementResourceRef(a_other.m_type, a_other.m_id);
 
-		if (m_id != ResourceId::Null)
+		if (IsValid())
 			m_resourceManager->Destroy(*this);
 
 		m_id = a_other.m_id;
@@ -42,7 +47,7 @@ namespace Oyl::Internal
 
 		OYL_ASSERT(m_type == a_other.m_type);
 
-		if (m_id != ResourceId::Null)
+		if (IsValid())
 			m_resourceManager->Destroy(*this);
 
 		m_id = a_other.m_id;
@@ -67,18 +72,22 @@ namespace Oyl::Internal
 
 	ResourceHandleBase::~ResourceHandleBase()
 	{
-		if (m_id == ResourceId::Null)
+		if (!IsValid())
 			return;
 
 		Release();
 	}
 
+	bool
+	ResourceHandleBase::IsValid() const
+	{
+		return m_id != ResourceId::Null;
+	}
+
 	ResourceBase*
 	ResourceHandleBase::Get()
 	{
-		assert(m_resourceManager && m_type != ResourceTypeId::Null);
-
-		if (m_id == ResourceId::Null)
+		if (!IsValid())
 			return nullptr;
 
 		return m_resourceManager->GetResource(m_type, m_id);
@@ -87,6 +96,9 @@ namespace Oyl::Internal
 	void
 	ResourceHandleBase::Release()
 	{
+		if (!IsValid())
+			return;
+
 		m_resourceManager->Destroy(*this);
 		m_id = ResourceId::Null;
 	}

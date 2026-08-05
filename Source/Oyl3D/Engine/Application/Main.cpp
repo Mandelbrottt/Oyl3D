@@ -5,10 +5,8 @@
 #include <Windows.h>
 
 #include <Core/Application/SharedLibrary.h>
-#include <Core/Resources/ResourceManager.h>
 
 #include <Rendering/Modules/RenderControlModule.h>
-#include <Rendering/Shaders/Shader.h>
 
 #include "Application/Modules/MainWindowModule.h"
 

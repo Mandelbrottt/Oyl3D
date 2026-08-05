@@ -1,0 +1,38 @@
+﻿#pragma once
+
+#include "RenderGraph.h"
+
+namespace Oyl::Rendering
+{
+	class RenderContext;
+
+	class OYL_RENDERING_API Renderer
+	{
+	public:
+		explicit
+		Renderer(RenderContext& a_renderContext);
+
+		NO_COPY(Renderer);
+		NO_MOVE(Renderer);
+
+		virtual
+		~Renderer();
+
+		void
+		Render();
+
+		RenderGraph&
+		GetRenderGraph();
+
+	private:
+		void
+		RecordCommandBuffer();
+
+		void
+		RecreateSwapChain();
+
+	private:
+		struct Impl;
+		std::unique_ptr<Impl> m_impl;
+	};
+}

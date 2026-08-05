@@ -4,7 +4,7 @@
 
 #include "Core/Modules/Module.h"
 
-#include "Rendering/Window/Window.h"
+#include "Rendering/Window.h"
 
 namespace Oyl
 {
@@ -59,6 +59,6 @@ namespace Oyl
 		OnWindowCursorMoveEvent(const WindowCursorMoveEvent& a_event);
 
 	private:
-		Window* m_window;
+		IWindow* m_window;
 	};
 }

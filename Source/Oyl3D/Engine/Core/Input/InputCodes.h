@@ -206,7 +206,7 @@ namespace Oyl::Input
 template<>
 struct OYL_CORE_API fmt::formatter<Oyl::Input::KeyboardKey> : formatter<std::string>
 {
-	using KeyboardKeyUnderlying = Oyl::Traits::UnderlyingType_T<Oyl::Input::KeyboardKey>;
+	using KeyboardKeyUnderlying = Oyl::Traits::TUnderlyingType<Oyl::Input::KeyboardKey>;
 
 	auto
 	format(
@@ -218,7 +218,7 @@ struct OYL_CORE_API fmt::formatter<Oyl::Input::KeyboardKey> : formatter<std::str
 template<>
 struct OYL_CORE_API fmt::formatter<Oyl::Input::MouseButton> : formatter<std::string>
 {
-	using MouseButtonUnderlying = Oyl::Traits::UnderlyingType_T<Oyl::Input::MouseButton>;
+	using MouseButtonUnderlying = Oyl::Traits::TUnderlyingType<Oyl::Input::MouseButton>;
 
 	auto
 	format(
@@ -230,7 +230,7 @@ struct OYL_CORE_API fmt::formatter<Oyl::Input::MouseButton> : formatter<std::str
 template<>
 struct OYL_CORE_API fmt::formatter<Oyl::Input::GamePadButton> : formatter<std::string>
 {
-	using GamePadButtonUnderlying = Oyl::Traits::UnderlyingType_T<Oyl::Input::GamePadButton>;
+	using GamePadButtonUnderlying = Oyl::Traits::TUnderlyingType<Oyl::Input::GamePadButton>;
 
 	auto
 	format(
@@ -242,7 +242,7 @@ struct OYL_CORE_API fmt::formatter<Oyl::Input::GamePadButton> : formatter<std::s
 template<>
 struct OYL_CORE_API fmt::formatter<Oyl::Input::GamePadAxis> : formatter<std::string>
 {
-	using GamePadAxisUnderlying = Oyl::Traits::UnderlyingType_T<Oyl::Input::GamePadAxis>;
+	using GamePadAxisUnderlying = Oyl::Traits::TUnderlyingType<Oyl::Input::GamePadAxis>;
 
 	auto
 	format(

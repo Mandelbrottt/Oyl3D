@@ -23,11 +23,11 @@ namespace Oyl::Internal
 
 		template<Traits::Resource TResource>
 		ResourceHandle<TResource>
-		Get(ResourceId a_id);
+		Get(ResourceId a_id) const;
 
 		template<Traits::ResourceHandle TResourceHandle>
 		TResourceHandle
-		Get(ResourceId a_id);
+		Get(ResourceId a_id) const;
 
 		void
 		Destroy(const ResourceHandleBase& a_handle);
@@ -55,7 +55,7 @@ namespace Oyl::Internal
 	ResourceManager::Load(TArgs&&... a_args)
 	{
 		auto resourceId = CreateResource<TResource>(std::forward<TArgs>(a_args)...);
-		return ResourceHandle<TResource>(resourceId, this);
+		return ResourceHandle<TResource>(ResourceHandleBase::Tag {}, resourceId, this);
 	}
 
 	template<Traits::ResourceHandle TResourceHandle, typename... TArgs>
@@ -67,18 +67,18 @@ namespace Oyl::Internal
 
 	template<Traits::Resource TResource>
 	ResourceHandle<TResource>
-	ResourceManager::Get(ResourceId a_id)
+	ResourceManager::Get(ResourceId a_id) const
 	{
 		OYL_ASSERT(a_id != ResourceId::Null);
 
 		constexpr auto typeId = TResource::GetResourceTypeId();
 		IncrementResourceRef(typeId, a_id);
-		return ResourceHandle<TResource>(a_id, this);
+		return ResourceHandle<TResource>(ResourceHandleBase::Tag {}, a_id, this);
 	}
 
 	template<Traits::ResourceHandle TResourceHandle>
 	TResourceHandle
-	ResourceManager::Get(ResourceId a_id)
+	ResourceManager::Get(ResourceId a_id) const
 	{
 		return Get<typename TResourceHandle::ResourceType>(a_id);
 	}

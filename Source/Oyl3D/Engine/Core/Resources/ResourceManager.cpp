@@ -20,7 +20,7 @@ namespace Oyl::Internal
 		ResourceId
 		GetNextId()
 		{
-			auto rawId = static_cast<Traits::UnderlyingType_T<ResourceId>>(nextId);
+			auto rawId = static_cast<Traits::TUnderlyingType<ResourceId>>(nextId);
 			nextId = static_cast<ResourceId>(rawId + 1);
 			return static_cast<ResourceId>(rawId);
 		}

@@ -1,16 +1,17 @@
 #pragma once
 
-#include <Core/Resources/ResourceManager.h>
-
-#include <Rendering/Renderer/RenderContext.h>
-
 #include "Core/Modules/Module.h"
+#include "Core/Resources/ResourceManager.h"
 
-#include "Rendering/Common.h"
+#include "Rendering/RenderEngineInstance.h"
+#include "Rendering/Renderer.h"
+#include "Rendering/RenderTarget.h"
+#include "Rendering/TestRenderPass.h"
+#include "Rendering/Window.h"
 
 namespace Oyl
 {
-	class Window;
+	class IWindow;
 
 	struct WindowClosedEvent;
 	struct WindowCreatedEvent;
@@ -18,8 +19,6 @@ namespace Oyl
 
 namespace Oyl::Rendering
 {
-	class RenderContext;
-
 	class OYL_RENDERING_API RenderControlModule : public Module
 	{
 		OYL_DECLARE_MODULE(RenderControlModule);
@@ -54,9 +53,14 @@ namespace Oyl::Rendering
 		OnWindowMinimizeEvent(const WindowMinimizeEvent& a_event);
 
 	private:
-		std::unique_ptr<RenderContext> m_renderContext;
-		std::unique_ptr<Internal::ResourceManager> m_resourceManager;
+		std::unique_ptr<Oyl::Internal::ResourceManager> m_resourceManager;
 
-		Window* m_mainWindow = nullptr;
+		std::unique_ptr<Internal::RenderEngineInstance> m_renderEngineInstance;
+
+		std::unique_ptr<Renderer> m_renderer;
+
+		IWindow* m_mainWindow = nullptr;
+
+		std::unique_ptr<TestRenderPass> m_testRenderPass;
 	};
 }

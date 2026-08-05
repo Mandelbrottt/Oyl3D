@@ -1,15 +1,17 @@
 #include "RenderControlModule.h"
 
-#include "Rendering/Renderer/RenderContext.h"
-#include "Rendering/Renderer/VulkanRenderContext.h"
-#include "Rendering/Window/GlfwWindow.h"
+#include "Rendering/RenderContext.h"
+#include "Rendering/RenderEngine.h"
+#include "Rendering/Glfw/GlfwWindow.h"
+#include "Rendering/Vulkan/VulkanRenderContext.h"
+#include "Rendering/Vulkan/VulkanRenderEngineInstance.h"
 
 namespace Oyl::Rendering
 {
 	bool
 	RenderControlModule::IsEnabled()
 	{
-		return !!m_renderContext;
+		return !!m_renderEngineInstance;
 	}
 
 	void
@@ -27,32 +29,51 @@ namespace Oyl::Rendering
 	void
 	RenderControlModule::Update()
 	{
-		m_renderContext->Update();
+		OYL_PROFILE_FUNCTION();
+
+		if (!m_renderEngineInstance)
+			return;
+
+		m_renderEngineInstance->GetRenderContext()->Update();
+		m_renderer->Render();
 	}
 
 	void
 	RenderControlModule::Shutdown()
 	{
-		if (!m_renderContext)
+		if (!m_renderEngineInstance->GetRenderContext())
 			return;
 
-		m_renderContext.release();
+		OYL_PROFILE_FUNCTION();
+
+		RenderEngine::SetInstance(nullptr);
+		m_renderEngineInstance.release();
 	}
 
 	void
 	RenderControlModule::OnWindowCreatedEvent(const WindowCreatedEvent& a_event)
 	{
+		if (m_mainWindow)
+			return;
+
+		OYL_PROFILE_FUNCTION();
+
 		// TODO: Check for main window, somehow?
 		m_mainWindow = a_event.window;
 
-		m_renderContext = std::make_unique<Vulkan::RenderContext>();
-		m_resourceManager = std::make_unique<Internal::ResourceManager>();
+		m_resourceManager = std::make_unique<Oyl::Internal::ResourceManager>();
 
-		auto renderContextParams = RenderContextParams {
-			.window = m_mainWindow,
-			.resourceManager = m_resourceManager.get()
-		};
-		m_renderContext->Init(renderContextParams);
+		m_renderEngineInstance = std::make_unique<VulkanRenderEngineInstance>(
+			VulkanRenderEngineInstance::CreateParams {
+				.window = m_mainWindow
+			}
+		);
+		RenderEngine::SetInstance(m_renderEngineInstance.get());
+
+		m_renderer = std::make_unique<Renderer>(*m_renderEngineInstance->GetRenderContext());
+
+		m_testRenderPass = std::make_unique<TestRenderPass>();
+		m_renderer->GetRenderGraph().AddRenderPass(m_testRenderPass.get());
 	}
 
 	void
@@ -61,7 +82,11 @@ namespace Oyl::Rendering
 		if (m_mainWindow != a_event.window)
 			return;
 
-		m_renderContext.release();
+		OYL_PROFILE_FUNCTION();
+
+		m_testRenderPass.release();
+		m_renderer.release();
+		m_renderEngineInstance.release();
 		m_resourceManager.release();
 	}
 
@@ -71,10 +96,14 @@ namespace Oyl::Rendering
 		if (m_mainWindow != a_event.window)
 			return;
 
-		if (!m_renderContext)
+		auto renderContext = m_renderEngineInstance->GetRenderContext();
+		if (!renderContext)
 			return;
 
-		m_renderContext->Resize(a_event.size);
+		OYL_PROFILE_FUNCTION();
+
+		renderContext->Resize(a_event.size);
+		m_testRenderPass->OnWindowResizedEvent(a_event);
 	}
 
 	void
@@ -83,11 +112,14 @@ namespace Oyl::Rendering
 		if (m_mainWindow != a_event.window)
 			return;
 
-		if (!m_renderContext)
+		auto renderContext = m_renderEngineInstance->GetRenderContext();
+		if (!renderContext)
 			return;
+
+		OYL_PROFILE_FUNCTION();
 
 		// Don't need to handle un-minimized case, OnWindowResizeEvent is fired
 		if (a_event.minimized)
-			m_renderContext->Resize({ 0, 0 });
+			renderContext->Resize({ 0, 0 });
 	}
 }

@@ -3,11 +3,12 @@
 	<s:String x:Key="/Default/CodeInspection/GeneratedCode/GeneratedFileMasks/=_002A_002Egenerated_002Eh/@EntryIndexedValue">*.generated.h</s:String>
 	<s:String x:Key="/Default/CodeInspection/Highlighting/InspectionSeverities/=CppEnforceCVQualifiersOrder/@EntryIndexedValue">SUGGESTION</s:String>
 	<s:String x:Key="/Default/CodeInspection/Highlighting/InspectionSeverities/=CppEnforceCVQualifiersPlacement/@EntryIndexedValue">SUGGESTION</s:String>
+	<s:String x:Key="/Default/CodeInspection/Highlighting/InspectionSeverities/=CppPolymorphicClassWithNonVirtualPublicDestructor/@EntryIndexedValue">ERROR</s:String>
 	<s:String x:Key="/Default/CodeInspection/Highlighting/InspectionSeverities/=CppTooWideScopeInitStatement/@EntryIndexedValue">DO_NOT_SHOW</s:String>
 	<s:String x:Key="/Default/CodeStyle/CodeFormatting/CommonFormatter/END_OF_LINE/@EntryValue">LF</s:String>
 	<s:Boolean x:Key="/Default/CodeStyle/CodeFormatting/CommonFormatter/ENFORCE_LINE_ENDING_STYLE/@EntryValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/CodeStyle/CodeFormatting/CommonFormatter/SHOW_AUTODETECT_CONFIGURE_FORMATTING_TIP/@EntryValue">False</s:Boolean>
-	<s:String x:Key="/Default/CodeStyle/CodeFormatting/CppCodeStyle/FunctionDeclarationStyle/@EntryValue">TrailingReturnType</s:String>
+	
 	<s:String x:Key="/Default/CodeStyle/CodeFormatting/CppCodeStyle/OverridingDestructorStyle/@EntryValue">Virtual</s:String>
 	
 	<s:Boolean x:Key="/Default/CodeStyle/CodeFormatting/CppFormatting/ALIGN_MULTILINE_BINARY_EXPRESSIONS_CHAIN/@EntryValue">True</s:Boolean>
@@ -37,7 +38,7 @@
 	
 	<s:Int64 x:Key="/Default/CodeStyle/CodeFormatting/CppFormatting/KEEP_BLANK_LINES_IN_CODE/@EntryValue">1</s:Int64>
 	<s:Int64 x:Key="/Default/CodeStyle/CodeFormatting/CppFormatting/KEEP_BLANK_LINES_IN_DECLARATIONS/@EntryValue">1</s:Int64>
-	<s:String x:Key="/Default/CodeStyle/CodeFormatting/CppFormatting/LINE_BREAK_AFTER_COLON_IN_MEMBER_INITIALIZER_LISTS/@EntryValue">ON_SINGLE_LINE</s:String>
+	
 	<s:Boolean x:Key="/Default/CodeStyle/CodeFormatting/CppFormatting/LINE_BREAK_AFTER_COMMA_IN_MEMBER_INITIALIZER_LISTS/@EntryValue">True</s:Boolean>
 	<s:String x:Key="/Default/CodeStyle/CodeFormatting/CppFormatting/LINE_BREAK_BEFORE_REQUIRES_CLAUSE/@EntryValue">LINE_BREAK</s:String>
 	<s:String x:Key="/Default/CodeStyle/CodeFormatting/CppFormatting/LINKAGE_SPECIFICATION_BRACES/@EntryValue">NEXT_LINE</s:String>
@@ -58,13 +59,14 @@
 	<s:String x:Key="/Default/CodeStyle/CodeFormatting/CppFormatting/TOPLEVEL_FUNCTION_DEFINITION_RETURN_TYPE_STYLE/@EntryValue">LINE_BREAK</s:String>
 	<s:Boolean x:Key="/Default/CodeStyle/CodeFormatting/CppFormatting/USE_INDENT_FROM_VS/@EntryValue">False</s:Boolean>
 	<s:Boolean x:Key="/Default/CodeStyle/CodeFormatting/CppFormatting/WRAP_AFTER_DECLARATION_LPAR/@EntryValue">True</s:Boolean>
-	<s:Boolean x:Key="/Default/CodeStyle/CodeFormatting/CppFormatting/WRAP_AFTER_INVOCATION_LPAR/@EntryValue">True</s:Boolean>
-	<s:String x:Key="/Default/CodeStyle/CodeFormatting/CppFormatting/WRAP_ARGUMENTS_STYLE/@EntryValue">CHOP_IF_LONG</s:String>
+	
+	
 	<s:String x:Key="/Default/CodeStyle/CodeFormatting/CppFormatting/WRAP_BASE_CLAUSE_STYLE/@EntryValue">CHOP_IF_LONG</s:String>
 	<s:Boolean x:Key="/Default/CodeStyle/CodeFormatting/CppFormatting/WRAP_BEFORE_COLON/@EntryValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/CodeStyle/CodeFormatting/CppFormatting/WRAP_BEFORE_DECLARATION_RPAR/@EntryValue">True</s:Boolean>
-	<s:Boolean x:Key="/Default/CodeStyle/CodeFormatting/CppFormatting/WRAP_BEFORE_INVOCATION_RPAR/@EntryValue">True</s:Boolean>
 	<s:String x:Key="/Default/CodeStyle/CodeFormatting/CppFormatting/WRAP_BRACED_INIT_LIST_STYLE/@EntryValue">CHOP_IF_LONG</s:String>
+	
+	
 	<s:String x:Key="/Default/CodeStyle/CodeFormatting/CppFormatting/WRAP_CTOR_INITIALIZER_STYLE/@EntryValue">CHOP_IF_LONG</s:String>
 	<s:Int64 x:Key="/Default/CodeStyle/CodeFormatting/CppFormatting/WRAP_LIMIT/@EntryValue">999</s:Int64>
 	<s:String x:Key="/Default/CodeStyle/CodeFormatting/CppFormatting/WRAP_PARAMETERS_STYLE/@EntryValue">CHOP_IF_LONG</s:String>
@@ -226,6 +228,8 @@
 	<s:String x:Key="/Default/CodeStyle/Generate/=EqualityMembers/Options/=ImplementIEquatable/@EntryIndexedValue">False</s:String>
 	<s:Boolean x:Key="/Default/CodeStyle/Generate/=Implementations/@KeyIndexDefined">True</s:Boolean>
 	<s:String x:Key="/Default/CodeStyle/Generate/=Implementations/Options/=Mutable/@EntryIndexedValue">True</s:String>
+	<s:String x:Key="/Default/CodeStyle/Naming/CppNaming/Abbreviations/=BGR/@EntryIndexedValue">BGR</s:String>
+	<s:String x:Key="/Default/CodeStyle/Naming/CppNaming/Abbreviations/=BGRA/@EntryIndexedValue">BGRA</s:String>
 	<s:String x:Key="/Default/CodeStyle/Naming/CppNaming/Abbreviations/=CS/@EntryIndexedValue">CS</s:String>
 	<s:String x:Key="/Default/CodeStyle/Naming/CppNaming/Abbreviations/=CV/@EntryIndexedValue">CV</s:String>
 	<s:String x:Key="/Default/CodeStyle/Naming/CppNaming/Abbreviations/=CXX/@EntryIndexedValue">CXX</s:String>
@@ -234,7 +238,11 @@
 	<s:String x:Key="/Default/CodeStyle/Naming/CppNaming/Abbreviations/=JS/@EntryIndexedValue">JS</s:String>
 	<s:String x:Key="/Default/CodeStyle/Naming/CppNaming/Abbreviations/=KB/@EntryIndexedValue">KB</s:String>
 	<s:String x:Key="/Default/CodeStyle/Naming/CppNaming/Abbreviations/=MB/@EntryIndexedValue">MB</s:String>
+	<s:String x:Key="/Default/CodeStyle/Naming/CppNaming/Abbreviations/=RGB/@EntryIndexedValue">RGB</s:String>
+	<s:String x:Key="/Default/CodeStyle/Naming/CppNaming/Abbreviations/=RGBA/@EntryIndexedValue">RGBA</s:String>
+	<s:String x:Key="/Default/CodeStyle/Naming/CppNaming/Abbreviations/=SL/@EntryIndexedValue">SL</s:String>
 	<s:String x:Key="/Default/CodeStyle/Naming/CppNaming/Abbreviations/=SP/@EntryIndexedValue">SP</s:String>
+	<s:String x:Key="/Default/CodeStyle/Naming/CppNaming/Abbreviations/=SRGB/@EntryIndexedValue">SRGB</s:String>
 	<s:String x:Key="/Default/CodeStyle/Naming/CppNaming/Abbreviations/=SS/@EntryIndexedValue">SS</s:String>
 	<s:String x:Key="/Default/CodeStyle/Naming/CppNaming/Abbreviations/=WS/@EntryIndexedValue">WS</s:String>
 	<s:String x:Key="/Default/CodeStyle/Naming/CppNaming/Rules/=Class_0020and_0020struct_0020fields/@EntryIndexedValue">&lt;NamingElement Priority="11"&gt;&lt;Descriptor Static="Indeterminate" Constexpr="Indeterminate" Const="Indeterminate" Volatile="Indeterminate" Accessibility="NOT_APPLICABLE"&gt;&lt;type Name="class field" /&gt;&lt;type Name="struct field" /&gt;&lt;/Descriptor&gt;&lt;Policy Inspect="True" Prefix="" Suffix="" Style="aaBb_aaBb" /&gt;&lt;/NamingElement&gt;</s:String>
@@ -296,6 +304,7 @@
 	<s:String x:Key="/Default/CodeStyle/Naming/XamlNaming/UserRules/=NAMESPACE_005FALIAS/@EntryIndexedValue">&lt;Policy Inspect="True" Prefix="" Suffix="" Style="aaBb" /&gt;</s:String>
 	<s:String x:Key="/Default/CodeStyle/Naming/XamlNaming/UserRules/=XAML_005FFIELD/@EntryIndexedValue">&lt;Policy Inspect="True" Prefix="" Suffix="" Style="AaBb" /&gt;</s:String>
 	<s:String x:Key="/Default/CodeStyle/Naming/XamlNaming/UserRules/=XAML_005FRESOURCE/@EntryIndexedValue">&lt;Policy Inspect="True" Prefix="" Suffix="" Style="AaBb" /&gt;</s:String>
+	<s:Boolean x:Key="/Default/Environment/ExcludedFiles/FilesAndFoldersThirdParty/=_002E_002E_005C_002E_002E_005C_002E_002E_005CPackages/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/Environment/SettingsMigration/IsMigratorApplied/=JetBrains_002EReSharper_002EFeature_002EServices_002ECpp_002ECodeStyle_002ECppCodeStyleSettingsMigration/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/Environment/SettingsMigration/IsMigratorApplied/=JetBrains_002EReSharper_002EFeature_002EServices_002ECpp_002ECodeStyle_002EIncludesOrder_002ECppIncludeDirectiveSettingsMigration/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/Environment/SettingsMigration/IsMigratorApplied/=JetBrains_002EReSharper_002EFeature_002EServices_002ECpp_002ECodeStyle_002ESettingsUpgrade_002EFunctionReturnStyleSettingsUpgrader/@EntryIndexedValue">True</s:Boolean>
@@ -306,7 +315,222 @@
 	<s:Boolean x:Key="/Default/Environment/SettingsMigration/IsMigratorApplied/=JetBrains_002EReSharper_002EPsi_002ECSharp_002ECodeStyle_002ESettingsUpgrade_002EPredefinedNamingRulesToUserRulesUpgrade/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/GrammarAndSpelling/GrammarChecking/Exceptions/=_005B/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/GrammarAndSpelling/GrammarChecking/Exceptions/=_005D/@EntryIndexedValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=03EEAFC468874A4597BC25D07F970FDF/@KeyIndexDefined">True</s:Boolean>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=03EEAFC468874A4597BC25D07F970FDF/Applicability/=File/@EntryIndexedValue">True</s:Boolean>
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=03EEAFC468874A4597BC25D07F970FDF/CustomProperties/=Extension/@EntryIndexedValue">h</s:String>
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=03EEAFC468874A4597BC25D07F970FDF/CustomProperties/=FileName/@EntryIndexedValue">$NAME$</s:String>
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=03EEAFC468874A4597BC25D07F970FDF/CustomProperties/=ValidateFileName/@EntryIndexedValue">False</s:String>
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=03EEAFC468874A4597BC25D07F970FDF/Description/@EntryValue">Oyl Base Device Class</s:String>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=03EEAFC468874A4597BC25D07F970FDF/Field/=NAME/@KeyIndexDefined">True</s:Boolean>
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=03EEAFC468874A4597BC25D07F970FDF/Field/=NAME/Expression/@EntryValue">getAlphaNumericFileNameWithoutExtension()</s:String>
+	<s:Int64 x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=03EEAFC468874A4597BC25D07F970FDF/Field/=NAME/InitialRange/@EntryValue">2</s:Int64>
+	<s:Int64 x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=03EEAFC468874A4597BC25D07F970FDF/Field/=NAME/Order/@EntryValue">0</s:Int64>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=03EEAFC468874A4597BC25D07F970FDF/Reformat/@EntryValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=03EEAFC468874A4597BC25D07F970FDF/Scope/=CD5B1AEA8099834C8F10F84286AA88CA/@KeyIndexDefined">True</s:Boolean>
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=03EEAFC468874A4597BC25D07F970FDF/Scope/=CD5B1AEA8099834C8F10F84286AA88CA/Type/@EntryValue">InCppProjectFile</s:String>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=03EEAFC468874A4597BC25D07F970FDF/ShortenQualifiedReferences/@EntryValue">True</s:Boolean>
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=03EEAFC468874A4597BC25D07F970FDF/Text/@EntryValue">#pragma once
+
+#include "DeviceObject.h"
+
+namespace Oyl::Rendering
+{
+	struct $NAME$Handle : OpaqueHandle&lt;$NAME$Handle&gt; {};
+
+	class $NAME$ : public DeviceObject&lt;$NAME$Handle&gt;
+	{
+	protected:
+		$NAME$() = default;
+
+		DEFAULT_MOVE($NAME$);
+
+	public:
+		NO_COPY($NAME$);
+
+		virtual
+		~$NAME$() = default;
+	};
+}
+</s:String>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=5944C2B410423E4085A72C09C543EE1C/@KeyIndexDefined">True</s:Boolean>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=5944C2B410423E4085A72C09C543EE1C/Applicability/=File/@EntryIndexedValue">True</s:Boolean>
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=5944C2B410423E4085A72C09C543EE1C/CustomProperties/=Extension/@EntryIndexedValue">h</s:String>
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=5944C2B410423E4085A72C09C543EE1C/CustomProperties/=FileName/@EntryIndexedValue">Vulkan$NAME$</s:String>
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=5944C2B410423E4085A72C09C543EE1C/CustomProperties/=ValidateFileName/@EntryIndexedValue">False</s:String>
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=5944C2B410423E4085A72C09C543EE1C/Description/@EntryValue">Oyl Vulkan Device Class</s:String>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=5944C2B410423E4085A72C09C543EE1C/Field/=API/@KeyIndexDefined">True</s:Boolean>
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=5944C2B410423E4085A72C09C543EE1C/Field/=API/Expression/@EntryValue">constant("PROJECT")</s:String>
+	<s:Int64 x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=5944C2B410423E4085A72C09C543EE1C/Field/=API/Order/@EntryValue">1</s:Int64>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=5944C2B410423E4085A72C09C543EE1C/Field/=NAME/@KeyIndexDefined">True</s:Boolean>
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=5944C2B410423E4085A72C09C543EE1C/Field/=NAME/Expression/@EntryValue">getAlphaNumericFileNameWithoutExtension()</s:String>
+	<s:Int64 x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=5944C2B410423E4085A72C09C543EE1C/Field/=NAME/InitialRange/@EntryValue">1</s:Int64>
+	<s:Int64 x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=5944C2B410423E4085A72C09C543EE1C/Field/=NAME/Order/@EntryValue">0</s:Int64>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=5944C2B410423E4085A72C09C543EE1C/Field/=VULKAN_005FCLASS/@KeyIndexDefined">True</s:Boolean>
+	<s:Int64 x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=5944C2B410423E4085A72C09C543EE1C/Field/=VULKAN_005FCLASS/Order/@EntryValue">2</s:Int64>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=5944C2B410423E4085A72C09C543EE1C/Reformat/@EntryValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=5944C2B410423E4085A72C09C543EE1C/Scope/=CD5B1AEA8099834C8F10F84286AA88CA/@KeyIndexDefined">True</s:Boolean>
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=5944C2B410423E4085A72C09C543EE1C/Scope/=CD5B1AEA8099834C8F10F84286AA88CA/Type/@EntryValue">InCppProjectFile</s:String>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=5944C2B410423E4085A72C09C543EE1C/Section/=171A3E994C835E4EAD3CC62935F3210A/@KeyIndexDefined">True</s:Boolean>
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=5944C2B410423E4085A72C09C543EE1C/Section/=171A3E994C835E4EAD3CC62935F3210A/LocationSelectorConfig/@EntryValue">&lt;RelativeConfig File="$NAME$.cpp" /&gt;</s:String>
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=5944C2B410423E4085A72C09C543EE1C/Section/=171A3E994C835E4EAD3CC62935F3210A/LocationSelectorName/@EntryValue">manual</s:String>
+	<s:Int64 x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=5944C2B410423E4085A72C09C543EE1C/Section/=171A3E994C835E4EAD3CC62935F3210A/Order/@EntryValue">0</s:Int64>
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=5944C2B410423E4085A72C09C543EE1C/Section/=171A3E994C835E4EAD3CC62935F3210A/SectionPlain/Text/@EntryValue">#include "Vulkan$NAME$.h"
+
+namespace Oyl::Rendering::Vulkan
+{
+	struct $NAME$::Impl
+	{
+		
+	};
+
+	$NAME$::$NAME$()
+		: m_impl(nullptr) {}
+
+	$NAME$::$NAME$(const CreateParams&amp; a_params)
+		: m_impl(std::make_unique&lt;Impl&gt;())
+	{
+		OYL_PROFILE_FUNCTION();
+
+		
+	}
+
+	$NAME$::$NAME$($NAME$&amp;&amp; a_other) noexcept
+	{
+		*this = std::move(a_other);
+	}
+
+	$NAME$&amp;
+	$NAME$::operator=($NAME$&amp;&amp; a_other) noexcept
+	{
+		if (this != &amp;a_other)
+		{
+			std::swap(m_impl, a_other.m_impl);
+		}
+		return *this;
+	}
+
+	$NAME$::~$NAME$()
+	{
+		$NAME$::Destroy();
+	}
+
+	void
+	$NAME$::Destroy()
+	{
+		if (!IsValid())
+			return;
+
+		TODO_IMPLEMENT_ME;
+	}
+
+	bool
+	$NAME$::IsValid() const
+	{
+		return m_impl
+		       &amp;&amp; TODO_IMPLEMENT_ME;
+	}
+}
+</s:String>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=5944C2B410423E4085A72C09C543EE1C/ShortenQualifiedReferences/@EntryValue">True</s:Boolean>
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=5944C2B410423E4085A72C09C543EE1C/Text/@EntryValue">#pragma once
+
+#include &lt;vulkan/vulkan_raii.hpp&gt;
+
+#include "Rendering/$NAME$.h"
+
+namespace Oyl::Rendering::Vulkan
+{
+	using $NAME$Handle = OpaqueHandleConvertible&lt;$NAME$Handle, $VULKAN_CLASS$&gt;;
+
+	class OYL_$API$_API $NAME$ : public Rendering::$NAME$
+	{
+	public:
+		$NAME$();
+
+		struct CreateParams
+		{
+			
+		};
+
+		explicit
+		$NAME$(const CreateParams&amp; a_params);
+
+		$NAME$($NAME$&amp;&amp; a_other) noexcept;
+		$NAME$&amp;
+		operator =($NAME$&amp;&amp; a_other) noexcept;
+
+		virtual
+		~$NAME$();
+
+		void
+		Destroy() override;
+
+		bool
+		IsValid() const override;
+
+	private:
+		struct Impl;
+		std::unique_ptr&lt;Impl&gt; m_impl;
+	};
+}
+</s:String>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=B07AB8B7E0DAFD4D85BE612EBE17FCF4/@KeyIndexDefined">True</s:Boolean>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=B07AB8B7E0DAFD4D85BE612EBE17FCF4/Applicability/=File/@EntryIndexedValue">True</s:Boolean>
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=B07AB8B7E0DAFD4D85BE612EBE17FCF4/CustomProperties/=Extension/@EntryIndexedValue">h</s:String>
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=B07AB8B7E0DAFD4D85BE612EBE17FCF4/CustomProperties/=FileName/@EntryIndexedValue">$NAME$</s:String>
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=B07AB8B7E0DAFD4D85BE612EBE17FCF4/CustomProperties/=ValidateFileName/@EntryIndexedValue">True</s:String>
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=B07AB8B7E0DAFD4D85BE612EBE17FCF4/Description/@EntryValue">Oyl Engine Class</s:String>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=B07AB8B7E0DAFD4D85BE612EBE17FCF4/Field/=CLASS/@KeyIndexDefined">True</s:Boolean>
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=B07AB8B7E0DAFD4D85BE612EBE17FCF4/Field/=CLASS/Expression/@EntryValue">getUpperCaseAlphaNumericFileName()</s:String>
+	<s:Int64 x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=B07AB8B7E0DAFD4D85BE612EBE17FCF4/Field/=CLASS/Order/@EntryValue">3</s:Int64>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=B07AB8B7E0DAFD4D85BE612EBE17FCF4/Field/=HEADER/@KeyIndexDefined">True</s:Boolean>
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=B07AB8B7E0DAFD4D85BE612EBE17FCF4/Field/=HEADER/Expression/@EntryValue">cppFileheader()</s:String>
+	<s:Int64 x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=B07AB8B7E0DAFD4D85BE612EBE17FCF4/Field/=HEADER/Order/@EntryValue">0</s:Int64>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=B07AB8B7E0DAFD4D85BE612EBE17FCF4/Field/=NAME/@KeyIndexDefined">True</s:Boolean>
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=B07AB8B7E0DAFD4D85BE612EBE17FCF4/Field/=NAME/Expression/@EntryValue">getFileNameWithoutExtension()</s:String>
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=B07AB8B7E0DAFD4D85BE612EBE17FCF4/Field/=NAME/InitialSection/@EntryValue">61DCFDC3BE250A468EDFA2C594F229D1</s:String>
+	<s:Int64 x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=B07AB8B7E0DAFD4D85BE612EBE17FCF4/Field/=NAME/Order/@EntryValue">1</s:Int64>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=B07AB8B7E0DAFD4D85BE612EBE17FCF4/Field/=NAMESPACE/@KeyIndexDefined">True</s:Boolean>
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=B07AB8B7E0DAFD4D85BE612EBE17FCF4/Field/=NAMESPACE/Expression/@EntryValue">getDefaultNamespace()</s:String>
+	<s:Int64 x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=B07AB8B7E0DAFD4D85BE612EBE17FCF4/Field/=NAMESPACE/Order/@EntryValue">2</s:Int64>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=B07AB8B7E0DAFD4D85BE612EBE17FCF4/Reformat/@EntryValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=B07AB8B7E0DAFD4D85BE612EBE17FCF4/Scope/=CD5B1AEA8099834C8F10F84286AA88CA/@KeyIndexDefined">True</s:Boolean>
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=B07AB8B7E0DAFD4D85BE612EBE17FCF4/Scope/=CD5B1AEA8099834C8F10F84286AA88CA/Type/@EntryValue">InCppProjectFile</s:String>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=B07AB8B7E0DAFD4D85BE612EBE17FCF4/Section/=61DCFDC3BE250A468EDFA2C594F229D1/@KeyIndexDefined">True</s:Boolean>
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=B07AB8B7E0DAFD4D85BE612EBE17FCF4/Section/=61DCFDC3BE250A468EDFA2C594F229D1/LocationSelectorConfig/@EntryValue">&lt;RelativeConfig File="$NAME$.cpp" /&gt;</s:String>
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=B07AB8B7E0DAFD4D85BE612EBE17FCF4/Section/=61DCFDC3BE250A468EDFA2C594F229D1/LocationSelectorName/@EntryValue">manual</s:String>
+	<s:Int64 x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=B07AB8B7E0DAFD4D85BE612EBE17FCF4/Section/=61DCFDC3BE250A468EDFA2C594F229D1/Order/@EntryValue">0</s:Int64>
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=B07AB8B7E0DAFD4D85BE612EBE17FCF4/Section/=61DCFDC3BE250A468EDFA2C594F229D1/SectionPlain/Text/@EntryValue">#include "$NAME$.h"&#xD;
+&#xD;
+namespace $NAMESPACE$ &#xD;
+{&#xD;
+	$CLASS$::$CLASS$()&#xD;
+	{&#xD;
+		TODO_IMPLEMENT_ME();&#xD;
+	}&#xD;
+&#xD;
+	$CLASS$::~$CLASS$()&#xD;
+	{&#xD;
+		TODO_IMPLEMENT_ME();&#xD;
+	}&#xD;
+}</s:String>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=B07AB8B7E0DAFD4D85BE612EBE17FCF4/ShortenQualifiedReferences/@EntryValue">True</s:Boolean>
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=B07AB8B7E0DAFD4D85BE612EBE17FCF4/Text/@EntryValue">$HEADER$#pragma once
+
+namespace $NAMESPACE$
+{
+	class $CLASS$
+	{
+	public:
+		$CLASS$();
+
+		~$CLASS$();
+	};
+}&#xD;
+</s:String>
 	<s:Boolean x:Key="/Default/UserDictionary/Words/=atexit/@EntryIndexedValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/UserDictionary/Words/=BGRA/@EntryIndexedValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/UserDictionary/Words/=Bilinear/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/UserDictionary/Words/=cbyte/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/UserDictionary/Words/=Dpad/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/UserDictionary/Words/=dxcompiler/@EntryIndexedValue">True</s:Boolean>
@@ -320,4 +544,6 @@
 	<s:Boolean x:Key="/Default/UserDictionary/Words/=rbegin/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/UserDictionary/Words/=SPDLOG/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/UserDictionary/Words/=Spirv/@EntryIndexedValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/UserDictionary/Words/=SRGB/@EntryIndexedValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/UserDictionary/Words/=Trilinear/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/UserDictionary/Words/=typeidof/@EntryIndexedValue">True</s:Boolean></wpf:ResourceDictionary>

@@ -5,7 +5,7 @@
 #include "Core/Application/ApplicationEvents.h"
 #include "Core/Logging/Logging.h"
 
-#include "Rendering/Window/GlfwWindow.h"
+#include "Rendering/Glfw/GlfwWindow.h"
 
 namespace Oyl
 {
@@ -46,7 +46,7 @@ namespace Oyl
 
 		glfwSetErrorCallback(GlfwErrorCallback);
 
-		WindowParams params {
+		Glfw::Window::CreateParams params {
 			.size = { 1280, 720 },
 			.title = "Oyl3D - Now with more code!",
 			.windowState = WS_None,
