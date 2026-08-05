@@ -13,9 +13,9 @@
 
 #include "Rendering/Device.h"
 
-namespace Oyl::Glfw
+namespace Oyl
 {
-	class Window;
+	class IWindow;
 }
 
 namespace Oyl::Rendering
@@ -31,16 +31,16 @@ namespace Oyl::Rendering
 
 		struct CreateParams
 		{
-			const IWindow& window;
-
 			CommandQueueFlags commandQueueFlags;
 
 			const char* const* ppRequiredDeviceExtensionsData;
 			size_t requiredDeviceExtensionsLength;
+
+			const IWindow* window;
 		};
 
 		static
-		PImpl<VulkanDevice>
+		UniquePtrImplicitConvertible<VulkanDevice>
 		Create(const CreateParams& a_params);
 
 		explicit
@@ -54,9 +54,6 @@ namespace Oyl::Rendering
 
 		bool
 		IsValid() const override;
-
-		const IWindow*
-		GetWindow() const override;
 
 		const VulkanCommandQueue*
 		GetCommandQueue(CommandQueueFlagBits a_flag) const override;
@@ -96,12 +93,6 @@ namespace Oyl::Rendering
 
 	private:
 		void
-		CreateInstance();
-
-		void
-		CreateDebugMessenger();
-
-		void
 		CreateSurface();
 
 		void
@@ -114,13 +105,9 @@ namespace Oyl::Rendering
 		CreateCommandQueues();
 
 	private:
-		const Glfw::Window* m_window = nullptr;
+		const IWindow* m_window = nullptr;
 
 		std::vector<std::string> m_requiredDeviceExtensions;
-
-		vk::raii::Context m_context;
-		vk::raii::Instance m_instance = nullptr;
-		vk::raii::DebugUtilsMessengerEXT m_debugMessenger = nullptr;
 
 		vk::raii::SurfaceKHR m_surface = nullptr;
 
@@ -131,5 +118,5 @@ namespace Oyl::Rendering
 		std::unordered_map<CommandQueueFlagBits, VulkanCommandQueue> m_queues;
 	};
 
-	using VulkanDeviceHandle = PImpl<VulkanDevice>;
+	using VulkanDeviceHandle = UniquePtrImplicitConvertible<VulkanDevice>;
 }

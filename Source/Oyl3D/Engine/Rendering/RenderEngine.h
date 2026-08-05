@@ -1,19 +1,87 @@
 #pragma once
 
-#include "Rendering/Device.h"
-#include "Rendering/RenderEngineInstance.h"
+#include <Core/UniquePtr.h>
+#include <Core/Math/Vector.h>
 
-namespace Oyl::Rendering
+#include "Enums.h"
+
+#include "Rendering/Device.h"
+#include "Rendering/RenderContext.h"
+#include "Rendering/ShaderCompiler.h"
+
+namespace Oyl::Internal
 {
-	class OYL_RENDERING_API RenderEngine final
+	class ResourceManager;
+}
+
+namespace Oyl
+{
+	namespace Internal
+	{
+		class OYL_RENDERING_API RenderEngineInstance
+		{
+		protected:
+			RenderEngineInstance();
+
+			struct CreateParams
+			{
+				std::unique_ptr<Rendering::ShaderCompiler> shaderCompiler;
+				std::unique_ptr<Rendering::RenderContext> renderContext;
+			};
+
+			explicit
+			RenderEngineInstance(CreateParams a_params);
+
+		public:
+			virtual
+			~RenderEngineInstance();
+
+	#pragma region Instance State
+			virtual
+			ResourceManager*
+			GetResourceManager() const;
+
+			virtual
+			const Rendering::ShaderCompiler*
+			GetShaderCompiler() const;
+
+			virtual
+			const Rendering::Device*
+			GetCurrentDevice() const;
+
+			virtual
+			Vector2u
+			GetCurrentViewPortSize() const;
+
+			virtual
+			Rendering::RenderContext*
+			GetRenderContext();
+
+			virtual
+			const Rendering::RenderContext*
+			GetRenderContext() const;
+	#pragma endregion Instance State
+
+		protected:
+			std::unique_ptr<ResourceManager> m_resourceManager;
+			std::unique_ptr<Rendering::ShaderCompiler> m_shaderCompiler;
+			std::unique_ptr<Rendering::Device> m_device;
+
+			// TEMPORARY: Should the renderer own the render context?
+			std::unique_ptr<Rendering::RenderContext> m_renderContext;
+		};
+	}
+
+	class OYL_RENDERING_API RenderEngine
 	{
 		friend class RenderControlModule;
+		friend class RenderDirectorModule;
 
 	public:
 		RenderEngine() = delete;
 
 		static
-		const Device*
+		const Rendering::Device*
 		GetCurrentDevice()
 		{
 			return s_instance->GetCurrentDevice();
@@ -27,37 +95,27 @@ namespace Oyl::Rendering
 		}
 
 		static
-		const ShaderCompiler*
+		const Rendering::ShaderCompiler*
 		GetShaderCompiler()
 		{
 			return s_instance->GetShaderCompiler();
 		}
 
-		//static
-		//Shader
-		//CreateShader(ShaderOptions a_options)
-		//{
-		//	return s_instance->CreateShader(std::move(a_options));
-		//}
+	protected:
+		static
+		UniquePtr<Internal::RenderEngineInstance>
+		CreateInstance(Rendering::GraphicsApi a_api);
 
-		//static
-		//VertexBuffer
-		//CreateVertexBuffer(VertexBufferOptions a_options)
-		//{
-		//	return s_instance->CreateVertexBuffer(std::move(a_options));
-		//}
-
-	private:
 		static
 		Internal::RenderEngineInstance*
-		GetInstance()
+		CurrentInstance()
 		{
 			return s_instance;
 		}
 
 		static
 		void
-		SetInstance(Internal::RenderEngineInstance* a_instance)
+		SetCurrentInstance(Internal::RenderEngineInstance* a_instance)
 		{
 			s_instance = a_instance;
 		}

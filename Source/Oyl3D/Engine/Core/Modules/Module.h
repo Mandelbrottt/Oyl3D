@@ -22,6 +22,9 @@ namespace Oyl
 	public:
 		Module();
 
+		DEFAULT_MOVE(Module);
+		NO_COPY(Module);
+
 		virtual
 		~Module();
 

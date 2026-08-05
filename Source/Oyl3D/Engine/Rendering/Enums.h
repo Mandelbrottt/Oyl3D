@@ -19,6 +19,14 @@ namespace Oyl::Rendering
 
 	//////////////////////////////////////////////////////////////////////////////
 
+	enum class GraphicsApi
+	{
+		None,
+		Vulkan,
+	};
+
+	//////////////////////////////////////////////////////////////////////////////
+
 	enum class ImageUsageFlagBits : uint32
 	{
 		ColorAttachment = 1 << 0,
@@ -30,17 +38,6 @@ namespace Oyl::Rendering
 	OYL_ENUM_CLASS_BITWISE_OPERATIONS(ImageUsageFlagBits)
 
 	using ImageUsageFlags = EnumFlags<ImageUsageFlagBits>;
-
-	//////////////////////////////////////////////////////////////////////////////
-
-	enum class PipelineStageFlagBits : uint32
-	{
-		ColorAttachmentOutput = 1 << 0,
-	};
-
-	OYL_ENUM_CLASS_BITWISE_OPERATIONS(PipelineStageFlagBits)
-
-	using PipelineStageFlags = EnumFlags<PipelineStageFlagBits>;
 
 	//////////////////////////////////////////////////////////////////////////////
 
@@ -64,6 +61,8 @@ namespace Oyl::Rendering
 		BGRA_8_SRGB
 	};
 
+	//////////////////////////////////////////////////////////////////////////////
+
 	enum class ImageLayout
 	{
 		None,
@@ -75,6 +74,17 @@ namespace Oyl::Rendering
 		TransferDest,
 		PresentSource,
 	};
+
+	//////////////////////////////////////////////////////////////////////////////
+
+	enum class PipelineStageFlagBits : uint32
+	{
+		ColorAttachmentOutput = 1 << 0,
+	};
+
+	OYL_ENUM_CLASS_BITWISE_OPERATIONS(PipelineStageFlagBits)
+
+	using PipelineStageFlags = EnumFlags<PipelineStageFlagBits>;
 
 	//////////////////////////////////////////////////////////////////////////////
 

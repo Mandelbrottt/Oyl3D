@@ -2,11 +2,8 @@
 
 #include "Rendering/RenderContext.h"
 #include "Rendering/RenderEngine.h"
-#include "Rendering/Glfw/GlfwWindow.h"
-#include "Rendering/Vulkan/VulkanRenderContext.h"
-#include "Rendering/Vulkan/VulkanRenderEngineInstance.h"
 
-namespace Oyl::Rendering
+namespace Oyl
 {
 	bool
 	RenderControlModule::IsEnabled()
@@ -46,8 +43,8 @@ namespace Oyl::Rendering
 
 		OYL_PROFILE_FUNCTION();
 
-		RenderEngine::SetInstance(nullptr);
-		m_renderEngineInstance.release();
+		RenderEngine::SetCurrentInstance(nullptr);
+		m_renderEngineInstance.Reset();
 	}
 
 	void
@@ -61,18 +58,19 @@ namespace Oyl::Rendering
 		// TODO: Check for main window, somehow?
 		m_mainWindow = a_event.window;
 
-		m_resourceManager = std::make_unique<Oyl::Internal::ResourceManager>();
+		m_resourceManager = std::make_unique<Internal::ResourceManager>();
 
-		m_renderEngineInstance = std::make_unique<VulkanRenderEngineInstance>(
-			VulkanRenderEngineInstance::CreateParams {
-				.window = m_mainWindow
-			}
-		);
-		RenderEngine::SetInstance(m_renderEngineInstance.get());
+		m_renderEngineInstance = RenderEngine::CreateInstance(Rendering::GraphicsApi::Vulkan);
+		//m_renderEngineInstance = std::make_unique<VulkanRenderEngineInstance>(
+		//	VulkanRenderEngineInstance::CreateParams {
+		//		.window = m_mainWindow
+		//	}
+		//);
+		RenderEngine::SetCurrentInstance(&m_renderEngineInstance);
 
-		m_renderer = std::make_unique<Renderer>(*m_renderEngineInstance->GetRenderContext());
+		m_renderer = std::make_unique<Rendering::Renderer>(*m_renderEngineInstance->GetRenderContext());
 
-		m_testRenderPass = std::make_unique<TestRenderPass>();
+		m_testRenderPass = std::make_unique<Rendering::TestRenderPass>();
 		m_renderer->GetRenderGraph().AddRenderPass(m_testRenderPass.get());
 	}
 
@@ -84,10 +82,10 @@ namespace Oyl::Rendering
 
 		OYL_PROFILE_FUNCTION();
 
-		m_testRenderPass.release();
-		m_renderer.release();
-		m_renderEngineInstance.release();
-		m_resourceManager.release();
+		m_testRenderPass.reset();
+		m_renderer.reset();
+		m_renderEngineInstance.Reset();
+		m_resourceManager.reset();
 	}
 
 	void

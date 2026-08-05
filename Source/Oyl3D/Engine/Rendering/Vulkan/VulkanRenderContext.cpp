@@ -65,10 +65,10 @@ namespace Oyl::Rendering
 		m_impl->window = a_params.window;
 
 		m_impl->device = VulkanDevice::Create({
-			.window = *m_impl->window,
 			.commandQueueFlags = CommandQueueFlagBits::Graphics | CommandQueueFlagBits::Transfer,
 			.ppRequiredDeviceExtensionsData = REQUIRED_DEVICE_EXTENSION.data(),
-			.requiredDeviceExtensionsLength = REQUIRED_DEVICE_EXTENSION.size()
+			.requiredDeviceExtensionsLength = REQUIRED_DEVICE_EXTENSION.size(),
+			.window = m_impl->window,
 		});
 
 		m_impl->swapChain = VulkanSwapChain(

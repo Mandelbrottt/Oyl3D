@@ -2,6 +2,7 @@
 
 #include <Core/PImpl.h>
 #include <Core/UniqueHandle.h>
+#include <Core/UniquePtr.h>
 
 #include "CommandBuffer.h"
 #include "CommandPool.h"
@@ -34,10 +35,6 @@ namespace Oyl::Rendering
 
 		bool
 		IsValid() const override = 0;
-
-		virtual
-		const IWindow*
-		GetWindow() const = 0;
 
 		virtual
 		const CommandQueue*
@@ -76,5 +73,5 @@ namespace Oyl::Rendering
 		CreateFence() const = 0;
 	};
 
-	using DeviceHandle = PImpl<Device>;
+	using DeviceHandle = UniquePtrImplicitConvertible<Device>;
 }
