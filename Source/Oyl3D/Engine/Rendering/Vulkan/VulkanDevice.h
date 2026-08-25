@@ -7,6 +7,7 @@
 #include "VulkanCommandQueue.h"
 #include "VulkanFence.h"
 #include "VulkanImage.h"
+#include "VulkanPresentTarget.h"
 #include "VulkanSemaphore.h"
 #include "VulkanShader.h"
 #include "VulkanVertexBuffer.h"
@@ -20,8 +21,6 @@ namespace Oyl
 
 namespace Oyl::Rendering
 {
-	class VulkanCommandQueue;
-
 	class OYL_RENDERING_API VulkanDevice : public Device
 	{
 		struct DeviceTag {};
@@ -31,20 +30,20 @@ namespace Oyl::Rendering
 
 		struct CreateParams
 		{
+			const VulkanPresentTarget* presentTarget;
+
 			CommandQueueFlags commandQueueFlags;
 
 			const char* const* ppRequiredDeviceExtensionsData;
 			size_t requiredDeviceExtensionsLength;
-
-			const IWindow* window;
 		};
 
 		static
 		UniquePtrImplicitConvertible<VulkanDevice>
-		Create(const CreateParams& a_params);
+		Create(const vk::raii::Instance& a_vkInstance, const CreateParams& a_params);
 
 		explicit
-		VulkanDevice(DeviceTag, const CreateParams& a_params);
+		VulkanDevice(DeviceTag, const vk::raii::Instance& a_vkInstance, const CreateParams& a_params);
 
 		virtual
 		~VulkanDevice();
@@ -63,9 +62,6 @@ namespace Oyl::Rendering
 
 		const vk::raii::PhysicalDevice&
 		GetVkPhysicalDevice() const;
-
-		const vk::raii::SurfaceKHR&
-		GetVkSurface() const;
 
 		void
 		WaitUntilIdle() const override;
@@ -93,23 +89,16 @@ namespace Oyl::Rendering
 
 	private:
 		void
-		CreateSurface();
+		PickPhysicalDevice(const vk::raii::Instance& a_vkInstance, CommandQueueFlags a_queueFlags);
 
 		void
-		PickPhysicalDevice(CommandQueueFlags a_queueFlags);
-
-		void
-		CreateLogicalDevice();
+		CreateLogicalDevice(const VulkanPresentTarget* a_presentTarget);
 
 		void
 		CreateCommandQueues();
 
 	private:
-		const IWindow* m_window = nullptr;
-
 		std::vector<std::string> m_requiredDeviceExtensions;
-
-		vk::raii::SurfaceKHR m_surface = nullptr;
 
 		vk::raii::PhysicalDevice m_physicalDevice = nullptr;
 		vk::raii::Device m_device = nullptr;

@@ -8,6 +8,7 @@
 #include "Rendering/Device.h"
 #include "Rendering/RenderContext.h"
 #include "Rendering/ShaderCompiler.h"
+#include "Rendering/PresentTarget.h"
 
 namespace Oyl::Internal
 {
@@ -23,15 +24,6 @@ namespace Oyl
 		protected:
 			RenderEngineInstance();
 
-			struct CreateParams
-			{
-				std::unique_ptr<Rendering::ShaderCompiler> shaderCompiler;
-				std::unique_ptr<Rendering::RenderContext> renderContext;
-			};
-
-			explicit
-			RenderEngineInstance(CreateParams a_params);
-
 		public:
 			virtual
 			~RenderEngineInstance();
@@ -39,11 +31,15 @@ namespace Oyl
 	#pragma region Instance State
 			virtual
 			ResourceManager*
-			GetResourceManager() const;
+			GetResourceManager();
 
 			virtual
 			const Rendering::ShaderCompiler*
 			GetShaderCompiler() const;
+
+			virtual
+			Rendering::PresentTargetHandle
+			CreatePresentTarget(const Rendering::PresentTarget::CreateParams& a_params) const = 0;
 
 			virtual
 			const Rendering::Device*
@@ -63,12 +59,11 @@ namespace Oyl
 	#pragma endregion Instance State
 
 		protected:
-			std::unique_ptr<ResourceManager> m_resourceManager;
-			std::unique_ptr<Rendering::ShaderCompiler> m_shaderCompiler;
-			std::unique_ptr<Rendering::Device> m_device;
+			UniquePtr<ResourceManager> m_resourceManager;
+			UniquePtr<Rendering::ShaderCompiler> m_shaderCompiler;
 
 			// TEMPORARY: Should the renderer own the render context?
-			std::unique_ptr<Rendering::RenderContext> m_renderContext;
+			UniquePtr<Rendering::RenderContext> m_renderContext;
 		};
 	}
 
@@ -79,6 +74,18 @@ namespace Oyl
 
 	public:
 		RenderEngine() = delete;
+
+		struct CreateParams
+		{
+			const IWindow* window;
+		};
+
+		static
+		Rendering::PresentTargetHandle
+		CreatePresentTarget(const Rendering::PresentTarget::CreateParams& a_params)
+		{
+			return s_instance->CreatePresentTarget(a_params);
+		}
 
 		static
 		const Rendering::Device*
@@ -104,7 +111,7 @@ namespace Oyl
 	protected:
 		static
 		UniquePtr<Internal::RenderEngineInstance>
-		CreateInstance(Rendering::GraphicsApi a_api);
+		CreateInstance(Rendering::GraphicsApi a_api, const CreateParams& a_params);
 
 		static
 		Internal::RenderEngineInstance*

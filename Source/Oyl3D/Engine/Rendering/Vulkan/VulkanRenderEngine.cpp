@@ -3,6 +3,7 @@
 #include <GLFW/glfw3.h>
 
 #include "VulkanRenderContext.h"
+#include "VulkanRenderContext.h"
 #include "VulkanShaderCompiler.h"
 
 namespace
@@ -35,18 +36,33 @@ namespace
 namespace Oyl::Internal
 {
 	VulkanRenderEngineInstance::VulkanRenderEngineInstance(CreateParams a_params)
-		: RenderEngineInstance(
-			{
-				.shaderCompiler = std::make_unique<Rendering::VulkanShaderCompiler>(),
-				.renderContext = std::make_unique<Rendering::VulkanRenderContext>(Rendering::VulkanRenderContext::CreateParams {
-					.window = a_params.window
-				})
-			}
-		)
 	{
 		CreateVkInstance();
 		if constexpr (ENABLE_VALIDATION_LAYERS)
 			CreateVkDebugMessenger();
+
+		m_shaderCompiler = UniquePtr<Rendering::VulkanShaderCompiler>::Create();
+		m_renderContext = UniquePtr<Rendering::VulkanRenderContext>::Create(Rendering::VulkanRenderContext::CreateParams {
+			.window = a_params.window,
+			.vkInstance = m_vkInstance,
+		});
+	}
+
+	VulkanRenderEngineInstance::~VulkanRenderEngineInstance()
+	{
+		// Destroy manually to ensure proper destruction order
+		m_renderContext->Destroy();
+	}
+
+	Rendering::PresentTargetHandle
+	VulkanRenderEngineInstance::CreatePresentTarget(const Rendering::PresentTarget::CreateParams& a_params) const
+	{
+		return Rendering::VulkanPresentTargetHandle(
+			UniquePtr<Rendering::VulkanPresentTarget>::Create(Rendering::VulkanPresentTarget::CreateParams {
+				.window = a_params.window,
+				.vkInstance = m_vkInstance
+			})
+		);
 	}
 
 	void

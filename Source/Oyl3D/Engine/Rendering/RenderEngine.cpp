@@ -12,25 +12,21 @@ namespace Oyl
 
 	namespace Internal
 	{
-		RenderEngineInstance::RenderEngineInstance() {}
-
-		RenderEngineInstance::RenderEngineInstance(CreateParams a_params)
-			: m_resourceManager(std::make_unique<ResourceManager>()),
-			  m_shaderCompiler(std::move(a_params.shaderCompiler)),
-			  m_renderContext(std::move(a_params.renderContext)) {}
+		RenderEngineInstance::RenderEngineInstance()
+			: m_resourceManager(std::make_unique<ResourceManager>()) {}
 
 		RenderEngineInstance::~RenderEngineInstance() {}
 
 		ResourceManager*
-		RenderEngineInstance::GetResourceManager() const
+		RenderEngineInstance::GetResourceManager()
 		{
-			return m_resourceManager.get();
+			return m_resourceManager.Get();
 		}
 
 		const Rendering::ShaderCompiler*
 		RenderEngineInstance::GetShaderCompiler() const
 		{
-			return m_shaderCompiler.get();
+			return m_shaderCompiler.Get();
 		}
 
 		const Rendering::Device*
@@ -51,25 +47,25 @@ namespace Oyl
 		Rendering::RenderContext*
 		RenderEngineInstance::GetRenderContext()
 		{
-			return m_renderContext.get();
+			return m_renderContext.Get();
 		}
 
 		const Rendering::RenderContext*
 		RenderEngineInstance::GetRenderContext() const
 		{
-			return m_renderContext.get();
+			return m_renderContext.Get();
 		}
 	}
 
 	UniquePtr<Internal::RenderEngineInstance>
-	RenderEngine::CreateInstance(Rendering::GraphicsApi a_api)
+	RenderEngine::CreateInstance(Rendering::GraphicsApi a_api, const CreateParams& a_params)
 	{
 		switch (a_api)
 		{
 			case Rendering::GraphicsApi::Vulkan:
 				return UniquePtr<Internal::VulkanRenderEngineInstance>::Create(
 					Internal::VulkanRenderEngineInstance::CreateParams {
-						.window = nullptr
+						.window = a_params.window
 					});
 			case Rendering::GraphicsApi::None:
 				throw "Graphics API must not be None!";

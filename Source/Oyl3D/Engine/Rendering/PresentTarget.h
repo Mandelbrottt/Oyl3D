@@ -1,14 +1,19 @@
 ﻿#pragma once
 
-#include <Core/PImpl.h>
+#include <Core/UniquePtr.h>
 
 #include "DeviceObject.h"
 
+namespace Oyl
+{
+	class IWindow;
+}
+
 namespace Oyl::Rendering
 {
-	struct PresentTargetHandle : OpaqueHandle<PresentTargetHandle> {};
+	struct PresentTargetId : OpaqueHandle<PresentTargetId> {};
 
-	class PresentTarget : public IDeviceObject<PresentTargetHandle>
+	class PresentTarget : public IDeviceObject<PresentTargetId>
 	{
 	protected:
 		PresentTarget() = default;
@@ -16,12 +21,16 @@ namespace Oyl::Rendering
 		DEFAULT_MOVE(PresentTarget);
 
 	public:
+		struct CreateParams
+		{
+			const IWindow& window;
+		};
+
 		NO_COPY(PresentTarget);
 
 		virtual
 		~PresentTarget() = default;
 	};
 
-	using PresentTargetPtr = PImpl<PresentTarget>;
-	//using PresentTargetPtr = DeviceObjectPtr<PresentTarget>;
+	using PresentTargetHandle = UniquePtrImplicitConvertible<PresentTarget>;
 }

@@ -60,12 +60,7 @@ namespace Oyl
 
 		m_resourceManager = std::make_unique<Internal::ResourceManager>();
 
-		m_renderEngineInstance = RenderEngine::CreateInstance(Rendering::GraphicsApi::Vulkan);
-		//m_renderEngineInstance = std::make_unique<VulkanRenderEngineInstance>(
-		//	VulkanRenderEngineInstance::CreateParams {
-		//		.window = m_mainWindow
-		//	}
-		//);
+		m_renderEngineInstance = RenderEngine::CreateInstance(Rendering::GraphicsApi::Vulkan, { .window = m_mainWindow });
 		RenderEngine::SetCurrentInstance(&m_renderEngineInstance);
 
 		m_renderer = std::make_unique<Rendering::Renderer>(*m_renderEngineInstance->GetRenderContext());
@@ -82,8 +77,8 @@ namespace Oyl
 
 		OYL_PROFILE_FUNCTION();
 
-		m_testRenderPass.reset();
 		m_renderer.reset();
+		m_testRenderPass.reset();
 		m_renderEngineInstance.Reset();
 		m_resourceManager.reset();
 	}

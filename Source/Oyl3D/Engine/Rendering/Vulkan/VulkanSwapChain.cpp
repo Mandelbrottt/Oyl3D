@@ -28,6 +28,7 @@ namespace Oyl::Rendering
 	{
 		const VulkanDevice* device = nullptr;
 		const IWindow* window = nullptr;
+		const VulkanPresentTarget* presentTarget = nullptr;
 
 		vk::raii::SwapchainKHR vkSwapChain = nullptr;
 		std::vector<vk::Image> vkSwapChainImageHandles;
@@ -56,6 +57,7 @@ namespace Oyl::Rendering
 
 		m_impl->device = &a_device;
 		m_impl->window = &a_params.window;
+		m_impl->presentTarget = &a_params.presentTarget;
 
 		m_impl->CreateSwapChain();
 		m_impl->CreateSwapChainImageViews();
@@ -212,7 +214,7 @@ namespace Oyl::Rendering
 		uint32 height = frameBufferSize.y;
 
 		const auto& physicalDevice = device->GetVkPhysicalDevice();
-		const auto& surface = device->GetVkSurface();
+		const auto& surface = presentTarget->GetVkSurface();
 
 		vk::SurfaceCapabilitiesKHR surfaceCapabilities = physicalDevice.getSurfaceCapabilitiesKHR(*surface);
 		vkSwapChainExtent = ChooseSwapExtent(surfaceCapabilities, { width, height });

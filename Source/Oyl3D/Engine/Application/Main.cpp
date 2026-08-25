@@ -122,8 +122,8 @@ namespace Oyl
 
 		auto& registry = g_data.moduleRegistry;
 		registry.RegisterModule<ApplicationCloseRequestEventListener>();
-		registry.RegisterModule<MainWindowModule>();
 		registry.RegisterModule<RenderControlModule>();
+		registry.RegisterModule<MainWindowModule>();
 
 		for (auto& module : registry)
 		{

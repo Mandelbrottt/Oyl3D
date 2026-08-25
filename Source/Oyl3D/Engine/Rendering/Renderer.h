@@ -19,6 +19,9 @@ namespace Oyl::Rendering
 		~Renderer();
 
 		void
+		Destroy();
+
+		void
 		Render();
 
 		RenderGraph&

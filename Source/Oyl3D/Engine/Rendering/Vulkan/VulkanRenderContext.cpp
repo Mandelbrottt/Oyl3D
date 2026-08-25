@@ -5,6 +5,7 @@
 #include "VulkanDevice.h"
 #include "VulkanSwapChain.h"
 
+#include "Rendering/RenderEngine.h"
 #include "Rendering/Glfw/GlfwWindow.h"
 
 static const std::vector REQUIRED_DEVICE_EXTENSION {
@@ -16,6 +17,7 @@ namespace Oyl::Rendering
 	struct VulkanRenderContext::Impl
 	{
 		const IWindow* window;
+		VulkanPresentTargetHandle presentTarget = nullptr;
 
 		VulkanDeviceHandle device = nullptr;
 		VulkanSwapChain swapChain = nullptr;
@@ -63,18 +65,29 @@ namespace Oyl::Rendering
 			m_impl = std::make_unique<Impl>();
 
 		m_impl->window = a_params.window;
+		if (m_impl->window)
+		{
+			VulkanPresentTarget::CreateParams params = {
+				.window = *a_params.window,
+				.vkInstance = a_params.vkInstance
+			};
+			m_impl->presentTarget = VulkanPresentTargetHandle::Create(params);
+		}
 
-		m_impl->device = VulkanDevice::Create({
-			.commandQueueFlags = CommandQueueFlagBits::Graphics | CommandQueueFlagBits::Transfer,
-			.ppRequiredDeviceExtensionsData = REQUIRED_DEVICE_EXTENSION.data(),
-			.requiredDeviceExtensionsLength = REQUIRED_DEVICE_EXTENSION.size(),
-			.window = m_impl->window,
-		});
+		m_impl->device = VulkanDevice::Create(
+			a_params.vkInstance,
+			{
+				.presentTarget = &m_impl->presentTarget,
+				.commandQueueFlags = CommandQueueFlagBits::Graphics | CommandQueueFlagBits::Transfer,
+				.ppRequiredDeviceExtensionsData = REQUIRED_DEVICE_EXTENSION.data(),
+				.requiredDeviceExtensionsLength = REQUIRED_DEVICE_EXTENSION.size(),
+			});
 
 		m_impl->swapChain = VulkanSwapChain(
 			*m_impl->device,
-			{
+			VulkanSwapChain::CreateParams {
 				.window = *m_impl->window,
+				.presentTarget = *m_impl->presentTarget
 			}
 		);
 	}
@@ -100,8 +113,9 @@ namespace Oyl::Rendering
 
 		m_impl->swapChain.Destroy();
 		m_impl->device->Destroy();
+		m_impl->presentTarget->Destroy();
 
-		*m_impl = {};
+		m_impl.reset();
 	}
 
 	void
@@ -109,6 +123,12 @@ namespace Oyl::Rendering
 	{
 		// No need to pass in a_size - we get the size from the window directly
 		m_impl->RecreateSwapChain();
+	}
+
+	const VulkanPresentTarget*
+	VulkanRenderContext::GetPresentTarget() const
+	{
+		return m_impl->presentTarget.Get();
 	}
 
 	const VulkanDevice*

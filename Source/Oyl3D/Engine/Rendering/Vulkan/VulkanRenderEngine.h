@@ -23,7 +23,7 @@ namespace Oyl
 			VulkanRenderEngineInstance(CreateParams a_params);
 
 			virtual
-			~VulkanRenderEngineInstance() = default;
+			~VulkanRenderEngineInstance();
 
 			const Rendering::VulkanShaderCompiler*
 			GetShaderCompiler() const override
@@ -31,6 +31,9 @@ namespace Oyl
 				const auto* abstract = RenderEngineInstance::GetShaderCompiler();
 				return static_cast<const Rendering::VulkanShaderCompiler*>(abstract);
 			}
+
+			Rendering::PresentTargetHandle
+			CreatePresentTarget(const Rendering::PresentTarget::CreateParams& a_params) const override;
 
 			const Rendering::VulkanDevice*
 			GetCurrentDevice() const override
@@ -86,7 +89,9 @@ namespace Oyl
 		Internal::VulkanRenderEngineInstance*
 		CurrentInstance()
 		{
-			return dynamic_cast<Internal::VulkanRenderEngineInstance*>(RenderEngine::CurrentInstance());
+			auto instance = dynamic_cast<Internal::VulkanRenderEngineInstance*>(RenderEngine::CurrentInstance());
+			OYL_ASSERT(instance);
+			return instance;
 		}
 	};
 }

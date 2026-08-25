@@ -20,17 +20,24 @@ namespace Oyl
 		UniquePtr(std::unique_ptr<TPointee>&& a_impl) noexcept
 			: m_impl(std::move(a_impl)) {}
 
-		template<typename TPointeeChild>
-			requires std::is_convertible_v<std::add_pointer_t<TPointeeChild>, std::add_pointer_t<TPointee>>
-		UniquePtr(UniquePtr<TPointeeChild>&& a_other) noexcept
-			: m_impl(std::move(a_other.m_impl)) {}
+		template<typename TPointeeOther>
+			requires Traits::ConvertibleTo<Traits::TAddPointer<TPointeeOther>, Traits::TAddPointer<TPointee>>
+		UniquePtr(UniquePtr<TPointeeOther>&& a_other) noexcept
+			: m_impl(std::unique_ptr<TPointee>(static_cast<Traits::TAddPointer<TPointee>>(a_other.m_impl.release()))) {}
 
-		template<typename TPointeeChild>
-			requires std::is_convertible_v<std::add_pointer_t<TPointeeChild>, std::add_pointer_t<TPointee>>
+		template<typename TPointeeOther>
+			requires (Traits::ExplicitlyConvertibleTo<Traits::TAddPointer<TPointeeOther>, Traits::TAddPointer<TPointee>>
+			          && !Traits::ImplicitlyConvertibleTo<Traits::TAddPointer<TPointeeOther>, Traits::TAddPointer<TPointee>>)
+		explicit
+		UniquePtr(UniquePtr<TPointeeOther>&& a_other) noexcept
+			: m_impl(std::unique_ptr<TPointee>(static_cast<Traits::TAddPointer<TPointee>>(a_other.m_impl.release()))) {}
+
+		template<typename TPointeeOther>
+			requires Traits::ConvertibleTo<Traits::TAddPointer<TPointeeOther>, Traits::TAddPointer<TPointee>>
 		UniquePtr&
-		operator =(UniquePtr<TPointeeChild>&& a_other) noexcept
+		operator =(UniquePtr<TPointeeOther>&& a_other) noexcept
 		{
-			std::swap(m_impl, a_other.m_impl);
+			m_impl = std::unique_ptr<TPointee>(static_cast<Traits::TAddPointer<TPointee>>(a_other.m_impl.release()));
 			return *this;
 		}
 
@@ -111,9 +118,32 @@ namespace Oyl
 		UniquePtrImplicitConvertible(std::unique_ptr<TPointee>&& a_impl) noexcept
 			: Super(std::move(a_impl)) {}
 
-		template<typename TPointeeChild>
-			requires std::is_pointer_interconvertible_base_of_v<TPointeeChild, TPointee>
-		UniquePtrImplicitConvertible(UniquePtr<TPointeeChild>&& a_other) noexcept
+		explicit
+		UniquePtrImplicitConvertible(Super&& a_other) noexcept
+			: Super(std::move(a_other)) {}
+
+		template<typename TPointeeOther>
+			requires Traits::ConvertibleTo<Traits::TAddPointer<TPointeeOther>, Traits::TAddPointer<TPointee>>
+		UniquePtrImplicitConvertible(UniquePtr<TPointeeOther>&& a_other) noexcept
+			: Super(std::move(a_other)) {}
+
+		template<typename TPointeeOther>
+			requires (Traits::ExplicitlyConvertibleTo<Traits::TAddPointer<TPointeeOther>, Traits::TAddPointer<TPointee>>
+			          && !Traits::ImplicitlyConvertibleTo<Traits::TAddPointer<TPointeeOther>, Traits::TAddPointer<TPointee>>)
+		explicit
+		UniquePtrImplicitConvertible(UniquePtr<TPointeeOther>&& a_other) noexcept
+			: Super(std::move(a_other)) {}
+
+		template<typename TPointeeOther>
+			requires Traits::ConvertibleTo<Traits::TAddPointer<TPointeeOther>, Traits::TAddPointer<TPointee>>
+		UniquePtrImplicitConvertible(UniquePtrImplicitConvertible<TPointeeOther>&& a_other) noexcept
+			: Super(std::move(a_other)) {}
+
+		template<typename TPointeeOther>
+			requires (Traits::ExplicitlyConvertibleTo<Traits::TAddPointer<TPointeeOther>, Traits::TAddPointer<TPointee>>
+			          && !Traits::ImplicitlyConvertibleTo<Traits::TAddPointer<TPointeeOther>, Traits::TAddPointer<TPointee>>)
+		explicit
+		UniquePtrImplicitConvertible(UniquePtrImplicitConvertible<TPointeeOther>&& a_other) noexcept
 			: Super(std::move(a_other)) {}
 
 		operator TPointee&()

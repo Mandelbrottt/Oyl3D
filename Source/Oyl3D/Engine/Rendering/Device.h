@@ -8,6 +8,7 @@
 #include "CommandPool.h"
 #include "CommandQueue.h"
 #include "Image.h"
+#include "PresentTarget.h"
 #include "Shader.h"
 #include "VertexBuffer.h"
 

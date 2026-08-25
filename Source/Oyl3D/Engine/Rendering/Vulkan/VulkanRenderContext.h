@@ -15,6 +15,7 @@ namespace Oyl::Rendering
 		struct CreateParams
 		{
 			const IWindow* window;
+			const vk::raii::Instance& vkInstance;
 		};
 
 		explicit
@@ -40,6 +41,9 @@ namespace Oyl::Rendering
 
 		void
 		Resize(Vector2u a_size) override;
+
+		const VulkanPresentTarget*
+		GetPresentTarget() const override;
 
 		const VulkanDevice*
 		GetDevice() const override;

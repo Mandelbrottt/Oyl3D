@@ -15,16 +15,14 @@ namespace Oyl::Rendering
 	VulkanDevice::VulkanDevice(nullptr_t) {}
 
 	VulkanDeviceHandle
-	VulkanDevice::Create(const CreateParams& a_params)
+	VulkanDevice::Create(const vk::raii::Instance& a_vkInstance, const CreateParams& a_params)
 	{
-		return VulkanDeviceHandle(std::make_unique<VulkanDevice>(DeviceTag(), a_params));
+		return VulkanDeviceHandle(std::make_unique<VulkanDevice>(DeviceTag(), a_vkInstance, a_params));
 	}
 
-	VulkanDevice::VulkanDevice(DeviceTag, const CreateParams& a_params)
+	VulkanDevice::VulkanDevice(DeviceTag, const vk::raii::Instance& a_vkInstance, const CreateParams& a_params)
 	{
 		OYL_PROFILE_FUNCTION();
-
-		m_window = static_cast<const Glfw::Window*>(a_params.window);
 
 		if (a_params.ppRequiredDeviceExtensionsData && a_params.requiredDeviceExtensionsLength > 0)
 		{
@@ -45,9 +43,8 @@ namespace Oyl::Rendering
 			}
 		}
 
-		CreateSurface();
-		PickPhysicalDevice(a_params.commandQueueFlags);
-		CreateLogicalDevice();
+		PickPhysicalDevice(a_vkInstance, a_params.commandQueueFlags);
+		CreateLogicalDevice(a_params.presentTarget);
 		CreateCommandQueues();
 	}
 
@@ -99,12 +96,6 @@ namespace Oyl::Rendering
 		return m_physicalDevice;
 	}
 
-	const vk::raii::SurfaceKHR&
-	VulkanDevice::GetVkSurface() const
-	{
-		return m_surface;
-	}
-
 	void
 	VulkanDevice::WaitUntilIdle() const
 	{
@@ -113,62 +104,46 @@ namespace Oyl::Rendering
 		m_device.waitIdle();
 	}
 
-	Rendering::CommandBufferHandle
+	CommandBufferHandle
 	VulkanDevice::CreateCommandBuffer(const VulkanCommandBuffer::CreateParams& a_params) const
 	{
 		return VulkanCommandBufferHandle(std::make_unique<VulkanCommandBuffer>(*this, a_params));
 	}
 
-	Rendering::CommandPoolHandle
+	CommandPoolHandle
 	VulkanDevice::CreateCommandPool(const VulkanCommandPool::CreateParams& a_params) const
 	{
 		return VulkanCommandPoolHandle(std::make_unique<VulkanCommandPool>(*this, a_params));
 	}
 
-	Rendering::ImageHandle
+	ImageHandle
 	VulkanDevice::CreateImage(const VulkanImage::CreateParams& a_params) const
 	{
 		return VulkanImageHandle(std::make_unique<VulkanImage>(*this, a_params));
 	}
 
-	Rendering::ShaderHandle
+	ShaderHandle
 	VulkanDevice::CreateShader(const VulkanShader::CreateParams& a_params) const
 	{
 		return VulkanShaderHandle(std::make_unique<VulkanShader>(*this, a_params));
 	}
 
-	Rendering::VertexBufferHandle
-	VulkanDevice::CreateVertexBuffer(const Rendering::VertexBuffer::CreateParams& a_params) const
+	VertexBufferHandle
+	VulkanDevice::CreateVertexBuffer(const VertexBuffer::CreateParams& a_params) const
 	{
 		return VulkanVertexBufferHandle(std::make_unique<VulkanVertexBuffer>(*this, a_params));
 	}
 
-	Rendering::SemaphoreHandle
+	SemaphoreHandle
 	VulkanDevice::CreateSemaphore() const
 	{
 		return VulkanSemaphoreHandle(std::make_unique<VulkanSemaphore>(*this));
 	}
 
-	Rendering::FenceHandle
+	FenceHandle
 	VulkanDevice::CreateFence() const
 	{
 		return VulkanFenceHandle(std::make_unique<VulkanFence>(*this));
-	}
-
-	void
-	VulkanDevice::CreateSurface()
-	{
-		OYL_PROFILE_FUNCTION();
-
-		auto& instance = VulkanRenderEngine::GetVkInstance();
-
-		VkSurfaceKHR cSurface;
-		auto glfwWindow = static_cast<GLFWwindow*>(m_window->GetNativeWindowHandle());
-		if (glfwCreateWindowSurface(*instance, glfwWindow, nullptr, &cSurface) != VK_SUCCESS)
-		{
-			throw std::runtime_error("failed to create window surface!");
-		}
-		m_surface = vk::raii::SurfaceKHR(instance, cSurface);
 	}
 
 	bool
@@ -227,13 +202,11 @@ namespace Oyl::Rendering
 	}
 
 	void
-	VulkanDevice::PickPhysicalDevice(CommandQueueFlags a_queueFlags)
+	VulkanDevice::PickPhysicalDevice(const vk::raii::Instance& a_vkInstance, CommandQueueFlags a_queueFlags)
 	{
 		OYL_PROFILE_FUNCTION();
 
-		auto& instance = VulkanRenderEngine::GetVkInstance();
-
-		auto physicalDevices = instance.enumeratePhysicalDevices();
+		auto physicalDevices = a_vkInstance.enumeratePhysicalDevices();
 		const auto iter = std::ranges::find_if(
 			physicalDevices,
 			[&](const vk::raii::PhysicalDevice& a_physicalDevice)
@@ -250,7 +223,7 @@ namespace Oyl::Rendering
 	}
 
 	void
-	VulkanDevice::CreateLogicalDevice()
+	VulkanDevice::CreateLogicalDevice(const VulkanPresentTarget* a_presentTarget)
 	{
 		OYL_PROFILE_FUNCTION();
 
@@ -267,8 +240,12 @@ namespace Oyl::Rendering
 
 				if (queueFlags & vk::QueueFlagBits::eGraphics)
 				{
-					// If the queue supports graphics, we also want it to support SurfaceKHR
-					if (!m_physicalDevice.getSurfaceSupportKHR(propertiesIndex, *m_surface))
+					// If we are given a PresentTarget, check for Present-To-Surface support
+					if (!a_presentTarget)
+						continue;
+
+					auto& vkSurface = *a_presentTarget->GetVkSurface();
+					if (!m_physicalDevice.getSurfaceSupportKHR(propertiesIndex, vkSurface))
 						continue;
 
 					// We want a unique queue for transfers

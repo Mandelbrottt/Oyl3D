@@ -42,7 +42,20 @@ namespace Oyl::Rendering
 		m_impl->CreateSyncObjects();
 	}
 
-	Renderer::~Renderer() {}
+	Renderer::~Renderer()
+	{
+		Destroy();
+	}
+
+	void
+	Renderer::Destroy()
+	{
+		if (!m_impl)
+			return;
+
+		m_impl->renderContext->GetDevice()->WaitUntilIdle();
+		m_impl.reset();
+	}
 
 	void
 	Renderer::Render()
