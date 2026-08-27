@@ -4,28 +4,17 @@
 
 namespace Oyl::Traits
 {
-#pragma region Base
+#pragma region Primitive
 
-	template<typename T>
-	struct AddConst
+	template<bool Value>
+	struct BoolConstant
 	{
-		using type = std::add_const_t<T>;
+		static constexpr bool value = Value;
 	};
 
-	template<typename T>
-	using TAddConst = typename AddConst<T>::type;
+	struct TrueType : BoolConstant<true> {};
 
-	template<typename T>
-	struct RemoveConst
-	{
-		using type = std::remove_const_t<T>;
-	};
-
-	template<typename T>
-	using TRemoveConst = typename RemoveConst<T>::type;
-
-#pragma endregion Base
-#pragma region Types
+	struct FalseType : BoolConstant<false> {};
 
 	template<typename T>
 	concept Integer = std::is_integral_v<T>;
@@ -42,32 +31,79 @@ namespace Oyl::Traits
 	template<typename T>
 	concept Enum = IsEnum<T>::value;
 
-#pragma endregion Types
+	template<typename T>
+	struct TypeConstant
+	{
+		using type = T;
+	};
+
+#pragma endregion Primitive
+#pragma region Base
+
+	template<typename T>
+	struct AddConst : TypeConstant<std::add_const_t<T>> {};
+
+	template<typename T>
+	using TAddConst = typename AddConst<T>::type;
+
+	template<typename T>
+	struct RemoveConst : TypeConstant<std::remove_const_t<T>> {};
+
+	template<typename T>
+	using TRemoveConst = typename RemoveConst<T>::type;
+
+	template<typename TFrom, typename TTo>
+	struct IsImplicitlyConvertibleTo : BoolConstant<std::is_convertible_v<TFrom, TTo>> {};
+
+	template<typename TFrom, typename TTo>
+	concept ImplicitlyConvertibleTo = IsImplicitlyConvertibleTo<TFrom, TTo>::value;
+
+	namespace Internal
+	{
+		template<typename TFrom, typename TTo>
+		auto TestExplicitlyConvertible(int) -> decltype(static_cast<TTo>(std::declval<TFrom>()), TrueType {});
+
+		template<typename TFrom, typename TTo>
+		auto TestExplicitlyConvertible(...) -> FalseType;
+	}
+
+	template<typename TFrom, typename TTo>
+	struct IsExplicitlyConvertibleTo : BoolConstant<decltype(Internal::TestExplicitlyConvertible<TFrom, TTo>(0))::value> {};
+
+	template<typename TFrom, typename TTo>
+	concept ExplicitlyConvertibleTo = IsExplicitlyConvertibleTo<TFrom, TTo>::value;
+
+	template<typename TFrom, typename TTo>
+	struct IsConvertibleTo
+		: BoolConstant<ImplicitlyConvertibleTo<TFrom, TTo>
+		               && ExplicitlyConvertibleTo<TFrom, TTo>> {};
+
+	template<typename TFrom, typename TTo>
+	concept ConvertibleTo = IsConvertibleTo<TFrom, TTo>::value;
+
+#pragma endregion Base
 #pragma region Pointers
 
 	template<typename T>
-	struct IsPointer
-	{
-		static constexpr bool value = std::is_pointer_v<T>;
-	};
+	struct IsPointer : BoolConstant<std::is_pointer_v<T>> {};
 
 	template<typename T>
 	concept Pointer = IsPointer<T>::value;
 
 	template<typename T>
-	struct RemovePointer
-	{
-		using type = std::remove_pointer_t<T>;
-	};
+	struct AddPointer : TypeConstant<std::add_pointer_t<T>> {};
+
+	template<typename T>
+	using TAddPointer = typename AddPointer<T>::type;
+
+	template<typename T>
+	struct RemovePointer : TypeConstant<std::remove_pointer_t<T>> {};
 
 	template<typename T>
 	using RemovePointer_T = typename RemovePointer<T>::type;
 
 	template<typename T>
-	struct IsVoidPointer
-	{
-		static constexpr bool value = std::is_void_v<RemovePointer<T>>;
-	};
+	struct IsVoidPointer : BoolConstant<std::is_void_v<RemovePointer<T>>> {};
 
 	template<typename T>
 	concept VoidPointer = IsVoidPointer<T>::value;
@@ -79,10 +115,7 @@ namespace Oyl::Traits
 	concept PointerToObject = IsPointer<T>::value && !IsPointer<RemovePointer_T<T>>::value;
 
 	template<typename T>
-	struct IsPointerToPointer
-	{
-		static constexpr bool value = IsPointer<T>::value && IsPointer<RemovePointer_T<T>>::value;
-	};
+	struct IsPointerToPointer : BoolConstant<Pointer<T> && Pointer<RemovePointer_T<T>>> {};
 
 	template<typename T>
 	concept PointerToPointer = IsPointerToPointer<T>::value;

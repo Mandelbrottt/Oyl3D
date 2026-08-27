@@ -13,11 +13,11 @@ namespace Oyl
 		OYL_DECLARE_MODULE(MainWindowModule);
 
 	public:
-		void
-		Setup() override;
+		const IWindow*
+		GetWindow() const { return m_window; }
 
 		void
-		Init() override;
+		Setup() override;
 
 		void
 		Update() override;

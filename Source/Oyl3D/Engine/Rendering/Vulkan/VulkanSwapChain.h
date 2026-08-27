@@ -15,6 +15,7 @@ namespace Oyl
 
 namespace Oyl::Rendering
 {
+	class VulkanPresentTarget;
 	class VulkanDevice;
 
 	class OYL_RENDERING_API VulkanSwapChain : public SwapChain
@@ -25,6 +26,7 @@ namespace Oyl::Rendering
 		struct CreateParams
 		{
 			const IWindow& window;
+			const VulkanPresentTarget& presentTarget;
 		};
 
 		VulkanSwapChain(const VulkanDevice& a_device, const CreateParams& a_params);

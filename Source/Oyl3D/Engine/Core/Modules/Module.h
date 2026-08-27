@@ -22,8 +22,25 @@ namespace Oyl
 	public:
 		Module();
 
+		DEFAULT_MOVE(Module);
+		NO_COPY(Module);
+
 		virtual
 		~Module();
+
+		template<typename TModule>
+			requires std::is_assignable_v<Traits::TAddPointer<Module>&, Traits::TAddPointer<TModule>>
+		static
+		TModule*
+		GetModule()
+		{
+			auto* module = GetModule(typeidof(TModule));
+			return static_cast<TModule*>(module);
+		}
+
+		static
+		Module*
+		GetModule(Reflection::TypeId a_typeId);
 
 	#pragma region Public Interface
 

@@ -69,17 +69,11 @@ namespace Oyl::Rendering
 		VulkanImageId
 		GetId() const;
 
-		operator VulkanImageId() const
-		{
-			return GetId();
-		}
+		operator VulkanImageId() const { return GetId(); }
 
 	protected:
 		ImageId
-		GetIdImpl() const override
-		{
-			return GetId();
-		}
+		GetIdImpl() const override { return GetId(); }
 
 	private:
 		struct Impl;

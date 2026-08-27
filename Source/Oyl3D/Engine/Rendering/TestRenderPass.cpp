@@ -10,12 +10,12 @@ namespace Oyl::Rendering
 		CreateRenderTarget(RenderEngine::GetCurrentViewPortSize());
 
 		ShaderCompileResult result;
-		RenderEngine::GetShaderCompiler()->CompileHlslFromFile(
+		RenderEngine::GetShaderCompiler().CompileHlslFromFile(
 			"G:/dev/Oyl3D/Oyl3D/Source/Oyl3D/Engine/Rendering/Shaders/shader.hlsl",
 			&result
 		);
 
-		m_shader = RenderEngine::GetCurrentDevice()->CreateShader(
+		m_shader = RenderEngine::GetCurrentDevice().CreateShader(
 			{
 				.renderTarget = m_renderTarget,
 				.compileResult = result,
@@ -36,7 +36,7 @@ namespace Oyl::Rendering
 		std::vector<byte> indexData;
 		indexData.insert(indexData.end(), (byte*) &indices[0], (byte*) &indices.data()[indices.size()]);
 
-		m_vertexBuffer = RenderEngine::GetCurrentDevice()->CreateVertexBuffer(
+		m_vertexBuffer = RenderEngine::GetCurrentDevice().CreateVertexBuffer(
 			{
 				.vertexData = vertexData,
 				.vertexStride = sizeof(Vertex),
@@ -82,7 +82,7 @@ namespace Oyl::Rendering
 	void
 	TestRenderPass::CreateRenderTarget(Vector2u a_size)
 	{
-		m_colorAttachment = RenderEngine::GetCurrentDevice()->CreateImage(
+		m_colorAttachment = RenderEngine::GetCurrentDevice().CreateImage(
 			{
 				.size = a_size,
 				.format = ImageFormat::RGBA_8_SRGB,

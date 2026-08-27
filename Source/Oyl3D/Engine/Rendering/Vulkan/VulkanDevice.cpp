@@ -6,51 +6,23 @@
 
 #include "VulkanCommandBuffer.h"
 #include "VulkanEnums.h"
+#include "VulkanRenderEngine.h"
 
 #include "Rendering/Glfw/GlfwWindow.h"
-
-namespace
-{
-	const std::vector VALIDATION_LAYERS {
-		"VK_LAYER_KHRONOS_validation",
-	};
-
-	constexpr bool ENABLE_VALIDATION_LAYERS =
-	#if defined(OYL_DISTRIBUTION)
-		false;
-	#else
-		true;
-	#endif
-
-	std::vector<const char*>
-	GetRequiredInstanceExtensions();
-
-	VKAPI_ATTR
-	vk::Bool32
-	VKAPI_CALL
-	DebugCallback(
-		vk::DebugUtilsMessageSeverityFlagBitsEXT a_severity,
-		vk::DebugUtilsMessageTypeFlagsEXT a_type,
-		const vk::DebugUtilsMessengerCallbackDataEXT* a_pCallbackData,
-		void* a_pUserData
-	);
-}
 
 namespace Oyl::Rendering
 {
 	VulkanDevice::VulkanDevice(nullptr_t) {}
 
 	VulkanDeviceHandle
-	VulkanDevice::Create(const CreateParams& a_params)
+	VulkanDevice::Create(const vk::raii::Instance& a_vkInstance, const CreateParams& a_params)
 	{
-		return VulkanDeviceHandle(std::make_unique<VulkanDevice>(DeviceTag(), a_params));
+		return VulkanDeviceHandle(std::make_unique<VulkanDevice>(a_vkInstance, a_params));
 	}
 
-	VulkanDevice::VulkanDevice(DeviceTag, const CreateParams& a_params)
+	VulkanDevice::VulkanDevice(const vk::raii::Instance& a_vkInstance, const CreateParams& a_params)
 	{
 		OYL_PROFILE_FUNCTION();
-
-		m_window = static_cast<const Glfw::Window*>(&a_params.window);
 
 		if (a_params.ppRequiredDeviceExtensionsData && a_params.requiredDeviceExtensionsLength > 0)
 		{
@@ -71,12 +43,8 @@ namespace Oyl::Rendering
 			}
 		}
 
-		CreateInstance();
-		if constexpr (ENABLE_VALIDATION_LAYERS)
-			CreateDebugMessenger();
-		CreateSurface();
-		PickPhysicalDevice(a_params.commandQueueFlags);
-		CreateLogicalDevice();
+		PickPhysicalDevice(a_vkInstance, a_params.commandQueueFlags);
+		CreateLogicalDevice(a_params.presentTarget);
 		CreateCommandQueues();
 	}
 
@@ -106,12 +74,6 @@ namespace Oyl::Rendering
 		return *m_device;
 	}
 
-	const IWindow*
-	VulkanDevice::GetWindow() const
-	{
-		return m_window;
-	}
-
 	const VulkanCommandQueue*
 	VulkanDevice::GetCommandQueue(CommandQueueFlagBits a_flag) const
 	{
@@ -134,12 +96,6 @@ namespace Oyl::Rendering
 		return m_physicalDevice;
 	}
 
-	const vk::raii::SurfaceKHR&
-	VulkanDevice::GetVkSurface() const
-	{
-		return m_surface;
-	}
-
 	void
 	VulkanDevice::WaitUntilIdle() const
 	{
@@ -148,159 +104,46 @@ namespace Oyl::Rendering
 		m_device.waitIdle();
 	}
 
-	Rendering::CommandBufferHandle
+	CommandBufferHandle
 	VulkanDevice::CreateCommandBuffer(const VulkanCommandBuffer::CreateParams& a_params) const
 	{
 		return VulkanCommandBufferHandle(std::make_unique<VulkanCommandBuffer>(*this, a_params));
 	}
 
-	Rendering::CommandPoolHandle
+	CommandPoolHandle
 	VulkanDevice::CreateCommandPool(const VulkanCommandPool::CreateParams& a_params) const
 	{
 		return VulkanCommandPoolHandle(std::make_unique<VulkanCommandPool>(*this, a_params));
 	}
 
-	Rendering::ImageHandle
+	ImageHandle
 	VulkanDevice::CreateImage(const VulkanImage::CreateParams& a_params) const
 	{
 		return VulkanImageHandle(std::make_unique<VulkanImage>(*this, a_params));
 	}
 
-	Rendering::ShaderHandle
+	ShaderHandle
 	VulkanDevice::CreateShader(const VulkanShader::CreateParams& a_params) const
 	{
 		return VulkanShaderHandle(std::make_unique<VulkanShader>(*this, a_params));
 	}
 
-	Rendering::VertexBufferHandle
-	VulkanDevice::CreateVertexBuffer(const Rendering::VertexBuffer::CreateParams& a_params) const
+	VertexBufferHandle
+	VulkanDevice::CreateVertexBuffer(const VertexBuffer::CreateParams& a_params) const
 	{
 		return VulkanVertexBufferHandle(std::make_unique<VulkanVertexBuffer>(*this, a_params));
 	}
 
-	Rendering::SemaphoreHandle
+	SemaphoreHandle
 	VulkanDevice::CreateSemaphore() const
 	{
 		return VulkanSemaphoreHandle(std::make_unique<VulkanSemaphore>(*this));
 	}
 
-	Rendering::FenceHandle
+	FenceHandle
 	VulkanDevice::CreateFence() const
 	{
 		return VulkanFenceHandle(std::make_unique<VulkanFence>(*this));
-	}
-
-	void
-	VulkanDevice::CreateInstance()
-	{
-		OYL_PROFILE_FUNCTION();
-
-		vk::ApplicationInfo appInfo {
-			.pApplicationName = "Oyl3D",
-			.applicationVersion = VK_MAKE_VERSION(1, 0, 0),
-			.pEngineName = "Oyl3D",
-			.engineVersion = VK_MAKE_VERSION(1, 0, 0),
-			.apiVersion = vk::ApiVersion14,
-		};
-
-		// Get the required layers
-		std::vector<const char*> requiredLayers;
-		if constexpr (ENABLE_VALIDATION_LAYERS)
-		{
-			requiredLayers.assign(VALIDATION_LAYERS.begin(), VALIDATION_LAYERS.end());
-		}
-
-		// Check if the required layers are supported by the Vulkan implementation.
-		auto layerProperties = m_context.enumerateInstanceLayerProperties();
-		auto unsupportedLayerIt = std::ranges::find_if(
-			requiredLayers,
-			[&layerProperties](const auto& a_requiredLayer)
-			{
-				return std::ranges::none_of(
-					layerProperties,
-					[a_requiredLayer](const auto& a_layerProperty)
-					{
-						return strcmp(a_layerProperty.layerName, a_requiredLayer) == 0;
-					}
-				);
-			}
-		);
-		if (unsupportedLayerIt != requiredLayers.end())
-		{
-			throw std::runtime_error("Required layer not supported: " + std::string(*unsupportedLayerIt));
-		}
-
-		// Get the required extensions.
-		auto requiredExtensions = GetRequiredInstanceExtensions();
-
-		// Check if the required extensions are supported by the Vulkan implementation.
-		auto extensionProperties = m_context.enumerateInstanceExtensionProperties();
-		auto unsupportedPropertyIt = std::ranges::find_if(
-			requiredExtensions,
-			[&extensionProperties](const auto& a_requiredExtension)
-			{
-				return std::ranges::none_of(
-					extensionProperties,
-					[a_requiredExtension](const auto& a_extensionProperty)
-					{
-						return strcmp(a_extensionProperty.extensionName, a_requiredExtension) == 0;
-					}
-				);
-			}
-		);
-		if (unsupportedPropertyIt != requiredExtensions.end())
-		{
-			throw std::runtime_error("Required extension not supported: " + std::string(*unsupportedPropertyIt));
-		}
-
-		vk::InstanceCreateInfo createInfo {
-			.pApplicationInfo = &appInfo,
-			.enabledLayerCount = (uint32) requiredLayers.size(),
-			.ppEnabledLayerNames = requiredLayers.data(),
-			.enabledExtensionCount = (uint32) requiredExtensions.size(),
-			.ppEnabledExtensionNames = requiredExtensions.data(),
-		};
-
-		m_instance = vk::raii::Instance(m_context, createInfo);
-	}
-
-	void
-	VulkanDevice::CreateDebugMessenger()
-	{
-		OYL_PROFILE_FUNCTION();
-
-		vk::DebugUtilsMessageSeverityFlagsEXT severityFlags(
-			vk::DebugUtilsMessageSeverityFlagBitsEXT::eVerbose
-			| vk::DebugUtilsMessageSeverityFlagBitsEXT::eInfo
-			| vk::DebugUtilsMessageSeverityFlagBitsEXT::eWarning
-			| vk::DebugUtilsMessageSeverityFlagBitsEXT::eError
-		);
-		vk::DebugUtilsMessageTypeFlagsEXT messageTypeFlags(
-			vk::DebugUtilsMessageTypeFlagBitsEXT::eGeneral
-			| vk::DebugUtilsMessageTypeFlagBitsEXT::ePerformance
-			| vk::DebugUtilsMessageTypeFlagBitsEXT::eValidation
-		);
-
-		vk::DebugUtilsMessengerCreateInfoEXT debugUtilsMessengerCreateInfoEXT {
-			.messageSeverity = severityFlags,
-			.messageType = messageTypeFlags,
-			.pfnUserCallback = DebugCallback,
-		};
-		m_debugMessenger = m_instance.createDebugUtilsMessengerEXT(debugUtilsMessengerCreateInfoEXT);
-	}
-
-	void
-	VulkanDevice::CreateSurface()
-	{
-		OYL_PROFILE_FUNCTION();
-
-		VkSurfaceKHR cSurface;
-		auto glfwWindow = static_cast<GLFWwindow*>(m_window->GetNativeWindowHandle());
-		if (glfwCreateWindowSurface(*m_instance, glfwWindow, nullptr, &cSurface) != VK_SUCCESS)
-		{
-			throw std::runtime_error("failed to create window surface!");
-		}
-		m_surface = vk::raii::SurfaceKHR(m_instance, cSurface);
 	}
 
 	bool
@@ -359,11 +202,11 @@ namespace Oyl::Rendering
 	}
 
 	void
-	VulkanDevice::PickPhysicalDevice(CommandQueueFlags a_queueFlags)
+	VulkanDevice::PickPhysicalDevice(const vk::raii::Instance& a_vkInstance, CommandQueueFlags a_queueFlags)
 	{
 		OYL_PROFILE_FUNCTION();
 
-		auto physicalDevices = m_instance.enumeratePhysicalDevices();
+		auto physicalDevices = a_vkInstance.enumeratePhysicalDevices();
 		const auto iter = std::ranges::find_if(
 			physicalDevices,
 			[&](const vk::raii::PhysicalDevice& a_physicalDevice)
@@ -380,7 +223,7 @@ namespace Oyl::Rendering
 	}
 
 	void
-	VulkanDevice::CreateLogicalDevice()
+	VulkanDevice::CreateLogicalDevice(const VulkanPresentTarget* a_presentTarget)
 	{
 		OYL_PROFILE_FUNCTION();
 
@@ -397,8 +240,12 @@ namespace Oyl::Rendering
 
 				if (queueFlags & vk::QueueFlagBits::eGraphics)
 				{
-					// If the queue supports graphics, we also want it to support SurfaceKHR
-					if (!m_physicalDevice.getSurfaceSupportKHR(propertiesIndex, *m_surface))
+					// If we are given a PresentTarget, check for Present-To-Surface support
+					if (!a_presentTarget)
+						continue;
+
+					auto& vkSurface = *a_presentTarget->GetVkSurface();
+					if (!m_physicalDevice.getSurfaceSupportKHR(propertiesIndex, vkSurface))
 						continue;
 
 					// We want a unique queue for transfers
@@ -470,63 +317,5 @@ namespace Oyl::Rendering
 				)
 			);
 		}
-	}
-}
-
-namespace
-{
-	vk::Bool32
-	DebugCallback(
-		vk::DebugUtilsMessageSeverityFlagBitsEXT a_severity,
-		vk::DebugUtilsMessageTypeFlagsEXT a_type,
-		const vk::DebugUtilsMessengerCallbackDataEXT* a_pCallbackData,
-		void* a_pUserData
-	)
-	{
-		OYL_UNUSED(a_pUserData);
-
-		constexpr char message[] = "Validation Layer [{}]: {}";
-
-		switch (a_severity)
-		{
-			case vk::DebugUtilsMessageSeverityFlagBitsEXT::eVerbose:
-			{
-				OYL_LOG_DEBUG(message, to_string(a_type).data(), a_pCallbackData->pMessage);
-				break;
-			}
-			case vk::DebugUtilsMessageSeverityFlagBitsEXT::eInfo:
-			{
-				OYL_LOG_INFO(message, to_string(a_type).data(), a_pCallbackData->pMessage);
-				break;
-			}
-			case vk::DebugUtilsMessageSeverityFlagBitsEXT::eWarning:
-			{
-				OYL_LOG_WARNING(message, to_string(a_type).data(), a_pCallbackData->pMessage);
-				break;
-			}
-			case vk::DebugUtilsMessageSeverityFlagBitsEXT::eError:
-			{
-				OYL_LOG_ERROR(message, to_string(a_type).data(), a_pCallbackData->pMessage);
-				break;
-			}
-			default:
-				break;
-		}
-
-		return vk::False;
-	}
-
-	std::vector<const char*>
-	GetRequiredInstanceExtensions()
-	{
-		uint32_t glfwExtensionCount = 0;
-		auto glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);
-
-		std::vector<const char*> extensions(glfwExtensions, glfwExtensions + glfwExtensionCount);
-		if constexpr (ENABLE_VALIDATION_LAYERS)
-		{
-			extensions.push_back(vk::EXTDebugUtilsExtensionName);
-		}
-		return extensions;
 	}
 }

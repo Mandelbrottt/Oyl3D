@@ -7,31 +7,28 @@
 #include "VulkanCommandQueue.h"
 #include "VulkanFence.h"
 #include "VulkanImage.h"
+#include "VulkanPresentTarget.h"
 #include "VulkanSemaphore.h"
 #include "VulkanShader.h"
 #include "VulkanVertexBuffer.h"
 
 #include "Rendering/Device.h"
 
-namespace Oyl::Glfw
+namespace Oyl
 {
-	class Window;
+	class IWindow;
 }
 
 namespace Oyl::Rendering
 {
-	class VulkanCommandQueue;
-
 	class OYL_RENDERING_API VulkanDevice : public Device
 	{
-		struct DeviceTag {};
-
 	public:
 		VulkanDevice(nullptr_t);
 
 		struct CreateParams
 		{
-			const IWindow& window;
+			const VulkanPresentTarget* presentTarget;
 
 			CommandQueueFlags commandQueueFlags;
 
@@ -40,11 +37,13 @@ namespace Oyl::Rendering
 		};
 
 		static
-		PImpl<VulkanDevice>
-		Create(const CreateParams& a_params);
+		UniquePtrImplicitConvertible<VulkanDevice>
+		Create(const vk::raii::Instance& a_vkInstance, const CreateParams& a_params);
 
 		explicit
-		VulkanDevice(DeviceTag, const CreateParams& a_params);
+		VulkanDevice(const vk::raii::Instance& a_vkInstance, const CreateParams& a_params);
+
+		DEFAULT_MOVE(VulkanDevice);
 
 		virtual
 		~VulkanDevice();
@@ -55,9 +54,6 @@ namespace Oyl::Rendering
 		bool
 		IsValid() const override;
 
-		const IWindow*
-		GetWindow() const override;
-
 		const VulkanCommandQueue*
 		GetCommandQueue(CommandQueueFlagBits a_flag) const override;
 
@@ -66,9 +62,6 @@ namespace Oyl::Rendering
 
 		const vk::raii::PhysicalDevice&
 		GetVkPhysicalDevice() const;
-
-		const vk::raii::SurfaceKHR&
-		GetVkSurface() const;
 
 		void
 		WaitUntilIdle() const override;
@@ -96,33 +89,16 @@ namespace Oyl::Rendering
 
 	private:
 		void
-		CreateInstance();
+		PickPhysicalDevice(const vk::raii::Instance& a_vkInstance, CommandQueueFlags a_queueFlags);
 
 		void
-		CreateDebugMessenger();
-
-		void
-		CreateSurface();
-
-		void
-		PickPhysicalDevice(CommandQueueFlags a_queueFlags);
-
-		void
-		CreateLogicalDevice();
+		CreateLogicalDevice(const VulkanPresentTarget* a_presentTarget);
 
 		void
 		CreateCommandQueues();
 
 	private:
-		const Glfw::Window* m_window = nullptr;
-
 		std::vector<std::string> m_requiredDeviceExtensions;
-
-		vk::raii::Context m_context;
-		vk::raii::Instance m_instance = nullptr;
-		vk::raii::DebugUtilsMessengerEXT m_debugMessenger = nullptr;
-
-		vk::raii::SurfaceKHR m_surface = nullptr;
 
 		vk::raii::PhysicalDevice m_physicalDevice = nullptr;
 		vk::raii::Device m_device = nullptr;
@@ -131,5 +107,5 @@ namespace Oyl::Rendering
 		std::unordered_map<CommandQueueFlagBits, VulkanCommandQueue> m_queues;
 	};
 
-	using VulkanDeviceHandle = PImpl<VulkanDevice>;
+	using VulkanDeviceHandle = UniquePtrImplicitConvertible<VulkanDevice>;
 }

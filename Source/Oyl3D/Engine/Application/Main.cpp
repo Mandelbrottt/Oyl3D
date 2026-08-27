@@ -6,9 +6,8 @@
 
 #include <Core/Application/SharedLibrary.h>
 
-#include <Rendering/Modules/RenderControlModule.h>
-
 #include "Application/Modules/MainWindowModule.h"
+#include "Application/Modules/RenderControlModule.h"
 
 #include "Core/Application/ApplicationEvents.h"
 #include "Core/Application/CommandLine.h"
@@ -121,10 +120,12 @@ namespace Oyl
 		Time::Detail::Init();
 		Logging::Detail::Init();
 
+		ModuleRegistry::s_currentModuleRegistry = &g_data.moduleRegistry;
+
 		auto& registry = g_data.moduleRegistry;
 		registry.RegisterModule<ApplicationCloseRequestEventListener>();
+		registry.RegisterModule<RenderControlModule>();
 		registry.RegisterModule<MainWindowModule>();
-		registry.RegisterModule<Rendering::RenderControlModule>();
 
 		for (auto& module : registry)
 		{
