@@ -44,7 +44,7 @@ namespace Oyl
 		template<typename... TArgs>
 		static
 		UniquePtr
-		Create(TArgs... a_args)
+		Create(TArgs&&... a_args)
 		{
 			return UniquePtr(
 				std::make_unique<TPointee>(std::forward<TArgs>(a_args)...)
