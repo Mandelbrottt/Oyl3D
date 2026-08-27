@@ -41,9 +41,6 @@ namespace Oyl
 
 	private:
 		void
-		OnWindowCreatedEvent(const WindowCreatedEvent& a_event);
-
-		void
 		OnWindowClosedEvent(const WindowClosedEvent& a_event);
 
 		void
@@ -60,6 +57,6 @@ namespace Oyl
 		UniquePtr<Rendering::Renderer> m_renderer;
 		UniquePtr<Rendering::TestRenderPass> m_testRenderPass;
 
-		IWindow* m_mainWindow = nullptr;
+		const IWindow* m_mainWindow = nullptr;
 	};
 }

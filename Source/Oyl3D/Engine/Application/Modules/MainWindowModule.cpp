@@ -28,12 +28,6 @@ namespace Oyl
 		RegisterEventListener(&MainWindowModule::OnWindowMouseReleaseEvent);
 		RegisterEventListener(&MainWindowModule::OnWindowMouseScrollEvent);
 		RegisterEventListener(&MainWindowModule::OnWindowCursorMoveEvent);
-	}
-
-	void
-	MainWindowModule::Init()
-	{
-		OYL_PROFILE_FUNCTION();
 
 		int initResult = glfwInit();
 		if (!initResult)

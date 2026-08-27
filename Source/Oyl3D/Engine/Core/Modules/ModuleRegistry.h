@@ -8,21 +8,29 @@
 
 namespace Oyl
 {
-	void ApplicationInit();
+	void
+	ApplicationInit();
 
 	class OYL_CORE_API ModuleRegistry
 	{
 		friend class Module;
-		friend void Oyl::ApplicationInit();
+		friend void
+		Oyl::ApplicationInit();
 
 		using ModuleList = std::vector<Module*>;
 
+		static ModuleRegistry* s_currentModuleRegistry;
+
 	public:
+		static
+		ModuleRegistry*
+		GetCurrent();
+
 		Module*
 		RegisterModule(Module* a_module);
 
 		template<typename TModule, typename... TArgs>
-			requires std::is_base_of_v<Module, TModule>
+			requires std::is_assignable_v<Traits::TAddPointer<Module>&, Traits::TAddPointer<TModule>>
 		TModule*
 		RegisterModule(TArgs&&... a_args)
 		{
@@ -31,11 +39,8 @@ namespace Oyl
 			return module;
 		}
 
-		Module*
-		GetModule(Reflection::TypeId a_typeId);
-
 		template<typename TModule>
-			requires std::is_base_of_v<Module, TModule>
+			requires std::is_assignable_v<Traits::TAddPointer<Module>&, Traits::TAddPointer<TModule>>
 		TModule*
 		GetModule()
 		{
@@ -43,24 +48,31 @@ namespace Oyl
 			return reinterpret_cast<TModule*>(module);
 		}
 
+		Module*
+		GetModule(Reflection::TypeId a_typeId);
+
 		bool
 		RemoveModule(Reflection::TypeId a_typeId);
 
 		template<typename TModule>
-			requires std::is_base_of_v<Module, TModule>
+			requires std::is_assignable_v<Traits::TAddPointer<Module>&, Traits::TAddPointer<TModule>>
 		bool
 		RemoveModule()
 		{
 			return RemoveModule(Reflection::GetTypeId<TModule>());
 		}
 
-		ModuleList::iterator begin() { return m_modules.begin(); }
+		ModuleList::iterator
+		begin() { return m_modules.begin(); }
 
-		ModuleList::iterator end() { return m_modules.end(); }
+		ModuleList::iterator
+		end() { return m_modules.end(); }
 
-		ModuleList::reverse_iterator rbegin() { return m_modules.rbegin(); }
+		ModuleList::reverse_iterator
+		rbegin() { return m_modules.rbegin(); }
 
-		ModuleList::reverse_iterator rend() { return m_modules.rend(); }
+		ModuleList::reverse_iterator
+		rend() { return m_modules.rend(); }
 
 	private:
 		std::vector<Module*> m_modules;

@@ -5,6 +5,14 @@
 
 namespace Oyl
 {
+	ModuleRegistry* ModuleRegistry::s_currentModuleRegistry = nullptr;
+
+	ModuleRegistry*
+	ModuleRegistry::GetCurrent()
+	{
+		return s_currentModuleRegistry;
+	}
+
 	Module*
 	ModuleRegistry::RegisterModule(Module* a_module)
 	{

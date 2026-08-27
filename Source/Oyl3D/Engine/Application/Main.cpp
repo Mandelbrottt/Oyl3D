@@ -120,6 +120,8 @@ namespace Oyl
 		Time::Detail::Init();
 		Logging::Detail::Init();
 
+		ModuleRegistry::s_currentModuleRegistry = &g_data.moduleRegistry;
+
 		auto& registry = g_data.moduleRegistry;
 		registry.RegisterModule<ApplicationCloseRequestEventListener>();
 		registry.RegisterModule<RenderControlModule>();
