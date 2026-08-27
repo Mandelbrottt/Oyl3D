@@ -4,9 +4,7 @@
 #include "CommandPool.h"
 #include "Device.h"
 #include "Fence.h"
-#include "RenderContext.h"
 #include "Semaphore.h"
-#include "Shader.h"
 #include "TestRenderPass.h"
 
 static constexpr uint32 MAX_FRAMES_IN_FLIGHT = 2;
@@ -15,7 +13,8 @@ namespace Oyl::Rendering
 {
 	struct Renderer::Impl
 	{
-		RenderContext* renderContext = nullptr;
+		Device* device;
+		SwapChain* swapChain;
 		RenderGraph renderGraph;
 
 		CommandPoolHandle commandPool = nullptr;
@@ -33,10 +32,11 @@ namespace Oyl::Rendering
 		CreateSyncObjects();
 	};
 
-	Renderer::Renderer(RenderContext& a_renderContext)
+	Renderer::Renderer(Device& a_device, SwapChain& a_swapChain)
 		: m_impl(std::make_unique<Impl>())
 	{
-		m_impl->renderContext = &a_renderContext;
+		m_impl->device = &a_device;
+		m_impl->swapChain = &a_swapChain;
 
 		m_impl->CreateCommandBuffers();
 		m_impl->CreateSyncObjects();
@@ -53,7 +53,7 @@ namespace Oyl::Rendering
 		if (!m_impl)
 			return;
 
-		m_impl->renderContext->GetDevice()->WaitUntilIdle();
+		m_impl->device->WaitUntilIdle();
 		m_impl.reset();
 	}
 
@@ -67,8 +67,7 @@ namespace Oyl::Rendering
 
 		drawFence->Wait();
 
-		auto& renderContext = *m_impl->renderContext;
-		auto& swapChain = *renderContext.GetSwapChain();
+		auto& swapChain = *m_impl->swapChain;
 		bool success = swapChain.AcquireNextImage(presentCompleteSemaphore, nullptr);
 		if (!success)
 		{
@@ -84,7 +83,7 @@ namespace Oyl::Rendering
 
 		auto& renderFinishedSemaphore = m_impl->renderFinishedSemaphores[imageIndex];
 
-		auto& device = *renderContext.GetDevice();
+		auto& device = *m_impl->device;
 		const auto& graphicsQueue = *device.GetCommandQueue(CommandQueueFlagBits::Graphics);
 		graphicsQueue.Submit(
 			CommandQueue::SubmitParams {
@@ -126,8 +125,7 @@ namespace Oyl::Rendering
 
 		m_impl->renderGraph.Execute(*commandBuffer);
 
-		auto& renderContext = *m_impl->renderContext;
-		auto& swapChain = *renderContext.GetSwapChain();
+		auto& swapChain = *m_impl->swapChain;
 
 		commandBuffer->TransitionImageLayout(
 			swapChain.GetCurrentImageId(),
@@ -158,7 +156,7 @@ namespace Oyl::Rendering
 	void
 	Renderer::RecreateSwapChain()
 	{
-		m_impl->renderContext->Resize(m_impl->renderContext->GetSwapChain()->GetSize());
+		m_impl->swapChain->Recreate();
 	}
 
 	void
@@ -166,14 +164,12 @@ namespace Oyl::Rendering
 	{
 		OYL_PROFILE_FUNCTION();
 
-		auto& device = *renderContext->GetDevice();
-
-		commandPool = device.CreateCommandPool({ .commandQueueFlags = CommandQueueFlagBits::Graphics });
+		commandPool = device->CreateCommandPool({ .commandQueueFlags = CommandQueueFlagBits::Graphics });
 
 		commandBuffers.Reserve(MAX_FRAMES_IN_FLIGHT);
 		for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++)
 		{
-			auto commandBuffer = device.CreateCommandBuffer({ .commandPool = *commandPool, });
+			auto commandBuffer = device->CreateCommandBuffer({ .commandPool = *commandPool, });
 			commandBuffers.Add(std::move(commandBuffer));
 		}
 	}
@@ -185,18 +181,15 @@ namespace Oyl::Rendering
 
 		OYL_ASSERT(renderFinishedSemaphores.Empty() && presentCompleteSemaphores.Empty() && inFlightFences.Empty());
 
-		auto& device = *renderContext->GetDevice();
-		auto& swapChain = *renderContext->GetSwapChain();
-
-		for (size_t i = 0; i < swapChain.GetImageCount(); i++)
+		for (size_t i = 0; i < swapChain->GetImageCount(); i++)
 		{
-			renderFinishedSemaphores.Add(device.CreateSemaphore());
+			renderFinishedSemaphores.Add(device->CreateSemaphore());
 		}
 
 		for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++)
 		{
-			presentCompleteSemaphores.Add(device.CreateSemaphore());
-			inFlightFences.Add(device.CreateFence());
+			presentCompleteSemaphores.Add(device->CreateSemaphore());
+			inFlightFences.Add(device->CreateFence());
 		}
 	}
 }

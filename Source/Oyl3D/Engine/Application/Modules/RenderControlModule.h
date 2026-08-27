@@ -53,14 +53,13 @@ namespace Oyl
 		OnWindowMinimizeEvent(const WindowMinimizeEvent& a_event);
 
 	private:
-		std::unique_ptr<Internal::ResourceManager> m_resourceManager;
+		UniquePtr<Internal::ResourceManager> m_resourceManager;
 
 		UniquePtr<Internal::RenderEngineInstance> m_renderEngineInstance;
 
-		std::unique_ptr<Rendering::Renderer> m_renderer;
+		UniquePtr<Rendering::Renderer> m_renderer;
+		UniquePtr<Rendering::TestRenderPass> m_testRenderPass;
 
 		IWindow* m_mainWindow = nullptr;
-
-		std::unique_ptr<Rendering::TestRenderPass> m_testRenderPass;
 	};
 }

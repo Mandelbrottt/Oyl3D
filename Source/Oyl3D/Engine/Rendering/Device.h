@@ -24,8 +24,9 @@ namespace Oyl::Rendering
 	protected:
 		Device() = default;
 
+		DEFAULT_MOVE(Device);
+
 	public:
-		NO_MOVE(Device);
 		NO_COPY(Device);
 
 		virtual

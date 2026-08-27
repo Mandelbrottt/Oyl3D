@@ -23,8 +23,6 @@ namespace Oyl::Rendering
 {
 	class OYL_RENDERING_API VulkanDevice : public Device
 	{
-		struct DeviceTag {};
-
 	public:
 		VulkanDevice(nullptr_t);
 
@@ -43,7 +41,9 @@ namespace Oyl::Rendering
 		Create(const vk::raii::Instance& a_vkInstance, const CreateParams& a_params);
 
 		explicit
-		VulkanDevice(DeviceTag, const vk::raii::Instance& a_vkInstance, const CreateParams& a_params);
+		VulkanDevice(const vk::raii::Instance& a_vkInstance, const CreateParams& a_params);
+
+		DEFAULT_MOVE(VulkanDevice);
 
 		virtual
 		~VulkanDevice();

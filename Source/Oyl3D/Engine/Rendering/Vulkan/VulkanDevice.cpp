@@ -17,10 +17,10 @@ namespace Oyl::Rendering
 	VulkanDeviceHandle
 	VulkanDevice::Create(const vk::raii::Instance& a_vkInstance, const CreateParams& a_params)
 	{
-		return VulkanDeviceHandle(std::make_unique<VulkanDevice>(DeviceTag(), a_vkInstance, a_params));
+		return VulkanDeviceHandle(std::make_unique<VulkanDevice>(a_vkInstance, a_params));
 	}
 
-	VulkanDevice::VulkanDevice(DeviceTag, const vk::raii::Instance& a_vkInstance, const CreateParams& a_params)
+	VulkanDevice::VulkanDevice(const vk::raii::Instance& a_vkInstance, const CreateParams& a_params)
 	{
 		OYL_PROFILE_FUNCTION();
 

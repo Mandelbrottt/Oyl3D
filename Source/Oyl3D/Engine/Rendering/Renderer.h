@@ -4,13 +4,15 @@
 
 namespace Oyl::Rendering
 {
+	class Device;
 	class RenderContext;
+	class SwapChain;
 
 	class OYL_RENDERING_API Renderer
 	{
 	public:
 		explicit
-		Renderer(RenderContext& a_renderContext);
+		Renderer(Device& a_device, SwapChain& a_swapChain);
 
 		NO_COPY(Renderer);
 		NO_MOVE(Renderer);

@@ -8,6 +8,8 @@
 
 namespace Oyl::Rendering
 {
+	VulkanPresentTarget::VulkanPresentTarget(nullptr_t) {}
+
 	VulkanPresentTarget::VulkanPresentTarget(const CreateParams& a_params)
 	{
 		OYL_PROFILE_FUNCTION();

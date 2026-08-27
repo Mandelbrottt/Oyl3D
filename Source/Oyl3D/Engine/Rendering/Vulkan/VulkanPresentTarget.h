@@ -11,7 +11,7 @@ namespace Oyl::Rendering
 	class OYL_RENDERING_API VulkanPresentTarget : public PresentTarget
 	{
 	public:
-		VulkanPresentTarget() = default;
+		VulkanPresentTarget(nullptr_t);
 
 		struct CreateParams
 		{

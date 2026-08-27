@@ -2,10 +2,6 @@
 
 #include <GLFW/glfw3.h>
 
-#include "VulkanRenderContext.h"
-#include "VulkanRenderContext.h"
-#include "VulkanShaderCompiler.h"
-
 namespace
 {
 	const std::vector VALIDATION_LAYERS {
@@ -18,6 +14,10 @@ namespace
 	#else
 		true;
 	#endif
+
+	const std::vector REQUIRED_DEVICE_EXTENSION {
+		vk::KHRSwapchainExtensionName,
+	};
 
 	std::vector<const char*>
 	GetRequiredInstanceExtensions();
@@ -41,17 +41,42 @@ namespace Oyl::Internal
 		if constexpr (ENABLE_VALIDATION_LAYERS)
 			CreateVkDebugMessenger();
 
-		m_shaderCompiler = UniquePtr<Rendering::VulkanShaderCompiler>::Create();
-		m_renderContext = UniquePtr<Rendering::VulkanRenderContext>::Create(Rendering::VulkanRenderContext::CreateParams {
-			.window = a_params.window,
-			.vkInstance = m_vkInstance,
-		});
+		m_window = a_params.window;
+		if (m_window)
+		{
+			Rendering::VulkanPresentTarget::CreateParams params = {
+				.window = *a_params.window,
+				.vkInstance = m_vkInstance
+			};
+			m_presentTarget = Rendering::VulkanPresentTarget(params);
+		}
+
+		m_device = Rendering::VulkanDevice(
+			m_vkInstance,
+			{
+				.presentTarget = &m_presentTarget,
+				.commandQueueFlags = Rendering::CommandQueueFlagBits::Graphics | Rendering::CommandQueueFlagBits::Transfer,
+				.ppRequiredDeviceExtensionsData = REQUIRED_DEVICE_EXTENSION.data(),
+				.requiredDeviceExtensionsLength = REQUIRED_DEVICE_EXTENSION.size(),
+			});
+
+		m_swapChain = Rendering::VulkanSwapChain(
+			m_device,
+			Rendering::VulkanSwapChain::CreateParams {
+				.window = *m_window,
+				.presentTarget = m_presentTarget
+			}
+		);
 	}
 
 	VulkanRenderEngineInstance::~VulkanRenderEngineInstance()
 	{
 		// Destroy manually to ensure proper destruction order
-		m_renderContext->Destroy();
+		m_device.WaitUntilIdle();
+
+		m_swapChain.Destroy();
+		m_device.Destroy();
+		m_presentTarget.Destroy();
 	}
 
 	Rendering::PresentTargetHandle

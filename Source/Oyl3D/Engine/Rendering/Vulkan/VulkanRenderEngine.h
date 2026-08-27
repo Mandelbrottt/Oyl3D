@@ -3,7 +3,9 @@
 #include <vulkan/vulkan_raii.hpp>
 
 #include "VulkanDevice.h"
+#include "VulkanPresentTarget.h"
 #include "VulkanShaderCompiler.h"
+#include "VulkanSwapChain.h"
 
 #include "Rendering/RenderEngine.h"
 
@@ -25,21 +27,37 @@ namespace Oyl
 			virtual
 			~VulkanRenderEngineInstance();
 
-			const Rendering::VulkanShaderCompiler*
+			const Rendering::VulkanShaderCompiler&
 			GetShaderCompiler() const override
 			{
-				const auto* abstract = RenderEngineInstance::GetShaderCompiler();
-				return static_cast<const Rendering::VulkanShaderCompiler*>(abstract);
+				return m_shaderCompiler;
 			}
 
 			Rendering::PresentTargetHandle
 			CreatePresentTarget(const Rendering::PresentTarget::CreateParams& a_params) const override;
 
-			const Rendering::VulkanDevice*
+			Rendering::VulkanDevice&
+			GetCurrentDevice() override
+			{
+				return m_device;
+			}
+
+			const Rendering::VulkanDevice&
 			GetCurrentDevice() const override
 			{
-				const auto* abstract = RenderEngineInstance::GetCurrentDevice();
-				return static_cast<const Rendering::VulkanDevice*>(abstract);
+				return const_cast<VulkanRenderEngineInstance*>(this)->GetCurrentDevice();
+			}
+
+			Rendering::SwapChain&
+			GetCurrentSwapChain() override
+			{
+				return m_swapChain;
+			}
+
+			const Rendering::SwapChain&
+			GetCurrentSwapChain() const override
+			{
+				return const_cast<VulkanRenderEngineInstance*>(this)->GetCurrentSwapChain();
 			}
 
 			const vk::raii::Context&
@@ -64,6 +82,14 @@ namespace Oyl
 			vk::raii::Context m_vkContext;
 			vk::raii::Instance m_vkInstance = nullptr;
 			vk::raii::DebugUtilsMessengerEXT m_debugMessenger = nullptr;
+
+			Rendering::VulkanShaderCompiler m_shaderCompiler;
+
+			Rendering::VulkanDevice m_device = nullptr;
+			Rendering::VulkanSwapChain m_swapChain = nullptr;
+			Rendering::VulkanPresentTarget m_presentTarget = nullptr;
+
+			const IWindow* m_window;
 		};
 	}
 

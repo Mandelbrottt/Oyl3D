@@ -1,6 +1,5 @@
 #include "RenderControlModule.h"
 
-#include "Rendering/RenderContext.h"
 #include "Rendering/RenderEngine.h"
 
 namespace Oyl
@@ -31,16 +30,12 @@ namespace Oyl
 		if (!m_renderEngineInstance)
 			return;
 
-		m_renderEngineInstance->GetRenderContext()->Update();
 		m_renderer->Render();
 	}
 
 	void
 	RenderControlModule::Shutdown()
 	{
-		if (!m_renderEngineInstance->GetRenderContext())
-			return;
-
 		OYL_PROFILE_FUNCTION();
 
 		RenderEngine::SetCurrentInstance(nullptr);
@@ -58,15 +53,18 @@ namespace Oyl
 		// TODO: Check for main window, somehow?
 		m_mainWindow = a_event.window;
 
-		m_resourceManager = std::make_unique<Internal::ResourceManager>();
+		m_resourceManager = UniquePtr<Internal::ResourceManager>::Create();
 
 		m_renderEngineInstance = RenderEngine::CreateInstance(Rendering::GraphicsApi::Vulkan, { .window = m_mainWindow });
 		RenderEngine::SetCurrentInstance(&m_renderEngineInstance);
 
-		m_renderer = std::make_unique<Rendering::Renderer>(*m_renderEngineInstance->GetRenderContext());
+		m_renderer = UniquePtr<Rendering::Renderer>::Create(
+			m_renderEngineInstance->GetCurrentDevice(),
+			m_renderEngineInstance->GetCurrentSwapChain()
+		);
 
-		m_testRenderPass = std::make_unique<Rendering::TestRenderPass>();
-		m_renderer->GetRenderGraph().AddRenderPass(m_testRenderPass.get());
+		m_testRenderPass = UniquePtr<Rendering::TestRenderPass>::Create();
+		m_renderer->GetRenderGraph().AddRenderPass(m_testRenderPass.Get());
 	}
 
 	void
@@ -77,10 +75,10 @@ namespace Oyl
 
 		OYL_PROFILE_FUNCTION();
 
-		m_renderer.reset();
-		m_testRenderPass.reset();
+		m_renderer.Reset();
+		m_testRenderPass.Reset();
 		m_renderEngineInstance.Reset();
-		m_resourceManager.reset();
+		m_resourceManager.Reset();
 	}
 
 	void
@@ -89,13 +87,13 @@ namespace Oyl
 		if (m_mainWindow != a_event.window)
 			return;
 
-		auto renderContext = m_renderEngineInstance->GetRenderContext();
-		if (!renderContext)
+		auto& swapChain = m_renderEngineInstance->GetCurrentSwapChain();
+		if (!swapChain)
 			return;
 
 		OYL_PROFILE_FUNCTION();
 
-		renderContext->Resize(a_event.size);
+		swapChain.Recreate();
 		m_testRenderPass->OnWindowResizedEvent(a_event);
 	}
 
@@ -105,14 +103,14 @@ namespace Oyl
 		if (m_mainWindow != a_event.window)
 			return;
 
-		auto renderContext = m_renderEngineInstance->GetRenderContext();
-		if (!renderContext)
+		auto& swapChain = m_renderEngineInstance->GetCurrentSwapChain();
+		if (!swapChain)
 			return;
 
 		OYL_PROFILE_FUNCTION();
 
 		// Don't need to handle un-minimized case, OnWindowResizeEvent is fired
 		if (a_event.minimized)
-			renderContext->Resize({ 0, 0 });
+			swapChain.Recreate();
 	}
 }

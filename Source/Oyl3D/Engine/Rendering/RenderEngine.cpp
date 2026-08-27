@@ -2,8 +2,6 @@
 
 #include <Core/Resources/ResourceManager.h>
 
-#include "Rendering/RenderContext.h"
-
 #include "Vulkan/VulkanRenderEngine.h"
 
 namespace Oyl
@@ -17,43 +15,16 @@ namespace Oyl
 
 		RenderEngineInstance::~RenderEngineInstance() {}
 
-		ResourceManager*
+		ResourceManager&
 		RenderEngineInstance::GetResourceManager()
 		{
-			return m_resourceManager.Get();
-		}
-
-		const Rendering::ShaderCompiler*
-		RenderEngineInstance::GetShaderCompiler() const
-		{
-			return m_shaderCompiler.Get();
-		}
-
-		const Rendering::Device*
-		RenderEngineInstance::GetCurrentDevice() const
-		{
-			const Rendering::Device* result = nullptr;
-			if (m_renderContext)
-				result = m_renderContext->GetDevice();
-			return result;
+			return *m_resourceManager;
 		}
 
 		Vector2u
 		RenderEngineInstance::GetCurrentViewPortSize() const
 		{
-			return m_renderContext->GetSwapChain()->GetSize();
-		}
-
-		Rendering::RenderContext*
-		RenderEngineInstance::GetRenderContext()
-		{
-			return m_renderContext.Get();
-		}
-
-		const Rendering::RenderContext*
-		RenderEngineInstance::GetRenderContext() const
-		{
-			return m_renderContext.Get();
+			return GetCurrentSwapChain().GetSize();
 		}
 	}
 

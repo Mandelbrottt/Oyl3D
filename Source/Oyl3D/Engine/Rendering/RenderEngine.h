@@ -6,9 +6,8 @@
 #include "Enums.h"
 
 #include "Rendering/Device.h"
-#include "Rendering/RenderContext.h"
-#include "Rendering/ShaderCompiler.h"
 #include "Rendering/PresentTarget.h"
+#include "Rendering/ShaderCompiler.h"
 
 namespace Oyl::Internal
 {
@@ -30,40 +29,46 @@ namespace Oyl
 
 	#pragma region Instance State
 			virtual
-			ResourceManager*
+			ResourceManager&
 			GetResourceManager();
 
 			virtual
-			const Rendering::ShaderCompiler*
-			GetShaderCompiler() const;
+			const Rendering::ShaderCompiler&
+			GetShaderCompiler() const = 0;
+
+			virtual
+			const Rendering::Device&
+			GetCurrentDevice() const
+			{
+				return const_cast<RenderEngineInstance*>(this)->GetCurrentDevice();
+			}
+
+			virtual
+			Rendering::Device&
+			GetCurrentDevice() = 0;
+
+			virtual
+			const Rendering::SwapChain&
+			GetCurrentSwapChain() const
+			{
+				return const_cast<RenderEngineInstance*>(this)->GetCurrentSwapChain();
+			}
+
+			virtual
+			Rendering::SwapChain&
+			GetCurrentSwapChain() = 0;
 
 			virtual
 			Rendering::PresentTargetHandle
 			CreatePresentTarget(const Rendering::PresentTarget::CreateParams& a_params) const = 0;
 
 			virtual
-			const Rendering::Device*
-			GetCurrentDevice() const;
-
-			virtual
 			Vector2u
 			GetCurrentViewPortSize() const;
-
-			virtual
-			Rendering::RenderContext*
-			GetRenderContext();
-
-			virtual
-			const Rendering::RenderContext*
-			GetRenderContext() const;
 	#pragma endregion Instance State
 
 		protected:
 			UniquePtr<ResourceManager> m_resourceManager;
-			UniquePtr<Rendering::ShaderCompiler> m_shaderCompiler;
-
-			// TEMPORARY: Should the renderer own the render context?
-			UniquePtr<Rendering::RenderContext> m_renderContext;
 		};
 	}
 
@@ -81,17 +86,17 @@ namespace Oyl
 		};
 
 		static
+		const Rendering::Device&
+		GetCurrentDevice()
+		{
+			return s_instance->GetCurrentDevice();
+		}
+
+		static
 		Rendering::PresentTargetHandle
 		CreatePresentTarget(const Rendering::PresentTarget::CreateParams& a_params)
 		{
 			return s_instance->CreatePresentTarget(a_params);
-		}
-
-		static
-		const Rendering::Device*
-		GetCurrentDevice()
-		{
-			return s_instance->GetCurrentDevice();
 		}
 
 		static
@@ -102,7 +107,7 @@ namespace Oyl
 		}
 
 		static
-		const Rendering::ShaderCompiler*
+		const Rendering::ShaderCompiler&
 		GetShaderCompiler()
 		{
 			return s_instance->GetShaderCompiler();
