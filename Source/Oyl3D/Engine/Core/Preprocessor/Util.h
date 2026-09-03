@@ -8,7 +8,7 @@
 #pragma endregion
 
 #pragma region Construction Macros
-	#if !defined(DEFAULT_COPY)
+	#if defined(DEFAULT_COPY)
 		#undef DEFAULT_COPY
 	#endif
 	#define DEFAULT_COPY(_class_) \
@@ -16,7 +16,7 @@
 		_class_& \
 		operator =(const _class_&) = default
 
-	#if !defined(DEFAULT_MOVE)
+	#if defined(DEFAULT_MOVE)
 		#undef DEFAULT_MOVE
 	#endif
 	#define DEFAULT_MOVE(_class_) \
@@ -24,7 +24,7 @@
 		_class_& \
 		operator =(_class_&&) noexcept = default
 
-	#if !defined(NO_COPY)
+	#if defined(NO_COPY)
 		#undef NO_COPY
 	#endif
 	#define NO_COPY(_class_) \
@@ -32,7 +32,7 @@
 		_class_& \
 		operator =(const _class_&) = delete
 
-	#if !defined(NO_MOVE)
+	#if defined(NO_MOVE)
 		#undef NO_MOVE
 	#endif
 	#define NO_MOVE(_class_) \
