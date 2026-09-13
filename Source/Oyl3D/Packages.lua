@@ -1,10 +1,9 @@
 local Config = require "Config"
 local Package = require "Package"
-
 local PackageCache = require "Packages"
 
 ---@type WorkspacePackage.List
-local Packages = {
+local Packages = Package.PackageList {
 	Glfw = {
 		Language = premake.C,
 		Kind = premake.SHAREDLIB,
@@ -211,7 +210,5 @@ local Packages = {
 		end
 	},
 }
-
-Package.InitWorkspacePackages(Packages)
 
 return Packages

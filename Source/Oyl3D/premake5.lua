@@ -1,11 +1,13 @@
-local Check = require "CheckProject"
 local Config = require "Config"
-local Engine = require "Engine"
+local Package = require "Package"
+
+local Oyl3D = require "Oyl3D"
 
 local Packages = require "Oyl3D.Packages"
 
-workspace "Oyl3D"; do
-	filename("%{wks.name}")
+Oyl3D.Workspace "Oyl3D"; do
+	filename "%{wks.name}"
+	checkproject "On"
 
 	configurations {
 		Config.Configurations.Debug,
@@ -19,11 +21,16 @@ workspace "Oyl3D"; do
 		Config.Platforms.Standalone
 	}
 
-	Engine.GenerateProjects {
-		Packages = Packages
-	}
+	group "Packages"; do
+		Package.GenerateProjects {
+			Packages = Packages,
+			Defaults = {
+				Cpp = Oyl3D.DefaultCppSettings
+			}
+		}
+	end
 
-	Check.GenerateProject {
-		"--workspace=oyl3d"
-	}
+	group ""; do
+		Oyl3D.GenerateProjectsFromScripts()
+	end
 end

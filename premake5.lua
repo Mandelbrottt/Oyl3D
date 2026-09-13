@@ -11,8 +11,6 @@ require "Action.Clean"
 require "Action.Packages"
 require "Overrides"
 
-local Project = require "Project"
-
 newoption {
 	trigger = "workspace",
 	description = "Generate only the selected workspace",
@@ -23,20 +21,5 @@ newoption {
 	}
 }
 
-local action = premake.action.current()
-if action and (not action.onWorkspace or not action.onProject) then
-	return
-end
-
-local function shouldGenerateWorkspace(wks)
-	local workspaceOpt = _OPTIONS["workspace"]
-	return not workspaceOpt or workspaceOpt:lower() == wks:lower()
-end
-
-if shouldGenerateWorkspace("Oyl3D") then
-	Project.Script("Source/Oyl3D")
-end
-
-if shouldGenerateWorkspace("Spyll") then
-	Project.Script("Source/Spyll")
-end
+dofile "Source/Oyl3D/premake5.lua"
+-- include "Source/Spyll"

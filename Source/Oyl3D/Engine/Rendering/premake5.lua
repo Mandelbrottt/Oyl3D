@@ -1,12 +1,11 @@
-local Engine = require "Engine"
+local Oyl3D = require "Oyl3D"
 
 group "Oyl/Engine"
 
-project "Oyl.Rendering"; do
-	language "C++"
+Oyl3D.CppProject "Oyl.Rendering"; do
 	kind "SharedLib"
 
-	-- Engine.GenerateOylSpyllInformation()
+	reflection "On"
 
 	links {
 		"Oyl.Core",

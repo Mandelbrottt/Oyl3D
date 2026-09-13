@@ -1,7 +1,7 @@
 local Package = require "Package"
 
 ---@type WorkspacePackage.List
-local Packages = {
+local Packages = Package.PackageList {
 	ClangTooling = {
 		Language = premake.CPP,
 		Include = { "include" },
@@ -44,7 +44,5 @@ local Packages = {
 		Include = { "include" },
 	},
 }
-
-Package.InitWorkspacePackages(Packages)
 
 return Packages

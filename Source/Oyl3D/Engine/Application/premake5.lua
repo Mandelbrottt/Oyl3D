@@ -1,14 +1,16 @@
+local Oyl3D = require "Oyl3D"
 local Engine = require "Engine"
 
 group "Oyl/Executables"
 
 startproject "Oyl.Application"
 
-project "Oyl.Application"; do
-	language(premake.CPP)
-	kind(premake.WINDOWEDAPP)
+Oyl3D.CppProject "Oyl.Application"; do
+	kind "WindowedApp"
 
-	targetname(Engine.Name .. "%{cfg.platform}")
+	targetname(Oyl3D.Name .. "%{cfg.platform}")
+
+	reflection "On"
 
 	links {
 		"Oyl.Core",

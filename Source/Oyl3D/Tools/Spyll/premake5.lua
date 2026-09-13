@@ -1,6 +1,8 @@
+local Oyl3D = require "Oyl3D"
+
 group "Oyl/Tools"
 
-project "Oyl.Spyll"; do
+Oyl3D.CppProject "Oyl.Spyll"; do
 	language "C++"
 	kind "ConsoleApp"
 

@@ -8,6 +8,12 @@ newoption {
 	description = "Disable the automatic run of premake on every compile",
 }
 
+premake.api.register {
+	name = "checkproject",
+	scope = "workspace",
+	kind = "boolean",
+}
+
 ---@param additionalArgs? string[]
 function CheckProject.GenerateProject(additionalArgs)
 	if _OPTIONS["no-premake-check"] then
