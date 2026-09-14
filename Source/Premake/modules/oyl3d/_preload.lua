@@ -6,7 +6,7 @@ p.oyl3d = p.modules.oyl3d
 
 include("actions.lua")
 include("clean_action.lua")
-include("package_action.lua")
+include("packages_action.lua")
 include("vstudio_action.lua")
 
 p.api.register {

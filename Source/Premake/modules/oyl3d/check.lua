@@ -17,8 +17,9 @@ function m.generateCheckProject(wks)
 		return
 	end
 
+	-- Add link to projects before defining check project to avoid circular dependency
 	private.addCheckLinkToProjects(wks)
-	private.checkProjectDefinition()
+	private.defineCheckProject()
 end
 
 function private.addCheckLinkToProjects(wks)
@@ -33,7 +34,7 @@ function private.addCheckLinkToProjects(wks)
 	os.chdir(cwd)
 end
 
-function private.checkProjectDefinition()
+function private.defineCheckProject()
 	group "Premake"
 
 	project "Premake"; do

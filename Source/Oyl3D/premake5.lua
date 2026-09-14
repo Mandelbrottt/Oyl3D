@@ -1,6 +1,7 @@
+require "oyl3d"
+
 local Config = require "Config"
 
-require "oyl3d"
 local Oyl3D = require "Oyl3D_old"
 
 local Packages = require "Oyl3D.Packages"

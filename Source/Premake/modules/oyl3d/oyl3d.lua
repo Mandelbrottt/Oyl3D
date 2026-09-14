@@ -11,7 +11,7 @@ local m = p.modules.oyl3d
 include("_preload.lua")
 include("check.lua")
 include("clean.lua")
-include("package.lua")
+include("packages.lua")
 include("project.lua")
 include("workspace.lua")
 
@@ -19,6 +19,10 @@ p.override(p.main, "preBake", function(base)
 	base()
 	m.preBake()
 end)
+
+function m.files()
+	
+end
 
 function m.preBake()
 	local global = p.api.scope.global
@@ -30,7 +34,7 @@ function m.preBake()
 			m.workspace.prepareWorkspace(wks)
 
 			m.workspace.generateWorkspaceProjects(wks)
-			m.package.generatePackageProjects(wks)
+			m.workspace.generatePackageProjects(wks)
 
 			for _, prj in ipairs(wks.projects) do
 				local cwd = os.getcwd()

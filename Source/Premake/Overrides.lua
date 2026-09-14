@@ -31,29 +31,6 @@ premake.override(premake.vstudio.vc2010.elements, "projectReferences", function(
 	return result
 end)
 
-premake.api.register {
-	name = "buildtargetcustomizations",
-	scope = "project",
-	kind = "list:string",
-	tokens = true,
-	pathVars = true
-}
-
--- Override premake buildcustomizations targets
-premake.override(premake.vstudio.vc2010.elements, "importExtensionTargets", function(base, prj)
-	local m = premake.vstudio.vc2010
-
-	local result = base(prj)
-	table.insert(result,
-		function(prj)
-			for i, build in ipairs(prj.buildtargetcustomizations) do
-				p.w('<Import Project="%s" />', path.translate(build))
-			end
-		end)
-
-	return result
-end)
-
 -- Hijack the userproject function to add ShowAllFiles by default in visual studio
 -- All custom userproject properties can be injected here
 premake.override(premake.vstudio.vc2010, "userProject", function(base)
