@@ -1,9 +1,12 @@
-local Oyl3D = require "Oyl3D"
+local Project = require "Project"
 
 group "Oyl/Engine"
 
-Oyl3D.CppProject "Oyl.Rendering"; do
+project "Oyl.Rendering"; do
+	language "C++"
 	kind "SharedLib"
+
+	Project.Files()
 
 	reflection "On"
 

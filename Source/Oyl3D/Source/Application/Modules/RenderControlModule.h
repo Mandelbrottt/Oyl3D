@@ -28,16 +28,16 @@ namespace Oyl
 		IsEnabled() override;
 
 		void
-		Setup() override;
+		OnCreate() override;
 
 		void
-		Init() override;
+		OnInit() override;
 
 		void
-		Update() override;
+		OnUpdate() override;
 
 		void
-		Shutdown() override;
+		OnDestroy() override;
 
 	private:
 		void

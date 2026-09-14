@@ -202,13 +202,7 @@ function Package.GenerateWorkspacePackageProject(name, package, defaults)
 		local premake_scripts = os.matchfiles("*premake5.lua")
 		if #premake_scripts > 0 then
 			local premake_script = premake_scripts[1]
-
-			local projectFn = project
-			project = function(_) return projectFn() end
-			
 			Project.Script(premake_script)
-
-			project = projectFn
 		end
 
 		filter { "platforms:not *Editor*" }; do

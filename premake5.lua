@@ -21,5 +21,6 @@ newoption {
 	}
 }
 
-dofile "Source/Oyl3D/premake5.lua"
+include "Source/Oyl3D"
+-- dofile "Source/Oyl3D/premake5.lua"
 -- include "Source/Spyll"

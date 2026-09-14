@@ -3,17 +3,6 @@ local Config = require "Config"
 local CheckProject = {}
 CheckProject.Name = "Premake"
 
-newoption {
-	trigger     = "no-premake-check",
-	description = "Disable the automatic run of premake on every compile",
-}
-
-premake.api.register {
-	name = "checkproject",
-	scope = "workspace",
-	kind = "boolean",
-}
-
 ---@param additionalArgs? string[]
 function CheckProject.GenerateProject(additionalArgs)
 	if _OPTIONS["no-premake-check"] then
@@ -23,7 +12,9 @@ function CheckProject.GenerateProject(additionalArgs)
 	---@type any
 	local wks = workspace()
 	for _, prj in ipairs(wks.projects) do
+		local basedir = prj.basedir
 		project(prj.name); do
+			prj.blocks[#prj.blocks]._basedir = basedir
 			links { CheckProject.Name }
 		end
 	end

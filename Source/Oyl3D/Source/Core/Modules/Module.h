@@ -66,19 +66,19 @@ namespace Oyl
 
 		virtual
 		void
-		Setup() {}
+		OnCreate() {}
 
 		virtual
 		void
-		Init() {}
+		OnInit() {}
 
 		virtual
 		void
-		Update() {}
+		OnUpdate() {}
 
 		virtual
 		void
-		Shutdown() {}
+		OnDestroy() {}
 
 	#pragma endregion
 

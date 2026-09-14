@@ -1,10 +1,13 @@
-local Oyl3D = require "Oyl3D"
+local Project = require "Project"
 local Config = require "Config"
 
 group "Oyl/Editor"
 
-Oyl3D.CppProject "Oyl.Editor"; do
+project "Oyl.Editor"; do
+	language "C++"
 	kind "SharedLib"
+	
+	Project.Files()
 	
 	removeconfigurations {
 		Config.Configurations.Distribution
@@ -18,6 +21,9 @@ Oyl3D.CppProject "Oyl.Editor"; do
 	
 	links {
 		"Oyl.Core",
+	}
+	
+	links {
 		"ImGui",
 		"SpdLog",
 		"TracyClient",

@@ -200,10 +200,10 @@ _ReflectionAssembly_Register(::Oyl::Reflection::Internal::ReflectionAllocatorFn 
 void
 EmitCodeFromTool(const Spyll::ReflectionParser* a_parser)
 {
-	std::filesystem::create_directory("Generated");
+	std::filesystem::create_directory(".Generated");
 
 	std::ofstream generatedIncludeFile;
-	generatedIncludeFile.open("Generated/Spyll.generated.cpp");
+	generatedIncludeFile.open(".Generated/Spyll.generated.cpp");
 
 	std::string emitString = std::string(g_emitTemplate);
 

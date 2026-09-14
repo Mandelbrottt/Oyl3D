@@ -11,7 +11,7 @@ namespace Oyl::Rendering
 
 		ShaderCompileResult result;
 		RenderEngine::GetShaderCompiler().CompileHlslFromFile(
-			"G:/dev/Oyl3D/Oyl3D/Source/Oyl3D/Engine/Rendering/Shaders/shader.hlsl",
+			"G:/dev/Oyl3D/Oyl3D/Source/Oyl3D/Source/Rendering/Shaders/shader.hlsl",
 			&result
 		);
 

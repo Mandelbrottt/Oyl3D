@@ -13,7 +13,7 @@ namespace Oyl
 	}
 
 	void
-	RenderControlModule::Setup()
+	RenderControlModule::OnCreate()
 	{
 		RegisterEventListener(&RenderControlModule::OnWindowClosedEvent);
 		RegisterEventListener(&RenderControlModule::OnWindowResizeEvent);
@@ -21,7 +21,7 @@ namespace Oyl
 	}
 
 	void
-	RenderControlModule::Init()
+	RenderControlModule::OnInit()
 	{
 		auto* mainWindowModule = GetModule<MainWindowModule>();
 		if (!mainWindowModule || !mainWindowModule->GetWindow())
@@ -44,7 +44,7 @@ namespace Oyl
 	}
 
 	void
-	RenderControlModule::Update()
+	RenderControlModule::OnUpdate()
 	{
 		OYL_PROFILE_FUNCTION();
 
@@ -55,7 +55,7 @@ namespace Oyl
 	}
 
 	void
-	RenderControlModule::Shutdown()
+	RenderControlModule::OnDestroy()
 	{
 		OYL_PROFILE_FUNCTION();
 

@@ -7,18 +7,6 @@ local Check = require "CheckProject"
 local p = premake
 local api = p.api
 
-api.register {
-	name = "reflection",
-	scope = "project",
-	kind = "boolean"
-}
-
-api.register {
-	name = "reflectionshowgenerated",
-	scope = "project",
-	kind = "boolean"
-}
-
 local Oyl3D = {}
 
 Oyl3D.Name = "Oyl3D"

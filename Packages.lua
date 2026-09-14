@@ -31,7 +31,7 @@ return {
 		},
 	},
 
-	GLFW = {
+	Glfw = {
 		Git = {
 			Url = "https://github.com/glfw/glfw.git",
 			Ref = "3.4",

@@ -17,7 +17,7 @@ namespace Oyl::Reflection
 		class ReflectionFactory;
 	}
 
-	struct Attribute
+	struct [[]] Attribute
 	{
 		friend Internal::ReflectionFactory;
 

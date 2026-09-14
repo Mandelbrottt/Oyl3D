@@ -17,13 +17,13 @@ namespace Oyl
 		GetWindow() const { return m_window; }
 
 		void
-		Setup() override;
+		OnCreate() override;
 
 		void
-		Update() override;
+		OnUpdate() override;
 
 		void
-		Shutdown() override;
+		OnDestroy() override;
 
 		void
 		OnWindowResizeEvent(const WindowResizeEvent& a_event);

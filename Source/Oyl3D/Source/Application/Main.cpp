@@ -88,7 +88,7 @@ namespace Oyl
 
 	public:
 		void
-		Setup() override
+		OnCreate() override
 		{
 			RegisterEventListener(&ApplicationCloseRequestEventListener::OnApplicationCloseRequestEvent);
 		}
@@ -129,7 +129,7 @@ namespace Oyl
 
 		for (auto& module : registry)
 		{
-			module->Init();
+			module->OnInit();
 		}
 	}
 
@@ -148,7 +148,7 @@ namespace Oyl
 				if (!module->IsEnabled())
 					continue;
 
-				module->Update();
+				module->OnUpdate();
 			}
 		}
 

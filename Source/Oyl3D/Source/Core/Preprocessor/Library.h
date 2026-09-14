@@ -2,6 +2,7 @@
 
 #include "Environment.h"
 #include "Reflection.h"
+#include "Util.h"
 
 #if defined(__REFLECT_GENERATE__)
 	#define OYL_REFLECT __attribute__((annotate("__REFLECT__")))

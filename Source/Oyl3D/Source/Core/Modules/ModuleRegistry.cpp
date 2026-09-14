@@ -18,7 +18,7 @@ namespace Oyl
 	{
 		m_modules.emplace_back(a_module);
 		Internal::AttachEventListenerToEventDispatcher(a_module, &m_eventDispatcher);
-		a_module->Setup();
+		a_module->OnCreate();
 		return a_module;
 	}
 
@@ -55,7 +55,7 @@ namespace Oyl
 		}
 
 		Module* module = *moduleIter;
-		module->Shutdown();
+		module->OnDestroy();
 		delete module;
 		m_modules.erase(moduleIter);
 		return true;

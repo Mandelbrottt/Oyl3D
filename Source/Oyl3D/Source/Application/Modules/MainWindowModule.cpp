@@ -15,7 +15,7 @@ namespace Oyl
 	}
 
 	void
-	MainWindowModule::Setup()
+	MainWindowModule::OnCreate()
 	{
 		RegisterEventListener(&MainWindowModule::OnWindowResizeEvent);
 		RegisterEventListener(&MainWindowModule::OnWindowMoveEvent);
@@ -51,7 +51,7 @@ namespace Oyl
 	}
 
 	void
-	MainWindowModule::Update()
+	MainWindowModule::OnUpdate()
 	{
 		OYL_PROFILE_FUNCTION();
 
@@ -62,7 +62,7 @@ namespace Oyl
 	}
 
 	void
-	MainWindowModule::Shutdown()
+	MainWindowModule::OnDestroy()
 	{
 		OYL_PROFILE_FUNCTION();
 

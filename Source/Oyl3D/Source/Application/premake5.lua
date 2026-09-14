@@ -1,14 +1,16 @@
-local Oyl3D = require "Oyl3D"
-local Engine = require "Engine"
+local Project = require "Project"
 
 group "Oyl/Executables"
 
 startproject "Oyl.Application"
 
-Oyl3D.CppProject "Oyl.Application"; do
+project "Oyl.Application"; do
+	language "C++"
 	kind "WindowedApp"
 
-	targetname(Oyl3D.Name .. "%{cfg.platform}")
+	targetname("Oyl3D%{cfg.platform}")
+
+	Project.Files()
 
 	reflection "On"
 

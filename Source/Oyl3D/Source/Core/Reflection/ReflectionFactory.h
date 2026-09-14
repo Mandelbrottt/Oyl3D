@@ -8,7 +8,7 @@ namespace Oyl::Reflection::Internal
 {
 	using ReflectionAllocatorFn = void*(*)(std::size_t, std::align_val_t);
 
-	class ReflectionFactory
+	class OYL_CORE_API ReflectionFactory
 	{
 		ReflectionFactory() = delete;
 

@@ -1,10 +1,12 @@
-local Oyl3D = require "Oyl3D"
+local Project = require "Project"
 
 group "Oyl/Tools"
 
-Oyl3D.CppProject "Oyl.Spyll"; do
+project "Oyl.Spyll"; do
 	language "C++"
 	kind "ConsoleApp"
+
+	Project.Files()
 
 	-- Needed to interfaces with Spyll.Tool
 	runtime "Release"
