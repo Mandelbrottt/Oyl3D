@@ -286,9 +286,9 @@ local Packages = {
 			kind "StaticLib"
 
 			files {
-				"%{prj.basedir}/**.cpp",
-				"%{prj.basedir}/**.h",
-				"%{prj.basedir}/**.hpp",
+				"**.cpp",
+				"**.h",
+				"**.hpp",
 			}
 
 			-- Project settings set by premake5.lua in basedir
@@ -297,7 +297,7 @@ local Packages = {
 				-- TODO: Make dependant on variable name in root Packages.lua
 				local clangNatvisPattern = path.join(Config.PackageCacheDir, "ClangTooling", "**.natvis")
 				files {
-					"%{prj.basedir}**.natvis",
+					"**.natvis",
 					clangNatvisPattern
 				}
 			end

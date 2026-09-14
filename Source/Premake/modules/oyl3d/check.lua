@@ -1,27 +1,41 @@
 local Config = require "Config"
 
-local CheckProject = {}
-CheckProject.Name = "Premake"
+local p = premake
 
----@param additionalArgs? string[]
-function CheckProject.GenerateProject(additionalArgs)
+local oyl3d = p.modules.oyl3d
+oyl3d.check = oyl3d.check or {}
+
+local m = oyl3d.check
+
+function m.generateCheckProject(wks)
 	if _OPTIONS["no-premake-check"] then
 		return
 	end
-
-	---@type any
-	local wks = workspace()
-	for _, prj in ipairs(wks.projects) do
-		local basedir = prj.basedir
-		project(prj.name); do
-			prj.blocks[#prj.blocks]._basedir = basedir
-			links { CheckProject.Name }
-		end
+	
+	if not wks.checkproject then
+		return
 	end
 
+	m.addCheckLinkToProjects(wks)
+	m.checkProjectDefinition()
+end
+
+function m.addCheckLinkToProjects(wks)
+	local cwd = os.getcwd()
+	for _, prj in ipairs(wks.projects) do
+		os.chdir(prj.basedir)
+
+		project(prj.name); do
+			links { "Premake" }
+		end
+	end
+	os.chdir(cwd)
+end
+
+function m.checkProjectDefinition()
 	group "Premake"
 
-	project(CheckProject.Name); do
+	project "Premake"; do
 		kind "Makefile"
 		filename("%{prj.name}")
 		targetdir(Config.BinariesDir)
@@ -33,12 +47,12 @@ function CheckProject.GenerateProject(additionalArgs)
 			"--premake-check",
 			"--cc=%{cfg.toolset}",
 		}
-		
+
 		local premakeCommand = "premake5"
 		for _, arg in ipairs(premakeCommandArgs) do
 			premakeCommand = string.format("%s %s", premakeCommand, arg)
 		end
-		
+
 		if additionalArgs then
 			for _, arg in ipairs(additionalArgs) do
 				premakeCommand = string.format("%s %s", premakeCommand, arg)
@@ -52,11 +66,11 @@ function CheckProject.GenerateProject(additionalArgs)
 			premakeCommand,
 		}
 
-		filter "system:windows"
+		filter "system:windows"; do
 			architecture "x86_64"
-		filter {}
+		end;
 	end
 	workspace()
 end
 
-return CheckProject
+return m
