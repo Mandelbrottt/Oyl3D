@@ -4,11 +4,13 @@ local p = premake
 
 local oyl3d = p.modules.oyl3d
 oyl3d.check = oyl3d.check or {}
+oyl3d.generate = oyl3d.generate or {}
 
 local m = oyl3d.check
+local generate = oyl3d.generate
 local private = {}
 
-function m.generateCheckProject(wks)
+function generate.generateCheckProject(wks)
 	if _OPTIONS["no-premake-check"] then
 		return
 	end

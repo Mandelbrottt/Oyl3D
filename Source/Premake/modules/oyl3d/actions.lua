@@ -1,6 +1,6 @@
 local p = premake
 
-local oyl3d = p.modules.oyl3d
+local oyl3d = premake.modules.oyl3d
 oyl3d.actions = oyl3d.actions or {}
 
 local m = oyl3d.actions

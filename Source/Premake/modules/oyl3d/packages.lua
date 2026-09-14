@@ -9,7 +9,7 @@ local private = {}
 local opt_clean
 local opt_reset
 
-local package_fetch_file = path.join(_MAIN_SCRIPT_DIR, "Packages.lua")
+local package_fetch_table = require(_MAIN_SCRIPT_DIR .. ".Packages")
 local package_cache_dir = path.join(_MAIN_SCRIPT_DIR, "Packages")
 
 function m.options()
@@ -19,8 +19,8 @@ function m.options()
 		value = "[PACKAGE[;<PACKAGE>...]]",
 		description = "Force fetch the given package(s)",
 		allowed = (function()
-			if _OPTION[reset_trigger] == "" then
-				_OPTION[reset_trigger] = "all"
+			if _OPTIONS[reset_trigger] == "" then
+				_OPTIONS[reset_trigger] = "all"
 			end
 
 			local result = { { "all", "Reset all of the packages in the package cache" } }
@@ -30,7 +30,7 @@ function m.options()
 			return result
 		end)(),
 	}
-	opt_reset = _OPTION[reset_trigger]
+	opt_reset = _OPTIONS[reset_trigger]
 
 	local clean_trigger = "clean"
 	newoption {
@@ -38,8 +38,8 @@ function m.options()
 		value = "[PACKAGE[;<PACKAGE>...]]",
 		description = "Clean the given package(s)",
 		allowed = (function()
-			if _OPTION[clean_trigger] == "" then
-				_OPTION[clean_trigger] = "all"
+			if _OPTIONS[clean_trigger] == "" then
+				_OPTIONS[clean_trigger] = "all"
 			end
 
 			local result = { { "all", "Clean all of the packages in the package cache" } }
@@ -49,7 +49,7 @@ function m.options()
 			return result
 		end)(),
 	}
-	opt_clean = _OPTION[clean_trigger]
+	opt_clean = _OPTIONS[clean_trigger]
 
 	newoption {
 		trigger = "dryrun",
@@ -59,8 +59,7 @@ end
 
 function m.execute()
 	if not opt_clean then
-		local packageFetchTable = private.getPackageFetchTable()
-		private.fetchPackages(packageFetchTable)
+		private.fetchPackages(package_fetch_table)
 	else
 		private.forEachPackageInCache(function(package, packageName, packageDir)
 			local doClean = opt_clean and (opt_clean == "all" or string.find(opt_clean, ";?" .. packageName:lower() .. ";?"))
@@ -72,22 +71,11 @@ function m.execute()
 	end
 end
 
-local _package_fetch_table
-function private.getPackageFetchTable()
-	if not _package_fetch_table then
-		_package_fetch_table = require(package_fetch_file)
-		assert(type(_package_fetch_table) == "table")
-	end
-	return _package_fetch_table
-end
-
 --- Run `callback` on each package in the package cache
 ---@param callback fun(package, packageName: string, packageDir: string)
 function private.forEachPackageInCache(callback)
 	-- Match all packages in the package cache
 	local package_cache_dirs = os.matchdirs(path.join(package_cache_dir, "*"))
-
-	local package_fetch_table = private.getPackageFetchTable()
 
 	-- Iterate the package cache and run callback on each package
 	for i, package_dir in ipairs(package_cache_dirs) do

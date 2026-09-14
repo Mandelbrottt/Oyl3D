@@ -1,4 +1,4 @@
-local Project = require "Project"
+local oyl3d = premake.modules.oyl3d
 
 group "Oyl/Tools"
 
@@ -6,7 +6,7 @@ project "Oyl.Spyll"; do
 	language "C++"
 	kind "ConsoleApp"
 
-	Project.Files()
+	oyl3d.project.files()
 
 	-- Needed to interfaces with Spyll.Tool
 	runtime "Release"

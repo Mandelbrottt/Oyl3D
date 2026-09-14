@@ -1,6 +1,7 @@
 return {
 	"_preload.lua",
 	"oyl3d.lua",
+	"actions.lua",
 	"check.lua",
 	"clean_action.lua",
 	"clean.lua",

@@ -1,11 +1,11 @@
 -- Set search paths for include()
-premake.path = ("%s;%s/Source/Premake;%s/Source"):format(premake.path, _MAIN_SCRIPT_DIR, _MAIN_SCRIPT_DIR)
+premake.path = premake.path .. (";{}/Source;{}/Source/Premake"):gsub("{}", _MAIN_SCRIPT_DIR)
 
 -- Register the root "Packages.lua" for future callers of `require "Packages"`
 -- require "Packages"
 
 -- Set search paths for require()
-package.path = ("{}/Source/?.lua;{}/Source/Premake/?.lua"):gsub("{}", _MAIN_SCRIPT_DIR)
+package.path = package.path .. (";?.lua;{}/Source/?.lua;{}/Source/Premake/?.lua"):gsub("{}", _MAIN_SCRIPT_DIR)
 
 -- require "Action.Clean"
 -- require "Action.Packages"

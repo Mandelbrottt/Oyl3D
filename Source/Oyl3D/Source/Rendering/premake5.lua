@@ -1,4 +1,4 @@
-local Project = require "Project"
+local oyl3d = premake.modules.oyl3d
 
 group "Oyl/Engine"
 
@@ -6,7 +6,7 @@ project "Oyl.Rendering"; do
 	language "C++"
 	kind "SharedLib"
 
-	Project.Files()
+	oyl3d.project.files()
 
 	reflection "On"
 

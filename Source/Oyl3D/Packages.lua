@@ -1,6 +1,4 @@
 local Config = require "Config"
-local Package = require "Package"
-local PackageCache = require "Packages"
 
 ---@type { [string]: { OnProject: fun(prj), OnDepend: fun(prjcfg, packagecfg)? } }
 local Packages = {
@@ -250,7 +248,7 @@ local Packages = {
 					"dxcompiler.dll"
 				}
 				for _, sharedLib in ipairs(sharedLibsToCopy) do
-					local inFile = path.join(PackageCache.Vulkan.Local.Path, path.join("Bin", sharedLib))
+					local inFile = path.join(prj.basedir, path.join("Bin", sharedLib))
 					local outFile = path.join(Config.BinariesDir, sharedLib)
 					local surround = function(str) return "%[" .. str .. "]" end
 
@@ -278,7 +276,7 @@ local Packages = {
 		end
 	},
 	["Spyll.Core"] = {
-		OnProject = function(package)
+		OnProject = function(prj)
 			basedir(path.join(Config.SourceDir, "Spyll/Tool/Core"))
 			os.chdir(premake.api.scope.project.basedir)
 

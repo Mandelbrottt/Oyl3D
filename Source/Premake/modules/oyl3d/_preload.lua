@@ -1,8 +1,8 @@
 local p = premake
 
-p.modules.oyl3d = p.modules.oyl3d or {}
-p.modules.oyl3d._VERSION = "0.0.1"
-p.oyl3d = p.modules.oyl3d
+premake.modules.oyl3d = p.modules.oyl3d or {}
+premake.modules.oyl3d._VERSION = "0.0.1"
+premake.oyl3d = p.modules.oyl3d
 
 include("actions.lua")
 include("clean_action.lua")

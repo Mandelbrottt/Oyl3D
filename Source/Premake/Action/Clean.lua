@@ -71,6 +71,6 @@ function m.options()
 	}
 end
 
-m.action()
+-- m.action()
 
 return m

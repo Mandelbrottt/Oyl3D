@@ -20,6 +20,6 @@ function m.execute()
 	-- https://stackoverflow.com/questions/328017/path-to-msbuild
 end
 
-m.action()
+-- m.action()
 
 return m

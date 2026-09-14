@@ -1,4 +1,5 @@
-local Project = require "Project"
+local oyl3d = premake.modules.oyl3d
+
 local Config = require "Config"
 
 group "Oyl/Editor"
@@ -7,7 +8,7 @@ project "Oyl.Editor"; do
 	language "C++"
 	kind "SharedLib"
 	
-	Project.Files()
+	oyl3d.project.files()
 	
 	removeconfigurations {
 		Config.Configurations.Distribution

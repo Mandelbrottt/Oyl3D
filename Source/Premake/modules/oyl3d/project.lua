@@ -4,20 +4,89 @@ local p = premake
 
 local oyl3d = p.modules.oyl3d
 oyl3d.project = oyl3d.project or {}
+oyl3d.generate = oyl3d.generate or {}
 
 local m = oyl3d.project
+local generate = oyl3d.generate
 
-function m.prjDotIncludeDir(prj)
-	local wks = prj.workspace
-	return path.join(oyl3d.workspace.wksDotIncludeDir(wks), prj.name)
+local cpp_file_patterns = {
+	"*.cpp",
+	"*.h",
+	"*.inl",
+	"*.natvis",
+	"*.hlsl",
+}
+
+--- Add the Project File List to the active project
+---@see Project.GetFileList
+function m.files()
+	filter { "language:c++" }; do
+		local fileList = m.getFileList(cpp_file_patterns)
+		files(fileList)
+	end
+	filter {}
 end
 
-function m.createPrjDotIncludeDirectory(prj)
+--- Get the list of files to be added to the current project
+--- File list is the set of all files in recursive directories without another premake5.lua script
+---@return string[] The list of files to be associated with the project in the current working directory
+function m.getFileList(file_patterns_table)
+	assert(type(file_patterns_table) == "table")
+
+	-- Generate list of project directories, defined as any subdirectory without
+	local premakeDirs = table.translate(
+		os.matchfiles("*/**premake5.lua"),
+		function(value) return path.getdirectory(value) end
+	)
+
+	-- Iterate premake dirs, if projectDir is a child (recursive) of premakeDir, remove it
+	local projectDirs = os.matchdirs("**")
+	local index = 1
+	while index <= #projectDirs do
+		local dir = projectDirs[index]
+		for _, premakeDir in ipairs(premakeDirs) do
+			-- Check if projectDir is a child of premakeDir. If so, remove it
+			if string.contains(dir, premakeDir) then
+				table.remove(projectDirs, index)
+
+				-- Subtract 1 from index after removal, so that
+				-- for loop will stay at the same index next loop
+				index = index - 1
+				break
+			end
+		end
+		index = index + 1
+	end
+
+	-- Insert empty string to represent the root directory
+	table.insert(projectDirs, "")
+
+	-- Iterate all project directories, and add patterns for common cpp files
+	local result = {}
+	for _, dir in ipairs(projectDirs) do
+		local patterns = table.translate(
+			file_patterns_table,
+			function(pattern) return path.join(dir, pattern) end
+		)
+		for _, pattern in ipairs(patterns) do
+			table.insert(result, pattern)
+		end
+	end
+
+	return result
+end
+
+function generate.prjDotIncludeDir(prj)
+	local wks = prj.workspace
+	return path.join(generate.wksDotIncludeDir(wks), prj.name)
+end
+
+function generate.createPrjDotIncludeDirectory(prj)
 	local wks = prj.workspace
 
-	oyl3d.workspace.createWksDotIncludeDir(wks)
+	generate.createWksDotIncludeDir(wks)
 
-	local prjDotIncludeDir = m.prjDotIncludeDir(prj)
+	local prjDotIncludeDir = generate.prjDotIncludeDir(prj)
 	if os.isdir(prjDotIncludeDir) then
 		os.rmdir(prjDotIncludeDir)
 	end
@@ -32,7 +101,7 @@ function m.createPrjDotIncludeDirectory(prj)
 	)
 end
 
-function m.applyProjectDefaults(prj)
+function generate.applyProjectDefaults(prj)
 	local wks = prj.workspace
 	local defaults = wks.projectdefaults
 	if not defaults then
@@ -67,7 +136,7 @@ function m.applyProjectDefaults(prj)
 	project(prj.name)
 end
 
-function m.applySharedToStaticLib(prj)
+function generate.applySharedToStaticLib(prj)
 	if prj.lockkind then
 		return
 	end
@@ -77,7 +146,7 @@ function m.applySharedToStaticLib(prj)
 	end; filter {}
 end
 
-function m.generateReflectionInfo(prj)
+function generate.generateReflectionInfo(prj)
 	if not prj.reflection then
 		return
 	end
@@ -133,7 +202,7 @@ function m.generateReflectionInfo(prj)
 	}
 
 	local generatedDir = ".Generated"
-	local linkDir = path.join(m.prjDotIncludeDir(prj), generatedDir)
+	local linkDir = path.join(generate.prjDotIncludeDir(prj), generatedDir)
 	os.linkdir(generatedDir, linkDir)
 
 	local generatedFilesPattern = path.join("%{prj.location}", generatedDir, "**")
@@ -149,7 +218,7 @@ function m.generateReflectionInfo(prj)
 	end
 end
 
-function m.connectProjectLinks(prj)
+function generate.connectProjectLinks(prj)
 	local wks = prj.workspace
 
 	for _, link in ipairs(prj.links) do
@@ -183,8 +252,8 @@ function m.connectProjectLinks(prj)
 			-- use the package name as the link directory name
 			link_name = linkprj.name
 			if type(package.OnDepend) == "function" then
-				local prj_copy = m.bakeConfigsForPrj(prj)
-				local linkprj_copy = m.bakeConfigsForPrj(linkprj)
+				local prj_copy = generate.bakeConfigsForPrj(prj)
+				local linkprj_copy = generate.bakeConfigsForPrj(linkprj)
 
 				-- Iterate over each config in prj, find the matching config in linkprj, then call package.OnDepend
 				-- with a filter on the config and platform
@@ -209,7 +278,7 @@ function m.connectProjectLinks(prj)
 		end
 
 		-- Create a symlink of the link project folder
-		local prjDotIncludeLinkDir = path.join(m.prjDotIncludeDir(prj), link_name)
+		local prjDotIncludeLinkDir = path.join(generate.prjDotIncludeDir(prj), link_name)
 		os.linkdir(link_dir, prjDotIncludeLinkDir)
 
 		::continue::
@@ -217,7 +286,7 @@ function m.connectProjectLinks(prj)
 end
 
 -- Abridged from premake source - "self" parameter name kept for ease of use
-function m.bakeConfigsForPrj(prj)
+function generate.bakeConfigsForPrj(prj)
 	if prj._baked_config_copy then
 		return prj._baked_config_copy
 	end

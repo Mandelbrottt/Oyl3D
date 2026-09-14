@@ -1,4 +1,4 @@
-local Project = require "Project"
+local oyl3d = premake.modules.oyl3d
 
 group "Oyl/Executables"
 
@@ -10,7 +10,7 @@ project "Oyl.Application"; do
 
 	targetname("Oyl3D%{cfg.platform}")
 
-	Project.Files()
+	oyl3d.project.files()
 
 	reflection "On"
 
