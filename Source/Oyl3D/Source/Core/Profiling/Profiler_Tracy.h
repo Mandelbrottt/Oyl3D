@@ -1,3 +1,3 @@
 #pragma once
 
-#include <tracy/Tracy.hpp>
+#include <TracyClient/tracy/Tracy.hpp>

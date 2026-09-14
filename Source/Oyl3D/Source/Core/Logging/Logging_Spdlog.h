@@ -1,4 +1,4 @@
 #pragma once
 
-#include <spdlog/logger.h>
-#include <spdlog/spdlog.h>
+#include <SpdLog/logger.h>
+#include <SpdLog/spdlog.h>

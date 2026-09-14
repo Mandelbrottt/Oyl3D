@@ -189,7 +189,7 @@ local Packages = {
 				"public"
 			}
 
-			packageincludedir "public/tracy"
+			packageincludedir "public"
 
 			defines {
 				"TRACY_ENABLE",
@@ -238,6 +238,8 @@ local Packages = {
 			includedirs {
 				"Include"
 			}
+
+			packageincludedir "Include"
 
 			libdirs {
 				"Lib"
