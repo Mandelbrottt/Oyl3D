@@ -7,7 +7,7 @@ require "Packages"
 -- Set search paths for require()
 package.path = ("{}/Source/?.lua;{}/Source/Premake/?.lua"):gsub("{}", _MAIN_SCRIPT_DIR)
 
-require "Action.Clean"
+-- require "Action.Clean"
 require "Action.Packages"
 require "Overrides"
 

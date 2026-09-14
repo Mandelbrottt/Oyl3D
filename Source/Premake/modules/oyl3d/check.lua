@@ -6,6 +6,7 @@ local oyl3d = p.modules.oyl3d
 oyl3d.check = oyl3d.check or {}
 
 local m = oyl3d.check
+local private = {}
 
 function m.generateCheckProject(wks)
 	if _OPTIONS["no-premake-check"] then
@@ -16,11 +17,11 @@ function m.generateCheckProject(wks)
 		return
 	end
 
-	m.addCheckLinkToProjects(wks)
-	m.checkProjectDefinition()
+	private.addCheckLinkToProjects(wks)
+	private.checkProjectDefinition()
 end
 
-function m.addCheckLinkToProjects(wks)
+function private.addCheckLinkToProjects(wks)
 	local cwd = os.getcwd()
 	for _, prj in ipairs(wks.projects) do
 		os.chdir(prj.basedir)
@@ -32,7 +33,7 @@ function m.addCheckLinkToProjects(wks)
 	os.chdir(cwd)
 end
 
-function m.checkProjectDefinition()
+function private.checkProjectDefinition()
 	group "Premake"
 
 	project "Premake"; do

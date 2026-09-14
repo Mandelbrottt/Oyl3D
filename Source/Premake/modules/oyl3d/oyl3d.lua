@@ -5,12 +5,12 @@ local Packages = require "Packages"
 local p = premake
 
 p.modules.oyl3d = p.modules.oyl3d or {}
-p.modules.oyl3d._VERSION = "0.0.1"
 
 local m = p.modules.oyl3d
 
 include("_preload.lua")
 include("check.lua")
+include("clean.lua")
 include("package.lua")
 include("project.lua")
 include("workspace.lua")
@@ -30,7 +30,7 @@ function m.preBake()
 			m.workspace.prepareWorkspace(wks)
 
 			m.workspace.generateWorkspaceProjects(wks)
-			m.workspace.generatePackageProjects(wks)
+			m.package.generatePackageProjects(wks)
 
 			for _, prj in ipairs(wks.projects) do
 				local cwd = os.getcwd()

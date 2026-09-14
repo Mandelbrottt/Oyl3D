@@ -1,6 +1,13 @@
 local p = premake
 
+p.modules.oyl3d = p.modules.oyl3d or {}
+p.modules.oyl3d._VERSION = "0.0.1"
 p.oyl3d = p.modules.oyl3d
+
+include("actions.lua")
+include("clean_action.lua")
+include("package_action.lua")
+include("vstudio_action.lua")
 
 p.api.register {
 	name = "sourcedir",
