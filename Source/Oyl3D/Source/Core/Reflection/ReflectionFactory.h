@@ -160,4 +160,85 @@ namespace Oyl::Reflection::Internal
 	 *	}
 	 *
 	 */
+
+	// Inspired by https://ledas.com/post/857-how-to-hack-c-with-templates-and-friends/
+	class Outer
+	{
+		struct Inner1
+		{
+			int test = 0;
+		};
+
+		struct Inner2
+		{
+			int test = 0;
+		};
+
+		static Inner1* s_inner1;
+		static Inner2* s_inner2;
+	};
+
+	class Outer2
+	{
+		struct Inner
+		{
+			int test = 0;
+		};
+
+		static Inner* s_inner;
+	};
+
+	inline Outer::Inner1* Outer::s_inner1 = new Inner1;
+	inline Outer::Inner2* Outer::s_inner2 = new Inner2;
+	inline Outer2::Inner* Outer2::s_inner = new Inner;
+
+	template<typename... TTypes>
+	struct TypeSmuggler
+	{
+		using tuple_t = std::tuple<TTypes...>;
+
+		template<size_t Index>
+		using element_t = std::tuple_element_t<Index, tuple_t>;
+
+		friend auto
+		__Smuggler__Outer_Inner1() { return static_cast<element_t<0>*>(nullptr); }
+
+		friend auto
+		__Smuggler__Outer_Inner2() { return static_cast<element_t<1>*>(nullptr); }
+
+		friend auto
+		__Smuggler__Outer2_Inner() { return static_cast<element_t<2>*>(nullptr); }
+	};
+
+	template struct TypeSmuggler<
+		Outer::Inner1,
+		Outer::Inner2,
+		Outer2::Inner
+	>;
+
+	auto
+	__Smuggler__Outer_Inner1();
+	using __Smuggled__Outer_Inner1 = Traits::RemovePointer_T<decltype(__Smuggler__Outer_Inner1())>;
+
+	auto
+	__Smuggler__Outer_Inner2();
+	using __Smuggled__Outer_Inner2 = Traits::RemovePointer_T<decltype(__Smuggler__Outer_Inner2())>;
+
+	auto
+	__Smuggler__Outer2_Inner();
+	using __Smuggled__Outer2_Inner = Traits::RemovePointer_T<decltype(__Smuggler__Outer2_Inner())>;
+
+	inline
+	void
+	Foo()
+	{
+		__Smuggled__Outer_Inner1 o1i1;
+		o1i1.test = 5;
+		__Smuggled__Outer_Inner2 o1i2;
+		o1i2.test = 6;
+		__Smuggled__Outer2_Inner o2i;
+		o2i.test = 5;
+
+		printf("%d %d %d\n", o1i1.test, o1i2.test, o2i.test);
+	}
 }
