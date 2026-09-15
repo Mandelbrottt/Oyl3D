@@ -33,7 +33,7 @@ function generate.createWksDotIncludeDir(wks)
 end
 
 function generate.prepareWorkspace(wks)
-	local wksDotIncludeDir = path.join(wks.basedir, ".Include")
+	local wksDotIncludeDir = generate.wksDotIncludeDir(wks)
 
 	if os.isdir(wksDotIncludeDir) then
 		os.rmdir(wksDotIncludeDir)
@@ -44,6 +44,8 @@ function generate.generateWorkspaceProjects(wks)
 	if type(wks.sourcedir) ~= "string" then
 		return
 	end
+
+	workspace(wks.name)
 
 	-- Get the absolute path to the workspace source directory
 	local sourcedir = path.isabsolute(wks.sourcedir) and wks.sourcedir or path.join(wks.basedir, wks.sourcedir)
@@ -68,8 +70,11 @@ function generate.generateWorkspaceProjects(wks)
 		for index = nProjects + 1, #wks.projects do
 			local prj = wks.projects[index]
 			project(prj.name); do
-				generate.createPrjDotIncludeDirectory(prj)
-				generate.generateReflectionInfo(prj)
+				-- Override Point
+				p.callArray(oyl3d.elements.workspaceProject, prj)
+				includedirs {
+					generate.prjDotIncludeDir(prj)
+				}
 			end
 		end
 
@@ -81,6 +86,8 @@ function generate.generatePackageProjects(wks)
 	if type(wks.packageprojects) ~= "table" then
 		return
 	end
+
+	workspace(wks.name)
 
 	local package_group = wks.packageprojects.group
 	local packages = wks.packageprojects.packages
@@ -112,22 +119,22 @@ function generate.generatePackageProjects(wks)
 
 			-- use cwd since it's a cache of the parent cwd
 			if prj.basedir:lower() == cwd:lower() then
-				error(string.format("Cannot infer basedir for package \"%s\"! Did you forget to call basedir()?",
-					name))
+				error(
+					string.format("Cannot infer basedir for package \"%s\"! Did you forget to call basedir()?", name)
+				)
 			end
-
 			private.errorIfPackageNotOnDisk(prj)
 
 			-- If package has a premake script in the basedir, run it
 			local script_dir = prj.basedir
 			local script_file = "premake5.lua"
+			local cwd = os.getcwd()
+			os.chdir(script_dir)
+			
 			if os.isfile(path.join(script_dir, script_file)) then
-				local cwd = os.getcwd()
-				os.chdir(script_dir)
-
 				local script_fn = loadfile(script_file)
 				assert(script_fn)()
-
+				
 				-- Included project from script must match name of package
 				if p.api.scope.project ~= prj then
 					error(
@@ -139,9 +146,12 @@ function generate.generatePackageProjects(wks)
 						)
 					)
 				end
-
-				os.chdir(cwd)
 			end
+			
+			-- Override Point
+			p.callArray(oyl3d.elements.packageProject, prj)
+			
+			os.chdir(cwd)
 		end
 
 		os.chdir(cwd)
@@ -168,6 +178,10 @@ function private.errorIfPackageNotOnDisk(prj)
 end
 
 function generate.removeUnreferencedProjects(wks)
+	if not p.action.isConfigurable() then
+		return
+	end
+	
 	-- Gather the set of projects referencing or being referenced by another project
 	local dependSet = {}
 	for _, prj in pairs(wks.projects) do

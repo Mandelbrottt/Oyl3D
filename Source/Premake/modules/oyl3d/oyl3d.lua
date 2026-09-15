@@ -11,6 +11,52 @@ include("packages.lua")
 include("project.lua")
 include("workspace.lua")
 
+m.elements = {}
+
+m.elements.workspaceGenerate = function(wks)
+	return {
+		m.generate.generateWorkspaceProjects,
+		m.generate.generatePackageProjects
+	}
+end
+
+m.elements.projectGenerate = function(prj)
+	return {
+		m.generate.applyProjectDefaults,
+		m.generate.applySharedToStaticLib,
+		m.generate.connectProjectLinks,
+	}
+end
+
+m.elements.workspaceProject = function(prj)
+	return {
+		m.generate.generateReflectionInfo
+	}
+end
+
+m.elements.packageProject = function(prj)
+	return {}
+end
+
+m.elements.workspaceComplete = function(wks)
+	return {
+		m.generate.removeUnreferencedProjects,
+		m.generate.generateCheckProject,
+	}
+end
+
+m.elements.workspaceAction = function(wks)
+	return {
+		m.generate.prepareWorkspace
+	}
+end
+
+m.elements.projectAction = function(prj)
+	return {
+		m.generate.createProjectLinkDirs
+	}
+end
+
 p.override(p.main, "preBake", function(base)
 	base()
 	m.preBake()
@@ -21,31 +67,45 @@ function m.preBake()
 	for _, wks in ipairs(global.workspaces) do
 		local cwd = os.getcwd()
 		os.chdir(wks.basedir)
-
 		workspace(wks.name); do
-			m.generate.prepareWorkspace(wks)
-
-			m.generate.generateWorkspaceProjects(wks)
-			m.generate.generatePackageProjects(wks)
+			p.callArray(m.elements.workspaceGenerate, wks)
 
 			for _, prj in ipairs(wks.projects) do
 				local cwd = os.getcwd()
 				os.chdir(prj.basedir)
-
 				project(prj.name); do
-					m.generate.applyProjectDefaults(prj)
-					m.generate.applySharedToStaticLib(prj)
-
-					m.generate.connectProjectLinks(prj)
+					p.callArray(m.elements.projectGenerate, prj)
 				end
 				os.chdir(cwd)
 			end
 
-			if p.action.isConfigurable() then
-				m.generate.removeUnreferencedProjects(wks)
-			end
+			p.callArray(m.elements.workspaceComplete, wks)
+		end
+		os.chdir(cwd)
+	end
+end
 
-			m.generate.generateCheckProject(wks)
+p.override(p.main, "postAction", function(base)
+	m.postAction()
+	base()
+end)
+
+function m.postAction()
+	local global = p.api.scope.global
+	for _, wks in ipairs(global.workspaces) do
+		local cwd = os.getcwd()
+		os.chdir(wks.basedir)
+		workspace(wks.name); do
+			p.callArray(m.elements.workspaceAction, wks)
+
+			for _, prj in ipairs(wks.projects) do
+				local cwd = os.getcwd()
+				os.chdir(prj.basedir)
+				project(prj.name); do
+					p.callArray(m.elements.projectAction, prj)
+				end
+				os.chdir(cwd)
+			end
 		end
 		os.chdir(cwd)
 	end

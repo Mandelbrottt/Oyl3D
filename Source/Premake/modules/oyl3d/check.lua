@@ -14,17 +14,18 @@ function generate.generateCheckProject(wks)
 	if _OPTIONS["no-premake-check"] then
 		return
 	end
-	
+
 	if not wks.checkproject then
 		return
 	end
 
 	-- Add link to projects before defining check project to avoid circular dependency
-	private.addCheckLinkToProjects(wks)
+	private.addLinkToAllProjects(wks)
 	private.defineCheckProject()
+	private.addProjectRegenerateOverrides()
 end
 
-function private.addCheckLinkToProjects(wks)
+function private.addLinkToAllProjects(wks)
 	local cwd = os.getcwd()
 	for _, prj in ipairs(wks.projects) do
 		os.chdir(prj.basedir)
@@ -75,6 +76,37 @@ function private.defineCheckProject()
 		end;
 	end
 	workspace()
+end
+
+local is_generate_overridden = false
+
+function private.addProjectRegenerateOverrides()
+	if not _OPTIONS["premake-check"] then
+		return
+	end
+
+	if _OPTIONS["no-premake-check"] then
+		return
+	end
+
+	if is_generate_overridden then
+		return
+	end
+
+	local isModified = false
+	premake.override(premake, "generate", function(base, obj, ext, callback)
+		local result = base(obj, ext, callback)
+		isModified = isModified or result
+		return result
+	end)
+
+	premake.override(premake.main, "postAction", function(base)
+		base()
+		if (isModified and _ACTION:startswith("vs")) then
+			printf("One or more project files were regenerated. Exiting with code 1")
+			os.exit(1)
+		end
+	end)
 end
 
 return m

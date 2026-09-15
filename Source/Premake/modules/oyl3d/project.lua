@@ -9,6 +9,8 @@ oyl3d.generate = oyl3d.generate or {}
 local m = oyl3d.project
 local generate = oyl3d.generate
 
+local private = {}
+
 local cpp_file_patterns = {
 	"*.cpp",
 	"*.h",
@@ -88,17 +90,22 @@ function generate.createPrjDotIncludeDirectory(prj)
 
 	local prjDotIncludeDir = generate.prjDotIncludeDir(prj)
 	if os.isdir(prjDotIncludeDir) then
-		os.rmdir(prjDotIncludeDir)
+		return
 	end
+
 	os.mkdir(prjDotIncludeDir)
+end
 
-	includedirs { prjDotIncludeDir }
+function generate.prjAddEntryToDotInclude(prj, source_path, entry_name)
+	generate.createPrjDotIncludeDirectory(prj)
 
-	-- Add link to own basedir in .Include dir
-	os.linkdir(
-		prj.basedir,
-		path.join(prjDotIncludeDir, path.getname(prj.basedir))
-	)
+	if not entry_name then
+		entry_name = path.getname(source_path)
+	end
+
+	local prj_dot_include = generate.prjDotIncludeDir(prj)
+	local link_path = path.join(prj_dot_include, entry_name)
+	os.linkdir(source_path, link_path)
 end
 
 function generate.applyProjectDefaults(prj)
@@ -132,7 +139,7 @@ function generate.applyProjectDefaults(prj)
 		table.move(prj.blocks, 1, nBlocks, #new_blocks + 1, new_blocks)
 		prj.blocks = new_blocks
 	end
-
+	-- Force a new block since we did some shenanigans
 	project(prj.name)
 end
 
@@ -141,15 +148,29 @@ function generate.applySharedToStaticLib(prj)
 		return
 	end
 
+	project(prj.name)
 	filter { "platforms:Standalone", "kind:SharedLib" }; do
 		kind "StaticLib"
 	end; filter {}
 end
 
 function generate.generateReflectionInfo(prj)
+	local project_action_call_array = oyl3d.elements.workspaceAction()
+	assert(type(project_action_call_array) == "table")
+
 	if not prj.reflection then
+		-- Check if we've already overridden projectAction. If not, then override it
+		if not table.contains(project_action_call_array, private.deleteDotGeneratedFolder) then
+			premake.override(oyl3d.elements, "projectAction", function(base, prj)
+				local result = base(prj)
+				table.insert(result, private.deleteDotGeneratedFolder)
+				return result
+			end)
+		end
 		return
 	end
+
+	project(prj.name)
 
 	dependson {
 		"Oyl.Spyll",
@@ -165,24 +186,24 @@ function generate.generateReflectionInfo(prj)
 
 	appendToCommand '--assembly="%{cfg.buildtarget.basename}"'
 
-	appendToCommand '--std="%{prj.cppdialect:lower()}"'
+	appendToCommand '--std="%{cfg.cppdialect:lower()}"'
 
-	appendToCommand '--include="%{table.concat(prj.includedirs, ";")}"'
-	appendToCommand '--externalinclude="%{table.concat(prj.externalincludedirs, ";")}"'
+	appendToCommand '--include="%{table.concat(cfg.includedirs, ";")}"'
+	appendToCommand '--externalinclude="%{table.concat(cfg.externalincludedirs, ";")}"'
 
 	if p.action.current() and p.action.current().vstudio then
 		appendToCommand '--externalinclude="$(IncludePath)"'
 	end
 
-	appendToCommand '--define="%{table.concat(prj.defines, ";")}"'
+	appendToCommand '--define="%{table.concat(cfg.defines, ";")}"'
 
 	-- Only include --pch arg if project has a pch
-	appendToCommand '%{prj.pchheader and "--pch=" .. prj.pchheader or ""}'
+	appendToCommand '%{cfg.pchheader and "--pch=" .. cfg.pchheader or ""}'
 
 	appendToCommand [[%{table.concat(
 		table.translate(
 				table.filter(
-					prj.files,
+					cfg.files,
 					function(file) return path.hasextension(file, ".h") end
 				),
 				function(file) return '"' .. file .. '"' end
@@ -198,15 +219,21 @@ function generate.generateReflectionInfo(prj)
 	}
 
 	files {
-		path.join("%{wks.location}", "GeneratedInclude.cpp")
+		path.join("%{wks.basedir}", "GeneratedInclude.cpp")
 	}
 
+	-- Check if we've already overridden projectAction. If not, then override it
+	if not table.contains(project_action_call_array, private.addDotGeneratedToPrjDotIncludeDir) then
+		premake.override(oyl3d.elements, "projectAction", function(base, prj)
+			local result = base(prj)
+			table.insert(result, private.addDotGeneratedToPrjDotIncludeDir)
+			return result
+		end)
+	end
+
+	-- Ensure files under .Generated aren't included in the build
 	local generatedDir = ".Generated"
-	local linkDir = path.join(generate.prjDotIncludeDir(prj), generatedDir)
-	os.linkdir(generatedDir, linkDir)
-
-	local generatedFilesPattern = path.join("%{prj.location}", generatedDir, "**")
-
+	local generatedFilesPattern = path.join(generatedDir, "**")
 	if prj.reflectionshowgenerated then
 		filter { "files:" .. generatedFilesPattern }; do
 			excludefrombuild "On"
@@ -218,8 +245,32 @@ function generate.generateReflectionInfo(prj)
 	end
 end
 
+function private.addDotGeneratedToPrjDotIncludeDir(prj)
+	-- Run on projects that have reflection enabled
+	if not prj.reflection then
+		return
+	end
+	
+	local source_dir = path.join(prj.basedir, ".Generated")
+	generate.prjAddEntryToDotInclude(prj, source_dir)
+end
+
+function private.deleteDotGeneratedFolder(prj)
+	-- Run on projects that have reflection disabled
+	if prj.reflection then
+		return
+	end
+	
+	local dot_generated_folder = path.join(prj.basedir, ".Generated")
+	if os.isdir(dot_generated_folder) then
+		os.rmdir(dot_generated_folder)
+	end
+end
+
 function generate.connectProjectLinks(prj)
 	local wks = prj.workspace
+
+	project(prj.name)
 
 	for _, link in ipairs(prj.links) do
 		local linkprj = wks.projects[link]
@@ -243,17 +294,11 @@ function generate.connectProjectLinks(prj)
 		-- end
 		-- filter {}
 
-		-- Add symlink from link dir to .Include/prj.name/link.name
-		local link_dir = linkprj.packageincludedir or linkprj.basedir
-		local link_name = path.getname(link_dir)
-
 		local package = linkprj._package
 		if package then
-			-- use the package name as the link directory name
-			link_name = linkprj.name
 			if type(package.OnDepend) == "function" then
-				local prj_copy = generate.bakeConfigsForPrj(prj)
-				local linkprj_copy = generate.bakeConfigsForPrj(linkprj)
+				local prj_copy = private.bakeConfigsForPrj(prj)
+				local linkprj_copy = private.bakeConfigsForPrj(linkprj)
 
 				-- Iterate over each config in prj, find the matching config in linkprj, then call package.OnDepend
 				-- with a filter on the config and platform
@@ -277,16 +322,36 @@ function generate.connectProjectLinks(prj)
 			end
 		end
 
-		-- Create a symlink of the link project folder
-		local prjDotIncludeLinkDir = path.join(generate.prjDotIncludeDir(prj), link_name)
-		os.linkdir(link_dir, prjDotIncludeLinkDir)
+		::continue::
+	end
+end
+
+function generate.createProjectLinkDirs(prj)
+	local wks = prj.workspace
+
+	generate.prjAddEntryToDotInclude(prj, prj.basedir)
+
+	for _, link in ipairs(prj.links) do
+		local linkprj = wks.projects[link]
+		if not linkprj then
+			goto continue
+		end
+
+		-- Add symlink from link dir to project .Include folder
+		local link_dir = linkprj.packageincludedir or linkprj.basedir
+		local link_name = path.getname(link_dir)
+		if linkprj._package then
+			-- Use package name for name of link dir
+			link_name = linkprj.name
+		end
+		generate.prjAddEntryToDotInclude(prj, link_dir, link_name)
 
 		::continue::
 	end
 end
 
 -- Abridged from premake source - "self" parameter name kept for ease of use
-function generate.bakeConfigsForPrj(prj)
+function private.bakeConfigsForPrj(prj)
 	if prj._baked_config_copy then
 		return prj._baked_config_copy
 	end

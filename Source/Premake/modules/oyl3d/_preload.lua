@@ -86,22 +86,6 @@ newoption {
 	description = "Return a non-zero exit code if any files on disk are modified by the current action",
 }
 
-if (_OPTIONS["premake-check"]) then
-	local isModified = false
-	premake.override(premake, "generate", function(base, obj, ext, callback)
-		local result = base(obj, ext, callback)
-		isModified = isModified or result
-	end)
-	
-	premake.override(premake.main, "postAction", function(base)
-		base()
-		if (isModified and _ACTION:sub(1, 2) == "vs") then
-			printf("One or more project files were regenerated. Exiting with code 1")
-			os.exit(1)
-		end
-	end)
-end
-
 p.api.register {
 	name = "packageincludedir",
 	scope = "project",
