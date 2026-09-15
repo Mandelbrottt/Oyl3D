@@ -17,8 +17,6 @@ namespace Spyll
 
 		m_offsetInBits = ctx.getFieldOffset(a_decl);
 
-		m_accessSpecifier = a_decl->getAccess();
-
 		m_isConst = qualifiedType.isLocalConstQualified();
 	}
 
@@ -54,12 +52,6 @@ namespace Spyll
 	Field::GetOffsetInBits() const
 	{
 		return m_offsetInBits;
-	}
-
-	int
-	Field::GetAccessSpecifier() const
-	{
-		return m_accessSpecifier;
 	}
 
 	bool

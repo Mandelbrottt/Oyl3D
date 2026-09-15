@@ -17,6 +17,15 @@ namespace Spyll
 	bool
 	IsTypeOfDeclVisible(const clang::ValueDecl* a_decl);
 
+	enum class AccessSpecifier
+	{
+		Public,
+		Protected,
+		Private,
+		None,
+		Count
+	};
+
 	class Declaration
 	{
 		friend class ReflectionParserVisitor;
@@ -38,6 +47,9 @@ namespace Spyll
 
 		std::string_view
 		GetQualifiedName() const;
+
+		AccessSpecifier
+		GetAccessSpecifier() const;
 
 		std::string_view
 		GetSourceFile() const;
@@ -62,4 +74,19 @@ namespace Spyll
 		std::string m_sourceFile;
 		uint32_t m_sourceLine;
 	};
+}
+
+namespace std
+{
+	inline
+	std::string
+	to_string(Spyll::AccessSpecifier a_accessSpecifier)
+	{
+		std::string_view strings[(size_t) Spyll::AccessSpecifier::Count];
+		strings[(size_t) Spyll::AccessSpecifier::Public] = "Public";
+		strings[(size_t) Spyll::AccessSpecifier::Protected] = "Protected";
+		strings[(size_t) Spyll::AccessSpecifier::Private] = "Private";
+		strings[(size_t) Spyll::AccessSpecifier::None] = "Global";
+		return std::string(strings[(size_t) a_accessSpecifier]);
+	}
 }

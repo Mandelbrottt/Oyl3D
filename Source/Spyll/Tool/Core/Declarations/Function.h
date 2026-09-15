@@ -34,19 +34,17 @@ namespace Spyll
 		Type*
 		GetParent() const;
 
-		int
-		GetAccessSpecifier() const;
-
 		std::string_view
 		GetReturnTypeAsString() const;
 
 		const std::vector<Argument>&
 		GetArguments() const;
 
+		bool
+		IsDeleted() const;
+
 	private:
 		Type* m_parent;
-
-		int m_accessSpecifier;
 
 		std::string m_returnType;
 

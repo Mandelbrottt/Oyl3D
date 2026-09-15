@@ -11,8 +11,6 @@ namespace Spyll
 		auto printingPolicy = ctx.getPrintingPolicy();
 		auto qualifiedType = a_decl->getType();
 		m_type = clang::TypeName::getFullyQualifiedName(qualifiedType, ctx, printingPolicy);
-
-		m_accessSpecifier = a_decl->getAccess();
 	}
 
 	Variable::~Variable() {}
@@ -40,11 +38,5 @@ namespace Spyll
 	Variable::GetParent() const
 	{
 		return m_parent;
-	}
-
-	int
-	Variable::GetAccessSpecifier() const
-	{
-		return m_accessSpecifier;
 	}
 }

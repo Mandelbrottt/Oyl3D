@@ -12,7 +12,7 @@ namespace Oyl
 		consteval auto
 		SubstringAsArray(std::string_view str, std::index_sequence<NIndices...>)
 		{
-			return std::array { str[NIndices]..., '\n' };
+			return std::array { str[NIndices]... };
 		}
 
 		template<typename T>

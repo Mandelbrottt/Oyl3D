@@ -36,14 +36,13 @@ AddIndentToStringStream(std::stringstream& a_stream, std::string_view a_indent =
 	std::stringstream indentStream;
 	while (!a_stream.eof())
 	{
-		char buf[256];
-		a_stream.getline(buf, std::size(buf));
+		char buf[1024] {};
+		a_stream.getline(buf, std::size(buf) - 1);
 		indentStream << a_indent << buf;
 		if (a_stream.peek(), !a_stream.eof())
 		{
 			indentStream << "\n";
 		}
-		std::memset(buf, 0, std::size(buf));
 	}
 	a_stream.swap(indentStream);
 	a_stream.seekp(0, std::ios::end);
@@ -53,29 +52,57 @@ std::string
 GetTypeNameAsVar(std::string_view a_name)
 {
 	std::string typeVar = std::string(a_name);
-	std::replace(typeVar.begin(), typeVar.end(), ' ', '_');
-	std::replace(typeVar.begin(), typeVar.end(), '-', '_');
-	std::replace(typeVar.begin(), typeVar.end(), '.', '_');
-	std::replace(typeVar.begin(), typeVar.end(), '<', '_');
-	std::replace(typeVar.begin(), typeVar.end(), '>', '_');
-	std::replace(typeVar.begin(), typeVar.end(), ',', '_');
+	std::ranges::replace(typeVar, ' ', '_');
+	std::ranges::replace(typeVar, '-', '_');
+	std::ranges::replace(typeVar, '.', '_');
+	std::ranges::replace(typeVar, '<', '_');
+	std::ranges::replace(typeVar, '>', '_');
+	std::ranges::replace(typeVar, ',', '_');
 	FindAndReplace(typeVar, "::", "_");
-	FindAndReplace(typeVar, "*", "ptr_");
+	FindAndReplace(typeVar, "*", "Ptr");
+	FindAndReplace(typeVar, "&", "Ref");
 
 	return typeVar;
 }
 
 std::string
-GetStowTypeName(std::string_view a_name)
+GetStolenMemberTypeName(std::string_view a_name)
 {
-	return "__Stow_" + GetTypeNameAsVar(a_name);
+	return "__Stolen__" + GetTypeNameAsVar(a_name);
 }
 
 std::string
-GetStowCall(std::string_view a_typeName)
+GetStolenMemberTypeName(const Spyll::Declaration& a_decl)
+{
+	return GetStolenMemberTypeName(a_decl.GetQualifiedName());
+}
+
+std::string
+GetStolenMemberTypeName(const Spyll::Function& a_function)
+{
+	std::string name = GetStolenMemberTypeName(static_cast<const Spyll::Declaration&>(a_function));
+	for (const auto& argument : a_function.GetArguments())
+	{
+		name += "__" + GetTypeNameAsVar(argument.type);
+	}
+	return name;
+}
+
+std::string
+GetStolenMemberTypeName(const Spyll::Method& a_method)
+{
+	std::string name = GetStolenMemberTypeName(static_cast<const Spyll::Function&>(a_method));
+	if (a_method.IsConst())
+		name += "__Const";
+	return name;
+}
+
+template<typename T>
+std::string
+StolenMember(const T& a_value)
 {
 	std::stringstream call;
-	call << "(Oyl::Reflection::Internal::Stowed<" << GetStowTypeName(a_typeName) << ">::value)";
+	call << "(Oyl::Reflection::Internal::StolenMember_V<" << GetStolenMemberTypeName(a_value) << ">)";
 	return call.str();
 }
 
@@ -107,7 +134,7 @@ void
 EmitReflectionRegister(std::string& a_emitString, const Spyll::ReflectionParser* a_parser);
 
 void
-EmitStowDeclarations(std::string& a_emitString, const Spyll::ReflectionParser* a_parser);
+EmitStealDeclarations(std::string& a_emitString, const Spyll::ReflectionParser* a_parser);
 
 void
 RegisterTypes(std::stringstream& a_stream, const Spyll::ReflectionParser* a_parser);
@@ -169,7 +196,7 @@ std::string_view g_emitTemplate = GetTrimmedStringView(R"""(
 
 {REFLECT_INCLUDES}
 
-{REFLECT_STOW}
+{REFLECT_STEAL_MEMBERS}
 
 extern "C"
 _OYL_EXPORT
@@ -210,7 +237,7 @@ EmitCodeFromTool(const Spyll::ReflectionParser* a_parser)
 	EmitHeaderComment(emitString);
 	EmitIncludes(emitString, a_parser);
 	EmitDependencies(emitString, g_tool.dependencies);
-	EmitStowDeclarations(emitString, a_parser);
+	EmitStealDeclarations(emitString, a_parser);
 	EmitReflectionRegister(emitString, a_parser);
 
 	FindAndReplace(emitString, "{ASSEMBLY_NAME}", g_tool.assemblyName);
@@ -323,14 +350,14 @@ EmitReflectionRegister(std::string& a_emitString, const Spyll::ReflectionParser*
 }
 
 void
-EmitStowDeclarations(std::string& a_emitString, const Spyll::ReflectionParser* a_parser)
+EmitStealDeclarations(std::string& a_emitString, const Spyll::ReflectionParser* a_parser)
 {
 	std::stringstream stream;
 	stream.setf(std::ios::boolalpha);
 
-	auto isPublic = [](int a_accessSpec)
+	auto isPublic = [](Spyll::AccessSpecifier a_accessSpec)
 	{
-		return a_accessSpec == 0;
+		return a_accessSpec == Spyll::AccessSpecifier::Public;
 	};
 
 	for (const auto* type : a_parser->GetTypes())
@@ -340,11 +367,11 @@ EmitStowDeclarations(std::string& a_emitString, const Spyll::ReflectionParser* a
 			if (!variable.ShouldReflect() || isPublic(variable.GetAccessSpecifier()))
 				continue;
 
-			auto stowTypeNameAsVar = GetStowTypeName(variable.GetQualifiedName());
+			auto typeNameAsVar = GetStolenMemberTypeName(variable);
 
-			stream << "struct " << stowTypeNameAsVar << " { using type = ";
-			stream << variable.GetTypeAsString() << "; };\n";
-			stream << "template struct Oyl::Reflection::Internal::StowPrivate<" << stowTypeNameAsVar << ", &" << variable.GetQualifiedName() << ">;\n";
+			stream << "struct " << typeNameAsVar << " { using type = ";
+			stream << variable.GetTypeAsString() << "*; };\n";
+			stream << "template struct Oyl::Reflection::Internal::StealMember<" << typeNameAsVar << ", &" << variable.GetQualifiedName() << ">;\n";
 		}
 
 		for (const auto& field : type->GetFields())
@@ -352,19 +379,19 @@ EmitStowDeclarations(std::string& a_emitString, const Spyll::ReflectionParser* a
 			if (!field.ShouldReflect() || isPublic(field.GetAccessSpecifier()))
 				continue;
 
-			auto typeNameAsVar = GetStowTypeName(field.GetQualifiedName());
+			auto typeNameAsVar = GetStolenMemberTypeName(field);
 
 			stream << "struct " << typeNameAsVar << " { using type = ";
 			stream << field.GetTypeAsString() << "(" << type->GetQualifiedName() << "::*); };\n";
-			stream << "template struct Oyl::Reflection::Internal::StowPrivate<" << typeNameAsVar << ", &" << field.GetQualifiedName() << ">;\n";
+			stream << "template struct Oyl::Reflection::Internal::StealMember<" << typeNameAsVar << ", &" << field.GetQualifiedName() << ">;\n";
 		}
 
 		for (const auto& function : type->GetFunctions())
 		{
-			if (!function.ShouldReflect() || isPublic(function.GetAccessSpecifier()))
+			if (!function.ShouldReflect() || isPublic(function.GetAccessSpecifier()) || function.IsDeleted())
 				continue;
 
-			auto typeNameAsVar = GetStowTypeName(function.GetQualifiedName());
+			auto typeNameAsVar = GetStolenMemberTypeName(function);
 
 			stream << "struct " << typeNameAsVar << " { using type = ";
 			stream << function.GetReturnTypeAsString() << "(*)(";
@@ -379,15 +406,15 @@ EmitStowDeclarations(std::string& a_emitString, const Spyll::ReflectionParser* a
 				}
 			}
 			stream << "); };\n";
-			stream << "template struct Oyl::Reflection::Internal::StowPrivate<" << typeNameAsVar << ", &" << function.GetQualifiedName() << ">;\n";
+			stream << "template struct Oyl::Reflection::Internal::StealMember<" << typeNameAsVar << ", &" << function.GetQualifiedName() << ">;\n";
 		}
 
 		for (const auto& method : type->GetMethods())
 		{
-			if (!method.ShouldReflect() || isPublic(method.GetAccessSpecifier()))
+			if (!method.ShouldReflect() || isPublic(method.GetAccessSpecifier()) || method.IsDeleted())
 				continue;
 
-			auto typeNameAsVar = GetStowTypeName(method.GetQualifiedName());
+			auto typeNameAsVar = GetStolenMemberTypeName(method);
 
 			stream << "struct " << typeNameAsVar << " { using type = ";
 			stream << method.GetReturnTypeAsString() << "(" << type->GetQualifiedName() << "::*)(";
@@ -407,11 +434,11 @@ EmitStowDeclarations(std::string& a_emitString, const Spyll::ReflectionParser* a
 				stream << " const";
 			}
 			stream << "; };\n";
-			stream << "template struct Oyl::Reflection::Internal::StowPrivate<" << typeNameAsVar << ", &" << method.GetQualifiedName() << ">;\n";
+			stream << "template struct Oyl::Reflection::Internal::StealMember<" << typeNameAsVar << ", &" << method.GetQualifiedName() << ">;\n";
 		}
 	}
 
-	FindAndReplace(a_emitString, "{REFLECT_STOW}", stream.str());
+	FindAndReplace(a_emitString, "{REFLECT_STEAL_MEMBERS}", stream.str());
 }
 
 void
@@ -474,7 +501,7 @@ RegisterVariablesForType(
 	VariableParams.name = "{NAME}";
 	VariableParams.type = Oyl::Reflection::Type::Get<{QUALIFIED_TYPE}>();
 	VariableParams.parentType = {PARENT_TYPENAME_AS_VAR};
-	VariableParams.accessSpecifier = static_cast<Oyl::Reflection::AccessSpecifier>({ACCESS_SPECIFIER});
+	VariableParams.accessSpecifier = Oyl::Reflection::AccessSpecifier::{ACCESS_SPECIFIER};
 	Oyl::Reflection::Internal::ReflectionFactory::AddVariableToType({PARENT_TYPENAME_AS_VAR}, VariableParams, a_allocate);
 }
 )"""
@@ -509,7 +536,7 @@ RegisterFieldsForType(
 	FieldParams.type = Oyl::Reflection::Type::Get<{QUALIFIED_TYPE}>();
 	FieldParams.parentType = {PARENT_TYPENAME_AS_VAR};
 	FieldParams.offsetInBits = {OFFSET_IN_BITS};
-	FieldParams.accessSpecifier = static_cast<Oyl::Reflection::AccessSpecifier>({ACCESS_SPECIFIER});
+	FieldParams.accessSpecifier = Oyl::Reflection::AccessSpecifier::{ACCESS_SPECIFIER};
 	FieldParams.isConst = {IS_CONST};
 	{FIELD_PTR}Oyl::Reflection::Internal::ReflectionFactory::AddFieldToType({PARENT_TYPENAME_AS_VAR}, FieldParams, a_allocate);
 {ATTRIBUTES}
@@ -596,7 +623,7 @@ RegisterFunctionsForType(
 	FunctionParams.name = "{NAME}";
 	FunctionParams.returnType = Oyl::Reflection::Type::Get<{RETURN_TYPE}>();
 	FunctionParams.parentType = {PARENT_TYPENAME_AS_VAR};
-	FunctionParams.accessSpecifier = static_cast<Oyl::Reflection::AccessSpecifier>({ACCESS_SPECIFIER});
+	FunctionParams.accessSpecifier = Oyl::Reflection::AccessSpecifier::{ACCESS_SPECIFIER};
 	{RETURN_TYPE}(*address)({ARG_SIGNATURE}) = {RAW_FN_ADDRESS};
 	FunctionParams.rawFnPtr = *reinterpret_cast<void**>(&address);
 {TYPESAFE_PTR}
@@ -626,14 +653,17 @@ RegisterFunctionsForType(
 		FindAndReplace(emitString, "{ARG_SIGNATURE}", argSignature.str());
 
 		std::stringstream rawAddress;
-		if (function.GetAccessSpecifier() == 0)
+		if (function.IsDeleted())
+		{
+			rawAddress << "nullptr";
+		} else if (function.GetAccessSpecifier() == Spyll::AccessSpecifier::Public)
 		{
 			// Namespace::Function
 			rawAddress << "&" << function.GetQualifiedName();
 		} else
 		{
-			// (Oyl::Reflection::Internal::Stowed<__Stow_Namespace_Function>::value)
-			rawAddress << GetStowCall(function.GetQualifiedName());
+			// (Oyl::Reflection::Internal::StolenMember<__Stolen_Namespace_Function>::value)
+			rawAddress << StolenMember(function);
 		}
 		FindAndReplace(emitString, "{RAW_FN_ADDRESS}", rawAddress.str());
 
@@ -666,44 +696,51 @@ FunctionParams.typeSafeThunkFnPtr = reinterpret_cast<void*>(thunkFnPtr);
 		FindAndReplace(typesafePtrString, "{NAME_SIGNATURE}", nameSignature.str());
 		FindAndReplace(typesafePtrString, "{TYPE_SIGNATURE}", typeSignature.str());
 
-		std::stringstream callStatement;
-		if (function.GetAccessSpecifier() == 0)
+		if (!function.IsDeleted())
 		{
-			// Namespace::Function
-			callStatement << function.GetQualifiedName();
+			std::stringstream callStatement;
+			if (function.GetAccessSpecifier() == Spyll::AccessSpecifier::Public)
+			{
+				// Namespace::Function
+				callStatement << function.GetQualifiedName();
+			} else
+			{
+				// (Oyl::Reflection::Internal::StolenMember<__Stolen_Namespace_Function>::value)
+				callStatement << StolenMember(function);
+			}
+			callStatement << "(" << (args.size() != 0 ? "\n" : "");
+			for (size_t i = 0; i < args.size(); i++)
+			{
+				const auto& [argType, argName] = args[i];
+
+				std::string declaration = "\tstd::any_cast<{TYPE}>({NAME})";
+				FindAndReplace(declaration, "{TYPE}", argType);
+				FindAndReplace(declaration, "{NAME}", argName);
+
+				callStatement << declaration;
+				if (i != args.size() - 1)
+					callStatement << ", ";
+				callStatement << "\n";
+			}
+			callStatement << ")";
+
+			std::stringstream callReturn;
+			if (function.GetReturnTypeAsString() == "void")
+			{
+				callReturn << callStatement.str() << ";\n";
+				callReturn << "return std::any {};";
+			} else
+			{
+				callReturn << "std::any result = " << callStatement.str() << ";\n";
+				callReturn << "return result;";
+			}
+			AddIndentToStringStream(callReturn);
+			FindAndReplace(typesafePtrString, "{RAW_CALL}", callReturn.str());
 		} else
 		{
-			// (Oyl::Reflection::Internal::Stowed<Stow_Namespace_Function, &Namespace::Function>::value)
-			callStatement << GetStowCall(function.GetQualifiedName());
+			// Function is deleted, return empty any
+			FindAndReplace(typesafePtrString, "{RAW_CALL}", "\treturn std::any {};");
 		}
-		callStatement << "(" << (args.size() != 0 ? "\n" : "");
-		for (size_t i = 0; i < args.size(); i++)
-		{
-			const auto& [argType, argName] = args[i];
-
-			std::string declaration = "\tstd::any_cast<{TYPE}>({NAME})";
-			FindAndReplace(declaration, "{TYPE}", argType);
-			FindAndReplace(declaration, "{NAME}", argName);
-
-			callStatement << declaration;
-			if (i != args.size() - 1)
-				callStatement << ", ";
-			callStatement << "\n";
-		}
-		callStatement << ")";
-
-		std::stringstream callReturn;
-		if (function.GetReturnTypeAsString() == "void")
-		{
-			callReturn << callStatement.str() << ";\n";
-			callReturn << "return std::any {};";
-		} else
-		{
-			callReturn << "std::any result = " << callStatement.str() << ";\n";
-			callReturn << "return result;";
-		}
-		AddIndentToStringStream(callReturn);
-		FindAndReplace(typesafePtrString, "{RAW_CALL}", callReturn.str());
 
 		std::stringstream typesafePtr;
 		typesafePtr << typesafePtrString;
@@ -737,7 +774,7 @@ RegisterMethodsForType(
 	MethodParams.name = "{NAME}";
 	MethodParams.returnType = Oyl::Reflection::Type::Get<{RETURN_TYPE}>();
 	MethodParams.parentType = {PARENT_TYPENAME_AS_VAR};
-	MethodParams.accessSpecifier = static_cast<Oyl::Reflection::AccessSpecifier>({ACCESS_SPECIFIER});
+	MethodParams.accessSpecifier = Oyl::Reflection::AccessSpecifier::{ACCESS_SPECIFIER};
 	MethodParams.isConst = {IS_CONST};
 	MethodParams.isVirtual = {IS_VIRTUAL};
 	{RETURN_TYPE}({PARENT_QUALIFIED_NAME}::*address)({ARG_SIGNATURE}){FN_CONST_QUAL} = {RAW_FN_ADDRESS};
@@ -773,14 +810,17 @@ RegisterMethodsForType(
 		FindAndReplace(emitString, "{ARG_SIGNATURE}", argSignature.str());
 
 		std::stringstream rawAddress;
-		if (method.GetAccessSpecifier() == 0)
+		if (method.IsDeleted())
+		{
+			rawAddress << "nullptr";
+		} else if (method.GetAccessSpecifier() == Spyll::AccessSpecifier::Public)
 		{
 			// Namespace::Function
 			rawAddress << "&" << method.GetQualifiedName();
 		} else
 		{
-			// (Oyl::Reflection::Internal::Stowed<__Stow_Namespace_Function>::value)
-			rawAddress << GetStowCall(method.GetQualifiedName());
+			// (Oyl::Reflection::Internal::StolenMember<__Stolen_Namespace_Function>::value)
+			rawAddress << StolenMember(method);
 		}
 		FindAndReplace(emitString, "{RAW_FN_ADDRESS}", rawAddress.str());
 
@@ -810,49 +850,55 @@ MethodParams.typeSafeThunkFnPtr = reinterpret_cast<void*>(thunkFnPtr);
 		FindAndReplace(typesafePtrString, "{NAME_SIGNATURE}", nameSignature.str());
 		FindAndReplace(typesafePtrString, "{TYPE_SIGNATURE}", typeSignature.str());
 
-		std::stringstream callStatement;
+		if (!method.IsDeleted())
 		{
-			std::string callFunc;
-			if (method.GetAccessSpecifier() == 0)
+			std::stringstream callStatement;
 			{
-				// Namespace::Function
-				callFunc = method.GetName();
+				std::string callFunc;
+				if (method.GetAccessSpecifier() == Spyll::AccessSpecifier::Public)
+				{
+					// Namespace::Function
+					callFunc = method.GetName();
+				} else
+				{
+					// *(Oyl::Reflection::Internal::StolenMember<__Stolen_Namespace_Function>::value)
+					callFunc = "*" + StolenMember(method);
+				}
+				callStatement << "(__self->" << callFunc << ")";
+			}
+			callStatement << "(" << (args.size() != 0 ? "\n" : "");
+			for (size_t i = 0; i < args.size(); i++)
+			{
+				const auto& [argType, argName] = args[i];
+
+				std::string declaration = "\tstd::any_cast<{TYPE}>({NAME})";
+				FindAndReplace(declaration, "{TYPE}", argType);
+				FindAndReplace(declaration, "{NAME}", argName);
+
+				callStatement << declaration;
+				if (i != args.size() - 1)
+					callStatement << ", ";
+				callStatement << "\n";
+			}
+			callStatement << ")";
+
+			std::stringstream callReturn;
+			callReturn << "auto __self = std::any_cast<" << a_parentType->GetQualifiedName() << "*>(__a_self);\n";
+			if (method.GetReturnTypeAsString() == "void")
+			{
+				callReturn << callStatement.str() << ";\n";
+				callReturn << "return std::any {};";
 			} else
 			{
-				// *(Oyl::Reflection::Internal::Stowed<Stow_Namespace_Function, &Namespace::Function>::value)
-				callFunc = "*" + GetStowCall(method.GetQualifiedName());
+				callReturn << "std::any result = " << callStatement.str() << ";\n";
+				callReturn << "return result;";
 			}
-			callStatement << "(__self->" << callFunc << ")";
-		}
-		callStatement << "(" << (args.size() != 0 ? "\n" : "");
-		for (size_t i = 0; i < args.size(); i++)
-		{
-			const auto& [argType, argName] = args[i];
-
-			std::string declaration = "\tstd::any_cast<{TYPE}>({NAME})";
-			FindAndReplace(declaration, "{TYPE}", argType);
-			FindAndReplace(declaration, "{NAME}", argName);
-
-			callStatement << declaration;
-			if (i != args.size() - 1)
-				callStatement << ", ";
-			callStatement << "\n";
-		}
-		callStatement << ")";
-
-		std::stringstream callReturn;
-		callReturn << "auto __self = std::any_cast<" << a_parentType->GetQualifiedName() << "*>(__a_self);\n";
-		if (method.GetReturnTypeAsString() == "void")
-		{
-			callReturn << callStatement.str() << ";\n";
-			callReturn << "return std::any {};";
+			AddIndentToStringStream(callReturn);
+			FindAndReplace(typesafePtrString, "{RAW_CALL}", callReturn.str());
 		} else
 		{
-			callReturn << "std::any result = " << callStatement.str() << ";\n";
-			callReturn << "return result;";
+			FindAndReplace(typesafePtrString, "{RAW_CALL}", "\treturn std::any {};");
 		}
-		AddIndentToStringStream(callReturn);
-		FindAndReplace(typesafePtrString, "{RAW_CALL}", callReturn.str());
 
 		std::stringstream typesafePtr;
 		typesafePtr << typesafePtrString;
@@ -957,7 +1003,7 @@ RegisterGlobalFunctions(std::stringstream& a_stream, const Spyll::ReflectionPars
 		FindAndReplace(emitString, "{RETURN_TYPE}", function->GetReturnTypeAsString());
 		FindAndReplace(emitString, "{INVOKABLE_PTR}", function->GetArguments().size() != 0 ? "auto InvokablePtr = " : "");
 		FindAndReplace(emitString, "{ASSEMBLY_PTR}", "AssemblyPtr");
-		FindAndReplace(emitString, "{RAW_FN_ADDRESS}", function->GetQualifiedName());
+		FindAndReplace(emitString, "{RAW_FN_ADDRESS}", function->IsDeleted() ? "nullptr" : function->GetQualifiedName());
 
 		std::stringstream argSignature;
 		for (size_t i = 0; i < function->GetArguments().size(); i++)
@@ -1000,36 +1046,42 @@ FunctionParams.typeSafeThunkFnPtr = reinterpret_cast<void*>(thunkFnPtr);
 		FindAndReplace(typesafePtrString, "{NAME_SIGNATURE}", nameSignature.str());
 		FindAndReplace(typesafePtrString, "{TYPE_SIGNATURE}", typeSignature.str());
 
-		std::stringstream callStatement;
-		callStatement << function->GetQualifiedName();
-		callStatement << "(" << (args.size() != 0 ? "\n" : "");
-		for (size_t i = 0; i < args.size(); i++)
+		if (!function->IsDeleted())
 		{
-			const auto& [argType, argName] = args[i];
+			std::stringstream callStatement;
+			callStatement << function->GetQualifiedName();
+			callStatement << "(" << (args.size() != 0 ? "\n" : "");
+			for (size_t i = 0; i < args.size(); i++)
+			{
+				const auto& [argType, argName] = args[i];
 
-			std::string declaration = "\tstd::any_cast<{TYPE}>({NAME})";
-			FindAndReplace(declaration, "{TYPE}", argType);
-			FindAndReplace(declaration, "{NAME}", argName);
+				std::string declaration = "\tstd::any_cast<{TYPE}>({NAME})";
+				FindAndReplace(declaration, "{TYPE}", argType);
+				FindAndReplace(declaration, "{NAME}", argName);
 
-			callStatement << declaration;
-			if (i != args.size() - 1)
-				callStatement << ", ";
-			callStatement << "\n";
-		}
-		callStatement << ")";
+				callStatement << declaration;
+				if (i != args.size() - 1)
+					callStatement << ", ";
+				callStatement << "\n";
+			}
+			callStatement << ")";
 
-		std::stringstream callReturn;
-		if (function->GetReturnTypeAsString() == "void")
-		{
-			callReturn << callStatement.str() << ";\n";
-			callReturn << "return std::any {};";
+			std::stringstream callReturn;
+			if (function->GetReturnTypeAsString() == "void")
+			{
+				callReturn << callStatement.str() << ";\n";
+				callReturn << "return std::any {};";
+			} else
+			{
+				callReturn << "std::any result = " << callStatement.str() << ";\n";
+				callReturn << "return result;";
+			}
+			AddIndentToStringStream(callReturn);
+			FindAndReplace(typesafePtrString, "{RAW_CALL}", callReturn.str());
 		} else
 		{
-			callReturn << "std::any result = " << callStatement.str() << ";\n";
-			callReturn << "return result;";
+			FindAndReplace(typesafePtrString, "{RAW_CALL}", "\tstd::any {};");
 		}
-		AddIndentToStringStream(callReturn);
-		FindAndReplace(typesafePtrString, "{RAW_CALL}", callReturn.str());
 
 		std::stringstream typesafePtr;
 		typesafePtr << typesafePtrString;

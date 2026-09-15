@@ -7,8 +7,6 @@ namespace Spyll
 	Function::Function(const clang::FunctionDecl* a_decl, Type* a_parent)
 		: Declaration(a_decl), m_parent(a_parent)
 	{
-		m_accessSpecifier = a_decl->getAccess();
-
 		auto& ctx = a_decl->getASTContext();
 		auto printingPolicy = ctx.getPrintingPolicy();
 		auto qualifiedType = a_decl->getReturnType();
@@ -61,12 +59,6 @@ namespace Spyll
 		return m_parent;
 	}
 
-	int
-	Function::GetAccessSpecifier() const
-	{
-		return m_accessSpecifier;
-	}
-
 	std::string_view
 	Function::GetReturnTypeAsString() const
 	{
@@ -77,5 +69,11 @@ namespace Spyll
 	Function::GetArguments() const
 	{
 		return m_arguments;
+	}
+
+	bool
+	Function::IsDeleted() const
+	{
+		return clang::dyn_cast<clang::FunctionDecl>(m_decl)->isDeleted();
 	}
 }

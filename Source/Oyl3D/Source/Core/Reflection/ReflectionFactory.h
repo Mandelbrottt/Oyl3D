@@ -72,32 +72,92 @@ namespace Oyl::Reflection::Internal
 	// http://bloglitb.blogspot.com/2010/07/access-to-private-members-thats-easy.html
 	// https://gist.github.com/dabrahams/1528856
 
-	// Generate a static data member of type Stub::type in which to store
-	// the address of a private member.  It is crucial that Stub does not
-	// depend on the /value/ of the the stored address in any way so that
-	// we can access it from ordinary code without directly touching
-	// private data.
-	template<typename Stub>
-	struct Stowed
+	/// Generate a static member of type \c Tag::type in which to store the address of the private member.
+	/// It is crucial that Tag does not depend on the \b value of the stored address in any way so that
+	/// we can access it from ordinary code without directly touching private data.
+	///
+	/// \tparam Tag A unique type used as a key to set and retrieve a given private member's member pointer
+	/// Tag types should be of the form
+	/// \code{.cpp}
+	/// struct Tag { using type = <type of address being stolen>; };
+	/// \endcode
+	template<typename Tag>
+	struct StolenMember
 	{
-		static typename Stub::type value;
+		static typename Tag::type value;
 	};
 
-	template<typename Stub>
-	typename Stub::type Stowed<Stub>::value;
+	template<typename Tag>
+	typename Tag::type StolenMember<Tag>::value;
 
-	// Generate a static data member whose constructor initializes
-	// Stowed<Stub>::value.  This type will only be named in an explicit
-	// instantiation, where it is legal to pass the address of a private
-	// member.
-	template<class Stub, typename Stub::type X>
-	struct StowPrivate
+	template<typename Tag>
+	inline const typename Tag::type& StolenMember_V = StolenMember<Tag>::value;
+
+	/// Generate a static member "instance" whose constructor initializes StolenMember<Tag>::value.
+	/// This type will only be named in an explicit template instantiation, where it is legal to
+	/// pass the address of a private member
+	///
+	/// \tparam Tag A unique type used as a key to set and retrieve a given private member's member pointer
+	/// Tag types should be of the form
+	/// \code{.cpp}
+	/// struct Tag { using type = <type of address being stolen>; };
+	/// \endcode
+	///
+	///	\tparam X The address of the member to steal
+	template<class Tag, typename Tag::type X>
+	struct StealMember
 	{
-		StowPrivate() { Stowed<Stub>::value = X; }
+		StealMember() { StolenMember<Tag>::value = X; }
 
-		static StowPrivate instance;
+		static StealMember instance;
 	};
 
-	template<class Stub, typename Stub::type X>
-	StowPrivate<Stub, X> StowPrivate<Stub, X>::instance;
+	template<class Tag, typename Tag::type X>
+	StealMember<Tag, X> StealMember<Tag, X>::instance;
+
+	/*
+	 *	Example Usage:
+	 *
+	 *	class Private
+	 *	{
+	 *	private:
+	 *		int member_field;
+	 *
+	 *		static unsigned static_field;
+	 *
+	 *		void MemberFunction(float);
+	 *
+	 *		static double StaticFunction();
+	 *	};
+	 *
+	 *	struct _Steal_Private_member_field { using type = int Private::*; };
+	 *	template struct StealMember<_Steal_Private_member_field, &Private::member_field>;
+	 *
+	 *	struct _Steal_Private_static_field { using type = unsigned*; };
+	 *	template struct StealMember<_Steal_Private_static_field, &Private::static_field>;
+	 *
+	 *	struct _Steal_Private_MemberFunction { using type = void(Private::*)(float); };
+	 *	template struct StealMember<_Steal_Private_MemberFunction, &Private::MemberFunction>;
+	 *
+	 *	struct _Steal_Private_StaticFunction { using type = double(*)(); };
+	 *	template struct StealMember<_Steal_Private_StaticFunction, &Private::StaticFunction>;
+	 *
+	 *	void Foo()
+	 *	{
+	 *		Private p;
+	 *
+	 *		// Equivalent to p.member_field = 5
+	 *		p.*(StolenMember<_Steal_Private_member_field>::value) = 5;
+	 *
+	 *		// Equivalent to Private::static_field = 6u
+	 *		*StolenMember_V<_Steal_Private_static_field> = 6u;
+	 *
+	 *		// Equivalent to p.MemberFunction(7.0f)
+	 *		(p.*StolenMember_V<_Steal_Private_MemberFunction>)(7.0f);
+	 *
+	 *		// Equivalent to double value = Private::StaticFunction();
+	 *		double value = (StolenMember<_Steal_Private_member_field>::value)();
+	 *	}
+	 *
+	 */
 }

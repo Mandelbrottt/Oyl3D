@@ -6,6 +6,18 @@
 
 namespace Spyll
 {
+	inline
+	AccessSpecifier
+	FromClang(clang::AccessSpecifier a_spec)
+	{
+		AccessSpecifier spyllSpecs[(size_t) AccessSpecifier::Count];
+		spyllSpecs[clang::AS_public] = AccessSpecifier::Public;
+		spyllSpecs[clang::AS_protected] = AccessSpecifier::Protected;
+		spyllSpecs[clang::AS_private] = AccessSpecifier::Private;
+		spyllSpecs[clang::AS_none] = AccessSpecifier::None;
+		return spyllSpecs[a_spec];
+	}
+
 	Declaration::Declaration(const clang::NamedDecl* a_decl)
 		: m_enabled(true),
 		  m_decl(a_decl),
@@ -41,6 +53,12 @@ namespace Spyll
 	Declaration::GetQualifiedName() const
 	{
 		return m_qualifiedName;
+	}
+
+	AccessSpecifier
+	Declaration::GetAccessSpecifier() const
+	{
+		return FromClang(m_decl->getAccess());
 	}
 
 	std::string_view

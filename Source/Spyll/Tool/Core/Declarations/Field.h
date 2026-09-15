@@ -32,9 +32,6 @@ namespace Spyll
 		size_t
 		GetOffsetInBits() const;
 
-		int
-		GetAccessSpecifier() const;
-
 		bool
 		IsConst() const;
 
@@ -44,8 +41,6 @@ namespace Spyll
 		Type* m_parent;
 
 		size_t m_offsetInBits;
-
-		int m_accessSpecifier;
 
 		bool m_isConst;
 	};

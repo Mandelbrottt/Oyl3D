@@ -26,9 +26,6 @@ namespace Spyll
 		Type*
 		GetParent() const;
 
-		int
-		GetAccessSpecifier() const;
-
 		std::string_view
 		GetTypeAsString() const;
 
@@ -36,7 +33,5 @@ namespace Spyll
 		std::string m_type;
 
 		Type* m_parent;
-
-		int m_accessSpecifier;
 	};
 }
