@@ -7,20 +7,18 @@
 
 namespace Spyll
 {
-	Field::Field(const clang::FieldDecl* a_decl, Type* a_parent)
-		: Declaration(a_decl), m_parent(a_parent)
+	Field::Field(const clang::FieldDecl* a_decl, Type* a_parentType)
+		: Declaration(a_decl, a_parentType)
 	{
 		auto& ctx = a_decl->getASTContext();
-		auto printingPolicy = ctx.getPrintingPolicy();
-		auto qualifiedType = a_decl->getType();
-		m_type = clang::TypeName::getFullyQualifiedName(qualifiedType, ctx, printingPolicy);
-
 		m_offsetInBits = ctx.getFieldOffset(a_decl);
 
+		auto qualifiedType = a_decl->getType();
 		m_isConst = qualifiedType.isLocalConstQualified();
-	}
 
-	Field::~Field() {}
+		auto printingPolicy = ctx.getPrintingPolicy();
+		m_typeAsString = clang::TypeName::getFullyQualifiedName(qualifiedType, ctx, printingPolicy);
+	}
 
 	bool
 	Field::ShouldReflect() const
@@ -28,35 +26,17 @@ namespace Spyll
 		if (!Declaration::ShouldReflect())
 			return false;
 
-		auto fieldDecl = clang::dyn_cast<clang::FieldDecl>(m_decl);
+		//auto fieldDecl = GetClangDecl();
 
-		if (!IsTypeOfDeclVisible(fieldDecl))
-			return false;
+		//if (!IsTypeOfDeclVisible(fieldDecl))
+		//	return false;
 
 		return true;
 	}
 
-	std::string_view
-	Field::GetTypeAsString() const
+	const clang::FieldDecl*
+	Field::GetClangDecl() const
 	{
-		return m_type;
-	}
-
-	Type*
-	Field::GetParent() const
-	{
-		return m_parent;
-	}
-
-	size_t
-	Field::GetOffsetInBits() const
-	{
-		return m_offsetInBits;
-	}
-
-	bool
-	Field::IsConst() const
-	{
-		return m_isConst;
+		return clang::dyn_cast<clang::FieldDecl>(Declaration::GetClangDecl());
 	}
 }

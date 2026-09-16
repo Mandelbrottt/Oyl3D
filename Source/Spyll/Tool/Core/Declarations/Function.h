@@ -2,6 +2,7 @@
 
 #include <vector>
 
+#include "Argument.h"
 #include "Declaration.h"
 
 namespace clang
@@ -13,40 +14,35 @@ namespace Spyll
 {
 	class Type;
 
-	struct Argument
-	{
-		std::string type;
-		std::string name;
-	};
-
 	class Function : public Declaration
 	{
+		friend class ReflectionParser;
+
 	public:
 		explicit
-		Function(const clang::FunctionDecl* a_decl, Type* a_parent);
-
-		virtual
-		~Function();
+		Function(const clang::FunctionDecl* a_decl, Type* a_parent = nullptr);
 
 		bool
 		ShouldReflect() const override;
 
-		Type*
-		GetParent() const;
-
-		std::string_view
-		GetReturnTypeAsString() const;
-
-		const std::vector<Argument>&
-		GetArguments() const;
-
 		bool
 		IsDeleted() const;
 
-	private:
-		Type* m_parent;
+		const Type*
+		GetReturnType() const { return m_returnType; }
 
-		std::string m_returnType;
+		std::string_view
+		GetReturnTypeAsString() const { return m_returnTypeAsString; }
+
+		const std::vector<Argument>&
+		GetArguments() const { return m_arguments; }
+
+		const clang::FunctionDecl*
+		GetClangDecl() const;
+
+	private:
+		Type* m_returnType = nullptr;
+		std::string m_returnTypeAsString;
 
 		std::vector<Argument> m_arguments;
 	};

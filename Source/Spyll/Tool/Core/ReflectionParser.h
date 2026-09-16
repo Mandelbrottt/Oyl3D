@@ -1,14 +1,17 @@
 #pragma once
 
-#include "Declarations/Type.h"
+#include <unordered_map>
+
 #include "Declarations/Enum.h"
 #include "Declarations/Function.h"
+#include "Declarations/Type.h"
 #include "Declarations/Variable.h"
 
 namespace clang
 {
 	class SourceManager;
 	class StaticAssertDecl;
+	class RecordDecl;
 }
 
 namespace Spyll
@@ -16,10 +19,7 @@ namespace Spyll
 	class ReflectionParser final
 	{
 	public:
-		explicit
-		ReflectionParser();
-
-		~ReflectionParser();
+		ReflectionParser() = default;
 
 		bool
 		ShouldReflectDecl(const clang::NamedDecl* Decl) const;
@@ -28,42 +28,50 @@ namespace Spyll
 		ParseCXXRecordDecl(clang::CXXRecordDecl* Decl);
 
 		bool
-		ParseVarDecl(clang::VarDecl* Decl);
+		ParseGlobalVarDecl(clang::VarDecl* Decl);
 
 		bool
-		ParseFunctionDecl(clang::FunctionDecl* Decl);
+		ParseGlobalFunctionDecl(clang::FunctionDecl* Decl);
 
 		bool
 		ParseEnumDecl(clang::EnumDecl* Decl);
 
-		const std::vector<Type*>&
+		Type*
+		TryGetParentTypeOfDecl(const clang::NamedDecl* Decl);
+
+		void
+		PopulateTypeFields();
+
+		const std::vector<Type>&
 		GetTypes() const
 		{
 			return m_types;
 		}
 
-		const std::vector<Variable*>&
+		const std::vector<Variable>&
 		GetGlobalVariables() const
 		{
 			return m_globalVariables;
 		}
 
-		const std::vector<Function*>&
+		const std::vector<Function>&
 		GetGlobalFunctions() const
 		{
 			return m_globalFunctions;
 		}
 
-		const std::vector<Enum*>&
+		const std::vector<Enum>&
 		GetEnums() const
 		{
 			return m_enums;
 		}
 
 	private:
-		std::vector<Type*> m_types;
-		std::vector<Variable*> m_globalVariables;
-		std::vector<Function*> m_globalFunctions;
-		std::vector<Enum*> m_enums;
+		std::vector<Type> m_types;
+		std::unordered_map<const clang::RecordDecl*, size_t> m_typeIndexMap;
+
+		std::vector<Variable> m_globalVariables;
+		std::vector<Function> m_globalFunctions;
+		std::vector<Enum> m_enums;
 	};
 }

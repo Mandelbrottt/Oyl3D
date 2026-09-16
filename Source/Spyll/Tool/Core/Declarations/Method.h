@@ -13,18 +13,20 @@ namespace Spyll
 
 	class Method : public Function
 	{
+		friend class ReflectionParser;
+
 	public:
 		explicit
-		Method(const clang::CXXMethodDecl* a_decl, Type* a_parent);
-
-		virtual
-		~Method();
+		Method(const clang::CXXMethodDecl* a_decl, Type* a_parent = nullptr);
 
 		bool
-		IsConst() const;
+		IsConst() const { return m_isConst; }
 
 		bool
-		IsVirtual() const;
+		IsVirtual() const { return m_isVirtual; }
+
+		const clang::CXXMethodDecl*
+		GetClangDecl() const;
 
 	private:
 		bool m_isConst;

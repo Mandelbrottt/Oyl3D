@@ -13,6 +13,8 @@ namespace clang
 
 namespace Spyll
 {
+	class Type;
+
 	extern
 	bool
 	IsTypeOfDeclVisible(const clang::ValueDecl* a_decl);
@@ -29,27 +31,37 @@ namespace Spyll
 	class Declaration
 	{
 		friend class ReflectionParserVisitor;
+		friend class ReflectionParser;
 
 	protected:
 		explicit
-		Declaration(const clang::NamedDecl* a_decl);
+		Declaration(const clang::NamedDecl* a_decl, Type* a_parent = nullptr);
 
 		virtual
-		~Declaration();
+		~Declaration() = default;
 
 	public:
 		virtual
 		bool
 		ShouldReflect() const;
 
-		std::string_view
-		GetName() const;
+		Type*
+		GetParent() const { return m_parent; }
 
 		std::string_view
-		GetQualifiedName() const;
+		GetName() const { return m_name; }
+
+		std::string_view
+		GetQualifiedName() const { return m_qualifiedName; }
 
 		AccessSpecifier
 		GetAccessSpecifier() const;
+
+		const std::vector<Attribute>&
+		GetAttributes() const { return m_attributeParser.GetAttributes(); }
+
+		const clang::NamedDecl*
+		GetClangDecl() const;
 
 		std::string_view
 		GetSourceFile() const;
@@ -57,13 +69,15 @@ namespace Spyll
 		std::uint32_t
 		GetSourceLine() const;
 
-		const std::vector<Attribute>&
-		GetAttributes() const;
+	protected:
+		virtual
+		std::string
+		ToString() const;
 
 	protected:
 		bool m_enabled;
 
-		const clang::NamedDecl* m_decl;
+		Type* m_parent = nullptr;
 
 		std::string m_name;
 		std::string m_qualifiedName;
@@ -71,6 +85,8 @@ namespace Spyll
 		AttributeParser m_attributeParser;
 
 	private:
+		const clang::NamedDecl* m_decl = nullptr;
+
 		std::string m_sourceFile;
 		uint32_t m_sourceLine;
 	};

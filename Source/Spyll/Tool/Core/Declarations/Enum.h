@@ -15,11 +15,13 @@ namespace Spyll
 
 	class EnumConstant : public Declaration
 	{
+		friend class ReflectionParser;
+
 	public:
 		explicit
 		EnumConstant(
 			const clang::EnumConstantDecl* a_decl,
-			const Enum* a_parent
+			const Enum* a_enum
 		);
 
 		virtual
@@ -38,43 +40,45 @@ namespace Spyll
 		}
 
 		const Enum*
-		GetParent() const
+		GetEnum() const
 		{
-			return m_parent;
+			return m_enum;
 		}
+
+		const clang::EnumConstantDecl*
+		GetClangDecl() const;
 
 	private:
 		std::string m_identifier;
 		int64_t m_value;
 
-		const Enum* m_parent;
+		const Enum* m_enum;
 	};
 
 	class Enum : public Declaration
 	{
+		friend class ReflectionParser;
+
 	public:
 		explicit
-		Enum(const clang::EnumDecl* a_decl);
-
-		virtual
-		~Enum();
+		Enum(const clang::EnumDecl* a_decl, Type* a_parent = nullptr);
 
 	public:
+		const Type*
+		GetUnderlyingType() const { return m_underlyingType; }
+
 		std::string_view
-		GetUnderlyingTypeAsString() const
-		{
-			return m_underlyingType;
-		}
+		GetUnderlyingTypeAsString() const { return m_underlyingTypeAsString; }
 
 		const std::vector<EnumConstant>&
-		GetEntries() const
-		{
-			return m_entries;
-		}
+		GetEntries() const { return m_entries; }
+
+		const clang::EnumDecl*
+		GetClangDecl() const;
 
 	private:
-		std::string m_underlyingType;
-
+		Type* m_underlyingType;
+		std::string m_underlyingTypeAsString;
 		std::vector<EnumConstant> m_entries;
 	};
 }

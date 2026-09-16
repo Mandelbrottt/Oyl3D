@@ -4,6 +4,27 @@
 
 namespace Spyll
 {
+	std::string
+	Attribute::ToString() const
+	{
+		std::stringstream stream;
+		stream << type;
+		if (arguments.size() > 0)
+		{
+			stream << "(";
+			for (size_t i = 0; i < arguments.size(); i++)
+			{
+				const auto& argument = arguments[i];
+				stream << argument;
+
+				if (i != arguments.size() - 1)
+					stream << ", ";
+			}
+			stream << ")";
+		}
+		return std::move(stream.str());
+	}
+
 	AttributeParser::AttributeParser(const clang::Decl* a_decl)
 	{
 		const auto& ctx = a_decl->getASTContext();

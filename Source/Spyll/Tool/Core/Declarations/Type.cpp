@@ -4,25 +4,19 @@
 
 namespace Spyll
 {
-	Type::Type(clang::CXXRecordDecl* a_decl)
-		: Declaration(a_decl)
+	Type::Type(clang::CXXRecordDecl* a_decl, Type* a_parent)
+		: Declaration(a_decl, a_parent)
 	{
-		auto* type = a_decl->getTypeForDecl();
-
-		if (!a_decl->isAbstract())
-		{
-			const auto& ctx = a_decl->getASTContext();
-			m_size = ctx.getTypeSizeInChars(type).getQuantity();
-			m_alignment = ctx.getPreferredTypeAlignInChars(type->getCanonicalTypeUnqualified()).getQuantity();
-		} else
+		if (a_decl->isAbstract())
 		{
 			m_size = 0;
 			m_alignment = 0;
-		}
-
-		for (const auto& decl : a_decl->bases())
+		} else
 		{
-			m_baseClasses.emplace_back(BaseType { decl.getType().getAsString() });
+			const auto& ctx = a_decl->getASTContext();
+			const auto* type = a_decl->getTypeForDecl();
+			m_size = ctx.getTypeSizeInChars(type).getQuantity();
+			m_alignment = ctx.getPreferredTypeAlignInChars(type->getCanonicalTypeUnqualified()).getQuantity();
 		}
 
 		for (auto* decl : a_decl->decls())
@@ -43,6 +37,7 @@ namespace Spyll
 					m_fields.emplace_back(fieldDecl, this);
 					break;
 				}
+				// Static Member Functions are CXXMethods, but are called like Global Functions
 				case clang::Decl::CXXMethod:
 				{
 					auto* cxxMethodDecl = static_cast<clang::CXXMethodDecl*>(decl);
@@ -66,53 +61,15 @@ namespace Spyll
 		}
 	}
 
-	Type::~Type() {}
-
 	bool
 	Type::ShouldReflect() const
 	{
 		return Declaration::ShouldReflect();
 	}
 
-	size_t
-	Type::GetSize() const
+	const clang::CXXRecordDecl*
+	Type::GetClangDecl() const
 	{
-		return m_size;
-	}
-
-	size_t
-	Type::GetAlignment() const
-	{
-		return m_alignment;
-	}
-
-	const std::vector<BaseType>&
-	Type::GetBaseClasses() const
-	{
-		return m_baseClasses;
-	}
-
-	const std::vector<Field>&
-	Type::GetFields() const
-	{
-		return m_fields;
-	}
-
-	const std::vector<Method>&
-	Type::GetMethods() const
-	{
-		return m_methods;
-	}
-
-	const std::vector<Variable>&
-	Type::GetVariables() const
-	{
-		return m_variables;
-	}
-
-	const std::vector<Function>&
-	Type::GetFunctions() const
-	{
-		return m_functions;
+		return clang::dyn_cast<clang::CXXRecordDecl>(Declaration::GetClangDecl());
 	}
 }

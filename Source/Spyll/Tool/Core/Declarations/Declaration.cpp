@@ -4,6 +4,8 @@
 
 #include <clang/AST/Decl.h>
 
+#include "Type.h"
+
 namespace Spyll
 {
 	inline
@@ -18,11 +20,12 @@ namespace Spyll
 		return spyllSpecs[a_spec];
 	}
 
-	Declaration::Declaration(const clang::NamedDecl* a_decl)
+	Declaration::Declaration(const clang::NamedDecl* a_decl, Type* a_parent)
 		: m_enabled(true),
-		  m_decl(a_decl),
+		  m_parent(a_parent),
 		  m_qualifiedName(a_decl->getQualifiedNameAsString()),
-		  m_attributeParser(a_decl)
+		  m_attributeParser(a_decl),
+		  m_decl(a_decl)
 	{
 		llvm::raw_string_ostream out { m_name };
 		a_decl->getDeclName().print(out, a_decl->getASTContext().getPrintingPolicy());
@@ -35,24 +38,10 @@ namespace Spyll
 		m_sourceLine = a_decl->getASTContext().getSourceManager().getSpellingLineNumber(sourceLocation);
 	}
 
-	Declaration::~Declaration() {}
-
 	bool
 	Declaration::ShouldReflect() const
 	{
 		return m_enabled;
-	}
-
-	std::string_view
-	Declaration::GetName() const
-	{
-		return m_name;
-	}
-
-	std::string_view
-	Declaration::GetQualifiedName() const
-	{
-		return m_qualifiedName;
 	}
 
 	AccessSpecifier
@@ -73,10 +62,36 @@ namespace Spyll
 		return m_sourceLine;
 	}
 
-	const std::vector<Attribute>&
-	Declaration::GetAttributes() const
+	const clang::NamedDecl*
+	Declaration::GetClangDecl() const
 	{
-		return m_attributeParser.GetAttributes();
+		return m_decl;
+	}
+
+	std::string
+	Declaration::ToString() const
+	{
+		std::stringstream stream;
+
+		// Attributes
+		stream << "[[";
+		const auto& attributes = GetAttributes();
+		for (size_t i = 0; i < attributes.size(); i++)
+		{
+			const auto& attribute = attributes[i];
+			stream << attribute.ToString();
+			if (i != attributes.size() - 1)
+			{
+				stream << ", ";
+			}
+		}
+		stream << "]]";
+
+		// Name and location
+		stream << " " << m_qualifiedName;
+		stream << " (" << m_sourceFile << ":" << m_sourceLine;
+
+		return std::move(stream.str());
 	}
 
 	static

@@ -15,6 +15,9 @@ namespace Spyll
 	{
 		std::string type;
 		std::vector<std::string> arguments;
+
+		std::string
+		ToString() const;
 	};
 
 	class AttributeParser
@@ -24,10 +27,7 @@ namespace Spyll
 		AttributeParser(const clang::Decl* a_decl);
 
 		const std::vector<Attribute>&
-		GetAttributes() const
-		{
-			return m_attributes;
-		}
+		GetAttributes() const { return m_attributes; }
 
 	private:
 		static

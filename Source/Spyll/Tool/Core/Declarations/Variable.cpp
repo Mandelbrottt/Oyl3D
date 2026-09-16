@@ -5,15 +5,13 @@
 namespace Spyll
 {
 	Variable::Variable(const clang::VarDecl* a_decl, Type* a_parent)
-		: Declaration(a_decl), m_parent(a_parent)
+		: Declaration(a_decl, a_parent)
 	{
 		auto& ctx = a_decl->getASTContext();
-		auto printingPolicy = ctx.getPrintingPolicy();
 		auto qualifiedType = a_decl->getType();
-		m_type = clang::TypeName::getFullyQualifiedName(qualifiedType, ctx, printingPolicy);
+		auto printingPolicy = ctx.getPrintingPolicy();
+		m_typeAsString = clang::TypeName::getFullyQualifiedName(qualifiedType, ctx, printingPolicy);
 	}
-
-	Variable::~Variable() {}
 
 	bool
 	Variable::ShouldReflect() const
@@ -23,20 +21,14 @@ namespace Spyll
 			return false;
 		}
 
-		auto varDecl = clang::dyn_cast<clang::VarDecl>(m_decl);
+		auto varDecl = GetClangDecl();
 
 		return !varDecl->isConstexpr();
 	}
 
-	std::string_view
-	Variable::GetTypeAsString() const
+	const clang::VarDecl*
+	Variable::GetClangDecl() const
 	{
-		return m_type;
-	}
-
-	Type*
-	Variable::GetParent() const
-	{
-		return m_parent;
+		return clang::dyn_cast<clang::VarDecl>(Declaration::GetClangDecl());
 	}
 }

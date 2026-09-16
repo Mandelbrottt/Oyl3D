@@ -4,6 +4,7 @@
 
 namespace clang
 {
+	class TypeDecl;
 	class VarDecl;
 }
 
@@ -13,25 +14,26 @@ namespace Spyll
 
 	class Variable : public Declaration
 	{
+		friend class ReflectionParser;
+
 	public:
 		explicit
-		Variable(const clang::VarDecl* a_decl, Type* a_parent);
-
-		virtual
-		~Variable();
+		Variable(const clang::VarDecl* a_decl, Type* a_parent = nullptr);
 
 		bool
 		ShouldReflect() const override;
 
-		Type*
-		GetParent() const;
+		const Type*
+		GetType() const { return m_type; }
 
 		std::string_view
-		GetTypeAsString() const;
+		GetTypeAsString() const { return m_typeAsString; }
+
+		const clang::VarDecl*
+		GetClangDecl() const;
 
 	private:
-		std::string m_type;
-
-		Type* m_parent;
+		Type* m_type = nullptr;
+		std::string m_typeAsString;
 	};
 }

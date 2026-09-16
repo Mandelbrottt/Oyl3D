@@ -9,17 +9,9 @@ namespace Spyll
 		m_isVirtual = a_decl->isVirtual();
 	}
 
-	Method::~Method() {}
-
-	bool
-	Method::IsConst() const
+	const clang::CXXMethodDecl*
+	Method::GetClangDecl() const
 	{
-		return m_isConst;
-	}
-
-	bool
-	Method::IsVirtual() const
-	{
-		return m_isVirtual;
+		return clang::dyn_cast<clang::CXXMethodDecl>(Function::GetClangDecl());
 	}
 }

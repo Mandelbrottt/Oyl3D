@@ -7,113 +7,9 @@
 
 #include <Spyll/Tool/Core/ReflectionParser.h>
 
+#include "DeclPrinter.h"
 #include "SpyllTool.h"
-
-std::string&
-FindAndReplace(std::string& a_str, std::string_view a_find, std::string_view a_replace)
-{
-	size_t start_pos = 0;
-	while ((start_pos = a_str.find(a_find, start_pos)) != std::string::npos)
-	{
-		a_str.replace(start_pos, a_find.length(), a_replace);
-		start_pos += a_replace.length(); // Handles case where 'replace' is a substring of 'find'
-	}
-	return a_str;
-};
-
-void
-AddIndentToStringStream(std::stringstream& a_stream, std::string_view a_indent = "\t")
-{
-	a_stream.seekg(0, std::ios::end);
-	auto size = a_stream.tellg();
-	a_stream.seekg(0);
-
-	if (size == 0)
-	{
-		return;
-	}
-
-	std::stringstream indentStream;
-	while (!a_stream.eof())
-	{
-		char buf[1024] {};
-		a_stream.getline(buf, std::size(buf) - 1);
-		indentStream << a_indent << buf;
-		if (a_stream.peek(), !a_stream.eof())
-		{
-			indentStream << "\n";
-		}
-	}
-	a_stream.swap(indentStream);
-	a_stream.seekp(0, std::ios::end);
-}
-
-std::string
-GetTypeNameAsVar(std::string_view a_name)
-{
-	std::string typeVar = std::string(a_name);
-	std::ranges::replace(typeVar, ' ', '_');
-	std::ranges::replace(typeVar, '-', '_');
-	std::ranges::replace(typeVar, '.', '_');
-	std::ranges::replace(typeVar, '<', '_');
-	std::ranges::replace(typeVar, '>', '_');
-	std::ranges::replace(typeVar, ',', '_');
-	FindAndReplace(typeVar, "::", "_");
-	FindAndReplace(typeVar, "*", "Ptr");
-	FindAndReplace(typeVar, "&", "Ref");
-
-	return typeVar;
-}
-
-std::string
-GetStolenMemberTypeName(std::string_view a_name)
-{
-	return "__Stolen__" + GetTypeNameAsVar(a_name);
-}
-
-std::string
-GetStolenMemberTypeName(const Spyll::Declaration& a_decl)
-{
-	return GetStolenMemberTypeName(a_decl.GetQualifiedName());
-}
-
-std::string
-GetStolenMemberTypeName(const Spyll::Function& a_function)
-{
-	std::string name = GetStolenMemberTypeName(static_cast<const Spyll::Declaration&>(a_function));
-	for (const auto& argument : a_function.GetArguments())
-	{
-		name += "__" + GetTypeNameAsVar(argument.type);
-	}
-	return name;
-}
-
-std::string
-GetStolenMemberTypeName(const Spyll::Method& a_method)
-{
-	std::string name = GetStolenMemberTypeName(static_cast<const Spyll::Function&>(a_method));
-	if (a_method.IsConst())
-		name += "__Const";
-	return name;
-}
-
-template<typename T>
-std::string
-StolenMember(const T& a_value)
-{
-	std::stringstream call;
-	call << "(Oyl::Reflection::Internal::StolenMember_V<" << GetStolenMemberTypeName(a_value) << ">)";
-	return call.str();
-}
-
-constexpr
-std::string_view
-GetTrimmedStringView(std::string_view a_view)
-{
-	size_t start = a_view.find_first_not_of(" \n\t");
-	size_t end = a_view.find_last_not_of(" \n\t");
-	return a_view.substr(start, end - start + 1);
-}
+#include "StringHelper.h"
 
 void
 EmitHeaderComment(std::string& a_emitString);
@@ -125,16 +21,13 @@ void
 EmitDependencies(std::string& a_emitString, const std::vector<std::string_view>& a_tool);
 
 void
-PushIndent(std::string& a_indent);
-
-void
-PopIndent(std::string& a_indent);
-
-void
 EmitReflectionRegister(std::string& a_emitString, const Spyll::ReflectionParser* a_parser);
 
 void
-EmitStealDeclarations(std::string& a_emitString, const Spyll::ReflectionParser* a_parser);
+EmitTypeSmuggleDeclarations(std::string& a_emitString, const Spyll::ReflectionParser* a_parser);
+
+void
+EmitMemberStealDeclarations(std::string& a_emitString, const Spyll::ReflectionParser* a_parser);
 
 void
 RegisterTypes(std::stringstream& a_stream, const Spyll::ReflectionParser* a_parser);
@@ -142,31 +35,31 @@ RegisterTypes(std::stringstream& a_stream, const Spyll::ReflectionParser* a_pars
 void
 RegisterVariablesForType(
 	std::stringstream& a_stream,
-	const Spyll::Type* a_parentType
+	const Spyll::Type& a_parentType
 );
 
 void
 RegisterFieldsForType(
 	std::stringstream& a_stream,
-	const Spyll::Type* a_parentType
+	const Spyll::Type& a_parentType
 );
 
 void
 RegisterFunctionsForType(
 	std::stringstream& a_stream,
-	const Spyll::Type* a_parentType
+	const Spyll::Type& a_parentType
 );
 
 void
 RegisterMethodsForType(
 	std::stringstream& a_stream,
-	const Spyll::Type* a_parentType
+	const Spyll::Type& a_parentType
 );
 
 void
 RegisterArgumentForFunction(
 	std::stringstream& a_stream,
-	const Spyll::Function* a_function
+	const Spyll::Function& a_function
 );
 
 void
@@ -195,6 +88,8 @@ std::string_view g_emitTemplate = GetTrimmedStringView(R"""(
 #include <Core/Reflection/ReflectionFactory.h>
 
 {REFLECT_INCLUDES}
+
+{REFLECT_SMUGGLE_TYPES}
 
 {REFLECT_STEAL_MEMBERS}
 
@@ -234,11 +129,12 @@ EmitCodeFromTool(const Spyll::ReflectionParser* a_parser)
 
 	std::string emitString = std::string(g_emitTemplate);
 
+	EmitReflectionRegister(emitString, a_parser);
+
 	EmitHeaderComment(emitString);
 	EmitIncludes(emitString, a_parser);
 	EmitDependencies(emitString, g_tool.dependencies);
-	EmitStealDeclarations(emitString, a_parser);
-	EmitReflectionRegister(emitString, a_parser);
+	EmitMemberStealDeclarations(emitString, a_parser);
 
 	FindAndReplace(emitString, "{ASSEMBLY_NAME}", g_tool.assemblyName);
 
@@ -261,24 +157,24 @@ EmitIncludes(std::string& a_emitString, const Spyll::ReflectionParser* a_parser)
 {
 	std::unordered_set<std::string_view> includeSet;
 
-	for (const Spyll::Type* type : a_parser->GetTypes())
+	for (const Spyll::Type& type : a_parser->GetTypes())
 	{
-		includeSet.insert(type->GetSourceFile());
+		includeSet.insert(type.GetSourceFile());
 	}
 
-	for (const Spyll::Variable* variable : a_parser->GetGlobalVariables())
+	for (const Spyll::Variable& variable : a_parser->GetGlobalVariables())
 	{
-		includeSet.insert(variable->GetSourceFile());
+		includeSet.insert(variable.GetSourceFile());
 	}
 
-	for (const Spyll::Function* function : a_parser->GetGlobalFunctions())
+	for (const Spyll::Function& function : a_parser->GetGlobalFunctions())
 	{
-		includeSet.insert(function->GetSourceFile());
+		includeSet.insert(function.GetSourceFile());
 	}
 
-	for (const Spyll::Enum* enum_ : a_parser->GetEnums())
+	for (const Spyll::Enum& enum_ : a_parser->GetEnums())
 	{
-		includeSet.insert(enum_->GetSourceFile());
+		includeSet.insert(enum_.GetSourceFile());
 	}
 
 	std::stringstream includes;
@@ -313,18 +209,6 @@ EmitDependencies(std::string& a_emitString, const std::vector<std::string_view>&
 }
 
 void
-PushIndent(std::string& a_indent)
-{
-	a_indent += "\t";
-}
-
-void
-PopIndent(std::string& a_indent)
-{
-	a_indent = a_indent.substr(0, a_indent.size() - 1);
-}
-
-void
 EmitReflectionRegister(std::string& a_emitString, const Spyll::ReflectionParser* a_parser)
 {
 	std::stringstream stream;
@@ -334,7 +218,7 @@ EmitReflectionRegister(std::string& a_emitString, const Spyll::ReflectionParser*
 	RegisterEnums(stream, a_parser);
 
 	// Register type children after all types registered to guarantee calls to Type::Get<T>() succeed
-	for (auto type : a_parser->GetTypes())
+	for (const auto& type : a_parser->GetTypes())
 	{
 		RegisterVariablesForType(stream, type);
 		RegisterFieldsForType(stream, type);
@@ -350,7 +234,81 @@ EmitReflectionRegister(std::string& a_emitString, const Spyll::ReflectionParser*
 }
 
 void
-EmitStealDeclarations(std::string& a_emitString, const Spyll::ReflectionParser* a_parser)
+EmitTypeSmuggleDeclarations(std::string& a_emitString, const Spyll::ReflectionParser* a_parser)
+{
+	std::stringstream stream;
+	stream.setf(std::ios::boolalpha);
+
+	std::string emitString = std::string(
+		GetTrimmedStringView(R"""(
+namespace
+{
+	template<typename... Types>
+	struct TypeSmuggler
+	{
+		using tuple_t = std::tuple<Types...>;
+
+		template<size_t Index>
+		using element_t = std::tuple_element_t<Index, tuple_t>;
+
+{FRIEND_INJECTIONS}
+
+		friend auto __Smuggler__Oyl_CommandLine_Impl() { return reinterpret_cast<std::add_pointer_t<element_t<0>>>(nullptr); };
+		friend auto __Smuggler__Oyl_EventDispatcher_ListenerList() { return reinterpret_cast<std::add_pointer_t<element_t<1>>>(nullptr); };
+		friend auto __Smuggler__Oyl_EventDispatcher_ListenerDescriptor() { return reinterpret_cast<std::add_pointer_t<element_t<2>>>(nullptr); };
+		friend auto __Smuggler__Oyl_Internal_ResourceHandleBase_Tag() { return reinterpret_cast<std::add_pointer_t<element_t<3>>>(nullptr); };
+	};
+
+	template struct TypeSmuggler<
+{TYPES_TO_SMUGGLE}
+		Oyl::CommandLine::Impl,
+		Oyl::EventDispatcher::ListenerList,
+		Oyl::EventDispatcher::ListenerDescriptor,
+		Oyl::Internal::ResourceHandleBase::Tag
+	>;
+
+{SMUGGLE_DECLARATIONS}
+
+	auto __Smuggler__Oyl_CommandLine_Impl();
+	using __Smuggled__Oyl_CommandLine_Impl = std::remove_pointer_t<decltype(__Smuggler__Oyl_CommandLine_Impl())>;
+	auto __Smuggler__Oyl_EventDispatcher_ListenerList();
+	using __Smuggled__Oyl_EventDispatcher_ListenerList = std::remove_pointer_t<decltype(__Smuggler__Oyl_EventDispatcher_ListenerList())>;
+	auto __Smuggler__Oyl_EventDispatcher_ListenerDescriptor();
+	using __Smuggled__Oyl_EventDispatcher_ListenerDescriptor = std::remove_pointer_t<decltype(__Smuggler__Oyl_EventDispatcher_ListenerDescriptor())>;
+	auto __Smuggler__Oyl_Internal_ResourceHandleBase_Tag();
+	using __Smuggled__Oyl_Internal_ResourceHandleBase_Tag = std::remove_pointer_t<decltype(__Smuggler__Oyl_Internal_ResourceHandleBase_Tag())>;
+}
+)"""
+		));
+
+	std::stringstream friendInjections;
+	std::stringstream typesToSmuggle;
+	std::stringstream smuggleDeclarations;
+
+	for (const auto& type : a_parser->GetTypes())
+	{
+		// We only need to smuggle non-publicly accessible types
+		if (type.GetAccessSpecifier() == Spyll::AccessSpecifier::Public
+		    || type.GetAccessSpecifier() == Spyll::AccessSpecifier::None)
+		{
+			continue;
+		}
+
+		FindAndReplace(emitString, "{ASSEMBLY_PTR}", "AssemblyPtr");
+		FindAndReplace(emitString, "{QUALIFIED_TYPENAME}", type.GetQualifiedName());
+		FindAndReplace(emitString, "{TYPENAME}", type.GetName());
+		FindAndReplace(emitString, "{SIZE}", std::to_string(type.GetSize()));
+		FindAndReplace(emitString, "{ALIGNMENT}", std::to_string(type.GetAlignment()));
+		FindAndReplace(emitString, "{TYPENAME_AS_VAR}", GetTypeNameAsVar(type.GetQualifiedName()));
+
+		stream << emitString;
+	}
+
+	FindAndReplace(a_emitString, "{REFLECT_SMUGGLE_TYPES}", stream.str());
+}
+
+void
+EmitMemberStealDeclarations(std::string& a_emitString, const Spyll::ReflectionParser* a_parser)
 {
 	std::stringstream stream;
 	stream.setf(std::ios::boolalpha);
@@ -360,9 +318,9 @@ EmitStealDeclarations(std::string& a_emitString, const Spyll::ReflectionParser* 
 		return a_accessSpec == Spyll::AccessSpecifier::Public;
 	};
 
-	for (const auto* type : a_parser->GetTypes())
+	for (const auto& type : a_parser->GetTypes())
 	{
-		for (const auto& variable : type->GetVariables())
+		for (const auto& variable : type.GetVariables())
 		{
 			if (!variable.ShouldReflect() || isPublic(variable.GetAccessSpecifier()))
 				continue;
@@ -374,7 +332,7 @@ EmitStealDeclarations(std::string& a_emitString, const Spyll::ReflectionParser* 
 			stream << "template struct Oyl::Reflection::Internal::StealMember<" << typeNameAsVar << ", &" << variable.GetQualifiedName() << ">;\n";
 		}
 
-		for (const auto& field : type->GetFields())
+		for (const auto& field : type.GetFields())
 		{
 			if (!field.ShouldReflect() || isPublic(field.GetAccessSpecifier()))
 				continue;
@@ -382,11 +340,11 @@ EmitStealDeclarations(std::string& a_emitString, const Spyll::ReflectionParser* 
 			auto typeNameAsVar = GetStolenMemberTypeName(field);
 
 			stream << "struct " << typeNameAsVar << " { using type = ";
-			stream << field.GetTypeAsString() << "(" << type->GetQualifiedName() << "::*); };\n";
+			stream << field.GetTypeAsString() << "(" << type.GetQualifiedName() << "::*); };\n";
 			stream << "template struct Oyl::Reflection::Internal::StealMember<" << typeNameAsVar << ", &" << field.GetQualifiedName() << ">;\n";
 		}
 
-		for (const auto& function : type->GetFunctions())
+		for (const auto& function : type.GetFunctions())
 		{
 			if (!function.ShouldReflect() || isPublic(function.GetAccessSpecifier()) || function.IsDeleted())
 				continue;
@@ -399,7 +357,7 @@ EmitStealDeclarations(std::string& a_emitString, const Spyll::ReflectionParser* 
 			for (size_t i = 0; i < args.size(); i++)
 			{
 				const auto& arg = args[i];
-				stream << arg.type;
+				stream << arg.GetTypeAsString();
 				if (i != args.size() - 1)
 				{
 					stream << ", ";
@@ -409,7 +367,7 @@ EmitStealDeclarations(std::string& a_emitString, const Spyll::ReflectionParser* 
 			stream << "template struct Oyl::Reflection::Internal::StealMember<" << typeNameAsVar << ", &" << function.GetQualifiedName() << ">;\n";
 		}
 
-		for (const auto& method : type->GetMethods())
+		for (const auto& method : type.GetMethods())
 		{
 			if (!method.ShouldReflect() || isPublic(method.GetAccessSpecifier()) || method.IsDeleted())
 				continue;
@@ -417,12 +375,12 @@ EmitStealDeclarations(std::string& a_emitString, const Spyll::ReflectionParser* 
 			auto typeNameAsVar = GetStolenMemberTypeName(method);
 
 			stream << "struct " << typeNameAsVar << " { using type = ";
-			stream << method.GetReturnTypeAsString() << "(" << type->GetQualifiedName() << "::*)(";
+			stream << method.GetReturnTypeAsString() << "(" << type.GetQualifiedName() << "::*)(";
 			const auto& args = method.GetArguments();
 			for (size_t i = 0; i < args.size(); i++)
 			{
 				const auto& arg = args[i];
-				stream << arg.type;
+				stream << arg.GetTypeAsString();
 				if (i != args.size() - 1)
 				{
 					stream << ", ";
@@ -441,12 +399,23 @@ EmitStealDeclarations(std::string& a_emitString, const Spyll::ReflectionParser* 
 	FindAndReplace(a_emitString, "{REFLECT_STEAL_MEMBERS}", stream.str());
 }
 
+static std::vector<const Spyll::Declaration*> g_privateTypes;
+static std::vector<const Spyll::Declaration*> g_privateAddressableDeclarations;
+
+static
+bool
+IsDeclarationPrivate(const Spyll::Declaration& a_decl)
+{
+	return a_decl.GetAccessSpecifier() == Spyll::AccessSpecifier::Protected
+	       || a_decl.GetAccessSpecifier() == Spyll::AccessSpecifier::Private;
+}
+
 void
 RegisterTypes(std::stringstream& a_stream, const Spyll::ReflectionParser* a_parser)
 {
 	for (const auto& type : a_parser->GetTypes())
 	{
-		if (!type->ShouldReflect())
+		if (!type.ShouldReflect())
 			continue;
 
 		if (a_stream.tellp() != 0)
@@ -454,7 +423,7 @@ RegisterTypes(std::stringstream& a_stream, const Spyll::ReflectionParser* a_pars
 			a_stream << "\n";
 		}
 
-		std::string typeVar = GetTypeNameAsVar(type->GetQualifiedName());
+		std::string typeVar = GetTypeNameAsVar(type.GetQualifiedName());
 
 		std::string emitString = std::string(
 			GetTrimmedStringView(R"""(
@@ -473,11 +442,11 @@ Oyl::Reflection::Type* {TYPENAME_AS_VAR}; (void) {TYPENAME_AS_VAR};
 			));
 
 		FindAndReplace(emitString, "{ASSEMBLY_PTR}", "AssemblyPtr");
-		FindAndReplace(emitString, "{QUALIFIED_TYPENAME}", type->GetQualifiedName());
-		FindAndReplace(emitString, "{TYPENAME}", type->GetName());
-		FindAndReplace(emitString, "{SIZE}", std::to_string(type->GetSize()));
-		FindAndReplace(emitString, "{ALIGNMENT}", std::to_string(type->GetAlignment()));
-		FindAndReplace(emitString, "{TYPENAME_AS_VAR}", GetTypeNameAsVar(type->GetQualifiedName()));
+		FindAndReplace(emitString, "{QUALIFIED_TYPENAME}", type.GetQualifiedName());
+		FindAndReplace(emitString, "{TYPENAME}", type.GetName());
+		FindAndReplace(emitString, "{SIZE}", std::to_string(type.GetSize()));
+		FindAndReplace(emitString, "{ALIGNMENT}", std::to_string(type.GetAlignment()));
+		FindAndReplace(emitString, "{TYPENAME_AS_VAR}", GetTypeNameAsVar(type.GetQualifiedName()));
 
 		a_stream << emitString;
 	}
@@ -486,13 +455,16 @@ Oyl::Reflection::Type* {TYPENAME_AS_VAR}; (void) {TYPENAME_AS_VAR};
 void
 RegisterVariablesForType(
 	std::stringstream& a_stream,
-	const Spyll::Type* a_parentType
+	const Spyll::Type& a_parentType
 )
 {
-	for (const auto& variable : a_parentType->GetVariables())
+	for (const auto& variable : a_parentType.GetVariables())
 	{
 		if (!variable.ShouldReflect())
 			continue;
+
+		if (IsDeclarationPrivate(variable))
+			g_privateAddressableDeclarations.push_back(&variable);
 
 		std::string emitString = GetTrimmedStringView(R"""(
 {
@@ -507,11 +479,18 @@ RegisterVariablesForType(
 )"""
 		).data();
 
+		std::string qualifiedType = std::string(variable.GetTypeAsString());
+		if (IsDeclarationPrivate(variable))
+		{
+			g_privateAddressableDeclarations.push_back(&variable);
+			qualifiedType = GetSmuggledTypeAsTypeName(qualifiedType);
+		}
+
 		FindAndReplace(emitString, "{QUALIFIED_NAME}", variable.GetQualifiedName());
 		FindAndReplace(emitString, "{NAME}", variable.GetName());
-		FindAndReplace(emitString, "{QUALIFIED_TYPE}", variable.GetTypeAsString());
+		FindAndReplace(emitString, "{QUALIFIED_TYPE}", qualifiedType);
 		FindAndReplace(emitString, "{ACCESS_SPECIFIER}", std::to_string(variable.GetAccessSpecifier()));
-		FindAndReplace(emitString, "{PARENT_TYPENAME_AS_VAR}", GetTypeNameAsVar(a_parentType->GetQualifiedName()));
+		FindAndReplace(emitString, "{PARENT_TYPENAME_AS_VAR}", GetTypeNameAsVar(a_parentType.GetQualifiedName()));
 
 		a_stream << emitString;
 	}
@@ -520,10 +499,10 @@ RegisterVariablesForType(
 void
 RegisterFieldsForType(
 	std::stringstream& a_stream,
-	const Spyll::Type* a_parentType
+	const Spyll::Type& a_parentType
 )
 {
-	for (const auto& field : a_parentType->GetFields())
+	for (const auto& field : a_parentType.GetFields())
 	{
 		if (!field.ShouldReflect())
 			continue;
@@ -544,10 +523,17 @@ RegisterFieldsForType(
 )"""
 		).data();
 
+		std::string qualifiedType = std::string(field.GetTypeAsString());
+		if (IsDeclarationPrivate(field))
+		{
+			g_privateAddressableDeclarations.push_back(&field);
+			qualifiedType = GetSmuggledTypeAsTypeName(qualifiedType);
+		}
+
 		FindAndReplace(emitString, "{QUALIFIED_NAME}", field.GetQualifiedName());
 		FindAndReplace(emitString, "{NAME}", field.GetName());
 		FindAndReplace(emitString, "{QUALIFIED_TYPE}", field.GetTypeAsString());
-		FindAndReplace(emitString, "{PARENT_TYPENAME_AS_VAR}", GetTypeNameAsVar(a_parentType->GetQualifiedName()));
+		FindAndReplace(emitString, "{PARENT_TYPENAME_AS_VAR}", GetTypeNameAsVar(a_parentType.GetQualifiedName()));
 		FindAndReplace(emitString, "{ACCESS_SPECIFIER}", std::to_string(field.GetAccessSpecifier()));
 		FindAndReplace(emitString, "{OFFSET_IN_BITS}", std::to_string(field.GetOffsetInBits()));
 		FindAndReplace(emitString, "{IS_CONST}", field.IsConst() ? "true" : "false");
@@ -573,7 +559,7 @@ RegisterFieldsForType(
 				FindAndReplace(attrString, "{ATTR_TYPE}", attr.type);
 
 				std::stringstream argStream;
-				for (size_t i  = 0; i < attr.arguments.size(); i++)
+				for (size_t i = 0; i < attr.arguments.size(); i++)
 				{
 					const auto& arg = attr.arguments[i];
 
@@ -608,10 +594,10 @@ RegisterFieldsForType(
 void
 RegisterFunctionsForType(
 	std::stringstream& a_stream,
-	const Spyll::Type* a_parentType
+	const Spyll::Type& a_parentType
 )
 {
-	for (const auto& function : a_parentType->GetFunctions())
+	for (const auto& function : a_parentType.GetFunctions())
 	{
 		if (!function.ShouldReflect())
 			continue;
@@ -636,7 +622,7 @@ RegisterFunctionsForType(
 		FindAndReplace(emitString, "{QUALIFIED_NAME}", function.GetQualifiedName());
 		FindAndReplace(emitString, "{NAME}", function.GetName());
 		FindAndReplace(emitString, "{RETURN_TYPE}", function.GetReturnTypeAsString());
-		FindAndReplace(emitString, "{PARENT_TYPENAME_AS_VAR}", GetTypeNameAsVar(a_parentType->GetQualifiedName()));
+		FindAndReplace(emitString, "{PARENT_TYPENAME_AS_VAR}", GetTypeNameAsVar(a_parentType.GetQualifiedName()));
 		FindAndReplace(emitString, "{ACCESS_SPECIFIER}", std::to_string(function.GetAccessSpecifier()));
 		FindAndReplace(emitString, "{INVOKABLE_PTR}", function.GetArguments().size() != 0 ? "auto InvokablePtr = " : "");
 
@@ -644,7 +630,7 @@ RegisterFunctionsForType(
 		for (size_t i = 0; i < function.GetArguments().size(); i++)
 		{
 			const auto& arg = function.GetArguments()[i];
-			argSignature << arg.type;
+			argSignature << arg.GetTypeAsString();
 
 			if (i < function.GetArguments().size() - 1)
 				argSignature << ", ";
@@ -682,10 +668,10 @@ FunctionParams.typeSafeThunkFnPtr = reinterpret_cast<void*>(thunkFnPtr);
 		const auto& args = function.GetArguments();
 		for (size_t i = 0; i < args.size(); i++)
 		{
-			const auto& [type, name] = args[i];
+			const auto& arg = args[i];
 			std::string_view std_any_ref = "std::any&";
 			typeSignature << std_any_ref;
-			nameSignature << std_any_ref << " " << name;
+			nameSignature << std_any_ref << " " << arg.GetName();
 
 			if (i != args.size() - 1)
 			{
@@ -711,11 +697,11 @@ FunctionParams.typeSafeThunkFnPtr = reinterpret_cast<void*>(thunkFnPtr);
 			callStatement << "(" << (args.size() != 0 ? "\n" : "");
 			for (size_t i = 0; i < args.size(); i++)
 			{
-				const auto& [argType, argName] = args[i];
+				const auto& arg = args[i];
 
 				std::string declaration = "\tstd::any_cast<{TYPE}>({NAME})";
-				FindAndReplace(declaration, "{TYPE}", argType);
-				FindAndReplace(declaration, "{NAME}", argName);
+				FindAndReplace(declaration, "{TYPE}", arg.GetTypeAsString());
+				FindAndReplace(declaration, "{NAME}", arg.GetName());
 
 				callStatement << declaration;
 				if (i != args.size() - 1)
@@ -748,7 +734,7 @@ FunctionParams.typeSafeThunkFnPtr = reinterpret_cast<void*>(thunkFnPtr);
 		FindAndReplace(emitString, "{TYPESAFE_PTR}", typesafePtr.str());
 
 		std::stringstream argumentsStream;
-		RegisterArgumentForFunction(argumentsStream, &function);
+		RegisterArgumentForFunction(argumentsStream, function);
 		AddIndentToStringStream(argumentsStream);
 		FindAndReplace(emitString, "{ARGUMENTS}", argumentsStream.str());
 
@@ -759,10 +745,10 @@ FunctionParams.typeSafeThunkFnPtr = reinterpret_cast<void*>(thunkFnPtr);
 void
 RegisterMethodsForType(
 	std::stringstream& a_stream,
-	const Spyll::Type* a_parentType
+	const Spyll::Type& a_parentType
 )
 {
-	for (const auto& method : a_parentType->GetMethods())
+	for (const auto& method : a_parentType.GetMethods())
 	{
 		if (!method.ShouldReflect())
 			continue;
@@ -789,8 +775,8 @@ RegisterMethodsForType(
 		FindAndReplace(emitString, "{QUALIFIED_NAME}", method.GetQualifiedName());
 		FindAndReplace(emitString, "{NAME}", method.GetName());
 		FindAndReplace(emitString, "{RETURN_TYPE}", method.GetReturnTypeAsString());
-		FindAndReplace(emitString, "{PARENT_QUALIFIED_NAME}", a_parentType->GetQualifiedName());
-		FindAndReplace(emitString, "{PARENT_TYPENAME_AS_VAR}", GetTypeNameAsVar(a_parentType->GetQualifiedName()));
+		FindAndReplace(emitString, "{PARENT_QUALIFIED_NAME}", a_parentType.GetQualifiedName());
+		FindAndReplace(emitString, "{PARENT_TYPENAME_AS_VAR}", GetTypeNameAsVar(a_parentType.GetQualifiedName()));
 		FindAndReplace(emitString, "{ACCESS_SPECIFIER}", std::to_string(method.GetAccessSpecifier()));
 		FindAndReplace(emitString, "{IS_CONST}", method.IsConst() ? "true" : "false");
 		FindAndReplace(emitString, "{IS_VIRTUAL}", method.IsVirtual() ? "true" : "false");
@@ -801,7 +787,7 @@ RegisterMethodsForType(
 		for (size_t i = 0; i < method.GetArguments().size(); i++)
 		{
 			const auto& arg = method.GetArguments()[i];
-			argSignature << arg.type;
+			argSignature << arg.GetTypeAsString();
 
 			if (i < method.GetArguments().size() - 1)
 				argSignature << ", ";
@@ -842,10 +828,10 @@ MethodParams.typeSafeThunkFnPtr = reinterpret_cast<void*>(thunkFnPtr);
 			typeSignature << ", ";
 			nameSignature << ", ";
 
-			const auto& [type, name] = args[i];
+			const auto& arg = args[i];
 			std::string_view std_any_ref = "std::any&";
 			typeSignature << std_any_ref;
-			nameSignature << std_any_ref << " " << name;
+			nameSignature << std_any_ref << " " << arg.GetName();
 		}
 		FindAndReplace(typesafePtrString, "{NAME_SIGNATURE}", nameSignature.str());
 		FindAndReplace(typesafePtrString, "{TYPE_SIGNATURE}", typeSignature.str());
@@ -869,11 +855,11 @@ MethodParams.typeSafeThunkFnPtr = reinterpret_cast<void*>(thunkFnPtr);
 			callStatement << "(" << (args.size() != 0 ? "\n" : "");
 			for (size_t i = 0; i < args.size(); i++)
 			{
-				const auto& [argType, argName] = args[i];
+				const auto& arg = args[i];
 
 				std::string declaration = "\tstd::any_cast<{TYPE}>({NAME})";
-				FindAndReplace(declaration, "{TYPE}", argType);
-				FindAndReplace(declaration, "{NAME}", argName);
+				FindAndReplace(declaration, "{TYPE}", arg.GetTypeAsString());
+				FindAndReplace(declaration, "{NAME}", arg.GetName());
 
 				callStatement << declaration;
 				if (i != args.size() - 1)
@@ -883,7 +869,7 @@ MethodParams.typeSafeThunkFnPtr = reinterpret_cast<void*>(thunkFnPtr);
 			callStatement << ")";
 
 			std::stringstream callReturn;
-			callReturn << "auto __self = std::any_cast<" << a_parentType->GetQualifiedName() << "*>(__a_self);\n";
+			callReturn << "auto __self = std::any_cast<" << a_parentType.GetQualifiedName() << "*>(__a_self);\n";
 			if (method.GetReturnTypeAsString() == "void")
 			{
 				callReturn << callStatement.str() << ";\n";
@@ -906,7 +892,7 @@ MethodParams.typeSafeThunkFnPtr = reinterpret_cast<void*>(thunkFnPtr);
 		FindAndReplace(emitString, "{TYPESAFE_PTR}", typesafePtr.str());
 
 		std::stringstream argumentsStream;
-		RegisterArgumentForFunction(argumentsStream, &method);
+		RegisterArgumentForFunction(argumentsStream, method);
 		AddIndentToStringStream(argumentsStream);
 		FindAndReplace(emitString, "{ARGUMENTS}", argumentsStream.str());
 
@@ -917,10 +903,10 @@ MethodParams.typeSafeThunkFnPtr = reinterpret_cast<void*>(thunkFnPtr);
 void
 RegisterArgumentForFunction(
 	std::stringstream& a_stream,
-	const Spyll::Function* a_function
+	const Spyll::Function& a_function
 )
 {
-	for (const auto& [argType, argName] : a_function->GetArguments())
+	for (const auto& arg : a_function.GetArguments())
 	{
 		std::string emitString = GetTrimmedStringView(R"""(
 {
@@ -932,8 +918,8 @@ RegisterArgumentForFunction(
 )"""
 		).data();
 
-		FindAndReplace(emitString, "{TYPE}", argType);
-		FindAndReplace(emitString, "{NAME}", argName);
+		FindAndReplace(emitString, "{TYPE}", arg.GetTypeAsString());
+		FindAndReplace(emitString, "{NAME}", arg.GetName());
 		FindAndReplace(emitString, "{INVOKABLE_PTR}", "InvokablePtr");
 
 		a_stream << emitString;
@@ -946,9 +932,9 @@ RegisterGlobalVariables(std::stringstream& a_stream, const Spyll::ReflectionPars
 	(void) a_stream;
 	(void) a_parser;
 
-	for (const auto* variable : a_parser->GetGlobalVariables())
+	for (const auto& variable : a_parser->GetGlobalVariables())
 	{
-		if (!variable->ShouldReflect())
+		if (!variable.ShouldReflect())
 			continue;
 
 		std::string emitString = GetTrimmedStringView(R"""(
@@ -964,9 +950,9 @@ RegisterGlobalVariables(std::stringstream& a_stream, const Spyll::ReflectionPars
 )"""
 		).data();
 
-		FindAndReplace(emitString, "{QUALIFIED_NAME}", variable->GetQualifiedName());
-		FindAndReplace(emitString, "{NAME}", variable->GetName());
-		FindAndReplace(emitString, "{QUALIFIED_TYPE}", variable->GetTypeAsString());
+		FindAndReplace(emitString, "{QUALIFIED_NAME}", variable.GetQualifiedName());
+		FindAndReplace(emitString, "{NAME}", variable.GetName());
+		FindAndReplace(emitString, "{QUALIFIED_TYPE}", variable.GetTypeAsString());
 		FindAndReplace(emitString, "{ASSEMBLY_PTR}", "AssemblyPtr");
 
 		a_stream << emitString;
@@ -978,7 +964,7 @@ RegisterGlobalFunctions(std::stringstream& a_stream, const Spyll::ReflectionPars
 {
 	for (const auto& function : a_parser->GetGlobalFunctions())
 	{
-		if (!function->ShouldReflect())
+		if (!function.ShouldReflect())
 			continue;
 
 		std::string emitString = GetTrimmedStringView(R"""(
@@ -998,20 +984,20 @@ RegisterGlobalFunctions(std::stringstream& a_stream, const Spyll::ReflectionPars
 )"""
 		).data();
 
-		FindAndReplace(emitString, "{QUALIFIED_NAME}", function->GetQualifiedName());
-		FindAndReplace(emitString, "{NAME}", function->GetName());
-		FindAndReplace(emitString, "{RETURN_TYPE}", function->GetReturnTypeAsString());
-		FindAndReplace(emitString, "{INVOKABLE_PTR}", function->GetArguments().size() != 0 ? "auto InvokablePtr = " : "");
+		FindAndReplace(emitString, "{QUALIFIED_NAME}", function.GetQualifiedName());
+		FindAndReplace(emitString, "{NAME}", function.GetName());
+		FindAndReplace(emitString, "{RETURN_TYPE}", function.GetReturnTypeAsString());
+		FindAndReplace(emitString, "{INVOKABLE_PTR}", function.GetArguments().size() != 0 ? "auto InvokablePtr = " : "");
 		FindAndReplace(emitString, "{ASSEMBLY_PTR}", "AssemblyPtr");
-		FindAndReplace(emitString, "{RAW_FN_ADDRESS}", function->IsDeleted() ? "nullptr" : function->GetQualifiedName());
+		FindAndReplace(emitString, "{RAW_FN_ADDRESS}", function.IsDeleted() ? "nullptr" : function.GetQualifiedName());
 
 		std::stringstream argSignature;
-		for (size_t i = 0; i < function->GetArguments().size(); i++)
+		for (size_t i = 0; i < function.GetArguments().size(); i++)
 		{
-			const auto& arg = function->GetArguments()[i];
-			argSignature << arg.type;
+			const auto& arg = function.GetArguments()[i];
+			argSignature << arg.GetTypeAsString();
 
-			if (i < function->GetArguments().size() - 1)
+			if (i < function.GetArguments().size() - 1)
 				argSignature << ", ";
 		}
 
@@ -1029,13 +1015,13 @@ FunctionParams.typeSafeThunkFnPtr = reinterpret_cast<void*>(thunkFnPtr);
 
 		std::stringstream nameSignature;
 		std::stringstream typeSignature;
-		const auto& args = function->GetArguments();
+		const auto& args = function.GetArguments();
 		for (size_t i = 0; i < args.size(); i++)
 		{
-			const auto& [type, name] = args[i];
+			const auto& arg = args[i];
 			std::string_view std_any_ref = "std::any&";
 			typeSignature << std_any_ref;
-			nameSignature << std_any_ref << " " << name;
+			nameSignature << std_any_ref << " " << arg.GetName();
 
 			if (i != args.size() - 1)
 			{
@@ -1046,18 +1032,18 @@ FunctionParams.typeSafeThunkFnPtr = reinterpret_cast<void*>(thunkFnPtr);
 		FindAndReplace(typesafePtrString, "{NAME_SIGNATURE}", nameSignature.str());
 		FindAndReplace(typesafePtrString, "{TYPE_SIGNATURE}", typeSignature.str());
 
-		if (!function->IsDeleted())
+		if (!function.IsDeleted())
 		{
 			std::stringstream callStatement;
-			callStatement << function->GetQualifiedName();
+			callStatement << function.GetQualifiedName();
 			callStatement << "(" << (args.size() != 0 ? "\n" : "");
 			for (size_t i = 0; i < args.size(); i++)
 			{
-				const auto& [argType, argName] = args[i];
+				const auto& arg = args[i];
 
 				std::string declaration = "\tstd::any_cast<{TYPE}>({NAME})";
-				FindAndReplace(declaration, "{TYPE}", argType);
-				FindAndReplace(declaration, "{NAME}", argName);
+				FindAndReplace(declaration, "{TYPE}", arg.GetTypeAsString());
+				FindAndReplace(declaration, "{NAME}", arg.GetName());
 
 				callStatement << declaration;
 				if (i != args.size() - 1)
@@ -1067,7 +1053,7 @@ FunctionParams.typeSafeThunkFnPtr = reinterpret_cast<void*>(thunkFnPtr);
 			callStatement << ")";
 
 			std::stringstream callReturn;
-			if (function->GetReturnTypeAsString() == "void")
+			if (function.GetReturnTypeAsString() == "void")
 			{
 				callReturn << callStatement.str() << ";\n";
 				callReturn << "return std::any {};";
@@ -1102,7 +1088,7 @@ RegisterEnums(std::stringstream& a_stream, const Spyll::ReflectionParser* a_pars
 {
 	for (const auto& enum_ : a_parser->GetEnums())
 	{
-		if (!enum_->ShouldReflect())
+		if (!enum_.ShouldReflect())
 			continue;
 
 		std::string emitString = GetTrimmedStringView(R"""(
@@ -1118,15 +1104,15 @@ RegisterEnums(std::stringstream& a_stream, const Spyll::ReflectionParser* a_pars
 )"""
 		).data();
 
-		FindAndReplace(emitString, "{QUALIFIED_NAME}", enum_->GetQualifiedName());
-		FindAndReplace(emitString, "{NAME}", enum_->GetName());
-		FindAndReplace(emitString, "{UNDERLYING_TYPE}", enum_->GetUnderlyingTypeAsString());
-		FindAndReplace(emitString, "{SIZE}", std::to_string(enum_->GetEntries().size()));
+		FindAndReplace(emitString, "{QUALIFIED_NAME}", enum_.GetQualifiedName());
+		FindAndReplace(emitString, "{NAME}", enum_.GetName());
+		FindAndReplace(emitString, "{UNDERLYING_TYPE}", enum_.GetUnderlyingTypeAsString());
+		FindAndReplace(emitString, "{SIZE}", std::to_string(enum_.GetEntries().size()));
 		FindAndReplace(emitString, "{ASSEMBLY_PTR}", "AssemblyPtr");
-		FindAndReplace(emitString, "{ENUM_PTR}", !enum_->GetEntries().empty() ? "auto EnumPtr = " : "");
+		FindAndReplace(emitString, "{ENUM_PTR}", !enum_.GetEntries().empty() ? "auto EnumPtr = " : "");
 
 		std::stringstream entryStream;
-		for (const auto& entry : enum_->GetEntries())
+		for (const auto& entry : enum_.GetEntries())
 		{
 			std::string entryString = GetTrimmedStringView(R"""(
 {
@@ -1140,7 +1126,7 @@ RegisterEnums(std::stringstream& a_stream, const Spyll::ReflectionParser* a_pars
 
 			FindAndReplace(entryString, "{IDENTIFIER}", entry.GetIdentifier());
 			FindAndReplace(entryString, "{VALUE}", std::to_string(entry.GetValue()));
-			FindAndReplace(entryString, "{UNDERLYING_TYPE}", enum_->GetUnderlyingTypeAsString());
+			FindAndReplace(entryString, "{UNDERLYING_TYPE}", enum_.GetUnderlyingTypeAsString());
 
 			entryStream << entryString;
 		}

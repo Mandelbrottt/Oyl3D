@@ -5,25 +5,18 @@
 namespace Spyll
 {
 	Function::Function(const clang::FunctionDecl* a_decl, Type* a_parent)
-		: Declaration(a_decl), m_parent(a_parent)
+		: Declaration(a_decl, a_parent)
 	{
 		auto& ctx = a_decl->getASTContext();
+		auto qualifiedType = a_decl->getType();
 		auto printingPolicy = ctx.getPrintingPolicy();
-		auto qualifiedType = a_decl->getReturnType();
-		m_returnType = clang::TypeName::getFullyQualifiedName(qualifiedType, ctx, printingPolicy);
+		m_returnTypeAsString = clang::TypeName::getFullyQualifiedName(qualifiedType, ctx, printingPolicy);
 
 		for (auto* argDecl : a_decl->parameters())
 		{
-			auto argType = argDecl->getType();
-
-			m_arguments.emplace_back(Argument {
-				clang::TypeName::getFullyQualifiedName(argType, ctx, printingPolicy),
-				argDecl->getNameAsString()
-			});
+			m_arguments.emplace_back(argDecl);
 		}
 	}
-
-	Function::~Function() {}
 
 	bool
 	Function::ShouldReflect() const
@@ -33,7 +26,7 @@ namespace Spyll
 			return false;
 		}
 
-		auto functionDecl = clang::dyn_cast<clang::FunctionDecl>(m_decl);
+		auto* functionDecl = GetClangDecl();
 
 		// Member Operators are technically not functions, they are functors
 		// Similar to lambdas or member function pointers. We can't take the address of these functions
@@ -41,39 +34,27 @@ namespace Spyll
 		if (functionDecl->isOverloadedOperator())
 			return false;
 
-		if (!IsTypeOfDeclVisible(functionDecl))
-			return false;
+		//if (!IsTypeOfDeclVisible(functionDecl))
+		//	return false;
 
-		for (auto paramDecl : functionDecl->parameters())
-		{
-			if (!IsTypeOfDeclVisible(paramDecl))
-				return false;
-		}
+		//for (auto paramDecl : functionDecl->parameters())
+		//{
+		//	if (!IsTypeOfDeclVisible(paramDecl))
+		//		return false;
+		//}
 
 		return true;
-	}
-
-	Type*
-	Function::GetParent() const
-	{
-		return m_parent;
-	}
-
-	std::string_view
-	Function::GetReturnTypeAsString() const
-	{
-		return m_returnType;
-	}
-
-	const std::vector<Argument>&
-	Function::GetArguments() const
-	{
-		return m_arguments;
 	}
 
 	bool
 	Function::IsDeleted() const
 	{
-		return clang::dyn_cast<clang::FunctionDecl>(m_decl)->isDeleted();
+		return GetClangDecl()->isDeleted();
+	}
+
+	const clang::FunctionDecl*
+	Function::GetClangDecl() const
+	{
+		return clang::dyn_cast<clang::FunctionDecl>(Declaration::GetClangDecl());
 	}
 }

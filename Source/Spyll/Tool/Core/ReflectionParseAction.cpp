@@ -8,10 +8,11 @@ namespace Spyll
 		explicit
 		ReflectionParserVisitor(ReflectionParser* Parser);
 
-		~ReflectionParserVisitor();
-
 		bool
 		ShouldReflectDecl(const clang::NamedDecl* Decl) const;
+
+		bool
+		TraverseTranslationUnitDecl(clang::TranslationUnitDecl* Decl);
 
 		bool
 		VisitCXXRecordDecl(clang::CXXRecordDecl* Decl);
@@ -121,8 +122,6 @@ namespace Spyll
 	ReflectionParserVisitor::ReflectionParserVisitor(ReflectionParser* Parser)
 		: Parser(Parser) {}
 
-	ReflectionParserVisitor::~ReflectionParserVisitor() {}
-
 	bool
 	ReflectionParserVisitor::ShouldReflectDecl(const clang::NamedDecl* Decl) const
 	{
@@ -134,6 +133,14 @@ namespace Spyll
 	}
 
 	bool
+	ReflectionParserVisitor::TraverseTranslationUnitDecl(clang::TranslationUnitDecl* Decl)
+	{
+		bool result = RecursiveASTVisitor::TraverseTranslationUnitDecl(Decl);
+		Parser->PopulateTypeFields();
+		return result;
+	}
+
+	bool
 	ReflectionParserVisitor::VisitCXXRecordDecl(clang::CXXRecordDecl* Decl)
 	{
 		return Parser->ParseCXXRecordDecl(Decl);
@@ -142,13 +149,13 @@ namespace Spyll
 	bool
 	ReflectionParserVisitor::VisitFunctionDecl(clang::FunctionDecl* Decl)
 	{
-		return Parser->ParseFunctionDecl(Decl);
+		return Parser->ParseGlobalFunctionDecl(Decl);
 	}
 
 	bool
 	ReflectionParserVisitor::VisitVarDecl(clang::VarDecl* Decl)
 	{
-		return Parser->ParseVarDecl(Decl);
+		return Parser->ParseGlobalVarDecl(Decl);
 	}
 
 	bool

@@ -6,22 +6,28 @@ namespace Spyll
 {
 	EnumConstant::EnumConstant(
 		const clang::EnumConstantDecl* a_decl,
-		const Enum* a_parent
+		const Enum* a_enum
 	)
-		: Declaration(a_decl),
+		: Declaration(a_decl, a_enum->GetParent()),
 		  m_identifier(a_decl->getNameAsString()),
 		  m_value(a_decl->getInitVal().getExtValue()),
-		  m_parent(a_parent) {}
+		  m_enum(a_enum) {}
 
 	EnumConstant::~EnumConstant() {}
 
-	Enum::Enum(const clang::EnumDecl* a_decl)
-		: Declaration(a_decl)
+	const clang::EnumConstantDecl*
+	EnumConstant::GetClangDecl() const
+	{
+		return clang::dyn_cast<clang::EnumConstantDecl>(Declaration::GetClangDecl());
+	}
+
+	Enum::Enum(const clang::EnumDecl* a_decl, Type* a_parent)
+		: Declaration(a_decl, a_parent)
 	{
 		auto& ctx = a_decl->getASTContext();
 		auto printingPolicy = ctx.getPrintingPolicy();
 		auto qualifiedType = a_decl->getIntegerType();
-		m_underlyingType = clang::TypeName::getFullyQualifiedName(qualifiedType, ctx, printingPolicy);
+		m_underlyingTypeAsString = clang::TypeName::getFullyQualifiedName(qualifiedType, ctx, printingPolicy);
 
 		for (auto* entryDecl : a_decl->enumerators())
 		{
@@ -29,5 +35,9 @@ namespace Spyll
 		}
 	}
 
-	Enum::~Enum() {}
+	const clang::EnumDecl*
+	Enum::GetClangDecl() const
+	{
+		return clang::dyn_cast<clang::EnumDecl>(Declaration::GetClangDecl());
+	}
 }
