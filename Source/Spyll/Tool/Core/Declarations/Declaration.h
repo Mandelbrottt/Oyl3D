@@ -13,7 +13,7 @@ namespace clang
 
 namespace Spyll
 {
-	class Type;
+	class Class;
 
 	extern
 	bool
@@ -35,7 +35,7 @@ namespace Spyll
 
 	protected:
 		explicit
-		Declaration(const clang::NamedDecl* a_decl, Type* a_parent = nullptr);
+		Declaration(const clang::NamedDecl* a_decl);
 
 		virtual
 		~Declaration() = default;
@@ -45,7 +45,7 @@ namespace Spyll
 		bool
 		ShouldReflect() const;
 
-		Type*
+		Class*
 		GetParent() const { return m_parent; }
 
 		std::string_view
@@ -77,12 +77,12 @@ namespace Spyll
 	protected:
 		bool m_enabled;
 
-		Type* m_parent = nullptr;
-
 		std::string m_name;
 		std::string m_qualifiedName;
 
 		AttributeParser m_attributeParser;
+
+		Class* m_parent = nullptr;
 
 	private:
 		const clang::NamedDecl* m_decl = nullptr;

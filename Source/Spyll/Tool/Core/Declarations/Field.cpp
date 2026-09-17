@@ -7,8 +7,8 @@
 
 namespace Spyll
 {
-	Field::Field(const clang::FieldDecl* a_decl, Type* a_parentType)
-		: Declaration(a_decl, a_parentType)
+	Field::Field(const clang::FieldDecl* a_decl)
+		: Declaration(a_decl)
 	{
 		auto& ctx = a_decl->getASTContext();
 		m_offsetInBits = ctx.getFieldOffset(a_decl);
@@ -17,7 +17,7 @@ namespace Spyll
 		m_isConst = qualifiedType.isLocalConstQualified();
 
 		auto printingPolicy = ctx.getPrintingPolicy();
-		m_typeAsString = clang::TypeName::getFullyQualifiedName(qualifiedType, ctx, printingPolicy);
+		m_typeAsString = clang::TypeName::getFullyQualifiedName(a_decl->getType(), ctx, printingPolicy);
 	}
 
 	bool

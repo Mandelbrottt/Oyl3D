@@ -2,8 +2,8 @@
 
 namespace Spyll
 {
-	Method::Method(const clang::CXXMethodDecl* a_decl, Type* a_parent)
-		: Function(a_decl, a_parent)
+	Method::Method(const clang::CXXMethodDecl* a_decl)
+		: Function(a_decl)
 	{
 		m_isConst = a_decl->isConst();
 		m_isVirtual = a_decl->isVirtual();

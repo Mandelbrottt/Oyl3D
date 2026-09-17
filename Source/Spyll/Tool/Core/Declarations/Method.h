@@ -17,7 +17,7 @@ namespace Spyll
 
 	public:
 		explicit
-		Method(const clang::CXXMethodDecl* a_decl, Type* a_parent = nullptr);
+		Method(const clang::CXXMethodDecl* a_decl);
 
 		bool
 		IsConst() const { return m_isConst; }

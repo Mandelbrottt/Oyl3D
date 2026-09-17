@@ -20,7 +20,7 @@ namespace Spyll
 
 	public:
 		explicit
-		Function(const clang::FunctionDecl* a_decl, Type* a_parent = nullptr);
+		Function(const clang::FunctionDecl* a_decl);
 
 		bool
 		ShouldReflect() const override;

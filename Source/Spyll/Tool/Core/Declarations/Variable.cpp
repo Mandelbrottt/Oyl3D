@@ -4,8 +4,8 @@
 
 namespace Spyll
 {
-	Variable::Variable(const clang::VarDecl* a_decl, Type* a_parent)
-		: Declaration(a_decl, a_parent)
+	Variable::Variable(const clang::VarDecl* a_decl)
+		: Declaration(a_decl)
 	{
 		auto& ctx = a_decl->getASTContext();
 		auto qualifiedType = a_decl->getType();

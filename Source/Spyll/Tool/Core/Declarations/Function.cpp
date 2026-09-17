@@ -4,13 +4,13 @@
 
 namespace Spyll
 {
-	Function::Function(const clang::FunctionDecl* a_decl, Type* a_parent)
-		: Declaration(a_decl, a_parent)
+	Function::Function(const clang::FunctionDecl* a_decl)
+		: Declaration(a_decl)
 	{
 		auto& ctx = a_decl->getASTContext();
-		auto qualifiedType = a_decl->getType();
+		auto qualifiedReturnType = a_decl->getReturnType();
 		auto printingPolicy = ctx.getPrintingPolicy();
-		m_returnTypeAsString = clang::TypeName::getFullyQualifiedName(qualifiedType, ctx, printingPolicy);
+		m_returnTypeAsString = clang::TypeName::getFullyQualifiedName(qualifiedReturnType, ctx, printingPolicy);
 
 		for (auto* argDecl : a_decl->parameters())
 		{

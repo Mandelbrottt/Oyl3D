@@ -12,6 +12,11 @@ namespace Oyl::Reflection
 		class ReflectionFactory;
 	}
 
+	struct TestRecord
+	{
+		int a;
+	};
+
 	struct EnumValue
 	{
 		// TODO: Add Attribute support

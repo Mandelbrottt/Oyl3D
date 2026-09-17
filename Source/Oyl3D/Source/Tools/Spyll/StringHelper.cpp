@@ -27,13 +27,12 @@ AddIndentToStringStream(std::stringstream& a_stream, std::string_view a_indent)
 	std::stringstream indentStream;
 	while (!a_stream.eof())
 	{
+		if (a_stream.tellg() != 0)
+			indentStream << "\n";
+
 		char buf[1024] {};
 		a_stream.getline(buf, std::size(buf) - 1);
 		indentStream << a_indent << buf;
-		if (a_stream.peek(), !a_stream.eof())
-		{
-			indentStream << "\n";
-		}
 	}
 	a_stream.swap(indentStream);
 	a_stream.seekp(0, std::ios::end);

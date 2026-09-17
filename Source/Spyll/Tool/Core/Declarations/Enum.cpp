@@ -8,7 +8,7 @@ namespace Spyll
 		const clang::EnumConstantDecl* a_decl,
 		const Enum* a_enum
 	)
-		: Declaration(a_decl, a_enum->GetParent()),
+		: Declaration(a_decl),
 		  m_identifier(a_decl->getNameAsString()),
 		  m_value(a_decl->getInitVal().getExtValue()),
 		  m_enum(a_enum) {}
@@ -21,8 +21,8 @@ namespace Spyll
 		return clang::dyn_cast<clang::EnumConstantDecl>(Declaration::GetClangDecl());
 	}
 
-	Enum::Enum(const clang::EnumDecl* a_decl, Type* a_parent)
-		: Declaration(a_decl, a_parent)
+	Enum::Enum(const clang::EnumDecl* a_decl)
+		: Type(a_decl)
 	{
 		auto& ctx = a_decl->getASTContext();
 		auto printingPolicy = ctx.getPrintingPolicy();

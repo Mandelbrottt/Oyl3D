@@ -4,7 +4,7 @@
 
 #include "Declarations/Enum.h"
 #include "Declarations/Function.h"
-#include "Declarations/Type.h"
+#include "Declarations/Class.h"
 #include "Declarations/Variable.h"
 
 namespace clang
@@ -25,6 +25,9 @@ namespace Spyll
 		ShouldReflectDecl(const clang::NamedDecl* Decl) const;
 
 		bool
+		ParseRecordDecl(clang::RecordDecl* Decl);
+
+		bool
 		ParseCXXRecordDecl(clang::CXXRecordDecl* Decl);
 
 		bool
@@ -42,36 +45,38 @@ namespace Spyll
 		void
 		PopulateTypeFields();
 
+		const std::vector<Type*>&
+		GetTypes() const { return m_types; }
+
 		const std::vector<Type>&
-		GetTypes() const
-		{
-			return m_types;
-		}
+		GetPrimitives() const { return m_primitives; }
 
-		const std::vector<Variable>&
-		GetGlobalVariables() const
-		{
-			return m_globalVariables;
-		}
+		const std::vector<Record>&
+		GetRecords() const { return m_records; }
 
-		const std::vector<Function>&
-		GetGlobalFunctions() const
-		{
-			return m_globalFunctions;
-		}
+		const std::vector<Class>&
+		GetClasses() const { return m_classes; }
 
 		const std::vector<Enum>&
-		GetEnums() const
-		{
-			return m_enums;
-		}
+		GetEnums() const { return m_enums; }
+
+		const std::vector<Variable>&
+		GetGlobalVariables() const { return m_globalVariables; }
+
+		const std::vector<Function>&
+		GetGlobalFunctions() const { return m_globalFunctions; }
 
 	private:
-		std::vector<Type> m_types;
-		std::unordered_map<const clang::RecordDecl*, size_t> m_typeIndexMap;
+		std::vector<Type*> m_types;
+
+		std::vector<Type> m_primitives;
+		std::vector<Record> m_records;
+		std::vector<Class> m_classes;
+		std::vector<Enum> m_enums;
 
 		std::vector<Variable> m_globalVariables;
 		std::vector<Function> m_globalFunctions;
-		std::vector<Enum> m_enums;
+
+		std::unordered_map<const clang::TypeDecl*, size_t> m_typeIndexMap;
 	};
 }

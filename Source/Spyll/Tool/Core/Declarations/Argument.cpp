@@ -2,8 +2,8 @@
 
 namespace Spyll
 {
-	Argument::Argument(const clang::ParmVarDecl* a_decl, Type* a_parent)
-		: Variable(a_decl, a_parent) {}
+	Argument::Argument(const clang::ParmVarDecl* a_decl)
+		: Variable(a_decl) {}
 
 	bool
 	Argument::ShouldReflect() const

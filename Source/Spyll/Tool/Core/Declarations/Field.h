@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Declaration.h"
+#include "Variable.h"
 
 namespace clang
 {
@@ -10,13 +10,15 @@ namespace clang
 
 namespace Spyll
 {
+	class Type;
+
 	class Field : public Declaration
 	{
 		friend class ReflectionParser;
 
 	public:
 		explicit
-		Field(const clang::FieldDecl* a_decl, Type* a_parentType = nullptr);
+		Field(const clang::FieldDecl* a_decl);
 
 		bool
 		ShouldReflect() const override;

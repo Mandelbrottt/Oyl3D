@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Declaration.h"
+#include "Type.h"
 
 namespace clang
 {
@@ -55,13 +56,13 @@ namespace Spyll
 		const Enum* m_enum;
 	};
 
-	class Enum : public Declaration
+	class Enum : public Type
 	{
 		friend class ReflectionParser;
 
 	public:
 		explicit
-		Enum(const clang::EnumDecl* a_decl, Type* a_parent = nullptr);
+		Enum(const clang::EnumDecl* a_decl);
 
 	public:
 		const Type*

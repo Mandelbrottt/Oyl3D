@@ -15,6 +15,9 @@ namespace Spyll
 		TraverseTranslationUnitDecl(clang::TranslationUnitDecl* Decl);
 
 		bool
+		VisitRecordDecl(clang::RecordDecl* Decl);
+
+		bool
 		VisitCXXRecordDecl(clang::CXXRecordDecl* Decl);
 
 		bool
@@ -138,6 +141,12 @@ namespace Spyll
 		bool result = RecursiveASTVisitor::TraverseTranslationUnitDecl(Decl);
 		Parser->PopulateTypeFields();
 		return result;
+	}
+
+	bool
+	ReflectionParserVisitor::VisitRecordDecl(clang::RecordDecl* Decl)
+	{
+		return Parser->ParseRecordDecl(Decl);
 	}
 
 	bool

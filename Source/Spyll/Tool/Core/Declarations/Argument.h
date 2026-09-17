@@ -19,7 +19,7 @@ namespace Spyll
 
 	public:
 		explicit
-		Argument(const clang::ParmVarDecl* a_decl, Type* a_parent = nullptr);
+		Argument(const clang::ParmVarDecl* a_decl);
 
 		bool
 		ShouldReflect() const override;

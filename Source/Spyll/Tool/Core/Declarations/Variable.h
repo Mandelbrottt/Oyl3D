@@ -18,7 +18,7 @@ namespace Spyll
 
 	public:
 		explicit
-		Variable(const clang::VarDecl* a_decl, Type* a_parent = nullptr);
+		Variable(const clang::VarDecl* a_decl);
 
 		bool
 		ShouldReflect() const override;

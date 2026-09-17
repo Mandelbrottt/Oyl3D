@@ -20,9 +20,8 @@ namespace Spyll
 		return spyllSpecs[a_spec];
 	}
 
-	Declaration::Declaration(const clang::NamedDecl* a_decl, Type* a_parent)
+	Declaration::Declaration(const clang::NamedDecl* a_decl)
 		: m_enabled(true),
-		  m_parent(a_parent),
 		  m_qualifiedName(a_decl->getQualifiedNameAsString()),
 		  m_attributeParser(a_decl),
 		  m_decl(a_decl)

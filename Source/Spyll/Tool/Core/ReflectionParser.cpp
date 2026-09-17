@@ -1,5 +1,7 @@
 #include "ReflectionParser.h"
 
+#include "Spyll/Tool/Core/Declarations/Class.h"
+
 namespace Spyll
 {
 	constexpr const char* REFLECT_ANNOTATION = "__REFLECT__";
@@ -54,6 +56,27 @@ namespace Spyll
 	}
 
 	bool
+	ReflectionParser::ParseRecordDecl(clang::RecordDecl* Decl)
+	{
+		if (!Decl->isCompleteDefinition())
+			return true;
+
+		// Don't parse unspecialized template types
+		if (Decl->isDependentType())
+			return true;
+
+		if (Decl->getKind() != clang::Decl::Record)
+			return true;
+
+		if (!ShouldReflectDecl(Decl))
+			return true;
+
+		m_records.emplace_back(Decl);
+
+		return true;
+	}
+
+	bool
 	ReflectionParser::ParseCXXRecordDecl(clang::CXXRecordDecl* Decl)
 	{
 		if (!Decl->isCompleteDefinition())
@@ -66,12 +89,7 @@ namespace Spyll
 		if (!ShouldReflectDecl(Decl))
 			return true;
 
-		// If this type is inside another, search for the parent
-		Type* pParentType = TryGetParentTypeOfDecl(Decl);
-		m_types.emplace_back(Decl, pParentType);
-
-		// We just added the type, so we know it's the last element
-		m_typeIndexMap[Decl] = m_types.size() - 1;
+		m_classes.emplace_back(Decl);
 
 		return true;
 	}
@@ -125,8 +143,7 @@ namespace Spyll
 		if (!ShouldReflectDecl(Decl))
 			return true;
 
-		Type* pParentType = TryGetParentTypeOfDecl(Decl);
-		m_enums.emplace_back(Decl, pParentType);
+		m_enums.emplace_back(Decl);
 
 		return true;
 	}
@@ -142,9 +159,9 @@ namespace Spyll
 		// Reverse search the array for the parent type. Clang does pre-order traversal
 		// Children are always added after their parent and before the next top-level type
 		auto* pParentDecl = clang::dyn_cast<clang::CXXRecordDecl>(pContext);
-		for (size_t i = m_types.size() - 1; i != 0; i--)
+		for (size_t i = m_primitives.size() - 1; i != 0; i--)
 		{
-			auto& type = m_types[i];
+			auto& type = m_primitives[i];
 			if (type.GetClangDecl() == pParentDecl)
 				return &type;
 		}
@@ -155,44 +172,66 @@ namespace Spyll
 	void
 	ReflectionParser::PopulateTypeFields()
 	{
-		auto getSpyllTypeFromClangType = [&](const clang::QualType& a_clangType) -> Type* {
-			if (!a_clangType->isRecordType())
-				return nullptr;
+		auto addToTypesList = [&](auto& a_list)
+		{
+			for (auto& type : a_list)
+			{
+				m_types.emplace_back(&type);
+				m_typeIndexMap[type.GetClangDecl()] = m_types.size() - 1;
+			}
+		};
 
+		addToTypesList(m_primitives);
+		addToTypesList(m_enums);
+		addToTypesList(m_records);
+		addToTypesList(m_classes);
+
+		auto getSpyllTypeFromClangType = [&](const clang::QualType& a_clangType) -> Type* {
 			const auto* typeDecl = a_clangType->getAsRecordDecl();
-			auto typeIndex = m_typeIndexMap[typeDecl];
-			return &m_types[typeIndex];
+			auto iter = m_typeIndexMap.find(typeDecl);
+			if (iter == m_typeIndexMap.end())
+				return nullptr;
+			return m_types[iter->second];
 		};
 
 		for (auto& type : m_types)
 		{
-			const auto* typeDecl = type.GetClangDecl();
-			for (const auto& base : typeDecl->bases())
-			{
-				auto* baseDecl = base.getType()->getAsRecordDecl();
-				auto baseIndex = m_typeIndexMap[baseDecl];
-				auto& baseType = m_types[baseIndex];
-				type.m_baseTypes.emplace_back(&baseType, base.isVirtual());
-			}
+			const auto* typeDecl = type->GetClangDecl();
 
-			for (auto& field : type.m_fields)
+			if (typeDecl->getKind() < clang::Decl::firstRecord || typeDecl->getKind() > clang::Decl::lastRecord)
+				continue;
+			auto& record = *static_cast<Record*>(type);
+
+			for (auto& field : record.m_fields)
 			{
 				field.m_type = getSpyllTypeFromClangType(field.GetClangDecl()->getType());
 			}
 
-			for (auto& variable : type.m_variables)
+			if (typeDecl->getKind() < clang::Decl::firstCXXRecord || typeDecl->getKind() > clang::Decl::lastCXXRecord)
+				continue;
+			auto& class_ = *static_cast<Class*>(type);
+
+			for (const auto& base : class_.GetClangDecl()->bases())
+			{
+				auto* baseDecl = base.getType()->getAsRecordDecl();
+				auto baseIndex = m_typeIndexMap[baseDecl];
+				auto* baseType = dynamic_cast<Record*>(m_types[baseIndex]);
+				class_.m_bases.emplace_back(baseType, base.isVirtual());
+			}
+
+			for (auto& variable : class_.m_variables)
 			{
 				variable.m_type = getSpyllTypeFromClangType(variable.GetClangDecl()->getType());
 			}
 
-			for (auto& method : type.m_methods)
+			for (auto& method : class_.m_methods)
 			{
 				method.m_returnType = getSpyllTypeFromClangType(method.GetClangDecl()->getReturnType());
 				for (auto& argument : method.m_arguments)
 					argument.m_type = getSpyllTypeFromClangType(argument.GetClangDecl()->getType());
 			}
 
-			for (auto& function : type.m_functions)
+			for (auto& function : class_.m_functions)
 			{
 				function.m_returnType = getSpyllTypeFromClangType(function.GetClangDecl()->getReturnType());
 				for (auto& argument : function.m_arguments)
