@@ -15,7 +15,7 @@ project "Spyll.Core"; do
 		"version",
 	}
 
-	Package.Include(Packages.ClangTooling)
+	Package.Include(Packages.Clang)
 	Package.Include(Packages.NlohmannJson)
 
 	filter "toolset:msc*"; do

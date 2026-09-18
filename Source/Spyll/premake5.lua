@@ -68,7 +68,7 @@ function Spyll.CommonCppSettings(package)
 	-- Currently only include the release clang tooling in the package
 	-- That compiles against release runtime STL, so all other projects have to as well to
 	-- maintain ABI
-	Packages.ClangTooling:OnDepend()
+	Packages.Clang:OnDepend()
 	filter {}
 end
 

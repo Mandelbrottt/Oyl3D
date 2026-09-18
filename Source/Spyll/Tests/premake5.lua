@@ -19,7 +19,7 @@ project "Spyll.Tests"; do
 		"Spyll.Core",
 	}
 
-	externalincludedirs(Packages.ClangTooling.Include)
+	externalincludedirs(Packages.Clang.Include)
 
 	Package.Include(Packages.GoogleTest)
 	Package.Include(Packages.NlohmannJson)

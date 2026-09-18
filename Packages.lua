@@ -43,7 +43,7 @@ return {
 			Ref = "v1.92.8",
 		},
 	},
-	ClangTooling = {
+	Clang = {
 		Remote = {
 			Url = (function()
 				if (os.host() == premake.WINDOWS) then

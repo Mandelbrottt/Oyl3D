@@ -2,7 +2,7 @@ local Package = require "Package"
 
 ---@type WorkspacePackage.List
 local Packages = Package.PackageList {
-	ClangTooling = {
+	Clang = {
 		Language = premake.CPP,
 		Include = { "include" },
 		LibDirs = { "lib" },

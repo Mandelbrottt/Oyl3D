@@ -273,7 +273,21 @@ local Packages = {
 			}
 
 			externalincludedirs {
-				path.join(packagecfg.basedir, "Include")
+				"Include"
+			}
+		end
+	},
+	Clang = {
+		OnDepend = function(prjcfg, packagecfg)
+			links {
+				os.matchfiles(path.join("lib", "*.lib"))
+			}
+			externalincludedirs {
+				"include"
+			}
+			runtime "Release"
+			defines {
+				"_ITERATOR_DEBUG_LEVEL=0"
 			}
 		end
 	},
@@ -295,7 +309,7 @@ local Packages = {
 
 			filter "action:vs*"; do
 				-- TODO: Make dependant on variable name in root Packages.lua
-				local clangNatvisPattern = path.join(Config.PackageCacheDir, "ClangTooling", "**.natvis")
+				local clangNatvisPattern = path.join(Config.PackageCacheDir, "Clang", "**.natvis")
 				files {
 					"**.natvis",
 					clangNatvisPattern

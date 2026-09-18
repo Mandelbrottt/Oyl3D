@@ -114,8 +114,10 @@ function generate.generatePackageProjects(wks)
 			location(path.join(wks.basedir, "Packages", prj.name))
 			warnings "Off"
 
-			package.OnProject(prj)
-			project(name)
+			if type(package.OnProject) == "function" then
+				package.OnProject(prj)
+				project(name)
+			end
 
 			-- use cwd since it's a cache of the parent cwd
 			if prj.basedir:lower() == cwd:lower() then
@@ -180,6 +182,23 @@ end
 function generate.removeUnreferencedProjects(wks)
 	if not p.action.isConfigurable() then
 		return
+	end
+	
+	-- Remove all package projects that don't define an OnProject function, and all references to them
+	for prjindex = #wks.projects, 1, -1 do
+		local prj =  wks.projects[prjindex]
+		if prj._package and not prj._package.OnProject then
+			table.remove(wks.projects, prjindex)
+			goto continue
+		end
+		for linkindex = #prj.links, 1, -1 do
+			local link = prj.links[linkindex]
+			local linkprj = wks.projects[link]
+			if not linkprj or (linkprj._package and not linkprj._package.OnProject) then
+				table.remove(prj.links, linkindex)
+			end
+		end
+		::continue::
 	end
 	
 	-- Gather the set of projects referencing or being referenced by another project

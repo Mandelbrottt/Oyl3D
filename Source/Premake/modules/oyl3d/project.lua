@@ -272,7 +272,8 @@ function generate.connectProjectLinks(prj)
 
 	project(prj.name)
 
-	for _, link in ipairs(prj.links) do
+	for linkindex = #prj.links, 1, -1 do
+		local link = prj.links[linkindex]
 		local linkprj = wks.projects[link]
 		if not linkprj then
 			goto continue
@@ -309,7 +310,10 @@ function generate.connectProjectLinks(prj)
 					end
 					filter { "configurations:" .. cfg.buildcfg, "platforms:" .. cfg.platform }; do
 						local nBlocks = #prj.blocks
+						local cwd = os.getcwd()
+						os.chdir(linkcfg.basedir)
 						package.OnDepend(cfg, linkcfg)
+						os.chdir(cwd)
 						-- Apply config and platforms criteria to all filters added in OnDepend
 						for i = nBlocks + 1, #prj.blocks do
 							local block = prj.blocks[i]
