@@ -18,7 +18,7 @@ namespace Spyll
 
 	public:
 		explicit
-		Record(clang::RecordDecl* a_decl);
+		Record(const clang::RecordDecl* a_decl);
 
 		bool
 		ShouldReflect() const override;

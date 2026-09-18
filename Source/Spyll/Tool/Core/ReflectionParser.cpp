@@ -170,6 +170,57 @@ namespace Spyll
 	}
 
 	void
+	ReflectionParser::PostProcess()
+	{
+		ParseClassMemberFieldAndFunctionTypes();
+		PopulateTypeFields();
+	}
+
+	void
+	ReflectionParser::ParseClassMemberFieldAndFunctionTypes()
+	{
+		const auto hasCXXRecordBeenParsed = [&](const clang::CXXRecordDecl* a_decl)
+		{
+			auto iter = std::ranges::find_if(m_classes,
+			                                 [&](const Class& a_class)
+			                                 {
+				                                 return a_decl == a_class.m_decl;
+			                                 });
+			return iter != m_classes.end();
+		};
+
+		for (int i = 0; i < m_classes.size(); i++)
+		{
+			auto& class_ = m_classes[i];
+			for (auto& field : class_.m_fields)
+			{
+				const auto* fieldDecl = field.GetClangDecl();
+				const auto* fieldType = fieldDecl->getType().getTypePtr();
+
+				if (fieldType->isRecordType())
+				{
+					const auto* fieldTypeDecl = fieldType->getAsCXXRecordDecl();
+					// Check if we've already parsed this decl. If we have, continue
+					if (hasCXXRecordBeenParsed(fieldTypeDecl))
+						continue;
+
+					auto& addedClass = m_classes.emplace_back(fieldTypeDecl);
+					for (auto& templateParam : addedClass.GetTemplateParams())
+					{
+						const auto* templateParamTypeDecl = clang::dyn_cast<clang::CXXRecordDecl>(templateParam.m_decl);
+						if (!templateParamTypeDecl)
+							continue;
+						if (hasCXXRecordBeenParsed(templateParamTypeDecl))
+							continue;
+
+						m_classes.emplace_back(templateParamTypeDecl);
+					}
+				}
+			}
+		}
+	}
+
+	void
 	ReflectionParser::PopulateTypeFields()
 	{
 		auto addToTypesList = [&](auto& a_list)

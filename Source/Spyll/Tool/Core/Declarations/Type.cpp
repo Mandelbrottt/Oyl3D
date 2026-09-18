@@ -4,6 +4,15 @@
 
 namespace Spyll
 {
+	TemplateParam::TemplateParam(const clang::NamedDecl* a_decl)
+		: Declaration(a_decl) {}
+
+	bool
+	TemplateParam::ShouldReflect() const
+	{
+		return Declaration::ShouldReflect();
+	}
+
 	Type::Type(const clang::TypeDecl* a_decl)
 		: Declaration(a_decl)
 	{
@@ -11,6 +20,12 @@ namespace Spyll
 		const auto* type = a_decl->getTypeForDecl();
 		m_size = ctx.getTypeSizeInChars(type).getQuantity();
 		m_alignment = ctx.getPreferredTypeAlignInChars(type->getCanonicalTypeUnqualified()).getQuantity();
+
+		if (auto* templateParams = a_decl->getDescribedTemplateParams())
+		{
+			for (const auto* templateParam : *templateParams)
+				m_templateParams.emplace_back(templateParam);
+		}
 	}
 
 	bool

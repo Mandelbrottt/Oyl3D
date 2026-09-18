@@ -2,7 +2,7 @@
 
 namespace Spyll
 {
-	Record::Record(clang::RecordDecl* a_decl)
+	Record::Record(const clang::RecordDecl* a_decl)
 		: Type(a_decl)
 	{
 		for (const auto* field : a_decl->fields())

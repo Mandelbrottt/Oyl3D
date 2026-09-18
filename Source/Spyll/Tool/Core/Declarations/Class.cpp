@@ -2,7 +2,7 @@
 
 namespace Spyll
 {
-	Class::Class(clang::CXXRecordDecl* a_decl)
+	Class::Class(const clang::CXXRecordDecl* a_decl)
 		: Record(a_decl)
 	{
 		if (a_decl->isAbstract())

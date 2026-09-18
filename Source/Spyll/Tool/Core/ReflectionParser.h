@@ -43,7 +43,7 @@ namespace Spyll
 		TryGetParentTypeOfDecl(const clang::NamedDecl* Decl);
 
 		void
-		PopulateTypeFields();
+		PostProcess();
 
 		const std::vector<Type*>&
 		GetTypes() const { return m_types; }
@@ -65,6 +65,13 @@ namespace Spyll
 
 		const std::vector<Function>&
 		GetGlobalFunctions() const { return m_globalFunctions; }
+
+	private:
+		void
+		ParseClassMemberFieldAndFunctionTypes();
+
+		void
+		PopulateTypeFields();
 
 	private:
 		std::vector<Type*> m_types;

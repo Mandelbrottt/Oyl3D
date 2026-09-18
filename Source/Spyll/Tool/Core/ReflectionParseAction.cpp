@@ -139,7 +139,7 @@ namespace Spyll
 	ReflectionParserVisitor::TraverseTranslationUnitDecl(clang::TranslationUnitDecl* Decl)
 	{
 		bool result = RecursiveASTVisitor::TraverseTranslationUnitDecl(Decl);
-		Parser->PopulateTypeFields();
+		Parser->PostProcess();
 		return result;
 	}
 
