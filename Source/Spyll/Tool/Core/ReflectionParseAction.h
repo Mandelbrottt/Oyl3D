@@ -8,17 +8,17 @@
 
 namespace Spyll
 {
-	class ReflectionParseAction final : public clang::ASTFrontendAction
+	class ReflectionAction_ final : public clang::ASTFrontendAction
 	{
 	public:
 		explicit
-		ReflectionParseAction(ReflectionParserOptions* a_options);
+		ReflectionAction_(ReflectionParserOptions* a_options);
 
 		std::unique_ptr<clang::ASTConsumer>
 		CreateASTConsumer(
 			clang::CompilerInstance& CI,
 			llvm::StringRef InFile
-		) override;	
+		) override;
 
 		void EndSourceFileAction() override;
 

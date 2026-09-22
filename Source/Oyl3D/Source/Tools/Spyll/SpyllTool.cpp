@@ -52,7 +52,7 @@ namespace Oyl
 			{
 				tempFile = std::filesystem::temp_directory_path() / std::filesystem::path(a_fileName);
 
-				fileStream.open(tempFile);
+				std::ofstream fileStream(tempFile);
 				for (auto headerDeclaration : a_headers)
 				{
 					fileStream << "#include \"" << headerDeclaration << "\"\n";
@@ -65,7 +65,6 @@ namespace Oyl
 				std::filesystem::remove(tempFile);
 			}
 
-			std::ofstream fileStream;
 			std::filesystem::path tempFile;
 		};
 
@@ -82,12 +81,12 @@ namespace Oyl
 
 		argumentsStream << "-Wno-everything\n";
 		argumentsStream << "-D__REFLECT_GENERATE__=1\n";
-		
+
 		if (!pch.empty())
 		{
 			argumentsStream << "-include" << pch << "\n";
 			// If pch was included in headerDeclarations, erase
-			if (auto iter = std::find(headerDeclarations.begin(), headerDeclarations.end(), pch); 
+			if (auto iter = std::find(headerDeclarations.begin(), headerDeclarations.end(), pch);
 				iter != headerDeclarations.end())
 			{
 				headerDeclarations.erase(iter);

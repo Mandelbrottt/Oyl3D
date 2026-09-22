@@ -62,11 +62,11 @@ namespace Spyll
 		clang::DiagnosticOptions* DiagnosticOptions = nullptr;
 	};
 
-	class ReflectionParserConsumer final : public clang::ASTConsumer
+	class ReflectionConsumer_ final : public clang::ASTConsumer
 	{
 	public:
 		explicit
-		ReflectionParserConsumer(clang::CompilerInstance* CI, ReflectionParser* Parser);
+		ReflectionConsumer_(clang::CompilerInstance* CI, ReflectionParser* Parser);
 
 		void
 		HandleTranslationUnit(clang::ASTContext& Ctx) override;
@@ -75,11 +75,11 @@ namespace Spyll
 		ReflectionParserVisitor Visitor;
 	};
 
-	ReflectionParseAction::ReflectionParseAction(ReflectionParserOptions* a_options)
+	ReflectionAction_::ReflectionAction_(ReflectionParserOptions* a_options)
 		: m_options(a_options) {}
 
 	std::unique_ptr<clang::ASTConsumer>
-	ReflectionParseAction::CreateASTConsumer(
+	ReflectionAction_::CreateASTConsumer(
 		clang::CompilerInstance& CI,
 		llvm::StringRef InFile
 	)
@@ -88,11 +88,11 @@ namespace Spyll
 
 		CI.getDiagnosticOpts().IgnoreWarnings = true;
 
-		return std::make_unique<ReflectionParserConsumer>(&CI, &Parser);
+		return std::make_unique<ReflectionConsumer_>(&CI, &Parser);
 	}
 
 	void
-	ReflectionParseAction::EndSourceFileAction()
+	ReflectionAction_::EndSourceFileAction()
 	{
 		if (m_options->onSourceParsedCallback)
 		{
@@ -101,7 +101,7 @@ namespace Spyll
 		}
 	}
 
-	ReflectionParserConsumer::ReflectionParserConsumer(clang::CompilerInstance* CI, ReflectionParser* Parser)
+	ReflectionConsumer_::ReflectionConsumer_(clang::CompilerInstance* CI, ReflectionParser* Parser)
 		: Visitor(Parser)
 	{
 		Visitor.SetDiagnosticOptions(&CI->getDiagnosticOpts());
@@ -109,7 +109,7 @@ namespace Spyll
 	}
 
 	void
-	ReflectionParserConsumer::HandleTranslationUnit(clang::ASTContext& Ctx)
+	ReflectionConsumer_::HandleTranslationUnit(clang::ASTContext& Ctx)
 	{
 		auto printingPolicy = Ctx.getPrintingPolicy();
 		printingPolicy.Bool = true;

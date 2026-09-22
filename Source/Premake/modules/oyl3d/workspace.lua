@@ -184,21 +184,31 @@ function generate.removeUnreferencedProjects(wks)
 		return
 	end
 	
-	-- Remove all package projects that don't define an OnProject function, and all references to them
+	-- Remove all references to non-project packages
+	-- Do this before we remove the projects from the workspace so we can distiguish between a raw
+	-- library links and package links
+	for _, prj in ipairs(wks.projects) do
+		for linkindex = #prj.links, 1, -1 do
+			local link = prj.links[linkindex]
+			local linkprj = wks.projects[link]
+			if linkprj and linkprj._package and not linkprj._package.OnProject then
+				project(prj.name)
+				removelinks {
+					link
+				}
+			end
+		end
+	end
+	workspace()
+	
+	-- Remove all non-project packages from the workspace
+	-- We only want the link as an indicator to call the OnDepend function. 
+	-- If no project is generated, there is no library to depend on
 	for prjindex = #wks.projects, 1, -1 do
 		local prj =  wks.projects[prjindex]
 		if prj._package and not prj._package.OnProject then
 			table.remove(wks.projects, prjindex)
-			goto continue
 		end
-		for linkindex = #prj.links, 1, -1 do
-			local link = prj.links[linkindex]
-			local linkprj = wks.projects[link]
-			if not linkprj or (linkprj._package and not linkprj._package.OnProject) then
-				table.remove(prj.links, linkindex)
-			end
-		end
-		::continue::
 	end
 	
 	-- Gather the set of projects referencing or being referenced by another project

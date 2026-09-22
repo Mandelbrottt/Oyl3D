@@ -58,8 +58,8 @@ m.elements.projectAction = function(prj)
 end
 
 p.override(p.main, "preBake", function(base)
-	base()
 	m.preBake()
+	base()
 end)
 
 function m.preBake()

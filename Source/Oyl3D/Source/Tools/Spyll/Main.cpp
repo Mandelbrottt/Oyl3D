@@ -65,7 +65,7 @@ PositionalArgumentHandler(std::string_view a_value)
 }
 
 int
-main(int argc, char** argv)
+main_(int argc, char** argv)
 {
 	RegisterPositionalArgumentHandler(PositionalArgumentHandler);
 

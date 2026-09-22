@@ -20,7 +20,7 @@ namespace Spyll
 			std::unique_ptr<clang::FrontendAction>
 			create() override
 			{
-				return std::make_unique<ReflectionParseAction>(m_options);
+				return std::make_unique<ReflectionAction_>(m_options);
 			}
 
 		private:
