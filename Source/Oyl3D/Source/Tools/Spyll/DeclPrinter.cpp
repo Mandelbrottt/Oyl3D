@@ -2,6 +2,10 @@
 
 #include <algorithm>
 
+#include <clang/AST/Decl.h>
+#include <clang/AST/DeclCXX.h>
+#include <clang/AST/QualTypeNames.h>
+
 #include "StringHelper.h"
 
 std::string
@@ -17,6 +21,8 @@ GetTypeNameAsVar(std::string_view a_name)
 	FindAndReplace(typeVar, "::", "_");
 	FindAndReplace(typeVar, "*", "Ptr");
 	FindAndReplace(typeVar, "&", "Ref");
+	FindAndReplace(typeVar, "(", "LParen_");
+	FindAndReplace(typeVar, ")", "_RParen");
 
 	return typeVar;
 }
@@ -28,27 +34,31 @@ GetStolenMemberTypeName(std::string_view a_name)
 }
 
 std::string
-GetStolenMemberTypeName(const Spyll::Declaration& a_decl)
+GetStolenMemberTypeName(const clang::NamedDecl& a_decl)
 {
-	return GetStolenMemberTypeName(a_decl.GetQualifiedName());
+	return GetStolenMemberTypeName(a_decl.getQualifiedNameAsString());
 }
 
 std::string
-GetStolenMemberTypeName(const Spyll::Function& a_function)
+GetStolenMemberTypeName(const clang::FunctionDecl& a_function)
 {
-	std::string name = GetStolenMemberTypeName(static_cast<const Spyll::Declaration&>(a_function));
-	for (const auto& argument : a_function.GetArguments())
+	auto& ctx = a_function.getASTContext();
+	auto printingPolicy = ctx.getPrintingPolicy();
+
+	std::string name = GetStolenMemberTypeName(static_cast<const clang::NamedDecl&>(a_function));
+	for (const auto* parameter : a_function.parameters())
 	{
-		name += "__" + GetTypeNameAsVar(argument.GetTypeAsString());
+		std::string qualifiedName = clang::TypeName::getFullyQualifiedName(parameter->getType(), ctx, printingPolicy);
+		name += "__" + GetTypeNameAsVar(qualifiedName);
 	}
 	return name;
 }
 
 std::string
-GetStolenMemberTypeName(const Spyll::Method& a_method)
+GetStolenMemberTypeName(const clang::CXXMethodDecl& a_method)
 {
-	std::string name = GetStolenMemberTypeName(static_cast<const Spyll::Function&>(a_method));
-	if (a_method.IsConst())
+	std::string name = GetStolenMemberTypeName(static_cast<const clang::FunctionDecl&>(a_method));
+	if (a_method.isConst())
 		name += "__Const";
 	return name;
 }

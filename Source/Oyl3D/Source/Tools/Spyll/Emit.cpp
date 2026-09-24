@@ -5,103 +5,84 @@
 #include <sstream>
 #include <unordered_set>
 
-#include <Spyll/Tool/Core/ReflectionParser.h>
+#include <clang/AST/QualTypeNames.h>
+
+//#include <Spyll/Tool/Core/ReflectionParser.h>
 
 #include "DeclPrinter.h"
+#include "Spyll.h"
 #include "SpyllTool.h"
 #include "StringHelper.h"
 
+bool
+IsDeclarationPrivate(const clang::NamedDecl* a_decl);
+
+bool
+TypeNeedsSmuggling(const clang::Type& a_type);
+
 std::string
-GetAccessibleTypeName(const Spyll::Type* a_type, std::string_view a_typeAsString);
+GetAccessibleTypeName(const clang::Type& a_type, const clang::ASTContext& a_astContext);
+
+std::string
+GetAccessibleTypeName(const clang::QualType& a_type, const clang::ASTContext& a_astContext)
+{
+	return GetAccessibleTypeName(*a_type, a_astContext);
+}
 
 void
 EmitHeaderComment(std::string& a_emitString);
 
 void
-EmitIncludes(std::string& a_emitString, const Spyll::ReflectionParser* a_parser);
+EmitIncludes(std::string& a_emitString, const Spyll::ReflectionContext& a_context);
 
 void
-EmitDependencies(std::string& a_emitString, const std::vector<std::string_view>& a_tool);
+EmitDependencies(std::string& a_emitString, const std::vector<std::string>& a_dependencies);
 
 void
-EmitReflectionRegister(std::string& a_emitString, const Spyll::ReflectionParser* a_parser);
+EmitReflectionRegister(std::string& a_emitString, const Spyll::ReflectionContext& a_context);
 
 void
-EmitTypeSmuggleDeclarations(std::string& a_emitString, const Spyll::ReflectionParser* a_parser);
+EmitTypeSmuggleDeclarations(std::string& a_emitString, const Spyll::ReflectionContext& a_context);
+
+std::unordered_set<const clang::Type*> g_typesToSmuggle;
 
 void
-EmitMemberStealDeclarations(std::string& a_emitString, const Spyll::ReflectionParser* a_parser);
+EmitMemberStealDeclarations(std::string& a_emitString, const Spyll::ReflectionContext& a_context);
 
 void
-RegisterTypes(std::stringstream& a_stream, const Spyll::ReflectionParser* a_parser);
+RegisterTypes(std::stringstream& a_stream, const Spyll::ReflectionContext& a_context);
 
 void
 RegisterVariable(
 	std::stringstream& a_stream,
-	const Spyll::Variable& a_variable,
-	const Spyll::Class* a_parent = nullptr
+	const clang::VarDecl& a_variable,
+	const clang::CXXRecordDecl* a_parent = nullptr
 );
 
 void
 RegisterField(
 	std::stringstream& a_stream,
-	const Spyll::Field& a_field,
-	const Spyll::Class* a_parent = nullptr
+	const clang::FieldDecl& a_field,
+	const clang::CXXRecordDecl& a_parent
 );
 
 void
 RegisterFunction(
 	std::stringstream& a_stream,
-	const Spyll::Function& a_variable,
-	const Spyll::Class* a_class = nullptr
-);
-
-void
-RegisterVariablesForType(
-	std::stringstream& a_stream,
-	const Spyll::Class& a_parentType
-);
-
-void
-RegisterFieldsForType(
-	std::stringstream& a_stream,
-	const Spyll::Record& a_parentType
-);
-
-void
-RegisterFunctionsForType(
-	std::stringstream& a_stream,
-	const Spyll::Class& a_parentType
-);
-
-void
-RegisterMethodsForType(
-	std::stringstream& a_stream,
-	const Spyll::Class& a_class
+	const clang::FunctionDecl& a_function,
+	const clang::CXXRecordDecl* a_class = nullptr
 );
 
 void
 RegisterArgumentForFunction(
 	std::stringstream& a_stream,
-	const Spyll::Argument& a_argument
-);
-
-void
-RegisterGlobalVariables(
-	std::stringstream& a_stream,
-	const Spyll::ReflectionParser* a_parser
-);
-
-void
-RegisterGlobalFunctions(
-	std::stringstream& a_stream,
-	const Spyll::ReflectionParser* a_parser
+	const clang::ParmVarDecl& a_parameter
 );
 
 void
 RegisterEnums(
 	std::stringstream& a_stream,
-	const Spyll::ReflectionParser* a_parser
+	const Spyll::ReflectionContext& a_context
 );
 
 constexpr
@@ -144,7 +125,7 @@ _ReflectionAssembly_Register(::Oyl::Reflection::Internal::ReflectionAllocatorFn 
 )""");
 
 void
-EmitCodeFromTool(const Spyll::ReflectionParser* a_parser)
+EmitCodeFromTool(const Spyll::ReflectionContext& a_context)
 {
 	std::filesystem::create_directory(".Generated");
 
@@ -153,14 +134,16 @@ EmitCodeFromTool(const Spyll::ReflectionParser* a_parser)
 
 	std::string emitString = std::string(g_emitTemplate);
 
-	EmitReflectionRegister(emitString, a_parser);
+	EmitReflectionRegister(emitString, a_context);
 
 	EmitHeaderComment(emitString);
-	EmitIncludes(emitString, a_parser);
-	EmitDependencies(emitString, g_tool.dependencies);
-	EmitMemberStealDeclarations(emitString, a_parser);
+	EmitIncludes(emitString, a_context);
+	EmitDependencies(emitString, a_context.dependencies);
 
-	FindAndReplace(emitString, "{ASSEMBLY_NAME}", g_tool.assemblyName);
+	EmitMemberStealDeclarations(emitString, a_context);
+	EmitTypeSmuggleDeclarations(emitString, a_context);
+
+	FindAndReplace(emitString, "{ASSEMBLY_NAME}", a_context.assemblyName);
 
 	generatedIncludeFile << emitString;
 }
@@ -177,40 +160,40 @@ EmitHeaderComment(std::string& a_emitString)
 }
 
 void
-EmitIncludes(std::string& a_emitString, const Spyll::ReflectionParser* a_parser)
+EmitIncludes(std::string& a_emitString, const Spyll::ReflectionContext& a_context)
 {
 	std::unordered_set<std::string_view> includeSet;
 
-	for (const Spyll::Type* type : a_parser->GetTypes())
+	for (auto& type : a_context.classes)
 	{
-		includeSet.insert(type->GetSourceFile());
+		includeSet.insert(a_context.GetSourceManager().getFilename(type.decl->getLocation()));
 	}
 
-	for (const Spyll::Variable& variable : a_parser->GetGlobalVariables())
+	for (auto& variable : a_context.globalVariables)
 	{
-		includeSet.insert(variable.GetSourceFile());
+		includeSet.insert(a_context.GetSourceManager().getFilename(variable.decl->getLocation()));
 	}
 
-	for (const Spyll::Function& function : a_parser->GetGlobalFunctions())
+	for (auto& function : a_context.globalFunctions)
 	{
-		includeSet.insert(function.GetSourceFile());
+		includeSet.insert(a_context.GetSourceManager().getFilename(function.decl->getLocation()));
 	}
 
-	for (const Spyll::Enum& enum_ : a_parser->GetEnums())
+	for (auto& enum_ : a_context.enums)
 	{
-		includeSet.insert(enum_.GetSourceFile());
+		includeSet.insert(a_context.GetSourceManager().getFilename(enum_.decl->getLocation()));
 	}
 
 	std::stringstream includes;
 	for (const auto& include : includeSet)
 	{
-		includes << "#include <" << include << ">\n";
+		includes << "#include <" << std::filesystem::absolute(include).string() << ">\n";
 	}
 	FindAndReplace(a_emitString, "{REFLECT_INCLUDES}", includes.str());
 }
 
 void
-EmitDependencies(std::string& a_emitString, const std::vector<std::string_view>& a_dependencies)
+EmitDependencies(std::string& a_emitString, const std::vector<std::string>& a_dependencies)
 {
 	std::stringstream dependenciesArr;
 	if (a_dependencies.empty())
@@ -233,62 +216,70 @@ EmitDependencies(std::string& a_emitString, const std::vector<std::string_view>&
 }
 
 void
-EmitReflectionRegister(std::string& a_emitString, const Spyll::ReflectionParser* a_parser)
+EmitReflectionRegister(std::string& a_emitString, const Spyll::ReflectionContext& a_context)
 {
 	std::stringstream stream;
 	stream.setf(std::ios::boolalpha);
 
-	RegisterTypes(stream, a_parser);
-	RegisterEnums(stream, a_parser);
+	RegisterTypes(stream, a_context);
+	RegisterEnums(stream, a_context);
 
 	// Register type children after all types registered to guarantee calls to Type::Get<T>() succeed
-	for (const auto& class_ : a_parser->GetClasses())
+	for (auto& class_ : a_context.classes)
 	{
-		for (const auto& field : class_.GetFields())
+		for (auto* decl : class_.decl->decls())
 		{
-			RegisterField(stream, field, &class_);
+			switch (decl->getKind())
+			{
+				case clang::Decl::CXXConstructor:
+				{
+					break;
+				}
+				case clang::Decl::CXXDestructor:
+				{
+					break;
+				}
+				// Static Member Functions are CXXMethods, but are called like Global Functions
+				case clang::Decl::CXXMethod:
+				{
+					auto* cxxMethodDecl = static_cast<clang::CXXMethodDecl*>(decl);
+					RegisterFunction(stream, *cxxMethodDecl, class_.decl);
+					break;
+				}
+				case clang::Decl::Var:
+				{
+					auto* varDecl = static_cast<clang::VarDecl*>(decl);
+					RegisterVariable(stream, *varDecl, class_.decl);
+					break;
+				}
+				case clang::Decl::Field:
+				{
+					auto* fieldDecl = static_cast<clang::FieldDecl*>(decl);
+					RegisterField(stream, *fieldDecl, *class_.decl);
+					break;
+				}
+				default:
+				{
+					break;
+				}
+			}
 		}
-		for (const auto& method : class_.GetMethods())
-		{
-			RegisterFunction(stream, method, &class_);
-		}
-		for (const auto& variable : class_.GetVariables())
-		{
-			RegisterVariable(stream, variable, &class_);
-		}
-		for (const auto& function : class_.GetFunctions())
-		{
-			RegisterFunction(stream, function, &class_);
-		}
-
-		//RegisterVariablesForType(stream, class_);
-		//RegisterFieldsForType(stream, class_);
-		//RegisterFunctionsForType(stream, class_);
-		//RegisterMethodsForType(stream, class_);
 	}
 
-	for (const auto& variable : a_parser->GetGlobalVariables())
-		RegisterVariable(stream, variable);
+	for (const auto& variable : a_context.globalVariables)
+		RegisterVariable(stream, *variable.decl);
 
-	for (const auto& function : a_parser->GetGlobalFunctions())
-		RegisterFunction(stream, function);
-
-	//RegisterGlobalVariables(stream, a_parser);
-	//RegisterGlobalFunctions(stream, a_parser);
+	for (const auto& function : a_context.globalFunctions)
+		RegisterFunction(stream, *function.decl);
 
 	AddIndentToStringStream(stream);
 	FindAndReplace(a_emitString, "{REFLECTION_REGISTER}", stream.str());
 }
 
-std::unordered_set<std::string_view> g_typesToSmuggle;
-
 void
-EmitTypeSmuggleDeclarations(std::string& a_emitString, const Spyll::ReflectionParser* a_parser)
+EmitTypeSmuggleDeclarations(std::string& a_emitString, const Spyll::ReflectionContext& a_context)
 {
-	std::stringstream stream;
-	stream.setf(std::ios::boolalpha);
-
-	std::string emitString = std::string(
+	std::string typeSmuggleString = std::string(
 		GetTrimmedStringView(R"""(
 namespace
 {
@@ -301,31 +292,13 @@ namespace
 		using element_t = std::tuple_element_t<Index, tuple_t>;
 
 {FRIEND_INJECTIONS}
-
-		friend auto __Smuggler__Oyl_CommandLine_Impl() { return reinterpret_cast<std::add_pointer_t<element_t<0>>>(nullptr); };
-		friend auto __Smuggler__Oyl_EventDispatcher_ListenerList() { return reinterpret_cast<std::add_pointer_t<element_t<1>>>(nullptr); };
-		friend auto __Smuggler__Oyl_EventDispatcher_ListenerDescriptor() { return reinterpret_cast<std::add_pointer_t<element_t<2>>>(nullptr); };
-		friend auto __Smuggler__Oyl_Internal_ResourceHandleBase_Tag() { return reinterpret_cast<std::add_pointer_t<element_t<3>>>(nullptr); };
 	};
 
 	template struct TypeSmuggler<
 {TYPES_TO_SMUGGLE}
-		Oyl::CommandLine::Impl,
-		Oyl::EventDispatcher::ListenerList,
-		Oyl::EventDispatcher::ListenerDescriptor,
-		Oyl::Internal::ResourceHandleBase::Tag
 	>;
 
 {SMUGGLE_DECLARATIONS}
-
-	auto __Smuggler__Oyl_CommandLine_Impl();
-	using __Smuggled__Oyl_CommandLine_Impl = std::remove_pointer_t<decltype(__Smuggler__Oyl_CommandLine_Impl())>;
-	auto __Smuggler__Oyl_EventDispatcher_ListenerList();
-	using __Smuggled__Oyl_EventDispatcher_ListenerList = std::remove_pointer_t<decltype(__Smuggler__Oyl_EventDispatcher_ListenerList())>;
-	auto __Smuggler__Oyl_EventDispatcher_ListenerDescriptor();
-	using __Smuggled__Oyl_EventDispatcher_ListenerDescriptor = std::remove_pointer_t<decltype(__Smuggler__Oyl_EventDispatcher_ListenerDescriptor())>;
-	auto __Smuggler__Oyl_Internal_ResourceHandleBase_Tag();
-	using __Smuggled__Oyl_Internal_ResourceHandleBase_Tag = std::remove_pointer_t<decltype(__Smuggler__Oyl_Internal_ResourceHandleBase_Tag())>;
 }
 )"""
 		));
@@ -334,162 +307,244 @@ namespace
 	std::stringstream typesToSmuggle;
 	std::stringstream smuggleDeclarations;
 
-	for (const auto* type : a_parser->GetTypes())
+	size_t index = 0;
+	for (const auto* type : g_typesToSmuggle)
 	{
-		// We only need to smuggle non-publicly accessible types
-		if (type->GetAccessSpecifier() == Spyll::AccessSpecifier::Public
-		    || type->GetAccessSpecifier() == Spyll::AccessSpecifier::None)
-		{
-			continue;
-		}
+		if (index > 0)
+			typesToSmuggle << ", ";
 
-		FindAndReplace(emitString, "{ASSEMBLY_PTR}", "AssemblyPtr");
-		FindAndReplace(emitString, "{QUALIFIED_TYPENAME}", type->GetQualifiedName());
-		FindAndReplace(emitString, "{TYPENAME}", type->GetName());
-		FindAndReplace(emitString, "{SIZE}", std::to_string(type->GetSize()));
-		FindAndReplace(emitString, "{ALIGNMENT}", std::to_string(type->GetAlignment()));
-		FindAndReplace(emitString, "{TYPENAME_AS_VAR}", GetTypeNameAsVar(type->GetQualifiedName()));
+		auto qualType = clang::QualType(type, 0);
+		auto& printingPolicy = a_context.GetASTContext().getPrintingPolicy();
+		std::string qualifiedTypeName = clang::TypeName::getFullyQualifiedName(qualType, a_context.GetASTContext(), printingPolicy);
+		std::string typeNameAsVar = GetTypeNameAsVar(qualifiedTypeName);
 
-		stream << emitString;
+		std::string smugglerFunctionName = "__Smuggler__" + typeNameAsVar;
+
+		std::string friendInjection =
+			"friend auto {SMUGGLER_FN}() { return reinterpret_cast<std::add_pointer_t<element_t<{INDEX}>>>(nullptr); };";
+		FindAndReplace(friendInjection, "{SMUGGLER_FN}", smugglerFunctionName);
+		FindAndReplace(friendInjection, "{INDEX}", std::to_string(index));
+
+		const std::string& typeToSmuggle = qualifiedTypeName;
+
+		std::string smuggleDeclaration =
+			"auto {SMUGGLER_FN}(); "
+			"using {ACCESSIBLE_NAME} = std::remove_pointer_t<decltype({SMUGGLER_FN}())>;";
+		FindAndReplace(smuggleDeclaration, "{SMUGGLER_FN}", smugglerFunctionName);
+		FindAndReplace(smuggleDeclaration, "{ACCESSIBLE_NAME}", GetAccessibleTypeName(*type, a_context.GetASTContext()));
+
+		friendInjections << friendInjection << "\n";
+		typesToSmuggle << typeToSmuggle << "\n";
+		smuggleDeclarations << smuggleDeclaration << "\n";
+
+		index++;
 	}
 
-	FindAndReplace(a_emitString, "{REFLECT_SMUGGLE_TYPES}", stream.str());
+	FindAndReplace(typeSmuggleString, "{FRIEND_INJECTIONS}", friendInjections.str());
+	FindAndReplace(typeSmuggleString, "{TYPES_TO_SMUGGLE}", typesToSmuggle.str());
+	FindAndReplace(typeSmuggleString, "{SMUGGLE_DECLARATIONS}", smuggleDeclarations.str());
+
+	FindAndReplace(a_emitString, "{REFLECT_SMUGGLE_TYPES}", typeSmuggleString);
 }
 
 void
-EmitMemberStealDeclarations(std::string& a_emitString, const Spyll::ReflectionParser* a_parser)
+EmitMemberStealDeclarations(std::string& a_emitString, const Spyll::ReflectionContext& a_context)
 {
 	std::stringstream stream;
 	stream.setf(std::ios::boolalpha);
 
-	auto isPublic = [](Spyll::AccessSpecifier a_accessSpec)
+	for (auto& class_ : a_context.classes)
 	{
-		return a_accessSpec == Spyll::AccessSpecifier::Public;
-	};
-
-	for (const auto& class_ : a_parser->GetClasses())
-	{
-		for (const auto& variable : class_.GetVariables())
+		for (auto* decl : class_.decl->decls())
 		{
-			if (!variable.ShouldReflect() || isPublic(variable.GetAccessSpecifier()))
+			if (decl->getKind() < clang::Decl::firstNamed || decl->getKind() > clang::Decl::lastNamed)
 				continue;
 
-			auto typeNameAsVar = GetStolenMemberTypeName(variable);
+			clang::NamedDecl* namedDecl = static_cast<clang::NamedDecl*>(decl);
 
-			stream << "struct " << typeNameAsVar << " { using type = ";
-			stream << GetAccessibleTypeName(variable.GetType(), variable.GetTypeAsString()) << "*; };\n";
-			stream << "template struct Oyl::Reflection::Internal::StealMember<" << typeNameAsVar << ", &" << variable.GetQualifiedName() << ">;\n";
-		}
-
-		for (const auto& field : class_.GetFields())
-		{
-			if (!field.ShouldReflect() || isPublic(field.GetAccessSpecifier()))
+			if (!IsDeclarationPrivate(namedDecl))
 				continue;
 
-			auto typeNameAsVar = GetStolenMemberTypeName(field);
+			std::string typeNameAsVar;
+			std::string accessibleTypeName;
 
-			stream << "struct " << typeNameAsVar << " { using type = ";
-			stream << GetAccessibleTypeName(field.GetType(), field.GetTypeAsString());
-			stream << " " << GetAccessibleTypeName(&class_, class_.GetQualifiedName()) << "::*; };\n";
-			stream << "template struct Oyl::Reflection::Internal::StealMember<" << typeNameAsVar << ", &" << field.GetQualifiedName() << ">;\n";
-		}
-
-		for (const auto& function : class_.GetFunctions())
-		{
-			if (!function.ShouldReflect() || isPublic(function.GetAccessSpecifier()) || function.IsDeleted())
-				continue;
-
-			auto typeNameAsVar = GetStolenMemberTypeName(function);
-
-			stream << "struct " << typeNameAsVar << " { using type = ";
-			stream << GetAccessibleTypeName(function.GetReturnType(), function.GetReturnTypeAsString()) << "(*)(";
-			const auto& args = function.GetArguments();
-			for (size_t i = 0; i < args.size(); i++)
+			switch (decl->getKind())
 			{
-				const auto& arg = args[i];
-				stream << GetAccessibleTypeName(arg.GetType(), arg.GetTypeAsString());
-				if (i != args.size() - 1)
+				case clang::Decl::Var:
 				{
-					stream << ", ";
+					auto* varDecl = static_cast<clang::VarDecl*>(decl);
+					auto varPtrType = decl->getASTContext().getPointerType(varDecl->getType());
+					accessibleTypeName = GetAccessibleTypeName(varPtrType, a_context.GetASTContext());
+					break;
+				}
+				case clang::Decl::Field:
+				{
+					auto* fieldDecl = static_cast<clang::FieldDecl*>(decl);
+					auto fieldMemberPtrType = decl->getASTContext().getMemberPointerType(fieldDecl->getType(), class_.decl->getTypeForDecl());
+					accessibleTypeName = GetAccessibleTypeName(fieldMemberPtrType, a_context.GetASTContext());
+					break;
+				}
+				case clang::Decl::CXXMethod:
+				{
+					auto* methodDecl = static_cast<clang::CXXMethodDecl*>(decl);
+
+					// Operators don't have a name, TODO support
+					if (!methodDecl->getIdentifier())
+						break;
+
+					clang::QualType qualType;
+					if (methodDecl->isInstance())
+						qualType = methodDecl->getASTContext().getMemberPointerType(methodDecl->getType(), methodDecl->getParent()->getTypeForDecl());
+					else
+						qualType = methodDecl->getASTContext().getPointerType(methodDecl->getType());
+					accessibleTypeName = GetAccessibleTypeName(qualType, methodDecl->getASTContext());
+					typeNameAsVar = GetStolenMemberTypeName(*methodDecl);
+
+					//accessibleTypeName = GetAccessibleTypeName(*methodDecl->getReturnType(), a_context.GetASTContext());
+					//accessibleTypeName += "(";
+					//if (methodDecl->isInstance())
+					//	accessibleTypeName += GetAccessibleTypeName(*class_.decl->getTypeForDecl(), a_context.GetASTContext()) + "::";
+					//accessibleTypeName += "*)(";
+					//for (auto* param : methodDecl->parameters())
+					//{
+					//	if (accessibleTypeName[accessibleTypeName.size() - 1] != '(')
+					//		accessibleTypeName += ", ";
+
+					//	accessibleTypeName += GetAccessibleTypeName(param->getType(), a_context.GetASTContext());
+					//}
+					//accessibleTypeName += ")";
+					//if (methodDecl->isConst())
+					//	accessibleTypeName += " const";
+
+					//const auto* functionProto = clang::dyn_cast<clang::FunctionProtoType>(methodDecl->getType());
+					//if (functionProto->hasNoexceptExceptionSpec())
+					//	accessibleTypeName += " noexcept";
+
+					//accessibleTypeName = name;
+
+					break;
 				}
 			}
-			stream << "); };\n";
-			stream << "template struct Oyl::Reflection::Internal::StealMember<" << typeNameAsVar << ", &" << function.GetQualifiedName() << ">;\n";
-		}
 
-		for (const auto& method : class_.GetMethods())
-		{
-			if (!method.ShouldReflect() || isPublic(method.GetAccessSpecifier()) || method.IsDeleted())
+			if (accessibleTypeName.empty())
 				continue;
 
-			auto typeNameAsVar = GetStolenMemberTypeName(method);
+			if (typeNameAsVar.empty())
+				typeNameAsVar = GetStolenMemberTypeName(*namedDecl);
 
-			stream << "struct " << typeNameAsVar << " { using type = ";
-			stream << GetAccessibleTypeName(method.GetReturnType(), method.GetReturnTypeAsString()) << "(" << class_.GetQualifiedName() << "::*)(";
-			const auto& args = method.GetArguments();
-			for (size_t i = 0; i < args.size(); i++)
-			{
-				const auto& arg = args[i];
-				stream << GetAccessibleTypeName(arg.GetType(), arg.GetTypeAsString());
-				if (i != args.size() - 1)
-				{
-					stream << ", ";
-				}
-			}
-			stream << ")";
-			if (method.IsConst())
-			{
-				stream << " const";
-			}
-			stream << "; };\n";
-			stream << "template struct Oyl::Reflection::Internal::StealMember<" << typeNameAsVar << ", &" << method.GetQualifiedName() << ">;\n";
+			std::string emitString = std::string(
+				GetTrimmedStringView(R"""(
+struct {TYPENAME_AS_VAR} { using type = {ACCESSIBLE_TYPE_NAME}; };
+template struct Oyl::Reflection::Internal::StealMember<{TYPENAME_AS_VAR}, &{VAR_QUALIFIED_NAME}>;
+)"""
+				));
+			FindAndReplace(emitString, "{TYPENAME_AS_VAR}", typeNameAsVar);
+			FindAndReplace(emitString, "{ACCESSIBLE_TYPE_NAME}", accessibleTypeName);
+			FindAndReplace(emitString, "{VAR_QUALIFIED_NAME}", namedDecl->getQualifiedNameAsString());
+
+			if (stream.tellp() != 0)
+				stream << "\n";
+			stream << emitString;
 		}
 	}
 
 	FindAndReplace(a_emitString, "{REFLECT_STEAL_MEMBERS}", stream.str());
 }
 
-static std::unordered_set<const Spyll::Declaration*> g_privateAddressableDeclarations;
+static std::unordered_set<const clang::NamedDecl*> g_privateAddressableDeclarations;
 
-static
 bool
-IsDeclarationPrivate(const Spyll::Declaration& a_decl)
+IsDeclarationPrivate(const clang::NamedDecl* a_decl)
 {
-	return a_decl.GetAccessSpecifier() == Spyll::AccessSpecifier::Protected
-	       || a_decl.GetAccessSpecifier() == Spyll::AccessSpecifier::Private;
+	return a_decl &&
+	       (a_decl->getAccess() == clang::AS_protected
+	        || a_decl->getAccess() == clang::AS_private);
+}
+
+bool
+TypeNeedsSmuggling(const clang::Type& a_type)
+{
+	if (a_type.hasPointerRepresentation())
+		return a_type.isNullPtrType()
+			       ? false
+			       : TypeNeedsSmuggling(*a_type.getPointeeType());
+
+	auto* tagDecl = a_type.getAsTagDecl();
+	if (tagDecl && IsDeclarationPrivate(tagDecl))
+		return true;
+
+	if (auto* memberPointerType = a_type.getAs<clang::MemberPointerType>())
+	{
+		if (TypeNeedsSmuggling(*memberPointerType->getClass()))
+			return true;
+
+		if (TypeNeedsSmuggling(*memberPointerType->getPointeeType()))
+			return true;
+	}
+
+	if (auto* functionType = a_type.getAs<clang::FunctionProtoType>())
+	{
+		if (TypeNeedsSmuggling(*functionType->getReturnType()))
+			return true;
+
+		for (const auto& param : functionType->param_types())
+		{
+			if (TypeNeedsSmuggling(*param))
+				return true;
+		}
+	}
+
+	if (auto* cxxRecordDecl = a_type.getAsCXXRecordDecl())
+	{
+		if (auto* templateDecl = clang::dyn_cast<clang::ClassTemplateSpecializationDecl>(cxxRecordDecl))
+		{
+			for (const auto& arg : templateDecl->getTemplateArgs().asArray())
+			{
+				if (arg.getKind() == clang::TemplateArgument::Type)
+				{
+					if (TypeNeedsSmuggling(*arg.getAsType()))
+						return true;
+				}
+				if (arg.getKind() == clang::TemplateArgument::Integral)
+				{
+					if (TypeNeedsSmuggling(*arg.getIntegralType()))
+						return true;
+				}
+			}
+		}
+	}
+
+	return false;
 }
 
 std::string
-GetAccessibleTypeName(const Spyll::Type* a_type, std::string_view a_typeAsString)
+GetAccessibleTypeName(const clang::Type& a_type, const clang::ASTContext& a_astContext)
 {
-	std::string qualifiedType = std::string(a_typeAsString);
+	// Force an unqualified type
+	auto qualType = clang::QualType(&a_type, 0);
 
-	if (!a_type)
-		return qualifiedType;
-
-	if (IsDeclarationPrivate(*a_type))
+	auto& printingPolicy = a_astContext.getPrintingPolicy();
+	std::string qualifiedType = clang::TypeName::getFullyQualifiedName(qualType, a_astContext, printingPolicy);
+	if (TypeNeedsSmuggling(a_type))
 	{
 		qualifiedType = GetSmuggledTypeAsTypeName(qualifiedType);
-		g_typesToSmuggle.insert(a_typeAsString);
+		g_typesToSmuggle.insert(&a_type);
 	}
 
 	return qualifiedType;
 }
 
 void
-RegisterTypes(std::stringstream& a_stream, const Spyll::ReflectionParser* a_parser)
+RegisterTypes(std::stringstream& a_stream, const Spyll::ReflectionContext& a_context)
 {
-	for (const auto& type : a_parser->GetClasses())
+	for (const auto& type : a_context.classes)
 	{
-		if (!type.ShouldReflect())
-			continue;
-
 		if (a_stream.tellp() != 0)
 		{
 			a_stream << "\n";
 		}
 
-		std::string typeVar = GetTypeNameAsVar(type.GetQualifiedName());
+		std::string typeVar = GetTypeNameAsVar(type.qualifiedName);
 
 		std::string emitString = std::string(
 			GetTrimmedStringView(R"""(
@@ -497,7 +552,7 @@ Oyl::Reflection::Type* {TYPENAME_AS_VAR}; (void) {TYPENAME_AS_VAR};
 {
 	Oyl::Reflection::Internal::TypeParams TypeParams;
 	TypeParams.assembly = {ASSEMBLY_PTR};
-	TypeParams.typeId = Oyl::Reflection::GetTypeId<{QUALIFIED_TYPENAME}>();
+	TypeParams.typeId = Oyl::Reflection::GetTypeId<{ACCESSIBLE_TYPENAME}>();
 	TypeParams.qualifiedName = "{QUALIFIED_TYPENAME}";
 	TypeParams.name = "{TYPENAME}";
 	TypeParams.size = {SIZE};
@@ -508,11 +563,12 @@ Oyl::Reflection::Type* {TYPENAME_AS_VAR}; (void) {TYPENAME_AS_VAR};
 			));
 
 		FindAndReplace(emitString, "{ASSEMBLY_PTR}", "AssemblyPtr");
-		FindAndReplace(emitString, "{QUALIFIED_TYPENAME}", type.GetQualifiedName());
-		FindAndReplace(emitString, "{TYPENAME}", type.GetName());
-		FindAndReplace(emitString, "{SIZE}", std::to_string(type.GetSize()));
-		FindAndReplace(emitString, "{ALIGNMENT}", std::to_string(type.GetAlignment()));
-		FindAndReplace(emitString, "{TYPENAME_AS_VAR}", GetTypeNameAsVar(type.GetQualifiedName()));
+		FindAndReplace(emitString, "{ACCESSIBLE_TYPENAME}", GetAccessibleTypeName(*type.decl->getTypeForDecl(), a_context.GetASTContext()));
+		FindAndReplace(emitString, "{QUALIFIED_TYPENAME}", type.qualifiedName);
+		FindAndReplace(emitString, "{TYPENAME}", type.qualifiedName);
+		FindAndReplace(emitString, "{SIZE}", std::to_string(a_context.GetASTContext().getTypeSizeInChars(type.decl->getTypeForDecl()).getQuantity()));
+		FindAndReplace(emitString, "{ALIGNMENT}", std::to_string(a_context.GetASTContext().getPreferredTypeAlignInChars(type.decl->getTypeForDecl()->getCanonicalTypeUnqualified()).getQuantity()));
+		FindAndReplace(emitString, "{TYPENAME_AS_VAR}", GetTypeNameAsVar(type.qualifiedName));
 
 		a_stream << emitString;
 	}
@@ -521,7 +577,7 @@ Oyl::Reflection::Type* {TYPENAME_AS_VAR}; (void) {TYPENAME_AS_VAR};
 void
 RegisterArgumentForFunction(
 	std::stringstream& a_stream,
-	const Spyll::Argument& a_argument
+	const clang::ParmVarDecl& a_parameter
 )
 {
 	std::string emitString = GetTrimmedStringView(R"""(
@@ -534,8 +590,8 @@ RegisterArgumentForFunction(
 )"""
 	).data();
 
-	FindAndReplace(emitString, "{TYPE}", GetAccessibleTypeName(a_argument.GetType(), a_argument.GetTypeAsString()));
-	FindAndReplace(emitString, "{NAME}", a_argument.GetName());
+	FindAndReplace(emitString, "{TYPE}", GetAccessibleTypeName(a_parameter.getType(), a_parameter.getASTContext()));
+	FindAndReplace(emitString, "{NAME}", a_parameter.getName());
 	FindAndReplace(emitString, "{PTR}", "Ptr");
 
 	a_stream << emitString;
@@ -544,14 +600,11 @@ RegisterArgumentForFunction(
 void
 RegisterVariable(
 	std::stringstream& a_stream,
-	const Spyll::Variable& a_variable,
-	const Spyll::Class* a_parent
+	const clang::VarDecl& a_variable,
+	const clang::CXXRecordDecl* a_parent
 )
 {
-	if (!a_variable.ShouldReflect())
-		return;
-
-	if (IsDeclarationPrivate(a_variable))
+	if (IsDeclarationPrivate(&a_variable))
 		g_privateAddressableDeclarations.insert(&a_variable);
 
 	std::string emitString = GetTrimmedStringView(R"""(
@@ -567,14 +620,14 @@ RegisterVariable(
 )"""
 	).data();
 
-	std::string qualifiedType = GetAccessibleTypeName(a_variable.GetType(), a_variable.GetTypeAsString());
+	std::string qualifiedType = GetAccessibleTypeName(a_variable.getType(), a_variable.getASTContext());
 
 	std::string parentTypeNameAsVar = "nullptr";
 	std::string factoryAddCall;
 
 	if (a_parent)
 	{
-		parentTypeNameAsVar = GetTypeNameAsVar(a_parent->GetQualifiedName());
+		parentTypeNameAsVar = GetTypeNameAsVar(a_parent->getQualifiedNameAsString());
 		factoryAddCall = "Oyl::Reflection::Internal::ReflectionFactory::AddVariableToType({PARENT_TYPENAME_AS_VAR}, Params, a_allocate)";
 	} else
 	{
@@ -583,11 +636,11 @@ RegisterVariable(
 
 	FindAndReplace(emitString, "{FACTORY_ADD_CALL}", factoryAddCall);
 
-	FindAndReplace(emitString, "{QUALIFIED_NAME}", a_variable.GetQualifiedName());
-	FindAndReplace(emitString, "{NAME}", a_variable.GetName());
+	FindAndReplace(emitString, "{QUALIFIED_NAME}", a_variable.getQualifiedNameAsString());
+	FindAndReplace(emitString, "{NAME}", a_variable.getName());
 	FindAndReplace(emitString, "{QUALIFIED_TYPE}", qualifiedType);
 	FindAndReplace(emitString, "{PARENT_TYPENAME_AS_VAR}", parentTypeNameAsVar);
-	FindAndReplace(emitString, "{ACCESS_SPECIFIER}", std::to_string(a_variable.GetAccessSpecifier()));
+	FindAndReplace(emitString, "{ACCESS_SPECIFIER}", std::to_string(a_variable.getAccess()));
 
 	// Attributes soon:tm:
 
@@ -597,14 +650,11 @@ RegisterVariable(
 void
 RegisterField(
 	std::stringstream& a_stream,
-	const Spyll::Field& a_field,
-	const Spyll::Class* a_parent
+	const clang::FieldDecl& a_field,
+	const clang::CXXRecordDecl& a_parent
 )
 {
-	if (!a_field.ShouldReflect())
-		return;
-
-	if (IsDeclarationPrivate(a_field))
+	if (IsDeclarationPrivate(&a_field))
 		g_privateAddressableDeclarations.insert(&a_field);
 
 	std::string emitString = GetTrimmedStringView(R"""(
@@ -622,17 +672,17 @@ RegisterField(
 )"""
 	).data();
 
-	std::string qualifiedType = GetAccessibleTypeName(a_field.GetType(), a_field.GetTypeAsString());
+	std::string qualifiedType = GetAccessibleTypeName(a_field.getType(), a_field.getASTContext());
 
-	std::string parentTypeNameAsVar = a_parent ? GetTypeNameAsVar(a_parent->GetQualifiedName()) : "nullptr";
+	std::string parentTypeNameAsVar = GetTypeNameAsVar(a_parent.getQualifiedNameAsString());
 
-	FindAndReplace(emitString, "{QUALIFIED_NAME}", a_field.GetQualifiedName());
-	FindAndReplace(emitString, "{NAME}", a_field.GetName());
+	FindAndReplace(emitString, "{QUALIFIED_NAME}", a_field.getQualifiedNameAsString());
+	FindAndReplace(emitString, "{NAME}", a_field.getName());
 	FindAndReplace(emitString, "{QUALIFIED_TYPE}", qualifiedType);
 	FindAndReplace(emitString, "{PARENT_TYPENAME_AS_VAR}", parentTypeNameAsVar);
-	FindAndReplace(emitString, "{ACCESS_SPECIFIER}", std::to_string(a_field.GetAccessSpecifier()));
-	FindAndReplace(emitString, "{OFFSET_IN_BITS}", std::to_string(a_field.GetOffsetInBits()));
-	FindAndReplace(emitString, "{IS_CONST}", a_field.IsConst() ? "true" : "false");
+	FindAndReplace(emitString, "{ACCESS_SPECIFIER}", std::to_string(a_field.getAccess()));
+	FindAndReplace(emitString, "{OFFSET_IN_BITS}", std::to_string(a_field.getASTContext().getFieldOffset(&a_field)));
+	FindAndReplace(emitString, "{IS_CONST}", a_field.getType().isConstQualified() ? "true" : "false");
 
 	// Attributes soon:tm:
 
@@ -640,60 +690,36 @@ RegisterField(
 }
 
 std::string
-RegisterFunction_GetRawFunctionString(const Spyll::Function& a_function, const Spyll::Class* a_class)
+RegisterFunction_GetRawFunctionString(const clang::FunctionDecl& a_function, const clang::CXXRecordDecl* a_class)
 {
 	std::string result = GetTrimmedStringView(R"""(
 {
-	{RETURN_TYPE}({METHOD_PTR_STUB}*address)({RAW_SIGNATURE}){CONST} = {RAW_FN_ADDRESS};
+	auto address = static_cast<{FN_PTR_SIG}>({RAW_FN_ADDRESS});
 	Params.rawFnPtr = *reinterpret_cast<void**>(&address);
 }
 	)"""
 	).data();
 
-	std::string methodPtrStub;
-	std::string methodConst;
-	const auto* method = dynamic_cast<const Spyll::Method*>(&a_function);
-	if (method)
-	{
-		methodPtrStub = GetAccessibleTypeName(a_class, a_class->GetQualifiedName()) + "::";
-		if (method->IsConst())
-			methodConst = " const";
-	}
-	FindAndReplace(result, "{METHOD_PTR_STUB}", methodPtrStub);
-	FindAndReplace(result, "{CONST}", methodConst);
+	const auto* method = clang::dyn_cast<clang::CXXMethodDecl>(&a_function);
+	std::string rawAddress = IsDeclarationPrivate(&a_function)
+		                         // (Oyl::Reflection::Internal::StolenMember<__Stolen_Namespace_Function>::value)
+		                         ? (method
+			                            ? StolenMember(*method)
+			                            : StolenMember(a_function))
+								 // Namespace::Function
+		                         : "&" + a_function.getQualifiedNameAsString();
+	FindAndReplace(result, "{RAW_FN_ADDRESS}", rawAddress);
 
-	// Construct the signature of the raw function type
-	std::stringstream argSignature;
-	for (size_t i = 0; i < a_function.GetArguments().size(); i++)
-	{
-		const auto& arg = a_function.GetArguments()[i];
-		argSignature << GetAccessibleTypeName(arg.GetType(), arg.GetTypeAsString());
-
-		// Add comma unless it's the last arg
-		if (i < a_function.GetArguments().size() - 1)
-			argSignature << ", ";
-	}
-	FindAndReplace(result, "{RAW_SIGNATURE}", argSignature.str());
-
-	std::stringstream rawAddress;
-	if (!IsDeclarationPrivate(a_function))
-	{
-		// Namespace::Function
-		rawAddress << "&" << a_function.GetQualifiedName();
-	} else
-	{
-		// (Oyl::Reflection::Internal::StolenMember<__Stolen_Namespace_Function>::value)
-		rawAddress << (method
-			               ? StolenMember(*method)
-			               : StolenMember(a_function));
-	}
-	FindAndReplace(result, "{RAW_FN_ADDRESS}", rawAddress.str());
+	clang::QualType fnPtrSignature = method && method->isInstance()
+		                                 ? method->getASTContext().getMemberPointerType(method->getType(), a_class->getTypeForDecl())
+		                                 : a_function.getASTContext().getPointerType(a_function.getType());
+	FindAndReplace(result, "{FN_PTR_SIG}", GetAccessibleTypeName(fnPtrSignature, a_function.getASTContext()));
 
 	return result;
 }
 
 std::string
-RegisterFunction_GetTypesafeFunctionString(const Spyll::Function& a_function, const Spyll::Class* a_class)
+RegisterFunction_GetTypesafeFunctionString(const clang::FunctionDecl& a_function, const clang::CXXRecordDecl* a_class)
 {
 	std::string result = GetTrimmedStringView(R"""(
 {
@@ -707,76 +733,104 @@ RegisterFunction_GetTypesafeFunctionString(const Spyll::Function& a_function, co
 )"""
 	).data();
 
-	const auto* method = dynamic_cast<const Spyll::Method*>(&a_function);
+	const auto* method = clang::dyn_cast<clang::CXXMethodDecl>(&a_function);
 
-	const auto& args = a_function.GetArguments();
 	std::string_view std_any_ref = "std::any&";
 
 	// Function arguments signature with names
 	// (std::any& arg1, std::any& arg2, ...)
-	std::stringstream nameSignature;
-	if (method)
-		nameSignature << "std::any& __a_self";
-	for (size_t i = 0; i < args.size(); i++)
+	std::string nameSignature;
+	for (const auto* parameter : a_function.parameters())
 	{
-		if (method || i != 0)
-			nameSignature << ", ";
+		if (!nameSignature.empty())
+			nameSignature += ", ";
 
-		const auto& arg = args[i];
-		nameSignature << std_any_ref << " " << arg.GetName();
+		nameSignature += std_any_ref;
+		nameSignature += " ";
+		nameSignature += parameter->getName();
 	}
-	FindAndReplace(result, "{TYPESAFE_NAME_SIGNATURE}", nameSignature.str());
+	if (method && method->isInstance())
+	{
+		if (nameSignature.empty())
+			nameSignature = "std::any& __a_self";
+		else
+			nameSignature = "std::any& __a_self" ", " + nameSignature;
+	}
+	FindAndReplace(result, "{TYPESAFE_NAME_SIGNATURE}", nameSignature);
 
 	// Function arguments signature without names
 	// (std::any&, std::any&, ...)
-	std::stringstream typeSignature;
-	if (method)
-		typeSignature << "std::any&";
-	for (size_t i = 0; i < args.size(); i++)
+	std::string typeSignature;
+	for (auto _ : a_function.parameters())
 	{
-		if (method || i != 0)
-			typeSignature << ", ";
+		if (!typeSignature.empty())
+			typeSignature += ", ";
 
-		typeSignature << std_any_ref;
+		typeSignature += std_any_ref;
 	}
-	FindAndReplace(result, "{TYPESAFE_TYPE_SIGNATURE}", typeSignature.str());
+	if (method && method->isInstance())
+	{
+		if (typeSignature.empty())
+			typeSignature = "std::any&";
+		else
+			typeSignature = "std::any&" ", " + typeSignature;
+	}
+	FindAndReplace(result, "{TYPESAFE_TYPE_SIGNATURE}", typeSignature);
 
 	std::stringstream callStatement;
 	{
 		std::string callFunc = "({SELF}{FN_PTR_DEREFERENCE}{FN_NAME})";
 
-		std::string functionName = IsDeclarationPrivate(a_function)
+		std::string functionName = IsDeclarationPrivate(&a_function)
 			                           // *(Oyl::Reflection::Internal::StolenMember<__Stolen_Namespace_Function>::value)
-			                           ? method ? StolenMember(*method) : StolenMember(a_function)
+			                           ? method
+				                             ? StolenMember(*method)
+				                             : StolenMember(a_function)
 			                           // Namespace::Function
-			                           : std::string(a_function.GetQualifiedName());
+			                           : a_function.getQualifiedNameAsString();
 
-		FindAndReplace(callFunc, "{SELF}", method ? "__self->" : "");
-		FindAndReplace(callFunc, "{FN_PTR_DEREFERENCE}", method && IsDeclarationPrivate(a_function) ? "*" : "");
+		std::string self;
+		std::string fnPtrDereference;
+		if (method && method->isInstance())
+		{
+			self = "__self->";
+			if (IsDeclarationPrivate(&a_function))
+				fnPtrDereference = "*";
+		}
+
+		FindAndReplace(callFunc, "{SELF}", self);
+		FindAndReplace(callFunc, "{FN_PTR_DEREFERENCE}", fnPtrDereference);
 		FindAndReplace(callFunc, "{FN_NAME}", functionName);
 
 		callStatement << callFunc;
 	}
 	callStatement << "(";
-	for (size_t i = 0; i < args.size(); i++)
+	std::string callStatementArgs;
+	for (const auto* parameter : a_function.parameters())
 	{
-		const auto& arg = args[i];
+		if (!callStatementArgs.empty())
+			callStatementArgs += ", ";
 
-		callStatement << "\n";
-		std::string declaration = "\tstd::any_cast<{TYPE}>({NAME})";
-		FindAndReplace(declaration, "{TYPE}", GetAccessibleTypeName(arg.GetType(), arg.GetTypeAsString()));
-		FindAndReplace(declaration, "{NAME}", arg.GetName());
-		callStatement << declaration;
+		callStatementArgs += "\n";
+		std::string declaration = "std::any_cast<{TYPE}>({NAME})";
+		std::string type = GetAccessibleTypeName(parameter->getOriginalType(), parameter->getASTContext());
+		if (parameter->getOriginalType()->isRValueReferenceType())
+		{
+			type = "std::remove_reference_t<" + type + ">&";
+			declaration = "std::move(" + declaration + ")";
+		}
+		FindAndReplace(declaration, "{TYPE}", type);
+		FindAndReplace(declaration, "{NAME}", parameter->getName());
 
-		if (i != args.size() - 1)
-			callStatement << ", ";
+		callStatementArgs += "\t" + declaration;
 	}
+	callStatement << callStatementArgs;
 	callStatement << ")";
 
 	std::stringstream callReturn;
-	if (method)
-		callReturn << "auto __self = std::any_cast<" << a_class->GetQualifiedName() << "*>(__a_self);\n";
-	if (a_function.GetReturnTypeAsString() == "void")
+	if (method && method->isInstance())
+		callReturn << "auto __self = std::any_cast<" << a_class->getQualifiedNameAsString() << "*>(__a_self);\n";
+	if (a_function.getReturnType() == a_function.getASTContext().VoidTy)
 	{
 		callReturn << callStatement.str() << ";\n";
 		callReturn << "return std::any {};";
@@ -794,14 +848,15 @@ RegisterFunction_GetTypesafeFunctionString(const Spyll::Function& a_function, co
 void
 RegisterFunction(
 	std::stringstream& a_stream,
-	const Spyll::Function& a_function,
-	const Spyll::Class* a_class
+	const clang::FunctionDecl& a_function,
+	const clang::CXXRecordDecl* a_class
 )
 {
-	if (!a_function.ShouldReflect())
+	// Operator, No operator support yet
+	if (!a_function.getIdentifier())
 		return;
 
-	if (IsDeclarationPrivate(a_function))
+	if (IsDeclarationPrivate(&a_function))
 		g_privateAddressableDeclarations.insert(&a_function);
 
 	std::string emitString = GetTrimmedStringView(R"""(
@@ -821,7 +876,7 @@ RegisterFunction(
 )"""
 	).data();
 
-	std::string qualifiedReturnType = GetAccessibleTypeName(a_function.GetReturnType(), a_function.GetReturnTypeAsString());
+	std::string qualifiedReturnType = GetAccessibleTypeName(a_function.getReturnType(), a_function.getASTContext());
 
 	std::string funcKind = "Function";
 	std::string methodParams;
@@ -830,26 +885,26 @@ RegisterFunction(
 
 	if (a_class)
 	{
-		parentTypeNameAsVar = GetTypeNameAsVar(a_class->GetQualifiedName());
+		parentTypeNameAsVar = GetTypeNameAsVar(a_class->getQualifiedNameAsString());
 		factoryAddCall = "Oyl::Reflection::Internal::ReflectionFactory::Add{FUNC_KIND}ToType({PARENT_TYPENAME_AS_VAR}, Params, a_allocate)";
 	} else
 	{
 		factoryAddCall = "Oyl::Reflection::Internal::ReflectionFactory::AddGlobalFunctionToAssembly(AssemblyPtr, Params, a_allocate)";
 	}
 
-	const auto* method = dynamic_cast<const Spyll::Method*>(&a_function);
-	if (method)
+	const auto* method = clang::dyn_cast<clang::CXXMethodDecl>(&a_function);
+	if (method && method->isInstance())
 	{
 		funcKind = "Method";
 		std::stringstream s;
-		s << "\tParams.isConst = " << (method->IsConst() ? "true" : "false") << ";\n";
-		s << "\tParams.isVirtual = " << (method->IsVirtual() ? "true" : "false") << ";";
+		s << "\tParams.isConst = " << (method->isConst() ? "true" : "false") << ";\n";
+		s << "\tParams.isVirtual = " << (method->isVirtual() ? "true" : "false") << ";";
 		methodParams = std::move(s.str());
 	}
 
 	std::string rawFnPtrString;
 	std::string typesafeFnPtrString;
-	if (!a_function.IsDeleted())
+	if (!a_function.isDeleted() && !a_function.isPureVirtual())
 	{
 		rawFnPtrString = RegisterFunction_GetRawFunctionString(a_function, a_class);
 		typesafeFnPtrString = RegisterFunction_GetTypesafeFunctionString(a_function, a_class);
@@ -861,16 +916,16 @@ RegisterFunction(
 	FindAndReplace(emitString, "{FACTORY_ADD_CALL}", factoryAddCall);
 
 	FindAndReplace(emitString, "{FUNC_KIND}", funcKind);
-	FindAndReplace(emitString, "{QUALIFIED_NAME}", a_function.GetQualifiedName());
-	FindAndReplace(emitString, "{NAME}", a_function.GetName());
+	FindAndReplace(emitString, "{QUALIFIED_NAME}", a_function.getQualifiedNameAsString());
+	FindAndReplace(emitString, "{NAME}", a_function.getName());
 	FindAndReplace(emitString, "{RETURN_TYPE}", qualifiedReturnType);
 	FindAndReplace(emitString, "{PARENT_TYPENAME_AS_VAR}", parentTypeNameAsVar);
-	FindAndReplace(emitString, "{ACCESS_SPECIFIER}", std::to_string(a_function.GetAccessSpecifier()));
+	FindAndReplace(emitString, "{ACCESS_SPECIFIER}", std::to_string(a_function.getAccess()));
 	FindAndReplace(emitString, "{METHOD_PARAMS}", methodParams);
 
 	std::stringstream argumentsStream;
-	for (const auto& argument : a_function.GetArguments())
-		RegisterArgumentForFunction(argumentsStream, argument);
+	for (const auto* parameter : a_function.parameters())
+		RegisterArgumentForFunction(argumentsStream, *parameter);
 	AddIndentToStringStream(argumentsStream);
 	FindAndReplace(emitString, "{ARGUMENTS}", argumentsStream.str());
 
@@ -880,13 +935,10 @@ RegisterFunction(
 }
 
 void
-RegisterEnums(std::stringstream& a_stream, const Spyll::ReflectionParser* a_parser)
+RegisterEnums(std::stringstream& a_stream, const Spyll::ReflectionContext& a_context)
 {
-	for (const auto& enum_ : a_parser->GetEnums())
+	for (const auto& enum_ : a_context.enums)
 	{
-		if (!enum_.ShouldReflect())
-			continue;
-
 		std::string emitString = GetTrimmedStringView(R"""(
 {
 	Oyl::Reflection::Internal::EnumParams EnumParams;
@@ -900,33 +952,34 @@ RegisterEnums(std::stringstream& a_stream, const Spyll::ReflectionParser* a_pars
 )"""
 		).data();
 
-		FindAndReplace(emitString, "{QUALIFIED_NAME}", enum_.GetQualifiedName());
-		FindAndReplace(emitString, "{NAME}", enum_.GetName());
-		FindAndReplace(emitString, "{UNDERLYING_TYPE}", enum_.GetUnderlyingTypeAsString());
-		FindAndReplace(emitString, "{SIZE}", std::to_string(enum_.GetEntries().size()));
+		FindAndReplace(emitString, "{QUALIFIED_NAME}", enum_.qualifiedName);
+		FindAndReplace(emitString, "{NAME}", enum_.name);
 
+		size_t nEnumerators = 0;
 		std::stringstream entryStream;
-		for (const auto& entry : enum_.GetEntries())
+		for (auto* entry : enum_.decl->enumerators())
 		{
+			nEnumerators++;
 			std::string entryString = GetTrimmedStringView(R"""(
 {
 	Oyl::Reflection::Internal::EnumValueParams EnumValueParams;
 	EnumValueParams.identifier = "{IDENTIFIER}";
-	EnumValueParams.value = static_cast<{UNDERLYING_TYPE}>({VALUE});
+	EnumValueParams.value = static_cast<decltype(EnumValueParams.value)>({VALUE});
 	Oyl::Reflection::Internal::ReflectionFactory::AddValueToEnum(Ptr, EnumValueParams, a_allocate);
 }
 )"""
 			).data();
 
-			FindAndReplace(entryString, "{IDENTIFIER}", entry.GetIdentifier());
-			FindAndReplace(entryString, "{VALUE}", std::to_string(entry.GetValue()));
-			FindAndReplace(entryString, "{UNDERLYING_TYPE}", enum_.GetUnderlyingTypeAsString());
+			FindAndReplace(entryString, "{IDENTIFIER}", entry->getName());
+			FindAndReplace(entryString, "{VALUE}", std::to_string(entry->getInitVal().getExtValue()));
 
 			entryStream << entryString;
 		}
-
 		AddIndentToStringStream(entryStream);
 		FindAndReplace(emitString, "{ENTRIES}", entryStream.str());
+
+		FindAndReplace(emitString, "{UNDERLYING_TYPE}", GetAccessibleTypeName(enum_.decl->getIntegerType(), a_context.GetASTContext()));
+		FindAndReplace(emitString, "{SIZE}", std::to_string(nEnumerators));
 
 		a_stream << emitString;
 	}

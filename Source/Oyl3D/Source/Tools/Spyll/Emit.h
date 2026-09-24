@@ -2,9 +2,9 @@
 
 namespace Spyll
 {
-	class ReflectionParser;
+	struct ReflectionContext;
 }
 
 extern
 void
-EmitCodeFromTool(const Spyll::ReflectionParser* a_parser);
+EmitCodeFromTool(const Spyll::ReflectionContext& a_context);

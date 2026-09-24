@@ -174,6 +174,8 @@ namespace Oyl::Reflection::Internal
 			int test = 0;
 		};
 
+		int Foo(int);
+
 		static Inner1* s_inner1;
 		static Inner2* s_inner2;
 	};
@@ -207,12 +209,16 @@ namespace Oyl::Reflection::Internal
 		__Smuggler__Outer_Inner2() { return static_cast<element_t<1>*>(nullptr); }
 
 		friend auto
-		__Smuggler__Outer2_Inner() { return static_cast<element_t<2>*>(nullptr); }
+		__Smuggler__Outer_Foo() { return static_cast<element_t<2>*>(nullptr); }
+
+		friend auto
+		__Smuggler__Outer2_Inner() { return static_cast<element_t<3>*>(nullptr); }
 	};
 
 	template struct TypeSmuggler<
 		Outer::Inner1,
 		Outer::Inner2,
+		decltype(&Outer::Foo),
 		Outer2::Inner
 	>;
 

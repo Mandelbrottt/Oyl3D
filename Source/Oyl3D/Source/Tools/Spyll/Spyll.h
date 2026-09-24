@@ -9,16 +9,61 @@
 
 namespace Spyll
 {
+	template<typename TDecl>
+		requires (std::is_convertible_v<std::add_pointer_t<TDecl>, std::add_pointer_t<clang::NamedDecl>>)
+	struct DeclDescriptor
+	{
+		explicit
+		DeclDescriptor(TDecl* Decl)
+			: decl(Decl)
+		{
+			name = Decl->getNameAsString();
+			qualifiedName = Decl->getQualifiedNameAsString();
+		}
+
+		TDecl* decl;
+		std::string name;
+		std::string qualifiedName;
+	};
+
 	struct ReflectionContext
 	{
-		std::vector<clang::CXXRecordDecl*> classes;
-		std::vector<clang::VarDecl*> globalVariables;
-		std::vector<clang::FunctionDecl*> globalFunctions;
-		std::vector<clang::EnumDecl*> enums;
+		std::string assemblyName;
+		std::vector<std::string> dependencies;
 
-		clang::IntrusiveRefCntPtr<clang::SourceManager> sourceManager;
-		clang::IntrusiveRefCntPtr<clang::ASTContext> astContext;
+		std::vector<DeclDescriptor<clang::CXXRecordDecl>> classes;
+		std::vector<DeclDescriptor<clang::VarDecl>> globalVariables;
+		std::vector<DeclDescriptor<clang::FunctionDecl>> globalFunctions;
+		std::vector<DeclDescriptor<clang::EnumDecl>> enums;
+
+		const clang::SourceManager&
+		GetSourceManager() const { return *m_sourceManager; }
+
+		const clang::ASTContext&
+		GetASTContext() const { return *m_astContext; }
+
+		const clang::TargetInfo&
+		GetTargetInfo() const { return *m_target; }
+
+	private:
+		friend class ReflectionAction;
+
+		void
+		Init(clang::CompilerInstance& CI)
+		{
+			m_sourceManager = CI.getSourceManagerPtr();
+			m_astContext = CI.getASTContextPtr();
+			m_target = CI.getTargetPtr();
+			m_fileManager = CI.getFileManagerPtr();
+		}
+
+		clang::IntrusiveRefCntPtr<clang::SourceManager> m_sourceManager;
+		clang::IntrusiveRefCntPtr<clang::ASTContext> m_astContext;
+		clang::IntrusiveRefCntPtr<clang::TargetInfo> m_target;
+		clang::IntrusiveRefCntPtr<clang::FileManager> m_fileManager;
 	};
+
+	using OnHandleSourceFileFn = void(const ReflectionContext&);
 
 	class ReflectionVisitor final : public clang::RecursiveASTVisitor<ReflectionVisitor>
 	{
@@ -73,9 +118,14 @@ namespace Spyll
 	{
 	public:
 		explicit
-		ReflectionConsumer(clang::CompilerInstance& CI, ReflectionContext& a_reflectionContext)
+		ReflectionConsumer(
+			clang::CompilerInstance& CI,
+			ReflectionContext& a_reflectionContext,
+			OnHandleSourceFileFn* a_callback
+		)
 			: m_compilerInstance(CI),
-			  m_reflectionContext(a_reflectionContext) {}
+			  m_reflectionContext(a_reflectionContext),
+			  m_callback(a_callback) {}
 
 		void
 		HandleTranslationUnit(clang::ASTContext& Ctx) override
@@ -83,24 +133,30 @@ namespace Spyll
 			auto printingPolicy = Ctx.getPrintingPolicy();
 			printingPolicy.Bool = true;
 			printingPolicy.FullyQualifiedName = true;
+			printingPolicy.PrintCanonicalTypes = true;
 			printingPolicy.SuppressScope = false;
 			printingPolicy.SuppressUnwrittenScope = false;
 			Ctx.setPrintingPolicy(printingPolicy);
 
 			ReflectionVisitor Visitor(m_compilerInstance, Ctx, m_reflectionContext);
 			Visitor.TraverseTranslationUnitDecl(Ctx.getTranslationUnitDecl());
+
+			if (m_callback)
+				m_callback(m_reflectionContext);
 		}
 
 	private:
 		clang::CompilerInstance& m_compilerInstance;
 		ReflectionContext& m_reflectionContext;
+		OnHandleSourceFileFn* m_callback;
 	};
 
 	class ReflectionAction final : public clang::ASTFrontendAction
 	{
 	public:
-		ReflectionAction(ReflectionContext& a_reflectionContext)
-			: m_reflectionContext(a_reflectionContext) {}
+		explicit
+		ReflectionAction(ReflectionContext& a_reflectionContext, OnHandleSourceFileFn* a_callback)
+			: m_reflectionContext(a_reflectionContext), m_callback(a_callback) {}
 
 		std::unique_ptr<clang::ASTConsumer>
 		CreateASTConsumer(
@@ -108,34 +164,35 @@ namespace Spyll
 			llvm::StringRef InFile
 		) override
 		{
-			m_reflectionContext.sourceManager = CI.getSourceManagerPtr();
-			m_reflectionContext.astContext = CI.getASTContextPtr();
+			m_reflectionContext.Init(CI);
 
 			auto& opts = CI.getDiagnosticOpts();
 			opts.VerifyDiagnostics = false;
 			opts.IgnoreWarnings = true;
 			opts.ShowCarets = false;
-			return std::make_unique<ReflectionConsumer>(CI, m_reflectionContext);
+			return std::make_unique<ReflectionConsumer>(CI, m_reflectionContext, m_callback);
 		}
 
 	private:
 		ReflectionContext& m_reflectionContext;
+		OnHandleSourceFileFn* m_callback;
 	};
 
 	class ReflectionActionFactory : public clang::tooling::FrontendActionFactory
 	{
 	public:
 		explicit
-		ReflectionActionFactory(ReflectionContext& a_reflectionContext)
-			: m_reflectionContext(a_reflectionContext) {}
+		ReflectionActionFactory(ReflectionContext* a_reflectionContext, OnHandleSourceFileFn* a_callback)
+			: m_reflectionContext(*a_reflectionContext), m_callback(a_callback) {}
 
 		std::unique_ptr<clang::FrontendAction>
 		create() override
 		{
-			return std::make_unique<ReflectionAction>(m_reflectionContext);
+			return std::make_unique<ReflectionAction>(m_reflectionContext, m_callback);
 		}
 
 	private:
 		ReflectionContext& m_reflectionContext;
+		OnHandleSourceFileFn* m_callback;
 	};
 }

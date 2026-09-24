@@ -84,6 +84,9 @@ namespace Spyll
 		if (!Decl->isCanonicalDecl())
 			return true;
 
+		if (Decl->isDependentContext())
+			return true;
+
 		if (Decl->getStorageClass() != clang::SC_Extern)
 			return true;
 
