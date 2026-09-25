@@ -69,7 +69,11 @@ function CppProjectDefaults.LanguageSettings()
 	cdialect "C11"
 	warnings "Extra"
 	fatalwarnings { "All" }
+	externalwarnings "Off"
+	externalanglebrackets "On"
+	
 	rtti "On"
+	floatingpoint "Fast"
 end
 
 function CppProjectDefaults.ProjectSettings()
@@ -78,9 +82,6 @@ function CppProjectDefaults.ProjectSettings()
 	implibdir(Config.LibraryDir)
 	debugdir(Config.BinariesDir)
 
-	externalanglebrackets "On"
-	externalwarnings "Off"
-	floatingpoint "Fast"
 	multiprocessorcompile "On"
 	staticruntime "Off"
 	stringpooling "On"
@@ -173,6 +174,12 @@ function CppProjectDefaults.ToolsetSettings()
 
 	filter { "toolset:clang" }; do
 		floatingpoint "Default"
+	end
+
+	filter { "action:vs*", "toolset:clang" }; do
+		buildoptions {
+			"/diagnostics:caret"
+		}
 	end
 	filter {}
 end

@@ -202,14 +202,14 @@ function generate.generateReflectionInfo(prj)
 			table.translate(
 				cfg.links,
 				function(link) return '"-dependency=' .. link .. '"' end
-			), 
+			),
 			" "
 		)}
 	]]
 
 	-- CC1 commands
 	appendToCommand '--'
-	appendToCommand '-xc++' -- language
+	appendToCommand '-xc++'                         -- language
 	appendToCommand '"-std=%{cfg.cppdialect:lower()}"' -- C++ Standard
 
 	-- Include directories
@@ -218,18 +218,18 @@ function generate.generateReflectionInfo(prj)
 			table.translate(
 				cfg.includedirs,
 				function(dir) return '"-I' .. dir .. '"' end
-			), 
+			),
 			" "
 		)}
 	]]
-	
+
 	-- External Include Directories
 	appendToCommand [[
 		%{table.concat(
 			table.translate(
 				cfg.externalincludedirs,
 				function(dir) return '"-isystem' .. dir .. '"' end
-			), 
+			),
 			" "
 		)}
 	]]
@@ -243,7 +243,7 @@ function generate.generateReflectionInfo(prj)
 			table.translate(
 				cfg.defines,
 				function(define) return '-D' .. define end
-			), 
+			),
 			" "
 		)}
 	]]
@@ -291,7 +291,7 @@ function private.addDotGeneratedToPrjDotIncludeDir(prj)
 	if not prj.reflection then
 		return
 	end
-	
+
 	local source_dir = path.join(prj.basedir, ".Generated")
 	generate.prjAddEntryToDotInclude(prj, source_dir)
 end
@@ -301,7 +301,7 @@ function private.deleteDotGeneratedFolder(prj)
 	if prj.reflection then
 		return
 	end
-	
+
 	local dot_generated_folder = path.join(prj.basedir, ".Generated")
 	if os.isdir(dot_generated_folder) then
 		os.rmdir(dot_generated_folder)
@@ -337,7 +337,20 @@ function generate.connectProjectLinks(prj)
 		-- filter {}
 
 		local package = linkprj._package
+
 		if package then
+			local pkgincludedirs = linkprj.packageincludedirs
+			if type(linkprj.packageincludedirs) ~= "table" then
+				pkgincludedirs = { linkprj.packageincludedirs }
+			end
+			-- No premake support for external header includes : do it ourselves
+			for _, dir in ipairs(pkgincludedirs) do
+				filter { "action:vs*", "toolset:clang" }; do
+					buildoptions { "-Xclang --system-header-prefix=\"" .. path.getname(dir) .. "/\"" }
+				end
+				filter{}
+			end
+
 			if type(package.OnDepend) == "function" then
 				local prj_copy = private.bakeConfigsForPrj(prj)
 				local linkprj_copy = private.bakeConfigsForPrj(linkprj)
@@ -392,7 +405,7 @@ function generate.createProjectLinkDirs(prj)
 			-- if unset, use basedir
 			link_dirs = linkprj.basedir
 		end
-		
+
 		-- Add symlink from link dir to project .Include folder
 		if type(link_dirs) ~= "table" then
 			local link_dir = link_dirs

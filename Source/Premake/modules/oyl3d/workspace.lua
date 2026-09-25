@@ -119,6 +119,8 @@ function generate.generatePackageProjects(wks)
 				project(name)
 			end
 
+			prj.packageincludedirs = prj.packageincludedirs or prj.basedir
+
 			-- Only check for invalid dirs if the action is configurable
 			if p.action.isConfigurable() and __ACTION ~= "clean" then
 				private.errorIfPackageNotOnDisk(prj)

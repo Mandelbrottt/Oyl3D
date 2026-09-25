@@ -7,8 +7,6 @@
 
 #include <clang/AST/QualTypeNames.h>
 
-//#include <Spyll/Tool/Core/ReflectionParser.h>
-
 #include "DeclPrinter.h"
 #include "Spyll.h"
 #include "StringHelper.h"
@@ -878,7 +876,7 @@ RegisterFunction(
 		std::stringstream s;
 		s << "\tParams.isConst = " << (method->isConst() ? "true" : "false") << ";\n";
 		s << "\tParams.isVirtual = " << (method->isVirtual() ? "true" : "false") << ";";
-		methodParams = std::move(s.str());
+		methodParams = s.str();
 	}
 
 	std::string rawFnPtrString;
