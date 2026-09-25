@@ -1,7 +1,5 @@
 #include "ReflectionFactory.h"
 
-#include <Spyll/Tool/Core/Declarations/Enum.h>
-
 #include "Assembly.h"
 #include "Enum.h"
 

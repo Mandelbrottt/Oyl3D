@@ -179,7 +179,7 @@ function private.errorIfPackageNotOnDisk(prj)
 	end
 end
 
-function generate.removeUnreferencedProjects(wks)
+function generate.removeNonProjectPackages(wks)
 	if not p.action.isConfigurable() then
 		return
 	end
@@ -210,6 +210,12 @@ function generate.removeUnreferencedProjects(wks)
 			table.remove(wks.projects, prjindex)
 		end
 	end
+end
+
+function generate.removeUnreferencedProjects(wks)
+	if not p.action.isConfigurable() then
+		return
+	end
 	
 	-- Gather the set of projects referencing or being referenced by another project
 	local dependSet = {}
@@ -219,6 +225,9 @@ function generate.removeUnreferencedProjects(wks)
 		end
 		for _, link in ipairs(prj.links) do
 			dependSet[link] = true
+		end
+		for _, depend in ipairs(prj.dependson) do
+			dependSet[depend] = true
 		end
 	end
 

@@ -40,7 +40,8 @@ end
 
 m.elements.workspaceComplete = function(wks)
 	return {
-		m.generate.removeUnreferencedProjects,
+		m.generate.removeNonProjectPackages,
+		-- m.generate.removeUnreferencedProjects,
 		m.generate.generateCheckProject,
 	}
 end

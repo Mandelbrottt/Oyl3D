@@ -98,8 +98,7 @@ local Packages = {
 			}
 
 			includedirs {
-				".",
-				"include/yaml-cpp"
+				"include"
 			}
 
 			packageincludedir "include/yaml-cpp"
@@ -278,9 +277,29 @@ local Packages = {
 		end
 	},
 	Clang = {
+		OnProject = function(prj)
+			language "C++"
+			kind "None"
+
+			-- files {
+			-- 	"include/**.h",
+			-- 	"include/**.hpp",
+			-- 	"include/**.inc",
+			-- }
+			-- links {
+			-- 	os.matchfiles(path.join("lib", "*.lib"))
+			-- }
+			filter "action:vs*"; do
+				files {
+					"**.natvis"
+				}
+			end
+		end,
 		OnDepend = function(prjcfg, packagecfg)
 			links {
-				os.matchfiles(path.join("lib", "*.lib"))
+				os.matchfiles(path.join("lib", "*.lib")),
+				"ntdll",
+				"version"
 			}
 			externalincludedirs {
 				"include"
@@ -289,32 +308,6 @@ local Packages = {
 			defines {
 				"_ITERATOR_DEBUG_LEVEL=0"
 			}
-		end
-	},
-	["Spyll.Core"] = {
-		OnProject = function(prj)
-			basedir(path.join(Config.SourceDir, "Spyll/Tool/Core"))
-			os.chdir(premake.api.scope.project.basedir)
-
-			language "C++"
-			kind "StaticLib"
-
-			files {
-				"**.cpp",
-				"**.h",
-				"**.hpp",
-			}
-
-			-- Project settings set by premake5.lua in basedir
-
-			filter "action:vs*"; do
-				-- TODO: Make dependant on variable name in root Packages.lua
-				local clangNatvisPattern = path.join(Config.PackageCacheDir, "Clang", "**.natvis")
-				files {
-					"**.natvis",
-					clangNatvisPattern
-				}
-			end
 		end
 	},
 }

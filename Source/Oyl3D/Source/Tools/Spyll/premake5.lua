@@ -8,14 +8,13 @@ project "Oyl.Spyll"; do
 
 	oyl3d.project.files()
 
-	-- Needed to interfaces with Spyll.Tool
+	-- Needed to interfaces with Clang libs
 	runtime "Release"
 	defines {
 		"_ITERATOR_DEBUG_LEVEL=0"
 	}
 
 	links {
-		"Spyll.Core",
 		"Clang",
 	}
 end
