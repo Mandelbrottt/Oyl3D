@@ -11,7 +11,6 @@
 
 #include "DeclPrinter.h"
 #include "Spyll.h"
-#include "SpyllTool.h"
 #include "StringHelper.h"
 
 bool

@@ -181,7 +181,11 @@ local Packages = {
 			}
 
 			files {
-				"public/**"
+				"public/TracyClient.cpp",
+				"public/tracy/**.h",
+				"public/tracy/**.hpp",
+				"public/common/**.h",
+				"public/common/**.hpp",
 			}
 
 			includedirs {

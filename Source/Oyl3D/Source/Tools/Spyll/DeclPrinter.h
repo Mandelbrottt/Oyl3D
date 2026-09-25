@@ -5,9 +5,12 @@
 
 #include <clang/Basic/Specifiers.h>
 
-#include <Spyll/Tool/Core/Declarations/Declaration.h>
-#include <Spyll/Tool/Core/Declarations/Function.h>
-#include <Spyll/Tool/Core/Declarations/Method.h>
+namespace clang
+{
+	class NamedDecl;
+	class FunctionDecl;
+	class CXXMethodDecl;
+}
 
 std::string
 GetTypeNameAsVar(std::string_view a_name);
@@ -42,7 +45,7 @@ namespace std
 	std::string
 	to_string(clang::AccessSpecifier a_accessSpecifier)
 	{
-		std::string_view strings[(size_t) Spyll::AccessSpecifier::Count];
+		std::string_view strings[4];
 		strings[clang::AS_public] = "Public";
 		strings[clang::AS_protected] = "Protected";
 		strings[clang::AS_private] = "Private";
