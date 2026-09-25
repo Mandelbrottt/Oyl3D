@@ -103,7 +103,7 @@ function generate.generatePackageProjects(wks)
 		end
 
 		local cwd = os.getcwd()
-		os.chdir(package_local_path)
+		local chdir_ok, chdir_err = os.chdir(package_local_path)
 
 		group(package_group)
 		project(name); do
@@ -119,34 +119,40 @@ function generate.generatePackageProjects(wks)
 				project(name)
 			end
 
-			-- use cwd since it's a cache of the parent cwd
-			if prj.basedir:lower() == cwd:lower() then
-				error(
-					string.format("Cannot infer basedir for package \"%s\"! Did you forget to call basedir()?", name)
-				)
-			end
-			private.errorIfPackageNotOnDisk(prj)
-
-			-- If package has a premake script in the basedir, run it
-			local script_dir = prj.basedir
-			local script_file = "premake5.lua"
-			local cwd = os.getcwd()
-			os.chdir(script_dir)
-			
-			if os.isfile(path.join(script_dir, script_file)) then
-				local script_fn = loadfile(script_file)
-				assert(script_fn)()
-				
-				-- Included project from script must match name of package
-				if p.api.scope.project ~= prj then
+			-- Only check for invalid dirs if the action is configurable
+			if p.action.isConfigurable() and __ACTION ~= "clean" then
+				private.errorIfPackageNotOnDisk(prj)
+				-- use cwd since it's a cache of the parent cwd
+				if prj.basedir:lower() == cwd:lower() then
 					error(
-						string.format(
-							"Name of project \"%s\" from project script \"%s\" does not including package \"%s\"",
-							p.api.scope.project.name,
-							p.api.scope.project.script,
-							name
-						)
+						string.format("Cannot infer basedir for package \"%s\"! Did you forget to call basedir()?", name)
 					)
+				end
+			end
+
+			-- Only try to run the premake script if the package sets its own directory
+			if prj.basedir:lower() ~= cwd:lower() then
+				-- If package has a premake script in the basedir, run it
+				local script_dir = prj.basedir
+				local script_file = "premake5.lua"
+				local cwd = os.getcwd()
+				os.chdir(script_dir)
+				
+				if os.isfile(path.join(script_dir, script_file)) then
+					local script_fn = loadfile(script_file)
+					assert(script_fn)()
+					
+					-- Included project from script must match name of package
+					if p.api.scope.project ~= prj then
+						error(
+							string.format(
+								"Name of project \"%s\" from project script \"%s\" does not including package \"%s\"",
+								p.api.scope.project.name,
+								p.api.scope.project.script,
+								name
+							)
+						)
+					end
 				end
 			end
 			
