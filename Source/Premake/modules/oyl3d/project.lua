@@ -381,15 +381,32 @@ function generate.createProjectLinkDirs(prj)
 		if not linkprj then
 			goto continue
 		end
-
-		-- Add symlink from link dir to project .Include folder
-		local link_dir = linkprj.packageincludedir or linkprj.basedir
-		local link_name = path.getname(link_dir)
-		if linkprj._package then
-			-- Use package name for name of link dir
-			link_name = linkprj.name
+		-- Non-source project, disregard
+		if linkprj.basedir == wks.basedir then
+			goto continue
 		end
-		generate.prjAddEntryToDotInclude(prj, link_dir, link_name)
+
+		local link_dirs = linkprj.packageincludedirs
+
+		if not link_dirs then
+			-- if unset, use basedir
+			link_dirs = linkprj.basedir
+		end
+		
+		-- Add symlink from link dir to project .Include folder
+		if type(link_dirs) ~= "table" then
+			local link_dir = link_dirs
+			local link_name = path.getname(link_dir)
+			if linkprj._package and link_dir == linkprj.basedir then
+				link_name = linkprj.name
+			end
+			generate.prjAddEntryToDotInclude(prj, link_dir, link_name)
+		else
+			for _, link_dir in ipairs(link_dirs) do
+				generate.prjAddEntryToDotInclude(prj, link_dir)
+			end
+		end
+
 
 		::continue::
 	end

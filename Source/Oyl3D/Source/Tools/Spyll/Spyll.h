@@ -1,5 +1,6 @@
 #pragma once
 
+#pragma warning(push) // Unreachable code in MSVC
 #pragma warning(disable : 4702) // Unreachable code in MSVC
 #include <clang/AST/RecursiveASTVisitor.h>
 #include <clang/Frontend/CompilerInstance.h>

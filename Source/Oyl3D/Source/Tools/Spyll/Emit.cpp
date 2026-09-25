@@ -398,31 +398,10 @@ EmitMemberStealDeclarations(std::string& a_emitString, const Spyll::ReflectionCo
 						qualType = methodDecl->getASTContext().getPointerType(methodDecl->getType());
 					accessibleTypeName = GetAccessibleTypeName(qualType, methodDecl->getASTContext());
 					typeNameAsVar = GetStolenMemberTypeName(*methodDecl);
-
-					//accessibleTypeName = GetAccessibleTypeName(*methodDecl->getReturnType(), a_context.GetASTContext());
-					//accessibleTypeName += "(";
-					//if (methodDecl->isInstance())
-					//	accessibleTypeName += GetAccessibleTypeName(*class_.decl->getTypeForDecl(), a_context.GetASTContext()) + "::";
-					//accessibleTypeName += "*)(";
-					//for (auto* param : methodDecl->parameters())
-					//{
-					//	if (accessibleTypeName[accessibleTypeName.size() - 1] != '(')
-					//		accessibleTypeName += ", ";
-
-					//	accessibleTypeName += GetAccessibleTypeName(param->getType(), a_context.GetASTContext());
-					//}
-					//accessibleTypeName += ")";
-					//if (methodDecl->isConst())
-					//	accessibleTypeName += " const";
-
-					//const auto* functionProto = clang::dyn_cast<clang::FunctionProtoType>(methodDecl->getType());
-					//if (functionProto->hasNoexceptExceptionSpec())
-					//	accessibleTypeName += " noexcept";
-
-					//accessibleTypeName = name;
-
 					break;
 				}
+				default:
+					break;
 			}
 
 			if (accessibleTypeName.empty())
@@ -762,6 +741,7 @@ RegisterFunction_GetTypesafeFunctionString(const clang::FunctionDecl& a_function
 	std::string typeSignature;
 	for (auto _ : a_function.parameters())
 	{
+		(void) _;
 		if (!typeSignature.empty())
 			typeSignature += ", ";
 

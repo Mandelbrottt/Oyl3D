@@ -19,7 +19,7 @@ local Packages = {
 				"include/GLFW"
 			}
 
-			packageincludedir "include/GLFW"
+			packageincludedirs "include/GLFW"
 
 			defines { "_CRT_SCURE_NO_WARNINGS" }
 
@@ -53,7 +53,7 @@ local Packages = {
 
 			includedirs { "." }
 
-			packageincludedir "."
+			packageincludedirs "."
 
 			filter "action:vs*"; do
 				files {
@@ -75,7 +75,7 @@ local Packages = {
 				"include/nlohmann"
 			}
 
-			packageincludedir "include/nlohmann"
+			packageincludedirs "include/nlohmann"
 
 			filter "action:vs*"; do
 				files {
@@ -101,7 +101,7 @@ local Packages = {
 				"include"
 			}
 
-			packageincludedir "include/yaml-cpp"
+			packageincludedirs "include/yaml-cpp"
 
 			filter "kind:StaticLib"; do
 				defines { "YAML_CPP_STATIC_DEFINE" }
@@ -125,7 +125,7 @@ local Packages = {
 				"include"
 			}
 
-			packageincludedir "include/spdlog"
+			packageincludedirs "include/spdlog"
 
 			defines {
 				"SPDLOG_COMPILED_LIB",
@@ -192,7 +192,7 @@ local Packages = {
 				"public"
 			}
 
-			packageincludedir "public"
+			-- packageincludedirs "public/tracy"
 
 			defines {
 				"TRACY_ENABLE",
@@ -242,7 +242,11 @@ local Packages = {
 				"Include"
 			}
 
-			packageincludedir "Include"
+			packageincludedirs {
+				"Include/vulkan",
+				"Include/vk_video",
+				"Include/dxc",
+			}
 
 			libdirs {
 				"Lib"
@@ -275,9 +279,9 @@ local Packages = {
 				"VULKAN_HPP_HANDLE_ERROR_OUT_OF_DATE_AS_SUCCESS=1"
 			}
 
-			externalincludedirs {
-				"Include"
-			}
+			-- externalincludedirs {
+			-- 	"Include"
+			-- }
 		end
 	},
 	Clang = {
@@ -285,13 +289,17 @@ local Packages = {
 			language "C++"
 			kind "None"
 
+			packageincludedirs {
+				"include/clang",
+				"include/clang-c",
+				"include/llvm",
+				"include/llvm-c",
+			}
+
 			-- files {
 			-- 	"include/**.h",
 			-- 	"include/**.hpp",
 			-- 	"include/**.inc",
-			-- }
-			-- links {
-			-- 	os.matchfiles(path.join("lib", "*.lib"))
 			-- }
 			filter "action:vs*"; do
 				files {
@@ -304,9 +312,6 @@ local Packages = {
 				os.matchfiles(path.join("lib", "*.lib")),
 				"ntdll",
 				"version"
-			}
-			externalincludedirs {
-				"include"
 			}
 			runtime "Release"
 			defines {

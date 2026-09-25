@@ -87,9 +87,9 @@ newoption {
 }
 
 p.api.register {
-	name = "packageincludedir",
-	scope = "project",
-	kind = "path",
+	name = "packageincludedirs",
+	scope = "config",
+	kind = "directory",
 }
 
 p.api.register {
