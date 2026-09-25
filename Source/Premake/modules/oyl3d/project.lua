@@ -184,22 +184,7 @@ function generate.generateReflectionInfo(prj)
 		spyllCommand = spyllCommand .. " " .. str:match("^%s*(.-)%s*$")
 	end
 
-	appendToCommand '--assembly="%{cfg.buildtarget.basename}"'
-
-	appendToCommand '--std="%{cfg.cppdialect:lower()}"'
-
-	appendToCommand '--include="%{table.concat(cfg.includedirs, ";")}"'
-	appendToCommand '--externalinclude="%{table.concat(cfg.externalincludedirs, ";")}"'
-
-	if p.action.current() and p.action.current().vstudio then
-		appendToCommand '--externalinclude="$(IncludePath)"'
-	end
-
-	appendToCommand '--define="%{table.concat(cfg.defines, ";")}"'
-
-	-- Only include --pch arg if project has a pch
-	appendToCommand '%{cfg.pchheader and "--pch=" .. cfg.pchheader or ""}'
-
+	-- Oyl.Spyll Commands
 	appendToCommand [[%{table.concat(
 		table.translate(
 				table.filter(
@@ -210,6 +195,62 @@ function generate.generateReflectionInfo(prj)
 			),
 			" "
 		)}]]
+
+	appendToCommand '"-assembly=%{cfg.buildtarget.basename}"'
+	appendToCommand [[
+		%{table.concat(
+			table.translate(
+				cfg.links,
+				function(link) return '"-dependency=' .. link .. '"' end
+			), 
+			" "
+		)}
+	]]
+
+	-- CC1 commands
+	appendToCommand '--'
+	appendToCommand '-xc++' -- language
+	appendToCommand '"-std=%{cfg.cppdialect:lower()}"' -- C++ Standard
+
+	-- Include directories
+	appendToCommand [[
+		%{table.concat(
+			table.translate(
+				cfg.includedirs,
+				function(dir) return '"-I' .. dir .. '"' end
+			), 
+			" "
+		)}
+	]]
+	
+	-- External Include Directories
+	appendToCommand [[
+		%{table.concat(
+			table.translate(
+				cfg.externalincludedirs,
+				function(dir) return '"-isystem' .. dir .. '"' end
+			), 
+			" "
+		)}
+	]]
+	if p.action.current() and p.action.current().vstudio then
+		appendToCommand '"-isystem$(IncludePath)"'
+	end
+
+	-- Defines
+	appendToCommand [[
+		%{table.concat(
+			table.translate(
+				cfg.defines,
+				function(define) return '-D' .. define end
+			), 
+			" "
+		)}
+	]]
+
+	-- Only include --pch arg if project has a pch
+	-- Force include the pch file
+	appendToCommand [[%{cfg.pchheader and '"-include' .. cfg.pchheader .. '"' or ''}]]
 
 	prebuildmessage("Executing " .. spyllCommand)
 

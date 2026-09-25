@@ -8,7 +8,7 @@ project "Oyl.Core"; do
 
 	oyl3d.project.files()
 
-	reflection "On"
+	-- reflection "On"
 
 	links {
 		"SpdLog",

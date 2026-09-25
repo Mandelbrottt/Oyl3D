@@ -8,7 +8,7 @@ project "Oyl.Rendering"; do
 
 	oyl3d.project.files()
 
-	reflection "On"
+	-- reflection "On"
 
 	links {
 		"Oyl.Core",

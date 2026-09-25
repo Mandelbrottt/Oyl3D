@@ -18,7 +18,7 @@ project "Oyl.Editor"; do
 		Config.Platforms.Standalone
 	}
 
-	reflection "On"
+	-- reflection "On"
 	
 	links {
 		"Oyl.Core",

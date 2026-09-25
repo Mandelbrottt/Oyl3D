@@ -36,16 +36,17 @@ main(int argc, const char** argv)
 
 	tooling::CommonOptionsParser& OptionsParser = ExpectedParser.get();
 
-	std::string tempPath = "__gen.cpp";
+	std::string virtualGenFilePath = "__gen.cpp";
 	std::string tempContents;
 	for (const auto& path : OptionsParser.getSourcePathList())
 	{
 		tempContents += "#include <" + path + ">\n";
 	}
 
-	tooling::ClangTool Tool { OptionsParser.getCompilations(), tempPath };
-	Tool.mapVirtualFile(tempPath, tempContents);
-
+	tooling::ClangTool Tool { OptionsParser.getCompilations(), virtualGenFilePath };
+	Tool.mapVirtualFile(virtualGenFilePath, tempContents);
+	Tool.appendArgumentsAdjuster(tooling::getInsertArgumentAdjuster("-Wno-everything"));
+	Tool.appendArgumentsAdjuster(tooling::getInsertArgumentAdjuster("-D__REFLECT_GENERATE__=1"));
 	Tool.appendArgumentsAdjuster(tooling::getClangSyntaxOnlyAdjuster());
 	Tool.appendArgumentsAdjuster(tooling::getClangStripOutputAdjuster());
 
