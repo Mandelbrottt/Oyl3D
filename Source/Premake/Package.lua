@@ -22,15 +22,30 @@ local Package = {}
 ---@field OnDepend? fun(package: WorkspacePackage) Callback run inside projects that reference this package
 ---@field _Init? boolean Have the package vars been initialized?
 
----@class WorkspacePackage.GenerateProjectsParams
----@field Packages { [string]: WorkspacePackage}
----@field OnProject? fun(package: WorkspacePackage)
+---@class WorkspacePackage.GenerateProjects.Params
+---@field Packages { [string]: WorkspacePackage }
+---@field Defaults WorkspacePackage.Defaults
 
----@param packages WorkspacePackage.List
-function Package.InitWorkspacePackages(packages)
-	for name, package in spairs(packages) do
+---@class WorkspacePackage.Defaults
+---@field Cpp fun()
+
+---@param params WorkspacePackage.GenerateProjects.Params
+function Package.GenerateProjects(params)
+	for name, package in spairs(params.Packages) do
+		Package.InitWorkspacePackageVars(name, package)
+		if package.GenerateProject then
+			Package.GenerateWorkspacePackageProject(name, package, params.Defaults)
+		end
+	end
+end
+
+--- @param list WorkspacePackage.List
+--- @return WorkspacePackage.List
+function Package.PackageList(list)
+	for name, package in spairs(list) do
 		Package.InitWorkspacePackageVars(name, package)
 	end
+	return list
 end
 
 ---@param name string
@@ -82,27 +97,10 @@ function Package.InitWorkspacePackageVars(name, package)
 	package._Init = true
 end
 
----@param params WorkspacePackage.GenerateProjectsParams
-function Package.GenerateWorkspacePackageProjects(params)
-	-- Package directories are not guaranteed to exist, only try to generate them if we actually need them
-	if not premake.action.current() or not premake.action.current().onProject then
-		return
-	end
-	
-	workspace()
-	for name, package in spairs(params.Packages) do
-		if package.GenerateProject then
-			group "Packages"
-			Package.GenerateWorkspacePackageProject(name, package, params.OnProject)
-		end
-	end
-	workspace()
-end
-
 ---@param name string
 ---@param package WorkspacePackage
----@param onProject? fun(package: WorkspacePackage)
-function Package.GenerateWorkspacePackageProject(name, package, onProject)
+---@param defaults WorkspacePackage.Defaults
+function Package.GenerateWorkspacePackageProject(name, package, defaults)
 	Package.InitWorkspacePackageVars(name, package)
 
 	local cwd = os.getcwd()
@@ -123,15 +121,24 @@ function Package.GenerateWorkspacePackageProject(name, package, onProject)
 		error(err)
 	end
 
+	local group_cache = premake.api.scope.group
+
 	project(package.Name); do
+		local prj = Project.Current()
+		prj._package = package
+
+		language(package.Language)
+		if package.Language == premake.CPP or package.Language == premake.C then
+			if defaults and defaults.Cpp then
+				defaults.Cpp()
+			end
+		else
+			error(string.format("Language \"%s\" in package \"%s\" not supported!", package.Language, package.Name))
+		end
+		filter {}
+
 		location(package.ProjectDir)
 		kind(package.Kind)
-
-		if onProject then
-			filter {}
-			onProject(package)
-			filter {}
-		end
 
 		-- Remove any files added by onProject
 		removefiles { "**" }
@@ -173,7 +180,6 @@ function Package.GenerateWorkspacePackageProject(name, package, onProject)
 			Project.Files()
 		end
 
-		language(package.Language)
 		warnings "Off"
 
 		includedirs(package.Include)
@@ -196,16 +202,18 @@ function Package.GenerateWorkspacePackageProject(name, package, onProject)
 		local premake_scripts = os.matchfiles("*premake5.lua")
 		if #premake_scripts > 0 then
 			local premake_script = premake_scripts[1]
-
-			local projectFn = _G.project
-			_G.project = function(_) projectFn() end
-			
 			Project.Script(premake_script)
-
-			_G.project = projectFn
 		end
+
+		filter { "platforms:not *Editor*" }; do
+			if prj.kind == "SharedLib" then
+				kind "StaticLib"
+			end
+		end
+		filter {}
 	end
 	project "*"
+	group(group_cache.name)
 	os.chdir(cwd)
 end
 
@@ -225,11 +233,12 @@ function Package.Include(package)
 		if package.Libs then
 			links(package.Libs)
 		end
+		
+		defines {
+			"_OYL_PACKAGE_" .. string.upper(package.Name):gsub("[%.%-]", "_")
+		}
+		
 		if package.OnDepend then
-			defines {
-				"_OYL_PACKAGE_" .. string.upper(package.Name):gsub("[%.%-]", "_")
-			}
-			
 			package:OnDepend()
 		end
 	end)

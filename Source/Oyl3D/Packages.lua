@@ -1,21 +1,25 @@
 local Config = require "Config"
-local Package = require "Package"
 
-local PackageCache = require "Packages"
-
----@type WorkspacePackage.List
+---@type { [string]: { OnProject: fun(prj), OnDepend: fun(prjcfg, packagecfg)? } }
 local Packages = {
 	Glfw = {
-		Language = premake.C,
-		Kind = premake.SHAREDLIB,
-		Include = { "include", },
-		OnProject = function(package)
-			defines { "_CRT_SCURE_NO_WARNINGS" }
-			removefiles { "**" }
+		OnProject = function(prj)
+			language "C"
+			kind "SharedLib"
+
 			files {
-				"include/GLFW/*",
+				"include/GLFW/**",
 				"src/**",
 			}
+
+			includedirs {
+				"include/GLFW"
+			}
+
+			packageincludedirs "include/GLFW"
+
+			defines { "_CRT_SCURE_NO_WARNINGS" }
+
 			filter "system:windows"; do
 				defines { "_GLFW_WIN32" }
 			end
@@ -26,34 +30,73 @@ local Packages = {
 				defines { "_GLFW_BUILD_DLL" }
 			end
 		end,
-		OnDepend = function(package)
-			if (package.Kind == premake.SHAREDLIB) then
-				filter "platforms:*Editor*"; do
-					defines { "GLFW_DLL" }
-				end
+		OnDepend = function(prjcfg, packagecfg)
+			if packagecfg.kind == "SharedLib" then
+				defines { "GLFW_DLL" }
 			end
 		end
 	},
 	ImGui = {
-		Kind = premake.STATICLIB, -- ImGui SharedLib support is quite involved, so don't bother for now
-		Include = { "." },
-		OnProject = function(package)
-			removefiles { "**" }
+		OnProject = function(prj)
+			language "C++"
+			kind "StaticLib" -- ImGui SharedLib support is quite involved, so don't bother for now
+
 			files {
 				"imconfig.h",
 				"imgui*.h",
 				"imgui*.cpp",
 				"imstb*.h",
 			}
+
+			includedirs { "." }
+
+			packageincludedirs "."
+
+			filter "action:vs*"; do
+				files {
+					"**.natvis"
+				}
+			end
 		end
 	},
 	NlohmannJson = {
-		Include = { "include" },
+		OnProject = function(prj)
+			language "C++"
+			kind "None"
+
+			files {
+				"include/**",
+			}
+
+			includedirs {
+				"include/nlohmann"
+			}
+
+			packageincludedirs "include/nlohmann"
+
+			filter "action:vs*"; do
+				files {
+					"**.natvis"
+				}
+			end
+		end
 	},
 	YamlCpp = {
-		Kind = premake.SHAREDLIB,
-		Include = { "Include" },
-		OnProject = function(package)
+		OnProject = function(prj)
+			language "C++"
+			kind "SharedLib"
+
+			files {
+				"src/**",
+				"include/**",
+			}
+
+			includedirs {
+				"include"
+			}
+
+			packageincludedirs "include/yaml-cpp"
+
 			filter "kind:StaticLib"; do
 				defines { "YAML_CPP_STATIC_DEFINE" }
 			end
@@ -63,29 +106,40 @@ local Packages = {
 		end
 	},
 	SpdLog = {
-		Kind = premake.SHAREDLIB,
-		Source = { "src" },
-		Include = { "include" },
-		OnProject = function(package)
+		OnProject = function(prj)
+			language "C++"
+			kind "SharedLib"
+
+			files {
+				"src/**",
+				"include/**"
+			}
+
+			includedirs {
+				"include"
+			}
+
+			packageincludedirs "include/spdlog"
+
 			defines {
 				"SPDLOG_COMPILED_LIB",
 				"SPDLOG_LEVEL_NAMES={" ..
-				[[spdlog::string_view_t("TRACE", 5),]] ..
-				[[spdlog::string_view_t("DEBUG", 5),]] ..
-				[[spdlog::string_view_t("INFO", 4),]] ..
-				[[spdlog::string_view_t("WARNING", 7),]] ..
-				[[spdlog::string_view_t("ERROR", 5),]] ..
-				[[spdlog::string_view_t("FATAL", 5),]] ..
-				[[spdlog::string_view_t("OFF", 3),]] ..
+				'	spdlog::string_view_t("TRACE", 5),' ..
+				'	spdlog::string_view_t("DEBUG", 5),' ..
+				'	spdlog::string_view_t("INFO", 4),' ..
+				'	spdlog::string_view_t("WARNING", 7),' ..
+				'	spdlog::string_view_t("ERROR", 5),' ..
+				'	spdlog::string_view_t("FATAL", 5),' ..
+				'	spdlog::string_view_t("OFF", 3),' ..
 				"}",
 				"SPDLOG_SHORT_LEVEL_NAMES={" ..
-				[["T", "D", "I", "W", "E", "F", "O"]] ..
+				'	"T", "D", "I", "W", "E", "F", "O"' ..
 				"}",
 				"_SILENCE_STDEXT_ARR_ITERS_DEPRECATION_WARNING",
 				"FMT_UNICODE=0",
 				"FMT_USE_CONSTEVAL=0",
 			}
-			filter "kind:SharedLib"; do
+			filter { "kind:SharedLib" }; do
 				defines {
 					"spdlog_EXPORTS",
 					"SPDLOG_SHARED_LIB",
@@ -94,35 +148,44 @@ local Packages = {
 				}
 			end
 		end,
-		OnDepend = function(package)
+		OnDepend = function(prjcfg, packagecfg)
 			defines {
 				"SPDLOG_COMPILED_LIB",
 				"_SILENCE_STDEXT_ARR_ITERS_DEPRECATION_WARNING", -- Silence warning
 				"FMT_UNICODE=0",
 				"FMT_USE_CONSTEVAL=0",
 			}
-			if (package.Kind == premake.SHAREDLIB) then
-				filter "platforms:*Editor*"; do
-					defines {
-						"SPDLOG_SHARED_LIB",
-						"FMT_SHARED"
-					}
-				end
+			if packagecfg.kind == "SharedLib" then
+				defines {
+					"SPDLOG_SHARED_LIB",
+					"FMT_SHARED"
+				}
 			end
-		end
+		end,
 	},
 	TracyClient = {
-		Kind = premake.SHAREDLIB,
-		Include = { "public" },
-		OnProject = function(package)
-			files {
-				"public/TracyClient.cpp"
-			}
+		OnProject = function(prj)
+			language "C++"
+			kind "SharedLib"
+
 			removeconfigurations {
 				Config.Configurations.Debug,
 				Config.Configurations.Development,
 				Config.Configurations.Distribution
 			}
+
+			files {
+				"public/TracyClient.cpp",
+				"public/tracy/**.h",
+				"public/tracy/**.hpp",
+				"public/common/**.h",
+				"public/common/**.hpp",
+			}
+
+			includedirs {
+				"public"
+			}
+
 			defines {
 				"TRACY_ENABLE",
 				"TRACY_DELAYED_INIT",
@@ -136,19 +199,12 @@ local Packages = {
 					"TRACY_EXPORTS"
 				}
 			end
-			filter("configurations:not " .. Config.Configurations.Profile); do
+			filter { "configurations:not " .. Config.Configurations.Profile }; do
 				excludefrombuild "On"
 			end
 		end,
-		OnDepend = function(package)
-			if (package.Kind == premake.SHAREDLIB) then
-				filter "platforms:*Editor*"; do
-					defines {
-						"TRACY_IMPORTS",
-					}
-				end
-			end
-			filter("configurations:" .. Config.Configurations.Profile); do
+		OnDepend = function(prjcfg, packagecfg)
+			if prjcfg.buildcfg == Config.Configurations.Profile then
 				defines {
 					"TRACY_ENABLE",
 					"TRACY_DELAYED_INIT",
@@ -156,25 +212,44 @@ local Packages = {
 					"TRACY_NO_SYSTEM_TRACING",
 				}
 			end
+			if packagecfg.kind == "SharedLib" then
+				defines {
+					"TRACY_IMPORTS",
+				}
+			end
 		end
 	},
 	Vulkan = {
-		Kind = premake.MAKEFILE,
-		Include = { "Include" },
-		LibDirs = { "Lib" },
-		Libs = {
-			-- Don't link against vulkan-1 or dxcompiler - both are loaded dynamically on windows
-			-- Explicitly set .dll extension on windows so we don't link against .lib file
-			-- 'vulkan-1%{prj.system == "windows" and ".dll" or ""}',
-			-- "dxcompiler",
-		},
-		OnProject = function(package)
+		OnProject = function(prj)
+			language "C++"
+			kind "Makefile"
+
+			files {
+				"Include/**.cpp",
+				"Include/**.h",
+				"Include/**.hpp",
+			}
+
+			includedirs {
+				"Include"
+			}
+
+			packageincludedirs {
+				"Include/vulkan",
+				"Include/vk_video",
+				"Include/dxc",
+			}
+
+			libdirs {
+				"Lib"
+			}
+
 			filter { "configurations:*" .. Config.Configurations.Distribution .. "*" }; do
 				local sharedLibsToCopy = {
 					"dxcompiler.dll"
 				}
 				for _, sharedLib in ipairs(sharedLibsToCopy) do
-					local inFile = path.join(PackageCache.Vulkan.Local.Path, path.join("Bin", sharedLib))
+					local inFile = path.join(prj.basedir, path.join("Bin", sharedLib))
 					local outFile = path.join(Config.BinariesDir, sharedLib)
 					local surround = function(str) return "%[" .. str .. "]" end
 
@@ -189,29 +264,53 @@ local Packages = {
 			end
 			filter {}
 		end,
-		OnDepend = function(package)
+		OnDepend = function(prjcfg, packagecfg)
 			defines {
 				"VULKAN_HPP_DISPATCH_LOADER_DYNAMIC=1",
 				"VULKAN_HPP_NO_STRUCT_CONSTRUCTORS=1",
 				"VULKAN_HPP_HANDLE_ERROR_OUT_OF_DATE_AS_SUCCESS=1"
 			}
+
+			-- externalincludedirs {
+			-- 	"Include"
+			-- }
 		end
 	},
-	["Spyll.Core"] = {
-		Kind = premake.STATICLIB,
-		PackageDir = path.join(Config.SourceDir, "Spyll/Tool/Core"),
-		OnProject = function(package)
+	Clang = {
+		OnProject = function(prj)
+			language "C++"
+			kind "None"
+
+			packageincludedirs {
+				"include/clang",
+				"include/clang-c",
+				"include/llvm",
+				"include/llvm-c",
+			}
+
+			-- files {
+			-- 	"include/**.h",
+			-- 	"include/**.hpp",
+			-- 	"include/**.inc",
+			-- }
 			filter "action:vs*"; do
-				-- TODO: Make dependant on variable name in root Packages.lua
-				local clangNatvisPattern = path.join(Config.PackageCacheDir, "ClangTooling", "**.natvis")
 				files {
-					clangNatvisPattern
+					"**.natvis"
 				}
 			end
+		end,
+		OnDepend = function(prjcfg, packagecfg)
+			links {
+				os.matchfiles(path.join("lib", "*.lib")),
+				"ntdll",
+				"version"
+			}
+			runtime "Release"
+			defines {
+				"_ITERATOR_DEBUG_LEVEL=0"
+			}
 		end
 	},
 }
-
-Package.InitWorkspacePackages(Packages)
 
 return Packages

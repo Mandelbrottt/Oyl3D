@@ -1,27 +1,17 @@
-local Actions = require "Actions"
-local Config = require "Config"
+local p = premake
 
-premake.modules.Clean = {}
-local m = premake.modules.Clean
+local oyl3d = p.modules.oyl3d
+oyl3d.clean = oyl3d.clean or {}
 
-function m.action()
-	newaction(m)
+local m = oyl3d.clean
+local private = {}
 
-	Actions.SetActionOptions {
-		Trigger = m.trigger,
-		Keep = {
-			"help",
-			"debugger",
-			"verbose",
-			"file",
-			"scripts",
-		},
-		Options = m.options
-	}
+function m.execute()
+	if os.isdir("Build") then
+		print("Cleaning Build Directory...")
+		os.rmdir("Build")
+	end
 end
-
-m.trigger = "clean"
-m.description = "Deletes the build directory and all project files"
 
 function m.onWorkspace(wks)
 	local filesToRemove = table.join(
@@ -55,22 +45,5 @@ function m.onProject(prj)
 		os.remove(file)
 	end
 end
-
-function m.execute()
-	if os.isdir("Build") then
-		print("Cleaning Build Directory...")
-		os.rmdir("Build")
-	end
-end
-
-function m.options()
-	newoption {
-		trigger     = "packages",
-		description = "Clean the package cache",
-		category    = m.trigger
-	}
-end
-
--- m.action()
 
 return m

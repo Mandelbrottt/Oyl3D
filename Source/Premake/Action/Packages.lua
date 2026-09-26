@@ -106,6 +106,6 @@ function m.packageListOptionSetDefault(option, default)
 	end
 end
 
-m.action()
+-- m.action()
 
 return m

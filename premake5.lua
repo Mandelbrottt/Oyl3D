@@ -1,42 +1,26 @@
 -- Set search paths for include()
-premake.path = ("%s;%s/Source/Premake;%s/Source"):format(premake.path, _MAIN_SCRIPT_DIR, _MAIN_SCRIPT_DIR)
+premake.path = premake.path .. (";{}/Source;{}/Source/Premake"):gsub("{}", _MAIN_SCRIPT_DIR)
 
 -- Register the root "Packages.lua" for future callers of `require "Packages"`
-require "Packages"
+-- require "Packages"
 
 -- Set search paths for require()
-package.path = ("{}/Source/?.lua;{}/Source/Premake/?.lua"):gsub("{}", _MAIN_SCRIPT_DIR)
+package.path = package.path .. (";?.lua;{}/Source/?.lua;{}/Source/Premake/?.lua"):gsub("{}", _MAIN_SCRIPT_DIR)
 
-require "Action.Clean"
-require "Action.Packages"
-require "Overrides"
+-- require "Action.Clean"
+-- require "Action.Packages"
+-- require "Overrides"
 
-local Project = require "Project"
+-- newoption {
+-- 	trigger = "workspace",
+-- 	description = "Generate only the selected workspace",
+-- 	value = "workspace",
+-- 	allowed = {
+-- 		{ "oyl3d", "Oyl3D Engine" },
+-- 		{ "spyll", "Oyl.Spyll Static Analysis Clang Plugin" }
+-- 	}
+-- }
 
-newoption {
-	trigger = "workspace",
-	description = "Generate only the selected workspace",
-	value = "workspace",
-	allowed = {
-		{ "oyl3d", "Oyl3D Engine" },
-		{ "spyll", "Oyl.Spyll Static Analysis Clang Plugin" }
-	}
-}
-
-local action = premake.action.current()
-if action and (not action.onWorkspace or not action.onProject) then
-	return
-end
-
-local function shouldGenerateWorkspace(wks)
-	local workspaceOpt = _OPTIONS["workspace"]
-	return not workspaceOpt or workspaceOpt:lower() == wks:lower()
-end
-
-if shouldGenerateWorkspace("Oyl3D") then
-	Project.Script("Source/Oyl3D")
-end
-
-if shouldGenerateWorkspace("Spyll") then
-	Project.Script("Source/Spyll")
-end
+include "Source/Oyl3D"
+-- dofile "Source/Oyl3D/premake5.lua"
+-- include "Source/Spyll"

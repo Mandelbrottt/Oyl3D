@@ -1,0 +1,63 @@
+#include "pch.h"
+#include "ModuleRegistry.h"
+
+#include "Module.h"
+
+namespace Oyl
+{
+	ModuleRegistry* ModuleRegistry::s_currentModuleRegistry = nullptr;
+
+	ModuleRegistry*
+	ModuleRegistry::GetCurrent()
+	{
+		return s_currentModuleRegistry;
+	}
+
+	Module*
+	ModuleRegistry::RegisterModule(Module* a_module)
+	{
+		m_modules.emplace_back(a_module);
+		Internal::AttachEventListenerToEventDispatcher(a_module, &m_eventDispatcher);
+		a_module->OnCreate();
+		return a_module;
+	}
+
+	Module*
+	ModuleRegistry::GetModule(Reflection::TypeId a_typeId)
+	{
+		Module* module = nullptr;
+		auto moduleIter = std::find_if(
+			begin(),
+			end(),
+			[a_typeId](Module* a_module) { return a_module->GetTypeId() == a_typeId; }
+		);
+
+		if (moduleIter != end())
+		{
+			module = *moduleIter;
+		}
+
+		return module;
+	}
+
+	bool
+	ModuleRegistry::RemoveModule(Reflection::TypeId a_typeId)
+	{
+		auto moduleIter = std::find_if(
+			begin(),
+			end(),
+			[a_typeId](Module* a_module) { return a_module->GetTypeId() == a_typeId; }
+		);
+
+		if (moduleIter == end())
+		{
+			return false;
+		}
+
+		Module* module = *moduleIter;
+		module->OnDestroy();
+		delete module;
+		m_modules.erase(moduleIter);
+		return true;
+	}
+}

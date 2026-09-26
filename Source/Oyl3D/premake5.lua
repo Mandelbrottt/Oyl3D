@@ -1,11 +1,13 @@
-local Check = require "CheckProject"
+require "oyl3d"
+
 local Config = require "Config"
-local Engine = require "Engine"
+
+local Oyl3D = require "Oyl3D_old"
 
 local Packages = require "Oyl3D.Packages"
 
 workspace "Oyl3D"; do
-	filename("%{wks.name}")
+	filename "%{wks.name}"
 
 	configurations {
 		Config.Configurations.Debug,
@@ -19,11 +21,17 @@ workspace "Oyl3D"; do
 		Config.Platforms.Standalone
 	}
 
-	Engine.GenerateProjects {
-		Packages = Packages
+	sourcedir "Source"
+
+	projectdefaults {
+		["C"] = Oyl3D.DefaultCppSettings,
+		["C++"] = Oyl3D.DefaultCppSettings,
 	}
 
-	Check.GenerateProject {
-		"--workspace=oyl3d"
+	packageprojects {
+		group = "Packages",
+		packages = Packages,
 	}
+
+	checkproject "On"
 end

@@ -96,7 +96,7 @@ jobs:
       - name: Generate Solutions
         working-directory: ${{ github.workspace }}
         run: |
-          premake5 ${{ env.visual_studio_version }} --workspace=oyl3d --cc=${{ env.toolset }} --no-premake-check
+          premake5 ${{ env.visual_studio_version }} --cc=${{ env.toolset }} --no-premake-check
 
       - name: Build
         working-directory: ${{ github.workspace }}

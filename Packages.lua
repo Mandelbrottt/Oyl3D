@@ -31,7 +31,7 @@ return {
 		},
 	},
 
-	GLFW = {
+	Glfw = {
 		Git = {
 			Url = "https://github.com/glfw/glfw.git",
 			Ref = "3.4",
@@ -43,7 +43,7 @@ return {
 			Ref = "v1.92.8",
 		},
 	},
-	ClangTooling = {
+	Clang = {
 		Remote = {
 			Url = (function()
 				if (os.host() == premake.WINDOWS) then

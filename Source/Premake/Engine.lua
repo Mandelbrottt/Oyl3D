@@ -1,20 +1,55 @@
 local Config = require "Config"
 local Package = require "Package"
 local Project = require "Project"
+local Workspace = require "Workspace"
 
 local Engine = {}
 
 Engine.Name = "Oyl3D"
 Engine.ShortName = "Oyl"
 
-local function CommonProjectSettings()
-	local prj = Project.CurrentProject()
+function Engine.DefaultProjectSettings()
+	location "."
+	
+	Engine.DefaultCppSettings()
+
+	filter("configurations:" .. Config.Configurations.Debug); do
+		defines { string.upper(Engine.ShortName) .. "_DEBUG=1" }
+	end
+	filter("configurations:" .. Config.Configurations.Development); do
+		defines { string.upper(Engine.ShortName) .. "_DEVELOPMENT=1" }
+	end
+	filter("configurations:" .. Config.Configurations.Profile); do
+		defines { string.upper(Engine.ShortName) .. "_PROFILE=1", }
+	end
+	filter("configurations:" .. Config.Configurations.Distribution); do
+		defines { string.upper(Engine.ShortName) .. "_DISTRIBUTION=1" }
+	end
+	filter "platforms:Editor"; do
+		defines { string.upper(Engine.ShortName) .. "_EDITOR=1" }
+	end
+	filter {}
+end
+
+function Engine.GenerateProjects()
+	local defaultSettingsFunc = Project.DefaultProjectSettings()
+	Project.DefaultProjectSettings(function(prj)
+
+	end)
+
+	Workspace.GenerateProjects()
+
+	Project.DefaultProjectSettings(defaultSettingsFunc)
+end
+
+function Engine.CommonProjectSettings()
+	local prj = Project.Current()
 
 	if not prj.language then language "C++" end
 	if not prj.kind then kind "None" end
 
 	if prj.language == premake.CPP then
-		Engine.CommonCppSettings()
+		Engine.DefaultCppSettings()
 	else
 		error(string.format("Invalid language \"%s\" in project \"%s\"", prj.language, prj.name))
 	end
@@ -64,7 +99,7 @@ function Engine.SetupProjectFromScript(script)
 	Project.PrependBlocks(function()
 		Project.Files()
 
-		CommonProjectSettings()
+		Engine.CommonProjectSettings()
 	end)
 
 	-- Run this outside of the prepend function, otherwise it gets overwritten by the project call to kind
@@ -112,7 +147,7 @@ end
 ---@field Packages? WorkspacePackage.List
 
 ---@param params? Engine.GenerateProjectParams
-function Engine.GenerateProjects(params)
+function Engine.GenerateProjectsOld(params)
 	params = params or {}
 
 	-- Generate package projects before engine projects to guarantee they will be ready when dependencies
@@ -122,7 +157,7 @@ function Engine.GenerateProjects(params)
 			Packages = params.Packages,
 			OnProject = function(package)
 				if package.Language == premake.CPP or package.Language == premake.C then
-					Engine.CommonCppSettings()
+					Engine.DefaultCppSettings()
 
 					if package.Kind == premake.SHAREDLIB then
 						filter "platforms:not *Editor*"; do
@@ -174,6 +209,17 @@ function Engine.GenerateProjects(params)
 		local prjIncludeFolder = path.join(prj.basedir, ".Include")
 		if os.isdir(prjIncludeFolder) then
 			os.rmdir(prjIncludeFolder)
+		end
+
+		if prj.oylGenerateSpyllInformation then
+			-- Add a symlink of the .Generated folder to .Include
+			os.linkdir(
+				path.join(prj.basedir, ".Generated"),
+				path.join(
+					prjIncludeFolder,
+					".Generated"
+				)
+			)
 		end
 
 		for _, link in ipairs(prj.links) do
@@ -234,9 +280,7 @@ function Engine.GenerateProjects(params)
 	RemoveUnreferencedProjects(wks, engineProjects)
 end
 
-function Engine.CommonCppSettings()
-	local prj = Project.CurrentProject()
-
+function Engine.DefaultCppSettings()
 	staticruntime "Off"
 	floatingpoint "Fast"
 	rtti "On"
@@ -335,11 +379,12 @@ function Engine.CommonCppSettings()
 		runtime "Release"
 		symbols "Off"
 	end
-
-	filter {}
 end
 
 function Engine.GenerateOylSpyllInformation()
+	local prj = Project.Current()
+	prj.oylGenerateSpyllInformation = true
+	
 	dependson {
 		"Oyl.Spyll",
 	}
@@ -390,7 +435,8 @@ function Engine.GenerateOylSpyllInformation()
 		path.join("%{wks.location}", "GeneratedInclude.cpp")
 	}
 
-	local generatedFilesPattern = "Generated/**"
+	local generatedDir = ".Generated"
+	local generatedFilesPattern = path.join(generatedDir, "**")
 
 	local debugGeneratedFile = true
 	if debugGeneratedFile then

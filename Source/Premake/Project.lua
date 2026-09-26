@@ -1,5 +1,8 @@
 local Project = {}
 
+local p = premake
+local api = p.api
+
 local CppFilePatterns = {
 	"*.cpp",
 	"*.h",
@@ -14,23 +17,33 @@ function Project.Script(script_path)
 	if path.getname(script_path) ~= "premake5.lua" and not path.hasextension(script_path, ".lua") then
 		script_path = path.join(script_path, "premake5.lua")
 	end
-	assert(loadfile(script_path))()
+	local script_dir = path.getdirectory(script_path)
+	local script_file = path.getname(script_path)
+
+	local cwd = os.getcwd()
+	os.chdir(script_dir)
+	assert(loadfile(script_file))()
+	os.chdir(cwd)
 end
 
 ---@return any
-function Project.CurrentProject()
-	local scope = premake.api.scope.current
-	if scope.class.name == "project" then
-		return scope
-	else
+function Project.Current()
+	local function recurseParent(scope)
+		if premake.container.classIsA(scope.class, "project") then
+			return scope
+		elseif scope.parent then
+			return recurseParent(scope.parent)
+		end
 		return nil
 	end
+	local scope = premake.api.scope.current
+	return recurseParent(scope)
 end
 
 ---@param callback fun()
 function Project.NestedFilter(callback)
 	-- Cache the current scope, block, and block index
-	local scope = assert(Project.CurrentProject())
+	local scope = assert(Project.Current())
 	local currentBlock = scope.current
 	local blocks = scope.blocks
 	local lastBlockIndex = #blocks
@@ -75,14 +88,14 @@ end
 
 ---@return string
 function Project.InsideProjectMacro()
-	local prj = Project.CurrentProject()
+	local prj = Project.Current()
 	local projectName = prj.name:gsub("[%.%-]", "_")
 	return string.format("_INSIDE_%s=1", projectName:upper())
 end
 
 ---@return string
 function Project.CurrentAssemblyMacro()
-	local prj = Project.CurrentProject()
+	local prj = Project.Current()
 	local projectName = prj.name:gsub("[%.%-]", "_")
 	return string.format("_CURRENT_ASSEMBLY=\"%s\"", projectName)
 end
@@ -90,7 +103,7 @@ end
 --- Get the list of files to be added to the current project
 --- File list is the set of all files in recursive directories without another premake5.lua script
 ---@return string[] The list of files to be associated with the project in the current working directory
-function Project.GetFileList()
+function Project.GetFileList(filePatternsTbl)
 	-- Generate list of project directories, defined as any subdirectory without
 	local premakeDirs = table.translate(
 		os.matchfiles("*/**premake5.lua"),
@@ -123,7 +136,7 @@ function Project.GetFileList()
 	local result = {}
 	for _, dir in ipairs(projectDirs) do
 		local patterns = table.translate(
-			CppFilePatterns,
+			filePatternsTbl,
 			function(pattern) return path.join(dir, pattern) end
 		)
 		for _, pattern in ipairs(patterns) do
@@ -137,8 +150,11 @@ end
 --- Add the Project File List to the active project
 ---@see Project.GetFileList
 function Project.Files()
-	local fileList = Project.GetFileList()
-	files(fileList)
+	filter { "language:c++" }; do
+		local fileList = Project.GetFileList(CppFilePatterns)
+		files(fileList)
+	end
+	filter {}
 end
 
 return Project
