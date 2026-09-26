@@ -207,7 +207,7 @@ function generate.removeNonProjectPackages(wks)
 			end
 		end
 	end
-	workspace()
+	workspace(wks.name)
 	
 	-- Remove all non-project packages from the workspace
 	-- We only want the link as an indicator to call the OnDepend function. 

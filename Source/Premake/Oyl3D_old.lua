@@ -106,7 +106,7 @@ function CppProjectDefaults.ProjectSettings()
 		pchsource(path.join(pchDir, "pch.cpp"))
 		files { path.join(pchDir, "pch.cpp") }
 		includedirs { pchDir }
-		defines { string.format([[OYL_PCH_FILE="%s/pch.h"]], os.getcwd()) }
+		defines { string.format('OYL_PCH_FILE="%s/pch.h"', os.getcwd()) }
 	end
 end
 

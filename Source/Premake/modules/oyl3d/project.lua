@@ -148,8 +148,12 @@ function generate.applySharedToStaticLib(prj)
 		return
 	end
 
+	if prj.kind ~= "SharedLib" then
+		return
+	end
+
 	project(prj.name)
-	filter { "platforms:Standalone", "kind:SharedLib" }; do
+	filter { "platforms:Standalone" }; do
 		kind "StaticLib"
 	end; filter {}
 end
@@ -321,20 +325,19 @@ function generate.connectProjectLinks(prj)
 		end
 
 		-- recurse links, add all children as links to parent projects for non-editor platform
-		-- local function addLinksRecursive(link)
-		-- 	links { link.links }
-		-- 	libdirs { link.libdirs }
-		-- 	for _, link in ipairs(link.links) do
-		-- 		local prj = wks.projects[link]
-		-- 		if prj then
-		-- 			addLinksRecursive(prj)
-		-- 		end
-		-- 	end
-		-- end
-		-- filter "platforms:not *Editor*"; do
-		-- 	addLinksRecursive(linkprj)
-		-- end
-		-- filter {}
+		local function addLinksRecursive(link)
+			links { link.links }
+			for _, link in ipairs(link.links) do
+				local prj = wks.projects[link]
+				if prj then
+					addLinksRecursive(prj)
+				end
+			end
+		end
+		filter { "kind:not StaticLib", "platforms:Standalone" }; do
+			addLinksRecursive(linkprj)
+		end
+		filter {}
 
 		local package = linkprj._package
 
@@ -382,6 +385,12 @@ function generate.connectProjectLinks(prj)
 
 		::continue::
 	end
+end
+
+function generate.removeStaticLibLinks(prj)
+	filter { "kind:StaticLib" }; do
+		removelinks { prj.links }
+	end; filter{}
 end
 
 function generate.createProjectLinkDirs(prj)

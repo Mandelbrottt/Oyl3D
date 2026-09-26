@@ -24,7 +24,6 @@ m.elements.projectGenerate = function(prj)
 	return {
 		m.generate.applyProjectDefaults,
 		m.generate.applySharedToStaticLib,
-		m.generate.connectProjectLinks,
 	}
 end
 
@@ -36,6 +35,13 @@ end
 
 m.elements.packageProject = function(prj)
 	return {}
+end
+
+m.elements.projectsComplete = function(prj)
+	return {
+		m.generate.connectProjectLinks,
+		m.generate.removeStaticLibLinks,
+	}
 end
 
 m.elements.workspaceComplete = function(wks)
@@ -69,8 +75,10 @@ function m.preBake()
 		local cwd = os.getcwd()
 		os.chdir(wks.basedir)
 		workspace(wks.name); do
+			-- Generate the workspace
 			p.callArray(m.elements.workspaceGenerate, wks)
 
+			-- Generate information for each project
 			for _, prj in ipairs(wks.projects) do
 				local cwd = os.getcwd()
 				os.chdir(prj.basedir)
@@ -80,6 +88,18 @@ function m.preBake()
 				os.chdir(cwd)
 			end
 
+			-- Per project configuration that depends on other projects' configurations
+			for _, prj in ipairs(wks.projects) do
+				local cwd = os.getcwd()
+				os.chdir(prj.basedir)
+				project(prj.name); do
+					p.callArray(m.elements.projectsComplete, prj)
+				end
+				os.chdir(cwd)
+			end
+
+			-- The workspace is now fully generated
+			workspace(wks.name)
 			p.callArray(m.elements.workspaceComplete, wks)
 		end
 		os.chdir(cwd)

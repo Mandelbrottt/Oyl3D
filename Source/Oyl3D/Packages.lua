@@ -6,9 +6,6 @@ local Packages = {
 		OnProject = function(prj)
 			language "C"
 			kind "SharedLib"
-			filter "platforms:not *Editor*"; do
-				kind "StaticLib"
-			end; filter {}
 
 			files {
 				"include/GLFW/**",
@@ -88,9 +85,6 @@ local Packages = {
 		OnProject = function(prj)
 			language "C++"
 			kind "SharedLib"
-			filter "platforms:not *Editor*"; do
-				kind "StaticLib"
-			end; filter {}
 
 			files {
 				"src/**",
@@ -130,22 +124,22 @@ local Packages = {
 			defines {
 				"SPDLOG_COMPILED_LIB",
 				"SPDLOG_LEVEL_NAMES={" ..
-				[[spdlog::string_view_t("TRACE", 5),]] ..
-				[[spdlog::string_view_t("DEBUG", 5),]] ..
-				[[spdlog::string_view_t("INFO", 4),]] ..
-				[[spdlog::string_view_t("WARNING", 7),]] ..
-				[[spdlog::string_view_t("ERROR", 5),]] ..
-				[[spdlog::string_view_t("FATAL", 5),]] ..
-				[[spdlog::string_view_t("OFF", 3),]] ..
+				'	spdlog::string_view_t("TRACE", 5),' ..
+				'	spdlog::string_view_t("DEBUG", 5),' ..
+				'	spdlog::string_view_t("INFO", 4),' ..
+				'	spdlog::string_view_t("WARNING", 7),' ..
+				'	spdlog::string_view_t("ERROR", 5),' ..
+				'	spdlog::string_view_t("FATAL", 5),' ..
+				'	spdlog::string_view_t("OFF", 3),' ..
 				"}",
 				"SPDLOG_SHORT_LEVEL_NAMES={" ..
-				[["T", "D", "I", "W", "E", "F", "O"]] ..
+				'	"T", "D", "I", "W", "E", "F", "O"' ..
 				"}",
 				"_SILENCE_STDEXT_ARR_ITERS_DEPRECATION_WARNING",
 				"FMT_UNICODE=0",
 				"FMT_USE_CONSTEVAL=0",
 			}
-			filter "kind:SharedLib"; do
+			filter { "kind:SharedLib" }; do
 				defines {
 					"spdlog_EXPORTS",
 					"SPDLOG_SHARED_LIB",
@@ -191,8 +185,6 @@ local Packages = {
 			includedirs {
 				"public"
 			}
-
-			-- packageincludedirs "public/tracy"
 
 			defines {
 				"TRACY_ENABLE",

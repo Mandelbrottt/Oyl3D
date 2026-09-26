@@ -5,8 +5,6 @@
 #include <sstream>
 #include <unordered_set>
 
-#include <clang/AST/QualTypeNames.h>
-
 #include "DeclPrinter.h"
 #include "Spyll.h"
 #include "StringHelper.h"

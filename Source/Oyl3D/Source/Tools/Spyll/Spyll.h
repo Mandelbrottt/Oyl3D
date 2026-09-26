@@ -1,6 +1,8 @@
 #pragma once
 
-#pragma warning(push, 1)
+#pragma warning(push)
+#pragma warning(disable : 4702)
+#include <clang/AST/QualTypeNames.h>
 #include <clang/AST/RecursiveASTVisitor.h>
 #include <clang/Frontend/CompilerInstance.h>
 #include <clang/Frontend/FrontendAction.h>
