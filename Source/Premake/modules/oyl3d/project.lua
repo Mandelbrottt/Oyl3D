@@ -324,6 +324,10 @@ function generate.connectProjectLinks(prj)
 			goto continue
 		end
 
+		if linkprj.kind == "None" then
+			table.remove(prj.links, linkindex)
+		end
+
 		-- recurse links, add all children as links to parent projects for non-editor platform
 		local function addLinksRecursive(link)
 			links { link.links }
@@ -384,6 +388,19 @@ function generate.connectProjectLinks(prj)
 		end
 
 		::continue::
+	end
+end
+
+function generate.removeLinksToNoneKindProjects(prj)
+	local wks = prj.workspace
+	for index = #prj.links, 1, -1 do
+		local link = prj.links[index]
+		local linkprj = wks.projects[link]
+		if linkprj and linkprj.kind == "None" then
+			removelinks {
+				link
+			}
+		end
 	end
 end
 

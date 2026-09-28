@@ -41,6 +41,7 @@ m.elements.projectsComplete = function(prj)
 	return {
 		m.generate.connectProjectLinks,
 		m.generate.removeStaticLibLinks,
+		-- m.generate.removeLinksToNoneKindProjects,
 	}
 end
 
