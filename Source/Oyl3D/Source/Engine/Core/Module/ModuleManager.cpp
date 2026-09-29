@@ -6,15 +6,18 @@ namespace Oyl
 {
 	struct ModuleInfo
 	{
-		String name;
+		String moduleName;
 
-		Platform::SharedLibraryHandle libHandle;
-		IModuleInterface* interface;
+		Platform::SharedLibraryHandle sharedLibHandle;
+		IModuleInterface* modulePointer;
 	};
 
 	struct ModuleManager::Impl
 	{
 		std::unordered_map<std::string, ModuleInfo> modules;
+
+		ModuleInfo*
+		FindModule(const String& a_moduleName);
 	};
 
 	ModuleManager::ModuleManager()
@@ -32,38 +35,49 @@ namespace Oyl
 		return manager;
 	}
 
-	bool
+	IModuleInterface*
 	ModuleManager::LoadModule(const String& a_moduleName)
 	{
 		if (auto iter = m_impl->modules.find(a_moduleName); iter != m_impl->modules.end())
 		{
-			return true;
+			return iter->second.modulePointer;
 		}
 
+		// Get handle to shared library
 		Platform::SharedLibraryHandle libHandle;
 		Platform::LoadSharedLibrary(&libHandle, a_moduleName);
 		if (libHandle == nullptr)
-			return false;
+			return nullptr;
 
+		// Get handle to creation function
 		using NewModuleInterfaceFn = IModuleInterface*(*)();
-		String symbolName = a_moduleName + String("_NewModuleInterface");
+		String symbolName = String("InitModule_") + a_moduleName;
 		auto getModuleInterface = (NewModuleInterfaceFn) Platform::GetSymbolFromSharedLibrary(libHandle, symbolName);
+		if (getModuleInterface == nullptr)
+			return nullptr;
 
-		ModuleInfo info;
-		info.libHandle = libHandle;
-		info.name = a_moduleName;
-		info.interface = getModuleInterface();
-		m_impl->modules.emplace(a_moduleName, std::move(info));
+		// Get handle to module interface
+		IModuleInterface* modulePtr = getModuleInterface();
+		if (modulePtr == nullptr)
+			return nullptr;
 
-		return true;
+		// Module load succeeded!
+		ModuleInfo& moduleInfo = m_impl->modules.emplace(a_moduleName, ModuleInfo {}).first->second;
+		moduleInfo.sharedLibHandle = libHandle;
+		moduleInfo.moduleName = a_moduleName;
+		moduleInfo.modulePointer = modulePtr;
+
+		moduleInfo.modulePointer->OnStartModule();
+
+		return modulePtr;
 	}
 
 	IModuleInterface*
-	ModuleManager::GetModuleInterface(const String& a_moduleName) const
+	ModuleManager::GetModule(const String& a_moduleName) const
 	{
 		if (auto iter = m_impl->modules.find(a_moduleName); iter != m_impl->modules.end())
 		{
-			return iter->second.interface;
+			return iter->second.modulePointer;
 		}
 		return nullptr;
 	}
@@ -73,24 +87,27 @@ namespace Oyl
 	{
 		if (auto iter = m_impl->modules.find(a_moduleName); iter != m_impl->modules.end())
 		{
-			using DeleteModuleInterfaceFn = void(*)(IModuleInterface*);
+			ModuleInfo& moduleInfo = iter->second;
 
-			String symbolName = a_moduleName + String("_DeleteModuleInterface");
-			auto deleteModuleInterface =
-				(DeleteModuleInterfaceFn) Platform::GetSymbolFromSharedLibrary(iter->second.libHandle, symbolName);
-			deleteModuleInterface(iter->second.interface);
+			moduleInfo.modulePointer->OnStopModule();
+			delete moduleInfo.modulePointer;
+			moduleInfo.modulePointer = nullptr;
 
+			Platform::FreeSharedLibrary(moduleInfo.sharedLibHandle);
 			m_impl->modules.erase(iter);
 			return true;
 		}
+
 		return false;
 	}
 
-	bool
-	ModuleManager::UnloadModuleUnsafe(const String& a_moduleName)
+	ModuleInfo*
+	ModuleManager::Impl::FindModule(const String& a_moduleName)
 	{
-		(void) a_moduleName;
-		return false;
-		//return TODO_IMPLEMENT_ME;
+		auto iter = modules.find(a_moduleName);
+		if (iter == modules.end())
+			return nullptr;
+
+		return &iter->second;
 	}
 }

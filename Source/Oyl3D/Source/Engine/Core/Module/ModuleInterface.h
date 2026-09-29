@@ -4,19 +4,23 @@ namespace Oyl
 {
 	class IModuleInterface
 	{
-	protected:
+	public:
 		virtual
 		~IModuleInterface() = default;
 
-	public:
 		virtual
 		void
-		OnPreInit() {}
+		OnStartModule() {}
 
 		virtual
 		void
-		OnPostInit() {}
+		OnStopModule() {}
 
-	public:
+		virtual
+		bool
+		SupportsHotReload()
+		{
+			return true;
+		}
 	};
 }

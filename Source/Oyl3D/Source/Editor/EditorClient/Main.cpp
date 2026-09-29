@@ -1,4 +1,4 @@
-#include <cstdio>
+#include <iostream>
 
 #include "Core/Module/ModuleManager.h"
 
@@ -9,7 +9,7 @@ main(int a_argc, char** a_argv)
 	(void) a_argv;
 	printf("Hello World!\n");
 
-	Oyl::ModuleManager::Get().LoadModule("Test");
+	Oyl::ModuleManager::LoadModulePointer("Test");
 	Oyl::ModuleManager::Get().UnloadModule("Test");
 }
 
@@ -33,6 +33,8 @@ WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	freopen_s(&errFileStream, "CONOUT$", "w", stderr);
 
 	int result = main(__argc, __argv);
+
+	std::cin.get();
 
 	fclose(inFileStream);
 	fclose(outFileStream);

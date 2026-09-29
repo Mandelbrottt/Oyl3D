@@ -15,20 +15,22 @@ public:
 	{
 		printf("Delete TestModule!\n");
 	}
+
+	void OnStartModule() override
+	{
+		puts("OnStart TestModule");
+	}
+
+	void OnStopModule() override
+	{
+		puts("OnStop TestModule");
+	}
 };
 
 extern "C"
 __OYL_EXPORT_ATTR
 Oyl::IModuleInterface*
-Test_NewModuleInterface()
+InitModule_Test()
 {
 	return new TestModuleInterface();
-}
-
-extern "C"
-__OYL_EXPORT_ATTR
-void
-Test_DeleteModuleInterface(TestModuleInterface* a_interface)
-{
-	delete a_interface;
 }

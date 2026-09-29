@@ -9,7 +9,7 @@ namespace Oyl
 {
 	using ModuleHandle = struct _ModuleHandle*;
 
-	class CORE_EXPORT ModuleManager
+	class ModuleManager
 	{
 	protected:
 		ModuleManager();
@@ -17,21 +17,40 @@ namespace Oyl
 		~ModuleManager();
 
 	public:
+		CORE_EXPORT
 		static
 		ModuleManager&
 		Get();
 
-		bool
+		CORE_EXPORT
+		IModuleInterface*
 		LoadModule(const String& a_moduleName);
 
+		CORE_EXPORT
 		IModuleInterface*
-		GetModuleInterface(const String& a_moduleName) const;
+		GetModule(const String& a_moduleName) const;
 
+		CORE_EXPORT
 		bool
 		UnloadModule(const String& a_moduleName);
 
-		bool
-		UnloadModuleUnsafe(const String& a_moduleName);
+		template<typename TInterface = IModuleInterface>
+			requires (std::is_convertible_v<TInterface*, IModuleInterface*>)
+		static
+		TInterface*
+		LoadModulePointer(const String& a_moduleName)
+		{
+			return static_cast<TInterface*>(Get().LoadModule(a_moduleName));
+		}
+
+		template<typename TInterface = IModuleInterface>
+			requires (std::is_convertible_v<TInterface*, IModuleInterface*>)
+		static
+		TInterface*
+		GetModulePointer(const String& a_moduleName)
+		{
+			return static_cast<TInterface*>(Get().GetModule(a_moduleName));
+		}
 
 	private:
 		struct Impl;
