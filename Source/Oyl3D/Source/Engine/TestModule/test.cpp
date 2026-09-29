@@ -27,10 +27,4 @@ public:
 	}
 };
 
-extern "C"
-__OYL_EXPORT_ATTR
-Oyl::IModuleInterface*
-InitModule_Test()
-{
-	return new TestModuleInterface();
-}
+OYL_MODULE_DECLARE(Test, TestModuleInterface)

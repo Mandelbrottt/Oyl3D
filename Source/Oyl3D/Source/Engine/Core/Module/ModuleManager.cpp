@@ -50,14 +50,31 @@ namespace Oyl
 			return nullptr;
 
 		// Get handle to creation function
-		using NewModuleInterfaceFn = IModuleInterface*(*)();
-		String symbolName = String("InitModule_") + a_moduleName;
-		auto getModuleInterface = (NewModuleInterfaceFn) Platform::GetSymbolFromSharedLibrary(libHandle, symbolName);
-		if (getModuleInterface == nullptr)
+		using ModuleDepsFn = void(*)(int*, const char***);
+		String depsSymbolName = String("ModuleDeps_") + a_moduleName;
+		auto moduleDepsFn = (ModuleDepsFn) Platform::GetSymbolFromSharedLibrary(libHandle, depsSymbolName);
+		if (moduleDepsFn == nullptr)
+			return nullptr;
+
+		std::vector<std::string> deps;
+		int nDeps;
+		const char** depsPtr;
+		moduleDepsFn(&nDeps, &depsPtr);
+		deps.reserve(nDeps);
+		for (int i = 0; i < nDeps; i++)
+			deps.emplace_back(depsPtr[i]);
+		for (const auto& dep : deps)
+			puts(dep.c_str());
+
+		// Get handle to creation function
+		using ModuleInitFn = IModuleInterface*(*)();
+		String initSymbolName = String("ModuleInit_") + a_moduleName;
+		auto moduleInitFn = (ModuleInitFn) Platform::GetSymbolFromSharedLibrary(libHandle, initSymbolName);
+		if (moduleInitFn == nullptr)
 			return nullptr;
 
 		// Get handle to module interface
-		IModuleInterface* modulePtr = getModuleInterface();
+		IModuleInterface* modulePtr = moduleInitFn();
 		if (modulePtr == nullptr)
 			return nullptr;
 

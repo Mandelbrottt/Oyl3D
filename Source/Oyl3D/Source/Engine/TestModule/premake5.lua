@@ -8,5 +8,9 @@ project "Test"; do
 
 	oyl3d.project.files()
 
+	links {
+		"Core"
+	}
+
 	-- reflection "On"
 end

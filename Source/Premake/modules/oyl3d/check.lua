@@ -31,7 +31,7 @@ function private.addLinkToAllProjects(wks)
 		os.chdir(prj.basedir)
 
 		project(prj.name); do
-			links { "Premake" }
+			dependson { "Premake" }
 		end
 	end
 	os.chdir(cwd)

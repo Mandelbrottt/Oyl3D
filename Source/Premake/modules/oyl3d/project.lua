@@ -158,6 +158,21 @@ function generate.applySharedToStaticLib(prj)
 	end; filter {}
 end
 
+function generate.defineMacros(prj)
+	defines {
+		'OYL_CURRENT_MODULE="%{prj.name}"',
+		'OYL_CURRENT_MODULE_AS_MACRO=%{prj.name:upper()}',
+		[[%{prj.name:upper()}_DEPENDENCIES={ %{
+			table.implode(
+				table.filter(prj.links, function(proj) return not proj._package end),
+				'"',
+				'"',
+				','
+			)
+		} }]]
+	}
+end
+
 function generate.generateReflectionInfo(prj)
 	local project_action_call_array = oyl3d.elements.workspaceAction()
 	assert(type(project_action_call_array) == "table")

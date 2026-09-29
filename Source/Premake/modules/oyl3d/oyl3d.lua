@@ -29,6 +29,7 @@ end
 
 m.elements.workspaceProject = function(prj)
 	return {
+		m.generate.defineMacros,
 		m.generate.generateReflectionInfo
 	}
 end
