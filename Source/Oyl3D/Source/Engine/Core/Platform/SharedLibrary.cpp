@@ -81,10 +81,12 @@ Windows_LoadSharedLibrary(
 	HMODULE hModule = LoadLibraryExA(a_library.data(), NULL, 0);
 
 	if (a_outResult)
+	{
 		if (hModule)
 			*a_outResult = SharedLibraryLoadResult::Success;
 		else
 			*a_outResult = SharedLibraryLoadResult::Failure;
+	}
 
 	return reinterpret_cast<SharedLibraryHandle>(hModule);
 }
@@ -99,10 +101,12 @@ Windows_FreeSharedLibrary(
 	BOOL result = FreeLibrary(hModule);
 
 	if (a_outResult)
+	{
 		if (result)
 			*a_outResult = SharedLibraryFreeResult::Success;
 		else
 			*a_outResult = SharedLibraryFreeResult::Failure;
+	}
 
 	return result;
 }
@@ -115,13 +119,15 @@ Windows_GetSymbolFromSharedLibrary(
 )
 {
 	HMODULE hModule = reinterpret_cast<HMODULE>(a_handle);
-	void* proc = GetProcAddress(hModule, a_symbol.data());
+	void* proc = (void*) GetProcAddress(hModule, a_symbol.data());
 
 	if (a_outResult)
+	{
 		if (proc)
 			*a_outResult = SharedLibrarySymbolResult::Success;
 		else
 			*a_outResult = SharedLibrarySymbolResult::Failure;
+	}
 
 	return proc;
 }

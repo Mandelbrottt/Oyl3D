@@ -162,14 +162,6 @@ function generate.defineMacros(prj)
 	defines {
 		'OYL_CURRENT_MODULE="%{prj.name}"',
 		'OYL_CURRENT_MODULE_AS_MACRO=%{prj.name:upper()}',
-		[[%{prj.name:upper()}_DEPENDENCIES={ %{
-			table.implode(
-				table.filter(prj.links, function(proj) return not proj._package end),
-				'"',
-				'"',
-				','
-			)
-		} }]]
 	}
 	local dependenciesString = table.implode(
 		table.filter(prj.links, function(proj) return not proj._package end),
