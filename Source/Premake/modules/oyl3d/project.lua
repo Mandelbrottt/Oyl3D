@@ -171,6 +171,19 @@ function generate.defineMacros(prj)
 			)
 		} }]]
 	}
+	local dependenciesString = table.implode(
+		table.filter(prj.links, function(proj) return not proj._package end),
+		'"',
+		'"',
+		','
+	)
+	if dependenciesString == "" then
+		dependenciesString = '""'
+	end
+	defines {
+		"%{prj.name:upper()}_DEPENDENCIES={ ".. dependenciesString .. " }"
+	}
+
 end
 
 function generate.generateReflectionInfo(prj)

@@ -2,14 +2,18 @@
 
 #include <unordered_map>
 
+#include "Core/Containers/Array.h"
+
 namespace Oyl
 {
 	struct ModuleInfo
 	{
-		String moduleName;
+		String name;
+		Array<String> dependencies;
+		IModuleInterface* interfacePointer;
 
 		Platform::SharedLibraryHandle sharedLibHandle;
-		IModuleInterface* modulePointer;
+		int refCount = 0;
 	};
 
 	struct ModuleManager::Impl
@@ -36,57 +40,97 @@ namespace Oyl
 	}
 
 	IModuleInterface*
-	ModuleManager::LoadModule(const String& a_moduleName)
+	ModuleManager::LoadModule(const String& a_moduleName, ModuleLoadResult* a_outResult)
 	{
 		if (auto iter = m_impl->modules.find(a_moduleName); iter != m_impl->modules.end())
 		{
-			return iter->second.modulePointer;
+			ModuleInfo& info = iter->second;
+			info.refCount++;
+			*a_outResult = ModuleLoadResult::Success;
+			return info.interfacePointer;
 		}
 
-		// Get handle to shared library
-		Platform::SharedLibraryHandle libHandle;
-		Platform::LoadSharedLibrary(&libHandle, a_moduleName);
-		if (libHandle == nullptr)
-			return nullptr;
+		ModuleInfo moduleInfo;
+		moduleInfo.name = a_moduleName;
+		moduleInfo.refCount = 1;
 
-		// Get handle to creation function
+		// Cleanup code if the module fails to load
+		auto failWithResult = [&](IModuleInterface* a_interface, ModuleLoadResult a_result)
+		{
+			if (moduleInfo.sharedLibHandle)
+			{
+				Platform::FreeSharedLibrary(moduleInfo.sharedLibHandle);
+				moduleInfo.sharedLibHandle = nullptr;
+			}
+			if (a_outResult)
+				*a_outResult = a_result;
+			return a_interface;
+		};
+
+		// Get handle to shared library
+		Platform::LoadSharedLibrary(&moduleInfo.sharedLibHandle, a_moduleName);
+		if (moduleInfo.sharedLibHandle == nullptr)
+			return failWithResult(nullptr, ModuleLoadResult::Failure_LibraryNotFound);
+
+		// Get handle to dependencies function
 		using ModuleDepsFn = void(*)(int*, const char***);
 		String depsSymbolName = String("ModuleDeps_") + a_moduleName;
-		auto moduleDepsFn = (ModuleDepsFn) Platform::GetSymbolFromSharedLibrary(libHandle, depsSymbolName);
-		if (moduleDepsFn == nullptr)
-			return nullptr;
+		auto moduleDepsFn =
+			(ModuleDepsFn) Platform::GetSymbolFromSharedLibrary(moduleInfo.sharedLibHandle, depsSymbolName);
 
-		std::vector<std::string> deps;
-		int nDeps;
-		const char** depsPtr;
-		moduleDepsFn(&nDeps, &depsPtr);
-		deps.reserve(nDeps);
-		for (int i = 0; i < nDeps; i++)
-			deps.emplace_back(depsPtr[i]);
-		for (const auto& dep : deps)
-			puts(dep.c_str());
+		// If ModuleDeps_ function exists, get list of dependencies
+		if (moduleDepsFn != nullptr)
+		{
+			int nDeps = 0;
+			const char** depsPtr = nullptr;
+			moduleDepsFn(&nDeps, &depsPtr);
+			if (depsPtr && nDeps > 0)
+			{
+				moduleInfo.dependencies.reserve(nDeps);
+				for (int i = 0; i < nDeps; i++)
+				{
+					const char* depStr = depsPtr[i];
+
+					// Try to load the dependency
+					ModuleLoadResult dependencyLoadResult;
+					auto dependencyInterface = LoadModule(depStr, &dependencyLoadResult);
+					if (!dependencyInterface)
+						switch (dependencyLoadResult)
+						{
+							case ModuleLoadResult::Failure_LibraryNotFound:
+								return failWithResult(nullptr, ModuleLoadResult::Failure_DependencyNotFound);
+							case ModuleLoadResult::Failure_InitFunctionNotFound:
+							case ModuleLoadResult::Failure_InterfaceWasNull:
+								return failWithResult(nullptr, ModuleLoadResult::Failure_DependencyFailure);
+							default:
+								throw "ModuleLoadResult case not implemented in Dependency Resolution!";
+						}
+
+					moduleInfo.dependencies.emplace_back(depStr);
+				}
+			}
+		}
 
 		// Get handle to creation function
 		using ModuleInitFn = IModuleInterface*(*)();
 		String initSymbolName = String("ModuleInit_") + a_moduleName;
-		auto moduleInitFn = (ModuleInitFn) Platform::GetSymbolFromSharedLibrary(libHandle, initSymbolName);
+		auto moduleInitFn =
+			(ModuleInitFn) Platform::GetSymbolFromSharedLibrary(moduleInfo.sharedLibHandle, initSymbolName);
 		if (moduleInitFn == nullptr)
-			return nullptr;
+			return failWithResult(nullptr, ModuleLoadResult::Failure_InitFunctionNotFound);
 
 		// Get handle to module interface
-		IModuleInterface* modulePtr = moduleInitFn();
-		if (modulePtr == nullptr)
-			return nullptr;
+		IModuleInterface* interface = moduleInitFn();
+		if (interface == nullptr)
+			return failWithResult(nullptr, ModuleLoadResult::Failure_InterfaceWasNull);
+		moduleInfo.interfacePointer = interface;
 
 		// Module load succeeded!
-		ModuleInfo& moduleInfo = m_impl->modules.emplace(a_moduleName, ModuleInfo {}).first->second;
-		moduleInfo.sharedLibHandle = libHandle;
-		moduleInfo.moduleName = a_moduleName;
-		moduleInfo.modulePointer = modulePtr;
-
-		moduleInfo.modulePointer->OnStartModule();
-
-		return modulePtr;
+		m_impl->modules.emplace(a_moduleName, std::move(moduleInfo));
+		interface->OnStartModule();
+		if (a_outResult)
+			*a_outResult = ModuleLoadResult::Success;
+		return interface;
 	}
 
 	IModuleInterface*
@@ -94,28 +138,43 @@ namespace Oyl
 	{
 		if (auto iter = m_impl->modules.find(a_moduleName); iter != m_impl->modules.end())
 		{
-			return iter->second.modulePointer;
+			return iter->second.interfacePointer;
 		}
 		return nullptr;
 	}
 
 	bool
-	ModuleManager::UnloadModule(const String& a_moduleName)
+	ModuleManager::UnloadModule(const String& a_moduleName, ModuleUnloadResult* a_outResult)
 	{
-		if (auto iter = m_impl->modules.find(a_moduleName); iter != m_impl->modules.end())
+		auto withResult = [&](bool a_didUnload, ModuleUnloadResult a_result)
 		{
-			ModuleInfo& moduleInfo = iter->second;
+			if (a_outResult)
+				*a_outResult = a_result;
+			return a_didUnload;
+		};
 
-			moduleInfo.modulePointer->OnStopModule();
-			delete moduleInfo.modulePointer;
-			moduleInfo.modulePointer = nullptr;
+		auto iter = m_impl->modules.find(a_moduleName);
+		if (iter == m_impl->modules.end())
+			return withResult(false, ModuleUnloadResult::Failure_NotFound);
+
+		ModuleInfo& moduleInfo = iter->second;
+		moduleInfo.refCount--;
+		if (moduleInfo.refCount == 0)
+		{
+			moduleInfo.interfacePointer->OnStopModule();
+			delete moduleInfo.interfacePointer;
+			moduleInfo.interfacePointer = nullptr;
+
+			// Unload dependencies after requested module so that we unload in reverse order
+			for (const auto& dependency : moduleInfo.dependencies)
+				UnloadModule(dependency);
 
 			Platform::FreeSharedLibrary(moduleInfo.sharedLibHandle);
 			m_impl->modules.erase(iter);
-			return true;
+			return withResult(true, ModuleUnloadResult::Success);
 		}
 
-		return false;
+		return withResult(false, ModuleUnloadResult::Failure_StillInUse);
 	}
 
 	ModuleInfo*

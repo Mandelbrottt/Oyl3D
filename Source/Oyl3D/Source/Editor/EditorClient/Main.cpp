@@ -7,7 +7,9 @@ main(int a_argc, char** a_argv)
 {
 	(void) a_argc;
 	(void) a_argv;
-	printf("Hello World!\n");
+	puts("Hello World!");
+
+	//Oyl::ModuleManager::LoadModulePointer("Core");
 
 	Oyl::ModuleManager::LoadModulePointer("Test");
 	Oyl::ModuleManager::Get().UnloadModule("Test");

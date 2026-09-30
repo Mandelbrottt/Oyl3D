@@ -9,6 +9,26 @@ namespace Oyl
 {
 	using ModuleHandle = struct _ModuleHandle*;
 
+	enum class ModuleLoadResult : uint32_t
+	{
+		Success = 0,
+
+		Failure_LibraryNotFound,
+		Failure_InitFunctionNotFound,
+		Failure_InterfaceWasNull,
+
+		Failure_DependencyFailure,
+		Failure_DependencyNotFound,
+	};
+
+	enum class ModuleUnloadResult : uint32_t
+	{
+		Success = 0,
+
+		Failure_NotFound,
+		Failure_StillInUse,
+	};
+
 	class ModuleManager
 	{
 	protected:
@@ -24,7 +44,7 @@ namespace Oyl
 
 		CORE_EXPORT
 		IModuleInterface*
-		LoadModule(const String& a_moduleName);
+		LoadModule(const String& a_moduleName, ModuleLoadResult* a_outResult = nullptr);
 
 		CORE_EXPORT
 		IModuleInterface*
@@ -32,7 +52,7 @@ namespace Oyl
 
 		CORE_EXPORT
 		bool
-		UnloadModule(const String& a_moduleName);
+		UnloadModule(const String& a_moduleName, ModuleUnloadResult* a_outResult = nullptr);
 
 		template<typename TInterface = IModuleInterface>
 			requires (std::is_convertible_v<TInterface*, IModuleInterface*>)
@@ -82,6 +102,12 @@ namespace Oyl
 	OYL_MODULE_DEPS_FN_NAME(_module_name_)(int* a_depc, const char*** a_depv) \
 	{ \
 		static const char* deps[] = CAT2(EXPAND(OYL_CURRENT_MODULE_AS_MACRO), _DEPENDENCIES); \
-		*a_depc = std::size(deps); \
-		*a_depv = deps; \
+		if (**deps == '\0') \
+		{ \
+			*a_depc = 0; \
+			*a_depv = nullptr; \
+		} else { \
+			*a_depc = std::size(deps); \
+			*a_depv = deps; \
+		} \
 	}

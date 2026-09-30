@@ -7,13 +7,13 @@ class TestModuleInterface : public Oyl::IModuleInterface
 public:
 	TestModuleInterface()
 	{
-		printf("New TestModule!\n");
+		puts("New TestModule!");
 	}
 
 	virtual
 	~TestModuleInterface()
 	{
-		printf("Delete TestModule!\n");
+		puts("Delete TestModule!");
 	}
 
 	void OnStartModule() override
