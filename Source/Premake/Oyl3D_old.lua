@@ -108,10 +108,6 @@ function CppProjectDefaults.ProjectSettings()
 		includedirs { pchDir }
 		defines { string.format('OYL_PCH_FILE="%s/pch.h"', os.getcwd()) }
 	end
-	defines {
-		"%{'__MODULE_' .. prj.name:gsub('[%.%-% ]', '_'):upper()}",
-		"%{'MODULE_NAME=\"' .. prj.name .. '\"'}"
-	}
 	filter "kind:SharedLib"; do
 		defines {
 			"%{prj.name:gsub('[%.%-% ]', '_'):upper() .. '_SHAREDLIB'}"

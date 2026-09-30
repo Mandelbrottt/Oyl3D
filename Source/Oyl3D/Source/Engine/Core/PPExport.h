@@ -23,7 +23,7 @@
 
 #if !defined(CORE_EXPORT)
 #	if defined(CORE_SHAREDLIB)
-#		if defined(__MODULE_CORE)
+#		if defined(OYL_WITHIN_MODULE_CORE)
 #			define CORE_EXPORT __OYL_EXPORT_ATTR
 #		else
 #			define CORE_EXPORT __OYL_IMPORT_ATTR

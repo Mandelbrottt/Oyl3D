@@ -160,8 +160,9 @@ end
 
 function generate.defineMacros(prj)
 	defines {
-		'OYL_CURRENT_MODULE="%{prj.name}"',
-		'OYL_CURRENT_MODULE_AS_MACRO=%{prj.name:upper()}',
+		"OYL_WITHIN_MODULE_" .. prj.name:upper():gsub("[%.%-% ]", "_"),
+		"OYL_CURRENT_MODULE=\"" .. prj.name .. "\"",
+		"OYL_CURRENT_MODULE_AS_MACRO=" .. prj.name:upper():gsub("[%.%-% ]", "_"),
 	}
 	local dependenciesString = table.implode(
 		table.filter(prj.links, function(proj) return not proj._package end),
@@ -173,9 +174,8 @@ function generate.defineMacros(prj)
 		dependenciesString = '""'
 	end
 	defines {
-		"%{prj.name:upper()}_DEPENDENCIES={ ".. dependenciesString .. " }"
+		prj.name:upper():gsub("[%.%-% ]", "_") .. '_DEPENDENCIES={ '.. dependenciesString .. ' }'
 	}
-
 end
 
 function generate.generateReflectionInfo(prj)
