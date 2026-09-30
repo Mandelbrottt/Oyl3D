@@ -76,6 +76,8 @@ namespace Oyl
 		struct Impl;
 		Impl* m_impl;
 	};
+
+	class PassThroughModuleInterface : public IModuleInterface {};
 }
 
 #define OYL_MODULE_INIT_FN_NAME(_module_name_) ModuleInit_##_module_name_

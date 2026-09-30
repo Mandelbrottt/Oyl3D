@@ -68,7 +68,7 @@ namespace Oyl
 		};
 
 		// Get handle to shared library
-		Platform::LoadSharedLibrary(&moduleInfo.sharedLibHandle, a_moduleName);
+		moduleInfo.sharedLibHandle = Platform::LoadSharedLibrary(a_moduleName);
 		if (moduleInfo.sharedLibHandle == nullptr)
 			return failWithResult(nullptr, ModuleLoadResult::Failure_LibraryNotFound);
 
