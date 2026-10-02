@@ -1,6 +1,7 @@
 #include <iostream>
 
-#include "Core/Module/ModuleManager.h"
+#include <Core/Logging/Logging.h>
+#include <Core/Module/ModuleManager.h>
 
 int
 main(int a_argc, char** a_argv)
@@ -9,10 +10,19 @@ main(int a_argc, char** a_argv)
 	(void) a_argv;
 	puts("Hello World!");
 
-	//Oyl::ModuleManager::LoadModulePointer("Core");
+	Oyl::ModuleManager::LoadModulePointer("Core");
+	Oyl::ModuleManager::LoadModulePointer("SpdLogLogger");
 
 	Oyl::ModuleManager::LoadModulePointer("Test");
+
+	Oyl::Log("Testing {} {} {}", 1, 2, 3);
+
+	Oyl::Internal::g_currentLogger->Flush();
+
 	Oyl::ModuleManager::Get().UnloadModule("Test");
+
+	Oyl::ModuleManager::Get().UnloadModule("SpdLogLogger");
+	Oyl::ModuleManager::Get().UnloadModule("Core");
 }
 
 #if defined(_WIN32)

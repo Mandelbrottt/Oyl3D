@@ -2,7 +2,7 @@ local oyl3d = premake.modules.oyl3d
 
 group "Oyl/Engine"
 
-project "Core"; do
+project "SpdLogLogger"; do
 	language "C++"
 	kind "SharedLib"
 
@@ -11,6 +11,7 @@ project "Core"; do
 	-- reflection "On"
 
 	uses {
-		"SpdLogLogger"
+		"Core",
+		"SpdLog"
 	}
 end
