@@ -2,24 +2,35 @@
 
 #include <string>
 
+#include "Core/Types/PrimitiveTypes.h"
+
 namespace Oyl
 {
 	class StringView : public std::string_view
 	{
 	public:
+		constexpr
 		StringView() = default;
+
+		constexpr
 		StringView(const StringView& a_rhs) = default;
+
+		constexpr
 		StringView&
 		operator =(const StringView& a_rhs) = default;
 
+		constexpr
 		StringView(StringView&& a_rhs) noexcept = default;
 
+		constexpr
 		StringView&
 		operator =(StringView&& a_rhs) noexcept = default;
 
+		constexpr
 		StringView(const std::string_view& a_rhs) noexcept
 			: std::string_view(a_rhs) {}
 
+		constexpr
 		StringView&
 		operator =(const std::string_view& a_rhs) noexcept
 		{
@@ -28,9 +39,11 @@ namespace Oyl
 			return *this;
 		}
 
+		constexpr
 		StringView(std::string_view&& a_rhs) noexcept
 			: std::string_view(std::move(a_rhs)) {}
 
+		constexpr
 		StringView&
 		operator =(std::string_view&& a_rhs) noexcept
 		{
@@ -39,15 +52,27 @@ namespace Oyl
 			return *this;
 		}
 
+		constexpr
 		StringView(const char* a_rhs) noexcept
 			: std::string_view(a_rhs) {}
 
+		constexpr
+		StringView(const char* a_rhs, uint a_length) noexcept
+			: std::string_view(a_rhs, a_length) {}
+
+		constexpr
 		StringView&
 		operator =(const char* a_rhs) noexcept
 		{
 			std::string_view temp(a_rhs);
 			std::swap<std::string_view>(*this, temp);
 			return *this;
+		}
+
+		const char*
+		Data() const
+		{
+			return std::string_view::data();
 		}
 	};
 

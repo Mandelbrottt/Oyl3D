@@ -121,7 +121,7 @@ local Packages = {
 	SpdLog = {
 		OnProject = function(prj)
 			language "C++"
-			kind "SharedLib"
+			kind "StaticLib"
 
 			files {
 				"src/**",

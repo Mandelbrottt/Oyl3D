@@ -159,12 +159,6 @@ function generate.applySharedToStaticLib(prj)
 end
 
 function generate.workspaceProjectUsages(prj)
-	usage "PUBLIC"; do
-		defines {
-			"OYL_MODULE_AVAILABLE_" .. prj.name:upper():gsub("[%.%-% ]", "_")
-		}
-	end
-
 	usage "INTERFACE"; do
 		links { prj.name }
 	end
@@ -196,6 +190,18 @@ function generate.defineMacros(prj)
 	defines {
 		prj.name:upper():gsub("[%.%-% ]", "_") .. '_DEPENDENCIES={ ' .. dependenciesString .. ' }'
 	}
+
+	usage "PUBLIC"; do
+		defines {
+			"OYL_MODULE_AVAILABLE_" .. prj.name:upper():gsub("[%.%-% ]", "_")
+		}
+		filter { "kind:SharedLib" }; do
+			defines {
+				prj.name:upper():gsub("[%.%-% ]", "_") .. "_SHAREDLIB"
+			}
+		end
+	end
+	project(prj.name)
 end
 
 function generate.generateReflectionInfo(prj)
