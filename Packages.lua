@@ -1,15 +1,37 @@
 ---@type Packages
 return {
-	SpdLog = {
-		Git = {
-			Url = "https://github.com/gabime/spdlog.git",
-			Ref = "v1.17.0",
+	Clang = {
+		Remote = {
+			Url = (function()
+				if (os.host() == premake.WINDOWS) then
+					return "https://dl.dropbox.com/scl/fi/gaeyy54dlccesq7yuzvif/llvm.txz?rlkey=hxbbr6nv963xgclo36bokcr3o"
+				end
+				return ""
+			end)()
 		},
 	},
-	TracyClient = {
+	CppTrace = {
 		Git = {
-			Url = "https://github.com/wolfpld/tracy.git",
-			Ref = "v0.13.1",
+			Url = "https://github.com/jeremy-rifkin/cpptrace.git",
+			Ref = "v1.0.4",
+		},
+	},
+	Glfw = {
+		Git = {
+			Url = "https://github.com/glfw/glfw.git",
+			Ref = "3.4",
+		},
+	},
+	GoogleTest = {
+		Git = {
+			Url = "https://github.com/google/googletest.git",
+			Ref = "v1.17.0",
+		}
+	},
+	ImGui = {
+		Git = {
+			Url = "https://github.com/ocornut/imgui.git",
+			Ref = "v1.92.8",
 		},
 	},
 	NlohmannJson = {
@@ -24,40 +46,17 @@ return {
 			}
 		},
 	},
-	YamlCpp = {
+	SpdLog = {
 		Git = {
-			Url = "https://github.com/jbeder/yaml-cpp.git",
-			Ref = "yaml-cpp-0.9.0",
-		},
-	},
-
-	Glfw = {
-		Git = {
-			Url = "https://github.com/glfw/glfw.git",
-			Ref = "3.4",
-		},
-	},
-	ImGui = {
-		Git = {
-			Url = "https://github.com/ocornut/imgui.git",
-			Ref = "v1.92.8",
-		},
-	},
-	Clang = {
-		Remote = {
-			Url = (function()
-				if (os.host() == premake.WINDOWS) then
-					return "https://dl.dropbox.com/scl/fi/gaeyy54dlccesq7yuzvif/llvm.txz?rlkey=hxbbr6nv963xgclo36bokcr3o"
-				end
-				return ""
-			end)()
-		},
-	},
-	GoogleTest = {
-		Git = {
-			Url = "https://github.com/google/googletest.git",
+			Url = "https://github.com/gabime/spdlog.git",
 			Ref = "v1.17.0",
-		}
+		},
+	},
+	TracyClient = {
+		Git = {
+			Url = "https://github.com/wolfpld/tracy.git",
+			Ref = "v0.13.1",
+		},
 	},
 	Vulkan = {
 		Local = {
@@ -66,5 +65,11 @@ return {
 				"Missing Vulkan SDK! Please install the Vulkan SDK (https://vulkan.lunarg.com/sdk/home)!"
 			)
 		}
-	}
+	},
+	YamlCpp = {
+		Git = {
+			Url = "https://github.com/jbeder/yaml-cpp.git",
+			Ref = "yaml-cpp-0.9.0",
+		},
+	},
 }

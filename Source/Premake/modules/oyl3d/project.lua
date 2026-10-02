@@ -158,6 +158,20 @@ function generate.applySharedToStaticLib(prj)
 	end; filter {}
 end
 
+function generate.workspaceProjectUsages(prj)
+	usage "PUBLIC"; do
+		defines {
+			"OYL_MODULE_AVAILABLE_" .. prj.name:upper():gsub("[%.%-% ]", "_")
+		}
+	end
+
+	usage "INTERFACE"; do
+		links { prj.name }
+	end
+
+	usage "PRIVATE"
+end
+
 function generate.defineMacros(prj)
 	defines {
 		"OYL_WITHIN_MODULE_" .. prj.name:upper():gsub("[%.%-% ]", "_"),
@@ -165,7 +179,13 @@ function generate.defineMacros(prj)
 		"OYL_CURRENT_MODULE_AS_MACRO=" .. prj.name:upper():gsub("[%.%-% ]", "_"),
 	}
 	local dependenciesString = table.implode(
-		table.filter(prj.links, function(proj) return not proj._package end),
+		table.filter(
+			prj.uses,
+			function(prj_use)
+				local use_prj = prj.workspace.projects[prj_use]
+				return use_prj and not use_prj._package
+			end
+		),
 		'"',
 		'"',
 		','
@@ -174,7 +194,7 @@ function generate.defineMacros(prj)
 		dependenciesString = '""'
 	end
 	defines {
-		prj.name:upper():gsub("[%.%-% ]", "_") .. '_DEPENDENCIES={ '.. dependenciesString .. ' }'
+		prj.name:upper():gsub("[%.%-% ]", "_") .. '_DEPENDENCIES={ ' .. dependenciesString .. ' }'
 	}
 end
 
@@ -337,6 +357,7 @@ function generate.connectProjectLinks(prj)
 
 	project(prj.name)
 
+	local linkSet = {}
 	for linkindex = #prj.links, 1, -1 do
 		local link = prj.links[linkindex]
 		local linkprj = wks.projects[link]
@@ -375,36 +396,36 @@ function generate.connectProjectLinks(prj)
 				filter { "action:vs*", "toolset:clang" }; do
 					buildoptions { "-Xclang --system-header-prefix=\"" .. path.getname(dir) .. "/\"" }
 				end
-				filter{}
+				filter {}
 			end
 
-			if type(package.OnDepend) == "function" then
-				local prj_copy = private.bakeConfigsForPrj(prj)
-				local linkprj_copy = private.bakeConfigsForPrj(linkprj)
+			-- if type(package.OnDepend) == "function" then
+			-- 	local prj_copy = private.bakeConfigsForPrj(prj)
+			-- 	local linkprj_copy = private.bakeConfigsForPrj(linkprj)
 
-				-- Iterate over each config in prj, find the matching config in linkprj, then call package.OnDepend
-				-- with a filter on the config and platform
-				for cfg in p.project.eachconfig(prj_copy) do
-					local linkcfg = p.project.getconfig(linkprj_copy, cfg.buildcfg, cfg.platform)
-					if not linkcfg then
-						linkcfg = p.project.findClosestMatch(linkprj_copy, cfg.buildcfg, cfg.platform)
-					end
-					filter { "configurations:" .. cfg.buildcfg, "platforms:" .. cfg.platform }; do
-						local nBlocks = #prj.blocks
-						local cwd = os.getcwd()
-						os.chdir(linkcfg.basedir)
-						package.OnDepend(cfg, linkcfg)
-						os.chdir(cwd)
-						-- Apply config and platforms criteria to all filters added in OnDepend
-						for i = nBlocks + 1, #prj.blocks do
-							local block = prj.blocks[i]
-							local new_terms = table.join(block._criteria.terms, prj.blocks[nBlocks]._criteria.terms)
-							local criteria = p.criteria.new(new_terms)
-							block._criteria = criteria
-						end
-					end
-				end
-			end
+			-- 	-- Iterate over each config in prj, find the matching config in linkprj, then call package.OnDepend
+			-- 	-- with a filter on the config and platform
+			-- 	for cfg in p.project.eachconfig(prj_copy) do
+			-- 		local linkcfg = p.project.getconfig(linkprj_copy, cfg.buildcfg, cfg.platform)
+			-- 		if not linkcfg then
+			-- 			linkcfg = p.project.findClosestMatch(linkprj_copy, cfg.buildcfg, cfg.platform)
+			-- 		end
+			-- 		filter { "configurations:" .. cfg.buildcfg, "platforms:" .. cfg.platform }; do
+			-- 			local nBlocks = #prj.blocks
+			-- 			local cwd = os.getcwd()
+			-- 			os.chdir(linkcfg.basedir)
+			-- 			package.OnDepend(cfg, linkcfg)
+			-- 			os.chdir(cwd)
+			-- 			-- Apply config and platforms criteria to all filters added in OnDepend
+			-- 			for i = nBlocks + 1, #prj.blocks do
+			-- 				local block = prj.blocks[i]
+			-- 				local new_terms = table.join(block._criteria.terms, prj.blocks[nBlocks]._criteria.terms)
+			-- 				local criteria = p.criteria.new(new_terms)
+			-- 				block._criteria = criteria
+			-- 			end
+			-- 		end
+			-- 	end
+			-- end
 		end
 
 		::continue::
@@ -427,7 +448,7 @@ end
 function generate.removeStaticLibLinks(prj)
 	filter { "kind:StaticLib" }; do
 		removelinks { prj.links }
-	end; filter{}
+	end; filter {}
 end
 
 function generate.createProjectLinkDirs(prj)
@@ -435,7 +456,19 @@ function generate.createProjectLinkDirs(prj)
 
 	generate.prjAddEntryToDotInclude(prj, prj.basedir)
 
+	local link_set = {}
 	for _, link in ipairs(prj.links) do
+		if prj.workspace.projects[link] then
+			link_set[link] = true
+		end
+	end
+	for _, use in ipairs(prj.uses) do
+		if prj.workspace.projects[use] then
+			link_set[use] = true
+		end
+	end
+
+	for link, _ in pairs(link_set) do
 		local linkprj = wks.projects[link]
 		if not linkprj then
 			goto continue
@@ -476,6 +509,8 @@ function private.bakeConfigsForPrj(prj)
 	if prj._baked_config_copy then
 		return prj._baked_config_copy
 	end
+
+	print("PRE_BAKING ", prj.name)
 
 	local wks = prj.workspace
 

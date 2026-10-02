@@ -16,7 +16,7 @@ m.elements = {}
 m.elements.workspaceGenerate = function(wks)
 	return {
 		m.generate.generateWorkspaceProjects,
-		m.generate.generatePackageProjects
+		m.generate.generatePackageProjects,
 	}
 end
 
@@ -30,7 +30,8 @@ end
 m.elements.workspaceProject = function(prj)
 	return {
 		m.generate.defineMacros,
-		m.generate.generateReflectionInfo
+		m.generate.workspaceProjectUsages,
+		m.generate.generateReflectionInfo,
 	}
 end
 
@@ -56,13 +57,13 @@ end
 
 m.elements.workspaceAction = function(wks)
 	return {
-		m.generate.prepareWorkspace
+		m.generate.prepareWorkspace,
 	}
 end
 
 m.elements.projectAction = function(prj)
 	return {
-		m.generate.createProjectLinkDirs
+		m.generate.createProjectLinkDirs,
 	}
 end
 

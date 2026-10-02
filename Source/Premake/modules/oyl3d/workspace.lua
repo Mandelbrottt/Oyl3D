@@ -237,6 +237,9 @@ function generate.removeUnreferencedProjects(wks)
 		for _, depend in ipairs(prj.dependson) do
 			dependSet[depend] = true
 		end
+		for _, uses in ipairs(prj.uses) do
+			dependSet[uses] = true
+		end
 	end
 
 	-- Remove all projects not referencing or being referenced by another project

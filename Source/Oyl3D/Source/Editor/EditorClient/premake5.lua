@@ -14,7 +14,7 @@ project "EditorClient"; do
 
 	-- reflection "On"
 
-	links {
+	uses {
 		"Core",
 		"Test",
 	}

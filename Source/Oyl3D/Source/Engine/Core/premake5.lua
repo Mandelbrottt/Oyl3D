@@ -9,4 +9,11 @@ project "Core"; do
 	oyl3d.project.files()
 
 	-- reflection "On"
+
+	-- links {
+	-- 	"SpdLog"
+	-- }
+	uses {
+		"SpdLog"
+	}
 end

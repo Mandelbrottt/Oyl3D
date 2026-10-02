@@ -2,6 +2,37 @@ local Config = require "Config"
 
 ---@type { [string]: { OnProject: fun(prj), OnDepend: fun(prjcfg, packagecfg)? } }
 local Packages = {
+	Clang = {
+		OnProject = function(prj)
+			language "C++"
+			kind "None"
+
+			packageincludedirs {
+				"include/clang",
+				"include/clang-c",
+				"include/llvm",
+				"include/llvm-c",
+			}
+
+			filter "action:vs*"; do
+				files {
+					"**.natvis"
+				}
+			end
+
+			usage "INTERFACE"; do
+				links {
+					os.matchfiles(path.join("lib", "*.lib")),
+					"ntdll",
+					"version"
+				}
+				runtime "Release"
+				defines {
+					"_ITERATOR_DEBUG_LEVEL=0"
+				}
+			end
+		end
+	},
 	Glfw = {
 		OnProject = function(prj)
 			language "C"
@@ -29,12 +60,14 @@ local Packages = {
 			filter "kind:SharedLib"; do
 				defines { "_GLFW_BUILD_DLL" }
 			end
-		end,
-		OnDepend = function(prjcfg, packagecfg)
-			if packagecfg.kind == "SharedLib" then
-				defines { "GLFW_DLL" }
+
+			usage "INTERFACE"; do
+				links { prj.name }
+				filter { "kind:SharedLib" }; do
+					defines { "GLFW_DLL" }
+				end
 			end
-		end
+		end,
 	},
 	ImGui = {
 		OnProject = function(prj)
@@ -56,6 +89,10 @@ local Packages = {
 				files {
 					"**.natvis"
 				}
+			end
+
+			usage "INTERFACE"; do
+				links { prj.name }
 			end
 		end
 	},
@@ -81,30 +118,6 @@ local Packages = {
 			end
 		end
 	},
-	YamlCpp = {
-		OnProject = function(prj)
-			language "C++"
-			kind "SharedLib"
-
-			files {
-				"src/**",
-				"include/**",
-			}
-
-			includedirs {
-				"include"
-			}
-
-			packageincludedirs "include/yaml-cpp"
-
-			filter "kind:StaticLib"; do
-				defines { "YAML_CPP_STATIC_DEFINE" }
-			end
-			filter "kind:SharedLib"; do
-				defines { "yaml_cpp_EXPORTS" }
-			end
-		end
-	},
 	SpdLog = {
 		OnProject = function(prj)
 			language "C++"
@@ -122,7 +135,6 @@ local Packages = {
 			packageincludedirs "include/spdlog"
 
 			defines {
-				"SPDLOG_COMPILED_LIB",
 				"SPDLOG_LEVEL_NAMES={" ..
 				'	spdlog::string_view_t("TRACE", 5),' ..
 				'	spdlog::string_view_t("DEBUG", 5),' ..
@@ -135,31 +147,30 @@ local Packages = {
 				"SPDLOG_SHORT_LEVEL_NAMES={" ..
 				'	"T", "D", "I", "W", "E", "F", "O"' ..
 				"}",
-				"_SILENCE_STDEXT_ARR_ITERS_DEPRECATION_WARNING",
-				"FMT_UNICODE=0",
-				"FMT_USE_CONSTEVAL=0",
 			}
 			filter { "kind:SharedLib" }; do
 				defines {
 					"spdlog_EXPORTS",
-					"SPDLOG_SHARED_LIB",
 					"FMT_LIB_EXPORT",
-					"FMT_SHARED",
 				}
 			end
-		end,
-		OnDepend = function(prjcfg, packagecfg)
-			defines {
-				"SPDLOG_COMPILED_LIB",
-				"_SILENCE_STDEXT_ARR_ITERS_DEPRECATION_WARNING", -- Silence warning
-				"FMT_UNICODE=0",
-				"FMT_USE_CONSTEVAL=0",
-			}
-			if packagecfg.kind == "SharedLib" then
+
+			usage "PUBLIC"; do
 				defines {
-					"SPDLOG_SHARED_LIB",
-					"FMT_SHARED"
+					"SPDLOG_COMPILED_LIB",
+					"_SILENCE_STDEXT_ARR_ITERS_DEPRECATION_WARNING",
+					"FMT_UNICODE=0",
+					"FMT_USE_CONSTEVAL=0",
 				}
+				filter { "kind:SharedLib" }; do
+					defines {
+						"SPDLOG_SHARED_LIB",
+						"FMT_SHARED",
+					}
+				end
+			end
+			usage "INTERFACE"; do
+				links { prj.name }
 			end
 		end,
 	},
@@ -187,11 +198,7 @@ local Packages = {
 			}
 
 			defines {
-				"TRACY_ENABLE",
-				"TRACY_DELAYED_INIT",
-				"TRACY_MANUAL_LIFETIME",
 				"TRACY_NO_SAMPLING",
-				"TRACY_NO_SYSTEM_TRACING",
 				"TRACY_ONLY_LOCALHOST", -- TODO: Fix only localhost at runtime
 			}
 			filter "kind:SharedLib"; do
@@ -202,9 +209,8 @@ local Packages = {
 			filter { "configurations:not " .. Config.Configurations.Profile }; do
 				excludefrombuild "On"
 			end
-		end,
-		OnDepend = function(prjcfg, packagecfg)
-			if prjcfg.buildcfg == Config.Configurations.Profile then
+
+			usage "PUBLIC"; do
 				defines {
 					"TRACY_ENABLE",
 					"TRACY_DELAYED_INIT",
@@ -212,12 +218,14 @@ local Packages = {
 					"TRACY_NO_SYSTEM_TRACING",
 				}
 			end
-			if packagecfg.kind == "SharedLib" then
+			usage "INTERFACE"; do
 				defines {
 					"TRACY_IMPORTS",
 				}
+
+				links { prj.name }
 			end
-		end
+		end,
 	},
 	Vulkan = {
 		OnProject = function(prj)
@@ -263,52 +271,46 @@ local Packages = {
 				excludefrombuild "On"
 			end
 			filter {}
-		end,
-		OnDepend = function(prjcfg, packagecfg)
-			defines {
-				"VULKAN_HPP_DISPATCH_LOADER_DYNAMIC=1",
-				"VULKAN_HPP_NO_STRUCT_CONSTRUCTORS=1",
-				"VULKAN_HPP_HANDLE_ERROR_OUT_OF_DATE_AS_SUCCESS=1"
-			}
 
-			-- externalincludedirs {
-			-- 	"Include"
-			-- }
-		end
-	},
-	Clang = {
-		OnProject = function(prj)
-			language "C++"
-			kind "None"
-
-			packageincludedirs {
-				"include/clang",
-				"include/clang-c",
-				"include/llvm",
-				"include/llvm-c",
-			}
-
-			-- files {
-			-- 	"include/**.h",
-			-- 	"include/**.hpp",
-			-- 	"include/**.inc",
-			-- }
-			filter "action:vs*"; do
-				files {
-					"**.natvis"
+			usage "INTERFACE"; do
+				defines {
+					"VULKAN_HPP_DISPATCH_LOADER_DYNAMIC=1",
+					"VULKAN_HPP_NO_STRUCT_CONSTRUCTORS=1",
+					"VULKAN_HPP_HANDLE_ERROR_OUT_OF_DATE_AS_SUCCESS=1"
+				}
+				links {
+					"vulkan-1",
+					"dxcompiler"
 				}
 			end
 		end,
-		OnDepend = function(prjcfg, packagecfg)
-			links {
-				os.matchfiles(path.join("lib", "*.lib")),
-				"ntdll",
-				"version"
+	},
+	YamlCpp = {
+		OnProject = function(prj)
+			language "C++"
+			kind "SharedLib"
+
+			files {
+				"src/**",
+				"include/**",
 			}
-			runtime "Release"
-			defines {
-				"_ITERATOR_DEBUG_LEVEL=0"
+
+			includedirs {
+				"include"
 			}
+
+			packageincludedirs "include/yaml-cpp"
+
+			filter "kind:SharedLib"; do
+				defines { "yaml_cpp_EXPORTS" }
+			end
+
+			usage "PUBLIC"; do
+				links { prj.name }
+				filter "kind:StaticLib"; do
+					defines { "YAML_CPP_STATIC_DEFINE" }
+				end
+			end
 		end
 	},
 }
