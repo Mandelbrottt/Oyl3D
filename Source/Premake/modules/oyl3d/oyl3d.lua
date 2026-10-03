@@ -3,8 +3,15 @@ local p = premake
 premake.modules.oyl3d = p.modules.oyl3d or {}
 
 local m = p.modules.oyl3d
+m.overrides = m.overrides or {}
+local private = {}
 
 include("_preload.lua")
+
+include("oyl3d_prebake.lua")
+include("oyl3d_postbake.lua")
+include("oyl3d_postaction.lua")
+
 include("check.lua")
 include("clean.lua")
 include("packages.lua")
@@ -13,126 +20,286 @@ include("workspace.lua")
 
 m.elements = {}
 
-m.elements.workspaceGenerate = function(wks)
+--- PreBake ---
+m.elements.preBake = {}
+
+m.elements.preBake.onWorkspacePreProcess = function(wks)
 	return {
-		m.generate.generateWorkspaceProjects,
-		m.generate.generatePackageProjects,
+		m.preBake.onWorkspaceModuleProjects,
+		m.preBake.onWorkspacePackageProjects,
 	}
 end
 
-m.elements.projectGenerate = function(prj)
+m.elements.preBake.onProjectPreProcessCommon = function(prj)
 	return {
-		m.generate.applyProjectDefaults,
-		m.generate.applySharedToStaticLib,
+		m.preBake.onProjectApplyDefaults,
+		m.preBake.onProjectApplySharedToStaticLib,
 	}
 end
 
-m.elements.workspaceProject = function(prj)
+m.elements.preBake.onProjectPreProcessModule = function(prj)
 	return {
-		m.generate.defineMacros,
-		m.generate.workspaceProjectUsages,
-		m.generate.generateReflectionInfo,
+		m.preBake.onProjectDefineModuleMacros,
+		m.preBake.onProjectModuleProjectUsages,
+		m.preBake.onProjectAddReflectionBuildAction,
 	}
 end
 
-m.elements.packageProject = function(prj)
+m.elements.preBake.onProjectPreProcessPackage = function(prj)
 	return {}
 end
 
-m.elements.projectsComplete = function(prj)
+m.elements.preBake.onProjectPostProcess = function(prj)
 	return {
-		m.generate.connectProjectLinks,
-		m.generate.removeStaticLibLinks,
-		-- m.generate.removeLinksToNoneKindProjects,
+		m.preBake.onProjectConnectProjectLinks,
+		-- m.preBake.onProjectRemoveLinksToNoneKindProjects,
+		m.preBake.onProjectRemoveStaticLibLinks,
 	}
 end
 
-m.elements.workspaceComplete = function(wks)
+m.elements.preBake.onWorkspacePostProcess = function(wks)
 	return {
-		m.generate.removeNonProjectPackages,
-		-- m.generate.removeUnreferencedProjects,
-		m.generate.generateCheckProject,
-	}
-end
-
-m.elements.workspaceAction = function(wks)
-	return {
-		m.generate.prepareWorkspace,
-	}
-end
-
-m.elements.projectAction = function(prj)
-	return {
-		m.generate.createProjectLinkDirs,
+		m.preBake.onWorkspaceRemoveNonProjectPackages,
+		-- m.preBake.onWorkspaceRemoveUnreferencedProjects,
+		m.check.generateCheckProject,
 	}
 end
 
 p.override(p.main, "preBake", function(base)
-	m.preBake()
+	m.overrides.preBake()
 	base()
 end)
 
-function m.preBake()
+function m.overrides.preBake()
 	local global = p.api.scope.global
 	for _, wks in ipairs(global.workspaces) do
 		local cwd = os.getcwd()
 		os.chdir(wks.basedir)
 		workspace(wks.name); do
 			-- Generate the workspace
-			p.callArray(m.elements.workspaceGenerate, wks)
+			for func in private.eachfunc(m.elements.preBake.onWorkspacePreProcess, wks) do
+				workspace(wks.name)
+				func(wks)
+			end
 
 			-- Generate information for each project
-			for _, prj in ipairs(wks.projects) do
-				local cwd = os.getcwd()
-				os.chdir(prj.basedir)
-				project(prj.name); do
-					p.callArray(m.elements.projectGenerate, prj)
+			private.callOnEachProjectInWorkspace(wks, function(prj)
+				for func in private.eachfunc(m.elements.preBake.onProjectPreProcessCommon, prj) do
+					project(prj.name)
+					func(prj)
 				end
-				os.chdir(cwd)
-			end
+				if prj._package then
+					for func in private.eachfunc(m.elements.preBake.onProjectPreProcessPackage, prj) do
+						project(prj.name)
+						func(prj)
+					end
+				else
+					for func in private.eachfunc(m.elements.preBake.onProjectPreProcessModule, prj) do
+						project(prj.name)
+						func(prj)
+					end
+					project(prj.name)
+					includedirs {
+						m.prjDotIncludeDir(prj)
+					}
+				end
+			end)
 
-			-- Per project configuration that depends on other projects' configurations
-			for _, prj in ipairs(wks.projects) do
-				local cwd = os.getcwd()
-				os.chdir(prj.basedir)
-				project(prj.name); do
-					p.callArray(m.elements.projectsComplete, prj)
+			private.callOnEachProjectInWorkspace(wks, function(prj)
+				for func in private.eachfunc(m.elements.preBake.onProjectPostProcess, prj) do
+					project(prj.name)
+					func(prj)
 				end
-				os.chdir(cwd)
-			end
+			end)
 
 			-- The workspace is now fully generated
-			workspace(wks.name)
-			p.callArray(m.elements.workspaceComplete, wks)
+			for func in private.eachfunc(m.elements.preBake.onWorkspacePostProcess, wks) do
+				workspace(wks.name)
+				func(wks)
+			end
 		end
 		os.chdir(cwd)
 	end
 end
 
-p.override(p.main, "postAction", function(base)
-	m.postAction()
+--- PreBake ---
+
+--- PostBake ---
+m.elements.postBake = {}
+
+m.elements.postBake.onWorkspacePreProcess = function(wks)
+	return {}
+end
+
+m.elements.postBake.onProjectPreProcess = function(wks)
+	return {}
+end
+
+m.elements.postBake.onConfigPreProcess = function(cfg)
+	return {
+		m.postBake.onConfigConnectProjectLinks,
+	}
+end
+
+m.elements.postBake.onConfigPostProcess = function(cfg)
+	return {
+		m.postBake.onConfigDefineModuleDependencies,
+	}
+end
+
+m.elements.postBake.onProjectPostProcess = function(wks)
+	return {}
+end
+
+m.elements.postBake.onWorkspacePostProcess = function(wks)
+	return {}
+end
+
+p.override(p.main, "postBake", function(base)
+	m.overrides.postBake()
 	base()
 end)
 
-function m.postAction()
+function m.overrides.postBake()
 	local global = p.api.scope.global
 	for _, wks in ipairs(global.workspaces) do
 		local cwd = os.getcwd()
 		os.chdir(wks.basedir)
-		workspace(wks.name); do
-			p.callArray(m.elements.workspaceAction, wks)
+		do
+			p.callArray(m.elements.postBake.onWorkspacePreProcess, wks)
 
-			for _, prj in ipairs(wks.projects) do
-				local cwd = os.getcwd()
-				os.chdir(prj.basedir)
-				project(prj.name); do
-					p.callArray(m.elements.projectAction, prj)
+			-- PreProcess
+			private.callOnEachProjectInWorkspace(wks, function(prj)
+				p.callArray(m.elements.postBake.onProjectPreProcess, prj)
+
+				for cfg in p.project.eachconfig(prj) do
+					p.callArray(m.elements.postBake.onConfigPreProcess, cfg)
 				end
-				os.chdir(cwd)
-			end
+			end)
+
+			-- PostProcess
+			private.callOnEachProjectInWorkspace(wks, function(prj)
+				for cfg in p.project.eachconfig(prj) do
+					p.callArray(m.elements.postBake.onConfigPostProcess, cfg)
+				end
+
+				p.callArray(m.elements.postBake.onProjectPostProcess, prj)
+			end)
+
+			p.callArray(m.elements.postBake.onWorkspacePostProcess, wks)
 		end
 		os.chdir(cwd)
 	end
+end
+
+--- PostBake ---
+
+--- PostAction ---
+m.elements.postAction = {}
+
+m.elements.postAction.onWorkspacePreProcess = function(wks)
+	return {
+		m.postAction.onWorkspacePrepare,
+	}
+end
+
+m.elements.postAction.onProjectPreProcess = function(prj)
+	return {
+		m.postAction.onProjectCreateLinkDotIncludeDirs,
+	}
+end
+
+m.elements.postAction.onConfigPreProcess = function(prj)
+	return {}
+end
+
+m.elements.postAction.onConfigPostProcess = function(prj)
+	return {}
+end
+
+m.elements.postAction.onProjectPostProcess = function(prj)
+	return {}
+end
+
+m.elements.postAction.onWorkspacePostProcess = function(wks)
+	return {}
+end
+
+p.override(p.main, "postAction", function(base)
+	m.overrides.postAction()
+	base()
+end)
+
+function m.overrides.postAction()
+	local global = p.api.scope.global
+	for _, wks in ipairs(global.workspaces) do
+		local cwd = os.getcwd()
+		os.chdir(wks.basedir)
+		do
+			p.callArray(m.elements.postAction.onWorkspacePreProcess, wks)
+
+			-- PreProcess
+			private.callOnEachProjectInWorkspace(wks, function(prj)
+				p.callArray(m.elements.postAction.onProjectPreProcess, prj)
+
+				for cfg in p.project.eachconfig(prj) do
+					p.callArray(m.elements.postAction.onConfigPreProcess, cfg)
+				end
+			end)
+
+			-- PostProcess
+			private.callOnEachProjectInWorkspace(wks, function(prj)
+				for cfg in p.project.eachconfig(prj) do
+					p.callArray(m.elements.postAction.onConfigPostProcess, cfg)
+				end
+
+				p.callArray(m.elements.postAction.onProjectPostProcess, prj)
+			end)
+
+			p.callArray(m.elements.postAction.onWorkspacePostProcess, wks)
+		end
+		os.chdir(cwd)
+	end
+end
+
+--- PostAction ---
+
+function private.callOnEachProjectInWorkspace(wks, func)
+	for _, prj in ipairs(wks.projects) do
+		local cwd = os.getcwd()
+		os.chdir(prj.basedir)
+		project(prj.name); do
+			func(prj)
+		end
+		os.chdir(cwd)
+	end
+end
+
+function private.eachfunc(funcs, ...)
+	if type(funcs) == "function" then
+		funcs = funcs(...)
+	end
+	local i = 0
+	local n = #funcs
+	return function()
+		i = i + 1
+		if i <= n then return funcs[i] end
+	end
+end
+
+function private.perCallableElementCallback(arr, callback, ...)
+	if type(arr) == "function" then
+		arr = arr(...)
+	end
+	return table.translate(
+		arr,
+		function(func)
+			return function(...)
+				callback()
+				func(...)
+			end
+		end
+	)
 end
 
 return m

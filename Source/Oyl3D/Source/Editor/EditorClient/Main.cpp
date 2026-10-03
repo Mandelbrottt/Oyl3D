@@ -2,6 +2,8 @@
 
 #include <Core/Logging/Logging.h>
 #include <Core/Module/ModuleManager.h>
+
+#define OYL_EXPOSE_PROFILER_CONTROLS
 #include <Core/Profiling/Profiling.h>
 
 int
@@ -15,13 +17,9 @@ main(int a_argc, char** a_argv)
 	Oyl::ModuleManager::LoadModulePointer("Core");
 	Oyl::ModuleManager::Get().LoadModule("SpdLogLogger");
 
-	Oyl::ModuleManager::LoadModulePointer("Test");
-
 	Oyl::Log("Testing {} {} {}", 1, 2, 3);
 
 	Oyl::Internal::GetCurrentLogger()->Flush();
-
-	Oyl::ModuleManager::Get().UnloadModule("Test");
 
 	Oyl::ModuleManager::Get().UnloadModule("SpdLogLogger");
 	Oyl::ModuleManager::Get().UnloadModule("Core");

@@ -309,12 +309,13 @@ local Packages = {
 			filter "kind:SharedLib"; do
 				defines { "yaml_cpp_EXPORTS" }
 			end
-
 			usage "PUBLIC"; do
-				links { prj.name }
 				filter "kind:StaticLib"; do
 					defines { "YAML_CPP_STATIC_DEFINE" }
 				end
+			end
+			usage "INTERFACE"; do
+				links { prj.name }
 			end
 		end
 	},

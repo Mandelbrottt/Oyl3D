@@ -1,6 +1,7 @@
 #include <Core/Logging/Logger.h>
 #include <Core/Logging/Logging.h>
 #include <Core/Module/ModuleManager.h>
+#include <Core/Profiling/Profiling.h>
 
 #include <spdlog/async.h>
 #include <spdlog/logger.h>
@@ -33,6 +34,8 @@ namespace Oyl
 		// TODO: Add multiple loggers at once https://github.com/gabime/spdlog/wiki/1.-QuickStart#create-a-logger-with-multiple-sinks-each-sink-with-its-own-formatting-and-log-level
 		SpdLogLogger()
 		{
+			OYL_PROFILE_FUNCTION();
+
 			// Initialize the main logger
 			auto formatter = std::make_unique<spdlog::pattern_formatter>();
 			formatter->set_pattern("%^[%T][%l][%n] %v%$");
@@ -68,7 +71,7 @@ namespace Oyl
 		void
 		OnStartModule() override
 		{
-			puts("OnStart SpdLogLogger");
+			OYL_PROFILE_FUNCTION();
 
 			// MUCH better performance when logging async, may run into issues with # of threads
 			// TODO: Move to manual queuing system like profiling?
@@ -76,12 +79,16 @@ namespace Oyl
 
 			m_logger = std::make_shared<SpdLogLogger>();
 			Internal::g_currentLogger = m_logger.get();
+
+			m_logger->LogTrace("Initialed SpdLogLogger");
 		}
 
 		void
 		OnStopModule() override
 		{
-			puts("OnStop SpdLogLogger");
+			OYL_PROFILE_FUNCTION();
+
+			m_logger->LogTrace("Shutting down SpdLogLogger");
 
 			if (Internal::g_currentLogger == m_logger.get())
 				Internal::g_currentLogger = nullptr;
