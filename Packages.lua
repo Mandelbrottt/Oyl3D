@@ -52,7 +52,7 @@ return {
 			Ref = "v1.17.0",
 		},
 	},
-	TracyClient = {
+	Tracy = {
 		Git = {
 			Url = "https://github.com/wolfpld/tracy.git",
 			Ref = "v0.13.1",

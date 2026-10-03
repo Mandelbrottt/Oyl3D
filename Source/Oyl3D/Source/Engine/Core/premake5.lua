@@ -10,7 +10,10 @@ project "Core"; do
 
 	-- reflection "On"
 
-	uses {
-		"SpdLogLogger"
-	}
+	uses { "Tracy" } -- TEMP: Fix uses in usage block not being picked up by oyl project gen
+	usage "PUBLIC"; do
+		uses {
+			"Tracy"
+		}
+	end
 end

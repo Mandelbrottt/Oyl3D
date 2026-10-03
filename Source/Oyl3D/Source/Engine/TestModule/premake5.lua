@@ -8,9 +8,9 @@ project "Test"; do
 
 	oyl3d.project.files()
 
+	-- reflection "On"
+	
 	uses {
 		"Core"
 	}
-
-	-- reflection "On"
 end

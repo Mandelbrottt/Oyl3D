@@ -174,7 +174,7 @@ local Packages = {
 			end
 		end,
 	},
-	TracyClient = {
+	Tracy = {
 		OnProject = function(prj)
 			language "C++"
 			kind "SharedLib"
@@ -211,19 +211,24 @@ local Packages = {
 			end
 
 			usage "PUBLIC"; do
-				defines {
-					"TRACY_ENABLE",
-					"TRACY_DELAYED_INIT",
-					"TRACY_MANUAL_LIFETIME",
-					"TRACY_NO_SYSTEM_TRACING",
-				}
+				filter { "configurations:" .. Config.Configurations.Profile }; do
+					defines {
+						"TRACY_ENABLE",
+						"TRACY_DELAYED_INIT",
+						"TRACY_MANUAL_LIFETIME",
+						"TRACY_NO_SYSTEM_TRACING",
+					}
+				end
 			end
 			usage "INTERFACE"; do
-				defines {
-					"TRACY_IMPORTS",
-				}
-
-				links { prj.name }
+				filter { "kind:SharedLib" }; do
+					defines {
+						"TRACY_IMPORTS",
+					}
+				end
+				filter { "configurations:" .. Config.Configurations.Profile }; do
+					links { prj.name }
+				end
 			end
 		end,
 	},

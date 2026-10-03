@@ -3,6 +3,7 @@
 #include <unordered_map>
 
 #include "Core/Containers/Array.h"
+#include "Core/Profiling/Profiling.h"
 
 namespace Oyl
 {
@@ -42,6 +43,8 @@ namespace Oyl
 	IModuleInterface*
 	ModuleManager::LoadModule(const String& a_moduleName, ModuleLoadResult* a_outResult)
 	{
+		OYL_PROFILE_FUNCTION();
+
 		if (auto iter = m_impl->modules.find(a_moduleName); iter != m_impl->modules.end())
 		{
 			ModuleInfo& info = iter->second;
@@ -146,6 +149,8 @@ namespace Oyl
 	bool
 	ModuleManager::UnloadModule(const String& a_moduleName, ModuleUnloadResult* a_outResult)
 	{
+		OYL_PROFILE_FUNCTION();
+
 		auto withResult = [&](bool a_didUnload, ModuleUnloadResult a_result)
 		{
 			if (a_outResult)

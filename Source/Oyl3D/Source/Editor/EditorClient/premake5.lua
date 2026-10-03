@@ -16,6 +16,6 @@ project "EditorClient"; do
 
 	uses {
 		"Core",
-		"Test",
+		"Tracy",
 	}
 end
