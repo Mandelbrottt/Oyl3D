@@ -3,11 +3,16 @@
 #include <Core/CommandLine/CommandLine.h>
 #include <Core/Logging/Logging.h>
 #include <Core/Module/ModuleManager.h>
+#include <Core/Time/Time.h>
 
 #ifndef OYL_EXPOSE_PROFILER_CONTROLS
 #	define OYL_EXPOSE_PROFILER_CONTROLS
 #endif
 #include <Core/Profiling/Profiling.h>
+
+#include <Oyl3D/Source/Engine/Core/Application/Application.h>
+
+#include "MainLoop.h"
 
 int
 main(int a_argc, char** a_argv)
@@ -37,14 +42,46 @@ main(int a_argc, char** a_argv)
 	OYL_PROFILER_INIT();
 	OYL_PROFILE_FUNCTION();
 
+	Oyl::Time::Internal::Init();
+
 	Oyl::ModuleManager::LoadModulePointer("Core");
 	Oyl::ModuleManager::Get().LoadModule("SpdLogLogger");
 
 	Oyl::CommandLine::Init(a_argc, a_argv);
+	Oyl::Time::Internal::Init();
 
-	Oyl::Log("Testing {} {} {}", 1, 2, 3);
+	// Scope the loop to manage when the destructor is called
+	{
+		Oyl::EditorClientMainLoop loop;
+		while (!Oyl::Application::IsExitRequested())
+		{
+			Oyl::Time::Internal::Update();
 
-	Oyl::Internal::GetCurrentLogger()->Flush();
+			loop.Update();
+
+			Oyl::Internal::GetCurrentLogger()->Flush();
+
+			static auto lastTick = Oyl::Time::Internal::ImmediateElapsedTicks();
+
+			Oyl::Application::Internal::UpdateTargetFramerate();
+			// If target framerate is 0, don't cap framerate
+			uint32 targetFrameRate = Oyl::Application::TargetFramerate();
+			uint64 minNumTicksPerFrame = 0;
+			if (targetFrameRate > 0)
+				minNumTicksPerFrame = (uint64) (Oyl::Time::Internal::TickResolution() * (1.0 / targetFrameRate));
+
+			auto targetTickForNextFrame = lastTick + minNumTicksPerFrame;
+
+			// Wait for next frame
+			uint64 thisTick;
+			do
+			{
+				thisTick = Oyl::Time::Internal::ImmediateElapsedTicks();
+			} while (thisTick < targetTickForNextFrame);
+
+			lastTick = thisTick;
+		}
+	}
 
 	Oyl::CommandLine::Shutdown();
 
@@ -74,8 +111,6 @@ WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	freopen_s(&errFileStream, "CONOUT$", "w", stderr);
 
 	int result = main(__argc, __argv);
-
-	std::cin.get();
 
 	fclose(inFileStream);
 	fclose(outFileStream);
