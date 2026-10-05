@@ -1,5 +1,6 @@
 #include <iostream>
 
+#include <Core/Application/Application.h>
 #include <Core/CommandLine/CommandLine.h>
 #include <Core/Logging/Logging.h>
 #include <Core/Module/ModuleManager.h>
@@ -10,35 +11,11 @@
 #endif
 #include <Core/Profiling/Profiling.h>
 
-#include <Oyl3D/Source/Engine/Core/Application/Application.h>
-
 #include "MainLoop.h"
 
 int
 main(int a_argc, char** a_argv)
 {
-#if defined(OYL_PROFILE)
-	{
-		// Allow users to dynamically set whether they want to profile over the network or not
-		// By default, only work over localhost
-		bool doProfileNetwork = false;
-		for (int i = 0; i < a_argc; i++)
-		{
-			if (strcmp(a_argv[i], "profile_network"))
-			{
-				doProfileNetwork = true;
-				break;
-			}
-		}
-		if (doProfileNetwork)
-		{
-		#if defined(OYL_WINDOWS)
-			SetEnvironmentVariableA("TRACY_ONLY_LOCALHOST", "1");
-		#endif
-		}
-	}
-#endif
-
 	OYL_PROFILER_INIT();
 	OYL_PROFILE_FUNCTION();
 
@@ -109,6 +86,28 @@ WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	freopen_s(&inFileStream, "CONIN$", "r", stdin);
 	freopen_s(&outFileStream, "CONOUT$", "w", stdout);
 	freopen_s(&errFileStream, "CONOUT$", "w", stderr);
+
+#if defined(OYL_PROFILE)
+	{
+		// Allow users to dynamically set whether they want to profile over the network or not
+		// By default, only work over localhost
+		bool doProfileNetwork = false;
+		for (int i = 0; i < __argc; i++)
+		{
+			if (strcmp(__argv[i], "profile_network"))
+			{
+				doProfileNetwork = true;
+				break;
+			}
+		}
+		if (doProfileNetwork)
+		{
+		#if defined(OYL_WINDOWS)
+			SetEnvironmentVariableA("TRACY_ONLY_LOCALHOST", "1");
+		#endif
+		}
+	}
+#endif
 
 	int result = main(__argc, __argv);
 
