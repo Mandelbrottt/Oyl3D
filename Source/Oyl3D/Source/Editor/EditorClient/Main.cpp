@@ -12,7 +12,30 @@
 int
 main(int a_argc, char** a_argv)
 {
+#if defined(OYL_PROFILE)
+	{
+		// Allow users to dynamically set whether they want to profile over the network or not
+		// By default, only work over localhost
+		bool doProfileNetwork = false;
+		for (int i = 0; i < a_argc; i++)
+		{
+			if (strcmp(a_argv[i], "profile_network"))
+			{
+				doProfileNetwork = true;
+				break;
+			}
+		}
+		if (doProfileNetwork)
+		{
+		#if defined(OYL_WINDOWS)
+			SetEnvironmentVariableA("TRACY_ONLY_LOCALHOST", "1");
+		#endif
+		}
+	}
+#endif
+
 	OYL_PROFILER_INIT();
+	OYL_PROFILE_FUNCTION();
 
 	Oyl::ModuleManager::LoadModulePointer("Core");
 	Oyl::ModuleManager::Get().LoadModule("SpdLogLogger");
