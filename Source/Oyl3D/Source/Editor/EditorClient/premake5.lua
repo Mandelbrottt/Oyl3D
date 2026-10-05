@@ -16,6 +16,9 @@ project "EditorClient"; do
 
 	uses {
 		"Core",
+	}
+
+	dependson {
 		"SpdLogLogger",
 	}
 end
