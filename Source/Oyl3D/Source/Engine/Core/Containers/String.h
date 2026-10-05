@@ -147,9 +147,9 @@ namespace Oyl
 			return *this;
 		}
 
-		operator StringView() const
+		constexpr operator StringView() const noexcept
 		{
-			return StringView(this->c_str());
+			return StringView(c_str(), (uint32) length());
 		}
 	};
 }

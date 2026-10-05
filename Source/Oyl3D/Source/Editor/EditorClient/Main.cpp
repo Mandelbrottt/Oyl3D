@@ -1,25 +1,29 @@
 #include <iostream>
 
+#include <Core/CommandLine/CommandLine.h>
 #include <Core/Logging/Logging.h>
 #include <Core/Module/ModuleManager.h>
 
-#define OYL_EXPOSE_PROFILER_CONTROLS
+#ifndef OYL_EXPOSE_PROFILER_CONTROLS
+#	define OYL_EXPOSE_PROFILER_CONTROLS
+#endif
 #include <Core/Profiling/Profiling.h>
 
 int
 main(int a_argc, char** a_argv)
 {
-	(void) a_argc;
-	(void) a_argv;
-
 	OYL_PROFILER_INIT();
 
 	Oyl::ModuleManager::LoadModulePointer("Core");
 	Oyl::ModuleManager::Get().LoadModule("SpdLogLogger");
 
+	Oyl::CommandLine::Init(a_argc, a_argv);
+
 	Oyl::Log("Testing {} {} {}", 1, 2, 3);
 
 	Oyl::Internal::GetCurrentLogger()->Flush();
+
+	Oyl::CommandLine::Shutdown();
 
 	Oyl::ModuleManager::Get().UnloadModule("SpdLogLogger");
 	Oyl::ModuleManager::Get().UnloadModule("Core");
