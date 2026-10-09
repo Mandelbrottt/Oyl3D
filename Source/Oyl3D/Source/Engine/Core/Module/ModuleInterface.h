@@ -23,4 +23,24 @@ namespace Oyl
 			return true;
 		}
 	};
+
+	class ReloadableModule : public IModuleInterface
+	{
+	public:
+		bool
+		SupportsHotReload() override
+		{
+			return true;
+		}
+	};
+
+	class NonReloadableModule : public IModuleInterface
+	{
+	public:
+		bool
+		SupportsHotReload() override
+		{
+			return false;
+		}
+	};
 }

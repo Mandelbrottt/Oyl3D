@@ -38,7 +38,7 @@
 
 #pragma region Attributes
 #	define OYL_DEPRECATED(_message_) [[deprecated(_message_)]]
-#	define OYL_UNUSED(_var_) static_cast<void>(_var_)
+#	define OYL_UNUSED(...) ([](...){})(__VA_ARGS__)
 #pragma endregion
 
 #pragma region Macro Utils

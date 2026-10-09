@@ -2,5 +2,5 @@
 
 namespace Oyl
 {
-	OYL_MODULE_DECLARE(Core, PassThroughModuleInterface)
+	OYL_MODULE_DECLARE(Core, NonReloadableModule)
 }
