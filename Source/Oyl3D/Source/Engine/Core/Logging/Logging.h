@@ -30,9 +30,7 @@ namespace Oyl
 #	if defined(OYL_ENABLE_LOGGING)
 		Internal::GetCurrentLogger()->Log(a_level, a_message, a_location);
 #	else
-		(void) a_level;
-		(void) a_format;
-		([](auto&&...) {})(a_args);
+		OYL_UNUSED(a_level, a_message, a_location);
 #	endif
 	}
 
@@ -50,9 +48,7 @@ namespace Oyl
 #	if defined(OYL_ENABLE_LOGGING)
 		Internal::GetCurrentLogger()->Log(a_level, a_format, std::forward<TArgs>(a_args)...);
 #	else
-		(void) a_level;
-		(void) a_format;
-		([](auto&&...) {})(a_args);
+		OYL_UNUSED(a_level, a_format, a_args...);
 #	endif
 	}
 
@@ -63,9 +59,7 @@ namespace Oyl
 #	if defined(OYL_ENABLE_LOGGING)
 		Internal::GetCurrentLogger()->Log(Internal::g_defaultLogLevel, a_format, std::forward<TArgs>(a_args)...);
 #	else
-		(void) a_level;
-		(void) a_format;
-		([](auto&&...) {})(a_args);
+		OYL_UNUSED(a_format, a_args...);
 #	endif
 	}
 
@@ -76,8 +70,7 @@ namespace Oyl
 #	if defined(OYL_ENABLE_LOGGING)
 		Internal::GetCurrentLogger()->LogTrace(a_format, std::forward<TArgs>(a_args)...);
 #	else
-		(void) a_format;
-		([](auto&&...) {})(a_args);
+		OYL_UNUSED(a_format, a_args...);
 #	endif
 	}
 
@@ -88,8 +81,7 @@ namespace Oyl
 #	if defined(OYL_ENABLE_LOGGING)
 		Internal::GetCurrentLogger()->LogDebug(a_format, std::forward<TArgs>(a_args)...);
 #	else
-		(void) a_format;
-		([](auto&&...) {})(a_args);
+		OYL_UNUSED(a_format, a_args...);
 #	endif
 	}
 
@@ -100,8 +92,7 @@ namespace Oyl
 #	if defined(OYL_ENABLE_LOGGING)
 		Internal::GetCurrentLogger()->LogInfo(a_format, std::forward<TArgs>(a_args)...);
 #	else
-		(void) a_format;
-		([](auto&&...) {})(a_args);
+		OYL_UNUSED(a_format, a_args...);
 #	endif
 	}
 
@@ -112,8 +103,7 @@ namespace Oyl
 #	if defined(OYL_ENABLE_LOGGING)
 		Internal::GetCurrentLogger()->LogWarning(a_format, std::forward<TArgs>(a_args)...);
 #	else
-		(void) a_format;
-		([](auto&&...) {})(a_args);
+		OYL_UNUSED(a_format, a_args...);
 #	endif
 	}
 
@@ -124,8 +114,7 @@ namespace Oyl
 #	if defined(OYL_ENABLE_LOGGING)
 		Internal::GetCurrentLogger()->LogError(a_format, std::forward<TArgs>(a_args)...);
 #	else
-		(void) a_format;
-		([](auto&&...) {})(a_args);
+		OYL_UNUSED(a_format, a_args...);
 #	endif
 	}
 
@@ -136,8 +125,7 @@ namespace Oyl
 #	if defined(OYL_ENABLE_LOGGING)
 		Internal::GetCurrentLogger()->LogFatal(a_format, std::forward<TArgs>(a_args)...);
 #	else
-		(void) a_format;
-		([](auto&&...) {})(a_args);
+		OYL_UNUSED(a_format, a_args...);
 #	endif
 	}
 }
