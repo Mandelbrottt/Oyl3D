@@ -3,7 +3,7 @@
 #include <Core/Application/Application.h>
 #include <Core/CommandLine/CommandLine.h>
 #include <Core/Logging/Logging.h>
-#include <Core/Module/ModuleManager.h>
+#include <Core/Modules/ModuleManager.h>
 #include <Core/Time/Time.h>
 
 #ifndef OYL_EXPOSE_PROFILER_CONTROLS

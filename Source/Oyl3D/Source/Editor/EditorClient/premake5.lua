@@ -2,8 +2,6 @@ local oyl3d = premake.modules.oyl3d
 
 group "Oyl/Editor"
 
--- startproject "OEClient"
-
 project "EditorClient"; do
 	language "C++"
 	kind "WindowedApp"
@@ -16,6 +14,7 @@ project "EditorClient"; do
 
 	uses {
 		"Core",
+		"Graphics",
 	}
 
 	dependson {

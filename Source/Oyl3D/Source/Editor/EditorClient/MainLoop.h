@@ -2,6 +2,8 @@
 
 namespace Oyl
 {
+	class IApplicationWindow;
+
 	class EditorClientMainLoop
 	{
 	public:
@@ -11,5 +13,8 @@ namespace Oyl
 
 		void
 		Update();
+
+	private:
+		IApplicationWindow* m_mainWindow;
 	};
 }
