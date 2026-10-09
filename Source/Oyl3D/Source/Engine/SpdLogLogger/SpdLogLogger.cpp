@@ -1,6 +1,6 @@
 #include <Core/Logging/Logger.h>
 #include <Core/Logging/Logging.h>
-#include <Core/Module/ModuleManager.h>
+#include <Core/Modules/ModuleManager.h>
 #include <Core/Profiling/Profiling.h>
 
 #include <spdlog/async.h>
