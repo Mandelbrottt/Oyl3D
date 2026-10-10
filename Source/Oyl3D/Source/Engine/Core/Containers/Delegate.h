@@ -80,11 +80,16 @@ namespace Oyl
 	#pragma region Function Pointers
 
 		template<auto Function>
-		explicit
 		Delegate(decltype(Function))
 			: Delegate()
 		{
 			Set<Function>();
+		}
+
+		template<typename TFunctor>
+		Delegate(TFunctor&& a_functor)
+		{
+			Set(static_cast<Fn*>(a_functor));
 		}
 
 		static
@@ -111,6 +116,21 @@ namespace Oyl
 			std::memcpy(&m_fn, &Function, sizeof(m_fn));
 		}
 
+		template<typename TFunction>
+		Delegate&
+		operator =(TFunction&& a_fn)
+		{
+			Set(static_cast<Fn*>(a_fn));
+			return *this;
+		}
+
+		Delegate&
+		operator =(Fn* a_fn)
+		{
+			Set(a_fn);
+			return *this;
+		}
+
 	#pragma endregion Function Pointers
 	#pragma region Member Functions
 
@@ -118,7 +138,7 @@ namespace Oyl
 		template<typename TObj, typename TClass> \
 		Delegate(TObj* a_obj, TReturn(TClass::*a_fn)(TArgs...) _cv_ref_noexcept_) \
 		{ \
-			Set(a_obj, a_fn); \
+			Set(static_cast<TClass*>(a_obj), a_fn); \
 		}
 
 	_CLASS_DEFINE_CV_REF_NOEXCEPT(_DELEGATE_MEMBER_CONSTRUCTOR)
@@ -132,7 +152,7 @@ namespace Oyl
 		Create(TObj* a_obj, TReturn(TClass::*a_fn)(TArgs...) _cv_ref_noexcept_) \
 		{ \
 			Delegate result; \
-			result.Set(a_obj, a_fn); \
+			result.Set(static_cast<TClass*>(a_obj), a_fn); \
 			return result; \
 		}
 
@@ -156,7 +176,8 @@ namespace Oyl
 		void \
 		Set(TObj* a_obj, TReturn(TClass::*a_fn)(TArgs...) _cv_ref_noexcept_) \
 		{ \
-			m_obj = reinterpret_cast<void*>(a_obj); \
+			/* static_cast to ensure base class pointer arithmetic is done correctly */\
+			m_obj = reinterpret_cast<void*>(static_cast<TClass*>(a_obj)); \
 			std::memcpy(&m_fn, &a_fn, sizeof(m_fn)); \
 		}
 
@@ -242,7 +263,7 @@ namespace Oyl
 		Delegate<TReturn(TArgs...)> \
 		CreateDelegate(TObj* a_obj, TReturn(TClass::*a_fn)(TArgs...) _cv_ref_noexcept_) \
 		{ \
-			return Delegate<TReturn(TArgs...)>::Create(a_obj, a_fn); \
+			return Delegate<TReturn(TArgs...)>::Create(static_cast<TClass*>(a_obj), a_fn); \
 		}
 
 	_CLASS_DEFINE_CV_REF_NOEXCEPT(_DELEGATE_MEMBER_CREATE_DELEGATE_FUNC)

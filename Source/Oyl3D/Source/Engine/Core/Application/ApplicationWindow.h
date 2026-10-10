@@ -1,38 +1,45 @@
 #pragma once
 
+#include "Core/PPExport.h"
 #include "Core/Containers/String.h"
 #include "Core/Events/Event.h"
+#include "Core/Input/InputCodes.h"
 #include "Core/Math/Vector.h"
+#include "Core/Types/EnumFlags.h"
 
 namespace Oyl
 {
-	enum WindowStateFlags
+	enum class WindowStateFlagBits : uint32
 	{
-		WS_None = 0,
-		WS_Fullscreen = 1 << 0,
-		WS_Borderless = 1 << 1,
-		WS_VSync = 1 << 2,
+		None = 0,
+		Fullscreen = 1 << 0,
+		Borderless = 1 << 1,
+		VSync = 1 << 2,
 	};
 
-	enum CursorState
+	OYL_ENUM_CLASS_BITWISE_OPERATIONS(WindowStateFlagBits)
+
+	using WindowStateFlags = EnumFlags<WindowStateFlagBits>;
+
+	enum class CursorState : uint32
 	{
-		CS_Start,
-		CS_Normal = CS_Start,
-		CS_Hidden,
-		CS_Disabled,
-		CS_Locked,
-		CS_Last,
+		Begin,
+		Normal = Begin,
+		Hidden,
+		Disabled,
+		Locked,
+		Last,
 	};
 
 	struct ApplicationWindowCreateParams
 	{
-		Vector2i position = Vector2i(-1, -1);
-		Vector2u size;
-
 		String title;
 
-		WindowStateFlags windowState;
-		CursorState cursorState;
+		Vector2u size = Vector2u::Zero;
+		Vector2i position = Vector2i(-1);
+
+		WindowStateFlags windowState = WindowStateFlagBits::None;
+		CursorState cursorState = CursorState::Normal;
 
 		PostEventDelegate postEventCallback;
 
@@ -108,4 +115,83 @@ namespace Oyl
 
 	inline
 	IApplicationWindow::~IApplicationWindow() noexcept {}
+
+	struct WindowEvent
+	{
+		IApplicationWindow* window = nullptr;
+
+	protected:
+		WindowEvent() = default;
+	};
+
+	/**
+	 * \brief Sent after a window is created, and is fully valid
+	 */
+	struct WindowCreatedEvent : WindowEvent, EventBase<WindowCreatedEvent> {};
+
+	/**
+	 * \brief Sent while window is being destroyed, before the window is freed in the underlying windowing API
+	 */
+	struct WindowClosedEvent : WindowEvent, EventBase<WindowClosedEvent> {};
+
+	struct WindowCloseRequestEvent : WindowEvent, EventBase<WindowCloseRequestEvent> {};
+
+	struct WindowResizeEvent : WindowEvent, EventBase<WindowResizeEvent>
+	{
+		Vector2u size;
+	};
+
+	struct WindowMaximizeEvent : WindowEvent, EventBase<WindowMaximizeEvent>
+	{
+		bool maximized;
+	};
+
+	struct WindowMinimizeEvent : WindowEvent, EventBase<WindowMinimizeEvent>
+	{
+		bool minimized;
+	};
+
+	struct WindowMoveEvent : WindowEvent, EventBase<WindowMoveEvent>
+	{
+		Vector2i position;
+	};
+
+	struct WindowFocusEvent : WindowEvent, EventBase<WindowFocusEvent>
+	{
+		bool focused;
+	};
+
+	struct WindowCursorMoveEvent : WindowEvent, EventBase<WindowCursorMoveEvent>
+	{
+		Vector2f position;
+	};
+
+	struct WindowKeyPressEvent : WindowEvent, EventBase<WindowKeyPressEvent>
+	{
+		Input::KeyboardKey key;
+		int mods;
+	};
+
+	struct WindowKeyReleaseEvent : WindowEvent, EventBase<WindowKeyReleaseEvent>
+	{
+		Input::KeyboardKey key;
+		int mods;
+	};
+
+	struct WindowMousePressEvent : WindowEvent, EventBase<WindowMousePressEvent>
+	{
+		Input::MouseButton button;
+		int mods;
+	};
+
+	struct WindowMouseReleaseEvent : WindowEvent, EventBase<WindowMouseReleaseEvent>
+	{
+		Input::MouseButton button;
+		int mods;
+	};
+
+	struct WindowMouseScrollEvent : WindowEvent, EventBase<WindowMouseScrollEvent>
+	{
+		Vector2f scroll;
+	};
 }

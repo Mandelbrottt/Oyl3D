@@ -41,6 +41,40 @@
 #	define OYL_UNUSED(...) ([](auto&&...){})(__VA_ARGS__)
 #pragma endregion
 
+#pragma region Construction Macros
+#	if defined(DEFAULT_COPY)
+#		undef DEFAULT_COPY
+#	endif
+#	define DEFAULT_COPY(_class_) \
+		_class_(const _class_&) = default; \
+		_class_& \
+		operator =(const _class_&) = default
+
+#	if defined(DEFAULT_MOVE)
+#		undef DEFAULT_MOVE
+#	endif
+#	define DEFAULT_MOVE(_class_) \
+		_class_(_class_&&) noexcept = default; \
+		_class_& \
+		operator =(_class_&&) noexcept = default
+
+#	if defined(NO_COPY)
+#		undef NO_COPY
+#	endif
+#	define NO_COPY(_class_) \
+		_class_(const _class_&) = delete; \
+		_class_& \
+		operator =(const _class_&) = delete
+
+#	if defined(NO_MOVE)
+#		undef NO_MOVE
+#	endif
+#	define NO_MOVE(_class_) \
+		_class_(_class_&&) noexcept = delete; \
+		_class_& \
+		operator =(_class_&&) noexcept = delete
+#pragma endregion Construction Macros
+
 #pragma region Macro Utils
 #	define OYL_EXPAND(_x_) _x_
 #	define OYL_STRINGIFY(_x_) #_x_

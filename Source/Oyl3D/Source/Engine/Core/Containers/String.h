@@ -69,7 +69,7 @@ namespace Oyl
 			return *this;
 		}
 
-		const char*
+		constexpr const char*
 		Data() const
 		{
 			return std::string_view::data();

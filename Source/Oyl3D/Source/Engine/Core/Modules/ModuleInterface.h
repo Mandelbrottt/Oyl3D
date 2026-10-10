@@ -6,7 +6,7 @@ namespace Oyl
 	{
 	public:
 		virtual
-		~IModuleInterface() = default;
+		~IModuleInterface() = 0;
 
 		virtual
 		void
@@ -24,9 +24,15 @@ namespace Oyl
 		}
 	};
 
+	inline
+	IModuleInterface::~IModuleInterface() {}
+
 	class ReloadableModule : public IModuleInterface
 	{
 	public:
+		virtual
+		~ReloadableModule() = default;
+
 		bool
 		SupportsHotReload() override
 		{
@@ -37,6 +43,9 @@ namespace Oyl
 	class NonReloadableModule : public IModuleInterface
 	{
 	public:
+		virtual
+		~NonReloadableModule() = default;
+
 		bool
 		SupportsHotReload() override
 		{

@@ -67,11 +67,12 @@ end
 function CppProjectDefaults.LanguageSettings()
 	cppdialect "C++20"
 	cdialect "C11"
+	characterset "Unicode"
 	warnings "Extra"
 	fatalwarnings { "All" }
 	externalwarnings "Off"
 	externalanglebrackets "On"
-	
+
 	rtti "On"
 	floatingpoint "Fast"
 end

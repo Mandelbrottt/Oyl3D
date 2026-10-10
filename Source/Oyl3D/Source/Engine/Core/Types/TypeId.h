@@ -116,7 +116,7 @@ namespace Oyl
 		// Generally hashes are much more consistent and chance of cache hit is very small
 
 		// Compute hash based on the typename
-		std::string_view name = NameOf<TRaw>();
+		StringView name = NameOf<TRaw>();
 		TUnderlying hash = Internal::Hash<TUnderlying>(name);
 
 		assert(hash != TypeId::Null);
