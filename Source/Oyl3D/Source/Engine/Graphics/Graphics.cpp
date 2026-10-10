@@ -1,17 +1,36 @@
 #include "Graphics.h"
 
 #include <Core/Logging/Logging.h>
+#include <Core/Modules/ModuleManager.h>
 
 namespace Oyl
 {
-	IApplicationWindow*
-	GraphicsModule::CreateWindow(const ApplicationWindowCreateParams& a_params)
+	class GraphicsModule : public IGraphicsModule
 	{
-		OYL_UNUSED(a_params);
-		LogDebug("CreateWindow!");
-		return nullptr;
-		//return TODO_IMPLEMENT_ME;
-	}
-}
+	public:
+		void
+		OnStartModule() override
+		{
+			ModuleManager::LoadModulePointer("GlfwGraphics");
+		}
 
-OYL_MODULE_DECLARE(Graphics, Oyl::GraphicsModule)
+		void
+		OnStopModule() override
+		{
+			ModuleManager::Get().UnloadModule("GlfwGraphics");
+		}
+
+		virtual
+		IApplicationWindow*
+		CreateWindow(const ApplicationWindowCreateParams& a_params)
+		{
+			// TODO: Load module based on user requested api
+			auto* glfwGraphics = ModuleManager::GetModulePointer<IGraphicsModule>("GlfwGraphics");
+			if (glfwGraphics)
+				return glfwGraphics->CreateWindow(a_params);
+			return nullptr;
+		}
+	};
+
+	OYL_MODULE_DECLARE(Graphics, GraphicsModule)
+}

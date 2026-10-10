@@ -11,6 +11,6 @@ project "Graphics"; do
 	-- reflection "On"
 
 	uses {
-		"Core"
+		"Core",
 	}
 end

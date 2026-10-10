@@ -17,6 +17,7 @@ project "EditorClient"; do
 		"Graphics",
 	}
 
+	-- TEMPORARY:
 	dependson {
 		"SpdLogLogger",
 	}
