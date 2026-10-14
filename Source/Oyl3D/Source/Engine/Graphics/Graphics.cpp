@@ -20,9 +20,8 @@ namespace Oyl
 			ModuleManager::Get().UnloadModule("GlfwGraphics");
 		}
 
-		virtual
 		IApplicationWindow*
-		CreateWindow(const ApplicationWindowCreateParams& a_params)
+		CreateWindow(const ApplicationWindowCreateParams& a_params) override
 		{
 			// TODO: Load module based on user requested api
 			auto* glfwGraphics = ModuleManager::GetModulePointer<IGraphicsModule>("GlfwGraphics");
