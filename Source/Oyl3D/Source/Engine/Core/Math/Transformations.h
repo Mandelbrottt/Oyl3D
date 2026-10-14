@@ -4,6 +4,8 @@
 #include "Matrix4.h"
 #include "Vector3.h"
 
+#include "Core/Preprocessor/Common.h"
+
 namespace Oyl::Matrix
 {
 	/**

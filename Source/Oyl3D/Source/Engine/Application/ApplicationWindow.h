@@ -1,10 +1,10 @@
 #pragma once
 
-#include "Core/Containers/String.h"
-#include "Core/Events/Event.h"
-#include "Core/Input/InputCodes.h"
-#include "Core/Math/Vector.h"
-#include "Core/Types/EnumFlags.h"
+#include <Core/Containers/String.h>
+#include <Core/Events/Event.h>
+#include <Core/Input/InputCodes.h>
+#include <Core/Math/Vector.h>
+#include <Core/Types/EnumFlags.h>
 
 namespace Oyl
 {
@@ -114,6 +114,20 @@ namespace Oyl
 
 	inline
 	IApplicationWindow::~IApplicationWindow() noexcept {}
+
+	class IApplicationWindowFactory
+	{
+	public:
+		virtual
+		~IApplicationWindowFactory() = 0;
+
+		virtual
+		IApplicationWindow*
+		CreateApplicationWindow(const ApplicationWindowCreateParams& a_params) = 0;
+	};
+
+	inline
+	IApplicationWindowFactory::~IApplicationWindowFactory() {}
 
 	struct WindowEvent
 	{

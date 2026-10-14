@@ -1,6 +1,7 @@
 #include <iostream>
 
-#include <Core/Application/Application.h>
+#include <Application/Application.h>
+
 #include <Core/CommandLine/CommandLine.h>
 #include <Core/Logging/Logging.h>
 #include <Core/Modules/ModuleManager.h>
@@ -12,13 +13,9 @@
 #include <Core/Profiling/Profiling.h>
 #include <Core/Time/IFrameTimer.h>
 
-#include "MainLoop.h"
+#include "EditorClientApplication.h"
 
 static Oyl::IFrameTimer* g_frameTimer = nullptr;
-
-static
-void
-WaitUntilNextFrame();
 
 int
 main(int a_argc, char** a_argv)
@@ -29,60 +26,29 @@ main(int a_argc, char** a_argv)
 	Oyl::ModuleManager::LoadModulePointer("Core");
 	Oyl::Time::Internal::Init(g_frameTimer);
 
-	Oyl::ModuleManager::Get().LoadModule("SpdLogLogger");
+	Oyl::ModuleManager::LoadModulePointer("SpdLogLogger");
+	Oyl::ModuleManager::LoadModulePointer("GlfwModule");
 
 	Oyl::CommandLine::Init(a_argc, a_argv);
 
-	// Scope the loop to manage when the MainLoop destructor is called
-	{
-		Oyl::EditorClientMainLoop loop;
-		while (!Oyl::Application::IsExitRequested())
-		{
-			Oyl::Time::Internal::Update();
+	Oyl::EditorClientApplication application;
+	application.RegisterOnUpdateCallback(Oyl::Time::Internal::Update);
+	application.RegisterOnUpdateCallback([] { Oyl::Internal::GetCurrentLogger()->Flush(); });
 
-			loop.Update();
-
-			Oyl::Internal::GetCurrentLogger()->Flush();
-
-			// Once we are done all the processing for this frame, we can wait for the next one
-			WaitUntilNextFrame();
-		}
-	}
+	auto* applicationModule = Oyl::ModuleManager::LoadModulePointer<Oyl::IApplicationModule>("Application");
+	applicationModule->RegisterApplication(&application);
+	applicationModule->RunApplication();
 
 	Oyl::CommandLine::Shutdown();
 
+	Oyl::ModuleManager::Get().UnloadModule("GlfwModule");
 	Oyl::ModuleManager::Get().UnloadModule("SpdLogLogger");
 	Oyl::ModuleManager::Get().UnloadModule("Core");
 
 	OYL_PROFILER_SHUTDOWN();
 }
 
-void
-WaitUntilNextFrame()
-{
-	// Intentionally use g_frameTimer instead of Oyl::Time::GetFrameTimer since that is user overrideable
-	static auto lastTick = g_frameTimer->ElapsedProcessorTicks();
-
-	Oyl::Application::Internal::UpdateTargetFramerate();
-	// If target framerate is 0, don't cap framerate
-	uint32 targetFrameRate = Oyl::Application::TargetFramerate();
-	uint64 minNumTicksPerFrame = 0;
-	if (targetFrameRate > 0)
-		minNumTicksPerFrame = (uint64) (g_frameTimer->TickResolution() * (1.0 / targetFrameRate));
-
-	auto targetTickForNextFrame = lastTick + minNumTicksPerFrame;
-
-	// Wait for next frame
-	uint64 thisTick;
-	do
-	{
-		thisTick = g_frameTimer->ElapsedProcessorTicks();
-	} while (thisTick < targetTickForNextFrame);
-
-	lastTick = thisTick;
-}
-
-#if defined(_WIN32)
+#if defined(OYL_WINDOWS)
 #include <Windows.h>
 
 #include <Core/Time/Windows/WindowsFrameTimer.h>

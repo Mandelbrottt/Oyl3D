@@ -49,7 +49,8 @@ namespace Oyl
 		{
 			ModuleInfo& info = iter->second;
 			info.refCount++;
-			*a_outResult = ModuleLoadResult::Success;
+			if (a_outResult)
+				*a_outResult = ModuleLoadResult::Success;
 			return info.interfacePointer;
 		}
 

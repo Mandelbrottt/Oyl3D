@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Core/Containers/String.h"
+#include "Core/Preprocessor/Common.h"
 
 namespace Oyl::Platform
 {

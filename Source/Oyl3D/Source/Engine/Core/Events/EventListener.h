@@ -2,6 +2,8 @@
 
 #include "Event.h"
 
+#include "Core/Preprocessor/Common.h"
+
 namespace Oyl
 {
 	class EventListener;

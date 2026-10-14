@@ -4,6 +4,7 @@
 #include <optional>
 
 #include "Core/Containers/String.h"
+#include "Core/Preprocessor/Common.h"
 
 int
 main(int, char**);

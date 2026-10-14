@@ -2,8 +2,6 @@
 
 #include <atomic>
 
-#include "IFrameTimer.h"
-
 #include "Core/Profiling/Profiling.h"
 
 namespace Oyl::Time

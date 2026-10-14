@@ -2,6 +2,8 @@
 
 #include "Logger.h"
 
+#include "Core/Preprocessor/Common.h"
+
 namespace Oyl
 {
 	namespace Internal

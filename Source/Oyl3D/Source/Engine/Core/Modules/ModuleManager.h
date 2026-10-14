@@ -3,6 +3,7 @@
 #include "ModuleInterface.h"
 
 #include "Core/Platform/SharedLibrary.h"
+#include "Core/Preprocessor/Common.h"
 
 namespace Oyl
 {
@@ -57,9 +58,9 @@ namespace Oyl
 			requires (std::is_convertible_v<TInterface*, IModuleInterface*>)
 		static
 		TInterface*
-		LoadModulePointer(const String& a_moduleName)
+		LoadModulePointer(const String& a_moduleName, ModuleLoadResult* a_outResult = nullptr)
 		{
-			return static_cast<TInterface*>(Get().LoadModule(a_moduleName));
+			return static_cast<TInterface*>(Get().LoadModule(a_moduleName, a_outResult));
 		}
 
 		template<typename TInterface = IModuleInterface>

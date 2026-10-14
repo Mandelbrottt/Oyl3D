@@ -16,16 +16,4 @@ project "Core"; do
 			"Tracy"
 		}
 	end
-	usage "PRIVATE"; do
-		forceincludes {
-			"Core/Preprocessor/Common.h"
-		}
-	end
-	usage "INTERFACE"; do
-		-- Premake adds forceincludes as relative paths no matter what
-		-- drop the "Core" for other projects to not use the .Include version
-		forceincludes {
-			"Preprocessor/Common.h"
-		}
-	end
 end

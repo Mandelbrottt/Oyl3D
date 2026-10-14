@@ -2,6 +2,7 @@
 
 #include <atomic>
 
+#include "Core/Preprocessor/Common.h"
 #include "Core/Time/IFrameTimer.h"
 
 namespace Oyl

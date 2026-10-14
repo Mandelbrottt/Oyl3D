@@ -6,6 +6,7 @@
 #include "Event.h"
 
 #include "Core/Containers/Delegate.h"
+#include "Core/Preprocessor/Common.h"
 
 namespace Oyl
 {

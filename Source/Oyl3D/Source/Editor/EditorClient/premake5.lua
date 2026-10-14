@@ -14,7 +14,7 @@ project "EditorClient"; do
 
 	uses {
 		"Core",
-		"Graphics",
+		"Application",
 	}
 
 	-- TEMPORARY:

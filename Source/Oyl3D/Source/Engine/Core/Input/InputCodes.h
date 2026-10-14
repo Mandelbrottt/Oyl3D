@@ -2,6 +2,7 @@
 
 #include <format>
 
+#include "Core/Preprocessor/Common.h"
 #include "Core/Types/PrimitiveTypes.h"
 #include "Core/Types/TypeTraits.h"
 

@@ -1,11 +1,8 @@
 #pragma once
 
+#include "Core/Preprocessor/Common.h"
+#include "Core/Time/IFrameTimer.h"
 #include "Core/Types/PrimitiveTypes.h"
-
-namespace Oyl
-{
-	class IFrameTimer;
-}
 
 namespace Oyl::Time
 {

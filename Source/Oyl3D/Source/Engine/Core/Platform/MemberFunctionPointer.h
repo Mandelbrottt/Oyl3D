@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Core/Preprocessor/Common.h"
 #include "Core/Types/TypeTraits.h"
 
 namespace Oyl::Platform

@@ -2,7 +2,7 @@ local oyl3d = premake.modules.oyl3d
 
 group "Oyl/Engine"
 
-project "GlfwGraphics"; do
+project "Application"; do
 	language "C++"
 	kind "SharedLib"
 
@@ -12,13 +12,5 @@ project "GlfwGraphics"; do
 
 	uses {
 		"Core",
-		"Graphics",
-		"Glfw",
 	}
-	usage "PUBLIC"; do
-		uses {
-			"Core",
-			"Graphics"
-		}
-	end
 end
