@@ -1,20 +1,20 @@
-local oyl3d = premake.modules.oyl3d
+-- local oyl3d = premake.modules.oyl3d
 
-group "Oyl/Tools"
+-- group "Oyl/Tools"
 
-project "Oyl.Spyll"; do
-	language "C++"
-	kind "ConsoleApp"
+-- project "Oyl.Spyll"; do
+-- 	language "C++"
+-- 	kind "ConsoleApp"
 
-	oyl3d.project.files()
+-- 	oyl3d.project.files()
 
-	-- Needed to interfaces with Clang libs
-	runtime "Release"
-	defines {
-		"_ITERATOR_DEBUG_LEVEL=0"
-	}
+-- 	-- Needed to interfaces with Clang libs
+-- 	runtime "Release"
+-- 	defines {
+-- 		"_ITERATOR_DEBUG_LEVEL=0"
+-- 	}
 
-	links {
-		"Clang",
-	}
-end
+-- 	links {
+-- 		"Clang",
+-- 	}
+-- end
