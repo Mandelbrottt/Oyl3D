@@ -27,6 +27,8 @@ namespace Oyl
 			auto* glfwGraphics = ModuleManager::GetModulePointer<IGraphicsModule>("GlfwGraphics");
 			if (glfwGraphics)
 				return glfwGraphics->CreateWindow(a_params);
+
+			LogError("Failed to create window!");
 			return nullptr;
 		}
 	};

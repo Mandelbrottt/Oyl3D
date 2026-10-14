@@ -36,7 +36,7 @@ local Packages = {
 	Glfw = {
 		OnProject = function(prj)
 			language "C"
-			kind "SharedLib"
+			kind "StaticLib"
 
 			files {
 				"include/GLFW/**",

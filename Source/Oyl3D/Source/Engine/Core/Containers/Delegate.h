@@ -2,6 +2,7 @@
 
 #include <algorithm>
 
+#include "Core/Platform/MemberFunctionPointer.h"
 #include "Core/Types/TypeTraits.h"
 
 namespace Oyl
@@ -17,7 +18,7 @@ namespace Oyl
 
 		template<auto Function>
 			requires Traits::MemberFunctionPointer<decltype(Function)>
-		using MemberFnFromValue = TReturn (Traits::MemberFunctionBaseClass_T<decltype(Function)>::*)(TArgs...);
+		using MemberFnFromValue = TReturn (Traits::TMemberFunctionBaseClass<decltype(Function)>::*)(TArgs...);
 
 		template<typename TClass>
 		using MemberFnFromType = TReturn (TClass::*)(TArgs...);
@@ -55,12 +56,14 @@ namespace Oyl
 			return *this;
 		}
 
-		friend bool operator ==(const Delegate& a_lhs, const Delegate& a_rhs)
+		friend bool
+		operator ==(const Delegate& a_lhs, const Delegate& a_rhs)
 		{
 			return a_lhs.m_fn == a_rhs.m_fn && a_lhs.m_obj == a_rhs.m_obj;
 		}
 
-		friend bool operator !=(const Delegate& a_lhs, const Delegate& a_rhs)
+		friend bool
+		operator !=(const Delegate& a_lhs, const Delegate& a_rhs)
 		{
 			return !(a_lhs == a_rhs);
 		}
@@ -86,8 +89,8 @@ namespace Oyl
 			Set<Function>();
 		}
 
-		template<typename TFunctor>
-		Delegate(TFunctor&& a_functor)
+		template<typename TPredicate>
+		Delegate(TPredicate&& a_functor)
 		{
 			Set(static_cast<Fn*>(a_functor));
 		}
@@ -113,12 +116,12 @@ namespace Oyl
 		Set()
 		{
 			m_obj = nullptr;
-			std::memcpy(&m_fn, &Function, sizeof(m_fn));
+			m_fn = static_cast<Fn*>(Function);
 		}
 
-		template<typename TFunction>
+		template<typename TPredicate>
 		Delegate&
-		operator =(TFunction&& a_fn)
+		operator =(TPredicate&& a_fn)
 		{
 			Set(static_cast<Fn*>(a_fn));
 			return *this;
@@ -138,10 +141,10 @@ namespace Oyl
 		template<typename TObj, typename TClass> \
 		Delegate(TObj* a_obj, TReturn(TClass::*a_fn)(TArgs...) _cv_ref_noexcept_) \
 		{ \
-			Set(static_cast<TClass*>(a_obj), a_fn); \
+			Set(a_obj, a_fn); \
 		}
 
-	_CLASS_DEFINE_CV_REF_NOEXCEPT(_DELEGATE_MEMBER_CONSTRUCTOR)
+		_CLASS_DEFINE_CV_REF_NOEXCEPT(_DELEGATE_MEMBER_CONSTRUCTOR)
 	#undef _DELEGATE_MEMBER_CONSTRUCTOR
 
 	#define _DELEGATE_MEMBER_CREATE_FUNC(_cv_ref_noexcept_) \
@@ -152,22 +155,30 @@ namespace Oyl
 		Create(TObj* a_obj, TReturn(TClass::*a_fn)(TArgs...) _cv_ref_noexcept_) \
 		{ \
 			Delegate result; \
-			result.Set(static_cast<TClass*>(a_obj), a_fn); \
+			result.Set(a_obj, a_fn); \
 			return result; \
 		}
 
-	_CLASS_DEFINE_CV_REF_NOEXCEPT(_DELEGATE_MEMBER_CREATE_FUNC)
+		_CLASS_DEFINE_CV_REF_NOEXCEPT(_DELEGATE_MEMBER_CREATE_FUNC)
 	#undef _DELEGATE_MEMBER_CREATE_FUNC
 
 		template<auto Function>
 			requires Traits::MemberFunctionPointer<decltype(Function)>
 		static
 		Delegate
-		Create(Traits::MemberFunctionBaseClass_T<decltype(Function)>* a_obj)
+		Create(Traits::TMemberFunctionBaseClass<decltype(Function)>* a_obj)
 		{
 			Delegate result;
 			result.Set(a_obj, Function);
 			return result;
+		}
+
+		template<auto Function>
+			requires Traits::MemberFunctionPointer<decltype(Function)>
+		void
+		Set(Traits::TMemberFunctionBaseClass<decltype(Function)>* a_obj)
+		{
+			Set(a_obj, Function);
 		}
 
 	#define _DELEGATE_MEMBER_SET_FUNC(_cv_ref_noexcept_) \
@@ -177,21 +188,14 @@ namespace Oyl
 		Set(TObj* a_obj, TReturn(TClass::*a_fn)(TArgs...) _cv_ref_noexcept_) \
 		{ \
 			/* static_cast to ensure base class pointer arithmetic is done correctly */\
-			m_obj = reinterpret_cast<void*>(static_cast<TClass*>(a_obj)); \
-			std::memcpy(&m_fn, &a_fn, sizeof(m_fn)); \
+			TClass* objAsTClass = static_cast<TClass*>(a_obj); \
+			Platform::MemberFunctionPointerData mfpdata(objAsTClass, a_fn);\
+			m_obj = mfpdata.thisPtr; \
+			m_fn = reinterpret_cast<Fn*>(mfpdata.thunkPtr); \
 		}
 
-	_CLASS_DEFINE_CV_REF_NOEXCEPT(_DELEGATE_MEMBER_SET_FUNC)
+		_CLASS_DEFINE_CV_REF_NOEXCEPT(_DELEGATE_MEMBER_SET_FUNC)
 	#undef _DELEGATE_MEMBER_SET_FUNC
-
-		template<auto Function>
-			requires Traits::MemberFunctionPointer<decltype(Function)>
-		void
-		Set(Traits::MemberFunctionBaseClass_T<decltype(Function)>* a_obj)
-		{
-			m_obj = reinterpret_cast<void*>(a_obj);
-			std::memcpy(&m_fn, Function, sizeof(m_fn));
-		}
 
 	#pragma endregion Member Functions
 	#pragma region Invoke
@@ -251,7 +255,7 @@ namespace Oyl
 
 	template<auto Function>
 	Delegate<Traits::FunctionSignatureFromPointer_T<decltype(Function)>>
-	CreateDelegate(Traits::MemberFunctionBaseClass_T<decltype(Function)>* a_obj)
+	CreateDelegate(Traits::TMemberFunctionBaseClass<decltype(Function)>* a_obj)
 	{
 		using TDelegate = Delegate<Traits::FunctionSignatureFromPointer_T<decltype(Function)>>;
 		return TDelegate::Create(a_obj, Function);
@@ -263,7 +267,7 @@ namespace Oyl
 		Delegate<TReturn(TArgs...)> \
 		CreateDelegate(TObj* a_obj, TReturn(TClass::*a_fn)(TArgs...) _cv_ref_noexcept_) \
 		{ \
-			return Delegate<TReturn(TArgs...)>::Create(static_cast<TClass*>(a_obj), a_fn); \
+			return Delegate<TReturn(TArgs...)>::Create(a_obj, a_fn); \
 		}
 
 	_CLASS_DEFINE_CV_REF_NOEXCEPT(_DELEGATE_MEMBER_CREATE_DELEGATE_FUNC)

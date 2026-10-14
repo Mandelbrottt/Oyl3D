@@ -242,47 +242,36 @@ namespace Oyl::Traits
 		using type = TReturn(TClass::*)(TArgs...) noexcept;
 	};
 
-	template<typename>
+	template<typename TMemberFunctionPointer>
 	struct MemberFunctionClass;
 
-	template<typename Class, typename TReturn, typename... TArgs>
-	struct MemberFunctionClass<TReturn(Class::*)(TArgs...)>
-	{
-		using type = Class;
+#define MEMBER_FUNCTION_CLASS(_cv_ref_noexcept_) \
+	template<typename Class, typename TReturn, typename... TArgs> \
+	struct MemberFunctionClass<TReturn(Class::*)(TArgs...) _cv_ref_noexcept_> \
+	{ \
+		using type = Class; \
 	};
 
-	template<typename Class, typename TReturn, typename... TArgs>
-	struct MemberFunctionClass<TReturn(Class::*)(TArgs...) const>
-	{
-		using type = Class;
-	};
+	_CLASS_DEFINE_CV_REF_NOEXCEPT(MEMBER_FUNCTION_CLASS)
+#undef MEMBER_FUNCTION_CLASS
 
-	template<typename Class, typename TReturn, typename... TArgs>
-	struct MemberFunctionClass<TReturn(Class::*)(TArgs...) noexcept>
-	{
-		using type = Class;
-	};
+	template<typename TMemberFunctionPointer>
+	using TMemberFunctionBaseClass = typename MemberFunctionClass<TMemberFunctionPointer>::type;
 
-	template<typename Class, typename TReturn, typename... TArgs>
-	struct MemberFunctionClass<TReturn(Class::*)(TArgs...) const noexcept>
-	{
-		using type = Class;
-	};
-
-	template<typename T>
-	using MemberFunctionBaseClass_T = typename MemberFunctionClass<T>::type;
-
-	template<typename TClass, typename>
+	template<typename TClass, typename TSignature>
 	struct MemberFunctionWithSignature;
 
-	template<typename TClass, typename TReturn, typename... TArgs>
-	struct MemberFunctionWithSignature<TClass, TReturn(TArgs...)>
-	{
-		using type = TReturn(TClass::*)(TArgs...);
+#define MEMBER_FUNCTION_WITH_SIGNATURE(_cv_ref_noexcept_) \
+	template<typename TClass, typename TReturn, typename... TArgs> \
+	struct MemberFunctionWithSignature<TClass, TReturn(TArgs...) _cv_ref_noexcept_> \
+	{ \
+		using type = TReturn(TClass::*)(TArgs...); \
 	};
+	_CLASS_DEFINE_CV_REF_NOEXCEPT(MEMBER_FUNCTION_WITH_SIGNATURE)
+#undef MEMBER_FUNCTION_WITH_SIGNATURE
 
-	template<typename TClass, typename TReturn, typename... TArgs>
-	using TMemberFunctionWithSignature = typename MemberFunctionWithSignature<TClass, TReturn(TArgs...)>::type;
+	template<typename TClass, typename TSignature>
+	using TMemberFunctionWithSignature = typename MemberFunctionWithSignature<TClass, TSignature>::type;
 
 #pragma endregion Member Functions
 
