@@ -1,18 +1,18 @@
-local oyl3d = premake.modules.oyl3d
+-- local oyl3d = premake.modules.oyl3d
 
-group "Oyl/Engine"
+-- group "Oyl/Engine"
 
-project "Oyl.Core"; do
-	language "C++"
-	kind "SharedLib"
+-- project "Oyl.Core"; do
+-- 	language "C++"
+-- 	kind "SharedLib"
 
-	oyl3d.project.files()
+-- 	oyl3d.project.files()
 
-	-- reflection "On"
+-- 	-- reflection "On"
 
-	links {
-		"SpdLog",
-		"TracyClient",
-		"Glfw",
-	}
-end
+-- 	links {
+-- 		"SpdLog",
+-- 		"TracyClient",
+-- 		"Glfw",
+-- 	}
+-- end

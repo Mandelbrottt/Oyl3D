@@ -1,6 +1,9 @@
 return {
 	"_preload.lua",
 	"oyl3d.lua",
+	"oyl3d_prebake.lua",
+	"oyl3d_postbake.lua",
+	"oyl3d_postaction.lua",
 	"actions.lua",
 	"check.lua",
 	"clean_action.lua",

@@ -67,11 +67,12 @@ end
 function CppProjectDefaults.LanguageSettings()
 	cppdialect "C++20"
 	cdialect "C11"
+	characterset "Unicode"
 	warnings "Extra"
 	fatalwarnings { "All" }
 	externalwarnings "Off"
 	externalanglebrackets "On"
-	
+
 	rtti "On"
 	floatingpoint "Fast"
 end
@@ -108,6 +109,12 @@ function CppProjectDefaults.ProjectSettings()
 		includedirs { pchDir }
 		defines { string.format('OYL_PCH_FILE="%s/pch.h"', os.getcwd()) }
 	end
+	filter "kind:SharedLib"; do
+		defines {
+			"%{prj.name:gsub('[%.%-% ]', '_'):upper() .. '_SHAREDLIB'}"
+		}
+	end
+	filter {}
 end
 
 function CppProjectDefaults.FileSettings()

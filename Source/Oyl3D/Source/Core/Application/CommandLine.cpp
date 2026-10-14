@@ -22,7 +22,7 @@ namespace Oyl
 
 	struct CommandLine::Impl
 	{
-		std::unordered_map<std::string, CommandLineArgument> arguments;
+		std::unordered_map<std::string, CommandLineArgument> namedArguments;
 	};
 
 	CommandLine::Impl* CommandLine::s_impl = nullptr;
@@ -30,14 +30,14 @@ namespace Oyl
 	bool
 	CommandLine::IsPresent(const std::string& a_name)
 	{
-		const auto iter = s_impl->arguments.find(a_name);
-		return iter != s_impl->arguments.end();
+		const auto iter = s_impl->namedArguments.find(a_name);
+		return iter != s_impl->namedArguments.end();
 	}
 
 	bool
 	CommandLine::AddArgument(const std::string& a_name, bool a_overwrite)
 	{
-		auto [iter, insert] = s_impl->arguments.emplace(a_name, CommandLineArgument {});
+		auto [iter, insert] = s_impl->namedArguments.emplace(a_name, CommandLineArgument {});
 		if (!insert && !a_overwrite)
 		{
 			return false;
@@ -52,7 +52,7 @@ namespace Oyl
 	bool
 	CommandLine::AddString(const std::string& a_name, std::string a_value, bool a_overwrite)
 	{
-		auto [iter, insert] = s_impl->arguments.emplace(a_name, CommandLineArgument {});
+		auto [iter, insert] = s_impl->namedArguments.emplace(a_name, CommandLineArgument {});
 		if (!insert && !a_overwrite)
 		{
 			return false;
@@ -67,7 +67,7 @@ namespace Oyl
 	bool
 	CommandLine::AddInt(const std::string& a_name, int32 a_value, bool a_overwrite)
 	{
-		auto [iter, insert] = s_impl->arguments.emplace(a_name, CommandLineArgument {});
+		auto [iter, insert] = s_impl->namedArguments.emplace(a_name, CommandLineArgument {});
 		if (!insert && !a_overwrite)
 		{
 			return false;
@@ -82,7 +82,7 @@ namespace Oyl
 	bool
 	CommandLine::AddArbitraryData(const std::string& a_name, ArbitraryData a_value, bool a_overwrite)
 	{
-		auto [iter, insert] = s_impl->arguments.emplace(a_name, CommandLineArgument {});
+		auto [iter, insert] = s_impl->namedArguments.emplace(a_name, CommandLineArgument {});
 		if (!insert && !a_overwrite)
 		{
 			return false;
@@ -97,8 +97,8 @@ namespace Oyl
 	std::optional<std::string_view>
 	CommandLine::GetString(const std::string& a_name)
 	{
-		auto iter = s_impl->arguments.find(a_name);
-		if (iter == s_impl->arguments.end() || iter->second.type != CommandLineArgument::ArgumentType::String)
+		auto iter = s_impl->namedArguments.find(a_name);
+		if (iter == s_impl->namedArguments.end() || iter->second.type != CommandLineArgument::ArgumentType::String)
 		{
 			return {};
 		}
@@ -108,8 +108,8 @@ namespace Oyl
 	std::optional<int32>
 	CommandLine::GetInt(const std::string& a_name)
 	{
-		auto iter = s_impl->arguments.find(a_name);
-		if (iter == s_impl->arguments.end() || iter->second.type != CommandLineArgument::ArgumentType::Integer)
+		auto iter = s_impl->namedArguments.find(a_name);
+		if (iter == s_impl->namedArguments.end() || iter->second.type != CommandLineArgument::ArgumentType::Integer)
 		{
 			return {};
 		}
@@ -119,8 +119,8 @@ namespace Oyl
 	std::optional<ArbitraryData>
 	CommandLine::GetArbitraryData(const std::string& a_name)
 	{
-		auto iter = s_impl->arguments.find(a_name);
-		if (iter == s_impl->arguments.end() || iter->second.type != CommandLineArgument::ArgumentType::Arbitrary)
+		auto iter = s_impl->namedArguments.find(a_name);
+		if (iter == s_impl->namedArguments.end() || iter->second.type != CommandLineArgument::ArgumentType::Arbitrary)
 		{
 			return {};
 		}
@@ -130,7 +130,7 @@ namespace Oyl
 	bool
 	CommandLine::RemoveArgument(const std::string& a_name)
 	{
-		size_t nElementsErased = s_impl->arguments.erase(a_name);
+		size_t nElementsErased = s_impl->namedArguments.erase(a_name);
 		return nElementsErased != 0;
 	}
 

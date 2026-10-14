@@ -7,10 +7,9 @@ oyl3d.check = oyl3d.check or {}
 oyl3d.generate = oyl3d.generate or {}
 
 local m = oyl3d.check
-local generate = oyl3d.generate
 local private = {}
 
-function generate.generateCheckProject(wks)
+function m.generateCheckProject(wks)
 	if _OPTIONS["no-premake-check"] then
 		return
 	end
@@ -31,7 +30,7 @@ function private.addLinkToAllProjects(wks)
 		os.chdir(prj.basedir)
 
 		project(prj.name); do
-			links { "Premake" }
+			dependson { "Premake" }
 		end
 	end
 	os.chdir(cwd)
