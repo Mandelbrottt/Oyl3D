@@ -1,4 +1,3 @@
-#include "pch.h"
 #include "Transformations.h"
 
 #include "Matrix3.h"

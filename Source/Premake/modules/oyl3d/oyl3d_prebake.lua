@@ -177,18 +177,42 @@ function m.onProjectModuleProjectUsages(prj)
 end
 
 function m.onProjectDefineModuleMacros(prj)
+	local prj_name_as_macro = prj.name:upper():gsub("[%.%-% ]", "_")
+
 	defines {
-		"OYL_WITHIN_MODULE_" .. prj.name:upper():gsub("[%.%-% ]", "_"),
-		"OYL_CURRENT_MODULE=\"" .. prj.name .. "\"",
-		"OYL_CURRENT_MODULE_AS_MACRO=" .. prj.name:upper():gsub("[%.%-% ]", "_"),
+		"OYL_MODULE_WITHIN_" .. prj_name_as_macro,
+		"OYL_MODULE_CURRENT=\"" .. prj.name .. "\"",
+		"OYL_MODULE_CURRENT_AS_MACRO=" .. prj_name_as_macro,
 	}
+
+	-- SharedLib Export Macros
 	usage "PUBLIC"; do
 		defines {
-			"OYL_MODULE_AVAILABLE_" .. prj.name:upper():gsub("[%.%-% ]", "_")
+			"OYL_MODULE_AVAILABLE_" .. prj_name_as_macro,
 		}
 		filter { "kind:SharedLib" }; do
 			defines {
-				prj.name:upper():gsub("[%.%-% ]", "_") .. "_SHAREDLIB"
+				prj_name_as_macro .. "_SHAREDLIB"
+			}
+		end
+		filter { "kind:StaticLib" }; do
+			defines {
+				prj_name_as_macro .. "_STATICLIB",
+				prj_name_as_macro .. "_EXPORT", -- Already defined for SharedLib in other usages
+			}
+		end
+	end
+	usage "PRIVATE"; do
+		filter { "kind:SharedLib" }; do
+			defines {
+				prj_name_as_macro .. "_EXPORT=__OYL__EXPORT_ATTR"
+			}
+		end
+	end
+	usage "INTERFACE"; do
+		filter { "kind:SharedLib" }; do
+			defines {
+				prj_name_as_macro .. "_EXPORT=__OYL__IMPORT_ATTR"
 			}
 		end
 	end
@@ -429,7 +453,7 @@ function m.onWorkspaceRemoveNonProjectPackages(wks)
 	if not p.action.isConfigurable() then
 		return
 	end
-	
+
 	-- Remove all references to non-project packages
 	-- Do this before we remove the projects from the workspace so we can distiguish between a raw
 	-- library links and package links
@@ -446,12 +470,12 @@ function m.onWorkspaceRemoveNonProjectPackages(wks)
 		end
 	end
 	workspace(wks.name)
-	
+
 	-- Remove all non-project packages from the workspace
-	-- We only want the link as an indicator to call the OnDepend function. 
+	-- We only want the link as an indicator to call the OnDepend function.
 	-- If no project is generated, there is no library to depend on
 	for prjindex = #wks.projects, 1, -1 do
-		local prj =  wks.projects[prjindex]
+		local prj = wks.projects[prjindex]
 		if prj._package and not prj._package.OnProject then
 			table.remove(wks.projects, prjindex)
 		end
@@ -462,7 +486,7 @@ function m.onWorkspaceRemoveUnreferencedProjects(wks)
 	if not p.action.isConfigurable() then
 		return
 	end
-	
+
 	-- Gather the set of projects referencing or being referenced by another project
 	local dependSet = {}
 	for _, prj in pairs(wks.projects) do
