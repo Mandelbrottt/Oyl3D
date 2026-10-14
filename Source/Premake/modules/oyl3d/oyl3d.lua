@@ -161,6 +161,10 @@ p.override(p.main, "postBake", function(base)
 end)
 
 function m.overrides.postBake()
+	if not p.action.isConfigurable() then
+		return
+	end
+
 	local global = p.api.scope.global
 	for _, wks in ipairs(global.workspaces) do
 		local cwd = os.getcwd()
