@@ -2,8 +2,6 @@
 
 #include "Logger.h"
 
-#include "Core/PPExport.h"
-
 namespace Oyl
 {
 	namespace Internal

@@ -1,6 +1,5 @@
 #pragma once
 
-#include "Core/PPExport.h"
 #include "Core/Types/PrimitiveTypes.h"
 
 namespace Oyl::Application

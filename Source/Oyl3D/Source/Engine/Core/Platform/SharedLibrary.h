@@ -1,6 +1,5 @@
 #pragma once
 
-#include "Core/PPExport.h"
 #include "Core/Containers/String.h"
 
 namespace Oyl::Platform

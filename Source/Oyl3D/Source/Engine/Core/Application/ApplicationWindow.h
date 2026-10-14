@@ -1,6 +1,5 @@
 #pragma once
 
-#include "Core/PPExport.h"
 #include "Core/Containers/String.h"
 #include "Core/Events/Event.h"
 #include "Core/Input/InputCodes.h"

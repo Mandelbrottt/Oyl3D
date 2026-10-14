@@ -1,7 +1,5 @@
 #pragma once
 
-#include "Core/PPExport.h"
-
 #if defined(OYL_PROFILE)
 #	include <Oyl3D/.Include/Tracy/Tracy/public/tracy/Tracy.hpp>
 
