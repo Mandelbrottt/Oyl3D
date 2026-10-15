@@ -40,7 +40,7 @@ main(int a_argc, char** a_argv)
 	// Register windowing modules
 	Oyl::ModuleManager::LoadModulePointer("GlfwModule");
 
-	applicationModule->RunApplication();
+	int exitCode = applicationModule->RunApplication();
 
 	Oyl::CommandLine::Shutdown();
 
@@ -49,6 +49,8 @@ main(int a_argc, char** a_argv)
 	Oyl::ModuleManager::Get().UnloadModule("Core");
 
 	OYL_PROFILER_SHUTDOWN();
+
+	return exitCode;
 }
 
 #if defined(OYL_WINDOWS)

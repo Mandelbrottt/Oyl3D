@@ -36,8 +36,16 @@ namespace Oyl
 
 	public:
 		virtual
+		const Array<IApplicationWindow*>&
+		GetApplicationWindows() const = 0;
+
+		virtual
 		IApplicationWindow*
 		CreateApplicationWindow(const ApplicationWindowCreateParams& a_params) = 0;
+
+		virtual
+		void
+		CloseApplicationWindow(IApplicationWindow* a_window) = 0;
 
 		virtual
 		void
@@ -92,7 +100,7 @@ namespace Oyl
 		CurrentApplication() const = 0;
 
 		virtual
-		void
+		int
 		RunApplication() = 0;
 
 		virtual

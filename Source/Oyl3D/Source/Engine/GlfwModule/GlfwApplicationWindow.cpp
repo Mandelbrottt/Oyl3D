@@ -39,11 +39,11 @@ namespace Oyl
 
 	GlfwApplicationWindow::~GlfwApplicationWindow()
 	{
-		GlfwApplicationWindow::Destroy();
+		GlfwApplicationWindow::Close();
 	}
 
 	void
-	GlfwApplicationWindow::Destroy()
+	GlfwApplicationWindow::Close()
 	{
 		OYL_PROFILE_FUNCTION();
 

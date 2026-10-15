@@ -28,11 +28,8 @@ namespace Oyl
 	void
 	EditorClientApplication::OnStop()
 	{
-		m_mainWindow->Destroy();
-		delete m_mainWindow;
+		CloseApplicationWindow(m_mainWindow);
 		m_mainWindow = nullptr;
-
-		ModuleManager::Get().UnloadModule("Application");
 	}
 
 	void
@@ -86,7 +83,23 @@ namespace Oyl
 		if (!window)
 			return LogError("Failed to create EditorClientApplication Window!"), nullptr;
 
+		m_applicationWindows.Add(window);
 		return window;
+	}
+
+	void
+	EditorClientApplication::CloseApplicationWindow(IApplicationWindow* a_window)
+	{
+		if (!a_window || !a_window->IsValid())
+			return;
+
+		a_window->Close();
+
+		auto iter = std::ranges::find(m_applicationWindows, a_window);
+		if (iter != m_applicationWindows.end())
+			m_applicationWindows.erase(iter);
+
+		delete a_window;
 	}
 
 	void
@@ -158,5 +171,12 @@ namespace Oyl
 	{
 		if (a_event.eventType == typeidof(WindowCloseRequestEvent))
 			RequestExit(0);
+
+		if (a_event.eventType == typeidof(WindowKeyPressEvent))
+		{
+			const auto& evt = static_cast<const WindowKeyPressEvent&>(a_event);
+			if (evt.key == Input::KeyboardKey::KB_Q)
+				RequestExit(1);
+		}
 	}
 }

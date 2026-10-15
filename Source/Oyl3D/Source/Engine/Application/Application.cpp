@@ -23,13 +23,14 @@ namespace Oyl
 			return m_currentApplication;
 		}
 
-		void RunApplication() override
+		int RunApplication() override
 		{
 			if (m_applicationStarted)
-				return;
+				return 0;
 
 			m_currentApplication->OnStart();
-			while (!m_currentApplication->IsExitRequested())
+			int exitCode = 0;
+			while (!m_currentApplication->IsExitRequested(&exitCode))
 			{
 				m_currentApplication->OnUpdate();
 
@@ -39,6 +40,7 @@ namespace Oyl
 				m_currentApplication->WaitIdle();
 			}
 			m_currentApplication->OnStop();
+			return exitCode;
 		}
 
 		const Array<IApplicationWindowFactory*>&

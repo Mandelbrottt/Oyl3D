@@ -24,8 +24,14 @@ namespace Oyl
 		WaitIdle() override;
 
 	public:
+		const Array<IApplicationWindow*>&
+		GetApplicationWindows() const override { return m_applicationWindows; }
+
 		IApplicationWindow*
 		CreateApplicationWindow(const ApplicationWindowCreateParams& a_params) override;
+
+		void
+		CloseApplicationWindow(IApplicationWindow* a_window) override;
 
 		void
 		RequestExit(int a_exitCode) override;
@@ -64,6 +70,7 @@ namespace Oyl
 		uint32 m_targetFrameRate = 0;
 		std::atomic<uint32> m_targetFramerateHint = 0;
 
+		Array<IApplicationWindow*> m_applicationWindows;
 		Array<OnUpdateDelegate> m_onUpdateCallbacks;
 	};
 }

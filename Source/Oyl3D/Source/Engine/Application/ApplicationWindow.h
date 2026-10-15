@@ -53,7 +53,7 @@ namespace Oyl
 
 		virtual
 		void
-		Destroy() = 0;
+		Close() = 0;
 
 		virtual
 		bool

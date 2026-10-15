@@ -19,7 +19,7 @@ namespace Oyl
 		~GlfwApplicationWindow();
 
 		void
-		Destroy() override;
+		Close() override;
 
 		bool
 		IsValid() const override;
