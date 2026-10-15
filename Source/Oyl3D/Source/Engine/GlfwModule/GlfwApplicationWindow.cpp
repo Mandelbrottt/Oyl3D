@@ -68,7 +68,7 @@ namespace Oyl
 	void
 	GlfwApplicationWindow::Update()
 	{
-		glfwPollEvents();
+		// TODO: Store events from glfw then dispatch on update?
 	}
 
 	Vector2u

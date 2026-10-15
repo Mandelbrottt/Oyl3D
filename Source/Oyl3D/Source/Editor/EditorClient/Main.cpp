@@ -24,19 +24,22 @@ main(int a_argc, char** a_argv)
 	OYL_PROFILE_FUNCTION();
 
 	Oyl::ModuleManager::LoadModulePointer("Core");
-	Oyl::Time::Internal::Init(g_frameTimer);
-
 	Oyl::ModuleManager::LoadModulePointer("SpdLogLogger");
-	Oyl::ModuleManager::LoadModulePointer("GlfwModule");
 
+	Oyl::Time::Internal::Init(g_frameTimer);
 	Oyl::CommandLine::Init(a_argc, a_argv);
 
+	// Create application after logger is created
 	Oyl::EditorClientApplication application;
 	application.RegisterOnUpdateCallback(Oyl::Time::Internal::Update);
 	application.RegisterOnUpdateCallback([] { Oyl::Internal::GetCurrentLogger()->Flush(); });
 
 	auto* applicationModule = Oyl::ModuleManager::LoadModulePointer<Oyl::IApplicationModule>("Application");
 	applicationModule->RegisterApplication(&application);
+
+	// Register windowing modules
+	Oyl::ModuleManager::LoadModulePointer("GlfwModule");
+
 	applicationModule->RunApplication();
 
 	Oyl::CommandLine::Shutdown();

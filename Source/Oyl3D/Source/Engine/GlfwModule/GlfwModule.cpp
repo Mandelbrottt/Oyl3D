@@ -29,8 +29,9 @@ namespace Oyl
 			}
 			glfwSetErrorCallback(GlfwErrorCallback);
 
-			auto* applicationModule = ModuleManager::LoadModulePointer<IApplicationModule>("Application");
+			auto* applicationModule = ModuleManager::GetModulePointer<IApplicationModule>("Application");
 			applicationModule->RegisterApplicationWindowFactory(*this);
+			applicationModule->CurrentApplication()->RegisterOnUpdateCallback(glfwPollEvents);
 		}
 
 		void
