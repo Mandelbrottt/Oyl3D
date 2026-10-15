@@ -1,7 +1,9 @@
 #include "ModuleManager.h"
 
+#include <filesystem>
 #include <unordered_map>
 
+#include "Core/CommandLine/CommandLine.h"
 #include "Core/Containers/Array.h"
 #include "Core/Profiling/Profiling.h"
 
@@ -20,6 +22,9 @@ namespace Oyl
 	struct ModuleManager::Impl
 	{
 		std::unordered_map<std::string, ModuleInfo> modules;
+
+		Array<String> engineModuleDirectories;
+		Array<String> userModuleDirectories;
 
 		ModuleInfo*
 		FindModule(const String& a_moduleName);
@@ -45,7 +50,13 @@ namespace Oyl
 	{
 		OYL_PROFILE_FUNCTION();
 
-		if (auto iter = m_impl->modules.find(a_moduleName); iter != m_impl->modules.end())
+		String moduleName = a_moduleName;
+
+		auto modulePath = std::filesystem::path((const std::string&) a_moduleName);
+		if (modulePath != modulePath.stem())
+			moduleName = modulePath.stem().string();
+
+		if (auto iter = m_impl->modules.find(moduleName); iter != m_impl->modules.end())
 		{
 			ModuleInfo& info = iter->second;
 			info.refCount++;
@@ -55,7 +66,7 @@ namespace Oyl
 		}
 
 		ModuleInfo moduleInfo;
-		moduleInfo.name = a_moduleName;
+		moduleInfo.name = moduleName;
 		moduleInfo.refCount = 1;
 
 		// Cleanup code if the module fails to load
@@ -78,7 +89,7 @@ namespace Oyl
 
 		// Get handle to dependencies function
 		using ModuleDepsFn = void(*)(int*, const char***);
-		String depsSymbolName = String("ModuleDeps_") + a_moduleName;
+		String depsSymbolName = String("ModuleDeps_") + moduleName;
 		auto moduleDepsFn =
 			(ModuleDepsFn) Platform::GetSymbolFromSharedLibrary(moduleInfo.sharedLibHandle, depsSymbolName);
 
@@ -117,7 +128,7 @@ namespace Oyl
 
 		// Get handle to creation function
 		using ModuleInitFn = IModuleInterface*(*)();
-		String initSymbolName = String("ModuleInit_") + a_moduleName;
+		String initSymbolName = String("ModuleInit_") + moduleName;
 		auto moduleInitFn =
 			(ModuleInitFn) Platform::GetSymbolFromSharedLibrary(moduleInfo.sharedLibHandle, initSymbolName);
 		if (moduleInitFn == nullptr)
@@ -130,7 +141,7 @@ namespace Oyl
 		moduleInfo.interfacePointer = interface;
 
 		// Module load succeeded!
-		m_impl->modules.emplace(a_moduleName, std::move(moduleInfo));
+		m_impl->modules.emplace(moduleName, std::move(moduleInfo));
 		interface->OnStartModule();
 		if (a_outResult)
 			*a_outResult = ModuleLoadResult::Success;
@@ -181,6 +192,70 @@ namespace Oyl
 		}
 
 		return withResult(false, ModuleUnloadResult::Failure_StillInUse);
+	}
+
+	void
+	ModuleManager::AddEngineModuleDirectory(StringView a_directory)
+	{
+		auto absPath = std::filesystem::absolute(std::string(a_directory)).string();
+		auto iter = std::ranges::find(m_impl->engineModuleDirectories, absPath);
+		if (iter == m_impl->engineModuleDirectories.end())
+			m_impl->engineModuleDirectories.Add(absPath);
+	}
+
+	void
+	ModuleManager::RemoveEngineModuleDirectory(StringView a_directory)
+	{
+		auto absPath = std::filesystem::absolute(std::string(a_directory)).string();
+		auto iter = std::ranges::find(m_impl->engineModuleDirectories, absPath);
+		if (iter != m_impl->engineModuleDirectories.end())
+			m_impl->engineModuleDirectories.erase(iter);
+	}
+
+	void
+	ModuleManager::AddUserModuleDirectory(StringView a_directory)
+	{
+		auto absPath = std::filesystem::absolute(std::string(a_directory)).string();
+		auto iter = std::ranges::find(m_impl->userModuleDirectories, absPath);
+		if (iter == m_impl->userModuleDirectories.end())
+			m_impl->userModuleDirectories.Add(absPath);
+	}
+
+	void
+	ModuleManager::RemoveUserModuleDirectory(StringView a_directory)
+	{
+		auto absPath = std::filesystem::absolute((std::string&) a_directory).string();
+		auto iter = std::ranges::find(m_impl->userModuleDirectories, absPath);
+		if (iter != m_impl->userModuleDirectories.end())
+			m_impl->userModuleDirectories.erase(iter);
+	}
+
+	void
+	ModuleManager::ScanAndLoadFromModuleDirectories()
+	{
+		auto scanAndLoadFromDirsInList = [&](const Array<String>& a_list)
+		{
+			// Cache list in case loading a module adds to the list
+			auto list = a_list;
+			for (const auto& directory : a_list)
+			{
+				auto iter = std::filesystem::directory_iterator((const std::string&) directory);
+				for (const auto& dir_entry : iter)
+				{
+					if (!dir_entry.exists())
+						continue;
+					if (!dir_entry.is_regular_file())
+						continue;
+					auto extension = dir_entry.path().extension();
+					if (extension == ".dll" || extension == ".dylib" || extension == ".so")
+					{
+						LoadModule(dir_entry.path().string());
+					}
+				}
+			}
+		};
+		scanAndLoadFromDirsInList(m_impl->engineModuleDirectories);
+		scanAndLoadFromDirsInList(m_impl->userModuleDirectories);
 	}
 
 	ModuleInfo*

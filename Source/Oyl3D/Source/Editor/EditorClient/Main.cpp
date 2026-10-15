@@ -10,6 +10,8 @@
 #ifndef OYL_EXPOSE_PROFILER_CONTROLS
 #	define OYL_EXPOSE_PROFILER_CONTROLS
 #endif
+#include <filesystem>
+
 #include <Core/Profiling/Profiling.h>
 #include <Core/Time/IFrameTimer.h>
 
@@ -23,30 +25,25 @@ main(int a_argc, char** a_argv)
 	OYL_PROFILER_INIT();
 	OYL_PROFILE_FUNCTION();
 
-	Oyl::ModuleManager::LoadModulePointer("Core");
-	Oyl::ModuleManager::LoadModulePointer("SpdLogLogger");
-
 	Oyl::Time::Internal::Init(g_frameTimer);
 	Oyl::CommandLine::Init(a_argc, a_argv);
 
-	// Create application after logger is created
 	Oyl::EditorClientApplication application;
 	application.RegisterOnUpdateCallback(Oyl::Time::Internal::Update);
 	application.RegisterOnUpdateCallback([] { Oyl::Internal::GetCurrentLogger()->Flush(); });
 
+	auto cwd = std::filesystem::current_path().string();
+	Oyl::ModuleManager::Get().AddEngineModuleDirectory(Oyl::StringView(cwd));
+
+	// Register application before we scan for modules
 	auto* applicationModule = Oyl::ModuleManager::LoadModulePointer<Oyl::IApplicationModule>("Application");
 	applicationModule->RegisterApplication(&application);
 
-	// Register windowing modules
-	Oyl::ModuleManager::LoadModulePointer("GlfwModule");
-
+	// Register remaining engine modules
+	Oyl::ModuleManager::Get().ScanAndLoadFromModuleDirectories();
 	int exitCode = applicationModule->RunApplication();
 
 	Oyl::CommandLine::Shutdown();
-
-	Oyl::ModuleManager::Get().UnloadModule("GlfwModule");
-	Oyl::ModuleManager::Get().UnloadModule("SpdLogLogger");
-	Oyl::ModuleManager::Get().UnloadModule("Core");
 
 	OYL_PROFILER_SHUTDOWN();
 

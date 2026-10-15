@@ -72,6 +72,26 @@ namespace Oyl
 			return static_cast<TInterface*>(Get().GetModule(a_moduleName));
 		}
 
+		CORE_EXPORT
+		void
+		AddEngineModuleDirectory(StringView a_directory);
+
+		CORE_EXPORT
+		void
+		RemoveEngineModuleDirectory(StringView a_directory);
+
+		CORE_EXPORT
+		void
+		AddUserModuleDirectory(StringView a_directory);
+
+		CORE_EXPORT
+		void
+		RemoveUserModuleDirectory(StringView a_directory);
+
+		CORE_EXPORT
+		void
+		ScanAndLoadFromModuleDirectories();
+
 	private:
 		struct Impl;
 		Impl* m_impl;

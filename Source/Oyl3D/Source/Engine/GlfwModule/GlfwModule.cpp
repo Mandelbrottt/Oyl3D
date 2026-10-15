@@ -14,7 +14,8 @@ namespace Oyl
 		  public IModuleInterface
 	{
 	public:
-		virtual ~GlfwModule() = default;
+		virtual
+		~GlfwModule() = default;
 
 		void
 		OnStartModule() override
