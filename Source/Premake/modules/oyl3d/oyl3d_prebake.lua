@@ -198,7 +198,7 @@ function m.onProjectDefineModuleMacros(prj)
 		filter { "kind:StaticLib" }; do
 			defines {
 				prj_name_as_macro .. "_STATICLIB",
-				prj_name_as_macro .. "_EXPORT", -- Already defined for SharedLib in other usages
+				prj_name_as_macro .. "_EXPORT=", -- Already defined for SharedLib in other usages
 			}
 		end
 	end
