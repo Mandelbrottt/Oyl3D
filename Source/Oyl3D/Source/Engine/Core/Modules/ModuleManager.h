@@ -90,7 +90,11 @@ namespace Oyl
 
 		CORE_EXPORT
 		void
-		ScanAndLoadFromModuleDirectories();
+		ScanModuleDirectories();
+
+		CORE_EXPORT
+		void
+		ProcessPendingAutoLoadRequests();
 
 	private:
 		struct Impl;

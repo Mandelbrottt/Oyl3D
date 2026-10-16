@@ -1,5 +1,6 @@
 #pragma once
-#pragma once
+
+#include <cassert>
 
 #pragma region Platform
 #	if defined(_WIN32)

@@ -14,13 +14,12 @@ namespace Oyl
 		g_defaultLogLevel = LogLevel::Debug;
 
 		CORE_EXPORT
-		extern
-		ILogger*
-		g_currentLogger;
-
-		CORE_EXPORT
 		ILogger*
 		GetCurrentLogger();
+
+		CORE_EXPORT
+		void
+		SetCurrentLogger(ILogger* a_logger);
 	}
 
 	inline

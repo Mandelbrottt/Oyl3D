@@ -20,6 +20,13 @@ namespace Oyl
 		bool
 		SupportsHotReload()
 		{
+			return false;
+		}
+
+		virtual
+		bool
+		ShouldAutoload()
+		{
 			return true;
 		}
 	};

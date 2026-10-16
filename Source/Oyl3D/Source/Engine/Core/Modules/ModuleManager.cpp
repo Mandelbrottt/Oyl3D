@@ -5,6 +5,7 @@
 
 #include "Core/CommandLine/CommandLine.h"
 #include "Core/Containers/Array.h"
+#include "Core/Logging/Logging.h"
 #include "Core/Profiling/Profiling.h"
 
 namespace Oyl
@@ -12,22 +13,30 @@ namespace Oyl
 	struct ModuleInfo
 	{
 		String name;
+		String libPath;
+
 		Array<String> dependencies;
 		IModuleInterface* interfacePointer;
 
-		Platform::SharedLibraryHandle sharedLibHandle;
+		Platform::SharedLibraryHandle* sharedLibHandle;
 		int refCount = 0;
 	};
 
 	struct ModuleManager::Impl
 	{
 		std::unordered_map<std::string, ModuleInfo> modules;
+		Array<String> modulesToAutoload;
 
 		Array<String> engineModuleDirectories;
 		Array<String> userModuleDirectories;
 
+		bool moduleDirectoriesAreDirty = true;
+
 		ModuleInfo*
 		FindModule(const String& a_moduleName);
+
+		void
+		DiscoverModule(const String& a_libPath);
 	};
 
 	ModuleManager::ModuleManager()
@@ -56,96 +65,40 @@ namespace Oyl
 		if (modulePath != modulePath.stem())
 			moduleName = modulePath.stem().string();
 
-		if (auto iter = m_impl->modules.find(moduleName); iter != m_impl->modules.end())
+		auto iter = m_impl->modules.find(moduleName);
+		if (iter == m_impl->modules.end())
 		{
-			ModuleInfo& info = iter->second;
-			info.refCount++;
+			LogError("Trying to load module \"{}\" that hasn't been discovered!");
 			if (a_outResult)
-				*a_outResult = ModuleLoadResult::Success;
-			return info.interfacePointer;
+				*a_outResult = ModuleLoadResult::Failure_LibraryNotFound;
+			return nullptr;
 		}
-
-		ModuleInfo moduleInfo;
-		moduleInfo.name = moduleName;
-		moduleInfo.refCount = 1;
-
-		// Cleanup code if the module fails to load
-		auto failWithResult = [&](IModuleInterface* a_interface, ModuleLoadResult a_result)
-		{
-			if (moduleInfo.sharedLibHandle)
+		auto& moduleInfo = iter->second;
+		if (moduleInfo.refCount == 0)
+		{ // Module is not loaded
+			// Load dependencies
+			for (const auto& dependencyName : moduleInfo.dependencies)
 			{
-				Platform::FreeSharedLibrary(moduleInfo.sharedLibHandle);
-				moduleInfo.sharedLibHandle = nullptr;
-			}
-			if (a_outResult)
-				*a_outResult = a_result;
-			return a_interface;
-		};
-
-		// Get handle to shared library
-		moduleInfo.sharedLibHandle = Platform::LoadSharedLibrary(a_moduleName);
-		if (moduleInfo.sharedLibHandle == nullptr)
-			return failWithResult(nullptr, ModuleLoadResult::Failure_LibraryNotFound);
-
-		// Get handle to dependencies function
-		using ModuleDepsFn = void(*)(int*, const char***);
-		String depsSymbolName = String("ModuleDeps_") + moduleName;
-		auto moduleDepsFn =
-			(ModuleDepsFn) Platform::GetSymbolFromSharedLibrary(moduleInfo.sharedLibHandle, depsSymbolName);
-
-		// If ModuleDeps_ function exists, get list of dependencies
-		if (moduleDepsFn != nullptr)
-		{
-			int nDeps = 0;
-			const char** depsPtr = nullptr;
-			moduleDepsFn(&nDeps, &depsPtr);
-			if (depsPtr && nDeps > 0)
-			{
-				moduleInfo.dependencies.reserve(nDeps);
-				for (int i = 0; i < nDeps; i++)
+				auto dependencyIter = m_impl->modules.find(dependencyName);
+				if (dependencyIter == m_impl->modules.end())
 				{
-					const char* depStr = depsPtr[i];
-
-					// Try to load the dependency
-					ModuleLoadResult dependencyLoadResult;
-					auto dependencyInterface = LoadModule(depStr, &dependencyLoadResult);
-					if (!dependencyInterface)
-						switch (dependencyLoadResult)
-						{
-							case ModuleLoadResult::Failure_LibraryNotFound:
-								return failWithResult(nullptr, ModuleLoadResult::Failure_DependencyNotFound);
-							case ModuleLoadResult::Failure_InitFunctionNotFound:
-							case ModuleLoadResult::Failure_InterfaceWasNull:
-								return failWithResult(nullptr, ModuleLoadResult::Failure_DependencyFailure);
-							default:
-								throw "ModuleLoadResult case not implemented in Dependency Resolution!";
-						}
-
-					moduleInfo.dependencies.emplace_back(depStr);
+					LogError("Dependency \"{}\" in module \"{}\" not found!");
+				} else
+				{
+					LoadModule(dependencyIter->second.name);
 				}
 			}
+
+			// Start the module
+			moduleInfo.interfacePointer->OnStartModule();
+			LogDebug("Loaded Module \"{}\"", moduleName);
 		}
+		moduleInfo.refCount++;
 
-		// Get handle to creation function
-		using ModuleInitFn = IModuleInterface*(*)();
-		String initSymbolName = String("ModuleInit_") + moduleName;
-		auto moduleInitFn =
-			(ModuleInitFn) Platform::GetSymbolFromSharedLibrary(moduleInfo.sharedLibHandle, initSymbolName);
-		if (moduleInitFn == nullptr)
-			return failWithResult(nullptr, ModuleLoadResult::Failure_InitFunctionNotFound);
-
-		// Get handle to module interface
-		IModuleInterface* interface = moduleInitFn();
-		if (interface == nullptr)
-			return failWithResult(nullptr, ModuleLoadResult::Failure_InterfaceWasNull);
-		moduleInfo.interfacePointer = interface;
-
-		// Module load succeeded!
-		m_impl->modules.emplace(moduleName, std::move(moduleInfo));
-		interface->OnStartModule();
 		if (a_outResult)
 			*a_outResult = ModuleLoadResult::Success;
-		return interface;
+
+		return moduleInfo.interfacePointer;
 	}
 
 	IModuleInterface*
@@ -179,15 +132,13 @@ namespace Oyl
 		if (moduleInfo.refCount == 0)
 		{
 			moduleInfo.interfacePointer->OnStopModule();
-			delete moduleInfo.interfacePointer;
-			moduleInfo.interfacePointer = nullptr;
+
+			LogDebug("Unloaded Module \"{}\"", moduleInfo.name);
 
 			// Unload dependencies after requested module so that we unload in reverse order
 			for (const auto& dependency : moduleInfo.dependencies)
 				UnloadModule(dependency);
 
-			Platform::FreeSharedLibrary(moduleInfo.sharedLibHandle);
-			m_impl->modules.erase(iter);
 			return withResult(true, ModuleUnloadResult::Success);
 		}
 
@@ -200,7 +151,11 @@ namespace Oyl
 		auto absPath = std::filesystem::absolute(std::string(a_directory)).string();
 		auto iter = std::ranges::find(m_impl->engineModuleDirectories, absPath);
 		if (iter == m_impl->engineModuleDirectories.end())
+		{
+			LogTrace("Adding \"{}\" as Engine Module Directory", a_directory);
 			m_impl->engineModuleDirectories.Add(absPath);
+			m_impl->moduleDirectoriesAreDirty = true;
+		}
 	}
 
 	void
@@ -209,7 +164,11 @@ namespace Oyl
 		auto absPath = std::filesystem::absolute(std::string(a_directory)).string();
 		auto iter = std::ranges::find(m_impl->engineModuleDirectories, absPath);
 		if (iter != m_impl->engineModuleDirectories.end())
+		{
+			LogTrace("Removing \"{}\" as Engine Module Directory", a_directory);
 			m_impl->engineModuleDirectories.erase(iter);
+			m_impl->moduleDirectoriesAreDirty = true;
+		}
 	}
 
 	void
@@ -218,7 +177,11 @@ namespace Oyl
 		auto absPath = std::filesystem::absolute(std::string(a_directory)).string();
 		auto iter = std::ranges::find(m_impl->userModuleDirectories, absPath);
 		if (iter == m_impl->userModuleDirectories.end())
+		{
+			LogTrace("Adding \"{}\" as User Module Directory", a_directory);
 			m_impl->userModuleDirectories.Add(absPath);
+			m_impl->moduleDirectoriesAreDirty = true;
+		}
 	}
 
 	void
@@ -227,12 +190,18 @@ namespace Oyl
 		auto absPath = std::filesystem::absolute((std::string&) a_directory).string();
 		auto iter = std::ranges::find(m_impl->userModuleDirectories, absPath);
 		if (iter != m_impl->userModuleDirectories.end())
+		{
+			LogTrace("Removing \"{}\" as User Module Directory", a_directory);
 			m_impl->userModuleDirectories.erase(iter);
+			m_impl->moduleDirectoriesAreDirty = true;
+		}
 	}
 
 	void
-	ModuleManager::ScanAndLoadFromModuleDirectories()
+	ModuleManager::ScanModuleDirectories()
 	{
+		OYL_PROFILE_FUNCTION();
+		LogTrace("Scanning Engine and Module Directories");
 		auto scanAndLoadFromDirsInList = [&](const Array<String>& a_list)
 		{
 			// Cache list in case loading a module adds to the list
@@ -249,13 +218,26 @@ namespace Oyl
 					auto extension = dir_entry.path().extension();
 					if (extension == ".dll" || extension == ".dylib" || extension == ".so")
 					{
-						LoadModule(dir_entry.path().string());
+						m_impl->DiscoverModule(dir_entry.path().string());
 					}
 				}
 			}
 		};
 		scanAndLoadFromDirsInList(m_impl->engineModuleDirectories);
 		scanAndLoadFromDirsInList(m_impl->userModuleDirectories);
+
+		m_impl->moduleDirectoriesAreDirty = false;
+	}
+
+	void
+	ModuleManager::ProcessPendingAutoLoadRequests()
+	{
+		for (const auto& moduleName : m_impl->modulesToAutoload)
+		{
+			LoadModule(moduleName);
+		}
+
+		m_impl->modulesToAutoload.clear();
 	}
 
 	ModuleInfo*
@@ -266,5 +248,80 @@ namespace Oyl
 			return nullptr;
 
 		return &iter->second;
+	}
+
+	void
+	ModuleManager::Impl::DiscoverModule(const String& a_libPath)
+	{
+		String moduleName = std::filesystem::path((const std::string&) a_libPath).stem().string();
+
+		auto iter = modules.find(moduleName);
+		if (iter != modules.end())
+		{
+			// Module has already been discovered, error if it refers to a different shared library
+			if (iter->second.libPath != a_libPath)
+				LogError("Duplicate module \"{}\" at \"{}\" has already been discovered at \"{}\"!",
+				         moduleName,
+				         a_libPath,
+				         iter->second.libPath);
+
+			return;
+		}
+
+		ModuleInfo moduleInfo;
+		moduleInfo.name = moduleName;
+		moduleInfo.libPath = a_libPath;
+
+		// Get handle to shared library
+		moduleInfo.sharedLibHandle = Platform::LoadSharedLibrary(a_libPath);
+		assert(moduleInfo.sharedLibHandle);
+
+		// Get handle to creation function
+		using ModuleInitFn = IModuleInterface*(*)();
+		String initSymbolName = String("ModuleInit_") + moduleName;
+		auto moduleInitFn =
+			(ModuleInitFn) Platform::GetSymbolFromSharedLibrary(moduleInfo.sharedLibHandle, initSymbolName);
+		if (moduleInitFn == nullptr)
+		{
+			// Not an OylModule, unload and continue;
+			FreeSharedLibrary(moduleInfo.sharedLibHandle);
+			return;
+		}
+
+		// Get handle to module interface
+		IModuleInterface* interface = moduleInitFn();
+		assert(interface && "If ModuleInit_ is found, valid interface should be returned");
+		moduleInfo.interfacePointer = interface;
+
+		// Get handle to dependencies function
+		using ModuleDepsFn = void(*)(int*, const char***);
+		String depsSymbolName = String("ModuleDeps_") + moduleName;
+		auto moduleDepsFn =
+			(ModuleDepsFn) Platform::GetSymbolFromSharedLibrary(moduleInfo.sharedLibHandle, depsSymbolName);
+
+		// If ModuleDeps_ function exists, get list of dependencies
+		if (moduleDepsFn != nullptr)
+		{
+			int nDeps = 0;
+			const char** depsPtr = nullptr;
+			moduleDepsFn(&nDeps, &depsPtr);
+			if (depsPtr && nDeps > 0)
+			{
+				moduleInfo.dependencies.reserve(nDeps);
+				for (int i = 0; i < nDeps; i++)
+				{
+					const char* depStr = depsPtr[i];
+					moduleInfo.dependencies.emplace_back(depStr);
+				}
+			}
+		}
+
+		// Module discovery successful
+		modules.try_emplace(moduleName, std::move(moduleInfo));
+		LogTrace("Discovered Module \"{}\" at {}", moduleName, a_libPath);
+
+		// Should we autoload this module?
+		if (interface->ShouldAutoload())
+			modulesToAutoload.Add(moduleName);
 	}
 }

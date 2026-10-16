@@ -83,6 +83,8 @@ namespace Oyl
 		if (!window)
 			return LogError("Failed to create EditorClientApplication Window!"), nullptr;
 
+		LogDebug("Created Application Window \"{}\"", window->GetTitle());
+
 		m_applicationWindows.Add(window);
 		return window;
 	}
@@ -94,6 +96,8 @@ namespace Oyl
 			return;
 
 		a_window->Close();
+
+		LogDebug("Closed Application Window \"{}\"", a_window->GetTitle());
 
 		auto iter = std::ranges::find(m_applicationWindows, a_window);
 		if (iter != m_applicationWindows.end())

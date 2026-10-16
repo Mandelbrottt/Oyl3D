@@ -13,6 +13,34 @@ namespace Oyl
 
 	CommandLine::Impl* CommandLine::s_impl = nullptr;
 
+	String
+	CommandLineArgument::ToString() const
+	{
+		switch (type)
+		{
+			case CommandLineArgumentType::Integer:
+			{
+				return std::to_string(std::any_cast<int>(value));
+			}
+			case CommandLineArgumentType::String:
+			{
+				return std::any_cast<String>(value);
+			}
+			case CommandLineArgumentType::Arbitrary:
+			{
+				auto data = std::any_cast<ArbitraryData>(value);
+				uintptr_t ptr = reinterpret_cast<uintptr_t>(std::any_cast<void*>(data.data));
+				return "[" + std::to_string(ptr) + ", " + std::to_string(data.size) + " bytes]";
+			}
+			case CommandLineArgumentType::None:
+			{
+				return {};
+			}
+			default:
+				throw "CommandLineArgument::ToString() Type not implemented!";
+		}
+	}
+
 	bool
 	CommandLine::IsPresent(const String& a_name)
 	{
@@ -88,7 +116,7 @@ namespace Oyl
 		{
 			return {};
 		}
-		StringView view = std::any_cast<String>(iter->second);
+		StringView view = std::any_cast<String&>(iter->second.value);
 		return { view };
 	}
 
@@ -100,7 +128,7 @@ namespace Oyl
 		{
 			return {};
 		}
-		return std::any_cast<int32>(iter->second);
+		return std::any_cast<int32>(iter->second.value);
 	}
 
 	std::optional<ArbitraryData>
@@ -111,7 +139,7 @@ namespace Oyl
 		{
 			return {};
 		}
-		return std::any_cast<ArbitraryData>(iter->second);
+		return std::any_cast<ArbitraryData>(iter->second.value);
 	}
 
 	bool
@@ -142,7 +170,7 @@ namespace Oyl
 					// First argument is the program name, ignore
 					continue;
 				}
-				LogWarning("Invalid command line argument \"{}\"", arg.c_str());
+				LogWarning("Invalid command line argument \"{}\"", arg);
 				continue;
 			}
 
@@ -155,12 +183,11 @@ namespace Oyl
 				equalsPos = arg.length();
 			} else if (equalsPos != arg.find_last_of('=')) // Ensure there's only 1 equals sign
 			{
-				LogWarning("Invalid command line argument \"{}\"", arg.c_str());
+				LogWarning("Invalid command line argument \"{}\"", arg);
 				continue;
 			} else // The rest of the string is the value
 			{
 				value = arg.substr(equalsPos + 1);
-				continue;
 			}
 
 			String name = arg.substr(namePos, equalsPos - namePos);
@@ -180,6 +207,20 @@ namespace Oyl
 				AddString(name, value);
 			}
 		}
+
+#	if defined(OYL_ENABLE_LOGGING)
+		String message;
+		for (const auto& [name, value] : s_impl->namedArguments)
+		{
+			if (!message.empty())
+				message += " ,";
+
+			message += name;
+			if (value.type != CommandLineArgumentType::None)
+				message += "=" + value.ToString();
+		}
+		LogDebug("CommandLine: {{{}}}", message);
+#	endif
 	}
 
 	void

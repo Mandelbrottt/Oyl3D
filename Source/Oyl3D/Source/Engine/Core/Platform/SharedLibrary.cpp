@@ -1,5 +1,6 @@
 #include "SharedLibrary.h"
 
+using namespace Oyl;
 using namespace Oyl::Platform;
 using Oyl::StringView;
 
@@ -7,7 +8,7 @@ using Oyl::StringView;
 #include <Windows.h>
 
 static
-SharedLibraryHandle
+SharedLibraryHandle*
 Windows_LoadSharedLibrary(
 	StringView a_library,
 	SharedLibraryLoadFlags a_loadFlags,
@@ -17,22 +18,29 @@ Windows_LoadSharedLibrary(
 static
 bool
 Windows_FreeSharedLibrary(
-	SharedLibraryHandle a_handle,
+	SharedLibraryHandle* a_handle,
 	SharedLibraryFreeResult* a_outResult
 );
 
 static
 void*
 Windows_GetSymbolFromSharedLibrary(
-	SharedLibraryHandle a_handle,
+	SharedLibraryHandle* a_handle,
 	StringView a_symbol,
 	SharedLibrarySymbolResult* a_outResult
+);
+
+static
+String
+Windows_GetFilePathForSharedLibrary(
+	SharedLibraryHandle* a_handle,
+	SharedLibraryFilePathResult* a_outResult
 );
 #endif
 
 namespace Oyl::Platform
 {
-	SharedLibraryHandle
+	SharedLibraryHandle*
 	LoadSharedLibrary(
 		StringView a_library,
 		SharedLibraryLoadFlags a_loadFlags,
@@ -46,7 +54,7 @@ namespace Oyl::Platform
 
 	bool
 	FreeSharedLibrary(
-		SharedLibraryHandle a_handle,
+		SharedLibraryHandle* a_handle,
 		SharedLibraryFreeResult* a_outResult
 	)
 	{
@@ -57,7 +65,7 @@ namespace Oyl::Platform
 
 	void*
 	GetSymbolFromSharedLibrary(
-		SharedLibraryHandle a_handle,
+		SharedLibraryHandle* a_handle,
 		StringView a_symbol,
 		SharedLibrarySymbolResult* a_outResult
 	)
@@ -66,11 +74,22 @@ namespace Oyl::Platform
 		return Windows_GetSymbolFromSharedLibrary(a_handle, a_symbol, a_outResult);
 	#endif
 	}
+
+	String
+	GetFilePathForSharedLibrary(
+		SharedLibraryHandle* a_handle,
+		SharedLibraryFilePathResult* a_outResult
+	)
+	{
+	#if defined(OYL_WINDOWS)
+		return Windows_GetFilePathForSharedLibrary(a_handle, a_outResult);
+	#endif
+	}
 }
 
 #if defined(OYL_WINDOWS)
 
-SharedLibraryHandle
+SharedLibraryHandle*
 Windows_LoadSharedLibrary(
 	StringView a_library,
 	SharedLibraryLoadFlags a_loadFlags,
@@ -88,12 +107,12 @@ Windows_LoadSharedLibrary(
 			*a_outResult = SharedLibraryLoadResult::Failure;
 	}
 
-	return reinterpret_cast<SharedLibraryHandle>(hModule);
+	return reinterpret_cast<SharedLibraryHandle*>(hModule);
 }
 
 bool
 Windows_FreeSharedLibrary(
-	SharedLibraryHandle a_handle,
+	SharedLibraryHandle* a_handle,
 	SharedLibraryFreeResult* a_outResult
 )
 {
@@ -113,7 +132,7 @@ Windows_FreeSharedLibrary(
 
 void*
 Windows_GetSymbolFromSharedLibrary(
-	SharedLibraryHandle a_handle,
+	SharedLibraryHandle* a_handle,
 	StringView a_symbol,
 	SharedLibrarySymbolResult* a_outResult
 )
@@ -130,5 +149,37 @@ Windows_GetSymbolFromSharedLibrary(
 	}
 
 	return proc;
+}
+
+String
+Windows_GetFilePathForSharedLibrary(
+	SharedLibraryHandle* a_handle,
+	SharedLibraryFilePathResult* a_outResult
+)
+{
+	HMODULE hModule = reinterpret_cast<HMODULE>(a_handle);
+	TCHAR dllPath[_MAX_PATH] { 0 };
+	DWORD dllPathLength = GetModuleFileName(hModule, dllPath, _MAX_PATH);
+
+	if (dllPathLength == 0)
+	{
+		if (a_outResult)
+			*a_outResult = SharedLibraryFilePathResult::Failure;
+		return String();
+	}
+	if (dllPathLength == _MAX_PATH)
+	{
+		if (a_outResult)
+			*a_outResult = SharedLibraryFilePathResult::Failure_BufferTooSmall;
+	}
+
+	int u8PathLength = WideCharToMultiByte(CP_UTF8, 0, dllPath, dllPathLength, NULL, 0, NULL, NULL);
+	String u8Path = String(u8PathLength);
+	WideCharToMultiByte(CP_UTF8, 0, dllPath, dllPathLength, u8Path.data(), u8PathLength, NULL, NULL);
+
+	if (a_outResult && *a_outResult != SharedLibraryFilePathResult::Failure_BufferTooSmall)
+		*a_outResult = SharedLibraryFilePathResult::Success;
+
+	return u8Path;
 }
 #endif

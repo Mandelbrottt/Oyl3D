@@ -32,15 +32,19 @@ main(int a_argc, char** a_argv)
 	application.RegisterOnUpdateCallback(Oyl::Time::Internal::Update);
 	application.RegisterOnUpdateCallback([] { Oyl::Internal::GetCurrentLogger()->Flush(); });
 
+	// Initial scan for modules
 	auto cwd = std::filesystem::current_path().string();
 	Oyl::ModuleManager::Get().AddEngineModuleDirectory(Oyl::StringView(cwd));
+	Oyl::ModuleManager::Get().ScanModuleDirectories();
+	application.RegisterOnUpdateCallback([] { Oyl::ModuleManager::Get().ProcessPendingAutoLoadRequests(); });
 
-	// Register application before we scan for modules
+	// Register EditorClientApplication after initial module scan
 	auto* applicationModule = Oyl::ModuleManager::LoadModulePointer<Oyl::IApplicationModule>("Application");
 	applicationModule->RegisterApplication(&application);
 
-	// Register remaining engine modules
-	Oyl::ModuleManager::Get().ScanAndLoadFromModuleDirectories();
+	// Process pending auto-load requests
+	Oyl::ModuleManager::Get().ProcessPendingAutoLoadRequests();
+
 	int exitCode = applicationModule->RunApplication();
 
 	Oyl::CommandLine::Shutdown();

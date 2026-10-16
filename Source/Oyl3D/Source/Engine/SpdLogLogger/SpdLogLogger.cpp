@@ -1,3 +1,4 @@
+#include <Core/CommandLine/CommandLine.h>
 #include <Core/Logging/Logger.h>
 #include <Core/Logging/Logging.h>
 #include <Core/Modules/ModuleManager.h>
@@ -38,17 +39,36 @@ namespace Oyl
 
 			// Initialize the main logger
 			auto formatter = std::make_unique<spdlog::pattern_formatter>();
-			formatter->set_pattern("%^[%T][%l][%n] %v%$");
+			formatter->set_pattern("%^[%T][%l][%g:%!():%#] %v%$");
 
 			//m_logger = spdlog::stdout_color_mt<spdlog::async_factory>("CORE");
 			m_logger = spdlog::stdout_color_st("CORE");
 
-			m_logger->set_level(spdlog::level::debug);
+			auto log_level = CommandLine::GetString("log_level");
+			auto level = spdlog::level::debug;
+			if (log_level.has_value())
+			{
+				if (log_level == "trace")
+					level = spdlog::level::trace;
+				if (log_level == "debug")
+					level = spdlog::level::debug;
+				if (log_level == "info")
+					level = spdlog::level::info;
+				if (log_level == "warning")
+					level = spdlog::level::warn;
+				if (log_level == "error")
+					level = spdlog::level::err;
+			}
+			m_logger->set_level(level);
 			m_logger->set_formatter(std::move(formatter));
 		}
 
 		void
-		Log(LogLevel a_level, StringView a_message, const Debug::SourceLocation& a_location = Debug::SourceLocation::Current()) const override
+		Log(
+			LogLevel a_level,
+			StringView a_message,
+			const Debug::SourceLocation& a_location = Debug::SourceLocation::Current()
+		) override
 		{
 			auto loc = spdlog::source_loc(a_location.file, a_location.line, a_location.function);
 			auto lvl = ToSpdLogEnum(a_level);
@@ -78,9 +98,9 @@ namespace Oyl
 			spdlog::init_thread_pool(g_queueSize, g_threadCount);
 
 			m_logger = std::make_shared<SpdLogLogger>();
-			Internal::g_currentLogger = m_logger.get();
+			Internal::SetCurrentLogger(m_logger.get());
 
-			m_logger->LogTrace("Initialed SpdLogLogger");
+			LogDebug("Initializing SpdLogLogger");
 		}
 
 		void
@@ -88,10 +108,10 @@ namespace Oyl
 		{
 			OYL_PROFILE_FUNCTION();
 
-			m_logger->LogTrace("Shutting down SpdLogLogger");
+			LogDebug("Shutting down SpdLogLogger");
 
-			if (Internal::g_currentLogger == m_logger.get())
-				Internal::g_currentLogger = nullptr;
+			if (Internal::GetCurrentLogger() == m_logger.get())
+				Internal::SetCurrentLogger(nullptr);
 
 			spdlog::shutdown();
 		}

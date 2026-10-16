@@ -2,36 +2,26 @@
 
 #include "Core/Containers/String.h"
 #include "Core/Preprocessor/Common.h"
+#include "Core/Types/EnumFlags.h"
 
 namespace Oyl::Platform
 {
-	enum class SharedLibraryLoadResult : uint32_t
+	using SharedLibraryHandle = struct SharedLibraryHandle;
+
+	enum class SharedLibraryLoadResult : uint32
 	{
 		Success = 0,
-
 		Failure,
 	};
 
-	enum class SharedLibraryFreeResult : uint32_t
-	{
-		Success = 0,
+	enum class SharedLibraryLoadFlagBits : uint32 {};
 
-		Failure,
-	};
+	using SharedLibraryLoadFlags = EnumFlags<SharedLibraryLoadFlagBits>;
 
-	enum class SharedLibrarySymbolResult : uint32_t
-	{
-		Success = 0,
-
-		Failure,
-	};
-
-	enum class SharedLibraryLoadFlags : uint32_t {};
-
-	using SharedLibraryHandle = struct _SharedLibraryHandle*;
+	OYL_ENUM_CLASS_BITWISE_OPERATIONS(SharedLibraryLoadFlagBits);
 
 	CORE_EXPORT
-	SharedLibraryHandle
+	SharedLibraryHandle*
 	LoadSharedLibrary(
 		StringView a_library,
 		SharedLibraryLoadFlags a_loadFlags,
@@ -39,7 +29,7 @@ namespace Oyl::Platform
 	);
 
 	inline
-	SharedLibraryHandle
+	SharedLibraryHandle*
 	LoadSharedLibrary(
 		StringView a_library,
 		SharedLibraryLoadFlags a_loadFlags
@@ -49,7 +39,7 @@ namespace Oyl::Platform
 	}
 
 	inline
-	SharedLibraryHandle
+	SharedLibraryHandle*
 	LoadSharedLibrary(
 		StringView a_library,
 		SharedLibraryLoadResult* a_outResult
@@ -59,24 +49,50 @@ namespace Oyl::Platform
 	}
 
 	inline
-	SharedLibraryHandle
+	SharedLibraryHandle*
 	LoadSharedLibrary(StringView a_library)
 	{
 		return LoadSharedLibrary(a_library, {}, nullptr);
 	}
 
+	enum class SharedLibraryFreeResult : uint32
+	{
+		Success = 0,
+		Failure,
+	};
+
 	CORE_EXPORT
 	bool
 	FreeSharedLibrary(
-		SharedLibraryHandle a_handle,
+		SharedLibraryHandle* a_handle,
 		SharedLibraryFreeResult* a_outResult = nullptr
 	);
+
+	enum class SharedLibrarySymbolResult : uint32
+	{
+		Success = 0,
+		Failure,
+	};
 
 	CORE_EXPORT
 	void*
 	GetSymbolFromSharedLibrary(
-		SharedLibraryHandle a_handle,
+		SharedLibraryHandle* a_handle,
 		StringView a_symbol,
 		SharedLibrarySymbolResult* a_outResult = nullptr
+	);
+
+	enum class SharedLibraryFilePathResult : uint32
+	{
+		Success = 0,
+		Failure,
+		Failure_BufferTooSmall,
+	};
+
+	CORE_EXPORT
+	String
+	GetFilePathForSharedLibrary(
+		SharedLibraryHandle* a_handle,
+		SharedLibraryFilePathResult* a_outResult = nullptr
 	);
 }

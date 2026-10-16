@@ -35,7 +35,7 @@ namespace Oyl
 		Arbitrary,
 	};
 
-	struct CORE_EXPORT CommandLineArgument final
+	struct CommandLineArgument final
 	{
 		explicit
 		CommandLineArgument()
@@ -55,6 +55,10 @@ namespace Oyl
 
 		CommandLineArgument(void* a_value, uint32 a_size)
 			: CommandLineArgument(ArbitraryData(a_value, a_size)) {}
+
+		CORE_EXPORT
+		String
+		ToString() const;
 
 		CommandLineArgumentType type;
 		std::any value;
