@@ -44,27 +44,27 @@ namespace Oyl
 	void
 	EditorClientApplication::WaitIdle()
 	{
-		auto* frameTimer = Time::Internal::GetFrameTimer();
+		auto& frameTimer = Time::Internal::GetFrameTimer();
 
 		// Intentionally use g_frameTimer instead of Oyl::Time::GetFrameTimer since that is user overrideable
-		static auto lastTick = frameTimer->ElapsedProcessorTicks();
+		static auto lastTime = frameTimer.ElapsedProcessorTime();
 
 		// If target framerate is 0, don't cap framerate
 		uint32 targetFrameRate = TargetFramerate();
-		uint64 minNumTicksPerFrame = 0;
+		float64 minTimePerFrame = 0;
 		if (targetFrameRate > 0)
-			minNumTicksPerFrame = (uint64) (frameTimer->TickResolution() * (1.0 / targetFrameRate));
+			minTimePerFrame = 1.0 / targetFrameRate;
 
-		auto targetTickForNextFrame = lastTick + minNumTicksPerFrame;
+		auto targetTimeForNextFrame = lastTime + minTimePerFrame;
 
 		// Wait for next frame
-		uint64 thisTick;
+		float64 currentTime;
 		do
 		{
-			thisTick = frameTimer->ElapsedProcessorTicks();
-		} while (thisTick < targetTickForNextFrame);
+			currentTime = frameTimer.ElapsedProcessorTime();
+		} while (currentTime < targetTimeForNextFrame);
 
-		lastTick = thisTick;
+		lastTime = currentTime;
 	}
 
 	IApplicationWindow*

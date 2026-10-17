@@ -25,7 +25,7 @@ main(int a_argc, char** a_argv)
 	OYL_PROFILER_INIT();
 	OYL_PROFILE_FUNCTION();
 
-	Oyl::Time::Internal::Init(g_frameTimer);
+	Oyl::Time::Internal::Init(*g_frameTimer);
 	Oyl::CommandLine::Init(a_argc, a_argv);
 
 	Oyl::EditorClientApplication application;

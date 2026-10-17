@@ -3,7 +3,7 @@
 #include <format>
 #include <string>
 
-#include "Core/Types/PrimitiveTypes.h"
+#include "Core/Types/Primitives.h"
 #include "Core/Types/TypeTraits.h"
 
 namespace Oyl

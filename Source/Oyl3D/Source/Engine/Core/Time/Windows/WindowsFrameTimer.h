@@ -40,14 +40,11 @@ namespace Oyl
 		void
 		SetTimeScale(float32 a_scale) override { m_timeScaleHint = a_scale; }
 
-		uint64
-		TickResolution() const override;
+		float64
+		CurrentProcessorTime() const override;
 
-		uint64
-		CurrentProcessorTick() const override;
-
-		uint64
-		ElapsedProcessorTicks() const override;
+		float64
+		ElapsedProcessorTime() const override;
 
 	private:
 		float32 m_deltaTime = 0;
@@ -61,8 +58,8 @@ namespace Oyl
 		float32 m_timeScale = 0;
 		std::atomic<float32> m_timeScaleHint = 0;
 
-		uint64 m_startTick = 0;
-		uint64 m_lastFrameTick = 0;
-		uint64 m_perfCounterFrequency = 0;
+		float64 m_startTime = 0;
+		float64 m_lastFrameTime = 0;
+		float64 m_perfCounterFrequency = 0;
 	};
 }

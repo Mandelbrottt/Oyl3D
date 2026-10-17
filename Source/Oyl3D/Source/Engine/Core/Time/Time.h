@@ -2,7 +2,7 @@
 
 #include "Core/Preprocessor/Common.h"
 #include "Core/Time/IFrameTimer.h"
-#include "Core/Types/PrimitiveTypes.h"
+#include "Core/Types/Primitives.h"
 
 namespace Oyl::Time
 {
@@ -38,14 +38,14 @@ namespace Oyl::Time
 	{
 		CORE_EXPORT
 		void
-		Init(IFrameTimer* a_defaultFrameTimer);
+		Init(IFrameTimer& a_defaultFrameTimer);
 
 		void
 		CORE_EXPORT
 		Update();
 
 		CORE_EXPORT
-		IFrameTimer*
+		const IFrameTimer&
 		GetFrameTimer();
 
 		CORE_EXPORT

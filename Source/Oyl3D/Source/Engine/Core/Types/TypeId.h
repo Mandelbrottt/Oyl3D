@@ -3,7 +3,7 @@
 #include <cassert>
 
 #include "Core/Types/NameOf.h"
-#include "Core/Types/PrimitiveTypes.h"
+#include "Core/Types/Primitives.h"
 #include "Core/Types/TypeTraits.h"
 
 namespace Oyl

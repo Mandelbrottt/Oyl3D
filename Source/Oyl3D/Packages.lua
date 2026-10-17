@@ -244,7 +244,7 @@ local Packages = {
 			}
 
 			includedirs {
-				"Include"
+				"Include",
 			}
 
 			packageincludedirs {
@@ -254,7 +254,7 @@ local Packages = {
 			}
 
 			libdirs {
-				"Lib"
+				"Lib",
 			}
 
 			filter { "configurations:*" .. Config.Configurations.Distribution .. "*" }; do
@@ -282,6 +282,9 @@ local Packages = {
 					"VULKAN_HPP_DISPATCH_LOADER_DYNAMIC=1",
 					"VULKAN_HPP_NO_STRUCT_CONSTRUCTORS=1",
 					"VULKAN_HPP_HANDLE_ERROR_OUT_OF_DATE_AS_SUCCESS=1"
+				}
+				libdirs {
+					"Lib",
 				}
 				links {
 					"vulkan-1",

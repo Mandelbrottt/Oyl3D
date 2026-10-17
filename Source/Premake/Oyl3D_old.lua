@@ -95,11 +95,6 @@ function CppProjectDefaults.ProjectSettings()
 		Config.SourceDir
 	}
 
-	defines {
-		Project.CurrentAssemblyMacro(),
-		Project.InsideProjectMacro(),
-	}
-
 	if os.isfile("pch.h") then
 		local pchDir = path.join("%{wks.location}", "Pch")
 		pchheader "pch.h"

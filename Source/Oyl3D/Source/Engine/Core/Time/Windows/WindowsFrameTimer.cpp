@@ -9,15 +9,15 @@ namespace Oyl
 	void
 	WindowsFrameTimer::Init()
 	{
-		LARGE_INTEGER counter;
-		QueryPerformanceCounter(&counter);
-		m_startTick = counter.QuadPart;
-
 		LARGE_INTEGER pcFrequency;
 		QueryPerformanceFrequency(&pcFrequency);
-		m_perfCounterFrequency = pcFrequency.QuadPart;
+		m_perfCounterFrequency = static_cast<float64>(pcFrequency.QuadPart);
 
-		m_lastFrameTick = m_startTick;
+		LARGE_INTEGER counter;
+		QueryPerformanceCounter(&counter);
+		m_startTime = counter.QuadPart / m_perfCounterFrequency;
+
+		m_lastFrameTime = m_startTime;
 	}
 
 	void
@@ -25,34 +25,28 @@ namespace Oyl
 	{
 		m_timeScale = m_timeScaleHint;
 
-		uint64 currentFrameTick = CurrentProcessorTick();
-		m_unscaledDeltaTime = (float32) ((currentFrameTick - m_lastFrameTick) / (float64) m_perfCounterFrequency);
-		m_unscaledElapsedTime = (float64) (currentFrameTick - m_startTick) / (float64) m_perfCounterFrequency;
+		float64 currentFrameTime = CurrentProcessorTime();
+		m_unscaledDeltaTime = static_cast<float32>(currentFrameTime - m_lastFrameTime);
+		m_unscaledElapsedTime = currentFrameTime - m_startTime;
 
 		m_deltaTime = m_unscaledDeltaTime * m_timeScale;
 		m_timeDifference += m_unscaledDeltaTime - m_deltaTime;
 		m_elapsedTime = m_unscaledElapsedTime + m_timeDifference;
 
-		m_lastFrameTick = currentFrameTick;
+		m_lastFrameTime = currentFrameTime;
 	}
 
-	uint64
-	WindowsFrameTimer::TickResolution() const
-	{
-		return m_perfCounterFrequency;
-	}
-
-	uint64
-	WindowsFrameTimer::CurrentProcessorTick() const
+	float64
+	WindowsFrameTimer::CurrentProcessorTime() const
 	{
 		LARGE_INTEGER counter;
 		QueryPerformanceCounter(&counter);
-		return counter.QuadPart;
+		return counter.QuadPart / m_perfCounterFrequency;
 	}
 
-	uint64
-	WindowsFrameTimer::ElapsedProcessorTicks() const
+	float64
+	WindowsFrameTimer::ElapsedProcessorTime() const
 	{
-		return CurrentProcessorTick() - m_startTick;
+		return CurrentProcessorTime() - m_startTime;
 	}
 }

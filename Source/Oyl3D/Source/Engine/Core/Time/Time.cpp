@@ -64,13 +64,11 @@ namespace Oyl::Time
 	namespace Internal
 	{
 		void
-		Init(IFrameTimer* a_defaultFrameTimer)
+		Init(IFrameTimer& a_defaultFrameTimer)
 		{
 			OYL_PROFILE_FUNCTION();
 
-			assert(a_defaultFrameTimer);
-
-			g_defaultFrameTimer = a_defaultFrameTimer;
+			g_defaultFrameTimer = &a_defaultFrameTimer;
 			SetFrameTimer(g_defaultFrameTimer);
 
 			g_frameTimer->Init();
@@ -92,10 +90,11 @@ namespace Oyl::Time
 			g_fixedDeltaTime = g_frameTimer->FixedDeltaTime();
 		}
 
-		IFrameTimer*
+		const IFrameTimer&
 		GetFrameTimer()
 		{
-			return g_frameTimer;
+			assert(g_frameTimer);
+			return *g_frameTimer;
 		}
 
 		void

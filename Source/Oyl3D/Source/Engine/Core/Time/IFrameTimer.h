@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Core/Types/PrimitiveTypes.h"
+#include "Core/Types/Primitives.h"
 
 namespace Oyl
 {
@@ -47,16 +47,12 @@ namespace Oyl
 		SetTimeScale(float32 a_scale) = 0;
 
 		virtual
-		uint64
-		TickResolution() const = 0;
+		float64
+		CurrentProcessorTime() const = 0;
 
 		virtual
-		uint64
-		CurrentProcessorTick() const = 0;
-
-		virtual
-		uint64
-		ElapsedProcessorTicks() const = 0;
+		float64
+		ElapsedProcessorTime() const = 0;
 	};
 
 	inline

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Core/Types/PrimitiveTypes.h"
+#include "Core/Types/Primitives.h"
 
 namespace Oyl
 {
