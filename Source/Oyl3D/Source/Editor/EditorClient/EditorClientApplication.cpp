@@ -20,9 +20,14 @@ namespace Oyl
 
 		m_mainWindow = CreateApplicationWindow({
 			.title = "Oyl3D - Now with more DLLs!",
-			.size = Vector2u(1280, 720),
-			.postEventCallback = PostEventDelegate::Create(this, &EditorClientApplication::PostEvent)
+			.size = Vector2u(1280, 720)
 		});
+
+		if (m_mainWindow)
+		{
+			m_mainWindow->RegisterWindowCloseRequestCallback({ this, &EditorClientApplication::OnWindowCloseRequestEvent });
+			m_mainWindow->RegisterKeyPressCallback({ this, &EditorClientApplication::OnKeyPressEvent });
+		}
 	}
 
 	void
@@ -171,16 +176,21 @@ namespace Oyl
 	}
 
 	void
-	EditorClientApplication::PostEvent(const Event& a_event)
+	EditorClientApplication::OnWindowCloseRequestEvent(const WindowCloseRequestEvent& a_event)
 	{
-		if (a_event.eventType == typeidof(WindowCloseRequestEvent))
-			RequestExit(0);
+		if (a_event.window != m_mainWindow)
+			return;
 
-		if (a_event.eventType == typeidof(WindowKeyPressEvent))
-		{
-			const auto& evt = static_cast<const WindowKeyPressEvent&>(a_event);
-			if (evt.key == Input::KeyboardKey::KB_Q)
-				RequestExit(1);
-		}
+		RequestExit(0);
+	}
+
+	void
+	EditorClientApplication::OnKeyPressEvent(const WindowKeyPressEvent& a_event)
+	{
+		if (a_event.window != m_mainWindow)
+			return;
+
+		if (a_event.key == Input::KB_Q)
+			RequestExit(1);
 	}
 }

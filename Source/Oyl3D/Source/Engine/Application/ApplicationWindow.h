@@ -1,10 +1,13 @@
 #pragma once
 
+#include <Core/Containers/Delegate.h>
 #include <Core/Containers/String.h>
 #include <Core/Events/Event.h>
 #include <Core/Input/InputCodes.h>
 #include <Core/Math/Vector.h>
 #include <Core/Types/EnumFlags.h>
+
+#include "Application/ApplicationWindowEvents.h"
 
 namespace Oyl
 {
@@ -39,8 +42,6 @@ namespace Oyl
 
 		WindowStateFlags windowState = WindowStateFlagBits::None;
 		CursorState cursorState = CursorState::Normal;
-
-		PostEventDelegate postEventCallback;
 
 		// Requested Default Graphics API
 	};
@@ -110,6 +111,110 @@ namespace Oyl
 		virtual
 		void*
 		GetNativeWindowHandle() const = 0;
+
+		virtual
+		void
+		RegisterWindowResizeCallback(Delegate<void(const WindowResizeEvent&)> a_callback) = 0;
+
+		virtual
+		void
+		UnregisterWindowResizeCallback(Delegate<void(const WindowResizeEvent&)> a_callback) = 0;
+
+		virtual
+		void
+		RegisterWindowMaximizeCallback(Delegate<void(const WindowMaximizeEvent&)> a_callback) = 0;
+
+		virtual
+		void
+		UnregisterWindowMaximizeCallback(Delegate<void(const WindowMaximizeEvent&)> a_callback) = 0;
+
+		virtual
+		void
+		RegisterWindowMinimizeCallback(Delegate<void(const WindowMinimizeEvent&)> a_callback) = 0;
+
+		virtual
+		void
+		UnregisterWindowMinimizeCallback(Delegate<void(const WindowMinimizeEvent&)> a_callback) = 0;
+
+		virtual
+		void
+		RegisterWindowMoveCallback(Delegate<void(const WindowMoveEvent&)> a_callback) = 0;
+
+		virtual
+		void
+		UnregisterWindowMoveCallback(Delegate<void(const WindowMoveEvent&)> a_callback) = 0;
+
+		virtual
+		void
+		RegisterWindowClosedCallback(Delegate<void(const WindowClosedEvent&)> a_callback) = 0;
+
+		virtual
+		void
+		UnregisterWindowClosedCallback(Delegate<void(const WindowClosedEvent&)> a_callback) = 0;
+
+		virtual
+		void
+		RegisterWindowCloseRequestCallback(Delegate<void(const WindowCloseRequestEvent&)> a_callback) = 0;
+
+		virtual
+		void
+		UnregisterWindowCloseRequestCallback(Delegate<void(const WindowCloseRequestEvent&)> a_callback) = 0;
+
+		virtual
+		void
+		RegisterWindowFocusCallback(Delegate<void(const WindowFocusEvent&)> a_callback) = 0;
+
+		virtual
+		void
+		UnregisterWindowFocusCallback(Delegate<void(const WindowFocusEvent&)> a_callback) = 0;
+
+		virtual
+		void
+		RegisterKeyPressCallback(Delegate<void(const WindowKeyPressEvent&)> a_callback) = 0;
+
+		virtual
+		void
+		UnregisterKeyPressCallback(Delegate<void(const WindowKeyPressEvent&)> a_callback) = 0;
+
+		virtual
+		void
+		RegisterKeyReleaseCallback(Delegate<void(const WindowKeyReleaseEvent&)> a_callback) = 0;
+
+		virtual
+		void
+		UnregisterKeyReleaseCallback(Delegate<void(const WindowKeyReleaseEvent&)> a_callback) = 0;
+
+		virtual
+		void
+		RegisterMousePressCallback(Delegate<void(const WindowMousePressEvent&)> a_callback) = 0;
+
+		virtual
+		void
+		UnregisterMousePressCallback(Delegate<void(const WindowMousePressEvent&)> a_callback) = 0;
+
+		virtual
+		void
+		RegisterMouseReleaseCallback(Delegate<void(const WindowMouseReleaseEvent&)> a_callback) = 0;
+
+		virtual
+		void
+		UnregisterMouseReleaseCallback(Delegate<void(const WindowMouseReleaseEvent&)> a_callback) = 0;
+
+		virtual
+		void
+		RegisterMouseScrollCallback(Delegate<void(const WindowMouseScrollEvent&)> a_callback) = 0;
+
+		virtual
+		void
+		UnregisterMouseScrollCallback(Delegate<void(const WindowMouseScrollEvent&)> a_callback) = 0;
+
+		virtual
+		void
+		RegisterCursorMoveCallback(Delegate<void(const WindowCursorMoveEvent&)> a_callback) = 0;
+
+		virtual
+		void
+		UnregisterCursorMoveCallback(Delegate<void(const WindowCursorMoveEvent&)> a_callback) = 0;
 	};
 
 	inline
@@ -128,83 +233,4 @@ namespace Oyl
 
 	inline
 	IApplicationWindowFactory::~IApplicationWindowFactory() {}
-
-	struct WindowEvent
-	{
-		IApplicationWindow* window = nullptr;
-
-	protected:
-		WindowEvent() = default;
-	};
-
-	/**
-	 * \brief Sent after a window is created, and is fully valid
-	 */
-	struct WindowCreatedEvent : WindowEvent, EventBase<WindowCreatedEvent> {};
-
-	/**
-	 * \brief Sent while window is being destroyed, before the window is freed in the underlying windowing API
-	 */
-	struct WindowClosedEvent : WindowEvent, EventBase<WindowClosedEvent> {};
-
-	struct WindowCloseRequestEvent : WindowEvent, EventBase<WindowCloseRequestEvent> {};
-
-	struct WindowResizeEvent : WindowEvent, EventBase<WindowResizeEvent>
-	{
-		Vector2u size;
-	};
-
-	struct WindowMaximizeEvent : WindowEvent, EventBase<WindowMaximizeEvent>
-	{
-		bool maximized;
-	};
-
-	struct WindowMinimizeEvent : WindowEvent, EventBase<WindowMinimizeEvent>
-	{
-		bool minimized;
-	};
-
-	struct WindowMoveEvent : WindowEvent, EventBase<WindowMoveEvent>
-	{
-		Vector2i position;
-	};
-
-	struct WindowFocusEvent : WindowEvent, EventBase<WindowFocusEvent>
-	{
-		bool focused;
-	};
-
-	struct WindowCursorMoveEvent : WindowEvent, EventBase<WindowCursorMoveEvent>
-	{
-		Vector2f position;
-	};
-
-	struct WindowKeyPressEvent : WindowEvent, EventBase<WindowKeyPressEvent>
-	{
-		Input::KeyboardKey key;
-		int mods;
-	};
-
-	struct WindowKeyReleaseEvent : WindowEvent, EventBase<WindowKeyReleaseEvent>
-	{
-		Input::KeyboardKey key;
-		int mods;
-	};
-
-	struct WindowMousePressEvent : WindowEvent, EventBase<WindowMousePressEvent>
-	{
-		Input::MouseButton button;
-		int mods;
-	};
-
-	struct WindowMouseReleaseEvent : WindowEvent, EventBase<WindowMouseReleaseEvent>
-	{
-		Input::MouseButton button;
-		int mods;
-	};
-
-	struct WindowMouseScrollEvent : WindowEvent, EventBase<WindowMouseScrollEvent>
-	{
-		Vector2f scroll;
-	};
 }

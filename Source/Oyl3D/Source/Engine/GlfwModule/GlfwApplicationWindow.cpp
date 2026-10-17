@@ -25,13 +25,9 @@ namespace Oyl
 		  m_position(a_params.position),
 		  m_size(a_params.size),
 		  m_windowState(a_params.windowState),
-		  m_cursorState(a_params.cursorState),
-		  m_postEventCallback(a_params.postEventCallback)
+		  m_cursorState(a_params.cursorState)
 	{
 		OYL_PROFILE_FUNCTION();
-
-		if (!m_postEventCallback)
-			m_postEventCallback = PostEventDelegate::Create([](const Event&) {});
 
 		CreateGlfwWindow();
 		SetupGlfwWindowCallbacks();
@@ -53,7 +49,7 @@ namespace Oyl
 		// Send event before we do any actual cleanup
 		WindowClosedEvent event;
 		event.window = this;
-		m_postEventCallback(event);
+		m_windowClosedCallback(event);
 
 		glfwDestroyWindow(m_glfwWindow);
 		m_glfwWindow = nullptr;
@@ -286,13 +282,10 @@ namespace Oyl
 			{
 				auto* this_ = reinterpret_cast<decltype(this)>(glfwGetWindowUserPointer(a_window));
 
-				if (!this_->m_postEventCallback)
-					return;
-
 				// The glfw callback is only a request - we still control destruction of the window
 				WindowCloseRequestEvent event;
 				event.window = this_;
-				this_->m_postEventCallback(event);
+				this_->m_windowCloseRequestCallback(event);
 			}
 		);
 
@@ -306,13 +299,10 @@ namespace Oyl
 				auto* this_ = reinterpret_cast<decltype(this)>(glfwGetWindowUserPointer(a_window));
 				this_->m_size = Vector2u(a_width, a_height);
 
-				if (!this_->m_postEventCallback)
-					return;
-
 				WindowResizeEvent event;
 				event.window = this_;
 				event.size = this_->m_size;
-				this_->m_postEventCallback(event);
+				this_->m_windowResizeCallback(event);
 			}
 		);
 
@@ -322,13 +312,10 @@ namespace Oyl
 			{
 				auto* this_ = reinterpret_cast<decltype(this)>(glfwGetWindowUserPointer(a_window));
 
-				if (!this_->m_postEventCallback)
-					return;
-
 				WindowMaximizeEvent event;
 				event.window = this_;
 				event.maximized = a_maximised;
-				this_->m_postEventCallback(event);
+				this_->m_windowMaximizeCallback(event);
 			}
 		);
 
@@ -338,13 +325,10 @@ namespace Oyl
 			{
 				auto* this_ = reinterpret_cast<decltype(this)>(glfwGetWindowUserPointer(a_window));
 
-				if (!this_->m_postEventCallback)
-					return;
-
 				WindowMinimizeEvent event;
 				event.window = this_;
 				event.minimized = a_minimized;
-				this_->m_postEventCallback(event);
+				this_->m_windowMinimizeCallback(event);
 			}
 		);
 
@@ -358,13 +342,10 @@ namespace Oyl
 				auto* this_ = reinterpret_cast<decltype(this)>(glfwGetWindowUserPointer(a_window));
 				this_->m_position = { a_posX, a_posY };
 
-				if (!this_->m_postEventCallback)
-					return;
-
 				WindowMoveEvent event;
 				event.window = this_;
 				event.position = this_->m_position;
-				this_->m_postEventCallback(event);
+				this_->m_windowMoveCallback(event);
 			}
 		);
 
@@ -374,13 +355,10 @@ namespace Oyl
 			{
 				auto* this_ = reinterpret_cast<decltype(this)>(glfwGetWindowUserPointer(a_window));
 
-				if (!this_->m_postEventCallback)
-					return;
-
 				WindowFocusEvent event;
 				event.window = this_;
 				event.focused = a_focused;
-				this_->m_postEventCallback(event);
+				this_->m_windowFocusCallback(event);
 			}
 		);
 
@@ -392,9 +370,6 @@ namespace Oyl
 
 				auto* this_ = reinterpret_cast<decltype(this)>(glfwGetWindowUserPointer(a_window));
 
-				if (!this_->m_postEventCallback)
-					return;
-
 				Input::KeyboardKey key = GetKeyCodeFromGlfw(a_key);
 
 				switch (a_action)
@@ -405,7 +380,7 @@ namespace Oyl
 						event.window = this_;
 						event.key = key;
 						event.mods = a_mods;
-						this_->m_postEventCallback(event);
+						this_->m_keyPressCallback(event);
 						break;
 					}
 					case GLFW_RELEASE:
@@ -414,7 +389,7 @@ namespace Oyl
 						event.window = this_;
 						event.key = key;
 						event.mods = a_mods;
-						this_->m_postEventCallback(event);
+						this_->m_keyReleaseCallback(event);
 						break;
 					}
 					default:
@@ -429,9 +404,6 @@ namespace Oyl
 			{
 				auto* this_ = reinterpret_cast<decltype(this)>(glfwGetWindowUserPointer(a_window));
 
-				if (!this_->m_postEventCallback)
-					return;
-
 				Input::MouseButton button = GetMouseButtonFromGlfw(a_button);
 
 				switch (a_action)
@@ -442,7 +414,7 @@ namespace Oyl
 						event.window = this_;
 						event.button = button;
 						event.mods = a_mods;
-						this_->m_postEventCallback(event);
+						this_->m_mousePressCallback(event);
 						break;
 					}
 					case GLFW_RELEASE:
@@ -451,7 +423,7 @@ namespace Oyl
 						event.window = this_;
 						event.button = button;
 						event.mods = a_mods;
-						this_->m_postEventCallback(event);
+						this_->m_mouseReleaseCallback(event);
 						break;
 					}
 					default:
@@ -466,13 +438,10 @@ namespace Oyl
 			{
 				auto* this_ = reinterpret_cast<decltype(this)>(glfwGetWindowUserPointer(a_window));
 
-				if (!this_->m_postEventCallback)
-					return;
-
 				WindowMouseScrollEvent event;
 				event.window = this_;
 				event.scroll = { (float32) a_scrollX, (float32) a_scrollY };
-				this_->m_postEventCallback(event);
+				this_->m_mouseScrollCallback(event);
 			}
 		);
 
@@ -482,13 +451,10 @@ namespace Oyl
 			{
 				auto* this_ = reinterpret_cast<decltype(this)>(glfwGetWindowUserPointer(a_window));
 
-				if (!this_->m_postEventCallback)
-					return;
-
 				WindowCursorMoveEvent event;
 				event.window = this_;
 				event.position = { (float32) a_posX, (float32) a_posY };
-				this_->m_postEventCallback(event);
+				this_->m_cursorMoveCallback(event);
 			}
 		);
 	}

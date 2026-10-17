@@ -1,7 +1,7 @@
-#include "Application.h"
-
 #include <Core/Logging/Logging.h>
 #include <Core/Modules/ModuleManager.h>
+
+#include "Application.h"
 
 namespace Oyl
 {

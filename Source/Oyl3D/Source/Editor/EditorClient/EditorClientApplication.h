@@ -58,9 +58,11 @@ namespace Oyl
 		UnregisterOnUpdateCallback(OnUpdateDelegate a_callback) override;
 
 	private:
-		virtual
 		void
-		PostEvent(const Event& a_event);
+		OnWindowCloseRequestEvent(const WindowCloseRequestEvent& a_event);
+
+		void
+		OnKeyPressEvent(const WindowKeyPressEvent& a_event);
 
 	private:
 		IApplicationWindow* m_mainWindow = nullptr;
