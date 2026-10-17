@@ -61,10 +61,12 @@ namespace Oyl::Traits
 	namespace Internal
 	{
 		template<typename TFrom, typename TTo>
-		auto TestExplicitlyConvertible(int) -> decltype(static_cast<TTo>(std::declval<TFrom>()), TrueType {});
+		auto
+		TestExplicitlyConvertible(int) -> decltype(static_cast<TTo>(std::declval<TFrom>()), TrueType {});
 
 		template<typename TFrom, typename TTo>
-		auto TestExplicitlyConvertible(...) -> FalseType;
+		auto
+		TestExplicitlyConvertible(...) -> FalseType;
 	}
 
 	template<typename TFrom, typename TTo>
@@ -274,13 +276,28 @@ namespace Oyl::Traits
 	using TMemberFunctionWithSignature = typename MemberFunctionWithSignature<TClass, TSignature>::type;
 
 #pragma endregion Member Functions
+#pragma region Functors
 
-	template<typename T>
-	struct UnderlyingType
+	template<typename T, typename... TArgs>
+	concept CFunctor = requires(T&& a_functor, TArgs&&... a_args)
 	{
-		using type = std::underlying_type_t<T>;
+		{ a_functor(a_args...) };
 	};
 
-	template<typename T>
-	using TUnderlyingType = typename UnderlyingType<T>::type;
+	template<typename T, typename... TArgs>
+	concept CFunctionLike = requires(T&& a_functionLike, TArgs&&... a_args)
+	{
+		{ std::declval<decltype(a_functionLike(a_args...))(*&)(TArgs...)>() = a_functionLike };
+	};
+
+#pragma endregion
+
+template<typename T>
+struct UnderlyingType
+{
+	using type = std::underlying_type_t<T>;
+};
+
+template<typename T>
+using TUnderlyingType = typename UnderlyingType<T>::type;
 }

@@ -4,6 +4,7 @@
 
 #include "Core/Platform/MemberFunctionPointer.h"
 #include "Core/Types/TypeTraits.h"
+#include "Core/Containers/Array.h"
 
 namespace Oyl
 {
@@ -56,13 +57,15 @@ namespace Oyl
 			return *this;
 		}
 
-		friend bool
+		friend
+		bool
 		operator ==(const Delegate& a_lhs, const Delegate& a_rhs)
 		{
 			return a_lhs.m_fn == a_rhs.m_fn && a_lhs.m_obj == a_rhs.m_obj;
 		}
 
-		friend bool
+		friend
+		bool
 		operator !=(const Delegate& a_lhs, const Delegate& a_rhs)
 		{
 			return !(a_lhs == a_rhs);
@@ -83,13 +86,14 @@ namespace Oyl
 	#pragma region Function Pointers
 
 		template<auto Function>
+			requires Traits::FunctionPointer<decltype(Function)>
 		Delegate(decltype(Function))
 			: Delegate()
 		{
 			Set<Function>();
 		}
 
-		template<typename TPredicate>
+		template<Traits::CFunctionLike TPredicate>
 		Delegate(TPredicate&& a_functor)
 		{
 			Set(static_cast<Fn*>(a_functor));
@@ -112,6 +116,7 @@ namespace Oyl
 		}
 
 		template<auto Function>
+			requires Traits::FunctionPointer<decltype(Function)>
 		void
 		Set()
 		{
@@ -119,7 +124,7 @@ namespace Oyl
 			m_fn = static_cast<Fn*>(Function);
 		}
 
-		template<typename TPredicate>
+		template<Traits::CFunctionLike TPredicate>
 		Delegate&
 		operator =(TPredicate&& a_fn)
 		{
@@ -272,6 +277,70 @@ namespace Oyl
 
 	_CLASS_DEFINE_CV_REF_NOEXCEPT(_DELEGATE_MEMBER_CREATE_DELEGATE_FUNC)
 	#undef _DELEGATE_MEMBER_CREATE_DELEGATE_FUNC
-}
 
-#undef _MEMBER_FUNCTION_POINTER_DECL
+	template<Traits::FunctionSignature>
+	class MulticastDelegate;
+
+	template<typename TReturn, typename... TArgs>
+	class MulticastDelegate<TReturn(TArgs...)>
+	{
+	public:
+		using DelegateType = Delegate<TReturn(TArgs...)>;
+
+		MulticastDelegate() = default;
+
+		MulticastDelegate&
+		operator +=(DelegateType a_delegate)
+		{
+			// Check if we've already added this delegate
+			for (const auto& delegate : m_delegates)
+				if (delegate == a_delegate)
+					return *this;
+
+			m_delegates.Add(a_delegate);
+			return *this;
+		}
+
+		MulticastDelegate&
+		operator -=(DelegateType a_delegate)
+		{
+			for (int i = 0; i < m_delegates.Length(); i++)
+				if (m_delegates[i] == a_delegate)
+					m_delegates.erase(m_delegates.begin() + i);
+			return *this;
+		}
+
+		TReturn
+		operator ()(TArgs&&... a_args) const
+		{
+			return Invoke(std::forward<TArgs>(a_args)...);
+		}
+
+		template<typename = void>
+			requires (std::is_void_v<TReturn>)
+		void
+		Invoke(TArgs&&... a_args) const
+		{
+			for (const auto& delegate : m_delegates)
+				delegate.Invoke(std::forward<TArgs>(a_args)...);
+		}
+
+		template<typename = void>
+			requires (!std::is_void_v<TReturn> && std::is_copy_constructible_v<TReturn>)
+		Array<TReturn>
+		Invoke(TArgs&&... a_args) const
+		{
+			if (m_delegates.empty())
+				return {};
+
+			Array<TReturn> result;
+			result.Reserve(m_delegates.size());
+			for (const auto& delegate : m_delegates)
+				result.emplace_back(delegate.Invoke(std::forward<TArgs>(a_args)...));
+			return result;
+		}
+
+	private:
+		Array<DelegateType> m_delegates;
+	};
+}
