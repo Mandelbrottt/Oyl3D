@@ -68,8 +68,8 @@ namespace Oyl
 		SetTargetFramerate(uint32 a_target) = 0;
 
 		virtual
-		const Array<OnUpdateDelegate>&
-		GetOnUpdateCallbacks() const = 0;
+		void
+		InvokeOnUpdateCallback() const = 0;
 
 		virtual
 		void

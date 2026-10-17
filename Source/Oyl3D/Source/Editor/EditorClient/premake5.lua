@@ -15,10 +15,6 @@ project "EditorClient"; do
 	uses {
 		"Core",
 		"Application",
-	}
-
-	-- TEMPORARY:
-	dependson {
-		"SpdLogLogger",
+		"Rendering",
 	}
 end

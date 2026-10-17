@@ -35,8 +35,7 @@ namespace Oyl
 				m_currentApplication->OnUpdate();
 
 				// Update callbacks after application update so app info is up to date
-				for (auto& callback : m_currentApplication->GetOnUpdateCallbacks())
-					callback();
+				m_currentApplication->InvokeOnUpdateCallback();
 
 				m_currentApplication->WaitIdle();
 			}

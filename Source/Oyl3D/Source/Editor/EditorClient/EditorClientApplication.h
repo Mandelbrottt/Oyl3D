@@ -2,6 +2,7 @@
 
 #include <Application/Application.h>
 
+#include <Core/Containers/Delegate.h>
 #include <Core/Events/Event.h>
 
 namespace Oyl
@@ -48,8 +49,8 @@ namespace Oyl
 		void
 		SetTargetFramerate(uint32 a_target) override;
 
-		const Array<OnUpdateDelegate>&
-		GetOnUpdateCallbacks() const override;
+		void
+		InvokeOnUpdateCallback() const override;
 
 		void
 		RegisterOnUpdateCallback(OnUpdateDelegate a_callback) override;
@@ -73,6 +74,6 @@ namespace Oyl
 		std::atomic<uint32> m_targetFramerateHint = 0;
 
 		Array<IApplicationWindow*> m_applicationWindows;
-		Array<OnUpdateDelegate> m_onUpdateCallbacks;
+		MulticastDelegate<void()> m_onUpdateCallback;
 	};
 }

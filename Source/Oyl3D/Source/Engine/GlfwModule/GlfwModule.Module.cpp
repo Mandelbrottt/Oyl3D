@@ -9,7 +9,7 @@
 
 namespace Oyl
 {
-	class GlfwModule
+	class GlfwModule final
 		: public IApplicationWindowFactory,
 		  public IModuleInterface
 	{

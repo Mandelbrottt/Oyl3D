@@ -6,6 +6,8 @@
 #include <Core/Modules/ModuleManager.h>
 #include <Core/Time/Time.h>
 
+#include <Rendering/Rendering.h>
+
 namespace Oyl
 {
 	void
@@ -28,6 +30,9 @@ namespace Oyl
 			m_mainWindow->RegisterWindowCloseRequestCallback({ this, &EditorClientApplication::OnWindowCloseRequestEvent });
 			m_mainWindow->RegisterKeyPressCallback({ this, &EditorClientApplication::OnKeyPressEvent });
 		}
+
+		auto* renderingModule = ModuleManager::GetModulePointer<IRenderingModule>("Rendering");
+		[[maybe_unused]] auto* renderer = renderingModule->CreateRenderer(RenderingApi::Vulkan);
 	}
 
 	void
@@ -145,34 +150,22 @@ namespace Oyl
 		m_targetFramerateHint = a_target;
 	}
 
-	const Array<OnUpdateDelegate>&
-	EditorClientApplication::GetOnUpdateCallbacks() const
+	void
+	EditorClientApplication::InvokeOnUpdateCallback() const
 	{
-		return m_onUpdateCallbacks;
+		m_onUpdateCallback.Invoke();
 	}
 
 	void
 	EditorClientApplication::RegisterOnUpdateCallback(OnUpdateDelegate a_callback)
 	{
-		if (!a_callback.IsValid())
-			return;
-
-		for (const auto& callback : m_onUpdateCallbacks)
-			if (callback == a_callback)
-				return;
-
-		m_onUpdateCallbacks.Add(a_callback);
+		m_onUpdateCallback += a_callback;
 	}
 
 	void
 	EditorClientApplication::UnregisterOnUpdateCallback(OnUpdateDelegate a_callback)
 	{
-		if (!a_callback.IsValid())
-			return;
-
-		for (uint i = 0; i < m_onUpdateCallbacks.Length(); i++)
-			if (m_onUpdateCallbacks[i] == a_callback)
-				m_onUpdateCallbacks.erase(m_onUpdateCallbacks.begin() + i);
+		m_onUpdateCallback -= a_callback;
 	}
 
 	void
