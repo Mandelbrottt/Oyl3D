@@ -142,30 +142,23 @@ namespace Oyl
 	#pragma endregion Function Pointers
 	#pragma region Member Functions
 
-	#define _DELEGATE_MEMBER_CONSTRUCTOR(_cv_ref_noexcept_) \
-		template<typename TObj, typename TClass> \
-		Delegate(TObj* a_obj, TReturn(TClass::*a_fn)(TArgs...) _cv_ref_noexcept_) \
-		{ \
-			Set(a_obj, a_fn); \
+		template<typename TObj, typename TMemberFunctionPointer>
+			requires Traits::MemberFunctionCallableWith<TObj, TMemberFunctionPointer>
+		Delegate(TObj* a_obj, TMemberFunctionPointer a_fn)
+		{
+			Set(a_obj, a_fn);
 		}
 
-		_CLASS_DEFINE_CV_REF_NOEXCEPT(_DELEGATE_MEMBER_CONSTRUCTOR)
-	#undef _DELEGATE_MEMBER_CONSTRUCTOR
-
-	#define _DELEGATE_MEMBER_CREATE_FUNC(_cv_ref_noexcept_) \
-		template<typename TObj, typename TClass> \
-			requires std::is_base_of_v<TClass, TObj> \
-		static \
-		Delegate \
-		Create(TObj* a_obj, TReturn(TClass::*a_fn)(TArgs...) _cv_ref_noexcept_) \
-		{ \
-			Delegate result; \
-			result.Set(a_obj, a_fn); \
-			return result; \
+		template<typename TObj, typename TMemberFunctionPointer>
+			requires Traits::MemberFunctionCallableWith<TObj, TMemberFunctionPointer>
+		static
+		Delegate
+		Create(TObj* a_obj, TMemberFunctionPointer a_fn)
+		{
+			Delegate result;
+			result.Set(a_obj, a_fn);
+			return result;
 		}
-
-		_CLASS_DEFINE_CV_REF_NOEXCEPT(_DELEGATE_MEMBER_CREATE_FUNC)
-	#undef _DELEGATE_MEMBER_CREATE_FUNC
 
 		template<auto Function>
 			requires Traits::MemberFunctionPointer<decltype(Function)>
@@ -186,21 +179,18 @@ namespace Oyl
 			Set(a_obj, Function);
 		}
 
-	#define _DELEGATE_MEMBER_SET_FUNC(_cv_ref_noexcept_) \
-		template<typename TObj, typename TClass> \
-			requires std::is_base_of_v<TClass, TObj> \
-		void \
-		Set(TObj* a_obj, TReturn(TClass::*a_fn)(TArgs...) _cv_ref_noexcept_) \
-		{ \
-			/* static_cast to ensure base class pointer arithmetic is done correctly */\
-			TClass* objAsTClass = static_cast<TClass*>(a_obj); \
-			Platform::MemberFunctionPointerData mfpdata(objAsTClass, a_fn);\
-			m_obj = mfpdata.thisPtr; \
-			m_fn = reinterpret_cast<Fn*>(mfpdata.thunkPtr); \
+		template<typename TObj, typename TMemberFunctionPointer> \
+			requires Traits::MemberFunctionCallableWith<TObj, TMemberFunctionPointer>
+		void
+		Set(TObj* a_obj, TMemberFunctionPointer a_fn)
+		{
+			using TClass = Traits::TMemberFunctionBaseClass<TMemberFunctionPointer>;
+			// static_cast to ensure base class pointer arithmetic is done correctly
+			TClass* objAsTClass = static_cast<TClass*>(a_obj);
+			Platform::MemberFunctionPointerData mfpdata(objAsTClass, a_fn);
+			m_obj = mfpdata.thisPtr;
+			m_fn = reinterpret_cast<Fn*>(mfpdata.thunkPtr);
 		}
-
-		_CLASS_DEFINE_CV_REF_NOEXCEPT(_DELEGATE_MEMBER_SET_FUNC)
-	#undef _DELEGATE_MEMBER_SET_FUNC
 
 	#pragma endregion Member Functions
 	#pragma region Invoke
@@ -266,17 +256,13 @@ namespace Oyl
 		return TDelegate::Create(a_obj, Function);
 	}
 
-	#define _DELEGATE_MEMBER_CREATE_DELEGATE_FUNC(_cv_ref_noexcept_) \
-		template<typename TObj, typename TClass, typename TReturn, typename... TArgs> \
-			requires std::is_base_of_v<TClass, TObj> \
-		Delegate<TReturn(TArgs...)> \
-		CreateDelegate(TObj* a_obj, TReturn(TClass::*a_fn)(TArgs...) _cv_ref_noexcept_) \
-		{ \
-			return Delegate<TReturn(TArgs...)>::Create(a_obj, a_fn); \
-		}
-
-	_CLASS_DEFINE_CV_REF_NOEXCEPT(_DELEGATE_MEMBER_CREATE_DELEGATE_FUNC)
-	#undef _DELEGATE_MEMBER_CREATE_DELEGATE_FUNC
+	template<typename TObj, typename TMemberFunctionPointer>
+		requires Traits::MemberFunctionCallableWith<TObj, TMemberFunctionPointer>
+	Delegate<Traits::FunctionSignatureFromPointer_T<TMemberFunctionPointer>>
+	CreateDelegate(TObj* a_obj, TMemberFunctionPointer a_fn)
+	{
+		return Delegate<Traits::FunctionSignatureFromPointer_T<TMemberFunctionPointer>>::Create(a_obj, a_fn);
+	}
 
 	template<Traits::FunctionSignature>
 	class MulticastDelegate;

@@ -275,6 +275,12 @@ namespace Oyl::Traits
 	template<typename TClass, typename TSignature>
 	using TMemberFunctionWithSignature = typename MemberFunctionWithSignature<TClass, TSignature>::type;
 
+	template<typename TObj, typename TMemberFunctionPointer>
+	concept MemberFunctionCallableWith = requires(TObj* a_obj, TMemberFunctionPointer a_fn)
+	{
+		{ static_cast<const TMemberFunctionBaseClass<TMemberFunctionPointer>*>(a_obj) };
+	};
+
 #pragma endregion Member Functions
 #pragma region Functors
 
