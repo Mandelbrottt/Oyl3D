@@ -12,6 +12,12 @@ namespace Oyl
 		using ValueTy = TValue;
 		using SizeTy = uint32;
 
+		struct Pair
+		{
+			KeyTy key;
+			ValueTy value;
+		};
+
 		ArrayMap() {}
 
 		bool
@@ -90,13 +96,19 @@ namespace Oyl
 			m_array.Clear();
 		}
 
-	private:
-		struct Kvp
-		{
-			KeyTy key;
-			ValueTy value;
-		};
+		typename Array<Pair>::iterator
+		begin() { return m_array.begin(); }
 
-		Array<Kvp> m_array;
+		typename Array<Pair>::const_iterator
+		begin() const { return m_array.begin(); }
+
+		typename Array<Pair>::iterator
+		end() { return m_array.end(); }
+
+		typename Array<Pair>::const_iterator
+		end() const { return m_array.end(); }
+
+	private:
+		Array<Pair> m_array;
 	};
 }

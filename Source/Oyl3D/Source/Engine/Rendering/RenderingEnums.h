@@ -1,0 +1,115 @@
+#pragma once
+
+#include <Core/Preprocessor/Common.h>
+#include <Core/Types/EnumFlags.h>
+#include <Core/Types/Primitives.h>
+
+namespace Oyl
+{
+	//////////////////////////////////////////////////////////////////////////////
+
+	enum class CommandQueueFlagBits : uint32
+	{
+		Graphics = 1 << 0,
+		Compute = 1 << 1,
+		Transfer = 1 << 2,
+	};
+
+	OYL_ENUM_CLASS_BITWISE_OPERATIONS(CommandQueueFlagBits)
+
+	using CommandQueueFlags = EnumFlags<CommandQueueFlagBits>;
+
+	//////////////////////////////////////////////////////////////////////////////
+
+	enum class RenderingApi : uint32
+	{
+		None = 0,
+		OpenGL,
+		WebGL,
+		DirectX11,
+		DirectX12,
+		Vulkan,
+		Metal,
+	};
+
+	//////////////////////////////////////////////////////////////////////////////
+
+	enum class ImageUsageFlagBits : uint32
+	{
+		ColorAttachment = 1 << 0,
+		DepthStencilAttachment = 1 << 1,
+		TransferSrc = 1 << 2,
+		TransferDst = 1 << 3,
+	};
+
+	OYL_ENUM_CLASS_BITWISE_OPERATIONS(ImageUsageFlagBits)
+
+	using ImageUsageFlags = EnumFlags<ImageUsageFlagBits>;
+
+	//////////////////////////////////////////////////////////////////////////////
+
+	enum class ImageFilter : uint32
+	{
+		Nearest,
+		Linear,
+		Cubic,
+	};
+
+	//////////////////////////////////////////////////////////////////////////////
+
+	enum class ImageFormat : uint32
+	{
+		None,
+
+		RGB_8_SRGB,
+		RGBA_8_SRGB,
+
+		BGR_8_SRGB,
+		BGRA_8_SRGB
+	};
+
+	//////////////////////////////////////////////////////////////////////////////
+
+	enum class ImageLayout : uint32
+	{
+		None,
+
+		ColorAttachment,
+		DepthStencilAttachment,
+		ShaderRead,
+		TransferSource,
+		TransferDest,
+		PresentSource,
+	};
+
+	//////////////////////////////////////////////////////////////////////////////
+
+	enum class PipelineStageFlagBits : uint32
+	{
+		ColorAttachmentOutput = 1 << 0,
+	};
+
+	OYL_ENUM_CLASS_BITWISE_OPERATIONS(PipelineStageFlagBits)
+
+	using PipelineStageFlags = EnumFlags<PipelineStageFlagBits>;
+
+	//////////////////////////////////////////////////////////////////////////////
+
+	enum class ShaderLanguage : uint32
+	{
+		None,
+
+		Hlsl,
+	};
+
+	//////////////////////////////////////////////////////////////////////////////
+
+	enum class ShaderProfile : uint32
+	{
+		None,
+
+		Vertex,
+		Geometry,
+		Fragment,
+	};
+}

@@ -42,6 +42,36 @@
 #	define OYL_UNUSED(...) ([](auto&&...){})(__VA_ARGS__)
 #pragma endregion
 
+#pragma region Assert
+#	if !defined(OYL_DISTRIBUTION) && !defined(OYL_DISABLE_ASSERTS)
+		#define OYL_ENABLE_ASSERTS
+#	endif
+
+#	define OYL_ASSERT(...) OYL_MACRO_OVERLOAD(_OYL_ASSERT, __VA_ARGS__)
+
+#	if defined(OYL_ENABLE_ASSERTS)
+		#define _OYL_ASSERT_1(_expr_)             { if(!(_expr_)) { OYL_BREAKPOINT; } } OYL_FORCE_SEMICOLON
+		#define _OYL_ASSERT_2(_expr_, _str_)      { if(!(_expr_)) { ::Oyl::LogError("Assert Failed [" __FILE__ ":" OYL_STRINGIFY_MACRO(__LINE__) "] (" #_expr_ "): " _str_); OYL_BREAKPOINT; } } OYL_FORCE_SEMICOLON
+		#define _OYL_ASSERT_3(_expr_, _str_, ...) { if(!(_expr_)) { ::Oyl::LogError("Assert Failed [" __FILE__ ":" OYL_STRINGIFY_MACRO(__LINE__) "] (" #_expr_ "): " _str_, ##__VA_ARGS__); OYL_BREAKPOINT; } } OYL_FORCE_SEMICOLON
+		#define _OYL_ASSERT_4(_expr_, _str_, ...) OYL_EXPAND(_OYL_ASSERT_3(_expr_, _str_, __VA_ARGS__))
+		#define _OYL_ASSERT_5(_expr_, _str_, ...) OYL_EXPAND(_OYL_ASSERT_3(_expr_, _str_, __VA_ARGS__))
+		#define _OYL_ASSERT_6(_expr_, _str_, ...) OYL_EXPAND(_OYL_ASSERT_3(_expr_, _str_, __VA_ARGS__))
+		#define _OYL_ASSERT_7(_expr_, _str_, ...) OYL_EXPAND(_OYL_ASSERT_3(_expr_, _str_, __VA_ARGS__))
+		#define _OYL_ASSERT_8(_expr_, _str_, ...) OYL_EXPAND(_OYL_ASSERT_3(_expr_, _str_, __VA_ARGS__))
+		#define _OYL_ASSERT_9(_expr_, _str_, ...) OYL_EXPAND(_OYL_ASSERT_3(_expr_, _str_, __VA_ARGS__))
+#	else
+		#define _OYL_ASSERT_1(_expr_)             OYL_UNUSED(_expr_)
+		#define _OYL_ASSERT_2(_expr_, _str_)      OYL_UNUSED(_expr_, _str_)
+		#define _OYL_ASSERT_3(_expr_, _str_, ...) OYL_EXPAND(_OYL_ASSERT_2(_expr_, _str_, __VA_ARGS__))
+		#define _OYL_ASSERT_4(_expr_, _str_, ...) OYL_EXPAND(_OYL_ASSERT_2(_expr_, _str_, __VA_ARGS__))
+		#define _OYL_ASSERT_5(_expr_, _str_, ...) OYL_EXPAND(_OYL_ASSERT_2(_expr_, _str_, __VA_ARGS__))
+		#define _OYL_ASSERT_6(_expr_, _str_, ...) OYL_EXPAND(_OYL_ASSERT_2(_expr_, _str_, __VA_ARGS__))
+		#define _OYL_ASSERT_7(_expr_, _str_, ...) OYL_EXPAND(_OYL_ASSERT_2(_expr_, _str_, __VA_ARGS__))
+		#define _OYL_ASSERT_8(_expr_, _str_, ...) OYL_EXPAND(_OYL_ASSERT_2(_expr_, _str_, __VA_ARGS__))
+		#define _OYL_ASSERT_9(_expr_, _str_, ...) OYL_EXPAND(_OYL_ASSERT_2(_expr_, _str_, __VA_ARGS__))
+#	endif
+#pragma endregion Asserts
+
 #pragma region Construction Macros
 #	if defined(DEFAULT_COPY)
 #		undef DEFAULT_COPY
@@ -123,7 +153,7 @@
  * // You can omit any number of macro overload definitions if you only want to support specific amounts
  * </code>
  */
-#	define OYL_MACRO_OVERLOAD(_name_, ...) OYL_EXPAND(_OYL_MACRO_APPEND_ARG_COUNT(_name_, __VA_ARGS__))
+#	define OYL_MACRO_OVERLOAD(_name_, ...) OYL_EXPAND(OYL_MACRO_APPEND_ARG_COUNT(_name_, __VA_ARGS__))
 
 #	define OYL_GET_ARG_COUNT(_1_, _2_, _3_, _4_, _5_, _6_, _7_, _8_, _9_, _10_, _11_, _12_, _13_, _14_, _15_, _16_, _17_, _18_, _19_, _20_, _count_, ...) _count_
 

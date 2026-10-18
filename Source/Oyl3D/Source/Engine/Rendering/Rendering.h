@@ -4,19 +4,10 @@
 
 #include "Renderer.h"
 
+#include "Rendering/RenderingEnums.h"
+
 namespace Oyl
 {
-	enum class RenderingApi
-	{
-		None = 0,
-		OpenGL,
-		WebGL,
-		DirectX11,
-		DirectX12,
-		Vulkan,
-		Metal,
-	};
-
 	class IRendererFactory
 	{
 	public:

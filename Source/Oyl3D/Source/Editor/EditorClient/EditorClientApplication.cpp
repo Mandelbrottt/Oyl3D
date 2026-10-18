@@ -43,9 +43,9 @@ namespace Oyl
 		m_renderer = renderingModule->CreateRenderer(RenderingApi::Vulkan);
 		if (m_renderer)
 		{
-			m_renderer->Init();
+			m_renderer->Init(m_mainWindow);
 			for (auto* window : m_applicationWindows)
-				m_renderer->RegisterApplicationWindow(window);
+				m_renderer->RegisterApplicationWindow(*window);
 		}
 	}
 
@@ -57,7 +57,7 @@ namespace Oyl
 		if (m_renderer)
 		{
 			for (auto* window : m_applicationWindows)
-				m_renderer->UnregisterApplicationWindow(window);
+				m_renderer->UnregisterApplicationWindow(*window);
 			m_renderer->Shutdown();
 		}
 
@@ -77,6 +77,9 @@ namespace Oyl
 
 		if (m_mainWindow && m_mainWindow->IsValid())
 			m_mainWindow->Update();
+
+		if (m_renderer)
+			m_renderer->Update();
 	}
 
 	void

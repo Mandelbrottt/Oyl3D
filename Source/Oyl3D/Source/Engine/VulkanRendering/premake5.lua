@@ -15,5 +15,6 @@ project "VulkanModule"; do
 		"Application",
 		"Rendering",
 		"Vulkan",
+		"Glfw"
 	}
 end

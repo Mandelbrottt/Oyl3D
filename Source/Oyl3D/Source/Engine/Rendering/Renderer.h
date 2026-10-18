@@ -1,5 +1,7 @@
 #pragma once
 
+#include <Application/ApplicationWindow.h>
+
 namespace Oyl
 {
 	class IRenderer
@@ -10,7 +12,11 @@ namespace Oyl
 
 		virtual
 		void
-		Init() = 0;
+		Init(IApplicationWindow* a_mainWindow) = 0;
+
+		virtual
+		void
+		Update() = 0;
 
 		virtual
 		void
@@ -18,11 +24,11 @@ namespace Oyl
 
 		virtual
 		void
-		RegisterApplicationWindow(IApplicationWindow* a_window) = 0;
+		RegisterApplicationWindow(IApplicationWindow& a_window) = 0;
 
 		virtual
 		void
-		UnregisterApplicationWindow(IApplicationWindow* a_window) = 0;
+		UnregisterApplicationWindow(IApplicationWindow& a_window) = 0;
 	};
 
 	inline

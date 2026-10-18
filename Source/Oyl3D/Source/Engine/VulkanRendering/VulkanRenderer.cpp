@@ -5,9 +5,13 @@
 #include <Core/Modules/ModuleManager.h>
 #include <Core/Profiling/Profiling.h>
 
+#include <GLFW/glfw3.h>
+
+#include "VulkanPresentTarget.h"
+
 namespace
 {
-	const std::vector VALIDATION_LAYERS {
+	const Oyl::Array<const char*> VALIDATION_LAYERS = std::vector {
 		"VK_LAYER_KHRONOS_validation",
 	};
 
@@ -18,11 +22,11 @@ namespace
 		true;
 	#endif
 
-	const std::vector REQUIRED_DEVICE_EXTENSION {
+	const Oyl::Array<const char*> REQUIRED_DEVICE_EXTENSIONS = std::vector {
 		vk::KHRSwapchainExtensionName,
 	};
 
-	Oyl::Array<Oyl::String>
+	Oyl::Array<const char*>
 	GetRequiredInstanceExtensions();
 
 	extern "C"
@@ -40,7 +44,7 @@ namespace
 namespace Oyl
 {
 	void
-	VulkanRenderer::Init()
+	VulkanRenderer::Init(IApplicationWindow* a_mainWindow)
 	{
 		OYL_PROFILE_FUNCTION();
 
@@ -48,7 +52,41 @@ namespace Oyl
 		if constexpr (ENABLE_VALIDATION_LAYERS)
 			CreateVkDebugMessenger();
 
-		LogTrace("VulkanRenderer Initialized");
+		VulkanPresentTarget* presentTarget = nullptr;
+		if (a_mainWindow)
+		{
+			RegisterApplicationWindow(*a_mainWindow);
+			presentTarget = &m_windowInfos[a_mainWindow].presentTarget;
+		}
+
+		LogTrace("Creating VulkanDevice");
+		m_device = VulkanDevice(
+			m_vkInstance,
+			{
+				.presentTarget = presentTarget,
+				.commandQueueFlags = CommandQueueFlagBits::Graphics | CommandQueueFlagBits::Transfer,
+				.requiredDeviceExtensions = REQUIRED_DEVICE_EXTENSIONS,
+			});
+	}
+
+	void
+	VulkanRenderer::Update()
+	{
+		OYL_PROFILE_FUNCTION();
+
+		for (auto& [window, info] : m_windowInfos)
+		{
+			if (!info.swapChain.IsValid())
+			{
+				LogTrace("Creating VulkanSwapChain for window [{} \"{}\"]", window->GetNativeWindowHandle(), window->GetTitle());
+				info.swapChain = VulkanSwapChain(
+					m_device,
+					{
+						.window = *window,
+						.presentTarget = info.presentTarget
+					});
+			}
+		}
 	}
 
 	void
@@ -57,36 +95,54 @@ namespace Oyl
 		OYL_PROFILE_FUNCTION();
 
 		LogTrace("VulkanRenderer Shutdown");
+
+		for (auto& [window, info] : m_windowInfos)
+		{
+			UnregisterApplicationWindow(*window);
+		}
+
+		m_windowInfos.Clear();
 	}
 
 	void
-	VulkanRenderer::RegisterApplicationWindow(IApplicationWindow* a_window)
+	VulkanRenderer::RegisterApplicationWindow(IApplicationWindow& a_window)
 	{
 		OYL_PROFILE_FUNCTION();
 
-		if (m_windowInfos.Contains(a_window))
+		if (!a_window.IsValid())
 			return;
 
-		LogDebug("Registering window [{} {}] with VulkanRenderer", a_window->GetNativeWindowHandle(), a_window->GetTitle());
+		if (m_windowInfos.Contains(&a_window))
+			return;
+
+		LogDebug("Registering window [{} \"{}\"] with VulkanRenderer", a_window.GetNativeWindowHandle(), a_window.GetTitle());
 
 		WindowInfo info;
-		// Create Device, PresentTarget, SwapChain
+		LogTrace("Creating VulkanPresentTarget for window [{} \"{}\"]", a_window.GetNativeWindowHandle(), a_window.GetTitle());
+		info.presentTarget = VulkanPresentTarget({
+			.vkInstance = m_vkInstance,
+			.window = a_window,
+		});
 
-		m_windowInfos.Emplace(a_window, std::move(info));
+		m_windowInfos.Emplace(&a_window, std::move(info));
 	}
 
 	void
-	VulkanRenderer::UnregisterApplicationWindow(IApplicationWindow* a_window)
+	VulkanRenderer::UnregisterApplicationWindow(IApplicationWindow& a_window)
 	{
 		OYL_PROFILE_FUNCTION();
 
-		if (!m_windowInfos.Contains(a_window))
+		if (!m_windowInfos.Contains(&a_window))
 			return;
 
-		LogDebug("Unregistering window [{} {}] with VulkanRenderer", a_window->GetNativeWindowHandle(), a_window->GetTitle());
+		LogDebug("Unregistering window [{} {}] with VulkanRenderer", a_window.GetNativeWindowHandle(), a_window.GetTitle());
 
-		// TODO: Destroy objects in WindowInfo
-		m_windowInfos.Erase(a_window);
+		m_device.WaitUntilIdle();
+
+		auto& [presentTarget, swapChain] = m_windowInfos[&a_window];
+		swapChain.Destroy();
+		presentTarget.Destroy();
+		m_windowInfos.Erase(&a_window);
 	}
 
 	void
@@ -152,16 +208,12 @@ namespace Oyl
 			throw std::runtime_error("Required extension not supported: " + std::string(*unsupportedPropertyIt));
 		}
 
-		Array<const char*> requiredExtensionsCStrings;
-		for (const String& string : requiredExtensions)
-			requiredExtensionsCStrings.Add(string.c_str());
-
 		vk::InstanceCreateInfo createInfo {
 			.pApplicationInfo = &appInfo,
 			.enabledLayerCount = (uint32) requiredLayers.size(),
 			.ppEnabledLayerNames = requiredLayers.data(),
 			.enabledExtensionCount = (uint32) requiredExtensions.size(),
-			.ppEnabledExtensionNames = requiredExtensionsCStrings.data(),
+			.ppEnabledExtensionNames = requiredExtensions.data(),
 		};
 
 		m_vkInstance = vk::raii::Instance(m_vkContext, createInfo);
@@ -195,15 +247,24 @@ namespace Oyl
 
 namespace
 {
-	Oyl::Array<Oyl::String>
+	Oyl::Array<const char*>
 	GetRequiredInstanceExtensions()
 	{
-		auto glfwModule = Oyl::ModuleManager::GetModulePointer<Oyl::IModuleInterface>("GlfwModule");
-		auto glfwModuleAsFactory = dynamic_cast<Oyl::IApplicationWindowFactory*>(glfwModule);
-		if (!glfwModuleAsFactory)
-			return {};
+		Oyl::Array<const char*> result;
 
-		Oyl::Array<Oyl::String> result = glfwModuleAsFactory->GetInstanceExtensions();
+		const char** extensions = nullptr;
+		uint32 count = 0;
+
+		if (Oyl::ModuleManager::GetModulePointer("GlfwModule"))
+			extensions = glfwGetRequiredInstanceExtensions(&count);
+
+		if (extensions && count > 0)
+		{
+			result.reserve(count);
+			for (uint32 i = 0; i < count; i++)
+				result.Add(extensions[i]);
+		}
+
 		if constexpr (ENABLE_VALIDATION_LAYERS)
 		{
 			result.Add(vk::EXTDebugUtilsExtensionName);
