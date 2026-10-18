@@ -290,7 +290,7 @@ namespace Oyl
 		MulticastDelegate&
 		operator -=(DelegateType a_delegate)
 		{
-			for (int i = 0; i < m_delegates.Length(); i++)
+			for (uint32 i = 0; i < m_delegates.Length(); i++)
 				if (m_delegates[i] == a_delegate)
 					m_delegates.erase(m_delegates.begin() + i);
 			return *this;

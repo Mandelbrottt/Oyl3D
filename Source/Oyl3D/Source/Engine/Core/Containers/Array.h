@@ -3,6 +3,8 @@
 #include <array>
 #include <vector>
 
+#include "Core/Types/Primitives.h"
+
 namespace Oyl
 {
 	template<typename T>
@@ -10,7 +12,7 @@ namespace Oyl
 	{
 	public:
 		using ElementTy = T;
-		using SizeTy = uint32_t;
+		using SizeTy = uint32;
 
 		constexpr
 		Array() = default;
@@ -106,6 +108,12 @@ namespace Oyl
 		Reserve(SizeTy a_size)
 		{
 			std::vector<T>::reserve(a_size);
+		}
+
+		void
+		Clear()
+		{
+			std::vector<T>::clear();
 		}
 	};
 }
