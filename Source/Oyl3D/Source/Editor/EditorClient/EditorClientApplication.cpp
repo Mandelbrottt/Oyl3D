@@ -4,8 +4,10 @@
 
 #include <Core/Logging/Logging.h>
 #include <Core/Modules/ModuleManager.h>
+#include <Core/Profiling/Profiling.h>
 #include <Core/Time/Time.h>
 
+#include <Rendering/Renderer.h>
 #include <Rendering/Rendering.h>
 
 namespace Oyl
@@ -13,6 +15,8 @@ namespace Oyl
 	void
 	EditorClientApplication::OnStart()
 	{
+		OYL_PROFILE_FUNCTION();
+
 		ModuleLoadResult loadResult;
 		auto applicationModule = ModuleManager::LoadModulePointer("Application", &loadResult);
 
@@ -20,10 +24,14 @@ namespace Oyl
 			LogError("Failed to load ApplicationModule with error \"{}\"!",
 			         Traits::TUnderlyingType<decltype(loadResult)>(loadResult));
 
-		m_mainWindow = CreateApplicationWindow({
+		LogTrace("Starting Main Window");
+		CreateApplicationWindow({
 			.title = "Oyl3D - Now with more DLLs!",
 			.size = Vector2u(1280, 720)
 		});
+
+		if (!m_applicationWindows.empty())
+			m_mainWindow = m_applicationWindows[0];
 
 		if (m_mainWindow)
 		{
@@ -32,19 +40,39 @@ namespace Oyl
 		}
 
 		auto* renderingModule = ModuleManager::GetModulePointer<IRenderingModule>("Rendering");
-		[[maybe_unused]] auto* renderer = renderingModule->CreateRenderer(RenderingApi::Vulkan);
+		m_renderer = renderingModule->CreateRenderer(RenderingApi::Vulkan);
+		if (m_renderer)
+		{
+			m_renderer->Init();
+			for (auto* window : m_applicationWindows)
+				m_renderer->RegisterApplicationWindow(window);
+		}
 	}
 
 	void
 	EditorClientApplication::OnStop()
 	{
-		CloseApplicationWindow(m_mainWindow);
+		OYL_PROFILE_FUNCTION();
+
+		if (m_renderer)
+		{
+			for (auto* window : m_applicationWindows)
+				m_renderer->UnregisterApplicationWindow(window);
+			m_renderer->Shutdown();
+		}
+
+		for (auto* window : m_applicationWindows)
+			CloseApplicationWindow(window);
+
+		m_applicationWindows.clear();
 		m_mainWindow = nullptr;
 	}
 
 	void
 	EditorClientApplication::OnUpdate()
 	{
+		OYL_PROFILE_FUNCTION();
+
 		m_targetFrameRate = m_targetFramerateHint;
 
 		if (m_mainWindow && m_mainWindow->IsValid())
@@ -54,6 +82,8 @@ namespace Oyl
 	void
 	EditorClientApplication::WaitIdle()
 	{
+		OYL_PROFILE_FUNCTION();
+
 		auto& frameTimer = Time::Internal::GetFrameTimer();
 
 		// Intentionally use g_frameTimer instead of Oyl::Time::GetFrameTimer since that is user overrideable
@@ -80,6 +110,8 @@ namespace Oyl
 	IApplicationWindow*
 	EditorClientApplication::CreateApplicationWindow(const ApplicationWindowCreateParams& a_params)
 	{
+		OYL_PROFILE_FUNCTION();
+
 		IApplicationWindowFactory* factory = nullptr;
 
 		auto* applicationModule = ModuleManager::GetModulePointer<IApplicationModule>("Application");
@@ -102,6 +134,8 @@ namespace Oyl
 	void
 	EditorClientApplication::CloseApplicationWindow(IApplicationWindow* a_window)
 	{
+		OYL_PROFILE_FUNCTION();
+
 		if (!a_window || !a_window->IsValid())
 			return;
 

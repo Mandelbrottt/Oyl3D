@@ -14,12 +14,6 @@ namespace Oyl
 		~RenderingModule() = default;
 
 		void
-		OnStartModule() override {}
-
-		void
-		OnStopModule() override {}
-
-		void
 		RegisterRendererFactory(IRendererFactory& a_factory) override
 		{
 			auto iter = std::ranges::find(m_rendererFactories, &a_factory);

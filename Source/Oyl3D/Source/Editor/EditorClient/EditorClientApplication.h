@@ -8,10 +8,10 @@
 namespace Oyl
 {
 	class IApplicationWindow;
+	class IRenderer;
 
 	class EditorClientApplication : public IApplication
 	{
-	private:
 		void
 		OnStart() override;
 
@@ -67,6 +67,7 @@ namespace Oyl
 
 	private:
 		IApplicationWindow* m_mainWindow = nullptr;
+		IRenderer* m_renderer = nullptr;
 
 		bool m_exitRequested = false;
 		int m_exitCode = 0;

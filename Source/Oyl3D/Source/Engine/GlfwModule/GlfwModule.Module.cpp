@@ -57,6 +57,19 @@ namespace Oyl
 			return new GlfwApplicationWindow(a_params);
 		}
 
+		Array<String>
+		GetInstanceExtensions() const override
+		{
+			uint32 count;
+			const char** extensions = glfwGetRequiredInstanceExtensions(&count);
+
+			Array<String> result;
+			result.reserve(count);
+			for (uint32 i = 0; i < count; i++)
+				result.emplace_back(extensions[i]);
+			return result;
+		}
+
 	private:
 		int m_initialized = GLFW_FALSE;
 	};

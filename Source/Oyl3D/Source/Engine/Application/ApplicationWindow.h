@@ -229,6 +229,10 @@ namespace Oyl
 		virtual
 		IApplicationWindow*
 		CreateApplicationWindow(const ApplicationWindowCreateParams& a_params) = 0;
+
+		virtual
+		Array<String>
+		GetInstanceExtensions() const = 0;
 	};
 
 	inline
