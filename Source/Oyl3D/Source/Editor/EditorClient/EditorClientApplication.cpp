@@ -61,8 +61,8 @@ namespace Oyl
 			m_renderer->Shutdown();
 		}
 
-		for (auto* window : m_applicationWindows)
-			CloseApplicationWindow(window);
+		while (!m_applicationWindows.empty())
+			CloseApplicationWindow(m_applicationWindows.front());
 
 		m_applicationWindows.clear();
 		m_mainWindow = nullptr;
