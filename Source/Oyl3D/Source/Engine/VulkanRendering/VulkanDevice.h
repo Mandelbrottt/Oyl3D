@@ -21,7 +21,7 @@ namespace Oyl
 	{
 		const VulkanPresentTarget* presentTarget;
 		CommandQueueFlags commandQueueFlags;
-		Array<const char*> requiredDeviceExtensions;
+		ArrayProxy<const char*> requiredDeviceExtensions;
 	};
 
 	class VulkanDevice : public IDevice

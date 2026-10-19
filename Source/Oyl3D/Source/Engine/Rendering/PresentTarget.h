@@ -30,5 +30,5 @@ namespace Oyl
 	inline
 	IPresentTarget::~IPresentTarget() {}
 
-	//using PresentTargetHandle = UniquePtrImplicitConvertible<PresentTarget>;
+	using PresentTargetHandle = IObjectHandle<IPresentTarget>;
 }

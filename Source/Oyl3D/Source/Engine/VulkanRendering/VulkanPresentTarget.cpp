@@ -13,7 +13,10 @@ namespace Oyl
 	{
 		OYL_PROFILE_FUNCTION();
 
-		CreateVkSurface(a_params.vkInstance, a_params.window);
+		if (!a_params.vkInstance || !a_params.window)
+			return;
+
+		CreateVkSurface(*a_params.vkInstance, *a_params.window);
 	}
 
 	VulkanPresentTarget::~VulkanPresentTarget()

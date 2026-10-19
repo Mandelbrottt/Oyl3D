@@ -10,8 +10,8 @@ namespace Oyl
 
 	struct VulkanPresentTargetCreateParams
 	{
-		const vk::raii::Instance& vkInstance;
-		const IApplicationWindow& window;
+		const vk::raii::Instance* vkInstance;
+		const IApplicationWindow* window;
 	};
 
 	class VulkanPresentTarget : public IPresentTarget

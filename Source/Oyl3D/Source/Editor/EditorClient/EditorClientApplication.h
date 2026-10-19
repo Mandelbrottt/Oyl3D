@@ -3,13 +3,12 @@
 #include <Application/Application.h>
 
 #include <Core/Containers/Delegate.h>
-#include <Core/Events/Event.h>
+#include <Core/Containers/SharedPtr.h>
+
+#include <Rendering/Renderer.h>
 
 namespace Oyl
 {
-	class IApplicationWindow;
-	class IRenderer;
-
 	class EditorClientApplication : public IApplication
 	{
 		void
@@ -67,7 +66,8 @@ namespace Oyl
 
 	private:
 		IApplicationWindow* m_mainWindow = nullptr;
-		IRenderer* m_renderer = nullptr;
+
+		RendererProcessor m_rendererProcessor;
 
 		bool m_exitRequested = false;
 		int m_exitCode = 0;

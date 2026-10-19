@@ -4,14 +4,15 @@
 #include <Core/Preprocessor/Common.h>
 
 #include "CommandBuffer.h"
-#include "CommandQueue.h"
 #include "CommandPool.h"
+#include "CommandQueue.h"
+#include "Fence.h"
+#include "IDeviceObject.h"
 #include "Image.h"
+#include "RenderingEnums.h"
+#include "Semaphore.h"
 #include "Shader.h"
 #include "VertexBuffer.h"
-#include "Semaphore.h"
-#include "Fence.h"
-#include "RenderingEnums.h"
 
 namespace Oyl
 {
@@ -67,4 +68,6 @@ namespace Oyl
 
 	inline
 	IDevice::~IDevice() {}
+
+	using DeviceHandle = IObjectHandle<IDevice>;
 }

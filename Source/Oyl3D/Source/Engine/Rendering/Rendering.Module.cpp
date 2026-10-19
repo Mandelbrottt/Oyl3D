@@ -29,7 +29,7 @@ namespace Oyl
 				m_rendererFactories.erase(iter);
 		}
 
-		IRenderer*
+		UniquePtr<IRenderer>
 		CreateRenderer(RenderingApi a_api) override
 		{
 			for (auto& rendererFactory : m_rendererFactories)

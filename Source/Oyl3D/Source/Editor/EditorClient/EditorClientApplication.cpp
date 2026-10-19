@@ -40,12 +40,12 @@ namespace Oyl
 		}
 
 		auto* renderingModule = ModuleManager::GetModulePointer<IRenderingModule>("Rendering");
-		m_renderer = renderingModule->CreateRenderer(RenderingApi::Vulkan);
-		if (m_renderer)
+		if (auto renderer = renderingModule->CreateRenderer(RenderingApi::Vulkan))
 		{
-			m_renderer->Init(m_mainWindow);
+			m_rendererProcessor = RendererProcessor(std::move(renderer));
+			m_rendererProcessor.Init(m_mainWindow);
 			for (auto* window : m_applicationWindows)
-				m_renderer->RegisterApplicationWindow(*window);
+				m_rendererProcessor.RegisterApplicationWindow(*window);
 		}
 	}
 
@@ -54,11 +54,11 @@ namespace Oyl
 	{
 		OYL_PROFILE_FUNCTION();
 
-		if (m_renderer)
+		if (m_rendererProcessor.IsValid())
 		{
 			for (auto* window : m_applicationWindows)
-				m_renderer->UnregisterApplicationWindow(*window);
-			m_renderer->Shutdown();
+				m_rendererProcessor.UnregisterApplicationWindow(*window);
+			m_rendererProcessor.Shutdown();
 		}
 
 		while (!m_applicationWindows.empty())
@@ -78,8 +78,8 @@ namespace Oyl
 		if (m_mainWindow && m_mainWindow->IsValid())
 			m_mainWindow->Update();
 
-		if (m_renderer)
-			m_renderer->Update();
+		if (m_rendererProcessor.IsValid())
+			m_rendererProcessor.Update();
 	}
 
 	void

@@ -19,7 +19,7 @@ namespace Oyl
 		SupportsApi(RenderingApi a_api) = 0;
 
 		virtual
-		IRenderer*
+		UniquePtr<IRenderer>
 		CreateRenderer() = 0;
 	};
 
@@ -41,7 +41,7 @@ namespace Oyl
 		UnregisterRendererFactory(IRendererFactory& a_factory) = 0;
 
 		virtual
-		IRenderer*
+		UniquePtr<IRenderer>
 		CreateRenderer(RenderingApi a_api) = 0;
 
 		bool

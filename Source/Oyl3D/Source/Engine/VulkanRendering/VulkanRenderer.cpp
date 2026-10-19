@@ -44,105 +44,15 @@ namespace
 namespace Oyl
 {
 	void
-	VulkanRenderer::Init(IApplicationWindow* a_mainWindow)
+	VulkanRenderer::Init()
 	{
 		OYL_PROFILE_FUNCTION();
+
+		OYL_ASSERT(!*m_vkInstance);
 
 		CreateVkInstance();
 		if constexpr (ENABLE_VALIDATION_LAYERS)
 			CreateVkDebugMessenger();
-
-		VulkanPresentTarget* presentTarget = nullptr;
-		if (a_mainWindow)
-		{
-			RegisterApplicationWindow(*a_mainWindow);
-			presentTarget = &m_windowInfos[a_mainWindow].presentTarget;
-		}
-
-		LogTrace("Creating VulkanDevice");
-		m_device = VulkanDevice(
-			m_vkInstance,
-			{
-				.presentTarget = presentTarget,
-				.commandQueueFlags = CommandQueueFlagBits::Graphics | CommandQueueFlagBits::Transfer,
-				.requiredDeviceExtensions = REQUIRED_DEVICE_EXTENSIONS,
-			});
-	}
-
-	void
-	VulkanRenderer::Update()
-	{
-		OYL_PROFILE_FUNCTION();
-
-		for (auto& [window, info] : m_windowInfos)
-		{
-			if (!info.swapChain.IsValid())
-			{
-				LogTrace("Creating VulkanSwapChain for window [{} \"{}\"]", window->GetNativeWindowHandle(), window->GetTitle());
-				info.swapChain = VulkanSwapChain(
-					m_device,
-					{
-						.window = *window,
-						.presentTarget = info.presentTarget
-					});
-			}
-		}
-	}
-
-	void
-	VulkanRenderer::Shutdown()
-	{
-		OYL_PROFILE_FUNCTION();
-
-		LogTrace("VulkanRenderer Shutdown");
-
-		for (auto& [window, info] : m_windowInfos)
-		{
-			UnregisterApplicationWindow(*window);
-		}
-
-		m_windowInfos.Clear();
-	}
-
-	void
-	VulkanRenderer::RegisterApplicationWindow(IApplicationWindow& a_window)
-	{
-		OYL_PROFILE_FUNCTION();
-
-		if (!a_window.IsValid())
-			return;
-
-		if (m_windowInfos.Contains(&a_window))
-			return;
-
-		LogDebug("Registering window [{} \"{}\"] with VulkanRenderer", a_window.GetNativeWindowHandle(), a_window.GetTitle());
-
-		WindowInfo info;
-		LogTrace("Creating VulkanPresentTarget for window [{} \"{}\"]", a_window.GetNativeWindowHandle(), a_window.GetTitle());
-		info.presentTarget = VulkanPresentTarget({
-			.vkInstance = m_vkInstance,
-			.window = a_window,
-		});
-
-		m_windowInfos.Emplace(&a_window, std::move(info));
-	}
-
-	void
-	VulkanRenderer::UnregisterApplicationWindow(IApplicationWindow& a_window)
-	{
-		OYL_PROFILE_FUNCTION();
-
-		if (!m_windowInfos.Contains(&a_window))
-			return;
-
-		LogDebug("Unregistering window [{} {}] with VulkanRenderer", a_window.GetNativeWindowHandle(), a_window.GetTitle());
-
-		m_device.WaitUntilIdle();
-
-		auto& [presentTarget, swapChain] = m_windowInfos[&a_window];
-		swapChain.Destroy();
-		presentTarget.Destroy();
-		m_windowInfos.Erase(&a_window);
 	}
 
 	void
@@ -242,6 +152,40 @@ namespace Oyl
 			.pfnUserCallback = DebugCallback,
 		};
 		m_debugMessenger = m_vkInstance.createDebugUtilsMessengerEXT(debugUtilsMessengerCreateInfoEXT);
+	}
+
+	PresentTargetHandle
+	VulkanRenderer::CreatePresentTarget(IApplicationWindow& a_window)
+	{
+		OYL_PROFILE_FUNCTION();
+		VulkanPresentTargetCreateParams params {
+			.vkInstance = &m_vkInstance,
+			.window = &a_window
+		};
+		return MakeSharedPtr<VulkanPresentTarget>(params);
+	}
+
+	DeviceHandle
+	VulkanRenderer::CreateDevice(IPresentTarget* a_presentTarget)
+	{
+		OYL_PROFILE_FUNCTION();
+		VulkanDeviceCreateParams params {
+			.presentTarget = dynamic_cast<VulkanPresentTarget*>(a_presentTarget),
+			.commandQueueFlags = CommandQueueFlagBits::Graphics | CommandQueueFlagBits::Transfer,
+			.requiredDeviceExtensions = REQUIRED_DEVICE_EXTENSIONS,
+		};
+		return MakeSharedPtr<VulkanDevice>(m_vkInstance, params);
+	}
+
+	SwapChainHandle
+	VulkanRenderer::CreateSwapChain(IDevice& a_device, IApplicationWindow& a_window, IPresentTarget& a_presentTarget)
+	{
+		OYL_PROFILE_FUNCTION();
+		VulkanSwapChainCreateParams params {
+			.window = a_window,
+			.presentTarget = dynamic_cast<VulkanPresentTarget&>(a_presentTarget)
+		};
+		return MakeSharedPtr<VulkanSwapChain>(dynamic_cast<VulkanDevice&>(a_device), params);
 	}
 }
 

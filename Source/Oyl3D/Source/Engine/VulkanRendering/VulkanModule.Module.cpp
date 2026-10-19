@@ -36,10 +36,10 @@ namespace Oyl
 			return a_api == RenderingApi::Vulkan;
 		}
 
-		IRenderer*
+		UniquePtr<IRenderer>
 		CreateRenderer() override
 		{
-			return new VulkanRenderer;
+			return MakeUniquePtr<VulkanRenderer>();
 		}
 
 		bool SupportsHotReload() override

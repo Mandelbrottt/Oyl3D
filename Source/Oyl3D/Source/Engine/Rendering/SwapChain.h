@@ -6,6 +6,8 @@
 #include <Core/Math/Vector.h>
 #include <Core/Preprocessor/Common.h>
 
+#include "IDeviceObject.h"
+
 namespace Oyl
 {
 	class ISwapChain : public IDestroyable
@@ -65,4 +67,6 @@ namespace Oyl
 
 	inline
 	ISwapChain::~ISwapChain() {}
+
+	using SwapChainHandle = IObjectHandle<ISwapChain>;
 }

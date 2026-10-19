@@ -2,8 +2,10 @@
 
 #include <bit>
 
+#include <Core/Containers/SharedPtr.h>
 #include <Core/Interfaces/IDestroyable.h>
 #include <Core/Preprocessor/Common.h>
+#include <Core/Types/TypeTraits.h>
 
 namespace Oyl
 {
@@ -18,6 +20,8 @@ namespace Oyl
 		DEFAULT_MOVE(IDeviceObject);
 
 	public:
+		using IdTy = TId;
+
 		NO_COPY(IDeviceObject);
 
 		TId
@@ -35,6 +39,27 @@ namespace Oyl
 		virtual
 		TId
 		GetIdImpl() const = 0;
+	};
+
+	template<typename TObject>
+	class IObjectHandle final : public SharedPtr<TObject>
+	{
+		IObjectHandle() = default;
+
+	public:
+		IObjectHandle(nullptr_t) {}
+
+		IObjectHandle(const IObjectHandle& a_other) = default;
+		IObjectHandle&
+		operator =(const IObjectHandle& a_other) = default;
+
+		IObjectHandle(IObjectHandle&& a_other) noexcept = default;
+		IObjectHandle&
+		operator =(IObjectHandle&& a_other) noexcept = default;
+
+		using SharedPtr<TObject>::SharedPtr;
+
+		operator TObject&() { return *this->Get(); }
 	};
 
 	template<typename TId>
