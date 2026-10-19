@@ -12,19 +12,19 @@ namespace Oyl
 		CommandQueueFlagBits commandQueueFlags;
 	};
 
-	class CommandPool : public IDestroyable
+	class ICommandPool : public IDestroyable
 	{
 	protected:
-		CommandPool() = default;
-		DEFAULT_MOVE(CommandPool);
+		ICommandPool() = default;
+		DEFAULT_MOVE(ICommandPool);
 
 	public:
-		NO_COPY(CommandPool);
+		NO_COPY(ICommandPool);
 
 		virtual
-		~CommandPool() = 0;
+		~ICommandPool() = 0;
 	};
 
 	inline
-	CommandPool::~CommandPool() {}
+	ICommandPool::~ICommandPool() {}
 }

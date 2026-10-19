@@ -5,27 +5,27 @@
 #include "IDeviceObject.h"
 #include "Image.h"
 
-namespace Oyl::Rendering
+namespace Oyl
 {
 	struct RenderTargetCreateParams
 	{
-		ArrayProxy<const Image*> colorImages;
-		const Image* pDepthImage = nullptr;
+		ArrayProxy<const IImage*> colorImages;
+		const IImage* pDepthImage = nullptr;
 	};
 
-	class RenderTarget : public IDestroyable
+	class IRenderTarget : public IDestroyable
 	{
 	public:
-		RenderTarget(nullptr_t) {}
+		IRenderTarget(nullptr_t) {}
 
 		explicit
-		RenderTarget(const RenderTargetCreateParams& a_params);
+		IRenderTarget(const RenderTargetCreateParams& a_params);
 
-		DEFAULT_MOVE(RenderTarget);
-		NO_COPY(RenderTarget);
+		DEFAULT_MOVE(IRenderTarget);
+		NO_COPY(IRenderTarget);
 
 		virtual
-		~RenderTarget();
+		~IRenderTarget();
 
 		void
 		Destroy() override;
@@ -38,19 +38,19 @@ namespace Oyl::Rendering
 		GetNumColorAttachments() const;
 
 		virtual
-		const Image*
+		const IImage*
 		GetColorAttachment(uint32 a_index) const;
 
 		virtual
-		const Array<const Image*>&
+		const Array<const IImage*>&
 		GetColorAttachments() const;
 
 		virtual
-		const Image*
+		const IImage*
 		GetDepthAttachment() const;
 
 	private:
-		Array<const Image*> m_colorAttachments;
-		const Image* m_depthAttachment = nullptr;
+		Array<const IImage*> m_colorAttachments;
+		const IImage* m_depthAttachment = nullptr;
 	};
 }

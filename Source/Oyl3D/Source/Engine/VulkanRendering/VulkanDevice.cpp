@@ -57,7 +57,54 @@ namespace Oyl
 		m_vkDevice.waitIdle();
 	}
 
-	const ICommandQueue*
+	ICommandBuffer*
+	VulkanDevice::CreateCommandBuffer(const CommandBufferCreateParams& a_params) const
+	{
+		OYL_UNUSED(a_params);
+		return nullptr;
+	}
+
+	ICommandPool*
+	VulkanDevice::CreateCommandPool(const CommandPoolCreateParams& a_params) const
+	{
+		OYL_UNUSED(a_params);
+		return nullptr;
+	}
+
+	IImage*
+	VulkanDevice::CreateImage(const ImageCreateParams& a_params) const
+	{
+		OYL_UNUSED(a_params);
+		return nullptr;
+	}
+
+	IShader*
+	VulkanDevice::CreateShader(const ShaderCreateParams& a_params) const
+	{
+		OYL_UNUSED(a_params);
+		return nullptr;
+	}
+
+	IVertexBuffer*
+	VulkanDevice::CreateVertexBuffer(const VertexBufferCreateParams& a_params) const
+	{
+		OYL_UNUSED(a_params);
+		return nullptr;
+	}
+
+	ISemaphore*
+	VulkanDevice::CreateSemaphore() const
+	{
+		return nullptr;
+	}
+
+	IFence*
+	VulkanDevice::CreateFence() const
+	{
+		return nullptr;
+	}
+
+	const VulkanCommandQueue*
 	VulkanDevice::GetCommandQueue(CommandQueueFlagBits a_flag) const
 	{
 		if (m_queues.Contains(a_flag))

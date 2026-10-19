@@ -7,6 +7,7 @@
 #include <Core/Containers/Array.h>
 #include <Core/Containers/ArrayMap.h>
 #include <Core/Containers/String.h>
+#include <Core/Profiling/Profiling.h>
 
 #include <Rendering/Device.h>
 
@@ -32,7 +33,6 @@ namespace Oyl
 		VulkanDevice(const vk::raii::Instance& a_vkInstance, const VulkanDeviceCreateParams& a_params);
 
 		DEFAULT_MOVE(VulkanDevice);
-		NO_COPY(VulkanDevice);
 
 		virtual
 		~VulkanDevice();
@@ -46,7 +46,28 @@ namespace Oyl
 		void
 		WaitUntilIdle() const override;
 
-		const ICommandQueue*
+		ICommandBuffer*
+		CreateCommandBuffer(const CommandBufferCreateParams& a_params) const override;
+
+		ICommandPool*
+		CreateCommandPool(const CommandPoolCreateParams& a_params) const override;
+
+		IImage*
+		CreateImage(const ImageCreateParams& a_params) const override;
+
+		IShader*
+		CreateShader(const ShaderCreateParams& a_params) const override;
+
+		IVertexBuffer*
+		CreateVertexBuffer(const VertexBufferCreateParams& a_params) const override;
+
+		ISemaphore*
+		CreateSemaphore() const override;
+
+		IFence*
+		CreateFence() const override;
+
+		const VulkanCommandQueue*
 		GetCommandQueue(CommandQueueFlagBits a_flag) const override;
 
 		const vk::raii::PhysicalDevice&

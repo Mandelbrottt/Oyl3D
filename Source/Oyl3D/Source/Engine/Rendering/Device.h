@@ -3,13 +3,15 @@
 #include <Core/Interfaces/IDestroyable.h>
 #include <Core/Preprocessor/Common.h>
 
+#include "CommandBuffer.h"
 #include "CommandQueue.h"
+#include "CommandPool.h"
+#include "Image.h"
+#include "Shader.h"
+#include "VertexBuffer.h"
+#include "Semaphore.h"
+#include "Fence.h"
 #include "RenderingEnums.h"
-
-namespace Oyl
-{
-	class IApplicationWindow;
-}
 
 namespace Oyl
 {
@@ -34,33 +36,33 @@ namespace Oyl
 		const ICommandQueue*
 		GetCommandQueue(CommandQueueFlagBits a_flag) const = 0;
 
-		//virtual
-		//CommandBufferHandle
-		//CreateCommandBuffer(const CommandBuffer::CreateParams& a_params) const = 0;
+		virtual
+		ICommandBuffer*
+		CreateCommandBuffer(const CommandBufferCreateParams& a_params) const = 0;
 
-		//virtual
-		//CommandPoolHandle
-		//CreateCommandPool(const CommandPool::CreateParams& a_params) const = 0;
+		virtual
+		ICommandPool*
+		CreateCommandPool(const CommandPoolCreateParams& a_params) const = 0;
 
-		//virtual
-		//ImageHandle
-		//CreateImage(const Image::CreateParams& a_params) const = 0;
+		virtual
+		IImage*
+		CreateImage(const ImageCreateParams& a_params) const = 0;
 
-		//virtual
-		//ShaderHandle
-		//CreateShader(const Shader::CreateParams& a_params) const = 0;
+		virtual
+		IShader*
+		CreateShader(const ShaderCreateParams& a_params) const = 0;
 
-		//virtual
-		//VertexBufferHandle
-		//CreateVertexBuffer(const VertexBuffer::CreateParams& a_params) const = 0;
+		virtual
+		IVertexBuffer*
+		CreateVertexBuffer(const VertexBufferCreateParams& a_params) const = 0;
 
-		//virtual
-		//SemaphoreHandle
-		//CreateSemaphore() const = 0;
+		virtual
+		ISemaphore*
+		CreateSemaphore() const = 0;
 
-		//virtual
-		//FenceHandle
-		//CreateFence() const = 0;
+		virtual
+		IFence*
+		CreateFence() const = 0;
 	};
 
 	inline

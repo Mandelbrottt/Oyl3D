@@ -8,18 +8,18 @@ namespace Oyl
 {
 	struct FenceId : IDeviceObjectId<FenceId> {};
 
-	class Fence : public IDeviceObject<FenceId>
+	class IFence : public IDeviceObject<FenceId>
 	{
 	protected:
-		Fence() = default;
+		IFence() = default;
 
-		DEFAULT_MOVE(Fence);
+		DEFAULT_MOVE(IFence);
 
 	public:
-		NO_COPY(Fence);
+		NO_COPY(IFence);
 
 		virtual
-		~Fence() = 0;
+		~IFence() = 0;
 
 		void
 		virtual
@@ -31,5 +31,5 @@ namespace Oyl
 	};
 
 	inline
-	Fence::~Fence() {}
+	IFence::~IFence() {}
 }

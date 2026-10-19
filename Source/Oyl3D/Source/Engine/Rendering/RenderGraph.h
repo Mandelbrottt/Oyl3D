@@ -5,12 +5,8 @@
 #include <Core/Containers/Set.h>
 #include <Core/Preprocessor/Common.h>
 
+#include "CommandBuffer.h"
 #include "RenderPass.h"
-
-namespace Oyl
-{
-	class CommandBuffer;
-}
 
 namespace Oyl
 {
@@ -46,7 +42,7 @@ namespace Oyl
 
 		virtual
 		void
-		Execute(const CommandBuffer& a_commandBuffer);
+		Execute(const ICommandBuffer& a_commandBuffer);
 
 	private:
 		void

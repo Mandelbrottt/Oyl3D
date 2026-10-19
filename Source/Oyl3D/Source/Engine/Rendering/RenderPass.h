@@ -1,15 +1,16 @@
 ﻿#pragma once
+
 #include <Core/Containers/Array.h>
 #include <Core/Containers/Set.h>
 
+#include "CommandBuffer.h"
+#include "RenderTarget.h"
+
 namespace Oyl
 {
-	class RenderTarget;
-	class CommandBuffer;
-
 	enum class RenderPassId : uint32 { Null = 0 };
 
-	class RenderPassBase
+	class RENDERING_EXPORT RenderPassBase
 	{
 	protected:
 		explicit
@@ -91,7 +92,7 @@ namespace Oyl
 		}
 
 		virtual
-		const RenderTarget*
+		const IRenderTarget*
 		GetRenderTarget() const
 		{
 			return m_renderTarget;
@@ -100,7 +101,7 @@ namespace Oyl
 		[[maybe_unused]]
 		virtual
 		RenderPassBase&
-		SetRenderTarget(const RenderTarget* a_renderTarget)
+		SetRenderTarget(const IRenderTarget* a_renderTarget)
 		{
 			m_renderTarget = a_renderTarget;
 			return *this;
@@ -108,7 +109,7 @@ namespace Oyl
 
 		virtual
 		void
-		Execute(const CommandBuffer* a_commandBuffer)
+		Execute(const ICommandBuffer* a_commandBuffer)
 		{
 			if (!IsEnabled())
 				return;
@@ -121,22 +122,22 @@ namespace Oyl
 	protected:
 		virtual
 		void
-		Begin(const CommandBuffer& a_commandBuffer) = 0;
+		Begin(const ICommandBuffer& a_commandBuffer) = 0;
 
 		virtual
 		void
-		Render(const CommandBuffer& a_commandBuffer) = 0;
+		Render(const ICommandBuffer& a_commandBuffer) = 0;
 
 		virtual
 		void
-		End(const CommandBuffer& a_commandBuffer) = 0;
+		End(const ICommandBuffer& a_commandBuffer) = 0;
 
 	private:
 		RenderPassId m_id;
 		String m_name;
 		bool m_enabled = true;
 
-		const RenderTarget* m_renderTarget = nullptr;
+		const IRenderTarget* m_renderTarget = nullptr;
 		Array<RenderPassId> m_dependencies;
 	};
 

@@ -10,30 +10,29 @@
 #include "RenderingEnums.h"
 #include "SwapChain.h"
 
+#include "CommandPool.h"
+#include "RenderTarget.h"
+#include "Shader.h"
+#include "VertexBuffer.h"
+
 namespace Oyl
 {
-	class RenderTarget;
-	class CommandPool;
-	class SwapChain;
-	class Shader;
-	class VertexBuffer;
-
 	struct CommandBufferCreateParams
 	{
-		const CommandPool& commandPool;
+		const ICommandPool& commandPool;
 	};
 
-	class CommandBuffer : public IDestroyable
+	class ICommandBuffer : public IDestroyable
 	{
 	protected:
-		CommandBuffer() noexcept = default;
+		ICommandBuffer() noexcept = default;
+		DEFAULT_MOVE(ICommandBuffer);
 
 	public:
-		NO_MOVE(CommandBuffer);
-		NO_COPY(CommandBuffer);
+		NO_COPY(ICommandBuffer);
 
 		virtual
-		~CommandBuffer() noexcept = 0;
+		~ICommandBuffer() noexcept = 0;
 
 		virtual
 		void
@@ -41,7 +40,7 @@ namespace Oyl
 
 		virtual
 		void
-		BeginRendering(const RenderTarget& a_renderTarget) const noexcept = 0;
+		BeginRendering(const IRenderTarget& a_renderTarget) const noexcept = 0;
 
 		virtual
 		void
@@ -61,19 +60,19 @@ namespace Oyl
 
 		virtual
 		void
-		BindShader(const Shader& a_shader) const noexcept = 0;
+		BindShader(const IShader& a_shader) const noexcept = 0;
 
 		virtual
 		void
-		BindVertexBuffer(const VertexBuffer& a_buffer) const noexcept = 0;
+		BindVertexBuffer(const IVertexBuffer& a_buffer) const noexcept = 0;
 
 		virtual
 		void
-		DrawVertexBuffer(const VertexBuffer& a_buffer) const noexcept = 0;
+		DrawVertexBuffer(const IVertexBuffer& a_buffer) const noexcept = 0;
 
 		virtual
 		void
-		TransitionImageLayout(Image& a_image, ImageLayout a_newLayout) const noexcept = 0;
+		TransitionImageLayout(IImage& a_image, ImageLayout a_newLayout) const noexcept = 0;
 
 		virtual
 		void
@@ -81,7 +80,7 @@ namespace Oyl
 
 		virtual
 		void
-		BlitImage(const Image& a_srcImage, const Image& a_dstImage, ImageFilter a_filter) const noexcept = 0;
+		BlitImage(const IImage& a_srcImage, const IImage& a_dstImage, ImageFilter a_filter) const noexcept = 0;
 
 		virtual
 		void
@@ -97,10 +96,10 @@ namespace Oyl
 
 	protected:
 		virtual
-		const CommandPool*
+		const ICommandPool*
 		GetCommandPool() const noexcept = 0;
 	};
 
 	inline
-	CommandBuffer::~CommandBuffer() noexcept {}
+	ICommandBuffer::~ICommandBuffer() noexcept {}
 }

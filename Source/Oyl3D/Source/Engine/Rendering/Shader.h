@@ -6,7 +6,7 @@
 #include "RenderTarget.h"
 #include "ShaderCompiler.h"
 
-namespace Oyl::Rendering
+namespace Oyl
 {
 	struct Vertex
 	{
@@ -18,24 +18,24 @@ namespace Oyl::Rendering
 
 	struct ShaderCreateParams
 	{
-		const RenderTarget& renderTarget;
+		const IRenderTarget& renderTarget;
 
 		ShaderCompileResult compileResult;
 	};
 
-	class Shader : public IDeviceObject<ShaderId>
+	class IShader : public IDeviceObject<ShaderId>
 	{
 	protected:
-		Shader() = default;
-		DEFAULT_MOVE(Shader);
+		IShader() = default;
+		DEFAULT_MOVE(IShader);
 
 	public:
-		NO_COPY(Shader);
+		NO_COPY(IShader);
 
 		virtual
-		~Shader() = 0;
+		~IShader() = 0;
 	};
 
 	inline
-	Shader::~Shader() {}
+	IShader::~IShader() {}
 }

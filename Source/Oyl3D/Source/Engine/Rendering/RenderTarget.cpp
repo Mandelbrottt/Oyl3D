@@ -1,39 +1,39 @@
 #include "RenderTarget.h"
 
-namespace Oyl::Rendering
+namespace Oyl
 {
-	RenderTarget::RenderTarget(const RenderTargetCreateParams& a_params)
+	IRenderTarget::IRenderTarget(const RenderTargetCreateParams& a_params)
 	{
 		m_colorAttachments = a_params.colorImages;
 		m_depthAttachment = a_params.pDepthImage;
 	}
 
-	RenderTarget::~RenderTarget()
+	IRenderTarget::~IRenderTarget()
 	{
-		RenderTarget::Destroy();
+		IRenderTarget::Destroy();
 	}
 
 	void
-	RenderTarget::Destroy()
+	IRenderTarget::Destroy()
 	{
 		m_colorAttachments.Clear();
 		m_depthAttachment = nullptr;
 	}
 
 	bool
-	RenderTarget::IsValid() const
+	IRenderTarget::IsValid() const
 	{
 		return !m_colorAttachments.Empty() || m_depthAttachment;
 	}
 
 	uint32
-	RenderTarget::GetNumColorAttachments() const
+	IRenderTarget::GetNumColorAttachments() const
 	{
 		return m_colorAttachments.Length();
 	}
 
-	const Image*
-	RenderTarget::GetColorAttachment(uint32 a_index) const
+	const IImage*
+	IRenderTarget::GetColorAttachment(uint32 a_index) const
 	{
 		if (a_index > m_colorAttachments.Length())
 			return nullptr;
@@ -41,14 +41,14 @@ namespace Oyl::Rendering
 		return m_colorAttachments[a_index];
 	}
 
-	const Array<const Image*>&
-	RenderTarget::GetColorAttachments() const
+	const Array<const IImage*>&
+	IRenderTarget::GetColorAttachments() const
 	{
 		return m_colorAttachments;
 	}
 
-	const Image*
-	RenderTarget::GetDepthAttachment() const
+	const IImage*
+	IRenderTarget::GetDepthAttachment() const
 	{
 		return m_depthAttachment;
 	}

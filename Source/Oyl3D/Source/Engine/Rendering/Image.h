@@ -21,18 +21,18 @@ namespace Oyl
 		ImageLayout layout;
 	};
 
-	class Image : public IDeviceObject<ImageId>
+	class IImage : public IDeviceObject<ImageId>
 	{
 	protected:
-		Image() = default;
+		IImage() = default;
 
-		DEFAULT_MOVE(Image);
+		DEFAULT_MOVE(IImage);
 
 	public:
-		NO_COPY(Image);
+		NO_COPY(IImage);
 
 		virtual
-		~Image() = 0;
+		~IImage() = 0;
 
 		virtual
 		Vector2u
@@ -52,5 +52,5 @@ namespace Oyl
 	};
 
 	inline
-	Image::~Image() {}
+	IImage::~IImage() {}
 }

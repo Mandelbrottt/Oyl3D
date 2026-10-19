@@ -1,11 +1,8 @@
 #pragma once
 
-#include "IDeviceObject.h"
+#include <Application/ApplicationWindow.h>
 
-namespace Oyl
-{
-	class IApplicationWindow;
-}
+#include "IDeviceObject.h"
 
 namespace Oyl
 {

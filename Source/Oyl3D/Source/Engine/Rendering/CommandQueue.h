@@ -4,11 +4,13 @@
 #include <Core/Preprocessor/Common.h>
 #include <Core/Types/Primitives.h>
 
+#include "CommandBuffer.h"
+#include "Fence.h"
+#include "Semaphore.h"
+#include "SwapChain.h"
+
 namespace Oyl
 {
-	class CommandBuffer;
-	class ISwapChain;
-
 	struct CommandQueueCreateParams
 	{
 		uint32 queueFamilyIndex;
@@ -16,17 +18,17 @@ namespace Oyl
 
 	struct CommandQueueSubmitParams
 	{
-		const CommandBuffer& commandBuffer;
-		//SemaphoreId waitSemaphore = {};
-		//SemaphoreId signalSemaphore = {};
-		//FenceId fence = {};
-		//PipelineStageFlags waitDestinationStageMask = {};
+		const ICommandBuffer& commandBuffer;
+		SemaphoreId waitSemaphore = {};
+		SemaphoreId signalSemaphore = {};
+		FenceId fence = {};
+		PipelineStageFlags waitDestinationStageMask = {};
 	};
 
 	struct CommandQueuePresentParams
 	{
 		const ISwapChain& swapChain;
-		//SemaphoreId waitSemaphore = {};
+		SemaphoreId waitSemaphore = {};
 	};
 
 	class ICommandQueue : public IDestroyable

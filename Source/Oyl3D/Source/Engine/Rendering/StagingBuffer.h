@@ -1,25 +1,25 @@
 ﻿#pragma once
 
-#include "IDeviceObject.h"
-
 #include <Core/Types/Primitives.h>
+
+#include "IDeviceObject.h"
 
 namespace Oyl
 {
 	struct StagingBufferId : IDeviceObjectId<StagingBufferId> {};
 
-	class StagingBuffer : public IDeviceObject<StagingBufferId>
+	class IStagingBuffer : public IDeviceObject<StagingBufferId>
 	{
 	protected:
-		StagingBuffer() = default;
+		IStagingBuffer() = default;
 
-		DEFAULT_MOVE(StagingBuffer);
+		DEFAULT_MOVE(IStagingBuffer);
 
 	public:
-		NO_COPY(StagingBuffer);
+		NO_COPY(IStagingBuffer);
 
 		virtual
-		~StagingBuffer() = 0;
+		~IStagingBuffer() = 0;
 
 		virtual
 		bool
@@ -27,5 +27,5 @@ namespace Oyl
 	};
 
 	inline
-	StagingBuffer::~StagingBuffer() {}
+	IStagingBuffer::~IStagingBuffer() {}
 }

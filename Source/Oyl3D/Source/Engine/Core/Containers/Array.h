@@ -7,11 +7,11 @@
 
 namespace Oyl
 {
-	template<typename T>
-	class Array : public std::vector<T>
+	template<typename TElement>
+	class Array : public std::vector<TElement>
 	{
 	public:
-		using ElementTy = T;
+		using ElementTy = TElement;
 		using SizeTy = uint32;
 
 		constexpr
@@ -49,13 +49,13 @@ namespace Oyl
 		//}
 
 		constexpr
-		Array(const std::vector<T>& a_rhs)
+		Array(const std::vector<TElement>& a_rhs)
 		{
 			*this = a_rhs;
 		}
 
 		constexpr Array&
-		operator =(const std::vector<T>& a_rhs)
+		operator =(const std::vector<TElement>& a_rhs)
 		{
 			Array temp(a_rhs);
 			std::swap(*this, temp);
@@ -63,13 +63,13 @@ namespace Oyl
 		}
 
 		constexpr
-		Array(std::vector<T>&& a_rhs) noexcept
+		Array(std::vector<TElement>&& a_rhs) noexcept
 		{
 			*this = std::move(a_rhs);
 		}
 
 		constexpr Array&
-		operator =(std::vector<T>&& a_rhs) noexcept
+		operator =(std::vector<TElement>&& a_rhs) noexcept
 		{
 			if (this != &a_rhs)
 			{
@@ -96,20 +96,20 @@ namespace Oyl
 		void
 		Add(const ElementTy& a_value)
 		{
-			std::vector<T>::push_back(a_value);
+			std::vector<TElement>::push_back(a_value);
 		}
 
 		constexpr
 		void
 		Add(ElementTy&& a_value)
 		{
-			std::vector<T>::push_back(std::move(a_value));
+			std::vector<TElement>::push_back(std::move(a_value));
 		}
 
 		constexpr SizeTy
 		Size() const
 		{
-			return static_cast<SizeTy>(std::vector<T>::size());
+			return static_cast<SizeTy>(std::vector<TElement>::size());
 		}
 
 		constexpr SizeTy
@@ -121,13 +121,25 @@ namespace Oyl
 		constexpr void
 		Reserve(SizeTy a_size)
 		{
-			std::vector<T>::reserve(a_size);
+			std::vector<TElement>::reserve(a_size);
 		}
 
 		void
 		Clear()
 		{
-			std::vector<T>::clear();
+			std::vector<TElement>::clear();
+		}
+
+		ElementTy*
+		Data()
+		{
+			return std::vector<TElement>::data();
+		}
+
+		const ElementTy*
+		Data() const
+		{
+			return std::vector<TElement>::data();
 		}
 	};
 

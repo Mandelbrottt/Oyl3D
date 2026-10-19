@@ -9,17 +9,17 @@ namespace Oyl
 {
 	class ShaderCompileResult;
 
-	class ShaderCompiler
+	class RENDERING_EXPORT IShaderCompiler
 	{
 	protected:
-		ShaderCompiler() = default;
+		IShaderCompiler() = default;
 
 	public:
 		virtual
-		~ShaderCompiler() = default;
+		~IShaderCompiler() = default;
 
-		DEFAULT_COPY(ShaderCompiler);
-		DEFAULT_MOVE(ShaderCompiler);
+		DEFAULT_COPY(IShaderCompiler);
+		DEFAULT_MOVE(IShaderCompiler);
 
 		bool
 		CompileHlslFromFile(StringView a_filePath, ShaderCompileResult* a_outShader) const;
@@ -43,7 +43,7 @@ namespace Oyl
 		String entryPoint;
 	};
 
-	class ShaderStage final
+	class RENDERING_EXPORT ShaderStage final
 	{
 	public:
 		ShaderStage();
@@ -68,9 +68,9 @@ namespace Oyl
 		String m_entryPoint;
 	};
 
-	class ShaderCompileResult
+	class RENDERING_EXPORT ShaderCompileResult
 	{
-		friend class ShaderCompiler;
+		friend class IShaderCompiler;
 
 	public:
 		ShaderCompileResult();

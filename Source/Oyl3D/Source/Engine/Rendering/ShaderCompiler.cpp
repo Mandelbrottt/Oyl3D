@@ -15,7 +15,7 @@ namespace
 namespace Oyl
 {
 	bool
-	ShaderCompiler::CompileHlslFromFile(StringView a_filePath, ShaderCompileResult* a_outShader) const
+	IShaderCompiler::CompileHlslFromFile(StringView a_filePath, ShaderCompileResult* a_outShader) const
 	{
 		std::ifstream inStream;
 		inStream.open(std::string(a_filePath));
@@ -45,7 +45,7 @@ namespace Oyl
 	}
 
 	bool
-	ShaderCompiler::CompileHlslFromSource(StringView a_source, ShaderCompileResult* a_outShader) const
+	IShaderCompiler::CompileHlslFromSource(StringView a_source, ShaderCompileResult* a_outShader) const
 	{
 		// TODO: Logging
 		if (!a_outShader)

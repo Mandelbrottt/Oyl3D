@@ -34,7 +34,7 @@ namespace Oyl
 	}
 
 	void
-	RenderGraph::Execute(const CommandBuffer& a_commandBuffer)
+	RenderGraph::Execute(const ICommandBuffer& a_commandBuffer)
 	{
 		if (m_dirty)
 			SortPasses();

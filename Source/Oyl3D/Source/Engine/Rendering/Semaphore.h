@@ -4,24 +4,24 @@
 
 #include "IDeviceObject.h"
 
-namespace Oyl::Rendering
+namespace Oyl
 {
 	struct SemaphoreId : IDeviceObjectId<SemaphoreId> {};
 
-	class Semaphore : public IDeviceObject<SemaphoreId>
+	class ISemaphore : public IDeviceObject<SemaphoreId>
 	{
 	protected:
-		Semaphore() = default;
+		ISemaphore() = default;
 
-		DEFAULT_MOVE(Semaphore);
+		DEFAULT_MOVE(ISemaphore);
 
 	public:
-		NO_COPY(Semaphore);
+		NO_COPY(ISemaphore);
 
 		virtual
-		~Semaphore() = 0;
+		~ISemaphore() = 0;
 	};
 
 	inline
-	Semaphore::~Semaphore() {}
+	ISemaphore::~ISemaphore() {}
 }

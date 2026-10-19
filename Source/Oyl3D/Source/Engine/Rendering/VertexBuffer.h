@@ -17,17 +17,17 @@ namespace Oyl
 		uint32 indexStride = sizeof(uint16);
 	};
 
-	class VertexBuffer : public IDeviceObject<VertexBufferId>
+	class IVertexBuffer : public IDeviceObject<VertexBufferId>
 	{
 	protected:
-		VertexBuffer() = default;
-		DEFAULT_MOVE(VertexBuffer);
+		IVertexBuffer() = default;
+		DEFAULT_MOVE(IVertexBuffer);
 
 	public:
-		NO_COPY(VertexBuffer);
+		NO_COPY(IVertexBuffer);
 
 		virtual
-		~VertexBuffer() = 0;
+		~IVertexBuffer() = 0;
 
 		virtual
 		uint32
@@ -47,5 +47,5 @@ namespace Oyl
 	};
 
 	inline
-	VertexBuffer::~VertexBuffer() {}
+	IVertexBuffer::~IVertexBuffer() {}
 }
