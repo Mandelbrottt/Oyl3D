@@ -1,3 +1,4 @@
+#include <filesystem>
 #include <iostream>
 
 #include <Application/Application.h>
@@ -10,8 +11,6 @@
 #ifndef OYL_EXPOSE_PROFILER_CONTROLS
 #	define OYL_EXPOSE_PROFILER_CONTROLS
 #endif
-#include <filesystem>
-
 #include <Core/Profiling/Profiling.h>
 #include <Core/Time/IFrameTimer.h>
 
@@ -23,7 +22,15 @@ int
 main(int a_argc, char** a_argv)
 {
 	OYL_PROFILER_INIT();
-	OYL_PROFILE_FUNCTION();
+
+#if defined(OYL_PROFILE)
+	for (int i = 0; i < a_argc; i++)
+		if (strcmp(a_argv[i], "-waitforprofiler") == 0)
+		{
+			puts("Waiting for profiler...");
+			OYL_PROFILER_WAIT_FOR_CONNECTION();
+		}
+#endif
 
 	Oyl::Time::Internal::Init(*g_frameTimer);
 	Oyl::CommandLine::Init(a_argc, a_argv);

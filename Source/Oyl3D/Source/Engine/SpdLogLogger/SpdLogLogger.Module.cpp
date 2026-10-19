@@ -37,14 +37,17 @@ namespace Oyl
 		{
 			OYL_PROFILE_FUNCTION();
 
+#		if defined(OYL_PROFILE)
+			m_profileLogCalls = CommandLine::IsPresent("profilelogs");
+#		endif
+
 			// Initialize the main logger
 			auto formatter = std::make_unique<spdlog::pattern_formatter>();
 			formatter->set_pattern("%^[%T][%l][%g:%!():%#] %v%$");
 
-			//m_logger = spdlog::stdout_color_mt<spdlog::async_factory>("CORE");
-			m_logger = spdlog::stdout_color_st("CORE");
+			m_logger = spdlog::stdout_color_mt<spdlog::async_factory>("CORE");
 
-			auto log_level = CommandLine::GetString("log_level");
+			auto log_level = CommandLine::GetString("loglevel");
 			auto level = spdlog::level::debug;
 			if (log_level.has_value())
 			{
@@ -70,9 +73,22 @@ namespace Oyl
 			const Debug::SourceLocation& a_location = Debug::SourceLocation::Current()
 		) override
 		{
-			auto loc = spdlog::source_loc(a_location.file, a_location.line, a_location.function);
-			auto lvl = ToSpdLogEnum(a_level);
-			m_logger->log(loc, lvl, { a_message.Data(), a_message.length() });
+			auto log = [&]
+			{
+				auto loc = spdlog::source_loc(a_location.file, a_location.line, a_location.function);
+				auto lvl = ToSpdLogEnum(a_level);
+				m_logger->log(loc, lvl, { a_message.Data(), a_message.length() });
+			};
+
+			if (m_profileLogCalls)
+			{
+				// Profile calls use RAII, we need to run this in a scope
+				OYL_PROFILE_FUNCTION();
+				log();
+			} else
+			{
+				log();
+			}
 		}
 
 		void
@@ -83,6 +99,7 @@ namespace Oyl
 
 	private:
 		std::shared_ptr<spdlog::logger> m_logger;
+		bool m_profileLogCalls = false;
 	};
 
 	class SpdLogLoggerModule : public IModuleInterface

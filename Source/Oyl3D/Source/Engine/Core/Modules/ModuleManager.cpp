@@ -57,7 +57,7 @@ namespace Oyl
 	IModuleInterface*
 	ModuleManager::LoadModule(const String& a_moduleName, ModuleLoadResult* a_outResult)
 	{
-		OYL_PROFILE_FUNCTION();
+		OYL_PROFILE_SCOPEF("Oyl::ModuleManager::LoadModule(\"%s\")", a_moduleName.c_str());
 
 		String moduleName = a_moduleName;
 
@@ -90,7 +90,10 @@ namespace Oyl
 			}
 
 			// Start the module
-			moduleInfo.interfacePointer->OnStartModule();
+			{
+				OYL_PROFILE_SCOPEF("%s::OnStartModule()", a_moduleName.c_str());
+				moduleInfo.interfacePointer->OnStartModule();
+			}
 			LogDebug("Loaded Module \"{}\"", moduleName);
 		}
 		moduleInfo.refCount++;

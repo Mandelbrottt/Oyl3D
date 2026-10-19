@@ -217,6 +217,7 @@ local Packages = {
 						"TRACY_DELAYED_INIT",
 						"TRACY_MANUAL_LIFETIME",
 						"TRACY_NO_SYSTEM_TRACING",
+						"TRACY_ON_DEMAND",
 					}
 				end
 			end

@@ -79,6 +79,20 @@ namespace Oyl
 		}
 
 		constexpr
+		bool
+		Empty() const
+		{
+			return Length() == 0;
+		}
+
+		constexpr
+		bool
+		Contains(const ElementTy& a_value) const
+		{
+			return std::ranges::find(*this, a_value) != this->end();
+		}
+
+		constexpr
 		void
 		Add(const ElementTy& a_value)
 		{
@@ -115,5 +129,44 @@ namespace Oyl
 		{
 			std::vector<T>::clear();
 		}
+	};
+
+	template<typename TElement>
+	class ArrayProxy : public Array<TElement>
+	{
+	public:
+		using ArrayTy = Array<TElement>;
+		using ElementTy = typename ArrayTy::ElementTy;
+		using SizeTy = typename ArrayTy::SizeTy;
+
+		constexpr
+		ArrayProxy()
+			: ArrayTy() {}
+
+		constexpr
+		ArrayProxy(const ElementTy& a_element)
+			: ArrayTy()
+		{
+			this->Add(a_element);
+		}
+
+		constexpr
+		ArrayProxy(ElementTy&& a_element)
+			: ArrayTy()
+		{
+			this->Add(std::move(a_element));
+		}
+
+		ArrayProxy(const ArrayTy& a_array)
+			: ArrayTy(a_array) {}
+
+		ArrayProxy(ArrayTy&& a_vector)
+			: ArrayTy(std::move(a_vector)) {}
+
+		ArrayProxy(const std::vector<ElementTy>& a_vector)
+			: ArrayTy(a_vector) {}
+
+		ArrayProxy(std::vector<ElementTy>&& a_vector)
+			: ArrayTy(std::move(a_vector)) {}
 	};
 }

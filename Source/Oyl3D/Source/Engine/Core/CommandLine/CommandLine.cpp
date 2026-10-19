@@ -152,6 +152,8 @@ namespace Oyl
 	void
 	CommandLine::Init(int a_argc, char** a_argv)
 	{
+		OYL_PROFILE_FUNCTION();
+
 		s_impl = new Impl;
 
 		for (int i = 0; i < a_argc; i++)
