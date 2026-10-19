@@ -3,6 +3,8 @@
 #include <Core/Logging/Logging.h>
 #include <Core/Profiling/Profiling.h>
 
+#include "RenderEngine.h"
+
 namespace Oyl
 {
 	RendererProcessor::RendererProcessor(UniquePtr<IRenderer>&& a_renderer)
@@ -32,6 +34,7 @@ namespace Oyl
 
 		LogTrace("Creating Device");
 		m_device = m_renderer->CreateDevice(presentTarget.Get());
+		RenderEngine::Get().RegisterDevice(m_device);
 	}
 
 	void
@@ -72,7 +75,10 @@ namespace Oyl
 			m_renderer->Shutdown();
 
 		m_windowInfos.Clear();
+
+		RenderEngine::Get().UnregisterDevice(m_device);
 		m_device.Reset();
+
 		m_renderer.Reset();
 	}
 
