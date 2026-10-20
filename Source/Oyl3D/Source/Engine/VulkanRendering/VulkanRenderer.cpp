@@ -3,11 +3,11 @@
 #include <Application/Application.h>
 
 #include <Core/Modules/ModuleManager.h>
-#include <Core/Profiling/Profiling.h>
 
 #include <GLFW/glfw3.h>
 
 #include "VulkanPresentTarget.h"
+#include "VulkanShaderCompiler.h"
 
 namespace
 {
@@ -186,6 +186,12 @@ namespace Oyl
 			.presentTarget = dynamic_cast<VulkanPresentTarget&>(a_presentTarget)
 		};
 		return MakeSharedPtr<VulkanSwapChain>(dynamic_cast<VulkanDevice&>(a_device), params);
+	}
+
+	SharedPtr<IShaderCompiler>
+	VulkanRenderer::CreateShaderCompiler()
+	{
+		return MakeSharedPtr<VulkanShaderCompiler>();
 	}
 }
 

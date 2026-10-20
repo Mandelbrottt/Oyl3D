@@ -1,5 +1,7 @@
 ﻿#include "VulkanCommandBuffer.h"
 
+#include <Core/Profiling/Profiling.h>
+
 #include "VulkanDevice.h"
 #include "VulkanImage.h"
 #include "VulkanRenderingEnums.h"
@@ -41,6 +43,9 @@ namespace Oyl
 	void
 	VulkanCommandBuffer::Destroy() noexcept
 	{
+		if (!IsValid())
+			return;
+
 		m_vkCommandBuffer.clear();
 	}
 
@@ -71,7 +76,7 @@ namespace Oyl
 	}
 
 	void
-	VulkanCommandBuffer::BeginRendering(const IRenderTarget& a_renderTarget) const noexcept
+	VulkanCommandBuffer::BeginRendering(const RenderTarget& a_renderTarget) const noexcept
 	{
 		OYL_PROFILE_FUNCTION();
 
@@ -237,6 +242,13 @@ namespace Oyl
 		}
 	}
 
+	void
+	VulkanCommandBuffer::TransitionImageLayout(IImage& a_image, ImageLayout a_newLayout) const noexcept
+	{
+		auto& vulkanImageImpl = dynamic_cast<VulkanImage&>(a_image);
+		TransitionImageLayout(vulkanImageImpl, a_newLayout);
+	}
+
 	static
 	void
 	SetVkStageAndAccessMasksForLayouts(
@@ -251,6 +263,12 @@ namespace Oyl
 		auto oldLayout = a_image.GetLayout();
 		TransitionImageLayout(a_image.GetId(), oldLayout, a_newLayout);
 		a_image.SetLayout(a_newLayout);
+	}
+
+	void
+	VulkanCommandBuffer::TransitionImageLayout(ImageId a_imageHandle, ImageLayout a_oldLayout, ImageLayout a_newLayout) const noexcept
+	{
+		TransitionImageLayout(static_cast<VulkanImageId>(a_imageHandle), a_oldLayout, a_newLayout);
 	}
 
 	void
@@ -286,6 +304,36 @@ namespace Oyl
 		};
 		const auto& vkCommandBuffer = GetVkCommandBuffer();
 		vkCommandBuffer.pipelineBarrier2(dependency_info);
+	}
+
+	void
+	VulkanCommandBuffer::BlitImage(const IImage& a_srcImage, const IImage& a_dstImage, ImageFilter a_filter) const noexcept
+	{
+		auto& vulkanSourceImage = dynamic_cast<const VulkanImage&>(a_srcImage);
+		auto& vulkanDestImage = dynamic_cast<const VulkanImage&>(a_dstImage);
+		BlitImage(vulkanSourceImage, vulkanDestImage, a_filter);
+	}
+
+	void
+	VulkanCommandBuffer::BlitImage(ImageId a_srcImageId, ImageLayout a_srcLayout, Rect2D a_srcRect, ImageId a_dstImageId, ImageLayout a_dstImageLayout, Rect2D a_dstRect, ImageFilter a_filter) const noexcept
+	{
+		auto vulkanSrcImageId = static_cast<VulkanImageId>(a_srcImageId);
+		auto vulkanDstImageId = static_cast<VulkanImageId>(a_dstImageId);
+		BlitImage(vulkanSrcImageId, a_srcLayout, a_srcRect, vulkanDstImageId, a_dstImageLayout, a_dstRect, a_filter);
+	}
+
+	void
+	VulkanCommandBuffer::BlitImage(const VulkanImage& a_srcImage, const VulkanImage& a_dstImage, ImageFilter a_filter) const noexcept
+	{
+		BlitImage(
+			a_srcImage.GetId(),
+			a_srcImage.GetLayout(),
+			Rect2D(Vector2i::Zero, a_srcImage.GetSize()),
+			a_dstImage.GetId(),
+			a_dstImage.GetLayout(),
+			Rect2D(Vector2i::Zero, a_dstImage.GetSize()),
+			a_filter
+		);
 	}
 
 	void

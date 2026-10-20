@@ -1,18 +1,14 @@
 #pragma once
 
-#include <Core/Math/Rect.h>
-#include <Core/Math/Vector.h>
-
-//#include "Image.h"
 #include <Core/Interfaces/IDestroyable.h>
-
-#include "Image.h"
-#include "RenderingEnums.h"
-#include "SwapChain.h"
+#include <Core/Math/Rect.h>
 
 #include "CommandPool.h"
+#include "Image.h"
+#include "RenderingEnums.h"
 #include "RenderTarget.h"
 #include "Shader.h"
+#include "SwapChain.h"
 #include "VertexBuffer.h"
 
 namespace Oyl
@@ -40,7 +36,7 @@ namespace Oyl
 
 		virtual
 		void
-		BeginRendering(const IRenderTarget& a_renderTarget) const noexcept = 0;
+		BeginRendering(const RenderTarget& a_renderTarget) const noexcept = 0;
 
 		virtual
 		void
@@ -102,4 +98,6 @@ namespace Oyl
 
 	inline
 	ICommandBuffer::~ICommandBuffer() noexcept {}
+
+	using CommandBufferHandle = IObjectHandle<ICommandBuffer>;
 }

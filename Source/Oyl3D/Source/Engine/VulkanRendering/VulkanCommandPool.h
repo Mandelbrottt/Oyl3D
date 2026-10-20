@@ -1,16 +1,13 @@
 ﻿#pragma once
 
-#include "VulkanDevice.h"
+#include <vulkan/vulkan_raii.hpp>
 
 #include "Rendering/CommandPool.h"
 
-namespace vk::raii
-{
-	class CommandPool;
-}
-
 namespace Oyl
 {
+	class VulkanDevice;
+
 	class VulkanCommandPool : public ICommandPool
 	{
 	public:

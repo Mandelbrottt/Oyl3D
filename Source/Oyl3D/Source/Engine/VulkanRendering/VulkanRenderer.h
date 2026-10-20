@@ -31,13 +31,6 @@ namespace Oyl
 		void
 		Shutdown() override {}
 
-	private:
-		void
-		CreateVkInstance();
-
-		void
-		CreateVkDebugMessenger();
-
 		PresentTargetHandle
 		CreatePresentTarget(IApplicationWindow& a_window) override;
 
@@ -46,6 +39,16 @@ namespace Oyl
 
 		SwapChainHandle
 		CreateSwapChain(IDevice& a_device, IApplicationWindow& a_window, IPresentTarget& a_presentTarget) override;
+
+		SharedPtr<IShaderCompiler>
+		CreateShaderCompiler() override;
+
+	private:
+		void
+		CreateVkInstance();
+
+		void
+		CreateVkDebugMessenger();
 
 	private:
 		vk::raii::Context m_vkContext;

@@ -1,9 +1,7 @@
 #include "VulkanShaderCompiler.h"
 
 #include <Core/Containers/ArrayMap.h>
-#include <Core/Logging/Logging.h>
 #include <Core/Platform/SharedLibrary.h>
-#include <Core/Profiling/Profiling.h>
 
 #if defined(OYL_WINDOWS)
 #include <atlcomcli.h>
@@ -75,7 +73,7 @@ namespace Oyl
 	{
 		OYL_PROFILE_FUNCTION();
 
-		m_impl = std::make_unique<Impl>();
+		m_impl = MakeUniquePtr<Impl>();
 
 		StringView dxCompilerLibName =
 		#if defined(OYL_DEBUG)
@@ -100,11 +98,18 @@ namespace Oyl
 		hres = m_impl->dxcCreateInstanceFn(CLSID_DxcUtils, IID_PPV_ARGS(&m_impl->dxcUtils));
 	}
 
-	VulkanShaderCompiler::~VulkanShaderCompiler() {}
+	VulkanShaderCompiler::~VulkanShaderCompiler()
+	{
+		m_impl->dxcUtils.Release();
+		m_impl->dxcCompiler.Release();
+
+		if (m_impl->dxcCompilerSharedLibrary)
+			FreeSharedLibrary(m_impl->dxcCompilerSharedLibrary);
+	}
 
 	VulkanShaderCompiler::VulkanShaderCompiler(const VulkanShaderCompiler& a_other)
 	{
-		m_impl = std::make_unique<Impl>();
+		m_impl = MakeUniquePtr<Impl>();
 
 		*this = a_other;
 	}
@@ -260,8 +265,7 @@ namespace Oyl
 			auto shaderType = (D3D12_SHADER_VERSION_TYPE) D3D12_SHVER_GET_TYPE(functionDesc.Version);
 
 			// TODO: Don't Hardcode version numbers
-			bool isValid = shaderType < shaderTypeMap.Size()
-			               && D3D12_SHVER_GET_MAJOR(functionDesc.Version) == 6
+			bool isValid = D3D12_SHVER_GET_MAJOR(functionDesc.Version) == 6
 			               && D3D12_SHVER_GET_MINOR(functionDesc.Version) == 6;
 
 			if (!isValid)

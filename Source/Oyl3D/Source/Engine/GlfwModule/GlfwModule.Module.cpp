@@ -2,6 +2,7 @@
 
 #include <Core/Logging/Logging.h>
 #include <Core/Modules/ModuleManager.h>
+#include <Core/Profiling/Profiling.h>
 
 #include <GLFW/glfw3.h>
 
@@ -32,7 +33,11 @@ namespace Oyl
 
 			auto* applicationModule = ModuleManager::GetModulePointer<IApplicationModule>("Application");
 			applicationModule->RegisterApplicationWindowFactory(*this);
-			applicationModule->CurrentApplication()->RegisterOnUpdateCallback(glfwPollEvents);
+			applicationModule->CurrentApplication()->RegisterOnUpdateCallback([]
+			{
+				OYL_PROFILE_SCOPE("glfwPollEvents()");
+				glfwPollEvents();
+			});
 		}
 
 		void

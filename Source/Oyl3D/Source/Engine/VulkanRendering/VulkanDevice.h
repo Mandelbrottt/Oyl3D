@@ -7,13 +7,18 @@
 #include <Core/Containers/Array.h>
 #include <Core/Containers/ArrayMap.h>
 #include <Core/Containers/String.h>
-#include <Core/Profiling/Profiling.h>
 
 #include <Rendering/Device.h>
 
+#include "VulkanCommandBuffer.h"
+#include "VulkanCommandPool.h"
 #include "VulkanCommandQueue.h"
+#include "VulkanFence.h"
+#include "VulkanImage.h"
 #include "VulkanPresentTarget.h"
-#include "VulkanRenderingEnums.h"
+#include "VulkanSemaphore.h"
+#include "VulkanShader.h"
+#include "VulkanVertexBuffer.h"
 
 namespace Oyl
 {
@@ -46,25 +51,25 @@ namespace Oyl
 		void
 		WaitUntilIdle() const override;
 
-		ICommandBuffer*
+		CommandBufferHandle
 		CreateCommandBuffer(const CommandBufferCreateParams& a_params) const override;
 
-		ICommandPool*
+		CommandPoolHandle
 		CreateCommandPool(const CommandPoolCreateParams& a_params) const override;
 
-		IImage*
+		ImageHandle
 		CreateImage(const ImageCreateParams& a_params) const override;
 
-		IShader*
+		ShaderHandle
 		CreateShader(const ShaderCreateParams& a_params) const override;
 
-		IVertexBuffer*
+		VertexBufferHandle
 		CreateVertexBuffer(const VertexBufferCreateParams& a_params) const override;
 
-		ISemaphore*
+		SemaphoreHandle
 		CreateSemaphore() const override;
 
-		IFence*
+		FenceHandle
 		CreateFence() const override;
 
 		const VulkanCommandQueue*

@@ -235,6 +235,8 @@ namespace Oyl
 	void
 	ModuleManager::ProcessPendingAutoLoadRequests()
 	{
+		OYL_PROFILE_FUNCTION();
+
 		for (const auto& moduleName : m_impl->modulesToAutoload)
 		{
 			LoadModule(moduleName);

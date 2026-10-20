@@ -2,6 +2,8 @@
 
 #include <memory>
 
+#include <Core/Containers/UniquePtr.h>
+
 #include "Rendering/ShaderCompiler.h"
 
 namespace Oyl
@@ -28,6 +30,6 @@ namespace Oyl
 
 	private:
 		struct Impl;
-		std::unique_ptr<Impl> m_impl;
+		UniquePtr<Impl> m_impl;
 	};
 }

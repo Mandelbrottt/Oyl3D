@@ -6,16 +6,12 @@
 
 #include <Rendering/CommandQueue.h>
 
-namespace vk::raii
-{
-	class Queue;
-}
+#include "VulkanCommandBuffer.h"
+#include "VulkanSwapChain.h"
 
 namespace Oyl
 {
 	class VulkanDevice;
-	class VulkanCommandBuffer;
-	class VulkanSwapChain;
 
 	class VulkanCommandQueue : public ICommandQueue
 	{

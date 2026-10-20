@@ -9,6 +9,7 @@
 
 #include <Rendering/Renderer.h>
 #include <Rendering/Rendering.h>
+#include <Rendering/RenderEngine.h>
 
 namespace Oyl
 {
@@ -46,6 +47,10 @@ namespace Oyl
 			m_rendererProcessor.Init(m_mainWindow);
 			for (auto* window : m_applicationWindows)
 				m_rendererProcessor.RegisterApplicationWindow(*window);
+
+			m_testRenderPass = UniquePtr<TestRenderPass>::Make(m_mainWindow->GetContentSize());
+			auto& renderGraph = m_rendererProcessor.GetRenderGraph();
+			renderGraph.AddRenderPass(m_testRenderPass.Get());
 		}
 	}
 
@@ -54,6 +59,10 @@ namespace Oyl
 	{
 		OYL_PROFILE_FUNCTION();
 
+		RenderEngine::Get().GetDevice().WaitUntilIdle();
+
+		m_testRenderPass.Reset();
+
 		if (m_rendererProcessor.IsValid())
 		{
 			for (auto* window : m_applicationWindows)
@@ -61,10 +70,10 @@ namespace Oyl
 			m_rendererProcessor.Shutdown();
 		}
 
-		while (!m_applicationWindows.empty())
+		while (!m_applicationWindows.Empty())
 			CloseApplicationWindow(m_applicationWindows.front());
 
-		m_applicationWindows.clear();
+		m_applicationWindows.Clear();
 		m_mainWindow = nullptr;
 	}
 

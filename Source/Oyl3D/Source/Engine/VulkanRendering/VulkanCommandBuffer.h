@@ -4,13 +4,18 @@
 
 #include "VulkanCommandPool.h"
 #include "VulkanImage.h"
-#include "VulkanShader.h"
-#include "VulkanVertexBuffer.h"
 
 #include "Rendering/CommandBuffer.h"
 
 namespace Oyl
 {
+	class IShader;
+	class IVertexBuffer;
+
+	class VulkanDevice;
+	class VulkanShader;
+	class VulkanVertexBuffer;
+
 	class VulkanCommandBuffer : public ICommandBuffer
 	{
 	public:
@@ -39,7 +44,7 @@ namespace Oyl
 		Begin() const noexcept override;
 
 		void
-		BeginRendering(const IRenderTarget& a_renderTarget) const noexcept override;
+		BeginRendering(const RenderTarget& a_renderTarget) const noexcept override;
 
 		void
 		EndRendering() const noexcept override;
@@ -72,11 +77,7 @@ namespace Oyl
 		DrawVertexBuffer(const VulkanVertexBuffer& a_vertexBuffer) const noexcept;
 
 		void
-		TransitionImageLayout(IImage& a_image, ImageLayout a_newLayout) const noexcept override
-		{
-			auto& vulkanImageImpl = dynamic_cast<VulkanImage&>(a_image);
-			TransitionImageLayout(vulkanImageImpl, a_newLayout);
-		}
+		TransitionImageLayout(IImage& a_image, ImageLayout a_newLayout) const noexcept override;
 
 		void
 		TransitionImageLayout(VulkanImage& a_image, ImageLayout a_newLayout) const noexcept;
@@ -86,10 +87,7 @@ namespace Oyl
 			ImageId a_imageHandle,
 			ImageLayout a_oldLayout,
 			ImageLayout a_newLayout
-		) const noexcept override
-		{
-			TransitionImageLayout(static_cast<VulkanImageId>(a_imageHandle), a_oldLayout, a_newLayout);
-		}
+		) const noexcept override;
 
 		void
 		TransitionImageLayout(
@@ -103,12 +101,7 @@ namespace Oyl
 			const IImage& a_srcImage,
 			const IImage& a_dstImage,
 			ImageFilter a_filter
-		) const noexcept override
-		{
-			auto& vulkanSourceImage = dynamic_cast<const VulkanImage&>(a_srcImage);
-			auto& vulkanDestImage = dynamic_cast<const VulkanImage&>(a_dstImage);
-			BlitImage(vulkanSourceImage, vulkanDestImage, a_filter);
-		}
+		) const noexcept override;
 
 		void
 		BlitImage(
@@ -119,30 +112,14 @@ namespace Oyl
 			ImageLayout a_dstImageLayout,
 			Rect2D a_dstRect,
 			ImageFilter a_filter
-		) const noexcept override
-		{
-			auto vulkanSrcImageId = static_cast<VulkanImageId>(a_srcImageId);
-			auto vulkanDstImageId = static_cast<VulkanImageId>(a_dstImageId);
-			BlitImage(vulkanSrcImageId, a_srcLayout, a_srcRect, vulkanDstImageId, a_dstImageLayout, a_dstRect, a_filter);
-		}
+		) const noexcept override;
 
 		void
 		BlitImage(
 			const VulkanImage& a_srcImage,
 			const VulkanImage& a_dstImage,
 			ImageFilter a_filter
-		) const noexcept
-		{
-			BlitImage(
-				a_srcImage.GetId(),
-				a_srcImage.GetLayout(),
-				Rect2D(Vector2i::Zero, a_srcImage.GetSize()),
-				a_dstImage.GetId(),
-				a_dstImage.GetLayout(),
-				Rect2D(Vector2i::Zero, a_dstImage.GetSize()),
-				a_filter
-			);
-		}
+		) const noexcept;
 
 		void
 		BlitImage(

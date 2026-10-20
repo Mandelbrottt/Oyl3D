@@ -24,4 +24,6 @@ namespace Oyl
 
 	inline
 	ISemaphore::~ISemaphore() {}
+
+	using SemaphoreHandle = IObjectHandle<ISemaphore>;
 }

@@ -92,7 +92,7 @@ namespace Oyl
 		}
 
 		virtual
-		const IRenderTarget*
+		const RenderTarget*
 		GetRenderTarget() const
 		{
 			return m_renderTarget;
@@ -101,7 +101,7 @@ namespace Oyl
 		[[maybe_unused]]
 		virtual
 		RenderPassBase&
-		SetRenderTarget(const IRenderTarget* a_renderTarget)
+		SetRenderTarget(const RenderTarget* a_renderTarget)
 		{
 			m_renderTarget = a_renderTarget;
 			return *this;
@@ -137,7 +137,7 @@ namespace Oyl
 		String m_name;
 		bool m_enabled = true;
 
-		const IRenderTarget* m_renderTarget = nullptr;
+		const RenderTarget* m_renderTarget = nullptr;
 		Array<RenderPassId> m_dependencies;
 	};
 

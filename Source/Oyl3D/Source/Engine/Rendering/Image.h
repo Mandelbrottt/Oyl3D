@@ -53,4 +53,6 @@ namespace Oyl
 
 	inline
 	IImage::~IImage() {}
+
+	using ImageHandle = IObjectHandle<IImage>;
 }

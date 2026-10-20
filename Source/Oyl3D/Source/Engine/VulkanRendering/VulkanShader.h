@@ -4,10 +4,10 @@
 
 #include "Rendering/Shader.h"
 
-#include "VulkanDevice.h"
-
 namespace Oyl
 {
+	class VulkanDevice;
+
 	struct VulkanVertex : Vertex
 	{
 		static

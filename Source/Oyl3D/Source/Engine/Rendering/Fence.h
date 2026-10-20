@@ -32,4 +32,6 @@ namespace Oyl
 
 	inline
 	IFence::~IFence() {}
+
+	using FenceHandle = IObjectHandle<IFence>;
 }

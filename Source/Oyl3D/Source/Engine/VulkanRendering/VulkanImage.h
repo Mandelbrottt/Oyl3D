@@ -2,13 +2,15 @@
 
 #include <vulkan/vulkan_raii.hpp>
 
-#include "Rendering/Image.h"
-
-#include "VulkanDevice.h"
+#include "VulkanRenderingEnums.h"
 #include "VulkanStagingBuffer.h"
+
+#include "Rendering/Image.h"
 
 namespace Oyl
 {
+	class VulkanDevice;
+
 	using VulkanImageId = IConvertibleDeviceObjectId<ImageId, vk::Image>;
 
 	class VulkanImage : public IImage
@@ -90,9 +92,9 @@ namespace Oyl
 		vk::raii::DeviceMemory m_vkImageMemory = nullptr;
 		vk::raii::ImageView m_vkImageView = nullptr;
 
-		ImageFormat m_format;
-		ImageUsageFlags m_usageFlags;
-		ImageLayout m_layout;
+		ImageFormat m_format = {};
+		ImageUsageFlags m_usageFlags = {};
+		ImageLayout m_layout = {};
 		Vector2u m_size;
 	};
 }

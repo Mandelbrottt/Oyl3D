@@ -28,4 +28,6 @@ namespace Oyl
 
 	inline
 	IStagingBuffer::~IStagingBuffer() {}
+
+	using StagingBufferHandle = IObjectHandle<IStagingBuffer>;
 }

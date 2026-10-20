@@ -19,6 +19,37 @@
 static Oyl::IFrameTimer* g_frameTimer = nullptr;
 
 int
+RunApplication()
+{
+	Oyl::EditorClientApplication application;
+	auto fps = Oyl::CommandLine::GetInt("fps");
+	if (fps.has_value() && fps >= 0)
+		application.SetTargetFramerate(*fps);
+	application.RegisterOnUpdateCallback(Oyl::Time::Internal::Update);
+	application.RegisterOnUpdateCallback([]
+	{
+		// Profile manually since we don't know if the client will
+		OYL_PROFILE_SCOPE("virtual Oyl::Internal::ILogger::Flush");
+		Oyl::Internal::GetCurrentLogger()->Flush();
+	});
+
+	// Initial scan for modules
+	auto cwd = std::filesystem::current_path().string();
+	Oyl::ModuleManager::Get().AddEngineModuleDirectory(Oyl::StringView(cwd));
+	Oyl::ModuleManager::Get().ScanModuleDirectories();
+	application.RegisterOnUpdateCallback([] { Oyl::ModuleManager::Get().ProcessPendingAutoLoadRequests(); });
+
+	// Register EditorClientApplication after initial module scan
+	auto* applicationModule = Oyl::ModuleManager::LoadModulePointer<Oyl::IApplicationModule>("Application");
+	applicationModule->RegisterApplication(&application);
+
+	// Process pending auto-load requests
+	Oyl::ModuleManager::Get().ProcessPendingAutoLoadRequests();
+
+	return applicationModule->RunApplication();
+}
+
+int
 main(int a_argc, char** a_argv)
 {
 	OYL_PROFILER_INIT();
@@ -35,24 +66,7 @@ main(int a_argc, char** a_argv)
 	Oyl::Time::Internal::Init(*g_frameTimer);
 	Oyl::CommandLine::Init(a_argc, a_argv);
 
-	Oyl::EditorClientApplication application;
-	application.RegisterOnUpdateCallback(Oyl::Time::Internal::Update);
-	application.RegisterOnUpdateCallback([] { Oyl::Internal::GetCurrentLogger()->Flush(); });
-
-	// Initial scan for modules
-	auto cwd = std::filesystem::current_path().string();
-	Oyl::ModuleManager::Get().AddEngineModuleDirectory(Oyl::StringView(cwd));
-	Oyl::ModuleManager::Get().ScanModuleDirectories();
-	application.RegisterOnUpdateCallback([] { Oyl::ModuleManager::Get().ProcessPendingAutoLoadRequests(); });
-
-	// Register EditorClientApplication after initial module scan
-	auto* applicationModule = Oyl::ModuleManager::LoadModulePointer<Oyl::IApplicationModule>("Application");
-	applicationModule->RegisterApplication(&application);
-
-	// Process pending auto-load requests
-	Oyl::ModuleManager::Get().ProcessPendingAutoLoadRequests();
-
-	int exitCode = applicationModule->RunApplication();
+	int exitCode = RunApplication();
 
 	Oyl::CommandLine::Shutdown();
 

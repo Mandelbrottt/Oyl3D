@@ -25,14 +25,23 @@ namespace Oyl
 		RenderEngine&
 		Get();
 
-		DeviceHandle
-		CurrentDevice();
+		IDevice&
+		GetDevice() const;
 
 		void
 		RegisterDevice(const DeviceHandle& a_device);
 
 		void
 		UnregisterDevice(const DeviceHandle& a_device);
+
+		IShaderCompiler&
+		GetShaderCompiler() const;
+
+		void
+		RegisterShaderCompiler(const SharedPtr<IShaderCompiler>& a_shaderCompiler);
+
+		void
+		UnregisterShaderCompiler(const SharedPtr<IShaderCompiler>& a_shaderCompiler);
 
 	private:
 		struct Impl;

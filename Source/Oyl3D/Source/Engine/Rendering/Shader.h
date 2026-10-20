@@ -18,7 +18,7 @@ namespace Oyl
 
 	struct ShaderCreateParams
 	{
-		const IRenderTarget& renderTarget;
+		const RenderTarget& renderTarget;
 
 		ShaderCompileResult compileResult;
 	};
@@ -38,4 +38,6 @@ namespace Oyl
 
 	inline
 	IShader::~IShader() {}
+	
+	using ShaderHandle = IObjectHandle<IShader>;
 }

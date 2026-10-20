@@ -3,6 +3,7 @@
 
 #include <Core/Interfaces/IDestroyable.h>
 
+#include "IDeviceObject.h"
 #include "RenderingEnums.h"
 
 namespace Oyl
@@ -27,4 +28,6 @@ namespace Oyl
 
 	inline
 	ICommandPool::~ICommandPool() {}
+
+	using CommandPoolHandle = IObjectHandle<ICommandPool>;
 }

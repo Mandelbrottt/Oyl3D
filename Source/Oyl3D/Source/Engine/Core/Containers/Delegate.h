@@ -307,8 +307,8 @@ namespace Oyl
 		void
 		Invoke(TArgs&&... a_args) const
 		{
-			for (const auto& delegate : m_delegates)
-				delegate.Invoke(std::forward<TArgs>(a_args)...);
+			for (uint32 i = 0; i < m_delegates.Size(); i++)
+				m_delegates[i].Invoke(std::forward<TArgs>(a_args)...);
 		}
 
 		template<typename = void>
@@ -321,8 +321,8 @@ namespace Oyl
 
 			Array<TReturn> result;
 			result.Reserve(m_delegates.size());
-			for (const auto& delegate : m_delegates)
-				result.emplace_back(delegate.Invoke(std::forward<TArgs>(a_args)...));
+			for (uint32 i = 0; i < m_delegates.Size(); i++)
+				result.Add(m_delegates[i].Invoke(std::forward<TArgs>(a_args)...));
 			return result;
 		}
 

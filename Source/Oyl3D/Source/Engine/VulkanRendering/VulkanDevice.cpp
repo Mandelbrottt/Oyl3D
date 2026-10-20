@@ -1,6 +1,8 @@
 #include "VulkanDevice.h"
 
-#include <Core/Profiling/Profiling.h>
+#include <Core/Containers/String.h>
+
+#include "VulkanRenderingEnums.h"
 
 namespace Oyl
 {
@@ -57,57 +59,52 @@ namespace Oyl
 		m_vkDevice.waitIdle();
 	}
 
-	ICommandBuffer*
+	CommandBufferHandle
 	VulkanDevice::CreateCommandBuffer(const CommandBufferCreateParams& a_params) const
 	{
-		OYL_UNUSED(a_params);
-		return nullptr;
+		return MakeSharedPtr<VulkanCommandBuffer>(*this, a_params);
 	}
 
-	ICommandPool*
+	CommandPoolHandle
 	VulkanDevice::CreateCommandPool(const CommandPoolCreateParams& a_params) const
 	{
-		OYL_UNUSED(a_params);
-		return nullptr;
+		return MakeSharedPtr<VulkanCommandPool>(*this, a_params);
 	}
 
-	IImage*
+	ImageHandle
 	VulkanDevice::CreateImage(const ImageCreateParams& a_params) const
 	{
-		OYL_UNUSED(a_params);
-		return nullptr;
+		return MakeSharedPtr<VulkanImage>(*this, a_params);
 	}
 
-	IShader*
+	ShaderHandle
 	VulkanDevice::CreateShader(const ShaderCreateParams& a_params) const
 	{
-		OYL_UNUSED(a_params);
-		return nullptr;
+		return MakeSharedPtr<VulkanShader>(*this, a_params);
 	}
 
-	IVertexBuffer*
+	VertexBufferHandle
 	VulkanDevice::CreateVertexBuffer(const VertexBufferCreateParams& a_params) const
 	{
-		OYL_UNUSED(a_params);
-		return nullptr;
+		return MakeSharedPtr<VulkanVertexBuffer>(*this, a_params);
 	}
 
-	ISemaphore*
+	SemaphoreHandle
 	VulkanDevice::CreateSemaphore() const
 	{
-		return nullptr;
+		return MakeSharedPtr<VulkanSemaphore>(*this);
 	}
 
-	IFence*
+	FenceHandle
 	VulkanDevice::CreateFence() const
 	{
-		return nullptr;
+		return MakeSharedPtr<VulkanFence>(*this);
 	}
 
 	const VulkanCommandQueue*
 	VulkanDevice::GetCommandQueue(CommandQueueFlagBits a_flag) const
 	{
-		if (m_queues.Contains(a_flag))
+		if (!m_queues.Contains(a_flag))
 			return nullptr;
 
 		return &m_queues.At(a_flag);

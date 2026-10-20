@@ -4,10 +4,10 @@
 
 #include "Rendering/StagingBuffer.h"
 
-#include "VulkanDevice.h"
-
 namespace Oyl
 {
+	class VulkanDevice;
+
 	using VulkanStagingBufferId = IConvertibleDeviceObjectId<StagingBufferId, vk::Buffer>;
 
 	struct VulkanStagingBufferCreateParams

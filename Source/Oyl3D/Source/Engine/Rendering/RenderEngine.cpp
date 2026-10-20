@@ -7,6 +7,7 @@ namespace Oyl
 	struct RenderEngine::Impl
 	{
 		DeviceHandle device = nullptr;
+		SharedPtr<IShaderCompiler> shaderCompiler;
 	};
 
 	RenderEngine::RenderEngine()
@@ -24,10 +25,11 @@ namespace Oyl
 		return instance;
 	}
 
-	DeviceHandle
-	RenderEngine::CurrentDevice()
+	IDevice&
+	RenderEngine::GetDevice() const
 	{
-		return m_impl->device;
+		OYL_ASSERT(m_impl->device);
+		return *m_impl->device;
 	}
 
 	void
@@ -63,5 +65,46 @@ namespace Oyl
 			LogError("Trying to unregister Device [{}] when Device [{}] has already been registered!",
 			         (void*) a_device.Get(),
 			         (void*) m_impl->device.Get());
+	}
+
+	IShaderCompiler&
+	RenderEngine::GetShaderCompiler() const
+	{
+		return *m_impl->shaderCompiler;
+	}
+
+	void
+	RenderEngine::RegisterShaderCompiler(const SharedPtr<IShaderCompiler>& a_shaderCompiler)
+	{
+		if (!a_shaderCompiler)
+			return;
+
+		if (!m_impl->shaderCompiler)
+		{
+			LogTrace("RenderEngine::RegisterShadeCompiler({})", (void*) a_shaderCompiler.Get());
+			m_impl->shaderCompiler = a_shaderCompiler;
+		} else
+			LogError("Trying to register ShaderCompiler [{}] when ShaderCompiler [{}] has already been registered!",
+			         (void*) a_shaderCompiler.Get(),
+			         (void*) m_impl->shaderCompiler.Get());
+	}
+
+	void
+	RenderEngine::UnregisterShaderCompiler(const SharedPtr<IShaderCompiler>& a_shaderCompiler)
+	{
+		if (!a_shaderCompiler)
+			return;
+
+		if (!m_impl->shaderCompiler)
+			return;
+
+		if (m_impl->shaderCompiler == a_shaderCompiler)
+		{
+			LogTrace("RenderEngine::UnregisterShaderCompiler({})", (void*) a_shaderCompiler.Get());
+			m_impl->shaderCompiler = nullptr;
+		} else
+			LogError("Trying to unregister ShaderCompiler [{}] when ShaderCompiler [{}] has already been registered!",
+			         (void*) a_shaderCompiler.Get(),
+			         (void*) m_impl->shaderCompiler.Get());
 	}
 }

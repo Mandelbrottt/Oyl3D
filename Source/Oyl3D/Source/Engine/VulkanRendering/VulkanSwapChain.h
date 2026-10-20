@@ -4,11 +4,12 @@
 
 #include <Rendering/SwapChain.h>
 
-#include "VulkanDevice.h"
 #include "VulkanPresentTarget.h"
 
 namespace Oyl
 {
+	class VulkanDevice;
+
 	struct VulkanSwapChainCreateParams
 	{
 		const IApplicationWindow& window;
@@ -39,6 +40,21 @@ namespace Oyl
 
 		void
 		Recreate() override;
+
+		bool
+		AcquireNextImage(SemaphoreId a_semaphore, FenceId a_fence) override;
+
+		uint32
+		GetImageCount() const override;
+
+		uint32
+		GetCurrentImageIndex() const override;
+
+		ImageId
+		GetImageId(uint32 a_index) const override;
+
+		ImageId
+		GetCurrentImageId() const override;
 
 		const vk::raii::SwapchainKHR&
 		GetVkSwapChain() const { return m_vkSwapChain; }

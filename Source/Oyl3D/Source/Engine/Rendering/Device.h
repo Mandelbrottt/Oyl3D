@@ -38,31 +38,31 @@ namespace Oyl
 		GetCommandQueue(CommandQueueFlagBits a_flag) const = 0;
 
 		virtual
-		ICommandBuffer*
+		CommandBufferHandle
 		CreateCommandBuffer(const CommandBufferCreateParams& a_params) const = 0;
 
 		virtual
-		ICommandPool*
+		CommandPoolHandle
 		CreateCommandPool(const CommandPoolCreateParams& a_params) const = 0;
 
 		virtual
-		IImage*
+		ImageHandle
 		CreateImage(const ImageCreateParams& a_params) const = 0;
 
 		virtual
-		IShader*
+		ShaderHandle
 		CreateShader(const ShaderCreateParams& a_params) const = 0;
 
 		virtual
-		IVertexBuffer*
+		VertexBufferHandle
 		CreateVertexBuffer(const VertexBufferCreateParams& a_params) const = 0;
 
 		virtual
-		ISemaphore*
+		SemaphoreHandle
 		CreateSemaphore() const = 0;
 
 		virtual
-		IFence*
+		FenceHandle
 		CreateFence() const = 0;
 	};
 

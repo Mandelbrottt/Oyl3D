@@ -4,10 +4,10 @@
 
 #include <Rendering/Semaphore.h>
 
-#include "VulkanDevice.h"
-
 namespace Oyl
 {
+	class VulkanDevice;
+
 	using VulkanSemaphoreId = IConvertibleDeviceObjectId<SemaphoreId, vk::Semaphore>;
 
 	class VulkanSemaphore : public ISemaphore

@@ -48,4 +48,6 @@ namespace Oyl
 
 	inline
 	IVertexBuffer::~IVertexBuffer() {}
+
+	using VertexBufferHandle = IObjectHandle<IVertexBuffer>;
 }

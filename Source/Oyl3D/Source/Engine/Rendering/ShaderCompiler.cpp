@@ -57,7 +57,7 @@ namespace Oyl
 		// This way, a_source isn't invalidated
 		String pixelShaderAttributeSource;
 		if (ReplaceFragmentWithPixelInSource(a_source, &pixelShaderAttributeSource))
-			compileStringView = StringView(pixelShaderAttributeSource);
+			compileStringView = (std::string&) pixelShaderAttributeSource;
 
 		// Implementation defined CompileHlsl
 		ShaderCompileResult outShader;
@@ -193,7 +193,7 @@ namespace
 				continue;
 
 			// substring [shader("fragment")] within the source code
-			return Oyl::StringView(a_source.data() + attributeStartIndex, currentTokenIndex - attributeStartIndex);
+			return Oyl::StringView(a_source.data() + attributeStartIndex, (uint32) (currentTokenIndex - attributeStartIndex));
 		}
 
 		return {};

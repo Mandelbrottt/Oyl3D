@@ -204,10 +204,19 @@ namespace Oyl
 			if (value.empty())
 			{
 				AddArgument(name);
-			} else
-			{
-				AddString(name, value);
+				continue;
 			}
+
+			{
+				char* endPtr;
+				int valueAsInt = strtol(value.c_str(), &endPtr, 0);
+				if (endPtr != value.c_str())
+				{
+					AddInt(name, valueAsInt);
+					continue;
+				}
+			}
+			AddString(name, value);
 		}
 
 #	if defined(OYL_ENABLE_LOGGING)

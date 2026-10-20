@@ -58,4 +58,6 @@ namespace Oyl
 
 	inline
 	ICommandQueue::~ICommandQueue() {}
+
+	using CommandQueueHandle = IObjectHandle<ICommandQueue>;
 }

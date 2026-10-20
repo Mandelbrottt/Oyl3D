@@ -3,12 +3,13 @@
 #include <vulkan/vulkan_raii.hpp>
 
 #include "VulkanCommandQueue.h"
-#include "VulkanDevice.h"
 
 #include "Rendering/VertexBuffer.h"
 
 namespace Oyl
 {
+	class VulkanDevice;
+
 	using VulkanVertexBufferId = IConvertibleDeviceObjectId<VertexBufferId, vk::Buffer>;
 
 	class VulkanVertexBuffer : public IVertexBuffer

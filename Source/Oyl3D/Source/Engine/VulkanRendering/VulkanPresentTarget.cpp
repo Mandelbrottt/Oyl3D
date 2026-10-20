@@ -3,7 +3,6 @@
 #include <Application/ApplicationWindow.h>
 
 #include <Core/Modules/ModuleManager.h>
-#include <Core/Profiling/Profiling.h>
 
 #include <GLFW/glfw3.h>
 

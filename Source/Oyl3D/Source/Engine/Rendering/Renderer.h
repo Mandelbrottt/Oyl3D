@@ -7,6 +7,7 @@
 
 #include "Device.h"
 #include "PresentTarget.h"
+#include "RenderGraph.h"
 
 namespace Oyl
 {
@@ -38,15 +39,28 @@ namespace Oyl
 		virtual
 		SwapChainHandle
 		CreateSwapChain(IDevice& a_device, IApplicationWindow& a_window, IPresentTarget& a_presentTarget) = 0;
+
+		virtual
+		SharedPtr<IShaderCompiler>
+		CreateShaderCompiler() = 0;
 	};
 
 	inline
 	IRenderer::~IRenderer() {}
 
-	struct WindowInfo
+	struct RendererWindowData
 	{
 		PresentTargetHandle presentTarget = nullptr;
 		SwapChainHandle swapChain = nullptr;
+
+		CommandPoolHandle commandPool = nullptr;
+		Array<CommandBufferHandle> commandBuffers;
+
+		Array<SemaphoreHandle> presentCompleteSemaphores;
+		Array<SemaphoreHandle> renderFinishedSemaphores;
+		Array<FenceHandle> inFlightFences;
+
+		uint32 frameIndex = 0;
 	};
 
 	class RENDERING_EXPORT RendererProcessor final
@@ -63,7 +77,7 @@ namespace Oyl
 		~RendererProcessor();
 
 		void
-		Init(IApplicationWindow* a_window);
+		Init(IApplicationWindow* a_mainWindow);
 
 		void
 		Update();
@@ -80,10 +94,40 @@ namespace Oyl
 		void
 		UnregisterApplicationWindow(IApplicationWindow& a_window);
 
+		RenderGraph&
+		GetRenderGraph() { return m_renderGraph; }
+
+		const RenderGraph&
+		GetRenderGraph() const { return const_cast<RendererProcessor*>(this)->GetRenderGraph(); }
+
+	private:
+		void
+		CreateSwapChain(IApplicationWindow& a_window, RendererWindowData& a_windowData);
+
+		void
+		CreateCommandBuffers(RendererWindowData& a_windowData);
+
+		void
+		CreateSyncObjects(RendererWindowData& a_windowData);
+
+		void
+		RenderToWindow(RendererWindowData& a_windowData);
+
+		void
+		RecordWindowCommandBuffer(RendererWindowData& a_windowData);
+
+		void
+		RecreateSwapChain(RendererWindowData& a_windowData);
+
 	private:
 		UniquePtr<IRenderer> m_renderer;
-
-		ArrayMap<IApplicationWindow*, WindowInfo> m_windowInfos;
 		DeviceHandle m_device = nullptr;
+
+		SharedPtr<IShaderCompiler> m_shaderCompiler;
+
+		ArrayMap<IApplicationWindow*, RendererWindowData> m_windowDataMap;
+		Array<IApplicationWindow*> m_windowDataPendingInitList;
+
+		RenderGraph m_renderGraph;
 	};
 }

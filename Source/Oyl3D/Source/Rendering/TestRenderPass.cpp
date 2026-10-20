@@ -3,7 +3,7 @@
 #include "RenderEngine.h"
 #include "Window.h"
 
-namespace Oyl::Rendering
+namespace Oyl
 {
 	TestRenderPass::TestRenderPass()
 	{

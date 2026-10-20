@@ -1,7 +1,5 @@
 #include "VulkanCommandQueue.h"
 
-#include <Core/Profiling/Profiling.h>
-
 #include "VulkanDevice.h"
 
 namespace Oyl
@@ -40,28 +38,26 @@ namespace Oyl
 	{
 		OYL_PROFILE_FUNCTION();
 
-		OYL_UNUSED(a_params);
+		auto& vkCommandBuffer = static_cast<const VulkanCommandBuffer&>(a_params.commandBuffer).GetVkCommandBuffer();
+		vk::Semaphore vkWaitSemaphore = static_cast<VulkanSemaphoreId>(a_params.waitSemaphore);
+		vk::Semaphore vkSignalSemaphore = static_cast<VulkanSemaphoreId>(a_params.signalSemaphore);
+		vk::Fence vkFence = static_cast<VulkanFenceId>(a_params.fence);
 
-		//auto& vkCommandBuffer = static_cast<const VulkanCommandBuffer&>(a_params.commandBuffer).GetVkCommandBuffer();
-		//vk::Semaphore vkWaitSemaphore = static_cast<VulkanSemaphoreId>(a_params.waitSemaphore);
-		//vk::Semaphore vkSignalSemaphore = static_cast<VulkanSemaphoreId>(a_params.signalSemaphore);
-		//vk::Fence vkFence = static_cast<VulkanFenceId>(a_params.fence);
+		vk::PipelineStageFlags waitDestinationStageMask = ToVkEnum(a_params.waitDestinationStageMask);
+		vk::SubmitInfo submitInfo;
+		submitInfo.setCommandBufferCount(1)
+		          .setPCommandBuffers(&*vkCommandBuffer);
 
-		//vk::PipelineStageFlags waitDestinationStageMask = ToVkEnum(a_params.waitDestinationStageMask);
-		//vk::SubmitInfo submitInfo;
-		//submitInfo.setCommandBufferCount(1)
-		//          .setPCommandBuffers(&*vkCommandBuffer);
+		if (a_params.waitDestinationStageMask)
+			submitInfo.setPWaitDstStageMask(&waitDestinationStageMask);
 
-		//if (a_params.waitDestinationStageMask)
-		//	submitInfo.setPWaitDstStageMask(&waitDestinationStageMask);
+		if (vkWaitSemaphore)
+			submitInfo.setWaitSemaphores(vkWaitSemaphore);
 
-		//if (vkWaitSemaphore)
-		//	submitInfo.setWaitSemaphores(vkWaitSemaphore);
+		if (vkSignalSemaphore)
+			submitInfo.setSignalSemaphores(vkSignalSemaphore);
 
-		//if (vkSignalSemaphore)
-		//	submitInfo.setSignalSemaphores(vkSignalSemaphore);
-
-		//m_impl->queue.submit(submitInfo, vkFence);
+		m_vkQueue.submit(submitInfo, vkFence);
 		return true;
 	}
 
@@ -70,23 +66,21 @@ namespace Oyl
 	{
 		OYL_PROFILE_FUNCTION();
 
-		OYL_UNUSED(a_params);
+		vk::Semaphore vkWaitSemaphore = static_cast<VulkanSemaphoreId>(a_params.waitSemaphore);
+		auto& vkSwapChain = dynamic_cast<const VulkanSwapChain&>(a_params.swapChain).GetVkSwapChain();
+		auto swapChainImageIndex = a_params.swapChain.GetCurrentImageIndex();
 
-		//vk::Semaphore vkWaitSemaphore = static_cast<VulkanSemaphoreId>(a_params.waitSemaphore);
-		//auto& vkSwapChain = dynamic_cast<const VulkanSwapChain&>(a_params.swapChain).GetVkSwapChain();
-		//auto swapChainImageIndex = a_params.swapChain.GetCurrentImageIndex();
+		const vk::PresentInfoKHR presentInfoKHR {
+			.waitSemaphoreCount = 1,
+			.pWaitSemaphores = &vkWaitSemaphore,
+			.swapchainCount = 1,
+			.pSwapchains = &*vkSwapChain,
+			.pImageIndices = &swapChainImageIndex
+		};
 
-		//const vk::PresentInfoKHR presentInfoKHR {
-		//	.waitSemaphoreCount = 1,
-		//	.pWaitSemaphores = &vkWaitSemaphore,
-		//	.swapchainCount = 1,
-		//	.pSwapchains = &*vkSwapChain,
-		//	.pImageIndices = &swapChainImageIndex
-		//};
-
-		//auto result = m_impl->queue.presentKHR(presentInfoKHR);
-		//if (result == vk::Result::eSuboptimalKHR || result == vk::Result::eErrorOutOfDateKHR)
-		//	return false;
+		auto result = m_vkQueue.presentKHR(presentInfoKHR);
+		if (result == vk::Result::eSuboptimalKHR || result == vk::Result::eErrorOutOfDateKHR)
+			return false;
 
 		return true;
 	}

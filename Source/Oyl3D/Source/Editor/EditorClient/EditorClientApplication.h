@@ -6,6 +6,7 @@
 #include <Core/Containers/SharedPtr.h>
 
 #include <Rendering/Renderer.h>
+#include <Rendering/TestRenderPass.h>
 
 namespace Oyl
 {
@@ -68,6 +69,7 @@ namespace Oyl
 		IApplicationWindow* m_mainWindow = nullptr;
 
 		RendererProcessor m_rendererProcessor;
+		UniquePtr<TestRenderPass> m_testRenderPass;
 
 		bool m_exitRequested = false;
 		int m_exitCode = 0;

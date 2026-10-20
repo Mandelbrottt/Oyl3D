@@ -1,6 +1,6 @@
 #include "VulkanSwapChain.h"
 
-#include <Core/Profiling/Profiling.h>
+#include "VulkanDevice.h"
 
 namespace
 {
@@ -71,6 +71,54 @@ namespace Oyl
 
 		CreateSwapChain();
 		CreateSwapChainImageViews();
+	}
+
+	bool
+	VulkanSwapChain::AcquireNextImage(SemaphoreId a_semaphore, FenceId a_fence)
+	{
+		OYL_PROFILE_FUNCTION();
+
+		auto [result, imageIndex] = m_vkSwapChain.acquireNextImage(UINT64_MAX,
+		                                                           (VulkanSemaphoreId) a_semaphore,
+		                                                           (VulkanFenceId) a_fence);
+		if (result == vk::Result::eErrorOutOfDateKHR)
+		{
+			return false;
+		}
+		if (result != vk::Result::eSuccess && result != vk::Result::eSuboptimalKHR)
+		{
+			OYL_ASSERT(result == vk::Result::eTimeout || result == vk::Result::eNotReady);
+			throw std::runtime_error("Failed to acquire swap chain image");
+		}
+
+		m_currentImageIndex = imageIndex;
+		return true;
+	}
+
+	uint32
+	VulkanSwapChain::GetImageCount() const
+	{
+		return m_vkSwapChainImageHandles.Size();
+	}
+
+	uint32
+	VulkanSwapChain::GetCurrentImageIndex() const
+	{
+		return m_currentImageIndex;
+	}
+
+	ImageId
+	VulkanSwapChain::GetImageId(uint32 a_index) const
+	{
+		VulkanImageId id = m_vkSwapChainImageHandles[a_index];
+		return id;
+	}
+
+	ImageId
+	VulkanSwapChain::GetCurrentImageId() const
+	{
+		auto index = GetCurrentImageIndex();
+		return GetImageId(index);
 	}
 
 	vk::Image

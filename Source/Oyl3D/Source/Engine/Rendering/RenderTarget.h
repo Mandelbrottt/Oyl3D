@@ -13,19 +13,19 @@ namespace Oyl
 		const IImage* pDepthImage = nullptr;
 	};
 
-	class IRenderTarget : public IDestroyable
+	class RenderTarget : public IDestroyable
 	{
 	public:
-		IRenderTarget(nullptr_t) {}
+		RenderTarget() = default;
 
 		explicit
-		IRenderTarget(const RenderTargetCreateParams& a_params);
+		RenderTarget(const RenderTargetCreateParams& a_params);
 
-		DEFAULT_MOVE(IRenderTarget);
-		NO_COPY(IRenderTarget);
+		DEFAULT_MOVE(RenderTarget);
+		NO_COPY(RenderTarget);
 
 		virtual
-		~IRenderTarget();
+		~RenderTarget();
 
 		void
 		Destroy() override;
