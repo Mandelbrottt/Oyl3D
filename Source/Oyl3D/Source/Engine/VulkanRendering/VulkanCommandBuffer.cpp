@@ -1,7 +1,5 @@
 ﻿#include "VulkanCommandBuffer.h"
 
-#include <Core/Profiling/Profiling.h>
-
 #include "VulkanDevice.h"
 #include "VulkanImage.h"
 #include "VulkanRenderingEnums.h"

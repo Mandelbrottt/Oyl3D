@@ -102,13 +102,13 @@ namespace Oyl
 		auto extensionProperties = m_vkContext.enumerateInstanceExtensionProperties();
 		auto unsupportedPropertyIt = std::ranges::find_if(
 			requiredExtensions,
-			[&extensionProperties](const String& a_requiredExtension)
+			[&extensionProperties](const char* a_requiredExtension)
 			{
 				return std::ranges::none_of(
 					extensionProperties,
 					[a_requiredExtension](const vk::ExtensionProperties& a_extensionProperty)
 					{
-						return a_extensionProperty.extensionName == a_requiredExtension;
+						return strcmp(a_extensionProperty.extensionName, a_requiredExtension) == 0;
 					}
 				);
 			}
