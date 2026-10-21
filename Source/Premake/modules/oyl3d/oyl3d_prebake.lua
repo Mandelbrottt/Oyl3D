@@ -169,8 +169,21 @@ function m.onProjectApplySharedToStaticLib(prj)
 end
 
 function m.onProjectModuleProjectUsages(prj)
+	vpaths {
+		["Public/*"] = path.join("Public/", prj.name, "**"),
+		["Private/*"] = path.join("Private/", "**")
+	}
+	usage "PRIVATE"; do
+		includedirs {
+			"Private",
+			"Public",
+		}
+	end
 	usage "INTERFACE"; do
 		links { prj.name }
+		includedirsafter {
+			"Public"
+		}
 	end
 end
 

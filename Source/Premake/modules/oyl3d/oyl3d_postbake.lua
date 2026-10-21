@@ -74,14 +74,6 @@ function m.onConfigConnectProjectLinks(cfg)
 
 		local package = link_prj._package
 
-		if package then
-			cfg.includedirsafter = cfg.includedirsafter or {}
-			table.insert(cfg.includedirsafter, path.getdirectory(link_cfg.basedir))
-		else
-			cfg.includedirs = cfg.includedirs or {}
-			table.insert(cfg.includedirs, path.getdirectory(link_cfg.basedir))
-		end
-
 		::continue::
 	end
 end
