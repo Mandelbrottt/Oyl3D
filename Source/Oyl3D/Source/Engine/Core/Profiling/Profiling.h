@@ -1,8 +1,7 @@
 #pragma once
 
+#include <Tracy/public/tracy/Tracy.hpp>
 #if defined(OYL_PROFILE)
-#	include <Oyl3D/.Include/Tracy/Tracy/public/tracy/Tracy.hpp>
-
 #	define OYL_PROFILE_SCOPE(_name_) ZoneScopedN(_name_); OYL_FORCE_SEMICOLON
 #	define OYL_PROFILE_SCOPEF(_fmt_, ...) ZoneScoped; ZoneNameF(_fmt_, __VA_ARGS__)
 #	define OYL_PROFILE_FUNCTION() ZoneScoped; OYL_FORCE_SEMICOLON

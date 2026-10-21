@@ -98,10 +98,6 @@ function m.overrides.preBake()
 						project(prj.name)
 						func(prj)
 					end
-					project(prj.name)
-					includedirs {
-						m.prjDotIncludeDir(prj)
-					}
 				end
 			end)
 
@@ -209,7 +205,7 @@ end
 
 m.elements.postAction.onProjectPreProcess = function(prj)
 	return {
-		m.postAction.onProjectCreateLinkDotIncludeDirs,
+		-- m.postAction.onProjectCreateLinkDotIncludeDirs,
 	}
 end
 

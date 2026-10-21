@@ -75,8 +75,6 @@ function m.onWorkspacePackageProjects(wks)
 				project(name)
 			end
 
-			prj.packageincludedirs = prj.packageincludedirs or prj.basedir
-
 			-- Only check for invalid dirs if the action is configurable
 			if p.action.isConfigurable() and __ACTION ~= "clean" then
 				-- private.errorIfPackageNotOnDisk(prj)
@@ -349,86 +347,6 @@ function m.onProjectAddReflectionBuildAction(prj)
 		}
 	end
 end
-
--- function m.onProjectConnectProjectLinks(prj)
--- 	local wks = prj.workspace
-
--- 	project(prj.name)
-
--- 	local linkSet = {}
--- 	for linkindex = #prj.links, 1, -1 do
--- 		local link = prj.links[linkindex]
--- 		local linkprj = wks.projects[link]
--- 		if not linkprj then
--- 			goto continue
--- 		end
-
--- 		if linkprj.kind == "None" then
--- 			table.remove(prj.links, linkindex)
--- 		end
-
--- 		-- recurse links, add all children as links to parent projects for non-editor platform
--- 		local function addLinksRecursive(link)
--- 			links { link.links }
--- 			for _, link in ipairs(link.links) do
--- 				local prj = wks.projects[link]
--- 				if prj then
--- 					addLinksRecursive(prj)
--- 				end
--- 			end
--- 		end
--- 		filter { "kind:not StaticLib", "platforms:Standalone" }; do
--- 			addLinksRecursive(linkprj)
--- 		end
--- 		filter {}
-
--- 		local package = linkprj._package
-
--- 		if package then
--- 			local pkgincludedirs = linkprj.packageincludedirs
--- 			if type(linkprj.packageincludedirs) ~= "table" then
--- 				pkgincludedirs = { linkprj.packageincludedirs }
--- 			end
--- 			-- No premake support for external header includes : do it ourselves
--- 			for _, dir in ipairs(pkgincludedirs) do
--- 				filter { "action:vs*", "toolset:clang" }; do
--- 					buildoptions { "-Xclang --system-header-prefix=\"" .. path.getname(dir) .. "/\"" }
--- 				end
--- 				filter {}
--- 			end
-
--- 			-- if type(package.OnDepend) == "function" then
--- 			-- 	local prj_copy = private.bakeConfigsForPrj(prj)
--- 			-- 	local linkprj_copy = private.bakeConfigsForPrj(linkprj)
-
--- 			-- 	-- Iterate over each config in prj, find the matching config in linkprj, then call package.OnDepend
--- 			-- 	-- with a filter on the config and platform
--- 			-- 	for cfg in p.project.eachconfig(prj_copy) do
--- 			-- 		local linkcfg = p.project.getconfig(linkprj_copy, cfg.buildcfg, cfg.platform)
--- 			-- 		if not linkcfg then
--- 			-- 			linkcfg = p.project.findClosestMatch(linkprj_copy, cfg.buildcfg, cfg.platform)
--- 			-- 		end
--- 			-- 		filter { "configurations:" .. cfg.buildcfg, "platforms:" .. cfg.platform }; do
--- 			-- 			local nBlocks = #prj.blocks
--- 			-- 			local cwd = os.getcwd()
--- 			-- 			os.chdir(linkcfg.basedir)
--- 			-- 			package.OnDepend(cfg, linkcfg)
--- 			-- 			os.chdir(cwd)
--- 			-- 			-- Apply config and platforms criteria to all filters added in OnDepend
--- 			-- 			for i = nBlocks + 1, #prj.blocks do
--- 			-- 				local block = prj.blocks[i]
--- 			-- 				local new_terms = table.join(block._criteria.terms, prj.blocks[nBlocks]._criteria.terms)
--- 			-- 				local criteria = p.criteria.new(new_terms)
--- 			-- 				block._criteria = criteria
--- 			-- 			end
--- 			-- 		end
--- 			-- 	end
--- 			-- end
--- 		end
-
--- 		::continue::
--- 	end
--- end
 
 function m.onProjectRemoveLinksToNoneKindProjects(prj)
 	local wks = prj.workspace

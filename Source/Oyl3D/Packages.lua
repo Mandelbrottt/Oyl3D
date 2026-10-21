@@ -7,13 +7,6 @@ local Packages = {
 			language "C++"
 			kind "None"
 
-			packageincludedirs {
-				"include/clang",
-				"include/clang-c",
-				"include/llvm",
-				"include/llvm-c",
-			}
-
 			filter "action:vs*"; do
 				files {
 					"**.natvis"
@@ -21,6 +14,9 @@ local Packages = {
 			end
 
 			usage "INTERFACE"; do
+				includedirsafter {
+					"include"
+				}
 				links {
 					os.matchfiles(path.join("lib", "*.lib")),
 					"ntdll",
@@ -44,10 +40,8 @@ local Packages = {
 			}
 
 			includedirs {
-				"include/GLFW"
+				"include/GLFW",
 			}
-
-			packageincludedirs "include/GLFW"
 
 			defines { "_CRT_SCURE_NO_WARNINGS" }
 
@@ -63,8 +57,13 @@ local Packages = {
 
 			usage "INTERFACE"; do
 				links { prj.name }
+				includedirsafter {
+					"include",
+				}
 				filter { "kind:SharedLib" }; do
-					defines { "GLFW_DLL" }
+					defines {
+						"GLFW_DLL",
+					}
 				end
 			end
 		end,
@@ -83,11 +82,9 @@ local Packages = {
 
 			includedirs { "." }
 
-			packageincludedirs "."
-
 			filter "action:vs*"; do
 				files {
-					"**.natvis"
+					"**.natvis",
 				}
 			end
 
@@ -109,11 +106,15 @@ local Packages = {
 				"include/nlohmann"
 			}
 
-			packageincludedirs "include/nlohmann"
-
 			filter "action:vs*"; do
 				files {
 					"**.natvis"
+				}
+			end
+
+			usage "INTERFACE"; do
+				includedirsafter {
+					"include",
 				}
 			end
 		end
@@ -131,8 +132,6 @@ local Packages = {
 			includedirs {
 				"include"
 			}
-
-			packageincludedirs "include/spdlog"
 
 			defines {
 				"SPDLOG_LEVEL_NAMES={" ..
@@ -171,6 +170,9 @@ local Packages = {
 			end
 			usage "INTERFACE"; do
 				links { prj.name }
+				includedirsafter {
+					"include"
+				}
 			end
 		end,
 	},
@@ -222,6 +224,9 @@ local Packages = {
 				end
 			end
 			usage "INTERFACE"; do
+				includedirsafter {
+					path.getdirectory(prj.basedir)
+				}
 				filter { "kind:SharedLib" }; do
 					defines {
 						"TRACY_IMPORTS",
@@ -246,12 +251,6 @@ local Packages = {
 
 			includedirs {
 				"Include",
-			}
-
-			packageincludedirs {
-				"Include/vulkan",
-				"Include/vk_video",
-				"Include/dxc",
 			}
 
 			libdirs {
@@ -279,6 +278,9 @@ local Packages = {
 			filter {}
 
 			usage "INTERFACE"; do
+				includedirsafter {
+					"Include",
+				}
 				defines {
 					"VULKAN_HPP_DISPATCH_LOADER_DYNAMIC=1",
 					"VULKAN_HPP_NO_STRUCT_CONSTRUCTORS=1",
@@ -289,7 +291,6 @@ local Packages = {
 				}
 				links {
 					"vulkan-1",
-					"dxcompiler"
 				}
 			end
 		end,
@@ -308,8 +309,6 @@ local Packages = {
 				"include"
 			}
 
-			packageincludedirs "include/yaml-cpp"
-
 			filter "kind:SharedLib"; do
 				defines { "yaml_cpp_EXPORTS" }
 			end
@@ -320,6 +319,9 @@ local Packages = {
 			end
 			usage "INTERFACE"; do
 				links { prj.name }
+				includedirsafter {
+					"include"
+				}
 			end
 		end
 	},
