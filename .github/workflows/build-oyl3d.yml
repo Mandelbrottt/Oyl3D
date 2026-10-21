@@ -3,11 +3,11 @@ name: Build Oyl3D
 on:
   push:
     paths: &paths-to-watch
-      - 'Source/Oyl3D/**'
-      - 'Source/Premake/**'
-      - 'premake5.lua'
-      - 'Packages.lua'
-      - '.github/workflows/build-oyl3d.yml'
+      - "Source/Oyl3D/**"
+      - "Source/Premake/**"
+      - "premake5.lua"
+      - "Packages.lua"
+      - ".github/workflows/build-oyl3d.yml"
   pull_request:
     branches: ["main"]
     paths: *paths-to-watch
@@ -20,7 +20,7 @@ permissions:
   contents: read
 
 env:
-  ACT: ''
+  ACT: ""
   ErrorView: NormalView
   visual_studio_version: vs2022
   solution_file_path: Source/Oyl3D/Oyl3D.sln
@@ -75,16 +75,10 @@ jobs:
         uses: actions/cache/restore@v4
         with:
           path: &package-cache-path |
-            Packages/*
-          key: packages-${{ runner.os }}-${{ hashFiles('Packages.lua') }}
+            Source/Packages/*
+          key: packages-${{ runner.os }}-${{ hashFiles('Source/Packages.lua') }}
           restore-keys: |
             packages-${{ runner.os }}-
-
-      - name: Fetch Packages
-        if: steps.restore-cache-packages.outputs.cache-hit != 'true'
-        working-directory: ${{ github.workspace }}
-        run: |
-          premake5 packages --verbose
 
       - name: Save Package Cache
         if: steps.restore-cache-packages.outputs.cache-hit != 'true'
@@ -96,7 +90,7 @@ jobs:
       - name: Generate Solutions
         working-directory: ${{ github.workspace }}
         run: |
-          premake5 ${{ env.visual_studio_version }} --cc=${{ env.toolset }} --no-premake-check
+          premake5 ${{ env.visual_studio_version }} --cc=${{ env.toolset }} --fetchpackages --no-premake-check
 
       - name: Build
         working-directory: ${{ github.workspace }}

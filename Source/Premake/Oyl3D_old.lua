@@ -87,10 +87,6 @@ function CppProjectDefaults.ProjectSettings()
 	staticruntime "Off"
 	stringpooling "On"
 
-	externalincludedirs {
-		Config.SourceDir
-	}
-
 	if os.isfile("pch.h") then
 		local pchDir = path.join("%{wks.location}", "Pch")
 		pchheader "pch.h"

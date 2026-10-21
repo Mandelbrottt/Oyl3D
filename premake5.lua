@@ -21,6 +21,6 @@ package.path = package.path .. (";?.lua;{}/Source/?.lua;{}/Source/Premake/?.lua"
 -- 	}
 -- }
 
-include "Source/Oyl3D"
+include "Source"
 -- dofile "Source/Oyl3D/premake5.lua"
 -- include "Source/Spyll"

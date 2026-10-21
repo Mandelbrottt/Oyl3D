@@ -2,25 +2,16 @@ local p = premake
 
 local oyl3d = p.modules.oyl3d
 oyl3d.preBake = oyl3d.preBake or {}
+oyl3d.packages = oyl3d.packages or {}
 
 local m = oyl3d.preBake
 local private = {}
 
-local package_fetch_table = require(_MAIN_SCRIPT_DIR .. ".Packages")
-local package_fetch_file = path.join(_MAIN_SCRIPT_DIR, "Packages.lua")
-
 function m.onWorkspaceModuleProjects(wks)
-	if type(wks.sourcedir) ~= "string" then
-		return
-	end
-
 	workspace(wks.name)
 
-	-- Get the absolute path to the workspace source directory
-	local sourcedir = path.isabsolute(wks.sourcedir) and wks.sourcedir or path.join(wks.basedir, wks.sourcedir)
-
 	-- Recurse through the workspace directory and include all premake scripts
-	local premake_script_pattern = path.join(sourcedir, "**/premake5.lua")
+	local premake_script_pattern = "*/**/premake5.lua"
 	local script_paths = os.matchfiles(premake_script_pattern)
 
 	-- Invoke Project Scripts
@@ -47,19 +38,24 @@ function m.onWorkspacePackageProjects(wks)
 
 	local package_group = wks.packageprojects.group
 	local packages = wks.packageprojects.packages
+	local cachedir = path.join(wks.basedir, wks.packageprojects.cachedir or "Packages")
 
 	for name, package in spairs(packages) do
-		local package_fetch_info = package_fetch_table[name]
-		local package_local_path = os.getcwd()
-		if type(package_fetch_info) == "table" then
-			package_local_path = package_fetch_info.Local and package_fetch_info.Local.Path or nil
-			if not package_local_path then
-				package_local_path = path.join(_MAIN_SCRIPT_DIR, "Packages", name)
-			end
+		oyl3d.packages.fetch(name, package, cachedir)
+
+		local package_fetch_info = packages[name]
+		local package_local_path = path.join(cachedir, name)
+		if type(package_fetch_info) == "table" and package_fetch_info.Local then
+			package_local_path = package_fetch_info.Local.Path
 		end
 
 		local cwd = os.getcwd()
 		local chdir_ok, chdir_err = os.chdir(package_local_path)
+
+		if not chdir_ok then
+			os.chdir(cwd)
+			return
+		end
 
 		group(package_group)
 		project(name); do
@@ -67,7 +63,7 @@ function m.onWorkspacePackageProjects(wks)
 
 			prj._package = package
 
-			location(path.join(wks.basedir, "Packages", prj.name))
+			location(path.join(cachedir, name))
 			warnings "Off"
 
 			if type(package.OnProject) == "function" then
@@ -75,40 +71,26 @@ function m.onWorkspacePackageProjects(wks)
 				project(name)
 			end
 
-			-- Only check for invalid dirs if the action is configurable
-			if p.action.isConfigurable() and __ACTION ~= "clean" then
-				-- private.errorIfPackageNotOnDisk(prj)
-				-- use cwd since it's a cache of the parent cwd
-				if prj.basedir:lower() == cwd:lower() then
-					premake.warn(
-						string.format("Cannot infer basedir for package \"%s\"! Did you forget to call basedir()?", name)
-					)
-				end
-			end
+			-- If package has a premake script in the basedir, run it
+			local script_dir = prj.basedir
+			local script_file = "premake5.lua"
+			local cwd = os.getcwd()
+			os.chdir(script_dir)
 
-			-- Only try to run the premake script if the package sets its own directory
-			if prj.basedir:lower() ~= cwd:lower() then
-				-- If package has a premake script in the basedir, run it
-				local script_dir = prj.basedir
-				local script_file = "premake5.lua"
-				local cwd = os.getcwd()
-				os.chdir(script_dir)
+			if os.isfile(path.join(script_dir, script_file)) then
+				local script_fn = loadfile(script_file)
+				assert(script_fn)()
 
-				if os.isfile(path.join(script_dir, script_file)) then
-					local script_fn = loadfile(script_file)
-					assert(script_fn)()
-
-					-- Included project from script must match name of package
-					if p.api.scope.project ~= prj then
-						error(
-							string.format(
-								"Name of project \"%s\" from project script \"%s\" does not including package \"%s\"",
-								p.api.scope.project.name,
-								p.api.scope.project.script,
-								name
-							)
+				-- Included project from script must match name of package
+				if p.api.scope.project ~= nil and p.api.scope.project ~= prj then
+					error(
+						string.format(
+							"Name of project \"%s\" from project script \"%s\" does not including package \"%s\"",
+							p.api.scope.project.name,
+							p.api.scope.project.script,
+							name
 						)
-					end
+					)
 				end
 			end
 

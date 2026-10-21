@@ -9,12 +9,6 @@ include("clean_action.lua")
 include("packages_action.lua")
 include("vstudio_action.lua")
 
-p.api.register {
-	name = "sourcedir",
-	scope = "workspace",
-	kind = "path"
-}
-
 ---	{
 ---		["C++"]: fun(),
 ---     ...

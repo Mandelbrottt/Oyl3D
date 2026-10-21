@@ -4,7 +4,7 @@ local Config = require "Config"
 
 local Oyl3D = require "Oyl3D_old"
 
-local Packages = require "Oyl3D.Packages"
+local Packages = require "Packages"
 
 workspace "Oyl3D"; do
 	filename "%{wks.name}"
@@ -20,8 +20,6 @@ workspace "Oyl3D"; do
 		Config.Platforms.Editor,
 		Config.Platforms.Standalone
 	}
-
-	sourcedir "Source"
 
 	projectdefaults {
 		["C"] = Oyl3D.DefaultCppSettings,

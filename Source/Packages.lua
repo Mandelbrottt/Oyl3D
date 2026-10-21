@@ -3,6 +3,14 @@ local Config = require "Config"
 ---@type { [string]: { OnProject: fun(prj), OnDepend: fun(prjcfg, packagecfg)? } }
 local Packages = {
 	Clang = {
+		Remote = {
+			Url = (function()
+				if (os.host() == premake.WINDOWS) then
+					return "https://dl.dropbox.com/scl/fi/gaeyy54dlccesq7yuzvif/llvm.txz?rlkey=hxbbr6nv963xgclo36bokcr3o"
+				end
+				return ""
+			end)()
+		},
 		OnProject = function(prj)
 			language "C++"
 			kind "None"
@@ -29,7 +37,17 @@ local Packages = {
 			end
 		end
 	},
+	CppTrace = {
+		Git = {
+			Url = "https://github.com/jeremy-rifkin/cpptrace.git",
+			Ref = "v1.0.4",
+		},
+	},
 	Glfw = {
+		Git = {
+			Url = "https://github.com/glfw/glfw.git",
+			Ref = "3.4",
+		},
 		OnProject = function(prj)
 			language "C"
 			kind "SharedLib"
@@ -68,7 +86,17 @@ local Packages = {
 			end
 		end,
 	},
+	GoogleTest = {
+		Git = {
+			Url = "https://github.com/google/googletest.git",
+			Ref = "v1.17.0",
+		}
+	},
 	ImGui = {
+		Git = {
+			Url = "https://github.com/ocornut/imgui.git",
+			Ref = "v1.92.8",
+		},
 		OnProject = function(prj)
 			language "C++"
 			kind "StaticLib" -- ImGui SharedLib support is quite involved, so don't bother for now
@@ -94,6 +122,16 @@ local Packages = {
 		end
 	},
 	NlohmannJson = {
+		Git = {
+			Url = "https://github.com/nlohmann/json.git",
+			Ref = "v3.11.3",
+			Sparse = {
+				"/*",
+				"!/test",
+				"!/benchmarks",
+				"!/single_include",
+			}
+		},
 		OnProject = function(prj)
 			language "C++"
 			kind "None"
@@ -120,6 +158,10 @@ local Packages = {
 		end
 	},
 	SpdLog = {
+		Git = {
+			Url = "https://github.com/gabime/spdlog.git",
+			Ref = "v1.17.0",
+		},
 		OnProject = function(prj)
 			language "C++"
 			kind "StaticLib"
@@ -177,6 +219,10 @@ local Packages = {
 		end,
 	},
 	Tracy = {
+		Git = {
+			Url = "https://github.com/wolfpld/tracy.git",
+			Ref = "v0.13.1",
+		},
 		OnProject = function(prj)
 			language "C++"
 			kind "SharedLib"
@@ -239,6 +285,12 @@ local Packages = {
 		end,
 	},
 	Vulkan = {
+		Local = {
+			Path = assert(
+				os.getenv("VULKAN_SDK"),
+				"Missing Vulkan SDK! Please install the Vulkan SDK (https://vulkan.lunarg.com/sdk/home)!"
+			)
+		},
 		OnProject = function(prj)
 			language "C++"
 			kind "Makefile"
@@ -296,6 +348,10 @@ local Packages = {
 		end,
 	},
 	YamlCpp = {
+		Git = {
+			Url = "https://github.com/jbeder/yaml-cpp.git",
+			Ref = "yaml-cpp-0.9.0",
+		},
 		OnProject = function(prj)
 			language "C++"
 			kind "SharedLib"
