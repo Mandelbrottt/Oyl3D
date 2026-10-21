@@ -27,9 +27,15 @@ function m.onWorkspace(wks)
 end
 
 function m.onProject(prj)
-	if _OPTIONS['packages'] and string.contains(prj.location:lower(), Config.PackageCacheDir:lower()) then
-		print(("Cleaning Package '%s'..."):format(prj.name))
-		os.rmdir(prj.location)
+	local wks = prj.workspace
+	if prj._package then
+		local prjpackages = wks.packageprojects -- guaranteed to exist since at least one prj._package is valid
+		local packages = prjpackages.packages
+		local cachedir = path.join(wks.basedir, prjpackages.cachedir or "Packages")
+		if packages[prj.name] and os.isdir(path.join(cachedir, prj.name)) then
+			print(("Cleaning Package '%s'..."):format(prj.name))
+			oyl3d.packages.clean(prj.name, cachedir)
+		end
 	end
 
 	local filesToRemove = table.join(

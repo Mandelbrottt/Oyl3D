@@ -11,9 +11,6 @@ local generate = oyl3d.generate
 
 local private = {}
 
-local package_fetch_table = require(_MAIN_SCRIPT_DIR .. ".Packages")
-local package_fetch_file = path.join(_MAIN_SCRIPT_DIR, "Packages.lua")
-
 function oyl3d.wksDotIncludeDir(wks)
 	return path.join(wks.basedir, ".Include")
 end

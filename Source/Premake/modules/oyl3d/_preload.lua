@@ -9,12 +9,6 @@ include("clean_action.lua")
 include("packages_action.lua")
 include("vstudio_action.lua")
 
-p.api.register {
-	name = "sourcedir",
-	scope = "workspace",
-	kind = "path"
-}
-
 ---	{
 ---		["C++"]: fun(),
 ---     ...
@@ -33,18 +27,18 @@ p.api.register {
 			check(type(func) == "function")
 			check(table.contains(premake.field._loweredList["language"].allowed, language:lower()))
 		end
-		
+
 		return allowed;
 	end,
 }
 
 ---	{
 ---		group: string
----		packages: { 
----			[string]: { 
----				OnProject: fun(prj), 
----				OnDepend: fun(packageprj) 
----			} 
+---		packages: {
+---			[string]: {
+---				OnProject: fun(prj),
+---				OnDepend: fun(packageprj)
+---			}
 ---		}
 ---	}
 p.api.register {
@@ -54,7 +48,7 @@ p.api.register {
 	allowed = function(tbl)
 		local allowed = true
 		local function check(condition) allowed = allowed and condition end
-		
+
 		check(tbl.group == nil or type(tbl.group) == "string")
 
 		check(type(tbl.packages) == "table")
@@ -65,7 +59,7 @@ p.api.register {
 			check(type(package.OnProject) == "function")
 			check(package.OnDepend == nil or type(package.OnDepend) == "function")
 		end
-		
+
 		return allowed;
 	end,
 }
@@ -84,12 +78,6 @@ newoption {
 newoption {
 	trigger = "premake-check",
 	description = "Return a non-zero exit code if any files on disk are modified by the current action",
-}
-
-p.api.register {
-	name = "packageincludedirs",
-	scope = "config",
-	kind = "directory",
 }
 
 p.api.register {

@@ -49,15 +49,11 @@ function m.onConfigConnectProjectLinks(cfg)
 			goto continue
 		end
 
-		-- if not link_cfg then
-		-- 	link_cfg = p.project.findClosestMatch(linkprj, cfg.buildcfg, cfg.platform)
-		-- end
-
 		if link_cfg.kind == "None" then
 			cfg.links[link] = nil
 			table.remove(cfg.links, link_index)
 		end
-		
+
 		-- recurse links, add all children as links to parent projects for non-editor platform
 		local function addLinksRecursive(link_cfg)
 			for _, link in ipairs(link_cfg.links) do
@@ -73,27 +69,10 @@ function m.onConfigConnectProjectLinks(cfg)
 			end
 		end
 		if cfg.kind == "StaticLib" and cfg.platform == "Standalone" then
-			-- addLinksRecursive(link_cfg)
+			addLinksRecursive(link_cfg)
 		end
-		
-		local package = link_prj._package
 
-		if package then
-			local pkgincludedirs = link_prj.packageincludedirs
-			if type(link_prj.packageincludedirs) ~= "table" then
-				pkgincludedirs = { link_prj.packageincludedirs }
-			end
-			-- No premake support for external header includes : do it ourselves
-			for _, dir in ipairs(pkgincludedirs) do
-				if string.startswith(_ACTION, "vs") and cfg.toolset == "clang" then
-					cfg.buildoptions = cfg.buildoptions or {}
-					table.insert(
-						cfg.buildoptions,
-						"-Xclang --system-header-prefix=\"" .. path.getname(dir) .. "/\""
-					)
-				end
-			end
-		end
+		local package = link_prj._package
 
 		::continue::
 	end

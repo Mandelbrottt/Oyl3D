@@ -87,19 +87,6 @@ function CppProjectDefaults.ProjectSettings()
 	staticruntime "Off"
 	stringpooling "On"
 
-	includedirs {
-		"%{prj.location}/..",
-	}
-
-	externalincludedirs {
-		Config.SourceDir
-	}
-
-	defines {
-		Project.CurrentAssemblyMacro(),
-		Project.InsideProjectMacro(),
-	}
-
 	if os.isfile("pch.h") then
 		local pchDir = path.join("%{wks.location}", "Pch")
 		pchheader "pch.h"
@@ -118,14 +105,6 @@ function CppProjectDefaults.ProjectSettings()
 end
 
 function CppProjectDefaults.FileSettings()
-	-- header files can be included across assembly boundaries, and so have to use project-agnostic includes
-	-- FIXME: premake doesn't support per-file includedirs
-	filter { "files:**.cpp" }; do
-		includedirs {
-			"%{prj.location}"
-		}
-	end
-
 	filter { "files:**.hlsl" }; do
 		excludefrombuild "On"
 	end

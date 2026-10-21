@@ -8,16 +8,16 @@ oyl3d.actions.packages = oyl3d.actions.packages or {}
 local m = oyl3d.actions.packages
 local private = {}
 
-oyl3d.actions.newaction {
-	trigger = "packages",
-	description = "Fetch all packages defined in Packages.lua files",
+-- oyl3d.actions.newaction {
+-- 	trigger = "packages",
+-- 	description = "Fetch all packages defined in Packages.lua files",
 
-	options = function()
-		oyl3d.packages.options()
-	end,
-	execute = function()
-		oyl3d.packages.execute()
-	end,
-}
+-- 	options = function()
+-- 		oyl3d.packages.options()
+-- 	end,
+-- 	onWorkspace = function(wks)
+-- 		oyl3d.packages.onWorkspace(wks)
+-- 	end,
+-- }
 
 return m
