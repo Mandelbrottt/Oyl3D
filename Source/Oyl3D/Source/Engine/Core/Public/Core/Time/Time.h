@@ -38,7 +38,7 @@ namespace Oyl::Time
 	{
 		CORE_EXPORT
 		void
-		Init(IFrameTimer& a_defaultFrameTimer);
+		Init();
 
 		void
 		CORE_EXPORT

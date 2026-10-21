@@ -16,8 +16,6 @@
 
 #include "EditorClientApplication.h"
 
-static Oyl::IFrameTimer* g_frameTimer = nullptr;
-
 int
 RunApplication()
 {
@@ -63,7 +61,7 @@ main(int a_argc, char** a_argv)
 		}
 #endif
 
-	Oyl::Time::Internal::Init(*g_frameTimer);
+	Oyl::Time::Internal::Init();
 	Oyl::CommandLine::Init(a_argc, a_argv);
 
 	int exitCode = RunApplication();
@@ -77,8 +75,6 @@ main(int a_argc, char** a_argv)
 
 #if defined(OYL_WINDOWS)
 #include <Windows.h>
-
-#include <Core/Time/Windows/WindowsFrameTimer.h>
 
 int
 WINAPI
@@ -118,7 +114,6 @@ WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	}
 #endif
 
-	g_frameTimer = new Oyl::WindowsFrameTimer;
 	int result = main(__argc, __argv);
 
 	fclose(inFileStream);

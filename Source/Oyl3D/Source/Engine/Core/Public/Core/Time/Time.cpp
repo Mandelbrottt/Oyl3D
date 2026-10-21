@@ -4,9 +4,13 @@
 
 #include "Core/Profiling/Profiling.h"
 
+#if defined(OYL_WINDOWS)
+#include "Windows/WindowsFrameTimer.h"
+static Oyl::WindowsFrameTimer g_defaultFrameTimer;
+#endif
+
 namespace Oyl::Time
 {
-	static IFrameTimer* g_defaultFrameTimer = nullptr;
 	static IFrameTimer* g_frameTimer = nullptr;
 
 	static float32 g_deltaTime = 0.0f;
@@ -64,14 +68,23 @@ namespace Oyl::Time
 	namespace Internal
 	{
 		void
-		Init(IFrameTimer& a_defaultFrameTimer)
+		Init()
 		{
 			OYL_PROFILE_FUNCTION();
 
-			g_defaultFrameTimer = &a_defaultFrameTimer;
-			SetFrameTimer(g_defaultFrameTimer);
+			g_defaultFrameTimer.Init();
 
-			g_frameTimer->Init();
+			// If user hasn't set a FrameTimer, use the default
+			if (g_frameTimer == nullptr)
+			{
+				SetFrameTimer(&g_defaultFrameTimer);
+			}
+
+			// Don't initialize the frame timer if none was provided, since we always initialize the default timer
+			if (g_frameTimer != &g_defaultFrameTimer)
+			{
+				g_frameTimer->Init();
+			}
 		}
 
 		void
@@ -93,19 +106,17 @@ namespace Oyl::Time
 		const IFrameTimer&
 		GetFrameTimer()
 		{
-			assert(g_frameTimer);
+			OYL_ASSERT(g_frameTimer);
 			return *g_frameTimer;
 		}
 
 		void
 		SetFrameTimer(IFrameTimer* a_frameTimer)
 		{
-			assert(g_defaultFrameTimer);
-
 			if (a_frameTimer != nullptr)
 				g_frameTimer = a_frameTimer;
 			else // If user supplies nullptr, use the default frame timer
-				g_frameTimer = g_defaultFrameTimer;
+				g_frameTimer = &g_defaultFrameTimer;
 		}
 	}
 }

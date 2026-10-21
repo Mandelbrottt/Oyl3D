@@ -2,4 +2,5 @@
 
 #include <cassert>
 
-#include "Profiling/Profiling.h"
+#include "Core/Logging/Logging.h"
+#include "Core/Profiling/Profiling.h"
