@@ -3,10 +3,8 @@ name: Build Oyl3D
 on:
   push:
     paths: &paths-to-watch
-      - "Source/Oyl3D/**"
-      - "Source/Premake/**"
+      - "Source/**"
       - "premake5.lua"
-      - "Packages.lua"
       - ".github/workflows/build-oyl3d.yml"
   pull_request:
     branches: ["main"]
