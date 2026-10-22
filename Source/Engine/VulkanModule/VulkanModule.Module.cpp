@@ -2,7 +2,7 @@
 
 #include <Rendering/Rendering.h>
 
-#include "VulkanRenderer.h"
+#include "VulkanModule/VulkanRenderer.h"
 
 namespace Oyl
 {

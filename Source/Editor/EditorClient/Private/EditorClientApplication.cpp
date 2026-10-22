@@ -7,9 +7,8 @@
 #include <Core/Profiling/Profiling.h>
 #include <Core/Time/Time.h>
 
-#include <Rendering/Renderer.h>
-#include <Rendering/Rendering.h>
 #include <Rendering/RenderEngine.h>
+#include <Rendering/Rendering.h>
 
 namespace Oyl
 {

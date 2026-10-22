@@ -6,6 +6,7 @@
 #include <Core/Containers/SharedPtr.h>
 
 #include <Rendering/Renderer.h>
+#include <Rendering/RendererProcessor.h>
 #include <Rendering/TestRenderPass.h>
 
 namespace Oyl

@@ -1,16 +1,25 @@
-#include "Renderer.h"
+#include "RendererProcessor.h"
 
 #include <Core/Logging/Logging.h>
+#include <Core/Modules/ModuleManager.h>
 #include <Core/Profiling/Profiling.h>
 
 #include "RenderEngine.h"
+#include "Rendering.h"
 
 namespace Oyl
 {
 	static constexpr uint32 MAX_FRAMES_IN_FLIGHT = 2;
 
 	RendererProcessor::RendererProcessor(UniquePtr<IRenderer>&& a_renderer)
-		: m_renderer(std::move(a_renderer)) {}
+		: m_renderer(std::move(a_renderer))
+	{
+		OYL_ASSERT(m_renderer);
+
+		auto renderingModule = ModuleManager::GetModulePointer<IRenderingModule>("Rendering");
+		if (renderingModule)
+			m_imGuiRenderer = renderingModule->CreateImGuiRenderer(m_renderer->GetRenderingApi());
+	}
 
 	RendererProcessor::~RendererProcessor()
 	{
@@ -41,6 +50,9 @@ namespace Oyl
 		LogTrace("Creating ShaderCompiler");
 		m_shaderCompiler = m_renderer->CreateShaderCompiler();
 		RenderEngine::Get().RegisterShaderCompiler(m_shaderCompiler);
+
+		// Init ImGuiRenderer after setting up the RenderEngine
+		m_imGuiRenderer->Init(*m_renderer);
 	}
 
 	void
@@ -52,8 +64,11 @@ namespace Oyl
 			return;
 
 		// Update renderer internal variables
-		if (m_renderer)
-			m_renderer->Update();
+		m_renderer->Update();
+
+		// Update ImGuiRenderer before we render to windows
+		if (m_imGuiRenderer)
+			m_imGuiRenderer->Update(*m_renderer);
 
 		// If any windows need to be registered with the renderer, do it now
 		if (!m_windowDataPendingInitList.Empty())
@@ -91,8 +106,11 @@ namespace Oyl
 			UnregisterApplicationWindow(*window);
 		}
 
-		if (m_renderer)
-			m_renderer->Shutdown();
+		// Shutdown ImGuiRenderer before Renderer shuts down
+		if (m_imGuiRenderer)
+			m_imGuiRenderer->Shutdown(*m_renderer);
+
+		m_renderer->Shutdown();
 
 		m_windowDataMap.Clear();
 
@@ -102,6 +120,7 @@ namespace Oyl
 		RenderEngine::Get().UnregisterShaderCompiler(m_shaderCompiler);
 		m_shaderCompiler.Reset();
 
+		m_imGuiRenderer.Reset();
 		m_renderer.Reset();
 	}
 

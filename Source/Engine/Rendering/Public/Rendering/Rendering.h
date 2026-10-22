@@ -1,8 +1,11 @@
 #pragma once
 
+#include <Core/Containers/UniquePtr.h>
 #include <Core/Modules/ModuleInterface.h>
 
 #include "Renderer.h"
+
+#include "ImGui/ImGuiRenderer.h"
 
 #include "Rendering/RenderingEnums.h"
 
@@ -26,6 +29,24 @@ namespace Oyl
 	inline
 	IRendererFactory::~IRendererFactory() {}
 
+	class IImGuiRendererFactory
+	{
+	public:
+		virtual
+		~IImGuiRendererFactory() = 0;
+
+		virtual
+		bool
+		SupportsApi(RenderingApi a_api) = 0;
+
+		virtual
+		UniquePtr<IImGuiRenderer>
+		CreateImGuiRenderer() = 0;
+	};
+
+	inline
+	IImGuiRendererFactory::~IImGuiRendererFactory() {}
+
 	class IRenderingModule : public IModuleInterface
 	{
 	public:
@@ -43,6 +64,18 @@ namespace Oyl
 		virtual
 		UniquePtr<IRenderer>
 		CreateRenderer(RenderingApi a_api) = 0;
+
+		virtual
+		void
+		RegisterImGuiRendererFactory(IImGuiRendererFactory& a_factory) = 0;
+
+		virtual
+		void
+		UnregisterImGuiRendererFactory(IImGuiRendererFactory& a_factory) = 0;
+
+		virtual
+		UniquePtr<IImGuiRenderer>
+		CreateImGuiRenderer(RenderingApi a_api) = 0;
 
 		bool
 		SupportsHotReload() override

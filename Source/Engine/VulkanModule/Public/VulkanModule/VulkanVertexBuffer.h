@@ -2,8 +2,6 @@
 
 #include <vulkan/vulkan_raii.hpp>
 
-#include "VulkanCommandQueue.h"
-
 #include "Rendering/VertexBuffer.h"
 
 namespace Oyl

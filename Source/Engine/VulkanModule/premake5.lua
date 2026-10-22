@@ -13,8 +13,13 @@ project "VulkanModule"; do
 	uses {
 		"Core",
 		"Application",
-		"Rendering",
-		"Vulkan",
 		"Glfw"
 	}
+
+	usage "PUBLIC"; do
+		uses {
+			"Rendering",
+			"Vulkan",
+		}
+	end
 end

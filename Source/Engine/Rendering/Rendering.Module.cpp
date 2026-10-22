@@ -38,8 +38,34 @@ namespace Oyl
 			return nullptr;
 		}
 
+		void
+		RegisterImGuiRendererFactory(IImGuiRendererFactory& a_factory) override
+		{
+			auto iter = std::ranges::find(m_imGuiRendererFactories, &a_factory);
+			if (iter == m_imGuiRendererFactories.end())
+				m_imGuiRendererFactories.Add(&a_factory);
+		}
+
+		void
+		UnregisterImGuiRendererFactory(IImGuiRendererFactory& a_factory) override
+		{
+			auto iter = std::ranges::find(m_imGuiRendererFactories, &a_factory);
+			if (iter != m_imGuiRendererFactories.end())
+				m_imGuiRendererFactories.erase(iter);
+		}
+
+		UniquePtr<IImGuiRenderer>
+		CreateImGuiRenderer(RenderingApi a_api) override
+		{
+			for (auto& rendererFactory : m_imGuiRendererFactories)
+				if (rendererFactory->SupportsApi(a_api))
+					return rendererFactory->CreateImGuiRenderer();
+			return nullptr;
+		}
+
 	private:
 		Array<IRendererFactory*> m_rendererFactories;
+		Array<IImGuiRendererFactory*> m_imGuiRendererFactories;
 	};
 
 	OYL_MODULE_DECLARE(Rendering, RenderingModule)

@@ -4,15 +4,9 @@
 
 #include <Application/ApplicationWindow.h>
 
-#include <Core/Containers/ArrayMap.h>
-#include <Core/Logging/Logging.h>
-
-#include <Rendering/RenderEngine.h>
 #include <Rendering/Renderer.h>
 
 #include "VulkanDevice.h"
-#include "VulkanPresentTarget.h"
-#include "VulkanSwapChain.h"
 
 namespace Oyl
 {
@@ -31,6 +25,9 @@ namespace Oyl
 		void
 		Shutdown() override {}
 
+		RenderingApi
+		GetRenderingApi() const override { return RenderingApi::Vulkan; }
+
 		PresentTargetHandle
 		CreatePresentTarget(IApplicationWindow& a_window) override;
 
@@ -42,6 +39,12 @@ namespace Oyl
 
 		SharedPtr<IShaderCompiler>
 		CreateShaderCompiler() override;
+
+		const vk::raii::Context&
+		GetVkContext() const { return m_vkContext; }
+
+		const vk::raii::Instance&
+		GetVkInstance() const { return m_vkInstance; }
 
 	private:
 		void
