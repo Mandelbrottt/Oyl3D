@@ -11,8 +11,11 @@
 #ifndef OYL_EXPOSE_PROFILER_CONTROLS
 #	define OYL_EXPOSE_PROFILER_CONTROLS
 #endif
+#include <Core/ImGui/ImGuiImpl.h>
 #include <Core/Profiling/Profiling.h>
 #include <Core/Time/IFrameTimer.h>
+
+#include <ImGui/imgui.h>
 
 #include "EditorClientApplication.h"
 
@@ -31,6 +34,16 @@ RunApplication()
 		Oyl::Internal::GetCurrentLogger()->Flush();
 	});
 
+	// Initialize ImGui context
+	ImGui::CreateContext();
+
+	Oyl::Internal::ImGuiSetCurrentContext(ImGui::GetCurrentContext());
+	ImGuiMemAllocFunc pAlloc = nullptr;
+	ImGuiMemFreeFunc pFree = nullptr;
+	void* pUserData = nullptr;
+	ImGui::GetAllocatorFunctions(&pAlloc, &pFree, &pUserData);
+	Oyl::Internal::ImGuiSetAllocatorFunctions(pAlloc, pFree, pUserData);
+
 	// Initial scan for modules
 	auto cwd = std::filesystem::current_path().string();
 	Oyl::ModuleManager::Get().AddEngineModuleDirectory(Oyl::StringView(cwd));
@@ -44,7 +57,13 @@ RunApplication()
 	// Process pending auto-load requests
 	Oyl::ModuleManager::Get().ProcessPendingAutoLoadRequests();
 
-	return applicationModule->RunApplication();
+	int exitCode = applicationModule->RunApplication();
+
+	Oyl::Internal::ImGuiSetAllocatorFunctions(nullptr, nullptr, nullptr);
+	Oyl::Internal::ImGuiSetCurrentContext(nullptr);
+	ImGui::DestroyContext();
+
+	return exitCode;
 }
 
 int

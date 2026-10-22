@@ -46,7 +46,9 @@ m.elements.preBake.onProjectPreProcessModule = function(prj)
 end
 
 m.elements.preBake.onProjectPreProcessPackage = function(prj)
-	return {}
+	return {
+		m.preBake.onProjectDefinePackageMacros,
+	}
 end
 
 m.elements.preBake.onProjectPostProcess = function(prj)

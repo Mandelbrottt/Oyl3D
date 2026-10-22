@@ -343,6 +343,33 @@ function m.onProjectAddReflectionBuildAction(prj)
 	end
 end
 
+function m.onProjectDefinePackageMacros(prj)
+	local prj_name_as_macro = prj.name:upper():gsub("[%.%-% ]", "_")
+
+	defines {
+		"OYL_PACKAGE_WITHIN_" .. prj_name_as_macro,
+		"OYL_PACKAGE_CURRENT=\"" .. prj.name .. "\"",
+		"OYL_PACKAGE_CURRENT_AS_MACRO=" .. prj_name_as_macro,
+	}
+
+	-- SharedLib Export Macros
+	usage "PUBLIC"; do
+		defines {
+			"OYL_PACKAGE_AVAILABLE_" .. prj_name_as_macro,
+		}
+		filter { "kind:SharedLib" }; do
+			defines {
+				prj_name_as_macro .. "_SHAREDLIB"
+			}
+		end
+		filter { "kind:StaticLib" }; do
+			defines {
+				prj_name_as_macro .. "_STATICLIB",
+			}
+		end
+	end
+end
+
 function m.onProjectRemoveLinksToNoneKindProjects(prj)
 	local wks = prj.workspace
 	for index = #prj.links, 1, -1 do

@@ -15,7 +15,6 @@ namespace Oyl
 		void
 		OnStartModule() override
 		{
-			LogWarning("{}", (void*) ImGui::GetCurrentContext());
 			auto* renderingModule = ModuleManager::GetModulePointer<IRenderingModule>("Rendering");
 			if (renderingModule)
 				renderingModule->RegisterRendererFactory(*this);

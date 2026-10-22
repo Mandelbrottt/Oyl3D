@@ -99,16 +99,21 @@ local Packages = {
 		},
 		OnProject = function(prj)
 			language "C++"
-			kind "StaticLib" -- ImGui SharedLib support is quite involved, so don't bother for now
+			kind "SharedLib"
 
 			files {
 				"imconfig.h",
 				"imgui*.h",
 				"imgui*.cpp",
 				"imstb*.h",
+				"backends/imgui_impl_vulkan.h",
+				"backends/imgui_impl_vulkan.cpp",
 			}
 
-			includedirs { "." }
+			includedirs {
+				".",
+				"backends"
+			}
 
 			filter "action:vs*"; do
 				files {
@@ -116,6 +121,20 @@ local Packages = {
 				}
 			end
 
+			uses {
+				"Glfw",
+				"Vulkan",
+			}
+
+			-- Tight coupling with Core, but this is ok since everything that uses core will also use ImGui
+			includedirsafter {
+				'%{!wks.projects["Core"].basedir}/Public'
+			}
+			usage "PUBLIC"; do
+				defines {
+					'IMGUI_USER_CONFIG=<Core/ImGui/ImGuiConfig.h>'
+				}
+			end
 			usage "INTERFACE"; do
 				links { prj.name }
 			end
