@@ -1,4 +1,3 @@
-#include <Core/Logging/Logging.h>
 #include <Core/Modules/ModuleManager.h>
 
 #include <Rendering/Rendering.h>
