@@ -14,7 +14,7 @@ namespace Oyl
 		~RenderingModule() = default;
 
 		void
-		RegisterRendererFactory(IRendererFactory& a_factory) override
+		RegisterRenderContextFactory(IRenderContextFactory& a_factory) override
 		{
 			auto iter = std::ranges::find(m_rendererFactories, &a_factory);
 			if (iter == m_rendererFactories.end())
@@ -22,19 +22,19 @@ namespace Oyl
 		}
 
 		void
-		UnregisterRendererFactory(IRendererFactory& a_factory) override
+		UnregisterRenderContextFactory(IRenderContextFactory& a_factory) override
 		{
 			auto iter = std::ranges::find(m_rendererFactories, &a_factory);
 			if (iter != m_rendererFactories.end())
 				m_rendererFactories.erase(iter);
 		}
 
-		UniquePtr<IRenderer>
-		CreateRenderer(RenderingApi a_api) override
+		UniquePtr<IRenderContext>
+		CreateRenderContext(RenderingApi a_api) override
 		{
 			for (auto& rendererFactory : m_rendererFactories)
 				if (rendererFactory->SupportsApi(a_api))
-					return rendererFactory->CreateRenderer();
+					return rendererFactory->CreateRenderContext();
 			return nullptr;
 		}
 
@@ -64,7 +64,7 @@ namespace Oyl
 		}
 
 	private:
-		Array<IRendererFactory*> m_rendererFactories;
+		Array<IRenderContextFactory*> m_rendererFactories;
 		Array<IImGuiRendererFactory*> m_imGuiRendererFactories;
 	};
 

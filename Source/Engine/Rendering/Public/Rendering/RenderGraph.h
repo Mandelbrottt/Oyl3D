@@ -6,7 +6,8 @@
 #include <Core/Preprocessor/Common.h>
 
 #include "CommandBuffer.h"
-#include "RenderPass.h"
+
+#include "Rendering/RenderPass/RenderPass.h"
 
 namespace Oyl
 {
@@ -39,6 +40,14 @@ namespace Oyl
 		virtual
 		bool
 		RemoveRenderPass(RenderPassId a_pass);
+
+		virtual
+		RenderPassBase*
+		GetRenderPass(RenderPassId a_renderPassId) const;
+
+		virtual
+		RenderPassBase*
+		GetRenderPass(StringView a_renderPassName) const;
 
 		virtual
 		void

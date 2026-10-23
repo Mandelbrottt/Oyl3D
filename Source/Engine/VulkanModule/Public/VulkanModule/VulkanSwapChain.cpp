@@ -71,6 +71,8 @@ namespace Oyl
 
 		CreateSwapChain();
 		CreateSwapChainImageViews();
+
+		m_onRecreate(*this);
 	}
 
 	bool
@@ -93,6 +95,12 @@ namespace Oyl
 
 		m_currentImageIndex = imageIndex;
 		return true;
+	}
+
+	uint32
+	VulkanSwapChain::GetMinImageCount() const
+	{
+		return m_minImageCount;
 	}
 
 	uint32
@@ -153,7 +161,7 @@ namespace Oyl
 
 		vk::SurfaceCapabilitiesKHR surfaceCapabilities = physicalDevice.getSurfaceCapabilitiesKHR(*surface);
 		m_vkSwapChainExtent = ChooseSwapExtent(surfaceCapabilities, { width, height });
-		uint32_t minImageCount = ChooseSwapMinImageCount(surfaceCapabilities);
+		m_minImageCount = ChooseSwapMinImageCount(surfaceCapabilities);
 
 		std::vector<vk::SurfaceFormatKHR> availableFormats = physicalDevice.getSurfaceFormatsKHR(*surface);
 		m_vkSwapChainSurfaceFormat = ChooseSwapSurfaceFormat(availableFormats);
@@ -163,7 +171,7 @@ namespace Oyl
 
 		vk::SwapchainCreateInfoKHR swapChainCreateInfo {
 			.surface = *surface,
-			.minImageCount = minImageCount,
+			.minImageCount = m_minImageCount,
 			.imageFormat = m_vkSwapChainSurfaceFormat.format,
 			.imageColorSpace = m_vkSwapChainSurfaceFormat.colorSpace,
 			.imageExtent = m_vkSwapChainExtent,
@@ -279,7 +287,7 @@ namespace
 		};
 	}
 
-	Oyl::uint32
+	uint32
 	ChooseSwapMinImageCount(const vk::SurfaceCapabilitiesKHR& a_capabilities)
 	{
 		auto minImageCount = std::max(3u, a_capabilities.minImageCount);

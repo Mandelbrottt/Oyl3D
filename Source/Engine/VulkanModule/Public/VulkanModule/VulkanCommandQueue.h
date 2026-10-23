@@ -13,7 +13,7 @@ namespace Oyl
 {
 	class VulkanDevice;
 
-	class VulkanCommandQueue : public ICommandQueue
+	class VULKANMODULE_EXPORT VulkanCommandQueue : public ICommandQueue
 	{
 	public:
 		VulkanCommandQueue() = default;

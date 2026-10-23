@@ -7,7 +7,7 @@ namespace Oyl
 	void
 	EventDispatcher::Register(
 		EventId a_eventId,
-		const OnEventDelegate& a_delegate,
+		const OnEventDelegate<Event>& a_delegate,
 		int32 a_priority
 	)
 	{
@@ -50,7 +50,7 @@ namespace Oyl
 	}
 
 	void
-	EventDispatcher::Unregister(EventId a_eventId, const OnEventDelegate& a_delegate)
+	EventDispatcher::Unregister(EventId a_eventId, const OnEventDelegate<Event>& a_delegate)
 	{
 		auto* listenerMap = TryGetListenerMapForEventId(a_eventId);
 		if (!listenerMap)

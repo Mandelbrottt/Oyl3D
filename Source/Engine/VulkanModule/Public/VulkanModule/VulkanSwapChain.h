@@ -16,7 +16,7 @@ namespace Oyl
 		const VulkanPresentTarget& presentTarget;
 	};
 
-	class VulkanSwapChain : public ISwapChain
+	class VULKANMODULE_EXPORT VulkanSwapChain : public ISwapChain
 	{
 	public:
 		VulkanSwapChain(nullptr_t) {}
@@ -35,14 +35,29 @@ namespace Oyl
 		bool
 		IsValid() const override { return *m_vkSwapChain; }
 
-		Vector2u
-		GetSize() const override;
-
 		void
 		Recreate() override;
 
+		void
+		AddOnRecreateCallback(OnRecreateDelegate a_callback) override
+		{
+			m_onRecreate += a_callback;
+		}
+
+		void
+		RemoveOnRecreateCallback(OnRecreateDelegate a_callback) override
+		{
+			m_onRecreate -= a_callback;
+		}
+
 		bool
 		AcquireNextImage(SemaphoreId a_semaphore, FenceId a_fence) override;
+
+		Vector2u
+		GetSize() const override;
+
+		uint32
+		GetMinImageCount() const override;
 
 		uint32
 		GetImageCount() const override;
@@ -98,6 +113,9 @@ namespace Oyl
 		vk::SurfaceFormatKHR m_vkSwapChainSurfaceFormat;
 		vk::Extent2D m_vkSwapChainExtent;
 
+		uint32 m_minImageCount = 0;
 		uint32 m_currentImageIndex = 0;
+
+		MulticastDelegate<void(const ISwapChain&)> m_onRecreate;
 	};
 }

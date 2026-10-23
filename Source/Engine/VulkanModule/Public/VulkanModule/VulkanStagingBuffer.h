@@ -19,7 +19,7 @@ namespace Oyl
 		vk::MemoryPropertyFlags vkProperties;
 	};
 
-	class VulkanStagingBuffer : public IStagingBuffer
+	class VULKANMODULE_EXPORT VulkanStagingBuffer : public IStagingBuffer
 	{
 	public:
 		VulkanStagingBuffer(nullptr_t) {}

@@ -106,9 +106,19 @@ local Packages = {
 				"imgui*.h",
 				"imgui*.cpp",
 				"imstb*.h",
+				"backends/imgui_impl_glfw.h",
+				"backends/imgui_impl_glfw.cpp",
 				"backends/imgui_impl_vulkan.h",
 				"backends/imgui_impl_vulkan.cpp",
 			}
+
+			-- While setting up ImGui, for reference
+			files {
+				"examples/example_glfw_vulkan/main.cpp",
+			}
+			filter { "files:examples/example_glfw_vulkan/main.cpp" }; do
+				excludefrombuild "On"
+			end; filter {}
 
 			includedirs {
 				".",

@@ -146,6 +146,7 @@ namespace Oyl
 #	include <Core/ImGui/ImGuiImpl.h>
 #	define __OYL__IMGUI_MODULE_INIT() \
 		do { \
+			IMGUI_CHECKVERSION();\
 			::ImGui::SetCurrentContext(::Oyl::Internal::ImGuiGetCurrentContext()); \
 			ImGuiMemAllocFunc pAlloc = nullptr; \
 			ImGuiMemFreeFunc pFree = nullptr; \

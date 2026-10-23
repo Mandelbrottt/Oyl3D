@@ -29,7 +29,7 @@ namespace Oyl
 		ArrayProxy<const char*> requiredDeviceExtensions;
 	};
 
-	class VulkanDevice : public IDevice
+	class VULKANMODULE_EXPORT VulkanDevice : public IDevice
 	{
 	public:
 		VulkanDevice(nullptr_t) {}

@@ -1,6 +1,4 @@
-#include <Core/Logging/Logging.h>
 #include <Core/Modules/ModuleManager.h>
-#include <Core/Profiling/Profiling.h>
 
 #include <Rendering/Rendering.h>
 

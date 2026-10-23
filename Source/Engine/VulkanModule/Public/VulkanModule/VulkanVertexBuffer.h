@@ -10,7 +10,7 @@ namespace Oyl
 
 	using VulkanVertexBufferId = IConvertibleDeviceObjectId<VertexBufferId, vk::Buffer>;
 
-	class VulkanVertexBuffer : public IVertexBuffer
+	class VULKANMODULE_EXPORT VulkanVertexBuffer : public IVertexBuffer
 	{
 	public:
 		VulkanVertexBuffer(nullptr_t) {}

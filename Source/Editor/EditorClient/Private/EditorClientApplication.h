@@ -5,8 +5,8 @@
 #include <Core/Containers/Delegate.h>
 #include <Core/Containers/SharedPtr.h>
 
+#include <Rendering/RenderContext.h>
 #include <Rendering/Renderer.h>
-#include <Rendering/RendererProcessor.h>
 #include <Rendering/TestRenderPass.h>
 
 namespace Oyl
@@ -69,7 +69,7 @@ namespace Oyl
 	private:
 		IApplicationWindow* m_mainWindow = nullptr;
 
-		RendererProcessor m_rendererProcessor;
+		Renderer m_renderer;
 		UniquePtr<TestRenderPass> m_testRenderPass;
 
 		bool m_exitRequested = false;

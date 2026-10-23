@@ -10,7 +10,7 @@ namespace Oyl
 
 	using VulkanSemaphoreId = IConvertibleDeviceObjectId<SemaphoreId, vk::Semaphore>;
 
-	class VulkanSemaphore : public ISemaphore
+	class VULKANMODULE_EXPORT VulkanSemaphore : public ISemaphore
 	{
 	public:
 		VulkanSemaphore(nullptr_t) {}

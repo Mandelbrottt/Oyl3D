@@ -16,7 +16,7 @@ namespace Oyl
 	class VulkanShader;
 	class VulkanVertexBuffer;
 
-	class VulkanCommandBuffer : public ICommandBuffer
+	class VULKANMODULE_EXPORT VulkanCommandBuffer : public ICommandBuffer
 	{
 	public:
 		VulkanCommandBuffer(nullptr_t) {}

@@ -1,4 +1,4 @@
-#include "VulkanRenderer.h"
+#include "VulkanRenderContext.h"
 
 #include <Application/Application.h>
 
@@ -44,7 +44,7 @@ namespace
 namespace Oyl
 {
 	void
-	VulkanRenderer::Init()
+	VulkanRenderContext::Init()
 	{
 		OYL_PROFILE_FUNCTION();
 
@@ -56,7 +56,7 @@ namespace Oyl
 	}
 
 	void
-	VulkanRenderer::CreateVkInstance()
+	VulkanRenderContext::CreateVkInstance()
 	{
 		OYL_PROFILE_FUNCTION();
 
@@ -130,7 +130,7 @@ namespace Oyl
 	}
 
 	void
-	VulkanRenderer::CreateVkDebugMessenger()
+	VulkanRenderContext::CreateVkDebugMessenger()
 	{
 		OYL_PROFILE_FUNCTION();
 
@@ -155,7 +155,7 @@ namespace Oyl
 	}
 
 	PresentTargetHandle
-	VulkanRenderer::CreatePresentTarget(IApplicationWindow& a_window)
+	VulkanRenderContext::CreatePresentTarget(IApplicationWindow& a_window)
 	{
 		OYL_PROFILE_FUNCTION();
 		VulkanPresentTargetCreateParams params {
@@ -166,7 +166,7 @@ namespace Oyl
 	}
 
 	DeviceHandle
-	VulkanRenderer::CreateDevice(IPresentTarget* a_presentTarget)
+	VulkanRenderContext::CreateDevice(IPresentTarget* a_presentTarget)
 	{
 		OYL_PROFILE_FUNCTION();
 		VulkanDeviceCreateParams params {
@@ -178,7 +178,7 @@ namespace Oyl
 	}
 
 	SwapChainHandle
-	VulkanRenderer::CreateSwapChain(IDevice& a_device, IApplicationWindow& a_window, IPresentTarget& a_presentTarget)
+	VulkanRenderContext::CreateSwapChain(IDevice& a_device, IApplicationWindow& a_window, IPresentTarget& a_presentTarget)
 	{
 		OYL_PROFILE_FUNCTION();
 		VulkanSwapChainCreateParams params {
@@ -189,7 +189,7 @@ namespace Oyl
 	}
 
 	SharedPtr<IShaderCompiler>
-	VulkanRenderer::CreateShaderCompiler()
+	VulkanRenderContext::CreateShaderCompiler()
 	{
 		return MakeSharedPtr<VulkanShaderCompiler>();
 	}

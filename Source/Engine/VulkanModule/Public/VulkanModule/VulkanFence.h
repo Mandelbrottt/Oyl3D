@@ -10,7 +10,7 @@ namespace Oyl
 
 	using VulkanFenceId = IConvertibleDeviceObjectId<FenceId, vk::Fence>;
 
-	class VulkanFence : public IFence
+	class VULKANMODULE_EXPORT VulkanFence : public IFence
 	{
 	public:
 		VulkanFence(nullptr_t) {}

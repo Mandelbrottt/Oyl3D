@@ -2,9 +2,9 @@
 
 #include <algorithm>
 
+#include "Core/Containers/Array.h"
 #include "Core/Platform/MemberFunctionPointer.h"
 #include "Core/Types/TypeTraits.h"
-#include "Core/Containers/Array.h"
 
 namespace Oyl
 {

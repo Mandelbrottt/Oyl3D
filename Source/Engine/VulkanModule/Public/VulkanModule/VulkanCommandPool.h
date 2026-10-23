@@ -8,7 +8,7 @@ namespace Oyl
 {
 	class VulkanDevice;
 
-	class VulkanCommandPool : public ICommandPool
+	class VULKANMODULE_EXPORT VulkanCommandPool : public ICommandPool
 	{
 	public:
 		VulkanCommandPool(nullptr_t) {}

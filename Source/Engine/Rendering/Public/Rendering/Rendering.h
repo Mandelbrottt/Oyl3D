@@ -3,7 +3,7 @@
 #include <Core/Containers/UniquePtr.h>
 #include <Core/Modules/ModuleInterface.h>
 
-#include "Renderer.h"
+#include "RenderContext.h"
 
 #include "ImGui/ImGuiRenderer.h"
 
@@ -11,23 +11,23 @@
 
 namespace Oyl
 {
-	class IRendererFactory
+	class IRenderContextFactory
 	{
 	public:
 		virtual
-		~IRendererFactory() = 0;
+		~IRenderContextFactory() = 0;
 
 		virtual
 		bool
 		SupportsApi(RenderingApi a_api) = 0;
 
 		virtual
-		UniquePtr<IRenderer>
-		CreateRenderer() = 0;
+		UniquePtr<IRenderContext>
+		CreateRenderContext() = 0;
 	};
 
 	inline
-	IRendererFactory::~IRendererFactory() {}
+	IRenderContextFactory::~IRenderContextFactory() {}
 
 	class IImGuiRendererFactory
 	{
@@ -55,15 +55,15 @@ namespace Oyl
 
 		virtual
 		void
-		RegisterRendererFactory(IRendererFactory& a_factory) = 0;
+		RegisterRenderContextFactory(IRenderContextFactory& a_factory) = 0;
 
 		virtual
 		void
-		UnregisterRendererFactory(IRendererFactory& a_factory) = 0;
+		UnregisterRenderContextFactory(IRenderContextFactory& a_factory) = 0;
 
 		virtual
-		UniquePtr<IRenderer>
-		CreateRenderer(RenderingApi a_api) = 0;
+		UniquePtr<IRenderContext>
+		CreateRenderContext(RenderingApi a_api) = 0;
 
 		virtual
 		void

@@ -4,17 +4,17 @@
 
 #include <Application/ApplicationWindow.h>
 
-#include <Rendering/Renderer.h>
+#include <Rendering/RenderContext.h>
 
 #include "VulkanDevice.h"
 
 namespace Oyl
 {
-	class VulkanRenderer : public IRenderer
+	class VULKANMODULE_EXPORT VulkanRenderContext : public IRenderContext
 	{
 	public:
 		virtual
-		~VulkanRenderer() = default;
+		~VulkanRenderContext() = default;
 
 		void
 		Init() override;

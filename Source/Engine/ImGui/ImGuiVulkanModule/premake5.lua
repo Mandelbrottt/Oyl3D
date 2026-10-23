@@ -15,6 +15,11 @@ project "ImGuiVulkanModule"; do
 		"Application",
 	}
 
+	-- ImGui_Impl* functions use #include "imgui.h"
+	includedirsafter {
+		'%{wks.projects["ImGui"].basedir}'
+	}
+
 	usage "PUBLIC"; do
 		uses {
 			"VulkanModule",

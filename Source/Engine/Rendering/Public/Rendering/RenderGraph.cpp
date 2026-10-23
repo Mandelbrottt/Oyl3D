@@ -20,6 +20,7 @@ namespace Oyl
 			return false;
 
 		m_renderPasses.Emplace(id, a_pass);
+		m_dirty = true;
 		return true;
 	}
 
@@ -30,26 +31,52 @@ namespace Oyl
 			return false;
 
 		m_renderPasses.Erase(a_pass);
+		m_dirty = true;
 		return true;
+	}
+
+	RenderPassBase*
+	RenderGraph::GetRenderPass(RenderPassId a_renderPassId) const
+	{
+		if (m_renderPasses.Contains(a_renderPassId))
+			return m_renderPasses[a_renderPassId];
+		return nullptr;
+	}
+
+	RenderPassBase*
+	RenderGraph::GetRenderPass(StringView a_renderPassName) const
+	{
+		for (auto& [id, pass] : m_renderPasses)
+			if (pass->GetName() == a_renderPassName)
+				return pass;
+		return nullptr;
 	}
 
 	void
 	RenderGraph::Execute(const ICommandBuffer& a_commandBuffer)
 	{
-		if (m_dirty)
-			SortPasses();
+		SortPasses();
 
 		for (auto& pass : m_sortedRenderPasses)
 		{
-			pass->Execute(&a_commandBuffer);
+			pass->Execute(a_commandBuffer);
 		}
 	}
 
 	void
 	RenderGraph::SortPasses()
 	{
+		if (!m_dirty)
+			return;
+
 		m_sortedRenderPasses.Clear();
-		m_sortedRenderPasses.Add(m_renderPasses.At(static_cast<RenderPassId>(1)));
+		for (auto& [id, pass] : m_renderPasses)
+			m_sortedRenderPasses.Add(pass);
+
+		// TEMPORARY:
+		std::swap(m_sortedRenderPasses[0], m_sortedRenderPasses[1]);
+
+		m_dirty = false;
 	}
 
 	void

@@ -8,7 +8,7 @@
 
 namespace Oyl
 {
-	class VulkanShaderCompiler : public IShaderCompiler
+	class VULKANMODULE_EXPORT VulkanShaderCompiler : public IShaderCompiler
 	{
 	public:
 		VulkanShaderCompiler();

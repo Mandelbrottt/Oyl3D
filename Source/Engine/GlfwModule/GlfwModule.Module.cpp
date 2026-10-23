@@ -1,10 +1,8 @@
 #include <Application/Application.h>
 
-#include <Core/Logging/Logging.h>
 #include <Core/Modules/ModuleManager.h>
-#include <Core/Profiling/Profiling.h>
 
-#include <GLFW/glfw3.h>
+#include <ImGui/backends/imgui_impl_glfw.h>
 
 #include "GlfwApplicationWindow.h"
 

@@ -2,12 +2,12 @@
 
 #include <Rendering/Rendering.h>
 
-#include "VulkanModule/VulkanRenderer.h"
+#include "VulkanModule/VulkanRenderContext.h"
 
 namespace Oyl
 {
 	class VulkanModule final
-		: public IRendererFactory,
+		: public IRenderContextFactory,
 		  public IModuleInterface
 	{
 	public:
@@ -16,7 +16,7 @@ namespace Oyl
 		{
 			auto* renderingModule = ModuleManager::GetModulePointer<IRenderingModule>("Rendering");
 			if (renderingModule)
-				renderingModule->RegisterRendererFactory(*this);
+				renderingModule->RegisterRenderContextFactory(*this);
 		}
 
 		void
@@ -24,7 +24,7 @@ namespace Oyl
 		{
 			auto* renderingModule = ModuleManager::GetModulePointer<IRenderingModule>("Rendering");
 			if (renderingModule)
-				renderingModule->UnregisterRendererFactory(*this);
+				renderingModule->UnregisterRenderContextFactory(*this);
 		}
 
 		bool
@@ -33,10 +33,10 @@ namespace Oyl
 			return a_api == RenderingApi::Vulkan;
 		}
 
-		UniquePtr<IRenderer>
-		CreateRenderer() override
+		UniquePtr<IRenderContext>
+		CreateRenderContext() override
 		{
-			return MakeUniquePtr<VulkanRenderer>();
+			return MakeUniquePtr<VulkanRenderContext>();
 		}
 
 		bool SupportsHotReload() override

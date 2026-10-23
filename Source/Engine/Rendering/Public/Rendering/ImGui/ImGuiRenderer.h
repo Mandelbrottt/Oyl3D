@@ -1,11 +1,12 @@
 #pragma once
 
-#include <Core/Containers/SharedPtr.h>
-
-#include "Rendering/Renderer.h"
+#include <Application/ApplicationWindow.h>
 
 namespace Oyl
 {
+	class Renderer;
+	class ICommandBuffer;
+
 	class IImGuiRenderer
 	{
 	public:
@@ -14,15 +15,23 @@ namespace Oyl
 
 		virtual
 		void
-		Init(IRenderer& a_renderer) = 0;
+		Init(Renderer& a_renderer, IApplicationWindow& a_mainWindow) = 0;
 
 		virtual
 		void
-		Update(IRenderer& a_renderer) = 0;
+		Update(Renderer& a_renderer) = 0;
 
 		virtual
 		void
-		Shutdown(IRenderer& a_renderer) = 0;
+		Render(Renderer& a_renderer, ICommandBuffer& a_commandBuffer) = 0;
+
+		virtual
+		void
+		Shutdown(Renderer& a_renderer) = 0;
+
+		virtual
+		void
+		SetOnUpdateCallback(Delegate<void()> a_callback) = 0;
 	};
 
 	inline

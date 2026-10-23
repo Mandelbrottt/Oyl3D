@@ -14,7 +14,7 @@ namespace Oyl
 		const IApplicationWindow* window;
 	};
 
-	class VulkanPresentTarget : public IPresentTarget
+	class VULKANMODULE_EXPORT VulkanPresentTarget : public IPresentTarget
 	{
 	public:
 		VulkanPresentTarget(nullptr_t) {}

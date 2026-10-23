@@ -3,8 +3,8 @@
 #include <Core/Containers/Array.h>
 #include <Core/Containers/Set.h>
 
-#include "CommandBuffer.h"
-#include "RenderTarget.h"
+#include "Rendering/CommandBuffer.h"
+#include "Rendering/RenderTarget.h"
 
 namespace Oyl
 {
@@ -109,14 +109,14 @@ namespace Oyl
 
 		virtual
 		void
-		Execute(const ICommandBuffer* a_commandBuffer)
+		Execute(const ICommandBuffer& a_commandBuffer)
 		{
 			if (!IsEnabled())
 				return;
 
-			Begin(*a_commandBuffer);
-			Render(*a_commandBuffer);
-			End(*a_commandBuffer);
+			Begin(a_commandBuffer);
+			Render(a_commandBuffer);
+			End(a_commandBuffer);
 		}
 
 	protected:

@@ -40,15 +40,15 @@ namespace Oyl
 		}
 
 		auto* renderingModule = ModuleManager::GetModulePointer<IRenderingModule>("Rendering");
-		if (auto renderer = renderingModule->CreateRenderer(RenderingApi::Vulkan))
+		if (auto renderContext = renderingModule->CreateRenderContext(RenderingApi::Vulkan))
 		{
-			m_rendererProcessor = RendererProcessor(std::move(renderer));
-			m_rendererProcessor.Init(m_mainWindow);
+			m_renderer = Renderer(std::move(renderContext));
+			m_renderer.Init(m_mainWindow);
 			for (auto* window : m_applicationWindows)
-				m_rendererProcessor.RegisterApplicationWindow(*window);
+				m_renderer.RegisterApplicationWindow(*window);
 
 			m_testRenderPass = UniquePtr<TestRenderPass>::Make(m_mainWindow->GetContentSize());
-			auto& renderGraph = m_rendererProcessor.GetRenderGraph();
+			auto& renderGraph = m_renderer.GetRenderGraph();
 			renderGraph.AddRenderPass(m_testRenderPass.Get());
 		}
 	}
@@ -62,11 +62,11 @@ namespace Oyl
 
 		m_testRenderPass.Reset();
 
-		if (m_rendererProcessor.IsValid())
+		if (m_renderer.IsValid())
 		{
 			for (auto* window : m_applicationWindows)
-				m_rendererProcessor.UnregisterApplicationWindow(*window);
-			m_rendererProcessor.Shutdown();
+				m_renderer.UnregisterApplicationWindow(*window);
+			m_renderer.Shutdown();
 		}
 
 		while (!m_applicationWindows.Empty())
@@ -86,8 +86,8 @@ namespace Oyl
 		if (m_mainWindow && m_mainWindow->IsValid())
 			m_mainWindow->Update();
 
-		if (m_rendererProcessor.IsValid())
-			m_rendererProcessor.Update();
+		if (m_renderer.IsValid())
+			m_renderer.Update();
 	}
 
 	void

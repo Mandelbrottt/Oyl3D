@@ -45,9 +45,19 @@ namespace Oyl
 			: Event(typeidof(TEvent)) {}
 	};
 
-	using OnEventSignature = void(const Event&);
-	using OnEventDelegate = Delegate<OnEventSignature>;
+	template<typename TEvent>
+		requires Traits::ConvertibleTo<TEvent&, Event&>
+	using OnEventSignature = void(const TEvent&);
 
-	using PostEventSignature = void(const Event&);
-	using PostEventDelegate = Delegate<PostEventSignature>;
+	template<typename TEvent>
+		requires Traits::ConvertibleTo<TEvent&, Event&>
+	using OnEventDelegate = Delegate<OnEventSignature<TEvent>>;
+
+	template<typename TEvent>
+		requires Traits::ConvertibleTo<TEvent&, Event&>
+	using PostEventSignature = void(const TEvent&);
+
+	template<typename TEvent>
+		requires Traits::ConvertibleTo<TEvent&, Event&>
+	using PostEventDelegate = Delegate<PostEventSignature<TEvent>>;
 }

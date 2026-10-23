@@ -1,7 +1,10 @@
 #include "GlfwApplicationWindow.h"
 
-#include <Core/Profiling/Profiling.h>
 #include <Core/Input/InputCodes.h>
+#include <Core/Profiling/Profiling.h>
+
+#include <ImGui/imgui.h>
+#include <ImGui/backends/imgui_impl_glfw.h>
 
 namespace
 {
@@ -31,6 +34,13 @@ namespace Oyl
 
 		CreateGlfwWindow();
 		SetupGlfwWindowCallbacks();
+
+		// TEMPORARY: Is this the best place for this?
+		auto main_scale = ImGui_ImplGlfw_GetContentScaleForWindow(m_glfwWindow);
+		// Setup scaling
+		ImGuiStyle& style = ImGui::GetStyle();
+		style.ScaleAllSizes(main_scale); // Bake a fixed style scale. (until we have a solution for dynamic style scaling, changing this requires resetting Style + calling this again)
+		style.FontScaleDpi = main_scale; // Set initial font scale. (in docking branch: using io.ConfigDpiScaleFonts=true automatically overrides this for every window depending on the current monitor)
 	}
 
 	GlfwApplicationWindow::~GlfwApplicationWindow()
@@ -281,6 +291,8 @@ namespace Oyl
 			[](GLFWwindow* a_window)
 			{
 				auto* this_ = reinterpret_cast<decltype(this)>(glfwGetWindowUserPointer(a_window));
+				if (a_window != this_->GetNativeWindowHandle())
+					return;
 
 				// The glfw callback is only a request - we still control destruction of the window
 				WindowCloseRequestEvent event;
@@ -297,6 +309,8 @@ namespace Oyl
 					return;
 
 				auto* this_ = reinterpret_cast<decltype(this)>(glfwGetWindowUserPointer(a_window));
+				if (a_window != this_->GetNativeWindowHandle())
+					return;
 				this_->m_size = Vector2u(a_width, a_height);
 
 				WindowResizeEvent event;
@@ -311,6 +325,8 @@ namespace Oyl
 			[](GLFWwindow* a_window, int a_maximised)
 			{
 				auto* this_ = reinterpret_cast<decltype(this)>(glfwGetWindowUserPointer(a_window));
+				if (a_window != this_->GetNativeWindowHandle())
+					return;
 
 				WindowMaximizeEvent event;
 				event.window = this_;
@@ -324,6 +340,8 @@ namespace Oyl
 			[](GLFWwindow* a_window, int a_minimized)
 			{
 				auto* this_ = reinterpret_cast<decltype(this)>(glfwGetWindowUserPointer(a_window));
+				if (a_window != this_->GetNativeWindowHandle())
+					return;
 
 				WindowMinimizeEvent event;
 				event.window = this_;
@@ -340,6 +358,8 @@ namespace Oyl
 					return;
 
 				auto* this_ = reinterpret_cast<decltype(this)>(glfwGetWindowUserPointer(a_window));
+				if (a_window != this_->GetNativeWindowHandle())
+					return;
 				this_->m_position = { a_posX, a_posY };
 
 				WindowMoveEvent event;
@@ -354,6 +374,8 @@ namespace Oyl
 			[](GLFWwindow* a_window, int a_focused)
 			{
 				auto* this_ = reinterpret_cast<decltype(this)>(glfwGetWindowUserPointer(a_window));
+				if (a_window != this_->GetNativeWindowHandle())
+					return;
 
 				WindowFocusEvent event;
 				event.window = this_;
@@ -369,6 +391,8 @@ namespace Oyl
 				OYL_UNUSED(a_scanCode);
 
 				auto* this_ = reinterpret_cast<decltype(this)>(glfwGetWindowUserPointer(a_window));
+				if (a_window != this_->GetNativeWindowHandle())
+					return;
 
 				Input::KeyboardKey key = GetKeyCodeFromGlfw(a_key);
 
@@ -403,6 +427,8 @@ namespace Oyl
 			[](GLFWwindow* a_window, int a_button, int a_action, int a_mods)
 			{
 				auto* this_ = reinterpret_cast<decltype(this)>(glfwGetWindowUserPointer(a_window));
+				if (a_window != this_->GetNativeWindowHandle())
+					return;
 
 				Input::MouseButton button = GetMouseButtonFromGlfw(a_button);
 
@@ -437,6 +463,8 @@ namespace Oyl
 			[](GLFWwindow* a_window, double a_scrollX, double a_scrollY)
 			{
 				auto* this_ = reinterpret_cast<decltype(this)>(glfwGetWindowUserPointer(a_window));
+				if (a_window != this_->GetNativeWindowHandle())
+					return;
 
 				WindowMouseScrollEvent event;
 				event.window = this_;
@@ -450,6 +478,8 @@ namespace Oyl
 			[](GLFWwindow* a_window, double a_posX, double a_posY)
 			{
 				auto* this_ = reinterpret_cast<decltype(this)>(glfwGetWindowUserPointer(a_window));
+				if (a_window != this_->GetNativeWindowHandle())
+					return;
 
 				WindowCursorMoveEvent event;
 				event.window = this_;

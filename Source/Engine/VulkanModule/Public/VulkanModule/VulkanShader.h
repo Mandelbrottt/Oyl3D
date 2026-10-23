@@ -21,7 +21,7 @@ namespace Oyl
 
 	using VulkanShaderId = IConvertibleDeviceObjectId<ShaderId, vk::Pipeline>;
 
-	class VulkanShader : public IShader
+	class VULKANMODULE_EXPORT VulkanShader : public IShader
 	{
 	public:
 		VulkanShader(nullptr_t) {}

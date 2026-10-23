@@ -13,7 +13,7 @@ namespace Oyl
 
 	using VulkanImageId = IConvertibleDeviceObjectId<ImageId, vk::Image>;
 
-	class VulkanImage : public IImage
+	class VULKANMODULE_EXPORT VulkanImage : public IImage
 	{
 		friend class VulkanCommandBuffer;
 
