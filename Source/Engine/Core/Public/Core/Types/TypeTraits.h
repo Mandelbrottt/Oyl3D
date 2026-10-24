@@ -40,6 +40,15 @@ namespace Oyl::Traits
 #pragma endregion Primitive
 #pragma region Base
 
+	template<typename T, typename U>
+	struct IsSame : FalseType {};
+
+	template<typename T>
+	struct IsSame<T, T> : TrueType {};
+
+	template<typename T, typename U>
+	concept Same = IsSame<T, U>::value;
+
 	template<typename T>
 	struct AddConst : TypeConstant<std::add_const_t<T>> {};
 

@@ -1,16 +1,17 @@
 #pragma once
 
 #include "Array.h"
+#include "Map.h"
 
 namespace Oyl
 {
 	template<typename TKey, typename TValue>
-	class ArrayMap
+	class ArrayMap : public IMap<TKey, TValue>
 	{
 	public:
-		using KeyTy = TKey;
-		using ValueTy = TValue;
-		using SizeTy = uint32;
+		using KeyTy = typename IMap<TKey, TValue>::KeyTy;
+		using ValueTy = typename IMap<TKey, TValue>::ValueTy;
+		using SizeTy = typename IMap<TKey, TValue>::SizeTy;
 
 		struct Pair
 		{
@@ -18,10 +19,17 @@ namespace Oyl
 			ValueTy value;
 		};
 
+		constexpr
 		ArrayMap() {}
 
-		bool
-		Contains(const KeyTy& a_key) const
+		constexpr SizeTy
+		Size() const override
+		{
+			return m_array.Size();
+		}
+
+		constexpr bool
+		ContainsKey(const KeyTy& a_key) const override
 		{
 			for (const auto& [key, value] : m_array)
 				if (a_key == key)
@@ -29,8 +37,14 @@ namespace Oyl
 			return false;
 		}
 
+		constexpr void
+		Assign(const KeyTy& a_key, ValueTy&& a_valueType) override
+		{
+			At(a_key) = std::move(a_valueType);
+		}
+
 		ValueTy&
-		At(const KeyTy& a_key)
+		At(const KeyTy& a_key) override
 		{
 			for (auto& [key, value] : m_array)
 				if (key == a_key)
@@ -41,16 +55,16 @@ namespace Oyl
 		}
 
 		const ValueTy&
-		At(const KeyTy& a_key) const
+		At(const KeyTy& a_key) const override
 		{
 			return const_cast<ArrayMap*>(this)->At(a_key);
 		}
 
 		ValueTy&
-		operator [](const KeyTy& a_key) { return At(a_key); }
+		operator [](const KeyTy& a_key) override { return At(a_key); }
 
 		const TValue&
-		operator [](const KeyTy& a_key) const { return At(a_key); }
+		operator [](const KeyTy& a_key) const override { return At(a_key); }
 
 		template<typename... TArgs>
 		ValueTy&
@@ -62,7 +76,7 @@ namespace Oyl
 		}
 
 		void
-		Erase(const KeyTy& a_key)
+		Erase(const KeyTy& a_key) override
 		{
 			for (uint32 i = 0; i < m_array.Length(); i++)
 				if (m_array[i].key == a_key)
@@ -72,28 +86,16 @@ namespace Oyl
 				}
 		}
 
-		constexpr SizeTy
-		Size() const
+		void
+		Clear() override
 		{
-			return m_array.Size();
-		}
-
-		constexpr SizeTy
-		Length() const
-		{
-			return m_array.Length();
+			m_array.Clear();
 		}
 
 		void
 		Reserve(SizeTy a_size)
 		{
 			m_array.Reserve(a_size);
-		}
-
-		void
-		Clear()
-		{
-			m_array.Clear();
 		}
 
 		typename Array<Pair>::iterator
