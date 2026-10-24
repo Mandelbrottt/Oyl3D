@@ -79,6 +79,7 @@ namespace Oyl
 		ToVkEnum,
 		ImageLayout,
 		vk::ImageLayout,
+		{ ImageLayout::None, vk::ImageLayout::eUndefined },
 		{ ImageLayout::ColorAttachment, vk::ImageLayout::eColorAttachmentOptimal },
 		{ ImageLayout::DepthStencilAttachment, vk::ImageLayout::eDepthStencilAttachmentOptimal },
 		{ ImageLayout::ShaderRead, vk::ImageLayout::eShaderReadOnlyOptimal },

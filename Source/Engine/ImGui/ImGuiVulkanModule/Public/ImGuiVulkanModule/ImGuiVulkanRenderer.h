@@ -28,12 +28,31 @@ namespace Oyl
 		void
 		Shutdown(Renderer& a_renderer) override;
 
+		ImageHandle
+		GetRenderedImageHandle() const override
+		{
+			return m_renderPass->GetColorAttachment();
+		}
+
 		void
 		SetOnUpdateCallback(Delegate<void()> a_callback) override { m_onUpdate = a_callback; }
+
+		void
+		SetGameViewPortImageHandle(const ImageHandle& a_imageHandle) override
+		{
+			if (m_gameViewPortImageHandle == a_imageHandle)
+				return;
+			m_gameViewPortImageHandle = a_imageHandle;
+		}
+
+		void
+		OnSwapChainRecreate(const ISwapChain& a_swapChain);
 
 	private:
 		IApplicationWindow* m_mainWindow = nullptr;
 		vk::raii::DescriptorPool m_vkDescriptorPool = nullptr;
+
+		ImageHandle m_gameViewPortImageHandle = nullptr;
 
 		UniquePtr<ImGuiVulkanRenderPass> m_renderPass;
 

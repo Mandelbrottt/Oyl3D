@@ -9,12 +9,6 @@
 
 #include "RenderPass/ColorOutputRenderPass.h"
 
-class A {};
-
-class B : public A {};
-
-static_assert(Oyl::Traits::Same<B, void> || Oyl::Traits::ConvertibleTo<B*, A*>);
-
 namespace Oyl
 {
 	class RENDERING_EXPORT TestRenderPass
@@ -29,7 +23,7 @@ namespace Oyl
 		~TestRenderPass() = default;
 
 		void
-		Resize(Vector2u a_size);
+		OnViewPortResize(Vector2u a_size) override;
 
 		ImageHandle
 		GetColorAttachment() const override { return m_colorAttachment; }

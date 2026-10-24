@@ -72,6 +72,7 @@ namespace Oyl
 	};
 
 	template<typename TKey, typename TValue>
+	constexpr
 	IMap<TKey, TValue>::~IMap() {}
 
 	template<typename TKey, typename TValue>

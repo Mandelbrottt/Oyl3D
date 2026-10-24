@@ -60,6 +60,7 @@ namespace Oyl
 	};
 
 	template<typename TElement>
+	constexpr
 	ISet<TElement>::~ISet() {}
 
 	template<typename TElement>
@@ -113,6 +114,18 @@ namespace Oyl
 		{
 			m_set.erase(a_element);
 		}
+
+		typename std::unordered_set<ElementTy>::iterator
+		begin() { return m_set.begin(); }
+
+		typename std::unordered_set<ElementTy>::const_iterator
+		begin() const { return m_set.begin(); }
+
+		typename std::unordered_set<ElementTy>::iterator
+		end() { return m_set.end(); }
+
+		typename std::unordered_set<ElementTy>::const_iterator
+		end() const { return m_set.end(); }
 
 	private:
 		std::unordered_set<ElementTy> m_set;

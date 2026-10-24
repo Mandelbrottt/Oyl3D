@@ -271,7 +271,7 @@ namespace Oyl
 			if (!isValid)
 				continue;
 
-			if (!shaderTypeMap.Contains(shaderType))
+			if (!shaderTypeMap.ContainsKey(shaderType))
 				continue;
 
 			auto shaderProfile = shaderTypeMap.At(shaderType);

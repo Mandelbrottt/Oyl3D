@@ -38,6 +38,10 @@ namespace Oyl
 
 	public:
 		virtual
+		void
+		OnViewPortResize(Vector2u a_size) = 0;
+
+		virtual
 		StringView
 		GetName() const = 0;
 
@@ -46,7 +50,7 @@ namespace Oyl
 		GetRenderTarget() const = 0;
 
 		virtual
-		const ISet<String>&
+		const ArraySet<String>&
 		GetDependencies() const = 0;
 
 		virtual
@@ -90,7 +94,7 @@ namespace Oyl
 		const RenderTarget&
 		GetRenderTarget() const override { return m_renderTarget; }
 
-		const ISet<String>&
+		const ArraySet<String>&
 		GetDependencies() const override
 		{
 			return m_dependencies;
@@ -124,8 +128,6 @@ namespace Oyl
 	template<typename TRenderPass = void>
 	class RenderPass : public RenderPassBase
 	{
-		static_assert(Traits::Same<TRenderPass, void> || Traits::ConvertibleTo<TRenderPass*, IRenderPass*>);
-
 	protected:
 		template<typename = std::enable_if_t<!Traits::Same<TRenderPass, void>>>
 		RenderPass()

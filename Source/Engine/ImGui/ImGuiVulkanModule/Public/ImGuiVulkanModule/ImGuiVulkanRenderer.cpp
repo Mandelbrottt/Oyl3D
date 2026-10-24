@@ -67,7 +67,7 @@ namespace Oyl
 		auto* rendererWindowData = a_renderer.GetWindowData(*m_mainWindow);
 		auto& swapChain = rendererWindowData->swapChain;
 
-		m_renderPass = MakeUniquePtr<ImGuiVulkanRenderPass>(swapChain);
+		m_renderPass = MakeUniquePtr<ImGuiVulkanRenderPass>(swapChain->GetSize());
 
 		// Setup Platform/Renderer backends
 		ImGui_ImplGlfw_InitForVulkan(glfwWindow, true);
@@ -98,9 +98,6 @@ namespace Oyl
 		init_info.PipelineInfoMain.MSAASamples = VK_SAMPLE_COUNT_1_BIT;
 		init_info.CheckVkResultFn = CheckVkResult;
 		ImGui_ImplVulkan_Init(&init_info);
-
-		a_renderer.GetRenderGraph().AddRenderPass(m_renderPass.Get());
-		m_renderPass->AddDependency(nameof(TestRenderPass));
 	}
 
 	void
@@ -172,7 +169,8 @@ namespace Oyl
 
 		std::lock_guard lock(m_renderMutex);
 
-		//m_renderPass->Execute(a_commandBuffer);
+		m_renderPass->SetGameViewPortColorAttachment(m_gameViewPortImageHandle);
+		m_renderPass->Execute(a_commandBuffer);
 	}
 
 	void
@@ -184,10 +182,18 @@ namespace Oyl
 		RenderEngine::Get().GetDevice().WaitUntilIdle();
 
 		m_renderPass.Reset();
+		m_gameViewPortImageHandle.Reset();
 
 		ImGui_ImplVulkan_Shutdown();
 		ImGui_ImplGlfw_Shutdown();
 
 		m_vkDescriptorPool.clear();
+	}
+
+	void
+	ImGuiVulkanRenderer::OnSwapChainRecreate(const ISwapChain& a_swapChain)
+	{
+        ImGui_ImplVulkan_SetMinImageCount(a_swapChain.GetMinImageCount());
+		m_renderPass->OnViewPortResize(a_swapChain.GetSize());
 	}
 }

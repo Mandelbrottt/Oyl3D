@@ -83,8 +83,8 @@ namespace Oyl
 	RenderGraph::TopologicalSort(
 		const String& a_name,
 		const IMap<String, IRenderPass*>& a_passMap,
-		ISet<StringView>& a_visited,
-		ISet<StringView>& a_visiting
+		ArraySet<StringView>& a_visited,
+		ArraySet<StringView>& a_visiting
 	)
 	{
 		a_visiting.Add(a_name);

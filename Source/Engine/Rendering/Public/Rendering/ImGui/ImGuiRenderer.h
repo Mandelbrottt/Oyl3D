@@ -30,8 +30,16 @@ namespace Oyl
 		Shutdown(Renderer& a_renderer) = 0;
 
 		virtual
+		ImageHandle
+		GetRenderedImageHandle() const = 0;
+
+		virtual
 		void
 		SetOnUpdateCallback(Delegate<void()> a_callback) = 0;
+
+		virtual
+		void
+		SetGameViewPortImageHandle(const ImageHandle& a_imageHandle) = 0;
 	};
 
 	inline

@@ -26,19 +26,19 @@ namespace Oyl
 		constexpr void
 		Add(const ElementTy& a_element) override
 		{
-			for (int i = 0; i < m_elements.size(); i++)
-				if (m_elements[i] == a_element)
+			for (int i = 0; i < m_array.size(); i++)
+				if (m_array[i] == a_element)
 					return;
-			m_elements.Add(a_element);
+			m_array.Add(a_element);
 		}
 
 		constexpr void
 		Add(ElementTy&& a_element) override
 		{
-			for (int i = 0; i < m_elements.size(); i++)
-				if (m_elements[i] == a_element)
+			for (int i = 0; i < m_array.size(); i++)
+				if (m_array[i] == a_element)
 					return;
-			m_elements.Add(std::move(a_element));
+			m_array.Add(std::move(a_element));
 		}
 
 		bool
@@ -56,8 +56,8 @@ namespace Oyl
 		bool
 		Contains(const UElement& a_element)
 		{
-			for (int i = 0; i < m_elements.size(); i++)
-				if (m_elements[i] == a_element)
+			for (int i = 0; i < m_array.size(); i++)
+				if (m_array[i] == a_element)
 					return true;
 			return false;
 		}
@@ -77,15 +77,27 @@ namespace Oyl
 		constexpr void
 		Erase(const UElement& a_element)
 		{
-			for (int i = 0; i < m_elements.size(); i++)
-				if (m_elements[i] == a_element)
+			for (int i = 0; i < m_array.size(); i++)
+				if (m_array[i] == a_element)
 				{
-					m_elements.erase(m_elements.begin() + i);
+					m_array.erase(m_array.begin() + i);
 					return;
 				}
 		}
 
+		typename std::vector<ElementTy>::iterator
+		begin() { return m_array.begin(); }
+
+		typename std::vector<ElementTy>::const_iterator
+		begin() const { return m_array.begin(); }
+
+		typename std::vector<ElementTy>::iterator
+		end() { return m_array.end(); }
+
+		typename std::vector<ElementTy>::const_iterator
+		end() const { return m_array.end(); }
+
 	private:
-		Array<ElementTy> m_elements;
+		Array<ElementTy> m_array;
 	};
 }

@@ -50,7 +50,7 @@ namespace Oyl
 	}
 
 	void
-	TestRenderPass::Resize(Vector2u a_size)
+	TestRenderPass::OnViewPortResize(Vector2u a_size)
 	{
 		CreateRenderTarget(a_size);
 	}
@@ -78,8 +78,6 @@ namespace Oyl
 	TestRenderPass::End(const ICommandBuffer& a_commandBuffer)
 	{
 		a_commandBuffer.EndRendering();
-
-		a_commandBuffer.TransitionImageLayout(*m_colorAttachment, ImageLayout::TransferSource);
 	}
 
 	void

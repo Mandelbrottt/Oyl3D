@@ -7,6 +7,8 @@
 #include "RenderEngine.h"
 #include "Rendering.h"
 
+#include "RenderPass/ColorOutputRenderPass.h"
+
 namespace Oyl
 {
 	static constexpr uint32 MAX_FRAMES_IN_FLIGHT = 2;
@@ -115,7 +117,6 @@ namespace Oyl
 		RenderEngine::Get().UnregisterShaderCompiler(m_shaderCompiler);
 		m_shaderCompiler.Reset();
 
-		m_imGuiRenderer.Reset();
 		m_renderContext.Reset();
 	}
 
@@ -136,8 +137,12 @@ namespace Oyl
 
 		LogDebug("Registering window [{} \"{}\"] with RendererProcessor", a_window.GetNativeWindowHandle(), a_window.GetTitle());
 
-		windowData.presentTarget = m_renderContext->CreatePresentTarget(a_window);
-		CreateSwapChain(a_window, windowData);
+		windowData.window = &a_window;
+
+		if (!windowData.presentTarget)
+			windowData.presentTarget = m_renderContext->CreatePresentTarget(a_window);
+
+		CreateSwapChain(windowData);
 		CreateCommandBuffers(windowData);
 		CreateSyncObjects(windowData);
 	}
@@ -150,7 +155,7 @@ namespace Oyl
 		if (!IsValid())
 			return;
 
-		if (!m_windowDataMap.Contains(&a_window))
+		if (!m_windowDataMap.ContainsKey(&a_window))
 			return;
 
 		LogDebug("Unregistering window [{} {}] with RendererProcessor", a_window.GetNativeWindowHandle(), a_window.GetTitle());
@@ -178,7 +183,7 @@ namespace Oyl
 	const RendererWindowData*
 	Renderer::GetWindowData(IApplicationWindow& a_window) const
 	{
-		if (!m_windowDataMap.Contains(&a_window))
+		if (!m_windowDataMap.ContainsKey(&a_window))
 			return nullptr;
 
 		return &m_windowDataMap.At(&a_window);
@@ -189,13 +194,13 @@ namespace Oyl
 	{
 		OYL_PROFILE_FUNCTION();
 
-		auto& drawFence = a_windowData.inFlightFences[a_windowData.frameIndex];
-		auto& presentCompleteSemaphore = a_windowData.presentCompleteSemaphores[a_windowData.frameIndex];
+		auto& drawFence = *a_windowData.inFlightFences[a_windowData.frameIndex];
+		auto& presentCompleteSemaphore = *a_windowData.presentCompleteSemaphores[a_windowData.frameIndex];
 
-		drawFence->Wait();
+		drawFence.Wait();
 
 		auto& swapChain = *a_windowData.swapChain;
-		bool success = swapChain.AcquireNextImage(presentCompleteSemaphore, nullptr);
+		bool success = swapChain.AcquireNextImage(*presentCompleteSemaphore, {});
 		if (!success)
 		{
 			return;
@@ -204,11 +209,11 @@ namespace Oyl
 		auto imageIndex = swapChain.GetCurrentImageIndex();
 
 		// Only reset fences if we are going to submit work to the GPU
-		drawFence->Reset();
+		drawFence.Reset();
 
 		RecordWindowCommandBuffer(a_windowData);
 
-		auto& renderFinishedSemaphore = a_windowData.renderFinishedSemaphores[imageIndex];
+		auto& renderFinishedSemaphore = *a_windowData.renderFinishedSemaphores[imageIndex];
 
 		const auto& graphicsQueue = *m_device->GetCommandQueue(CommandQueueFlagBits::Graphics);
 		graphicsQueue.Submit(
@@ -245,33 +250,61 @@ namespace Oyl
 
 		m_renderGraph.Execute(*commandBuffer);
 
-		//if (m_imGuiRenderer)
-		//	m_imGuiRenderer->Render(*this, commandBuffer);
+		ImageHandle finalColorOutput = nullptr;
 
-		auto& swapChain = *a_windowData.swapChain;
+		auto& sortedPasses = m_renderGraph.GetSortedRenderPasses();
+		if (!sortedPasses.Empty())
+		{
+			auto* finalRenderPass = dynamic_cast<IColorOutputRenderPass*>(sortedPasses.back());
+			if (finalRenderPass == nullptr)
+				LogError("Final RenderPass doesn't provide a Color Output, it needs to derive from \"{}\"!",
+				         nameof(IColorOutputRenderPass));
+			else
+				finalColorOutput = finalRenderPass->GetColorAttachment();
+		}
 
-		commandBuffer->TransitionImageLayout(
-			swapChain.GetCurrentImageId(),
-			ImageLayout::None,
-			ImageLayout::TransferDest
-		);
+		if (m_imGuiRenderer)
+		{
+			m_imGuiRenderer->SetGameViewPortImageHandle(finalColorOutput);
+			m_imGuiRenderer->Render(*this, commandBuffer);
+			finalColorOutput = m_imGuiRenderer->GetRenderedImageHandle();
+		}
 
-		auto& image = *m_renderGraph.GetSortedRenderPasses().back()->GetRenderTarget()->GetColorAttachment(0);
-		commandBuffer->BlitImage(
-			image.GetId(),
-			ImageLayout::TransferSource,
-			Rect2D(Vector2i::Zero, image.GetSize()),
-			swapChain.GetCurrentImageId(),
-			ImageLayout::TransferDest,
-			Rect2D(Vector2i::Zero, swapChain.GetSize()),
-			ImageFilter::Nearest
-		);
+		if (finalColorOutput)
+		{
+			auto& swapChain = *a_windowData.swapChain;
 
-		commandBuffer->TransitionImageLayout(
-			swapChain.GetCurrentImageId(),
-			ImageLayout::TransferDest,
-			ImageLayout::PresentSource
-		);
+			commandBuffer->TransitionImageLayout(
+				finalColorOutput,
+				ImageLayout::TransferSource
+			);
+
+			commandBuffer->TransitionImageLayout(
+				swapChain.GetCurrentImageId(),
+				ImageLayout::None,
+				ImageLayout::TransferDest
+			);
+
+			commandBuffer->BlitImage(
+				**finalColorOutput,
+				ImageLayout::TransferSource,
+				Rect2D(Vector2i::Zero, finalColorOutput->GetSize()),
+				swapChain.GetCurrentImageId(),
+				ImageLayout::TransferDest,
+				Rect2D(Vector2i::Zero, swapChain.GetSize()),
+				ImageFilter::Nearest
+			);
+
+			commandBuffer->TransitionImageLayout(
+				swapChain.GetCurrentImageId(),
+				ImageLayout::TransferDest,
+				ImageLayout::PresentSource
+			);
+		} else
+		{
+			LogError("No image is being rendered to swap chain for window [{}]!",
+			         a_windowData.window->GetNativeWindowHandle());
+		}
 
 		commandBuffer->End();
 	}
@@ -283,10 +316,10 @@ namespace Oyl
 	}
 
 	void
-	Renderer::CreateSwapChain(IApplicationWindow& a_window, RendererWindowData& a_windowData)
+	Renderer::CreateSwapChain(RendererWindowData& a_windowData)
 	{
 		OYL_PROFILE_FUNCTION();
-		a_windowData.swapChain = m_renderContext->CreateSwapChain(m_device, a_window, a_windowData.presentTarget);
+		a_windowData.swapChain = m_renderContext->CreateSwapChain(m_device, *a_windowData.window, a_windowData.presentTarget);
 	}
 
 	void

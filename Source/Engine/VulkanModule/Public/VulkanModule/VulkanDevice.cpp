@@ -104,7 +104,7 @@ namespace Oyl
 	const VulkanCommandQueue*
 	VulkanDevice::GetCommandQueue(CommandQueueFlagBits a_flag) const
 	{
-		if (!m_queues.Contains(a_flag))
+		if (!m_queues.ContainsKey(a_flag))
 			return nullptr;
 
 		return &m_queues.At(a_flag);

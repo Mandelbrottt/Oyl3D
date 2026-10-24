@@ -8,26 +8,34 @@
 
 namespace Oyl
 {
-	ImGuiVulkanRenderPass::ImGuiVulkanRenderPass(const SwapChainHandle& a_swapChain)
-		: m_swapChain(a_swapChain)
+	ImGuiVulkanRenderPass::ImGuiVulkanRenderPass(Vector2u a_size)
 	{
-		CreateRenderTarget(m_swapChain->GetSize());
-		m_swapChain->AddOnRecreateCallback({ this, &ImGuiVulkanRenderPass::OnSwapChainRecreate });
+		CreateRenderTarget(a_size);
 	}
 
-	ImGuiVulkanRenderPass::~ImGuiVulkanRenderPass()
+	void
+	ImGuiVulkanRenderPass::OnViewPortResize(Vector2u a_size)
 	{
-		m_swapChain->RemoveOnRecreateCallback({ this, &ImGuiVulkanRenderPass::OnSwapChainRecreate });
+		CreateRenderTarget(a_size);
 	}
 
 	void
 	ImGuiVulkanRenderPass::Begin(const ICommandBuffer& a_commandBuffer)
 	{
-		auto size = m_colorAttachment->GetSize();
+		if (m_gameViewPortColorAttachment)
+		{
+			a_commandBuffer.TransitionImageLayout(*m_gameViewPortColorAttachment, ImageLayout::TransferSource);
+			a_commandBuffer.TransitionImageLayout(*m_colorAttachment, ImageLayout::TransferDest);
+			a_commandBuffer.BlitImage(*m_gameViewPortColorAttachment, *m_colorAttachment, ImageFilter::Nearest);
+			a_commandBuffer.TransitionImageLayout(*m_colorAttachment, ImageLayout::ColorAttachment);
+		} else
+		{
+			a_commandBuffer.TransitionImageLayout(*m_colorAttachment, ImageLayout::ColorAttachment);
+		}
 
+		auto size = m_colorAttachment->GetSize();
 		a_commandBuffer.SetViewport(Vector2i::Zero, size);
 		a_commandBuffer.SetScissor(Vector2i::Zero, size);
-		a_commandBuffer.TransitionImageLayout(*m_colorAttachment, ImageLayout::ColorAttachment);
 		a_commandBuffer.BeginRendering(m_renderTarget);
 	}
 
@@ -49,13 +57,6 @@ namespace Oyl
 	}
 
 	void
-	ImGuiVulkanRenderPass::OnSwapChainRecreate(const ISwapChain& a_swapChain)
-	{
-        ImGui_ImplVulkan_SetMinImageCount(a_swapChain.GetMinImageCount());
-		CreateRenderTarget(a_swapChain.GetSize());
-	}
-
-	void
 	ImGuiVulkanRenderPass::CreateRenderTarget(Vector2u a_size)
 	{
 		auto& device = RenderEngine::Get().GetDevice();
@@ -63,7 +64,7 @@ namespace Oyl
 			{
 				.size = a_size,
 				.format = ImageFormat::RGBA_8_SRGB,
-				.usageFlags = ImageUsageFlagBits::ColorAttachment | ImageUsageFlagBits::TransferSrc,
+				.usageFlags = ImageUsageFlagBits::ColorAttachment | ImageUsageFlagBits::TransferSrc | ImageUsageFlagBits::TransferDst,
 				.layout = ImageLayout::ColorAttachment
 			}
 		);

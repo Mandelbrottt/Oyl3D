@@ -11,13 +11,24 @@ namespace Oyl
 	{
 	public:
 		explicit
-		ImGuiVulkanRenderPass(const SwapChainHandle& a_swapChain);
+		ImGuiVulkanRenderPass(Vector2u a_size);
 
 		virtual
-		~ImGuiVulkanRenderPass();
+		~ImGuiVulkanRenderPass() = default;
 
 		ImageHandle
 		GetColorAttachment() const override { return m_colorAttachment; }
+
+		void
+		OnViewPortResize(Vector2u a_size) override;
+
+		void
+		SetGameViewPortColorAttachment(const ImageHandle& a_imageHandle)
+		{
+			if (m_gameViewPortColorAttachment == a_imageHandle)
+				return;
+			m_gameViewPortColorAttachment = a_imageHandle;
+		}
 
 	protected:
 		void
@@ -31,12 +42,9 @@ namespace Oyl
 
 	private:
 		void
-		OnSwapChainRecreate(const ISwapChain& a_swapChain);
-
-		void
 		CreateRenderTarget(Vector2u a_size);
 
-		SwapChainHandle m_swapChain;
+		ImageHandle m_gameViewPortColorAttachment = nullptr;
 
 		ImageHandle m_colorAttachment = nullptr;
 		RenderTarget m_renderTarget;

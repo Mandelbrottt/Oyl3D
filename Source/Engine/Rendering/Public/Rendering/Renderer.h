@@ -17,6 +17,8 @@ namespace Oyl
 {
 	struct RendererWindowData
 	{
+		IApplicationWindow* window;
+
 		PresentTargetHandle presentTarget = nullptr;
 		SwapChainHandle swapChain = nullptr;
 
@@ -75,7 +77,7 @@ namespace Oyl
 
 	private:
 		void
-		CreateSwapChain(IApplicationWindow& a_window, RendererWindowData& a_windowData);
+		CreateSwapChain(RendererWindowData& a_windowData);
 
 		void
 		CreateCommandBuffers(RendererWindowData& a_windowData);

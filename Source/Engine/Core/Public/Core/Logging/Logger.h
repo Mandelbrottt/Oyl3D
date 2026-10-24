@@ -86,7 +86,7 @@ namespace Oyl
 		void
 		Log(LogLevel a_level, const Internal::StringViewWithSourceLocation& a_format, TArgs&&... a_args)
 		{
-			char buf[256];
+			char buf[2048];
 			// std::make_format_args won't let us pass in temporary objects or rvalues
 			// Make a tuple from a_args, with each value either being a_args[i], or a_args[i].ToString()
 			// To properly deduce the types passed to std::make_format_args in their non-forwarded forms,

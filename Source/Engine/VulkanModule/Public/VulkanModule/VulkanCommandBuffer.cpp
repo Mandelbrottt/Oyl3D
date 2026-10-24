@@ -88,9 +88,9 @@ namespace Oyl
 				vk::RenderingAttachmentInfo {
 					.imageView = vulkanImage->GetVkImageView(),
 					.imageLayout = vk::ImageLayout::eColorAttachmentOptimal,
-					.loadOp = vk::AttachmentLoadOp::eClear,
+					//.loadOp = vk::AttachmentLoadOp::eClear, // TODO: Add way to change clear behaviour
 					.storeOp = vk::AttachmentStoreOp::eStore,
-					.clearValue = vk::ClearColorValue(0.0f, 0.0f, 0.0f, 1.0f)
+					//.clearValue = vk::ClearColorValue(0.0f, 0.0f, 0.0f, 1.0f)
 				}
 			);
 
@@ -386,6 +386,12 @@ namespace Oyl
 				a_barrier.srcAccessMask = vk::AccessFlagBits2::eTransferWrite;
 				a_barrier.dstStageMask = vk::PipelineStageFlagBits2::eTransfer | vk::PipelineStageFlagBits2::eBlit;
 				a_barrier.dstAccessMask = vk::AccessFlagBits2::eTransferWrite;
+			} else if (a_newLayout == vk::ImageLayout::eTransferSrcOptimal)
+			{
+				a_barrier.srcStageMask = vk::PipelineStageFlagBits2::eTopOfPipe | vk::PipelineStageFlagBits2::eTransfer;
+				a_barrier.srcAccessMask = vk::AccessFlagBits2::eTransferRead;
+				a_barrier.dstStageMask = vk::PipelineStageFlagBits2::eTransfer | vk::PipelineStageFlagBits2::eBlit;
+				a_barrier.dstAccessMask = vk::AccessFlagBits2::eTransferRead;
 			}
 		}
 
@@ -423,7 +429,7 @@ namespace Oyl
 			}
 		}
 
-		if (a_oldLayout != vk::ImageLayout::eUndefined && (!a_barrier.srcStageMask || a_barrier.dstStageMask))
+		if (a_oldLayout != vk::ImageLayout::eUndefined && !(a_barrier.srcStageMask && a_barrier.dstStageMask))
 			SetVkStageAndAccessMasksForLayouts(a_barrier, vk::ImageLayout::eUndefined, a_newLayout);
 
 		OYL_ASSERT(
