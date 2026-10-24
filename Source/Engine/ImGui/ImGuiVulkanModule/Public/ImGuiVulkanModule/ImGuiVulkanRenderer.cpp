@@ -100,6 +100,7 @@ namespace Oyl
 		ImGui_ImplVulkan_Init(&init_info);
 
 		a_renderer.GetRenderGraph().AddRenderPass(m_renderPass.Get());
+		m_renderPass->AddDependency(nameof(TestRenderPass));
 	}
 
 	void

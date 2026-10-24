@@ -16,6 +16,10 @@ namespace Oyl
 		virtual
 		~ImGuiVulkanRenderPass();
 
+		ImageHandle
+		GetColorAttachment() const override { return m_colorAttachment; }
+
+	protected:
 		void
 		Begin(const ICommandBuffer& a_commandBuffer) override;
 
@@ -24,9 +28,6 @@ namespace Oyl
 
 		void
 		End(const ICommandBuffer& a_commandBuffer) override;
-
-		ImageHandle
-		GetColorAttachment() const override { return m_colorAttachment; }
 
 	private:
 		void

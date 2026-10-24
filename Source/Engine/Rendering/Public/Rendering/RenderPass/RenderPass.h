@@ -1,6 +1,6 @@
 ﻿#pragma once
 
-#include <Core/Containers/Array.h>
+#include <Core/Containers/ArraySet.h>
 #include <Core/Containers/Set.h>
 
 #include "Rendering/CommandBuffer.h"
@@ -8,112 +8,16 @@
 
 namespace Oyl
 {
-	enum class RenderPassId : uint32 { Null = 0 };
-
-	class RENDERING_EXPORT RenderPassBase
+	class IRenderPass
 	{
-	protected:
-		explicit
-		RenderPassBase(StringView a_name)
-			: m_name(a_name)
-		{
-			m_id = []
-			{
-				static auto underlyingNextId = Traits::TUnderlyingType<RenderPassId>(RenderPassId::Null);
-				underlyingNextId++;
-				return RenderPassId(underlyingNextId);
-			}();
-		}
-
-		DEFAULT_MOVE(RenderPassBase);
-
 	public:
-		NO_COPY(RenderPassBase);
-
 		virtual
-		~RenderPassBase() = default;
-
-		RenderPassId
-		GetId() const
-		{
-			return m_id;
-		}
-
-		StringView
-		GetName() const
-		{
-			return m_name;
-		}
-
-		[[maybe_unused]]
-		virtual
-		RenderPassBase&
-		SetEnabled(bool a_enabled)
-		{
-			m_enabled = a_enabled;
-			return *this;
-		}
-
-		virtual
-		bool
-		IsEnabled() const
-		{
-			return m_enabled;
-		}
-
-		[[maybe_unused]]
-		virtual
-		RenderPassBase&
-		AddDependency(RenderPassId a_id)
-		{
-			if (a_id == RenderPassId::Null)
-				return *this;
-
-			if (m_dependencies.Contains(a_id))
-				return *this;
-
-			m_dependencies.Add(a_id);
-			return *this;
-		}
-
-		[[maybe_unused]]
-		virtual
-		RenderPassBase&
-		AddDependency(const RenderPassBase* a_renderPass)
-		{
-			return AddDependency(a_renderPass->GetId());
-		}
-
-		virtual
-		const Array<RenderPassId>&
-		GetDependencies() const
-		{
-			return m_dependencies;
-		}
-
-		virtual
-		const RenderTarget*
-		GetRenderTarget() const
-		{
-			return m_renderTarget;
-		}
-
-		[[maybe_unused]]
-		virtual
-		RenderPassBase&
-		SetRenderTarget(const RenderTarget* a_renderTarget)
-		{
-			m_renderTarget = a_renderTarget;
-			return *this;
-		}
+		~IRenderPass() = 0;
 
 		virtual
 		void
 		Execute(const ICommandBuffer& a_commandBuffer)
 		{
-			if (!IsEnabled())
-				return;
-
 			Begin(a_commandBuffer);
 			Render(a_commandBuffer);
 			End(a_commandBuffer);
@@ -132,24 +36,109 @@ namespace Oyl
 		void
 		End(const ICommandBuffer& a_commandBuffer) = 0;
 
-	private:
-		RenderPassId m_id;
-		String m_name;
-		bool m_enabled = true;
+	public:
+		virtual
+		StringView
+		GetName() const = 0;
 
-		const RenderTarget* m_renderTarget = nullptr;
-		Array<RenderPassId> m_dependencies;
+		virtual
+		const RenderTarget&
+		GetRenderTarget() const = 0;
+
+		virtual
+		const ISet<String>&
+		GetDependencies() const = 0;
+
+		virtual
+		void
+		AddDependency(StringView a_name) = 0;
+
+		virtual
+		void
+		AddDependency(IRenderPass& a_renderPass) { AddDependency(a_renderPass.GetName()); };
+
+		virtual
+		void
+		RemoveDependency(StringView a_name) = 0;
+
+		virtual
+		void
+		RemoveDependency(IRenderPass& a_renderPass) { RemoveDependency(a_renderPass.GetName()); };
 	};
 
-	template<typename TRenderPass>
-	class RenderPass : public RenderPassBase
+	inline
+	IRenderPass::~IRenderPass() {}
+
+	class RENDERING_EXPORT RenderPassBase : public IRenderPass
 	{
 	protected:
+		explicit
+		RenderPassBase(StringView a_name)
+			: m_name(a_name) {}
+
+		DEFAULT_MOVE(RenderPassBase);
+
+	public:
+		NO_COPY(RenderPassBase);
+
+		virtual
+		~RenderPassBase() = 0;
+
+		StringView
+		GetName() const override { return m_name; }
+
+		const RenderTarget&
+		GetRenderTarget() const override { return m_renderTarget; }
+
+		const ISet<String>&
+		GetDependencies() const override
+		{
+			return m_dependencies;
+		}
+
+		void
+		AddDependency(StringView a_name) override
+		{
+			if (!m_dependencies.Contains(a_name))
+				m_dependencies.Add(String(a_name));
+		}
+
+		void
+		RemoveDependency(StringView a_name) override
+		{
+			if (!m_dependencies.Contains(a_name))
+				m_dependencies.Erase(String(a_name));
+		}
+
+	protected:
+		RenderTarget m_renderTarget;
+
+	private:
+		String m_name;
+		ArraySet<String> m_dependencies;
+	};
+
+	inline
+	RenderPassBase::~RenderPassBase() {}
+
+	template<typename TRenderPass = void>
+	class RenderPass : public RenderPassBase
+	{
+		static_assert(Traits::Same<TRenderPass, void> || Traits::ConvertibleTo<TRenderPass*, IRenderPass*>);
+
+	protected:
+		template<typename = std::enable_if_t<!Traits::Same<TRenderPass, void>>>
 		RenderPass()
 			: RenderPassBase(nameof(TRenderPass)) {}
 
-	public:
+		explicit
+		RenderPass(StringView a_name)
+			: RenderPassBase(a_name) {}
+
 		virtual
-		~RenderPass() = default;
+		~RenderPass() = 0;
 	};
+
+	template<typename TRenderPass>
+	RenderPass<TRenderPass>::~RenderPass() {}
 }

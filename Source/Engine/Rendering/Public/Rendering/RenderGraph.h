@@ -23,31 +23,27 @@ namespace Oyl
 		~RenderGraph();
 
 		virtual
-		const Array<RenderPassBase*>&
+		const Array<IRenderPass*>&
 		GetSortedRenderPasses() const;
 
 		virtual
 		bool
-		AddRenderPass(RenderPassBase* a_pass);
+		AddRenderPass(IRenderPass* a_renderPass);
 
 		virtual
 		bool
-		RemoveRenderPass(RenderPassBase* a_pass)
+		RemoveRenderPass(StringView a_name);
+
+		virtual
+		bool
+		RemoveRenderPass(IRenderPass* a_pass)
 		{
-			return RemoveRenderPass(a_pass->GetId());
+			return RemoveRenderPass(a_pass->GetName());
 		}
 
 		virtual
-		bool
-		RemoveRenderPass(RenderPassId a_pass);
-
-		virtual
-		RenderPassBase*
-		GetRenderPass(RenderPassId a_renderPassId) const;
-
-		virtual
-		RenderPassBase*
-		GetRenderPass(StringView a_renderPassName) const;
+		IRenderPass*
+		GetRenderPass(StringView a_name) const;
 
 		virtual
 		void
@@ -59,15 +55,15 @@ namespace Oyl
 
 		void
 		TopologicalSort(
-			RenderPassId a_id,
-			const ArrayMap<RenderPassId, RenderPassBase*>& a_passDict,
-			Set<RenderPassId>& a_visited,
-			Set<RenderPassId>& a_visiting
+			const String& a_name,
+			const IMap<String, IRenderPass*>& a_passMap,
+			ISet<StringView>& a_visited,
+			ISet<StringView>& a_visiting
 		);
 
 	private:
 		bool m_dirty = true;
-		ArrayMap<RenderPassId, RenderPassBase*> m_renderPasses;
-		Array<RenderPassBase*> m_sortedRenderPasses;
+		ArrayMap<String, IRenderPass*> m_renderPasses;
+		Array<IRenderPass*> m_sortedRenderPasses;
 	};
 }

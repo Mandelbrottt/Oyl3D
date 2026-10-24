@@ -28,7 +28,7 @@ namespace Oyl
 		a_commandBuffer.SetViewport(Vector2i::Zero, size);
 		a_commandBuffer.SetScissor(Vector2i::Zero, size);
 		a_commandBuffer.TransitionImageLayout(*m_colorAttachment, ImageLayout::ColorAttachment);
-		a_commandBuffer.BeginRendering(*GetRenderTarget());
+		a_commandBuffer.BeginRendering(m_renderTarget);
 	}
 
 	void
@@ -68,6 +68,5 @@ namespace Oyl
 			}
 		);
 		m_renderTarget = RenderTarget({ .colorImages = &*m_colorAttachment });
-		SetRenderTarget(&m_renderTarget);
 	}
 }

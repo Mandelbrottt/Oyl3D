@@ -9,6 +9,12 @@
 
 #include "RenderPass/ColorOutputRenderPass.h"
 
+class A {};
+
+class B : public A {};
+
+static_assert(Oyl::Traits::Same<B, void> || Oyl::Traits::ConvertibleTo<B*, A*>);
+
 namespace Oyl
 {
 	class RENDERING_EXPORT TestRenderPass
@@ -44,7 +50,6 @@ namespace Oyl
 
 	private:
 		ImageHandle m_colorAttachment = nullptr;
-		RenderTarget m_renderTarget;
 
 		ShaderHandle m_shader = nullptr;
 		VertexBufferHandle m_vertexBuffer = nullptr;
