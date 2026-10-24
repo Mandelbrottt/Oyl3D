@@ -120,6 +120,8 @@ namespace Oyl
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
 
+		ImGui::DockSpaceOverViewport(0, ImGui::GetMainViewport(), ImGuiDockNodeFlags_PassthruCentralNode);
+
 		if (m_onUpdate)
 			m_onUpdate();
 
@@ -171,6 +173,15 @@ namespace Oyl
 
 		m_renderPass->SetGameViewPortColorAttachment(m_gameViewPortImageHandle);
 		m_renderPass->Execute(a_commandBuffer);
+
+		auto& io = ImGui::GetIO();
+        // Update and Render additional Platform Windows
+        if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
+        {
+            ImGui::UpdatePlatformWindows();
+            ImGui::RenderPlatformWindowsDefault();
+        }
+
 	}
 
 	void

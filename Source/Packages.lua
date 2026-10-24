@@ -95,7 +95,7 @@ local Packages = {
 	ImGui = {
 		Git = {
 			Url = "https://github.com/ocornut/imgui.git",
-			Ref = "v1.92.8",
+			Ref = "v1.92.8-docking",
 		},
 		OnProject = function(prj)
 			language "C++"
