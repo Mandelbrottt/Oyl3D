@@ -59,9 +59,13 @@ namespace Oyl
 		ImageFormat,
 		vk::Format,
 		{ ImageFormat::RGB_8_SRGB, vk::Format::eR8G8B8Srgb },
+		{ ImageFormat::RGB_8_UNORM, vk::Format::eR8G8B8Unorm },
 		{ ImageFormat::RGBA_8_SRGB, vk::Format::eR8G8B8A8Srgb },
-		{ ImageFormat::BGRA_8_SRGB, vk::Format::eB8G8R8A8Srgb },
+		{ ImageFormat::RGBA_8_UNORM, vk::Format::eR8G8B8A8Unorm },
 		{ ImageFormat::BGR_8_SRGB, vk::Format::eB8G8R8Srgb },
+		{ ImageFormat::BGR_8_UNORM, vk::Format::eB8G8R8Unorm },
+		{ ImageFormat::BGRA_8_SRGB, vk::Format::eB8G8R8A8Srgb },
+		{ ImageFormat::BGRA_8_UNORM, vk::Format::eB8G8R8A8Unorm },
 	)
 
 	OYL_DEFINE_ENUM_CONVERSION_FUNCTIONS(

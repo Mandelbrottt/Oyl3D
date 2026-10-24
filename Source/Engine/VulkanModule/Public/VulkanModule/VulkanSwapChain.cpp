@@ -233,7 +233,7 @@ namespace
 			a_availableFormats,
 			[](const auto& a_format)
 			{
-				return a_format.format == vk::Format::eB8G8R8A8Srgb
+				return a_format.format == vk::Format::eB8G8R8A8Unorm
 				       && a_format.colorSpace == vk::ColorSpaceKHR::eSrgbNonlinear;
 			}
 		);
