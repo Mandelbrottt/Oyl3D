@@ -94,6 +94,9 @@ namespace Oyl
 		void
 		RecreateSwapChain(RendererWindowData& a_windowData);
 
+		void
+		OnRecreateSwapChain(const ISwapChain& a_swapChain);
+
 	private:
 		UniquePtr<IRenderContext> m_renderContext;
 		UniquePtr<IImGuiRenderer> m_imGuiRenderer;

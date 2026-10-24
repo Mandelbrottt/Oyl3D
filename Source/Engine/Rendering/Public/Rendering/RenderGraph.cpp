@@ -61,6 +61,13 @@ namespace Oyl
 	}
 
 	void
+	RenderGraph::ResizeViewPort(Vector2u a_size)
+	{
+		for (auto& pass : m_renderPasses)
+			pass.value->OnViewPortResize(a_size);
+	}
+
+	void
 	RenderGraph::SortPasses()
 	{
 		m_sortedRenderPasses.Clear();

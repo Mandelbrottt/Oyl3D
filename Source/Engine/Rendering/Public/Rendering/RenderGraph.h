@@ -49,6 +49,9 @@ namespace Oyl
 		void
 		Execute(const ICommandBuffer& a_commandBuffer);
 
+		void
+		ResizeViewPort(Vector2u a_size);
+
 	private:
 		void
 		SortPasses();
