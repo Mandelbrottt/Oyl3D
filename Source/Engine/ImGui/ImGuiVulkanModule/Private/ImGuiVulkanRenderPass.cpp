@@ -22,6 +22,8 @@ namespace Oyl
 	void
 	ImGuiVulkanRenderPass::Begin(const ICommandBuffer& a_commandBuffer)
 	{
+		OYL_PROFILE_FUNCTION();
+
 		if (m_gameViewPortColorAttachment)
 		{
 			a_commandBuffer.TransitionImageLayout(*m_gameViewPortColorAttachment, ImageLayout::TransferSource);
@@ -42,16 +44,22 @@ namespace Oyl
 	void
 	ImGuiVulkanRenderPass::Render(const ICommandBuffer& a_commandBuffer)
 	{
+		OYL_PROFILE_FUNCTION();
 		ImGui::Render();
 		auto* drawData = ImGui::GetDrawData();
 
-		auto& vulkanCommandBuffer = static_cast<const VulkanCommandBuffer&>(a_commandBuffer);
-		ImGui_ImplVulkan_RenderDrawData(drawData, *vulkanCommandBuffer.GetVkCommandBuffer());
+		{
+			OYL_PROFILE_SCOPE("ImGui_ImplVulkan_RenderDrawData()");
+			auto& vulkanCommandBuffer = static_cast<const VulkanCommandBuffer&>(a_commandBuffer);
+			ImGui_ImplVulkan_RenderDrawData(drawData, *vulkanCommandBuffer.GetVkCommandBuffer());
+		}
 	}
 
 	void
 	ImGuiVulkanRenderPass::End(const ICommandBuffer& a_commandBuffer)
 	{
+		OYL_PROFILE_FUNCTION();
+
 		a_commandBuffer.EndRendering();
 		a_commandBuffer.TransitionImageLayout(*m_colorAttachment, ImageLayout::TransferSource);
 	}
