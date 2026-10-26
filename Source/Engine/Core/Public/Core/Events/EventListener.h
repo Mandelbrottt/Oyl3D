@@ -39,7 +39,7 @@ namespace Oyl
 			::Oyl::OnEventDelegate<Event>::MemberFnFromType<::Oyl::EventListener> fn; \
 			std::memcpy(&fn, &a_fn, sizeof(fn)); \
 			\
-			auto delegate = ::Oyl::OnEventDelegate<Event>::Create(obj, fn); \
+			auto delegate = ::Oyl::OnEventDelegate<Event>(obj, fn); \
 			\
 			RegisterEventListener(eventId, std::move(delegate), a_priority); \
 		}
@@ -62,7 +62,7 @@ namespace Oyl
 			::Oyl::OnEventDelegate<Event>::MemberFnFromType<::Oyl::EventListener> fn; \
 			std::memcpy(&fn, &a_fn, sizeof(fn)); \
 			\
-			auto delegate = ::Oyl::OnEventDelegate<Event>::Create(obj, fn); \
+			auto delegate = ::Oyl::OnEventDelegate<Event>(obj, fn); \
 			\
 			UnregisterEventListener(eventId, std::move(delegate)); \
 		}
