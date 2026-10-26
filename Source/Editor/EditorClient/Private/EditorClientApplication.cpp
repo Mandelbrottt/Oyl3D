@@ -1,20 +1,19 @@
 #include "EditorClientApplication.h"
 
-#include <Application/Application.h>
+#include <Application/ApplicationModule.h>
 
 #include <Core/Logging/Logging.h>
 #include <Core/Modules/ModuleManager.h>
 #include <Core/Profiling/Profiling.h>
 #include <Core/Time/Time.h>
 
-#include <Rendering/Renderer.h>
-#include <Rendering/Rendering.h>
 #include <Rendering/RenderEngine.h>
+#include <Rendering/Rendering.h>
 
 namespace Oyl
 {
 	void
-	EditorClientApplication::OnStart()
+	EditorClientApplication::Start()
 	{
 		OYL_PROFILE_FUNCTION();
 
@@ -36,26 +35,28 @@ namespace Oyl
 
 		if (m_mainWindow)
 		{
-			m_mainWindow->RegisterWindowCloseRequestCallback({ this, &EditorClientApplication::OnWindowCloseRequestEvent });
-			m_mainWindow->RegisterKeyPressCallback({ this, &EditorClientApplication::OnKeyPressEvent });
+			m_mainWindow->OnCloseRequestCallback() += InstanceDelegate(OnWindowCloseRequestEvent);
+			m_mainWindow->OnKeyPressCallback() += InstanceDelegate(OnKeyPressEvent);
 		}
 
 		auto* renderingModule = ModuleManager::GetModulePointer<IRenderingModule>("Rendering");
-		if (auto renderer = renderingModule->CreateRenderer(RenderingApi::Vulkan))
+		if (auto renderContext = renderingModule->CreateRenderContext(RenderingApi::Vulkan))
 		{
-			m_rendererProcessor = RendererProcessor(std::move(renderer));
-			m_rendererProcessor.Init(m_mainWindow);
+			m_renderer = Renderer(std::move(renderContext));
+			m_renderer.Init(m_mainWindow);
 			for (auto* window : m_applicationWindows)
-				m_rendererProcessor.RegisterApplicationWindow(*window);
+				m_renderer.RegisterApplicationWindow(*window);
 
 			m_testRenderPass = UniquePtr<TestRenderPass>::Make(m_mainWindow->GetContentSize());
-			auto& renderGraph = m_rendererProcessor.GetRenderGraph();
+			auto& renderGraph = m_renderer.GetRenderGraph();
 			renderGraph.AddRenderPass(m_testRenderPass.Get());
+
+			m_renderer.OnDebugGuiCallback() += InstanceDelegate(OnDebugGui);
 		}
 	}
 
 	void
-	EditorClientApplication::OnStop()
+	EditorClientApplication::Shutdown()
 	{
 		OYL_PROFILE_FUNCTION();
 
@@ -63,22 +64,30 @@ namespace Oyl
 
 		m_testRenderPass.Reset();
 
-		if (m_rendererProcessor.IsValid())
+		if (m_renderer.IsValid())
 		{
 			for (auto* window : m_applicationWindows)
-				m_rendererProcessor.UnregisterApplicationWindow(*window);
-			m_rendererProcessor.Shutdown();
+				m_renderer.UnregisterApplicationWindow(*window);
+			m_renderer.Shutdown();
+			m_renderer.OnDebugGuiCallback() -= InstanceDelegate(OnDebugGui);
+		}
+
+		if (m_mainWindow)
+		{
+			m_mainWindow->OnCloseRequestCallback() -= InstanceDelegate(OnWindowCloseRequestEvent);
+			m_mainWindow->OnKeyPressCallback() -= InstanceDelegate(OnKeyPressEvent);
 		}
 
 		while (!m_applicationWindows.Empty())
 			CloseApplicationWindow(m_applicationWindows.front());
+
 
 		m_applicationWindows.Clear();
 		m_mainWindow = nullptr;
 	}
 
 	void
-	EditorClientApplication::OnUpdate()
+	EditorClientApplication::Update()
 	{
 		OYL_PROFILE_FUNCTION();
 
@@ -87,8 +96,8 @@ namespace Oyl
 		if (m_mainWindow && m_mainWindow->IsValid())
 			m_mainWindow->Update();
 
-		if (m_rendererProcessor.IsValid())
-			m_rendererProcessor.Update();
+		if (m_renderer.IsValid())
+			m_renderer.Update();
 	}
 
 	void
@@ -197,21 +206,10 @@ namespace Oyl
 	}
 
 	void
-	EditorClientApplication::InvokeOnUpdateCallback() const
+	EditorClientApplication::OnDebugGui()
 	{
-		m_onUpdateCallback.Invoke();
-	}
-
-	void
-	EditorClientApplication::RegisterOnUpdateCallback(OnUpdateDelegate a_callback)
-	{
-		m_onUpdateCallback += a_callback;
-	}
-
-	void
-	EditorClientApplication::UnregisterOnUpdateCallback(OnUpdateDelegate a_callback)
-	{
-		m_onUpdateCallback -= a_callback;
+		static bool open = true;
+		ImGui::ShowDemoWindow(&open);
 	}
 
 	void

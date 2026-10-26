@@ -62,10 +62,14 @@ namespace Oyl
 		None,
 
 		RGB_8_SRGB,
+		RGB_8_UNORM,
 		RGBA_8_SRGB,
+		RGBA_8_UNORM,
 
 		BGR_8_SRGB,
-		BGRA_8_SRGB
+		BGR_8_UNORM,
+		BGRA_8_SRGB,
+		BGRA_8_UNORM
 	};
 
 	//////////////////////////////////////////////////////////////////////////////

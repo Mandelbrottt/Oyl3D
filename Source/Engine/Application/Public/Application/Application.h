@@ -1,7 +1,6 @@
 #pragma once
 
 #include <Core/Containers/Array.h>
-#include <Core/Modules/ModuleInterface.h>
 
 #include "ApplicationWindow.h"
 
@@ -20,15 +19,15 @@ namespace Oyl
 	protected:
 		virtual
 		void
-		OnStart() = 0;
+		Start() = 0;
 
 		virtual
 		void
-		OnUpdate() = 0;
+		Update() = 0;
 
 		virtual
 		void
-		OnStop() = 0;
+		Shutdown() = 0;
 
 		virtual
 		void
@@ -68,60 +67,14 @@ namespace Oyl
 		SetTargetFramerate(uint32 a_target) = 0;
 
 		virtual
-		void
-		InvokeOnUpdateCallback() const = 0;
+		const MulticastDelegate<void()>&
+		OnUpdateCallback() const = 0;
 
 		virtual
-		void
-		RegisterOnUpdateCallback(OnUpdateDelegate a_callback) = 0;
-
-		virtual
-		void
-		UnregisterOnUpdateCallback(OnUpdateDelegate a_callback) = 0;
-
-	protected:
+		const MulticastDelegate<void()>&
+		OnDebugGuiCallback() const = 0;
 	};
 
 	inline
 	IApplication::~IApplication() {}
-
-	class IApplicationModule : public IModuleInterface
-	{
-	public:
-		virtual
-		~IApplicationModule() = 0;
-
-		virtual
-		void
-		RegisterApplication(IApplication* a_application) = 0;
-
-		virtual
-		IApplication*
-		CurrentApplication() const = 0;
-
-		virtual
-		int
-		RunApplication() = 0;
-
-		virtual
-		const Array<IApplicationWindowFactory*>&
-		GetApplicationWindowFactories() const = 0;
-
-		virtual
-		void
-		RegisterApplicationWindowFactory(IApplicationWindowFactory& a_factory) = 0;
-
-		virtual
-		void
-		UnregisterApplicationWindowFactory(IApplicationWindowFactory& a_factory) = 0;
-
-		bool
-		SupportsHotReload() override
-		{
-			return false;
-		}
-	};
-
-	inline
-	IApplicationModule::~IApplicationModule() {}
 }

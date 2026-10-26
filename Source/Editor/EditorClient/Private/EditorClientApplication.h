@@ -5,6 +5,7 @@
 #include <Core/Containers/Delegate.h>
 #include <Core/Containers/SharedPtr.h>
 
+#include <Rendering/RenderContext.h>
 #include <Rendering/Renderer.h>
 #include <Rendering/TestRenderPass.h>
 
@@ -13,13 +14,13 @@ namespace Oyl
 	class EditorClientApplication : public IApplication
 	{
 		void
-		OnStart() override;
+		Start() override;
 
 		void
-		OnStop() override;
+		Shutdown() override;
 
 		void
-		OnUpdate() override;
+		Update() override;
 
 		void
 		WaitIdle() override;
@@ -49,14 +50,14 @@ namespace Oyl
 		void
 		SetTargetFramerate(uint32 a_target) override;
 
-		void
-		InvokeOnUpdateCallback() const override;
+		const MulticastDelegate<void()>&
+		OnUpdateCallback() const override { return m_onUpdateCallback; }
+
+		const MulticastDelegate<void()>&
+		OnDebugGuiCallback() const override { return m_renderer.OnDebugGuiCallback(); }
 
 		void
-		RegisterOnUpdateCallback(OnUpdateDelegate a_callback) override;
-
-		void
-		UnregisterOnUpdateCallback(OnUpdateDelegate a_callback) override;
+		OnDebugGui();
 
 	private:
 		void
@@ -68,7 +69,7 @@ namespace Oyl
 	private:
 		IApplicationWindow* m_mainWindow = nullptr;
 
-		RendererProcessor m_rendererProcessor;
+		Renderer m_renderer;
 		UniquePtr<TestRenderPass> m_testRenderPass;
 
 		bool m_exitRequested = false;

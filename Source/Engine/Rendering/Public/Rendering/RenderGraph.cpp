@@ -6,64 +6,110 @@ namespace Oyl
 
 	RenderGraph::~RenderGraph() {}
 
-	const Array<RenderPassBase*>&
+	const Array<IRenderPass*>&
 	RenderGraph::GetSortedRenderPasses() const
 	{
 		return m_sortedRenderPasses;
 	}
 
 	bool
-	RenderGraph::AddRenderPass(RenderPassBase* a_pass)
+	RenderGraph::AddRenderPass(IRenderPass* a_renderPass)
 	{
-		auto id = a_pass->GetId();
-		if (m_renderPasses.Contains(id))
+		auto name = String(a_renderPass->GetName());
+		if (m_renderPasses.ContainsKey(name))
 			return false;
 
-		m_renderPasses.Emplace(id, a_pass);
+		m_renderPasses.Emplace(name, a_renderPass);
+		m_dirty = true;
 		return true;
 	}
 
 	bool
-	RenderGraph::RemoveRenderPass(RenderPassId a_pass)
+	RenderGraph::RemoveRenderPass(StringView a_name)
 	{
-		if (!m_renderPasses.Contains(a_pass))
+		auto name = String(a_name);
+		if (!m_renderPasses.ContainsKey(name))
 			return false;
 
-		m_renderPasses.Erase(a_pass);
+		m_renderPasses.Erase(name);
+		m_dirty = true;
 		return true;
+	}
+
+	IRenderPass*
+	RenderGraph::GetRenderPass(StringView a_name) const
+	{
+		auto name = String(a_name);
+		if (m_renderPasses.ContainsKey(name))
+			return m_renderPasses[name];
+		return nullptr;
 	}
 
 	void
 	RenderGraph::Execute(const ICommandBuffer& a_commandBuffer)
 	{
 		if (m_dirty)
+		{
 			SortPasses();
+			m_dirty = false;
+		}
 
 		for (auto& pass : m_sortedRenderPasses)
 		{
-			pass->Execute(&a_commandBuffer);
+			pass->Execute(a_commandBuffer);
 		}
+	}
+
+	void
+	RenderGraph::ResizeViewPort(Vector2u a_size)
+	{
+		for (auto& pass : m_renderPasses)
+			pass.value->OnViewPortResize(a_size);
 	}
 
 	void
 	RenderGraph::SortPasses()
 	{
 		m_sortedRenderPasses.Clear();
-		m_sortedRenderPasses.Add(m_renderPasses.At(static_cast<RenderPassId>(1)));
+
+		ArrayMap<String, IRenderPass*> passMap;
+		for (const auto& [name, pass] : m_renderPasses)
+			passMap[name] = pass;
+
+		ArraySet<StringView> visited;
+		ArraySet<StringView> visiting;
+
+		for (const auto& [name, pass] : passMap)
+		{
+			if (!visited.Contains(name))
+				TopologicalSort(name, passMap, visited, visiting);
+		}
 	}
 
 	void
 	RenderGraph::TopologicalSort(
-		RenderPassId a_id,
-		const ArrayMap<RenderPassId, RenderPassBase*>& a_passDict,
-		Set<RenderPassId>& a_visited,
-		Set<RenderPassId>& a_visiting
+		const String& a_name,
+		const IMap<String, IRenderPass*>& a_passMap,
+		ArraySet<StringView>& a_visited,
+		ArraySet<StringView>& a_visiting
 	)
 	{
-		OYL_UNUSED(a_id);
-		OYL_UNUSED(a_passDict);
-		OYL_UNUSED(a_visited);
-		OYL_UNUSED(a_visiting);
-		//TODO_IMPLEMENT_ME();
+		a_visiting.Add(a_name);
+
+		auto pass = a_passMap[a_name];
+		for (const auto& dependencyName : pass->GetDependencies())
+		{
+			if (!a_visited.Contains(dependencyName))
+			{
+				if (a_visiting.Contains(dependencyName))
+					throw "Circular dependency detected in RenderGraph!";
+
+				TopologicalSort(dependencyName, a_passMap, a_visited, a_visiting);
+			}
+		}
+
+		a_visiting.Erase(a_name);
+		a_visited.Add(a_name);
+		m_sortedRenderPasses.Add(pass);
 	}
 }

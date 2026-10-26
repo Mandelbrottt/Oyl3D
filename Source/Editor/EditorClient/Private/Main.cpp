@@ -1,7 +1,7 @@
 #include <filesystem>
 #include <iostream>
 
-#include <Application/Application.h>
+#include <Application/ApplicationModule.h>
 
 #include <Core/CommandLine/CommandLine.h>
 #include <Core/Logging/Logging.h>
@@ -11,8 +11,11 @@
 #ifndef OYL_EXPOSE_PROFILER_CONTROLS
 #	define OYL_EXPOSE_PROFILER_CONTROLS
 #endif
+#include <Core/ImGui/ImGuiImpl.h>
 #include <Core/Profiling/Profiling.h>
 #include <Core/Time/IFrameTimer.h>
+
+#include <ImGui/imgui.h>
 
 #include "EditorClientApplication.h"
 
@@ -23,19 +26,50 @@ RunApplication()
 	auto fps = Oyl::CommandLine::GetInt("fps");
 	if (fps.has_value() && fps >= 0)
 		application.SetTargetFramerate(*fps);
-	application.RegisterOnUpdateCallback(Oyl::Time::Internal::Update);
-	application.RegisterOnUpdateCallback([]
+	application.OnUpdateCallback() += Oyl::Time::Internal::Update;
+	application.OnUpdateCallback() += []
 	{
 		// Profile manually since we don't know if the client will
 		OYL_PROFILE_SCOPE("virtual Oyl::Internal::ILogger::Flush");
 		Oyl::Internal::GetCurrentLogger()->Flush();
-	});
+	};
+
+	// Initialize ImGui context
+	IMGUI_CHECKVERSION();
+	ImGui::CreateContext();
+
+    ImGuiIO& io = ImGui::GetIO(); (void)io;
+    io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
+    io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
+	io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
+    io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;       // Enable Multi-Viewport / Platform Windows
+
+    // Setup Dear ImGui style
+    ImGui::StyleColorsDark();
+    //ImGui::StyleColorsLight();
+
+    // Setup scaling
+    ImGuiStyle& style = ImGui::GetStyle();
+
+    // When viewports are enabled we tweak WindowRounding/WindowBg so platform windows can look identical to regular ones.
+    if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
+    {
+        style.WindowRounding = 0.0f;
+        style.Colors[ImGuiCol_WindowBg].w = 1.0f;
+    }
+
+	Oyl::Internal::ImGuiSetCurrentContext(ImGui::GetCurrentContext());
+	ImGuiMemAllocFunc pAlloc = nullptr;
+	ImGuiMemFreeFunc pFree = nullptr;
+	void* pUserData = nullptr;
+	ImGui::GetAllocatorFunctions(&pAlloc, &pFree, &pUserData);
+	Oyl::Internal::ImGuiSetAllocatorFunctions(pAlloc, pFree, pUserData);
 
 	// Initial scan for modules
 	auto cwd = std::filesystem::current_path().string();
 	Oyl::ModuleManager::Get().AddEngineModuleDirectory(Oyl::StringView(cwd));
 	Oyl::ModuleManager::Get().ScanModuleDirectories();
-	application.RegisterOnUpdateCallback([] { Oyl::ModuleManager::Get().ProcessPendingAutoLoadRequests(); });
+	application.OnUpdateCallback() += [] { Oyl::ModuleManager::Get().ProcessPendingAutoLoadRequests(); };
 
 	// Register EditorClientApplication after initial module scan
 	auto* applicationModule = Oyl::ModuleManager::LoadModulePointer<Oyl::IApplicationModule>("Application");
@@ -44,7 +78,13 @@ RunApplication()
 	// Process pending auto-load requests
 	Oyl::ModuleManager::Get().ProcessPendingAutoLoadRequests();
 
-	return applicationModule->RunApplication();
+	int exitCode = applicationModule->RunApplication();
+
+	Oyl::Internal::ImGuiSetAllocatorFunctions(nullptr, nullptr, nullptr);
+	Oyl::Internal::ImGuiSetCurrentContext(nullptr);
+	ImGui::DestroyContext();
+
+	return exitCode;
 }
 
 int

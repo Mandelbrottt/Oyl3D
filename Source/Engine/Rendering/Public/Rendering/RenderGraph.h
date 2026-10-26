@@ -6,7 +6,8 @@
 #include <Core/Preprocessor/Common.h>
 
 #include "CommandBuffer.h"
-#include "RenderPass.h"
+
+#include "Rendering/RenderPass/RenderPass.h"
 
 namespace Oyl
 {
@@ -22,27 +23,34 @@ namespace Oyl
 		~RenderGraph();
 
 		virtual
-		const Array<RenderPassBase*>&
+		const Array<IRenderPass*>&
 		GetSortedRenderPasses() const;
 
 		virtual
 		bool
-		AddRenderPass(RenderPassBase* a_pass);
+		AddRenderPass(IRenderPass* a_renderPass);
 
 		virtual
 		bool
-		RemoveRenderPass(RenderPassBase* a_pass)
+		RemoveRenderPass(StringView a_name);
+
+		virtual
+		bool
+		RemoveRenderPass(IRenderPass* a_pass)
 		{
-			return RemoveRenderPass(a_pass->GetId());
+			return RemoveRenderPass(a_pass->GetName());
 		}
 
 		virtual
-		bool
-		RemoveRenderPass(RenderPassId a_pass);
+		IRenderPass*
+		GetRenderPass(StringView a_name) const;
 
 		virtual
 		void
 		Execute(const ICommandBuffer& a_commandBuffer);
+
+		void
+		ResizeViewPort(Vector2u a_size);
 
 	private:
 		void
@@ -50,15 +58,15 @@ namespace Oyl
 
 		void
 		TopologicalSort(
-			RenderPassId a_id,
-			const ArrayMap<RenderPassId, RenderPassBase*>& a_passDict,
-			Set<RenderPassId>& a_visited,
-			Set<RenderPassId>& a_visiting
+			const String& a_name,
+			const IMap<String, IRenderPass*>& a_passMap,
+			ArraySet<StringView>& a_visited,
+			ArraySet<StringView>& a_visiting
 		);
 
 	private:
 		bool m_dirty = true;
-		ArrayMap<RenderPassId, RenderPassBase*> m_renderPasses;
-		Array<RenderPassBase*> m_sortedRenderPasses;
+		ArrayMap<String, IRenderPass*> m_renderPasses;
+		Array<IRenderPass*> m_sortedRenderPasses;
 	};
 }

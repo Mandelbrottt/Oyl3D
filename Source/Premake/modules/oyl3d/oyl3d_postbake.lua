@@ -69,7 +69,7 @@ function m.onConfigConnectProjectLinks(cfg)
 			end
 		end
 		if cfg.kind == "StaticLib" and cfg.platform == "Standalone" then
-			addLinksRecursive(link_cfg)
+			-- addLinksRecursive(link_cfg)
 		end
 
 		local package = link_prj._package

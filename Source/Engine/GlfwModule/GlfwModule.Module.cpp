@@ -1,10 +1,8 @@
-#include <Application/Application.h>
+#include <Application/ApplicationModule.h>
 
-#include <Core/Logging/Logging.h>
 #include <Core/Modules/ModuleManager.h>
-#include <Core/Profiling/Profiling.h>
 
-#include <GLFW/glfw3.h>
+#include <ImGui/backends/imgui_impl_glfw.h>
 
 #include "GlfwApplicationWindow.h"
 
@@ -33,17 +31,21 @@ namespace Oyl
 
 			auto* applicationModule = ModuleManager::GetModulePointer<IApplicationModule>("Application");
 			applicationModule->RegisterApplicationWindowFactory(*this);
-			applicationModule->CurrentApplication()->RegisterOnUpdateCallback([]
-			{
-				OYL_PROFILE_SCOPE("glfwPollEvents()");
-				glfwPollEvents();
-			});
+			applicationModule->CurrentApplication()->OnUpdateCallback() += PollEvents;
 		}
 
 		void
 		OnStopModule() override
 		{
 			glfwTerminate();
+		}
+
+		static
+		void
+		PollEvents()
+		{
+			OYL_PROFILE_SCOPE("glfwPollEvents()");
+			glfwPollEvents();
 		}
 
 		static

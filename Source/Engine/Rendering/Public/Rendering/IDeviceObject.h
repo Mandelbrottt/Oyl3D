@@ -30,10 +30,11 @@ namespace Oyl
 			return GetIdImpl();
 		}
 
-		operator TId() const
-		{
-			return GetId();
-		}
+		explicit
+		operator TId() const { return GetId(); }
+
+		TId
+		operator *() const { return GetId(); }
 
 	protected:
 		virtual
@@ -60,6 +61,7 @@ namespace Oyl
 		using SharedPtr<TObject>::SharedPtr;
 
 		operator TObject&() { return *this->Get(); }
+		operator const TObject&() const { return *this->Get(); }
 	};
 
 	template<typename TId>
@@ -76,6 +78,21 @@ namespace Oyl
 
 		DEFAULT_COPY(IDeviceObjectId);
 		DEFAULT_MOVE(IDeviceObjectId);
+
+		constexpr
+		operator bool() const { return m_id != nullptr; }
+
+		constexpr bool
+		operator==(IDeviceObjectId a_other) const { return m_id == a_other.m_id; }
+
+		constexpr bool
+		operator!=(IDeviceObjectId a_other) const { return !(m_id == a_other.m_id); }
+
+		constexpr bool
+		operator==(nullptr_t) const { return m_id == nullptr; }
+
+		constexpr bool
+		operator!=(nullptr_t) const { return m_id != nullptr; }
 
 	protected:
 		struct Id;

@@ -9,47 +9,16 @@
 #include "PresentTarget.h"
 #include "RenderGraph.h"
 
+#include "ImGui/IImGuiRenderer.h"
+
+#include "Rendering/RenderContext.h"
+
 namespace Oyl
 {
-	struct IRenderer
-	{
-		virtual
-		~IRenderer() = 0;
-
-		virtual
-		void
-		Init() = 0;
-
-		virtual
-		void
-		Update() = 0;
-
-		virtual
-		void
-		Shutdown() = 0;
-
-		virtual
-		PresentTargetHandle
-		CreatePresentTarget(IApplicationWindow& a_window) = 0;
-
-		virtual
-		DeviceHandle
-		CreateDevice(IPresentTarget* a_presentTarget) = 0;
-
-		virtual
-		SwapChainHandle
-		CreateSwapChain(IDevice& a_device, IApplicationWindow& a_window, IPresentTarget& a_presentTarget) = 0;
-
-		virtual
-		SharedPtr<IShaderCompiler>
-		CreateShaderCompiler() = 0;
-	};
-
-	inline
-	IRenderer::~IRenderer() {}
-
 	struct RendererWindowData
 	{
+		IApplicationWindow* window;
+
 		PresentTargetHandle presentTarget = nullptr;
 		SwapChainHandle swapChain = nullptr;
 
@@ -63,18 +32,18 @@ namespace Oyl
 		uint32 frameIndex = 0;
 	};
 
-	class RENDERING_EXPORT RendererProcessor final
+	class RENDERING_EXPORT Renderer final
 	{
 	public:
-		RendererProcessor() = default;
+		Renderer() = default;
 
 		explicit
-		RendererProcessor(UniquePtr<IRenderer>&& a_renderer);
+		Renderer(UniquePtr<IRenderContext>&& a_renderer);
 
-		NO_COPY(RendererProcessor);
-		DEFAULT_MOVE(RendererProcessor);
+		NO_COPY(Renderer);
+		DEFAULT_MOVE(Renderer);
 
-		~RendererProcessor();
+		~Renderer();
 
 		void
 		Init(IApplicationWindow* a_mainWindow);
@@ -86,7 +55,10 @@ namespace Oyl
 		Shutdown();
 
 		bool
-		IsValid() const noexcept { return m_renderer; }
+		IsValid() const noexcept { return m_renderContext; }
+
+		IRenderContext&
+		GetRenderContext() const { return *m_renderContext; }
 
 		void
 		RegisterApplicationWindow(IApplicationWindow& a_window);
@@ -94,15 +66,24 @@ namespace Oyl
 		void
 		UnregisterApplicationWindow(IApplicationWindow& a_window);
 
+		const RendererWindowData*
+		GetWindowData(IApplicationWindow& a_window) const;
+
 		RenderGraph&
 		GetRenderGraph() { return m_renderGraph; }
 
 		const RenderGraph&
-		GetRenderGraph() const { return const_cast<RendererProcessor*>(this)->GetRenderGraph(); }
+		GetRenderGraph() const { return const_cast<Renderer*>(this)->GetRenderGraph(); }
+
+		const MulticastDelegate<void()>&
+		OnDebugGuiCallback() const
+		{
+			return m_imGuiRenderer->OnDebugGuiCallback();
+		}
 
 	private:
 		void
-		CreateSwapChain(IApplicationWindow& a_window, RendererWindowData& a_windowData);
+		CreateSwapChain(RendererWindowData& a_windowData);
 
 		void
 		CreateCommandBuffers(RendererWindowData& a_windowData);
@@ -119,14 +100,17 @@ namespace Oyl
 		void
 		RecreateSwapChain(RendererWindowData& a_windowData);
 
+		void
+		ResizeRenderGraphViewPort(const ISwapChain& a_swapChain);
+
 	private:
-		UniquePtr<IRenderer> m_renderer;
+		UniquePtr<IRenderContext> m_renderContext;
+		UniquePtr<IImGuiRenderer> m_imGuiRenderer;
 		DeviceHandle m_device = nullptr;
 
 		SharedPtr<IShaderCompiler> m_shaderCompiler;
 
 		ArrayMap<IApplicationWindow*, RendererWindowData> m_windowDataMap;
-		Array<IApplicationWindow*> m_windowDataPendingInitList;
 
 		RenderGraph m_renderGraph;
 	};

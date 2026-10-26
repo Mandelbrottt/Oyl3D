@@ -1,14 +1,19 @@
 #pragma once
 
 #include "Image.h"
-#include "RenderPass.h"
 #include "RenderTarget.h"
 #include "Shader.h"
 #include "VertexBuffer.h"
 
+#include "Rendering/RenderPass/RenderPass.h"
+
+#include "RenderPass/ColorOutputRenderPass.h"
+
 namespace Oyl
 {
-	class RENDERING_EXPORT TestRenderPass : public RenderPass<TestRenderPass>
+	class RENDERING_EXPORT TestRenderPass
+		: public IColorOutputRenderPass,
+		  public RenderPass<TestRenderPass>
 	{
 	public:
 		explicit
@@ -18,7 +23,10 @@ namespace Oyl
 		~TestRenderPass() = default;
 
 		void
-		Resize(Vector2u a_size);
+		OnViewPortResize(Vector2u a_size) override;
+
+		const ImageHandle&
+		GetColorAttachment() const override { return m_colorAttachment; }
 
 	protected:
 		void
@@ -36,7 +44,6 @@ namespace Oyl
 
 	private:
 		ImageHandle m_colorAttachment = nullptr;
-		RenderTarget m_renderTarget;
 
 		ShaderHandle m_shader = nullptr;
 		VertexBufferHandle m_vertexBuffer = nullptr;

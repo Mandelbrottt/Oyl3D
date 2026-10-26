@@ -2,9 +2,9 @@
 
 #include <algorithm>
 
+#include "Core/Containers/Array.h"
 #include "Core/Platform/MemberFunctionPointer.h"
 #include "Core/Types/TypeTraits.h"
-#include "Core/Containers/Array.h"
 
 namespace Oyl
 {
@@ -15,7 +15,10 @@ namespace Oyl
 	class Delegate<TReturn(TArgs...)>
 	{
 	public:
-		using Fn = TReturn(TArgs...);
+		using FnPtr = TReturn(*)(TArgs...);
+
+		template<typename TObj>
+		using ObjFnPtr = TReturn(*)(TObj, TArgs...);
 
 		template<auto Function>
 			requires Traits::MemberFunctionPointer<decltype(Function)>
@@ -83,117 +86,168 @@ namespace Oyl
 			return IsValid();
 		}
 
-	#pragma region Function Pointers
+		// Templated Function Pointer
 
-		template<auto Function>
-			requires Traits::FunctionPointer<decltype(Function)>
-		Delegate(decltype(Function))
+		template<FnPtr Function>
+		Delegate(FnPtr)
 			: Delegate()
 		{
 			Set<Function>();
 		}
 
-		template<Traits::CFunctionLike TPredicate>
+		template<FnPtr Function>
+		void
+		Set(FnPtr)
+		{
+			m_obj = nullptr;
+			m_fn = Function;
+		}
+
+		// Templated Function Pointer
+		// Function-Like Predicate
+
+		// TReturn(*)(TArgs...)
+		template<Traits::CFunctionLike<TArgs...> TPredicate>
+			requires requires(TPredicate&& a_functor, TArgs&&... a_args)
+			{
+				{ a_functor(std::forward<TArgs>(a_args)...) } -> Traits::ConvertibleTo<TReturn>;
+			}
 		Delegate(TPredicate&& a_functor)
 		{
-			Set(static_cast<Fn*>(a_functor));
+			*this = a_functor;
 		}
 
-		static
-		Delegate
-		Create(Fn* a_fn)
-		{
-			Delegate result;
-			result.Set(a_fn);
-			return result;
-		}
-
-		void
-		Set(Fn* a_fn)
-		{
-			m_obj = nullptr;
-			m_fn = a_fn;
-		}
-
-		template<auto Function>
-			requires Traits::FunctionPointer<decltype(Function)>
-		void
-		Set()
-		{
-			m_obj = nullptr;
-			m_fn = static_cast<Fn*>(Function);
-		}
-
-		template<Traits::CFunctionLike TPredicate>
+		// TReturn(*)(TArgs...)
+		template<Traits::CFunctionLike<TArgs...> TPredicate>
+			requires requires(TPredicate&& a_functor, TArgs&&... a_args)
+			{
+				{ a_functor(std::forward<TArgs>(a_args)...) } -> Traits::ConvertibleTo<TReturn>;
+			}
 		Delegate&
-		operator =(TPredicate&& a_fn)
+		operator =(TPredicate&& a_functor)
 		{
-			Set(static_cast<Fn*>(a_fn));
+			Set(static_cast<FnPtr>(a_functor));
 			return *this;
 		}
 
-		Delegate&
-		operator =(Fn* a_fn)
+		// TReturn(*)(TArgs...)
+		template<Traits::CFunctionLike<TArgs...> TPredicate>
+			requires requires(TPredicate&& a_functor, TArgs&&... a_args)
+			{
+				{ a_functor(std::forward<TArgs>(a_args)...) } -> Traits::ConvertibleTo<TReturn>;
+			}
+		void
+		Set(TPredicate&& a_functor)
 		{
-			Set(a_fn);
-			return *this;
+			m_obj = nullptr;
+			m_fn = static_cast<FnPtr>(a_functor);
 		}
 
-	#pragma endregion Function Pointers
-	#pragma region Member Functions
+		// Function-Like Predicate
+		// Object Pointer Function-Like Predicate
 
+		// TReturn(*)(TObjBase&, TArgs...)
+		template<typename TObj, typename TPredicate>
+			requires Traits::CFunctionLike<TPredicate, typename Traits::FirstArgumentOfSignature<TPredicate>::type, TArgs...>
+			         && requires(TObj* a_obj, TPredicate&& a_functor, TArgs&&... a_args)
+			         {
+				         { a_functor(a_obj, std::forward<TArgs>(a_args)...) } -> Traits::ConvertibleTo<TReturn>;
+			         }
+		Delegate(TObj* a_obj, TPredicate a_functor)
+		{
+			using TFirstArg = typename Traits::FirstArgumentOfSignature<TPredicate>::type;
+			Set(a_obj, static_cast<ObjFnPtr<TFirstArg>>(a_functor));
+		}
+
+		// TReturn(*)(TObjBase&, TArgs...)
+		template<typename TObj, typename TPredicate>
+			requires Traits::CFunctionLike<TPredicate, typename Traits::FirstArgumentOfSignature<TPredicate>::type, TArgs...>
+			         && requires(TObj* a_obj, TPredicate&& a_functor, TArgs&&... a_args)
+			         {
+				         { a_functor(a_obj, std::forward<TArgs>(a_args)...) } -> Traits::ConvertibleTo<TReturn>;
+			         }
+		void
+		Set(TObj* a_obj, TPredicate a_functor)
+		{
+			using TFirstArg = typename Traits::FirstArgumentOfSignature<TPredicate>::type;
+			using TClass = std::remove_pointer_t<TFirstArg>;
+			m_obj = static_cast<TClass*>(a_obj);
+			m_fn = reinterpret_cast<FnPtr>(a_functor);
+		}
+
+		// TReturn(*)(TObjBase*, TArgs...)
+		template<typename TObj, typename TPredicate>
+			requires Traits::CFunctionLike<TPredicate, typename Traits::FirstArgumentOfSignature<TPredicate>::type, TArgs...>
+			         && requires(TObj& a_obj, TPredicate&& a_functor, TArgs&&... a_args)
+			         {
+				         { a_functor(a_obj, std::forward<TArgs>(a_args)...) } -> Traits::ConvertibleTo<TReturn>;
+			         }
+		Delegate(TObj* a_obj, TPredicate a_functor)
+		{
+			using TFirstArg = typename Traits::FirstArgumentOfSignature<TPredicate>::type;
+			Set(a_obj, static_cast<ObjFnPtr<TFirstArg>>(a_functor));
+		}
+
+		// TReturn(*)(TObjBase*, TArgs...)
+		template<typename TObj, typename TPredicate>
+			requires Traits::CFunctionLike<TPredicate, typename Traits::FirstArgumentOfSignature<TPredicate>::type, TArgs...>
+			         && requires(TObj& a_obj, TPredicate&& a_functor, TArgs&&... a_args)
+			         {
+				         { a_functor(a_obj, std::forward<TArgs>(a_args)...) } -> Traits::ConvertibleTo<TReturn>;
+			         }
+		void
+		Set(TObj* a_obj, TPredicate a_functor)
+		{
+			using TFirstArg = typename Traits::FirstArgumentOfSignature<TPredicate>::type;
+			using TClass = std::remove_reference_t<TFirstArg>;
+			m_obj = static_cast<TClass*>(a_obj);
+			m_fn = reinterpret_cast<FnPtr>(a_functor);
+		}
+
+		// Object Pointer Function-Like Predicate
+		// Member Function Pointer
+
+		// TReturn(TObj::*)(TArgs...)
 		template<typename TObj, typename TMemberFunctionPointer>
-			requires Traits::MemberFunctionCallableWith<TObj, TMemberFunctionPointer>
+			requires Traits::Same<TObj, Traits::TMemberFunctionBaseClass<TMemberFunctionPointer>>
+			         && requires(TObj a_obj, TMemberFunctionPointer a_fn, TArgs&&... a_args)
+			         {
+				         { (a_obj.*a_fn)(std::forward<TArgs>(a_args)...) } -> Traits::ConvertibleTo<TReturn>;
+			         }
 		Delegate(TObj* a_obj, TMemberFunctionPointer a_fn)
 		{
 			Set(a_obj, a_fn);
 		}
 
+		// TReturn(TObj::*)(TArgs...)
 		template<typename TObj, typename TMemberFunctionPointer>
-			requires Traits::MemberFunctionCallableWith<TObj, TMemberFunctionPointer>
-		static
-		Delegate
-		Create(TObj* a_obj, TMemberFunctionPointer a_fn)
-		{
-			Delegate result;
-			result.Set(a_obj, a_fn);
-			return result;
-		}
-
-		template<auto Function>
-			requires Traits::MemberFunctionPointer<decltype(Function)>
-		static
-		Delegate
-		Create(Traits::TMemberFunctionBaseClass<decltype(Function)>* a_obj)
-		{
-			Delegate result;
-			result.Set(a_obj, Function);
-			return result;
-		}
-
-		template<auto Function>
-			requires Traits::MemberFunctionPointer<decltype(Function)>
-		void
-		Set(Traits::TMemberFunctionBaseClass<decltype(Function)>* a_obj)
-		{
-			Set(a_obj, Function);
-		}
-
-		template<typename TObj, typename TMemberFunctionPointer> \
-			requires Traits::MemberFunctionCallableWith<TObj, TMemberFunctionPointer>
+			requires Traits::Same<TObj, Traits::TMemberFunctionBaseClass<TMemberFunctionPointer>>
+			         && requires(TObj a_obj, TMemberFunctionPointer a_fn, TArgs&&... a_args)
+			         {
+				         { (a_obj.*a_fn)(std::forward<TArgs>(a_args)...) } -> Traits::ConvertibleTo<TReturn>;
+			         }
 		void
 		Set(TObj* a_obj, TMemberFunctionPointer a_fn)
 		{
-			using TClass = Traits::TMemberFunctionBaseClass<TMemberFunctionPointer>;
-			// static_cast to ensure base class pointer arithmetic is done correctly
-			TClass* objAsTClass = static_cast<TClass*>(a_obj);
-			Platform::MemberFunctionPointerData mfpdata(objAsTClass, a_fn);
-			m_obj = mfpdata.thisPtr;
-			m_fn = reinterpret_cast<Fn*>(mfpdata.thunkPtr);
+			auto mfpData = Platform::MemberFunctionPointerData::Create<TArgs...>(a_obj, a_fn);
+			m_obj = mfpData.thisPtr;
+			m_fn = reinterpret_cast<FnPtr>(mfpData.thunkPtr);
 		}
 
-	#pragma endregion Member Functions
-	#pragma region Invoke
+		// TReturn(TObj::*)(TArgs...)
+		template<auto MemberFunctionPtr>
+			requires Traits::MemberFunctionPointer<decltype(MemberFunctionPtr)> && requires(Traits::TMemberFunctionBaseClass<decltype(MemberFunctionPtr)> a_obj, TArgs&&... a_args)
+			{
+				{ (a_obj.*MemberFunctionPtr)(std::forward<TArgs>(a_args)...) } -> Traits::ConvertibleTo<TReturn>;
+			}
+		void
+		Set(Traits::TMemberFunctionBaseClass<decltype(MemberFunctionPtr)>* a_obj)
+		{
+			Set(a_obj, MemberFunctionPtr);
+		}
+
+		// Member Function Pointer
+		// Invoke
 
 		TReturn
 		operator ()(TArgs&&... a_args) const
@@ -212,8 +266,7 @@ namespace Oyl
 				return;
 			}
 
-			using MemberThunkFn = TReturn(void*, TArgs...);
-			MemberThunkFn* fn;
+			ObjFnPtr<void*> fn;
 			std::memcpy(&fn, &m_fn, sizeof(fn));
 			(void) fn(m_obj, std::forward<TArgs>(a_args)...);
 		}
@@ -228,41 +281,17 @@ namespace Oyl
 				return m_fn(std::forward<TArgs>(a_args)...);
 			}
 
-			using MemberThunkFn = TReturn(void*, TArgs...);
-			MemberThunkFn* fn;
+			ObjFnPtr<void*> fn;
 			std::memcpy(&fn, &m_fn, sizeof(fn));
 			return fn(m_obj, std::forward<TArgs>(a_args)...);
 		}
-	#pragma endregion Invoke
+
+		// Invoke
 
 	private:
 		void* m_obj = nullptr;
-		Fn* m_fn = nullptr;
+		FnPtr m_fn = nullptr;
 	};
-
-	template<auto Function>
-	Delegate<Traits::FunctionSignatureFromPointer_T<decltype(Function)>>
-	CreateDelegate()
-	{
-		using TDelegate = Delegate<Traits::FunctionSignatureFromPointer_T<decltype(Function)>>;
-		return TDelegate::Create(Function);
-	}
-
-	template<auto Function>
-	Delegate<Traits::FunctionSignatureFromPointer_T<decltype(Function)>>
-	CreateDelegate(Traits::TMemberFunctionBaseClass<decltype(Function)>* a_obj)
-	{
-		using TDelegate = Delegate<Traits::FunctionSignatureFromPointer_T<decltype(Function)>>;
-		return TDelegate::Create(a_obj, Function);
-	}
-
-	template<typename TObj, typename TMemberFunctionPointer>
-		requires Traits::MemberFunctionCallableWith<TObj, TMemberFunctionPointer>
-	Delegate<Traits::FunctionSignatureFromPointer_T<TMemberFunctionPointer>>
-	CreateDelegate(TObj* a_obj, TMemberFunctionPointer a_fn)
-	{
-		return Delegate<Traits::FunctionSignatureFromPointer_T<TMemberFunctionPointer>>::Create(a_obj, a_fn);
-	}
 
 	template<Traits::FunctionSignature>
 	class MulticastDelegate;
@@ -271,33 +300,39 @@ namespace Oyl
 	class MulticastDelegate<TReturn(TArgs...)>
 	{
 	public:
-		using DelegateType = Delegate<TReturn(TArgs...)>;
+		using DelegateTy = Delegate<TReturn(TArgs...)>;
 
 		MulticastDelegate() = default;
 
-		MulticastDelegate&
-		operator +=(DelegateType a_delegate)
+		NO_COPY(MulticastDelegate);
+		DEFAULT_MOVE(MulticastDelegate);
+
+		operator bool() const { return IsValid(); }
+
+		bool
+		IsValid() const { return !m_delegates.Empty(); }
+
+		void
+		operator +=(DelegateTy a_delegate) const
 		{
 			// Check if we've already added this delegate
 			for (const auto& delegate : m_delegates)
 				if (delegate == a_delegate)
-					return *this;
+					return;
 
 			m_delegates.Add(a_delegate);
-			return *this;
 		}
 
-		MulticastDelegate&
-		operator -=(DelegateType a_delegate)
+		void
+		operator -=(DelegateTy a_delegate) const
 		{
 			for (uint32 i = 0; i < m_delegates.Length(); i++)
 				if (m_delegates[i] == a_delegate)
 					m_delegates.erase(m_delegates.begin() + i);
-			return *this;
 		}
 
 		TReturn
-		operator ()(TArgs&&... a_args) const
+		operator ()(TArgs&&... a_args)
 		{
 			return Invoke(std::forward<TArgs>(a_args)...);
 		}
@@ -305,7 +340,7 @@ namespace Oyl
 		template<typename = void>
 			requires (std::is_void_v<TReturn>)
 		void
-		Invoke(TArgs&&... a_args) const
+		Invoke(TArgs&&... a_args)
 		{
 			for (uint32 i = 0; i < m_delegates.Size(); i++)
 				m_delegates[i].Invoke(std::forward<TArgs>(a_args)...);
@@ -314,7 +349,7 @@ namespace Oyl
 		template<typename = void>
 			requires (!std::is_void_v<TReturn> && std::is_copy_constructible_v<TReturn>)
 		Array<TReturn>
-		Invoke(TArgs&&... a_args) const
+		Invoke(TArgs&&... a_args)
 		{
 			if (m_delegates.empty())
 				return {};
@@ -327,6 +362,8 @@ namespace Oyl
 		}
 
 	private:
-		Array<DelegateType> m_delegates;
+		mutable Array<DelegateTy> m_delegates;
 	};
 }
+
+#define InstanceDelegate(_member_function_name_) { this, &Traits::TRemovePointer<decltype(this)>::_member_function_name_ }

@@ -10,13 +10,20 @@ namespace Oyl
 	}
 
 	void
-	EventListener::RegisterEventListener(EventId a_eventId, const OnEventDelegate& a_delegate, int32 a_priority)
+	EventListener::RegisterEventListener(
+		EventId a_eventId,
+		const OnEventDelegate<Event>& a_delegate,
+		int32 a_priority
+	)
 	{
 		m_eventDispatcher->Register(a_eventId, a_delegate, a_priority);
 	}
 
 	void
-	EventListener::UnregisterEventListener(EventId a_eventId, const OnEventDelegate& a_delegate)
+	EventListener::UnregisterEventListener(
+		EventId a_eventId,
+		const OnEventDelegate<Event>& a_delegate
+	)
 	{
 		m_eventDispatcher->Unregister(a_eventId, a_delegate);
 	}

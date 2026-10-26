@@ -117,6 +117,7 @@ namespace Oyl
 	::Oyl::IModuleInterface* \
 	OYL_MODULE_INIT_FN_NAME(_module_name_)() \
 	{ \
+		__OYL__IMGUI_MODULE_INIT(); \
 		return new _module_class_(); \
 	} \
 	extern "C" \
@@ -138,3 +139,22 @@ namespace Oyl
 			*a_depv = deps; \
 		} \
 	}
+
+// DLLs don't share global data on windows
+// We need to keep a centralized record to pass to each DLL's instance of ImGui so that they're all using the same data
+#if defined(OYL_WINDOWS) && defined(OYL_PACKAGE_AVAILABLE_IMGUI) && defined(OYL_MODULE_CURRENT_AS_MACRO) && OYL_CAT_EXPAND(OYL_MODULE_CURRENT_AS_MACRO, _SHAREDLIB)
+#	include <Core/ImGui/ImGuiImpl.h>
+#	define __OYL__IMGUI_MODULE_INIT() \
+		do { \
+			IMGUI_CHECKVERSION();\
+			::ImGui::SetCurrentContext(::Oyl::Internal::ImGuiGetCurrentContext()); \
+			ImGuiMemAllocFunc pAlloc = nullptr; \
+			ImGuiMemFreeFunc pFree = nullptr; \
+			void* pUserData = nullptr; \
+			::Oyl::Internal::ImGuiGetAllocatorFunctions(&pAlloc, &pFree, &pUserData); \
+			::ImGui::SetAllocatorFunctions(pAlloc, pFree, pUserData); \
+		} while (0)
+#else
+#	include <ImGui/ImGui.h>
+#	define __OYL__IMGUI_MODULE_INIT() do {} while (0)
+#endif

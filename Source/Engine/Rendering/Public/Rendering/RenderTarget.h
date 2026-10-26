@@ -13,7 +13,7 @@ namespace Oyl
 		const IImage* pDepthImage = nullptr;
 	};
 
-	class RenderTarget : public IDestroyable
+	class RENDERING_EXPORT RenderTarget : public IDestroyable
 	{
 	public:
 		RenderTarget() = default;

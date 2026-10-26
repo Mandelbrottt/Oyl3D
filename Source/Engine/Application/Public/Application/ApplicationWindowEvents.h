@@ -24,7 +24,7 @@ namespace Oyl
 	/**
 	 * \brief Sent while window is being destroyed, before the window is freed in the underlying windowing API
 	 */
-	struct WindowClosedEvent : WindowEvent, EventBase<WindowClosedEvent> {};
+	struct WindowCloseEvent : WindowEvent, EventBase<WindowCloseEvent> {};
 
 	struct WindowCloseRequestEvent : WindowEvent, EventBase<WindowCloseRequestEvent> {};
 

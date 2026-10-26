@@ -12,7 +12,7 @@ namespace Oyl
 
 		ShaderCompileResult result;
 		renderEngine.GetShaderCompiler().CompileHlslFromFile(
-			"G:/dev/Oyl3D/Oyl3D/Source/Oyl3D/Source/Engine/Rendering/Private/Shaders/shader.hlsl",
+			"G:/dev/Oyl3D/Oyl3D/Source/Engine/Rendering/Private/Shaders/shader.hlsl",
 			&result
 		);
 
@@ -50,7 +50,7 @@ namespace Oyl
 	}
 
 	void
-	TestRenderPass::Resize(Vector2u a_size)
+	TestRenderPass::OnViewPortResize(Vector2u a_size)
 	{
 		CreateRenderTarget(a_size);
 	}
@@ -64,7 +64,7 @@ namespace Oyl
 		a_commandBuffer.SetScissor(Vector2i::Zero, size);
 		a_commandBuffer.TransitionImageLayout(*m_colorAttachment, ImageLayout::ColorAttachment);
 
-		a_commandBuffer.BeginRendering(*GetRenderTarget());
+		a_commandBuffer.BeginRendering(GetRenderTarget());
 	}
 
 	void
@@ -78,8 +78,6 @@ namespace Oyl
 	TestRenderPass::End(const ICommandBuffer& a_commandBuffer)
 	{
 		a_commandBuffer.EndRendering();
-
-		a_commandBuffer.TransitionImageLayout(*m_colorAttachment, ImageLayout::TransferSource);
 	}
 
 	void
@@ -95,6 +93,5 @@ namespace Oyl
 			}
 		);
 		m_renderTarget = RenderTarget({ .colorImages = &*m_colorAttachment });
-		SetRenderTarget(&m_renderTarget);
 	}
 }

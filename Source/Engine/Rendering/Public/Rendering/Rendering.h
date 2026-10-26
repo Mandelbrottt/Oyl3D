@@ -1,30 +1,47 @@
 #pragma once
 
+#include <Core/Containers/UniquePtr.h>
 #include <Core/Modules/ModuleInterface.h>
 
-#include "Renderer.h"
+#include "RenderContext.h"
+
+#include "ImGui/IImGuiRenderer.h"
 
 #include "Rendering/RenderingEnums.h"
 
 namespace Oyl
 {
-	class IRendererFactory
+	class IRenderContextFactory
 	{
 	public:
 		virtual
-		~IRendererFactory() = 0;
+		~IRenderContextFactory() = 0;
 
 		virtual
 		bool
 		SupportsApi(RenderingApi a_api) = 0;
 
 		virtual
-		UniquePtr<IRenderer>
-		CreateRenderer() = 0;
+		UniquePtr<IRenderContext>
+		CreateRenderContext() = 0;
 	};
 
 	inline
-	IRendererFactory::~IRendererFactory() {}
+	IRenderContextFactory::~IRenderContextFactory() {}
+
+	class IImGuiRendererFactory
+	{
+	public:
+		virtual
+		~IImGuiRendererFactory() = 0;
+
+		virtual
+		UniquePtr<IImGuiRenderer>
+		CreateImGuiRenderer() = 0;
+	};
+
+	inline
+	IImGuiRendererFactory::~IImGuiRendererFactory() {}
 
 	class IRenderingModule : public IModuleInterface
 	{
@@ -34,15 +51,27 @@ namespace Oyl
 
 		virtual
 		void
-		RegisterRendererFactory(IRendererFactory& a_factory) = 0;
+		RegisterRenderContextFactory(IRenderContextFactory& a_factory) = 0;
 
 		virtual
 		void
-		UnregisterRendererFactory(IRendererFactory& a_factory) = 0;
+		UnregisterRenderContextFactory(IRenderContextFactory& a_factory) = 0;
 
 		virtual
-		UniquePtr<IRenderer>
-		CreateRenderer(RenderingApi a_api) = 0;
+		UniquePtr<IRenderContext>
+		CreateRenderContext(RenderingApi a_api) = 0;
+
+		virtual
+		void
+		RegisterImGuiRendererFactory(IImGuiRendererFactory& a_factory) = 0;
+
+		virtual
+		void
+		UnregisterImGuiRendererFactory(IImGuiRendererFactory& a_factory) = 0;
+
+		virtual
+		UniquePtr<IImGuiRenderer>
+		CreateImGuiRenderer() = 0;
 
 		bool
 		SupportsHotReload() override

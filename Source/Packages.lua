@@ -95,20 +95,35 @@ local Packages = {
 	ImGui = {
 		Git = {
 			Url = "https://github.com/ocornut/imgui.git",
-			Ref = "v1.92.8",
+			Ref = "v1.92.8-docking",
 		},
 		OnProject = function(prj)
 			language "C++"
-			kind "StaticLib" -- ImGui SharedLib support is quite involved, so don't bother for now
+			kind "SharedLib"
 
 			files {
 				"imconfig.h",
 				"imgui*.h",
 				"imgui*.cpp",
 				"imstb*.h",
+				"backends/imgui_impl_glfw.h",
+				"backends/imgui_impl_glfw.cpp",
+				"backends/imgui_impl_vulkan.h",
+				"backends/imgui_impl_vulkan.cpp",
 			}
 
-			includedirs { "." }
+			-- While setting up ImGui, for reference
+			files {
+				"examples/example_glfw_vulkan/main.cpp",
+			}
+			filter { "files:examples/example_glfw_vulkan/main.cpp" }; do
+				excludefrombuild "On"
+			end; filter {}
+
+			includedirs {
+				".",
+				"backends"
+			}
 
 			filter "action:vs*"; do
 				files {
@@ -116,6 +131,20 @@ local Packages = {
 				}
 			end
 
+			uses {
+				"Glfw",
+				"Vulkan",
+			}
+
+			-- Tight coupling with Core, but this is ok since everything that uses core will also use ImGui
+			includedirsafter {
+				'%{!wks.projects["Core"].basedir}/Public'
+			}
+			usage "PUBLIC"; do
+				defines {
+					'IMGUI_USER_CONFIG=<Core/ImGui/ImGuiConfig.h>'
+				}
+			end
 			usage "INTERFACE"; do
 				links { prj.name }
 			end

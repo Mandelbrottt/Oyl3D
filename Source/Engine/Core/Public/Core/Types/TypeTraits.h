@@ -40,6 +40,15 @@ namespace Oyl::Traits
 #pragma endregion Primitive
 #pragma region Base
 
+	template<typename T, typename U>
+	struct IsSame : FalseType {};
+
+	template<typename T>
+	struct IsSame<T, T> : TrueType {};
+
+	template<typename T, typename U>
+	concept Same = IsSame<T, U>::value;
+
 	template<typename T>
 	struct AddConst : TypeConstant<std::add_const_t<T>> {};
 
@@ -102,7 +111,7 @@ namespace Oyl::Traits
 	struct RemovePointer : TypeConstant<std::remove_pointer_t<T>> {};
 
 	template<typename T>
-	using RemovePointer_T = typename RemovePointer<T>::type;
+	using TRemovePointer = typename RemovePointer<T>::type;
 
 	template<typename T>
 	struct IsVoidPointer : BoolConstant<std::is_void_v<RemovePointer<T>>> {};
@@ -114,10 +123,10 @@ namespace Oyl::Traits
 	concept NonVoidPointer = !IsVoidPointer<T>::value;
 
 	template<typename T>
-	concept PointerToObject = IsPointer<T>::value && !IsPointer<RemovePointer_T<T>>::value;
+	concept PointerToObject = IsPointer<T>::value && !IsPointer<TRemovePointer<T>>::value;
 
 	template<typename T>
-	struct IsPointerToPointer : BoolConstant<Pointer<T> && Pointer<RemovePointer_T<T>>> {};
+	struct IsPointerToPointer : BoolConstant<Pointer<T> && Pointer<TRemovePointer<T>>> {};
 
 	template<typename T>
 	concept PointerToPointer = IsPointerToPointer<T>::value;
@@ -296,14 +305,38 @@ namespace Oyl::Traits
 		{ std::declval<decltype(a_functionLike(a_args...))(*&)(TArgs...)>() = a_functionLike };
 	};
 
-#pragma endregion
+	template<typename...>
+	struct FirstTypeOfPack;
 
-template<typename T>
-struct UnderlyingType
-{
-	using type = std::underlying_type_t<T>;
-};
+	template<typename UFirst, typename... UArgs>
+	struct FirstTypeOfPack<UFirst, UArgs...>
+	{
+		using type = UFirst;
+	};
 
-template<typename T>
-using TUnderlyingType = typename UnderlyingType<T>::type;
+	template<typename>
+	struct FirstArgumentOfSignature;
+
+	template<typename UReturn, typename... UArgs>
+	struct FirstArgumentOfSignature<UReturn(UArgs...)>
+	{
+		using type = typename FirstTypeOfPack<UArgs...>::type;
+	};
+
+	template<typename UReturn, typename... UArgs>
+	struct FirstArgumentOfSignature<UReturn(*)(UArgs...)>
+	{
+		using type = typename FirstTypeOfPack<UArgs...>::type;
+	};
+
+#pragma endregion Functors
+
+	template<typename T>
+	struct UnderlyingType
+	{
+		using type = std::underlying_type_t<T>;
+	};
+
+	template<typename T>
+	using TUnderlyingType = typename UnderlyingType<T>::type;
 }

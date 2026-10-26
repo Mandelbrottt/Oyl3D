@@ -25,7 +25,7 @@ namespace Oyl
 		~EventListener();
 
 		void
-		RegisterEventListener(EventId a_eventId, const OnEventDelegate& a_delegate, int32 a_priority);
+		RegisterEventListener(EventId a_eventId, const OnEventDelegate<Event>& a_delegate, int32 a_priority);
 
 	#define _EVENT_LISTENER_REGISTER_FUNCTION(_cv_ref_noexcept_) \
 		template<typename TListener, typename TEvent> \
@@ -36,10 +36,10 @@ namespace Oyl
 			\
 			TListener* obj = static_cast<TListener*>(this); \
 			\
-			::Oyl::OnEventDelegate::MemberFnFromType<::Oyl::EventListener> fn; \
+			::Oyl::OnEventDelegate<Event>::MemberFnFromType<::Oyl::EventListener> fn; \
 			std::memcpy(&fn, &a_fn, sizeof(fn)); \
 			\
-			auto delegate = ::Oyl::OnEventDelegate::Create(obj, fn); \
+			auto delegate = ::Oyl::OnEventDelegate<Event>(obj, fn); \
 			\
 			RegisterEventListener(eventId, std::move(delegate), a_priority); \
 		}
@@ -48,7 +48,7 @@ namespace Oyl
 	#undef _EVENT_LISTENER_REGISTER_FUNCTION
 
 		void
-		UnregisterEventListener(EventId a_eventId, const OnEventDelegate& a_delegate);
+		UnregisterEventListener(EventId a_eventId, const OnEventDelegate<Event>& a_delegate);
 
 	#define _EVENT_LISTENER_UNREGISTER_FUNCTION(_cv_ref_noexcept_) \
 		template<typename TListener, typename TEvent> \
@@ -59,10 +59,10 @@ namespace Oyl
 			\
 			TListener* obj = static_cast<TListener*>(this); \
 			\
-			::Oyl::OnEventDelegate::MemberFnFromType<::Oyl::EventListener> fn; \
+			::Oyl::OnEventDelegate<Event>::MemberFnFromType<::Oyl::EventListener> fn; \
 			std::memcpy(&fn, &a_fn, sizeof(fn)); \
 			\
-			auto delegate = ::Oyl::OnEventDelegate::Create(obj, fn); \
+			auto delegate = ::Oyl::OnEventDelegate<Event>(obj, fn); \
 			\
 			UnregisterEventListener(eventId, std::move(delegate)); \
 		}

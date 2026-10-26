@@ -13,45 +13,121 @@ namespace Oyl
 		explicit
 		constexpr
 		SetBase(TypeId a_elementTypeId)
-			: m_elementTypeId(a_elementTypeId)
-		{
-			OYL_UNUSED(m_elementTypeId);
-		}
+			: m_elementTypeId(a_elementTypeId) {}
+
+	public:
+		constexpr
+		TypeId
+		ElementTypeId() const { return m_elementTypeId; }
 
 	private:
 		TypeId m_elementTypeId;
 	};
 
 	template<typename TElement>
-	class Set : public SetBase
+	class ISet
+	{
+	protected:
+		constexpr
+		ISet() = default;
+
+		virtual
+		constexpr
+		~ISet() = 0;
+
+	public:
+		using ElementTy = TElement;
+		using SizeTy = uint32;
+
+		constexpr TypeId
+		ElementTypeId() const { return typeidof(TElement); }
+
+		virtual
+		constexpr void
+		Add(const ElementTy& a_element) = 0;
+
+		virtual
+		constexpr void
+		Add(ElementTy&& a_element) = 0;
+
+		virtual
+		bool
+		Contains(const ElementTy& a_element) = 0;
+
+		virtual
+		constexpr void
+		Erase(const ElementTy& a_element) = 0;
+	};
+
+	template<typename TElement>
+	constexpr
+	ISet<TElement>::~ISet() {}
+
+	template<typename TElement>
+	class Set : public ISet<TElement>, public SetBase
 	{
 	public:
-		using ElementType = TElement;
+		using ElementTy = TElement;
 
 		constexpr
 		Set()
-			: SetBase(typeidof(ElementType)) {}
+			: SetBase(typeidof(ElementTy)) {}
+
+		using ISet<TElement>::ElementTypeId;
 
 		void
-		Add(const ElementType& a_element)
+		Add(const ElementTy& a_element) override
 		{
 			m_set.insert(a_element);
 		}
 
 		void
-		Add(ElementType&& a_element)
+		Add(ElementTy&& a_element) override
 		{
 			m_set.insert(std::move(a_element));
 		}
 
 		bool
-		Contains(const ElementType& a_element)
+		Contains(const ElementTy& a_element) override
 		{
 			auto iter = m_set.find(a_element);
 			return iter != m_set.end();
 		}
 
+		template<typename UElement>
+			requires requires(ElementTy a_lhs, UElement a_rhs)
+			{
+				{ a_lhs == a_rhs };
+				{ a_lhs != a_rhs };
+			}
+		bool
+		Contains(const UElement& a_element)
+		{
+			for (const auto& element : m_set)
+				if (element == a_element)
+					return true;
+			return false;
+		}
+
+		constexpr void
+		Erase(const ElementTy& a_element) override
+		{
+			m_set.erase(a_element);
+		}
+
+		typename std::unordered_set<ElementTy>::iterator
+		begin() { return m_set.begin(); }
+
+		typename std::unordered_set<ElementTy>::const_iterator
+		begin() const { return m_set.begin(); }
+
+		typename std::unordered_set<ElementTy>::iterator
+		end() { return m_set.end(); }
+
+		typename std::unordered_set<ElementTy>::const_iterator
+		end() const { return m_set.end(); }
+
 	private:
-		std::unordered_set<ElementType> m_set;
+		std::unordered_set<ElementTy> m_set;
 	};
 }

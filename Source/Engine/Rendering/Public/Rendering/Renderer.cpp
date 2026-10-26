@@ -1,50 +1,73 @@
 #include "Renderer.h"
 
 #include <Core/Logging/Logging.h>
+#include <Core/Modules/ModuleManager.h>
 #include <Core/Profiling/Profiling.h>
 
 #include "RenderEngine.h"
+#include "Rendering.h"
+
+#include "RenderPass/ColorOutputRenderPass.h"
 
 namespace Oyl
 {
 	static constexpr uint32 MAX_FRAMES_IN_FLIGHT = 2;
 
-	RendererProcessor::RendererProcessor(UniquePtr<IRenderer>&& a_renderer)
-		: m_renderer(std::move(a_renderer)) {}
+	Renderer::Renderer(UniquePtr<IRenderContext>&& a_renderer)
+		: m_renderContext(std::move(a_renderer))
+	{
+		OYL_ASSERT(m_renderContext);
+	}
 
-	RendererProcessor::~RendererProcessor()
+	Renderer::~Renderer()
 	{
 		Shutdown();
 	}
 
 	void
-	RendererProcessor::Init(IApplicationWindow* a_mainWindow)
+	Renderer::Init(IApplicationWindow* a_mainWindow)
 	{
 		OYL_PROFILE_FUNCTION();
 
 		if (!IsValid())
 			return;
 
-		m_renderer->Init();
+		m_renderContext->Init();
 
 		PresentTargetHandle presentTarget = nullptr;
 		if (a_mainWindow)
 		{
-			RegisterApplicationWindow(*a_mainWindow);
-			presentTarget = m_windowDataMap[a_mainWindow].presentTarget;
+			RendererWindowData& data = m_windowDataMap[a_mainWindow];
+			data.presentTarget = m_renderContext->CreatePresentTarget(*a_mainWindow);
+			presentTarget = data.presentTarget;
 		}
 
 		LogTrace("Creating Device");
-		m_device = m_renderer->CreateDevice(presentTarget.Get());
+		m_device = m_renderContext->CreateDevice(presentTarget.Get());
 		RenderEngine::Get().RegisterDevice(m_device);
 
 		LogTrace("Creating ShaderCompiler");
-		m_shaderCompiler = m_renderer->CreateShaderCompiler();
+		m_shaderCompiler = m_renderContext->CreateShaderCompiler();
 		RenderEngine::Get().RegisterShaderCompiler(m_shaderCompiler);
+
+		if (a_mainWindow)
+		{
+			// Register the main window to create its render primitives
+			RegisterApplicationWindow(*a_mainWindow);
+
+			// Only init ImGuiRenderer if we have a window for it to render to
+			// Init ImGuiRenderer after setting up the RenderEngine
+			auto renderingModule = ModuleManager::GetModulePointer<IRenderingModule>("Rendering");
+			if (renderingModule)
+				m_imGuiRenderer = renderingModule->CreateImGuiRenderer();
+
+			if (m_imGuiRenderer)
+				m_imGuiRenderer->Init(*this, *a_mainWindow);
+		}
 	}
 
 	void
-	RendererProcessor::Update()
+	Renderer::Update()
 	{
 		OYL_PROFILE_FUNCTION();
 
@@ -52,22 +75,11 @@ namespace Oyl
 			return;
 
 		// Update renderer internal variables
-		if (m_renderer)
-			m_renderer->Update();
+		m_renderContext->Update();
 
-		// If any windows need to be registered with the renderer, do it now
-		if (!m_windowDataPendingInitList.Empty())
-		{
-			for (auto* windowToInit : m_windowDataPendingInitList)
-			{
-				LogTrace("Creating RendererWindowData for window [{} \"{}\"]", windowToInit->GetNativeWindowHandle(), windowToInit->GetTitle());
-				auto& windowDataToInit = m_windowDataMap[windowToInit];
-				CreateSwapChain(*windowToInit, windowDataToInit);
-				CreateCommandBuffers(windowDataToInit);
-				CreateSyncObjects(windowDataToInit);
-			}
-			m_windowDataPendingInitList.Clear();
-		}
+		// Update ImGuiRenderer before we render to windows
+		if (m_imGuiRenderer)
+			m_imGuiRenderer->Update();
 
 		// Render to each window
 		for (auto& [window, windowData] : m_windowDataMap)
@@ -77,7 +89,7 @@ namespace Oyl
 	}
 
 	void
-	RendererProcessor::Shutdown()
+	Renderer::Shutdown()
 	{
 		OYL_PROFILE_FUNCTION();
 
@@ -91,8 +103,11 @@ namespace Oyl
 			UnregisterApplicationWindow(*window);
 		}
 
-		if (m_renderer)
-			m_renderer->Shutdown();
+		// Shutdown ImGuiRenderer before Renderer shuts down
+		if (m_imGuiRenderer)
+			m_imGuiRenderer->Shutdown();
+
+		m_renderContext->Shutdown();
 
 		m_windowDataMap.Clear();
 
@@ -102,11 +117,11 @@ namespace Oyl
 		RenderEngine::Get().UnregisterShaderCompiler(m_shaderCompiler);
 		m_shaderCompiler.Reset();
 
-		m_renderer.Reset();
+		m_renderContext.Reset();
 	}
 
 	void
-	RendererProcessor::RegisterApplicationWindow(IApplicationWindow& a_window)
+	Renderer::RegisterApplicationWindow(IApplicationWindow& a_window)
 	{
 		OYL_PROFILE_FUNCTION();
 
@@ -116,31 +131,76 @@ namespace Oyl
 		if (!a_window.IsValid())
 			return;
 
-		if (m_windowDataMap.Contains(&a_window))
+		RendererWindowData& windowData = m_windowDataMap[&a_window];
+		if (windowData.swapChain)
 			return;
 
 		LogDebug("Registering window [{} \"{}\"] with RendererProcessor", a_window.GetNativeWindowHandle(), a_window.GetTitle());
 
-		RendererWindowData info;
-		LogTrace("Creating PresentTarget for window [{} \"{}\"]", a_window.GetNativeWindowHandle(), a_window.GetTitle());
-		info.presentTarget = m_renderer->CreatePresentTarget(a_window);
+		windowData.window = &a_window;
 
-		m_windowDataMap.Emplace(&a_window, std::move(info));
-		m_windowDataPendingInitList.Add(&a_window);
+		if (!windowData.presentTarget)
+			windowData.presentTarget = m_renderContext->CreatePresentTarget(a_window);
+
+		CreateSwapChain(windowData);
+		CreateCommandBuffers(windowData);
+		CreateSyncObjects(windowData);
 	}
 
 	void
-	RendererProcessor::RenderToWindow(RendererWindowData& a_windowData)
+	Renderer::UnregisterApplicationWindow(IApplicationWindow& a_window)
 	{
 		OYL_PROFILE_FUNCTION();
 
-		auto& drawFence = a_windowData.inFlightFences[a_windowData.frameIndex];
-		auto& presentCompleteSemaphore = a_windowData.presentCompleteSemaphores[a_windowData.frameIndex];
+		if (!IsValid())
+			return;
 
-		drawFence->Wait();
+		if (!m_windowDataMap.ContainsKey(&a_window))
+			return;
+
+		LogDebug("Unregistering window [{} {}] with RendererProcessor", a_window.GetNativeWindowHandle(), a_window.GetTitle());
+
+		m_device->WaitUntilIdle();
+
+		auto& windowData = m_windowDataMap[&a_window];
+		for (auto& fence : windowData.inFlightFences)
+		{
+			fence->Wait();
+			fence->Destroy();
+		}
+		for (auto& semaphore : windowData.renderFinishedSemaphores)
+			semaphore->Destroy();
+		for (auto& semaphore : windowData.presentCompleteSemaphores)
+			semaphore->Destroy();
+		for (auto& commandBuffer : windowData.commandBuffers)
+			commandBuffer->Destroy();
+		windowData.commandPool->Destroy();
+		windowData.swapChain->Destroy();
+		windowData.presentTarget->Destroy();
+		m_windowDataMap.Erase(&a_window);
+	}
+
+	const RendererWindowData*
+	Renderer::GetWindowData(IApplicationWindow& a_window) const
+	{
+		if (!m_windowDataMap.ContainsKey(&a_window))
+			return nullptr;
+
+		return &m_windowDataMap.At(&a_window);
+	}
+
+	void
+	Renderer::RenderToWindow(RendererWindowData& a_windowData)
+	{
+		OYL_PROFILE_FUNCTION();
+
+		auto& drawFence = *a_windowData.inFlightFences[a_windowData.frameIndex];
+		auto& presentCompleteSemaphore = *a_windowData.presentCompleteSemaphores[a_windowData.frameIndex];
+
+		drawFence.Wait();
 
 		auto& swapChain = *a_windowData.swapChain;
-		bool success = swapChain.AcquireNextImage(presentCompleteSemaphore, nullptr);
+		bool success = swapChain.AcquireNextImage(*presentCompleteSemaphore, {});
 		if (!success)
 		{
 			return;
@@ -149,11 +209,11 @@ namespace Oyl
 		auto imageIndex = swapChain.GetCurrentImageIndex();
 
 		// Only reset fences if we are going to submit work to the GPU
-		drawFence->Reset();
+		drawFence.Reset();
 
 		RecordWindowCommandBuffer(a_windowData);
 
-		auto& renderFinishedSemaphore = a_windowData.renderFinishedSemaphores[imageIndex];
+		auto& renderFinishedSemaphore = *a_windowData.renderFinishedSemaphores[imageIndex];
 
 		const auto& graphicsQueue = *m_device->GetCommandQueue(CommandQueueFlagBits::Graphics);
 		graphicsQueue.Submit(
@@ -180,7 +240,7 @@ namespace Oyl
 	}
 
 	void
-	RendererProcessor::RecordWindowCommandBuffer(RendererWindowData& a_windowData)
+	Renderer::RecordWindowCommandBuffer(RendererWindowData& a_windowData)
 	{
 		OYL_PROFILE_FUNCTION();
 
@@ -190,82 +250,87 @@ namespace Oyl
 
 		m_renderGraph.Execute(*commandBuffer);
 
-		auto& swapChain = *a_windowData.swapChain;
+		ImageHandle finalColorOutput = nullptr;
 
-		commandBuffer->TransitionImageLayout(
-			swapChain.GetCurrentImageId(),
-			ImageLayout::None,
-			ImageLayout::TransferDest
-		);
+		auto& sortedPasses = m_renderGraph.GetSortedRenderPasses();
+		if (!sortedPasses.Empty())
+		{
+			auto* finalRenderPass = dynamic_cast<IColorOutputRenderPass*>(sortedPasses.back());
+			if (finalRenderPass == nullptr)
+				LogError("Final RenderPass doesn't provide a Color Output, it needs to derive from \"{}\"!",
+				         nameof(IColorOutputRenderPass));
+			else
+				finalColorOutput = finalRenderPass->GetColorAttachment();
+		}
 
-		auto& image = *m_renderGraph.GetSortedRenderPasses().front()->GetRenderTarget()->GetColorAttachment(0);
-		commandBuffer->BlitImage(
-			image.GetId(),
-			ImageLayout::TransferSource,
-			Rect2D(Vector2i::Zero, image.GetSize()),
-			swapChain.GetCurrentImageId(),
-			ImageLayout::TransferDest,
-			Rect2D(Vector2i::Zero, swapChain.GetSize()),
-			ImageFilter::Nearest
-		);
+		if (m_imGuiRenderer)
+		{
+			m_imGuiRenderer->SetGameViewPortImageHandle(finalColorOutput);
+			m_imGuiRenderer->Render(commandBuffer);
+			finalColorOutput = m_imGuiRenderer->GetRenderedImageHandle();
+		}
 
-		commandBuffer->TransitionImageLayout(
-			swapChain.GetCurrentImageId(),
-			ImageLayout::TransferDest,
-			ImageLayout::PresentSource
-		);
+		if (finalColorOutput)
+		{
+			auto& swapChain = *a_windowData.swapChain;
+
+			commandBuffer->TransitionImageLayout(
+				finalColorOutput,
+				ImageLayout::TransferSource
+			);
+
+			commandBuffer->TransitionImageLayout(
+				swapChain.GetCurrentImageId(),
+				ImageLayout::None,
+				ImageLayout::TransferDest
+			);
+
+			commandBuffer->BlitImage(
+				**finalColorOutput,
+				ImageLayout::TransferSource,
+				Rect2D(Vector2i::Zero, finalColorOutput->GetSize()),
+				swapChain.GetCurrentImageId(),
+				ImageLayout::TransferDest,
+				Rect2D(Vector2i::Zero, swapChain.GetSize()),
+				ImageFilter::Nearest
+			);
+
+			commandBuffer->TransitionImageLayout(
+				swapChain.GetCurrentImageId(),
+				ImageLayout::TransferDest,
+				ImageLayout::PresentSource
+			);
+		} else
+		{
+			LogError("No image is being rendered to swap chain for window [{}]!",
+			         a_windowData.window->GetNativeWindowHandle());
+		}
 
 		commandBuffer->End();
 	}
 
 	void
-	RendererProcessor::RecreateSwapChain(RendererWindowData& a_windowData)
+	Renderer::RecreateSwapChain(RendererWindowData& a_windowData)
 	{
 		a_windowData.swapChain->Recreate();
 	}
 
 	void
-	RendererProcessor::UnregisterApplicationWindow(IApplicationWindow& a_window)
+	Renderer::ResizeRenderGraphViewPort(const ISwapChain& a_swapChain)
 	{
-		OYL_PROFILE_FUNCTION();
-
-		if (!IsValid())
-			return;
-
-		if (!m_windowDataMap.Contains(&a_window))
-			return;
-
-		LogDebug("Unregistering window [{} {}] with RendererProcessor", a_window.GetNativeWindowHandle(), a_window.GetTitle());
-
-		m_device->WaitUntilIdle();
-
-		auto& windowData = m_windowDataMap[&a_window];
-		for (auto& fence : windowData.inFlightFences)
-		{
-			fence->Wait();
-			fence->Destroy();
-		}
-		for (auto& semaphore : windowData.renderFinishedSemaphores)
-			semaphore->Destroy();
-		for (auto& semaphore : windowData.presentCompleteSemaphores)
-			semaphore->Destroy();
-		for (auto& commandBuffer : windowData.commandBuffers)
-			commandBuffer->Destroy();
-		windowData.commandPool->Destroy();
-		windowData.swapChain->Destroy();
-		windowData.presentTarget->Destroy();
-		m_windowDataMap.Erase(&a_window);
+		m_renderGraph.ResizeViewPort(a_swapChain.GetSize());
 	}
 
 	void
-	RendererProcessor::CreateSwapChain(IApplicationWindow& a_window, RendererWindowData& a_windowData)
+	Renderer::CreateSwapChain(RendererWindowData& a_windowData)
 	{
 		OYL_PROFILE_FUNCTION();
-		a_windowData.swapChain = m_renderer->CreateSwapChain(m_device, a_window, a_windowData.presentTarget);
+		a_windowData.swapChain = m_renderContext->CreateSwapChain(m_device, *a_windowData.window, a_windowData.presentTarget);
+		a_windowData.swapChain->AddOnRecreateCallback({ this, &Renderer::ResizeRenderGraphViewPort });
 	}
 
 	void
-	RendererProcessor::CreateCommandBuffers(RendererWindowData& a_windowData)
+	Renderer::CreateCommandBuffers(RendererWindowData& a_windowData)
 	{
 		OYL_PROFILE_FUNCTION();
 
@@ -280,7 +345,7 @@ namespace Oyl
 	}
 
 	void
-	RendererProcessor::CreateSyncObjects(RendererWindowData& a_windowData)
+	Renderer::CreateSyncObjects(RendererWindowData& a_windowData)
 	{
 		OYL_PROFILE_FUNCTION();
 

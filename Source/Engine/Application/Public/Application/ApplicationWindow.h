@@ -113,108 +113,56 @@ namespace Oyl
 		GetNativeWindowHandle() const = 0;
 
 		virtual
-		void
-		RegisterWindowResizeCallback(Delegate<void(const WindowResizeEvent&)> a_callback) = 0;
+		const MulticastDelegate<void(const WindowResizeEvent&)>&
+		OnResizeCallback() const = 0;
 
 		virtual
-		void
-		UnregisterWindowResizeCallback(Delegate<void(const WindowResizeEvent&)> a_callback) = 0;
+		const MulticastDelegate<void(const WindowMaximizeEvent&)>&
+		OnMaximizeCallback() const = 0;
 
 		virtual
-		void
-		RegisterWindowMaximizeCallback(Delegate<void(const WindowMaximizeEvent&)> a_callback) = 0;
+		const MulticastDelegate<void(const WindowMinimizeEvent&)>&
+		OnMinimizeCallback() const = 0;
 
 		virtual
-		void
-		UnregisterWindowMaximizeCallback(Delegate<void(const WindowMaximizeEvent&)> a_callback) = 0;
+		const MulticastDelegate<void(const WindowMoveEvent&)>&
+		OnMoveCallback() const = 0;
 
 		virtual
-		void
-		RegisterWindowMinimizeCallback(Delegate<void(const WindowMinimizeEvent&)> a_callback) = 0;
+		const MulticastDelegate<void(const WindowCloseRequestEvent&)>&
+		OnCloseRequestCallback() const = 0;
 
 		virtual
-		void
-		UnregisterWindowMinimizeCallback(Delegate<void(const WindowMinimizeEvent&)> a_callback) = 0;
+		const MulticastDelegate<void(const WindowCloseEvent&)>&
+		OnCloseCallback() const = 0;
 
 		virtual
-		void
-		RegisterWindowMoveCallback(Delegate<void(const WindowMoveEvent&)> a_callback) = 0;
+		const MulticastDelegate<void(const WindowFocusEvent&)>&
+		OnFocusCallback() const = 0;
 
 		virtual
-		void
-		UnregisterWindowMoveCallback(Delegate<void(const WindowMoveEvent&)> a_callback) = 0;
+		const MulticastDelegate<void(const WindowKeyPressEvent&)>&
+		OnKeyPressCallback() const = 0;
 
 		virtual
-		void
-		RegisterWindowClosedCallback(Delegate<void(const WindowClosedEvent&)> a_callback) = 0;
+		const MulticastDelegate<void(const WindowKeyReleaseEvent&)>&
+		OnKeyReleaseCallback() const = 0;
 
 		virtual
-		void
-		UnregisterWindowClosedCallback(Delegate<void(const WindowClosedEvent&)> a_callback) = 0;
+		const MulticastDelegate<void(const WindowMousePressEvent&)>&
+		OnMousePressCallback() const = 0;
 
 		virtual
-		void
-		RegisterWindowCloseRequestCallback(Delegate<void(const WindowCloseRequestEvent&)> a_callback) = 0;
+		const MulticastDelegate<void(const WindowMouseReleaseEvent&)>&
+		OnMouseReleaseCallback() const = 0;
 
 		virtual
-		void
-		UnregisterWindowCloseRequestCallback(Delegate<void(const WindowCloseRequestEvent&)> a_callback) = 0;
+		const MulticastDelegate<void(const WindowMouseScrollEvent&)>&
+		OnMouseScrollCallback() const = 0;
 
 		virtual
-		void
-		RegisterWindowFocusCallback(Delegate<void(const WindowFocusEvent&)> a_callback) = 0;
-
-		virtual
-		void
-		UnregisterWindowFocusCallback(Delegate<void(const WindowFocusEvent&)> a_callback) = 0;
-
-		virtual
-		void
-		RegisterKeyPressCallback(Delegate<void(const WindowKeyPressEvent&)> a_callback) = 0;
-
-		virtual
-		void
-		UnregisterKeyPressCallback(Delegate<void(const WindowKeyPressEvent&)> a_callback) = 0;
-
-		virtual
-		void
-		RegisterKeyReleaseCallback(Delegate<void(const WindowKeyReleaseEvent&)> a_callback) = 0;
-
-		virtual
-		void
-		UnregisterKeyReleaseCallback(Delegate<void(const WindowKeyReleaseEvent&)> a_callback) = 0;
-
-		virtual
-		void
-		RegisterMousePressCallback(Delegate<void(const WindowMousePressEvent&)> a_callback) = 0;
-
-		virtual
-		void
-		UnregisterMousePressCallback(Delegate<void(const WindowMousePressEvent&)> a_callback) = 0;
-
-		virtual
-		void
-		RegisterMouseReleaseCallback(Delegate<void(const WindowMouseReleaseEvent&)> a_callback) = 0;
-
-		virtual
-		void
-		UnregisterMouseReleaseCallback(Delegate<void(const WindowMouseReleaseEvent&)> a_callback) = 0;
-
-		virtual
-		void
-		RegisterMouseScrollCallback(Delegate<void(const WindowMouseScrollEvent&)> a_callback) = 0;
-
-		virtual
-		void
-		UnregisterMouseScrollCallback(Delegate<void(const WindowMouseScrollEvent&)> a_callback) = 0;
-
-		virtual
-		void
-		RegisterCursorMoveCallback(Delegate<void(const WindowCursorMoveEvent&)> a_callback) = 0;
-
-		virtual
-		void
-		UnregisterCursorMoveCallback(Delegate<void(const WindowCursorMoveEvent&)> a_callback) = 0;
+		const MulticastDelegate<void(const WindowCursorMoveEvent&)>&
+		OnCursorMoveCallback() const = 0;
 	};
 
 	inline
