@@ -25,7 +25,7 @@ namespace Oyl
 		void
 		OnViewPortResize(Vector2u a_size) override;
 
-		ImageHandle
+		const ImageHandle&
 		GetColorAttachment() const override { return m_colorAttachment; }
 
 	protected:

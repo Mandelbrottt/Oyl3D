@@ -59,7 +59,7 @@ namespace Oyl
 			// Init ImGuiRenderer after setting up the RenderEngine
 			auto renderingModule = ModuleManager::GetModulePointer<IRenderingModule>("Rendering");
 			if (renderingModule)
-				m_imGuiRenderer = renderingModule->CreateImGuiRenderer(m_renderContext->GetRenderingApi());
+				m_imGuiRenderer = renderingModule->CreateImGuiRenderer();
 
 			if (m_imGuiRenderer)
 				m_imGuiRenderer->Init(*this, *a_mainWindow);
@@ -79,7 +79,7 @@ namespace Oyl
 
 		// Update ImGuiRenderer before we render to windows
 		if (m_imGuiRenderer)
-			m_imGuiRenderer->Update(*this);
+			m_imGuiRenderer->Update();
 
 		// Render to each window
 		for (auto& [window, windowData] : m_windowDataMap)
@@ -105,7 +105,7 @@ namespace Oyl
 
 		// Shutdown ImGuiRenderer before Renderer shuts down
 		if (m_imGuiRenderer)
-			m_imGuiRenderer->Shutdown(*this);
+			m_imGuiRenderer->Shutdown();
 
 		m_renderContext->Shutdown();
 
@@ -266,7 +266,7 @@ namespace Oyl
 		if (m_imGuiRenderer)
 		{
 			m_imGuiRenderer->SetGameViewPortImageHandle(finalColorOutput);
-			m_imGuiRenderer->Render(*this, commandBuffer);
+			m_imGuiRenderer->Render(commandBuffer);
 			finalColorOutput = m_imGuiRenderer->GetRenderedImageHandle();
 		}
 

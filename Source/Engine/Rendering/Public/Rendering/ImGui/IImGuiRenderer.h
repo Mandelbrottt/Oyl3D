@@ -2,6 +2,8 @@
 
 #include <Application/ApplicationWindow.h>
 
+#include "Rendering/Image.h"
+
 namespace Oyl
 {
 	class Renderer;
@@ -19,23 +21,31 @@ namespace Oyl
 
 		virtual
 		void
-		Update(Renderer& a_renderer) = 0;
+		Update() = 0;
 
 		virtual
 		void
-		Render(Renderer& a_renderer, ICommandBuffer& a_commandBuffer) = 0;
+		Render(ICommandBuffer& a_commandBuffer) = 0;
 
 		virtual
 		void
-		Shutdown(Renderer& a_renderer) = 0;
+		Shutdown() = 0;
 
 		virtual
-		ImageHandle
+		Renderer&
+		GetRenderer() const = 0;
+
+		virtual
+		const ImageHandle&
 		GetRenderedImageHandle() const = 0;
 
 		virtual
 		void
 		SetOnUpdateCallback(Delegate<void()> a_callback) = 0;
+
+		virtual
+		const ImageHandle&
+		GetGameViewPortImageHandle() = 0;
 
 		virtual
 		void

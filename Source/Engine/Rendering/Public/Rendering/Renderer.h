@@ -9,7 +9,7 @@
 #include "PresentTarget.h"
 #include "RenderGraph.h"
 
-#include "ImGui/ImGuiRenderer.h"
+#include "ImGui/IImGuiRenderer.h"
 
 #include "Rendering/RenderContext.h"
 

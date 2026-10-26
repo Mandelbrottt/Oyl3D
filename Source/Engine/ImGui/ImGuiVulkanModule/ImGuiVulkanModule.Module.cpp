@@ -1,13 +1,14 @@
 #include <Core/Modules/ModuleManager.h>
 
-#include <Rendering/Rendering.h>
+#include <ImGuiModule/IImGuiImpl.h>
+#include <ImGuiModule/ImGuiModule.h>
 
-#include "ImGuiVulkanModule/ImGuiVulkanRenderer.h"
+#include "ImGuiVulkanModule/ImGuiVulkanImpl.h"
 
 namespace Oyl
 {
 	class ImGuiVulkanModule final
-		: public IImGuiRendererFactory,
+		: public IImGuiImplFactory,
 		  public IModuleInterface
 	{
 	public:
@@ -17,17 +18,17 @@ namespace Oyl
 		void
 		OnStartModule() override
 		{
-			auto renderingModule = ModuleManager::GetModulePointer<IRenderingModule>("Rendering");
+			auto renderingModule = ModuleManager::GetModulePointer<IImGuiModule>("ImGuiModule");
 			if (renderingModule)
-				renderingModule->RegisterImGuiRendererFactory(*this);
+				renderingModule->RegisterImGuiImplFactory(*this);
 		}
 
 		void
 		OnStopModule() override
 		{
-			auto renderingModule = ModuleManager::GetModulePointer<IRenderingModule>("Rendering");
+			auto renderingModule = ModuleManager::GetModulePointer<IImGuiModule>("ImGuiModule");
 			if (renderingModule)
-				renderingModule->UnregisterImGuiRendererFactory(*this);
+				renderingModule->UnregisterImGuiImplFactory(*this);
 		}
 
 		bool
@@ -36,10 +37,10 @@ namespace Oyl
 			return a_api == RenderingApi::Vulkan;
 		}
 
-		UniquePtr<IImGuiRenderer>
-		CreateImGuiRenderer() override
+		UniquePtr<IImGuiImpl>
+		CreateImGuiImpl() override
 		{
-			return MakeUniquePtr<ImGuiVulkanRenderer>();
+			return MakeUniquePtr<ImGuiVulkanImpl>();
 		}
 	};
 

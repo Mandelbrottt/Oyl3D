@@ -16,7 +16,7 @@ namespace Oyl
 		virtual
 		~ImGuiVulkanRenderPass() = default;
 
-		ImageHandle
+		const ImageHandle&
 		GetColorAttachment() const override { return m_colorAttachment; }
 
 		void

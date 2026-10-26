@@ -41,31 +41,28 @@ namespace Oyl
 		void
 		RegisterImGuiRendererFactory(IImGuiRendererFactory& a_factory) override
 		{
-			auto iter = std::ranges::find(m_imGuiRendererFactories, &a_factory);
-			if (iter == m_imGuiRendererFactories.end())
-				m_imGuiRendererFactories.Add(&a_factory);
+			if (m_imGuiRendererFactory == nullptr)
+				m_imGuiRendererFactory = &a_factory;
 		}
 
 		void
 		UnregisterImGuiRendererFactory(IImGuiRendererFactory& a_factory) override
 		{
-			auto iter = std::ranges::find(m_imGuiRendererFactories, &a_factory);
-			if (iter != m_imGuiRendererFactories.end())
-				m_imGuiRendererFactories.erase(iter);
+			if (m_imGuiRendererFactory == &a_factory)
+				m_imGuiRendererFactory = nullptr;
 		}
 
 		UniquePtr<IImGuiRenderer>
-		CreateImGuiRenderer(RenderingApi a_api) override
+		CreateImGuiRenderer() override
 		{
-			for (auto& rendererFactory : m_imGuiRendererFactories)
-				if (rendererFactory->SupportsApi(a_api))
-					return rendererFactory->CreateImGuiRenderer();
+			if (m_imGuiRendererFactory)
+				return m_imGuiRendererFactory->CreateImGuiRenderer();
 			return nullptr;
 		}
 
 	private:
 		Array<IRenderContextFactory*> m_rendererFactories;
-		Array<IImGuiRendererFactory*> m_imGuiRendererFactories;
+		IImGuiRendererFactory* m_imGuiRendererFactory = nullptr;
 	};
 
 	OYL_MODULE_DECLARE(Rendering, RenderingModule)

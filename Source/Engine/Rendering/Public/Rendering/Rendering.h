@@ -5,7 +5,7 @@
 
 #include "RenderContext.h"
 
-#include "ImGui/ImGuiRenderer.h"
+#include "ImGui/IImGuiRenderer.h"
 
 #include "Rendering/RenderingEnums.h"
 
@@ -34,10 +34,6 @@ namespace Oyl
 	public:
 		virtual
 		~IImGuiRendererFactory() = 0;
-
-		virtual
-		bool
-		SupportsApi(RenderingApi a_api) = 0;
 
 		virtual
 		UniquePtr<IImGuiRenderer>
@@ -75,7 +71,7 @@ namespace Oyl
 
 		virtual
 		UniquePtr<IImGuiRenderer>
-		CreateImGuiRenderer(RenderingApi a_api) = 0;
+		CreateImGuiRenderer() = 0;
 
 		bool
 		SupportsHotReload() override
