@@ -71,161 +71,44 @@ namespace Oyl
 		SetupGlfwWindowCallbacks();
 
 	public:
-		void
-		RegisterWindowResizeCallback(Delegate<void(const WindowResizeEvent&)> a_callback) override
-		{
-			m_windowResizeCallback += a_callback;
-		}
+		const MulticastDelegate<void(const WindowResizeEvent&)>&
+		OnResizeCallback() const override { return m_windowResizeCallback; };
 
-		void
-		UnregisterWindowResizeCallback(Delegate<void(const WindowResizeEvent&)> a_callback) override
-		{
-			m_windowResizeCallback -= a_callback;
-		}
+		const MulticastDelegate<void(const WindowMaximizeEvent&)>&
+		OnMaximizeCallback() const override { return m_windowMaximizeCallback; }
 
-		void
-		RegisterWindowMaximizeCallback(Delegate<void(const WindowMaximizeEvent&)> a_callback) override
-		{
-			m_windowMaximizeCallback += a_callback;
-		}
+		const MulticastDelegate<void(const WindowMinimizeEvent&)>&
+		OnMinimizeCallback() const override { return m_windowMinimizeCallback; }
 
-		void
-		UnregisterWindowMaximizeCallback(Delegate<void(const WindowMaximizeEvent&)> a_callback) override
-		{
-			m_windowMaximizeCallback -= a_callback;
-		}
+		const MulticastDelegate<void(const WindowMoveEvent&)>&
+		OnMoveCallback() const override { return m_windowMoveCallback; }
 
-		void
-		RegisterWindowMinimizeCallback(Delegate<void(const WindowMinimizeEvent&)> a_callback) override
-		{
-			m_windowMinimizeCallback += a_callback;
-		}
+		const MulticastDelegate<void(const WindowCloseRequestEvent&)>&
+		OnCloseRequestCallback() const override { return m_windowCloseRequestCallback; }
 
-		void
-		UnregisterWindowMinimizeCallback(Delegate<void(const WindowMinimizeEvent&)> a_callback) override
-		{
-			m_windowMinimizeCallback -= a_callback;
-		}
+		const MulticastDelegate<void(const WindowCloseEvent&)>&
+		OnCloseCallback() const override { return m_windowCloseCallback; }
 
-		void
-		RegisterWindowMoveCallback(Delegate<void(const WindowMoveEvent&)> a_callback) override
-		{
-			m_windowMoveCallback += a_callback;
-		}
+		const MulticastDelegate<void(const WindowFocusEvent&)>&
+		OnFocusCallback() const override { return m_windowFocusCallback; }
 
-		void
-		UnregisterWindowMoveCallback(Delegate<void(const WindowMoveEvent&)> a_callback) override
-		{
-			m_windowMoveCallback -= a_callback;
-		}
+		const MulticastDelegate<void(const WindowKeyPressEvent&)>&
+		OnKeyPressCallback() const override { return m_keyPressCallback; }
 
-		void
-		RegisterWindowClosedCallback(Delegate<void(const WindowClosedEvent&)> a_callback) override
-		{
-			m_windowClosedCallback += a_callback;
-		}
+		const MulticastDelegate<void(const WindowKeyReleaseEvent&)>&
+		OnKeyReleaseCallback() const override { return m_keyReleaseCallback; }
 
-		void
-		UnregisterWindowClosedCallback(Delegate<void(const WindowClosedEvent&)> a_callback) override
-		{
-			m_windowClosedCallback -= a_callback;
-		}
+		const MulticastDelegate<void(const WindowMousePressEvent&)>&
+		OnMousePressCallback() const override { return m_mousePressCallback; }
 
-		void
-		RegisterWindowCloseRequestCallback(Delegate<void(const WindowCloseRequestEvent&)> a_callback) override
-		{
-			m_windowCloseRequestCallback += a_callback;
-		}
+		const MulticastDelegate<void(const WindowMouseReleaseEvent&)>&
+		OnMouseReleaseCallback() const override { return m_mouseReleaseCallback; }
 
-		void
-		UnregisterWindowCloseRequestCallback(Delegate<void(const WindowCloseRequestEvent&)> a_callback) override
-		{
-			m_windowCloseRequestCallback -= a_callback;
-		}
+		const MulticastDelegate<void(const WindowMouseScrollEvent&)>&
+		OnMouseScrollCallback() const override { return m_mouseScrollCallback; }
 
-		void
-		RegisterWindowFocusCallback(Delegate<void(const WindowFocusEvent&)> a_callback) override
-		{
-			m_windowFocusCallback += a_callback;
-		}
-
-		void
-		UnregisterWindowFocusCallback(Delegate<void(const WindowFocusEvent&)> a_callback) override
-		{
-			m_windowFocusCallback -= a_callback;
-		}
-
-		void
-		RegisterKeyPressCallback(Delegate<void(const WindowKeyPressEvent&)> a_callback) override
-		{
-			m_keyPressCallback += a_callback;
-		}
-
-		void
-		UnregisterKeyPressCallback(Delegate<void(const WindowKeyPressEvent&)> a_callback) override
-		{
-			m_keyPressCallback -= a_callback;
-		}
-
-		void
-		RegisterKeyReleaseCallback(Delegate<void(const WindowKeyReleaseEvent&)> a_callback) override
-		{
-			m_keyReleaseCallback += a_callback;
-		}
-
-		void
-		UnregisterKeyReleaseCallback(Delegate<void(const WindowKeyReleaseEvent&)> a_callback) override
-		{
-			m_keyReleaseCallback -= a_callback;
-		}
-
-		void
-		RegisterMousePressCallback(Delegate<void(const WindowMousePressEvent&)> a_callback) override
-		{
-			m_mousePressCallback += a_callback;
-		}
-
-		void
-		UnregisterMousePressCallback(Delegate<void(const WindowMousePressEvent&)> a_callback) override
-		{
-			m_mousePressCallback -= a_callback;
-		}
-
-		void
-		RegisterMouseReleaseCallback(Delegate<void(const WindowMouseReleaseEvent&)> a_callback) override
-		{
-			m_mouseReleaseCallback += a_callback;
-		}
-
-		void
-		UnregisterMouseReleaseCallback(Delegate<void(const WindowMouseReleaseEvent&)> a_callback) override
-		{
-			m_mouseReleaseCallback -= a_callback;
-		}
-
-		void
-		RegisterMouseScrollCallback(Delegate<void(const WindowMouseScrollEvent&)> a_callback) override
-		{
-			m_mouseScrollCallback += a_callback;
-		}
-
-		void
-		UnregisterMouseScrollCallback(Delegate<void(const WindowMouseScrollEvent&)> a_callback) override
-		{
-			m_mouseScrollCallback -= a_callback;
-		}
-
-		void
-		RegisterCursorMoveCallback(Delegate<void(const WindowCursorMoveEvent&)> a_callback) override
-		{
-			m_cursorMoveCallback += a_callback;
-		}
-
-		void
-		UnregisterCursorMoveCallback(Delegate<void(const WindowCursorMoveEvent&)> a_callback) override
-		{
-			m_cursorMoveCallback -= a_callback;
-		}
+		const MulticastDelegate<void(const WindowCursorMoveEvent&)>&
+		OnCursorMoveCallback() const override { return m_cursorMoveCallback; }
 
 	private:
 		String m_title;
@@ -242,7 +125,7 @@ namespace Oyl
 		MulticastDelegate<void(const WindowMinimizeEvent&)> m_windowMinimizeCallback;
 		MulticastDelegate<void(const WindowMaximizeEvent&)> m_windowMaximizeCallback;
 		MulticastDelegate<void(const WindowMoveEvent&)> m_windowMoveCallback;
-		MulticastDelegate<void(const WindowClosedEvent&)> m_windowClosedCallback;
+		MulticastDelegate<void(const WindowCloseEvent&)> m_windowCloseCallback;
 		MulticastDelegate<void(const WindowCloseRequestEvent&)> m_windowCloseRequestCallback;
 		MulticastDelegate<void(const WindowFocusEvent&)> m_windowFocusCallback;
 		MulticastDelegate<void(const WindowKeyPressEvent&)> m_keyPressCallback;

@@ -304,29 +304,35 @@ namespace Oyl
 
 		MulticastDelegate() = default;
 
-		MulticastDelegate&
-		operator +=(DelegateTy a_delegate)
+		NO_COPY(MulticastDelegate);
+		DEFAULT_MOVE(MulticastDelegate);
+
+		operator bool() const { return IsValid(); }
+
+		bool
+		IsValid() const { return !m_delegates.Empty(); }
+
+		void
+		operator +=(DelegateTy a_delegate) const
 		{
 			// Check if we've already added this delegate
 			for (const auto& delegate : m_delegates)
 				if (delegate == a_delegate)
-					return *this;
+					return;
 
 			m_delegates.Add(a_delegate);
-			return *this;
 		}
 
-		MulticastDelegate&
-		operator -=(DelegateTy a_delegate)
+		void
+		operator -=(DelegateTy a_delegate) const
 		{
 			for (uint32 i = 0; i < m_delegates.Length(); i++)
 				if (m_delegates[i] == a_delegate)
 					m_delegates.erase(m_delegates.begin() + i);
-			return *this;
 		}
 
 		TReturn
-		operator ()(TArgs&&... a_args) const
+		operator ()(TArgs&&... a_args)
 		{
 			return Invoke(std::forward<TArgs>(a_args)...);
 		}
@@ -334,7 +340,7 @@ namespace Oyl
 		template<typename = void>
 			requires (std::is_void_v<TReturn>)
 		void
-		Invoke(TArgs&&... a_args) const
+		Invoke(TArgs&&... a_args)
 		{
 			for (uint32 i = 0; i < m_delegates.Size(); i++)
 				m_delegates[i].Invoke(std::forward<TArgs>(a_args)...);
@@ -343,7 +349,7 @@ namespace Oyl
 		template<typename = void>
 			requires (!std::is_void_v<TReturn> && std::is_copy_constructible_v<TReturn>)
 		Array<TReturn>
-		Invoke(TArgs&&... a_args) const
+		Invoke(TArgs&&... a_args)
 		{
 			if (m_delegates.empty())
 				return {};
@@ -356,6 +362,8 @@ namespace Oyl
 		}
 
 	private:
-		Array<DelegateTy> m_delegates;
+		mutable Array<DelegateTy> m_delegates;
 	};
 }
+
+#define InstanceDelegate(_member_function_name_) { this, &Traits::TRemovePointer<decltype(this)>::_member_function_name_ }

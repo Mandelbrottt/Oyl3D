@@ -105,7 +105,7 @@ namespace Oyl
 	constexpr TypeId
 	GetTypeId() noexcept
 	{
-		using TRaw = std::decay_t<Traits::RemovePointer_T<T>>;
+		using TRaw = std::decay_t<Traits::TRemovePointer<T>>;
 
 		using TUnderlying = Traits::TUnderlyingType<TypeId>;
 

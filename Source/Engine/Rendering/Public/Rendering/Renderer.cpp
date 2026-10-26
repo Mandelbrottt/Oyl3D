@@ -316,7 +316,7 @@ namespace Oyl
 	}
 
 	void
-	Renderer::OnRecreateSwapChain(const ISwapChain& a_swapChain)
+	Renderer::ResizeRenderGraphViewPort(const ISwapChain& a_swapChain)
 	{
 		m_renderGraph.ResizeViewPort(a_swapChain.GetSize());
 	}
@@ -326,7 +326,7 @@ namespace Oyl
 	{
 		OYL_PROFILE_FUNCTION();
 		a_windowData.swapChain = m_renderContext->CreateSwapChain(m_device, *a_windowData.window, a_windowData.presentTarget);
-		a_windowData.swapChain->AddOnRecreateCallback({ this, &Renderer::OnRecreateSwapChain });
+		a_windowData.swapChain->AddOnRecreateCallback({ this, &Renderer::ResizeRenderGraphViewPort });
 	}
 
 	void

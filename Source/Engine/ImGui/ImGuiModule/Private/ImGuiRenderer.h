@@ -30,8 +30,8 @@ namespace Oyl
 		const ImageHandle&
 		GetRenderedImageHandle() const override;
 
-		void
-		SetOnUpdateCallback(Delegate<void()> a_callback) override { m_onUpdate = a_callback; }
+		const MulticastDelegate<void()>&
+		OnDebugGuiCallback() const override { return m_onDebugGuiCallback; }
 
 		const ImageHandle&
 		GetGameViewPortImageHandle() override { return m_gameViewPortImageHandle; }
@@ -48,7 +48,7 @@ namespace Oyl
 
 		UniquePtr<IImGuiImpl> m_imGuiImpl;
 
-		Delegate<void()> m_onUpdate;
+		MulticastDelegate<void()> m_onDebugGuiCallback;
 
 		std::mutex m_renderMutex;
 

@@ -1,6 +1,6 @@
 #include "EditorClientApplication.h"
 
-#include <Application/Application.h>
+#include <Application/ApplicationModule.h>
 
 #include <Core/Logging/Logging.h>
 #include <Core/Modules/ModuleManager.h>
@@ -13,7 +13,7 @@
 namespace Oyl
 {
 	void
-	EditorClientApplication::OnStart()
+	EditorClientApplication::Start()
 	{
 		OYL_PROFILE_FUNCTION();
 
@@ -35,8 +35,8 @@ namespace Oyl
 
 		if (m_mainWindow)
 		{
-			m_mainWindow->RegisterWindowCloseRequestCallback({ this, &EditorClientApplication::OnWindowCloseRequestEvent });
-			m_mainWindow->RegisterKeyPressCallback({ this, &EditorClientApplication::OnKeyPressEvent });
+			m_mainWindow->OnCloseRequestCallback() += InstanceDelegate(OnWindowCloseRequestEvent);
+			m_mainWindow->OnKeyPressCallback() += InstanceDelegate(OnKeyPressEvent);
 		}
 
 		auto* renderingModule = ModuleManager::GetModulePointer<IRenderingModule>("Rendering");
@@ -50,11 +50,13 @@ namespace Oyl
 			m_testRenderPass = UniquePtr<TestRenderPass>::Make(m_mainWindow->GetContentSize());
 			auto& renderGraph = m_renderer.GetRenderGraph();
 			renderGraph.AddRenderPass(m_testRenderPass.Get());
+
+			m_renderer.OnDebugGuiCallback() += InstanceDelegate(OnDebugGui);
 		}
 	}
 
 	void
-	EditorClientApplication::OnStop()
+	EditorClientApplication::Shutdown()
 	{
 		OYL_PROFILE_FUNCTION();
 
@@ -67,17 +69,25 @@ namespace Oyl
 			for (auto* window : m_applicationWindows)
 				m_renderer.UnregisterApplicationWindow(*window);
 			m_renderer.Shutdown();
+			m_renderer.OnDebugGuiCallback() -= InstanceDelegate(OnDebugGui);
+		}
+
+		if (m_mainWindow)
+		{
+			m_mainWindow->OnCloseRequestCallback() -= InstanceDelegate(OnWindowCloseRequestEvent);
+			m_mainWindow->OnKeyPressCallback() -= InstanceDelegate(OnKeyPressEvent);
 		}
 
 		while (!m_applicationWindows.Empty())
 			CloseApplicationWindow(m_applicationWindows.front());
+
 
 		m_applicationWindows.Clear();
 		m_mainWindow = nullptr;
 	}
 
 	void
-	EditorClientApplication::OnUpdate()
+	EditorClientApplication::Update()
 	{
 		OYL_PROFILE_FUNCTION();
 
@@ -196,21 +206,10 @@ namespace Oyl
 	}
 
 	void
-	EditorClientApplication::InvokeOnUpdateCallback() const
+	EditorClientApplication::OnDebugGui()
 	{
-		m_onUpdateCallback.Invoke();
-	}
-
-	void
-	EditorClientApplication::RegisterOnUpdateCallback(OnUpdateDelegate a_callback)
-	{
-		m_onUpdateCallback += a_callback;
-	}
-
-	void
-	EditorClientApplication::UnregisterOnUpdateCallback(OnUpdateDelegate a_callback)
-	{
-		m_onUpdateCallback -= a_callback;
+		static bool open = true;
+		ImGui::ShowDemoWindow(&open);
 	}
 
 	void

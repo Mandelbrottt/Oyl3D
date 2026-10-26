@@ -57,9 +57,9 @@ namespace Oyl
 			return;
 
 		// Send event before we do any actual cleanup
-		WindowClosedEvent event;
+		WindowCloseEvent event;
 		event.window = this;
-		m_windowClosedCallback(event);
+		m_windowCloseCallback(event);
 
 		glfwDestroyWindow(m_glfwWindow);
 		m_glfwWindow = nullptr;

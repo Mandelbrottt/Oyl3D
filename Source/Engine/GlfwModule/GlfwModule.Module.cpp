@@ -1,4 +1,4 @@
-#include <Application/Application.h>
+#include <Application/ApplicationModule.h>
 
 #include <Core/Modules/ModuleManager.h>
 
@@ -31,17 +31,21 @@ namespace Oyl
 
 			auto* applicationModule = ModuleManager::GetModulePointer<IApplicationModule>("Application");
 			applicationModule->RegisterApplicationWindowFactory(*this);
-			applicationModule->CurrentApplication()->RegisterOnUpdateCallback([]
-			{
-				OYL_PROFILE_SCOPE("glfwPollEvents()");
-				glfwPollEvents();
-			});
+			applicationModule->CurrentApplication()->OnUpdateCallback() += PollEvents;
 		}
 
 		void
 		OnStopModule() override
 		{
 			glfwTerminate();
+		}
+
+		static
+		void
+		PollEvents()
+		{
+			OYL_PROFILE_SCOPE("glfwPollEvents()");
+			glfwPollEvents();
 		}
 
 		static

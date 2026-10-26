@@ -1,7 +1,7 @@
 #include <filesystem>
 #include <iostream>
 
-#include <Application/Application.h>
+#include <Application/ApplicationModule.h>
 
 #include <Core/CommandLine/CommandLine.h>
 #include <Core/Logging/Logging.h>
@@ -26,13 +26,13 @@ RunApplication()
 	auto fps = Oyl::CommandLine::GetInt("fps");
 	if (fps.has_value() && fps >= 0)
 		application.SetTargetFramerate(*fps);
-	application.RegisterOnUpdateCallback(Oyl::Time::Internal::Update);
-	application.RegisterOnUpdateCallback([]
+	application.OnUpdateCallback() += Oyl::Time::Internal::Update;
+	application.OnUpdateCallback() += []
 	{
 		// Profile manually since we don't know if the client will
 		OYL_PROFILE_SCOPE("virtual Oyl::Internal::ILogger::Flush");
 		Oyl::Internal::GetCurrentLogger()->Flush();
-	});
+	};
 
 	// Initialize ImGui context
 	IMGUI_CHECKVERSION();
@@ -69,7 +69,7 @@ RunApplication()
 	auto cwd = std::filesystem::current_path().string();
 	Oyl::ModuleManager::Get().AddEngineModuleDirectory(Oyl::StringView(cwd));
 	Oyl::ModuleManager::Get().ScanModuleDirectories();
-	application.RegisterOnUpdateCallback([] { Oyl::ModuleManager::Get().ProcessPendingAutoLoadRequests(); });
+	application.OnUpdateCallback() += [] { Oyl::ModuleManager::Get().ProcessPendingAutoLoadRequests(); };
 
 	// Register EditorClientApplication after initial module scan
 	auto* applicationModule = Oyl::ModuleManager::LoadModulePointer<Oyl::IApplicationModule>("Application");

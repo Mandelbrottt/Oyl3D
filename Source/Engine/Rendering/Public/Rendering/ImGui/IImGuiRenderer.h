@@ -40,8 +40,8 @@ namespace Oyl
 		GetRenderedImageHandle() const = 0;
 
 		virtual
-		void
-		SetOnUpdateCallback(Delegate<void()> a_callback) = 0;
+		const MulticastDelegate<void()>&
+		OnDebugGuiCallback() const = 0;
 
 		virtual
 		const ImageHandle&

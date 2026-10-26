@@ -75,6 +75,12 @@ namespace Oyl
 		const RenderGraph&
 		GetRenderGraph() const { return const_cast<Renderer*>(this)->GetRenderGraph(); }
 
+		const MulticastDelegate<void()>&
+		OnDebugGuiCallback() const
+		{
+			return m_imGuiRenderer->OnDebugGuiCallback();
+		}
+
 	private:
 		void
 		CreateSwapChain(RendererWindowData& a_windowData);
@@ -95,7 +101,7 @@ namespace Oyl
 		RecreateSwapChain(RendererWindowData& a_windowData);
 
 		void
-		OnRecreateSwapChain(const ISwapChain& a_swapChain);
+		ResizeRenderGraphViewPort(const ISwapChain& a_swapChain);
 
 	private:
 		UniquePtr<IRenderContext> m_renderContext;

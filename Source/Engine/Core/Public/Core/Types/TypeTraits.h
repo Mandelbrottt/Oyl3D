@@ -111,7 +111,7 @@ namespace Oyl::Traits
 	struct RemovePointer : TypeConstant<std::remove_pointer_t<T>> {};
 
 	template<typename T>
-	using RemovePointer_T = typename RemovePointer<T>::type;
+	using TRemovePointer = typename RemovePointer<T>::type;
 
 	template<typename T>
 	struct IsVoidPointer : BoolConstant<std::is_void_v<RemovePointer<T>>> {};
@@ -123,10 +123,10 @@ namespace Oyl::Traits
 	concept NonVoidPointer = !IsVoidPointer<T>::value;
 
 	template<typename T>
-	concept PointerToObject = IsPointer<T>::value && !IsPointer<RemovePointer_T<T>>::value;
+	concept PointerToObject = IsPointer<T>::value && !IsPointer<TRemovePointer<T>>::value;
 
 	template<typename T>
-	struct IsPointerToPointer : BoolConstant<Pointer<T> && Pointer<RemovePointer_T<T>>> {};
+	struct IsPointerToPointer : BoolConstant<Pointer<T> && Pointer<TRemovePointer<T>>> {};
 
 	template<typename T>
 	concept PointerToPointer = IsPointerToPointer<T>::value;

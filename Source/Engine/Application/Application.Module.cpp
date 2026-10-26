@@ -6,6 +6,8 @@
 #define OYL_EXPOSE_PROFILER_CONTROLS
 #include <Core/Profiling/Profiling.h>
 
+#include "Application/ApplicationModule.h"
+
 namespace Oyl
 {
 	class ApplicationModule : public IApplicationModule
@@ -33,23 +35,23 @@ namespace Oyl
 
 			OYL_PROFILE_FUNCTION();
 
-			m_currentApplication->OnStart();
+			m_currentApplication->Start();
 			int exitCode = 0;
 			while (!m_currentApplication->IsExitRequested(&exitCode))
 			{
 				OYL_PROFILER_FRAME_MARK();
 
-				m_currentApplication->OnUpdate();
+				m_currentApplication->Update();
 
 				{
 					OYL_PROFILE_SCOPE("Oyl::ApplicationModule::RunApplication() Update Callbacks");
 					// Update callbacks after application update so app info is up to date
-					m_currentApplication->InvokeOnUpdateCallback();
+					const_cast<MulticastDelegate<void()>&>(m_currentApplication->OnUpdateCallback()).Invoke();
 				}
 
 				m_currentApplication->WaitIdle();
 			}
-			m_currentApplication->OnStop();
+			m_currentApplication->Shutdown();
 			return exitCode;
 		}
 
