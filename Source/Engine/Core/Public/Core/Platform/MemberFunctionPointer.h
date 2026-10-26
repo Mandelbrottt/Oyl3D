@@ -5,26 +5,33 @@
 
 namespace Oyl::Platform
 {
-	struct MemberFunctionPointerData
+	class MemberFunctionPointerData
 	{
-#	define MEMBER_FUNCTION_POINTER_DATA_CONSTRUCTOR(_cv_ref_noexcept_) \
-		template<typename TObj, typename TReturn, typename TClass, typename... TArgs> \
-		MemberFunctionPointerData(TObj* a_obj, TReturn (TClass::*a_pMemberFunction)(TArgs...) _cv_ref_noexcept_) \
-		{ \
-			TClass* obj = static_cast<TClass*>(a_obj); \
-			void* pBytes = reinterpret_cast<void*>(&a_pMemberFunction); \
-			if constexpr (sizeof(a_pMemberFunction) == 8) \
-				PopulateSizeof8(obj, pBytes); \
-			else if constexpr (sizeof(a_pMemberFunction) == 16) \
-				PopulateSizeof16(obj, pBytes); \
-			else if constexpr (sizeof(a_pMemberFunction) == 24) \
-				PopulateSizeof24(obj, pBytes); \
-		}
-		_CLASS_DEFINE_CV_REF_NOEXCEPT(MEMBER_FUNCTION_POINTER_DATA_CONSTRUCTOR)
-#	undef MEMBER_FUNCTION_POINTER_DATA_CONSTRUCTOR
+		MemberFunctionPointerData() = default;
 
-		void* thisPtr;
-		void* thunkPtr;
+	public:
+		template<typename... TArgs, typename TObj, typename TMemberFunctionPointer>
+			requires requires(TObj a_obj, TMemberFunctionPointer a_memberFunctionPointer, TArgs&&... a_args)
+			{
+				{ (a_obj.*a_memberFunctionPointer)(std::forward<TArgs>(a_args)...) };
+			}
+		static
+		MemberFunctionPointerData
+		Create(TObj* a_obj, TMemberFunctionPointer a_pMemberFunction)
+		{
+			MemberFunctionPointerData result;
+			void* pBytes = reinterpret_cast<void*>(&a_pMemberFunction);
+			if constexpr (sizeof(a_pMemberFunction) == 8)
+				result.PopulateSizeof8(a_obj, pBytes);
+			else if constexpr (sizeof(a_pMemberFunction) == 16)
+				result.PopulateSizeof16(a_obj, pBytes);
+			else if constexpr (sizeof(a_pMemberFunction) == 24)
+				result.PopulateSizeof24(a_obj, pBytes);
+			return result;
+		}
+
+		void* thisPtr = nullptr;
+		void* thunkPtr = nullptr;
 
 	private:
 		CORE_EXPORT

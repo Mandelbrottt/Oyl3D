@@ -305,14 +305,38 @@ namespace Oyl::Traits
 		{ std::declval<decltype(a_functionLike(a_args...))(*&)(TArgs...)>() = a_functionLike };
 	};
 
-#pragma endregion
+	template<typename...>
+	struct FirstTypeOfPack;
 
-template<typename T>
-struct UnderlyingType
-{
-	using type = std::underlying_type_t<T>;
-};
+	template<typename UFirst, typename... UArgs>
+	struct FirstTypeOfPack<UFirst, UArgs...>
+	{
+		using type = UFirst;
+	};
 
-template<typename T>
-using TUnderlyingType = typename UnderlyingType<T>::type;
+	template<typename>
+	struct FirstArgumentOfSignature;
+
+	template<typename UReturn, typename... UArgs>
+	struct FirstArgumentOfSignature<UReturn(UArgs...)>
+	{
+		using type = typename FirstTypeOfPack<UArgs...>::type;
+	};
+
+	template<typename UReturn, typename... UArgs>
+	struct FirstArgumentOfSignature<UReturn(*)(UArgs...)>
+	{
+		using type = typename FirstTypeOfPack<UArgs...>::type;
+	};
+
+#pragma endregion Functors
+
+	template<typename T>
+	struct UnderlyingType
+	{
+		using type = std::underlying_type_t<T>;
+	};
+
+	template<typename T>
+	using TUnderlyingType = typename UnderlyingType<T>::type;
 }
