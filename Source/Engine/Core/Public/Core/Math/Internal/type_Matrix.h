@@ -227,10 +227,10 @@ namespace Oyl
 		bool \
 		operator ==(const Matrix_t& a_other) noexcept \
 		{ \
-			for (int y = 0; y < SizeY; y++)  \
-				for (int x = 0; x < SizeX; x++) \
+			for (int y = 0; y < size_x; y++)  \
+				for (int x = 0; x < size_y; x++) \
 				{ \
-					if (data[y * size_x + x] != a_other.data[y * SizeX + x]) \
+					if (data[y * size_x + x] != a_other.data[y * size_x + x]) \
 						return false; \
 				} \
 			return true; \
@@ -240,7 +240,7 @@ namespace Oyl
 		bool \
 		operator !=(const Matrix_t& a_other) noexcept \
 		{ \
-			return !(*this == a_other)\
+			return !(*this == a_other); \
 		} \
 		\
 		constexpr \
