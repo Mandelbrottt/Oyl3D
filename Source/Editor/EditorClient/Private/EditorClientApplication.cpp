@@ -53,6 +53,15 @@ namespace Oyl
 
 			m_renderer.OnDebugGuiCallback() += InstanceDelegate(OnDebugGui);
 		}
+
+		Optional<Model> model = renderingModule->CreateModel("G:/dev/Oyl3D/Oyl3D/Source/Packages/Assimp/test/models/OBJ/box.obj");
+		if (model.HasValue())
+		{
+			LogDebug("Stanford Bunny Loaded with {} vertices!", model->GetMeshes()[0].GetVertexPositions().Length());
+		} else
+		{
+			LogError("Failed to load Bunny!");
+		}
 	}
 
 	void
