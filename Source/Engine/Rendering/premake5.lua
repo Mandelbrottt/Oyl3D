@@ -10,10 +10,6 @@ project "Rendering"; do
 
 	-- reflection "On"
 
-	uses {
-		"Core",
-		"Application",
-	}
 	usage "PUBLIC"; do
 		uses {
 			"Core",

@@ -1,9 +1,12 @@
 #include <Application/Application.h>
 
-#include <Core/Logging/Logging.h>
+#include <Core/Containers/ArraySet.h>
+#include <Core/Containers/Optional.h>
 #include <Core/Modules/ModuleManager.h>
 
 #include "Rendering/Rendering.h"
+
+#include <optional>
 
 namespace Oyl
 {
@@ -16,23 +19,19 @@ namespace Oyl
 		void
 		RegisterRenderContextFactory(IRenderContextFactory& a_factory) override
 		{
-			auto iter = std::ranges::find(m_rendererFactories, &a_factory);
-			if (iter == m_rendererFactories.end())
-				m_rendererFactories.Add(&a_factory);
+			m_renderContextFactories.Add(&a_factory);
 		}
 
 		void
 		UnregisterRenderContextFactory(IRenderContextFactory& a_factory) override
 		{
-			auto iter = std::ranges::find(m_rendererFactories, &a_factory);
-			if (iter != m_rendererFactories.end())
-				m_rendererFactories.erase(iter);
+			m_renderContextFactories.Erase(&a_factory);
 		}
 
 		UniquePtr<IRenderContext>
 		CreateRenderContext(RenderingApi a_api) override
 		{
-			for (auto& rendererFactory : m_rendererFactories)
+			for (auto& rendererFactory : m_renderContextFactories)
 				if (rendererFactory->SupportsApi(a_api))
 					return rendererFactory->CreateRenderContext();
 			return nullptr;
@@ -60,9 +59,33 @@ namespace Oyl
 			return nullptr;
 		}
 
+		void
+		RegisterModelLoaderFactory(IModelLoaderFactory& a_factory) override
+		{
+			m_modelFactories.Add(&a_factory);
+		}
+
+		void
+		UnregisterModelLoaderFactory(IModelLoaderFactory& a_factory) override
+		{
+			m_modelFactories.Erase(&a_factory);
+		}
+
+		Optional<Model>
+		CreateModel(StringView a_filename) override
+		{
+			auto extension = StringView(a_filename.substr(a_filename.rfind(".")));
+			for (auto* factory : m_modelFactories)
+				if (factory->SupportsExtension(extension))
+					return factory->LoadModelFromFile(a_filename);
+			return {};
+		}
+
 	private:
-		Array<IRenderContextFactory*> m_rendererFactories;
+		ArraySet<IRenderContextFactory*> m_renderContextFactories;
 		IImGuiRendererFactory* m_imGuiRendererFactory = nullptr;
+
+		ArraySet<IModelLoaderFactory*> m_modelFactories;
 	};
 
 	OYL_MODULE_DECLARE(Rendering, RenderingModule)

@@ -1,11 +1,11 @@
 #pragma once
 
-#include <Application/ApplicationWindow.h>
-
 #include "IDeviceObject.h"
 
 namespace Oyl
 {
+	class IApplicationWindow;
+
 	struct PresentTargetId : IDeviceObjectId<PresentTargetId> {};
 
 	struct PresentTargetCreateParams
