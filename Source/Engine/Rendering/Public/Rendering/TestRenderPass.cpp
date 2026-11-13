@@ -10,8 +10,6 @@
 #include "RenderEngine.h"
 #include "Rendering.h"
 
-#include "../../../../../../../VulkanSDK/1.4.341.1/Include/glm/ext/matrix_clip_space.hpp"
-
 namespace Oyl
 {
 	struct UniformBufferObject
@@ -25,82 +23,8 @@ namespace Oyl
 	{
 		CreateRenderTarget(a_size);
 
-		auto& renderEngine = RenderEngine::Get();
-
-		ShaderCompileResult result;
-		renderEngine.GetShaderCompiler().CompileHlslFromFile(
-			"G:/dev/Oyl3D/Oyl3D/Source/Engine/Rendering/Private/Shaders/shader.hlsl",
-			&result
-		);
-
-		auto& device = renderEngine.GetDevice();
-
-		m_shader = device.CreateShader(
-			{
-				.renderTarget = m_renderTarget,
-				.compileResult = result,
-			}
-		);
-
-		auto model = ModuleManager::GetModulePointer<IRenderingModule>("Rendering")->CreateModel("G:/dev/Oyl3D/Oyl3D/Source/Packages/Assimp/test/models-nonbsd/OBJ/rifle.obj");
-		if (model.HasValue())
-		{
-			auto mesh = model->GetMeshes()[0];
-			Array<Vertex> vertices;
-			for (uint i = 0; i < mesh.GetVertexPositions().Length(); i++)
-			{
-				vertices.Add(Vertex(mesh.GetVertexPositions()[i], mesh.GetVertexNormals()[i] * 0.5f + Vector3(0.5f)));
-			}
-			Array<uint16> indices;
-			for (uint i = 0; i < mesh.GetVertexIndices().Length(); i++)
-			{
-				indices.Add((uint16) mesh.GetVertexIndices()[i]);
-			}
-
-			Array<byte> vertexData;
-			vertexData.insert(vertexData.end(), (byte*) &vertices[0], (byte*) &vertices.data()[vertices.size()]);
-			Array<byte> indexData;
-			indexData.insert(indexData.end(), (byte*) &indices[0], (byte*) &indices.data()[indices.size()]);
-
-			m_vertexBuffer = device.CreateVertexBuffer(
-				{
-					.vertexData = vertexData,
-					.vertexStride = sizeof(Vertex),
-					.indexData = indexData,
-					.indexStride = sizeof(uint16)
-				}
-			);
-		} else
-		{
-			const Array<Vertex> vertices = std::vector {
-				Vertex { Vector3f { -0.5f, 0, -0.5f }, Vector3f { 1.0f, 0.0f, 0.0f } },
-				Vertex { Vector3f { -0.5f, 0, 0.5f }, Vector3f { 1.0f, 1.0f, 1.0f } },
-				Vertex { Vector3f { 0.5f, 0, 0.5f }, Vector3f { 0.0f, 0.0f, 1.0f } },
-				Vertex { Vector3f { 0.5f, 0, -0.5f }, Vector3f { 0.0f, 1.0f, 0.0f } },
-			};
-
-			const Array<uint16> indices = std::vector<uint16> { 0, 1, 2, 2, 3, 0 };
-
-			Array<byte> vertexData;
-			vertexData.insert(vertexData.end(), (byte*) &vertices[0], (byte*) &vertices.data()[vertices.size()]);
-			Array<byte> indexData;
-			indexData.insert(indexData.end(), (byte*) &indices[0], (byte*) &indices.data()[indices.size()]);
-
-			m_vertexBuffer = device.CreateVertexBuffer(
-				{
-					.vertexData = vertexData,
-					.vertexStride = sizeof(Vertex),
-					.indexData = indexData,
-					.indexStride = sizeof(uint16)
-				}
-			);
-		}
-
-		m_uniformBuffer = device.CreateUniformBuffer({
-			.stride = sizeof(UniformBufferObject)
-		});
-
-		m_shader->SetUniformBuffer(renderEngine.GetDevice(), m_uniformBuffer);
+		CreateDescriptors();
+		CreateRdoObjects();
 
 		auto* application = ModuleManager::GetModulePointer<IApplicationModule>("Application")->CurrentApplication();
 		application->OnDebugGuiCallback() += InstanceDelegate(OnDebugGui);
@@ -119,7 +43,7 @@ namespace Oyl
 	}
 
 	void
-	TestRenderPass::Begin(const IRdoCommandBuffer& a_commandBuffer)
+	TestRenderPass::Render(const IRdoCommandBuffer& a_commandBuffer)
 	{
 		auto size = m_colorAttachment->GetSize();
 
@@ -131,21 +55,13 @@ namespace Oyl
 		                               {
 			                               .clearColor = Vector4(0.0f, 0.0f, 0.0f, 1.0f)
 		                               });
-	}
 
-	void
-	TestRenderPass::Render(const IRdoCommandBuffer& a_commandBuffer)
-	{
 		UpdateUniformBuffer();
 
 		a_commandBuffer.BindShader(*m_shader);
 		m_shader->BindUniformBuffer(a_commandBuffer, m_uniformBuffer);
 		a_commandBuffer.DrawVertexBuffer(*m_vertexBuffer);
-	}
 
-	void
-	TestRenderPass::End(const IRdoCommandBuffer& a_commandBuffer)
-	{
 		a_commandBuffer.EndRendering();
 	}
 
@@ -162,6 +78,84 @@ namespace Oyl
 			}
 		);
 		m_renderTarget = RenderTarget({ .colorImages = &*m_colorAttachment });
+	}
+
+	void
+	TestRenderPass::CreateDescriptors()
+	{
+		m_material = Material::Make();
+		m_material->SetShader(Shader::Make("G:/dev/Oyl3D/Oyl3D/Source/Engine/Rendering/Private/Shaders/shader.hlsl"));
+
+		m_model = ModuleManager::GetModulePointer<IRenderingModule>("Rendering")->CreateModel("G:/dev/Oyl3D/Oyl3D/Source/Packages/Assimp/test/models-nonbsd/OBJ/rifle.obj");
+	}
+
+	void
+	TestRenderPass::CreateRdoObjects()
+	{
+		auto& renderEngine = RenderEngine::Get();
+
+		ShaderCompileResult result;
+		renderEngine.GetShaderCompiler().CompileHlslFromFile(
+			m_material->GetShader()->GetPath(),
+			&result
+		);
+
+		auto& device = renderEngine.GetDevice();
+
+		m_shader = device.CreateShader(
+			{
+				.renderTarget = m_renderTarget,
+				.compileResult = result,
+			}
+		);
+
+		Array<byte> vertexData;
+		Array<byte> indexData;
+		if (m_model->GetMeshes().Length() > 0)
+		{
+			auto& mesh = m_model->GetMeshes()[0];
+			Array<Vertex> vertices;
+			for (uint i = 0; i < mesh.GetVertexPositions().Length(); i++)
+			{
+				vertices.Add(Vertex(mesh.GetVertexPositions()[i], mesh.GetVertexNormals()[i] * 0.5f + Vector3(0.5f)));
+			}
+			Array<uint16> indices;
+			for (uint i = 0; i < mesh.GetVertexIndices().Length(); i++)
+			{
+				indices.Add((uint16) mesh.GetVertexIndices()[i]);
+			}
+
+			vertexData.insert(vertexData.end(), (byte*) &vertices[0], (byte*) &vertices.data()[vertices.size()]);
+			indexData.insert(indexData.end(), (byte*) &indices[0], (byte*) &indices.data()[indices.size()]);
+		} else
+		{
+			const Array<Vertex> vertices = std::vector {
+				Vertex { Vector3f { -0.5f, 0, -0.5f }, Vector3f { 1.0f, 0.0f, 0.0f } },
+				Vertex { Vector3f { -0.5f, 0, 0.5f }, Vector3f { 1.0f, 1.0f, 1.0f } },
+				Vertex { Vector3f { 0.5f, 0, 0.5f }, Vector3f { 0.0f, 0.0f, 1.0f } },
+				Vertex { Vector3f { 0.5f, 0, -0.5f }, Vector3f { 0.0f, 1.0f, 0.0f } },
+			};
+
+			const Array<uint16> indices = std::vector<uint16> { 0, 1, 2, 2, 3, 0 };
+
+			vertexData.insert(vertexData.end(), (byte*) &vertices[0], (byte*) &vertices.data()[vertices.size()]);
+			indexData.insert(indexData.end(), (byte*) &indices[0], (byte*) &indices.data()[indices.size()]);
+		}
+
+		m_vertexBuffer = device.CreateVertexBuffer(
+			{
+				.vertexData = vertexData,
+				.vertexStride = sizeof(Vertex),
+				.indexData = indexData,
+				.indexStride = sizeof(uint16)
+			}
+		);
+
+		m_uniformBuffer = device.CreateUniformBuffer({
+			.stride = sizeof(UniformBufferObject)
+		});
+
+		m_shader->SetUniformBuffer(renderEngine.GetDevice(), m_uniformBuffer);
 	}
 
 	void

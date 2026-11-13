@@ -56,7 +56,10 @@ namespace Oyl
 
 		for (auto& pass : m_sortedRenderPasses)
 		{
-			pass->Execute(a_commandBuffer);
+			if (!pass->IsEnabled())
+				continue;
+
+			pass->Render(a_commandBuffer);
 		}
 	}
 

@@ -71,11 +71,11 @@ namespace Oyl
 	OYL_DEFINE_ENUM_CONVERSION_FUNCTIONS(
 		ToOylEnum,
 		ToVkEnum,
-		ShaderProfile,
+		ShaderProfileFlagBits,
 		vk::ShaderStageFlagBits,
-		{ ShaderProfile::Vertex, vk::ShaderStageFlagBits::eVertex },
-		{ ShaderProfile::Geometry, vk::ShaderStageFlagBits::eGeometry },
-		{ ShaderProfile::Fragment, vk::ShaderStageFlagBits::eFragment },
+		{ ShaderProfileFlagBits::Vertex, vk::ShaderStageFlagBits::eVertex },
+		{ ShaderProfileFlagBits::Geometry, vk::ShaderStageFlagBits::eGeometry },
+		{ ShaderProfileFlagBits::Fragment, vk::ShaderStageFlagBits::eFragment },
 	)
 
 	OYL_DEFINE_ENUM_CONVERSION_FUNCTIONS(

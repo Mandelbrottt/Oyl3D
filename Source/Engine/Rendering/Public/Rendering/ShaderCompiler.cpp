@@ -86,7 +86,7 @@ namespace Oyl
 
 	ShaderStage::~ShaderStage() {}
 
-	ShaderProfile
+	ShaderProfileFlagBits
 	ShaderStage::GetShaderProfile() const
 	{
 		return m_shaderProfile;

@@ -20,7 +20,7 @@ namespace Oyl
 	}
 
 	void
-	ImGuiVulkanRenderPass::Begin(const IRdoCommandBuffer& a_commandBuffer)
+	ImGuiVulkanRenderPass::Render(const IRdoCommandBuffer& a_commandBuffer)
 	{
 		OYL_PROFILE_FUNCTION();
 
@@ -39,12 +39,7 @@ namespace Oyl
 		a_commandBuffer.SetViewport(Vector2i::Zero, size);
 		a_commandBuffer.SetScissor(Vector2i::Zero, size);
 		a_commandBuffer.BeginRendering(m_renderTarget);
-	}
 
-	void
-	ImGuiVulkanRenderPass::Render(const IRdoCommandBuffer& a_commandBuffer)
-	{
-		OYL_PROFILE_FUNCTION();
 		ImGui::Render();
 		auto* drawData = ImGui::GetDrawData();
 
@@ -53,12 +48,6 @@ namespace Oyl
 			auto& vulkanCommandBuffer = static_cast<const VulkanCommandBuffer&>(a_commandBuffer);
 			ImGui_ImplVulkan_RenderDrawData(drawData, *vulkanCommandBuffer.GetVkCommandBuffer());
 		}
-	}
-
-	void
-	ImGuiVulkanRenderPass::End(const IRdoCommandBuffer& a_commandBuffer)
-	{
-		OYL_PROFILE_FUNCTION();
 
 		a_commandBuffer.EndRendering();
 		a_commandBuffer.TransitionImageLayout(*m_colorAttachment, ImageLayout::TransferSource);

@@ -71,13 +71,20 @@ namespace Oyl
 			m_modelFactories.Erase(&a_factory);
 		}
 
-		Optional<Model>
+		Model
 		CreateModel(StringView a_filename) override
 		{
 			auto extension = StringView(a_filename.substr(a_filename.rfind(".")));
 			for (auto* factory : m_modelFactories)
-				if (factory->SupportsExtension(extension))
-					return factory->LoadModelFromFile(a_filename);
+			{
+				if (!factory->SupportsExtension(extension))
+					continue;
+
+				auto optModel = factory->LoadModelFromFile(a_filename);
+				if (optModel.HasValue())
+					return Model::Make(*optModel);
+			}
+
 			return {};
 		}
 

@@ -13,43 +13,57 @@ namespace Oyl
 		~Optional() noexcept { Reset(); }
 
 		Optional(const Optional& a_rhs)
-			requires std::is_copy_assignable_v<TValue>
+			requires std::is_copy_constructible_v<TValue>
 		{
-			*this = a_rhs;
+			if (!a_rhs.HasValue())
+				return;
+
+			Assign(*a_rhs);
 		}
 
 		Optional&
 		operator =(const Optional& a_rhs)
 			requires std::is_copy_assignable_v<TValue>
 		{
-			if (!a_rhs.HasValue())
-				Reset();
-			else
-				Assign(a_rhs.Value());
+			if (this != &a_rhs)
+			{
+				if (!a_rhs.HasValue())
+					Reset();
+
+				if (a_rhs.HasValue())
+					Assign(std::move(a_rhs.Value()));
+			}
 			return *this;
 		}
 
 		Optional(Optional&& a_rhs) noexcept
-			requires std::is_move_assignable_v<TValue>
+			requires std::is_move_constructible_v<TValue>
 		{
-			this = a_rhs;
+			if (!a_rhs.HasValue())
+				return;
+
+			Assign(*a_rhs);
 		}
 
 		Optional&
 		operator =(Optional&& a_rhs) noexcept
 			requires std::is_move_assignable_v<TValue>
 		{
-			if (!a_rhs.HasValue())
-				Reset();
-			else
-				Assign(std::move(a_rhs.Value()));
+			if (this != &a_rhs)
+			{
+				if (!a_rhs.HasValue())
+					Reset();
+
+				if (a_rhs.HasValue())
+					Assign(std::move(a_rhs.Value()));
+			}
 			return *this;
 		}
 
 		Optional(const TValue& a_value)
-			requires std::is_copy_assignable_v<TValue>
+			requires std::is_copy_constructible_v<TValue>
 		{
-			this = a_value;
+			Assign(a_value);
 		}
 
 		Optional&
@@ -61,9 +75,9 @@ namespace Oyl
 		}
 
 		Optional(TValue&& a_value) noexcept
-			requires std::is_move_assignable_v<TValue>
+			requires std::is_move_constructible_v<TValue>
 		{
-			*this = std::move(a_value);
+			Assign(std::move(a_value));
 		}
 
 		Optional&
@@ -93,23 +107,19 @@ namespace Oyl
 
 		void
 		Assign(const TValue& a_value)
-			requires std::is_copy_assignable_v<TValue>
+			requires std::is_copy_constructible_v<TValue>
 		{
-			if (m_hasValue)
-				*StorageAsPtr() = a_value;
-			else
-				new(StorageAsPtr()) TValue(a_value);
+			Reset();
+			new(StorageAsPtr()) TValue(a_value);
 			m_hasValue = true;
 		}
 
 		void
 		Assign(TValue&& a_value) noexcept
-			requires std::is_move_assignable_v<TValue>
+			requires std::is_move_constructible_v<TValue>
 		{
-			if (m_hasValue)
-				*StorageAsPtr() = std::move(a_value);
-			else
-				new(StorageAsPtr()) TValue(std::move(a_value));
+			Reset();
+			new(StorageAsPtr()) TValue(std::move(a_value));
 			m_hasValue = true;
 		}
 

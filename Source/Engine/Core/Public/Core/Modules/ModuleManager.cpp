@@ -61,14 +61,10 @@ namespace Oyl
 
 		String moduleName = a_moduleName;
 
-		auto modulePath = std::filesystem::path((const std::string&) a_moduleName);
-		if (modulePath != modulePath.stem())
-			moduleName = modulePath.stem().string();
-
 		auto iter = m_impl->modules.find(moduleName);
 		if (iter == m_impl->modules.end())
 		{
-			LogError("Trying to load module \"{}\" that hasn't been discovered!");
+			LogError("Trying to load module \"{}\" that hasn't been discovered!", moduleName.c_str());
 			if (a_outResult)
 				*a_outResult = ModuleLoadResult::Failure_LibraryNotFound;
 			return nullptr;
@@ -82,7 +78,7 @@ namespace Oyl
 				auto dependencyIter = m_impl->modules.find(dependencyName);
 				if (dependencyIter == m_impl->modules.end())
 				{
-					LogError("Dependency \"{}\" in module \"{}\" not found!");
+					LogError("Dependency \"{}\" in module \"{}\" not found!", dependencyName.c_str(), moduleName.c_str());
 				} else
 				{
 					LoadModule(dependencyIter->second.name);
@@ -281,9 +277,30 @@ namespace Oyl
 		moduleInfo.sharedLibHandle = Platform::LoadSharedLibrary(a_libPath);
 		assert(moduleInfo.sharedLibHandle);
 
+		// Get an upper case variable name for the module, since that is how the functions are declared
+		String moduleNameAsVar = moduleName;
+		size_t pos = std::string::npos;
+		do
+		{
+			pos = moduleNameAsVar.find(".");
+			if (pos != std::string::npos)
+			{
+				moduleNameAsVar.replace(pos, 1, "_");
+				continue;
+			}
+
+			pos = moduleNameAsVar.find("-");
+			if (pos != std::string::npos)
+			{
+				moduleNameAsVar.replace(pos, 1, "_");
+				continue;
+			}
+		} while (pos != std::string::npos);
+		std::ranges::transform(moduleNameAsVar, moduleNameAsVar.begin(), [](auto a_c) { return std::toupper(a_c); });
+
 		// Get handle to creation function
 		using ModuleInitFn = IModuleInterface*(*)();
-		String initSymbolName = String("ModuleInit_") + moduleName;
+		String initSymbolName = String("ModuleInit_") + moduleNameAsVar;
 		auto moduleInitFn =
 			(ModuleInitFn) Platform::GetSymbolFromSharedLibrary(moduleInfo.sharedLibHandle, initSymbolName);
 		if (moduleInitFn == nullptr)
@@ -300,7 +317,7 @@ namespace Oyl
 
 		// Get handle to dependencies function
 		using ModuleDepsFn = void(*)(int*, const char***);
-		String depsSymbolName = String("ModuleDeps_") + moduleName;
+		String depsSymbolName = String("ModuleDeps_") + moduleNameAsVar;
 		auto moduleDepsFn =
 			(ModuleDepsFn) Platform::GetSymbolFromSharedLibrary(moduleInfo.sharedLibHandle, depsSymbolName);
 

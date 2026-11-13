@@ -30,15 +30,8 @@ namespace Oyl
 			m_gameViewPortColorAttachment = a_imageHandle;
 		}
 
-	protected:
-		void
-		Begin(const IRdoCommandBuffer& a_commandBuffer) override;
-
 		void
 		Render(const IRdoCommandBuffer& a_commandBuffer) override;
-
-		void
-		End(const IRdoCommandBuffer& a_commandBuffer) override;
 
 	private:
 		void

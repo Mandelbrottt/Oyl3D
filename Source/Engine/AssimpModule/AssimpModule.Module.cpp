@@ -50,7 +50,7 @@ namespace Oyl
 			return m_supportedExtensions.Contains(a_extension);
 		}
 
-		Optional<Model>
+		Optional<ModelDesc>
 		LoadModelFromFile(StringView a_fileName) override
 		{
 			Assimp::Importer importer;
@@ -64,7 +64,7 @@ namespace Oyl
 
 			Array<Mesh> meshes;
 			ProcessNode(pScene->mRootNode, pScene, &meshes);
-			return Model(meshes);
+			return ModelDesc(meshes);
 		}
 
 	private:

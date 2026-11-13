@@ -7,7 +7,7 @@
 
 #include "ImGui/IImGuiRenderer.h"
 
-#include "Models/Model.h"
+#include "Objects/Model.h"
 
 #include "Rendering/RenderingEnums.h"
 
@@ -84,7 +84,7 @@ namespace Oyl
 		UnregisterModelLoaderFactory(IModelLoaderFactory& a_factory) = 0;
 
 		virtual
-		Optional<Model>
+		Model
 		CreateModel(StringView a_filename) = 0;
 
 		bool

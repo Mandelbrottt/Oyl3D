@@ -62,11 +62,11 @@ namespace Oyl
 		CComPtr<IDxcCompiler3> dxcCompiler;
 		CComPtr<IDxcUtils> dxcUtils;
 
-		Array<ShaderProfile>
+		Array<ShaderProfileFlagBits>
 		GetShaderProfilesInSource(StringView a_source) const;
 
 		ShaderStage
-		CompileHlslShaderStage(ShaderProfile a_profile, StringView a_source, StringView a_sourceName);
+		CompileHlslShaderStage(ShaderProfileFlagBits a_profile, StringView a_source, StringView a_sourceName);
 	};
 
 	VulkanShaderCompiler::VulkanShaderCompiler()
@@ -167,7 +167,7 @@ namespace Oyl
 		return true;
 	}
 
-	Array<ShaderProfile>
+	Array<ShaderProfileFlagBits>
 	VulkanShaderCompiler::Impl::GetShaderProfilesInSource(StringView a_source) const
 	{
 		OYL_PROFILE_FUNCTION();
@@ -236,9 +236,9 @@ namespace Oyl
 			throw std::runtime_error("Compilation failed");
 		}
 
-		ArrayMap<D3D12_SHADER_VERSION_TYPE, ShaderProfile> shaderTypeMap;
-		shaderTypeMap[D3D12_SHVER_VERTEX_SHADER] = ShaderProfile::Vertex;
-		shaderTypeMap[D3D12_SHVER_PIXEL_SHADER] = ShaderProfile::Fragment;
+		ArrayMap<D3D12_SHADER_VERSION_TYPE, ShaderProfileFlagBits> shaderTypeMap;
+		shaderTypeMap[D3D12_SHVER_VERTEX_SHADER] = ShaderProfileFlagBits::Vertex;
+		shaderTypeMap[D3D12_SHVER_PIXEL_SHADER] = ShaderProfileFlagBits::Fragment;
 
 		CComPtr<IDxcBlob> reflectionData;
 		hres = compileResult->GetOutput(DXC_OUT_REFLECTION, IID_PPV_ARGS(&reflectionData), nullptr);
@@ -253,7 +253,7 @@ namespace Oyl
 		D3D12_LIBRARY_DESC libraryDesc;
 		hres = libraryReflection->GetDesc(&libraryDesc);
 
-		std::vector<ShaderProfile> shaderProfiles;
+		std::vector<ShaderProfileFlagBits> shaderProfiles;
 		shaderProfiles.reserve(libraryDesc.FunctionCount);
 
 		for (uint32 i = 0; i < libraryDesc.FunctionCount; i++)
@@ -283,17 +283,17 @@ namespace Oyl
 
 	static
 	StringView
-	HlslEntryPointFromProfile(ShaderProfile a_profile)
+	HlslEntryPointFromProfile(ShaderProfileFlagBits a_profile)
 	{
 		switch (a_profile)
 		{
-			case ShaderProfile::Vertex:
+			case ShaderProfileFlagBits::Vertex:
 				return "VertMain";
-			case ShaderProfile::Geometry:
+			case ShaderProfileFlagBits::Geometry:
 				return "GeomMain";
-			case ShaderProfile::Fragment:
+			case ShaderProfileFlagBits::Fragment:
 				return "FragMain";
-			case ShaderProfile::None: break;
+			case ShaderProfileFlagBits::None: break;
 		}
 
 		return "";
@@ -301,24 +301,24 @@ namespace Oyl
 
 	static
 	StringView
-	HlslProfileStringFromProfile(ShaderProfile a_profile)
+	HlslProfileStringFromProfile(ShaderProfileFlagBits a_profile)
 	{
 		switch (a_profile)
 		{
-			case ShaderProfile::Vertex:
+			case ShaderProfileFlagBits::Vertex:
 				return "vs_6_6";
-			case ShaderProfile::Geometry:
+			case ShaderProfileFlagBits::Geometry:
 				return "gs_6_6";
-			case ShaderProfile::Fragment:
+			case ShaderProfileFlagBits::Fragment:
 				return "ps_6_6"; // HLSL uses Pixel Shader instead of Fragment Shader
-			case ShaderProfile::None: break;
+			case ShaderProfileFlagBits::None: break;
 		}
 
 		return "";
 	}
 
 	ShaderStage
-	VulkanShaderCompiler::Impl::CompileHlslShaderStage(ShaderProfile a_profile, StringView a_source, StringView a_sourceName)
+	VulkanShaderCompiler::Impl::CompileHlslShaderStage(ShaderProfileFlagBits a_profile, StringView a_source, StringView a_sourceName)
 	{
 		OYL_PROFILE_FUNCTION();
 

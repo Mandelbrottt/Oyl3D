@@ -15,28 +15,13 @@ namespace Oyl
 		~IRenderPass() = 0;
 
 		virtual
-		void
-		Execute(const IRdoCommandBuffer& a_commandBuffer)
-		{
-			Begin(a_commandBuffer);
-			Render(a_commandBuffer);
-			End(a_commandBuffer);
-		}
-
-	protected:
-		virtual
-		void
-		Begin(const IRdoCommandBuffer& a_commandBuffer) = 0;
+		bool
+		IsEnabled() { return true; }
 
 		virtual
 		void
 		Render(const IRdoCommandBuffer& a_commandBuffer) = 0;
 
-		virtual
-		void
-		End(const IRdoCommandBuffer& a_commandBuffer) = 0;
-
-	public:
 		virtual
 		void
 		OnViewPortResize(Vector2u a_size) = 0;

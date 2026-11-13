@@ -62,7 +62,7 @@ namespace Oyl
 
 		const auto& gameViewPortImageHandle = m_imGuiRenderer->GetGameViewPortImageHandle();
 		m_renderPass->SetGameViewPortColorAttachment(gameViewPortImageHandle);
-		m_renderPass->Execute(a_commandBuffer);
+		m_renderPass->Render(a_commandBuffer);
 	}
 
 	void

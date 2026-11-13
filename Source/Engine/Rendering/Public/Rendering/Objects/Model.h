@@ -9,19 +9,23 @@
 
 namespace Oyl
 {
-	class Model
+	class ModelDesc;
+
+	using Model = SharedPtr<ModelDesc>;
+
+	class ModelDesc
 	{
 	public:
-		Model() = default;
+		ModelDesc() = default;
 
 		explicit
-		Model(const Array<Mesh>& a_meshes)
+		ModelDesc(const Array<Mesh>& a_meshes)
 			: m_meshes(a_meshes) {}
 
-		NO_COPY(Model);
-		DEFAULT_MOVE(Model);
+		NO_COPY_ASSIGN(ModelDesc);
+		NO_MOVE_ASSIGN(ModelDesc);
 
-		~Model() = default;
+		~ModelDesc() = default;
 
 		const Array<Mesh>&
 		GetMeshes() const { return m_meshes; }
@@ -41,7 +45,7 @@ namespace Oyl
 		SupportsExtension(StringView a_extension) = 0;
 
 		virtual
-		Optional<Model>
+		Optional<ModelDesc>
 		LoadModelFromFile(StringView a_fileName) = 0;
 	};
 

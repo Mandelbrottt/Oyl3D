@@ -35,7 +35,7 @@ namespace Oyl
 
 	struct ShaderStageCreateParams
 	{
-		ShaderProfile shaderProfile;
+		ShaderProfileFlagBits shaderProfile;
 
 		const byte* buffer;
 		size_t bufferLength;
@@ -53,7 +53,7 @@ namespace Oyl
 
 		~ShaderStage();
 
-		ShaderProfile
+		ShaderProfileFlagBits
 		GetShaderProfile() const;
 
 		StringView
@@ -63,7 +63,7 @@ namespace Oyl
 		GetByteCode() const;
 
 	private:
-		ShaderProfile m_shaderProfile = {};
+		ShaderProfileFlagBits m_shaderProfile = {};
 		Array<byte> m_byteCode;
 		String m_entryPoint;
 	};
