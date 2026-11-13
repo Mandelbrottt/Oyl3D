@@ -10,7 +10,7 @@
 
 namespace Oyl
 {
-	VulkanVertexBuffer::VulkanVertexBuffer(const VulkanDevice& a_device, const VertexBufferCreateParams& a_params)
+	VulkanVertexBuffer::VulkanVertexBuffer(const VulkanDevice& a_device, const RdoVertexBufferCreateParams& a_params)
 	{
 		OYL_PROFILE_FUNCTION();
 
@@ -69,7 +69,7 @@ namespace Oyl
 	);
 
 	void
-	VulkanVertexBuffer::CreateVertexBuffer(const VulkanDevice& a_device, const VertexBufferCreateParams& a_params)
+	VulkanVertexBuffer::CreateVertexBuffer(const VulkanDevice& a_device, const RdoVertexBufferCreateParams& a_params)
 	{
 		OYL_PROFILE_FUNCTION();
 

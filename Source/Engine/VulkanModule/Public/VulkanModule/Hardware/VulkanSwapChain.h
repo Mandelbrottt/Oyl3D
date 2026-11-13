@@ -2,7 +2,7 @@
 
 #include <Application/ApplicationWindow.h>
 
-#include <Rendering/SwapChain.h>
+#include <Rendering/Hardware/SwapChain.h>
 
 #include "VulkanPresentTarget.h"
 
@@ -16,7 +16,7 @@ namespace Oyl
 		const VulkanPresentTarget& presentTarget;
 	};
 
-	class VULKANMODULE_EXPORT VulkanSwapChain : public ISwapChain
+	class VULKANMODULE_EXPORT VulkanSwapChain : public IRdoSwapChain
 	{
 	public:
 		VulkanSwapChain(nullptr_t) {}
@@ -51,7 +51,7 @@ namespace Oyl
 		}
 
 		bool
-		AcquireNextImage(SemaphoreId a_semaphore, FenceId a_fence) override;
+		AcquireNextImage(RdoSemaphoreId a_semaphore, RdoFenceId a_fence) override;
 
 		Vector2u
 		GetSize() const override;
@@ -65,10 +65,10 @@ namespace Oyl
 		uint32
 		GetCurrentImageIndex() const override;
 
-		ImageId
+		RdoImageId
 		GetImageId(uint32 a_index) const override;
 
-		ImageId
+		RdoImageId
 		GetCurrentImageId() const override;
 
 		const vk::raii::SwapchainKHR&
@@ -116,6 +116,6 @@ namespace Oyl
 		uint32 m_minImageCount = 0;
 		uint32 m_currentImageIndex = 0;
 
-		MulticastDelegate<void(const ISwapChain&)> m_onRecreate;
+		MulticastDelegate<void(const IRdoSwapChain&)> m_onRecreate;
 	};
 }

@@ -2,18 +2,19 @@
 
 #include "VulkanDevice.h"
 #include "VulkanImage.h"
-#include "VulkanRenderingEnums.h"
 #include "VulkanShader.h"
 #include "VulkanSwapChain.h"
 #include "VulkanVertexBuffer.h"
 
 #include "Rendering/RenderTarget.h"
 
+#include "VulkanModule/VulkanRenderingEnums.h"
+
 namespace Oyl
 {
 	VulkanCommandBuffer::VulkanCommandBuffer(
 		const VulkanDevice& a_device,
-		const CommandBufferCreateParams& a_params
+		const RdoCommandBufferCreateParams& a_params
 	) noexcept
 	{
 		OYL_PROFILE_FUNCTION();
@@ -84,7 +85,7 @@ namespace Oyl
 		Vector2u size;
 
 		std::vector<vk::RenderingAttachmentInfo> colorAttachmentInfo;
-		for (const IImage* image : a_renderTarget.GetColorAttachments())
+		for (const IRdoImage* image : a_renderTarget.GetColorAttachments())
 		{
 			auto* vulkanImage = static_cast<const VulkanImage*>(image);
 			auto renderingAttachmentInfo = vk::RenderingAttachmentInfo {
@@ -186,7 +187,7 @@ namespace Oyl
 	}
 
 	void
-	VulkanCommandBuffer::BindShader(const IShader& a_shader) const noexcept
+	VulkanCommandBuffer::BindShader(const IRdoShader& a_shader) const noexcept
 	{
 		return BindShader(static_cast<const VulkanShader&>(a_shader));
 	}
@@ -200,7 +201,7 @@ namespace Oyl
 	}
 
 	void
-	VulkanCommandBuffer::BindVertexBuffer(const IVertexBuffer& a_vertexBuffer) const noexcept
+	VulkanCommandBuffer::BindVertexBuffer(const IRdoVertexBuffer& a_vertexBuffer) const noexcept
 	{
 		return BindVertexBuffer(static_cast<const VulkanVertexBuffer&>(a_vertexBuffer));
 	}
@@ -224,7 +225,7 @@ namespace Oyl
 	}
 
 	void
-	VulkanCommandBuffer::DrawVertexBuffer(const IVertexBuffer& a_vertexBuffer) const noexcept
+	VulkanCommandBuffer::DrawVertexBuffer(const IRdoVertexBuffer& a_vertexBuffer) const noexcept
 	{
 		DrawVertexBuffer(static_cast<const VulkanVertexBuffer&>(a_vertexBuffer));
 	}
@@ -250,7 +251,7 @@ namespace Oyl
 	}
 
 	void
-	VulkanCommandBuffer::TransitionImageLayout(IImage& a_image, ImageLayout a_newLayout) const noexcept
+	VulkanCommandBuffer::TransitionImageLayout(IRdoImage& a_image, ImageLayout a_newLayout) const noexcept
 	{
 		auto& vulkanImageImpl = dynamic_cast<VulkanImage&>(a_image);
 		TransitionImageLayout(vulkanImageImpl, a_newLayout);
@@ -265,7 +266,10 @@ namespace Oyl
 	);
 
 	void
-	VulkanCommandBuffer::TransitionImageLayout(VulkanImage& a_image, ImageLayout a_newLayout) const noexcept
+	VulkanCommandBuffer::TransitionImageLayout(
+		VulkanImage& a_image,
+		ImageLayout a_newLayout
+	) const noexcept
 	{
 		auto oldLayout = a_image.GetLayout();
 		TransitionImageLayout(a_image.GetId(), oldLayout, a_newLayout);
@@ -273,7 +277,11 @@ namespace Oyl
 	}
 
 	void
-	VulkanCommandBuffer::TransitionImageLayout(ImageId a_imageHandle, ImageLayout a_oldLayout, ImageLayout a_newLayout) const noexcept
+	VulkanCommandBuffer::TransitionImageLayout(
+		RdoImageId a_imageHandle,
+		ImageLayout a_oldLayout,
+		ImageLayout a_newLayout
+	) const noexcept
 	{
 		TransitionImageLayout(static_cast<VulkanImageId>(a_imageHandle), a_oldLayout, a_newLayout);
 	}
@@ -314,7 +322,11 @@ namespace Oyl
 	}
 
 	void
-	VulkanCommandBuffer::BlitImage(const IImage& a_srcImage, const IImage& a_dstImage, ImageFilter a_filter) const noexcept
+	VulkanCommandBuffer::BlitImage(
+		const IRdoImage& a_srcImage,
+		const IRdoImage& a_dstImage,
+		ImageFilter a_filter
+	) const noexcept
 	{
 		auto& vulkanSourceImage = dynamic_cast<const VulkanImage&>(a_srcImage);
 		auto& vulkanDestImage = dynamic_cast<const VulkanImage&>(a_dstImage);
@@ -322,7 +334,15 @@ namespace Oyl
 	}
 
 	void
-	VulkanCommandBuffer::BlitImage(ImageId a_srcImageId, ImageLayout a_srcLayout, Rect2D a_srcRect, ImageId a_dstImageId, ImageLayout a_dstImageLayout, Rect2D a_dstRect, ImageFilter a_filter) const noexcept
+	VulkanCommandBuffer::BlitImage(
+		RdoImageId a_srcImageId,
+		ImageLayout a_srcLayout,
+		Rect2D a_srcRect,
+		RdoImageId a_dstImageId,
+		ImageLayout a_dstImageLayout,
+		Rect2D a_dstRect,
+		ImageFilter a_filter
+	) const noexcept
 	{
 		auto vulkanSrcImageId = static_cast<VulkanImageId>(a_srcImageId);
 		auto vulkanDstImageId = static_cast<VulkanImageId>(a_dstImageId);
@@ -330,7 +350,11 @@ namespace Oyl
 	}
 
 	void
-	VulkanCommandBuffer::BlitImage(const VulkanImage& a_srcImage, const VulkanImage& a_dstImage, ImageFilter a_filter) const noexcept
+	VulkanCommandBuffer::BlitImage(
+		const VulkanImage& a_srcImage,
+		const VulkanImage& a_dstImage,
+		ImageFilter a_filter
+	) const noexcept
 	{
 		BlitImage(
 			a_srcImage.GetId(),

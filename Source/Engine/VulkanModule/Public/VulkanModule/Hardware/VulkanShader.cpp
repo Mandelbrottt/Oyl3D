@@ -4,10 +4,11 @@
 
 #include "VulkanDevice.h"
 #include "VulkanImage.h"
-#include "VulkanRenderingEnums.h"
 #include "VulkanUniformBuffer.h"
 
 #include "Rendering/RenderTarget.h"
+
+#include "VulkanModule/VulkanRenderingEnums.h"
 
 namespace Oyl
 {
@@ -40,7 +41,7 @@ namespace Oyl
 		};
 	}
 
-	VulkanShader::VulkanShader(const VulkanDevice& a_device, const ShaderCreateParams& a_params)
+	VulkanShader::VulkanShader(const VulkanDevice& a_device, const RdoShaderCreateParams& a_params)
 	{
 		OYL_PROFILE_FUNCTION();
 
@@ -62,7 +63,7 @@ namespace Oyl
 	}
 
 	void
-	VulkanShader::SetUniformBuffer(const IDevice& a_device, const IUniformBuffer& a_uniformBuffer)
+	VulkanShader::SetUniformBuffer(const IRenderDevice& a_device, const IRdoUniformBuffer& a_uniformBuffer)
 	{
 		auto& vulkanUniformBuffer = static_cast<const VulkanUniformBuffer&>(a_uniformBuffer);
 
@@ -83,7 +84,7 @@ namespace Oyl
 	}
 
 	void
-	VulkanShader::BindUniformBuffer(const ICommandBuffer& a_commandBuffer, const IUniformBuffer& a_uniformBuffer)
+	VulkanShader::BindUniformBuffer(const IRdoCommandBuffer& a_commandBuffer, const IRdoUniformBuffer& a_uniformBuffer)
 	{
 		OYL_UNUSED(a_uniformBuffer);
 
@@ -97,7 +98,7 @@ namespace Oyl
 	}
 
 	void
-	VulkanShader::CreatePipeline(const VulkanDevice& a_device, const ShaderCreateParams& a_params)
+	VulkanShader::CreatePipeline(const VulkanDevice& a_device, const RdoShaderCreateParams& a_params)
 	{
 		OYL_PROFILE_FUNCTION();
 

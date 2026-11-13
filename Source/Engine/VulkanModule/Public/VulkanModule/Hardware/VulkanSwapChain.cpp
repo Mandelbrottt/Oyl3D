@@ -76,7 +76,7 @@ namespace Oyl
 	}
 
 	bool
-	VulkanSwapChain::AcquireNextImage(SemaphoreId a_semaphore, FenceId a_fence)
+	VulkanSwapChain::AcquireNextImage(RdoSemaphoreId a_semaphore, RdoFenceId a_fence)
 	{
 		OYL_PROFILE_FUNCTION();
 
@@ -115,14 +115,14 @@ namespace Oyl
 		return m_currentImageIndex;
 	}
 
-	ImageId
+	RdoImageId
 	VulkanSwapChain::GetImageId(uint32 a_index) const
 	{
 		VulkanImageId id = m_vkSwapChainImageHandles[a_index];
 		return id;
 	}
 
-	ImageId
+	RdoImageId
 	VulkanSwapChain::GetCurrentImageId() const
 	{
 		auto index = GetCurrentImageIndex();

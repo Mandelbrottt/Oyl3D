@@ -2,25 +2,25 @@
 
 #include <vulkan/vulkan_raii.hpp>
 
-#include "VulkanRenderingEnums.h"
+#include "VulkanModule/VulkanRenderingEnums.h"
 #include "VulkanStagingBuffer.h"
 
-#include "Rendering/Image.h"
+#include "Rendering/Hardware/Image.h"
 
 namespace Oyl
 {
 	class VulkanDevice;
 
-	using VulkanImageId = IConvertibleDeviceObjectId<ImageId, vk::Image>;
+	using VulkanImageId = IConvertibleRenderDeviceObjectId<RdoImageId, vk::Image>;
 
-	class VULKANMODULE_EXPORT VulkanImage : public IImage
+	class VULKANMODULE_EXPORT VulkanImage : public IRdoImage
 	{
 		friend class VulkanCommandBuffer;
 
 	public:
 		VulkanImage(nullptr_t) {}
 
-		VulkanImage(const VulkanDevice& a_device, const ImageCreateParams& a_params);
+		VulkanImage(const VulkanDevice& a_device, const RdoImageCreateParams& a_params);
 
 		DEFAULT_MOVE(VulkanImage);
 
@@ -66,7 +66,7 @@ namespace Oyl
 		operator VulkanImageId() const { return GetId(); }
 
 	protected:
-		ImageId
+		RdoImageId
 		GetIdImpl() const override { return GetId(); }
 
 	private:
@@ -74,16 +74,16 @@ namespace Oyl
 		SetLayout(ImageLayout a_layout) { m_layout = a_layout; }
 
 		void
-		CreateImage(const VulkanDevice& a_device, const ImageCreateParams& a_params);
+		CreateImage(const VulkanDevice& a_device, const RdoImageCreateParams& a_params);
 
 		void
-		CreateImageView(const VulkanDevice& a_device, const ImageCreateParams& a_params);
+		CreateImageView(const VulkanDevice& a_device, const RdoImageCreateParams& a_params);
 
 		void
-		CreateStagingBuffer(const VulkanDevice& a_device, const ImageCreateParams& a_params);
+		CreateStagingBuffer(const VulkanDevice& a_device, const RdoImageCreateParams& a_params);
 
 		void
-		CopyStagingBufferToImage(VulkanImage& a_image, const VulkanDevice& a_device, const ImageCreateParams& a_params);
+		CopyStagingBufferToImage(VulkanImage& a_image, const VulkanDevice& a_device, const RdoImageCreateParams& a_params);
 
 	private:
 		VulkanStagingBuffer m_stagingBuffer = nullptr;

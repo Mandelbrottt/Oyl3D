@@ -2,13 +2,13 @@
 
 #include <vulkan/vulkan_raii.hpp>
 
-#include "Rendering/StagingBuffer.h"
+#include "Rendering/Hardware/StagingBuffer.h"
 
 namespace Oyl
 {
 	class VulkanDevice;
 
-	using VulkanStagingBufferId = IConvertibleDeviceObjectId<StagingBufferId, vk::Buffer>;
+	using VulkanStagingBufferId = IConvertibleRenderDeviceObjectId<RdoStagingBufferId, vk::Buffer>;
 
 	struct VulkanStagingBufferCreateParams
 	{
@@ -19,7 +19,7 @@ namespace Oyl
 		vk::MemoryPropertyFlags vkProperties;
 	};
 
-	class VULKANMODULE_EXPORT VulkanStagingBuffer : public IStagingBuffer
+	class VULKANMODULE_EXPORT VulkanStagingBuffer : public IRdoStagingBuffer
 	{
 	public:
 		VulkanStagingBuffer(nullptr_t) {}
@@ -56,7 +56,7 @@ namespace Oyl
 		}
 
 	protected:
-		StagingBufferId
+		RdoStagingBufferId
 		GetIdImpl() const override
 		{
 			return GetId();

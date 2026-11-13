@@ -6,7 +6,7 @@
 
 namespace Oyl
 {
-	VulkanCommandPool::VulkanCommandPool(const VulkanDevice& a_device, const CommandPoolCreateParams& a_params)
+	VulkanCommandPool::VulkanCommandPool(const VulkanDevice& a_device, const RdoCommandPoolCreateParams& a_params)
 	{
 		OYL_PROFILE_FUNCTION();
 

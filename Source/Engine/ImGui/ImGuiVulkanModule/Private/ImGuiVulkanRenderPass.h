@@ -16,14 +16,14 @@ namespace Oyl
 		virtual
 		~ImGuiVulkanRenderPass() = default;
 
-		const ImageHandle&
+		const RdoImageHandle&
 		GetColorAttachment() const override { return m_colorAttachment; }
 
 		void
 		OnViewPortResize(Vector2u a_size) override;
 
 		void
-		SetGameViewPortColorAttachment(const ImageHandle& a_imageHandle)
+		SetGameViewPortColorAttachment(const RdoImageHandle& a_imageHandle)
 		{
 			if (m_gameViewPortColorAttachment == a_imageHandle)
 				return;
@@ -32,21 +32,21 @@ namespace Oyl
 
 	protected:
 		void
-		Begin(const ICommandBuffer& a_commandBuffer) override;
+		Begin(const IRdoCommandBuffer& a_commandBuffer) override;
 
 		void
-		Render(const ICommandBuffer& a_commandBuffer) override;
+		Render(const IRdoCommandBuffer& a_commandBuffer) override;
 
 		void
-		End(const ICommandBuffer& a_commandBuffer) override;
+		End(const IRdoCommandBuffer& a_commandBuffer) override;
 
 	private:
 		void
 		CreateRenderTarget(Vector2u a_size);
 
-		ImageHandle m_gameViewPortColorAttachment = nullptr;
+		RdoImageHandle m_gameViewPortColorAttachment = nullptr;
 
-		ImageHandle m_colorAttachment = nullptr;
+		RdoImageHandle m_colorAttachment = nullptr;
 		RenderTarget m_renderTarget;
 	};
 }

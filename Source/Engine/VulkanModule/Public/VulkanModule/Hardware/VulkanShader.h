@@ -2,7 +2,7 @@
 
 #include <vulkan/vulkan_raii.hpp>
 
-#include "Rendering/Shader.h"
+#include "Rendering/Hardware/Shader.h"
 
 namespace Oyl
 {
@@ -19,15 +19,15 @@ namespace Oyl
 		GetAttributeDescriptions();
 	};
 
-	using VulkanShaderId = IConvertibleDeviceObjectId<ShaderId, vk::Pipeline>;
+	using VulkanShaderId = IConvertibleRenderDeviceObjectId<RdoShaderId, vk::Pipeline>;
 
-	class VULKANMODULE_EXPORT VulkanShader : public IShader
+	class VULKANMODULE_EXPORT VulkanShader : public IRdoShader
 	{
 	public:
 		VulkanShader(nullptr_t) {}
 
 		explicit
-		VulkanShader(const VulkanDevice& a_device, const ShaderCreateParams& a_params);
+		VulkanShader(const VulkanDevice& a_device, const RdoShaderCreateParams& a_params);
 
 		DEFAULT_MOVE(VulkanShader);
 
@@ -41,10 +41,10 @@ namespace Oyl
 		IsValid() const override { return *m_vkPipeline; }
 
 		void
-		SetUniformBuffer(const IDevice& a_device, const IUniformBuffer& a_uniformBuffer) override;
+		SetUniformBuffer(const IRenderDevice& a_device, const IRdoUniformBuffer& a_uniformBuffer) override;
 
 		void
-		BindUniformBuffer(const ICommandBuffer& a_commandBuffer, const IUniformBuffer& a_uniformBuffer) override;
+		BindUniformBuffer(const IRdoCommandBuffer& a_commandBuffer, const IRdoUniformBuffer& a_uniformBuffer) override;
 
 		const vk::raii::Pipeline&
 		GetVkPipeline() const { return m_vkPipeline; }
@@ -58,7 +58,7 @@ namespace Oyl
 		}
 
 	protected:
-		ShaderId
+		RdoShaderId
 		GetIdImpl() const override
 		{
 			return GetId();
@@ -66,7 +66,7 @@ namespace Oyl
 
 	private:
 		void
-		CreatePipeline(const VulkanDevice& a_device, const ShaderCreateParams& a_params);
+		CreatePipeline(const VulkanDevice& a_device, const RdoShaderCreateParams& a_params);
 
 		vk::raii::ShaderModule
 		CompileVkShaderModule(const VulkanDevice& a_device, const ShaderStage& a_stage);

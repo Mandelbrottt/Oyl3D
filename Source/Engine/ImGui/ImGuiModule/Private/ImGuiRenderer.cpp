@@ -73,7 +73,7 @@ namespace Oyl
 		m_gameViewPortImageHandle.Reset();
 	}
 
-	const ImageHandle&
+	const RdoImageHandle&
 	ImGuiRenderer::GetRenderedImageHandle() const
 	{
 		return m_imGuiImpl->GetRenderedImageHandle();

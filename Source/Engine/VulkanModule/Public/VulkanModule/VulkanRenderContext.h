@@ -6,7 +6,7 @@
 
 #include <Rendering/RenderContext.h>
 
-#include "VulkanDevice.h"
+#include "VulkanModule/Hardware/VulkanDevice.h"
 
 namespace Oyl
 {
@@ -28,14 +28,14 @@ namespace Oyl
 		RenderingApi
 		GetRenderingApi() const override { return RenderingApi::Vulkan; }
 
-		PresentTargetHandle
+		HardwarePresentTargetHandle
 		CreatePresentTarget(IApplicationWindow& a_window) override;
 
-		DeviceHandle
-		CreateDevice(IPresentTarget* a_presentTarget) override;
+		RenderDeviceHandle
+		CreateDevice(IHardwarePresentTarget* a_presentTarget) override;
 
-		SwapChainHandle
-		CreateSwapChain(IDevice& a_device, IApplicationWindow& a_window, IPresentTarget& a_presentTarget) override;
+		RdoSwapChainHandle
+		CreateSwapChain(IRenderDevice& a_device, IApplicationWindow& a_window, IHardwarePresentTarget& a_presentTarget) override;
 
 		SharedPtr<IShaderCompiler>
 		CreateShaderCompiler() override;

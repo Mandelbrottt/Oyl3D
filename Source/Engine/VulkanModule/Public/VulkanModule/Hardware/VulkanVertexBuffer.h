@@ -2,21 +2,21 @@
 
 #include <vulkan/vulkan_raii.hpp>
 
-#include "Rendering/VertexBuffer.h"
+#include "Rendering/Hardware/VertexBuffer.h"
 
 namespace Oyl
 {
 	class VulkanDevice;
 
-	using VulkanVertexBufferId = IConvertibleDeviceObjectId<VertexBufferId, vk::Buffer>;
+	using VulkanVertexBufferId = IConvertibleRenderDeviceObjectId<RdoVertexBufferId, vk::Buffer>;
 
-	class VULKANMODULE_EXPORT VulkanVertexBuffer : public IVertexBuffer
+	class VULKANMODULE_EXPORT VulkanVertexBuffer : public IRdoVertexBuffer
 	{
 	public:
 		VulkanVertexBuffer(nullptr_t) {}
 
 		explicit
-		VulkanVertexBuffer(const VulkanDevice& a_device, const VertexBufferCreateParams& a_params);
+		VulkanVertexBuffer(const VulkanDevice& a_device, const RdoVertexBufferCreateParams& a_params);
 
 		DEFAULT_MOVE(VulkanVertexBuffer);
 
@@ -61,7 +61,7 @@ namespace Oyl
 		}
 
 	protected:
-		VertexBufferId
+		RdoVertexBufferId
 		GetIdImpl() const override
 		{
 			return GetId();
@@ -69,7 +69,7 @@ namespace Oyl
 
 	private:
 		void
-		CreateVertexBuffer(const VulkanDevice& a_device, const VertexBufferCreateParams& a_params);
+		CreateVertexBuffer(const VulkanDevice& a_device, const RdoVertexBufferCreateParams& a_params);
 
 	private:
 		vk::raii::Buffer m_buffer = nullptr;

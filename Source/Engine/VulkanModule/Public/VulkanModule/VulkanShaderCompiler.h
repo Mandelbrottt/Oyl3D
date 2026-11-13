@@ -1,7 +1,5 @@
 #pragma once
 
-#include <memory>
-
 #include <Core/Containers/UniquePtr.h>
 
 #include "Rendering/ShaderCompiler.h"

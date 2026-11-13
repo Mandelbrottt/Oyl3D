@@ -8,7 +8,7 @@
 #include <Core/Containers/ArrayMap.h>
 #include <Core/Containers/String.h>
 
-#include <Rendering/Device.h>
+#include <Rendering/Hardware/RenderDevice.h>
 
 #include "VulkanCommandBuffer.h"
 #include "VulkanCommandPool.h"
@@ -29,7 +29,7 @@ namespace Oyl
 		ArrayProxy<const char*> requiredDeviceExtensions;
 	};
 
-	class VULKANMODULE_EXPORT VulkanDevice : public IDevice
+	class VULKANMODULE_EXPORT VulkanDevice : public IRenderDevice
 	{
 	public:
 		VulkanDevice(nullptr_t) {}
@@ -51,28 +51,28 @@ namespace Oyl
 		void
 		WaitUntilIdle() const override;
 
-		CommandBufferHandle
-		CreateCommandBuffer(const CommandBufferCreateParams& a_params) const override;
+		RdoCommandBufferHandle
+		CreateCommandBuffer(const RdoCommandBufferCreateParams& a_params) const override;
 
-		CommandPoolHandle
-		CreateCommandPool(const CommandPoolCreateParams& a_params) const override;
+		RdoCommandPoolHandle
+		CreateCommandPool(const RdoCommandPoolCreateParams& a_params) const override;
 
-		ImageHandle
-		CreateImage(const ImageCreateParams& a_params) const override;
+		RdoImageHandle
+		CreateImage(const RdoImageCreateParams& a_params) const override;
 
-		ShaderHandle
-		CreateShader(const ShaderCreateParams& a_params) const override;
+		RdoShaderHandle
+		CreateShader(const RdoShaderCreateParams& a_params) const override;
 
-		VertexBufferHandle
-		CreateVertexBuffer(const VertexBufferCreateParams& a_params) const override;
+		RdoVertexBufferHandle
+		CreateVertexBuffer(const RdoVertexBufferCreateParams& a_params) const override;
 
-		UniformBufferHandle
-		CreateUniformBuffer(const UniformBufferCreateParams& a_params) const override;
+		RdoUniformBufferHandle
+		CreateUniformBuffer(const RdoUniformBufferCreateParams& a_params) const override;
 
-		SemaphoreHandle
+		RdoSemaphoreHandle
 		CreateSemaphore() const override;
 
-		FenceHandle
+		RdoFenceHandle
 		CreateFence() const override;
 
 		const VulkanCommandQueue*

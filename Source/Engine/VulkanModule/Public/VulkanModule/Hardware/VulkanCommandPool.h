@@ -2,18 +2,18 @@
 
 #include <vulkan/vulkan_raii.hpp>
 
-#include "Rendering/CommandPool.h"
+#include "Rendering/Hardware/CommandPool.h"
 
 namespace Oyl
 {
 	class VulkanDevice;
 
-	class VULKANMODULE_EXPORT VulkanCommandPool : public ICommandPool
+	class VULKANMODULE_EXPORT VulkanCommandPool : public IRdoCommandPool
 	{
 	public:
 		VulkanCommandPool(nullptr_t) {}
 
-		VulkanCommandPool(const VulkanDevice& a_device, const CommandPoolCreateParams& a_params);
+		VulkanCommandPool(const VulkanDevice& a_device, const RdoCommandPoolCreateParams& a_params);
 
 		DEFAULT_MOVE(VulkanCommandPool);
 

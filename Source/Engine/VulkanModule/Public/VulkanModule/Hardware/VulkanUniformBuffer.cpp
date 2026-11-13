@@ -6,7 +6,10 @@
 
 namespace Oyl
 {
-	VulkanUniformBuffer::VulkanUniformBuffer(const VulkanDevice& a_device, const UniformBufferCreateParams& a_params)
+	VulkanUniformBuffer::VulkanUniformBuffer(
+		const VulkanDevice& a_device,
+		const RdoUniformBufferCreateParams& a_params
+	)
 	{
 		OYL_PROFILE_FUNCTION();
 

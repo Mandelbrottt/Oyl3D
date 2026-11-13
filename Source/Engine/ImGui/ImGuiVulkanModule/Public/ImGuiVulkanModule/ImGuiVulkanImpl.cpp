@@ -9,7 +9,7 @@
 #include <Rendering/Renderer.h>
 #include <Rendering/TestRenderPass.h>
 
-#include <VulkanModule/VulkanDevice.h>
+#include <VulkanModule/Hardware/VulkanDevice.h>
 #include <VulkanModule/VulkanRenderContext.h>
 
 namespace
@@ -162,7 +162,7 @@ namespace Oyl
 	}
 
 	void
-	ImGuiVulkanImpl::OnSwapChainRecreate(const ISwapChain& a_swapChain)
+	ImGuiVulkanImpl::OnSwapChainRecreate(const IRdoSwapChain& a_swapChain)
 	{
 		ImGui_ImplVulkan_SetMinImageCount(a_swapChain.GetMinImageCount());
 		m_renderPass->OnViewPortResize(a_swapChain.GetSize());

@@ -2,21 +2,21 @@
 
 #include <vulkan/vulkan_raii.hpp>
 
-#include "Rendering/UniformBuffer.h"
+#include "Rendering/Hardware/UniformBuffer.h"
 
 namespace Oyl
 {
 	class VulkanDevice;
 
-	using VulkanUniformBufferId = IConvertibleDeviceObjectId<UniformBufferId, vk::Buffer>;
+	using VulkanUniformBufferId = IConvertibleRenderDeviceObjectId<RdoUniformBufferId, vk::Buffer>;
 
-	class VULKANMODULE_EXPORT VulkanUniformBuffer : public IUniformBuffer
+	class VULKANMODULE_EXPORT VulkanUniformBuffer : public IRdoUniformBuffer
 	{
 	public:
 		VulkanUniformBuffer(nullptr_t) {}
 
 		explicit
-		VulkanUniformBuffer(const VulkanDevice& a_device, const UniformBufferCreateParams& a_params);
+		VulkanUniformBuffer(const VulkanDevice& a_device, const RdoUniformBufferCreateParams& a_params);
 
 		DEFAULT_MOVE(VulkanUniformBuffer);
 
@@ -44,7 +44,7 @@ namespace Oyl
 		}
 
 	protected:
-		UniformBufferId
+		RdoUniformBufferId
 		GetIdImpl() const override
 		{
 			return GetId();

@@ -6,8 +6,9 @@
 
 #include <GLFW/glfw3.h>
 
-#include "VulkanPresentTarget.h"
 #include "VulkanShaderCompiler.h"
+
+#include "VulkanModule/Hardware/VulkanPresentTarget.h"
 
 namespace
 {
@@ -154,7 +155,7 @@ namespace Oyl
 		m_debugMessenger = m_vkInstance.createDebugUtilsMessengerEXT(debugUtilsMessengerCreateInfoEXT);
 	}
 
-	PresentTargetHandle
+	HardwarePresentTargetHandle
 	VulkanRenderContext::CreatePresentTarget(IApplicationWindow& a_window)
 	{
 		OYL_PROFILE_FUNCTION();
@@ -165,8 +166,8 @@ namespace Oyl
 		return MakeSharedPtr<VulkanPresentTarget>(params);
 	}
 
-	DeviceHandle
-	VulkanRenderContext::CreateDevice(IPresentTarget* a_presentTarget)
+	RenderDeviceHandle
+	VulkanRenderContext::CreateDevice(IHardwarePresentTarget* a_presentTarget)
 	{
 		OYL_PROFILE_FUNCTION();
 		VulkanDeviceCreateParams params {
@@ -177,8 +178,12 @@ namespace Oyl
 		return MakeSharedPtr<VulkanDevice>(m_vkInstance, params);
 	}
 
-	SwapChainHandle
-	VulkanRenderContext::CreateSwapChain(IDevice& a_device, IApplicationWindow& a_window, IPresentTarget& a_presentTarget)
+	RdoSwapChainHandle
+	VulkanRenderContext::CreateSwapChain(
+		IRenderDevice& a_device,
+		IApplicationWindow& a_window,
+		IHardwarePresentTarget& a_presentTarget
+	)
 	{
 		OYL_PROFILE_FUNCTION();
 		VulkanSwapChainCreateParams params {

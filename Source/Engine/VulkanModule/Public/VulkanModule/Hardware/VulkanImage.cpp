@@ -2,12 +2,13 @@
 
 #include "VulkanCommandBuffer.h"
 #include "VulkanDevice.h"
-#include "VulkanRenderingEnums.h"
 #include "VulkanStagingBuffer.h"
+
+#include "VulkanModule/VulkanRenderingEnums.h"
 
 namespace Oyl
 {
-	VulkanImage::VulkanImage(const VulkanDevice& a_device, const ImageCreateParams& a_params)
+	VulkanImage::VulkanImage(const VulkanDevice& a_device, const RdoImageCreateParams& a_params)
 	{
 		OYL_PROFILE_FUNCTION();
 
@@ -67,7 +68,7 @@ namespace Oyl
 	}
 
 	void
-	VulkanImage::CreateImage(const VulkanDevice& a_device, const ImageCreateParams& a_params)
+	VulkanImage::CreateImage(const VulkanDevice& a_device, const RdoImageCreateParams& a_params)
 	{
 		OYL_PROFILE_FUNCTION();
 
@@ -109,7 +110,7 @@ namespace Oyl
 	}
 
 	void
-	VulkanImage::CreateImageView(const VulkanDevice& a_device, const ImageCreateParams& a_params)
+	VulkanImage::CreateImageView(const VulkanDevice& a_device, const RdoImageCreateParams& a_params)
 	{
 		OYL_PROFILE_FUNCTION();
 
@@ -127,7 +128,7 @@ namespace Oyl
 	}
 
 	void
-	VulkanImage::CreateStagingBuffer(const VulkanDevice& a_device, const ImageCreateParams& a_params)
+	VulkanImage::CreateStagingBuffer(const VulkanDevice& a_device, const RdoImageCreateParams& a_params)
 	{
 		OYL_PROFILE_FUNCTION();
 
@@ -149,7 +150,7 @@ namespace Oyl
 	VulkanImage::CopyStagingBufferToImage(
 		VulkanImage& a_image,
 		const VulkanDevice& a_device,
-		const ImageCreateParams& a_params
+		const RdoImageCreateParams& a_params
 	)
 	{
 		OYL_PROFILE_FUNCTION();

@@ -4,7 +4,7 @@
 
 #include <cstddef>
 
-#include <Rendering/CommandQueue.h>
+#include <Rendering/Hardware/CommandQueue.h>
 
 #include "VulkanCommandBuffer.h"
 #include "VulkanSwapChain.h"
@@ -13,13 +13,13 @@ namespace Oyl
 {
 	class VulkanDevice;
 
-	class VULKANMODULE_EXPORT VulkanCommandQueue : public ICommandQueue
+	class VULKANMODULE_EXPORT VulkanCommandQueue : public IRdoCommandQueue
 	{
 	public:
 		VulkanCommandQueue() = default;
 		VulkanCommandQueue(nullptr_t) {}
 
-		VulkanCommandQueue(const VulkanDevice& a_device, const CommandQueueCreateParams& a_params);
+		VulkanCommandQueue(const VulkanDevice& a_device, const RdoCommandQueueCreateParams& a_params);
 
 		DEFAULT_MOVE(VulkanCommandQueue);
 		NO_COPY(VulkanCommandQueue);
@@ -37,10 +37,10 @@ namespace Oyl
 		WaitUntilIdle() const override;
 
 		bool
-		Submit(const CommandQueueSubmitParams& a_params) const override;
+		Submit(const RdoCommandQueueSubmitParams& a_params) const override;
 
 		bool
-		Present(const CommandQueuePresentParams& a_params) const override;
+		Present(const RdoCommandQueuePresentParams& a_params) const override;
 
 		const vk::raii::Queue&
 		GetVkQueue() const { return m_vkQueue; }

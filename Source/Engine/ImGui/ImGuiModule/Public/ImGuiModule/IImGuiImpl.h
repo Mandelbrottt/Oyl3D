@@ -2,8 +2,8 @@
 
 #include <Core/Containers/UniquePtr.h>
 
-#include <Rendering/Image.h>
 #include <Rendering/RenderingEnums.h>
+#include <Rendering/Hardware/Image.h>
 
 namespace Oyl
 {
@@ -34,7 +34,7 @@ namespace Oyl
 		Shutdown() = 0;
 
 		virtual
-		const ImageHandle&
+		const RdoImageHandle&
 		GetRenderedImageHandle() const = 0;
 	};
 

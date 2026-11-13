@@ -2,15 +2,15 @@
 
 #include <vulkan/vulkan_raii.hpp>
 
-#include "Rendering/Fence.h"
+#include "Rendering/Hardware/Fence.h"
 
 namespace Oyl
 {
 	class VulkanDevice;
 
-	using VulkanFenceId = IConvertibleDeviceObjectId<FenceId, vk::Fence>;
+	using VulkanFenceId = IConvertibleRenderDeviceObjectId<RdoFenceId, vk::Fence>;
 
-	class VULKANMODULE_EXPORT VulkanFence : public IFence
+	class VULKANMODULE_EXPORT VulkanFence : public IRdoFence
 	{
 	public:
 		VulkanFence(nullptr_t) {}
@@ -53,7 +53,7 @@ namespace Oyl
 		}
 
 	protected:
-		FenceId
+		RdoFenceId
 		GetIdImpl() const override
 		{
 			return GetId();

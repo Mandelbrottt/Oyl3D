@@ -4,7 +4,7 @@
 
 namespace Oyl
 {
-	VulkanCommandQueue::VulkanCommandQueue(const VulkanDevice& a_device, const CommandQueueCreateParams& a_params)
+	VulkanCommandQueue::VulkanCommandQueue(const VulkanDevice& a_device, const RdoCommandQueueCreateParams& a_params)
 	{
 		auto& vkDevice = a_device.GetVkDevice();
 		m_queueFamilyIndex = a_params.queueFamilyIndex;
@@ -34,7 +34,7 @@ namespace Oyl
 	}
 
 	bool
-	VulkanCommandQueue::Submit(const CommandQueueSubmitParams& a_params) const
+	VulkanCommandQueue::Submit(const RdoCommandQueueSubmitParams& a_params) const
 	{
 		OYL_PROFILE_FUNCTION();
 
@@ -62,7 +62,7 @@ namespace Oyl
 	}
 
 	bool
-	VulkanCommandQueue::Present(const CommandQueuePresentParams& a_params) const
+	VulkanCommandQueue::Present(const RdoCommandQueuePresentParams& a_params) const
 	{
 		OYL_PROFILE_FUNCTION();
 

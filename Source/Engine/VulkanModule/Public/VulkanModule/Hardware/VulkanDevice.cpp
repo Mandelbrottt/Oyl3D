@@ -2,8 +2,9 @@
 
 #include <Core/Containers/String.h>
 
-#include "VulkanRenderingEnums.h"
 #include "VulkanUniformBuffer.h"
+
+#include "VulkanModule/VulkanRenderingEnums.h"
 
 namespace Oyl
 {
@@ -60,49 +61,49 @@ namespace Oyl
 		m_vkDevice.waitIdle();
 	}
 
-	CommandBufferHandle
-	VulkanDevice::CreateCommandBuffer(const CommandBufferCreateParams& a_params) const
+	RdoCommandBufferHandle
+	VulkanDevice::CreateCommandBuffer(const RdoCommandBufferCreateParams& a_params) const
 	{
 		return MakeSharedPtr<VulkanCommandBuffer>(*this, a_params);
 	}
 
-	CommandPoolHandle
-	VulkanDevice::CreateCommandPool(const CommandPoolCreateParams& a_params) const
+	RdoCommandPoolHandle
+	VulkanDevice::CreateCommandPool(const RdoCommandPoolCreateParams& a_params) const
 	{
 		return MakeSharedPtr<VulkanCommandPool>(*this, a_params);
 	}
 
-	ImageHandle
-	VulkanDevice::CreateImage(const ImageCreateParams& a_params) const
+	RdoImageHandle
+	VulkanDevice::CreateImage(const RdoImageCreateParams& a_params) const
 	{
 		return MakeSharedPtr<VulkanImage>(*this, a_params);
 	}
 
-	ShaderHandle
-	VulkanDevice::CreateShader(const ShaderCreateParams& a_params) const
+	RdoShaderHandle
+	VulkanDevice::CreateShader(const RdoShaderCreateParams& a_params) const
 	{
 		return MakeSharedPtr<VulkanShader>(*this, a_params);
 	}
 
-	VertexBufferHandle
-	VulkanDevice::CreateVertexBuffer(const VertexBufferCreateParams& a_params) const
+	RdoVertexBufferHandle
+	VulkanDevice::CreateVertexBuffer(const RdoVertexBufferCreateParams& a_params) const
 	{
 		return MakeSharedPtr<VulkanVertexBuffer>(*this, a_params);
 	}
 
-	UniformBufferHandle
-	VulkanDevice::CreateUniformBuffer(const UniformBufferCreateParams& a_params) const
+	RdoUniformBufferHandle
+	VulkanDevice::CreateUniformBuffer(const RdoUniformBufferCreateParams& a_params) const
 	{
 		return MakeSharedPtr<VulkanUniformBuffer>(*this, a_params);
 	}
 
-	SemaphoreHandle
+	RdoSemaphoreHandle
 	VulkanDevice::CreateSemaphore() const
 	{
 		return MakeSharedPtr<VulkanSemaphore>(*this);
 	}
 
-	FenceHandle
+	RdoFenceHandle
 	VulkanDevice::CreateFence() const
 	{
 		return MakeSharedPtr<VulkanFence>(*this);

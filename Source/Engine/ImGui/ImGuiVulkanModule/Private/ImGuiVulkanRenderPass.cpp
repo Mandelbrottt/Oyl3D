@@ -4,7 +4,7 @@
 
 #include <Rendering/RenderEngine.h>
 
-#include <VulkanModule/VulkanCommandBuffer.h>
+#include <VulkanModule/Hardware/VulkanCommandBuffer.h>
 
 namespace Oyl
 {
@@ -20,7 +20,7 @@ namespace Oyl
 	}
 
 	void
-	ImGuiVulkanRenderPass::Begin(const ICommandBuffer& a_commandBuffer)
+	ImGuiVulkanRenderPass::Begin(const IRdoCommandBuffer& a_commandBuffer)
 	{
 		OYL_PROFILE_FUNCTION();
 
@@ -42,7 +42,7 @@ namespace Oyl
 	}
 
 	void
-	ImGuiVulkanRenderPass::Render(const ICommandBuffer& a_commandBuffer)
+	ImGuiVulkanRenderPass::Render(const IRdoCommandBuffer& a_commandBuffer)
 	{
 		OYL_PROFILE_FUNCTION();
 		ImGui::Render();
@@ -56,7 +56,7 @@ namespace Oyl
 	}
 
 	void
-	ImGuiVulkanRenderPass::End(const ICommandBuffer& a_commandBuffer)
+	ImGuiVulkanRenderPass::End(const IRdoCommandBuffer& a_commandBuffer)
 	{
 		OYL_PROFILE_FUNCTION();
 

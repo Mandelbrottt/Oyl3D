@@ -6,7 +6,7 @@
 
 #include <ImGuiModule/IImGuiImpl.h>
 
-#include <Rendering/SwapChain.h>
+#include <Rendering/Hardware/SwapChain.h>
 #include <Rendering/ImGui/IImGuiRenderer.h>
 
 #include "ImGuiVulkanRenderPass.h"
@@ -28,7 +28,7 @@ namespace Oyl
 		void
 		Shutdown() override;
 
-		const ImageHandle&
+		const RdoImageHandle&
 		GetRenderedImageHandle() const override
 		{
 			return m_renderPass->GetColorAttachment();
@@ -42,7 +42,7 @@ namespace Oyl
 		InitImGuiVulkan();
 
 		void
-		OnSwapChainRecreate(const ISwapChain& a_swapChain);
+		OnSwapChainRecreate(const IRdoSwapChain& a_swapChain);
 
 	private:
 		IImGuiRenderer* m_imGuiRenderer = nullptr;

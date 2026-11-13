@@ -2,15 +2,15 @@
 
 #include <vulkan/vulkan_raii.hpp>
 
-#include <Rendering/Semaphore.h>
+#include <Rendering/Hardware/Semaphore.h>
 
 namespace Oyl
 {
 	class VulkanDevice;
 
-	using VulkanSemaphoreId = IConvertibleDeviceObjectId<SemaphoreId, vk::Semaphore>;
+	using VulkanSemaphoreId = IConvertibleRenderDeviceObjectId<RdoSemaphoreId, vk::Semaphore>;
 
-	class VULKANMODULE_EXPORT VulkanSemaphore : public ISemaphore
+	class VULKANMODULE_EXPORT VulkanSemaphore : public IRdoSemaphore
 	{
 	public:
 		VulkanSemaphore(nullptr_t) {}
@@ -43,7 +43,7 @@ namespace Oyl
 		}
 
 	protected:
-		SemaphoreId
+		RdoSemaphoreId
 		GetIdImpl() const override
 		{
 			return GetId();

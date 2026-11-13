@@ -5,23 +5,23 @@
 #include "VulkanCommandPool.h"
 #include "VulkanImage.h"
 
-#include "Rendering/CommandBuffer.h"
+#include "Rendering/Hardware/CommandBuffer.h"
 
 namespace Oyl
 {
-	class IShader;
-	class IVertexBuffer;
+	class IRdoShader;
+	class IRdoVertexBuffer;
 
 	class VulkanDevice;
 	class VulkanShader;
 	class VulkanVertexBuffer;
 
-	class VULKANMODULE_EXPORT VulkanCommandBuffer : public ICommandBuffer
+	class VULKANMODULE_EXPORT VulkanCommandBuffer : public IRdoCommandBuffer
 	{
 	public:
 		VulkanCommandBuffer(nullptr_t) {}
 
-		VulkanCommandBuffer(const VulkanDevice& a_device, const CommandBufferCreateParams& a_params) noexcept;
+		VulkanCommandBuffer(const VulkanDevice& a_device, const RdoCommandBufferCreateParams& a_params) noexcept;
 
 		DEFAULT_MOVE(VulkanCommandBuffer);
 
@@ -59,32 +59,32 @@ namespace Oyl
 		SetScissor(Vector2i a_offset, Vector2u a_size) const noexcept override;
 
 		void
-		BindShader(const IShader& a_shader) const noexcept override;
+		BindShader(const IRdoShader& a_shader) const noexcept override;
 
 		void
 		BindShader(const VulkanShader& a_shader) const noexcept;
 
 		void
-		BindVertexBuffer(const IVertexBuffer& a_vertexBuffer) const noexcept override;
+		BindVertexBuffer(const IRdoVertexBuffer& a_vertexBuffer) const noexcept override;
 
 		void
 		BindVertexBuffer(const VulkanVertexBuffer& a_vertexBuffer) const noexcept;
 
 		void
-		DrawVertexBuffer(const IVertexBuffer& a_vertexBuffer) const noexcept override;
+		DrawVertexBuffer(const IRdoVertexBuffer& a_vertexBuffer) const noexcept override;
 
 		void
 		DrawVertexBuffer(const VulkanVertexBuffer& a_vertexBuffer) const noexcept;
 
 		void
-		TransitionImageLayout(IImage& a_image, ImageLayout a_newLayout) const noexcept override;
+		TransitionImageLayout(IRdoImage& a_image, ImageLayout a_newLayout) const noexcept override;
 
 		void
 		TransitionImageLayout(VulkanImage& a_image, ImageLayout a_newLayout) const noexcept;
 
 		void
 		TransitionImageLayout(
-			ImageId a_imageHandle,
+			RdoImageId a_imageHandle,
 			ImageLayout a_oldLayout,
 			ImageLayout a_newLayout
 		) const noexcept override;
@@ -98,17 +98,17 @@ namespace Oyl
 
 		void
 		BlitImage(
-			const IImage& a_srcImage,
-			const IImage& a_dstImage,
+			const IRdoImage& a_srcImage,
+			const IRdoImage& a_dstImage,
 			ImageFilter a_filter
 		) const noexcept override;
 
 		void
 		BlitImage(
-			ImageId a_srcImageId,
+			RdoImageId a_srcImageId,
 			ImageLayout a_srcLayout,
 			Rect2D a_srcRect,
-			ImageId a_dstImageId,
+			RdoImageId a_dstImageId,
 			ImageLayout a_dstImageLayout,
 			Rect2D a_dstRect,
 			ImageFilter a_filter

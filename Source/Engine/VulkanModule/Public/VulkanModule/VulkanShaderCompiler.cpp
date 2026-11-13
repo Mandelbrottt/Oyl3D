@@ -89,7 +89,7 @@ namespace Oyl
 			"DxcCreateInstance");
 		OYL_ASSERT(m_impl->dxcCreateInstanceFn);
 
-		HResultHandler hres;
+		HResultHandler hres {};
 
 		// Initialize DXC compiler
 		hres = m_impl->dxcCreateInstanceFn(CLSID_DxcCompiler, IID_PPV_ARGS(&m_impl->dxcCompiler));

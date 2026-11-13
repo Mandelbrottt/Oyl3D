@@ -2,11 +2,11 @@
 
 #include <vulkan/vulkan_raii.hpp>
 
-#include <Rendering/PresentTarget.h>
+#include <Rendering/Hardware/PresentTarget.h>
 
 namespace Oyl
 {
-	using VulkanPresentTargetId = IConvertibleDeviceObjectId<PresentTargetId, vk::SurfaceKHR>;
+	using VulkanPresentTargetId = IConvertibleRenderDeviceObjectId<HardwarePresentTargetId, vk::SurfaceKHR>;
 
 	struct VulkanPresentTargetCreateParams
 	{
@@ -14,7 +14,7 @@ namespace Oyl
 		const IApplicationWindow* window;
 	};
 
-	class VULKANMODULE_EXPORT VulkanPresentTarget : public IPresentTarget
+	class VULKANMODULE_EXPORT VulkanPresentTarget : public IHardwarePresentTarget
 	{
 	public:
 		VulkanPresentTarget(nullptr_t) {}
@@ -42,7 +42,7 @@ namespace Oyl
 		operator VulkanPresentTargetId() const { return GetId(); }
 
 	protected:
-		PresentTargetId
+		HardwarePresentTargetId
 		GetIdImpl() const override { return GetId(); }
 
 	private:
