@@ -88,5 +88,5 @@ namespace Oyl
 		ArraySet<IModelLoaderFactory*> m_modelFactories;
 	};
 
-	OYL_MODULE_DECLARE(Rendering, RenderingModule)
+	OYL_MODULE_DECLARE(RenderingModule)
 }

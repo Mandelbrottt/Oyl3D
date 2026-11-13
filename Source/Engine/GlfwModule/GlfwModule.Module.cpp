@@ -68,5 +68,5 @@ namespace Oyl
 		int m_initialized = GLFW_FALSE;
 	};
 
-	OYL_MODULE_DECLARE(GlfwModule, GlfwModule)
+	OYL_MODULE_DECLARE(GlfwModule)
 }

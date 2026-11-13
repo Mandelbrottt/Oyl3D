@@ -28,7 +28,7 @@ end
 
 function m.onProject(prj)
 	local wks = prj.workspace
-	if prj._package then
+	if prj._package and _OPTIONS["packages"] then
 		local prjpackages = wks.packageprojects -- guaranteed to exist since at least one prj._package is valid
 		local packages = prjpackages.packages
 		local cachedir = path.join(wks.basedir, prjpackages.cachedir or "Packages")

@@ -345,7 +345,7 @@ local Packages = {
 
 			uses {
 				"Glfw",
-				"Vulkan",
+				"VulkanSdk",
 			}
 
 			-- Tight coupling with Core, but this is ok since everything that uses core will also use ImGui
@@ -525,7 +525,7 @@ local Packages = {
 			end
 		end,
 	},
-	Vulkan = {
+	VulkanSdk = {
 		Local = {
 			Path = assert(
 				os.getenv("VULKAN_SDK"),

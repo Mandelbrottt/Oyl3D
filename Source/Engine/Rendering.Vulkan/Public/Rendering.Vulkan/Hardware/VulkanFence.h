@@ -1,0 +1,66 @@
+﻿#pragma once
+
+#include <vulkan/vulkan_raii.hpp>
+
+#include "Rendering/Hardware/RdoFence.h"
+
+namespace Oyl
+{
+	class VulkanDevice;
+
+	using VulkanFenceId = IConvertibleRenderDeviceObjectId<RdoFenceId, vk::Fence>;
+
+	class RENDERING_VULKAN_EXPORT VulkanFence : public IRdoFence
+	{
+	public:
+		VulkanFence(nullptr_t) {}
+
+		explicit
+		VulkanFence(const VulkanDevice& a_device);
+
+		DEFAULT_MOVE(VulkanFence);
+
+		virtual
+		~VulkanFence();
+
+		void
+		Destroy() override;
+
+		bool
+		IsValid() const override;
+
+		void
+		Reset() override;
+
+		bool
+		Wait(uint64 a_timeout = INT64_MAX) override;
+
+		const vk::raii::Fence&
+		GetVkFence() const
+		{
+			return m_fence;
+		}
+
+		VulkanFenceId
+		GetId() const
+		{
+			return *m_fence;
+		}
+
+		operator VulkanFenceId() const
+		{
+			return GetId();
+		}
+
+	protected:
+		RdoFenceId
+		GetIdImpl() const override
+		{
+			return GetId();
+		}
+
+	private:
+		const VulkanDevice* m_device = nullptr;
+		vk::raii::Fence m_fence = nullptr;
+	};
+}

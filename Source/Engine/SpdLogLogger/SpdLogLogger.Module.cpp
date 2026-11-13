@@ -137,5 +137,5 @@ namespace Oyl
 		std::shared_ptr<SpdLogLogger> m_logger;
 	};
 
-	OYL_MODULE_DECLARE(SpdLogLogger, SpdLogLoggerModule);
+	OYL_MODULE_DECLARE(SpdLogLoggerModule);
 }

@@ -149,5 +149,5 @@ namespace Oyl
 		ArraySet<String> m_supportedExtensions;
 	};
 
-	OYL_MODULE_DECLARE(AssimpModule, AssimpModule)
+	OYL_MODULE_DECLARE(AssimpModule)
 }

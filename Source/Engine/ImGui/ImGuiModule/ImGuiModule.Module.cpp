@@ -68,5 +68,5 @@ namespace Oyl
 		ArraySet<IImGuiImplFactory*> m_imGuiImplFactories;
 	};
 
-	OYL_MODULE_DECLARE(ImGuiModule, ImGuiModule)
+	OYL_MODULE_DECLARE(ImGuiModule)
 }
