@@ -10,19 +10,19 @@
 namespace Oyl
 {
 	template<typename TId>
-	class IDeviceObject : public IDestroyable
+	class IRenderDeviceObject : public IDestroyable
 	{
 	protected:
 		virtual
-		~IDeviceObject() = 0;
+		~IRenderDeviceObject() = 0;
 
-		IDeviceObject() = default;
-		DEFAULT_MOVE(IDeviceObject);
+		IRenderDeviceObject() = default;
+		DEFAULT_MOVE(IRenderDeviceObject);
 
 	public:
 		using IdTy = TId;
 
-		NO_COPY(IDeviceObject);
+		NO_COPY(IRenderDeviceObject);
 
 		TId
 		GetId() const
@@ -43,20 +43,20 @@ namespace Oyl
 	};
 
 	template<typename TObject>
-	class IObjectHandle final : public SharedPtr<TObject>
+	class IRenderDeviceObjectHandle final : public SharedPtr<TObject>
 	{
-		IObjectHandle() = default;
+		IRenderDeviceObjectHandle() = default;
 
 	public:
-		IObjectHandle(nullptr_t) {}
+		IRenderDeviceObjectHandle(nullptr_t) {}
 
-		IObjectHandle(const IObjectHandle& a_other) = default;
-		IObjectHandle&
-		operator =(const IObjectHandle& a_other) = default;
+		IRenderDeviceObjectHandle(const IRenderDeviceObjectHandle& a_other) = default;
+		IRenderDeviceObjectHandle&
+		operator =(const IRenderDeviceObjectHandle& a_other) = default;
 
-		IObjectHandle(IObjectHandle&& a_other) noexcept = default;
-		IObjectHandle&
-		operator =(IObjectHandle&& a_other) noexcept = default;
+		IRenderDeviceObjectHandle(IRenderDeviceObjectHandle&& a_other) noexcept = default;
+		IRenderDeviceObjectHandle&
+		operator =(IRenderDeviceObjectHandle&& a_other) noexcept = default;
 
 		using SharedPtr<TObject>::SharedPtr;
 
@@ -65,28 +65,28 @@ namespace Oyl
 	};
 
 	template<typename TId>
-	IDeviceObject<TId>::~IDeviceObject() {}
+	IRenderDeviceObject<TId>::~IRenderDeviceObject() {}
 
 	template<typename>
-	struct IDeviceObjectId
+	struct IRenderDeviceObjectId
 	{
 		constexpr
-		IDeviceObjectId() = default;
+		IRenderDeviceObjectId() = default;
 
 		constexpr
-		IDeviceObjectId(nullptr_t) {}
+		IRenderDeviceObjectId(nullptr_t) {}
 
-		DEFAULT_COPY(IDeviceObjectId);
-		DEFAULT_MOVE(IDeviceObjectId);
+		DEFAULT_COPY(IRenderDeviceObjectId);
+		DEFAULT_MOVE(IRenderDeviceObjectId);
 
 		constexpr
 		operator bool() const { return m_id != nullptr; }
 
 		constexpr bool
-		operator==(IDeviceObjectId a_other) const { return m_id == a_other.m_id; }
+		operator==(IRenderDeviceObjectId a_other) const { return m_id == a_other.m_id; }
 
 		constexpr bool
-		operator!=(IDeviceObjectId a_other) const { return !(m_id == a_other.m_id); }
+		operator!=(IRenderDeviceObjectId a_other) const { return !(m_id == a_other.m_id); }
 
 		constexpr bool
 		operator==(nullptr_t) const { return m_id == nullptr; }
@@ -103,18 +103,18 @@ namespace Oyl
 		requires (sizeof(TId) == sizeof(TOtherId)
 		          && std::is_trivially_destructible_v<TId>
 		          && std::is_trivially_destructible_v<TOtherId>)
-	struct IConvertibleDeviceObjectId
+	struct IConvertibleRenderDeviceObjectId
 	{
 		constexpr
-		IConvertibleDeviceObjectId() = default;
+		IConvertibleRenderDeviceObjectId() = default;
 
 		constexpr
-		IConvertibleDeviceObjectId(nullptr_t) {}
+		IConvertibleRenderDeviceObjectId(nullptr_t) {}
 
 		constexpr
-		IConvertibleDeviceObjectId(TId a_other)
+		IConvertibleRenderDeviceObjectId(TId a_other)
 		{
-			*this = std::bit_cast<IConvertibleDeviceObjectId>(a_other);
+			*this = std::bit_cast<IConvertibleRenderDeviceObjectId>(a_other);
 		}
 
 		constexpr
@@ -124,7 +124,7 @@ namespace Oyl
 		}
 
 		constexpr
-		IConvertibleDeviceObjectId(TOtherId a_libType)
+		IConvertibleRenderDeviceObjectId(TOtherId a_libType)
 		{
 			m_id = std::bit_cast<TId>(a_libType);
 		}

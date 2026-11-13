@@ -7,7 +7,7 @@
 namespace Oyl
 {
 	class IImGuiImpl;
-	class ISwapChain;
+	class IRdoSwapChain;
 
 	class ImGuiRenderer : public IImGuiRenderer
 	{
@@ -19,7 +19,7 @@ namespace Oyl
 		Update() override;
 
 		void
-		Render(ICommandBuffer& a_commandBuffer) override;
+		Render(IRdoCommandBuffer& a_commandBuffer) override;
 
 		void
 		Shutdown() override;

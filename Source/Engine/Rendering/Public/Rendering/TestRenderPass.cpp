@@ -119,7 +119,7 @@ namespace Oyl
 	}
 
 	void
-	TestRenderPass::Begin(const ICommandBuffer& a_commandBuffer)
+	TestRenderPass::Begin(const IRdoCommandBuffer& a_commandBuffer)
 	{
 		auto size = m_colorAttachment->GetSize();
 
@@ -134,7 +134,7 @@ namespace Oyl
 	}
 
 	void
-	TestRenderPass::Render(const ICommandBuffer& a_commandBuffer)
+	TestRenderPass::Render(const IRdoCommandBuffer& a_commandBuffer)
 	{
 		UpdateUniformBuffer();
 
@@ -144,7 +144,7 @@ namespace Oyl
 	}
 
 	void
-	TestRenderPass::End(const ICommandBuffer& a_commandBuffer)
+	TestRenderPass::End(const IRdoCommandBuffer& a_commandBuffer)
 	{
 		a_commandBuffer.EndRendering();
 	}

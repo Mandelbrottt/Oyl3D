@@ -46,7 +46,7 @@ namespace Oyl
 	}
 
 	void
-	ImGuiRenderer::Render(ICommandBuffer& a_commandBuffer)
+	ImGuiRenderer::Render(IRdoCommandBuffer& a_commandBuffer)
 	{
 		OYL_PROFILE_FUNCTION();
 

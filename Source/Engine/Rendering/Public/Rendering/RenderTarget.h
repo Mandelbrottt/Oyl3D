@@ -2,15 +2,15 @@
 
 #include <Core/Containers/Array.h>
 
-#include "IDeviceObject.h"
-#include "Image.h"
+#include "Rendering/Hardware/Image.h"
+#include "Rendering/Hardware/RenderDeviceObject.h"
 
 namespace Oyl
 {
 	struct RenderTargetCreateParams
 	{
-		ArrayProxy<const IImage*> colorImages;
-		const IImage* pDepthImage = nullptr;
+		ArrayProxy<const IRdoImage*> colorImages;
+		const IRdoImage* pDepthImage = nullptr;
 	};
 
 	class RENDERING_EXPORT RenderTarget : public IDestroyable
@@ -38,19 +38,19 @@ namespace Oyl
 		GetNumColorAttachments() const;
 
 		virtual
-		const IImage*
+		const IRdoImage*
 		GetColorAttachment(uint32 a_index) const;
 
 		virtual
-		const Array<const IImage*>&
+		const Array<const IRdoImage*>&
 		GetColorAttachments() const;
 
 		virtual
-		const IImage*
+		const IRdoImage*
 		GetDepthAttachment() const;
 
 	private:
-		Array<const IImage*> m_colorAttachments;
-		const IImage* m_depthAttachment = nullptr;
+		Array<const IRdoImage*> m_colorAttachments;
+		const IRdoImage* m_depthAttachment = nullptr;
 	};
 }

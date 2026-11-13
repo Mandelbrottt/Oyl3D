@@ -3,8 +3,8 @@
 #include <Core/Containers/ArraySet.h>
 #include <Core/Containers/Set.h>
 
-#include "Rendering/CommandBuffer.h"
 #include "Rendering/RenderTarget.h"
+#include "Rendering/Hardware/CommandBuffer.h"
 
 namespace Oyl
 {
@@ -16,7 +16,7 @@ namespace Oyl
 
 		virtual
 		void
-		Execute(const ICommandBuffer& a_commandBuffer)
+		Execute(const IRdoCommandBuffer& a_commandBuffer)
 		{
 			Begin(a_commandBuffer);
 			Render(a_commandBuffer);
@@ -26,15 +26,15 @@ namespace Oyl
 	protected:
 		virtual
 		void
-		Begin(const ICommandBuffer& a_commandBuffer) = 0;
+		Begin(const IRdoCommandBuffer& a_commandBuffer) = 0;
 
 		virtual
 		void
-		Render(const ICommandBuffer& a_commandBuffer) = 0;
+		Render(const IRdoCommandBuffer& a_commandBuffer) = 0;
 
 		virtual
 		void
-		End(const ICommandBuffer& a_commandBuffer) = 0;
+		End(const IRdoCommandBuffer& a_commandBuffer) = 0;
 
 	public:
 		virtual

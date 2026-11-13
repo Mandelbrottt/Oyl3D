@@ -9,7 +9,7 @@ namespace Oyl
 {
 	class IImGuiRenderer;
 	class IApplicationWindow;
-	class ICommandBuffer;
+	class IRdoCommandBuffer;
 
 	class IImGuiImpl
 	{
@@ -27,7 +27,7 @@ namespace Oyl
 
 		virtual
 		void
-		Render(ICommandBuffer& a_commandBuffer) = 0;
+		Render(IRdoCommandBuffer& a_commandBuffer) = 0;
 
 		virtual
 		void

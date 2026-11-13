@@ -6,17 +6,18 @@
 
 #include "CommandPool.h"
 #include "Image.h"
-#include "RenderingEnums.h"
-#include "RenderTarget.h"
 #include "Shader.h"
 #include "SwapChain.h"
 #include "VertexBuffer.h"
 
+#include "Rendering/RenderingEnums.h"
+#include "Rendering/RenderTarget.h"
+
 namespace Oyl
 {
-	struct CommandBufferCreateParams
+	struct RdoCommandBufferCreateParams
 	{
-		const ICommandPool& commandPool;
+		const IRdoCommandPool& commandPool;
 	};
 
 	struct BeginRenderingParams
@@ -26,17 +27,17 @@ namespace Oyl
 
 	static_assert(std::is_default_constructible_v<BeginRenderingParams>);
 
-	class ICommandBuffer : public IDestroyable
+	class IRdoCommandBuffer : public IDestroyable
 	{
 	protected:
-		ICommandBuffer() noexcept = default;
-		DEFAULT_MOVE(ICommandBuffer);
+		IRdoCommandBuffer() noexcept = default;
+		DEFAULT_MOVE(IRdoCommandBuffer);
 
 	public:
-		NO_COPY(ICommandBuffer);
+		NO_COPY(IRdoCommandBuffer);
 
 		virtual
-		~ICommandBuffer() noexcept = 0;
+		~IRdoCommandBuffer() noexcept = 0;
 
 		virtual
 		void
@@ -64,35 +65,35 @@ namespace Oyl
 
 		virtual
 		void
-		BindShader(const IShader& a_shader) const noexcept = 0;
+		BindShader(const IRdoShader& a_shader) const noexcept = 0;
 
 		virtual
 		void
-		BindVertexBuffer(const IVertexBuffer& a_buffer) const noexcept = 0;
+		BindVertexBuffer(const IRdoVertexBuffer& a_buffer) const noexcept = 0;
 
 		virtual
 		void
-		DrawVertexBuffer(const IVertexBuffer& a_buffer) const noexcept = 0;
+		DrawVertexBuffer(const IRdoVertexBuffer& a_buffer) const noexcept = 0;
 
 		virtual
 		void
-		TransitionImageLayout(IImage& a_image, ImageLayout a_newLayout) const noexcept = 0;
+		TransitionImageLayout(IRdoImage& a_image, ImageLayout a_newLayout) const noexcept = 0;
 
 		virtual
 		void
-		TransitionImageLayout(ImageId a_image, ImageLayout a_oldLayout, ImageLayout a_newLayout) const noexcept = 0;
+		TransitionImageLayout(RdoImageId a_image, ImageLayout a_oldLayout, ImageLayout a_newLayout) const noexcept = 0;
 
 		virtual
 		void
-		BlitImage(const IImage& a_srcImage, const IImage& a_dstImage, ImageFilter a_filter) const noexcept = 0;
+		BlitImage(const IRdoImage& a_srcImage, const IRdoImage& a_dstImage, ImageFilter a_filter) const noexcept = 0;
 
 		virtual
 		void
 		BlitImage(
-			ImageId a_srcImageId,
+			RdoImageId a_srcImageId,
 			ImageLayout a_srcLayout,
 			Rect2D a_srcRect,
-			ImageId a_dstImageId,
+			RdoImageId a_dstImageId,
 			ImageLayout a_dstImageLayout,
 			Rect2D a_dstRect,
 			ImageFilter a_filter
@@ -100,12 +101,12 @@ namespace Oyl
 
 	protected:
 		virtual
-		const ICommandPool*
+		const IRdoCommandPool*
 		GetCommandPool() const noexcept = 0;
 	};
 
 	inline
-	ICommandBuffer::~ICommandBuffer() noexcept {}
+	IRdoCommandBuffer::~IRdoCommandBuffer() noexcept {}
 
-	using CommandBufferHandle = IObjectHandle<ICommandBuffer>;
+	using RdoCommandBufferHandle = IRenderDeviceObjectHandle<IRdoCommandBuffer>;
 }

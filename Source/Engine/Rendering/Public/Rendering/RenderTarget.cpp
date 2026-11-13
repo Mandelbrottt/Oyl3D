@@ -32,7 +32,7 @@ namespace Oyl
 		return m_colorAttachments.Length();
 	}
 
-	const IImage*
+	const IRdoImage*
 	RenderTarget::GetColorAttachment(uint32 a_index) const
 	{
 		if (a_index > m_colorAttachments.Length())
@@ -41,13 +41,13 @@ namespace Oyl
 		return m_colorAttachments[a_index];
 	}
 
-	const Array<const IImage*>&
+	const Array<const IRdoImage*>&
 	RenderTarget::GetColorAttachments() const
 	{
 		return m_colorAttachments;
 	}
 
-	const IImage*
+	const IRdoImage*
 	RenderTarget::GetDepthAttachment() const
 	{
 		return m_depthAttachment;

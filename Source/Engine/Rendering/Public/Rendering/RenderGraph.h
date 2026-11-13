@@ -5,8 +5,7 @@
 #include <Core/Containers/Set.h>
 #include <Core/Preprocessor/Common.h>
 
-#include "CommandBuffer.h"
-
+#include "Rendering/Hardware/CommandBuffer.h"
 #include "Rendering/RenderPass/RenderPass.h"
 
 namespace Oyl
@@ -47,7 +46,7 @@ namespace Oyl
 
 		virtual
 		void
-		Execute(const ICommandBuffer& a_commandBuffer);
+		Execute(const IRdoCommandBuffer& a_commandBuffer);
 
 		void
 		ResizeViewPort(Vector2u a_size);

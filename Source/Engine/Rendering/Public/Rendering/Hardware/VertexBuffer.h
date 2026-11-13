@@ -2,13 +2,13 @@
 
 #include <Core/Containers/Array.h>
 
-#include "IDeviceObject.h"
+#include "RenderDeviceObject.h"
 
 namespace Oyl
 {
-	struct VertexBufferId : IDeviceObjectId<VertexBufferId> {};
+	struct RdoVertexBufferId : IRenderDeviceObjectId<RdoVertexBufferId> {};
 
-	struct VertexBufferCreateParams
+	struct RdoVertexBufferCreateParams
 	{
 		ArrayProxy<byte> vertexData;
 		uint32 vertexStride;
@@ -17,17 +17,17 @@ namespace Oyl
 		uint32 indexStride = sizeof(uint16);
 	};
 
-	class IVertexBuffer : public IDeviceObject<VertexBufferId>
+	class IRdoVertexBuffer : public IRenderDeviceObject<RdoVertexBufferId>
 	{
 	protected:
-		IVertexBuffer() = default;
-		DEFAULT_MOVE(IVertexBuffer);
+		IRdoVertexBuffer() = default;
+		DEFAULT_MOVE(IRdoVertexBuffer);
 
 	public:
-		NO_COPY(IVertexBuffer);
+		NO_COPY(IRdoVertexBuffer);
 
 		virtual
-		~IVertexBuffer() = 0;
+		~IRdoVertexBuffer() = 0;
 
 		virtual
 		uint32
@@ -47,7 +47,7 @@ namespace Oyl
 	};
 
 	inline
-	IVertexBuffer::~IVertexBuffer() {}
+	IRdoVertexBuffer::~IRdoVertexBuffer() {}
 
-	using VertexBufferHandle = IObjectHandle<IVertexBuffer>;
+	using RdoVertexBufferHandle = IRenderDeviceObjectHandle<IRdoVertexBuffer>;
 }

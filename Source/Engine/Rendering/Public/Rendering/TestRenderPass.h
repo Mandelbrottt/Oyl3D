@@ -1,11 +1,11 @@
 #pragma once
 
-#include "Image.h"
 #include "RenderTarget.h"
-#include "Shader.h"
-#include "UniformBuffer.h"
-#include "VertexBuffer.h"
 
+#include "Rendering/Hardware/Image.h"
+#include "Rendering/Hardware/Shader.h"
+#include "Rendering/Hardware/UniformBuffer.h"
+#include "Rendering/Hardware/VertexBuffer.h"
 #include "Rendering/RenderPass/RenderPass.h"
 
 #include "RenderPass/ColorOutputRenderPass.h"
@@ -26,18 +26,18 @@ namespace Oyl
 		void
 		OnViewPortResize(Vector2u a_size) override;
 
-		const ImageHandle&
+		const RdoImageHandle&
 		GetColorAttachment() const override { return m_colorAttachment; }
 
 	protected:
 		void
-		Begin(const ICommandBuffer& a_commandBuffer) override;
+		Begin(const IRdoCommandBuffer& a_commandBuffer) override;
 
 		void
-		Render(const ICommandBuffer& a_commandBuffer) override;
+		Render(const IRdoCommandBuffer& a_commandBuffer) override;
 
 		void
-		End(const ICommandBuffer& a_commandBuffer) override;
+		End(const IRdoCommandBuffer& a_commandBuffer) override;
 
 	private:
 		void
@@ -50,11 +50,11 @@ namespace Oyl
 		OnDebugGui();
 
 	private:
-		ImageHandle m_colorAttachment = nullptr;
+		RdoImageHandle m_colorAttachment = nullptr;
 
-		ShaderHandle m_shader = nullptr;
-		VertexBufferHandle m_vertexBuffer = nullptr;
-		UniformBufferHandle m_uniformBuffer = nullptr;
+		RdoShaderHandle m_shader = nullptr;
+		RdoVertexBufferHandle m_vertexBuffer = nullptr;
+		RdoUniformBufferHandle m_uniformBuffer = nullptr;
 
 		Vector3 m_gunPosition;
 	};

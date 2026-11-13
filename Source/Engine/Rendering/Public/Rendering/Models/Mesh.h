@@ -2,7 +2,7 @@
 
 #include "Core/Math/Vector.h"
 
-#include "Rendering/Image.h"
+#include "Rendering/Hardware/Image.h"
 
 namespace Oyl
 {
@@ -16,7 +16,7 @@ namespace Oyl
 			const Array<Vector2>& a_vertexUvs,
 			const Array<Vector3>& a_vertexNormals,
 			const Array<uint32>& a_vertexIndices,
-			const ImageHandle* a_texture = nullptr
+			const RdoImageHandle* a_texture = nullptr
 		)
 			: m_vertexPositions(a_vertexPositions),
 			  m_vertexUvs(a_vertexUvs),
@@ -45,6 +45,6 @@ namespace Oyl
 		Array<Vector3> m_vertexNormals;
 		Array<uint32> m_vertexIndices;
 
-		ImageHandle m_texture = nullptr;
+		RdoImageHandle m_texture = nullptr;
 	};
 }

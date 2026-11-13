@@ -3,14 +3,15 @@
 #include <Core/Containers/Array.h>
 #include <Core/Math/Vector2.h>
 
-#include "IDeviceObject.h"
-#include "RenderingEnums.h"
+#include "RenderDeviceObject.h"
+
+#include "Rendering/RenderingEnums.h"
 
 namespace Oyl
 {
-	struct ImageId : IDeviceObjectId<ImageId> {};
+	struct RdoImageId : IRenderDeviceObjectId<RdoImageId> {};
 
-	struct ImageCreateParams
+	struct RdoImageCreateParams
 	{
 		ArrayProxy<byte> pixelData = {};
 
@@ -21,18 +22,18 @@ namespace Oyl
 		ImageLayout layout;
 	};
 
-	class IImage : public IDeviceObject<ImageId>
+	class IRdoImage : public IRenderDeviceObject<RdoImageId>
 	{
 	protected:
-		IImage() = default;
+		IRdoImage() = default;
 
-		DEFAULT_MOVE(IImage);
+		DEFAULT_MOVE(IRdoImage);
 
 	public:
-		NO_COPY(IImage);
+		NO_COPY(IRdoImage);
 
 		virtual
-		~IImage() = 0;
+		~IRdoImage() = 0;
 
 		virtual
 		Vector2u
@@ -52,7 +53,7 @@ namespace Oyl
 	};
 
 	inline
-	IImage::~IImage() {}
+	IRdoImage::~IRdoImage() {}
 
-	using ImageHandle = IObjectHandle<IImage>;
+	using RdoImageHandle = IRenderDeviceObjectHandle<IRdoImage>;
 }

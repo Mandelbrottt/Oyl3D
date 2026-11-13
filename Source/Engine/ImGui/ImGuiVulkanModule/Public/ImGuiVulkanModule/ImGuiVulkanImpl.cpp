@@ -56,7 +56,7 @@ namespace Oyl
 	}
 
 	void
-	ImGuiVulkanImpl::Render(ICommandBuffer& a_commandBuffer)
+	ImGuiVulkanImpl::Render(IRdoCommandBuffer& a_commandBuffer)
 	{
 		OYL_PROFILE_FUNCTION();
 

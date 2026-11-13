@@ -2,8 +2,8 @@
 
 #include <Core/Preprocessor/Common.h>
 
-#include "Device.h"
-#include "PresentTarget.h"
+#include "Rendering/Hardware/PresentTarget.h"
+#include "Rendering/Hardware/RenderDevice.h"
 
 namespace Oyl
 {
@@ -22,7 +22,7 @@ namespace Oyl
 		RenderEngine&
 		Get();
 
-		IDevice&
+		IRenderDevice&
 		GetDevice() const;
 
 		IShaderCompiler&
@@ -30,10 +30,10 @@ namespace Oyl
 
 	private:
 		void
-		RegisterDevice(const DeviceHandle& a_device);
+		RegisterDevice(const RenderDeviceHandle& a_device);
 
 		void
-		UnregisterDevice(const DeviceHandle& a_device);
+		UnregisterDevice(const RenderDeviceHandle& a_device);
 
 		void
 		RegisterShaderCompiler(const SharedPtr<IShaderCompiler>& a_shaderCompiler);

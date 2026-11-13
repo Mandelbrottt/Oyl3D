@@ -8,25 +8,25 @@
 #include <Core/Preprocessor/Common.h>
 
 #include "Fence.h"
-#include "IDeviceObject.h"
+#include "RenderDeviceObject.h"
 #include "Image.h"
 #include "Semaphore.h"
 
 namespace Oyl
 {
-	class ISwapChain : public IDestroyable
+	class IRdoSwapChain : public IDestroyable
 	{
 	protected:
-		ISwapChain() = default;
-		DEFAULT_MOVE(ISwapChain);
+		IRdoSwapChain() = default;
+		DEFAULT_MOVE(IRdoSwapChain);
 
 	public:
-		NO_COPY(ISwapChain);
+		NO_COPY(IRdoSwapChain);
 
-		using OnRecreateDelegate = Delegate<void(const ISwapChain&)>;
+		using OnRecreateDelegate = Delegate<void(const IRdoSwapChain&)>;
 
 		virtual
-		~ISwapChain() = 0;
+		~IRdoSwapChain() = 0;
 
 		virtual
 		void
@@ -42,16 +42,16 @@ namespace Oyl
 
 		virtual
 		bool
-		AcquireNextImage(SemaphoreId a_semaphore, FenceId a_fence) = 0;
+		AcquireNextImage(RdoSemaphoreId a_semaphore, RdoFenceId a_fence) = 0;
 
 		bool
-		AcquireNextImage(const SemaphoreHandle& a_semaphore, const FenceHandle& a_fence)
+		AcquireNextImage(const RdoSemaphoreHandle& a_semaphore, const RdoFenceHandle& a_fence)
 		{
-			SemaphoreId semaphoreId = {};
+			RdoSemaphoreId semaphoreId = {};
 			if (a_semaphore)
 				semaphoreId = a_semaphore->GetId();
 
-			FenceId fenceId = {};
+			RdoFenceId fenceId = {};
 			if (a_fence)
 				fenceId = a_fence->GetId();
 
@@ -75,16 +75,16 @@ namespace Oyl
 		GetCurrentImageIndex() const = 0;
 
 		virtual
-		ImageId
+		RdoImageId
 		GetImageId(uint32 a_index) const = 0;
 
 		virtual
-		ImageId
+		RdoImageId
 		GetCurrentImageId() const = 0;
 	};
 
 	inline
-	ISwapChain::~ISwapChain() {}
+	IRdoSwapChain::~IRdoSwapChain() {}
 
-	using SwapChainHandle = IObjectHandle<ISwapChain>;
+	using RdoSwapChainHandle = IRenderDeviceObjectHandle<IRdoSwapChain>;
 }

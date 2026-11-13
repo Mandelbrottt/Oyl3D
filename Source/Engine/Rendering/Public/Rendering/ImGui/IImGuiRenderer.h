@@ -2,12 +2,12 @@
 
 #include <Application/ApplicationWindow.h>
 
-#include "Rendering/Image.h"
+#include "Rendering/Hardware/Image.h"
 
 namespace Oyl
 {
 	class Renderer;
-	class ICommandBuffer;
+	class IRdoCommandBuffer;
 
 	class IImGuiRenderer
 	{
@@ -25,7 +25,7 @@ namespace Oyl
 
 		virtual
 		void
-		Render(ICommandBuffer& a_commandBuffer) = 0;
+		Render(IRdoCommandBuffer& a_commandBuffer) = 0;
 
 		virtual
 		void
@@ -36,7 +36,7 @@ namespace Oyl
 		GetRenderer() const = 0;
 
 		virtual
-		const ImageHandle&
+		const RdoImageHandle&
 		GetRenderedImageHandle() const = 0;
 
 		virtual
@@ -44,12 +44,12 @@ namespace Oyl
 		OnDebugGuiCallback() const = 0;
 
 		virtual
-		const ImageHandle&
+		const RdoImageHandle&
 		GetGameViewPortImageHandle() = 0;
 
 		virtual
 		void
-		SetGameViewPortImageHandle(const ImageHandle& a_imageHandle) = 0;
+		SetGameViewPortImageHandle(const RdoImageHandle& a_imageHandle) = 0;
 	};
 
 	inline

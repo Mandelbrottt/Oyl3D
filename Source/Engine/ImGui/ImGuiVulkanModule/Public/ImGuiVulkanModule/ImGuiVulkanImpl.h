@@ -23,7 +23,7 @@ namespace Oyl
 		Update() override;
 
 		void
-		Render(ICommandBuffer& a_commandBuffer) override;
+		Render(IRdoCommandBuffer& a_commandBuffer) override;
 
 		void
 		Shutdown() override;

@@ -2,8 +2,8 @@
 
 #include <Application/ApplicationWindow.h>
 
-#include "Device.h"
-#include "PresentTarget.h"
+#include "Rendering/Hardware/RenderDevice.h"
+#include "Rendering/Hardware/PresentTarget.h"
 
 namespace Oyl
 {
@@ -29,16 +29,20 @@ namespace Oyl
 		GetRenderingApi() const = 0;
 
 		virtual
-		PresentTargetHandle
+		HardwarePresentTargetHandle
 		CreatePresentTarget(IApplicationWindow& a_window) = 0;
 
 		virtual
-		DeviceHandle
-		CreateDevice(IPresentTarget* a_presentTarget) = 0;
+		RenderDeviceHandle
+		CreateDevice(IHardwarePresentTarget* a_presentTarget) = 0;
 
 		virtual
-		SwapChainHandle
-		CreateSwapChain(IDevice& a_device, IApplicationWindow& a_window, IPresentTarget& a_presentTarget) = 0;
+		RdoSwapChainHandle
+		CreateSwapChain(
+			IRenderDevice& a_device,
+			IApplicationWindow& a_window,
+			IHardwarePresentTarget& a_presentTarget
+		) = 0;
 
 		virtual
 		SharedPtr<IShaderCompiler>
