@@ -2,7 +2,7 @@
 
 #include <vulkan/vulkan_raii.hpp>
 
-#include "Rendering/Hardware/CommandPool.h"
+#include "Rendering/Hardware/RdoCommandPool.h"
 
 namespace Oyl
 {

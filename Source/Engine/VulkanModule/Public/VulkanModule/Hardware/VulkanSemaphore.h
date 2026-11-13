@@ -2,7 +2,7 @@
 
 #include <vulkan/vulkan_raii.hpp>
 
-#include <Rendering/Hardware/Semaphore.h>
+#include <Rendering/Hardware/RdoSemaphore.h>
 
 namespace Oyl
 {

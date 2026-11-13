@@ -3,16 +3,16 @@
 #include <Core/Interfaces/IDestroyable.h>
 #include <Core/Preprocessor/Common.h>
 
-#include "CommandBuffer.h"
-#include "CommandPool.h"
-#include "CommandQueue.h"
-#include "Fence.h"
-#include "Image.h"
+#include "RdoCommandBuffer.h"
+#include "RdoCommandPool.h"
+#include "RdoCommandQueue.h"
+#include "RdoFence.h"
+#include "RdoImage.h"
 #include "RenderDeviceObject.h"
-#include "Semaphore.h"
-#include "Shader.h"
-#include "UniformBuffer.h"
-#include "VertexBuffer.h"
+#include "RdoSemaphore.h"
+#include "RdoShader.h"
+#include "RdoUniformBuffer.h"
+#include "RdoVertexBuffer.h"
 
 #include "Rendering/RenderingEnums.h"
 

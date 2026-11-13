@@ -7,10 +7,10 @@
 #include <Core/Math/Vector.h>
 #include <Core/Preprocessor/Common.h>
 
-#include "Fence.h"
+#include "RdoFence.h"
 #include "RenderDeviceObject.h"
-#include "Image.h"
-#include "Semaphore.h"
+#include "RdoImage.h"
+#include "RdoSemaphore.h"
 
 namespace Oyl
 {

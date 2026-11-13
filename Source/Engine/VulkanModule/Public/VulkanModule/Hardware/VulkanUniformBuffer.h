@@ -2,7 +2,7 @@
 
 #include <vulkan/vulkan_raii.hpp>
 
-#include "Rendering/Hardware/UniformBuffer.h"
+#include "Rendering/Hardware/RdoUniformBuffer.h"
 
 namespace Oyl
 {

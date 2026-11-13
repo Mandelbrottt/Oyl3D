@@ -2,10 +2,10 @@
 
 #include "RenderTarget.h"
 
-#include "Rendering/Hardware/Image.h"
-#include "Rendering/Hardware/Shader.h"
-#include "Rendering/Hardware/UniformBuffer.h"
-#include "Rendering/Hardware/VertexBuffer.h"
+#include "Rendering/Hardware/RdoImage.h"
+#include "Rendering/Hardware/RdoShader.h"
+#include "Rendering/Hardware/RdoUniformBuffer.h"
+#include "Rendering/Hardware/RdoVertexBuffer.h"
 #include "Rendering/RenderPass/RenderPass.h"
 
 #include "RenderPass/ColorOutputRenderPass.h"

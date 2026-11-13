@@ -10,7 +10,7 @@
 #include "ImGui/IImGuiRenderer.h"
 
 #include "Rendering/RenderContext.h"
-#include "Rendering/Hardware/PresentTarget.h"
+#include "Rendering/Hardware/HardwarePresentTarget.h"
 #include "Rendering/Hardware/RenderDevice.h"
 
 namespace Oyl

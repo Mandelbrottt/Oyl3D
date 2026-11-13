@@ -3,7 +3,7 @@
 #include <Application/ApplicationWindow.h>
 
 #include "Rendering/Hardware/RenderDevice.h"
-#include "Rendering/Hardware/PresentTarget.h"
+#include "Rendering/Hardware/HardwarePresentTarget.h"
 
 namespace Oyl
 {

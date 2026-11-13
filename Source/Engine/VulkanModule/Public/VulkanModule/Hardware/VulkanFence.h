@@ -2,7 +2,7 @@
 
 #include <vulkan/vulkan_raii.hpp>
 
-#include "Rendering/Hardware/Fence.h"
+#include "Rendering/Hardware/RdoFence.h"
 
 namespace Oyl
 {

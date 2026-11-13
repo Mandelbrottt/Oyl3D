@@ -2,7 +2,7 @@
 
 #include <Application/ApplicationWindow.h>
 
-#include <Rendering/Hardware/SwapChain.h>
+#include <Rendering/Hardware/RdoSwapChain.h>
 
 #include "VulkanPresentTarget.h"
 

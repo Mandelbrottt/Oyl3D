@@ -4,10 +4,10 @@
 #include <Core/Preprocessor/Common.h>
 #include <Core/Types/Primitives.h>
 
-#include "CommandBuffer.h"
-#include "Fence.h"
-#include "Semaphore.h"
-#include "SwapChain.h"
+#include "RdoCommandBuffer.h"
+#include "RdoFence.h"
+#include "RdoSemaphore.h"
+#include "RdoSwapChain.h"
 
 namespace Oyl
 {

@@ -2,7 +2,7 @@
 
 #include <vulkan/vulkan_raii.hpp>
 
-#include "Rendering/Hardware/VertexBuffer.h"
+#include "Rendering/Hardware/RdoVertexBuffer.h"
 
 namespace Oyl
 {

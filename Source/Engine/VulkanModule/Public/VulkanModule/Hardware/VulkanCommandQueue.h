@@ -4,7 +4,7 @@
 
 #include <cstddef>
 
-#include <Rendering/Hardware/CommandQueue.h>
+#include <Rendering/Hardware/RdoCommandQueue.h>
 
 #include "VulkanCommandBuffer.h"
 #include "VulkanSwapChain.h"

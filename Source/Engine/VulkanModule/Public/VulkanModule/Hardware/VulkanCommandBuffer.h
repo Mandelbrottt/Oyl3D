@@ -5,7 +5,7 @@
 #include "VulkanCommandPool.h"
 #include "VulkanImage.h"
 
-#include "Rendering/Hardware/CommandBuffer.h"
+#include "Rendering/Hardware/RdoCommandBuffer.h"
 
 namespace Oyl
 {

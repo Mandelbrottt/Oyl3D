@@ -2,7 +2,7 @@
 
 #include <vulkan/vulkan_raii.hpp>
 
-#include "Rendering/Hardware/StagingBuffer.h"
+#include "Rendering/Hardware/RdoStagingBuffer.h"
 
 namespace Oyl
 {

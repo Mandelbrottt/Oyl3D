@@ -4,7 +4,7 @@
 #include <Core/Containers/Set.h>
 
 #include "Rendering/RenderTarget.h"
-#include "Rendering/Hardware/CommandBuffer.h"
+#include "Rendering/Hardware/RdoCommandBuffer.h"
 
 namespace Oyl
 {

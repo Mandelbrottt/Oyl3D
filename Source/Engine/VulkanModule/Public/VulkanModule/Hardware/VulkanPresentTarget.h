@@ -2,7 +2,7 @@
 
 #include <vulkan/vulkan_raii.hpp>
 
-#include <Rendering/Hardware/PresentTarget.h>
+#include <Rendering/Hardware/HardwarePresentTarget.h>
 
 namespace Oyl
 {

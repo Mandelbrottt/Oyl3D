@@ -5,7 +5,7 @@
 #include <Core/Containers/Set.h>
 #include <Core/Preprocessor/Common.h>
 
-#include "Rendering/Hardware/CommandBuffer.h"
+#include "Rendering/Hardware/RdoCommandBuffer.h"
 #include "Rendering/RenderPass/RenderPass.h"
 
 namespace Oyl

@@ -2,7 +2,7 @@
 
 #include <Application/ApplicationWindow.h>
 
-#include "Rendering/Hardware/Image.h"
+#include "Rendering/Hardware/RdoImage.h"
 
 namespace Oyl
 {

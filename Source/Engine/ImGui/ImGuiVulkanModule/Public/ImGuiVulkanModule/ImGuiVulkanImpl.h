@@ -6,7 +6,7 @@
 
 #include <ImGuiModule/IImGuiImpl.h>
 
-#include <Rendering/Hardware/SwapChain.h>
+#include <Rendering/Hardware/RdoSwapChain.h>
 #include <Rendering/ImGui/IImGuiRenderer.h>
 
 #include "ImGuiVulkanRenderPass.h"

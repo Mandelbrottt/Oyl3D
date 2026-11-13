@@ -4,11 +4,11 @@
 #include <Core/Interfaces/IDestroyable.h>
 #include <Core/Math/Rect.h>
 
-#include "CommandPool.h"
-#include "Image.h"
-#include "Shader.h"
-#include "SwapChain.h"
-#include "VertexBuffer.h"
+#include "RdoCommandPool.h"
+#include "RdoImage.h"
+#include "RdoShader.h"
+#include "RdoSwapChain.h"
+#include "RdoVertexBuffer.h"
 
 #include "Rendering/RenderingEnums.h"
 #include "Rendering/RenderTarget.h"

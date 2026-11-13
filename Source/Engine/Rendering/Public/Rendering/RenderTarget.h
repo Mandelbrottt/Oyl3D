@@ -2,7 +2,7 @@
 
 #include <Core/Containers/Array.h>
 
-#include "Rendering/Hardware/Image.h"
+#include "Rendering/Hardware/RdoImage.h"
 #include "Rendering/Hardware/RenderDeviceObject.h"
 
 namespace Oyl
